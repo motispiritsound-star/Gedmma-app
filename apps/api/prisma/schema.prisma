@@ -1,0 +1,647 @@
+// Khidma — service marketplace for Morocco.
+//
+// Conventions used throughout:
+//  * Money is stored as an integer number of centimes (1 MAD = 100 centimes),
+//    never as a float, and always excluding VAT unless a field says otherwise.
+//  * Phone numbers are stored in E.164 (`+2126...`), normalised at the edge.
+//  * Catalog tables (City, Category, Plan) are seeded from @khidma/shared so
+//    the app and the API agree on slugs, and carry a name column per language.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum UserRole {
+  CUSTOMER
+  PRO
+  ADMIN
+}
+
+enum Locale {
+  fr
+  ar
+  en
+}
+
+enum JobStatus {
+  DRAFT
+  OPEN
+  QUOTED
+  AWARDED
+  COMPLETED
+  CANCELLED
+  EXPIRED
+}
+
+enum JobUrgency {
+  URGENT
+  WITHIN_WEEK
+  WITHIN_MONTH
+  FLEXIBLE
+}
+
+enum PropertyType {
+  APARTMENT
+  VILLA
+  RIAD
+  OFFICE
+  SHOP
+  OTHER
+}
+
+enum QuoteStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+  EXPIRED
+}
+
+enum ProVerificationStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum LegalForm {
+  AUTO_ENTREPRENEUR
+  PERSONNE_PHYSIQUE
+  SARL
+  SARL_AU
+  SA
+  SNC
+  COOPERATIVE
+  ASSOCIATION
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  EXPIRED
+}
+
+enum BillingPeriod {
+  MONTHLY
+  YEARLY
+}
+
+enum PaymentMethod {
+  CMI_CARD
+  BANK_TRANSFER
+  CASH
+  MOBILE_WALLET
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum CreditReason {
+  PLAN_GRANT
+  TRIAL_GRANT
+  QUOTE_SUBMITTED
+  QUOTE_REFUND
+  MANUAL_ADJUSTMENT
+  TOPUP_PURCHASE
+}
+
+enum Region {
+  TANGER_TETOUAN_AL_HOCEIMA
+  ORIENTAL
+  FES_MEKNES
+  RABAT_SALE_KENITRA
+  BENI_MELLAL_KHENIFRA
+  CASABLANCA_SETTAT
+  MARRAKECH_SAFI
+  DRAA_TAFILALET
+  SOUSS_MASSA
+  GUELMIM_OUED_NOUN
+  LAAYOUNE_SAKIA_EL_HAMRA
+  DAKHLA_OUED_ED_DAHAB
+}
+
+enum NotificationType {
+  JOB_NEW_QUOTE
+  JOB_AWARDED
+  JOB_CANCELLED
+  QUOTE_REJECTED
+  NEW_LEAD
+  NEW_MESSAGE
+  REVIEW_RECEIVED
+  SUBSCRIPTION_EXPIRING
+  SUBSCRIPTION_RENEWED
+  CREDITS_LOW
+  PRO_VERIFIED
+}
+
+// ---------------------------------------------------------------------------
+// Catalog
+// ---------------------------------------------------------------------------
+
+model City {
+  id         String  @id @default(cuid())
+  slug       String  @unique
+  nameFr     String
+  nameAr     String
+  nameEn     String
+  region     Region
+  lat        Float
+  lng        Float
+  population Int     @default(0)
+  isActive   Boolean @default(true)
+
+  jobs      Job[]
+  proBases  ProProfile[]  @relation("ProBaseCity")
+  proCities ProCoverage[]
+  users     User[]
+
+  @@index([region])
+  @@map("cities")
+}
+
+model Category {
+  id                       String  @id @default(cuid())
+  slug                     String  @unique
+  nameFr                   String
+  nameAr                   String
+  nameEn                   String
+  icon                     String
+  parentId                 String?
+  /// Ordering hint for the category grid; lower sorts first.
+  position                 Int     @default(0)
+  /// Guidance shown in the posting wizard, in centimes.
+  typicalBudgetMinCentimes Int?
+  typicalBudgetMaxCentimes Int?
+  isActive                 Boolean @default(true)
+
+  parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryTree")
+  jobs      Job[]
+  proTrades ProTrade[]
+
+  @@index([parentId])
+  @@map("categories")
+}
+
+model Plan {
+  id                   String  @id @default(cuid())
+  slug                 String  @unique
+  nameFr               String
+  nameAr               String
+  nameEn               String
+  taglineFr            String
+  taglineAr            String
+  taglineEn            String
+  /// Prices exclude VAT; 20% TVA is added when the invoice is raised.
+  monthlyPriceCentimes Int
+  yearlyPriceCentimes  Int
+  monthlyCredits       Int
+  maxCategories        Int
+  /// Null means the pro may cover every city.
+  maxCities            Int?
+  featured             Boolean @default(false)
+  leadHeadStartMinutes Int     @default(0)
+  teamSeats            Int     @default(0)
+  /// Localised bullet list, stored as { fr, ar, en } string arrays.
+  perks                Json
+  position             Int     @default(0)
+  isActive             Boolean @default(true)
+
+  subscriptions Subscription[]
+
+  @@map("plans")
+}
+
+// ---------------------------------------------------------------------------
+// Identity
+// ---------------------------------------------------------------------------
+
+model User {
+  id              String    @id @default(cuid())
+  /// E.164, the sign-in identifier. Every account has one.
+  phone           String    @unique
+  phoneVerifiedAt DateTime?
+  email           String?   @unique
+  firstName       String?
+  lastName        String?
+  avatarUrl       String?
+  locale          Locale    @default(fr)
+  role            UserRole  @default(CUSTOMER)
+  cityId          String?
+  isBlocked       Boolean   @default(false)
+  blockedReason   String?
+  lastSeenAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  city           City?          @relation(fields: [cityId], references: [id])
+  proProfile     ProProfile?
+  jobs           Job[]          @relation("JobCustomer")
+  refreshTokens  RefreshToken[]
+  messages       Message[]
+  reviewsWritten Review[]       @relation("ReviewAuthor")
+  devices        DeviceToken[]
+  notifications  Notification[]
+
+  @@index([role])
+  @@map("users")
+}
+
+/// One-time codes sent by SMS. Rows are kept after use for rate limiting and
+/// abuse investigation, and swept by a scheduled job.
+model OtpChallenge {
+  id         String    @id @default(cuid())
+  phone      String
+  /// SHA-256 of the code — a leaked database must not hand out live codes.
+  codeHash   String
+  expiresAt  DateTime
+  consumedAt DateTime?
+  attempts   Int       @default(0)
+  requestIp  String?
+  createdAt  DateTime  @default(now())
+
+  @@index([phone, createdAt])
+  @@map("otp_challenges")
+}
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  userId    String
+  /// SHA-256 of the opaque token handed to the device.
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  userAgent String?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model DeviceToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  platform  String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("device_tokens")
+}
+
+// ---------------------------------------------------------------------------
+// Professionals
+// ---------------------------------------------------------------------------
+
+model ProProfile {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  displayName     String
+  legalForm       LegalForm
+  bio             String
+  yearsExperience Int       @default(0)
+  teamSize        Int       @default(1)
+  baseCityId      String
+  serviceRadiusKm Int       @default(30)
+  logoUrl         String?
+  websiteUrl      String?
+  portfolioUrls   String[]  @default([])
+
+  // Moroccan registration identifiers. ICE identifies a registered business;
+  // sole traders and auto-entrepreneurs are identified by their CIN instead.
+  ice   String? @unique
+  rc    String?
+  taxId String?
+  cnss  String?
+  cin   String?
+
+  verificationStatus ProVerificationStatus @default(UNVERIFIED)
+  verifiedAt         DateTime?
+  verificationNotes  String?
+  documentUrls       String[]              @default([])
+
+  /// Denormalised review aggregates, recomputed when a review lands.
+  ratingAverage         Float @default(0)
+  ratingCount           Int   @default(0)
+  /// Lifetime counters powering the "responds quickly" style profile badges.
+  quotesSent            Int   @default(0)
+  jobsWon               Int   @default(0)
+  /// Rolling median first-response time in minutes, or null before any quote.
+  medianResponseMinutes Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  baseCity      City                @relation("ProBaseCity", fields: [baseCityId], references: [id])
+  trades        ProTrade[]
+  coverage      ProCoverage[]
+  quotes        Quote[]
+  subscriptions Subscription[]
+  creditEntries CreditLedgerEntry[]
+  reviews       Review[]            @relation("ReviewPro")
+  conversations Conversation[]
+
+  @@index([verificationStatus])
+  @@index([ratingAverage])
+  @@map("pro_profiles")
+}
+
+model ProTrade {
+  proId      String
+  categoryId String
+  /// The pro's headline trade, shown first on their profile card.
+  isPrimary  Boolean @default(false)
+
+  pro      ProProfile @relation(fields: [proId], references: [id], onDelete: Cascade)
+  category Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([proId, categoryId])
+  @@index([categoryId])
+  @@map("pro_trades")
+}
+
+model ProCoverage {
+  proId  String
+  cityId String
+
+  pro  ProProfile @relation(fields: [proId], references: [id], onDelete: Cascade)
+  city City       @relation(fields: [cityId], references: [id], onDelete: Cascade)
+
+  @@id([proId, cityId])
+  @@index([cityId])
+  @@map("pro_coverage")
+}
+
+// ---------------------------------------------------------------------------
+// Jobs and quotes
+// ---------------------------------------------------------------------------
+
+model Job {
+  id                 String        @id @default(cuid())
+  /// Short human-quotable code shown in the UI and in SMS, e.g. `KH-4F2A9C`.
+  reference          String        @unique
+  customerId         String
+  categoryId         String
+  cityId             String
+  title              String
+  description        String
+  district           String?
+  /// Withheld from pros until the customer awards the job to one of them.
+  addressLine        String?
+  lat                Float?
+  lng                Float?
+  propertyType       PropertyType?
+  urgency            JobUrgency    @default(WITHIN_WEEK)
+  preferredStartDate DateTime?
+  budgetMinCentimes  Int?
+  budgetMaxCentimes  Int?
+  photoUrls          String[]      @default([])
+  /// Overrides the account phone when the customer wants to be reached elsewhere.
+  contactPhone       String?
+
+  status         JobStatus @default(OPEN)
+  viewCount      Int       @default(0)
+  quoteCount     Int       @default(0)
+  publishedAt    DateTime?
+  expiresAt      DateTime?
+  awardedQuoteId String?   @unique
+  awardedAt      DateTime?
+  completedAt    DateTime?
+  cancelledAt    DateTime?
+  cancelReason   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer      User           @relation("JobCustomer", fields: [customerId], references: [id], onDelete: Cascade)
+  category      Category       @relation(fields: [categoryId], references: [id])
+  city          City           @relation(fields: [cityId], references: [id])
+  quotes        Quote[]        @relation("JobQuotes")
+  awardedQuote  Quote?         @relation("AwardedQuote", fields: [awardedQuoteId], references: [id])
+  conversations Conversation[]
+  review        Review?
+
+  @@index([status, publishedAt])
+  @@index([categoryId, cityId, status])
+  @@index([customerId, status])
+  @@map("jobs")
+}
+
+model Quote {
+  id                    String      @id @default(cuid())
+  jobId                 String
+  proId                 String
+  amountCentimes        Int
+  /// True when the figure is an estimate pending a site visit, not a firm price.
+  isEstimate            Boolean     @default(false)
+  message               String
+  estimatedDurationDays Int?
+  canStartOn            DateTime?
+  includesSiteVisit     Boolean     @default(false)
+  validUntil            DateTime
+  status                QuoteStatus @default(PENDING)
+
+  /// Minutes between the job being published and this quote landing.
+  responseMinutes Int?
+  rejectedReason  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  job           Job                 @relation("JobQuotes", fields: [jobId], references: [id], onDelete: Cascade)
+  pro           ProProfile          @relation(fields: [proId], references: [id], onDelete: Cascade)
+  awardedForJob Job?                @relation("AwardedQuote")
+  conversation  Conversation?
+  creditEntry   CreditLedgerEntry[]
+
+  /// A professional may quote a given job only once.
+  @@unique([jobId, proId])
+  @@index([proId, status])
+  @@map("quotes")
+}
+
+// ---------------------------------------------------------------------------
+// Messaging and reviews
+// ---------------------------------------------------------------------------
+
+model Conversation {
+  id             String    @id @default(cuid())
+  jobId          String
+  proId          String
+  quoteId        String?   @unique
+  lastMessageAt  DateTime?
+  customerUnread Int       @default(0)
+  proUnread      Int       @default(0)
+  createdAt      DateTime  @default(now())
+
+  job      Job        @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  pro      ProProfile @relation(fields: [proId], references: [id], onDelete: Cascade)
+  quote    Quote?     @relation(fields: [quoteId], references: [id])
+  messages Message[]
+
+  @@unique([jobId, proId])
+  @@index([lastMessageAt])
+  @@map("conversations")
+}
+
+model Message {
+  id             String    @id @default(cuid())
+  conversationId String
+  senderId       String
+  body           String
+  attachmentUrls String[]  @default([])
+  readAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+  @@map("messages")
+}
+
+model Review {
+  id                  String    @id @default(cuid())
+  jobId               String    @unique
+  proId               String
+  authorId            String
+  rating              Int
+  qualityRating       Int?
+  punctualityRating   Int?
+  priceRating         Int?
+  communicationRating Int?
+  comment             String
+  /// The pro gets one public right of reply.
+  proReply            String?
+  proRepliedAt        DateTime?
+  isPublished         Boolean   @default(true)
+  createdAt           DateTime  @default(now())
+
+  job    Job        @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  pro    ProProfile @relation("ReviewPro", fields: [proId], references: [id], onDelete: Cascade)
+  author User       @relation("ReviewAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([proId, createdAt])
+  @@map("reviews")
+}
+
+// ---------------------------------------------------------------------------
+// Billing
+// ---------------------------------------------------------------------------
+
+model Subscription {
+  id                 String             @id @default(cuid())
+  proId              String
+  planId             String
+  status             SubscriptionStatus @default(TRIALING)
+  period             BillingPeriod      @default(MONTHLY)
+  currentPeriodStart DateTime           @default(now())
+  currentPeriodEnd   DateTime
+  trialEndsAt        DateTime?
+  cancelAtPeriodEnd  Boolean            @default(false)
+  cancelledAt        DateTime?
+  cancelReason       String?
+  /// Credits left in the current period. The ledger holds the full history.
+  creditsRemaining   Int                @default(0)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  pro      ProProfile          @relation(fields: [proId], references: [id], onDelete: Cascade)
+  plan     Plan                @relation(fields: [planId], references: [id])
+  payments Payment[]
+  credits  CreditLedgerEntry[]
+
+  @@index([proId, status])
+  @@index([currentPeriodEnd])
+  @@map("subscriptions")
+}
+
+/// Append-only ledger. `creditsRemaining` on the subscription is the running
+/// total of these entries and must never be written without one.
+model CreditLedgerEntry {
+  id             String       @id @default(cuid())
+  proId          String
+  subscriptionId String?
+  /// Positive when credits are granted, negative when they are spent.
+  delta          Int
+  balanceAfter   Int
+  reason         CreditReason
+  quoteId        String?
+  note           String?
+  createdAt      DateTime     @default(now())
+
+  pro          ProProfile    @relation(fields: [proId], references: [id], onDelete: Cascade)
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id])
+  quote        Quote?        @relation(fields: [quoteId], references: [id])
+
+  @@index([proId, createdAt])
+  @@map("credit_ledger_entries")
+}
+
+model Payment {
+  id             String        @id @default(cuid())
+  subscriptionId String
+  /// Invoice reference shown to the customer, e.g. `KH-2026-000418`.
+  reference      String        @unique
+  netCentimes    Int
+  vatCentimes    Int
+  grossCentimes  Int
+  vatRate        Float         @default(0.2)
+  method         PaymentMethod @default(CMI_CARD)
+  status         PaymentStatus @default(PENDING)
+  /// Identifier returned by the gateway, used to reconcile the callback.
+  providerRef    String?
+  paidAt         DateTime?
+  failureReason  String?
+  invoiceUrl     String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([subscriptionId, status])
+  @@map("payments")
+}
+
+// ---------------------------------------------------------------------------
+// Notifications
+// ---------------------------------------------------------------------------
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  /// Localised at send time; stored rendered so history stays stable.
+  title     String
+  body      String
+  /// Deep link target, e.g. `khidma://jobs/<id>`.
+  deepLink  String?
+  payload   Json?
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+  @@map("notifications")
+}
