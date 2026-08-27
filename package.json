@@ -1,0 +1,30 @@
+{
+  "name": "webscan-nl",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Geautomatiseerde websitescan voor Nederlandse bedrijven: vind slecht presterende websites en genereer leads voor optimalisatie-voorstellen.",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "bin": {
+    "webscan": "./src/cli.ts"
+  },
+  "scripts": {
+    "webscan": "node src/cli.ts",
+    "dashboard": "node src/cli.ts serve",
+    "test": "node test/run.ts",
+    "test:api": "node test/server.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "commander": "^12.1.0",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0"
+  }
+}
