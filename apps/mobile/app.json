@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "Khidma",
+    "slug": "khidma",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "khidma",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#0F6F5C",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "ma.khidma.app",
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true,
+        "NSPhotoLibraryUsageDescription": "Khidma utilise vos photos pour illustrer vos demandes de devis.",
+        "NSCameraUsageDescription": "Khidma utilise l'appareil photo pour photographier les travaux à réaliser."
+      }
+    },
+    "android": {
+      "package": "ma.khidma.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0F6F5C"
+      },
+      "permissions": ["CAMERA", "READ_EXTERNAL_STORAGE"]
+    },
+    "locales": {
+      "fr": "./src/i18n/store-fr.json",
+      "ar": "./src/i18n/store-ar.json",
+      "en": "./src/i18n/store-en.json"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-localization",
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Khidma utilise vos photos pour illustrer vos demandes de devis."
+        }
+      ]
+    ],
+    "extra": {
+      "apiUrl": "http://localhost:4000",
+      "router": {
+        "origin": false
+      }
+    }
+  }
+}
