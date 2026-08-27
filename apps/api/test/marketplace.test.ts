@@ -444,6 +444,33 @@ describe('awarding and reviewing', () => {
     expect(entry.delta).toBe(1);
   });
 
+  it('shows a professional their own posted job as its customer', async () => {
+    // A tradesperson hiring another trade for their own premises is a normal
+    // case, and they must see their own address rather than the lead view.
+    const pro = await createPro(app, { phone: '0613000200', planSlug: 'artisan' });
+
+    const posted = await app.inject({
+      method: 'POST',
+      url: '/v1/jobs',
+      headers: auth(pro.accessToken),
+      payload: {
+        ...VALID_JOB,
+        categorySlug: 'debouchage',
+        addressLine: '8 rue des Artisans, Derb Omar',
+      },
+    });
+    expect(posted.statusCode).toBe(201);
+
+    const detail = await app.inject({
+      method: 'GET',
+      url: `/v1/jobs/${posted.json().job.id}`,
+      headers: auth(pro.accessToken),
+    });
+
+    expect(detail.json().viewer).toBe('CUSTOMER');
+    expect(detail.json().job.addressLine).toBe('8 rue des Artisans, Derb Omar');
+  });
+
   it('lets only the customer who posted the job award it', async () => {
     const customer = await signIn(app, '0613000100');
     const stranger = await signIn(app, '0613000101');

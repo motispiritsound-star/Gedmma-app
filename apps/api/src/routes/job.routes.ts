@@ -9,15 +9,16 @@ import {
   updateJobSchema,
 } from '@khidma/shared';
 import { z } from 'zod';
+import { AppError } from '../lib/errors.js';
 
 const jobRoutes: FastifyPluginAsync = async (app) => {
-  const customerOnly = app.requireRole('CUSTOMER', 'PRO', 'ADMIN');
+  const anySignedInUser = app.requireRole('CUSTOMER', 'PRO', 'ADMIN');
 
   /**
    * Anyone signed in may post a job — a professional hiring another trade is a
    * normal case, so posting is not restricted to the CUSTOMER role.
    */
-  app.post('/', { onRequest: [customerOnly] }, async (request, reply) => {
+  app.post('/', { onRequest: [anySignedInUser] }, async (request, reply) => {
     const body = createJobSchema.parse(request.body);
     const job = await app.services.jobs.create(request.currentUser!.sub, body);
     reply.code(201);
@@ -33,10 +34,27 @@ const jobRoutes: FastifyPluginAsync = async (app) => {
     });
   });
 
-  /** Resolves to the customer view or the pro view depending on who asks. */
+  /**
+   * Resolves to the customer view or the pro view. Ownership is checked first,
+   * because a professional who posted a job for their own premises is its
+   * customer and must see their own address, not the redacted lead view.
+   */
   app.get('/:jobId', { onRequest: [app.authenticate] }, async (request) => {
     const { jobId } = z.object({ jobId: z.string().min(1) }).parse(request.params);
     const user = request.currentUser!;
+
+    const owner = await app.prisma.job.findUnique({
+      where: { id: jobId },
+      select: { customerId: true },
+    });
+    if (!owner) throw new AppError('not_found');
+
+    if (owner.customerId === user.sub) {
+      return {
+        job: await app.services.jobs.getForCustomer(jobId, user.sub),
+        viewer: 'CUSTOMER' as const,
+      };
+    }
 
     if (user.proId) {
       const job = await app.services.jobs.getForPro(jobId, user.proId);
@@ -44,7 +62,8 @@ const jobRoutes: FastifyPluginAsync = async (app) => {
       return { job, viewer: 'PRO' as const };
     }
 
-    return { job: await app.services.jobs.getForCustomer(jobId, user.sub), viewer: 'CUSTOMER' as const };
+    // Not the owner and not a professional: nothing to show.
+    throw new AppError('forbidden');
   });
 
   app.patch('/:jobId', { onRequest: [app.authenticate] }, async (request) => {

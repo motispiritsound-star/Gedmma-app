@@ -9,8 +9,7 @@ import { QuoteCard } from '@/components/cards';
 import { useApi } from '@/hooks/use-api';
 import { useSession } from '@/store/session';
 import { ApiError } from '@/api/client';
-import { formatDate, formatMoney, formatRelative } from '@/utils/format';
-import { pickName } from '@/utils/format';
+import { formatDate, formatMoney, formatRelative, pickName } from '@/utils/format';
 import type { CustomerJobDetail } from '@/api/types';
 import { colors, spacing } from '@/theme';
 
