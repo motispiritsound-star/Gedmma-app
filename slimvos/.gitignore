@@ -43,3 +43,6 @@ yarn-error.*
 # Tests en builds
 .test-build/
 dist/
+
+# Gegenereerde demo (bouw met: npm run demo)
+demo/slimvos-demo.html

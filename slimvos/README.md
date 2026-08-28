@@ -21,7 +21,38 @@ Andere commando's:
 npm test           # 34 tests op de leerlogica en de vragen
 npm run typecheck  # TypeScript over de hele app
 npm run web        # in de browser, handig om snel te klikken
+npm run demo       # bouwt demo/slimvos-demo.html: één bestand, geen server
 ```
+
+## Op je computer proberen
+
+Twee manieren, allebei zonder developer-account:
+
+**1. De ontwikkelversie** — je ziet je wijzigingen meteen terug.
+
+```bash
+cd slimvos
+npm install
+npm run web
+```
+
+De browser opent vanzelf op `http://localhost:8081`. Maak het venster smal, of
+zet in de ontwikkelaarstools een telefoonformaat aan, dan zie je de app zoals
+hij op een toestel staat.
+
+**2. Eén los bestand** — handig om aan iemand anders te geven.
+
+```bash
+npm run demo
+```
+
+Dat maakt `demo/slimvos-demo.html`: de hele app in één bestand van ongeveer
+1,2 MB, inclusief alle JavaScript en plaatjes. Dubbelklik het en het draait —
+geen server, geen internet, geen installatie. Op een breed scherm staat de app
+in een nagebootst toestel; op een telefoon vult hij het scherm.
+
+De voortgang wordt in beide gevallen in de browser bewaard (`localStorage`),
+niet in de app-opslag van je telefoon. Het zijn dus losse profielen.
 
 ## Hoe de app werkt
 

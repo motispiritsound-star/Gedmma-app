@@ -33,7 +33,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
-    "test": "tsc -p tsconfig.test.json && node --test .test-build/test/*.test.js"
+    "test": "tsc -p tsconfig.test.json && node --test .test-build/test/*.test.js",
+    "demo": "expo export --platform web --output-dir dist && node demo/bouw-demo.mjs"
   },
   "private": true
 }
