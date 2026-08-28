@@ -129,7 +129,13 @@ Oefenen kan zonder account — dat blijft zo. Een ouderaccount heb je alleen
 nodig voor een abonnement. Het oudergedeelte zit achter een rekenslotje, zodat
 een kind niet zomaar bij de instellingen komt.
 
-Het prijsplan en de onderbouwing staan in [`PRIJZEN.md`](PRIJZEN.md).
+Het instapaanbod is **een week gratis, daarna €4,99 per maand**, automatisch
+verlengd tot je opzegt. Opzeggen doe je in de abonnementeninstellingen van je
+telefoon — de app linkt er rechtstreeks naartoe.
+
+- [`PRIJZEN.md`](PRIJZEN.md) — het plan en waarom elk getal zo gekozen is
+- [`BETALINGEN.md`](BETALINGEN.md) — hoe het geld automatisch op een zakelijke
+  rekening komt, en wat je daarvoor moet instellen
 
 ### Waar de gegevens staan
 
@@ -165,8 +171,8 @@ leerlogica in gewone Node en is die volledig te testen zonder simulator.
 | | Squla (aug 2026) | Slimvos |
 | --- | --- | --- |
 | Goedkoopste prijs | €10,99 p/m bij een jaarabonnement (~€132 per jaar) | €39,99 per jaar (€3,33 p/m) |
-| Maandprijs | €16,99 per kwartaalabonnement | €4,99 |
-| Opzeggen | een maand opzegtermijn | wanneer je wilt, geen opzegtermijn |
+| Maandprijs | €16,99 per kwartaalabonnement | €4,99, eerste week gratis |
+| Opzeggen | een maand opzegtermijn | wanneer je wilt, in de winkelinstellingen |
 | Gratis | 7 dagen proberen | rekenen blijft gratis, permanent |
 | Account | verplicht om te beginnen | pas nodig om te betalen |
 | Internet | nodig | volledig offline |
@@ -200,9 +206,10 @@ domeinnaambeschikbaarheid.
 
 Bewust buiten deze eerste versie gehouden:
 
-- **Echt betalen.** De hele abonnementsstroom zit erin — plannen, proefperiode,
-  opzeggen, toegangsregels — maar er wordt niets afgeschreven. De koppeling met
-  de App Store en Google Play moet nog gemaakt worden; zie `PRIJZEN.md`.
+- **Echt betalen.** De hele abonnementsstroom zit erin — proefweek, automatisch
+  verlengen, opzeggen, toegangsregels, de datum van de eerste afschrijving —
+  maar er wordt niets afgeschreven. De koppeling met de App Store en Google Play
+  moet nog gemaakt worden; zie [`BETALINGEN.md`](BETALINGEN.md).
 - **Een echte server achter het account.** Registreren, inloggen en wachtwoord
   vergeten werken, maar tegen lokale opslag. Alles loopt via één poort
   (`AuthPoort`), dus overstappen op Supabase of Firebase is één bestand.

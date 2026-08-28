@@ -78,21 +78,27 @@ minstens twee weken voor.
 
 ## 6. Verdienmodel
 
-Het plan staat helemaal uitgewerkt in [`PRIJZEN.md`](PRIJZEN.md): gratis laag,
-€4,99 per maand of €39,99 per jaar, 14 dagen proberen, geen opzegtermijn.
+Het plan staat uitgewerkt in [`PRIJZEN.md`](PRIJZEN.md): gratis laag waarin
+rekenen onbeperkt blijft, daarna **een week gratis en dan €4,99 per maand**, of
+€39,99 per jaar.
 
-In de app zit de hele stroom al: plannen kiezen, proefperiode, opzeggen,
-hervatten en de toegangsregels. Wat nog moet gebeuren:
+Hoe het geld automatisch op je zakelijke rekening komt en wat je daarvoor moet
+instellen — KvK, btw-nummer, bankgegevens in beide consoles, het
+Small Business Program — staat in [`BETALINGEN.md`](BETALINGEN.md). Begin daar
+vroeg mee: bankverificatie en belastingformulieren duren langer dan de app.
+
+In de app zit de hele stroom al: proefweek, automatisch verlengen, opzeggen,
+hervatten, toegangsregels en de datum van de eerste afschrijving. Wat nog moet
+gebeuren:
 
 1. **Producten aanmaken** in App Store Connect en de Play Console met de
-   product-ids uit `src/core/abonnement/plannen.ts`.
-2. **RevenueCat of `expo-in-app-purchases` aansluiten** in
-   `src/state/aankoop.ts`. Dat bestand heeft nu een implementatie die niets
-   afschrijft; de schermen hoeven niet mee te veranderen.
+   product-ids uit `src/core/abonnement/plannen.ts`, allebei met een
+   introductieaanbod van 7 dagen gratis, in dezelfde abonnementsgroep.
+2. **RevenueCat aansluiten** in `src/state/aankoop.ts`. Dat bestand heeft nu een
+   implementatie die niets afschrijft; de schermen veranderen niet mee.
 3. **Een server voor het account** kiezen (Supabase of Firebase) en achter
    `src/state/auth.ts` hangen, zodat een abonnement op meerdere toestellen
-   werkt. Zonder server blijft het abonnement aan één toestel gebonden — dat is
-   een keuze die je in de storebeschrijving eerlijk moet benoemen.
+   werkt. Zonder server blijft het lidmaatschap aan één toestel gebonden.
 
 ## 7. Volgorde die ik zou aanhouden
 

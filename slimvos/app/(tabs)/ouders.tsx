@@ -9,7 +9,8 @@ import { metBeheersing } from '../../src/core/engine/profiel';
 import { dagSleutel } from '../../src/core/engine/punten';
 import { maakOuderslotVraag } from '../../src/core/account/ouderslot';
 import { euro, vindPlan } from '../../src/core/abonnement/plannen';
-import { dagenResterend } from '../../src/core/abonnement/toegang';
+import { dagenResterend, datumInWoorden, volgendeAfschrijving } from '../../src/core/abonnement/toegang';
+import { openBeheer } from '../../src/state/aankoop';
 import { maakRng } from '../../src/core/rng';
 import { useApp } from '../../src/state/AppContext';
 import { Kaart } from '../../src/ui/components/Kaart';
@@ -85,6 +86,7 @@ export default function Ouders() {
   const tijdWeek =
     msWeek === 0 ? 'nog geen oefentijd' : msWeek < 60000 ? 'minder dan een minuut' : `ongeveer ${Math.round(msWeek / 60000)} minuten`;
   const resterend = dagenResterend(abonnement);
+  const volgende = volgendeAfschrijving(abonnement);
 
   function bevestigWissen() {
     Alert.alert(
@@ -232,18 +234,32 @@ export default function Ouders() {
           </Text>
           <Text style={tekst.zacht}>
             {premium
-              ? resterend !== null
-                ? `Nog ${resterend} dagen in deze periode.`
-                : 'Actief.'
-              : `Rekenen onbeperkt, en 10 vragen per dag in de andere vakken. Compleet kost ${euro(vindPlan('jaar').centen)} per jaar.`}
+              ? volgende
+                ? `${volgende.isEersteKeer ? 'Eerste afschrijving' : 'Volgende afschrijving'} op ${datumInWoorden(volgende.op)}: ${euro(vindPlan(volgende.plan).centen)}.`
+                : resterend !== null
+                  ? `Nog ${resterend} dagen toegang, daarna stopt het vanzelf.`
+                  : 'Actief.'
+              : `Rekenen onbeperkt, en 10 vragen per dag in de andere vakken. Eerste week gratis, daarna ${euro(vindPlan('maand').centen)} per maand.`}
           </Text>
           <Knop
             testID="naar-abonnement"
-            titel={premium ? 'Abonnement beheren' : 'Bekijk Slimvos Compleet'}
+            titel={premium ? 'Abonnement bekijken' : 'Begin met een week gratis'}
             soort={premium ? 'rand' : 'merk'}
             onPress={() => router.push('/abonnement')}
             style={{ marginTop: ruimte.m }}
           />
+          {premium ? (
+            <Knop
+              titel="Opzeggen of wijzigen in de winkel"
+              soort="kaal"
+              klein
+              onPress={async () => {
+                if (!(await openBeheer())) {
+                  Alert.alert('Beheren', 'Open de instellingen van je telefoon en ga naar Abonnementen.');
+                }
+              }}
+            />
+          ) : null}
         </Kaart>
 
         <Text style={[tekst.kop, { marginTop: ruimte.m }]}>Instellingen</Text>

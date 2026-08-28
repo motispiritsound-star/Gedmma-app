@@ -17,10 +17,20 @@ export interface Plan {
   proefDagen: number;
   maxProfielen: number;
   regels: string[];
+  /** Waarmee het abonnement zichzelf verlengt; null bij het gratis plan. */
+  verlengtElke?: 'maand' | 'jaar';
 }
 
-export const PROEF_DAGEN = 14;
+/**
+ * Eén week gratis, daarna gaat het abonnement vanzelf in. Zeven dagen is kort
+ * voor een gewoonte, maar dat hoeft ook niet: de gratis versie blijft daarna
+ * gewoon bestaan, dus niemand valt in het niets.
+ */
+export const PROEF_DAGEN = 7;
 export const MAX_PROFIELEN_BETAALD = 5;
+
+/** Het plan dat standaard aanstaat: de laagste drempel om te beginnen. */
+export const STANDAARD_PLAN: PlanId = 'maand';
 
 export const PLANNEN: Plan[] = [
   {
@@ -54,6 +64,7 @@ export const PLANNEN: Plan[] = [
       'Weekrapport voor ouders',
       'Elke maand opzegbaar, geen opzegtermijn',
     ],
+    verlengtElke: 'maand',
   },
   {
     id: 'jaar',
@@ -68,6 +79,7 @@ export const PLANNEN: Plan[] = [
       'Je betaalt acht maanden voor twaalf',
       'Prijs staat een jaar vast',
     ],
+    verlengtElke: 'jaar',
   },
 ];
 
@@ -91,4 +103,15 @@ export function jaarKortingProcent(): number {
   const maand = vindPlan('maand');
   const jaar = vindPlan('jaar');
   return Math.round((1 - jaar.centen / (maand.centen * 12)) * 100);
+}
+
+/**
+ * De zin die de stores verplicht op een paywall willen zien, en die ook
+ * gewoon eerlijk is: wat het kost, hoe vaak, en dat het doorloopt.
+ */
+export function verlengingsregel(plan: Plan): string {
+  if (!plan.verlengtElke) return 'Gratis, zonder abonnement.';
+  const per = plan.verlengtElke === 'jaar' ? 'jaar' : 'maand';
+  const proef = plan.proefDagen > 0 ? `${plan.proefDagen} dagen gratis, daarna ` : '';
+  return `${proef}${euro(plan.centen)} per ${per}. Loopt automatisch door tot je opzegt.`;
 }

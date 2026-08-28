@@ -6,7 +6,7 @@
 | --- | --- | --- | --- |
 | Prijs | €0 | **€4,99 per maand** | **€39,99 per jaar** (€3,33 p/m) |
 | Opzeggen | n.v.t. | wanneer je wilt, geen opzegtermijn | loopt gewoon af |
-| Proefperiode | – | 14 dagen | 14 dagen |
+| Proefperiode | – | 1 week gratis | 1 week gratis |
 | Rekenen | onbeperkt | onbeperkt | onbeperkt |
 | Andere vijf vakken | 10 vragen per dag | onbeperkt | onbeperkt |
 | Uitlegfilmpjes | 3 | alle | alle |
@@ -49,6 +49,21 @@ boven de 45% verkoop je je maandplan kapot.
 Het jaarplan is ook het bedrag waarmee je adverteert, want daar is het verschil
 met de concurrent het grootst.
 
+### Waarom een week proberen en niet twee
+
+Zeven dagen is kort om een gewoonte op te bouwen, en bij de meeste leerapps zou
+ik voor veertien pleiten. Hier niet, om één reden: **na de proefweek val je niet
+in het niets.** De gratis versie blijft bestaan, met rekenen onbeperkt. Een
+ouder die na een week nog twijfelt, verliest de app niet — hij zakt terug naar
+gratis en kan later alsnog beginnen.
+
+Daardoor hoeft de proefperiode niet het werk te doen van "laat ze het echt leren
+kennen". Dat doet de gratis laag. De proefweek is er alleen om de betaalde
+vakken te laten zien, en daar is een week genoeg voor.
+
+Praktisch voordeel: je omzet begint een week na aanmelding in plaats van twee,
+en je hebt sneller door of mensen echt blijven.
+
 ### Waarom een gratis laag en niet alleen een proefperiode
 
 Squla geeft 7 dagen. Een proefperiode zet een klok op je kind: over een week
@@ -68,6 +83,18 @@ De keuze om **rekenen helemaal gratis** te maken is bewust: dat is het vak waar
 ouders het meest om geven en waar de app zijn waarde het snelst laat zien. De
 andere vakken op 10 vragen per dag zetten is genoeg om te proeven en te weinig
 om er een schooljaar op te draaien.
+
+### Waarom het maandplan standaard aanstaat
+
+Op de paywall staat het maandplan voorgeselecteerd, niet het jaarplan. Dat kost
+je op papier omzet, maar het is de laagste drempel om te beginnen: een week
+gratis en daarna €4,99 voelt als een kleine beslissing. €39,99 ineens voelt als
+een grote.
+
+Wie na een paar maanden blijft, stapt vanzelf over naar het jaarplan — dat is
+één tik in de winkelinstellingen en de korting van 33% staat er groot bij. Je
+verdient meer aan een tevreden maandklant die overstapt dan aan een jaarklant
+die je nooit binnenhaalt.
 
 ### Waarom geen opzegtermijn
 
@@ -124,15 +151,9 @@ opbrengst naar €23,14 per jaar. Ook dan klopt het, maar houd er rekening mee.
 
 ## Wat er technisch nog moet gebeuren
 
-De hele stroom zit in de app: plannen kiezen, proefperiode, opzeggen,
-hervatten, toegangsregels. Wat ontbreekt is de koppeling met de winkels. In
-`src/state/aankoop.ts` zit nu een implementatie die niets afschrijft; daar komt
-RevenueCat of `expo-in-app-purchases` voor in de plaats, met de product-ids uit
-`src/core/abonnement/plannen.ts`:
+De hele stroom zit in de app: plannen kiezen, proefweek, automatisch verlengen,
+opzeggen, hervatten, toegangsregels en de datum van de eerste afschrijving.
+Wat ontbreekt is de koppeling met de winkels.
 
-```
-nl.slimvos.app.compleet.maand
-nl.slimvos.app.compleet.jaar
-```
-
-De schermen hoeven daarvoor niet te veranderen.
+Hoe dat werkt, wat de stores voor je regelen, en wat je moet instellen voordat
+er geld op je zakelijke rekening komt, staat in [`BETALINGEN.md`](BETALINGEN.md).

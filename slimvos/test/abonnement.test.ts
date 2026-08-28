@@ -1,9 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { euro, jaarKortingProcent, perMaand, PLANNEN, vindPlan } from '../src/core/abonnement/plannen';
+import {
+  euro,
+  jaarKortingProcent,
+  perMaand,
+  PLANNEN,
+  STANDAARD_PLAN,
+  verlengingsregel,
+  vindPlan,
+} from '../src/core/abonnement/plannen';
 import {
   activeer,
   dagenResterend,
+  datumInWoorden,
   gratisAbonnement,
   GRATIS_VAK,
   GRATIS_VRAGEN_PER_DAG,
@@ -14,6 +23,7 @@ import {
   magOefenen,
   maxProfielen,
   startProef,
+  volgendeAfschrijving,
   zegOp,
 } from '../src/core/abonnement/toegang';
 
@@ -129,4 +139,81 @@ test('resterende dagen kloppen', () => {
   assert.equal(dagenResterend(abo, 0), 30);
   assert.equal(dagenResterend(abo, 29 * DAG), 1);
   assert.equal(dagenResterend(gratisAbonnement()), null);
+});
+
+test('de proefperiode duurt precies een week', () => {
+  assert.equal(vindPlan('maand').proefDagen, 7);
+  assert.equal(vindPlan('jaar').proefDagen, 7);
+  assert.equal(vindPlan('gratis').proefDagen, 0);
+});
+
+test('na de proefweek gaat het maandabonnement vanzelf in', () => {
+  const proef = startProef(gratisAbonnement(), 'maand', 0);
+  assert.equal(proef.status, 'proef');
+  assert.equal(dagenResterend(proef, 0), 7);
+
+  // Dag 6: nog proef, nog niets betaald.
+  const halverwege = huidigeStatus(proef, 6 * DAG);
+  assert.equal(halverwege.status, 'proef');
+
+  // Dag 8: de week is om, het abonnement loopt.
+  const na = huidigeStatus(proef, 8 * DAG);
+  assert.equal(na.status, 'actief');
+  assert.equal(na.plan, 'maand');
+  assert.equal(heeftToegang(na, 8 * DAG), true);
+});
+
+test('opzeggen tijdens de proefweek kost niets', () => {
+  const proef = startProef(gratisAbonnement(), 'maand', 0);
+  const opgezegd = zegOp(proef);
+  assert.equal(heeftToegang(opgezegd, 3 * DAG), true, 'de week loopt gewoon af');
+  assert.equal(volgendeAfschrijving(opgezegd, 3 * DAG), null, 'er komt geen afschrijving meer');
+  const na = huidigeStatus(opgezegd, 9 * DAG);
+  assert.equal(na.status, 'verlopen');
+  assert.equal(heeftToegang(na, 9 * DAG), false);
+});
+
+test('de eerste afschrijving valt op het einde van de proefweek', () => {
+  const proef = startProef(gratisAbonnement(), 'maand', 0);
+  const eerste = volgendeAfschrijving(proef, 0);
+  assert.ok(eerste);
+  assert.equal(eerste!.isEersteKeer, true);
+  assert.equal(eerste!.plan, 'maand');
+  assert.equal(eerste!.op, 7 * DAG);
+
+  // Daarna is het gewoon de volgende maandtermijn.
+  const actief = huidigeStatus(proef, 8 * DAG);
+  const tweede = volgendeAfschrijving(actief, 8 * DAG);
+  assert.equal(tweede!.isEersteKeer, false);
+  assert.ok(tweede!.op > 8 * DAG);
+});
+
+test('een app die weken dichtstond komt op de juiste periode uit', () => {
+  const abo = activeer(gratisAbonnement(), 'maand', 0);
+  const na = huidigeStatus(abo, 95 * DAG);
+  assert.equal(na.status, 'actief');
+  assert.ok(na.looptTot !== null && na.looptTot > 95 * DAG, 'de periode loopt in de toekomst');
+  assert.ok(na.looptTot !== null && na.looptTot <= 125 * DAG, 'en niet verder dan één termijn vooruit');
+});
+
+test('een gratis abonnement heeft geen afschrijving', () => {
+  assert.equal(volgendeAfschrijving(gratisAbonnement()), null);
+});
+
+test('datums worden in gewone woorden getoond', () => {
+  assert.equal(datumInWoorden(new Date(2026, 8, 4).getTime()), '4 september 2026');
+  assert.equal(datumInWoorden(new Date(2027, 0, 31).getTime()), '31 januari 2027');
+});
+
+test('de verlengingsregel zegt prijs, periode en dat het doorloopt', () => {
+  const regel = verlengingsregel(vindPlan('maand'));
+  assert.ok(regel.includes('7 dagen gratis'), regel);
+  assert.ok(regel.includes('€4,99'), regel);
+  assert.ok(regel.includes('per maand'), regel);
+  assert.ok(/automatisch door/i.test(regel), regel);
+  assert.ok(!verlengingsregel(vindPlan('gratis')).includes('€'), 'gratis heeft geen bedrag');
+});
+
+test('het standaardplan is het maandplan: de laagste drempel', () => {
+  assert.equal(STANDAARD_PLAN, 'maand');
 });

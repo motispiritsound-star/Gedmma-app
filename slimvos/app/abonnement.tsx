@@ -2,8 +2,23 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { euro, jaarKortingProcent, perMaand, vindPlan, type PlanId } from '../src/core/abonnement/plannen';
-import { dagenResterend, GRATIS_VRAGEN_PER_DAG } from '../src/core/abonnement/toegang';
+import {
+  euro,
+  jaarKortingProcent,
+  perMaand,
+  PROEF_DAGEN,
+  STANDAARD_PLAN,
+  verlengingsregel,
+  vindPlan,
+  type PlanId,
+} from '../src/core/abonnement/plannen';
+import {
+  dagenResterend,
+  datumInWoorden,
+  GRATIS_VRAGEN_PER_DAG,
+  volgendeAfschrijving,
+} from '../src/core/abonnement/toegang';
+import { openBeheer } from '../src/state/aankoop';
 import { useApp } from '../src/state/AppContext';
 import { Kaart } from '../src/ui/components/Kaart';
 import { Knop } from '../src/ui/components/Knop';
@@ -14,13 +29,16 @@ import { kleur, radius, ruimte, schaduw, tekst } from '../src/ui/thema';
 export default function Abonnement() {
   const router = useRouter();
   const { ouder, abonnement, premium, koopAbonnement, zegAbonnementOp, hervatAbonnement, herstelAankopen } = useApp();
-  const [gekozen, setGekozen] = useState<PlanId>('jaar');
+  const [gekozen, setGekozen] = useState<PlanId>(STANDAARD_PLAN);
   const [bezig, setBezig] = useState(false);
 
   const maand = vindPlan('maand');
   const jaar = vindPlan('jaar');
   const gratis = vindPlan('gratis');
   const resterend = dagenResterend(abonnement);
+  const volgende = volgendeAfschrijving(abonnement);
+  const magProeven = !abonnement.proefGebruikt;
+  const eersteAfschrijving = new Date(Date.now() + PROEF_DAGEN * 86400000).getTime();
 
   async function bevestig() {
     if (!ouder) {
@@ -46,6 +64,11 @@ export default function Abonnement() {
         <Text style={[tekst.body, styles.midden]}>
           Alle zes de vakken, alle filmpjes, tot vijf kinderen. Rekenen blijft altijd gratis.
         </Text>
+        {!premium && magProeven ? (
+          <View style={styles.proefLint}>
+            <Text style={styles.proefLintTekst}>Eerste week gratis</Text>
+          </View>
+        ) : null}
       </View>
 
       {premium ? (
@@ -60,9 +83,22 @@ export default function Abonnement() {
             <Text style={tekst.zacht}>
               {abonnement.status === 'opgezegd'
                 ? `Nog ${resterend} dagen toegang, daarna stopt het vanzelf.`
-                : `Verlengt over ${resterend} dagen.`}
+                : volgende
+                  ? `${volgende.isEersteKeer ? 'Eerste afschrijving' : 'Volgende afschrijving'} op ${datumInWoorden(volgende.op)}: ${euro(vindPlan(volgende.plan).centen)}.`
+                  : `Nog ${resterend} dagen.`}
             </Text>
           ) : null}
+          <Knop
+            titel="Beheren in de winkel"
+            soort="zacht"
+            klein
+            onPress={async () => {
+              if (!(await openBeheer())) {
+                Alert.alert('Beheren', 'Open de instellingen van je telefoon en ga naar Abonnementen.');
+              }
+            }}
+            style={{ marginTop: ruimte.m }}
+          />
           {abonnement.status === 'opgezegd' ? (
             <Knop titel="Toch doorgaan" soort="zacht" onPress={hervatAbonnement} style={{ marginTop: ruimte.m }} />
           ) : (
@@ -96,15 +132,27 @@ export default function Abonnement() {
 
           <Knop
             testID="koop"
-            titel={abonnement.proefGebruikt ? 'Nu afsluiten' : `${vindPlan(gekozen).proefDagen} dagen gratis proberen`}
+            titel={magProeven ? 'Begin met een week gratis' : 'Nu afsluiten'}
             onPress={bevestig}
             bezig={bezig}
           />
-          <Text style={[tekst.klein, styles.midden]}>
-            {abonnement.proefGebruikt
-              ? 'Je kunt op elk moment opzeggen; er is geen opzegtermijn.'
-              : 'Je betaalt pas na de proefperiode. Opzeggen kan elk moment, zonder opzegtermijn.'}
-          </Text>
+
+          <Kaart style={styles.voorwaarden}>
+            <Text style={tekst.bodyVet}>{verlengingsregel(vindPlan(gekozen))}</Text>
+            {magProeven ? (
+              <Text style={tekst.zacht}>
+                Je eerste afschrijving is op {datumInWoorden(eersteAfschrijving)}. Zeg je daarvoor op,
+                dan betaal je niets.
+              </Text>
+            ) : null}
+            <Text style={tekst.zacht}>
+              Opzeggen doe je in de instellingen van je telefoon, bij Abonnementen. Er is geen
+              opzegtermijn: je houdt toegang tot het einde van de periode die je al betaald hebt.
+            </Text>
+            <Text style={tekst.klein}>
+              Eén proefperiode per gebruiker. Prijzen zijn inclusief btw.
+            </Text>
+          </Kaart>
         </>
       )}
 
@@ -237,4 +285,15 @@ const styles = StyleSheet.create({
   actief: { backgroundColor: kleur.goedZacht, borderColor: kleur.goedRand, gap: ruimte.xs },
   regel: { flexDirection: 'row', alignItems: 'flex-start', gap: ruimte.s, marginTop: ruimte.s },
   vergelijk: { backgroundColor: kleur.slotZacht, borderColor: '#DED3F8', gap: ruimte.s },
+  voorwaarden: { backgroundColor: kleur.grondDiep, borderColor: kleur.rand, gap: ruimte.s },
+  proefLint: {
+    marginTop: ruimte.s,
+    backgroundColor: kleur.goedZacht,
+    borderWidth: 1,
+    borderColor: kleur.goedRand,
+    borderRadius: radius.rond,
+    paddingHorizontal: ruimte.l,
+    paddingVertical: 6,
+  },
+  proefLintTekst: { ...tekst.label, color: kleur.goed },
 });

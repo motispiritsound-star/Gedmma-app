@@ -53,12 +53,52 @@ export function hervat(abo: Abonnement): Abonnement {
   return { ...abo, status: 'actief', automatischVerlengen: true };
 }
 
-/** Rekent de status bij op basis van de tijd; een verlopen abonnement valt terug op gratis. */
+/**
+ * Rekent de status bij op basis van de tijd.
+ *
+ * Een proefperiode die afloopt gaat vanzelf over in een betaald abonnement op
+ * hetzelfde plan — dat is precies wat de stores ook doen. Zeg je op, dan loopt
+ * de lopende periode uit en val je daarna terug op de gratis versie.
+ */
 export function huidigeStatus(abo: Abonnement, nu = Date.now()): Abonnement {
   if (abo.looptTot === null || abo.status === 'geen' || abo.status === 'verlopen') return abo;
   if (nu < abo.looptTot) return abo;
-  if (abo.automatischVerlengen && abo.status !== 'opgezegd') return activeer(abo, abo.plan, abo.looptTot);
+  if (abo.automatischVerlengen && abo.status !== 'opgezegd') {
+    // Doorrekenen, zodat een app die weken dichtstond niet op één periode blijft hangen.
+    let bijgewerkt = activeer(abo, abo.plan, abo.looptTot);
+    let rondes = 0;
+    while (bijgewerkt.looptTot !== null && nu >= bijgewerkt.looptTot && rondes < 500) {
+      bijgewerkt = activeer(bijgewerkt, bijgewerkt.plan, bijgewerkt.looptTot);
+      rondes += 1;
+    }
+    return bijgewerkt;
+  }
   return { ...abo, plan: 'gratis', status: 'verlopen', looptTot: null, automatischVerlengen: false };
+}
+
+/**
+ * Wanneer er (voor het eerst of weer) afgeschreven wordt, en hoeveel.
+ * Dit staat op de paywall en in het ouderdashboard: een ouder die precies weet
+ * wanneer er geld af gaat, hoeft geen mail te sturen om het te vragen.
+ */
+export function volgendeAfschrijving(
+  abo: Abonnement,
+  nu = Date.now(),
+): { op: number; plan: PlanId; isEersteKeer: boolean } | null {
+  const actueel = huidigeStatus(abo, nu);
+  if (actueel.looptTot === null) return null;
+  if (!actueel.automatischVerlengen) return null;
+  return { op: actueel.looptTot, plan: actueel.plan, isEersteKeer: actueel.status === 'proef' };
+}
+
+/** Datum als '4 september 2026', voor tekst die een ouder leest. */
+export function datumInWoorden(tijd: number): string {
+  const maanden = [
+    'januari', 'februari', 'maart', 'april', 'mei', 'juni',
+    'juli', 'augustus', 'september', 'oktober', 'november', 'december',
+  ];
+  const d = new Date(tijd);
+  return `${d.getDate()} ${maanden[d.getMonth()]} ${d.getFullYear()}`;
 }
 
 export function heeftToegang(abo: Abonnement, nu = Date.now()): boolean {
