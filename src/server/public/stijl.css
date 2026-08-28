@@ -104,7 +104,24 @@ code { font:400 12px var(--mono); background:var(--surface); border:1px solid va
 /* ---------- werkvlak ---------- */
 .werkvlak { display:grid; grid-template-columns:minmax(0,1fr) 440px; gap:16px; align-items:start; }
 .werkvlak.team { grid-template-columns:minmax(0,1fr) 360px; }
-@media (max-width:1120px) { .werkvlak, .werkvlak.team { grid-template-columns:1fr; } }
+.werkvlak.nieuws { grid-template-columns:minmax(0,1fr) 360px; }
+@media (max-width:1120px) { .werkvlak, .werkvlak.team, .werkvlak.nieuws { grid-template-columns:1fr; } }
+
+/* ---------- nieuws ---------- */
+.tab .teller { display:inline-block; min-width:18px; margin-left:6px; padding:0 5px; border-radius:9px;
+  background:var(--accent); color:#fff; font-size:11px; line-height:18px; text-align:center; font-weight:600; }
+.nieuwsitem { border-bottom:1px solid var(--line); padding:14px 16px; }
+.nieuwsitem:last-child { border-bottom:0; }
+.nieuwsitem.ongelezen { background:var(--accent-wash); }
+.nieuwsitem h3 { margin:0 0 3px; font-size:15px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.nieuwsitem p { margin:6px 0 0; white-space:pre-wrap; }
+.nieuwsitem .regel { display:flex; gap:10px; justify-content:space-between; align-items:baseline; }
+.nieuwsitem .knoppen { display:flex; gap:6px; margin-top:9px; }
+.soortpil { display:inline-block; border-radius:999px; padding:2px 9px; font-size:11.5px; font-weight:500;
+  background:var(--surface); border:1px solid var(--line-strong); color:var(--ink-2); }
+.soortpil.update { background:var(--accent-wash); border-color:color-mix(in srgb,var(--accent) 35%,transparent); color:var(--accent-ink); }
+.soortpil.resultaat { background:var(--goed-wash); border-color:color-mix(in srgb,var(--goed) 35%,transparent); }
+.soortpil.let-op { background:var(--slecht-wash); border-color:color-mix(in srgb,var(--slecht) 35%,transparent); }
 
 .kaart-paneel { background:var(--panel); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); }
 .lijst { overflow:hidden; }

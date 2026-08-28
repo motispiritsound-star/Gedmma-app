@@ -40,6 +40,7 @@
       <button class="tab" data-weergave="kaart" aria-pressed="true">Kaart &amp; leads</button>
       <button class="tab" data-weergave="mijn" aria-pressed="false">Mijn lijst</button>
       <button class="tab" data-weergave="team" aria-pressed="false" hidden>Team &amp; omzet</button>
+      <button class="tab" data-weergave="nieuws" aria-pressed="false">Nieuws<span class="teller" id="nieuws-teller" hidden></span></button>
     </nav>
     <div class="ik">
       <span id="ik-naam"></span>
@@ -178,6 +179,42 @@
           <button class="knop sterk" type="submit">Account aanmaken</button>
           <p class="melding" id="t-melding" role="alert"></p>
         </form>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ---------- nieuws ---------- -->
+  <section class="weergave" id="weergave-nieuws" hidden>
+    <div class="werkvlak nieuws">
+      <div class="kaart-paneel">
+        <div class="paneelkop">
+          <div>
+            <h2>Nieuws voor het team</h2>
+            <p class="sub">Wat er verandert, wat er goed gaat en waar we op letten.</p>
+          </div>
+          <button class="knop klein" id="nieuws-alles-gelezen">Alles gelezen</button>
+        </div>
+        <div id="nieuws-lijst"></div>
+        <div class="leeg" id="nieuws-geen" hidden>Er is nog geen nieuws geplaatst.</div>
+      </div>
+      <aside class="kaart-paneel detail" id="nieuws-plaatsen" hidden>
+        <span class="label-klein">Bericht plaatsen</span>
+        <form id="nieuws-formulier" class="stapel">
+          <input class="veld" name="titel" placeholder="Titel" required maxlength="120">
+          <textarea class="veld" name="tekst" rows="6" placeholder="Wat moet iedereen weten?" required maxlength="4000"></textarea>
+          <select class="veld" name="soort">
+            <option value="bericht">Bericht</option>
+            <option value="update">Verandering in het werk</option>
+            <option value="resultaat">Resultaat om te vieren</option>
+            <option value="let-op">Let op</option>
+          </select>
+          <label class="schakel"><input type="checkbox" name="vastgezet"> bovenaan vastzetten</label>
+          <button class="knop sterk" type="submit">Plaatsen</button>
+          <p class="melding" id="nieuws-melding" role="alert"></p>
+        </form>
+        <hr>
+        <p class="sub">Alleen de eigenaar plaatst berichten. Iedereen ziet ze meteen bij het
+          inloggen, met een teller voor wat nog ongelezen is.</p>
       </aside>
     </div>
   </section>

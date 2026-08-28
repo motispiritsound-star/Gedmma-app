@@ -48,6 +48,7 @@ export type Lead = {
   city: string | null;
   branch: string | null;
   rechtsvorm: string | null;
+  kvk_number: string | null;
   bel_toestemming: number;
   toestemming_op: string | null;
   toestemming_via: string | null;
@@ -156,6 +157,7 @@ function shape(row: Row): Lead {
     city: (row.city as string) ?? null,
     branch: (row.branch as string) ?? null,
     rechtsvorm: (row.rechtsvorm as string) ?? null,
+    kvk_number: (row.kvk_number as string) ?? null,
     bel_toestemming: Number(row.bel_toestemming ?? 0),
     toestemming_op: (row.toestemming_op as string) ?? null,
     toestemming_via: (row.toestemming_via as string) ?? null,

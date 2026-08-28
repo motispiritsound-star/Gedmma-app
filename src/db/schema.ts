@@ -473,6 +473,68 @@ const MIGRATIES: { naam: string; sql: string }[] = [
       LEFT JOIN klanten k       ON k.company_id = c.id;
     `,
   },
+
+  {
+    naam: '016-nieuws-voor-het-team',
+    sql: `
+      -- Een prikbord voor het team: aankondigingen, wat er goed gaat en wat er
+      -- verandert. De eigenaar plaatst, iedereen leest, en wie het gelezen heeft
+      -- wordt onthouden zodat de teller alleen ongelezen berichten telt.
+      CREATE TABLE nieuws (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        titel       TEXT NOT NULL,
+        tekst       TEXT NOT NULL,
+        soort       TEXT NOT NULL DEFAULT 'bericht',
+        vastgezet   INTEGER NOT NULL DEFAULT 0,
+        door_id     INTEGER REFERENCES gebruikers(id),
+        gemaakt_op  TEXT NOT NULL DEFAULT (datetime('now')),
+        verwijderd  INTEGER NOT NULL DEFAULT 0
+      );
+      CREATE INDEX idx_nieuws_datum ON nieuws (verwijderd, vastgezet DESC, gemaakt_op DESC);
+
+      CREATE TABLE nieuws_gelezen (
+        nieuws_id    INTEGER NOT NULL REFERENCES nieuws(id) ON DELETE CASCADE,
+        gebruiker_id INTEGER NOT NULL REFERENCES gebruikers(id) ON DELETE CASCADE,
+        gelezen_op   TEXT NOT NULL DEFAULT (datetime('now')),
+        PRIMARY KEY (nieuws_id, gebruiker_id)
+      );
+    `,
+  },
+
+  {
+    naam: '017-kvk-nummer-in-de-leadweergave',
+    sql: `
+      -- Het KVK-nummer stond al op het bedrijf, maar niet in de weergave die het
+      -- dashboard leest. Sinds je de rechtsvorm bij de KVK kunt ophalen is het
+      -- nummer zichtbaar bewijs dat dat gelukt is.
+      DROP VIEW IF EXISTS leads;
+      CREATE VIEW leads AS
+      SELECT
+        c.id, c.name, c.website, c.domain, c.city, c.province, c.branch, c.rechtsvorm,
+        c.kvk_number,
+        c.lat, c.lon, c.phone AS company_phone, c.email AS company_email, c.source,
+        c.laatste_scan_id AS scan_id, c.gescand_op AS scanned_at, c.scan_status,
+        c.score, c.grade, c.leven, c.prioriteit,
+        c.vorige_score, c.vorige_scan_op, c.heeft_telefoon, c.heeft_email,
+        s.final_url, s.http_status, s.error, s.report,
+        COALESCE(o.fase, 'nieuw')  AS fase,
+        o.toegewezen_aan, o.toegewezen_op, o.volgende_actie_op, o.notitie AS opvolging_notitie,
+        o.bijgewerkt_op AS opvolging_bijgewerkt_op,
+        g.naam AS agent_naam,
+        COALESCE(b.bel_toestemming, 0) AS bel_toestemming,
+        b.toestemming_op, b.toestemming_via,
+        COALESCE(b.geblokkeerd, 0) AS geblokkeerd, b.geblokkeerd_reden,
+        k.status AS klant_status, k.maandbedrag_cent, k.gestart_op AS klant_sinds,
+        t.sterren AS testimonial_sterren, t.tekst AS testimonial_tekst
+      FROM companies c
+      LEFT JOIN scans s         ON s.id = c.laatste_scan_id
+      LEFT JOIN opvolging o     ON o.company_id = c.id
+      LEFT JOIN gebruikers g    ON g.id = o.toegewezen_aan
+      LEFT JOIN benaderregels b ON b.company_id = c.id
+      LEFT JOIN klanten k       ON k.company_id = c.id
+      LEFT JOIN testimonials t  ON t.company_id = c.id;
+    `,
+  },
 ];
 
 /** Brengt de database bij naar de nieuwste versie. Veilig om vaak aan te roepen. */

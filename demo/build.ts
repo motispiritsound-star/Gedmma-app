@@ -43,15 +43,17 @@ const work = process.env.WEBSCAN_DEMO_TLS;
 const keyPath = join(work, 'key.pem');
 const certPath = join(work, 'cert.pem');
 
+const demoDb = process.env.WEBSCAN_DB ?? 'data/demo.db';
+
 // De demo begint elke keer met een schone database, zodat opnieuw bouwen
 // hetzelfde oplevert en er geen bedrijven van een vorige ronde blijven staan.
 if (process.env.DEMO_BEHOUD_DB !== '1') {
   for (const achtervoegsel of ['', '-wal', '-shm']) {
-    rmSync(`data/demo.db${achtervoegsel}`, { force: true });
+    rmSync(`${demoDb}${achtervoegsel}`, { force: true });
   }
 }
 
-process.env.WEBSCAN_DB = 'data/demo.db';
+process.env.WEBSCAN_DB = demoDb;
 process.env.WEBSCAN_HOST_DELAY_MS = '1';
 process.env.WEBSCAN_TIMEOUT_MS = '20000';
 
@@ -169,6 +171,29 @@ for (const stap of verhaal) {
     bewaarTestimonial(id, { tekst: stap.testimonial, sterren: 5, publiceerbaar: true, gebruikerId: stap.agent });
   }
 }
+
+// Een paar berichten op het prikbord, zodat de proefrit laat zien hoe je het
+// team op de hoogte houdt.
+const { plaatsNieuws } = await import('../src/db/nieuws.ts');
+plaatsNieuws({
+  titel: 'Vanaf maandag bellen we alleen na toestemming',
+  soort: 'let-op', vastgezet: true, doorId: eigenaar!.id,
+  tekst: 'Sinds 1 juli geldt de opt-in voor eenmanszaken, vof\'s en maatschappen. '
+    + 'Staat er "alleen mailen" bij een bedrijf, mail dan eerst en vraag in die mail om '
+    + 'toestemming om te bellen. Leg het antwoord vast bij de lead — dan kleurt de belknop groen.',
+});
+plaatsNieuws({
+  titel: 'Bakkerij Het Molentje staat live',
+  soort: 'resultaat', doorId: eigenaar!.id,
+  tekst: 'Binnen twee weken van eerste mail naar een nieuwe site op onze hosting. '
+    + 'Ze hebben meteen een testimonial gegeven; die staat in het paneel bij de lead.',
+});
+plaatsNieuws({
+  titel: 'Nieuwe scanronde gedraaid',
+  soort: 'update', doorId: eigenaar!.id,
+  tekst: 'Veertien sites zijn achteruitgegaan sinds de vorige ronde. Filter op '
+    + '"achteruit" in de lijst: dat is de beste aanleiding voor een gesprek.',
+});
 
 // Een bedrijf dat zich heeft afgemeld, zodat de demo ook die kant laat zien.
 blokkeer(opDomein('dierenartsdepoot.nl'), 'gaf aan geen berichten meer te willen', tom!.id);

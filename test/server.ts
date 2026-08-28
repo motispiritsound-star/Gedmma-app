@@ -1,5 +1,8 @@
 process.env.WEBSCAN_HOST_DELAY_MS = '1';
 process.env.WEBSCAN_DB = './data/test.db';
+// Een nagemaakte KVK, zodat het verrijken getest wordt zonder er echt te bellen.
+process.env.KVK_API_KEY = 'testsleutel';
+process.env.KVK_API_URL = 'http://127.0.0.1:4398/api';
 
 // Elke run begint schoon; anders struikelt een tweede run over de accounts en
 // de bedrijven die een vorige (afgebroken) run heeft achtergelaten.
@@ -245,6 +248,78 @@ check('de sjablonen nemen het nieuwe aanbod over', naWijziging.tekst.includes('2
 await eigenaar.doe('/api/instellingen', { method: 'PUT', body: JSON.stringify({ soort: 'gratis' }) });
 check('terug naar gratis werkt',
   (await eigenaar.doe(`/api/leads/${zaak.id}/mail?sjabloon=eerste-contact`)).inhoud.tekst.includes('kosteloos'));
+
+console.log('\nVerrijken bij de KVK (met een nagemaakte KVK):');
+const { createServer } = await import('node:http');
+let kvkBevragingen = 0;
+const nepKvk = createServer((verzoek, antwoord) => {
+  const pad = new URL(verzoek.url ?? '/', 'http://127.0.0.1').pathname;
+  antwoord.setHeader('content-type', 'application/json');
+  if (pad === '/api/v2/zoeken') {
+    const naam = new URL(verzoek.url ?? '/', 'http://127.0.0.1').searchParams.get('naam') ?? '';
+    antwoord.end(JSON.stringify({ resultaten: [
+      { kvkNummer: '12345678', naam, adres: { binnenlandsAdres: { plaats: 'Amersfoort' } }, type: 'hoofdvestiging' },
+    ] }));
+    return;
+  }
+  if (pad.startsWith('/api/v1/basisprofielen/')) {
+    kvkBevragingen++;
+    antwoord.end(JSON.stringify({
+      kvkNummer: '12345678', naam: 'Kapotte Site B.V.',
+      _embedded: { eigenaar: { rechtsvorm: 'Besloten Vennootschap' } },
+    }));
+    return;
+  }
+  antwoord.statusCode = 404;
+  antwoord.end('{}');
+});
+await new Promise<void>((klaar) => nepKvk.listen(4398, '127.0.0.1', () => klaar()));
+
+const kapot = leads.find((rij: any) => rij.domain === 'kapot2.test');
+await eigenaar.doe(`/api/leads/${kapot.id}/rechtsvorm`, { method: 'POST', body: JSON.stringify({ rechtsvorm: '' }) });
+check('rechtsvorm eerst leeggemaakt',
+  (await eigenaar.doe(`/api/leads/${kapot.id}`)).inhoud.rechtsvorm === null);
+
+const verrijkt = await eigenaar.doe(`/api/leads/${kapot.id}/verrijken`, { method: 'POST' });
+check('de KVK levert de rechtsvorm', verrijkt.status === 200 && verrijkt.inhoud.rechtsvorm === 'bv');
+check('en het KVK-nummer komt mee', verrijkt.inhoud.kvkNummer === '12345678');
+check('er is precies één betaalde bevraging gedaan', kvkBevragingen === 1);
+check('bellen mag nu, want het is een rechtspersoon', verrijkt.inhoud.bellen.mag === true);
+check('het nummer staat ook op de lead',
+  (await eigenaar.doe(`/api/leads/${kapot.id}`)).inhoud.kvk_number === '12345678');
+check('het dashboard weet dat verrijken aanstaat',
+  (await eigenaar.doe('/api/overzicht')).inhoud.kvk.beschikbaar === true);
+
+// De slechtste lead staat hierboven al op naam van agent één.
+check('een collega kan een toegewezen lead niet verrijken',
+  (await twee.doe(`/api/leads/${slechtste.id}/verrijken`, { method: 'POST' })).status === 403);
+nepKvk.close();
+
+console.log('\nNieuws voor het team:');
+const geplaatst = await eigenaar.doe('/api/nieuws', {
+  method: 'POST',
+  body: JSON.stringify({ titel: 'Nieuw aanbod vanaf maandag', tekst: 'Hosting gaat naar 19,50 per maand.', soort: 'update', vastgezet: true }),
+});
+check('de eigenaar kan een bericht plaatsen', geplaatst.status === 200 && geplaatst.inhoud.id > 0);
+check('een agent kan dat niet',
+  (await een.doe('/api/nieuws', { method: 'POST', body: JSON.stringify({ titel: 'Van mij', tekst: 'nee' }) })).status === 403);
+check('een bericht zonder titel wordt geweigerd',
+  (await eigenaar.doe('/api/nieuws', { method: 'POST', body: JSON.stringify({ titel: '', tekst: 'iets' }) })).status === 400);
+
+const nieuwsVoorAgent = (await een.doe('/api/nieuws')).inhoud;
+check('de agent ziet het bericht', nieuwsVoorAgent.items.length === 1);
+check('en het staat als ongelezen', nieuwsVoorAgent.ongelezen === 1 && nieuwsVoorAgent.items[0].gelezen === 0);
+check('de schrijver heeft niets ongelezen', (await eigenaar.doe('/api/nieuws')).inhoud.ongelezen === 0);
+check('het overzicht telt het ongelezen bericht mee',
+  (await een.doe('/api/overzicht')).inhoud.ongelezenNieuws === 1);
+
+await een.doe('/api/nieuws/gelezen', { method: 'POST' });
+check('na lezen is de teller leeg', (await een.doe('/api/nieuws')).inhoud.ongelezen === 0);
+check('een agent kan het bericht niet weghalen',
+  (await een.doe(`/api/nieuws/${geplaatst.inhoud.id}`, { method: 'DELETE' })).status === 403);
+check('de eigenaar wel',
+  (await eigenaar.doe(`/api/nieuws/${geplaatst.inhoud.id}`, { method: 'DELETE' })).status === 200);
+check('en dan is het weg', (await een.doe('/api/nieuws')).inhoud.items.length === 0);
 
 console.log('\nOverig:');
 const csv = (await eigenaar.doe('/api/export.csv?maxScore=100')).inhoud;

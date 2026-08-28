@@ -86,6 +86,7 @@ async function start() {
   staat.sjablonen = sjablonen.sjablonen;
   staat.rechtsvormen = overzicht.rechtsvormen;
   staat.benaderbaarheid = overzicht.benaderbaarheid;
+  staat.kvk = overzicht.kvk ?? { beschikbaar: false, centPerBevraging: 2 };
 
   vulKeuzelijsten(overzicht);
 
@@ -97,6 +98,8 @@ async function start() {
     await kaart.laadOmtrek();
   }
   $('kaartnoot').textContent = `${overzicht.cijfers.opKaart} van ${overzicht.cijfers.bedrijven} bedrijven staan op de kaart`;
+  zetNieuwsTeller(overzicht.ongelezenNieuws);
+  $('nieuws-plaatsen').hidden = mij.gebruiker.rol !== 'eigenaar';
 
   await ververs();
 }
@@ -534,6 +537,11 @@ function tekenDetail(doel, lead) {
           ${staat.rechtsvormen.map((vorm) => `<option value="${vorm.id}" ${vorm.id === lead.rechtsvorm ? 'selected' : ''}>${esc(vorm.label)}${vorm.natuurlijkPersoon ? ' — bellen alleen met toestemming' : ''}</option>`).join('')}
         </select>
       </div>
+      ${staat.kvk.beschikbaar ? `<div class="rij">
+        <button class="knop klein" data-actie="verrijken">Ophalen bij de KVK
+          (${(staat.kvk.centPerBevraging / 100).toFixed(2).replace('.', ',')} euro)</button>
+        <span class="sub" id="d-kvk">${lead.kvk_number ? 'KVK ' + esc(lead.kvk_number) : ''}</span>
+      </div>` : ''}
       ${lead.bel_toestemming
         ? '<div class="rij"><button class="knop" data-actie="toestemming-intrekken">Toestemming intrekken</button></div>'
         : `<div class="rij">
@@ -634,6 +642,25 @@ function koppelDetailKnoppen(doel, lead) {
 
   doel.querySelector('#d-rechtsvorm')?.addEventListener('change', (gebeurtenis) =>
     post(`/api/leads/${lead.id}/rechtsvorm`, { rechtsvorm: gebeurtenis.target.value }, 'Rechtsvorm vastgelegd.'));
+
+  doel.querySelector('[data-actie="verrijken"]')?.addEventListener('click', async (gebeurtenis) => {
+    const knop = gebeurtenis.target;
+    knop.disabled = true;
+    knop.textContent = 'Bezig bij de KVK…';
+    try {
+      const uitkomst = await api(`/api/leads/${lead.id}/verrijken`, { method: 'POST' });
+      zeg(uitkomst.rechtsvorm
+        ? `KVK ${uitkomst.kvkNummer}: ${uitkomst.rechtsvormTekst}. ${uitkomst.bellen.mag ? 'Bellen mag.' : uitkomst.bellen.reden}`
+        : (uitkomst.reden ?? 'Niets gevonden bij de KVK.'), Boolean(uitkomst.rechtsvorm));
+      const vers = await api(`/api/leads/${lead.id}`);
+      tekenDetail(doel, vers);
+      ververs();
+    } catch (fout) {
+      zeg(fout.message, false);
+      knop.disabled = false;
+      knop.textContent = 'Ophalen bij de KVK';
+    }
+  });
 
   doel.querySelector('[data-actie="toestemming"]')?.addEventListener('click', () =>
     post(`/api/leads/${lead.id}/toestemming`, {
@@ -748,11 +775,12 @@ async function wisselNaar(weergave) {
   for (const knop of $('tabs').querySelectorAll('.tab')) {
     knop.setAttribute('aria-pressed', String(knop.dataset.weergave === weergave));
   }
-  for (const naam of ['kaart', 'mijn', 'team']) $(`weergave-${naam}`).hidden = naam !== weergave;
+  for (const naam of ['kaart', 'mijn', 'team', 'nieuws']) $(`weergave-${naam}`).hidden = naam !== weergave;
 
   if (weergave === 'kaart') { kaart?.hermeet(); await ververs(); }
   if (weergave === 'mijn') await toonMijnLijst();
   if (weergave === 'team') await toonTeam();
+  if (weergave === 'nieuws') await toonNieuws();
 }
 
 async function toonMijnLijst() {
@@ -870,6 +898,93 @@ $('nieuwe-gebruiker').addEventListener('submit', async (gebeurtenis) => {
   } catch (fout) {
     $('t-melding').textContent = fout.message;
     $('t-melding').classList.remove('goed');
+  }
+});
+
+// --------------------------------------------------------------------------
+// Nieuws
+// --------------------------------------------------------------------------
+const SOORT_LABEL = { bericht: 'Bericht', update: 'Verandering', resultaat: 'Resultaat', 'let-op': 'Let op' };
+
+function zetNieuwsTeller(aantal) {
+  const teller = $('nieuws-teller');
+  teller.hidden = !aantal;
+  teller.textContent = aantal > 99 ? '99+' : String(aantal ?? 0);
+}
+
+/** Datum als "vandaag", "gisteren" of gewoon de dag zelf. */
+function wanneer(tijdstip) {
+  const toen = new Date(`${tijdstip.replace(' ', 'T')}Z`);
+  const dagen = Math.floor((Date.now() - toen.getTime()) / 86400000);
+  if (dagen <= 0) return `vandaag ${toen.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}`;
+  if (dagen === 1) return 'gisteren';
+  if (dagen < 7) return `${dagen} dagen geleden`;
+  return toen.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+async function toonNieuws() {
+  const { items, ongelezen } = await api('/api/nieuws');
+  zetNieuwsTeller(ongelezen);
+  $('nieuws-geen').hidden = items.length > 0;
+
+  const eigenaar = staat.ik.rol === 'eigenaar';
+  $('nieuws-lijst').innerHTML = items.map((item) => `
+    <article class="nieuwsitem${item.gelezen ? '' : ' ongelezen'}" data-id="${item.id}">
+      <div class="regel">
+        <h3>${item.vastgezet ? '📌 ' : ''}${esc(item.titel)}
+          <span class="soortpil ${esc(item.soort)}">${esc(SOORT_LABEL[item.soort] ?? item.soort)}</span>
+          ${item.gelezen ? '' : '<span class="soortpil">nieuw</span>'}</h3>
+        <span class="sub">${esc(wanneer(item.gemaakt_op))}</span>
+      </div>
+      <div class="sub">${esc(item.door_naam ?? 'onbekend')}</div>
+      <p>${esc(item.tekst)}</p>
+      ${eigenaar ? `<div class="knoppen">
+        <button class="knop klein" data-doe="vast">${item.vastgezet ? 'Losmaken' : 'Vastzetten'}</button>
+        <button class="knop klein" data-doe="weg">Weghalen</button>
+      </div>` : ''}
+    </article>`).join('');
+
+  for (const blok of $('nieuws-lijst').querySelectorAll('.nieuwsitem')) {
+    const id = Number(blok.dataset.id);
+    const item = items.find((rij) => rij.id === id);
+    blok.querySelector('[data-doe="vast"]')?.addEventListener('click', async () => {
+      await api(`/api/nieuws/${id}/vastzetten`, { method: 'POST', body: JSON.stringify({ vast: !item.vastgezet }) });
+      await toonNieuws();
+    });
+    blok.querySelector('[data-doe="weg"]')?.addEventListener('click', async () => {
+      await api(`/api/nieuws/${id}`, { method: 'DELETE' });
+      await toonNieuws();
+    });
+  }
+
+  // Wie het scherm openslaat heeft het gezien; de teller loopt daarna leeg.
+  if (ongelezen > 0) {
+    await api('/api/nieuws/gelezen', { method: 'POST' });
+    zetNieuwsTeller(0);
+  }
+}
+
+$('nieuws-alles-gelezen').addEventListener('click', async () => {
+  await api('/api/nieuws/gelezen', { method: 'POST' });
+  await toonNieuws();
+});
+
+$('nieuws-formulier').addEventListener('submit', async (gebeurtenis) => {
+  gebeurtenis.preventDefault();
+  const formulier = gebeurtenis.target;
+  const velden = Object.fromEntries(new FormData(formulier));
+  try {
+    await api('/api/nieuws', {
+      method: 'POST',
+      body: JSON.stringify({ ...velden, vastgezet: formulier.vastgezet.checked }),
+    });
+    formulier.reset();
+    $('nieuws-melding').textContent = 'Geplaatst — het team ziet het meteen.';
+    $('nieuws-melding').classList.add('goed');
+    await toonNieuws();
+  } catch (fout) {
+    $('nieuws-melding').textContent = fout.message;
+    $('nieuws-melding').classList.remove('goed');
   }
 });
 

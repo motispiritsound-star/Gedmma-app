@@ -20,6 +20,8 @@ import { exportLeads } from './report/export.ts';
 import { buildReport } from './report/pitch.ts';
 import { SJABLONEN, renderSjabloon, stelSjabloonVoor } from './report/templates.ts';
 import { aanbodTekst, bewaarAanbod, leesAanbod } from './db/instellingen.ts';
+import { plaatsNieuws, nieuwsLijst, verwijderNieuws, SOORTEN } from './db/nieuws.ts';
+import { verrijkBedrijf, zonderRechtsvorm, CENT_PER_BEVRAGING } from './sources/kvk-verrijken.ts';
 import { RECHTSVORMEN, benaderbaarheid, blokkeer, deblokkeer, herkenRechtsvorm,
          legToestemmingVast, magBellen, zetRechtsvorm, type RechtsvormId } from './db/contact.ts';
 
@@ -472,6 +474,102 @@ gebruiker
     if (!account) { log.error(`Geen gebruiker met e-mailadres ${email}.`); process.exitCode = 1; return; }
     zetActief(account.id, Boolean(options.herstel));
     log.ok(`${account.naam} is nu ${options.herstel ? 'weer actief' : 'geblokkeerd'}.`);
+  });
+
+// --------------------------------------------------------------------------
+program
+  .command('verrijken')
+  .description('Haal KVK-nummer en rechtsvorm op bij de KVK voor bedrijven zonder rechtsvorm')
+  .option('-l, --limit <aantal>', 'hoeveel bedrijven', '25')
+  .option('-p, --plaats <plaats>', 'alleen deze plaats')
+  .option('--ja', 'niet eerst om bevestiging vragen')
+  .action(async (options) => {
+    const limit = Number(options.limit);
+    const rijen = zonderRechtsvorm(limit, options.plaats ?? null);
+    if (rijen.length === 0) { log.ok('Alle bedrijven hebben al een rechtsvorm.'); return; }
+
+    const kosten = (rijen.length * CENT_PER_BEVRAGING) / 100;
+    log.info(`${rijen.length} bedrijven zonder rechtsvorm. Zoeken is gratis; het profiel `
+      + `kost € ${CENT_PER_BEVRAGING / 100} per bedrijf, dus maximaal € ${kosten.toFixed(2)}.`);
+    if (!options.ja) {
+      const rl = createInterface({ input: process.stdin, output: process.stdout });
+      const antwoord = (await rl.question('Doorgaan? [j/N] ')).trim().toLowerCase();
+      rl.close();
+      if (antwoord !== 'j' && antwoord !== 'ja') { log.warn('Afgebroken.'); return; }
+    }
+
+    let gevonden = 0;
+    let bevragingen = 0;
+    for (const rij of rijen) {
+      try {
+        const uitkomst = await verrijkBedrijf(rij);
+        bevragingen += uitkomst.bevragingen;
+        if (uitkomst.rechtsvorm) {
+          gevonden++;
+          log.info(`  ${rij.name.padEnd(34).slice(0, 34)} ${uitkomst.kvkNummer} · ${uitkomst.rechtsvormTekst}`);
+        } else {
+          log.warn(`  ${rij.name.padEnd(34).slice(0, 34)} ${uitkomst.reden}`);
+        }
+      } catch (fout) {
+        log.error(`  ${rij.name}: ${(fout as Error).message}`);
+        break;
+      }
+    }
+    log.ok(`${gevonden} van de ${rijen.length} bedrijven hebben nu een rechtsvorm. `
+      + `${bevragingen} betaalde bevragingen, ongeveer € ${((bevragingen * CENT_PER_BEVRAGING) / 100).toFixed(2)}.`);
+  });
+
+// --------------------------------------------------------------------------
+const nieuws = program.command('nieuws').description('Het prikbord voor je team');
+
+nieuws
+  .command('plaatsen')
+  .description('Plaats een bericht dat iedereen in het dashboard ziet')
+  .requiredOption('-t, --titel <titel>', 'korte titel')
+  .requiredOption('-b, --bericht <tekst>', 'de tekst zelf')
+  .option('-s, --soort <soort>', `een van: ${SOORTEN.join(', ')}`, 'bericht')
+  .option('--vast', 'bovenaan vastzetten')
+  .option('--door <email>', 'namens welk account (standaard de eerste eigenaar)')
+  .action((options) => {
+    const account = options.door
+      ? gebruikerOpEmail(options.door)
+      : gebruikers().find((rij) => rij.rol === 'eigenaar' && rij.actief);
+    if (!account) {
+      log.error('Geen eigenaar gevonden om het bericht op naam te zetten. Gebruik --door <email>.');
+      process.exitCode = 1;
+      return;
+    }
+    try {
+      const item = plaatsNieuws({
+        titel: options.titel, tekst: options.bericht, soort: options.soort,
+        vastgezet: Boolean(options.vast), doorId: account.id,
+      });
+      log.ok(`Geplaatst als #${item.id} namens ${account.naam}.`);
+    } catch (fout) { log.error((fout as Error).message); process.exitCode = 1; }
+  });
+
+nieuws
+  .command('lijst')
+  .description('Toon de geplaatste berichten')
+  .action(() => {
+    const eigenaar = gebruikers().find((rij) => rij.rol === 'eigenaar') ?? gebruikers()[0];
+    if (!eigenaar) { log.warn('Nog geen accounts.'); return; }
+    const items = nieuwsLijst(eigenaar.id);
+    if (items.length === 0) { log.warn('Nog geen nieuws geplaatst.'); return; }
+    log.info('');
+    for (const item of items) {
+      log.info(`  ${String(item.id).padEnd(4)} ${item.gemaakt_op.slice(0, 10)}  ${item.vastgezet ? '📌 ' : '   '}${item.titel}`);
+      log.info(`       ${item.soort} · ${item.door_naam ?? 'onbekend'}`);
+    }
+    log.info('');
+  });
+
+nieuws
+  .command('weghalen <id>')
+  .description('Haal een bericht weg (het blijft bewaard, maar niemand ziet het nog)')
+  .action((id) => {
+    if (!verwijderNieuws(Number(id))) { log.error(`Geen bericht met nummer ${id}.`); process.exitCode = 1; return; }
+    log.ok(`Bericht ${id} is weggehaald.`);
   });
 
 // --------------------------------------------------------------------------

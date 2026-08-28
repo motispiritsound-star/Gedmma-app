@@ -16,6 +16,9 @@ import { RECHTSVORMEN, benaderbaarheid, blokkeer, deblokkeer, legToestemmingVast
 import { SJABLONEN, renderSjabloon, stelSjabloonVoor } from '../report/templates.ts';
 import { aanbodTekst, bewaarAanbod, leesAanbod } from '../db/instellingen.ts';
 import { toCsv } from '../util/csv.ts';
+import { verrijkBedrijf, CENT_PER_BEVRAGING } from '../sources/kvk-verrijken.ts';
+import { plaatsNieuws, nieuwsLijst, markeerGelezen, markeerAllesGelezen,
+         aantalOngelezen, verwijderNieuws, zetVastgezet, SOORTEN } from '../db/nieuws.ts';
 import { log } from '../util/log.ts';
 import { config } from '../config.ts';
 
@@ -194,7 +197,55 @@ export async function startServer(port: number): Promise<void> {
       rechtsvormen: RECHTSVORMEN,
       plaatsen: plaatsen().slice(0, 40),
       agenten: gebruikers().filter((g) => g.actief).map((g) => ({ id: g.id, naam: g.naam, rol: g.rol })),
+      ongelezenNieuws: aantalOngelezen(req.gebruiker!.id),
+      kvk: { beschikbaar: Boolean(config.kvkApiKey), centPerBevraging: CENT_PER_BEVRAGING },
     });
+  });
+
+  // --- nieuws: het prikbord van het team ---
+  app.get('/api/nieuws', vereistLogin, (req: Verzoek, res) => {
+    res.json({
+      soorten: SOORTEN,
+      ongelezen: aantalOngelezen(req.gebruiker!.id),
+      items: nieuwsLijst(req.gebruiker!.id),
+    });
+  });
+
+  app.post('/api/nieuws', vereistLogin, vereistEigenaar, (req: Verzoek, res) => {
+    const { titel, tekst, soort, vastgezet } = req.body as
+      { titel?: string; tekst?: string; soort?: string; vastgezet?: boolean };
+    try {
+      res.json(plaatsNieuws({
+        titel: titel ?? '', tekst: tekst ?? '', soort, vastgezet, doorId: req.gebruiker!.id,
+      }));
+    } catch (fout) { meld(res, 400, (fout as Error).message); }
+  });
+
+  app.post('/api/nieuws/gelezen', vereistLogin, (req: Verzoek, res) => {
+    markeerAllesGelezen(req.gebruiker!.id);
+    res.json({ ok: true, ongelezen: 0 });
+  });
+
+  app.post('/api/nieuws/:id/gelezen', vereistLogin, (req: Verzoek, res) => {
+    markeerGelezen(Number(req.params.id), req.gebruiker!.id);
+    res.json({ ok: true, ongelezen: aantalOngelezen(req.gebruiker!.id) });
+  });
+
+  app.post('/api/nieuws/:id/vastzetten', vereistLogin, vereistEigenaar, (req: Verzoek, res) => {
+    const { vast } = req.body as { vast?: boolean };
+    if (!zetVastgezet(Number(req.params.id), Boolean(vast))) {
+      meld(res, 404, 'Dat bericht bestaat niet (meer).');
+      return;
+    }
+    res.json({ ok: true });
+  });
+
+  app.delete('/api/nieuws/:id', vereistLogin, vereistEigenaar, (req, res) => {
+    if (!verwijderNieuws(Number(req.params.id))) {
+      meld(res, 404, 'Dat bericht bestaat niet (meer).');
+      return;
+    }
+    res.json({ ok: true });
   });
 
   // --- leads ---
@@ -382,6 +433,25 @@ export async function startServer(port: number): Promise<void> {
       }
       res.json({ ok: true });
     } catch (fout) { meld(res, 400, (fout as Error).message); }
+  });
+
+  // Rechtsvorm ophalen bij de KVK. Kost een betaalde bevraging, dus alleen voor
+  // de lead waar je echt mee aan de slag gaat — en alleen door wie hem heeft.
+  app.post('/api/leads/:id/verrijken', vereistLogin, async (req: Verzoek, res) => {
+    const lead = getLead(Number(req.params.id));
+    if (!lead) { meld(res, 404, 'Die lead bestaat niet.'); return; }
+    if (req.gebruiker!.rol !== 'eigenaar'
+        && lead.toegewezen_aan !== null && lead.toegewezen_aan !== req.gebruiker!.id) {
+      meld(res, 403, 'Deze lead staat op naam van een collega.');
+      return;
+    }
+    try {
+      const uitkomst = await verrijkBedrijf({
+        id: lead.id, name: lead.name, city: lead.city, kvk_number: lead.kvk_number,
+      });
+      const bijgewerkt = getLead(lead.id)!;
+      res.json({ ...uitkomst, bellen: magBellen(bijgewerkt), rechtsvormNu: bijgewerkt.rechtsvorm });
+    } catch (fout) { meld(res, 502, (fout as Error).message); }
   });
 
   app.post('/api/leads/:id/rechtsvorm', vereistLogin, (req: Verzoek, res) => {

@@ -90,6 +90,30 @@ node start.js import --source csv --file examples/bedrijven-voorbeeld.csv
 
 Categorieën voor `osm`: `shop`, `horeca`, `office`, `craft`, `zorg`, `toerisme`, `all`.
 
+### Rechtsvorm ophalen bij de KVK
+
+De rechtsvorm bepaalt of je mag bellen, en die staat nergens op een website. Bij
+een bedrijf dat je gaat benaderen haal je hem op bij de KVK:
+
+```bash
+node start.js verrijken --limit 50            # de vijftig met de hoogste prioriteit
+node start.js verrijken --plaats Amersfoort --limit 200
+```
+
+Dat gaat in twee stappen: **Zoeken** (naam + plaats erin, KVK-nummer eruit; zonder
+kosten per bevraging) en **Basisprofiel** (KVK-nummer erin, rechtsvorm eruit; die
+bevraging kost geld). Alleen bij een duidelijke naam- en plaatsmatch wordt het
+nummer overgenomen — liever geen rechtsvorm dan die van de buurman. In het
+dashboard zit dezelfde knop in het leadpaneel, zodat een agent hem per bedrijf
+indrukt op het moment dat hij ermee aan de slag gaat.
+
+Aanzetten doe je met een API-key van [developers.kvk.nl](https://developers.kvk.nl)
+in `KVK_API_KEY`; zonder key verschijnt de knop niet. De KVK rekent op dit moment
+**€ 6,40 per maand per API-key** plus **€ 0,02 per bevraging** van een profiel-API,
+met een maximum van 300.000 bevragingen per maand en 100 per seconde; zoeken in het
+Handelsregister is gratis. Reken dus met ongeveer twee euro per honderd verrijkte
+leads — verrijk daarom per lead die je benadert, niet je hele bestand.
+
 ## Wat de scan meet
 
 Elke site krijgt 100 punten en verliest punten per gevonden probleem. De weging:
@@ -257,6 +281,26 @@ node start.js fase 42 afspraak --agent sara@voorbeeld.nl --notitie "dinsdag 14:0
 node start.js trechter        # hoeveel bedrijven in welke fase
 node start.js team            # wie belt hoeveel en brengt hoeveel op
 node start.js testimonials --publiceerbaar
+```
+
+### Nieuws voor het team
+
+Onder het tabblad **Nieuws** staat het prikbord van het platform: korte berichten
+van de eigenaar aan iedereen die meewerkt. Bedoeld voor wat je anders per app of
+mail zou sturen — een regel die verandert, een nieuw aanbod, een resultaat om te
+vieren.
+
+- alleen de **eigenaar** plaatst, iedereen leest;
+- een bericht heeft een soort (bericht, verandering, resultaat, let op) en kan
+  **bovenaan vastgezet** worden;
+- naast het tabblad staat een teller met het aantal **ongelezen** berichten; die
+  loopt leeg zodra iemand het scherm opent, per persoon bijgehouden;
+- weghalen verbergt het bericht, het blijft in de database staan.
+
+```bash
+node start.js nieuws plaatsen --titel "Vanaf maandag" --bericht "..." --soort let-op --vast
+node start.js nieuws lijst
+node start.js nieuws weghalen 3
 ```
 
 ## Wat je aanbiedt
@@ -482,8 +526,12 @@ node start.js rechtsvorm 42 eenmanszaak
 node start.js toestemming 42 --via mailreactie --bewijs "Mailde terug: prima, u mag bellen"
 ```
 
-Zoek de rechtsvorm op in het KVK-register voordat je belt. Dit is geen juridisch
-advies: laat je opzet toetsen voordat je begint.
+Zoek de rechtsvorm op in het KVK-register voordat je belt — met `verrijken` gaat
+dat automatisch. Dit is geen juridisch advies: laat je opzet toetsen voordat je
+begint. Koop je een adressenbestand, houd dan rekening met het **non-mailing
+indicator** (NMI) van de KVK: bedrijven met die indicator wil je niet voor
+reclamedoeleinden benaderen. Zet ze bij het importeren meteen op de
+niet-benaderen-lijst.
 
 ## Niet meer benaderen
 
@@ -526,7 +574,7 @@ src/
     pipeline.ts       fases, belgeschiedenis, klanten, testimonials
     contact.ts        rechtsvorm, belregels, toestemming en de niet-benaderen-lijst
     instellingen.ts   wat je aanbiedt, in één plek
-  sources/            waar bedrijven vandaan komen (osm, csv, kvk)
+  sources/            waar bedrijven vandaan komen (osm, csv, kvk, kvk-verrijken)
   scan/
     robots.ts         robots.txt lezen en naleven
     fetcher.ts        beleefd ophalen, https-fallback, timing
