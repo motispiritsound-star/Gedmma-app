@@ -17,3 +17,7 @@ coverage/
 android/
 ios/
 prisma/*.db
+
+# Expo web export
+apps/mobile/dist/
+apps/mobile/dist-plain/

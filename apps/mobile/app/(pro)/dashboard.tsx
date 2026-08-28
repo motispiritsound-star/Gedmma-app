@@ -29,8 +29,13 @@ export default function Dashboard() {
 
   const subscription = data?.subscription;
   const stats = data?.stats;
-  const usedRatio = subscription
-    ? 1 - subscription.creditsRemaining / Math.max(1, subscription.monthlyCredits)
+  // The balance carries over between months and can exceed the quota, so the
+  // meter is scaled against whichever is larger and clamped at both ends.
+  const creditScale = subscription
+    ? Math.max(subscription.monthlyCredits, subscription.creditsRemaining, 1)
+    : 1;
+  const remainingRatio = subscription
+    ? Math.min(1, Math.max(0, subscription.creditsRemaining / creditScale))
     : 0;
 
   return (
@@ -57,13 +62,16 @@ export default function Dashboard() {
           </View>
 
           <Txt variant="body">
-            {t('pro.creditsOf', {
-              remaining: subscription.creditsRemaining,
-              total: subscription.monthlyCredits,
-            })}
+            {subscription.creditsRemaining > subscription.monthlyCredits
+              ? t('pro.creditsRemaining', { count: subscription.creditsRemaining })
+              : t('pro.creditsOf', {
+                  remaining: subscription.creditsRemaining,
+                  total: subscription.monthlyCredits,
+                })}
           </Txt>
+          {/* Fills with what is left, not with what is spent. */}
           <View style={styles.meter}>
-            <View style={[styles.meterFill, { width: `${Math.min(100, usedRatio * 100)}%` }]} />
+            <View style={[styles.meterFill, { width: `${remainingRatio * 100}%` }]} />
           </View>
 
           <Txt variant="caption" color={colors.textMuted}>

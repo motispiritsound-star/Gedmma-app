@@ -110,7 +110,11 @@ export function LeadCard({
           <Txt variant="caption" color={colors.textMuted}>
             {lead.city.name}
             {lead.district ? ` · ${lead.district}` : ''}
-            {lead.distanceKm != null ? ` · ${formatDistanceLabel(lead.distanceKm, locale)}` : ''}
+            {/* Coordinates are city-level, so anything under a kilometre is
+                noise — "0 m" would claim a precision we do not have. */}
+            {lead.distanceKm != null && lead.distanceKm >= 1
+              ? ` · ${formatDistanceLabel(lead.distanceKm, locale)}`
+              : ''}
           </Txt>
         </View>
       </View>

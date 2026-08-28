@@ -70,10 +70,14 @@ export default function Leads() {
         subscription ? (
           <View style={styles.creditsBar}>
             <Txt variant="caption" color={colors.textMuted}>
-              {t('pro.creditsOf', {
-                remaining: subscription.creditsRemaining,
-                total: subscription.monthlyCredits,
-              })}
+              {/* Credits carry over, so the balance can exceed the monthly
+                  quota; showing "154 of 150" would read as a bug. */}
+              {subscription.creditsRemaining > subscription.monthlyCredits
+                ? t('pro.creditsRemaining', { count: subscription.creditsRemaining })
+                : t('pro.creditsOf', {
+                    remaining: subscription.creditsRemaining,
+                    total: subscription.monthlyCredits,
+                  })}
             </Txt>
             {subscription.creditsRemaining <= 3 ? (
               <Badge label={t('subscription.chooseTitle')} tone="warning" icon="alert-circle" />

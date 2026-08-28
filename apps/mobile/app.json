@@ -11,14 +11,16 @@
       "backgroundColor": "#0F6F5C",
       "resizeMode": "contain"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "ma.khidma.app",
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true,
         "NSPhotoLibraryUsageDescription": "Khidma utilise vos photos pour illustrer vos demandes de devis.",
-        "NSCameraUsageDescription": "Khidma utilise l'appareil photo pour photographier les travaux à réaliser."
+        "NSCameraUsageDescription": "Khidma utilise l'appareil photo pour photographier les travaux \u00e0 r\u00e9aliser."
       }
     },
     "android": {
@@ -26,7 +28,10 @@
       "adaptiveIcon": {
         "backgroundColor": "#0F6F5C"
       },
-      "permissions": ["CAMERA", "READ_EXTERNAL_STORAGE"]
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE"
+      ]
     },
     "locales": {
       "fr": "./src/i18n/store-fr.json",
@@ -49,6 +54,10 @@
       "router": {
         "origin": false
       }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
     }
   }
 }

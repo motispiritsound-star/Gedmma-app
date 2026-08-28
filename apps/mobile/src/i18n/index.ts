@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { I18nManager } from 'react-native';
+import { I18nManager, Platform } from 'react-native';
 import * as Localization from 'expo-localization';
 import { DEFAULT_LOCALE, isRtl, resolveLocale, type Locale } from '@khidma/shared';
 import fr from './locales/fr.json';
@@ -44,12 +44,28 @@ export async function initI18n(initial?: Locale): Promise<Locale> {
 }
 
 /**
- * Arabic lays the whole interface out right-to-left. React Native applies the
- * change to native views only after a reload, so the caller is responsible for
- * restarting the app when this returns true.
+ * Arabic lays the whole interface out right-to-left.
+ *
+ * Returns whether the app must restart for the change to take effect: React
+ * Native applies the flip to native views only after a reload. On web there is
+ * nothing to restart — react-native-web reads the direction off the document —
+ * so this applies it there and then and always returns false. Reporting a
+ * restart on web would put the app in a reload loop, because
+ * `I18nManager.forceRTL` never changes `isRTL` in the browser.
  */
 export function applyDirection(locale: Locale): boolean {
   const shouldBeRtl = isRtl(locale);
+
+  if (Platform.OS === 'web') {
+    if (typeof document !== 'undefined') {
+      document.documentElement.dir = shouldBeRtl ? 'rtl' : 'ltr';
+      document.documentElement.lang = locale;
+    }
+    I18nManager.allowRTL(shouldBeRtl);
+    I18nManager.forceRTL(shouldBeRtl);
+    return false;
+  }
+
   if (I18nManager.isRTL === shouldBeRtl) return false;
 
   I18nManager.allowRTL(shouldBeRtl);

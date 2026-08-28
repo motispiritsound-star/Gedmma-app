@@ -77,6 +77,44 @@ describe('posting a job', () => {
   });
 });
 
+describe('localised names on jobs', () => {
+  it('collapses the trade and city to the caller\'s language', async () => {
+    const customer = await signIn(app, '0613000300');
+    const job = await postJob(customer.accessToken);
+
+    for (const [locale, city, trade] of [
+      ['fr', 'Casablanca', 'Peinture intérieure'],
+      ['ar', 'الدار البيضاء', 'صباغة داخلية'],
+      ['en', 'Casablanca', 'Interior painting'],
+    ] as const) {
+      const response = await app.inject({
+        method: 'GET',
+        url: `/v1/jobs/${job.id}`,
+        headers: { ...auth(customer.accessToken), 'x-khidma-locale': locale },
+      });
+      expect(response.json().job.city.name, locale).toBe(city);
+      expect(response.json().job.category.name, locale).toBe(trade);
+    }
+  });
+
+  it('collapses them on the lead feed too, which is where they are read most', async () => {
+    const customer = await signIn(app, '0613000310');
+    const job = await postJob(customer.accessToken);
+    await releaseToAllPlans(job.id);
+    const pro = await createPro(app, { phone: '0613000311', planSlug: 'artisan' });
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/v1/pros/me/leads',
+      headers: { ...auth(pro.accessToken), 'x-khidma-locale': 'ar' },
+    });
+
+    const lead = (response.json().items as Array<{ city: { name: string }; category: { name: string } }>)[0];
+    expect(lead?.city.name).toBe('الدار البيضاء');
+    expect(lead?.category.name).toBe('صباغة داخلية');
+  });
+});
+
 describe('the lead feed', () => {
   it('shows a pro only the trades and cities they cover', async () => {
     const customer = await signIn(app, '0613000010');

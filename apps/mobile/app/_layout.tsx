@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { I18nManager, StyleSheet, View } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -42,13 +42,19 @@ export default function RootLayout() {
   }, [hydrated, locale]);
 
   // Switching to or from Arabic changes the layout direction, and React Native
-  // only applies that to native views after a reload.
+  // only applies that to native views after a reload. Reload at most once per
+  // mount: if the flip does not take on this platform, retrying would loop.
+  const hasReloadedForDirection = useRef(false);
   useEffect(() => {
     if (!ready) return;
     const needsReload = applyDirection(locale);
-    if (needsReload && !__DEV__) {
-      void Updates.reloadAsync();
-    }
+    if (!needsReload || __DEV__ || hasReloadedForDirection.current) return;
+
+    hasReloadedForDirection.current = true;
+    void Updates.reloadAsync().catch(() => {
+      // Nothing to reload (Expo Go, a bare build without expo-updates): the
+      // direction still applies on the next launch.
+    });
   }, [locale, ready]);
 
   if (!ready) {

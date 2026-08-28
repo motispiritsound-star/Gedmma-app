@@ -13,4 +13,18 @@ config.resolver.nodeModulesPaths = [
 ];
 config.resolver.disableHierarchicalLookup = true;
 
+// Expo's web modules register themselves under their class name and throw
+// "Module implementation must be a class" when the minifier strips it, so the
+// names have to survive minification.
+config.transformer.minifierConfig = {
+  ...config.transformer.minifierConfig,
+  keep_classnames: true,
+  keep_fnames: true,
+  mangle: {
+    ...(config.transformer.minifierConfig?.mangle ?? {}),
+    keep_classnames: true,
+    keep_fnames: true,
+  },
+};
+
 module.exports = config;

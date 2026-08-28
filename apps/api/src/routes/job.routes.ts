@@ -10,6 +10,7 @@ import {
 } from '@khidma/shared';
 import { z } from 'zod';
 import { AppError } from '../lib/errors.js';
+import { localizeAll, withLocalizedNames } from '../lib/localize.js';
 
 const jobRoutes: FastifyPluginAsync = async (app) => {
   const anySignedInUser = app.requireRole('CUSTOMER', 'PRO', 'ADMIN');
@@ -22,16 +23,17 @@ const jobRoutes: FastifyPluginAsync = async (app) => {
     const body = createJobSchema.parse(request.body);
     const job = await app.services.jobs.create(request.currentUser!.sub, body);
     reply.code(201);
-    return { job };
+    return { job: withLocalizedNames(job, request.locale) };
   });
 
   app.get('/mine', { onRequest: [app.authenticate] }, async (request) => {
     const query = listMyJobsSchema.parse(request.query);
-    return app.services.jobs.listForCustomer(request.currentUser!.sub, {
+    const page = await app.services.jobs.listForCustomer(request.currentUser!.sub, {
       status: query.status,
       cursor: query.cursor,
       limit: query.limit,
     });
+    return { ...page, items: localizeAll(page.items, request.locale) };
   });
 
   /**
@@ -51,7 +53,7 @@ const jobRoutes: FastifyPluginAsync = async (app) => {
 
     if (owner.customerId === user.sub) {
       return {
-        job: await app.services.jobs.getForCustomer(jobId, user.sub),
+        job: withLocalizedNames(await app.services.jobs.getForCustomer(jobId, user.sub), request.locale),
         viewer: 'CUSTOMER' as const,
       };
     }
@@ -59,7 +61,7 @@ const jobRoutes: FastifyPluginAsync = async (app) => {
     if (user.proId) {
       const job = await app.services.jobs.getForPro(jobId, user.proId);
       await app.services.jobs.incrementView(jobId);
-      return { job, viewer: 'PRO' as const };
+      return { job: withLocalizedNames(job, request.locale), viewer: 'PRO' as const };
     }
 
     // Not the owner and not a professional: nothing to show.
@@ -69,7 +71,8 @@ const jobRoutes: FastifyPluginAsync = async (app) => {
   app.patch('/:jobId', { onRequest: [app.authenticate] }, async (request) => {
     const { jobId } = z.object({ jobId: z.string().min(1) }).parse(request.params);
     const body = updateJobSchema.parse(request.body);
-    return { job: await app.services.jobs.update(jobId, request.currentUser!.sub, body) };
+    const job = await app.services.jobs.update(jobId, request.currentUser!.sub, body);
+    return { job: withLocalizedNames(job, request.locale) };
   });
 
   app.post('/:jobId/cancel', { onRequest: [app.authenticate] }, async (request) => {
@@ -84,7 +87,8 @@ const jobRoutes: FastifyPluginAsync = async (app) => {
 
   app.post('/:jobId/complete', { onRequest: [app.authenticate] }, async (request) => {
     const { jobId } = z.object({ jobId: z.string().min(1) }).parse(request.params);
-    return { job: await app.services.jobs.markCompleted(jobId, request.currentUser!.sub) };
+    const job = await app.services.jobs.markCompleted(jobId, request.currentUser!.sub);
+    return { job: withLocalizedNames(job, request.locale) };
   });
 
   // --- Quotes on a job -----------------------------------------------------

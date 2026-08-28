@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import * as SecureStore from 'expo-secure-store';
+import { deleteItem, getItem, setItem } from './secure-storage';
 import { DEFAULT_LOCALE, type Locale } from '@khidma/shared';
 import { ApiError, request } from '../api/client';
 import type { AuthTokens, SessionUser, SignInResponse } from '../api/types';
@@ -28,14 +28,14 @@ interface SessionState {
 async function persistTokens(tokens: AuthTokens | null) {
   if (!tokens) {
     await Promise.all([
-      SecureStore.deleteItemAsync(ACCESS_KEY),
-      SecureStore.deleteItemAsync(REFRESH_KEY),
+      deleteItem(ACCESS_KEY),
+      deleteItem(REFRESH_KEY),
     ]);
     return;
   }
   await Promise.all([
-    SecureStore.setItemAsync(ACCESS_KEY, tokens.accessToken),
-    SecureStore.setItemAsync(REFRESH_KEY, tokens.refreshToken),
+    setItem(ACCESS_KEY, tokens.accessToken),
+    setItem(REFRESH_KEY, tokens.refreshToken),
   ]);
 }
 
@@ -48,9 +48,9 @@ export const useSession = create<SessionState>((set, get) => ({
 
   async hydrate() {
     const [accessToken, refreshToken, storedLocale] = await Promise.all([
-      SecureStore.getItemAsync(ACCESS_KEY),
-      SecureStore.getItemAsync(REFRESH_KEY),
-      SecureStore.getItemAsync(LOCALE_KEY),
+      getItem(ACCESS_KEY),
+      getItem(REFRESH_KEY),
+      getItem(LOCALE_KEY),
     ]);
 
     set({
@@ -66,7 +66,7 @@ export const useSession = create<SessionState>((set, get) => ({
   },
 
   async setLocale(locale) {
-    await SecureStore.setItemAsync(LOCALE_KEY, locale);
+    await setItem(LOCALE_KEY, locale);
     set({ locale });
 
     // Persist the choice on the account too, so notifications and API errors

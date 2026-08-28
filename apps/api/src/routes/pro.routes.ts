@@ -8,6 +8,7 @@ import {
 } from '@khidma/shared';
 import { z } from 'zod';
 import { SubscriptionService } from '../services/subscription.service.js';
+import { localizeAll, withLocalizedNames } from '../lib/localize.js';
 
 const proRoutes: FastifyPluginAsync = async (app) => {
   const proOnly = app.requireRole('PRO', 'ADMIN');
@@ -104,17 +105,26 @@ const proRoutes: FastifyPluginAsync = async (app) => {
     const proId = await proIdOf(request.currentUser!.sub, request.currentUser!.proId);
     const subscription = await app.services.subscriptions.requireAccess(proId);
 
-    return app.services.jobs.listLeads({
+    const page = await app.services.jobs.listLeads({
       proId,
       planHeadStartMinutes: subscription.plan.leadHeadStartMinutes,
       filters,
     });
+    return { ...page, items: localizeAll(page.items, request.locale) };
   });
 
   app.get('/me/quotes', { onRequest: [proOnly] }, async (request) => {
     const query = listMyQuotesSchema.parse(request.query);
     const proId = await proIdOf(request.currentUser!.sub, request.currentUser!.proId);
-    return app.services.quotes.listForPro(proId, query);
+    const page = await app.services.quotes.listForPro(proId, query);
+    // Each quote embeds its job, whose category and city need collapsing too.
+    return {
+      ...page,
+      items: page.items.map((quote) => ({
+        ...quote,
+        job: withLocalizedNames(quote.job, request.locale),
+      })),
+    };
   });
 
   app.post('/me/quotes/:quoteId/withdraw', { onRequest: [proOnly] }, async (request) => {
