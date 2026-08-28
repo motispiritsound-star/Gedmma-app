@@ -19,6 +19,14 @@ import { STYLES } from './styles.js';
 
 export const SITE_URL = 'https://khidma.ma';
 
+/**
+ * Inter for Latin, IBM Plex Sans Arabic for Arabic. Both are loaded with
+ * `display=swap`, so text renders in the fallback immediately on a slow
+ * connection rather than sitting invisible.
+ */
+export const FONT_HREF =
+  'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap';
+
 /** Escapes text destined for HTML. All copy goes through here. */
 export function esc(value: string): string {
   return value
@@ -85,6 +93,9 @@ function head({ locale, page, title, description }: Omit<PageOptions, 'body'>): 
     <meta property="og:url" content="${canonical}">
     <meta property="og:locale" content="${COPY[locale].meta.ogLocale}">
     <meta name="theme-color" content="#0F6F5C">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="${FONT_HREF}">
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>`;

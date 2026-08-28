@@ -38,8 +38,11 @@ export const STYLES = `
   --shadow-card: 0 4px 14px rgba(20, 32, 29, 0.06);
   --shadow-raised: 0 12px 32px rgba(20, 32, 29, 0.12);
 
+  /* Both faces are loaded from Google Fonts in the document head. The stacks
+     below name real fallbacks, so a blocked font request degrades to a system
+     face rather than to whatever the browser picks. */
   --font: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
-  --font-ar: "Noto Naskh Arabic", "Geeza Pro", "Segoe UI", system-ui, sans-serif;
+  --font-ar: "IBM Plex Sans Arabic", "Noto Naskh Arabic", "Geeza Pro", "Segoe UI", system-ui, sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
