@@ -161,10 +161,30 @@ src/
 data/webscan.db       SQLite-database met bedrijven, scans en opvolging
 ```
 
+## Demo
+
+`npm run demo` start vijftien nagemaakte Nederlandse bedrijfswebsites op je eigen
+machine — van een tabel-site uit 2009 met Flash tot een keurig verzorgde moderne
+site — laat de echte scanner erover lopen en schrijft het resultaat weg als
+`demo/out/demo.html`: een losse pagina die je zonder server kunt openen. Handig om
+te zien hoe de scores uitpakken voordat je echte bedrijven gaat scannen, en om de
+regels in `src/score/rules.ts` bij te stellen en het effect meteen terug te zien.
+
 ## Testen
 
 ```bash
 npm test          # scanner + scoring tegen een lokale testsite
 npm run test:api  # dashboard-API van begin tot eind
 npm run typecheck
+```
+
+En in de projectstructuur hoort daar nog bij:
+
+```
+demo/
+  sites.ts        vijftien nagemaakte bedrijfssites (http en https)
+  build.ts        scant ze en schrijft demo/out/demo-data.json
+  template.html   de losse demo-pagina
+  page.ts         zet de scanresultaten in de pagina
+test/             fixtures en controles
 ```

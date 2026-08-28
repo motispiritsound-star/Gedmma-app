@@ -46,7 +46,10 @@ export function scoreSignals(signals: PageSignals): Verdict {
     return { category, label: CATEGORY_LABELS[category], score: max - lost, max, lost };
   });
 
-  const score = Math.max(0, Math.min(100, Math.round(categories.reduce((sum, c) => sum + c.score, 0))));
+  const raw = Math.max(0, Math.min(100, Math.round(categories.reduce((sum, c) => sum + c.score, 0))));
+  // Een parkeerpagina of "in aanbouw"-pagina is geen website, hoe netjes de HTML
+  // ook is. De categoriegrenzen zouden dat te mild beoordelen.
+  const score = signals.content.parked ? Math.min(raw, 15) : raw;
   const grade = gradeFor(score);
 
   const ranked = [...issues].sort(

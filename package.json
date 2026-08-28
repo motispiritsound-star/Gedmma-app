@@ -15,7 +15,8 @@
     "dashboard": "node src/cli.ts serve",
     "test": "node test/run.ts",
     "test:api": "node test/server.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "demo": "node demo/build.ts && node demo/page.ts"
   },
   "dependencies": {
     "cheerio": "^1.0.0",
