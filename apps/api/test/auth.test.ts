@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { CLIENT_AGREEMENTS } from '@buurklus/shared';
 import { auth, createTestApp, prisma, resetTransactionalData, signIn } from './helpers.js';
 
 let app: FastifyInstance;
@@ -73,13 +74,16 @@ describe('phone sign-in', () => {
       payload: { phone: '0612000004' },
     });
     const code = requested.json().debugCode as string;
-    const payload = { phone: '0612000004', code };
+    const payload = { phone: '0612000004', code, agreements: CLIENT_AGREEMENTS };
 
     const first = await app.inject({ method: 'POST', url: '/v1/auth/otp/verify', payload });
     const second = await app.inject({ method: 'POST', url: '/v1/auth/otp/verify', payload });
 
     expect(first.statusCode).toBe(200);
     expect(second.statusCode).toBe(400);
+    // Both refusals are 400; naming the code keeps this from passing for the
+    // wrong reason, such as a missing agreement rather than a spent code.
+    expect(second.json().error.code).toBe('otp_invalid');
   });
 
   it('throttles a second code requested straight away', async () => {

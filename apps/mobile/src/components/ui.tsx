@@ -173,6 +173,41 @@ export function Field({
 // Surfaces
 // ---------------------------------------------------------------------------
 
+/**
+ * A tick box with its label as one tap target. Used where someone has to agree
+ * to something rather than merely continue past it: an explicit act is what
+ * makes the agreement record worth anything, and a pre-ticked box or an
+ * "by continuing you agree" line is not one.
+ */
+export function Checkbox({
+  checked,
+  onChange,
+  children,
+  accessibilityLabel,
+}: {
+  checked: boolean;
+  onChange: (next: boolean) => void;
+  children: React.ReactNode;
+  accessibilityLabel: string;
+}) {
+  return (
+    <Pressable
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked }}
+      accessibilityLabel={accessibilityLabel}
+      onPress={() => onChange(!checked)}
+      // 44 points of height comes from the padding plus the box, so the label
+      // is part of the target rather than a decoration beside it.
+      style={({ pressed }) => [styles.checkboxRow, pressed && styles.pressed]}
+    >
+      <View style={[styles.checkbox, checked && styles.checkboxChecked]}>
+        {checked ? <Ionicons name="checkmark" size={15} color={colors.textInverse} /> : null}
+      </View>
+      <View style={styles.checkboxLabel}>{children}</View>
+    </Pressable>
+  );
+}
+
 export function Card({
   children,
   onPress,
@@ -339,6 +374,25 @@ const styles = StyleSheet.create({
   inputMultiline: { minHeight: 132, textAlignVertical: 'top' },
   inputError: { borderColor: colors.danger },
 
+  checkboxRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: spacing.md,
+    paddingVertical: spacing.sm,
+    minHeight: 44,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: radius.sm,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 2,
+  },
+  checkboxChecked: { backgroundColor: colors.primary, borderColor: colors.primary },
+  checkboxLabel: { flex: 1 },
   card: {
     backgroundColor: colors.surface,
     borderRadius: radius.lg,

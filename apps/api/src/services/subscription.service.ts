@@ -10,6 +10,7 @@ import {
 } from '@buurklus/shared';
 import { AppError } from '../lib/errors.js';
 import { invoiceReference } from '../lib/crypto.js';
+import { billingSnapshot } from './privacy.service.js';
 import type { PaymentAdapter } from '../adapters/payments.js';
 
 /** Transaction client, so callers can compose these calls into their own. */
@@ -237,6 +238,13 @@ export class SubscriptionService {
         });
 
     const reference = await this.nextInvoiceReference();
+    // Frozen onto the invoice rather than read through the relations at print
+    // time: an invoice has to stay legible for seven years, including after
+    // the account behind it has exercised its right to erasure.
+    const biller = await this.prisma.proProfile.findUniqueOrThrow({
+      where: { id: params.proId },
+      select: { displayName: true, kvk: true, vatId: true },
+    });
     const payment = await this.prisma.payment.create({
       data: {
         subscriptionId: subscription.id,
@@ -247,6 +255,7 @@ export class SubscriptionService {
         vatRate: vat.vatRate,
         method: params.method,
         status: 'PENDING',
+        billingSnapshot: billingSnapshot(biller),
       },
     });
 

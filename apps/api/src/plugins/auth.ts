@@ -10,6 +10,13 @@ export interface AccessTokenPayload {
   role: UserRole;
   /** Present for professionals, so routes can skip a lookup for the common case. */
   proId?: string;
+  /**
+   * Set only on tokens minted for one narrow job, such as the data-export
+   * download link. An access token never carries it, and `authenticate`
+   * refuses any token that does -- otherwise a link handed to a browser would
+   * be a full session in a query string.
+   */
+  purpose?: string;
 }
 
 declare module 'fastify' {
@@ -60,6 +67,10 @@ const authPlugin: FastifyPluginAsync = async (app) => {
     } catch {
       throw new AppError('unauthorized');
     }
+    // A single-purpose token is not a session. Without this, the export link
+    // -- which travels in a URL, through browser history and proxy logs --
+    // would open every authenticated route on the API.
+    if (request.user.purpose) throw new AppError('unauthorized');
     request.currentUser = request.user;
   });
 

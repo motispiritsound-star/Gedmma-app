@@ -4,6 +4,7 @@ export * from './phone.js';
 export * from './money.js';
 export * from './geo.js';
 export * from './identifiers.js';
+export * from './legal.js';
 export * from './catalog/categories.js';
 export * from './catalog/cities.js';
 export * from './catalog/plans.js';

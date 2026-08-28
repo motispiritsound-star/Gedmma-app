@@ -63,9 +63,12 @@
     "resendIn": "Resend in {{seconds}}s",
     "changeNumber": "Change number",
     "verify": "Verify",
-    "terms": "By continuing you accept Buurklus's terms of use and privacy policy.",
     "signOut": "Sign out",
-    "signOutConfirm": "Are you sure you want to sign out?"
+    "signOutConfirm": "Are you sure you want to sign out?",
+    "agreeLabel": "I agree to the terms of use and the privacy statement, and I am {{age}} or older.",
+    "agreeRequired": "Please tick the box first.",
+    "readTerms": "Read the terms of use",
+    "readPrivacy": "Read the privacy statement"
   },
   "home": {
     "greeting": "Hello {{name}}",
@@ -333,5 +336,23 @@
     "tooLong": "Too long (maximum {{max}} characters)",
     "invalidNumber": "Enter a valid number",
     "budgetRange": "The maximum budget must be higher than the minimum"
+  },
+  "privacy": {
+    "title": "Privacy and data",
+    "subtitle": "What we keep about you, for how long, and what you can do with it.",
+    "exportTitle": "Download your data",
+    "exportBody": "A file with everything we hold about you.",
+    "exportDone": "Your data has been downloaded.",
+    "exportFailed": "The download failed. Please try again later.",
+    "marketingTitle": "Email me occasionally",
+    "marketingBody": "Tips and news about Buurklus. Off unless you turn it on, and you can turn it off again without losing your account.",
+    "retentionTitle": "How long we keep things",
+    "documentsTitle": "Documents",
+    "deleteTitle": "Delete account",
+    "deleteBody": "Your data is erased. Your jobs and reviews stay, without your name. Invoices are kept for seven years, which Dutch tax law requires.",
+    "deleteConfirmTitle": "Delete your account for good?",
+    "deleteConfirmBody": "This cannot be undone. You will be signed out straight away.",
+    "deleteConfirmAction": "Yes, delete my account",
+    "deleteFailed": "Deleting failed. Please try again later."
   }
 }

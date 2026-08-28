@@ -149,6 +149,8 @@ enum NotificationType {
   SUBSCRIPTION_RENEWED
   CREDITS_LOW
   PRO_VERIFIED
+  /// Sent before an account that has gone quiet is deleted for retention.
+  ACCOUNT_INACTIVE
 }
 
 // ---------------------------------------------------------------------------
@@ -247,17 +249,63 @@ model User {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
-  city           City?          @relation(fields: [cityId], references: [id])
-  proProfile     ProProfile?
-  jobs           Job[]          @relation("JobCustomer")
-  refreshTokens  RefreshToken[]
-  messages       Message[]
-  reviewsWritten Review[]       @relation("ReviewAuthor")
-  devices        DeviceToken[]
-  notifications  Notification[]
+  /// Latest version of each document this account has agreed to. The full
+  /// history lives in agreement_records; these two exist so the API can tell
+  /// in one read whether the holder still needs to see a new version.
+  termsVersion    String?
+  privacyVersion  String?
+  /// The holder stated they meet the minimum age. Nothing verifies it.
+  ageConfirmedAt  DateTime?
+  /// Article 6(1)(a) consent for marketing messages: null means never given,
+  /// and withdrawing sets it back to null rather than deleting the record.
+  marketingOptInAt DateTime?
+
+  /// When erasure was carried out. The row survives, emptied of everything
+  /// identifying, because jobs, quotes and invoices point at it and dropping
+  /// it would take a seven-year fiscal record down with it.
+  anonymisedAt    DateTime?
+
+  city             City?             @relation(fields: [cityId], references: [id])
+  proProfile       ProProfile?
+  jobs             Job[]             @relation("JobCustomer")
+  refreshTokens    RefreshToken[]
+  messages         Message[]
+  reviewsWritten   Review[]          @relation("ReviewAuthor")
+  devices          DeviceToken[]
+  notifications    Notification[]
+  agreements       AgreementRecord[]
 
   @@index([role])
+  @@index([lastSeenAt])
+  @@index([anonymisedAt])
   @@map("users")
+}
+
+/// What someone agreed to, when, and from where. Append-only: a new version
+/// adds a row, it never updates one. Article 7(1) requires being able to
+/// demonstrate an agreement, and an overwritten timestamp demonstrates nothing.
+///
+/// The IP address is a personal datum in its own right, kept because it is the
+/// only thing that distinguishes a real acceptance from a claimed one in a
+/// dispute. It is covered by the same seven-year rule as the agreement itself.
+model AgreementRecord {
+  id         String            @id @default(cuid())
+  userId     String
+  document   AgreementDocument
+  version    String
+  acceptedAt DateTime          @default(now())
+  ip         String?
+  userAgent  String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, acceptedAt])
+  @@map("agreement_records")
+}
+
+enum AgreementDocument {
+  TERMS
+  PRIVACY
 }
 
 /// One-time codes sent by SMS. Rows are kept after use for rate limiting and
@@ -612,6 +660,12 @@ model Payment {
   paidAt         DateTime?
   failureReason  String?
   invoiceUrl     String?
+  /// The billing details as they stood when the invoice was raised: name,
+  /// address, KvK and VAT id. Frozen here rather than read through the
+  /// relations because an invoice must stay legible for seven years (Article
+  /// 52 AWR) even after the account behind it is erased -- which Article
+  /// 17(3)(b) permits precisely because that retention is a legal obligation.
+  billingSnapshot Json?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 

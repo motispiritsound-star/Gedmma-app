@@ -1,4 +1,4 @@
-import type { Locale, UserRole } from '@buurklus/shared';
+import type { AgreementsInput, Locale, UserRole } from '@buurklus/shared';
 import { DEFAULT_LOCALE } from '@buurklus/shared';
 import type { Prisma, PrismaClient } from '@prisma/client';
 import { AppError } from '../lib/errors.js';
@@ -74,6 +74,9 @@ export class AuthService {
     code: string;
     role?: Exclude<UserRole, 'ADMIN'>;
     locale?: Locale;
+    agreements?: AgreementsInput;
+    ip?: string;
+    userAgent?: string;
   }) {
     const now = new Date();
     const challenge = await this.prisma.otpChallenge.findFirst({
@@ -99,6 +102,16 @@ export class AuthService {
     });
     if (consumed.count === 0) throw new AppError('otp_invalid');
 
+    const existing = await this.prisma.user.findUnique({
+      where: { phone: params.phone },
+      select: { id: true },
+    });
+
+    // An account cannot come into existence without a record of what its
+    // holder agreed to: the terms have to be agreed before the contract
+    // exists, and the record is the only evidence it happened.
+    if (!existing && !params.agreements) throw new AppError('agreements_required');
+
     const user = await this.prisma.user.upsert({
       where: { phone: params.phone },
       create: {
@@ -106,13 +119,77 @@ export class AuthService {
         phoneVerifiedAt: now,
         role: params.role ?? 'CUSTOMER',
         locale: params.locale ?? DEFAULT_LOCALE,
+        termsVersion: params.agreements?.terms,
+        privacyVersion: params.agreements?.privacy,
+        ageConfirmedAt: params.agreements ? now : undefined,
       },
       update: { phoneVerifiedAt: now, lastSeenAt: now },
       include: { proProfile: { select: { id: true, verificationStatus: true } } },
     });
 
     if (user.isBlocked) throw new AppError('account_blocked');
+
+    if (params.agreements) {
+      await this.recordAgreements({
+        userId: user.id,
+        agreements: params.agreements,
+        current: { terms: user.termsVersion, privacy: user.privacyVersion },
+        isNewAccount: !existing,
+        ip: params.ip,
+        userAgent: params.userAgent,
+        now,
+      });
+    }
+
     return user;
+  }
+
+  /**
+   * Writes an append-only row for each document whose version has moved, and
+   * updates the copy on the user so a later sign-in can tell in one read
+   * whether anything new needs showing.
+   *
+   * Re-agreeing to a version already on file writes nothing: a row per sign-in
+   * would bury the moments that actually matter under thousands of duplicates.
+   */
+  private async recordAgreements(params: {
+    userId: string;
+    agreements: AgreementsInput;
+    current: { terms: string | null; privacy: string | null };
+    isNewAccount: boolean;
+    ip?: string;
+    userAgent?: string;
+    now: Date;
+  }) {
+    const changed: { document: 'TERMS' | 'PRIVACY'; version: string }[] = [];
+    if (params.isNewAccount || params.current.terms !== params.agreements.terms) {
+      changed.push({ document: 'TERMS', version: params.agreements.terms });
+    }
+    if (params.isNewAccount || params.current.privacy !== params.agreements.privacy) {
+      changed.push({ document: 'PRIVACY', version: params.agreements.privacy });
+    }
+    if (changed.length === 0) return;
+
+    await this.prisma.$transaction([
+      this.prisma.agreementRecord.createMany({
+        data: changed.map((entry) => ({
+          userId: params.userId,
+          document: entry.document,
+          version: entry.version,
+          acceptedAt: params.now,
+          ip: params.ip,
+          userAgent: params.userAgent?.slice(0, 500),
+        })),
+      }),
+      this.prisma.user.update({
+        where: { id: params.userId },
+        data: {
+          termsVersion: params.agreements.terms,
+          privacyVersion: params.agreements.privacy,
+          ageConfirmedAt: params.now,
+        },
+      }),
+    ]);
   }
 
   /**

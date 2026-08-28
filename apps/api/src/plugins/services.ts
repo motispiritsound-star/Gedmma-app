@@ -9,6 +9,7 @@ import { CatalogService } from '../services/catalog.service.js';
 import { JobService } from '../services/job.service.js';
 import { MessageService } from '../services/message.service.js';
 import { NotificationService } from '../services/notification.service.js';
+import { PrivacyService } from '../services/privacy.service.js';
 import { ProService } from '../services/pro.service.js';
 import { QuoteService } from '../services/quote.service.js';
 import { ReviewService } from '../services/review.service.js';
@@ -20,6 +21,7 @@ export interface Services {
   jobs: JobService;
   messages: MessageService;
   notifications: NotificationService;
+  privacy: PrivacyService;
   pros: ProService;
   quotes: QuoteService;
   reviews: ReviewService;
@@ -50,6 +52,7 @@ const servicesPlugin: FastifyPluginAsync = async (app) => {
     jobs: new JobService(prisma),
     messages: new MessageService(prisma, notifications),
     notifications,
+    privacy: new PrivacyService(prisma, notifications),
     pros: new ProService(prisma, subscriptions),
     quotes: new QuoteService(prisma, subscriptions, notifications),
     reviews: new ReviewService(prisma, notifications),

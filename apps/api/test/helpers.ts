@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { PrismaClient } from '@prisma/client';
-import { PLANS } from '@buurklus/shared';
+import { CLIENT_AGREEMENTS, PLANS } from '@buurklus/shared';
 import { buildApp } from '../src/app.js';
 import { loadEnv } from '../src/env.js';
 
@@ -97,7 +97,10 @@ export async function signIn(
   const verified = await app.inject({
     method: 'POST',
     url: '/v1/auth/otp/verify',
-    payload: { phone, code, role },
+    // Sent on every sign-in, the way the app does: the client cannot know
+    // whether the account already exists, and creating one without a record
+    // of what was agreed to is refused.
+    payload: { phone, code, role, agreements: CLIENT_AGREEMENTS },
   });
   if (verified.statusCode !== 200) {
     throw new Error(`OTP verify failed: ${verified.statusCode} ${verified.body}`);

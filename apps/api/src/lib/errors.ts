@@ -7,6 +7,7 @@ import { DEFAULT_LOCALE, type Locale } from '@buurklus/shared';
  */
 export type ErrorCode =
   | 'validation_failed'
+  | 'agreements_required'
   | 'unauthorized'
   | 'forbidden'
   | 'not_found'
@@ -33,6 +34,10 @@ export type ErrorCode =
   | 'internal_error';
 
 const MESSAGES: Record<ErrorCode, Record<Locale, string>> = {
+  agreements_required: {
+    nl: 'Ga eerst akkoord met de gebruiksvoorwaarden en het privacybeleid.',
+    en: 'Please agree to the terms of use and the privacy statement first.',
+  },
   validation_failed: {
     nl: 'Sommige gegevens kloppen niet.',
     en: 'Some of the information provided is invalid.',
@@ -137,6 +142,7 @@ const MESSAGES: Record<ErrorCode, Record<Locale, string>> = {
 
 const DEFAULT_STATUS: Record<ErrorCode, number> = {
   validation_failed: 400,
+  agreements_required: 400,
   unauthorized: 401,
   forbidden: 403,
   not_found: 404,

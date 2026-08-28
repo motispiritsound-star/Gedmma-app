@@ -63,9 +63,12 @@
     "resendIn": "Opnieuw over {{seconds}} s",
     "changeNumber": "Nummer wijzigen",
     "verify": "Controleren",
-    "terms": "Door verder te gaan ga je akkoord met de gebruiksvoorwaarden en het privacybeleid van Buurklus.",
     "signOut": "Uitloggen",
-    "signOutConfirm": "Weet je zeker dat je wilt uitloggen?"
+    "signOutConfirm": "Weet je zeker dat je wilt uitloggen?",
+    "agreeLabel": "Ik ga akkoord met de gebruiksvoorwaarden en het privacybeleid, en ik ben {{age}} jaar of ouder.",
+    "agreeRequired": "Zet eerst een vinkje bij de voorwaarden.",
+    "readTerms": "Gebruiksvoorwaarden lezen",
+    "readPrivacy": "Privacybeleid lezen"
   },
   "home": {
     "greeting": "Hoi {{name}}",
@@ -333,5 +336,23 @@
     "tooLong": "Te lang (maximaal {{max}} tekens)",
     "invalidNumber": "Vul een geldig getal in",
     "budgetRange": "Het maximale budget moet hoger zijn dan het minimale"
+  },
+  "privacy": {
+    "title": "Privacy en gegevens",
+    "subtitle": "Wat we van je bewaren, hoe lang, en wat je ermee kunt.",
+    "exportTitle": "Je gegevens downloaden",
+    "exportBody": "Een bestand met alles wat we van je hebben.",
+    "exportDone": "Je gegevens zijn gedownload.",
+    "exportFailed": "Downloaden is niet gelukt. Probeer het later opnieuw.",
+    "marketingTitle": "Mail me af en toe iets",
+    "marketingBody": "Tips en nieuws over Buurklus. Uit tenzij je het aanzet, en je kunt het altijd weer uitzetten zonder je account te verliezen.",
+    "retentionTitle": "Hoe lang we dingen bewaren",
+    "documentsTitle": "Documenten",
+    "deleteTitle": "Account verwijderen",
+    "deleteBody": "Je gegevens worden gewist. Je klussen en beoordelingen blijven bestaan zonder je naam. Facturen bewaren we zeven jaar, dat moet van de Belastingdienst.",
+    "deleteConfirmTitle": "Account definitief verwijderen?",
+    "deleteConfirmBody": "Dit kan niet ongedaan gemaakt worden. Je wordt meteen uitgelogd.",
+    "deleteConfirmAction": "Ja, verwijder mijn account",
+    "deleteFailed": "Verwijderen is niet gelukt. Probeer het later opnieuw."
   }
 }

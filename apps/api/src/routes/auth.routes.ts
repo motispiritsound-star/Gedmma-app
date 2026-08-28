@@ -47,6 +47,12 @@ const authRoutes: FastifyPluginAsync = async (app) => {
         code: body.code,
         role: body.role,
         locale: request.locale,
+        agreements: body.agreements,
+        // Recorded with the agreement: in a dispute about whether someone
+        // accepted the terms, "from this address, in this browser" is the only
+        // thing separating a real acceptance from a claimed one.
+        ip: request.ip,
+        userAgent: request.headers['user-agent'],
       });
 
       if (body.deviceToken) {

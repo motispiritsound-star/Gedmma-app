@@ -13,6 +13,7 @@ import catalogRoutes from './routes/catalog.routes.js';
 import jobRoutes from './routes/job.routes.js';
 import messageRoutes from './routes/message.routes.js';
 import notificationRoutes from './routes/notification.routes.js';
+import privacyRoutes from './routes/privacy.routes.js';
 import proRoutes from './routes/pro.routes.js';
 import subscriptionRoutes from './routes/subscription.routes.js';
 import { AppError, errorMessage } from './lib/errors.js';
@@ -126,6 +127,7 @@ export async function buildApp(config: Env = env()): Promise<FastifyInstance> {
   await app.register(subscriptionRoutes, { prefix: '/v1/subscriptions' });
   await app.register(messageRoutes, { prefix: '/v1/conversations' });
   await app.register(notificationRoutes, { prefix: '/v1/notifications' });
+  await app.register(privacyRoutes, { prefix: '/v1/privacy' });
 
   return app;
 }

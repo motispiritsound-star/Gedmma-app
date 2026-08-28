@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
@@ -90,9 +90,17 @@ export default function Profile() {
         <View style={styles.groupBody}>
           <SettingsRow icon="help-circle-outline" label={t('profile.help')} />
           <Divider />
-          <SettingsRow icon="document-outline" label={t('profile.terms')} />
+          <SettingsRow
+            icon="document-outline"
+            label={t('profile.terms')}
+            onPress={() => void Linking.openURL(`${SITE_URL}/voorwaarden/`)}
+          />
           <Divider />
-          <SettingsRow icon="lock-closed-outline" label={t('profile.privacy')} />
+          <SettingsRow
+            icon="lock-closed-outline"
+            label={t('privacy.title')}
+            onPress={() => router.push('/settings/privacy')}
+          />
           <Divider />
           <SettingsRow
             icon="log-out-outline"
@@ -109,6 +117,9 @@ export default function Profile() {
     </ScrollView>
   );
 }
+
+/** Where the published legal documents live. */
+const SITE_URL = 'https://buurklus.nl';
 
 const styles = StyleSheet.create({
   container: { padding: spacing.lg, gap: spacing.lg, paddingBottom: spacing.xxxl },

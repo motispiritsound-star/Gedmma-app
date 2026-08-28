@@ -64,6 +64,10 @@ const COPY: Record<NotificationType, Record<Locale, Template>> = {
     nl: () => ({ title: 'Profiel geverifieerd', body: 'Je bedrijf is geverifieerd via de KvK. Klanten zien nu het vinkje bij je profiel.' }),
     en: () => ({ title: 'Profile verified', body: 'Your business is verified against the Chamber of Commerce. Customers now see the badge on your profile.' }),
   },
+  ACCOUNT_INACTIVE: {
+    nl: (p) => ({ title: 'Je account wordt binnenkort verwijderd', body: `Je hebt hier lang niet ingelogd. Over ${p.days} dagen verwijderen we je account en je gegevens. Log in om het te behouden.` }),
+    en: (p) => ({ title: 'Your account will be deleted soon', body: `You have not signed in for a long time. In ${p.days} days we will delete your account and your data. Sign in to keep it.` }),
+  },
 };
 
 export class NotificationService {

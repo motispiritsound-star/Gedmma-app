@@ -2,7 +2,12 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { formatDutchPhone, normalizeDutchPhone, type UserRole } from '@buurklus/shared';
+import {
+  CLIENT_AGREEMENTS,
+  formatDutchPhone,
+  normalizeDutchPhone,
+  type UserRole,
+} from '@buurklus/shared';
 import { Button, Txt } from '@/components/ui';
 import { usePublicApi } from '@/hooks/use-api';
 import { ApiError, NetworkError } from '@/api/client';
@@ -20,6 +25,7 @@ export default function OtpScreen() {
   const params = useLocalSearchParams<{
     phone: string;
     role?: string;
+    agreed?: string;
     resendAt?: string;
     debugCode?: string;
   }>();
@@ -60,7 +66,15 @@ export default function OtpScreen() {
     try {
       const response = await api<SignInResponse>('/v1/auth/otp/verify', {
         method: 'POST',
-        body: { phone: params.phone, code, role: (params.role as UserRole) ?? 'CUSTOMER' },
+        body: {
+          phone: params.phone,
+          code,
+          role: (params.role as UserRole) ?? 'CUSTOMER',
+          // The versions this build showed on the previous screen, not
+          // whatever is current on the server: the record has to say which
+          // text the person actually read.
+          ...(params.agreed === '1' ? { agreements: CLIENT_AGREEMENTS } : {}),
+        },
       });
 
       await signIn(response);

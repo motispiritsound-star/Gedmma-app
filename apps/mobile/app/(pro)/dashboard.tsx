@@ -162,6 +162,12 @@ export default function Dashboard() {
         />
         <Divider />
         <SettingsRow
+          icon="lock-closed-outline"
+          label={t('privacy.title')}
+          onPress={() => router.push('/settings/privacy')}
+        />
+        <Divider />
+        <SettingsRow
           icon="log-out-outline"
           label={t('auth.signOut')}
           tone="danger"
