@@ -27,13 +27,81 @@ export class SubscriptionService {
     private readonly payments: PaymentAdapter,
   ) {}
 
+  /** A plan nobody is billed for. Read from the price, not from a flag. */
+  static isFree(plan: Plan): boolean {
+    return plan.monthlyPriceCents === 0 && plan.yearlyPriceCents === 0;
+  }
+
   /** The subscription that governs a pro's access right now, if any. */
   async current(proId: string): Promise<SubscriptionWithPlan | null> {
-    return this.prisma.subscription.findFirst({
+    const subscription = await this.prisma.subscription.findFirst({
       where: { proId, status: { in: [...ACTIVE_STATUSES, 'PAST_DUE'] } },
       include: { plan: true },
       orderBy: { createdAt: 'desc' },
     });
+    if (!subscription) return null;
+    return this.rollFreePeriod(subscription);
+  }
+
+  /**
+   * A free subscription has no invoice to renew it, so its month rolls over
+   * here, the first time anyone looks at it after it lapses. Doing it lazily
+   * means no scheduler has to be running for the platform to keep working.
+   *
+   * The update is conditional on the period end we read, so two requests
+   * arriving at the same moment cannot both grant a month of credits: the
+   * second matches no row and simply re-reads what the first wrote.
+   */
+  private async rollFreePeriod(
+    subscription: SubscriptionWithPlan,
+    now = new Date(),
+  ): Promise<SubscriptionWithPlan> {
+    if (!SubscriptionService.isFree(subscription.plan)) return subscription;
+    if (subscription.currentPeriodEnd > now) return subscription;
+
+    const periodEnd = addBillingPeriod(now, 'MONTHLY');
+    const credits = subscription.plan.monthlyCredits;
+
+    const rolled = await this.prisma.$transaction(async (tx) => {
+      const claimed = await tx.subscription.updateMany({
+        where: { id: subscription.id, currentPeriodEnd: subscription.currentPeriodEnd },
+        data: {
+          status: 'ACTIVE',
+          currentPeriodStart: now,
+          currentPeriodEnd: periodEnd,
+          // The quota is a monthly allowance, not a balance to hoard: unused
+          // credits do not roll over, so one dormant account cannot come back
+          // with a year of quota and flood every open job.
+          creditsRemaining: credits,
+        },
+      });
+      if (claimed.count === 0) return null;
+
+      await this.recordCredit(tx, {
+        proId: subscription.proId,
+        subscriptionId: subscription.id,
+        delta: credits - subscription.creditsRemaining,
+        balanceAfter: credits,
+        reason: 'PLAN_GRANT',
+        note: `${subscription.plan.slug} · gratis maand`,
+      });
+      return true;
+    });
+
+    if (!rolled) {
+      return this.prisma.subscription.findUniqueOrThrow({
+        where: { id: subscription.id },
+        include: { plan: true },
+      });
+    }
+
+    return {
+      ...subscription,
+      status: 'ACTIVE',
+      currentPeriodStart: now,
+      currentPeriodEnd: periodEnd,
+      creditsRemaining: credits,
+    };
   }
 
   /**
@@ -63,13 +131,20 @@ export class SubscriptionService {
     return subscription as SubscriptionWithPlan;
   }
 
-  /** Starts the free trial that every new professional account gets once. */
-  async startTrial(proId: string, planSlug?: string): Promise<SubscriptionWithPlan> {
+  /**
+   * Puts a new professional account on a plan. Which plan is a question for
+   * the database, not a hardcoded slug: today the cheapest active plan is free
+   * and nobody trials anything, and when the paid tiers are switched back on
+   * the same call starts a trial again without being rewritten.
+   *
+   * A free plan gets an active month with the plan's own quota; a paid plan
+   * gets the trial. Either way the professional can start working immediately
+   * and is never asked for payment details to sign up.
+   */
+  async startInitialSubscription(proId: string, planSlug?: string): Promise<SubscriptionWithPlan> {
     const existing = await this.prisma.subscription.findFirst({ where: { proId } });
     if (existing) throw new AppError('conflict');
 
-    // Resolved from the database rather than a hardcoded slug: renaming a plan
-    // should not silently break sign-up for every new professional.
     const plan = planSlug
       ? await this.prisma.plan.findUniqueOrThrow({ where: { slug: planSlug } })
       : ((await this.prisma.plan.findFirst({
@@ -80,29 +155,36 @@ export class SubscriptionService {
           where: { isActive: true },
           orderBy: { position: 'asc' },
         })));
+
+    const free = SubscriptionService.isFree(plan);
     const now = new Date();
-    const trialEnd = new Date(now.getTime() + TRIAL_DURATION_DAYS * 86_400_000);
+    const periodEnd = free
+      ? addBillingPeriod(now, 'MONTHLY')
+      : new Date(now.getTime() + TRIAL_DURATION_DAYS * 86_400_000);
+    const credits = free ? plan.monthlyCredits : TRIAL_CREDITS;
 
     return this.prisma.$transaction(async (tx) => {
       const subscription = await tx.subscription.create({
         data: {
           proId,
           planId: plan.id,
-          status: 'TRIALING',
+          status: free ? 'ACTIVE' : 'TRIALING',
           period: 'MONTHLY',
           currentPeriodStart: now,
-          currentPeriodEnd: trialEnd,
-          trialEndsAt: trialEnd,
-          creditsRemaining: TRIAL_CREDITS,
+          currentPeriodEnd: periodEnd,
+          // Only a trial ends on a date the professional needs to know about.
+          trialEndsAt: free ? null : periodEnd,
+          creditsRemaining: credits,
         },
         include: { plan: true },
       });
       await this.recordCredit(tx, {
         proId,
         subscriptionId: subscription.id,
-        delta: TRIAL_CREDITS,
-        balanceAfter: TRIAL_CREDITS,
-        reason: 'TRIAL_GRANT',
+        delta: credits,
+        balanceAfter: credits,
+        reason: free ? 'PLAN_GRANT' : 'TRIAL_GRANT',
+        note: free ? `${plan.slug} · gratis maand` : undefined,
       });
       return subscription;
     });
@@ -123,6 +205,9 @@ export class SubscriptionService {
   }) {
     const plan = await this.prisma.plan.findUnique({ where: { slug: params.planSlug } });
     if (!plan || !plan.isActive) throw new AppError('not_found');
+    // Nothing to charge for, so there is nothing to check out. Sending a zero
+    // euro order to the payment provider would fail there instead of here.
+    if (SubscriptionService.isFree(plan)) throw new AppError('validation_failed');
 
     const netCents =
       params.period === 'YEARLY' ? plan.yearlyPriceCents : plan.monthlyPriceCents;

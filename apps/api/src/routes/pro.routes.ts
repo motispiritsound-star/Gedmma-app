@@ -8,7 +8,7 @@ import {
 } from '@buurklus/shared';
 import { z } from 'zod';
 import { SubscriptionService } from '../services/subscription.service.js';
-import { localizeAll, withLocalizedNames } from '../lib/localize.js';
+import { localizeAll, pickName, withLocalizedNames } from '../lib/localize.js';
 
 const proRoutes: FastifyPluginAsync = async (app) => {
   const proOnly = app.requireRole('PRO', 'ADMIN');
@@ -38,8 +38,9 @@ const proRoutes: FastifyPluginAsync = async (app) => {
   // --- The signed-in professional -----------------------------------------
 
   /**
-   * Creating a profile also starts the free trial, so a new professional can
-   * quote on their first day without entering card details.
+   * Creating a profile also opens the subscription, so a new professional can
+   * quote on their first day without entering card details. While Buurklus is
+   * free that subscription simply never asks for any.
    */
   app.put('/me', { onRequest: [app.authenticate] }, async (request) => {
     const body = upsertProProfileSchema.parse(request.body);
@@ -51,10 +52,10 @@ const proRoutes: FastifyPluginAsync = async (app) => {
     const profile = await app.services.pros.upsert(request.currentUser!.sub, body);
 
     if (!existing) {
-      await app.services.subscriptions.startTrial(profile.id).catch((error) => {
+      await app.services.subscriptions.startInitialSubscription(profile.id).catch((error) => {
         // A pro who somehow already had a subscription keeps it; the profile
         // save itself must not fail because of that.
-        app.log.warn({ err: error, proId: profile.id }, 'trial not started');
+        app.log.warn({ err: error, proId: profile.id }, 'subscription not started');
       });
     }
 
@@ -82,9 +83,12 @@ const proRoutes: FastifyPluginAsync = async (app) => {
             status: subscription.status,
             period: subscription.period,
             planSlug: subscription.plan.slug,
-            planName: subscription.plan.nameNl,
+            planName: pickName(subscription.plan, request.locale),
             creditsRemaining: subscription.creditsRemaining,
             monthlyCredits: subscription.plan.monthlyCredits,
+            // The app decides what to show from the price, not from a flag it
+            // would have to keep in step with the server.
+            monthlyPriceCents: subscription.plan.monthlyPriceCents,
             currentPeriodEnd: subscription.currentPeriodEnd,
             trialEndsAt: subscription.trialEndsAt,
             cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
@@ -93,7 +97,7 @@ const proRoutes: FastifyPluginAsync = async (app) => {
         : null,
       stats: {
         pendingQuotes,
-        wonQuotes,
+        wonJobs: wonQuotes,
         unreadMessages: unreadMessages._sum.proUnread ?? 0,
       },
     };

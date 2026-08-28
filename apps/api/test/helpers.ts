@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { PrismaClient } from '@prisma/client';
+import { PLANS } from '@buurklus/shared';
 import { buildApp } from '../src/app.js';
 import { loadEnv } from '../src/env.js';
 
@@ -32,6 +33,10 @@ export async function createTestApp(): Promise<FastifyInstance> {
 /**
  * Clears everything a test creates, leaving the seeded catalog in place.
  * Ordered so foreign keys are satisfied without disabling constraints.
+ *
+ * Which plans are on sale is reset too. A test that needs the paid tiers
+ * switches them on for itself, and must not leave them on for whatever runs
+ * next: the default has to keep matching what production actually ships.
  */
 export async function resetTransactionalData() {
   await prisma.$executeRawUnsafe(`
@@ -42,6 +47,20 @@ export async function resetTransactionalData() {
       notifications, device_tokens, refresh_tokens, otp_challenges, users
     RESTART IDENTITY CASCADE
   `);
+  await Promise.all(
+    PLANS.map((plan) =>
+      prisma.plan.update({ where: { slug: plan.slug }, data: { isActive: plan.available } }),
+    ),
+  );
+}
+
+/**
+ * Puts the paid plans on sale for the duration of one test. Buurklus launches
+ * free, so they ship switched off, but the billing code still has to work for
+ * the day they come back and the tests that cover it say so out loud.
+ */
+export async function sellPaidPlans() {
+  await prisma.plan.updateMany({ where: { monthlyPriceCents: { gt: 0 } }, data: { isActive: true } });
 }
 
 interface SignInResult {
@@ -141,6 +160,9 @@ export async function createPro(
   const refreshed = await signIn(app, options.phone, 'PRO');
 
   if (options.planSlug) {
+    // Asking for a plan by name means the test wants to be on it, whether or
+    // not it is one of the ones currently for sale.
+    await prisma.plan.update({ where: { slug: options.planSlug }, data: { isActive: true } });
     const subscribed = await app.inject({
       method: 'POST',
       url: '/v1/subscriptions',

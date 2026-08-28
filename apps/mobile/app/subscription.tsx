@@ -4,12 +4,18 @@ import { Stack, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
-import { TRIAL_CREDITS, TRIAL_DURATION_DAYS, applyVat, type BillingPeriod } from '@buurklus/shared';
+import {
+  PRICING_NOTICE_DAYS,
+  TRIAL_CREDITS,
+  TRIAL_DURATION_DAYS,
+  applyVat,
+  type BillingPeriod,
+} from '@buurklus/shared';
 import { Badge, Button, Card, Divider, Loader, Txt } from '@/components/ui';
 import { useApi, usePublicApi } from '@/hooks/use-api';
 import { useSession } from '@/store/session';
 import { ApiError } from '@/api/client';
-import { formatMoney } from '@/utils/format';
+import { formatDate, formatMoney } from '@/utils/format';
 import type { PlanRef, ProDashboard } from '@/api/types';
 import { colors, radius, spacing } from '@/theme';
 
@@ -36,11 +42,11 @@ export default function Subscription() {
     mutationFn: (planSlug: string) =>
       api<{ redirectUrl: string | null }>('/v1/subscriptions', {
         method: 'POST',
-        body: { planSlug, period, paymentMethod: 'CMI_CARD' },
+        body: { planSlug, period, paymentMethod: 'IDEAL' },
       }),
     onSuccess: async () => {
-      // With a live CMI gateway the response carries a redirect URL to open;
-      // in development the mock adapter settles immediately.
+      // With a live gateway the response carries a redirect URL to open; in
+      // development, and for an offline method, the mock adapter settles at once.
       await queryClient.invalidateQueries({ queryKey: ['pro-dashboard'] });
       await queryClient.invalidateQueries({ queryKey: ['leads'] });
       router.back();
@@ -61,6 +67,63 @@ export default function Subscription() {
   if (plans.isLoading) return <Loader label={t('common.loading')} />;
 
   const current = dashboard.data?.subscription;
+  const offered = plans.data?.plans ?? [];
+
+  /**
+   * Nothing on offer costs anything. Read from the prices the API returned
+   * rather than a flag in the app, so the screen cannot claim the platform is
+   * free after the paid plans have been switched back on server-side.
+   */
+  const everythingIsFree =
+    offered.length > 0 &&
+    offered.every((plan) => plan.monthlyPriceCents === 0 && plan.yearlyPriceCents === 0);
+
+  if (everythingIsFree) {
+    const total = current?.monthlyCredits ?? offered[0]?.monthlyCredits ?? 0;
+    return (
+      <>
+        {/* "Subscription" would be the wrong word for a screen that has none. */}
+        <Stack.Screen options={{ title: t('subscription.free.screenTitle') }} />
+        <ScrollView contentContainerStyle={styles.container}>
+          <Card>
+            <Badge label={t('subscription.free.badge')} tone="accent" icon="gift" />
+            <Txt variant="title">{t('subscription.free.title')}</Txt>
+            <Txt variant="body" color={colors.textMuted}>
+              {t('subscription.free.body')}
+            </Txt>
+
+            {current ? (
+              <>
+                <Divider />
+                <Txt variant="bodyStrong">
+                  {t('subscription.free.quota', {
+                    remaining: current.creditsRemaining,
+                    total,
+                  })}
+                </Txt>
+                <Txt variant="caption" color={colors.textMuted}>
+                  {t('subscription.free.renews', {
+                    total,
+                    date: formatDate(current.currentPeriodEnd, locale),
+                  })}
+                </Txt>
+              </>
+            ) : null}
+          </Card>
+
+          <Card>
+            <Txt variant="heading">{t('subscription.free.laterTitle')}</Txt>
+            <Txt variant="body" color={colors.textMuted}>
+              {t('subscription.free.later', { days: PRICING_NOTICE_DAYS })}
+            </Txt>
+            <Txt variant="caption" color={colors.textSubtle}>
+              {t('subscription.free.noPayment')}
+            </Txt>
+          </Card>
+        </ScrollView>
+      </>
+    );
+  }
 
   return (
     <>
@@ -111,7 +174,7 @@ export default function Subscription() {
           <Badge label={t('subscription.yearlySaving')} tone="accent" icon="pricetag" />
         ) : null}
 
-        {(plans.data?.plans ?? []).map((plan) => {
+        {offered.map((plan) => {
           const netCents =
             period === 'YEARLY' ? plan.yearlyPriceCents : plan.monthlyPriceCents;
           const gross = applyVat(netCents).grossCents;

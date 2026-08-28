@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
+  AVAILABLE_PLANS,
   CITIES,
+  DEFAULT_PLAN,
   PLANS,
+  PLATFORM_IS_FREE,
+  PRICING_NOTICE_DAYS,
   ROOT_CATEGORIES,
   SUPPORTED_LOCALES,
   applyVat,
@@ -73,7 +77,7 @@ describe('content coming from @buurklus/shared', () => {
 
   it('quotes the same prices the app charges, with VAT beneath', () => {
     const html = renderPro('nl');
-    for (const plan of PLANS) {
+    for (const plan of AVAILABLE_PLANS) {
       const net = eurosToCents(plan.monthlyPriceEur);
       const gross = applyVat(net).grossCents;
       // Compare on digits: the currency formatter inserts its own separators.
@@ -82,30 +86,51 @@ describe('content coming from @buurklus/shared', () => {
       expect(html.replace(/[^\d<>="/\w]/g, ''), plan.slug).toContain(digits(gross));
     }
   });
-
-  it('describes the plan limits exactly as the plans define them', () => {
-    const html = renderPro('en');
-    const vakman = PLANS.find((plan) => plan.slug === 'vakman')!;
-    expect(html).toContain(`${vakman.monthlyCredits} quotes per month`);
-    expect(html).toContain(`${vakman.leadHeadStartMinutes}-minute head start`);
-    expect(renderPro('en')).toContain('The whole country');
-  });
 });
 
-describe('the pricing table', () => {
-  it('recommends exactly one plan', () => {
+describe('the pricing section', () => {
+  it('names no plan the professional cannot have', () => {
+    // The paid tiers still exist in the catalog. A price on the page that
+    // nobody can buy is the sort of thing that ends up in a complaint.
     for (const locale of SUPPORTED_LOCALES) {
       const html = renderPro(locale);
-      const badge = COPY[locale].pro.pricing.popular;
-      const occurrences = html.split(esc(badge)).length - 1;
-      expect(occurrences, `${locale} badges`).toBe(1);
+      for (const plan of PLANS.filter((row) => !row.available)) {
+        expect(html, `${locale} ${plan.slug}`).not.toContain(esc(localize(plan.name, locale)));
+        expect(html, `${locale} ${plan.slug} price`).not.toContain(`${plan.monthlyPriceEur}`);
+      }
     }
   });
 
-  it('offers every plan the professional can actually buy', () => {
-    const html = renderPro('nl');
-    for (const plan of PLANS) {
-      expect(html, plan.slug).toContain(esc(localize(plan.name, 'nl')));
+  it('states the free quota the API actually grants', () => {
+    expect(PLATFORM_IS_FREE).toBe(true);
+    expect(renderPro('en')).toContain(`${DEFAULT_PLAN.monthlyCredits} quotes a month`);
+    expect(renderPro('nl')).toContain(`${DEFAULT_PLAN.monthlyCredits} offertes per maand`);
+  });
+
+  it('promises notice before it starts charging, in both languages', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      expect(renderPro(locale), locale).toContain(String(PRICING_NOTICE_DAYS));
+    }
+  });
+
+  it('carries exactly one badge, on the free plan', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderPro(locale);
+      expect(html.split('plan__badge').length - 1, `${locale} badges`).toBe(1);
+      expect(html, locale).toContain(esc(COPY[locale].pro.pricing.launch.badge));
+      // And the "most chosen" badge is gone while there is nothing to choose.
+      expect(html, locale).not.toContain(esc(COPY[locale].pro.pricing.popular));
+    }
+  });
+
+  it('explains no way to pay, because there is nothing to pay', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderPro(locale).toLowerCase();
+      // Naming a payment method implies a charge is coming. "No credit card"
+      // is the opposite claim and stays, so the list is only methods.
+      for (const method of ['incasso', 'direct debit', 'bankoverschrijving', 'bank transfer']) {
+        expect(html.includes(method), `${locale} mentions ${method}`).toBe(false);
+      }
     }
   });
 });
@@ -165,7 +190,9 @@ describe('privacy of the served pages', () => {
   const ALLOWED_EXTERNAL_HOSTS: string[] = [];
 
   const hostsIn = (html: string) =>
-    [...html.matchAll(/(?:href|src|action)="(https?:)?\/\/([^/"]+)/g)].map((match) => match[2]);
+    [...html.matchAll(/(?:href|src|action)="(https?:)?\/\/([^/"]+)/g)].flatMap(
+      (match) => match[2] ?? [],
+    );
 
   it('contacts no third party from any page', () => {
     for (const page of [...pages, { name: 'index', html: renderRootRedirect() }]) {

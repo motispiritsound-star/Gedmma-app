@@ -265,7 +265,18 @@
       "BANK_TRANSFER": "Bankoverschrijving"
     },
     "outOfCreditsTitle": "Geen offertes meer",
-    "outOfCreditsBody": "Je offertes voor deze maand zijn op. Kies een groter pakket om te blijven reageren."
+    "outOfCreditsBody": "Je offertes voor deze maand zijn op. Aan het begin van je volgende maand staat je tegoed er weer op.",
+    "free": {
+      "badge": "Nu gratis",
+      "title": "Buurklus kost je voorlopig niets",
+      "body": "We zijn net begonnen en willen eerst genoeg klussen in elke gemeente. Zolang dat zo is betaal je niets: geen abonnement, geen commissie en geen betaalgegevens.",
+      "quota": "{{remaining}} van {{total}} offertes over deze maand",
+      "renews": "Je tegoed gaat op {{date}} weer naar {{total}}.",
+      "laterTitle": "En straks?",
+      "later": "Ooit gaat Buurklus geld kosten. Als het zover is hoor je dat minstens {{days}} dagen van tevoren, per e-mail en in de app. Er wordt nooit vanzelf iets afgeschreven: zonder jouw akkoord blijft je account gratis.",
+      "noPayment": "Er staat geen betaalmethode in je account en we vragen er ook niet om.",
+      "screenTitle": "Wat het kost"
+    }
   },
   "messages": {
     "title": "Berichten",

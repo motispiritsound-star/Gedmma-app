@@ -82,8 +82,8 @@ const MESSAGES: Record<ErrorCode, Record<Locale, string>> = {
     en: 'An active subscription is required to send a quote.',
   },
   no_credits_remaining: {
-    nl: 'Je offertes voor deze maand zijn op. Kies een groter pakket voor meer.',
-    en: 'You have used all of this month’s quotes. Upgrade your plan for more.',
+    nl: 'Je offertes voor deze maand zijn op. Aan het begin van je volgende maand staat je tegoed er weer op.',
+    en: 'You have used all of this month’s quotes. Your allowance is topped up again at the start of your next month.',
   },
   plan_limit_categories: {
     nl: 'Je pakket staat niet zoveel vakgebieden toe.',

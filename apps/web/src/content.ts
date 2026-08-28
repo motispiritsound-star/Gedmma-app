@@ -15,7 +15,17 @@ export interface SiteCopy {
     ogLocale: string;
   };
   /** ctaShort is used below 560px, where the full label wraps to three lines. */
-  nav: { trades: string; how: string; pros: string; cta: string; ctaShort: string; forCustomers: string };
+  nav: {
+    trades: string;
+    how: string;
+    pros: string;
+    cta: string;
+    ctaShort: string;
+    forCustomers: string;
+    /** Label for the pricing link. Says nothing about a price, so it is true
+        while the platform is free and still true once it is not. */
+    pricing: string;
+  };
   hero: {
     eyebrow: string;
     title: string;
@@ -63,6 +73,21 @@ export interface SiteCopy {
       popular: string;
       vatNote: string;
       trialNote: string;
+      /**
+       * Shown instead of the price cards while nothing is for sale. Kept in
+       * the same shape in both languages so the page cannot advertise a price
+       * in one and a free platform in the other.
+       */
+      launch: {
+        badge: string;
+        title: string;
+        cardTitle: string;
+        subtitle: string;
+        points: string[];
+        laterTitle: string;
+        later: string;
+        cta: string;
+      };
     };
     how: { title: string; steps: { title: string; body: string }[] };
     faq: { title: string; items: { q: string; a: string }[] };
@@ -76,7 +101,7 @@ const nl: SiteCopy = {
       'Beschrijf je klus en ontvang tot 6 gratis offertes van vakmensen en bedrijven met een geverifieerd KvK-nummer. Gratis en vrijblijvend.',
     proTitle: 'Buurklus voor vakmensen — Ontvang klussen bij je in de buurt',
     proDescription:
-      'Vul je agenda met klussen die bij je vakgebied en je werkgebied passen. Maandabonnement, 14 dagen gratis proberen.',
+      'Vul je agenda met klussen die bij je vakgebied en je werkgebied passen. Nu gratis, zonder abonnement en zonder commissie.',
     ogLocale: 'nl_NL',
   },
   nav: {
@@ -86,6 +111,7 @@ const nl: SiteCopy = {
     cta: 'Klus plaatsen',
     ctaShort: 'Plaatsen',
     forCustomers: 'Je zoekt een vakman',
+    pricing: 'Wat het kost',
   },
   hero: {
     eyebrow: 'Gratis voor particulieren',
@@ -209,9 +235,9 @@ const nl: SiteCopy = {
       title: 'Vul je agenda zonder achter werk aan te bellen',
       subtitle:
         'Elke dag beschrijven klanten hun klus in jouw gemeente. Ontvang de klussen die bij je vakgebied passen en reageer op wat je aanstaat.',
-      cta: 'Start je gratis proefperiode',
-      ctaShort: 'Gratis proberen',
-      note: '14 dagen gratis · Zonder betaalgegevens · Maandelijks opzegbaar',
+      cta: 'Maak je gratis account',
+      ctaShort: 'Gratis starten',
+      note: 'Nu gratis · Zonder betaalgegevens · Geen commissie',
     },
     value: {
       title: 'Wat je krijgt',
@@ -254,6 +280,23 @@ const nl: SiteCopy = {
       popular: 'Meest gekozen',
       vatNote: 'Prijzen zijn exclusief btw. Bij facturatie komt 21% btw erbij.',
       trialNote: 'Elk nieuw account begint met {{days}} dagen proefperiode en {{credits}} gratis offertes.',
+      launch: {
+        badge: 'Nu gratis',
+        title: 'Buurklus kost je voorlopig niets',
+        cardTitle: 'Gratis account',
+        subtitle:
+          'We zijn net begonnen en willen eerst genoeg klussen in elke gemeente. Zolang dat zo is betaal je niets: geen abonnement, geen commissie, geen betaalgegevens.',
+        points: [
+          '{{credits}} offertes per maand, elke maand opnieuw',
+          '{{trades}} vakgebieden en {{cities}} gemeenten',
+          'Geen commissie over je omzet',
+          'Geen creditcard en geen opzegtermijn',
+        ],
+        laterTitle: 'En straks?',
+        later:
+          'Ooit gaat Buurklus geld kosten, anders bestaan we volgend jaar niet meer. Als het zover is hoor je dat minstens {{notice}} dagen van tevoren, per e-mail en in de app. Je gaat nooit vanzelf betalen: zonder dat jij akkoord geeft blijft je account gratis, met dezelfde {{credits}} offertes per maand.',
+        cta: 'Gratis account aanmaken',
+      },
     },
     how: {
       title: 'Zo begin je',
@@ -267,24 +310,24 @@ const nl: SiteCopy = {
       title: 'Veelgestelde vragen',
       items: [
         {
-          q: 'Wat telt als een offerte in mijn pakket?',
-          a: 'Elke reactie die je naar een klant stuurt verbruikt één offerte uit je maandtegoed. Klussen bekijken kost niets.',
+          q: 'Wat kost Buurklus?',
+          a: 'Op dit moment niets. We zijn net begonnen en willen eerst genoeg klussen in elke gemeente hebben. Er is geen abonnement en geen commissie, en we vragen je geen betaalgegevens.',
         },
         {
-          q: 'Wat als ik de klus niet krijg?',
-          a: 'De offerte blijft verbruikt: je betaalt voor de kans, niet voor de uitkomst. Trekt de klant de klus in vóórdat hij gegund is, dan krijg je je offerte wel terug.',
+          q: 'Blijft het gratis?',
+          a: 'Dat kunnen we niet beloven. Ooit gaat Buurklus geld kosten. Als het zover is laten we het minstens 30 dagen van tevoren weten, per e-mail en in de app, en gaat er niets automatisch af: je account blijft gratis tot jij zelf akkoord geeft.',
         },
         {
-          q: 'Kan ik van pakket wisselen?',
-          a: 'Ja, op elk moment in de app. De wijziging gaat direct in en je resterende offertes blijven staan.',
+          q: 'Waarom een limiet van 20 offertes per maand?',
+          a: 'Om te voorkomen dat één account op elke klus reageert. Voor een vakman die zijn werk doet is twintig offertes per maand ruim; loop je er tegenaan, laat het ons weten.',
+        },
+        {
+          q: 'Wat telt als een offerte?',
+          a: 'Elke reactie die je naar een klant stuurt telt er één. Klussen bekijken kost niets. Trekt de klant de klus in vóórdat hij gegund is, dan krijg je je offerte terug.',
         },
         {
           q: 'Heb ik een ingeschreven bedrijf nodig?',
           a: 'Je hebt een KvK-nummer nodig. Dat geldt ook voor zzp’ers: iedereen die in Nederland onderneemt staat ingeschreven.',
-        },
-        {
-          q: 'Hoe betaal ik het abonnement?',
-          a: 'Met iDEAL of automatische incasso. Bedrijven die op rekening werken kunnen per bankoverschrijving betalen. Je ontvangt een factuur met btw.',
         },
       ],
     },
@@ -298,7 +341,7 @@ const en: SiteCopy = {
       'Describe your job and receive up to 6 free quotes from tradespeople and companies with a verified Chamber of Commerce registration. Free, with no commitment.',
     proTitle: 'Buurklus for tradespeople — Receive jobs near you',
     proDescription:
-      'Fill your diary with jobs that match your trade and your service area. Monthly subscription, 14-day free trial.',
+      'Fill your diary with jobs that match your trade and your service area. Free right now, with no subscription and no commission.',
     ogLocale: 'en_NL',
   },
   nav: {
@@ -308,6 +351,7 @@ const en: SiteCopy = {
     cta: 'Post a job',
     ctaShort: 'Post a job',
     forCustomers: 'Looking for a tradesperson',
+    pricing: 'What it costs',
   },
   hero: {
     eyebrow: 'Free for households',
@@ -431,9 +475,9 @@ const en: SiteCopy = {
       title: 'Fill your diary without chasing work',
       subtitle:
         'Customers describe their jobs in your municipality every day. Receive the ones that match your trade, and reply to those worth your time.',
-      cta: 'Start your free trial',
-      ctaShort: 'Free trial',
-      note: '14 days free · No payment details · Cancel monthly',
+      cta: 'Create your free account',
+      ctaShort: 'Start free',
+      note: 'Free right now · No payment details · No commission',
     },
     value: {
       title: 'What you get',
@@ -476,6 +520,23 @@ const en: SiteCopy = {
       popular: 'Most chosen',
       vatNote: 'Prices exclude VAT. 21% Dutch VAT is added at invoicing.',
       trialNote: 'Every new account starts with {{days}} days of trial and {{credits}} free quotes.',
+      launch: {
+        badge: 'Free right now',
+        title: 'Buurklus costs you nothing for the time being',
+        cardTitle: 'Free account',
+        subtitle:
+          'We have just started, and we want enough jobs in every municipality first. Until then you pay nothing: no subscription, no commission, no payment details.',
+        points: [
+          '{{credits}} quotes a month, renewed every month',
+          '{{trades}} trades and {{cities}} municipalities',
+          'No commission on your turnover',
+          'No card and no notice period',
+        ],
+        laterTitle: 'And later?',
+        later:
+          'Buurklus will cost money one day, or we will not be here next year. When that happens you will hear about it at least {{notice}} days in advance, by email and in the app. You will never start paying by default: without your agreement your account stays free, with the same {{credits}} quotes a month.',
+        cta: 'Create a free account',
+      },
     },
     how: {
       title: 'Getting started',
@@ -489,24 +550,24 @@ const en: SiteCopy = {
       title: 'Frequently asked questions',
       items: [
         {
-          q: 'What counts as a quote in my plan?',
-          a: 'Every reply you send a customer uses one quote from your monthly allowance. Browsing jobs costs nothing.',
+          q: 'What does Buurklus cost?',
+          a: 'Nothing at the moment. We have just started and want enough jobs in every municipality first. There is no subscription and no commission, and we do not ask you for payment details.',
         },
         {
-          q: 'What if I do not win the job?',
-          a: 'The quote stays spent: you pay for the opportunity, not the outcome. If the customer withdraws the job before awarding it, though, your quote is refunded.',
+          q: 'Will it stay free?',
+          a: 'We cannot promise that. Buurklus will cost money one day. When it does we will tell you at least 30 days in advance, by email and in the app, and nothing will be taken automatically: your account stays free until you agree yourself.',
         },
         {
-          q: 'Can I change plan?',
-          a: 'Yes, at any time in the app. The change takes effect immediately and your remaining quotes are kept.',
+          q: 'Why a limit of 20 quotes a month?',
+          a: 'To stop one account replying to every job. For a tradesperson doing their work, twenty quotes a month is plenty; if you run into it, tell us.',
+        },
+        {
+          q: 'What counts as a quote?',
+          a: 'Every reply you send a customer counts as one. Browsing jobs costs nothing. If the customer withdraws the job before awarding it, your quote is refunded.',
         },
         {
           q: 'Do I need a registered business?',
           a: 'You need a Chamber of Commerce number. That applies to sole traders too: everyone trading in the Netherlands is registered.',
-        },
-        {
-          q: 'How do I pay for the subscription?',
-          a: 'By iDEAL or direct debit. Companies that work on account can pay by bank transfer. You receive an invoice showing the VAT.',
         },
       ],
     },

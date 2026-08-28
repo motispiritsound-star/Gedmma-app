@@ -265,7 +265,18 @@
       "BANK_TRANSFER": "Bank transfer"
     },
     "outOfCreditsTitle": "No quotes left",
-    "outOfCreditsBody": "You have used all of this month's quotes. Change plan to keep replying."
+    "outOfCreditsBody": "You have used all of this month’s quotes. Your allowance is topped up again at the start of your next month.",
+    "free": {
+      "badge": "Free right now",
+      "title": "Buurklus costs you nothing for the time being",
+      "body": "We have just started and want enough jobs in every municipality first. Until then you pay nothing: no subscription, no commission and no payment details.",
+      "quota": "{{remaining}} of {{total}} quotes left this month",
+      "renews": "Your allowance returns to {{total}} on {{date}}.",
+      "laterTitle": "And later?",
+      "later": "Buurklus will cost money one day. When it does you will hear at least {{days}} days in advance, by email and in the app. Nothing is ever charged automatically: without your agreement your account stays free.",
+      "noPayment": "There is no payment method on your account, and we do not ask for one.",
+      "screenTitle": "What it costs"
+    }
   },
   "messages": {
     "title": "Messages",

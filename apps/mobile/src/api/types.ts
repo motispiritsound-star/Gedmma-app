@@ -154,6 +154,8 @@ export interface SubscriptionSummary {
   planName: string;
   creditsRemaining: number;
   monthlyCredits: number;
+  /** Zero while the platform is free. The app reads this, not a build flag. */
+  monthlyPriceCents: number;
   currentPeriodEnd: string;
   trialEndsAt: string | null;
   cancelAtPeriodEnd: boolean;

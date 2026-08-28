@@ -1,6 +1,9 @@
 import {
   CITIES,
+  DEFAULT_PLAN,
   PLANS,
+  PLATFORM_IS_FREE,
+  PRICING_NOTICE_DAYS,
   ROOT_CATEGORIES,
   SUPPORTED_LOCALES,
   TRIAL_CREDITS,
@@ -110,7 +113,7 @@ function header(locale: Locale, page: 'home' | 'pro'): string {
       ? `<a href="#trades">${esc(copy.nav.trades)}</a>
          <a href="#how">${esc(copy.nav.how)}</a>
          <a href="${pathFor(locale, 'pro')}">${esc(copy.nav.pros)}</a>`
-      : `<a href="#pricing">${esc(copy.pro.pricing.title)}</a>
+      : `<a href="#pricing">${esc(copy.nav.pricing)}</a>
          <a href="#pro-how">${esc(copy.pro.how.title)}</a>
          <a href="${pathFor(locale, 'home')}">${esc(copy.nav.forCustomers)}</a>`;
 
@@ -464,6 +467,48 @@ function planCard(plan: PlanSeed, locale: Locale, copy: SiteCopy): string {
   </article>`;
 }
 
+/**
+ * What the pricing section shows while nothing is on sale. The paid cards say
+ * "choose this plan" next to a price, which would be a lie today, so they are
+ * replaced rather than dressed up: one panel that says the platform is free,
+ * what the free account actually gives you, and -- the part that matters --
+ * that it will not start charging you without asking.
+ */
+function launchPanel(locale: Locale, copy: SiteCopy): string {
+  const l = copy.pro.pricing.launch;
+  const values = {
+    credits: count(DEFAULT_PLAN.monthlyCredits, locale),
+    trades: count(DEFAULT_PLAN.maxCategories, locale),
+    cities:
+      DEFAULT_PLAN.maxCities === null
+        ? copy.pro.pricing.citiesAll
+        : count(DEFAULT_PLAN.maxCities, locale),
+    notice: count(PRICING_NOTICE_DAYS, locale),
+  };
+
+  const points = l.points
+    .map(
+      (point) =>
+        `<li><span class="plan__tick">${solidIcon('check', 17)}</span><span>${esc(fill(point, values))}</span></li>`,
+    )
+    .join('');
+
+  return `<article class="card plan plan--launch">
+    <span class="plan__badge">${esc(l.badge)}</span>
+    <h3>${esc(l.cardTitle)}</h3>
+    <div class="plan__price">
+      <span class="plan__amount">${esc(money(0, locale))}</span>
+      <span class="plan__period">${esc(copy.pro.pricing.perMonth)}</span>
+    </div>
+    <ul class="plan__features">${points}</ul>
+    <a class="btn btn--primary" href="#">${esc(l.cta)}</a>
+  </article>
+  <aside class="card plan plan--later">
+    <h3>${esc(l.laterTitle)}</h3>
+    <p class="muted">${esc(fill(l.later, values))}</p>
+  </aside>`;
+}
+
 function proBody(locale: Locale): string {
   const copy = COPY[locale];
   const p = copy.pro;
@@ -518,14 +563,26 @@ function proBody(locale: Locale): string {
   <section class="section section--tint" id="pricing">
     <div class="wrap">
       <div class="section__head">
-        <h2>${esc(p.pricing.title)}</h2>
-        <p class="lede muted">${esc(p.pricing.subtitle)}</p>
+        <h2>${esc(PLATFORM_IS_FREE ? p.pricing.launch.title : p.pricing.title)}</h2>
+        <p class="lede muted">${esc(
+          PLATFORM_IS_FREE ? p.pricing.launch.subtitle : p.pricing.subtitle,
+        )}</p>
       </div>
-      <div class="plans">${PLANS.map((plan) => planCard(plan, locale, copy)).join('')}</div>
-      <p class="muted" style="margin-block-start:1.5rem;font-size:0.9rem">
+      <div class="plans${PLATFORM_IS_FREE ? ' plans--launch' : ''}">${
+        PLATFORM_IS_FREE
+          ? launchPanel(locale, copy)
+          : PLANS.filter((plan) => plan.available)
+              .map((plan) => planCard(plan, locale, copy))
+              .join('')
+      }</div>
+      ${
+        PLATFORM_IS_FREE
+          ? ''
+          : `<p class="muted" style="margin-block-start:1.5rem;font-size:0.9rem">
         ${esc(p.pricing.vatNote)}<br>
         ${esc(fill(p.pricing.trialNote, { days: TRIAL_DURATION_DAYS, credits: TRIAL_CREDITS }))}
-      </p>
+      </p>`
+      }
     </div>
   </section>
 

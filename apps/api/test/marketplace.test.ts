@@ -140,7 +140,34 @@ describe('the lead feed', () => {
     expect(ids).toEqual([matching.id]);
   });
 
-  it('holds a new lead back from a lower tier until its head start elapses', async () => {
+  it('shows a brand new lead to everyone while no head start is for sale', async () => {
+    // Buurklus launches free, so no plan buys an earlier look at a job. The
+    // staging machinery below is still exercised, but only once a tier that
+    // pays for a head start is actually on sale.
+    const customer = await signIn(app, '0613000023');
+    const job = await postJob(customer.accessToken);
+    const pro = await createPro(app, { phone: '0613000024', displayName: 'Gratis vakman' });
+
+    const feed = await app.inject({
+      method: 'GET',
+      url: '/v1/pros/me/leads',
+      headers: auth(pro.accessToken),
+    });
+    expect((feed.json().items as Array<{ id: string }>)[0]?.id).toBe(job.id);
+
+    const quote = await app.inject({
+      method: 'POST',
+      url: `/v1/jobs/${job.id}/quotes`,
+      headers: auth(pro.accessToken),
+      payload: QUOTE,
+    });
+    expect(quote.statusCode).toBe(201);
+  });
+
+  it.skip('holds a new lead back from a lower tier until its head start elapses', async () => {
+    // Skipped while the paid tiers are switched off: the delay is derived from
+    // the plans on sale, so with only the free plan there is nothing to stage.
+    // Switch the paid plans back on and this test comes back with them.
     const customer = await signIn(app, '0613000020');
     const job = await postJob(customer.accessToken);
 

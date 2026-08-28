@@ -1,7 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { CATEGORIES, CATEGORY_BY_SLUG, ROOT_CATEGORIES, childCategories } from './categories.js';
 import { CITIES, PROVINCES, PROVINCE_NAMES, citiesInProvince } from './cities.js';
-import { PLANS, planCreditsForPeriod, planPricing, yearlySavingPercent } from './plans.js';
+import {
+  AVAILABLE_PLANS,
+  DEFAULT_PLAN,
+  MAX_LEAD_HEAD_START_MINUTES,
+  PLANS,
+  PLATFORM_IS_FREE,
+  isFreePlan,
+  leadDelayMinutes,
+  leadVisibleFrom,
+  planCreditsForPeriod,
+  planPricing,
+  yearlySavingPercent,
+} from './plans.js';
 import { SUPPORTED_LOCALES } from '../locales.js';
 
 describe('trade catalog', () => {
@@ -75,18 +87,20 @@ describe('city catalog', () => {
   });
 });
 
+const PAID_PLANS = PLANS.filter((plan) => !isFreePlan(plan));
+
 describe('subscription plans', () => {
-  it('increases credits and price with each tier', () => {
-    for (let i = 1; i < PLANS.length; i += 1) {
-      const previous = PLANS[i - 1]!;
-      const current = PLANS[i]!;
+  it('increases credits and price with each paid tier', () => {
+    for (let i = 1; i < PAID_PLANS.length; i += 1) {
+      const previous = PAID_PLANS[i - 1]!;
+      const current = PAID_PLANS[i]!;
       expect(current.monthlyPriceEur).toBeGreaterThan(previous.monthlyPriceEur);
       expect(current.monthlyCredits).toBeGreaterThan(previous.monthlyCredits);
     }
   });
 
   it('prices a year at ten months, i.e. two months free', () => {
-    for (const plan of PLANS) {
+    for (const plan of PAID_PLANS) {
       expect(plan.yearlyPriceEur, plan.slug).toBe(plan.monthlyPriceEur * 10);
       expect(yearlySavingPercent(plan), plan.slug).toBe(17);
     }
@@ -96,5 +110,59 @@ describe('subscription plans', () => {
     const vakman = PLANS.find((plan) => plan.slug === 'vakman')!;
     expect(planPricing(vakman, 'MONTHLY').grossCents).toBe(10_769);
     expect(planCreditsForPeriod(vakman, 'YEARLY')).toBe(vakman.monthlyCredits * 12);
+  });
+
+  it('charges nothing for a free plan, in either billing period', () => {
+    const free = PLANS.filter(isFreePlan);
+    expect(free.length).toBeGreaterThan(0);
+    for (const plan of free) {
+      expect(planPricing(plan, 'MONTHLY').grossCents, plan.slug).toBe(0);
+      expect(planPricing(plan, 'YEARLY').grossCents, plan.slug).toBe(0);
+      // Nothing to save by paying yearly when the price is zero either way.
+      expect(yearlySavingPercent(plan), plan.slug).toBe(0);
+    }
+  });
+});
+
+describe('what is on sale today', () => {
+  // Buurklus launches free. These assertions are the contract the rest of the
+  // codebase leans on -- and the ones to change, deliberately, on the day the
+  // paid plans are switched back on.
+  it('sells nothing but the free plan', () => {
+    expect(AVAILABLE_PLANS.map((plan) => plan.slug)).toEqual(['gratis']);
+    expect(PLATFORM_IS_FREE).toBe(true);
+    expect(isFreePlan(DEFAULT_PLAN)).toBe(true);
+  });
+
+  it('gives every professional the same quota, since none can pay for more', () => {
+    for (const plan of AVAILABLE_PLANS) {
+      expect(plan.leadHeadStartMinutes, plan.slug).toBe(0);
+    }
+    expect(MAX_LEAD_HEAD_START_MINUTES).toBe(0);
+  });
+
+  it('holds no lead back while a head start cannot be bought', () => {
+    const published = new Date('2026-03-01T09:00:00Z');
+    expect(leadDelayMinutes(0)).toBe(0);
+    expect(leadVisibleFrom(published, 0).getTime()).toBe(published.getTime());
+  });
+
+  it('still stages leads correctly once tiers differ', () => {
+    // The staging rule itself, independent of which plans happen to be on
+    // sale: the top tier waits nothing and everyone else waits the difference.
+    const ceiling = 30;
+    const delay = (headStart: number) => Math.max(0, ceiling - headStart);
+    expect(delay(30)).toBe(0);
+    expect(delay(15)).toBe(15);
+    expect(delay(0)).toBe(30);
+  });
+
+  it('keeps the paid tiers defined so they can be switched back on', () => {
+    for (const slug of ['zzp', 'vakman', 'bedrijf']) {
+      const plan = PLANS.find((row) => row.slug === slug);
+      expect(plan, slug).toBeDefined();
+      expect(plan!.available, slug).toBe(false);
+      expect(plan!.monthlyPriceEur, slug).toBeGreaterThan(0);
+    }
   });
 });

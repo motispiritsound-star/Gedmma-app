@@ -41,6 +41,34 @@ the job before awarding it, the credit is refunded — the lead never had a
 chance. If the tradesperson simply loses, the credit is gone: they got what they
 paid for, which was the opportunity.
 
+### Free first, and honestly so
+
+None of that is charged for yet. A marketplace with no jobs is worth nothing to
+a tradesperson, and asking € 39 a month for an empty feed is the fastest way to
+never fill it. So the platform launches free on both sides: the only plan on
+sale costs nothing, the paid tiers are defined and switched off, and the app
+never asks for payment details.
+
+The quota survives the free launch, at 20 quotes a month. It is not a paywall —
+it is what stops a single account from replying to every job in the country and
+making the quotes worthless to households. The month rolls over on its own,
+lazily, the first time anyone looks at a subscription whose period has ended.
+Unused credits do not carry over, so a dormant account cannot return with a
+year's worth and flood the feed.
+
+Being free is a decision, not a promise, and the product says so in those words.
+The pricing section, the app and the terms all state that Buurklus will cost
+money one day, that the holder gets **30 days' notice** before it does, and that
+nothing converts to paid without them agreeing. That sentence is worth more than
+a "free forever" claim that gets quietly deleted in a year — and it is the
+difference between changing a price and misleading the people who signed up.
+
+One consequence worth naming: the paid tiers buy a **head start** on new leads,
+and the ceiling is derived from the plans on sale. With nothing to buy, the
+ceiling is zero and every lead reaches everyone at once. If that were derived
+from all plans instead, every job would sit unseen for half an hour with no way
+to pay to skip the wait.
+
 ## Adapted to the Netherlands
 
 **Sign-in is a mobile number.** Everyone has one, so the account is the number,
@@ -64,8 +92,8 @@ demanding it would lock out exactly the small operators this market runs on.
 tax-exclusive price, the way a tradesperson expects to read it, with the
 tax-inclusive figure beneath so there is no surprise on the invoice.
 
-**Payment is iDEAL and direct debit.** That is how the country pays online and
-how it pays for subscriptions. Card and bank transfer cover foreign-registered
+**Payment is iDEAL and direct debit** — for the day there is something to pay.
+That is how the country pays online and how it pays for subscriptions. Card and bank transfer cover foreign-registered
 businesses and companies that insist on invoicing.
 
 **The trades match the housing stock and the moment.** Insulation, heat pumps,
@@ -85,10 +113,12 @@ Dutch.
    timing, budget. The wizard shows typical prices for that trade so a
    first-time customer has some sense of the going rate.
 2. **The job reaches tradespeople.** Only those whose trades and municipalities
-   match. The top tiers see it first — that head start is what the higher plans
-   sell — but it is capped at thirty minutes so a zzp'er still arrives before
-   the household has decided.
-3. **Tradespeople quote.** Each spends one credit. A job stops accepting quotes
+   match. Today it reaches all of them at once: the head start is what the paid
+   tiers sell, and nothing is on sale. Once they are, the top tier sees a job
+   first, capped at thirty minutes so a zzp'er still arrives before the
+   household has decided.
+3. **Tradespeople quote.** Each spends one credit from their monthly quota —
+   free today, part of a plan later. A job stops accepting quotes
    at six, which keeps the decision manageable and stops later arrivals from
    paying to join a queue they cannot win.
 4. **The household awards one.** Only then does the winner receive the street

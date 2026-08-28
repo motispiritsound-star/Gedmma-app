@@ -372,6 +372,19 @@ img, svg { max-width: 100%; display: block; }
 .plan__features li { display: flex; gap: 0.55rem; align-items: start; font-size: 0.95rem; }
 .plan__tick { color: var(--green-600); flex: none; }
 
+/* While Buurklus is free the section holds two panels rather than a row of
+   tiers: the free account, and a plain answer to "what happens when it is not
+   free any more". They are given a readable measure instead of being stretched
+   across the full page the way three cards were. */
+.plans--launch {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  max-width: 56rem;
+  margin-inline: auto;
+}
+.plan--launch { border-color: var(--green-600); border-width: 2px; box-shadow: var(--shadow-raised); }
+.plan--later { background: var(--green-50); border-color: var(--green-100); }
+.plan--later p { margin-block-start: 0.5rem; }
+
 /* --- FAQ ------------------------------------------------------------------ */
 .faq { display: grid; gap: 0.75rem; max-width: 52rem; }
 .faq details {

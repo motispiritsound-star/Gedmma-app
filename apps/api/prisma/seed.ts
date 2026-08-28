@@ -7,10 +7,12 @@ import { PrismaClient, type Prisma } from '@prisma/client';
 import {
   CATEGORIES,
   CITIES,
+  DEFAULT_PLAN,
   PLANS,
   SUPPORTED_LOCALES,
   TRIAL_CREDITS,
   TRIAL_DURATION_DAYS,
+  addBillingPeriod,
   eurosToCents,
   normalizeDutchPhone,
 } from '@buurklus/shared';
@@ -92,6 +94,9 @@ async function seedPlans() {
       teamSeats: plan.teamSeats,
       perks,
       position: index,
+      // The paid tiers are seeded but switched off: they exist so the billing
+      // code has something real to run against, not so anyone can buy one.
+      isActive: plan.available,
     };
 
     await prisma.plan.upsert({
@@ -100,7 +105,8 @@ async function seedPlans() {
       update: data,
     });
   }
-  console.log(`  pakketten:   ${PLANS.length}`);
+  const live = PLANS.filter((plan) => plan.available).length;
+  console.log(`  pakketten:   ${PLANS.length} (${live} te koop)`);
 }
 
 /** Same reference format the API generates, so demo rows look real. */
@@ -115,7 +121,9 @@ async function seedDemoData() {
     where: { slug: 'binnenschilderwerk' },
   });
   const leak = await prisma.category.findUniqueOrThrow({ where: { slug: 'lekkage' } });
-  const vakmanPlan = await prisma.plan.findUniqueOrThrow({ where: { slug: 'vakman' } });
+  // Whatever a real professional would land on today, so the demo account
+  // shows the same screens a new sign-up sees.
+  const demoPlan = await prisma.plan.findUniqueOrThrow({ where: { slug: DEFAULT_PLAN.slug } });
 
   const customer = await prisma.user.upsert({
     where: { phone: normalizeDutchPhone('0600000001') },
@@ -185,29 +193,35 @@ async function seedDemoData() {
   });
 
   const now = new Date();
-  const trialEnd = new Date(now.getTime() + TRIAL_DURATION_DAYS * 86_400_000);
+  const free = demoPlan.monthlyPriceCents === 0;
+  const periodEnd = free
+    ? addBillingPeriod(now, 'MONTHLY')
+    : new Date(now.getTime() + TRIAL_DURATION_DAYS * 86_400_000);
+  const credits = free ? demoPlan.monthlyCredits : TRIAL_CREDITS;
   const existingSubscription = await prisma.subscription.findFirst({ where: { proId: pro.id } });
   if (!existingSubscription) {
     const subscription = await prisma.subscription.create({
       data: {
         proId: pro.id,
-        planId: vakmanPlan.id,
-        status: 'TRIALING',
+        planId: demoPlan.id,
+        status: free ? 'ACTIVE' : 'TRIALING',
         period: 'MONTHLY',
         currentPeriodStart: now,
-        currentPeriodEnd: trialEnd,
-        trialEndsAt: trialEnd,
-        creditsRemaining: TRIAL_CREDITS,
+        currentPeriodEnd: periodEnd,
+        trialEndsAt: free ? null : periodEnd,
+        creditsRemaining: credits,
       },
     });
     await prisma.creditLedgerEntry.create({
       data: {
         proId: pro.id,
         subscriptionId: subscription.id,
-        delta: TRIAL_CREDITS,
-        balanceAfter: TRIAL_CREDITS,
-        reason: 'TRIAL_GRANT',
-        note: `Gratis proefperiode van ${TRIAL_DURATION_DAYS} dagen`,
+        delta: credits,
+        balanceAfter: credits,
+        reason: free ? 'PLAN_GRANT' : 'TRIAL_GRANT',
+        note: free
+          ? `${demoPlan.slug} · gratis maand`
+          : `Gratis proefperiode van ${TRIAL_DURATION_DAYS} dagen`,
       },
     });
   }

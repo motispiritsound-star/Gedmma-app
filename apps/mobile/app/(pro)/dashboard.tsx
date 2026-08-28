@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
+import { TRIAL_DURATION_DAYS } from '@buurklus/shared';
 import { Badge, Button, Card, Divider, Loader, Txt } from '@/components/ui';
 import { SettingsRow } from '@/components/settings-row';
 import { useApi } from '@/hooks/use-api';
@@ -55,7 +56,13 @@ export default function Dashboard() {
               <Txt variant="heading">{subscription.planName}</Txt>
             </View>
             {subscription.status === 'TRIALING' ? (
-              <Badge label={t('subscription.trialTitle', { days: 14 })} tone="accent" />
+              <Badge
+                label={t('subscription.trialTitle', { days: TRIAL_DURATION_DAYS })}
+                tone="accent"
+              />
+            ) : subscription.monthlyPriceCents === 0 ? (
+              // Nothing is being paid for, so "active" would say very little.
+              <Badge label={t('subscription.free.badge')} tone="accent" />
             ) : (
               <Badge label={t(`job.status.${subscription.grantsAccess ? 'OPEN' : 'EXPIRED'}`)} tone={subscription.grantsAccess ? 'success' : 'danger'} />
             )}
@@ -89,7 +96,11 @@ export default function Dashboard() {
           </Txt>
 
           <Button
-            title={t('subscription.title')}
+            title={t(
+              subscription.monthlyPriceCents === 0
+                ? 'subscription.free.screenTitle'
+                : 'subscription.title',
+            )}
             variant="secondary"
             size="md"
             onPress={() => router.push('/subscription')}

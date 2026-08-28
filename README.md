@@ -3,8 +3,8 @@
 Buurklus connects households in the Netherlands with tradespeople and service
 companies. Someone describes a job — a room to paint, a leak under the sink, a
 full renovation — and verified businesses reply with quotes. Households use
-Buurklus for free; tradespeople pay a monthly subscription that includes a
-quota of leads.
+Buurklus for free, and so, for now, do tradespeople: the platform launches
+free on both sides while it fills up with work.
 
 It ships in **Dutch** first and **English** second.
 
@@ -64,10 +64,27 @@ by the database.
 
 ## How the business works
 
-Tradespeople subscribe to one of three plans and receive **lead credits**.
-Sending a quote spends one credit; if the customer withdraws the job before
-awarding it, the credit comes back. Losing a job does not cost anything extra —
-Buurklus charges for the lead, not the win.
+Tradespeople hold **lead credits**. Sending a quote spends one; if the customer
+withdraws the job before awarding it, the credit comes back. Losing a job costs
+nothing extra — Buurklus charges for the lead, not the win.
+
+### Today: free
+
+The only plan on sale is `gratis`: **€ 0**, 20 quotes a month, 5 trades, 3
+municipalities, no card and no notice period. The quota is a brake on one
+account replying to every job, not a paywall. It renews on its own each month,
+lazily, the first time anyone looks at a lapsed subscription — no scheduler has
+to be running for the platform to keep working.
+
+The terms promise **30 days' notice** (`PRICING_NOTICE_DAYS`) before any account
+starts costing money, and no account converts to paid without the holder
+agreeing. The site, the app and the seed all read that from one place.
+
+### Later: the paid tiers
+
+Three paid plans are defined and switched off (`available: false`), so the
+billing code has something real to run against and switching them on is a flag
+rather than a rewrite:
 
 | Plan | Price/month (excl. VAT) | Quotes | Trades | Municipalities | Head start |
 |------|------------------------:|-------:|-------:|---------------:|-----------:|
@@ -75,8 +92,12 @@ Buurklus charges for the lead, not the win.
 | Vakman | € 89 | 50 | 5 | 3 | 15 min |
 | Bedrijf | € 179 | 150 | 15 | all | 30 min |
 
-A year costs ten months. Every new tradesperson gets a 14-day trial with 5
-quotes and no payment details. 21% btw is added at invoicing.
+A year costs ten months, a new tradesperson on a paid plan gets a 14-day trial,
+and 21% btw is added at invoicing. Nothing outside `packages/shared/src/catalog/plans.ts`
+may assume a paid plan exists — read `AVAILABLE_PLANS`, not `PLANS`.
+
+The lead head start works the same way: it is derived from the plans on sale, so
+while nothing buys an earlier look, no job is held back from anybody.
 
 See [docs/PRODUCT.md](docs/PRODUCT.md) for why it is built this way.
 
