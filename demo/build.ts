@@ -83,9 +83,9 @@ servers.close();
 
 // --- team, toewijzingen en klanten, zodat de demo een werkend platform toont ---
 if (gebruikers().length === 0) {
-  maakGebruiker({ naam: 'Ayoub Bekkali', email: 'ayoub@voorbeeld.nl', wachtwoord: 'demowachtwoord', rol: 'eigenaar' });
-  maakGebruiker({ naam: 'Sara de Wit', email: 'sara@voorbeeld.nl', wachtwoord: 'demowachtwoord' });
-  maakGebruiker({ naam: 'Tom Bakker', email: 'tom@voorbeeld.nl', wachtwoord: 'demowachtwoord' });
+  maakGebruiker({ naam: 'Ayoub Bekkali', email: 'eigenaar@proefrit.nl', wachtwoord: 'proefrit2026', rol: 'eigenaar' });
+  maakGebruiker({ naam: 'Sara de Wit', email: 'sara@proefrit.nl', wachtwoord: 'proefrit2026' });
+  maakGebruiker({ naam: 'Tom Bakker', email: 'tom@proefrit.nl', wachtwoord: 'proefrit2026' });
 }
 const [eigenaar, sara, tom] = gebruikers().sort((a, b) => a.id - b.id);
 

@@ -21,11 +21,6 @@ const database = process.env.WEBSCAN_DB ?? join(wortel, 'data', 'demo.db');
 process.env.WEBSCAN_DB = database;
 
 const WACHTWOORD = 'proefrit2026';
-const ACCOUNTS = [
-  { naam: 'Ayoub Bekkali', email: 'eigenaar@proefrit.nl', rol: 'eigenaar' as const },
-  { naam: 'Sara de Wit', email: 'sara@proefrit.nl', rol: 'agent' as const },
-  { naam: 'Tom Bakker', email: 'tom@proefrit.nl', rol: 'agent' as const },
-];
 
 const poort = Number(process.env.WEBSCAN_PORT ?? 4321);
 
@@ -47,15 +42,20 @@ if (!existsSync(database)) {
   console.log('Verwijder dat bestand als je opnieuw wilt beginnen.');
 }
 
-// --- 2. Accounts aanmaken ---------------------------------------------------
-const { maakGebruiker, gebruikerOpEmail } = await import('../src/db/team.ts');
+// --- 2. Accounts klaarzetten ------------------------------------------------
+// De demo maakt de drie accounts al aan, inclusief de leads die op naam van
+// Sara en Tom staan. Hier zetten we alleen het wachtwoord op iets bekends, ook
+// als je een database hergebruikt waarvan je het wachtwoord kwijt bent.
+const { gebruikers, maakGebruiker, wijzigWachtwoord } = await import('../src/db/team.ts');
 const { stats } = await import('../src/db/index.ts');
 
-for (const account of ACCOUNTS) {
-  if (!gebruikerOpEmail(account.email)) {
-    maakGebruiker({ ...account, wachtwoord: WACHTWOORD });
-  }
+if (gebruikers().length === 0) {
+  maakGebruiker({ naam: 'Eigenaar', email: 'eigenaar@proefrit.nl', wachtwoord: WACHTWOORD, rol: 'eigenaar' });
 }
+const accounts = gebruikers()
+  .filter((account) => account.actief)
+  .sort((a, b) => (a.rol === 'eigenaar' ? -1 : 1) - (b.rol === 'eigenaar' ? -1 : 1));
+for (const account of accounts) wijzigWachtwoord(account.id, WACHTWOORD);
 
 // --- 3. Dashboard starten ---------------------------------------------------
 const cijfers = stats();
@@ -67,7 +67,7 @@ console.log(`\n${streep}`);
 console.log(`  Open http://localhost:${poort} in je browser`);
 console.log(streep);
 console.log('\n  Log in met een van deze accounts:\n');
-for (const account of ACCOUNTS) {
+for (const account of accounts) {
   console.log(`    ${account.rol.padEnd(9)} ${account.email.padEnd(24)} ${WACHTWOORD}`);
 }
 console.log(`

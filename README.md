@@ -17,30 +17,55 @@ de agents die je werft, wijst leads toe (of laat ze zelf oppakken), en ziet per
 persoon hoeveel er gebeld is, hoeveel afspraken eruit komen en welke maandomzet
 ze binnenbrengen.
 
-## Snel starten
+## Eerst even proberen
+
+Wil je zien hoe het werkt zonder eerst bedrijven te verzamelen:
 
 ```bash
+git clone https://github.com/motispiritsound-star/Gedmma-app.git
+cd Gedmma-app
 npm install
+npm run proefrit
+```
+
+De eerste keer duurt dat ongeveer een minuut: er worden 125 nagemaakte
+bedrijfswebsites opgezet en echt gescand. Daarna opent het dashboard op
+**http://localhost:4321** en staan de inloggegevens op je scherm — een eigenaar
+en twee agents, allemaal met wachtwoord `proefrit2026`.
+
+Log eerst in als **eigenaar** voor de kaart, het teamoverzicht en de omzet.
+Log daarna in als **Sara** of **Tom** om te voelen hoe het is om met een eigen
+lijst te werken: je ziet wel wat je collega onder handen heeft, maar je komt er
+niet in. Alles wat je aanklikt wordt echt opgeslagen. Opnieuw beginnen doe je
+door `data/demo.db` te verwijderen.
+
+Node 22.18 of nieuwer is vereist (het project draait TypeScript rechtstreeks,
+zonder buildstap, en gebruikt de ingebouwde SQLite van Node). Draai je iets
+ouders, dan zegt het opstartscript dat meteen.
+
+## Aan de slag met echte bedrijven
+
+```bash
 cp .env.example .env          # zet je eigen contactgegevens in WEBSCAN_USER_AGENT
 
 # 1. Maak je eigen account aan
-node src/cli.ts gebruiker toevoegen --naam "Jouw naam" --email jij@voorbeeld.nl --rol eigenaar
+node start.js gebruiker toevoegen --naam "Jouw naam" --email jij@voorbeeld.nl --rol eigenaar
 
 # 2. Bedrijven met een website ophalen (gratis, uit OpenStreetMap — mét positie)
-node src/cli.ts import --source osm --area Utrecht --category all --limit 300
+node start.js import --source osm --area Utrecht --category all --limit 300
 
 # 3. Hun websites scannen
-node src/cli.ts scan --limit 300
+node start.js scan --limit 300
 
 # 4. Leg vast wat je aanbiedt
-node src/cli.ts aanbod --maandbedrag 49
+node start.js aanbod --maandbedrag 49
 
 # 5. Alles bekijken op de kaart
-node src/cli.ts serve      # http://localhost:4321
+node start.js serve      # http://localhost:4321
 ```
 
-Node 22.18 of nieuwer is vereist (het project draait TypeScript rechtstreeks,
-zonder buildstap, en gebruikt de ingebouwde SQLite van Node).
+Zet `WEBSCAN_DB` in je `.env` op een ander bestand dan `data/demo.db`, zodat je
+echte werk niet tussen de proefgegevens komt te staan.
 
 ## Waar de bedrijven vandaan komen
 
@@ -57,8 +82,8 @@ Voor de praktijk is `osm` de bruikbaarste startbron: voor Nederland staan er
 honderdduizenden bedrijven in mét `website`-tag.
 
 ```bash
-node src/cli.ts import --source osm --area Amersfoort --category horeca
-node src/cli.ts import --source csv --file examples/bedrijven-voorbeeld.csv
+node start.js import --source osm --area Amersfoort --category horeca
+node start.js import --source csv --file examples/bedrijven-voorbeeld.csv
 ```
 
 Categorieën voor `osm`: `shop`, `horeca`, `office`, `craft`, `zorg`, `toerisme`, `all`.
@@ -88,7 +113,7 @@ de cijfers waar Google zelf op stuurt. Dat vraagt `npm install playwright` en is
 een stuk trager, dus gebruik het op je shortlist en niet op de hele lijst:
 
 ```bash
-node src/cli.ts scan --deep --limit 25 --screenshots ./out/screenshots
+node start.js scan --deep --limit 25 --screenshots ./out/screenshots
 ```
 
 ## Draait dit bedrijf nog?
@@ -142,7 +167,7 @@ Bedrijven uit OpenStreetMap hebben hun eigen positie al. Voor bedrijven uit een
 CSV zoek je de plaats op met:
 
 ```bash
-node src/cli.ts geocode --limit 500
+node start.js geocode --limit 500
 ```
 
 Dat gebruikt Nominatim (één verzoek per seconde, zoals hun voorwaarden vragen) en
@@ -161,9 +186,9 @@ Een lead die een agent oppakt is van hem: een collega kan er niet meer in werken
 Zo bellen twee mensen nooit hetzelfde bedrijf.
 
 ```bash
-node src/cli.ts gebruiker toevoegen --naam "Sara de Wit" --email sara@voorbeeld.nl
-node src/cli.ts gebruiker lijst
-node src/cli.ts gebruiker blokkeren sara@voorbeeld.nl      # en --herstel om terug te draaien
+node start.js gebruiker toevoegen --naam "Sara de Wit" --email sara@voorbeeld.nl
+node start.js gebruiker lijst
+node start.js gebruiker blokkeren sara@voorbeeld.nl      # en --herstel om terug te draaien
 ```
 
 ### De weg van lead naar klant
@@ -207,10 +232,10 @@ Filteren kan op *Van mij*, *Van collega's* of *Nog niet toegewezen*, zodat je in
 één klik ziet wat er nog vrij ligt.
 
 ```bash
-node src/cli.ts fase 42 afspraak --agent sara@voorbeeld.nl --notitie "dinsdag 14:00"
-node src/cli.ts trechter        # hoeveel bedrijven in welke fase
-node src/cli.ts team            # wie belt hoeveel en brengt hoeveel op
-node src/cli.ts testimonials --publiceerbaar
+node start.js fase 42 afspraak --agent sara@voorbeeld.nl --notitie "dinsdag 14:00"
+node start.js trechter        # hoeveel bedrijven in welke fase
+node start.js team            # wie belt hoeveel en brengt hoeveel op
+node start.js testimonials --publiceerbaar
 ```
 
 ## Wat je aanbiedt
@@ -230,8 +255,8 @@ agent die hem binnenhaalde. Eén klant die na acht maanden opzegt kost je geld.
 Het dashboard rekent die terugverdientijd voor je uit zodra je "gratis" kiest.
 
 ```bash
-node src/cli.ts aanbod                                            # wat staat er nu
-node src/cli.ts aanbod --soort startbedrag --startbedrag 295 --maandbedrag 59
+node start.js aanbod                                            # wat staat er nu
+node start.js aanbod --soort startbedrag --startbedrag 295 --maandbedrag 59
 ```
 
 ## Mailsjablonen
@@ -267,29 +292,29 @@ zakelijke mail hoort. Lees elke mail na voordat je hem verstuurt — het blijft 
 concept, geen automaat.
 
 ```bash
-node src/cli.ts sjablonen                      # welke er zijn
-node src/cli.ts mail 42                        # het passende sjabloon
-node src/cli.ts mail 42 --sjabloon na-gesprek --naam "Jouw naam" --bedrijf "Jouw bedrijf"
+node start.js sjablonen                      # welke er zijn
+node start.js mail 42                        # het passende sjabloon
+node start.js mail 42 --sjabloon na-gesprek --naam "Jouw naam" --bedrijf "Jouw bedrijf"
 ```
 
 ## Leads eruit halen
 
 ```bash
 # Slechtst scorende sites met een telefoonnummer of e-mailadres
-node src/cli.ts leads --max-score 45 --city Utrecht --met-contact
+node start.js leads --max-score 45 --city Utrecht --met-contact
 
 # Naar CSV voor je CRM of mailmerge
-node src/cli.ts export out/leads-utrecht.csv --max-score 45 --city Utrecht
+node start.js export out/leads-utrecht.csv --max-score 45 --city Utrecht
 
 # Concept-mail voor lead #12
-node src/cli.ts mail 12 --naam "Jouw naam" --bedrijf "Jouw bedrijf" \
+node start.js mail 12 --naam "Jouw naam" --bedrijf "Jouw bedrijf" \
   --telefoon "06-12345678" --email "jij@voorbeeld.nl" --rapport
 
 # Bijhouden waar je staat
-node src/cli.ts fase 12 gebeld --notitie "voicemail ingesproken"
+node start.js fase 12 gebeld --notitie "voicemail ingesproken"
 ```
 
-Het dashboard (`node src/cli.ts serve`) doet hetzelfde met de kaart erbij: filters,
+Het dashboard (`node start.js serve`) doet hetzelfde met de kaart erbij: filters,
 de scoreverdeling per onderdeel, de volledige probleemlijst, knoppen om een
 telefoontje vast te leggen, en de mailsjablonen met een knop om ze in je
 mailprogramma te openen.
@@ -302,14 +327,61 @@ en doorgaan wanneer je wilt — alles staat in SQLite en scans worden hervat.
 
 ```bash
 for plaats in Utrecht Amersfoort Nieuwegein Zeist Veenendaal; do
-  node src/cli.ts import --source osm --area "$plaats" --limit 2000
+  node start.js import --source osm --area "$plaats" --limit 2000
 done
-node src/cli.ts scan --limit 5000 --concurrency 8
+node start.js scan --limit 5000 --concurrency 8
 ```
 
 Reken op ongeveer 1 tot 3 seconden per site. Met `--concurrency 8` is dat ruwweg
 10.000 sites per uur; de rem zit bewust in de pauze per host (`WEBSCAN_HOST_DELAY_MS`),
 niet in de doorvoer over alle hosts heen.
+
+## Op een server zetten
+
+Zodra je met agents gaat werken, moet het dashboard ergens draaien waar zij bij
+kunnen. Een kleine VPS is genoeg — het is één Node-proces en één databasebestand.
+
+```bash
+# op de server, als een eigen gebruiker (dus niet als root)
+git clone https://github.com/motispiritsound-star/Gedmma-app.git /srv/webscan
+cd /srv/webscan && npm install --omit=dev
+node start.js gebruiker toevoegen --naam "Jouw naam" --email jij@voorbeeld.nl --rol eigenaar
+```
+
+Draaiend houden met systemd (`/etc/systemd/system/webscan.service`):
+
+```ini
+[Unit]
+Description=Webscan NL
+After=network.target
+
+[Service]
+User=webscan
+WorkingDirectory=/srv/webscan
+Environment=WEBSCAN_HTTPS=1
+Environment=WEBSCAN_DB=/srv/webscan/data/webscan.db
+ExecStart=/usr/bin/node start.js serve --port 4321
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+En ervoor een reverse proxy die het certificaat regelt. Met Caddy is dat twee
+regels in je `Caddyfile`:
+
+```
+webscan.jouwdomein.nl {
+    reverse_proxy localhost:4321
+}
+```
+
+Caddy haalt en vernieuwt het certificaat zelf. Laat poort 4321 dicht in je
+firewall; alleen 80 en 443 hoeven open. Zet `WEBSCAN_HTTPS=1` zoals hierboven,
+anders krijgt de sessiecookie geen `Secure`-vlag.
+
+Back-up is één bestand: zet `data/webscan.db` (plus de `-wal`) elke nacht ergens
+anders neer. Dat is je hele administratie.
 
 ## Voordat je het op internet zet
 
@@ -318,8 +390,8 @@ beheert. Inloggen gaat met scrypt-gehashte wachtwoorden en een HttpOnly-sessieco
 mislukte pogingen worden afgeremd, en agents kunnen alleen bij hun eigen leads.
 Wat er nog niet in zit en wat je zelf moet regelen voordat het publiek bereikbaar is:
 
-- **HTTPS ervoor** (nginx of Caddy als reverse proxy) en `WEBSCAN_HTTPS=1` in je
-  `.env`, zodat de sessiecookie `Secure` meekrijgt;
+- **HTTPS ervoor** — zie hierboven; zonder `WEBSCAN_HTTPS=1` reist de
+  sessiecookie onbeschermd mee;
 - **wachtwoord vergeten** — er is geen herstelmail; als eigenaar zet je met
   `webscan gebruiker wachtwoord <email>` een nieuw wachtwoord;
 - **back-ups** van `data/webscan.db` (één bestand, dus een kopie volstaat);
@@ -356,9 +428,9 @@ Daarom werkt de tool zo:
 - filter **"mag gebeld worden"** geeft je in één klik de belijst die wél mag.
 
 ```bash
-node src/cli.ts mag-bellen 42                     # mag ik dit bedrijf bellen?
-node src/cli.ts rechtsvorm 42 eenmanszaak
-node src/cli.ts toestemming 42 --via mailreactie --bewijs "Mailde terug: prima, u mag bellen"
+node start.js mag-bellen 42                     # mag ik dit bedrijf bellen?
+node start.js rechtsvorm 42 eenmanszaak
+node start.js toestemming 42 --via mailreactie --bewijs "Mailde terug: prima, u mag bellen"
 ```
 
 Zoek de rechtsvorm op in het KVK-register voordat je belt. Dit is geen juridisch
@@ -372,7 +444,7 @@ lijsten, van de kaart en uit de export, en de server weigert elk telefoontje en
 elke mail. Alleen de eigenaar kan het terugdraaien.
 
 ```bash
-node src/cli.ts niet-benaderen 42 --reden "wil geen berichten meer"
+node start.js niet-benaderen 42 --reden "wil geen berichten meer"
 ```
 
 ## Spelregels bij het scannen
