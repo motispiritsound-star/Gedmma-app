@@ -142,6 +142,10 @@ tbody tr.bezet td:first-child { box-shadow:inset 3px 0 0 var(--line-strong); }
 .banner { display:flex; gap:10px; align-items:flex-start; margin-top:14px; padding:10px 12px; border-radius:8px;
   font-size:13px; background:var(--surface); border:1px solid var(--line); }
 .banner.mijlpaal { background:var(--accent-wash); border-color:color-mix(in srgb,var(--accent) 35%,transparent); }
+.banner.verboden { background:var(--slecht-wash); border-color:color-mix(in srgb,var(--slecht) 35%,transparent); }
+.banner.toegestaan { background:var(--goed-wash); border-color:color-mix(in srgb,var(--goed) 32%,transparent); }
+.alleen-mail { display:inline-block; margin-left:6px; padding:1px 6px; border-radius:4px;
+  background:var(--matig-wash); color:var(--ink-2); font:500 10px/1.6 var(--mono); }
 .banner b { font-weight:600; }
 .leeg { padding:48px 20px; text-align:center; color:var(--muted); font-size:13.5px; }
 
@@ -244,7 +248,8 @@ textarea { width:100%; min-height:220px; resize:vertical; background:var(--surfa
     <b>Wat je hier ziet.</b> De 125 websites in deze demo zijn nagemaakt — van een tabel-site uit 2009
     met Flash tot een keurig verzorgde moderne site — en daarna gescand met dezelfde code die in
     productie draait. Scores, gevonden problemen en de concept-mail komen dus uit de tool zelf.
-    De kaartposities zijn per plaats toegekend, zoals de geocoder dat in het echt ook doet.
+    De kaartposities zijn per plaats toegekend, zoals de geocoder dat in het echt ook doet. Ook het oordeel
+    "mag ik dit bedrijf bellen?" komt uit dezelfde code als het dashboard.
     <br><br>
     <b>Wat de demo niet doet.</b> In het echte dashboard log je in met je eigen account, pak je een lead op
     zodat een collega hem niet ook belt, leg je elk telefoontje vast, en zet je een klant om in een
@@ -278,8 +283,9 @@ $('tegels').innerHTML = [
   { waarde: DATA.samenvatting.gemiddelde, tekst:'gemiddelde score' },
   { waarde: DATA.samenvatting.slecht, tekst:'onder de 50 — je leads', klem:true },
   { waarde: DATA.samenvatting.benaderbaar, tekst:'daarvan met contactgegevens' },
+  { waarde: DATA.samenvatting.magBellen, tekst:'mag je bellen' },
+  { waarde: DATA.samenvatting.alleenMailen, tekst:'alleen mailen — opt-in nodig' },
   { waarde: DATA.samenvatting.opdrachten, tekst:'opdrachten binnen', klem:true },
-  { waarde: DATA.samenvatting.klanten, tekst:'hostingklanten' },
   { waarde: euro(DATA.samenvatting.mrrCent), tekst:'per maand', klem:true },
 ].map((tegel) => `<div class="tegel${tegel.klem ? ' klem' : ''}"><b>${esc(tegel.waarde)}</b><span>${tegel.tekst}</span></div>`).join('');
 
@@ -355,7 +361,7 @@ function tekenLijst(leads) {
       <td class="kwaliteit"><span class="bol bol-${bandVan(lead.score).id}"></span><span class="score">${lead.score}</span></td>
       <td><div class="naam">${esc(lead.naam)}</div>
           <div class="sub mono">${esc(lead.domein)}${lead.plaats ? ' · ' + esc(lead.plaats) : ''}</div>
-          ${contact ? `<div class="telefoon">${esc(contact)}</div>` : ''}</td>
+          ${contact ? `<div class="telefoon">${esc(contact)}${!lead.bellen.mag && lead.contact.phones[0] ? '<span class="alleen-mail">alleen mailen</span>' : ''}</div>` : ''}</td>
       <td class="probleem"><span>${esc(lead.verdict.issues[0]?.title ?? 'Geen problemen gevonden')}</span></td>
       <td><span class="fasepil ${lead.fase}">${esc(faseLabel(lead.fase))}</span>
           ${lead.agent
@@ -428,6 +434,16 @@ function kiesLead(id) {
       In het dashboard kan niemand anders deze lead oppakken of bewerken.</div></div>` : ''}
     ${lead.fase === DATA.mijlpaal ? `<div class="banner mijlpaal"><span>🎯</span><div><b>Opdracht binnen.</b>
       De site mag kosteloos herbouwd en op onze hosting gezet worden. Dit is de mijlpaal waar alles op stuurt.</div></div>` : ''}
+
+    ${lead.geblokkeerd
+      ? `<div class="banner verboden"><span>⛔</span><div><b>Niet benaderen.</b>
+          ${esc(lead.geblokkeerdReden ?? 'Dit bedrijf heeft zich afgemeld.')}</div></div>`
+      : !lead.bellen.mag
+      ? `<div class="banner verboden"><span>📵</span><div><b>Bellen mag niet.</b> ${esc(lead.bellen.reden)}
+          ${lead.bellen.route ? `<br>${esc(lead.bellen.route)}` : ''}</div></div>`
+      : lead.belToestemming
+      ? `<div class="banner toegestaan"><span>☎️</span><div><b>Bellen mag.</b> Toestemming is vastgelegd.</div></div>`
+      : `<div class="banner toegestaan"><span>☎️</span><div><b>Bellen mag.</b> ${esc(lead.bellen.reden)}</div></div>`}
 
     ${lead.fout ? `<div class="deel"><span class="label-klein">Bij het ophalen</span>
       <div class="sub">${esc(lead.fout)}</div></div>` : ''}

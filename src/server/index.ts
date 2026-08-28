@@ -9,6 +9,9 @@ import { FASES, activiteiten, bewaarTestimonial, claim, logActiviteit, maakKlant
          teamOverzicht, trechter, wijsToe, zegKlantOp, zetFase, zetVolgendeActie,
          type Fase, type Soort } from '../db/pipeline.ts';
 import { buildReport } from '../report/pitch.ts';
+import { RECHTSVORMEN, benaderbaarheid, blokkeer, deblokkeer, legToestemmingVast,
+         magBellen, magMailen, trekToestemmingIn, zetRechtsvorm,
+         type RechtsvormId } from '../db/contact.ts';
 import { SJABLONEN, renderSjabloon, stelSjabloonVoor } from '../report/templates.ts';
 import { toCsv } from '../util/csv.ts';
 import { log } from '../util/log.ts';
@@ -57,6 +60,8 @@ function filterUitQuery(query: Record<string, unknown>, ikId?: number): LeadFilt
     agentId: getal(query.agent),
     alleenVrij: query.vrij === '1',
     vanCollegas: query.collegas === '1' ? ikId : undefined,
+    alleenBelbaar: query.belbaar === '1',
+    toonGeblokkeerd: query.geblokkeerd === '1',
     metContact: query.metContact === '1',
     metCoordinaten: query.opKaart === '1',
     includeOffline: query.includeOffline !== '0',
@@ -177,6 +182,8 @@ export async function startServer(port: number): Promise<void> {
       opdrachten: opdrachten(eigenAgent),
       mijnOpenLeads: countLeads({ agentId: req.gebruiker!.id, maxScore: 100 }),
       omzet: req.gebruiker!.rol === 'eigenaar' ? omzet() : null,
+      benaderbaarheid: benaderbaarheid(),
+      rechtsvormen: RECHTSVORMEN,
       plaatsen: plaatsen().slice(0, 40),
       agenten: gebruikers().filter((g) => g.actief).map((g) => ({ id: g.id, naam: g.naam, rol: g.rol })),
     });
@@ -196,7 +203,12 @@ export async function startServer(port: number): Promise<void> {
   app.get('/api/leads/:id', vereistLogin, (req, res) => {
     const lead = getLead(Number(req.params.id));
     if (!lead) { meld(res, 404, 'Die lead bestaat niet.'); return; }
-    res.json({ ...lead, geschiedenis: activiteiten(lead.id) });
+    res.json({
+      ...lead,
+      geschiedenis: activiteiten(lead.id),
+      bellen: magBellen(lead),
+      mailen: magMailen(lead),
+    });
   });
 
   app.get('/api/sjablonen', vereistLogin, (_req, res) => {
@@ -225,11 +237,13 @@ export async function startServer(port: number): Promise<void> {
       },
     };
 
-    const gekozen = (req.query.sjabloon as string) || stelSjabloonVoor(rapport.verdict);
+    const bellen = magBellen(lead);
+    const voorgesteld = stelSjabloonVoor(rapport.verdict, bellen.mag);
+    const gekozen = (req.query.sjabloon as string) || voorgesteld;
     try {
       res.json({
         ...renderSjabloon(gekozen, context, lead.contact.emails[0] ?? null),
-        voorgesteld: stelSjabloonVoor(rapport.verdict),
+        voorgesteld,
         aan: lead.contact.emails[0] ?? null,
         rapport: buildReport({
           companyName: lead.name, domain: lead.domain, city: lead.city,
@@ -276,6 +290,16 @@ export async function startServer(port: number): Promise<void> {
     if (!magAanLead(req, res, id)) return;
     const { soort, uitkomst, notitie } = req.body as { soort?: Soort; uitkomst?: string; notitie?: string };
     if (!soort) { meld(res, 400, 'Geef aan wat je gedaan hebt.'); return; }
+
+    // Telefoontjes alleen vastleggen als bellen ook mocht — anders zou het
+    // dashboard een overtreding netjes archiveren.
+    const lead = getLead(id);
+    if (lead) {
+      const regel = soort === 'gebeld' || soort === 'voicemail' ? magBellen(lead)
+        : soort === 'mail' ? magMailen(lead) : { mag: true, reden: '' };
+      if (!regel.mag) { meld(res, 403, regel.reden); return; }
+    }
+
     logActiviteit({ companyId: id, gebruikerId: req.gebruiker!.id, soort, uitkomst, notitie });
     res.json({ ok: true });
   });
@@ -314,6 +338,54 @@ export async function startServer(port: number): Promise<void> {
       tekst, sterren: sterren ?? null, contactpersoon: contactpersoon ?? null,
       publiceerbaar, gebruikerId: req.gebruiker!.id,
     });
+    res.json({ ok: true });
+  });
+
+  // --- wie mag je benaderen ---
+  app.post('/api/leads/:id/toestemming', vereistLogin, (req: Verzoek, res) => {
+    const id = Number(req.params.id);
+    if (!magAanLead(req, res, id)) return;
+    const { via, bewijs, intrekken } = req.body as { via?: string; bewijs?: string; intrekken?: boolean };
+    try {
+      if (intrekken) {
+        trekToestemmingIn(id);
+        logActiviteit({ companyId: id, gebruikerId: req.gebruiker!.id, soort: 'notitie', uitkomst: 'toestemming ingetrokken' });
+      } else {
+        legToestemmingVast(id, { via: via ?? 'onbekend', bewijs: bewijs ?? '', door: req.gebruiker!.id });
+        logActiviteit({
+          companyId: id, gebruikerId: req.gebruiker!.id, soort: 'notitie',
+          uitkomst: `belafspraak toegestaan (${via ?? 'onbekend'})`, notitie: bewijs,
+        });
+      }
+      res.json({ ok: true });
+    } catch (fout) { meld(res, 400, (fout as Error).message); }
+  });
+
+  app.post('/api/leads/:id/rechtsvorm', vereistLogin, (req: Verzoek, res) => {
+    const id = Number(req.params.id);
+    if (!magAanLead(req, res, id)) return;
+    const { rechtsvorm } = req.body as { rechtsvorm?: string };
+    if (rechtsvorm && !RECHTSVORMEN.some((vorm) => vorm.id === rechtsvorm)) {
+      meld(res, 400, `Onbekende rechtsvorm "${rechtsvorm}".`);
+      return;
+    }
+    zetRechtsvorm(id, (rechtsvorm || null) as RechtsvormId | null);
+    res.json({ ok: true });
+  });
+
+  app.post('/api/leads/:id/blokkeren', vereistLogin, (req: Verzoek, res) => {
+    const { reden, opheffen } = req.body as { reden?: string; opheffen?: boolean };
+    const id = Number(req.params.id);
+    if (opheffen) {
+      if (req.gebruiker!.rol !== 'eigenaar') { meld(res, 403, 'Alleen de eigenaar kan een blokkade opheffen.'); return; }
+      deblokkeer(id);
+    } else {
+      blokkeer(id, reden ?? 'op eigen verzoek', req.gebruiker!.id);
+      logActiviteit({
+        companyId: id, gebruikerId: req.gebruiker!.id, soort: 'notitie',
+        uitkomst: 'niet meer benaderen', notitie: reden,
+      });
+    }
     res.json({ ok: true });
   });
 

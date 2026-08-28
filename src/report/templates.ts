@@ -232,6 +232,28 @@ ${AFMELDEN}`,
   },
 
   {
+    id: 'toestemming-vragen',
+    naam: 'Toestemming vragen om te bellen',
+    wanneer: 'Voor eenmanszaken, vof\'s en zzp\'ers: bellen mag pas als zij ja zeggen.',
+    onderwerp: (ctx) => `Mag ik u bellen over ${ctx.domein}?`,
+    tekst: (ctx) => `Beste ${ctx.bedrijf},
+
+Ik heb uw website ${ctx.domein} bekeken en zag een paar dingen die u nu klanten kosten:
+
+${kortePunten(ctx)}
+
+Ik zou dat graag kort telefonisch toelichten — dat is in vijf minuten duidelijker dan in een lange mail. Maar ik bel u niet zomaar: sinds 1 juli 2026 mag dat alleen als u daar vooraf toestemming voor geeft.
+
+Vandaar deze vraag. **Antwoordt u met "ja, u mag bellen", dan neem ik binnen een paar dagen contact op.** Reageert u niet, dan hoort u niets meer van mij per telefoon.
+
+Liever meteen weten waar het over gaat? ${AANBOD}
+
+${ondertekening(ctx)}
+
+${AFMELDEN}`,
+  },
+
+  {
     id: 'geen-gehoor',
     naam: 'Na geen gehoor',
     wanneer: 'U hebt gebeld maar niemand bereikt.',
@@ -394,8 +416,10 @@ export const sjabloon = (id: string): Sjabloon => {
 /**
  * Kiest het sjabloon dat het best past bij wat de scan gevonden heeft, zodat de
  * mail meteen over het zwaarste probleem gaat in plaats van over alles tegelijk.
+ * Mag je het bedrijf niet bellen, dan is de eerste stap toestemming vragen.
  */
-export function stelSjabloonVoor(verdict: Verdict): string {
+export function stelSjabloonVoor(verdict: Verdict, magBellen = true): string {
+  if (!magBellen) return 'toestemming-vragen';
   const heeft = (id: string) => verdict.issues.some((kwestie) => kwestie.id === id);
   if (heeft('onbereikbaar') || heeft('parkeerpagina')) return 'website-offline';
   if (heeft('geen-viewport') || heeft('niet-responsive')) return 'mobiel';

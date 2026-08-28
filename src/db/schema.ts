@@ -204,6 +204,63 @@ const MIGRATIES: { naam: string; sql: string }[] = [
       LEFT JOIN testimonials t ON t.company_id = c.id;
     `,
   },
+  {
+    naam: '009-benaderregels',
+    sql: `
+      -- Sinds 1 juli 2026 mag je zzp'ers, eenmanszaken, vof's, maatschappen en
+      -- cv's alleen nog bellen met aantoonbare voorafgaande toestemming. De
+      -- rechtsvorm bepaalt dus of bellen mag; die houden we per bedrijf bij.
+      ALTER TABLE companies ADD COLUMN rechtsvorm TEXT;
+
+      CREATE TABLE benaderregels (
+        company_id           INTEGER PRIMARY KEY REFERENCES companies(id) ON DELETE CASCADE,
+        -- Toestemming om te bellen. De bewijslast ligt bij ons, dus we leggen
+        -- vast wanneer, hoe en met welke woorden die gegeven is.
+        bel_toestemming      INTEGER NOT NULL DEFAULT 0,
+        toestemming_op       TEXT,
+        toestemming_via      TEXT,
+        toestemming_bewijs   TEXT,
+        toestemming_door     INTEGER REFERENCES gebruikers(id) ON DELETE SET NULL,
+        -- Wie zegt "haal me van je lijst" wordt door niemand meer benaderd.
+        geblokkeerd          INTEGER NOT NULL DEFAULT 0,
+        geblokkeerd_op       TEXT,
+        geblokkeerd_reden    TEXT,
+        geblokkeerd_door     INTEGER REFERENCES gebruikers(id) ON DELETE SET NULL
+      );
+      CREATE INDEX idx_benaderregels_geblokkeerd ON benaderregels(geblokkeerd);
+    `,
+  },
+  {
+    naam: '010-benaderregels-in-view',
+    sql: `
+      DROP VIEW IF EXISTS leads;
+      CREATE VIEW leads AS
+      SELECT
+        c.id, c.name, c.website, c.domain, c.city, c.province, c.branch, c.rechtsvorm,
+        c.lat, c.lon, c.phone AS company_phone, c.email AS company_email, c.source,
+        s.id AS scan_id, s.scanned_at, s.status AS scan_status,
+        s.score, s.grade, s.final_url, s.http_status, s.error, s.report,
+        COALESCE(o.fase, 'nieuw')  AS fase,
+        o.toegewezen_aan, o.toegewezen_op, o.volgende_actie_op, o.notitie AS opvolging_notitie,
+        o.bijgewerkt_op AS opvolging_bijgewerkt_op,
+        g.naam AS agent_naam,
+        COALESCE(b.bel_toestemming, 0) AS bel_toestemming,
+        b.toestemming_op, b.toestemming_via,
+        COALESCE(b.geblokkeerd, 0) AS geblokkeerd, b.geblokkeerd_reden,
+        k.status AS klant_status, k.maandbedrag_cent, k.gestart_op AS klant_sinds,
+        t.sterren AS testimonial_sterren, t.tekst AS testimonial_tekst,
+        (SELECT COUNT(*) FROM activiteiten a WHERE a.company_id = c.id) AS activiteiten
+      FROM companies c
+      LEFT JOIN scans s ON s.id = (
+        SELECT id FROM scans WHERE company_id = c.id ORDER BY scanned_at DESC, id DESC LIMIT 1
+      )
+      LEFT JOIN opvolging o     ON o.company_id = c.id
+      LEFT JOIN gebruikers g    ON g.id = o.toegewezen_aan
+      LEFT JOIN benaderregels b ON b.company_id = c.id
+      LEFT JOIN klanten k       ON k.company_id = c.id
+      LEFT JOIN testimonials t  ON t.company_id = c.id;
+    `,
+  },
 ];
 
 /** Brengt de database bij naar de nieuwste versie. Veilig om vaak aan te roepen. */

@@ -58,6 +58,7 @@ const servers = await startDemoServers(
 const { upsertCompanies, db } = await import('../src/db/index.ts');
 const { maakGebruiker, gebruikers } = await import('../src/db/team.ts');
 const { wijsToe, zetFase, logActiviteit, maakKlant, bewaarTestimonial } = await import('../src/db/pipeline.ts');
+const { legToestemmingVast, blokkeer, magBellen } = await import('../src/db/contact.ts');
 const { scanAll } = await import('../src/scan/scanner.ts');
 const { queryLeads, getLead } = await import('../src/report/leads.ts');
 const { buildReport } = await import('../src/report/pitch.ts');
@@ -71,6 +72,7 @@ upsertCompanies(ALLE.map((site) => ({
   branch: site.branche,
   lat: site.lat ?? null,
   lon: site.lon ?? null,
+  rechtsvorm: site.rechtsvorm ?? null,
   source: 'demo',
 })));
 
@@ -106,6 +108,11 @@ const verhaal: { domein: string; agent: number; fase: string; gebeld?: number; k
 for (const stap of verhaal) {
   const id = opDomein(stap.domein);
   wijsToe(id, stap.agent, eigenaar!.id);
+  // Bedrijven die verder komen dan een eerste mail hebben toestemming gegeven;
+  // zonder die stap zou bellen bij een eenmanszaak niet mogen.
+  if (['afspraak', 'opdracht', 'in_aanbouw', 'klant'].includes(stap.fase)) {
+    legToestemmingVast(id, { via: 'mailreactie', bewijs: 'Antwoord per mail: "prima, u mag bellen"', door: stap.agent });
+  }
   for (let keer = 0; keer < (stap.gebeld ?? 0); keer++) {
     logActiviteit({ companyId: id, gebruikerId: stap.agent, soort: keer === 0 ? 'gebeld' : 'voicemail',
       notitie: keer === 0 ? 'Eigenaar gesproken, wil eerst zien wat er mis is.' : 'Voicemail ingesproken.' });
@@ -117,7 +124,10 @@ for (const stap of verhaal) {
   }
 }
 
-const leads = queryLeads({ maxScore: 100, limit: 500 }).map((lead) => {
+// Een bedrijf dat zich heeft afgemeld, zodat de demo ook die kant laat zien.
+blokkeer(opDomein('dierenartsdepoot.nl'), 'gaf aan geen berichten meer te willen', tom!.id);
+
+const leads = queryLeads({ maxScore: 100, limit: 500, toonGeblokkeerd: true }).map((lead) => {
   const full = getLead(lead.id)!;
   const report = full.report as { verdict?: never; signals?: never };
   const rapportInput = {
@@ -128,7 +138,9 @@ const leads = queryLeads({ maxScore: 100, limit: 500 }).map((lead) => {
     bedrijf: lead.name, domein: lead.domain, plaats: lead.city,
     verdict: report.verdict!, signals: report.signals ?? null,
   };
-  const voorgesteld = stelSjabloonVoor(report.verdict!);
+  // Mag je niet bellen, dan is toestemming vragen de eerste stap — precies
+  // zoals het dashboard het voorstelt.
+  const voorgesteld = stelSjabloonVoor(report.verdict!, magBellen(lead).mag);
   return {
     ...lead,
     verdict: report.verdict,

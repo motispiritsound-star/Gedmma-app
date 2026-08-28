@@ -1,5 +1,6 @@
 import { config } from '../config.ts';
 import { normalizeUrl, registrableDomain, isPlatformPage } from '../util/url.ts';
+import { herkenRechtsvorm } from '../db/contact.ts';
 import type { CompanyInput, Source, SourceOptions } from './types.ts';
 
 const ENDPOINT = process.env.OVERPASS_URL ?? 'https://overpass-api.de/api/interpreter';
@@ -87,6 +88,7 @@ export const osmSource: Source = {
 
       out.push({
         name: tags.name ?? domain,
+        rechtsvorm: herkenRechtsvorm(tags.name),
         website,
         domain,
         city: tags['addr:city'] ?? null,

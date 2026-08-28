@@ -193,11 +193,13 @@ specifieke site gevonden heeft. Je kiest er een, controleert de tekst en klikt o
 | `laatste-poging` | Beleefd afsluiten na een paar keer geen reactie |
 | `opdracht-bevestigd` | Ze zeggen ja: afspraken op een rij en wat je nodig hebt |
 | `site-live` | De nieuwe site staat online |
+| `toestemming-vragen` | Toestemming vragen om te mogen bellen (verplicht bij eenmanszaken) |
 | `testimonial` | Vragen om een testimonial |
 
 Het dashboard kiest zelf het sjabloon dat bij de scan past: geen viewport gevonden
 → `mobiel`, site onbereikbaar → `website-offline`, veel SEO-punten kwijt →
-`vindbaarheid`. Je kunt altijd een ander kiezen.
+`vindbaarheid`. Mag je het bedrijf niet bellen, dan wint `toestemming-vragen`:
+dat is dan de enige route naar een gesprek. Je kunt altijd een ander kiezen.
 
 De koude sjablonen sluiten af met een afmeldregel, omdat dat bij ongevraagde
 zakelijke mail hoort. Lees elke mail na voordat je hem verstuurt — het blijft een
@@ -262,7 +264,57 @@ Wat er nog niet in zit en wat je zelf moet regelen voordat het publiek bereikbaa
 - **back-ups** van `data/webscan.db` (één bestand, dus een kopie volstaat);
 - **tweefactor** zit er niet in.
 
-## Spelregels
+## Wie mag je bellen, en wie niet
+
+**Dit is het belangrijkste stuk van de README.** Sinds **1 juli 2026** geldt in
+Nederland een opt-in voor telemarketing: bellen mag alleen nog met vooraf gegeven,
+aantoonbare toestemming. Dat geldt voor natuurlijke personen — en daar vallen
+**eenmanszaken, vof's, maatschappen en cv's** onder. De uitzondering voor
+bestaande klanten is per diezelfde datum vervallen. De ACM handhaaft en kan
+boetes opleggen tot € 900.000 of 1% van de jaaromzet, en de bewijslast dat er
+toestemming was ligt bij degene die belt.
+
+Voor **rechtspersonen** (bv, nv, stichting, vereniging, coöperatie) verandert er
+niets: die mag je zakelijk bellen.
+
+Dat raakt dit product in het hart, want de doelgroep — loodgieters, kappers,
+bakkers, hoveniers — is grotendeels eenmanszaak of vof. In de demo van 125
+bedrijven mag je er **26 bellen en 91 alleen mailen**.
+
+Daarom werkt de tool zo:
+
+- elk bedrijf heeft een **rechtsvorm**; die wordt afgeleid uit de bedrijfsnaam
+  ("... B.V.") of uit een `rechtsvorm`-kolom in je CSV, en is anders `onbekend`;
+- **onbekend telt als "niet bellen"** — bij twijfel geen risico;
+- de **belknoppen staan uit** als bellen niet mag, met de reden erbij, en de
+  server weigert het telefoontje ook als je het toch probeert vast te leggen;
+- het voorgestelde mailsjabloon is dan `toestemming-vragen`, dat expliciet om
+  toestemming vraagt om te mogen bellen;
+- komt die toestemming binnen, dan leg je vast **hoe** en **waar het uit blijkt** —
+  zonder die onderbouwing weigert de tool de toestemming op te slaan;
+- filter **"mag gebeld worden"** geeft je in één klik de belijst die wél mag.
+
+```bash
+node src/cli.ts mag-bellen 42                     # mag ik dit bedrijf bellen?
+node src/cli.ts rechtsvorm 42 eenmanszaak
+node src/cli.ts toestemming 42 --via mailreactie --bewijs "Mailde terug: prima, u mag bellen"
+```
+
+Zoek de rechtsvorm op in het KVK-register voordat je belt. Dit is geen juridisch
+advies: laat je opzet toetsen voordat je begint.
+
+## Niet meer benaderen
+
+Zegt iemand "haal me van je lijst", dan zet je hem op de niet-benaderen-lijst.
+Dat werkt voor het hele platform en voor iedereen: het bedrijf verdwijnt uit alle
+lijsten, van de kaart en uit de export, en de server weigert elk telefoontje en
+elke mail. Alleen de eigenaar kan het terugdraaien.
+
+```bash
+node src/cli.ts niet-benaderen 42 --reden "wil geen berichten meer"
+```
+
+## Spelregels bij het scannen
 
 De scan bezoekt alleen de openbaar toegankelijke homepage, en:
 
@@ -273,12 +325,11 @@ De scan bezoekt alleen de openbaar toegankelijke homepage, en:
   in via `WEBSCAN_USER_AGENT`, zodat een beheerder je kan bereiken;
 - haalt maximaal 3 MB per pagina op en stopt daarna.
 
-Voor de benadering zelf gelden gewoon de Nederlandse regels: e-mail naar
-zakelijke adressen mag alleen met een geldige grondslag en altijd met een
-afmeldmogelijkheid (die staat in de concept-mail), voor telefonisch benaderen
-geldt het Bel-me-niet-register voor eenmanszaken en zzp'ers, en gegevens die je
-verzamelt vallen onder de AVG. De gegenereerde mail is een **concept** — lees hem
-na en pas hem aan voor je iets verstuurt.
+Zakelijke e-mail mag ruimer dan bellen, maar niet vrijblijvend: elk bericht heeft
+een afmeldmogelijkheid nodig (die staat in de sjablonen) en de gegevens die je
+verzamelt vallen onder de AVG — met een bewaartermijn, een verwerkingsregister en
+het recht om verwijderd te worden. De gegenereerde mail is een **concept**: lees
+hem na voordat je iets verstuurt.
 
 ## Projectstructuur
 
@@ -291,6 +342,7 @@ src/
     index.ts          verbinding, bedrijven en scans
     team.ts           accounts, wachtwoorden en sessies
     pipeline.ts       fases, belgeschiedenis, klanten, testimonials
+    contact.ts        rechtsvorm, belregels, toestemming en de niet-benaderen-lijst
   sources/            waar bedrijven vandaan komen (osm, csv, kvk)
   scan/
     robots.ts         robots.txt lezen en naleven

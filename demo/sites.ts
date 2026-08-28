@@ -10,6 +10,8 @@ type Site = {
   domein: string;
   status?: number;
   headers?: Record<string, string>;
+  /** Rechtsvorm; bepaalt of dit bedrijf gebeld mag worden. */
+  rechtsvorm?: string | null;
   /** Positie op de kaart; in het echt komt die uit OpenStreetMap of de geocoder. */
   lat?: number;
   lon?: number;
@@ -137,21 +139,21 @@ export type { Site };
 
 export const SITES: Site[] = [
   {
-    path: '/de-kraan', lat: 52.0907, lon: 5.1214, delayMs: 1900, bedrijf: 'Loodgietersbedrijf De Kraan', plaats: 'Utrecht',
+    path: '/de-kraan', rechtsvorm: 'vof', lat: 52.0907, lon: 5.1214, delayMs: 1900, bedrijf: 'Loodgietersbedrijf De Kraan', plaats: 'Utrecht',
     branche: 'loodgieter', domein: 'loodgieter-dekraan.nl',
     headers: { 'x-powered-by': 'PHP/5.4.45', server: 'Apache/2.2.15' },
     html: tabelSite('Loodgietersbedrijf De Kraan', 'Utrecht', 2009,
       'Voor al uw loodgieterswerk. Lekkage? Bel ons! Wij komen door heel de regio.', '030-2871934'),
   },
   {
-    path: '/schilders-vermeer', lat: 52.1561, lon: 5.3878, delayMs: 2400, bedrijf: 'Schildersbedrijf Vermeer', plaats: 'Amersfoort',
+    path: '/schilders-vermeer', rechtsvorm: 'eenmanszaak', lat: 52.1561, lon: 5.3878, delayMs: 2400, bedrijf: 'Schildersbedrijf Vermeer', plaats: 'Amersfoort',
     branche: 'schilder', domein: 'schildersbedrijfvermeer.nl',
     headers: { 'x-powered-by': 'PHP/5.6.40' },
     html: oudeWordpress('Schildersbedrijf Vermeer', 'Amersfoort', '4.7.2', 2016,
       lorem('Wij verzorgen binnen- en buitenschilderwerk voor particulieren en bedrijven.', 3), '033-4612780'),
   },
   {
-    path: '/bakkerij-molentje', lat: 52.0907, lon: 5.2333, delayMs: 1400, bedrijf: 'Bakkerij Het Molentje', plaats: 'Zeist',
+    path: '/bakkerij-molentje', rechtsvorm: 'eenmanszaak', lat: 52.0907, lon: 5.2333, delayMs: 1400, bedrijf: 'Bakkerij Het Molentje', plaats: 'Zeist',
     branche: 'bakkerij', domein: 'bakkerijhetmolentje.nl',
     html: `<html><head><title>Welkom</title><style>${themaCss(90)}</style></head><body>
       <center><h1>Bakkerij Het Molentje</h1>
@@ -162,20 +164,20 @@ export const SITES: Site[] = [
       <p>&copy; 2014</p></center></body></html>`,
   },
   {
-    path: '/autobedrijf-jansen', lat: 52.0296, lon: 5.0803, delayMs: 3800, bedrijf: 'Autobedrijf Jansen', plaats: 'Nieuwegein',
+    path: '/autobedrijf-jansen', rechtsvorm: 'bv', lat: 52.0296, lon: 5.0803, delayMs: 3800, bedrijf: 'Autobedrijf Jansen', plaats: 'Nieuwegein',
     branche: 'autobedrijf', domein: 'autobedrijfjansen.nl',
     headers: { 'x-powered-by': 'PHP/7.2.34' },
     html: oudeWordpress('Autobedrijf Jansen', 'Nieuwegein', '5.4.2', 2019,
       lorem('APK, onderhoud en reparatie van alle merken. Ook occasions met garantie.', 4), '030-6039215'),
   },
   {
-    path: '/hovenier-groenrijk', lat: 52.0286, lon: 5.5586, delayMs: 2100, bedrijf: 'Hovenier Groenrijk', plaats: 'Veenendaal',
+    path: '/hovenier-groenrijk', rechtsvorm: 'eenmanszaak', lat: 52.0286, lon: 5.5586, delayMs: 2100, bedrijf: 'Hovenier Groenrijk', plaats: 'Veenendaal',
     branche: 'hovenier', domein: 'hoveniergroenrijk.nl',
     html: tabelSite('Hovenier Groenrijk', 'Veenendaal', 2011,
       'Tuinaanleg en onderhoud. Vraag vrijblijvend een offerte aan.', '0318-521470'),
   },
   {
-    path: '/kapsalon-lisa', lat: 52.093, lon: 5.11, delayMs: 1250, bedrijf: 'Kapsalon Lisa', plaats: 'Utrecht',
+    path: '/kapsalon-lisa', rechtsvorm: 'eenmanszaak', lat: 52.093, lon: 5.11, delayMs: 1250, bedrijf: 'Kapsalon Lisa', plaats: 'Utrecht',
     branche: 'kapper', domein: 'kapsalonlisa.nl', secure: true, goedGeconfigureerd: true,
     html: `<html><head><meta name="generator" content="Wix.com Website Builder">
       <style>${themaCss(200)}</style></head>
@@ -188,28 +190,28 @@ export const SITES: Site[] = [
       <p>&copy; 2021 Kapsalon Lisa</p></div></body></html>`,
   },
   {
-    path: '/restaurant-de-hoek', lat: 52.1519, lon: 5.39, delayMs: 940, bedrijf: 'Restaurant De Hoek', plaats: 'Amersfoort',
+    path: '/restaurant-de-hoek', rechtsvorm: 'bv', lat: 52.1519, lon: 5.39, delayMs: 940, bedrijf: 'Restaurant De Hoek', plaats: 'Amersfoort',
     branche: 'restaurant', domein: 'restaurantdehoek.nl', secure: true, goedGeconfigureerd: true,
     html: middenmoot('Restaurant De Hoek', 'Amersfoort',
       lorem('Seizoensgebonden gerechten met producten uit de streek. Reserveren wordt aanbevolen. De kaart wisselt elke zes weken mee met wat de telers in de omgeving aanbieden.', 5),
       '033-4728190', { titel: 'Restaurant De Hoek' }),
   },
   {
-    path: '/fysio-beweegt', lat: 52.087, lon: 5.235, delayMs: 780, bedrijf: 'Fysiotherapie Beweegt', plaats: 'Zeist',
+    path: '/fysio-beweegt', rechtsvorm: 'maatschap', lat: 52.087, lon: 5.235, delayMs: 780, bedrijf: 'Fysiotherapie Beweegt', plaats: 'Zeist',
     branche: 'fysiotherapie', domein: 'fysiobeweegt.nl', secure: true, goedGeconfigureerd: true,
     html: middenmoot('Fysiotherapie Beweegt', 'Zeist',
       lorem('Fysiotherapie, manuele therapie en revalidatie. Aangesloten bij alle zorgverzekeraars. U kunt zonder verwijzing van de huisarts bij ons terecht.', 5),
       '030-6924415', { titel: 'Fysiotherapie Beweegt Zeist' }),
   },
   {
-    path: '/drukkerij-vandenberg', lat: 52.033, lon: 5.085, delayMs: 2600, bedrijf: 'Drukkerij Van den Berg', plaats: 'Nieuwegein',
+    path: '/drukkerij-vandenberg', rechtsvorm: 'bv', lat: 52.033, lon: 5.085, delayMs: 2600, bedrijf: 'Drukkerij Van den Berg', plaats: 'Nieuwegein',
     branche: 'drukkerij', domein: 'drukkerijvandenberg.nl',
     headers: { 'x-powered-by': 'PHP/5.3.29' },
     html: tabelSite('Drukkerij Van den Berg', 'Nieuwegein', 2008,
       'Drukwerk voor bedrijven: visitekaartjes, folders, briefpapier en meer.', '030-6041188'),
   },
   {
-    path: '/tandarts-smile', lat: 52.098, lon: 5.13, delayMs: 320, bedrijf: 'Tandartspraktijk Smile', plaats: 'Utrecht',
+    path: '/tandarts-smile', rechtsvorm: 'bv', lat: 52.098, lon: 5.13, delayMs: 320, bedrijf: 'Tandartspraktijk Smile', plaats: 'Utrecht',
     branche: 'tandarts', domein: 'tandartssmile.nl', secure: true, goedGeconfigureerd: true,
     html: modern('Tandartspraktijk Smile', 'Utrecht',
       'Tandarts in Utrecht — ook op zaterdag terecht | Smile',
@@ -218,7 +220,7 @@ export const SITES: Site[] = [
       '030-2345678', 'info@tandartssmile.nl'),
   },
   {
-    path: '/installatie-vandijk', lat: 52.16, lon: 5.37, delayMs: 410, bedrijf: 'Van Dijk Installatietechniek', plaats: 'Amersfoort',
+    path: '/installatie-vandijk', rechtsvorm: 'bv', lat: 52.16, lon: 5.37, delayMs: 410, bedrijf: 'Van Dijk Installatietechniek', plaats: 'Amersfoort',
     branche: 'installateur', domein: 'vandijkinstallatie.nl', secure: true, goedGeconfigureerd: true,
     html: modern('Van Dijk Installatietechniek', 'Amersfoort',
       'Installateur in Amersfoort — cv, warmtepompen en sanitair',
@@ -227,12 +229,12 @@ export const SITES: Site[] = [
       '033-4567890', 'info@vandijkinstallatie.nl'),
   },
   {
-    path: '/advocaat-mulder', lat: 52.085, lon: 5.118, delayMs: 500, bedrijf: 'Advocatenkantoor Mulder', plaats: 'Utrecht',
+    path: '/advocaat-mulder', rechtsvorm: 'bv', lat: 52.085, lon: 5.118, delayMs: 500, bedrijf: 'Advocatenkantoor Mulder', plaats: 'Utrecht',
     branche: 'advocaat', domein: 'advocatenkantoormulder.nl', secure: true, status: 500,
     html: '<h1>Er is een fout opgetreden</h1>',
   },
   {
-    path: '/glaszetter-helder', lat: 52.025, lon: 5.55, delayMs: 620, bedrijf: 'Glaszetterij Helder', plaats: 'Veenendaal',
+    path: '/glaszetter-helder', rechtsvorm: null, lat: 52.025, lon: 5.55, delayMs: 620, bedrijf: 'Glaszetterij Helder', plaats: 'Veenendaal',
     branche: 'glaszetter', domein: 'glaszetterijhelder.nl',
     html: `<html><head><title>glaszetterijhelder.nl</title></head><body>
       <h1>Deze domeinnaam is te koop</h1>
@@ -240,14 +242,14 @@ export const SITES: Site[] = [
       </body></html>`,
   },
   {
-    path: '/dierenarts-poot', lat: 52.095, lon: 5.24, delayMs: 6800, bedrijf: 'Dierenartsenpraktijk De Poot', plaats: 'Zeist',
+    path: '/dierenarts-poot', rechtsvorm: 'maatschap', lat: 52.095, lon: 5.24, delayMs: 6800, bedrijf: 'Dierenartsenpraktijk De Poot', plaats: 'Zeist',
     branche: 'dierenarts', domein: 'dierenartsdepoot.nl', secure: true,
     headers: { 'x-powered-by': 'PHP/7.4.33' },
     html: oudeWordpress('Dierenartsenpraktijk De Poot', 'Zeist', '5.8.6', 2020,
       lorem('Wij behandelen honden, katten en kleine huisdieren. Ook spoedgevallen buiten kantooruren.', 5), '030-6951203'),
   },
   {
-    path: '/makelaar-huisenzo', lat: 52.027, lon: 5.09, delayMs: 1150, bedrijf: 'Makelaardij Huis & Zo', plaats: 'Nieuwegein',
+    path: '/makelaar-huisenzo', rechtsvorm: 'vof', lat: 52.027, lon: 5.09, delayMs: 1150, bedrijf: 'Makelaardij Huis & Zo', plaats: 'Nieuwegein',
     branche: 'makelaar', domein: 'makelaardijhuisenzo.nl', secure: true,
     html: middenmoot('Makelaardij Huis & Zo', 'Nieuwegein',
       lorem('Aan- en verkoopbegeleiding, taxaties en woningpresentatie in de regio Utrecht. Wij kennen elke wijk en weten wat een woning hier werkelijk waard is.', 5), '030-6077340'),
@@ -377,8 +379,14 @@ export function genereerSites(aantal: number): Site[] {
 
     // De verdeling weerspiegelt wat je in het veld tegenkomt: veel achterstallig
     // onderhoud, een kleinere groep die het goed voor elkaar heeft.
+    // In deze hoek van het mkb is de eenmanszaak of vof de regel en de bv de
+    // uitzondering — precies de groep die je sinds 1 juli 2026 niet zomaar mag bellen.
+    const trekking = random();
+    const rechtsvorm = trekking < 0.5 ? 'eenmanszaak' : trekking < 0.66 ? 'vof'
+      : trekking < 0.72 ? 'maatschap' : trekking < 0.94 ? 'bv' : null;
+
     const gemeen = {
-      path: pad, bedrijf, plaats, branche, domein,
+      path: pad, bedrijf, plaats, branche, domein, rechtsvorm,
       lat: lat + (random() - 0.5) * 0.05,
       lon: lon + (random() - 0.5) * 0.08,
     };

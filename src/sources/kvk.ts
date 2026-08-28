@@ -1,4 +1,5 @@
 import { config } from '../config.ts';
+import { herkenRechtsvorm } from '../db/contact.ts';
 import type { CompanyInput, Source, SourceOptions } from './types.ts';
 
 const BASE = 'https://api.kvk.nl/api/v2/zoeken';
@@ -50,6 +51,7 @@ export const kvkSource: Source = {
           name: item.naam ?? '',
           website: '',
           domain: '',
+          rechtsvorm: herkenRechtsvorm(item.naam),
           city: item.adres?.binnenlandsAdres?.plaats ?? area,
           kvkNumber: item.kvkNummer ?? null,
           source: 'kvk',

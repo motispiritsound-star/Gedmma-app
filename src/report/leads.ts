@@ -1,4 +1,5 @@
 import { db } from '../db/index.ts';
+import { RECHTSVORMEN } from '../db/contact.ts';
 import type { Verdict } from '../score/score.ts';
 import type { PageSignals } from '../scan/analyze.ts';
 
@@ -17,6 +18,10 @@ export type LeadFilter = {
   alleenVrij?: boolean;
   /** Alleen leads die bij een ander dan deze gebruiker liggen. */
   vanCollegas?: number;
+  /** Alleen bedrijven die je mag bellen (rechtspersoon of toestemming). */
+  alleenBelbaar?: boolean;
+  /** Toon ook bedrijven die zich hebben afgemeld. Standaard blijven die verborgen. */
+  toonGeblokkeerd?: boolean;
   /** Alleen leads met een telefoonnummer of e-mailadres. */
   metContact?: boolean;
   /** Alleen leads met coördinaten (voor de kaart). */
@@ -35,6 +40,12 @@ export type Lead = {
   domain: string;
   city: string | null;
   branch: string | null;
+  rechtsvorm: string | null;
+  bel_toestemming: number;
+  toestemming_op: string | null;
+  toestemming_via: string | null;
+  geblokkeerd: number;
+  geblokkeerd_reden: string | null;
   source: string;
   lat: number | null;
   lon: number | null;
@@ -60,6 +71,8 @@ export type Lead = {
 
 type Row = Record<string, unknown>;
 
+const RECHTSPERSONEN = RECHTSVORMEN.filter((vorm) => !vorm.natuurlijkPersoon).map((vorm) => vorm.id);
+
 const getal = (waarde: unknown): number | null =>
   waarde === null || waarde === undefined ? null : Number(waarde);
 
@@ -78,6 +91,12 @@ function shape(row: Row): Lead {
     domain: String(row.domain ?? ''),
     city: (row.city as string) ?? null,
     branch: (row.branch as string) ?? null,
+    rechtsvorm: (row.rechtsvorm as string) ?? null,
+    bel_toestemming: Number(row.bel_toestemming ?? 0),
+    toestemming_op: (row.toestemming_op as string) ?? null,
+    toestemming_via: (row.toestemming_via as string) ?? null,
+    geblokkeerd: Number(row.geblokkeerd ?? 0),
+    geblokkeerd_reden: (row.geblokkeerd_reden as string) ?? null,
     source: String(row.source ?? ''),
     lat: getal(row.lat),
     lon: getal(row.lon),
@@ -127,6 +146,12 @@ function waar(filter: LeadFilter): { sql: string; params: (string | number)[] } 
     params.push(filter.vanCollegas);
   }
   if (filter.metCoordinaten) delen.push('lat IS NOT NULL AND lon IS NOT NULL');
+  // Wie zich heeft afgemeld verdwijnt uit elke lijst, tenzij je er expliciet om vraagt.
+  if (!filter.toonGeblokkeerd) delen.push('geblokkeerd = 0');
+  if (filter.alleenBelbaar) {
+    delen.push(`(bel_toestemming = 1 OR rechtsvorm IN (${
+      RECHTSPERSONEN.map((vorm) => `'${vorm}'`).join(',')}))`);
+  }
   if (filter.includeOffline === false) delen.push("scan_status = 'ok'");
   if (filter.search) {
     delen.push('(name LIKE ? OR domain LIKE ? OR city LIKE ?)');
@@ -164,7 +189,7 @@ export function countLeads(filter: LeadFilter = {}): number {
 export type KaartPunt = {
   id: number; naam: string; plaats: string | null;
   lat: number; lon: number; score: number; grade: string; fase: string;
-  agentId: number | null; agent: string | null; klant: boolean;
+  agentId: number | null; agent: string | null; klant: boolean; belbaar: boolean;
 };
 
 /**
@@ -174,7 +199,8 @@ export type KaartPunt = {
 export function kaartPunten(filter: LeadFilter = {}): KaartPunt[] {
   const { sql, params } = waar({ ...filter, metCoordinaten: true });
   const rows = db().prepare(`
-    SELECT id, name, city, lat, lon, score, grade, fase, toegewezen_aan, agent_naam, klant_status
+    SELECT id, name, city, lat, lon, score, grade, fase, toegewezen_aan, agent_naam, klant_status,
+           rechtsvorm, bel_toestemming
     FROM leads WHERE ${sql} ORDER BY score ASC LIMIT ?
   `).all(...params, filter.limit ?? 5000) as unknown as Row[];
 
@@ -190,6 +216,8 @@ export function kaartPunten(filter: LeadFilter = {}): KaartPunt[] {
     agentId: getal(row.toegewezen_aan),
     agent: (row.agent_naam as string) ?? null,
     klant: row.klant_status === 'actief',
+    belbaar: Number(row.bel_toestemming ?? 0) === 1
+      || RECHTSPERSONEN.includes(String(row.rechtsvorm ?? '') as never),
   }));
 }
 

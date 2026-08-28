@@ -17,6 +17,7 @@ export type CompanyRow = {
   email: string | null;
   lat: number | null;
   lon: number | null;
+  rechtsvorm: string | null;
   source: string;
   source_ref: string | null;
   created_at: string;
@@ -52,6 +53,8 @@ export type CompanyInput = {
   email?: string | null;
   lat?: number | null;
   lon?: number | null;
+  /** bv, nv, eenmanszaak, vof, ... — bepaalt of je mag bellen. */
+  rechtsvorm?: string | null;
   source: string;
   sourceRef?: string | null;
 };
@@ -61,8 +64,8 @@ export function upsertCompanies(rows: CompanyInput[]): { inserted: number; updat
   const database = db();
   const bestaat = database.prepare('SELECT 1 FROM companies WHERE domain = ?');
   const insert = database.prepare(`
-    INSERT INTO companies (name, website, domain, city, province, branch, kvk_number, phone, email, lat, lon, source, source_ref)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO companies (name, website, domain, city, province, branch, kvk_number, phone, email, lat, lon, rechtsvorm, source, source_ref)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(domain) DO UPDATE SET
       name       = COALESCE(NULLIF(companies.name, ''), excluded.name),
       city       = COALESCE(companies.city, excluded.city),
@@ -72,7 +75,8 @@ export function upsertCompanies(rows: CompanyInput[]): { inserted: number; updat
       phone      = COALESCE(companies.phone, excluded.phone),
       email      = COALESCE(companies.email, excluded.email),
       lat        = COALESCE(companies.lat, excluded.lat),
-      lon        = COALESCE(companies.lon, excluded.lon)
+      lon        = COALESCE(companies.lon, excluded.lon),
+      rechtsvorm = COALESCE(companies.rechtsvorm, excluded.rechtsvorm)
   `);
 
   let inserted = 0;
@@ -84,7 +88,7 @@ export function upsertCompanies(rows: CompanyInput[]): { inserted: number; updat
       insert.run(
         row.name, row.website, row.domain, row.city ?? null, row.province ?? null,
         row.branch ?? null, row.kvkNumber ?? null, row.phone ?? null, row.email ?? null,
-        row.lat ?? null, row.lon ?? null, row.source, row.sourceRef ?? null,
+        row.lat ?? null, row.lon ?? null, row.rechtsvorm ?? null, row.source, row.sourceRef ?? null,
       );
     }
     database.exec('COMMIT');

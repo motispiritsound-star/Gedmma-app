@@ -6,8 +6,11 @@
  *
  *   node demo/build.ts && node demo/page.ts
  */
+process.removeAllListeners('warning');
+
 import { readFileSync, writeFileSync } from 'node:fs';
 import ts from 'typescript';
+import { magBellen, magMailen } from '../src/db/contact.ts';
 
 type RawLead = Record<string, any>;
 
@@ -48,6 +51,13 @@ const leads = source.leads.map((lead) => ({
   agentId: lead.toegewezen_aan,
   klantStatus: lead.klant_status,
   maandbedragCent: lead.maandbedrag_cent,
+  rechtsvorm: lead.rechtsvorm,
+  geblokkeerd: lead.geblokkeerd,
+  geblokkeerdReden: lead.geblokkeerd_reden,
+  belToestemming: lead.bel_toestemming,
+  // Met dezelfde functie als de server, zodat de demo geen eigen oordeel verzint.
+  bellen: magBellen(lead),
+  mailen: magMailen(lead),
   score: lead.score,
   grade: lead.grade,
   oordeel: lead.verdict?.label ?? '',
@@ -87,6 +97,8 @@ const data = {
     benaderbaar: leads.filter((lead) =>
       (lead.score ?? 100) < 55 && (lead.contact.emails.length > 0 || lead.contact.phones.length > 0)).length,
     opdrachten: leads.filter((lead) => VANAF_OPDRACHT.includes(lead.fase)).length,
+    magBellen: leads.filter((lead) => lead.bellen.mag).length,
+    alleenMailen: leads.filter((lead) => !lead.bellen.mag && lead.mailen.mag).length,
     klanten: klanten.length,
     mrrCent: klanten.reduce((som, lead) => som + (lead.maandbedragCent ?? 0), 0),
   },

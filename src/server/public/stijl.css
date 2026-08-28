@@ -152,6 +152,11 @@ tbody tr.van-mij td:first-child { box-shadow:inset 3px 0 0 var(--accent); }
   border-radius:8px; font-size:13px; background:var(--surface); border:1px solid var(--line); }
 .banner.bezet { border-color:var(--line-strong); color:var(--ink-2); }
 .banner.mijlpaal { background:var(--accent-wash); border-color:color-mix(in srgb,var(--accent) 35%,transparent); }
+.banner.verboden { background:var(--slecht-wash); border-color:color-mix(in srgb,var(--slecht) 35%,transparent); }
+.banner.toegestaan { background:var(--goed-wash); border-color:color-mix(in srgb,var(--goed) 32%,transparent); }
+.alleen-mail { display:inline-block; margin-left:6px; padding:1px 6px; border-radius:4px;
+  background:var(--matig-wash); color:var(--ink-2); font:500 10px/1.6 var(--mono); }
+.knop.gevaarlijk { border-color:color-mix(in srgb,var(--slecht) 40%,transparent); color:var(--slecht); }
 .banner b { font-weight:600; }
 .leeg { padding:50px 20px; text-align:center; color:var(--muted); font-size:13.5px; }
 

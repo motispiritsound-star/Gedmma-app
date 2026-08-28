@@ -19,6 +19,8 @@ import { queryLeads, getLead } from './report/leads.ts';
 import { exportLeads } from './report/export.ts';
 import { buildReport } from './report/pitch.ts';
 import { SJABLONEN, renderSjabloon, stelSjabloonVoor } from './report/templates.ts';
+import { RECHTSVORMEN, benaderbaarheid, blokkeer, deblokkeer, herkenRechtsvorm,
+         legToestemmingVast, magBellen, zetRechtsvorm, type RechtsvormId } from './db/contact.ts';
 
 const program = new Command();
 const euro = (cent: number): string => `€ ${(cent / 100).toFixed(2).replace('.', ',')}`;
@@ -231,7 +233,7 @@ program
     };
 
     try {
-      const gekozen = options.sjabloon ?? stelSjabloonVoor(rapport.verdict);
+      const gekozen = options.sjabloon ?? stelSjabloonVoor(rapport.verdict, magBellen(lead).mag);
       const mail = renderSjabloon(gekozen, context, lead.contact.emails[0] ?? null);
       log.info('');
       log.info(`Sjabloon:  ${mail.naam}${options.sjabloon ? '' : ' (voorgesteld op basis van de scan)'}`);
@@ -264,6 +266,60 @@ program
       zetFase(Number(id), fase as Fase, agent?.id ?? null, options.notitie);
       log.ok(`Lead ${id} staat nu op "${fase}"${agent ? ` bij ${agent.naam}` : ''}.`);
     } catch (fout) { log.error((fout as Error).message); process.exitCode = 1; }
+  });
+
+// --------------------------------------------------------------------------
+program
+  .command('mag-bellen <id>')
+  .description('Vertelt of je dit bedrijf mag bellen, en zo nee waarom niet')
+  .action((id) => {
+    const lead = getLead(Number(id));
+    if (!lead) { log.error(`Geen lead met id ${id}.`); process.exitCode = 1; return; }
+    const oordeel = magBellen(lead);
+    log.info('');
+    log.info(`  ${lead.name} (${lead.rechtsvorm ?? 'rechtsvorm onbekend'})`);
+    if (oordeel.mag) log.ok(oordeel.reden);
+    else {
+      log.error(oordeel.reden);
+      if (oordeel.route) log.dim(`  ${oordeel.route}`);
+    }
+    log.info('');
+  });
+
+// --------------------------------------------------------------------------
+program
+  .command('rechtsvorm <id> <vorm>')
+  .description(`Leg de rechtsvorm vast (${RECHTSVORMEN.map((vorm) => vorm.id).join(', ')})`)
+  .action((id, vorm) => {
+    const herkend = RECHTSVORMEN.some((rij) => rij.id === vorm) ? (vorm as RechtsvormId) : herkenRechtsvorm(vorm);
+    if (!herkend) { log.error(`Onbekende rechtsvorm "${vorm}".`); process.exitCode = 1; return; }
+    zetRechtsvorm(Number(id), herkend);
+    log.ok(`Lead ${id} staat nu als ${herkend} geregistreerd.`);
+  });
+
+// --------------------------------------------------------------------------
+program
+  .command('toestemming <id>')
+  .description('Leg vast dat dit bedrijf toestemming gaf om gebeld te worden')
+  .requiredOption('--via <hoe>', 'bijvoorbeeld: mailreactie, formulier, schriftelijk')
+  .requiredOption('--bewijs <tekst>', 'waar blijkt het uit — dit moet je kunnen aantonen')
+  .action((id, options) => {
+    try {
+      legToestemmingVast(Number(id), { via: options.via, bewijs: options.bewijs });
+      log.ok(`Toestemming vastgelegd voor lead ${id}.`);
+    } catch (fout) { log.error((fout as Error).message); process.exitCode = 1; }
+  });
+
+// --------------------------------------------------------------------------
+program
+  .command('niet-benaderen <id>')
+  .description('Zet een bedrijf voorgoed op de niet-benaderen-lijst')
+  .option('-r, --reden <tekst>', 'waarom', 'op eigen verzoek')
+  .option('--opheffen', 'de blokkade juist opheffen')
+  .action((id, options) => {
+    if (options.opheffen) { deblokkeer(Number(id)); log.ok(`Lead ${id} mag weer benaderd worden.`); return; }
+    blokkeer(Number(id), options.reden);
+    log.ok(`Lead ${id} wordt door niemand meer benaderd.`);
   });
 
 // --------------------------------------------------------------------------
@@ -372,6 +428,12 @@ program
     for (const [label, waarde] of Object.entries(cijfers)) {
       log.info(`  ${label.padEnd(14)} ${String(waarde).padStart(7)}`);
     }
+    const benaderen = benaderbaarheid();
+    log.info('');
+    log.info(`  mag gebeld worden      ${String(benaderen.magBellen).padStart(7)}`);
+    log.info(`  alleen mailen          ${String(benaderen.alleenMailen).padStart(7)}  (eenmanszaak, vof, maatschap of cv zonder toestemming)`);
+    log.info(`  rechtsvorm onbekend    ${String(benaderen.onbekend).padStart(7)}  (bellen pas na controle bij de KVK)`);
+    log.info(`  afgemeld               ${String(benaderen.geblokkeerd).padStart(7)}`);
     const geld = omzet();
     if (geld.actieveKlanten > 0) {
       log.info(`\n  ${geld.actieveKlanten} klanten · ${euro(geld.mrrCent)} per maand · gemiddeld ${euro(geld.gemiddeldeKlantCent)} per klant`);

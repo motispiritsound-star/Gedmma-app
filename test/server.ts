@@ -10,9 +10,9 @@ const { scanAll } = await import('../src/scan/scanner.ts');
 const { maakGebruiker } = await import('../src/db/team.ts');
 
 upsertCompanies([
-  { name: 'Loodgietersbedrijf De Kraan', website: `${base}/slecht`, domain: 'dekraan.test', city: 'Utrecht', lat: 52.09, lon: 5.12, source: 'test' },
-  { name: 'Van Dijk Installatie', website: `${base}/goed`, domain: 'vandijk.test', city: 'Utrecht', lat: 52.10, lon: 5.13, source: 'test' },
-  { name: 'Kapotte Site BV', website: `${base}/kapot`, domain: 'kapot2.test', city: 'Amersfoort', lat: 52.15, lon: 5.38, source: 'test' },
+  { name: 'Loodgietersbedrijf De Kraan', website: `${base}/slecht`, domain: 'dekraan.test', city: 'Utrecht', lat: 52.09, lon: 5.12, rechtsvorm: 'eenmanszaak', source: 'test' },
+  { name: 'Van Dijk Installatie', website: `${base}/goed`, domain: 'vandijk.test', city: 'Utrecht', lat: 52.10, lon: 5.13, rechtsvorm: 'bv', source: 'test' },
+  { name: 'Kapotte Site BV', website: `${base}/kapot`, domain: 'kapot2.test', city: 'Amersfoort', lat: 52.15, lon: 5.38, rechtsvorm: 'bv', source: 'test' },
 ]);
 await scanAll(db().prepare("SELECT * FROM companies WHERE source = 'test'").all() as never[], { concurrency: 3 });
 
@@ -95,6 +95,54 @@ check('lead staat op naam van agent één', detail.agent_naam === 'Agent Een');
 
 check('onbekende fase wordt geweigerd',
   (await een.doe(`/api/leads/${slechtste.id}/fase`, { method: 'POST', body: JSON.stringify({ fase: 'onzin' }) })).status === 400);
+
+console.log('\nWie mag je bellen:');
+const opDomein = (domein: string) => leads.find((rij: any) => rij.domain === domein)!;
+const zaak = opDomein('dekraan.test');       // eenmanszaak
+const vennootschap = opDomein('vandijk.test'); // bv
+const derde = opDomein('kapot2.test');
+
+const eenmanszaak = (await een.doe(`/api/leads/${zaak.id}`)).inhoud;
+check('een eenmanszaak mag niet gebeld worden', eenmanszaak.bellen.mag === false, eenmanszaak.bellen.reden);
+check('mailen mag wel', eenmanszaak.mailen.mag === true);
+check('er staat bij wat je dan moet doen', Boolean(eenmanszaak.bellen.route));
+check('een telefoontje wordt geweigerd', (await een.doe(`/api/leads/${zaak.id}/activiteit`, {
+  method: 'POST', body: JSON.stringify({ soort: 'gebeld' }),
+})).status === 403);
+check('een mail mag wel', (await een.doe(`/api/leads/${zaak.id}/activiteit`, {
+  method: 'POST', body: JSON.stringify({ soort: 'mail' }),
+})).status === 200);
+check('het voorgestelde sjabloon vraagt eerst om toestemming',
+  (await een.doe(`/api/leads/${zaak.id}/mail`)).inhoud.sjabloon === 'toestemming-vragen');
+
+check('toestemming zonder bewijs wordt geweigerd', (await een.doe(`/api/leads/${zaak.id}/toestemming`, {
+  method: 'POST', body: JSON.stringify({ via: 'mailreactie', bewijs: '  ' }),
+})).status === 400);
+check('toestemming mét bewijs wordt vastgelegd', (await een.doe(`/api/leads/${zaak.id}/toestemming`, {
+  method: 'POST', body: JSON.stringify({ via: 'mailreactie', bewijs: 'Mailde terug: prima, u mag bellen' }),
+})).status === 200);
+check('daarna mag bellen wel', (await een.doe(`/api/leads/${zaak.id}`)).inhoud.bellen.mag === true);
+check('en wordt het telefoontje vastgelegd', (await een.doe(`/api/leads/${zaak.id}/activiteit`, {
+  method: 'POST', body: JSON.stringify({ soort: 'gebeld' }),
+})).status === 200);
+
+const bv = (await eigenaar.doe(`/api/leads/${vennootschap.id}`)).inhoud;
+check('een bv mag zonder toestemming gebeld worden', bv.bellen.mag === true, bv.bellen.reden);
+
+check('afmelden lukt', (await eigenaar.doe(`/api/leads/${derde.id}/blokkeren`, {
+  method: 'POST', body: JSON.stringify({ reden: 'wil geen berichten meer' }),
+})).status === 200);
+const naAfmelden = (await eigenaar.doe('/api/leads?maxScore=100&limit=50')).inhoud.leads;
+check('een afgemeld bedrijf verdwijnt uit de lijst', !naAfmelden.some((rij: any) => rij.id === derde.id));
+check('en uit de kaart', !(await eigenaar.doe('/api/kaart')).inhoud.punten.some((punt: any) => punt.id === derde.id));
+check('bellen en mailen mag niet meer',
+  (await eigenaar.doe(`/api/leads/${derde.id}/activiteit`, { method: 'POST', body: JSON.stringify({ soort: 'mail' }) })).status === 403);
+check('een agent kan een blokkade niet opheffen', (await een.doe(`/api/leads/${derde.id}/blokkeren`, {
+  method: 'POST', body: JSON.stringify({ opheffen: true }),
+})).status === 403);
+check('de eigenaar wel', (await eigenaar.doe(`/api/leads/${derde.id}/blokkeren`, {
+  method: 'POST', body: JSON.stringify({ opheffen: true }),
+})).status === 200);
 
 console.log('\nDe mijlpaal: de opdracht binnenhalen:');
 check('opdracht vastleggen', (await een.doe(`/api/leads/${slechtste.id}/fase`, {

@@ -8,13 +8,15 @@ const datum = (waarde) => waarde ? new Date(waarde.replace(' ', 'T') + 'Z').toLo
   { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
 
 const ERNST = { kritiek: 'Kritiek', hoog: 'Hoog', middel: 'Middel', laag: 'Laag' };
+/** Rechtsvormen die onder de telemarketingregels vallen. */
+const NATUURLIJK = ['eenmanszaak', 'vof', 'maatschap', 'cv'];
 
 const staat = {
   ik: null,
   fases: [],
   agenten: [],
   sjablonen: [],
-  filters: { zoek: '', plaats: '', fase: '', agent: '', contact: false, band: '' },
+  filters: { zoek: '', plaats: '', fase: '', agent: '', contact: false, belbaar: false, band: '' },
   gekozen: null,
   weergave: 'kaart',
   afzender: {},
@@ -80,6 +82,8 @@ async function start() {
   staat.fases = overzicht.fases;
   staat.agenten = overzicht.agenten;
   staat.sjablonen = sjablonen.sjablonen;
+  staat.rechtsvormen = overzicht.rechtsvormen;
+  staat.benaderbaarheid = overzicht.benaderbaarheid;
 
   vulKeuzelijsten(overzicht);
 
@@ -118,6 +122,7 @@ function queryVan(extra = {}) {
   else if (staat.filters.agent === 'collegas') zet('collegas', '1');
   else zet('agent', staat.filters.agent);
   if (staat.filters.contact) zet('metContact', '1');
+  if (staat.filters.belbaar) zet('belbaar', '1');
   if (staat.filters.band) {
     const band = BANDEN.find((rij) => rij.id === staat.filters.band);
     zet('minScore', band.vanaf);
@@ -192,7 +197,7 @@ function tekenLijst(tbody, leegVak, leads, welke) {
       <td class="kwaliteit">${bolVan(lead.score)}<span class="score">${lead.score}</span></td>
       <td><div class="naam">${esc(lead.name)}</div>
           <div class="sub mono">${esc(lead.domain)}${lead.city ? ' · ' + esc(lead.city) : ''}</div>
-          ${contact ? `<div class="telefoon">${esc(contact)}</div>` : ''}</td>
+          ${contact ? `<div class="telefoon">${lead.bel_toestemming || !lead.contact.phones[0] ? '' : ''}${esc(contact)}${lead.contact.phones[0] && !lead.bel_toestemming && NATUURLIJK.includes(lead.rechtsvorm ?? '') ? ' <span class="alleen-mail" title="Bellen mag alleen met toestemming">alleen mailen</span>' : ''}</div>` : ''}</td>
       ${metActie
         ? `<td class="sub">${lead.volgende_actie_op ? esc(lead.volgende_actie_op) : '—'}</td>`
         : `<td class="probleem"><span>${esc(lead.topIssues[0]?.title ?? '')}</span></td>`}
@@ -289,6 +294,17 @@ function tekenDetail(doel, lead) {
       ? '<div class="banner mijlpaal"><span>🎯</span><div><b>Opdracht binnen.</b> Je mag de site kosteloos herbouwen en op onze hosting zetten. Vanaf hier is het uitvoeren.</div></div>'
       : ''}
 
+    ${lead.geblokkeerd
+      ? `<div class="banner verboden"><span>⛔</span><div><b>Niet benaderen.</b>
+          ${esc(lead.geblokkeerd_reden ?? 'Dit bedrijf heeft zich afgemeld.')} Bel en mail dit bedrijf niet meer.</div></div>`
+      : !lead.bellen.mag
+      ? `<div class="banner verboden"><span>📵</span><div><b>Bellen mag niet.</b> ${esc(lead.bellen.reden)}
+          ${lead.bellen.route ? `<br>${esc(lead.bellen.route)}` : ''}</div></div>`
+      : lead.bel_toestemming
+      ? `<div class="banner toegestaan"><span>☎️</span><div><b>Bellen mag.</b> Toestemming vastgelegd
+          ${lead.toestemming_via ? `via ${esc(lead.toestemming_via)}` : ''} op ${esc(datum(lead.toestemming_op))}.</div></div>`
+      : ''}
+
     ${vrij ? '<div class="rij"><button class="knop sterk" data-actie="claim">Deze neem ik</button></div>' : ''}
     ${isEigenaar ? `<div class="rij">
       <select class="veld" data-actie="toewijzen">
@@ -300,8 +316,11 @@ function tekenDetail(doel, lead) {
     <div class="deel">
       <span class="label-klein">Wat heb je gedaan?</span>
       <div class="rij">
-        ${['gebeld', 'voicemail', 'mail', 'afspraak', 'notitie'].map((soort) =>
-          `<button class="knop" data-log="${soort}">${soort[0].toUpperCase() + soort.slice(1)}</button>`).join('')}
+        ${['gebeld', 'voicemail', 'mail', 'afspraak', 'notitie'].map((soort) => {
+          const telefonisch = soort === 'gebeld' || soort === 'voicemail';
+          const uit = (telefonisch && !lead.bellen.mag) || (soort === 'mail' && !lead.mailen.mag);
+          return `<button class="knop" data-log="${soort}" ${uit ? 'disabled title="' + esc(telefonisch ? lead.bellen.reden : lead.mailen.reden) + '"' : ''}>${soort[0].toUpperCase() + soort.slice(1)}</button>`;
+        }).join('')}
       </div>
       <textarea class="klein" id="d-notitie" placeholder="Notitie bij deze stap (optioneel)"></textarea>
       <div class="rij">
@@ -351,6 +370,33 @@ function tekenDetail(doel, lead) {
         <a class="knop sterk" id="d-open" href="#" target="_blank" rel="noopener">Open in mailprogramma</a>
         <button class="knop" data-actie="kopieer">Kopieer</button>
         <button class="knop" data-actie="verstuurd">Verstuurd — leg vast</button>
+      </div>
+    </div>
+
+    <div class="deel">
+      <span class="label-klein">Mag je benaderen?</span>
+      <div class="rij">
+        <select class="veld" id="d-rechtsvorm" style="flex:1">
+          <option value="">Rechtsvorm onbekend</option>
+          ${staat.rechtsvormen.map((vorm) => `<option value="${vorm.id}" ${vorm.id === lead.rechtsvorm ? 'selected' : ''}>${esc(vorm.label)}${vorm.natuurlijkPersoon ? ' — bellen alleen met toestemming' : ''}</option>`).join('')}
+        </select>
+      </div>
+      ${lead.bel_toestemming
+        ? '<div class="rij"><button class="knop" data-actie="toestemming-intrekken">Toestemming intrekken</button></div>'
+        : `<div class="rij">
+            <select class="veld" id="d-via" style="width:150px">
+              <option value="mailreactie">per mail</option>
+              <option value="formulier">via formulier</option>
+              <option value="schriftelijk">schriftelijk</option>
+              <option value="telefonisch bevestigd">telefonisch bevestigd</option>
+            </select>
+            <input class="veld" id="d-bewijs" placeholder="Waar blijkt het uit?" style="flex:1">
+            <button class="knop" data-actie="toestemming">Toestemming vastleggen</button>
+          </div>`}
+      <div class="rij">
+        ${lead.geblokkeerd
+          ? (isEigenaar ? '<button class="knop" data-actie="deblokkeren">Blokkade opheffen</button>' : '')
+          : '<button class="knop gevaarlijk" data-actie="blokkeren">Wil niet benaderd worden</button>'}
       </div>
     </div>
 
@@ -432,6 +478,27 @@ function koppelDetailKnoppen(doel, lead) {
 
   doel.querySelector('[data-actie="volgende"]')?.addEventListener('click', () =>
     post(`/api/leads/${lead.id}/volgende-actie`, { datum: doel.querySelector('#d-actie').value || null }, 'Ingepland.'));
+
+  doel.querySelector('#d-rechtsvorm')?.addEventListener('change', (gebeurtenis) =>
+    post(`/api/leads/${lead.id}/rechtsvorm`, { rechtsvorm: gebeurtenis.target.value }, 'Rechtsvorm vastgelegd.'));
+
+  doel.querySelector('[data-actie="toestemming"]')?.addEventListener('click', () =>
+    post(`/api/leads/${lead.id}/toestemming`, {
+      via: doel.querySelector('#d-via').value,
+      bewijs: doel.querySelector('#d-bewijs').value,
+    }, 'Toestemming vastgelegd — je mag nu bellen.'));
+
+  doel.querySelector('[data-actie="toestemming-intrekken"]')?.addEventListener('click', () =>
+    post(`/api/leads/${lead.id}/toestemming`, { intrekken: true }, 'Toestemming ingetrokken.'));
+
+  doel.querySelector('[data-actie="blokkeren"]')?.addEventListener('click', () => {
+    const reden = prompt('Waarom mag dit bedrijf niet meer benaderd worden?', 'op eigen verzoek');
+    if (reden === null) return;
+    post(`/api/leads/${lead.id}/blokkeren`, { reden }, 'Dit bedrijf wordt niet meer benaderd.');
+  });
+
+  doel.querySelector('[data-actie="deblokkeren"]')?.addEventListener('click', () =>
+    post(`/api/leads/${lead.id}/blokkeren`, { opheffen: true }, 'Blokkade opgeheven.'));
 
   doel.querySelector('[data-actie="klant"]')?.addEventListener('click', () =>
     post(`/api/leads/${lead.id}/klant`, {
@@ -628,11 +695,13 @@ koppelFilter('f-plaats', 'plaats');
 koppelFilter('f-fase', 'fase');
 koppelFilter('f-agent', 'agent');
 koppelFilter('f-contact', 'contact');
+koppelFilter('f-belbaar', 'belbaar');
 
 $('f-wis').addEventListener('click', () => {
-  staat.filters = { zoek: '', plaats: '', fase: '', agent: '', contact: false, band: '' };
+  staat.filters = { zoek: '', plaats: '', fase: '', agent: '', contact: false, belbaar: false, band: '' };
   for (const id of ['f-zoek', 'f-plaats', 'f-fase', 'f-agent']) $(id).value = '';
   $('f-contact').checked = false;
+  $('f-belbaar').checked = false;
   ververs();
 });
 

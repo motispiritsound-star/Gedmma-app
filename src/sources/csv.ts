@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { parseCsv } from '../util/csv.ts';
 import { normalizeUrl, registrableDomain, isPlatformPage } from '../util/url.ts';
+import { herkenRechtsvorm } from '../db/contact.ts';
 import type { CompanyInput, Source, SourceOptions } from './types.ts';
 
 const pick = (row: Record<string, string>, ...keys: string[]): string =>
@@ -26,8 +27,9 @@ export const csvSource: Source = {
       if (!website || !domain) continue;
       if (isPlatformPage(website)) continue;
 
+      const naam = pick(row, 'naam', 'bedrijfsnaam', 'handelsnaam', 'company', 'name') || domain;
       out.push({
-        name: pick(row, 'naam', 'bedrijfsnaam', 'handelsnaam', 'company', 'name') || domain,
+        name: naam,
         website,
         domain,
         city: pick(row, 'plaats', 'stad', 'vestigingsplaats', 'city') || null,
@@ -36,6 +38,8 @@ export const csvSource: Source = {
         kvkNumber: pick(row, 'kvk', 'kvknummer', 'kvk_nummer') || null,
         phone: pick(row, 'telefoon', 'tel', 'phone') || null,
         email: pick(row, 'email', 'e-mail', 'mail') || null,
+        // De rechtsvorm bepaalt of je mag bellen; uit de kolom, anders uit de naam.
+        rechtsvorm: herkenRechtsvorm(pick(row, 'rechtsvorm', 'legal_form')) ?? herkenRechtsvorm(naam),
         source: 'csv',
         sourceRef: file,
       });
