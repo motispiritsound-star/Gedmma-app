@@ -12,12 +12,13 @@ import { config } from './config.ts';
 import { getSource, sources } from './sources/index.ts';
 import { upsertCompanies, companiesToScan, stats, db } from './db/index.ts';
 import { maakGebruiker, gebruikers, wijzigWachtwoord, zetActief, gebruikerOpEmail } from './db/team.ts';
-import { FASES, teamOverzicht, omzet, trechter, zetFase, wijsToe, testimonials, type Fase } from './db/pipeline.ts';
+import { FASES, teamOverzicht, omzet, opdrachten, trechter, zetFase, wijsToe, testimonials, type Fase } from './db/pipeline.ts';
 import { scanAll } from './scan/scanner.ts';
 import { geocodeBedrijven } from './scan/geocode.ts';
 import { queryLeads, getLead } from './report/leads.ts';
 import { exportLeads } from './report/export.ts';
-import { buildEmail, buildReport } from './report/pitch.ts';
+import { buildReport } from './report/pitch.ts';
+import { SJABLONEN, renderSjabloon, stelSjabloonVoor } from './report/templates.ts';
 
 const program = new Command();
 const euro = (cent: number): string => `€ ${(cent / 100).toFixed(2).replace('.', ',')}`;
@@ -178,7 +179,7 @@ filterOpties(
     );
   }
   log.info('');
-  log.dim(`  ${leads.length} leads. "webscan pitch <#>" voor een concept-mail, "webscan fase <#> <fase>" om bij te werken.`);
+  log.dim(`  ${leads.length} leads. "webscan mail <#>" voor een concept-mail, "webscan fase <#> <fase>" om bij te werken.`);
 });
 
 // --------------------------------------------------------------------------
@@ -195,8 +196,22 @@ filterOpties(
 
 // --------------------------------------------------------------------------
 program
-  .command('pitch <id>')
-  .description('Genereer een concept-mail (en optioneel een rapport) voor één lead')
+  .command('sjablonen')
+  .description('Toon de beschikbare mailsjablonen')
+  .action(() => {
+    log.info('');
+    for (const sjabloon of SJABLONEN) {
+      log.info(`  ${sjabloon.id.padEnd(22)} ${sjabloon.naam}`);
+      log.dim(`  ${' '.repeat(22)} ${sjabloon.wanneer}`);
+    }
+    log.info('');
+  });
+
+// --------------------------------------------------------------------------
+program
+  .command('mail <id>')
+  .description('Schrijf een mail aan een lead met een van de sjablonen')
+  .option('-s, --sjabloon <naam>', 'welk sjabloon (leeg = het sjabloon dat bij de bevindingen past)')
   .option('--naam <naam>', 'jouw naam')
   .option('--bedrijf <naam>', 'jouw bedrijfsnaam')
   .option('--telefoon <nummer>', 'jouw telefoonnummer')
@@ -206,26 +221,33 @@ program
     const lead = getLead(Number(id));
     if (!lead) { log.error(`Geen lead met id ${id}.`); process.exitCode = 1; return; }
 
-    const rapport = lead.report as { verdict?: Parameters<typeof buildEmail>[0]['verdict']; signals?: Parameters<typeof buildEmail>[0]['signals'] };
+    const rapport = lead.report as { verdict?: never; signals?: never };
     if (!rapport.verdict) { log.error('Deze lead heeft nog geen scanresultaat.'); process.exitCode = 1; return; }
 
-    const invoer = {
-      companyName: lead.name, domain: lead.domain, city: lead.city,
+    const context = {
+      bedrijf: lead.name, domein: lead.domain, plaats: lead.city,
       verdict: rapport.verdict, signals: rapport.signals ?? null,
-      sender: { name: options.naam, company: options.bedrijf, phone: options.telefoon, email: options.email },
+      afzender: { naam: options.naam, bedrijf: options.bedrijf, telefoon: options.telefoon, email: options.email },
     };
 
-    const { subject, body } = buildEmail(invoer);
-    log.info('');
-    log.info(`Aan:       ${lead.contact.emails[0] ?? '(geen e-mailadres gevonden — bel of gebruik het contactformulier)'}`);
-    log.info(`Onderwerp: ${subject}`);
-    log.info('');
-    log.info(body);
-    log.info('');
-    if (options.rapport) {
-      log.info('─'.repeat(70));
-      log.info(buildReport(invoer));
-    }
+    try {
+      const gekozen = options.sjabloon ?? stelSjabloonVoor(rapport.verdict);
+      const mail = renderSjabloon(gekozen, context, lead.contact.emails[0] ?? null);
+      log.info('');
+      log.info(`Sjabloon:  ${mail.naam}${options.sjabloon ? '' : ' (voorgesteld op basis van de scan)'}`);
+      log.info(`Aan:       ${lead.contact.emails[0] ?? '(geen e-mailadres gevonden — bel of gebruik het contactformulier)'}`);
+      log.info(`Onderwerp: ${mail.onderwerp}`);
+      log.info('');
+      log.info(mail.tekst);
+      log.info('');
+      if (options.rapport) {
+        log.info('─'.repeat(70));
+        log.info(buildReport({
+          companyName: lead.name, domain: lead.domain, city: lead.city,
+          verdict: rapport.verdict, signals: rapport.signals ?? null,
+        }));
+      }
+    } catch (fout) { log.error((fout as Error).message); process.exitCode = 1; }
   });
 
 // --------------------------------------------------------------------------
@@ -307,18 +329,20 @@ program
     const rijen = teamOverzicht();
     if (rijen.length === 0) { log.warn('Nog geen actieve accounts.'); return; }
     log.info('');
-    log.info('  Naam                     Rol        Open  Gebeld 7d  Afspraken  Klanten  Maandomzet');
-    log.info('  ' + '─'.repeat(90));
+    log.info('  Naam                     Rol        Open  Gebeld 7d  Afspraken  Opdrachten  Klanten  Maandomzet');
+    log.info('  ' + '─'.repeat(102));
     for (const rij of rijen) {
       log.info(
         '  ' + rij.naam.slice(0, 23).padEnd(25) + rij.rol.padEnd(11) +
         String(rij.open).padStart(4) + String(rij.gebeld_7d).padStart(11) +
-        String(rij.afspraken).padStart(11) + String(rij.klanten).padStart(9) +
-        euro(rij.mrr_cent).padStart(13),
+        String(rij.afspraken).padStart(11) + String(rij.opdrachten).padStart(12) +
+        String(rij.klanten).padStart(9) + euro(rij.mrr_cent).padStart(13),
       );
     }
     const totaal = omzet();
+    const werk = opdrachten();
     log.info('');
+    log.info(`  ${werk.totaal} opdrachten binnen (${werk.laatste30Dagen} in de laatste 30 dagen), ${werk.omgezet} daarvan betaalt inmiddels`);
     log.info(`  ${totaal.actieveKlanten} actieve klanten · ${euro(totaal.mrrCent)} per maand · ${euro(totaal.jaaromzetCent)} per jaar`);
     log.info('');
   });

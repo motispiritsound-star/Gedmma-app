@@ -5,10 +5,11 @@ import { queryLeads, getLead, kaartPunten, countLeads, plaatsen, type LeadFilter
 import { db, stats } from '../db/index.ts';
 import { login, logUit, sessieGebruiker, maakGebruiker, gebruikers, zetActief, wijzigWachtwoord,
          ruimSessiesOp, type Gebruiker } from '../db/team.ts';
-import { FASES, activiteiten, bewaarTestimonial, claim, logActiviteit, maakKlant, omzet,
+import { FASES, activiteiten, bewaarTestimonial, claim, logActiviteit, maakKlant, omzet, opdrachten,
          teamOverzicht, trechter, wijsToe, zegKlantOp, zetFase, zetVolgendeActie,
          type Fase, type Soort } from '../db/pipeline.ts';
-import { buildEmail, buildReport } from '../report/pitch.ts';
+import { buildReport } from '../report/pitch.ts';
+import { SJABLONEN, renderSjabloon, stelSjabloonVoor } from '../report/templates.ts';
 import { toCsv } from '../util/csv.ts';
 import { log } from '../util/log.ts';
 import { config } from '../config.ts';
@@ -44,7 +45,7 @@ function zetSessieCookie(res: Response, token: string, dagen = 14): void {
   res.setHeader('Set-Cookie', delen.join('; '));
 }
 
-function filterUitQuery(query: Record<string, unknown>): LeadFilter {
+function filterUitQuery(query: Record<string, unknown>, ikId?: number): LeadFilter {
   return {
     maxScore: getal(query.maxScore),
     minScore: getal(query.minScore),
@@ -55,6 +56,7 @@ function filterUitQuery(query: Record<string, unknown>): LeadFilter {
     fase: (query.fase as string) || undefined,
     agentId: getal(query.agent),
     alleenVrij: query.vrij === '1',
+    vanCollegas: query.collegas === '1' ? ikId : undefined,
     metContact: query.metContact === '1',
     metCoordinaten: query.opKaart === '1',
     includeOffline: query.includeOffline !== '0',
@@ -172,6 +174,7 @@ export async function startServer(port: number): Promise<void> {
       })),
       trechter: trechter(eigenAgent),
       fases: FASES,
+      opdrachten: opdrachten(eigenAgent),
       mijnOpenLeads: countLeads({ agentId: req.gebruiker!.id, maxScore: 100 }),
       omzet: req.gebruiker!.rol === 'eigenaar' ? omzet() : null,
       plaatsen: plaatsen().slice(0, 40),
@@ -180,13 +183,13 @@ export async function startServer(port: number): Promise<void> {
   });
 
   // --- leads ---
-  app.get('/api/leads', vereistLogin, (req, res) => {
-    const filter = filterUitQuery(req.query as Record<string, unknown>);
+  app.get('/api/leads', vereistLogin, (req: Verzoek, res) => {
+    const filter = filterUitQuery(req.query as Record<string, unknown>, req.gebruiker!.id);
     res.json({ leads: queryLeads(filter), totaal: countLeads(filter) });
   });
 
-  app.get('/api/kaart', vereistLogin, (req, res) => {
-    const filter = filterUitQuery(req.query as Record<string, unknown>);
+  app.get('/api/kaart', vereistLogin, (req: Verzoek, res) => {
+    const filter = filterUitQuery(req.query as Record<string, unknown>, req.gebruiker!.id);
     res.json({ punten: kaartPunten({ ...filter, limit: getal(req.query.limit, 5000) }) });
   });
 
@@ -196,24 +199,44 @@ export async function startServer(port: number): Promise<void> {
     res.json({ ...lead, geschiedenis: activiteiten(lead.id) });
   });
 
-  app.get('/api/leads/:id/pitch', vereistLogin, (req: Verzoek, res) => {
+  app.get('/api/sjablonen', vereistLogin, (_req, res) => {
+    res.json({
+      sjablonen: SJABLONEN.map((sjabloon) => ({
+        id: sjabloon.id, naam: sjabloon.naam, wanneer: sjabloon.wanneer, naFase: sjabloon.naFase,
+      })),
+    });
+  });
+
+  app.get('/api/leads/:id/mail', vereistLogin, (req: Verzoek, res) => {
     const lead = getLead(Number(req.params.id));
     if (!lead) { meld(res, 404, 'Die lead bestaat niet.'); return; }
 
-    const report = lead.report as { verdict?: never; signals?: never };
-    if (!report?.verdict) { meld(res, 409, 'Deze lead is nog niet gescand.'); return; }
+    const rapport = lead.report as { verdict?: never; signals?: never };
+    if (!rapport?.verdict) { meld(res, 409, 'Deze lead is nog niet gescand.'); return; }
 
-    const invoer = {
-      companyName: lead.name, domain: lead.domain, city: lead.city,
-      verdict: report.verdict, signals: report.signals ?? null,
-      sender: {
-        name: (req.query.naam as string) || req.gebruiker!.naam,
-        company: (req.query.bedrijf as string) || undefined,
-        phone: (req.query.telefoon as string) || undefined,
+    const context = {
+      bedrijf: lead.name, domein: lead.domain, plaats: lead.city,
+      verdict: rapport.verdict, signals: rapport.signals ?? null,
+      afzender: {
+        naam: (req.query.naam as string) || req.gebruiker!.naam,
+        bedrijf: (req.query.bedrijf as string) || undefined,
+        telefoon: (req.query.telefoon as string) || undefined,
         email: (req.query.email as string) || req.gebruiker!.email,
       },
     };
-    res.json({ ...buildEmail(invoer), rapport: buildReport(invoer), aan: lead.contact.emails[0] ?? null });
+
+    const gekozen = (req.query.sjabloon as string) || stelSjabloonVoor(rapport.verdict);
+    try {
+      res.json({
+        ...renderSjabloon(gekozen, context, lead.contact.emails[0] ?? null),
+        voorgesteld: stelSjabloonVoor(rapport.verdict),
+        aan: lead.contact.emails[0] ?? null,
+        rapport: buildReport({
+          companyName: lead.name, domain: lead.domain, city: lead.city,
+          verdict: rapport.verdict, signals: rapport.signals ?? null,
+        }),
+      });
+    } catch (fout) { meld(res, 400, (fout as Error).message); }
   });
 
   // --- werken aan een lead ---
@@ -316,8 +339,10 @@ export async function startServer(port: number): Promise<void> {
   });
 
   // --- export ---
-  app.get('/api/export.csv', vereistLogin, (req, res) => {
-    const leads = queryLeads({ ...filterUitQuery(req.query as Record<string, unknown>), limit: 100_000, offset: 0 });
+  app.get('/api/export.csv', vereistLogin, (req: Verzoek, res) => {
+    const leads = queryLeads({
+      ...filterUitQuery(req.query as Record<string, unknown>, req.gebruiker!.id), limit: 100_000, offset: 0,
+    });
     const rijen = leads.map((lead) => ({
       bedrijf: lead.name, website: lead.website, plaats: lead.city ?? '',
       score: lead.score ?? '', beoordeling: lead.grade ?? '',

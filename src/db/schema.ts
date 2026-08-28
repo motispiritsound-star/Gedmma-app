@@ -167,6 +167,43 @@ const MIGRATIES: { naam: string; sql: string }[] = [
       LEFT JOIN testimonials t ON t.company_id = c.id;
     `,
   },
+  {
+    naam: '007-opdracht-als-mijlpaal',
+    sql: `
+      -- "akkoord" heette de fase waarin een bedrijf ja zegt tegen de kosteloze
+      -- herbouw. Die stap is de mijlpaal waar alles op stuurt, dus hij heet nu
+      -- "opdracht": we hebben de opdracht om te bouwen en te hosten.
+      UPDATE opvolging   SET fase = 'opdracht'     WHERE fase = 'akkoord';
+      UPDATE activiteiten SET uitkomst = 'opdracht' WHERE soort = 'fase' AND uitkomst = 'akkoord';
+    `,
+  },
+  {
+    naam: '008-toewijsdatum-in-view',
+    sql: `
+      DROP VIEW IF EXISTS leads;
+      CREATE VIEW leads AS
+      SELECT
+        c.id, c.name, c.website, c.domain, c.city, c.province, c.branch,
+        c.lat, c.lon, c.phone AS company_phone, c.email AS company_email, c.source,
+        s.id AS scan_id, s.scanned_at, s.status AS scan_status,
+        s.score, s.grade, s.final_url, s.http_status, s.error, s.report,
+        COALESCE(o.fase, 'nieuw')  AS fase,
+        o.toegewezen_aan, o.toegewezen_op, o.volgende_actie_op, o.notitie AS opvolging_notitie,
+        o.bijgewerkt_op AS opvolging_bijgewerkt_op,
+        g.naam AS agent_naam,
+        k.status AS klant_status, k.maandbedrag_cent, k.gestart_op AS klant_sinds,
+        t.sterren AS testimonial_sterren, t.tekst AS testimonial_tekst,
+        (SELECT COUNT(*) FROM activiteiten a WHERE a.company_id = c.id) AS activiteiten
+      FROM companies c
+      LEFT JOIN scans s ON s.id = (
+        SELECT id FROM scans WHERE company_id = c.id ORDER BY scanned_at DESC, id DESC LIMIT 1
+      )
+      LEFT JOIN opvolging o   ON o.company_id = c.id
+      LEFT JOIN gebruikers g  ON g.id = o.toegewezen_aan
+      LEFT JOIN klanten k     ON k.company_id = c.id
+      LEFT JOIN testimonials t ON t.company_id = c.id;
+    `,
+  },
 ];
 
 /** Brengt de database bij naar de nieuwste versie. Veilig om vaak aan te roepen. */

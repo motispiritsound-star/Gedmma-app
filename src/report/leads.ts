@@ -15,6 +15,8 @@ export type LeadFilter = {
   agentId?: number;
   /** Alleen leads die nog van niemand zijn. */
   alleenVrij?: boolean;
+  /** Alleen leads die bij een ander dan deze gebruiker liggen. */
+  vanCollegas?: number;
   /** Alleen leads met een telefoonnummer of e-mailadres. */
   metContact?: boolean;
   /** Alleen leads met coördinaten (voor de kaart). */
@@ -43,6 +45,7 @@ export type Lead = {
   error: string | null;
   fase: string;
   toegewezen_aan: number | null;
+  toegewezen_op: string | null;
   agent_naam: string | null;
   volgende_actie_op: string | null;
   opvolging_notitie: string | null;
@@ -85,6 +88,7 @@ function shape(row: Row): Lead {
     error: (row.error as string) ?? null,
     fase: String(row.fase ?? 'nieuw'),
     toegewezen_aan: getal(row.toegewezen_aan),
+    toegewezen_op: (row.toegewezen_op as string) ?? null,
     agent_naam: (row.agent_naam as string) ?? null,
     volgende_actie_op: (row.volgende_actie_op as string) ?? null,
     opvolging_notitie: (row.opvolging_notitie as string) ?? null,
@@ -118,6 +122,10 @@ function waar(filter: LeadFilter): { sql: string; params: (string | number)[] } 
   if (filter.fase) { delen.push('fase = ?'); params.push(filter.fase); }
   if (filter.agentId !== undefined) { delen.push('toegewezen_aan = ?'); params.push(filter.agentId); }
   if (filter.alleenVrij) delen.push('toegewezen_aan IS NULL');
+  if (filter.vanCollegas !== undefined) {
+    delen.push('toegewezen_aan IS NOT NULL AND toegewezen_aan != ?');
+    params.push(filter.vanCollegas);
+  }
   if (filter.metCoordinaten) delen.push('lat IS NOT NULL AND lon IS NOT NULL');
   if (filter.includeOffline === false) delen.push("scan_status = 'ok'");
   if (filter.search) {
@@ -156,7 +164,7 @@ export function countLeads(filter: LeadFilter = {}): number {
 export type KaartPunt = {
   id: number; naam: string; plaats: string | null;
   lat: number; lon: number; score: number; grade: string; fase: string;
-  agent: string | null; klant: boolean;
+  agentId: number | null; agent: string | null; klant: boolean;
 };
 
 /**
@@ -166,7 +174,7 @@ export type KaartPunt = {
 export function kaartPunten(filter: LeadFilter = {}): KaartPunt[] {
   const { sql, params } = waar({ ...filter, metCoordinaten: true });
   const rows = db().prepare(`
-    SELECT id, name, city, lat, lon, score, grade, fase, agent_naam, klant_status
+    SELECT id, name, city, lat, lon, score, grade, fase, toegewezen_aan, agent_naam, klant_status
     FROM leads WHERE ${sql} ORDER BY score ASC LIMIT ?
   `).all(...params, filter.limit ?? 5000) as unknown as Row[];
 
@@ -179,6 +187,7 @@ export function kaartPunten(filter: LeadFilter = {}): KaartPunt[] {
     score: Number(row.score),
     grade: String(row.grade ?? 'F'),
     fase: String(row.fase ?? 'nieuw'),
+    agentId: getal(row.toegewezen_aan),
     agent: (row.agent_naam as string) ?? null,
     klant: row.klant_status === 'actief',
   }));

@@ -9,7 +9,7 @@
   --accent:#0f6b74; --accent-ink:#0b545c; --accent-wash:#e4f0f1;
   --slecht:#d03b3b; --matig:#e8901c; --goed:#0ca30c;
   --slecht-wash:#fae6e6; --matig-wash:#fceee8; --goed-wash:#e6f5e6;
-  --kaart-water:#eaf0f1; --kaart-land:#dfe8e8; --kaart-rand:#a9bec0; --kaart-tekst:#5c6b71;
+  --kaart-water:#eaf0f1; --kaart-land:#dfe8e8; --kaart-rand:#a9bec0; --kaart-tekst:#5c6b71; --kaart-bezet:#5c6b71;
   --shadow:0 1px 2px rgba(16,26,28,.05), 0 8px 24px -18px rgba(16,26,28,.3);
   --sans:"IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
@@ -20,7 +20,7 @@
     --ink:#e3edee; --ink-2:#b3c4c6; --muted:#8b9fa2; --line:#243437; --line-strong:#33474b;
     --accent:#5bb8c1; --accent-ink:#8ed3d9; --accent-wash:#16302f;
     --slecht-wash:#331a1a; --matig-wash:#33211a; --goed-wash:#12301a;
-    --kaart-water:#101b1d; --kaart-land:#1d2c2f; --kaart-rand:#35494d; --kaart-tekst:#8b9fa2;
+    --kaart-water:#101b1d; --kaart-land:#1d2c2f; --kaart-rand:#35494d; --kaart-tekst:#8b9fa2; --kaart-bezet:#9db1b4;
     --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -22px rgba(0,0,0,.9);
   }
 }
@@ -130,6 +130,19 @@ td.probleem span { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient
   font:500 11.5px/1.5 var(--mono); white-space:nowrap; }
 .fasepil.klant { background:var(--goed-wash); border-color:color-mix(in srgb,var(--goed) 35%,transparent); }
 .fasepil.afgewezen { color:var(--muted); }
+.fasepil.opdracht, .fasepil.in_aanbouw, .fasepil.live {
+  background:var(--accent-wash); border-color:color-mix(in srgb,var(--accent) 40%,transparent);
+  color:var(--accent-ink); font-weight:600; }
+.agentchip { display:inline-flex; align-items:center; gap:6px; margin-top:4px; font:500 11.5px/1 var(--mono); color:var(--ink-2); }
+.initialen { display:grid; place-items:center; width:19px; height:19px; border-radius:50%;
+  background:var(--line); color:var(--ink-2); font:600 9.5px/1 var(--sans); }
+tbody tr.bezet td:first-child { box-shadow:inset 3px 0 0 var(--line-strong); }
+.stap.mijlpaal { border-color:color-mix(in srgb,var(--accent) 45%,transparent); }
+.stap.mijlpaal b { color:var(--accent-ink); }
+.banner { display:flex; gap:10px; align-items:flex-start; margin-top:14px; padding:10px 12px; border-radius:8px;
+  font-size:13px; background:var(--surface); border:1px solid var(--line); }
+.banner.mijlpaal { background:var(--accent-wash); border-color:color-mix(in srgb,var(--accent) 35%,transparent); }
+.banner b { font-weight:600; }
 .leeg { padding:48px 20px; text-align:center; color:var(--muted); font-size:13.5px; }
 
 /* detail */
@@ -243,6 +256,7 @@ textarea { width:100%; min-height:220px; resize:vertical; background:var(--surfa
 
 <script type="module">
 /*__KAART_JS__*/
+/*__SJABLONEN_JS__*/
 
 const NL_OMTREK = "__NL_OMTREK__";
 const DATA = "__DEMO_DATA__";
@@ -253,7 +267,7 @@ const esc = (waarde) => String(waarde ?? '').replace(/[&<>"]/g, (teken) =>
 const euro = (cent) => `€ ${((cent ?? 0) / 100).toFixed(2).replace('.', ',')}`;
 const ERNST = { kritiek:'Kritiek', hoog:'Hoog', middel:'Middel', laag:'Laag' };
 
-const staat = { zoek:'', plaats:'', branche:'', contact:false, band:'', fase:'', gekozen:null, afzender:{} };
+const staat = { zoek:'', plaats:'', branche:'', contact:false, band:'', fase:'', gekozen:null, sjabloon:null, afzender:{} };
 let kaart = null;
 
 $('tijd').textContent = 'Gescand op ' + new Date(DATA.gegenereerdOp)
@@ -263,14 +277,15 @@ $('tegels').innerHTML = [
   { waarde: DATA.samenvatting.bedrijven, tekst:'websites gescand' },
   { waarde: DATA.samenvatting.gemiddelde, tekst:'gemiddelde score' },
   { waarde: DATA.samenvatting.slecht, tekst:'onder de 50 — je leads', klem:true },
-  { waarde: DATA.samenvatting.benaderbaar, tekst:'daarvan met contactgegevens', klem:true },
+  { waarde: DATA.samenvatting.benaderbaar, tekst:'daarvan met contactgegevens' },
+  { waarde: DATA.samenvatting.opdrachten, tekst:'opdrachten binnen', klem:true },
   { waarde: DATA.samenvatting.klanten, tekst:'hostingklanten' },
   { waarde: euro(DATA.samenvatting.mrrCent), tekst:'per maand', klem:true },
 ].map((tegel) => `<div class="tegel${tegel.klem ? ' klem' : ''}"><b>${esc(tegel.waarde)}</b><span>${tegel.tekst}</span></div>`).join('');
 
 function tekenTrechter() {
   $('trechter').innerHTML = DATA.trechter.filter((stap) => stap.aantal > 0).map((stap) => `
-    <button class="stap" data-fase="${stap.fase}" aria-pressed="${staat.fase === stap.fase}">
+    <button class="stap${stap.fase === DATA.mijlpaal ? ' mijlpaal' : ''}" data-fase="${stap.fase}" aria-pressed="${staat.fase === stap.fase}">
       <b>${stap.aantal}</b><span>${esc(stap.label)}</span></button>`).join('');
   for (const knop of $('trechter').querySelectorAll('.stap')) {
     knop.addEventListener('click', () => {
@@ -323,25 +338,29 @@ function ververs() {
   kaart.zetPunten(leads.filter((lead) => lead.lat && lead.lon).map((lead) => ({
     id: lead.id, naam: lead.naam, plaats: lead.plaats, lat: lead.lat, lon: lead.lon,
     score: lead.score, grade: lead.grade, fase: lead.fase,
+    agentId: lead.agentId, agent: lead.agent,
   })));
   if (staat.gekozen) kaart.zetGekozen(staat.gekozen);
   else $('detail').innerHTML = '<div class="leeg">Klik een bolletje op de kaart of een regel in de lijst aan.</div>';
 }
 
 const faseLabel = (fase) => DATA.faseLabels[fase] ?? fase;
+const initialen = (naam) => naam.split(/\s+/).filter(Boolean).slice(0, 2).map((deel) => deel[0].toUpperCase()).join('');
 
 function tekenLijst(leads) {
   $('rijen').innerHTML = leads.map((lead) => {
     const contact = lead.contact.phones[0] ?? lead.contact.emails[0] ?? '';
     return `
-    <tr data-id="${lead.id}" tabindex="0" aria-selected="${lead.id === staat.gekozen}">
+    <tr class="${lead.agentId ? 'bezet' : ''}" data-id="${lead.id}" tabindex="0" aria-selected="${lead.id === staat.gekozen}">
       <td class="kwaliteit"><span class="bol bol-${bandVan(lead.score).id}"></span><span class="score">${lead.score}</span></td>
       <td><div class="naam">${esc(lead.naam)}</div>
           <div class="sub mono">${esc(lead.domein)}${lead.plaats ? ' · ' + esc(lead.plaats) : ''}</div>
           ${contact ? `<div class="telefoon">${esc(contact)}</div>` : ''}</td>
-      <td class="probleem"><span>${esc(lead.problemen[0]?.title ?? 'Geen problemen gevonden')}</span></td>
+      <td class="probleem"><span>${esc(lead.verdict.issues[0]?.title ?? 'Geen problemen gevonden')}</span></td>
       <td><span class="fasepil ${lead.fase}">${esc(faseLabel(lead.fase))}</span>
-          ${lead.agent ? `<div class="sub">${esc(lead.agent)}</div>` : ''}</td>
+          ${lead.agent
+            ? `<div class="agentchip"><span class="initialen">${esc(initialen(lead.agent))}</span>${esc(lead.agent)}</div>`
+            : '<div class="sub">vrij</div>'}</td>
     </tr>`;
   }).join('');
 
@@ -360,9 +379,12 @@ function toonTip(cluster, x, y) {
   tip.hidden = false;
   tip.style.left = `${Math.min(x + 14, window.innerWidth - 260)}px`;
   tip.style.top = `${y + 16}px`;
-  tip.innerHTML = cluster.aantal === 1
-    ? `<b>${esc(cluster.punt.naam)}</b><span class="sub">${esc(cluster.punt.plaats ?? '')} · score ${cluster.punt.score} · ${esc(faseLabel(cluster.punt.fase))}</span>`
-    : `<b>${cluster.aantal} bedrijven</b><span class="sub">gemiddeld ${Math.round(cluster.som / cluster.aantal)}/100 — klik om in te zoomen</span>`;
+  if (cluster.aantal > 1) {
+    tip.innerHTML = `<b>${cluster.aantal} bedrijven</b><span class="sub">gemiddeld ${Math.round(cluster.som / cluster.aantal)}/100 — klik om in te zoomen</span>`;
+    return;
+  }
+  const punt = cluster.punt;
+  tip.innerHTML = `<b>${esc(punt.naam)}</b><span class="sub">${esc(punt.plaats ?? '')} · score ${punt.score} · ${esc(faseLabel(punt.fase))}<br>${punt.agent ? esc(punt.agent) + ' is hiermee bezig' : 'nog vrij'}</span>`;
 }
 
 const kwesties = (lijst) => lijst.map((kwestie) => `
@@ -383,7 +405,8 @@ function kiesLead(id) {
   const band = bandVan(lead.score);
   const feiten = lead.feiten;
   const feitVeld = (waarde, tekst) => `<div class="feit"><b>${esc(waarde)}</b><span>${esc(tekst)}</span></div>`;
-  const licht = lead.problemen.filter((kwestie) => kwestie.severity === 'laag');
+  const problemen = lead.verdict?.issues ?? [];
+  const licht = problemen.filter((kwestie) => kwestie.severity === 'laag');
 
   $('detail').innerHTML = `
     <div class="paneelkop">
@@ -398,16 +421,20 @@ function kiesLead(id) {
 
     <div class="rij">
       <span class="fasepil ${lead.fase}">${esc(faseLabel(lead.fase))}</span>
-      ${lead.agent ? `<span class="sub">bij ${esc(lead.agent)}</span>` : '<span class="sub">nog van niemand</span>'}
       ${lead.klantStatus === 'actief' ? `<span class="fasepil klant">klant · ${euro(lead.maandbedragCent)}/mnd</span>` : ''}
     </div>
+
+    ${lead.agent ? `<div class="banner"><span>👤</span><div><b>${esc(lead.agent)} is hiermee bezig.</b>
+      In het dashboard kan niemand anders deze lead oppakken of bewerken.</div></div>` : ''}
+    ${lead.fase === DATA.mijlpaal ? `<div class="banner mijlpaal"><span>🎯</span><div><b>Opdracht binnen.</b>
+      De site mag kosteloos herbouwd en op onze hosting gezet worden. Dit is de mijlpaal waar alles op stuurt.</div></div>` : ''}
 
     ${lead.fout ? `<div class="deel"><span class="label-klein">Bij het ophalen</span>
       <div class="sub">${esc(lead.fout)}</div></div>` : ''}
 
     <div class="deel">
       <span class="label-klein">Score per onderdeel</span>
-      ${lead.categorieen.map((categorie) => `
+      ${(lead.verdict?.categories ?? []).map((categorie) => `
         <div class="meter">
           <span class="meter-naam">${esc(categorie.label)}</span>
           <span class="meter-waarde">${categorie.score}/${categorie.max}</span>
@@ -426,17 +453,21 @@ function kiesLead(id) {
       </div></div>` : ''}
 
     <div class="deel">
-      <span class="label-klein">Gevonden problemen (${lead.problemen.length})</span>
-      ${lead.problemen.length === 0
+      <span class="label-klein">Gevonden problemen (${problemen.length})</span>
+      ${problemen.length === 0
         ? '<p class="sub" style="margin:0">Niets aan te merken — dit is geen lead.</p>'
-        : kwesties(lead.problemen.filter((kwestie) => kwestie.severity !== 'laag')) +
+        : kwesties(problemen.filter((kwestie) => kwestie.severity !== 'laag')) +
           (licht.length > 0
             ? `<details class="rest"><summary>Nog ${licht.length} kleine punten</summary>${kwesties(licht)}</details>`
             : '')}
     </div>
 
     <div class="deel">
-      <span class="label-klein">Concept-mail</span>
+      <span class="label-klein">Mail versturen</span>
+      <select class="veld" id="d-sjabloon" style="width:100%">
+        ${SJABLONEN.map((sjabloon) => `<option value="${sjabloon.id}">${esc(sjabloon.naam)}</option>`).join('')}
+      </select>
+      <p class="sub" id="d-wanneer" style="margin:5px 0 0"></p>
       <div class="rij">
         <input class="veld" id="a-naam" placeholder="Jouw naam" style="flex:1" value="${esc(staat.afzender.naam ?? '')}">
         <input class="veld" id="a-bedrijf" placeholder="Jouw bedrijf" style="flex:1" value="${esc(staat.afzender.bedrijf ?? '')}">
@@ -444,40 +475,63 @@ function kiesLead(id) {
       <div class="rij">
         <input class="veld" id="a-telefoon" placeholder="Telefoon" style="width:130px" value="${esc(staat.afzender.telefoon ?? '')}">
         <input class="veld" id="a-email" placeholder="E-mail" style="flex:1" value="${esc(staat.afzender.email ?? '')}">
+      </div>
+      <input class="veld" id="d-onderwerp" style="width:100%;margin-top:7px" readonly>
+      <textarea id="mail" spellcheck="false" style="margin-top:7px"></textarea>
+      <div class="rij">
+        <a class="knop sterk" id="d-open" href="#" target="_blank" rel="noopener">Open in mailprogramma</a>
         <button class="knop" id="kopieer">Kopieer</button>
       </div>
-      <textarea id="mail" spellcheck="false"></textarea>
-      <p class="demo-noot">In het dashboard staan hier ook de knoppen om een telefoontje vast te leggen,
-        de fase te verzetten, een terugbelmoment te plannen en de klant met maandbedrag op te voeren.</p>
+      <p class="demo-noot">Dertien sjablonen, van eerste contact tot opdrachtbevestiging en de vraag om een
+        testimonial. Het sjabloon dat bij deze scan past staat voorgeselecteerd. In het dashboard legt de knop
+        "Verstuurd" de mail ook vast in de geschiedenis van de lead en zet hij de fase door.</p>
     </div>`;
+
+  $('d-sjabloon').value = staat.sjabloon ?? lead.voorgesteldSjabloon ?? 'eerste-contact';
+  $('d-sjabloon').addEventListener('change', () => {
+    staat.sjabloon = $('d-sjabloon').value;
+    vulMail(lead);
+  });
 
   for (const veld of ['a-naam', 'a-bedrijf', 'a-telefoon', 'a-email']) {
     $(veld).addEventListener('input', () => {
-      staat.afzender[veld.slice(2)] = $(veld).value;
+      const sleutel = { 'a-naam':'naam', 'a-bedrijf':'bedrijf', 'a-telefoon':'telefoon', 'a-email':'email' }[veld];
+      staat.afzender[sleutel] = $(veld).value;
       vulMail(lead);
     });
   }
   $('kopieer').addEventListener('click', async () => {
-    await navigator.clipboard.writeText($('mail').value);
+    await navigator.clipboard.writeText(`Onderwerp: ${$('d-onderwerp').value}\n\n${$('mail').value}`);
     $('kopieer').textContent = 'Gekopieerd';
     setTimeout(() => { $('kopieer').textContent = 'Kopieer'; }, 1800);
   });
   vulMail(lead);
 }
 
+/** Rendert het gekozen sjabloon met dezelfde code als het dashboard. */
 function vulMail(lead) {
-  const naam = staat.afzender.naam?.trim() || '[jouw naam]';
-  const bedrijf = staat.afzender.bedrijf?.trim() || '[jouw bedrijf]';
-  const contact = [staat.afzender.telefoon?.trim(), staat.afzender.email?.trim()]
-    .filter(Boolean).join(' · ') || '[telefoon] · [e-mail]';
+  const gekozen = staat.sjabloon ?? lead.voorgesteldSjabloon ?? 'eerste-contact';
+  const mail = renderSjabloon(gekozen, {
+    bedrijf: lead.naam, domein: lead.domein, plaats: lead.plaats,
+    verdict: lead.verdict, signals: lead.signals,
+    afzender: staat.afzender,
+  }, lead.contact.emails[0] ?? null);
 
-  $('mail').value =
-    `Aan: ${lead.contact.emails[0] ?? '(geen e-mailadres gevonden — bel of gebruik het contactformulier)'}\n` +
-    `Onderwerp: ${lead.pitch.onderwerp}\n\n` +
-    lead.pitch.tekst
-      .replace('[jouw naam]', naam)
-      .replace('[jouw bedrijf]', bedrijf)
-      .replace('[telefoon] · [e-mail]', contact);
+  $('d-onderwerp').value = mail.onderwerp;
+  $('mail').value = mail.tekst;
+
+  const beschrijving = SJABLONEN.find((sjabloon) => sjabloon.id === gekozen);
+  $('d-wanneer').textContent = (beschrijving?.wanneer ?? '') +
+    (gekozen === (lead.voorgesteldSjabloon ?? 'eerste-contact') ? ' · voorgesteld op basis van de scan' : '');
+
+  const openen = $('d-open');
+  if (mail.mailto) {
+    openen.href = mail.mailto;
+    openen.textContent = 'Open in mailprogramma';
+  } else {
+    openen.href = '#';
+    openen.textContent = 'Geen e-mailadres — bel of gebruik het formulier';
+  }
 }
 
 // --- bediening ---

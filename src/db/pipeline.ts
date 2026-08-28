@@ -3,19 +3,26 @@ import { db } from './index.ts';
 /**
  * De weg die een lead aflegt, van gescande website naar hostingklant.
  * `open` betekent: staat nog op de werklijst van een agent.
+ * `mijlpaal` markeert de stap waar alles op stuurt: de opdracht om de site
+ * kosteloos te herbouwen en op onze hosting te zetten. Vanaf dat moment is het
+ * werk binnen; alles daarvoor is overtuigen.
  */
 export const FASES = [
-  { id: 'nieuw',      label: 'Nieuw',            open: true,  uitleg: 'Gescand, nog niemand mee bezig' },
-  { id: 'toegewezen', label: 'Toegewezen',       open: true,  uitleg: 'Op de lijst van een agent' },
-  { id: 'gebeld',     label: 'Gebeld',           open: true,  uitleg: 'Gesproken, nog geen besluit' },
-  { id: 'geen_gehoor',label: 'Geen gehoor',      open: true,  uitleg: 'Niet bereikt, later opnieuw' },
-  { id: 'afspraak',   label: 'Afspraak',         open: true,  uitleg: 'Afspraak of terugbelmoment staat' },
-  { id: 'akkoord',    label: 'Akkoord',          open: true,  uitleg: 'Zegt ja tegen de gratis verbetering' },
-  { id: 'in_aanbouw', label: 'In aanbouw',       open: true,  uitleg: 'Nieuwe site wordt gebouwd' },
-  { id: 'live',       label: 'Live',             open: true,  uitleg: 'Site staat live op onze hosting' },
-  { id: 'klant',      label: 'Klant',            open: false, uitleg: 'Betaalt maandelijks voor hosting' },
-  { id: 'afgewezen',  label: 'Afgewezen',        open: false, uitleg: 'Geen interesse' },
+  { id: 'nieuw',      label: 'Nieuw',       open: true,  mijlpaal: false, uitleg: 'Gescand, nog niemand mee bezig' },
+  { id: 'toegewezen', label: 'Toegewezen',  open: true,  mijlpaal: false, uitleg: 'Op de lijst van een agent' },
+  { id: 'gebeld',     label: 'Gebeld',      open: true,  mijlpaal: false, uitleg: 'Gesproken, nog geen besluit' },
+  { id: 'geen_gehoor',label: 'Geen gehoor', open: true,  mijlpaal: false, uitleg: 'Niet bereikt, later opnieuw' },
+  { id: 'afspraak',   label: 'Afspraak',    open: true,  mijlpaal: false, uitleg: 'Afspraak of terugbelmoment staat' },
+  { id: 'opdracht',   label: 'Opdracht binnen', open: true, mijlpaal: true,
+    uitleg: 'Mag de site kosteloos herbouwen en op onze hosting zetten' },
+  { id: 'in_aanbouw', label: 'In aanbouw',  open: true,  mijlpaal: false, uitleg: 'Nieuwe site wordt gebouwd' },
+  { id: 'live',       label: 'Live',        open: true,  mijlpaal: false, uitleg: 'Site staat live op onze hosting' },
+  { id: 'klant',      label: 'Klant',       open: false, mijlpaal: false, uitleg: 'Betaalt maandelijks voor hosting' },
+  { id: 'afgewezen',  label: 'Afgewezen',   open: false, mijlpaal: false, uitleg: 'Geen interesse' },
 ] as const;
+
+/** De fases vanaf de mijlpaal: hier is de opdracht binnen. */
+export const VANAF_OPDRACHT: string[] = ['opdracht', 'in_aanbouw', 'live', 'klant'];
 
 export type Fase = (typeof FASES)[number]['id'];
 
@@ -181,7 +188,8 @@ export const testimonials = (alleenPubliceerbaar = false) =>
 export type TeamRegel = {
   gebruiker_id: number; naam: string; rol: string;
   toegewezen: number; open: number; gebeld_7d: number;
-  afspraken: number; klanten: number; mrr_cent: number; testimonials: number;
+  afspraken: number; opdrachten: number; opdrachten_30d: number;
+  klanten: number; mrr_cent: number; testimonials: number;
 };
 
 export function teamOverzicht(): TeamRegel[] {
@@ -194,6 +202,10 @@ export function teamOverzicht(): TeamRegel[] {
       (SELECT COUNT(*) FROM activiteiten a WHERE a.gebruiker_id = g.id AND a.soort IN ('gebeld','voicemail')
          AND a.op > datetime('now','-7 days')) AS gebeld_7d,
       (SELECT COUNT(*) FROM opvolging o WHERE o.toegewezen_aan = g.id AND o.fase = 'afspraak') AS afspraken,
+      (SELECT COUNT(*) FROM opvolging o WHERE o.toegewezen_aan = g.id
+         AND o.fase IN (${VANAF_OPDRACHT.map((fase) => `'${fase}'`).join(',')})) AS opdrachten,
+      (SELECT COUNT(*) FROM activiteiten a WHERE a.gebruiker_id = g.id AND a.soort = 'fase'
+         AND a.uitkomst = 'opdracht' AND a.op > datetime('now','-30 days')) AS opdrachten_30d,
       (SELECT COUNT(*) FROM klanten k WHERE k.binnengehaald_door = g.id AND k.status = 'actief') AS klanten,
       (SELECT COALESCE(SUM(k.maandbedrag_cent), 0) FROM klanten k
          WHERE k.binnengehaald_door = g.id AND k.status = 'actief') AS mrr_cent,
@@ -202,6 +214,22 @@ export function teamOverzicht(): TeamRegel[] {
     WHERE g.actief = 1
     ORDER BY mrr_cent DESC, klanten DESC, g.naam
   `).all() as never;
+}
+
+/** Hoeveel opdrachten er binnen zijn — de mijlpaal waar het team op stuurt. */
+export function opdrachten(agentId?: number | null): { totaal: number; laatste30Dagen: number; omgezet: number } {
+  const lijst = VANAF_OPDRACHT.map((fase) => `'${fase}'`).join(',');
+  const rij = db().prepare(`
+    SELECT
+      (SELECT COUNT(*) FROM opvolging o WHERE o.fase IN (${lijst})
+        AND (? IS NULL OR o.toegewezen_aan = ?)) AS totaal,
+      (SELECT COUNT(*) FROM activiteiten a WHERE a.soort = 'fase' AND a.uitkomst = 'opdracht'
+        AND a.op > datetime('now','-30 days') AND (? IS NULL OR a.gebruiker_id = ?)) AS laatste30,
+      (SELECT COUNT(*) FROM opvolging o JOIN klanten k ON k.company_id = o.company_id
+        WHERE k.status = 'actief' AND (? IS NULL OR o.toegewezen_aan = ?)) AS omgezet
+  `).get(agentId ?? null, agentId ?? null, agentId ?? null, agentId ?? null, agentId ?? null, agentId ?? null) as
+    Record<string, number>;
+  return { totaal: Number(rij.totaal ?? 0), laatste30Dagen: Number(rij.laatste30 ?? 0), omgezet: Number(rij.omgezet ?? 0) };
 }
 
 /** Aantal leads per fase, voor de trechter in het dashboard. */

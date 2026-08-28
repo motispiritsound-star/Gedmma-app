@@ -135,23 +135,78 @@ node src/cli.ts gebruiker blokkeren sara@voorbeeld.nl      # en --herstel om ter
 | `gebeld` | Gesproken, nog geen besluit |
 | `geen_gehoor` | Niet bereikt, later opnieuw |
 | `afspraak` | Afspraak of terugbelmoment staat |
-| `akkoord` | Zegt ja tegen de gratis verbetering |
+| **`opdracht`** | **De mijlpaal: we mogen de site kosteloos herbouwen en hosten** |
 | `in_aanbouw` | Nieuwe site wordt gebouwd |
 | `live` | Site staat live op onze hosting |
 | `klant` | Betaalt maandelijks voor hosting |
 | `afgewezen` | Geen interesse |
 
+**`opdracht` is waar het om draait.** Alles daarvoor is overtuigen; vanaf daar is
+het werk binnen. Het dashboard telt die stap apart — als tegel op je eigen lijst,
+als kolom in het teamoverzicht en gemarkeerd in de trechter — en het aantal van de
+laatste dertig dagen staat er los bij, zodat je ziet of het loopt of stilstaat.
+
 Elk telefoontje, elke notitie en elke fasewissel komt in de geschiedenis van die
-lead te staan, met wie het deed en wanneer. Zeggen ze ja, dan leg je het
-maandbedrag vast en telt de lead mee in de maandomzet — van het bedrijf én van de
-agent die hem binnenhaalde. Testimonials leg je bij dezelfde lead vast, met een
-vinkje of je hem mag publiceren.
+lead te staan, met wie het deed en wanneer. Gaat de site later live en betaalt het
+bedrijf voor de hosting, dan leg je het maandbedrag vast en telt het mee in de
+maandomzet — van het bedrijf én van de agent die de opdracht binnenhaalde.
+Testimonials leg je bij dezelfde lead vast, met een vinkje of je hem mag publiceren.
+
+### Zien wie waarmee bezig is
+
+Iedereen ziet alle bedrijven, maar nooit zonder te zien wie er al mee bezig is:
+
+- op de **kaart** krijgt een bolletje een ring — in de accentkleur als hij van jou
+  is, grijs als een collega hem heeft; de tooltip noemt de naam;
+- in de **lijst** staat bij elke regel een rondje met initialen en de naam van de
+  agent, met een streep langs de regel;
+- in het **detailpaneel** staat bovenaan wie ermee bezig is en sinds wanneer, met
+  de knoppen op slot voor iedereen behalve die agent en de eigenaar.
+
+Filteren kan op *Van mij*, *Van collega's* of *Nog niet toegewezen*, zodat je in
+één klik ziet wat er nog vrij ligt.
 
 ```bash
 node src/cli.ts fase 42 afspraak --agent sara@voorbeeld.nl --notitie "dinsdag 14:00"
 node src/cli.ts trechter        # hoeveel bedrijven in welke fase
 node src/cli.ts team            # wie belt hoeveel en brengt hoeveel op
 node src/cli.ts testimonials --publiceerbaar
+```
+
+## Mailsjablonen
+
+Er zitten dertien kant-en-klare mails in, allemaal gevuld met wat de scan op die
+specifieke site gevonden heeft. Je kiest er een, controleert de tekst en klikt op
+**Open in mailprogramma** — onderwerp en tekst staan er al in.
+
+| Sjabloon | Wanneer |
+| --- | --- |
+| `eerste-contact` | Koude benadering met de bevindingen |
+| `eerste-contact-kort` | Vier zinnen, één vraag, voor wie weinig tijd heeft |
+| `mobiel` | De site werkt niet op een telefoon |
+| `vindbaarheid` | De site is slecht vindbaar in Google |
+| `snelheid` | De site is traag of draait op verouderde techniek |
+| `website-offline` | De site laadt helemaal niet |
+| `geen-gehoor` | Gebeld, niemand bereikt |
+| `na-gesprek` | Bevestiging van wat je telefonisch besprak |
+| `rapport` | Het volledige rapport meesturen |
+| `laatste-poging` | Beleefd afsluiten na een paar keer geen reactie |
+| `opdracht-bevestigd` | Ze zeggen ja: afspraken op een rij en wat je nodig hebt |
+| `site-live` | De nieuwe site staat online |
+| `testimonial` | Vragen om een testimonial |
+
+Het dashboard kiest zelf het sjabloon dat bij de scan past: geen viewport gevonden
+→ `mobiel`, site onbereikbaar → `website-offline`, veel SEO-punten kwijt →
+`vindbaarheid`. Je kunt altijd een ander kiezen.
+
+De koude sjablonen sluiten af met een afmeldregel, omdat dat bij ongevraagde
+zakelijke mail hoort. Lees elke mail na voordat je hem verstuurt — het blijft een
+concept, geen automaat.
+
+```bash
+node src/cli.ts sjablonen                      # welke er zijn
+node src/cli.ts mail 42                        # het passende sjabloon
+node src/cli.ts mail 42 --sjabloon na-gesprek --naam "Jouw naam" --bedrijf "Jouw bedrijf"
 ```
 
 ## Leads eruit halen
@@ -164,7 +219,7 @@ node src/cli.ts leads --max-score 45 --city Utrecht --met-contact
 node src/cli.ts export out/leads-utrecht.csv --max-score 45 --city Utrecht
 
 # Concept-mail voor lead #12
-node src/cli.ts pitch 12 --naam "Jouw naam" --bedrijf "Jouw bedrijf" \
+node src/cli.ts mail 12 --naam "Jouw naam" --bedrijf "Jouw bedrijf" \
   --telefoon "06-12345678" --email "jij@voorbeeld.nl" --rapport
 
 # Bijhouden waar je staat
@@ -173,7 +228,8 @@ node src/cli.ts fase 12 gebeld --notitie "voicemail ingesproken"
 
 Het dashboard (`node src/cli.ts serve`) doet hetzelfde met de kaart erbij: filters,
 de scoreverdeling per onderdeel, de volledige probleemlijst, knoppen om een
-telefoontje vast te leggen, en de concept-mail met een kopieerknop.
+telefoontje vast te leggen, en de mailsjablonen met een knop om ze in je
+mailprogramma te openen.
 
 ## Heel Nederland scannen
 
@@ -250,7 +306,8 @@ src/
   report/
     leads.ts          leads opvragen, filteren en kaartpunten
     export.ts         CSV/JSON-export
-    pitch.ts          concept-mail en rapport
+    templates.ts      de dertien mailsjablonen — hier pas je de teksten aan
+    pitch.ts          het uitgebreide rapport
   server/
     index.ts          API met inloggen en rechten
     public/           dashboard: kaart (canvas), lijst en detailpaneel

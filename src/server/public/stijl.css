@@ -5,6 +5,7 @@
   --slecht:#d03b3b; --matig:#e8901c; --goed:#0ca30c;
   --slecht-wash:#fae6e6; --matig-wash:#fceee8; --goed-wash:#e6f5e6;
   --kaart-water:#eaf0f1; --kaart-land:#dfe8e8; --kaart-rand:#a9bec0; --kaart-tekst:#5c6b71;
+  --kaart-bezet:#5c6b71;
   --shadow:0 1px 2px rgba(16,26,28,.05), 0 8px 24px -18px rgba(16,26,28,.3);
   --sans:"IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
@@ -16,6 +17,7 @@
     --accent:#5bb8c1; --accent-ink:#8ed3d9; --accent-wash:#16302f;
     --slecht-wash:#331a1a; --matig-wash:#33211a; --goed-wash:#12301a;
     --kaart-water:#101b1d; --kaart-land:#1d2c2f; --kaart-rand:#35494d; --kaart-tekst:#8b9fa2;
+    --kaart-bezet:#9db1b4;
     --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -22px rgba(0,0,0,.9);
   }
 }
@@ -130,6 +132,27 @@ td.probleem span { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient
   border:1px solid var(--line); font:500 11.5px/1.5 var(--mono); white-space:nowrap; }
 .fasepil.klant { background:var(--goed-wash); border-color:color-mix(in srgb,var(--goed) 35%,transparent); }
 .fasepil.afgewezen { color:var(--muted); }
+/* De mijlpaal: de opdracht om kosteloos te herbouwen en te hosten. */
+.fasepil.opdracht, .fasepil.in_aanbouw, .fasepil.live {
+  background:var(--accent-wash); border-color:color-mix(in srgb,var(--accent) 40%,transparent);
+  color:var(--accent-ink); font-weight:600;
+}
+
+/* Wie is ermee bezig */
+.agentchip { display:inline-flex; align-items:center; gap:6px; margin-top:4px;
+  font:500 11.5px/1 var(--mono); color:var(--ink-2); }
+.initialen { display:grid; place-items:center; width:19px; height:19px; border-radius:50%;
+  background:var(--line); color:var(--ink-2); font:600 9.5px/1 var(--sans); letter-spacing:.02em; }
+.agentchip.ikzelf .initialen { background:var(--accent); color:var(--panel); }
+.agentchip.ikzelf { color:var(--accent-ink); }
+tbody tr.van-collega td:first-child { box-shadow:inset 3px 0 0 var(--line-strong); }
+tbody tr.van-mij td:first-child { box-shadow:inset 3px 0 0 var(--accent); }
+
+.banner { display:flex; gap:10px; align-items:flex-start; margin-top:14px; padding:10px 12px;
+  border-radius:8px; font-size:13px; background:var(--surface); border:1px solid var(--line); }
+.banner.bezet { border-color:var(--line-strong); color:var(--ink-2); }
+.banner.mijlpaal { background:var(--accent-wash); border-color:color-mix(in srgb,var(--accent) 35%,transparent); }
+.banner b { font-weight:600; }
 .leeg { padding:50px 20px; text-align:center; color:var(--muted); font-size:13.5px; }
 
 /* ---------- detailpaneel ---------- */
@@ -181,6 +204,8 @@ textarea.klein { min-height:80px; font-family:var(--sans); font-size:13.5px; }
 .trechterbalk { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
 .trechterstap { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:8px 13px; cursor:pointer; }
 .trechterstap[aria-pressed="true"] { border-color:var(--accent); background:var(--accent-wash); }
+.trechterstap.mijlpaal { border-color:color-mix(in srgb,var(--accent) 45%,transparent); }
+.trechterstap.mijlpaal b { color:var(--accent-ink); }
 .trechterstap b { display:block; font:600 17px/1.1 var(--mono); font-variant-numeric:tabular-nums; }
 .trechterstap span { font-size:12px; color:var(--muted); }
 

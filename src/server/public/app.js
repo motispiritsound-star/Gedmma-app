@@ -13,6 +13,7 @@ const staat = {
   ik: null,
   fases: [],
   agenten: [],
+  sjablonen: [],
   filters: { zoek: '', plaats: '', fase: '', agent: '', contact: false, band: '' },
   gekozen: null,
   weergave: 'kaart',
@@ -75,14 +76,15 @@ async function start() {
   $('ik-naam').textContent = `${mij.gebruiker.naam} · ${mij.gebruiker.rol}`;
   document.querySelector('[data-weergave="team"]').hidden = mij.gebruiker.rol !== 'eigenaar';
 
-  const overzicht = await api('/api/overzicht');
+  const [overzicht, sjablonen] = await Promise.all([api('/api/overzicht'), api('/api/sjablonen')]);
   staat.fases = overzicht.fases;
   staat.agenten = overzicht.agenten;
+  staat.sjablonen = sjablonen.sjablonen;
 
   vulKeuzelijsten(overzicht);
 
   if (!kaart) {
-    kaart = maakKaart($('kaart'), { onKiezen: kiesLead, onZweven: toonTip });
+    kaart = maakKaart($('kaart'), { onKiezen: kiesLead, onZweven: toonTip, eigenaarId: mij.gebruiker.id });
     await kaart.laadOmtrek();
   }
   $('kaartnoot').textContent = `${overzicht.cijfers.opKaart} van ${overzicht.cijfers.bedrijven} bedrijven staan op de kaart`;
@@ -95,7 +97,10 @@ function vulKeuzelijsten(overzicht) {
     overzicht.plaatsen.map((rij) => `<option value="${esc(rij.plaats)}">${esc(rij.plaats)} (${rij.aantal})</option>`).join('');
   $('f-fase').innerHTML = '<option value="">Alle fases</option>' +
     staat.fases.map((fase) => `<option value="${fase.id}">${fase.label}</option>`).join('');
-  $('f-agent').innerHTML = '<option value="">Iedereen</option><option value="vrij">Nog niet toegewezen</option>' +
+  $('f-agent').innerHTML = '<option value="">Iedereen</option>' +
+    '<option value="mij">Van mij</option>' +
+    '<option value="collegas">Van collega\'s</option>' +
+    '<option value="vrij">Nog niet toegewezen</option>' +
     staat.agenten.map((agent) => `<option value="${agent.id}">${esc(agent.naam)}</option>`).join('');
 }
 
@@ -109,6 +114,8 @@ function queryVan(extra = {}) {
   zet('city', staat.filters.plaats);
   zet('fase', staat.filters.fase);
   if (staat.filters.agent === 'vrij') zet('vrij', '1');
+  else if (staat.filters.agent === 'mij') zet('agent', staat.ik.id);
+  else if (staat.filters.agent === 'collegas') zet('collegas', '1');
   else zet('agent', staat.filters.agent);
   if (staat.filters.contact) zet('metContact', '1');
   if (staat.filters.band) {
@@ -158,6 +165,19 @@ async function ververs() {
 // --------------------------------------------------------------------------
 const bolVan = (score) => `<span class="bol bol-${bandVan(score).id}" title="${bandVan(score).label}"></span>`;
 const faseLabel = (id) => staat.fases.find((fase) => fase.id === id)?.label ?? id;
+const isMijlpaal = (id) => Boolean(staat.fases.find((fase) => fase.id === id)?.mijlpaal);
+
+const initialen = (naam) => naam.split(/\s+/).filter(Boolean).slice(0, 2)
+  .map((deel) => deel[0].toUpperCase()).join('');
+
+/** Laat zien wie er met een bedrijf bezig is — of dat het nog vrij is. */
+function agentChip(lead) {
+  if (!lead.toegewezen_aan) return '<div class="sub">vrij</div>';
+  const ikzelf = lead.toegewezen_aan === staat.ik.id;
+  return `<div class="agentchip${ikzelf ? ' ikzelf' : ''}">
+    <span class="initialen">${esc(initialen(lead.agent_naam ?? '?'))}</span>${esc(ikzelf ? 'jij' : lead.agent_naam)}
+  </div>`;
+}
 
 function tekenLijst(tbody, leegVak, leads, welke) {
   leegVak.hidden = leads.length > 0;
@@ -165,8 +185,10 @@ function tekenLijst(tbody, leegVak, leads, welke) {
 
   tbody.innerHTML = leads.map((lead) => {
     const contact = lead.contact.phones[0] ?? lead.contact.emails[0] ?? '';
+    const bezetting = !lead.toegewezen_aan ? ''
+      : lead.toegewezen_aan === staat.ik.id ? ' van-mij' : ' van-collega';
     return `
-    <tr data-id="${lead.id}" tabindex="0" aria-selected="${lead.id === staat.gekozen}">
+    <tr class="${bezetting.trim()}" data-id="${lead.id}" tabindex="0" aria-selected="${lead.id === staat.gekozen}">
       <td class="kwaliteit">${bolVan(lead.score)}<span class="score">${lead.score}</span></td>
       <td><div class="naam">${esc(lead.name)}</div>
           <div class="sub mono">${esc(lead.domain)}${lead.city ? ' · ' + esc(lead.city) : ''}</div>
@@ -175,7 +197,7 @@ function tekenLijst(tbody, leegVak, leads, welke) {
         ? `<td class="sub">${lead.volgende_actie_op ? esc(lead.volgende_actie_op) : '—'}</td>`
         : `<td class="probleem"><span>${esc(lead.topIssues[0]?.title ?? '')}</span></td>`}
       <td><span class="fasepil ${lead.fase}">${esc(faseLabel(lead.fase))}</span>
-          ${lead.agent_naam && welke === 'kaart' ? `<div class="sub">${esc(lead.agent_naam)}</div>` : ''}</td>
+          ${welke === 'kaart' ? agentChip(lead) : ''}</td>
     </tr>`;
   }).join('');
 
@@ -197,9 +219,15 @@ function toonTip(cluster, x, y) {
   tip.hidden = false;
   tip.style.left = `${Math.min(x + 14, window.innerWidth - 260)}px`;
   tip.style.top = `${y + 16}px`;
-  tip.innerHTML = cluster.aantal === 1
-    ? `<b>${esc(cluster.punt.naam)}</b><span class="sub">${esc(cluster.punt.plaats ?? '')} · score ${cluster.punt.score} · ${esc(faseLabel(cluster.punt.fase))}</span>`
-    : `<b>${cluster.aantal} bedrijven</b><span class="sub">gemiddeld ${Math.round(cluster.som / cluster.aantal)}/100 — klik om in te zoomen</span>`;
+  if (cluster.aantal > 1) {
+    tip.innerHTML = `<b>${cluster.aantal} bedrijven</b><span class="sub">gemiddeld ${Math.round(cluster.som / cluster.aantal)}/100 — klik om in te zoomen</span>`;
+    return;
+  }
+  const punt = cluster.punt;
+  const bezig = !punt.agentId ? 'nog vrij'
+    : punt.agentId === staat.ik.id ? 'jij bent hiermee bezig'
+    : `${punt.agent} is hiermee bezig`;
+  tip.innerHTML = `<b>${esc(punt.naam)}</b><span class="sub">${esc(punt.plaats ?? '')} · score ${punt.score} · ${esc(faseLabel(punt.fase))}<br>${esc(bezig)}</span>`;
 }
 
 // --------------------------------------------------------------------------
@@ -246,9 +274,20 @@ function tekenDetail(doel, lead) {
 
     <div class="rij">
       <span class="fasepil ${lead.fase}">${esc(faseLabel(lead.fase))}</span>
-      ${lead.agent_naam ? `<span class="sub">bij ${esc(lead.agent_naam)}</span>` : '<span class="sub">nog van niemand</span>'}
       ${lead.klant_status === 'actief' ? `<span class="fasepil klant">klant · ${euro(lead.maandbedrag_cent)}/mnd</span>` : ''}
     </div>
+
+    ${lead.toegewezen_aan && !vanMij
+      ? `<div class="banner bezet"><span>👤</span><div><b>${esc(lead.agent_naam)} is hiermee bezig</b><br>
+          ${lead.toegewezen_op ? `Opgepakt op ${esc(datum(lead.toegewezen_op))}. ` : ''}Bel dit bedrijf niet zonder overleg.
+          ${isEigenaar ? 'Als eigenaar kun je de lead hieronder aan iemand anders geven.' : ''}</div></div>`
+      : vanMij
+      ? '<div class="banner"><span>✋</span><div><b>Jij bent hiermee bezig.</b> Niemand anders kan deze lead oppakken.</div></div>'
+      : ''}
+
+    ${isMijlpaal(lead.fase)
+      ? '<div class="banner mijlpaal"><span>🎯</span><div><b>Opdracht binnen.</b> Je mag de site kosteloos herbouwen en op onze hosting zetten. Vanaf hier is het uitvoeren.</div></div>'
+      : ''}
 
     ${vrij ? '<div class="rij"><button class="knop sterk" data-actie="claim">Deze neem ik</button></div>' : ''}
     ${isEigenaar ? `<div class="rij">
@@ -275,7 +314,7 @@ function tekenDetail(doel, lead) {
         <input class="veld" id="d-actie" type="date" value="${esc(lead.volgende_actie_op ?? '')}">
         <button class="knop" data-actie="volgende">Vastleggen</button>
       </div>
-    </div>` : '<p class="sub">Deze lead staat op naam van een collega.</p>'}
+    </div>` : ''}
 
     <div class="deel">
       <span class="label-klein">Score per onderdeel</span>
@@ -297,14 +336,22 @@ function tekenDetail(doel, lead) {
 
     ${magWerken ? `
     <div class="deel">
-      <span class="label-klein">Concept-mail</span>
+      <span class="label-klein">Mail versturen</span>
+      <select class="veld" id="d-sjabloon" style="width:100%">
+        ${staat.sjablonen.map((sjabloon) => `<option value="${sjabloon.id}">${esc(sjabloon.naam)}</option>`).join('')}
+      </select>
+      <p class="sub" id="d-wanneer" style="margin:5px 0 0"></p>
       <div class="rij">
         <input class="veld" id="a-bedrijf" placeholder="Jouw bedrijf" style="flex:1" value="${esc(staat.afzender.bedrijf ?? '')}">
         <input class="veld" id="a-telefoon" placeholder="Telefoon" style="width:130px" value="${esc(staat.afzender.telefoon ?? '')}">
-        <button class="knop" data-actie="pitch">Vernieuwen</button>
-        <button class="knop" data-actie="kopieer">Kopieer</button>
       </div>
-      <textarea id="d-mail" spellcheck="false"></textarea>
+      <input class="veld" id="d-onderwerp" style="width:100%;margin-top:7px" readonly>
+      <textarea id="d-mail" spellcheck="false" style="margin-top:7px"></textarea>
+      <div class="rij">
+        <a class="knop sterk" id="d-open" href="#" target="_blank" rel="noopener">Open in mailprogramma</a>
+        <button class="knop" data-actie="kopieer">Kopieer</button>
+        <button class="knop" data-actie="verstuurd">Verstuurd — leg vast</button>
+      </div>
     </div>
 
     <div class="deel">
@@ -347,7 +394,7 @@ function tekenDetail(doel, lead) {
     <p class="melding" data-melding></p>`;
 
   koppelDetailKnoppen(doel, lead);
-  if (magWerken) haalPitch(doel, lead.id);
+  if (magWerken) haalMail(doel, lead.id);
 }
 
 function koppelDetailKnoppen(doel, lead) {
@@ -399,28 +446,71 @@ function koppelDetailKnoppen(doel, lead) {
       publiceerbaar: doel.querySelector('#d-publiceerbaar').checked,
     }, 'Testimonial opgeslagen.'));
 
-  doel.querySelector('[data-actie="pitch"]')?.addEventListener('click', () => {
-    staat.afzender.bedrijf = doel.querySelector('#a-bedrijf').value;
-    staat.afzender.telefoon = doel.querySelector('#a-telefoon').value;
-    haalPitch(doel, lead.id);
+  for (const veld of ['#a-bedrijf', '#a-telefoon']) {
+    doel.querySelector(veld)?.addEventListener('change', () => {
+      staat.afzender.bedrijf = doel.querySelector('#a-bedrijf').value;
+      staat.afzender.telefoon = doel.querySelector('#a-telefoon').value;
+      haalMail(doel, lead.id);
+    });
+  }
+
+  doel.querySelector('#d-sjabloon')?.addEventListener('change', () => {
+    staat.sjabloon = doel.querySelector('#d-sjabloon').value;
+    haalMail(doel, lead.id);
   });
 
   doel.querySelector('[data-actie="kopieer"]')?.addEventListener('click', async () => {
-    await navigator.clipboard.writeText(doel.querySelector('#d-mail').value);
-    zeg('Gekopieerd naar je klembord.');
+    const onderwerp = doel.querySelector('#d-onderwerp').value;
+    await navigator.clipboard.writeText(`Onderwerp: ${onderwerp}\n\n${doel.querySelector('#d-mail').value}`);
+    zeg('Onderwerp en tekst staan op je klembord.');
+  });
+
+  doel.querySelector('[data-actie="verstuurd"]')?.addEventListener('click', async () => {
+    const gekozen = staat.sjablonen.find((sjabloon) => sjabloon.id === doel.querySelector('#d-sjabloon').value);
+    await post(`/api/leads/${lead.id}/activiteit`,
+      { soort: 'mail', uitkomst: gekozen?.naam, notitie: doel.querySelector('#d-onderwerp').value },
+      'Mail vastgelegd in de geschiedenis.');
+    if (gekozen?.naFase && gekozen.naFase !== lead.fase) {
+      await api(`/api/leads/${lead.id}/fase`, { method: 'POST', body: JSON.stringify({ fase: gekozen.naFase }) })
+        .catch(() => {});
+      const vers = await api(`/api/leads/${lead.id}`);
+      tekenDetail(doel, vers);
+      ververs();
+    }
   });
 }
 
-async function haalPitch(doel, id) {
+async function haalMail(doel, id) {
   const veld = doel.querySelector('#d-mail');
   if (!veld) return;
+  const keuze = doel.querySelector('#d-sjabloon');
+
   const params = new URLSearchParams();
+  if (staat.sjabloon) params.set('sjabloon', staat.sjabloon);
   if (staat.afzender.bedrijf) params.set('bedrijf', staat.afzender.bedrijf);
   if (staat.afzender.telefoon) params.set('telefoon', staat.afzender.telefoon);
+
   try {
-    const pitch = await api(`/api/leads/${id}/pitch?${params}`);
-    veld.value = `Aan: ${pitch.aan ?? '(geen e-mailadres gevonden — bel of gebruik het contactformulier)'}\n` +
-      `Onderwerp: ${pitch.subject}\n\n${pitch.body}`;
+    const mail = await api(`/api/leads/${id}/mail?${params}`);
+    keuze.value = mail.sjabloon;
+    staat.sjabloon = mail.sjabloon;
+    doel.querySelector('#d-onderwerp').value = mail.onderwerp;
+    veld.value = mail.tekst;
+
+    const gekozen = staat.sjablonen.find((sjabloon) => sjabloon.id === mail.sjabloon);
+    doel.querySelector('#d-wanneer').textContent =
+      (gekozen?.wanneer ?? '') + (mail.sjabloon === mail.voorgesteld ? ' · voorgesteld op basis van de scan' : '');
+
+    const openen = doel.querySelector('#d-open');
+    if (mail.mailto) {
+      openen.href = mail.mailto;
+      openen.removeAttribute('aria-disabled');
+      openen.textContent = 'Open in mailprogramma';
+    } else {
+      openen.href = '#';
+      openen.setAttribute('aria-disabled', 'true');
+      openen.textContent = 'Geen e-mailadres — bel of gebruik het formulier';
+    }
   } catch (fout) {
     veld.value = fout.message;
   }
@@ -449,9 +539,16 @@ async function toonMijnLijst() {
   const overzicht = await api('/api/overzicht');
   const mijn = await api(`/api/leads?agent=${staat.ik.id}&sort=actie&limit=300`);
 
+  $('mijn-tegels').innerHTML = [
+    { waarde: overzicht.mijnOpenLeads, tekst: 'leads op jouw naam' },
+    { waarde: overzicht.opdrachten.totaal, tekst: 'opdrachten binnen', klem: true },
+    { waarde: overzicht.opdrachten.laatste30Dagen, tekst: 'in de laatste 30 dagen', klem: true },
+    { waarde: overzicht.opdrachten.omgezet, tekst: 'daarvan betaalt inmiddels' },
+  ].map((tegel) => `<div class="tegel${tegel.klem ? ' klem' : ''}"><b>${esc(tegel.waarde)}</b><span>${tegel.tekst}</span></div>`).join('');
+
   $('mijn-trechter').innerHTML = overzicht.trechter
     .filter((stap) => stap.aantal > 0)
-    .map((stap) => `<button class="trechterstap" data-fase="${stap.fase}"
+    .map((stap) => `<button class="trechterstap${isMijlpaal(stap.fase) ? ' mijlpaal' : ''}" data-fase="${stap.fase}"
         aria-pressed="${staat.filters.fase === stap.fase}"><b>${stap.aantal}</b><span>${esc(stap.label)}</span></button>`).join('')
     || '<p class="sub">Nog geen leads toegewezen.</p>';
 
@@ -473,12 +570,12 @@ async function toonTeam() {
   const overzicht = await api('/api/overzicht');
 
   $('omzettegels').innerHTML = [
-    { waarde: gegevens.omzet.actieveKlanten, tekst: 'betalende klanten', klem: true },
+    { waarde: overzicht.opdrachten.totaal, tekst: 'opdrachten binnen', klem: true },
+    { waarde: overzicht.opdrachten.laatste30Dagen, tekst: 'opdrachten laatste 30 dagen', klem: true },
+    { waarde: gegevens.omzet.actieveKlanten, tekst: 'betalende klanten' },
     { waarde: euro(gegevens.omzet.mrrCent), tekst: 'per maand', klem: true },
     { waarde: euro(gegevens.omzet.jaaromzetCent), tekst: 'op jaarbasis' },
     { waarde: euro(gegevens.omzet.gemiddeldeKlantCent), tekst: 'gemiddeld per klant' },
-    { waarde: gegevens.omzet.proefKlanten, tekst: 'in proefperiode' },
-    { waarde: gegevens.omzet.opgezegd, tekst: 'opgezegd' },
   ].map((tegel) => `<div class="tegel${tegel.klem ? ' klem' : ''}"><b>${esc(tegel.waarde)}</b><span>${tegel.tekst}</span></div>`).join('');
 
   $('team-rijen').innerHTML = gegevens.team.map((regel) => `
@@ -487,6 +584,7 @@ async function toonTeam() {
       <td class="mono">${regel.open}</td>
       <td class="mono">${regel.gebeld_7d}</td>
       <td class="mono">${regel.afspraken}</td>
+      <td class="mono"><b>${regel.opdrachten}</b>${regel.opdrachten_30d ? ` <span class="sub">+${regel.opdrachten_30d}</span>` : ''}</td>
       <td class="mono">${regel.klanten}</td>
       <td class="mono">${euro(regel.mrr_cent)}</td>
       <td class="mono">${regel.testimonials}</td>
@@ -495,7 +593,7 @@ async function toonTeam() {
   const grootste = Math.max(...overzicht.trechter.map((stap) => stap.aantal), 1);
   $('team-trechter').innerHTML = overzicht.trechter.map((stap) => `
     <div class="meter">
-      <span class="meter-naam">${esc(stap.label)}</span>
+      <span class="meter-naam">${isMijlpaal(stap.fase) ? '🎯 ' : ''}${esc(stap.label)}</span>
       <span class="meter-waarde">${stap.aantal}</span>
       <span class="meter-spoor"><i class="meter-vul" style="width:${Math.round((stap.aantal / grootste) * 100)}%"></i></span>
     </div>`).join('');

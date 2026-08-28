@@ -60,7 +60,8 @@ const { maakGebruiker, gebruikers } = await import('../src/db/team.ts');
 const { wijsToe, zetFase, logActiviteit, maakKlant, bewaarTestimonial } = await import('../src/db/pipeline.ts');
 const { scanAll } = await import('../src/scan/scanner.ts');
 const { queryLeads, getLead } = await import('../src/report/leads.ts');
-const { buildEmail, buildReport } = await import('../src/report/pitch.ts');
+const { buildReport } = await import('../src/report/pitch.ts');
+const { renderSjabloon, stelSjabloonVoor } = await import('../src/report/templates.ts');
 
 upsertCompanies(ALLE.map((site) => ({
   name: site.bedrijf,
@@ -93,7 +94,7 @@ const verhaal: { domein: string; agent: number; fase: string; gebeld?: number; k
   { domein: 'loodgieter-dekraan.nl',     agent: sara!.id, fase: 'afspraak',   gebeld: 2 },
   { domein: 'schildersbedrijfvermeer.nl', agent: sara!.id, fase: 'gebeld',     gebeld: 1 },
   { domein: 'hoveniergroenrijk.nl',      agent: sara!.id, fase: 'geen_gehoor', gebeld: 3 },
-  { domein: 'drukkerijvandenberg.nl',    agent: tom!.id,  fase: 'akkoord',    gebeld: 2 },
+  { domein: 'drukkerijvandenberg.nl',    agent: tom!.id,  fase: 'opdracht',    gebeld: 2 },
   { domein: 'autobedrijfjansen.nl',      agent: tom!.id,  fase: 'in_aanbouw', gebeld: 2 },
   { domein: 'bakkerijhetmolentje.nl',    agent: tom!.id,  fase: 'klant',      gebeld: 3, klant: 2450,
     testimonial: 'Binnen twee weken stond er een nieuwe site. We krijgen nu bestellingen via de website binnen, dat hadden we eerst nooit.' },
@@ -119,16 +120,25 @@ for (const stap of verhaal) {
 const leads = queryLeads({ maxScore: 100, limit: 500 }).map((lead) => {
   const full = getLead(lead.id)!;
   const report = full.report as { verdict?: never; signals?: never };
-  const pitchInput = {
+  const rapportInput = {
     companyName: lead.name, domain: lead.domain, city: lead.city,
     verdict: report.verdict!, signals: report.signals ?? null,
   };
-  const { subject, body } = buildEmail(pitchInput);
+  const context = {
+    bedrijf: lead.name, domein: lead.domain, plaats: lead.city,
+    verdict: report.verdict!, signals: report.signals ?? null,
+  };
+  const voorgesteld = stelSjabloonVoor(report.verdict!);
   return {
     ...lead,
     verdict: report.verdict,
     signals: report.signals ?? null,
-    pitch: { subject, body, markdown: buildReport(pitchInput) },
+    voorgesteldSjabloon: voorgesteld,
+    pitch: {
+      subject: renderSjabloon(voorgesteld, context).onderwerp,
+      body: renderSjabloon(voorgesteld, context).tekst,
+      markdown: buildReport(rapportInput),
+    },
   };
 });
 

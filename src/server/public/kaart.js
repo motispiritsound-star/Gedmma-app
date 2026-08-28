@@ -55,6 +55,7 @@ export function maakKaart(canvas, opties = {}) {
       tekst: css.getPropertyValue('--kaart-tekst').trim() || '#5c6b71',
       accent: css.getPropertyValue('--accent').trim() || '#0f6b74',
       paneel: css.getPropertyValue('--panel').trim() || '#ffffff',
+      bezet: css.getPropertyValue('--kaart-bezet').trim() || '#5c6b71',
     };
   };
 
@@ -171,6 +172,17 @@ export function maakKaart(canvas, opties = {}) {
       ctx.lineWidth = 1.4;
       ctx.strokeStyle = kleuren.paneel;
       ctx.stroke();
+
+      // Een losse bol die iemand in behandeling heeft, krijgt een ring: de jouwe
+      // in de accentkleur, die van een collega in grijs. Zo zie je in één blik
+      // welke bedrijven al bezet zijn.
+      if (cluster.aantal === 1 && cluster.punt.agentId) {
+        ctx.beginPath();
+        ctx.arc(cluster.x, cluster.y, straal + 2.6, 0, Math.PI * 2);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = cluster.punt.agentId === opties.eigenaarId ? kleuren.accent : kleuren.bezet;
+        ctx.stroke();
+      }
 
       if (cluster.aantal >= 8) {
         ctx.fillStyle = '#ffffff';
@@ -293,6 +305,8 @@ export function maakKaart(canvas, opties = {}) {
       meet();
     },
     zetPunten(nieuwe) { punten = nieuwe; herteken(); },
+    /** Wie ben ik — bepaalt welke ring een bol krijgt. */
+    zetEigenaar(id) { opties.eigenaarId = id; teken(); },
     zetGekozen(id) { gekozenId = id; teken(); },
     /** Schuift de kaart naar één bedrijf toe. */
     ganaar(lat, lon, schaal = 9) {

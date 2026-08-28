@@ -96,6 +96,18 @@ check('lead staat op naam van agent één', detail.agent_naam === 'Agent Een');
 check('onbekende fase wordt geweigerd',
   (await een.doe(`/api/leads/${slechtste.id}/fase`, { method: 'POST', body: JSON.stringify({ fase: 'onzin' }) })).status === 400);
 
+console.log('\nDe mijlpaal: de opdracht binnenhalen:');
+check('opdracht vastleggen', (await een.doe(`/api/leads/${slechtste.id}/fase`, {
+  method: 'POST', body: JSON.stringify({ fase: 'opdracht', notitie: 'mag de site herbouwen' }),
+})).status === 200);
+const naOpdracht = (await eigenaar.doe('/api/overzicht')).inhoud;
+check('opdracht telt mee', naOpdracht.opdrachten.totaal === 1, `kreeg ${naOpdracht.opdrachten.totaal}`);
+check('opdracht telt in de laatste 30 dagen', naOpdracht.opdrachten.laatste30Dagen === 1);
+check('opdracht is de mijlpaal in de faselijst',
+  naOpdracht.fases.find((fase: any) => fase.id === 'opdracht')?.mijlpaal === true);
+check('opdracht komt terug in het teamoverzicht',
+  (await eigenaar.doe('/api/team')).inhoud.team.find((regel: any) => regel.naam === 'Agent Een').opdrachten === 1);
+
 console.log('\nKlant en testimonial:');
 check('klant vastleggen',
   (await een.doe(`/api/leads/${slechtste.id}/klant`, { method: 'POST', body: JSON.stringify({ maandbedrag: 24.5 }) })).status === 200);
@@ -111,6 +123,17 @@ check('lege testimonial wordt geweigerd', (await een.doe(`/api/leads/${slechtste
   method: 'POST', body: JSON.stringify({ tekst: '  ' }),
 })).status === 400);
 
+console.log('\nWie is waarmee bezig:');
+const alles = (await twee.doe('/api/leads?maxScore=100&limit=50')).inhoud.leads;
+const bezet = alles.find((rij: any) => rij.id === slechtste.id);
+check('een agent ziet wie een lead in behandeling heeft', bezet.agent_naam === 'Agent Een');
+check('en sinds wanneer', Boolean(bezet.toegewezen_op));
+const vanCollegas = (await twee.doe('/api/leads?maxScore=100&collegas=1&limit=50')).inhoud.leads;
+check('filter op leads van collega\'s werkt',
+  vanCollegas.length === 1 && vanCollegas[0].id === slechtste.id, `kreeg ${vanCollegas.length}`);
+const kaartMetAgent = (await twee.doe('/api/kaart')).inhoud.punten.find((punt: any) => punt.id === slechtste.id);
+check('de kaart weet ook wie ermee bezig is', kaartMetAgent.agentId !== null && kaartMetAgent.agent === 'Agent Een');
+
 console.log('\nToewijzen door de eigenaar:');
 const tweede = leads[1];
 check('eigenaar wijst toe', (await eigenaar.doe(`/api/leads/${tweede.id}/toewijzen`, {
@@ -121,9 +144,25 @@ check('agent mag niet toewijzen', (await een.doe(`/api/leads/${tweede.id}/toewij
 })).status === 403);
 check('lead staat nu bij agent twee', (await eigenaar.doe(`/api/leads/${tweede.id}`)).inhoud.agent_naam === 'Agent Twee');
 
+console.log('\nMailsjablonen:');
+const sjablonen = (await een.doe('/api/sjablonen')).inhoud.sjablonen;
+check('sjablonen komen terug', sjablonen.length >= 10, `kreeg ${sjablonen.length}`);
+
+const voorstel = (await een.doe(`/api/leads/${slechtste.id}/mail?bedrijf=Studio`)).inhoud;
+check('sjabloon wordt voorgesteld op basis van de scan', voorstel.sjabloon === voorstel.voorgesteld, voorstel.sjabloon);
+check('de tekst noemt de afzender', voorstel.tekst.includes('Studio'));
+check('de tekst noemt het bedrijf', voorstel.tekst.includes(slechtste.name));
+check('er is een onderwerp', voorstel.onderwerp.length > 10);
+check('koude mail bevat een afmeldregel', voorstel.tekst.includes('uit mijn lijst'));
+
+const bevestiging = (await een.doe(`/api/leads/${slechtste.id}/mail?sjabloon=opdracht-bevestigd`)).inhoud;
+check('ander sjabloon geeft andere tekst', bevestiging.tekst !== voorstel.tekst);
+check('opdrachtbevestiging noemt de hosting', bevestiging.tekst.includes('hosting'));
+check('opdrachtbevestiging noemt het domein', bevestiging.tekst.includes(slechtste.domain));
+check('onbekend sjabloon wordt geweigerd',
+  (await een.doe(`/api/leads/${slechtste.id}/mail?sjabloon=bestaatniet`)).status === 400);
+
 console.log('\nOverig:');
-const pitch = (await een.doe(`/api/leads/${slechtste.id}/pitch?bedrijf=Studio`)).inhoud;
-check('concept-mail wordt gemaakt', Boolean(pitch.subject && pitch.body.includes('Studio')));
 const csv = (await eigenaar.doe('/api/export.csv?maxScore=100')).inhoud;
 check('csv-export werkt', typeof csv === 'string' && csv.split('\n').length >= 4);
 check('uitloggen wist de sessie',
