@@ -72,15 +72,19 @@ code { font:400 12px var(--mono); background:var(--surface); border:1px solid va
 .weergave { padding:16px 22px 40px; max-width:1520px; margin:0 auto; }
 
 /* ---------- filters ---------- */
-.filters { display:flex; gap:9px; flex-wrap:wrap; align-items:center; margin-bottom:14px; }
-.telling { margin-left:auto; font:400 12.5px/1 var(--mono); color:var(--muted); }
+/* Blijft onder de kop hangen; anders verdwijnt hij eronder zodra je scrolt. */
+.filters { position:sticky; top:53px; z-index:15; display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+  margin:0 -22px 14px; padding:10px 22px; background:var(--paper); border-bottom:1px solid var(--line); }
+.veld.smal { max-width:165px; }
+.telling { margin-left:auto; margin-right:2px; font:400 12.5px/1 var(--mono); color:var(--muted); white-space:nowrap; }
+@media (max-width:900px) { .filters { position:static; margin:0 0 14px; padding:0; border-bottom:0; } }
 
 /* ---------- kaart ---------- */
 .drieluik { display:grid; grid-template-columns:380px minmax(0,1fr) 420px; gap:16px; align-items:start; }
 @media (max-width:1440px) { .drieluik { grid-template-columns:340px minmax(0,1fr); } .drieluik .detail { grid-column:1/-1; } }
 @media (max-width:1020px) { .drieluik { grid-template-columns:1fr; } .drieluik .detail { grid-column:auto; } }
 
-.kolom-kaart { display:grid; gap:12px; position:sticky; top:78px; }
+.kolom-kaart { display:grid; gap:12px; position:sticky; top:124px; }
 @media (max-width:1020px) { .kolom-kaart { position:static; } }
 .kaartvak { position:relative; background:var(--panel); border:1px solid var(--line); border-radius:10px;
   box-shadow:var(--shadow); overflow:hidden; }
@@ -104,7 +108,7 @@ code { font:400 12px var(--mono); background:var(--surface); border:1px solid va
 
 .kaart-paneel { background:var(--panel); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); }
 .lijst { overflow:hidden; }
-.detail { padding:20px; max-height:calc(100vh - 120px); overflow:auto; position:sticky; top:78px; }
+.detail { padding:20px; max-height:calc(100vh - 140px); overflow:auto; position:sticky; top:124px; }
 @media (max-width:1120px) { .detail { position:static; max-height:none; } }
 
 .tabelrol { overflow-x:auto; }
@@ -117,7 +121,16 @@ tbody tr[data-id] { cursor:pointer; }
 tbody tr[data-id]:hover td { background:color-mix(in srgb,var(--accent) 5%,transparent); }
 tbody tr[aria-selected="true"] td { background:var(--accent-wash); }
 
-td.kwaliteit { width:86px; white-space:nowrap; }
+td.kwaliteit { width:96px; white-space:nowrap; }
+.leven { margin-top:3px; font:500 10px/1.5 var(--mono); letter-spacing:.03em; text-transform:uppercase; }
+.leven.l-levend { color:var(--goed); }
+.leven.l-onduidelijk { color:var(--muted); }
+.leven.l-stil { color:var(--muted); opacity:.65; }
+ul.tekens { margin:0; padding:0; list-style:none; display:grid; gap:4px; }
+ul.tekens li { font-size:12.5px; color:var(--ink-2); padding-left:18px; position:relative; }
+ul.tekens li::before { position:absolute; left:0; }
+ul.tekens li.ja::before { content:'+'; color:var(--goed); font-weight:600; }
+ul.tekens li.nee::before { content:'−'; color:var(--slecht); font-weight:600; }
 thead th:nth-child(2) { width:36%; }
 thead th:nth-child(3) { width:40%; }
 

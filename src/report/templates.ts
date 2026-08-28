@@ -43,6 +43,8 @@ export type SjabloonContext = {
   verdict: Verdict;
   signals: PageSignals | null;
   afzender?: Afzender;
+  /** De zin die je aanbod uitlegt; komt uit de instellingen. */
+  aanbod?: string;
   /** Losse gegevens die sommige sjablonen invullen, bijvoorbeeld een afspraakdatum. */
   extra?: Record<string, string | undefined>;
 };
@@ -94,9 +96,12 @@ const plaatszin = (ctx: SjabloonContext) => ctx.plaats ? ` in ${ctx.plaats} en o
 
 // --- het aanbod, overal hetzelfde ------------------------------------------
 
-const AANBOD =
+const STANDAARD_AANBOD =
   'Mijn voorstel is simpel: ik bouw uw website kosteloos opnieuw op en zet hem op onze eigen hosting. ' +
   'U betaalt vooraf niets en zit nergens aan vast. Bevalt het niet, dan stopt het daar en houdt u gewoon uw huidige site.';
+
+/** Het aanbod uit de instellingen, of het standaardaanbod als er niets is ingesteld. */
+const aanbodVan = (ctx: SjabloonContext): string => ctx.aanbod?.trim() || STANDAARD_AANBOD;
 
 // --- de sjablonen ----------------------------------------------------------
 
@@ -115,7 +120,7 @@ Ik kwam uw website ${ctx.domein} tegen en heb hem kort bekeken. Een paar dingen 
 
 ${opsomming(ctx)}
 
-${AANBOD}
+${aanbodVan(ctx)}
 
 Wat ik van u nodig heb is een halfuurtje om te horen wat uw klanten belangrijk vinden. Ik laat u eerst een voorbeeld zien voordat er iets live gaat.
 
@@ -159,7 +164,7 @@ Ik heb ${ctx.domein} even op mijn telefoon bekeken. Daar valt het meteen op: de 
 
 Dat is geen detail. Het grootste deel van de mensen die u opzoekt doet dat op een telefoon, meestal op het moment dat ze u nodig hebben. Wie dan moet knijpen en slepen, gaat door naar de volgende in de lijst.
 
-${AANBOD}
+${aanbodVan(ctx)}
 
 Zal ik u een voorbeeld sturen van hoe uw site er op een telefoon uit kan zien?
 
@@ -180,7 +185,7 @@ Wie in Google zoekt naar wat u doet${plaatszin(ctx)}, komt u nu moeilijk tegen. 
 
 ${opsomming(ctx, 4)}
 
-Dat is grotendeels techniek en tekst, geen reclamebudget. ${AANBOD}
+Dat is grotendeels techniek en tekst, geen reclamebudget. ${aanbodVan(ctx)}
 
 Zal ik u laten zien op welke zoekopdrachten u nu mist?
 
@@ -201,7 +206,7 @@ Ik heb de laadtijd van ${ctx.domein} gemeten: de pagina doet er ${laadtijd(ctx)}
 
 Bezoekers wachten dat niet af, en Google laat trage sites structureel lager zien.
 
-${AANBOD} Op onze hosting draait uw site op moderne techniek die we bijhouden.
+${aanbodVan(ctx)} Op onze hosting draait uw site op moderne techniek die we bijhouden.
 
 Mag ik u er deze week even over bellen?
 
@@ -222,7 +227,9 @@ Ik wilde uw website ${ctx.domein} bekijken, maar die is op dit moment niet te be
 
 Ik weet niet of u daarvan op de hoogte bent — het gebeurt vaker dat het al een tijd zo staat zonder dat iemand het doorheeft. Wie u opzoekt, vindt intussen niets.
 
-Ik kan twee dingen doen. Als u alleen wilt weten wat er mis is: dat zoek ik kosteloos voor u uit en dan hoort u het van me, zonder verplichting. Wilt u het meteen goed hebben: ${AANBOD.charAt(0).toLowerCase() + AANBOD.slice(1)}
+Ik kan twee dingen doen. Als u alleen wilt weten wat er mis is: dat zoek ik kosteloos voor u uit en dan hoort u het van me, zonder verplichting. Wilt u het meteen goed hebben, dan is dit mijn voorstel.
+
+${aanbodVan(ctx)}
 
 Zal ik u bellen?
 
@@ -246,7 +253,7 @@ Ik zou dat graag kort telefonisch toelichten — dat is in vijf minuten duidelij
 
 Vandaar deze vraag. **Antwoordt u met "ja, u mag bellen", dan neem ik binnen een paar dagen contact op.** Reageert u niet, dan hoort u niets meer van mij per telefoon.
 
-Liever meteen weten waar het over gaat? ${AANBOD}
+Liever meteen weten waar het over gaat? ${aanbodVan(ctx)}
 
 ${ondertekening(ctx)}
 
@@ -266,7 +273,7 @@ Ik heb uw website bekeken en een paar punten gevonden die u nu klanten kosten:
 
 ${kortePunten(ctx)}
 
-${AANBOD}
+${aanbodVan(ctx)}
 
 Als u me laat weten wanneer het u schikt, bel ik op dat moment terug. Antwoorden op deze mail mag ook.
 
@@ -285,7 +292,7 @@ Dank voor het gesprek van zojuist. Zoals beloofd op een rij wat me op uw huidige
 
 ${opsomming(ctx, 5)}
 
-${AANBOD}
+${aanbodVan(ctx)}
 
 Wat er dan gebeurt:
 
@@ -313,7 +320,7 @@ ${opsomming(ctx, 5)}
 
 In het bijgevoegde rapport staat het volledige lijstje, per onderdeel, met bij elk punt wat eraan te doen is. U mag het gerust aan iemand anders laten zien — ook als u besluit het door een ander te laten oplossen.
 
-${AANBOD}
+${aanbodVan(ctx)}
 
 ${ondertekening(ctx)}`,
   },
@@ -345,7 +352,8 @@ ${ondertekening(ctx)}`,
 
 Fijn dat we eruit zijn. Even zwart op wit wat we hebben afgesproken:
 
-• Ik bouw de website van ${ctx.bedrijf} opnieuw op. Daar zijn voor u geen kosten aan verbonden.
+• Ik bouw de website van ${ctx.bedrijf} opnieuw op.
+• ${aanbodVan(ctx)}
 • De nieuwe site komt op onze hosting te staan; het onderhoud en de beveiliging doe ik.
 • Uw domeinnaam ${ctx.domein} blijft op uw naam staan. U blijft er eigenaar van.
 • U ziet de site eerst in een testomgeving. Pas als u akkoord bent, gaat hij live.

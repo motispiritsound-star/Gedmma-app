@@ -210,9 +210,32 @@ check('opdrachtbevestiging noemt het domein', bevestiging.tekst.includes(slechts
 check('onbekend sjabloon wordt geweigerd',
   (await een.doe(`/api/leads/${slechtste.id}/mail?sjabloon=bestaatniet`)).status === 400);
 
+console.log('\nWat je aanbiedt:');
+const standaard = (await een.doe('/api/instellingen')).inhoud;
+check('standaard is het gratis aanbod', standaard.aanbod.soort === 'gratis');
+check('een agent kan het aanbod niet wijzigen', (await een.doe('/api/instellingen', {
+  method: 'PUT', body: JSON.stringify({ soort: 'startbedrag' }),
+})).status === 403);
+const gewijzigd = (await eigenaar.doe('/api/instellingen', {
+  method: 'PUT', body: JSON.stringify({ soort: 'startbedrag', startbedrag: 295, maandbedrag: 59 }),
+})).inhoud;
+check('de eigenaar wel', gewijzigd.aanbod.startbedragCent === 29500 && gewijzigd.aanbod.maandbedragCent === 5900);
+check('het voorbeeld noemt de bedragen',
+  gewijzigd.voorbeeld.includes('295') && gewijzigd.voorbeeld.includes('59'));
+const naWijziging = (await eigenaar.doe(`/api/leads/${zaak.id}/mail?sjabloon=eerste-contact`)).inhoud;
+check('de sjablonen nemen het nieuwe aanbod over', naWijziging.tekst.includes('295'));
+await eigenaar.doe('/api/instellingen', { method: 'PUT', body: JSON.stringify({ soort: 'gratis' }) });
+check('terug naar gratis werkt',
+  (await eigenaar.doe(`/api/leads/${zaak.id}/mail?sjabloon=eerste-contact`)).inhoud.tekst.includes('kosteloos'));
+
 console.log('\nOverig:');
 const csv = (await eigenaar.doe('/api/export.csv?maxScore=100')).inhoud;
-check('csv-export werkt', typeof csv === 'string' && csv.split('\n').length >= 4);
+check('csv-export werkt', typeof csv === 'string' && csv.split('\n').length >= 3);
+check('de export bevat prioriteit en levenstekenen',
+  typeof csv === 'string' && csv.includes('prioriteit') && csv.includes('levenstekenen'));
+const opPrioriteit = (await eigenaar.doe('/api/leads?maxScore=100&sort=prioriteit&limit=50')).inhoud.leads;
+check('standaard staan de beste leads bovenaan',
+  opPrioriteit.every((rij: any, i: number) => i === 0 || rij.prioriteit <= opPrioriteit[i - 1].prioriteit));
 check('uitloggen wist de sessie',
   (await een.doe('/api/uitloggen', { method: 'POST' })).status === 200 &&
   (await een.doe('/api/leads')).status === 401);

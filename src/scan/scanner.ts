@@ -1,8 +1,9 @@
 import { checkRobots } from './robots.ts';
-import { fetchPage, exists } from './fetcher.ts';
+import { fetchPage, exists, leesSitemap } from './fetcher.ts';
 import { analyzePage, type PageSignals } from './analyze.ts';
 import { deepScan, type DeepMetrics } from './deep.ts';
 import { scoreSignals, offlineVerdict, type Verdict } from '../score/score.ts';
+import { beoordeelLeven, bepaalPrioriteit, type Leven, type Prioriteit, type SitemapInfo } from '../score/leven.ts';
 import { saveScan, type CompanyRow } from '../db/index.ts';
 import { pool } from '../util/pool.ts';
 import { progress, log } from '../util/log.ts';
@@ -11,8 +12,10 @@ import { config } from '../config.ts';
 export type ScanReport = {
   signals: PageSignals | null;
   verdict: Verdict;
+  leven: Leven;
+  prioriteit: Prioriteit;
   deep: DeepMetrics | null;
-  extra: { hasSitemap: boolean; hasRobotsTxt: boolean };
+  extra: { sitemap: SitemapInfo; hasRobotsTxt: boolean };
 };
 
 export type ScanOutcome = {
@@ -20,6 +23,8 @@ export type ScanOutcome = {
   status: 'ok' | 'error' | 'blocked' | 'offline';
   score: number | null;
   grade: string | null;
+  leven: number | null;
+  prioriteit: number | null;
   finalUrl: string | null;
   httpStatus: number | null;
   error: string | null;
@@ -38,8 +43,10 @@ export type ScanOptions = {
 export async function scanCompany(company: CompanyRow, options: ScanOptions = {}): Promise<ScanOutcome> {
   const base = {
     company, score: null as number | null, grade: null as string | null,
+    leven: null as number | null, prioriteit: null as number | null,
     finalUrl: null as string | null, httpStatus: null as number | null,
   };
+  const geenSitemap: SitemapInfo = { aanwezig: false, laatstGewijzigd: null, aantalUrls: 0 };
 
   const robots = await checkRobots(company.website).catch(() => ({ allowed: true, crawlDelayMs: 0 }));
   if (!robots.allowed) {
@@ -52,36 +59,41 @@ export async function scanCompany(company: CompanyRow, options: ScanOptions = {}
 
   const fetched = await fetchPage(company.website, { crawlDelayMs: robots.crawlDelayMs });
 
-  if (fetched.error || fetched.status === null) {
-    const reason = fetched.error ?? 'onbekende fout';
+  const onbereikbaar = (status: 'offline' | 'error', reason: string, httpStatus: number | null): ScanOutcome => {
     const verdict = offlineVerdict(reason);
+    const leven = beoordeelLeven(null);
+    const prioriteit = bepaalPrioriteit({
+      kwaliteit: verdict.score, leven, heeftTelefoon: Boolean(company.phone), heeftEmail: Boolean(company.email),
+    });
     return {
-      ...base, status: 'offline', score: verdict.score, grade: verdict.grade,
-      finalUrl: fetched.finalUrl, httpStatus: null, error: reason,
-      report: { signals: null, verdict, deep: null, extra: { hasSitemap: false, hasRobotsTxt: false } },
+      ...base, status, score: verdict.score, grade: verdict.grade,
+      leven: leven.score, prioriteit: prioriteit.score,
+      finalUrl: fetched.finalUrl, httpStatus, error: reason,
+      report: { signals: null, verdict, leven, prioriteit, deep: null, extra: { sitemap: geenSitemap, hasRobotsTxt: false } },
     };
-  }
+  };
 
-  if (fetched.status >= 400) {
-    const reason = `HTTP ${fetched.status}`;
-    const verdict = offlineVerdict(reason);
-    return {
-      ...base, status: 'error', score: verdict.score, grade: verdict.grade,
-      finalUrl: fetched.finalUrl, httpStatus: fetched.status, error: reason,
-      report: { signals: null, verdict, deep: null, extra: { hasSitemap: false, hasRobotsTxt: false } },
-    };
-  }
+  if (fetched.error || fetched.status === null) return onbereikbaar('offline', fetched.error ?? 'onbekende fout', null);
+  if (fetched.status >= 400) return onbereikbaar('error', `HTTP ${fetched.status}`, fetched.status);
 
   const signals = analyzePage(fetched);
   const verdict = scoreSignals(signals);
 
   const origin = new URL(fetched.finalUrl).origin;
   const extra = options.skipExtras
-    ? { hasSitemap: false, hasRobotsTxt: false }
+    ? { sitemap: geenSitemap, hasRobotsTxt: false }
     : {
-        hasSitemap: await exists(`${origin}/sitemap.xml`),
+        sitemap: await leesSitemap(origin),
         hasRobotsTxt: await exists(`${origin}/robots.txt`),
       };
+
+  const leven = beoordeelLeven(signals, extra.sitemap);
+  const prioriteit = bepaalPrioriteit({
+    kwaliteit: verdict.score,
+    leven,
+    heeftTelefoon: signals.contact.phones.length > 0 || Boolean(company.phone),
+    heeftEmail: signals.contact.emails.length > 0 || Boolean(company.email),
+  });
 
   const deep = options.deep
     ? await deepScan(fetched.finalUrl, { screenshotDir: options.screenshotDir, mobile: true })
@@ -92,10 +104,12 @@ export async function scanCompany(company: CompanyRow, options: ScanOptions = {}
     status: 'ok',
     score: verdict.score,
     grade: verdict.grade,
+    leven: leven.score,
+    prioriteit: prioriteit.score,
     finalUrl: fetched.finalUrl,
     httpStatus: fetched.status,
     error: null,
-    report: { signals, verdict, deep, extra },
+    report: { signals, verdict, leven, prioriteit, deep, extra },
   };
 }
 
@@ -114,14 +128,16 @@ export async function scanAll(companies: CompanyRow[], options: ScanOptions = {}
     (company) => scanCompany(company, options),
     (result, company) => {
       const outcome: ScanOutcome = result ?? {
-        company, status: 'error', score: null, grade: null, finalUrl: null,
-        httpStatus: null, error: 'scan mislukt', report: { error: 'scan mislukt' },
+        company, status: 'error', score: null, grade: null, leven: null, prioriteit: null,
+        finalUrl: null, httpStatus: null, error: 'scan mislukt', report: { error: 'scan mislukt' },
       };
       outcomes.push(outcome);
       saveScan(company.id, {
         status: outcome.status,
         score: outcome.score,
         grade: outcome.grade,
+        leven: outcome.leven,
+        prioriteit: outcome.prioriteit,
         finalUrl: outcome.finalUrl,
         httpStatus: outcome.httpStatus,
         error: outcome.error,

@@ -7,7 +7,9 @@ Vanaf daar werkt je team ze uit — bellen, adviseren, gratis verbeteren, hostin
 overnemen — tot ze maandelijks betalende klanten zijn.
 
 ```
-bedrijven ophalen → scannen → kaart met rood/oranje/groen → bellen → klant → maandomzet
+bedrijven ophalen → scannen → kaart met rood/oranje/groen
+                 → prioriteit (slechte site + bedrijf dat draait + bereikbaar)
+                 → mailen, dan bellen → opdracht → klant → maandomzet
 ```
 
 Het is een platform voor meer mensen dan jij alleen: je maakt accounts aan voor
@@ -30,7 +32,10 @@ node src/cli.ts import --source osm --area Utrecht --category all --limit 300
 # 3. Hun websites scannen
 node src/cli.ts scan --limit 300
 
-# 4. Alles bekijken op de kaart
+# 4. Leg vast wat je aanbiedt
+node src/cli.ts aanbod --maandbedrag 49
+
+# 5. Alles bekijken op de kaart
 node src/cli.ts serve      # http://localhost:4321
 ```
 
@@ -85,6 +90,41 @@ een stuk trager, dus gebruik het op je shortlist en niet op de hele lijst:
 ```bash
 node src/cli.ts scan --deep --limit 25 --screenshots ./out/screenshots
 ```
+
+## Draait dit bedrijf nog?
+
+Een verwaarloosde website is nog geen goede lead. De bakker die er over een jaar
+mee stopt heeft ook een site uit 2011, maar die gaat niets afnemen. Daarom wordt
+naast de kwaliteit apart gekeken of het bedrijf nog draait — uit dezelfde pagina
+die toch al opgehaald wordt, plus de sitemap:
+
+| Teken van leven | Waarom het meetelt |
+| --- | --- |
+| Sitemap recent bijgewerkt | Het hardste signaal dat iemand nog aan de site werkt |
+| Het huidige jaartal staat erop | Iemand houdt de teksten bij |
+| Een nieuwsbericht van dit jaar | Er wordt nog geschreven |
+| Een vacature | Er wordt geld uitgegeven aan personeel |
+| Online bestellen of afspraak maken | Er is in conversie geïnvesteerd |
+| Statistiek op de site | Iemand kijkt naar de cijfers |
+| Meerdere social-profielen, WhatsApp | Er wordt naar buiten gecommuniceerd |
+| Copyright van vier jaar terug | Telt juist tegen |
+| Tekst als "wij zijn gestopt" | Telt zwaar tegen |
+
+Daaruit komt een **prioriteit**: hoe interessant dit bedrijf is om te benaderen.
+Die drie dingen moeten alle drie kloppen, dus ze werken op elkaar in in plaats
+van dat ze bij elkaar opgeteld worden:
+
+```
+prioriteit = (hoeveel er aan de site te verbeteren valt)
+           × (draait het bedrijf nog)
+           × (kun je er contact mee krijgen)
+```
+
+Een site van 6 op 100 van een bedrijf zonder teken van leven zakt daarmee onder
+een site van 16 van een bedrijf dat personeel zoekt. De lijst staat standaard op
+prioriteit gesorteerd; met **Slechtste site eerst** krijg je de oude volgorde
+terug. Bij elke lead staat waarom hij hoog of laag scoort, zodat je het zelf kunt
+wegen.
 
 ## De kaart
 
@@ -171,6 +211,27 @@ node src/cli.ts fase 42 afspraak --agent sara@voorbeeld.nl --notitie "dinsdag 14
 node src/cli.ts trechter        # hoeveel bedrijven in welke fase
 node src/cli.ts team            # wie belt hoeveel en brengt hoeveel op
 node src/cli.ts testimonials --publiceerbaar
+```
+
+## Wat je aanbiedt
+
+Onder **Team & omzet** stel je in wat je precies aanbiedt. Die tekst komt in alle
+mailsjablonen terecht, dus je kunt je propositie bijstellen zonder dertien
+teksten te herschrijven. Er zijn twee vormen:
+
+- **Gratis herbouw, betalen per maand** — laagste drempel, maar je legt de hele
+  kostprijs vooraf bij jezelf;
+- **Startbedrag voor de bouw, daarna per maand** — je verdient de bouw meteen
+  terug en filtert de mensen eruit die toch nooit gingen betalen.
+
+Reken het door voordat je kiest. Een herbouw van zes uur bij € 24,50 per maand
+verdien je pas na ongeveer tien maanden terug, en dan nog zonder provisie voor de
+agent die hem binnenhaalde. Eén klant die na acht maanden opzegt kost je geld.
+Het dashboard rekent die terugverdientijd voor je uit zodra je "gratis" kiest.
+
+```bash
+node src/cli.ts aanbod                                            # wat staat er nu
+node src/cli.ts aanbod --soort startbedrag --startbedrag 295 --maandbedrag 59
 ```
 
 ## Mailsjablonen
@@ -343,6 +404,7 @@ src/
     team.ts           accounts, wachtwoorden en sessies
     pipeline.ts       fases, belgeschiedenis, klanten, testimonials
     contact.ts        rechtsvorm, belregels, toestemming en de niet-benaderen-lijst
+    instellingen.ts   wat je aanbiedt, in één plek
   sources/            waar bedrijven vandaan komen (osm, csv, kvk)
   scan/
     robots.ts         robots.txt lezen en naleven

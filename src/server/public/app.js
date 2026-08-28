@@ -16,7 +16,7 @@ const staat = {
   fases: [],
   agenten: [],
   sjablonen: [],
-  filters: { zoek: '', plaats: '', fase: '', agent: '', contact: false, belbaar: false, band: '' },
+  filters: { zoek: '', plaats: '', fase: '', agent: '', contact: false, belbaar: false, levend: false, band: '', sort: 'prioriteit' },
   gekozen: null,
   weergave: 'kaart',
   afzender: {},
@@ -123,6 +123,8 @@ function queryVan(extra = {}) {
   else zet('agent', staat.filters.agent);
   if (staat.filters.contact) zet('metContact', '1');
   if (staat.filters.belbaar) zet('belbaar', '1');
+  if (staat.filters.levend) zet('levend', '1');
+  zet('sort', staat.filters.sort);
   if (staat.filters.band) {
     const band = BANDEN.find((rij) => rij.id === staat.filters.band);
     zet('minScore', band.vanaf);
@@ -151,7 +153,7 @@ function tekenBanden(punten) {
 
 async function ververs() {
   const [lijst, kaartData] = await Promise.all([
-    api('/api/leads?' + queryVan({ limit: 300, sort: 'score' })),
+    api('/api/leads?' + queryVan({ limit: 300 })),
     api('/api/kaart?' + queryVan({ limit: 6000 })),
   ]);
   $('telling').textContent = `${lijst.leads.length} getoond van ${lijst.totaal}`;
@@ -171,6 +173,14 @@ async function ververs() {
 const bolVan = (score) => `<span class="bol bol-${bandVan(score).id}" title="${bandVan(score).label}"></span>`;
 const faseLabel = (id) => staat.fases.find((fase) => fase.id === id)?.label ?? id;
 const isMijlpaal = (id) => Boolean(staat.fases.find((fase) => fase.id === id)?.mijlpaal);
+
+/** Hoe levend het bedrijf oogt — los van hoe slecht de site is. */
+const LEVEN = [
+  { vanaf: 60, id: 'levend', label: 'draait' },
+  { vanaf: 35, id: 'onduidelijk', label: 'onduidelijk' },
+  { vanaf: 0, id: 'stil', label: 'stil' },
+];
+const levenVan = (score) => LEVEN.find((rij) => (score ?? 0) >= rij.vanaf) ?? LEVEN[2];
 
 const initialen = (naam) => naam.split(/\s+/).filter(Boolean).slice(0, 2)
   .map((deel) => deel[0].toUpperCase()).join('');
@@ -194,7 +204,8 @@ function tekenLijst(tbody, leegVak, leads, welke) {
       : lead.toegewezen_aan === staat.ik.id ? ' van-mij' : ' van-collega';
     return `
     <tr class="${bezetting.trim()}" data-id="${lead.id}" tabindex="0" aria-selected="${lead.id === staat.gekozen}">
-      <td class="kwaliteit">${bolVan(lead.score)}<span class="score">${lead.score}</span></td>
+      <td class="kwaliteit">${bolVan(lead.score)}<span class="score">${lead.score}</span>
+          <div class="leven l-${levenVan(lead.leven).id}" title="Levenstekenen: ${lead.leven ?? '?'}/100">${levenVan(lead.leven).label}</div></td>
       <td><div class="naam">${esc(lead.name)}</div>
           <div class="sub mono">${esc(lead.domain)}${lead.city ? ' · ' + esc(lead.city) : ''}</div>
           ${contact ? `<div class="telefoon">${lead.bel_toestemming || !lead.contact.phones[0] ? '' : ''}${esc(contact)}${lead.contact.phones[0] && !lead.bel_toestemming && NATUURLIJK.includes(lead.rechtsvorm ?? '') ? ' <span class="alleen-mail" title="Bellen mag alleen met toestemming">alleen mailen</span>' : ''}</div>` : ''}</td>
@@ -333,6 +344,25 @@ function tekenDetail(doel, lead) {
         <input class="veld" id="d-actie" type="date" value="${esc(lead.volgende_actie_op ?? '')}">
         <button class="knop" data-actie="volgende">Vastleggen</button>
       </div>
+    </div>` : ''}
+
+    ${lead.report?.leven ? `<div class="deel">
+      <span class="label-klein">Draait dit bedrijf nog?</span>
+      <div class="meter">
+        <span class="meter-naam">${esc(lead.report.leven.label)}</span>
+        <span class="meter-waarde">${lead.report.leven.score}/100</span>
+        <span class="meter-spoor"><i class="meter-vul" style="width:${lead.report.leven.score}%"></i></span>
+      </div>
+      <div class="meter">
+        <span class="meter-naam">Prioriteit als lead</span>
+        <span class="meter-waarde">${lead.prioriteit ?? '–'}/100</span>
+        <span class="meter-spoor"><i class="meter-vul" style="width:${lead.prioriteit ?? 0}%"></i></span>
+      </div>
+      <p class="sub" style="margin:2px 0 8px">${esc(lead.report.prioriteit?.uitleg ?? '')}</p>
+      <ul class="tekens">
+        ${lead.report.leven.tekens.slice(0, 4).map((teken) => `<li class="ja">${esc(teken.tekst)}</li>`).join('')}
+        ${lead.report.leven.twijfels.slice(0, 3).map((teken) => `<li class="nee">${esc(teken.tekst)}</li>`).join('')}
+      </ul>
     </div>` : ''}
 
     <div class="deel">
@@ -635,6 +665,7 @@ async function toonMijnLijst() {
 async function toonTeam() {
   const gegevens = await api('/api/team');
   const overzicht = await api('/api/overzicht');
+  await vulAanbod();
 
   $('omzettegels').innerHTML = [
     { waarde: overzicht.opdrachten.totaal, tekst: 'opdrachten binnen', klem: true },
@@ -666,6 +697,44 @@ async function toonTeam() {
     </div>`).join('');
 }
 
+/** Het aanbod dat in alle mailsjablonen terechtkomt. */
+async function vulAanbod() {
+  const { aanbod, voorbeeld } = await api('/api/instellingen');
+  const formulier = $('aanbod-formulier');
+  formulier.soort.value = aanbod.soort;
+  formulier.startbedrag.value = (aanbod.startbedragCent / 100).toFixed(2);
+  formulier.maandbedrag.value = (aanbod.maandbedragCent / 100).toFixed(2);
+  formulier.inbegrepen.value = aanbod.inbegrepen;
+  formulier.bedrijfsnaam.value = aanbod.bedrijfsnaam;
+  formulier.telefoon.value = aanbod.telefoon;
+  toonAanbodVoorbeeld(aanbod, voorbeeld);
+}
+
+function toonAanbodVoorbeeld(aanbod, voorbeeld) {
+  const maanden = Math.max(1, Math.round(24000 / Math.max(aanbod.maandbedragCent, 1)));
+  $('aanbod-voorbeeld').innerHTML = `Zo staat het in de mail:<br><em>"${esc(voorbeeld)}"</em>` +
+    (aanbod.soort === 'gratis'
+      ? `<br><br>Bij een gratis herbouw van zes uur verdien je die pas na ongeveer
+         <b>${maanden} maanden</b> hosting terug, exclusief provisie.`
+      : '');
+}
+
+$('aanbod-formulier').addEventListener('submit', async (gebeurtenis) => {
+  gebeurtenis.preventDefault();
+  const velden = Object.fromEntries(new FormData(gebeurtenis.target));
+  try {
+    const { aanbod, voorbeeld } = await api('/api/instellingen', {
+      method: 'PUT', body: JSON.stringify(velden),
+    });
+    toonAanbodVoorbeeld(aanbod, voorbeeld);
+    $('aanbod-melding').textContent = 'Opgeslagen — alle sjablonen gebruiken dit nu.';
+    $('aanbod-melding').classList.add('goed');
+  } catch (fout) {
+    $('aanbod-melding').textContent = fout.message;
+    $('aanbod-melding').classList.remove('goed');
+  }
+});
+
 $('nieuwe-gebruiker').addEventListener('submit', async (gebeurtenis) => {
   gebeurtenis.preventDefault();
   const formulier = new FormData(gebeurtenis.target);
@@ -696,12 +765,16 @@ koppelFilter('f-fase', 'fase');
 koppelFilter('f-agent', 'agent');
 koppelFilter('f-contact', 'contact');
 koppelFilter('f-belbaar', 'belbaar');
+koppelFilter('f-levend', 'levend');
+koppelFilter('f-sort', 'sort');
 
 $('f-wis').addEventListener('click', () => {
-  staat.filters = { zoek: '', plaats: '', fase: '', agent: '', contact: false, belbaar: false, band: '' };
+  staat.filters = { zoek: '', plaats: '', fase: '', agent: '', contact: false, belbaar: false, levend: false, band: '', sort: 'prioriteit' };
   for (const id of ['f-zoek', 'f-plaats', 'f-fase', 'f-agent']) $(id).value = '';
   $('f-contact').checked = false;
   $('f-belbaar').checked = false;
+  $('f-levend').checked = false;
+  $('f-sort').value = 'prioriteit';
   ververs();
 });
 

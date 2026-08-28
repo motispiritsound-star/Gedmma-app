@@ -129,7 +129,9 @@ blokkeer(opDomein('dierenartsdepoot.nl'), 'gaf aan geen berichten meer te willen
 
 const leads = queryLeads({ maxScore: 100, limit: 500, toonGeblokkeerd: true }).map((lead) => {
   const full = getLead(lead.id)!;
-  const report = full.report as { verdict?: never; signals?: never };
+  const report = full.report as {
+    verdict?: never; signals?: never; leven?: never; prioriteit?: { uitleg: string };
+  };
   const rapportInput = {
     companyName: lead.name, domain: lead.domain, city: lead.city,
     verdict: report.verdict!, signals: report.signals ?? null,
@@ -146,6 +148,8 @@ const leads = queryLeads({ maxScore: 100, limit: 500, toonGeblokkeerd: true }).m
     verdict: report.verdict,
     signals: report.signals ?? null,
     voorgesteldSjabloon: voorgesteld,
+    levenRapport: report.leven ?? null,
+    prioriteitUitleg: report.prioriteit?.uitleg ?? null,
     pitch: {
       subject: renderSjabloon(voorgesteld, context).onderwerp,
       body: renderSjabloon(voorgesteld, context).tekst,

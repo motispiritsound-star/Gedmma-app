@@ -62,6 +62,22 @@ export function startFixtureServer(port = 0): Promise<{ server: Server; port: nu
       return;
     }
     if (path === '/kapot') { res.writeHead(500); res.end('boem'); return; }
+    // Twee even beroerde sites: de een van een bedrijf dat draait, de ander niet.
+    if (path === '/levend' || path === '/stil') {
+      const jaar = new Date().getFullYear();
+      const extra = path === '/levend'
+        ? `<p>Nieuws — 4 april ${jaar}: we hebben er een bus bij.</p>
+           <p><a href="/vacature">Vacature: wij zoeken een monteur</a></p>
+           <p><a href="/afspraak">Direct online een afspraak maken</a></p>
+           <p><a href="https://www.facebook.com/x">Facebook</a> <a href="https://www.instagram.com/x">Instagram</a></p>
+           <script async src="https://www.googletagmanager.com/gtag/js?id=G-X"></script>
+           <p>&copy; ${jaar} Voorbeeld</p>`
+        : '<p>&copy; 2009 Voorbeeld</p>';
+      res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+      res.end(`<html><head><title></title></head><body bgcolor="#fff"><center><font size="5">Voorbeeld</font></center>
+        <table><tr><td><table><tr><td><p>Bel 030-1234567.</p>${extra}</td></tr></table></td></tr></table></body></html>`);
+      return;
+    }
     res.writeHead(404); res.end('niet gevonden');
   });
 

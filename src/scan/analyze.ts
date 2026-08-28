@@ -16,6 +16,12 @@ const PARKED_PATTERNS = [
 const COOKIE_LIBS = /cookiebot|cookieconsent|complianz|borlabs|usercentrics|iubenda|klaro|osano|onetrust|cookie-script|didomi/i;
 const FORM_KEYWORDS = /contact|offerte|afspraak|aanvraag|reserve|boek/i;
 
+// --- tekenen dat er nog een bedrijf achter zit ------------------------------
+const VACATURE = /vacature|werken bij|we zoeken|kom ons team|solliciteer/i;
+const ONLINE_ACTIE = /online (?:bestellen|reserveren|boeken|afspraak)|afspraak maken|bestel(?:len)? online|reserveer|winkelwagen|webshop|in winkelwagen/i;
+const GESTOPT = /(?:zijn|is) gestopt|opgeheven|bedrijfsbeëindiging|failliet|uit bedrijf|wij zijn per \d|laatste dag/i;
+const BLOG_DATUM = /(\d{1,2}\s+(?:januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|november|december)\s+(20\d{2}))/gi;
+
 const EMAIL_RE = /[\w.+-]+@[\w-]+\.[\w.-]{2,}/g;
 const PHONE_RE = /(?:\+31|0031|0)[\s.-]?(?:\d[\s.-]?){8,9}\d/g;
 const KVK_RE = /k\.?v\.?k\.?(?:[\s-]*nummer)?[\s.:#-]*(\d{8})\b/i;
@@ -237,6 +243,29 @@ export function analyzePage(result: FetchResult) {
       copyrightYear,
       copyrightAgeYears: copyrightYear ? currentYear - copyrightYear : null,
       lastModified: result.headers['last-modified'] ?? null,
+    },
+
+    /**
+     * Signalen dat het bedrijf nog actief is. Een verwaarloosde site van een
+     * bedrijf dat op omvallen staat is geen lead; een verwaarloosde site van
+     * een bedrijf dat volop draait wel.
+     */
+    leven: {
+      /** Het jongste jaartal dat ergens in de tekst voorkomt. */
+      jongsteJaar: Math.max(0, ...[...visibleText.matchAll(/\b(20[12]\d)\b/g)]
+        .map((treffer) => Number(treffer[1]))
+        .filter((jaar) => jaar <= currentYear)),
+      /** De jongste datum in een blog- of nieuwsoverzicht. */
+      jongsteBerichtJaar: Math.max(0, ...[...visibleText.matchAll(BLOG_DATUM)]
+        .map((treffer) => Number(treffer[2]))
+        .filter((jaar) => jaar <= currentYear)),
+      vacature: VACATURE.test(visibleText),
+      onlineActie: ONLINE_ACTIE.test(visibleText) || ONLINE_ACTIE.test(linkText),
+      lijktGestopt: GESTOPT.test(visibleText.slice(0, 2000)),
+      meetInstrument: /gtag|googletagmanager|analytics|matomo|plausible|hotjar|clarity/i.test(html),
+      socials: socials.length,
+      whatsapp: /wa\.me\/|api\.whatsapp\.com/i.test(html),
+      cookiebanner: COOKIE_LIBS.test(html),
     },
 
     security: {

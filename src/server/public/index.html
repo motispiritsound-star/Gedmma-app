@@ -45,15 +45,21 @@
   <!-- ---------- kaart & leads ---------- -->
   <section class="weergave" id="weergave-kaart">
     <div class="filters">
-      <input class="veld" id="f-zoek" type="search" placeholder="Zoek bedrijf, domein of plaats" style="width:230px">
-      <select class="veld" id="f-plaats"><option value="">Alle plaatsen</option></select>
-      <select class="veld" id="f-fase"><option value="">Alle fases</option></select>
-      <select class="veld" id="f-agent"><option value="">Iedereen</option><option value="vrij">Nog niet toegewezen</option></select>
-      <label class="schakel"><input type="checkbox" id="f-contact"> met contactgegevens</label>
-      <label class="schakel"><input type="checkbox" id="f-belbaar"> mag gebeld worden</label>
+      <input class="veld smal" id="f-zoek" type="search" placeholder="Zoek bedrijf of plaats">
+      <select class="veld smal" id="f-plaats"><option value="">Alle plaatsen</option></select>
+      <select class="veld smal" id="f-fase"><option value="">Alle fases</option></select>
+      <select class="veld smal" id="f-agent"><option value="">Iedereen</option></select>
+      <label class="schakel" title="Alleen bedrijven met een telefoonnummer of e-mailadres"><input type="checkbox" id="f-contact"> contact</label>
+      <label class="schakel" title="Alleen bedrijven die je zonder toestemming mag bellen"><input type="checkbox" id="f-belbaar"> belbaar</label>
+      <label class="schakel" title="Alleen bedrijven met tekenen van leven"><input type="checkbox" id="f-levend"> draait nog</label>
       <button class="knop" id="f-wis">Wissen</button>
-      <a class="knop" id="f-export" href="/api/export.csv">CSV</a>
       <span class="telling" id="telling"></span>
+      <select class="veld smal" id="f-sort">
+        <option value="prioriteit">Beste leads eerst</option>
+        <option value="score">Slechtste site eerst</option>
+        <option value="naam">Op naam</option>
+      </select>
+      <a class="knop" id="f-export" href="/api/export.csv">CSV</a>
     </div>
 
     <div class="drieluik">
@@ -128,6 +134,30 @@
         </div>
       </div>
       <aside class="kaart-paneel detail">
+        <span class="label-klein">Wat je aanbiedt</span>
+        <form id="aanbod-formulier" class="stapel">
+          <select class="veld" name="soort">
+            <option value="gratis">Gratis herbouw, betalen per maand</option>
+            <option value="startbedrag">Startbedrag voor de bouw, daarna per maand</option>
+          </select>
+          <div class="rij">
+            <label class="sub" style="width:100px" for="a-start">Startbedrag</label>
+            <input class="veld" id="a-start" name="startbedrag" type="number" min="0" step="5" style="flex:1">
+          </div>
+          <div class="rij">
+            <label class="sub" style="width:100px" for="a-maand">Per maand</label>
+            <input class="veld" id="a-maand" name="maandbedrag" type="number" min="0" step="0.5" style="flex:1">
+          </div>
+          <input class="veld" name="inbegrepen" placeholder="Wat zit erin?">
+          <div class="rij">
+            <input class="veld" name="bedrijfsnaam" placeholder="Jouw bedrijfsnaam" style="flex:1">
+            <input class="veld" name="telefoon" placeholder="Telefoon" style="width:130px">
+          </div>
+          <button class="knop sterk" type="submit">Opslaan</button>
+          <p class="sub" id="aanbod-voorbeeld"></p>
+          <p class="melding" id="aanbod-melding" role="alert"></p>
+        </form>
+        <hr>
         <span class="label-klein">Trechter</span>
         <div id="team-trechter"></div>
         <hr>

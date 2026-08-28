@@ -101,13 +101,14 @@ export function upsertCompanies(rows: CompanyInput[]): { inserted: number; updat
 
 export function saveScan(companyId: number, scan: {
   status: string; score: number | null; grade: string | null;
+  leven: number | null; prioriteit: number | null;
   finalUrl: string | null; httpStatus: number | null; error: string | null; report: unknown;
 }): void {
   db().prepare(`
-    INSERT INTO scans (company_id, status, score, grade, final_url, http_status, error, report)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO scans (company_id, status, score, grade, leven, prioriteit, final_url, http_status, error, report)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
-    companyId, scan.status, scan.score, scan.grade,
+    companyId, scan.status, scan.score, scan.grade, scan.leven, scan.prioriteit,
     scan.finalUrl, scan.httpStatus, scan.error, JSON.stringify(scan.report ?? {}),
   );
 }

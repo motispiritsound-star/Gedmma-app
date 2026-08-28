@@ -60,6 +60,10 @@ const leads = source.leads.map((lead) => ({
   mailen: magMailen(lead),
   score: lead.score,
   grade: lead.grade,
+  leven: lead.leven,
+  prioriteit: lead.prioriteit,
+  levenRapport: lead.levenRapport,
+  prioriteitUitleg: lead.prioriteitUitleg,
   oordeel: lead.verdict?.label ?? '',
   status: lead.scan_status,
   fout: lead.error,
@@ -98,6 +102,7 @@ const data = {
       (lead.score ?? 100) < 55 && (lead.contact.emails.length > 0 || lead.contact.phones.length > 0)).length,
     opdrachten: leads.filter((lead) => VANAF_OPDRACHT.includes(lead.fase)).length,
     magBellen: leads.filter((lead) => lead.bellen.mag).length,
+    draaitNog: leads.filter((lead) => (lead.leven ?? 0) >= 60).length,
     alleenMailen: leads.filter((lead) => !lead.bellen.mag && lead.mailen.mag).length,
     klanten: klanten.length,
     mrrCent: klanten.reduce((som, lead) => som + (lead.maandbedragCent ?? 0), 0),
@@ -106,7 +111,7 @@ const data = {
   trechter,
   faseLabels: FASE_LABELS,
   mijlpaal: MIJLPAAL,
-  leads: leads.sort((a, b) => (a.score ?? 0) - (b.score ?? 0)),
+  leads: leads.sort((a, b) => (b.prioriteit ?? 0) - (a.prioriteit ?? 0)),
 };
 
 /** Zet een TypeScript-module om in gewone JS die in de pagina kan staan. */

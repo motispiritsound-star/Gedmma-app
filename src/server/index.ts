@@ -13,6 +13,7 @@ import { RECHTSVORMEN, benaderbaarheid, blokkeer, deblokkeer, legToestemmingVast
          magBellen, magMailen, trekToestemmingIn, zetRechtsvorm,
          type RechtsvormId } from '../db/contact.ts';
 import { SJABLONEN, renderSjabloon, stelSjabloonVoor } from '../report/templates.ts';
+import { aanbodTekst, bewaarAanbod, leesAanbod } from '../db/instellingen.ts';
 import { toCsv } from '../util/csv.ts';
 import { log } from '../util/log.ts';
 import { config } from '../config.ts';
@@ -61,12 +62,13 @@ function filterUitQuery(query: Record<string, unknown>, ikId?: number): LeadFilt
     alleenVrij: query.vrij === '1',
     vanCollegas: query.collegas === '1' ? ikId : undefined,
     alleenBelbaar: query.belbaar === '1',
+    minLeven: query.levend === '1' ? 45 : undefined,
     toonGeblokkeerd: query.geblokkeerd === '1',
     metContact: query.metContact === '1',
     metCoordinaten: query.opKaart === '1',
     includeOffline: query.includeOffline !== '0',
     search: (query.zoek as string) || undefined,
-    sort: (query.sort as LeadFilter['sort']) || 'score',
+    sort: (query.sort as LeadFilter['sort']) || 'prioriteit',
     limit: getal(query.limit, 100),
     offset: getal(query.offset, 0),
   };
@@ -226,13 +228,15 @@ export async function startServer(port: number): Promise<void> {
     const rapport = lead.report as { verdict?: never; signals?: never };
     if (!rapport?.verdict) { meld(res, 409, 'Deze lead is nog niet gescand.'); return; }
 
+    const aanbod = leesAanbod();
     const context = {
       bedrijf: lead.name, domein: lead.domain, plaats: lead.city,
       verdict: rapport.verdict, signals: rapport.signals ?? null,
+      aanbod: aanbodTekst(aanbod),
       afzender: {
         naam: (req.query.naam as string) || req.gebruiker!.naam,
-        bedrijf: (req.query.bedrijf as string) || undefined,
-        telefoon: (req.query.telefoon as string) || undefined,
+        bedrijf: (req.query.bedrijf as string) || aanbod.bedrijfsnaam || undefined,
+        telefoon: (req.query.telefoon as string) || aanbod.telefoon || undefined,
         email: (req.query.email as string) || req.gebruiker!.email,
       },
     };
@@ -389,6 +393,25 @@ export async function startServer(port: number): Promise<void> {
     res.json({ ok: true });
   });
 
+  // --- instellingen ---
+  app.get('/api/instellingen', vereistLogin, (_req, res) => {
+    const aanbod = leesAanbod();
+    res.json({ aanbod, voorbeeld: aanbodTekst(aanbod) });
+  });
+
+  app.put('/api/instellingen', vereistLogin, vereistEigenaar, (req, res) => {
+    const body = req.body as Record<string, unknown>;
+    const aanbod = bewaarAanbod({
+      soort: body.soort === 'startbedrag' ? 'startbedrag' : body.soort === 'gratis' ? 'gratis' : undefined,
+      startbedragCent: body.startbedrag !== undefined ? Math.round(Number(body.startbedrag) * 100) : undefined,
+      maandbedragCent: body.maandbedrag !== undefined ? Math.round(Number(body.maandbedrag) * 100) : undefined,
+      inbegrepen: body.inbegrepen as string | undefined,
+      bedrijfsnaam: body.bedrijfsnaam as string | undefined,
+      telefoon: body.telefoon as string | undefined,
+    });
+    res.json({ aanbod, voorbeeld: aanbodTekst(aanbod) });
+  });
+
   // --- team ---
   app.get('/api/team', vereistLogin, vereistEigenaar, (_req, res) => {
     res.json({ team: teamOverzicht(), gebruikers: gebruikers(), omzet: omzet() });
@@ -417,7 +440,10 @@ export async function startServer(port: number): Promise<void> {
     });
     const rijen = leads.map((lead) => ({
       bedrijf: lead.name, website: lead.website, plaats: lead.city ?? '',
-      score: lead.score ?? '', beoordeling: lead.grade ?? '',
+      rechtsvorm: lead.rechtsvorm ?? '',
+      prioriteit: lead.prioriteit ?? '', score: lead.score ?? '', beoordeling: lead.grade ?? '',
+      levenstekenen: lead.leven ?? '',
+      mag_bellen: magBellen(lead).mag ? 'ja' : 'nee',
       telefoon: lead.contact.phones.join(' / '), email: lead.contact.emails.join(' / '),
       belangrijkste_probleem: lead.topIssues[0]?.title ?? '',
       fase: lead.fase, agent: lead.agent_naam ?? '',

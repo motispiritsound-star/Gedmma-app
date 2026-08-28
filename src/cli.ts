@@ -19,6 +19,7 @@ import { queryLeads, getLead } from './report/leads.ts';
 import { exportLeads } from './report/export.ts';
 import { buildReport } from './report/pitch.ts';
 import { SJABLONEN, renderSjabloon, stelSjabloonVoor } from './report/templates.ts';
+import { aanbodTekst, bewaarAanbod, leesAanbod } from './db/instellingen.ts';
 import { RECHTSVORMEN, benaderbaarheid, blokkeer, deblokkeer, herkenRechtsvorm,
          legToestemmingVast, magBellen, zetRechtsvorm, type RechtsvormId } from './db/contact.ts';
 
@@ -226,10 +227,15 @@ program
     const rapport = lead.report as { verdict?: never; signals?: never };
     if (!rapport.verdict) { log.error('Deze lead heeft nog geen scanresultaat.'); process.exitCode = 1; return; }
 
+    const aanbod = leesAanbod();
     const context = {
       bedrijf: lead.name, domein: lead.domain, plaats: lead.city,
       verdict: rapport.verdict, signals: rapport.signals ?? null,
-      afzender: { naam: options.naam, bedrijf: options.bedrijf, telefoon: options.telefoon, email: options.email },
+      aanbod: aanbodTekst(aanbod),
+      afzender: {
+        naam: options.naam, bedrijf: options.bedrijf ?? aanbod.bedrijfsnaam,
+        telefoon: options.telefoon ?? aanbod.telefoon, email: options.email,
+      },
     };
 
     try {
@@ -266,6 +272,45 @@ program
       zetFase(Number(id), fase as Fase, agent?.id ?? null, options.notitie);
       log.ok(`Lead ${id} staat nu op "${fase}"${agent ? ` bij ${agent.naam}` : ''}.`);
     } catch (fout) { log.error((fout as Error).message); process.exitCode = 1; }
+  });
+
+// --------------------------------------------------------------------------
+program
+  .command('aanbod')
+  .description('Toon of wijzig wat je aanbiedt; dit komt in alle mailsjablonen terecht')
+  .option('--soort <soort>', 'gratis of startbedrag')
+  .option('--startbedrag <euro>', 'eenmalig bedrag voor de bouw', Number)
+  .option('--maandbedrag <euro>', 'bedrag per maand', Number)
+  .option('--inbegrepen <tekst>', 'wat er in het maandbedrag zit')
+  .option('--bedrijfsnaam <naam>', 'jouw bedrijfsnaam in de ondertekening')
+  .option('--telefoon <nummer>', 'jouw telefoonnummer in de ondertekening')
+  .action((options) => {
+    const wijzigingen = ['soort', 'startbedrag', 'maandbedrag', 'inbegrepen', 'bedrijfsnaam', 'telefoon']
+      .some((sleutel) => options[sleutel] !== undefined);
+    const aanbod = wijzigingen
+      ? bewaarAanbod({
+          soort: options.soort,
+          startbedragCent: options.startbedrag !== undefined ? Math.round(options.startbedrag * 100) : undefined,
+          maandbedragCent: options.maandbedrag !== undefined ? Math.round(options.maandbedrag * 100) : undefined,
+          inbegrepen: options.inbegrepen,
+          bedrijfsnaam: options.bedrijfsnaam,
+          telefoon: options.telefoon,
+        })
+      : leesAanbod();
+
+    log.info('');
+    log.info(`  soort         ${aanbod.soort}`);
+    log.info(`  startbedrag   ${euro(aanbod.startbedragCent)}`);
+    log.info(`  maandbedrag   ${euro(aanbod.maandbedragCent)}`);
+    log.info(`  inbegrepen    ${aanbod.inbegrepen}`);
+    log.info('');
+    log.info('  Zo staat het in de mail:');
+    log.info(`  "${aanbodTekst(aanbod)}"`);
+    log.info('');
+    if (aanbod.soort === 'gratis') {
+      log.dim('  Reken door wat een herbouw je aan uren kost. Bij een gratis bouw verdien je die');
+      log.dim(`  pas terug na ongeveer ${Math.max(1, Math.round(24000 / Math.max(aanbod.maandbedragCent, 1)))} maanden hosting — en dan nog zonder provisie.`);
+    }
   });
 
 // --------------------------------------------------------------------------

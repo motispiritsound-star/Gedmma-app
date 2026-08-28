@@ -62,6 +62,29 @@ const broken = await scanCompany(company('kapot', '/kapot'));
 check('status error', () => assert.equal(broken.status, 'error'));
 check('score 0', () => assert.equal(broken.score, 0));
 
+console.log('\nDraait het bedrijf nog?');
+const levend = await scanCompany(company('levend', '/levend'));
+const stil = await scanCompany(company('stil', '/stil'));
+const levendRapport = levend.report as any;
+const stilRapport = stil.report as any;
+
+check('beide sites zijn even beroerd', () =>
+  assert.ok(Math.abs(levend.score! - stil.score!) <= 12, `${levend.score} tegen ${stil.score}`));
+check('het levende bedrijf scoort hoger op levenstekenen', () =>
+  assert.ok(levend.leven! > stil.leven! + 25, `${levend.leven} tegen ${stil.leven}`));
+check('en krijgt dus voorrang als lead', () =>
+  assert.ok(levend.prioriteit! > stil.prioriteit!, `${levend.prioriteit} tegen ${stil.prioriteit}`));
+check('de vacature telt mee', () =>
+  assert.ok(levendRapport.leven.tekens.some((teken: any) => /personeel/i.test(teken.tekst))));
+check('de online afspraak telt mee', () =>
+  assert.ok(levendRapport.leven.tekens.some((teken: any) => /online/i.test(teken.tekst))));
+check('het oude copyright telt tegen', () =>
+  assert.ok(stilRapport.leven.twijfels.some((teken: any) => /copyright/i.test(teken.tekst))));
+check('elk oordeel heeft een uitleg', () =>
+  assert.equal(typeof levendRapport.prioriteit.uitleg, 'string'));
+console.log(`  levend: site ${levend.score}, leven ${levend.leven}, prioriteit ${levend.prioriteit}`);
+console.log(`  stil:   site ${stil.score}, leven ${stil.leven}, prioriteit ${stil.prioriteit}`);
+
 console.log('\nGoede site scoort hoger dan slechte:');
 check('rangorde klopt', () => assert.ok(good.score! > bad.score! + 25));
 

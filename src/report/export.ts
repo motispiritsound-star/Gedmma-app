@@ -4,7 +4,8 @@ import { toCsv } from '../util/csv.ts';
 import { queryLeads, type LeadFilter } from './leads.ts';
 
 const COLUMNS = [
-  'bedrijf', 'website', 'domein', 'plaats', 'branche', 'score', 'beoordeling',
+  'bedrijf', 'website', 'domein', 'plaats', 'branche', 'rechtsvorm',
+  'prioriteit', 'score', 'beoordeling', 'levenstekenen',
   'scanstatus', 'telefoon', 'email', 'belangrijkste_problemen', 'gescand_op',
   'fase', 'agent', 'volgende_actie', 'lat', 'lon',
 ];
@@ -29,8 +30,11 @@ export async function exportLeads(
     domein: lead.domain,
     plaats: lead.city ?? '',
     branche: lead.branch ?? '',
+    rechtsvorm: lead.rechtsvorm ?? '',
+    prioriteit: lead.prioriteit ?? '',
     score: lead.score ?? '',
     beoordeling: lead.grade ?? '',
+    levenstekenen: lead.leven ?? '',
     scanstatus: lead.scan_status ?? '',
     telefoon: lead.contact.phones.join(' / '),
     email: lead.contact.emails.join(' / '),

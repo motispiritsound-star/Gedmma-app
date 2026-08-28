@@ -20,6 +20,9 @@ export type LeadFilter = {
   vanCollegas?: number;
   /** Alleen bedrijven die je mag bellen (rechtspersoon of toestemming). */
   alleenBelbaar?: boolean;
+  /** Alleen bedrijven waar nog tekenen van leven zijn. */
+  minLeven?: number;
+  minPrioriteit?: number;
   /** Toon ook bedrijven die zich hebben afgemeld. Standaard blijven die verborgen. */
   toonGeblokkeerd?: boolean;
   /** Alleen leads met een telefoonnummer of e-mailadres. */
@@ -30,7 +33,7 @@ export type LeadFilter = {
   search?: string;
   limit?: number;
   offset?: number;
-  sort?: 'score' | 'naam' | 'datum' | 'actie';
+  sort?: 'prioriteit' | 'score' | 'naam' | 'datum' | 'actie';
 };
 
 export type Lead = {
@@ -53,6 +56,8 @@ export type Lead = {
   scan_status: string | null;
   score: number | null;
   grade: string | null;
+  leven: number | null;
+  prioriteit: number | null;
   error: string | null;
   fase: string;
   toegewezen_aan: number | null;
@@ -104,6 +109,8 @@ function shape(row: Row): Lead {
     scan_status: (row.scan_status as string) ?? null,
     score: getal(row.score),
     grade: (row.grade as string) ?? null,
+    leven: getal(row.leven),
+    prioriteit: getal(row.prioriteit),
     error: (row.error as string) ?? null,
     fase: String(row.fase ?? 'nieuw'),
     toegewezen_aan: getal(row.toegewezen_aan),
@@ -148,6 +155,8 @@ function waar(filter: LeadFilter): { sql: string; params: (string | number)[] } 
   if (filter.metCoordinaten) delen.push('lat IS NOT NULL AND lon IS NOT NULL');
   // Wie zich heeft afgemeld verdwijnt uit elke lijst, tenzij je er expliciet om vraagt.
   if (!filter.toonGeblokkeerd) delen.push('geblokkeerd = 0');
+  if (filter.minLeven !== undefined) { delen.push('leven >= ?'); params.push(filter.minLeven); }
+  if (filter.minPrioriteit !== undefined) { delen.push('prioriteit >= ?'); params.push(filter.minPrioriteit); }
   if (filter.alleenBelbaar) {
     delen.push(`(bel_toestemming = 1 OR rechtsvorm IN (${
       RECHTSPERSONEN.map((vorm) => `'${vorm}'`).join(',')}))`);
@@ -161,6 +170,8 @@ function waar(filter: LeadFilter): { sql: string; params: (string | number)[] } 
 }
 
 const SORTERING: Record<string, string> = {
+  // Standaard: de bedrijven waar het meeste te halen valt bovenaan.
+  prioriteit: 'prioriteit DESC, score ASC, name ASC',
   score: 'score ASC, name ASC',
   naam: 'name ASC',
   datum: 'scanned_at DESC',
@@ -169,7 +180,7 @@ const SORTERING: Record<string, string> = {
 
 export function queryLeads(filter: LeadFilter = {}): Lead[] {
   const { sql, params } = waar(filter);
-  const order = SORTERING[filter.sort ?? 'score'] ?? SORTERING.score!;
+  const order = SORTERING[filter.sort ?? 'prioriteit'] ?? SORTERING.prioriteit!;
   const rows = db().prepare(`SELECT * FROM leads WHERE ${sql} ORDER BY ${order} LIMIT ? OFFSET ?`)
     .all(...params, filter.limit ?? 200, filter.offset ?? 0) as unknown as Row[];
 
@@ -189,6 +200,7 @@ export function countLeads(filter: LeadFilter = {}): number {
 export type KaartPunt = {
   id: number; naam: string; plaats: string | null;
   lat: number; lon: number; score: number; grade: string; fase: string;
+  leven: number | null; prioriteit: number | null;
   agentId: number | null; agent: string | null; klant: boolean; belbaar: boolean;
 };
 
@@ -199,9 +211,9 @@ export type KaartPunt = {
 export function kaartPunten(filter: LeadFilter = {}): KaartPunt[] {
   const { sql, params } = waar({ ...filter, metCoordinaten: true });
   const rows = db().prepare(`
-    SELECT id, name, city, lat, lon, score, grade, fase, toegewezen_aan, agent_naam, klant_status,
-           rechtsvorm, bel_toestemming
-    FROM leads WHERE ${sql} ORDER BY score ASC LIMIT ?
+    SELECT id, name, city, lat, lon, score, grade, leven, prioriteit, fase,
+           toegewezen_aan, agent_naam, klant_status, rechtsvorm, bel_toestemming
+    FROM leads WHERE ${sql} ORDER BY prioriteit DESC LIMIT ?
   `).all(...params, filter.limit ?? 5000) as unknown as Row[];
 
   return rows.map((row) => ({
@@ -213,6 +225,8 @@ export function kaartPunten(filter: LeadFilter = {}): KaartPunt[] {
     score: Number(row.score),
     grade: String(row.grade ?? 'F'),
     fase: String(row.fase ?? 'nieuw'),
+    leven: getal(row.leven),
+    prioriteit: getal(row.prioriteit),
     agentId: getal(row.toegewezen_aan),
     agent: (row.agent_naam as string) ?? null,
     klant: row.klant_status === 'actief',

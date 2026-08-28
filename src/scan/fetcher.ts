@@ -157,6 +157,37 @@ export async function fetchPage(target: string, opts: { crawlDelayMs?: number } 
   }
 }
 
+/**
+ * Haalt de sitemap op en kijkt wanneer de site voor het laatst is bijgewerkt.
+ * Dat is het goedkoopste harde signaal of er nog iemand aan de site werkt.
+ */
+export async function leesSitemap(origin: string): Promise<{
+  aanwezig: boolean; laatstGewijzigd: string | null; aantalUrls: number;
+}> {
+  const leeg = { aanwezig: false, laatstGewijzigd: null, aantalUrls: 0 };
+  try {
+    const response = await fetch(`${origin}/sitemap.xml`, {
+      headers: { 'user-agent': config.userAgent },
+      redirect: 'follow',
+      signal: AbortSignal.timeout(Math.min(config.timeoutMs, 10_000)),
+    });
+    if (!response.ok) { await response.body?.cancel().catch(() => {}); return leeg; }
+
+    const xml = (await response.text()).slice(0, 1_500_000);
+    const datums = [...xml.matchAll(/<lastmod>\s*([^<\s]+)/gi)]
+      .map((treffer) => Date.parse(treffer[1]!))
+      .filter((tijd) => Number.isFinite(tijd) && tijd < Date.now() + 86_400_000);
+
+    return {
+      aanwezig: true,
+      laatstGewijzigd: datums.length > 0 ? new Date(Math.max(...datums)).toISOString().slice(0, 10) : null,
+      aantalUrls: (xml.match(/<loc>/gi) ?? []).length,
+    };
+  } catch {
+    return leeg;
+  }
+}
+
 /** Lichte HEAD/GET-check of een pad bestaat (voor sitemap.xml, favicon e.d.). */
 export async function exists(target: string): Promise<boolean> {
   try {
