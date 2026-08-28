@@ -46,6 +46,9 @@ jobs:
       - name: Build the shared package
         run: npm run build --workspace @khidma/shared
 
+      - name: Build the website
+        run: npm run build --workspace @khidma/web
+
       - name: Typecheck
         run: npm run typecheck
 

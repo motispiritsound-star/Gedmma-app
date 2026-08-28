@@ -15,8 +15,9 @@ The app ships in **French** first, **Arabic** second (right-to-left) and
 apps/
   api/        Fastify + Prisma + PostgreSQL
   mobile/     Expo (React Native) for iOS and Android
+  web/        The public website, generated from the shared catalogs
 packages/
-  shared/     Domain rules used by both: locales, money, Moroccan
+  shared/     Domain rules used by all three: locales, money, Moroccan
               identifiers, catalogs, validation schemas
 docs/
   PRODUCT.md       The marketplace model and how Morocco shaped it
@@ -40,6 +41,7 @@ npm run db:seed            # 57 trades, 34 cities, 3 plans, demo accounts
 
 npm run dev:api            # http://localhost:4000
 npm run dev:mobile         # Expo — press i, a, or scan the QR code
+npm run dev:web            # the website on http://localhost:4300
 ```
 
 The seeded demo accounts sign in with **0600000001** (customer) and
@@ -52,7 +54,7 @@ To point the app at an API that is not on localhost, edit `extra.apiUrl` in
 ## Tests
 
 ```bash
-npm test          # 77 tests: 28 domain, 33 API integration, 16 app
+npm test          # 93 tests: 28 domain, 36 API integration, 16 app, 13 website
 npm run typecheck
 ```
 

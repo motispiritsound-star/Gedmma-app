@@ -11,7 +11,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "npm run build --workspace @khidma/shared && npm run build --workspace @khidma/api",
+    "build": "npm run build --workspace @khidma/shared && npm run build --workspace @khidma/api && npm run build --workspace @khidma/web",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
@@ -19,6 +19,7 @@
     "db:migrate": "npm run db:migrate --workspace @khidma/api",
     "db:seed": "npm run db:seed --workspace @khidma/api",
     "dev:api": "npm run dev --workspace @khidma/api",
-    "dev:mobile": "npm run start --workspace @khidma/mobile"
+    "dev:mobile": "npm run start --workspace @khidma/mobile",
+    "dev:web": "npm run dev --workspace @khidma/web"
   }
 }

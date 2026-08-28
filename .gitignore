@@ -21,3 +21,6 @@ prisma/*.db
 # Expo web export
 apps/mobile/dist/
 apps/mobile/dist-plain/
+
+# Generated website
+apps/web/dist/
