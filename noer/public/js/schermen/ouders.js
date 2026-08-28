@@ -2,7 +2,7 @@
 // De pincode houdt kleine handjes tegen, meer niet — hij staat gewoon op het
 // apparaat. Het is een drempel, geen beveiliging; dat staat er ook bij.
 
-import { el, leeg, bevestig, tijdKort, toast } from '../ui.js';
+import { el, leeg, bevestig, tijdKort, toast, avatarRing } from '../ui.js';
 import { LETTER_OP_ID } from '../../data/letters.js';
 import { LESSEN } from '../../data/qaida.js';
 import { AUDIO } from '../../data/bronnen.js';
@@ -91,7 +91,7 @@ function kindKaart(p, isActief) {
 
   return el('section', { class: 'kaart kindkaart' },
     el('div', { class: 'kindkop' },
-      el('span', { class: 'avatar', stijl: { background: p.kleur }, tekst: p.avatar }),
+      avatarRing(p, n.deel, { niveauNr: n.nr }),
       el('div', {},
         el('h2', {}, p.naam, isActief ? el('span', { class: 'label', tekst: 'nu actief' }) : null),
         el('p', { class: 'klein', tekst: `${p.leeftijd} jaar · niveau ${n.nr} (${n.naam}) · ${v.xp} punten` }))),
@@ -162,7 +162,7 @@ function weekStrip(v) {
   return el('figure', { class: 'weekstrip' },
     el('figcaption', { tekst: 'Oefentijd per dag, afgelopen week (minuten)' }),
     totaal === 0 ? el('p', { class: 'klein', tekst: 'Deze week is er nog geen oefentijd gemeten.' }) : null,
-    el('div', { class: 'staven' }, ...dagen.map((d) =>
+    el('div', { class: `staven ${totaal === 0 ? 'leeg' : ''}`.trim() }, ...dagen.map((d) =>
       el('div', { class: `staafkolom ${d.vandaag ? 'vandaag' : ''}`.trim() },
         el('span', { class: 'staafwaarde', tekst: d.minuten ? String(d.minuten) : '' }),
         el('div', { class: 'staafbak' },

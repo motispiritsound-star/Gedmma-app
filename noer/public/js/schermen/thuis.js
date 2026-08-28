@@ -21,33 +21,37 @@ export function toon(bak) {
   const zwak = zwakkePunten(v, 3);
 
   leeg(bak).append(
-    el('section', { class: 'groet' },
-      el('h1', { tekst: `${groet()}, ${p.naam}` }),
-      el('p', { class: 'ar bismillah', dir: 'rtl', lang: 'ar', tekst: 'بِسْمِ ٱللَّهِ' })),
-
-    el('section', { class: 'kaart dagdoel' },
-      el('h2', { tekst: 'Vandaag' }),
-      balk(Math.min(1, vandaag.goed / DAGDOEL), 'Dagdoel'),
-      el('p', { class: 'klein', tekst: vandaag.goed >= DAGDOEL
-        ? `Dagdoel gehaald — ${vandaag.goed} goed vandaag. ${s.huidigeReeks} dagen op rij.`
-        : `Nog ${DAGDOEL - vandaag.goed} goede antwoorden voor je dagdoel.` })),
+    el('section', { class: 'hero groet' },
+      el('div', { class: 'herorij' },
+        el('div', {},
+          el('h1', { tekst: `${groet()}, ${p.naam}` }),
+          el('p', { class: 'klein', tekst: n.max
+            ? `${n.emoji} ${n.naam} — ${v.xp} punten`
+            : `${n.emoji} ${n.naam} — nog ${n.xpNodig - n.xpInNiveau} punten tot niveau ${n.nr + 1}` })),
+        el('p', { class: 'ar bismillah', dir: 'rtl', lang: 'ar', tekst: 'بِسْمِ ٱللَّهِ' })),
+      el('div', { class: 'herodoel' },
+        el('p', { class: 'klein', tekst: vandaag.goed >= DAGDOEL
+          ? `Dagdoel gehaald — ${vandaag.goed} goed vandaag. ${s.huidigeReeks} dagen op rij.`
+          : `Vandaag: nog ${DAGDOEL - vandaag.goed} ${DAGDOEL - vandaag.goed === 1
+              ? 'goed antwoord' : 'goede antwoorden'} voor je dagdoel.` }),
+        balk(Math.min(1, vandaag.goed / DAGDOEL), 'Dagdoel'))),
 
     el('section', { class: 'verder' },
       el('h2', { tekst: 'Verder waar je was' }),
       el('div', { class: 'tegels' },
         tegel({ href: `#/qaida/${volgendeLes.id}`, emoji: '📗', titel: `Les ${volgendeLes.nr}`,
-          onder: volgendeLes.titel, kleur: '#5fb99a' }),
+          onder: volgendeLes.titel, kleur: 'var(--groen)' }),
         volgendeSoera ? tegel({ href: `#/koran/${volgendeSoera.id}`, emoji: '📖',
-          titel: volgendeSoera.naam, onder: `${volgendeSoera.aantalAyaat} aya's`, kleur: '#7c9cf5' }) : null)),
+          titel: volgendeSoera.naam, onder: `${volgendeSoera.aantalAyaat} aya's`, kleur: 'var(--blauw)' }) : null)),
 
     el('section', { class: 'ontdek' },
       el('h2', { tekst: 'Wat wil je doen?' }),
       el('div', { class: 'tegels' },
-        tegel({ href: '#/letters', emoji: '🔤', titel: 'Letters', onder: `${s.lettersGoed}/28 gekend`, kleur: '#f6c453' }),
-        tegel({ href: '#/qaida', emoji: '📗', titel: 'Leren lezen', onder: `${s.lessenAf.length}/${LESSEN.length} lessen`, kleur: '#5fb99a' }),
-        tegel({ href: '#/koran', emoji: '📖', titel: 'Koran', onder: `${s.soerasAf.length} soera's uit je hoofd`, kleur: '#7c9cf5' }),
-        tegel({ href: '#/woorden', emoji: '💬', titel: 'Woorden', onder: `${s.woordenGoed} geleerd`, kleur: '#c58bd8' }),
-        tegel({ href: '#/voortgang', emoji: '🏅', titel: 'Mijn sterren', onder: `${v.badges.length} badges`, kleur: '#e0776a' }))),
+        tegel({ href: '#/letters', emoji: '🔤', titel: 'Letters', onder: `${s.lettersGoed}/28 gekend`, kleur: 'var(--goud)' }),
+        tegel({ href: '#/qaida', emoji: '📗', titel: 'Leren lezen', onder: `${s.lessenAf.length}/${LESSEN.length} lessen`, kleur: 'var(--groen)' }),
+        tegel({ href: '#/koran', emoji: '📖', titel: 'Koran', onder: `${s.soerasAf.length} soera's uit je hoofd`, kleur: 'var(--blauw)' }),
+        tegel({ href: '#/woorden', emoji: '💬', titel: 'Woorden', onder: `${s.woordenGoed} geleerd`, kleur: 'var(--paars)' }),
+        tegel({ href: '#/voortgang', emoji: '🏅', titel: 'Mijn sterren', onder: `${v.badges.length} badges`, kleur: 'var(--terra)' }))),
 
     zwak.length ? el('section', { class: 'kaart oefenen' },
       el('h2', { tekst: 'Deze letters zijn nog lastig' }),
@@ -57,9 +61,6 @@ export function toon(bak) {
           el('span', { class: 'ar', dir: 'rtl', lang: 'ar', tekst: l.letter }),
           el('span', { class: 'klein', tekst: l.naam }));
       }))) : null,
-
-    n.max ? null : el('p', { class: 'voetnoot', tekst:
-      `Nog ${n.xpNodig - n.xpInNiveau} punten tot niveau ${n.nr + 1}.` }),
   );
 }
 
@@ -73,6 +74,6 @@ const groet = () => {
 
 const tegel = ({ href, emoji, titel, onder, kleur }) =>
   el('a', { class: 'tegel', href, stijl: { '--tegelkleur': kleur } },
-    el('span', { class: 'tegel-emoji', tekst: emoji }),
+    el('span', { class: 'tegelbol', tekst: emoji }),
     el('b', { tekst: titel }),
     el('span', { class: 'klein', tekst: onder }));

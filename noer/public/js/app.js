@@ -1,6 +1,6 @@
 // Router en schil. De app is één pagina; het adres achter # bepaalt het scherm.
 
-import { el, leeg } from './ui.js';
+import { el, leeg, avatarRing } from './ui.js';
 import {
   actiefProfiel, alleProfielen, opAndering, telTijd, tikDagreeks, voortgang,
 } from './opslag.js';
@@ -55,19 +55,22 @@ function tekenKopbalk() {
   const s = samenvatting(v);
 
   kopbalk.append(
-    el('button', { class: 'profielknop', 'aria-label': 'Wissel van profiel',
-      opclick: () => ga('/start') },
-      el('span', { class: 'avatar', stijl: { background: p.kleur }, tekst: p.avatar }),
-      el('span', { class: 'profielnaam', tekst: p.naam })),
-    el('button', { class: 'niveauknop', 'aria-label': `Niveau ${n.nr}: ${n.naam}`,
-      opclick: () => ga('/voortgang') },
-      el('span', { class: 'niveau-emoji', tekst: n.emoji }),
-      el('span', { class: 'niveau-tekst' },
-        el('b', { tekst: `Niveau ${n.nr}` }),
-        el('span', { class: 'xp', tekst: n.max ? `${v.xp} punten` : `${n.xpInNiveau}/${n.xpNodig}` })),
-      el('span', { class: 'mini-balk' }, el('i', { stijl: { width: `${n.deel * 100}%` } }))),
-    el('span', { class: `vlam ${s.huidigeReeks > 0 ? 'aan' : ''}`, title: `${s.huidigeReeks} dagen op rij` },
-      '🔥', el('b', { tekst: String(s.huidigeReeks) })),
+    el('button', {
+      class: 'profielknop',
+      'aria-label': `Wissel van profiel. Nu: ${p.naam}, niveau ${n.nr}`,
+      opclick: () => ga('/start'),
+    },
+      avatarRing(p, n.deel, { niveauNr: n.nr }),
+      el('span', { class: 'profieltekst' },
+        el('span', { class: 'profielnaam', tekst: p.naam }),
+        el('span', { class: 'niveaunaam', tekst: `${n.emoji} ${n.naam}` }))),
+
+    el('a', {
+      class: `vlam ${s.huidigeReeks > 0 ? 'aan' : ''}`.trim(),
+      href: '#/voortgang',
+      'aria-label': `${s.huidigeReeks} dagen op rij geoefend. Bekijk je sterren.`,
+    }, '🔥', el('b', { tekst: String(s.huidigeReeks) })),
+
     el('button', { class: 'oudersknop', 'aria-label': 'Voor ouders', tekst: '⚙️',
       opclick: () => ga('/ouders') }),
   );

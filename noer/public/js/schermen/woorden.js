@@ -19,8 +19,8 @@ export function toon(bak) {
       el('p', { tekst: 'Kies een thema. Tik op een kaartje om het woord te horen.' })),
     el('div', { class: 'tegels' }, ...beschikbaar.map((t) => {
       const stand = v.themas[t.id] || { gekend: [] };
-      return el('a', { class: 'tegel', href: `#/woorden/${t.id}`, stijl: { '--tegelkleur': '#c58bd8' } },
-        el('span', { class: 'tegel-emoji', tekst: t.emoji }),
+      return el('a', { class: 'tegel', href: `#/woorden/${t.id}`, stijl: { '--tegelkleur': 'var(--paars)' } },
+        el('span', { class: 'tegelbol', tekst: t.emoji }),
         el('b', { tekst: t.naam }),
         el('span', { class: 'klein', tekst: `${stand.gekend.length}/${t.woorden.length} gekend` }));
     })),

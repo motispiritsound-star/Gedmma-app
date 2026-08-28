@@ -1,6 +1,6 @@
 // Wie ben jij? Profielen kiezen en aanmaken. Meerdere kinderen op één tablet.
 
-import { el, leeg, bevestig } from '../ui.js';
+import { el, leeg, bevestig, avatarRing } from '../ui.js';
 import { alleProfielen, maakProfiel, kiesProfiel, verwijderProfiel } from '../opslag.js';
 import { voortgang } from '../opslag.js';
 import { niveauVan } from '../punten.js';
@@ -28,9 +28,9 @@ function profielenLijst(profielen) {
       const n = niveauVan(voortgang(p.id).xp);
       return el('div', { class: 'profielkaart' },
         el('button', { class: 'profielkies', opclick: () => { kiesProfiel(p.id); ga('/thuis'); } },
-          el('span', { class: 'avatar groot', stijl: { background: p.kleur }, tekst: p.avatar }),
+          avatarRing(p, n.deel, { groot: true, niveauNr: n.nr }),
           el('b', { tekst: p.naam }),
-          el('span', { class: 'klein', tekst: `${n.emoji} niveau ${n.nr}` })),
+          el('span', { class: 'klein', tekst: `${n.emoji} ${n.naam}` })),
         el('button', { class: 'wis', 'aria-label': `${p.naam} verwijderen`, tekst: '×',
           opclick: async () => {
             if (await bevestig(`${p.naam} verwijderen?`,

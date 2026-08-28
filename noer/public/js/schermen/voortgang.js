@@ -1,6 +1,6 @@
 // Mijn sterren: wat heb je al gehaald, en waar sta je nu.
 
-import { el, leeg, balk, sterren, tijdKort } from '../ui.js';
+import { el, leeg, balk, sterren, tijdKort, avatarRing } from '../ui.js';
 import { BADGES } from '../../data/badges.js';
 import { LESSEN } from '../../data/qaida.js';
 import { LETTERS } from '../../data/letters.js';
@@ -22,7 +22,7 @@ export function toon(bak) {
 
     el('section', { class: 'kaart niveaukaart' },
       el('div', { class: 'niveau-groot' },
-        el('span', { class: 'niveau-emoji groot', tekst: n.emoji }),
+        avatarRing(p, n.deel, { groot: true, niveauNr: n.nr }),
         el('div', {},
           el('h2', { tekst: `Niveau ${n.nr}: ${n.naam}` }),
           el('p', { class: 'klein', tekst: n.max ? `${v.xp} punten` : `${n.xpInNiveau} van ${n.xpNodig} punten` }))),

@@ -24,6 +24,35 @@ export function el(tag, props = {}, ...kinderen) {
   return node;
 }
 
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+/** Zelfde idee als el(), maar voor SVG — daar werkt createElement niet. */
+export function svg(tag, props = {}, ...kinderen) {
+  const node = document.createElementNS(SVG_NS, tag);
+  for (const [k, v] of Object.entries(props)) {
+    if (v === null || v === undefined || v === false) continue;
+    node.setAttribute(k, v === true ? '' : String(v));
+  }
+  node.append(...kinderen.flat().filter(Boolean));
+  return node;
+}
+
+/**
+ * De avatar van een kind met een ring eromheen die laat zien hoe ver het is
+ * naar het volgende niveau, en het niveaunummer als klein muntje.
+ */
+export function avatarRing(profiel, deel = 0, { groot = false, niveauNr = null } = {}) {
+  const straal = 20;
+  const omtrek = 2 * Math.PI * straal;
+  return el('span', { class: `avatarring ${groot ? 'groot' : ''}`.trim() },
+    svg('svg', { viewBox: '0 0 44 44', 'aria-hidden': 'true' },
+      svg('circle', { class: 'spoor', cx: 22, cy: 22, r: straal, fill: 'none', 'stroke-width': 3 }),
+      svg('circle', { class: 'voortgang', cx: 22, cy: 22, r: straal, fill: 'none', 'stroke-width': 3,
+        'stroke-dasharray': `${(omtrek * Math.min(1, Math.max(0, deel))).toFixed(1)} ${omtrek.toFixed(1)}` })),
+    el('span', { class: 'avatar', stijl: { background: profiel.kleur }, tekst: profiel.avatar }),
+    niveauNr ? el('span', { class: 'niveaubadge', tekst: String(niveauNr) }) : null);
+}
+
 export const leeg = (node) => { while (node.firstChild) node.firstChild.remove(); return node; };
 
 export const husselen = (lijst) => {

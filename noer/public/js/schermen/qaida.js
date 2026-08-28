@@ -77,7 +77,9 @@ export function toonLes(bak, id) {
     el('section', { class: 'kaart' },
       el('h2', { tekst: 'Het oefenblad' }),
       el('p', { class: 'klein', tekst: 'Lees hardop, van rechts naar links. Tik op een vakje om het te horen.' }),
-      el('div', { class: 'blad', dir: 'rtl' }, ...les.rijen.map((rij) =>
+      el('div', { class: 'blad', dir: 'rtl',
+        stijl: { '--kolommen': String(Math.max(...les.rijen.map((r) => r.length))) } },
+        ...les.rijen.map((rij) =>
         el('div', { class: 'bladrij' }, ...rij.map((item) =>
           el('button', { class: 'bladvak', lang: 'ar',
             opclick: (e) => { if (!spreekUit(item.ar)) e.currentTarget.classList.add('stil'); } },
