@@ -6,7 +6,8 @@ import { queryLeads, type LeadFilter } from './leads.ts';
 const COLUMNS = [
   'bedrijf', 'website', 'domein', 'plaats', 'branche', 'rechtsvorm',
   'prioriteit', 'score', 'beoordeling', 'levenstekenen',
-  'scanstatus', 'telefoon', 'email', 'belangrijkste_problemen', 'gescand_op',
+  'scanstatus', 'telefoon', 'email', 'whatsapp', 'adres', 'postcode', 'vestigingsplaats',
+  'kvk', 'btw', 'openingstijden', 'belangrijkste_problemen', 'gescand_op',
   'fase', 'agent', 'volgende_actie', 'lat', 'lon',
 ];
 
@@ -38,6 +39,13 @@ export async function exportLeads(
     scanstatus: lead.scan_status ?? '',
     telefoon: lead.contact.phones.join(' / '),
     email: lead.contact.emails.join(' / '),
+    whatsapp: lead.contact.whatsapp ?? '',
+    adres: lead.contact.adres?.adres ?? '',
+    postcode: lead.contact.adres?.postcode ?? '',
+    vestigingsplaats: lead.contact.adres?.plaats ?? lead.city ?? '',
+    kvk: lead.contact.kvk ?? '',
+    btw: lead.contact.btw ?? '',
+    openingstijden: lead.contact.openingstijden ?? '',
     belangrijkste_problemen: lead.topIssues.map((entry) => entry.title).join(' | '),
     gescand_op: lead.scanned_at ?? '',
     fase: lead.fase,

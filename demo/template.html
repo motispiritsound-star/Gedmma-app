@@ -144,6 +144,17 @@ tbody tr.bezet td:first-child { box-shadow:inset 3px 0 0 var(--line-strong); }
 .banner.mijlpaal { background:var(--accent-wash); border-color:color-mix(in srgb,var(--accent) 35%,transparent); }
 .banner.verboden { background:var(--slecht-wash); border-color:color-mix(in srgb,var(--slecht) 35%,transparent); }
 .banner.toegestaan { background:var(--goed-wash); border-color:color-mix(in srgb,var(--goed) 32%,transparent); }
+.verschil { display:inline-block; margin-left:5px; padding:1px 5px; border-radius:4px;
+  font:600 10.5px/1.6 var(--mono); vertical-align:2px; }
+.verschil.omlaag { background:var(--slecht-wash); color:var(--slecht); }
+.verschil.omhoog { background:var(--goed-wash); color:var(--goed); }
+.contactvak { background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:13px 14px 14px; }
+.contactvak .rij { margin-top:6px; }
+.contactvak .rij:first-of-type { margin-top:0; }
+.contactvak a.knop { background:var(--panel); }
+dl.gegevens { display:grid; grid-template-columns:auto 1fr; gap:3px 12px; margin:10px 0 0; font-size:13px; }
+dl.gegevens dt { color:var(--muted); font:500 11px/1.5 var(--mono); text-transform:uppercase; letter-spacing:.05em; }
+dl.gegevens dd { margin:0; color:var(--ink-2); }
 .leven { margin-top:3px; font:500 10px/1.5 var(--mono); letter-spacing:.03em; text-transform:uppercase; }
 .leven.l-levend { color:var(--goed); }
 .leven.l-onduidelijk { color:var(--muted); }
@@ -203,7 +214,7 @@ textarea { width:100%; min-height:220px; resize:vertical; background:var(--surfa
   <header class="kop">
     <div>
       <div class="merk"><h1>Webscan NL</h1> <span class="badge">Demo</span></div>
-      <p>125 nagemaakte bedrijfswebsites, gescand met de echte scanner en op de kaart gezet.
+      <p>400 nagemaakte bedrijfswebsites, gescand met de echte scanner en op de kaart gezet.
          Rood is een slechte site, oranje matig, groen goed. Klik een bolletje of een regel aan.</p>
     </div>
     <div class="tijd" id="tijd"></div>
@@ -218,10 +229,12 @@ textarea { width:100%; min-height:220px; resize:vertical; background:var(--surfa
     <select class="veld" id="f-branche"><option value="">Alle branches</option></select>
     <label class="schakel"><input type="checkbox" id="f-contact"> met contactgegevens</label>
     <label class="schakel"><input type="checkbox" id="f-levend"> bedrijf draait nog</label>
+    <label class="schakel"><input type="checkbox" id="f-achteruit"> achteruitgegaan</label>
     <select class="veld" id="f-sort">
       <option value="prioriteit">Beste leads eerst</option>
       <option value="score">Slechtste site eerst</option>
       <option value="naam">Op naam</option>
+      <option value="verandering">Meeste achteruitgang</option>
     </select>
     <button class="knop" id="f-wis">Wissen</button>
     <span class="telling" id="telling"></span>
@@ -287,7 +300,7 @@ const esc = (waarde) => String(waarde ?? '').replace(/[&<>"]/g, (teken) =>
 const euro = (cent) => `€ ${((cent ?? 0) / 100).toFixed(2).replace('.', ',')}`;
 const ERNST = { kritiek:'Kritiek', hoog:'Hoog', middel:'Middel', laag:'Laag' };
 
-const staat = { zoek:'', plaats:'', branche:'', contact:false, levend:false, band:'', fase:'',
+const staat = { zoek:'', plaats:'', branche:'', contact:false, levend:false, achteruit:false, band:'', fase:'',
   sortering:'prioriteit', gekozen:null, sjabloon:null, afzender:{} };
 
 /** Hoe levend het bedrijf oogt — los van hoe slecht de site is. */
@@ -297,6 +310,16 @@ const LEVEN = [
   { vanaf: 0, id:'stil', label:'stil' },
 ];
 const levenVan = (score) => LEVEN.find((rij) => (score ?? 0) >= rij.vanaf) ?? LEVEN[2];
+
+const verschilVan = (lead) =>
+  lead.vorigeScore === null || lead.score === null ? null : lead.score - lead.vorigeScore;
+
+function verschilChip(lead) {
+  const verschil = verschilVan(lead);
+  if (verschil === null || Math.abs(verschil) < 3) return '';
+  const omlaag = verschil < 0;
+  return `<span class="verschil ${omlaag ? 'omlaag' : 'omhoog'}" title="Was ${lead.vorigeScore} bij de vorige scan">${omlaag ? '▼' : '▲'}${Math.abs(verschil)}</span>`;
+}
 let kaart = null;
 
 $('tijd').textContent = 'Gescand op ' + new Date(DATA.gegenereerdOp)
@@ -308,6 +331,7 @@ $('tegels').innerHTML = [
   { waarde: DATA.samenvatting.slecht, tekst:'onder de 50 — je leads', klem:true },
   { waarde: DATA.samenvatting.benaderbaar, tekst:'daarvan met contactgegevens' },
   { waarde: DATA.samenvatting.draaitNog, tekst:'bedrijf draait nog' },
+  { waarde: DATA.samenvatting.achteruit, tekst:'sinds vorige scan achteruit' },
   { waarde: DATA.samenvatting.magBellen, tekst:'mag je bellen' },
   { waarde: DATA.samenvatting.alleenMailen, tekst:'alleen mailen — opt-in nodig' },
   { waarde: DATA.samenvatting.opdrachten, tekst:'opdrachten binnen', klem:true },
@@ -343,10 +367,12 @@ function gefilterd() {
     (!staat.contact || lead.contact.emails.length > 0 || lead.contact.phones.length > 0) &&
     (!band || (lead.score >= band.vanaf && lead.score <= band.tot)) &&
     (!staat.levend || (lead.leven ?? 0) >= 45) &&
+    (!staat.achteruit || (verschilVan(lead) ?? 0) <= -4) &&
     (!zoek || lead.naam.toLowerCase().includes(zoek) || lead.domein.toLowerCase().includes(zoek)
       || (lead.plaats ?? '').toLowerCase().includes(zoek)))
     .sort((a, b) => staat.sortering === 'score' ? (a.score ?? 0) - (b.score ?? 0)
       : staat.sortering === 'naam' ? a.naam.localeCompare(b.naam)
+      : staat.sortering === 'verandering' ? (verschilVan(a) ?? 0) - (verschilVan(b) ?? 0)
       : (b.prioriteit ?? 0) - (a.prioriteit ?? 0));
 }
 
@@ -387,7 +413,7 @@ function tekenLijst(leads) {
     const contact = lead.contact.phones[0] ?? lead.contact.emails[0] ?? '';
     return `
     <tr class="${lead.agentId ? 'bezet' : ''}" data-id="${lead.id}" tabindex="0" aria-selected="${lead.id === staat.gekozen}">
-      <td class="kwaliteit"><span class="bol bol-${bandVan(lead.score).id}"></span><span class="score">${lead.score}</span>
+      <td class="kwaliteit"><span class="bol bol-${bandVan(lead.score).id}"></span><span class="score">${lead.score}</span>${verschilChip(lead)}
           <div class="leven l-${levenVan(lead.leven).id}" title="Levenstekenen: ${lead.leven ?? '?'}/100">${levenVan(lead.leven).label}</div></td>
       <td><div class="naam">${esc(lead.naam)}</div>
           <div class="sub mono">${esc(lead.domein)}${lead.plaats ? ' · ' + esc(lead.plaats) : ''}</div>
@@ -421,6 +447,40 @@ function toonTip(cluster, x, y) {
   }
   const punt = cluster.punt;
   tip.innerHTML = `<b>${esc(punt.naam)}</b><span class="sub">${esc(punt.plaats ?? '')} · score ${punt.score} · ${esc(faseLabel(punt.fase))}<br>${punt.agent ? esc(punt.agent) + ' is hiermee bezig' : 'nog vrij'}</span>`;
+}
+
+const SOCIAL_LABEL = { facebook:'Facebook', instagram:'Instagram', linkedin:'LinkedIn',
+  youtube:'YouTube', x:'X', tiktok:'TikTok' };
+
+/** Alles wat we van dit bedrijf weten om contact te leggen, op één plek. */
+function contactblok(lead) {
+  const contact = lead.contact;
+  const tel = contact.phones.map((nummer) =>
+    `<a class="knop klein" href="tel:${esc(nummer.replace(/[^0-9+]/g, ''))}">${esc(nummer)}</a>`).join(' ');
+  const mail = contact.emails.map((adres) =>
+    `<a class="knop klein" href="mailto:${esc(adres)}">${esc(adres)}</a>`).join(' ');
+  const socials = Object.entries(contact.socials ?? {})
+    .map(([naam, href]) => `<a class="knop klein" href="${esc(href)}" target="_blank" rel="noopener">${SOCIAL_LABEL[naam] ?? naam}</a>`).join(' ');
+
+  const regels = [];
+  if (contact.adres) regels.push(['Adres', [contact.adres.adres, `${contact.adres.postcode} ${contact.adres.plaats}`.trim()].filter(Boolean).join(', ')]);
+  if (contact.openingstijden) regels.push(['Open', contact.openingstijden]);
+  if (contact.kvk) regels.push(['KvK', contact.kvk]);
+  if (contact.btw) regels.push(['Btw', contact.btw]);
+
+  return `<div class="deel contactvak">
+    <span class="label-klein">Contactgegevens</span>
+    ${contact.phones.length === 0 && contact.emails.length === 0
+      ? '<p class="sub" style="margin:0 0 8px">Niets gevonden op de site.</p>' : ''}
+    ${tel ? `<div class="rij">${tel}</div>` : ''}
+    ${mail ? `<div class="rij">${mail}</div>` : ''}
+    ${contact.whatsapp ? `<div class="rij"><a class="knop klein" href="https://wa.me/${esc(contact.whatsapp)}" target="_blank" rel="noopener">WhatsApp</a></div>` : ''}
+    ${regels.length > 0 ? `<dl class="gegevens">${regels.map(([naam, waarde]) => `<dt>${esc(naam)}</dt><dd>${esc(waarde)}</dd>`).join('')}</dl>` : ''}
+    ${socials ? `<div class="rij">${socials}</div>` : ''}
+    <p class="sub" style="margin:8px 0 0">${contact.vanEerdereScan
+      ? 'Deze gegevens komen uit een eerdere scan; de site geeft nu niets meer prijs.'
+      : (contact.bron ? 'Ook de contactpagina is bekeken.' : 'Alleen de homepage is bekeken.')}</p>
+  </div>`;
 }
 
 const kwesties = (lijst) => lijst.map((kwestie) => `
@@ -460,8 +520,18 @@ function kiesLead(id) {
       ${lead.klantStatus === 'actief' ? `<span class="fasepil klant">klant · ${euro(lead.maandbedragCent)}/mnd</span>` : ''}
     </div>
 
+    ${verschilVan(lead) !== null && Math.abs(verschilVan(lead)) >= 3
+      ? `<div class="banner ${verschilVan(lead) < 0 ? 'verboden' : 'toegestaan'}">
+          <span>${verschilVan(lead) < 0 ? '📉' : '📈'}</span>
+          <div><b>${verschilVan(lead) < 0 ? 'Achteruitgegaan' : 'Vooruitgegaan'} sinds de vorige scan.</b>
+          Van ${lead.vorigeScore} naar ${lead.score}.
+          ${verschilVan(lead) < 0 ? 'Een goede aanleiding om te bellen.' : ''}</div></div>`
+      : ''}
+
     ${lead.agent ? `<div class="banner"><span>👤</span><div><b>${esc(lead.agent)} is hiermee bezig.</b>
       In het dashboard kan niemand anders deze lead oppakken of bewerken.</div></div>` : ''}
+    ${contactblok(lead)}
+
     ${lead.fase === DATA.mijlpaal ? `<div class="banner mijlpaal"><span>🎯</span><div><b>Opdracht binnen.</b>
       De site mag kosteloos herbouwd en op onze hosting gezet worden. Dit is de mijlpaal waar alles op stuurt.</div></div>` : ''}
 
@@ -611,13 +681,15 @@ koppel('f-plaats', 'plaats');
 koppel('f-branche', 'branche');
 koppel('f-contact', 'contact');
 koppel('f-levend', 'levend');
+koppel('f-achteruit', 'achteruit');
 koppel('f-sort', 'sortering');
 
 $('f-wis').addEventListener('click', () => {
-  Object.assign(staat, { zoek:'', plaats:'', branche:'', contact:false, levend:false, band:'', fase:'', sortering:'prioriteit' });
+  Object.assign(staat, { zoek:'', plaats:'', branche:'', contact:false, levend:false, achteruit:false, band:'', fase:'', sortering:'prioriteit' });
   for (const id of ['f-zoek', 'f-plaats', 'f-branche']) $(id).value = '';
   $('f-contact').checked = false;
   $('f-levend').checked = false;
+  $('f-achteruit').checked = false;
   $('f-sort').value = 'prioriteit';
   tekenTrechter();
   ververs();

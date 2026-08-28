@@ -63,6 +63,7 @@ function filterUitQuery(query: Record<string, unknown>, ikId?: number): LeadFilt
     vanCollegas: query.collegas === '1' ? ikId : undefined,
     alleenBelbaar: query.belbaar === '1',
     minLeven: query.levend === '1' ? 45 : undefined,
+    achteruit: query.achteruit === '1',
     toonGeblokkeerd: query.geblokkeerd === '1',
     metContact: query.metContact === '1',
     metCoordinaten: query.opKaart === '1',
@@ -445,6 +446,10 @@ export async function startServer(port: number): Promise<void> {
       levenstekenen: lead.leven ?? '',
       mag_bellen: magBellen(lead).mag ? 'ja' : 'nee',
       telefoon: lead.contact.phones.join(' / '), email: lead.contact.emails.join(' / '),
+      whatsapp: lead.contact.whatsapp ?? '',
+      adres: [lead.contact.adres?.adres, lead.contact.adres?.postcode, lead.contact.adres?.plaats]
+        .filter(Boolean).join(', '),
+      kvk: lead.contact.kvk ?? '',
       belangrijkste_probleem: lead.topIssues[0]?.title ?? '',
       fase: lead.fase, agent: lead.agent_naam ?? '',
     }));

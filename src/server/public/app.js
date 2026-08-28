@@ -16,7 +16,7 @@ const staat = {
   fases: [],
   agenten: [],
   sjablonen: [],
-  filters: { zoek: '', plaats: '', fase: '', agent: '', contact: false, belbaar: false, levend: false, band: '', sort: 'prioriteit' },
+  filters: { zoek: '', plaats: '', fase: '', agent: '', contact: false, belbaar: false, levend: false, achteruit: false, band: '', sort: 'prioriteit' },
   gekozen: null,
   weergave: 'kaart',
   afzender: {},
@@ -124,6 +124,7 @@ function queryVan(extra = {}) {
   if (staat.filters.contact) zet('metContact', '1');
   if (staat.filters.belbaar) zet('belbaar', '1');
   if (staat.filters.levend) zet('levend', '1');
+  if (staat.filters.achteruit) zet('achteruit', '1');
   zet('sort', staat.filters.sort);
   if (staat.filters.band) {
     const band = BANDEN.find((rij) => rij.id === staat.filters.band);
@@ -182,6 +183,18 @@ const LEVEN = [
 ];
 const levenVan = (score) => LEVEN.find((rij) => (score ?? 0) >= rij.vanaf) ?? LEVEN[2];
 
+/** Hoeveel de score veranderd is sinds de vorige scan. */
+const verschilVan = (lead) =>
+  lead.vorige_score === null || lead.score === null ? null : lead.score - lead.vorige_score;
+
+function verschilChip(lead) {
+  const verschil = verschilVan(lead);
+  if (verschil === null || Math.abs(verschil) < 3) return '';
+  const omlaag = verschil < 0;
+  return `<span class="verschil ${omlaag ? 'omlaag' : 'omhoog'}"
+    title="Was ${lead.vorige_score} bij de vorige scan">${omlaag ? '▼' : '▲'}${Math.abs(verschil)}</span>`;
+}
+
 const initialen = (naam) => naam.split(/\s+/).filter(Boolean).slice(0, 2)
   .map((deel) => deel[0].toUpperCase()).join('');
 
@@ -199,16 +212,20 @@ function tekenLijst(tbody, leegVak, leads, welke) {
   const metActie = welke === 'mijn';
 
   tbody.innerHTML = leads.map((lead) => {
-    const contact = lead.contact.phones[0] ?? lead.contact.emails[0] ?? '';
+    const telefoon = lead.contact.phones[0] ?? '';
+    const email = lead.contact.emails[0] ?? '';
     const bezetting = !lead.toegewezen_aan ? ''
       : lead.toegewezen_aan === staat.ik.id ? ' van-mij' : ' van-collega';
     return `
     <tr class="${bezetting.trim()}" data-id="${lead.id}" tabindex="0" aria-selected="${lead.id === staat.gekozen}">
-      <td class="kwaliteit">${bolVan(lead.score)}<span class="score">${lead.score}</span>
+      <td class="kwaliteit">${bolVan(lead.score)}<span class="score">${lead.score}</span>${verschilChip(lead)}
           <div class="leven l-${levenVan(lead.leven).id}" title="Levenstekenen: ${lead.leven ?? '?'}/100">${levenVan(lead.leven).label}</div></td>
       <td><div class="naam">${esc(lead.name)}</div>
           <div class="sub mono">${esc(lead.domain)}${lead.city ? ' · ' + esc(lead.city) : ''}</div>
-          ${contact ? `<div class="telefoon">${lead.bel_toestemming || !lead.contact.phones[0] ? '' : ''}${esc(contact)}${lead.contact.phones[0] && !lead.bel_toestemming && NATUURLIJK.includes(lead.rechtsvorm ?? '') ? ' <span class="alleen-mail" title="Bellen mag alleen met toestemming">alleen mailen</span>' : ''}</div>` : ''}</td>
+          ${telefoon ? `<div class="telefoon">${esc(telefoon)}${NATUURLIJK.includes(lead.rechtsvorm ?? '') && !lead.bel_toestemming
+            ? '<span class="alleen-mail" title="Bellen mag alleen met toestemming">alleen mailen</span>' : ''}</div>` : ''}
+          ${email ? `<div class="telefoon">${esc(email)}</div>` : ''}
+          ${!telefoon && !email ? '<div class="sub">geen contactgegevens gevonden</div>' : ''}</td>
       ${metActie
         ? `<td class="sub">${lead.volgende_actie_op ? esc(lead.volgende_actie_op) : '—'}</td>`
         : `<td class="probleem"><span>${esc(lead.topIssues[0]?.title ?? '')}</span></td>`}
@@ -259,6 +276,48 @@ async function kiesLead(punt) {
   const doel = staat.weergave === 'mijn' ? $('mijn-detail') : $('detail');
   tekenDetail(doel, lead);
   if (lead.lat && lead.lon && staat.weergave === 'kaart') kaart?.zetGekozen(lead.id);
+}
+
+const SOCIAL_LABEL = { facebook:'Facebook', instagram:'Instagram', linkedin:'LinkedIn',
+  youtube:'YouTube', x:'X', tiktok:'TikTok' };
+
+/** Alles wat we van dit bedrijf weten om contact te leggen, op één plek. */
+function contactblok(lead) {
+  const contact = lead.contact;
+  const telefoonlinks = contact.phones.map((nummer) =>
+    `<a class="knop klein" href="tel:${esc(nummer.replace(/[^0-9+]/g, ''))}">${esc(nummer)}</a>`).join(' ');
+  const maillinks = contact.emails.map((adres) =>
+    `<a class="knop klein" href="mailto:${esc(adres)}">${esc(adres)}</a>`).join(' ');
+  const socials = Object.entries(contact.socials ?? {})
+    .map(([naam, href]) => `<a class="knop klein" href="${esc(href)}" target="_blank" rel="noopener">${SOCIAL_LABEL[naam] ?? naam}</a>`)
+    .join(' ');
+
+  const regels = [];
+  if (contact.adres) {
+    regels.push(['Adres', [contact.adres.adres, `${contact.adres.postcode} ${contact.adres.plaats}`.trim()]
+      .filter(Boolean).join(', ')]);
+  }
+  if (contact.openingstijden) regels.push(['Open', contact.openingstijden]);
+  if (contact.kvk) regels.push(['KvK', contact.kvk]);
+  if (contact.btw) regels.push(['Btw', contact.btw]);
+
+  const niets = contact.phones.length === 0 && contact.emails.length === 0;
+
+  return `<div class="deel contactvak">
+    <span class="label-klein">Contactgegevens</span>
+    ${niets ? '<p class="sub" style="margin:0 0 8px">Niets gevonden op de site — probeer het contactformulier of zoek het op in het KVK-register.</p>' : ''}
+    ${telefoonlinks ? `<div class="rij">${telefoonlinks}</div>` : ''}
+    ${maillinks ? `<div class="rij">${maillinks}</div>` : ''}
+    ${contact.whatsapp ? `<div class="rij"><a class="knop klein" href="https://wa.me/${esc(contact.whatsapp)}" target="_blank" rel="noopener">WhatsApp</a></div>` : ''}
+    ${regels.length > 0 ? `<dl class="gegevens">${regels.map(([naam, waarde]) =>
+      `<dt>${esc(naam)}</dt><dd>${esc(waarde)}</dd>`).join('')}</dl>` : ''}
+    ${socials ? `<div class="rij">${socials}</div>` : ''}
+    <p class="sub" style="margin:8px 0 0">
+      ${contact.vanEerdereScan
+        ? `Deze gegevens komen uit de scan van ${esc(datum(contact.vanEerdereScan))}; de site geeft nu niets meer prijs.`
+        : `${contact.heeftFormulier ? 'Er is een contactformulier op de site. ' : ''}${contact.bron ? 'Ook de contactpagina is bekeken.' : 'Alleen de homepage is bekeken.'}`}
+    </p>
+  </div>`;
 }
 
 const kwesties = (lijst) => lijst.map((kwestie) => `
@@ -317,6 +376,16 @@ function tekenDetail(doel, lead) {
       : ''}
 
     ${vrij ? '<div class="rij"><button class="knop sterk" data-actie="claim">Deze neem ik</button></div>' : ''}
+
+    ${verschilVan(lead) !== null && Math.abs(verschilVan(lead)) >= 3
+      ? `<div class="banner ${verschilVan(lead) < 0 ? 'verboden' : 'toegestaan'}">
+          <span>${verschilVan(lead) < 0 ? '📉' : '📈'}</span>
+          <div><b>${verschilVan(lead) < 0 ? 'Achteruitgegaan' : 'Vooruitgegaan'} sinds de vorige scan.</b>
+          Van ${lead.vorige_score} naar ${lead.score}, gemeten op ${esc(datum(lead.vorige_scan_op))}.
+          ${verschilVan(lead) < 0 ? 'Dat is een goede aanleiding om te bellen.' : 'Mogelijk heeft iemand anders hem al opgepakt.'}</div></div>`
+      : ''}
+
+    ${contactblok(lead)}
     ${isEigenaar ? `<div class="rij">
       <select class="veld" data-actie="toewijzen">
         <option value="">— toewijzen aan —</option>
@@ -766,14 +835,16 @@ koppelFilter('f-agent', 'agent');
 koppelFilter('f-contact', 'contact');
 koppelFilter('f-belbaar', 'belbaar');
 koppelFilter('f-levend', 'levend');
+koppelFilter('f-achteruit', 'achteruit');
 koppelFilter('f-sort', 'sort');
 
 $('f-wis').addEventListener('click', () => {
-  staat.filters = { zoek: '', plaats: '', fase: '', agent: '', contact: false, belbaar: false, levend: false, band: '', sort: 'prioriteit' };
+  staat.filters = { zoek: '', plaats: '', fase: '', agent: '', contact: false, belbaar: false, levend: false, achteruit: false, band: '', sort: 'prioriteit' };
   for (const id of ['f-zoek', 'f-plaats', 'f-fase', 'f-agent']) $(id).value = '';
   $('f-contact').checked = false;
   $('f-belbaar').checked = false;
   $('f-levend').checked = false;
+  $('f-achteruit').checked = false;
   $('f-sort').value = 'prioriteit';
   ververs();
 });

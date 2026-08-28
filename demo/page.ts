@@ -62,6 +62,8 @@ const leads = source.leads.map((lead) => ({
   grade: lead.grade,
   leven: lead.leven,
   prioriteit: lead.prioriteit,
+  vorigeScore: lead.vorige_score,
+  vorigeScanOp: lead.vorige_scan_op,
   levenRapport: lead.levenRapport,
   prioriteitUitleg: lead.prioriteitUitleg,
   oordeel: lead.verdict?.label ?? '',
@@ -103,6 +105,8 @@ const data = {
     opdrachten: leads.filter((lead) => VANAF_OPDRACHT.includes(lead.fase)).length,
     magBellen: leads.filter((lead) => lead.bellen.mag).length,
     draaitNog: leads.filter((lead) => (lead.leven ?? 0) >= 60).length,
+    achteruit: leads.filter((lead) =>
+      lead.vorigeScore !== null && lead.score !== null && lead.score < lead.vorigeScore - 4).length,
     alleenMailen: leads.filter((lead) => !lead.bellen.mag && lead.mailen.mag).length,
     klanten: klanten.length,
     mrrCent: klanten.reduce((som, lead) => som + (lead.maandbedragCent ?? 0), 0),

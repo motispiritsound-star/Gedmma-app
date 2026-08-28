@@ -33,6 +33,7 @@ const GOOD = `<!doctype html><html lang="nl">
 <form action="/offerte"><input name="naam"><button>Offerte aanvragen</button></form>
 <a href="tel:0301234567">030-1234567</a> <a href="mailto:info@goed.test">info@goed.test</a>
 <a href="https://www.linkedin.com/company/vandijk">LinkedIn</a>
+<a href="/goed/contact">Contact</a>
 <a href="/privacy">Privacyverklaring</a>
 <p>&copy; ${new Date().getFullYear()} Van Dijk</p>
 </body></html>`;
@@ -62,6 +63,19 @@ export function startFixtureServer(port = 0): Promise<{ server: Server; port: nu
       return;
     }
     if (path === '/kapot') { res.writeHead(500); res.end('boem'); return; }
+    if (path === '/goed/contact') {
+      res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+      res.end(`<html><head><title>Contact</title></head><body>
+        <h1>Contact</h1>
+        <p>Van Dijk Installatie<br>Nieuwe Gracht 45<br>3512 LP Utrecht</p>
+        <p>Telefoon: <a href="tel:0301234567">030-1234567</a><br>
+           E-mail: <a href="mailto:planning@goed.test">planning@goed.test</a></p>
+        <p>Openingstijden: maandag t/m vrijdag 08.00 - 17.30 uur</p>
+        <p>KvK-nummer: 30112233<br>Btw-nummer: NL301122339B01</p>
+        <p>IBAN: NL91ABNA0417164300</p>
+      </body></html>`);
+      return;
+    }
     // Twee even beroerde sites: de een van een bedrijf dat draait, de ander niet.
     if (path === '/levend' || path === '/stil') {
       const jaar = new Date().getFullYear();

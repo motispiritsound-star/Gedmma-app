@@ -116,6 +116,25 @@ een stuk trager, dus gebruik het op je shortlist en niet op de hele lijst:
 node start.js scan --deep --limit 25 --screenshots ./out/screenshots
 ```
 
+## Contactgegevens
+
+Contactgegevens staan zelden op de homepage — ze staan op `/contact`. De scan
+haalt daarom die ene extra pagina op als de site ernaar linkt, en haalt eruit
+wat je nodig hebt om te bellen:
+
+- alle telefoonnummers en e-mailadressen van beide pagina's samen;
+- het bezoekadres (straat, huisnummer, postcode, plaats);
+- openingstijden, KvK-nummer, btw-nummer en IBAN als ze er staan;
+- WhatsApp en de social-profielen waar de site naar linkt.
+
+In het dashboard staat dat bovenaan bij elke lead, met klikbare `tel:`- en
+`mailto:`-knoppen. In de CSV-export staan ze als losse kolommen.
+
+**Gaat een site offline, dan blijven de gegevens staan.** De scan valt terug op
+de laatste keer dat er wél iets te vinden was, met de datum erbij. Juist dan wil
+je hun nummer nog hebben — "uw website is uit de lucht" is een van de betere
+redenen om te bellen.
+
 ## Draait dit bedrijf nog?
 
 Een verwaarloosde website is nog geen goede lead. De bakker die er over een jaar
@@ -296,6 +315,34 @@ node start.js sjablonen                      # welke er zijn
 node start.js mail 42                        # het passende sjabloon
 node start.js mail 42 --sjabloon na-gesprek --naam "Jouw naam" --bedrijf "Jouw bedrijf"
 ```
+
+## Actueel houden
+
+Websites veranderen. Een site die vorige maand nog draaide kan nu uit de lucht
+zijn, en een site die je drie maanden geleden afschreef kan intussen door iemand
+anders zijn opgepakt. Draai daarom periodiek:
+
+```bash
+node start.js actualiseren --dagen 30 --limit 200
+```
+
+Dat scant alles wat langer dan dertig dagen geleden gemeten is, en laat zien wat
+er veranderd is:
+
+```
+  Verandering  Bedrijf                            Wat er gebeurd is
+  ─────────────────────────────────────────────────────────────────────────
+  ▼  54 → 0    Dierenkliniek Smit                 site is nu onbereikbaar
+  ▼  71 → 38   Installatiebedrijf Meijer          Geen HTTPS: bezoekers zien "Niet veilig"
+  ▲  22 → 74   Kapsalon van der Berg              de site is verbeterd
+```
+
+Achteruitgegaan is een goede belreden: er is iets kapot of verwaarloosd sinds je
+vorige contact. Vooruitgegaan is een waarschuwing: mogelijk heeft een ander het
+werk al gedaan. In het dashboard zie je het verschil als een pijltje naast de
+score, met een filter **achteruit** en een sortering op meeste achteruitgang.
+
+Elke scan wordt bewaard, dus de geschiedenis van een bedrijf blijft compleet.
 
 ## Leads eruit halen
 
@@ -483,6 +530,7 @@ src/
     fetcher.ts        beleefd ophalen, https-fallback, timing
     analyze.ts        HTML omzetten in meetbare signalen
     tech.ts           CMS-, framework- en verouderde-techniekdetectie
+    contactpagina.ts  haalt /contact op voor telefoon, adres, KvK en openingstijden
     geocode.ts        plaatsnamen naar coördinaten (Nominatim)
     deep.ts           optionele browsermeting (LCP/CLS/screenshot)
     scanner.ts        alles aan elkaar knopen

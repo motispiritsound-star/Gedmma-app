@@ -122,6 +122,10 @@ tbody tr[data-id]:hover td { background:color-mix(in srgb,var(--accent) 5%,trans
 tbody tr[aria-selected="true"] td { background:var(--accent-wash); }
 
 td.kwaliteit { width:96px; white-space:nowrap; }
+.verschil { display:inline-block; margin-left:5px; padding:1px 5px; border-radius:4px;
+  font:600 10.5px/1.6 var(--mono); vertical-align:2px; }
+.verschil.omlaag { background:var(--slecht-wash); color:var(--slecht); }
+.verschil.omhoog { background:var(--goed-wash); color:var(--goed); }
 .leven { margin-top:3px; font:500 10px/1.5 var(--mono); letter-spacing:.03em; text-transform:uppercase; }
 .leven.l-levend { color:var(--goed); }
 .leven.l-onduidelijk { color:var(--muted); }
@@ -167,6 +171,15 @@ tbody tr.van-mij td:first-child { box-shadow:inset 3px 0 0 var(--accent); }
 .banner.mijlpaal { background:var(--accent-wash); border-color:color-mix(in srgb,var(--accent) 35%,transparent); }
 .banner.verboden { background:var(--slecht-wash); border-color:color-mix(in srgb,var(--slecht) 35%,transparent); }
 .banner.toegestaan { background:var(--goed-wash); border-color:color-mix(in srgb,var(--goed) 32%,transparent); }
+
+/* Contactgegevens: het eerste wat een agent nodig heeft. */
+.contactvak { background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:13px 14px 14px; }
+.contactvak .rij { margin-top:6px; }
+.contactvak .rij:first-of-type { margin-top:0; }
+.contactvak a.knop { background:var(--panel); }
+dl.gegevens { display:grid; grid-template-columns:auto 1fr; gap:3px 12px; margin:10px 0 0; font-size:13px; }
+dl.gegevens dt { color:var(--muted); font:500 11px/1.5 var(--mono); text-transform:uppercase; letter-spacing:.05em; }
+dl.gegevens dd { margin:0; color:var(--ink-2); }
 .alleen-mail { display:inline-block; margin-left:6px; padding:1px 6px; border-radius:4px;
   background:var(--matig-wash); color:var(--ink-2); font:500 10px/1.6 var(--mono); }
 .knop.gevaarlijk { border-color:color-mix(in srgb,var(--slecht) 40%,transparent); color:var(--slecht); }

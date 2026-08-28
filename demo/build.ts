@@ -48,8 +48,21 @@ process.env.WEBSCAN_HOST_DELAY_MS = '1';
 process.env.WEBSCAN_TIMEOUT_MS = '20000';
 
 const { SITES, genereerSites, startDemoServers } = await import('./sites.ts');
-const extra = Number(process.env.DEMO_EXTRA ?? 110);
-const ALLE = [...SITES, ...genereerSites(extra)];
+const extra = Number(process.env.DEMO_EXTRA ?? 385);
+
+/** De vijftien uitgewerkte sites krijgen dezelfde contactpagina als de rest. */
+const metContact = SITES.map((site, index) => ({
+  ...site,
+  contact: site.contact ?? {
+    telefoon: `0${30 + (index % 40)}-${1000000 + index * 37913}`,
+    email: `info@${site.domein}`,
+    straat: `${['Dorpsstraat', 'Kerkstraat', 'Industrieweg', 'Molenweg', 'Havenstraat'][index % 5]} ${3 + index * 7}`,
+    postcode: `${3500 + index * 13} ${String.fromCharCode(65 + (index % 26))}${String.fromCharCode(70 + (index % 20))}`,
+    kvk: String(30000000 + index * 111317),
+  },
+}));
+
+const ALLE = [...metContact, ...genereerSites(extra)];
 const servers = await startDemoServers(
   { key: readFileSync(keyPath, 'utf8'), cert: readFileSync(certPath, 'utf8') },
   ALLE,
@@ -78,8 +91,29 @@ upsertCompanies(ALLE.map((site) => ({
 
 const companies = db().prepare('SELECT * FROM companies ORDER BY id').all() as never[];
 console.log(`${companies.length} nagemaakte bedrijfssites scannen…`);
-await scanAll(companies, { concurrency: 5 });
+await scanAll(companies, { concurrency: 14 });
 servers.close();
+
+// --- een tweede scanronde, zodat de demo ook verandering laat zien -----------
+// In het echt draai je "webscan actualiseren" elke maand. Hier laten we een
+// paar sites onderuit gaan en scannen we die opnieuw, zodat het dashboard echte
+// voor-en-na-cijfers heeft in plaats van een verzonnen verschil.
+const teVerslechteren = ALLE.filter((site) => site.path.startsWith('/g/')).slice(0, 14);
+for (const [index, site] of teVerslechteren.entries()) {
+  if (index % 2 === 0) {
+    site.status = 503; // hosting eruit
+  } else {
+    // Iemand heeft er zelf iets van gemaakt: terug naar een tabel-site.
+    site.html = site.html.replace(/<meta name="viewport"[^>]*>/i, '')
+      .replace(/<title>[^<]*<\/title>/i, '<title></title>');
+  }
+}
+
+const opnieuw = db().prepare(
+  `SELECT * FROM companies WHERE domain IN (${teVerslechteren.map(() => '?').join(',')})`,
+).all(...teVerslechteren.map((site) => site.domein)) as never[];
+console.log(`\n${opnieuw.length} sites opnieuw scannen na een maand (sommige zijn achteruitgegaan)…`);
+await scanAll(opnieuw, { concurrency: 8 });
 
 // --- team, toewijzingen en klanten, zodat de demo een werkend platform toont ---
 if (gebruikers().length === 0) {

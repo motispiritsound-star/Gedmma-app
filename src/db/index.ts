@@ -131,6 +131,29 @@ export function companiesToScan(opts: { limit?: number; rescanAfterDays?: number
   `).all(`-${days} days`, limit) as unknown as CompanyRow[];
 }
 
+/**
+ * De contactgegevens uit de laatste scan die er wél vond. Als een site vandaag
+ * offline is, wil je het nummer van vorige maand nog steeds kunnen bellen —
+ * dat is juist dan een goede reden om contact op te nemen.
+ */
+export function laatsteContactgegevens(companyId: number): { contact: unknown; op: string } | null {
+  const rijen = db().prepare(`
+    SELECT report, scanned_at FROM scans
+    WHERE company_id = ? AND status = 'ok'
+    ORDER BY scanned_at DESC, id DESC LIMIT 5
+  `).all(companyId) as unknown as { report: string; scanned_at: string }[];
+
+  for (const rij of rijen) {
+    try {
+      const rapport = JSON.parse(rij.report) as { contact?: { emails: string[]; phones: string[] } };
+      if ((rapport.contact?.emails.length ?? 0) > 0 || (rapport.contact?.phones.length ?? 0) > 0) {
+        return { contact: rapport.contact, op: rij.scanned_at };
+      }
+    } catch { /* corrupte json overslaan */ }
+  }
+  return null;
+}
+
 /** Bedrijven zonder coördinaten, voor de geocodeerstap. */
 export function companiesZonderCoordinaten(limit = 200): CompanyRow[] {
   return db().prepare(

@@ -1,10 +1,12 @@
 import { checkRobots } from './robots.ts';
 import { fetchPage, exists, leesSitemap } from './fetcher.ts';
 import { analyzePage, type PageSignals } from './analyze.ts';
+import { leesContactpagina, samenvoegen, vulAanUitVerleden,
+         type Contactgegevens, type Contactpagina } from './contactpagina.ts';
 import { deepScan, type DeepMetrics } from './deep.ts';
 import { scoreSignals, offlineVerdict, type Verdict } from '../score/score.ts';
 import { beoordeelLeven, bepaalPrioriteit, type Leven, type Prioriteit, type SitemapInfo } from '../score/leven.ts';
-import { saveScan, type CompanyRow } from '../db/index.ts';
+import { laatsteContactgegevens, saveScan, type CompanyRow } from '../db/index.ts';
 import { pool } from '../util/pool.ts';
 import { progress, log } from '../util/log.ts';
 import { config } from '../config.ts';
@@ -14,6 +16,9 @@ export type ScanReport = {
   verdict: Verdict;
   leven: Leven;
   prioriteit: Prioriteit;
+  /** Alles wat we aan contactgegevens hebben kunnen vinden, uit beide pagina's. */
+  contact: Contactgegevens;
+  contactpagina: Contactpagina | null;
   deep: DeepMetrics | null;
   extra: { sitemap: SitemapInfo; hasRobotsTxt: boolean };
 };
@@ -32,6 +37,8 @@ export type ScanOutcome = {
 };
 
 export type ScanOptions = {
+  /** Haal ook de contactpagina op; dat is één extra verzoek per bedrijf. */
+  contactpagina?: boolean;
   deep?: boolean;
   screenshotDir?: string;
   concurrency?: number;
@@ -69,7 +76,12 @@ export async function scanCompany(company: CompanyRow, options: ScanOptions = {}
       ...base, status, score: verdict.score, grade: verdict.grade,
       leven: leven.score, prioriteit: prioriteit.score,
       finalUrl: fetched.finalUrl, httpStatus, error: reason,
-      report: { signals: null, verdict, leven, prioriteit, deep: null, extra: { sitemap: geenSitemap, hasRobotsTxt: false } },
+      report: {
+        signals: null, verdict, leven, prioriteit,
+        contact: vulAanUitVerleden(samenvoegen(null, null), laatsteContactgegevens(company.id)),
+        contactpagina: null,
+        deep: null, extra: { sitemap: geenSitemap, hasRobotsTxt: false },
+      },
     };
   };
 
@@ -87,12 +99,18 @@ export async function scanCompany(company: CompanyRow, options: ScanOptions = {}
         hasRobotsTxt: await exists(`${origin}/robots.txt`),
       };
 
+  // Contactgegevens staan meestal op /contact, niet op de homepage.
+  const contactpagina = options.contactpagina === false
+    ? null
+    : await leesContactpagina(signals, { crawlDelayMs: robots.crawlDelayMs }).catch(() => null);
+  const contact = vulAanUitVerleden(samenvoegen(signals, contactpagina), laatsteContactgegevens(company.id));
+
   const leven = beoordeelLeven(signals, extra.sitemap);
   const prioriteit = bepaalPrioriteit({
     kwaliteit: verdict.score,
     leven,
-    heeftTelefoon: signals.contact.phones.length > 0 || Boolean(company.phone),
-    heeftEmail: signals.contact.emails.length > 0 || Boolean(company.email),
+    heeftTelefoon: contact.phones.length > 0 || Boolean(company.phone),
+    heeftEmail: contact.emails.length > 0 || Boolean(company.email),
   });
 
   const deep = options.deep
@@ -109,7 +127,7 @@ export async function scanCompany(company: CompanyRow, options: ScanOptions = {}
     finalUrl: fetched.finalUrl,
     httpStatus: fetched.status,
     error: null,
-    report: { signals, verdict, leven, prioriteit, deep, extra },
+    report: { signals, verdict, leven, prioriteit, contact, contactpagina, deep, extra },
   };
 }
 

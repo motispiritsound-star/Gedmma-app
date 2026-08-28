@@ -23,6 +23,8 @@ export type LeadFilter = {
   /** Alleen bedrijven waar nog tekenen van leven zijn. */
   minLeven?: number;
   minPrioriteit?: number;
+  /** Alleen bedrijven waarvan de site sinds de vorige scan slechter is geworden. */
+  achteruit?: boolean;
   /** Toon ook bedrijven die zich hebben afgemeld. Standaard blijven die verborgen. */
   toonGeblokkeerd?: boolean;
   /** Alleen leads met een telefoonnummer of e-mailadres. */
@@ -33,7 +35,7 @@ export type LeadFilter = {
   search?: string;
   limit?: number;
   offset?: number;
-  sort?: 'prioriteit' | 'score' | 'naam' | 'datum' | 'actie';
+  sort?: 'prioriteit' | 'score' | 'naam' | 'datum' | 'actie' | 'verandering';
 };
 
 export type Lead = {
@@ -58,6 +60,9 @@ export type Lead = {
   grade: string | null;
   leven: number | null;
   prioriteit: number | null;
+  /** De score van de scan daarvoor, om te zien of het beter of slechter wordt. */
+  vorige_score: number | null;
+  vorige_scan_op: string | null;
   error: string | null;
   fase: string;
   toegewezen_aan: number | null;
@@ -69,7 +74,19 @@ export type Lead = {
   klant_status: string | null;
   maandbedrag_cent: number | null;
   testimonial_sterren: number | null;
-  contact: { emails: string[]; phones: string[] };
+  contact: {
+    emails: string[];
+    phones: string[];
+    adres: { adres: string; postcode: string; plaats: string } | null;
+    kvk: string | null;
+    btw: string | null;
+    openingstijden: string | null;
+    whatsapp: string | null;
+    socials: Record<string, string>;
+    heeftFormulier: boolean;
+    bron: string | null;
+    vanEerdereScan: string | null;
+  };
   topIssues: { id: string; title: string; severity: string }[];
   categories: { label: string; score: number; max: number }[];
 };
@@ -81,13 +98,29 @@ const RECHTSPERSONEN = RECHTSVORMEN.filter((vorm) => !vorm.natuurlijkPersoon).ma
 const getal = (waarde: unknown): number | null =>
   waarde === null || waarde === undefined ? null : Number(waarde);
 
+type Contactblok = {
+  emails: string[]; phones: string[];
+  adres: { adres: string; postcode: string; plaats: string } | null;
+  kvk: string | null; btw: string | null; openingstijden: string | null;
+  whatsapp: string | null; socials: Record<string, string>;
+  heeftFormulier: boolean; bron: string | null; vanEerdereScan: string | null;
+};
+
 function shape(row: Row): Lead {
-  let report: { verdict?: Verdict; signals?: PageSignals | null } = {};
+  let report: { verdict?: Verdict; signals?: PageSignals | null; contact?: Contactblok } = {};
   try { report = JSON.parse(String(row.report ?? '{}')); } catch { /* corrupte json negeren */ }
 
   const signals = report.signals ?? null;
-  const emails = signals?.contact.emails ?? [];
-  const phones = signals?.contact.phones ?? [];
+  // Sinds de contactpagina wordt meegescand staan de samengevoegde gegevens in
+  // het rapport; oudere scans hebben alleen wat er op de homepage stond.
+  const gevonden = report.contact ?? {
+    emails: signals?.contact.emails ?? [], phones: signals?.contact.phones ?? [],
+    adres: null, kvk: signals?.contact.kvk ?? null, btw: signals?.contact.btw ?? null,
+    openingstijden: null, whatsapp: null, socials: {},
+    heeftFormulier: Boolean(signals?.contact.hasContactForm), bron: null, vanEerdereScan: null,
+  };
+  const emails = gevonden.emails;
+  const phones = gevonden.phones;
 
   return {
     id: Number(row.id),
@@ -111,6 +144,8 @@ function shape(row: Row): Lead {
     grade: (row.grade as string) ?? null,
     leven: getal(row.leven),
     prioriteit: getal(row.prioriteit),
+    vorige_score: getal(row.vorige_score),
+    vorige_scan_op: (row.vorige_scan_op as string) ?? null,
     error: (row.error as string) ?? null,
     fase: String(row.fase ?? 'nieuw'),
     toegewezen_aan: getal(row.toegewezen_aan),
@@ -123,6 +158,8 @@ function shape(row: Row): Lead {
     maandbedrag_cent: getal(row.maandbedrag_cent),
     testimonial_sterren: getal(row.testimonial_sterren),
     contact: {
+      ...gevonden,
+      // Wat de bron meegaf telt mee als de site zelf niets prijsgeeft.
       emails: emails.length > 0 ? emails : [row.company_email].filter(Boolean).map(String),
       phones: phones.length > 0 ? phones : [row.company_phone].filter(Boolean).map(String),
     },
@@ -157,6 +194,7 @@ function waar(filter: LeadFilter): { sql: string; params: (string | number)[] } 
   if (!filter.toonGeblokkeerd) delen.push('geblokkeerd = 0');
   if (filter.minLeven !== undefined) { delen.push('leven >= ?'); params.push(filter.minLeven); }
   if (filter.minPrioriteit !== undefined) { delen.push('prioriteit >= ?'); params.push(filter.minPrioriteit); }
+  if (filter.achteruit) delen.push('vorige_score IS NOT NULL AND score < vorige_score - 4');
   if (filter.alleenBelbaar) {
     delen.push(`(bel_toestemming = 1 OR rechtsvorm IN (${
       RECHTSPERSONEN.map((vorm) => `'${vorm}'`).join(',')}))`);
@@ -176,6 +214,7 @@ const SORTERING: Record<string, string> = {
   naam: 'name ASC',
   datum: 'scanned_at DESC',
   actie: 'volgende_actie_op IS NULL, volgende_actie_op ASC, score ASC',
+  verandering: 'COALESCE(score - vorige_score, 0) ASC, prioriteit DESC',
 };
 
 export function queryLeads(filter: LeadFilter = {}): Lead[] {

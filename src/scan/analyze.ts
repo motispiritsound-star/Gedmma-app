@@ -26,7 +26,80 @@ const EMAIL_RE = /[\w.+-]+@[\w-]+\.[\w.-]{2,}/g;
 const PHONE_RE = /(?:\+31|0031|0)[\s.-]?(?:\d[\s.-]?){8,9}\d/g;
 const KVK_RE = /k\.?v\.?k\.?(?:[\s-]*nummer)?[\s.:#-]*(\d{8})\b/i;
 const BTW_RE = /\bNL\s?\d{9}\s?B\s?\d{2}\b/i;
+const IBAN_RE = /\bNL\d{2}\s?[A-Z]{4}(?:\s?\d{4}){2}\s?\d{2}\b/;
 const YEAR_RE = /(?:©|&copy;|copyright)[^\d]{0,20}((?:19|20)\d{2})(?:\s*[–-]\s*((?:19|20)\d{2}))?/i;
+
+/** Nederlandse postcode, het beste anker om een adres uit lopende tekst te vissen. */
+const POSTCODE_RE = /\b([1-9][0-9]{3})\s?([A-Z]{2})\b/;
+
+// Straatnamen eindigen in het Nederlands bijna altijd op een van deze woorden.
+// Daarop zoeken is veel betrouwbaarder dan "een woord met een hoofdletter",
+// want anders sleep je de bedrijfsnaam en de kop van de pagina mee het adres in.
+// Bij een straatnaam van twee woorden krijgt het tweede woord een hoofdletter
+// ("Nieuwe Gracht"), dus beide schrijfwijzen moeten kunnen.
+const STRAATSOORT = ['straat', 'weg', 'laan', 'plein', 'kade', 'gracht', 'dijk', 'pad', 'hof',
+  'park', 'singel', 'baan', 'dreef', 'steeg', 'markt', 'plantsoen', 'boulevard', 'erf', 'wal',
+  'akker', 'veld', 'ring']
+  .map((woord) => `[${woord[0]!.toUpperCase()}${woord[0]}]${woord.slice(1)}`)
+  .join('|');
+/** Woorden die wél bij de straatnaam horen: "Nieuwe Gracht", "Van Speijkstraat". */
+const STRAAT_VOORVOEGSEL = 'Nieuwe|Oude|Grote|Kleine|Korte|Lange|Hoge|Lage|Sint|Van|Ter|Ten|Der|Onze';
+/** Woorden die bij een plaatsnaam horen: "Alphen aan den Rijn", "Den Bosch". */
+const PLAATS_KOPPEL = new Set(['aan', 'den', 'de', 'der', 'op', 'het', 'ter', 'te', 'bij', 'aan-de']);
+
+const STRAAT_RE = new RegExp(
+  '(' +
+    // "Nieuwe Gracht", "Van Speijkstraat" — het tweede woord draagt de uitgang
+    `(?:${STRAAT_VOORVOEGSEL})\\s[A-Z]?[\\w'.-]*(?:${STRAATSOORT})` +
+    '|' +
+    // "Dorpsstraat", "Industrieweg"
+    `[A-Z][\\w'.-]*(?:${STRAATSOORT})` +
+  ')' +
+  '\\s+(\\d+\\s?[a-zA-Z]?(?:\\s?-\\s?\\d+)?)', 'g');
+/** Terugval voor straatnamen zonder herkenbare uitgang, zoals "De Hoef 12". */
+const STRAAT_LOS_RE = new RegExp(
+  `(?:^|[\\s,:])((?:(?:De|Den|Het|'t|${STRAAT_VOORVOEGSEL})\\s)?[A-Z][\\wéëèïöüáà'.-]{2,})\\s(\\d+\\s?[a-zA-Z]?)`, 'g');
+
+const laatsteTreffer = (tekst: string, patroon: RegExp): RegExpExecArray | null => {
+  const treffers = [...tekst.matchAll(patroon)];
+  return (treffers[treffers.length - 1] ?? null) as RegExpExecArray | null;
+};
+
+/** Leest de plaatsnaam die achter de postcode staat, inclusief "aan den Rijn". */
+function leesPlaats(na: string): string {
+  const woorden = na.replace(/^[\s,.-]+/, '').split(/[\s]+/);
+  const gekozen: string[] = [];
+  for (const ruw of woorden.slice(0, 5)) {
+    // Een woord met een dubbele punt hoort bij het volgende veld ("Telefoon:").
+    if (/[:|]$/.test(ruw)) break;
+    const woord = ruw.replace(/[.,;)(]+$/, '');
+    if (!woord) break;
+    const isNaam = /^[A-Z][\wéëèïöüáà'.-]*$/.test(woord);
+    const isKoppel = PLAATS_KOPPEL.has(woord.toLowerCase());
+    if (gekozen.length === 0 && !isNaam) break;
+    if (!isNaam && !isKoppel) break;
+    gekozen.push(woord);
+  }
+  // Een losse koppeling aan het eind ("Alphen aan") hoort er niet bij.
+  while (gekozen.length > 0 && PLAATS_KOPPEL.has(gekozen[gekozen.length - 1]!.toLowerCase())) gekozen.pop();
+  return gekozen.join(' ');
+}
+
+/** Zoekt een Nederlands adres: straat + huisnummer, postcode en plaats. */
+export function zoekAdres(tekst: string): { adres: string; postcode: string; plaats: string } | null {
+  const postcode = POSTCODE_RE.exec(tekst);
+  if (!postcode) return null;
+
+  // Alleen het stukje vlak voor de postcode; verder terug staat de rest van de pagina.
+  const voor = tekst.slice(Math.max(0, postcode.index - 60), postcode.index).trimEnd();
+  const straat = laatsteTreffer(voor, STRAAT_RE) ?? laatsteTreffer(voor, STRAAT_LOS_RE);
+
+  return {
+    adres: straat ? `${straat[1]} ${straat[2]}`.replace(/\s+/g, ' ').trim() : '',
+    postcode: `${postcode[1]} ${postcode[2]}`,
+    plaats: leesPlaats(tekst.slice(postcode.index + postcode[0].length, postcode.index + postcode[0].length + 50)),
+  };
+}
 
 const SOCIAL_HOSTS: Record<string, RegExp> = {
   facebook: /facebook\.com/i, instagram: /instagram\.com/i, linkedin: /linkedin\.com/i,
@@ -34,6 +107,20 @@ const SOCIAL_HOSTS: Record<string, RegExp> = {
 };
 
 const unique = <T,>(values: T[]): T[] => [...new Set(values)];
+
+/**
+ * Haalt de leesbare tekst uit een pagina. Cheerio's .text() plakt regels aan
+ * elkaar omdat <br> en blokelementen geen witruimte opleveren — dan wordt
+ * "Gracht 45<br>3512 LP" ineens "453512 LP" en vindt geen enkele regex nog een
+ * adres of KvK-nummer. Adressen staan op vrijwel elke site met <br>'s, dus dit
+ * is geen randgeval.
+ */
+export function zichtbareTekst($: cheerio.CheerioAPI): string {
+  $('br').replaceWith(' ');
+  $('p, div, li, td, th, tr, h1, h2, h3, h4, h5, section, article, header, footer, address')
+    .each((_, knoop) => { $(knoop).append(' '); });
+  return $('body').text().replace(/\s+/g, ' ').trim();
+}
 
 function countMatches(text: string, pattern: RegExp): number {
   return (text.match(pattern) ?? []).length;
@@ -47,7 +134,7 @@ export function analyzePage(result: FetchResult) {
   const isHttps = finalUrl.startsWith('https://');
 
   $('script, style, noscript, template').remove();
-  const visibleText = $('body').text().replace(/\s+/g, ' ').trim();
+  const visibleText = zichtbareTekst($);
   const $full = cheerio.load(html); // ongewijzigde kopie voor script/style-analyse
 
   // --- Meta & SEO -----------------------------------------------------------
@@ -228,9 +315,19 @@ export function analyzePage(result: FetchResult) {
       phones,
       kvk: KVK_RE.exec(visibleText)?.[1] ?? null,
       btw: BTW_RE.exec(visibleText)?.[0] ?? null,
+      iban: IBAN_RE.exec(visibleText)?.[0] ?? null,
+      adres: zoekAdres(visibleText),
       hasForm: forms.length > 0,
       hasContactForm: forms.length > 0 || FORM_KEYWORDS.test(linkText),
       hasWhatsApp: /wa\.me\/|api\.whatsapp\.com/i.test(html),
+      whatsappNummer: /wa\.me\/(\d{8,15})/i.exec(html)?.[1] ?? null,
+      socialLinks: Object.fromEntries(Object.entries(SOCIAL_HOSTS)
+        .map(([naam, patroon]) => [naam, externalLinks.find((href) => patroon.test(href)) ?? null])
+        .filter(([, href]) => href !== null)) as Record<string, string>,
+      /** De pagina waar de contactgegevens waarschijnlijk staan. */
+      contactpaginaUrl: absolute.find((href) =>
+        /\/(?:contact|contactgegevens|over-?ons|about)(?:\/|\.html?|$)/i.test(href)
+        && sameHost(href, finalUrl)) ?? null,
     },
 
     legal: {

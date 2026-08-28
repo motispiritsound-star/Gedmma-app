@@ -210,6 +210,17 @@ check('opdrachtbevestiging noemt het domein', bevestiging.tekst.includes(slechts
 check('onbekend sjabloon wordt geweigerd',
   (await een.doe(`/api/leads/${slechtste.id}/mail?sjabloon=bestaatniet`)).status === 400);
 
+console.log('\nContactgegevens en verandering:');
+const goedeLead = (await eigenaar.doe(`/api/leads/${vennootschap.id}`)).inhoud;
+check('de lead levert het volledige contactblok', Boolean(goedeLead.contact.adres && goedeLead.contact.kvk),
+  JSON.stringify(goedeLead.contact.adres));
+check('met openingstijden', Boolean(goedeLead.contact.openingstijden));
+const csvContact = (await eigenaar.doe('/api/export.csv?maxScore=100')).inhoud as string;
+check('de export bevat adres en kvk', csvContact.includes('adres') && csvContact.includes('kvk'));
+
+const geenVerandering = (await eigenaar.doe('/api/leads?achteruit=1&maxScore=100')).inhoud.leads;
+check('zonder tweede scan is er niets achteruitgegaan', geenVerandering.length === 0);
+
 console.log('\nWat je aanbiedt:');
 const standaard = (await een.doe('/api/instellingen')).inhoud;
 check('standaard is het gratis aanbod', standaard.aanbod.soort === 'gratis');

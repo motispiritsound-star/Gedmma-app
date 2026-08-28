@@ -311,6 +311,42 @@ const MIGRATIES: { naam: string; sql: string }[] = [
       );
     `,
   },
+  {
+    naam: '013-vorige-scan-in-view',
+    sql: `
+      DROP VIEW IF EXISTS leads;
+      CREATE VIEW leads AS
+      SELECT
+        c.id, c.name, c.website, c.domain, c.city, c.province, c.branch, c.rechtsvorm,
+        c.lat, c.lon, c.phone AS company_phone, c.email AS company_email, c.source,
+        s.id AS scan_id, s.scanned_at, s.status AS scan_status,
+        s.score, s.grade, s.leven, s.prioriteit, s.final_url, s.http_status, s.error, s.report,
+        -- De scan daarvoor, zodat je ziet wat er veranderd is.
+        (SELECT v.score FROM scans v WHERE v.company_id = c.id
+           ORDER BY v.scanned_at DESC, v.id DESC LIMIT 1 OFFSET 1) AS vorige_score,
+        (SELECT v.scanned_at FROM scans v WHERE v.company_id = c.id
+           ORDER BY v.scanned_at DESC, v.id DESC LIMIT 1 OFFSET 1) AS vorige_scan_op,
+        COALESCE(o.fase, 'nieuw')  AS fase,
+        o.toegewezen_aan, o.toegewezen_op, o.volgende_actie_op, o.notitie AS opvolging_notitie,
+        o.bijgewerkt_op AS opvolging_bijgewerkt_op,
+        g.naam AS agent_naam,
+        COALESCE(b.bel_toestemming, 0) AS bel_toestemming,
+        b.toestemming_op, b.toestemming_via,
+        COALESCE(b.geblokkeerd, 0) AS geblokkeerd, b.geblokkeerd_reden,
+        k.status AS klant_status, k.maandbedrag_cent, k.gestart_op AS klant_sinds,
+        t.sterren AS testimonial_sterren, t.tekst AS testimonial_tekst,
+        (SELECT COUNT(*) FROM activiteiten a WHERE a.company_id = c.id) AS activiteiten
+      FROM companies c
+      LEFT JOIN scans s ON s.id = (
+        SELECT id FROM scans WHERE company_id = c.id ORDER BY scanned_at DESC, id DESC LIMIT 1
+      )
+      LEFT JOIN opvolging o     ON o.company_id = c.id
+      LEFT JOIN gebruikers g    ON g.id = o.toegewezen_aan
+      LEFT JOIN benaderregels b ON b.company_id = c.id
+      LEFT JOIN klanten k       ON k.company_id = c.id
+      LEFT JOIN testimonials t  ON t.company_id = c.id;
+    `,
+  },
 ];
 
 /** Brengt de database bij naar de nieuwste versie. Veilig om vaak aan te roepen. */

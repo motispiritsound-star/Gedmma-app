@@ -57,6 +57,22 @@ check('linkedin gevonden', () => assert.ok(goodReport.signals.links.socials.incl
 console.log(`  score=${good.score} grade=${good.grade} problemen=${goodReport.verdict.issues.length}`);
 console.log('  gevonden:', goodReport.verdict.issues.map((i: any) => i.id).join(', ') || '(geen)');
 
+console.log('\nContactgegevens van de contactpagina:');
+const contact = goodReport.contact;
+check('de contactpagina is gevonden', () => assert.ok(contact.bron?.includes('/contact')));
+check('telefoonnummer', () => assert.ok(contact.phones.some((nummer: string) => nummer.includes('0301234567'))));
+check('e-mailadres van de contactpagina', () => assert.ok(contact.emails.includes('planning@goed.test')));
+check('e-mailadres van de homepage blijft', () => assert.ok(contact.emails.includes('info@goed.test')));
+check('adres', () => assert.equal(contact.adres?.adres, 'Nieuwe Gracht 45'));
+check('postcode', () => assert.equal(contact.adres?.postcode, '3512 LP'));
+check('plaats', () => assert.equal(contact.adres?.plaats, 'Utrecht'));
+check('kvk-nummer', () => assert.equal(contact.kvk, '30112233'));
+check('btw-nummer', () => assert.equal(contact.btw, 'NL301122339B01'));
+check('iban', () => assert.equal(contact.iban, 'NL91ABNA0417164300'));
+check('openingstijden', () => assert.match(contact.openingstijden ?? '', /maandag.*17[.:]30/));
+check('de homepage-signalen blijven onaangeraakt', () =>
+  assert.ok(!goodReport.signals.contact.emails.includes('planning@goed.test')));
+
 console.log('\nKapotte website:');
 const broken = await scanCompany(company('kapot', '/kapot'));
 check('status error', () => assert.equal(broken.status, 'error'));

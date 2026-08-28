@@ -10,6 +10,8 @@ type Site = {
   domein: string;
   status?: number;
   headers?: Record<string, string>;
+  /** Gegevens die op de contactpagina komen te staan. */
+  contact?: { telefoon: string; email: string; straat: string; postcode: string; kvk: string };
   /** Hoe levend het bedrijf oogt op de site. */
   leven?: Levensprofiel;
   /** Rechtsvorm; bepaalt of dit bedrijf gebeld mag worden. */
@@ -42,6 +44,24 @@ type Levensprofiel = 'actief' | 'sluimert' | 'stil';
 
 const NU = new Date().getFullYear();
 
+/** De contactpagina waar de meeste bedrijven hun gegevens op kwijt kunnen. */
+function contactpagina(site: {
+  bedrijf: string; plaats: string; telefoon: string; email: string;
+  straat: string; postcode: string; kvk: string;
+}): string {
+  return `<html><head><meta charset="utf-8"><title>Contact — ${site.bedrijf}</title></head><body>
+<h1>Contact</h1>
+<p>${site.bedrijf}<br>
+${site.straat}<br>
+${site.postcode} ${site.plaats}</p>
+<p>Telefoon: <a href="tel:${site.telefoon.replace(/[^0-9+]/g, '')}">${site.telefoon}</a><br>
+E-mail: <a href="mailto:${site.email}">${site.email}</a></p>
+<p>Openingstijden: maandag t/m vrijdag 08.30 - 17.00 uur</p>
+<p>KvK-nummer: ${site.kvk}<br>
+Btw-nummer: NL${site.kvk}9B01</p>
+</body></html>`;
+}
+
 function levensblok(profiel: Levensprofiel, plaats: string): string {
   if (profiel === 'stil') return '';
   if (profiel === 'sluimert') {
@@ -63,7 +83,7 @@ const themaCss = (regels: number) => Array.from({ length: regels }, (_, i) =>
 
 /** Ouderwetse tabel-site uit ongeveer 2006. */
 const tabelSite = (naam: string, plaats: string, jaar: number, tekst: string, telefoon: string,
-  leven: Levensprofiel = 'stil') => `<html>
+  leven: Levensprofiel = 'stil', pad = '') => `<html>
 <head><title></title>
 <style>${themaCss(180)}</style>
 </head>
@@ -72,7 +92,7 @@ const tabelSite = (naam: string, plaats: string, jaar: number, tekst: string, te
 <center><font face="Arial" size="6" color="#003366">${naam}</font></center>
 <table width="880"><tr><td width="200" bgcolor="#003366">
 <font color="#FFFFFF"><b>Menu</b></font><br>
-<a href="/home">Home</a><br><a href="/diensten">Diensten</a><br><a href="/contact">Contact</a>
+<a href="/home">Home</a><br><a href="/diensten">Diensten</a><br><a href="${pad}/contact">Contact</a>
 </td><td>
 <img src="/images/foto1.jpg"><img src="/images/foto2.gif">
 <p><font face="Arial" size="2">${tekst}</font></p>
@@ -89,7 +109,7 @@ ${levensblok(leven, plaats)}
 
 /** Verouderde WordPress-site: wel een titel, geen mobiele weergave. */
 const oudeWordpress = (naam: string, plaats: string, wpVersie: string, jaar: number, tekst: string,
-  telefoon: string, leven: Levensprofiel = 'sluimert') => `<html>
+  telefoon: string, leven: Levensprofiel = 'sluimert', pad = '') => `<html>
 <head>
 <meta name="generator" content="WordPress ${wpVersie}">
 <title>${naam}</title>
@@ -102,7 +122,7 @@ const oudeWordpress = (naam: string, plaats: string, wpVersie: string, jaar: num
 <h1>${naam}</h1>
 <img src="/wp-content/uploads/2013/06/header.jpg">
 <p>${tekst}</p>
-<p>Bel ons op ${telefoon} of kom langs in ${plaats}. ${lorem('Wij werken zowel voor particulieren als voor bedrijven en zijn op werkdagen telefonisch bereikbaar tussen acht en vijf.', 4)}</p>
+<p><a href="${pad}/contact">Contactgegevens</a> — bel ons op ${telefoon} of kom langs in ${plaats}. ${lorem('Wij werken zowel voor particulieren als voor bedrijven en zijn op werkdagen telefonisch bereikbaar tussen acht en vijf.', 4)}</p>
 <img src="/wp-content/uploads/2013/06/werk1.jpg"><img src="/wp-content/uploads/2013/06/werk2.jpg">
 <img src="/wp-content/uploads/2013/06/werk3.jpg"><img src="/wp-content/uploads/2013/06/werk4.jpg">
 <img src="/wp-content/uploads/2013/06/werk5.jpg"><img src="/wp-content/uploads/2013/06/werk6.jpg">
@@ -113,7 +133,7 @@ ${levensblok(leven, plaats)}
 
 /** Redelijke site: mobiel in orde, maar SEO en snelheid laten steken vallen. */
 const middenmoot = (naam: string, plaats: string, tekst: string, telefoon: string,
-  opties: { titel?: string; leven?: Levensprofiel } = {}) => `<!doctype html>
+  opties: { titel?: string; leven?: Levensprofiel; pad?: string } = {}) => `<!doctype html>
 <html lang="nl"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -128,14 +148,15 @@ ${themaCss(260)}</style>
 <img src="/img/banner.jpg" alt="">
 <p>${tekst}</p>
 <img src="/img/team.jpg"><img src="/img/werkplaats.jpg"><img src="/img/detail.jpg">
-<a href="/contact">Contact</a>
+<a href="${opties.pad ?? ''}/contact">Contact</a>
 <p>Bereikbaar op <a href="tel:${telefoon.replace(/[^0-9+]/g, '')}">${telefoon}</a>.</p>
 ${levensblok(opties.leven ?? 'actief', plaats)}
 <p>${naam}, ${plaats}. &copy; ${new Date().getFullYear()}</p>
 </body></html>`;
 
 /** Moderne, goed verzorgde site. */
-const modern = (naam: string, plaats: string, titel: string, omschrijving: string, tekst: string, telefoon: string, email: string) => `<!doctype html>
+const modern = (naam: string, plaats: string, titel: string, omschrijving: string, tekst: string,
+  telefoon: string, email: string, pad = '') => `<!doctype html>
 <html lang="nl"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -162,6 +183,7 @@ ${themaCss(140)}</style>
 <a href="https://www.linkedin.com/company/voorbeeld">LinkedIn</a>
 <a href="https://www.instagram.com/voorbeeld">Instagram</a>
 ${levensblok('actief', plaats)}
+<a href="${pad}/contact">Contact</a>
 <a href="/privacyverklaring">Privacyverklaring</a>
 <a href="/algemene-voorwaarden">Algemene voorwaarden</a>
 <p>&copy; ${new Date().getFullYear()} ${naam}, ${plaats}</p>
@@ -175,14 +197,14 @@ export const SITES: Site[] = [
     branche: 'loodgieter', domein: 'loodgieter-dekraan.nl',
     headers: { 'x-powered-by': 'PHP/5.4.45', server: 'Apache/2.2.15' },
     html: tabelSite('Loodgietersbedrijf De Kraan', 'Utrecht', 2009,
-      'Voor al uw loodgieterswerk. Lekkage? Bel ons! Wij komen door heel de regio.', '030-2871934', 'actief'),
+      'Voor al uw loodgieterswerk. Lekkage? Bel ons! Wij komen door heel de regio.', '030-2871934', 'actief', '/de-kraan'),
   },
   {
     path: '/schilders-vermeer', rechtsvorm: 'eenmanszaak', lat: 52.1561, lon: 5.3878, delayMs: 2400, bedrijf: 'Schildersbedrijf Vermeer', plaats: 'Amersfoort',
     branche: 'schilder', domein: 'schildersbedrijfvermeer.nl',
     headers: { 'x-powered-by': 'PHP/5.6.40' },
     html: oudeWordpress('Schildersbedrijf Vermeer', 'Amersfoort', '4.7.2', 2016,
-      lorem('Wij verzorgen binnen- en buitenschilderwerk voor particulieren en bedrijven.', 3), '033-4612780', 'actief'),
+      lorem('Wij verzorgen binnen- en buitenschilderwerk voor particulieren en bedrijven.', 3), '033-4612780', 'actief', '/schilders-vermeer'),
   },
   {
     path: '/bakkerij-molentje', rechtsvorm: 'eenmanszaak', lat: 52.0907, lon: 5.2333, delayMs: 1400, bedrijf: 'Bakkerij Het Molentje', plaats: 'Zeist',
@@ -200,13 +222,13 @@ export const SITES: Site[] = [
     branche: 'autobedrijf', domein: 'autobedrijfjansen.nl',
     headers: { 'x-powered-by': 'PHP/7.2.34' },
     html: oudeWordpress('Autobedrijf Jansen', 'Nieuwegein', '5.4.2', 2019,
-      lorem('APK, onderhoud en reparatie van alle merken. Ook occasions met garantie.', 4), '030-6039215', 'sluimert'),
+      lorem('APK, onderhoud en reparatie van alle merken. Ook occasions met garantie.', 4), '030-6039215', 'sluimert', '/autobedrijf-jansen'),
   },
   {
     path: '/hovenier-groenrijk', rechtsvorm: 'eenmanszaak', lat: 52.0286, lon: 5.5586, delayMs: 2100, bedrijf: 'Hovenier Groenrijk', plaats: 'Veenendaal',
     branche: 'hovenier', domein: 'hoveniergroenrijk.nl',
     html: tabelSite('Hovenier Groenrijk', 'Veenendaal', 2011,
-      'Tuinaanleg en onderhoud. Vraag vrijblijvend een offerte aan.', '0318-521470', 'stil'),
+      'Tuinaanleg en onderhoud. Vraag vrijblijvend een offerte aan.', '0318-521470', 'stil', '/hovenier-groenrijk'),
   },
   {
     path: '/kapsalon-lisa', rechtsvorm: 'eenmanszaak', lat: 52.093, lon: 5.11, delayMs: 1250, bedrijf: 'Kapsalon Lisa', plaats: 'Utrecht',
@@ -226,21 +248,21 @@ export const SITES: Site[] = [
     branche: 'restaurant', domein: 'restaurantdehoek.nl', secure: true, goedGeconfigureerd: true,
     html: middenmoot('Restaurant De Hoek', 'Amersfoort',
       lorem('Seizoensgebonden gerechten met producten uit de streek. Reserveren wordt aanbevolen. De kaart wisselt elke zes weken mee met wat de telers in de omgeving aanbieden.', 5),
-      '033-4728190', { titel: 'Restaurant De Hoek' }),
+      '033-4728190', { titel: 'Restaurant De Hoek', pad: '/restaurant-de-hoek' }),
   },
   {
     path: '/fysio-beweegt', rechtsvorm: 'maatschap', lat: 52.087, lon: 5.235, delayMs: 780, bedrijf: 'Fysiotherapie Beweegt', plaats: 'Zeist',
     branche: 'fysiotherapie', domein: 'fysiobeweegt.nl', secure: true, goedGeconfigureerd: true,
     html: middenmoot('Fysiotherapie Beweegt', 'Zeist',
       lorem('Fysiotherapie, manuele therapie en revalidatie. Aangesloten bij alle zorgverzekeraars. U kunt zonder verwijzing van de huisarts bij ons terecht.', 5),
-      '030-6924415', { titel: 'Fysiotherapie Beweegt Zeist' }),
+      '030-6924415', { titel: 'Fysiotherapie Beweegt Zeist', pad: '/fysio-beweegt' }),
   },
   {
     path: '/drukkerij-vandenberg', rechtsvorm: 'bv', lat: 52.033, lon: 5.085, delayMs: 2600, bedrijf: 'Drukkerij Van den Berg', plaats: 'Nieuwegein',
     branche: 'drukkerij', domein: 'drukkerijvandenberg.nl',
     headers: { 'x-powered-by': 'PHP/5.3.29' },
     html: tabelSite('Drukkerij Van den Berg', 'Nieuwegein', 2008,
-      'Drukwerk voor bedrijven: visitekaartjes, folders, briefpapier en meer.', '030-6041188', 'actief'),
+      'Drukwerk voor bedrijven: visitekaartjes, folders, briefpapier en meer.', '030-6041188', 'actief', '/drukkerij-vandenberg'),
   },
   {
     path: '/tandarts-smile', rechtsvorm: 'bv', lat: 52.098, lon: 5.13, delayMs: 320, bedrijf: 'Tandartspraktijk Smile', plaats: 'Utrecht',
@@ -249,7 +271,7 @@ export const SITES: Site[] = [
       'Tandarts in Utrecht — ook op zaterdag terecht | Smile',
       'Tandartspraktijk Smile in Utrecht neemt nieuwe patiënten aan. Avond- en zaterdagafspraken mogelijk, en een eigen mondhygiënist in huis.',
       lorem('Bij Smile bent u terecht voor controles, vullingen, kronen en implantaten. Onze mondhygienist kijkt bij elke halfjaarlijkse controle mee, zodat problemen vroeg aan het licht komen.', 8),
-      '030-2345678', 'info@tandartssmile.nl'),
+      '030-2345678', 'info@tandartssmile.nl', '/tandarts-smile'),
   },
   {
     path: '/installatie-vandijk', rechtsvorm: 'bv', lat: 52.16, lon: 5.37, delayMs: 410, bedrijf: 'Van Dijk Installatietechniek', plaats: 'Amersfoort',
@@ -258,7 +280,7 @@ export const SITES: Site[] = [
       'Installateur in Amersfoort — cv, warmtepompen en sanitair',
       'Van Dijk Installatietechniek installeert en onderhoudt cv-ketels, warmtepompen en badkamers in Amersfoort en omgeving. Binnen 24 uur bij spoed.',
       lorem('Wij werken voor particulieren, VvE\'s en aannemers in heel Midden-Nederland. Van het vervangen van een cv-ketel tot het compleet verduurzamen van een woning met een warmtepomp en vloerverwarming.', 8),
-      '033-4567890', 'info@vandijkinstallatie.nl'),
+      '033-4567890', 'info@vandijkinstallatie.nl', '/installatie-vandijk'),
   },
   {
     path: '/advocaat-mulder', rechtsvorm: 'bv', lat: 52.085, lon: 5.118, delayMs: 500, bedrijf: 'Advocatenkantoor Mulder', plaats: 'Utrecht',
@@ -278,13 +300,13 @@ export const SITES: Site[] = [
     branche: 'dierenarts', domein: 'dierenartsdepoot.nl', secure: true,
     headers: { 'x-powered-by': 'PHP/7.4.33' },
     html: oudeWordpress('Dierenartsenpraktijk De Poot', 'Zeist', '5.8.6', 2020,
-      lorem('Wij behandelen honden, katten en kleine huisdieren. Ook spoedgevallen buiten kantooruren.', 5), '030-6951203', 'stil'),
+      lorem('Wij behandelen honden, katten en kleine huisdieren. Ook spoedgevallen buiten kantooruren.', 5), '030-6951203', 'stil', '/dierenarts-poot'),
   },
   {
     path: '/makelaar-huisenzo', rechtsvorm: 'vof', lat: 52.027, lon: 5.09, delayMs: 1150, bedrijf: 'Makelaardij Huis & Zo', plaats: 'Nieuwegein',
     branche: 'makelaar', domein: 'makelaardijhuisenzo.nl', secure: true,
     html: middenmoot('Makelaardij Huis & Zo', 'Nieuwegein',
-      lorem('Aan- en verkoopbegeleiding, taxaties en woningpresentatie in de regio Utrecht. Wij kennen elke wijk en weten wat een woning hier werkelijk waard is.', 5), '030-6077340'),
+      lorem('Aan- en verkoopbegeleiding, taxaties en woningpresentatie in de regio Utrecht. Wij kennen elke wijk en weten wat een woning hier werkelijk waard is.', 5), '030-6077340', { pad: '/makelaar-huisenzo' }),
   },
 ];
 
@@ -303,6 +325,16 @@ function handler(sites: Site[]) {
       res.end('User-agent: *\nDisallow: /wp-admin/\n');
       return;
     }
+    // /g/12/contact hoort bij de site op /g/12.
+    if (path.endsWith('/contact')) {
+      const eigenaar = bySite.get(path.slice(0, -'/contact'.length));
+      if (eigenaar?.contact) {
+        res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+        res.end(contactpagina({ bedrijf: eigenaar.bedrijf, plaats: eigenaar.plaats, ...eigenaar.contact }));
+        return;
+      }
+    }
+
     const site = bySite.get(path);
     if (!site) { res.writeHead(404); res.end('niet gevonden'); return; }
     if (site.delayMs) await new Promise((done) => setTimeout(done, site.delayMs));
@@ -364,6 +396,12 @@ const BRANCHES: [string, string[]][] = [
   ['elektricien', ['Elektrotechniek', 'Installatietechniek']],
 ];
 
+const STRATEN = [
+  'Dorpsstraat', 'Kerkstraat', 'Nieuwstraat', 'Molenweg', 'Industrieweg', 'Havenstraat',
+  'Stationsweg', 'Julianalaan', 'Wilhelminastraat', 'Beatrixlaan', 'Hoofdstraat', 'Marktplein',
+  'Ambachtsweg', 'Handelsweg', 'De Hoef', 'Parallelweg', 'Zuiderpark', 'Noorderhaven',
+];
+
 const ACHTERNAMEN = [
   'de Vries', 'Jansen', 'van Dijk', 'Bakker', 'Visser', 'Smit', 'Meijer', 'de Boer',
   'Mulder', 'de Groot', 'Bos', 'Vos', 'Peters', 'Hendriks', 'van Leeuwen', 'Dekker',
@@ -422,36 +460,45 @@ export function genereerSites(aantal: number): Site[] {
     const levenTrekking = random();
     const leven: Levensprofiel = levenTrekking < 0.34 ? 'actief' : levenTrekking < 0.68 ? 'sluimert' : 'stil';
 
+    const contact = {
+      telefoon,
+      email: `info@${domein}`,
+      straat: `${STRATEN[Math.floor(random() * STRATEN.length)]} ${1 + Math.floor(random() * 180)}`,
+      postcode: `${1000 + Math.floor(random() * 8999)} ${String.fromCharCode(65 + Math.floor(random() * 26))}${String.fromCharCode(65 + Math.floor(random() * 26))}`,
+      kvk: String(10000000 + Math.floor(random() * 89999999)),
+    };
+
     const gemeen = {
-      path: pad, bedrijf, plaats, branche, domein, rechtsvorm, leven,
+      path: pad, bedrijf, plaats, branche, domein, rechtsvorm, leven, contact,
       lat: lat + (random() - 0.5) * 0.05,
       lon: lon + (random() - 0.5) * 0.08,
     };
 
     if (soort < 0.28) {
-      sites.push({ ...gemeen, delayMs: 900 + Math.floor(random() * 2200),
+      sites.push({ ...gemeen, delayMs: 400 + Math.floor(random() * 2600),
         headers: { 'x-powered-by': `PHP/5.${Math.floor(random() * 7)}.${Math.floor(random() * 40)}` },
-        html: tabelSite(bedrijf, plaats, jaar, `Al ${NU - jaar} jaar actief in ${plaats} en omstreken.`, telefoon, leven) });
+        html: tabelSite(bedrijf, plaats, jaar, `Al ${NU - jaar} jaar actief in ${plaats} en omstreken.`, telefoon, leven, pad) });
     } else if (soort < 0.55) {
-      sites.push({ ...gemeen, delayMs: 800 + Math.floor(random() * 3400),
+      sites.push({ ...gemeen, delayMs: 350 + Math.floor(random() * 3600),
         headers: { 'x-powered-by': random() < 0.5 ? 'PHP/7.4.33' : 'PHP/8.1.27' },
         html: oudeWordpress(bedrijf, plaats, random() < 0.5 ? '5.4.2' : '4.9.8', jaar,
-          lorem(`Wij werken door heel ${plaats} en de regio eromheen.`, 3), telefoon, leven) });
+          lorem(`Wij werken door heel ${plaats} en de regio eromheen.`, 3), telefoon, leven, pad) });
     } else if (soort < 0.68) {
-      sites.push({ ...gemeen, secure: true, goedGeconfigureerd: true, delayMs: 400 + Math.floor(random() * 900),
+      sites.push({ ...gemeen, secure: true, goedGeconfigureerd: true, delayMs: 250 + Math.floor(random() * 700),
         html: `<html><head><meta name="generator" content="Wix.com Website Builder"><style>${themaCss(180)}</style></head>
           <body><h1>${bedrijf}</h1><script src="https://static.wixstatic.com/services/main.js"></script>
           <p>${lorem(`${bedrijf} in ${plaats}. Bel voor een afspraak.`, 5)}</p>
-          <p>Telefoon: ${telefoon}</p>${levensblok(leven, plaats)}<p>&copy; ${jaar} ${bedrijf}</p></body></html>` });
+          <p>Telefoon: ${telefoon}</p><p><a href="${pad}/contact">Contactgegevens</a></p>
+          ${levensblok(leven, plaats)}<p>&copy; ${jaar} ${bedrijf}</p></body></html>` });
     } else if (soort < 0.88) {
-      sites.push({ ...gemeen, secure: true, goedGeconfigureerd: true, delayMs: 500 + Math.floor(random() * 900),
-        html: middenmoot(bedrijf, plaats, lorem(`Al jaren het vertrouwde adres in ${plaats} voor ${branche}werk.`, 4), telefoon, { leven }) });
+      sites.push({ ...gemeen, secure: true, goedGeconfigureerd: true, delayMs: 300 + Math.floor(random() * 800),
+        html: middenmoot(bedrijf, plaats, lorem(`Al jaren het vertrouwde adres in ${plaats} voor ${branche}werk.`, 4), telefoon, { leven, pad }) });
     } else {
       sites.push({ ...gemeen, secure: true, goedGeconfigureerd: true, delayMs: 250 + Math.floor(random() * 400),
         html: modern(bedrijf, plaats, `${voorvoegsel} in ${plaats} — ${bedrijf}`,
           `${bedrijf} is het vertrouwde adres voor ${branche}werk in ${plaats} en omgeving. Vaste prijzen vooraf en snel ter plaatse.`,
           lorem(`Wij werken voor particulieren en bedrijven in heel ${plaats} en de regio.`, 8),
-          telefoon, `info@${domein}`) });
+          telefoon, `info@${domein}`, pad) });
     }
   }
   return sites;

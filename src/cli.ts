@@ -114,6 +114,58 @@ program
 
 // --------------------------------------------------------------------------
 program
+  .command('actualiseren')
+  .description('Scan bedrijven opnieuw en laat zien wat er sinds de vorige keer veranderd is')
+  .option('-d, --dagen <dagen>', 'alleen scans ouder dan zoveel dagen', Number, 30)
+  .option('-l, --limit <aantal>', 'maximum aantal bedrijven deze ronde', Number, 200)
+  .option('-c, --concurrency <aantal>', 'aantal gelijktijdige scans', Number, config.concurrency)
+  .action(async (options) => {
+    const bedrijven = companiesToScan({ limit: options.limit, rescanAfterDays: options.dagen });
+    if (bedrijven.length === 0) {
+      log.ok(`Alles is korter dan ${options.dagen} dagen geleden gescand.`);
+      return;
+    }
+
+    const ervoor = new Map(queryLeads({ limit: 100000 }).map((lead) => [lead.id, lead.score]));
+    log.step(`${bedrijven.length} bedrijven opnieuw scannen…`);
+    await scanAll(bedrijven, { concurrency: options.concurrency });
+
+    const erna = queryLeads({ limit: 100000, toonGeblokkeerd: true })
+      .filter((lead) => bedrijven.some((bedrijf) => bedrijf.id === lead.id));
+
+    const veranderd = erna
+      .map((lead) => ({ lead, oud: ervoor.get(lead.id) ?? null }))
+      .filter((rij) => rij.oud !== null && rij.lead.score !== null && Math.abs(rij.lead.score - rij.oud!) >= 3)
+      .sort((a, b) => (a.lead.score! - a.oud!) - (b.lead.score! - b.oud!));
+
+    if (veranderd.length === 0) {
+      log.ok(`${erna.length} bedrijven opnieuw gescand; er is niets noemenswaardigs veranderd.`);
+      return;
+    }
+
+    log.info('');
+    log.info('  Verandering  Bedrijf                            Wat er gebeurd is');
+    log.info('  ' + '─'.repeat(100));
+    for (const { lead, oud } of veranderd) {
+      const verschil = lead.score! - oud!;
+      const pijl = verschil < 0 ? '▼' : '▲';
+      const uitleg = lead.scan_status !== 'ok'
+        ? `site is nu onbereikbaar (${lead.error ?? 'onbekend'})`
+        : verschil < 0 ? (lead.topIssues[0]?.title ?? 'meer problemen gevonden')
+        : 'de site is verbeterd — mogelijk heeft iemand anders hem al opgepakt';
+      log.info(
+        `  ${pijl} ${String(oud).padStart(3)} → ${String(lead.score).padEnd(4)} ` +
+        lead.name.slice(0, 33).padEnd(35) + uitleg.slice(0, 58),
+      );
+    }
+    const slechter = veranderd.filter((rij) => rij.lead.score! < rij.oud!).length;
+    log.info('');
+    log.ok(`${erna.length} opnieuw gescand · ${slechter} achteruit · ${veranderd.length - slechter} vooruit`);
+    log.dim('  Achteruitgegaan is een goede belreden: er is iets kapot of verwaarloosd sinds je vorige contact.');
+  });
+
+// --------------------------------------------------------------------------
+program
   .command('geocode')
   .description('Zet bedrijven zonder positie op de kaart aan de hand van hun plaatsnaam')
   .option('-l, --limit <aantal>', 'maximum aantal bedrijven deze ronde', Number, 500)
