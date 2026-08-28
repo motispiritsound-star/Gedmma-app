@@ -1,13 +1,40 @@
 /**
- * One stylesheet for both reading directions. Every inline offset uses a CSS
- * logical property (`margin-inline-start`, `border-inline-end`, `inset-inline`)
- * so `dir="rtl"` on the document flips the layout without a second file and
- * without a single `[dir="rtl"]` override.
- *
  * The palette and the type scale mirror apps/mobile/src/theme, so the site and
  * the app read as one product.
+ *
+ * Note this file is a template literal: a backtick anywhere below, comments
+ * included, ends the string early.
  */
 export const STYLES = `
+/* Inter is served from our own domain, not from Google Fonts. A stylesheet
+   link to Google would make every visitor's browser open a connection to a
+   Google server and hand it their IP address before they have agreed to
+   anything -- a transfer to a third country that a German court has already
+   ruled unlawful (LG Munchen I, 20-01-2022, 3 O 17493/20). Self-hosting
+   removes the transfer entirely, so it needs no consent and no mention in the
+   privacy statement.
+
+   One file per subset covers every weight: Inter on Google Fonts is a variable
+   font, so the 400/500/600/700 the design uses all come out of the same
+   download. Regenerate with scripts/fetch-fonts.py. Licensed under the SIL
+   Open Font License; the licence ships alongside the files. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 :root {
   --green-900: #06342B;
   --green-700: #0B5546;
@@ -38,9 +65,8 @@ export const STYLES = `
   --shadow-card: 0 4px 14px rgba(20, 32, 29, 0.06);
   --shadow-raised: 0 12px 32px rgba(20, 32, 29, 0.12);
 
-  /* Inter is loaded from Google Fonts in the document head. The stack names
-     real fallbacks, so a blocked font request degrades to a system face rather
-     than to whatever the browser picks. */
+  /* The stack names real fallbacks, so a font that fails to load degrades to a
+     system face rather than to whatever the browser picks. */
   --font: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
 
 }

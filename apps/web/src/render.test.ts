@@ -9,7 +9,14 @@ import {
   localize,
 } from '@buurklus/shared';
 import { COPY } from './content.js';
-import { esc, renderHome, renderPro, renderRootRedirect, renderSitemap } from './render.js';
+import {
+  esc,
+  renderHome,
+  renderPro,
+  renderRootRedirect,
+  renderSitemap,
+  renderStyles,
+} from './render.js';
 
 const pages = SUPPORTED_LOCALES.flatMap((locale) => [
   { locale, name: `${locale} home`, html: renderHome(locale) },
@@ -146,5 +153,34 @@ describe('crawlability', () => {
     expect(renderRootRedirect()).toContain('name="robots" content="noindex"');
     // It must still work without JavaScript.
     expect(renderRootRedirect()).toContain('http-equiv="refresh"');
+  });
+});
+
+describe('privacy of the served pages', () => {
+  // Every host a page contacts sees the visitor's IP address before the
+  // visitor has agreed to anything. Google Fonts was the first such request
+  // this site made; this test is here so it does not come back unnoticed, and
+  // so a tag manager, an analytics snippet or an embedded map cannot slip in
+  // without someone deciding to weaken this assertion on purpose.
+  const ALLOWED_EXTERNAL_HOSTS: string[] = [];
+
+  const hostsIn = (html: string) =>
+    [...html.matchAll(/(?:href|src|action)="(https?:)?\/\/([^/"]+)/g)].map((match) => match[2]);
+
+  it('contacts no third party from any page', () => {
+    for (const page of [...pages, { name: 'index', html: renderRootRedirect() }]) {
+      const foreign = hostsIn(page.html).filter(
+        (host) => !ALLOWED_EXTERNAL_HOSTS.includes(host) && !host.endsWith('buurklus.nl'),
+      );
+      expect(foreign, page.name).toEqual([]);
+    }
+  });
+
+  it('serves its own fonts', () => {
+    const css = renderStyles();
+    expect(css).toContain('@font-face');
+    expect(css).toContain('/fonts/inter-latin.woff2');
+    expect(css).not.toContain('fonts.googleapis.com');
+    expect(css).not.toContain('fonts.gstatic.com');
   });
 });
