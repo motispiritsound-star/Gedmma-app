@@ -11,7 +11,11 @@ import atlas from 'world-atlas/countries-10m.json' with { type: 'json' };
 
 type Ring = [number, number][];
 
-const wereld = feature(atlas as never, (atlas as never as { objects: { countries: unknown } }).objects.countries) as unknown as {
+// De typen van world-atlas en topojson-client sluiten niet op elkaar aan; de
+// vorm klopt wel, dus we halen hem hier eenmalig door de typecontrole heen.
+const topologie = atlas as unknown as Parameters<typeof feature>[0];
+const objecten = (topologie as unknown as { objects: Record<string, Parameters<typeof feature>[1]> }).objects;
+const wereld = feature(topologie, objecten.countries!) as unknown as {
   features: { properties: { name: string }; geometry: { type: string; coordinates: Ring[][] } }[];
 };
 

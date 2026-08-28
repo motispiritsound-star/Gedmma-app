@@ -8,15 +8,16 @@
     "node": ">=22.18.0"
   },
   "bin": {
-    "webscan": "./src/cli.ts"
+    "webscan": "./start.js"
   },
   "scripts": {
-    "webscan": "node src/cli.ts",
-    "dashboard": "node src/cli.ts serve",
+    "proefrit": "node start.js --proefrit",
+    "webscan": "node start.js",
+    "dashboard": "node start.js serve",
+    "demo": "node demo/build.ts && node demo/page.ts",
     "test": "node test/run.ts",
     "test:api": "node test/server.ts",
-    "typecheck": "tsc --noEmit",
-    "demo": "node demo/build.ts && node demo/page.ts"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "cheerio": "^1.0.0",
