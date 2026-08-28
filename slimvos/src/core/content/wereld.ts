@@ -163,8 +163,112 @@ export const natuur: Gen = (niveau, rng) => {
   });
 };
 
-export const WERELD_GENERATOREN: Record<string, Gen> = {
+const _WERELD_BASIS: Record<string, Gen> = {
   'wereld.topografie': topografie,
   'wereld.geschiedenis': geschiedenis,
   'wereld.natuur': natuur,
+};
+
+/** [land of gebied, hoofdstad of werelddeel] */
+const WERELDDELEN: Array<[string, string]> = [
+  ['Brazilië', 'Zuid-Amerika'],
+  ['Japan', 'Azië'],
+  ['Egypte', 'Afrika'],
+  ['Canada', 'Noord-Amerika'],
+  ['Australië', 'Oceanië'],
+  ['India', 'Azië'],
+  ['Nigeria', 'Afrika'],
+  ['Mexico', 'Noord-Amerika'],
+  ['Argentinië', 'Zuid-Amerika'],
+  ['China', 'Azië'],
+];
+
+const WERELDHOOFDSTEDEN: Array<[string, string]> = [
+  ['Japan', 'Tokio'], ['Brazilië', 'Brasilia'], ['Egypte', 'Caïro'],
+  ['Canada', 'Ottawa'], ['Australië', 'Canberra'], ['India', 'New Delhi'],
+  ['China', 'Peking'], ['Mexico', 'Mexico-Stad'], ['Zuid-Afrika', 'Pretoria'],
+  ['Verenigde Staten', 'Washington D.C.'],
+];
+
+const WERELDFEITEN: Array<[string, string, string[]]> = [
+  ['Wat is de grootste oceaan?', 'de Grote Oceaan', ['de Atlantische Oceaan', 'de Indische Oceaan', 'de Noordelijke IJszee']],
+  ['Door welk werelddeel loopt de evenaar het langst?', 'Afrika', ['Europa', 'Noord-Amerika', 'Oceanië']],
+  ['Wat is de hoogste berg ter wereld?', 'de Mount Everest', ['de Mont Blanc', 'de Kilimanjaro', 'de Matterhorn']],
+  ['Welke rivier is de langste van Afrika?', 'de Nijl', ['de Congo', 'de Zambezi', 'de Niger']],
+  ['Welk werelddeel heeft geen vaste inwoners?', 'Antarctica', ['Oceanië', 'Zuid-Amerika', 'Azië']],
+];
+
+export const wereldtopo: Gen = (niveau, rng) => {
+  const id = 'wereld.wereldtopo';
+  if (niveau <= 2) {
+    const [land, deel] = kies(rng, WERELDDELEN);
+    return keuzeVraag(rng, {
+      onderwerpId: id,
+      niveau,
+      stam: `In welk werelddeel ligt ${land}?`,
+      antwoord: deel,
+      afleiders: kiesUniek(rng, [...new Set(WERELDDELEN.map((w) => w[1]))].filter((d) => d !== deel), 3),
+      uitleg: `${land} ligt in ${deel}.`,
+    });
+  }
+  if (niveau <= 4) {
+    const [land, stad] = kies(rng, WERELDHOOFDSTEDEN);
+    return keuzeVraag(rng, {
+      onderwerpId: id,
+      niveau,
+      stam: `Wat is de hoofdstad van ${land}?`,
+      antwoord: stad,
+      afleiders: kiesUniek(rng, WERELDHOOFDSTEDEN.filter((l) => l[0] !== land), 3).map((l) => l[1]),
+      uitleg: `De hoofdstad van ${land} is ${stad}.`,
+    });
+  }
+  const [vraag, antwoord, afleiders] = kies(rng, WERELDFEITEN);
+  return keuzeVraag(rng, {
+    onderwerpId: id,
+    niveau,
+    stam: vraag,
+    antwoord,
+    afleiders,
+    uitleg: `${vraag} ${antwoord.charAt(0).toUpperCase()}${antwoord.slice(1)}.`,
+  });
+};
+
+const BURGERSCHAP: Record<number, Array<[string, string, string[], string]>> = {
+  1: [
+    ['Wie mag er in Nederland stemmen bij de verkiezingen?', 'iedereen van 18 jaar en ouder', ['alleen mensen met werk', 'alleen mensen boven de 30', 'iedereen vanaf 12 jaar'], 'Vanaf je achttiende mag je stemmen. Dat heet kiesrecht.'],
+    ['Waarom zijn er regels op school?', 'zodat iedereen veilig kan leren', ['om kinderen te straffen', 'omdat de juf dat leuk vindt', 'om tijd te vullen'], 'Regels zijn er om samen goed te kunnen werken en spelen.'],
+    ['Wat is een recht dat elk kind heeft?', 'naar school mogen', ['een eigen telefoon', 'elke dag snoep', 'nooit hoeven opruimen'], 'In het Kinderrechtenverdrag staat dat elk kind recht op onderwijs heeft.'],
+  ],
+  2: [
+    ['Wat doet de gemeenteraad?', 'beslissen over zaken in je eigen gemeente', ['wetten maken voor heel Nederland', 'rechtszaken behandelen', 'het leger aansturen'], 'De gemeenteraad gaat over je eigen stad of dorp: wegen, sportvelden, afval.'],
+    ['Wat betekent democratie?', 'het volk beslist, via gekozen vertegenwoordigers', ['één persoon beslist alles', 'de rijkste beslist', 'niemand beslist'], 'Demos is Grieks voor volk, kratos voor macht.'],
+    ['Wat is discriminatie?', 'mensen ongelijk behandelen om wie ze zijn', ['iemand niet aardig vinden', 'een andere mening hebben', 'ergens niet goed in zijn'], 'Discriminatie is verboden; dat staat in artikel 1 van de Grondwet.'],
+  ],
+  3: [
+    ['Wie controleert of de regering haar werk goed doet?', 'de Tweede Kamer', ['de koning', 'de burgemeester', 'de politie'], 'De Tweede Kamer controleert de regering en maakt samen met haar de wetten.'],
+    ['Wat staat er in de Grondwet?', 'de belangrijkste regels en rechten van Nederland', ['de regels van je school', 'de prijzen in de winkel', 'de dienstregeling van de trein'], 'De Grondwet is de basis waar alle andere wetten op moeten passen.'],
+    ['Wat is vrijheid van meningsuiting?', 'je mag zeggen wat je denkt, binnen de wet', ['je mag alles zeggen zonder grenzen', 'alleen volwassenen mogen iets zeggen', 'je mag niets over de regering zeggen'], 'Je mag je mening geven, maar niet oproepen tot haat of geweld.'],
+  ],
+  4: [
+    ['Wat is het verschil tussen de Eerste en Tweede Kamer?', 'de Eerste Kamer kijkt of een wet goed in elkaar zit', ['de Eerste Kamer maakt alle wetten', 'de Eerste Kamer is voor jongeren', 'er is geen verschil'], 'De Tweede Kamer maakt en wijzigt wetten; de Eerste Kamer keurt ze alleen goed of af.'],
+    ['Wat doet een rechter?', 'oordelen of iemand de wet heeft overtreden', ['wetten maken', 'de politie aansturen', 'belasting innen'], 'De rechtspraak staat los van de regering; dat heet scheiding der machten.'],
+    ['Waarom betalen mensen belasting?', 'om samen wegen, scholen en zorg te betalen', ['omdat de koning dat wil', 'als straf voor werken', 'om de winkels te helpen'], 'Van belastinggeld worden voorzieningen betaald die we samen gebruiken.'],
+  ],
+  5: [
+    ['Wat betekent "scheiding der machten"?', 'wetten maken, uitvoeren en beoordelen liggen bij verschillende instanties', ['iedereen mag zijn eigen wet maken', 'de koning beslist alleen', 'de gemeente staat los van het land'], 'Zo kan geen enkele macht ongecontroleerd zijn gang gaan.'],
+    ['Wat is een coalitie?', 'partijen die samen een meerderheid vormen en gaan regeren', ['de grootste partij alleen', 'de oppositie', 'alle partijen samen'], 'Omdat geen partij in Nederland de meerderheid haalt, wordt er samengewerkt.'],
+    ['Wat doet de Europese Unie?', 'afspraken maken tussen Europese landen over handel en regels', ['de wereld besturen', 'alleen geld drukken', 'oorlogen voeren'], 'De EU is een samenwerkingsverband van Europese landen.'],
+  ],
+};
+
+export const burgerschap: Gen = (niveau, rng) => {
+  const lijst = BURGERSCHAP[Math.min(5, Math.max(1, niveau))];
+  const [vraag, antwoord, afleiders, uitleg] = kies(rng, lijst);
+  return keuzeVraag(rng, { onderwerpId: 'wereld.burgerschap', niveau, stam: vraag, antwoord, afleiders, uitleg });
+};
+
+export const WERELD_GENERATOREN: Record<string, Gen> = {
+  ..._WERELD_BASIS,
+  'wereld.wereldtopo': wereldtopo,
+  'wereld.burgerschap': burgerschap,
 };

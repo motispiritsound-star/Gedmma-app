@@ -1,5 +1,5 @@
-import type React from 'react';
-import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { useRef } from 'react';
+import { Animated, Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { kleur, radius, ruimte, schaduw } from '../thema';
 
 interface Props {
@@ -7,19 +7,39 @@ interface Props {
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
   accessibilityLabel?: string;
+  hoogte?: 'klein' | 'midden' | 'groot';
+  testID?: string;
 }
 
-export function Kaart({ children, onPress, style, accessibilityLabel }: Props) {
-  if (!onPress) return <View style={[styles.kaart, style]}>{children}</View>;
+export function Kaart({ children, onPress, style, accessibilityLabel, hoogte = 'klein', testID }: Props) {
+  const schaal = useRef(new Animated.Value(1)).current;
+  const basis = [styles.kaart, schaduw[hoogte], style];
+
+  if (!onPress) {
+    return (
+      <View testID={testID} style={basis}>
+        {children}
+      </View>
+    );
+  }
+
+  const veer = (naar: number) =>
+    Animated.spring(schaal, { toValue: naar, useNativeDriver: true, speed: 40, bounciness: 5 }).start();
+
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
-      onPress={onPress}
-      style={({ pressed }) => [styles.kaart, pressed && styles.ingedrukt, style]}
-    >
-      {children}
-    </Pressable>
+    <Animated.View style={{ transform: [{ scale: schaal }] }}>
+      <Pressable
+        testID={testID}
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel}
+        onPressIn={() => veer(0.98)}
+        onPressOut={() => veer(1)}
+        onPress={onPress}
+        style={basis}
+      >
+        {children}
+      </Pressable>
+    </Animated.View>
   );
 }
 
@@ -29,8 +49,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.l,
     padding: ruimte.l,
     borderWidth: 1,
-    borderColor: kleur.rand,
-    ...schaduw,
+    borderColor: kleur.randZacht,
   },
-  ingedrukt: { transform: [{ scale: 0.99 }], opacity: 0.92 },
 });

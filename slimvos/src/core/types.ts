@@ -3,7 +3,7 @@
 export type Groep = 3 | 4 | 5 | 6 | 7 | 8;
 export const GROEPEN: Groep[] = [3, 4, 5, 6, 7, 8];
 
-export type VakId = 'rekenen' | 'taal' | 'lezen' | 'engels' | 'wereld';
+export type VakId = 'rekenen' | 'taal' | 'lezen' | 'engels' | 'wereld' | 'studie';
 
 export interface Vak {
   id: VakId;

@@ -3,9 +3,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BADGES } from '../../src/core/engine/badges';
 import { WINKEL, kanKopen } from '../../src/core/engine/winkel';
 import { useApp } from '../../src/state/AppContext';
-import { Balk } from '../../src/ui/components/Balk';
 import { Kaart } from '../../src/ui/components/Kaart';
-import { kleur, radius, ruimte, tekst } from '../../src/ui/thema';
+import { Balk } from '../../src/ui/components/Voortgang';
+import { Icoon } from '../../src/ui/VakIcoon';
+import { kleur, radius, ruimte, schaduw, tabelCijfers, tekst } from '../../src/ui/thema';
 
 export default function Beloningen() {
   const { profiel, koop, kiesAvatar } = useApp();
@@ -16,10 +17,13 @@ export default function Beloningen() {
 
   return (
     <SafeAreaView style={styles.scherm} edges={['top']}>
-      <ScrollView contentContainerStyle={styles.inhoud}>
+      <ScrollView contentContainerStyle={styles.inhoud} showsVerticalScrollIndicator={false}>
         <View style={styles.kop}>
           <Text style={tekst.titel}>Beloningen</Text>
-          <Text style={styles.munten}>🪙 {profiel.munten}</Text>
+          <View style={styles.munten}>
+            <Icoon soort="munt" formaat={18} kleur={kleur.goud} />
+            <Text style={[tekst.bodyVet, tabelCijfers]}>{profiel.munten}</Text>
+          </View>
         </View>
 
         <Text style={tekst.kop}>Maatjes</Text>
@@ -35,22 +39,24 @@ export default function Beloningen() {
               <Pressable
                 key={item.id}
                 accessibilityRole="button"
-                accessibilityLabel={
-                  heeft ? `${item.naam} kiezen` : `${item.naam} kopen voor ${item.prijs} munten`
-                }
+                accessibilityLabel={heeft ? `${item.naam} kiezen` : `${item.naam} kopen voor ${item.prijs} munten`}
+                accessibilityState={{ selected: gekozen, disabled: !beschikbaar }}
                 disabled={!beschikbaar}
                 onPress={() => (heeft ? kiesAvatar(item.id) : koop(item.id))}
-                style={[
-                  styles.item,
-                  gekozen && styles.itemGekozen,
-                  !beschikbaar && styles.itemUit,
-                ]}
+                style={[styles.item, gekozen && styles.itemGekozen, !beschikbaar && styles.itemUit]}
               >
                 <Text style={styles.itemEmoji}>{item.emoji}</Text>
                 <Text style={tekst.klein}>{item.naam}</Text>
-                <Text style={[tekst.klein, styles.prijs]}>
-                  {gekozen ? 'in gebruik' : heeft ? 'kies' : `🪙 ${item.prijs}`}
-                </Text>
+                {gekozen ? (
+                  <Text style={[tekst.klein, { color: kleur.merkDieper }]}>in gebruik</Text>
+                ) : heeft ? (
+                  <Text style={[tekst.klein, { color: kleur.goed }]}>kies</Text>
+                ) : (
+                  <View style={styles.prijsRij}>
+                    <Icoon soort="munt" formaat={12} kleur={kleur.goud} />
+                    <Text style={tekst.klein}>{item.prijs}</Text>
+                  </View>
+                )}
               </Pressable>
             );
           })}
@@ -68,9 +74,9 @@ export default function Beloningen() {
               <View style={{ flex: 1, gap: ruimte.xs }}>
                 <Text style={tekst.subkop}>{badge.naam}</Text>
                 <Text style={tekst.klein}>{badge.omschrijving}</Text>
-                {!klaar ? <Balk fractie={voortgang} kleurVoor={kleur.goud} hoogte={6} /> : null}
+                {!klaar ? <Balk fractie={voortgang} kleurVoor={kleur.goud} hoogte={6} stil /> : null}
               </View>
-              {klaar ? <Text style={styles.vink}>✓</Text> : null}
+              {klaar ? <Icoon soort="vink" formaat={20} kleur={kleur.goud} /> : null}
             </Kaart>
           );
         })}
@@ -80,28 +86,38 @@ export default function Beloningen() {
 }
 
 const styles = StyleSheet.create({
-  scherm: { flex: 1, backgroundColor: kleur.achtergrond },
+  scherm: { flex: 1, backgroundColor: kleur.grond },
   inhoud: { padding: ruimte.l, gap: ruimte.s, paddingBottom: ruimte.xxl },
   kop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  munten: { fontSize: 20, fontWeight: '800', color: kleur.tekst },
+  munten: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: kleur.kaart,
+    borderRadius: radius.rond,
+    paddingHorizontal: ruimte.m,
+    paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: kleur.randZacht,
+  },
   raster: { flexDirection: 'row', flexWrap: 'wrap', gap: ruimte.m, marginTop: ruimte.s },
   item: {
-    width: 92,
+    width: 96,
     paddingVertical: ruimte.m,
     alignItems: 'center',
     gap: 2,
     borderRadius: radius.m,
     borderWidth: 2,
-    borderColor: kleur.rand,
+    borderColor: kleur.randZacht,
     backgroundColor: kleur.kaart,
+    ...schaduw.klein,
   },
-  itemGekozen: { borderColor: kleur.primair, backgroundColor: kleur.primairZacht },
-  itemUit: { opacity: 0.4 },
-  itemEmoji: { fontSize: 34 },
-  prijs: { fontWeight: '700' },
+  itemGekozen: { borderColor: kleur.merk, backgroundColor: kleur.merkZacht },
+  itemUit: { opacity: 0.38 },
+  itemEmoji: { fontSize: 36 },
+  prijsRij: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   badge: { flexDirection: 'row', alignItems: 'center', gap: ruimte.m, marginTop: ruimte.s },
-  badgeKlaar: { borderColor: kleur.goud, backgroundColor: kleur.goudZacht },
+  badgeKlaar: { borderColor: kleur.goudRand, backgroundColor: kleur.goudZacht },
   badgeEmoji: { fontSize: 30 },
-  grijs: { opacity: 0.35 },
-  vink: { fontSize: 22, color: kleur.goud, fontWeight: '800' },
+  grijs: { opacity: 0.32 },
 });

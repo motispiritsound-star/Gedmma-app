@@ -1,6 +1,7 @@
 import { Redirect } from 'expo-router';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useApp } from '../src/state/AppContext';
+import { Vos } from '../src/ui/Vos';
 import { kleur, ruimte, tekst } from '../src/ui/thema';
 
 export default function Start() {
@@ -9,9 +10,8 @@ export default function Start() {
   if (!klaar) {
     return (
       <View style={styles.midden}>
-        <Text style={styles.logo}>🦊</Text>
-        <Text style={tekst.kop}>Slimvos</Text>
-        <ActivityIndicator style={{ marginTop: ruimte.l }} color={kleur.primair} />
+        <Vos uitdrukking="blij" formaat={104} />
+        <Text style={[tekst.titel, { marginTop: ruimte.m }]}>Slimvos</Text>
       </View>
     );
   }
@@ -19,6 +19,5 @@ export default function Start() {
 }
 
 const styles = StyleSheet.create({
-  midden: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: kleur.achtergrond },
-  logo: { fontSize: 64, marginBottom: ruimte.m },
+  midden: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: kleur.grond },
 });

@@ -96,14 +96,40 @@ niet werkt).
 
 | Vak | Onderwerpen |
 | --- | --- |
-| Rekenen | optellen, aftrekken, tafels, delen, klokkijken, geld, meten, breuken, procenten, verhaaltjessommen |
-| Taal | spelling, werkwoordspelling, woordenschat, ontleden |
-| Begrijpend lezen | teksten met vragen, oplopend in moeilijkheid |
-| Engels | woorden (beide richtingen), zinnen aanvullen |
-| Wereldoriëntatie | topografie, geschiedenis, natuur & techniek |
+| Rekenen | optellen, aftrekken, tafels, delen, klokkijken, geld, meten, breuken, procenten, verhaaltjessommen, getalbegrip, omtrek & oppervlakte, verhoudingen |
+| Taal | spelling, werkwoordspelling, woordenschat, ontleden, leestekens, spreekwoorden |
+| Begrijpend lezen | tien teksten met vragen, oplopend in moeilijkheid |
+| Engels | woorden (beide richtingen), zinnen aanvullen, onregelmatige werkwoorden |
+| Wereldoriëntatie | topografie NL, de wereld, geschiedenis, natuur & techniek, samenleven |
+| Studievaardigheden | tabellen & grafieken, kaartlezen, informatie zoeken |
+
+Samen 31 onderwerpen in 6 vakken.
 
 Bij **elk** fout antwoord verschijnt meteen een uitleg in kindertaal — niet
 alleen "fout", maar waaróm.
+
+### Filmpjes
+
+Negen korte filmpjes van ongeveer een halve minuut: vier motiverende (waarom
+fouten maken helpt, je brein is een spier, volhouden) en vijf met uitleg bij een
+onderwerp ('t kofschip, tafels, breuken, procenten, begrijpend lezen).
+
+Ze worden **in de app zelf getekend en geanimeerd** in plaats van als video
+afgespeeld. Vos wisselt van uitdrukking, de tekst schuift in beeld en de
+rekenstappen verschijnen één voor één. Daardoor wegen ze niets, werken ze
+offline en kosten ze geen hosting. Zodra er echt getekende video's zijn, zet je
+de URL in het filmpje en speelt de speler die af.
+
+**Wat hier níet zit:** echte gefilmde of getekende animatievideo. Dat is
+productiewerk (illustrator, stemacteur, montage) en geen code.
+
+### Account en abonnement
+
+Oefenen kan zonder account — dat blijft zo. Een ouderaccount heb je alleen
+nodig voor een abonnement. Het oudergedeelte zit achter een rekenslotje, zodat
+een kind niet zomaar bij de instellingen komt.
+
+Het prijsplan en de onderbouwing staan in [`PRIJZEN.md`](PRIJZEN.md).
 
 ### Waar de gegevens staan
 
@@ -136,17 +162,20 @@ leerlogica in gewone Node en is die volledig te testen zonder simulator.
 
 ## Wat de app anders doet dan Squla
 
-| | Squla | Slimvos |
+| | Squla (aug 2026) | Slimvos |
 | --- | --- | --- |
-| Prijs | ~€11,95 per maand | doel: €3–4 per maand, één abonnement voor het hele gezin |
-| Account | verplicht, met e-mailadres | geen account, direct beginnen |
+| Goedkoopste prijs | €10,99 p/m bij een jaarabonnement (~€132 per jaar) | €39,99 per jaar (€3,33 p/m) |
+| Maandprijs | €16,99 per kwartaalabonnement | €4,99 |
+| Opzeggen | een maand opzegtermijn | wanneer je wilt, geen opzegtermijn |
+| Gratis | 7 dagen proberen | rekenen blijft gratis, permanent |
+| Account | verplicht om te beginnen | pas nodig om te betalen |
 | Internet | nodig | volledig offline |
 | Uitleg bij fout | beperkt | altijd, bij elke vraag |
 | Niveau | grotendeels per leerjaar | adaptief per onderwerp |
 | Gegevens van je kind | op een server | alleen op het toestel |
 
-Het prijspunt is een aanname, geen belofte: die keuze hangt af van wat de
-kosten (stores, marketing, content) uiteindelijk blijken te zijn.
+Squla-prijzen van augustus 2026; controleer ze voordat je ermee adverteert.
+De volledige onderbouwing staat in [`PRIJZEN.md`](PRIJZEN.md).
 
 ## Over de naam
 
@@ -171,11 +200,15 @@ domeinnaambeschikbaarheid.
 
 Bewust buiten deze eerste versie gehouden:
 
-- **Betalen.** Er zit geen abonnement of in-app-aankoop in. Zie `LANCEREN.md`
-  voor hoe dat eruit zou kunnen zien.
-- **Geluid en animaties.** Er is haptische feedback, maar geen audio.
-- **Eigen illustraties.** De app gebruikt nu emoji; echte tekeningen en een
-  getekende mascotte Vos zijn een ontwerpklus op zich.
+- **Echt betalen.** De hele abonnementsstroom zit erin — plannen, proefperiode,
+  opzeggen, toegangsregels — maar er wordt niets afgeschreven. De koppeling met
+  de App Store en Google Play moet nog gemaakt worden; zie `PRIJZEN.md`.
+- **Een echte server achter het account.** Registreren, inloggen en wachtwoord
+  vergeten werken, maar tegen lokale opslag. Alles loopt via één poort
+  (`AuthPoort`), dus overstappen op Supabase of Firebase is één bestand.
+- **Gefilmde video.** De filmpjes worden in de app getekend; echt
+  animatiemateriaal is productiewerk.
+- **Geluid.** Er is haptische feedback, maar geen audio.
 - **Voorlezen van vragen.** Belangrijk voor groep 3 en voor kinderen met
   dyslexie; vraagt een text-to-speech-integratie.
 - **Synchroniseren tussen toestellen.** Kan alleen mét een backend, en dat
@@ -186,15 +219,17 @@ Bewust buiten deze eerste versie gehouden:
 
 ## Hoe dit getest is
 
-- `npm test` — 34 tests op de leerlogica: niveaustappen, streaks, XP, de
-  sessiestroom, badges, de winkel en de profielmigratie. Daarnaast een
-  contenttest die per onderwerp op elk van de vijf niveaus 60 vragen genereert
-  en controleert dat het goede antwoord tussen de opties staat, dat er geen
-  dubbele opties zijn en dat er geen `undefined` of `NaN` in de tekst sluipt.
+- `npm test` — 61 tests: niveaustappen, streaks, XP, de sessiestroom, badges,
+  de winkel, profielmigratie, de abonnementsregels (gratis limiet, proefperiode,
+  opzeggen, verlopen), invoercontrole en de filmpjes. Daarnaast een contenttest
+  die per onderwerp op elk van de vijf niveaus 60 vragen genereert en
+  controleert dat het goede antwoord tussen de opties staat, dat er geen dubbele
+  opties zijn en dat er geen `undefined` of `NaN` in de tekst sluipt.
 - `npm run typecheck` — TypeScript in strict mode over de hele app.
 - Een browsertest die de app echt doorloopt: profiel aanmaken, een ronde van
-  tien vragen spelen, het scorescherm, de voortgang, het ouderdashboard, de
-  beloningen, en of alles bewaard blijft na herladen.
+  tien vragen spelen, het scorescherm, de voortgang, een filmpje afspelen en
+  doorspoelen, de beloningen, het ouderslot openen, een account aanmaken, een
+  proefperiode starten, en of alles bewaard blijft na herladen.
 
 De app is nog niet op een fysiek toestel getest — dat is stap 1 in
 [`LANCEREN.md`](LANCEREN.md).

@@ -6,6 +6,7 @@ import { TAAL_GENERATOREN } from './taal';
 import { ENGELS_GENERATOREN } from './engels';
 import { WERELD_GENERATOREN } from './wereld';
 import { LEZEN_GENERATOREN } from './lezen';
+import { STUDIE_GENERATOREN } from './studie';
 
 export type VraagGenerator = (niveau: number, rng: Rng) => Vraag;
 
@@ -15,6 +16,7 @@ export const GENERATOREN: Record<string, VraagGenerator> = {
   ...ENGELS_GENERATOREN,
   ...WERELD_GENERATOREN,
   ...LEZEN_GENERATOREN,
+  ...STUDIE_GENERATOREN,
 };
 
 export function heeftGenerator(onderwerpId: string): boolean {

@@ -285,7 +285,7 @@ export const ontleden: Gen = (niveau, rng) => {
   });
 };
 
-export const TAAL_GENERATOREN: Record<string, Gen> = {
+const _TAAL_BASIS: Record<string, Gen> = {
   'taal.spelling': spelling,
   'taal.werkwoorden': werkwoorden,
   'taal.woordenschat': woordenschat,
@@ -298,3 +298,104 @@ export const TAAL_BANK_OMVANG =
   Object.values(WOORDENSCHAT).reduce((n, l) => n + l.length, 0) +
   WERKWOORDEN.length +
   ZINNEN.length;
+
+/** [zin zonder leestekens, goede zin, uitleg] */
+const LEESTEKENS: Record<number, Array<[string, string, string[], string]>> = {
+  1: [
+    ['de hond blaft', 'De hond blaft.', ['de hond blaft.', 'De hond blaft', 'de Hond blaft.'], 'Een zin begint met een hoofdletter en eindigt met een punt.'],
+    ['waar is mijn tas', 'Waar is mijn tas?', ['Waar is mijn tas.', 'waar is mijn tas?', 'Waar is mijn tas!'], 'Een vraag eindigt met een vraagteken.'],
+    ['pas op', 'Pas op!', ['Pas op.', 'pas op!', 'Pas op?'], 'Bij een uitroep of waarschuwing hoort een uitroepteken.'],
+  ],
+  2: [
+    ['ik woon in utrecht', 'Ik woon in Utrecht.', ['Ik woon in utrecht.', 'ik woon in Utrecht.', 'Ik Woon in Utrecht.'], 'Plaatsnamen krijgen altijd een hoofdletter.'],
+    ['we gaan maandag naar de dierentuin', 'We gaan maandag naar de dierentuin.', ['We gaan Maandag naar de dierentuin.', 'we gaan maandag naar de Dierentuin.', 'We gaan maandag naar de dierentuin'], 'Dagen van de week krijgen in het Nederlands géén hoofdletter.'],
+    ['mijn zus heet noa', 'Mijn zus heet Noa.', ['Mijn zus heet noa.', 'mijn zus heet Noa.', 'Mijn Zus heet Noa.'], 'Namen van mensen krijgen een hoofdletter.'],
+  ],
+  3: [
+    ['ik kocht brood kaas en melk', 'Ik kocht brood, kaas en melk.', ['Ik kocht brood kaas, en melk.', 'Ik kocht, brood, kaas en melk.', 'Ik kocht brood, kaas, en melk.'], 'In een opsomming komt een komma tussen de delen, maar niet vóór "en".'],
+    ['toen het ging regenen bleven we binnen', 'Toen het ging regenen, bleven we binnen.', ['Toen het ging regenen bleven we, binnen.', 'Toen, het ging regenen bleven we binnen.', 'Toen het ging regenen bleven we binnen.'], 'Na een bijzin vooraan komt een komma.'],
+    ['hij vroeg kom je ook', 'Hij vroeg: "Kom je ook?"', ['Hij vroeg "kom je ook".', 'Hij vroeg: kom je ook?', 'Hij vroeg, "Kom je ook?"'], 'Bij een letterlijke vraag komt een dubbele punt en aanhalingstekens.'],
+  ],
+  4: [
+    ['de trein die om acht uur vertrekt is vol', 'De trein, die om acht uur vertrekt, is vol.', ['De trein die om acht uur vertrekt, is vol.', 'De trein, die om acht uur vertrekt is vol.', 'De trein die om acht uur vertrekt is vol.'], 'Een tussenzin zet je tussen twee komma’s.'],
+    ['ze had alles bij zich boek pen en tas', 'Ze had alles bij zich: boek, pen en tas.', ['Ze had alles bij zich; boek, pen en tas.', 'Ze had alles bij zich, boek, pen en tas.', 'Ze had alles bij zich - boek, pen en tas.'], 'Voor een opsomming die je aankondigt, komt een dubbele punt.'],
+    ['het regende toch gingen we lopen', 'Het regende; toch gingen we lopen.', ['Het regende, toch gingen we lopen', 'Het regende: toch gingen we lopen.', 'Het regende toch, gingen we lopen.'], 'Een puntkomma verbindt twee zinnen die bij elkaar horen.'],
+  ],
+  5: [
+    ['het boek van jan is dik', 'Het boek van Jan is dik.', ['Het boek van jan is dik.', 'Het Boek van Jan is dik.', 'Het boek van Jan’s is dik.'], 'In het Nederlands schrijf je bezit met "van", zonder apostrof.'],
+    ['annes fiets staat buiten', 'Annes fiets staat buiten.', ['Anne’s fiets staat buiten.', 'annes fiets staat buiten.', 'Annes’ fiets staat buiten.'], 'Alleen na een klinker komt een apostrof: Anna’s wel, Annes niet.'],
+    ['zij zei ik kom morgen', 'Zij zei: "Ik kom morgen."', ['Zij zei: "ik kom morgen".', 'Zij zei, "Ik kom morgen".', 'Zij zei: Ik kom morgen.'], 'De punt hoort binnen de aanhalingstekens als de hele zin geciteerd wordt.'],
+  ],
+};
+
+export const leestekens: Gen = (niveau, rng) => {
+  const lijst = LEESTEKENS[Math.min(5, Math.max(1, niveau))];
+  const [ruw, goed, fout, uitleg] = kies(rng, lijst);
+  return keuzeVraag(rng, {
+    onderwerpId: 'taal.leestekens',
+    niveau,
+    context: `Zonder leestekens: ${ruw}`,
+    stam: 'Welke zin is goed geschreven?',
+    antwoord: goed,
+    afleiders: fout,
+    uitleg,
+  });
+};
+
+/** [spreekwoord, betekenis] */
+const SPREEKWOORDEN: Record<number, Array<[string, string]>> = {
+  1: [
+    ['De kat uit de boom kijken', 'eerst rustig afwachten'],
+    ['Een handje helpen', 'iemand even helpen'],
+    ['In de wolken zijn', 'heel erg blij zijn'],
+    ['Ergens geen zin in hebben', 'iets niet willen doen'],
+    ['Op je tenen lopen', 'meer doen dan je eigenlijk aankunt'],
+  ],
+  2: [
+    ['De koe bij de horens vatten', 'iets moeilijks meteen aanpakken'],
+    ['Een oogje in het zeil houden', 'in de gaten houden'],
+    ['Met de deur in huis vallen', 'meteen zeggen waar het om gaat'],
+    ['Uit je dak gaan', 'heel uitbundig blij zijn'],
+    ['Geen kind meer', 'oud genoeg om het zelf te doen'],
+  ],
+  3: [
+    ['Het is boter aan de galg gesmeerd', 'het heeft geen enkel nut'],
+    ['De kool en de geit sparen', 'niemand voor het hoofd willen stoten'],
+    ['Van een mug een olifant maken', 'iets kleins veel te groot maken'],
+    ['Iets onder de knie hebben', 'iets goed kunnen'],
+    ['Een gegeven paard niet in de bek kijken', 'niet klagen over iets wat je gratis krijgt'],
+  ],
+  4: [
+    ['Beter een vogel in de hand dan tien in de lucht', 'iets zekers is meer waard dan een grote belofte'],
+    ['De appel valt niet ver van de boom', 'kinderen lijken op hun ouders'],
+    ['Wie een kuil graaft voor een ander, valt er zelf in', 'wie een ander wil pakken, wordt er zelf slachtoffer van'],
+    ['Zijn hart luchten', 'vertellen wat je dwarszit'],
+    ['Een storm in een glas water', 'veel drukte om iets onbelangrijks'],
+  ],
+  5: [
+    ['De hand in eigen boezem steken', 'eerst naar je eigen aandeel in de fout kijken'],
+    ['Iemand het gras voor de voeten wegmaaien', 'iets doen voordat de ander de kans krijgt'],
+    ['Met twee maten meten', 'gelijke gevallen ongelijk behandelen'],
+    ['Zoden aan de dijk zetten', 'echt verschil maken'],
+    ['Water bij de wijn doen', 'toegeven, minder eisen'],
+  ],
+};
+
+export const figuurlijk: Gen = (niveau, rng) => {
+  const lijst = SPREEKWOORDEN[Math.min(5, Math.max(1, niveau))];
+  const [spreekwoord, betekenis] = kies(rng, lijst);
+  return keuzeVraag(rng, {
+    onderwerpId: 'taal.figuurlijk',
+    niveau,
+    stam: `Wat betekent "${spreekwoord}"?`,
+    antwoord: betekenis,
+    afleiders: kiesUniek(rng, lijst.filter((i) => i[0] !== spreekwoord), 3).map((i) => i[1]),
+    uitleg: `"${spreekwoord}" betekent: ${betekenis}. Je moet het niet letterlijk nemen.`,
+  });
+};
+
+export const TAAL_GENERATOREN: Record<string, Gen> = {
+  ..._TAAL_BASIS,
+  'taal.leestekens': leestekens,
+  'taal.figuurlijk': figuurlijk,
+};

@@ -97,7 +97,68 @@ export const engelsZinnen: Gen = (niveau, rng) => {
   });
 };
 
-export const ENGELS_GENERATOREN: Record<string, Gen> = {
+const _ENGELS_BASIS: Record<string, Gen> = {
   'engels.woorden': engelsWoorden,
   'engels.zinnen': engelsZinnen,
+};
+
+/** [hele werkwoord, verleden tijd, voltooid deelwoord, betekenis] */
+const WERKWOORDEN: Record<number, Array<[string, string, string, string]>> = {
+  1: [
+    ['go', 'went', 'gone', 'gaan'],
+    ['see', 'saw', 'seen', 'zien'],
+    ['eat', 'ate', 'eaten', 'eten'],
+    ['make', 'made', 'made', 'maken'],
+    ['take', 'took', 'taken', 'nemen'],
+  ],
+  2: [
+    ['buy', 'bought', 'bought', 'kopen'],
+    ['bring', 'brought', 'brought', 'brengen'],
+    ['think', 'thought', 'thought', 'denken'],
+    ['write', 'wrote', 'written', 'schrijven'],
+    ['drink', 'drank', 'drunk', 'drinken'],
+  ],
+  3: [
+    ['choose', 'chose', 'chosen', 'kiezen'],
+    ['break', 'broke', 'broken', 'breken'],
+    ['speak', 'spoke', 'spoken', 'spreken'],
+    ['forget', 'forgot', 'forgotten', 'vergeten'],
+    ['begin', 'began', 'begun', 'beginnen'],
+  ],
+  4: [
+    ['catch', 'caught', 'caught', 'vangen'],
+    ['teach', 'taught', 'taught', 'onderwijzen'],
+    ['lie', 'lay', 'lain', 'liggen'],
+    ['rise', 'rose', 'risen', 'stijgen'],
+    ['hide', 'hid', 'hidden', 'verbergen'],
+  ],
+  5: [
+    ['bear', 'bore', 'borne', 'dragen, verdragen'],
+    ['seek', 'sought', 'sought', 'zoeken'],
+    ['weave', 'wove', 'woven', 'weven'],
+    ['strike', 'struck', 'struck', 'slaan, treffen'],
+    ['bind', 'bound', 'bound', 'binden'],
+  ],
+};
+
+export const engelsWerkwoorden: Gen = (niveau, rng) => {
+  const lijst = WERKWOORDEN[Math.min(5, Math.max(1, niveau))];
+  const [heel, verleden, voltooid, betekenis] = kies(rng, lijst);
+  const anderen = kiesUniek(rng, lijst.filter((w) => w[0] !== heel), 3);
+  const vraagVerleden = rng() < 0.6;
+  return keuzeVraag(rng, {
+    onderwerpId: 'engels.werkwoorden',
+    niveau,
+    stam: vraagVerleden
+      ? `Wat is de verleden tijd van "${heel}" (${betekenis})?`
+      : `Wat is het voltooid deelwoord van "${heel}" (${betekenis})? I have ___`,
+    antwoord: vraagVerleden ? verleden : voltooid,
+    afleiders: anderen.map((w) => (vraagVerleden ? w[1] : w[2])),
+    uitleg: `${heel} — ${verleden} — ${voltooid}. Dit is een onregelmatig werkwoord, dus je moet de rijtjes uit je hoofd leren.`,
+  });
+};
+
+export const ENGELS_GENERATOREN: Record<string, Gen> = {
+  ..._ENGELS_BASIS,
+  'engels.werkwoorden': engelsWerkwoorden,
 };

@@ -76,23 +76,23 @@ minstens twee weken voor.
 - **Google Play Families-beleid**: vul de vragenlijst "app gericht op
   kinderen" in en verklaar dat er geen advertentie-SDK's in zitten.
 
-## 6. Verdienmodel — wat er nog gebouwd moet worden
+## 6. Verdienmodel
 
-Er zit nu **geen betaalonderdeel** in de app. De keuze die het beste past bij
-"goedkoper dan Squla":
+Het plan staat helemaal uitgewerkt in [`PRIJZEN.md`](PRIJZEN.md): gratis laag,
+€4,99 per maand of €39,99 per jaar, 14 dagen proberen, geen opzegtermijn.
 
-- Gratis: één vak volledig, plus een paar rondes per dag in de andere vakken.
-- Abonnement (voorstel €3,99 per maand of €34,99 per jaar) voor alle vakken,
-  onbeperkt, voor alle kinderen in het gezin op dat toestel.
+In de app zit de hele stroom al: plannen kiezen, proefperiode, opzeggen,
+hervatten en de toegangsregels. Wat nog moet gebeuren:
 
-Technisch: `expo-in-app-purchases` of RevenueCat, plus een grens in
-`src/core/engine/` die bepaalt wat gratis is. Houd er rekening mee dat Apple en
-Google 15% (klein bedrijf) tot 30% inhouden — dat is de belangrijkste reden dat
-€3,99 realistischer is dan €2,99.
-
-Belangrijk: zolang de app geen server heeft, kan een abonnement niet tussen
-toestellen gedeeld worden. Dat is een bewuste ruil (privacy en kosten tegen
-gemak) die je in de storebeschrijving eerlijk moet benoemen.
+1. **Producten aanmaken** in App Store Connect en de Play Console met de
+   product-ids uit `src/core/abonnement/plannen.ts`.
+2. **RevenueCat of `expo-in-app-purchases` aansluiten** in
+   `src/state/aankoop.ts`. Dat bestand heeft nu een implementatie die niets
+   afschrijft; de schermen hoeven niet mee te veranderen.
+3. **Een server voor het account** kiezen (Supabase of Firebase) en achter
+   `src/state/auth.ts` hangen, zodat een abonnement op meerdere toestellen
+   werkt. Zonder server blijft het abonnement aan één toestel gebonden — dat is
+   een keuze die je in de storebeschrijving eerlijk moet benoemen.
 
 ## 7. Volgorde die ik zou aanhouden
 

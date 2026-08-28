@@ -1,5 +1,6 @@
 import type { Groep } from '../types';
 import { startNiveau, vindOnderwerp, onderwerpenVoorGroep } from '../content/curriculum';
+import { GRATIS_VAK } from '../abonnement/toegang';
 import { nieuweBeheersing, naAntwoord, type Beheersing } from './beheersing';
 import {
   dagSleutel,
@@ -32,6 +33,8 @@ export interface DagTeller {
   goed: number;
   xp: number;
   minuten: number;
+  /** Vragen buiten het gratis vak; hierop rust de limiet van de gratis versie. */
+  buitenGratisVak: number;
 }
 
 export interface Profiel {
@@ -76,7 +79,7 @@ export function nieuwProfiel(naam: string, groep: Groep, avatar = AVATARS[0], nu
     badges: [],
     bezit: [avatar],
     dagdoel: 20,
-    vandaag: { datum: dagSleutel(new Date(nu)), vragen: 0, goed: 0, xp: 0, minuten: 0 },
+    vandaag: { datum: dagSleutel(new Date(nu)), vragen: 0, goed: 0, xp: 0, minuten: 0, buitenGratisVak: 0 },
     geschiedenis: [],
     ouderPincode: null,
     aangemaakt: nu,
@@ -118,11 +121,14 @@ export function verwerkRonde(profiel: Profiel, sessie: Sessie, nu = Date.now()):
   const vandaag: DagTeller =
     profiel.vandaag.datum === vandaagSleutel
       ? { ...profiel.vandaag }
-      : { datum: vandaagSleutel, vragen: 0, goed: 0, xp: 0, minuten: 0 };
+      : { datum: vandaagSleutel, vragen: 0, goed: 0, xp: 0, minuten: 0, buitenGratisVak: 0 };
   vandaag.vragen += uitkomst.aantal;
   vandaag.goed += uitkomst.goed;
   vandaag.xp += xp;
   vandaag.minuten += Math.round(uitkomst.duurMs / 60000);
+  if (vindOnderwerp(sessie.onderwerpId)?.vak !== GRATIS_VAK) {
+    vandaag.buitenGratisVak += uitkomst.aantal;
+  }
 
   const log: RondeLog = {
     onderwerpId: sessie.onderwerpId,

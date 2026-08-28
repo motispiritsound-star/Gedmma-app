@@ -501,7 +501,7 @@ export const verhaaltjes: Gen = (niveau, rng) => {
   });
 };
 
-export const REKENEN_GENERATOREN: Record<string, Gen> = {
+const _REKENEN_BASIS: Record<string, Gen> = {
   'rekenen.optellen': optellen,
   'rekenen.aftrekken': aftrekken,
   'rekenen.tafels': tafels,
@@ -512,4 +512,205 @@ export const REKENEN_GENERATOREN: Record<string, Gen> = {
   'rekenen.breuken': breuken,
   'rekenen.procenten': procenten,
   'rekenen.verhaaltjes': verhaaltjes,
+};
+
+const PLAATSWAARDEN: Array<[string, number]> = [
+  ['eenheden', 1],
+  ['tientallen', 10],
+  ['honderdtallen', 100],
+  ['duizendtallen', 1000],
+];
+
+export const getalbegrip: Gen = (niveau, rng) => {
+  const id = 'rekenen.getalbegrip';
+  if (niveau <= 1) {
+    const a = heelGetal(rng, 2, 19);
+    const b = heelGetal(rng, 2, 19);
+    if (a === b) return getalbegrip(niveau, rng);
+    return keuzeVraag(rng, {
+      onderwerpId: id,
+      niveau,
+      stam: `Welk getal is het grootst: ${a} of ${b}?`,
+      antwoord: String(Math.max(a, b)),
+      afleiders: [String(Math.min(a, b)), 'Ze zijn even groot'],
+      uitleg: `${Math.max(a, b)} ligt verder op de getallenlijn dan ${Math.min(a, b)}, dus ${Math.max(a, b)} is groter.`,
+    });
+  }
+  if (niveau === 2) {
+    const getal = heelGetal(rng, 100, 999);
+    const [naam, waarde] = kies(rng, PLAATSWAARDEN.slice(0, 3));
+    const cijfer = Math.floor(getal / waarde) % 10;
+    return keuzeVraag(rng, {
+      onderwerpId: id,
+      niveau,
+      stam: `Hoeveel ${naam} zitten er in ${getal}?`,
+      antwoord: String(cijfer),
+      afleiders: getalAfleiders(rng, cijfer, 4),
+      uitleg: `Splits ${getal} in ${Math.floor(getal / 100)} honderdtallen, ${Math.floor(getal / 10) % 10} tientallen en ${getal % 10} eenheden. Dus ${cijfer} ${naam}.`,
+    });
+  }
+  if (niveau === 3) {
+    const getal = heelGetal(rng, 120, 9800);
+    const naarTiental = kies(rng, [10, 100]);
+    const afgerond = Math.round(getal / naarTiental) * naarTiental;
+    return invulVraag({
+      onderwerpId: id,
+      niveau,
+      stam: `Rond ${getal} af op ${naarTiental === 10 ? 'tientallen' : 'honderdtallen'}.`,
+      antwoord: String(afgerond),
+      uitleg: `Kijk naar het cijfer erachter: is dat 5 of meer, dan naar boven. ${getal} wordt ${afgerond}.`,
+    });
+  }
+  if (niveau === 4) {
+    const getal = heelGetal(rng, 10000, 999999);
+    const [naam, waarde] = kies(rng, PLAATSWAARDEN);
+    const cijfer = Math.floor(getal / waarde) % 10;
+    return invulVraag({
+      onderwerpId: id,
+      niveau,
+      stam: `Welk cijfer staat in ${getal} op de plaats van de ${naam}?`,
+      antwoord: String(cijfer),
+      uitleg: `Tel van rechts naar links: eenheden, tientallen, honderdtallen, duizendtallen. Op de plaats van de ${naam} staat een ${cijfer}.`,
+    });
+  }
+  const a = heelGetal(rng, -20, -1);
+  const stap = heelGetal(rng, 3, 25);
+  return invulVraag({
+    onderwerpId: id,
+    niveau,
+    stam: `Het is ${a} graden. Het wordt ${stap} graden warmer. Hoeveel graden is het dan?`,
+    antwoord: String(a + stap),
+    uitleg: `Vanaf ${a} tel je ${stap} omhoog. Je gaat via 0 en komt uit op ${a + stap}.`,
+  });
+};
+
+export const oppervlakte: Gen = (niveau, rng) => {
+  const id = 'rekenen.oppervlakte';
+  const lengte = heelGetal(rng, 3, 18);
+  const breedte = heelGetal(rng, 2, 14);
+  if (niveau <= 1) {
+    return invulVraag({
+      onderwerpId: id,
+      niveau,
+      stam: `Een rechthoek is ${lengte} cm lang en ${breedte} cm breed. Hoe groot is de omtrek?`,
+      antwoord: String(2 * (lengte + breedte)),
+      eenheid: 'cm',
+      uitleg: `De omtrek is alle zijden bij elkaar: ${lengte} + ${breedte} + ${lengte} + ${breedte} = ${2 * (lengte + breedte)} cm.`,
+    });
+  }
+  if (niveau === 2) {
+    return invulVraag({
+      onderwerpId: id,
+      niveau,
+      stam: `Een rechthoek is ${lengte} cm lang en ${breedte} cm breed. Hoe groot is de oppervlakte?`,
+      antwoord: String(lengte * breedte),
+      eenheid: 'cm²',
+      uitleg: `Oppervlakte is lengte × breedte: ${lengte} × ${breedte} = ${lengte * breedte} cm².`,
+    });
+  }
+  if (niveau === 3) {
+    const zijde = heelGetal(rng, 4, 16);
+    return invulVraag({
+      onderwerpId: id,
+      niveau,
+      stam: `Een vierkant heeft een oppervlakte van ${zijde * zijde} cm². Hoe lang is één zijde?`,
+      antwoord: String(zijde),
+      eenheid: 'cm',
+      uitleg: `Bij een vierkant zijn alle zijden gelijk. Welk getal maal zichzelf is ${zijde * zijde}? Dat is ${zijde}.`,
+    });
+  }
+  if (niveau === 4) {
+    const basis = heelGetal(rng, 4, 20);
+    const hoogte = heelGetal(rng, 2, 16) * 2;
+    return invulVraag({
+      onderwerpId: id,
+      niveau,
+      stam: `Een driehoek heeft een basis van ${basis} cm en een hoogte van ${hoogte} cm. Hoe groot is de oppervlakte?`,
+      antwoord: String((basis * hoogte) / 2),
+      eenheid: 'cm²',
+      uitleg: `Een driehoek is een halve rechthoek: (${basis} × ${hoogte}) : 2 = ${(basis * hoogte) / 2} cm².`,
+    });
+  }
+  const h = heelGetal(rng, 2, 12);
+  return invulVraag({
+    onderwerpId: id,
+    niveau,
+    stam: `Een doos is ${lengte} cm lang, ${breedte} cm breed en ${h} cm hoog. Hoeveel kubieke centimeter past erin?`,
+    antwoord: String(lengte * breedte * h),
+    eenheid: 'cm³',
+    uitleg: `Inhoud is lengte × breedte × hoogte: ${lengte} × ${breedte} × ${h} = ${lengte * breedte * h} cm³.`,
+  });
+};
+
+export const verhoudingen: Gen = (niveau, rng) => {
+  const id = 'rekenen.verhoudingen';
+  const naam = kies(rng, NAMEN);
+  if (niveau <= 1) {
+    const perStuk = heelGetal(rng, 2, 9);
+    const stuks = heelGetal(rng, 3, 9);
+    return invulVraag({
+      onderwerpId: id,
+      niveau,
+      stam: `3 appels kosten €${perStuk * 3}. Wat kosten ${stuks} appels?`,
+      antwoord: String(perStuk * stuks),
+      eenheid: '€',
+      uitleg: `Eerst één appel: €${perStuk * 3} : 3 = €${perStuk}. Dan × ${stuks} = €${perStuk * stuks}.`,
+    });
+  }
+  if (niveau === 2) {
+    const personen = kies(rng, [4, 6, 8]);
+    const nieuwe = personen * kies(rng, [2, 3]);
+    const hoeveelheid = heelGetal(rng, 2, 9) * 50;
+    return invulVraag({
+      onderwerpId: id,
+      niveau,
+      stam: `Een recept voor ${personen} personen vraagt ${hoeveelheid} gram bloem. Hoeveel heb je nodig voor ${nieuwe} personen?`,
+      antwoord: String((hoeveelheid / personen) * nieuwe),
+      eenheid: 'g',
+      uitleg: `Per persoon is dat ${hoeveelheid} : ${personen} = ${hoeveelheid / personen} gram. Keer ${nieuwe} = ${(hoeveelheid / personen) * nieuwe} gram.`,
+    });
+  }
+  if (niveau === 3) {
+    const schaal = kies(rng, [100, 200, 500, 1000]);
+    const cm = heelGetal(rng, 2, 14);
+    const meters = (cm * schaal) / 100;
+    return invulVraag({
+      onderwerpId: id,
+      niveau,
+      stam: `Op een kaart met schaal 1 : ${schaal} is een pad ${cm} cm lang. Hoeveel meter is dat in het echt?`,
+      antwoord: String(meters),
+      eenheid: 'm',
+      uitleg: `1 cm op de kaart is ${schaal} cm echt. ${cm} × ${schaal} = ${cm * schaal} cm, en dat is ${meters} meter.`,
+    });
+  }
+  if (niveau === 4) {
+    const km = heelGetal(rng, 3, 24);
+    const minuten = kies(rng, [10, 12, 15, 20, 30]);
+    const perUur = Math.round((km / minuten) * 60);
+    return invulVraag({
+      onderwerpId: id,
+      niveau,
+      stam: `${naam} fietst ${km} km in ${minuten} minuten. Hoeveel kilometer per uur is dat?`,
+      antwoord: String(perUur),
+      eenheid: 'km/u',
+      uitleg: `In een uur passen ${60 / minuten === Math.round(60 / minuten) ? `${60 / minuten} keer` : `${(60 / minuten).toFixed(1)} keer`} ${minuten} minuten. ${km} × ${(60 / minuten).toFixed(2)} ≈ ${perUur} km per uur.`,
+    });
+  }
+  const deelA = heelGetal(rng, 2, 6);
+  const deelB = heelGetal(rng, 2, 6);
+  const totaal = (deelA + deelB) * heelGetal(rng, 3, 12);
+  return invulVraag({
+    onderwerpId: id,
+    niveau,
+    stam: `${totaal} knikkers worden verdeeld in de verhouding ${deelA} : ${deelB}. Hoeveel krijgt de eerste?`,
+    antwoord: String((totaal / (deelA + deelB)) * deelA),
+    uitleg: `Samen zijn dat ${deelA + deelB} delen. Eén deel is ${totaal} : ${deelA + deelB} = ${totaal / (deelA + deelB)}. De eerste krijgt ${deelA} delen = ${(totaal / (deelA + deelB)) * deelA}.`,
+  });
+};
+
+export const REKENEN_GENERATOREN: Record<string, Gen> = {
+  ..._REKENEN_BASIS,
+  'rekenen.getalbegrip': getalbegrip,
+  'rekenen.oppervlakte': oppervlakte,
+  'rekenen.verhoudingen': verhoudingen,
 };
