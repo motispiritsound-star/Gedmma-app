@@ -30,31 +30,121 @@
  */
 export type AgreementDocument = 'TERMS' | 'PRIVACY';
 
-export interface LegalDocument {
-  key: AgreementDocument;
+/**
+ * Everything published on the legal side of the site. Two of these are agreed
+ * to at sign-up; the other two are simply published, because a cookie
+ * statement nobody agreed to is still a statement that has to be true.
+ */
+export type LegalPageKey = AgreementDocument | 'DISCLAIMER' | 'COOKIES';
+
+export interface LegalPage {
+  key: LegalPageKey;
   /**
    * ISO date the wording last changed. A date is a better version than a
    * number here: it answers "which text did they see" without a changelog.
    */
   version: string;
-  /** Path on the public website, relative to the site root. */
-  path: string;
+  /**
+   * Where the page lives, per language. The Dutch slugs are the ones people
+   * will type and the ones a Dutch reader expects; the English pages are
+   * translations of the same text, and each says which one prevails.
+   */
+  paths: Record<'nl' | 'en', string>;
 }
 
-export const LEGAL_DOCUMENTS: readonly LegalDocument[] = [
-  { key: 'TERMS', version: '2026-08-28', path: '/voorwaarden/' },
-  { key: 'PRIVACY', version: '2026-08-28', path: '/privacy/' },
+export const LEGAL_PAGES: readonly LegalPage[] = [
+  {
+    key: 'TERMS',
+    version: '2026-08-28',
+    paths: { nl: '/nl/voorwaarden/', en: '/en/terms/' },
+  },
+  {
+    key: 'PRIVACY',
+    version: '2026-08-28',
+    paths: { nl: '/nl/privacy/', en: '/en/privacy/' },
+  },
+  {
+    key: 'DISCLAIMER',
+    version: '2026-08-28',
+    paths: { nl: '/nl/disclaimer/', en: '/en/disclaimer/' },
+  },
+  {
+    key: 'COOKIES',
+    version: '2026-08-28',
+    paths: { nl: '/nl/cookies/', en: '/en/cookies/' },
+  },
 ];
 
-export const DOCUMENT_BY_KEY: ReadonlyMap<AgreementDocument, LegalDocument> = new Map(
-  LEGAL_DOCUMENTS.map((document) => [document.key, document]),
+export const PAGE_BY_KEY: ReadonlyMap<LegalPageKey, LegalPage> = new Map(
+  LEGAL_PAGES.map((page) => [page.key, page]),
 );
 
-export function documentVersion(key: AgreementDocument): string {
-  const document = DOCUMENT_BY_KEY.get(key);
-  if (!document) throw new Error(`Unknown legal document: ${key}`);
-  return document.version;
+/** The subset a new account has to agree to before it exists. */
+export const LEGAL_DOCUMENTS: readonly LegalPage[] = LEGAL_PAGES.filter(
+  (page): page is LegalPage & { key: AgreementDocument } =>
+    page.key === 'TERMS' || page.key === 'PRIVACY',
+);
+
+export function legalPage(key: LegalPageKey): LegalPage {
+  const page = PAGE_BY_KEY.get(key);
+  if (!page) throw new Error(`Unknown legal page: ${key}`);
+  return page;
 }
+
+export function documentVersion(key: AgreementDocument): string {
+  return legalPage(key).version;
+}
+
+export function legalPath(key: LegalPageKey, locale: 'nl' | 'en'): string {
+  return legalPage(key).paths[locale];
+}
+
+/**
+ * Who is responsible for the processing -- the "verwerkingsverantwoordelijke"
+ * a privacy statement has to name, with an address a letter can reach and a
+ * way to contact them about their data.
+ *
+ * These are null because there is no registered company yet. Nothing here is
+ * invented: a made-up KvK number or address on a published privacy statement
+ * is worse than an empty one, because it looks answered. The site renders an
+ * explicit list of what is still missing, and that list disappears on its own
+ * once these are filled in.
+ */
+export interface Operator {
+  legalName: string | null;
+  kvk: string | null;
+  vatId: string | null;
+  address: string | null;
+  email: string | null;
+  /** Only required once a DPO is appointed, which a platform this size is not. */
+  dpoEmail: string | null;
+}
+
+export const OPERATOR: Operator = {
+  legalName: null,
+  kvk: null,
+  vatId: null,
+  address: null,
+  email: null,
+  dpoEmail: null,
+};
+
+/** Which operator details still have to be filled in before publishing. */
+export function missingOperatorFields(operator: Operator = OPERATOR): (keyof Operator)[] {
+  return (['legalName', 'kvk', 'address', 'email'] as const).filter(
+    (field) => !operator[field],
+  );
+}
+
+/**
+ * The Dutch supervisory authority, which every privacy statement must point
+ * people at: Article 77 gives everyone the right to complain to one, and a
+ * statement that does not say where is missing something people actually use.
+ */
+export const SUPERVISORY_AUTHORITY = {
+  name: 'Autoriteit Persoonsgegevens',
+  url: 'https://autoriteitpersoonsgegevens.nl/nl/zelf-doen/privacyrechten/klacht-indienen-bij-de-ap',
+} as const;
 
 /** What a new account must currently agree to, as {TERMS: version, ...}. */
 export const CURRENT_AGREEMENTS: Readonly<Record<AgreementDocument, string>> = Object.freeze(

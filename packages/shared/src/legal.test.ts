@@ -4,28 +4,44 @@ import {
   CURRENT_AGREEMENTS,
   DATA_REQUEST_DEADLINE_DAYS,
   LEGAL_DOCUMENTS,
+  LEGAL_PAGES,
   MINIMUM_AGE,
+  OPERATOR,
   RETENTION,
   RETENTION_BY_KEY,
+  SUPERVISORY_AUTHORITY,
   documentVersion,
+  legalPage,
+  legalPath,
+  missingOperatorFields,
   retentionCutoff,
   retentionDays,
 } from './legal.js';
 import { SUPPORTED_LOCALES } from './locales.js';
 
 describe('legal documents', () => {
-  it('versions every document with a date, so the record says which text', () => {
-    for (const document of LEGAL_DOCUMENTS) {
+  it('versions every page with a date, so the record says which text', () => {
+    for (const document of LEGAL_PAGES) {
       expect(document.version, document.key).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       // A version that is not a real date would sort and compare wrongly.
       expect(Number.isNaN(Date.parse(document.version)), document.key).toBe(false);
     }
   });
 
-  it('points every document at a page that exists on the site', () => {
-    for (const document of LEGAL_DOCUMENTS) {
-      expect(document.path, document.key).toMatch(/^\/[a-z-]+\/$/);
+  it('points every page at a locale-prefixed path on the site', () => {
+    for (const page of LEGAL_PAGES) {
+      for (const locale of SUPPORTED_LOCALES) {
+        expect(page.paths[locale], `${page.key}.${locale}`).toMatch(
+          new RegExp(`^/${locale}/[a-z-]+/$`),
+        );
+        expect(legalPath(page.key, locale)).toBe(page.paths[locale]);
+      }
     }
+  });
+
+  it('asks people to agree to the terms and the privacy statement, not to a cookie page', () => {
+    expect(LEGAL_DOCUMENTS.map((page) => page.key).sort()).toEqual(['PRIVACY', 'TERMS']);
+    expect(LEGAL_PAGES.length).toBeGreaterThan(LEGAL_DOCUMENTS.length);
   });
 
   it('agrees with itself about what is current', () => {
@@ -35,9 +51,9 @@ describe('legal documents', () => {
     }
   });
 
-  it('refuses a document nobody wrote', () => {
+  it('refuses a page nobody wrote', () => {
     // @ts-expect-error -- the point is what happens when a caller ignores the type.
-    expect(() => documentVersion('COOKIES')).toThrow();
+    expect(() => legalPage('REFUND_POLICY')).toThrow();
   });
 });
 
@@ -91,5 +107,28 @@ describe('the rest of the legal surface', () => {
   it('uses a placeholder nobody could mistake for real data', () => {
     expect(ANONYMISED.length).toBeGreaterThan(0);
     expect(ANONYMISED).not.toMatch(/^\s*$/);
+  });
+});
+
+describe('who is responsible', () => {
+  it('invents nothing it does not know', () => {
+    // A made-up KvK number or address on a published privacy statement is
+    // worse than an empty one, because it reads as answered.
+    for (const field of missingOperatorFields()) {
+      expect(OPERATOR[field], field).toBeNull();
+    }
+  });
+
+  it('names what still has to be filled in before this is published', () => {
+    // Fails, correctly, on the day someone fills them in and forgets to
+    // update whatever else assumes they are missing.
+    expect(missingOperatorFields()).toEqual(['legalName', 'kvk', 'address', 'email']);
+    expect(missingOperatorFields({ ...OPERATOR, legalName: 'Buurklus B.V.' })).not.toContain(
+      'legalName',
+    );
+  });
+
+  it('points people at the authority they can complain to', () => {
+    expect(SUPERVISORY_AUTHORITY.url).toMatch(/^https:\/\/autoriteitpersoonsgegevens\.nl\//);
   });
 });

@@ -21,6 +21,8 @@ packages/
 docs/
   PRODUCT.md       The marketplace model and how the Dutch market shaped it
   ARCHITECTURE.md  Data model, API surface, and the decisions behind them
+  PRIVACY.md       The processing register, and what the AVG needs that code
+                   cannot provide
 ```
 
 ## Running it
@@ -101,9 +103,36 @@ while nothing buys an earlier look, no job is held back from anybody.
 
 See [docs/PRODUCT.md](docs/PRODUCT.md) for why it is built this way.
 
+## Privacy and the AVG
+
+The rights side of the regulation is implemented rather than promised: an
+explicit agreement at sign-up recorded with its version, a data export, an
+erasure that anonymises instead of cascading a DELETE through seven years of
+invoices, and a retention sweep that runs nightly.
+
+One list drives all of it. `packages/shared/src/legal.ts` holds the document
+versions, the retention periods with the reason for each, and the minimum age;
+the published pages, the app and the sweep all read from it, so the privacy
+statement cannot promise a deletion the code does not perform.
+
+```bash
+npm run retention -w @buurklus/api    # the nightly sweep
+```
+
+Four documents are published in Dutch and English — terms of use, privacy
+statement, disclaimer, cookie statement — generated from
+`apps/web/src/legal/`. They are honest about what is not finished: there is no
+registered company yet, so every page carries a visible box naming exactly which
+details are missing. It disappears on its own once `OPERATOR` is filled in.
+
+[docs/PRIVACY.md](docs/PRIVACY.md) holds the Article 30 processing register and
+the list of things no amount of code will close — a company registration,
+processing agreements, a breach procedure, and a jurist reading the documents.
+
 ## Before going live
 
 This is a working foundation, not a launched business. The commercial and legal
 groundwork a Dutch marketplace needs is listed at the end of
-[docs/PRODUCT.md](docs/PRODUCT.md) — company registration, VAT, the GDPR
-paperwork, and the payment provider contract.
+[docs/PRODUCT.md](docs/PRODUCT.md) and, for everything privacy-related, in
+[docs/PRIVACY.md](docs/PRIVACY.md) — company registration, VAT, the processing
+agreements, and the payment provider contract.

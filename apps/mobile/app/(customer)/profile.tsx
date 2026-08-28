@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
 import { Ionicons } from '@expo/vector-icons';
-import { formatDutchPhone } from '@buurklus/shared';
+import { formatDutchPhone, legalPath } from '@buurklus/shared';
 import { Card, Divider, Txt } from '@/components/ui';
 import { SettingsRow } from '@/components/settings-row';
 import { useSession } from '@/store/session';
@@ -93,7 +93,7 @@ export default function Profile() {
           <SettingsRow
             icon="document-outline"
             label={t('profile.terms')}
-            onPress={() => void Linking.openURL(`${SITE_URL}/voorwaarden/`)}
+            onPress={() => void Linking.openURL(`${SITE_URL}${legalPath('TERMS', locale)}`)}
           />
           <Divider />
           <SettingsRow

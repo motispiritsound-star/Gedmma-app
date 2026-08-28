@@ -3,7 +3,7 @@ import { Alert, Linking, ScrollView, StyleSheet, Switch, View } from 'react-nati
 import { Stack, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { LEGAL_DOCUMENTS } from '@buurklus/shared';
+import { LEGAL_PAGES, legalPath } from '@buurklus/shared';
 import { Button, Card, Divider, Loader, Txt } from '@/components/ui';
 import { SettingsRow } from '@/components/settings-row';
 import { useApi, usePublicApi } from '@/hooks/use-api';
@@ -12,6 +12,13 @@ import { ApiError } from '@/api/client';
 import { colors, spacing } from '@/theme';
 
 const SITE_URL = 'https://buurklus.nl';
+
+const LEGAL_PAGE_ICONS = {
+  TERMS: 'document-text-outline',
+  PRIVACY: 'lock-closed-outline',
+  DISCLAIMER: 'alert-circle-outline',
+  COOKIES: 'browsers-outline',
+} as const;
 
 interface PolicyResponse {
   retention: { key: string; days: number; reason: string }[];
@@ -135,14 +142,14 @@ export default function PrivacySettings() {
             {t('privacy.documentsTitle')}
           </Txt>
           <View style={styles.groupBody}>
-            {LEGAL_DOCUMENTS.map((document, index) => (
+            {LEGAL_PAGES.map((document, index) => (
               <React.Fragment key={document.key}>
                 {index > 0 ? <Divider /> : null}
                 <SettingsRow
-                  icon={document.key === 'TERMS' ? 'document-text-outline' : 'lock-closed-outline'}
-                  label={t(document.key === 'TERMS' ? 'profile.terms' : 'profile.privacy')}
+                  icon={LEGAL_PAGE_ICONS[document.key]}
+                  label={t(`privacy.pages.${document.key}`)}
                   value={document.version}
-                  onPress={() => void Linking.openURL(`${SITE_URL}${document.path}`)}
+                  onPress={() => void Linking.openURL(`${SITE_URL}${legalPath(document.key, locale)}`)}
                 />
               </React.Fragment>
             ))}

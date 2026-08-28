@@ -385,6 +385,60 @@ img, svg { max-width: 100%; display: block; }
 .plan--later { background: var(--green-50); border-color: var(--green-100); }
 .plan--later p { margin-block-start: 0.5rem; }
 
+/* --- Legal pages ---------------------------------------------------------- */
+/* A legal document is read, not scanned, so the measure is narrower than the
+   marketing pages and the type is set for continuous reading. */
+.wrap--narrow { width: min(46rem, 100% - 2.5rem); }
+
+.legal { padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+.legal__head { display: grid; gap: 0.75rem; margin-block-end: 2.5rem; }
+.legal__head h1 { margin: 0; }
+.legal__meta { font-size: 0.85rem; color: var(--ink-300); margin: 0; }
+.legalAge { font-size: 0.9rem; }
+
+.legalSection { margin-block-end: 2.5rem; }
+.legalSection h2 {
+  font-size: 1.25rem;
+  margin-block: 0 0.75rem;
+  padding-block-start: 1.5rem;
+  border-block-start: 1px solid var(--ink-100);
+}
+.legalSection p { margin-block: 0 0.9rem; line-height: 1.7; color: var(--ink-700); }
+.legalSection a { color: var(--green-700); }
+
+.legalList { margin-block: 0 1rem; padding-inline-start: 1.25rem; display: grid; gap: 0.5rem; }
+.legalList li { line-height: 1.6; color: var(--ink-700); }
+
+/* Wide tables scroll inside their own box; the page body never moves sideways. */
+.tableWrap { overflow-x: auto; margin-block-end: 1rem; }
+.legalTable { border-collapse: collapse; width: 100%; min-width: 30rem; font-size: 0.92rem; }
+.legalTable th, .legalTable td {
+  text-align: start;
+  vertical-align: top;
+  padding: 0.65rem 0.75rem;
+  border-block-end: 1px solid var(--ink-100);
+}
+.legalTable th { background: var(--ink-50); font-weight: 600; color: var(--ink-900); }
+.legalTable td { color: var(--ink-700); line-height: 1.55; }
+
+.notice {
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.25rem;
+  margin-block-end: 1rem;
+  border: 1px solid var(--ink-100);
+  background: var(--ink-50);
+}
+/* Deliberately loud: it marks a document that is not finished, and quiet
+   styling would let it be published as though it were. */
+.notice--warn { background: var(--saffron-100); border-color: var(--saffron-500); }
+.notice h3 { margin-block: 0 0.4rem; font-size: 1rem; }
+.notice p { margin-block: 0 0.6rem; }
+
+.legal__authority { margin-block: 0 1rem; }
+.legal__authority a { color: var(--green-700); }
+.legal__others { padding-block-start: 1.5rem; border-block-start: 1px solid var(--ink-100); }
+.legal__others h2 { font-size: 1rem; margin-block: 0 0.75rem; }
+
 /* --- FAQ ------------------------------------------------------------------ */
 .faq { display: grid; gap: 0.75rem; max-width: 52rem; }
 .faq details {
@@ -459,7 +513,10 @@ img, svg { max-width: 100%; display: block; }
 @media (pointer: coarse) {
   .nav__links a,
   .footer a,
-  .footer__bottom a {
+  .footer__bottom a,
+  .legalSection a,
+  .legal__others a,
+  .legal__authority a {
     display: inline-flex;
     align-items: center;
     min-block-size: 44px;

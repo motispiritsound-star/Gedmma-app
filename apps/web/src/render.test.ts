@@ -3,29 +3,47 @@ import {
   AVAILABLE_PLANS,
   CITIES,
   DEFAULT_PLAN,
+  LEGAL_PAGES,
+  MINIMUM_AGE,
   PLANS,
   PLATFORM_IS_FREE,
   PRICING_NOTICE_DAYS,
+  RETENTION,
   ROOT_CATEGORIES,
   SUPPORTED_LOCALES,
   applyVat,
   eurosToCents,
+  legalPath,
   localize,
+  missingOperatorFields,
 } from '@buurklus/shared';
 import { COPY } from './content.js';
 import {
   esc,
   renderHome,
+  renderLegal,
   renderPro,
   renderRootRedirect,
   renderSitemap,
   renderStyles,
 } from './render.js';
 
-const pages = SUPPORTED_LOCALES.flatMap((locale) => [
-  { locale, name: `${locale} home`, html: renderHome(locale) },
-  { locale, name: `${locale} pro`, html: renderPro(locale) },
-]);
+const legalPages = SUPPORTED_LOCALES.flatMap((locale) =>
+  LEGAL_PAGES.map((document) => ({
+    locale,
+    key: document.key,
+    name: `${locale} ${document.key}`,
+    html: renderLegal(document.key, locale),
+  })),
+);
+
+const pages = [
+  ...SUPPORTED_LOCALES.flatMap((locale) => [
+    { locale, name: `${locale} home`, html: renderHome(locale) },
+    { locale, name: `${locale} pro`, html: renderPro(locale) },
+  ]),
+  ...legalPages.map(({ locale, name, html }) => ({ locale, name, html })),
+];
 
 describe('every page', () => {
   it('declares its language', () => {
@@ -189,10 +207,18 @@ describe('privacy of the served pages', () => {
   // without someone deciding to weaken this assertion on purpose.
   const ALLOWED_EXTERNAL_HOSTS: string[] = [];
 
-  const hostsIn = (html: string) =>
-    [...html.matchAll(/(?:href|src|action)="(https?:)?\/\/([^/"]+)/g)].flatMap(
-      (match) => match[2] ?? [],
-    );
+  /**
+   * Hosts the browser will contact on its own, before the reader does
+   * anything: script and image sources, form targets, and <link> elements.
+   * A plain <a href> is not one of these -- the privacy statement links to
+   * the supervisory authority on purpose, and following it is the reader's
+   * decision, not a request the page makes for them.
+   */
+  const hostsIn = (html: string) => {
+    const fromAttributes = [...html.matchAll(/(?:src|action)="(https?:)?\/\/([^/"]+)/g)];
+    const fromLinkTags = [...html.matchAll(/<link[^>]+href="(https?:)?\/\/([^/"]+)/g)];
+    return [...fromAttributes, ...fromLinkTags].flatMap((match) => match[2] ?? []);
+  };
 
   it('contacts no third party from any page', () => {
     for (const page of [...pages, { name: 'index', html: renderRootRedirect() }]) {
@@ -209,5 +235,123 @@ describe('privacy of the served pages', () => {
     expect(css).toContain('/fonts/inter-latin.woff2');
     expect(css).not.toContain('fonts.googleapis.com');
     expect(css).not.toContain('fonts.gstatic.com');
+  });
+});
+
+describe('the legal pages', () => {
+  it('publishes every document in every language', () => {
+    expect(legalPages).toHaveLength(LEGAL_PAGES.length * SUPPORTED_LOCALES.length);
+    for (const page of legalPages) {
+      expect(page.html, page.name).toContain('<h1>');
+      expect(page.html.length, page.name).toBeGreaterThan(3000);
+    }
+  });
+
+  it('translates section for section, so neither language is missing a clause', () => {
+    // A term that exists in Dutch and not in English is not a translation,
+    // it is a different contract for English-speaking users.
+    for (const document of LEGAL_PAGES) {
+      const counts = SUPPORTED_LOCALES.map(
+        (locale) => renderLegal(document.key, locale).split('<h2>').length,
+      );
+      expect(new Set(counts).size, document.key).toBe(1);
+    }
+  });
+
+  it('says which language version prevails', () => {
+    for (const page of legalPages) {
+      expect(page.html, page.name).toMatch(/Nederlandse|Dutch text prevails/);
+    }
+  });
+
+  it('states the version of the document on the page itself', () => {
+    for (const document of LEGAL_PAGES) {
+      for (const locale of SUPPORTED_LOCALES) {
+        expect(renderLegal(document.key, locale), `${document.key} ${locale}`).toContain(
+          `datetime="${document.version}"`,
+        );
+      }
+    }
+  });
+
+  it('generates the retention table from the code that does the deleting', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderLegal('PRIVACY', locale);
+      for (const rule of RETENTION) {
+        // The page cannot promise a period the sweep does not enforce,
+        // because both read the same list.
+        expect(html, `${locale} ${rule.key}`).toContain(esc(rule.reason[locale]));
+      }
+    }
+  });
+
+  it('admits what is still missing rather than printing a blank', () => {
+    // There is no registered company yet. A privacy statement with an empty
+    // controller reads as answered; this one says out loud that it is not.
+    expect(missingOperatorFields().length).toBeGreaterThan(0);
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderLegal('PRIVACY', locale);
+      expect(html, locale).toContain('notice--warn');
+      for (const field of missingOperatorFields()) {
+        expect(html, `${locale} ${field}`).toMatch(/KvK|Chamber of Commerce/);
+      }
+    }
+  });
+
+  it('names one minimum age, taken from the constant', () => {
+    for (const key of ['TERMS', 'PRIVACY'] as const) {
+      for (const locale of SUPPORTED_LOCALES) {
+        expect(renderLegal(key, locale), `${key} ${locale}`).toContain(String(MINIMUM_AGE));
+      }
+    }
+  });
+
+  it('points at the supervisory authority people can complain to', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      expect(renderLegal('PRIVACY', locale), locale).toContain('autoriteitpersoonsgegevens.nl');
+    }
+  });
+
+  it('links every document from every other one, and from the footer', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const home = renderHome(locale);
+      for (const document of LEGAL_PAGES) {
+        const path = legalPath(document.key, locale);
+        expect(home, `footer ${locale} ${document.key}`).toContain(`href="${path}"`);
+        for (const other of LEGAL_PAGES.filter((row) => row.key !== document.key)) {
+          expect(
+            renderLegal(other.key, locale),
+            `${other.key} -> ${document.key}`,
+          ).toContain(`href="${path}"`);
+        }
+      }
+    }
+  });
+
+  it('lists every legal page in the sitemap', () => {
+    const sitemap = renderSitemap();
+    // The namespace is plural; a crawler reading the singular indexes nothing.
+    expect(sitemap).toContain('http://www.sitemaps.org/schemas/sitemap/0.9');
+    for (const locale of SUPPORTED_LOCALES) {
+      for (const document of LEGAL_PAGES) {
+        expect(sitemap, `${locale} ${document.key}`).toContain(legalPath(document.key, locale));
+      }
+    }
+  });
+
+  it('says the platform is free and that notice comes before that changes', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const terms = renderLegal('TERMS', locale);
+      expect(terms, locale).toContain(String(PRICING_NOTICE_DAYS));
+    }
+  });
+
+  it('does not claim a cookie banner it does not show', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const cookies = renderLegal('COOKIES', locale);
+      expect(cookies, locale).toMatch(/geen toestemming|no consent/);
+      // And the page itself sets nothing that would need one.
+      expect(cookies, locale).not.toContain('googletagmanager');
+    }
   });
 });

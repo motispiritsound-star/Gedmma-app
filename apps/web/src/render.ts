@@ -1,6 +1,15 @@
 import {
   CITIES,
   DEFAULT_PLAN,
+  LEGAL_PAGES,
+  MINIMUM_AGE,
+  OPERATOR,
+  RETENTION,
+  SUPERVISORY_AUTHORITY,
+  legalPage,
+  legalPath,
+  missingOperatorFields,
+  type LegalPageKey,
   PLANS,
   PLATFORM_IS_FREE,
   PRICING_NOTICE_DAYS,
@@ -16,6 +25,9 @@ import {
   type PlanSeed,
 } from '@buurklus/shared';
 import { COPY, type SiteCopy } from './content.js';
+import { CHROME_NL, LEGAL_NL } from './legal/nl.js';
+import { CHROME_EN, LEGAL_EN } from './legal/en.js';
+import type { LegalChrome, LegalCopy, LegalDocument, LegalSection } from './legal/types.js';
 import { icon, solidIcon } from './icons.js';
 import { STYLES } from './styles.js';
 
@@ -48,16 +60,23 @@ function count(value: number, locale: Locale): string {
   return new Intl.NumberFormat(NUMBER_TAGS[locale]).format(value);
 }
 
+/** Every page the site publishes, marketing and legal alike. */
+type PageKind = 'home' | 'pro' | LegalPageKey;
+
 interface PageOptions {
   locale: Locale;
-  page: 'home' | 'pro';
+  page: PageKind;
   title: string;
   description: string;
   body: string;
 }
 
+const LEGAL_KEYS = new Set<string>(LEGAL_PAGES.map((page) => page.key));
+const isLegal = (page: PageKind): page is LegalPageKey => LEGAL_KEYS.has(page);
+
 /** Where a given locale's version of the current page lives. */
-function pathFor(locale: Locale, page: 'home' | 'pro'): string {
+function pathFor(locale: Locale, page: PageKind): string {
+  if (isLegal(page)) return legalPath(page, locale);
   return page === 'pro' ? `/${locale}/pro/` : `/${locale}/`;
 }
 
@@ -97,7 +116,7 @@ function brand(locale: Locale): string {
   return `<a class="brand" href="${pathFor(locale, 'home')}">${mark}<span>Buurklus</span></a>`;
 }
 
-function langSwitcher(locale: Locale, page: 'home' | 'pro'): string {
+function langSwitcher(locale: Locale, page: PageKind): string {
   const labels: Record<Locale, string> = { nl: 'NL', en: 'EN' };
   const links = SUPPORTED_LOCALES.map(
     (other) =>
@@ -106,12 +125,14 @@ function langSwitcher(locale: Locale, page: 'home' | 'pro'): string {
   return `<nav class="langs" aria-label="${esc(COPY[locale].footer.languageLabel)}">${links}</nav>`;
 }
 
-function header(locale: Locale, page: 'home' | 'pro'): string {
+function header(locale: Locale, page: PageKind): string {
   const copy = COPY[locale];
+  // A legal page has no sections of its own worth jumping to, so it borrows
+  // the home navigation and lets the reader get back out.
   const links =
-    page === 'home'
-      ? `<a href="#trades">${esc(copy.nav.trades)}</a>
-         <a href="#how">${esc(copy.nav.how)}</a>
+    page !== 'pro'
+      ? `<a href="${pathFor(locale, 'home')}#trades">${esc(copy.nav.trades)}</a>
+         <a href="${pathFor(locale, 'home')}#how">${esc(copy.nav.how)}</a>
          <a href="${pathFor(locale, 'pro')}">${esc(copy.nav.pros)}</a>`
       : `<a href="#pricing">${esc(copy.nav.pricing)}</a>
          <a href="#pro-how">${esc(copy.pro.how.title)}</a>
@@ -139,7 +160,7 @@ function header(locale: Locale, page: 'home' | 'pro'): string {
   </header>`;
 }
 
-function footer(locale: Locale, page: 'home' | 'pro'): string {
+function footer(locale: Locale, page: PageKind): string {
   const copy = COPY[locale];
   const year = new Date().getUTCFullYear();
   const l = copy.footer.links;
@@ -170,8 +191,12 @@ function footer(locale: Locale, page: 'home' | 'pro'): string {
         <div>
           <h3>${esc(copy.footer.legal)}</h3>
           <ul>
-            <li><a href="#">${esc(l.terms)}</a></li>
-            <li><a href="#">${esc(l.privacy)}</a></li>
+            ${LEGAL_PAGES.map(
+              (document) =>
+                `<li><a href="${legalPath(document.key, locale)}">${esc(
+                  CHROME[locale].pageNames[document.key],
+                )}</a></li>`,
+            ).join('\n            ')}
           </ul>
         </div>
       </div>
@@ -191,6 +216,186 @@ function page(options: PageOptions): string {
   </body>
 </html>
 `;
+}
+
+// ---------------------------------------------------------------------------
+// Legal pages
+// ---------------------------------------------------------------------------
+
+const LEGAL: Record<Locale, LegalCopy> = { nl: LEGAL_NL, en: LEGAL_EN };
+const CHROME: Record<Locale, LegalChrome> = { nl: CHROME_NL, en: CHROME_EN };
+
+function table(headings: string[], rows: string[][]): string {
+  const head = headings.map((cell) => `<th scope="col">${esc(cell)}</th>`).join('');
+  const body = rows
+    .map((row) => `<tr>${row.map((cell) => `<td>${esc(cell)}</td>`).join('')}</tr>`)
+    .join('');
+  // Wrapped so a wide table scrolls inside itself rather than pushing the
+  // whole page sideways on a phone.
+  return `<div class="tableWrap"><table class="legalTable"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+}
+
+/**
+ * Who is responsible for the processing. There is no registered company yet,
+ * so rather than printing a plausible-looking blank this states plainly what
+ * is missing. The box disappears by itself once OPERATOR is filled in.
+ */
+function operatorBlock(locale: Locale): string {
+  const chrome = CHROME[locale];
+  const missing = missingOperatorFields();
+
+  const fields: [string, string | null][] = [
+    ['legalName', OPERATOR.legalName],
+    ['kvk', OPERATOR.kvk],
+    ['vatId', OPERATOR.vatId],
+    ['address', OPERATOR.address],
+    ['email', OPERATOR.email],
+  ];
+  const known = fields.filter((entry): entry is [string, string] => entry[1] !== null);
+
+  const knownList = known.length
+    ? `<ul class="legalList">${known
+        .map(([field, value]) => `<li>${esc(chrome.incompleteFields[field] ?? field)}: ${esc(value)}</li>`)
+        .join('')}</ul>`
+    : '';
+
+  if (missing.length === 0) return knownList;
+
+  return `${knownList}<aside class="notice notice--warn">
+    <h3>${esc(chrome.incompleteTitle)}</h3>
+    <p>${esc(chrome.incompleteBody)}</p>
+    <ul class="legalList">${missing
+      .map((field) => `<li>${esc(chrome.incompleteFields[field] ?? field)}</li>`)
+      .join('')}</ul>
+  </aside>`;
+}
+
+/** Days as something a person reads: "1 dag", "7 jaar". */
+function humanDays(days: number, locale: Locale): string {
+  const words =
+    locale === 'en'
+      ? { day: 'day', days: 'days', month: 'months', year: 'year', years: 'years' }
+      : { day: 'dag', days: 'dagen', month: 'maanden', year: 'jaar', years: 'jaar' };
+
+  if (days % 365 === 0) {
+    const years = days / 365;
+    return `${count(years, locale)} ${years === 1 ? words.year : words.years}`;
+  }
+  if (days % 30 === 0 && days >= 60) return `${count(days / 30, locale)} ${words.month}`;
+  return `${count(days, locale)} ${days === 1 ? words.day : words.days}`;
+}
+
+function generatedBlock(section: LegalSection, locale: Locale): string {
+  const chrome = CHROME[locale];
+  const labels = chrome.tables;
+
+  switch (section.generated) {
+    case 'operator':
+      return operatorBlock(locale);
+    case 'dataCategories':
+      return table(
+        [labels.data, labels.purpose, labels.basis],
+        chrome.dataCategories.map((row) => [row.data, row.purpose, row.basis]),
+      );
+    case 'processors':
+      return table(
+        [labels.processor, labels.role, labels.location],
+        chrome.processors.map((row) => [row.processor, row.role, row.location]),
+      );
+    case 'rights':
+      return table(
+        [labels.right, labels.how],
+        chrome.rights.map((row) => [row.right, row.how]),
+      );
+    case 'retention':
+      // Straight out of @buurklus/shared, which is what the nightly sweep
+      // reads too. The page and the deletion cannot disagree.
+      return table(
+        [labels.period, labels.reason],
+        RETENTION.map((rule) => [humanDays(rule.days, locale), rule.reason[locale]]),
+      );
+    default:
+      return '';
+  }
+}
+
+function legalSection(section: LegalSection, locale: Locale): string {
+  const paragraphs = (section.paragraphs ?? []).map((text) => `<p>${esc(text)}</p>`).join('');
+  const list = section.list
+    ? `<ul class="legalList">${section.list.map((item) => `<li>${esc(item)}</li>`).join('')}</ul>`
+    : '';
+
+  return `<section class="legalSection">
+    <h2>${esc(section.heading)}</h2>
+    ${paragraphs}
+    ${list}
+    ${generatedBlock(section, locale)}
+  </section>`;
+}
+
+function legalBody(key: LegalPageKey, locale: Locale): string {
+  const document: LegalDocument = LEGAL[locale][key];
+  const chrome = CHROME[locale];
+  const meta = legalPage(key);
+
+  const others = LEGAL_PAGES.filter((page) => page.key !== key)
+    .map(
+      (page) =>
+        `<li><a href="${legalPath(page.key, locale)}">${esc(chrome.pageNames[page.key])}</a></li>`,
+    )
+    .join('');
+
+  const authority =
+    key === 'PRIVACY'
+      ? `<p class="legal__authority"><a href="${SUPERVISORY_AUTHORITY.url}" rel="noopener">${esc(
+          SUPERVISORY_AUTHORITY.name,
+        )}</a></p>`
+      : '';
+
+  // The minimum age appears in two documents and comes from one constant, so
+  // raising it cannot leave one page saying something else.
+  const ageNote =
+    key === 'TERMS' || key === 'PRIVACY'
+      ? `<p class="muted legalAge">${esc(
+          locale === 'en'
+            ? `Minimum age for an account: ${MINIMUM_AGE}.`
+            : `Minimumleeftijd voor een account: ${MINIMUM_AGE} jaar.`,
+        )}</p>`
+      : '';
+
+  return `
+  <article class="legal">
+    <div class="wrap wrap--narrow">
+      <header class="legal__head">
+        <h1>${esc(document.title)}</h1>
+        <p class="lede muted">${esc(document.intro)}</p>
+        <p class="legal__meta">${esc(chrome.lastUpdated)}: <time datetime="${meta.version}">${esc(
+          meta.version,
+        )}</time></p>
+        <p class="legal__meta">${esc(chrome.languageNote)}</p>
+      </header>
+
+      ${document.sections.map((section) => legalSection(section, locale)).join('')}
+      ${authority}
+      ${ageNote}
+
+      <nav class="legal__others" aria-label="${esc(chrome.otherDocuments)}">
+        <h2>${esc(chrome.otherDocuments)}</h2>
+        <ul class="legalList">${others}</ul>
+      </nav>
+    </div>
+  </article>`;
+}
+
+export function renderLegal(key: LegalPageKey, locale: Locale): string {
+  const document = LEGAL[locale][key];
+  return page({
+    locale,
+    page: key,
+    title: `${document.title} — Buurklus`,
+    description: document.metaDescription,
+    body: legalBody(key, locale),
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -665,12 +870,15 @@ export function renderRootRedirect(): string {
 }
 
 export function renderSitemap(): string {
+  const kinds: PageKind[] = ['home', 'pro', ...LEGAL_PAGES.map((page) => page.key)];
   const urls = SUPPORTED_LOCALES.flatMap((locale) =>
-    (['home', 'pro'] as const).map((p) => `${SITE_URL}${pathFor(locale, p)}`),
+    kinds.map((kind) => `${SITE_URL}${pathFor(locale, kind)}`),
   );
   const today = new Date().toISOString().slice(0, 10);
+  // The namespace is sitemaps.org, plural. A crawler that gets the singular
+  // treats the document as unrecognised XML and indexes none of it.
   return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemap.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map((url) => `  <url><loc>${url}</loc><lastmod>${today}</lastmod></url>`).join('\n')}
 </urlset>
 `;

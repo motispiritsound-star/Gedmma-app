@@ -353,6 +353,12 @@
     "deleteConfirmTitle": "Account definitief verwijderen?",
     "deleteConfirmBody": "Dit kan niet ongedaan gemaakt worden. Je wordt meteen uitgelogd.",
     "deleteConfirmAction": "Ja, verwijder mijn account",
-    "deleteFailed": "Verwijderen is niet gelukt. Probeer het later opnieuw."
+    "deleteFailed": "Verwijderen is niet gelukt. Probeer het later opnieuw.",
+    "pages": {
+      "TERMS": "Gebruiksvoorwaarden",
+      "PRIVACY": "Privacybeleid",
+      "DISCLAIMER": "Disclaimer",
+      "COOKIES": "Cookieverklaring"
+    }
   }
 }

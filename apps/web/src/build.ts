@@ -1,9 +1,10 @@
 import { cp, mkdir, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SUPPORTED_LOCALES } from '@buurklus/shared';
+import { LEGAL_PAGES, SUPPORTED_LOCALES, legalPath } from '@buurklus/shared';
 import {
   renderHome,
+  renderLegal,
   renderPro,
   renderRobots,
   renderRootRedirect,
@@ -57,6 +58,13 @@ async function main() {
   for (const locale of SUPPORTED_LOCALES) {
     written.push(await write(`${locale}/index.html`, renderHome(locale)));
     written.push(await write(`${locale}/pro/index.html`, renderPro(locale)));
+
+    for (const document of LEGAL_PAGES) {
+      // The path in @buurklus/shared is what the app links to, so the file is
+      // written where that path says rather than at a name chosen here.
+      const target = `${legalPath(document.key, locale).replace(/^\/|\/$/g, '')}/index.html`;
+      written.push(await write(target, renderLegal(document.key, locale)));
+    }
   }
 
   const total = written.reduce((sum, file) => sum + file.bytes, 0);

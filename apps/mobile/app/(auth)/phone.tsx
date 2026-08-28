@@ -10,9 +10,10 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { LEGAL_DOCUMENTS, MINIMUM_AGE, isDutchMobile } from '@buurklus/shared';
+import { LEGAL_DOCUMENTS, MINIMUM_AGE, isDutchMobile, legalPath } from '@buurklus/shared';
 import { Button, Checkbox, Field, Txt } from '@/components/ui';
 import { usePublicApi } from '@/hooks/use-api';
+import { useSession } from '@/store/session';
 import { ApiError, NetworkError } from '@/api/client';
 import type { OtpChallengeResponse } from '@/api/types';
 import { colors, spacing } from '@/theme';
@@ -22,6 +23,7 @@ export default function PhoneScreen() {
   const router = useRouter();
   const api = usePublicApi();
   const { role } = useLocalSearchParams<{ role?: string }>();
+  const locale = useSession((state) => state.locale);
 
   const [phone, setPhone] = useState('');
   const [agreed, setAgreed] = useState(false);
@@ -129,7 +131,7 @@ export default function PhoneScreen() {
             <Pressable
               key={document.key}
               accessibilityRole="link"
-              onPress={() => void Linking.openURL(`${SITE_URL}${document.path}`)}
+              onPress={() => void Linking.openURL(`${SITE_URL}${legalPath(document.key, locale)}`)}
               style={styles.link}
             >
               <Txt variant="caption" color={colors.primary}>

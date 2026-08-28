@@ -353,6 +353,12 @@
     "deleteConfirmTitle": "Delete your account for good?",
     "deleteConfirmBody": "This cannot be undone. You will be signed out straight away.",
     "deleteConfirmAction": "Yes, delete my account",
-    "deleteFailed": "Deleting failed. Please try again later."
+    "deleteFailed": "Deleting failed. Please try again later.",
+    "pages": {
+      "TERMS": "Terms of use",
+      "PRIVACY": "Privacy statement",
+      "DISCLAIMER": "Disclaimer",
+      "COOKIES": "Cookie statement"
+    }
   }
 }
