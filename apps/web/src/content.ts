@@ -14,7 +14,8 @@ export interface SiteCopy {
     proDescription: string;
     ogLocale: string;
   };
-  nav: { trades: string; how: string; pros: string; cta: string; forCustomers: string };
+  /** ctaShort is used below 560px, where the full label wraps to three lines. */
+  nav: { trades: string; how: string; pros: string; cta: string; ctaShort: string; forCustomers: string };
   hero: {
     eyebrow: string;
     title: string;
@@ -40,7 +41,7 @@ export interface SiteCopy {
     languageLabel: string;
   };
   pro: {
-    hero: { eyebrow: string; title: string; subtitle: string; cta: string; note: string };
+    hero: { eyebrow: string; title: string; subtitle: string; cta: string; ctaShort: string; note: string };
     value: { title: string; items: { title: string; body: string }[] };
     pricing: {
       title: string;
@@ -83,6 +84,7 @@ const fr: SiteCopy = {
     how: 'Comment ça marche',
     pros: 'Vous êtes professionnel',
     cta: 'Publier une demande',
+    ctaShort: 'Publier',
     forCustomers: 'Vous cherchez un artisan',
   },
   hero: {
@@ -208,6 +210,7 @@ const fr: SiteCopy = {
       subtitle:
         "Des clients décrivent leurs travaux chaque jour dans votre ville. Recevez les demandes qui correspondent à vos métiers et répondez à celles qui vous intéressent.",
       cta: 'Commencer l’essai gratuit',
+      ctaShort: 'Essai gratuit',
       note: '14 jours offerts · Sans carte bancaire · Résiliable à tout moment',
     },
     value: {
@@ -303,6 +306,7 @@ const ar: SiteCopy = {
     how: 'كيف يعمل',
     pros: 'أنت محترف',
     cta: 'انشر طلبًا',
+    ctaShort: 'انشر طلبًا',
     forCustomers: 'تبحث عن حرفي',
   },
   hero: {
@@ -428,6 +432,7 @@ const ar: SiteCopy = {
       subtitle:
         'كل يوم يصف عملاء أشغالهم في مدينتك. استقبل الطلبات المطابقة لمهنك، ورد على ما يهمك منها.',
       cta: 'ابدأ التجربة المجانية',
+      ctaShort: 'تجربة مجانية',
       note: '14 يومًا مجانًا · بدون بطاقة بنكية · يمكن الإلغاء في أي وقت',
     },
     value: {
@@ -523,6 +528,7 @@ const en: SiteCopy = {
     how: 'How it works',
     pros: 'For professionals',
     cta: 'Post a job',
+    ctaShort: 'Post a job',
     forCustomers: 'Looking for a tradesperson',
   },
   hero: {
@@ -648,6 +654,7 @@ const en: SiteCopy = {
       subtitle:
         'Customers describe their jobs in your city every day. Receive the requests that match your trades, and reply to the ones worth your time.',
       cta: 'Start the free trial',
+      ctaShort: 'Free trial',
       note: '14 days free · No card needed · Cancel any time',
     },
     value: {

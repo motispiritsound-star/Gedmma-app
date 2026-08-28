@@ -99,7 +99,9 @@ img, svg { max-width: 100%; display: block; }
 .btn--ghost { background: transparent; color: var(--green-700); border-color: var(--ink-200); }
 .btn--ghost:hover { background: var(--green-50); }
 .btn--onDark { background: var(--white); color: var(--green-700); }
-.btn--sm { min-height: 42px; padding-inline: 1.1rem; font-size: 0.94rem; }
+/* 44px is the smallest a thumb hits reliably, so even the compact variant
+   keeps it. Two pixels of visual difference, a real difference in use. */
+.btn--sm { min-height: 44px; padding-inline: 1.1rem; font-size: 0.94rem; }
 
 /* --- Header --------------------------------------------------------------- */
 .header {
@@ -111,7 +113,14 @@ img, svg { max-width: 100%; display: block; }
   border-block-end: 1px solid var(--ink-100);
 }
 .header__inner { display: flex; align-items: center; gap: 1.5rem; min-height: 72px; }
-.brand { display: inline-flex; align-items: center; gap: 0.65rem; font-weight: 700; font-size: 1.2rem; }
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-block-size: 44px;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
 .brand__mark {
   inline-size: 36px;
   block-size: 36px;
@@ -136,21 +145,28 @@ img, svg { max-width: 100%; display: block; }
 /* Below this the brand, the language switcher and the call to action no longer
    fit on one row — in French the button alone is 110px — so the header wraps
    onto two rows rather than pushing the page sideways. */
+.nav__ctaShort { display: none; }
+
 @media (max-width: 560px) {
   .header__inner { flex-wrap: wrap; min-height: 0; padding-block: 0.7rem; gap: 0.7rem; }
   .nav { inline-size: 100%; margin-inline-start: 0; justify-content: space-between; gap: 0.5rem; }
-  .nav__cta { margin-inline-start: 0; }
+  .nav__cta { margin-inline-start: 0; white-space: nowrap; }
+  .nav__ctaLong { display: none; }
+  .nav__ctaShort { display: inline; }
 }
 
 /* --- Language switcher ---------------------------------------------------- */
 .langs { display: inline-flex; gap: 0.25rem; }
 .langs a {
-  min-inline-size: 2.4rem;
-  padding: 0.3rem 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  padding-inline: 0.7rem;
   border-radius: var(--radius-pill);
   font-size: 0.85rem;
   font-weight: 600;
-  text-align: center;
   color: var(--ink-500);
   border: 1px solid var(--ink-100);
 }
@@ -349,6 +365,9 @@ img, svg { max-width: 100%; display: block; }
   justify-content: space-between;
   gap: 1rem;
   align-items: center;
+  /* The whole row is the control that opens the answer, so it has to be tall
+     enough to hit without aiming. */
+  min-block-size: 44px;
 }
 .faq summary::-webkit-details-marker { display: none; }
 .faq summary::after {
@@ -394,6 +413,24 @@ img, svg { max-width: 100%; display: block; }
   align-items: center;
   font-size: 0.88rem;
   color: var(--ink-500);
+}
+
+/* Text links sit at their natural line height, which is fine under a mouse and
+   too small under a thumb. Keyed to the input device rather than the screen
+   width, because a touch laptop needs this and a narrow desktop window does
+   not. */
+@media (pointer: coarse) {
+  .nav__links a,
+  .footer a,
+  .footer__bottom a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 44px;
+    /* A short word like "Aide" is only 33px wide; the trailing space is
+       invisible and makes the link hittable. */
+    min-inline-size: 44px;
+  }
+  .footer ul { gap: 0.15rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

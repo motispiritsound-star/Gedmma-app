@@ -84,6 +84,24 @@ describe('content coming from @khidma/shared', () => {
   });
 });
 
+describe('the pricing table', () => {
+  it('recommends exactly one plan', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderPro(locale);
+      const badge = COPY[locale].pro.pricing.popular;
+      const occurrences = html.split(esc(badge)).length - 1;
+      expect(occurrences, `${locale} badges`).toBe(1);
+    }
+  });
+
+  it('offers every plan the professional can actually buy', () => {
+    const html = renderPro('fr');
+    for (const plan of PLANS) {
+      expect(html, plan.slug).toContain(esc(localize(plan.name, 'fr')));
+    }
+  });
+});
+
 describe('copy', () => {
   it('is filled in for all three languages', () => {
     for (const locale of SUPPORTED_LOCALES) {

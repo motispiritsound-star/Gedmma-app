@@ -128,10 +128,15 @@ function header(locale: Locale, page: 'home' | 'pro'): string {
          <a href="#pro-how">${esc(copy.pro.how.title)}</a>
          <a href="${pathFor(locale, 'home')}">${esc(copy.nav.forCustomers)}</a>`;
 
+  // Both labels ship; the stylesheet picks the short one on narrow screens,
+  // where the full French label wraps onto three lines and eats the header.
+  const ctaLabels = (long: string, short: string) =>
+    `<span class="nav__ctaLong">${esc(long)}</span><span class="nav__ctaShort">${esc(short)}</span>`;
+
   const cta =
     page === 'home'
-      ? `<a class="btn btn--primary btn--sm nav__cta" href="#cta">${esc(copy.nav.cta)}</a>`
-      : `<a class="btn btn--primary btn--sm nav__cta" href="#pricing">${esc(copy.pro.hero.cta)}</a>`;
+      ? `<a class="btn btn--primary btn--sm nav__cta" href="#cta">${ctaLabels(copy.nav.cta, copy.nav.ctaShort)}</a>`
+      : `<a class="btn btn--primary btn--sm nav__cta" href="#pricing">${ctaLabels(copy.pro.hero.cta, copy.pro.hero.ctaShort)}</a>`;
 
   return `<header class="header">
     <div class="wrap header__inner">
@@ -431,7 +436,16 @@ function homeBody(locale: Locale): string {
 // Professionals page
 // ---------------------------------------------------------------------------
 
+/**
+ * Exactly one plan carries the badge. `featured` on a plan means it ranks above
+ * cheaper tiers in the customer-facing directory — not "most popular" — and two
+ * tiers carry it, so badging on `featured` claimed two plans were the most
+ * chosen. The recommendation is the cheapest featured tier.
+ */
+const RECOMMENDED_PLAN = PLANS.find((plan) => plan.featured)?.slug ?? PLANS[1]?.slug;
+
 function planCard(plan: PlanSeed, locale: Locale, copy: SiteCopy): string {
+  const isRecommended = plan.slug === RECOMMENDED_PLAN;
   const net = dirhamsToCentimes(plan.monthlyPriceMad);
   const gross = applyVat(net).grossCentimes;
   const p = copy.pro.pricing;
@@ -446,8 +460,8 @@ function planCard(plan: PlanSeed, locale: Locale, copy: SiteCopy): string {
     ...(plan.teamSeats > 0 ? [`${count(plan.teamSeats, locale)} ${p.seats}`] : []),
   ];
 
-  return `<article class="card plan${plan.featured ? ' plan--featured' : ''}">
-    ${plan.featured ? `<span class="plan__badge">${esc(p.popular)}</span>` : ''}
+  return `<article class="card plan${isRecommended ? ' plan--featured' : ''}">
+    ${isRecommended ? `<span class="plan__badge">${esc(p.popular)}</span>` : ''}
     <h3>${esc(localize(plan.name, locale))}</h3>
     <p class="muted">${esc(localize(plan.tagline, locale))}</p>
     <div class="plan__price">
@@ -460,7 +474,7 @@ function planCard(plan: PlanSeed, locale: Locale, copy: SiteCopy): string {
         .map((f) => `<li><span class="plan__tick">${solidIcon('check', 17)}</span><span>${esc(f)}</span></li>`)
         .join('')}
     </ul>
-    <a class="btn ${plan.featured ? 'btn--primary' : 'btn--ghost'}" href="#">${esc(p.choose)}</a>
+    <a class="btn ${isRecommended ? 'btn--primary' : 'btn--ghost'}" href="#">${esc(p.choose)}</a>
   </article>`;
 }
 
