@@ -1,0 +1,545 @@
+import { maakKaart, BANDEN, bandVan } from '/kaart.js';
+
+const $ = (id) => document.getElementById(id);
+const esc = (waarde) => String(waarde ?? '').replace(/[&<>"]/g, (teken) =>
+  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[teken]);
+const euro = (cent) => `€ ${((cent ?? 0) / 100).toFixed(2).replace('.', ',')}`;
+const datum = (waarde) => waarde ? new Date(waarde.replace(' ', 'T') + 'Z').toLocaleString('nl-NL',
+  { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+
+const ERNST = { kritiek: 'Kritiek', hoog: 'Hoog', middel: 'Middel', laag: 'Laag' };
+
+const staat = {
+  ik: null,
+  fases: [],
+  agenten: [],
+  filters: { zoek: '', plaats: '', fase: '', agent: '', contact: false, band: '' },
+  gekozen: null,
+  weergave: 'kaart',
+  afzender: {},
+};
+
+let kaart = null;
+
+// --------------------------------------------------------------------------
+async function api(pad, opties = {}) {
+  const antwoord = await fetch(pad, {
+    ...opties,
+    headers: opties.body ? { 'content-type': 'application/json' } : undefined,
+  });
+  if (antwoord.status === 401) { toonInlogscherm(); throw new Error('Niet ingelogd.'); }
+  const inhoud = await antwoord.json().catch(() => ({}));
+  if (!antwoord.ok) throw new Error(inhoud.fout ?? `Er ging iets mis (${antwoord.status}).`);
+  return inhoud;
+}
+
+// --------------------------------------------------------------------------
+// Inloggen
+// --------------------------------------------------------------------------
+function toonInlogscherm(geenGebruikers = false) {
+  $('inloggen').hidden = false;
+  $('app').hidden = true;
+  $('i-geenaccount').hidden = !geenGebruikers;
+}
+
+$('inlogformulier').addEventListener('submit', async (gebeurtenis) => {
+  gebeurtenis.preventDefault();
+  $('i-melding').textContent = '';
+  try {
+    await api('/api/login', {
+      method: 'POST',
+      body: JSON.stringify({ email: $('i-email').value, wachtwoord: $('i-wachtwoord').value }),
+    });
+    $('i-wachtwoord').value = '';
+    await start();
+  } catch (fout) {
+    $('i-melding').textContent = fout.message;
+  }
+});
+
+$('uitloggen').addEventListener('click', async () => {
+  await fetch('/api/uitloggen', { method: 'POST' });
+  location.reload();
+});
+
+// --------------------------------------------------------------------------
+// Opstarten
+// --------------------------------------------------------------------------
+async function start() {
+  const mij = await fetch('/api/mij').then((antwoord) => antwoord.json());
+  if (!mij.ingelogd) { toonInlogscherm(mij.geenGebruikers); return; }
+
+  staat.ik = mij.gebruiker;
+  $('inloggen').hidden = true;
+  $('app').hidden = false;
+  $('ik-naam').textContent = `${mij.gebruiker.naam} · ${mij.gebruiker.rol}`;
+  document.querySelector('[data-weergave="team"]').hidden = mij.gebruiker.rol !== 'eigenaar';
+
+  const overzicht = await api('/api/overzicht');
+  staat.fases = overzicht.fases;
+  staat.agenten = overzicht.agenten;
+
+  vulKeuzelijsten(overzicht);
+
+  if (!kaart) {
+    kaart = maakKaart($('kaart'), { onKiezen: kiesLead, onZweven: toonTip });
+    await kaart.laadOmtrek();
+  }
+  $('kaartnoot').textContent = `${overzicht.cijfers.opKaart} van ${overzicht.cijfers.bedrijven} bedrijven staan op de kaart`;
+
+  await ververs();
+}
+
+function vulKeuzelijsten(overzicht) {
+  $('f-plaats').innerHTML = '<option value="">Alle plaatsen</option>' +
+    overzicht.plaatsen.map((rij) => `<option value="${esc(rij.plaats)}">${esc(rij.plaats)} (${rij.aantal})</option>`).join('');
+  $('f-fase').innerHTML = '<option value="">Alle fases</option>' +
+    staat.fases.map((fase) => `<option value="${fase.id}">${fase.label}</option>`).join('');
+  $('f-agent').innerHTML = '<option value="">Iedereen</option><option value="vrij">Nog niet toegewezen</option>' +
+    staat.agenten.map((agent) => `<option value="${agent.id}">${esc(agent.naam)}</option>`).join('');
+}
+
+// --------------------------------------------------------------------------
+// Filters
+// --------------------------------------------------------------------------
+function queryVan(extra = {}) {
+  const params = new URLSearchParams();
+  const zet = (sleutel, waarde) => { if (waarde !== '' && waarde != null && waarde !== false) params.set(sleutel, waarde); };
+  zet('zoek', staat.filters.zoek);
+  zet('city', staat.filters.plaats);
+  zet('fase', staat.filters.fase);
+  if (staat.filters.agent === 'vrij') zet('vrij', '1');
+  else zet('agent', staat.filters.agent);
+  if (staat.filters.contact) zet('metContact', '1');
+  if (staat.filters.band) {
+    const band = BANDEN.find((rij) => rij.id === staat.filters.band);
+    zet('minScore', band.vanaf);
+    zet('maxScore', band.tot);
+  }
+  for (const [sleutel, waarde] of Object.entries(extra)) zet(sleutel, waarde);
+  return params;
+}
+
+/** Telt hoeveel bedrijven er per kwaliteitsband zijn, en laat erop filteren. */
+function tekenBanden(punten) {
+  $('bandvak').innerHTML = BANDEN.map((band) => {
+    const aantal = punten.filter((punt) => bandVan(punt.score).id === band.id).length;
+    return `<button data-band="${band.id}" aria-pressed="${staat.filters.band === band.id}">
+      <b>${aantal}</b>
+      <span><i class="bol" style="background:${band.kleur}"></i>${band.label}</span>
+    </button>`;
+  }).join('');
+  for (const knop of $('bandvak').querySelectorAll('button')) {
+    knop.addEventListener('click', () => {
+      staat.filters.band = staat.filters.band === knop.dataset.band ? '' : knop.dataset.band;
+      ververs();
+    });
+  }
+}
+
+async function ververs() {
+  const [lijst, kaartData] = await Promise.all([
+    api('/api/leads?' + queryVan({ limit: 300, sort: 'score' })),
+    api('/api/kaart?' + queryVan({ limit: 6000 })),
+  ]);
+  $('telling').textContent = `${lijst.leads.length} getoond van ${lijst.totaal}`;
+  $('f-export').href = '/api/export.csv?' + queryVan({ limit: 100000 });
+  tekenLijst($('rijen'), $('geen'), lijst.leads, 'kaart');
+  tekenBanden(kaartData.punten);
+  kaart.zetPunten(kaartData.punten);
+  if (staat.gekozen) kaart.zetGekozen(staat.gekozen);
+  if (!staat.gekozen) $('detail').innerHTML =
+    '<div class="leeg">Klik een bolletje op de kaart of een regel in de lijst aan.<br>' +
+    'Groen is een goede site, oranje matig, rood slecht.</div>';
+}
+
+// --------------------------------------------------------------------------
+// Lijst
+// --------------------------------------------------------------------------
+const bolVan = (score) => `<span class="bol bol-${bandVan(score).id}" title="${bandVan(score).label}"></span>`;
+const faseLabel = (id) => staat.fases.find((fase) => fase.id === id)?.label ?? id;
+
+function tekenLijst(tbody, leegVak, leads, welke) {
+  leegVak.hidden = leads.length > 0;
+  const metActie = welke === 'mijn';
+
+  tbody.innerHTML = leads.map((lead) => {
+    const contact = lead.contact.phones[0] ?? lead.contact.emails[0] ?? '';
+    return `
+    <tr data-id="${lead.id}" tabindex="0" aria-selected="${lead.id === staat.gekozen}">
+      <td class="kwaliteit">${bolVan(lead.score)}<span class="score">${lead.score}</span></td>
+      <td><div class="naam">${esc(lead.name)}</div>
+          <div class="sub mono">${esc(lead.domain)}${lead.city ? ' · ' + esc(lead.city) : ''}</div>
+          ${contact ? `<div class="telefoon">${esc(contact)}</div>` : ''}</td>
+      ${metActie
+        ? `<td class="sub">${lead.volgende_actie_op ? esc(lead.volgende_actie_op) : '—'}</td>`
+        : `<td class="probleem"><span>${esc(lead.topIssues[0]?.title ?? '')}</span></td>`}
+      <td><span class="fasepil ${lead.fase}">${esc(faseLabel(lead.fase))}</span>
+          ${lead.agent_naam && welke === 'kaart' ? `<div class="sub">${esc(lead.agent_naam)}</div>` : ''}</td>
+    </tr>`;
+  }).join('');
+
+  for (const rij of tbody.querySelectorAll('tr')) {
+    const kies = () => kiesLead({ id: Number(rij.dataset.id) });
+    rij.addEventListener('click', kies);
+    rij.addEventListener('keydown', (gebeurtenis) => {
+      if (gebeurtenis.key === 'Enter' || gebeurtenis.key === ' ') { gebeurtenis.preventDefault(); kies(); }
+    });
+  }
+}
+
+// --------------------------------------------------------------------------
+// Kaarttip
+// --------------------------------------------------------------------------
+function toonTip(cluster, x, y) {
+  const tip = $('kaarttip');
+  if (!cluster) { tip.hidden = true; return; }
+  tip.hidden = false;
+  tip.style.left = `${Math.min(x + 14, window.innerWidth - 260)}px`;
+  tip.style.top = `${y + 16}px`;
+  tip.innerHTML = cluster.aantal === 1
+    ? `<b>${esc(cluster.punt.naam)}</b><span class="sub">${esc(cluster.punt.plaats ?? '')} · score ${cluster.punt.score} · ${esc(faseLabel(cluster.punt.fase))}</span>`
+    : `<b>${cluster.aantal} bedrijven</b><span class="sub">gemiddeld ${Math.round(cluster.som / cluster.aantal)}/100 — klik om in te zoomen</span>`;
+}
+
+// --------------------------------------------------------------------------
+// Detailpaneel
+// --------------------------------------------------------------------------
+async function kiesLead(punt) {
+  staat.gekozen = punt.id;
+  kaart?.zetGekozen(punt.id);
+  for (const rij of document.querySelectorAll('tbody tr[data-id]')) {
+    rij.setAttribute('aria-selected', String(Number(rij.dataset.id) === punt.id));
+  }
+  const lead = await api(`/api/leads/${punt.id}`);
+  const doel = staat.weergave === 'mijn' ? $('mijn-detail') : $('detail');
+  tekenDetail(doel, lead);
+  if (lead.lat && lead.lon && staat.weergave === 'kaart') kaart?.zetGekozen(lead.id);
+}
+
+const kwesties = (lijst) => lijst.map((kwestie) => `
+  <div class="kwestie i-${kwestie.severity}">
+    <i></i><b>${esc(kwestie.title)}</b>
+    <p><span class="ernst">${ERNST[kwestie.severity]}</span> — ${esc(kwestie.advies)}</p>
+  </div>`).join('');
+
+function tekenDetail(doel, lead) {
+  const oordeel = lead.report?.verdict ?? { categories: [], issues: [], label: '' };
+  const band = bandVan(lead.score ?? 0);
+  const isEigenaar = staat.ik.rol === 'eigenaar';
+  const vanMij = lead.toegewezen_aan === staat.ik.id;
+  const vrij = lead.toegewezen_aan === null;
+  const magWerken = isEigenaar || vanMij || vrij;
+
+  doel.innerHTML = `
+    <div class="paneelkop">
+      <div>
+        <h2>${esc(lead.name)}</h2>
+        <div class="sub mono"><a href="${esc(lead.website)}" target="_blank" rel="noopener">${esc(lead.domain)}</a></div>
+        <div class="sub">${esc(lead.city ?? '')}${lead.branch ? ' · ' + esc(lead.branch) : ''}</div>
+      </div>
+      <div class="groot">
+        <b style="color:${band.kleur}">${lead.score ?? '–'}</b>
+        <span>${esc(band.label)} · ${esc(lead.grade ?? '')}</span>
+      </div>
+    </div>
+
+    <div class="rij">
+      <span class="fasepil ${lead.fase}">${esc(faseLabel(lead.fase))}</span>
+      ${lead.agent_naam ? `<span class="sub">bij ${esc(lead.agent_naam)}</span>` : '<span class="sub">nog van niemand</span>'}
+      ${lead.klant_status === 'actief' ? `<span class="fasepil klant">klant · ${euro(lead.maandbedrag_cent)}/mnd</span>` : ''}
+    </div>
+
+    ${vrij ? '<div class="rij"><button class="knop sterk" data-actie="claim">Deze neem ik</button></div>' : ''}
+    ${isEigenaar ? `<div class="rij">
+      <select class="veld" data-actie="toewijzen">
+        <option value="">— toewijzen aan —</option>
+        ${staat.agenten.map((agent) => `<option value="${agent.id}" ${agent.id === lead.toegewezen_aan ? 'selected' : ''}>${esc(agent.naam)}</option>`).join('')}
+      </select></div>` : ''}
+
+    ${magWerken ? `
+    <div class="deel">
+      <span class="label-klein">Wat heb je gedaan?</span>
+      <div class="rij">
+        ${['gebeld', 'voicemail', 'mail', 'afspraak', 'notitie'].map((soort) =>
+          `<button class="knop" data-log="${soort}">${soort[0].toUpperCase() + soort.slice(1)}</button>`).join('')}
+      </div>
+      <textarea class="klein" id="d-notitie" placeholder="Notitie bij deze stap (optioneel)"></textarea>
+      <div class="rij">
+        <select class="veld" data-actie="fase">
+          ${staat.fases.map((fase) => `<option value="${fase.id}" ${fase.id === lead.fase ? 'selected' : ''}>${fase.label} — ${fase.uitleg}</option>`).join('')}
+        </select>
+      </div>
+      <div class="rij">
+        <label class="sub" for="d-actie">Terugbellen op</label>
+        <input class="veld" id="d-actie" type="date" value="${esc(lead.volgende_actie_op ?? '')}">
+        <button class="knop" data-actie="volgende">Vastleggen</button>
+      </div>
+    </div>` : '<p class="sub">Deze lead staat op naam van een collega.</p>'}
+
+    <div class="deel">
+      <span class="label-klein">Score per onderdeel</span>
+      ${(oordeel.categories ?? []).map((categorie) => `
+        <div class="meter">
+          <span class="meter-naam">${esc(categorie.label)}</span>
+          <span class="meter-waarde">${categorie.score}/${categorie.max}</span>
+          <span class="meter-spoor"><i class="meter-vul" style="width:${Math.round((categorie.score / categorie.max) * 100)}%"></i></span>
+        </div>`).join('')}
+    </div>
+
+    <div class="deel">
+      <span class="label-klein">Gevonden problemen (${(oordeel.issues ?? []).length})</span>
+      ${kwesties((oordeel.issues ?? []).filter((kwestie) => kwestie.severity !== 'laag'))}
+      ${(oordeel.issues ?? []).some((kwestie) => kwestie.severity === 'laag')
+        ? `<details class="rest"><summary>Nog ${(oordeel.issues ?? []).filter((k) => k.severity === 'laag').length} kleine punten</summary>
+           ${kwesties(oordeel.issues.filter((kwestie) => kwestie.severity === 'laag'))}</details>` : ''}
+    </div>
+
+    ${magWerken ? `
+    <div class="deel">
+      <span class="label-klein">Concept-mail</span>
+      <div class="rij">
+        <input class="veld" id="a-bedrijf" placeholder="Jouw bedrijf" style="flex:1" value="${esc(staat.afzender.bedrijf ?? '')}">
+        <input class="veld" id="a-telefoon" placeholder="Telefoon" style="width:130px" value="${esc(staat.afzender.telefoon ?? '')}">
+        <button class="knop" data-actie="pitch">Vernieuwen</button>
+        <button class="knop" data-actie="kopieer">Kopieer</button>
+      </div>
+      <textarea id="d-mail" spellcheck="false"></textarea>
+    </div>
+
+    <div class="deel">
+      <span class="label-klein">Klant maken</span>
+      <div class="rij">
+        <input class="veld" id="d-bedrag" type="number" min="0" step="0.5" placeholder="Per maand (€)"
+               style="width:150px" value="${lead.maandbedrag_cent ? (lead.maandbedrag_cent / 100).toFixed(2) : ''}">
+        <select class="veld" id="d-klantstatus">
+          <option value="actief">Betalend</option><option value="proef">Proefperiode</option>
+        </select>
+        <button class="knop sterk" data-actie="klant">Vastleggen</button>
+      </div>
+    </div>
+
+    <div class="deel">
+      <span class="label-klein">Testimonial ${lead.testimonial_sterren ? `(${lead.testimonial_sterren}★ ontvangen)` : ''}</span>
+      <textarea class="klein" id="d-testimonial" placeholder="Wat zei de klant?"></textarea>
+      <div class="rij">
+        <select class="veld" id="d-sterren">
+          ${[5, 4, 3, 2, 1].map((aantal) => `<option value="${aantal}">${'★'.repeat(aantal)}</option>`).join('')}
+        </select>
+        <label class="schakel"><input type="checkbox" id="d-publiceerbaar" checked> mag ik publiceren</label>
+        <button class="knop" data-actie="testimonial">Opslaan</button>
+      </div>
+    </div>` : ''}
+
+    <div class="deel">
+      <span class="label-klein">Geschiedenis (${lead.geschiedenis.length})</span>
+      ${lead.geschiedenis.length === 0 ? '<p class="sub" style="margin:0">Nog niets vastgelegd.</p>' : `
+        <div class="geschiedenis">${lead.geschiedenis.map((gebeurtenis) => `
+          <div class="gebeurtenis">
+            <time>${datum(gebeurtenis.op)}</time>
+            <div>${esc(gebeurtenis.soort)}${gebeurtenis.uitkomst ? ' → ' + esc(gebeurtenis.uitkomst) : ''}
+              ${gebeurtenis.notitie ? `<div class="sub">${esc(gebeurtenis.notitie)}</div>` : ''}
+              <div class="wie">${esc(gebeurtenis.gebruiker_naam ?? 'systeem')}</div>
+            </div>
+          </div>`).join('')}</div>`}
+    </div>
+
+    <p class="melding" data-melding></p>`;
+
+  koppelDetailKnoppen(doel, lead);
+  if (magWerken) haalPitch(doel, lead.id);
+}
+
+function koppelDetailKnoppen(doel, lead) {
+  const melding = doel.querySelector('[data-melding]');
+  const zeg = (tekst, goed = true) => {
+    melding.textContent = tekst;
+    melding.classList.toggle('goed', goed);
+    setTimeout(() => { melding.textContent = ''; }, 3000);
+  };
+  const notitie = () => doel.querySelector('#d-notitie')?.value.trim() || undefined;
+
+  const post = async (pad, body, bericht) => {
+    try {
+      await api(pad, { method: 'POST', body: JSON.stringify(body) });
+      zeg(bericht);
+      const vers = await api(`/api/leads/${lead.id}`);
+      tekenDetail(doel, vers);
+      ververs();
+    } catch (fout) { zeg(fout.message, false); }
+  };
+
+  doel.querySelector('[data-actie="claim"]')?.addEventListener('click', () =>
+    post(`/api/leads/${lead.id}/claim`, {}, 'Deze lead staat nu op jouw naam.'));
+
+  doel.querySelector('[data-actie="toewijzen"]')?.addEventListener('change', (gebeurtenis) =>
+    post(`/api/leads/${lead.id}/toewijzen`, { agentId: Number(gebeurtenis.target.value) || null }, 'Toegewezen.'));
+
+  for (const knop of doel.querySelectorAll('[data-log]')) {
+    knop.addEventListener('click', () =>
+      post(`/api/leads/${lead.id}/activiteit`, { soort: knop.dataset.log, notitie: notitie() }, 'Vastgelegd.'));
+  }
+
+  doel.querySelector('[data-actie="fase"]')?.addEventListener('change', (gebeurtenis) =>
+    post(`/api/leads/${lead.id}/fase`, { fase: gebeurtenis.target.value, notitie: notitie() }, 'Fase bijgewerkt.'));
+
+  doel.querySelector('[data-actie="volgende"]')?.addEventListener('click', () =>
+    post(`/api/leads/${lead.id}/volgende-actie`, { datum: doel.querySelector('#d-actie').value || null }, 'Ingepland.'));
+
+  doel.querySelector('[data-actie="klant"]')?.addEventListener('click', () =>
+    post(`/api/leads/${lead.id}/klant`, {
+      maandbedrag: Number(doel.querySelector('#d-bedrag').value),
+      status: doel.querySelector('#d-klantstatus').value,
+    }, 'Klant vastgelegd.'));
+
+  doel.querySelector('[data-actie="testimonial"]')?.addEventListener('click', () =>
+    post(`/api/leads/${lead.id}/testimonial`, {
+      tekst: doel.querySelector('#d-testimonial').value,
+      sterren: Number(doel.querySelector('#d-sterren').value),
+      publiceerbaar: doel.querySelector('#d-publiceerbaar').checked,
+    }, 'Testimonial opgeslagen.'));
+
+  doel.querySelector('[data-actie="pitch"]')?.addEventListener('click', () => {
+    staat.afzender.bedrijf = doel.querySelector('#a-bedrijf').value;
+    staat.afzender.telefoon = doel.querySelector('#a-telefoon').value;
+    haalPitch(doel, lead.id);
+  });
+
+  doel.querySelector('[data-actie="kopieer"]')?.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(doel.querySelector('#d-mail').value);
+    zeg('Gekopieerd naar je klembord.');
+  });
+}
+
+async function haalPitch(doel, id) {
+  const veld = doel.querySelector('#d-mail');
+  if (!veld) return;
+  const params = new URLSearchParams();
+  if (staat.afzender.bedrijf) params.set('bedrijf', staat.afzender.bedrijf);
+  if (staat.afzender.telefoon) params.set('telefoon', staat.afzender.telefoon);
+  try {
+    const pitch = await api(`/api/leads/${id}/pitch?${params}`);
+    veld.value = `Aan: ${pitch.aan ?? '(geen e-mailadres gevonden — bel of gebruik het contactformulier)'}\n` +
+      `Onderwerp: ${pitch.subject}\n\n${pitch.body}`;
+  } catch (fout) {
+    veld.value = fout.message;
+  }
+}
+
+// --------------------------------------------------------------------------
+// Weergaven
+// --------------------------------------------------------------------------
+for (const knop of $('tabs').querySelectorAll('.tab')) {
+  knop.addEventListener('click', () => wisselNaar(knop.dataset.weergave));
+}
+
+async function wisselNaar(weergave) {
+  staat.weergave = weergave;
+  for (const knop of $('tabs').querySelectorAll('.tab')) {
+    knop.setAttribute('aria-pressed', String(knop.dataset.weergave === weergave));
+  }
+  for (const naam of ['kaart', 'mijn', 'team']) $(`weergave-${naam}`).hidden = naam !== weergave;
+
+  if (weergave === 'kaart') { kaart?.hermeet(); await ververs(); }
+  if (weergave === 'mijn') await toonMijnLijst();
+  if (weergave === 'team') await toonTeam();
+}
+
+async function toonMijnLijst() {
+  const overzicht = await api('/api/overzicht');
+  const mijn = await api(`/api/leads?agent=${staat.ik.id}&sort=actie&limit=300`);
+
+  $('mijn-trechter').innerHTML = overzicht.trechter
+    .filter((stap) => stap.aantal > 0)
+    .map((stap) => `<button class="trechterstap" data-fase="${stap.fase}"
+        aria-pressed="${staat.filters.fase === stap.fase}"><b>${stap.aantal}</b><span>${esc(stap.label)}</span></button>`).join('')
+    || '<p class="sub">Nog geen leads toegewezen.</p>';
+
+  for (const knop of $('mijn-trechter').querySelectorAll('.trechterstap')) {
+    knop.addEventListener('click', async () => {
+      const fase = knop.dataset.fase;
+      const lijst = await api(`/api/leads?agent=${staat.ik.id}&fase=${fase}&sort=actie&limit=300`);
+      tekenLijst($('mijn-rijen'), $('mijn-geen'), lijst.leads, 'mijn');
+      for (const andere of $('mijn-trechter').querySelectorAll('.trechterstap')) {
+        andere.setAttribute('aria-pressed', String(andere === knop));
+      }
+    });
+  }
+  tekenLijst($('mijn-rijen'), $('mijn-geen'), mijn.leads, 'mijn');
+}
+
+async function toonTeam() {
+  const gegevens = await api('/api/team');
+  const overzicht = await api('/api/overzicht');
+
+  $('omzettegels').innerHTML = [
+    { waarde: gegevens.omzet.actieveKlanten, tekst: 'betalende klanten', klem: true },
+    { waarde: euro(gegevens.omzet.mrrCent), tekst: 'per maand', klem: true },
+    { waarde: euro(gegevens.omzet.jaaromzetCent), tekst: 'op jaarbasis' },
+    { waarde: euro(gegevens.omzet.gemiddeldeKlantCent), tekst: 'gemiddeld per klant' },
+    { waarde: gegevens.omzet.proefKlanten, tekst: 'in proefperiode' },
+    { waarde: gegevens.omzet.opgezegd, tekst: 'opgezegd' },
+  ].map((tegel) => `<div class="tegel${tegel.klem ? ' klem' : ''}"><b>${esc(tegel.waarde)}</b><span>${tegel.tekst}</span></div>`).join('');
+
+  $('team-rijen').innerHTML = gegevens.team.map((regel) => `
+    <tr>
+      <td><div class="naam">${esc(regel.naam)}</div><div class="sub">${esc(regel.rol)}</div></td>
+      <td class="mono">${regel.open}</td>
+      <td class="mono">${regel.gebeld_7d}</td>
+      <td class="mono">${regel.afspraken}</td>
+      <td class="mono">${regel.klanten}</td>
+      <td class="mono">${euro(regel.mrr_cent)}</td>
+      <td class="mono">${regel.testimonials}</td>
+    </tr>`).join('');
+
+  const grootste = Math.max(...overzicht.trechter.map((stap) => stap.aantal), 1);
+  $('team-trechter').innerHTML = overzicht.trechter.map((stap) => `
+    <div class="meter">
+      <span class="meter-naam">${esc(stap.label)}</span>
+      <span class="meter-waarde">${stap.aantal}</span>
+      <span class="meter-spoor"><i class="meter-vul" style="width:${Math.round((stap.aantal / grootste) * 100)}%"></i></span>
+    </div>`).join('');
+}
+
+$('nieuwe-gebruiker').addEventListener('submit', async (gebeurtenis) => {
+  gebeurtenis.preventDefault();
+  const formulier = new FormData(gebeurtenis.target);
+  try {
+    const nieuw = await api('/api/team', { method: 'POST', body: JSON.stringify(Object.fromEntries(formulier)) });
+    $('t-melding').textContent = `${nieuw.gebruiker.naam} kan nu inloggen.`;
+    $('t-melding').classList.add('goed');
+    gebeurtenis.target.reset();
+    await toonTeam();
+  } catch (fout) {
+    $('t-melding').textContent = fout.message;
+    $('t-melding').classList.remove('goed');
+  }
+});
+
+// --------------------------------------------------------------------------
+// Bediening
+// --------------------------------------------------------------------------
+const koppelFilter = (id, sleutel, gebeurtenisNaam = 'change') => {
+  $(id).addEventListener(gebeurtenisNaam, () => {
+    staat.filters[sleutel] = $(id).type === 'checkbox' ? $(id).checked : $(id).value;
+    ververs();
+  });
+};
+koppelFilter('f-zoek', 'zoek', 'change');
+koppelFilter('f-plaats', 'plaats');
+koppelFilter('f-fase', 'fase');
+koppelFilter('f-agent', 'agent');
+koppelFilter('f-contact', 'contact');
+
+$('f-wis').addEventListener('click', () => {
+  staat.filters = { zoek: '', plaats: '', fase: '', agent: '', contact: false, band: '' };
+  for (const id of ['f-zoek', 'f-plaats', 'f-fase', 'f-agent']) $(id).value = '';
+  $('f-contact').checked = false;
+  ververs();
+});
+
+$('k-in').addEventListener('click', () => kaart.zoomKnop(1.5));
+$('k-uit').addEventListener('click', () => kaart.zoomKnop(1 / 1.5));
+$('k-herstel').addEventListener('click', () => kaart.herstel());
+
+start();

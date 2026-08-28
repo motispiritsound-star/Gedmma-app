@@ -18,6 +18,10 @@ const CATEGORIES: Record<string, string[]> = {
 type OverpassElement = {
   type: string;
   id: number;
+  /** Nodes hebben lat/lon zelf; ways en relations krijgen een center mee. */
+  lat?: number;
+  lon?: number;
+  center?: { lat: number; lon: number };
   tags?: Record<string, string>;
 };
 
@@ -90,6 +94,8 @@ export const osmSource: Source = {
         branch: tags.shop ?? tags.office ?? tags.craft ?? tags.amenity ?? tags.healthcare ?? tags.tourism ?? null,
         phone: tags.phone ?? tags['contact:phone'] ?? null,
         email: tags.email ?? tags['contact:email'] ?? null,
+        lat: element.lat ?? element.center?.lat ?? null,
+        lon: element.lon ?? element.center?.lon ?? null,
         source: 'osm',
         sourceRef: `${element.type}/${element.id}`,
       });

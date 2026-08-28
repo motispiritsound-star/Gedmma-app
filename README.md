@@ -1,13 +1,19 @@
 # Webscan NL
 
 Scant geautomatiseerd de websites van Nederlandse bedrijven, geeft elke site een
-cijfer van 0 tot 100 en zet de slecht scorende sites op een belijst — inclusief
-contactgegevens, een lijst met wat er precies mis is en een concept-mail waarin
-je aanbiedt het kosteloos op te lossen op je eigen hosting.
+cijfer van 0 tot 100 en zet ze als gekleurde bollen op de kaart: **rood** is een
+slechte site, **oranje** matig, **groen** goed. De slechte sites zijn je leads.
+Vanaf daar werkt je team ze uit — bellen, adviseren, gratis verbeteren, hosting
+overnemen — tot ze maandelijks betalende klanten zijn.
 
 ```
-bedrijven ophalen  →  websites scannen  →  score + problemen  →  leads + concept-mail
+bedrijven ophalen → scannen → kaart met rood/oranje/groen → bellen → klant → maandomzet
 ```
+
+Het is een platform voor meer mensen dan jij alleen: je maakt accounts aan voor
+de agents die je werft, wijst leads toe (of laat ze zelf oppakken), en ziet per
+persoon hoeveel er gebeld is, hoeveel afspraken eruit komen en welke maandomzet
+ze binnenbrengen.
 
 ## Snel starten
 
@@ -15,16 +21,16 @@ bedrijven ophalen  →  websites scannen  →  score + problemen  →  leads + c
 npm install
 cp .env.example .env          # zet je eigen contactgegevens in WEBSCAN_USER_AGENT
 
-# 1. Bedrijven met een website ophalen (gratis, uit OpenStreetMap)
+# 1. Maak je eigen account aan
+node src/cli.ts gebruiker toevoegen --naam "Jouw naam" --email jij@voorbeeld.nl --rol eigenaar
+
+# 2. Bedrijven met een website ophalen (gratis, uit OpenStreetMap — mét positie)
 node src/cli.ts import --source osm --area Utrecht --category all --limit 300
 
-# 2. Hun websites scannen
+# 3. Hun websites scannen
 node src/cli.ts scan --limit 300
 
-# 3. De slechte eruit pikken
-node src/cli.ts leads --max-score 50 --met-contact
-
-# 4. Of alles bekijken in het dashboard
+# 4. Alles bekijken op de kaart
 node src/cli.ts serve      # http://localhost:4321
 ```
 
@@ -80,6 +86,74 @@ een stuk trager, dus gebruik het op je shortlist en niet op de hele lijst:
 node src/cli.ts scan --deep --limit 25 --screenshots ./out/screenshots
 ```
 
+## De kaart
+
+Het dashboard opent op de kaart van Nederland met elk gescand bedrijf als een
+bolletje: rood onder de 40, oranje van 40 tot 70, groen daarboven. Bollen die op
+elkaar liggen worden gebundeld tot één grotere bol met een aantal erin; klik erop
+om in te zoomen. Klik een los bolletje aan en de lead opent rechts.
+
+De kaart gebruikt geen externe kaartdienst en laadt geen tegels: de omtrek van
+Nederland staat als 6 kB aan coördinaten in de repo (Natural Earth, publiek
+domein). Dat scheelt een afhankelijkheid, kost geen verkeer, en er lekt geen
+informatie over wie jij opzoekt naar een tegelserver.
+
+Bedrijven uit OpenStreetMap hebben hun eigen positie al. Voor bedrijven uit een
+CSV zoek je de plaats op met:
+
+```bash
+node src/cli.ts geocode --limit 500
+```
+
+Dat gebruikt Nominatim (één verzoek per seconde, zoals hun voorwaarden vragen) en
+zet alle bedrijven uit dezelfde plaats rond het centrum, met wat spreiding zodat
+ze niet op elkaar vallen. Een grove positie dus — goed genoeg om regio's te zien,
+niet om een pand te vinden.
+
+## Met een team werken
+
+Iedereen logt in met een eigen account. Er zijn twee rollen:
+
+- **eigenaar** — ziet alles, wijst leads toe, ziet de omzet en maakt accounts aan;
+- **agent** — pakt vrije leads op, werkt zijn eigen lijst af.
+
+Een lead die een agent oppakt is van hem: een collega kan er niet meer in werken.
+Zo bellen twee mensen nooit hetzelfde bedrijf.
+
+```bash
+node src/cli.ts gebruiker toevoegen --naam "Sara de Wit" --email sara@voorbeeld.nl
+node src/cli.ts gebruiker lijst
+node src/cli.ts gebruiker blokkeren sara@voorbeeld.nl      # en --herstel om terug te draaien
+```
+
+### De weg van lead naar klant
+
+| Fase | Betekenis |
+| --- | --- |
+| `nieuw` | Gescand, nog niemand mee bezig |
+| `toegewezen` | Op de lijst van een agent |
+| `gebeld` | Gesproken, nog geen besluit |
+| `geen_gehoor` | Niet bereikt, later opnieuw |
+| `afspraak` | Afspraak of terugbelmoment staat |
+| `akkoord` | Zegt ja tegen de gratis verbetering |
+| `in_aanbouw` | Nieuwe site wordt gebouwd |
+| `live` | Site staat live op onze hosting |
+| `klant` | Betaalt maandelijks voor hosting |
+| `afgewezen` | Geen interesse |
+
+Elk telefoontje, elke notitie en elke fasewissel komt in de geschiedenis van die
+lead te staan, met wie het deed en wanneer. Zeggen ze ja, dan leg je het
+maandbedrag vast en telt de lead mee in de maandomzet — van het bedrijf én van de
+agent die hem binnenhaalde. Testimonials leg je bij dezelfde lead vast, met een
+vinkje of je hem mag publiceren.
+
+```bash
+node src/cli.ts fase 42 afspraak --agent sara@voorbeeld.nl --notitie "dinsdag 14:00"
+node src/cli.ts trechter        # hoeveel bedrijven in welke fase
+node src/cli.ts team            # wie belt hoeveel en brengt hoeveel op
+node src/cli.ts testimonials --publiceerbaar
+```
+
 ## Leads eruit halen
 
 ```bash
@@ -94,12 +168,12 @@ node src/cli.ts pitch 12 --naam "Jouw naam" --bedrijf "Jouw bedrijf" \
   --telefoon "06-12345678" --email "jij@voorbeeld.nl" --rapport
 
 # Bijhouden waar je staat
-node src/cli.ts status 12 benaderd --note "voicemail ingesproken"
+node src/cli.ts fase 12 gebeld --notitie "voicemail ingesproken"
 ```
 
-Het dashboard (`node src/cli.ts serve`) doet hetzelfde met filters, een
-scoreverdeling per onderdeel, de volledige probleemlijst en een knop om de
-concept-mail te kopiëren.
+Het dashboard (`node src/cli.ts serve`) doet hetzelfde met de kaart erbij: filters,
+de scoreverdeling per onderdeel, de volledige probleemlijst, knoppen om een
+telefoontje vast te leggen, en de concept-mail met een kopieerknop.
 
 ## Heel Nederland scannen
 
@@ -117,6 +191,20 @@ node src/cli.ts scan --limit 5000 --concurrency 8
 Reken op ongeveer 1 tot 3 seconden per site. Met `--concurrency 8` is dat ruwweg
 10.000 sites per uur; de rem zit bewust in de pauze per host (`WEBSCAN_HOST_DELAY_MS`),
 niet in de doorvoer over alle hosts heen.
+
+## Voordat je het op internet zet
+
+Het dashboard is gebouwd voor een team dat je kent, op een server die je zelf
+beheert. Inloggen gaat met scrypt-gehashte wachtwoorden en een HttpOnly-sessiecookie,
+mislukte pogingen worden afgeremd, en agents kunnen alleen bij hun eigen leads.
+Wat er nog niet in zit en wat je zelf moet regelen voordat het publiek bereikbaar is:
+
+- **HTTPS ervoor** (nginx of Caddy als reverse proxy) en `WEBSCAN_HTTPS=1` in je
+  `.env`, zodat de sessiecookie `Secure` meekrijgt;
+- **wachtwoord vergeten** — er is geen herstelmail; als eigenaar zet je met
+  `webscan gebruiker wachtwoord <email>` een nieuw wachtwoord;
+- **back-ups** van `data/webscan.db` (één bestand, dus een kopie volstaat);
+- **tweefactor** zit er niet in.
 
 ## Spelregels
 
@@ -142,23 +230,32 @@ na en pas hem aan voor je iets verstuurt.
 src/
   cli.ts              alle commando's
   config.ts           instellingen en .env
+  db/
+    schema.ts         migraties — de database werkt zichzelf bij
+    index.ts          verbinding, bedrijven en scans
+    team.ts           accounts, wachtwoorden en sessies
+    pipeline.ts       fases, belgeschiedenis, klanten, testimonials
   sources/            waar bedrijven vandaan komen (osm, csv, kvk)
   scan/
     robots.ts         robots.txt lezen en naleven
     fetcher.ts        beleefd ophalen, https-fallback, timing
     analyze.ts        HTML omzetten in meetbare signalen
     tech.ts           CMS-, framework- en verouderde-techniekdetectie
+    geocode.ts        plaatsnamen naar coördinaten (Nominatim)
     deep.ts           optionele browsermeting (LCP/CLS/screenshot)
     scanner.ts        alles aan elkaar knopen
   score/
     rules.ts          de probleemcatalogus — hier pas je het oordeel aan
     score.ts          punten naar score, cijfer en deelscores
   report/
-    leads.ts          leads opvragen en filteren
+    leads.ts          leads opvragen, filteren en kaartpunten
     export.ts         CSV/JSON-export
     pitch.ts          concept-mail en rapport
-  server/             dashboard (API + één HTML-pagina)
-data/webscan.db       SQLite-database met bedrijven, scans en opvolging
+  server/
+    index.ts          API met inloggen en rechten
+    public/           dashboard: kaart (canvas), lijst en detailpaneel
+tools/build-map.ts    maakt de omtrek van Nederland (eenmalig)
+data/webscan.db       SQLite: bedrijven, scans, team, opvolging en klanten
 ```
 
 ## Demo

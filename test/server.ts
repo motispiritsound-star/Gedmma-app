@@ -7,67 +7,129 @@ const base = `http://127.0.0.1:${port}`;
 
 const { upsertCompanies, db } = await import('../src/db/index.ts');
 const { scanAll } = await import('../src/scan/scanner.ts');
+const { maakGebruiker } = await import('../src/db/team.ts');
 
 upsertCompanies([
-  { name: 'Loodgietersbedrijf De Kraan', website: `${base}/slecht`, domain: 'dekraan.test', city: 'Utrecht', source: 'test' },
-  { name: 'Van Dijk Installatie', website: `${base}/goed`, domain: 'vandijk.test', city: 'Utrecht', source: 'test' },
-  { name: 'Kapotte Site BV', website: `${base}/kapot`, domain: 'kapot2.test', city: 'Amersfoort', source: 'test' },
+  { name: 'Loodgietersbedrijf De Kraan', website: `${base}/slecht`, domain: 'dekraan.test', city: 'Utrecht', lat: 52.09, lon: 5.12, source: 'test' },
+  { name: 'Van Dijk Installatie', website: `${base}/goed`, domain: 'vandijk.test', city: 'Utrecht', lat: 52.10, lon: 5.13, source: 'test' },
+  { name: 'Kapotte Site BV', website: `${base}/kapot`, domain: 'kapot2.test', city: 'Amersfoort', lat: 52.15, lon: 5.38, source: 'test' },
 ]);
-const rows = db().prepare("SELECT * FROM companies WHERE source = 'test'").all() as any[];
-await scanAll(rows as any, { concurrency: 3 });
+await scanAll(db().prepare("SELECT * FROM companies WHERE source = 'test'").all() as never[], { concurrency: 3 });
+
+maakGebruiker({ naam: 'Eigenaar', email: 'eigenaar@test.nl', wachtwoord: 'testwachtwoord', rol: 'eigenaar' });
+maakGebruiker({ naam: 'Agent Een', email: 'een@test.nl', wachtwoord: 'testwachtwoord' });
+maakGebruiker({ naam: 'Agent Twee', email: 'twee@test.nl', wachtwoord: 'testwachtwoord' });
 
 const { startServer } = await import('../src/server/index.ts');
-const apiPort = 4399;
-await startServer(apiPort);
+const apiPoort = 4399;
+await startServer(apiPoort);
+const url = (pad: string) => `http://127.0.0.1:${apiPoort}${pad}`;
 
-const get = async (path: string) => {
-  const response = await fetch(`http://127.0.0.1:${apiPort}${path}`);
-  return { status: response.status, body: await response.text() };
+let mislukt = 0;
+const check = (label: string, goed: boolean, extra = '') => {
+  if (goed) console.log(`  ✓ ${label}`);
+  else { mislukt++; console.error(`  ✗ ${label} ${extra}`); }
 };
 
-let failures = 0;
-const check = (label: string, condition: boolean, extra = '') => {
-  if (condition) console.log(`  ✓ ${label}`);
-  else { failures++; console.error(`  ✗ ${label} ${extra}`); }
-};
+/** Houdt de sessiecookie per gebruiker vast, zoals een browser dat doet. */
+function maakClient() {
+  let cookie = '';
+  return {
+    async doe(pad: string, opties: RequestInit = {}) {
+      const antwoord = await fetch(url(pad), {
+        ...opties,
+        headers: { ...(opties.body ? { 'content-type': 'application/json' } : {}), ...(cookie ? { cookie } : {}) },
+      });
+      const gezet = antwoord.headers.get('set-cookie');
+      if (gezet) cookie = gezet.split(';')[0]!;
+      const tekst = await antwoord.text();
+      let inhoud: any = {};
+      try { inhoud = JSON.parse(tekst); } catch { inhoud = tekst; }
+      return { status: antwoord.status, inhoud };
+    },
+    async login(email: string, wachtwoord: string) {
+      return this.doe('/api/login', { method: 'POST', body: JSON.stringify({ email, wachtwoord }) });
+    },
+  };
+}
 
-console.log('\nDashboard-API:');
-const home = await get('/');
-check('index.html wordt geserveerd', home.status === 200 && home.body.includes('Webscan NL'));
+console.log('\nToegang:');
+const gast = maakClient();
+check('zonder login geen leads', (await gast.doe('/api/leads')).status === 401);
+check('verkeerd wachtwoord wordt geweigerd', (await gast.login('eigenaar@test.nl', 'fout')).status === 401);
 
-const stats = await get('/api/stats');
-check('/api/stats geeft cijfers', stats.status === 200 && JSON.parse(stats.body).bedrijven >= 3);
+const eigenaar = maakClient();
+check('eigenaar kan inloggen', (await eigenaar.login('eigenaar@test.nl', 'testwachtwoord')).status === 200);
+check('sessie blijft staan', (await eigenaar.doe('/api/mij')).inhoud.ingelogd === true);
 
-const leads = await get('/api/leads?maxScore=55&limit=50');
-const leadList = JSON.parse(leads.body).leads;
-check('/api/leads geeft de slechte sites', leadList.length >= 2, `kreeg ${leadList.length}`);
-check('leads staan op score gesorteerd', leadList[0].score <= leadList[leadList.length - 1].score);
+const een = maakClient();
+const twee = maakClient();
+await een.login('een@test.nl', 'testwachtwoord');
+await twee.login('twee@test.nl', 'testwachtwoord');
+check('agent mag niet bij het teamoverzicht', (await een.doe('/api/team')).status === 403);
+check('eigenaar mag wel bij het teamoverzicht', (await eigenaar.doe('/api/team')).status === 200);
 
-const worst = leadList[0];
-const detail = await get(`/api/leads/${worst.id}`);
-check('/api/leads/:id geeft het volledige rapport', detail.status === 200 && JSON.parse(detail.body).report.verdict);
+console.log('\nLeads en kaart:');
+const leads = (await eigenaar.doe('/api/leads?maxScore=100&limit=50')).inhoud.leads;
+check('leads komen terug', leads.length === 3, `kreeg ${leads.length}`);
+check('gesorteerd op score', leads[0].score <= leads[2].score);
+const kaart = (await eigenaar.doe('/api/kaart')).inhoud.punten;
+check('kaartpunten hebben coördinaten', kaart.length === 3 && kaart.every((punt: any) => punt.lat && punt.lon));
+check('kaartpunten zijn licht (geen rapport)', !('report' in kaart[0]));
 
-const pitch = await get(`/api/leads/${worst.id}/pitch?naam=Ayoub&bedrijf=Studio&telefoon=0612345678&email=a@b.nl`);
-const pitchBody = JSON.parse(pitch.body);
-check('/pitch geeft onderwerp en tekst', Boolean(pitchBody.subject && pitchBody.body));
-check('pitch bevat de afzender', pitchBody.body.includes('Ayoub') && pitchBody.body.includes('Studio'));
-check('pitch noemt een concreet probleem', pitchBody.body.includes('•'));
-check('pitch bevat een rapport', pitchBody.report.includes('Scores per onderdeel'));
+const slechtste = leads[0];
 
-const statusUpdate = await fetch(`http://127.0.0.1:${apiPort}/api/leads/${worst.id}/status`, {
-  method: 'POST', headers: { 'content-type': 'application/json' },
-  body: JSON.stringify({ status: 'benaderd', note: 'gebeld op maandag' }),
-});
-check('status bijwerken werkt', statusUpdate.status === 200);
-const after = await get(`/api/leads?status=benaderd&maxScore=100`);
-check('status is opgeslagen', JSON.parse(after.body).leads.some((lead: any) => lead.id === worst.id));
+console.log('\nSamenwerken aan een lead:');
+check('agent één claimt de lead', (await een.doe(`/api/leads/${slechtste.id}/claim`, { method: 'POST' })).status === 200);
+check('agent twee kan hem niet meer claimen', (await twee.doe(`/api/leads/${slechtste.id}/claim`, { method: 'POST' })).status === 409);
+check('agent twee mag er niet in werken',
+  (await twee.doe(`/api/leads/${slechtste.id}/fase`, { method: 'POST', body: JSON.stringify({ fase: 'gebeld' }) })).status === 403);
+check('agent één mag dat wel',
+  (await een.doe(`/api/leads/${slechtste.id}/fase`, { method: 'POST', body: JSON.stringify({ fase: 'gebeld', notitie: 'eigenaar gesproken' }) })).status === 200);
 
-const csv = await get('/api/export.csv?maxScore=55');
-check('CSV-export werkt', csv.status === 200 && csv.body.split('\n').length >= 3, csv.body.slice(0, 60));
+await een.doe(`/api/leads/${slechtste.id}/activiteit`, { method: 'POST', body: JSON.stringify({ soort: 'gebeld', notitie: 'wil offerte zien' }) });
+const detail = (await een.doe(`/api/leads/${slechtste.id}`)).inhoud;
+check('fase is bijgewerkt', detail.fase === 'gebeld', detail.fase);
+check('geschiedenis is bijgehouden', detail.geschiedenis.length >= 2, `${detail.geschiedenis.length} regels`);
+check('lead staat op naam van agent één', detail.agent_naam === 'Agent Een');
 
-console.log('\nVoorbeeld-mail voor de slechtste site:\n');
-console.log(pitchBody.body.split('\n').slice(0, 12).map((line: string) => '  ' + line).join('\n'));
+check('onbekende fase wordt geweigerd',
+  (await een.doe(`/api/leads/${slechtste.id}/fase`, { method: 'POST', body: JSON.stringify({ fase: 'onzin' }) })).status === 400);
+
+console.log('\nKlant en testimonial:');
+check('klant vastleggen',
+  (await een.doe(`/api/leads/${slechtste.id}/klant`, { method: 'POST', body: JSON.stringify({ maandbedrag: 24.5 }) })).status === 200);
+const naKlant = (await eigenaar.doe('/api/team')).inhoud;
+check('maandomzet klopt', naKlant.omzet.mrrCent === 2450, `kreeg ${naKlant.omzet.mrrCent}`);
+check('omzet telt door naar de agent', naKlant.team.find((regel: any) => regel.naam === 'Agent Een').mrr_cent === 2450);
+check('fase staat automatisch op klant', (await een.doe(`/api/leads/${slechtste.id}`)).inhoud.fase === 'klant');
+
+check('testimonial opslaan', (await een.doe(`/api/leads/${slechtste.id}/testimonial`, {
+  method: 'POST', body: JSON.stringify({ tekst: 'Prima geregeld', sterren: 5, publiceerbaar: true }),
+})).status === 200);
+check('lege testimonial wordt geweigerd', (await een.doe(`/api/leads/${slechtste.id}/testimonial`, {
+  method: 'POST', body: JSON.stringify({ tekst: '  ' }),
+})).status === 400);
+
+console.log('\nToewijzen door de eigenaar:');
+const tweede = leads[1];
+check('eigenaar wijst toe', (await eigenaar.doe(`/api/leads/${tweede.id}/toewijzen`, {
+  method: 'POST', body: JSON.stringify({ agentId: (await eigenaar.doe('/api/team')).inhoud.gebruikers.find((g: any) => g.email === 'twee@test.nl').id }),
+})).status === 200);
+check('agent mag niet toewijzen', (await een.doe(`/api/leads/${tweede.id}/toewijzen`, {
+  method: 'POST', body: JSON.stringify({ agentId: null }),
+})).status === 403);
+check('lead staat nu bij agent twee', (await eigenaar.doe(`/api/leads/${tweede.id}`)).inhoud.agent_naam === 'Agent Twee');
+
+console.log('\nOverig:');
+const pitch = (await een.doe(`/api/leads/${slechtste.id}/pitch?bedrijf=Studio`)).inhoud;
+check('concept-mail wordt gemaakt', Boolean(pitch.subject && pitch.body.includes('Studio')));
+const csv = (await eigenaar.doe('/api/export.csv?maxScore=100')).inhoud;
+check('csv-export werkt', typeof csv === 'string' && csv.split('\n').length >= 4);
+check('uitloggen wist de sessie',
+  (await een.doe('/api/uitloggen', { method: 'POST' })).status === 200 &&
+  (await een.doe('/api/leads')).status === 401);
 
 server.close();
-console.log(failures === 0 ? '\nAlle controles geslaagd.\n' : `\n${failures} controle(s) mislukt.\n`);
-process.exit(failures === 0 ? 0 : 1);
+console.log(mislukt === 0 ? '\nAlle controles geslaagd.\n' : `\n${mislukt} controle(s) mislukt.\n`);
+process.exit(mislukt === 0 ? 0 : 1);

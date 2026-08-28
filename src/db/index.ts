@@ -2,6 +2,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { config } from '../config.ts';
+import { migreer } from './schema.ts';
 
 export type CompanyRow = {
   id: number;
@@ -14,78 +15,12 @@ export type CompanyRow = {
   kvk_number: string | null;
   phone: string | null;
   email: string | null;
+  lat: number | null;
+  lon: number | null;
   source: string;
   source_ref: string | null;
   created_at: string;
 };
-
-export type ScanRow = {
-  id: number;
-  company_id: number;
-  scanned_at: string;
-  status: string;
-  score: number | null;
-  grade: string | null;
-  final_url: string | null;
-  http_status: number | null;
-  error: string | null;
-  report: string;
-};
-
-const SCHEMA = `
-CREATE TABLE IF NOT EXISTS companies (
-  id          INTEGER PRIMARY KEY,
-  name        TEXT NOT NULL,
-  website     TEXT NOT NULL,
-  domain      TEXT NOT NULL UNIQUE,
-  city        TEXT,
-  province    TEXT,
-  branch      TEXT,
-  kvk_number  TEXT,
-  phone       TEXT,
-  email       TEXT,
-  source      TEXT NOT NULL,
-  source_ref  TEXT,
-  created_at  TEXT NOT NULL DEFAULT (datetime('now'))
-);
-
-CREATE TABLE IF NOT EXISTS scans (
-  id          INTEGER PRIMARY KEY,
-  company_id  INTEGER NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
-  scanned_at  TEXT NOT NULL DEFAULT (datetime('now')),
-  status      TEXT NOT NULL,
-  score       INTEGER,
-  grade       TEXT,
-  final_url   TEXT,
-  http_status INTEGER,
-  error       TEXT,
-  report      TEXT NOT NULL DEFAULT '{}'
-);
-
-CREATE INDEX IF NOT EXISTS idx_scans_company ON scans(company_id, scanned_at DESC);
-CREATE INDEX IF NOT EXISTS idx_scans_score   ON scans(score);
-
-CREATE TABLE IF NOT EXISTS outreach (
-  company_id  INTEGER PRIMARY KEY REFERENCES companies(id) ON DELETE CASCADE,
-  status      TEXT NOT NULL DEFAULT 'nieuw',
-  note        TEXT,
-  updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
-);
-
--- Laatste scan per bedrijf, verrijkt met leadstatus.
-CREATE VIEW IF NOT EXISTS leads AS
-SELECT
-  c.id, c.name, c.website, c.domain, c.city, c.province, c.branch,
-  c.phone AS company_phone, c.email AS company_email, c.source,
-  s.id AS scan_id, s.scanned_at, s.status AS scan_status,
-  s.score, s.grade, s.final_url, s.http_status, s.error, s.report,
-  COALESCE(o.status, 'nieuw') AS outreach_status, o.note AS outreach_note
-FROM companies c
-LEFT JOIN scans s ON s.id = (
-  SELECT id FROM scans WHERE company_id = c.id ORDER BY scanned_at DESC, id DESC LIMIT 1
-)
-LEFT JOIN outreach o ON o.company_id = c.id;
-`;
 
 let handle: DatabaseSync | null = null;
 
@@ -95,8 +30,14 @@ export function db(): DatabaseSync {
   handle = new DatabaseSync(config.dbPath);
   handle.exec('PRAGMA journal_mode = WAL;');
   handle.exec('PRAGMA foreign_keys = ON;');
-  handle.exec(SCHEMA);
+  migreer(handle);
   return handle;
+}
+
+/** Sluit de verbinding; alleen nodig in tests en scripts. */
+export function sluitDb(): void {
+  handle?.close();
+  handle = null;
 }
 
 export type CompanyInput = {
@@ -109,6 +50,8 @@ export type CompanyInput = {
   kvkNumber?: string | null;
   phone?: string | null;
   email?: string | null;
+  lat?: number | null;
+  lon?: number | null;
   source: string;
   sourceRef?: string | null;
 };
@@ -116,9 +59,10 @@ export type CompanyInput = {
 /** Voegt bedrijven toe; bestaande domeinen worden aangevuld, niet overschreven. */
 export function upsertCompanies(rows: CompanyInput[]): { inserted: number; updated: number } {
   const database = db();
+  const bestaat = database.prepare('SELECT 1 FROM companies WHERE domain = ?');
   const insert = database.prepare(`
-    INSERT INTO companies (name, website, domain, city, province, branch, kvk_number, phone, email, source, source_ref)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO companies (name, website, domain, city, province, branch, kvk_number, phone, email, lat, lon, source, source_ref)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(domain) DO UPDATE SET
       name       = COALESCE(NULLIF(companies.name, ''), excluded.name),
       city       = COALESCE(companies.city, excluded.city),
@@ -126,7 +70,9 @@ export function upsertCompanies(rows: CompanyInput[]): { inserted: number; updat
       branch     = COALESCE(companies.branch, excluded.branch),
       kvk_number = COALESCE(companies.kvk_number, excluded.kvk_number),
       phone      = COALESCE(companies.phone, excluded.phone),
-      email      = COALESCE(companies.email, excluded.email)
+      email      = COALESCE(companies.email, excluded.email),
+      lat        = COALESCE(companies.lat, excluded.lat),
+      lon        = COALESCE(companies.lon, excluded.lon)
   `);
 
   let inserted = 0;
@@ -134,13 +80,12 @@ export function upsertCompanies(rows: CompanyInput[]): { inserted: number; updat
   database.exec('BEGIN');
   try {
     for (const row of rows) {
-      const before = database.prepare('SELECT 1 FROM companies WHERE domain = ?').get(row.domain);
+      if (bestaat.get(row.domain)) updated++; else inserted++;
       insert.run(
         row.name, row.website, row.domain, row.city ?? null, row.province ?? null,
         row.branch ?? null, row.kvkNumber ?? null, row.phone ?? null, row.email ?? null,
-        row.source, row.sourceRef ?? null,
+        row.lat ?? null, row.lon ?? null, row.source, row.sourceRef ?? null,
       );
-      if (before) updated++; else inserted++;
     }
     database.exec('COMMIT');
   } catch (error) {
@@ -181,15 +126,15 @@ export function companiesToScan(opts: { limit?: number; rescanAfterDays?: number
   `).all(`-${days} days`, limit) as unknown as CompanyRow[];
 }
 
-export function setOutreach(companyId: number, status: string, note?: string): void {
-  db().prepare(`
-    INSERT INTO outreach (company_id, status, note, updated_at)
-    VALUES (?, ?, ?, datetime('now'))
-    ON CONFLICT(company_id) DO UPDATE SET
-      status = excluded.status,
-      note = COALESCE(excluded.note, outreach.note),
-      updated_at = datetime('now')
-  `).run(companyId, status, note ?? null);
+/** Bedrijven zonder coördinaten, voor de geocodeerstap. */
+export function companiesZonderCoordinaten(limit = 200): CompanyRow[] {
+  return db().prepare(
+    'SELECT * FROM companies WHERE (lat IS NULL OR lon IS NULL) AND city IS NOT NULL ORDER BY id LIMIT ?',
+  ).all(limit) as unknown as CompanyRow[];
+}
+
+export function bewaarCoordinaten(companyId: number, lat: number, lon: number): void {
+  db().prepare('UPDATE companies SET lat = ?, lon = ? WHERE id = ?').run(lat, lon, companyId);
 }
 
 export function stats(): Record<string, number> {
@@ -198,10 +143,12 @@ export function stats(): Record<string, number> {
   return {
     bedrijven: one('SELECT COUNT(*) n FROM companies'),
     gescand: one('SELECT COUNT(DISTINCT company_id) n FROM scans'),
-    ongescand: one(`SELECT COUNT(*) n FROM companies c WHERE NOT EXISTS (SELECT 1 FROM scans WHERE company_id = c.id)`),
-    slecht: one(`SELECT COUNT(*) n FROM leads WHERE score IS NOT NULL AND score < 50`),
-    matig: one(`SELECT COUNT(*) n FROM leads WHERE score >= 50 AND score < 70`),
-    goed: one(`SELECT COUNT(*) n FROM leads WHERE score >= 70`),
-    onbereikbaar: one(`SELECT COUNT(*) n FROM leads WHERE scan_status IN ('error','offline')`),
+    ongescand: one('SELECT COUNT(*) n FROM companies c WHERE NOT EXISTS (SELECT 1 FROM scans WHERE company_id = c.id)'),
+    slecht: one('SELECT COUNT(*) n FROM leads WHERE score IS NOT NULL AND score < 50'),
+    matig: one('SELECT COUNT(*) n FROM leads WHERE score >= 50 AND score < 70'),
+    goed: one('SELECT COUNT(*) n FROM leads WHERE score >= 70'),
+    onbereikbaar: one("SELECT COUNT(*) n FROM leads WHERE scan_status IN ('error','offline')"),
+    opKaart: one('SELECT COUNT(*) n FROM companies WHERE lat IS NOT NULL'),
+    klanten: one("SELECT COUNT(*) n FROM klanten WHERE status = 'actief'"),
   };
 }

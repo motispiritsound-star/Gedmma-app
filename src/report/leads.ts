@@ -9,15 +9,21 @@ export type LeadFilter = {
   city?: string;
   branch?: string;
   source?: string;
-  outreachStatus?: string;
+  /** Fase in de pijplijn, bv. 'nieuw' of 'afspraak'. */
+  fase?: string;
+  /** Alleen leads van deze agent. */
+  agentId?: number;
+  /** Alleen leads die nog van niemand zijn. */
+  alleenVrij?: boolean;
   /** Alleen leads met een telefoonnummer of e-mailadres. */
   metContact?: boolean;
-  /** Neem onbereikbare sites mee (standaard: ja). */
+  /** Alleen leads met coördinaten (voor de kaart). */
+  metCoordinaten?: boolean;
   includeOffline?: boolean;
   search?: string;
   limit?: number;
   offset?: number;
-  sort?: 'score' | 'naam' | 'datum';
+  sort?: 'score' | 'naam' | 'datum' | 'actie';
 };
 
 export type Lead = {
@@ -28,19 +34,31 @@ export type Lead = {
   city: string | null;
   branch: string | null;
   source: string;
+  lat: number | null;
+  lon: number | null;
   scanned_at: string | null;
   scan_status: string | null;
   score: number | null;
   grade: string | null;
   error: string | null;
-  outreach_status: string;
-  outreach_note: string | null;
+  fase: string;
+  toegewezen_aan: number | null;
+  agent_naam: string | null;
+  volgende_actie_op: string | null;
+  opvolging_notitie: string | null;
+  activiteiten: number;
+  klant_status: string | null;
+  maandbedrag_cent: number | null;
+  testimonial_sterren: number | null;
   contact: { emails: string[]; phones: string[] };
   topIssues: { id: string; title: string; severity: string }[];
   categories: { label: string; score: number; max: number }[];
 };
 
 type Row = Record<string, unknown>;
+
+const getal = (waarde: unknown): number | null =>
+  waarde === null || waarde === undefined ? null : Number(waarde);
 
 function shape(row: Row): Lead {
   let report: { verdict?: Verdict; signals?: PageSignals | null } = {};
@@ -58,13 +76,22 @@ function shape(row: Row): Lead {
     city: (row.city as string) ?? null,
     branch: (row.branch as string) ?? null,
     source: String(row.source ?? ''),
+    lat: getal(row.lat),
+    lon: getal(row.lon),
     scanned_at: (row.scanned_at as string) ?? null,
     scan_status: (row.scan_status as string) ?? null,
-    score: row.score === null || row.score === undefined ? null : Number(row.score),
+    score: getal(row.score),
     grade: (row.grade as string) ?? null,
     error: (row.error as string) ?? null,
-    outreach_status: String(row.outreach_status ?? 'nieuw'),
-    outreach_note: (row.outreach_note as string) ?? null,
+    fase: String(row.fase ?? 'nieuw'),
+    toegewezen_aan: getal(row.toegewezen_aan),
+    agent_naam: (row.agent_naam as string) ?? null,
+    volgende_actie_op: (row.volgende_actie_op as string) ?? null,
+    opvolging_notitie: (row.opvolging_notitie as string) ?? null,
+    activiteiten: Number(row.activiteiten ?? 0),
+    klant_status: (row.klant_status as string) ?? null,
+    maandbedrag_cent: getal(row.maandbedrag_cent),
+    testimonial_sterren: getal(row.testimonial_sterren),
     contact: {
       emails: emails.length > 0 ? emails : [row.company_email].filter(Boolean).map(String),
       phones: phones.length > 0 ? phones : [row.company_phone].filter(Boolean).map(String),
@@ -78,31 +105,41 @@ function shape(row: Row): Lead {
   };
 }
 
-export function queryLeads(filter: LeadFilter = {}): Lead[] {
-  const where: string[] = ['score IS NOT NULL'];
+function waar(filter: LeadFilter): { sql: string; params: (string | number)[] } {
+  const delen: string[] = ['score IS NOT NULL'];
   const params: (string | number)[] = [];
 
-  if (filter.maxScore !== undefined) { where.push('score <= ?'); params.push(filter.maxScore); }
-  if (filter.minScore !== undefined) { where.push('score >= ?'); params.push(filter.minScore); }
-  if (filter.grade) { where.push('grade = ?'); params.push(filter.grade.toUpperCase()); }
-  if (filter.city) { where.push('city LIKE ?'); params.push(`%${filter.city}%`); }
-  if (filter.branch) { where.push('branch LIKE ?'); params.push(`%${filter.branch}%`); }
-  if (filter.source) { where.push('source = ?'); params.push(filter.source); }
-  if (filter.outreachStatus) { where.push('outreach_status = ?'); params.push(filter.outreachStatus); }
-  if (filter.includeOffline === false) { where.push("scan_status = 'ok'"); }
+  if (filter.maxScore !== undefined) { delen.push('score <= ?'); params.push(filter.maxScore); }
+  if (filter.minScore !== undefined) { delen.push('score >= ?'); params.push(filter.minScore); }
+  if (filter.grade) { delen.push('grade = ?'); params.push(filter.grade.toUpperCase()); }
+  if (filter.city) { delen.push('city LIKE ?'); params.push(`%${filter.city}%`); }
+  if (filter.branch) { delen.push('branch LIKE ?'); params.push(`%${filter.branch}%`); }
+  if (filter.source) { delen.push('source = ?'); params.push(filter.source); }
+  if (filter.fase) { delen.push('fase = ?'); params.push(filter.fase); }
+  if (filter.agentId !== undefined) { delen.push('toegewezen_aan = ?'); params.push(filter.agentId); }
+  if (filter.alleenVrij) delen.push('toegewezen_aan IS NULL');
+  if (filter.metCoordinaten) delen.push('lat IS NOT NULL AND lon IS NOT NULL');
+  if (filter.includeOffline === false) delen.push("scan_status = 'ok'");
   if (filter.search) {
-    where.push('(name LIKE ? OR domain LIKE ?)');
-    params.push(`%${filter.search}%`, `%${filter.search}%`);
+    delen.push('(name LIKE ? OR domain LIKE ? OR city LIKE ?)');
+    params.push(`%${filter.search}%`, `%${filter.search}%`, `%${filter.search}%`);
   }
+  return { sql: delen.join(' AND '), params };
+}
 
-  const order = filter.sort === 'naam' ? 'name ASC'
-    : filter.sort === 'datum' ? 'scanned_at DESC'
-    : 'score ASC, name ASC';
+const SORTERING: Record<string, string> = {
+  score: 'score ASC, name ASC',
+  naam: 'name ASC',
+  datum: 'scanned_at DESC',
+  actie: 'volgende_actie_op IS NULL, volgende_actie_op ASC, score ASC',
+};
 
-  const sql = `SELECT * FROM leads WHERE ${where.join(' AND ')} ORDER BY ${order} LIMIT ? OFFSET ?`;
-  params.push(filter.limit ?? 200, filter.offset ?? 0);
+export function queryLeads(filter: LeadFilter = {}): Lead[] {
+  const { sql, params } = waar(filter);
+  const order = SORTERING[filter.sort ?? 'score'] ?? SORTERING.score!;
+  const rows = db().prepare(`SELECT * FROM leads WHERE ${sql} ORDER BY ${order} LIMIT ? OFFSET ?`)
+    .all(...params, filter.limit ?? 200, filter.offset ?? 0) as unknown as Row[];
 
-  const rows = db().prepare(sql).all(...params) as unknown as Row[];
   const leads = rows.map(shape);
   return filter.metContact
     ? leads.filter((lead) => lead.contact.emails.length > 0 || lead.contact.phones.length > 0)
@@ -110,7 +147,41 @@ export function queryLeads(filter: LeadFilter = {}): Lead[] {
 }
 
 export function countLeads(filter: LeadFilter = {}): number {
-  return queryLeads({ ...filter, limit: 100_000, offset: 0 }).length;
+  if (filter.metContact) return queryLeads({ ...filter, limit: 100_000, offset: 0 }).length;
+  const { sql, params } = waar(filter);
+  const rij = db().prepare(`SELECT COUNT(*) AS n FROM leads WHERE ${sql}`).get(...params) as { n: number };
+  return Number(rij?.n ?? 0);
+}
+
+export type KaartPunt = {
+  id: number; naam: string; plaats: string | null;
+  lat: number; lon: number; score: number; grade: string; fase: string;
+  agent: string | null; klant: boolean;
+};
+
+/**
+ * Lichte variant voor de kaart: alleen wat een bolletje nodig heeft. Duizenden
+ * bedrijven passen zo in één antwoord zonder de rapporten mee te sturen.
+ */
+export function kaartPunten(filter: LeadFilter = {}): KaartPunt[] {
+  const { sql, params } = waar({ ...filter, metCoordinaten: true });
+  const rows = db().prepare(`
+    SELECT id, name, city, lat, lon, score, grade, fase, agent_naam, klant_status
+    FROM leads WHERE ${sql} ORDER BY score ASC LIMIT ?
+  `).all(...params, filter.limit ?? 5000) as unknown as Row[];
+
+  return rows.map((row) => ({
+    id: Number(row.id),
+    naam: String(row.name ?? ''),
+    plaats: (row.city as string) ?? null,
+    lat: Number(row.lat),
+    lon: Number(row.lon),
+    score: Number(row.score),
+    grade: String(row.grade ?? 'F'),
+    fase: String(row.fase ?? 'nieuw'),
+    agent: (row.agent_naam as string) ?? null,
+    klant: row.klant_status === 'actief',
+  }));
 }
 
 export function getLead(id: number): (Lead & { report: unknown }) | null {
@@ -119,4 +190,13 @@ export function getLead(id: number): (Lead & { report: unknown }) | null {
   let report: unknown = {};
   try { report = JSON.parse(String(row.report ?? '{}')); } catch { /* negeren */ }
   return { ...shape(row), report };
+}
+
+/** Plaatsen met hun aantallen, voor de filterlijst en de kaartlegenda. */
+export function plaatsen(): { plaats: string; aantal: number; gemiddelde: number }[] {
+  return db().prepare(`
+    SELECT city AS plaats, COUNT(*) AS aantal, ROUND(AVG(score)) AS gemiddelde
+    FROM leads WHERE city IS NOT NULL AND score IS NOT NULL
+    GROUP BY city ORDER BY aantal DESC
+  `).all() as never;
 }

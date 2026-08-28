@@ -7,10 +7,10 @@
   --paper:#f2f5f5; --panel:#ffffff; --surface:#fbfcfc;
   --ink:#101a1c; --ink-2:#3d4d51; --muted:#68797d; --line:#dce4e5; --line-strong:#c3cfd1;
   --accent:#0f6b74; --accent-ink:#0b545c; --accent-wash:#e4f0f1;
-  --goed:#0ca30c; --goed-licht:#7cc96b; --waarschuwing:#fab219; --ernstig:#ec835a; --kritiek:#d03b3b;
-  --goed-wash:#e6f5e6; --waarschuwing-wash:#fdf1d8; --ernstig-wash:#fceee8; --kritiek-wash:#fae6e6;
-  --shadow:0 1px 2px rgba(16,26,28,.05), 0 8px 24px -16px rgba(16,26,28,.28);
-  --r:8px;
+  --slecht:#d03b3b; --matig:#e8901c; --goed:#0ca30c;
+  --slecht-wash:#fae6e6; --matig-wash:#fceee8; --goed-wash:#e6f5e6;
+  --kaart-water:#eaf0f1; --kaart-land:#dfe8e8; --kaart-rand:#a9bec0; --kaart-tekst:#5c6b71;
+  --shadow:0 1px 2px rgba(16,26,28,.05), 0 8px 24px -18px rgba(16,26,28,.3);
   --sans:"IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
@@ -19,232 +19,202 @@
     --paper:#0d1416; --panel:#131e20; --surface:#162224;
     --ink:#e3edee; --ink-2:#b3c4c6; --muted:#8b9fa2; --line:#243437; --line-strong:#33474b;
     --accent:#5bb8c1; --accent-ink:#8ed3d9; --accent-wash:#16302f;
-    --goed-wash:#12301a; --waarschuwing-wash:#332714; --ernstig-wash:#33211a; --kritiek-wash:#331a1a;
-    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -20px rgba(0,0,0,.8);
+    --slecht-wash:#331a1a; --matig-wash:#33211a; --goed-wash:#12301a;
+    --kaart-water:#101b1d; --kaart-land:#1d2c2f; --kaart-rand:#35494d; --kaart-tekst:#8b9fa2;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -22px rgba(0,0,0,.9);
   }
 }
 :root[data-theme="dark"] {
   --paper:#0d1416; --panel:#131e20; --surface:#162224;
   --ink:#e3edee; --ink-2:#b3c4c6; --muted:#8b9fa2; --line:#243437; --line-strong:#33474b;
   --accent:#5bb8c1; --accent-ink:#8ed3d9; --accent-wash:#16302f;
-  --goed-wash:#12301a; --waarschuwing-wash:#332714; --ernstig-wash:#33211a; --kritiek-wash:#331a1a;
-  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -20px rgba(0,0,0,.8);
+  --slecht-wash:#331a1a; --matig-wash:#33211a; --goed-wash:#12301a;
+  --kaart-water:#101b1d; --kaart-land:#1d2c2f; --kaart-rand:#35494d; --kaart-tekst:#8b9fa2;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -22px rgba(0,0,0,.9);
 }
 
 * { box-sizing:border-box; }
-body {
-  margin:0; background:var(--paper); color:var(--ink);
-  font:400 15px/1.55 var(--sans); -webkit-font-smoothing:antialiased;
-}
-.wrap { max-width:1320px; margin:0 auto; padding:26px 22px 60px; }
+[hidden] { display:none !important; }
+body { margin:0; background:var(--paper); color:var(--ink); font:400 15px/1.55 var(--sans); -webkit-font-smoothing:antialiased; }
+.wrap { max-width:1560px; margin:0 auto; padding:24px 20px 56px; }
+a { color:var(--accent-ink); }
+hr { border:0; border-top:1px solid var(--line); margin:18px 0; }
+input, select, button, textarea { font:inherit; color:var(--ink); }
+.veld { background:var(--panel); border:1px solid var(--line); border-radius:7px; padding:7px 11px; min-width:0; }
+.veld::placeholder { color:var(--muted); }
+:is(input,select,button,textarea,tr):focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+.knop { background:var(--panel); border:1px solid var(--line); border-radius:7px; padding:7px 13px; cursor:pointer; font-size:13.5px; }
+.knop:hover { border-color:var(--line-strong); }
+.knop.sterk { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:500; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .knop.sterk { color:#08191b; } }
+.knop.klein { padding:4px 9px; font-size:12.5px; }
+.schakel { display:inline-flex; align-items:center; gap:7px; font-size:13.5px; color:var(--ink-2); cursor:pointer; }
+.sub { color:var(--muted); font-size:13px; }
+.mono { font-family:var(--mono); }
+.label-klein { display:block; font:500 10.5px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:9px; }
+code { font:400 12px var(--mono); background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:1px 5px; }
 
-/* ---------- kop ---------- */
-.kop { display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:22px; }
+/* kop */
+.kop { display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:18px; }
 .merk { display:flex; align-items:baseline; gap:11px; }
 .merk h1 { margin:0; font-size:21px; font-weight:600; letter-spacing:-.015em; }
-.badge {
-  font:500 10.5px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase;
-  color:var(--accent-ink); background:var(--accent-wash);
-  border:1px solid color-mix(in srgb, var(--accent) 26%, transparent);
-  padding:5px 8px; border-radius:999px;
-}
-.kop p { margin:4px 0 0; color:var(--muted); font-size:13.5px; max-width:62ch; }
+.badge { font:500 10.5px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase; color:var(--accent-ink);
+  background:var(--accent-wash); border:1px solid color-mix(in srgb,var(--accent) 26%,transparent); padding:5px 8px; border-radius:999px; }
+.kop p { margin:5px 0 0; color:var(--muted); font-size:13.5px; max-width:66ch; }
 .tijd { font:400 11.5px/1.4 var(--mono); color:var(--muted); text-align:right; }
 
-/* ---------- meetlat ---------- */
-.meetlat { background:var(--panel); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow); overflow:hidden; }
-.meetlat-kop { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:15px 18px 12px; flex-wrap:wrap; }
-.label-klein { font:500 10.5px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
-
-.tegels { display:grid; grid-template-columns:repeat(auto-fit, minmax(128px,1fr)); gap:1px; background:var(--line); border-top:1px solid var(--line); }
-.tegel { background:var(--panel); padding:13px 18px 15px; }
-.tegel b { display:block; font:600 26px/1.1 var(--mono); font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
+/* tegels */
+.tegels { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--line);
+  border:1px solid var(--line); border-radius:10px; overflow:hidden; box-shadow:var(--shadow); margin-bottom:14px; }
+.tegel { background:var(--panel); padding:13px 17px 15px; }
+.tegel b { display:block; font:600 24px/1.1 var(--mono); font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
 .tegel span { display:block; margin-top:3px; font-size:12.5px; color:var(--muted); }
 .tegel.klem b { color:var(--accent-ink); }
 
-.strip { display:flex; gap:2px; padding:0 18px; height:16px; }
-.seg { border:0; padding:0; border-radius:4px; cursor:pointer; min-width:6px;
-  transition:transform .12s ease, opacity .12s ease; }
-.seg:hover, .seg:focus-visible { transform:scaleY(1.3); }
-.seg-uit { opacity:.26; }
+/* trechter */
+.trechter { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:16px; }
+.stap { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:7px 12px; cursor:pointer; text-align:left; }
+.stap:hover { border-color:var(--line-strong); }
+.stap[aria-pressed="true"] { border-color:var(--accent); background:var(--accent-wash); }
+.stap b { display:block; font:600 16px/1.15 var(--mono); font-variant-numeric:tabular-nums; }
+.stap span { font-size:11.5px; color:var(--muted); }
 
-.legenda { display:flex; gap:7px; flex-wrap:wrap; padding:11px 18px 16px; }
-.chip {
-  display:inline-flex; align-items:center; gap:6px; cursor:pointer;
-  background:transparent; border:1px solid var(--line); border-radius:999px;
-  padding:4px 10px 4px 7px; font:500 12px/1 var(--mono); color:var(--ink-2);
-}
-.chip:hover { border-color:var(--line-strong); }
-.chip[aria-pressed="true"] { border-color:var(--accent); background:var(--accent-wash); color:var(--ink); }
-.chip .dot { width:9px; height:9px; border-radius:3px; }
-.chip .aantal { color:var(--muted); }
-.chip[aria-pressed="true"] .aantal { color:var(--ink-2); }
-
-.g-A .seg-balk, .vul-A { background:var(--goed); }
-.g-B .seg-balk, .vul-B { background:var(--goed-licht); }
-.g-C .seg-balk, .vul-C { background:var(--waarschuwing); }
-.g-D .seg-balk, .vul-D { background:var(--ernstig); }
-.g-F .seg-balk, .vul-F { background:var(--kritiek); }
-
-/* ---------- filters ---------- */
-.filters { display:flex; gap:9px; flex-wrap:wrap; align-items:center; margin:20px 0 14px; }
-input, select, button, textarea { font:inherit; color:var(--ink); }
-.veld {
-  background:var(--panel); border:1px solid var(--line); border-radius:7px;
-  padding:7px 11px; min-width:0;
-}
-.veld::placeholder { color:var(--muted); }
-input:focus-visible, select:focus-visible, button:focus-visible, textarea:focus-visible {
-  outline:2px solid var(--accent); outline-offset:1px;
-}
-.schakel { display:inline-flex; align-items:center; gap:7px; font-size:13.5px; color:var(--ink-2); cursor:pointer; }
-.knop {
-  background:var(--panel); border:1px solid var(--line); border-radius:7px;
-  padding:7px 13px; cursor:pointer; font-size:13.5px;
-}
-.knop:hover { border-color:var(--line-strong); }
-.knop.sterk { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:500; }
-:root[data-theme="dark"] .knop.sterk, :root:not([data-theme="light"]) .knop.sterk { color:#08191b; }
-@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .knop.sterk { color:#fff; } }
+/* filters */
+.filters { display:flex; gap:9px; flex-wrap:wrap; align-items:center; margin-bottom:14px; }
 .telling { margin-left:auto; font:400 12.5px/1 var(--mono); color:var(--muted); }
 
-/* ---------- werkvlak ---------- */
-.werkvlak { display:grid; grid-template-columns:minmax(0,1fr) 448px; gap:18px; align-items:start; }
-@media (max-width:1080px) { .werkvlak { grid-template-columns:1fr; } }
+/* drieluik */
+.drieluik { display:grid; grid-template-columns:370px minmax(0,1fr) 420px; gap:16px; align-items:start; }
+@media (max-width:1400px) { .drieluik { grid-template-columns:330px minmax(0,1fr); } .drieluik .detail { grid-column:1/-1; } }
+@media (max-width:1000px) { .drieluik { grid-template-columns:1fr; } .drieluik .detail { grid-column:auto; } }
+.kolom-kaart { display:grid; gap:12px; }
+.paneel { background:var(--panel); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); }
+.kaartvak { position:relative; overflow:hidden; }
+#kaart { display:block; width:100%; height:min(58vh,520px); touch-action:none; cursor:grab; }
+.kaartbediening { position:absolute; top:10px; right:10px; display:flex; gap:5px; }
+.kaartbediening .knop { background:var(--panel); }
+.kaartnoot { position:absolute; right:10px; bottom:7px; margin:0; font:400 11px/1.3 var(--mono); color:var(--muted); }
+.bandvak { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); overflow:hidden; }
+.bandvak button { background:var(--panel); border:0; padding:11px 12px 13px; cursor:pointer; text-align:left; }
+.bandvak button[aria-pressed="true"] { background:var(--accent-wash); }
+.bandvak b { display:block; font:600 21px/1.1 var(--mono); font-variant-numeric:tabular-nums; }
+.bandvak span { display:flex; align-items:center; gap:6px; margin-top:4px; font-size:12px; color:var(--muted); }
+.tip { position:fixed; z-index:40; pointer-events:none; background:var(--panel); border:1px solid var(--line-strong);
+  border-radius:7px; box-shadow:var(--shadow); padding:7px 10px; font-size:12.5px; max-width:250px; }
+.tip b { display:block; font-weight:600; }
 
-.kaart { background:var(--panel); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow); }
+/* lijst */
 .lijst { overflow:hidden; }
-.tabelrol { overflow-x:auto; }
+.tabelrol { overflow-x:auto; max-height:min(78vh,900px); overflow-y:auto; }
 table { width:100%; border-collapse:collapse; }
-thead th {
-  text-align:left; padding:10px 14px; border-bottom:1px solid var(--line);
-  font:500 10.5px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase; color:var(--muted); white-space:nowrap;
-}
+thead th { position:sticky; top:0; background:var(--panel); z-index:2; text-align:left; padding:10px 14px;
+  border-bottom:1px solid var(--line); font:500 10.5px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase;
+  color:var(--muted); white-space:nowrap; }
 tbody td { padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:middle; }
-tbody tr { cursor:pointer; }
 tbody tr:last-child td { border-bottom:0; }
-tbody tr:hover td { background:color-mix(in srgb, var(--accent) 5%, transparent); }
+tbody tr[data-id] { cursor:pointer; }
+tbody tr[data-id]:hover td { background:color-mix(in srgb,var(--accent) 5%,transparent); }
 tbody tr[aria-selected="true"] td { background:var(--accent-wash); }
-tbody tr:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; }
+td.kwaliteit { width:86px; white-space:nowrap; }
+thead th:nth-child(2) { width:36%; }
+thead th:nth-child(3) { width:40%; }
 
-td.cijfer { width:96px; white-space:nowrap; }
-.stripe { display:inline-block; width:3px; height:26px; border-radius:2px; vertical-align:middle; margin-right:9px; }
-.score { font:600 19px/1 var(--mono); font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
-.pil {
-  display:inline-block; margin-left:6px; padding:2px 6px; border-radius:5px;
-  font:600 11px/1.35 var(--mono);
-}
-.pil-A,.pil-B { background:var(--goed-wash); color:var(--ink); }
-.pil-C { background:var(--waarschuwing-wash); color:var(--ink); }
-.pil-D { background:var(--ernstig-wash); color:var(--ink); }
-.pil-F { background:var(--kritiek-wash); color:var(--ink); }
+.bol { display:inline-block; width:13px; height:13px; border-radius:50%; vertical-align:-2px; margin-right:8px; }
+.bol-slecht { background:var(--slecht); } .bol-matig { background:var(--matig); } .bol-goed { background:var(--goed); }
+.score { font:600 18px/1 var(--mono); font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
 .naam { font-weight:500; }
-.sub { color:var(--muted); font-size:12.5px; }
-.mono { font-family:var(--mono); }
-td.probleem { color:var(--ink-2); font-size:13.5px; max-width:340px; }
-td.contact { font:400 12.5px/1.45 var(--mono); color:var(--muted); white-space:nowrap; }
+.telefoon { font:400 12px/1.45 var(--mono); color:var(--muted); }
+td.probleem { color:var(--ink-2); font-size:13.5px; }
+td.probleem span { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.fasepil { display:inline-block; padding:2px 8px; border-radius:999px; background:var(--surface); border:1px solid var(--line);
+  font:500 11.5px/1.5 var(--mono); white-space:nowrap; }
+.fasepil.klant { background:var(--goed-wash); border-color:color-mix(in srgb,var(--goed) 35%,transparent); }
+.fasepil.afgewezen { color:var(--muted); }
+.leeg { padding:48px 20px; text-align:center; color:var(--muted); font-size:13.5px; }
 
-/* ---------- inspectiepaneel ---------- */
-.paneel { position:sticky; top:18px; padding:20px; }
-@media (max-width:1080px) { .paneel { position:static; } }
-.paneel h2 { margin:0; font-size:19px; font-weight:600; letter-spacing:-.015em; text-wrap:balance; }
-.paneel-kop { display:flex; gap:16px; align-items:flex-start; justify-content:space-between; }
+/* detail */
+.detail { padding:20px; }
+.detail h2 { margin:0; font-size:18px; font-weight:600; letter-spacing:-.015em; text-wrap:balance; }
+.paneelkop { display:flex; gap:14px; justify-content:space-between; align-items:flex-start; }
 .groot { text-align:right; white-space:nowrap; }
-.groot b { display:block; font:600 40px/1 var(--mono); font-variant-numeric:tabular-nums; letter-spacing:-.03em; }
+.groot b { display:block; font:600 34px/1 var(--mono); font-variant-numeric:tabular-nums; letter-spacing:-.03em; }
 .groot span { font:500 11.5px/1 var(--mono); color:var(--muted); }
-
 .deel { margin-top:20px; }
-.deel > .label-klein { display:block; margin-bottom:9px; }
+.rij { display:flex; gap:7px; flex-wrap:wrap; align-items:center; margin-top:9px; }
 .meter { display:grid; grid-template-columns:1fr auto; gap:3px 10px; margin-bottom:9px; align-items:baseline; }
 .meter-naam { font-size:13px; color:var(--ink-2); }
 .meter-waarde { font:500 12px/1 var(--mono); font-variant-numeric:tabular-nums; color:var(--muted); }
-.meter-spoor { grid-column:1 / -1; height:6px; background:color-mix(in srgb, var(--line) 75%, transparent); border-radius:3px; overflow:hidden; }
+.meter-spoor { grid-column:1/-1; height:6px; background:color-mix(in srgb,var(--line) 75%,transparent); border-radius:3px; overflow:hidden; }
 .meter-vul { display:block; height:100%; border-radius:3px; background:var(--accent); }
-
-.feiten { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:7px; overflow:hidden; }
+.feiten { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px; background:var(--line);
+  border:1px solid var(--line); border-radius:7px; overflow:hidden; }
 .feit { background:var(--panel); padding:9px 11px; }
 .feit b { display:block; font:500 14px/1.3 var(--mono); font-variant-numeric:tabular-nums; }
 .feit span { font-size:11.5px; color:var(--muted); }
-
 .kwestie { display:grid; grid-template-columns:auto 1fr; gap:0 11px; padding:9px 0; border-top:1px solid var(--line); }
 .kwestie:first-of-type { border-top:0; }
-details.rest { margin-top:2px; }
-details.rest > summary {
-  cursor:pointer; list-style:none; padding:9px 0 0; border-top:1px solid var(--line);
-  font:500 12px/1 var(--mono); color:var(--muted);
-}
-details.rest > summary::-webkit-details-marker { display:none; }
-details.rest > summary::after { content:' ▾'; }
-details.rest[open] > summary::after { content:' ▴'; }
-details.rest > summary:hover { color:var(--ink-2); }
-.kwestie i { width:3px; border-radius:2px; grid-row:1 / span 2; }
+.kwestie i { width:3px; border-radius:2px; grid-row:1/span 2; }
 .kwestie b { font-weight:500; font-size:13.5px; text-wrap:balance; }
 .kwestie p { margin:2px 0 0; font-size:12.5px; color:var(--muted); }
 .ernst { font:500 10px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
-.i-kritiek i { background:var(--kritiek); } .i-hoog i { background:var(--ernstig); }
-.i-middel i { background:var(--waarschuwing); } .i-laag i { background:var(--line-strong); }
+.i-kritiek i { background:var(--slecht); } .i-hoog i { background:var(--matig); }
+.i-middel i { background:color-mix(in srgb,var(--matig) 60%,var(--line)); } .i-laag i { background:var(--line-strong); }
+details.rest > summary { cursor:pointer; list-style:none; padding:9px 0 0; border-top:1px solid var(--line);
+  font:500 12px/1 var(--mono); color:var(--muted); }
+details.rest > summary::-webkit-details-marker { display:none; }
+details.rest > summary::after { content:' ▾'; } details.rest[open] > summary::after { content:' ▴'; }
+textarea { width:100%; min-height:220px; resize:vertical; background:var(--surface); border:1px solid var(--line);
+  border-radius:7px; padding:11px; font:400 12.5px/1.6 var(--mono); color:var(--ink-2); }
+.demo-noot { margin-top:9px; padding:9px 11px; background:var(--surface); border:1px dashed var(--line-strong);
+  border-radius:7px; font-size:12.5px; color:var(--muted); }
 
-.afzender { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-bottom:9px; }
-.afzender .veld { font-size:13px; padding:6px 9px; }
-textarea {
-  width:100%; min-height:250px; resize:vertical;
-  background:var(--surface); border:1px solid var(--line); border-radius:7px; padding:12px;
-  font:400 12.5px/1.6 var(--mono); color:var(--ink-2);
-}
-.rij { display:flex; gap:8px; align-items:center; margin-top:9px; flex-wrap:wrap; }
-.leeg { padding:60px 20px; text-align:center; color:var(--muted); font-size:13.5px; }
-
-.voet { margin-top:26px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted); font-size:12.5px; max-width:78ch; }
+.voet { margin-top:24px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted); font-size:12.5px; max-width:82ch; }
 .voet b { color:var(--ink-2); font-weight:500; }
-.voet code { font:400 12px var(--mono); background:var(--panel); border:1px solid var(--line); border-radius:4px; padding:1px 5px; }
-.op-mobiel { display:none; }
-@media (max-width:760px) {
-  thead th:nth-child(3), tbody td:nth-child(3),
-  thead th:nth-child(4), tbody td:nth-child(4) { display:none; }
-  .op-mobiel { display:block; margin-top:3px; color:var(--ink-2); }
-  .tegels { grid-template-columns:repeat(2,1fr); }
-  .tegel:last-child { grid-column:1 / -1; }
-  .afzender { grid-template-columns:1fr; }
-}
 @media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
 </style>
 
 <div class="wrap">
-
   <header class="kop">
     <div>
       <div class="merk"><h1>Webscan NL</h1> <span class="badge">Demo</span></div>
-      <p>Vijftien nagemaakte bedrijfswebsites, gescand met de echte scanner. Klik een regel aan voor het volledige oordeel en de concept-mail.</p>
+      <p>125 nagemaakte bedrijfswebsites, gescand met de echte scanner en op de kaart gezet.
+         Rood is een slechte site, oranje matig, groen goed. Klik een bolletje of een regel aan.</p>
     </div>
     <div class="tijd" id="tijd"></div>
   </header>
 
-  <section class="meetlat" aria-labelledby="verdeling-kop">
-    <div class="meetlat-kop">
-      <span class="label-klein" id="verdeling-kop">Verdeling van de beoordelingen</span>
-      <span class="label-klein">Klik een cijfer om te filteren</span>
-    </div>
-    <div class="strip" id="strip"></div>
-    <div class="legenda" id="legenda"></div>
-    <div class="tegels" id="tegels"></div>
-  </section>
+  <div class="tegels" id="tegels"></div>
+  <div class="trechter" id="trechter"></div>
 
   <div class="filters">
-    <input class="veld" id="f-zoek" type="search" placeholder="Zoek op naam of domein" style="width:210px">
+    <input class="veld" id="f-zoek" type="search" placeholder="Zoek bedrijf, domein of plaats" style="width:230px">
     <select class="veld" id="f-plaats"><option value="">Alle plaatsen</option></select>
     <select class="veld" id="f-branche"><option value="">Alle branches</option></select>
-    <label class="schakel"><input type="checkbox" id="f-contact"> alleen met contactgegevens</label>
-    <button class="knop" id="f-wis">Filters wissen</button>
+    <label class="schakel"><input type="checkbox" id="f-contact"> met contactgegevens</label>
+    <button class="knop" id="f-wis">Wissen</button>
     <span class="telling" id="telling"></span>
   </div>
 
-  <div class="werkvlak">
-    <div class="kaart lijst">
+  <div class="drieluik">
+    <div class="kolom-kaart">
+      <div class="paneel kaartvak">
+        <canvas id="kaart" aria-label="Kaart van Nederland met de gescande bedrijven"></canvas>
+        <div class="kaartbediening">
+          <button class="knop klein" id="k-in" title="Inzoomen">+</button>
+          <button class="knop klein" id="k-uit" title="Uitzoomen">−</button>
+          <button class="knop klein" id="k-herstel" title="Heel Nederland">Alles</button>
+        </div>
+        <p class="kaartnoot">sleep om te schuiven, scroll om te zoomen</p>
+      </div>
+      <div class="paneel bandvak" id="bandvak"></div>
+    </div>
+
+    <div class="paneel lijst">
       <div class="tabelrol">
         <table>
           <thead><tr>
             <th scope="col">Score</th><th scope="col">Bedrijf</th>
-            <th scope="col">Contact</th><th scope="col">Grootste probleem</th>
+            <th scope="col">Grootste probleem</th><th scope="col">Fase</th>
           </tr></thead>
           <tbody id="rijen"></tbody>
         </table>
@@ -252,153 +222,200 @@ textarea {
       <div class="leeg" id="geen" hidden>Geen bedrijven met deze filters.</div>
     </div>
 
-    <aside class="kaart paneel" id="paneel" aria-live="polite"></aside>
+    <aside class="paneel detail" id="detail"></aside>
   </div>
 
+  <div class="tip" id="tip" hidden></div>
+
   <p class="voet">
-    <b>Wat je hier ziet.</b> De vijftien websites in deze demo zijn nagemaakt — echte Nederlandse
-    bedrijfssites nabootsen zonder ze bij naam te noemen — en daarna gescand met dezelfde code die in
-    productie draait. Scores, gevonden problemen en de concept-mail komen dus uit de tool zelf, niet
-    uit een ontwerp. Zelf opnieuw genereren: <code>node demo/build.ts &amp;&amp; node demo/page.ts</code>.
-    De opvolgstatus per lead werkt in het echte dashboard tegen SQLite; in deze losse pagina is die weggelaten.
+    <b>Wat je hier ziet.</b> De 125 websites in deze demo zijn nagemaakt — van een tabel-site uit 2009
+    met Flash tot een keurig verzorgde moderne site — en daarna gescand met dezelfde code die in
+    productie draait. Scores, gevonden problemen en de concept-mail komen dus uit de tool zelf.
+    De kaartposities zijn per plaats toegekend, zoals de geocoder dat in het echt ook doet.
+    <br><br>
+    <b>Wat de demo niet doet.</b> In het echte dashboard log je in met je eigen account, pak je een lead op
+    zodat een collega hem niet ook belt, leg je elk telefoontje vast, en zet je een klant om in een
+    maandbedrag dat meetelt in de omzet — van jou en van de agent die hem binnenhaalde. Hier zijn die
+    knoppen weggelaten: dit is één losse HTML-pagina zonder server. De fases, agents en klanten die je
+    ziet, komen wel uit dezelfde database.
   </p>
 </div>
 
 <script type="module">
+/*__KAART_JS__*/
+
+const NL_OMTREK = "__NL_OMTREK__";
 const DATA = "__DEMO_DATA__";
 
 const $ = (id) => document.getElementById(id);
-const esc = (value) => String(value ?? '').replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' })[c]);
+const esc = (waarde) => String(waarde ?? '').replace(/[&<>"]/g, (teken) =>
+  ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' })[teken]);
+const euro = (cent) => `€ ${((cent ?? 0) / 100).toFixed(2).replace('.', ',')}`;
 const ERNST = { kritiek:'Kritiek', hoog:'Hoog', middel:'Middel', laag:'Laag' };
 
-let filters = { grade:'', zoek:'', plaats:'', branche:'', contact:false };
-let gekozen = DATA.leads[0]?.id ?? null;
+const staat = { zoek:'', plaats:'', branche:'', contact:false, band:'', fase:'', gekozen:null, afzender:{} };
+let kaart = null;
 
-/* ---------- kop ---------- */
 $('tijd').textContent = 'Gescand op ' + new Date(DATA.gegenereerdOp)
   .toLocaleDateString('nl-NL', { day:'numeric', month:'long', year:'numeric' });
 
-/* ---------- meetlat ---------- */
-const OORDEEL = { A:'uitstekend', B:'goed', C:'matig', D:'slecht', F:'zeer slecht' };
+$('tegels').innerHTML = [
+  { waarde: DATA.samenvatting.bedrijven, tekst:'websites gescand' },
+  { waarde: DATA.samenvatting.gemiddelde, tekst:'gemiddelde score' },
+  { waarde: DATA.samenvatting.slecht, tekst:'onder de 50 — je leads', klem:true },
+  { waarde: DATA.samenvatting.benaderbaar, tekst:'daarvan met contactgegevens', klem:true },
+  { waarde: DATA.samenvatting.klanten, tekst:'hostingklanten' },
+  { waarde: euro(DATA.samenvatting.mrrCent), tekst:'per maand', klem:true },
+].map((tegel) => `<div class="tegel${tegel.klem ? ' klem' : ''}"><b>${esc(tegel.waarde)}</b><span>${tegel.tekst}</span></div>`).join('');
 
-function tekenStrip() {
-  const totaal = DATA.leads.length;
-  const zichtbaar = DATA.verdeling.filter((v) => v.aantal > 0);
-
-  $('strip').innerHTML = zichtbaar.map((v) => `
-    <button class="seg vul-${v.grade}${filters.grade && filters.grade !== v.grade ? ' seg-uit' : ''}"
-            style="flex:${v.aantal}" data-grade="${v.grade}" aria-pressed="${filters.grade === v.grade}"
-            aria-label="${v.aantal} van de ${totaal} sites kreeg een ${v.grade} (${OORDEEL[v.grade]})"></button>`).join('');
-
-  $('legenda').innerHTML = zichtbaar.map((v) => `
-    <button class="chip" data-grade="${v.grade}" aria-pressed="${filters.grade === v.grade}">
-      <span class="dot vul-${v.grade}"></span>${v.grade} ${OORDEEL[v.grade]}
-      <span class="aantal">${v.aantal}</span>
-    </button>`).join('');
-
-  for (const knop of document.querySelectorAll('.seg, .chip')) {
+function tekenTrechter() {
+  $('trechter').innerHTML = DATA.trechter.filter((stap) => stap.aantal > 0).map((stap) => `
+    <button class="stap" data-fase="${stap.fase}" aria-pressed="${staat.fase === stap.fase}">
+      <b>${stap.aantal}</b><span>${esc(stap.label)}</span></button>`).join('');
+  for (const knop of $('trechter').querySelectorAll('.stap')) {
     knop.addEventListener('click', () => {
-      filters.grade = filters.grade === knop.dataset.grade ? '' : knop.dataset.grade;
-      tekenStrip(); tekenLijst();
+      staat.fase = staat.fase === knop.dataset.fase ? '' : knop.dataset.fase;
+      tekenTrechter(); ververs();
     });
   }
 }
 
-$('tegels').innerHTML = [
-  { waarde:DATA.samenvatting.bedrijven, tekst:'websites gescand' },
-  { waarde:DATA.samenvatting.gemiddelde, tekst:'gemiddelde score' },
-  { waarde:DATA.samenvatting.slecht, tekst:'onder de 50 — je leads', klem:true },
-  { waarde:DATA.samenvatting.benaderbaar, tekst:'daarvan met contactgegevens', klem:true },
-  { waarde:DATA.samenvatting.onbereikbaar, tekst:'niet bereikbaar' },
-].map((t) => `<div class="tegel${t.klem ? ' klem' : ''}"><b>${t.waarde}</b><span>${t.tekst}</span></div>`).join('');
-
-/* ---------- filters ---------- */
 const vulKeuze = (id, waarden) => {
   $(id).insertAdjacentHTML('beforeend',
-    [...new Set(waarden)].filter(Boolean).sort().map((w) => `<option>${esc(w)}</option>`).join(''));
+    [...new Set(waarden)].filter(Boolean).sort().map((waarde) => `<option>${esc(waarde)}</option>`).join(''));
 };
-vulKeuze('f-plaats', DATA.leads.map((l) => l.plaats));
-vulKeuze('f-branche', DATA.leads.map((l) => l.branche));
+vulKeuze('f-plaats', DATA.leads.map((lead) => lead.plaats));
+vulKeuze('f-branche', DATA.leads.map((lead) => lead.branche));
 
 function gefilterd() {
-  const zoek = filters.zoek.toLowerCase();
+  const zoek = staat.zoek.toLowerCase();
+  const band = staat.band ? BANDEN.find((rij) => rij.id === staat.band) : null;
   return DATA.leads.filter((lead) =>
-    (!filters.grade || lead.grade === filters.grade) &&
-    (!filters.plaats || lead.plaats === filters.plaats) &&
-    (!filters.branche || lead.branche === filters.branche) &&
-    (!filters.contact || lead.contact.emails.length > 0 || lead.contact.phones.length > 0) &&
-    (!zoek || lead.naam.toLowerCase().includes(zoek) || lead.domein.toLowerCase().includes(zoek)));
+    (!staat.plaats || lead.plaats === staat.plaats) &&
+    (!staat.branche || lead.branche === staat.branche) &&
+    (!staat.fase || lead.fase === staat.fase) &&
+    (!staat.contact || lead.contact.emails.length > 0 || lead.contact.phones.length > 0) &&
+    (!band || (lead.score >= band.vanaf && lead.score <= band.tot)) &&
+    (!zoek || lead.naam.toLowerCase().includes(zoek) || lead.domein.toLowerCase().includes(zoek)
+      || (lead.plaats ?? '').toLowerCase().includes(zoek)));
 }
 
-/* ---------- lijst ---------- */
-function tekenLijst() {
-  const rijen = gefilterd();
-  $('telling').textContent = `${rijen.length} van ${DATA.leads.length} bedrijven`;
-  $('geen').hidden = rijen.length > 0;
-
-  $('rijen').innerHTML = rijen.map((lead) => `
-    <tr data-id="${lead.id}" tabindex="0" aria-selected="${lead.id === gekozen}">
-      <td class="cijfer">
-        <span class="stripe vul-${lead.grade}"></span>
-        <span class="score">${lead.score}</span><span class="pil pil-${lead.grade}">${lead.grade}</span>
-      </td>
-      <td><div class="naam">${esc(lead.naam)}</div>
-          <div class="sub mono">${esc(lead.domein)} · ${esc(lead.plaats)}</div>
-          <div class="sub op-mobiel">${esc(lead.problemen[0]?.title ?? 'Geen problemen gevonden')}</div></td>
-      <td class="contact">${esc(lead.contact.phones[0] ?? '')}${lead.contact.phones[0] && lead.contact.emails[0] ? '<br>' : ''}${esc(lead.contact.emails[0] ?? '')}${!lead.contact.phones[0] && !lead.contact.emails[0] ? '—' : ''}</td>
-      <td class="probleem">${esc(lead.problemen[0]?.title ?? 'Geen problemen gevonden')}</td>
-    </tr>`).join('');
-
-  for (const rij of $('rijen').querySelectorAll('tr')) {
-    const kies = () => { gekozen = Number(rij.dataset.id); tekenLijst(); tekenPaneel(); };
-    rij.addEventListener('click', kies);
-    rij.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); kies(); } });
+function tekenBanden(leads) {
+  $('bandvak').innerHTML = BANDEN.map((band) => {
+    const aantal = leads.filter((lead) => bandVan(lead.score).id === band.id).length;
+    return `<button data-band="${band.id}" aria-pressed="${staat.band === band.id}">
+      <b>${aantal}</b><span><i class="bol" style="background:${band.kleur}"></i>${band.label}</span></button>`;
+  }).join('');
+  for (const knop of $('bandvak').querySelectorAll('button')) {
+    knop.addEventListener('click', () => {
+      staat.band = staat.band === knop.dataset.band ? '' : knop.dataset.band;
+      ververs();
+    });
   }
 }
 
-/* ---------- paneel ---------- */
-const kwesties = (lijst) => lijst.map((p) => `
-  <div class="kwestie i-${p.severity}">
-    <i></i>
-    <b>${esc(p.title)}</b>
-    <p><span class="ernst">${ERNST[p.severity]}</span> — ${esc(p.advies)}${p.detail ? ' <em>(' + esc(p.detail) + ')</em>' : ''}</p>
+function ververs() {
+  const leads = gefilterd();
+  $('telling').textContent = `${leads.length} van ${DATA.leads.length} bedrijven`;
+  $('geen').hidden = leads.length > 0;
+  tekenBanden(leads);
+  tekenLijst(leads);
+  kaart.zetPunten(leads.filter((lead) => lead.lat && lead.lon).map((lead) => ({
+    id: lead.id, naam: lead.naam, plaats: lead.plaats, lat: lead.lat, lon: lead.lon,
+    score: lead.score, grade: lead.grade, fase: lead.fase,
+  })));
+  if (staat.gekozen) kaart.zetGekozen(staat.gekozen);
+  else $('detail').innerHTML = '<div class="leeg">Klik een bolletje op de kaart of een regel in de lijst aan.</div>';
+}
+
+const faseLabel = (fase) => DATA.faseLabels[fase] ?? fase;
+
+function tekenLijst(leads) {
+  $('rijen').innerHTML = leads.map((lead) => {
+    const contact = lead.contact.phones[0] ?? lead.contact.emails[0] ?? '';
+    return `
+    <tr data-id="${lead.id}" tabindex="0" aria-selected="${lead.id === staat.gekozen}">
+      <td class="kwaliteit"><span class="bol bol-${bandVan(lead.score).id}"></span><span class="score">${lead.score}</span></td>
+      <td><div class="naam">${esc(lead.naam)}</div>
+          <div class="sub mono">${esc(lead.domein)}${lead.plaats ? ' · ' + esc(lead.plaats) : ''}</div>
+          ${contact ? `<div class="telefoon">${esc(contact)}</div>` : ''}</td>
+      <td class="probleem"><span>${esc(lead.problemen[0]?.title ?? 'Geen problemen gevonden')}</span></td>
+      <td><span class="fasepil ${lead.fase}">${esc(faseLabel(lead.fase))}</span>
+          ${lead.agent ? `<div class="sub">${esc(lead.agent)}</div>` : ''}</td>
+    </tr>`;
+  }).join('');
+
+  for (const rij of $('rijen').querySelectorAll('tr')) {
+    const kies = () => kiesLead(Number(rij.dataset.id));
+    rij.addEventListener('click', kies);
+    rij.addEventListener('keydown', (gebeurtenis) => {
+      if (gebeurtenis.key === 'Enter' || gebeurtenis.key === ' ') { gebeurtenis.preventDefault(); kies(); }
+    });
+  }
+}
+
+function toonTip(cluster, x, y) {
+  const tip = $('tip');
+  if (!cluster) { tip.hidden = true; return; }
+  tip.hidden = false;
+  tip.style.left = `${Math.min(x + 14, window.innerWidth - 260)}px`;
+  tip.style.top = `${y + 16}px`;
+  tip.innerHTML = cluster.aantal === 1
+    ? `<b>${esc(cluster.punt.naam)}</b><span class="sub">${esc(cluster.punt.plaats ?? '')} · score ${cluster.punt.score} · ${esc(faseLabel(cluster.punt.fase))}</span>`
+    : `<b>${cluster.aantal} bedrijven</b><span class="sub">gemiddeld ${Math.round(cluster.som / cluster.aantal)}/100 — klik om in te zoomen</span>`;
+}
+
+const kwesties = (lijst) => lijst.map((kwestie) => `
+  <div class="kwestie i-${kwestie.severity}">
+    <i></i><b>${esc(kwestie.title)}</b>
+    <p><span class="ernst">${ERNST[kwestie.severity]}</span> — ${esc(kwestie.advies)}${kwestie.detail ? ' <em>(' + esc(kwestie.detail) + ')</em>' : ''}</p>
   </div>`).join('');
 
-function tekenPaneel() {
-  const lead = DATA.leads.find((l) => l.id === gekozen);
-  if (!lead) { $('paneel').innerHTML = '<div class="leeg">Kies een bedrijf uit de lijst.</div>'; return; }
+function kiesLead(id) {
+  const lead = DATA.leads.find((rij) => rij.id === id);
+  if (!lead) return;
+  staat.gekozen = id;
+  kaart.zetGekozen(id);
+  for (const rij of $('rijen').querySelectorAll('tr')) {
+    rij.setAttribute('aria-selected', String(Number(rij.dataset.id) === id));
+  }
 
+  const band = bandVan(lead.score);
   const feiten = lead.feiten;
   const feitVeld = (waarde, tekst) => `<div class="feit"><b>${esc(waarde)}</b><span>${esc(tekst)}</span></div>`;
+  const licht = lead.problemen.filter((kwestie) => kwestie.severity === 'laag');
 
-  $('paneel').innerHTML = `
-    <div class="paneel-kop">
+  $('detail').innerHTML = `
+    <div class="paneelkop">
       <div>
         <h2>${esc(lead.naam)}</h2>
         <div class="sub mono">${esc(lead.domein)}</div>
-        <div class="sub">${esc(lead.plaats)} · ${esc(lead.branche ?? '')}</div>
+        <div class="sub">${esc(lead.plaats ?? '')}${lead.branche ? ' · ' + esc(lead.branche) : ''}</div>
       </div>
-      <div class="groot">
-        <b>${lead.score}</b>
-        <span>${lead.grade} · ${esc(lead.oordeel)}</span>
-      </div>
+      <div class="groot"><b style="color:${band.kleur}">${lead.score}</b>
+        <span>${esc(band.label)} · ${esc(lead.grade)}</span></div>
+    </div>
+
+    <div class="rij">
+      <span class="fasepil ${lead.fase}">${esc(faseLabel(lead.fase))}</span>
+      ${lead.agent ? `<span class="sub">bij ${esc(lead.agent)}</span>` : '<span class="sub">nog van niemand</span>'}
+      ${lead.klantStatus === 'actief' ? `<span class="fasepil klant">klant · ${euro(lead.maandbedragCent)}/mnd</span>` : ''}
     </div>
 
     ${lead.fout ? `<div class="deel"><span class="label-klein">Bij het ophalen</span>
-      <div class="sub" style="margin-top:6px">${esc(lead.fout)}</div></div>` : ''}
+      <div class="sub">${esc(lead.fout)}</div></div>` : ''}
 
     <div class="deel">
       <span class="label-klein">Score per onderdeel</span>
-      ${lead.categorieen.map((cat) => `
+      ${lead.categorieen.map((categorie) => `
         <div class="meter">
-          <span class="meter-naam">${esc(cat.label)}</span>
-          <span class="meter-waarde">${cat.score}/${cat.max}</span>
-          <span class="meter-spoor"><i class="meter-vul" style="width:${Math.round((cat.score / cat.max) * 100)}%"></i></span>
+          <span class="meter-naam">${esc(categorie.label)}</span>
+          <span class="meter-waarde">${categorie.score}/${categorie.max}</span>
+          <span class="meter-spoor"><i class="meter-vul" style="width:${Math.round((categorie.score / categorie.max) * 100)}%"></i></span>
         </div>`).join('')}
     </div>
 
-    ${feiten ? `<div class="deel">
-      <span class="label-klein">Gemeten</span>
+    ${feiten ? `<div class="deel"><span class="label-klein">Gemeten</span>
       <div class="feiten">
         ${feitVeld((feiten.laadtijdMs / 1000).toFixed(1) + ' s', 'laadtijd homepage')}
         ${feitVeld(feiten.kb + ' kB', 'paginagrootte')}
@@ -406,77 +423,89 @@ function tekenPaneel() {
         ${feitVeld(feiten.afbeeldingen + ' / ' + feiten.zonderAlt, 'afbeeldingen / zonder alt')}
         ${feitVeld(feiten.platform.slice(0, 2).join(', ') || 'onbekend', 'gevonden techniek')}
         ${feitVeld(feiten.copyright ?? '—', 'copyright-jaar')}
-      </div>
-    </div>` : ''}
+      </div></div>` : ''}
 
     <div class="deel">
       <span class="label-klein">Gevonden problemen (${lead.problemen.length})</span>
       ${lead.problemen.length === 0
         ? '<p class="sub" style="margin:0">Niets aan te merken — dit is geen lead.</p>'
-        : kwesties(lead.problemen.filter((p) => p.severity !== 'laag')) +
-          (lead.problemen.some((p) => p.severity === 'laag')
-            ? `<details class="rest"><summary>Nog ${lead.problemen.filter((p) => p.severity === 'laag').length} kleine punten</summary>
-               ${kwesties(lead.problemen.filter((p) => p.severity === 'laag'))}</details>`
+        : kwesties(lead.problemen.filter((kwestie) => kwestie.severity !== 'laag')) +
+          (licht.length > 0
+            ? `<details class="rest"><summary>Nog ${licht.length} kleine punten</summary>${kwesties(licht)}</details>`
             : '')}
     </div>
 
     <div class="deel">
       <span class="label-klein">Concept-mail</span>
-      <div class="afzender">
-        <input class="veld" id="a-naam" placeholder="Jouw naam">
-        <input class="veld" id="a-bedrijf" placeholder="Jouw bedrijf">
-        <input class="veld" id="a-telefoon" placeholder="Telefoon">
-        <input class="veld" id="a-email" placeholder="E-mailadres">
+      <div class="rij">
+        <input class="veld" id="a-naam" placeholder="Jouw naam" style="flex:1" value="${esc(staat.afzender.naam ?? '')}">
+        <input class="veld" id="a-bedrijf" placeholder="Jouw bedrijf" style="flex:1" value="${esc(staat.afzender.bedrijf ?? '')}">
+      </div>
+      <div class="rij">
+        <input class="veld" id="a-telefoon" placeholder="Telefoon" style="width:130px" value="${esc(staat.afzender.telefoon ?? '')}">
+        <input class="veld" id="a-email" placeholder="E-mail" style="flex:1" value="${esc(staat.afzender.email ?? '')}">
+        <button class="knop" id="kopieer">Kopieer</button>
       </div>
       <textarea id="mail" spellcheck="false"></textarea>
-      <div class="rij">
-        <button class="knop sterk" id="kopieer">Kopieer mail</button>
-        <span class="sub" id="kopieer-melding"></span>
-      </div>
+      <p class="demo-noot">In het dashboard staan hier ook de knoppen om een telefoontje vast te leggen,
+        de fase te verzetten, een terugbelmoment te plannen en de klant met maandbedrag op te voeren.</p>
     </div>`;
 
-  for (const veld of ['a-naam','a-bedrijf','a-telefoon','a-email']) {
-    $(veld).value = afzender[veld] ?? '';
-    $(veld).addEventListener('input', () => { afzender[veld] = $(veld).value; vulMail(lead); });
+  for (const veld of ['a-naam', 'a-bedrijf', 'a-telefoon', 'a-email']) {
+    $(veld).addEventListener('input', () => {
+      staat.afzender[veld.slice(2)] = $(veld).value;
+      vulMail(lead);
+    });
   }
   $('kopieer').addEventListener('click', async () => {
     await navigator.clipboard.writeText($('mail').value);
-    $('kopieer-melding').textContent = 'Gekopieerd naar je klembord.';
-    setTimeout(() => { $('kopieer-melding').textContent = ''; }, 2200);
+    $('kopieer').textContent = 'Gekopieerd';
+    setTimeout(() => { $('kopieer').textContent = 'Kopieer'; }, 1800);
   });
   vulMail(lead);
 }
 
-const afzender = {};
 function vulMail(lead) {
-  const naam = afzender['a-naam']?.trim() || '[jouw naam]';
-  const bedrijf = afzender['a-bedrijf']?.trim() || '[jouw bedrijf]';
-  const telefoon = afzender['a-telefoon']?.trim();
-  const email = afzender['a-email']?.trim();
-  const contact = [telefoon, email].filter(Boolean).join(' · ') || '[telefoon] · [e-mail]';
-
-  const tekst = lead.pitch.tekst
-    .replace('[jouw naam]', naam)
-    .replace('[jouw bedrijf]', bedrijf)
-    .replace('[telefoon] · [e-mail]', contact);
+  const naam = staat.afzender.naam?.trim() || '[jouw naam]';
+  const bedrijf = staat.afzender.bedrijf?.trim() || '[jouw bedrijf]';
+  const contact = [staat.afzender.telefoon?.trim(), staat.afzender.email?.trim()]
+    .filter(Boolean).join(' · ') || '[telefoon] · [e-mail]';
 
   $('mail').value =
     `Aan: ${lead.contact.emails[0] ?? '(geen e-mailadres gevonden — bel of gebruik het contactformulier)'}\n` +
-    `Onderwerp: ${lead.pitch.onderwerp}\n\n${tekst}`;
+    `Onderwerp: ${lead.pitch.onderwerp}\n\n` +
+    lead.pitch.tekst
+      .replace('[jouw naam]', naam)
+      .replace('[jouw bedrijf]', bedrijf)
+      .replace('[telefoon] · [e-mail]', contact);
 }
 
-/* ---------- bediening ---------- */
-$('f-zoek').addEventListener('input', () => { filters.zoek = $('f-zoek').value; tekenLijst(); });
-$('f-plaats').addEventListener('change', () => { filters.plaats = $('f-plaats').value; tekenLijst(); });
-$('f-branche').addEventListener('change', () => { filters.branche = $('f-branche').value; tekenLijst(); });
-$('f-contact').addEventListener('change', () => { filters.contact = $('f-contact').checked; tekenLijst(); });
+// --- bediening ---
+const koppel = (id, sleutel, gebeurtenis = 'change') => {
+  $(id).addEventListener(gebeurtenis, () => {
+    staat[sleutel] = $(id).type === 'checkbox' ? $(id).checked : $(id).value;
+    ververs();
+  });
+};
+koppel('f-zoek', 'zoek', 'input');
+koppel('f-plaats', 'plaats');
+koppel('f-branche', 'branche');
+koppel('f-contact', 'contact');
+
 $('f-wis').addEventListener('click', () => {
-  filters = { grade:'', zoek:'', plaats:'', branche:'', contact:false };
-  $('f-zoek').value = ''; $('f-plaats').value = ''; $('f-branche').value = ''; $('f-contact').checked = false;
-  tekenStrip(); tekenLijst();
+  Object.assign(staat, { zoek:'', plaats:'', branche:'', contact:false, band:'', fase:'' });
+  for (const id of ['f-zoek', 'f-plaats', 'f-branche']) $(id).value = '';
+  $('f-contact').checked = false;
+  tekenTrechter();
+  ververs();
 });
 
-tekenStrip();
-tekenLijst();
-tekenPaneel();
+kaart = maakKaart($('kaart'), { onKiezen: (punt) => kiesLead(punt.id), onZweven: toonTip });
+kaart.zetOmtrek(NL_OMTREK.polygonen);
+$('k-in').addEventListener('click', () => kaart.zoomKnop(1.5));
+$('k-uit').addEventListener('click', () => kaart.zoomKnop(1 / 1.5));
+$('k-herstel').addEventListener('click', () => kaart.herstel());
+
+tekenTrechter();
+ververs();
 </script>

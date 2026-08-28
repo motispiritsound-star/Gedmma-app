@@ -37,6 +37,8 @@ export const config = {
     'WebscanNL/0.1 (+website-kwaliteitsscan; zet je contactgegevens in WEBSCAN_USER_AGENT)',
   kvkApiKey: process.env.KVK_API_KEY ?? '',
   serverPort: num(process.env.WEBSCAN_PORT, 4321),
+  /** Zet op 1 als het dashboard achter https draait; de sessiecookie krijgt dan Secure. */
+  achterHttps: process.env.WEBSCAN_HTTPS === '1',
 };
 
 export type Config = typeof config;

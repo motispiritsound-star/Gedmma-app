@@ -10,6 +10,9 @@ type Site = {
   domein: string;
   status?: number;
   headers?: Record<string, string>;
+  /** Positie op de kaart; in het echt komt die uit OpenStreetMap of de geocoder. */
+  lat?: number;
+  lon?: number;
   /** Draait deze site op https? Oude sites in de praktijk vaak niet. */
   secure?: boolean;
   /** Levert de server gecomprimeerd en met cache-headers uit? */
@@ -134,21 +137,21 @@ export type { Site };
 
 export const SITES: Site[] = [
   {
-    path: '/de-kraan', delayMs: 1900, bedrijf: 'Loodgietersbedrijf De Kraan', plaats: 'Utrecht',
+    path: '/de-kraan', lat: 52.0907, lon: 5.1214, delayMs: 1900, bedrijf: 'Loodgietersbedrijf De Kraan', plaats: 'Utrecht',
     branche: 'loodgieter', domein: 'loodgieter-dekraan.nl',
     headers: { 'x-powered-by': 'PHP/5.4.45', server: 'Apache/2.2.15' },
     html: tabelSite('Loodgietersbedrijf De Kraan', 'Utrecht', 2009,
       'Voor al uw loodgieterswerk. Lekkage? Bel ons! Wij komen door heel de regio.', '030-2871934'),
   },
   {
-    path: '/schilders-vermeer', delayMs: 2400, bedrijf: 'Schildersbedrijf Vermeer', plaats: 'Amersfoort',
+    path: '/schilders-vermeer', lat: 52.1561, lon: 5.3878, delayMs: 2400, bedrijf: 'Schildersbedrijf Vermeer', plaats: 'Amersfoort',
     branche: 'schilder', domein: 'schildersbedrijfvermeer.nl',
     headers: { 'x-powered-by': 'PHP/5.6.40' },
     html: oudeWordpress('Schildersbedrijf Vermeer', 'Amersfoort', '4.7.2', 2016,
       lorem('Wij verzorgen binnen- en buitenschilderwerk voor particulieren en bedrijven.', 3), '033-4612780'),
   },
   {
-    path: '/bakkerij-molentje', delayMs: 1400, bedrijf: 'Bakkerij Het Molentje', plaats: 'Zeist',
+    path: '/bakkerij-molentje', lat: 52.0907, lon: 5.2333, delayMs: 1400, bedrijf: 'Bakkerij Het Molentje', plaats: 'Zeist',
     branche: 'bakkerij', domein: 'bakkerijhetmolentje.nl',
     html: `<html><head><title>Welkom</title><style>${themaCss(90)}</style></head><body>
       <center><h1>Bakkerij Het Molentje</h1>
@@ -159,20 +162,20 @@ export const SITES: Site[] = [
       <p>&copy; 2014</p></center></body></html>`,
   },
   {
-    path: '/autobedrijf-jansen', delayMs: 3800, bedrijf: 'Autobedrijf Jansen', plaats: 'Nieuwegein',
+    path: '/autobedrijf-jansen', lat: 52.0296, lon: 5.0803, delayMs: 3800, bedrijf: 'Autobedrijf Jansen', plaats: 'Nieuwegein',
     branche: 'autobedrijf', domein: 'autobedrijfjansen.nl',
     headers: { 'x-powered-by': 'PHP/7.2.34' },
     html: oudeWordpress('Autobedrijf Jansen', 'Nieuwegein', '5.4.2', 2019,
       lorem('APK, onderhoud en reparatie van alle merken. Ook occasions met garantie.', 4), '030-6039215'),
   },
   {
-    path: '/hovenier-groenrijk', delayMs: 2100, bedrijf: 'Hovenier Groenrijk', plaats: 'Veenendaal',
+    path: '/hovenier-groenrijk', lat: 52.0286, lon: 5.5586, delayMs: 2100, bedrijf: 'Hovenier Groenrijk', plaats: 'Veenendaal',
     branche: 'hovenier', domein: 'hoveniergroenrijk.nl',
     html: tabelSite('Hovenier Groenrijk', 'Veenendaal', 2011,
       'Tuinaanleg en onderhoud. Vraag vrijblijvend een offerte aan.', '0318-521470'),
   },
   {
-    path: '/kapsalon-lisa', delayMs: 1250, bedrijf: 'Kapsalon Lisa', plaats: 'Utrecht',
+    path: '/kapsalon-lisa', lat: 52.093, lon: 5.11, delayMs: 1250, bedrijf: 'Kapsalon Lisa', plaats: 'Utrecht',
     branche: 'kapper', domein: 'kapsalonlisa.nl', secure: true, goedGeconfigureerd: true,
     html: `<html><head><meta name="generator" content="Wix.com Website Builder">
       <style>${themaCss(200)}</style></head>
@@ -185,28 +188,28 @@ export const SITES: Site[] = [
       <p>&copy; 2021 Kapsalon Lisa</p></div></body></html>`,
   },
   {
-    path: '/restaurant-de-hoek', delayMs: 940, bedrijf: 'Restaurant De Hoek', plaats: 'Amersfoort',
+    path: '/restaurant-de-hoek', lat: 52.1519, lon: 5.39, delayMs: 940, bedrijf: 'Restaurant De Hoek', plaats: 'Amersfoort',
     branche: 'restaurant', domein: 'restaurantdehoek.nl', secure: true, goedGeconfigureerd: true,
     html: middenmoot('Restaurant De Hoek', 'Amersfoort',
       lorem('Seizoensgebonden gerechten met producten uit de streek. Reserveren wordt aanbevolen. De kaart wisselt elke zes weken mee met wat de telers in de omgeving aanbieden.', 5),
       '033-4728190', { titel: 'Restaurant De Hoek' }),
   },
   {
-    path: '/fysio-beweegt', delayMs: 780, bedrijf: 'Fysiotherapie Beweegt', plaats: 'Zeist',
+    path: '/fysio-beweegt', lat: 52.087, lon: 5.235, delayMs: 780, bedrijf: 'Fysiotherapie Beweegt', plaats: 'Zeist',
     branche: 'fysiotherapie', domein: 'fysiobeweegt.nl', secure: true, goedGeconfigureerd: true,
     html: middenmoot('Fysiotherapie Beweegt', 'Zeist',
       lorem('Fysiotherapie, manuele therapie en revalidatie. Aangesloten bij alle zorgverzekeraars. U kunt zonder verwijzing van de huisarts bij ons terecht.', 5),
       '030-6924415', { titel: 'Fysiotherapie Beweegt Zeist' }),
   },
   {
-    path: '/drukkerij-vandenberg', delayMs: 2600, bedrijf: 'Drukkerij Van den Berg', plaats: 'Nieuwegein',
+    path: '/drukkerij-vandenberg', lat: 52.033, lon: 5.085, delayMs: 2600, bedrijf: 'Drukkerij Van den Berg', plaats: 'Nieuwegein',
     branche: 'drukkerij', domein: 'drukkerijvandenberg.nl',
     headers: { 'x-powered-by': 'PHP/5.3.29' },
     html: tabelSite('Drukkerij Van den Berg', 'Nieuwegein', 2008,
       'Drukwerk voor bedrijven: visitekaartjes, folders, briefpapier en meer.', '030-6041188'),
   },
   {
-    path: '/tandarts-smile', delayMs: 320, bedrijf: 'Tandartspraktijk Smile', plaats: 'Utrecht',
+    path: '/tandarts-smile', lat: 52.098, lon: 5.13, delayMs: 320, bedrijf: 'Tandartspraktijk Smile', plaats: 'Utrecht',
     branche: 'tandarts', domein: 'tandartssmile.nl', secure: true, goedGeconfigureerd: true,
     html: modern('Tandartspraktijk Smile', 'Utrecht',
       'Tandarts in Utrecht — ook op zaterdag terecht | Smile',
@@ -215,7 +218,7 @@ export const SITES: Site[] = [
       '030-2345678', 'info@tandartssmile.nl'),
   },
   {
-    path: '/installatie-vandijk', delayMs: 410, bedrijf: 'Van Dijk Installatietechniek', plaats: 'Amersfoort',
+    path: '/installatie-vandijk', lat: 52.16, lon: 5.37, delayMs: 410, bedrijf: 'Van Dijk Installatietechniek', plaats: 'Amersfoort',
     branche: 'installateur', domein: 'vandijkinstallatie.nl', secure: true, goedGeconfigureerd: true,
     html: modern('Van Dijk Installatietechniek', 'Amersfoort',
       'Installateur in Amersfoort — cv, warmtepompen en sanitair',
@@ -224,12 +227,12 @@ export const SITES: Site[] = [
       '033-4567890', 'info@vandijkinstallatie.nl'),
   },
   {
-    path: '/advocaat-mulder', delayMs: 500, bedrijf: 'Advocatenkantoor Mulder', plaats: 'Utrecht',
+    path: '/advocaat-mulder', lat: 52.085, lon: 5.118, delayMs: 500, bedrijf: 'Advocatenkantoor Mulder', plaats: 'Utrecht',
     branche: 'advocaat', domein: 'advocatenkantoormulder.nl', secure: true, status: 500,
     html: '<h1>Er is een fout opgetreden</h1>',
   },
   {
-    path: '/glaszetter-helder', delayMs: 620, bedrijf: 'Glaszetterij Helder', plaats: 'Veenendaal',
+    path: '/glaszetter-helder', lat: 52.025, lon: 5.55, delayMs: 620, bedrijf: 'Glaszetterij Helder', plaats: 'Veenendaal',
     branche: 'glaszetter', domein: 'glaszetterijhelder.nl',
     html: `<html><head><title>glaszetterijhelder.nl</title></head><body>
       <h1>Deze domeinnaam is te koop</h1>
@@ -237,14 +240,14 @@ export const SITES: Site[] = [
       </body></html>`,
   },
   {
-    path: '/dierenarts-poot', delayMs: 6800, bedrijf: 'Dierenartsenpraktijk De Poot', plaats: 'Zeist',
+    path: '/dierenarts-poot', lat: 52.095, lon: 5.24, delayMs: 6800, bedrijf: 'Dierenartsenpraktijk De Poot', plaats: 'Zeist',
     branche: 'dierenarts', domein: 'dierenartsdepoot.nl', secure: true,
     headers: { 'x-powered-by': 'PHP/7.4.33' },
     html: oudeWordpress('Dierenartsenpraktijk De Poot', 'Zeist', '5.8.6', 2020,
       lorem('Wij behandelen honden, katten en kleine huisdieren. Ook spoedgevallen buiten kantooruren.', 5), '030-6951203'),
   },
   {
-    path: '/makelaar-huisenzo', delayMs: 1150, bedrijf: 'Makelaardij Huis & Zo', plaats: 'Nieuwegein',
+    path: '/makelaar-huisenzo', lat: 52.027, lon: 5.09, delayMs: 1150, bedrijf: 'Makelaardij Huis & Zo', plaats: 'Nieuwegein',
     branche: 'makelaar', domein: 'makelaardijhuisenzo.nl', secure: true,
     html: middenmoot('Makelaardij Huis & Zo', 'Nieuwegein',
       lorem('Aan- en verkoopbegeleiding, taxaties en woningpresentatie in de regio Utrecht. Wij kennen elke wijk en weten wat een woning hier werkelijk waard is.', 5), '030-6077340'),
@@ -291,9 +294,127 @@ function handler(sites: Site[]) {
  * de praktijk vaak geen SSL hebben) en een https-server voor de rest. Het
  * certificaat is zelfondertekend; de scan vertrouwt het via NODE_EXTRA_CA_CERTS.
  */
-export function startDemoServers(cert: { key: string; cert: string }): Promise<DemoServers> {
-  const plain: Server = createHttpServer(handler(SITES) as never);
-  const secure: Server = createHttpsServer(cert, handler(SITES) as never);
+
+/** Plaatsen met hun positie, om de nagemaakte bedrijven over het land te verdelen. */
+const PLAATSEN: [string, number, number][] = [
+  ['Amsterdam', 52.372, 4.894], ['Rotterdam', 51.924, 4.478], ['Den Haag', 52.078, 4.288],
+  ['Utrecht', 52.091, 5.122], ['Eindhoven', 51.441, 5.469], ['Groningen', 53.219, 6.567],
+  ['Tilburg', 51.560, 5.091], ['Almere', 52.371, 5.215], ['Breda', 51.586, 4.776],
+  ['Nijmegen', 51.842, 5.853], ['Enschede', 52.221, 6.894], ['Haarlem', 52.381, 4.637],
+  ['Arnhem', 51.985, 5.899], ['Zaanstad', 52.457, 4.813], ['Amersfoort', 52.156, 5.388],
+  ['Apeldoorn', 52.211, 5.970], ['Den Bosch', 51.697, 5.304], ['Hoofddorp', 52.303, 4.690],
+  ['Maastricht', 50.851, 5.691], ['Leiden', 52.160, 4.497], ['Dordrecht', 51.813, 4.690],
+  ['Zoetermeer', 52.057, 4.494], ['Zwolle', 52.516, 6.083], ['Deventer', 52.255, 6.164],
+  ['Delft', 52.012, 4.357], ['Alkmaar', 52.632, 4.749], ['Leeuwarden', 53.201, 5.799],
+  ['Venlo', 51.370, 6.172], ['Oss', 51.765, 5.518], ['Hengelo', 52.266, 6.793],
+  ['Emmen', 52.785, 6.898], ['Roosendaal', 51.531, 4.466], ['Purmerend', 52.505, 4.960],
+  ['Vlaardingen', 51.912, 4.341], ['Assen', 52.995, 6.563], ['Terneuzen', 51.335, 3.828],
+  ['Middelburg', 51.499, 3.611], ['Heerlen', 50.888, 5.979], ['Lelystad', 52.518, 5.471],
+  ['Hoorn', 52.642, 5.060],
+];
+
+const BRANCHES: [string, string[]][] = [
+  ['loodgieter', ['Loodgietersbedrijf', 'Installatiebedrijf']],
+  ['schilder', ['Schildersbedrijf', 'Schilderwerken']],
+  ['bakkerij', ['Bakkerij', 'Banketbakkerij']],
+  ['kapper', ['Kapsalon', 'Haarstudio']],
+  ['autobedrijf', ['Autobedrijf', 'Garage']],
+  ['hovenier', ['Hoveniersbedrijf', 'Tuinen']],
+  ['restaurant', ['Restaurant', 'Eetcafé']],
+  ['fysiotherapie', ['Fysiotherapie', 'Praktijk']],
+  ['tandarts', ['Tandartspraktijk', 'Mondzorg']],
+  ['makelaar', ['Makelaardij', 'Makelaars']],
+  ['drukkerij', ['Drukkerij', 'Printservice']],
+  ['dierenarts', ['Dierenartsenpraktijk', 'Dierenkliniek']],
+  ['aannemer', ['Bouwbedrijf', 'Aannemersbedrijf']],
+  ['elektricien', ['Elektrotechniek', 'Installatietechniek']],
+];
+
+const ACHTERNAMEN = [
+  'de Vries', 'Jansen', 'van Dijk', 'Bakker', 'Visser', 'Smit', 'Meijer', 'de Boer',
+  'Mulder', 'de Groot', 'Bos', 'Vos', 'Peters', 'Hendriks', 'van Leeuwen', 'Dekker',
+  'Brouwer', 'de Wit', 'Dijkstra', 'Smits', 'de Graaf', 'van der Meer', 'van der Berg',
+  'Kuipers', 'Veenstra', 'Kok', 'Willems', 'Prins', 'Blom', 'Huisman',
+];
+
+/** Vaste pseudo-willekeur, zodat de demo elke keer hetzelfde oplevert. */
+function pseudo(zaad: number): () => number {
+  let staat = zaad >>> 0;
+  return () => {
+    staat = (staat * 1664525 + 1013904223) >>> 0;
+    return staat / 4294967296;
+  };
+}
+
+const zonderAccenten = (tekst: string) => tekst
+  .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .toLowerCase().replace(/[^a-z0-9]/g, '');
+
+/**
+ * Bouwt een groter bestand nagemaakte bedrijven, verspreid over het land, met
+ * dezelfde vijf sitetypes. Ze worden echt geserveerd en echt gescand — alleen
+ * de bedrijfsnamen en plaatsen zijn samengesteld.
+ */
+export function genereerSites(aantal: number): Site[] {
+  const random = pseudo(20260828);
+  const sites: Site[] = [];
+  const gebruikt = new Set(SITES.map((site) => site.domein));
+
+  for (let i = 0; sites.length < aantal && i < aantal * 4; i++) {
+    const [plaats, lat, lon] = PLAATSEN[Math.floor(random() * PLAATSEN.length)]!;
+    const [branche, voorvoegsels] = BRANCHES[Math.floor(random() * BRANCHES.length)]!;
+    const voorvoegsel = voorvoegsels[Math.floor(random() * voorvoegsels.length)]!;
+    const achternaam = ACHTERNAMEN[Math.floor(random() * ACHTERNAMEN.length)]!;
+    const bedrijf = `${voorvoegsel} ${achternaam}`;
+    const domein = `${zonderAccenten(voorvoegsel).slice(0, 8)}${zonderAccenten(achternaam)}.nl`;
+    if (gebruikt.has(domein)) continue;
+    gebruikt.add(domein);
+
+    const telefoon = `0${10 + Math.floor(random() * 79)}-${1000000 + Math.floor(random() * 8999999)}`;
+    const pad = `/g/${sites.length}`;
+    const jaar = 2006 + Math.floor(random() * 14);
+    const soort = random();
+
+    // De verdeling weerspiegelt wat je in het veld tegenkomt: veel achterstallig
+    // onderhoud, een kleinere groep die het goed voor elkaar heeft.
+    const gemeen = {
+      path: pad, bedrijf, plaats, branche, domein,
+      lat: lat + (random() - 0.5) * 0.05,
+      lon: lon + (random() - 0.5) * 0.08,
+    };
+
+    if (soort < 0.28) {
+      sites.push({ ...gemeen, delayMs: 900 + Math.floor(random() * 2200),
+        headers: { 'x-powered-by': `PHP/5.${Math.floor(random() * 7)}.${Math.floor(random() * 40)}` },
+        html: tabelSite(bedrijf, plaats, jaar, `Al ${2026 - jaar} jaar actief in ${plaats} en omstreken.`, telefoon) });
+    } else if (soort < 0.55) {
+      sites.push({ ...gemeen, delayMs: 800 + Math.floor(random() * 3400),
+        headers: { 'x-powered-by': random() < 0.5 ? 'PHP/7.4.33' : 'PHP/8.1.27' },
+        html: oudeWordpress(bedrijf, plaats, random() < 0.5 ? '5.4.2' : '4.9.8', jaar,
+          lorem(`Wij werken door heel ${plaats} en de regio eromheen.`, 3), telefoon) });
+    } else if (soort < 0.68) {
+      sites.push({ ...gemeen, secure: true, goedGeconfigureerd: true, delayMs: 400 + Math.floor(random() * 900),
+        html: `<html><head><meta name="generator" content="Wix.com Website Builder"><style>${themaCss(180)}</style></head>
+          <body><h1>${bedrijf}</h1><script src="https://static.wixstatic.com/services/main.js"></script>
+          <p>${lorem(`${bedrijf} in ${plaats}. Bel voor een afspraak.`, 5)}</p>
+          <p>Telefoon: ${telefoon}</p><p>&copy; ${jaar} ${bedrijf}</p></body></html>` });
+    } else if (soort < 0.88) {
+      sites.push({ ...gemeen, secure: true, goedGeconfigureerd: true, delayMs: 500 + Math.floor(random() * 900),
+        html: middenmoot(bedrijf, plaats, lorem(`Al jaren het vertrouwde adres in ${plaats} voor ${branche}werk.`, 4), telefoon) });
+    } else {
+      sites.push({ ...gemeen, secure: true, goedGeconfigureerd: true, delayMs: 250 + Math.floor(random() * 400),
+        html: modern(bedrijf, plaats, `${voorvoegsel} in ${plaats} — ${bedrijf}`,
+          `${bedrijf} is het vertrouwde adres voor ${branche}werk in ${plaats} en omgeving. Vaste prijzen vooraf en snel ter plaatse.`,
+          lorem(`Wij werken voor particulieren en bedrijven in heel ${plaats} en de regio.`, 8),
+          telefoon, `info@${domein}`) });
+    }
+  }
+  return sites;
+}
+
+export function startDemoServers(cert: { key: string; cert: string }, sites: Site[] = SITES): Promise<DemoServers> {
+  const plain: Server = createHttpServer(handler(sites) as never);
+  const secure: Server = createHttpsServer(cert, handler(sites) as never);
 
   return new Promise((resolve) => {
     plain.listen(0, '127.0.0.1', () => {

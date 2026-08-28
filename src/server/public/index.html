@@ -3,244 +3,146 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Webscan NL — leads</title>
-<style>
-  :root {
-    --bg: #f6f7f9; --panel: #ffffff; --line: #e2e5ea; --text: #16181d;
-    --muted: #6b7280; --accent: #2563eb; --bad: #dc2626; --warn: #d97706; --good: #16a34a;
-    --radius: 10px;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg:#0e1014; --panel:#171a21; --line:#262b34; --text:#e7e9ee; --muted:#98a1b0; --accent:#5b8cff; }
-  }
-  * { box-sizing: border-box; }
-  body { margin:0; background:var(--bg); color:var(--text);
-    font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
-  header { padding:18px 22px; border-bottom:1px solid var(--line); background:var(--panel);
-    display:flex; gap:26px; align-items:baseline; flex-wrap:wrap; }
-  h1 { font-size:16px; margin:0; font-weight:650; letter-spacing:-.01em; }
-  .stat { font-size:12px; color:var(--muted); }
-  .stat b { color:var(--text); font-size:15px; font-variant-numeric:tabular-nums; }
-  main { display:grid; grid-template-columns: minmax(0,1fr) 420px; gap:0; height:calc(100vh - 62px); }
-  @media (max-width: 1000px) { main { grid-template-columns:1fr; height:auto; } #detail { border-left:0; border-top:1px solid var(--line); } }
-
-  .filters { padding:12px 22px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;
-    border-bottom:1px solid var(--line); background:var(--panel); }
-  input, select, button { font:inherit; color:var(--text); background:var(--bg);
-    border:1px solid var(--line); border-radius:8px; padding:6px 10px; }
-  input:focus, select:focus { outline:2px solid var(--accent); outline-offset:-1px; }
-  button { cursor:pointer; background:var(--panel); }
-  button:hover { border-color:var(--accent); }
-  button.primary { background:var(--accent); color:#fff; border-color:var(--accent); }
-  label.check { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted); }
-
-  #list { overflow:auto; }
-  table { width:100%; border-collapse:collapse; }
-  th { position:sticky; top:0; background:var(--panel); text-align:left; font-size:11px;
-    text-transform:uppercase; letter-spacing:.05em; color:var(--muted); font-weight:600;
-    padding:9px 14px; border-bottom:1px solid var(--line); }
-  td { padding:10px 14px; border-bottom:1px solid var(--line); vertical-align:top; }
-  tbody tr { cursor:pointer; }
-  tbody tr:hover { background:color-mix(in srgb, var(--accent) 7%, transparent); }
-  tbody tr[aria-selected="true"] { background:color-mix(in srgb, var(--accent) 14%, transparent); }
-  .name { font-weight:600; }
-  .sub { color:var(--muted); font-size:12px; }
-  .score { font-variant-numeric:tabular-nums; font-weight:700; font-size:15px; }
-  .pill { display:inline-block; padding:1px 7px; border-radius:999px; font-size:11px; font-weight:600; }
-  .g-F,.g-D { background:color-mix(in srgb,var(--bad) 18%,transparent); color:var(--bad); }
-  .g-C     { background:color-mix(in srgb,var(--warn) 20%,transparent); color:var(--warn); }
-  .g-B,.g-A{ background:color-mix(in srgb,var(--good) 18%,transparent); color:var(--good); }
-
-  #detail { border-left:1px solid var(--line); background:var(--panel); overflow:auto; padding:20px; }
-  #detail h2 { font-size:17px; margin:0 0 2px; }
-  .bar { height:6px; background:var(--line); border-radius:3px; overflow:hidden; margin-top:4px; }
-  .bar > i { display:block; height:100%; background:var(--accent); }
-  .cat { margin-bottom:11px; }
-  .cat-head { display:flex; justify-content:space-between; font-size:12px; color:var(--muted); }
-  .issue { border-left:3px solid var(--line); padding:6px 0 6px 11px; margin:9px 0; }
-  .issue.kritiek { border-color:var(--bad); } .issue.hoog { border-color:var(--warn); }
-  .issue b { display:block; font-weight:600; }
-  .issue span { color:var(--muted); font-size:13px; }
-  textarea { width:100%; min-height:290px; font:12.5px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;
-    background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:11px; resize:vertical; }
-  .row { display:flex; gap:7px; flex-wrap:wrap; margin:11px 0; }
-  .empty { padding:50px 22px; color:var(--muted); text-align:center; }
-  a { color:var(--accent); }
-  hr { border:0; border-top:1px solid var(--line); margin:18px 0; }
-</style>
+<title>Webscan NL</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%230f6b74'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/stijl.css">
 </head>
 <body>
 
-<header>
-  <h1>Webscan NL</h1>
-  <div class="stat">bedrijven <b id="s-bedrijven">–</b></div>
-  <div class="stat">gescand <b id="s-gescand">–</b></div>
-  <div class="stat">slecht (&lt;50) <b id="s-slecht">–</b></div>
-  <div class="stat">matig <b id="s-matig">–</b></div>
-  <div class="stat">goed <b id="s-goed">–</b></div>
-  <div class="stat">onbereikbaar <b id="s-onbereikbaar">–</b></div>
-</header>
-
-<div class="filters">
-  <input id="f-zoek" placeholder="Zoek op naam of domein" size="22">
-  <input id="f-city" placeholder="Plaats" size="12">
-  <input id="f-max" type="number" placeholder="Max score" value="55" size="6" style="width:100px">
-  <select id="f-grade">
-    <option value="">Alle beoordelingen</option>
-    <option>F</option><option>D</option><option>C</option><option>B</option><option>A</option>
-  </select>
-  <select id="f-status">
-    <option value="">Alle opvolgstatussen</option>
-    <option>nieuw</option><option>benaderd</option><option>gereageerd</option><option>klant</option><option>afgewezen</option>
-  </select>
-  <label class="check"><input type="checkbox" id="f-contact"> alleen met contactgegevens</label>
-  <button class="primary" id="f-apply">Filteren</button>
-  <button id="f-export">Exporteer CSV</button>
+<div id="inloggen" class="inlogscherm" hidden>
+  <form class="inlogkaart" id="inlogformulier">
+    <h1>Webscan NL</h1>
+    <p class="sub">Log in om met de leads te werken.</p>
+    <label for="i-email">E-mailadres</label>
+    <input class="veld" id="i-email" type="email" autocomplete="username" required>
+    <label for="i-wachtwoord">Wachtwoord</label>
+    <input class="veld" id="i-wachtwoord" type="password" autocomplete="current-password" required>
+    <button class="knop sterk" type="submit">Inloggen</button>
+    <p class="melding" id="i-melding" role="alert"></p>
+    <p class="sub" id="i-geenaccount" hidden>
+      Er is nog geen account. Maak er een aan op de server:<br>
+      <code>node src/cli.ts gebruiker toevoegen --naam "Jouw naam" --email jij@voorbeeld.nl --rol eigenaar</code>
+    </p>
+  </form>
 </div>
 
-<main>
-  <div id="list"><div class="empty">Laden…</div></div>
-  <aside id="detail"><div class="empty">Kies een bedrijf uit de lijst.</div></aside>
-</main>
-
-<script type="module">
-const $ = (id) => document.getElementById(id);
-const escape = (value) => String(value ?? '').replace(/[&<>"]/g, (c) =>
-  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-
-let selected = null;
-
-function query() {
-  const params = new URLSearchParams();
-  const add = (key, value) => { if (value !== '' && value != null) params.set(key, value); };
-  add('zoek', $('f-zoek').value.trim());
-  add('city', $('f-city').value.trim());
-  add('maxScore', $('f-max').value);
-  add('grade', $('f-grade').value);
-  add('status', $('f-status').value);
-  if ($('f-contact').checked) add('metContact', '1');
-  add('limit', 300);
-  return params;
-}
-
-async function loadStats() {
-  const data = await (await fetch('/api/stats')).json();
-  for (const [key, value] of Object.entries(data)) {
-    const node = $('s-' + key);
-    if (node) node.textContent = value.toLocaleString('nl-NL');
-  }
-}
-
-async function loadLeads() {
-  const { leads } = await (await fetch('/api/leads?' + query())).json();
-  if (leads.length === 0) {
-    $('list').innerHTML = '<div class="empty">Geen leads met deze filters. Draai eerst <code>webscan scan</code>.</div>';
-    return;
-  }
-  $('list').innerHTML = `<table>
-    <thead><tr><th>Score</th><th>Bedrijf</th><th>Contact</th><th>Grootste probleem</th><th>Opvolging</th></tr></thead>
-    <tbody>${leads.map((lead) => `
-      <tr data-id="${lead.id}">
-        <td><span class="score">${lead.score ?? '–'}</span>
-            <span class="pill g-${lead.grade ?? 'F'}">${lead.grade ?? '?'}</span></td>
-        <td><div class="name">${escape(lead.name)}</div>
-            <div class="sub">${escape(lead.domain)}${lead.city ? ' · ' + escape(lead.city) : ''}</div></td>
-        <td class="sub">${escape(lead.contact.phones[0] ?? '')}<br>${escape(lead.contact.emails[0] ?? '')}</td>
-        <td class="sub">${escape(lead.topIssues[0]?.title ?? '')}</td>
-        <td class="sub">${escape(lead.outreach_status)}</td>
-      </tr>`).join('')}</tbody></table>`;
-
-  for (const row of document.querySelectorAll('tbody tr')) {
-    row.addEventListener('click', () => showLead(Number(row.dataset.id)));
-  }
-}
-
-async function showLead(id) {
-  selected = id;
-  for (const row of document.querySelectorAll('tbody tr')) {
-    row.setAttribute('aria-selected', String(Number(row.dataset.id) === id));
-  }
-
-  const lead = await (await fetch(`/api/leads/${id}`)).json();
-  const verdict = lead.report?.verdict ?? { categories: [], issues: [] };
-
-  $('detail').innerHTML = `
-    <h2>${escape(lead.name)}</h2>
-    <div class="sub"><a href="${escape(lead.website)}" target="_blank" rel="noopener">${escape(lead.domain)}</a>
-      ${lead.city ? ' · ' + escape(lead.city) : ''} · gescand ${escape(lead.scanned_at ?? '')}</div>
-    <p><span class="score" style="font-size:30px">${lead.score ?? '–'}</span>
-       <span class="pill g-${lead.grade ?? 'F'}">${escape(lead.grade ?? '?')} — ${escape(verdict.label ?? '')}</span></p>
-    ${lead.error ? `<p class="sub">Foutmelding bij het ophalen: ${escape(lead.error)}</p>` : ''}
-
-    ${verdict.categories.map((cat) => `
-      <div class="cat"><div class="cat-head"><span>${escape(cat.label)}</span><span>${cat.score}/${cat.max}</span></div>
-        <div class="bar"><i style="width:${Math.round((cat.score / cat.max) * 100)}%"></i></div></div>`).join('')}
-
-    <hr>
-    <div class="sub">Contact: ${escape(lead.contact.phones.join(', ') || '—')} ·
-      ${escape(lead.contact.emails.join(', ') || 'geen e-mail gevonden')}</div>
-
-    <h3 style="font-size:14px;margin:16px 0 0">Gevonden problemen (${verdict.issues.length})</h3>
-    ${verdict.issues.map((entry) => `
-      <div class="issue ${escape(entry.severity)}">
-        <b>${escape(entry.title)}</b>
-        <span>${escape(entry.advies)}${entry.detail ? ' — ' + escape(entry.detail) : ''}</span>
-      </div>`).join('')}
-
-    <hr>
-    <h3 style="font-size:14px;margin:0 0 8px">Concept-mail</h3>
-    <div class="row">
-      <input id="p-naam" placeholder="Jouw naam" size="12">
-      <input id="p-bedrijf" placeholder="Jouw bedrijf" size="12">
-      <input id="p-telefoon" placeholder="Telefoon" size="10">
-      <input id="p-email" placeholder="E-mail" size="14">
-      <button id="p-maak">Genereer</button>
-      <button id="p-kopieer">Kopieer</button>
+<div id="app" hidden>
+  <header class="kop">
+    <div class="merk">Webscan NL</div>
+    <nav class="tabs" id="tabs">
+      <button class="tab" data-weergave="kaart" aria-pressed="true">Kaart &amp; leads</button>
+      <button class="tab" data-weergave="mijn" aria-pressed="false">Mijn lijst</button>
+      <button class="tab" data-weergave="team" aria-pressed="false" hidden>Team &amp; omzet</button>
+    </nav>
+    <div class="ik">
+      <span id="ik-naam"></span>
+      <button class="knop klein" id="uitloggen">Uitloggen</button>
     </div>
-    <textarea id="p-tekst" placeholder="Klik op Genereer voor een concept."></textarea>
+  </header>
 
-    <div class="row">
-      ${['benaderd', 'gereageerd', 'klant', 'afgewezen'].map((status) =>
-        `<button data-status="${status}">${status}</button>`).join('')}
-    </div>`;
+  <!-- ---------- kaart & leads ---------- -->
+  <section class="weergave" id="weergave-kaart">
+    <div class="filters">
+      <input class="veld" id="f-zoek" type="search" placeholder="Zoek bedrijf, domein of plaats" style="width:230px">
+      <select class="veld" id="f-plaats"><option value="">Alle plaatsen</option></select>
+      <select class="veld" id="f-fase"><option value="">Alle fases</option></select>
+      <select class="veld" id="f-agent"><option value="">Iedereen</option><option value="vrij">Nog niet toegewezen</option></select>
+      <label class="schakel"><input type="checkbox" id="f-contact"> met contactgegevens</label>
+      <button class="knop" id="f-wis">Wissen</button>
+      <a class="knop" id="f-export" href="/api/export.csv">CSV</a>
+      <span class="telling" id="telling"></span>
+    </div>
 
-  $('p-maak').addEventListener('click', makePitch);
-  $('p-kopieer').addEventListener('click', async () => {
-    await navigator.clipboard.writeText($('p-tekst').value);
-    $('p-kopieer').textContent = 'Gekopieerd';
-    setTimeout(() => { $('p-kopieer').textContent = 'Kopieer'; }, 1500);
-  });
-  for (const button of $('detail').querySelectorAll('[data-status]')) {
-    button.addEventListener('click', async () => {
-      await fetch(`/api/leads/${id}/status`, {
-        method: 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ status: button.dataset.status }),
-      });
-      loadLeads();
-    });
-  }
-  makePitch();
-}
+    <div class="drieluik">
+      <div class="kolom-kaart">
+        <div class="kaartvak">
+          <canvas id="kaart" aria-label="Kaart van Nederland met de gescande bedrijven"></canvas>
+          <div class="kaartbediening">
+            <button class="knop klein" id="k-in" title="Inzoomen">+</button>
+            <button class="knop klein" id="k-uit" title="Uitzoomen">−</button>
+            <button class="knop klein" id="k-herstel" title="Heel Nederland">Alles</button>
+          </div>
+          <p class="kaartnoot" id="kaartnoot"></p>
+        </div>
+        <div class="kaart-paneel bandvak" id="bandvak"></div>
+      </div>
 
-async function makePitch() {
-  const params = new URLSearchParams();
-  for (const key of ['naam', 'bedrijf', 'telefoon', 'email']) {
-    const value = $('p-' + key)?.value.trim();
-    if (value) params.set(key, value);
-  }
-  const pitch = await (await fetch(`/api/leads/${selected}/pitch?${params}`)).json();
-  if (pitch.error) { $('p-tekst').value = pitch.error; return; }
-  $('p-tekst').value = `Aan: ${pitch.to ?? '(geen e-mailadres gevonden)'}\nOnderwerp: ${pitch.subject}\n\n${pitch.body}`;
-}
+      <div class="kaart-paneel lijst">
+        <div class="tabelrol">
+          <table>
+            <thead><tr>
+              <th scope="col">Score</th><th scope="col">Bedrijf</th>
+              <th scope="col">Grootste probleem</th><th scope="col">Fase</th>
+            </tr></thead>
+            <tbody id="rijen"></tbody>
+          </table>
+        </div>
+        <div class="leeg" id="geen" hidden>Geen bedrijven met deze filters.</div>
+      </div>
 
-$('f-apply').addEventListener('click', loadLeads);
-$('f-export').addEventListener('click', () => { location.href = '/api/export.csv?' + query(); });
-for (const id of ['f-zoek', 'f-city', 'f-max']) {
-  $(id).addEventListener('keydown', (event) => { if (event.key === 'Enter') loadLeads(); });
-}
+      <aside class="kaart-paneel detail" id="detail" aria-live="polite"></aside>
+    </div>
+    <div class="tip" id="kaarttip" hidden></div>
+  </section>
 
-loadStats();
-loadLeads();
-</script>
+  <!-- ---------- mijn lijst ---------- -->
+  <section class="weergave" id="weergave-mijn" hidden>
+    <div class="trechterbalk" id="mijn-trechter"></div>
+    <div class="werkvlak">
+      <div class="kaart-paneel lijst">
+        <div class="tabelrol">
+          <table>
+            <thead><tr>
+              <th scope="col">Score</th><th scope="col">Bedrijf</th>
+              <th scope="col">Volgende actie</th><th scope="col">Fase</th>
+            </tr></thead>
+            <tbody id="mijn-rijen"></tbody>
+          </table>
+        </div>
+        <div class="leeg" id="mijn-geen" hidden>
+          Je hebt nog geen leads. Ga naar <b>Kaart &amp; leads</b> en pak er een op met "Deze neem ik".
+        </div>
+      </div>
+      <aside class="kaart-paneel detail" id="mijn-detail" aria-live="polite"></aside>
+    </div>
+  </section>
+
+  <!-- ---------- team & omzet ---------- -->
+  <section class="weergave" id="weergave-team" hidden>
+    <div class="tegels" id="omzettegels"></div>
+    <div class="werkvlak team">
+      <div class="kaart-paneel">
+        <div class="tabelrol">
+          <table>
+            <thead><tr>
+              <th scope="col">Wie</th><th scope="col">Open</th><th scope="col">Gebeld (7d)</th>
+              <th scope="col">Afspraken</th><th scope="col">Klanten</th><th scope="col">Per maand</th>
+              <th scope="col">Testimonials</th>
+            </tr></thead>
+            <tbody id="team-rijen"></tbody>
+          </table>
+        </div>
+      </div>
+      <aside class="kaart-paneel detail">
+        <span class="label-klein">Trechter</span>
+        <div id="team-trechter"></div>
+        <hr>
+        <span class="label-klein">Nieuwe medewerker</span>
+        <form id="nieuwe-gebruiker" class="stapel">
+          <input class="veld" name="naam" placeholder="Naam" required>
+          <input class="veld" name="email" type="email" placeholder="E-mailadres" required>
+          <input class="veld" name="wachtwoord" type="password" placeholder="Wachtwoord (10+ tekens)" required minlength="10">
+          <select class="veld" name="rol"><option value="agent">Agent</option><option value="eigenaar">Eigenaar</option></select>
+          <button class="knop sterk" type="submit">Account aanmaken</button>
+          <p class="melding" id="t-melding" role="alert"></p>
+        </form>
+      </aside>
+    </div>
+  </section>
+</div>
+
+<script type="module" src="/app.js"></script>
 </body>
 </html>
