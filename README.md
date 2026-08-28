@@ -119,6 +119,28 @@ statement cannot promise a deletion the code does not perform.
 npm run retention -w @buurklus/api    # the nightly sweep
 ```
 
+## The website
+
+Eleven pages, generated from `@buurklus/shared`: a home page, a page for
+professionals, a registration page and four legal documents, each in Dutch and
+English. Everything a share needs is there — an Open Graph card per page and
+language, a favicon, a manifest — and every asset comes from our own domain, so
+opening a page contacts nobody.
+
+```bash
+npm run build -w @buurklus/web                # writes apps/web/dist
+PUBLIC_API_URL=http://127.0.0.1:4000 \
+  npm run build -w @buurklus/web              # point the form at a local API
+node scripts/make-brand-assets.mjs            # redraw the share cards and icons
+```
+
+The registration page is the one place the site asks for something: an email
+address, a municipality, and for a business a KvK number and its trades. It
+posts to `POST /v1/signups`, which is rate-limited, carries a honeypot, and
+refuses anything without an explicit, unticked-by-default consent box. That is
+the waiting list a marketplace needs before it opens: the first customer in a
+municipality has to find somebody there.
+
 Four documents are published in Dutch and English — terms of use, privacy
 statement, disclaimer, cookie statement — generated from
 `apps/web/src/legal/`. They are honest about what is not finished: there is no

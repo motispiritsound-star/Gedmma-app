@@ -149,6 +149,12 @@ export const CHROME_NL: LegalChrome = {
       purpose: 'Je af en toe iets sturen over Buurklus, als je daarom hebt gevraagd.',
       basis: 'Toestemming (art. 6 lid 1 sub a)',
     },
+    {
+      data: 'Je aanmelding op de wachtlijst: e-mailadres, gemeente, en bij een bedrijf ook vakgebieden en KvK-nummer',
+      purpose:
+        'Je laten weten wanneer Buurklus in jouw gemeente opengaat, en vooraf kunnen zien of daar genoeg vakmensen én klanten zijn.',
+      basis: 'Toestemming (art. 6 lid 1 sub a)',
+    },
   ],
 };
 

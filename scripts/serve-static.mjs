@@ -20,6 +20,7 @@ const TYPES = {
   '.png': 'image/png',
   '.webp': 'image/webp',
   '.woff2': 'font/woff2',
+  '.webmanifest': 'application/manifest+json',
 };
 
 createServer(async (request, response) => {

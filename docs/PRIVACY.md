@@ -118,7 +118,29 @@ exemption does not apply. Keep this register, and keep it current.
 - **Retention:** seven years, matching the limitation period for a claim under
   the agreement.
 
-### 8. Notifications
+### 8. The waiting list
+
+- **Purpose:** telling someone when Buurklus opens in their municipality, and
+  knowing beforehand whether both sides of the marketplace are there. A
+  marketplace that opens with customers and no tradespeople fails on its first
+  day, so this is not a mailing list dressed up as a product decision — it is
+  the product decision.
+- **Data subjects:** people who filled in the registration form on the website.
+  Not account holders: there is no account.
+- **Categories:** email address, optional phone number, name or business name,
+  municipality, trades, KvK number, language, consent timestamp, IP address.
+- **Lawful basis:** Article 6(1)(a) consent. An address collected in order to
+  email it later is the textbook case, and the tick box is unticked, explicit
+  and separate from everything else on the form.
+- **Recipients:** nobody. This list is not shared, sold or exported.
+- **Retention:** deleted two years after the person was told the platform is
+  open to them, or 30 days after they unsubscribe. The clock starts at the
+  invitation rather than at sign-up, because an address collected two years ago
+  and never used is exactly what storage limitation is about.
+- **Note:** the form carries a honeypot field. A request that fills it in is
+  dropped and nothing is stored, so a bot leaves no personal data behind either.
+
+### 9. Notifications
 
 - **Purpose:** telling someone a quote arrived or a message is waiting.
 - **Categories:** rendered title and body, deep link, read state.
@@ -223,3 +245,5 @@ A short list, in order:
 - [ ] DPIA decision recorded, either way
 - [ ] Jurist has read the four published documents
 - [ ] A test run of a data request: export it, erase it, look at what is left
+- [ ] A way for someone on the waiting list to get off it without emailing a
+      person: the endpoint exists, a link in the mail does not yet

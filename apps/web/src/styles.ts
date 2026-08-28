@@ -385,6 +385,166 @@ img, svg { max-width: 100%; display: block; }
 .plan--later { background: var(--green-50); border-color: var(--green-100); }
 .plan--later p { margin-block-start: 0.5rem; }
 
+/* --- Registration --------------------------------------------------------- */
+/* The pitch and the form sit side by side on a wide screen and stack on a
+   phone, with the form first once stacked: someone who arrived from a button
+   marked "sign up" came to sign up, not to be sold to again. */
+.join__head { max-width: 46rem; display: grid; gap: 0.75rem; margin-block-end: 2rem; }
+/* The badge is a label, not a banner: in a grid it would stretch the full
+   column width and stop reading as one. */
+.join__head .eyebrow { justify-self: start; }
+.join__head h1 { margin: 0; }
+
+.seg--role {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--white);
+  border: 1px solid var(--ink-100);
+  border-radius: var(--radius-pill);
+  margin-block-end: 2rem;
+  flex-wrap: wrap;
+}
+.seg--role .seg__btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--ink-500);
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-block-size: 44px;
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+}
+.seg--role .seg__btn[aria-checked="true"] { background: var(--green-600); color: var(--white); }
+.seg--role .seg__btn:focus-visible { outline: 2px solid var(--green-600); outline-offset: 2px; }
+
+.join__grid { display: grid; gap: 2rem; align-items: start; }
+@media (min-width: 62rem) {
+  .join__grid { grid-template-columns: 1fr 26rem; gap: 3rem; }
+}
+.join__pitch { display: grid; gap: 1.25rem; order: 2; }
+.join__panel { order: 1; }
+@media (min-width: 62rem) {
+  .join__pitch { order: 1; }
+  .join__panel { order: 2; position: sticky; inset-block-start: 1.5rem; }
+}
+
+.joinCard {
+  background: var(--white);
+  border: 1px solid var(--ink-100);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+}
+.joinCard h2 { font-size: 1.15rem; margin-block: 0 0.5rem; }
+.joinCard--promise { background: var(--green-50); border-color: var(--green-100); }
+
+.join__form {
+  background: var(--white);
+  border: 1px solid var(--ink-100);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-raised);
+}
+.join__form fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 1.1rem; }
+.join__legend { font-weight: 700; font-size: 1.05rem; padding: 0; margin-block-end: 0.25rem; }
+
+.field { display: grid; gap: 0.35rem; }
+.field label, .field__label { font-weight: 600; font-size: 0.92rem; }
+.field__optional { font-weight: 400; color: var(--ink-300); font-size: 0.85rem; }
+.field__hint { font-size: 0.82rem; color: var(--ink-500); margin: 0; }
+.field input, .field select {
+  font: inherit;
+  color: var(--ink-900);
+  background: var(--white);
+  border: 1px solid var(--ink-200);
+  border-radius: var(--radius-md);
+  padding: 0.7rem 0.85rem;
+  /* 16px keeps iOS from zooming the page when the field takes focus. */
+  font-size: 16px;
+  min-block-size: 44px;
+  inline-size: 100%;
+}
+.field input:focus-visible, .field select:focus-visible {
+  outline: 2px solid var(--green-600);
+  outline-offset: 1px;
+  border-color: var(--green-600);
+}
+
+.chips--wrap { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.chip--check { position: relative; cursor: pointer; }
+.chip--check input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  margin: 0;
+}
+.chip--check span {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 40px;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--ink-200);
+  border-radius: var(--radius-pill);
+  font-size: 0.88rem;
+  color: var(--ink-700);
+}
+.chip--check input:checked + span {
+  background: var(--green-600);
+  border-color: var(--green-600);
+  color: var(--white);
+}
+.chip--check input:focus-visible + span { outline: 2px solid var(--green-600); outline-offset: 2px; }
+
+.check { display: flex; gap: 0.7rem; align-items: start; font-size: 0.92rem; line-height: 1.5; }
+.check a { display: block; margin-block-start: 0.2rem; color: var(--green-700); }
+.check input {
+  inline-size: 20px;
+  block-size: 20px;
+  margin: 0.15rem 0 0;
+  accent-color: var(--green-600);
+  flex: none;
+}
+
+/* Off-screen rather than display:none: a form filler skips what is hidden, and
+   the whole point is that it does not skip this one. */
+.honeypot {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.btn--block { inline-size: 100%; justify-content: center; }
+.join__error { color: var(--terracotta-600); font-size: 0.9rem; margin: 0; font-weight: 600; }
+
+.join__done {
+  background: var(--white);
+  border: 2px solid var(--green-600);
+  border-radius: var(--radius-lg);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  box-shadow: var(--shadow-raised);
+}
+.join__doneMark {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 52px;
+  block-size: 52px;
+  border-radius: 50%;
+  background: var(--green-100);
+  color: var(--green-700);
+  margin-block-end: 0.75rem;
+}
+.join__done h3 { margin-block: 0 0.5rem; }
+.join__done p { margin: 0; color: var(--ink-500); line-height: 1.6; }
+
 /* --- Legal pages ---------------------------------------------------------- */
 /* A legal document is read, not scanned, so the measure is narrower than the
    marketing pages and the type is set for continuous reading. */
@@ -516,7 +676,8 @@ img, svg { max-width: 100%; display: block; }
   .footer__bottom a,
   .legalSection a,
   .legal__others a,
-  .legal__authority a {
+  .legal__authority a,
+  .check a {
     display: inline-flex;
     align-items: center;
     min-block-size: 44px;

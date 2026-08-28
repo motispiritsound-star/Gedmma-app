@@ -172,6 +172,7 @@ model City {
   proBases  ProProfile[]  @relation("ProBaseCity")
   proCities ProCoverage[]
   users     User[]
+  signups   Signup[]
 
   @@index([province])
   @@map("cities")
@@ -306,6 +307,55 @@ model AgreementRecord {
 enum AgreementDocument {
   TERMS
   PRIVACY
+}
+
+/// Someone who asked to be told when Buurklus opens, before the app is on the
+/// stores. Not an account: no password, no verified phone, no profile. It
+/// exists so the first customer in a municipality finds somebody there, which
+/// is the problem every marketplace has on its first day.
+///
+/// The email address is here to be emailed, so it rests on consent, and the
+/// consent is recorded beside it rather than assumed.
+model Signup {
+  id            String     @id @default(cuid())
+  role          SignupRole
+  email         String
+  phone         String?
+  name          String?
+  cityId        String?
+  /// Category slugs a professional picked. Slugs rather than a join table: a
+  /// waiting list entry is a note, not a profile, and it is read by a person.
+  categorySlugs String[]   @default([])
+  kvk           String?
+  locale        Locale     @default(nl)
+
+  /// When they agreed to be emailed, and from where. Article 7(1) again.
+  consentAt DateTime @default(now())
+  ip        String?
+  userAgent String?
+
+  /// Set when they have been told the platform is open to them, which starts
+  /// the retention clock.
+  invitedAt DateTime?
+  /// Set when they ask to be taken off the list; the row is kept only long
+  /// enough to honour that and is then swept.
+  unsubscribedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  city City? @relation(fields: [cityId], references: [id])
+
+  /// One entry per address per side of the marketplace: a painter may also be
+  /// a customer, and signing up twice as the same thing is a duplicate.
+  @@unique([email, role])
+  @@index([role, createdAt])
+  @@index([cityId])
+  @@map("signups")
+}
+
+enum SignupRole {
+  CUSTOMER
+  PRO
 }
 
 /// One-time codes sent by SMS. Rows are kept after use for rate limiting and

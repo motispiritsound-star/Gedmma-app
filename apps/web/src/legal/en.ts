@@ -148,6 +148,12 @@ export const CHROME_EN: LegalChrome = {
       purpose: 'Sending you something about Buurklus occasionally, if you asked for it.',
       basis: 'Consent (art. 6(1)(a))',
     },
+    {
+      data: 'Your waiting-list registration: email address, municipality, and for a business also trades and Chamber of Commerce number',
+      purpose:
+        'Telling you when Buurklus opens in your municipality, and seeing beforehand whether there are enough tradespeople and customers there.',
+      basis: 'Consent (art. 6(1)(a))',
+    },
   ],
 };
 

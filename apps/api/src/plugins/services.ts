@@ -13,6 +13,7 @@ import { PrivacyService } from '../services/privacy.service.js';
 import { ProService } from '../services/pro.service.js';
 import { QuoteService } from '../services/quote.service.js';
 import { ReviewService } from '../services/review.service.js';
+import { SignupService } from '../services/signup.service.js';
 import { SubscriptionService } from '../services/subscription.service.js';
 
 export interface Services {
@@ -25,6 +26,7 @@ export interface Services {
   pros: ProService;
   quotes: QuoteService;
   reviews: ReviewService;
+  signups: SignupService;
   subscriptions: SubscriptionService;
   /** Exposed so the gateway callback route can verify its signature. */
   payments: PaymentAdapter;
@@ -56,6 +58,7 @@ const servicesPlugin: FastifyPluginAsync = async (app) => {
     pros: new ProService(prisma, subscriptions),
     quotes: new QuoteService(prisma, subscriptions, notifications),
     reviews: new ReviewService(prisma, notifications),
+    signups: new SignupService(prisma),
     subscriptions,
     payments,
   };

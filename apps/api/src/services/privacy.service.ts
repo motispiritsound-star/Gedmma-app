@@ -247,6 +247,7 @@ export class PrivacyService {
       },
     });
 
+    const signups = await this.sweepSignups(now);
     const jobs = await this.anonymiseOldJobs(now);
     const accounts = await this.handleInactiveAccounts(now);
 
@@ -255,9 +256,29 @@ export class PrivacyService {
       otpChallenges: otp.count,
       expiredSessions: sessions.count,
       notifications: notifications.count,
+      signups,
       ...jobs,
       ...accounts,
     };
+  }
+
+  /**
+   * Clears the waiting list of entries that have done their job.
+   *
+   * Two cases. Someone who unsubscribed: the row is kept a month so the
+   * request is honoured and auditable if they say we kept mailing them, then
+   * deleted. And someone who was told the platform is open to them: the clock
+   * starts there, not at sign-up, because an address collected two years ago
+   * and never used is exactly what the storage-limitation principle is about.
+   */
+  private async sweepSignups(now: Date) {
+    const unsubscribed = await this.prisma.signup.deleteMany({
+      where: { unsubscribedAt: { lt: new Date(now.getTime() - 30 * 86_400_000) } },
+    });
+    const invited = await this.prisma.signup.deleteMany({
+      where: { invitedAt: { lt: retentionCutoff('signup', now) } },
+    });
+    return unsubscribed.count + invited.count;
   }
 
   /**

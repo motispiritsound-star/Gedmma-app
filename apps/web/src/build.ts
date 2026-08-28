@@ -2,10 +2,14 @@ import { cp, mkdir, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LEGAL_PAGES, SUPPORTED_LOCALES, legalPath } from '@buurklus/shared';
+import { joinUrl } from './render.js';
 import {
   renderHome,
+  renderJoin,
   renderLegal,
   renderPro,
+  renderManifest,
+  renderNotFound,
   renderRobots,
   renderRootRedirect,
   renderSitemap,
@@ -43,6 +47,12 @@ async function write(relative: string, contents: string) {
   return { relative, bytes: Buffer.byteLength(contents) };
 }
 
+/** The sign-up page's slug differs per language; the build follows the path
+ * the site itself links to rather than choosing a name of its own. */
+function joinPath(locale: (typeof SUPPORTED_LOCALES)[number]): string {
+  return joinUrl(locale).replace(/^\/|\/$/g, '');
+}
+
 async function main() {
   await rm(OUT, { recursive: true, force: true });
   await mkdir(OUT, { recursive: true });
@@ -52,12 +62,15 @@ async function main() {
     await write('index.html', renderRootRedirect()),
     await write('styles.css', renderStyles()),
     await write('robots.txt', renderRobots()),
+    await write('site.webmanifest', renderManifest()),
+    await write('404.html', renderNotFound()),
     await write('sitemap.xml', renderSitemap()),
   ];
 
   for (const locale of SUPPORTED_LOCALES) {
     written.push(await write(`${locale}/index.html`, renderHome(locale)));
     written.push(await write(`${locale}/pro/index.html`, renderPro(locale)));
+    written.push(await write(`${joinPath(locale)}/index.html`, renderJoin(locale)));
 
     for (const document of LEGAL_PAGES) {
       // The path in @buurklus/shared is what the app links to, so the file is

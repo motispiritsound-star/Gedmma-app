@@ -20,13 +20,18 @@ import {
 import { COPY } from './content.js';
 import {
   esc,
+  joinUrl,
   renderHome,
+  renderManifest,
+  renderNotFound,
+  renderJoin,
   renderLegal,
   renderPro,
   renderRootRedirect,
   renderSitemap,
   renderStyles,
 } from './render.js';
+import { JOIN_COPY } from './join-content.js';
 
 const legalPages = SUPPORTED_LOCALES.flatMap((locale) =>
   LEGAL_PAGES.map((document) => ({
@@ -41,6 +46,7 @@ const pages = [
   ...SUPPORTED_LOCALES.flatMap((locale) => [
     { locale, name: `${locale} home`, html: renderHome(locale) },
     { locale, name: `${locale} pro`, html: renderPro(locale) },
+    { locale, name: `${locale} join`, html: renderJoin(locale) },
   ]),
   ...legalPages.map(({ locale, name, html }) => ({ locale, name, html })),
 ];
@@ -353,5 +359,187 @@ describe('the legal pages', () => {
       // And the page itself sets nothing that would need one.
       expect(cookies, locale).not.toContain('googletagmanager');
     }
+  });
+});
+
+describe('the registration page', () => {
+  it('gives each language a slug in its own language', () => {
+    expect(joinUrl('nl')).toBe('/nl/aanmelden/');
+    expect(joinUrl('en')).toBe('/en/join/');
+  });
+
+  it('leads every call to action on the site to it', () => {
+    // A button marked "sign up" that goes nowhere is the fastest way to lose
+    // somebody who had already decided.
+    for (const locale of SUPPORTED_LOCALES) {
+      const target = `href="${joinUrl(locale)}"`;
+      expect(renderHome(locale), `${locale} home`).toContain(target);
+      expect(renderPro(locale), `${locale} pro`).toContain(target);
+    }
+  });
+
+  it('leaves no link pointing at nothing', () => {
+    for (const page of pages) {
+      expect(page.html, page.name).not.toContain('href="#"');
+    }
+  });
+
+  it('asks a professional for what a professional needs, and nobody else', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderJoin(locale);
+      // The KvK field and the trades ship with the page and are revealed by
+      // the choice, rather than living on a second page half the visitors
+      // would never reach.
+      expect(html, locale).toContain('data-role="PRO"');
+      expect(html, locale).toContain('name="kvk"');
+      expect(html, locale).toContain('name="categorySlugs"');
+    }
+  });
+
+  it('offers every municipality and every trade the catalog knows', () => {
+    const html = renderJoin('nl');
+    for (const city of CITIES) {
+      expect(html, city.slug).toContain(`value="${city.slug}"`);
+    }
+    for (const category of ROOT_CATEGORIES) {
+      expect(html, category.slug).toContain(`value="${category.slug}"`);
+    }
+  });
+
+  it('carries an unticked consent box and links the privacy statement beside it', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderJoin(locale);
+      expect(html, locale).toContain('id="consent"');
+      // A pre-ticked box is not consent, so the attribute must not be there.
+      expect(html, locale).not.toMatch(/id="consent"[^>]*checked/);
+      expect(html, locale).toContain(`href="${legalPath('PRIVACY', locale)}"`);
+    }
+  });
+
+  it('hides a honeypot that a person will never see', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderJoin(locale);
+      expect(html, locale).toContain('name="website"');
+      expect(html, locale).toContain('class="honeypot"');
+      expect(html, locale).toContain('tabindex="-1"');
+    }
+  });
+
+  it('says what happens when the form cannot run', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      // Without JavaScript the button cannot submit; a page that pretends
+      // otherwise loses the registration silently.
+      expect(renderJoin(locale), locale).toContain('<noscript>');
+      expect(renderJoin(locale), locale).toContain(
+        esc(JOIN_COPY[locale].states.noScript),
+      );
+    }
+  });
+
+  it('posts to one API host, and never to a third party', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderJoin(locale);
+      const posts = [...html.matchAll(/fetch\(config\.api/g)];
+      expect(posts.length, locale).toBe(1);
+      expect(html, locale).toContain('/v1/signups');
+    }
+  });
+
+  it('promises nothing about the address it does not keep', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const copy = JOIN_COPY[locale];
+      expect(copy.promise.items.length, locale).toBeGreaterThanOrEqual(3);
+      expect(renderJoin(locale), locale).toContain(esc(copy.promise.items[0]!));
+    }
+  });
+
+  it('is in the sitemap in both languages', () => {
+    const sitemap = renderSitemap();
+    for (const locale of SUPPORTED_LOCALES) {
+      expect(sitemap, locale).toContain(joinUrl(locale));
+    }
+  });
+});
+
+describe('sharing a link', () => {
+  it('gives every page a card, so a share is never a grey rectangle', () => {
+    for (const page of pages) {
+      expect(page.html, page.name).toMatch(/<meta property="og:image" content="https:[^"]+\.png">/);
+      expect(page.html, page.name).toContain('<meta property="og:image:width" content="1200">');
+      expect(page.html, page.name).toContain('name="twitter:card" content="summary_large_image"');
+    }
+  });
+
+  it('points each page at the card that was actually drawn for it', () => {
+    // The images are generated by scripts/make-brand-assets.mjs; a page
+    // naming one that does not exist shares as a broken image.
+    const drawn = new Set([
+      'og-nl-home.png',
+      'og-nl-pro.png',
+      'og-nl-join.png',
+      'og-en-home.png',
+      'og-en-pro.png',
+      'og-en-join.png',
+    ]);
+    for (const page of pages) {
+      const match = /og:image" content="[^"]+\/og\/([^"]+)"/.exec(page.html);
+      expect(match, page.name).not.toBeNull();
+      expect(drawn.has(match![1]!), `${page.name} -> ${match![1]}`).toBe(true);
+    }
+  });
+
+  it('uses the right language card on the right language page', () => {
+    expect(renderHome('nl')).toContain('/og/og-nl-home.png');
+    expect(renderHome('en')).toContain('/og/og-en-home.png');
+    expect(renderPro('nl')).toContain('/og/og-nl-pro.png');
+    expect(renderJoin('en')).toContain('/og/og-en-join.png');
+  });
+
+  it('carries an icon a browser and a home screen can use', () => {
+    for (const page of pages) {
+      expect(page.html, page.name).toContain('rel="icon" href="/favicon.svg"');
+      expect(page.html, page.name).toContain('rel="apple-touch-icon"');
+      expect(page.html, page.name).toContain('rel="manifest"');
+    }
+  });
+
+  it('describes itself to a search engine, truthfully', () => {
+    for (const page of pages) {
+      expect(page.html, page.name).toContain('application/ld+json');
+    }
+
+    const home = renderHome('nl');
+    const blocks = [...home.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)].map(
+      (match) => JSON.parse(match[1]!.replace(/<\\\//g, '</')),
+    );
+    const types = blocks.map((block) => block['@type']);
+    expect(types).toContain('Organization');
+    // The FAQ is marked up only where a visitor can actually read it.
+    expect(types).toContain('FAQPage');
+    const faq = blocks.find((block) => block['@type'] === 'FAQPage');
+    expect(faq.mainEntity).toHaveLength(COPY.nl.faq.items.length);
+    for (const item of COPY.nl.faq.items) {
+      expect(home, item.q).toContain(esc(item.q));
+    }
+    expect(renderPro('nl')).not.toContain('FAQPage');
+  });
+
+  it('ships a manifest that matches the icons on disk', () => {
+    const manifest = JSON.parse(renderManifest());
+    expect(manifest.name).toBe('Buurklus');
+    expect(manifest.start_url).toBe('/nl/');
+    expect(manifest.icons.map((icon: { src: string }) => icon.src)).toEqual([
+      '/icons/icon-192.png',
+      '/icons/icon-512.png',
+      '/favicon.svg',
+    ]);
+  });
+
+  it('sends a mistyped link somewhere useful instead of nowhere', () => {
+    const page = renderNotFound();
+    expect(page).toContain('name="robots" content="noindex"');
+    expect(page).toContain('href="/nl/"');
+    expect(page).toContain(`href="${joinUrl('nl')}"`);
+    expect(page).toContain('href="/en/"');
   });
 });

@@ -214,6 +214,14 @@ export const RETENTION: readonly RetentionRule[] = [
     },
   },
   {
+    key: 'signup',
+    days: 2 * DAYS_PER_YEAR,
+    reason: {
+      nl: 'Meld je je aan voor de wachtlijst, dan bewaren we je e-mailadres tot twee jaar nadat we je hebben laten weten dat je terechtkunt, of tot je je afmeldt. Wat daarna nog staat wordt verwijderd.',
+      en: 'If you join the waiting list we keep your email address for up to two years after we tell you the platform is open to you, or until you unsubscribe. Anything left after that is deleted.',
+    },
+  },
+  {
     key: 'inactiveAccount',
     days: 3 * DAYS_PER_YEAR,
     reason: {
