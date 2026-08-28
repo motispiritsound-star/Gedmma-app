@@ -1,0 +1,135 @@
+// Router en schil. De app is één pagina; het adres achter # bepaalt het scherm.
+
+import { el, leeg } from './ui.js';
+import {
+  actiefProfiel, alleProfielen, opAndering, telTijd, tikDagreeks, voortgang,
+} from './opslag.js';
+import { niveauVan, samenvatting, geefXp, XP } from './punten.js';
+
+import * as start from './schermen/start.js';
+import * as thuis from './schermen/thuis.js';
+import * as letters from './schermen/letters.js';
+import * as qaida from './schermen/qaida.js';
+import * as koran from './schermen/koran.js';
+import * as woorden from './schermen/woorden.js';
+import * as voortgangScherm from './schermen/voortgang.js';
+import * as ouders from './schermen/ouders.js';
+
+const inhoud = document.getElementById('inhoud');
+const kopbalk = document.getElementById('kopbalk');
+const navigatie = document.getElementById('navigatie');
+
+export const ga = (pad) => { window.location.hash = pad; };
+
+const ROUTES = [
+  [/^\/start$/, () => start.toon(inhoud)],
+  [/^\/thuis$/, () => thuis.toon(inhoud)],
+  [/^\/letters$/, () => letters.toon(inhoud)],
+  [/^\/letters\/([\w-]+)$/, (id) => letters.toonLetter(inhoud, id)],
+  [/^\/qaida$/, () => qaida.toon(inhoud)],
+  [/^\/qaida\/([\w-]+)$/, (id) => qaida.toonLes(inhoud, id)],
+  [/^\/koran$/, () => koran.toon(inhoud)],
+  [/^\/koran\/([\w-]+)$/, (id) => koran.toonSoera(inhoud, id)],
+  [/^\/woorden$/, () => woorden.toon(inhoud)],
+  [/^\/woorden\/([\w-]+)$/, (id) => woorden.toonThema(inhoud, id)],
+  [/^\/voortgang$/, () => voortgangScherm.toon(inhoud)],
+  [/^\/ouders$/, () => ouders.toon(inhoud)],
+];
+
+const NAV = [
+  { pad: '/thuis', naam: 'Thuis', emoji: '🏠' },
+  { pad: '/letters', naam: 'Letters', emoji: '🔤' },
+  { pad: '/qaida', naam: 'Lezen', emoji: '📗' },
+  { pad: '/koran', naam: 'Koran', emoji: '📖' },
+  { pad: '/woorden', naam: 'Woorden', emoji: '💬' },
+];
+
+function tekenKopbalk() {
+  const p = actiefProfiel();
+  leeg(kopbalk);
+  if (!p) return kopbalk.classList.add('verborgen');
+  kopbalk.classList.remove('verborgen');
+
+  const v = voortgang();
+  const n = niveauVan(v.xp);
+  const s = samenvatting(v);
+
+  kopbalk.append(
+    el('button', { class: 'profielknop', 'aria-label': 'Wissel van profiel',
+      opclick: () => ga('/start') },
+      el('span', { class: 'avatar', stijl: { background: p.kleur }, tekst: p.avatar }),
+      el('span', { class: 'profielnaam', tekst: p.naam })),
+    el('button', { class: 'niveauknop', 'aria-label': `Niveau ${n.nr}: ${n.naam}`,
+      opclick: () => ga('/voortgang') },
+      el('span', { class: 'niveau-emoji', tekst: n.emoji }),
+      el('span', { class: 'niveau-tekst' },
+        el('b', { tekst: `Niveau ${n.nr}` }),
+        el('span', { class: 'xp', tekst: n.max ? `${v.xp} punten` : `${n.xpInNiveau}/${n.xpNodig}` })),
+      el('span', { class: 'mini-balk' }, el('i', { stijl: { width: `${n.deel * 100}%` } }))),
+    el('span', { class: `vlam ${s.huidigeReeks > 0 ? 'aan' : ''}`, title: `${s.huidigeReeks} dagen op rij` },
+      '🔥', el('b', { tekst: String(s.huidigeReeks) })),
+    el('button', { class: 'oudersknop', 'aria-label': 'Voor ouders', tekst: '⚙️',
+      opclick: () => ga('/ouders') }),
+  );
+}
+
+function tekenNavigatie(huidig) {
+  leeg(navigatie);
+  if (!actiefProfiel()) return navigatie.classList.add('verborgen');
+  navigatie.classList.remove('verborgen');
+  for (const item of NAV) {
+    navigatie.append(el('a', {
+      href: `#${item.pad}`,
+      class: `navknop ${huidig.startsWith(item.pad) ? 'actief' : ''}`.trim(),
+      'aria-current': huidig.startsWith(item.pad) ? 'page' : null,
+    }, el('span', { class: 'nav-emoji', tekst: item.emoji }), el('span', { tekst: item.naam })));
+  }
+}
+
+function pasLeeftijdToe() {
+  const p = actiefProfiel();
+  document.body.classList.remove('leeftijd-klein', 'leeftijd-midden', 'leeftijd-groot');
+  if (!p) return;
+  document.body.classList.add(
+    p.leeftijd <= 7 ? 'leeftijd-klein' : p.leeftijd <= 10 ? 'leeftijd-midden' : 'leeftijd-groot');
+}
+
+function router() {
+  const pad = window.location.hash.slice(1) || '/thuis';
+  if (!actiefProfiel() && pad !== '/start') return ga('/start');
+  if (!alleProfielen().length && pad !== '/start') return ga('/start');
+
+  pasLeeftijdToe();
+  tekenKopbalk();
+  tekenNavigatie(pad);
+
+  for (const [patroon, teken] of ROUTES) {
+    const treffer = pad.match(patroon);
+    if (treffer) { teken(...treffer.slice(1)); window.scrollTo(0, 0); return; }
+  }
+  leeg(inhoud).append(el('div', { class: 'kaart leeg' },
+    el('h2', { tekst: 'Hier is niets' }),
+    el('a', { class: 'knop', href: '#/thuis', tekst: 'Terug naar huis' })));
+}
+
+// Oefentijd bijhouden: alleen tellen als het scherm echt aan staat.
+let laatsteTik = Date.now();
+setInterval(() => {
+  const nu = Date.now();
+  const verstreken = Math.round((nu - laatsteTik) / 1000);
+  laatsteTik = nu;
+  if (document.visibilityState === 'visible' && actiefProfiel() && verstreken < 60) {
+    telTijd(verstreken);
+  }
+}, 30000);
+document.addEventListener('visibilitychange', () => { laatsteTik = Date.now(); });
+
+window.addEventListener('hashchange', router);
+opAndering(() => { if (actiefProfiel()) tekenKopbalk(); });
+
+if (actiefProfiel() && tikDagreeks()) geefXp(XP.nieuweDag);
+router();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}

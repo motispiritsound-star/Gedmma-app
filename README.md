@@ -576,3 +576,9 @@ demo/
   page.ts         zet de scanresultaten in de pagina
 test/             fixtures en controles
 ```
+
+## Ook in deze repository
+
+**[`noer/`](noer/)** — Noer: Arabisch leren lezen en korte soera's uit je hoofd
+leren, voor kinderen van 5 tot en met 13 jaar. Een losstaande app met een eigen
+`package.json`; `cd noer && npm start`.

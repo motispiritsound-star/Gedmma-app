@@ -1,0 +1,16 @@
+{
+  "name": "Noer — Arabisch en Koran voor kinderen",
+  "short_name": "Noer",
+  "description": "Arabisch leren lezen en korte soera's uit je hoofd leren, spelenderwijs.",
+  "lang": "nl",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fcfcfb",
+  "theme_color": "#2f8f6f",
+  "icons": [
+    { "src": "icoon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
