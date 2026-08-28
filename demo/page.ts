@@ -38,6 +38,13 @@ const feitenVan = (lead: RawLead) => {
   };
 };
 
+/** Alleen wat de pagina toont; de rest van de meting hoeft niet mee. */
+const techniekVan = (signals: any) =>
+  signals ? {
+    totalMs: signals.totalMs,
+    tech: signals.tech.map((tech: any) => ({ name: tech.name, version: tech.version, staleness: tech.staleness })),
+  } : null;
+
 const leads = source.leads.map((lead) => ({
   id: lead.id,
   naam: lead.name,
@@ -64,17 +71,31 @@ const leads = source.leads.map((lead) => ({
   prioriteit: lead.prioriteit,
   vorigeScore: lead.vorige_score,
   vorigeScanOp: lead.vorige_scan_op,
-  levenRapport: lead.levenRapport,
+  levenRapport: lead.levenRapport ? {
+    score: lead.levenRapport.score, niveau: lead.levenRapport.niveau, label: lead.levenRapport.label,
+    tekens: lead.levenRapport.tekens.slice(0, 4), twijfels: lead.levenRapport.twijfels.slice(0, 3),
+  } : null,
   prioriteitUitleg: lead.prioriteitUitleg,
   oordeel: lead.verdict?.label ?? '',
   status: lead.scan_status,
   fout: lead.error,
   contact: lead.contact,
   voorgesteldSjabloon: lead.voorgesteldSjabloon,
+  // De titels van de belangrijkste problemen heeft elk bedrijf, ook zonder het
+  // volledige rapport; de lijst en de kaart hebben aan die ene regel genoeg.
+  topProblemen: (lead.topIssues ?? []).slice(0, 3).map((kwestie: any) => kwestie.title),
+  uitgewerkt: lead.uitgewerkt !== false,
   // De sjablonen worden in de pagina zelf gerenderd; daarvoor is het oordeel
-  // nodig plus de twee dingen die de teksten uit de meting halen.
-  verdict: lead.verdict,
-  signals: lead.signals ? { totalMs: lead.signals.totalMs, tech: lead.signals.tech } : null,
+  // nodig plus de twee dingen die de teksten uit de meting halen. topIssues is
+  // de kop van issues en wordt in de pagina teruggerekend.
+  verdict: lead.verdict ? {
+    score: lead.verdict.score, grade: lead.verdict.grade, label: lead.verdict.label,
+    categories: lead.verdict.categories,
+    issues: lead.verdict.issues.map((kwestie: any) => ({
+      id: kwestie.id, severity: kwestie.severity, title: kwestie.title, advies: kwestie.advies,
+    })),
+  } : null,
+  signals: techniekVan(lead.signals),
   feiten: feitenVan(lead),
 }));
 
@@ -109,6 +130,7 @@ const data = {
       lead.vorigeScore !== null && lead.score !== null && lead.score < lead.vorigeScore - 4).length,
     alleenMailen: leads.filter((lead) => !lead.bellen.mag && lead.mailen.mag).length,
     klanten: klanten.length,
+    uitgewerkt: leads.filter((lead) => lead.uitgewerkt).length,
     mrrCent: klanten.reduce((som, lead) => som + (lead.maandbedragCent ?? 0), 0),
   },
   verdeling,
@@ -140,4 +162,6 @@ const html = template
   .replace('"__DEMO_DATA__"', JSON.stringify(data));
 
 writeFileSync('demo/out/demo.html', html);
-console.log(`demo/out/demo.html geschreven (${Math.round(html.length / 1024)} kB, ${leads.length} bedrijven)`);
+const uitgewerkt = leads.filter((lead) => lead.uitgewerkt).length;
+console.log(`demo/out/demo.html geschreven (${Math.round(html.length / 1024)} kB, ${leads.length} bedrijven, `
+  + `${uitgewerkt} met volledige analyse)`);

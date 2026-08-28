@@ -1,7 +1,8 @@
 import express, { type Request, type Response, type NextFunction } from 'express';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { queryLeads, getLead, kaartPunten, countLeads, plaatsen, type LeadFilter } from '../report/leads.ts';
+import { queryLeads, getLead, kaartPunten, kaartVakjes, countLeads, plaatsen,
+         type LeadFilter } from '../report/leads.ts';
 import { db, stats } from '../db/index.ts';
 import { login, logUit, sessieGebruiker, maakGebruiker, gebruikers, zetActief, wijzigWachtwoord,
          ruimSessiesOp, type Gebruiker } from '../db/team.ts';
@@ -64,6 +65,10 @@ function filterUitQuery(query: Record<string, unknown>, ikId?: number): LeadFilt
     alleenBelbaar: query.belbaar === '1',
     minLeven: query.levend === '1' ? 45 : undefined,
     achteruit: query.achteruit === '1',
+    kader: query.noord !== undefined ? {
+      noord: Number(query.noord), zuid: Number(query.zuid),
+      oost: Number(query.oost), west: Number(query.west),
+    } : undefined,
     toonGeblokkeerd: query.geblokkeerd === '1',
     metContact: query.metContact === '1',
     metCoordinaten: query.opKaart === '1',
@@ -198,9 +203,22 @@ export async function startServer(port: number): Promise<void> {
     res.json({ leads: queryLeads(filter), totaal: countLeads(filter) });
   });
 
+  /**
+   * De kaart. Bij een handzaam aantal bedrijven krijg je de losse bolletjes;
+   * daarboven groepeert de server ze per stukje kaart, zodat er niet tienduizenden
+   * punten over de lijn hoeven. De kaart vraagt de losse punten op zodra je inzoomt.
+   */
   app.get('/api/kaart', vereistLogin, (req: Verzoek, res) => {
-    const filter = filterUitQuery(req.query as Record<string, unknown>, req.gebruiker!.id);
-    res.json({ punten: kaartPunten({ ...filter, limit: getal(req.query.limit, 5000) }) });
+    const filter = { ...filterUitQuery(req.query as Record<string, unknown>, req.gebruiker!.id), metCoordinaten: true };
+    const grens = getal(req.query.max, 4000)!;
+    const totaal = countLeads(filter);
+
+    if (totaal > grens) {
+      const cel = Math.min(0.4, Math.max(0.01, getal(req.query.cel, 0.06)!));
+      res.json({ modus: 'vakjes', totaal, vakjes: kaartVakjes(filter, cel) });
+      return;
+    }
+    res.json({ modus: 'punten', totaal, punten: kaartPunten({ ...filter, limit: grens }) });
   });
 
   app.get('/api/leads/:id', vereistLogin, (req, res) => {

@@ -1,6 +1,7 @@
 <title>Webscan NL</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" media="print" onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 
 <style>
 :root {
@@ -46,6 +47,7 @@ input, select, button, textarea { font:inherit; color:var(--ink); }
 .knop { background:var(--panel); border:1px solid var(--line); border-radius:7px; padding:7px 13px; cursor:pointer; font-size:13.5px; }
 .knop:hover { border-color:var(--line-strong); }
 .knop.sterk { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:500; }
+.knop.meer { display:block; width:calc(100% - 28px); margin:14px; text-align:center; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .knop.sterk { color:#08191b; } }
 .knop.klein { padding:4px 9px; font-size:12.5px; }
 .schakel { display:inline-flex; align-items:center; gap:7px; font-size:13.5px; color:var(--ink-2); cursor:pointer; }
@@ -264,6 +266,7 @@ textarea { width:100%; min-height:220px; resize:vertical; background:var(--surfa
           <tbody id="rijen"></tbody>
         </table>
       </div>
+      <button class="knop meer" id="meer" hidden></button>
       <div class="leeg" id="geen" hidden>Geen bedrijven met deze filters.</div>
     </div>
 
@@ -301,7 +304,7 @@ const euro = (cent) => `€ ${((cent ?? 0) / 100).toFixed(2).replace('.', ',')}`
 const ERNST = { kritiek:'Kritiek', hoog:'Hoog', middel:'Middel', laag:'Laag' };
 
 const staat = { zoek:'', plaats:'', branche:'', contact:false, levend:false, achteruit:false, band:'', fase:'',
-  sortering:'prioriteit', gekozen:null, sjabloon:null, afzender:{} };
+  sortering:'prioriteit', gekozen:null, sjabloon:null, afzender:{}, getoond: 200 };
 
 /** Hoe levend het bedrijf oogt — los van hoe slecht de site is. */
 const LEVEN = [
@@ -390,12 +393,16 @@ function tekenBanden(leads) {
   }
 }
 
-function ververs() {
+const PAGINA = 200;
+
+function ververs({ behoudPagina = false } = {}) {
   const leads = gefilterd();
+  if (!behoudPagina) staat.getoond = PAGINA;
   $('telling').textContent = `${leads.length} van ${DATA.leads.length} bedrijven`;
   $('geen').hidden = leads.length > 0;
   tekenBanden(leads);
-  tekenLijst(leads);
+  tekenLijst(leads.slice(0, staat.getoond));
+  tekenMeerKnop(leads.length);
   kaart.zetPunten(leads.filter((lead) => lead.lat && lead.lon).map((lead) => ({
     id: lead.id, naam: lead.naam, plaats: lead.plaats, lat: lead.lat, lon: lead.lon,
     score: lead.score, grade: lead.grade, fase: lead.fase,
@@ -403,6 +410,13 @@ function ververs() {
   })));
   if (staat.gekozen) kaart.zetGekozen(staat.gekozen);
   else $('detail').innerHTML = '<div class="leeg">Klik een bolletje op de kaart of een regel in de lijst aan.</div>';
+}
+
+/** Bij duizenden bedrijven toont de lijst er tweehonderd tegelijk. */
+function tekenMeerKnop(totaal) {
+  const rest = totaal - staat.getoond;
+  $('meer').hidden = rest <= 0;
+  if (rest > 0) $('meer').textContent = `Nog ${rest.toLocaleString('nl-NL')} bedrijven tonen`;
 }
 
 const faseLabel = (fase) => DATA.faseLabels[fase] ?? fase;
@@ -418,7 +432,7 @@ function tekenLijst(leads) {
       <td><div class="naam">${esc(lead.naam)}</div>
           <div class="sub mono">${esc(lead.domein)}${lead.plaats ? ' · ' + esc(lead.plaats) : ''}</div>
           ${contact ? `<div class="telefoon">${esc(contact)}${!lead.bellen.mag && lead.contact.phones[0] ? '<span class="alleen-mail">alleen mailen</span>' : ''}</div>` : ''}</td>
-      <td class="probleem"><span>${esc(lead.verdict.issues[0]?.title ?? 'Geen problemen gevonden')}</span></td>
+      <td class="probleem"><span>${esc(lead.topProblemen[0] ?? 'Geen problemen gevonden')}</span></td>
       <td><span class="fasepil ${lead.fase}">${esc(faseLabel(lead.fase))}</span>
           ${lead.agent
             ? `<div class="agentchip"><span class="initialen">${esc(initialen(lead.agent))}</span>${esc(lead.agent)}</div>`
@@ -567,7 +581,7 @@ function kiesLead(id) {
       </ul>
     </div>` : ''}
 
-    <div class="deel">
+    ${(lead.verdict?.categories ?? []).length === 0 ? '' : `<div class="deel">
       <span class="label-klein">Score per onderdeel</span>
       ${(lead.verdict?.categories ?? []).map((categorie) => `
         <div class="meter">
@@ -575,7 +589,7 @@ function kiesLead(id) {
           <span class="meter-waarde">${categorie.score}/${categorie.max}</span>
           <span class="meter-spoor"><i class="meter-vul" style="width:${Math.round((categorie.score / categorie.max) * 100)}%"></i></span>
         </div>`).join('')}
-    </div>
+    </div>`}
 
     ${feiten ? `<div class="deel"><span class="label-klein">Gemeten</span>
       <div class="feiten">
@@ -587,7 +601,7 @@ function kiesLead(id) {
         ${feitVeld(feiten.copyright ?? '—', 'copyright-jaar')}
       </div></div>` : ''}
 
-    <div class="deel">
+    ${lead.uitgewerkt ? `<div class="deel">
       <span class="label-klein">Gevonden problemen (${problemen.length})</span>
       ${problemen.length === 0
         ? '<p class="sub" style="margin:0">Niets aan te merken — dit is geen lead.</p>'
@@ -595,9 +609,19 @@ function kiesLead(id) {
           (licht.length > 0
             ? `<details class="rest"><summary>Nog ${licht.length} kleine punten</summary>${kwesties(licht)}</details>`
             : '')}
-    </div>
+    </div>` : `<div class="deel">
+      <span class="label-klein">Grootste problemen</span>
+      <ul class="tekens">${(lead.topProblemen ?? []).map((titel) => `<li class="nee">${esc(titel)}</li>`).join('')
+        || '<li class="ja">Niets aan te merken — dit is geen lead.</li>'}</ul>
+      <p class="demo-noot">Deze demo bewaart het volledige rapport en de mailteksten van de
+        ${(DATA.samenvatting.uitgewerkt ?? 0).toLocaleString('nl-NL')} bedrijven met de hoogste prioriteit —
+        anders wordt dit ene HTML-bestand onwerkbaar groot. In het dashboard zelf staat van elk bedrijf de
+        volledige analyse klaar, ook van deze.</p>
+    </div>`}`;
 
-    <div class="deel">
+  if (!lead.uitgewerkt) return;
+
+  $('detail').insertAdjacentHTML('beforeend', `    <div class="deel">
       <span class="label-klein">Mail versturen</span>
       <select class="veld" id="d-sjabloon" style="width:100%">
         ${SJABLONEN.map((sjabloon) => `<option value="${sjabloon.id}">${esc(sjabloon.naam)}</option>`).join('')}
@@ -620,7 +644,7 @@ function kiesLead(id) {
       <p class="demo-noot">Dertien sjablonen, van eerste contact tot opdrachtbevestiging en de vraag om een
         testimonial. Het sjabloon dat bij deze scan past staat voorgeselecteerd. In het dashboard legt de knop
         "Verstuurd" de mail ook vast in de geschiedenis van de lead en zet hij de fase door.</p>
-    </div>`;
+    </div>`);
 
   $('d-sjabloon').value = staat.sjabloon ?? lead.voorgesteldSjabloon ?? 'eerste-contact';
   $('d-sjabloon').addEventListener('change', () => {
@@ -648,7 +672,9 @@ function vulMail(lead) {
   const gekozen = staat.sjabloon ?? lead.voorgesteldSjabloon ?? 'eerste-contact';
   const mail = renderSjabloon(gekozen, {
     bedrijf: lead.naam, domein: lead.domein, plaats: lead.plaats,
-    verdict: lead.verdict, signals: lead.signals,
+    // topIssues is de kop van issues; die staat niet apart in de demo-gegevens.
+    verdict: { ...lead.verdict, topIssues: lead.verdict.issues.slice(0, 5) },
+    signals: lead.signals,
     afzender: staat.afzender,
   }, lead.contact.emails[0] ?? null);
 
@@ -693,6 +719,11 @@ $('f-wis').addEventListener('click', () => {
   $('f-sort').value = 'prioriteit';
   tekenTrechter();
   ververs();
+});
+
+$('meer').addEventListener('click', () => {
+  staat.getoond += PAGINA;
+  ververs({ behoudPagina: true });
 });
 
 kaart = maakKaart($('kaart'), { onKiezen: (punt) => kiesLead(punt.id), onZweven: toonTip });

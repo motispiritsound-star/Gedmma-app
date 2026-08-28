@@ -43,12 +43,24 @@ const work = process.env.WEBSCAN_DEMO_TLS;
 const keyPath = join(work, 'key.pem');
 const certPath = join(work, 'cert.pem');
 
+// De demo begint elke keer met een schone database, zodat opnieuw bouwen
+// hetzelfde oplevert en er geen bedrijven van een vorige ronde blijven staan.
+if (process.env.DEMO_BEHOUD_DB !== '1') {
+  for (const achtervoegsel of ['', '-wal', '-shm']) {
+    rmSync(`data/demo.db${achtervoegsel}`, { force: true });
+  }
+}
+
 process.env.WEBSCAN_DB = 'data/demo.db';
 process.env.WEBSCAN_HOST_DELAY_MS = '1';
 process.env.WEBSCAN_TIMEOUT_MS = '20000';
 
 const { SITES, genereerSites, startDemoServers } = await import('./sites.ts');
-const extra = Number(process.env.DEMO_EXTRA ?? 385);
+const extra = Number(process.env.DEMO_EXTRA ?? 2985);
+// Hoeveel bedrijven de losse demopagina met volledige analyse meeneemt. De rest
+// staat er wel in — op de kaart, in de lijst, met contactgegevens — maar zonder
+// het uitgeschreven rapport, anders wordt het ene HTML-bestand onwerkbaar groot.
+const detail = Number(process.env.DEMO_DETAIL ?? 600);
 
 /** De vijftien uitgewerkte sites krijgen dezelfde contactpagina als de rest. */
 const metContact = SITES.map((site, index) => ({
@@ -91,7 +103,7 @@ upsertCompanies(ALLE.map((site) => ({
 
 const companies = db().prepare('SELECT * FROM companies ORDER BY id').all() as never[];
 console.log(`${companies.length} nagemaakte bedrijfssites scannen…`);
-await scanAll(companies, { concurrency: 14 });
+await scanAll(companies, { concurrency: Number(process.env.DEMO_CONCURRENCY ?? 64) });
 servers.close();
 
 // --- een tweede scanronde, zodat de demo ook verandering laat zien -----------
@@ -161,7 +173,25 @@ for (const stap of verhaal) {
 // Een bedrijf dat zich heeft afgemeld, zodat de demo ook die kant laat zien.
 blokkeer(opDomein('dierenartsdepoot.nl'), 'gaf aan geen berichten meer te willen', tom!.id);
 
-const leads = queryLeads({ maxScore: 100, limit: 500, toonGeblokkeerd: true }).map((lead) => {
+const alle = queryLeads({ maxScore: 100, limit: ALLE.length + 100, toonGeblokkeerd: true });
+
+// Bij duizenden bedrijven past niet elk volledig rapport in één HTML-bestand.
+// De volledige uitwerking gaat naar de bedrijven waar een agent ook echt mee
+// begint: de hoogste prioriteiten, de vijftien uitgewerkte voorbeelden en alles
+// wat al in behandeling is. De rest houdt zijn plek op de kaart en in de lijst.
+const volledig = new Set<number>(
+  [...alle].sort((a, b) => (b.prioriteit ?? 0) - (a.prioriteit ?? 0)).slice(0, detail).map((lead) => lead.id),
+);
+for (const lead of alle) {
+  if (SITES.some((site) => site.domein === lead.domain) || lead.fase !== 'nieuw' || lead.geblokkeerd) {
+    volledig.add(lead.id);
+  }
+}
+
+const leads = alle.map((lead) => {
+  if (!volledig.has(lead.id)) {
+    return { ...lead, uitgewerkt: false as const };
+  }
   const full = getLead(lead.id)!;
   const report = full.report as {
     verdict?: never; signals?: never; leven?: never; prioriteit?: { uitleg: string };
@@ -179,6 +209,7 @@ const leads = queryLeads({ maxScore: 100, limit: 500, toonGeblokkeerd: true }).m
   const voorgesteld = stelSjabloonVoor(report.verdict!, magBellen(lead).mag);
   return {
     ...lead,
+    uitgewerkt: true as const,
     verdict: report.verdict,
     signals: report.signals ?? null,
     voorgesteldSjabloon: voorgesteld,

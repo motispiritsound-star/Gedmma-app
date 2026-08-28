@@ -25,6 +25,8 @@ export type LeadFilter = {
   minPrioriteit?: number;
   /** Alleen bedrijven waarvan de site sinds de vorige scan slechter is geworden. */
   achteruit?: boolean;
+  /** Alleen bedrijven binnen dit stuk kaart. */
+  kader?: { noord: number; zuid: number; oost: number; west: number };
   /** Toon ook bedrijven die zich hebben afgemeld. Standaard blijven die verborgen. */
   toonGeblokkeerd?: boolean;
   /** Alleen leads met een telefoonnummer of e-mailadres. */
@@ -106,21 +108,45 @@ type Contactblok = {
   heeftFormulier: boolean; bron: string | null; vanEerdereScan: string | null;
 };
 
+const LEEG_CONTACT: Contactblok = {
+  emails: [], phones: [], adres: null, kvk: null, btw: null, openingstijden: null,
+  whatsapp: null, socials: {}, heeftFormulier: false, bron: null, vanEerdereScan: null,
+};
+
+/**
+ * Zet een rij om in een lead. Rijen uit de lichte view hebben geen rapport; dan
+ * komen de contactgegevens en het grootste probleem uit de afgeleide kolommen.
+ */
 function shape(row: Row): Lead {
   let report: { verdict?: Verdict; signals?: PageSignals | null; contact?: Contactblok } = {};
-  try { report = JSON.parse(String(row.report ?? '{}')); } catch { /* corrupte json negeren */ }
+  if (row.report) {
+    try { report = JSON.parse(String(row.report)); } catch { /* corrupte json negeren */ }
+  }
 
   const signals = report.signals ?? null;
+  const uitKolommen: Contactblok = {
+    ...LEEG_CONTACT,
+    phones: [row.contact_telefoon, row.company_phone].filter(Boolean).slice(0, 1).map(String),
+    emails: [row.contact_email, row.company_email].filter(Boolean).slice(0, 1).map(String),
+  };
   // Sinds de contactpagina wordt meegescand staan de samengevoegde gegevens in
   // het rapport; oudere scans hebben alleen wat er op de homepage stond.
-  const gevonden = report.contact ?? {
-    emails: signals?.contact.emails ?? [], phones: signals?.contact.phones ?? [],
-    adres: null, kvk: signals?.contact.kvk ?? null, btw: signals?.contact.btw ?? null,
-    openingstijden: null, whatsapp: null, socials: {},
-    heeftFormulier: Boolean(signals?.contact.hasContactForm), bron: null, vanEerdereScan: null,
-  };
+  const gevonden = report.contact ?? (signals
+    ? {
+        ...LEEG_CONTACT,
+        emails: signals.contact.emails, phones: signals.contact.phones,
+        kvk: signals.contact.kvk, btw: signals.contact.btw,
+        heeftFormulier: Boolean(signals.contact.hasContactForm),
+      }
+    : uitKolommen);
   const emails = gevonden.emails;
   const phones = gevonden.phones;
+
+  let topProblemen: string[] = [];
+  if (report.verdict) topProblemen = report.verdict.topIssues.map((rij) => rij.title);
+  else if (row.top_problemen) {
+    try { topProblemen = JSON.parse(String(row.top_problemen)) as string[]; } catch { topProblemen = []; }
+  }
 
   return {
     id: Number(row.id),
@@ -163,9 +189,9 @@ function shape(row: Row): Lead {
       emails: emails.length > 0 ? emails : [row.company_email].filter(Boolean).map(String),
       phones: phones.length > 0 ? phones : [row.company_phone].filter(Boolean).map(String),
     },
-    topIssues: (report.verdict?.topIssues ?? []).map((entry) => ({
-      id: entry.id, title: entry.title, severity: entry.severity,
-    })),
+    topIssues: report.verdict
+      ? report.verdict.topIssues.map((entry) => ({ id: entry.id, title: entry.title, severity: entry.severity }))
+      : topProblemen.map((titel) => ({ id: '', title: titel, severity: 'onbekend' })),
     categories: (report.verdict?.categories ?? []).map((entry) => ({
       label: entry.label, score: entry.score, max: entry.max,
     })),
@@ -190,11 +216,16 @@ function waar(filter: LeadFilter): { sql: string; params: (string | number)[] } 
     params.push(filter.vanCollegas);
   }
   if (filter.metCoordinaten) delen.push('lat IS NOT NULL AND lon IS NOT NULL');
+  if (filter.metContact) delen.push('(heeft_telefoon = 1 OR heeft_email = 1)');
   // Wie zich heeft afgemeld verdwijnt uit elke lijst, tenzij je er expliciet om vraagt.
   if (!filter.toonGeblokkeerd) delen.push('geblokkeerd = 0');
   if (filter.minLeven !== undefined) { delen.push('leven >= ?'); params.push(filter.minLeven); }
   if (filter.minPrioriteit !== undefined) { delen.push('prioriteit >= ?'); params.push(filter.minPrioriteit); }
   if (filter.achteruit) delen.push('vorige_score IS NOT NULL AND score < vorige_score - 4');
+  if (filter.kader) {
+    delen.push('lat BETWEEN ? AND ? AND lon BETWEEN ? AND ?');
+    params.push(filter.kader.zuid, filter.kader.noord, filter.kader.west, filter.kader.oost);
+  }
   if (filter.alleenBelbaar) {
     delen.push(`(bel_toestemming = 1 OR rechtsvorm IN (${
       RECHTSPERSONEN.map((vorm) => `'${vorm}'`).join(',')}))`);
@@ -217,22 +248,23 @@ const SORTERING: Record<string, string> = {
   verandering: 'COALESCE(score - vorige_score, 0) ASC, prioriteit DESC',
 };
 
+/**
+ * Haalt een pagina met leads op. Gebruikt de lichte view: alles wat een lijst
+ * toont staat als kolom op het bedrijf, dus het rapport van een paar kilobyte
+ * hoeft er niet bij. Dat scheelt bij tienduizenden bedrijven het verschil
+ * tussen een halve seconde en een paar milliseconden.
+ */
 export function queryLeads(filter: LeadFilter = {}): Lead[] {
   const { sql, params } = waar(filter);
   const order = SORTERING[filter.sort ?? 'prioriteit'] ?? SORTERING.prioriteit!;
-  const rows = db().prepare(`SELECT * FROM leads WHERE ${sql} ORDER BY ${order} LIMIT ? OFFSET ?`)
+  const rows = db().prepare(`SELECT * FROM leads_kort WHERE ${sql} ORDER BY ${order} LIMIT ? OFFSET ?`)
     .all(...params, filter.limit ?? 200, filter.offset ?? 0) as unknown as Row[];
-
-  const leads = rows.map(shape);
-  return filter.metContact
-    ? leads.filter((lead) => lead.contact.emails.length > 0 || lead.contact.phones.length > 0)
-    : leads;
+  return rows.map(shape);
 }
 
 export function countLeads(filter: LeadFilter = {}): number {
-  if (filter.metContact) return queryLeads({ ...filter, limit: 100_000, offset: 0 }).length;
   const { sql, params } = waar(filter);
-  const rij = db().prepare(`SELECT COUNT(*) AS n FROM leads WHERE ${sql}`).get(...params) as { n: number };
+  const rij = db().prepare(`SELECT COUNT(*) AS n FROM leads_kort WHERE ${sql}`).get(...params) as { n: number };
   return Number(rij?.n ?? 0);
 }
 
@@ -252,7 +284,7 @@ export function kaartPunten(filter: LeadFilter = {}): KaartPunt[] {
   const rows = db().prepare(`
     SELECT id, name, city, lat, lon, score, grade, leven, prioriteit, fase,
            toegewezen_aan, agent_naam, klant_status, rechtsvorm, bel_toestemming
-    FROM leads WHERE ${sql} ORDER BY prioriteit DESC LIMIT ?
+    FROM leads_kort WHERE ${sql} ORDER BY prioriteit DESC LIMIT ?
   `).all(...params, filter.limit ?? 5000) as unknown as Row[];
 
   return rows.map((row) => ({
@@ -274,6 +306,34 @@ export function kaartPunten(filter: LeadFilter = {}): KaartPunt[] {
   }));
 }
 
+export type KaartVakje = {
+  lat: number; lon: number; aantal: number; gemiddelde: number; slechtste: number;
+};
+
+/**
+ * Groepeert de bedrijven per stukje kaart. Bij tienduizenden bedrijven heeft
+ * het geen zin om elk bolletje apart naar de browser te sturen: op deze schaal
+ * vallen ze toch op elkaar. Zodra je inzoomt vraagt de kaart de losse punten op.
+ */
+export function kaartVakjes(filter: LeadFilter = {}, celGrootte = 0.06): KaartVakje[] {
+  const { sql, params } = waar({ ...filter, metCoordinaten: true });
+  const cel = Math.max(0.005, celGrootte);
+  const rows = db().prepare(`
+    SELECT ROUND(lat / ?) * ? AS vlat, ROUND(lon / ?) * ? AS vlon,
+           COUNT(*) AS aantal, AVG(score) AS gemiddelde, MIN(score) AS slechtste
+    FROM leads_kort WHERE ${sql}
+    GROUP BY vlat, vlon
+  `).all(cel, cel, cel, cel, ...params) as unknown as Row[];
+
+  return rows.map((row) => ({
+    lat: Number(row.vlat),
+    lon: Number(row.vlon),
+    aantal: Number(row.aantal),
+    gemiddelde: Math.round(Number(row.gemiddelde)),
+    slechtste: Number(row.slechtste),
+  }));
+}
+
 export function getLead(id: number): (Lead & { report: unknown }) | null {
   const row = db().prepare('SELECT * FROM leads WHERE id = ?').get(id) as unknown as Row | undefined;
   if (!row) return null;
@@ -286,7 +346,7 @@ export function getLead(id: number): (Lead & { report: unknown }) | null {
 export function plaatsen(): { plaats: string; aantal: number; gemiddelde: number }[] {
   return db().prepare(`
     SELECT city AS plaats, COUNT(*) AS aantal, ROUND(AVG(score)) AS gemiddelde
-    FROM leads WHERE city IS NOT NULL AND score IS NOT NULL
-    GROUP BY city ORDER BY aantal DESC
+    FROM companies WHERE city IS NOT NULL AND score IS NOT NULL
+    GROUP BY city ORDER BY aantal DESC LIMIT 200
   `).all() as never;
 }

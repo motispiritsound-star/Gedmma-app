@@ -36,7 +36,8 @@ const projecteer = (lat, lon) => [lon * BREEDTE_CORRECTIE, -lat];
 export function maakKaart(canvas, opties = {}) {
   const ctx = canvas.getContext('2d');
   let omtrek = null;
-  let punten = [];
+  /** Losse bedrijven, of samengevatte vakjes als het er te veel zijn. */
+  let bron = [];
   let gekozenId = null;
   let zweeft = null;
 
@@ -88,29 +89,31 @@ export function maakKaart(canvas, opties = {}) {
 
   /** Bundelt bollen die op elkaar liggen tot één grotere bol met een aantal. */
   function bundel() {
-    const cel = beeld.schaal > 3.4 ? 0 : Math.max(13, 26 - beeld.schaal * 4);
-    if (cel === 0) {
-      clusters = punten.map((punt) => {
-        const [x, y] = naarScherm(punt.lat, punt.lon);
-        return { x, y, aantal: 1, som: punt.score, punt };
+    const losseBollen = beeld.schaal > 3.4 && bron.every((rij) => rij.aantal === 1);
+    if (losseBollen) {
+      clusters = bron.map((rij) => {
+        const [x, y] = naarScherm(rij.lat, rij.lon);
+        return { x, y, aantal: 1, som: rij.som, punt: rij.punt };
       });
       return;
     }
 
+    const cel = Math.max(13, 26 - beeld.schaal * 4);
     const vakken = new Map();
-    for (const punt of punten) {
-      const [x, y] = naarScherm(punt.lat, punt.lon);
+    for (const rij of bron) {
+      const [x, y] = naarScherm(rij.lat, rij.lon);
       if (x < -60 || y < -60 || x > breedte + 60 || y > hoogte + 60) continue;
       const sleutel = `${Math.round(x / cel)}|${Math.round(y / cel)}`;
       const vak = vakken.get(sleutel);
       if (vak) {
-        vak.x = (vak.x * vak.aantal + x) / (vak.aantal + 1);
-        vak.y = (vak.y * vak.aantal + y) / (vak.aantal + 1);
-        vak.aantal++;
-        vak.som += punt.score;
-        if (punt.score < vak.punt.score) vak.punt = punt;
+        const totaal = vak.aantal + rij.aantal;
+        vak.x = (vak.x * vak.aantal + x * rij.aantal) / totaal;
+        vak.y = (vak.y * vak.aantal + y * rij.aantal) / totaal;
+        vak.aantal = totaal;
+        vak.som += rij.som;
+        if (rij.punt && (!vak.punt || rij.punt.score < vak.punt.score)) vak.punt = rij.punt;
       } else {
-        vakken.set(sleutel, { x, y, aantal: 1, som: punt.score, punt });
+        vakken.set(sleutel, { x, y, aantal: rij.aantal, som: rij.som, punt: rij.punt ?? null });
       }
     }
     clusters = [...vakken.values()];
@@ -251,6 +254,7 @@ export function maakKaart(canvas, opties = {}) {
       beeld.dy += dy;
       laatste = [event.clientX, event.clientY];
       herteken();
+      meldVerschuiving();
       return;
     }
     const gevonden = dichtstbij(event.clientX - rect.left, event.clientY - rect.top);
@@ -279,6 +283,13 @@ export function maakKaart(canvas, opties = {}) {
     opties.onZweven?.(null);
   });
 
+  let meldTimer = null;
+  const meldVerschuiving = () => {
+    if (!opties.onVerschuiven) return;
+    clearTimeout(meldTimer);
+    meldTimer = setTimeout(() => opties.onVerschuiven(), 350);
+  };
+
   function zoomNaar(x, y, factor) {
     const nieuw = Math.min(40, Math.max(1, beeld.schaal * factor));
     const verhouding = nieuw / beeld.schaal;
@@ -286,6 +297,7 @@ export function maakKaart(canvas, opties = {}) {
     beeld.dy = y - (y - beeld.dy) * verhouding;
     beeld.schaal = nieuw;
     herteken();
+    meldVerschuiving();
   }
 
   canvas.addEventListener('wheel', (event) => {
@@ -304,7 +316,33 @@ export function maakKaart(canvas, opties = {}) {
       omtrek = (await antwoord.json()).polygonen;
       meet();
     },
-    zetPunten(nieuwe) { punten = nieuwe; herteken(); },
+    zetPunten(nieuwe) {
+      bron = nieuwe.map((punt) => ({ lat: punt.lat, lon: punt.lon, aantal: 1, som: punt.score, punt }));
+      herteken();
+    },
+    /** Samengevatte vakjes, voor als er te veel bedrijven zijn om los te tonen. */
+    zetVakjes(vakjes) {
+      bron = vakjes.map((vak) => ({
+        lat: vak.lat, lon: vak.lon, aantal: vak.aantal,
+        som: vak.gemiddelde * vak.aantal, punt: null,
+      }));
+      herteken();
+    },
+    /** Het stuk kaart dat nu in beeld is, om daar de losse bedrijven van op te halen. */
+    zichtbaarKader() {
+      const hoek = (x, y) => {
+        const px = ((x - beeld.dx) / beeld.schaal - basis.dx) / basis.schaal;
+        const py = ((y - beeld.dy) / beeld.schaal - basis.dy) / basis.schaal;
+        return { lat: -py, lon: px / BREEDTE_CORRECTIE };
+      };
+      const linksboven = hoek(0, 0);
+      const rechtsonder = hoek(breedte, hoogte);
+      return {
+        noord: linksboven.lat, zuid: rechtsonder.lat,
+        west: linksboven.lon, oost: rechtsonder.lon,
+        schaal: beeld.schaal,
+      };
+    },
     /** Wie ben ik — bepaalt welke ring een bol krijgt. */
     zetEigenaar(id) { opties.eigenaarId = id; teken(); },
     zetGekozen(id) { gekozenId = id; teken(); },
@@ -316,7 +354,7 @@ export function maakKaart(canvas, opties = {}) {
       beeld.dy = hoogte / 2 - (y * basis.schaal + basis.dy) * schaal;
       herteken();
     },
-    herstel() { beeld.schaal = 1; beeld.dx = 0; beeld.dy = 0; herteken(); },
+    herstel() { beeld.schaal = 1; beeld.dx = 0; beeld.dy = 0; herteken(); meldVerschuiving(); },
     zoomKnop(factor) { zoomNaar(breedte / 2, hoogte / 2, factor); },
     hermeet: meet,
     hertekenOpnieuw: herteken,

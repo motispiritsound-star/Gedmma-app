@@ -28,8 +28,10 @@ npm install
 npm run proefrit
 ```
 
-De eerste keer duurt dat ongeveer een minuut: er worden 125 nagemaakte
-bedrijfswebsites opgezet en echt gescand. Daarna opent het dashboard op
+De eerste keer duurt dat ongeveer anderhalve minuut: er worden **3.000
+nagemaakte bedrijfswebsites** opgezet en echt gescand — genoeg om te voelen hoe
+het werkt met een lijst die je niet meer in één blik overziet. Wil je sneller
+beginnen, dan zet `DEMO_EXTRA=300 npm run proefrit` er een paar honderd neer. Daarna opent het dashboard op
 **http://localhost:4321** en staan de inloggegevens op je scherm — een eigenaar
 en twee agents, allemaal met wachtwoord `proefrit2026`.
 
@@ -458,8 +460,8 @@ Voor **rechtspersonen** (bv, nv, stichting, vereniging, coöperatie) verandert e
 niets: die mag je zakelijk bellen.
 
 Dat raakt dit product in het hart, want de doelgroep — loodgieters, kappers,
-bakkers, hoveniers — is grotendeels eenmanszaak of vof. In de demo van 125
-bedrijven mag je er **26 bellen en 91 alleen mailen**.
+bakkers, hoveniers — is grotendeels eenmanszaak of vof. In de demo van 3.000
+bedrijven mag je er **659 bellen en 2.340 alleen mailen**.
 
 Daarom werkt de tool zo:
 
@@ -551,12 +553,67 @@ data/webscan.db       SQLite: bedrijven, scans, team, opvolging en klanten
 
 ## Demo
 
-`npm run demo` start vijftien nagemaakte Nederlandse bedrijfswebsites op je eigen
-machine — van een tabel-site uit 2009 met Flash tot een keurig verzorgde moderne
-site — laat de echte scanner erover lopen en schrijft het resultaat weg als
+`npm run demo` start **3.000 nagemaakte Nederlandse bedrijfswebsites** op je eigen
+machine — vijftien met de hand uitgewerkt, van een tabel-site uit 2009 met Flash
+tot een keurig verzorgde moderne site, en de rest gegenereerd over tachtig
+plaatsen — laat de echte scanner erover lopen en schrijft het resultaat weg als
 `demo/out/demo.html`: een losse pagina die je zonder server kunt openen. Handig om
 te zien hoe de scores uitpakken voordat je echte bedrijven gaat scannen, en om de
 regels in `src/score/rules.ts` bij te stellen en het effect meteen terug te zien.
+
+Scannen duurt ongeveer anderhalve minuut (64 sites tegelijk, alles op je eigen
+machine). Wat je kunt bijstellen:
+
+| Omgevingsvariabele | Standaard | Wat het doet |
+| --- | --- | --- |
+| `DEMO_EXTRA` | `2985` | hoeveel bedrijven er naast de vijftien uitgewerkte bij komen |
+| `DEMO_DETAIL` | `600` | hoeveel bedrijven het volledige rapport meekrijgen in `demo.html` |
+| `DEMO_CONCURRENCY` | `64` | hoeveel sites er tegelijk gescand worden |
+| `DEMO_BEHOUD_DB` | – | op `1` blijft `data/demo.db` staan in plaats van opnieuw te beginnen |
+
+Die `DEMO_DETAIL` is er omdat de losse demo-pagina één bestand is zonder server:
+alle 3.000 bedrijven staan erin, met contactgegevens, op de kaart en in de lijst,
+maar het uitgeschreven rapport en de mailteksten gaan mee voor de bedrijven met de
+hoogste prioriteit — de rest zou het bestand vier keer zo groot maken zonder dat je
+er meer aan hebt. In het dashboard zelf staat van elk bedrijf de volledige analyse.
+
+## Duizenden bedrijven
+
+Een landelijke lijst is geen paar honderd bedrijven maar tienduizenden. Wat daarbij
+hoort zit erin:
+
+- **De huidige stand staat op het bedrijf zelf.** Score, grade, levenstekenen,
+  prioriteit, de gevonden contactgegevens en de kopregels van de problemen worden
+  bij elke scan mee weggeschreven naar `companies` (migratie 014/015). De lijst
+  hoeft daardoor geen scanrapporten meer te openen; `leads_kort` is de weergave
+  zonder de zware `report`-kolom.
+- **De lijst pagineert.** Het dashboard haalt honderd rijen tegelijk op met een
+  "meer"-knop eronder; de tellingen komen apart en blijven kloppen.
+- **De kaart vat samen.** Boven de 4.000 bedrijven in beeld stuurt de server geen
+  losse punten meer maar vakjes van ongeveer 6 km met aantal, gemiddelde en
+  slechtste score erin. Zoom je in, dan schakelt hij vanzelf terug naar bolletjes
+  voor precies dat kader.
+
+Meten kun je het zelf; er wordt niets over het netwerk gehaald, dit meet alleen de
+opslag- en zoeklaag:
+
+```bash
+node tools/benchmark.ts --bedrijven 100000
+```
+
+Gemeten op deze machine met 100.000 bedrijven, voor en na die aanpak:
+
+| Wat het dashboard doet | Voor | Na |
+| --- | --- | --- |
+| eerste honderd leads ophalen | 300 ms | 6 ms |
+| tellen met filter op contactgegevens | 16.302 ms | 32 ms |
+| cijfers bovenin (`stats`) | 1.659 ms | 39 ms |
+| pagina 20 van de lijst | 564 ms | 11 ms |
+| kaart met alle 100.000 losse punten | 923 ms | – |
+| dezelfde kaart samengevat in vakjes | – | 98 ms (1.172 vakjes) |
+
+In de browser: het dashboard staat er met 400 bedrijven in 308 ms en met 100.000
+bedrijven in 637 ms, gemeten van het openen van de pagina tot een werkende lijst.
 
 ## Testen
 
@@ -570,9 +627,11 @@ En in de projectstructuur hoort daar nog bij:
 
 ```
 demo/
-  sites.ts        vijftien nagemaakte bedrijfssites (http en https)
+  sites.ts        vijftien uitgewerkte bedrijfssites plus de generator (http en https)
   build.ts        scant ze en schrijft demo/out/demo-data.json
   template.html   de losse demo-pagina
   page.ts         zet de scanresultaten in de pagina
+  proefrit.ts     zet in één commando een werkende omgeving neer
+tools/benchmark.ts  meet de opslag- en zoeklaag met tienduizenden bedrijven
 test/             fixtures en controles
 ```

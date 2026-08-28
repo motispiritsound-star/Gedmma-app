@@ -99,17 +99,54 @@ export function upsertCompanies(rows: CompanyInput[]): { inserted: number; updat
   return { inserted, updated };
 }
 
+/**
+ * Bewaart een scan en werkt de huidige stand op het bedrijf bij. Die twee horen
+ * bij elkaar: scans is de geschiedenis, het bedrijf draagt wat je opvraagt.
+ */
 export function saveScan(companyId: number, scan: {
   status: string; score: number | null; grade: string | null;
   leven: number | null; prioriteit: number | null;
   finalUrl: string | null; httpStatus: number | null; error: string | null; report: unknown;
 }): void {
-  db().prepare(`
+  const database = db();
+  const rapport = scan.report as {
+    contact?: { phones?: string[]; emails?: string[] };
+    verdict?: { topIssues?: { title: string }[] };
+  } | null;
+  const contact = rapport?.contact;
+  const topProblemen = (rapport?.verdict?.topIssues ?? []).slice(0, 3).map((rij) => rij.title);
+
+  const telefoon = contact?.phones?.[0] ?? null;
+  const email = contact?.emails?.[0] ?? null;
+  const bestaand = (database.prepare('SELECT phone, email FROM companies WHERE id = ?').get(companyId)
+    ?? { phone: null, email: null }) as { phone: string | null; email: string | null };
+
+  const resultaat = database.prepare(`
     INSERT INTO scans (company_id, status, score, grade, leven, prioriteit, final_url, http_status, error, report)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     companyId, scan.status, scan.score, scan.grade, scan.leven, scan.prioriteit,
     scan.finalUrl, scan.httpStatus, scan.error, JSON.stringify(scan.report ?? {}),
+  );
+
+  database.prepare(`
+    UPDATE companies SET
+      vorige_score   = score,
+      vorige_scan_op = gescand_op,
+      laatste_scan_id = ?,
+      score = ?, grade = ?, leven = ?, prioriteit = ?, scan_status = ?,
+      gescand_op = datetime('now'),
+      heeft_telefoon = ?, heeft_email = ?,
+      contact_telefoon = ?, contact_email = ?, top_problemen = ?
+    WHERE id = ?
+  `).run(
+    Number(resultaat.lastInsertRowid), scan.score, scan.grade, scan.leven, scan.prioriteit, scan.status,
+    telefoon || bestaand.phone ? 1 : 0,
+    email || bestaand.email ? 1 : 0,
+    telefoon ?? bestaand.phone ?? null,
+    email ?? bestaand.email ?? null,
+    JSON.stringify(topProblemen),
+    companyId,
   );
 }
 
@@ -121,12 +158,9 @@ export function companiesToScan(opts: { limit?: number; rescanAfterDays?: number
   }
   const days = opts.rescanAfterDays ?? 30;
   return db().prepare(`
-    SELECT c.* FROM companies c
-    LEFT JOIN scans s ON s.id = (
-      SELECT id FROM scans WHERE company_id = c.id ORDER BY scanned_at DESC, id DESC LIMIT 1
-    )
-    WHERE s.id IS NULL OR s.scanned_at < datetime('now', ?)
-    ORDER BY c.id
+    SELECT * FROM companies
+    WHERE gescand_op IS NULL OR gescand_op < datetime('now', ?)
+    ORDER BY id
     LIMIT ?
   `).all(`-${days} days`, limit) as unknown as CompanyRow[];
 }
@@ -165,18 +199,33 @@ export function bewaarCoordinaten(companyId: number, lat: number, lon: number): 
   db().prepare('UPDATE companies SET lat = ?, lon = ? WHERE id = ?').run(lat, lon, companyId);
 }
 
+/** Alle cijfers voor bovenin het dashboard, in één keer over de bedrijventabel. */
 export function stats(): Record<string, number> {
-  const one = (sql: string): number =>
-    Number((db().prepare(sql).get() as Record<string, unknown>)?.n ?? 0);
+  const rij = db().prepare(`
+    SELECT
+      COUNT(*)                                                              AS bedrijven,
+      SUM(CASE WHEN laatste_scan_id IS NOT NULL THEN 1 ELSE 0 END)          AS gescand,
+      SUM(CASE WHEN laatste_scan_id IS NULL THEN 1 ELSE 0 END)              AS ongescand,
+      SUM(CASE WHEN score IS NOT NULL AND score < 50 THEN 1 ELSE 0 END)     AS slecht,
+      SUM(CASE WHEN score >= 50 AND score < 70 THEN 1 ELSE 0 END)           AS matig,
+      SUM(CASE WHEN score >= 70 THEN 1 ELSE 0 END)                          AS goed,
+      SUM(CASE WHEN scan_status IN ('error','offline') THEN 1 ELSE 0 END)   AS onbereikbaar,
+      SUM(CASE WHEN lat IS NOT NULL THEN 1 ELSE 0 END)                      AS opKaart
+    FROM companies
+  `).get() as Record<string, number | null>;
+
+  const klanten = db().prepare("SELECT COUNT(*) n FROM klanten WHERE status = 'actief'")
+    .get() as { n: number };
+
   return {
-    bedrijven: one('SELECT COUNT(*) n FROM companies'),
-    gescand: one('SELECT COUNT(DISTINCT company_id) n FROM scans'),
-    ongescand: one('SELECT COUNT(*) n FROM companies c WHERE NOT EXISTS (SELECT 1 FROM scans WHERE company_id = c.id)'),
-    slecht: one('SELECT COUNT(*) n FROM leads WHERE score IS NOT NULL AND score < 50'),
-    matig: one('SELECT COUNT(*) n FROM leads WHERE score >= 50 AND score < 70'),
-    goed: one('SELECT COUNT(*) n FROM leads WHERE score >= 70'),
-    onbereikbaar: one("SELECT COUNT(*) n FROM leads WHERE scan_status IN ('error','offline')"),
-    opKaart: one('SELECT COUNT(*) n FROM companies WHERE lat IS NOT NULL'),
-    klanten: one("SELECT COUNT(*) n FROM klanten WHERE status = 'actief'"),
+    bedrijven: Number(rij.bedrijven ?? 0),
+    gescand: Number(rij.gescand ?? 0),
+    ongescand: Number(rij.ongescand ?? 0),
+    slecht: Number(rij.slecht ?? 0),
+    matig: Number(rij.matig ?? 0),
+    goed: Number(rij.goed ?? 0),
+    onbereikbaar: Number(rij.onbereikbaar ?? 0),
+    opKaart: Number(rij.opKaart ?? 0),
+    klanten: Number(klanten?.n ?? 0),
   };
 }

@@ -347,6 +347,132 @@ const MIGRATIES: { naam: string; sql: string }[] = [
       LEFT JOIN testimonials t  ON t.company_id = c.id;
     `,
   },
+  {
+    naam: '014-huidige-stand-op-het-bedrijf',
+    sql: `
+      -- De view zocht per bedrijf met subquery's op welke scan de laatste was.
+      -- Dat is prima bij honderden bedrijven en onwerkbaar bij tienduizenden:
+      -- ook een LIMIT 100 moest dan eerst elke rij uitrekenen. De huidige stand
+      -- staat nu als kolommen op het bedrijf zelf; scans blijven de volledige
+      -- geschiedenis. saveScan houdt beide bij.
+      ALTER TABLE companies ADD COLUMN laatste_scan_id INTEGER REFERENCES scans(id) ON DELETE SET NULL;
+      ALTER TABLE companies ADD COLUMN score          INTEGER;
+      ALTER TABLE companies ADD COLUMN grade          TEXT;
+      ALTER TABLE companies ADD COLUMN leven          INTEGER;
+      ALTER TABLE companies ADD COLUMN prioriteit     INTEGER;
+      ALTER TABLE companies ADD COLUMN scan_status    TEXT;
+      ALTER TABLE companies ADD COLUMN gescand_op     TEXT;
+      ALTER TABLE companies ADD COLUMN vorige_score   INTEGER;
+      ALTER TABLE companies ADD COLUMN vorige_scan_op TEXT;
+      -- Of er contactgegevens gevonden zijn: anders moest voor het tellen elk
+      -- rapport uit de database gelezen en ontleed worden.
+      ALTER TABLE companies ADD COLUMN heeft_telefoon INTEGER NOT NULL DEFAULT 0;
+      ALTER TABLE companies ADD COLUMN heeft_email    INTEGER NOT NULL DEFAULT 0;
+
+      -- Bestaande databases bijwerken met wat er al aan scans in staat.
+      UPDATE companies SET laatste_scan_id = (
+        SELECT id FROM scans WHERE company_id = companies.id ORDER BY scanned_at DESC, id DESC LIMIT 1
+      );
+      UPDATE companies SET
+        score       = (SELECT score FROM scans WHERE id = companies.laatste_scan_id),
+        grade       = (SELECT grade FROM scans WHERE id = companies.laatste_scan_id),
+        leven       = (SELECT leven FROM scans WHERE id = companies.laatste_scan_id),
+        prioriteit  = (SELECT prioriteit FROM scans WHERE id = companies.laatste_scan_id),
+        scan_status = (SELECT status FROM scans WHERE id = companies.laatste_scan_id),
+        gescand_op  = (SELECT scanned_at FROM scans WHERE id = companies.laatste_scan_id),
+        vorige_score = (SELECT score FROM scans WHERE company_id = companies.id
+                          ORDER BY scanned_at DESC, id DESC LIMIT 1 OFFSET 1),
+        vorige_scan_op = (SELECT scanned_at FROM scans WHERE company_id = companies.id
+                          ORDER BY scanned_at DESC, id DESC LIMIT 1 OFFSET 1)
+      WHERE laatste_scan_id IS NOT NULL;
+
+      UPDATE companies SET
+        heeft_telefoon = CASE WHEN phone IS NOT NULL AND phone <> '' THEN 1 ELSE 0 END,
+        heeft_email    = CASE WHEN email IS NOT NULL AND email <> '' THEN 1 ELSE 0 END;
+
+      CREATE INDEX idx_companies_prioriteit ON companies(prioriteit DESC, score ASC);
+      CREATE INDEX idx_companies_score      ON companies(score);
+      CREATE INDEX idx_companies_plaats     ON companies(city);
+      CREATE INDEX idx_companies_gescand    ON companies(gescand_op);
+      CREATE INDEX idx_companies_contact    ON companies(heeft_telefoon, heeft_email);
+
+      DROP VIEW IF EXISTS leads;
+      CREATE VIEW leads AS
+      SELECT
+        c.id, c.name, c.website, c.domain, c.city, c.province, c.branch, c.rechtsvorm,
+        c.lat, c.lon, c.phone AS company_phone, c.email AS company_email, c.source,
+        c.laatste_scan_id AS scan_id, c.gescand_op AS scanned_at, c.scan_status,
+        c.score, c.grade, c.leven, c.prioriteit,
+        c.vorige_score, c.vorige_scan_op, c.heeft_telefoon, c.heeft_email,
+        s.final_url, s.http_status, s.error, s.report,
+        COALESCE(o.fase, 'nieuw')  AS fase,
+        o.toegewezen_aan, o.toegewezen_op, o.volgende_actie_op, o.notitie AS opvolging_notitie,
+        o.bijgewerkt_op AS opvolging_bijgewerkt_op,
+        g.naam AS agent_naam,
+        COALESCE(b.bel_toestemming, 0) AS bel_toestemming,
+        b.toestemming_op, b.toestemming_via,
+        COALESCE(b.geblokkeerd, 0) AS geblokkeerd, b.geblokkeerd_reden,
+        k.status AS klant_status, k.maandbedrag_cent, k.gestart_op AS klant_sinds,
+        t.sterren AS testimonial_sterren, t.tekst AS testimonial_tekst
+      FROM companies c
+      LEFT JOIN scans s         ON s.id = c.laatste_scan_id
+      LEFT JOIN opvolging o     ON o.company_id = c.id
+      LEFT JOIN gebruikers g    ON g.id = o.toegewezen_aan
+      LEFT JOIN benaderregels b ON b.company_id = c.id
+      LEFT JOIN klanten k       ON k.company_id = c.id
+      LEFT JOIN testimonials t  ON t.company_id = c.id;
+
+      /* Een lichte variant zonder het rapport: voor lijsten, tellingen en de
+         kaart hoef je die kilobytes aan JSON niet uit de database te halen. */
+      DROP VIEW IF EXISTS leads_kort;
+      CREATE VIEW leads_kort AS
+      SELECT
+        c.id, c.name, c.domain, c.city, c.branch, c.rechtsvorm, c.lat, c.lon, c.source,
+        c.gescand_op AS scanned_at, c.scan_status, c.score, c.grade, c.leven, c.prioriteit,
+        c.vorige_score, c.vorige_scan_op, c.heeft_telefoon, c.heeft_email,
+        COALESCE(o.fase, 'nieuw') AS fase, o.toegewezen_aan, o.volgende_actie_op,
+        g.naam AS agent_naam,
+        COALESCE(b.bel_toestemming, 0) AS bel_toestemming,
+        COALESCE(b.geblokkeerd, 0) AS geblokkeerd,
+        k.status AS klant_status
+      FROM companies c
+      LEFT JOIN opvolging o     ON o.company_id = c.id
+      LEFT JOIN gebruikers g    ON g.id = o.toegewezen_aan
+      LEFT JOIN benaderregels b ON b.company_id = c.id
+      LEFT JOIN klanten k       ON k.company_id = c.id;
+    `,
+  },
+  {
+    naam: '015-lijstvelden-op-het-bedrijf',
+    sql: `
+      -- Wat de lijst en de export tonen komt uit het rapport, dat een paar
+      -- kilobyte JSON per bedrijf is. Voor honderd regels betekende dat honderd
+      -- keer JSON ontleden; voor een export over tienduizenden bedrijven werd
+      -- het onwerkbaar. Deze drie afgeleide velden worden bij elke scan bijgewerkt.
+      ALTER TABLE companies ADD COLUMN top_problemen    TEXT;
+      ALTER TABLE companies ADD COLUMN contact_telefoon TEXT;
+      ALTER TABLE companies ADD COLUMN contact_email    TEXT;
+
+      DROP VIEW IF EXISTS leads_kort;
+      CREATE VIEW leads_kort AS
+      SELECT
+        c.id, c.name, c.domain, c.city, c.branch, c.rechtsvorm, c.lat, c.lon, c.source,
+        c.gescand_op AS scanned_at, c.scan_status, c.score, c.grade, c.leven, c.prioriteit,
+        c.vorige_score, c.vorige_scan_op, c.heeft_telefoon, c.heeft_email,
+        c.top_problemen, c.contact_telefoon, c.contact_email,
+        c.phone AS company_phone, c.email AS company_email,
+        COALESCE(o.fase, 'nieuw') AS fase, o.toegewezen_aan, o.toegewezen_op, o.volgende_actie_op,
+        g.naam AS agent_naam,
+        COALESCE(b.bel_toestemming, 0) AS bel_toestemming,
+        COALESCE(b.geblokkeerd, 0) AS geblokkeerd,
+        k.status AS klant_status, k.maandbedrag_cent
+      FROM companies c
+      LEFT JOIN opvolging o     ON o.company_id = c.id
+      LEFT JOIN gebruikers g    ON g.id = o.toegewezen_aan
+      LEFT JOIN benaderregels b ON b.company_id = c.id
+      LEFT JOIN klanten k       ON k.company_id = c.id;
+    `,
+  },
 ];
 
 /** Brengt de database bij naar de nieuwste versie. Veilig om vaak aan te roepen. */

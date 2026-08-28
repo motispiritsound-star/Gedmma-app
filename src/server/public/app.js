@@ -18,6 +18,8 @@ const staat = {
   sjablonen: [],
   filters: { zoek: '', plaats: '', fase: '', agent: '', contact: false, belbaar: false, levend: false, achteruit: false, band: '', sort: 'prioriteit' },
   gekozen: null,
+  getoond: 100,
+  totaal: 0,
   weergave: 'kaart',
   afzender: {},
 };
@@ -88,7 +90,10 @@ async function start() {
   vulKeuzelijsten(overzicht);
 
   if (!kaart) {
-    kaart = maakKaart($('kaart'), { onKiezen: kiesLead, onZweven: toonTip, eigenaarId: mij.gebruiker.id });
+    kaart = maakKaart($('kaart'), {
+      onKiezen: kiesLead, onZweven: toonTip, eigenaarId: mij.gebruiker.id,
+      onVerschuiven: () => haalKaart(),
+    });
     await kaart.laadOmtrek();
   }
   $('kaartnoot').textContent = `${overzicht.cijfers.opKaart} van ${overzicht.cijfers.bedrijven} bedrijven staan op de kaart`;
@@ -135,11 +140,17 @@ function queryVan(extra = {}) {
   return params;
 }
 
-/** Telt hoeveel bedrijven er per kwaliteitsband zijn, en laat erop filteren. */
-function tekenBanden(punten) {
+/**
+ * Telt hoeveel bedrijven er per kwaliteitsband zijn, en laat erop filteren.
+ * Bij samengevatte vakjes zijn de losse scores er niet, dus tonen we een streepje.
+ */
+function tekenBanden(punten, totaal) {
   $('bandvak').innerHTML = BANDEN.map((band) => {
-    const aantal = punten.filter((punt) => bandVan(punt.score).id === band.id).length;
-    return `<button data-band="${band.id}" aria-pressed="${staat.filters.band === band.id}">
+    const aantal = punten
+      ? punten.filter((punt) => bandVan(punt.score).id === band.id).length.toLocaleString('nl-NL')
+      : '–';
+    return `<button data-band="${band.id}" aria-pressed="${staat.filters.band === band.id}"
+      title="${punten ? '' : `Zoom in of filter om de verdeling over ${(totaal ?? 0).toLocaleString('nl-NL')} bedrijven te zien`}">
       <b>${aantal}</b>
       <span><i class="bol" style="background:${band.kleur}"></i>${band.label}</span>
     </button>`;
@@ -152,20 +163,63 @@ function tekenBanden(punten) {
   }
 }
 
-async function ververs() {
-  const [lijst, kaartData] = await Promise.all([
-    api('/api/leads?' + queryVan({ limit: 300 })),
-    api('/api/kaart?' + queryVan({ limit: 6000 })),
-  ]);
-  $('telling').textContent = `${lijst.leads.length} getoond van ${lijst.totaal}`;
+const PAGINA = 100;
+
+async function ververs({ behoudPagina = false } = {}) {
+  if (!behoudPagina) staat.getoond = PAGINA;
+  const lijst = await api('/api/leads?' + queryVan({ limit: staat.getoond }));
+
+  staat.totaal = lijst.totaal;
+  $('telling').textContent = `${lijst.leads.length} getoond van ${lijst.totaal.toLocaleString('nl-NL')}`;
   $('f-export').href = '/api/export.csv?' + queryVan({ limit: 100000 });
   tekenLijst($('rijen'), $('geen'), lijst.leads, 'kaart');
-  tekenBanden(kaartData.punten);
-  kaart.zetPunten(kaartData.punten);
-  if (staat.gekozen) kaart.zetGekozen(staat.gekozen);
+  tekenMeerKnop();
+
   if (!staat.gekozen) $('detail').innerHTML =
     '<div class="leeg">Klik een bolletje op de kaart of een regel in de lijst aan.<br>' +
     'Groen is een goede site, oranje matig, rood slecht.</div>';
+
+  await haalKaart();
+}
+
+function tekenMeerKnop() {
+  const meer = $('meer');
+  const rest = staat.totaal - Math.min(staat.getoond, staat.totaal);
+  meer.hidden = rest <= 0;
+  if (rest > 0) meer.textContent = `Nog ${rest.toLocaleString('nl-NL')} tonen`;
+}
+
+$('meer').addEventListener('click', async () => {
+  staat.getoond += 400;
+  await ververs({ behoudPagina: true });
+});
+
+/**
+ * Haalt de kaartgegevens op. Zodra je inzoomt vraagt hij alleen de bedrijven op
+ * die in beeld zijn; op landsniveau krijgt hij samengevatte vakjes, want honderd­
+ * duizend losse bolletjes hebben geen zin en zijn zwaar om te versturen.
+ */
+async function haalKaart() {
+  const kader = kaart.zichtbaarKader();
+  const extra = { max: 4000 };
+  if (kader.schaal > 2.5) {
+    Object.assign(extra, {
+      noord: kader.noord.toFixed(4), zuid: kader.zuid.toFixed(4),
+      oost: kader.oost.toFixed(4), west: kader.west.toFixed(4),
+    });
+  }
+
+  const gegevens = await api('/api/kaart?' + queryVan(extra));
+  if (gegevens.modus === 'vakjes') {
+    kaart.zetVakjes(gegevens.vakjes);
+    tekenBanden(null, gegevens.totaal);
+    $('kaartnoot').textContent = `${gegevens.totaal.toLocaleString('nl-NL')} bedrijven — zoom in voor losse bolletjes`;
+  } else {
+    kaart.zetPunten(gegevens.punten);
+    tekenBanden(gegevens.punten, gegevens.totaal);
+    $('kaartnoot').textContent = `${gegevens.punten.length.toLocaleString('nl-NL')} bedrijven in beeld`;
+  }
+  if (staat.gekozen) kaart.zetGekozen(staat.gekozen);
 }
 
 // --------------------------------------------------------------------------

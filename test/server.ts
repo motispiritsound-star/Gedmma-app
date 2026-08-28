@@ -1,6 +1,13 @@
 process.env.WEBSCAN_HOST_DELAY_MS = '1';
 process.env.WEBSCAN_DB = './data/test.db';
 
+// Elke run begint schoon; anders struikelt een tweede run over de accounts en
+// de bedrijven die een vorige (afgebroken) run heeft achtergelaten.
+import { rmSync } from 'node:fs';
+for (const achtervoegsel of ['', '-wal', '-shm']) {
+  rmSync(`${process.env.WEBSCAN_DB}${achtervoegsel}`, { force: true });
+}
+
 import { startFixtureServer } from './fixtures.ts';
 const { server, port } = await startFixtureServer();
 const base = `http://127.0.0.1:${port}`;

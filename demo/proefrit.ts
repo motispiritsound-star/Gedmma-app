@@ -26,8 +26,9 @@ const poort = Number(process.env.WEBSCAN_PORT ?? 4321);
 
 // --- 1. Gegevens klaarzetten ------------------------------------------------
 if (!existsSync(database)) {
-  console.log('\nEerst even 125 nagemaakte bedrijfssites opzetten en scannen.');
-  console.log('Dat duurt ongeveer een minuut; daarna gaat het meteen.\n');
+  console.log('\nEerst even drieduizend nagemaakte bedrijfssites opzetten en scannen.');
+  console.log('Dat duurt ongeveer anderhalve minuut; daarna gaat het meteen.');
+  console.log('Wil je sneller beginnen: DEMO_EXTRA=300 npm run proefrit\n');
   const bouw = spawnSync(process.execPath, [join(hier, 'build.ts')], {
     stdio: 'inherit',
     env: { ...process.env, WEBSCAN_DB: database, NODE_NO_WARNINGS: '1' },

@@ -376,7 +376,20 @@ const PLAATSEN: [string, number, number][] = [
   ['Emmen', 52.785, 6.898], ['Roosendaal', 51.531, 4.466], ['Purmerend', 52.505, 4.960],
   ['Vlaardingen', 51.912, 4.341], ['Assen', 52.995, 6.563], ['Terneuzen', 51.335, 3.828],
   ['Middelburg', 51.499, 3.611], ['Heerlen', 50.888, 5.979], ['Lelystad', 52.518, 5.471],
-  ['Hoorn', 52.642, 5.060],
+  ['Hoorn', 52.642, 5.060], ['Helmond', 51.481, 5.661], ['Amstelveen', 52.309, 4.860],
+  ['Sittard', 50.998, 5.869], ['Veenendaal', 52.029, 5.554], ['Katwijk', 52.203, 4.399],
+  ['Doetinchem', 51.965, 6.288], ['Kampen', 52.555, 5.911], ['Harderwijk', 52.341, 5.621],
+  ['Barneveld', 52.140, 5.585], ['Waalwijk', 51.687, 5.073], ['Goes', 51.504, 3.888],
+  ['Vlissingen', 51.443, 3.573], ['Weert', 51.251, 5.706], ['Roermond', 51.194, 5.987],
+  ['Uden', 51.661, 5.617], ['Tiel', 51.887, 5.430], ['Zutphen', 52.140, 6.196],
+  ['Winterswijk', 51.971, 6.720], ['Almelo', 52.357, 6.662], ['Hardenberg', 52.575, 6.619],
+  ['Meppel', 52.696, 6.194], ['Hoogeveen', 52.722, 6.477], ['Stadskanaal', 52.988, 6.949],
+  ['Veendam', 53.104, 6.876], ['Drachten', 53.112, 6.099], ['Sneek', 53.033, 5.658],
+  ['Heerenveen', 52.960, 5.919], ['Franeker', 53.187, 5.545], ['Den Helder', 52.956, 4.759],
+  ['Schagen', 52.788, 4.797], ['Hilversum', 52.223, 5.176], ['Bussum', 52.279, 5.163],
+  ['Woerden', 52.086, 4.883], ['Gouda', 52.011, 4.711], ['Alphen aan den Rijn', 52.129, 4.656],
+  ['Spijkenisse', 51.845, 4.329], ['Gorinchem', 51.836, 4.975], ['Veghel', 51.615, 5.545],
+  ['Oosterhout', 51.645, 4.860], ['Bergen op Zoom', 51.494, 4.288],
 ];
 
 const BRANCHES: [string, string[]][] = [
@@ -407,6 +420,10 @@ const ACHTERNAMEN = [
   'Mulder', 'de Groot', 'Bos', 'Vos', 'Peters', 'Hendriks', 'van Leeuwen', 'Dekker',
   'Brouwer', 'de Wit', 'Dijkstra', 'Smits', 'de Graaf', 'van der Meer', 'van der Berg',
   'Kuipers', 'Veenstra', 'Kok', 'Willems', 'Prins', 'Blom', 'Huisman',
+  'van der Linden', 'Schouten', 'van den Heuvel', 'van der Velde', 'Timmermans', 'Verhoeven',
+  'Koster', 'Postma', 'Martens', 'Groen', 'Hofman', 'Kramer', 'van Beek', 'Wolters',
+  'Sanders', 'Maas', 'Nijhof', 'Bosman', 'Wagenaar', 'Kuijpers', 'van Vliet', 'Driessen',
+  'Molenaar', 'de Bruin', 'van Loon', 'Everts', 'Zijlstra', 'Rietveld', 'Lammers',
 ];
 
 /** Vaste pseudo-willekeur, zodat de demo elke keer hetzelfde oplevert. */
@@ -432,13 +449,17 @@ export function genereerSites(aantal: number): Site[] {
   const sites: Site[] = [];
   const gebruikt = new Set(SITES.map((site) => site.domein));
 
-  for (let i = 0; sites.length < aantal && i < aantal * 4; i++) {
+  for (let i = 0; sites.length < aantal && i < aantal * 40; i++) {
     const [plaats, lat, lon] = PLAATSEN[Math.floor(random() * PLAATSEN.length)]!;
     const [branche, voorvoegsels] = BRANCHES[Math.floor(random() * BRANCHES.length)]!;
     const voorvoegsel = voorvoegsels[Math.floor(random() * voorvoegsels.length)]!;
     const achternaam = ACHTERNAMEN[Math.floor(random() * ACHTERNAMEN.length)]!;
     const bedrijf = `${voorvoegsel} ${achternaam}`;
-    const domein = `${zonderAccenten(voorvoegsel).slice(0, 8)}${zonderAccenten(achternaam)}.nl`;
+    // Dezelfde naam komt in het echt in tien plaatsen voor; het domein krijgt er
+    // dan de plaats bij, precies zoals die bedrijven dat zelf doen.
+    const kaal = `${zonderAccenten(voorvoegsel).slice(0, 8)}${zonderAccenten(achternaam)}`;
+    let domein = `${kaal}.nl`;
+    if (gebruikt.has(domein)) domein = `${kaal}-${zonderAccenten(plaats)}.nl`;
     if (gebruikt.has(domein)) continue;
     gebruikt.add(domein);
 
