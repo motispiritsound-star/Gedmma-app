@@ -18,8 +18,11 @@ android/
 ios/
 prisma/*.db
 
-# Expo web export
+# Expo web export. The output directory has been spelled three ways across
+# demo runs; a bundle with a content hash in its name is noise in a diff and
+# gets committed by accident every time one of them is missed.
 apps/mobile/dist/
+apps/mobile/dist-web/
 apps/mobile/dist-plain/
 
 # Generated website
