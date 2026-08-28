@@ -1,28 +1,21 @@
 /**
- * Khidma ships French first (the language of business and administration in
- * Morocco), Arabic second (Modern Standard Arabic, right-to-left) and English
- * third for expatriates and tourists.
+ * Buurklus ships Dutch first and English second. English serves expats,
+ * international students and the many tradespeople in the Netherlands who work
+ * in English before they work in Dutch.
  */
-export const SUPPORTED_LOCALES = ['fr', 'ar', 'en'] as const;
+export const SUPPORTED_LOCALES = ['nl', 'en'] as const;
 
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
 
-export const DEFAULT_LOCALE: Locale = 'fr';
-
-/** Locales written right-to-left. Drives `I18nManager.forceRTL` in the app. */
-export const RTL_LOCALES: readonly Locale[] = ['ar'];
+export const DEFAULT_LOCALE: Locale = 'nl';
 
 export function isLocale(value: unknown): value is Locale {
   return typeof value === 'string' && (SUPPORTED_LOCALES as readonly string[]).includes(value);
 }
 
-export function isRtl(locale: Locale): boolean {
-  return RTL_LOCALES.includes(locale);
-}
-
 /**
  * Picks the best supported locale from an `Accept-Language` header or from the
- * device locale list reported by expo-localization (e.g. `['fr-MA', 'ar']`).
+ * device locale list reported by expo-localization (e.g. `['nl-NL', 'en']`).
  */
 export function resolveLocale(candidates: readonly string[] | string | null | undefined): Locale {
   if (!candidates) return DEFAULT_LOCALE;

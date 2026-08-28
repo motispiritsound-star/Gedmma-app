@@ -4,7 +4,7 @@ import { Stack, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
-import { TRIAL_CREDITS, TRIAL_DURATION_DAYS, applyVat, type BillingPeriod } from '@khidma/shared';
+import { TRIAL_CREDITS, TRIAL_DURATION_DAYS, applyVat, type BillingPeriod } from '@buurklus/shared';
 import { Badge, Button, Card, Divider, Loader, Txt } from '@/components/ui';
 import { useApi, usePublicApi } from '@/hooks/use-api';
 import { useSession } from '@/store/session';
@@ -112,9 +112,9 @@ export default function Subscription() {
         ) : null}
 
         {(plans.data?.plans ?? []).map((plan) => {
-          const netCentimes =
-            period === 'YEARLY' ? plan.yearlyPriceCentimes : plan.monthlyPriceCentimes;
-          const gross = applyVat(netCentimes).grossCentimes;
+          const netCents =
+            period === 'YEARLY' ? plan.yearlyPriceCents : plan.monthlyPriceCents;
+          const gross = applyVat(netCents).grossCents;
           const isCurrent = current?.planSlug === plan.slug && current.grantsAccess;
 
           return (
@@ -131,7 +131,7 @@ export default function Subscription() {
 
               <View style={styles.priceRow}>
                 <Txt variant="display" color={colors.primaryDark}>
-                  {formatMoney(netCentimes, locale)}
+                  {formatMoney(netCents, locale)}
                 </Txt>
                 <Txt variant="caption" color={colors.textMuted}>
                   {t(period === 'YEARLY' ? 'subscription.perYear' : 'subscription.perMonth')}{' '}

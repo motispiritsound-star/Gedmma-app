@@ -3,7 +3,7 @@ import {
   cancelSubscriptionSchema,
   paymentCallbackSchema,
   startSubscriptionSchema,
-} from '@khidma/shared';
+} from '@buurklus/shared';
 import { SubscriptionService } from '../services/subscription.service.js';
 import { AppError } from '../lib/errors.js';
 
@@ -40,9 +40,9 @@ const subscriptionRoutes: FastifyPluginAsync = async (app) => {
       redirectUrl: result.checkout.redirectUrl,
       payment: {
         reference: result.payment.reference,
-        grossCentimes: result.payment.grossCentimes,
-        netCentimes: result.payment.netCentimes,
-        vatCentimes: result.payment.vatCentimes,
+        grossCents: result.payment.grossCents,
+        netCents: result.payment.netCents,
+        vatCents: result.payment.vatCents,
         status: result.payment.status,
       },
       subscription: result.subscription,

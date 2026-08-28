@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@prisma/client';
-import type { SendMessageInput } from '@khidma/shared';
+import type { SendMessageInput } from '@buurklus/shared';
 import { AppError } from '../lib/errors.js';
 import { cursorArgs, toPage } from '../lib/pagination.js';
 import type { NotificationService } from './notification.service.js';
@@ -32,7 +32,7 @@ export class MessageService {
           },
         },
         pro: { select: { id: true, displayName: true, logoUrl: true, userId: true } },
-        quote: { select: { id: true, amountCentimes: true, status: true } },
+        quote: { select: { id: true, amountCents: true, status: true } },
         messages: { orderBy: { createdAt: 'desc' }, take: 1 },
       },
       ...cursorArgs(params.cursor, params.limit),
@@ -93,7 +93,7 @@ export class MessageService {
       params: isCustomer
         ? { customerName: conversation.job.customer.firstName ?? undefined }
         : { proName: conversation.pro.displayName },
-      deepLink: `khidma://conversations/${conversation.id}`,
+      deepLink: `buurklus://conversations/${conversation.id}`,
     });
 
     return message;

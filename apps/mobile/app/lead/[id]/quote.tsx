@@ -4,7 +4,7 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
-import { QUOTE_DEFAULT_VALIDITY_DAYS, QUOTE_MESSAGE_MIN } from '@khidma/shared';
+import { QUOTE_DEFAULT_VALIDITY_DAYS, QUOTE_MESSAGE_MIN } from '@buurklus/shared';
 import { Button, Field, Txt } from '@/components/ui';
 import { useApi } from '@/hooks/use-api';
 import { ApiError } from '@/api/client';
@@ -60,7 +60,7 @@ export default function SendQuote() {
       api<{ creditsRemaining: number }>(`/v1/jobs/${id}/quotes`, {
         method: 'POST',
         body: {
-          amountMad: amountValue,
+          amountEur: amountValue,
           isEstimate,
           message: message.trim(),
           estimatedDurationDays: Number.parseInt(durationDays, 10) || undefined,

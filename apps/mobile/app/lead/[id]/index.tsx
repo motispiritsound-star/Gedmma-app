@@ -4,7 +4,7 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
-import { formatMoroccanPhone } from '@khidma/shared';
+import { formatDutchPhone } from '@buurklus/shared';
 import { Badge, Button, Card, Divider, EmptyState, Loader, Txt } from '@/components/ui';
 import { useApi } from '@/hooks/use-api';
 import { useSession } from '@/store/session';
@@ -43,8 +43,8 @@ export default function LeadDetail() {
   const job = data.job;
   const credits = dashboard.data?.subscription?.creditsRemaining ?? 0;
   const budget =
-    job.budgetMinCentimes != null || job.budgetMaxCentimes != null
-      ? [job.budgetMinCentimes, job.budgetMaxCentimes]
+    job.budgetMinCents != null || job.budgetMaxCents != null
+      ? [job.budgetMinCents, job.budgetMaxCents]
           .filter((value): value is number => value != null)
           .map((value) => formatMoney(value, locale))
           .join(' – ')
@@ -101,7 +101,7 @@ export default function LeadDetail() {
             ) : null}
             {job.contactPhone ? (
               <Button
-                title={formatMoroccanPhone(job.contactPhone)}
+                title={formatDutchPhone(job.contactPhone)}
                 icon="call-outline"
                 onPress={() => void Linking.openURL(`tel:${job.contactPhone}`)}
               />
@@ -116,7 +116,7 @@ export default function LeadDetail() {
                 {t('quote.title')}
               </Txt>
               <Txt variant="heading" color={colors.primaryDark}>
-                {formatMoney(job.myQuote.amountCentimes, locale)}
+                {formatMoney(job.myQuote.amountCents, locale)}
               </Txt>
             </View>
             <Txt variant="body" color={colors.textMuted}>

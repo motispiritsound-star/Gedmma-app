@@ -2,7 +2,7 @@
 CREATE TYPE "UserRole" AS ENUM ('CUSTOMER', 'PRO', 'ADMIN');
 
 -- CreateEnum
-CREATE TYPE "Locale" AS ENUM ('fr', 'ar', 'en');
+CREATE TYPE "Locale" AS ENUM ('nl', 'en');
 
 -- CreateEnum
 CREATE TYPE "JobStatus" AS ENUM ('DRAFT', 'OPEN', 'QUOTED', 'AWARDED', 'COMPLETED', 'CANCELLED', 'EXPIRED');
@@ -11,7 +11,7 @@ CREATE TYPE "JobStatus" AS ENUM ('DRAFT', 'OPEN', 'QUOTED', 'AWARDED', 'COMPLETE
 CREATE TYPE "JobUrgency" AS ENUM ('URGENT', 'WITHIN_WEEK', 'WITHIN_MONTH', 'FLEXIBLE');
 
 -- CreateEnum
-CREATE TYPE "PropertyType" AS ENUM ('APARTMENT', 'VILLA', 'RIAD', 'OFFICE', 'SHOP', 'OTHER');
+CREATE TYPE "PropertyType" AS ENUM ('APPARTEMENT', 'TUSSENWONING', 'HOEKWONING', 'TWEE_ONDER_EEN_KAP', 'VRIJSTAAND', 'BEDRIJFSPAND', 'VVE', 'ANDERS');
 
 -- CreateEnum
 CREATE TYPE "QuoteStatus" AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED', 'WITHDRAWN', 'EXPIRED');
@@ -20,7 +20,7 @@ CREATE TYPE "QuoteStatus" AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED', 'WITHDRAWN
 CREATE TYPE "ProVerificationStatus" AS ENUM ('UNVERIFIED', 'PENDING', 'VERIFIED', 'REJECTED');
 
 -- CreateEnum
-CREATE TYPE "LegalForm" AS ENUM ('AUTO_ENTREPRENEUR', 'PERSONNE_PHYSIQUE', 'SARL', 'SARL_AU', 'SA', 'SNC', 'COOPERATIVE', 'ASSOCIATION');
+CREATE TYPE "LegalForm" AS ENUM ('EENMANSZAAK', 'VOF', 'MAATSCHAP', 'CV', 'BV', 'NV', 'COOPERATIE', 'STICHTING', 'VERENIGING');
 
 -- CreateEnum
 CREATE TYPE "SubscriptionStatus" AS ENUM ('TRIALING', 'ACTIVE', 'PAST_DUE', 'CANCELLED', 'EXPIRED');
@@ -29,7 +29,7 @@ CREATE TYPE "SubscriptionStatus" AS ENUM ('TRIALING', 'ACTIVE', 'PAST_DUE', 'CAN
 CREATE TYPE "BillingPeriod" AS ENUM ('MONTHLY', 'YEARLY');
 
 -- CreateEnum
-CREATE TYPE "PaymentMethod" AS ENUM ('CMI_CARD', 'BANK_TRANSFER', 'CASH', 'MOBILE_WALLET');
+CREATE TYPE "PaymentMethod" AS ENUM ('IDEAL', 'SEPA_DIRECT_DEBIT', 'CARD', 'BANK_TRANSFER');
 
 -- CreateEnum
 CREATE TYPE "PaymentStatus" AS ENUM ('PENDING', 'PAID', 'FAILED', 'REFUNDED');
@@ -38,7 +38,7 @@ CREATE TYPE "PaymentStatus" AS ENUM ('PENDING', 'PAID', 'FAILED', 'REFUNDED');
 CREATE TYPE "CreditReason" AS ENUM ('PLAN_GRANT', 'TRIAL_GRANT', 'QUOTE_SUBMITTED', 'QUOTE_REFUND', 'MANUAL_ADJUSTMENT', 'TOPUP_PURCHASE');
 
 -- CreateEnum
-CREATE TYPE "Region" AS ENUM ('TANGER_TETOUAN_AL_HOCEIMA', 'ORIENTAL', 'FES_MEKNES', 'RABAT_SALE_KENITRA', 'BENI_MELLAL_KHENIFRA', 'CASABLANCA_SETTAT', 'MARRAKECH_SAFI', 'DRAA_TAFILALET', 'SOUSS_MASSA', 'GUELMIM_OUED_NOUN', 'LAAYOUNE_SAKIA_EL_HAMRA', 'DAKHLA_OUED_ED_DAHAB');
+CREATE TYPE "Province" AS ENUM ('DRENTHE', 'FLEVOLAND', 'FRIESLAND', 'GELDERLAND', 'GRONINGEN', 'LIMBURG', 'NOORD_BRABANT', 'NOORD_HOLLAND', 'OVERIJSSEL', 'UTRECHT', 'ZEELAND', 'ZUID_HOLLAND');
 
 -- CreateEnum
 CREATE TYPE "NotificationType" AS ENUM ('JOB_NEW_QUOTE', 'JOB_AWARDED', 'JOB_CANCELLED', 'QUOTE_REJECTED', 'NEW_LEAD', 'NEW_MESSAGE', 'REVIEW_RECEIVED', 'SUBSCRIPTION_EXPIRING', 'SUBSCRIPTION_RENEWED', 'CREDITS_LOW', 'PRO_VERIFIED');
@@ -47,10 +47,9 @@ CREATE TYPE "NotificationType" AS ENUM ('JOB_NEW_QUOTE', 'JOB_AWARDED', 'JOB_CAN
 CREATE TABLE "cities" (
     "id" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
-    "nameFr" TEXT NOT NULL,
-    "nameAr" TEXT NOT NULL,
+    "nameNl" TEXT NOT NULL,
     "nameEn" TEXT NOT NULL,
-    "region" "Region" NOT NULL,
+    "province" "Province" NOT NULL,
     "lat" DOUBLE PRECISION NOT NULL,
     "lng" DOUBLE PRECISION NOT NULL,
     "population" INTEGER NOT NULL DEFAULT 0,
@@ -63,14 +62,13 @@ CREATE TABLE "cities" (
 CREATE TABLE "categories" (
     "id" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
-    "nameFr" TEXT NOT NULL,
-    "nameAr" TEXT NOT NULL,
+    "nameNl" TEXT NOT NULL,
     "nameEn" TEXT NOT NULL,
     "icon" TEXT NOT NULL,
     "parentId" TEXT,
     "position" INTEGER NOT NULL DEFAULT 0,
-    "typicalBudgetMinCentimes" INTEGER,
-    "typicalBudgetMaxCentimes" INTEGER,
+    "typicalBudgetMinCents" INTEGER,
+    "typicalBudgetMaxCents" INTEGER,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
 
     CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
@@ -80,14 +78,12 @@ CREATE TABLE "categories" (
 CREATE TABLE "plans" (
     "id" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
-    "nameFr" TEXT NOT NULL,
-    "nameAr" TEXT NOT NULL,
+    "nameNl" TEXT NOT NULL,
     "nameEn" TEXT NOT NULL,
-    "taglineFr" TEXT NOT NULL,
-    "taglineAr" TEXT NOT NULL,
+    "taglineNl" TEXT NOT NULL,
     "taglineEn" TEXT NOT NULL,
-    "monthlyPriceCentimes" INTEGER NOT NULL,
-    "yearlyPriceCentimes" INTEGER NOT NULL,
+    "monthlyPriceCents" INTEGER NOT NULL,
+    "yearlyPriceCents" INTEGER NOT NULL,
     "monthlyCredits" INTEGER NOT NULL,
     "maxCategories" INTEGER NOT NULL,
     "maxCities" INTEGER,
@@ -110,7 +106,7 @@ CREATE TABLE "users" (
     "firstName" TEXT,
     "lastName" TEXT,
     "avatarUrl" TEXT,
-    "locale" "Locale" NOT NULL DEFAULT 'fr',
+    "locale" "Locale" NOT NULL DEFAULT 'nl',
     "role" "UserRole" NOT NULL DEFAULT 'CUSTOMER',
     "cityId" TEXT,
     "isBlocked" BOOLEAN NOT NULL DEFAULT false,
@@ -174,11 +170,9 @@ CREATE TABLE "pro_profiles" (
     "logoUrl" TEXT,
     "websiteUrl" TEXT,
     "portfolioUrls" TEXT[] DEFAULT ARRAY[]::TEXT[],
-    "ice" TEXT,
-    "rc" TEXT,
-    "taxId" TEXT,
-    "cnss" TEXT,
-    "cin" TEXT,
+    "kvk" TEXT NOT NULL,
+    "vatId" TEXT,
+    "iban" TEXT,
     "verificationStatus" "ProVerificationStatus" NOT NULL DEFAULT 'UNVERIFIED',
     "verifiedAt" TIMESTAMP(3),
     "verificationNotes" TEXT,
@@ -227,8 +221,8 @@ CREATE TABLE "jobs" (
     "propertyType" "PropertyType",
     "urgency" "JobUrgency" NOT NULL DEFAULT 'WITHIN_WEEK',
     "preferredStartDate" TIMESTAMP(3),
-    "budgetMinCentimes" INTEGER,
-    "budgetMaxCentimes" INTEGER,
+    "budgetMinCents" INTEGER,
+    "budgetMaxCents" INTEGER,
     "photoUrls" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "contactPhone" TEXT,
     "status" "JobStatus" NOT NULL DEFAULT 'OPEN',
@@ -252,7 +246,7 @@ CREATE TABLE "quotes" (
     "id" TEXT NOT NULL,
     "jobId" TEXT NOT NULL,
     "proId" TEXT NOT NULL,
-    "amountCentimes" INTEGER NOT NULL,
+    "amountCents" INTEGER NOT NULL,
     "isEstimate" BOOLEAN NOT NULL DEFAULT false,
     "message" TEXT NOT NULL,
     "estimatedDurationDays" INTEGER,
@@ -355,11 +349,11 @@ CREATE TABLE "payments" (
     "id" TEXT NOT NULL,
     "subscriptionId" TEXT NOT NULL,
     "reference" TEXT NOT NULL,
-    "netCentimes" INTEGER NOT NULL,
-    "vatCentimes" INTEGER NOT NULL,
-    "grossCentimes" INTEGER NOT NULL,
-    "vatRate" DOUBLE PRECISION NOT NULL DEFAULT 0.2,
-    "method" "PaymentMethod" NOT NULL DEFAULT 'CMI_CARD',
+    "netCents" INTEGER NOT NULL,
+    "vatCents" INTEGER NOT NULL,
+    "grossCents" INTEGER NOT NULL,
+    "vatRate" DOUBLE PRECISION NOT NULL DEFAULT 0.21,
+    "method" "PaymentMethod" NOT NULL DEFAULT 'IDEAL',
     "status" "PaymentStatus" NOT NULL DEFAULT 'PENDING',
     "providerRef" TEXT,
     "paidAt" TIMESTAMP(3),
@@ -390,7 +384,7 @@ CREATE TABLE "notifications" (
 CREATE UNIQUE INDEX "cities_slug_key" ON "cities"("slug");
 
 -- CreateIndex
-CREATE INDEX "cities_region_idx" ON "cities"("region");
+CREATE INDEX "cities_province_idx" ON "cities"("province");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "categories_slug_key" ON "categories"("slug");
@@ -429,7 +423,7 @@ CREATE INDEX "device_tokens_userId_idx" ON "device_tokens"("userId");
 CREATE UNIQUE INDEX "pro_profiles_userId_key" ON "pro_profiles"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "pro_profiles_ice_key" ON "pro_profiles"("ice");
+CREATE UNIQUE INDEX "pro_profiles_kvk_key" ON "pro_profiles"("kvk");
 
 -- CreateIndex
 CREATE INDEX "pro_profiles_verificationStatus_idx" ON "pro_profiles"("verificationStatus");

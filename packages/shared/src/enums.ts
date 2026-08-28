@@ -19,7 +19,16 @@ export type QuoteStatus = (typeof QUOTE_STATUSES)[number];
 export const JOB_URGENCIES = ['URGENT', 'WITHIN_WEEK', 'WITHIN_MONTH', 'FLEXIBLE'] as const;
 export type JobUrgency = (typeof JOB_URGENCIES)[number];
 
-export const PROPERTY_TYPES = ['APARTMENT', 'VILLA', 'RIAD', 'OFFICE', 'SHOP', 'OTHER'] as const;
+export const PROPERTY_TYPES = [
+  'APPARTEMENT',
+  'TUSSENWONING',
+  'HOEKWONING',
+  'TWEE_ONDER_EEN_KAP',
+  'VRIJSTAAND',
+  'BEDRIJFSPAND',
+  'VVE',
+  'ANDERS',
+] as const;
 export type PropertyType = (typeof PROPERTY_TYPES)[number];
 
 export const PRO_VERIFICATION_STATUSES = [
@@ -43,10 +52,11 @@ export const BILLING_PERIODS = ['MONTHLY', 'YEARLY'] as const;
 export type BillingPeriod = (typeof BILLING_PERIODS)[number];
 
 /**
- * CMI is the Moroccan interbank card gateway and the default online method.
- * Bank transfer and cash remain common for companies invoicing on account.
+ * iDEAL is how the Netherlands pays online, and SEPA direct debit is how it
+ * pays for subscriptions. Card and bank transfer cover foreign-registered
+ * businesses and companies that insist on invoicing.
  */
-export const PAYMENT_METHODS = ['CMI_CARD', 'BANK_TRANSFER', 'CASH', 'MOBILE_WALLET'] as const;
+export const PAYMENT_METHODS = ['IDEAL', 'SEPA_DIRECT_DEBIT', 'CARD', 'BANK_TRANSFER'] as const;
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 
 export const PAYMENT_STATUSES = ['PENDING', 'PAID', 'FAILED', 'REFUNDED'] as const;

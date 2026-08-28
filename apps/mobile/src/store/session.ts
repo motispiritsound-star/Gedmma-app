@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import { deleteItem, getItem, setItem } from './secure-storage';
-import { DEFAULT_LOCALE, type Locale } from '@khidma/shared';
+import { DEFAULT_LOCALE, type Locale } from '@buurklus/shared';
 import { ApiError, request } from '../api/client';
 import type { AuthTokens, SessionUser, SignInResponse } from '../api/types';
 
-const ACCESS_KEY = 'khidma.accessToken';
-const REFRESH_KEY = 'khidma.refreshToken';
-const LOCALE_KEY = 'khidma.locale';
+const ACCESS_KEY = 'buurklus.accessToken';
+const REFRESH_KEY = 'buurklus.refreshToken';
+const LOCALE_KEY = 'buurklus.locale';
 
 interface SessionState {
   hydrated: boolean;

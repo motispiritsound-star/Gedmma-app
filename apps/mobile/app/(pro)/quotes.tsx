@@ -17,8 +17,8 @@ type ProQuote = Quote & {
     title: string;
     status: string;
     awardedQuoteId: string | null;
-    city: { nameFr: string; nameAr: string; nameEn: string; slug: string };
-    category: { nameFr: string; nameAr: string; nameEn: string; slug: string; icon: string };
+    city: { nameNl: string; nameEn: string; slug: string };
+    category: { nameNl: string; nameEn: string; slug: string; icon: string };
   };
 };
 
@@ -74,7 +74,7 @@ export default function MyQuotes() {
               </Txt>
             </View>
             <Txt variant="heading" color={colors.primaryDark}>
-              {formatMoney(item.amountCentimes, locale)}
+              {formatMoney(item.amountCents, locale)}
             </Txt>
           </View>
 

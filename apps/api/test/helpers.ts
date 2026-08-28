@@ -5,7 +5,7 @@ import { loadEnv } from '../src/env.js';
 
 const TEST_DATABASE_URL =
   process.env.TEST_DATABASE_URL ??
-  'postgresql://khidma:khidma@localhost:5432/khidma_test?schema=public';
+  'postgresql://buurklus:buurklus@localhost:5432/buurklus_test?schema=public';
 
 export const testEnv = () => {
   process.env.DATABASE_URL = TEST_DATABASE_URL;
@@ -62,7 +62,7 @@ export async function signIn(
   role: 'CUSTOMER' | 'PRO' = 'CUSTOMER',
 ): Promise<SignInResult> {
   await prisma.otpChallenge.deleteMany({
-    where: { phone: phone.startsWith('+') ? phone : `+212${phone.replace(/^0/, '')}` },
+    where: { phone: phone.startsWith('+') ? phone : `+31${phone.replace(/^0/, '')}` },
   });
 
   const requested = await app.inject({
@@ -94,12 +94,12 @@ export async function signIn(
 export const auth = (token: string) => ({ authorization: `Bearer ${token}` });
 
 /**
- * An ICE identifies exactly one business, and the column is unique, so each
- * test professional needs its own. Derived from the phone number to stay
+ * A KvK number identifies exactly one business, and the column is unique, so
+ * each test professional needs its own. Derived from the phone number to stay
  * stable across runs.
  */
-export function testIce(phone: string): string {
-  return phone.replace(/\D/g, '').padStart(15, '9').slice(-15);
+export function testKvk(phone: string): string {
+  return phone.replace(/\D/g, '').slice(-8).padStart(8, '9');
 }
 
 /** Creates a complete professional: profile, trades, coverage and a paid plan. */
@@ -120,16 +120,16 @@ export async function createPro(
     url: '/v1/pros/me',
     headers: auth(session.accessToken),
     payload: {
-      displayName: options.displayName ?? 'Entreprise de test',
-      legalForm: 'SARL',
-      bio: "Entreprise de test disposant d'une équipe complète et de plusieurs années d'expérience.",
+      displayName: options.displayName ?? 'Testbedrijf',
+      legalForm: 'BV',
+      bio: 'Testbedrijf met een compleet team en ruime ervaring in binnen- en buitenwerk.',
       yearsExperience: 10,
       teamSize: 4,
-      baseCitySlug: options.citySlugs?.[0] ?? 'casablanca',
+      baseCitySlug: options.citySlugs?.[0] ?? 'utrecht',
       serviceRadiusKm: 50,
-      categorySlugs: options.categorySlugs ?? ['peinture-interieure'],
-      citySlugs: options.citySlugs ?? ['casablanca'],
-      ice: testIce(options.phone),
+      categorySlugs: options.categorySlugs ?? ['binnenschilderwerk'],
+      citySlugs: options.citySlugs ?? ['utrecht'],
+      kvk: testKvk(options.phone),
     },
   });
   if (profileResponse.statusCode !== 200) {
@@ -145,7 +145,7 @@ export async function createPro(
       method: 'POST',
       url: '/v1/subscriptions',
       headers: auth(refreshed.accessToken),
-      payload: { planSlug: options.planSlug, period: 'MONTHLY', paymentMethod: 'CMI_CARD' },
+      payload: { planSlug: options.planSlug, period: 'MONTHLY', paymentMethod: 'IDEAL' },
     });
     if (subscribed.statusCode !== 200) {
       throw new Error(`Subscribe failed: ${subscribed.statusCode} ${subscribed.body}`);
@@ -157,12 +157,12 @@ export async function createPro(
 }
 
 export const VALID_JOB = {
-  categorySlug: 'peinture-interieure',
-  title: 'Peindre un salon de 25 m²',
+  categorySlug: 'binnenschilderwerk',
+  title: 'Woonkamer van 25 m² schilderen',
   description:
-    "Salon de 25 m² à repeindre en blanc mat, murs et plafond. Petit rebouchage nécessaire autour des fenêtres. Intervention souhaitée en semaine, de préférence le matin.",
-  citySlug: 'casablanca',
+    'Woonkamer van 25 m² opnieuw schilderen in gebroken wit, muren en plafond. Rond de kozijnen moet wat gestuct worden. Graag doordeweeks, het liefst in de ochtend.',
+  citySlug: 'utrecht',
   urgency: 'WITHIN_WEEK' as const,
-  budgetMinMad: 3000,
-  budgetMaxMad: 6000,
+  budgetMinEur: 800,
+  budgetMaxEur: 1600,
 };

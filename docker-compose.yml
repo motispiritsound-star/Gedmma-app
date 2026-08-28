@@ -1,21 +1,21 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: khidma-postgres
+    container_name: buurklus-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: khidma
-      POSTGRES_PASSWORD: khidma
-      POSTGRES_DB: khidma
+      POSTGRES_USER: buurklus
+      POSTGRES_PASSWORD: buurklus
+      POSTGRES_DB: buurklus
     ports:
       - "5432:5432"
     volumes:
-      - khidma-pgdata:/var/lib/postgresql/data
+      - buurklus-pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U khidma"]
+      test: ["CMD-SHELL", "pg_isready -U buurklus"]
       interval: 5s
       timeout: 5s
       retries: 10
 
 volumes:
-  khidma-pgdata:
+  buurklus-pgdata:

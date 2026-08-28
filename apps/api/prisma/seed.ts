@@ -1,5 +1,5 @@
 /**
- * Seeds the catalog tables from @khidma/shared, then — outside production —
+ * Seeds the catalog tables from @buurklus/shared, then — outside production —
  * a small set of demo accounts, jobs and quotes so the app has something to
  * show on first run. Safe to re-run: everything is upserted by slug or phone.
  */
@@ -11,43 +11,36 @@ import {
   SUPPORTED_LOCALES,
   TRIAL_CREDITS,
   TRIAL_DURATION_DAYS,
-  dirhamsToCentimes,
-  normalizeMoroccanPhone,
-} from '@khidma/shared';
+  eurosToCents,
+  normalizeDutchPhone,
+} from '@buurklus/shared';
 
 const prisma = new PrismaClient();
 
 async function seedCities() {
   for (const city of CITIES) {
+    const data = {
+      nameNl: city.name.nl,
+      nameEn: city.name.en,
+      province: city.province,
+      lat: city.lat,
+      lng: city.lng,
+      population: city.population,
+    };
     await prisma.city.upsert({
       where: { slug: city.slug },
-      create: {
-        slug: city.slug,
-        nameFr: city.name.fr,
-        nameAr: city.name.ar,
-        nameEn: city.name.en,
-        region: city.region,
-        lat: city.lat,
-        lng: city.lng,
-        population: city.population,
-      },
-      update: {
-        nameFr: city.name.fr,
-        nameAr: city.name.ar,
-        nameEn: city.name.en,
-        region: city.region,
-        lat: city.lat,
-        lng: city.lng,
-        population: city.population,
-      },
+      create: { slug: city.slug, ...data },
+      update: data,
     });
   }
-  console.log(`  cities:     ${CITIES.length}`);
+  console.log(`  gemeenten:   ${CITIES.length}`);
 }
 
 async function seedCategories() {
   // Two passes: roots first, so a child can always resolve its parent id.
-  const ordered = [...CATEGORIES].sort((a, b) => Number(a.parentSlug != null) - Number(b.parentSlug != null));
+  const ordered = [...CATEGORIES].sort(
+    (a, b) => Number(a.parentSlug != null) - Number(b.parentSlug != null),
+  );
 
   for (const [index, category] of ordered.entries()) {
     const parent = category.parentSlug
@@ -55,17 +48,16 @@ async function seedCategories() {
       : null;
 
     const data = {
-      nameFr: category.name.fr,
-      nameAr: category.name.ar,
+      nameNl: category.name.nl,
       nameEn: category.name.en,
       icon: category.icon,
       parentId: parent?.id ?? null,
       position: index,
-      typicalBudgetMinCentimes: category.typicalBudgetMad
-        ? dirhamsToCentimes(category.typicalBudgetMad.min)
+      typicalBudgetMinCents: category.typicalBudgetEur
+        ? eurosToCents(category.typicalBudgetEur.min)
         : null,
-      typicalBudgetMaxCentimes: category.typicalBudgetMad
-        ? dirhamsToCentimes(category.typicalBudgetMad.max)
+      typicalBudgetMaxCents: category.typicalBudgetEur
+        ? eurosToCents(category.typicalBudgetEur.max)
         : null,
     };
 
@@ -75,7 +67,7 @@ async function seedCategories() {
       update: data,
     });
   }
-  console.log(`  categories: ${CATEGORIES.length}`);
+  console.log(`  vakgebieden: ${CATEGORIES.length}`);
 }
 
 async function seedPlans() {
@@ -86,14 +78,12 @@ async function seedPlans() {
     ) as Prisma.InputJsonValue;
 
     const data = {
-      nameFr: plan.name.fr,
-      nameAr: plan.name.ar,
+      nameNl: plan.name.nl,
       nameEn: plan.name.en,
-      taglineFr: plan.tagline.fr,
-      taglineAr: plan.tagline.ar,
+      taglineNl: plan.tagline.nl,
       taglineEn: plan.tagline.en,
-      monthlyPriceCentimes: dirhamsToCentimes(plan.monthlyPriceMad),
-      yearlyPriceCentimes: dirhamsToCentimes(plan.yearlyPriceMad),
+      monthlyPriceCents: eurosToCents(plan.monthlyPriceEur),
+      yearlyPriceCents: eurosToCents(plan.yearlyPriceEur),
       monthlyCredits: plan.monthlyCredits,
       maxCategories: plan.maxCategories,
       maxCities: plan.maxCities,
@@ -110,45 +100,47 @@ async function seedPlans() {
       update: data,
     });
   }
-  console.log(`  plans:      ${PLANS.length}`);
+  console.log(`  pakketten:   ${PLANS.length}`);
 }
 
 /** Same reference format the API generates, so demo rows look real. */
 function jobReference(index: number): string {
-  return `KH-DEMO${index.toString().padStart(2, '0')}`;
+  return `BK-DEMO${index.toString().padStart(2, '0')}`;
 }
 
 async function seedDemoData() {
-  const casablanca = await prisma.city.findUniqueOrThrow({ where: { slug: 'casablanca' } });
-  const rabat = await prisma.city.findUniqueOrThrow({ where: { slug: 'rabat' } });
-  const painting = await prisma.category.findUniqueOrThrow({ where: { slug: 'peinture-interieure' } });
-  const plumbing = await prisma.category.findUniqueOrThrow({ where: { slug: 'fuite-eau' } });
-  const proPlan = await prisma.plan.findUniqueOrThrow({ where: { slug: 'pro' } });
+  const utrecht = await prisma.city.findUniqueOrThrow({ where: { slug: 'utrecht' } });
+  const amersfoort = await prisma.city.findUniqueOrThrow({ where: { slug: 'amersfoort' } });
+  const painting = await prisma.category.findUniqueOrThrow({
+    where: { slug: 'binnenschilderwerk' },
+  });
+  const leak = await prisma.category.findUniqueOrThrow({ where: { slug: 'lekkage' } });
+  const vakmanPlan = await prisma.plan.findUniqueOrThrow({ where: { slug: 'vakman' } });
 
   const customer = await prisma.user.upsert({
-    where: { phone: normalizeMoroccanPhone('0600000001') },
+    where: { phone: normalizeDutchPhone('0600000001') },
     create: {
-      phone: normalizeMoroccanPhone('0600000001'),
+      phone: normalizeDutchPhone('0600000001'),
       phoneVerifiedAt: new Date(),
-      firstName: 'Salma',
-      lastName: 'Benali',
-      locale: 'fr',
+      firstName: 'Sanne',
+      lastName: 'de Vries',
+      locale: 'nl',
       role: 'CUSTOMER',
-      cityId: casablanca.id,
+      cityId: utrecht.id,
     },
     update: {},
   });
 
   const proUser = await prisma.user.upsert({
-    where: { phone: normalizeMoroccanPhone('0600000002') },
+    where: { phone: normalizeDutchPhone('0600000002') },
     create: {
-      phone: normalizeMoroccanPhone('0600000002'),
+      phone: normalizeDutchPhone('0600000002'),
       phoneVerifiedAt: new Date(),
-      firstName: 'Youssef',
-      lastName: 'El Amrani',
-      locale: 'fr',
+      firstName: 'Joost',
+      lastName: 'Bakker',
+      locale: 'nl',
       role: 'PRO',
-      cityId: casablanca.id,
+      cityId: utrecht.id,
     },
     update: {},
   });
@@ -157,15 +149,15 @@ async function seedDemoData() {
     where: { userId: proUser.id },
     create: {
       userId: proUser.id,
-      displayName: 'Peinture El Amrani',
-      legalForm: 'SARL',
-      bio: "Entreprise de peinture et décoration basée à Casablanca, 18 ans d'expérience sur des chantiers résidentiels et de bureaux.",
+      displayName: 'Schildersbedrijf Bakker',
+      legalForm: 'BV',
+      bio: 'Schildersbedrijf uit Utrecht, achttien jaar ervaring met binnen- en buitenschilderwerk voor particulieren en VvE’s.',
       yearsExperience: 18,
       teamSize: 6,
-      baseCityId: casablanca.id,
+      baseCityId: utrecht.id,
       serviceRadiusKm: 45,
-      ice: '001234567000012',
-      rc: '482913',
+      kvk: '30123456',
+      vatId: 'NL123456789B01',
       verificationStatus: 'VERIFIED',
       verifiedAt: new Date(),
       ratingAverage: 4.7,
@@ -180,14 +172,14 @@ async function seedDemoData() {
   await prisma.proTrade.createMany({
     data: [
       { proId: pro.id, categoryId: painting.id, isPrimary: true },
-      { proId: pro.id, categoryId: plumbing.id, isPrimary: false },
+      { proId: pro.id, categoryId: leak.id, isPrimary: false },
     ],
     skipDuplicates: true,
   });
   await prisma.proCoverage.createMany({
     data: [
-      { proId: pro.id, cityId: casablanca.id },
-      { proId: pro.id, cityId: rabat.id },
+      { proId: pro.id, cityId: utrecht.id },
+      { proId: pro.id, cityId: amersfoort.id },
     ],
     skipDuplicates: true,
   });
@@ -199,7 +191,7 @@ async function seedDemoData() {
     const subscription = await prisma.subscription.create({
       data: {
         proId: pro.id,
-        planId: proPlan.id,
+        planId: vakmanPlan.id,
         status: 'TRIALING',
         period: 'MONTHLY',
         currentPeriodStart: now,
@@ -215,7 +207,7 @@ async function seedDemoData() {
         delta: TRIAL_CREDITS,
         balanceAfter: TRIAL_CREDITS,
         reason: 'TRIAL_GRANT',
-        note: `Essai gratuit de ${TRIAL_DURATION_DAYS} jours`,
+        note: `Gratis proefperiode van ${TRIAL_DURATION_DAYS} dagen`,
       },
     });
   }
@@ -224,26 +216,28 @@ async function seedDemoData() {
     {
       reference: jobReference(1),
       categoryId: painting.id,
-      cityId: casablanca.id,
-      title: 'Peindre un salon et un couloir de 40 m²',
+      cityId: utrecht.id,
+      title: 'Woonkamer en hal schilderen, samen 40 m²',
       description:
-        "Salon de 30 m² et couloir de 10 m² à repeindre en blanc mat. Les murs sont en bon état, un léger rebouchage sera nécessaire près des fenêtres. Je fournis la peinture si nécessaire. Intervention souhaitée en semaine.",
-      district: 'Maârif',
+        'Woonkamer van 30 m² en hal van 10 m² opnieuw schilderen in gebroken wit. De muren zijn in goede staat, rond de kozijnen moet wat gestuct worden. Verf mag door de schilder geleverd worden. Graag doordeweeks.',
+      district: 'Wittevrouwen',
       urgency: 'WITHIN_WEEK' as const,
-      budgetMinCentimes: dirhamsToCentimes(3000),
-      budgetMaxCentimes: dirhamsToCentimes(6000),
+      propertyType: 'TUSSENWONING' as const,
+      budgetMinCents: eurosToCents(800),
+      budgetMaxCents: eurosToCents(1600),
     },
     {
       reference: jobReference(2),
-      categoryId: plumbing.id,
-      cityId: rabat.id,
-      title: "Fuite d'eau sous l'évier de la cuisine",
+      categoryId: leak.id,
+      cityId: amersfoort.id,
+      title: 'Lekkage onder de gootsteen',
       description:
-        "Une fuite s'est déclarée sous l'évier depuis deux jours, l'eau coule dès que le robinet est ouvert. Le meuble commence à gonfler. Je cherche quelqu'un qui puisse passer rapidement pour diagnostiquer et réparer.",
-      district: 'Agdal',
+        'Sinds twee dagen lekt het onder de gootsteen zodra de kraan openstaat. Het keukenkastje begint te zwellen. Ik zoek iemand die snel langs kan komen om het te bekijken en te verhelpen.',
+      district: 'Soesterkwartier',
       urgency: 'URGENT' as const,
-      budgetMinCentimes: dirhamsToCentimes(300),
-      budgetMaxCentimes: dirhamsToCentimes(1200),
+      propertyType: 'APPARTEMENT' as const,
+      budgetMinCents: eurosToCents(90),
+      budgetMaxCents: eurosToCents(400),
     },
   ];
 
@@ -261,12 +255,12 @@ async function seedDemoData() {
     });
   }
 
-  console.log('  demo:       1 customer, 1 pro, 2 open jobs');
-  console.log('              sign in with 0600000001 (client) or 0600000002 (pro)');
+  console.log('  demo:        1 klant, 1 vakman, 2 open klussen');
+  console.log('               inloggen met 0600000001 (klant) of 0600000002 (vakman)');
 }
 
 async function main() {
-  console.log('Seeding Khidma…');
+  console.log('Buurklus vullen…');
   await seedCities();
   await seedCategories();
   await seedPlans();
@@ -274,7 +268,7 @@ async function main() {
   if (process.env.NODE_ENV !== 'production' && process.env.SKIP_DEMO_SEED !== 'true') {
     await seedDemoData();
   }
-  console.log('Done.');
+  console.log('Klaar.');
 }
 
 main()

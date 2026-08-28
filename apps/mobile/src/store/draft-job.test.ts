@@ -15,40 +15,40 @@ describe('the job posting draft', () => {
 
   it('shapes the answers into the payload the API expects', () => {
     useJobDraft.getState().update({
-      categorySlug: 'peinture-interieure',
-      title: '  Peindre un salon  ',
-      description: '  Salon de 25 m² à repeindre en blanc mat.  ',
-      citySlug: 'casablanca',
-      district: 'Maârif',
-      budgetMinMad: '3000',
-      budgetMaxMad: '6000',
+      categorySlug: 'binnenschilderwerk',
+      title: '  Woonkamer schilderen  ',
+      description: '  Woonkamer van 25 m² schilderen in gebroken wit.  ',
+      citySlug: 'utrecht',
+      district: 'Wittevrouwen',
+      budgetMinEur: '3000',
+      budgetMaxEur: '6000',
     });
 
     const payload = useJobDraft.getState().toPayload();
-    expect(payload.title).toBe('Peindre un salon');
-    expect(payload.description).toBe('Salon de 25 m² à repeindre en blanc mat.');
-    expect(payload.budgetMinMad).toBe(3000);
-    expect(payload.budgetMaxMad).toBe(6000);
-    expect(payload.district).toBe('Maârif');
+    expect(payload.title).toBe('Woonkamer schilderen');
+    expect(payload.description).toBe('Woonkamer van 25 m² schilderen in gebroken wit.');
+    expect(payload.budgetMinEur).toBe(3000);
+    expect(payload.budgetMaxEur).toBe(6000);
+    expect(payload.district).toBe('Wittevrouwen');
   });
 
   it('omits the budget and the optional text fields when left blank', () => {
     useJobDraft.getState().update({
-      categorySlug: 'plomberie',
-      title: 'Fuite sous évier',
-      description: 'Une fuite est apparue sous l’évier de la cuisine.',
-      citySlug: 'rabat',
+      categorySlug: 'loodgieter',
+      title: 'Lekkage onder de gootsteen',
+      description: 'Er lekt water onder de gootsteen in de keuken.',
+      citySlug: 'amersfoort',
     });
 
     const payload = useJobDraft.getState().toPayload();
-    expect(payload.budgetMinMad).toBeUndefined();
-    expect(payload.budgetMaxMad).toBeUndefined();
+    expect(payload.budgetMinEur).toBeUndefined();
+    expect(payload.budgetMaxEur).toBeUndefined();
     expect(payload.district).toBeUndefined();
     expect(payload.addressLine).toBeUndefined();
   });
 
   it('clears everything once the job has been posted', () => {
-    useJobDraft.getState().update({ title: 'Quelque chose', photoUrls: ['file:///a.jpg'] });
+    useJobDraft.getState().update({ title: 'Iets', photoUrls: ['file:///a.jpg'] });
     useJobDraft.getState().reset();
     expect(useJobDraft.getState().title).toBe('');
     expect(useJobDraft.getState().photoUrls).toEqual([]);

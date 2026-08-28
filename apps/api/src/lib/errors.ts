@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, type Locale } from '@khidma/shared';
+import { DEFAULT_LOCALE, type Locale } from '@buurklus/shared';
 
 /**
  * Error codes are stable identifiers; the API returns both the code and a
@@ -34,128 +34,103 @@ export type ErrorCode =
 
 const MESSAGES: Record<ErrorCode, Record<Locale, string>> = {
   validation_failed: {
-    fr: 'Certaines informations sont invalides.',
-    ar: 'بعض المعلومات غير صحيحة.',
+    nl: 'Sommige gegevens kloppen niet.',
     en: 'Some of the information provided is invalid.',
   },
   unauthorized: {
-    fr: 'Veuillez vous connecter pour continuer.',
-    ar: 'يرجى تسجيل الدخول للمتابعة.',
+    nl: 'Log in om verder te gaan.',
     en: 'Please sign in to continue.',
   },
   forbidden: {
-    fr: "Vous n'avez pas accès à cette ressource.",
-    ar: 'ليس لديك صلاحية الوصول إلى هذا المحتوى.',
+    nl: 'Je hebt geen toegang tot dit onderdeel.',
     en: 'You do not have access to this resource.',
   },
   not_found: {
-    fr: 'Introuvable.',
-    ar: 'غير موجود.',
+    nl: 'Niet gevonden.',
     en: 'Not found.',
   },
   rate_limited: {
-    fr: 'Trop de tentatives. Réessayez dans quelques minutes.',
-    ar: 'محاولات كثيرة. أعد المحاولة بعد بضع دقائق.',
+    nl: 'Te veel pogingen. Probeer het over een paar minuten opnieuw.',
     en: 'Too many attempts. Try again in a few minutes.',
   },
   otp_invalid: {
-    fr: 'Code incorrect.',
-    ar: 'الرمز غير صحيح.',
+    nl: 'Onjuiste code.',
     en: 'Incorrect code.',
   },
   otp_expired: {
-    fr: 'Ce code a expiré. Demandez-en un nouveau.',
-    ar: 'انتهت صلاحية الرمز. اطلب رمزًا جديدًا.',
+    nl: 'Deze code is verlopen. Vraag een nieuwe aan.',
     en: 'That code has expired. Request a new one.',
   },
   otp_too_many_attempts: {
-    fr: 'Trop de tentatives. Demandez un nouveau code.',
-    ar: 'محاولات كثيرة. اطلب رمزًا جديدًا.',
+    nl: 'Te veel pogingen. Vraag een nieuwe code aan.',
     en: 'Too many attempts. Request a new code.',
   },
   account_blocked: {
-    fr: 'Ce compte a été suspendu. Contactez le support.',
-    ar: 'تم تعليق هذا الحساب. تواصل مع الدعم.',
+    nl: 'Dit account is geblokkeerd. Neem contact op met de klantenservice.',
     en: 'This account has been suspended. Please contact support.',
   },
   pro_profile_required: {
-    fr: "Complétez votre profil professionnel pour continuer.",
-    ar: 'أكمل ملفك المهني للمتابعة.',
-    en: 'Complete your professional profile to continue.',
+    nl: 'Maak je bedrijfsprofiel af om verder te gaan.',
+    en: 'Complete your business profile to continue.',
   },
   pro_profile_exists: {
-    fr: 'Un profil professionnel existe déjà pour ce compte.',
-    ar: 'يوجد ملف مهني بالفعل لهذا الحساب.',
-    en: 'A professional profile already exists for this account.',
+    nl: 'Er bestaat al een bedrijfsprofiel voor dit account.',
+    en: 'A business profile already exists for this account.',
   },
   subscription_required: {
-    fr: 'Un abonnement actif est nécessaire pour envoyer un devis.',
-    ar: 'يلزم اشتراك نشط لإرسال عرض السعر.',
+    nl: 'Je hebt een actief abonnement nodig om een offerte te sturen.',
     en: 'An active subscription is required to send a quote.',
   },
   no_credits_remaining: {
-    fr: "Vous avez utilisé tous vos devis du mois. Changez de formule pour en obtenir plus.",
-    ar: 'لقد استنفدت عروض هذا الشهر. غيّر باقتك للحصول على المزيد.',
+    nl: 'Je offertes voor deze maand zijn op. Kies een groter pakket voor meer.',
     en: 'You have used all of this month’s quotes. Upgrade your plan for more.',
   },
   plan_limit_categories: {
-    fr: 'Votre formule ne permet pas autant de métiers.',
-    ar: 'باقتك لا تسمح بهذا العدد من المهن.',
+    nl: 'Je pakket staat niet zoveel vakgebieden toe.',
     en: 'Your plan does not allow that many trades.',
   },
   plan_limit_cities: {
-    fr: 'Votre formule ne permet pas autant de villes.',
-    ar: 'باقتك لا تسمح بهذا العدد من المدن.',
-    en: 'Your plan does not allow that many cities.',
+    nl: 'Je pakket staat niet zoveel gemeenten toe.',
+    en: 'Your plan does not allow that many municipalities.',
   },
   job_not_open: {
-    fr: "Cette demande n'accepte plus de devis.",
-    ar: 'هذا الطلب لم يعد يقبل عروض الأسعار.',
+    nl: 'Deze klus neemt geen offertes meer aan.',
     en: 'This job is no longer accepting quotes.',
   },
   job_quote_limit_reached: {
-    fr: 'Cette demande a déjà reçu le nombre maximum de devis.',
-    ar: 'تلقى هذا الطلب الحد الأقصى من العروض.',
+    nl: 'Deze klus heeft het maximale aantal offertes al ontvangen.',
     en: 'This job has already received the maximum number of quotes.',
   },
   job_already_quoted: {
-    fr: 'Vous avez déjà envoyé un devis pour cette demande.',
-    ar: 'لقد أرسلت بالفعل عرض سعر لهذا الطلب.',
+    nl: 'Je hebt al een offerte gestuurd voor deze klus.',
     en: 'You have already sent a quote for this job.',
   },
   lead_not_released: {
-    fr: "Cette demande n'est pas encore ouverte à votre formule.",
-    ar: 'هذا الطلب لم يُفتح بعد لباقتك.',
+    nl: 'Deze klus is nog niet vrijgegeven voor jouw pakket.',
     en: 'This job has not been released to your plan yet.',
   },
   quote_not_pending: {
-    fr: "Ce devis n'est plus en attente.",
-    ar: 'عرض السعر هذا لم يعد في الانتظار.',
+    nl: 'Deze offerte staat niet meer open.',
     en: 'That quote is no longer pending.',
   },
   quote_expired: {
-    fr: 'Ce devis a expiré.',
-    ar: 'انتهت صلاحية عرض السعر.',
+    nl: 'Deze offerte is verlopen.',
     en: 'That quote has expired.',
   },
   review_already_exists: {
-    fr: 'Vous avez déjà laissé un avis pour cette demande.',
-    ar: 'لقد تركت تقييمًا لهذا الطلب من قبل.',
+    nl: 'Je hebt deze klus al beoordeeld.',
     en: 'You have already reviewed this job.',
   },
   review_requires_completed_job: {
-    fr: 'Vous pourrez laisser un avis une fois les travaux terminés.',
-    ar: 'يمكنك ترك تقييم بعد انتهاء الأشغال.',
+    nl: 'Je kunt een beoordeling achterlaten zodra de klus is afgerond.',
     en: 'You can leave a review once the work is complete.',
   },
   conflict: {
-    fr: 'Cette action entre en conflit avec l’état actuel.',
-    ar: 'هذا الإجراء يتعارض مع الحالة الحالية.',
+    nl: 'Deze actie past niet bij de huidige status.',
     en: 'That action conflicts with the current state.',
   },
   internal_error: {
-    fr: 'Une erreur est survenue. Réessayez plus tard.',
-    ar: 'حدث خطأ ما. حاول مرة أخرى لاحقًا.',
+    nl: 'Er ging iets mis. Probeer het later opnieuw.',
     en: 'Something went wrong. Please try again later.',
   },
 };

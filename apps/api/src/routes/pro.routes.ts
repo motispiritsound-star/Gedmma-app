@@ -5,7 +5,7 @@ import {
   paginationSchema,
   searchProsSchema,
   upsertProProfileSchema,
-} from '@khidma/shared';
+} from '@buurklus/shared';
 import { z } from 'zod';
 import { SubscriptionService } from '../services/subscription.service.js';
 import { localizeAll, withLocalizedNames } from '../lib/localize.js';
@@ -82,7 +82,7 @@ const proRoutes: FastifyPluginAsync = async (app) => {
             status: subscription.status,
             period: subscription.period,
             planSlug: subscription.plan.slug,
-            planName: subscription.plan.nameFr,
+            planName: subscription.plan.nameNl,
             creditsRemaining: subscription.creditsRemaining,
             monthlyCredits: subscription.plan.monthlyCredits,
             currentPeriodEnd: subscription.currentPeriodEnd,

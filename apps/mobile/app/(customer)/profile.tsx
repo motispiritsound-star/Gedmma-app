@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
 import { Ionicons } from '@expo/vector-icons';
-import { formatMoroccanPhone } from '@khidma/shared';
+import { formatDutchPhone } from '@buurklus/shared';
 import { Card, Divider, Txt } from '@/components/ui';
 import { SettingsRow } from '@/components/settings-row';
 import { useSession } from '@/store/session';
@@ -42,7 +42,7 @@ export default function Profile() {
           <View style={styles.identityText}>
             <Txt variant="heading">{fullName || t('profile.personalInfo')}</Txt>
             <Txt variant="caption" color={colors.textMuted}>
-              {user ? formatMoroccanPhone(user.phone) : ''}
+              {user ? formatDutchPhone(user.phone) : ''}
             </Txt>
           </View>
         </View>

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { JobUrgency, PropertyType } from '@khidma/shared';
+import type { JobUrgency, PropertyType } from '@buurklus/shared';
 
 /**
  * The job-posting wizard spans several screens, so the answers live here rather
@@ -19,8 +19,8 @@ export interface JobDraft {
   propertyType: PropertyType | null;
   urgency: JobUrgency;
   preferredStartDate: string | null;
-  budgetMinMad: string;
-  budgetMaxMad: string;
+  budgetMinEur: string;
+  budgetMaxEur: string;
 }
 
 const EMPTY: JobDraft = {
@@ -37,8 +37,8 @@ const EMPTY: JobDraft = {
   propertyType: null,
   urgency: 'WITHIN_WEEK',
   preferredStartDate: null,
-  budgetMinMad: '',
-  budgetMaxMad: '',
+  budgetMinEur: '',
+  budgetMaxEur: '',
 };
 
 interface DraftState extends JobDraft {
@@ -56,8 +56,8 @@ export const useJobDraft = create<DraftState>((set, get) => ({
 
   toPayload() {
     const draft = get();
-    const min = Number.parseInt(draft.budgetMinMad, 10);
-    const max = Number.parseInt(draft.budgetMaxMad, 10);
+    const min = Number.parseInt(draft.budgetMinEur, 10);
+    const max = Number.parseInt(draft.budgetMaxEur, 10);
 
     return {
       categorySlug: draft.categorySlug,
@@ -69,8 +69,8 @@ export const useJobDraft = create<DraftState>((set, get) => ({
       propertyType: draft.propertyType ?? undefined,
       urgency: draft.urgency,
       preferredStartDate: draft.preferredStartDate ?? undefined,
-      budgetMinMad: Number.isFinite(min) ? min : undefined,
-      budgetMaxMad: Number.isFinite(max) ? max : undefined,
+      budgetMinEur: Number.isFinite(min) ? min : undefined,
+      budgetMaxEur: Number.isFinite(max) ? max : undefined,
       photoUrls: draft.photoUrls,
     };
   },

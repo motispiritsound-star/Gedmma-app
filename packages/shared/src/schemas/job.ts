@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { JOB_STATUSES, JOB_URGENCIES, PROPERTY_TYPES } from '../enums.js';
-import { moroccanMobileSchema } from './auth.js';
+import { dutchMobileSchema } from './auth.js';
 import { coordinatesSchema, paginationSchema, slugSchema } from './common.js';
 
 /**
@@ -29,14 +29,14 @@ export const createJobSchema = z.object({
   propertyType: z.enum(PROPERTY_TYPES).optional(),
   urgency: z.enum(JOB_URGENCIES).default('WITHIN_WEEK'),
   preferredStartDate: z.coerce.date().optional(),
-  budgetMinMad: z.number().int().min(0).max(5_000_000).optional(),
-  budgetMaxMad: z.number().int().min(0).max(5_000_000).optional(),
+  budgetMinEur: z.number().int().min(0).max(1_000_000).optional(),
+  budgetMaxEur: z.number().int().min(0).max(1_000_000).optional(),
   photoUrls: z.array(z.string().url().max(500)).max(JOB_MAX_PHOTOS).default([]),
   /** Set when the poster wants to be called on a number other than their login. */
-  contactPhone: moroccanMobileSchema.optional(),
+  contactPhone: dutchMobileSchema.optional(),
 }).refine(
-  (job) => job.budgetMinMad == null || job.budgetMaxMad == null || job.budgetMinMad <= job.budgetMaxMad,
-  { message: 'budget_range_inverted', path: ['budgetMaxMad'] },
+  (job) => job.budgetMinEur == null || job.budgetMaxEur == null || job.budgetMinEur <= job.budgetMaxEur,
+  { message: 'budget_range_inverted', path: ['budgetMaxEur'] },
 );
 
 export const updateJobSchema = z.object({
@@ -44,8 +44,8 @@ export const updateJobSchema = z.object({
   description: z.string().trim().min(JOB_DESCRIPTION_MIN).max(JOB_DESCRIPTION_MAX).optional(),
   urgency: z.enum(JOB_URGENCIES).optional(),
   preferredStartDate: z.coerce.date().optional(),
-  budgetMinMad: z.number().int().min(0).max(5_000_000).nullable().optional(),
-  budgetMaxMad: z.number().int().min(0).max(5_000_000).nullable().optional(),
+  budgetMinEur: z.number().int().min(0).max(1_000_000).nullable().optional(),
+  budgetMaxEur: z.number().int().min(0).max(1_000_000).nullable().optional(),
   photoUrls: z.array(z.string().url().max(500)).max(JOB_MAX_PHOTOS).optional(),
 });
 
@@ -71,7 +71,7 @@ export const listLeadsSchema = paginationSchema.extend({
     .pipe(z.array(slugSchema).max(20))
     .optional(),
   urgency: z.enum(JOB_URGENCIES).optional(),
-  minBudgetMad: z.coerce.number().int().min(0).optional(),
+  minBudgetEur: z.coerce.number().int().min(0).optional(),
   /** Hides jobs the pro has already quoted on. Defaults to true. */
   hideQuoted: z.coerce.boolean().default(true),
   sort: z.enum(['RECENT', 'NEAREST', 'BUDGET']).default('RECENT'),

@@ -4,7 +4,7 @@ import { Stack, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
-import { PROPERTY_TYPES, type PropertyType } from '@khidma/shared';
+import { PROPERTY_TYPES, type PropertyType } from '@buurklus/shared';
 import { Button, Field, StepProgress, Txt } from '@/components/ui';
 import { usePublicApi } from '@/hooks/use-api';
 import { useJobDraft } from '@/store/draft-job';
@@ -34,7 +34,7 @@ export default function LocationStep() {
     return cities.filter(
       (city) =>
         city.name.toLocaleLowerCase().includes(query) ||
-        city.regionName.toLocaleLowerCase().includes(query),
+        city.provinceName.toLocaleLowerCase().includes(query),
     );
   }, [cities, cityQuery]);
 
@@ -150,7 +150,7 @@ export default function LocationStep() {
                 <View style={styles.cityText}>
                   <Txt variant="body">{item.name}</Txt>
                   <Txt variant="caption" color={colors.textMuted}>
-                    {item.regionName}
+                    {item.provinceName}
                   </Txt>
                 </View>
                 {draft.citySlug === item.slug ? (

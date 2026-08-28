@@ -4,7 +4,7 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
-import { formatIce } from '@khidma/shared';
+import { formatKvk } from '@buurklus/shared';
 import { Badge, Card, Divider, Loader, Rating, Txt } from '@/components/ui';
 import { usePublicApi } from '@/hooks/use-api';
 import { useSession } from '@/store/session';
@@ -24,9 +24,9 @@ interface PublicPro {
   jobsWon: number;
   medianResponseMinutes: number | null;
   createdAt: string;
-  ice: string | null;
-  baseCity: { nameFr: string; nameAr: string; nameEn: string; slug: string };
-  trades: { isPrimary: boolean; category: { slug: string; nameFr: string; nameAr: string; nameEn: string; icon: string } }[];
+  kvk: string;
+  baseCity: { nameNl: string; nameEn: string; slug: string };
+  trades: { isPrimary: boolean; category: { slug: string; nameNl: string; nameEn: string; icon: string } }[];
 }
 
 interface Review {
@@ -60,11 +60,8 @@ export default function ProProfile() {
   const profile = pro.data.pro;
   const responseTime = formatDuration(profile.medianResponseMinutes, locale);
   const tradeName = (trade: PublicPro['trades'][number]) =>
-    locale === 'ar'
-      ? trade.category.nameAr
-      : locale === 'en'
-        ? trade.category.nameEn
-        : trade.category.nameFr;
+    locale === 'en' ? trade.category.nameEn
+        : trade.category.nameNl;
 
   return (
     <>
@@ -123,13 +120,13 @@ export default function ProProfile() {
             ))}
           </View>
 
-          {/* The ICE is public information in Morocco, and showing it lets a
-              customer check the business against the official register. */}
-          {profile.ice ? (
+          {/* The KvK number is public, and showing it lets a customer look the
+              business up in the register themselves. */}
+          {profile.kvk ? (
             <>
               <Divider />
               <Txt variant="caption" color={colors.textSubtle}>
-                {t('pro.ice')}: {formatIce(profile.ice)}
+                {t('pro.kvk')}: {formatKvk(profile.kvk)}
               </Txt>
             </>
           ) : null}

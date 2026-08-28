@@ -1,33 +1,33 @@
 import type { LocalizedText } from '../locales.js';
-import { applyVat, dirhamsToCentimes, type VatBreakdown } from '../money.js';
+import { applyVat, eurosToCents, type VatBreakdown } from '../money.js';
 import type { BillingPeriod } from '../enums.js';
 
 /**
- * Khidma monetises the professional side only: customers post jobs and receive
- * quotes for free, professionals pay a monthly subscription that includes a
- * quota of lead credits. One credit is spent when a pro sends a quote on a job,
- * and is refunded if the job is cancelled by the customer before any award.
+ * Buurklus monetises the professional side only: households post jobs and
+ * receive quotes for free, professionals pay a monthly subscription that
+ * includes a quota of lead credits. One credit is spent when a pro sends a
+ * quote, and is refunded if the customer cancels before awarding the job.
  *
- * Prices are stored excluding VAT ("HT"), the way Moroccan businesses quote
- * B2B pricing; 20% TVA is added at invoicing time.
+ * Prices are stored excluding VAT, the way Dutch businesses quote to each
+ * other; 21% btw is added at invoicing.
  */
 export interface PlanSeed {
   slug: string;
   name: LocalizedText;
   tagline: LocalizedText;
-  /** Monthly price in dirhams, excluding VAT. */
-  monthlyPriceMad: number;
-  /** Yearly price in dirhams, excluding VAT — two months free. */
-  yearlyPriceMad: number;
+  /** Monthly price in euros, excluding VAT. */
+  monthlyPriceEur: number;
+  /** Yearly price in euros, excluding VAT — two months free. */
+  yearlyPriceEur: number;
   /** Lead credits granted at the start of each billing month. */
   monthlyCredits: number;
-  /** How many trade categories the pro may be listed under. */
+  /** How many trades the pro may be listed under. */
   maxCategories: number;
   /** How many cities the pro may cover. `null` means nationwide. */
   maxCities: number | null;
-  /** Ranked above cheaper plans in the customer-facing pro list. */
+  /** Ranked above cheaper plans in the customer-facing directory. */
   featured: boolean;
-  /** Leads are released to this plan before lower tiers, in minutes of head start. */
+  /** Leads are released to this plan before lower tiers, in minutes. */
   leadHeadStartMinutes: number;
   /** Extra logins for a company's staff, beyond the owner account. */
   teamSeats: number;
@@ -42,15 +42,14 @@ export const GRACE_PERIOD_DAYS = 7;
 
 export const PLANS: readonly PlanSeed[] = [
   {
-    slug: 'artisan',
-    name: { fr: 'Artisan', ar: 'حرفي', en: 'Artisan' },
+    slug: 'zzp',
+    name: { nl: 'ZZP', en: 'Sole trader' },
     tagline: {
-      fr: "Pour l'artisan indépendant qui démarre",
-      ar: 'للحرفي المستقل في بداية الطريق',
-      en: 'For the independent tradesperson starting out',
+      nl: 'Voor de zelfstandige vakman die begint',
+      en: 'For the self-employed tradesperson starting out',
     },
-    monthlyPriceMad: 249,
-    yearlyPriceMad: 2490,
+    monthlyPriceEur: 39,
+    yearlyPriceEur: 390,
     monthlyCredits: 15,
     maxCategories: 2,
     maxCities: 1,
@@ -58,21 +57,20 @@ export const PLANS: readonly PlanSeed[] = [
     leadHeadStartMinutes: 0,
     teamSeats: 0,
     perks: [
-      { fr: '15 devis par mois', ar: '15 عرض سعر شهريًا', en: '15 quotes per month' },
-      { fr: '2 métiers, 1 ville', ar: 'مهنتان، مدينة واحدة', en: '2 trades, 1 city' },
-      { fr: 'Profil vérifié', ar: 'ملف موثق', en: 'Verified profile' },
+      { nl: '15 offertes per maand', en: '15 quotes per month' },
+      { nl: '2 vakgebieden, 1 gemeente', en: '2 trades, 1 municipality' },
+      { nl: 'KvK-gecontroleerd profiel', en: 'Chamber of Commerce verified profile' },
     ],
   },
   {
-    slug: 'pro',
-    name: { fr: 'Pro', ar: 'محترف', en: 'Pro' },
+    slug: 'vakman',
+    name: { nl: 'Vakman', en: 'Professional' },
     tagline: {
-      fr: 'Pour les équipes qui veulent remplir leur agenda',
-      ar: 'للفرق التي تريد ملء جدولها',
-      en: 'For teams that want a full diary',
+      nl: 'Voor bedrijven die hun agenda vol willen houden',
+      en: 'For businesses that want a full diary',
     },
-    monthlyPriceMad: 599,
-    yearlyPriceMad: 5990,
+    monthlyPriceEur: 89,
+    yearlyPriceEur: 890,
     monthlyCredits: 50,
     maxCategories: 5,
     maxCities: 3,
@@ -80,27 +78,22 @@ export const PLANS: readonly PlanSeed[] = [
     leadHeadStartMinutes: 15,
     teamSeats: 2,
     perks: [
-      { fr: '50 devis par mois', ar: '50 عرض سعر شهريًا', en: '50 quotes per month' },
-      { fr: '5 métiers, 3 villes', ar: '5 مهن، 3 مدن', en: '5 trades, 3 cities' },
-      {
-        fr: 'Accès aux demandes 15 min avant',
-        ar: 'الوصول للطلبات قبل 15 دقيقة',
-        en: '15-minute head start on new jobs',
-      },
-      { fr: 'Badge « Pro » sur votre profil', ar: 'شارة «محترف»', en: '“Pro” badge on your profile' },
-      { fr: '2 comptes collaborateurs', ar: 'حسابان للموظفين', en: '2 staff accounts' },
+      { nl: '50 offertes per maand', en: '50 quotes per month' },
+      { nl: '5 vakgebieden, 3 gemeenten', en: '5 trades, 3 municipalities' },
+      { nl: 'Klussen 15 minuten eerder zien', en: '15-minute head start on new jobs' },
+      { nl: 'Vakman-badge op je profiel', en: '“Professional” badge on your profile' },
+      { nl: '2 medewerkersaccounts', en: '2 staff accounts' },
     ],
   },
   {
-    slug: 'entreprise',
-    name: { fr: 'Entreprise', ar: 'شركة', en: 'Business' },
+    slug: 'bedrijf',
+    name: { nl: 'Bedrijf', en: 'Business' },
     tagline: {
-      fr: 'Pour les sociétés multi-villes et multi-métiers',
-      ar: 'للشركات متعددة المدن والمهن',
-      en: 'For multi-city, multi-trade companies',
+      nl: 'Voor bedrijven met meerdere ploegen en werkgebieden',
+      en: 'For companies with several teams and service areas',
     },
-    monthlyPriceMad: 1290,
-    yearlyPriceMad: 12900,
+    monthlyPriceEur: 179,
+    yearlyPriceEur: 1790,
     monthlyCredits: 150,
     maxCategories: 15,
     maxCities: null,
@@ -108,20 +101,12 @@ export const PLANS: readonly PlanSeed[] = [
     leadHeadStartMinutes: 30,
     teamSeats: 10,
     perks: [
-      { fr: '150 devis par mois', ar: '150 عرض سعر شهريًا', en: '150 quotes per month' },
-      { fr: 'Villes illimitées', ar: 'مدن غير محدودة', en: 'Unlimited cities' },
-      {
-        fr: 'Accès aux demandes 30 min avant',
-        ar: 'الوصول للطلبات قبل 30 دقيقة',
-        en: '30-minute head start on new jobs',
-      },
-      { fr: 'Mise en avant dans les résultats', ar: 'الظهور في مقدمة النتائج', en: 'Featured placement' },
-      { fr: '10 comptes collaborateurs', ar: '10 حسابات للموظفين', en: '10 staff accounts' },
-      {
-        fr: 'Facturation et conseiller dédié',
-        ar: 'فوترة ومستشار مخصص',
-        en: 'Invoicing and a dedicated account manager',
-      },
+      { nl: '150 offertes per maand', en: '150 quotes per month' },
+      { nl: 'Heel Nederland', en: 'The whole country' },
+      { nl: 'Klussen 30 minuten eerder zien', en: '30-minute head start on new jobs' },
+      { nl: 'Bovenaan in de zoekresultaten', en: 'Featured placement in search' },
+      { nl: '10 medewerkersaccounts', en: '10 staff accounts' },
+      { nl: 'Facturatie en vaste contactpersoon', en: 'Invoicing and a dedicated contact' },
     ],
   },
 ];
@@ -130,13 +115,13 @@ export const PLAN_BY_SLUG: ReadonlyMap<string, PlanSeed> = new Map(
   PLANS.map((plan) => [plan.slug, plan]),
 );
 
-/** Price of one billing period in centimes, excluding VAT. */
-export function planNetCentimes(plan: PlanSeed, period: BillingPeriod): number {
-  return dirhamsToCentimes(period === 'YEARLY' ? plan.yearlyPriceMad : plan.monthlyPriceMad);
+/** Price of one billing period in cents, excluding VAT. */
+export function planNetCents(plan: PlanSeed, period: BillingPeriod): number {
+  return eurosToCents(period === 'YEARLY' ? plan.yearlyPriceEur : plan.monthlyPriceEur);
 }
 
 export function planPricing(plan: PlanSeed, period: BillingPeriod): VatBreakdown {
-  return applyVat(planNetCentimes(plan, period));
+  return applyVat(planNetCents(plan, period));
 }
 
 /** Credits granted per invoice: a yearly subscription is billed for 12 months. */
@@ -146,9 +131,9 @@ export function planCreditsForPeriod(plan: PlanSeed, period: BillingPeriod): num
 
 /** How much a year of monthly billing costs versus paying yearly, in percent. */
 export function yearlySavingPercent(plan: PlanSeed): number {
-  const monthlyTotal = plan.monthlyPriceMad * 12;
+  const monthlyTotal = plan.monthlyPriceEur * 12;
   if (monthlyTotal === 0) return 0;
-  return Math.round(((monthlyTotal - plan.yearlyPriceMad) / monthlyTotal) * 100);
+  return Math.round(((monthlyTotal - plan.yearlyPriceEur) / monthlyTotal) * 100);
 }
 
 export function addBillingPeriod(from: Date, period: BillingPeriod): Date {
@@ -162,10 +147,8 @@ export function addBillingPeriod(from: Date, period: BillingPeriod): Date {
  * Leads are staged rather than broadcast: the highest tier sees a new job the
  * moment it is published, and every other tier after its head start has been
  * used up. The ceiling is deliberately half an hour — long enough to be worth
- * paying for, short enough that an entry-tier artisan still reaches a job
- * before the customer has picked someone. Expressed relative to the best plan, a pro whose plan grants `H`
- * minutes of head start sees the job `MAX_LEAD_HEAD_START_MINUTES - H` minutes
- * after publication.
+ * paying for, short enough that a zzp'er still reaches a job before the
+ * household has picked someone.
  */
 export const MAX_LEAD_HEAD_START_MINUTES = PLANS.reduce(
   (max, plan) => Math.max(max, plan.leadHeadStartMinutes),

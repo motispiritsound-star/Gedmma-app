@@ -2,7 +2,7 @@ const { getDefaultConfig } = require('expo/metro-config');
 const path = require('node:path');
 
 // The app lives in an npm workspace, so Metro has to watch the repo root to
-// resolve @khidma/shared and the hoisted node_modules.
+// resolve @buurklus/shared and the hoisted node_modules.
 const workspaceRoot = path.resolve(__dirname, '../..');
 const config = getDefaultConfig(__dirname);
 

@@ -38,11 +38,11 @@ export const STYLES = `
   --shadow-card: 0 4px 14px rgba(20, 32, 29, 0.06);
   --shadow-raised: 0 12px 32px rgba(20, 32, 29, 0.12);
 
-  /* Both faces are loaded from Google Fonts in the document head. The stacks
-     below name real fallbacks, so a blocked font request degrades to a system
-     face rather than to whatever the browser picks. */
+  /* Inter is loaded from Google Fonts in the document head. The stack names
+     real fallbacks, so a blocked font request degrades to a system face rather
+     than to whatever the browser picks. */
   --font: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
-  --font-ar: "IBM Plex Sans Arabic", "Noto Naskh Arabic", "Geeza Pro", "Segoe UI", system-ui, sans-serif;
+
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -58,8 +58,6 @@ body {
   background: var(--white);
   -webkit-font-smoothing: antialiased;
 }
-
-html[lang="ar"] body { font-family: var(--font-ar); line-height: 1.9; }
 
 h1, h2, h3 { line-height: 1.2; margin: 0; letter-spacing: -0.015em; font-weight: 700; }
 h1 { font-size: clamp(2.1rem, 5.2vw, 3.5rem); }

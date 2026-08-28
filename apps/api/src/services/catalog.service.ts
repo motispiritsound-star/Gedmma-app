@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@prisma/client';
-import { REGION_NAMES, type Locale, type Region } from '@khidma/shared';
+import { PROVINCE_NAMES, type Locale, type Province } from '@buurklus/shared';
 
 /**
  * Serves the catalog already collapsed to one language, so the app never has to
@@ -8,8 +8,8 @@ import { REGION_NAMES, type Locale, type Region } from '@khidma/shared';
 export class CatalogService {
   constructor(private readonly prisma: PrismaClient) {}
 
-  private static pick(row: { nameFr: string; nameAr: string; nameEn: string }, locale: Locale) {
-    return locale === 'ar' ? row.nameAr : locale === 'en' ? row.nameEn : row.nameFr;
+  private static pick(row: { nameNl: string; nameEn: string }, locale: Locale) {
+    return locale === 'en' ? row.nameEn : row.nameNl;
   }
 
   async categories(locale: Locale) {
@@ -26,8 +26,8 @@ export class CatalogService {
         slug: parent.slug,
         name: CatalogService.pick(parent, locale),
         icon: parent.icon,
-        typicalBudgetMinCentimes: parent.typicalBudgetMinCentimes,
-        typicalBudgetMaxCentimes: parent.typicalBudgetMaxCentimes,
+        typicalBudgetMinCents: parent.typicalBudgetMinCents,
+        typicalBudgetMaxCents: parent.typicalBudgetMaxCents,
         children: rows
           .filter((row) => row.parentId === parent.id)
           .map((child) => ({
@@ -35,8 +35,8 @@ export class CatalogService {
             slug: child.slug,
             name: CatalogService.pick(child, locale),
             icon: child.icon,
-            typicalBudgetMinCentimes: child.typicalBudgetMinCentimes ?? parent.typicalBudgetMinCentimes,
-            typicalBudgetMaxCentimes: child.typicalBudgetMaxCentimes ?? parent.typicalBudgetMaxCentimes,
+            typicalBudgetMinCents: child.typicalBudgetMinCents ?? parent.typicalBudgetMinCents,
+            typicalBudgetMaxCents: child.typicalBudgetMaxCents ?? parent.typicalBudgetMaxCents,
           })),
         parentName: parent.parentId ? CatalogService.pick(byId.get(parent.parentId)!, locale) : null,
       }));
@@ -45,15 +45,15 @@ export class CatalogService {
   async cities(locale: Locale) {
     const rows = await this.prisma.city.findMany({
       where: { isActive: true },
-      orderBy: [{ population: 'desc' }, { nameFr: 'asc' }],
+      orderBy: [{ population: 'desc' }, { nameNl: 'asc' }],
     });
 
     return rows.map((row) => ({
       id: row.id,
       slug: row.slug,
       name: CatalogService.pick(row, locale),
-      region: row.region,
-      regionName: REGION_NAMES[row.region as Region][locale],
+      province: row.province,
+      provinceName: PROVINCE_NAMES[row.province as Province][locale],
       lat: row.lat,
       lng: row.lng,
     }));
@@ -71,9 +71,9 @@ export class CatalogService {
         id: row.id,
         slug: row.slug,
         name: CatalogService.pick(row, locale),
-        tagline: locale === 'ar' ? row.taglineAr : locale === 'en' ? row.taglineEn : row.taglineFr,
-        monthlyPriceCentimes: row.monthlyPriceCentimes,
-        yearlyPriceCentimes: row.yearlyPriceCentimes,
+        tagline: locale === 'en' ? row.taglineEn : row.taglineNl,
+        monthlyPriceCents: row.monthlyPriceCents,
+        yearlyPriceCents: row.yearlyPriceCents,
         monthlyCredits: row.monthlyCredits,
         maxCategories: row.maxCategories,
         maxCities: row.maxCities,

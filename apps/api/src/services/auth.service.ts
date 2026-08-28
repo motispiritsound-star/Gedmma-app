@@ -1,5 +1,5 @@
-import type { Locale, UserRole } from '@khidma/shared';
-import { DEFAULT_LOCALE } from '@khidma/shared';
+import type { Locale, UserRole } from '@buurklus/shared';
+import { DEFAULT_LOCALE } from '@buurklus/shared';
 import type { Prisma, PrismaClient } from '@prisma/client';
 import { AppError } from '../lib/errors.js';
 import {

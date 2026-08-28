@@ -1,14 +1,13 @@
-import type { Locale } from '@khidma/shared';
+import type { Locale } from '@buurklus/shared';
 
 interface LocalizedColumns {
-  nameFr: string;
-  nameAr: string;
+  nameNl: string;
   nameEn: string;
 }
 
 /** Reads the column matching the caller's language off a catalog row. */
 export function pickName(row: LocalizedColumns, locale: Locale): string {
-  return locale === 'ar' ? row.nameAr : locale === 'en' ? row.nameEn : row.nameFr;
+  return locale === 'en' ? row.nameEn : row.nameNl;
 }
 
 /**

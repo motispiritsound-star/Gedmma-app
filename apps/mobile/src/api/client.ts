@@ -1,5 +1,5 @@
 import Constants from 'expo-constants';
-import type { Locale } from '@khidma/shared';
+import type { Locale } from '@buurklus/shared';
 
 const API_URL: string =
   (Constants.expoConfig?.extra as { apiUrl?: string } | undefined)?.apiUrl ??
@@ -58,7 +58,7 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
   if (accessToken) headers.authorization = `Bearer ${accessToken}`;
   // Asking for a language here is what makes API error messages appear in the
   // user's own language rather than being translated twice.
-  if (locale) headers['x-khidma-locale'] = locale;
+  if (locale) headers['x-buurklus-locale'] = locale;
 
   let response: Response;
   try {

@@ -8,7 +8,7 @@ import type {
   QuoteStatus,
   SubscriptionStatus,
   UserRole,
-} from '@khidma/shared';
+} from '@buurklus/shared';
 
 export interface LocalizedRef {
   id: string;
@@ -18,22 +18,22 @@ export interface LocalizedRef {
 
 export interface CategoryNode extends LocalizedRef {
   icon: string;
-  typicalBudgetMinCentimes: number | null;
-  typicalBudgetMaxCentimes: number | null;
+  typicalBudgetMinCents: number | null;
+  typicalBudgetMaxCents: number | null;
   children: Omit<CategoryNode, 'children'>[];
 }
 
 export interface CityRef extends LocalizedRef {
   region: string;
-  regionName: string;
+  provinceName: string;
   lat: number;
   lng: number;
 }
 
 export interface PlanRef extends LocalizedRef {
   tagline: string;
-  monthlyPriceCentimes: number;
-  yearlyPriceCentimes: number;
+  monthlyPriceCents: number;
+  yearlyPriceCents: number;
   monthlyCredits: number;
   maxCategories: number;
   maxCities: number | null;
@@ -84,8 +84,8 @@ export interface JobSummary {
   status: JobStatus;
   propertyType: PropertyType | null;
   preferredStartDate: string | null;
-  budgetMinCentimes: number | null;
-  budgetMaxCentimes: number | null;
+  budgetMinCents: number | null;
+  budgetMaxCents: number | null;
   photoUrls: string[];
   quoteCount: number;
   viewCount: number;
@@ -112,14 +112,14 @@ export interface QuoteProSummary {
   verificationStatus: ProVerificationStatus;
   jobsWon: number;
   medianResponseMinutes: number | null;
-  baseCity: { slug: string; nameFr: string; nameAr: string; nameEn: string };
+  baseCity: { slug: string; nameNl: string; nameEn: string };
 }
 
 export interface Quote {
   id: string;
   jobId: string;
   proId: string;
-  amountCentimes: number;
+  amountCents: number;
   isEstimate: boolean;
   message: string;
   estimatedDurationDays: number | null;
@@ -134,8 +134,8 @@ export interface Quote {
 export interface CustomerJobDetail extends Omit<JobSummary, 'category' | 'city'> {
   addressLine: string | null;
   awardedQuoteId: string | null;
-  category: { id: string; slug: string; nameFr: string; nameAr: string; nameEn: string; icon: string };
-  city: { id: string; slug: string; nameFr: string; nameAr: string; nameEn: string };
+  category: { id: string; slug: string; nameNl: string; nameEn: string; icon: string };
+  city: { id: string; slug: string; nameNl: string; nameEn: string };
   quotes: Quote[];
 }
 
@@ -172,7 +172,7 @@ export interface ConversationSummary {
   proUnread: number;
   job: { id: string; reference: string; title: string; status: JobStatus; customerId: string; customer: { firstName: string | null; avatarUrl: string | null } };
   pro: { id: string; displayName: string; logoUrl: string | null; userId: string };
-  quote: { id: string; amountCentimes: number; status: QuoteStatus } | null;
+  quote: { id: string; amountCents: number; status: QuoteStatus } | null;
   messages: ChatMessage[];
 }
 

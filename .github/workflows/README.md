@@ -1,7 +1,7 @@
 # CI
 
 `ci.yml` runs on every push and pull request: it starts PostgreSQL 16, generates
-the Prisma client, builds `@khidma/shared`, typechecks all three packages and
+the Prisma client, builds `@buurklus/shared`, typechecks all three packages and
 runs the full test suite (77 tests, including the API integration tests against
 the live database).
 

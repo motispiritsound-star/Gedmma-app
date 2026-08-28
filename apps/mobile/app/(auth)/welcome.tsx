@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
-import { SUPPORTED_LOCALES, type Locale } from '@khidma/shared';
+import { SUPPORTED_LOCALES, type Locale } from '@buurklus/shared';
 import { Button, Card, Txt } from '@/components/ui';
 import { useSession } from '@/store/session';
 import { colors, radius, spacing } from '@/theme';

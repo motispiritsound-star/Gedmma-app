@@ -1,7 +1,7 @@
 import fastifyJwt from '@fastify/jwt';
 import fp from 'fastify-plugin';
 import type { FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
-import { DEFAULT_LOCALE, resolveLocale, type Locale, type UserRole } from '@khidma/shared';
+import { DEFAULT_LOCALE, resolveLocale, type Locale, type UserRole } from '@buurklus/shared';
 import { AppError } from '../lib/errors.js';
 import { env } from '../env.js';
 
@@ -43,11 +43,11 @@ const authPlugin: FastifyPluginAsync = async (app) => {
   });
 
   /**
-   * Language resolution order: an explicit `X-Khidma-Locale` header set by the
+   * Language resolution order: an explicit `X-Buurklus-Locale` header set by the
    * app, then `Accept-Language`, then French.
    */
   app.addHook('onRequest', async (request) => {
-    const header = request.headers['x-khidma-locale'];
+    const header = request.headers['x-buurklus-locale'];
     const explicit = Array.isArray(header) ? header[0] : header;
     request.locale = explicit
       ? resolveLocale(explicit)
@@ -75,4 +75,4 @@ const authPlugin: FastifyPluginAsync = async (app) => {
   );
 };
 
-export default fp(authPlugin, { name: 'khidma-auth' });
+export default fp(authPlugin, { name: 'buurklus-auth' });

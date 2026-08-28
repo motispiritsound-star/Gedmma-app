@@ -52,8 +52,8 @@ export default function ReviewStep() {
   }
 
   const budget =
-    draft.budgetMinMad || draft.budgetMaxMad
-      ? [draft.budgetMinMad, draft.budgetMaxMad]
+    draft.budgetMinEur || draft.budgetMaxEur
+      ? [draft.budgetMinEur, draft.budgetMaxEur]
           .filter(Boolean)
           .map((value) => formatMoney(Number(value) * 100, locale))
           .join(' – ')

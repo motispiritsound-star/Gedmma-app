@@ -65,4 +65,4 @@ const servicesPlugin: FastifyPluginAsync = async (app) => {
   });
 };
 
-export default fp(servicesPlugin, { name: 'khidma-services' });
+export default fp(servicesPlugin, { name: 'buurklus-services' });

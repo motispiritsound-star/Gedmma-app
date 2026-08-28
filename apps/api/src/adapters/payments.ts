@@ -1,28 +1,29 @@
-import { createHash } from 'node:crypto';
-import type { BillingPeriod, PaymentMethod } from '@khidma/shared';
+import { createHmac, timingSafeEqual } from 'node:crypto';
+import type { BillingPeriod, PaymentMethod } from '@buurklus/shared';
 import type { Env } from '../env.js';
 
 export interface CheckoutRequest {
   reference: string;
-  grossCentimes: number;
+  grossCents: number;
   method: PaymentMethod;
   period: BillingPeriod;
   planSlug: string;
   returnUrl?: string;
   customerPhone: string;
+  description: string;
 }
 
 export interface CheckoutSession {
   /** Where the app should send the pro to pay, or null when none is needed. */
   redirectUrl: string | null;
   providerRef: string;
-  /** True when the payment settled without a redirect (mock, cash, transfer). */
+  /** True when the payment settled without a redirect (mock, transfer). */
   settledImmediately: boolean;
 }
 
 export interface PaymentAdapter {
   createCheckout(request: CheckoutRequest): Promise<CheckoutSession>;
-  /** Verifies a gateway callback really came from the gateway. */
+  /** Verifies a provider callback really came from the provider. */
   verifyCallbackSignature(payload: Record<string, string>, signature: string): boolean;
 }
 
@@ -45,59 +46,96 @@ class MockPaymentAdapter implements PaymentAdapter {
 }
 
 /**
- * CMI — the Moroccan interbank card gateway. Checkout is a form POST to the
- * bank's 3-D Secure page, and the callback is signed with a shared store key
- * hashed over the alphabetically ordered parameters.
+ * Mollie is the default provider here: it covers iDEAL, which is how the
+ * Netherlands pays online, and SEPA direct debit, which is how it pays for
+ * subscriptions.
  *
- * Offline methods (bank transfer, cash) never reach the gateway: they create a
- * pending payment that the Khidma team marks as paid once the funds land.
+ * Two things about Mollie shape this adapter. Its webhook carries only a
+ * payment id and no signed body — the server is expected to call the API back
+ * and read the authoritative status — so the "signature" checked here is a
+ * shared secret placed in the webhook URL, not a body signature. And a
+ * subscription is a first payment that establishes a mandate, after which
+ * later charges are taken without the customer present.
  */
-class CmiPaymentAdapter implements PaymentAdapter {
+class MolliePaymentAdapter implements PaymentAdapter {
   constructor(private readonly env: Env) {}
 
   async createCheckout(request: CheckoutRequest): Promise<CheckoutSession> {
-    if (request.method !== 'CMI_CARD') {
+    if (request.method === 'BANK_TRANSFER') {
+      // Invoiced on account: no gateway, and the team marks it paid on arrival.
       return {
         redirectUrl: null,
-        providerRef: `offline_${request.reference}`,
+        providerRef: `invoice_${request.reference}`,
         settledImmediately: false,
       };
     }
 
-    const params = new URLSearchParams({
-      clientid: this.env.CMI_MERCHANT_ID ?? '',
-      oid: request.reference,
-      // CMI expects a decimal amount in dirhams, not centimes.
-      amount: (request.grossCentimes / 100).toFixed(2),
-      currency: '504', // ISO 4217 numeric code for the Moroccan dirham.
-      storetype: '3D_PAY_HOSTING',
-      trantype: 'PreAuth',
-      rnd: request.reference,
-      lang: 'fr',
-      ...(request.returnUrl ? { okUrl: request.returnUrl, failUrl: request.returnUrl } : {}),
+    const response = await fetch('https://api.mollie.com/v2/payments', {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${this.env.MOLLIE_API_KEY ?? ''}`,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        amount: {
+          currency: 'EUR',
+          // Mollie takes a decimal string, not cents.
+          value: (request.grossCents / 100).toFixed(2),
+        },
+        description: request.description,
+        redirectUrl: request.returnUrl ?? `${this.env.PUBLIC_APP_URL}/abonnement`,
+        webhookUrl: `${this.env.PUBLIC_API_URL}/v1/subscriptions/callback?token=${this.env.PAYMENT_WEBHOOK_SECRET ?? ''}`,
+        method: request.method === 'IDEAL' ? 'ideal' : undefined,
+        // Establishes the mandate that later monthly charges are taken against.
+        sequenceType: 'first',
+        metadata: { reference: request.reference, plan: request.planSlug, period: request.period },
+      }),
     });
 
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+      throw new Error(`Mollie rejected the payment (${response.status}): ${detail.slice(0, 200)}`);
+    }
+
+    const payment = (await response.json()) as {
+      id: string;
+      _links?: { checkout?: { href?: string } };
+    };
+
     return {
-      redirectUrl: `${this.env.CMI_GATEWAY_URL}?${params.toString()}`,
-      providerRef: request.reference,
+      redirectUrl: payment._links?.checkout?.href ?? null,
+      providerRef: payment.id,
       settledImmediately: false,
     };
   }
 
-  verifyCallbackSignature(payload: Record<string, string>, signature: string): boolean {
-    const storeKey = this.env.CMI_STORE_KEY;
-    if (!storeKey) return false;
-    const plaintext = Object.keys(payload)
-      .filter((key) => key.toLowerCase() !== 'hash' && key.toLowerCase() !== 'encoding')
-      .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-      .map((key) => (payload[key] ?? '').replace(/\\/g, '\\\\').replace(/\|/g, '\\|'))
-      .concat(storeKey)
-      .join('|');
-    const expected = createHash('sha512').update(plaintext, 'utf8').digest('base64');
-    return expected === signature;
+  /**
+   * Mollie does not sign its webhook body, so the callback is authenticated by
+   * a secret carried in the webhook URL and compared in constant time.
+   */
+  verifyCallbackSignature(_payload: Record<string, string>, signature: string): boolean {
+    const secret = this.env.PAYMENT_WEBHOOK_SECRET;
+    if (!secret) return false;
+
+    const provided = Buffer.from(signature);
+    const expected = Buffer.from(secret);
+    if (provided.length !== expected.length) return false;
+    return timingSafeEqual(provided, expected);
   }
 }
 
+/**
+ * For providers that do sign their callbacks, this is the HMAC comparison to
+ * reach for. Kept here so switching provider does not mean rediscovering it.
+ */
+export function verifyHmacSignature(body: string, signature: string, secret: string): boolean {
+  const expected = createHmac('sha256', secret).update(body, 'utf8').digest('hex');
+  const provided = Buffer.from(signature, 'hex');
+  const computed = Buffer.from(expected, 'hex');
+  if (provided.length !== computed.length) return false;
+  return timingSafeEqual(provided, computed);
+}
+
 export function createPaymentAdapter(env: Env): PaymentAdapter {
-  return env.PAYMENT_PROVIDER === 'cmi' ? new CmiPaymentAdapter(env) : new MockPaymentAdapter();
+  return env.PAYMENT_PROVIDER === 'mollie' ? new MolliePaymentAdapter(env) : new MockPaymentAdapter();
 }

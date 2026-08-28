@@ -1,7 +1,7 @@
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SUPPORTED_LOCALES } from '@khidma/shared';
+import { SUPPORTED_LOCALES } from '@buurklus/shared';
 import {
   renderHome,
   renderPro,

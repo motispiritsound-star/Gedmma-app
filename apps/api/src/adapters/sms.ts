@@ -1,5 +1,5 @@
 import type { FastifyBaseLogger } from 'fastify';
-import { type Locale } from '@khidma/shared';
+import { type Locale } from '@buurklus/shared';
 import type { Env } from '../env.js';
 
 export interface SmsAdapter {
@@ -19,9 +19,10 @@ class LogSmsAdapter implements SmsAdapter {
 }
 
 /**
- * Generic HTTP adapter. Moroccan aggregators are mostly plain REST endpoints
- * taking a sender id, a destination and a body, so one adapter covers them
- * with the endpoint supplied through configuration.
+ * Generic HTTP adapter. The Dutch SMS aggregators (MessageBird, CM.com,
+ * Spryng) all expose a plain REST endpoint taking a sender id, a destination
+ * and a body, so one adapter covers them with the endpoint supplied through
+ * configuration.
  */
 class HttpSmsAdapter implements SmsAdapter {
   constructor(
@@ -56,9 +57,8 @@ export function createSmsAdapter(env: Env, logger: FastifyBaseLogger): SmsAdapte
 }
 
 const OTP_TEMPLATES: Record<Locale, (code: string) => string> = {
-  fr: (code) => `Khidma : votre code de connexion est ${code}. Il expire dans 10 minutes.`,
-  ar: (code) => `خدمة: رمز الدخول الخاص بك هو ${code}. ينتهي بعد 10 دقائق.`,
-  en: (code) => `Khidma: your sign-in code is ${code}. It expires in 10 minutes.`,
+  nl: (code) => `Buurklus: je inlogcode is ${code}. De code verloopt over 10 minuten.`,
+  en: (code) => `Buurklus: your sign-in code is ${code}. It expires in 10 minutes.`,
 };
 
 export function otpMessage(code: string, locale: Locale): string {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { isMoroccanMobile } from '@khidma/shared';
+import { isDutchMobile } from '@buurklus/shared';
 import { Button, Field, Txt } from '@/components/ui';
 import { usePublicApi } from '@/hooks/use-api';
 import { ApiError, NetworkError } from '@/api/client';
@@ -19,7 +19,7 @@ export default function PhoneScreen() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const valid = isMoroccanMobile(phone);
+  const valid = isDutchMobile(phone);
 
   async function submit() {
     if (!valid) {

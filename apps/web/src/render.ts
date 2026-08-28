@@ -6,18 +6,17 @@ import {
   TRIAL_CREDITS,
   TRIAL_DURATION_DAYS,
   applyVat,
-  centimesToDirhams,
-  dirhamsToCentimes,
-  isRtl,
+  centsToEuros,
+  eurosToCents,
   localize,
   type Locale,
   type PlanSeed,
-} from '@khidma/shared';
+} from '@buurklus/shared';
 import { COPY, type SiteCopy } from './content.js';
 import { icon, solidIcon } from './icons.js';
 import { STYLES } from './styles.js';
 
-export const SITE_URL = 'https://khidma.ma';
+export const SITE_URL = 'https://buurklus.nl';
 
 /**
  * Inter for Latin, IBM Plex Sans Arabic for Arabic. Both are loaded with
@@ -40,14 +39,14 @@ function fill(template: string, values: Record<string, string | number>): string
   return template.replace(/\{\{(\w+)\}\}/g, (_, key: string) => String(values[key] ?? ''));
 }
 
-const NUMBER_TAGS: Record<Locale, string> = { fr: 'fr-MA', ar: 'ar-MA', en: 'en-MA' };
+const NUMBER_TAGS: Record<Locale, string> = { nl: 'nl-NL', en: 'en-NL' };
 
-function money(centimes: number, locale: Locale): string {
+function money(cents: number, locale: Locale): string {
   return new Intl.NumberFormat(NUMBER_TAGS[locale], {
     style: 'currency',
-    currency: 'MAD',
+    currency: 'EUR',
     maximumFractionDigits: 0,
-  }).format(centimesToDirhams(centimes));
+  }).format(centsToEuros(cents));
 }
 
 function count(value: number, locale: Locale): string {
@@ -68,16 +67,15 @@ function pathFor(locale: Locale, page: 'home' | 'pro'): string {
 }
 
 function head({ locale, page, title, description }: Omit<PageOptions, 'body'>): string {
-  const dir = isRtl(locale) ? 'rtl' : 'ltr';
   const canonical = `${SITE_URL}${pathFor(locale, page)}`;
-  // Every language of this page is declared, plus x-default pointing at French.
+  // Every language of this page is declared, plus x-default pointing at Dutch.
   const alternates = SUPPORTED_LOCALES.map(
     (other) =>
       `<link rel="alternate" hreflang="${other}" href="${SITE_URL}${pathFor(other, page)}">`,
   ).join('\n    ');
 
   return `<!doctype html>
-<html lang="${locale}" dir="${dir}">
+<html lang="${locale}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -85,9 +83,9 @@ function head({ locale, page, title, description }: Omit<PageOptions, 'body'>): 
     <meta name="description" content="${esc(description)}">
     <link rel="canonical" href="${canonical}">
     ${alternates}
-    <link rel="alternate" hreflang="x-default" href="${SITE_URL}/fr/">
+    <link rel="alternate" hreflang="x-default" href="${SITE_URL}/nl/">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Khidma">
+    <meta property="og:site_name" content="Buurklus">
     <meta property="og:title" content="${esc(title)}">
     <meta property="og:description" content="${esc(description)}">
     <meta property="og:url" content="${canonical}">
@@ -103,13 +101,11 @@ function head({ locale, page, title, description }: Omit<PageOptions, 'body'>): 
 
 function brand(locale: Locale): string {
   const mark = `<span class="brand__mark">${icon('construct-outline', 20)}</span>`;
-  return `<a class="brand" href="${pathFor(locale, 'home')}">${mark}<span>${
-    locale === 'ar' ? 'خدمة' : 'Khidma'
-  }</span></a>`;
+  return `<a class="brand" href="${pathFor(locale, 'home')}">${mark}<span>Buurklus</span></a>`;
 }
 
 function langSwitcher(locale: Locale, page: 'home' | 'pro'): string {
-  const labels: Record<Locale, string> = { fr: 'FR', ar: 'ع', en: 'EN' };
+  const labels: Record<Locale, string> = { nl: 'NL', en: 'EN' };
   const links = SUPPORTED_LOCALES.map(
     (other) =>
       `<a href="${pathFor(other, page)}" hreflang="${other}" aria-current="${other === locale}">${labels[other]}</a>`,
@@ -187,7 +183,7 @@ function footer(locale: Locale, page: 'home' | 'pro'): string {
         </div>
       </div>
       <div class="footer__bottom">
-        <span>© ${year} Khidma. ${esc(copy.footer.rights)}</span>
+        <span>© ${year} Buurklus. ${esc(copy.footer.rights)}</span>
         ${langSwitcher(locale, page)}
       </div>
     </div>
@@ -215,29 +211,29 @@ function page(options: PageOptions): string {
  */
 function heroMock(locale: Locale, copy: SiteCopy, variant: 'home' | 'pro' = 'home'): string {
   const quotes = [
-    { name: locale === 'ar' ? 'صباغة العمراني' : 'Peinture El Amrani', price: 4500, stars: '★★★★★', meta: locale === 'ar' ? '18 سنة خبرة' : '18 ans d’expérience' },
-    { name: locale === 'ar' ? 'ديكور أطلس' : 'Décoration Atlas', price: 5200, stars: '★★★★☆', meta: locale === 'ar' ? '34 تقييمًا' : '34 avis' },
-    { name: locale === 'ar' ? 'ورشة الزليج' : 'Atelier Zellige', price: 3900, stars: '★★★★★', meta: locale === 'ar' ? 'يرد خلال 40 دقيقة' : 'Répond en 40 min' },
+    { name: 'Schildersbedrijf Bakker', price: 1250, stars: '★★★★★', meta: locale === 'en' ? '18 years’ experience' : '18 jaar ervaring' },
+    { name: 'Van Dijk Afbouw', price: 1480, stars: '★★★★☆', meta: locale === 'en' ? '34 reviews' : '34 beoordelingen' },
+    { name: 'Klusbedrijf Yilmaz', price: 990, stars: '★★★★★', meta: locale === 'en' ? 'Replies in 40 min' : 'Reageert binnen 40 min' },
   ];
 
   const leads = [
     {
-      name: locale === 'ar' ? 'صباغة صالون 25 م²' : locale === 'en' ? 'Paint a 25 m² living room' : 'Peindre un salon de 25 m²',
-      price: 6000,
+      name: locale === 'en' ? 'Paint a 25 m² living room' : 'Woonkamer van 25 m² schilderen',
+      price: 1600,
       stars: '',
-      meta: locale === 'ar' ? 'الدار البيضاء · المعاريف' : 'Casablanca · Maârif',
+      meta: 'Utrecht · Wittevrouwen',
     },
     {
-      name: locale === 'ar' ? 'تسرب تحت المغسلة' : locale === 'en' ? 'Leak under the sink' : "Fuite sous l'évier",
+      name: locale === 'en' ? 'Leak under the sink' : 'Lekkage onder de gootsteen',
+      price: 400,
+      stars: '',
+      meta: 'Amersfoort · Soesterkwartier',
+    },
+    {
+      name: locale === 'en' ? 'Replace the consumer unit' : 'Groepenkast vervangen',
       price: 1200,
       stars: '',
-      meta: locale === 'ar' ? 'الرباط · أكدال' : 'Rabat · Agdal',
-    },
-    {
-      name: locale === 'ar' ? 'تركيب مكيف' : locale === 'en' ? 'Air conditioner installation' : 'Installation de climatiseur',
-      price: 4000,
-      stars: '',
-      meta: locale === 'ar' ? 'مراكش · جليز' : 'Marrakech · Gueliz',
+      meta: 'Amsterdam · De Pijp',
     },
   ];
 
@@ -248,7 +244,7 @@ function heroMock(locale: Locale, copy: SiteCopy, variant: 'home' | 'pro' = 'hom
       (row) => `<div class="mock__card">
         <div class="mock__row">
           <span class="mock__name">${esc(row.name)}</span>
-          <span class="mock__price">${esc(money(dirhamsToCentimes(row.price), locale))}</span>
+          <span class="mock__price">${esc(money(eurosToCents(row.price), locale))}</span>
         </div>
         <div class="mock__row">
           ${row.stars ? `<span class="mock__stars">${row.stars}</span>` : ''}
@@ -275,9 +271,9 @@ function homeBody(locale: Locale): string {
 
   const trades = ROOT_CATEGORIES.slice(0, 12)
     .map((category) => {
-      const budget = category.typicalBudgetMad
+      const budget = category.typicalBudgetEur
         ? `<span class="trade__budget">${esc(copy.trades.budgetFrom)} ${esc(
-            money(dirhamsToCentimes(category.typicalBudgetMad.min), locale),
+            money(eurosToCents(category.typicalBudgetEur.min), locale),
           )}</span>`
         : '';
       return `<a class="trade" href="#cta">
@@ -446,8 +442,8 @@ const RECOMMENDED_PLAN = PLANS.find((plan) => plan.featured)?.slug ?? PLANS[1]?.
 
 function planCard(plan: PlanSeed, locale: Locale, copy: SiteCopy): string {
   const isRecommended = plan.slug === RECOMMENDED_PLAN;
-  const net = dirhamsToCentimes(plan.monthlyPriceMad);
-  const gross = applyVat(net).grossCentimes;
+  const net = eurosToCents(plan.monthlyPriceEur);
+  const gross = applyVat(net).grossCents;
   const p = copy.pro.pricing;
 
   const features = [
@@ -600,23 +596,23 @@ export function renderStyles(): string {
 export function renderRootRedirect(): string {
   const map = JSON.stringify(Object.fromEntries(SUPPORTED_LOCALES.map((l) => [l, `/${l}/`])));
   return `<!doctype html>
-<html lang="fr">
+<html lang="nl">
   <head>
     <meta charset="utf-8">
-    <title>Khidma</title>
+    <title>Buurklus</title>
     <meta name="robots" content="noindex">
-    <link rel="canonical" href="${SITE_URL}/fr/">
-    <meta http-equiv="refresh" content="0; url=/fr/">
+    <link rel="canonical" href="${SITE_URL}/nl/">
+    <meta http-equiv="refresh" content="0; url=/nl/">
     <script>
-      // Prefer the browser's language when Khidma speaks it; French otherwise.
+      // Prefer the browser's language when Buurklus speaks it; Dutch otherwise.
       var paths = ${map};
       var picked = (navigator.languages || [navigator.language || 'fr'])
         .map(function (tag) { return String(tag).slice(0, 2).toLowerCase(); })
         .find(function (code) { return paths[code]; });
-      location.replace(paths[picked] || '/fr/');
+      location.replace(paths[picked] || '/nl/');
     </script>
   </head>
-  <body><a href="/fr/">Khidma</a></body>
+  <body><a href="/nl/">Buurklus</a></body>
 </html>
 `;
 }

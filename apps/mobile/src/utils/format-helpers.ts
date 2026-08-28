@@ -1,4 +1,4 @@
-import { formatDistanceKm, type Locale } from '@khidma/shared';
+import { formatDistanceKm, type Locale } from '@buurklus/shared';
 
 export { formatDate, formatDuration, formatMoney, formatRelative, pickName } from './format';
 

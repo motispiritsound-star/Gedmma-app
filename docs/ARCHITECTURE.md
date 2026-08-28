@@ -9,10 +9,10 @@ packages/shared ──> apps/api
                 └─> apps/mobile
 ```
 
-`@khidma/shared` holds the rules that the API and the app must agree on: what
-counts as a valid Moroccan mobile number, how a price splits into HT/TVA/TTC,
-the trade and city catalogs, the subscription plans, and the zod schemas for
-every request body. When the app validates a form it runs the same schema the
+`@buurklus/shared` holds the rules that the API and the app must agree on: what
+counts as a valid Dutch mobile number, how a price splits into net, VAT and
+gross, the trade and municipality catalogs, the subscription plans, and the zod
+schemas for every request body. When the app validates a form it runs the same schema the
 API will run, so the two cannot drift apart.
 
 ## Backend
@@ -36,9 +36,9 @@ called from an HTTP route today and from a scheduled renewal job later.
 
 ### Money
 
-Every amount is an integer number of centimes. Never a float — a rounding error
-in a bill destroys trust faster than a bug in a list view. Prices are stored
-excluding tax and `applyVat` produces the three lines an invoice needs.
+Every amount is an integer number of cents. Never a float — a rounding error in
+a bill destroys trust faster than a bug in a list view. Prices are stored
+excluding tax and `applyVat` produces the three lines a Dutch invoice needs.
 
 ### Lead credits are a ledger, not a counter
 
@@ -67,8 +67,8 @@ cannot end up with seven quotes because two professionals pressed send at once.
 ### Staged lead release
 
 Higher plans see new jobs first. A job published at `T` becomes visible to a
-plan with head start `H` at `T + (30 − H)` minutes, so Entreprise sees it
-immediately, Pro after 15 minutes and Artisan after 30. The ceiling is
+plan with head start `H` at `T + (30 − H)` minutes, so Bedrijf sees it
+immediately, Vakman after 15 minutes and ZZP after 30. The ceiling is
 deliberately half an hour: long enough that the head start is worth paying for,
 short enough that the entry tier is not locked out of a market it anchors.
 
@@ -91,13 +91,13 @@ an app-side filter is a suggestion.
 ```
 
 The code is stable and the message is already in the caller's language, chosen
-from `X-Khidma-Locale` or `Accept-Language`. An app that meets a code it does
+from `X-Buurklus-Locale` or `Accept-Language`. An app that meets a code it does
 not recognise still shows the user something useful, and a new error does not
 require an app release to be legible.
 
 ### Authentication
 
-Phone plus a six-digit SMS code. Codes are stored as SHA-256 hashes with an
+Dutch mobile number plus a six-digit SMS code. Codes are stored as SHA-256 hashes with an
 expiry and an attempt counter, and consumed with a conditional update so the
 same code cannot be redeemed twice. Sign-in returns a short-lived JWT and an
 opaque refresh token; only the refresh token's hash is stored, and presenting
@@ -113,23 +113,14 @@ costs money, and the number being pumped belongs to a real person.
 **Zustand** for the two pieces of client state that outlive a screen (the
 session and the posting draft), **i18next** for translation.
 
-### Right-to-left
+### Two languages, one bundle each
 
-Arabic is a layout, not a font. `I18nManager.forceRTL` flips the frame; the
-parts React Native does not flip are handled explicitly:
-
-- `textStart()` / `textEnd()` instead of `'left'` / `'right'`
-- `forwardIcon()` / `backIcon()`, so the chevron points the way the user reads
-- the stack animation direction
-- phone numbers, prices and identifiers pinned LTR, because a number does not
-  flip even in an Arabic sentence
-
-Switching into or out of Arabic needs a reload for native views to pick it up,
-so the language screen says so rather than leaving a half-flipped interface.
-
-Every translation key exists in all three languages with identical
-interpolation placeholders, checked by a test — a missing key would otherwise
-strand one screen in French.
+Dutch and English ship as separate translation bundles with identical keys,
+checked by a test — a missing key would otherwise strand one screen in Dutch.
+Neither language is right-to-left, so the app carries no direction-switching
+machinery. The website's stylesheet still uses CSS logical properties
+(`margin-inline-start` rather than `margin-left`), which costs nothing and means
+a right-to-left language could be added later without redoing the layout.
 
 ### Tokens
 
@@ -141,19 +132,23 @@ iOS and the Keystore on Android. `useApi` retries once through a refresh on a
 
 77 tests.
 
-- **28 unit tests** over the domain rules in `packages/shared`: phone
-  normalisation, VAT arithmetic, catalog integrity, the validation schemas.
-- **33 integration tests** over the API, against a real PostgreSQL database.
+- **43 unit tests** over the domain rules in `packages/shared`: phone
+  normalisation, VAT arithmetic, KvK and IBAN validation, catalog integrity,
+  the validation schemas.
+- **36 integration tests** over the API, against a real PostgreSQL database.
   They drive the HTTP surface with `app.inject` and assert on the database
   afterwards. They cover the whole flow — post, quote, award, complete, review
   — and the rules that cost money: credits spent and refunded, the quote cap,
   staged release, address hiding, plan limits, and callback idempotency.
 - **16 unit tests** over the app's plain-TypeScript parts: translation parity,
   the posting draft, the formatters.
+- **16 tests** over the rendered website: one `h1` per page, `hreflang` for
+  every language, no unresolved placeholders, and prices that match what
+  `@buurklus/shared` defines.
 
 Mocks are avoided where the database is the thing being tested. That a business
-cannot register two accounts under one ICE is a unique index; asserting it
-against a mock would assert nothing.
+cannot register two accounts under one KvK number is a unique index; asserting
+it against a mock would assert nothing.
 
 ## Deliberate gaps
 
@@ -166,6 +161,11 @@ against a mock would assert nothing.
   already exist.
 - **Admin tooling.** Verifying a professional's documents is a status column
   today with no interface behind it.
-- **CMI payments.** The adapter implements checkout and signature verification
-  against the documented protocol but has not been run against the real
-  gateway; `PAYMENT_PROVIDER=mock` is the default until it has.
+- **Mollie payments.** The adapter implements checkout and callback
+  authentication against Mollie's documented API but has never run against the
+  live gateway; `PAYMENT_PROVIDER=mock` is the default until it has. Note that
+  Mollie does not sign its webhook body — it sends a payment id and expects the
+  server to fetch the authoritative status — so the adapter authenticates the
+  callback with a secret carried in the webhook URL, and a production
+  deployment should also re-read the payment from the API before granting
+  credits.

@@ -1,113 +1,106 @@
 import type { LocalizedText } from '../locales.js';
 
-/** The twelve administrative regions of Morocco. */
-export const REGIONS = [
-  'TANGER_TETOUAN_AL_HOCEIMA',
-  'ORIENTAL',
-  'FES_MEKNES',
-  'RABAT_SALE_KENITRA',
-  'BENI_MELLAL_KHENIFRA',
-  'CASABLANCA_SETTAT',
-  'MARRAKECH_SAFI',
-  'DRAA_TAFILALET',
-  'SOUSS_MASSA',
-  'GUELMIM_OUED_NOUN',
-  'LAAYOUNE_SAKIA_EL_HAMRA',
-  'DAKHLA_OUED_ED_DAHAB',
+/** The twelve provinces of the Netherlands. */
+export const PROVINCES = [
+  'DRENTHE',
+  'FLEVOLAND',
+  'FRIESLAND',
+  'GELDERLAND',
+  'GRONINGEN',
+  'LIMBURG',
+  'NOORD_BRABANT',
+  'NOORD_HOLLAND',
+  'OVERIJSSEL',
+  'UTRECHT',
+  'ZEELAND',
+  'ZUID_HOLLAND',
 ] as const;
 
-export type Region = (typeof REGIONS)[number];
+export type Province = (typeof PROVINCES)[number];
 
-export const REGION_NAMES: Record<Region, LocalizedText> = {
-  TANGER_TETOUAN_AL_HOCEIMA: {
-    fr: 'Tanger-Tétouan-Al Hoceïma',
-    ar: 'طنجة تطوان الحسيمة',
-    en: 'Tangier-Tetouan-Al Hoceima',
-  },
-  ORIENTAL: { fr: "L'Oriental", ar: 'الشرق', en: 'Oriental' },
-  FES_MEKNES: { fr: 'Fès-Meknès', ar: 'فاس مكناس', en: 'Fes-Meknes' },
-  RABAT_SALE_KENITRA: {
-    fr: 'Rabat-Salé-Kénitra',
-    ar: 'الرباط سلا القنيطرة',
-    en: 'Rabat-Sale-Kenitra',
-  },
-  BENI_MELLAL_KHENIFRA: {
-    fr: 'Béni Mellal-Khénifra',
-    ar: 'بني ملال خنيفرة',
-    en: 'Beni Mellal-Khenifra',
-  },
-  CASABLANCA_SETTAT: {
-    fr: 'Casablanca-Settat',
-    ar: 'الدار البيضاء سطات',
-    en: 'Casablanca-Settat',
-  },
-  MARRAKECH_SAFI: { fr: 'Marrakech-Safi', ar: 'مراكش آسفي', en: 'Marrakech-Safi' },
-  DRAA_TAFILALET: { fr: 'Drâa-Tafilalet', ar: 'درعة تافيلالت', en: 'Draa-Tafilalet' },
-  SOUSS_MASSA: { fr: 'Souss-Massa', ar: 'سوس ماسة', en: 'Souss-Massa' },
-  GUELMIM_OUED_NOUN: { fr: 'Guelmim-Oued Noun', ar: 'كلميم واد نون', en: 'Guelmim-Oued Noun' },
-  LAAYOUNE_SAKIA_EL_HAMRA: {
-    fr: 'Laâyoune-Sakia El Hamra',
-    ar: 'العيون الساقية الحمراء',
-    en: 'Laayoune-Sakia El Hamra',
-  },
-  DAKHLA_OUED_ED_DAHAB: {
-    fr: 'Dakhla-Oued Ed-Dahab',
-    ar: 'الداخلة وادي الذهب',
-    en: 'Dakhla-Oued Ed-Dahab',
-  },
+export const PROVINCE_NAMES: Record<Province, LocalizedText> = {
+  DRENTHE: { nl: 'Drenthe', en: 'Drenthe' },
+  FLEVOLAND: { nl: 'Flevoland', en: 'Flevoland' },
+  FRIESLAND: { nl: 'Friesland', en: 'Friesland' },
+  GELDERLAND: { nl: 'Gelderland', en: 'Gelderland' },
+  GRONINGEN: { nl: 'Groningen', en: 'Groningen' },
+  LIMBURG: { nl: 'Limburg', en: 'Limburg' },
+  NOORD_BRABANT: { nl: 'Noord-Brabant', en: 'North Brabant' },
+  NOORD_HOLLAND: { nl: 'Noord-Holland', en: 'North Holland' },
+  OVERIJSSEL: { nl: 'Overijssel', en: 'Overijssel' },
+  UTRECHT: { nl: 'Utrecht', en: 'Utrecht' },
+  ZEELAND: { nl: 'Zeeland', en: 'Zeeland' },
+  ZUID_HOLLAND: { nl: 'Zuid-Holland', en: 'South Holland' },
 };
 
 export interface CitySeed {
   slug: string;
   name: LocalizedText;
-  region: Region;
+  province: Province;
   lat: number;
   lng: number;
   /** Rough population, used only to order pickers so big cities surface first. */
   population: number;
 }
 
+/**
+ * The places Buurklus covers: every municipality above roughly 60,000 people,
+ * plus the provincial capitals, so no province is left without a city in the
+ * picker.
+ */
 export const CITIES: readonly CitySeed[] = [
-  { slug: 'casablanca', name: { fr: 'Casablanca', ar: 'الدار البيضاء', en: 'Casablanca' }, region: 'CASABLANCA_SETTAT', lat: 33.5731, lng: -7.5898, population: 3359818 },
-  { slug: 'fes', name: { fr: 'Fès', ar: 'فاس', en: 'Fes' }, region: 'FES_MEKNES', lat: 34.0331, lng: -5.0003, population: 1112072 },
-  { slug: 'tanger', name: { fr: 'Tanger', ar: 'طنجة', en: 'Tangier' }, region: 'TANGER_TETOUAN_AL_HOCEIMA', lat: 35.7595, lng: -5.834, population: 1065601 },
-  { slug: 'marrakech', name: { fr: 'Marrakech', ar: 'مراكش', en: 'Marrakech' }, region: 'MARRAKECH_SAFI', lat: 31.6295, lng: -7.9811, population: 928850 },
-  { slug: 'sale', name: { fr: 'Salé', ar: 'سلا', en: 'Sale' }, region: 'RABAT_SALE_KENITRA', lat: 34.0531, lng: -6.7985, population: 890403 },
-  { slug: 'meknes', name: { fr: 'Meknès', ar: 'مكناس', en: 'Meknes' }, region: 'FES_MEKNES', lat: 33.8935, lng: -5.5473, population: 632079 },
-  { slug: 'rabat', name: { fr: 'Rabat', ar: 'الرباط', en: 'Rabat' }, region: 'RABAT_SALE_KENITRA', lat: 34.0209, lng: -6.8416, population: 577827 },
-  { slug: 'oujda', name: { fr: 'Oujda', ar: 'وجدة', en: 'Oujda' }, region: 'ORIENTAL', lat: 34.6867, lng: -1.9114, population: 494252 },
-  { slug: 'kenitra', name: { fr: 'Kénitra', ar: 'القنيطرة', en: 'Kenitra' }, region: 'RABAT_SALE_KENITRA', lat: 34.261, lng: -6.5802, population: 431282 },
-  { slug: 'agadir', name: { fr: 'Agadir', ar: 'أكادير', en: 'Agadir' }, region: 'SOUSS_MASSA', lat: 30.4278, lng: -9.5981, population: 421844 },
-  { slug: 'tetouan', name: { fr: 'Tétouan', ar: 'تطوان', en: 'Tetouan' }, region: 'TANGER_TETOUAN_AL_HOCEIMA', lat: 35.5785, lng: -5.3684, population: 380787 },
-  { slug: 'temara', name: { fr: 'Témara', ar: 'تمارة', en: 'Temara' }, region: 'RABAT_SALE_KENITRA', lat: 33.9287, lng: -6.9067, population: 313510 },
-  { slug: 'safi', name: { fr: 'Safi', ar: 'آسفي', en: 'Safi' }, region: 'MARRAKECH_SAFI', lat: 32.2994, lng: -9.2372, population: 308508 },
-  { slug: 'mohammedia', name: { fr: 'Mohammédia', ar: 'المحمدية', en: 'Mohammedia' }, region: 'CASABLANCA_SETTAT', lat: 33.6861, lng: -7.3829, population: 208612 },
-  { slug: 'khouribga', name: { fr: 'Khouribga', ar: 'خريبكة', en: 'Khouribga' }, region: 'BENI_MELLAL_KHENIFRA', lat: 32.8811, lng: -6.9063, population: 196196 },
-  { slug: 'el-jadida', name: { fr: 'El Jadida', ar: 'الجديدة', en: 'El Jadida' }, region: 'CASABLANCA_SETTAT', lat: 33.2549, lng: -8.5079, population: 194934 },
-  { slug: 'beni-mellal', name: { fr: 'Béni Mellal', ar: 'بني ملال', en: 'Beni Mellal' }, region: 'BENI_MELLAL_KHENIFRA', lat: 32.3373, lng: -6.3498, population: 192676 },
-  { slug: 'nador', name: { fr: 'Nador', ar: 'الناظور', en: 'Nador' }, region: 'ORIENTAL', lat: 35.1681, lng: -2.9335, population: 161726 },
-  { slug: 'taza', name: { fr: 'Taza', ar: 'تازة', en: 'Taza' }, region: 'FES_MEKNES', lat: 34.21, lng: -4.01, population: 148456 },
-  { slug: 'settat', name: { fr: 'Settat', ar: 'سطات', en: 'Settat' }, region: 'CASABLANCA_SETTAT', lat: 33.0018, lng: -7.6166, population: 142250 },
-  { slug: 'berrechid', name: { fr: 'Berrechid', ar: 'برشيد', en: 'Berrechid' }, region: 'CASABLANCA_SETTAT', lat: 33.2655, lng: -7.5877, population: 136634 },
-  { slug: 'khemisset', name: { fr: 'Khémisset', ar: 'الخميسات', en: 'Khemisset' }, region: 'RABAT_SALE_KENITRA', lat: 33.8242, lng: -6.0658, population: 131542 },
-  { slug: 'larache', name: { fr: 'Larache', ar: 'العرائش', en: 'Larache' }, region: 'TANGER_TETOUAN_AL_HOCEIMA', lat: 35.1932, lng: -6.1557, population: 125008 },
-  { slug: 'guelmim', name: { fr: 'Guelmim', ar: 'كلميم', en: 'Guelmim' }, region: 'GUELMIM_OUED_NOUN', lat: 28.987, lng: -10.0574, population: 118318 },
-  { slug: 'berkane', name: { fr: 'Berkane', ar: 'بركان', en: 'Berkane' }, region: 'ORIENTAL', lat: 34.9218, lng: -2.3199, population: 109237 },
-  { slug: 'taourirt', name: { fr: 'Taourirt', ar: 'تاوريرت', en: 'Taourirt' }, region: 'ORIENTAL', lat: 34.4075, lng: -2.8975, population: 103398 },
-  { slug: 'laayoune', name: { fr: 'Laâyoune', ar: 'العيون', en: 'Laayoune' }, region: 'LAAYOUNE_SAKIA_EL_HAMRA', lat: 27.1536, lng: -13.2033, population: 217732 },
-  { slug: 'dakhla', name: { fr: 'Dakhla', ar: 'الداخلة', en: 'Dakhla' }, region: 'DAKHLA_OUED_ED_DAHAB', lat: 23.6848, lng: -15.958, population: 106277 },
-  { slug: 'errachidia', name: { fr: 'Errachidia', ar: 'الرشيدية', en: 'Errachidia' }, region: 'DRAA_TAFILALET', lat: 31.9314, lng: -4.4245, population: 92374 },
-  { slug: 'ouarzazate', name: { fr: 'Ouarzazate', ar: 'ورزازات', en: 'Ouarzazate' }, region: 'DRAA_TAFILALET', lat: 30.9335, lng: -6.937, population: 71067 },
-  { slug: 'essaouira', name: { fr: 'Essaouira', ar: 'الصويرة', en: 'Essaouira' }, region: 'MARRAKECH_SAFI', lat: 31.5085, lng: -9.7595, population: 77966 },
-  { slug: 'al-hoceima', name: { fr: 'Al Hoceïma', ar: 'الحسيمة', en: 'Al Hoceima' }, region: 'TANGER_TETOUAN_AL_HOCEIMA', lat: 35.2517, lng: -3.9372, population: 56716 },
-  { slug: 'chefchaouen', name: { fr: 'Chefchaouen', ar: 'شفشاون', en: 'Chefchaouen' }, region: 'TANGER_TETOUAN_AL_HOCEIMA', lat: 35.1688, lng: -5.2636, population: 42786 },
-  { slug: 'ifrane', name: { fr: 'Ifrane', ar: 'إفران', en: 'Ifrane' }, region: 'FES_MEKNES', lat: 33.5228, lng: -5.1106, population: 14659 },
+  { slug: 'amsterdam', name: { nl: 'Amsterdam', en: 'Amsterdam' }, province: 'NOORD_HOLLAND', lat: 52.3676, lng: 4.9041, population: 921402 },
+  { slug: 'rotterdam', name: { nl: 'Rotterdam', en: 'Rotterdam' }, province: 'ZUID_HOLLAND', lat: 51.9244, lng: 4.4777, population: 664311 },
+  { slug: 'den-haag', name: { nl: 'Den Haag', en: 'The Hague' }, province: 'ZUID_HOLLAND', lat: 52.0705, lng: 4.3007, population: 566221 },
+  { slug: 'utrecht', name: { nl: 'Utrecht', en: 'Utrecht' }, province: 'UTRECHT', lat: 52.0907, lng: 5.1214, population: 367984 },
+  { slug: 'eindhoven', name: { nl: 'Eindhoven', en: 'Eindhoven' }, province: 'NOORD_BRABANT', lat: 51.4416, lng: 5.4697, population: 246443 },
+  { slug: 'groningen', name: { nl: 'Groningen', en: 'Groningen' }, province: 'GRONINGEN', lat: 53.2194, lng: 6.5665, population: 240697 },
+  { slug: 'tilburg', name: { nl: 'Tilburg', en: 'Tilburg' }, province: 'NOORD_BRABANT', lat: 51.5555, lng: 5.0913, population: 226094 },
+  { slug: 'almere', name: { nl: 'Almere', en: 'Almere' }, province: 'FLEVOLAND', lat: 52.3508, lng: 5.2647, population: 224667 },
+  { slug: 'breda', name: { nl: 'Breda', en: 'Breda' }, province: 'NOORD_BRABANT', lat: 51.5719, lng: 4.7683, population: 187642 },
+  { slug: 'nijmegen', name: { nl: 'Nijmegen', en: 'Nijmegen' }, province: 'GELDERLAND', lat: 51.8126, lng: 5.8372, population: 182773 },
+  { slug: 'apeldoorn', name: { nl: 'Apeldoorn', en: 'Apeldoorn' }, province: 'GELDERLAND', lat: 52.2112, lng: 5.9699, population: 165525 },
+  { slug: 'haarlem', name: { nl: 'Haarlem', en: 'Haarlem' }, province: 'NOORD_HOLLAND', lat: 52.3874, lng: 4.6462, population: 165396 },
+  { slug: 'arnhem', name: { nl: 'Arnhem', en: 'Arnhem' }, province: 'GELDERLAND', lat: 51.9851, lng: 5.8987, population: 165359 },
+  { slug: 'enschede', name: { nl: 'Enschede', en: 'Enschede' }, province: 'OVERIJSSEL', lat: 52.2215, lng: 6.8937, population: 160979 },
+  { slug: 'amersfoort', name: { nl: 'Amersfoort', en: 'Amersfoort' }, province: 'UTRECHT', lat: 52.1561, lng: 5.3878, population: 160902 },
+  { slug: 'zaanstad', name: { nl: 'Zaanstad', en: 'Zaanstad' }, province: 'NOORD_HOLLAND', lat: 52.4389, lng: 4.8267, population: 158580 },
+  { slug: 'den-bosch', name: { nl: "'s-Hertogenbosch", en: 'Den Bosch' }, province: 'NOORD_BRABANT', lat: 51.6978, lng: 5.3037, population: 158090 },
+  { slug: 'zwolle', name: { nl: 'Zwolle', en: 'Zwolle' }, province: 'OVERIJSSEL', lat: 52.5168, lng: 6.0830, population: 132228 },
+  { slug: 'zoetermeer', name: { nl: 'Zoetermeer', en: 'Zoetermeer' }, province: 'ZUID_HOLLAND', lat: 52.0575, lng: 4.4931, population: 126070 },
+  { slug: 'leiden', name: { nl: 'Leiden', en: 'Leiden' }, province: 'ZUID_HOLLAND', lat: 52.1601, lng: 4.4970, population: 127046 },
+  { slug: 'leeuwarden', name: { nl: 'Leeuwarden', en: 'Leeuwarden' }, province: 'FRIESLAND', lat: 53.2012, lng: 5.7999, population: 125983 },
+  { slug: 'maastricht', name: { nl: 'Maastricht', en: 'Maastricht' }, province: 'LIMBURG', lat: 50.8514, lng: 5.6910, population: 121565 },
+  { slug: 'dordrecht', name: { nl: 'Dordrecht', en: 'Dordrecht' }, province: 'ZUID_HOLLAND', lat: 51.8133, lng: 4.6901, population: 121344 },
+  { slug: 'ede', name: { nl: 'Ede', en: 'Ede' }, province: 'GELDERLAND', lat: 52.0333, lng: 5.6667, population: 120000 },
+  { slug: 'alphen-aan-den-rijn', name: { nl: 'Alphen aan den Rijn', en: 'Alphen aan den Rijn' }, province: 'ZUID_HOLLAND', lat: 52.1290, lng: 4.6550, population: 113000 },
+  { slug: 'alkmaar', name: { nl: 'Alkmaar', en: 'Alkmaar' }, province: 'NOORD_HOLLAND', lat: 52.6324, lng: 4.7534, population: 111000 },
+  { slug: 'emmen', name: { nl: 'Emmen', en: 'Emmen' }, province: 'DRENTHE', lat: 52.7792, lng: 6.9069, population: 107000 },
+  { slug: 'delft', name: { nl: 'Delft', en: 'Delft' }, province: 'ZUID_HOLLAND', lat: 52.0116, lng: 4.3571, population: 104000 },
+  { slug: 'venlo', name: { nl: 'Venlo', en: 'Venlo' }, province: 'LIMBURG', lat: 51.3704, lng: 6.1724, population: 102000 },
+  { slug: 'deventer', name: { nl: 'Deventer', en: 'Deventer' }, province: 'OVERIJSSEL', lat: 52.2551, lng: 6.1639, population: 101000 },
+  { slug: 'helmond', name: { nl: 'Helmond', en: 'Helmond' }, province: 'NOORD_BRABANT', lat: 51.4793, lng: 5.6570, population: 95000 },
+  { slug: 'hilversum', name: { nl: 'Hilversum', en: 'Hilversum' }, province: 'NOORD_HOLLAND', lat: 52.2292, lng: 5.1669, population: 92000 },
+  { slug: 'heerlen', name: { nl: 'Heerlen', en: 'Heerlen' }, province: 'LIMBURG', lat: 50.8882, lng: 5.9795, population: 87000 },
+  { slug: 'amstelveen', name: { nl: 'Amstelveen', en: 'Amstelveen' }, province: 'NOORD_HOLLAND', lat: 52.3114, lng: 4.8701, population: 92000 },
+  { slug: 'oss', name: { nl: 'Oss', en: 'Oss' }, province: 'NOORD_BRABANT', lat: 51.7650, lng: 5.5197, population: 93000 },
+  { slug: 'purmerend', name: { nl: 'Purmerend', en: 'Purmerend' }, province: 'NOORD_HOLLAND', lat: 52.5050, lng: 4.9592, population: 82000 },
+  { slug: 'schiedam', name: { nl: 'Schiedam', en: 'Schiedam' }, province: 'ZUID_HOLLAND', lat: 51.9192, lng: 4.3887, population: 79000 },
+  { slug: 'roosendaal', name: { nl: 'Roosendaal', en: 'Roosendaal' }, province: 'NOORD_BRABANT', lat: 51.5308, lng: 4.4653, population: 77000 },
+  { slug: 'gouda', name: { nl: 'Gouda', en: 'Gouda' }, province: 'ZUID_HOLLAND', lat: 52.0115, lng: 4.7104, population: 74000 },
+  { slug: 'almelo', name: { nl: 'Almelo', en: 'Almelo' }, province: 'OVERIJSSEL', lat: 52.3564, lng: 6.6626, population: 73000 },
+  { slug: 'vlaardingen', name: { nl: 'Vlaardingen', en: 'Vlaardingen' }, province: 'ZUID_HOLLAND', lat: 51.9123, lng: 4.3419, population: 73000 },
+  { slug: 'assen', name: { nl: 'Assen', en: 'Assen' }, province: 'DRENTHE', lat: 52.9925, lng: 6.5649, population: 69000 },
+  { slug: 'lelystad', name: { nl: 'Lelystad', en: 'Lelystad' }, province: 'FLEVOLAND', lat: 52.5185, lng: 5.4714, population: 81000 },
+  { slug: 'middelburg', name: { nl: 'Middelburg', en: 'Middelburg' }, province: 'ZEELAND', lat: 51.4988, lng: 3.6136, population: 49000 },
+  { slug: 'vlissingen', name: { nl: 'Vlissingen', en: 'Flushing' }, province: 'ZEELAND', lat: 51.4426, lng: 3.5736, population: 44000 },
+  { slug: 'sneek', name: { nl: 'Sneek', en: 'Sneek' }, province: 'FRIESLAND', lat: 53.0326, lng: 5.6581, population: 34000 },
 ];
 
 export const CITY_BY_SLUG: ReadonlyMap<string, CitySeed> = new Map(
   CITIES.map((city) => [city.slug, city]),
 );
 
-export function citiesInRegion(region: Region): CitySeed[] {
-  return CITIES.filter((city) => city.region === region);
+export function citiesInProvince(province: Province): CitySeed[] {
+  return CITIES.filter((city) => city.province === province);
 }

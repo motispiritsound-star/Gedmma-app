@@ -3,7 +3,7 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
-import { JOB_URGENCIES, type JobUrgency } from '@khidma/shared';
+import { JOB_URGENCIES, type JobUrgency } from '@buurklus/shared';
 import { Button, StepProgress, Txt } from '@/components/ui';
 import { useJobDraft } from '@/store/draft-job';
 import { colors, radius, spacing } from '@/theme';

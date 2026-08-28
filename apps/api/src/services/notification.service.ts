@@ -1,5 +1,5 @@
 import type { NotificationType, PrismaClient } from '@prisma/client';
-import { DEFAULT_LOCALE, type Locale } from '@khidma/shared';
+import { DEFAULT_LOCALE, type Locale } from '@buurklus/shared';
 import type { FastifyBaseLogger } from 'fastify';
 
 export interface NotificationParams {
@@ -21,59 +21,48 @@ type Template = (params: NotificationParams) => { title: string; body: string };
  */
 const COPY: Record<NotificationType, Record<Locale, Template>> = {
   JOB_NEW_QUOTE: {
-    fr: (p) => ({ title: 'Nouveau devis reçu', body: `Vous avez reçu un devis pour « ${p.jobTitle} ».` }),
-    ar: (p) => ({ title: 'عرض سعر جديد', body: `توصلت بعرض سعر لطلب «${p.jobTitle}».` }),
+    nl: (p) => ({ title: 'Nieuwe offerte ontvangen', body: `Je hebt een offerte gekregen voor “${p.jobTitle}”.` }),
     en: (p) => ({ title: 'New quote received', body: `You received a quote for “${p.jobTitle}”.` }),
   },
   JOB_AWARDED: {
-    fr: (p) => ({ title: 'Devis accepté', body: `Votre devis pour « ${p.jobTitle} » a été accepté. Les coordonnées du client sont maintenant visibles.` }),
-    ar: (p) => ({ title: 'تم قبول عرضك', body: `تم قبول عرضك لطلب «${p.jobTitle}». يمكنك الآن الاطلاع على معلومات الاتصال بالعميل.` }),
+    nl: (p) => ({ title: 'Offerte geaccepteerd', body: `Je offerte voor “${p.jobTitle}” is geaccepteerd. De contactgegevens van de klant zijn nu zichtbaar.` }),
     en: (p) => ({ title: 'Quote accepted', body: `Your quote for “${p.jobTitle}” was accepted. The customer’s contact details are now visible.` }),
   },
   JOB_CANCELLED: {
-    fr: (p) => ({ title: 'Demande annulée', body: `Le client a annulé « ${p.jobTitle} ». Votre crédit a été remboursé.` }),
-    ar: (p) => ({ title: 'تم إلغاء الطلب', body: `ألغى العميل «${p.jobTitle}». تم إرجاع رصيدك.` }),
-    en: (p) => ({ title: 'Job cancelled', body: `The customer cancelled “${p.jobTitle}”. Your credit has been refunded.` }),
+    nl: (p) => ({ title: 'Klus ingetrokken', body: `De klant heeft “${p.jobTitle}” ingetrokken. Je offerte is teruggestort.` }),
+    en: (p) => ({ title: 'Job cancelled', body: `The customer cancelled “${p.jobTitle}”. Your quote has been refunded.` }),
   },
   QUOTE_REJECTED: {
-    fr: (p) => ({ title: 'Devis non retenu', body: `Votre devis pour « ${p.jobTitle} » n'a pas été retenu.` }),
-    ar: (p) => ({ title: 'لم يتم اختيار عرضك', body: `لم يتم اختيار عرضك لطلب «${p.jobTitle}».` }),
+    nl: (p) => ({ title: 'Offerte niet gekozen', body: `Je offerte voor “${p.jobTitle}” is niet gekozen.` }),
     en: (p) => ({ title: 'Quote not selected', body: `Your quote for “${p.jobTitle}” was not selected.` }),
   },
   NEW_LEAD: {
-    fr: (p) => ({ title: 'Nouvelle demande près de chez vous', body: `${p.jobTitle} — répondez vite pour maximiser vos chances.` }),
-    ar: (p) => ({ title: 'طلب جديد بالقرب منك', body: `${p.jobTitle} — سارع بالرد لزيادة فرصك.` }),
+    nl: (p) => ({ title: 'Nieuwe klus bij je in de buurt', body: `${p.jobTitle} — reageer snel, dat scheelt.` }),
     en: (p) => ({ title: 'New job near you', body: `${p.jobTitle} — reply quickly to improve your chances.` }),
   },
   NEW_MESSAGE: {
-    fr: (p) => ({ title: 'Nouveau message', body: `${p.customerName ?? p.proName ?? 'Votre contact'} vous a écrit.` }),
-    ar: (p) => ({ title: 'رسالة جديدة', body: `${p.customerName ?? p.proName ?? 'مراسلك'} أرسل لك رسالة.` }),
+    nl: (p) => ({ title: 'Nieuw bericht', body: `${p.customerName ?? p.proName ?? 'Je contactpersoon'} heeft je een bericht gestuurd.` }),
     en: (p) => ({ title: 'New message', body: `${p.customerName ?? p.proName ?? 'Your contact'} sent you a message.` }),
   },
   REVIEW_RECEIVED: {
-    fr: (p) => ({ title: 'Nouvel avis', body: `${p.customerName ?? 'Un client'} a laissé un avis sur « ${p.jobTitle} ».` }),
-    ar: (p) => ({ title: 'تقييم جديد', body: `${p.customerName ?? 'أحد العملاء'} ترك تقييمًا حول «${p.jobTitle}».` }),
+    nl: (p) => ({ title: 'Nieuwe beoordeling', body: `${p.customerName ?? 'Een klant'} heeft “${p.jobTitle}” beoordeeld.` }),
     en: (p) => ({ title: 'New review', body: `${p.customerName ?? 'A customer'} reviewed “${p.jobTitle}”.` }),
   },
   SUBSCRIPTION_EXPIRING: {
-    fr: (p) => ({ title: 'Votre abonnement expire bientôt', body: `Il reste ${p.days} jour(s). Renouvelez pour continuer à recevoir des demandes.` }),
-    ar: (p) => ({ title: 'اشتراكك على وشك الانتهاء', body: `تبقى ${p.days} يوم/أيام. جدّد اشتراكك لمواصلة تلقي الطلبات.` }),
+    nl: (p) => ({ title: 'Je abonnement loopt bijna af', body: `Nog ${p.days} dag(en). Verleng om klussen te blijven ontvangen.` }),
     en: (p) => ({ title: 'Your subscription expires soon', body: `${p.days} day(s) left. Renew to keep receiving jobs.` }),
   },
   SUBSCRIPTION_RENEWED: {
-    fr: (p) => ({ title: 'Abonnement renouvelé', body: `${p.credits} devis ont été ajoutés à votre compte.` }),
-    ar: (p) => ({ title: 'تم تجديد الاشتراك', body: `تمت إضافة ${p.credits} عرض سعر إلى حسابك.` }),
+    nl: (p) => ({ title: 'Abonnement verlengd', body: `Er zijn ${p.credits} offertes aan je account toegevoegd.` }),
     en: (p) => ({ title: 'Subscription renewed', body: `${p.credits} quotes have been added to your account.` }),
   },
   CREDITS_LOW: {
-    fr: (p) => ({ title: 'Bientôt à court de devis', body: `Il vous reste ${p.credits} devis ce mois-ci.` }),
-    ar: (p) => ({ title: 'رصيدك على وشك النفاد', body: `تبقى لك ${p.credits} عرض سعر هذا الشهر.` }),
+    nl: (p) => ({ title: 'Bijna door je offertes heen', body: `Je hebt nog ${p.credits} offertes deze maand.` }),
     en: (p) => ({ title: 'Running low on quotes', body: `You have ${p.credits} quotes left this month.` }),
   },
   PRO_VERIFIED: {
-    fr: () => ({ title: 'Profil vérifié', body: 'Votre entreprise est vérifiée. Le badge est maintenant visible par les clients.' }),
-    ar: () => ({ title: 'تم توثيق ملفك', body: 'تم توثيق شركتك. أصبحت الشارة ظاهرة للعملاء.' }),
-    en: () => ({ title: 'Profile verified', body: 'Your business is verified. The badge is now visible to customers.' }),
+    nl: () => ({ title: 'Profiel geverifieerd', body: 'Je bedrijf is geverifieerd via de KvK. Klanten zien nu het vinkje bij je profiel.' }),
+    en: () => ({ title: 'Profile verified', body: 'Your business is verified against the Chamber of Commerce. Customers now see the badge on your profile.' }),
   },
 };
 

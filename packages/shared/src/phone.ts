@@ -1,73 +1,77 @@
 /**
- * Moroccan phone numbers. The national plan uses a leading 0 followed by nine
- * digits; 06 and 07 are mobile ranges, 05 is fixed line. Khidma authenticates
- * with mobile numbers only, since sign-in is by SMS one-time code.
+ * Dutch phone numbers. The national significant number is nine digits after
+ * the trunk zero; mobile numbers start with 6, landlines with an area code
+ * (10 for Rotterdam, 20 for Amsterdam, 30 for Utrecht, and so on).
+ *
+ * Buurklus authenticates with mobile numbers only, since sign-in is by SMS.
  */
-export const MOROCCO_COUNTRY_CODE = '212';
-export const MOROCCO_DIAL_PREFIX = `+${MOROCCO_COUNTRY_CODE}`;
+export const NETHERLANDS_COUNTRY_CODE = '31';
+export const NETHERLANDS_DIAL_PREFIX = `+${NETHERLANDS_COUNTRY_CODE}`;
 
-const MOBILE_PREFIXES = ['6', '7'];
+const MOBILE_PREFIX = '6';
 
 export class InvalidPhoneNumberError extends Error {
   constructor(readonly input: string) {
-    super(`"${input}" is not a valid Moroccan phone number`);
+    super(`"${input}" is not a valid Dutch phone number`);
     this.name = 'InvalidPhoneNumberError';
   }
 }
 
 /**
- * Normalises any local spelling of a Moroccan number to E.164.
- * Accepts `0612345678`, `+212612345678`, `00212 6 12 34 56 78`, `212-612345678`.
+ * Normalises any local spelling of a Dutch number to E.164.
+ * Accepts `0612345678`, `+31612345678`, `0031 6 12345678`, `06-12345678`.
  */
-export function normalizeMoroccanPhone(input: string): string {
+export function normalizeDutchPhone(input: string): string {
   const digits = input.replace(/[^\d+]/g, '');
   let national: string;
 
-  if (digits.startsWith('+212')) national = digits.slice(4);
-  else if (digits.startsWith('00212')) national = digits.slice(5);
-  else if (digits.startsWith('212')) national = digits.slice(3);
+  if (digits.startsWith('+31')) national = digits.slice(3);
+  else if (digits.startsWith('0031')) national = digits.slice(4);
+  else if (digits.startsWith('31') && digits.length === 11) national = digits.slice(2);
   else if (digits.startsWith('0')) national = digits.slice(1);
   else national = digits;
 
   if (!/^\d{9}$/.test(national)) throw new InvalidPhoneNumberError(input);
-  return `${MOROCCO_DIAL_PREFIX}${national}`;
+  return `${NETHERLANDS_DIAL_PREFIX}${national}`;
 }
 
-export function isValidMoroccanPhone(input: string): boolean {
+export function isValidDutchPhone(input: string): boolean {
   try {
-    normalizeMoroccanPhone(input);
+    normalizeDutchPhone(input);
     return true;
   } catch {
     return false;
   }
 }
 
-export function isMoroccanMobile(input: string): boolean {
+export function isDutchMobile(input: string): boolean {
   try {
-    const national = normalizeMoroccanPhone(input).slice(MOROCCO_DIAL_PREFIX.length);
-    return MOBILE_PREFIXES.includes(national.charAt(0));
+    const national = normalizeDutchPhone(input).slice(NETHERLANDS_DIAL_PREFIX.length);
+    return national.startsWith(MOBILE_PREFIX);
   } catch {
     return false;
   }
 }
 
-/** `+212612345678` -> `06 12 34 56 78`, the way a number is written in Morocco. */
-export function formatMoroccanPhone(e164: string): string {
-  const national = e164.startsWith(MOROCCO_DIAL_PREFIX)
-    ? e164.slice(MOROCCO_DIAL_PREFIX.length)
+/** `+31612345678` -> `06 12345678`, the way a mobile number is written here. */
+export function formatDutchPhone(e164: string): string {
+  const national = e164.startsWith(NETHERLANDS_DIAL_PREFIX)
+    ? e164.slice(NETHERLANDS_DIAL_PREFIX.length)
     : e164.replace(/\D/g, '');
   if (national.length !== 9) return e164;
-  const pairs = national.slice(1).match(/.{1,2}/g) ?? [];
-  return `0${national.charAt(0)} ${pairs.join(' ')}`;
+
+  if (national.startsWith(MOBILE_PREFIX)) return `0${national.slice(0, 1)} ${national.slice(1)}`;
+  // Landlines group as area code then subscriber number: 010 1234567.
+  return `0${national.slice(0, 2)} ${national.slice(2)}`;
 }
 
 /** Masks all but the last two digits, for showing a number back to its owner. */
 export function maskPhone(e164: string): string {
-  const formatted = formatMoroccanPhone(e164);
+  const formatted = formatDutchPhone(e164);
   const totalDigits = (formatted.match(/\d/g) ?? []).length;
   let seen = 0;
   // Counts digits across the whole string, since the national format groups
-  // them in pairs and a lookahead would stop at each separating space.
+  // them and a lookahead would stop at each separating space.
   return formatted.replace(/\d/g, (digit) => {
     seen += 1;
     return seen <= totalDigits - 2 ? '•' : digit;

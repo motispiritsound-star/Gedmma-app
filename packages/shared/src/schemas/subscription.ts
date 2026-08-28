@@ -5,7 +5,7 @@ import { slugSchema } from './common.js';
 export const startSubscriptionSchema = z.object({
   planSlug: slugSchema,
   period: z.enum(BILLING_PERIODS).default('MONTHLY'),
-  paymentMethod: z.enum(PAYMENT_METHODS).default('CMI_CARD'),
+  paymentMethod: z.enum(PAYMENT_METHODS).default('IDEAL'),
   /** Deep link the payment gateway returns the pro to after checkout. */
   returnUrl: z.string().url().max(500).optional(),
   promoCode: z.string().trim().max(32).optional(),
@@ -23,14 +23,15 @@ export const cancelSubscriptionSchema = z.object({
 });
 
 /**
- * Callback posted by the payment gateway. CMI returns its own field names; the
- * adapter in the API maps them onto this shape before validation.
+ * Callback posted by the payment provider. Mollie sends only a payment id and
+ * expects the server to fetch the status; the adapter in the API maps whatever
+ * the provider sends onto this shape before validation.
  */
 export const paymentCallbackSchema = z.object({
   reference: z.string().min(4).max(120),
   providerRef: z.string().min(1).max(160),
   status: z.enum(['PAID', 'FAILED']),
-  amountCentimes: z.number().int().min(0),
+  amountCents: z.number().int().min(0),
   signature: z.string().min(8).max(512),
 });
 

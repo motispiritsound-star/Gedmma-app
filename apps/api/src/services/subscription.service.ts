@@ -7,7 +7,7 @@ import {
   applyVat,
   type BillingPeriod,
   type PaymentMethod,
-} from '@khidma/shared';
+} from '@buurklus/shared';
 import { AppError } from '../lib/errors.js';
 import { invoiceReference } from '../lib/crypto.js';
 import type { PaymentAdapter } from '../adapters/payments.js';
@@ -64,11 +64,22 @@ export class SubscriptionService {
   }
 
   /** Starts the free trial that every new professional account gets once. */
-  async startTrial(proId: string, planSlug = 'pro'): Promise<SubscriptionWithPlan> {
+  async startTrial(proId: string, planSlug?: string): Promise<SubscriptionWithPlan> {
     const existing = await this.prisma.subscription.findFirst({ where: { proId } });
     if (existing) throw new AppError('conflict');
 
-    const plan = await this.prisma.plan.findUniqueOrThrow({ where: { slug: planSlug } });
+    // Resolved from the database rather than a hardcoded slug: renaming a plan
+    // should not silently break sign-up for every new professional.
+    const plan = planSlug
+      ? await this.prisma.plan.findUniqueOrThrow({ where: { slug: planSlug } })
+      : ((await this.prisma.plan.findFirst({
+          where: { isActive: true, featured: true },
+          orderBy: { position: 'asc' },
+        })) ??
+        (await this.prisma.plan.findFirstOrThrow({
+          where: { isActive: true },
+          orderBy: { position: 'asc' },
+        })));
     const now = new Date();
     const trialEnd = new Date(now.getTime() + TRIAL_DURATION_DAYS * 86_400_000);
 
@@ -113,9 +124,9 @@ export class SubscriptionService {
     const plan = await this.prisma.plan.findUnique({ where: { slug: params.planSlug } });
     if (!plan || !plan.isActive) throw new AppError('not_found');
 
-    const netCentimes =
-      params.period === 'YEARLY' ? plan.yearlyPriceCentimes : plan.monthlyPriceCentimes;
-    const vat = applyVat(netCentimes);
+    const netCents =
+      params.period === 'YEARLY' ? plan.yearlyPriceCents : plan.monthlyPriceCents;
+    const vat = applyVat(netCents);
     const now = new Date();
 
     const existing = await this.prisma.subscription.findFirst({
@@ -145,9 +156,9 @@ export class SubscriptionService {
       data: {
         subscriptionId: subscription.id,
         reference,
-        netCentimes: vat.netCentimes,
-        vatCentimes: vat.vatCentimes,
-        grossCentimes: vat.grossCentimes,
+        netCents: vat.netCents,
+        vatCents: vat.vatCents,
+        grossCents: vat.grossCents,
         vatRate: vat.vatRate,
         method: params.method,
         status: 'PENDING',
@@ -156,12 +167,14 @@ export class SubscriptionService {
 
     const checkout = await this.payments.createCheckout({
       reference,
-      grossCentimes: vat.grossCentimes,
+      grossCents: vat.grossCents,
       method: params.method,
       period: params.period,
       planSlug: plan.slug,
       returnUrl: params.returnUrl,
       customerPhone: params.customerPhone,
+      // Shown on the customer's bank statement and in the provider's dashboard.
+      description: `Buurklus ${plan.nameNl} — ${params.period === 'YEARLY' ? 'jaarabonnement' : 'maandabonnement'}`,
     });
 
     await this.prisma.payment.update({
@@ -353,7 +366,7 @@ export class SubscriptionService {
   private async nextInvoiceReference(): Promise<string> {
     const year = new Date().getUTCFullYear();
     const count = await this.prisma.payment.count({
-      where: { reference: { startsWith: `KH-${year}-` } },
+      where: { reference: { startsWith: `BK-${year}-` } },
     });
     return invoiceReference(year, count + 1);
   }

@@ -70,8 +70,8 @@ export default function JobDetail() {
   const job = data.job;
   const isOpen = job.status === 'OPEN' || job.status === 'QUOTED';
   const budget =
-    job.budgetMinCentimes != null || job.budgetMaxCentimes != null
-      ? [job.budgetMinCentimes, job.budgetMaxCentimes]
+    job.budgetMinCents != null || job.budgetMaxCents != null
+      ? [job.budgetMinCents, job.budgetMaxCents]
           .filter((value): value is number => value != null)
           .map((value) => formatMoney(value, locale))
           .join(' – ')

@@ -1,15 +1,15 @@
 import { z } from 'zod';
 import { USER_ROLES } from '../enums.js';
-import { isMoroccanMobile, normalizeMoroccanPhone } from '../phone.js';
+import { isDutchMobile, normalizeDutchPhone } from '../phone.js';
 import { localeSchema } from './common.js';
 
 /** Accepts any local spelling and hands the API a normalised E.164 number. */
-export const moroccanMobileSchema = z
+export const dutchMobileSchema = z
   .string()
   .min(9)
   .max(20)
-  .refine(isMoroccanMobile, { message: 'phone_invalid_mobile' })
-  .transform(normalizeMoroccanPhone);
+  .refine(isDutchMobile, { message: 'phone_invalid_mobile' })
+  .transform(normalizeDutchPhone);
 
 export const otpCodeSchema = z
   .string()
@@ -17,12 +17,12 @@ export const otpCodeSchema = z
   .regex(/^\d{6}$/, 'otp_invalid_format');
 
 export const requestOtpSchema = z.object({
-  phone: moroccanMobileSchema,
+  phone: dutchMobileSchema,
   locale: localeSchema.optional(),
 });
 
 export const verifyOtpSchema = z.object({
-  phone: moroccanMobileSchema,
+  phone: dutchMobileSchema,
   code: otpCodeSchema,
   /** Sent on first sign-in so the account is created with the right role. */
   role: z.enum(USER_ROLES).exclude(['ADMIN']).optional(),

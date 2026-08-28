@@ -1,10 +1,10 @@
-// Khidma — service marketplace for Morocco.
+// Buurklus — service marketplace for the Netherlands.
 //
 // Conventions used throughout:
-//  * Money is stored as an integer number of centimes (1 MAD = 100 centimes),
-//    never as a float, and always excluding VAT unless a field says otherwise.
-//  * Phone numbers are stored in E.164 (`+2126...`), normalised at the edge.
-//  * Catalog tables (City, Category, Plan) are seeded from @khidma/shared so
+//  * Money is stored as an integer number of cents, never as a float, and
+//    always excluding VAT unless a field says otherwise.
+//  * Phone numbers are stored in E.164 (`+316...`), normalised at the edge.
+//  * Catalog tables (City, Category, Plan) are seeded from @buurklus/shared so
 //    the app and the API agree on slugs, and carry a name column per language.
 
 generator client {
@@ -27,8 +27,7 @@ enum UserRole {
 }
 
 enum Locale {
-  fr
-  ar
+  nl
   en
 }
 
@@ -50,12 +49,14 @@ enum JobUrgency {
 }
 
 enum PropertyType {
-  APARTMENT
-  VILLA
-  RIAD
-  OFFICE
-  SHOP
-  OTHER
+  APPARTEMENT
+  TUSSENWONING
+  HOEKWONING
+  TWEE_ONDER_EEN_KAP
+  VRIJSTAAND
+  BEDRIJFSPAND
+  VVE
+  ANDERS
 }
 
 enum QuoteStatus {
@@ -74,14 +75,15 @@ enum ProVerificationStatus {
 }
 
 enum LegalForm {
-  AUTO_ENTREPRENEUR
-  PERSONNE_PHYSIQUE
-  SARL
-  SARL_AU
-  SA
-  SNC
-  COOPERATIVE
-  ASSOCIATION
+  EENMANSZAAK
+  VOF
+  MAATSCHAP
+  CV
+  BV
+  NV
+  COOPERATIE
+  STICHTING
+  VERENIGING
 }
 
 enum SubscriptionStatus {
@@ -98,10 +100,10 @@ enum BillingPeriod {
 }
 
 enum PaymentMethod {
-  CMI_CARD
+  IDEAL
+  SEPA_DIRECT_DEBIT
+  CARD
   BANK_TRANSFER
-  CASH
-  MOBILE_WALLET
 }
 
 enum PaymentStatus {
@@ -120,19 +122,19 @@ enum CreditReason {
   TOPUP_PURCHASE
 }
 
-enum Region {
-  TANGER_TETOUAN_AL_HOCEIMA
-  ORIENTAL
-  FES_MEKNES
-  RABAT_SALE_KENITRA
-  BENI_MELLAL_KHENIFRA
-  CASABLANCA_SETTAT
-  MARRAKECH_SAFI
-  DRAA_TAFILALET
-  SOUSS_MASSA
-  GUELMIM_OUED_NOUN
-  LAAYOUNE_SAKIA_EL_HAMRA
-  DAKHLA_OUED_ED_DAHAB
+enum Province {
+  DRENTHE
+  FLEVOLAND
+  FRIESLAND
+  GELDERLAND
+  GRONINGEN
+  LIMBURG
+  NOORD_BRABANT
+  NOORD_HOLLAND
+  OVERIJSSEL
+  UTRECHT
+  ZEELAND
+  ZUID_HOLLAND
 }
 
 enum NotificationType {
@@ -154,40 +156,38 @@ enum NotificationType {
 // ---------------------------------------------------------------------------
 
 model City {
-  id         String  @id @default(cuid())
-  slug       String  @unique
-  nameFr     String
-  nameAr     String
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  nameNl     String
   nameEn     String
-  region     Region
+  province   Province
   lat        Float
   lng        Float
-  population Int     @default(0)
-  isActive   Boolean @default(true)
+  population Int      @default(0)
+  isActive   Boolean  @default(true)
 
   jobs      Job[]
   proBases  ProProfile[]  @relation("ProBaseCity")
   proCities ProCoverage[]
   users     User[]
 
-  @@index([region])
+  @@index([province])
   @@map("cities")
 }
 
 model Category {
-  id                       String  @id @default(cuid())
-  slug                     String  @unique
-  nameFr                   String
-  nameAr                   String
-  nameEn                   String
-  icon                     String
-  parentId                 String?
+  id                    String  @id @default(cuid())
+  slug                  String  @unique
+  nameNl                String
+  nameEn                String
+  icon                  String
+  parentId              String?
   /// Ordering hint for the category grid; lower sorts first.
-  position                 Int     @default(0)
-  /// Guidance shown in the posting wizard, in centimes.
-  typicalBudgetMinCentimes Int?
-  typicalBudgetMaxCentimes Int?
-  isActive                 Boolean @default(true)
+  position              Int     @default(0)
+  /// Guidance shown in the posting wizard, in cents.
+  typicalBudgetMinCents Int?
+  typicalBudgetMaxCents Int?
+  isActive              Boolean @default(true)
 
   parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id])
   children  Category[] @relation("CategoryTree")
@@ -201,15 +201,13 @@ model Category {
 model Plan {
   id                   String  @id @default(cuid())
   slug                 String  @unique
-  nameFr               String
-  nameAr               String
+  nameNl               String
   nameEn               String
-  taglineFr            String
-  taglineAr            String
+  taglineNl            String
   taglineEn            String
-  /// Prices exclude VAT; 20% TVA is added when the invoice is raised.
-  monthlyPriceCentimes Int
-  yearlyPriceCentimes  Int
+  /// Prices exclude VAT; 21% btw is added when the invoice is raised.
+  monthlyPriceCents    Int
+  yearlyPriceCents     Int
   monthlyCredits       Int
   maxCategories        Int
   /// Null means the pro may cover every city.
@@ -217,7 +215,7 @@ model Plan {
   featured             Boolean @default(false)
   leadHeadStartMinutes Int     @default(0)
   teamSeats            Int     @default(0)
-  /// Localised bullet list, stored as { fr, ar, en } string arrays.
+  /// Localised bullet list, stored as { nl, en } string arrays.
   perks                Json
   position             Int     @default(0)
   isActive             Boolean @default(true)
@@ -240,7 +238,7 @@ model User {
   firstName       String?
   lastName        String?
   avatarUrl       String?
-  locale          Locale    @default(fr)
+  locale          Locale    @default(nl)
   role            UserRole  @default(CUSTOMER)
   cityId          String?
   isBlocked       Boolean   @default(false)
@@ -326,13 +324,13 @@ model ProProfile {
   websiteUrl      String?
   portfolioUrls   String[]  @default([])
 
-  // Moroccan registration identifiers. ICE identifies a registered business;
-  // sole traders and auto-entrepreneurs are identified by their CIN instead.
-  ice   String? @unique
-  rc    String?
-  taxId String?
-  cnss  String?
-  cin   String?
+  // Dutch registration identifiers. Every business here has a KvK number,
+  // including a one-person zzp business, so it is required and unique. The VAT
+  // id is optional: a business under the small-business scheme has none. The
+  // IBAN is only present when the subscription is paid by direct debit.
+  kvk   String  @unique
+  vatId String?
+  iban  String?
 
   verificationStatus ProVerificationStatus @default(UNVERIFIED)
   verifiedAt         DateTime?
@@ -398,7 +396,7 @@ model ProCoverage {
 
 model Job {
   id                 String        @id @default(cuid())
-  /// Short human-quotable code shown in the UI and in SMS, e.g. `KH-4F2A9C`.
+  /// Short human-quotable code shown in the UI and in SMS, e.g. `BK-4F2A9C`.
   reference          String        @unique
   customerId         String
   categoryId         String
@@ -413,8 +411,8 @@ model Job {
   propertyType       PropertyType?
   urgency            JobUrgency    @default(WITHIN_WEEK)
   preferredStartDate DateTime?
-  budgetMinCentimes  Int?
-  budgetMaxCentimes  Int?
+  budgetMinCents     Int?
+  budgetMaxCents     Int?
   photoUrls          String[]      @default([])
   /// Overrides the account phone when the customer wants to be reached elsewhere.
   contactPhone       String?
@@ -451,7 +449,7 @@ model Quote {
   id                    String      @id @default(cuid())
   jobId                 String
   proId                 String
-  amountCentimes        Int
+  amountCents           Int
   /// True when the figure is an estimate pending a site visit, not a firm price.
   isEstimate            Boolean     @default(false)
   message               String
@@ -601,13 +599,13 @@ model CreditLedgerEntry {
 model Payment {
   id             String        @id @default(cuid())
   subscriptionId String
-  /// Invoice reference shown to the customer, e.g. `KH-2026-000418`.
+  /// Invoice reference shown to the customer, e.g. `BK-2026-000418`.
   reference      String        @unique
-  netCentimes    Int
-  vatCentimes    Int
-  grossCentimes  Int
-  vatRate        Float         @default(0.2)
-  method         PaymentMethod @default(CMI_CARD)
+  netCents       Int
+  vatCents       Int
+  grossCents     Int
+  vatRate        Float         @default(0.21)
+  method         PaymentMethod @default(IDEAL)
   status         PaymentStatus @default(PENDING)
   /// Identifier returned by the gateway, used to reconcile the callback.
   providerRef    String?
@@ -634,7 +632,7 @@ model Notification {
   /// Localised at send time; stored rendered so history stays stable.
   title     String
   body      String
-  /// Deep link target, e.g. `khidma://jobs/<id>`.
+  /// Deep link target, e.g. `buurklus://jobs/<id>`.
   deepLink  String?
   payload   Json?
   readAt    DateTime?

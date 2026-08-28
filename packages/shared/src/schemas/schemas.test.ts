@@ -2,29 +2,27 @@ import { describe, expect, it } from 'vitest';
 import { requestOtpSchema, verifyOtpSchema } from './auth.js';
 import { createJobSchema } from './job.js';
 import { upsertProProfileSchema } from './pro.js';
-import { moroccoCoordinatesSchema } from './common.js';
+import { netherlandsCoordinatesSchema } from './common.js';
 
 describe('auth schemas', () => {
   it('normalises the phone number as part of parsing', () => {
-    const parsed = requestOtpSchema.parse({ phone: '06 12 34 56 78' });
-    expect(parsed.phone).toBe('+212612345678');
+    const parsed = requestOtpSchema.parse({ phone: '06 12345678' });
+    expect(parsed.phone).toBe('+31612345678');
   });
 
   it('rejects a landline and a malformed code', () => {
-    expect(requestOtpSchema.safeParse({ phone: '0522123456' }).success).toBe(false);
-    expect(
-      verifyOtpSchema.safeParse({ phone: '0612345678', code: '12345' }).success,
-    ).toBe(false);
+    expect(requestOtpSchema.safeParse({ phone: '0101234567' }).success).toBe(false);
+    expect(verifyOtpSchema.safeParse({ phone: '0612345678', code: '12345' }).success).toBe(false);
   });
 });
 
 describe('job schema', () => {
   const base = {
-    categorySlug: 'peinture-interieure',
-    title: 'Peindre un salon de 25 m²',
+    categorySlug: 'binnenschilderwerk',
+    title: 'Woonkamer van 25 m² schilderen',
     description:
-      "Salon de 25 m² à repeindre en blanc mat, murs et plafond. Les meubles seront déplacés avant l'intervention.",
-    citySlug: 'casablanca',
+      'Woonkamer van 25 m² opnieuw schilderen in gebroken wit, muren en plafond. Kleine reparaties nodig rond de kozijnen.',
+    citySlug: 'utrecht',
   };
 
   it('accepts a well-formed job', () => {
@@ -32,47 +30,69 @@ describe('job schema', () => {
   });
 
   it('rejects a description too short to quote against', () => {
-    expect(createJobSchema.safeParse({ ...base, description: 'Peinture' }).success).toBe(false);
+    expect(createJobSchema.safeParse({ ...base, description: 'Schilderen' }).success).toBe(false);
   });
 
   it('rejects an inverted budget range', () => {
-    const result = createJobSchema.safeParse({ ...base, budgetMinMad: 5000, budgetMaxMad: 1000 });
+    const result = createJobSchema.safeParse({ ...base, budgetMinEur: 5000, budgetMaxEur: 1000 });
     expect(result.success).toBe(false);
   });
 });
 
 describe('pro profile schema', () => {
   const base = {
-    displayName: 'Atelier Zellige Fès',
-    legalForm: 'SARL' as const,
-    bio: "Atelier familial spécialisé dans le zellige et le tadelakt depuis trois générations.",
+    displayName: 'Schildersbedrijf De Vries',
+    legalForm: 'BV' as const,
+    bio: 'Familiebedrijf uit Utrecht, al drie generaties gespecialiseerd in binnen- en buitenschilderwerk.',
     yearsExperience: 22,
-    baseCitySlug: 'fes',
-    categorySlugs: ['zellige-tadelakt'],
-    citySlugs: ['fes', 'meknes'],
+    baseCitySlug: 'utrecht',
+    categorySlugs: ['binnenschilderwerk'],
+    citySlugs: ['utrecht', 'amersfoort'],
   };
 
-  it('requires an ICE for a registered company', () => {
+  it('requires a KvK number, which every Dutch business has', () => {
     expect(upsertProProfileSchema.safeParse(base).success).toBe(false);
-    expect(
-      upsertProProfileSchema.safeParse({ ...base, ice: '001234567000012' }).success,
-    ).toBe(true);
+    expect(upsertProProfileSchema.safeParse({ ...base, kvk: '12345678' }).success).toBe(true);
   });
 
-  it('lets an auto-entrepreneur identify with a CIN instead', () => {
-    const result = upsertProProfileSchema.safeParse({
+  it('treats the VAT id as optional, since a KOR business has none', () => {
+    const withoutVat = upsertProProfileSchema.safeParse({ ...base, kvk: '12345678' });
+    expect(withoutVat.success).toBe(true);
+
+    const withVat = upsertProProfileSchema.safeParse({
       ...base,
-      legalForm: 'AUTO_ENTREPRENEUR',
-      cin: 'AB123456',
+      kvk: '12345678',
+      vatId: 'NL123456789B01',
     });
-    expect(result.success).toBe(true);
+    expect(withVat.success).toBe(true);
+  });
+
+  it('rejects an invalid KvK number', () => {
+    expect(upsertProProfileSchema.safeParse({ ...base, kvk: '1234' }).success).toBe(false);
   });
 });
 
 describe('coordinates', () => {
-  it('keeps jobs inside Morocco', () => {
-    expect(moroccoCoordinatesSchema.safeParse({ lat: 33.5731, lng: -7.5898 }).success).toBe(true);
-    // Paris — a mis-set device locale should not create a job in France.
-    expect(moroccoCoordinatesSchema.safeParse({ lat: 48.8566, lng: 2.3522 }).success).toBe(false);
+  it('accepts locations across the country, from Zeeland to Groningen', () => {
+    for (const point of [
+      { lat: 52.3676, lng: 4.9041 }, // Amsterdam
+      { lat: 50.8514, lng: 5.691 }, // Maastricht, the southern tip
+      { lat: 53.2194, lng: 6.5665 }, // Groningen
+      { lat: 51.4988, lng: 3.6136 }, // Middelburg, the western edge
+    ]) {
+      expect(netherlandsCoordinatesSchema.safeParse(point).success, JSON.stringify(point)).toBe(true);
+    }
+  });
+
+  it('rejects coordinates from another country entirely', () => {
+    // The check is a coarse box, so it catches Paris and Berlin rather than
+    // Antwerp — which is the class of error it exists for.
+    for (const point of [
+      { lat: 48.8566, lng: 2.3522 }, // Paris
+      { lat: 52.52, lng: 13.405 }, // Berlin
+      { lat: 33.5731, lng: -7.5898 }, // Casablanca
+    ]) {
+      expect(netherlandsCoordinatesSchema.safeParse(point).success, JSON.stringify(point)).toBe(false);
+    }
   });
 });

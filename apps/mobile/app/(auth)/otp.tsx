@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { formatMoroccanPhone, normalizeMoroccanPhone, type UserRole } from '@khidma/shared';
+import { formatDutchPhone, normalizeDutchPhone, type UserRole } from '@buurklus/shared';
 import { Button, Txt } from '@/components/ui';
 import { usePublicApi } from '@/hooks/use-api';
 import { ApiError, NetworkError } from '@/api/client';
@@ -32,7 +32,7 @@ export default function OtpScreen() {
 
   const displayPhone = useMemo(() => {
     try {
-      return formatMoroccanPhone(normalizeMoroccanPhone(params.phone));
+      return formatDutchPhone(normalizeDutchPhone(params.phone));
     } catch {
       return params.phone;
     }

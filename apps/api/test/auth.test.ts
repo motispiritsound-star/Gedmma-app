@@ -22,14 +22,14 @@ describe('phone sign-in', () => {
     expect(session.refreshToken).toBeTruthy();
 
     const user = await prisma.user.findUniqueOrThrow({ where: { id: session.userId } });
-    expect(user.phone).toBe('+212612000001');
+    expect(user.phone).toBe('+31612000001');
     expect(user.phoneVerifiedAt).not.toBeNull();
     expect(user.role).toBe('CUSTOMER');
   });
 
   it('normalises the phone number, so 06… and +2126… are the same account', async () => {
     const first = await signIn(app, '0612000002');
-    const second = await signIn(app, '+212612000002');
+    const second = await signIn(app, '+31612000002');
     expect(second.userId).toBe(first.userId);
   });
 
@@ -37,7 +37,7 @@ describe('phone sign-in', () => {
     const response = await app.inject({
       method: 'POST',
       url: '/v1/auth/otp/request',
-      payload: { phone: '0522123456' },
+      payload: { phone: '0101234567' },
     });
     expect(response.statusCode).toBe(400);
     expect(response.json().error.code).toBe('validation_failed');
@@ -56,7 +56,7 @@ describe('phone sign-in', () => {
     // A correct guess is possible once in a million; assert on the attempt
     // counter instead, which moves either way.
     const challenge = await prisma.otpChallenge.findFirstOrThrow({
-      where: { phone: '+212612000003' },
+      where: { phone: '+31612000003' },
     });
     if (response.statusCode === 400) {
       expect(response.json().error.code).toBe('otp_invalid');
@@ -121,12 +121,12 @@ describe('phone sign-in', () => {
 
 describe('language negotiation', () => {
   it('returns the error message in the requested language', async () => {
-    const arabic = await app.inject({
+    const dutch = await app.inject({
       method: 'GET',
       url: '/v1/auth/me',
-      headers: { 'x-khidma-locale': 'ar' },
+      headers: { 'x-buurklus-locale': 'nl' },
     });
-    expect(arabic.json().error.message).toBe('يرجى تسجيل الدخول للمتابعة.');
+    expect(dutch.json().error.message).toBe('Log in om verder te gaan.');
 
     const english = await app.inject({
       method: 'GET',
@@ -135,24 +135,31 @@ describe('language negotiation', () => {
     });
     expect(english.json().error.message).toBe('Please sign in to continue.');
 
-    // French is the default when nothing usable is offered.
+    // Dutch is the default when nothing usable is offered.
     const fallback = await app.inject({
       method: 'GET',
       url: '/v1/auth/me',
       headers: { 'accept-language': 'de-DE' },
     });
-    expect(fallback.json().error.message).toBe('Veuillez vous connecter pour continuer.');
+    expect(fallback.json().error.message).toBe('Log in om verder te gaan.');
   });
 
   it('serves the catalog in the requested language', async () => {
-    const response = await app.inject({
+    const dutch = await app.inject({
       method: 'GET',
       url: '/v1/catalog/categories',
-      headers: { 'x-khidma-locale': 'ar' },
+      headers: { 'x-buurklus-locale': 'nl' },
     });
-    const categories = response.json().categories as Array<{ slug: string; name: string }>;
-    const plumbing = categories.find((row) => row.slug === 'plomberie');
-    expect(plumbing?.name).toBe('السباكة');
+    const dutchCategories = dutch.json().categories as Array<{ slug: string; name: string }>;
+    expect(dutchCategories.find((row) => row.slug === 'loodgieter')?.name).toBe('Loodgieter');
+
+    const english = await app.inject({
+      method: 'GET',
+      url: '/v1/catalog/categories',
+      headers: { 'x-buurklus-locale': 'en' },
+    });
+    const englishCategories = english.json().categories as Array<{ slug: string; name: string }>;
+    expect(englishCategories.find((row) => row.slug === 'loodgieter')?.name).toBe('Plumbing');
   });
 });
 
@@ -163,9 +170,9 @@ describe('profile', () => {
       method: 'PATCH',
       url: '/v1/auth/me',
       headers: auth(session.accessToken),
-      payload: { firstName: 'Salma', lastName: 'Benali', locale: 'ar' },
+      payload: { firstName: 'Sanne', lastName: 'de Vries', locale: 'en' },
     });
     expect(response.statusCode).toBe(200);
-    expect(response.json().locale).toBe('ar');
+    expect(response.json().locale).toBe('en');
   });
 });

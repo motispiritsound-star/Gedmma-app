@@ -9,7 +9,7 @@ export default function setup() {
   process.env.NODE_ENV = 'test';
   const databaseUrl =
     process.env.TEST_DATABASE_URL ??
-    'postgresql://khidma:khidma@localhost:5432/khidma_test?schema=public';
+    'postgresql://buurklus:buurklus@localhost:5432/buurklus_test?schema=public';
   process.env.DATABASE_URL = databaseUrl;
 
   execSync('npx prisma db push --skip-generate --accept-data-loss', {

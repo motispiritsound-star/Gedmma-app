@@ -1,12 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { I18nManager, StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import * as Updates from 'expo-updates';
 import { I18nextProvider } from 'react-i18next';
-import i18n, { applyDirection, initI18n } from '@/i18n';
+import i18n, { initI18n } from '@/i18n';
 import { useSession } from '@/store/session';
 import { colors } from '@/theme';
 import { Loader } from '@/components/ui';
@@ -41,22 +40,6 @@ export default function RootLayout() {
     })();
   }, [hydrated, locale]);
 
-  // Switching to or from Arabic changes the layout direction, and React Native
-  // only applies that to native views after a reload. Reload at most once per
-  // mount: if the flip does not take on this platform, retrying would loop.
-  const hasReloadedForDirection = useRef(false);
-  useEffect(() => {
-    if (!ready) return;
-    const needsReload = applyDirection(locale);
-    if (!needsReload || __DEV__ || hasReloadedForDirection.current) return;
-
-    hasReloadedForDirection.current = true;
-    void Updates.reloadAsync().catch(() => {
-      // Nothing to reload (Expo Go, a bare build without expo-updates): the
-      // direction still applies on the next launch.
-    });
-  }, [locale, ready]);
-
   if (!ready) {
     return (
       <View style={styles.splash}>
@@ -77,8 +60,7 @@ export default function RootLayout() {
               headerTitleStyle: { fontSize: 17, fontWeight: '600', color: colors.text },
               headerTintColor: colors.primary,
               contentStyle: { backgroundColor: colors.background },
-              // Push animation follows the reading direction in Arabic.
-              animation: I18nManager.isRTL ? 'slide_from_left' : 'slide_from_right',
+                animation: 'slide_from_right',
             }}
           >
             <Stack.Screen name="index" options={{ headerShown: false }} />

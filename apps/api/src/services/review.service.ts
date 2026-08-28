@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@prisma/client';
-import type { CreateReviewInput } from '@khidma/shared';
+import type { CreateReviewInput } from '@buurklus/shared';
 import { AppError } from '../lib/errors.js';
 import { cursorArgs, toPage } from '../lib/pagination.js';
 import type { NotificationService } from './notification.service.js';
@@ -12,7 +12,7 @@ export class ReviewService {
 
   /**
    * Only the customer who awarded a completed job may review it, and only once.
-   * That constraint is what keeps the ratings on Khidma worth reading.
+   * That constraint is what keeps the ratings on Buurklus worth reading.
    */
   async create(params: { jobId: string; authorId: string; input: CreateReviewInput }) {
     const job = await this.prisma.job.findUnique({
@@ -65,7 +65,7 @@ export class ReviewService {
     await this.notifications.notifyPro(proId, {
       type: 'REVIEW_RECEIVED',
       params: { jobTitle: job.title },
-      deepLink: `khidma://pro/reviews`,
+      deepLink: `buurklus://pro/reviews`,
     });
 
     return review;
@@ -77,7 +77,7 @@ export class ReviewService {
       orderBy: { createdAt: 'desc' },
       include: {
         author: { select: { firstName: true, avatarUrl: true } },
-        job: { select: { title: true, category: { select: { slug: true, nameFr: true, nameAr: true, nameEn: true } } } },
+        job: { select: { title: true, category: { select: { slug: true, nameNl: true, nameEn: true } } } },
       },
       ...cursorArgs(params.cursor, params.limit),
     });

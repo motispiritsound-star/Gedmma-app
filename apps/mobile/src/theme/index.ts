@@ -1,7 +1,7 @@
 import { I18nManager, Platform, type TextStyle } from 'react-native';
 
 /**
- * Khidma's palette. The green is drawn from the zellige and tilework that reads
+ * Buurklus's palette. The green is drawn from the zellige and tilework that reads
  * as craftsmanship in Morocco; the terracotta accent picks up the ochre of
  * Marrakech. Both were checked for 4.5:1 contrast on their paired surfaces.
  */

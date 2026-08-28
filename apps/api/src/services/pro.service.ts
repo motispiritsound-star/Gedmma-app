@@ -1,5 +1,5 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
-import type { SearchProsInput, UpsertProProfileInput } from '@khidma/shared';
+import type { SearchProsInput, UpsertProProfileInput } from '@buurklus/shared';
 import { AppError } from '../lib/errors.js';
 import { cursorArgs, toPage } from '../lib/pagination.js';
 import { SubscriptionService } from './subscription.service.js';
@@ -22,17 +22,18 @@ export const PUBLIC_PRO_SELECT = {
   jobsWon: true,
   medianResponseMinutes: true,
   createdAt: true,
-  // The ICE is public information in Morocco, and showing it is a strong trust
-  // signal; the tax and social security numbers are not, and never leave here.
-  ice: true,
-  baseCity: { select: { slug: true, nameFr: true, nameAr: true, nameEn: true } },
+  // The KvK number is public information — anyone can look the business up in
+  // the register — and showing it is a strong trust signal. The VAT id and the
+  // IBAN are not public, and never leave here.
+  kvk: true,
+  baseCity: { select: { slug: true, nameNl: true, nameEn: true } },
   trades: {
     select: {
       isPrimary: true,
-      category: { select: { slug: true, nameFr: true, nameAr: true, nameEn: true, icon: true } },
+      category: { select: { slug: true, nameNl: true, nameEn: true, icon: true } },
     },
   },
-  coverage: { select: { city: { select: { slug: true, nameFr: true, nameAr: true, nameEn: true } } } },
+  coverage: { select: { city: { select: { slug: true, nameNl: true, nameEn: true } } } },
 } satisfies Prisma.ProProfileSelect;
 
 export class ProService {
@@ -81,11 +82,9 @@ export class ProService {
       logoUrl: input.logoUrl,
       websiteUrl: input.websiteUrl || null,
       portfolioUrls: input.portfolioUrls,
-      ice: input.ice ?? null,
-      rc: input.rc ?? null,
-      taxId: input.taxId ?? null,
-      cnss: input.cnss ?? null,
-      cin: input.cin ?? null,
+      kvk: input.kvk,
+      vatId: input.vatId ?? null,
+      iban: input.iban ?? null,
       documentUrls: input.documentUrls,
     };
 
@@ -133,10 +132,8 @@ export class ProService {
       select: {
         ...PUBLIC_PRO_SELECT,
         userId: true,
-        rc: true,
-        taxId: true,
-        cnss: true,
-        cin: true,
+        vatId: true,
+        iban: true,
         documentUrls: true,
         verificationNotes: true,
         quotesSent: true,

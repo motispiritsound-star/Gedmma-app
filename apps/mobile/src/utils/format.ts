@@ -1,10 +1,10 @@
-import { formatCentimes, type Locale } from '@khidma/shared';
+import { formatCents, type Locale } from '@buurklus/shared';
 
-const DATE_TAGS: Record<Locale, string> = { fr: 'fr-MA', ar: 'ar-MA', en: 'en-GB' };
+const DATE_TAGS: Record<Locale, string> = { nl: 'nl-NL', en: 'en-GB' };
 
 export function formatMoney(centimes: number | null | undefined, locale: Locale): string {
   if (centimes == null) return '—';
-  return formatCentimes(centimes, locale, { withDecimals: false });
+  return formatCents(centimes, locale, { withDecimals: false });
 }
 
 export function formatDate(value: string | Date | null | undefined, locale: Locale): string {
@@ -51,13 +51,10 @@ export function formatDuration(minutes: number | null | undefined, locale: Local
   const hours = Math.round(minutes / 60);
   if (hours < 24) return `${new Intl.NumberFormat(DATE_TAGS[locale]).format(hours)} h`;
   const days = Math.round(hours / 24);
-  return `${new Intl.NumberFormat(DATE_TAGS[locale]).format(days)} j`;
+  return `${new Intl.NumberFormat(DATE_TAGS[locale]).format(days)} d`;
 }
 
 /** Reads the right language column off a row the API did not collapse. */
-export function pickName(
-  row: { nameFr: string; nameAr: string; nameEn: string },
-  locale: Locale,
-): string {
-  return locale === 'ar' ? row.nameAr : locale === 'en' ? row.nameEn : row.nameFr;
+export function pickName(row: { nameNl: string; nameEn: string }, locale: Locale): string {
+  return locale === 'en' ? row.nameEn : row.nameNl;
 }

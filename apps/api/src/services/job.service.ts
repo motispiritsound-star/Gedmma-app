@@ -5,10 +5,10 @@ import {
   type CreateJobInput,
   type ListLeadsInput,
   type UpdateJobInput,
-  dirhamsToCentimes,
+  eurosToCents,
   distanceKm,
   leadDelayMinutes,
-} from '@khidma/shared';
+} from '@buurklus/shared';
 import { AppError } from '../lib/errors.js';
 import { generateJobReference } from '../lib/crypto.js';
 import { cursorArgs, toPage } from '../lib/pagination.js';
@@ -24,16 +24,16 @@ export const LEAD_SAFE_JOB_SELECT = {
   status: true,
   propertyType: true,
   preferredStartDate: true,
-  budgetMinCentimes: true,
-  budgetMaxCentimes: true,
+  budgetMinCents: true,
+  budgetMaxCents: true,
   photoUrls: true,
   quoteCount: true,
   viewCount: true,
   publishedAt: true,
   expiresAt: true,
   createdAt: true,
-  category: { select: { id: true, slug: true, nameFr: true, nameAr: true, nameEn: true, icon: true } },
-  city: { select: { id: true, slug: true, nameFr: true, nameAr: true, nameEn: true, lat: true, lng: true } },
+  category: { select: { id: true, slug: true, nameNl: true, nameEn: true, icon: true } },
+  city: { select: { id: true, slug: true, nameNl: true, nameEn: true, lat: true, lng: true } },
   customer: { select: { id: true, firstName: true, avatarUrl: true } },
 } satisfies Prisma.JobSelect;
 
@@ -64,8 +64,8 @@ export class JobService {
         propertyType: input.propertyType,
         urgency: input.urgency,
         preferredStartDate: input.preferredStartDate,
-        budgetMinCentimes: input.budgetMinMad != null ? dirhamsToCentimes(input.budgetMinMad) : null,
-        budgetMaxCentimes: input.budgetMaxMad != null ? dirhamsToCentimes(input.budgetMaxMad) : null,
+        budgetMinCents: input.budgetMinEur != null ? eurosToCents(input.budgetMinEur) : null,
+        budgetMaxCents: input.budgetMaxEur != null ? eurosToCents(input.budgetMaxEur) : null,
         photoUrls: input.photoUrls,
         contactPhone: input.contactPhone,
         status: 'OPEN',
@@ -97,7 +97,7 @@ export class JobService {
                 verificationStatus: true,
                 jobsWon: true,
                 medianResponseMinutes: true,
-                baseCity: { select: { slug: true, nameFr: true, nameAr: true, nameEn: true } },
+                baseCity: { select: { slug: true, nameNl: true, nameEn: true } },
               },
             },
           },
@@ -196,14 +196,14 @@ export class JobService {
       expiresAt: { gt: new Date() },
       quoteCount: { lt: JOB_MAX_QUOTES },
       ...(filters.urgency ? { urgency: filters.urgency } : {}),
-      ...(filters.minBudgetMad != null
-        ? { budgetMaxCentimes: { gte: dirhamsToCentimes(filters.minBudgetMad) } }
+      ...(filters.minBudgetEur != null
+        ? { budgetMaxCents: { gte: eurosToCents(filters.minBudgetEur) } }
         : {}),
       ...(filters.hideQuoted ? { quotes: { none: { proId } } } : {}),
     };
 
     const orderBy: Prisma.JobOrderByWithRelationInput =
-      filters.sort === 'BUDGET' ? { budgetMaxCentimes: 'desc' } : { publishedAt: 'desc' };
+      filters.sort === 'BUDGET' ? { budgetMaxCents: 'desc' } : { publishedAt: 'desc' };
 
     const rows = await this.prisma.job.findMany({
       where,
@@ -247,10 +247,10 @@ export class JobService {
         description: input.description,
         urgency: input.urgency,
         preferredStartDate: input.preferredStartDate,
-        budgetMinCentimes:
-          input.budgetMinMad === null ? null : input.budgetMinMad != null ? dirhamsToCentimes(input.budgetMinMad) : undefined,
-        budgetMaxCentimes:
-          input.budgetMaxMad === null ? null : input.budgetMaxMad != null ? dirhamsToCentimes(input.budgetMaxMad) : undefined,
+        budgetMinCents:
+          input.budgetMinEur === null ? null : input.budgetMinEur != null ? eurosToCents(input.budgetMinEur) : undefined,
+        budgetMaxCents:
+          input.budgetMaxEur === null ? null : input.budgetMaxEur != null ? eurosToCents(input.budgetMaxEur) : undefined,
         photoUrls: input.photoUrls,
       },
       select: LEAD_SAFE_JOB_SELECT,

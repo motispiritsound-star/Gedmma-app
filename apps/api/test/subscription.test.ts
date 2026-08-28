@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { PLANS, TRIAL_CREDITS, applyVat, dirhamsToCentimes } from '@khidma/shared';
+import { PLANS, TRIAL_CREDITS, applyVat, eurosToCents } from '@buurklus/shared';
 import { auth, createPro, createTestApp, prisma, resetTransactionalData } from './helpers.js';
 
 let app: FastifyInstance;
@@ -34,24 +34,24 @@ describe('the free trial', () => {
 });
 
 describe('subscribing to a paid plan', () => {
-  it('raises an invoice with 20% Moroccan VAT and grants the plan credits', async () => {
+  it('raises an invoice with 21% Dutch VAT and grants the plan credits', async () => {
     const pro = await createPro(app, { phone: '0614000010' });
-    const plan = PLANS.find((row) => row.slug === 'pro')!;
+    const plan = PLANS.find((row) => row.slug === 'vakman')!;
 
     const response = await app.inject({
       method: 'POST',
       url: '/v1/subscriptions',
       headers: auth(pro.accessToken),
-      payload: { planSlug: 'pro', period: 'MONTHLY', paymentMethod: 'CMI_CARD' },
+      payload: { planSlug: 'vakman', period: 'MONTHLY', paymentMethod: 'IDEAL' },
     });
     expect(response.statusCode).toBe(200);
 
-    const expected = applyVat(dirhamsToCentimes(plan.monthlyPriceMad));
+    const expected = applyVat(eurosToCents(plan.monthlyPriceEur));
     const payment = response.json().payment;
-    expect(payment.netCentimes).toBe(expected.netCentimes);
-    expect(payment.vatCentimes).toBe(expected.vatCentimes);
-    expect(payment.grossCentimes).toBe(expected.grossCentimes);
-    expect(payment.reference).toMatch(/^KH-\d{4}-\d{6}$/);
+    expect(payment.netCents).toBe(expected.netCents);
+    expect(payment.vatCents).toBe(expected.vatCents);
+    expect(payment.grossCents).toBe(expected.grossCents);
+    expect(payment.reference).toMatch(/^BK-\d{4}-\d{6}$/);
 
     // The mock gateway settles at once, so the plan's credits are already in.
     const subscription = await prisma.subscription.findFirstOrThrow({ where: { proId: pro.proId } });
@@ -62,16 +62,16 @@ describe('subscribing to a paid plan', () => {
 
   it('bills a year at ten months and grants twelve months of credits', async () => {
     const pro = await createPro(app, { phone: '0614000020' });
-    const plan = PLANS.find((row) => row.slug === 'artisan')!;
+    const plan = PLANS.find((row) => row.slug === 'zzp')!;
 
     const response = await app.inject({
       method: 'POST',
       url: '/v1/subscriptions',
       headers: auth(pro.accessToken),
-      payload: { planSlug: 'artisan', period: 'YEARLY', paymentMethod: 'CMI_CARD' },
+      payload: { planSlug: 'zzp', period: 'YEARLY', paymentMethod: 'IDEAL' },
     });
 
-    expect(response.json().payment.netCentimes).toBe(dirhamsToCentimes(plan.monthlyPriceMad * 10));
+    expect(response.json().payment.netCents).toBe(eurosToCents(plan.monthlyPriceEur * 10));
 
     const subscription = await prisma.subscription.findFirstOrThrow({ where: { proId: pro.proId } });
     expect(subscription.creditsRemaining).toBe(TRIAL_CREDITS + plan.monthlyCredits * 12);
@@ -83,7 +83,7 @@ describe('subscribing to a paid plan', () => {
       method: 'POST',
       url: '/v1/subscriptions',
       headers: auth(pro.accessToken),
-      payload: { planSlug: 'platinum', period: 'MONTHLY' },
+      payload: { planSlug: 'platina', period: 'MONTHLY' },
     });
     expect(response.statusCode).toBe(404);
   });
@@ -95,20 +95,20 @@ describe('the payment callback', () => {
 
     // Create a pending invoice by hand: the mock gateway would settle instantly.
     const subscription = await prisma.subscription.findFirstOrThrow({ where: { proId: pro.proId } });
-    const plan = await prisma.plan.findUniqueOrThrow({ where: { slug: 'pro' } });
+    const plan = await prisma.plan.findUniqueOrThrow({ where: { slug: 'vakman' } });
     await prisma.subscription.update({
       where: { id: subscription.id },
       data: { planId: plan.id, status: 'PAST_DUE' },
     });
-    const vat = applyVat(plan.monthlyPriceCentimes);
+    const vat = applyVat(plan.monthlyPriceCents);
     const payment = await prisma.payment.create({
       data: {
         subscriptionId: subscription.id,
-        reference: 'KH-2026-009999',
-        netCentimes: vat.netCentimes,
-        vatCentimes: vat.vatCentimes,
-        grossCentimes: vat.grossCentimes,
-        method: 'CMI_CARD',
+        reference: 'BK-2026-009999',
+        netCents: vat.netCents,
+        vatCents: vat.vatCents,
+        grossCents: vat.grossCents,
+        method: 'IDEAL',
         status: 'PENDING',
       },
     });
@@ -117,7 +117,7 @@ describe('the payment callback', () => {
       reference: payment.reference,
       providerRef: 'cmi_ref_1',
       status: 'PAID' as const,
-      amountCentimes: vat.grossCentimes,
+      amountCents: vat.grossCents,
       signature: 'mock-signature',
     };
 
@@ -142,11 +142,11 @@ describe('the payment callback', () => {
     const payment = await prisma.payment.create({
       data: {
         subscriptionId: subscription.id,
-        reference: 'KH-2026-009998',
-        netCentimes: 59_900,
-        vatCentimes: 11_980,
-        grossCentimes: 71_880,
-        method: 'CMI_CARD',
+        reference: 'BK-2026-009998',
+        netCents: 59_900,
+        vatCents: 11_980,
+        grossCents: 71_880,
+        method: 'IDEAL',
         status: 'PENDING',
       },
     });
@@ -158,7 +158,7 @@ describe('the payment callback', () => {
         reference: payment.reference,
         providerRef: 'cmi_ref_2',
         status: 'FAILED',
-        amountCentimes: 71_880,
+        amountCents: 71_880,
         signature: 'mock-signature',
       },
     });
@@ -174,7 +174,7 @@ describe('the payment callback', () => {
 
 describe('cancelling', () => {
   it('keeps access to the end of the paid period by default', async () => {
-    const pro = await createPro(app, { phone: '0614000060', planSlug: 'pro' });
+    const pro = await createPro(app, { phone: '0614000060', planSlug: 'vakman' });
 
     const response = await app.inject({
       method: 'POST',
@@ -198,7 +198,7 @@ describe('cancelling', () => {
   });
 
   it('ends access immediately when asked to', async () => {
-    const pro = await createPro(app, { phone: '0614000070', planSlug: 'pro' });
+    const pro = await createPro(app, { phone: '0614000070', planSlug: 'vakman' });
 
     await app.inject({
       method: 'POST',
@@ -223,22 +223,22 @@ describe('cancelling', () => {
 
 describe('plan limits', () => {
   it('refuses more trades than the plan allows', async () => {
-    const pro = await createPro(app, { phone: '0614000080', planSlug: 'artisan' });
+    const pro = await createPro(app, { phone: '0614000080', planSlug: 'zzp' });
 
     const response = await app.inject({
       method: 'PUT',
       url: '/v1/pros/me',
       headers: auth(pro.accessToken),
       payload: {
-        displayName: 'Entreprise de test',
-        legalForm: 'SARL',
-        bio: "Entreprise de test disposant d'une équipe complète et de plusieurs années d'expérience.",
+        displayName: 'Testbedrijf',
+        legalForm: 'BV',
+        bio: 'Testbedrijf met een compleet team en ruime ervaring in binnen- en buitenwerk.',
         yearsExperience: 10,
-        baseCitySlug: 'casablanca',
-        // The artisan plan allows two trades.
-        categorySlugs: ['peinture-interieure', 'fuite-eau', 'debouchage'],
-        citySlugs: ['casablanca'],
-        ice: '999990614000080',
+        baseCitySlug: 'utrecht',
+        // The zzp plan allows two trades.
+        categorySlugs: ['binnenschilderwerk', 'lekkage', 'riool-ontstoppen'],
+        citySlugs: ['utrecht'],
+        kvk: '99614000080'.slice(-8),
       },
     });
 

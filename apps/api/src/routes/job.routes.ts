@@ -7,7 +7,7 @@ import {
   listMyJobsSchema,
   rejectQuoteSchema,
   updateJobSchema,
-} from '@khidma/shared';
+} from '@buurklus/shared';
 import { z } from 'zod';
 import { AppError } from '../lib/errors.js';
 import { localizeAll, withLocalizedNames } from '../lib/localize.js';

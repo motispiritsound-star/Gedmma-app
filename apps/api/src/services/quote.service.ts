@@ -1,10 +1,10 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
 import {
   JOB_MAX_QUOTES,
-  dirhamsToCentimes,
+  eurosToCents,
   leadDelayMinutes,
   type CreateQuoteInput,
-} from '@khidma/shared';
+} from '@buurklus/shared';
 import { AppError } from '../lib/errors.js';
 import { cursorArgs, toPage } from '../lib/pagination.js';
 import { SubscriptionService } from './subscription.service.js';
@@ -19,7 +19,7 @@ export class QuoteService {
 
   /**
    * Sends a quote on a job. This is the single moment where a professional
-   * spends money on Khidma, so it is done in one transaction: check the job is
+   * spends money on Buurklus, so it is done in one transaction: check the job is
    * still open, spend a credit, write the quote, and open the conversation.
    */
   async submit(params: { proId: string; jobId: string; input: CreateQuoteInput }) {
@@ -83,7 +83,7 @@ export class QuoteService {
         data: {
           jobId: job.id,
           proId: params.proId,
-          amountCentimes: dirhamsToCentimes(params.input.amountMad),
+          amountCents: eurosToCents(params.input.amountEur),
           isEstimate: params.input.isEstimate,
           message: params.input.message,
           estimatedDurationDays: params.input.estimatedDurationDays,
@@ -120,7 +120,7 @@ export class QuoteService {
       userId: job.customerId,
       type: 'JOB_NEW_QUOTE',
       params: { jobTitle: job.title, jobReference: job.reference },
-      deepLink: `khidma://jobs/${job.id}`,
+      deepLink: `buurklus://jobs/${job.id}`,
     });
 
     return quote;
@@ -166,13 +166,13 @@ export class QuoteService {
     await this.notifications.notifyPro(quote.proId, {
       type: 'JOB_AWARDED',
       params: { jobTitle: job.title, jobReference: job.reference },
-      deepLink: `khidma://quotes/${quote.id}`,
+      deepLink: `buurklus://quotes/${quote.id}`,
     });
     for (const loser of losers) {
       await this.notifications.notifyPro(loser.proId, {
         type: 'QUOTE_REJECTED',
         params: { jobTitle: job.title, jobReference: job.reference },
-        deepLink: `khidma://quotes/${loser.id}`,
+        deepLink: `buurklus://quotes/${loser.id}`,
       });
     }
 
@@ -199,7 +199,7 @@ export class QuoteService {
     await this.notifications.notifyPro(quote.proId, {
       type: 'QUOTE_REJECTED',
       params: { jobTitle: quote.job.title, jobReference: quote.job.reference },
-      deepLink: `khidma://quotes/${quote.id}`,
+      deepLink: `buurklus://quotes/${quote.id}`,
     });
 
     return updated;
@@ -271,7 +271,7 @@ export class QuoteService {
       await this.notifications.notifyPro(quote.proId, {
         type: 'JOB_CANCELLED',
         params: { jobTitle: job.title, jobReference: job.reference },
-        deepLink: `khidma://quotes/${quote.id}`,
+        deepLink: `buurklus://quotes/${quote.id}`,
       });
     }
 
@@ -291,8 +291,8 @@ export class QuoteService {
             status: true,
             urgency: true,
             awardedQuoteId: true,
-            city: { select: { slug: true, nameFr: true, nameAr: true, nameEn: true } },
-            category: { select: { slug: true, nameFr: true, nameAr: true, nameEn: true, icon: true } },
+            city: { select: { slug: true, nameNl: true, nameEn: true } },
+            category: { select: { slug: true, nameNl: true, nameEn: true, icon: true } },
             customer: { select: { firstName: true, avatarUrl: true } },
           },
         },

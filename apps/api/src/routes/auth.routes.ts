@@ -4,7 +4,7 @@ import {
   requestOtpSchema,
   updateProfileSchema,
   verifyOtpSchema,
-} from '@khidma/shared';
+} from '@buurklus/shared';
 import { z } from 'zod';
 import { env } from '../env.js';
 import { AppError } from '../lib/errors.js';
@@ -50,7 +50,7 @@ const authRoutes: FastifyPluginAsync = async (app) => {
       });
 
       if (body.deviceToken) {
-        const platform = String(request.headers['x-khidma-platform'] ?? 'unknown');
+        const platform = String(request.headers['x-buurklus-platform'] ?? 'unknown');
         await app.services.auth.registerDevice(user.id, body.deviceToken, platform);
       }
 
@@ -104,7 +104,7 @@ const authRoutes: FastifyPluginAsync = async (app) => {
     const user = await app.prisma.user.findUnique({
       where: { id: request.currentUser!.sub },
       include: {
-        city: { select: { slug: true, nameFr: true, nameAr: true, nameEn: true } },
+        city: { select: { slug: true, nameNl: true, nameEn: true } },
         proProfile: { select: { id: true, displayName: true, verificationStatus: true } },
       },
     });

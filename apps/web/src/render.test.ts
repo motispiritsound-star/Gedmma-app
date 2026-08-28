@@ -5,9 +5,9 @@ import {
   ROOT_CATEGORIES,
   SUPPORTED_LOCALES,
   applyVat,
-  dirhamsToCentimes,
+  eurosToCents,
   localize,
-} from '@khidma/shared';
+} from '@buurklus/shared';
 import { COPY } from './content.js';
 import { esc, renderHome, renderPro, renderRootRedirect, renderSitemap } from './render.js';
 
@@ -17,10 +17,9 @@ const pages = SUPPORTED_LOCALES.flatMap((locale) => [
 ]);
 
 describe('every page', () => {
-  it('declares its language and reading direction', () => {
+  it('declares its language', () => {
     for (const page of pages) {
-      const dir = page.locale === 'ar' ? 'rtl' : 'ltr';
-      expect(page.html, page.name).toContain(`<html lang="${page.locale}" dir="${dir}">`);
+      expect(page.html, page.name).toContain(`<html lang="${page.locale}">`);
     }
   });
 
@@ -49,25 +48,27 @@ describe('every page', () => {
   });
 });
 
-describe('content coming from @khidma/shared', () => {
-  it('lists trades in the page language, not in French three times', () => {
-    const plumbing = ROOT_CATEGORIES.find((category) => category.slug === 'plomberie')!;
-    expect(renderHome('fr')).toContain(esc(localize(plumbing.name, 'fr')));
-    expect(renderHome('ar')).toContain(esc(localize(plumbing.name, 'ar')));
+describe('content coming from @buurklus/shared', () => {
+  it('lists trades in the page language, not in Dutch twice', () => {
+    const plumbing = ROOT_CATEGORIES.find((category) => category.slug === 'loodgieter')!;
+    expect(renderHome('nl')).toContain(esc(localize(plumbing.name, 'nl')));
     expect(renderHome('en')).toContain(esc(localize(plumbing.name, 'en')));
+    // The Dutch and English names differ, so this would catch a page rendered
+    // in the wrong language.
+    expect(localize(plumbing.name, 'nl')).not.toBe(localize(plumbing.name, 'en'));
   });
 
-  it('names real Moroccan cities', () => {
-    const casablanca = CITIES.find((city) => city.slug === 'casablanca')!;
-    expect(renderHome('fr')).toContain(esc(localize(casablanca.name, 'fr')));
-    expect(renderHome('ar')).toContain(esc(localize(casablanca.name, 'ar')));
+  it('names real Dutch municipalities', () => {
+    const utrecht = CITIES.find((city) => city.slug === 'utrecht')!;
+    expect(renderHome('nl')).toContain(esc(localize(utrecht.name, 'nl')));
+    expect(renderHome('en')).toContain(esc(localize(utrecht.name, 'en')));
   });
 
   it('quotes the same prices the app charges, with VAT beneath', () => {
-    const html = renderPro('fr');
+    const html = renderPro('nl');
     for (const plan of PLANS) {
-      const net = dirhamsToCentimes(plan.monthlyPriceMad);
-      const gross = applyVat(net).grossCentimes;
+      const net = eurosToCents(plan.monthlyPriceEur);
+      const gross = applyVat(net).grossCents;
       // Compare on digits: the currency formatter inserts its own separators.
       const digits = (value: number) => String(Math.round(value / 100));
       expect(html.replace(/[^\d<>="/\w]/g, ''), plan.slug).toContain(digits(net));
@@ -77,10 +78,10 @@ describe('content coming from @khidma/shared', () => {
 
   it('describes the plan limits exactly as the plans define them', () => {
     const html = renderPro('en');
-    const pro = PLANS.find((plan) => plan.slug === 'pro')!;
-    expect(html).toContain(`${pro.monthlyCredits} quotes per month`);
-    expect(html).toContain(`${pro.leadHeadStartMinutes}-minute head start`);
-    expect(renderPro('en')).toContain('Unlimited cities');
+    const vakman = PLANS.find((plan) => plan.slug === 'vakman')!;
+    expect(html).toContain(`${vakman.monthlyCredits} quotes per month`);
+    expect(html).toContain(`${vakman.leadHeadStartMinutes}-minute head start`);
+    expect(renderPro('en')).toContain('The whole country');
   });
 });
 
@@ -95,9 +96,9 @@ describe('the pricing table', () => {
   });
 
   it('offers every plan the professional can actually buy', () => {
-    const html = renderPro('fr');
+    const html = renderPro('nl');
     for (const plan of PLANS) {
-      expect(html, plan.slug).toContain(esc(localize(plan.name, 'fr')));
+      expect(html, plan.slug).toContain(esc(localize(plan.name, 'nl')));
     }
   });
 });
@@ -132,6 +133,12 @@ describe('crawlability', () => {
     for (const locale of SUPPORTED_LOCALES) {
       expect(sitemap).toContain(`/${locale}/`);
       expect(sitemap).toContain(`/${locale}/pro/`);
+    }
+  });
+
+  it('never leaves the old brand name on a page', () => {
+    for (const page of pages) {
+      expect(page.html.toLowerCase(), page.name).not.toContain('khidma');
     }
   });
 

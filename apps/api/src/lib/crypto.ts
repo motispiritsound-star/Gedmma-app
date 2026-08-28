@@ -24,7 +24,7 @@ export function generateOpaqueToken(bytes = 48): string {
 const REFERENCE_ALPHABET = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
 
 /**
- * Short job reference like `KH-7F2K9M`, avoiding characters that are easy to
+ * Short job reference like `BK-7F2K9M`, avoiding characters that are easy to
  * misread aloud over the phone (0/O, 1/I).
  */
 export function generateJobReference(): string {
@@ -32,10 +32,10 @@ export function generateJobReference(): string {
   for (let i = 0; i < 6; i += 1) {
     suffix += REFERENCE_ALPHABET.charAt(randomInt(0, REFERENCE_ALPHABET.length));
   }
-  return `KH-${suffix}`;
+  return `BK-${suffix}`;
 }
 
-/** Sequential-looking invoice reference, e.g. `KH-2026-000418`. */
+/** Sequential-looking invoice reference, e.g. `BK-2026-000418`. */
 export function invoiceReference(year: number, sequence: number): string {
-  return `KH-${year}-${sequence.toString().padStart(6, '0')}`;
+  return `BK-${year}-${sequence.toString().padStart(6, '0')}`;
 }

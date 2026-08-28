@@ -9,7 +9,7 @@ export const QUOTE_MESSAGE_MAX = 2000;
 export const QUOTE_DEFAULT_VALIDITY_DAYS = 14;
 
 export const createQuoteSchema = z.object({
-  amountMad: z.number().int().min(50).max(5_000_000),
+  amountEur: z.number().int().min(25).max(1_000_000),
   /** Whether `amountMad` is a fixed price or an estimate pending a site visit. */
   isEstimate: z.boolean().default(false),
   message: z.string().trim().min(QUOTE_MESSAGE_MIN).max(QUOTE_MESSAGE_MAX),

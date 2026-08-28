@@ -1,5 +1,5 @@
 import type { FastifyPluginAsync } from 'fastify';
-import { paginationSchema, sendMessageSchema } from '@khidma/shared';
+import { paginationSchema, sendMessageSchema } from '@buurklus/shared';
 import { z } from 'zod';
 
 const messageRoutes: FastifyPluginAsync = async (app) => {

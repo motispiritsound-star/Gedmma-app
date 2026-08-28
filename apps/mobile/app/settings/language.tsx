@@ -1,9 +1,9 @@
 import React from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
-import { SUPPORTED_LOCALES, isRtl, type Locale } from '@khidma/shared';
+import { SUPPORTED_LOCALES, type Locale } from '@buurklus/shared';
 import { Txt } from '@/components/ui';
 import { useSession } from '@/store/session';
 import { colors, radius, spacing } from '@/theme';
@@ -16,20 +16,9 @@ export default function LanguageSettings() {
 
   async function choose(next: Locale) {
     if (next === locale) return;
-
-    const directionChanges = isRtl(next) !== isRtl(locale);
     await setLocale(next);
     await i18n.changeLanguage(next);
-
-    if (directionChanges) {
-      // Going into or out of Arabic flips the whole layout, which needs a
-      // reload to take effect on native views.
-      Alert.alert(t('language.title'), t('language.restartNotice'), [
-        { text: t('common.confirm'), onPress: () => router.back() },
-      ]);
-    } else {
-      router.back();
-    }
+    router.back();
   }
 
   return (

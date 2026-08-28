@@ -4,16 +4,13 @@ import { Stack, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
-import { LEGAL_FORMS, isValidCin, isValidIce, type LegalForm } from '@khidma/shared';
+import { LEGAL_FORMS, isValidKvk, type LegalForm } from '@buurklus/shared';
 import { Badge, Button, Card, Field, Txt } from '@/components/ui';
 import { useApi, usePublicApi } from '@/hooks/use-api';
 import { useSession } from '@/store/session';
 import { ApiError } from '@/api/client';
 import type { CategoryNode, CityRef } from '@/api/types';
 import { colors, radius, spacing } from '@/theme';
-
-/** Legal forms that identify a person rather than a registered company. */
-const SOLE_TRADER_FORMS: LegalForm[] = ['AUTO_ENTREPRENEUR', 'PERSONNE_PHYSIQUE'];
 
 function MultiSelect<T extends { slug: string; name: string }>({
   options,
@@ -64,16 +61,15 @@ export default function ProOnboarding() {
   const reloadUser = useSession((state) => state.reloadUser);
 
   const [displayName, setDisplayName] = useState('');
-  const [legalForm, setLegalForm] = useState<LegalForm>('SARL');
+  const [legalForm, setLegalForm] = useState<LegalForm>('EENMANSZAAK');
   const [bio, setBio] = useState('');
   const [yearsExperience, setYearsExperience] = useState('');
   const [teamSize, setTeamSize] = useState('1');
   const [baseCity, setBaseCity] = useState<string | null>(null);
   const [trades, setTrades] = useState<string[]>([]);
   const [cities, setCities] = useState<string[]>([]);
-  const [ice, setIce] = useState('');
-  const [cin, setCin] = useState('');
-  const [rc, setRc] = useState('');
+  const [kvk, setKvk] = useState('');
+  const [vatId, setVatId] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const categoriesQuery = useQuery({
@@ -91,10 +87,9 @@ export default function ProOnboarding() {
   );
   const cityOptions = citiesQuery.data?.cities ?? [];
 
-  const isSoleTrader = SOLE_TRADER_FORMS.includes(legalForm);
-  const identifierValid = isSoleTrader
-    ? isValidCin(cin) || isValidIce(ice)
-    : isValidIce(ice);
+  // Every business registered in the Netherlands has a KvK number, including a
+  // one-person zzp business, so there is one rule rather than a branch.
+  const identifierValid = isValidKvk(kvk);
 
   const canSubmit =
     displayName.trim().length >= 2 &&
@@ -118,9 +113,8 @@ export default function ProOnboarding() {
           serviceRadiusKm: 40,
           categorySlugs: trades,
           citySlugs: cities,
-          ice: isValidIce(ice) ? ice : undefined,
-          cin: isValidCin(cin) ? cin : undefined,
-          rc: rc.trim() || undefined,
+          kvk,
+          vatId: vatId.trim() || undefined,
         },
       }),
     onSuccess: async () => {
@@ -250,30 +244,18 @@ export default function ProOnboarding() {
           </Txt>
 
           <Field
-            label={t('pro.ice')}
-            value={ice}
-            onChangeText={(value) => setIce(value.replace(/\D/g, '').slice(0, 15))}
+            label={t('pro.kvk')}
+            value={kvk}
+            onChangeText={(value) => setKvk(value.replace(/\D/g, '').slice(0, 8))}
             keyboardType="number-pad"
-            optional={isSoleTrader}
-            optionalLabel={t('common.optional')}
             style={{ textAlign: 'left', writingDirection: 'ltr' }}
           />
 
-          {isSoleTrader ? (
-            <Field
-              label={t('pro.cin')}
-              value={cin}
-              onChangeText={(value) => setCin(value.toUpperCase().slice(0, 10))}
-              autoCapitalize="characters"
-              style={{ textAlign: 'left', writingDirection: 'ltr' }}
-            />
-          ) : null}
-
           <Field
-            label={t('pro.rc')}
-            value={rc}
-            onChangeText={(value) => setRc(value.replace(/\D/g, ''))}
-            keyboardType="number-pad"
+            label={t('pro.vatId')}
+            value={vatId}
+            onChangeText={(value) => setVatId(value.toUpperCase().slice(0, 14))}
+            autoCapitalize="characters"
             optional
             optionalLabel={t('common.optional')}
             style={{ textAlign: 'left', writingDirection: 'ltr' }}

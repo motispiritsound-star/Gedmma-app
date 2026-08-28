@@ -28,15 +28,15 @@ export default function BudgetStep() {
   const guidance = useMemo(() => {
     const flat = (data?.categories ?? []).flatMap((parent) => [parent, ...parent.children]);
     const match = flat.find((entry) => entry.slug === draft.categorySlug);
-    if (!match?.typicalBudgetMinCentimes || !match.typicalBudgetMaxCentimes) return null;
+    if (!match?.typicalBudgetMinCents || !match.typicalBudgetMaxCents) return null;
     return t('job.budgetTypical', {
-      min: formatMoney(match.typicalBudgetMinCentimes, locale),
-      max: formatMoney(match.typicalBudgetMaxCentimes, locale),
+      min: formatMoney(match.typicalBudgetMinCents, locale),
+      max: formatMoney(match.typicalBudgetMaxCents, locale),
     });
   }, [data, draft.categorySlug, locale, t]);
 
-  const min = Number.parseInt(draft.budgetMinMad, 10);
-  const max = Number.parseInt(draft.budgetMaxMad, 10);
+  const min = Number.parseInt(draft.budgetMinEur, 10);
+  const max = Number.parseInt(draft.budgetMaxEur, 10);
   const inverted = Number.isFinite(min) && Number.isFinite(max) && min > max;
 
   return (
@@ -64,8 +64,8 @@ export default function BudgetStep() {
 
         <Field
           label={t('job.budgetMin')}
-          value={draft.budgetMinMad}
-          onChangeText={(value) => draft.update({ budgetMinMad: value.replace(/\D/g, '') })}
+          value={draft.budgetMinEur}
+          onChangeText={(value) => draft.update({ budgetMinEur: value.replace(/\D/g, '') })}
           keyboardType="number-pad"
           optional
           optionalLabel={t('common.optional')}
@@ -73,8 +73,8 @@ export default function BudgetStep() {
         />
         <Field
           label={t('job.budgetMax')}
-          value={draft.budgetMaxMad}
-          onChangeText={(value) => draft.update({ budgetMaxMad: value.replace(/\D/g, '') })}
+          value={draft.budgetMaxEur}
+          onChangeText={(value) => draft.update({ budgetMaxEur: value.replace(/\D/g, '') })}
           keyboardType="number-pad"
           error={inverted ? t('errors.budgetRange') : null}
           optional

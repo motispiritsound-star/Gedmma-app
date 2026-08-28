@@ -1,10 +1,10 @@
-import type { Locale } from '@khidma/shared';
+import type { Locale } from '@buurklus/shared';
 
 /**
  * Website copy. Deliberately separate from the app's translation bundle: the
  * app labels controls, the site has to argue a case, and mixing the two makes
- * both worse. Authored in each language rather than translated from French,
- * so the Arabic reads as Arabic.
+ * both worse. Dutch is written first and English is written as English, not as
+ * a word-for-word rendering of the Dutch.
  */
 export interface SiteCopy {
   meta: {
@@ -69,444 +69,222 @@ export interface SiteCopy {
   };
 }
 
-const fr: SiteCopy = {
+const nl: SiteCopy = {
   meta: {
-    title: 'Khidma — Trouvez un artisan de confiance au Maroc',
+    title: 'Buurklus — Vind een vakman bij je in de buurt',
     description:
-      "Décrivez vos travaux et recevez jusqu'à 6 devis gratuits d'artisans et d'entreprises vérifiés, partout au Maroc. Gratuit et sans engagement.",
-    proTitle: 'Khidma Pro — Recevez des demandes de clients près de chez vous',
+      'Beschrijf je klus en ontvang tot 6 gratis offertes van vakmensen en bedrijven met een geverifieerd KvK-nummer. Gratis en vrijblijvend.',
+    proTitle: 'Buurklus voor vakmensen — Ontvang klussen bij je in de buurt',
     proDescription:
-      "Développez votre activité avec des demandes qualifiées dans vos métiers et vos villes. Abonnement mensuel, 14 jours d'essai gratuit.",
-    ogLocale: 'fr_MA',
+      'Vul je agenda met klussen die bij je vakgebied en je werkgebied passen. Maandabonnement, 14 dagen gratis proberen.',
+    ogLocale: 'nl_NL',
   },
   nav: {
-    trades: 'Métiers',
-    how: 'Comment ça marche',
-    pros: 'Vous êtes professionnel',
-    cta: 'Publier une demande',
-    ctaShort: 'Publier',
-    forCustomers: 'Vous cherchez un artisan',
+    trades: 'Vakgebieden',
+    how: 'Hoe het werkt',
+    pros: 'Voor vakmensen',
+    cta: 'Klus plaatsen',
+    ctaShort: 'Plaatsen',
+    forCustomers: 'Je zoekt een vakman',
   },
   hero: {
-    eyebrow: 'Gratuit pour les particuliers',
-    title: 'Trouvez le bon professionnel, près de chez vous',
+    eyebrow: 'Gratis voor particulieren',
+    title: 'Vind een vakman bij je in de buurt',
     subtitle:
-      "Décrivez vos travaux en deux minutes. Des artisans et des entreprises vérifiés de votre ville vous envoient leurs devis. Vous comparez, vous choisissez.",
-    primaryCta: 'Publier une demande',
-    secondaryCta: 'Voir les métiers',
-    note: 'Sans engagement · Vos coordonnées ne sont partagées qu’avec le professionnel que vous choisissez',
+      'Beschrijf je klus in twee minuten. Vakmensen en bedrijven uit je eigen gemeente sturen je hun offerte. Jij vergelijkt en kiest.',
+    primaryCta: 'Klus plaatsen',
+    secondaryCta: 'Bekijk de vakgebieden',
+    note: 'Vrijblijvend · Je gegevens gaan alleen naar de vakman die je kiest',
   },
   proof: {
-    trades: 'métiers couverts',
-    cities: 'villes au Maroc',
-    free: 'gratuit pour les clients',
-    verified: 'entreprises vérifiées par ICE',
+    trades: 'vakgebieden',
+    cities: 'gemeenten',
+    free: 'gratis voor klanten',
+    verified: 'bedrijven met KvK-controle',
   },
   how: {
-    title: 'Comment ça marche',
-    subtitle: 'Trois étapes, et vous avez de quoi comparer.',
+    title: 'Hoe het werkt',
+    subtitle: 'Drie stappen, en je hebt iets om te vergelijken.',
     steps: [
       {
-        title: 'Décrivez vos travaux',
-        body: "Le métier, la ville, quelques photos si vous en avez. Deux minutes suffisent, et c'est gratuit.",
+        title: 'Beschrijf je klus',
+        body: 'Het vakgebied, je gemeente, een paar foto’s als je die hebt. Twee minuten werk, en het kost niets.',
       },
       {
-        title: 'Recevez jusqu’à 6 devis',
-        body: "Les professionnels de votre région vous répondent avec un prix, un délai et ce qui est inclus. Généralement sous 24 heures.",
+        title: 'Ontvang tot 6 offertes',
+        body: 'Vakmensen uit je regio reageren met een prijs, een termijn en wat er inbegrepen zit. Meestal binnen 24 uur.',
       },
       {
-        title: 'Choisissez en confiance',
-        body: "Comparez les prix, les avis et l'expérience. Le professionnel retenu reçoit alors vos coordonnées, pas avant.",
+        title: 'Kies met vertrouwen',
+        body: 'Vergelijk prijs, beoordelingen en ervaring. Pas dan krijgt de vakman die je kiest je adres en telefoonnummer.',
       },
     ],
   },
   trades: {
-    title: 'Tous les métiers du bâtiment et des services',
-    subtitle: 'De la petite réparation au chantier complet.',
-    all: 'Et bien d’autres',
-    budgetFrom: 'à partir de',
+    title: 'Van kleine reparatie tot complete verbouwing',
+    subtitle: 'Alle bouw- en onderhoudsvakken, plus het verduurzamingswerk.',
+    all: 'En nog veel meer',
+    budgetFrom: 'vanaf',
   },
   cities: {
-    title: 'Partout au Maroc',
-    subtitle: 'De Tanger à Dakhla, dans les grandes villes comme dans les villes moyennes.',
-    andMore: 'et {{count}} autres villes',
+    title: 'In heel Nederland',
+    subtitle: 'Van Groningen tot Maastricht, in de grote steden en de gemeenten daartussen.',
+    andMore: 'en {{count}} andere gemeenten',
   },
   trust: {
-    title: 'Pourquoi Khidma',
+    title: 'Waarom Buurklus',
     items: [
       {
-        title: 'Des entreprises vérifiées',
-        body: "Chaque société professionnelle fournit son ICE, l'identifiant public de son entreprise. Vous pouvez le vérifier vous-même.",
+        title: 'Bedrijven met een KvK-controle',
+        body: 'Elke vakman geeft zijn KvK-nummer op. Dat register is openbaar, dus je kunt het zelf natrekken.',
       },
       {
-        title: 'Des avis qui veulent dire quelque chose',
-        body: "Seul un client dont les travaux sont terminés peut laisser un avis, et une seule fois. Pas d'avis achetés.",
+        title: 'Beoordelingen die iets betekenen',
+        body: 'Alleen een klant van wie de klus is afgerond kan beoordelen, en één keer. Geen gekochte sterren.',
       },
       {
-        title: 'Votre adresse reste privée',
-        body: "Tant que vous n'avez pas choisi, les professionnels voient votre quartier, pas votre adresse ni votre numéro.",
+        title: 'Je adres blijft privé',
+        body: 'Tot je gekozen hebt zien vakmensen alleen je gemeente en je wijk. Niet je adres, niet je nummer.',
       },
       {
-        title: 'Aucune commission',
-        body: "Khidma ne prend rien sur vos travaux. Vous payez le professionnel directement, comme vous en convenez avec lui.",
+        title: 'Geen commissie',
+        body: 'Buurklus pakt niets van je klus af. Je betaalt de vakman rechtstreeks, zoals jullie het samen afspreken.',
       },
     ],
   },
   proTeaser: {
-    title: 'Vous êtes artisan ou société de services ?',
-    body: "Recevez des demandes qualifiées dans vos métiers et vos villes, et remplissez votre agenda sans démarchage.",
-    cta: 'Découvrir Khidma Pro',
+    title: 'Ben je vakman of heb je een servicebedrijf?',
+    body: 'Ontvang klussen die bij je vakgebied en je werkgebied passen, en vul je agenda zonder achter werk aan te bellen.',
+    cta: 'Bekijk Buurklus voor vakmensen',
     bullets: [
-      'Des demandes de clients réels, près de chez vous',
-      'Vous répondez quand la demande vous intéresse',
-      'Abonnement mensuel, sans commission sur vos chantiers',
-      '14 jours d’essai gratuit, sans carte bancaire',
+      'Klussen van echte klanten bij je in de buurt',
+      'Je reageert alleen als een klus je aanstaat',
+      'Maandabonnement, geen commissie over je werk',
+      '14 dagen gratis proberen, zonder betaalgegevens',
     ],
   },
   faq: {
-    title: 'Questions fréquentes',
+    title: 'Veelgestelde vragen',
     items: [
       {
-        q: 'Combien ça coûte pour un particulier ?',
-        a: "Rien. Publier une demande, recevoir des devis et échanger avec les professionnels est entièrement gratuit. Ce sont les professionnels qui s'abonnent.",
+        q: 'Wat kost het voor een particulier?',
+        a: 'Niets. Een klus plaatsen, offertes ontvangen en met vakmensen appen is helemaal gratis. De vakmensen nemen een abonnement.',
       },
       {
-        q: 'Combien de devis vais-je recevoir ?',
-        a: "Jusqu'à six. Au-delà, la demande n'accepte plus de réponses, pour que vous gardiez une décision gérable.",
+        q: 'Hoeveel offertes krijg ik?',
+        a: 'Maximaal zes. Daarna sluit de klus voor nieuwe reacties, zodat je keuze overzichtelijk blijft.',
       },
       {
-        q: 'Qui voit mon adresse et mon numéro ?',
-        a: "Uniquement le professionnel dont vous acceptez le devis. Avant cela, les autres voient votre ville et votre quartier, rien de plus.",
+        q: 'Wie ziet mijn adres en telefoonnummer?',
+        a: 'Alleen de vakman van wie je de offerte accepteert. Daarvoor zien de anderen je gemeente en je wijk, meer niet.',
       },
       {
-        q: 'Comment se passe le paiement des travaux ?',
-        a: "Directement entre vous et le professionnel, selon ce que vous convenez. Khidma n'intervient pas dans le paiement et ne prend aucune commission.",
+        q: 'Hoe wordt de klus betaald?',
+        a: 'Rechtstreeks tussen jou en de vakman, op de manier die jullie afspreken. Buurklus zit niet tussen de betaling en pakt geen commissie.',
       },
       {
-        q: 'Et si je change d’avis ?',
-        a: "Vous pouvez annuler votre demande tant que vous n'avez pas accepté de devis. Les professionnels qui avaient répondu sont prévenus et remboursés.",
+        q: 'En als ik me bedenk?',
+        a: 'Je kunt je klus intrekken zolang je nog geen offerte hebt geaccepteerd. Vakmensen die al reageerden krijgen bericht en hun offerte terug.',
       },
     ],
   },
   footer: {
-    tagline: 'La plateforme qui met en relation les Marocains avec des artisans et des entreprises de confiance.',
-    product: 'Le service',
-    company: 'Khidma',
-    legal: 'Informations légales',
+    tagline: 'Het platform dat mensen in Nederland verbindt met vakmensen en bedrijven die ze kunnen vertrouwen.',
+    product: 'De dienst',
+    company: 'Buurklus',
+    legal: 'Juridisch',
     links: {
-      about: 'À propos',
+      about: 'Over ons',
       contact: 'Contact',
-      terms: "Conditions d'utilisation",
-      privacy: 'Confidentialité',
-      help: 'Aide',
+      terms: 'Gebruiksvoorwaarden',
+      privacy: 'Privacy',
+      help: 'Hulp',
     },
-    rights: 'Tous droits réservés.',
-    languageLabel: 'Langue',
+    rights: 'Alle rechten voorbehouden.',
+    languageLabel: 'Taal',
   },
   pro: {
     hero: {
-      eyebrow: 'Pour les artisans et les entreprises',
-      title: 'Remplissez votre agenda, sans démarchage',
+      eyebrow: 'Voor vakmensen en bedrijven',
+      title: 'Vul je agenda zonder achter werk aan te bellen',
       subtitle:
-        "Des clients décrivent leurs travaux chaque jour dans votre ville. Recevez les demandes qui correspondent à vos métiers et répondez à celles qui vous intéressent.",
-      cta: 'Commencer l’essai gratuit',
-      ctaShort: 'Essai gratuit',
-      note: '14 jours offerts · Sans carte bancaire · Résiliable à tout moment',
+        'Elke dag beschrijven klanten hun klus in jouw gemeente. Ontvang de klussen die bij je vakgebied passen en reageer op wat je aanstaat.',
+      cta: 'Start je gratis proefperiode',
+      ctaShort: 'Gratis proberen',
+      note: '14 dagen gratis · Zonder betaalgegevens · Maandelijks opzegbaar',
     },
     value: {
-      title: 'Ce que vous obtenez',
+      title: 'Wat je krijgt',
       items: [
         {
-          title: 'Des demandes qualifiées',
-          body: "Le client a déjà décrit ses travaux, sa ville et son budget. Vous savez à quoi vous répondez avant de vous déplacer.",
+          title: 'Klussen met een duidelijke vraag',
+          body: 'De klant heeft het werk, de gemeente en het budget al beschreven. Je weet waar je op offreert voordat je in de bus stapt.',
         },
         {
-          title: 'Vous choisissez vos chantiers',
-          body: "Consulter les demandes ne coûte rien. Vous ne dépensez un devis que lorsque vous décidez de répondre.",
+          title: 'Jij kiest je klussen',
+          body: 'Klussen bekijken kost niets. Je verbruikt pas een offerte op het moment dat je besluit te reageren.',
         },
         {
-          title: 'Aucune commission',
-          body: "Vous facturez votre client directement. Khidma ne prend rien sur le montant de vos travaux.",
+          title: 'Geen commissie',
+          body: 'Je factureert je klant rechtstreeks. Buurklus pakt niets van de waarde van je werk.',
         },
         {
-          title: 'Un profil qui vous fait gagner',
-          body: "Vos avis, vos années d'expérience et votre ICE vérifié apparaissent à côté de chaque devis.",
+          title: 'Een profiel dat werk oplevert',
+          body: 'Je beoordelingen, je jaren ervaring en je gecontroleerde KvK-nummer staan naast elke offerte die je stuurt.',
         },
       ],
     },
     pricing: {
-      title: 'Des formules simples',
-      subtitle: 'Vous payez pour recevoir les demandes, jamais un pourcentage de vos chantiers.',
-      monthly: 'Mensuel',
-      yearly: 'Annuel',
-      perMonth: '/ mois',
-      perYear: '/ an',
-      excludingVat: 'HT',
-      includingVat: 'TTC',
-      quotes: 'devis par mois',
-      trades: 'métiers',
-      cities: 'villes',
-      citiesAll: 'Villes illimitées',
-      headStart: 'Accès aux demandes {{minutes}} min avant',
-      noHeadStart: 'Accès aux demandes de votre zone',
-      seats: 'comptes collaborateurs',
-      choose: 'Choisir cette formule',
-      popular: 'Le plus choisi',
-      vatNote: 'Prix hors taxes. TVA 20 % ajoutée à la facturation.',
-      trialNote: 'Chaque nouveau compte démarre avec {{days}} jours d’essai et {{credits}} devis offerts.',
+      title: 'Overzichtelijke pakketten',
+      subtitle: 'Je betaalt om klussen te ontvangen, nooit een percentage van je omzet.',
+      monthly: 'Maandelijks',
+      yearly: 'Jaarlijks',
+      perMonth: '/ maand',
+      perYear: '/ jaar',
+      excludingVat: 'excl. btw',
+      includingVat: 'incl. btw',
+      quotes: 'offertes per maand',
+      trades: 'vakgebieden',
+      cities: 'gemeenten',
+      citiesAll: 'Heel Nederland',
+      headStart: 'Klussen {{minutes}} minuten eerder zien',
+      noHeadStart: 'Toegang tot klussen in je werkgebied',
+      seats: 'medewerkersaccounts',
+      choose: 'Dit pakket kiezen',
+      popular: 'Meest gekozen',
+      vatNote: 'Prijzen zijn exclusief btw. Bij facturatie komt 21% btw erbij.',
+      trialNote: 'Elk nieuw account begint met {{days}} dagen proefperiode en {{credits}} gratis offertes.',
     },
     how: {
-      title: 'Comment démarrer',
+      title: 'Zo begin je',
       steps: [
-        { title: 'Créez votre profil', body: "Vos métiers, vos villes, votre ICE ou votre CIN. Comptez dix minutes." },
-        { title: 'Recevez les demandes', body: "Celles qui correspondent à vos métiers et à votre zone d'intervention arrivent dans l'application." },
-        { title: 'Envoyez vos devis', body: "Un prix, un délai, ce qui est inclus. Le client compare et vous répond." },
+        { title: 'Maak je profiel', body: 'Je vakgebieden, je werkgebied en je KvK-nummer. Tien minuten werk.' },
+        { title: 'Ontvang klussen', body: 'Klussen die bij je vakgebied en je werkgebied passen komen binnen in de app.' },
+        { title: 'Stuur je offerte', body: 'Een prijs, een termijn en wat erbij zit. De klant vergelijkt en reageert.' },
       ],
     },
     faq: {
-      title: 'Questions fréquentes',
+      title: 'Veelgestelde vragen',
       items: [
         {
-          q: 'Qu’est-ce qu’un devis dans ma formule ?',
-          a: "Chaque réponse envoyée à un client consomme un devis de votre quota mensuel. Consulter les demandes ne coûte rien.",
+          q: 'Wat telt als een offerte in mijn pakket?',
+          a: 'Elke reactie die je naar een klant stuurt verbruikt één offerte uit je maandtegoed. Klussen bekijken kost niets.',
         },
         {
-          q: 'Que se passe-t-il si je ne gagne pas le chantier ?',
-          a: "Le devis reste consommé : vous avez payé pour l'opportunité, pas pour le résultat. En revanche, si le client annule sa demande avant d'attribuer les travaux, votre devis vous est remboursé.",
+          q: 'Wat als ik de klus niet krijg?',
+          a: 'De offerte blijft verbruikt: je betaalt voor de kans, niet voor de uitkomst. Trekt de klant de klus in vóórdat hij gegund is, dan krijg je je offerte wel terug.',
         },
         {
-          q: 'Puis-je changer de formule ?',
-          a: "Oui, à tout moment depuis l'application. Le changement prend effet immédiatement et vos devis restants sont conservés.",
+          q: 'Kan ik van pakket wisselen?',
+          a: 'Ja, op elk moment in de app. De wijziging gaat direct in en je resterende offertes blijven staan.',
         },
         {
-          q: 'Faut-il une entreprise enregistrée ?',
-          a: "Une société fournit son ICE. Un auto-entrepreneur ou un artisan en nom propre peut s'inscrire avec sa CIN.",
+          q: 'Heb ik een ingeschreven bedrijf nodig?',
+          a: 'Je hebt een KvK-nummer nodig. Dat geldt ook voor zzp’ers: iedereen die in Nederland onderneemt staat ingeschreven.',
         },
         {
-          q: 'Comment se passe le paiement de l’abonnement ?',
-          a: "Par carte bancaire via CMI, ou par virement pour les entreprises qui facturent sur compte. Vous recevez une facture avec la TVA.",
-        },
-      ],
-    },
-  },
-};
-
-const ar: SiteCopy = {
-  meta: {
-    title: 'خدمة — اعثر على حرفي موثوق في المغرب',
-    description:
-      'صف الأشغال التي تحتاجها واحصل على ما يصل إلى 6 عروض أسعار مجانية من حرفيين وشركات موثقة في جميع أنحاء المغرب. مجانًا وبدون التزام.',
-    proTitle: 'خدمة برو — استقبل طلبات العملاء بالقرب منك',
-    proDescription:
-      'طوّر نشاطك بطلبات حقيقية في مهنك ومدنك. اشتراك شهري مع 14 يومًا تجربة مجانية.',
-    ogLocale: 'ar_MA',
-  },
-  nav: {
-    trades: 'المهن',
-    how: 'كيف يعمل',
-    pros: 'أنت محترف',
-    cta: 'انشر طلبًا',
-    ctaShort: 'انشر طلبًا',
-    forCustomers: 'تبحث عن حرفي',
-  },
-  hero: {
-    eyebrow: 'مجاني للأفراد',
-    title: 'اعثر على المحترف المناسب بالقرب منك',
-    subtitle:
-      'صف أشغالك في دقيقتين. حرفيون وشركات موثقة من مدينتك يرسلون لك عروض أسعارهم. تقارن، ثم تختار.',
-    primaryCta: 'انشر طلبًا',
-    secondaryCta: 'تصفح المهن',
-    note: 'بدون التزام · لا تُشارَك معلومات الاتصال بك إلا مع المحترف الذي تختاره',
-  },
-  proof: {
-    trades: 'مهنة مغطاة',
-    cities: 'مدينة في المغرب',
-    free: 'مجاني للعملاء',
-    verified: 'شركات موثقة بالمعرف الموحد',
-  },
-  how: {
-    title: 'كيف يعمل',
-    subtitle: 'ثلاث خطوات، ويصبح لديك ما تقارن به.',
-    steps: [
-      {
-        title: 'صف أشغالك',
-        body: 'المهنة، المدينة، وبعض الصور إن توفرت. دقيقتان تكفيان، والأمر مجاني.',
-      },
-      {
-        title: 'استقبل حتى 6 عروض',
-        body: 'يجيبك محترفو منطقتك بالسعر والأجل وما يشمله العرض. عادةً خلال 24 ساعة.',
-      },
-      {
-        title: 'اختر بثقة',
-        body: 'قارن الأسعار والتقييمات والخبرة. المحترف الذي تختاره هو وحده من يتوصل بمعلومات الاتصال بك، وليس قبل ذلك.',
-      },
-    ],
-  },
-  trades: {
-    title: 'جميع مهن البناء والخدمات',
-    subtitle: 'من الإصلاح البسيط إلى الورش الكاملة.',
-    all: 'والمزيد',
-    budgetFrom: 'ابتداءً من',
-  },
-  cities: {
-    title: 'في جميع أنحاء المغرب',
-    subtitle: 'من طنجة إلى الداخلة، في المدن الكبرى والمتوسطة على حد سواء.',
-    andMore: 'و{{count}} مدينة أخرى',
-  },
-  trust: {
-    title: 'لماذا خدمة',
-    items: [
-      {
-        title: 'شركات موثقة',
-        body: 'كل شركة محترفة تقدم معرفها الموحد للمقاولة، وهو معطى عمومي يمكنك التحقق منه بنفسك.',
-      },
-      {
-        title: 'تقييمات لها معنى',
-        body: 'لا يترك التقييم إلا عميل انتهت أشغاله، ومرة واحدة فقط. لا تقييمات مشتراة.',
-      },
-      {
-        title: 'عنوانك يبقى خاصًا',
-        body: 'قبل أن تختار، يرى المحترفون حيّك فقط، لا عنوانك ولا رقم هاتفك.',
-      },
-      {
-        title: 'بدون أي عمولة',
-        body: 'خدمة لا تقتطع شيئًا من أشغالك. تؤدي للمحترف مباشرة، حسب ما تتفقان عليه.',
-      },
-    ],
-  },
-  proTeaser: {
-    title: 'هل أنت حرفي أو شركة خدمات؟',
-    body: 'استقبل طلبات حقيقية في مهنك ومدنك، واملأ جدولك دون بحث عن الزبناء.',
-    cta: 'اكتشف خدمة برو',
-    bullets: [
-      'طلبات من عملاء حقيقيين بالقرب منك',
-      'ترد فقط عندما يهمك الطلب',
-      'اشتراك شهري، بدون عمولة على أوراشك',
-      '14 يومًا تجربة مجانية، بدون بطاقة بنكية',
-    ],
-  },
-  faq: {
-    title: 'أسئلة شائعة',
-    items: [
-      {
-        q: 'كم يكلف الأمر بالنسبة للفرد؟',
-        a: 'لا شيء. نشر الطلب وتلقي العروض والتواصل مع المحترفين مجاني بالكامل. المحترفون هم من يشتركون.',
-      },
-      {
-        q: 'كم عرضًا سأتلقى؟',
-        a: 'ما يصل إلى ستة. بعدها يتوقف الطلب عن قبول الردود، حتى يبقى القرار في متناولك.',
-      },
-      {
-        q: 'من يرى عنواني ورقمي؟',
-        a: 'المحترف الذي تقبل عرضه وحده. قبل ذلك يرى الآخرون مدينتك وحيّك، لا أكثر.',
-      },
-      {
-        q: 'كيف يتم أداء ثمن الأشغال؟',
-        a: 'مباشرة بينك وبين المحترف، حسب اتفاقكما. خدمة لا تتدخل في الأداء ولا تأخذ أي عمولة.',
-      },
-      {
-        q: 'وإن غيّرت رأيي؟',
-        a: 'يمكنك إلغاء طلبك ما دمت لم تقبل أي عرض. يُشعَر المحترفون الذين ردّوا ويُعاد لهم رصيدهم.',
-      },
-    ],
-  },
-  footer: {
-    tagline: 'المنصة التي تربط المغاربة بحرفيين وشركات موثوقة.',
-    product: 'الخدمة',
-    company: 'خدمة',
-    legal: 'معلومات قانونية',
-    links: {
-      about: 'من نحن',
-      contact: 'اتصل بنا',
-      terms: 'شروط الاستخدام',
-      privacy: 'الخصوصية',
-      help: 'المساعدة',
-    },
-    rights: 'جميع الحقوق محفوظة.',
-    languageLabel: 'اللغة',
-  },
-  pro: {
-    hero: {
-      eyebrow: 'للحرفيين والشركات',
-      title: 'املأ جدولك دون البحث عن الزبناء',
-      subtitle:
-        'كل يوم يصف عملاء أشغالهم في مدينتك. استقبل الطلبات المطابقة لمهنك، ورد على ما يهمك منها.',
-      cta: 'ابدأ التجربة المجانية',
-      ctaShort: 'تجربة مجانية',
-      note: '14 يومًا مجانًا · بدون بطاقة بنكية · يمكن الإلغاء في أي وقت',
-    },
-    value: {
-      title: 'ما الذي تحصل عليه',
-      items: [
-        {
-          title: 'طلبات واضحة',
-          body: 'العميل وصف أشغاله ومدينته وميزانيته مسبقًا. تعرف على ماذا ترد قبل أن تتنقل.',
-        },
-        {
-          title: 'أنت تختار أوراشك',
-          body: 'الاطلاع على الطلبات مجاني. لا تستهلك عرضًا إلا حين تقرر الرد.',
-        },
-        {
-          title: 'بدون أي عمولة',
-          body: 'تفوتر عميلك مباشرة. خدمة لا تقتطع شيئًا من مبلغ أشغالك.',
-        },
-        {
-          title: 'ملف يكسب لك الثقة',
-          body: 'تقييماتك وسنوات خبرتك ومعرفك الموحد الموثق تظهر بجانب كل عرض ترسله.',
-        },
-      ],
-    },
-    pricing: {
-      title: 'باقات بسيطة',
-      subtitle: 'تؤدي مقابل استقبال الطلبات، لا نسبة من أوراشك.',
-      monthly: 'شهري',
-      yearly: 'سنوي',
-      perMonth: '/ شهريًا',
-      perYear: '/ سنويًا',
-      excludingVat: 'دون الضريبة',
-      includingVat: 'مع الضريبة',
-      quotes: 'عرض سعر شهريًا',
-      trades: 'مهن',
-      cities: 'مدن',
-      citiesAll: 'مدن غير محدودة',
-      headStart: 'الوصول للطلبات قبل {{minutes}} دقيقة',
-      noHeadStart: 'الوصول لطلبات منطقتك',
-      seats: 'حسابات للموظفين',
-      choose: 'اختيار هذه الباقة',
-      popular: 'الأكثر اختيارًا',
-      vatNote: 'الأسعار دون احتساب الضريبة. تضاف الضريبة على القيمة المضافة 20% عند الفوترة.',
-      trialNote: 'كل حساب جديد يبدأ بـ{{days}} يومًا تجربة و{{credits}} عروض مجانية.',
-    },
-    how: {
-      title: 'كيف تبدأ',
-      steps: [
-        { title: 'أنشئ ملفك', body: 'مهنك، مدنك، ومعرفك الموحد أو بطاقتك الوطنية. عشر دقائق تكفي.' },
-        { title: 'استقبل الطلبات', body: 'تصلك في التطبيق الطلبات المطابقة لمهنك ولنطاق تدخلك.' },
-        { title: 'أرسل عروضك', body: 'سعر، أجل، وما يشمله العرض. العميل يقارن ثم يجيبك.' },
-      ],
-    },
-    faq: {
-      title: 'أسئلة شائعة',
-      items: [
-        {
-          q: 'ما المقصود بعرض السعر في باقتي؟',
-          a: 'كل رد ترسله لعميل يستهلك عرضًا من حصتك الشهرية. الاطلاع على الطلبات مجاني.',
-        },
-        {
-          q: 'ماذا لو لم أكسب الورش؟',
-          a: 'يبقى العرض مستهلكًا: أنت تؤدي مقابل الفرصة لا مقابل النتيجة. لكن إن ألغى العميل طلبه قبل إسناد الأشغال، يُعاد لك رصيدك.',
-        },
-        {
-          q: 'هل يمكنني تغيير الباقة؟',
-          a: 'نعم، في أي وقت من التطبيق. يسري التغيير فورًا وتحتفظ بعروضك المتبقية.',
-        },
-        {
-          q: 'هل يلزم أن تكون لدي شركة مسجلة؟',
-          a: 'الشركة تقدم معرفها الموحد. أما المقاول الذاتي أو الحرفي باسمه الشخصي فيسجل ببطاقته الوطنية.',
-        },
-        {
-          q: 'كيف يتم أداء الاشتراك؟',
-          a: 'ببطاقة بنكية عبر CMI، أو بتحويل بنكي للشركات التي تفوتر على حساب. تتوصل بفاتورة تتضمن الضريبة.',
+          q: 'Hoe betaal ik het abonnement?',
+          a: 'Met iDEAL of automatische incasso. Bedrijven die op rekening werken kunnen per bankoverschrijving betalen. Je ontvangt een factuur met btw.',
         },
       ],
     },
@@ -515,36 +293,36 @@ const ar: SiteCopy = {
 
 const en: SiteCopy = {
   meta: {
-    title: 'Khidma — Find a trusted tradesperson in Morocco',
+    title: 'Buurklus — Find a trusted tradesperson near you',
     description:
-      'Describe your job and receive up to 6 free quotes from verified tradespeople and companies across Morocco. Free, with no commitment.',
-    proTitle: 'Khidma Pro — Receive customer requests near you',
+      'Describe your job and receive up to 6 free quotes from tradespeople and companies with a verified Chamber of Commerce registration. Free, with no commitment.',
+    proTitle: 'Buurklus for tradespeople — Receive jobs near you',
     proDescription:
-      'Grow your business with qualified requests in your trades and your cities. Monthly subscription, 14-day free trial.',
-    ogLocale: 'en_MA',
+      'Fill your diary with jobs that match your trade and your service area. Monthly subscription, 14-day free trial.',
+    ogLocale: 'en_NL',
   },
   nav: {
     trades: 'Trades',
     how: 'How it works',
-    pros: 'For professionals',
+    pros: 'For tradespeople',
     cta: 'Post a job',
     ctaShort: 'Post a job',
     forCustomers: 'Looking for a tradesperson',
   },
   hero: {
     eyebrow: 'Free for households',
-    title: 'Find the right professional, close to home',
+    title: 'Find a trusted tradesperson near you',
     subtitle:
-      'Describe your job in two minutes. Verified tradespeople and companies in your city send you their quotes. You compare, you choose.',
+      'Describe your job in two minutes. Tradespeople and companies in your own municipality send you their quotes. You compare, you choose.',
     primaryCta: 'Post a job',
-    secondaryCta: 'Browse trades',
-    note: 'No commitment · Your contact details go only to the professional you choose',
+    secondaryCta: 'Browse the trades',
+    note: 'No commitment · Your details go only to the tradesperson you choose',
   },
   proof: {
     trades: 'trades covered',
-    cities: 'cities in Morocco',
+    cities: 'municipalities',
     free: 'free for customers',
-    verified: 'businesses verified by ICE',
+    verified: 'businesses checked at the Chamber of Commerce',
   },
   how: {
     title: 'How it works',
@@ -552,59 +330,59 @@ const en: SiteCopy = {
     steps: [
       {
         title: 'Describe your job',
-        body: 'The trade, the city, a few photos if you have them. Two minutes is enough, and it costs nothing.',
+        body: 'The trade, your municipality, a few photos if you have them. Two minutes, and it costs nothing.',
       },
       {
         title: 'Receive up to 6 quotes',
-        body: 'Professionals in your area reply with a price, a timescale and what is included. Usually within 24 hours.',
+        body: 'Tradespeople in your area reply with a price, a timescale and what is included. Usually within 24 hours.',
       },
       {
         title: 'Choose with confidence',
-        body: 'Compare prices, reviews and experience. Only the professional you pick receives your contact details, and not before.',
+        body: 'Compare price, reviews and experience. Only then does the tradesperson you pick receive your address and phone number.',
       },
     ],
   },
   trades: {
-    title: 'Every building and service trade',
-    subtitle: 'From a small repair to a full renovation.',
+    title: 'From a small repair to a full renovation',
+    subtitle: 'Every building and maintenance trade, plus the energy work.',
     all: 'And many more',
     budgetFrom: 'from',
   },
   cities: {
-    title: 'Across Morocco',
-    subtitle: 'From Tangier to Dakhla, in the major cities and the mid-sized ones alike.',
-    andMore: 'and {{count}} more cities',
+    title: 'Across the Netherlands',
+    subtitle: 'From Groningen to Maastricht, in the big cities and the towns between them.',
+    andMore: 'and {{count}} more municipalities',
   },
   trust: {
-    title: 'Why Khidma',
+    title: 'Why Buurklus',
     items: [
       {
-        title: 'Verified businesses',
-        body: 'Every professional company supplies its ICE, the public identifier of a Moroccan business. You can check it yourself.',
+        title: 'Businesses checked against the register',
+        body: 'Every tradesperson supplies their Chamber of Commerce number. That register is public, so you can check it yourself.',
       },
       {
         title: 'Reviews that mean something',
-        body: 'Only a customer whose work is finished can leave a review, and only once. No bought ratings.',
+        body: 'Only a customer whose job is finished can leave a review, and only once. No bought stars.',
       },
       {
         title: 'Your address stays private',
-        body: 'Until you choose, professionals see your district — not your address and not your number.',
+        body: 'Until you choose, tradespeople see only your municipality and district. Not your address, not your number.',
       },
       {
         title: 'No commission',
-        body: 'Khidma takes nothing from your job. You pay the professional directly, on the terms you agree between you.',
+        body: 'Buurklus takes nothing from your job. You pay the tradesperson directly, on the terms you agree between you.',
       },
     ],
   },
   proTeaser: {
     title: 'Are you a tradesperson or a service company?',
-    body: 'Receive qualified requests in your trades and your cities, and fill your diary without chasing work.',
-    cta: 'Discover Khidma Pro',
+    body: 'Receive jobs that match your trade and your service area, and fill your diary without chasing work.',
+    cta: 'See Buurklus for tradespeople',
     bullets: [
-      'Requests from real customers near you',
-      'Reply only when a job interests you',
+      'Jobs from real customers near you',
+      'Reply only when a job suits you',
       'Monthly subscription, no commission on your work',
-      '14-day free trial, no card needed',
+      '14-day free trial, no payment details',
     ],
   },
   faq: {
@@ -612,30 +390,30 @@ const en: SiteCopy = {
     items: [
       {
         q: 'What does it cost a household?',
-        a: 'Nothing. Posting a job, receiving quotes and messaging professionals is entirely free. It is the professionals who subscribe.',
+        a: 'Nothing. Posting a job, receiving quotes and messaging tradespeople is entirely free. It is the tradespeople who subscribe.',
       },
       {
         q: 'How many quotes will I get?',
-        a: 'Up to six. After that the job stops accepting replies, so your decision stays manageable.',
+        a: 'Up to six. After that the job closes to new replies, so your decision stays manageable.',
       },
       {
         q: 'Who sees my address and phone number?',
-        a: 'Only the professional whose quote you accept. Before that, the others see your city and district, nothing more.',
+        a: 'Only the tradesperson whose quote you accept. Before that, the others see your municipality and district, nothing more.',
       },
       {
-        q: 'How is the work paid for?',
-        a: 'Directly between you and the professional, on whatever terms you agree. Khidma takes no part in the payment and no commission.',
+        q: 'How is the job paid for?',
+        a: 'Directly between you and the tradesperson, on whatever terms you agree. Buurklus takes no part in the payment and no commission.',
       },
       {
         q: 'What if I change my mind?',
-        a: 'You can cancel your request at any point before you accept a quote. Professionals who replied are notified and refunded.',
+        a: 'You can withdraw your job at any point before you accept a quote. Tradespeople who replied are notified and refunded.',
       },
     ],
   },
   footer: {
-    tagline: 'The platform connecting people in Morocco with tradespeople and companies they can trust.',
+    tagline: 'The platform connecting people in the Netherlands with tradespeople and companies they can trust.',
     product: 'The service',
-    company: 'Khidma',
+    company: 'Buurklus',
     legal: 'Legal',
     links: {
       about: 'About',
@@ -652,35 +430,35 @@ const en: SiteCopy = {
       eyebrow: 'For tradespeople and companies',
       title: 'Fill your diary without chasing work',
       subtitle:
-        'Customers describe their jobs in your city every day. Receive the requests that match your trades, and reply to the ones worth your time.',
-      cta: 'Start the free trial',
+        'Customers describe their jobs in your municipality every day. Receive the ones that match your trade, and reply to those worth your time.',
+      cta: 'Start your free trial',
       ctaShort: 'Free trial',
-      note: '14 days free · No card needed · Cancel any time',
+      note: '14 days free · No payment details · Cancel monthly',
     },
     value: {
       title: 'What you get',
       items: [
         {
-          title: 'Qualified requests',
-          body: 'The customer has already described the work, the city and the budget. You know what you are quoting before you travel.',
+          title: 'Jobs with a clear brief',
+          body: 'The customer has already described the work, the municipality and the budget. You know what you are quoting before you get in the van.',
         },
         {
           title: 'You pick your jobs',
-          body: 'Browsing requests costs nothing. You only spend a quote when you decide to reply.',
+          body: 'Browsing jobs costs nothing. You only spend a quote when you decide to reply.',
         },
         {
           title: 'No commission',
-          body: 'You invoice your customer directly. Khidma takes nothing from the value of your work.',
+          body: 'You invoice your customer directly. Buurklus takes nothing from the value of your work.',
         },
         {
           title: 'A profile that wins work',
-          body: 'Your reviews, your years of experience and your verified ICE appear beside every quote you send.',
+          body: 'Your reviews, your years of experience and your verified Chamber of Commerce number sit beside every quote you send.',
         },
       ],
     },
     pricing: {
-      title: 'Simple plans',
-      subtitle: 'You pay to receive the requests, never a percentage of your jobs.',
+      title: 'Straightforward plans',
+      subtitle: 'You pay to receive the jobs, never a percentage of your turnover.',
       monthly: 'Monthly',
       yearly: 'Yearly',
       perMonth: '/ month',
@@ -689,22 +467,22 @@ const en: SiteCopy = {
       includingVat: 'incl. VAT',
       quotes: 'quotes per month',
       trades: 'trades',
-      cities: 'cities',
-      citiesAll: 'Unlimited cities',
+      cities: 'municipalities',
+      citiesAll: 'The whole country',
       headStart: '{{minutes}}-minute head start on new jobs',
-      noHeadStart: 'Access to jobs in your area',
+      noHeadStart: 'Access to jobs in your service area',
       seats: 'staff accounts',
       choose: 'Choose this plan',
-      popular: 'Most popular',
-      vatNote: 'Prices exclude tax. 20% Moroccan VAT is added at invoicing.',
+      popular: 'Most chosen',
+      vatNote: 'Prices exclude VAT. 21% Dutch VAT is added at invoicing.',
       trialNote: 'Every new account starts with {{days}} days of trial and {{credits}} free quotes.',
     },
     how: {
       title: 'Getting started',
       steps: [
-        { title: 'Create your profile', body: 'Your trades, your cities, and your ICE or CIN. About ten minutes.' },
-        { title: 'Receive requests', body: 'Jobs matching your trades and your travel radius arrive in the app.' },
-        { title: 'Send your quotes', body: 'A price, a timescale, what is included. The customer compares and replies.' },
+        { title: 'Create your profile', body: 'Your trades, your service area and your Chamber of Commerce number. About ten minutes.' },
+        { title: 'Receive jobs', body: 'Jobs matching your trade and your service area arrive in the app.' },
+        { title: 'Send your quote', body: 'A price, a timescale and what is included. The customer compares and replies.' },
       ],
     },
     faq: {
@@ -712,27 +490,27 @@ const en: SiteCopy = {
       items: [
         {
           q: 'What counts as a quote in my plan?',
-          a: 'Every reply you send a customer uses one quote from your monthly allowance. Browsing requests costs nothing.',
+          a: 'Every reply you send a customer uses one quote from your monthly allowance. Browsing jobs costs nothing.',
         },
         {
-          q: 'What happens if I do not win the job?',
-          a: 'The quote stays spent: you paid for the opportunity, not the outcome. If the customer cancels before awarding the work, though, your quote is refunded.',
+          q: 'What if I do not win the job?',
+          a: 'The quote stays spent: you pay for the opportunity, not the outcome. If the customer withdraws the job before awarding it, though, your quote is refunded.',
         },
         {
           q: 'Can I change plan?',
-          a: 'Yes, at any time from the app. The change takes effect immediately and your remaining quotes are kept.',
+          a: 'Yes, at any time in the app. The change takes effect immediately and your remaining quotes are kept.',
         },
         {
-          q: 'Do I need a registered company?',
-          a: 'A company supplies its ICE. A sole trader or auto-entrepreneur can register with their CIN instead.',
+          q: 'Do I need a registered business?',
+          a: 'You need a Chamber of Commerce number. That applies to sole traders too: everyone trading in the Netherlands is registered.',
         },
         {
-          q: 'How is the subscription paid?',
-          a: 'By bank card through CMI, or by transfer for companies that invoice on account. You receive an invoice showing the VAT.',
+          q: 'How do I pay for the subscription?',
+          a: 'By iDEAL or direct debit. Companies that work on account can pay by bank transfer. You receive an invoice showing the VAT.',
         },
       ],
     },
   },
 };
 
-export const COPY: Record<Locale, SiteCopy> = { fr, ar, en };
+export const COPY: Record<Locale, SiteCopy> = { nl, en };

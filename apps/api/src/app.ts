@@ -4,7 +4,7 @@ import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import { ZodError } from 'zod';
 import { Prisma } from '@prisma/client';
-import { DEFAULT_LOCALE } from '@khidma/shared';
+import { DEFAULT_LOCALE } from '@buurklus/shared';
 import { corsOrigins, env, type Env } from './env.js';
 import authPlugin from './plugins/auth.js';
 import servicesPlugin from './plugins/services.js';
@@ -35,7 +35,7 @@ export async function buildApp(config: Env = env()): Promise<FastifyInstance> {
   await app.register(cors, {
     origin: corsOrigins(config.CORS_ORIGINS),
     credentials: true,
-    allowedHeaders: ['content-type', 'authorization', 'x-khidma-locale', 'x-khidma-platform'],
+    allowedHeaders: ['content-type', 'authorization', 'x-buurklus-locale', 'x-buurklus-platform'],
   });
   // The whole test suite runs from one address, so IP-based limiting would
   // throttle it. The abuse controls that actually matter — the OTP resend
@@ -116,7 +116,7 @@ export async function buildApp(config: Env = env()): Promise<FastifyInstance> {
 
   app.get('/health', async () => {
     await app.prisma.$queryRaw`SELECT 1`;
-    return { status: 'ok', service: 'khidma-api', time: new Date().toISOString() };
+    return { status: 'ok', service: 'buurklus-api', time: new Date().toISOString() };
   });
 
   await app.register(authRoutes, { prefix: '/v1/auth' });

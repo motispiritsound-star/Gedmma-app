@@ -4,7 +4,7 @@ import { Stack, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
-import { JOB_DESCRIPTION_MIN, JOB_MAX_PHOTOS } from '@khidma/shared';
+import { JOB_DESCRIPTION_MIN, JOB_MAX_PHOTOS } from '@buurklus/shared';
 import { Button, Field, StepProgress, Txt } from '@/components/ui';
 import { useJobDraft } from '@/store/draft-job';
 import { colors, radius, spacing } from '@/theme';

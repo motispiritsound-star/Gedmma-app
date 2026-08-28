@@ -1,8 +1,8 @@
 {
-  "name": "khidma",
+  "name": "buurklus",
   "private": true,
   "version": "0.1.0",
-  "description": "Khidma - marketplace connecting customers in Morocco with tradespeople and service companies",
+  "description": "Buurklus - marketplace connecting households in the Netherlands with tradespeople and service companies",
   "workspaces": [
     "packages/*",
     "apps/*"
@@ -11,15 +11,15 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "npm run build --workspace @khidma/shared && npm run build --workspace @khidma/api && npm run build --workspace @khidma/web",
+    "build": "npm run build --workspace @buurklus/shared && npm run build --workspace @buurklus/api && npm run build --workspace @buurklus/web",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "db:up": "docker compose up -d postgres",
-    "db:migrate": "npm run db:migrate --workspace @khidma/api",
-    "db:seed": "npm run db:seed --workspace @khidma/api",
-    "dev:api": "npm run dev --workspace @khidma/api",
-    "dev:mobile": "npm run start --workspace @khidma/mobile",
-    "dev:web": "npm run dev --workspace @khidma/web"
+    "db:migrate": "npm run db:migrate --workspace @buurklus/api",
+    "db:seed": "npm run db:seed --workspace @buurklus/api",
+    "dev:api": "npm run dev --workspace @buurklus/api",
+    "dev:mobile": "npm run start --workspace @buurklus/mobile",
+    "dev:web": "npm run dev --workspace @buurklus/web"
   }
 }

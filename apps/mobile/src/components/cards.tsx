@@ -2,7 +2,7 @@ import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import type { Locale } from '@khidma/shared';
+import type { Locale } from '@buurklus/shared';
 import { colors, radius, spacing } from '../theme';
 import { formatDistanceLabel, formatMoney, formatRelative } from '../utils/format-helpers';
 import type { JobSummary, Lead, Quote } from '../api/types';
@@ -26,14 +26,14 @@ const STATUS_TONE = {
 } as const;
 
 function budgetLabel(job: JobSummary, locale: Locale): string | null {
-  if (job.budgetMinCentimes == null && job.budgetMaxCentimes == null) return null;
-  if (job.budgetMinCentimes != null && job.budgetMaxCentimes != null) {
-    if (job.budgetMinCentimes === job.budgetMaxCentimes) {
-      return formatMoney(job.budgetMinCentimes, locale);
+  if (job.budgetMinCents == null && job.budgetMaxCents == null) return null;
+  if (job.budgetMinCents != null && job.budgetMaxCents != null) {
+    if (job.budgetMinCents === job.budgetMaxCents) {
+      return formatMoney(job.budgetMinCents, locale);
     }
-    return `${formatMoney(job.budgetMinCentimes, locale)} – ${formatMoney(job.budgetMaxCentimes, locale)}`;
+    return `${formatMoney(job.budgetMinCents, locale)} – ${formatMoney(job.budgetMaxCents, locale)}`;
   }
-  return formatMoney(job.budgetMinCentimes ?? job.budgetMaxCentimes, locale);
+  return formatMoney(job.budgetMinCents ?? job.budgetMaxCents, locale);
 }
 
 /** The customer's own job, on the "my jobs" list. */
@@ -178,7 +178,7 @@ export function QuoteCard({
           ) : null}
         </View>
         <Txt variant="heading" color={colors.primaryDark}>
-          {formatMoney(quote.amountCentimes, locale)}
+          {formatMoney(quote.amountCents, locale)}
         </Txt>
       </View>
 

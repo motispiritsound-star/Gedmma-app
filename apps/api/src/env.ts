@@ -11,15 +11,19 @@ const envSchema = z.object({
   ACCESS_TOKEN_TTL: z.string().default('15m'),
   REFRESH_TOKEN_TTL: z.string().default('60d'),
 
+  /** Where the app and the API live, used to build redirect and webhook URLs. */
+  PUBLIC_APP_URL: z.string().url().default('https://buurklus.nl'),
+  PUBLIC_API_URL: z.string().url().default('http://localhost:4000'),
+
   SMS_PROVIDER: z.enum(['log', 'http']).default('log'),
-  SMS_SENDER_ID: z.string().default('Khidma'),
+  SMS_SENDER_ID: z.string().default('Buurklus'),
   SMS_API_KEY: z.string().optional(),
   SMS_ENDPOINT: z.string().url().optional(),
 
-  PAYMENT_PROVIDER: z.enum(['mock', 'cmi']).default('mock'),
-  CMI_MERCHANT_ID: z.string().optional(),
-  CMI_STORE_KEY: z.string().optional(),
-  CMI_GATEWAY_URL: z.string().url().optional(),
+  PAYMENT_PROVIDER: z.enum(['mock', 'mollie']).default('mock'),
+  MOLLIE_API_KEY: z.string().optional(),
+  /** Shared secret carried in the Mollie webhook URL and checked on callback. */
+  PAYMENT_WEBHOOK_SECRET: z.string().optional(),
 
   CORS_ORIGINS: z.string().default('*'),
 });
@@ -36,14 +40,16 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
       .join('\n');
     throw new Error(`Invalid environment configuration:\n${details}`);
   }
-  if (parsed.data.PAYMENT_PROVIDER === 'cmi') {
-    const missing = (['CMI_MERCHANT_ID', 'CMI_STORE_KEY', 'CMI_GATEWAY_URL'] as const).filter(
+
+  if (parsed.data.PAYMENT_PROVIDER === 'mollie') {
+    const missing = (['MOLLIE_API_KEY', 'PAYMENT_WEBHOOK_SECRET'] as const).filter(
       (key) => !parsed.data[key],
     );
     if (missing.length > 0) {
-      throw new Error(`PAYMENT_PROVIDER=cmi requires ${missing.join(', ')}`);
+      throw new Error(`PAYMENT_PROVIDER=mollie requires ${missing.join(', ')}`);
     }
   }
+
   return parsed.data;
 }
 

@@ -1,29 +1,28 @@
 import { DEFAULT_LOCALE, type Locale } from './locales.js';
 
-/** Every amount in Khidma is stored as an integer number of centimes (MAD/100). */
-export const CURRENCY = 'MAD' as const;
-export const CENTIMES_PER_DIRHAM = 100;
+/** Every amount in Buurklus is stored as an integer number of cents. */
+export const CURRENCY = 'EUR' as const;
+export const CENTS_PER_EURO = 100;
 
-/** Standard Moroccan VAT rate applied to professional subscriptions. */
-export const VAT_RATE = 0.2;
+/** The standard Dutch VAT rate, applied to professional subscriptions. */
+export const VAT_RATE = 0.21;
 
-export function dirhamsToCentimes(dirhams: number): number {
-  return Math.round(dirhams * CENTIMES_PER_DIRHAM);
+export function eurosToCents(euros: number): number {
+  return Math.round(euros * CENTS_PER_EURO);
 }
 
-export function centimesToDirhams(centimes: number): number {
-  return centimes / CENTIMES_PER_DIRHAM;
+export function centsToEuros(cents: number): number {
+  return cents / CENTS_PER_EURO;
 }
 
 const LOCALE_TAGS: Record<Locale, string> = {
-  fr: 'fr-MA',
-  ar: 'ar-MA',
-  en: 'en-MA',
+  nl: 'nl-NL',
+  en: 'en-NL',
 };
 
-/** Formats centimes as a currency string, e.g. `1 250,00 MAD`. */
-export function formatCentimes(
-  centimes: number,
+/** Formats cents as a currency string, e.g. `€ 1.250,00`. */
+export function formatCents(
+  cents: number,
   locale: Locale = DEFAULT_LOCALE,
   options: { withDecimals?: boolean } = {},
 ): string {
@@ -34,41 +33,41 @@ export function formatCentimes(
     currency: CURRENCY,
     minimumFractionDigits: fractionDigits,
     maximumFractionDigits: fractionDigits,
-  }).format(centimesToDirhams(centimes));
+  }).format(centsToEuros(cents));
 }
 
 /** Renders a job budget range, collapsing to a single value when both ends match. */
 export function formatBudgetRange(
-  minCentimes: number | null | undefined,
-  maxCentimes: number | null | undefined,
+  minCents: number | null | undefined,
+  maxCents: number | null | undefined,
   locale: Locale = DEFAULT_LOCALE,
 ): string | null {
   const opts = { withDecimals: false } as const;
-  if (minCentimes != null && maxCentimes != null) {
-    if (minCentimes === maxCentimes) return formatCentimes(minCentimes, locale, opts);
-    return `${formatCentimes(minCentimes, locale, opts)} – ${formatCentimes(maxCentimes, locale, opts)}`;
+  if (minCents != null && maxCents != null) {
+    if (minCents === maxCents) return formatCents(minCents, locale, opts);
+    return `${formatCents(minCents, locale, opts)} – ${formatCents(maxCents, locale, opts)}`;
   }
-  if (minCentimes != null) return formatCentimes(minCentimes, locale, opts);
-  if (maxCentimes != null) return formatCentimes(maxCentimes, locale, opts);
+  if (minCents != null) return formatCents(minCents, locale, opts);
+  if (maxCents != null) return formatCents(maxCents, locale, opts);
   return null;
 }
 
 export interface VatBreakdown {
-  /** Amount excluding tax — "hors taxes" on a Moroccan invoice. */
-  netCentimes: number;
-  vatCentimes: number;
-  /** Amount including tax — "toutes taxes comprises". */
-  grossCentimes: number;
+  /** Amount excluding tax — "exclusief btw" on a Dutch invoice. */
+  netCents: number;
+  vatCents: number;
+  /** Amount including tax — "inclusief btw". */
+  grossCents: number;
   vatRate: number;
 }
 
-/** Splits a tax-exclusive price into the HT / TVA / TTC lines of an invoice. */
-export function applyVat(netCentimes: number, rate: number = VAT_RATE): VatBreakdown {
-  const vatCentimes = Math.round(netCentimes * rate);
+/** Splits a tax-exclusive price into the ex-btw / btw / incl-btw invoice lines. */
+export function applyVat(netCents: number, rate: number = VAT_RATE): VatBreakdown {
+  const vatCents = Math.round(netCents * rate);
   return {
-    netCentimes,
-    vatCentimes,
-    grossCentimes: netCentimes + vatCentimes,
+    netCents,
+    vatCents,
+    grossCents: netCents + vatCents,
     vatRate: rate,
   };
 }

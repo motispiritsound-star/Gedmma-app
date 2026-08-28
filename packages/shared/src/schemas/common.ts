@@ -23,10 +23,17 @@ export const coordinatesSchema = z.object({
   lng: z.number().min(-180).max(180),
 });
 
-/** Morocco's bounding box, including the southern provinces. */
-export const moroccoCoordinatesSchema = coordinatesSchema.refine(
-  ({ lat, lng }) => lat >= 20.5 && lat <= 36.2 && lng >= -17.5 && lng <= -0.8,
-  { message: 'coordinates_outside_morocco' },
+/**
+ * A coarse sanity check, not a border. The box around the European Netherlands
+ * necessarily takes in the Belgian and German border regions — no rectangle can
+ * exclude Antwerp while still containing Maastricht and Zeeland. It exists to
+ * catch coordinates from another continent, which is what a mis-set device
+ * locale or a copy-paste error actually produces; the city a customer picks is
+ * what places the job.
+ */
+export const netherlandsCoordinatesSchema = coordinatesSchema.refine(
+  ({ lat, lng }) => lat >= 50.7 && lat <= 53.6 && lng >= 3.3 && lng <= 7.3,
+  { message: 'coordinates_outside_netherlands' },
 );
 
 export interface CursorPage<T> {

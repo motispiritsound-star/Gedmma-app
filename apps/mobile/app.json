@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "Khidma",
-    "slug": "khidma",
+    "name": "Buurklus",
+    "slug": "buurklus",
     "version": "0.1.0",
     "orientation": "portrait",
-    "scheme": "khidma",
+    "scheme": "buurklus",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -16,15 +16,15 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "ma.khidma.app",
+      "bundleIdentifier": "nl.buurklus.app",
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true,
-        "NSPhotoLibraryUsageDescription": "Khidma utilise vos photos pour illustrer vos demandes de devis.",
-        "NSCameraUsageDescription": "Khidma utilise l'appareil photo pour photographier les travaux \u00e0 r\u00e9aliser."
+        "NSPhotoLibraryUsageDescription": "Buurklus gebruikt je foto’s om je klus te illustreren.",
+        "NSCameraUsageDescription": "Buurklus gebruikt de camera om het werk te fotograferen."
       }
     },
     "android": {
-      "package": "ma.khidma.app",
+      "package": "nl.buurklus.app",
       "adaptiveIcon": {
         "backgroundColor": "#0F6F5C"
       },
@@ -34,8 +34,7 @@
       ]
     },
     "locales": {
-      "fr": "./src/i18n/store-fr.json",
-      "ar": "./src/i18n/store-ar.json",
+      "nl": "./src/i18n/store-nl.json",
       "en": "./src/i18n/store-en.json"
     },
     "plugins": [
@@ -45,7 +44,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Khidma utilise vos photos pour illustrer vos demandes de devis."
+          "photosPermission": "Buurklus gebruikt je foto’s om je klus te illustreren."
         }
       ]
     ],
