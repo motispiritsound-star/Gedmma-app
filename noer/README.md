@@ -16,7 +16,9 @@ npm start
 ```
 
 Open **http://localhost:5173**, vul een naam en een leeftijd in en je bent
-binnen. Er is geen installatie nodig: de app zelf heeft geen afhankelijkheden
+binnen. De server noemt bij het starten ook het adres waarop je hem vanaf een
+tablet of telefoon op hetzelfde wifi-netwerk kunt openen — handig om te testen,
+en goed om te weten dat iedereen op dat netwerk er dan bij kan. Er is geen installatie nodig: de app zelf heeft geen afhankelijkheden
 en geen buildstap, en er is geen account.
 
 ```bash
@@ -168,12 +170,19 @@ ze vanzelf oppakt — ook offline. Draai eerst `--proef`: dat kost één seconde
 zegt meteen of het adres klopt. De mapnamen in `bronnen.js` zijn opgeschreven
 uit hoe die bron zijn bestanden ordent, niet ter plekke nagelopen.
 
+Het script legt naast de bestanden een `bron.json` neer met de naam van de
+reciteur. Daar leest het soerascherm de naamsvermelding uit — anders zou de app
+moeten gokken op basis van de streaminstelling, en die zegt niets over wat er
+gedownload is. Staat er nog geen recitatie, dan zegt het scherm dat ook.
+
 Wil je streamen in plaats van downloaden, zet dan in `public/data/bronnen.js`
 `reciteur: { aan: true, keuze: 'alafasy' }`. Dan werkt de Koran wel alleen mét
 internet; gedownloade bestanden gaan altijd vóór op streamen.
 
-Het soerascherm noemt de reciteur bij naam zodra er recitatie is, en zegt het
-ook als er nog geen is.
+Gedownloade recitatie belandt in een aparte cache (`noer-media`) die bij een
+nieuwe uitgave blijft staan. De app zelf zit in een cache die dan wél wordt
+opgeruimd — anders zou elke update tientallen megabytes weggooien die iemand
+met de hand heeft opgehaald.
 
 **Over toestemming.** Een recitatie is een auteursrechtelijk beschermde opname
 van een mens. Dat een opname wereldwijd gebruikt wordt, is geen licentie. Of je

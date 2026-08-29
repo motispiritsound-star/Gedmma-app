@@ -1,5 +1,7 @@
 // Woordenschat per thema. tr = uitspraak in Nederlandse letters.
 
+import { opSleutel } from './hulp.js';
+
 export const THEMAS = [
   { id: 'groeten', naam: 'Groeten', emoji: '👋', vanaf: 5, woorden: [
     { ar: 'ٱلسَّلَامُ عَلَيْكُمْ', tr: 'as-salaamoe ʿalaikoem', nl: 'vrede zij met jullie', emoji: '🤝' },
@@ -107,7 +109,7 @@ export const THEMAS = [
   ] },
 ];
 
-export const THEMA_OP_ID = Object.fromEntries(THEMAS.map((t) => [t.id, t]));
+export const THEMA_OP_ID = opSleutel(THEMAS);
 
 export function themasVoorLeeftijd(leeftijd) {
   return THEMAS.filter((t) => t.vanaf <= leeftijd);

@@ -4,6 +4,7 @@ import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { networkInterfaces } from 'node:os';
 
 const wortel = join(fileURLToPath(new URL('.', import.meta.url)), 'public');
 const poort = Number(process.env.PORT || 5173);
@@ -18,6 +19,12 @@ const types = {
   '.png': 'image/png',
   '.mp3': 'audio/mpeg',
   '.ogg': 'audio/ogg',
+  // De studio exporteert in het formaat van de browser: webm (Chrome, Firefox),
+  // m4a (Safari). Zonder deze regels komen die binnen als octet-stream.
+  '.webm': 'audio/webm',
+  '.m4a': 'audio/mp4',
+  '.opus': 'audio/ogg',
+  '.wav': 'audio/wav',
   '.woff2': 'font/woff2',
   '.ico': 'image/x-icon',
 };
@@ -79,8 +86,22 @@ const server = createServer(async (verzoek, antwoord) => {
 const zelfGestart = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (zelfGestart) {
   server.listen(poort, () => {
-    console.log(`\n  Noer draait op http://localhost:${poort}\n`);
+    console.log(`\n  Noer draait op http://localhost:${poort}`);
+    // De server luistert op alle netwerkkaarten, zodat je de app op de tablet
+    // van je kind kunt openen. Handig, en goed om te weten: iedereen op
+    // hetzelfde wifi-netwerk kan er dan bij.
+    for (const adres of lokaleAdressen()) {
+      console.log(`  Op je tablet of telefoon: http://${adres}:${poort}`);
+    }
+    console.log('');
   });
+}
+
+/** IPv4-adressen van dit apparaat op het lokale netwerk. */
+function lokaleAdressen() {
+  return Object.values(networkInterfaces()).flat()
+    .filter((n) => n && n.family === 'IPv4' && !n.internal)
+    .map((n) => n.address);
 }
 
 export default server;

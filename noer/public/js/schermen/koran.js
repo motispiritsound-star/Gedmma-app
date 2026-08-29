@@ -211,9 +211,15 @@ function recitatieRegel(soera) {
       return;
     }
     if (bron.soort === 'opname') { regel.textContent = 'Recitatie: jullie eigen opname.'; return; }
-    const naam = bron.reciteur?.naam;
-    const hoe = bron.soort === 'reciteur' ? ' (gestreamd)' : '';
-    regel.textContent = naam ? `Recitatie: ${naam}${hoe}.` : 'Recitatie uit public/audio/.';
+    if (bron.soort === 'reciteur') {
+      regel.textContent = bron.naam
+        ? `Recitatie: ${bron.naam} — gestreamd van internet.`
+        : 'Recitatie wordt gestreamd van internet.';
+      return;
+    }
+    regel.textContent = bron.naam ? `Recitatie: ${bron.naam}.` : 'Recitatie uit public/audio/.';
+  }).catch(() => {
+    regel.textContent = 'Kon niet nagaan of er recitatie is.';
   });
   return regel;
 }

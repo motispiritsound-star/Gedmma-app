@@ -2,16 +2,19 @@
 // Dit bewaakt de structuur van de data — het is géén controle op de
 // juistheid van de Koran-tekst. Die hoort door een mens gedaan te worden.
 
-import { test, after } from 'node:test';
+import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 
 import { LETTERS, LETTER_OP_ID, afleiders, MAKHRAJ } from '../public/data/letters.js';
 import { HARAKAT, TANWEEN, metHaraka, uitspraak } from '../public/data/harakat.js';
-import { LESSEN, itemsVan } from '../public/data/qaida.js';
-import { SOERAS, woordenVan, soerasVoorLeeftijd } from '../public/data/koran.js';
-import { THEMAS, themasVoorLeeftijd } from '../public/data/woorden.js';
-import { BADGES } from '../public/data/badges.js';
-import { ayaUrls, RECITEURS, vulIn, AUDIO, reciteurNu } from '../public/data/bronnen.js';
+import { LESSEN, LES_OP_ID, itemsVan } from '../public/data/qaida.js';
+import { SOERAS, SOERA_OP_ID, woordenVan, soerasVoorLeeftijd } from '../public/data/koran.js';
+import { THEMAS, THEMA_OP_ID, themasVoorLeeftijd } from '../public/data/woorden.js';
+import { BADGES, BADGE_OP_ID } from '../public/data/badges.js';
+import {
+  ayaUrls, RECITEURS, vulIn, AUDIO, reciteurNu, bronBeschrijving,
+} from '../public/data/bronnen.js';
 import server, { veiligPad } from '../server.js';
 
 test('het alfabet heeft 28 letters, allemaal uniek', () => {
@@ -193,7 +196,9 @@ test('een ontbrekend bestand is een 404, geen index.html met een 200', async (t)
   const poort = server.address().port;
   const haal = (pad) => fetch(`http://127.0.0.1:${poort}${pad}`);
   try {
-    const weg = await haal('/audio/koran/114/1.mp3');
+    // Soera 999 bestaat niet, dus dit pad blijft leeg ook als iemand
+    // tools/haal-recitatie.js heeft gedraaid.
+    const weg = await haal('/audio/koran/999/999.mp3');
     assert.equal(weg.status, 404, 'een ontbrekende mp3 hoort 404 te geven');
 
     const pagina = await haal('/thuis');
@@ -207,6 +212,55 @@ test('een ontbrekend bestand is een 404, geen index.html met een 200', async (t)
   } finally {
     await new Promise((klaar) => server.close(klaar));
   }
+});
+
+test('de beschrijving naast de recitatie noemt de reciteur bij naam', () => {
+  const b = bronBeschrijving('sudais', 'https://x/{soera}{aya}.mp3', new Date('2026-08-29T00:00:00Z'));
+  assert.equal(b.reciteur, RECITEURS.sudais.naam);
+  assert.equal(b.sleutel, 'sudais');
+  assert.equal(b.opgehaald, '2026-08-29');
+
+  // Bij een zelf opgegeven adres valt er geen naam te noemen; dan verzint de
+  // app er ook geen. Beter geen vermelding dan de verkeerde.
+  const eigen = bronBeschrijving(null, 'https://eigen.nl/{soera}.mp3');
+  assert.equal(eigen.reciteur, null);
+  assert.equal(eigen.sleutel, null);
+});
+
+test('geluidsbestanden krijgen een audio-type mee, ook die uit de studio', async () => {
+  const { veiligPad: _ } = await import('../server.js');
+  const bron = await readFile(new URL('../server.js', import.meta.url), 'utf8');
+  for (const extensie of ['.mp3', '.webm', '.m4a', '.ogg', '.wav']) {
+    assert.match(bron, new RegExp(`'\\${extensie}': 'audio/`),
+      `${extensie} wordt niet als audio geserveerd; de app negeert het bestand dan`);
+  }
+});
+
+test('opzoektabellen antwoorden niet op sleutels uit Object.prototype', () => {
+  // De app leest een id uit het adres (#/letters/…) en toetst met `if (!l)`.
+  // Bij een gewoon object geeft tabel['constructor'] een functie terug, slaagt
+  // die toets ten onrechte, en klapt het scherm er even later op stuk.
+  const tabellen = {
+    LETTER_OP_ID, SOERA_OP_ID, LES_OP_ID, THEMA_OP_ID, BADGE_OP_ID, RECITEURS,
+  };
+  for (const [naam, tabel] of Object.entries(tabellen)) {
+    for (const sleutel of ['constructor', 'toString', 'valueOf', 'hasOwnProperty', '__proto__']) {
+      assert.equal(tabel[sleutel], undefined,
+        `${naam}['${sleutel}'] geeft iets terug; een verzonnen adres laat de app dan crashen`);
+    }
+  }
+  // En de echte sleutels doen het nog gewoon.
+  assert.equal(LETTER_OP_ID.ba.naam, 'ba');
+  assert.equal(SOERA_OP_ID['an-nas'].nr, 114);
+  assert.equal(LES_OP_ID.harakat.nr, 4);
+  assert.equal(THEMA_OP_ID.kleuren.naam, 'Kleuren');
+  assert.ok(BADGE_OP_ID['eerste-stap']);
+});
+
+test('el() heeft geen innerHTML-ingang meer', async () => {
+  const bron = await readFile(new URL('../public/js/ui.js', import.meta.url), 'utf8');
+  assert.ok(!bron.includes('innerHTML'),
+    'een ongebruikte innerHTML-ingang is een XSS-voetangel die ooit gebruikt wordt');
 });
 
 test('de server laat niets buiten public/ zien', () => {

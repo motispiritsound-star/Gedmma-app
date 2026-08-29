@@ -1,5 +1,7 @@
 // Badges: elk met een test op de voortgang. Zo staat de regel op één plek.
 
+import { opSleutel } from './hulp.js';
+
 export const BADGES = [
   { id: 'eerste-stap', naam: 'Eerste stap', emoji: '🌱',
     uitleg: 'Je eerste oefening af.', test: (v) => v.totaalGoed >= 1 },
@@ -29,4 +31,4 @@ export const BADGES = [
     uitleg: 'Een hele les zonder één fout.', test: (v) => v.foutlozeLessen >= 1 },
 ];
 
-export const BADGE_OP_ID = Object.fromEntries(BADGES.map((b) => [b.id, b]));
+export const BADGE_OP_ID = opSleutel(BADGES);

@@ -3,6 +3,8 @@
 // (ا د ذ ر ز و); daar zijn begin/midden gelijk aan los/eind.
 // makhraj = uitspraakplaats, in kindertaal.
 
+import { opSleutel } from './hulp.js';
+
 export const MAKHRAJ = {
   holte: { naam: 'Holte', kleur: '#7c9cf5', uitleg: 'De klank rekt door je mond naar buiten.' },
   keel: { naam: 'Keel', kleur: '#e0776a', uitleg: 'Diep achter in je keel.' },
@@ -180,7 +182,7 @@ export const LETTERS = [
     voorbeeld: { woord: 'يَد', translit: 'jad', betekenis: 'hand', emoji: '✋' } },
 ];
 
-export const LETTER_OP_ID = Object.fromEntries(LETTERS.map((l) => [l.id, l]));
+export const LETTER_OP_ID = opSleutel(LETTERS);
 
 /** Letters die visueel makkelijk verward worden — handig als afleiders in spellen. */
 export const VERWARPAREN = [

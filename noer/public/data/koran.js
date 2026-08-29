@@ -10,6 +10,8 @@
 // nl = betekenis in het Nederlands. Een vertaling van de Koran is een
 // uitleg van de betekenis, niet de Koran zelf; zo staat het ook in de app.
 
+import { opSleutel } from './hulp.js';
+
 export const SOERAS = [
   {
     nr: 1, id: 'al-fatiha', naam: 'Al-Faatiha', naamAr: 'ٱلْفَاتِحَة',
@@ -180,7 +182,7 @@ export const SOERAS = [
   },
 ];
 
-export const SOERA_OP_ID = Object.fromEntries(SOERAS.map((s) => [s.id, s]));
+export const SOERA_OP_ID = opSleutel(SOERAS);
 
 /** Splitst een aya in losse woorden, met de Nederlandse betekenis als die er is. */
 export function woordenVan(aya) {

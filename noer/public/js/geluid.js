@@ -8,7 +8,9 @@
 // Levert geen van vieren iets op, dan blijft het stil en zegt het scherm dat.
 // Recitatie is geen voorleesstem: laag 4 komt bij de Koran niet aan bod.
 
-import { AUDIO, letterUrl, woordUrl, ayaUrls, reciteurNu } from '../data/bronnen.js';
+import {
+  AUDIO, letterUrl, woordUrl, ayaUrls, reciteurNu, RECITATIE_BRON_URL,
+} from '../data/bronnen.js';
 import { sleutels, urlVan } from './opnames.js';
 
 // Browsers nemen op in verschillende formaten, dus we proberen er meer dan één.
@@ -20,15 +22,28 @@ const audioCtx = () => (ctx ||= new (window.AudioContext || window.webkitAudioCo
 const bestaat = new Map(); // url -> Promise<boolean>
 
 /**
- * Bestaat dit bestand, en is het ook echt geluid? Dat tweede is nodig omdat
- * veel servers een ontbrekend bestand met een 200 en de index-pagina
- * beantwoorden. Zonder die controle denkt de app dat er geluid is en blijft
- * het stil zonder uitleg.
+ * Als één los HTML-bestand (dubbelklikken, zonder server) is er geen map met
+ * geluidsbestanden om in te kijken, en weigert de browser elke fetch met een
+ * CORS-fout. Dan maar niet kijken: dat scheelt een console vol rode regels en
+ * de uitkomst is dezelfde. Opnames uit de studio werken hier gewoon, want die
+ * komen uit IndexedDB.
+ */
+const KAN_BESTANDEN_LEZEN = window.location.protocol !== 'file:';
+
+/**
+ * Bestaat dit bestand? Veel servers beantwoorden een ontbrekend bestand met
+ * een 200 en de index-pagina; dan denkt de app dat er geluid is en blijft het
+ * stil zonder uitleg. Daarom wordt HTML geweigerd.
+ *
+ * Er wordt bewust niet op `audio/` gecontroleerd: een opname uit de studio is
+ * webm of m4a, en niet elke host kent die types. Dan zou de app zijn eigen
+ * export negeren. HTML uitsluiten vangt het echte probleem; de rest mag door.
  */
 function heeftBestand(url) {
+  if (!KAN_BESTANDEN_LEZEN) return Promise.resolve(false);
   if (!bestaat.has(url)) {
     bestaat.set(url, fetch(url, { method: 'HEAD' })
-      .then((r) => r.ok && (r.headers.get('content-type') || '').startsWith('audio/'))
+      .then((r) => r.ok && !(r.headers.get('content-type') || '').startsWith('text/html'))
       .catch(() => false));
   }
   return bestaat.get(url);
@@ -53,7 +68,9 @@ function speelUrl(url) {
       huidig = a;
       a.onerror = () => eenmaal(false);
       a.play().then(() => eenmaal(true), () => eenmaal(false));
-      setTimeout(() => eenmaal(false), 3000); // vangnet als play() blijft hangen
+      // Vangnet als play() blijft hangen. Wel eerst stilzetten: anders meldt
+      // het scherm "geen geluid" terwijl het even later alsnog begint te spelen.
+      setTimeout(() => { if (!af) { a.pause(); eenmaal(false); } }, 3000);
     } catch {
       eenmaal(false);
     }
@@ -174,18 +191,40 @@ export async function speelAya(soeraNr, ayaNr) {
   return 'stil';
 }
 
+let bronBelofte = null;
+
+/** Leest één keer uit wie de gedownloade recitatie heeft ingesproken. */
+function gedownloadeBron() {
+  if (!KAN_BESTANDEN_LEZEN) return Promise.resolve(null);
+  if (!bronBelofte) {
+    bronBelofte = fetch(RECITATIE_BRON_URL)
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+  }
+  return bronBelofte;
+}
+
 /**
  * Waar de recitatie van deze soera vandaan zou komen — of null als er niets is.
- * Het soeratscherm gebruikt dit om de reciteur te vermelden, en om te zeggen
+ * Het soerascherm gebruikt dit om de reciteur te vermelden, en om te zeggen
  * dat er nog niets is als dat zo is.
+ *
+ * De externe reciteur wordt niet nagebeld. Een HEAD naar een andere host loopt
+ * meestal stuk op CORS, ook als het afspelen straks gewoon werkt — dat komt
+ * niet door de host maar door de regels van fetch. Een mislukte controle zou
+ * dus "geen recitatie" melden waar er wel is. Daarom staat er wat er ingesteld
+ * is, en zegt de afspeelknop wat er werkelijk gebeurt.
  */
 export async function bronVanRecitatie(soeraNr, ayaNr = 1) {
   if (await urlVan(sleutels.aya(soeraNr, ayaNr))) return { soort: 'opname' };
+
   const [eigen, ...extern] = ayaUrls(soeraNr, ayaNr);
   for (const url of metExtensies(eigen)) {
-    if (await heeftBestand(url)) return { soort: 'bestand', reciteur: reciteurNu() };
+    if (await heeftBestand(url)) {
+      return { soort: 'bestand', naam: (await gedownloadeBron())?.reciteur || null };
+    }
   }
-  if (extern.length) return { soort: 'reciteur', reciteur: reciteurNu() };
+  if (extern.length) return { soort: 'reciteur', naam: reciteurNu()?.naam || null };
   return null;
 }
 

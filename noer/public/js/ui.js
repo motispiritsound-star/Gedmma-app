@@ -6,7 +6,6 @@ export function el(tag, props = {}, ...kinderen) {
     if (v === null || v === undefined || v === false) continue;
     if (k === 'class') node.className = v;
     else if (k === 'tekst') node.textContent = v;
-    else if (k === 'html') node.innerHTML = v;
     else if (k === 'stijl') {
       // Eigen variabelen (--naam) moeten via setProperty; Object.assign slikt ze stil.
       for (const [eigenschap, waarde] of Object.entries(v)) {

@@ -9,6 +9,7 @@
 // NOER_URL zet een ander adres, NOER_SCHERMAFDRUKKEN een map voor plaatjes.
 
 import { chromium } from 'playwright';
+import { mkdir, writeFile, rm } from 'node:fs/promises';
 
 const BASIS = process.env.NOER_URL || 'http://localhost:5173';
 const SCHERMEN = process.env.NOER_SCHERMAFDRUKKEN || null;
@@ -236,6 +237,122 @@ await stap('opnemen, afspelen en wissen in de studio', async () => {
   await page.locator('.opnameregel.opgenomen').first().locator('button[aria-label="Opname wissen"]').click();
   await page.waitForTimeout(400);
   if (await page.locator('.opnameregel.opgenomen').count()) throw new Error('wissen werkte niet');
+});
+
+/** Een korte, geldige wav — genoeg om echt af te spelen en te cachen. */
+function stilteWav(seconden = 0.2, snelheid = 8000) {
+  const monsters = Math.round(seconden * snelheid);
+  const buffer = Buffer.alloc(44 + monsters);
+  buffer.write('RIFF', 0);
+  buffer.writeUInt32LE(36 + monsters, 4);
+  buffer.write('WAVEfmt ', 8);
+  buffer.writeUInt32LE(16, 16);            // lengte van het fmt-blok
+  buffer.writeUInt16LE(1, 20);             // PCM
+  buffer.writeUInt16LE(1, 22);             // mono
+  buffer.writeUInt32LE(snelheid, 24);
+  buffer.writeUInt32LE(snelheid, 28);      // bytes per seconde
+  buffer.writeUInt16LE(1, 32);             // blokgrootte
+  buffer.writeUInt16LE(8, 34);             // bits per monster
+  buffer.write('data', 36);
+  buffer.writeUInt32LE(monsters, 40);
+  buffer.fill(128, 44);                    // 8-bits stilte is 128, niet 0
+  return buffer;
+}
+
+await stap('recitatie: naamsvermelding, en offline blijven werken', async () => {
+  const map = new URL('../public/audio/koran/114/', import.meta.url);
+  const bronPad = new URL('../public/audio/koran/bron.json', import.meta.url);
+  const wavPad = new URL('1.wav', map);
+
+  await mkdir(map, { recursive: true });
+  await writeFile(wavPad, stilteWav());
+  await writeFile(bronPad, JSON.stringify({
+    reciteur: 'Testreciteur', sleutel: null, sjabloon: 'test', opgehaald: '2026-01-01',
+  }));
+
+  try {
+    await page.goto(`${BASIS}/#/koran/an-nas`);
+    await page.waitForSelector('.recitatie-bron');
+    await page.waitForFunction(() => document.querySelector('.recitatie-bron')?.textContent.trim());
+    const regel = await page.textContent('.recitatie-bron');
+    if (!regel.includes('Testreciteur')) {
+      throw new Error(`het soerascherm noemt de reciteur niet: ${regel}`);
+    }
+
+    // De service worker moet de aya in zijn media-cache zetten, en offline
+    // een HEAD kunnen beantwoorden — anders blijft recitatie offline stil.
+    await page.evaluate(() => navigator.serviceWorker.register('sw.js'));
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    await page.evaluate(() => fetch('audio/koran/114/1.wav').then((r) => r.arrayBuffer()));
+    await page.waitForTimeout(400);
+
+    const caches = await page.evaluate(async () => {
+      const namen = await window.caches.keys();
+      const media = await window.caches.open('noer-media');
+      return { namen, media: (await media.keys()).map((r) => new URL(r.url).pathname) };
+    });
+    if (!caches.namen.includes('noer-media')) throw new Error(`geen media-cache: ${caches.namen}`);
+    if (!caches.media.some((p) => p.endsWith('/audio/koran/114/1.wav'))) {
+      throw new Error(`de aya staat niet in de media-cache: ${JSON.stringify(caches.media)}`);
+    }
+
+    await context.setOffline(true);
+    try {
+      const offline = await page.evaluate(async () => {
+        const r = await fetch('audio/koran/114/1.wav', { method: 'HEAD' });
+        return r.ok;
+      });
+      if (!offline) throw new Error('offline vindt de app zijn eigen gecachte aya niet');
+
+      const bron = await page.evaluate(async () => {
+        const { bronVanRecitatie } = await import('/js/geluid.js');
+        return bronVanRecitatie(114, 1);
+      });
+      if (bron?.soort !== 'bestand') {
+        throw new Error(`offline zegt de app dat er geen recitatie is: ${JSON.stringify(bron)}`);
+      }
+    } finally {
+      await context.setOffline(false);
+    }
+  } finally {
+    // Alleen opruimen wat deze test zelf heeft neergezet. De map koran/ zelf
+    // blijft staan: daar hoort een LEESMIJ.md in die in de repo zit.
+    await rm(map, { recursive: true, force: true });
+    await rm(bronPad, { force: true });
+    await page.evaluate(() => navigator.serviceWorker.getRegistrations()
+      .then((rs) => Promise.all(rs.map((r) => r.unregister()))))
+      .catch(() => {});
+    await page.evaluate(() => window.caches.keys().then((ns) => Promise.all(ns.map((n) => window.caches.delete(n)))))
+      .catch(() => {});
+  }
+});
+
+await stap('verzonnen adressen leiden terug in plaats van stuk te lopen', async () => {
+  // Sleutels uit Object.prototype zijn het gemene geval: bij een gewone
+  // opzoektabel geeft tabel['constructor'] een functie terug, waardoor de
+  // "bestaat dit?"-toets slaagt en het scherm er even later op stuk klapt.
+  const teruggestuurd = {
+    '/letters/constructor': '#/letters',
+    '/letters/bestaat-niet': '#/letters',
+    '/koran/toString': '#/koran',
+    '/qaida/valueOf': '#/qaida',
+    '/woorden/hasOwnProperty': '#/woorden',
+    '/studio/constructor': '#/studio',
+  };
+  for (const [route, verwacht] of Object.entries(teruggestuurd)) {
+    await page.goto(`${BASIS}/#${route}`);
+    await page.waitForTimeout(250);
+    const nu = await page.evaluate(() => window.location.hash);
+    if (nu !== verwacht) {
+      throw new Error(`${route} stuurde niet terug naar ${verwacht} maar bleef op ${nu}`);
+    }
+    const zichtbaar = (await page.evaluate(() => document.getElementById('inhoud')?.innerText || '')).trim();
+    if (!zichtbaar) throw new Error(`${route} laat een leeg scherm achter`);
+  }
+
+  // Een route die helemaal niet bestaat hoort het "hier is niets"-kaartje te geven.
+  await page.goto(`${BASIS}/#/nergens`);
+  await page.waitForSelector('.kaart.leeg');
 });
 
 // Regressie: `node.append(null)` zet letterlijk "null" in beeld. Elk scherm

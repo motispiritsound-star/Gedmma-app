@@ -19,7 +19,7 @@ import { fileURLToPath } from 'node:url';
 
 const WORTEL = fileURLToPath(new URL('..', import.meta.url));
 const { SOERAS } = await import(new URL('../public/data/koran.js', import.meta.url));
-const { RECITEURS, vulIn } = await import(new URL('../public/data/bronnen.js', import.meta.url));
+const { RECITEURS, vulIn, bronBeschrijving } = await import(new URL('../public/data/bronnen.js', import.meta.url));
 
 const argumenten = process.argv.slice(2);
 const heeft = (vlag) => argumenten.includes(vlag);
@@ -70,7 +70,6 @@ if (!sjabloon || !sjabloon.includes('{')) {
   process.exit(1);
 }
 
-const drie = (n) => String(n).padStart(3, '0');
 const bestaat = (pad) => access(pad).then(() => true, () => false);
 const pauze = (ms) => new Promise((k) => setTimeout(k, ms));
 
@@ -137,17 +136,21 @@ if (mislukt.length) {
   console.log(`\n  Probeer één adres met de hand:\n    ${mislukt[0].url}`);
 }
 
-if (gehaald) {
+if (gehaald || overgeslagen) {
+  // Naast de bestanden leggen we vast wie er reciteert. Daar leest de app de
+  // naamsvermelding uit; anders zou hij moeten gokken op basis van de
+  // streaminstelling, en die zegt niets over wat er gedownload is.
+  const beschrijving = bronBeschrijving(preset ? opgegeven : null, sjabloon);
+  await writeFile(
+    join(WORTEL, 'public', 'audio', 'koran', 'bron.json'),
+    `${JSON.stringify(beschrijving, null, 2)}\n`,
+  );
+
   console.log(`
-  De bestanden staan in public/audio/koran/. De app pakt ze vanzelf op.
+  De bestanden staan in public/audio/koran/. De app pakt ze vanzelf op en
+  vermeldt ${beschrijving.reciteur ? beschrijving.reciteur : 'de bron'} op het soerascherm.
 
-  Zet de naam van de reciteur in de app, zodat die er netjes bij staat.
-  In public/data/bronnen.js:
-
-      reciteur: { aan: false, keuze: '${preset ? opgegeven : 'alafasy'}' },
-
-  ('aan' mag uit blijven: de gedownloade bestanden gaan toch vóór op streamen.
-  De naam wordt wel getoond.)
+  Streamen hoef je niet aan te zetten: gedownloade bestanden gaan toch voor.
 
   En controleer of je deze opnames mag verspreiden voordat je de app uitgeeft.`);
 }

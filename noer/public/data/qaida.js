@@ -4,6 +4,7 @@
 
 import { LETTERS, LETTER_OP_ID } from './letters.js';
 import { metHaraka, uitspraak, SOEKOEN, SJADDA } from './harakat.js';
+import { opSleutel } from './hulp.js';
 
 const rijen = (items, per = 6) => {
   const uit = [];
@@ -152,7 +153,7 @@ export const LESSEN = [
   },
 ];
 
-export const LES_OP_ID = Object.fromEntries(LESSEN.map((l) => [l.id, l]));
+export const LES_OP_ID = opSleutel(LESSEN);
 
 /** Alle oefenitems van een les, plat. */
 export function itemsVan(les) {

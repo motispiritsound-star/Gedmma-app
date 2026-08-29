@@ -21,7 +21,7 @@
  * De mapnamen hieronder zijn niet ter plekke gecontroleerd. Controleer ze in
  * één seconde met:  node tools/haal-recitatie.js --bron alafasy --proef
  */
-export const RECITEURS = {
+const RECITEUR_LIJST = {
   alafasy: {
     naam: 'Mishary Rashid Alafasy',
     stijl: 'Murattal — rustig en helder, veel gebruikt bij kinderen',
@@ -48,6 +48,8 @@ export const RECITEURS = {
     sjabloon: 'https://everyayah.com/data/Minshawy_Murattal_128kbps/{soera}{aya}.mp3',
   },
 };
+
+export const RECITEURS = Object.assign(Object.create(null), RECITEUR_LIJST);
 
 export const AUDIO = {
   /** Map met eigen opnames, relatief aan public/. */
@@ -83,6 +85,24 @@ const drie = (n) => String(n).padStart(3, '0');
 export const vulIn = (sjabloon, soeraNr, ayaNr) => sjabloon
   .replaceAll('{soera}', drie(soeraNr)).replaceAll('{aya}', drie(ayaNr))
   .replaceAll('{soera2}', String(soeraNr)).replaceAll('{aya2}', String(ayaNr));
+
+/**
+ * De downloader zet dit bestand naast de opgehaalde aya's neer, zodat de app
+ * weet wie er reciteert. Zonder zoiets zou de app moeten gokken aan de hand
+ * van de streaming-instelling — en die staat standaard uit, of op een andere
+ * reciteur dan er daadwerkelijk gedownload is.
+ */
+export const RECITATIE_BRON_URL = `${AUDIO.eigenBasis}/koran/bron.json`;
+
+export function bronBeschrijving(sleutel, sjabloon, opTijdstip = new Date()) {
+  const r = RECITEURS[sleutel];
+  return {
+    reciteur: r ? r.naam : null,
+    sleutel: r ? sleutel : null,
+    sjabloon,
+    opgehaald: opTijdstip.toISOString().slice(0, 10),
+  };
+}
 
 /** URL van een eigen opname van een letter. */
 export const letterUrl = (id) => `${AUDIO.eigenBasis}/letters/${id}.mp3`;
