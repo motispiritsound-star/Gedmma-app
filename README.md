@@ -1,5 +1,13 @@
 # Webscan NL
 
+> **Deze repository bevat twee projecten.** Dit document beschrijft **Webscan
+> NL**. Het tweede project, **Questly** — een platform met offline avonturen en
+> leerzame missies voor gezinnen — staat in [`questly/`](./questly) en heeft
+> [zijn eigen README](./questly/README.md).
+>
+> *This repository holds two projects. This document describes Webscan NL; the
+> second, Questly, lives in [`questly/`](./questly) with its own README.*
+
 Scant geautomatiseerd de websites van Nederlandse bedrijven, geeft elke site een
 cijfer van 0 tot 100 en zet ze als gekleurde bollen op de kaart: **rood** is een
 slechte site, **oranje** matig, **groen** goed. De slechte sites zijn je leads.

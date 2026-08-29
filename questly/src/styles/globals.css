@@ -1,0 +1,221 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   Questly design tokens
+   Warm paper background, deep forest ink, moss green as the primary action
+   colour and a warm ember accent. Adventurous and premium rather than
+   childish, and legible for a parent and a nine-year-old alike.
+   Every text/background pair used in the UI meets WCAG 2.2 AA.
+   ========================================================================== */
+
+@theme {
+  /* --- colour ---------------------------------------------------------- */
+  --color-paper: #fbf7f1;
+  --color-paper-raised: #ffffff;
+  --color-paper-sunken: #f3ece2;
+
+  --color-ink: #1b2a24;
+  --color-ink-soft: #46564e;
+  /* All ink tones clear 4.5:1 on both paper surfaces (checked in the a11y suite). */
+  --color-ink-muted: #52645b;
+
+  --color-moss-50: #eef6f2;
+  --color-moss-100: #d5e9e0;
+  --color-moss-200: #a9d3c2;
+  --color-moss-300: #6fb49b;
+  --color-moss-500: #1f6f5c;
+  --color-moss-600: #175A4A;
+  --color-moss-700: #10453a;
+  --color-moss-900: #0a2a24;
+
+  --color-ember-50: #fdf2e9;
+  --color-ember-100: #fadfc6;
+  --color-ember-300: #f0a765;
+  --color-ember-500: #c2661f;
+  --color-ember-600: #a2530f;
+  --color-ember-700: #7d3f0b;
+
+  --color-dusk-50: #eef2f7;
+  --color-dusk-100: #d7e1ec;
+  --color-dusk-300: #8fa9c4;
+  --color-dusk-500: #3a5a78;
+  --color-dusk-600: #2c4760;
+  --color-dusk-700: #1f3446;
+
+  --color-berry-100: #f7dfe6;
+  --color-berry-500: #a63d5b;
+  --color-berry-600: #8a2f49;
+
+  --color-sun-100: #fdf3d0;
+  --color-sun-500: #b3860a;
+  --color-sun-600: #7d5c05;
+
+  --color-line: #e2d8ca;
+  --color-line-strong: #cbbda9;
+
+  --color-danger-50: #fdeceb;
+  --color-danger-500: #b3261e;
+  --color-danger-600: #8c1d17;
+
+  --color-success-50: #e9f6ef;
+  --color-success-600: #1a6d43;
+
+  /* --- typography ------------------------------------------------------ */
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', sans-serif;
+  --font-display:
+    ui-serif, Georgia, Cambria, 'Iowan Old Style', 'Times New Roman', serif;
+
+  --text-hero: 2.75rem;
+  --text-hero--line-height: 1.08;
+  --text-hero--letter-spacing: -0.02em;
+
+  /* --- shape ----------------------------------------------------------- */
+  --radius-card: 1.25rem;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 1px 2px rgb(27 42 36 / 0.05), 0 8px 24px -12px rgb(27 42 36 / 0.18);
+  --shadow-lifted: 0 2px 4px rgb(27 42 36 / 0.06), 0 18px 40px -18px rgb(27 42 36 / 0.28);
+
+  /* --- motion ---------------------------------------------------------- */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ==========================================================================
+   Base layer
+   ========================================================================== */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    color: var(--color-ink);
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* A visible, high-contrast focus ring on everything focusable. Never
+     removed - keyboard users must always be able to see where they are. */
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 3px solid var(--color-dusk-500);
+    outline-offset: 2px;
+    border-radius: 0.375rem;
+  }
+
+  ::selection {
+    background-color: var(--color-moss-200);
+    color: var(--color-moss-900);
+  }
+
+  /* Respect the operating system's reduced-motion preference. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .q-card,
+    .q-badge {
+      border: 1px solid CanvasText;
+    }
+  }
+}
+
+/* ==========================================================================
+   Components
+   Small, hand-written primitives. Anything reused more than twice lives here
+   or in src/components/ui.
+   ========================================================================== */
+
+@layer components {
+  .q-skip-link {
+    position: absolute;
+    left: 0.5rem;
+    top: -4rem;
+    z-index: 100;
+    border-radius: 0.5rem;
+    background-color: var(--color-moss-600);
+    padding: 0.75rem 1rem;
+    color: white;
+    font-weight: 600;
+    transition: top 150ms var(--ease-out-soft);
+  }
+  .q-skip-link:focus {
+    top: 0.5rem;
+  }
+
+  .q-container {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 76rem;
+    padding-inline: 1.25rem;
+  }
+
+  .q-card {
+    background-color: var(--color-paper-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+  }
+
+  .q-prose {
+    max-width: 65ch;
+  }
+  .q-prose p + p {
+    margin-top: 0.85em;
+  }
+
+  /* Decorative topographic texture for hero areas. Purely presentational. */
+  .q-topo {
+    background-image:
+      radial-gradient(circle at 12% 18%, rgb(31 111 92 / 0.10) 0, transparent 42%),
+      radial-gradient(circle at 88% 8%, rgb(194 102 31 / 0.10) 0, transparent 38%),
+      radial-gradient(circle at 65% 92%, rgb(58 90 120 / 0.08) 0, transparent 44%);
+  }
+}
+
+@layer utilities {
+  .q-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border-width: 0;
+  }
+}

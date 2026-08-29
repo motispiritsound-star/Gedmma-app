@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  verify:
+    name: Typecheck, lint, test, build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: questly
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: questly
+          POSTGRES_PASSWORD: questly
+          POSTGRES_DB: questly_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U questly"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://questly:questly@localhost:5432/questly_test?schema=public
+      SESSION_SECRET: ci-only-secret-at-least-thirty-two-characters
+      APP_URL: http://127.0.0.1:3100
+      ALLOW_SEED: 'true'
+      LOG_LEVEL: error
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: questly/package-lock.json
+
+      - run: npm ci
+
+      - name: Write the test environment
+        run: cp .env.test.example .env.test
+
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+      - name: Install the Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: questly/playwright-report
+          retention-days: 7

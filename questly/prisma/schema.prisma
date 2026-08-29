@@ -1,0 +1,658 @@
+// Questly data model.
+//
+// Design notes
+// - Child profiles are deliberately thin: a nickname, an avatar key and an age
+//   band. No e-mail, no legal name, no date of birth, no precise location.
+// - Everything a family produces (evidence, notes, reflections) hangs off a
+//   family and is only reachable through a family membership check.
+// - Quest content is translation-first: `Quest` holds locale-independent facts,
+//   `QuestTranslation` and `QuestStepTranslation` hold the words.
+// - Small taxonomies (categories, skills, interests, materials) carry `nameEn`
+//   and `nameNl` columns instead of separate translation tables. See
+//   PRODUCT_DECISIONS.md.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // Prisma 7 takes the connection through a driver adapter; see prisma.config.ts
+  // and src/lib/db.ts.
+}
+
+// ---------------------------------------------------------------- enums ----
+
+enum UserRole {
+  PARENT
+  CONTENT_ADMIN
+  PLATFORM_ADMIN
+}
+
+enum FamilyRole {
+  OWNER
+  PARENT
+}
+
+enum AgeBand {
+  AGE_6_8
+  AGE_9_11
+  AGE_12_15
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  CHALLENGING
+}
+
+enum Setting {
+  INDOOR
+  OUTDOOR
+  BOTH
+}
+
+enum EnvironmentType {
+  CITY
+  SUBURB
+  RURAL
+}
+
+enum WeatherSuitability {
+  ANY
+  DRY
+  RAIN_FRIENDLY
+  SNOW
+  WARM
+}
+
+enum Season {
+  SPRING
+  SUMMER
+  AUTUMN
+  WINTER
+}
+
+enum QuestStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum SafetySeverity {
+  INFO
+  CAUTION
+  ADULT_REQUIRED
+}
+
+enum CompletionStatus {
+  IN_PROGRESS
+  ABANDONED
+  PENDING_APPROVAL
+  APPROVED
+}
+
+enum PlannedQuestStatus {
+  PLANNED
+  DONE
+  SKIPPED
+}
+
+enum BadgeCriteria {
+  COMPLETIONS_TOTAL
+  COMPLETIONS_IN_CATEGORY
+  SKILL_POINTS
+  DISTINCT_CATEGORIES
+  FAMILY_MILESTONE
+}
+
+enum SubscriptionPlan {
+  FREE
+  FAMILY_PREMIUM
+  SCHOOL
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  TRIALING
+  PAST_DUE
+  CANCELED
+}
+
+enum TokenType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
+enum Locale {
+  nl
+  en
+}
+
+// -------------------------------------------------- identity & families ----
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  passwordHash    String
+  displayName     String
+  role            UserRole  @default(PARENT)
+  locale          Locale    @default(nl)
+  emailVerifiedAt DateTime?
+  lastLoginAt     DateTime?
+  failedLogins    Int       @default(0)
+  lockedUntil     DateTime?
+  // Set when the parent requests deletion; a scheduled purge removes the row.
+  deletedAt       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  memberships       FamilyMembership[]
+  sessions          Session[]
+  tokens            VerificationToken[]
+  auditLogs         AuditLog[]
+  approvedIn        QuestCompletion[]   @relation("ApprovedBy")
+  startedCompletion QuestCompletion[]   @relation("StartedBy")
+  uploadedEvidence  CompletionEvidence[]
+  questVersions     QuestVersion[]
+
+  @@index([role])
+  @@index([deletedAt])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  lastSeenAt DateTime @default(now())
+  ipHash    String?
+  userAgent String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model VerificationToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  type      TokenType
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type])
+}
+
+model Family {
+  id       String  @id @default(cuid())
+  name     String
+  locale   Locale  @default(nl)
+  country  String  @default("NL")
+  timezone String  @default("Europe/Amsterdam")
+
+  // Practical preferences. Deliberately coarse - no addresses, no coordinates.
+  environment           EnvironmentType @default(SUBURB)
+  preferredDuration     Int             @default(45) // minutes
+  preferredDifficulty   Difficulty      @default(EASY)
+  preferredSetting      Setting         @default(BOTH)
+  prefersFamilyActivity Boolean         @default(true)
+  adultCount            Int             @default(2)
+
+  // When true (default) a completion needs a parent to approve it.
+  requireParentApproval Boolean @default(true)
+  onboardingCompletedAt DateTime?
+
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  memberships   FamilyMembership[]
+  children      ChildProfile[]
+  completions   QuestCompletion[]
+  favourites    FavouriteQuest[]
+  planned       PlannedQuest[]
+  badges        AwardedBadge[]
+  subscription  Subscription?
+
+  @@index([deletedAt])
+}
+
+model FamilyMembership {
+  id       String     @id @default(cuid())
+  userId   String
+  familyId String
+  role     FamilyRole @default(PARENT)
+  createdAt DateTime  @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, familyId])
+  @@index([familyId])
+}
+
+model ChildProfile {
+  id        String    @id @default(cuid())
+  familyId  String
+  nickname  String
+  avatarKey String    @default("fox")
+  ageBand   AgeBand
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  family        Family              @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  interests     ChildInterest[]
+  participation QuestParticipation[]
+  badges        AwardedBadge[]
+  reflections   CompletionReflection[]
+
+  @@unique([familyId, nickname])
+  @@index([familyId, deletedAt])
+}
+
+// ------------------------------------------------------------ taxonomy ----
+
+model Category {
+  id            String @id @default(cuid())
+  slug          String @unique
+  nameEn        String
+  nameNl        String
+  descriptionEn String
+  descriptionNl String
+  icon          String @default("compass")
+  colorToken    String @default("moss")
+  sortOrder     Int    @default(0)
+
+  quests    Quest[]
+  interests Interest[]
+  badges    Badge[]
+}
+
+model Skill {
+  id            String @id @default(cuid())
+  slug          String @unique
+  nameEn        String
+  nameNl        String
+  descriptionEn String
+  descriptionNl String
+
+  quests QuestSkill[]
+  badges Badge[]
+}
+
+model Interest {
+  id         String  @id @default(cuid())
+  slug       String  @unique
+  nameEn     String
+  nameNl     String
+  categoryId String?
+
+  category Category?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  children ChildInterest[]
+
+  @@index([categoryId])
+}
+
+model ChildInterest {
+  childProfileId String
+  interestId     String
+  createdAt      DateTime @default(now())
+
+  childProfile ChildProfile @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  interest     Interest     @relation(fields: [interestId], references: [id], onDelete: Cascade)
+
+  @@id([childProfileId, interestId])
+  @@index([interestId])
+}
+
+model Material {
+  id       String  @id @default(cuid())
+  slug     String  @unique
+  nameEn   String
+  nameNl   String
+  // Materials most homes already have do not count against "materials I have".
+  isCommon Boolean @default(true)
+
+  quests QuestMaterial[]
+}
+
+// --------------------------------------------------------------- quests ----
+
+model Quest {
+  id       String @id @default(cuid())
+  slug     String @unique
+  categoryId String
+
+  ageBands        AgeBand[]
+  durationMinutes Int
+  difficulty      Difficulty
+  setting         Setting
+  weather         WeatherSuitability[]
+  seasons         Season[]
+  minParticipants Int                  @default(1)
+  maxParticipants Int                  @default(6)
+  requiresAdult   Boolean              @default(false)
+  isPremium       Boolean              @default(false)
+  status          QuestStatus          @default(DRAFT)
+  imageKey        String               @default("quest-default")
+  version         Int                  @default(1)
+
+  publishedAt DateTime?
+  archivedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  category     Category            @relation(fields: [categoryId], references: [id])
+  translations QuestTranslation[]
+  steps        QuestStep[]
+  skills       QuestSkill[]
+  materials    QuestMaterial[]
+  safety       SafetyInstruction[]
+  completions  QuestCompletion[]
+  favourites   FavouriteQuest[]
+  planned      PlannedQuest[]
+  versions     QuestVersion[]
+
+  @@index([status, isPremium])
+  @@index([categoryId])
+  @@index([difficulty])
+}
+
+model QuestTranslation {
+  id      String @id @default(cuid())
+  questId String
+  locale  Locale
+
+  title                String
+  shortDescription     String
+  story                String
+  educationalObjective String
+  expectedResult       String
+  preparation          String[]
+  reflectionQuestions  String[]
+
+  quest Quest @relation(fields: [questId], references: [id], onDelete: Cascade)
+
+  @@unique([questId, locale])
+}
+
+model QuestStep {
+  id               String  @id @default(cuid())
+  questId          String
+  position         Int
+  estimatedMinutes Int     @default(5)
+  requiresAdult    Boolean @default(false)
+
+  quest        Quest                  @relation(fields: [questId], references: [id], onDelete: Cascade)
+  translations QuestStepTranslation[]
+
+  @@unique([questId, position])
+}
+
+model QuestStepTranslation {
+  id     String @id @default(cuid())
+  stepId String
+  locale Locale
+
+  title       String
+  instruction String
+  // Spoken variant used by Adventure Mode's text-to-speech narration.
+  audioScript String?
+
+  step QuestStep @relation(fields: [stepId], references: [id], onDelete: Cascade)
+
+  @@unique([stepId, locale])
+}
+
+model QuestSkill {
+  questId String
+  skillId String
+  weight  Int @default(1)
+
+  quest Quest @relation(fields: [questId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([questId, skillId])
+  @@index([skillId])
+}
+
+model QuestMaterial {
+  questId    String
+  materialId String
+  quantity   String?
+  optional   Boolean @default(false)
+
+  quest    Quest    @relation(fields: [questId], references: [id], onDelete: Cascade)
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@id([questId, materialId])
+  @@index([materialId])
+}
+
+model SafetyInstruction {
+  id       String         @id @default(cuid())
+  questId  String
+  position Int
+  severity SafetySeverity @default(INFO)
+  textEn   String
+  textNl   String
+
+  quest Quest @relation(fields: [questId], references: [id], onDelete: Cascade)
+
+  @@unique([questId, position])
+}
+
+model QuestVersion {
+  id            String   @id @default(cuid())
+  questId       String
+  version       Int
+  snapshot      Json
+  changeNote    String?
+  changedByUserId String?
+  createdAt     DateTime @default(now())
+
+  quest         Quest @relation(fields: [questId], references: [id], onDelete: Cascade)
+  changedByUser User? @relation(fields: [changedByUserId], references: [id], onDelete: SetNull)
+
+  @@unique([questId, version])
+  @@index([questId])
+}
+
+// ------------------------------------------------------------- progress ----
+
+model QuestCompletion {
+  id       String           @id @default(cuid())
+  familyId String
+  questId  String
+  status   CompletionStatus @default(IN_PROGRESS)
+
+  startedAt   DateTime  @default(now())
+  finishedAt  DateTime?
+  approvedAt  DateTime?
+  // Minutes the family reported being away from the screen. Self-reported, and
+  // presented as such everywhere in the UI.
+  offlineMinutes Int    @default(0)
+  familyNote  String?
+  locale      Locale    @default(nl)
+
+  startedByUserId  String?
+  approvedByUserId String?
+
+  family      Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  quest       Quest  @relation(fields: [questId], references: [id])
+  startedBy   User?  @relation("StartedBy", fields: [startedByUserId], references: [id], onDelete: SetNull)
+  approvedBy  User?  @relation("ApprovedBy", fields: [approvedByUserId], references: [id], onDelete: SetNull)
+
+  participants QuestParticipation[]
+  reflections  CompletionReflection[]
+  evidence     CompletionEvidence[]
+  badges       AwardedBadge[]
+
+  @@index([familyId, status])
+  @@index([familyId, finishedAt])
+  @@index([questId])
+}
+
+model QuestParticipation {
+  completionId   String
+  childProfileId String
+  createdAt      DateTime @default(now())
+
+  completion   QuestCompletion @relation(fields: [completionId], references: [id], onDelete: Cascade)
+  childProfile ChildProfile    @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+
+  @@id([completionId, childProfileId])
+  @@index([childProfileId])
+}
+
+model CompletionReflection {
+  id             String   @id @default(cuid())
+  completionId   String
+  childProfileId String?
+  position       Int
+  question       String
+  answer         String
+  createdAt      DateTime @default(now())
+
+  completion   QuestCompletion @relation(fields: [completionId], references: [id], onDelete: Cascade)
+  childProfile ChildProfile?   @relation(fields: [childProfileId], references: [id], onDelete: SetNull)
+
+  @@unique([completionId, position])
+}
+
+model CompletionEvidence {
+  id           String   @id @default(cuid())
+  completionId String
+  // Opaque key in the object-storage abstraction, never a public URL.
+  storageKey   String   @unique
+  mimeType     String
+  sizeBytes    Int
+  checksum     String
+  caption      String?
+  // Private by default; there is no UI that makes evidence public in the MVP.
+  isPrivate    Boolean  @default(true)
+  uploadedByUserId String?
+  createdAt    DateTime @default(now())
+
+  completion QuestCompletion @relation(fields: [completionId], references: [id], onDelete: Cascade)
+  uploadedBy User?           @relation(fields: [uploadedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([completionId])
+}
+
+model Badge {
+  id            String        @id @default(cuid())
+  slug          String        @unique
+  nameEn        String
+  nameNl        String
+  descriptionEn String
+  descriptionNl String
+  icon          String        @default("star")
+  criteria      BadgeCriteria
+  threshold     Int           @default(1)
+  categoryId    String?
+  skillId       String?
+
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  skill    Skill?    @relation(fields: [skillId], references: [id], onDelete: SetNull)
+  awarded  AwardedBadge[]
+}
+
+model AwardedBadge {
+  id             String   @id @default(cuid())
+  badgeId        String
+  familyId       String
+  childProfileId String?
+  completionId   String?
+  awardedAt      DateTime @default(now())
+
+  badge        Badge            @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  family       Family           @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  childProfile ChildProfile?    @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  completion   QuestCompletion? @relation(fields: [completionId], references: [id], onDelete: SetNull)
+
+  // A badge is earned once per family, or once per child for per-child badges.
+  // The partial-unique behaviour is enforced in code plus these two indexes.
+  @@unique([badgeId, familyId, childProfileId])
+  @@index([familyId])
+}
+
+model FavouriteQuest {
+  familyId  String
+  questId   String
+  createdAt DateTime @default(now())
+
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  quest  Quest  @relation(fields: [questId], references: [id], onDelete: Cascade)
+
+  @@id([familyId, questId])
+  @@index([questId])
+}
+
+model PlannedQuest {
+  id           String             @id @default(cuid())
+  familyId     String
+  questId      String
+  scheduledFor DateTime           @db.Date
+  timeOfDay    String?
+  note         String?
+  status       PlannedQuestStatus @default(PLANNED)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  quest  Quest  @relation(fields: [questId], references: [id], onDelete: Cascade)
+
+  @@unique([familyId, questId, scheduledFor])
+  @@index([familyId, scheduledFor])
+}
+
+// -------------------------------------------------- billing & auditing ----
+
+model Subscription {
+  id       String             @id @default(cuid())
+  familyId String             @unique
+  plan     SubscriptionPlan   @default(FREE)
+  status   SubscriptionStatus @default(ACTIVE)
+  provider String             @default("mock")
+
+  providerCustomerId     String?
+  providerSubscriptionId String?
+  currentPeriodEnd       DateTime?
+  cancelAtPeriodEnd      Boolean   @default(false)
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@index([plan, status])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?
+  actorRole   String?
+  action      String
+  entityType  String
+  entityId    String?
+  metadata    Json?
+  ipHash      String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  actor User? @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([action])
+  @@index([entityType, entityId])
+  @@index([actorUserId])
+}
