@@ -56,6 +56,12 @@ export const nl: Dictionary = {
     admin: 'Beheer',
     mainNavigation: 'Hoofdnavigatie',
     account: 'Account',
+    homeShort: 'Start',
+    libraryShort: 'Avonturen',
+    plannerShort: 'Planner',
+    dashboardShort: 'Voortgang',
+    childrenShort: 'Kinderen',
+    settingsShort: 'Instellingen',
   },
   landing: {
     heroTitle: 'Echte avonturen winnen het van nog een uur scrollen',

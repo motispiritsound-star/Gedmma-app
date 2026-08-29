@@ -22,7 +22,7 @@ const ICONS = {
   settings: IconSettings,
 } as const
 
-type Item = { href: string; key: keyof typeof ICONS; label: string }
+type Item = { href: string; key: keyof typeof ICONS; label: string; short: string }
 
 /**
  * Primary navigation. Rendered as a sidebar on large screens and as a bottom
@@ -32,12 +32,12 @@ export function AppNav({ d, adminHref }: { d: Dictionary; adminHref: string | nu
   const pathname = usePathname()
 
   const items: Item[] = [
-    { href: '/home', key: 'home', label: d.nav.home },
-    { href: '/quests', key: 'library', label: d.nav.library },
-    { href: '/planner', key: 'planner', label: d.nav.planner },
-    { href: '/dashboard', key: 'dashboard', label: d.nav.dashboard },
-    { href: '/children', key: 'children', label: d.nav.children },
-    { href: '/settings', key: 'settings', label: d.nav.settings },
+    { href: '/home', key: 'home', label: d.nav.home, short: d.nav.homeShort },
+    { href: '/quests', key: 'library', label: d.nav.library, short: d.nav.libraryShort },
+    { href: '/planner', key: 'planner', label: d.nav.planner, short: d.nav.plannerShort },
+    { href: '/dashboard', key: 'dashboard', label: d.nav.dashboard, short: d.nav.dashboardShort },
+    { href: '/children', key: 'children', label: d.nav.children, short: d.nav.childrenShort },
+    { href: '/settings', key: 'settings', label: d.nav.settings, short: d.nav.settingsShort },
   ]
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
@@ -86,22 +86,25 @@ export function AppNav({ d, adminHref }: { d: Dictionary; adminHref: string | nu
         aria-label={d.nav.mainNavigation}
         className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper-raised/95 backdrop-blur lg:hidden"
       >
-        <ul className="mx-auto flex max-w-lg items-stretch justify-between px-2 pb-[env(safe-area-inset-bottom)]">
+        <ul className="mx-auto grid max-w-lg grid-cols-6 pb-[env(safe-area-inset-bottom)]">
           {items.map((item) => {
             const Icon = ICONS[item.key]
             const active = isActive(item.href)
             return (
-              <li key={item.href} className="flex-1">
+              <li key={item.href} className="min-w-0">
                 <Link
                   href={item.href}
                   aria-current={active ? 'page' : undefined}
+                  // The full name is the accessible name; the visible label is
+                  // shortened so all six fit on the narrowest phone.
+                  aria-label={item.label}
                   className={cn(
-                    'flex flex-col items-center gap-1 px-1 py-2.5 text-[0.68rem] font-semibold',
+                    'flex flex-col items-center gap-1 px-0.5 py-2.5 text-[0.6rem] font-semibold',
                     active ? 'text-moss-700' : 'text-ink-muted',
                   )}
                 >
-                  <Icon size={21} />
-                  <span className="truncate">{item.label}</span>
+                  <Icon size={20} />
+                  <span className="w-full truncate text-center">{item.short}</span>
                 </Link>
               </li>
             )

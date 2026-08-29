@@ -54,6 +54,13 @@ export const en = {
     admin: 'Administration',
     mainNavigation: 'Main navigation',
     account: 'Account',
+    // Compact labels for the phone bottom bar, where the full names overflow.
+    homeShort: 'Home',
+    libraryShort: 'Quests',
+    plannerShort: 'Planner',
+    dashboardShort: 'Progress',
+    childrenShort: 'Children',
+    settingsShort: 'Settings',
   },
   landing: {
     heroTitle: 'Real adventures beat another hour of scrolling',
