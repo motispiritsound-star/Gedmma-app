@@ -1,0 +1,62 @@
+{
+  "expo": {
+    "name": "Buurklus",
+    "slug": "buurklus",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "buurklus",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#0F6F5C",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "nl.buurklus.app",
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true,
+        "NSPhotoLibraryUsageDescription": "Buurklus gebruikt je foto’s om je klus te illustreren.",
+        "NSCameraUsageDescription": "Buurklus gebruikt de camera om het werk te fotograferen."
+      }
+    },
+    "android": {
+      "package": "nl.buurklus.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0F6F5C"
+      },
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE"
+      ]
+    },
+    "locales": {
+      "nl": "./src/i18n/store-nl.json",
+      "en": "./src/i18n/store-en.json"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-localization",
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Buurklus gebruikt je foto’s om je klus te illustreren."
+        }
+      ]
+    ],
+    "extra": {
+      "apiUrl": "http://localhost:4000",
+      "router": {
+        "origin": false
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    }
+  }
+}

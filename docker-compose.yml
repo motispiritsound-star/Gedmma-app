@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: buurklus-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: buurklus
+      POSTGRES_PASSWORD: buurklus
+      POSTGRES_DB: buurklus
+    ports:
+      - "5432:5432"
+    volumes:
+      - buurklus-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U buurklus"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  buurklus-pgdata:

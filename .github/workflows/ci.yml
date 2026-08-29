@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: buurklus
+          POSTGRES_PASSWORD: buurklus
+          POSTGRES_DB: buurklus_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U buurklus"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://buurklus:buurklus@localhost:5432/buurklus_test?schema=public
+      TEST_DATABASE_URL: postgresql://buurklus:buurklus@localhost:5432/buurklus_test?schema=public
+      JWT_ACCESS_SECRET: ci-access-secret-that-is-long-enough-0000000
+      JWT_REFRESH_SECRET: ci-refresh-secret-that-is-long-enough-000000
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Generate the Prisma client
+        run: npm run db:generate --workspace @buurklus/api
+
+      - name: Build the shared package
+        run: npm run build --workspace @buurklus/shared
+
+      - name: Build the website
+        run: npm run build --workspace @buurklus/web
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
