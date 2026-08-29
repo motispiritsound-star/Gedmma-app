@@ -20,6 +20,18 @@ export type Aanbod = {
   telefoon: string;
 };
 
+/**
+ * Wat een agent verdient. Een vast bedrag zodra de opdracht binnen is, en een
+ * deel van wat die klant maandelijks opbrengt zolang hij klant blijft. Die
+ * tweede helft is het punt: een agent die meedeelt in de hosting heeft er belang
+ * bij dat de klant tevreden blijft, niet alleen dat hij ja zegt.
+ */
+export type Provisie = {
+  perOpdrachtCent: number;
+  /** Percentage van de maandomzet van eigen klanten, 0-100. */
+  mrrPercentage: number;
+};
+
 const STANDAARD: Aanbod = {
   soort: 'gratis',
   startbedragCent: 0,
@@ -28,6 +40,51 @@ const STANDAARD: Aanbod = {
   bedrijfsnaam: '',
   telefoon: '',
 };
+
+const STANDAARD_PROVISIE: Provisie = { perOpdrachtCent: 5000, mrrPercentage: 10 };
+
+/** Alle instellingen in één keer uit de tabel, als map. */
+function opgeslagenWaarden(): Map<string, string> {
+  const rijen = db().prepare('SELECT sleutel, waarde FROM instellingen').all() as
+    unknown as { sleutel: string; waarde: string }[];
+  return new Map(rijen.map((rij) => [rij.sleutel, rij.waarde]));
+}
+
+export function leesProvisie(): Provisie {
+  const opgeslagen = opgeslagenWaarden();
+  const getal = (sleutel: string, standaard: number, max = Infinity): number => {
+    const waarde = Number(opgeslagen.get(sleutel));
+    return Number.isFinite(waarde) && waarde >= 0 && waarde <= max ? waarde : standaard;
+  };
+  return {
+    perOpdrachtCent: getal('provisie_per_opdracht_cent', STANDAARD_PROVISIE.perOpdrachtCent),
+    mrrPercentage: getal('provisie_mrr_percentage', STANDAARD_PROVISIE.mrrPercentage, 100),
+  };
+}
+
+export function bewaarProvisie(nieuw: Partial<Provisie>): Provisie {
+  const zet = db().prepare(`
+    INSERT INTO instellingen (sleutel, waarde, bijgewerkt_op) VALUES (?, ?, datetime('now'))
+    ON CONFLICT(sleutel) DO UPDATE SET waarde = excluded.waarde, bijgewerkt_op = datetime('now')
+  `);
+  if (nieuw.perOpdrachtCent !== undefined) {
+    zet.run('provisie_per_opdracht_cent', String(Math.max(0, Math.round(nieuw.perOpdrachtCent))));
+  }
+  if (nieuw.mrrPercentage !== undefined) {
+    zet.run('provisie_mrr_percentage', String(Math.min(100, Math.max(0, Math.round(nieuw.mrrPercentage)))));
+  }
+  return leesProvisie();
+}
+
+/** Wat een agent aan één regel uit het teamoverzicht verdient. */
+export function provisieVan(
+  regel: { opdrachten: number; mrr_cent: number }, provisie = leesProvisie(),
+): { eenmaligCent: number; perMaandCent: number } {
+  return {
+    eenmaligCent: regel.opdrachten * provisie.perOpdrachtCent,
+    perMaandCent: Math.round((regel.mrr_cent * provisie.mrrPercentage) / 100),
+  };
+}
 
 export function leesAanbod(): Aanbod {
   const rijen = db().prepare('SELECT sleutel, waarde FROM instellingen').all() as

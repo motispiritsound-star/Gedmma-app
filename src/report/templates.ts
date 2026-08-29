@@ -45,6 +45,16 @@ export type SjabloonContext = {
   afzender?: Afzender;
   /** De zin die je aanbod uitlegt; komt uit de instellingen. */
   aanbod?: string;
+  /**
+   * Bewijs dat je het al vaker deed. Niets hiervan wordt verzonnen: het komt uit
+   * je eigen klanten en testimonials, en staat er alleen als je het echt hebt.
+   * Een tevreden ondernemer uit dezelfde streek overtuigt sterker dan welke
+   * belofte ook.
+   */
+  bewijs?: {
+    klanten: number;
+    testimonial?: { tekst: string; bedrijf: string; plaats?: string | null } | null;
+  };
   /** Losse gegevens die sommige sjablonen invullen, bijvoorbeeld een afspraakdatum. */
   extra?: Record<string, string | undefined>;
 };
@@ -94,6 +104,32 @@ const platform = (ctx: SjabloonContext): string => {
 
 const plaatszin = (ctx: SjabloonContext) => ctx.plaats ? ` in ${ctx.plaats} en omgeving` : ' in de regio';
 
+/**
+ * De alinea met sociaal bewijs. Onder de drie klanten noemen we geen aantal —
+ * "ik doe dit voor twee ondernemers" werkt tegen je — en zonder testimonial en
+ * zonder klanten blijft de alinea gewoon weg.
+ */
+const bewijszin = (ctx: SjabloonContext): string => {
+  const klanten = ctx.bewijs?.klanten ?? 0;
+  const stem = ctx.bewijs?.testimonial;
+  const delen: string[] = [];
+
+  if (klanten >= 3) {
+    delen.push(`Ik doe dit inmiddels voor ${klanten} ondernemers; hun sites draaien op onze hosting.`);
+  }
+  if (stem?.tekst) {
+    const wie = [stem.bedrijf, stem.plaats].filter(Boolean).join(' uit ');
+    delen.push(`${wie} zei erover: "${stem.tekst.trim().replace(/\s+/g, ' ')}"`);
+  }
+  return delen.join(' ');
+};
+
+/** Zet de bewijsalinea erbij als er iets te bewijzen valt, anders niets. */
+const metBewijs = (ctx: SjabloonContext): string => {
+  const zin = bewijszin(ctx);
+  return zin ? `\n${zin}\n` : '';
+};
+
 // --- het aanbod, overal hetzelfde ------------------------------------------
 
 const STANDAARD_AANBOD =
@@ -121,7 +157,7 @@ Ik kwam uw website ${ctx.domein} tegen en heb hem kort bekeken. Een paar dingen 
 ${opsomming(ctx)}
 
 ${aanbodVan(ctx)}
-
+${metBewijs(ctx)}
 Wat ik van u nodig heb is een halfuurtje om te horen wat uw klanten belangrijk vinden. Ik laat u eerst een voorbeeld zien voordat er iets live gaat.
 
 Schikt het als ik u deze week even bel?
@@ -144,7 +180,7 @@ Ik zag drie dingen op ${ctx.domein} die u nu klanten kosten:
 ${kortePunten(ctx)}
 
 Ik los ze kosteloos voor u op en zet de nieuwe site op onze hosting. Geen kosten vooraf, geen contract.
-
+${metBewijs(ctx)}
 Mag ik u bellen om het kort toe te lichten?
 
 ${ondertekening(ctx)}

@@ -14,7 +14,9 @@ import { RECHTSVORMEN, benaderbaarheid, blokkeer, deblokkeer, legToestemmingVast
          magBellen, magMailen, trekToestemmingIn, zetRechtsvorm,
          type RechtsvormId } from '../db/contact.ts';
 import { SJABLONEN, renderSjabloon, stelSjabloonVoor } from '../report/templates.ts';
-import { aanbodTekst, bewaarAanbod, leesAanbod } from '../db/instellingen.ts';
+import { aanbodTekst, bewaarAanbod, leesAanbod, leesProvisie, bewaarProvisie, provisieVan } from '../db/instellingen.ts';
+import { werklijst, werkdruk, legReactieVast } from '../db/opvolging.ts';
+import { prognose, leesDoel, bewaarDoel, tempo } from '../db/prognose.ts';
 import { toCsv } from '../util/csv.ts';
 import { verrijkBedrijf, CENT_PER_BEVRAGING } from '../sources/kvk-verrijken.ts';
 import { plaatsNieuws, nieuwsLijst, markeerGelezen, markeerAllesGelezen,
@@ -291,6 +293,26 @@ export async function startServer(port: number): Promise<void> {
     });
   });
 
+  /**
+   * Sociaal bewijs voor in de mail: hoeveel klanten je hebt en een testimonial
+   * die je mag publiceren, het liefst uit dezelfde plaats. Alles komt uit je
+   * eigen gegevens; heb je nog niets, dan staat er ook niets in de mail.
+   */
+  const sociaalBewijs = (plaats: string | null) => {
+    const aantal = Number((db().prepare(
+      "SELECT COUNT(*) AS n FROM klanten WHERE status IN ('actief','proef')").get() as { n: number }).n);
+
+    const stem = db().prepare(`
+      SELECT t.tekst, c.name AS bedrijf, c.city AS plaats
+      FROM testimonials t JOIN companies c ON c.id = t.company_id
+      WHERE t.publiceerbaar = 1 AND length(t.tekst) BETWEEN 20 AND 240
+      ORDER BY CASE WHEN c.city = ? THEN 0 ELSE 1 END, t.sterren DESC, t.ontvangen_op DESC
+      LIMIT 1
+    `).get(plaats) as { tekst: string; bedrijf: string; plaats: string | null } | undefined;
+
+    return { klanten: aantal, testimonial: stem ?? null };
+  };
+
   app.get('/api/leads/:id/mail', vereistLogin, (req: Verzoek, res) => {
     const lead = getLead(Number(req.params.id));
     if (!lead) { meld(res, 404, 'Die lead bestaat niet.'); return; }
@@ -303,6 +325,7 @@ export async function startServer(port: number): Promise<void> {
       bedrijf: lead.name, domein: lead.domain, plaats: lead.city,
       verdict: rapport.verdict, signals: rapport.signals ?? null,
       aanbod: aanbodTekst(aanbod),
+      bewijs: sociaalBewijs(lead.city),
       afzender: {
         naam: (req.query.naam as string) || req.gebruiker!.naam,
         bedrijf: (req.query.bedrijf as string) || aanbod.bedrijfsnaam || undefined,
@@ -482,10 +505,41 @@ export async function startServer(port: number): Promise<void> {
     res.json({ ok: true });
   });
 
+  // --- de werklijst: wat moet er vandaag gebeuren ---
+  app.get('/api/vandaag', vereistLogin, (req: Verzoek, res) => {
+    // Een agent ziet zijn eigen werk; de eigenaar kan met ?iedereen=1 het hele
+    // team zien, zodat hij ziet waar leads stil blijven liggen.
+    const iedereen = req.gebruiker!.rol === 'eigenaar' && req.query.iedereen === '1';
+    const agent = iedereen ? null : req.gebruiker!.id;
+    res.json({ regels: werklijst(agent, 60), druk: werkdruk(agent), iedereen });
+  });
+
+  /** Een reactie van het bedrijf vastleggen; dat stopt de herinneringen. */
+  app.post('/api/leads/:id/reactie', vereistLogin, (req: Verzoek, res) => {
+    const id = Number(req.params.id);
+    if (!magAanLead(req, res, id)) return;
+    const { notitie } = req.body as { notitie?: string };
+    legReactieVast(id, req.gebruiker!.id, notitie);
+    res.json({ ok: true });
+  });
+
+  // --- prognose: wat is de pijplijn waard ---
+  app.get('/api/prognose', vereistLogin, (req: Verzoek, res) => {
+    const eigenAgent = req.gebruiker!.rol === 'agent' ? req.gebruiker!.id : null;
+    res.json({ ...prognose(eigenAgent), tempo: tempo() });
+  });
+
+  app.put('/api/doel', vereistLogin, vereistEigenaar, (req, res) => {
+    const { doel } = req.body as { doel?: number };
+    const cent = Math.round(Number(doel) * 100);
+    if (!Number.isFinite(cent) || cent < 0) { meld(res, 400, 'Geef een bedrag per maand op.'); return; }
+    res.json({ doelMrrCent: bewaarDoel(cent) });
+  });
+
   // --- instellingen ---
   app.get('/api/instellingen', vereistLogin, (_req, res) => {
     const aanbod = leesAanbod();
-    res.json({ aanbod, voorbeeld: aanbodTekst(aanbod) });
+    res.json({ aanbod, voorbeeld: aanbodTekst(aanbod), provisie: leesProvisie(), doelMrrCent: leesDoel() });
   });
 
   app.put('/api/instellingen', vereistLogin, vereistEigenaar, (req, res) => {
@@ -498,12 +552,22 @@ export async function startServer(port: number): Promise<void> {
       bedrijfsnaam: body.bedrijfsnaam as string | undefined,
       telefoon: body.telefoon as string | undefined,
     });
-    res.json({ aanbod, voorbeeld: aanbodTekst(aanbod) });
+    if (body.provisiePerOpdracht !== undefined || body.provisieMrrPercentage !== undefined) {
+      bewaarProvisie({
+        perOpdrachtCent: body.provisiePerOpdracht !== undefined
+          ? Math.round(Number(body.provisiePerOpdracht) * 100) : undefined,
+        mrrPercentage: body.provisieMrrPercentage !== undefined
+          ? Number(body.provisieMrrPercentage) : undefined,
+      });
+    }
+    res.json({ aanbod, voorbeeld: aanbodTekst(aanbod), provisie: leesProvisie() });
   });
 
   // --- team ---
   app.get('/api/team', vereistLogin, vereistEigenaar, (_req, res) => {
-    res.json({ team: teamOverzicht(), gebruikers: gebruikers(), omzet: omzet() });
+    const provisie = leesProvisie();
+    const team = teamOverzicht().map((regel) => ({ ...regel, provisie: provisieVan(regel, provisie) }));
+    res.json({ team, gebruikers: gebruikers(), omzet: omzet(), provisie, prognose: prognose() });
   });
 
   app.post('/api/team', vereistLogin, vereistEigenaar, (req, res) => {

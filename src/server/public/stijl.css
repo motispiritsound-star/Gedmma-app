@@ -458,6 +458,43 @@ textarea.klein { min-height:80px; font-family:var(--sans); font-size:13.5px; }
 .trechterstap b { display:block; font:600 17px/1.1 var(--mono); font-variant-numeric:tabular-nums; }
 .trechterstap span { font-size:12px; color:var(--muted); }
 
+/* ---------- vandaag: de werklijst ---------- */
+.segment { display:inline-flex; gap:2px; padding:2px; background:var(--surface-2);
+  border:1px solid var(--line); border-radius:var(--r-sm); }
+.segmentknop { padding:5px 11px; background:transparent; border:0; border-radius:var(--r-xs);
+  font-size:13px; color:var(--ink-2); cursor:pointer; transition:background var(--vlot); }
+.segmentknop:hover { color:var(--ink); }
+.segmentknop[aria-pressed="true"] { background:var(--panel); color:var(--ink); font-weight:500;
+  box-shadow:var(--schaduw-1); }
+
+.teller.waarschuwing { background:var(--slecht); }
+.werklijst thead th:nth-child(1) { width:152px; }
+.werklijst thead th:nth-child(3) { width:212px; }
+td.wanneer { white-space:nowrap; }
+td.wanneer .sub { overflow:hidden; text-overflow:ellipsis; }
+.wanneer-tekst { font-weight:500; font-size:13px; }
+.stip { display:inline-block; width:7px; height:7px; margin-right:7px; border-radius:50%;
+  background:var(--line-strong); vertical-align:1px; }
+.stip.te-laat { background:var(--slecht); }
+.stip.vandaag { background:var(--matig); }
+td.doen { text-align:right; white-space:nowrap; }
+td.doen .knop { margin-left:5px; }
+#vandaag-rijen .tweede { white-space:normal; }
+#vandaag-rijen .tweede b { font-weight:500; color:var(--ink); }
+
+/* ---------- prognose ---------- */
+.prognosevak { margin-bottom:16px; overflow:hidden; }
+.doelvorm { display:flex; align-items:center; gap:7px; }
+.doelvorm .valuta { color:var(--muted); font-size:13px; }
+.tegels.binnenin { margin:0; padding:14px; grid-template-columns:repeat(auto-fit,minmax(158px,1fr)); }
+.tegels.binnenin .tegel { box-shadow:none; background:var(--surface); }
+.doelbalk { height:6px; margin:0 14px 14px; background:var(--surface-2); border-radius:99px; overflow:hidden; }
+.doelbalk i { display:block; height:100%; background:var(--accent); border-radius:99px;
+  transition:width 420ms cubic-bezier(.2,.7,.3,1); }
+.prognosetabel thead th { background:var(--surface); }
+.prognosetabel .sub { display:block; font-size:11px; }
+.prognosetabel .voorraadrij td { color:var(--muted); }
+
 /* ---------- nieuws ---------- */
 .nieuwsitem { border-bottom:1px solid var(--line); padding:15px 17px; }
 .nieuwsitem:last-child { border-bottom:0; }

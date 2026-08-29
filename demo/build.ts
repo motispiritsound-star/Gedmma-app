@@ -172,6 +172,49 @@ for (const stap of verhaal) {
   }
 }
 
+// --- opvolging die is blijven liggen ----------------------------------------
+// In het echt is de werklijst het scherm waar een agent zijn dag mee begint.
+// Daarvoor moet er iets ouds in staan, dus zetten we de activiteiten van een
+// paar leads terug in de tijd en plannen we twee acties op vandaag en gisteren.
+const database = db();
+const zetTerug = (domein: string, dagen: number) => {
+  database.prepare(`
+    UPDATE activiteiten SET op = datetime('now', ?) WHERE company_id = (SELECT id FROM companies WHERE domain = ?)
+  `).run(`-${dagen} days`, domein);
+  database.prepare(`
+    UPDATE opvolging SET bijgewerkt_op = datetime('now', ?) WHERE company_id = (SELECT id FROM companies WHERE domain = ?)
+  `).run(`-${dagen} days`, domein);
+};
+zetTerug('schildersbedrijfvermeer.nl', 6);
+zetTerug('hoveniergroenrijk.nl', 3);
+zetTerug('drukkerijvandenberg.nl', 5);
+zetTerug('autobedrijfjansen.nl', 9);
+zetTerug('loodgieter-dekraan.nl', 2);
+
+// Een afspraak die vandaag staat en een terugbelmoment van gisteren.
+database.prepare(`
+  UPDATE opvolging SET volgende_actie_op = date('now') WHERE company_id = ?
+`).run(opDomein('loodgieter-dekraan.nl'));
+database.prepare(`
+  UPDATE opvolging SET volgende_actie_op = date('now', '-1 day') WHERE company_id = ?
+`).run(opDomein('hoveniergroenrijk.nl'));
+
+// Vier bedrijven die een mail kregen en niet reageerden — precies de groep die
+// je zonder werklijst kwijtraakt.
+const stilNaMail = ['bakkerijdegraaf.nl', 'makelaarmeijer-spijkenisse.nl', 'bakkerijblom.nl', 'eetcafesmits.nl'];
+for (const [index, domein] of stilNaMail.entries()) {
+  const rij = database.prepare('SELECT id FROM companies WHERE domain = ?').get(domein) as { id: number } | undefined;
+  if (!rij) continue;
+  const agent = index % 2 === 0 ? sara!.id : tom!.id;
+  wijsToe(rij.id, agent, eigenaar!.id);
+  zetFase(rij.id, 'toegewezen', agent);
+  logActiviteit({ companyId: rij.id, gebruikerId: agent, soort: 'mail',
+    notitie: 'Eerste contact verstuurd, nog geen reactie.' });
+  database.prepare(`
+    UPDATE activiteiten SET op = datetime('now', ?) WHERE company_id = ?
+  `).run(`-${5 + index * 2} days`, rij.id);
+}
+
 // Een paar berichten op het prikbord, zodat de proefrit laat zien hoe je het
 // team op de hoogte houdt.
 const { plaatsNieuws } = await import('../src/db/nieuws.ts');
@@ -194,6 +237,13 @@ plaatsNieuws({
   tekst: 'Veertien sites zijn achteruitgegaan sinds de vorige ronde. Filter op '
     + '"achteruit" in de lijst: dat is de beste aanleiding voor een gesprek.',
 });
+
+// Een doel voor de maandomzet en een provisieregeling, zodat de prognose en het
+// teamoverzicht in de proefrit laten zien waar het om draait.
+const { bewaarDoel } = await import('../src/db/prognose.ts');
+const { bewaarProvisie } = await import('../src/db/instellingen.ts');
+bewaarDoel(250_00);
+bewaarProvisie({ perOpdrachtCent: 5000, mrrPercentage: 10 });
 
 // Een bedrijf dat zich heeft afgemeld, zodat de demo ook die kant laat zien.
 blokkeer(opDomein('dierenartsdepoot.nl'), 'gaf aan geen berichten meer te willen', tom!.id);
@@ -248,6 +298,19 @@ const leads = alle.map((lead) => {
   };
 });
 
+// De werklijst en de prognose gaan mee naar de demopagina: die twee laten zien
+// waar het geld zit — wat er blijft liggen, en wat de pijplijn waard is.
+const { werklijst, werkdruk } = await import('../src/db/opvolging.ts');
+const { prognose } = await import('../src/db/prognose.ts');
+const werk = werklijst(null, 10).map((regel) => ({
+  id: regel.id, naam: regel.name, domein: regel.domain, plaats: regel.city,
+  fase: regel.faseLabel, wat: regel.wat, waarom: regel.waarom,
+  urgentie: regel.urgentie, dagenTeLaat: regel.dagenTeLaat,
+  agent: regel.agent_naam, telefoon: regel.telefoon,
+}));
+const werkDruk = werkdruk();
+const vooruitzicht = prognose();
+
 const samenvatting = {
   bedrijven: leads.length,
   slecht: leads.filter((lead) => (lead.score ?? 0) < 50).length,
@@ -259,7 +322,20 @@ const samenvatting = {
 
 mkdirSync('demo/out', { recursive: true });
 writeFileSync('demo/out/demo-data.json',
-  JSON.stringify({ gegenereerdOp: new Date().toISOString(), samenvatting, leads }, null, 2));
+  JSON.stringify({
+    gegenereerdOp: new Date().toISOString(), samenvatting, leads,
+    werk, werkDruk,
+    prognose: {
+      huidigeMrrCent: vooruitzicht.huidigeMrrCent,
+      verwachteMrrCent: vooruitzicht.verwachteMrrCent,
+      verwachteKlanten: vooruitzicht.verwachteKlanten,
+      pijplijnJaarCent: vooruitzicht.pijplijnJaarCent,
+      doelMrrCent: vooruitzicht.doelMrrCent,
+      opdrachtenNodig: vooruitzicht.opdrachtenNodig,
+      voorraad: vooruitzicht.voorraad,
+      fases: vooruitzicht.fases.filter((rij) => rij.aantal > 0),
+    },
+  }, null, 2));
 
 console.log('\nDe vijftien uitgewerkte voorbeelden:');
 for (const lead of leads.filter((lead) => SITES.some((site) => site.domein === lead.domain))

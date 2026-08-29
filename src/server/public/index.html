@@ -53,6 +53,10 @@
     </div>
 
     <nav class="tabs" id="tabs" aria-label="Hoofdmenu">
+      <button class="tab" data-weergave="vandaag" aria-pressed="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M10 6v4l2.6 1.6"/></svg>
+        <span>Vandaag</span><span class="teller waarschuwing" id="vandaag-teller" hidden></span>
+      </button>
       <button class="tab" data-weergave="kaart" aria-pressed="true">
         <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 5.5l5-2 5 2 5-2v11l-5 2-5-2-5 2z"/><path d="M7.5 3.5v11M12.5 5.5v11"/></svg>
         <span>Kaart &amp; leads</span><span class="telpil" id="tel-leads"></span>
@@ -107,6 +111,39 @@
         <span>Zoek een bedrijf…</span><kbd>/</kbd>
       </button>
     </header>
+
+    <!-- ---------- vandaag: de werklijst ---------- -->
+    <section class="weergave" id="weergave-vandaag" hidden>
+      <div class="tegels" id="vandaag-tegels"></div>
+      <div class="werkbalk">
+        <div class="segment" id="vandaag-wie" hidden>
+          <button class="segmentknop" data-wie="ik" aria-pressed="true">Mijn werk</button>
+          <button class="segmentknop" data-wie="team" aria-pressed="false">Het hele team</button>
+        </div>
+        <span class="telling" id="vandaag-telling"></span>
+      </div>
+      <div class="werkvlak">
+        <div class="paneel lijst werklijst">
+          <div class="tabelrol">
+            <table>
+              <thead><tr>
+                <th scope="col">Wanneer</th><th scope="col">Bedrijf &amp; volgende stap</th>
+                <th scope="col">Doen</th>
+              </tr></thead>
+              <tbody id="vandaag-rijen"></tbody>
+            </table>
+          </div>
+          <div class="leeg" id="vandaag-geen" hidden>
+            <span class="leegteken" aria-hidden="true">
+              <svg viewBox="0 0 20 20"><path d="M4.5 10.5l3.5 3.5 7.5-8"/></svg>
+            </span>
+            <b>Niets meer openstaand</b>
+            <span class="sub">Alles is opgevolgd. Pak er een paar nieuwe leads bij op de kaart.</span>
+          </div>
+        </div>
+        <aside class="paneel detail" id="vandaag-detail" aria-live="polite"></aside>
+      </div>
+    </section>
 
     <!-- ---------- kaart & leads ---------- -->
     <section class="weergave" id="weergave-kaart">
@@ -247,6 +284,18 @@
     <!-- ---------- team & omzet ---------- -->
     <section class="weergave" id="weergave-team" hidden>
       <div class="tegels" id="omzettegels"></div>
+      <div class="paneel prognosevak">
+        <div class="paneelbalk">
+          <span class="label-klein">Wat de pijplijn waard is</span>
+          <form class="doelvorm" id="doel-formulier">
+            <label class="sub" for="doel">Doel per maand</label>
+            <span class="valuta">€</span>
+            <input class="veld" id="doel" name="doel" type="number" min="0" step="25" style="width:110px">
+            <button class="knop klein" type="submit">Vastleggen</button>
+          </form>
+        </div>
+        <div class="prognose" id="prognose"></div>
+      </div>
       <div class="werkvlak team">
         <div class="paneel">
           <div class="tabelrol">
@@ -254,7 +303,7 @@
               <thead><tr>
                 <th scope="col">Wie</th><th scope="col">Open</th><th scope="col">Gebeld (7d)</th>
                 <th scope="col">Afspraken</th><th scope="col">Opdrachten</th><th scope="col">Klanten</th>
-                <th scope="col">Per maand</th><th scope="col">Testimonials</th>
+                <th scope="col">Per maand</th><th scope="col">Provisie</th><th scope="col">Testimonials</th>
               </tr></thead>
               <tbody id="team-rijen"></tbody>
             </table>
@@ -283,6 +332,21 @@
             <button class="knop sterk" type="submit">Opslaan</button>
             <p class="sub" id="aanbod-voorbeeld"></p>
             <p class="melding" id="aanbod-melding" role="alert"></p>
+          </form>
+          <hr>
+          <span class="label-klein">Wat een agent verdient</span>
+          <form id="provisie-formulier" class="stapel">
+            <div class="rij">
+              <label class="sub" style="width:130px" for="p-opdracht">Per opdracht</label>
+              <input class="veld" id="p-opdracht" name="provisiePerOpdracht" type="number" min="0" step="5" style="flex:1">
+            </div>
+            <div class="rij">
+              <label class="sub" style="width:130px" for="p-mrr">% van de hosting</label>
+              <input class="veld" id="p-mrr" name="provisieMrrPercentage" type="number" min="0" max="100" step="1" style="flex:1">
+            </div>
+            <button class="knop" type="submit">Provisie opslaan</button>
+            <p class="sub">Het percentage loopt door zolang de klant blijft betalen — zo heeft een agent
+              er belang bij dat de klant tevreden blijft, niet alleen dat hij ja zegt.</p>
           </form>
           <hr>
           <span class="label-klein">Trechter</span>
@@ -365,7 +429,7 @@
     <dt><kbd>J</kbd> <kbd>K</kbd></dt><dd>Volgende of vorige lead</dd>
     <dt><kbd>Enter</kbd></dt><dd>Lead openen</dd>
     <dt><kbd>C</kbd></dt><dd>Deze lead oppakken</dd>
-    <dt><kbd>G</kbd> dan <kbd>K</kbd> <kbd>M</kbd> <kbd>T</kbd> <kbd>N</kbd></dt><dd>Naar kaart, mijn lijst, team of nieuws</dd>
+    <dt><kbd>G</kbd> dan <kbd>V</kbd> <kbd>K</kbd> <kbd>M</kbd> <kbd>T</kbd> <kbd>N</kbd></dt><dd>Naar vandaag, kaart, mijn lijst, team of nieuws</dd>
     <dt><kbd>F</kbd></dt><dd>Filters openen</dd>
     <dt><kbd>Esc</kbd></dt><dd>Sluiten of selectie loslaten</dd>
     <dt><kbd>?</kbd></dt><dd>Dit venster</dd>

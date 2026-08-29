@@ -126,13 +126,25 @@ async function start() {
   $('nieuws-plaatsen').hidden = mij.gebruiker.rol !== 'eigenaar';
   $('tel-leads').textContent = overzicht.cijfers.gescand.toLocaleString('nl-NL');
   $('tel-mijn').textContent = overzicht.mijnOpenLeads || '';
-  zetPaginakop('kaart');
 
   await ververs();
+
+  // Wie werk heeft openstaan begint op de werklijst; dat is waar de omzet zit.
+  if (mij.gebruiker.rol === 'eigenaar') {
+    vandaagWie = 'team';
+    for (const knop of $('vandaag-wie').querySelectorAll('.segmentknop')) {
+      knop.setAttribute('aria-pressed', String(knop.dataset.wie === 'team'));
+    }
+  }
+  const { druk } = await api(`/api/vandaag${vandaagWie === 'team' ? '?iedereen=1' : ''}`);
+  zetWerkTeller(druk);
+  if (druk.totaal > 0) await wisselNaar('vandaag');
+  else zetPaginakop('kaart');
 }
 
 /** De titel boven het werkgebied hoort bij het scherm waar je in staat. */
 const PAGINAS = {
+  vandaag: ['Vandaag', 'Wat er nu opgevolgd moet worden, het langst wachtende bovenaan.'],
   kaart: ['Kaart & leads', 'Alle gescande bedrijven, de slechtste sites eerst.'],
   mijn: ['Mijn lijst', 'De bedrijven die op jouw naam staan.'],
   team: ['Team & omzet', 'Wat het team doet en wat het oplevert.'],
@@ -403,7 +415,8 @@ async function kiesLead(punt) {
     rij.setAttribute('aria-selected', String(Number(rij.dataset.id) === punt.id));
   }
   const lead = await api(`/api/leads/${punt.id}`);
-  const doel = staat.weergave === 'mijn' ? $('mijn-detail') : $('detail');
+  const doel = staat.weergave === 'mijn' ? $('mijn-detail')
+    : staat.weergave === 'vandaag' ? $('vandaag-detail') : $('detail');
   tekenDetail(doel, lead);
   if (lead.lat && lead.lon && staat.weergave === 'kaart') kaart?.zetGekozen(lead.id);
 }
@@ -849,8 +862,9 @@ async function wisselNaar(weergave) {
   for (const knop of $('tabs').querySelectorAll('.tab')) {
     knop.setAttribute('aria-pressed', String(knop.dataset.weergave === weergave));
   }
-  for (const naam of ['kaart', 'mijn', 'team', 'nieuws']) $(`weergave-${naam}`).hidden = naam !== weergave;
+  for (const naam of ['vandaag', 'kaart', 'mijn', 'team', 'nieuws']) $(`weergave-${naam}`).hidden = naam !== weergave;
 
+  if (weergave === 'vandaag') await toonVandaag();
   if (weergave === 'kaart') { kaart?.hermeet(); await ververs(); }
   if (weergave === 'mijn') await toonMijnLijst();
   if (weergave === 'team') await toonTeam();
@@ -895,6 +909,7 @@ async function toonTeam() {
   const gegevens = await api('/api/team');
   const overzicht = await api('/api/overzicht');
   await vulAanbod();
+  tekenPrognose(gegevens.prognose);
 
   $('omzettegels').innerHTML = [
     { waarde: overzicht.opdrachten.totaal, tekst: 'opdrachten binnen', klem: true },
@@ -914,6 +929,9 @@ async function toonTeam() {
       <td class="mono"><b>${regel.opdrachten}</b>${regel.opdrachten_30d ? ` <span class="sub">+${regel.opdrachten_30d}</span>` : ''}</td>
       <td class="mono">${regel.klanten}</td>
       <td class="mono">${euro(regel.mrr_cent)}</td>
+      <td class="mono" title="Eenmalig per opdracht plus een deel van de hosting, elke maand">
+        ${euro(regel.provisie?.eenmaligCent ?? 0)}
+        <span class="sub">+ ${euro(regel.provisie?.perMaandCent ?? 0)}/mnd</span></td>
       <td class="mono">${regel.testimonials}</td>
     </tr>`).join('');
 
@@ -926,9 +944,79 @@ async function toonTeam() {
     </div>`).join('');
 }
 
+/**
+ * Wat de pijplijn waard is. De kans per fase komt uit je eigen historie zodra
+ * die genoeg zegt; tot dan staan er startwaarden, en dat staat er ook bij.
+ */
+function tekenPrognose(prognose) {
+  if (!prognose) return;
+  const doel = prognose.doelMrrCent;
+  const gehaald = doel > 0 ? Math.min(100, Math.round((prognose.huidigeMrrCent / doel) * 100)) : 0;
+  $('doel').value = doel > 0 ? (doel / 100).toFixed(0) : '';
+
+  const tegels = [
+    { waarde: euro(prognose.huidigeMrrCent), tekst: 'nu per maand binnen', klem: true },
+    { waarde: euro(prognose.verwachteMrrCent), tekst: `verwacht uit de pijplijn (${prognose.verwachteKlanten.toFixed(1)} klanten)` },
+    { waarde: euro(prognose.pijplijnJaarCent), tekst: 'die pijplijn over een jaar' },
+    { waarde: prognose.voorraad.aantal.toLocaleString('nl-NL'), tekst: 'nog onaangeraakt op de plank' },
+  ];
+  if (doel > 0) {
+    tegels.push({ waarde: `${gehaald}%`, tekst: `van je doel (${euro(doel)})`, klem: true });
+    tegels.push({ waarde: prognose.opdrachtenNodig, tekst: 'opdrachten nog nodig' });
+  }
+
+  $('prognose').innerHTML = `
+    <div class="tegels binnenin">${tegels.map((tegel) => `
+      <div class="tegel${tegel.klem ? ' klem' : ''}"><b>${esc(tegel.waarde)}</b><span>${esc(tegel.tekst)}</span></div>`).join('')}
+    </div>
+    ${doel > 0 ? `<div class="doelbalk"><i style="width:${gehaald}%"></i></div>` : ''}
+    <table class="prognosetabel">
+      <thead><tr>
+        <th scope="col">Fase</th><th scope="col">Leads</th><th scope="col">Wordt klant</th>
+        <th scope="col">Verwacht</th><th scope="col">Per maand</th>
+      </tr></thead>
+      <tbody>
+        ${prognose.fases.filter((rij) => rij.aantal > 0).map((rij) => `
+          <tr class="${rij.fase === 'nieuw' ? 'voorraadrij' : ''}">
+            <td>${esc(rij.label)}${rij.fase === 'nieuw' ? '<span class="sub"> — voorraad, telt niet mee</span>' : ''}</td>
+            <td class="mono">${rij.aantal.toLocaleString('nl-NL')}</td>
+            <td class="mono">${Math.round(rij.kans * 100)}%
+              <span class="sub">${rij.bron === 'gemeten' ? `gemeten (${rij.waargenomen})` : 'startwaarde'}</span></td>
+            <td class="mono">${rij.verwachteKlanten.toFixed(1)}</td>
+            <td class="mono">${euro(rij.verwachteMrrCent)}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+    <p class="sub" style="margin:10px 14px 14px">Zodra je van een fase ${25} of meer leads hebt gehad,
+      rekent de prognose met je eigen conversie in plaats van met de startwaarde.</p>`;
+}
+
+$('doel-formulier').addEventListener('submit', async (gebeurtenis) => {
+  gebeurtenis.preventDefault();
+  try {
+    await api('/api/doel', { method: 'PUT', body: JSON.stringify({ doel: Number($('doel').value) }) });
+    toon('Doel vastgelegd.');
+    await toonTeam();
+  } catch (fout) { toon(fout.message, 'fout'); }
+});
+
+$('provisie-formulier').addEventListener('submit', async (gebeurtenis) => {
+  gebeurtenis.preventDefault();
+  const velden = Object.fromEntries(new FormData(gebeurtenis.target));
+  try {
+    await api('/api/instellingen', { method: 'PUT', body: JSON.stringify(velden) });
+    toon('Provisie opgeslagen.');
+    await toonTeam();
+  } catch (fout) { toon(fout.message, 'fout'); }
+});
+
 /** Het aanbod dat in alle mailsjablonen terechtkomt. */
 async function vulAanbod() {
-  const { aanbod, voorbeeld } = await api('/api/instellingen');
+  const { aanbod, voorbeeld, provisie } = await api('/api/instellingen');
+  if (provisie) {
+    $('p-opdracht').value = (provisie.perOpdrachtCent / 100).toFixed(0);
+    $('p-mrr').value = provisie.mrrPercentage;
+  }
   const formulier = $('aanbod-formulier');
   formulier.soort.value = aanbod.soort;
   formulier.startbedrag.value = (aanbod.startbedragCent / 100).toFixed(2);
@@ -974,6 +1062,94 @@ $('nieuwe-gebruiker').addEventListener('submit', async (gebeurtenis) => {
     toon(fout.message, 'fout');
   }
 });
+
+// --------------------------------------------------------------------------
+// Vandaag: de werklijst
+// --------------------------------------------------------------------------
+// Een agent begint bij zijn eigen werk; de eigenaar heeft zelden leads op naam
+// staan en wil zien waar het bij het team blijft liggen.
+let vandaagWie = 'ik';
+
+function zetWerkTeller(druk) {
+  const teller = $('vandaag-teller');
+  teller.hidden = !druk?.teLaat;
+  teller.textContent = druk?.teLaat > 99 ? '99+' : String(druk?.teLaat ?? 0);
+}
+
+/** Hoe dringend, in gewone taal. */
+const WANNEER = {
+  'te-laat': (dagen) => dagen === 1 ? '1 dag te laat' : `${dagen} dagen te laat`,
+  vandaag: () => 'Vandaag',
+  binnenkort: () => 'Binnenkort',
+};
+
+async function toonVandaag() {
+  const iedereen = vandaagWie === 'team' && staat.ik.rol === 'eigenaar';
+  $('vandaag-wie').hidden = staat.ik.rol !== 'eigenaar';
+  const { regels, druk } = await api(`/api/vandaag${iedereen ? '?iedereen=1' : ''}`);
+  zetWerkTeller(druk);
+
+  $('vandaag-tegels').innerHTML = [
+    { waarde: druk.teLaat, tekst: 'te laat opgevolgd', klem: druk.teLaat > 0 },
+    { waarde: druk.vandaag, tekst: 'vandaag aan de beurt' },
+    { waarde: druk.totaal, tekst: 'openstaand in totaal' },
+  ].map((tegel) => `<div class="tegel${tegel.klem ? ' klem' : ''}"><b>${esc(tegel.waarde)}</b><span>${tegel.tekst}</span></div>`).join('');
+
+  $('vandaag-telling').textContent = `${regels.length} van ${druk.totaal} getoond`;
+  $('vandaag-geen').hidden = regels.length > 0;
+
+  $('vandaag-rijen').innerHTML = regels.map((regel) => `
+    <tr data-id="${regel.id}" tabindex="0" aria-selected="${regel.id === staat.gekozen}">
+      <td class="wanneer"><span class="stip ${regel.urgentie}"></span>
+        <span class="wanneer-tekst">${esc(WANNEER[regel.urgentie](regel.dagenTeLaat))}</span>
+        <div class="sub">${esc(regel.faseLabel)}</div></td>
+      <td class="bedrijf">
+        <div class="naamregel"><span class="naam">${esc(regel.name)}</span>
+          <span class="sub mono plaats">${esc(regel.domain)}${regel.city ? ' · ' + esc(regel.city) : ''}</span></div>
+        <div class="tweede"><b>${esc(regel.wat)}</b> — ${esc(regel.waarom)}</div>
+        ${iedereen && regel.agent_naam ? `<div class="merkjes"><span class="merkje">${esc(regel.agent_naam)}</span></div>` : ''}
+      </td>
+      <td class="doen">
+        ${regel.telefoon ? `<a class="knop klein" href="tel:${esc(regel.telefoon.replace(/[^0-9+]/g, ''))}">Bellen</a>` : ''}
+        ${regel.sjabloon ? `<button class="knop klein sterk" data-mail="${esc(regel.sjabloon)}">Mail opstellen</button>` : ''}
+      </td>
+    </tr>`).join('');
+
+  for (const rij of $('vandaag-rijen').querySelectorAll('tr')) {
+    const id = Number(rij.dataset.id);
+    rij.addEventListener('click', (gebeurtenis) => {
+      if (gebeurtenis.target.closest('a')) return;
+      const sjabloon = gebeurtenis.target.closest('[data-mail]')?.dataset.mail;
+      if (sjabloon) staat.sjabloon = sjabloon;
+      kiesLead({ id });
+    });
+    rij.addEventListener('keydown', (gebeurtenis) => {
+      if (gebeurtenis.key === 'Enter' || gebeurtenis.key === ' ') { gebeurtenis.preventDefault(); kiesLead({ id }); }
+    });
+  }
+
+  if (staat.gekozen) await kiesLead({ id: staat.gekozen });
+  else $('vandaag-detail').innerHTML = LEEG_WERK;
+}
+
+const LEEG_WERK = `
+  <div class="leeg">
+    <span class="leegteken" aria-hidden="true">
+      <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/><path d="M10 6v4l2.6 1.6"/></svg>
+    </span>
+    <b>Kies een regel</b>
+    <span class="sub">De mail staat dan klaar in het sjabloon dat bij deze stap hoort.</span>
+  </div>`;
+
+for (const knop of $('vandaag-wie').querySelectorAll('.segmentknop')) {
+  knop.addEventListener('click', async () => {
+    vandaagWie = knop.dataset.wie;
+    for (const ander of $('vandaag-wie').querySelectorAll('.segmentknop')) {
+      ander.setAttribute('aria-pressed', String(ander === knop));
+    }
+    await toonVandaag();
+  });
+}
 
 // --------------------------------------------------------------------------
 // Nieuws
@@ -1236,6 +1412,7 @@ function openPalet() {
 }
 
 const SCHERMEN = [
+  { weergave: 'vandaag', naam: 'Vandaag' },
   { weergave: 'kaart', naam: 'Kaart & leads' },
   { weergave: 'mijn', naam: 'Mijn lijst' },
   { weergave: 'team', naam: 'Team & omzet' },
@@ -1324,8 +1501,10 @@ sneltoetsen.addEventListener('click', (gebeurtenis) => { if (gebeurtenis.target 
 let wachtOpG = false;
 
 /** Rijen van de lijst die nu in beeld staat, om met j/k door te lopen. */
-const zichtbareRijen = () =>
-  [...$(staat.weergave === 'mijn' ? 'mijn-rijen' : 'rijen').querySelectorAll('tr[data-id]')];
+const zichtbareRijen = () => {
+  const tabel = { mijn: 'mijn-rijen', vandaag: 'vandaag-rijen' }[staat.weergave] ?? 'rijen';
+  return [...$(tabel).querySelectorAll('tr[data-id]')];
+};
 
 function loopDoorLijst(stap) {
   const rijen = zichtbareRijen();
@@ -1356,7 +1535,7 @@ document.addEventListener('keydown', (gebeurtenis) => {
 
   if (wachtOpG) {
     wachtOpG = false;
-    const naar = { k: 'kaart', m: 'mijn', t: 'team', n: 'nieuws' }[toets.toLowerCase()];
+    const naar = { v: 'vandaag', k: 'kaart', m: 'mijn', t: 'team', n: 'nieuws' }[toets.toLowerCase()];
     if (naar && !(naar === 'team' && staat.ik.rol !== 'eigenaar')) { gebeurtenis.preventDefault(); wisselNaar(naar); }
     return;
   }

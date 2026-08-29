@@ -295,6 +295,61 @@ check('een collega kan een toegewezen lead niet verrijken',
   (await twee.doe(`/api/leads/${slechtste.id}/verrijken`, { method: 'POST' })).status === 403);
 nepKvk.close();
 
+console.log('\nDe werklijst en de prognose:');
+const { db: testDb } = await import('../src/db/index.ts');
+
+// Een lead die vijf dagen geleden een mail kreeg en niet reageerde.
+const stil = leads.find((rij: any) => rij.domain === 'vandijk.test');
+const alleGebruikers = (await eigenaar.doe('/api/team')).inhoud.gebruikers;
+const agentEen = alleGebruikers.find((rij: any) => rij.email === 'een@test.nl');
+await eigenaar.doe(`/api/leads/${stil.id}/toewijzen`, {
+  method: 'POST', body: JSON.stringify({ agentId: agentEen.id }),
+});
+await een.doe(`/api/leads/${stil.id}/activiteit`, {
+  method: 'POST', body: JSON.stringify({ soort: 'mail', notitie: 'eerste contact' }),
+});
+testDb().prepare("UPDATE activiteiten SET op = datetime('now','-5 days') WHERE company_id = ?").run(stil.id);
+
+const vandaag = (await een.doe('/api/vandaag')).inhoud;
+const regel = vandaag.regels.find((rij: any) => rij.id === stil.id);
+check('een lead zonder reactie komt op de werklijst', Boolean(regel));
+check('met een reden erbij', /geen reactie/.test(regel?.waarom ?? ''), regel?.waarom);
+check('en een sjabloon om mee op te volgen', regel?.sjabloon === 'geen-gehoor', regel?.sjabloon);
+check('de teller telt hem als te laat', vandaag.druk.teLaat >= 1);
+
+await een.doe(`/api/leads/${stil.id}/reactie`, { method: 'POST', body: JSON.stringify({ notitie: 'belt terug' }) });
+testDb().prepare("UPDATE activiteiten SET op = datetime('now') WHERE company_id = ? AND soort = 'reactie'").run(stil.id);
+const naReactie = (await een.doe('/api/vandaag')).inhoud;
+check('na een reactie stopt de herinnering',
+  !naReactie.regels.some((rij: any) => rij.id === stil.id && /geen reactie/.test(rij.waarom)));
+
+check('een agent ziet alleen zijn eigen werk',
+  (await twee.doe('/api/vandaag')).inhoud.regels.every((rij: any) => rij.id !== stil.id));
+check('de eigenaar kan het hele team zien',
+  (await eigenaar.doe('/api/vandaag?iedereen=1')).status === 200);
+
+await eigenaar.doe('/api/doel', { method: 'PUT', body: JSON.stringify({ doel: 500 }) });
+const vooruit = (await eigenaar.doe('/api/prognose')).inhoud;
+check('het doel is vastgelegd', vooruit.doelMrrCent === 50000);
+const zonderVoorraad = vooruit.fases
+  .filter((rij: any) => rij.fase !== 'nieuw')
+  .reduce((som: number, rij: any) => som + rij.verwachteMrrCent, 0);
+check('de voorraad staat er wel bij maar telt niet mee in de pijplijn',
+  vooruit.fases.some((rij: any) => rij.fase === 'nieuw')
+  && vooruit.verwachteMrrCent === zonderVoorraad);
+check('er is uitgerekend hoeveel opdrachten er nog nodig zijn', vooruit.opdrachtenNodig > 0);
+check('een agent kan het doel niet wijzigen',
+  (await een.doe('/api/doel', { method: 'PUT', body: JSON.stringify({ doel: 1 }) })).status === 403);
+
+await eigenaar.doe('/api/instellingen', {
+  method: 'PUT', body: JSON.stringify({ provisiePerOpdracht: 75, provisieMrrPercentage: 12 }),
+});
+const teamNa = (await eigenaar.doe('/api/team')).inhoud;
+check('de provisieregeling is opgeslagen',
+  teamNa.provisie.perOpdrachtCent === 7500 && teamNa.provisie.mrrPercentage === 12);
+check('elke agent heeft een provisiebedrag',
+  teamNa.team.every((rij: any) => typeof rij.provisie?.eenmaligCent === 'number'));
+
 console.log('\nNieuws voor het team:');
 const geplaatst = await eigenaar.doe('/api/nieuws', {
   method: 'POST',

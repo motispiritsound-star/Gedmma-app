@@ -22,6 +22,9 @@ import { SJABLONEN, renderSjabloon, stelSjabloonVoor } from './report/templates.
 import { aanbodTekst, bewaarAanbod, leesAanbod } from './db/instellingen.ts';
 import { plaatsNieuws, nieuwsLijst, verwijderNieuws, SOORTEN } from './db/nieuws.ts';
 import { verrijkBedrijf, zonderRechtsvorm, CENT_PER_BEVRAGING } from './sources/kvk-verrijken.ts';
+import { werklijst, werkdruk } from './db/opvolging.ts';
+import { prognose, bewaarDoel, leesDoel, tempo } from './db/prognose.ts';
+import { leesProvisie, bewaarProvisie, provisieVan } from './db/instellingen.ts';
 import { RECHTSVORMEN, benaderbaarheid, blokkeer, deblokkeer, herkenRechtsvorm,
          legToestemmingVast, magBellen, zetRechtsvorm, type RechtsvormId } from './db/contact.ts';
 
@@ -517,6 +520,96 @@ program
     }
     log.ok(`${gevonden} van de ${rijen.length} bedrijven hebben nu een rechtsvorm. `
       + `${bevragingen} betaalde bevragingen, ongeveer € ${((bevragingen * CENT_PER_BEVRAGING) / 100).toFixed(2)}.`);
+  });
+
+// --------------------------------------------------------------------------
+program
+  .command('vandaag')
+  .description('Wat er vandaag opgevolgd moet worden — het langst wachtende bovenaan')
+  .option('-a, --agent <email>', 'alleen het werk van deze agent')
+  .option('-l, --limit <aantal>', 'hoeveel regels', '25')
+  .action((options) => {
+    let agentId: number | null = null;
+    if (options.agent) {
+      const account = gebruikerOpEmail(options.agent);
+      if (!account) { log.error(`Geen gebruiker met e-mailadres ${options.agent}.`); process.exitCode = 1; return; }
+      agentId = account.id;
+    }
+
+    const druk = werkdruk(agentId);
+    const regels = werklijst(agentId, Number(options.limit));
+    if (regels.length === 0) {
+      log.ok('Niets openstaand. Pak er nieuwe leads bij met "webscan leads".');
+      return;
+    }
+
+    log.info(`\n${druk.teLaat} te laat · ${druk.vandaag} vandaag · ${druk.totaal} openstaand\n`);
+    for (const regel of regels) {
+      const wanneer = regel.urgentie === 'te-laat' ? `${regel.dagenTeLaat}d te laat` : 'vandaag';
+      log.info(`  ${String(regel.id).padStart(5)}  ${wanneer.padEnd(11)} ${regel.name.padEnd(30).slice(0, 30)} ${regel.wat}`);
+      log.info(`         ${regel.waarom}${regel.telefoon ? ` · ${regel.telefoon}` : ''}${regel.agent_naam ? ` · ${regel.agent_naam}` : ''}`);
+    }
+    log.info('');
+  });
+
+// --------------------------------------------------------------------------
+program
+  .command('prognose')
+  .description('Wat de pijplijn waard is en wat er nodig is voor je doel')
+  .option('--doel <bedrag>', 'zet het doel voor de maandomzet, in euro')
+  .action((options) => {
+    if (options.doel !== undefined) {
+      bewaarDoel(Math.round(Number(options.doel) * 100));
+      log.ok(`Doel gezet op ${euro(leesDoel())} per maand.`);
+    }
+
+    const cijfers = prognose();
+    log.info('');
+    log.info(`  Nu binnen            ${euro(cijfers.huidigeMrrCent).padStart(12)} per maand`);
+    log.info(`  Verwacht uit pijplijn${euro(cijfers.verwachteMrrCent).padStart(12)} per maand (${cijfers.verwachteKlanten.toFixed(1)} klanten)`);
+    log.info(`  Over een jaar        ${euro(cijfers.pijplijnJaarCent).padStart(12)}`);
+    if (cijfers.doelMrrCent > 0) {
+      const gehaald = Math.round((cijfers.huidigeMrrCent / cijfers.doelMrrCent) * 100);
+      log.info(`  Doel                 ${euro(cijfers.doelMrrCent).padStart(12)} per maand — ${gehaald}% gehaald, `
+        + `nog ${cijfers.opdrachtenNodig} opdrachten nodig`);
+    }
+    log.info(`\n  Nog onaangeraakt: ${cijfers.voorraad.aantal} bedrijven\n`);
+
+    for (const fase of cijfers.fases.filter((rij) => rij.aantal > 0)) {
+      log.info(`  ${fase.label.padEnd(18)} ${String(fase.aantal).padStart(6)} leads  `
+        + `${String(Math.round(fase.kans * 100)).padStart(3)}% ${fase.bron === 'gemeten' ? 'gemeten   ' : 'startwaarde'}  `
+        + `${euro(fase.verwachteMrrCent).padStart(11)}`);
+    }
+
+    const maanden = tempo().filter((rij) => rij.opdrachten > 0 || rij.klanten > 0);
+    if (maanden.length > 0) {
+      log.info('\n  Per maand binnengehaald:');
+      for (const rij of maanden) log.info(`    ${rij.maand}  ${rij.opdrachten} opdrachten, ${rij.klanten} klanten`);
+    }
+    log.info('');
+  });
+
+// --------------------------------------------------------------------------
+program
+  .command('provisie')
+  .description('Wat een agent verdient, en wat er tot nu toe is opgebouwd')
+  .option('--per-opdracht <bedrag>', 'eenmalig bedrag per binnengehaalde opdracht, in euro')
+  .option('--percentage <getal>', 'percentage van de maandomzet van eigen klanten')
+  .action((options) => {
+    if (options.perOpdracht !== undefined || options.percentage !== undefined) {
+      bewaarProvisie({
+        perOpdrachtCent: options.perOpdracht !== undefined ? Math.round(Number(options.perOpdracht) * 100) : undefined,
+        mrrPercentage: options.percentage !== undefined ? Number(options.percentage) : undefined,
+      });
+    }
+    const regeling = leesProvisie();
+    log.info(`\n  ${euro(regeling.perOpdrachtCent)} per opdracht en ${regeling.mrrPercentage}% van de hosting, elke maand.\n`);
+    for (const regel of teamOverzicht()) {
+      const verdiend = provisieVan(regel, regeling);
+      log.info(`  ${regel.naam.padEnd(24)} ${String(regel.opdrachten).padStart(3)} opdrachten  `
+        + `${euro(verdiend.eenmaligCent).padStart(11)} eenmalig  ${euro(verdiend.perMaandCent).padStart(10)} per maand`);
+    }
+    log.info('');
   });
 
 // --------------------------------------------------------------------------

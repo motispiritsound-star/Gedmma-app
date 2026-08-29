@@ -198,8 +198,9 @@ wegen.
 
 ## Het dashboard
 
-Links een vaste menubalk, rechts je werk: de kaart met de lijst ernaast en het
-bedrijf dat je aanklikt in het paneel daarnaast. Wat het snel maakt om er een dag
+Links een vaste menubalk, rechts je werk. Het dashboard opent op **Vandaag** —
+de werklijst — en heeft daarnaast de kaart met de lijst en het bedrijf dat je
+aanklikt in het paneel ernaast. Wat het snel maakt om er een dag
 mee te werken:
 
 - **Snel zoeken** met <kbd>/</kbd> of <kbd>⌘K</kbd> — typ een bedrijfsnaam en
@@ -323,6 +324,77 @@ node start.js nieuws lijst
 node start.js nieuws weghalen 3
 ```
 
+## Vandaag: wat er opgevolgd moet worden
+
+Leads gaan zelden verloren omdat het aanbod niet deugt. Ze gaan verloren omdat er
+na de eerste mail niets meer gebeurt. Het scherm **Vandaag** is daarom het eerste
+wat je ziet als je inlogt: elke lead waar iets mee moet, het langst wachtende
+bovenaan, met de reden erbij en de mail al klaargezet in het juiste sjabloon.
+
+Wanneer iets op die lijst komt:
+
+| Situatie | Na | Voorgestelde stap |
+| --- | --- | --- |
+| Toegewezen, nog niets gedaan | 1 dag | eerste mail sturen |
+| Mail verstuurd, geen reactie | 4 dagen | herinnering sturen |
+| Twee herinneringen zonder reactie | – | laatste poging, daarna loslaten |
+| Gebeld, geen besluit | 3 dagen | terugkoppelen op het gesprek |
+| Geen gehoor | 1 dag | opnieuw proberen |
+| Afspraak of terugbelmoment | op de dag zelf | afspraak nakomen |
+| Opdracht binnen | 2 dagen | gegevens opvragen en beginnen |
+| In aanbouw | 7 dagen | laten zien hoe ver de site is |
+| Live | 3 dagen | om een testimonial vragen |
+
+Er wordt niets automatisch verstuurd. Het dashboard zet het werk klaar, de agent
+drukt op de knop — een mail die namens jou de deur uit gaat zonder dat iemand hem
+gelezen heeft, kost je meer klanten dan hij oplevert. Legt een agent een reactie
+van het bedrijf vast, dan stoppen de herinneringen vanzelf.
+
+De eigenaar ziet met één klik het werk van het hele team, en dus ook waar leads
+blijven liggen.
+
+```bash
+node start.js vandaag                       # de hele lijst
+node start.js vandaag --agent sara@voorbeeld.nl
+```
+
+## Wat de pijplijn waard is
+
+Duizend leads zegt niets; wat zegt wat er binnenkomt is: hoeveel leads staan er in
+welke fase, hoe vaak wordt zo'n fase een betalende klant, en wat brengt een klant
+per maand op. Onder **Team & omzet** staat die rekensom, met een doel dat je zelf
+zet:
+
+```bash
+node start.js prognose --doel 2500          # doel: € 2.500 per maand
+node start.js prognose
+```
+
+Twee dingen die de prognose eerlijk houden:
+
+- **Bedrijven waar nog niemand iets mee deed tellen niet mee.** Die staan er als
+  *voorraad* apart bij. Zou je ze meerekenen, dan lijkt een verse database van
+  drieduizend bedrijven ineens duizenden euro's waard terwijl er nog geen mens aan
+  gewerkt heeft.
+- **De kans per fase komt uit je eigen historie** zodra je van die fase 25 of meer
+  leads hebt gehad; tot dan staan er voorzichtige startwaarden, en er staat bij
+  welke van de twee je ziet.
+
+## Wat een agent verdient
+
+Agents werven lukt alleen als er iets te verdienen valt, en klanten houden lukt
+alleen als dat verdienen doorloopt. De provisie bestaat daarom uit twee delen: een
+vast bedrag zodra de opdracht binnen is, en een percentage van wat die klant
+maandelijks aan hosting betaalt, zolang hij klant blijft.
+
+```bash
+node start.js provisie --per-opdracht 50 --percentage 10
+node start.js provisie                      # wat iedereen tot nu toe opbouwde
+```
+
+Standaard staat het op € 50 per opdracht en 10% van de hosting. In het
+teamoverzicht staat per agent wat dat oplevert, eenmalig en per maand.
+
 ## Wat je aanbiedt
 
 Onder **Team & omzet** stel je in wat je precies aanbiedt. Die tekst komt in alle
@@ -375,6 +447,13 @@ dat is dan de enige route naar een gesprek. Je kunt altijd een ander kiezen.
 De koude sjablonen sluiten af met een afmeldregel, omdat dat bij ongevraagde
 zakelijke mail hoort. Lees elke mail na voordat je hem verstuurt — het blijft een
 concept, geen automaat.
+
+**Sociaal bewijs komt er vanzelf bij.** Heb je drie of meer klanten, dan noemt de
+koude mail dat aantal; is er een testimonial die je mag publiceren, dan staat die
+er als citaat bij — bij voorkeur van een bedrijf uit dezelfde plaats. Alles komt
+uit je eigen gegevens: heb je nog niets, dan staat er ook niets. Onder de drie
+klanten zwijgt hij over aantallen, want "ik doe dit voor twee ondernemers" werkt
+tegen je.
 
 ```bash
 node start.js sjablonen                      # welke er zijn
@@ -593,7 +672,10 @@ src/
     team.ts           accounts, wachtwoorden en sessies
     pipeline.ts       fases, belgeschiedenis, klanten, testimonials
     contact.ts        rechtsvorm, belregels, toestemming en de niet-benaderen-lijst
-    instellingen.ts   wat je aanbiedt, in één plek
+    opvolging.ts      de werklijst: wat moet er vandaag gebeuren
+    prognose.ts       wat de pijplijn waard is, en het doel
+    nieuws.ts         het prikbord voor het team
+    instellingen.ts   wat je aanbiedt en wat een agent verdient
   sources/            waar bedrijven vandaan komen (osm, csv, kvk, kvk-verrijken)
   scan/
     robots.ts         robots.txt lezen en naleven

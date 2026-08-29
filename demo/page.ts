@@ -18,6 +18,9 @@ const source = JSON.parse(readFileSync('demo/out/demo-data.json', 'utf8')) as {
   gegenereerdOp: string;
   samenvatting: Record<string, number>;
   leads: RawLead[];
+  werk: RawLead[];
+  werkDruk: Record<string, number>;
+  prognose: Record<string, any>;
 };
 
 const feitenVan = (lead: RawLead) => {
@@ -137,6 +140,9 @@ const data = {
   trechter,
   faseLabels: FASE_LABELS,
   mijlpaal: MIJLPAAL,
+  werk: source.werk ?? [],
+  werkDruk: source.werkDruk ?? { teLaat: 0, vandaag: 0, totaal: 0 },
+  prognose: source.prognose ?? null,
   leads: leads.sort((a, b) => (b.prioriteit ?? 0) - (a.prioriteit ?? 0)),
 };
 

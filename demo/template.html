@@ -21,6 +21,26 @@
   </header>
 
   <div class="tegels" id="tegels"></div>
+
+  <div class="tweeluik">
+    <div class="paneel" id="werkvak">
+      <div class="paneelbalk">
+        <span class="label-klein">Vandaag opvolgen</span>
+        <span class="sub" id="werkdruk"></span>
+      </div>
+      <div id="werklijst"></div>
+      <p class="demo-noot">Het dashboard zet dit elke ochtend klaar: wie er wacht op een antwoord, hoe lang al,
+        en welke mail erbij hoort. Dit is waar leads normaal gesproken verloren gaan.</p>
+    </div>
+
+    <div class="paneel" id="prognosevak">
+      <div class="paneelbalk"><span class="label-klein">Wat de pijplijn waard is</span></div>
+      <div id="prognose"></div>
+      <p class="demo-noot">De kans per fase komt uit je eigen historie zodra je er genoeg van hebt; tot dan
+        staan er voorzichtige startwaarden, en dat staat er ook bij.</p>
+    </div>
+  </div>
+
   <div class="trechter" id="trechter"></div>
 
   <div class="filters">
@@ -138,6 +158,59 @@ $('tegels').innerHTML = [
   { waarde: DATA.samenvatting.opdrachten, tekst:'opdrachten binnen', klem:true },
   { waarde: euro(DATA.samenvatting.mrrCent), tekst:'per maand', klem:true },
 ].map((tegel) => `<div class="tegel${tegel.klem ? ' klem' : ''}"><b>${esc(tegel.waarde)}</b><span>${tegel.tekst}</span></div>`).join('');
+
+// --- de werklijst en de prognose --------------------------------------------
+const WANNEER = { 'te-laat': (d) => d === 1 ? '1 dag te laat' : `${d} dagen te laat`,
+  vandaag: () => 'Vandaag', binnenkort: () => 'Binnenkort' };
+
+if (DATA.werk?.length) {
+  $('werkdruk').textContent = `${DATA.werkDruk.teLaat} te laat · ${DATA.werkDruk.vandaag} vandaag`;
+  $('werklijst').innerHTML = DATA.werk.map((regel) => `
+    <button class="werkregel" data-id="${regel.id}">
+      <span class="stip ${regel.urgentie}"></span>
+      <span class="werktekst">
+        <b>${esc(regel.naam)}</b>
+        <span class="sub">${esc(regel.wat)} — ${esc(regel.waarom)}</span>
+      </span>
+      <span class="werkwanneer">${esc(WANNEER[regel.urgentie](regel.dagenTeLaat))}
+        <span class="sub">${esc(regel.agent ?? 'vrij')}</span></span>
+    </button>`).join('');
+  for (const knop of $('werklijst').querySelectorAll('.werkregel')) {
+    knop.addEventListener('click', () => {
+      kiesLead(Number(knop.dataset.id));
+      document.querySelector('.drieluik')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+} else {
+  $('werkvak').hidden = true;
+}
+
+if (DATA.prognose) {
+  const p = DATA.prognose;
+  const gehaald = p.doelMrrCent > 0 ? Math.min(100, Math.round((p.huidigeMrrCent / p.doelMrrCent) * 100)) : 0;
+  $('prognose').innerHTML = `
+    <div class="tegels binnenin">
+      <div class="tegel klem"><b>${euro(p.huidigeMrrCent)}</b><span>nu per maand binnen</span></div>
+      <div class="tegel"><b>${euro(p.verwachteMrrCent)}</b><span>verwacht uit de pijplijn</span></div>
+      <div class="tegel"><b>${euro(p.pijplijnJaarCent)}</b><span>die pijplijn over een jaar</span></div>
+      ${p.doelMrrCent > 0 ? `<div class="tegel klem"><b>${gehaald}%</b><span>van het doel (${euro(p.doelMrrCent)})</span></div>
+      <div class="tegel"><b>${p.opdrachtenNodig}</b><span>opdrachten nog nodig</span></div>` : ''}
+      <div class="tegel"><b>${p.voorraad.aantal.toLocaleString('nl-NL')}</b><span>nog onaangeraakt op de plank</span></div>
+    </div>
+    ${p.doelMrrCent > 0 ? `<div class="doelbalk"><i style="width:${gehaald}%"></i></div>` : ''}
+    <table class="prognosetabel">
+      <thead><tr><th>Fase</th><th>Leads</th><th>Wordt klant</th><th>Per maand</th></tr></thead>
+      <tbody>${p.fases.map((rij) => `
+        <tr class="${rij.fase === 'nieuw' ? 'voorraadrij' : ''}">
+          <td>${esc(rij.label)}${rij.fase === 'nieuw' ? '<span class="sub"> — voorraad</span>' : ''}</td>
+          <td class="mono">${rij.aantal.toLocaleString('nl-NL')}</td>
+          <td class="mono">${Math.round(rij.kans * 100)}%<span class="sub">${rij.bron === 'gemeten' ? 'gemeten' : 'startwaarde'}</span></td>
+          <td class="mono">${euro(rij.verwachteMrrCent)}</td>
+        </tr>`).join('')}</tbody>
+    </table>`;
+} else {
+  $('prognosevak').hidden = true;
+}
 
 function tekenTrechter() {
   $('trechter').innerHTML = DATA.trechter.filter((stap) => stap.aantal > 0).map((stap) => `
