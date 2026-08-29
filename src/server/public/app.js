@@ -39,6 +39,27 @@ async function api(pad, opties = {}) {
 }
 
 // --------------------------------------------------------------------------
+// Meldingen: kort in beeld rechtsonder, zodat je nooit hoeft te zoeken waar
+// het antwoord op je klik staat.
+// --------------------------------------------------------------------------
+const TEKENS = {
+  goed: '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.2"/><path d="M6.8 10.3l2.2 2.2 4.2-4.7"/></svg>',
+  fout: '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.2"/><path d="M10 6.4v4.4M10 13.4h.01"/></svg>',
+};
+
+function toon(tekst, soort = 'goed') {
+  const melding = document.createElement('div');
+  melding.className = `toast ${soort}`;
+  melding.innerHTML = `${TEKENS[soort] ?? TEKENS.goed}<span></span>`;
+  melding.querySelector('span').textContent = tekst;
+  $('toasts').append(melding);
+  setTimeout(() => {
+    melding.classList.add('weg');
+    melding.addEventListener('animationend', () => melding.remove(), { once: true });
+  }, 3600);
+}
+
+// --------------------------------------------------------------------------
 // Inloggen
 // --------------------------------------------------------------------------
 function toonInlogscherm(geenGebruikers = false) {
@@ -77,8 +98,11 @@ async function start() {
   staat.ik = mij.gebruiker;
   $('inloggen').hidden = true;
   $('app').hidden = false;
-  $('ik-naam').textContent = `${mij.gebruiker.naam} · ${mij.gebruiker.rol}`;
+  $('ik-naam').textContent = mij.gebruiker.naam;
+  $('ik-rol').textContent = mij.gebruiker.rol;
+  $('ik-avatar').textContent = initialen(mij.gebruiker.naam);
   document.querySelector('[data-weergave="team"]').hidden = mij.gebruiker.rol !== 'eigenaar';
+  toonSkelet($('rijen'));
 
   const [overzicht, sjablonen] = await Promise.all([api('/api/overzicht'), api('/api/sjablonen')]);
   staat.fases = overzicht.fases;
@@ -100,8 +124,32 @@ async function start() {
   $('kaartnoot').textContent = `${overzicht.cijfers.opKaart} van ${overzicht.cijfers.bedrijven} bedrijven staan op de kaart`;
   zetNieuwsTeller(overzicht.ongelezenNieuws);
   $('nieuws-plaatsen').hidden = mij.gebruiker.rol !== 'eigenaar';
+  $('tel-leads').textContent = overzicht.cijfers.gescand.toLocaleString('nl-NL');
+  $('tel-mijn').textContent = overzicht.mijnOpenLeads || '';
+  zetPaginakop('kaart');
 
   await ververs();
+}
+
+/** De titel boven het werkgebied hoort bij het scherm waar je in staat. */
+const PAGINAS = {
+  kaart: ['Kaart & leads', 'Alle gescande bedrijven, de slechtste sites eerst.'],
+  mijn: ['Mijn lijst', 'De bedrijven die op jouw naam staan.'],
+  team: ['Team & omzet', 'Wat het team doet en wat het oplevert.'],
+  nieuws: ['Nieuws', 'Berichten voor iedereen die meewerkt.'],
+};
+
+function zetPaginakop(weergave) {
+  const [titel, sub] = PAGINAS[weergave] ?? PAGINAS.kaart;
+  $('pagina-titel').textContent = titel;
+  $('pagina-sub').textContent = sub;
+  document.title = `${titel} · Webscan NL`;
+}
+
+/** Vier grijze regels terwijl de eerste lijst nog onderweg is. */
+function toonSkelet(doel) {
+  doel.innerHTML = Array.from({ length: 6 }, () =>
+    '<tr class="skelet"><td><span></span></td><td><span></span></td><td><span></span></td></tr>').join('');
 }
 
 function vulKeuzelijsten(overzicht) {
@@ -178,9 +226,7 @@ async function ververs({ behoudPagina = false } = {}) {
   tekenLijst($('rijen'), $('geen'), lijst.leads, 'kaart');
   tekenMeerKnop();
 
-  if (!staat.gekozen) $('detail').innerHTML =
-    '<div class="leeg">Klik een bolletje op de kaart of een regel in de lijst aan.<br>' +
-    'Groen is een goede site, oranje matig, rood slecht.</div>';
+  if (!staat.gekozen) $('detail').innerHTML = LEEG_PANEEL;
 
   await haalKaart();
 }
@@ -229,6 +275,9 @@ async function haalKaart() {
 // Lijst
 // --------------------------------------------------------------------------
 const bolVan = (score) => `<span class="bol bol-${bandVan(score).id}" title="${bandVan(score).label}"></span>`;
+/** De score als gekleurd blokje: in één oogopslag rood, oranje of groen. */
+const scoreVan = (score) =>
+  `<span class="score s-${bandVan(score).id}" title="${bandVan(score).label}">${score ?? '–'}</span>`;
 const faseLabel = (id) => staat.fases.find((fase) => fase.id === id)?.label ?? id;
 const isMijlpaal = (id) => Boolean(staat.fases.find((fase) => fase.id === id)?.mijlpaal);
 
@@ -252,6 +301,11 @@ function verschilChip(lead) {
     title="Was ${lead.vorige_score} bij de vorige scan">${omlaag ? '▼' : '▲'}${Math.abs(verschil)}</span>`;
 }
 
+const IKOON = {
+  telefoon: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.4 3.5l1.8 3-1.4 1.6a9 9 0 004.1 4.1l1.6-1.4 3 1.8-.5 2.4c-.2.7-.9 1.1-1.6 1C8.6 15.3 4.7 11.4 3.6 5.6c-.1-.7.3-1.4 1-1.6z"/></svg>',
+  mail: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5.5h14v9H3z"/><path d="M3.4 6l6.6 5 6.6-5"/></svg>',
+};
+
 const initialen = (naam) => naam.split(/\s+/).filter(Boolean).slice(0, 2)
   .map((deel) => deel[0].toUpperCase()).join('');
 
@@ -264,6 +318,17 @@ function agentChip(lead) {
   </div>`;
 }
 
+/** Wat er in het rechterpaneel staat zolang je niets hebt aangeklikt. */
+const LEEG_PANEEL = `
+  <div class="leeg">
+    <span class="leegteken" aria-hidden="true">
+      <svg viewBox="0 0 20 20"><path d="M2.5 5.5l5-2 5 2 5-2v11l-5 2-5-2-5 2z"/><path d="M7.5 3.5v11M12.5 5.5v11"/></svg>
+    </span>
+    <b>Kies een bedrijf</b>
+    <span class="sub">Klik een bolletje op de kaart of een regel in de lijst aan.<br>
+      Groen is een goede site, oranje matig, rood slecht.</span>
+  </div>`;
+
 function tekenLijst(tbody, leegVak, leads, welke) {
   leegVak.hidden = leads.length > 0;
   const metActie = welke === 'mijn';
@@ -273,20 +338,28 @@ function tekenLijst(tbody, leegVak, leads, welke) {
     const email = lead.contact.emails[0] ?? '';
     const bezetting = !lead.toegewezen_aan ? ''
       : lead.toegewezen_aan === staat.ik.id ? ' van-mij' : ' van-collega';
+    const alleenMailen = telefoon && NATUURLIJK.includes(lead.rechtsvorm ?? '') && !lead.bel_toestemming;
+    // Eén regel met wat je nodig hebt om contact te leggen: nummer, mailadres,
+    // en of bellen wel mag. Wat niet past kapt af in plaats van de rij op te rekken.
+    const contactregel = [
+      telefoon ? `<span class="merkje${alleenMailen ? ' mag-niet' : ''}" title="${alleenMailen
+        ? 'Bellen mag alleen met toestemming' : 'Telefoonnummer'}">${IKOON.telefoon}${esc(telefoon)}</span>` : '',
+      email ? `<span class="merkje" title="E-mailadres">${IKOON.mail}${esc(email)}</span>` : '',
+      !telefoon && !email ? '<span class="merkje leegje">geen contactgegevens</span>' : '',
+    ].join('');
+
     return `
     <tr class="${bezetting.trim()}" data-id="${lead.id}" tabindex="0" aria-selected="${lead.id === staat.gekozen}">
-      <td class="kwaliteit">${bolVan(lead.score)}<span class="score">${lead.score}</span>${verschilChip(lead)}
+      <td class="kwaliteit">${scoreVan(lead.score)}${verschilChip(lead)}
           <div class="leven l-${levenVan(lead.leven).id}" title="Levenstekenen: ${lead.leven ?? '?'}/100">${levenVan(lead.leven).label}</div></td>
-      <td><div class="naam">${esc(lead.name)}</div>
-          <div class="sub mono">${esc(lead.domain)}${lead.city ? ' · ' + esc(lead.city) : ''}</div>
-          ${telefoon ? `<div class="telefoon">${esc(telefoon)}${NATUURLIJK.includes(lead.rechtsvorm ?? '') && !lead.bel_toestemming
-            ? '<span class="alleen-mail" title="Bellen mag alleen met toestemming">alleen mailen</span>' : ''}</div>` : ''}
-          ${email ? `<div class="telefoon">${esc(email)}</div>` : ''}
-          ${!telefoon && !email ? '<div class="sub">geen contactgegevens gevonden</div>' : ''}</td>
-      ${metActie
-        ? `<td class="sub">${lead.volgende_actie_op ? esc(lead.volgende_actie_op) : '—'}</td>`
-        : `<td class="probleem"><span>${esc(lead.topIssues[0]?.title ?? '')}</span></td>`}
-      <td><span class="fasepil ${lead.fase}">${esc(faseLabel(lead.fase))}</span>
+      <td class="bedrijf">
+          <div class="naamregel"><span class="naam">${esc(lead.name)}</span>
+            <span class="sub mono plaats">${esc(lead.domain)}${lead.city ? ' · ' + esc(lead.city) : ''}</span></div>
+          <div class="tweede">${metActie
+            ? `Volgende actie: ${lead.volgende_actie_op ? esc(lead.volgende_actie_op) : 'nog niet ingepland'}`
+            : esc(lead.topIssues[0]?.title ?? 'Geen problemen gevonden')}</div>
+          <div class="merkjes">${contactregel}</div></td>
+      <td class="fasekolom"><span class="fasepil ${lead.fase}">${esc(faseLabel(lead.fase))}</span>
           ${welke === 'kaart' ? agentChip(lead) : ''}</td>
     </tr>`;
   }).join('');
@@ -606,10 +679,10 @@ function tekenDetail(doel, lead) {
 
 function koppelDetailKnoppen(doel, lead) {
   const melding = doel.querySelector('[data-melding]');
+  // Alles wat je doet bevestigt zichzelf rechtsonder; het paneel zelf blijft rustig.
   const zeg = (tekst, goed = true) => {
-    melding.textContent = tekst;
-    melding.classList.toggle('goed', goed);
-    setTimeout(() => { melding.textContent = ''; }, 3000);
+    toon(tekst, goed ? 'goed' : 'fout');
+    if (melding) melding.textContent = '';
   };
   const notitie = () => doel.querySelector('#d-notitie')?.value.trim() || undefined;
 
@@ -772,6 +845,7 @@ for (const knop of $('tabs').querySelectorAll('.tab')) {
 
 async function wisselNaar(weergave) {
   staat.weergave = weergave;
+  zetPaginakop(weergave);
   for (const knop of $('tabs').querySelectorAll('.tab')) {
     knop.setAttribute('aria-pressed', String(knop.dataset.weergave === weergave));
   }
@@ -811,6 +885,10 @@ async function toonMijnLijst() {
     });
   }
   tekenLijst($('mijn-rijen'), $('mijn-geen'), mijn.leads, 'mijn');
+  // Het paneel hoort bij het scherm waar je in staat: had je al een bedrijf
+  // open, teken dat hier opnieuw; zo niet, dan de uitleg.
+  if (staat.gekozen) await kiesLead({ id: staat.gekozen });
+  else $('mijn-detail').innerHTML = LEEG_PANEEL;
 }
 
 async function toonTeam() {
@@ -878,11 +956,9 @@ $('aanbod-formulier').addEventListener('submit', async (gebeurtenis) => {
       method: 'PUT', body: JSON.stringify(velden),
     });
     toonAanbodVoorbeeld(aanbod, voorbeeld);
-    $('aanbod-melding').textContent = 'Opgeslagen — alle sjablonen gebruiken dit nu.';
-    $('aanbod-melding').classList.add('goed');
+    toon('Opgeslagen — alle sjablonen gebruiken dit nu.');
   } catch (fout) {
-    $('aanbod-melding').textContent = fout.message;
-    $('aanbod-melding').classList.remove('goed');
+    toon(fout.message, 'fout');
   }
 });
 
@@ -891,13 +967,11 @@ $('nieuwe-gebruiker').addEventListener('submit', async (gebeurtenis) => {
   const formulier = new FormData(gebeurtenis.target);
   try {
     const nieuw = await api('/api/team', { method: 'POST', body: JSON.stringify(Object.fromEntries(formulier)) });
-    $('t-melding').textContent = `${nieuw.gebruiker.naam} kan nu inloggen.`;
-    $('t-melding').classList.add('goed');
+    toon(`${nieuw.gebruiker.naam} kan nu inloggen.`);
     gebeurtenis.target.reset();
     await toonTeam();
   } catch (fout) {
-    $('t-melding').textContent = fout.message;
-    $('t-melding').classList.remove('goed');
+    toon(fout.message, 'fout');
   }
 });
 
@@ -979,12 +1053,11 @@ $('nieuws-formulier').addEventListener('submit', async (gebeurtenis) => {
       body: JSON.stringify({ ...velden, vastgezet: formulier.vastgezet.checked }),
     });
     formulier.reset();
-    $('nieuws-melding').textContent = 'Geplaatst — het team ziet het meteen.';
-    $('nieuws-melding').classList.add('goed');
+    toon('Geplaatst — het team ziet het meteen.');
+    $('nieuws-melding').textContent = '';
     await toonNieuws();
   } catch (fout) {
-    $('nieuws-melding').textContent = fout.message;
-    $('nieuws-melding').classList.remove('goed');
+    toon(fout.message, 'fout');
   }
 });
 
@@ -994,6 +1067,7 @@ $('nieuws-formulier').addEventListener('submit', async (gebeurtenis) => {
 const koppelFilter = (id, sleutel, gebeurtenisNaam = 'change') => {
   $(id).addEventListener(gebeurtenisNaam, () => {
     staat.filters[sleutel] = $(id).type === 'checkbox' ? $(id).checked : $(id).value;
+    tekenChips();
     ververs();
   });
 };
@@ -1007,19 +1081,298 @@ koppelFilter('f-levend', 'levend');
 koppelFilter('f-achteruit', 'achteruit');
 koppelFilter('f-sort', 'sort');
 
-$('f-wis').addEventListener('click', () => {
+function wisFilters() {
   staat.filters = { zoek: '', plaats: '', fase: '', agent: '', contact: false, belbaar: false, levend: false, achteruit: false, band: '', sort: 'prioriteit' };
   for (const id of ['f-zoek', 'f-plaats', 'f-fase', 'f-agent']) $(id).value = '';
-  $('f-contact').checked = false;
-  $('f-belbaar').checked = false;
-  $('f-levend').checked = false;
-  $('f-achteruit').checked = false;
+  for (const id of ['f-contact', 'f-belbaar', 'f-levend', 'f-achteruit']) $(id).checked = false;
   $('f-sort').value = 'prioriteit';
+  tekenChips();
   ververs();
-});
+}
+$('f-wis').addEventListener('click', wisFilters);
 
 $('k-in').addEventListener('click', () => kaart.zoomKnop(1.5));
 $('k-uit').addEventListener('click', () => kaart.zoomKnop(1 / 1.5));
 $('k-herstel').addEventListener('click', () => kaart.herstel());
+
+// --------------------------------------------------------------------------
+// Actieve filters als wisbare chips
+// --------------------------------------------------------------------------
+const KRUIS = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 6l8 8M14 6l-8 8"/></svg>';
+
+/** Welke filters staan aan, en hoe heet dat in gewone taal? */
+function actieveFilters() {
+  const uit = [];
+  const tekst = (id, waarde) => $(id).querySelector(`option[value="${CSS.escape(waarde)}"]`)?.textContent ?? waarde;
+  if (staat.filters.zoek) uit.push({ sleutel: 'zoek', label: `"${staat.filters.zoek}"` });
+  if (staat.filters.plaats) uit.push({ sleutel: 'plaats', label: tekst('f-plaats', staat.filters.plaats) });
+  if (staat.filters.fase) uit.push({ sleutel: 'fase', label: tekst('f-fase', staat.filters.fase) });
+  if (staat.filters.agent) uit.push({ sleutel: 'agent', label: tekst('f-agent', staat.filters.agent) });
+  if (staat.filters.contact) uit.push({ sleutel: 'contact', label: 'Heeft contactgegevens' });
+  if (staat.filters.belbaar) uit.push({ sleutel: 'belbaar', label: 'Mag ik bellen' });
+  if (staat.filters.levend) uit.push({ sleutel: 'levend', label: 'Draait nog' });
+  if (staat.filters.achteruit) uit.push({ sleutel: 'achteruit', label: 'Achteruitgegaan' });
+  if (staat.filters.band) uit.push({ sleutel: 'band', label: BANDEN.find((rij) => rij.id === staat.filters.band)?.label ?? '' });
+  return uit;
+}
+
+const VELD_VAN = { zoek: 'f-zoek', plaats: 'f-plaats', fase: 'f-fase', agent: 'f-agent',
+  contact: 'f-contact', belbaar: 'f-belbaar', levend: 'f-levend', achteruit: 'f-achteruit' };
+
+function tekenChips() {
+  const actief = actieveFilters();
+  $('f-chips').innerHTML = actief.map((rij) => `
+    <span class="chip">${esc(rij.label)}
+      <button data-wis="${rij.sleutel}" aria-label="Filter ${esc(rij.label)} weghalen">${KRUIS}</button></span>`).join('')
+    + (actief.length > 1 ? '<button class="knop klein" data-wis="alles">Alles wissen</button>' : '');
+
+  const aantal = $('f-aantal');
+  const inPaneel = actief.filter((rij) => rij.sleutel !== 'zoek' && rij.sleutel !== 'band').length;
+  aantal.hidden = inPaneel === 0;
+  aantal.textContent = inPaneel;
+
+  for (const knop of $('f-chips').querySelectorAll('[data-wis]')) {
+    knop.addEventListener('click', () => {
+      const sleutel = knop.dataset.wis;
+      if (sleutel === 'alles') { wisFilters(); return; }
+      staat.filters[sleutel] = typeof staat.filters[sleutel] === 'boolean' ? false : '';
+      const veld = VELD_VAN[sleutel];
+      if (veld) { const el = $(veld); if (el.type === 'checkbox') el.checked = false; else el.value = ''; }
+      tekenChips();
+      ververs();
+    });
+  }
+}
+
+// --------------------------------------------------------------------------
+// Uitklapmenu's voor filters en sortering
+// --------------------------------------------------------------------------
+function koppelPop(knopId, paneelId) {
+  const knop = $(knopId);
+  const paneel = $(paneelId);
+  const sluit = () => { paneel.hidden = true; knop.setAttribute('aria-expanded', 'false'); };
+  knop.addEventListener('click', (gebeurtenis) => {
+    gebeurtenis.stopPropagation();
+    const open = paneel.hidden;
+    for (const ander of document.querySelectorAll('.popkaart')) ander.hidden = true;
+    for (const ander of document.querySelectorAll('.popvak .knop')) ander.setAttribute('aria-expanded', 'false');
+    paneel.hidden = !open;
+    knop.setAttribute('aria-expanded', String(open));
+  });
+  paneel.addEventListener('click', (gebeurtenis) => gebeurtenis.stopPropagation());
+  return sluit;
+}
+const sluitFilters = koppelPop('f-open', 'f-paneel');
+const sluitSort = koppelPop('s-open', 's-paneel');
+document.addEventListener('click', () => { sluitFilters(); sluitSort(); });
+
+/** De sorteerkeuzes als knoppen; het select-veld eronder blijft de bron. */
+function tekenSorteerkeuzes() {
+  const veld = $('f-sort');
+  $('s-keuzes').innerHTML = [...veld.options].map((optie) => `
+    <button class="popkeuze" data-waarde="${esc(optie.value)}" aria-pressed="${optie.value === veld.value}">
+      ${esc(optie.textContent)}
+      <svg class="vink" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10.5l3.5 3.5 7.5-8"/></svg>
+    </button>`).join('');
+  $('s-label').textContent = veld.selectedOptions[0].textContent;
+
+  for (const knop of $('s-keuzes').querySelectorAll('.popkeuze')) {
+    knop.addEventListener('click', () => {
+      veld.value = knop.dataset.waarde;
+      veld.dispatchEvent(new Event('change'));
+      tekenSorteerkeuzes();
+      sluitSort();
+    });
+  }
+}
+tekenSorteerkeuzes();
+
+// --------------------------------------------------------------------------
+// Licht of donker
+// --------------------------------------------------------------------------
+const THEMAS = ['systeem', 'licht', 'donker'];
+function zetThema(keuze) {
+  if (keuze === 'systeem') delete document.documentElement.dataset.thema;
+  else document.documentElement.dataset.thema = keuze;
+  try { localStorage.setItem('webscan-thema', keuze); } catch { /* privémodus: dan onthouden we het niet */ }
+  $('thema').title = { systeem: 'Volgt je systeem', licht: 'Lichte weergave', donker: 'Donkere weergave' }[keuze];
+  kaart?.hermeet?.();
+}
+let themaKeuze = 'systeem';
+try { themaKeuze = localStorage.getItem('webscan-thema') ?? 'systeem'; } catch { /* geen opslag */ }
+zetThema(THEMAS.includes(themaKeuze) ? themaKeuze : 'systeem');
+$('thema').addEventListener('click', () => {
+  themaKeuze = THEMAS[(THEMAS.indexOf(themaKeuze) + 1) % THEMAS.length];
+  zetThema(themaKeuze);
+  toon(`Weergave: ${{ systeem: 'volgt je systeem', licht: 'licht', donker: 'donker' }[themaKeuze]}`);
+});
+
+// --------------------------------------------------------------------------
+// Menu op smalle schermen
+// --------------------------------------------------------------------------
+const zetMenu = (open) => {
+  $('app').classList.toggle('menu-open', open);
+  $('zij-scherm').hidden = !open;
+};
+$('menu-open').addEventListener('click', () => zetMenu(true));
+$('menu-dicht').addEventListener('click', () => zetMenu(false));
+$('zij-scherm').addEventListener('click', () => zetMenu(false));
+for (const knop of $('tabs').querySelectorAll('.tab')) knop.addEventListener('click', () => zetMenu(false));
+
+// --------------------------------------------------------------------------
+// Snel zoeken (⌘K of /)
+// --------------------------------------------------------------------------
+const palet = $('palet');
+let paletRijen = [];
+let paletKeuze = 0;
+let paletTijd = null;
+
+function openPalet() {
+  if (palet.open) return;
+  palet.showModal();
+  $('palet-veld').value = '';
+  vulPalet('');
+  $('palet-veld').focus();
+}
+
+const SCHERMEN = [
+  { weergave: 'kaart', naam: 'Kaart & leads' },
+  { weergave: 'mijn', naam: 'Mijn lijst' },
+  { weergave: 'team', naam: 'Team & omzet' },
+  { weergave: 'nieuws', naam: 'Nieuws' },
+];
+
+async function vulPalet(zoek) {
+  const schermen = SCHERMEN
+    .filter((rij) => !zoek || rij.naam.toLowerCase().includes(zoek.toLowerCase()))
+    .filter((rij) => rij.weergave !== 'team' || staat.ik.rol === 'eigenaar')
+    .map((rij) => ({ soort: 'scherm', naam: rij.naam, extra: 'Ga naar', doe: () => wisselNaar(rij.weergave) }));
+
+  let leads = [];
+  if (zoek.trim().length >= 2) {
+    try {
+      const uitkomst = await api(`/api/leads?zoek=${encodeURIComponent(zoek)}&limit=7&sort=prioriteit`);
+      leads = uitkomst.leads.map((lead) => ({
+        soort: 'lead', naam: lead.name,
+        extra: [lead.city, `score ${lead.score}`].filter(Boolean).join(' · '),
+        doe: async () => { await wisselNaar('kaart'); kiesLead({ id: lead.id }); },
+      }));
+    } catch { /* zoeken mag stilletjes mislukken */ }
+  }
+
+  paletRijen = [...leads, ...schermen];
+  paletKeuze = 0;
+  tekenPalet();
+}
+
+function tekenPalet() {
+  if (paletRijen.length === 0) {
+    $('palet-lijst').innerHTML = '<p class="palet-leeg">Niets gevonden.</p>';
+    return;
+  }
+  let vorige = null;
+  $('palet-lijst').innerHTML = paletRijen.map((rij, index) => {
+    const kop = rij.soort !== vorige
+      ? `<div class="palet-groep">${rij.soort === 'lead' ? 'Bedrijven' : 'Schermen'}</div>` : '';
+    vorige = rij.soort;
+    return `${kop}<button class="palet-rij" data-index="${index}" data-actief="${index === paletKeuze ? 'ja' : 'nee'}">
+      ${esc(rij.naam)}<span class="sub">${esc(rij.extra)}</span></button>`;
+  }).join('');
+
+  for (const knop of $('palet-lijst').querySelectorAll('.palet-rij')) {
+    knop.addEventListener('click', () => kiesPalet(Number(knop.dataset.index)));
+  }
+}
+
+async function kiesPalet(index) {
+  const rij = paletRijen[index];
+  palet.close();
+  await rij?.doe();
+}
+
+$('palet-veld').addEventListener('input', (gebeurtenis) => {
+  clearTimeout(paletTijd);
+  const waarde = gebeurtenis.target.value;
+  paletTijd = setTimeout(() => vulPalet(waarde), 140);
+});
+$('palet-veld').addEventListener('keydown', (gebeurtenis) => {
+  if (gebeurtenis.key === 'ArrowDown' || gebeurtenis.key === 'ArrowUp') {
+    gebeurtenis.preventDefault();
+    const stap = gebeurtenis.key === 'ArrowDown' ? 1 : -1;
+    paletKeuze = (paletKeuze + stap + paletRijen.length) % Math.max(paletRijen.length, 1);
+    tekenPalet();
+    $('palet-lijst').querySelector('[data-actief="ja"]')?.scrollIntoView({ block: 'nearest' });
+  }
+  if (gebeurtenis.key === 'Enter') { gebeurtenis.preventDefault(); kiesPalet(paletKeuze); }
+});
+$('open-palet').addEventListener('click', openPalet);
+palet.addEventListener('click', (gebeurtenis) => { if (gebeurtenis.target === palet) palet.close(); });
+// Na het sluiten hoort de aandacht terug bij de zoekknop; blijft hij in het
+// zoekveld hangen, dan zou de eerstvolgende sneltoets verloren gaan.
+palet.addEventListener('close', () => $('open-palet').focus());
+
+// --------------------------------------------------------------------------
+// Sneltoetsen
+// --------------------------------------------------------------------------
+const sneltoetsen = $('sneltoetsen');
+for (const knop of sneltoetsen.querySelectorAll('[data-sluit]')) {
+  knop.addEventListener('click', () => sneltoetsen.close());
+}
+$('toon-sneltoetsen').addEventListener('click', () => sneltoetsen.showModal());
+sneltoetsen.addEventListener('click', (gebeurtenis) => { if (gebeurtenis.target === sneltoetsen) sneltoetsen.close(); });
+
+let wachtOpG = false;
+
+/** Rijen van de lijst die nu in beeld staat, om met j/k door te lopen. */
+const zichtbareRijen = () =>
+  [...$(staat.weergave === 'mijn' ? 'mijn-rijen' : 'rijen').querySelectorAll('tr[data-id]')];
+
+function loopDoorLijst(stap) {
+  const rijen = zichtbareRijen();
+  if (rijen.length === 0) return;
+  const nu = rijen.findIndex((rij) => Number(rij.dataset.id) === staat.gekozen);
+  const volgende = rijen[Math.min(Math.max(nu + stap, 0), rijen.length - 1)] ?? rijen[0];
+  volgende.scrollIntoView({ block: 'nearest' });
+  kiesLead({ id: Number(volgende.dataset.id) });
+}
+
+document.addEventListener('keydown', (gebeurtenis) => {
+  // Alleen tekstvelden slikken sneltoetsen op; een vinkje of knop niet, anders
+  // werkt het toetsenbord niet meer zodra je één filter hebt aangeklikt.
+  const doel = gebeurtenis.target;
+  const inVeld = doel.isContentEditable || doel.tagName === 'TEXTAREA' || doel.tagName === 'SELECT'
+    || (doel.tagName === 'INPUT' && !['checkbox', 'radio', 'button', 'submit'].includes(doel.type));
+  const toets = gebeurtenis.key;
+
+  if ((gebeurtenis.metaKey || gebeurtenis.ctrlKey) && toets.toLowerCase() === 'k') {
+    gebeurtenis.preventDefault(); openPalet(); return;
+  }
+  if (toets === 'Escape' && !palet.open && !sneltoetsen.open) {
+    if (!$('f-paneel').hidden || !$('s-paneel').hidden) { sluitFilters(); sluitSort(); return; }
+    if (staat.gekozen) { staat.gekozen = null; ververs({ behoudPagina: true }); }
+    return;
+  }
+  if (inVeld || $('app').hidden || gebeurtenis.metaKey || gebeurtenis.ctrlKey || gebeurtenis.altKey) return;
+
+  if (wachtOpG) {
+    wachtOpG = false;
+    const naar = { k: 'kaart', m: 'mijn', t: 'team', n: 'nieuws' }[toets.toLowerCase()];
+    if (naar && !(naar === 'team' && staat.ik.rol !== 'eigenaar')) { gebeurtenis.preventDefault(); wisselNaar(naar); }
+    return;
+  }
+
+  switch (toets) {
+    case '/': gebeurtenis.preventDefault(); openPalet(); break;
+    case '?': gebeurtenis.preventDefault(); sneltoetsen.showModal(); break;
+    case 'g': case 'G': wachtOpG = true; setTimeout(() => { wachtOpG = false; }, 1200); break;
+    case 'j': case 'J': gebeurtenis.preventDefault(); loopDoorLijst(1); break;
+    case 'k': case 'K': gebeurtenis.preventDefault(); loopDoorLijst(-1); break;
+    case 'f': case 'F': gebeurtenis.preventDefault(); $('f-open').click(); break;
+    case 'c': case 'C':
+      if (staat.gekozen) document.querySelector('[data-actie="claim"]')?.click();
+      break;
+    default: break;
+  }
+});
 
 start();

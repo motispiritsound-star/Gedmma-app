@@ -4,27 +4,33 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Webscan NL</title>
+<meta name="color-scheme" content="light dark">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Niet-blokkerend: is de lettertypedienst traag of onbereikbaar, dan laadt het
      dashboard gewoon door met de systeemletters in plaats van te wachten. -->
 <link rel="stylesheet" media="print" onload="this.media='all'"
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;500;600&display=swap">
 <noscript><link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap"></noscript>
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;500;600&display=swap"></noscript>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%230f6b74'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="/stijl.css">
 </head>
 <body>
 
+<!-- ---------- inloggen ---------- -->
 <div id="inloggen" class="inlogscherm" hidden>
   <form class="inlogkaart" id="inlogformulier">
-    <h1>Webscan NL</h1>
-    <p class="sub">Log in om met de leads te werken.</p>
+    <div class="inlogmerk">
+      <span class="merkteken" aria-hidden="true"></span>
+      <span>Webscan<b>NL</b></span>
+    </div>
+    <h1>Welkom terug</h1>
+    <p class="sub">Log in om met je leads te werken.</p>
     <label for="i-email">E-mailadres</label>
-    <input class="veld" id="i-email" type="email" autocomplete="username" required>
+    <input class="veld" id="i-email" type="email" autocomplete="username" placeholder="jij@bedrijf.nl" required>
     <label for="i-wachtwoord">Wachtwoord</label>
-    <input class="veld" id="i-wachtwoord" type="password" autocomplete="current-password" required>
-    <button class="knop sterk" type="submit">Inloggen</button>
+    <input class="veld" id="i-wachtwoord" type="password" autocomplete="current-password" placeholder="••••••••••" required>
+    <button class="knop sterk breed" type="submit">Inloggen</button>
     <p class="melding" id="i-melding" role="alert"></p>
     <p class="sub" id="i-geenaccount" hidden>
       Er is nog geen account. Maak er een aan op de server:<br>
@@ -33,192 +39,338 @@
   </form>
 </div>
 
-<div id="app" hidden>
-  <header class="kop">
-    <div class="merk">Webscan NL</div>
-    <nav class="tabs" id="tabs">
-      <button class="tab" data-weergave="kaart" aria-pressed="true">Kaart &amp; leads</button>
-      <button class="tab" data-weergave="mijn" aria-pressed="false">Mijn lijst</button>
-      <button class="tab" data-weergave="team" aria-pressed="false" hidden>Team &amp; omzet</button>
-      <button class="tab" data-weergave="nieuws" aria-pressed="false">Nieuws<span class="teller" id="nieuws-teller" hidden></span></button>
+<!-- ---------- de app zelf ---------- -->
+<div id="app" class="schil" hidden>
+  <a class="overslaan" href="#hoofd">Naar de inhoud</a>
+
+  <aside class="zijbalk" id="zijbalk">
+    <div class="zij-kop">
+      <span class="merkteken" aria-hidden="true"></span>
+      <span class="merk">Webscan<b>NL</b></span>
+      <button class="ikoonknop zij-sluit" id="menu-dicht" aria-label="Menu sluiten">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 6l8 8M14 6l-8 8"/></svg>
+      </button>
+    </div>
+
+    <nav class="tabs" id="tabs" aria-label="Hoofdmenu">
+      <button class="tab" data-weergave="kaart" aria-pressed="true">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 5.5l5-2 5 2 5-2v11l-5 2-5-2-5 2z"/><path d="M7.5 3.5v11M12.5 5.5v11"/></svg>
+        <span>Kaart &amp; leads</span><span class="telpil" id="tel-leads"></span>
+      </button>
+      <button class="tab" data-weergave="mijn" aria-pressed="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 10a3.2 3.2 0 100-6.4A3.2 3.2 0 0010 10z"/><path d="M3.8 17c.6-3.1 3.1-4.8 6.2-4.8s5.6 1.7 6.2 4.8"/></svg>
+        <span>Mijn lijst</span><span class="telpil" id="tel-mijn"></span>
+      </button>
+      <button class="tab" data-weergave="team" aria-pressed="false" hidden>
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 16.5v-4M7.7 16.5v-8M12.3 16.5v-5.5M17 16.5V4.5"/></svg>
+        <span>Team &amp; omzet</span>
+      </button>
+      <button class="tab" data-weergave="nieuws" aria-pressed="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4.5h12v11H4z"/><path d="M6.5 8h7M6.5 11h7M6.5 14h4"/></svg>
+        <span>Nieuws</span><span class="teller" id="nieuws-teller" hidden></span>
+      </button>
     </nav>
-    <div class="ik">
-      <span id="ik-naam"></span>
-      <button class="knop klein" id="uitloggen">Uitloggen</button>
-    </div>
-  </header>
 
-  <!-- ---------- kaart & leads ---------- -->
-  <section class="weergave" id="weergave-kaart">
-    <div class="filters">
-      <input class="veld smal" id="f-zoek" type="search" placeholder="Zoek bedrijf of plaats">
-      <select class="veld smal" id="f-plaats"><option value="">Alle plaatsen</option></select>
-      <select class="veld smal" id="f-fase"><option value="">Alle fases</option></select>
-      <select class="veld smal" id="f-agent"><option value="">Iedereen</option></select>
-      <label class="schakel" title="Alleen bedrijven met een telefoonnummer of e-mailadres"><input type="checkbox" id="f-contact"> contact</label>
-      <label class="schakel" title="Alleen bedrijven die je zonder toestemming mag bellen"><input type="checkbox" id="f-belbaar"> belbaar</label>
-      <label class="schakel" title="Alleen bedrijven met tekenen van leven"><input type="checkbox" id="f-levend"> draait nog</label>
-      <label class="schakel" title="Sinds de vorige scan slechter geworden"><input type="checkbox" id="f-achteruit"> achteruit</label>
-      <button class="knop" id="f-wis">Wissen</button>
-      <span class="telling" id="telling"></span>
-      <select class="veld smal" id="f-sort">
-        <option value="prioriteit">Beste leads eerst</option>
-        <option value="score">Slechtste site eerst</option>
-        <option value="naam">Op naam</option>
-        <option value="verandering">Meeste achteruitgang</option>
-      </select>
-      <a class="knop" id="f-export" href="/api/export.csv">CSV</a>
-    </div>
-
-    <div class="drieluik">
-      <div class="kolom-kaart">
-        <div class="kaartvak">
-          <canvas id="kaart" aria-label="Kaart van Nederland met de gescande bedrijven"></canvas>
-          <div class="kaartbediening">
-            <button class="knop klein" id="k-in" title="Inzoomen">+</button>
-            <button class="knop klein" id="k-uit" title="Uitzoomen">−</button>
-            <button class="knop klein" id="k-herstel" title="Heel Nederland">Alles</button>
-          </div>
-          <p class="kaartnoot" id="kaartnoot"></p>
-        </div>
-        <div class="kaart-paneel bandvak" id="bandvak"></div>
+    <div class="zij-onder">
+      <button class="zij-hulp" id="toon-sneltoetsen">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 5.5h15v9h-15z"/><path d="M5.5 9h.01M8.5 9h.01M11.5 9h.01M14.5 9h.01M6.5 12h7"/></svg>
+        <span>Sneltoetsen</span><kbd>?</kbd>
+      </button>
+      <div class="gebruikerregel">
+        <span class="avatar" id="ik-avatar" aria-hidden="true"></span>
+        <span class="wie">
+          <b id="ik-naam"></b>
+          <span class="sub" id="ik-rol"></span>
+        </span>
+        <button class="ikoonknop" id="thema" title="Licht of donker" aria-label="Licht of donker">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v1.6M10 15.4V17M17 10h-1.6M4.6 10H3M14.9 5.1l-1.1 1.1M6.2 13.8l-1.1 1.1M14.9 14.9l-1.1-1.1M6.2 6.2L5.1 5.1"/><circle cx="10" cy="10" r="3.2"/></svg>
+        </button>
+        <button class="ikoonknop" id="uitloggen" title="Uitloggen" aria-label="Uitloggen">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 6.5V4.5h-9v11h9v-2"/><path d="M8 10h8.5M14 7.5L16.5 10 14 12.5"/></svg>
+        </button>
       </div>
-
-      <div class="kaart-paneel lijst">
-        <div class="tabelrol">
-          <table>
-            <thead><tr>
-              <th scope="col">Score</th><th scope="col">Bedrijf</th>
-              <th scope="col">Grootste probleem</th><th scope="col">Fase</th>
-            </tr></thead>
-            <tbody id="rijen"></tbody>
-          </table>
-        </div>
-        <div class="leeg" id="geen" hidden>Geen bedrijven met deze filters.</div>
-        <button class="knop meer" id="meer" hidden>Meer tonen</button>
-      </div>
-
-      <aside class="kaart-paneel detail" id="detail" aria-live="polite"></aside>
     </div>
-    <div class="tip" id="kaarttip" hidden></div>
-  </section>
+  </aside>
+  <div class="zij-scherm" id="zij-scherm" hidden></div>
 
-  <!-- ---------- mijn lijst ---------- -->
-  <section class="weergave" id="weergave-mijn" hidden>
-    <div class="tegels" id="mijn-tegels"></div>
-    <div class="trechterbalk" id="mijn-trechter"></div>
-    <div class="werkvlak">
-      <div class="kaart-paneel lijst">
-        <div class="tabelrol">
-          <table>
-            <thead><tr>
-              <th scope="col">Score</th><th scope="col">Bedrijf</th>
-              <th scope="col">Volgende actie</th><th scope="col">Fase</th>
-            </tr></thead>
-            <tbody id="mijn-rijen"></tbody>
-          </table>
-        </div>
-        <div class="leeg" id="mijn-geen" hidden>
-          Je hebt nog geen leads. Ga naar <b>Kaart &amp; leads</b> en pak er een op met "Deze neem ik".
-        </div>
+  <main class="werkgebied" id="hoofd">
+    <header class="baar">
+      <button class="ikoonknop menuknop" id="menu-open" aria-label="Menu openen">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 6h13M3.5 10h13M3.5 14h13"/></svg>
+      </button>
+      <div class="titelblok">
+        <h1 id="pagina-titel">Kaart &amp; leads</h1>
+        <p class="sub" id="pagina-sub"></p>
       </div>
-      <aside class="kaart-paneel detail" id="mijn-detail" aria-live="polite"></aside>
-    </div>
-  </section>
+      <button class="zoekknop" id="open-palet">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.2"/><path d="M12.8 12.8L17 17"/></svg>
+        <span>Zoek een bedrijf…</span><kbd>/</kbd>
+      </button>
+    </header>
 
-  <!-- ---------- team & omzet ---------- -->
-  <section class="weergave" id="weergave-team" hidden>
-    <div class="tegels" id="omzettegels"></div>
-    <div class="werkvlak team">
-      <div class="kaart-paneel">
-        <div class="tabelrol">
-          <table>
-            <thead><tr>
-              <th scope="col">Wie</th><th scope="col">Open</th><th scope="col">Gebeld (7d)</th>
-              <th scope="col">Afspraken</th><th scope="col">Opdrachten</th><th scope="col">Klanten</th>
-              <th scope="col">Per maand</th><th scope="col">Testimonials</th>
-            </tr></thead>
-            <tbody id="team-rijen"></tbody>
-          </table>
+    <!-- ---------- kaart & leads ---------- -->
+    <section class="weergave" id="weergave-kaart">
+      <div class="werkbalk">
+        <div class="zoekvak">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.2"/><path d="M12.8 12.8L17 17"/></svg>
+          <input class="veld" id="f-zoek" type="search" placeholder="Zoek bedrijf, domein of plaats">
         </div>
-      </div>
-      <aside class="kaart-paneel detail">
-        <span class="label-klein">Wat je aanbiedt</span>
-        <form id="aanbod-formulier" class="stapel">
-          <select class="veld" name="soort">
-            <option value="gratis">Gratis herbouw, betalen per maand</option>
-            <option value="startbedrag">Startbedrag voor de bouw, daarna per maand</option>
-          </select>
-          <div class="rij">
-            <label class="sub" style="width:100px" for="a-start">Startbedrag</label>
-            <input class="veld" id="a-start" name="startbedrag" type="number" min="0" step="5" style="flex:1">
-          </div>
-          <div class="rij">
-            <label class="sub" style="width:100px" for="a-maand">Per maand</label>
-            <input class="veld" id="a-maand" name="maandbedrag" type="number" min="0" step="0.5" style="flex:1">
-          </div>
-          <input class="veld" name="inbegrepen" placeholder="Wat zit erin?">
-          <div class="rij">
-            <input class="veld" name="bedrijfsnaam" placeholder="Jouw bedrijfsnaam" style="flex:1">
-            <input class="veld" name="telefoon" placeholder="Telefoon" style="width:130px">
-          </div>
-          <button class="knop sterk" type="submit">Opslaan</button>
-          <p class="sub" id="aanbod-voorbeeld"></p>
-          <p class="melding" id="aanbod-melding" role="alert"></p>
-        </form>
-        <hr>
-        <span class="label-klein">Trechter</span>
-        <div id="team-trechter"></div>
-        <hr>
-        <span class="label-klein">Nieuwe medewerker</span>
-        <form id="nieuwe-gebruiker" class="stapel">
-          <input class="veld" name="naam" placeholder="Naam" required>
-          <input class="veld" name="email" type="email" placeholder="E-mailadres" required>
-          <input class="veld" name="wachtwoord" type="password" placeholder="Wachtwoord (10+ tekens)" required minlength="10">
-          <select class="veld" name="rol"><option value="agent">Agent</option><option value="eigenaar">Eigenaar</option></select>
-          <button class="knop sterk" type="submit">Account aanmaken</button>
-          <p class="melding" id="t-melding" role="alert"></p>
-        </form>
-      </aside>
-    </div>
-  </section>
 
-  <!-- ---------- nieuws ---------- -->
-  <section class="weergave" id="weergave-nieuws" hidden>
-    <div class="werkvlak nieuws">
-      <div class="kaart-paneel">
-        <div class="paneelkop">
-          <div>
-            <h2>Nieuws voor het team</h2>
-            <p class="sub">Wat er verandert, wat er goed gaat en waar we op letten.</p>
+        <div class="popvak">
+          <button class="knop" id="f-open" aria-expanded="false">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5.5h14M6 10h8M8.5 14.5h3"/></svg>
+            Filters<span class="telpil" id="f-aantal" hidden></span>
+          </button>
+          <div class="popkaart" id="f-paneel" hidden>
+            <div class="popregel">
+              <label for="f-plaats">Plaats</label>
+              <select class="veld" id="f-plaats"><option value="">Alle plaatsen</option></select>
+            </div>
+            <div class="popregel">
+              <label for="f-fase">Fase</label>
+              <select class="veld" id="f-fase"><option value="">Alle fases</option></select>
+            </div>
+            <div class="popregel">
+              <label for="f-agent">Van wie</label>
+              <select class="veld" id="f-agent"><option value="">Iedereen</option></select>
+            </div>
+            <hr>
+            <label class="schakel" title="Alleen bedrijven met een telefoonnummer of e-mailadres">
+              <input type="checkbox" id="f-contact"><span>Heeft contactgegevens</span></label>
+            <label class="schakel" title="Alleen bedrijven die je zonder toestemming mag bellen">
+              <input type="checkbox" id="f-belbaar"><span>Mag ik bellen</span></label>
+            <label class="schakel" title="Alleen bedrijven met tekenen van leven">
+              <input type="checkbox" id="f-levend"><span>Bedrijf draait nog</span></label>
+            <label class="schakel" title="Sinds de vorige scan slechter geworden">
+              <input type="checkbox" id="f-achteruit"><span>Achteruitgegaan</span></label>
+            <hr>
+            <button class="knop breed" id="f-wis">Alle filters wissen</button>
           </div>
-          <button class="knop klein" id="nieuws-alles-gelezen">Alles gelezen</button>
         </div>
-        <div id="nieuws-lijst"></div>
-        <div class="leeg" id="nieuws-geen" hidden>Er is nog geen nieuws geplaatst.</div>
+
+        <div class="popvak">
+          <button class="knop" id="s-open" aria-expanded="false">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 4v12M6 16l-2.5-2.5M14 16V4M14 4l2.5 2.5"/></svg>
+            <span id="s-label">Beste leads eerst</span>
+          </button>
+          <div class="popkaart smal" id="s-paneel" hidden>
+            <select class="veld verborgen-veld" id="f-sort" aria-label="Sorteren">
+              <option value="prioriteit">Beste leads eerst</option>
+              <option value="score">Slechtste site eerst</option>
+              <option value="naam">Op naam</option>
+              <option value="verandering">Meeste achteruitgang</option>
+            </select>
+            <div id="s-keuzes"></div>
+          </div>
+        </div>
+
+        <span class="telling" id="telling"></span>
+        <a class="knop" id="f-export" href="/api/export.csv" title="Deze selectie als CSV">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9M10 12l-3-3M10 12l3-3M4 15.5h12"/></svg>
+          CSV
+        </a>
       </div>
-      <aside class="kaart-paneel detail" id="nieuws-plaatsen" hidden>
-        <span class="label-klein">Bericht plaatsen</span>
-        <form id="nieuws-formulier" class="stapel">
-          <input class="veld" name="titel" placeholder="Titel" required maxlength="120">
-          <textarea class="veld" name="tekst" rows="6" placeholder="Wat moet iedereen weten?" required maxlength="4000"></textarea>
-          <select class="veld" name="soort">
-            <option value="bericht">Bericht</option>
-            <option value="update">Verandering in het werk</option>
-            <option value="resultaat">Resultaat om te vieren</option>
-            <option value="let-op">Let op</option>
-          </select>
-          <label class="schakel"><input type="checkbox" name="vastgezet"> bovenaan vastzetten</label>
-          <button class="knop sterk" type="submit">Plaatsen</button>
-          <p class="melding" id="nieuws-melding" role="alert"></p>
-        </form>
-        <hr>
-        <p class="sub">Alleen de eigenaar plaatst berichten. Iedereen ziet ze meteen bij het
-          inloggen, met een teller voor wat nog ongelezen is.</p>
-      </aside>
-    </div>
-  </section>
+      <div class="chips" id="f-chips"></div>
+
+      <div class="drieluik">
+        <div class="kolom-kaart">
+          <div class="kaartvak">
+            <canvas id="kaart" aria-label="Kaart van Nederland met de gescande bedrijven"></canvas>
+            <div class="kaartbediening">
+              <button class="ikoonknop vlak" id="k-in" title="Inzoomen" aria-label="Inzoomen">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 5.5v9M5.5 10h9"/></svg>
+              </button>
+              <button class="ikoonknop vlak" id="k-uit" title="Uitzoomen" aria-label="Uitzoomen">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 10h9"/></svg>
+              </button>
+              <button class="ikoonknop vlak" id="k-herstel" title="Heel Nederland" aria-label="Heel Nederland">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 8V4.5h3.5M16 8V4.5h-3.5M4 12v3.5h3.5M16 12v3.5h-3.5"/></svg>
+              </button>
+            </div>
+            <p class="kaartnoot" id="kaartnoot"></p>
+          </div>
+          <div class="paneel bandvak" id="bandvak"></div>
+        </div>
+
+        <div class="paneel lijst">
+          <div class="tabelrol">
+            <table>
+              <thead><tr>
+                <th scope="col">Score</th><th scope="col">Bedrijf &amp; grootste probleem</th>
+                <th scope="col">Fase</th>
+              </tr></thead>
+              <tbody id="rijen"></tbody>
+            </table>
+          </div>
+          <div class="leeg" id="geen" hidden>
+            <span class="leegteken" aria-hidden="true">
+              <svg viewBox="0 0 20 20"><circle cx="9" cy="9" r="5.2"/><path d="M12.8 12.8L17 17"/></svg>
+            </span>
+            <b>Geen bedrijven met deze filters</b>
+            <span class="sub">Verruim je zoekopdracht of wis de filters.</span>
+          </div>
+          <button class="knop meer" id="meer" hidden>Meer tonen</button>
+        </div>
+
+        <aside class="paneel detail" id="detail" aria-live="polite"></aside>
+      </div>
+      <div class="tip" id="kaarttip" hidden></div>
+    </section>
+
+    <!-- ---------- mijn lijst ---------- -->
+    <section class="weergave" id="weergave-mijn" hidden>
+      <div class="tegels" id="mijn-tegels"></div>
+      <div class="trechterbalk" id="mijn-trechter"></div>
+      <div class="werkvlak">
+        <div class="paneel lijst">
+          <div class="tabelrol">
+            <table>
+              <thead><tr>
+                <th scope="col">Score</th><th scope="col">Bedrijf &amp; volgende actie</th>
+                <th scope="col">Fase</th>
+              </tr></thead>
+              <tbody id="mijn-rijen"></tbody>
+            </table>
+          </div>
+          <div class="leeg" id="mijn-geen" hidden>
+            <span class="leegteken" aria-hidden="true">
+              <svg viewBox="0 0 20 20"><path d="M10 10a3.2 3.2 0 100-6.4A3.2 3.2 0 0010 10z"/><path d="M3.8 17c.6-3.1 3.1-4.8 6.2-4.8s5.6 1.7 6.2 4.8"/></svg>
+            </span>
+            <b>Je hebt nog geen leads</b>
+            <span class="sub">Ga naar Kaart &amp; leads en pak er een op met "Deze neem ik".</span>
+          </div>
+        </div>
+        <aside class="paneel detail" id="mijn-detail" aria-live="polite"></aside>
+      </div>
+    </section>
+
+    <!-- ---------- team & omzet ---------- -->
+    <section class="weergave" id="weergave-team" hidden>
+      <div class="tegels" id="omzettegels"></div>
+      <div class="werkvlak team">
+        <div class="paneel">
+          <div class="tabelrol">
+            <table>
+              <thead><tr>
+                <th scope="col">Wie</th><th scope="col">Open</th><th scope="col">Gebeld (7d)</th>
+                <th scope="col">Afspraken</th><th scope="col">Opdrachten</th><th scope="col">Klanten</th>
+                <th scope="col">Per maand</th><th scope="col">Testimonials</th>
+              </tr></thead>
+              <tbody id="team-rijen"></tbody>
+            </table>
+          </div>
+        </div>
+        <aside class="paneel detail">
+          <span class="label-klein">Wat je aanbiedt</span>
+          <form id="aanbod-formulier" class="stapel">
+            <select class="veld" name="soort">
+              <option value="gratis">Gratis herbouw, betalen per maand</option>
+              <option value="startbedrag">Startbedrag voor de bouw, daarna per maand</option>
+            </select>
+            <div class="rij">
+              <label class="sub" style="width:100px" for="a-start">Startbedrag</label>
+              <input class="veld" id="a-start" name="startbedrag" type="number" min="0" step="5" style="flex:1">
+            </div>
+            <div class="rij">
+              <label class="sub" style="width:100px" for="a-maand">Per maand</label>
+              <input class="veld" id="a-maand" name="maandbedrag" type="number" min="0" step="0.5" style="flex:1">
+            </div>
+            <input class="veld" name="inbegrepen" placeholder="Wat zit erin?">
+            <div class="rij">
+              <input class="veld" name="bedrijfsnaam" placeholder="Jouw bedrijfsnaam" style="flex:1">
+              <input class="veld" name="telefoon" placeholder="Telefoon" style="width:130px">
+            </div>
+            <button class="knop sterk" type="submit">Opslaan</button>
+            <p class="sub" id="aanbod-voorbeeld"></p>
+            <p class="melding" id="aanbod-melding" role="alert"></p>
+          </form>
+          <hr>
+          <span class="label-klein">Trechter</span>
+          <div id="team-trechter"></div>
+          <hr>
+          <span class="label-klein">Nieuwe medewerker</span>
+          <form id="nieuwe-gebruiker" class="stapel">
+            <input class="veld" name="naam" placeholder="Naam" required>
+            <input class="veld" name="email" type="email" placeholder="E-mailadres" required>
+            <input class="veld" name="wachtwoord" type="password" placeholder="Wachtwoord (10+ tekens)" required minlength="10">
+            <select class="veld" name="rol"><option value="agent">Agent</option><option value="eigenaar">Eigenaar</option></select>
+            <button class="knop sterk" type="submit">Account aanmaken</button>
+            <p class="melding" id="t-melding" role="alert"></p>
+          </form>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ---------- nieuws ---------- -->
+    <section class="weergave" id="weergave-nieuws" hidden>
+      <div class="werkvlak nieuws">
+        <div class="paneel">
+          <div class="paneelbalk">
+            <span class="label-klein">Berichten</span>
+            <button class="knop klein" id="nieuws-alles-gelezen">Alles gelezen</button>
+          </div>
+          <div id="nieuws-lijst"></div>
+          <div class="leeg" id="nieuws-geen" hidden>
+            <span class="leegteken" aria-hidden="true">
+              <svg viewBox="0 0 20 20"><path d="M4 4.5h12v11H4z"/><path d="M6.5 8h7M6.5 11h7M6.5 14h4"/></svg>
+            </span>
+            <b>Er is nog geen nieuws geplaatst</b>
+            <span class="sub">Berichten van de eigenaar verschijnen hier.</span>
+          </div>
+        </div>
+        <aside class="paneel detail" id="nieuws-plaatsen" hidden>
+          <span class="label-klein">Bericht plaatsen</span>
+          <form id="nieuws-formulier" class="stapel">
+            <input class="veld" name="titel" placeholder="Titel" required maxlength="120">
+            <textarea class="veld" name="tekst" rows="6" placeholder="Wat moet iedereen weten?" required maxlength="4000"></textarea>
+            <select class="veld" name="soort">
+              <option value="bericht">Bericht</option>
+              <option value="update">Verandering in het werk</option>
+              <option value="resultaat">Resultaat om te vieren</option>
+              <option value="let-op">Let op</option>
+            </select>
+            <label class="schakel"><input type="checkbox" name="vastgezet"><span>Bovenaan vastzetten</span></label>
+            <button class="knop sterk" type="submit">Plaatsen</button>
+            <p class="melding" id="nieuws-melding" role="alert"></p>
+          </form>
+          <hr>
+          <p class="sub">Alleen de eigenaar plaatst berichten. Iedereen ziet ze meteen bij het
+            inloggen, met een teller voor wat nog ongelezen is.</p>
+        </aside>
+      </div>
+    </section>
+  </main>
 </div>
+
+<!-- ---------- meldingen, zoekvenster en sneltoetsen ---------- -->
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<dialog class="palet" id="palet" aria-label="Snel zoeken">
+  <div class="palet-zoek">
+    <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.2"/><path d="M12.8 12.8L17 17"/></svg>
+    <input id="palet-veld" type="text" placeholder="Zoek een bedrijf, plaats of scherm…" autocomplete="off">
+    <kbd>esc</kbd>
+  </div>
+  <div class="palet-lijst" id="palet-lijst"></div>
+</dialog>
+
+<dialog class="venster" id="sneltoetsen" aria-label="Sneltoetsen">
+  <div class="vensterkop"><h2>Sneltoetsen</h2>
+    <button class="ikoonknop" data-sluit aria-label="Sluiten">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 6l8 8M14 6l-8 8"/></svg>
+    </button>
+  </div>
+  <dl class="toetsen">
+    <dt><kbd>/</kbd> of <kbd>⌘</kbd><kbd>K</kbd></dt><dd>Snel zoeken</dd>
+    <dt><kbd>J</kbd> <kbd>K</kbd></dt><dd>Volgende of vorige lead</dd>
+    <dt><kbd>Enter</kbd></dt><dd>Lead openen</dd>
+    <dt><kbd>C</kbd></dt><dd>Deze lead oppakken</dd>
+    <dt><kbd>G</kbd> dan <kbd>K</kbd> <kbd>M</kbd> <kbd>T</kbd> <kbd>N</kbd></dt><dd>Naar kaart, mijn lijst, team of nieuws</dd>
+    <dt><kbd>F</kbd></dt><dd>Filters openen</dd>
+    <dt><kbd>Esc</kbd></dt><dd>Sluiten of selectie loslaten</dd>
+    <dt><kbd>?</kbd></dt><dd>Dit venster</dd>
+  </dl>
+</dialog>
 
 <script type="module" src="/app.js"></script>
 </body>

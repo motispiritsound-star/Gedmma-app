@@ -196,6 +196,26 @@ prioriteit gesorteerd; met **Slechtste site eerst** krijg je de oude volgorde
 terug. Bij elke lead staat waarom hij hoog of laag scoort, zodat je het zelf kunt
 wegen.
 
+## Het dashboard
+
+Links een vaste menubalk, rechts je werk: de kaart met de lijst ernaast en het
+bedrijf dat je aanklikt in het paneel daarnaast. Wat het snel maakt om er een dag
+mee te werken:
+
+- **Snel zoeken** met <kbd>/</kbd> of <kbd>⌘K</kbd> — typ een bedrijfsnaam en
+  spring er direct heen, of ga naar een ander scherm;
+- **Sneltoetsen**: <kbd>J</kbd>/<kbd>K</kbd> door de lijst, <kbd>Enter</kbd> om te
+  openen, <kbd>C</kbd> om een lead op te pakken, <kbd>G</kbd> gevolgd door
+  <kbd>K</kbd>/<kbd>M</kbd>/<kbd>T</kbd>/<kbd>N</kbd> om van scherm te wisselen,
+  <kbd>F</kbd> voor de filters, <kbd>Esc</kbd> om te sluiten. <kbd>?</kbd> toont
+  het hele lijstje;
+- **Filters in een uitklapmenu**, met wat aanstaat als wisbare labels eronder, dus
+  je ziet altijd waarom je maar 40 bedrijven ziet;
+- **Bevestigingen als melding** rechtsonder in plaats van tekst die je moet zoeken;
+- **Licht of donker**, met een knop linksonder die je keuze onthoudt en anders je
+  systeem volgt;
+- werkt op een telefoon: het menu schuift dan in vanaf de zijkant.
+
 ## De kaart
 
 Het dashboard opent op de kaart van Nederland met elk gescand bedrijf als een
@@ -594,7 +614,7 @@ src/
     pitch.ts          het uitgebreide rapport
   server/
     index.ts          API met inloggen en rechten
-    public/           dashboard: kaart (canvas), lijst en detailpaneel
+    public/           dashboard: stijl.css (het uiterlijk), kaart (canvas), lijst en detailpaneel
 tools/build-map.ts    maakt de omtrek van Nederland (eenmalig)
 data/webscan.db       SQLite: bedrijven, scans, team, opvolging en klanten
 ```
@@ -678,7 +698,8 @@ demo/
   sites.ts        vijftien uitgewerkte bedrijfssites plus de generator (http en https)
   build.ts        scant ze en schrijft demo/out/demo-data.json
   template.html   de losse demo-pagina
-  page.ts         zet de scanresultaten in de pagina
+  stijl-extra.css wat de demo bovenop het uiterlijk van het dashboard heeft
+  page.ts         zet de scanresultaten en het uiterlijk in de pagina
   proefrit.ts     zet in één commando een werkende omgeving neer
 tools/benchmark.ts  meet de opslag- en zoeklaag met tienduizenden bedrijven
 test/             fixtures en controles

@@ -150,12 +150,18 @@ function naarBrowserJs(pad: string): string {
   return uitvoer.outputText.replace(/^export /gm, '');
 }
 
+// De demo gebruikt letterlijk het uiterlijk van het dashboard, met daarbovenop
+// wat alleen deze losse pagina nodig heeft. Zo blijven ze niet half gelijk.
+const stijl = readFileSync('src/server/public/stijl.css', 'utf8')
+  + '\n' + readFileSync('demo/stijl-extra.css', 'utf8');
+
 const kaartJs = readFileSync('src/server/public/kaart.js', 'utf8').replace(/^export /gm, '');
 const sjabloonJs = naarBrowserJs('src/report/templates.ts');
 const omtrek = readFileSync('src/server/public/nederland.json', 'utf8');
 
 const template = readFileSync('demo/template.html', 'utf8');
 const html = template
+  .replace('/*__STIJL__*/', stijl)
   .replace('/*__KAART_JS__*/', kaartJs)
   .replace('/*__SJABLONEN_JS__*/', sjabloonJs)
   .replace('"__NL_OMTREK__"', omtrek)

@@ -1,0 +1,46 @@
+/* ==========================================================================
+   Wat de losse demopagina bovenop het dashboard heeft. De rest van het
+   uiterlijk komt uit src/server/public/stijl.css, zodat de demo en het echte
+   dashboard er niet uit elkaar kunnen groeien.
+   ========================================================================== */
+
+.wrap { max-width:1560px; margin:0 auto; padding:22px 20px 56px; }
+
+.kop { display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:18px; }
+.merk-groot { display:flex; align-items:center; gap:11px; }
+.merk-groot h1 { margin:0; font-size:21px; font-weight:600; }
+.merk-groot h1 b { color:var(--accent-ink); }
+.badge { font:600 10px/1 var(--sans); letter-spacing:.09em; text-transform:uppercase; color:var(--accent-ink);
+  background:var(--accent-wash); border:1px solid var(--accent-rand); padding:5px 9px; border-radius:999px; }
+.kop p { margin:7px 0 0; color:var(--muted); font-size:13.5px; max-width:70ch; }
+.tijd { font:400 11.5px/1.4 var(--mono); color:var(--muted); text-align:right; }
+
+.trechter { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+.stap { background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:8px 13px;
+  cursor:pointer; text-align:left; box-shadow:var(--schaduw-1); transition:border-color var(--vlot), background var(--vlot); }
+.stap:hover { border-color:var(--line-strong); }
+.stap[aria-pressed="true"] { border-color:var(--accent); background:var(--accent-wash); }
+.stap.mijlpaal { border-color:var(--accent-rand); }
+.stap.mijlpaal b { color:var(--accent-ink); }
+.stap b { display:block; font:600 16px/1.15 var(--mono); font-variant-numeric:tabular-nums; }
+.stap span { font-size:11.5px; color:var(--muted); }
+
+.filters { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:14px; }
+
+/* De demo heeft geen vaste kop, dus niets hoeft mee te scrollen. */
+.kolom-kaart, .detail { position:static; max-height:none; }
+.tabelrol { max-height:min(78vh,900px); overflow-y:auto; }
+
+.feiten { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px; background:var(--line);
+  border:1px solid var(--line); border-radius:var(--r-sm); overflow:hidden; }
+.feit { background:var(--panel); padding:10px 12px; }
+.feit b { display:block; font:500 14px/1.3 var(--mono); font-variant-numeric:tabular-nums; }
+.feit span { font-size:11.5px; color:var(--muted); }
+
+.demo-noot { margin-top:10px; padding:10px 12px; background:var(--surface); border:1px dashed var(--line-strong);
+  border-radius:var(--r-sm); font-size:12.5px; color:var(--muted); }
+.voet { margin-top:26px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted);
+  font-size:12.5px; max-width:82ch; }
+.voet b { color:var(--ink-2); font-weight:500; }
+
+@media (max-width:900px) { .wrap { padding:16px 14px 44px; } }
