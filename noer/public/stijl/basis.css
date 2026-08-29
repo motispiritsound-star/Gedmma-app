@@ -179,9 +179,11 @@ a { color: var(--groen); }
   border-radius: 999px; padding: .2em .7em .2em .5em; font-size: .85em; font-weight: 700;
 }
 .vlam:not(.aan) { background: var(--vlak-2); color: var(--inkt-3); border-color: transparent; }
-.oudersknop { flex: none; font-size: 1.1em; }
+.oudersknop { flex: none; }
 
 #inhoud { max-width: 46rem; margin: 0 auto; padding: 1rem .85rem 6.5rem; }
+/* Terwijl de feedbackstrook openstaat, mag die niets afdekken. */
+body.feedback-open #inhoud { padding-bottom: 11rem; }
 
 #navigatie {
   position: fixed; left: 50%; transform: translateX(-50%);
@@ -202,7 +204,8 @@ a { color: var(--groen); }
   transition: background .2s ease, color .2s ease;
 }
 .navknop.actief { color: #fff; background: linear-gradient(160deg, var(--groen-licht), var(--groen)); }
-.nav-emoji { font-size: 1.45em; line-height: 1.1; }
+.nav-icoon { display: block; }
+.navknop.actief .nav-icoon { transform: translateY(-1px); }
 
 /* --- Bouwstenen -------------------------------------------------------- */
 
@@ -289,7 +292,7 @@ label { display: block; font-size: .85em; color: var(--inkt-2); margin: .8rem 0 
   background: #fff;
   -webkit-mask-image: var(--girih); mask-image: var(--girih);
   -webkit-mask-size: 80px 80px; mask-size: 80px 80px;
-  opacity: .16;
+  opacity: .13;
 }
 .hero::after {
   content: ''; position: absolute; right: -18%; top: -55%;
@@ -403,3 +406,39 @@ label { display: block; font-size: .85em; color: var(--inkt-2); margin: .8rem 0 
 .verder h2, .ontdek h2 { margin-bottom: .6rem; }
 .niveau-groot { display: flex; align-items: center; gap: 1rem; margin-bottom: .9rem; }
 .niveau-groot h2 { margin-bottom: .1em; }
+
+
+/* --- Iconen ------------------------------------------------------------- */
+
+.icoon { display: block; flex: none; }
+
+/* Eén maat voor alle ronde icoonknoppen: 44px, groot genoeg om te raken. */
+.icoonknop {
+  width: 2.75rem; height: 2.75rem; flex: none;
+  display: grid; place-items: center;
+  border-radius: 50%; border: 1px solid var(--rand);
+  background: var(--vlak); color: var(--inkt-2);
+  cursor: pointer; text-decoration: none; padding: 0;
+  box-shadow: var(--schaduw-s);
+  transition: color .15s ease, border-color .15s ease, transform .12s ease;
+}
+.icoonknop:hover { color: var(--groen); border-color: var(--groen); }
+.icoonknop:active { transform: scale(.94); }
+
+.kruimel {
+  font-size: .74em; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--inkt-3); margin: 0 0 .1em;
+}
+
+/* --- Profiel aanmaken: levend voorbeeld -------------------------------- */
+
+.voorbeeldkind {
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  padding: 1.2rem 1rem; margin-bottom: .5rem;
+  background: linear-gradient(165deg, var(--groen-zacht), var(--vlak) 75%);
+  border-radius: var(--straal-groot);
+  border: 1px solid color-mix(in srgb, var(--groen) 18%, var(--rand));
+}
+.voorbeeldkind .avatarring .spoor,
+.voorbeeldkind .avatarring .voortgang { stroke: transparent; }
+.voorbeeldnaam { font-size: 1.1em; }

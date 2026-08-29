@@ -1,7 +1,7 @@
 // Aya-puzzel: de woorden van een aya staan door elkaar. Zet ze terug in de
 // goede volgorde — van rechts naar links.
 
-import { el, husselen, leeg } from '../ui.js';
+import { el, husselen, zet } from '../ui.js';
 import { speelAya } from '../geluid.js';
 import { ronde } from './basis.js';
 
@@ -12,7 +12,7 @@ const vraag = (soera, aya) => (api) => {
   const gebouwd = el('div', { class: 'gebouwd ar aya-bouw', dir: 'rtl', lang: 'ar' });
   const voorraad = el('div', { class: 'voorraad woorden' });
 
-  const teken = () => leeg(gebouwd).append(doel.slice(0, stap).join(' ') || '…');
+  const teken = () => zet(gebouwd, doel.slice(0, stap).join(' ') || '…');
 
   const knoppen = husselen(doel.map((w, i) => ({ w, i }))).map(({ w }) =>
     el('button', { class: 'ar tegel woordtegel', dir: 'rtl', lang: 'ar', tekst: w,

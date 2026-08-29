@@ -1,6 +1,7 @@
 // Het alfabet: alle 28 letters, en per letter een kaart met vormen en klank.
 
-import { el, leeg, husselen } from '../ui.js';
+import { el, zet, husselen } from '../ui.js';
+import { icoon } from '../iconen.js';
 import { LETTERS, LETTER_OP_ID, MAKHRAJ } from '../../data/letters.js';
 import { voortgang } from '../opslag.js';
 import { zegLetter, heeftArabischeStem } from '../geluid.js';
@@ -23,7 +24,7 @@ export function toon(bak) {
   const v = voortgang();
   const gekend = LETTERS.filter((l) => beheersing(l.id, v) >= 2).length;
 
-  leeg(bak).append(
+  zet(bak, 
     el('header', { class: 'schermkop' },
       el('h1', { tekst: 'Het alfabet' }),
       el('p', { tekst: `${gekend} van de 28 letters ken je goed. Tik op een letter om hem te leren.` })),
@@ -37,11 +38,11 @@ export function toon(bak) {
     el('section', { class: 'kaart' },
       el('h2', { tekst: 'Oefenen met alle letters' }),
       el('div', { class: 'knoprij' },
-        el('button', { class: 'knop', tekst: '🎯 Klankjacht',
+        el('button', { class: 'knop', tekst: 'Klankjacht',
           opclick: () => klankjacht.start(bak, { terug: () => toon(bak), opKlaar: (r) => r.nogmaals ? klankjacht.start(bak, { terug: () => toon(bak), opKlaar: () => toon(bak) }) : toon(bak) }) }),
-        el('button', { class: 'knop', tekst: '🧩 Vormenpuzzel',
+        el('button', { class: 'knop stil', tekst: 'Vormenpuzzel',
           opclick: () => vormenpuzzel.start(bak, { terug: () => toon(bak), opKlaar: () => toon(bak) }) }),
-        el('button', { class: 'knop', tekst: '🔗 Woorden bouwen',
+        el('button', { class: 'knop stil', tekst: 'Woorden bouwen',
           opclick: () => koppelen.start(bak, { terug: () => toon(bak), opKlaar: () => toon(bak) }) }))),
 
     el('section', { class: 'kaart' },
@@ -71,14 +72,14 @@ export function toonLetter(bak, id) {
       : hoe === 'stem' ? 'Voorgelezen door je apparaat.' : '';
   };
 
-  leeg(bak).append(
+  zet(bak, 
     el('header', { class: 'schermkop met-terug' },
-      el('a', { class: 'terug', href: '#/letters', 'aria-label': 'Terug naar het alfabet', tekst: '←' }),
+      el('a', { class: 'icoonknop', href: '#/letters', 'aria-label': 'Terug naar het alfabet' }, icoon('terug')),
       el('h1', {}, l.naam, el('span', { class: 'ar naam-ar', dir: 'rtl', lang: 'ar', tekst: l.naamAr }))),
 
     el('section', { class: 'letterheld', stijl: { '--kleur': m.kleur } },
       el('div', { class: 'ar letter-groot', dir: 'rtl', lang: 'ar', tekst: l.letter }),
-      el('button', { class: 'knop luisterknop', tekst: '🔊 Luister', opclick: spreek }),
+      el('button', { class: 'knop luisterknop', opclick: spreek }, icoon('geluid', { maat: 20 }), 'Luister'),
       melding,
       el('p', { class: 'klank', tekst: l.klank }),
       el('p', { class: 'tip', tekst: `💡 ${l.tip}` })),

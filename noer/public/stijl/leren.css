@@ -57,7 +57,7 @@
   text-shadow: 0 6px 20px rgba(0, 0, 0, .22);
 }
 .letterheld .knop { background: rgba(255, 255, 255, .95); color: var(--inkt); box-shadow: var(--schaduw); }
-.luisterknop { margin: .9rem 0 .3rem; }
+.luisterknop { margin: .9rem 0 .3rem; display: inline-flex; align-items: center; gap: .5rem; }
 .klank { font-size: 1.05em; color: rgba(255, 255, 255, .95); }
 .tip { color: rgba(255, 255, 255, .8); font-size: .9em; max-width: 26rem; margin: .3em auto 0; }
 .letterheld .stilmelding { color: rgba(255, 255, 255, .75); }
@@ -226,18 +226,128 @@
 
 /* --- Spellen ----------------------------------------------------------- */
 
-.spel-kop { display: flex; align-items: center; gap: .7rem; margin: .3rem 0 .7rem; }
-.spel-titel { flex: 1; min-width: 0; }
-.spel-titel h2 { margin: 0; }
-.spel-titel p { margin: 0; font-size: .8em; color: var(--inkt-2); }
-.spel-teller { display: flex; flex-direction: column; align-items: flex-end; font-size: .78em; font-weight: 700; }
-.teller-goed { color: var(--groen); }
-.teller-fout { color: var(--terra); }
-.teller-van { color: var(--inkt-3); font-weight: 400; }
-.spel-balk { margin-bottom: 1.4rem; }
+/* De kop tijdens een oefening: sluiten, hoe ver ben je, hoeveel goed.
+   Verder niets — de vraag zelf moet de aandacht hebben. */
+.oefenkop { display: flex; align-items: center; gap: .7rem; margin: .3rem 0 .5rem; }
+.oefenbalk { flex: 1; }
+.oefenbalk .balk { height: 14px; }
+.oefenteller {
+  display: inline-flex; align-items: center; gap: .25rem; flex: none;
+  color: var(--groen); font-weight: 800; font-size: .95em;
+}
+.oefenhint { text-align: center; font-size: .82em; color: var(--inkt-3); margin: 0 0 1.4rem; }
 
-.podium { opacity: 0; transform: translateY(8px) scale(.99); transition: opacity .2s ease, transform .2s ease; }
+.podium {
+  opacity: 0; transform: translateY(8px) scale(.99);
+  transition: opacity .2s ease, transform .2s ease;
+  display: flex; flex-direction: column; min-height: 62vh;
+}
 .podium.in { opacity: 1; transform: none; }
+/* De antwoorden zakken naar beneden: daar zit de duim. De vraag zelf komt
+   daarboven in het midden te hangen, niet tegen de kop aan geplakt. */
+.podium .vraag { flex: 1; display: flex; flex-direction: column; }
+.podium .vraag > .opdracht { margin-top: auto; }
+.podium .vraag > .keuzes, .podium .vraag > .voorraad { margin-top: auto; }
+.podium .vraag > .luister { margin-inline: auto; }
+
+/* De feedbackstrook: schuift omhoog, blijft staan tot het kind doorgaat. */
+.feedback {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+  padding: 1rem .9rem calc(1rem + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--rand);
+  background: var(--vlak);
+  box-shadow: 0 -12px 32px -12px rgba(60, 45, 20, .28);
+  animation: omhoog .22s cubic-bezier(.2, .9, .3, 1);
+}
+.feedback.goed {
+  background: linear-gradient(180deg, var(--groen-zacht), var(--vlak));
+  border-top-color: color-mix(in srgb, var(--groen) 40%, transparent);
+}
+.feedback.fout {
+  background: linear-gradient(180deg, var(--terra-zacht), var(--vlak));
+  border-top-color: color-mix(in srgb, var(--terra) 40%, transparent);
+}
+.feedback-binnen {
+  max-width: 46rem; margin: 0 auto;
+  display: flex; align-items: center; gap: .8rem;
+}
+.feedback-icoon {
+  width: 2.4rem; height: 2.4rem; flex: none; border-radius: 50%;
+  display: grid; place-items: center; color: #fff;
+}
+.feedback.goed .feedback-icoon { background: var(--groen); }
+.feedback.fout .feedback-icoon { background: var(--terra); }
+.feedback-tekst { flex: 1; min-width: 0; line-height: 1.35; }
+.feedback-tekst b { font-size: 1.05em; }
+.feedback.goed .feedback-tekst b { color: var(--groen); }
+.feedback.fout .feedback-tekst b { color: var(--terra); }
+.feedback-tekst p { margin: 0; font-size: .88em; color: var(--inkt-2); }
+.juist-ar { font-size: 1.6em; line-height: 1; vertical-align: -.15em; color: var(--inkt); }
+.doorgaan { flex: none; }
+.feedback.fout .doorgaan { background: linear-gradient(160deg, #d9705a, var(--terra)); box-shadow: 0 2px 0 #9c4530; }
+
+@keyframes omhoog { from { transform: translateY(100%); } to { transform: none; } }
+
+/* --- Leerpad ----------------------------------------------------------- */
+
+.leerpad { position: relative; width: min(320px, 100%); margin: 1.2rem auto 0; }
+.padlijnen { position: absolute; inset: 0; width: 100%; height: 100%; }
+.padlijn { fill: none; stroke: var(--rand); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 2 14; }
+.padlijn.gedaan { stroke: color-mix(in srgb, var(--groen) 55%, var(--rand)); stroke-dasharray: none; stroke-width: 5; }
+
+.padstap {
+  position: absolute; transform: translate(-50%, -34px);
+  display: flex; flex-direction: column; align-items: center; gap: .3rem;
+  width: 9.4rem; text-align: center; text-decoration: none; color: inherit;
+}
+.padbol {
+  width: 68px; height: 68px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 1.5rem; font-weight: 800;
+  background: var(--vlak); color: var(--inkt-2);
+  border: 2px solid var(--rand);
+  box-shadow: 0 5px 0 var(--rand), var(--schaduw-s);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.padstap:active .padbol { transform: translateY(4px); box-shadow: 0 1px 0 var(--rand); }
+.padstap.af .padbol {
+  background: linear-gradient(160deg, var(--groen-licht), var(--groen));
+  border-color: var(--groen-diep); color: #fff;
+  box-shadow: 0 5px 0 var(--groen-diep), var(--schaduw);
+}
+.padstap.open:not(.af) .padbol {
+  background: linear-gradient(160deg, var(--vlak), var(--vlak-2));
+  border-color: var(--rand-sterk); color: var(--inkt);
+}
+.padstap.huidig .padbol {
+  background: linear-gradient(160deg, var(--goud-licht), var(--goud));
+  border-color: color-mix(in srgb, var(--goud) 70%, #000); color: #fff;
+  box-shadow: 0 5px 0 color-mix(in srgb, var(--goud) 70%, #000), 0 0 0 0 color-mix(in srgb, var(--goud) 55%, transparent);
+  animation: klop 2.4s ease-in-out infinite;
+}
+.padstap.slot { cursor: default; }
+.padstap.slot .padbol { opacity: .5; box-shadow: none; }
+.padstap.slot .padnaam { opacity: .5; }
+.padnaam {
+  font-size: .78rem; font-weight: 600; line-height: 1.25; color: var(--inkt-2);
+  background: var(--papier); border-radius: 8px; padding: .12em .45em;
+}
+.padstap .sterren { font-size: .8em; background: var(--papier); border-radius: 8px; padding: 0 .3em; }
+.padwijzer {
+  position: absolute; top: -2.1rem;
+  background: var(--inkt); color: var(--papier);
+  font-size: .68em; font-weight: 800; letter-spacing: .07em; text-transform: uppercase;
+  padding: .3em .8em; border-radius: 999px; white-space: nowrap;
+  box-shadow: var(--schaduw);
+}
+.padwijzer::after {
+  content: ''; position: absolute; left: 50%; bottom: -4px; transform: translateX(-50%) rotate(45deg);
+  width: 8px; height: 8px; background: var(--inkt); border-radius: 1px;
+}
+
+@keyframes klop {
+  0%, 100% { box-shadow: 0 5px 0 color-mix(in srgb, var(--goud) 70%, #000), 0 0 0 0 color-mix(in srgb, var(--goud) 50%, transparent); }
+  50% { box-shadow: 0 5px 0 color-mix(in srgb, var(--goud) 70%, #000), 0 0 0 12px transparent; }
+}
 
 .vraag { text-align: center; }
 .opdracht { font-weight: 700; margin-bottom: 1rem; color: var(--inkt-2); }
@@ -250,16 +360,17 @@
 .naam-groot { font-size: 2.1rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: .5rem; }
 
 .luister {
-  width: 2.7em; height: 2.7em; border-radius: 50%; font-size: 1em;
-  border: 1px solid var(--rand); background: var(--vlak); cursor: pointer;
-  display: inline-grid; place-items: center; color: inherit; box-shadow: var(--schaduw-s);
-  transition: transform .12s ease;
+  width: 2.75rem; height: 2.75rem; flex: none; border-radius: 50%;
+  border: 1px solid var(--rand); background: var(--vlak); cursor: pointer; padding: 0;
+  display: inline-grid; place-items: center; color: var(--inkt-2); box-shadow: var(--schaduw-s);
+  transition: transform .12s ease, color .15s ease, border-color .15s ease;
 }
+.luister:hover { color: var(--groen); border-color: var(--groen); }
 .luister:hover { transform: scale(1.08); }
 .luister.bezig { background: var(--groen-zacht); border-color: var(--groen); }
 .luister.stil { opacity: .4; }
 
-.keuzes { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: .6rem; margin-top: 1.3rem; }
+.keuzes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; margin-top: 1.3rem; }
 .keuze {
   font: inherit; padding: .95em .6em; border-radius: var(--straal-groot); cursor: pointer;
   background: var(--vlak); border: 2px solid var(--rand); color: inherit;
@@ -337,7 +448,17 @@
 .eind { text-align: center; padding: 2.5rem 1rem; }
 .eind-emoji { font-size: 4.5rem; line-height: 1; animation: pop .5s ease; }
 .eind .sterren { font-size: 2.6rem; display: block; margin: .4rem 0; }
-.eind-score { color: var(--inkt-2); }
+.eind-cijfers { display: flex; justify-content: center; gap: .5rem; margin: 1.2rem 0; }
+.eind-cijfer {
+  min-width: 5rem; padding: .7rem .6rem; border-radius: var(--straal);
+  background: var(--vlak); border: 1px solid var(--rand);
+  display: flex; flex-direction: column; align-items: center; box-shadow: var(--schaduw-s);
+}
+.eind-cijfer b { font-size: 1.4em; font-weight: 800; }
+.eind-cijfer.goed b { color: var(--groen); }
+.eind-cijfer.fout b { color: var(--terra); }
+.eind-cijfer.punten b { color: var(--goud); }
+.eind .knop.groot { width: auto; min-width: 10rem; }
 .eind-badges { margin: 1.2rem 0; }
 .badgerij { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
 .eind .knoprij { justify-content: center; }
@@ -469,3 +590,5 @@
 .nieuwprofiel { margin-top: .3rem; }
 .nieuwprofiel .knop { margin-top: 1.2rem; }
 .voorbeeldkaart .voorbeeld { padding: .2rem 0; }
+
+.tegelbol.emoji-bol { font-size: 1.6rem; }

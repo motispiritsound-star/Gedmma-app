@@ -16,8 +16,17 @@ npm start
 ```
 
 Open **http://localhost:5173**, vul een naam en een leeftijd in en je bent
-binnen. Er is geen installatie nodig: geen build, geen afhankelijkheden, geen
-account. `npm test` draait de controles op de leerinhoud.
+binnen. Er is geen installatie nodig: de app zelf heeft geen afhankelijkheden
+en geen buildstap, en er is geen account.
+
+```bash
+npm test          # controles op de leerinhoud — draait zonder installatie
+npm run test:browser   # loopt de hele app door in een echte browser
+```
+
+De browsertest heeft Playwright nodig (`npm install`, en `npm start` in een
+ander venster). Hij maakt een profiel aan, opent elk scherm, speelt elk spel,
+en let op fouten in de console en op lege of kapotte schermen.
 
 Op een tablet of telefoon kun je de app via het browsermenu op je beginscherm
 zetten. Hij werkt daarna ook zonder internet.
@@ -45,8 +54,10 @@ behandeld, want daar gaat het bij kinderen het vaakst mis.
 | 9 | Sjadda | één letter, twee keer |
 | 10 | Alles door elkaar | lezen zoals in de Koran |
 
-Elke les heeft een oefenblad zoals in het boekje én een spel. Een les gaat pas
-open als de vorige twee sterren heeft.
+De tien lessen staan op een leerpad: een slingerend pad met een bol per les,
+waarop je in één blik ziet waar je bent, wat af is en wat nog op slot zit. Elke
+les heeft een oefenblad zoals in het boekje én een spel. Een les gaat pas open
+als de vorige twee sterren heeft.
 
 **De Koran.** Al-Faatiha en elf korte soera's uit Djoez ʿAmma. Per soera drie
 manieren om ermee bezig te zijn: lezen, de betekenis woord voor woord, en uit
@@ -58,7 +69,13 @@ eten, moskee, school, natuur — met een geheugenspel en een betekenisquiz.
 
 **Belonen.** Punten, tien niveaus, dertien badges, sterren per les en een
 dagreeks. Het dagdoel is tien goede antwoorden: klein genoeg om elke dag te
-halen.
+halen. De ring om de avatar laat zien hoe ver het volgende niveau nog is.
+
+**Feedback die blijft staan.** Na een antwoord schuift er onderin een strook
+omhoog die zegt wat er goed of fout ging, en bij een fout staat het juiste
+antwoord erbij. Het kind gaat pas verder als het zelf op "Doorgaan" tikt. Dat
+is trager dan automatisch doorspoelen, en het is precies het moment waarop
+iemand iets leert.
 
 **Meegroeien met de leeftijd.** Bij 5 t/m 7 jaar zijn de letters en knoppen
 groter en zie je alleen de kortste soera's en de eenvoudigste thema's. Bij 8
@@ -135,10 +152,19 @@ noer/
       geluid.js          opname → apparaatstem → stilte, plus effectgeluidjes
       punten.js          punten, niveaus, badges, zwakke punten
       ui.js              kleine DOM-hulpjes
+      iconen.js          de icoonset: één raster, één lijndikte
       schermen/          één bestand per scherm
       spellen/           basis.js draagt de zes spellen
     stijl/               basis.css (schil) en leren.css (leren en spelen)
 ```
+
+Over de vormgeving: het palet, de maten en de schaduwen staan als CSS-variabelen
+boven in `basis.css`, één keer voor licht en één keer voor donker. Het
+achtpuntige stermotief is één SVG die als masker wordt gebruikt, zodat hij zijn
+kleur uit die variabelen haalt en in beide modi klopt. Iconen zijn met de hand
+getekend op één raster van 24 met dezelfde lijndikte; ze erven hun kleur van de
+tekst eromheen. Emoji blijft waar het inhoud is — dieren, kleuren, badges — en
+niet in knoppen en menu's.
 
 De leerinhoud staat los van de code. Wil je een soera toevoegen, een thema
 uitbreiden of de lessen anders opbouwen, dan hoef je alleen in `data/` te zijn —

@@ -6,7 +6,8 @@
 //  - Een vertaling is uitleg van de betekenis, niet de Koran zelf. Dat staat
 //    er ook bij, zodat een kind het verschil leert.
 
-import { el, leeg, balk, sterren, confetti, toast, husselen } from '../ui.js';
+import { el, zet, balk, sterren, confetti, toast, husselen } from '../ui.js';
+import { icoon, icoonKnop } from '../iconen.js';
 import { SOERAS, SOERA_OP_ID, woordenVan, soerasVoorLeeftijd } from '../../data/koran.js';
 import { actiefProfiel, voortgang, bewaarAya, bewaarSoera } from '../opslag.js';
 import { speelAya } from '../geluid.js';
@@ -19,7 +20,7 @@ export function toon(bak) {
   const v = voortgang();
   const beschikbaar = soerasVoorLeeftijd(p.leeftijd);
 
-  leeg(bak).append(
+  zet(bak, 
     el('header', { class: 'schermkop' },
       el('h1', { tekst: 'Koran' }),
       el('p', { tekst: 'Korte soera\'s om te lezen en uit je hoofd te leren.' })),
@@ -50,9 +51,9 @@ export function toonSoera(bak, id) {
     const v = voortgang();
     const stand = v.soeras[id] || { ayaGeleerd: [], af: false, sterren: 0 };
 
-    leeg(bak).append(
+    zet(bak, 
       el('header', { class: 'schermkop met-terug' },
-        el('a', { class: 'terug', href: '#/koran', 'aria-label': 'Terug', tekst: '←' }),
+        el('a', { class: 'icoonknop', href: '#/koran', 'aria-label': 'Terug naar de soera\'s' }, icoon('terug')),
         el('h1', {}, s.naam, el('span', { class: 'ar naam-ar', dir: 'rtl', lang: 'ar', tekst: s.naamAr }))),
 
       el('section', { class: 'kaart soera-over' },
@@ -61,7 +62,7 @@ export function toonSoera(bak, id) {
         balk(stand.ayaGeleerd.length / s.aantalAyaat, 'Aya\'s geleerd')),
 
       el('div', { class: 'tabs', role: 'tablist' }, ...[
-        ['lezen', '📖 Lezen'], ['betekenis', '💬 Betekenis'], ['uithoofd', '🧠 Uit je hoofd'],
+        ['lezen', 'Lezen'], ['betekenis', 'Betekenis'], ['uithoofd', 'Uit je hoofd'],
       ].map(([sleutel, label]) =>
         el('button', { class: `tab ${modus === sleutel ? 'aan' : ''}`.trim(), role: 'tab',
           'aria-selected': modus === sleutel ? 'true' : 'false', tekst: label,
@@ -73,7 +74,7 @@ export function toonSoera(bak, id) {
       el('section', { class: 'kaart' },
         el('h2', { tekst: 'Oefenen' }),
         el('div', { class: 'knoprij' },
-          el('button', { class: 'knop', tekst: '🧩 Woordpuzzel',
+          el('button', { class: 'knop', tekst: 'Woordpuzzel',
             opclick: () => ayapuzzel.start(bak, {
               soera: s,
               terug: teken,
@@ -107,7 +108,7 @@ function ayaBlok(s, a, modus) {
   return el('article', { class: 'ayakaart' },
     el('div', { class: 'ayakop' },
       el('span', { class: 'ayanr', tekst: String(a.n) }),
-      el('button', { class: 'luister', 'aria-label': `Luister naar aya ${a.n}`, tekst: '🔊', opclick: speel }),
+      icoonKnop('geluid', { label: `Luister naar aya ${a.n}`, klasse: 'luister', opklik: speel }),
       melding),
 
     woorden
@@ -138,7 +139,7 @@ function uitHoofdBlok(s, stand, herteken) {
 
   const teken = () => {
     const r = RONDES[ronde];
-    leeg(bak).append(
+    zet(bak, 
       el('div', { class: 'kaart uitleg' },
         el('h2', { tekst: `Ronde ${ronde + 1} van 3: ${r.naam}` }),
         el('p', { tekst: r.uitleg })),
@@ -152,8 +153,8 @@ function uitHoofdBlok(s, stand, herteken) {
         return el('article', { class: `ayakaart ${geleerd ? 'geleerd' : ''}`.trim() },
           el('div', { class: 'ayakop' },
             el('span', { class: 'ayanr', tekst: String(a.n) }),
-            el('button', { class: 'luister', 'aria-label': `Luister naar aya ${a.n}`, tekst: '🔊',
-              opclick: () => speelAya(s.nr, a.n) })),
+            icoonKnop('geluid', { label: `Luister naar aya ${a.n}`, klasse: 'luister',
+              opklik: () => speelAya(s.nr, a.n) })),
           el('p', { class: 'ar aya', dir: 'rtl', lang: 'ar' }, ...woorden.map((w, i) =>
             verstop.has(i)
               ? el('button', { class: 'verstopt', 'aria-label': 'Woord laten zien',

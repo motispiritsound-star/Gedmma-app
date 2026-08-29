@@ -1,6 +1,6 @@
 // Wie ben jij? Profielen kiezen en aanmaken. Meerdere kinderen op één tablet.
 
-import { el, leeg, bevestig, avatarRing } from '../ui.js';
+import { el, zet, bevestig, avatarRing } from '../ui.js';
 import { alleProfielen, maakProfiel, kiesProfiel, verwijderProfiel } from '../opslag.js';
 import { voortgang } from '../opslag.js';
 import { niveauVan } from '../punten.js';
@@ -11,7 +11,7 @@ const KLEUREN = ['#f6c453', '#5fb99a', '#7c9cf5', '#e0776a', '#c58bd8', '#66c4c9
 
 export function toon(bak) {
   const profielen = alleProfielen();
-  leeg(bak).append(
+  zet(bak, 
     el('div', { class: 'welkom' },
       el('div', { class: 'logo' }, el('span', { class: 'ar', dir: 'rtl', lang: 'ar', tekst: 'نُور' })),
       el('h1', { tekst: 'Noer' }),
@@ -46,27 +46,53 @@ function nieuwFormulier(inklapbaar) {
   let avatar = AVATARS[0];
   let kleur = KLEUREN[0];
 
+  // Levend voorbeeld: het kind ziet meteen wat het kiest.
+  const voorbeeldAvatar = el('span', { class: 'avatar', stijl: { background: kleur }, tekst: avatar });
+  const voorbeeldNaam = el('b', { class: 'voorbeeldnaam', tekst: 'Jouw naam' });
+  const voorbeeld = el('div', { class: 'voorbeeldkind' },
+    el('span', { class: 'avatarring groot' }, voorbeeldAvatar), voorbeeldNaam);
+
+  const beginKnop = el('button', { class: 'knop groot', type: 'submit', tekst: 'Beginnen', disabled: true });
+
   const naamVeld = el('input', { type: 'text', id: 'naam', maxlength: '20',
-    placeholder: 'Bijvoorbeeld: Yasmina', autocomplete: 'off' });
+    placeholder: 'Bijvoorbeeld: Yasmina', autocomplete: 'off',
+    opinput: (e) => {
+      const naam = e.target.value.trim();
+      voorbeeldNaam.textContent = naam || 'Jouw naam';
+      beginKnop.disabled = naam.length === 0;
+    } });
+
   const leeftijdVeld = el('select', { id: 'leeftijd' },
     ...Array.from({ length: 9 }, (_, i) => el('option', { value: String(i + 5), tekst: `${i + 5} jaar` })));
   leeftijdVeld.value = '8';
 
   const avatarRij = el('div', { class: 'kiezers' }, ...AVATARS.map((a, i) =>
-    el('button', { class: `kiezer ${i === 0 ? 'aan' : ''}`.trim(), tekst: a, 'aria-label': `Avatar ${a}`,
+    el('button', { class: `kiezer ${i === 0 ? 'aan' : ''}`.trim(), type: 'button', tekst: a,
+      'aria-label': `Kies ${a}`, 'aria-pressed': i === 0 ? 'true' : 'false',
       opclick: (e) => {
         avatar = a;
-        avatarRij.querySelectorAll('.kiezer').forEach((k) => k.classList.remove('aan'));
+        voorbeeldAvatar.textContent = a;
+        for (const k of avatarRij.querySelectorAll('.kiezer')) {
+          k.classList.remove('aan');
+          k.setAttribute('aria-pressed', 'false');
+        }
         e.currentTarget.classList.add('aan');
+        e.currentTarget.setAttribute('aria-pressed', 'true');
       } })));
 
   const kleurRij = el('div', { class: 'kiezers' }, ...KLEUREN.map((k, i) =>
-    el('button', { class: `kiezer kleur ${i === 0 ? 'aan' : ''}`.trim(), stijl: { background: k },
-      'aria-label': `Kleur ${i + 1}`,
+    el('button', { class: `kiezer kleur ${i === 0 ? 'aan' : ''}`.trim(), type: 'button',
+      stijl: { background: k }, 'aria-label': `Kleur ${i + 1}`,
+      'aria-pressed': i === 0 ? 'true' : 'false',
       opclick: (e) => {
         kleur = k;
-        kleurRij.querySelectorAll('.kiezer').forEach((x) => x.classList.remove('aan'));
+        voorbeeldAvatar.style.background = k;
+        for (const x of kleurRij.querySelectorAll('.kiezer')) {
+          x.classList.remove('aan');
+          x.setAttribute('aria-pressed', 'false');
+        }
         e.currentTarget.classList.add('aan');
+        e.currentTarget.setAttribute('aria-pressed', 'true');
       } })));
 
   const formulier = el('form', { class: 'nieuwprofiel', opsubmit: (e) => {
@@ -76,11 +102,12 @@ function nieuwFormulier(inklapbaar) {
     maakProfiel({ naam, leeftijd: Number(leeftijdVeld.value), avatar, kleur });
     ga('/thuis');
   } },
+    voorbeeld,
     el('label', { for: 'naam', tekst: 'Naam' }), naamVeld,
     el('label', { for: 'leeftijd', tekst: 'Leeftijd' }), leeftijdVeld,
     el('label', { tekst: 'Kies een dier' }), avatarRij,
     el('label', { tekst: 'Kies een kleur' }), kleurRij,
-    el('button', { class: 'knop groot', type: 'submit', tekst: 'Beginnen' }));
+    beginKnop);
 
   if (!inklapbaar) {
     return el('section', { class: 'kaart' }, el('h2', { tekst: 'Maak een profiel' }), formulier);

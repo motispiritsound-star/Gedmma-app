@@ -2,7 +2,8 @@
 // De pincode houdt kleine handjes tegen, meer niet — hij staat gewoon op het
 // apparaat. Het is een drempel, geen beveiliging; dat staat er ook bij.
 
-import { el, leeg, bevestig, tijdKort, toast, avatarRing } from '../ui.js';
+import { el, zet, bevestig, tijdKort, toast, avatarRing } from '../ui.js';
+import { icoon } from '../iconen.js';
 import { LETTER_OP_ID } from '../../data/letters.js';
 import { LESSEN } from '../../data/qaida.js';
 import { AUDIO } from '../../data/bronnen.js';
@@ -26,7 +27,7 @@ function pinScherm(bak, pin) {
     id: 'pin', placeholder: '••••', autocomplete: 'off' });
   const fout = el('p', { class: 'fout-melding' });
 
-  leeg(bak).append(el('section', { class: 'kaart smal' },
+  zet(bak, el('section', { class: 'kaart smal' },
     el('h1', { tekst: 'Voor ouders' }),
     el('p', { tekst: 'Vul de pincode in.' }),
     el('form', { opsubmit: (e) => {
@@ -43,9 +44,9 @@ function dashboard(bak) {
   const profielen = alleProfielen();
   const actief = actiefProfiel();
 
-  leeg(bak).append(
+  zet(bak, 
     el('header', { class: 'schermkop met-terug' },
-      el('a', { class: 'terug', href: '#/thuis', 'aria-label': 'Terug', tekst: '←' }),
+      el('a', { class: 'icoonknop', href: '#/thuis', 'aria-label': 'Terug naar het startscherm' }, icoon('terug')),
       el('h1', { tekst: 'Voor ouders' })),
 
     ...profielen.map((p) => kindKaart(p, p.id === actief?.id)),

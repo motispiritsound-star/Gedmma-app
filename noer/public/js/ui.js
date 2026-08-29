@@ -55,6 +55,20 @@ export function avatarRing(profiel, deel = 0, { groot = false, niveauNr = null }
 
 export const leeg = (node) => { while (node.firstChild) node.firstChild.remove(); return node; };
 
+/**
+ * Leegt een element en zet er nieuwe kinderen in. Anders dan het kale
+ * node.append() slaat dit null en false over — dat scheelt een letterlijke
+ * "null" in beeld bij een regel als `voorwaarde ? el(...) : null`.
+ */
+export function zet(node, ...kinderen) {
+  leeg(node);
+  for (const kind of kinderen.flat()) {
+    if (kind === null || kind === undefined || kind === false) continue;
+    node.append(kind instanceof Node ? kind : document.createTextNode(String(kind)));
+  }
+  return node;
+}
+
 export const husselen = (lijst) => {
   const kopie = [...lijst];
   for (let i = kopie.length - 1; i > 0; i--) {
@@ -63,6 +77,9 @@ export const husselen = (lijst) => {
   }
   return kopie;
 };
+
+/** "1 dag" / "3 dagen" — scheelt losse telfouten door de hele app heen. */
+export const meervoud = (aantal, enkel, meer) => `${aantal} ${aantal === 1 ? enkel : meer}`;
 
 export const kies = (lijst) => lijst[Math.floor(Math.random() * lijst.length)];
 

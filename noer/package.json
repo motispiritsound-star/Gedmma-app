@@ -9,6 +9,10 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "node --test test/run.js"
+    "test": "node --test test/run.js",
+    "test:browser": "node test/browser.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0"
   }
 }

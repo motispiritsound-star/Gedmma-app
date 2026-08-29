@@ -1,7 +1,7 @@
 // Koppelen: bouw een woord door de letters in de goede volgorde te tikken.
 // Arabisch leest van rechts naar links, dus de eerste letter staat rechts.
 
-import { el, husselen, leeg } from '../ui.js';
+import { el, husselen, zet } from '../ui.js';
 import { zegWoord } from '../geluid.js';
 import { LETTERS } from '../../data/letters.js';
 import { ronde } from './basis.js';
@@ -18,7 +18,7 @@ const vraag = (opgave) => (api) => {
   const hint = el('p', { class: 'onderschrift', tekst: `${opgave.tr} — ${opgave.nl}` });
 
   const tekenGebouwd = () =>
-    leeg(gebouwd).append(
+    zet(gebouwd, 
       doel.slice(0, stap).join('') || '…',
     );
 

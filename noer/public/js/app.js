@@ -1,6 +1,7 @@
 // Router en schil. De app is één pagina; het adres achter # bepaalt het scherm.
 
-import { el, leeg, avatarRing } from './ui.js';
+import { el, leeg, zet, avatarRing, meervoud } from './ui.js';
+import { icoon } from './iconen.js';
 import {
   actiefProfiel, alleProfielen, opAndering, telTijd, tikDagreeks, voortgang,
 } from './opslag.js';
@@ -37,11 +38,11 @@ const ROUTES = [
 ];
 
 const NAV = [
-  { pad: '/thuis', naam: 'Thuis', emoji: '🏠' },
-  { pad: '/letters', naam: 'Letters', emoji: '🔤' },
-  { pad: '/qaida', naam: 'Lezen', emoji: '📗' },
-  { pad: '/koran', naam: 'Koran', emoji: '📖' },
-  { pad: '/woorden', naam: 'Woorden', emoji: '💬' },
+  { pad: '/thuis', naam: 'Thuis', teken: 'thuis' },
+  { pad: '/letters', naam: 'Letters', teken: 'ster8' },
+  { pad: '/qaida', naam: 'Lezen', teken: 'boek' },
+  { pad: '/koran', naam: 'Koran', teken: 'koran' },
+  { pad: '/woorden', naam: 'Woorden', teken: 'praatwolk' },
 ];
 
 function tekenKopbalk() {
@@ -63,16 +64,16 @@ function tekenKopbalk() {
       avatarRing(p, n.deel, { niveauNr: n.nr }),
       el('span', { class: 'profieltekst' },
         el('span', { class: 'profielnaam', tekst: p.naam }),
-        el('span', { class: 'niveaunaam', tekst: `${n.emoji} ${n.naam}` }))),
+        el('span', { class: 'niveaunaam', tekst: n.naam }))),
 
     el('a', {
       class: `vlam ${s.huidigeReeks > 0 ? 'aan' : ''}`.trim(),
       href: '#/voortgang',
-      'aria-label': `${s.huidigeReeks} dagen op rij geoefend. Bekijk je sterren.`,
-    }, '🔥', el('b', { tekst: String(s.huidigeReeks) })),
+      'aria-label': `${meervoud(s.huidigeReeks, 'dag', 'dagen')} op rij geoefend. Bekijk je sterren.`,
+    }, icoon('vlam', { maat: 16 }), el('b', { tekst: String(s.huidigeReeks) })),
 
-    el('button', { class: 'oudersknop', 'aria-label': 'Voor ouders', tekst: '⚙️',
-      opclick: () => ga('/ouders') }),
+    el('button', { class: 'oudersknop icoonknop', 'aria-label': 'Voor ouders',
+      opclick: () => ga('/ouders') }, icoon('instellingen', { maat: 21 })),
   );
 }
 
@@ -85,7 +86,7 @@ function tekenNavigatie(huidig) {
       href: `#${item.pad}`,
       class: `navknop ${huidig.startsWith(item.pad) ? 'actief' : ''}`.trim(),
       'aria-current': huidig.startsWith(item.pad) ? 'page' : null,
-    }, el('span', { class: 'nav-emoji', tekst: item.emoji }), el('span', { tekst: item.naam })));
+    }, icoon(item.teken, { maat: 23, klasse: 'nav-icoon' }), el('span', { tekst: item.naam })));
   }
 }
 
@@ -110,7 +111,7 @@ function router() {
     const treffer = pad.match(patroon);
     if (treffer) { teken(...treffer.slice(1)); window.scrollTo(0, 0); return; }
   }
-  leeg(inhoud).append(el('div', { class: 'kaart leeg' },
+  zet(inhoud, el('div', { class: 'kaart leeg' },
     el('h2', { tekst: 'Hier is niets' }),
     el('a', { class: 'knop', href: '#/thuis', tekst: 'Terug naar huis' })));
 }

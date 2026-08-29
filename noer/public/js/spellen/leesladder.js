@@ -2,6 +2,7 @@
 // De afleiders komen uit dezelfde les, zodat het verschil echt in de tekens zit.
 
 import { el, husselen } from '../ui.js';
+import { icoon } from '../iconen.js';
 import { spreekUit } from '../geluid.js';
 import { itemsVan } from '../../data/qaida.js';
 import { ronde, keuzeknoppen } from './basis.js';
@@ -12,8 +13,9 @@ const vraag = (item, pool) => (api) => {
   return el('div', { class: 'vraag' },
     el('p', { class: 'opdracht', tekst: 'Hoe lees je dit?' }),
     el('div', { class: 'groot-arabisch', dir: 'rtl', lang: 'ar', tekst: item.ar }),
-    el('button', { class: 'luister', 'aria-label': 'Luister', tekst: '🔊',
-      opclick: (e) => { if (!spreekUit(item.ar)) e.currentTarget.classList.add('stil'); } }),
+    el('button', { class: 'luister', 'aria-label': 'Luister',
+      opclick: (e) => { if (!spreekUit(item.ar)) e.currentTarget.classList.add('stil'); } },
+      icoon('geluid', { maat: 22 })),
     keuzeknoppen(
       opties.map((o) => el('span', { class: 'keuze-naam', tekst: o.tr })),
       opties.indexOf(item), api, { letterId: item.letterId ?? null }));

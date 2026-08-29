@@ -1,6 +1,7 @@
 // Het startscherm: waar was je gebleven, en wat kun je vandaag doen.
 
-import { el, leeg, balk } from '../ui.js';
+import { el, zet, balk, meervoud } from '../ui.js';
+import { icoon } from '../iconen.js';
 import { actiefProfiel, voortgang } from '../opslag.js';
 import { samenvatting, niveauVan, zwakkePunten } from '../punten.js';
 import { LESSEN } from '../../data/qaida.js';
@@ -20,7 +21,7 @@ export function toon(bak) {
   const volgendeSoera = soeras.find((sr) => !v.soeras[sr.id]?.af) || soeras[0];
   const zwak = zwakkePunten(v, 3);
 
-  leeg(bak).append(
+  zet(bak, 
     el('section', { class: 'hero groet' },
       el('div', { class: 'herorij' },
         el('div', {},
@@ -31,7 +32,7 @@ export function toon(bak) {
         el('p', { class: 'ar bismillah', dir: 'rtl', lang: 'ar', tekst: 'بِسْمِ ٱللَّهِ' })),
       el('div', { class: 'herodoel' },
         el('p', { class: 'klein', tekst: vandaag.goed >= DAGDOEL
-          ? `Dagdoel gehaald — ${vandaag.goed} goed vandaag. ${s.huidigeReeks} dagen op rij.`
+          ? `Dagdoel gehaald — ${vandaag.goed} goed vandaag. ${meervoud(s.huidigeReeks, 'dag', 'dagen')} op rij.`
           : `Vandaag: nog ${DAGDOEL - vandaag.goed} ${DAGDOEL - vandaag.goed === 1
               ? 'goed antwoord' : 'goede antwoorden'} voor je dagdoel.` }),
         balk(Math.min(1, vandaag.goed / DAGDOEL), 'Dagdoel'))),
@@ -39,19 +40,19 @@ export function toon(bak) {
     el('section', { class: 'verder' },
       el('h2', { tekst: 'Verder waar je was' }),
       el('div', { class: 'tegels' },
-        tegel({ href: `#/qaida/${volgendeLes.id}`, emoji: '📗', titel: `Les ${volgendeLes.nr}`,
+        tegel({ href: `#/qaida/${volgendeLes.id}`, teken: 'boek', titel: `Les ${volgendeLes.nr}`,
           onder: volgendeLes.titel, kleur: 'var(--groen)' }),
-        volgendeSoera ? tegel({ href: `#/koran/${volgendeSoera.id}`, emoji: '📖',
+        volgendeSoera ? tegel({ href: `#/koran/${volgendeSoera.id}`, teken: 'koran',
           titel: volgendeSoera.naam, onder: `${volgendeSoera.aantalAyaat} aya's`, kleur: 'var(--blauw)' }) : null)),
 
     el('section', { class: 'ontdek' },
       el('h2', { tekst: 'Wat wil je doen?' }),
       el('div', { class: 'tegels' },
-        tegel({ href: '#/letters', emoji: '🔤', titel: 'Letters', onder: `${s.lettersGoed}/28 gekend`, kleur: 'var(--goud)' }),
-        tegel({ href: '#/qaida', emoji: '📗', titel: 'Leren lezen', onder: `${s.lessenAf.length}/${LESSEN.length} lessen`, kleur: 'var(--groen)' }),
-        tegel({ href: '#/koran', emoji: '📖', titel: 'Koran', onder: `${s.soerasAf.length} soera's uit je hoofd`, kleur: 'var(--blauw)' }),
-        tegel({ href: '#/woorden', emoji: '💬', titel: 'Woorden', onder: `${s.woordenGoed} geleerd`, kleur: 'var(--paars)' }),
-        tegel({ href: '#/voortgang', emoji: '🏅', titel: 'Mijn sterren', onder: `${v.badges.length} badges`, kleur: 'var(--terra)' }))),
+        tegel({ href: '#/letters', teken: 'ster8', titel: 'Letters', onder: `${s.lettersGoed}/28 gekend`, kleur: 'var(--goud)' }),
+        tegel({ href: '#/qaida', teken: 'boek', titel: 'Leren lezen', onder: `${s.lessenAf.length}/${LESSEN.length} lessen`, kleur: 'var(--groen)' }),
+        tegel({ href: '#/koran', teken: 'koran', titel: 'Koran', onder: `${s.soerasAf.length} soera's uit je hoofd`, kleur: 'var(--blauw)' }),
+        tegel({ href: '#/woorden', teken: 'praatwolk', titel: 'Woorden', onder: `${s.woordenGoed} geleerd`, kleur: 'var(--paars)' }),
+        tegel({ href: '#/voortgang', teken: 'ster', titel: 'Mijn sterren', onder: `${v.badges.length} badges`, kleur: 'var(--terra)' }))),
 
     zwak.length ? el('section', { class: 'kaart oefenen' },
       el('h2', { tekst: 'Deze letters zijn nog lastig' }),
@@ -72,8 +73,8 @@ const groet = () => {
   return 'Goedenavond';
 };
 
-const tegel = ({ href, emoji, titel, onder, kleur }) =>
+const tegel = ({ href, teken, titel, onder, kleur }) =>
   el('a', { class: 'tegel', href, stijl: { '--tegelkleur': kleur } },
-    el('span', { class: 'tegelbol', tekst: emoji }),
+    el('span', { class: 'tegelbol' }, icoon(teken, { maat: 24 })),
     el('b', { tekst: titel }),
     el('span', { class: 'klein', tekst: onder }));

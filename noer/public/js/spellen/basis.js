@@ -1,18 +1,24 @@
-// Het raamwerk onder elk spel: vragen achter elkaar, teller, en een
-// eindscherm met sterren, punten en eventuele nieuwe badges.
+// Het raamwerk onder elk spel.
+//
+// De belangrijkste keuze hier: na een antwoord flitst er niets weg. Er schuift
+// een strook omhoog die zegt wat er goed of fout ging — en bij een fout staat
+// het juiste antwoord erbij. Het kind gaat pas verder als het zelf op
+// "Doorgaan" tikt. Dat is trager dan automatisch doorspoelen, en het is precies
+// het moment waarop iemand iets leert.
 
-import { el, leeg, balk, sterren, confetti, toast } from '../ui.js';
+import { el, zet, balk, sterren, confetti } from '../ui.js';
+import { icoon, icoonKnop } from '../iconen.js';
 import { klinkGoed, klinkFout, klinkKlaar } from '../geluid.js';
 import { XP, geefXp, nieuweBadges, sterrenVoor } from '../punten.js';
 import { telAntwoord, telTijd, tikDagreeks } from '../opslag.js';
 
 /**
  * @param bak      element waar het spel in getekend wordt
- * @param titel    kop boven het spel
+ * @param titel    naam van het spel (voor het eindscherm)
  * @param uitleg   één zin, wat moet het kind doen
- * @param vragen   array van functies: (api) => Node. api.beantwoord(goed, meta)
- * @param opKlaar  ({goed, fout, sterren}) => void, na het eindscherm
- * @param terug    () => void, knop linksboven
+ * @param vragen   array van functies: (api) => Node
+ * @param opKlaar  ({goed, fout, sterren, nogmaals}) => void
+ * @param terug    () => void, de sluitknop linksboven
  */
 export function ronde(bak, { titel, uitleg, vragen, opKlaar, terug, lesId = null }) {
   let index = 0;
@@ -21,23 +27,44 @@ export function ronde(bak, { titel, uitleg, vragen, opKlaar, terug, lesId = null
   let bezig = false;
   const begonnen = Date.now();
 
-  const kop = el('header', { class: 'spel-kop' },
-    el('button', { class: 'terug', 'aria-label': 'Terug', tekst: '←', opclick: () => terug?.() }),
-    el('div', { class: 'spel-titel' }, el('h2', { tekst: titel }), uitleg && el('p', { tekst: uitleg })),
-    el('div', { class: 'spel-teller' }));
-  const voortgangsbalk = el('div', { class: 'spel-balk' });
+  const voortgangsbalk = el('div', { class: 'oefenbalk' });
+  const teller = el('span', { class: 'oefenteller' });
+  const kop = el('header', { class: 'oefenkop' },
+    icoonKnop('sluiten', { label: 'Oefening sluiten', opklik: () => terug?.(), klasse: 'sluit' }),
+    voortgangsbalk,
+    teller);
+  const hint = el('p', { class: 'oefenhint', tekst: uitleg || '' });
   const podium = el('section', { class: 'podium' });
+  const strook = el('div', { class: 'feedback', role: 'status', 'aria-live': 'assertive', hidden: true });
 
-  leeg(bak).append(kop, voortgangsbalk, podium);
-
-  const tellerNode = kop.querySelector('.spel-teller');
+  zet(bak, kop, hint, podium, strook);
 
   function tekenKop() {
-    leeg(tellerNode).append(
-      el('span', { class: 'teller-goed', tekst: `✓ ${goed}` }),
-      el('span', { class: 'teller-fout', tekst: `✗ ${fout}` }),
-      el('span', { class: 'teller-van', tekst: `${Math.min(index + 1, vragen.length)}/${vragen.length}` }));
-    leeg(voortgangsbalk).append(balk(index / vragen.length, 'Voortgang in dit spel'));
+    zet(teller, icoon('vink', { maat: 16 }), el('b', { tekst: String(goed) }));
+    zet(voortgangsbalk, balk(index / vragen.length, `Vraag ${Math.min(index + 1, vragen.length)} van ${vragen.length}`));
+  }
+
+  /** De strook onderin: wat ging er goed of fout, en hoe gaat het verder. */
+  function toonStrook(isGoed, juist) {
+    const doorgaan = el('button', { class: 'knop doorgaan', tekst: 'Doorgaan',
+      opclick: () => { verbergStrook(); volgendeVraag(); } });
+
+    strook.className = `feedback ${isGoed ? 'goed' : 'fout'} open`;
+    strook.hidden = false;
+    zet(strook, el('div', { class: 'feedback-binnen' },
+      el('span', { class: 'feedback-icoon' }, icoon(isGoed ? 'vink' : 'sluiten', { maat: 22 })),
+      el('div', { class: 'feedback-tekst' },
+        el('b', { tekst: isGoed ? 'Goed zo!' : 'Net niet' }),
+        !isGoed && juist ? juistRegel(juist) : null),
+      doorgaan));
+    doorgaan.focus({ preventScroll: true });
+    document.body.classList.add('feedback-open');
+  }
+
+  function verbergStrook() {
+    strook.hidden = true;
+    strook.className = 'feedback';
+    document.body.classList.remove('feedback-open');
   }
 
   const api = {
@@ -52,56 +79,83 @@ export function ronde(bak, { titel, uitleg, vragen, opKlaar, terug, lesId = null
     verder(vertraging = 0) {
       if (bezig) return;
       bezig = true;
-      setTimeout(() => { bezig = false; index++; volgende(); }, vertraging);
+      setTimeout(() => { bezig = false; volgendeVraag(); }, vertraging);
     },
-    /** Het gewone geval: één antwoord, dan door. */
+    /** Eén antwoord op een keuzevraag: tellen, uitleggen, en wachten op het kind. */
     beantwoord(isGoed, meta = {}) {
       if (bezig) return;
       api.tel(isGoed, meta);
-      api.verder(isGoed ? 700 : 1500);
+      toonStrook(isGoed, meta.juist);
     },
   };
 
-  function volgende() {
+  function volgendeVraag() {
+    index++;
+    tekenVraag();
+  }
+
+  function tekenVraag() {
     tekenKop();
     if (index >= vragen.length) return eindscherm();
     podium.classList.remove('in');
-    leeg(podium).append(vragen[index](api));
+    zet(podium, vragen[index](api));
     requestAnimationFrame(() => podium.classList.add('in'));
   }
 
   function eindscherm() {
+    verbergStrook();
     const aantalSterren = sterrenVoor(goed, fout);
     telTijd(Math.round((Date.now() - begonnen) / 1000));
     if (tikDagreeks()) geefXp(XP.nieuweDag);
     if (aantalSterren >= 2) geefXp(XP.lesAf);
     if (fout === 0) geefXp(XP.perfecteLes);
     const badges = nieuweBadges();
+    const verdiend = goed * XP.goedAntwoord + (aantalSterren >= 2 ? XP.lesAf : 0) + (fout === 0 ? XP.perfecteLes : 0);
     klinkKlaar();
     if (aantalSterren >= 2) confetti();
 
-    leeg(bak).append(el('div', { class: 'eind' },
+    zet(bak, el('div', { class: 'eind' },
       el('div', { class: 'eind-emoji', tekst: aantalSterren === 3 ? '🎉' : aantalSterren >= 1 ? '👏' : '💪' }),
       el('h2', { tekst: aantalSterren === 3 ? 'Helemaal top!' : aantalSterren >= 2 ? 'Goed gedaan!' : aantalSterren === 1 ? 'Bijna!' : 'Blijf oefenen' }),
       sterren(aantalSterren),
-      el('p', { class: 'eind-score', tekst: `${goed} goed, ${fout} fout` }),
+      el('div', { class: 'eind-cijfers' },
+        eindCijfer('Goed', `${goed}`, 'goed'),
+        eindCijfer('Fout', `${fout}`, 'fout'),
+        eindCijfer('Punten', `+${verdiend}`, 'punten')),
       badges.length ? el('div', { class: 'eind-badges' },
         el('p', { tekst: badges.length === 1 ? 'Nieuwe badge!' : 'Nieuwe badges!' }),
         el('div', { class: 'badgerij' }, ...badges.map((b) =>
           el('div', { class: 'badge nieuw', title: b.uitleg },
             el('span', { class: 'badge-emoji', tekst: b.emoji }),
-            el('span', { tekst: b.naam }))))) : null,
+            el('b', { tekst: b.naam }))))) : null,
       el('div', { class: 'knoprij' },
-        el('button', { class: 'knop', tekst: 'Nog een keer', opclick: () => opKlaar?.({ goed, fout, sterren: aantalSterren, nogmaals: true }) }),
-        el('button', { class: 'knop stil', tekst: 'Klaar', opclick: () => opKlaar?.({ goed, fout, sterren: aantalSterren }) }))));
-
-    if (lesId) toast(`+${goed * XP.goedAntwoord} punten`, 'goed');
+        el('button', { class: 'knop groot', tekst: 'Nog een keer',
+          opclick: () => opKlaar?.({ goed, fout, sterren: aantalSterren, nogmaals: true }) }),
+        el('button', { class: 'knop stil groot', tekst: 'Klaar',
+          opclick: () => opKlaar?.({ goed, fout, sterren: aantalSterren }) }))));
   }
 
-  volgende();
+  const eindCijfer = (label, waarde, soort) =>
+    el('div', { class: `eind-cijfer ${soort}` },
+      el('b', { tekst: waarde }), el('span', { class: 'klein', tekst: label }));
+
+  index = -1;
+  volgendeVraag();
 }
 
-/** Knoppen met keuzes; markeert goed/fout en blokkeert daarna verder klikken. */
+const HEEFT_ARABISCH = /[\u0600-\u06FF]/;
+
+/** "Het goede antwoord is: X" — met het Arabische lettertype als dat past. */
+function juistRegel(juist) {
+  if (!HEEFT_ARABISCH.test(juist)) return el('p', { tekst: `Het goede antwoord is: ${juist}` });
+  return el('p', {}, 'Het goede antwoord is: ',
+    el('span', { class: 'ar juist-ar', dir: 'rtl', lang: 'ar', tekst: juist }));
+}
+
+/**
+ * Knoppen met keuzes. De tekst van het juiste antwoord gaat automatisch mee
+ * naar de feedbackstrook, zodat elk spel dat gratis krijgt.
+ */
 export function keuzeknoppen(opties, juisteIndex, api, meta = {}, klasse = '') {
   const rij = el('div', { class: `keuzes ${klasse}`.trim() });
   const knoppen = opties.map((inhoud, i) =>
@@ -110,9 +164,11 @@ export function keuzeknoppen(opties, juisteIndex, api, meta = {}, klasse = '') {
       opclick: () => {
         if (rij.dataset.klaar) return;
         rij.dataset.klaar = '1';
-        knoppen[i].classList.add(i === juisteIndex ? 'goed' : 'fout');
-        if (i !== juisteIndex) knoppen[juisteIndex].classList.add('goed', 'onthul');
-        api.beantwoord(i === juisteIndex, meta);
+        const isGoed = i === juisteIndex;
+        knoppen[i].classList.add(isGoed ? 'goed' : 'fout');
+        if (!isGoed) knoppen[juisteIndex].classList.add('goed', 'onthul');
+        for (const k of knoppen) k.disabled = true;
+        api.beantwoord(isGoed, { ...meta, juist: knoppen[juisteIndex].textContent.trim() });
       },
     }, inhoud));
   rij.append(...knoppen);

@@ -1,6 +1,6 @@
 // Mijn sterren: wat heb je al gehaald, en waar sta je nu.
 
-import { el, leeg, balk, sterren, tijdKort, avatarRing } from '../ui.js';
+import { el, zet, balk, sterren, tijdKort, avatarRing } from '../ui.js';
 import { BADGES } from '../../data/badges.js';
 import { LESSEN } from '../../data/qaida.js';
 import { LETTERS } from '../../data/letters.js';
@@ -16,7 +16,7 @@ export function toon(bak) {
   const n = niveauVan(v.xp);
   const verdiend = new Set(v.badges);
 
-  leeg(bak).append(
+  zet(bak, 
     el('header', { class: 'schermkop' },
       el('h1', { tekst: `De sterren van ${p.naam}` })),
 

@@ -1,6 +1,7 @@
 // Woordenschat per thema: kaartjes om te leren, en spelletjes om te oefenen.
 
-import { el, leeg, husselen } from '../ui.js';
+import { el, zet, husselen } from '../ui.js';
+import { icoon, icoonKnop } from '../iconen.js';
 import { THEMAS, THEMA_OP_ID, themasVoorLeeftijd } from '../../data/woorden.js';
 import { actiefProfiel, voortgang, bewaarWoord } from '../opslag.js';
 import { zegWoord } from '../geluid.js';
@@ -13,14 +14,14 @@ export function toon(bak) {
   const v = voortgang();
   const beschikbaar = themasVoorLeeftijd(p.leeftijd);
 
-  leeg(bak).append(
+  zet(bak, 
     el('header', { class: 'schermkop' },
       el('h1', { tekst: 'Arabische woorden' }),
       el('p', { tekst: 'Kies een thema. Tik op een kaartje om het woord te horen.' })),
     el('div', { class: 'tegels' }, ...beschikbaar.map((t) => {
       const stand = v.themas[t.id] || { gekend: [] };
       return el('a', { class: 'tegel', href: `#/woorden/${t.id}`, stijl: { '--tegelkleur': 'var(--paars)' } },
-        el('span', { class: 'tegelbol', tekst: t.emoji }),
+        el('span', { class: 'tegelbol emoji-bol', tekst: t.emoji }),
         el('b', { tekst: t.naam }),
         el('span', { class: 'klein', tekst: `${stand.gekend.length}/${t.woorden.length} gekend` }));
     })),
@@ -50,9 +51,9 @@ export function toonThema(bak, id) {
     el('span', { class: 'klein', tekst: w.tr }),
     el('b', { tekst: w.nl }));
 
-  leeg(bak).append(
+  zet(bak, 
     el('header', { class: 'schermkop met-terug' },
-      el('a', { class: 'terug', href: '#/woorden', 'aria-label': 'Terug', tekst: '←' }),
+      el('a', { class: 'icoonknop', href: '#/woorden', 'aria-label': 'Terug naar de thema\'s' }, icoon('terug')),
       el('h1', {}, `${thema.emoji} ${thema.naam}`)),
 
     el('div', { class: 'woordrooster' }, ...thema.woorden.map(kaartje)),
@@ -60,9 +61,9 @@ export function toonThema(bak, id) {
     el('section', { class: 'kaart' },
       el('h2', { tekst: 'Oefenen' }),
       el('div', { class: 'knoprij' },
-        el('button', { class: 'knop', tekst: '🃏 Geheugenspel',
+        el('button', { class: 'knop', tekst: 'Geheugenspel',
           opclick: () => geheugen.start(bak, { thema, terug: () => toonThema(bak, id), opKlaar: () => toonThema(bak, id) }) }),
-        el('button', { class: 'knop', tekst: '❓ Wat betekent het?',
+        el('button', { class: 'knop stil', tekst: 'Wat betekent het?',
           opclick: () => startQuiz(bak, thema) }))),
   );
 }
@@ -77,8 +78,8 @@ function startQuiz(bak, thema) {
       return el('div', { class: 'vraag' },
         el('p', { class: 'opdracht', tekst: 'Wat betekent dit woord?' }),
         el('div', { class: 'ar woord-groot groot-arabisch', dir: 'rtl', lang: 'ar', tekst: w.ar }),
-        el('button', { class: 'luister', 'aria-label': 'Luister', tekst: '🔊',
-          opclick: () => zegWoord(w.ar, { themaId: thema.id, index: w.index }) }),
+        icoonKnop('geluid', { label: 'Luister', klasse: 'luister',
+          opklik: () => zegWoord(w.ar, { themaId: thema.id, index: w.index }) }),
         keuzeknoppen(
           opties.map((o) => el('span', { class: 'keuze-naam' },
             el('span', { class: 'keuze-emoji', tekst: o.emoji }), o.nl)),

@@ -1,6 +1,7 @@
 // Klankjacht: welke letter is dit? Zie de letter, kies de naam — of andersom.
 
 import { el, husselen, kies } from '../ui.js';
+import { icoon } from '../iconen.js';
 import { LETTERS, LETTER_OP_ID, afleiders } from '../../data/letters.js';
 import { zegLetter } from '../geluid.js';
 import { ronde, keuzeknoppen } from './basis.js';
@@ -16,7 +17,7 @@ const luisterknop = (letter) =>
       knop.classList.toggle('stil', hoe === 'stil');
       if (hoe === 'stil') knop.title = 'Nog geen opname en geen Arabische stem op dit apparaat';
     },
-  }, '🔊');
+  }, icoon('geluid', { maat: 22 }));
 
 /** Zie de Arabische letter, kies de juiste naam. */
 const vraagNaam = (letter) => (api) => {
@@ -62,7 +63,7 @@ export function start(bak, { letters = LETTERS, aantal = 10, terug, opKlaar } = 
   const vragen = gekozen.map((letter) => kies(SOORTEN)(letter));
   ronde(bak, {
     titel: 'Klankjacht',
-    uitleg: 'Kies de goede letter. Tik op 🔊 om te luisteren.',
+    uitleg: 'Kies de goede letter. Tik op de luidspreker om te luisteren.',
     vragen, terug, opKlaar,
   });
 }
