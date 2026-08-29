@@ -7,7 +7,7 @@ import { actiefProfiel, voortgang, bewaarWoord } from '../opslag.js';
 import { zegWoord } from '../geluid.js';
 import { ronde, keuzeknoppen } from '../spellen/basis.js';
 import * as geheugen from '../spellen/geheugen.js';
-import { ga } from '../app.js';
+import { ga } from '../route.js';
 
 export function toon(bak) {
   const p = actiefProfiel();

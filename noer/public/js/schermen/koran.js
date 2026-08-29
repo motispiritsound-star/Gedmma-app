@@ -13,7 +13,7 @@ import { actiefProfiel, voortgang, bewaarAya, bewaarSoera } from '../opslag.js';
 import { speelAya } from '../geluid.js';
 import { geefXp, XP, nieuweBadges } from '../punten.js';
 import * as ayapuzzel from '../spellen/ayapuzzel.js';
-import { ga } from '../app.js';
+import { ga } from '../route.js';
 
 export function toon(bak) {
   const p = actiefProfiel();

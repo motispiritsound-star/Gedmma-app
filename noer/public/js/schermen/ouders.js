@@ -12,7 +12,7 @@ import {
   ouderInstelling, zetOuderPin, wisAlles, vandaag,
 } from '../opslag.js';
 import { samenvatting, zwakkePunten, niveauVan } from '../punten.js';
-import { ga } from '../app.js';
+import { ga } from '../route.js';
 
 let ontgrendeld = false;
 

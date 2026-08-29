@@ -4,7 +4,7 @@ import { el, zet, bevestig, avatarRing } from '../ui.js';
 import { alleProfielen, maakProfiel, kiesProfiel, verwijderProfiel } from '../opslag.js';
 import { voortgang } from '../opslag.js';
 import { niveauVan } from '../punten.js';
-import { ga } from '../app.js';
+import { ga } from '../route.js';
 
 const AVATARS = ['🦊', '🐨', '🦁', '🐼', '🐧', '🦉', '🐢', '🐝', '🦋', '🐬', '🦄', '🐙'];
 const KLEUREN = ['#f6c453', '#5fb99a', '#7c9cf5', '#e0776a', '#c58bd8', '#66c4c9'];

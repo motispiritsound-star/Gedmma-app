@@ -8,7 +8,7 @@ import { zegLetter, heeftArabischeStem } from '../geluid.js';
 import * as klankjacht from '../spellen/klankjacht.js';
 import * as vormenpuzzel from '../spellen/vormenpuzzel.js';
 import * as koppelen from '../spellen/koppelen.js';
-import { ga } from '../app.js';
+import { ga } from '../route.js';
 
 /** Hoe goed kent dit kind de letter: 0 (niet gezien) t/m 3. */
 export function beheersing(letterId, v = voortgang()) {

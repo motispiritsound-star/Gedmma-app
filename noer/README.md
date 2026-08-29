@@ -31,6 +31,30 @@ en let op fouten in de console en op lege of kapotte schermen.
 Op een tablet of telefoon kun je de app via het browsermenu op je beginscherm
 zetten. Hij werkt daarna ook zonder internet.
 
+## Delen zonder server
+
+```bash
+node tools/bundel.js --demo
+```
+
+Dat schrijft **noer-demo.html**: de hele app in één bestand van ongeveer 200 kB.
+Alle modules, alle stijlen en het icoon zitten erin; je kunt het mailen, op een
+USB-stick zetten of ergens neerleggen, en het opent gewoon door erop te
+dubbelklikken. Zonder `--demo` krijg je hetzelfde bestand, maar leeg.
+
+Met `--demo` staat er één ingevuld voorbeeldprofiel klaar (vijf lessen af, twee
+soera's uit het hoofd, een week oefentijd en drie letters die nog misgaan),
+zodat iemand die het opent meteen een app ziet die geleefd heeft. Heeft de
+bezoeker al eens geoefend, dan blijft die voortgang met rust.
+
+Andere vlaggen: `--fragment` laat `<html>` en `<head>` weg om de app ergens in
+te bedden, `--titel` zet de titel, `--uit` het pad.
+
+De bundelaar geeft elke module zijn eigen scope en haalt ze lazy op, dus de
+importgraaf mag geen kringetje bevatten. Daarom staat `route.js` los van
+`app.js`: schermen navigeren via `route.js` en hoeven niet terug te grijpen
+naar de router die ze zelf tekent.
+
 ## Wat er in zit
 
 **Het alfabet.** Alle 28 letters met hun vier vormen (los, begin, midden, eind),
@@ -134,7 +158,10 @@ is wat de browser draait.
 ```
 noer/
   server.js              kleine statische server, zonder afhankelijkheden
+  tools/bundel.js        bouwt de hele app tot één HTML-bestand
+  tools/demo-zaad.js     het voorbeeldprofiel voor de demo-bundel
   test/run.js            controles op de leerinhoud
+  test/browser.js        doorloop van de hele app in een echte browser
   public/
     index.html           de hele schil
     sw.js                service worker: werkt offline
@@ -152,6 +179,7 @@ noer/
       geluid.js          opname → apparaatstem → stilte, plus effectgeluidjes
       punten.js          punten, niveaus, badges, zwakke punten
       ui.js              kleine DOM-hulpjes
+      route.js           navigeren, los van app.js om een importkringetje te vermijden
       iconen.js          de icoonset: één raster, één lijndikte
       schermen/          één bestand per scherm
       spellen/           basis.js draagt de zes spellen
@@ -159,7 +187,9 @@ noer/
 ```
 
 Over de vormgeving: het palet, de maten en de schaduwen staan als CSS-variabelen
-boven in `basis.css`, één keer voor licht en één keer voor donker. Het
+boven in `basis.css`. Elke kleur staat er één keer, met `light-dark()` voor de
+lichte en de donkere waarde, zodat de twee thema's niet uit elkaar kunnen lopen;
+kiest iemand zelf een thema, dan zet dat `color-scheme` en volgt de rest. Het
 achtpuntige stermotief is één SVG die als masker wordt gebruikt, zodat hij zijn
 kleur uit die variabelen haalt en in beide modi klopt. Iconen zijn met de hand
 getekend op één raster van 24 met dezelfde lijndikte; ze erven hun kleur van de

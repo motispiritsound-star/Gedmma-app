@@ -3,46 +3,53 @@
    terugkomt. Licht en donker, en drie maten voor drie leeftijden. */
 
 :root {
+  /* Eén set tokens voor licht en donker. light-dark() kiest per waarde, dus de
+     twee thema's kunnen niet meer uit elkaar lopen. Kiest een kijker zelf een
+     thema, dan zet dat hieronder color-scheme — en light-dark() volgt vanzelf. */
   color-scheme: light dark;
 
   /* Papier en inkt */
-  --papier: #faf5ec;
-  --papier-diep: #f2ead9;
-  --vlak: #fffdf8;
-  --vlak-2: #f5eddf;
-  --rand: #e7dcc8;
-  --rand-sterk: #d8c9ac;
-  --inkt: #2b2419;
-  --inkt-2: #6b5f4e;
-  --inkt-3: #9c8e79;
+  --papier:      light-dark(#faf5ec, #12191a);
+  --papier-diep: light-dark(#f2ead9, #0d1314);
+  --vlak:        light-dark(#fffdf8, #1a2425);
+  --vlak-2:      light-dark(#f5eddf, #222e2f);
+  --rand:        light-dark(#e7dcc8, #2e3d3e);
+  --rand-sterk:  light-dark(#d8c9ac, #425454);
+  --inkt:        light-dark(#2b2419, #f0ebe0);
+  --inkt-2:      light-dark(#6b5f4e, #b3ac9e);
+  --inkt-3:      light-dark(#9c8e79, #837d70);
 
   /* Accenten */
-  --groen: #0f7a67;
-  --groen-diep: #0a5748;
-  --groen-licht: #2fa48c;
-  --groen-zacht: #ddefe9;
-  --goud: #c08417;
-  --goud-licht: #e8b44c;
-  --goud-zacht: #fbeed3;
-  --terra: #c2593c;
-  --terra-zacht: #fbe3da;
-  --blauw: #3a68bf;
-  --blauw-zacht: #e0e8f8;
-  --paars: #8654b4;
-  --paars-zacht: #eee3f7;
+  --groen:       light-dark(#0f7a67, #35b394);
+  --groen-diep:  light-dark(#0a5748, #0d3d34);
+  --groen-licht: light-dark(#2fa48c, #56cfae);
+  --groen-zacht: light-dark(#ddefe9, #17332d);
+  --goud:        light-dark(#c08417, #e8b44c);
+  --goud-licht:  light-dark(#e8b44c, #f3cd7d);
+  --goud-zacht:  light-dark(#fbeed3, #372c15);
+  --terra:       light-dark(#c2593c, #e8836a);
+  --terra-zacht: light-dark(#fbe3da, #3a2320);
+  --blauw:       light-dark(#3a68bf, #7ea0f0);
+  --blauw-zacht: light-dark(#e0e8f8, #1d2a45);
+  --paars:       light-dark(#8654b4, #b387dd);
+  --paars-zacht: light-dark(#eee3f7, #2b2140);
 
-  /* Grafiek: één reeks, dus één kleur. Gecontroleerd op contrast. */
-  --staaf: #0b8f72;
+  /* Grafiek: één reeks, dus één kleur. Apart gecontroleerd op contrast. */
+  --staaf:       light-dark(#0b8f72, #2ea184);
+
+  --lijn-patroon: light-dark(rgba(15, 122, 103, .45), rgba(86, 207, 174, .35));
 
   --straal: 16px;
   --straal-groot: 26px;
   --straal-xl: 34px;
   --boog: 50% 50% var(--straal) var(--straal) / 34% 34% var(--straal) var(--straal);
 
-  --schaduw-s: 0 1px 2px rgba(60, 45, 20, .07);
-  --schaduw: 0 2px 4px rgba(60, 45, 20, .05), 0 10px 24px -8px rgba(60, 45, 20, .14);
-  --schaduw-l: 0 4px 8px rgba(60, 45, 20, .06), 0 20px 44px -12px rgba(60, 45, 20, .2);
-  --lijn-patroon: rgba(15, 122, 103, .45);
+  /* Een schaduw is geen kleur, dus light-dark() zit hier in de kleur ervan. */
+  --schaduw-zacht: light-dark(rgba(60, 45, 20, .07), rgba(0, 0, 0, .34));
+  --schaduw-diep:  light-dark(rgba(60, 45, 20, .16), rgba(0, 0, 0, .5));
+  --schaduw-s: 0 1px 2px var(--schaduw-zacht);
+  --schaduw:   0 2px 4px var(--schaduw-zacht), 0 10px 24px -8px var(--schaduw-diep);
+  --schaduw-l: 0 4px 8px var(--schaduw-zacht), 0 20px 44px -12px var(--schaduw-diep);
 
   --maat: 1rem;
   --arabisch: 'Amiri Quran', 'Scheherazade New', 'Noto Naskh Arabic',
@@ -51,40 +58,9 @@
 --girih: url("data:image/svg+xml,<svg xmlns='http%3A//www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='%23000' stroke-width='1.5'><rect x='24' y='24' width='32' height='32' rx='2'/><rect x='24' y='24' width='32' height='32' rx='2' transform='rotate%2845 40 40%29'/><rect x='-16' y='-16' width='32' height='32' rx='2'/><rect x='-16' y='-16' width='32' height='32' rx='2' transform='rotate%2845 0 0%29'/><rect x='64' y='-16' width='32' height='32' rx='2'/><rect x='64' y='-16' width='32' height='32' rx='2' transform='rotate%2845 80 0%29'/><rect x='-16' y='64' width='32' height='32' rx='2'/><rect x='-16' y='64' width='32' height='32' rx='2' transform='rotate%2845 0 80%29'/><rect x='64' y='64' width='32' height='32' rx='2'/><rect x='64' y='64' width='32' height='32' rx='2' transform='rotate%2845 80 80%29'/></g></svg>");
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --papier: #12191a;
-    --papier-diep: #0d1314;
-    --vlak: #1a2425;
-    --vlak-2: #222e2f;
-    --rand: #2e3d3e;
-    --rand-sterk: #425454;
-    --inkt: #f0ebe0;
-    --inkt-2: #b3ac9e;
-    --inkt-3: #837d70;
-
-    --groen: #35b394;
-    --groen-diep: #0d3d34;
-    --groen-licht: #56cfae;
-    --groen-zacht: #17332d;
-    --goud: #e8b44c;
-    --goud-licht: #f3cd7d;
-    --goud-zacht: #372c15;
-    --terra: #e8836a;
-    --terra-zacht: #3a2320;
-    --blauw: #7ea0f0;
-    --blauw-zacht: #1d2a45;
-    --paars: #b387dd;
-    --paars-zacht: #2b2140;
-
-    --staaf: #2ea184;
-
-    --schaduw-s: 0 1px 2px rgba(0, 0, 0, .35);
-    --schaduw: 0 2px 4px rgba(0, 0, 0, .3), 0 10px 24px -8px rgba(0, 0, 0, .5);
-    --schaduw-l: 0 4px 8px rgba(0, 0, 0, .35), 0 20px 44px -12px rgba(0, 0, 0, .6);
-    --lijn-patroon: rgba(86, 207, 174, .35);
-  }
-}
+/* Kiest een kijker zelf licht of donker, dan wint dat van de systeeminstelling. */
+:root[data-theme="dark"] { color-scheme: dark; }
+:root[data-theme="light"] { color-scheme: light; }
 
 * { box-sizing: border-box; }
 

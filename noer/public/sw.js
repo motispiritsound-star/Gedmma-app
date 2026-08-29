@@ -7,6 +7,7 @@ const KERN = [
   './', 'index.html', 'manifest.webmanifest', 'icoon.svg',
   'stijl/basis.css', 'stijl/leren.css',
   'js/app.js', 'js/ui.js', 'js/opslag.js', 'js/geluid.js', 'js/punten.js', 'js/iconen.js',
+  'js/route.js',
   'js/schermen/start.js', 'js/schermen/thuis.js', 'js/schermen/letters.js',
   'js/schermen/qaida.js', 'js/schermen/koran.js', 'js/schermen/woorden.js',
   'js/schermen/voortgang.js', 'js/schermen/ouders.js',

@@ -16,11 +16,11 @@ import * as woorden from './schermen/woorden.js';
 import * as voortgangScherm from './schermen/voortgang.js';
 import * as ouders from './schermen/ouders.js';
 
+import { ga, huidigPad } from './route.js';
+
 const inhoud = document.getElementById('inhoud');
 const kopbalk = document.getElementById('kopbalk');
 const navigatie = document.getElementById('navigatie');
-
-export const ga = (pad) => { window.location.hash = pad; };
 
 const ROUTES = [
   [/^\/start$/, () => start.toon(inhoud)],
@@ -99,7 +99,7 @@ function pasLeeftijdToe() {
 }
 
 function router() {
-  const pad = window.location.hash.slice(1) || '/thuis';
+  const pad = huidigPad();
   if (!actiefProfiel() && pad !== '/start') return ga('/start');
   if (!alleProfielen().length && pad !== '/start') return ga('/start');
 
@@ -134,6 +134,8 @@ opAndering(() => { if (actiefProfiel()) tekenKopbalk(); });
 if (actiefProfiel() && tikDagreeks()) geefXp(XP.nieuweDag);
 router();
 
+// #bundel-weg — een los HTML-bestand heeft geen service worker.
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 }
+// #bundel-eind

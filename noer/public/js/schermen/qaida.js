@@ -10,7 +10,7 @@ import * as leesladder from '../spellen/leesladder.js';
 import * as klankjacht from '../spellen/klankjacht.js';
 import * as vormenpuzzel from '../spellen/vormenpuzzel.js';
 import * as koppelen from '../spellen/koppelen.js';
-import { ga } from '../app.js';
+import { ga } from '../route.js';
 
 const SPELLEN = { leesladder, klankjacht, vormenpuzzel, koppelen };
 
