@@ -4,7 +4,7 @@ import { el, zet, husselen } from '../ui.js';
 import { icoon } from '../iconen.js';
 import { LETTERS, LETTER_OP_ID, MAKHRAJ } from '../../data/letters.js';
 import { voortgang } from '../opslag.js';
-import { zegLetter, heeftArabischeStem } from '../geluid.js';
+import { zegLetterNaam, zegLetterKlank, heeftArabischeStem } from '../geluid.js';
 import * as klankjacht from '../spellen/klankjacht.js';
 import * as vormenpuzzel from '../spellen/vormenpuzzel.js';
 import * as koppelen from '../spellen/koppelen.js';
@@ -65,11 +65,14 @@ export function toonLetter(bak, id) {
 
   const melding = el('p', { class: 'klein stilmelding' });
 
-  const spreek = async () => {
-    const hoe = await zegLetter(l);
-    melding.textContent = hoe === 'stil'
-      ? 'Er staat nog geen opname klaar en dit apparaat heeft geen Arabische stem.'
-      : hoe === 'stem' ? 'Voorgelezen door je apparaat.' : '';
+  const UITLEG = {
+    stil: 'Er is nog geen opname en dit apparaat heeft geen Arabische stem.',
+    stem: 'Voorgelezen door je apparaat.',
+    opname: 'Jullie eigen opname.',
+    bestand: '',
+  };
+  const spreek = (wat) => async () => {
+    melding.textContent = UITLEG[await wat(l)] ?? '';
   };
 
   zet(bak, 
@@ -79,7 +82,11 @@ export function toonLetter(bak, id) {
 
     el('section', { class: 'letterheld', stijl: { '--kleur': m.kleur } },
       el('div', { class: 'ar letter-groot', dir: 'rtl', lang: 'ar', tekst: l.letter }),
-      el('button', { class: 'knop luisterknop', opclick: spreek }, icoon('geluid', { maat: 20 }), 'Luister'),
+      el('div', { class: 'knoprij luisterrij' },
+        el('button', { class: 'knop luisterknop', opclick: spreek(zegLetterKlank) },
+          icoon('geluid', { maat: 20 }), 'De klank'),
+        el('button', { class: 'knop stil luisterknop', opclick: spreek(zegLetterNaam) },
+          icoon('geluid', { maat: 20 }), 'De naam')),
       melding,
       el('p', { class: 'klank', tekst: l.klank }),
       el('p', { class: 'tip', tekst: `💡 ${l.tip}` })),
@@ -118,7 +125,20 @@ export function toonLetter(bak, id) {
               terug: () => toonLetter(bak, id), opKlaar: () => toonLetter(bak, id) });
           } }))),
 
-    heeftArabischeStem() ? null : el('p', { class: 'voetnoot', tekst:
-      'Tip voor ouders: zet eigen opnames in public/audio/letters/ om het geluid te verbeteren.' }),
+    stemTip(),
   );
+}
+
+/**
+ * Heeft dit apparaat geen Arabische stem, dan is dat geen storing maar een
+ * gemis dat je kunt oplossen. Het scherm zegt dat pas als het zeker is.
+ */
+function stemTip() {
+  const regel = el('p', { class: 'voetnoot' });
+  heeftArabischeStem().then((heeft) => {
+    regel.textContent = heeft
+      ? 'Tip voor ouders: neem de letters in de studio in met je eigen stem — dat klinkt beter dan een computerstem.'
+      : 'Dit apparaat heeft geen Arabische stem. Neem de letters in de studio in met je eigen stem, dan hoort je kind ze wel.';
+  });
+  return regel;
 }

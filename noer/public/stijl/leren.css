@@ -592,3 +592,63 @@
 .voorbeeldkaart .voorbeeld { padding: .2rem 0; }
 
 .tegelbol.emoji-bol { font-size: 1.6rem; }
+
+/* --- Opnamestudio ------------------------------------------------------- */
+
+.groeplijst { display: grid; gap: .45rem; }
+.groepregel {
+  display: grid; grid-template-columns: 1fr 5rem auto; align-items: center; gap: .8rem;
+  padding: .7rem .9rem; border-radius: var(--straal);
+  background: var(--vlak-2); border: 1px solid color-mix(in srgb, var(--rand) 60%, transparent);
+  text-decoration: none; color: inherit;
+  transition: transform .12s ease, border-color .12s ease;
+}
+.groepregel:hover { transform: translateX(3px); border-color: var(--groen); }
+.groepregel.af { border-color: color-mix(in srgb, var(--groen) 45%, var(--rand)); color: var(--groen); }
+.groepregel .balk { height: 7px; }
+.groepinfo { display: flex; flex-direction: column; min-width: 0; }
+.groepinfo b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.opnamelijst { display: grid; gap: .5rem; }
+.opnameregel {
+  display: flex; flex-direction: column; gap: .5rem;
+  padding: .8rem .9rem; border-radius: var(--straal-groot);
+  background: var(--vlak); border: 1px solid var(--rand); box-shadow: var(--schaduw-s);
+}
+.opnameregel.opgenomen {
+  border-color: color-mix(in srgb, var(--groen) 45%, var(--rand));
+  background: linear-gradient(160deg, var(--groen-zacht), var(--vlak) 70%);
+}
+.opname-ar { font-size: 2.05rem; line-height: 1.6; }
+.opname-voet { display: flex; align-items: center; gap: .6rem; }
+.opname-labels { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.opname-labels .klein { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.opnamestaat {
+  font-size: .68em; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--inkt-3);
+}
+.opnameregel.opgenomen .opnamestaat { color: var(--groen); }
+
+.opname-knoppen { display: flex; align-items: center; gap: .35rem; flex: none; }
+.neemop { display: inline-flex; align-items: center; gap: .4rem; font-size: .88em; padding: .5em .9em; }
+.neemop.bezig {
+  background: linear-gradient(160deg, #d9705a, var(--terra));
+  box-shadow: 0 2px 0 #9c4530;
+  animation: klopjeRood 1.4s ease-in-out infinite;
+}
+.luister.klein-rond { width: 2.4rem; height: 2.4rem; }
+.luister.gevaarlijk:hover { color: var(--terra); border-color: var(--terra); }
+.luister:disabled { opacity: .35; cursor: default; }
+.luister:disabled:hover { color: var(--inkt-2); border-color: var(--rand); }
+
+.studiokaart { border-top: 3px solid var(--goud); }
+.studiokaart .knop { display: inline-flex; align-items: center; gap: .5rem; text-decoration: none; }
+.stemproef { margin-top: .5rem; }
+.knop.stil.klein-knop { display: inline-flex; align-items: center; gap: .45rem; }
+.luisterrij { justify-content: center; }
+.luisterrij .knop { display: inline-flex; align-items: center; gap: .5rem; }
+
+@keyframes klopjeRood {
+  0%, 100% { box-shadow: 0 2px 0 #9c4530, 0 0 0 0 color-mix(in srgb, var(--terra) 55%, transparent); }
+  50% { box-shadow: 0 2px 0 #9c4530, 0 0 0 10px transparent; }
+}

@@ -15,6 +15,7 @@ import * as koran from './schermen/koran.js';
 import * as woorden from './schermen/woorden.js';
 import * as voortgangScherm from './schermen/voortgang.js';
 import * as ouders from './schermen/ouders.js';
+import * as studio from './schermen/studio.js';
 
 import { ga, huidigPad } from './route.js';
 
@@ -35,6 +36,8 @@ const ROUTES = [
   [/^\/woorden\/([\w-]+)$/, (id) => woorden.toonThema(inhoud, id)],
   [/^\/voortgang$/, () => voortgangScherm.toon(inhoud)],
   [/^\/ouders$/, () => ouders.toon(inhoud)],
+  [/^\/studio$/, () => studio.toon(inhoud)],
+  [/^\/studio\/([\w-]+)$/, (id) => studio.toonGroep(inhoud, id)],
 ];
 
 const NAV = [

@@ -14,8 +14,13 @@ const BASIS = process.env.NOER_URL || 'http://localhost:5173';
 const SCHERMEN = process.env.NOER_SCHERMAFDRUKKEN || null;
 
 const fouten = [];
-const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
-const page = await browser.newPage({ viewport: { width: 420, height: 900 } });
+const browser = await chromium.launch({
+  executablePath: '/opt/pw-browsers/chromium',
+  // Een nepmicrofoon, zodat de opnamestudio echt getest kan worden.
+  args: ['--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream'],
+});
+const context = await browser.newContext({ viewport: { width: 420, height: 900 }, permissions: ['microphone'] });
+const page = await context.newPage();
 page.on('console', (m) => { if (m.type() === 'error') fouten.push(`console: ${m.text()}`); });
 page.on('pageerror', (e) => fouten.push(`pageerror: ${e.message}`));
 
@@ -168,11 +173,69 @@ await stap('ouderscherm met pincode', async () => {
 });
 if (SCHERMEN) await page.screenshot({ path: `${SCHERMEN}/noer-ouders.png`, fullPage: true });
 
+await stap('opnemen, afspelen en wissen in de studio', async () => {
+  await page.goto(`${BASIS}/#/studio`);
+  await page.waitForSelector('.groepregel');
+  const groepen = await page.locator('.groepregel').count();
+  if (groepen < 20) throw new Error(`${groepen} groepen in de studio`);
+
+  await page.click('a[href="#/studio/letter-klank"]');
+  await page.waitForSelector('.opnameregel');
+  if ((await page.locator('.opnameregel').count()) !== 28) throw new Error('geen 28 letters');
+
+  const regel = page.locator('.opnameregel').first();
+  await regel.locator('button:has-text("Opnemen")').click();
+  await page.waitForTimeout(1400);
+  await regel.locator('.neemop.bezig').click();
+  await page.waitForTimeout(700);
+  if (!(await regel.evaluate((n) => n.classList.contains('opgenomen')))) {
+    throw new Error('de regel werd niet als opgenomen gemarkeerd');
+  }
+
+  const bewaard = await page.evaluate(async () => {
+    const { alleOpnames } = await import('/js/opnames.js');
+    return (await alleOpnames()).map((r) => ({ sleutel: r.sleutel, bytes: r.blob.size }));
+  });
+  if (bewaard.length !== 1 || bewaard[0].bytes < 500) {
+    throw new Error(`opname niet goed bewaard: ${JSON.stringify(bewaard)}`);
+  }
+
+  // De letterkaart hoort nu de opname te pakken, niet de computerstem.
+  await page.goto(`${BASIS}/#/letters/alif`);
+  await page.waitForSelector('.letterheld');
+  await page.click('button:has-text("De klank")');
+  await page.waitForTimeout(400);
+  const melding = await page.textContent('.stilmelding');
+  if (!melding.includes('eigen opname')) throw new Error(`letterkaart zei: ${melding}`);
+
+  // En de export levert een echte zip op.
+  const zip = await page.evaluate(async () => {
+    const { alleOpnames, padVan, extensieVan } = await import('/js/opnames.js');
+    const { zipBytes } = await import('/js/zip.js');
+    const rijen = await alleOpnames();
+    const bestanden = await Promise.all(rijen.map(async (r) => ({
+      naam: padVan(r.sleutel, extensieVan(r.type)),
+      data: new Uint8Array(await r.blob.arrayBuffer()),
+    })));
+    const bytes = zipBytes(bestanden);
+    return { naam: bestanden[0].naam, magisch: [...bytes.slice(0, 4)].join(',') };
+  });
+  if (zip.magisch !== '80,75,3,4') throw new Error('de zip begint niet met PK\\x03\\x04');
+  if (!zip.naam.startsWith('audio/letters/')) throw new Error(`verkeerd pad in de zip: ${zip.naam}`);
+
+  await page.goto(`${BASIS}/#/studio/letter-klank`);
+  await page.waitForSelector('.opnameregel.opgenomen');
+  await page.locator('.opnameregel.opgenomen').first().locator('button[aria-label="Opname wissen"]').click();
+  await page.waitForTimeout(400);
+  if (await page.locator('.opnameregel.opgenomen').count()) throw new Error('wissen werkte niet');
+});
+
 // Regressie: `node.append(null)` zet letterlijk "null" in beeld. Elk scherm
 // wordt daarop nagelopen.
 await stap('geen losse null of undefined in beeld', async () => {
   const routes = ['/thuis', '/letters', '/letters/ba', '/qaida', '/qaida/losse-letters',
-    '/koran', '/koran/an-nas', '/woorden', '/woorden/kleuren', '/voortgang', '/ouders', '/start'];
+    '/koran', '/koran/an-nas', '/woorden', '/woorden/kleuren', '/voortgang', '/ouders',
+    '/studio', '/studio/letter-klank', '/start'];
   const vies = [];
   for (const route of routes) {
     await page.goto(`${BASIS}/#${route}`);
@@ -190,6 +253,7 @@ await stap('donkere modus', async () => {
 });
 if (SCHERMEN) await page.screenshot({ path: `${SCHERMEN}/noer-donker.png` });
 
+await context.close();
 await browser.close();
 console.log(fouten.length ? `\nFOUTEN (${fouten.length}):\n` + fouten.join('\n') : '\nGeen fouten.');
 process.exit(fouten.length ? 1 : 0);

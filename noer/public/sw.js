@@ -1,16 +1,16 @@
 // Service worker: de app blijft werken zonder internet.
 // Bij elke uitgave het versienummer ophogen, dan wordt de cache ververst.
 
-const VERSIE = 'noer-v2';
+const VERSIE = 'noer-v3';
 
 const KERN = [
   './', 'index.html', 'manifest.webmanifest', 'icoon.svg',
   'stijl/basis.css', 'stijl/leren.css',
   'js/app.js', 'js/ui.js', 'js/opslag.js', 'js/geluid.js', 'js/punten.js', 'js/iconen.js',
-  'js/route.js',
+  'js/route.js', 'js/opnames.js', 'js/zip.js',
   'js/schermen/start.js', 'js/schermen/thuis.js', 'js/schermen/letters.js',
   'js/schermen/qaida.js', 'js/schermen/koran.js', 'js/schermen/woorden.js',
-  'js/schermen/voortgang.js', 'js/schermen/ouders.js',
+  'js/schermen/voortgang.js', 'js/schermen/ouders.js', 'js/schermen/studio.js',
   'js/spellen/basis.js', 'js/spellen/klankjacht.js', 'js/spellen/vormenpuzzel.js',
   'js/spellen/leesladder.js', 'js/spellen/koppelen.js', 'js/spellen/geheugen.js',
   'js/spellen/ayapuzzel.js',

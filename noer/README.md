@@ -108,25 +108,70 @@ ouderscherm.
 
 **Voor ouders.** Achter een pincode: per kind de oefentijd van de afgelopen
 week, hoeveel goed en fout, welke lessen af zijn, en — het nuttigste — welke
-letters structureel fout gaan, zodat je die samen kunt oefenen.
+letters structureel fout gaan, zodat je die samen kunt oefenen. Plus de
+opnamestudio, waarover hieronder meer.
 
 ## Geluid
 
-De app zoekt geluid in deze volgorde:
+De app zoekt geluid in vier lagen. De eerste die iets oplevert wint:
 
-1. **Een eigen opname** uit `public/audio/`. Zie de `LEESMIJ.md` in elke map
-   voor de namen die de app verwacht.
-2. **De stem van het apparaat**, voor losse letters en woorden — als er een
-   Arabische stem geïnstalleerd is.
-3. **Stilte**, met een nette melding in beeld.
+1. **Een eigen opname** uit de studio, op dit apparaat.
+2. **Een bestand** in `public/audio/`.
+3. **Een externe reciteur** — alleen voor de Koran, en alleen als je die zelf
+   aanzet in `public/data/bronnen.js`.
+4. **De stem van het apparaat**, voor letters en losse woorden.
 
-Voor de Koran wordt stap 2 nooit gebruikt. Een voorleesstem is geen recitatie;
-zonder echte opname blijft het stil. Wil je een externe reciteur gebruiken, vul
-die dan in bij `reciteur` in `public/data/bronnen.js` — en gebruik alleen een
-bron die je mag gebruiken.
+Levert geen van vieren iets op, dan blijft het stil en zegt het scherm dat.
+Laag 4 komt bij de Koran nooit aan bod: recitatie is geen voorleesstem.
 
-Effectgeluidjes (goed, fout, klaar) worden in de browser zelf opgewekt, dus
-daar zijn geen bestanden voor nodig.
+### Zelf inspreken — de beste optie
+
+In het ouderscherm zit een **opnamestudio**. Daar spreek je de letters, de
+woorden en de aya's in met je eigen stem, rechtstreeks in de browser. Je kind
+hoort daarna een stem die het kent, en dat is pedagogisch beter dan welke
+computerstem ook. Voor de Koran is het bovendien de enige nette manier.
+
+Begin bij **Letters — de klank**: 28 opnames, ongeveer tien minuten werk. Dat
+alleen al maakt het alfabet, de qaida-lessen en de spellen hoorbaar.
+
+De opnames staan in IndexedDB op het apparaat zelf; er gaat niets naar een
+server. Met **Opnames opslaan** krijg je er een zip van met dezelfde mappen als
+`public/audio/`, zodat je ze kunt bewaren, naar een ander apparaat brengen, of
+in de app zelf zetten zodat iedereen ze heeft.
+
+### De stem van het apparaat
+
+Zonder opnames leest het apparaat losse letters en woorden voor — als er een
+Arabische stem geïnstalleerd is. Op telefoons en tablets is dat meestal zo, op
+een laptop vaak niet. In het ouderscherm zit een knop **Hoor hoe "ba" klinkt**
+die meteen laat zien wat dit apparaat ervan maakt.
+
+De letterkaart heeft twee knoppen: **de klank** (بَ, "ba" — wat je nodig hebt om
+te lezen) en **de naam** (بَاء, "baa"). Zonder die fatha spelt een voorleesstem
+de letternaam in plaats van de klank.
+
+### Recitatie ophalen
+
+```bash
+node tools/haal-recitatie.js \
+  --bron 'https://voorbeeld.nl/{reciteur}/{soera}{aya}.mp3' \
+  --reciteur naam-van-de-map
+```
+
+Dit zet de aya's van alle soera's in de app neer als
+`public/audio/koran/<soera>/<aya>.mp3`. Er zit met opzet **geen bron
+ingebakken**: een recitatie is een opname van een mens, en of je die mag
+kopiëren hangt af van de reciteur en de uitgever. Kies zelf een bron waarvan je
+weet dat het mag, en lees de voorwaarden — wat je hier neerzet deel je mee met
+iedereen die de app krijgt.
+
+Wil je liever streamen dan downloaden, vul dan `reciteur` in
+`public/data/bronnen.js` in. Dan werkt de Koran wel alleen mét internet.
+
+### Effectgeluidjes
+
+Goed, fout en klaar worden in de browser zelf opgewekt met een oscillator. Daar
+zijn geen bestanden voor nodig, en ze klinken overal hetzelfde.
 
 ## Nog te doen vóór je dit uitgeeft
 
@@ -160,6 +205,7 @@ noer/
   server.js              kleine statische server, zonder afhankelijkheden
   tools/bundel.js        bouwt de hele app tot één HTML-bestand
   tools/demo-zaad.js     het voorbeeldprofiel voor de demo-bundel
+  tools/haal-recitatie.js  haalt aya-opnames op bij een bron die jij kiest
   test/run.js            controles op de leerinhoud
   test/browser.js        doorloop van de hele app in een echte browser
   public/
@@ -181,6 +227,8 @@ noer/
       ui.js              kleine DOM-hulpjes
       route.js           navigeren, los van app.js om een importkringetje te vermijden
       iconen.js          de icoonset: één raster, één lijndikte
+      opnames.js         eigen opnames in IndexedDB
+      zip.js             kleine zip-schrijver voor de export
       schermen/          één bestand per scherm
       spellen/           basis.js draagt de zes spellen
     stijl/               basis.css (schil) en leren.css (leren en spelen)

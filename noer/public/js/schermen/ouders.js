@@ -12,6 +12,9 @@ import {
   ouderInstelling, zetOuderPin, wisAlles, vandaag,
 } from '../opslag.js';
 import { samenvatting, zwakkePunten, niveauVan } from '../punten.js';
+import { opgenomenSleutels } from '../opnames.js';
+import { heeftArabischeStem, zegLetterKlank } from '../geluid.js';
+import { LETTER_OP_ID as LETTERS_OP_ID } from '../../data/letters.js';
 import { ga } from '../route.js';
 
 let ontgrendeld = false;
@@ -51,6 +54,8 @@ function dashboard(bak) {
 
     ...profielen.map((p) => kindKaart(p, p.id === actief?.id)),
 
+    studioKaart(),
+
     el('section', { class: 'kaart' },
       el('h2', { tekst: 'Geluid' }),
       el('p', { class: 'klein', tekst:
@@ -59,6 +64,7 @@ function dashboard(bak) {
         'op staat. Voor de Koran gebeurt dat nooit: recitatie komt alleen uit een echte opname.' }),
       schakelaar('Letters en woorden voorlezen met de stem van het apparaat', AUDIO.spraak.aan,
         (aan) => { AUDIO.spraak.aan = aan; }),
+      stemProef(),
       el('p', { class: 'klein', tekst: AUDIO.reciteur.aan
         ? `Recitatie: ${AUDIO.reciteur.naam || 'externe bron'}.`
         : 'Er is geen externe reciteur ingesteld. Zet eigen opnames in public/audio/koran/, of vul in data/bronnen.js een bron in die je mag gebruiken.' })),
@@ -208,4 +214,36 @@ function schakelaar(label, aan, opWissel) {
       opWissel(nu);
     } }, el('i', {}));
   return el('label', { class: 'schakelrij' }, knop, el('span', { tekst: label }));
+}
+
+/** Snelkoppeling naar de studio, met hoeveel er al ingesproken is. */
+function studioKaart() {
+  const regel = el('p', { class: 'klein', tekst: 'Even kijken wat er al is…' });
+  opgenomenSleutels().then((gedaan) => {
+    regel.textContent = gedaan.size
+      ? `${gedaan.size} opnames staan klaar op dit apparaat.`
+      : 'Er staat nog niets ingesproken. De 28 letters kosten je ongeveer tien minuten.';
+  });
+  return el('section', { class: 'kaart studiokaart' },
+    el('h2', { tekst: 'Zelf inspreken' }),
+    el('p', { tekst: 'Neem de letters, woorden en aya\'s in met je eigen stem. Je kind hoort dan een stem die het kent — en bij de Koran is het de enige manier waarop er geluid klinkt.' }),
+    regel,
+    el('a', { class: 'knop', href: '#/studio' }, icoon('microfoon', { maat: 20 }), 'Naar de opnamestudio'));
+}
+
+/** Laat horen wat de stem van dit apparaat ervan maakt, met één tik. */
+function stemProef() {
+  const melding = el('p', { class: 'klein' });
+  heeftArabischeStem().then((heeft) => {
+    melding.textContent = heeft
+      ? 'Dit apparaat heeft een Arabische stem.'
+      : 'Dit apparaat heeft géén Arabische stem. Letters en woorden blijven stil tot je ze zelf inspreekt.';
+  });
+  return el('div', {},
+    el('button', { class: 'knop stil klein-knop', opclick: async () => {
+      const hoe = await zegLetterKlank(LETTERS_OP_ID.ba);
+      melding.textContent = { opname: 'Dat was jullie eigen opname.', bestand: 'Dat kwam uit een bestand.',
+        stem: 'Dat was de stem van dit apparaat.', stil: 'Er kwam niets — er is geen opname en geen Arabische stem.' }[hoe];
+    } }, icoon('geluid', { maat: 18 }), 'Hoor hoe "ba" klinkt'),
+    melding);
 }

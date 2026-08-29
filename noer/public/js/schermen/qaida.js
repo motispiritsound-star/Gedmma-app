@@ -130,7 +130,10 @@ export function toonLes(bak, id) {
         ...les.rijen.map((rij) =>
           el('div', { class: 'bladrij' }, ...rij.map((item) =>
             el('button', { class: 'bladvak', lang: 'ar', 'aria-label': `${item.tr}, luister`,
-              opclick: (e) => { if (!spreekUit(item.ar)) e.currentTarget.classList.add('stil'); } },
+              opclick: (e) => {
+                const knop = e.currentTarget;
+                spreekUit(item.ar).then((gelukt) => knop.classList.toggle('stil', !gelukt));
+              } },
               el('span', { class: 'ar', tekst: item.ar }),
               el('span', { class: 'blad-tr', dir: 'ltr', tekst: item.tr }))))))),
   );

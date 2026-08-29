@@ -14,7 +14,10 @@ const vraag = (item, pool) => (api) => {
     el('p', { class: 'opdracht', tekst: 'Hoe lees je dit?' }),
     el('div', { class: 'groot-arabisch', dir: 'rtl', lang: 'ar', tekst: item.ar }),
     el('button', { class: 'luister', 'aria-label': 'Luister',
-      opclick: (e) => { if (!spreekUit(item.ar)) e.currentTarget.classList.add('stil'); } },
+      opclick: (e) => {
+        const knop = e.currentTarget;
+        spreekUit(item.ar).then((gelukt) => knop.classList.toggle('stil', !gelukt));
+      } },
       icoon('geluid', { maat: 22 })),
     keuzeknoppen(
       opties.map((o) => el('span', { class: 'keuze-naam', tekst: o.tr })),
