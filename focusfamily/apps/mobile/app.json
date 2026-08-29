@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "FocusFamily",
+    "slug": "focusfamily",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "focusfamily",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "test.focusfamily.app",
+      "infoPlist": {
+        "NSUserActivityTypes": []
+      }
+    },
+    "android": {
+      "package": "test.focusfamily.app",
+      "edgeToEdgeEnabled": true,
+      "permissions": []
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": false
+    },
+    "extra": {
+      "focusFamilyApiUrl": "http://10.0.2.2:4000",
+      "useMockScreenTime": true
+    }
+  }
+}

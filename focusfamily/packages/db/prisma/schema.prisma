@@ -1,0 +1,761 @@
+// FocusFamily data model.
+//
+// Two things are worth noticing about what is NOT here: there is no table for
+// messages, browsing history, locations or per-app usage, and there is no
+// column anywhere that stores the content of a notification. The schema is the
+// first place a reviewer should be able to check the privacy promise.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum FamilyRole {
+  guardian
+  child
+}
+
+enum PlatformRole {
+  member
+  support_admin
+}
+
+enum Locale {
+  nl
+  en
+}
+
+enum AgeBand {
+  band_8_10
+  band_11_13
+  band_14_17
+  adult
+}
+
+enum DataSourceKind {
+  self_reported
+  app_observed
+  os_verified
+  simulated
+}
+
+enum ConfidenceLevel {
+  low
+  medium
+  high
+}
+
+enum AdapterKind {
+  ios_screen_time
+  android_usage
+  mock
+  none
+}
+
+enum DevicePlatform {
+  ios
+  android
+  web
+  unknown
+}
+
+enum ConsentScope {
+  account_basic
+  measurement_self_report
+  measurement_app_observed
+  measurement_os_verified
+  notifications_push
+  insights_weekly_review
+  ai_assistant
+}
+
+enum ConsentDecision {
+  granted
+  withdrawn
+  expired
+}
+
+enum AgreementStatus {
+  draft
+  proposed
+  active
+  retired
+}
+
+enum AgreementContext {
+  meals
+  homework
+  bedtime
+  bedrooms
+  school
+  family_activities
+}
+
+enum RuleAudience {
+  everyone
+  adults
+  children
+  member
+}
+
+enum RuleKind {
+  devices_away
+  device_free_room
+  quiet_window
+  shared_activity
+  charge_outside_bedroom
+  ask_before_new_app
+}
+
+enum FocusKind {
+  dinner
+  homework
+  bedtime
+  family_time
+  custom
+}
+
+enum FocusSessionStatus {
+  running
+  paused
+  completed
+  abandoned
+}
+
+enum FocusEventType {
+  start
+  pause
+  resume
+  complete
+  abandon
+}
+
+enum PauseReason {
+  someone_needed_me
+  urgent_call
+  schoolwork
+  changed_my_mind
+  other
+}
+
+enum ConflictLevel {
+  none
+  a_little
+  quite_a_bit
+}
+
+enum GoalKind {
+  device_free_dinners
+  screen_free_evenings
+  shared_activities
+  bedtime_routine
+  outdoor_time
+}
+
+enum AchievementKind {
+  first_agreement
+  first_focus_moment
+  goal_reached
+  week_reviewed
+  everyone_joined_in
+}
+
+enum Plan {
+  free
+  family_premium
+  sponsored
+}
+
+enum SubscriptionStatus {
+  active
+  trialing
+  past_due
+  canceled
+  none
+}
+
+enum BillingProviderKind {
+  mock
+  stripe_test
+  sponsor_code
+}
+
+enum FeatureKey {
+  agreements_multiple
+  insights_history_90d
+  programmes_guided
+  activities_extra_packs
+  review_export_pdf
+  focus_custom_schedules
+}
+
+enum EntitlementSource {
+  plan
+  sponsor
+  grandfathered
+  trial
+}
+
+enum NotificationChannel {
+  push
+  email
+  none
+}
+
+enum RequestStatus {
+  pending
+  ready
+  failed
+  expired
+}
+
+enum DeletionScope {
+  self
+  child_profile
+  family
+}
+
+enum DeletionStatus {
+  scheduled
+  cancelled
+  completed
+}
+
+enum ActivityCategory {
+  outdoors
+  kitchen
+  making
+  games
+  talking
+  movement
+}
+
+enum ArticleTopic {
+  social_media
+  gaming
+  sleep
+  conversations
+  school
+  privacy
+}
+
+model User {
+  id           String       @id
+  email        String?      @unique
+  // scrypt: "scrypt$N$r$p$salt$hash". No plaintext, ever.
+  passwordHash String?
+  displayName  String
+  locale       Locale       @default(nl)
+  platformRole PlatformRole @default(member)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  memberships             Membership[]
+  sessions                AuthSession[]
+  consentsAboutMe         ConsentRecord[]          @relation("ConsentSubject")
+  consentsIGave           ConsentRecord[]          @relation("ConsentActor")
+  checkIns                CheckIn[]
+  notificationPreferences NotificationPreference[]
+  goalContributions       GoalContribution[]
+  usageSummaries          UsageSummary[]
+  devices                 Device[]
+
+  @@map("users")
+}
+
+model AuthSession {
+  id        String    @id
+  userId    String
+  // Only a hash of the session token is stored; the cookie holds the secret.
+  tokenHash String    @unique
+  csrfHash  String
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  revokedAt DateTime?
+  userAgent String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("auth_sessions")
+}
+
+model Family {
+  id                String    @id
+  name              String
+  locale            Locale    @default(nl)
+  timeZone          String    @default("Europe/Amsterdam")
+  baselineStartedAt DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  memberships        Membership[]
+  invitations        Invitation[]
+  childProfiles      ChildProfile[]
+  devices            Device[]
+  measurementSources MeasurementSource[]
+  usageSummaries     UsageSummary[]
+  agreements         FamilyAgreement[]
+  focusSchedules     FocusSchedule[]
+  focusSessions      FocusSession[]
+  checkIns           CheckIn[]
+  goals              Goal[]
+  goalContributions  GoalContribution[]
+  achievements       Achievement[]
+  consentRecords     ConsentRecord[]
+  subscriptions      Subscription[]
+  entitlements       Entitlement[]
+  notificationPrefs  NotificationPreference[]
+  exportRequests     DataExportRequest[]
+  deletionRequests   DeletionRequest[]
+  auditLogs          AuditLog[]
+
+  @@map("families")
+}
+
+model Membership {
+  id          String     @id
+  familyId    String
+  userId      String
+  role        FamilyRole
+  displayName String
+  joinedAt    DateTime   @default(now())
+  removedAt   DateTime?
+
+  family       Family        @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  childProfile ChildProfile?
+
+  @@unique([familyId, userId])
+  @@index([userId])
+  @@map("memberships")
+}
+
+model Invitation {
+  id         String     @id
+  familyId   String
+  email      String
+  role       FamilyRole
+  tokenHash  String     @unique
+  invitedBy  String
+  createdAt  DateTime   @default(now())
+  expiresAt  DateTime
+  acceptedAt DateTime?
+
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@index([familyId])
+  @@map("invitations")
+}
+
+model ChildProfile {
+  id                   String   @id
+  membershipId         String   @unique
+  familyId             String
+  birthYear            Int
+  ageBand              AgeBand
+  canEditOwnAgreements Boolean  @default(true)
+  linkedByUserId       String
+  linkedAt             DateTime @default(now())
+
+  membership Membership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  family     Family     @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@index([familyId])
+  @@map("child_profiles")
+}
+
+model Device {
+  id           String         @id
+  familyId     String
+  userId       String
+  label        String
+  platform     DevicePlatform
+  adapter      AdapterKind
+  osVersion    String?
+  registeredAt DateTime       @default(now())
+  lastSeenAt   DateTime?
+
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([familyId])
+  @@map("devices")
+}
+
+model MeasurementSource {
+  id         String         @id
+  familyId   String
+  userId     String?
+  kind       DataSourceKind
+  provider   String
+  enabled    Boolean        @default(false)
+  createdAt  DateTime       @default(now())
+  disabledAt DateTime?
+
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@index([familyId, userId])
+  @@map("measurement_sources")
+}
+
+model UsageSummary {
+  id                String          @id
+  familyId          String
+  userId            String
+  dayKey            String
+  source            DataSourceKind
+  provider          String
+  confidence        ConfidenceLevel
+  // Whole minutes per coarse category. Never a per-app breakdown.
+  minutesByCategory Json
+  screenPickups     Int?
+  note              String?
+  createdAt         DateTime        @default(now())
+
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, dayKey, source, provider])
+  @@index([familyId, dayKey])
+  @@map("usage_summaries")
+}
+
+model ConsentRecord {
+  id               String          @id
+  familyId         String
+  subjectUserId    String
+  actorUserId      String
+  scope            ConsentScope
+  decision         ConsentDecision
+  statementKey     String
+  statementVersion String
+  recordedAt       DateTime        @default(now())
+  supersededAt     DateTime?
+
+  family  Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  subject User   @relation("ConsentSubject", fields: [subjectUserId], references: [id], onDelete: Cascade)
+  actor   User   @relation("ConsentActor", fields: [actorUserId], references: [id], onDelete: Cascade)
+
+  @@index([familyId, subjectUserId, scope])
+  @@map("consent_records")
+}
+
+model FamilyAgreement {
+  id              String          @id
+  familyId        String
+  title           String
+  status          AgreementStatus @default(draft)
+  agreedByUserIds String[]
+  createdByUserId String
+  createdAt       DateTime        @default(now())
+  activatedAt     DateTime?
+  reviewOnDayKey  String?
+
+  family         Family          @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  rules          AgreementRule[]
+  focusSchedules FocusSchedule[]
+
+  @@index([familyId, status])
+  @@map("family_agreements")
+}
+
+model AgreementRule {
+  id          String           @id
+  agreementId String
+  context     AgreementContext
+  kind        RuleKind
+  audience    RuleAudience
+  memberId    String?
+  ageBands    AgeBand[]
+  startsAt    String?
+  endsAt      String?
+  weekdays    Int[]
+  text        String
+  repairText  String?
+  createdAt   DateTime         @default(now())
+
+  agreement FamilyAgreement @relation(fields: [agreementId], references: [id], onDelete: Cascade)
+
+  @@index([agreementId])
+  @@map("agreement_rules")
+}
+
+model FocusSchedule {
+  id              String    @id
+  familyId        String
+  agreementId     String?
+  kind            FocusKind
+  title           String
+  startsAt        String
+  durationMinutes Int
+  weekdays        Int[]
+  participantIds  String[]
+  enabled         Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+
+  family    Family           @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  agreement FamilyAgreement? @relation(fields: [agreementId], references: [id], onDelete: SetNull)
+  sessions  FocusSession[]
+
+  @@index([familyId])
+  @@map("focus_schedules")
+}
+
+model FocusSession {
+  id              String             @id
+  familyId        String
+  scheduleId      String?
+  participantIds  String[]
+  startedByUserId String
+  plannedMinutes  Int
+  status          FocusSessionStatus @default(running)
+  // Always app_observed: this is our own timer, nothing else.
+  source          DataSourceKind     @default(app_observed)
+  createdAt       DateTime           @default(now())
+
+  family        Family              @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  schedule      FocusSchedule?      @relation(fields: [scheduleId], references: [id], onDelete: SetNull)
+  events        FocusSessionEvent[]
+  contributions GoalContribution[]
+
+  @@index([familyId, createdAt])
+  @@map("focus_sessions")
+}
+
+model FocusSessionEvent {
+  // The client generates this id so a retried offline upload collapses.
+  id              String         @id
+  sessionId       String
+  type            FocusEventType
+  at              DateTime
+  reason          PauseReason?
+  recordedOffline Boolean        @default(false)
+  receivedAt      DateTime       @default(now())
+
+  session FocusSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, at])
+  @@map("focus_session_events")
+}
+
+model CheckIn {
+  id               String         @id
+  familyId         String
+  userId           String
+  dayKey           String
+  sleepHours       Float?
+  bedtime          String?
+  mood             Int
+  conflict         ConflictLevel
+  note             String?
+  sharedWithFamily Boolean        @default(false)
+  source           DataSourceKind @default(self_reported)
+  createdAt        DateTime       @default(now())
+
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, dayKey])
+  @@index([familyId, dayKey])
+  @@map("check_ins")
+}
+
+model Goal {
+  id              String    @id
+  familyId        String
+  kind            GoalKind
+  title           String
+  target          Int
+  periodDays      Int       @default(7)
+  startsOnDayKey  String
+  participantIds  String[]
+  createdByUserId String
+  createdAt       DateTime  @default(now())
+  archivedAt      DateTime?
+
+  family        Family             @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  contributions GoalContribution[]
+  achievements  Achievement[]
+
+  @@index([familyId])
+  @@map("goals")
+}
+
+model GoalContribution {
+  id                  String         @id
+  goalId              String
+  familyId            String
+  contributedByUserId String
+  dayKey              String
+  amount              Int            @default(1)
+  focusSessionId      String?
+  source              DataSourceKind @default(self_reported)
+  createdAt           DateTime       @default(now())
+
+  goal         Goal          @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  family       Family        @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  contributor  User          @relation(fields: [contributedByUserId], references: [id], onDelete: Cascade)
+  focusSession FocusSession? @relation(fields: [focusSessionId], references: [id], onDelete: SetNull)
+
+  @@index([goalId])
+  @@map("goal_contributions")
+}
+
+model Achievement {
+  id         String          @id
+  familyId   String
+  kind       AchievementKind
+  goalId     String?
+  titleKey   String
+  bodyKey    String
+  earnedAt   DateTime        @default(now())
+  // There is no other value. Achievements never leave the family.
+  visibility String          @default("family_private")
+
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  goal   Goal?  @relation(fields: [goalId], references: [id], onDelete: SetNull)
+
+  @@index([familyId])
+  @@map("achievements")
+}
+
+model ActivitySuggestion {
+  id         String           @id
+  category   ActivityCategory
+  // { "nl": "...", "en": "..." } - edited by people, not by developers.
+  title      Json
+  body       Json
+  minutes    Int
+  minAge     Int
+  maxAge     Int
+  needsAdult Boolean          @default(true)
+  pack       String           @default("core")
+  // Reserved for the planned Questly hand-off; unused in this MVP.
+  questlyRef String?
+
+  @@map("activity_suggestions")
+}
+
+model EducationalArticle {
+  id          String       @id
+  slug        String       @unique
+  topic       ArticleTopic
+  title       Json
+  summary     Json
+  // { "nl": ["para", ...], "en": [...] }
+  body        Json
+  readMinutes Int
+  audience    String       @default("guardian")
+  sourceNote  Json
+  updatedAt   DateTime     @updatedAt
+
+  @@map("educational_articles")
+}
+
+model Subscription {
+  id               String              @id
+  familyId         String
+  plan             Plan                @default(free)
+  status           SubscriptionStatus  @default(none)
+  provider         BillingProviderKind @default(mock)
+  providerRef      String?
+  sponsorName      String?
+  currentPeriodEnd DateTime?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@index([familyId])
+  @@map("subscriptions")
+}
+
+model Entitlement {
+  id        String            @id
+  familyId  String
+  feature   FeatureKey
+  source    EntitlementSource
+  expiresAt DateTime?
+  createdAt DateTime          @default(now())
+
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@unique([familyId, feature])
+  @@map("entitlements")
+}
+
+model NotificationPreference {
+  id                String              @id
+  userId            String
+  familyId          String
+  enabledCategories String[]
+  quietHoursStart   String              @default("21:00")
+  quietHoursEnd     String              @default("07:30")
+  quietHoursEnabled Boolean             @default(true)
+  channel           NotificationChannel @default(push)
+  updatedAt         DateTime            @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, familyId])
+  @@map("notification_preferences")
+}
+
+model DataExportRequest {
+  id                String        @id
+  familyId          String
+  requestedByUserId String
+  scope             String
+  format            String        @default("json")
+  status            RequestStatus @default(pending)
+  requestedAt       DateTime      @default(now())
+  completedAt       DateTime?
+  expiresAt         DateTime?
+  // The bundle itself, held only until it expires.
+  payload           Json?
+
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@index([familyId])
+  @@map("data_export_requests")
+}
+
+model DeletionRequest {
+  id                String         @id
+  familyId          String
+  requestedByUserId String
+  subjectUserId     String?
+  scope             DeletionScope
+  status            DeletionStatus @default(scheduled)
+  requestedAt       DateTime       @default(now())
+  executeAfter      DateTime
+  completedAt       DateTime?
+  cancelledAt       DateTime?
+
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@index([familyId])
+  @@map("deletion_requests")
+}
+
+model AuditLog {
+  id            String   @id
+  familyId      String?
+  actorUserId   String?
+  action        String
+  subjectUserId String?
+  // Scalars only. Never a note, a message or a URL.
+  metadata      Json     @default("{}")
+  at            DateTime @default(now())
+
+  family Family? @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@index([familyId, at])
+  @@map("audit_logs")
+}

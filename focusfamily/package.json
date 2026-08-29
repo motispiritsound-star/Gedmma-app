@@ -1,0 +1,43 @@
+{
+  "name": "focusfamily",
+  "private": true,
+  "version": "0.1.0",
+  "description": "FocusFamily - collaborative family digital wellbeing / gezamenlijke digitale balans",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/api",
+    "apps/web",
+    "apps/mobile"
+  ],
+  "scripts": {
+    "build": "npm run build -w @focusfamily/domain && npm run build -w @focusfamily/db && npm run build -w @focusfamily/api && npm run build -w @focusfamily/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint . --max-warnings=0",
+    "test": "vitest run",
+    "test:unit": "vitest run --project domain --project api",
+    "test:e2e": "npm run test:e2e -w @focusfamily/web",
+    "test:mobile": "npm run test -w @focusfamily/mobile",
+    "db:generate": "npm run generate -w @focusfamily/db",
+    "db:push": "npm run push -w @focusfamily/db",
+    "db:seed": "npm run seed -w @focusfamily/db",
+    "dev:api": "npm run dev -w @focusfamily/api",
+    "dev:web": "npm run dev -w @focusfamily/web",
+    "test:setup": "prisma migrate deploy --schema packages/db/prisma/schema.prisma"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^22.10.0",
+    "eslint": "^9.17.0",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.19.0",
+    "vitest": "^2.1.8"
+  },
+  "overrides": {
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-test-renderer": "19.2.0"
+  }
+}
