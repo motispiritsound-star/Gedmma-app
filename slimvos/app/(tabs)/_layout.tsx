@@ -1,12 +1,27 @@
 import { Tabs } from 'expo-router';
+import { View } from 'react-native';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
-import { kleur, font } from '../../src/ui/thema';
+import { kleur, font, radius } from '../../src/ui/thema';
 
+/**
+ * Het actieve tabblad krijgt een gekleurd vlakje achter het icoon. Dat leest
+ * op een klein scherm sneller dan alleen een kleurverschil in de lijn.
+ */
 function TabIcoon({ soort, actief }: { soort: string; actief: boolean }) {
-  const c = actief ? kleur.merk : kleur.tekstZacht;
+  const c = actief ? kleur.merkDieper : kleur.tekstZacht;
   const lijn = { stroke: c, strokeWidth: actief ? 2.6 : 2.1, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, fill: 'none' };
   return (
-    <Svg width={26} height={26} viewBox="0 0 24 24">
+    <View
+      style={{
+        width: 52,
+        height: 32,
+        borderRadius: radius.rond,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: actief ? kleur.merkZacht : 'transparent',
+      }}
+    >
+    <Svg width={24} height={24} viewBox="0 0 24 24">
       {soort === 'oefenen' ? (
         <>
           <Circle cx={12} cy={12} r={8.5} {...lijn} />
@@ -36,6 +51,7 @@ function TabIcoon({ soort, actief }: { soort: string; actief: boolean }) {
         </>
       )}
     </Svg>
+    </View>
   );
 }
 
@@ -44,14 +60,14 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: kleur.merk,
+        tabBarActiveTintColor: kleur.merkDieper,
         tabBarInactiveTintColor: kleur.tekstZacht,
         tabBarStyle: {
           backgroundColor: kleur.kaart,
           borderTopColor: kleur.randZacht,
-          height: 68,
-          paddingBottom: 9,
-          paddingTop: 6,
+          height: 72,
+          paddingBottom: 10,
+          paddingTop: 8,
         },
         tabBarLabelStyle: { fontFamily: font.bodySemi, fontSize: 11.5 },
       }}

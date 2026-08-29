@@ -61,9 +61,10 @@ minstens twee weken voor.
 
 ## 5. Wat je nodig hebt voor de store-inzending
 
-- **Icoon** 1024×1024 zonder transparantie, en de adaptive-icon-lagen voor
-  Android. In `assets/` staan nu de placeholders van de Expo-template — die
-  moeten vervangen door een echt Slimvos-icoon.
+- **Icoon** — staat er al. `assets/` bevat een echt Slimvos-icoon plus de
+  adaptive-icon-lagen en het monochrome thema-icoon voor Android, allemaal
+  gerenderd uit dezelfde mascotte-SVG. Verander je de mascotte, draai dan
+  `node tools/maak-iconen.mjs` opnieuw (vereist Playwright).
 - **Screenshots**: iPhone 6.7" en 6.5", en voor Android telefoon + tablet.
   `npm run web` en een smalle browser zijn genoeg om ze te maken.
 - **Beschrijving** in het Nederlands, plus een korte Engelse versie.

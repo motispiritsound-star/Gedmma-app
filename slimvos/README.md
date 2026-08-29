@@ -145,6 +145,28 @@ maakt de app bruikbaar zonder internet, houdt de kosten laag en beperkt de
 AVG-verplichtingen tot een minimum — belangrijk, want de gebruikers zijn
 kinderen.
 
+## Vormgeving
+
+De app leunt op de patronen die je kent uit de best draaiende leerapps, omdat
+ze werken — niet omdat ze mooi zijn:
+
+- **Tastbare knoppen.** Elke knop heeft een donkere rand eronder die verdwijnt
+  als je hem indrukt. Je ziet de knop zakken; dat maakt tikken op een telefoon
+  bevestigend.
+- **Een leerpad in plaats van een lijst.** Binnen een vak staan de onderwerpen
+  als route, met een ring die het niveau toont, sterren eronder, en een
+  wippende bubbel bij het onderwerp dat de app nu aanraadt. Een lijst laat
+  alles even belangrijk lijken; een pad laat zien waar je bent.
+- **Een weekstrip.** Zeven bolletjes van maandag tot zondag, aangevinkt op de
+  dagen dat er geoefend is. Dat leest sneller dan een getal naast een vlammetje.
+- **Een afsluitscherm dat iets viert.** Drie tegels (goed, score, tijd),
+  confetti bij een foutloze ronde, en een aparte melding als het niveau
+  omhoog ging.
+- **Getekende iconen en een eigen app-icoon**, gemaakt uit dezelfde mascotte —
+  zie `tools/maak-iconen.mjs`, dat de PNG's uit één SVG rendert.
+- **Rustig als dat gevraagd wordt.** Zet het toestel "verminder beweging" aan,
+  dan stoppen de sier-animaties; alles blijft bedienbaar.
+
 ## Structuur
 
 ```
@@ -159,7 +181,8 @@ slimvos/
 │   ├── content/             curriculum + vraaggeneratoren per vak
 │   └── engine/              niveau, punten, sessie, profiel, badges, winkel
 ├── src/state/               AsyncStorage + React context
-├── src/ui/                  thema en gedeelde componenten
+├── src/ui/                  thema, mascotte, iconen en componenten
+├── tools/                   iconen genereren uit de mascotte-SVG
 └── test/                    node:test over src/core
 ```
 

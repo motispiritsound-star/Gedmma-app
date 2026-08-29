@@ -5,15 +5,17 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { aanbevelingen } from '../../src/core/engine/aanbeveling';
 import { levelVoortgang } from '../../src/core/engine/punten';
+import { dagenDezeWeek, weekOverzicht } from '../../src/core/engine/week';
 import { onderwerpenVoorVak, vakkenVoorGroep } from '../../src/core/content/curriculum';
 import { motivatieFilms } from '../../src/core/film/films';
 import { useApp } from '../../src/state/AppContext';
 import { Kaart } from '../../src/ui/components/Kaart';
 import { Knop } from '../../src/ui/components/Knop';
 import { Balk, Ring, Sterren } from '../../src/ui/components/Voortgang';
+import { Weekstrip } from '../../src/ui/components/Weekstrip';
 import { Vos } from '../../src/ui/Vos';
 import { Icoon, VakIcoon } from '../../src/ui/VakIcoon';
-import { kleur, kleurVoorVak, radius, ruimte, schaduw, tekst } from '../../src/ui/thema';
+import { kleur, kleurVoorVak, radius, ruimte, schaduw, tabelCijfers, tekst } from '../../src/ui/thema';
 
 export default function Thuis() {
   const router = useRouter();
@@ -28,6 +30,8 @@ export default function Thuis() {
   const vakken = vakkenVoorGroep(profiel.groep);
   const eerste = tips[0];
   const film = motivatieFilms()[profiel.streak.dagen % motivatieFilms().length];
+  const week = weekOverzicht(profiel.geschiedenis);
+  const dezeWeek = dagenDezeWeek(profiel.geschiedenis);
 
   return (
     <SafeAreaView style={styles.scherm} edges={['top']}>
@@ -50,25 +54,37 @@ export default function Thuis() {
           </View>
         </View>
 
-        <Kaart hoogte="midden" style={styles.dagKaart}>
-          <Ring
-            fractie={doelFractie}
-            kleurVoor={doelGehaald ? kleur.goed : kleur.merk}
-            midden={
-              <View style={{ alignItems: 'center' }}>
-                <Text style={tekst.cijfer}>{profiel.vandaag.vragen}</Text>
-                <Text style={tekst.klein}>van {profiel.dagdoel}</Text>
-              </View>
-            }
-          />
-          <View style={{ flex: 1, gap: ruimte.s }}>
-            <Text style={tekst.subkop}>{doelGehaald ? 'Dagdoel gehaald!' : 'Vandaag'}</Text>
-            <Text style={tekst.zacht}>
-              {doelGehaald
-                ? 'Mooi. Alles wat je nu nog doet is bonus.'
-                : `Nog ${Math.max(0, profiel.dagdoel - profiel.vandaag.vragen)} vragen te gaan.`}
+        <Kaart hoogte="midden" style={{ gap: ruimte.l }}>
+          <View style={styles.dagRij}>
+            <Ring
+              fractie={doelFractie}
+              formaat={84}
+              kleurVoor={doelGehaald ? kleur.goed : kleur.merk}
+              midden={
+                <View style={{ alignItems: 'center' }}>
+                  <Text style={[tekst.cijfer, tabelCijfers]}>{profiel.vandaag.vragen}</Text>
+                  <Text style={tekst.klein}>van {profiel.dagdoel}</Text>
+                </View>
+              }
+            />
+            <View style={{ flex: 1, gap: ruimte.s }}>
+              <Text style={tekst.subkop}>{doelGehaald ? 'Dagdoel gehaald!' : 'Vandaag'}</Text>
+              <Text style={tekst.zacht}>
+                {doelGehaald
+                  ? 'Mooi. Alles wat je nu nog doet is bonus.'
+                  : `Nog ${Math.max(0, profiel.dagdoel - profiel.vandaag.vragen)} vragen te gaan.`}
+              </Text>
+              <Balk fractie={voortgang.fractie} hoogte={8} label={`Nog ${voortgang.xpVoorVolgend} XP tot level ${voortgang.level + 1}`} />
+            </View>
+          </View>
+
+          <View style={styles.scheiding} />
+
+          <View style={{ gap: ruimte.s }}>
+            <Text style={tekst.label}>
+              Deze week {dezeWeek === 0 ? 'nog niet geoefend' : `${dezeWeek} ${dezeWeek === 1 ? 'dag' : 'dagen'} geoefend`}
             </Text>
-            <Balk fractie={voortgang.fractie} hoogte={8} label={`Nog ${voortgang.xpVoorVolgend} XP tot level ${voortgang.level + 1}`} />
+            <Weekstrip dagen={week} />
           </View>
         </Kaart>
 
@@ -204,7 +220,8 @@ const styles = StyleSheet.create({
   },
   tellerTekst: { ...tekst.bodyVet, fontSize: 14 },
   avatar: { fontSize: 32 },
-  dagKaart: { flexDirection: 'row', alignItems: 'center', gap: ruimte.l },
+  dagRij: { flexDirection: 'row', alignItems: 'center', gap: ruimte.l },
+  scheiding: { height: 1, backgroundColor: kleur.randZacht },
   verderRaam: { borderRadius: radius.l, overflow: 'hidden', ...schaduw.midden },
   verder: { padding: ruimte.l, gap: ruimte.l },
   verderTop: { flexDirection: 'row', alignItems: 'center', gap: ruimte.s },

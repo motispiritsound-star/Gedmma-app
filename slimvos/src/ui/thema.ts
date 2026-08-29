@@ -121,6 +121,23 @@ export const tabelCijfers: TextStyle = { fontVariant: ['tabular-nums'] };
 
 export const RAAKVLAK = 56;
 
+/**
+ * Hoe diep een knop "in zijn sokkel" zit. De donkere rand eronder is wat een
+ * knop tastbaar maakt: je ziet hem indrukken in plaats van alleen verkleuren.
+ */
+export const KNOPDIEPTE = 5;
+
+/** De donkere rand onder elk knopvlak. */
+export const knopRand = {
+  merk: '#A8410F',
+  zacht: oranje[100],
+  rand: inkt[200],
+  goed: '#157544',
+  fout: '#A32424',
+  slot: '#5B3FB0',
+  kaal: 'transparent',
+} as const;
+
 export const schaduw = {
   klein: {
     shadowColor: '#3B3020',

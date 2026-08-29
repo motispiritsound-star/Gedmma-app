@@ -25,7 +25,7 @@ import { Confetti } from '../../src/ui/components/Confetti';
 import { Balk } from '../../src/ui/components/Voortgang';
 import { Vos } from '../../src/ui/Vos';
 import { Icoon } from '../../src/ui/VakIcoon';
-import { kleur, kleurVoorVak, radius, RAAKVLAK, ruimte, tekst } from '../../src/ui/thema';
+import { kleur, kleurVoorVak, radius, RAAKVLAK, ruimte, tabelCijfers, tekst } from '../../src/ui/thema';
 
 type Fase = 'vraag' | 'feedback' | 'klaar';
 
@@ -143,17 +143,43 @@ export default function Oefenen() {
     const perfect = eindstand.goed === eindstand.aantal && eindstand.aantal > 0;
     const goedBezig = eindstand.procent >= 60;
     const film = filmsVoorOnderwerp(onderwerp.id)[0];
+    const beheersing = profiel.beheersing[onderwerp.id];
+    const gestegen = beheersing && beheersing.niveau > sessie.niveauBijStart;
+    const seconden = Math.max(1, Math.round(eindstand.duurMs / 1000));
+    const tijd = seconden < 60 ? `${seconden} sec` : `${Math.round(seconden / 60)} min`;
+
     return (
-      <SafeAreaView style={styles.scherm}>
+      <SafeAreaView style={styles.scherm} testID="uitslag">
         <Confetti actief={perfect} />
         <ScrollView contentContainerStyle={styles.inhoud} showsVerticalScrollIndicator={false}>
           <View style={styles.uitslagKop}>
-            <Vos uitdrukking={perfect ? 'juich' : goedBezig ? 'blij' : 'troost'} formaat={124} />
+            <Vos uitdrukking={perfect ? 'juich' : goedBezig ? 'blij' : 'troost'} formaat={118} />
             <Text style={tekst.titel}>{perfect ? 'Alles goed!' : goedBezig ? 'Goed gedaan!' : 'Bijna!'}</Text>
-            <Text style={tekst.body}>
-              {eindstand.goed} van de {eindstand.aantal} goed ({eindstand.procent}%)
+            <Text style={[tekst.body, styles.midden]}>
+              {perfect
+                ? 'Geen enkele fout. Dat mag gevierd worden.'
+                : goedBezig
+                  ? 'Je hebt er weer een paar bij geleerd.'
+                  : 'Dit onderwerp is nog lastig. Daar komen we vanzelf.'}
             </Text>
           </View>
+
+          {/* De opbrengst van deze ronde in één oogopslag. */}
+          <View style={styles.tegels}>
+            <Tegel label="Goed" waarde={`${eindstand.goed}/${eindstand.aantal}`} tint={kleur.goed} />
+            <Tegel label="Score" waarde={`${eindstand.procent}%`} tint={kleur.merk} />
+            <Tegel label="Tijd" waarde={tijd} tint={kleur.slot} />
+          </View>
+
+          {gestegen ? (
+            <Kaart style={styles.niveauKaart}>
+              <Text style={tekst.label}>Niveau omhoog</Text>
+              <Text style={tekst.subkop}>
+                Van niveau {sessie.niveauBijStart} naar {beheersing.niveau}
+              </Text>
+              <Text style={tekst.zacht}>De vragen worden vanaf nu een stukje moeilijker.</Text>
+            </Kaart>
+          ) : null}
 
           {verse.length > 0 ? (
             <Kaart style={styles.badgeKaart}>
@@ -184,17 +210,21 @@ export default function Oefenen() {
 
           {!goedBezig && film ? (
             <Kaart onPress={() => router.replace(`/film/${film.id}`)} style={styles.filmKaart} accessibilityLabel={`Filmpje: ${film.titel}`}>
-              <Icoon soort="speel" formaat={17} kleur={kleur.slot} />
+              <View style={styles.filmSpeel}>
+                <Icoon soort="speel" formaat={16} kleur="#FFFFFF" />
+              </View>
               <View style={{ flex: 1 }}>
                 <Text style={tekst.bodyVet}>Vos legt het uit</Text>
-                <Text style={tekst.klein}>{film.titel} · {film.pitch}</Text>
+                <Text style={tekst.klein}>{film.titel}</Text>
               </View>
             </Kaart>
           ) : null}
-
-          <Knop testID="nog-een-ronde" titel="Nog een ronde" onPress={nogEenRonde} />
-          <Knop testID="terug" titel="Klaar voor nu" soort="rand" onPress={terug} />
         </ScrollView>
+
+        <View style={styles.voet}>
+          <Knop testID="nog-een-ronde" titel="Nog een ronde" onPress={nogEenRonde} />
+          <Knop testID="terug" titel="Klaar voor nu" soort="kaal" klein onPress={terug} />
+        </View>
       </SafeAreaView>
     );
   }
@@ -315,6 +345,15 @@ export default function Oefenen() {
   );
 }
 
+function Tegel({ label, waarde, tint }: { label: string; waarde: string; tint: string }) {
+  return (
+    <View style={[styles.tegel, { borderColor: `${tint}44`, backgroundColor: `${tint}12` }]}>
+      <Text style={[tekst.label, { color: tint }]}>{label}</Text>
+      <Text style={[tekst.cijfer, tabelCijfers, { color: tint }]}>{waarde}</Text>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   scherm: { flex: 1, backgroundColor: kleur.grond },
   leeg: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: ruimte.xl, gap: ruimte.m },
@@ -360,8 +399,26 @@ const styles = StyleSheet.create({
   uitlegGoed: { backgroundColor: kleur.goedZacht, borderColor: kleur.goedRand, gap: ruimte.s },
   uitlegFout: { backgroundColor: kleur.foutZacht, borderColor: kleur.foutRand, gap: ruimte.s },
   uitlegKop: { flexDirection: 'row', alignItems: 'center', gap: ruimte.s },
-  voet: { padding: ruimte.l, borderTopWidth: 1, borderTopColor: kleur.randZacht, backgroundColor: kleur.grond },
+  voet: { padding: ruimte.l, gap: ruimte.s, borderTopWidth: 1, borderTopColor: kleur.randZacht, backgroundColor: kleur.grond },
   uitslagKop: { alignItems: 'center', gap: ruimte.xs },
+  tegels: { flexDirection: 'row', gap: ruimte.m },
+  tegel: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 2,
+    paddingVertical: ruimte.m,
+    borderRadius: radius.m,
+    borderWidth: 1.5,
+  },
+  niveauKaart: { backgroundColor: kleur.slotZacht, borderColor: '#DED3F8', gap: ruimte.xs },
+  filmSpeel: {
+    width: 38,
+    height: 38,
+    borderRadius: radius.rond,
+    backgroundColor: kleur.slot,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   badgeKaart: { backgroundColor: kleur.goudZacht, borderColor: kleur.goudRand, gap: ruimte.xs },
   foutRij: { marginTop: ruimte.m, gap: 3 },
   filmKaart: { flexDirection: 'row', alignItems: 'center', gap: ruimte.m, backgroundColor: kleur.slotZacht, borderColor: '#DED3F8' },

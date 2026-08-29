@@ -6,6 +6,7 @@ import { beantwoord, huidigeVraag, resultaat, startSessie, volgende } from '../s
 import { nieuwProfiel, verwerkRonde, huidigNiveau, migreerProfiel } from '../src/core/engine/profiel';
 import { BADGES, metBadges, nieuweBadges, verdiendeBadges } from '../src/core/engine/badges';
 import { aanbevelingen, volgendeOefening } from '../src/core/engine/aanbeveling';
+import { dagenDezeWeek, weekOverzicht } from '../src/core/engine/week';
 import { koop, kanKopen, WINKEL, kiesAvatar } from '../src/core/engine/winkel';
 import { MAX_NIVEAU, MIN_NIVEAU } from '../src/core/types';
 
@@ -259,4 +260,31 @@ test('een opgeslagen profiel van een oudere vorm blijft bruikbaar', () => {
   assert.ok(Array.isArray(p!.badges));
   assert.equal(migreerProfiel(null), null);
   assert.equal(migreerProfiel({ naam: 'zonder groep' }), null);
+});
+
+test('de weekstrip loopt van maandag tot zondag', () => {
+  // 2026-08-26 is een woensdag.
+  const woensdag = new Date(2026, 7, 26, 12).getTime();
+  const week = weekOverzicht([], woensdag);
+  assert.equal(week.length, 7);
+  assert.equal(week[0].naam, 'maandag');
+  assert.equal(week[6].naam, 'zondag');
+  assert.equal(week[2].isVandaag, true, 'woensdag is vandaag');
+  assert.equal(week[1].isToekomst, false);
+  assert.equal(week[3].isToekomst, true, 'donderdag ligt nog voor ons');
+});
+
+test('de weekstrip telt de vragen per dag op', () => {
+  const woensdag = new Date(2026, 7, 26, 12).getTime();
+  const dinsdag = new Date(2026, 7, 25, 9).getTime();
+  const geschiedenis = [
+    { onderwerpId: 'x', tijd: woensdag, aantal: 10, goed: 8, xp: 100, niveauVoor: 2, niveauNa: 2, duurMs: 1000 },
+    { onderwerpId: 'y', tijd: woensdag, aantal: 5, goed: 5, xp: 60, niveauVoor: 2, niveauNa: 3, duurMs: 900 },
+    { onderwerpId: 'z', tijd: dinsdag, aantal: 10, goed: 6, xp: 70, niveauVoor: 1, niveauNa: 1, duurMs: 800 },
+  ];
+  const week = weekOverzicht(geschiedenis, woensdag);
+  assert.equal(week[1].vragen, 10, 'dinsdag');
+  assert.equal(week[2].vragen, 15, 'woensdag: twee rondes bij elkaar');
+  assert.equal(week[0].vragen, 0, 'maandag');
+  assert.equal(dagenDezeWeek(geschiedenis, woensdag), 2);
 });
