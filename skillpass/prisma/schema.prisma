@@ -1,0 +1,1045 @@
+// SkillPass — Prisma schema
+// Conventions:
+//  - Money is stored in MINOR currency units (cents) as Int, always with a currency code.
+//  - Credits are whole numbers and are ONLY derived from append-only CreditLedgerEntry rows.
+//  - Every table carries createdAt/updatedAt; soft state is expressed through explicit enums.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// ---------------------------------------------------------------------------
+/// Enums
+/// ---------------------------------------------------------------------------
+
+enum Locale {
+  NL
+  EN
+}
+
+enum UserRole {
+  GUARDIAN
+  PROVIDER_STAFF
+  ADMIN
+  SAFEGUARDING_OFFICER
+}
+
+enum UserStatus {
+  PENDING_VERIFICATION
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+/// Age bands avoid storing an exact date of birth (data minimisation).
+enum AgeBand {
+  AGE_6_8
+  AGE_9_11
+  AGE_12_14
+  AGE_15_17
+}
+
+enum FamilyRole {
+  OWNER
+  CO_GUARDIAN
+}
+
+enum ProviderStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum VerificationDocumentType {
+  CHAMBER_OF_COMMERCE
+  LIABILITY_INSURANCE
+  VOG_DECLARATION
+  SAFEGUARDING_POLICY
+  IDENTITY
+  OTHER
+}
+
+enum VerificationDecision {
+  PENDING
+  MORE_INFO_REQUIRED
+  APPROVED
+  REJECTED
+}
+
+enum ProviderStaffRole {
+  OWNER
+  MANAGER
+  INSTRUCTOR
+}
+
+enum ActivityCategory {
+  SPORTS
+  MUSIC
+  COOKING
+  ART
+  CRAFTS
+  TECHNOLOGY
+  NATURE
+  THEATRE
+  PRACTICAL_SKILLS
+  DANCE
+  LANGUAGES
+  SCIENCE
+}
+
+enum ActivityStatus {
+  DRAFT
+  PENDING_REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ActivityLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  ALL_LEVELS
+}
+
+enum SessionStatus {
+  SCHEDULED
+  CANCELLED
+  COMPLETED
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED_BY_GUARDIAN
+  CANCELLED_BY_PROVIDER
+  COMPLETED
+  NO_SHOW
+}
+
+enum WaitlistStatus {
+  WAITING
+  PROMOTED
+  EXPIRED
+  CANCELLED
+}
+
+enum AttendanceStatus {
+  EXPECTED
+  ATTENDED
+  ABSENT
+  EXCUSED
+}
+
+enum PlanTier {
+  FREE_DISCOVERY
+  FAMILY_MONTHLY
+  PROVIDER_PRO
+}
+
+enum PlanAudience {
+  GUARDIAN
+  PROVIDER
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+}
+
+enum CreditEntryType {
+  MONTHLY_GRANT
+  SIGNUP_BONUS
+  BOOKING_DEDUCTION
+  CANCELLATION_REFUND
+  ADMIN_ADJUSTMENT
+  EXPIRY
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum PaymentPurpose {
+  SUBSCRIPTION
+  ONE_OFF
+  CANCELLATION_FEE
+}
+
+enum RefundStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
+enum PayoutStatus {
+  PENDING
+  IN_TRANSIT
+  PAID
+  FAILED
+}
+
+enum ReviewStatus {
+  PUBLISHED
+  HIDDEN
+  REMOVED
+}
+
+enum IncidentCategory {
+  INJURY
+  BEHAVIOUR
+  SAFEGUARDING
+  FACILITY
+  DISCRIMINATION
+  OTHER
+}
+
+enum IncidentSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum IncidentStatus {
+  OPEN
+  UNDER_REVIEW
+  ESCALATED
+  RESOLVED
+  CLOSED
+}
+
+enum SafeguardingCaseStatus {
+  OPEN
+  INVESTIGATING
+  REFERRED_TO_AUTHORITY
+  CLOSED
+}
+
+enum NotificationChannel {
+  IN_APP
+  EMAIL
+}
+
+enum NotificationCategory {
+  ACCOUNT
+  BOOKING_CONFIRMED
+  BOOKING_CANCELLED
+  WAITLIST_PROMOTED
+  SESSION_REMINDER
+  CREDITS_GRANTED
+  PROVIDER_VERIFICATION
+  PROVIDER_ANNOUNCEMENT
+  INCIDENT
+  SAFEGUARDING
+}
+
+enum ConsentType {
+  TERMS_OF_SERVICE
+  PRIVACY_POLICY
+  CHILD_DATA_PROCESSING
+  MEDICAL_SHARING
+  MARKETING_EMAIL
+}
+
+enum MediaVisibility {
+  PUBLIC
+  PRIVATE
+}
+
+/// ---------------------------------------------------------------------------
+/// Identity & family
+/// ---------------------------------------------------------------------------
+
+model User {
+  id               String     @id @default(cuid())
+  email            String     @unique
+  emailNormalised  String     @unique
+  passwordHash     String
+  displayName      String
+  phone            String?
+  role             UserRole   @default(GUARDIAN)
+  status           UserStatus @default(PENDING_VERIFICATION)
+  locale           Locale     @default(NL)
+  emailVerifiedAt  DateTime?
+  lastLoginAt      DateTime?
+  failedLoginCount Int        @default(0)
+  lockedUntil      DateTime?
+  /// Set when the account has been erased under a data-deletion request.
+  anonymisedAt     DateTime?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  authSessions      AuthSession[]
+  emailTokens       EmailToken[]
+  memberships       FamilyMembership[]
+  providerRoles     ProviderStaff[]
+  reviews           Review[]
+  favourites        Favourite[]
+  notifications     Notification[]
+  auditLogs         AuditLog[]             @relation("AuditActor")
+  consents          Consent[]
+  reportedIncidents Incident[]             @relation("IncidentReporter")
+  verificationsMade ProviderVerification[] @relation("VerificationReviewer")
+  safeguardingCases SafeguardingCase[]     @relation("SafeguardingOfficer")
+  bookingsCreated   Booking[]              @relation("BookingCreatedBy")
+  messagesSent      ProviderMessage[]      @relation("ProviderMessageSender")
+  messagesReceived  ProviderMessage[]      @relation("ProviderMessageRecipient")
+
+  @@index([role, status])
+  @@index([createdAt])
+}
+
+model AuthSession {
+  id        String    @id @default(cuid())
+  /// SHA-256 of the opaque session token; the raw token never touches the DB.
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ipHash    String?
+  userAgent String?
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId, expiresAt])
+}
+
+model EmailToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  purpose   String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, purpose])
+}
+
+model Family {
+  id        String   @id @default(cuid())
+  name      String
+  cityId    String?
+  city      City?    @relation(fields: [cityId], references: [id])
+  locale    Locale   @default(NL)
+  currency  String   @default("EUR") @db.VarChar(3)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  memberships   FamilyMembership[]
+  children      ChildProfile[]
+  subscriptions Subscription[]
+  bookings      Booking[]
+  waitlist      WaitlistEntry[]
+  ledger        CreditLedgerEntry[]
+  payments      Payment[]
+  favourites    Favourite[]
+  reviews       Review[]
+
+  @@index([cityId])
+}
+
+model FamilyMembership {
+  id        String     @id @default(cuid())
+  familyId  String
+  family    Family     @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      FamilyRole @default(OWNER)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@unique([familyId, userId])
+  @@index([userId])
+}
+
+/// A child profile is never an independent account: it has no credentials,
+/// no public page and no login. It is always reached through a guardian.
+model ChildProfile {
+  id                 String    @id @default(cuid())
+  familyId           String
+  family             Family    @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  /// Nickname only — full names of children are not collected.
+  nickname           String
+  ageBand            AgeBand
+  pronouns           String?
+  accessibilityNeeds String?
+  /// Free-text notes shared with a provider only for a confirmed booking.
+  medicalNotes       String?
+  preferredLanguages String[]  @default([])
+  archivedAt         DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  interests   Interest[]      @relation("ChildInterests")
+  bookings    Booking[]
+  waitlist    WaitlistEntry[]
+  attendances Attendance[]
+  favourites  Favourite[]
+
+  @@index([familyId, archivedAt])
+  @@index([ageBand])
+}
+
+model Interest {
+  id        String           @id @default(cuid())
+  slug      String           @unique
+  labelNl   String
+  labelEn   String
+  category  ActivityCategory
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  children   ChildProfile[] @relation("ChildInterests")
+  activities Activity[]     @relation("ActivityInterests")
+
+  @@index([category])
+}
+
+model Consent {
+  id        String      @id @default(cuid())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      ConsentType
+  granted   Boolean
+  version   String
+  ipHash    String?
+  grantedAt DateTime    @default(now())
+  revokedAt DateTime?
+
+  @@index([userId, type])
+}
+
+/// ---------------------------------------------------------------------------
+/// Geography
+/// ---------------------------------------------------------------------------
+
+model City {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  name          String
+  countryCode   String   @db.VarChar(2)
+  currency      String   @default("EUR") @db.VarChar(3)
+  timezone      String   @default("Europe/Amsterdam")
+  defaultLocale Locale   @default(NL)
+  latitude      Float
+  longitude     Float
+  isLaunchCity  Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  venues   Venue[]
+  families Family[]
+}
+
+model Venue {
+  id                   String   @id @default(cuid())
+  providerId           String
+  provider             Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  name                 String
+  addressLine1         String
+  postalCode           String
+  cityId               String
+  city                 City     @relation(fields: [cityId], references: [id])
+  latitude             Float
+  longitude            Float
+  /// Coarse coordinates (~500m grid) shown before a booking is confirmed.
+  approxLatitude       Float
+  approxLongitude      Float
+  accessibilityNotes   String?
+  wheelchairAccessible Boolean  @default(false)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  activities Activity[]
+
+  @@index([cityId])
+  @@index([providerId])
+}
+
+/// ---------------------------------------------------------------------------
+/// Providers
+/// ---------------------------------------------------------------------------
+
+model Provider {
+  id                    String         @id @default(cuid())
+  slug                  String         @unique
+  legalName             String
+  displayName           String
+  description           String
+  /// Dutch Chamber of Commerce number (KVK). Format-checked only, never treated
+  /// as conclusive proof of identity — see SAFEGUARDING.md.
+  chamberOfCommerceNo   String?
+  vatNumber             String?
+  contactEmail          String
+  contactPhone          String?
+  contactPersonName     String
+  websiteUrl            String?
+  status                ProviderStatus @default(DRAFT)
+  liabilityInsurer      String?
+  liabilityPolicyNo     String?
+  insuranceExpiresAt    DateTime?
+  safeguardingPolicyUrl String?
+  vogDeclared           Boolean        @default(false)
+  approvedAt            DateTime?
+  suspendedAt           DateTime?
+  payoutAccountRef      String?
+  commissionBps         Int            @default(1500)
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  venues        Venue[]
+  staff         ProviderStaff[]
+  verifications ProviderVerification[]
+  activities    Activity[]
+  payouts       Payout[]
+  incidents     Incident[]
+  subscriptions Subscription[]
+  messages      ProviderMessage[]
+  media         MediaAsset[]
+
+  @@index([status])
+}
+
+model ProviderVerification {
+  id           String                   @id @default(cuid())
+  providerId   String
+  provider     Provider                 @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  documentType VerificationDocumentType
+  mediaAssetId String?
+  mediaAsset   MediaAsset?              @relation(fields: [mediaAssetId], references: [id])
+  reference    String?
+  decision     VerificationDecision     @default(PENDING)
+  reviewerId   String?
+  reviewer     User?                    @relation("VerificationReviewer", fields: [reviewerId], references: [id])
+  reviewerNote String?
+  submittedAt  DateTime                 @default(now())
+  decidedAt    DateTime?
+  expiresAt    DateTime?
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @updatedAt
+
+  @@index([providerId, decision])
+  @@index([decision, submittedAt])
+}
+
+model ProviderStaff {
+  id            String            @id @default(cuid())
+  providerId    String
+  provider      Provider          @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role          ProviderStaffRole @default(INSTRUCTOR)
+  /// Fine-grained permission slugs, e.g. "sessions:write", "bookings:checkin".
+  permissions   String[]          @default([])
+  vogVerifiedAt DateTime?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  activitiesLed Activity[]   @relation("ActivityInstructor")
+  attendances   Attendance[] @relation("AttendanceRecordedBy")
+
+  @@unique([providerId, userId])
+  @@index([userId])
+}
+
+/// ---------------------------------------------------------------------------
+/// Catalogue
+/// ---------------------------------------------------------------------------
+
+model Activity {
+  id                   String           @id @default(cuid())
+  providerId           String
+  provider             Provider         @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  venueId              String
+  venue                Venue            @relation(fields: [venueId], references: [id])
+  instructorId         String?
+  instructor           ProviderStaff?   @relation("ActivityInstructor", fields: [instructorId], references: [id])
+  slug                 String           @unique
+  category             ActivityCategory
+  level                ActivityLevel    @default(ALL_LEVELS)
+  status               ActivityStatus   @default(DRAFT)
+  minAgeBand           AgeBand
+  maxAgeBand           AgeBand
+  creditCost           Int
+  /// Reference price used for provider revenue estimates and payouts.
+  listPriceCents       Int
+  currency             String           @default("EUR") @db.VarChar(3)
+  languages            Locale[]         @default([NL])
+  wheelchairAccessible Boolean          @default(false)
+  sensoryFriendly      Boolean          @default(false)
+  trialAvailable       Boolean          @default(false)
+  equipmentProvided    Boolean          @default(true)
+  cancellationHours    Int              @default(24)
+  publishedAt          DateTime?
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+
+  translations ActivityTranslation[]
+  sessions     Session[]
+  interests    Interest[]            @relation("ActivityInterests")
+  reviews      Review[]
+  favourites   Favourite[]
+  media        MediaAsset[]
+
+  @@index([status, category])
+  @@index([providerId, status])
+  @@index([minAgeBand, maxAgeBand])
+}
+
+model ActivityTranslation {
+  id                String   @id @default(cuid())
+  activityId        String
+  activity          Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  locale            Locale
+  title             String
+  summary           String
+  description       String
+  whatToBring       String?
+  safetyNotes       String?
+  cancellationTerms String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([activityId, locale])
+  @@index([locale])
+}
+
+model Session {
+  id                 String        @id @default(cuid())
+  activityId         String
+  activity           Activity      @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  startsAt           DateTime
+  endsAt             DateTime
+  status             SessionStatus @default(SCHEDULED)
+  cancelledAt        DateTime?
+  cancellationReason String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  capacity    Capacity?
+  bookings    Booking[]
+  waitlist    WaitlistEntry[]
+  attendances Attendance[]
+  incidents   Incident[]
+
+  @@index([activityId, startsAt])
+  @@index([startsAt, status])
+}
+
+/// Capacity is a separate row so seat reservation is a single atomic UPDATE
+/// guarded by a CHECK constraint (see prisma/migrations + booking service).
+model Capacity {
+  id            String   @id @default(cuid())
+  sessionId     String   @unique
+  session       Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  totalSeats    Int
+  seatsTaken    Int      @default(0)
+  waitlistLimit Int      @default(20)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+/// ---------------------------------------------------------------------------
+/// Bookings
+/// ---------------------------------------------------------------------------
+
+model Booking {
+  id                 String        @id @default(cuid())
+  reference          String        @unique
+  familyId           String
+  family             Family        @relation(fields: [familyId], references: [id])
+  childProfileId     String
+  childProfile       ChildProfile  @relation(fields: [childProfileId], references: [id])
+  sessionId          String
+  session            Session       @relation(fields: [sessionId], references: [id])
+  createdById        String
+  createdBy          User          @relation("BookingCreatedBy", fields: [createdById], references: [id])
+  status             BookingStatus @default(CONFIRMED)
+  creditsCharged     Int
+  isTrial            Boolean       @default(false)
+  cancelledAt        DateTime?
+  cancellationReason String?
+  /// True when cancellation happened inside the provider's cancellation window.
+  lateCancellation   Boolean       @default(false)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  attendance    Attendance?
+  review        Review?
+  ledgerEntries CreditLedgerEntry[]
+
+  @@unique([sessionId, childProfileId])
+  @@index([familyId, status])
+  @@index([sessionId, status])
+}
+
+model WaitlistEntry {
+  id             String         @id @default(cuid())
+  sessionId      String
+  session        Session        @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  familyId       String
+  family         Family         @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  childProfileId String
+  childProfile   ChildProfile   @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  position       Int
+  status         WaitlistStatus @default(WAITING)
+  promotedAt     DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@unique([sessionId, childProfileId])
+  @@index([sessionId, status, position])
+}
+
+model Attendance {
+  id             String           @id @default(cuid())
+  bookingId      String           @unique
+  booking        Booking          @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  sessionId      String
+  session        Session          @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  childProfileId String
+  childProfile   ChildProfile     @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  status         AttendanceStatus @default(EXPECTED)
+  checkedInAt    DateTime?
+  recordedById   String?
+  recordedBy     ProviderStaff?   @relation("AttendanceRecordedBy", fields: [recordedById], references: [id])
+  note           String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@index([sessionId, status])
+}
+
+/// ---------------------------------------------------------------------------
+/// Billing
+/// ---------------------------------------------------------------------------
+
+model SubscriptionPlan {
+  id             String       @id @default(cuid())
+  slug           String       @unique
+  tier           PlanTier
+  audience       PlanAudience @default(GUARDIAN)
+  nameNl         String
+  nameEn         String
+  descriptionNl  String
+  descriptionEn  String
+  priceCents     Int
+  currency       String       @default("EUR") @db.VarChar(3)
+  monthlyCredits Int          @default(0)
+  /// Unused credits that may roll over into the next period.
+  rolloverLimit  Int          @default(0)
+  commissionBps  Int          @default(1500)
+  trialDays      Int          @default(0)
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  subscriptions Subscription[]
+
+  @@index([audience, isActive])
+}
+
+model Subscription {
+  id                 String             @id @default(cuid())
+  planId             String
+  plan               SubscriptionPlan   @relation(fields: [planId], references: [id])
+  familyId           String?
+  family             Family?            @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  providerId         String?
+  provider           Provider?          @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  status             SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean            @default(false)
+  cancelledAt        DateTime?
+  externalRef        String?            @unique
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  ledgerEntries CreditLedgerEntry[]
+  payments      Payment[]
+
+  @@index([familyId, status])
+  @@index([providerId, status])
+}
+
+/// Append-only ledger. Rows are never updated or deleted; the balance is the
+/// SUM of `delta` for a family. Guarded by a DB trigger (see migration SQL).
+model CreditLedgerEntry {
+  id             String          @id @default(cuid())
+  familyId       String
+  family         Family          @relation(fields: [familyId], references: [id])
+  subscriptionId String?
+  subscription   Subscription?   @relation(fields: [subscriptionId], references: [id])
+  bookingId      String?
+  booking        Booking?        @relation(fields: [bookingId], references: [id])
+  type           CreditEntryType
+  /// Positive = credits added, negative = credits consumed.
+  delta          Int
+  /// Running balance after this entry, for fast statements and reconciliation.
+  balanceAfter   Int
+  description    String
+  /// Guarantees exactly-once posting for retried operations and webhooks.
+  idempotencyKey String
+  periodStart    DateTime?
+  periodEnd      DateTime?
+  createdAt      DateTime        @default(now())
+
+  @@unique([familyId, idempotencyKey])
+  @@index([familyId, createdAt])
+  @@index([bookingId])
+}
+
+model Payment {
+  id             String         @id @default(cuid())
+  familyId       String?
+  family         Family?        @relation(fields: [familyId], references: [id])
+  subscriptionId String?
+  subscription   Subscription?  @relation(fields: [subscriptionId], references: [id])
+  purpose        PaymentPurpose @default(SUBSCRIPTION)
+  amountCents    Int
+  currency       String         @default("EUR") @db.VarChar(3)
+  status         PaymentStatus  @default(PENDING)
+  provider       String         @default("mock")
+  externalRef    String         @unique
+  failureReason  String?
+  paidAt         DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  refunds Refund[]
+
+  @@index([familyId, status])
+}
+
+model Refund {
+  id            String       @id @default(cuid())
+  paymentId     String
+  payment       Payment      @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  amountCents   Int
+  currency      String       @default("EUR") @db.VarChar(3)
+  reason        String
+  status        RefundStatus @default(PENDING)
+  externalRef   String?      @unique
+  requestedById String?
+  processedAt   DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([paymentId, status])
+}
+
+model Payout {
+  id              String       @id @default(cuid())
+  providerId      String
+  provider        Provider     @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  periodStart     DateTime
+  periodEnd       DateTime
+  grossCents      Int
+  commissionCents Int
+  netCents        Int
+  currency        String       @default("EUR") @db.VarChar(3)
+  status          PayoutStatus @default(PENDING)
+  externalRef     String?      @unique
+  paidAt          DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@unique([providerId, periodStart, periodEnd])
+  @@index([status])
+}
+
+model WebhookEvent {
+  id          String    @id @default(cuid())
+  provider    String
+  eventId     String
+  eventType   String
+  payloadHash String
+  processedAt DateTime?
+  receivedAt  DateTime  @default(now())
+
+  @@unique([provider, eventId])
+  @@index([eventType, receivedAt])
+}
+
+/// ---------------------------------------------------------------------------
+/// Engagement
+/// ---------------------------------------------------------------------------
+
+model Review {
+  id             String       @id @default(cuid())
+  bookingId      String       @unique
+  booking        Booking      @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  activityId     String
+  activity       Activity     @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  familyId       String
+  family         Family       @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  /// Reviews are written by the guardian, never by or about a named child.
+  authorId       String
+  author         User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  rating         Int
+  title          String?
+  body           String
+  status         ReviewStatus @default(PUBLISHED)
+  moderationNote String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([activityId, status])
+  @@index([familyId])
+}
+
+model Favourite {
+  id             String        @id @default(cuid())
+  familyId       String
+  family         Family        @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activityId     String
+  activity       Activity      @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  childProfileId String?
+  childProfile   ChildProfile? @relation(fields: [childProfileId], references: [id], onDelete: SetNull)
+  createdAt      DateTime      @default(now())
+
+  @@unique([familyId, activityId, childProfileId])
+  @@index([activityId])
+}
+
+model Notification {
+  id        String               @id @default(cuid())
+  userId    String
+  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel   NotificationChannel  @default(IN_APP)
+  category  NotificationCategory
+  titleNl   String
+  titleEn   String
+  bodyNl    String
+  bodyEn    String
+  link      String?
+  readAt    DateTime?
+  sentAt    DateTime?
+  createdAt DateTime             @default(now())
+
+  @@index([userId, readAt])
+  @@index([category, createdAt])
+}
+
+/// Structured, moderated provider -> guardian message. There is no channel that
+/// can address a ChildProfile: recipients are always adult guardian accounts.
+model ProviderMessage {
+  id          String   @id @default(cuid())
+  providerId  String
+  provider    Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  senderId    String
+  sender      User     @relation("ProviderMessageSender", fields: [senderId], references: [id])
+  recipientId String
+  recipient   User     @relation("ProviderMessageRecipient", fields: [recipientId], references: [id])
+  templateKey String
+  variables   Json     @default("{}")
+  sentAt      DateTime @default(now())
+
+  @@index([providerId, sentAt])
+  @@index([recipientId])
+}
+
+/// ---------------------------------------------------------------------------
+/// Safety
+/// ---------------------------------------------------------------------------
+
+model Incident {
+  id         String           @id @default(cuid())
+  reference  String           @unique
+  providerId String?
+  provider   Provider?        @relation(fields: [providerId], references: [id])
+  sessionId  String?
+  session    Session?         @relation(fields: [sessionId], references: [id])
+  reporterId String?
+  reporter   User?            @relation("IncidentReporter", fields: [reporterId], references: [id])
+  category   IncidentCategory
+  severity   IncidentSeverity @default(LOW)
+  status     IncidentStatus   @default(OPEN)
+  summary    String
+  details    String
+  resolution String?
+  occurredAt DateTime
+  resolvedAt DateTime?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  safeguardingCase SafeguardingCase?
+
+  @@index([status, severity])
+  @@index([providerId, status])
+}
+
+model SafeguardingCase {
+  id                 String                 @id @default(cuid())
+  reference          String                 @unique
+  incidentId         String                 @unique
+  incident           Incident               @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  officerId          String?
+  officer            User?                  @relation("SafeguardingOfficer", fields: [officerId], references: [id])
+  status             SafeguardingCaseStatus @default(OPEN)
+  /// Restricted narrative, readable only by the safeguarding role.
+  caseNotes          String?
+  authorityReference String?
+  openedAt           DateTime               @default(now())
+  closedAt           DateTime?
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+
+  @@index([status])
+}
+
+model AuditLog {
+  id          String    @id @default(cuid())
+  actorUserId String?
+  actor       User?     @relation("AuditActor", fields: [actorUserId], references: [id])
+  actorRole   UserRole?
+  action      String
+  entityType  String
+  entityId    String?
+  metadata    Json      @default("{}")
+  ipHash      String?
+  userAgent   String?
+  createdAt   DateTime  @default(now())
+
+  @@index([entityType, entityId])
+  @@index([actorUserId, createdAt])
+  @@index([action, createdAt])
+}
+
+model MediaAsset {
+  id           String          @id @default(cuid())
+  providerId   String?
+  provider     Provider?       @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  activityId   String?
+  activity     Activity?       @relation(fields: [activityId], references: [id], onDelete: SetNull)
+  storageKey   String          @unique
+  mimeType     String
+  byteSize     Int
+  visibility   MediaVisibility @default(PRIVATE)
+  originalName String
+  checksum     String
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  verifications ProviderVerification[]
+
+  @@index([providerId, visibility])
+}

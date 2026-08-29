@@ -1,0 +1,24 @@
+# Local development database for SkillPass.
+#   docker compose up -d
+# The application itself runs on the host (npm run dev) so it stays debuggable.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: skillpass-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: skillpass
+      POSTGRES_PASSWORD: skillpass
+      POSTGRES_DB: skillpass
+    ports:
+      - '5432:5432'
+    volumes:
+      - skillpass-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U skillpass -d skillpass']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  skillpass-pgdata:

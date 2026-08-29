@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased;
+  }
+
+  /* Visible focus for every interactive element: keyboard users come first. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-600 ring-offset-2 ring-offset-white;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-slate-200 bg-white shadow-sm;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition
+           disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-brand-600 text-white hover:bg-brand-700;
+  }
+
+  .btn-secondary {
+    @apply btn border border-slate-300 bg-white text-slate-800 hover:bg-slate-100;
+  }
+
+  .btn-danger {
+    @apply btn border border-red-300 bg-white text-red-700 hover:bg-red-50;
+  }
+
+  .field {
+    @apply w-full rounded-lg border border-slate-300 px-3 py-2 text-sm
+           focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500;
+  }
+
+  .label {
+    @apply mb-1 block text-sm font-medium text-slate-700;
+  }
+
+  .hint {
+    @apply mt-1 text-xs text-slate-500;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
+  }
+}
+
+/* The skip link is visible only once it takes focus. */
+.skip-link {
+  @apply absolute left-2 top-2 z-50 -translate-y-20 rounded bg-white px-4 py-2 text-sm font-medium
+         text-brand-700 shadow transition focus:translate-y-0;
+}

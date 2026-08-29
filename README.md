@@ -704,3 +704,20 @@ demo/
 tools/benchmark.ts  meet de opslag- en zoeklaag met tienduizenden bedrijven
 test/             fixtures en controles
 ```
+
+---
+
+## SkillPass (`skillpass/`)
+
+Deze repository bevat daarnaast **SkillPass**, een op zichzelf staande
+MVP-applicatie voor een marktplaats van lokale jeugdactiviteiten (Next.js,
+PostgreSQL, Prisma). Die applicatie staat volledig in de map `skillpass/` en
+heeft een eigen `package.json`, database, tests en documentatie; het bovenstaande
+project (Webscan NL) blijft ongewijzigd.
+
+This repository also contains **SkillPass**, a self-contained MVP for a
+marketplace of local children's activities. It lives entirely in `skillpass/`
+with its own dependencies, database, tests and documentation; the Webscan NL
+project above is unchanged.
+
+Start hier / start here: [`skillpass/README.md`](skillpass/README.md).
