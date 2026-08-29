@@ -272,6 +272,23 @@ De leerinhoud staat los van de code. Wil je een soera toevoegen, een thema
 uitbreiden of de lessen anders opbouwen, dan hoef je alleen in `data/` te zijn —
 `npm test` zegt daarna of het klopt.
 
+## De promofilm
+
+In [`promo/`](promo/) staat een promofilm van 1 minuut en 22 seconden:
+`promo.html` speelt hem af in de browser, `DRAAIBOEK.md` bevat het draaiboek,
+de boodschap aan ouders, de nasheed-tekst en een muziekbriefing.
+
+```bash
+node tools/film-opnemen.js            # liggend, 1280x720
+node tools/film-opnemen.js --staand   # staand, voor sociale media
+```
+
+Dat schrijft een videobestand door een browser zichzelf te laten filmen. Zet je
+een `nasheed.mp3` naast `promo.html`, dan loopt de film mee met de muziek.
+
+De film gebruikt drie religieuze teksten en één aya. Laat die nakijken voordat
+je hem uitgeeft; zie de laatste paragraaf van het draaiboek.
+
 ## Waar het naartoe kan
 
 - Opnames van een reciteur en van een leerkracht die de letters voorzegt.
