@@ -836,34 +836,27 @@ export function renderLegal(key: LegalPageKey, locale: Locale): string {
  * screen argues the wrong case. Names and figures are illustrative.
  */
 function heroMock(locale: Locale, copy: SiteCopy, variant: 'home' | 'pro' = 'home'): string {
+  const en = locale === 'en';
+
   const quotes = [
-    { name: 'Schildersbedrijf Bakker', price: 1250, stars: '★★★★★', meta: locale === 'en' ? '18 years’ experience' : '18 jaar ervaring' },
-    { name: 'Van Dijk Afbouw', price: 1480, stars: '★★★★☆', meta: locale === 'en' ? '34 reviews' : '34 beoordelingen' },
-    { name: 'Klusbedrijf Yilmaz', price: 990, stars: '★★★★★', meta: locale === 'en' ? 'Replies in 40 min' : 'Reageert binnen 40 min' },
+    { name: 'Schildersbedrijf Bakker', price: 1250, stars: 5, meta: en ? '18 years’ experience' : '18 jaar ervaring' },
+    { name: 'Van Dijk Afbouw', price: 1480, stars: 4, meta: en ? '34 reviews' : '34 beoordelingen' },
+    { name: 'Klusbedrijf Yilmaz', price: 990, stars: 5, meta: en ? 'Replies in 40 min' : 'Reageert binnen 40 min' },
   ];
 
   const leads = [
-    {
-      name: locale === 'en' ? 'Paint a 25 m² living room' : 'Woonkamer van 25 m² schilderen',
-      price: 1600,
-      stars: '',
-      meta: 'Utrecht · Wittevrouwen',
-    },
-    {
-      name: locale === 'en' ? 'Leak under the sink' : 'Lekkage onder de gootsteen',
-      price: 400,
-      stars: '',
-      meta: 'Amersfoort · Soesterkwartier',
-    },
-    {
-      name: locale === 'en' ? 'Replace the consumer unit' : 'Groepenkast vervangen',
-      price: 1200,
-      stars: '',
-      meta: 'Amsterdam · De Pijp',
-    },
+    { name: en ? 'Paint a 25 m² living room' : 'Woonkamer van 25 m² schilderen', price: 1600, stars: 0, meta: 'Utrecht · Wittevrouwen' },
+    { name: en ? 'Leak under the sink' : 'Lekkage onder de gootsteen', price: 400, stars: 0, meta: 'Amersfoort · Soesterkwartier' },
+    { name: en ? 'Replace the consumer unit' : 'Groepenkast vervangen', price: 1200, stars: 0, meta: 'Amsterdam · De Pijp' },
   ];
 
   const rows = variant === 'pro' ? leads : quotes;
+
+  /** Filled and empty stars as separate spans, so the rating reads at a glance. */
+  const rating = (filled: number) =>
+    filled === 0
+      ? ''
+      : `<span class="mock__stars" aria-hidden="true">${'★'.repeat(filled)}<span class="mock__starsOff">${'★'.repeat(5 - filled)}</span></span>`;
 
   const cards = rows
     .map(
@@ -873,20 +866,41 @@ function heroMock(locale: Locale, copy: SiteCopy, variant: 'home' | 'pro' = 'hom
           <span class="mock__price">${esc(money(eurosToCents(row.price), locale))}</span>
         </div>
         <div class="mock__row">
-          ${row.stars ? `<span class="mock__stars">${row.stars}</span>` : ''}
+          ${rating(row.stars)}
           <span class="mock__meta">${esc(row.meta)}</span>
         </div>
       </div>`,
     )
     .join('');
 
-  const heading = variant === 'pro' ? copy.pro.hero.eyebrow : copy.nav.cta;
+  // The customer's own job at the top, so the quotes below have something to
+  // be quotes *for*. Without it the screen was a price list from nowhere.
+  const context =
+    variant === 'pro'
+      ? {
+          title: en ? 'Jobs near you' : 'Klussen bij jou in de buurt',
+          line: en ? 'Painting · Utrecht and 2 more' : 'Schilderwerk · Utrecht en 2 andere',
+          footer: en ? '3 new since this morning' : '3 nieuw sinds vanochtend',
+        }
+      : {
+          title: en ? 'Paint a 25 m² living room' : 'Woonkamer van 25 m² schilderen',
+          line: en ? 'Utrecht · Within a week' : 'Utrecht · Binnen een week',
+          footer: en ? '3 of 6 quotes received' : '3 van 6 offertes ontvangen',
+        };
+
   const label = variant === 'pro' ? copy.pro.hero.subtitle : copy.hero.subtitle;
 
   return `<div class="mock" role="img" aria-label="${esc(label)}">
     <span class="mock__bar"></span>
-    <span class="mock__title">${esc(heading)}</span>
-    ${cards}
+    <div class="mock__job">
+      <span class="mock__jobTitle">${esc(context.title)}</span>
+      <span class="mock__jobMeta">${esc(context.line)}</span>
+    </div>
+    <div class="mock__cards">${cards}</div>
+    <div class="mock__foot">
+      <span class="mock__dot"></span>
+      <span>${esc(context.footer)}</span>
+    </div>
   </div>`;
 }
 
@@ -973,7 +987,7 @@ function homeBody(locale: Locale): string {
         <span class="proof__label">${esc(copy.proof.free)}</span>
       </div>
       <div class="proof__item">
-        <span class="proof__value">ICE</span>
+        <span class="proof__value">KvK</span>
         <span class="proof__label">${esc(copy.proof.verified)}</span>
       </div>
     </div>

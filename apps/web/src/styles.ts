@@ -99,6 +99,9 @@ img, svg { max-width: 100%; display: block; }
 .section { padding-block: clamp(3.5rem, 8vw, 6rem); }
 .section--tint { background: var(--ink-50); }
 .section__head { max-width: 46rem; margin-block-end: 2.5rem; display: grid; gap: 0.75rem; }
+/* Balanced so a two-line heading splits somewhere sensible rather than leaving
+   one word stranded on the second line. */
+h1, h2, .section__head h2, .cta h2 { text-wrap: balance; }
 
 /* --- Buttons -------------------------------------------------------------- */
 .btn {
@@ -198,7 +201,26 @@ img, svg { max-width: 100%; display: block; }
 .langs a[aria-current="true"] { background: var(--green-600); color: var(--white); }
 
 /* --- Hero ----------------------------------------------------------------- */
-.hero { background: linear-gradient(170deg, var(--green-50), var(--white) 62%); }
+.hero {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(172deg, var(--green-50) 0%, var(--white) 58%);
+  overflow: hidden;
+}
+/* A soft light behind the phone so it sits on something rather than hovering
+   over white. One shape, off to the side, well under the text. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset-block-start: -18%;
+  inset-inline-end: -12%;
+  inline-size: min(52rem, 70%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(15, 111, 92, 0.13), transparent 62%);
+  z-index: -1;
+  pointer-events: none;
+}
 .hero__inner {
   display: grid;
   gap: clamp(2rem, 5vw, 4rem);
@@ -215,7 +237,10 @@ img, svg { max-width: 100%; display: block; }
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
+  /* Both axes: align-self alone leaves a grid item stretched across the
+     column, which turned a badge into a full-width banner. */
   align-self: start;
+  justify-self: start;
   padding: 0.35rem 0.85rem;
   border-radius: var(--radius-pill);
   background: var(--terracotta-100);
@@ -226,35 +251,68 @@ img, svg { max-width: 100%; display: block; }
 .lede { font-size: clamp(1.05rem, 2vw, 1.2rem); color: var(--ink-700); }
 
 /* --- Phone mock ----------------------------------------------------------- */
+/* Sized to its content rather than to a phone's aspect ratio: pinned to 9:18.5
+   it ended in a hand-length of empty white below the last card, which read as
+   an unfinished screen rather than a full one. */
 .mock {
   justify-self: center;
   inline-size: min(320px, 82vw);
-  aspect-ratio: 9 / 18.5;
   border-radius: 38px;
   background: var(--white);
   border: 10px solid var(--green-900);
-  box-shadow: var(--shadow-raised);
-  padding: 1.25rem 1rem;
+  box-shadow: 0 30px 60px -20px rgba(6, 52, 43, 0.45), var(--shadow-raised);
+  padding: 1.1rem 1rem 1.25rem;
   display: grid;
-  gap: 0.75rem;
+  gap: 0.9rem;
   align-content: start;
   overflow: hidden;
 }
-.mock__bar { inline-size: 42%; block-size: 6px; border-radius: 3px; background: var(--ink-100); margin-inline: auto; }
-.mock__title { font-weight: 700; font-size: 1.05rem; }
+.mock__bar { inline-size: 34%; block-size: 5px; border-radius: 3px; background: var(--ink-100); margin-inline: auto; }
+
+.mock__job {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--radius-md);
+  background: var(--green-50);
+  border: 1px solid var(--green-100);
+}
+.mock__jobTitle { font-weight: 700; font-size: 0.95rem; line-height: 1.3; color: var(--green-900); }
+.mock__jobMeta { font-size: 0.78rem; color: var(--green-700); }
+
+.mock__cards { display: grid; gap: 0.6rem; }
 .mock__card {
   border: 1px solid var(--ink-100);
   border-radius: var(--radius-md);
-  padding: 0.75rem 0.85rem;
+  padding: 0.7rem 0.8rem;
   display: grid;
   gap: 0.3rem;
   box-shadow: var(--shadow-card);
 }
 .mock__row { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
-.mock__name { font-weight: 600; font-size: 0.9rem; line-height: 1.3; }
+.mock__name { font-weight: 600; font-size: 0.88rem; line-height: 1.3; }
 .mock__price { font-weight: 700; color: var(--green-700); font-size: 0.95rem; white-space: nowrap; }
-.mock__meta { font-size: 0.78rem; color: var(--ink-500); }
+.mock__meta { font-size: 0.76rem; color: var(--ink-500); margin-inline-start: auto; }
 .mock__stars { color: var(--saffron-500); font-size: 0.8rem; letter-spacing: 0.06em; }
+/* The unearned stars stay in place and lose their colour, so four out of five
+   reads as four out of five rather than as a shorter row. */
+.mock__starsOff { color: var(--ink-200); }
+
+.mock__foot {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--ink-500);
+  padding-block-start: 0.15rem;
+}
+.mock__dot {
+  inline-size: 7px;
+  block-size: 7px;
+  border-radius: 50%;
+  background: var(--green-600);
+  flex: none;
+}
 
 /* --- Proof strip ---------------------------------------------------------- */
 .proof {
@@ -311,12 +369,20 @@ img, svg { max-width: 100%; display: block; }
   align-items: center;
   gap: 0.85rem;
   padding: 0.9rem 1.05rem;
+  /* A floor, not a fixed height: "Warmtepomp en airco" wraps to two lines and
+     used to stand a card taller than its neighbours, which made every row
+     look accidental. */
+  min-block-size: 4.25rem;
   border: 1px solid var(--ink-100);
   border-radius: var(--radius-md);
   background: var(--white);
-  transition: border-color 0.12s ease, transform 0.12s ease;
+  transition: border-color 0.14s ease, transform 0.14s ease, box-shadow 0.14s ease;
 }
-.trade:hover { border-color: var(--green-600); transform: translateY(-2px); }
+.trade:hover {
+  border-color: var(--green-600);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
 .trade__icon { color: var(--green-600); flex: none; }
 .trade__name { font-weight: 600; font-size: 0.97rem; }
 .trade__budget { font-size: 0.8rem; color: var(--ink-500); }
@@ -633,17 +699,34 @@ img, svg { max-width: 100%; display: block; }
 
 /* --- CTA ------------------------------------------------------------------ */
 .cta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   background: var(--green-900);
   color: var(--white);
   border-radius: var(--radius-xl);
-  padding: clamp(2.25rem, 6vw, 3.5rem);
+  padding: clamp(2.75rem, 7vw, 4.5rem) clamp(1.5rem, 5vw, 3.5rem);
   display: grid;
-  gap: 1.25rem;
+  gap: 1.35rem;
   justify-items: center;
   text-align: center;
 }
-.cta h2 { color: var(--white); }
+/* The same light as the hero, mirrored, so the page opens and closes on one
+   gesture instead of two unrelated blocks of green. */
+.cta::before {
+  content: "";
+  position: absolute;
+  inset-block-start: -55%;
+  inset-inline-start: -10%;
+  inline-size: min(40rem, 80%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(15, 111, 92, 0.55), transparent 65%);
+  z-index: -1;
+}
+.cta h2 { color: var(--white); font-size: clamp(1.7rem, 4vw, 2.4rem); max-width: 20ch; }
 .cta p { color: var(--green-100); max-width: 38rem; }
+.cta .btn { min-height: 58px; padding-inline: 2.2rem; font-size: 1.05rem; }
 
 /* --- Footer --------------------------------------------------------------- */
 .footer { background: var(--ink-50); border-block-start: 1px solid var(--ink-100); padding-block: 3rem 2rem; }
@@ -687,6 +770,29 @@ img, svg { max-width: 100%; display: block; }
   }
   .footer ul { gap: 0.15rem; }
 }
+
+/* --- Motion --------------------------------------------------------------- */
+/* The hero arrives once, on load, and nothing else moves.
+   
+   A scroll-triggered reveal was tried and taken out again: it starts content at
+   opacity 0 and depends on an observer to put it back, so a script that fails
+   to run, a full-page render, or a crawler that does not scroll all leave the
+   page blank below the fold. An animation is not worth a page that can hide
+   itself. This one animates from a visible state to a visible state, so the
+   worst case is that it simply does not play. */
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+.hero__copy > *, .hero .mock {
+  animation: riseIn 0.55s cubic-bezier(0.2, 0.6, 0.2, 1) backwards;
+}
+.hero__copy > *:nth-child(1) { animation-delay: 0.02s; }
+.hero__copy > *:nth-child(2) { animation-delay: 0.08s; }
+.hero__copy > *:nth-child(3) { animation-delay: 0.14s; }
+.hero__copy > *:nth-child(4) { animation-delay: 0.2s; }
+.hero__copy > *:nth-child(5) { animation-delay: 0.26s; }
+.hero .mock { animation-delay: 0.16s; animation-duration: 0.7s; }
 
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
