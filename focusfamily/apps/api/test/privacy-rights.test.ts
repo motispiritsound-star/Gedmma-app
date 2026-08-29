@@ -135,6 +135,31 @@ describe('export and deletion', () => {
     expect(bundle.sections.checkIns.length).toBeGreaterThan(0);
   });
 
+  it('lists a person their own export requests without the bundles', async () => {
+    const client = new Client(app);
+    await client.signIn('lena@focusfamily.test');
+    await client.post('/account/export', { scope: 'self' });
+
+    const list = await client.get('/account/export');
+    expect(list.statusCode).toBe(200);
+    const requests = list.json().requests as Array<Record<string, unknown>>;
+    expect(requests.length).toBeGreaterThan(0);
+    expect(Object.keys(requests[0] ?? {})).not.toContain('payload');
+    expect(requests[0]?.expired).toBe(false);
+  });
+
+  it('does not hand one person another person export', async () => {
+    const lena = new Client(app);
+    await lena.signIn('lena@focusfamily.test');
+    const hers = await lena.post('/account/export', { scope: 'self' });
+    const id = hers.json().requestId as string;
+
+    const guardian = new Client(app);
+    await guardian.signIn('noor@focusfamily.test');
+    const attempt = await guardian.get(`/account/export/${id}`);
+    expect(attempt.statusCode).toBe(404);
+  });
+
   it('does not let a child export the whole family', async () => {
     const client = new Client(app);
     await client.signIn('lena@focusfamily.test');

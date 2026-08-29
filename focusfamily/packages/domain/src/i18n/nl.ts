@@ -257,6 +257,9 @@ export const nl: Record<keyof typeof en, string> = {
 
   'rights.export.title': 'Download je gegevens',
   'rights.export.body': 'Een JSON-bestand met alles wat we over je bewaren.',
+  'rights.export.ready': 'Je bestand staat klaar. De link werkt zeven dagen.',
+  'rights.export.download': 'Downloaden',
+  'action.saved': 'Opgeslagen.',
   'rights.deletion.title': 'Gegevens verwijderen',
   'rights.deletion.body':
     'We wachten zeven dagen zodat je je kunt bedenken, daarna is het definitief weg.',

@@ -261,6 +261,9 @@ export const en = {
   // ---- data rights ------------------------------------------------------
   'rights.export.title': 'Download your data',
   'rights.export.body': 'A JSON file with everything we hold about you.',
+  'rights.export.ready': 'Your file is ready. The link works for seven days.',
+  'rights.export.download': 'Download',
+  'action.saved': 'Saved.',
   'rights.deletion.title': 'Delete data',
   'rights.deletion.body':
     'We wait seven days so you can change your mind, then it is gone for good.',

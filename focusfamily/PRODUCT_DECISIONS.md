@@ -289,7 +289,7 @@ zodat de demo de hele cyclus kan tonen.
 
 ## 20. Nederlands eerst, Engels ernaast
 
-**Beslissing.** Beide talen zijn eersterangs. 187 sleutels, in beide talen, met
+**Beslissing.** Beide talen zijn eersterangs. 190 sleutels, in beide talen, met
 een typedefinitie die afdwingt dat er niets ontbreekt.
 
 **Waarom.** Het product is voor Nederlandse gezinnen, en de zorgvuldigste

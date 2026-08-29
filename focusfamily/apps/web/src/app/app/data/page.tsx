@@ -1,4 +1,5 @@
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import {
   DELETION_GRACE_DAYS,
   NOT_COLLECTED,
@@ -49,47 +50,82 @@ interface DeletionResponse {
   graceDays: number;
 }
 
+/**
+ * Send the result of a server action back to the page as a query parameter.
+ * A refusal here - "this measurement needs the young person's own yes" - is
+ * the product working, so it has to be visible rather than swallowed.
+ */
+function reportBack(
+  subject: string,
+  ok: boolean,
+  messageKey: string | undefined,
+  successKey = 'action.saved',
+): string {
+  const params = new URLSearchParams({ subject });
+  params.set(ok ? 'notice' : 'problem', ok ? successKey : (messageKey ?? 'error.unexpected'));
+  return `/app/data?${params.toString()}`;
+}
+
+interface ExportListResponse {
+  requests: Array<{
+    id: string;
+    scope: string;
+    status: string;
+    requestedAt: string;
+    expiresAt: string | null;
+    expired: boolean;
+  }>;
+}
+
 export default async function DataPage({
   searchParams,
 }: {
-  searchParams: Promise<{ subject?: string; exported?: string }>;
+  searchParams: Promise<{ subject?: string; notice?: string; problem?: string }>;
 }) {
   const { locale } = await getSiteText();
   const me = await requireFamilyMe();
   const params = await searchParams;
   const subject = params.subject ?? me.user.id;
 
-  const [consentResult, familyResult, deletionResult] = await Promise.all([
+  const [consentResult, familyResult, deletionResult, exportResult] = await Promise.all([
     api.get<ConsentResponse>(`/consent?subjectUserId=${encodeURIComponent(subject)}`),
     api.get<FamilyResponse>('/family'),
     api.get<DeletionResponse>('/account/deletion'),
+    api.get<ExportListResponse>('/account/export'),
   ]);
   const nl = locale === 'nl';
   const members = familyResult.data?.members ?? [];
 
   async function decide(formData: FormData): Promise<void> {
     'use server';
-    await api.post('/consent', {
-      subjectUserId: String(formData.get('subjectUserId')),
+    const subjectUserId = String(formData.get('subjectUserId'));
+    const result = await api.post('/consent', {
+      subjectUserId,
       scope: String(formData.get('scope')),
       decision: String(formData.get('decision')),
     });
     revalidatePath('/app/data');
+    redirect(reportBack(subjectUserId, result.ok, result.error?.messageKey));
   }
 
   async function toggleMeasurement(formData: FormData): Promise<void> {
     'use server';
-    await api.patch('/measurements', {
+    const result = await api.patch('/measurements', {
       sourceId: String(formData.get('sourceId')),
       enabled: formData.get('enabled') === 'true',
     });
     revalidatePath('/app/data');
+    // A refusal here is the point of the product, not an edge case: say why.
+    redirect(reportBack(String(formData.get('subjectUserId') ?? me.user.id), result.ok, result.error?.messageKey));
   }
 
   async function requestExport(formData: FormData): Promise<void> {
     'use server';
-    await api.post('/account/export', { scope: String(formData.get('scope') ?? 'self') });
+    const result = await api.post('/account/export', {
+      scope: String(formData.get('scope') ?? 'self'),
+    });
     revalidatePath('/app/data');
+    redirect(reportBack(subject, result.ok, result.error?.messageKey, 'rights.export.ready'));
   }
 
   async function requestDeletion(formData: FormData): Promise<void> {
@@ -113,6 +149,16 @@ export default async function DataPage({
             ? 'Elk gezinslid ziet dit scherm voor zichzelf. Volwassenen kunnen bovendien de toestemming van een kind bekijken - en het kind ziet dat ook.'
             : 'Every family member sees this screen for themselves. Grown-ups can also view a child’s consent - and the child sees that too.'}
         </p>
+        {params.problem ? (
+          <p className="notice notice--warm" role="alert">
+            {translate(locale, params.problem)}
+          </p>
+        ) : null}
+        {params.notice ? (
+          <p className="notice notice--good" role="status">
+            {translate(locale, params.notice)}
+          </p>
+        ) : null}
       </section>
 
       {members.length > 1 ? (
@@ -209,6 +255,7 @@ export default async function DataPage({
                   {may(me, 'measurement.enable') ? (
                     <form action={toggleMeasurement}>
                       <input type="hidden" name="sourceId" value={source.id} />
+                      <input type="hidden" name="subjectUserId" value={source.userId ?? subject} />
                       <input type="hidden" name="enabled" value={source.enabled ? 'false' : 'true'} />
                       <button className="btn btn--secondary" type="submit" style={{ minHeight: '38px' }}>
                         {source.enabled ? (nl ? 'Uitzetten' : 'Turn off') : nl ? 'Aanzetten' : 'Turn on'}
@@ -292,6 +339,34 @@ export default async function DataPage({
           <button className="btn" type="submit">
             {nl ? 'Export aanvragen' : 'Request export'}
           </button>
+
+          {(exportResult.data?.requests ?? []).length > 0 ? (
+            <ul className="list-plain" style={{ marginTop: '8px' }}>
+              {(exportResult.data?.requests ?? []).slice(0, 3).map((request) => (
+                <li key={request.id} style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <span style={{ color: 'var(--ink-soft)', fontSize: '0.9rem' }}>
+                    {new Date(request.requestedAt).toLocaleDateString(
+                      locale === 'nl' ? 'nl-NL' : 'en-GB',
+                    )}{' '}
+                    · {request.scope}
+                  </span>
+                  {request.expired ? (
+                    <span className="badge badge--quiet">
+                      {nl ? 'Verlopen' : 'Expired'}
+                    </span>
+                  ) : (
+                    <a
+                      className="btn btn--secondary"
+                      style={{ minHeight: '36px', padding: '4px 14px' }}
+                      href={`/api/export/${request.id}`}
+                    >
+                      {translate(locale, 'rights.export.download')}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </form>
 
         <form action={requestDeletion} className="card stack">

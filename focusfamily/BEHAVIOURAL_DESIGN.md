@@ -147,7 +147,7 @@ geschreven over hoe je verdergaat.
 ### 8. De taal is gecontroleerd, niet aangenomen
 
 Twee blokkeerlijsten — klinisch en beschamend, in beide talen — worden bij elke
-testrun over de volledige tekstcatalogus gehaald: 374 strings in de app plus
+testrun over de volledige tekstcatalogus gehaald: 380 strings in de app plus
 alle bibliotheekinhoud.
 
 ```

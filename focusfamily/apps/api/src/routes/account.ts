@@ -247,6 +247,35 @@ export async function registerAccountRoutes(
     return reply.code(201).send({ requestId: saved.id, bundle });
   });
 
+  /** The caller's own export requests, without the bundles themselves. */
+  app.get('/account/export', async (request) => {
+    const session = requireFamily(request);
+    assertCan(session.actor, 'export.request', {
+      familyId: session.familyId,
+      subjectUserId: session.actor.userId,
+    });
+    const rows = await prisma.dataExportRequest.findMany({
+      where: { familyId: session.familyId, requestedByUserId: session.actor.userId },
+      orderBy: { requestedAt: 'desc' },
+      take: 20,
+      select: {
+        id: true,
+        scope: true,
+        format: true,
+        status: true,
+        requestedAt: true,
+        expiresAt: true,
+      },
+    });
+    const now = Date.now();
+    return {
+      requests: rows.map((row) => ({
+        ...row,
+        expired: row.expiresAt !== null && row.expiresAt.getTime() < now,
+      })),
+    };
+  });
+
   app.get('/account/export/:id', async (request) => {
     const session = requireFamily(request);
     const { id } = z.object({ id: z.string().min(1) }).parse(request.params);

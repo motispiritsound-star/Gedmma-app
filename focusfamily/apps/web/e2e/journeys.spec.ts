@@ -114,11 +114,34 @@ test.describe('a guardian journey', () => {
     await expect(page.getByText('message_content').first()).toBeVisible();
   });
 
-  test('exports their data and can schedule and cancel a deletion', async ({ page }) => {
+  test('is told why a measurement cannot be switched on yet', async ({ page }) => {
+    await signIn(page, 'noor@focusfamily.test');
+    await page.goto('/app/data');
+    // Lena is fifteen and has not given her own assent, so this must refuse
+    // out loud rather than quietly doing nothing.
+    const lenaOsRow = page.locator('.card', { hasText: 'ios.DeviceActivity' });
+    await lenaOsRow.getByRole('button', { name: 'Aanzetten' }).click();
+    await expect(page.locator('p.notice--warm[role="alert"]')).toContainText(
+      'We vragen het ook aan degene om wie het gaat',
+    );
+  });
+
+  test('exports their data and can download it, then schedule and cancel a deletion', async ({
+    page,
+  }) => {
     await signIn(page, 'sam@focusfamily.test');
     await page.goto('/app/data');
     await page.getByRole('button', { name: 'Export aanvragen' }).click();
-    await expect(page.getByRole('heading', { name: 'Download je gegevens' })).toBeVisible();
+    await expect(page.getByText('Je bestand staat klaar')).toBeVisible();
+
+    const download = page.getByRole('link', { name: 'Downloaden' }).first();
+    await expect(download).toBeVisible();
+    const href = await download.getAttribute('href');
+    const bundle = await page.request.get(href as string);
+    expect(bundle.status()).toBe(200);
+    expect(bundle.headers()['content-disposition']).toContain('attachment');
+    const body = await bundle.json();
+    expect(body.notCollected).toContain('message_content');
 
     await page.getByRole('button', { name: /Verwijderen over 7 dagen/ }).click();
     await expect(page.getByText('Het verwijderen staat gepland')).toBeVisible();

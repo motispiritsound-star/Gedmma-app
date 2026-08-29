@@ -173,8 +173,8 @@ entitlements.
 ## Tests
 
 ```bash
-npm test                 # 186 tests: domein, content, API tegen echte PostgreSQL
-npm run test:e2e         # 17 Playwright-journeys tegen de echte stack
+npm test                 # 188 tests: domein, content, API tegen echte PostgreSQL
+npm run test:e2e         # 18 Playwright-journeys tegen de echte stack
 npm run test:mobile      # 19 component-tests (jest-expo)
 npm run lint             # ESLint, 0 waarschuwingen toegestaan
 npm run typecheck        # alle workspaces
