@@ -13,12 +13,15 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Svg, { Path } from 'react-native-svg';
 import { vindOnderwerp } from '../../src/core/content/curriculum';
 import { BADGES } from '../../src/core/engine/badges';
 import { huidigNiveau } from '../../src/core/engine/profiel';
 import { beantwoord, huidigeVraag, resultaat, startSessie, volgende, type Sessie } from '../../src/core/engine/sessie';
 import { filmsVoorOnderwerp } from '../../src/core/film/films';
+import { sleutel } from '../../src/core/engine/herhalen';
 import { useApp } from '../../src/state/AppContext';
+import { useVoorlezer, voorleesTekst } from '../../src/ui/voorlezen';
 import { Kaart } from '../../src/ui/components/Kaart';
 import { Knop } from '../../src/ui/components/Knop';
 import { Confetti } from '../../src/ui/components/Confetti';
@@ -32,14 +35,16 @@ type Fase = 'vraag' | 'feedback' | 'klaar';
 export default function Oefenen() {
   const { onderwerpId } = useLocalSearchParams<{ onderwerpId: string }>();
   const router = useRouter();
-  const { profiel, rondeKlaar, magDitOefenen, premium } = useApp();
+  const { profiel, rondeKlaar, magDitOefenen, premium, herhalingenVoor } = useApp();
 
   const onderwerp = onderwerpId ? vindOnderwerp(onderwerpId) : undefined;
   const oordeel = onderwerpId ? magDitOefenen(onderwerpId) : { mag: false };
   const startniveau = profiel && onderwerpId ? huidigNiveau(profiel, onderwerpId) : 1;
 
   const [sessie, setSessie] = useState<Sessie | null>(() =>
-    onderwerp && oordeel.mag ? startSessie(onderwerp.id, startniveau) : null,
+    onderwerp && oordeel.mag
+      ? startSessie(onderwerp.id, startniveau, { herhalingen: herhalingenVoor(onderwerp.id) })
+      : null,
   );
   const [fase, setFase] = useState<Fase>('vraag');
   const [gekozen, setGekozen] = useState<string | null>(null);
@@ -48,6 +53,7 @@ export default function Oefenen() {
   const [verse, setVerse] = useState<string[]>([]);
   const opslaanBezig = useRef(false);
   const schud = useRef(new Animated.Value(0)).current;
+  const voorlezer = useVoorlezer();
 
   const vraag = sessie ? huidigeVraag(sessie) : undefined;
   const eindstand = useMemo(() => (sessie && fase === 'klaar' ? resultaat(sessie) : null), [sessie, fase]);
@@ -101,12 +107,16 @@ export default function Oefenen() {
       return;
     }
     opslaanBezig.current = false;
-    setSessie(startSessie(onderwerp.id, huidigNiveau(profiel, onderwerp.id)));
+    setSessie(
+      startSessie(onderwerp.id, huidigNiveau(profiel, onderwerp.id), {
+        herhalingen: herhalingenVoor(onderwerp.id),
+      }),
+    );
     setFase('vraag');
     setGekozen(null);
     setInvoer('');
     setVerse([]);
-  }, [onderwerp, profiel, magDitOefenen, router]);
+  }, [onderwerp, profiel, magDitOefenen, router, herhalingenVoor]);
 
   const terug = () => (router.canGoBack() ? router.back() : router.replace('/(tabs)'));
 
@@ -249,9 +259,16 @@ export default function Oefenen() {
         </View>
 
         <ScrollView contentContainerStyle={styles.inhoud} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          <Text style={tekst.label}>
-            {onderwerp.naam} · niveau {vraag.niveau}
-          </Text>
+          <View style={styles.kopRij}>
+            <Text style={tekst.label}>
+              {onderwerp.naam} · niveau {vraag.niveau}
+            </Text>
+            {sessie.herhaalSleutels.includes(sleutel(vraag)) ? (
+              <View style={styles.herhaalLint}>
+                <Text style={styles.herhaalTekst}>Herhaling</Text>
+              </View>
+            ) : null}
+          </View>
 
           {vraag.context ? (
             <Kaart style={styles.contextKaart}>
@@ -259,8 +276,22 @@ export default function Oefenen() {
             </Kaart>
           ) : null}
 
-          <Animated.View style={{ transform: [{ translateX: schudX }] }}>
-            <Text style={tekst.vraag}>{vraag.stam}</Text>
+          <Animated.View style={[styles.vraagRij, { transform: [{ translateX: schudX }] }]}>
+            <Text style={[tekst.vraag, { flex: 1 }]}>{vraag.stam}</Text>
+            <Pressable
+              testID="voorlezen"
+              accessibilityRole="button"
+              accessibilityLabel={voorlezer.leestVoor ? 'Stop met voorlezen' : 'Lees de vraag voor'}
+              onPress={() =>
+                voorlezer.leestVoor
+                  ? voorlezer.stop()
+                  : voorlezer.lees(voorleesTekst(vraag.stam, vraag.context))
+              }
+              hitSlop={10}
+              style={[styles.luidspreker, voorlezer.leestVoor && styles.luidsprekerAan]}
+            >
+              <Luidspreker actief={voorlezer.leestVoor} />
+            </Pressable>
           </Animated.View>
 
           {vraag.type === 'keuze' ? (
@@ -345,6 +376,25 @@ export default function Oefenen() {
   );
 }
 
+function Luidspreker({ actief }: { actief: boolean }) {
+  const c = actief ? kleur.merkDieper : kleur.tekstZacht;
+  return (
+    <Svg width={22} height={22} viewBox="0 0 24 24">
+      <Path d="M4 9.5 H7.5 L12 5.5 V18.5 L7.5 14.5 H4 Z" fill={c} />
+      <Path
+        d="M15.5 9 C16.8 10.2 16.8 13.8 15.5 15"
+        stroke={c}
+        strokeWidth={2}
+        strokeLinecap="round"
+        fill="none"
+      />
+      {actief ? (
+        <Path d="M18.3 6.6 C20.6 8.8 20.6 15.2 18.3 17.4" stroke={c} strokeWidth={2} strokeLinecap="round" fill="none" />
+      ) : null}
+    </Svg>
+  );
+}
+
 function Tegel({ label, waarde, tint }: { label: string; waarde: string; tint: string }) {
   return (
     <View style={[styles.tegel, { borderColor: `${tint}44`, backgroundColor: `${tint}12` }]}>
@@ -362,6 +412,28 @@ const styles = StyleSheet.create({
   balkRij: { flexDirection: 'row', alignItems: 'center', gap: ruimte.m, paddingHorizontal: ruimte.l, paddingTop: ruimte.s },
   inhoud: { padding: ruimte.l, gap: ruimte.l, paddingBottom: ruimte.xxl },
   contextKaart: { backgroundColor: kleur.goudZacht, borderColor: kleur.goudRand },
+  kopRij: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: ruimte.s },
+  herhaalLint: {
+    backgroundColor: kleur.slotZacht,
+    borderWidth: 1,
+    borderColor: '#DED3F8',
+    borderRadius: radius.rond,
+    paddingHorizontal: ruimte.m,
+    paddingVertical: 3,
+  },
+  herhaalTekst: { ...tekst.label, color: kleur.slot },
+  vraagRij: { flexDirection: 'row', alignItems: 'flex-start', gap: ruimte.m },
+  luidspreker: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.rond,
+    borderWidth: 2,
+    borderColor: kleur.rand,
+    backgroundColor: kleur.kaart,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  luidsprekerAan: { borderColor: kleur.merk, backgroundColor: kleur.merkZacht },
   optie: {
     minHeight: RAAKVLAK + 8,
     borderRadius: radius.l,

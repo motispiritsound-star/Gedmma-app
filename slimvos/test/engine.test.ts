@@ -7,6 +7,8 @@ import { nieuwProfiel, verwerkRonde, huidigNiveau, migreerProfiel } from '../src
 import { BADGES, metBadges, nieuweBadges, verdiendeBadges } from '../src/core/engine/badges';
 import { aanbevelingen, volgendeOefening } from '../src/core/engine/aanbeveling';
 import { dagenDezeWeek, weekOverzicht } from '../src/core/engine/week';
+import { aantalTeHerhalen, sleutel } from '../src/core/engine/herhalen';
+import { voorleesTekst } from '../src/core/voorlezen';
 import { koop, kanKopen, WINKEL, kiesAvatar } from '../src/core/engine/winkel';
 import { MAX_NIVEAU, MIN_NIVEAU } from '../src/core/types';
 
@@ -287,4 +289,82 @@ test('de weekstrip telt de vragen per dag op', () => {
   assert.equal(week[2].vragen, 15, 'woensdag: twee rondes bij elkaar');
   assert.equal(week[0].vragen, 0, 'maandag');
   assert.equal(dagenDezeWeek(geschiedenis, woensdag), 2);
+});
+
+test('fouten uit een ronde belanden in de herhaalbak', () => {
+  const p = nieuwProfiel('Fenna', 5, '🦊', 1000);
+  let s = startSessie('rekenen.tafels', 2, { aantal: 4, seed: 21, nu: 1000 });
+  const foutVragen: string[] = [];
+  while (s.status === 'bezig') {
+    const vraag = huidigeVraag(s)!;
+    // Om en om goed en fout.
+    const goed = s.index % 2 === 0;
+    if (!goed) foutVragen.push(sleutel(vraag));
+    s = beantwoord(s, goed ? vraag.antwoord : 'zeker-fout', s.vraagGestartOp + 1000).sessie;
+    s = volgende(s, s.vraagGestartOp + 1000);
+  }
+  const na = verwerkRonde(p, s, 5000);
+
+  assert.equal(na.herhaalbak.length, foutVragen.length, 'elke fout staat erin');
+  for (const sl of foutVragen) {
+    assert.ok(na.herhaalbak.some((i) => sleutel(i.vraag) === sl), `${sl} ontbreekt`);
+  }
+  assert.equal(aantalTeHerhalen(na.herhaalbak, 5000), 0, 'nog niet aan de beurt');
+  assert.ok(aantalTeHerhalen(na.herhaalbak, 5000 + 2 * 86400000) > 0, 'morgen wel');
+});
+
+test('een herhaalde vraag die goed gaat schuift op in plaats van opnieuw toegevoegd te worden', () => {
+  const p = nieuwProfiel('Sem', 5, '🦊', 0);
+  const lastig = { ...startSessie('rekenen.tafels', 2, { aantal: 1, seed: 3, nu: 0 }).vragen[0] };
+
+  // Eerst fout, zodat hij in de bak komt.
+  let s = startSessie('rekenen.tafels', 2, { aantal: 1, seed: 3, nu: 0 });
+  s = beantwoord(s, 'fout', 500).sessie;
+  s = volgende(s, 500);
+  const metBak = verwerkRonde(p, s, 1000);
+  assert.equal(metBak.herhaalbak.length, 1);
+
+  // Nu terug als herhaling, en goed beantwoord.
+  const DAGMS = 86400000;
+  let herhaal = startSessie('rekenen.tafels', 2, { aantal: 2, seed: 9, nu: 2 * DAGMS, herhalingen: [lastig] });
+  assert.ok(herhaal.herhaalSleutels.includes(sleutel(lastig)));
+  while (herhaal.status === 'bezig') {
+    const v = huidigeVraag(herhaal)!;
+    herhaal = beantwoord(herhaal, v.antwoord, herhaal.vraagGestartOp + 800).sessie;
+    herhaal = volgende(herhaal, herhaal.vraagGestartOp + 800);
+  }
+  const na = verwerkRonde(metBak, herhaal, 2 * DAGMS + 5000);
+  assert.equal(na.herhaalbak.length, 1, 'hij blijft in de bak');
+  assert.equal(na.herhaalbak[0].goedOpRij, 1, 'maar schuift een stap op');
+  assert.ok(na.herhaalbak[0].volgendeKeer > 2 * DAGMS + 86400000, 'en komt later terug');
+});
+
+test('een ronde met herhalingen houdt hetzelfde aantal vragen', () => {
+  const extra = { ...startSessie('rekenen.optellen', 2, { aantal: 1, seed: 1, nu: 0 }).vragen[0] };
+  const s = startSessie('rekenen.optellen', 2, { aantal: 10, seed: 7, nu: 0, herhalingen: [extra] });
+  assert.equal(s.vragen.length, 10);
+  assert.equal(s.herhaalSleutels.length, 1);
+  assert.equal(resultaat(s, 0).herhaald, 1);
+});
+
+test('herhalingen staan niet allemaal vooraan', () => {
+  const drie = [0, 1, 2].map(
+    (i) => startSessie('rekenen.optellen', 2, { aantal: 1, seed: 100 + i, nu: 0 }).vragen[0],
+  );
+  const s = startSessie('rekenen.optellen', 2, { aantal: 10, seed: 4, nu: 0, herhalingen: drie });
+  const set = new Set(s.herhaalSleutels);
+  const plekken = s.vragen.map((v, i) => (set.has(sleutel(v)) ? i : -1)).filter((i) => i >= 0);
+  assert.equal(plekken.length, 3);
+  assert.ok(plekken[0] > 0, 'de eerste vraag is geen herhaling');
+  assert.ok(Math.max(...plekken) - Math.min(...plekken) >= 4, 'ze staan verspreid');
+});
+
+test('rekentekens worden uitgesproken in plaats van gespeld', () => {
+  assert.equal(voorleesTekst('8 × 7 = ?'), '8 keer 7 is hoeveel?');
+  assert.equal(voorleesTekst('20 − 6 = ?'), '20 min 6 is hoeveel?');
+  assert.equal(voorleesTekst('12 + 3 = ?'), '12 plus 3 is hoeveel?');
+  assert.equal(voorleesTekst('25% van 80'), '25 procent van 80');
+  assert.ok(voorleesTekst('Hoeveel is €4,99?').includes('euro'));
+  assert.ok(voorleesTekst('7 × 8 = ?', 'Kijk goed').startsWith('Kijk goed. '));
+  assert.equal(voorleesTekst('   '), '');
 });

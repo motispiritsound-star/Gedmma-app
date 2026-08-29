@@ -47,6 +47,13 @@
           "backgroundColor": "#FFFDF7",
           "imageWidth": 180
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/android-icon-monochrome.png",
+          "color": "#F4783C"
+        }
       ]
     ],
     "experiments": {

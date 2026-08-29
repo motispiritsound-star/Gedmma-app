@@ -108,6 +108,34 @@ Samen 31 onderwerpen in 6 vakken.
 Bij **elk** fout antwoord verschijnt meteen een uitleg in kindertaal — niet
 alleen "fout", maar waaróm.
 
+### Fouten komen terug
+
+Een vraag die fout ging, verschijnt na een dag opnieuw — verspreid tussen de
+gewone vragen, met het label "Herhaling". Gaat hij dan goed, dan komt hij na
+drie dagen nog eens, daarna na een week, daarna na drie weken. Pas dan is hij
+klaar. Gaat hij weer fout, dan begint de reeks opnieuw.
+
+Dit is het verschil tussen "geoefend" en "geleerd": zonder herhaling ben je een
+som die je fout had over drie dagen gewoon weer kwijt. Het kind hoeft er niets
+voor te doen; de herhalingen zitten vanzelf in de volgende ronde. Het
+ouderdashboard laat zien wat er klaarstaat.
+
+### Voorlezen
+
+Elke vraag heeft een luidsprekerknop die hem hardop leest, met de stem die al
+op het toestel zit — dus offline en gratis. Rekentekens worden uitgesproken
+in plaats van gespeld: "8 × 7 = ?" wordt "8 keer 7 is hoeveel?".
+
+Voor groep 3 en voor kinderen met dyslexie is dit het verschil tussen wel of
+niet mee kunnen doen: het rekenen is niet het probleem, het lezen van de vraag
+is dat.
+
+### Een herinnering per dag
+
+De ouder kiest in het dashboard een tijdstip; de app plant één melding per dag
+lokaal in. Er gaat niets naar een server en er wordt niemand gevolgd — dat is
+precies waarom dit mag bij een app voor kinderen.
+
 ### Filmpjes
 
 Negen korte filmpjes van ongeveer een halve minuut: vier motiverende (waarom
@@ -239,8 +267,6 @@ Bewust buiten deze eerste versie gehouden:
 - **Gefilmde video.** De filmpjes worden in de app getekend; echt
   animatiemateriaal is productiewerk.
 - **Geluid.** Er is haptische feedback, maar geen audio.
-- **Voorlezen van vragen.** Belangrijk voor groep 3 en voor kinderen met
-  dyslexie; vraagt een text-to-speech-integratie.
 - **Synchroniseren tussen toestellen.** Kan alleen mét een backend, en dat
   botst met de privacykeuze hierboven. Een export/import-bestand is een
   tussenoplossing.
@@ -249,9 +275,11 @@ Bewust buiten deze eerste versie gehouden:
 
 ## Hoe dit getest is
 
-- `npm test` — 61 tests: niveaustappen, streaks, XP, de sessiestroom, badges,
+- `npm test` — 89 tests: niveaustappen, streaks, XP, de sessiestroom, badges,
   de winkel, profielmigratie, de abonnementsregels (gratis limiet, proefperiode,
-  opzeggen, verlopen), invoercontrole en de filmpjes. Daarnaast een contenttest
+  opzeggen, verlopen), invoercontrole, de filmpjes, de weekstrip en het
+  herhaalsysteem (intervallen, terugvallen na een nieuwe fout, de bak die niet
+  volloopt, en dat herhalingen verspreid in de ronde staan). Daarnaast een contenttest
   die per onderwerp op elk van de vijf niveaus 60 vragen genereert en
   controleert dat het goede antwoord tussen de opties staat, dat er geen dubbele
   opties zijn en dat er geen `undefined` of `NaN` in de tekst sluipt.

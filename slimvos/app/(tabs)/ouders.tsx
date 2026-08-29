@@ -12,6 +12,8 @@ import { euro, vindPlan } from '../../src/core/abonnement/plannen';
 import { dagenResterend, datumInWoorden, volgendeAfschrijving } from '../../src/core/abonnement/toegang';
 import { openBeheer } from '../../src/state/aankoop';
 import { maakRng } from '../../src/core/rng';
+import { aantalTeHerhalen, herhalingenPerOnderwerp } from '../../src/core/engine/herhalen';
+import { stopHerinnering, zetHerinnering } from '../../src/state/herinnering';
 import { useApp } from '../../src/state/AppContext';
 import { Kaart } from '../../src/ui/components/Kaart';
 import { Knop } from '../../src/ui/components/Knop';
@@ -86,6 +88,8 @@ export default function Ouders() {
   const tijdWeek =
     msWeek === 0 ? 'nog geen oefentijd' : msWeek < 60000 ? 'minder dan een minuut' : `ongeveer ${Math.round(msWeek / 60000)} minuten`;
   const resterend = dagenResterend(abonnement);
+  const openHerhalingen = aantalTeHerhalen(profiel.herhaalbak ?? []);
+  const herhaalPer = herhalingenPerOnderwerp(profiel.herhaalbak ?? []);
   const volgende = volgendeAfschrijving(abonnement);
 
   function bevestigWissen() {
@@ -174,6 +178,35 @@ export default function Ouders() {
             </Text>
           </Kaart>
         ) : null}
+
+        <Kaart>
+          <Text style={tekst.label}>Fouten die terugkomen</Text>
+          {(profiel.herhaalbak ?? []).length === 0 ? (
+            <Text style={tekst.zacht}>
+              Er staat niets klaar. Vragen die fout gaan, komen hier vanzelf terecht en worden na een
+              dag, drie dagen, een week en drie weken opnieuw gesteld.
+            </Text>
+          ) : (
+            <>
+              <Text style={tekst.subkop}>
+                {openHerhalingen === 0
+                  ? `${profiel.herhaalbak.length} vragen ingepland`
+                  : `${openHerhalingen} vragen nu aan de beurt`}
+              </Text>
+              <Text style={tekst.klein}>
+                {[...herhaalPer.entries()]
+                  .sort((a, b) => b[1] - a[1])
+                  .slice(0, 4)
+                  .map(([id, n]) => `${vindOnderwerp(id)?.naam ?? id} (${n})`)
+                  .join(', ') || 'Ze staan later deze week weer klaar.'}
+              </Text>
+              <Text style={[tekst.klein, { marginTop: ruimte.s }]}>
+                Ze worden vanzelf tussen de gewone vragen door gesteld; {profiel.naam} hoeft er niets
+                voor te doen.
+              </Text>
+            </>
+          )}
+        </Kaart>
 
         <Kaart>
           <Text style={tekst.label}>Laatste rondes</Text>
@@ -270,6 +303,39 @@ export default function Ouders() {
           <View style={styles.keuzeRij}>
             {[10, 20, 30, 50].map((n) => (
               <Chip key={n} label={String(n)} aan={profiel.dagdoel === n} onPress={() => werkProfielBij({ dagdoel: n })} />
+            ))}
+          </View>
+        </Kaart>
+
+        <Kaart>
+          <Text style={tekst.label}>Dagelijkse herinnering</Text>
+          <Text style={tekst.klein}>
+            Eén melding per dag op dit toestel. Er gaat niets naar een server; de melding wordt
+            lokaal ingepland.
+          </Text>
+          <View style={styles.keuzeRij}>
+            {[null, 15, 16, 17, 18, 19].map((uur) => (
+              <Chip
+                key={String(uur)}
+                label={uur === null ? 'Uit' : `${uur}:00`}
+                aan={profiel.herinneringUur === uur}
+                onPress={async () => {
+                  if (uur === null) {
+                    await stopHerinnering();
+                    await werkProfielBij({ herinneringUur: null });
+                    return;
+                  }
+                  const gelukt = await zetHerinnering(uur);
+                  if (gelukt) {
+                    await werkProfielBij({ herinneringUur: uur });
+                  } else {
+                    Alert.alert(
+                      'Meldingen staan uit',
+                      'Zet meldingen voor Slimvos aan in de instellingen van je telefoon.',
+                    );
+                  }
+                }}
+              />
             ))}
           </View>
         </Kaart>

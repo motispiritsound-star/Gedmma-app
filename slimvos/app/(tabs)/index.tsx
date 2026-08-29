@@ -8,6 +8,8 @@ import { levelVoortgang } from '../../src/core/engine/punten';
 import { dagenDezeWeek, weekOverzicht } from '../../src/core/engine/week';
 import { onderwerpenVoorVak, vakkenVoorGroep } from '../../src/core/content/curriculum';
 import { motivatieFilms } from '../../src/core/film/films';
+import { herhalingenPerOnderwerp } from '../../src/core/engine/herhalen';
+import { vindOnderwerp } from '../../src/core/content/curriculum';
 import { useApp } from '../../src/state/AppContext';
 import { Kaart } from '../../src/ui/components/Kaart';
 import { Knop } from '../../src/ui/components/Knop';
@@ -19,7 +21,7 @@ import { kleur, kleurVoorVak, radius, ruimte, schaduw, tabelCijfers, tekst } fro
 
 export default function Thuis() {
   const router = useRouter();
-  const { profiel, premium, magDitOefenen } = useApp();
+  const { profiel, premium, magDitOefenen, aantalHerhalingen } = useApp();
 
   const tips = useMemo(() => (profiel ? aanbevelingen(profiel, 3) : []), [profiel]);
   if (!profiel) return null;
@@ -32,6 +34,10 @@ export default function Thuis() {
   const film = motivatieFilms()[profiel.streak.dagen % motivatieFilms().length];
   const week = weekOverzicht(profiel.geschiedenis);
   const dezeWeek = dagenDezeWeek(profiel.geschiedenis);
+  // Het onderwerp met de meeste openstaande herhalingen komt bovenaan.
+  const herhaalPerOnderwerp = herhalingenPerOnderwerp(profiel.herhaalbak ?? []);
+  const drukste = [...herhaalPerOnderwerp.entries()].sort((a, b) => b[1] - a[1])[0];
+  const herhaalOnderwerp = drukste ? vindOnderwerp(drukste[0]) : undefined;
 
   return (
     <SafeAreaView style={styles.scherm} edges={['top']}>
@@ -87,6 +93,29 @@ export default function Thuis() {
             <Weekstrip dagen={week} />
           </View>
         </Kaart>
+
+        {aantalHerhalingen > 0 && herhaalOnderwerp ? (
+          <Kaart
+            testID="herhaalkaart"
+            onPress={() => router.push(`/oefenen/${herhaalOnderwerp.id}`)}
+            accessibilityLabel={`${aantalHerhalingen} vragen herhalen, te beginnen bij ${herhaalOnderwerp.naam}`}
+            style={styles.herhaalKaart}
+          >
+            <View style={styles.herhaalBol}>
+              <Text style={styles.herhaalCijfer}>{aantalHerhalingen}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={tekst.label}>Klaar om te herhalen</Text>
+              <Text style={tekst.subkop}>
+                {aantalHerhalingen === 1 ? 'Eén vraag' : `${aantalHerhalingen} vragen`} van eerder
+              </Text>
+              <Text style={tekst.klein}>
+                Ze zitten vanzelf in je volgende ronde {herhaalOnderwerp.naam.toLowerCase()}.
+              </Text>
+            </View>
+            <Icoon soort="pijl" formaat={20} kleur={kleur.slot} />
+          </Kaart>
+        ) : null}
 
         {eerste ? (
           <View style={styles.verderRaam}>
@@ -243,4 +272,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   promo: { backgroundColor: kleur.merkZacht, borderColor: kleur.merkRand, gap: ruimte.xs },
+  herhaalKaart: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: ruimte.m,
+    backgroundColor: kleur.slotZacht,
+    borderColor: '#DED3F8',
+  },
+  herhaalBol: {
+    width: 46,
+    height: 46,
+    borderRadius: radius.rond,
+    backgroundColor: kleur.slot,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  herhaalCijfer: { ...tekst.cijfer, fontSize: 20, color: '#FFFFFF' },
 });

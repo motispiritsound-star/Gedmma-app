@@ -4,6 +4,8 @@ import { metBadges, nieuweBadges } from '../core/engine/badges';
 import { nieuwProfiel, verwerkRonde, type Profiel } from '../core/engine/profiel';
 import type { Sessie } from '../core/engine/sessie';
 import { koop as koopItem, kiesAvatar as kiesAvatarPuur } from '../core/engine/winkel';
+import { aantalTeHerhalen, teHerhalen } from '../core/engine/herhalen';
+import type { Vraag } from '../core/types';
 import type { Aanmeldgegevens, Ouder } from '../core/account/types';
 import {
   gratisAbonnement,
@@ -47,6 +49,10 @@ interface AppState {
 
   magDitOefenen: (onderwerpId: string) => Oordeel;
   ruimteVoorProfiel: boolean;
+  /** Vragen die voor dit onderwerp weer aan de beurt zijn. */
+  herhalingenVoor: (onderwerpId: string) => Vraag[];
+  /** Hoeveel vragen er in totaal klaarstaan om te herhalen. */
+  aantalHerhalingen: number;
 
   registreer: (gegevens: Aanmeldgegevens) => Promise<void>;
   logIn: (email: string, wachtwoord: string) => Promise<void>;
@@ -185,6 +191,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [abonnement, profiel],
   );
 
+  const herhalingenVoor = useCallback(
+    (onderwerpId: string) =>
+      teHerhalen(profiel?.herhaalbak ?? [], { onderwerpId }).map((i) => i.vraag),
+    [profiel],
+  );
+
+  const aantalHerhalingen = useMemo(() => aantalTeHerhalen(profiel?.herhaalbak ?? []), [profiel]);
+
   const registreer = useCallback(async (gegevens: Aanmeldgegevens) => {
     setOuder(await lokaleAuth.registreer(gegevens));
   }, []);
@@ -256,6 +270,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       vergeetVerseBadges: () => setVerseBadges([]),
       magDitOefenen,
       ruimteVoorProfiel,
+      herhalingenVoor,
+      aantalHerhalingen,
       registreer,
       logIn,
       logUit,
@@ -269,7 +285,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [
       klaar, profielen, profiel, ouder, abonnement, premium, verseBadges,
       maakProfiel, kiesProfiel, verwijderProfiel, rondeKlaar, werkProfielBij, koop, kiesAvatar,
-      verwijderAlles, magDitOefenen, ruimteVoorProfiel, registreer, logIn, logUit, werkOuderBij,
+      verwijderAlles, magDitOefenen, ruimteVoorProfiel, herhalingenVoor, aantalHerhalingen,
+      registreer, logIn, logUit, werkOuderBij,
       verwijderAccount, koopAbonnement, zegAbonnementOp, hervatAbonnement, herstelAankopen,
     ],
   );

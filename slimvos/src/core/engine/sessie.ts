@@ -1,6 +1,23 @@
 import type { Antwoord, Vraag } from '../types';
 import { maakRonde } from '../content';
 import { isGoed } from '../content/helpers';
+import { sleutel } from './herhalen';
+
+/**
+ * Zet de herhalingen verspreid tussen de nieuwe vragen, niet vooraan. Een
+ * ronde die begint met drie sommen die je vorige keer fout had, voelt als een
+ * strafwerkje.
+ */
+function vlecht(nieuwe: Vraag[], herhalingen: Vraag[]): Vraag[] {
+  if (herhalingen.length === 0) return nieuwe;
+  const uit = [...nieuwe];
+  const stap = Math.max(1, Math.floor(uit.length / (herhalingen.length + 1)));
+  herhalingen.forEach((vraag, i) => {
+    const plek = Math.min(uit.length, (i + 1) * stap + i);
+    uit.splice(plek, 0, vraag);
+  });
+  return uit;
+}
 
 export const VRAGEN_PER_RONDE = 10;
 
@@ -8,6 +25,8 @@ export interface Sessie {
   onderwerpId: string;
   niveauBijStart: number;
   vragen: Vraag[];
+  /** Sleutels van de vragen die als herhaling zijn ingevoegd. */
+  herhaalSleutels: string[];
   index: number;
   antwoorden: Antwoord[];
   gestartOp: number;
@@ -18,15 +37,18 @@ export interface Sessie {
 export function startSessie(
   onderwerpId: string,
   niveau: number,
-  opties: { aantal?: number; seed?: number; nu?: number } = {},
+  opties: { aantal?: number; seed?: number; nu?: number; herhalingen?: Vraag[] } = {},
 ): Sessie {
   const nu = opties.nu ?? Date.now();
   const aantal = opties.aantal ?? VRAGEN_PER_RONDE;
   const seed = opties.seed ?? Math.floor(Math.random() * 2 ** 31);
+  const herhalingen = (opties.herhalingen ?? []).slice(0, Math.max(0, aantal - 1));
+  const nieuwe = maakRonde(onderwerpId, niveau, aantal - herhalingen.length, seed);
   return {
     onderwerpId,
     niveauBijStart: niveau,
-    vragen: maakRonde(onderwerpId, niveau, aantal, seed),
+    vragen: vlecht(nieuwe, herhalingen),
+    herhaalSleutels: herhalingen.map(sleutel),
     index: 0,
     antwoorden: [],
     gestartOp: nu,
@@ -86,6 +108,8 @@ export function volgende(s: Sessie, nu = Date.now()): Sessie {
 export interface RondeResultaat {
   onderwerpId: string;
   aantal: number;
+  /** Hoeveel van de vragen herhalingen waren. */
+  herhaald: number;
   goed: number;
   fout: number;
   procent: number;
@@ -98,9 +122,11 @@ export function resultaat(s: Sessie, nu = Date.now()): RondeResultaat {
   const goed = s.antwoorden.filter((a) => a.goed).length;
   const aantal = s.antwoorden.length;
   const foutIds = new Set(s.antwoorden.filter((a) => !a.goed).map((a) => a.vraagId));
+  const herhaalSet = new Set(s.herhaalSleutels);
   return {
     onderwerpId: s.onderwerpId,
     aantal,
+    herhaald: s.vragen.filter((v) => herhaalSet.has(sleutel(v))).length,
     goed,
     fout: aantal - goed,
     procent: aantal === 0 ? 0 : Math.round((goed / aantal) * 100),

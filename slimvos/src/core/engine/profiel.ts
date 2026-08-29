@@ -2,6 +2,7 @@ import type { Groep } from '../types';
 import { startNiveau, vindOnderwerp, onderwerpenVoorGroep } from '../content/curriculum';
 import { GRATIS_VAK } from '../abonnement/toegang';
 import { nieuweBeheersing, naAntwoord, type Beheersing } from './beheersing';
+import { naHerhaling, sleutel, voegToe, type Herhaalitem } from './herhalen';
 import {
   dagSleutel,
   levelVoorXp,
@@ -54,8 +55,12 @@ export interface Profiel {
   vandaag: DagTeller;
   /** De laatste 100 rondes, voor het ouderdashboard. */
   geschiedenis: RondeLog[];
+  /** Vragen die fout gingen en op een later moment terugkomen. */
+  herhaalbak: Herhaalitem[];
   /** Pincode voor het oudergedeelte; null = nog niet ingesteld. */
   ouderPincode: string | null;
+  /** Uur van de dagelijkse herinnering; null = geen herinnering. */
+  herinneringUur: number | null;
   aangemaakt: number;
 }
 
@@ -81,7 +86,9 @@ export function nieuwProfiel(naam: string, groep: Groep, avatar = AVATARS[0], nu
     dagdoel: 20,
     vandaag: { datum: dagSleutel(new Date(nu)), vragen: 0, goed: 0, xp: 0, minuten: 0, buitenGratisVak: 0 },
     geschiedenis: [],
+    herhaalbak: [],
     ouderPincode: null,
+    herinneringUur: null,
     aangemaakt: nu,
   };
 }
@@ -130,6 +137,19 @@ export function verwerkRonde(profiel: Profiel, sessie: Sessie, nu = Date.now()):
     vandaag.buitenGratisVak += uitkomst.aantal;
   }
 
+  // Fouten in de bak, goed beantwoorde herhalingen een stap verder.
+  const herhaalSet = new Set(sessie.herhaalSleutels);
+  let herhaalbak = profiel.herhaalbak ?? [];
+  for (const antwoord of sessie.antwoorden) {
+    const vraag = vraagPerId.get(antwoord.vraagId);
+    if (!vraag) continue;
+    if (herhaalSet.has(sleutel(vraag))) {
+      herhaalbak = naHerhaling(herhaalbak, vraag, antwoord.goed, nu);
+    } else if (!antwoord.goed) {
+      herhaalbak = voegToe(herhaalbak, vraag, nu);
+    }
+  }
+
   const log: RondeLog = {
     onderwerpId: sessie.onderwerpId,
     tijd: nu,
@@ -149,6 +169,7 @@ export function verwerkRonde(profiel: Profiel, sessie: Sessie, nu = Date.now()):
     beheersing: { ...profiel.beheersing, [sessie.onderwerpId]: beheersing },
     vandaag,
     geschiedenis: [log, ...profiel.geschiedenis].slice(0, 100),
+    herhaalbak,
   };
 }
 
@@ -172,5 +193,6 @@ export function migreerProfiel(ruw: unknown): Profiel | null {
     badges: p.badges ?? [],
     bezit: p.bezit ?? basis.bezit,
     geschiedenis: p.geschiedenis ?? [],
+    herhaalbak: p.herhaalbak ?? [],
   };
 }
