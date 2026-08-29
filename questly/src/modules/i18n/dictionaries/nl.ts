@@ -168,7 +168,7 @@ export const nl = {
   "completion.note": "Prive notitie voor het gezin",
   "completion.noteHint": "Alleen jullie gezin ziet dit.",
   "completion.evidence": "Foto toevoegen (optioneel)",
-  "completion.evidenceHint": "Prive by default. Je hoeft nooit een foto te uploaden.",
+  "completion.evidenceHint": "Standaard prive. Je hoeft nooit een foto te uploaden.",
   "completion.submit": "Afronden",
   "completion.submitForApproval": "Ter goedkeuring versturen",
   "completion.awaitingApproval": "Wacht op goedkeuring van een ouder.",
