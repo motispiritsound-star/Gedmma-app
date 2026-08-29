@@ -1,0 +1,28 @@
+# Local PostgreSQL for development and tests.
+#
+#   docker compose up -d db
+#
+# Nothing else in WonderBox needs a container: payment, shipping, storage and
+# AI drafting all have in-process mocks.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: wonderbox-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: wonderbox
+      POSTGRES_PASSWORD: wonderbox
+      POSTGRES_DB: wonderbox
+    ports:
+      - '5432:5432'
+    volumes:
+      - wonderbox-db:/var/lib/postgresql/data
+      - ./scripts/init-test-db.sql:/docker-entrypoint-initdb.d/10-test-db.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U wonderbox -d wonderbox']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  wonderbox-db:

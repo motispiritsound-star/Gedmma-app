@@ -1,0 +1,29 @@
+{
+  "name": "wonderbox",
+  "version": "0.1.0",
+  "private": true,
+  "description": "WonderBox \u2014 monthly physical learning kits for children aged 5-12 with a screen-free audio companion.",
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @wonderbox/web",
+    "build": "npm run build --workspace @wonderbox/web",
+    "start": "npm run start --workspace @wonderbox/web",
+    "lint": "npm run lint --workspace @wonderbox/web",
+    "typecheck": "npm run typecheck --workspace @wonderbox/hardware-protocol && npm run typecheck --workspace @wonderbox/web",
+    "test": "npm run test --workspace @wonderbox/hardware-protocol && npm run test --workspace @wonderbox/web",
+    "test:e2e": "npm run test:e2e --workspace @wonderbox/web",
+    "db:generate": "npm run db:generate --workspace @wonderbox/web",
+    "db:push": "npm run db:push --workspace @wonderbox/web",
+    "db:migrate": "npm run db:migrate --workspace @wonderbox/web",
+    "db:reset": "npm run db:reset --workspace @wonderbox/web",
+    "db:seed": "npm run db:seed --workspace @wonderbox/web",
+    "setup": "npm install && node scripts/env-init.mjs && npm run db:generate && npm run db:push && npm run db:seed",
+    "env:init": "node scripts/env-init.mjs"
+  }
+}
