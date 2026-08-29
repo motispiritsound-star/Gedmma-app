@@ -1,0 +1,17 @@
+{
+  "name": "Questly",
+  "short_name": "Questly",
+  "description": "Kies een avontuur, leg het scherm weg en beleef iets in de echte wereld.",
+  "start_url": "/home",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fbf7f0",
+  "theme_color": "#14574a",
+  "lang": "nl",
+  "categories": ["education", "lifestyle"],
+  "icons": [
+    { "src": "/icons/questly.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icons/questly-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

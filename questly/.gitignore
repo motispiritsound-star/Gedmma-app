@@ -1,0 +1,19 @@
+node_modules/
+.next/
+out/
+build/
+.data/
+coverage/
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+*.tsbuildinfo
+.env
+.env.local
+# .env.test and .env.e2e are committed on purpose: they point at throwaway
+# databases and carry obvious development-only secrets, so `npm test` and
+# `npm run test:e2e` work straight after a clone.
+.DS_Store
+*.log
+next-env.d.ts

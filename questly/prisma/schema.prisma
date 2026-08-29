@@ -1,0 +1,729 @@
+// Questly - modular monolith data model.
+// Conventions: every table carries createdAt/updatedAt; soft deletion is used only
+// where a record must survive for auditability (users, families, child profiles).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------- enums
+
+enum UserRole {
+  PARENT
+  CONTENT_ADMIN
+  PLATFORM_ADMIN
+}
+
+enum FamilyRole {
+  OWNER
+  GUARDIAN
+}
+
+enum Locale {
+  NL
+  EN
+}
+
+enum AgeBand {
+  AGE_6_8
+  AGE_9_11
+  AGE_12_15
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  CHALLENGING
+}
+
+enum Setting {
+  INDOOR
+  OUTDOOR
+  BOTH
+}
+
+enum WeatherSuitability {
+  ANY
+  DRY
+  RAIN_FRIENDLY
+  WARM
+  COLD
+}
+
+enum Season {
+  SPRING
+  SUMMER
+  AUTUMN
+  WINTER
+}
+
+enum Environment {
+  CITY
+  SUBURB
+  RURAL
+}
+
+enum ParticipationStyle {
+  FAMILY
+  INDIVIDUAL
+  BOTH
+}
+
+enum QuestStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum SafetySeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+enum CompletionStatus {
+  IN_PROGRESS
+  AWAITING_APPROVAL
+  APPROVED
+  REJECTED
+}
+
+enum EvidenceVisibility {
+  PRIVATE
+  FAMILY
+}
+
+enum BadgeCriteria {
+  QUESTS_COMPLETED
+  CATEGORY_COMPLETED
+  SKILL_PRACTISED
+  CATEGORIES_EXPLORED
+  REFLECTIONS_WRITTEN
+}
+
+enum BadgeScope {
+  FAMILY
+  CHILD
+}
+
+enum SubscriptionPlan {
+  FREE
+  FAMILY_PREMIUM
+  SCHOOL
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  TRIALING
+  PAST_DUE
+  CANCELED
+}
+
+enum PaymentProviderKind {
+  MOCK
+  STRIPE
+}
+
+// ---------------------------------------------------------------- identity
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  passwordHash    String
+  displayName     String
+  role            UserRole  @default(PARENT)
+  locale          Locale    @default(NL)
+  emailVerifiedAt DateTime?
+  lastLoginAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  sessions           Session[]
+  verificationTokens EmailVerificationToken[]
+  memberships        FamilyMembership[]
+  auditLogs          AuditLog[]               @relation("AuditActor")
+  approvedCompletions QuestCompletion[]       @relation("CompletionApprover")
+  uploadedEvidence   CompletionEvidence[]
+  plannedQuests      PlannedQuest[]
+  createdQuests      Quest[]                  @relation("QuestAuthor")
+  questVersions      QuestVersion[]
+  deletionRequests   AccountDeletionRequest[]
+
+  @@index([role])
+  @@index([deletedAt])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  ipHash    String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model EmailVerificationToken {
+  id         String    @id @default(cuid())
+  userId     String
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ---------------------------------------------------------------- family
+
+model Family {
+  id                    String      @id @default(cuid())
+  name                  String
+  locale                Locale      @default(NL)
+  country               String      @default("NL")
+  environment           Environment @default(SUBURB)
+  requireParentApproval Boolean     @default(true)
+  onboardingCompletedAt DateTime?
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  deletedAt             DateTime?
+
+  memberships      FamilyMembership[]
+  children         ChildProfile[]
+  preference       FamilyPreference?
+  subscription     Subscription?
+  completions      QuestCompletion[]
+  favourites       FavouriteQuest[]
+  plannedQuests    PlannedQuest[]
+  awardedBadges    AwardedBadge[]
+  auditLogs        AuditLog[]
+  deletionRequests AccountDeletionRequest[]
+
+  @@index([deletedAt])
+}
+
+model FamilyMembership {
+  id        String     @id @default(cuid())
+  userId    String
+  familyId  String
+  role      FamilyRole @default(OWNER)
+  createdAt DateTime   @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, familyId])
+  @@index([familyId])
+}
+
+model FamilyPreference {
+  id                       String             @id @default(cuid())
+  familyId                 String             @unique
+  preferredDurationMinutes Int                @default(60)
+  preferredDifficulty      Difficulty         @default(EASY)
+  settingPreference        Setting            @default(BOTH)
+  participationStyle       ParticipationStyle @default(BOTH)
+  availableMaterialSlugs   String[]           @default([])
+  createdAt                DateTime           @default(now())
+  updatedAt                DateTime           @updatedAt
+
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+}
+
+/// Child profiles are deliberately thin: a nickname, an age band and interests.
+/// No email address, no legal name, no date of birth, no public profile.
+model ChildProfile {
+  id        String    @id @default(cuid())
+  familyId  String
+  nickname  String
+  avatarKey String    @default("fox")
+  ageBand   AgeBand
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  family         Family              @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  interests      ChildInterest[]
+  participations QuestParticipation[]
+  awardedBadges  AwardedBadge[]
+  plannedFor     PlannedQuestChild[]
+
+  @@unique([familyId, nickname])
+  @@index([familyId, deletedAt])
+}
+
+model Interest {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  nameNl     String
+  nameEn     String
+  emoji      String   @default("*")
+  categoryId String?
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  category Category?       @relation(fields: [categoryId], references: [id])
+  children ChildInterest[]
+}
+
+model ChildInterest {
+  childProfileId String
+  interestId     String
+  createdAt      DateTime @default(now())
+
+  childProfile ChildProfile @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  interest     Interest     @relation(fields: [interestId], references: [id], onDelete: Cascade)
+
+  @@id([childProfileId, interestId])
+  @@index([interestId])
+}
+
+// ---------------------------------------------------------------- content
+
+model Category {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  nameNl        String
+  nameEn        String
+  descriptionNl String
+  descriptionEn String
+  colorToken    String   @default("--q-category-default")
+  icon          String   @default("compass")
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  quests    Quest[]
+  interests Interest[]
+  badges    Badge[]
+}
+
+model Skill {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  nameNl        String
+  nameEn        String
+  descriptionNl String
+  descriptionEn String
+  icon          String   @default("spark")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  quests QuestSkill[]
+  badges Badge[]
+}
+
+model Material {
+  id                 String   @id @default(cuid())
+  slug               String   @unique
+  nameNl             String
+  nameEn             String
+  commonlyAvailable  Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  quests QuestMaterial[]
+}
+
+model Quest {
+  id                        String             @id @default(cuid())
+  slug                      String             @unique
+  categoryId                String
+  status                    QuestStatus        @default(DRAFT)
+  ageBands                  AgeBand[]
+  seasons                   Season[]           @default([SPRING, SUMMER, AUTUMN, WINTER])
+  durationMinutes           Int
+  difficulty                Difficulty
+  setting                   Setting
+  weather                   WeatherSuitability @default(ANY)
+  minParticipants           Int                @default(1)
+  maxParticipants           Int                @default(6)
+  isPremium                 Boolean            @default(false)
+  requiresAdultSupervision  Boolean            @default(false)
+  safetyLevel               SafetySeverity     @default(INFO)
+  imageKey                  String             @default("default")
+  version                   Int                @default(1)
+  publishedAt               DateTime?
+  archivedAt                DateTime?
+  createdById               String?
+  createdAt                 DateTime           @default(now())
+  updatedAt                 DateTime           @updatedAt
+
+  category            Category            @relation(fields: [categoryId], references: [id])
+  createdBy           User?               @relation("QuestAuthor", fields: [createdById], references: [id])
+  translations        QuestTranslation[]
+  steps               QuestStep[]
+  skills              QuestSkill[]
+  materials           QuestMaterial[]
+  safetyInstructions  SafetyInstruction[]
+  reflectionQuestions ReflectionQuestion[]
+  completions         QuestCompletion[]
+  favourites          FavouriteQuest[]
+  plannedQuests       PlannedQuest[]
+  versions            QuestVersion[]
+
+  @@index([status, isPremium])
+  @@index([categoryId])
+  @@index([difficulty])
+  @@index([durationMinutes])
+}
+
+model QuestTranslation {
+  id                   String   @id @default(cuid())
+  questId              String
+  locale               Locale
+  title                String
+  summary              String
+  story                String
+  educationalObjective String
+  expectedResult       String
+  preparation          String[] @default([])
+  audioScript          String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  quest Quest @relation(fields: [questId], references: [id], onDelete: Cascade)
+
+  @@unique([questId, locale])
+}
+
+model QuestStep {
+  id              String   @id @default(cuid())
+  questId         String
+  position        Int
+  durationMinutes Int?
+  requiresParent  Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  quest        Quest                  @relation(fields: [questId], references: [id], onDelete: Cascade)
+  translations QuestStepTranslation[]
+
+  @@unique([questId, position])
+}
+
+model QuestStepTranslation {
+  id          String   @id @default(cuid())
+  questStepId String
+  locale      Locale
+  title       String
+  body        String
+  tip         String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  step QuestStep @relation(fields: [questStepId], references: [id], onDelete: Cascade)
+
+  @@unique([questStepId, locale])
+}
+
+model QuestSkill {
+  questId String
+  skillId String
+  weight  Int    @default(1)
+
+  quest Quest @relation(fields: [questId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([questId, skillId])
+  @@index([skillId])
+}
+
+model QuestMaterial {
+  questId    String
+  materialId String
+  quantity   String?
+  optional   Boolean @default(false)
+
+  quest    Quest    @relation(fields: [questId], references: [id], onDelete: Cascade)
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@id([questId, materialId])
+  @@index([materialId])
+}
+
+model SafetyInstruction {
+  id        String         @id @default(cuid())
+  questId   String
+  position  Int
+  severity  SafetySeverity @default(INFO)
+  textNl    String
+  textEn    String
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  quest Quest @relation(fields: [questId], references: [id], onDelete: Cascade)
+
+  @@unique([questId, position])
+}
+
+model ReflectionQuestion {
+  id        String   @id @default(cuid())
+  questId   String
+  position  Int
+  textNl    String
+  textEn    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  quest       Quest                 @relation(fields: [questId], references: [id], onDelete: Cascade)
+  reflections CompletionReflection[]
+
+  @@unique([questId, position])
+}
+
+/// Immutable snapshot of a quest's material content, written on every publish or
+/// content edit so administrators can see what changed and when.
+model QuestVersion {
+  id              String   @id @default(cuid())
+  questId         String
+  version         Int
+  snapshot        Json
+  changeNote      String?
+  changedByUserId String?
+  createdAt       DateTime @default(now())
+
+  quest     Quest @relation(fields: [questId], references: [id], onDelete: Cascade)
+  changedBy User? @relation(fields: [changedByUserId], references: [id])
+
+  @@unique([questId, version])
+  @@index([questId])
+}
+
+// ---------------------------------------------------------------- progress
+
+model QuestCompletion {
+  id                String           @id @default(cuid())
+  familyId          String
+  questId           String
+  status            CompletionStatus @default(IN_PROGRESS)
+  startedAt         DateTime         @default(now())
+  finishedAt        DateTime?
+  approvedAt        DateTime?
+  approvedByUserId  String?
+  rejectionReason   String?
+  minutesSpent      Int              @default(0)
+  familyNote        String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  family        Family                @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  quest         Quest                 @relation(fields: [questId], references: [id])
+  approvedBy    User?                 @relation("CompletionApprover", fields: [approvedByUserId], references: [id])
+  participants  QuestParticipation[]
+  reflections   CompletionReflection[]
+  evidence      CompletionEvidence[]
+  awardedBadges AwardedBadge[]
+
+  @@index([familyId, status])
+  @@index([questId])
+  @@index([familyId, finishedAt])
+}
+
+model QuestParticipation {
+  id                String   @id @default(cuid())
+  questCompletionId String
+  childProfileId    String
+  createdAt         DateTime @default(now())
+
+  completion   QuestCompletion @relation(fields: [questCompletionId], references: [id], onDelete: Cascade)
+  childProfile ChildProfile    @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+
+  @@unique([questCompletionId, childProfileId])
+  @@index([childProfileId])
+}
+
+model CompletionReflection {
+  id                   String   @id @default(cuid())
+  questCompletionId    String
+  reflectionQuestionId String?
+  prompt               String
+  answer               String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  completion QuestCompletion     @relation(fields: [questCompletionId], references: [id], onDelete: Cascade)
+  question   ReflectionQuestion? @relation(fields: [reflectionQuestionId], references: [id])
+
+  @@index([questCompletionId])
+}
+
+/// Private family media. Never public: bytes are served only through an
+/// authenticated route that re-checks family ownership, and only via a
+/// short-lived signed token.
+model CompletionEvidence {
+  id                String             @id @default(cuid())
+  questCompletionId String
+  storageKey        String             @unique
+  mimeType          String
+  sizeBytes         Int
+  checksum          String
+  visibility        EvidenceVisibility @default(PRIVATE)
+  uploadedByUserId  String?
+  createdAt         DateTime           @default(now())
+  deletedAt         DateTime?
+
+  completion QuestCompletion @relation(fields: [questCompletionId], references: [id], onDelete: Cascade)
+  uploadedBy User?           @relation(fields: [uploadedByUserId], references: [id])
+
+  @@index([questCompletionId])
+}
+
+model Badge {
+  id            String        @id @default(cuid())
+  slug          String        @unique
+  nameNl        String
+  nameEn        String
+  descriptionNl String
+  descriptionEn String
+  icon          String        @default("medal")
+  scope         BadgeScope    @default(FAMILY)
+  criteria      BadgeCriteria
+  threshold     Int           @default(1)
+  categoryId    String?
+  skillId       String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  category Category?      @relation(fields: [categoryId], references: [id])
+  skill    Skill?         @relation(fields: [skillId], references: [id])
+  awarded  AwardedBadge[]
+}
+
+/// scopeKey is `FAMILY` for family-wide badges, otherwise the child profile id.
+/// It exists so the unique constraint can guarantee "awarded at most once".
+model AwardedBadge {
+  id                String   @id @default(cuid())
+  badgeId           String
+  familyId          String
+  childProfileId    String?
+  scopeKey          String
+  questCompletionId String?
+  awardedAt         DateTime @default(now())
+
+  badge        Badge            @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  family       Family           @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  childProfile ChildProfile?    @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  completion   QuestCompletion? @relation(fields: [questCompletionId], references: [id], onDelete: SetNull)
+
+  @@unique([familyId, badgeId, scopeKey])
+  @@index([familyId])
+}
+
+model FavouriteQuest {
+  id        String   @id @default(cuid())
+  familyId  String
+  questId   String
+  createdAt DateTime @default(now())
+
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  quest  Quest  @relation(fields: [questId], references: [id], onDelete: Cascade)
+
+  @@unique([familyId, questId])
+  @@index([questId])
+}
+
+model PlannedQuest {
+  id              String   @id @default(cuid())
+  familyId        String
+  questId         String
+  scheduledFor    DateTime @db.Date
+  timeOfDay       String?
+  note            String?
+  completedAt     DateTime?
+  createdByUserId String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  family    Family              @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  quest     Quest               @relation(fields: [questId], references: [id], onDelete: Cascade)
+  createdBy User?               @relation(fields: [createdByUserId], references: [id])
+  children  PlannedQuestChild[]
+
+  @@unique([familyId, questId, scheduledFor])
+  @@index([familyId, scheduledFor])
+}
+
+model PlannedQuestChild {
+  plannedQuestId String
+  childProfileId String
+
+  plannedQuest PlannedQuest @relation(fields: [plannedQuestId], references: [id], onDelete: Cascade)
+  childProfile ChildProfile @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+
+  @@id([plannedQuestId, childProfileId])
+  @@index([childProfileId])
+}
+
+// ---------------------------------------------------------------- commerce
+
+model Subscription {
+  id                     String              @id @default(cuid())
+  familyId               String              @unique
+  plan                   SubscriptionPlan    @default(FREE)
+  status                 SubscriptionStatus  @default(ACTIVE)
+  provider               PaymentProviderKind @default(MOCK)
+  providerCustomerId     String?
+  providerSubscriptionId String?
+  currentPeriodEnd       DateTime?
+  cancelAtPeriodEnd      Boolean             @default(false)
+  createdAt              DateTime            @default(now())
+  updatedAt              DateTime            @updatedAt
+
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@index([plan, status])
+}
+
+// ---------------------------------------------------------------- governance
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  actorUserId  String?
+  actorRole    String?
+  action       String
+  targetType   String
+  targetId     String?
+  familyId     String?
+  ipHash       String?
+  metadata     Json     @default("{}")
+  createdAt    DateTime @default(now())
+
+  actor  User?   @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+  family Family? @relation(fields: [familyId], references: [id], onDelete: SetNull)
+
+  @@index([action, createdAt])
+  @@index([actorUserId])
+  @@index([familyId])
+}
+
+model AccountDeletionRequest {
+  id              String    @id @default(cuid())
+  userId          String
+  familyId        String?
+  reason          String?
+  requestedAt     DateTime  @default(now())
+  scheduledPurgeAt DateTime
+  confirmedAt     DateTime?
+  cancelledAt     DateTime?
+  purgedAt        DateTime?
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  family Family? @relation(fields: [familyId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([scheduledPurgeAt])
+}

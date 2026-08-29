@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Questly">
+  <rect width="512" height="512" rx="112" fill="#14574a"/>
+  <circle cx="256" cy="256" r="150" fill="none" stroke="#fbf7f0" stroke-width="18"/>
+  <path d="M330 182 L282 290 L182 330 L230 222 Z" fill="#fbf7f0"/>
+  <circle cx="256" cy="256" r="22" fill="#b64c17"/>
+</svg>

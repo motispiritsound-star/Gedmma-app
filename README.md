@@ -1,3 +1,10 @@
+> **Note** — this repository holds two independent projects.
+>
+> - **Webscan NL** (this README, below) — geautomatiseerde websitescan en leadgeneratie.
+> - **[Questly](./questly/README.md)** (`questly/`) — a family and education
+>   platform: personalised offline adventures for children aged 6–15. Built as a
+>   separate application; nothing here was changed for it.
+
 # Webscan NL
 
 Scant geautomatiseerd de websites van Nederlandse bedrijven, geeft elke site een

@@ -1,0 +1,25 @@
+# Local PostgreSQL for development and tests.
+#   docker compose up -d
+# The credentials match the DATABASE_URL in .env.example.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: questly-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: questly
+      POSTGRES_PASSWORD: questly
+      POSTGRES_DB: questly
+    ports:
+      - "5432:5432"
+    volumes:
+      - questly-postgres:/var/lib/postgresql/data
+      - ./docker/init-databases.sql:/docker-entrypoint-initdb.d/10-init-databases.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U questly -d questly"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  questly-postgres:
