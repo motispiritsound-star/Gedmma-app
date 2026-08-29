@@ -24,6 +24,7 @@
     "db:reset": "npm run db:reset --workspace @wonderbox/web",
     "db:seed": "npm run db:seed --workspace @wonderbox/web",
     "setup": "npm install && node scripts/env-init.mjs && npm run db:generate && npm run db:push && npm run db:seed",
-    "env:init": "node scripts/env-init.mjs"
+    "env:init": "node scripts/env-init.mjs",
+    "video": "npm run video --workspace @wonderbox/web"
   }
 }

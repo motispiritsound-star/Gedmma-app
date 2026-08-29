@@ -100,6 +100,60 @@ instance, because that is where the guarantee actually lives.
 
 ---
 
+## Unit economics
+
+The question that decides whether a box gets made: at the catalogue price, what
+is left after everything it actually costs to put in a child's hands?
+
+`/ops/costing` answers it. `src/server/costing.ts` does the arithmetic, and it
+is written around three traps.
+
+**VAT.** The catalogue price is gross. Revenue is `gross × 100 / 121`, because
+the VAT belongs to the tax office and was never yours. Comparing a gross price
+to a net cost overstates margin by about a fifth — enough to make a bad box look
+fine.
+
+**Purchase cost is net too.** Input VAT is reclaimed, so counting it as a cost
+punishes the same money twice.
+
+**One-off costs are real costs.** EN 71 testing, the technical file and the card
+artwork are spent before the first box ships. Spread over a run they are often
+larger than the cheap electronics inside, and a parts-only calculation cannot
+see them at all. `BoxProduct` carries `certificationCostCents`,
+`artworkCostCents` and `amortiseOverUnits` for exactly this.
+
+The seeded boxes, at the prices on the catalogue page:
+
+| Box | Retail incl. VAT | Net | Parts | Pack | Cert + artwork | Margin |
+| --- | --- | --- | --- | --- | --- | --- |
+| Bouw een Alarm | €39.95 | €33.02 | €5.71 | €1.50 | €5.07 | €20.74 · 63% |
+| Junior Ruimteverkenner | €34.95 | €28.88 | €7.45 | €1.50 | €2.35 | €17.58 · 61% |
+| Natuurdetective | €29.95 | €24.75 | €6.03 | €1.50 | €2.95 | €14.27 · 58% |
+
+The alarm box is the most profitable despite the most expensive certification,
+because small electronics are cheap. The nature box is the thinnest: plaster and
+optics are not, and it carries the lowest retail price. A test asserts the case
+that matters — a box whose parts look fine and whose certification, spread over
+a short run, puts the whole thing under water.
+
+### Purchase planning
+
+`purchasePlan()` turns a production run into a shopping list: what each box
+needs, minus what is free on the shelf, rounded up to each supplier's minimum
+order quantity. Reserved stock is excluded — it is spoken for by orders that
+have not shipped, and counting it would have you pack a box twice.
+
+It reports three numbers an operator acts on: the purchase value, the slowest
+lead time (which is the date you can start packing), and how much you are
+spending on units you did not need because of minimum order quantities.
+
+Sourcing data lives in `prisma/content/procurement.ts`, keyed by SKU and kept
+apart from the box content: a mailer box is shared between products, suppliers
+change without the story changing, and an editor writing a chapter has no
+business editing purchase prices.
+
+---
+
 ## Orders
 
 ```
@@ -268,6 +322,7 @@ The e2e suite asserts that no full code pattern appears anywhere on that page.
 | Page | What it does |
 | --- | --- |
 | `/ops/inventory` | Levels per SKU, boxes buildable, receive a batch |
+| `/ops/costing` | Margin per box, and the purchase plan for a run |
 | `/ops/orders` | Fulfilment queue: create a label, cancel, refund |
 | `/ops/shipments` | Advance carrier status (mock mode) |
 | `/ops/codes` | Counts by state; mint a print run |
@@ -290,5 +345,9 @@ Ops holds `address.read` because packing a parcel requires an address — and
 - **No proration.** Plan changes are not implemented; a parent cancels and
   resubscribes.
 - **No real carrier.** The port exists; the adapter does not.
+- **Sourcing figures are placeholders.** Realistic Dutch wholesale for a run in
+  the hundreds, but they are not quotes. Replace them before ordering anything.
+- **No CE conformity work.** The cost of certification is modelled; the
+  certification is not done. Nothing here substitutes for a testing lab.
 - **Renewals are not scheduled.** `runRenewal()` and `dueSubscriptions()` are
   the seam a cron or job runner would call.

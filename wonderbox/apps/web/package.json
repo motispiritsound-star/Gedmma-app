@@ -15,7 +15,8 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset --force",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "video": "tsx scripts/record-demo.mts && tsx scripts/record-explainer.mts && node scripts/encode-video.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

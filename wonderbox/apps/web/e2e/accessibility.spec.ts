@@ -58,6 +58,7 @@ test.describe('signed-in surfaces have no accessibility violations', () => {
       '/studio/drafts',
       '/ops',
       '/ops/inventory',
+      '/ops/costing',
       '/ops/orders',
       '/ops/shipments',
       '/ops/codes',

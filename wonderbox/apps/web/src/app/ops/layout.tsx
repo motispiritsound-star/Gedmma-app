@@ -13,6 +13,7 @@ export default async function OpsLayout({ children }: { children: React.ReactNod
   const links: [string, string][] = [
     ['/ops', t('ops.title')],
     ['/ops/inventory', t('ops.inventory')],
+    ['/ops/costing', locale === 'nl' ? 'Kostprijs en marge' : 'Cost and margin'],
     ['/ops/orders', t('ops.orders')],
     ['/ops/shipments', t('ops.shipments')],
     ['/ops/codes', t('ops.codes')],

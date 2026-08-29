@@ -17,6 +17,7 @@ import { hashActivationCode } from '../src/server/activation.ts';
 import { generateActivationCode } from '../src/lib/crypto.ts';
 import { addMonths } from '../src/server/subscriptions.ts';
 import { BOXES, THEMES, type BoxSpec, type ChapterSpec } from './content/index.ts';
+import { SETUP_COSTS, SOURCING } from './content/procurement.ts';
 import { estimateDurationMs, synthesisePlaceholder } from './audio.ts';
 
 const prisma = new PrismaClient();
@@ -147,6 +148,9 @@ async function seedBox(spec: BoxSpec, themeIds: Map<string, string>): Promise<Se
       ageMax: spec.ageMax,
       priceCents: spec.priceCents,
       curriculumIndex: spec.curriculumIndex,
+      certificationCostCents: SETUP_COSTS[spec.sku]?.certificationCostCents ?? 0,
+      artworkCostCents: SETUP_COSTS[spec.sku]?.artworkCostCents ?? 0,
+      amortiseOverUnits: SETUP_COSTS[spec.sku]?.amortiseOverUnits ?? 1000,
       translations: {
         create: (['nl', 'en'] as const).map((locale) => ({
           locale,
@@ -162,6 +166,7 @@ async function seedBox(spec: BoxSpec, themeIds: Map<string, string>): Promise<Se
 
   // Inventory: one item per distinct SKU across all boxes, with a batch on hand.
   for (const component of spec.components) {
+    const sourcing = SOURCING[component.sku];
     const item = await prisma.inventoryItem.upsert({
       where: { sku: component.sku },
       create: {
@@ -169,6 +174,12 @@ async function seedBox(spec: BoxSpec, themeIds: Map<string, string>): Promise<Se
         name: component.name,
         kind: component.kind,
         reorderLevel: Math.max(10, Math.round(component.stock * 0.1)),
+        supplierName: sourcing?.supplierName ?? null,
+        supplierSku: sourcing?.supplierSku ?? null,
+        costCents: sourcing?.costCents ?? 0,
+        moq: sourcing?.moq ?? 1,
+        leadTimeDays: sourcing?.leadTimeDays ?? 0,
+        weightGrams: sourcing?.weightGrams ?? 0,
       },
       update: {},
     });

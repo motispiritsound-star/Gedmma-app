@@ -177,6 +177,16 @@ model BoxProduct {
   heroImageKey String?
   /// Position in the curriculum; the subscription engine ships these in order.
   curriculumIndex Int       @default(0)
+
+  // --- One-off costs, amortised over a production run --------------------
+  // A kit sold to children needs EN 71 testing and a technical file before it
+  // may carry a CE mark, and the cards and box need designing. Those are the
+  // costs that decide whether a box is viable, and they are invisible if you
+  // only count the parts, so they are modelled explicitly.
+  certificationCostCents Int  @default(0)
+  artworkCostCents       Int  @default(0)
+  /// Units the one-off costs are spread across. Never zero.
+  amortiseOverUnits      Int  @default(1000)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -233,6 +243,22 @@ model InventoryItem {
   unit         String        @default("piece")
   reorderLevel Int           @default(0)
   createdAt    DateTime      @default(now())
+
+  // --- Procurement -------------------------------------------------------
+  // Everything below is what turns a catalogue entry into something you can
+  // actually buy and ship. Cost is the *net* purchase price per unit,
+  // excluding VAT, because input VAT is reclaimed and must not be counted as
+  // a cost. See COMMERCE_AND_FULFILMENT.md.
+  supplierName String?
+  supplierSku  String?
+  costCents    Int           @default(0)
+  costCurrency String        @default("EUR")
+  /// Minimum order quantity the supplier will accept.
+  moq          Int           @default(1)
+  /// Working days between placing a purchase order and goods on the shelf.
+  leadTimeDays Int           @default(0)
+  /// Shipping weight per unit; feeds the parcel estimate.
+  weightGrams  Int           @default(0)
 
   batches       InventoryBatch[]
   kitComponents KitComponent[]

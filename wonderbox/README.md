@@ -97,6 +97,7 @@ The seed prints one activation code bound to the demo family. Enter it at
 | Content studio | `src/app/studio` | Dialogue graphs, versions, approval workflow, AI drafts |
 | Parent summary | `src/server/progress.ts` | Descriptive only — see [`CONTENT_SAFETY.md`](CONTENT_SAFETY.md) |
 | Support & safety | `src/server/support.ts` | Safety reports are triaged ahead of everything else |
+| Unit economics | `src/server/costing.ts` | Margin per box and the purchase plan for a run |
 | Hardware protocol | `packages/hardware-protocol` | Shared by server, PWA and emulator |
 
 ### Seeded content
@@ -118,6 +119,7 @@ uploaded through the studio.
 
 ```bash
 npm run dev            # development server
+npm run video          # re-record the demo films (needs a running dev server)
 npm run build          # production build
 npm run start          # serve the production build
 npm run typecheck      # strict TypeScript, both packages
@@ -180,6 +182,12 @@ audio is discarded immediately after transcription, and consent is revocable.
 **No ads, no public profiles, no messaging, no behavioural profiling.** There is
 nowhere in the schema to put them.
 
+**A box has to be deliverable, not just listable.** `/ops/costing` prices every
+box against what it actually costs — parts at net purchase price, pick and pack,
+and this box's share of certification and artwork — and turns a production run
+into a purchase list that respects minimum order quantities and tells you the
+lead time you are really waiting on.
+
 **Money is integer minor units, everywhere.** No floating point touches a price.
 Webhooks are idempotent by unique index. Stock reservation survives concurrency
 because it is a conditional UPDATE under a row lock, and there is a test that
@@ -199,7 +207,8 @@ absence of permission, with a test that enumerates the whole matrix.
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Layers, data model, the decisions and their trade-offs |
 | [`HARDWARE_PROTOCOL.md`](HARDWARE_PROTOCOL.md) | The companion contract, frame by frame |
 | [`CONTENT_SAFETY.md`](CONTENT_SAFETY.md) | The dialogue-graph model, review workflow, what we refuse to claim |
-| [`COMMERCE_AND_FULFILMENT.md`](COMMERCE_AND_FULFILMENT.md) | Money, stock, orders, refunds, idempotency |
+| [`COMMERCE_AND_FULFILMENT.md`](COMMERCE_AND_FULFILMENT.md) | Money, stock, orders, refunds, idempotency, unit economics |
+| [`apps/web/marketing/VIDEO.md`](apps/web/marketing/VIDEO.md) | The demo films, their voice-over, and a shoot brief |
 | [`SECURITY_AND_PRIVACY.md`](SECURITY_AND_PRIVACY.md) | Sessions, consent, retention, deletion, threat model |
 | [`.env.example`](.env.example) | Every setting, annotated |
 
@@ -217,3 +226,13 @@ This is an MVP. It is honest about what it is not:
 - **No email delivery.** Order confirmations are modelled, not sent.
 - **Speech-to-text is a designed, documented, disabled path** — the consent
   machinery and retention controls exist; the transcription provider does not.
+- **Sourcing figures are plausible, not quoted.** Realistic Dutch wholesale for
+  a run in the hundreds; get your own quotes before ordering.
+- **No CE conformity work has been done.** Selling these to children in the EU
+  requires EN 71 testing, a technical file and a Declaration of Conformity. The
+  cost of that is modelled so it shows up in the margin; the certification
+  itself needs a testing lab, and nothing in this repository substitutes for
+  one.
+- **No footage of a physical product.** The demo films are real screen captures
+  and an animation. There is no video of a child with a box, because there is
+  no box.
