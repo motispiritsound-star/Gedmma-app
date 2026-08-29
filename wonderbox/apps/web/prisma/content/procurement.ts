@@ -6,8 +6,14 @@
  * writing a chapter has no business editing purchase prices.
  *
  * Costs are **net of VAT** — input VAT is reclaimed, so counting it here would
- * punish the same money twice. Figures are realistic Dutch wholesale for a run
- * in the hundreds; replace them with your own quotes before ordering anything.
+ * punish the same money twice.
+ *
+ * ⚠ The supplier names below are INVENTED. They are placeholders shaped like
+ * real Dutch trade names so the data model and the screens have something
+ * plausible to work with. None of them has been contacted, quoted or vetted,
+ * and the prices are researched estimates for a run in the hundreds, not
+ * offers. Replace every one of them with a real quote before you order
+ * anything. See COMMERCE_AND_FULFILMENT.md for how to run that sourcing round.
  */
 export interface Sourcing {
   readonly supplierName: string;
@@ -233,4 +239,188 @@ export const SETUP_COSTS: Record<string, SetupCosts> = {
     amortiseOverUnits: 2000,
     note: 'EN 71 with small-parts testing throughout: this box is graded from age five.',
   },
+};
+
+/**
+ * The supplier records themselves.
+ *
+ * `autoApproveUnderCents` is the amount below which the replenishment job may
+ * send an order without a person looking at it. It is zero for everyone here
+ * on purpose: a purchase order commits real money, and the sensible default is
+ * that a human sees the first few. Raise it per supplier once the forecast has
+ * been right a few months running.
+ */
+export interface SupplierRecord {
+  readonly code: string;
+  readonly name: string;
+  readonly email: string;
+  readonly channel: 'EMAIL' | 'CSV' | 'API' | 'MANUAL';
+  readonly leadTimeDays: number;
+  readonly minOrderValueCents: number;
+  readonly autoApproveUnderCents: number;
+  readonly notes: string;
+}
+
+export const SUPPLIERS: readonly SupplierRecord[] = [
+  {
+    code: 'FEEST-TILBURG',
+    name: 'Feestgroothandel Tilburg',
+    email: 'orders@feestgroothandel.invalid',
+    channel: 'EMAIL',
+    leadTimeDays: 10,
+    minOrderValueCents: 15_000,
+    autoApproveUnderCents: 0,
+    notes: 'Ballonnen. Vraag om de EN 71-verklaring bij elke partij.',
+  },
+  {
+    code: 'TOUW-ROTTERDAM',
+    name: 'Touwhandel Rotterdam',
+    email: 'verkoop@touwhandel.invalid',
+    channel: 'EMAIL',
+    leadTimeDays: 14,
+    minOrderValueCents: 10_000,
+    autoApproveUnderCents: 0,
+    notes: 'Vliegertouw op rol; wij snijden zelf op lengte.',
+  },
+  {
+    code: 'ECOWARE',
+    name: 'Ecoware BV',
+    email: 'sales@ecoware.invalid',
+    channel: 'EMAIL',
+    leadTimeDays: 10,
+    minOrderValueCents: 12_500,
+    autoApproveUnderCents: 0,
+    notes: 'Papieren rietjes, voedselveilig gecertificeerd.',
+  },
+  {
+    code: 'KUNSTSTOF-NL',
+    name: 'Kunststof Verpakking NL',
+    email: 'orders@kunststofverpakking.invalid',
+    channel: 'EMAIL',
+    leadTimeDays: 21,
+    minOrderValueCents: 25_000,
+    autoApproveUnderCents: 0,
+    notes: 'Inslagbakken. Levert de bloem los; wij vullen bij het inpakken.',
+  },
+  {
+    code: 'GLAS-IMPORT',
+    name: 'Glaswerk Import',
+    email: 'info@glaswerkimport.invalid',
+    channel: 'EMAIL',
+    leadTimeDays: 42,
+    minOrderValueCents: 30_000,
+    autoApproveUnderCents: 0,
+    notes: 'Knikkers, made-to-order uit Azië. Langste levertijd in de keten.',
+  },
+  {
+    code: 'DRUK-DEBOER',
+    name: 'Drukkerij De Boer',
+    email: 'orders@drukkerijdeboer.invalid',
+    channel: 'EMAIL',
+    leadTimeDays: 12,
+    minOrderValueCents: 20_000,
+    autoApproveUnderCents: 0,
+    notes: 'Alle proefkaarten, ringen en posters. Levert drukproef vooraf.',
+  },
+  {
+    code: 'ELEK-IMPORT',
+    name: 'Elektronica Import BV',
+    email: 'orders@elektronicaimport.invalid',
+    channel: 'API',
+    leadTimeDays: 35,
+    minOrderValueCents: 25_000,
+    autoApproveUnderCents: 0,
+    notes: 'Zoemers, LEDs, houders. Vraag naar RoHS- en EN 62115-documentatie.',
+  },
+  {
+    code: 'FOLIE-GROOT',
+    name: 'Huishoudfolie Groothandel',
+    email: 'verkoop@foliegroothandel.invalid',
+    channel: 'EMAIL',
+    leadTimeDays: 10,
+    minOrderValueCents: 7_500,
+    autoApproveUnderCents: 0,
+    notes: 'Aluminiumfolie op vel gesneden.',
+  },
+  {
+    code: 'BOUWSTOF-DIRECT',
+    name: 'Bouwstoffen Direct',
+    email: 'orders@bouwstoffendirect.invalid',
+    channel: 'CSV',
+    leadTimeDays: 14,
+    minOrderValueCents: 15_000,
+    autoApproveUnderCents: 0,
+    notes: 'Modelgips in zakjes van 200 gram. Let op de stofwaarschuwing.',
+  },
+  {
+    code: 'OPTIEK-IMPORT',
+    name: 'Optiek Import',
+    email: 'sales@optiekimport.invalid',
+    channel: 'EMAIL',
+    leadTimeDays: 30,
+    minOrderValueCents: 25_000,
+    autoApproveUnderCents: 0,
+    notes: 'Loepen en kijkpotjes. Kindveilige randen, geen glas.',
+  },
+  {
+    code: 'KWAST-AMERSFOORT',
+    name: 'Kwastenhandel Amersfoort',
+    email: 'info@kwastenhandel.invalid',
+    channel: 'EMAIL',
+    leadTimeDays: 25,
+    minOrderValueCents: 10_000,
+    autoApproveUnderCents: 0,
+    notes: 'Zachte kwastjes, 20 mm.',
+  },
+  {
+    code: 'GOLF-ZEELAND',
+    name: 'Golfkarton Zeeland',
+    email: 'orders@golfkartonzeeland.invalid',
+    channel: 'EMAIL',
+    leadTimeDays: 15,
+    minOrderValueCents: 40_000,
+    autoApproveUnderCents: 0,
+    notes: 'Bedrukte mailerdozen M en S. Vierkleurendruk, FSC.',
+  },
+];
+
+/** Which supplier each SKU comes from. */
+export const SKU_SUPPLIER: Record<string, string> = {
+  'CMP-BALLOON-10': 'FEEST-TILBURG',
+  'CMP-STRING-8M': 'TOUW-ROTTERDAM',
+  'CMP-STRAW-20': 'ECOWARE',
+  'CMP-FLOUR-TRAY': 'KUNSTSTOF-NL',
+  'CMP-MARBLES-3': 'GLAS-IMPORT',
+  'PRN-SPACE-CARDS': 'DRUK-DEBOER',
+  'CMP-BATT-HOLDER': 'ELEK-IMPORT',
+  'CMP-BUZZER-5V': 'ELEK-IMPORT',
+  'CMP-LED-RED': 'ELEK-IMPORT',
+  'CMP-WIRE-CROC': 'ELEK-IMPORT',
+  'CMP-FOIL-SHEET': 'FOLIE-GROOT',
+  'CMP-CARD-STRIP': 'DRUK-DEBOER',
+  'PRN-ALARM-CARDS': 'DRUK-DEBOER',
+  'CMP-PLASTER-200': 'BOUWSTOF-DIRECT',
+  'CMP-MAGNIFIER': 'OPTIEK-IMPORT',
+  'CMP-COLLECT-POT': 'OPTIEK-IMPORT',
+  'CMP-CARD-RING': 'DRUK-DEBOER',
+  'CMP-SOFT-BRUSH': 'KWAST-AMERSFOORT',
+  'PRN-NATURE-MAP': 'DRUK-DEBOER',
+  'PKG-BOX-M': 'GOLF-ZEELAND',
+  'PKG-BOX-S': 'GOLF-ZEELAND',
+};
+
+/**
+ * Buffer stock per SKU, in units. Sized against lead time: the marbles carry
+ * six weeks of cover because that is how long a replacement takes to arrive.
+ */
+export const SAFETY_STOCK: Record<string, number> = {
+  'CMP-MARBLES-3': 250,
+  'CMP-BATT-HOLDER': 200,
+  'CMP-BUZZER-5V': 200,
+  'CMP-WIRE-CROC': 150,
+  'CMP-MAGNIFIER': 150,
+  'CMP-COLLECT-POT': 200,
+  'CMP-FLOUR-TRAY': 120,
+  'PKG-BOX-M': 200,
+  'PKG-BOX-S': 150,
 };

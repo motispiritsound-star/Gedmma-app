@@ -17,7 +17,7 @@ import { hashActivationCode } from '../src/server/activation.ts';
 import { generateActivationCode } from '../src/lib/crypto.ts';
 import { addMonths } from '../src/server/subscriptions.ts';
 import { BOXES, THEMES, type BoxSpec, type ChapterSpec } from './content/index.ts';
-import { SETUP_COSTS, SOURCING } from './content/procurement.ts';
+import { SAFETY_STOCK, SETUP_COSTS, SKU_SUPPLIER, SOURCING, SUPPLIERS } from './content/procurement.ts';
 import { estimateDurationMs, synthesisePlaceholder } from './audio.ts';
 
 const prisma = new PrismaClient();
@@ -55,9 +55,14 @@ async function wipe(): Promise<void> {
     'experiment',
     'chapter',
     'learningJourney',
+    // Purchase order lines point at inventory items, so they go first.
+    'purchaseOrderLine',
+    'purchaseOrder',
+    'jobRun',
     'kitComponent',
     'inventoryBatch',
     'inventoryItem',
+    'supplier',
     'boxTranslation',
     'boxProduct',
     'theme',
@@ -86,6 +91,30 @@ async function seedThemes(): Promise<Map<string, string>> {
       },
     });
     ids.set(theme.slug, row.id);
+  }
+  return ids;
+}
+
+/**
+ * Suppliers first: inventory items point at them, and the replenishment engine
+ * groups purchase orders by supplier.
+ */
+async function seedSuppliers(): Promise<Map<string, string>> {
+  const ids = new Map<string, string>();
+  for (const supplier of SUPPLIERS) {
+    const row = await prisma.supplier.create({
+      data: {
+        code: supplier.code,
+        name: supplier.name,
+        email: supplier.email,
+        channel: supplier.channel,
+        leadTimeDays: supplier.leadTimeDays,
+        minOrderValueCents: supplier.minOrderValueCents,
+        autoApproveUnderCents: supplier.autoApproveUnderCents,
+        notes: supplier.notes,
+      },
+    });
+    ids.set(supplier.code, row.id);
   }
   return ids;
 }
@@ -134,7 +163,11 @@ interface SeededBox {
   readonly chapterIds: Map<string, string>;
 }
 
-async function seedBox(spec: BoxSpec, themeIds: Map<string, string>): Promise<SeededBox> {
+async function seedBox(
+  spec: BoxSpec,
+  themeIds: Map<string, string>,
+  supplierIds: Map<string, string>,
+): Promise<SeededBox> {
   const themeId = themeIds.get(spec.themeSlug);
   if (!themeId) throw new Error(`Unknown theme ${spec.themeSlug}`);
 
@@ -174,8 +207,9 @@ async function seedBox(spec: BoxSpec, themeIds: Map<string, string>): Promise<Se
         name: component.name,
         kind: component.kind,
         reorderLevel: Math.max(10, Math.round(component.stock * 0.1)),
-        supplierName: sourcing?.supplierName ?? null,
+        supplierId: supplierIds.get(SKU_SUPPLIER[component.sku] ?? '') ?? null,
         supplierSku: sourcing?.supplierSku ?? null,
+        safetyStockUnits: SAFETY_STOCK[component.sku] ?? 0,
         costCents: sourcing?.costCents ?? 0,
         moq: sourcing?.moq ?? 1,
         leadTimeDays: sourcing?.leadTimeDays ?? 0,
@@ -517,14 +551,15 @@ async function main(): Promise<void> {
   console.log('Wiping existing data…');
   await wipe();
 
-  console.log('Seeding themes and plans…');
+  console.log('Seeding themes, plans and suppliers…');
   const themeIds = await seedThemes();
   await seedPlans();
+  const supplierIds = await seedSuppliers();
 
   console.log('Seeding boxes, journeys and placeholder audio…');
   const boxes: SeededBox[] = [];
   for (const spec of BOXES) {
-    boxes.push(await seedBox(spec, themeIds));
+    boxes.push(await seedBox(spec, themeIds, supplierIds));
     console.log(`  · ${spec.sku}`);
   }
 

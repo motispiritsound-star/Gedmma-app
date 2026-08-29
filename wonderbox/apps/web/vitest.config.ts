@@ -33,6 +33,10 @@ export default defineConfig({
       STORAGE_LOCAL_ROOT: '.storage-test',
       AI_DRAFT_PROVIDER: 'mock',
       SPEECH_TO_TEXT_ENABLED: 'false',
+      // On in tests so the auto-fulfilment path is actually exercised; the
+      // shipped default in .env.example is off, deliberately.
+      AUTO_FULFIL: 'true',
+      JOB_RUNNER_TOKEN: 'test-job-runner-token',
     },
   },
 });

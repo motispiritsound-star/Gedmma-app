@@ -6,11 +6,21 @@ import { z } from 'zod';
 import { requirePermission } from '../../lib/auth/session.ts';
 import { money } from '../../lib/money.ts';
 import { DomainError } from '../../lib/errors.ts';
+import { audit } from '../../lib/audit.ts';
 import { receiveBatch } from '../inventory.ts';
 import { cancelOrder, createShipmentForOrder, refundOrder, applyShipmentStatus } from '../orders.ts';
 import { mintActivationCodes } from '../activation.ts';
 import { resolveCase } from '../support.ts';
 import { runRenewal } from '../subscriptions.ts';
+import {
+  approvePurchaseOrder,
+  cancelPurchaseOrder,
+  createPurchaseOrder,
+  receivePurchaseOrder,
+  replenishmentProposal,
+  sendPurchaseOrder,
+} from '../purchasing.ts';
+import { runJob } from '../jobs.ts';
 
 /** Fulfilment and support mutations. None of these can edit content. */
 
@@ -108,4 +118,88 @@ export async function runRenewalAction(formData: FormData): Promise<void> {
   const subscriptionId = String(formData.get('subscriptionId') ?? '');
   await runRenewal(subscriptionId);
   revalidatePath('/ops/renewals');
+}
+
+/**
+ * Raises purchase orders from the current proposal.
+ *
+ * The same call the replenishment job makes, with the same origin key, so
+ * clicking this after the job has run finds the existing orders instead of
+ * duplicating them.
+ */
+export async function raisePurchaseOrdersAction(): Promise<void> {
+  const actor = await requirePermission('inventory.write');
+  const proposals = await replenishmentProposal();
+  const day = new Date().toISOString().slice(0, 10);
+
+  for (const proposal of proposals) {
+    if (proposal.belowMinimumOrderValue) continue;
+    await createPurchaseOrder(proposal, `replenish:${proposal.supplierId}:${day}`);
+  }
+  await audit({
+    actorUserId: actor.id,
+    actorRole: 'OPS',
+    action: 'purchasing.proposalRaised',
+    entityType: 'Supplier',
+    entityId: 'all',
+    metadata: { proposals: proposals.length },
+  });
+  revalidatePath('/ops/purchasing');
+}
+
+export async function approvePurchaseOrderAction(formData: FormData): Promise<void> {
+  const actor = await requirePermission('inventory.write');
+  const id = String(formData.get('purchaseOrderId') ?? '');
+  const andSend = String(formData.get('send') ?? '') === 'true';
+  try {
+    await approvePurchaseOrder(id, actor.id);
+    if (andSend) await sendPurchaseOrder(id);
+  } catch (error) {
+    if (error instanceof DomainError) redirect(`/ops/purchasing?error=${error.code}`);
+    throw error;
+  }
+  revalidatePath('/ops/purchasing');
+}
+
+export async function cancelPurchaseOrderAction(formData: FormData): Promise<void> {
+  const actor = await requirePermission('inventory.write');
+  const id = String(formData.get('purchaseOrderId') ?? '');
+  try {
+    await cancelPurchaseOrder(id, actor.id);
+  } catch (error) {
+    if (error instanceof DomainError) redirect(`/ops/purchasing?error=${error.code}`);
+    throw error;
+  }
+  revalidatePath('/ops/purchasing');
+}
+
+/** Books in whatever actually turned up, which is rarely the whole order. */
+export async function receivePurchaseOrderAction(formData: FormData): Promise<void> {
+  const actor = await requirePermission('inventory.write');
+  const id = String(formData.get('purchaseOrderId') ?? '');
+
+  const receipts: { inventoryItemId: string; quantity: number }[] = [];
+  for (const [key, value] of formData.entries()) {
+    if (!key.startsWith('qty:')) continue;
+    const quantity = Number(value);
+    if (!Number.isInteger(quantity) || quantity <= 0) continue;
+    receipts.push({ inventoryItemId: key.slice(4), quantity });
+  }
+
+  try {
+    await receivePurchaseOrder(id, receipts, actor.id);
+  } catch (error) {
+    if (error instanceof DomainError) redirect(`/ops/purchasing?error=${error.code}`);
+    throw error;
+  }
+  revalidatePath('/ops/purchasing');
+  revalidatePath('/ops/inventory');
+}
+
+/** Runs one scheduled job by hand — the same path the scheduler takes. */
+export async function runJobAction(formData: FormData): Promise<void> {
+  await requirePermission('inventory.write');
+  const name = String(formData.get('job') ?? '');
+  await runJob(name);
+  revalidatePath('/ops/jobs');
 }

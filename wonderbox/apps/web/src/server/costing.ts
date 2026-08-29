@@ -78,7 +78,10 @@ export async function boxEconomics(
 ): Promise<BoxEconomics> {
   const product = await db.boxProduct.findUnique({
     where: { id: boxProductId },
-    include: { translations: true, kitComponents: { include: { inventoryItem: true } } },
+    include: {
+      translations: true,
+      kitComponents: { include: { inventoryItem: { include: { supplier: true } } } },
+    },
   });
   if (!product) throw new NotFoundError('Box product');
 
@@ -90,7 +93,7 @@ export async function boxEconomics(
       quantity: component.quantity,
       unitCost: money(item.costCents),
       lineCost: money(item.costCents * component.quantity),
-      supplierName: item.supplierName,
+      supplierName: item.supplier?.name ?? null,
       weightGrams: item.weightGrams * component.quantity,
       missingCost: item.costCents === 0,
     };
@@ -187,7 +190,7 @@ export async function purchasePlan(
 
   const items = await prisma.inventoryItem.findMany({
     where: { id: { in: [...required.keys()] } },
-    include: { batches: true },
+    include: { batches: true, supplier: true },
   });
 
   const lines: PurchaseLine[] = [];
@@ -210,7 +213,7 @@ export async function purchasePlan(
     lines.push({
       sku: item.sku,
       name: item.name,
-      supplierName: item.supplierName,
+      supplierName: item.supplier?.name ?? null,
       supplierSku: item.supplierSku,
       required: need,
       available,

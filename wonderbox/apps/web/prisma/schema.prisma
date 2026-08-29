@@ -57,6 +57,7 @@ model User {
   contentVersions ContentVersion[]
   approvals       Approval[]
   consentsGranted ConsentRecord[]  @relation("ConsentGrantedBy")
+  purchaseOrders  PurchaseOrder[]
   supportCases    SupportCase[]    @relation("SupportReporter")
   assignedCases   SupportCase[]    @relation("SupportAssignee")
 
@@ -249,7 +250,7 @@ model InventoryItem {
   // actually buy and ship. Cost is the *net* purchase price per unit,
   // excluding VAT, because input VAT is reclaimed and must not be counted as
   // a cost. See COMMERCE_AND_FULFILMENT.md.
-  supplierName String?
+  supplierId   String?
   supplierSku  String?
   costCents    Int           @default(0)
   costCurrency String        @default("EUR")
@@ -259,10 +260,122 @@ model InventoryItem {
   leadTimeDays Int           @default(0)
   /// Shipping weight per unit; feeds the parcel estimate.
   weightGrams  Int           @default(0)
+  /// Buffer held on top of forecast demand, so one late delivery is survivable.
+  safetyStockUnits Int       @default(0)
 
+  supplier      Supplier?          @relation(fields: [supplierId], references: [id], onDelete: SetNull)
   batches       InventoryBatch[]
   kitComponents KitComponent[]
   reservations  StockReservation[]
+  purchaseLines PurchaseOrderLine[]
+
+  @@index([supplierId])
+}
+
+/// How a purchase order actually reaches a supplier.
+enum SupplierChannel {
+  EMAIL
+  CSV
+  API
+  MANUAL
+}
+
+model Supplier {
+  id                 String          @id @default(cuid())
+  code               String          @unique
+  name               String
+  email              String?
+  phone              String?
+  channel            SupplierChannel @default(EMAIL)
+  currency           String          @default("EUR")
+  /// Default when an item does not state its own.
+  leadTimeDays       Int             @default(14)
+  /// Below this a supplier will not accept an order at all.
+  minOrderValueCents Int             @default(0)
+  /// Ceiling under which a proposed order may be sent without a human.
+  /// Zero — the default — means nothing is ever sent automatically.
+  autoApproveUnderCents Int          @default(0)
+  active             Boolean         @default(true)
+  notes              String?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  items          InventoryItem[]
+  purchaseOrders PurchaseOrder[]
+}
+
+enum PurchaseOrderStatus {
+  DRAFT
+  APPROVED
+  SENT
+  CONFIRMED
+  PARTIALLY_RECEIVED
+  RECEIVED
+  CANCELLED
+}
+
+/// A purchase order. Created by the replenishment job or by hand; only ever
+/// sent to a supplier once it is APPROVED, which for most suppliers means a
+/// person looked at it.
+model PurchaseOrder {
+  id            String              @id @default(cuid())
+  number        String              @unique
+  supplierId    String
+  status        PurchaseOrderStatus @default(DRAFT)
+  currency      String              @default("EUR")
+  subtotalCents Int                 @default(0)
+  /// When the goods are due, from the slowest line's lead time.
+  expectedAt    DateTime?
+  /// Identifies the replenishment run that produced this order, so re-running
+  /// the job cannot raise the same order twice.
+  originKey     String?             @unique
+  notes         String?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  approvedAt    DateTime?
+  approvedById  String?
+  sentAt        DateTime?
+  receivedAt    DateTime?
+  cancelledAt   DateTime?
+
+  supplier   Supplier            @relation(fields: [supplierId], references: [id])
+  approvedBy User?               @relation(fields: [approvedById], references: [id], onDelete: SetNull)
+  lines      PurchaseOrderLine[]
+
+  @@index([status, createdAt])
+  @@index([supplierId])
+}
+
+model PurchaseOrderLine {
+  id               String @id @default(cuid())
+  purchaseOrderId  String
+  inventoryItemId  String
+  quantity         Int
+  receivedQuantity Int    @default(0)
+  unitCostCents    Int
+  lineCents        Int
+
+  purchaseOrder PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  inventoryItem InventoryItem @relation(fields: [inventoryItemId], references: [id])
+
+  @@unique([purchaseOrderId, inventoryItemId])
+}
+
+/// One execution of a scheduled job. Kept so an operator can see that the
+/// machinery actually ran, and what it did — an automated process nobody can
+/// observe is indistinguishable from one that quietly stopped.
+model JobRun {
+  id         String    @id @default(cuid())
+  job        String
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  status     String    @default("running")
+  summary    Json      @default("{}")
+  error      String?
+  /// Set when a run was skipped because the same run had already happened.
+  skipped    Boolean   @default(false)
+
+  @@index([job, startedAt])
 }
 
 /// Physical stock arrives in batches so a recall can be scoped to one lot.

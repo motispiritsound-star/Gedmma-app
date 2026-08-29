@@ -154,6 +154,119 @@ business editing purchase prices.
 
 ---
 
+## Sourcing: where the parts actually come from
+
+**The supplier names in `prisma/content/procurement.ts` are invented.** They are
+placeholders shaped like real Dutch trade names so the data model and the
+screens have something plausible to work with. None has been contacted, quoted
+or vetted. The prices are researched estimates for a run in the hundreds, not
+offers. Treat every one of them as a `TODO`.
+
+What the sourcing round actually looks like, per category:
+
+| Category | Where to look | What to insist on |
+| --- | --- | --- |
+| Electronics (buzzer, LED, holder, leads) | Distributors with public catalogues and datasheets — Mouser, Farnell/element14, RS, TME, Reichelt — then an Asian factory via an agent once volume justifies it | RoHS and REACH declarations, and a datasheet you can put in the technical file |
+| Print (cards, ring, map, box) | Dutch and Belgian online printers quote instantly for a run of 500; a local printer is worth more once you need a proof and a colour match | A physical proof before the run, and FSC stock |
+| Corrugated mailers | Box converters quote per die-line; the tooling is a one-off cost | Die-line file, a sample box, and a drop test |
+| Party and hobby (balloons, string, straws, brushes) | Wholesale importers; also the category with the most variable quality | EN 71-3 migration test for anything a child handles |
+| Plaster, optics, small parts | Hobby and educational-supply wholesalers | Small-parts geometry for the 5+ age band, and a safety data sheet for the plaster |
+
+Get **three quotes per line** and compare on landed cost, not unit price: MOQ,
+carriage, and lead time move the real number more than the price per piece does.
+Ask every supplier the same four questions — minimum, lead time, what a repeat
+order costs, and which conformity documents come with it — because the fourth is
+the one that decides whether you can sell the box at all.
+
+### Buy the parts, or buy the box?
+
+Two routes, and the second is worth taking seriously:
+
+- **Self-kitting.** You buy components, and someone packs boxes. Highest margin,
+  lowest fixed cost, and it is your evenings until volume pays for a packer.
+- **Contract kitting / 3PL.** A fulfilment partner holds your components, packs
+  to your spec and ships. Typically €1.50–€3.00 a box depending on the number of
+  picks, plus storage. `PICK_PACK_COST_CENTS` in `src/server/costing.ts` is
+  where that number goes; at the seeded margins there is room for it.
+
+The system does not care which you choose. `ShippingProvider` already abstracts
+despatch, and `receivePurchaseOrder()` books goods in wherever they physically
+sit.
+
+### The gate that is not a sourcing problem
+
+None of the above matters until the boxes are **CE marked**. A kit sold to
+children in the EU falls under the Toy Safety Directive: EN 71-1 (mechanical and
+physical), EN 71-2 (flammability) and EN 71-3 (migration of certain elements) at
+minimum, plus EN 62115 and EMC for the electric box, plus battery and packaging
+producer registration. That means a testing lab, a technical file, and a
+Declaration of Conformity per box design.
+
+The cost is modelled — `certificationCostCents` on `BoxProduct`, amortised over
+the run, which is why it shows up in the margin table above. The work is not
+done, and nothing in this repository substitutes for a notified body.
+
+---
+
+## Automated replenishment
+
+The point of a subscription business is that demand is **known**. Every live
+subscription is a promise to ship one box in a period, and the curriculum says
+which one. So replenishment here is not a moving average — it is the
+subscription book, expanded into components.
+
+```
+  subscription book ──▶ demandForecast(periods)
+                            │  per period, per box product
+                            ▼
+                        components (KitComponent)
+                            │  minus free stock, minus what is already on order
+                            ▼
+                   replenishmentProposal()  ── grouped per supplier
+                            │
+                            ▼
+                     PurchaseOrder (DRAFT)
+                            │  approve  ─────────────┐
+                            ▼                        ▼
+                     SENT ──▶ CONFIRMED ──▶ PARTIALLY_RECEIVED ──▶ RECEIVED
+                                                     │
+                                              InventoryBatch
+```
+
+`demandForecast()` simulates each subscription forward: a pause that outlasts
+the period ships nothing, a skip loses exactly one period, a quarterly plan
+ships every third, and a family that has had every box in the catalogue stops
+consuming stock — ordering for a shipment that cannot happen is worse than
+forecasting nothing. One-off sales are added as a flat run rate from the
+trailing ninety days, because nothing about them is knowable in advance.
+
+The **cover horizon** is each item's own lead time plus one period: an order
+placed today arrives after the lead time and has to last until the one after it
+lands. The marbles have a 42-day lead time, so they are ordered two periods out
+and carry the largest safety buffer.
+
+### Money is not committed automatically
+
+`Supplier.autoApproveUnderCents` is **zero for every seeded supplier**, which
+means a proposed order is raised as a DRAFT and waits for a person. Raise it per
+supplier once the forecast has been right for a few months. A supplier whose
+proposal falls under its own `minOrderValueCents` is held back entirely rather
+than sent an order it would reject.
+
+This is the one place where "fully automated" is deliberately not fully
+automated. Everything else in the loop is reversible; a purchase order is not.
+
+### Ordering twice is the failure mode
+
+`PurchaseOrder.originKey` is unique and is set to
+`replenish:<supplierId>:<date>`, so the replenishment job can run hourly and
+still raise one order per supplier per day. A second attempt finds the existing
+order and returns it. Open orders also count as cover in the next proposal, so
+the job does not order the same shortfall again while the first delivery is in
+transit.
+
+---
+
 ## Orders
 
 ```
@@ -323,6 +436,8 @@ The e2e suite asserts that no full code pattern appears anywhere on that page.
 | --- | --- |
 | `/ops/inventory` | Levels per SKU, boxes buildable, receive a batch |
 | `/ops/costing` | Margin per box, and the purchase plan for a run |
+| `/ops/purchasing` | Replenishment proposal, purchase orders, goods receipt |
+| `/ops/jobs` | What the automation did, and when it last ran |
 | `/ops/orders` | Fulfilment queue: create a label, cancel, refund |
 | `/ops/shipments` | Advance carrier status (mock mode) |
 | `/ops/codes` | Counts by state; mint a print run |
@@ -351,3 +466,57 @@ Ops holds `address.read` because packing a parcel requires an address — and
   certification is not done. Nothing here substitutes for a testing lab.
 - **Renewals are not scheduled.** `runRenewal()` and `dueSubscriptions()` are
   the seam a cron or job runner would call.
+
+---
+
+## Running it unattended
+
+Five jobs, in `src/server/jobs.ts`. There is no queue and no worker daemon: each
+is a plain async function that is safe to call twice, so any cron that can make
+an HTTP request drives the whole thing.
+
+```cron
+# renewals, every morning
+0 6 * * *   curl -fsS -X POST https://…/api/jobs/run \
+              -H "authorization: Bearer $JOB_RUNNER_TOKEN" \
+              -H 'content-type: application/json' \
+              -d '{"job":"renew-subscriptions"}'
+
+# labels for paid orders, twice an hour
+*/30 * * * * … -d '{"job":"fulfil-paid-orders","minIntervalMinutes":25}'
+
+# replenishment, Monday morning
+0 7 * * 1   … -d '{"job":"replenish-stock"}'
+
+# retention, nightly
+0 4 * * *   … -d '{"job":"retention-sweep"}'
+
+# summaries, first of the month
+0 3 1 * *   … -d '{"job":"snapshot-summaries"}'
+```
+
+Posting with no `job` runs all five in order.
+
+| Job | What it does |
+| --- | --- |
+| `renew-subscriptions` | Renews every subscription whose period has ended and places the order |
+| `replenish-stock` | Forecast → proposal → purchase orders |
+| `fulfil-paid-orders` | Creates a shipping label for every paid order. Off unless `AUTO_FULFIL=true` |
+| `snapshot-summaries` | Freezes the monthly parent summary before progress events age out |
+| `retention-sweep` | Drops what the retention policy says must go |
+
+**Authorisation is a shared secret**, compared in constant time, not a session:
+the caller is a machine and has no business holding a user's cookie. Without
+`JOB_RUNNER_TOKEN` the endpoint refuses everything and the production boot check
+fails — an automated process that silently stops is worse than one that never
+started.
+
+**Every run is recorded** in `JobRun` and shown at `/ops/jobs`, including what it
+decided. A job that has not run in 36 hours is flagged there. An automated
+process nobody can observe is indistinguishable from one that quietly stopped
+six weeks ago.
+
+**Failure is per-item, not per-batch.** One family with a broken address does not
+stop the other four hundred renewals; the failure is collected into the run
+summary. A failed job returns `207` to the scheduler with the failures named,
+rather than a blank `500` that invites a retry of the whole batch.

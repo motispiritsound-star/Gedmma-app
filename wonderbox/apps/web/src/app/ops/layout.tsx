@@ -14,11 +14,13 @@ export default async function OpsLayout({ children }: { children: React.ReactNod
     ['/ops', t('ops.title')],
     ['/ops/inventory', t('ops.inventory')],
     ['/ops/costing', locale === 'nl' ? 'Kostprijs en marge' : 'Cost and margin'],
+    ['/ops/purchasing', locale === 'nl' ? 'Inkoop' : 'Purchasing'],
     ['/ops/orders', t('ops.orders')],
     ['/ops/shipments', t('ops.shipments')],
     ['/ops/codes', t('ops.codes')],
     ['/ops/renewals', locale === 'nl' ? 'Verlengingen' : 'Renewals'],
     ['/ops/support', t('support.title')],
+    ['/ops/jobs', locale === 'nl' ? 'Automatische taken' : 'Scheduled jobs'],
   ];
 
   return (

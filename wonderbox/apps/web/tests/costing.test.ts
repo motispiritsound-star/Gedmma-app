@@ -33,7 +33,13 @@ describe('cost and margin', () => {
       where: { id: box.inventoryItem.id },
       data: {
         costCents: options.unitCostCents,
-        supplierName: 'Test supplier',
+        supplier: {
+          create: {
+            code: `SUP-${box.inventoryItem.sku}`,
+            name: 'Test supplier',
+            email: 'orders@test.invalid',
+          },
+        },
         supplierSku: 'TST-1',
         moq: options.moq ?? 1,
         leadTimeDays: options.leadTimeDays ?? 7,

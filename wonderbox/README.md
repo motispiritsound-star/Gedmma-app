@@ -98,6 +98,8 @@ The seed prints one activation code bound to the demo family. Enter it at
 | Parent summary | `src/server/progress.ts` | Descriptive only — see [`CONTENT_SAFETY.md`](CONTENT_SAFETY.md) |
 | Support & safety | `src/server/support.ts` | Safety reports are triaged ahead of everything else |
 | Unit economics | `src/server/costing.ts` | Margin per box and the purchase plan for a run |
+| Automated purchasing | `src/server/purchasing.ts` | Forecast from the subscription book, purchase orders, goods receipt |
+| Scheduled jobs | `src/server/jobs.ts` | Renewals, replenishment, fulfilment, summaries, retention |
 | Hardware protocol | `packages/hardware-protocol` | Shared by server, PWA and emulator |
 
 ### Seeded content
@@ -182,6 +184,16 @@ audio is discarded immediately after transcription, and consent is revocable.
 **No ads, no public profiles, no messaging, no behavioural profiling.** There is
 nowhere in the schema to put them.
 
+**It runs without anybody clicking.** Five jobs behind one authenticated
+endpoint — renewals, replenishment, fulfilment, summaries, retention — each safe
+to call twice, each recorded so you can see the machinery is alive. Demand is
+not estimated: every live subscription is one box in a period and the curriculum
+says which, so `replenish-stock` expands the subscription book into components,
+nets it against the shelf and what is already on order, and raises purchase
+orders per supplier. The one step deliberately left to a person is the moment
+money is committed — `autoApproveUnderCents` is zero by default, so an order
+waits for someone until you decide otherwise.
+
 **A box has to be deliverable, not just listable.** `/ops/costing` prices every
 box against what it actually costs — parts at net purchase price, pick and pack,
 and this box's share of certification and artwork — and turns a production run
@@ -226,8 +238,10 @@ This is an MVP. It is honest about what it is not:
 - **No email delivery.** Order confirmations are modelled, not sent.
 - **Speech-to-text is a designed, documented, disabled path** — the consent
   machinery and retention controls exist; the transcription provider does not.
-- **Sourcing figures are plausible, not quoted.** Realistic Dutch wholesale for
-  a run in the hundreds; get your own quotes before ordering.
+- **The supplier names are invented.** Placeholders shaped like real Dutch trade
+  names, so the screens have something to show. None has been contacted or
+  quoted, and the prices are researched estimates, not offers. See the sourcing
+  section of `COMMERCE_AND_FULFILMENT.md` for how to run that round properly.
 - **No CE conformity work has been done.** Selling these to children in the EU
   requires EN 71 testing, a technical file and a Declaration of Conformity. The
   cost of that is modelled so it shows up in the margin; the certification

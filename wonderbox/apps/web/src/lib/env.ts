@@ -61,6 +61,13 @@ const EnvSchema = z
     SPEECH_TO_TEXT_PROVIDER: z.enum(['mock', 'whisper']).default('mock'),
     SPEECH_TO_TEXT_RETENTION_MINUTES: intFromString(0),
 
+    // --- Automation --------------------------------------------------------
+    /// Creates shipping labels for paid orders without a human. Off by default:
+    /// a label costs money and a mislabelled parcel costs more.
+    AUTO_FULFIL: booleanish,
+    /// Shared secret an external scheduler presents to /api/jobs/run.
+    JOB_RUNNER_TOKEN: z.string().optional(),
+
     PROGRESS_EVENT_RETENTION_DAYS: intFromString(400),
     AUDIT_LOG_RETENTION_DAYS: intFromString(730),
   })
@@ -83,6 +90,15 @@ const EnvSchema = z
         code: z.ZodIssueCode.custom,
         path: ['STRIPE_SECRET_KEY'],
         message: 'PAYMENT_PROVIDER=stripe requires STRIPE_SECRET_KEY.',
+      });
+    }
+    if (!value.JOB_RUNNER_TOKEN) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['JOB_RUNNER_TOKEN'],
+        message:
+          'JOB_RUNNER_TOKEN is required in production: without it the scheduled ' +
+          'jobs endpoint refuses every request and the automation silently stops.',
       });
     }
     if (value.STORAGE_DRIVER === 's3' && !value.S3_BUCKET) {

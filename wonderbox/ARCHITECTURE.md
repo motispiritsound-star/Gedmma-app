@@ -54,6 +54,8 @@ emulator's `activateBox` command and the test suite — three callers, one rule.
 | Has this webhook been seen? | `claim()` in `server/webhooks.ts` |
 | Which locale is served? | `tryResolve()` in `lib/i18n/localised.ts` |
 | What may this role do? | `PERMISSIONS` in `lib/auth/roles.ts` |
+| How much will we need? | `demandForecast()` in `server/purchasing.ts` |
+| Has this job already run? | `runJob()` in `server/jobs.ts` |
 | Where is this child now? | `CompanionSession` in the protocol package |
 
 Each has a test file named after it. If a claim in this document is true, that
@@ -252,9 +254,11 @@ apps/web/e2e/                      full journey + axe, in a real browser
 ## Deliberate limits
 
 - **Single region, single database.** No read replicas, no sharding.
-- **No queue.** Renewals and retention are functions the ops console can call
-  and a cron would call. A real deployment wants a job runner; the seam is the
-  function signature.
+- **No queue, on purpose.** The scheduled work is a registry of idempotent
+  async functions behind one authenticated endpoint, so any cron drives it.
+  That is the right size for five jobs and a few hundred subscriptions. At ten
+  thousand it wants a real runner with retries and backoff — the seam is
+  `runJob()`, which already records every attempt.
 - **No email.** Order confirmations are modelled, not sent.
 - **No CDN for audio.** Signed application routes, which is correct for privacy
   and wrong for cost at scale. `ObjectStorage.sign()` is where a presigned CDN
