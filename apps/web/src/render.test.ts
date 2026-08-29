@@ -543,3 +543,57 @@ describe('sharing a link', () => {
     expect(page).toContain('href="/en/"');
   });
 });
+
+describe('the explainer on the home page', () => {
+  it('shows the film on the home page and nowhere else', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      expect(renderHome(locale), locale).toContain('<video');
+      expect(renderPro(locale), locale).not.toContain('<video');
+      expect(renderJoin(locale), locale).not.toContain('<video');
+    }
+  });
+
+  it('loads three megabytes only when somebody asks for them', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderHome(locale);
+      // preload="none" plus a poster: the page costs one 60 kB frame until
+      // the play button is pressed.
+      expect(html, locale).toContain('preload="none"');
+      expect(html, locale).toContain('poster="/video/buurklus-poster.jpg"');
+      // The film has sound. A page that starts talking on its own is a page
+      // people close. Matched on the opening tag rather than on the word,
+      // which also appears in the comment above it explaining the decision.
+      const tag = /<video\b[^>]*>/.exec(html)?.[0] ?? '';
+      expect(tag, locale).not.toMatch(/\bautoplay\b/);
+      expect(tag, locale).toMatch(/\bcontrols\b/);
+    }
+  });
+
+  it('offers English subtitles as a track, not as a second video', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderHome(locale);
+      expect(html, locale).toContain('kind="subtitles"');
+      expect(html, locale).toContain('srclang="en"');
+      expect(html, locale).toContain('label="English"');
+      // `default` on the track would switch them on for everybody, including
+      // the Dutch readers the picture is already written for.
+      expect(html, locale).not.toMatch(/<track[^>]*\bdefault\b/);
+    }
+  });
+
+  it('describes the film for somebody who cannot see it', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderHome(locale);
+      expect(html, locale).toContain(esc(COPY[locale].video.alt));
+      // And says what to do if the browser cannot play it at all.
+      expect(html, locale).toContain(esc(COPY[locale].video.unsupported));
+    }
+  });
+
+  it('tells the reader the subtitles are there', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      // A track nobody knows about is a track nobody turns on.
+      expect(renderHome(locale), locale).toContain(esc(COPY[locale].video.subtitlesNote));
+    }
+  });
+});

@@ -993,7 +993,37 @@ function homeBody(locale: Locale): string {
     </div>
   </div>
 
-  <section class="section" id="how">
+  <section class="section" id="video">
+    <div class="wrap">
+      <div class="section__head">
+        <h2>${esc(copy.video.title)}</h2>
+        <p class="lede muted">${esc(copy.video.subtitle)}</p>
+      </div>
+      <!-- preload="none" so the three megabytes are fetched when somebody
+           presses play and not before. The poster is what loads on arrival:
+           one frame, 60 kB. No autoplay -- the film has sound, and a page
+           that starts talking on its own is a page people close. -->
+      <div class="videoFrame">
+        <video
+          class="video"
+          controls
+          preload="none"
+          playsinline
+          poster="/video/buurklus-poster.jpg"
+          width="1080"
+          height="1080"
+          aria-label="${esc(copy.video.alt)}"
+        >
+          <source src="/video/buurklus.mp4" type="video/mp4">
+          <track kind="subtitles" src="/video/buurklus-en.vtt" srclang="en" label="English">
+          ${esc(copy.video.unsupported)}
+        </video>
+      </div>
+      <p class="muted video__note">${solidIcon('check', 15)} ${esc(copy.video.subtitlesNote)}</p>
+    </div>
+  </section>
+
+  <section class="section section--tint" id="how">
     <div class="wrap">
       <div class="section__head">
         <h2>${esc(copy.how.title)}</h2>
@@ -1003,7 +1033,7 @@ function homeBody(locale: Locale): string {
     </div>
   </section>
 
-  <section class="section section--tint" id="trades">
+  <section class="section" id="trades">
     <div class="wrap">
       <div class="section__head">
         <h2>${esc(copy.trades.title)}</h2>

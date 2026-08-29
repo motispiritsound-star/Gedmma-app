@@ -154,6 +154,28 @@ would be seven megabytes shipped with every deploy for nothing.
 |------|------|---------------|
 | `buurklus-square.mp4` | 1080×1080, 25s | LinkedIn, Facebook and Instagram feed |
 | `buurklus-vertical.mp4` | 1080×1920, 25s | Stories, Reels, TikTok |
+| `marketing/subtitles/buurklus-en.srt` | 9 cues | Upload beside the video where a platform takes one |
+| `marketing/audio/buurklus-theme.wav` | 25s | The score on its own |
+
+Both files carry the soundtrack and an English subtitle track that is **off
+until a viewer switches it on** — the picture is Dutch, and captions burned on
+by default would talk over it. ffmpeg's `-disposition` is accepted and then
+ignored by its MP4 muxer, so the enabled bit on that track is cleared in the
+file afterwards; `disableSubtitleByDefault` in the render script does it and
+refuses to finish if it cannot find exactly one subtitle track.
+
+The square cut is also copied into `apps/web/public/video/` with a poster frame
+and a WebVTT track, for the section on the home page. That player is
+`preload="none"`, so a visitor pays for one 60 kB frame and nothing else until
+they press play.
+
+### The music
+
+`scripts/explainer/music.py` synthesises the score from scratch — a plucked
+motif, a warm pad and a low pulse, following the same six shots as the picture.
+Written rather than licensed: a stock track carries terms to re-check every time
+the video is re-cut, and a piece thousands of other videos also use is a piece a
+platform's content-ID will flag. This one belongs to the project.
 
 The registration page is the one place the site asks for something: an email
 address, a municipality, and for a business a KvK number and its trades. It

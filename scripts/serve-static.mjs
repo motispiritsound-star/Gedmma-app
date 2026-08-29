@@ -21,6 +21,9 @@ const TYPES = {
   '.webp': 'image/webp',
   '.woff2': 'font/woff2',
   '.webmanifest': 'application/manifest+json',
+  '.mp4': 'video/mp4',
+  '.vtt': 'text/vtt',
+  '.jpg': 'image/jpeg',
 };
 
 createServer(async (request, response) => {

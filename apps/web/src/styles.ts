@@ -451,6 +451,38 @@ h1, h2, .section__head h2, .cta h2 { text-wrap: balance; }
 .plan--later { background: var(--green-50); border-color: var(--green-100); }
 .plan--later p { margin-block-start: 0.5rem; }
 
+/* --- Video ---------------------------------------------------------------- */
+/* Held to a readable width rather than the full page: at 1160px a square film
+   is a wall, and the controls end up further from the play button than the
+   thumb that has to reach them. */
+.videoFrame {
+  max-width: 40rem;
+  margin-inline: auto;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--green-900);
+  box-shadow: var(--shadow-raised);
+  line-height: 0;
+}
+.video {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 1 / 1;
+}
+.video__note {
+  max-width: 40rem;
+  margin-inline: auto;
+  margin-block-start: 1rem;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  justify-content: center;
+  text-align: center;
+}
+.video__note .icon { color: var(--green-600); flex: none; }
+
 /* --- Registration --------------------------------------------------------- */
 /* The pitch and the form sit side by side on a wide screen and stack on a
    phone, with the form first once stacked: someone who arrived from a button

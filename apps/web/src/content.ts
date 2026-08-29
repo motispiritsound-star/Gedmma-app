@@ -35,6 +35,15 @@ export interface SiteCopy {
     note: string;
   };
   proof: { trades: string; cities: string; free: string; verified: string };
+  video: {
+    title: string;
+    subtitle: string;
+    /** Read by a screen reader in place of the film. */
+    alt: string;
+    /** Says the English track is there and off unless asked for. */
+    subtitlesNote: string;
+    unsupported: string;
+  };
   how: { title: string; subtitle: string; steps: { title: string; body: string }[] };
   trades: { title: string; subtitle: string; all: string; budgetFrom: string };
   cities: { title: string; subtitle: string; andMore: string };
@@ -127,6 +136,14 @@ const nl: SiteCopy = {
     cities: 'gemeenten',
     free: 'gratis voor klanten',
     verified: 'bedrijven met KvK-controle',
+  },
+  video: {
+    title: 'Zo werkt het, in 25 seconden',
+    subtitle:
+      'Van een woonkamer die geschilderd moet worden tot een vakman die je zelf hebt gekozen.',
+    alt: 'Een animatie die laat zien hoe je een klus plaatst, offertes ontvangt en er één kiest.',
+    subtitlesNote: 'Met geluid. Engelse ondertiteling kun je aanzetten in de spelerknoppen.',
+    unsupported: 'Je browser kan deze video niet afspelen.',
   },
   how: {
     title: 'Hoe het werkt',
@@ -367,6 +384,14 @@ const en: SiteCopy = {
     cities: 'municipalities',
     free: 'free for customers',
     verified: 'businesses checked at the Chamber of Commerce',
+  },
+  video: {
+    title: 'How it works, in 25 seconds',
+    subtitle: 'From a living room that needs painting to a tradesperson you chose yourself.',
+    alt: 'An animation showing how you post a job, receive quotes and pick one.',
+    subtitlesNote:
+      'The film is in Dutch, with sound. English subtitles can be switched on in the player controls.',
+    unsupported: 'Your browser cannot play this video.',
   },
   how: {
     title: 'How it works',

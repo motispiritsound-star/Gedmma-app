@@ -1,0 +1,16 @@
+{
+  "language": "en",
+  "label": "English",
+  "note": "The picture is in Dutch. These cues translate what is on screen, so the same file reaches an English-speaking viewer without a second cut of the video. Times are in seconds and follow the shots in scene.js; a cue must never outlast the shot it belongs to, or it sits over the next one.",
+  "cues": [
+    { "from": 0.35, "to": 2.85, "text": "The living room needs painting.\nWho do you call?" },
+    { "from": 3.25, "to": 5.6, "text": "1 · Describe your job" },
+    { "from": 5.8, "to": 8.05, "text": "Describe it once. Two minutes' work." },
+    { "from": 8.45, "to": 10.9, "text": "2 · Receive quotes" },
+    { "from": 11.1, "to": 13.65, "text": "Tradespeople from your own\nmunicipality reply." },
+    { "from": 14.05, "to": 16.0, "text": "3 · Compare and choose" },
+    { "from": 16.2, "to": 17.85, "text": "Price, reviews and experience\nside by side." },
+    { "from": 19.3, "to": 21.25, "text": "Your address stays yours — only the\ntradesperson you pick gets your street\nand phone number." },
+    { "from": 21.9, "to": 24.6, "text": "Find a tradesperson near you.\nFree · buurklus.nl" }
+  ]
+}
