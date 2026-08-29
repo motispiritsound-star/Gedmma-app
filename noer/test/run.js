@@ -2,7 +2,7 @@
 // Dit bewaakt de structuur van de data — het is géén controle op de
 // juistheid van de Koran-tekst. Die hoort door een mens gedaan te worden.
 
-import { test } from 'node:test';
+import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { LETTERS, LETTER_OP_ID, afleiders, MAKHRAJ } from '../public/data/letters.js';
@@ -11,8 +11,8 @@ import { LESSEN, itemsVan } from '../public/data/qaida.js';
 import { SOERAS, woordenVan, soerasVoorLeeftijd } from '../public/data/koran.js';
 import { THEMAS, themasVoorLeeftijd } from '../public/data/woorden.js';
 import { BADGES } from '../public/data/badges.js';
-import { ayaUrls } from '../public/data/bronnen.js';
-import { veiligPad } from '../server.js';
+import { ayaUrls, RECITEURS, vulIn, AUDIO, reciteurNu } from '../public/data/bronnen.js';
+import server, { veiligPad } from '../server.js';
 
 test('het alfabet heeft 28 letters, allemaal uniek', () => {
   assert.equal(LETTERS.length, 28);
@@ -144,6 +144,69 @@ test('badges zijn uniek en hun test werkt op een leeg beginpunt', () => {
 
 test('zonder externe reciteur wijst een aya alleen naar een eigen opname', () => {
   assert.deepEqual(ayaUrls(114, 1), ['audio/koran/114/1.mp3']);
+});
+
+test('elke reciteur heeft een naam en een bruikbaar adres', () => {
+  const sleutels = Object.keys(RECITEURS);
+  assert.ok(sleutels.length >= 2, 'er staan te weinig reciteurs klaar');
+  for (const [sleutel, r] of Object.entries(RECITEURS)) {
+    assert.ok(r.naam?.trim(), `${sleutel} heeft geen naam om te vermelden`);
+    assert.ok(r.stijl?.trim(), `${sleutel} heeft geen omschrijving`);
+    assert.match(r.sjabloon, /^https:\/\//, `${sleutel} gebruikt geen https`);
+    assert.ok(r.sjabloon.includes('{soera'), `${sleutel} mist {soera} in het adres`);
+    assert.ok(r.sjabloon.includes('{aya'), `${sleutel} mist {aya} in het adres`);
+    // Na invullen mag er geen plaatshouder meer overblijven.
+    const ingevuld = vulIn(r.sjabloon, 114, 1);
+    assert.ok(!ingevuld.includes('{'), `${sleutel} houdt een plaatshouder over: ${ingevuld}`);
+  }
+});
+
+test('drie cijfers waar dat hoort, kaal waar dat hoort', () => {
+  assert.equal(vulIn('x/{soera}{aya}.mp3', 114, 1), 'x/114001.mp3');
+  assert.equal(vulIn('x/{soera}{aya}.mp3', 1, 7), 'x/001007.mp3');
+  assert.equal(vulIn('x/{soera2}/{aya2}.mp3', 114, 1), 'x/114/1.mp3');
+});
+
+test('streamen staat uit, dus de app kijkt alleen naar eigen bestanden', () => {
+  assert.equal(AUDIO.reciteur.aan, false);
+  assert.equal(reciteurNu(), null);
+  assert.deepEqual(ayaUrls(114, 1), ['audio/koran/114/1.mp3']);
+});
+
+test('met streamen aan komt de reciteur er als tweede bij, nooit als eerste', () => {
+  AUDIO.reciteur.aan = true;
+  try {
+    const urls = ayaUrls(114, 1);
+    assert.equal(urls.length, 2);
+    assert.equal(urls[0], 'audio/koran/114/1.mp3', 'een eigen bestand hoort voor te gaan');
+    assert.ok(urls[1].startsWith('https://'));
+    assert.equal(reciteurNu().naam, RECITEURS[AUDIO.reciteur.keuze].naam);
+  } finally {
+    AUDIO.reciteur.aan = false;
+  }
+});
+
+test('een ontbrekend bestand is een 404, geen index.html met een 200', async (t) => {
+  // Zonder dit onderscheid krijgt een ontbrekende mp3 een 200 met de app erin,
+  // en denkt de app dat er geluid is waar niets is.
+  await new Promise((klaar) => server.listen(0, '127.0.0.1', klaar));
+  const poort = server.address().port;
+  const haal = (pad) => fetch(`http://127.0.0.1:${poort}${pad}`);
+  try {
+    const weg = await haal('/audio/koran/114/1.mp3');
+    assert.equal(weg.status, 404, 'een ontbrekende mp3 hoort 404 te geven');
+
+    const pagina = await haal('/thuis');
+    assert.equal(pagina.status, 200);
+    assert.match(pagina.headers.get('content-type'), /text\/html/,
+      'een route zonder extensie hoort de app terug te geven');
+
+    const echt = await haal('/data/koran.js');
+    assert.equal(echt.status, 200);
+    assert.match(echt.headers.get('content-type'), /javascript/);
+  } finally {
+    await new Promise((klaar) => server.close(klaar));
+  }
 });
 
 test('de server laat niets buiten public/ zien', () => {

@@ -10,7 +10,7 @@ import { el, zet, balk, sterren, confetti, toast, husselen } from '../ui.js';
 import { icoon, icoonKnop } from '../iconen.js';
 import { SOERAS, SOERA_OP_ID, woordenVan, soerasVoorLeeftijd } from '../../data/koran.js';
 import { actiefProfiel, voortgang, bewaarAya, bewaarSoera } from '../opslag.js';
-import { speelAya } from '../geluid.js';
+import { speelAya, bronVanRecitatie } from '../geluid.js';
 import { geefXp, XP, nieuweBadges } from '../punten.js';
 import * as ayapuzzel from '../spellen/ayapuzzel.js';
 import { ga } from '../route.js';
@@ -83,6 +83,8 @@ export function toonSoera(bak, id) {
                 teken();
               },
             }) }))),
+
+      recitatieRegel(s),
 
       el('p', { class: 'voetnoot', tekst:
         'De Nederlandse tekst is een uitleg van de betekenis. De Koran zelf is het Arabisch.' }),
@@ -194,4 +196,24 @@ function uitHoofdBlok(s, stand, herteken) {
 
   teken();
   return bak;
+}
+
+/**
+ * Wie er reciteert, of dat er nog niemand reciteert. Een opname van een mens
+ * hoort met naam vermeld te worden; staat er niets, dan zegt het scherm dat
+ * ook — dan weet je dat je hem zelf kunt inspreken.
+ */
+function recitatieRegel(soera) {
+  const regel = el('p', { class: 'voetnoot recitatie-bron' });
+  bronVanRecitatie(soera.nr).then((bron) => {
+    if (!bron) {
+      regel.textContent = 'Er is nog geen recitatie voor deze soera. Neem hem zelf op in de studio, of haal er een op met tools/haal-recitatie.js.';
+      return;
+    }
+    if (bron.soort === 'opname') { regel.textContent = 'Recitatie: jullie eigen opname.'; return; }
+    const naam = bron.reciteur?.naam;
+    const hoe = bron.soort === 'reciteur' ? ' (gestreamd)' : '';
+    regel.textContent = naam ? `Recitatie: ${naam}${hoe}.` : 'Recitatie uit public/audio/.';
+  });
+  return regel;
 }

@@ -21,7 +21,15 @@ const browser = await chromium.launch({
 });
 const context = await browser.newContext({ viewport: { width: 420, height: 900 }, permissions: ['microphone'] });
 const page = await context.newPage();
-page.on('console', (m) => { if (m.type() === 'error') fouten.push(`console: ${m.text()}`); });
+// De app kijkt of er een geluidsbestand ligt; is dat er niet, dan is een 404
+// het goede antwoord en geen fout. Alleen die overslaan.
+const optioneelGeluid = (regel) => /audio\/(letters|woorden|koran)\//.test(regel);
+page.on('console', (m) => {
+  if (m.type() !== 'error') return;
+  const regel = m.location?.()?.url || m.text();
+  if (m.text().includes('404') && optioneelGeluid(regel)) return;
+  fouten.push(`console: ${m.text()} ${regel}`);
+});
 page.on('pageerror', (e) => fouten.push(`pageerror: ${e.message}`));
 
 const stap = async (naam, fn) => {

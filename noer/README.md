@@ -153,20 +153,35 @@ de letternaam in plaats van de klank.
 ### Recitatie ophalen
 
 ```bash
-node tools/haal-recitatie.js \
-  --bron 'https://voorbeeld.nl/{reciteur}/{soera}{aya}.mp3' \
-  --reciteur naam-van-de-map
+node tools/haal-recitatie.js --lijst                  # wie er klaarstaat
+node tools/haal-recitatie.js --bron alafasy --proef   # één aya proberen
+node tools/haal-recitatie.js --bron alafasy           # alles ophalen
 ```
 
-Dit zet de aya's van alle soera's in de app neer als
-`public/audio/koran/<soera>/<aya>.mp3`. Er zit met opzet **geen bron
-ingebakken**: een recitatie is een opname van een mens, en of je die mag
-kopiëren hangt af van de reciteur en de uitgever. Kies zelf een bron waarvan je
-weet dat het mag, en lees de voorwaarden — wat je hier neerzet deel je mee met
-iedereen die de app krijgt.
+Klaarstaande reciteurs: **alafasy** (Mishary Rashid Alafasy), **sudais**
+(Abdurrahman As-Sudais), **husary_muallim** (de leraar-opname van Al-Husary,
+langzaam en met ruimte om na te zeggen — voor kinderen vaak de beste),
+**husary** en **minshawi**. Of geef zelf een adres op met `{soera}` en `{aya}`.
 
-Wil je liever streamen dan downloaden, vul dan `reciteur` in
-`public/data/bronnen.js` in. Dan werkt de Koran wel alleen mét internet.
+De 58 aya's komen terecht in `public/audio/koran/<soera>/<aya>.mp3`, waar de app
+ze vanzelf oppakt — ook offline. Draai eerst `--proef`: dat kost één seconde en
+zegt meteen of het adres klopt. De mapnamen in `bronnen.js` zijn opgeschreven
+uit hoe die bron zijn bestanden ordent, niet ter plekke nagelopen.
+
+Wil je streamen in plaats van downloaden, zet dan in `public/data/bronnen.js`
+`reciteur: { aan: true, keuze: 'alafasy' }`. Dan werkt de Koran wel alleen mét
+internet; gedownloade bestanden gaan altijd vóór op streamen.
+
+Het soerascherm noemt de reciteur bij naam zodra er recitatie is, en zegt het
+ook als er nog geen is.
+
+**Over toestemming.** Een recitatie is een auteursrechtelijk beschermde opname
+van een mens. Dat een opname wereldwijd gebruikt wordt, is geen licentie. Of je
+hem mag downloaden, meeleveren of streamen hangt af van de reciteur en de
+uitgever. Dit script haalt op wat jij aanwijst; de afweging of dat mag is van
+degene die de app uitgeeft. Voor eigen gebruik in huis of klas is dat een ander
+verhaal dan voor een app in een appwinkel — zoek het uit vóór dat laatste, en
+vermeld altijd wie er reciteert.
 
 ### Effectgeluidjes
 

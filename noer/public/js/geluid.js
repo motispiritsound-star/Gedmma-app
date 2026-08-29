@@ -8,7 +8,7 @@
 // Levert geen van vieren iets op, dan blijft het stil en zegt het scherm dat.
 // Recitatie is geen voorleesstem: laag 4 komt bij de Koran niet aan bod.
 
-import { AUDIO, letterUrl, woordUrl, ayaUrls } from '../data/bronnen.js';
+import { AUDIO, letterUrl, woordUrl, ayaUrls, reciteurNu } from '../data/bronnen.js';
 import { sleutels, urlVan } from './opnames.js';
 
 // Browsers nemen op in verschillende formaten, dus we proberen er meer dan één.
@@ -19,9 +19,17 @@ const audioCtx = () => (ctx ||= new (window.AudioContext || window.webkitAudioCo
 
 const bestaat = new Map(); // url -> Promise<boolean>
 
+/**
+ * Bestaat dit bestand, en is het ook echt geluid? Dat tweede is nodig omdat
+ * veel servers een ontbrekend bestand met een 200 en de index-pagina
+ * beantwoorden. Zonder die controle denkt de app dat er geluid is en blijft
+ * het stil zonder uitleg.
+ */
 function heeftBestand(url) {
   if (!bestaat.has(url)) {
-    bestaat.set(url, fetch(url, { method: 'HEAD' }).then((r) => r.ok).catch(() => false));
+    bestaat.set(url, fetch(url, { method: 'HEAD' })
+      .then((r) => r.ok && (r.headers.get('content-type') || '').startsWith('audio/'))
+      .catch(() => false));
   }
   return bestaat.get(url);
 }
@@ -34,19 +42,20 @@ const metExtensies = (url) => {
 
 let huidig = null;
 
+/** Geeft terug of het afspelen echt begonnen is — niet of het klaar is. */
 function speelUrl(url) {
   return new Promise((klaar) => {
+    let af = false;
+    const eenmaal = (uitkomst) => { if (!af) { af = true; klaar(uitkomst); } };
     try {
       huidig?.pause();
       const a = new Audio(url);
       huidig = a;
-      a.onended = () => klaar(true);
-      a.onerror = () => klaar(false);
-      a.play().then(() => {}, () => klaar(false));
-      // Niet wachten tot het einde: de aanroeper wil weten of het start.
-      setTimeout(() => klaar(true), 120);
+      a.onerror = () => eenmaal(false);
+      a.play().then(() => eenmaal(true), () => eenmaal(false));
+      setTimeout(() => eenmaal(false), 3000); // vangnet als play() blijft hangen
     } catch {
-      klaar(false);
+      eenmaal(false);
     }
   });
 }
@@ -163,6 +172,21 @@ export async function speelAya(soeraNr, ayaNr) {
   if (await speelEerste(metExtensies(eigen))) return 'bestand';
   if (extern.length && await speelEerste(extern)) return 'reciteur';
   return 'stil';
+}
+
+/**
+ * Waar de recitatie van deze soera vandaan zou komen — of null als er niets is.
+ * Het soeratscherm gebruikt dit om de reciteur te vermelden, en om te zeggen
+ * dat er nog niets is als dat zo is.
+ */
+export async function bronVanRecitatie(soeraNr, ayaNr = 1) {
+  if (await urlVan(sleutels.aya(soeraNr, ayaNr))) return { soort: 'opname' };
+  const [eigen, ...extern] = ayaUrls(soeraNr, ayaNr);
+  for (const url of metExtensies(eigen)) {
+    if (await heeftBestand(url)) return { soort: 'bestand', reciteur: reciteurNu() };
+  }
+  if (extern.length) return { soort: 'reciteur', reciteur: reciteurNu() };
+  return null;
 }
 
 export function stop() {

@@ -1,7 +1,7 @@
 // Service worker: de app blijft werken zonder internet.
 // Bij elke uitgave het versienummer ophogen, dan wordt de cache ververst.
 
-const VERSIE = 'noer-v3';
+const VERSIE = 'noer-v4';
 
 const KERN = [
   './', 'index.html', 'manifest.webmanifest', 'icoon.svg',
@@ -32,9 +32,9 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET' || url.origin !== self.location.origin) return;
 
-  // Audio wordt niet in de cache gezet: dat zijn de grootste bestanden en ze
-  // zijn niet nodig om de app te laten werken.
-  if (url.pathname.includes('/audio/')) return;
+  // Geluid staat niet in de lijst hierboven (het hoeft niet mee bij de eerste
+  // installatie), maar wordt wel bewaard zodra het één keer is afgespeeld.
+  // Anders werkt recitatie offline niet — juist waar je hem nodig hebt.
 
   e.respondWith(
     caches.match(e.request).then((gevonden) =>

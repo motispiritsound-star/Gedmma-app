@@ -57,7 +57,14 @@ const server = createServer(async (verzoek, antwoord) => {
     });
     antwoord.end(verzoek.method === 'HEAD' ? undefined : inhoud);
   } catch {
-    // Alles wat geen bestand is, valt terug op de app zelf (client-side routes).
+    // Een pad met een extensie is een bestand: dat bestaat of het bestaat niet.
+    // Alleen navigatie valt terug op de app zelf (client-side routes).
+    // Zonder dit onderscheid krijgt een ontbrekende mp3 een 200 met daarin
+    // index.html, en denkt de app dat er geluid is.
+    if (extname(doel)) {
+      antwoord.writeHead(404).end('Niet gevonden');
+      return;
+    }
     try {
       const inhoud = await readFile(join(wortel, 'index.html'));
       antwoord.writeHead(200, { 'content-type': types['.html'] }).end(inhoud);
