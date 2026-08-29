@@ -132,7 +132,28 @@ npm run build -w @buurklus/web                # writes apps/web/dist
 PUBLIC_API_URL=http://127.0.0.1:4000 \
   npm run build -w @buurklus/web              # point the form at a local API
 node scripts/make-brand-assets.mjs            # redraw the share cards and icons
+node scripts/make-explainer-video.mjs         # redraw the explainer video
 ```
+
+### The explainer video
+
+`scripts/explainer/` holds a scene that draws itself from one number — the time
+in milliseconds. `make-explainer-video.mjs` walks that number forward a frame at
+a time, screenshots each one and hands the sequence to ffmpeg, so nothing is
+captured in real time: a slow machine produces the same file as a fast one and
+no frame is ever dropped. The storyboard is the `SHOTS` array at the top of
+`scene.js`, and the composition scales from a single `--u` unit, so the square
+and vertical cuts are one design at two sizes rather than two layouts to keep
+in step.
+
+Output lands in `marketing/video/`, not in `apps/web/public/`: that directory is
+copied wholesale into the built site, and no page links to the video, so it
+would be seven megabytes shipped with every deploy for nothing.
+
+| File | Size | Where it fits |
+|------|------|---------------|
+| `buurklus-square.mp4` | 1080×1080, 25s | LinkedIn, Facebook and Instagram feed |
+| `buurklus-vertical.mp4` | 1080×1920, 25s | Stories, Reels, TikTok |
 
 The registration page is the one place the site asks for something: an email
 address, a municipality, and for a business a KvK number and its trades. It
