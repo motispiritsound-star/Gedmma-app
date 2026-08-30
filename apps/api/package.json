@@ -1,0 +1,33 @@
+{
+  "name": "@gedmma/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Gedmma API: modulaire monoliet met de boekhoudkundige kern, authenticatie en rapportage.",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "start": "node src/index.ts",
+    "dev": "node --watch src/index.ts",
+    "migrate": "node src/db/migreer-cli.ts",
+    "seed": "node src/db/seed-cli.ts",
+    "test": "node --test --test-reporter=spec --test-concurrency=1 test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@gedmma/accounting": "*",
+    "@gedmma/money": "*",
+    "express": "^4.21.2",
+    "fast-xml-parser": "^4.5.0",
+    "pdfkit": "^0.15.1",
+    "zod": "^3.24.1",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/pdfkit": "^0.13.9",
+    "@types/pg": "^8.11.10",
+    "fast-check": "^3.23.1"
+  }
+}
