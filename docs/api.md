@@ -156,10 +156,24 @@ gebeurtenis heeft `type`, `at` en `data`. Types in de MVP: `import.progress`,
 
 ## OpenAPI
 
-`GET /api/v1/openapi.json` levert de specificatie, gegenereerd uit dezelfde
-`zod`-schema's die de invoer valideren. Daardoor kan de documentatie niet uit de
-pas lopen met het gedrag. Een contracttest controleert dat elke route in de
-specificatie voorkomt en omgekeerd.
+`GET /api/v1/openapi.json` levert de specificatie. Die wordt bij het opvragen
+opgebouwd uit de routers zelf: dezelfde tabel waarmee `server.ts` de routers
+monteert, wordt doorlopen om de paden, de methoden en het vereiste recht
+(`x-vereist-recht`) af te lezen. Een route toevoegen betekent dus dat hij meteen
+in de specificatie staat; een route verwijderen haalt hem er ook uit.
+
+De specificatie beschrijft alleen de vorm van de API en geen gegevens, en is
+daarom zonder aanmelding op te vragen.
+
+Wat niet uit de code te lezen valt, is de betekenis van een route. Die staat als
+korte omschrijving in `apps/api/src/http/openapi.ts`. Een contracttest
+(`apps/api/test/openapi.test.ts`) laat de build falen zodra er een route zonder
+omschrijving bestaat of een omschrijving zonder route.
+
+Wat er nog **niet** in staat: de schema's van de verzoek- en antwoordlichamen.
+De `zod`-schema's staan nu bij de routes waar ze valideren; ze worden nog niet
+omgezet naar JSON Schema. Zolang dat zo is, blijft dit document de plek waar de
+velden per bron staan beschreven.
 
 ## Verplichte headers op elk verzoek
 
