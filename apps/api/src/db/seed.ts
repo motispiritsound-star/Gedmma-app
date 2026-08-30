@@ -18,6 +18,11 @@ export const RECHTEN: { sleutel: string; omschrijving: string; kritiek?: boolean
   { sleutel: 'inkoop.lezen', omschrijving: 'Inkoopfacturen en bonnen bekijken' },
   { sleutel: 'inkoop.schrijven', omschrijving: 'Inkoopfacturen en bonnen vastleggen' },
   { sleutel: 'inkoop.goedkeuren', omschrijving: 'Inkoopfacturen goedkeuren', kritiek: true },
+  { sleutel: 'uren.lezen', omschrijving: 'Eigen uren en projecten bekijken' },
+  { sleutel: 'uren.schrijven', omschrijving: 'Uren schrijven en wijzigen' },
+  { sleutel: 'uren.allen.lezen', omschrijving: 'De uren van alle medewerkers bekijken' },
+  { sleutel: 'uren.goedkeuren', omschrijving: 'Uren goedkeuren of afkeuren', kritiek: true },
+  { sleutel: 'project.beheren', omschrijving: 'Projecten aanmaken en wijzigen' },
   { sleutel: 'bank.lezen', omschrijving: 'Banktransacties bekijken' },
   { sleutel: 'bank.schrijven', omschrijving: 'Banktransacties importeren en koppelen' },
   { sleutel: 'bank.koppelen', omschrijving: 'Een bankrekening koppelen', kritiek: true },
@@ -32,7 +37,11 @@ export const RECHTEN: { sleutel: string; omschrijving: string; kritiek?: boolean
   { sleutel: 'rapport.exporteren', omschrijving: 'Rapportages exporteren of downloaden', kritiek: true },
   { sleutel: 'document.lezen', omschrijving: 'Documenten bekijken' },
   { sleutel: 'document.schrijven', omschrijving: 'Documenten uploaden' },
-  { sleutel: 'document.gevoelig.lezen', omschrijving: 'Als gevoelig geclassificeerde documenten inzien', kritiek: true },
+  {
+    sleutel: 'document.gevoelig.lezen',
+    omschrijving: 'Als gevoelig geclassificeerde documenten inzien',
+    kritiek: true,
+  },
   { sleutel: 'gebruiker.beheren', omschrijving: 'Gebruikers en rollen beheren', kritiek: true },
   { sleutel: 'accountant.toegang', omschrijving: 'Accountantstoegang verlenen', kritiek: true },
   { sleutel: 'audit.lezen', omschrijving: 'De audit trail inzien', kritiek: true },
@@ -41,7 +50,9 @@ export const RECHTEN: { sleutel: string; omschrijving: string; kritiek?: boolean
 ];
 
 const ALLE = RECHTEN.map((r) => r.sleutel);
-const ALLEEN_LEZEN = ALLE.filter((s) => s.endsWith('.lezen') && s !== 'audit.lezen' && s !== 'document.gevoelig.lezen');
+const ALLEEN_LEZEN = ALLE.filter(
+  (s) => s.endsWith('.lezen') && s !== 'audit.lezen' && s !== 'document.gevoelig.lezen',
+);
 
 /** Ingebouwde rollen. Zie docs/security.md voor de bedoeling per rol. */
 export const ROLLEN: { sleutel: string; naam: string; omschrijving: string; rechten: string[] }[] = [
@@ -62,14 +73,24 @@ export const ROLLEN: { sleutel: string; naam: string; omschrijving: string; rech
     naam: 'Boekhouder',
     omschrijving: 'Boekt, maakt definitief en rapporteert. Geen gebruikersbeheer.',
     rechten: ALLE.filter(
-      (s) => !['gebruiker.beheren', 'accountant.toegang', 'periode.heropenen', 'privacy.beheren', 'ai.beheren', 'betaling.goedkeuren'].includes(s),
+      (s) =>
+        ![
+          'gebruiker.beheren',
+          'accountant.toegang',
+          'periode.heropenen',
+          'privacy.beheren',
+          'ai.beheren',
+          'betaling.goedkeuren',
+        ].includes(s),
     ),
   },
   {
     sleutel: 'accountant',
     naam: 'Accountant',
     omschrijving: 'Als boekhouder, plus perioden heropenen. Toegang heeft een einddatum.',
-    rechten: ALLE.filter((s) => !['gebruiker.beheren', 'privacy.beheren', 'ai.beheren', 'betaling.goedkeuren'].includes(s)),
+    rechten: ALLE.filter(
+      (s) => !['gebruiker.beheren', 'privacy.beheren', 'ai.beheren', 'betaling.goedkeuren'].includes(s),
+    ),
   },
   {
     sleutel: 'employee',
@@ -82,6 +103,10 @@ export const ROLLEN: { sleutel: string; naam: string; omschrijving: string; rech
       'inkoop.schrijven',
       'document.lezen',
       'document.schrijven',
+      // Een medewerker schrijft zijn eigen uren, maar ziet die van collega's
+      // niet en keurt niets goed.
+      'uren.lezen',
+      'uren.schrijven',
     ],
   },
   {
@@ -136,10 +161,10 @@ export async function seedBasisgegevens(): Promise<void> {
       if (!rolId) throw new Error(`Rol ${rol.sleutel} kon niet worden aangemaakt.`);
       await client.query('DELETE FROM role_permission WHERE role_id = $1', [rolId]);
       for (const recht of rol.rechten) {
-        await client.query(
-          'INSERT INTO role_permission (role_id, permission_sleutel) VALUES ($1, $2)',
-          [rolId, recht],
-        );
+        await client.query('INSERT INTO role_permission (role_id, permission_sleutel) VALUES ($1, $2)', [
+          rolId,
+          recht,
+        ]);
       }
     }
 

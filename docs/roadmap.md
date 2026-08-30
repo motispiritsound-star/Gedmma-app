@@ -25,6 +25,8 @@ acceptatiecriteria. Opgeleverd in deze `docs/`-map.
 | Klanten en leveranciers | gebouwd |
 | Verkoopfacturen, creditnota's, PDF, UBL, verzending | gebouwd |
 | Inkoopfacturen met documentupload | gebouwd |
+| Projecten, urenregistratie, goedkeuring en uren factureren | gebouwd |
+| Facturenoverzicht met zoeken, filteren, sorteren en totalen | gebouwd |
 | Bankimport (CSV, MT940, CAMT.053) | gebouwd |
 | Bankmatching en boekingsregels | gebouwd |
 | Btw-overzicht met aansluiting | gebouwd |
@@ -46,7 +48,8 @@ acceptatiecriteria. Opgeleverd in deze `docs/`-map.
 * Goedkeuringsworkflows voor inkoopfacturen en declaraties.
 * UBL-inlezen en e-mailimport (eigen inbox per administratie).
 * Uitgebreide rapportages, budgetten, kostenplaatsen en -dragers.
-* Projecten, uren, kilometers en declaraties.
+* Kilometers en declaraties langs dezelfde goedkeuringsweg als de uren.
+* Urenstaat per week, een meelopende timer en resultaat per project.
 * Importwizard met kolommapping, dry run, rollback en aansluitingsrapport.
 * Vreemde valuta: herwaardering en koersverschillen op balansdatum.
 * Passkeys (WebAuthn).

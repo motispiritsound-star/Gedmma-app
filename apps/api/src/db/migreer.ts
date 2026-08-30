@@ -99,9 +99,42 @@ export async function migreer(opties: { stil?: boolean } = {}): Promise<string[]
 }
 
 /** Draait de database helemaal leeg. Alleen voor tests en lokale ontwikkeling. */
+/** Leest de databasenaam uit een verbindingsadres, zonder te struikelen over rare tekens. */
+function databaseNaamVan(url: string): string {
+  try {
+    return decodeURIComponent(new URL(url).pathname.replace(/^\//, ''));
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Gooit het schema weg en bouwt het opnieuw op. Alleen voor tests en voor het
+ * opnieuw opzetten van een ontwikkelomgeving.
+ *
+ * Twee grendels, want een lege database is niet terug te draaien:
+ *
+ *  1. nooit in productie;
+ *  2. nooit tegen een database die niet herkenbaar een testdatabase is, tenzij
+ *     iemand dat expliciet aanzet met GEDMMA_LEEG_TOESTAAN=ja.
+ *
+ * Die tweede grendel staat er niet voor de sier: een testrun heeft een keer de
+ * ontwikkeldatabase geleegd doordat de omgevingsvariabelen te laat werden
+ * gezet. Zie apps/api/test/omgeving.ts.
+ */
 export async function leegDatabase(): Promise<void> {
   if (config.isProductie) {
     throw new Error('leegDatabase() mag nooit in productie draaien.');
+  }
+
+  const naam = databaseNaamVan(config.database.migratieUrl);
+  const isTestdatabase = /(^|[_-])test$/i.test(naam) || naam.endsWith('_test');
+  if (!isTestdatabase && process.env.GEDMMA_LEEG_TOESTAAN !== 'ja') {
+    throw new Error(
+      `leegDatabase() weigert de database "${naam}" te legen: de naam ziet er niet uit als een ` +
+        'testdatabase. Draai de tests tegen gedmma_test, of zet GEDMMA_LEEG_TOESTAAN=ja als je ' +
+        'echt deze database wilt wissen.',
+    );
   }
   const pool = new pg.Pool({ connectionString: config.database.migratieUrl, max: 1 });
   try {

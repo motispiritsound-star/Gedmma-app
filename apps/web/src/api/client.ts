@@ -234,6 +234,89 @@ export type Factuurregel = {
   bedrag_inclusief: string;
 };
 
+export type Factuurtotalen = {
+  aantal: number;
+  totaal: string;
+  openstaand: string;
+  vervallen: string;
+};
+
+export type Factuurlijst = {
+  items: Factuur[];
+  totaalAantal: number;
+  totalen: Factuurtotalen;
+  meer: boolean;
+};
+
+export type Project = {
+  id: string;
+  code: string | null;
+  naam: string;
+  omschrijving: string | null;
+  contact_id: string | null;
+  contact_naam: string | null;
+  status: 'actief' | 'op_pauze' | 'afgerond' | 'gearchiveerd';
+  facturatie: 'uurtarief' | 'vaste_prijs' | 'niet';
+  uurtarief: string | null;
+  vaste_prijs: string | null;
+  budget_minuten: number | null;
+  begint_op: string | null;
+  eindigt_op: string | null;
+  tax_code_id: string | null;
+  ledger_account_id: string | null;
+  valuta: string;
+  versie: number;
+};
+
+export type Projectactiviteit = {
+  id: string;
+  project_id: string;
+  naam: string;
+  uurtarief: string | null;
+  factureerbaar: boolean;
+  status: string;
+};
+
+export type Projectsamenvatting = {
+  project_id: string;
+  project_naam: string;
+  project_code: string | null;
+  contact_naam: string | null;
+  status: string;
+  budget_minuten: number | null;
+  geschreven_minuten: number;
+  factureerbare_minuten: number;
+  ongefactureerde_minuten: number;
+  factureerbaar_nu_minuten: number;
+  gefactureerde_minuten: number;
+};
+
+export type Uur = {
+  id: string;
+  project_id: string;
+  project_naam: string;
+  project_code: string | null;
+  activity_id: string | null;
+  activiteit_naam: string | null;
+  user_id: string;
+  gebruiker_naam: string;
+  datum: string;
+  minuten: number;
+  omschrijving: string;
+  factureerbaar: boolean;
+  uurtarief: string | null;
+  status: 'concept' | 'ingediend' | 'goedgekeurd' | 'afgekeurd' | 'gefactureerd';
+  sales_invoice_id: string | null;
+  factuurnummer: string | null;
+  versie: number;
+};
+
+export type Urenlijst = {
+  items: Uur[];
+  totaalMinuten: number;
+  alleenEigenUren: boolean;
+};
+
 export type Banktransactie = {
   id: string;
   bank_account_id: string;

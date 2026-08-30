@@ -48,7 +48,7 @@ export default defineConfig({
     { name: 'opzet', testMatch: /opzet\.setup\.ts/, use: { launchOptions } },
     {
       name: 'chromium',
-      testMatch: /scenario\.spec\.ts/,
+      testMatch: /(scenario|uren|verkoopoverzicht)\.spec\.ts/,
       dependencies: ['opzet'],
       use: { ...devices['Desktop Chrome'], launchOptions, storageState: 'e2e/.auth/gebruiker.json' },
     },

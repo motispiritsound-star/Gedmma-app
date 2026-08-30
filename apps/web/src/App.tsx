@@ -18,6 +18,7 @@ const FactuurScherm = lazy(() => import('./schermen/Factuur.tsx').then((m) => ({
 const Relaties = lazy(() => import('./schermen/Relaties.tsx').then((m) => ({ default: m.Relaties })));
 const Inkoop = lazy(() => import('./schermen/Inkoop.tsx').then((m) => ({ default: m.Inkoop })));
 const Bank = lazy(() => import('./schermen/Bank.tsx').then((m) => ({ default: m.Bank })));
+const Uren = lazy(() => import('./schermen/Uren.tsx').then((m) => ({ default: m.Uren })));
 const Rapporten = lazy(() => import('./schermen/Rapporten.tsx').then((m) => ({ default: m.Rapporten })));
 const Instellingen = lazy(() => import('./schermen/Instellingen.tsx').then((m) => ({ default: m.Instellingen })));
 
@@ -51,6 +52,7 @@ export function App() {
           <Route path="/relaties" element={<Relaties />} />
           <Route path="/inkoop" element={<Inkoop />} />
           <Route path="/bank" element={<Bank />} />
+          <Route path="/uren/*" element={<Uren />} />
           <Route path="/cijfers/*" element={<Rapporten />} />
           <Route path="/instellingen/*" element={<Instellingen />} />
           <Route path="*" element={<Navigate to="/" replace />} />

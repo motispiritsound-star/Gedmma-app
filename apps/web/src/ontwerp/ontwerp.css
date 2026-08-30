@@ -570,6 +570,54 @@ textarea.veld__invoer {
   flex-wrap: wrap;
 }
 
+/* --- Filterbalk ----------------------------------------------------------- */
+
+.filterbalk {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ruimte-3);
+  align-items: center;
+}
+
+.filterbalk__zoek {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.filterbalk select {
+  min-width: 10rem;
+}
+
+/* Een kolomkop die tegelijk een sorteerknop is. Hij ziet eruit als een kop,
+   maar gedraagt zich als een knop: bedienbaar met het toetsenbord en met een
+   zichtbare focus. */
+.tabel__sorteer {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 2.75rem;
+}
+
+.tabel__sorteer:hover {
+  color: var(--kleur-accent-sterk);
+  text-decoration: underline;
+}
+
+.tabel__waarschuwing {
+  color: var(--kleur-fout);
+  font-size: var(--tekst-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .raster {
   display: grid;
   gap: var(--ruimte-4);

@@ -97,7 +97,7 @@ test('de app is met het toetsenbord te bedienen', async ({ page }) => {
 
   // Elk interactief element in de navigatie is bereikbaar en heeft een naam.
   const links = page.getByRole('navigation', { name: /hoofdmenu/i }).getByRole('link');
-  await expect(links).toHaveCount(7);
+  await expect(links).toHaveCount(8);
   for (const link of await links.all()) {
     await expect(link).toHaveAccessibleName(/\S/);
   }

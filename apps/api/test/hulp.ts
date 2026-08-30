@@ -6,17 +6,9 @@
  * repository stond (fixtureserver in plaats van mocks) en is voor financiele
  * software het enige dat iets bewijst.
  */
-process.env.NODE_ENV ??= 'test';
-process.env.DATABASE_URL ??= 'postgres://gedmma_app:gedmma_dev@127.0.0.1:5432/gedmma_test';
-process.env.DATABASE_MIGRATION_URL ??= 'postgres://gedmma_owner:gedmma_dev@127.0.0.1:5432/gedmma_test';
-process.env.DATABASE_APP_ROLE ??= 'gedmma_app';
-process.env.PASSWORD_PEPPER ??= 'test-peper';
-process.env.DATA_ENCRYPTION_KEY ??= '1'.repeat(64);
-process.env.LOG_LEVEL ??= 'error';
-process.env.MAIL_DRIVER ??= 'logboek';
-// scrypt met productieparameters maakt de testsuite onnodig traag; de
-// correctheid van de hashfunctie wordt apart getest.
-process.env.SCRYPT_COST ??= '16384';
+// Deze import moet bovenaan blijven staan: hij zet de testomgeving voordat
+// config.ts wordt geladen. Zie het bestand zelf voor waarom dat uitmaakt.
+import './omgeving.ts';
 
 import type { Server } from 'node:http';
 import type { AddressInfo } from 'node:net';

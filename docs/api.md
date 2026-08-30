@@ -77,14 +77,62 @@ zodat de client kan tonen wat er intussen veranderd is.
 ## Paginering, filteren en sorteren
 
 ```
-GET /api/v1/administrations/{id}/sales-invoices
-    ?status=open&from=2026-01-01&to=2026-03-31
-    &sort=-invoiceDate&limit=50&cursor=eyJ...
+GET /api/v1/administraties/{id}/verkoopfacturen
+    ?zoek=jansen&openstaand=true&vanaf=2026-01-01&tot=2026-03-31
+    &sorteer=vervaldatum&richting=op&limiet=50&offset=0
 ```
 
-Cursor-gebaseerd, niet offset-gebaseerd: bij een groeiende dataset slaat offset
-rijen over. Het antwoord bevat `items`, `nextCursor` en `totalEstimate`.
-`limit` is standaard 50 en maximaal 200.
+Het antwoord bevat `items`, `totaalAantal`, `meer` en `totalen`.
+
+Twee keuzes die hier zijn gemaakt:
+
+* **Offset in plaats van een cursor.** Een overzicht waarin de gebruiker zelf
+  sorteert, kan niet op een cursor draaien die aan één vaste volgorde hangt.
+  De aantallen per administratie zijn bovendien van een orde waarin offset
+  prima werkt. Waar dat verandert (het journaal, de audit trail) blijft
+  paginering wél op volgorde en sleutel gebaseerd.
+* **De totalen gaan over het hele filter, niet over de pagina.** Anders
+  verandert "nog te ontvangen" zodra iemand doorbladert, en dat is precies het
+  getal waar het overzicht voor bestaat.
+
+`sorteer` accepteert alleen waarden uit een vaste lijst (`datum`, `nummer`,
+`klant`, `bedrag`, `vervaldatum`, `openstaand`); een onbekende waarde levert
+`400 validation_failed`. Een sorteerkolom uit de invoer belandt nooit
+rechtstreeks in de query.
+
+`limiet` is standaard 50 en maximaal 200.
+
+## Uren en projecten
+
+Uren staan in **minuten**, als geheel getal. De API accepteert of levert nooit
+een decimaal aantal uren; het omrekenen naar uren gebeurt pas op de factuurregel
+en op het scherm.
+
+```
+POST /api/v1/administraties/{id}/uren
+{ "projectId": "…", "datum": "2026-03-02", "minuten": 480,
+  "omschrijving": "Ontwerpsessie", "factureerbaar": true }
+```
+
+De weg van een uur:
+
+| Stap | Endpoint | Wie |
+| --- | --- | --- |
+| Schrijven | `POST /uren` | `uren.schrijven` |
+| Indienen | `POST /uren/indienen` | `uren.schrijven` |
+| Beoordelen | `POST /uren/beoordelen` | `uren.goedkeuren`, en nooit de eigen uren |
+| Factureren | `POST /uren/factureren` | `verkoop.schrijven` |
+
+`GET /uren` beperkt zich tot de eigen uren zolang de gebruiker `uren.allen.lezen`
+mist. Dat is een filter op de query, niet een keuze van het scherm; het antwoord
+zegt dat ook met `alleenEigenUren`. `GET /uren/{id}` van een collega levert
+`404` in plaats van `403`, zodat het antwoord niet verraadt dat er iets achter
+dat id zit.
+
+`POST /uren/factureren` levert een **conceptfactuur**. Definitief maken en
+boeken blijft de gewone weg via de verkoopmodule, met het recht dat daarbij
+hoort. De uren worden gegroepeerd per activiteit en per tarief: twee tarieven
+horen nooit in één regel, want dan is het bedrag niet meer na te rekenen.
 
 ## Foutformaat
 

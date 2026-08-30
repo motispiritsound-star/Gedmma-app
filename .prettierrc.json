@@ -1,0 +1,11 @@
+{
+  "singleQuote": true,
+  "printWidth": 110,
+  "trailingComma": "all",
+  "semi": true,
+  "arrowParens": "always",
+  "overrides": [
+    { "files": "*.md", "options": { "printWidth": 80, "proseWrap": "always" } },
+    { "files": "*.css", "options": { "singleQuote": false } }
+  ]
+}

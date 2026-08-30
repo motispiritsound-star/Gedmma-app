@@ -504,25 +504,61 @@ export async function leesFactuur(
 }
 
 export type FactuurZoekopdracht = {
+  /** Vrij zoeken op nummer, klantnaam of referentie. */
+  zoek?: string;
   status?: string;
   soort?: FactuurSoort;
   contactId?: string;
   vanaf?: string;
   tot?: string;
   openstaand?: boolean;
+  /** Alleen facturen waarvan de vervaldatum voorbij is en die nog niet betaald zijn. */
+  vervallen?: boolean;
+  sorteer?: 'datum' | 'nummer' | 'klant' | 'bedrag' | 'vervaldatum' | 'openstaand';
+  richting?: 'op' | 'af';
   limiet?: number;
-  cursor?: string;
+  offset?: number;
 };
 
-export async function zoekFacturen(
-  client: Db,
-  administratieId: string,
-  opdracht: FactuurZoekopdracht = {},
-): Promise<{ items: FactuurRij[]; volgendeCursor: string | null }> {
-  const limiet = Math.min(opdracht.limiet ?? 50, 200);
-  const parameters: unknown[] = [administratieId];
-  const voorwaarden: string[] = [];
+export type FactuurTotalen = {
+  aantal: number;
+  totaal: string;
+  openstaand: string;
+  vervallen: string;
+};
 
+/**
+ * Sorteervolgordes, als vaste tabel.
+ *
+ * Een sorteerkolom uit de invoer mag nooit rechtstreeks in de query belanden;
+ * daarom is dit een afbeelding van toegestane waarden naar vaste SQL en geen
+ * samengestelde tekst.
+ */
+const SORTERING: Record<NonNullable<FactuurZoekopdracht['sorteer']>, string> = {
+  datum: 'f.factuurdatum',
+  nummer: 'f.documentnummer',
+  klant: 'c.naam',
+  bedrag: 'f.totaal_inclusief',
+  vervaldatum: 'f.vervaldatum',
+  openstaand: '(f.totaal_inclusief - f.betaald_bedrag)',
+};
+
+/** Bouwt de WHERE-voorwaarden die zowel de lijst als de totalen gebruiken. */
+function bouwFilter(
+  administratieId: string,
+  opdracht: FactuurZoekopdracht,
+): { waar: string; parameters: unknown[] } {
+  const parameters: unknown[] = [administratieId];
+  const voorwaarden: string[] = ['f.administration_id = $1'];
+
+  if (opdracht.zoek) {
+    parameters.push(`%${opdracht.zoek}%`);
+    voorwaarden.push(
+      `(f.documentnummer ILIKE $${parameters.length}
+        OR c.naam ILIKE $${parameters.length}
+        OR f.referentie ILIKE $${parameters.length})`,
+    );
+  }
   if (opdracht.status) {
     parameters.push(opdracht.status);
     voorwaarden.push(`f.status = $${parameters.length}`);
@@ -543,15 +579,30 @@ export async function zoekFacturen(
     parameters.push(opdracht.tot);
     voorwaarden.push(`f.factuurdatum <= $${parameters.length}::date`);
   }
-  if (opdracht.openstaand) {
+  if (opdracht.openstaand || opdracht.vervallen) {
     voorwaarden.push(`f.status IN ('definitief', 'verzonden', 'deels_betaald', 'vervallen')`);
     voorwaarden.push('f.totaal_inclusief <> f.betaald_bedrag');
   }
-  if (opdracht.cursor) {
-    parameters.push(opdracht.cursor);
-    voorwaarden.push(`(f.factuurdatum::text || f.id::text) < $${parameters.length}`);
+  if (opdracht.vervallen) {
+    voorwaarden.push('f.vervaldatum < CURRENT_DATE');
   }
-  parameters.push(limiet + 1);
+
+  return { waar: voorwaarden.join(' AND '), parameters };
+}
+
+export async function zoekFacturen(
+  client: Db,
+  administratieId: string,
+  opdracht: FactuurZoekopdracht = {},
+): Promise<{ items: FactuurRij[]; totaalAantal: number; totalen: FactuurTotalen; meer: boolean }> {
+  const limiet = Math.min(opdracht.limiet ?? 50, 200);
+  const offset = Math.max(opdracht.offset ?? 0, 0);
+  const { waar, parameters } = bouwFilter(administratieId, opdracht);
+
+  const kolom = SORTERING[opdracht.sorteer ?? 'datum'];
+  const richting = opdracht.richting === 'op' ? 'ASC' : 'DESC';
+
+  const lijstParameters = [...parameters, limiet + 1, offset];
 
   const { rows } = await client.query<FactuurRij>(
     `SELECT f.id, f.contact_id, c.naam AS contact_naam, f.soort, f.documentnummer, f.status,
@@ -562,17 +613,35 @@ export async function zoekFacturen(
             f.betaald_bedrag::text AS betaald_bedrag, f.journal_entry_id::text AS journal_entry_id,
             f.pdf_document_id::text AS pdf_document_id, f.verzonden_op::text AS verzonden_op, f.versie
        FROM sales_invoice f JOIN contact c ON c.id = f.contact_id
-      WHERE f.administration_id = $1 ${voorwaarden.length > 0 ? `AND ${voorwaarden.join(' AND ')}` : ''}
-      ORDER BY f.factuurdatum DESC, f.id DESC
-      LIMIT $${parameters.length}`,
+      WHERE ${waar}
+      ORDER BY ${kolom} ${richting} NULLS LAST, f.id DESC
+      LIMIT $${lijstParameters.length - 1} OFFSET $${lijstParameters.length}`,
+    lijstParameters,
+  );
+
+  // De totalen gaan over het hele filter, niet over de zichtbare pagina; anders
+  // verandert "nog te ontvangen" zodra je doorbladert.
+  const samenvatting = await client.query<FactuurTotalen>(
+    `SELECT count(*)::int AS aantal,
+            COALESCE(SUM(f.totaal_inclusief), 0)::text AS totaal,
+            COALESCE(SUM(f.totaal_inclusief - f.betaald_bedrag)
+                     FILTER (WHERE f.status IN ('definitief', 'verzonden', 'deels_betaald', 'vervallen')), 0)::text
+              AS openstaand,
+            COALESCE(SUM(f.totaal_inclusief - f.betaald_bedrag)
+                     FILTER (WHERE f.status IN ('definitief', 'verzonden', 'deels_betaald', 'vervallen')
+                                   AND f.vervaldatum < CURRENT_DATE), 0)::text AS vervallen
+       FROM sales_invoice f JOIN contact c ON c.id = f.contact_id
+      WHERE ${waar}`,
     parameters,
   );
 
-  const items = rows.slice(0, limiet);
-  const laatste = items[items.length - 1];
+  const totalen = samenvatting.rows[0] ?? { aantal: 0, totaal: '0.00', openstaand: '0.00', vervallen: '0.00' };
+
   return {
-    items,
-    volgendeCursor: rows.length > limiet && laatste ? `${laatste.factuurdatum}${laatste.id}` : null,
+    items: rows.slice(0, limiet),
+    totaalAantal: totalen.aantal,
+    totalen,
+    meer: rows.length > limiet,
   };
 }
 

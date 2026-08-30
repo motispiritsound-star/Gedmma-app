@@ -195,14 +195,18 @@ boekhoudRoutes.get(
   asyncRoute(async (verzoek: Verzoek, antwoord) => {
     const opdracht = valideer(
       z.object({
+        zoek: z.string().max(100).optional(),
         status: z.string().max(30).optional(),
         soort: z.enum(['offerte', 'factuur', 'creditnota', 'proforma']).optional(),
         contactId: uuidSchema.optional(),
         vanaf: datumSchema.optional(),
         tot: datumSchema.optional(),
         openstaand: z.coerce.boolean().optional(),
+        vervallen: z.coerce.boolean().optional(),
+        sorteer: z.enum(['datum', 'nummer', 'klant', 'bedrag', 'vervaldatum', 'openstaand']).optional(),
+        richting: z.enum(['op', 'af']).optional(),
         limiet: z.coerce.number().int().min(1).max(200).default(50),
-        cursor: z.string().optional(),
+        offset: z.coerce.number().int().min(0).max(100_000).default(0),
       }),
       verzoek.query,
     );

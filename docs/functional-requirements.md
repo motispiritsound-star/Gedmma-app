@@ -116,7 +116,27 @@ geformuleerd als iets dat een gebruiker kan doen of dat het systeem garandeert.
 | K-12 | Creditcards en betaalproviders (PayPal, Mollie, Stripe) | F3 |
 | K-13 | SEPA-betaalbestand (pain.001) met functiescheiding bij goedkeuring | F3 |
 
-## 8. Btw en belastingen
+## 8. Uren en projecten
+
+| # | Eis | Prio |
+| --- | --- | --- |
+| U-01 | Project aanmaken met klant, uurtarief of vaste prijs, budget en periode | M |
+| U-02 | Activiteiten binnen een project, met een eigen tarief per activiteit | M |
+| U-03 | Uren schrijven in minuten, met omschrijving en factureerbaarheid | M |
+| U-04 | Het tarief wordt vastgelegd zoals het gold op het moment van schrijven | M |
+| U-05 | Uren indienen, goedkeuren en afkeuren; niemand keurt zijn eigen uren goed | M |
+| U-06 | Een gewijzigd uur verliest zijn goedkeuring | M |
+| U-07 | Wie geen recht heeft op andermans uren, ziet en wijzigt alleen de eigen uren | M |
+| U-08 | Goedgekeurde uren omzetten in een conceptfactuur, per activiteit en tarief gegroepeerd | M |
+| U-09 | Een gefactureerd uur is niet meer te wijzigen of te verwijderen | M |
+| U-10 | Projectoverzicht: geschreven, te factureren, gefactureerd en budgetbewaking | M |
+| U-11 | Urenstaat per week met een snelinvoer per dag | F2 |
+| U-12 | Kilometers en declaraties, met dezelfde goedkeuringsweg | F2 |
+| U-13 | Timer die meeloopt tijdens het werk | F2 |
+| U-14 | Resultaat per project: omzet tegenover kosten en uren | F2 |
+| U-15 | Vaste prijs met termijnen en een voortgangspercentage | F3 |
+
+## 9. Btw en belastingen
 
 | # | Eis | Prio |
 | --- | --- | --- |
@@ -136,7 +156,7 @@ Bij elke fiscale uitkomst toont de interface dat het een berekening is en geen
 belastingadvies, met de vermelding dat controle door een accountant of fiscalist
 nodig kan zijn.
 
-## 9. Rapportages
+## 10. Rapportages
 
 | # | Rapport | Prio |
 | --- | --- | --- |
@@ -158,7 +178,7 @@ nodig kan zijn.
 Alle rapporten zijn filterbaar op periode, doorklikbaar tot de journaalpost en
 het document, en exporteerbaar naar CSV en PDF (Excel in fase 2).
 
-## 10. Dashboard
+## 11. Dashboard
 
 | # | Eis | Prio |
 | --- | --- | --- |
@@ -176,7 +196,7 @@ het document, en exporteerbaar naar CSV en PDF (Excel in fase 2).
 | D-12 | Door AI voorgestelde acties | F2 |
 | D-13 | Widgets aanpassen en herschikken | F2 |
 
-## 11. Import, export en migratie
+## 12. Import, export en migratie
 
 | # | Eis | Prio |
 | --- | --- | --- |
@@ -187,7 +207,7 @@ het document, en exporteerbaar naar CSV en PDF (Excel in fase 2).
 | M-05 | Import van UBL, MT940, CAMT en auditfiles | M (bank) / F2 (rest) |
 | M-06 | Generieke migratieadapters per bronpakket | F2 |
 
-## 12. Abonnementen en commercie
+## 13. Abonnementen en commercie
 
 | # | Eis | Prio |
 | --- | --- | --- |
@@ -198,7 +218,7 @@ het document, en exporteerbaar naar CSV en PDF (Excel in fase 2).
 | S-05 | Read-onlymodus na beëindiging, met veilige export en grace period | M |
 | S-06 | Facturering via een betaalprovider achter een adapter | F3 |
 
-## 13. Privacy en compliance in het product
+## 14. Privacy en compliance in het product
 
 | # | Eis | Prio |
 | --- | --- | --- |

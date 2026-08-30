@@ -40,6 +40,13 @@ of het commando dat het aantoont. De MVP is pas gereed als alles op groen staat.
 | 28 | Rapportages zijn exporteerbaar (CSV, PDF) | `apps/api/test/rapportage.test.ts` |
 | 29 | Er is een volledige machineleesbare export van een administratie | `apps/api/test/export.test.ts` |
 | 30 | Privacy: logging bevat geen wachtwoorden, tokens of documentinhoud | `apps/api/test/logging.test.ts` |
+| 31 | Uren worden in hele minuten vastgelegd en het tarief reist mee met het uur | `apps/api/test/uren.test.ts` |
+| 32 | Niemand keurt zijn eigen uren goed | `apps/api/test/uren.test.ts`, `apps/web/e2e/uren.spec.ts` |
+| 33 | Wie geen recht heeft op andermans uren, ziet en wijzigt alleen de eigen uren | `apps/api/test/uren.test.ts` |
+| 34 | Goedgekeurde uren worden een conceptfactuur, gegroepeerd per activiteit en tarief | `apps/api/test/uren.test.ts` |
+| 35 | Dezelfde uren komen nooit twee keer op een factuur, en een gefactureerd uur ligt vast | `apps/api/test/uren.test.ts` |
+| 36 | Het facturenoverzicht filtert, zoekt en sorteert, met totalen over het hele filter | `apps/api/test/facturenoverzicht.test.ts`, `apps/web/e2e/verkoopoverzicht.spec.ts` |
+| 37 | Een testrun kan de ontwikkeldatabase niet legen | `apps/api/test/omgeving.test.ts` |
 
 ## Wat expliciet níet in de MVP zit
 

@@ -49,7 +49,7 @@ Legenda: **A** = aanwezig, **N** = niet aanwezig, **M** = MVP (fase 1),
 | Bankieren | PSD2-koppeling, regels, reconciliatie | M (CSV/MT940/CAMT-import + matching + regels), F3 (PSD2-adapters) |
 | Relatiebeheer | Klanten, leveranciers, condities | M |
 | Voorraad | Artikelen, mutaties, waardering | F4 |
-| Uren en projecten | Registratie, doorbelasting | F2 |
+| Uren en projecten | Registratie, doorbelasting | M (projecten, uren, goedkeuring, factureren), F2 (weekstaat, timer, kilometers, declaraties) |
 | Btw | Aangifte, ICP, suppletie | M (btw-overzicht + aansluiting), F2 (aangifteoverzicht + ICP), F4 (SBR-koppelpunt) |
 | Rapportages | Balans, W&V, saldibalans, ouderdom | M (balans, W&V, saldibalans, grootboek, journaal, ouderdom), F2 (rest) |
 | Jaarafsluiting | Checklist, beginbalans, auditfile | F4 |

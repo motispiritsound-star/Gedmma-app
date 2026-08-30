@@ -35,6 +35,7 @@ flowchart TB
       m_sales["verkoop"]
       m_purch["inkoop"]
       m_bank["bank"]
+      m_uren["uren<br/>projecten"]
       m_tax["btw"]
       m_rep["rapportage"]
       m_doc["documenten"]

@@ -113,6 +113,27 @@ erDiagram
 | `bank_transaction` | Datum, bedrag, tegenrekening, naam, omschrijving, `external_id`, `status` (`new`,`suggested`,`matched`,`booked`,`ignored`), `dedupe_hash` |
 | `bank_rule` | Voorwaarden (JSON) en actie (grootboek + btw-code); volgorde bepaalt voorrang |
 
+### Uren en projecten
+
+| Entiteit | Toelichting |
+| --- | --- |
+| `project` | Naam, code, klant, `facturatie` (`uurtarief`,`vaste_prijs`,`niet`), `uurtarief`, `vaste_prijs`, `budget_minuten`, standaard btw-code en omzetrekening |
+| `project_activity` | Activiteit binnen een project (ontwerp, overleg, reistijd) met een eigen tarief en factureerbaarheid |
+| `time_entry` | `datum`, `minuten` (geheel getal), `omschrijving`, `factureerbaar`, `uurtarief` zoals het gold bij het schrijven, `status` (`concept`,`ingediend`,`goedgekeurd`,`afgekeurd`,`gefactureerd`), `sales_invoice_id` en `sales_invoice_line_id` |
+
+Drie dingen zijn hier in de database vastgelegd en niet aan de applicatie
+overgelaten:
+
+* **Minuten zijn gehele getallen.** Een kwartier is 15, niet 0,25. Een decimale
+  breuk zou later, als het een bedrag wordt, een afronding introduceren.
+* **Het tarief reist mee met het uur.** Een tariefwijziging verandert
+  geschreven uren dus niet met terugwerkende kracht.
+* **Een gefactureerd uur ligt vast.** Een trigger (`gedmma.uur_is_vast`)
+  weigert wijziging en verwijdering, en een `CHECK` bewaakt dat de status
+  `gefactureerd` en de verwijzing naar de factuur altijd samen bestaan. Wie
+  zich vergist, crediteert de factuur; dat is dezelfde weg als bij een
+  definitieve boeking.
+
 ### Documenten, AI, audit
 
 | Entiteit | Toelichting |
