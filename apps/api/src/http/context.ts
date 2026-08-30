@@ -25,11 +25,23 @@ export type Werkcontext = {
   rolSleutel: string;
 };
 
-export type Verzoek = Request & {
-  requestId: string;
-  aangemeld?: Aangemeld;
-  werk?: Werkcontext;
-};
+/**
+ * De velden die de middleware aan elke request toevoegt. Ze worden via
+ * declaration merging aan Express' Request gehangen, zodat elke handler ze kent
+ * zonder overal te casten.
+ */
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Express {
+    interface Request {
+      requestId: string;
+      aangemeld?: Aangemeld;
+      werk?: Werkcontext;
+    }
+  }
+}
+
+export type Verzoek = Request;
 
 /** De aangemelde gebruiker, of een nette 401. */
 export function eisAangemeld(verzoek: Verzoek): Aangemeld {
