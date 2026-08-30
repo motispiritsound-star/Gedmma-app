@@ -1,0 +1,66 @@
+# Lokale ontwikkelomgeving. Voor productie: zie docs/deployment.md.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: gedmma_owner
+      POSTGRES_PASSWORD: gedmma_dev
+      POSTGRES_DB: gedmma
+    ports:
+      - '5432:5432'
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./docker/db-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U gedmma_owner -d gedmma']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: '4000'
+      DATABASE_URL: postgres://gedmma_app:gedmma_dev@db:5432/gedmma
+      DATABASE_MIGRATION_URL: postgres://gedmma_owner:gedmma_dev@db:5432/gedmma
+      DATABASE_APP_ROLE: gedmma_app
+      WEB_URL: http://localhost:8080
+      # In een echte omgeving komen deze uit de secrets manager, nooit uit een
+      # compose-bestand. Zie docs/security.md.
+      PASSWORD_PEPPER: ontwikkel-peper-niet-voor-productie
+      DATA_ENCRYPTION_KEY: '0000000000000000000000000000000000000000000000000000000000000000'
+      STORAGE_DRIVER: lokaal
+      STORAGE_LOCAL_PATH: /data/opslag
+      MAIL_DRIVER: logboek
+      TRUST_PROXY: 'true'
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - '4000:4000'
+    volumes:
+      - opslag:/data/opslag
+    healthcheck:
+      test: ['CMD', 'node', '-e', "fetch('http://127.0.0.1:4000/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/web.Dockerfile
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - '8080:8080'
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  opslag:

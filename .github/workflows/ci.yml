@@ -1,0 +1,180 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22.18'
+
+jobs:
+  kwaliteit:
+    name: Linting en typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      # --ignore-scripts: geen postinstall-scripts van afhankelijkheden in CI.
+      - run: npm ci --ignore-scripts
+      - run: npm run lint
+      - run: npm run typecheck
+
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: gedmma_owner
+          POSTGRES_PASSWORD: gedmma_dev
+          POSTGRES_DB: gedmma_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U gedmma_owner -d gedmma_test"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      DATABASE_URL: postgres://gedmma_app:gedmma_dev@127.0.0.1:5432/gedmma_test
+      DATABASE_MIGRATION_URL: postgres://gedmma_owner:gedmma_dev@127.0.0.1:5432/gedmma_test
+      DATABASE_APP_ROLE: gedmma_app
+      PASSWORD_PEPPER: ci-peper
+      DATA_ENCRYPTION_KEY: '1111111111111111111111111111111111111111111111111111111111111111'
+      NODE_ENV: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci --ignore-scripts
+
+      - name: Applicatierol aanmaken
+        run: |
+          PGPASSWORD=gedmma_dev psql -h 127.0.0.1 -U gedmma_owner -d gedmma_test \
+            -c "CREATE ROLE gedmma_app LOGIN PASSWORD 'gedmma_dev';" \
+            -c "GRANT USAGE ON SCHEMA public TO gedmma_app;"
+
+      # De rekenkern eerst: die is snel en vangt de meeste fouten.
+      - run: npm run test:unit
+      - run: npm run -w @gedmma/i18n test
+      - run: npm run test:api
+      - run: npm run -w @gedmma/web test
+      - run: npm run test:webscan
+
+  e2e:
+    name: End-to-end
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: gedmma_owner
+          POSTGRES_PASSWORD: gedmma_dev
+          POSTGRES_DB: gedmma
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U gedmma_owner -d gedmma"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      DATABASE_URL: postgres://gedmma_app:gedmma_dev@127.0.0.1:5432/gedmma
+      DATABASE_MIGRATION_URL: postgres://gedmma_owner:gedmma_dev@127.0.0.1:5432/gedmma
+      DATABASE_APP_ROLE: gedmma_app
+      PASSWORD_PEPPER: ci-peper
+      DATA_ENCRYPTION_KEY: '1111111111111111111111111111111111111111111111111111111111111111'
+      RATE_LIMIT_FACTOR: '200'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Applicatierol aanmaken
+        run: |
+          PGPASSWORD=gedmma_dev psql -h 127.0.0.1 -U gedmma_owner -d gedmma \
+            -c "CREATE ROLE gedmma_app LOGIN PASSWORD 'gedmma_dev';" \
+            -c "GRANT USAGE ON SCHEMA public TO gedmma_app;"
+      - run: npx playwright install --with-deps chromium
+        working-directory: apps/web
+      - run: npm run -w @gedmma/web test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-rapport
+          path: apps/web/playwright-report
+          retention-days: 7
+
+  beveiliging:
+    name: Beveiligingscontroles
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci --ignore-scripts
+
+      - name: Kwetsbare afhankelijkheden
+        run: npm audit --audit-level=high
+
+      - name: Geheimen in de geschiedenis
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Statische analyse (CodeQL)
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          queries: security-extended
+      - uses: github/codeql-action/analyze@v3
+
+  containers:
+    name: Containers bouwen en scannen
+    runs-on: ubuntu-latest
+    needs: [kwaliteit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+
+      - name: API-image bouwen
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/api.Dockerfile
+          load: true
+          tags: gedmma-api:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Web-image bouwen
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/web.Dockerfile
+          load: true
+          tags: gedmma-web:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Images scannen op kwetsbaarheden
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: gedmma-api:ci
+          severity: HIGH,CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true

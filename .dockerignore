@@ -1,0 +1,14 @@
+node_modules
+**/node_modules
+**/dist
+**/build
+**/coverage
+**/test-results
+**/playwright-report
+.git
+.env
+.env.*
+data
+apps/webscan
+docs
+*.log
