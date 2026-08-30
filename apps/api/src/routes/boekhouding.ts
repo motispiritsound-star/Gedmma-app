@@ -2,7 +2,7 @@
 import { Router } from 'express';
 import { Money } from '@gedmma/money';
 import { z, valideer, aantalSchema, bedragSchema, datumSchema, uuidSchema } from '../http/valideer.ts';
-import { eisAangemeld, type Verzoek } from '../http/context.ts';
+import type { Verzoek } from '../http/context.ts';
 import { administratieContext, eisAanmelding, vereistRecht } from '../http/middleware.ts';
 import { ApiFout, fout } from '../http/fout.ts';
 import { asyncRoute, inContext, inContextIdempotent, verwachteVersie } from './hulp.ts';
@@ -52,7 +52,7 @@ import {
   winstEnVerlies,
 } from '../modules/rapportage/service.ts';
 import { btwOverzicht, icpOverzicht } from '../modules/btw/service.ts';
-import { controleerKetting, leesAudit, auditeer } from '../modules/audit/service.ts';
+import { controleerKetting, leesAudit } from '../modules/audit/service.ts';
 import { leesPost } from '../modules/grootboek/repo.ts';
 import { storneer } from '../modules/grootboek/service.ts';
 

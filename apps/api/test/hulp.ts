@@ -23,7 +23,7 @@ import type { AddressInfo } from 'node:net';
 import { leegDatabase, migreer } from '../src/db/migreer.ts';
 import { seedBasisgegevens } from '../src/db/seed.ts';
 import { maakApp } from '../src/http/server.ts';
-import { db, inTransactie, SYSTEEM_CONTEXT } from '../src/db/pool.ts';
+import { db, inTransactie, SYSTEEM_CONTEXT, type Db } from '../src/db/pool.ts';
 import { gebruikGeheugenopslag } from '../src/opslag/index.ts';
 
 export type Antwoord<T = any> = {
@@ -226,7 +226,7 @@ export async function btwCodeId(gebruiker: Gebruiker, admin: Administratie, code
 export async function inDb<T>(
   administratieId: string | null,
   organisatieId: string | null,
-  werk: (client: import('../src/db/pool.ts').Db) => Promise<T>,
+  werk: (client: Db) => Promise<T>,
 ): Promise<T> {
   return inTransactie(
     { organisatieId, administratieId, gebruikerId: null, actorSoort: 'systeem' },

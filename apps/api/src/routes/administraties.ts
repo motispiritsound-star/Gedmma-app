@@ -2,7 +2,7 @@
 import { Router } from 'express';
 import { inTransactie } from '../db/pool.ts';
 import { z, valideer, datumSchema, uuidSchema } from '../http/valideer.ts';
-import { eisAangemeld, tenantVan, type Verzoek } from '../http/context.ts';
+import { eisAangemeld, type Verzoek } from '../http/context.ts';
 import { administratieContext, eisAanmelding, vereistRecht } from '../http/middleware.ts';
 import { fout } from '../http/fout.ts';
 import {
@@ -10,13 +10,13 @@ import {
   maakAdministratie,
   maakOrganisatie,
   organisatiesVan,
-  toegangVan,
+  wijzigAdministratie,
 } from '../modules/organisaties/service.ts';
 import { alleBoekjaren, alleBtwCodes, alleDagboeken, allePeriodes, alleRekeningen } from '../modules/grootboek/repo.ts';
 import { wijzigPeriodestatus } from '../modules/grootboek/service.ts';
 import { STANDAARD_BTWCODES } from '../modules/btw/codes.ts';
 import { SCHEMA_SJABLONEN } from '@gedmma/accounting';
-import { accepteerUitnodiging, ledenVan, nodigUit, trekToegangIn, wijzigRol } from '../modules/organisaties/leden.ts';
+import { ledenVan, nodigUit, trekToegangIn, wijzigRol } from '../modules/organisaties/leden.ts';
 import { asyncRoute, inContext } from './hulp.ts';
 
 export const organisatieRoutes = Router();
@@ -149,41 +149,22 @@ administratieRoutes.patch(
       verzoek.body,
     );
 
-    const uitkomst = await inContext(verzoek, async (client, context) => {
-      await client.query(
-        `UPDATE administration SET
-           naam = COALESCE($2, naam),
-           kvk_nummer = COALESCE($3, kvk_nummer),
-           btw_nummer = COALESCE($4, btw_nummer),
-           adres = COALESCE($5, adres),
-           postcode_plaats = COALESCE($6, postcode_plaats),
-           email = COALESCE($7, email),
-           telefoon = COALESCE($8, telefoon),
-           iban = COALESCE($9, iban),
-           factuur_voettekst = COALESCE($10, factuur_voettekst),
-           huisstijl_kleur = COALESCE($11, huisstijl_kleur),
-           locale = COALESCE($12, locale),
-           betalingsverschil_tolerantie = COALESCE($13::numeric, betalingsverschil_tolerantie),
-           gewijzigd_op = now()
-         WHERE id = $1`,
-        [
-          context.administratieId,
-          invoer.naam ?? null,
-          invoer.kvkNummer ?? null,
-          invoer.btwNummer ?? null,
-          invoer.adres ?? null,
-          invoer.postcodePlaats ?? null,
-          invoer.email ?? null,
-          invoer.telefoon ?? null,
-          invoer.iban ?? null,
-          invoer.factuurVoettekst ?? null,
-          invoer.huisstijlKleur ?? null,
-          invoer.locale ?? null,
-          invoer.betalingsverschilTolerantie?.replace(',', '.') ?? null,
-        ],
-      );
-      return leesAdministratie(client, context.administratieId);
-    });
+    const uitkomst = await inContext(verzoek, (client, context) =>
+      wijzigAdministratie(client, context, {
+        naam: invoer.naam ?? null,
+        kvkNummer: invoer.kvkNummer ?? null,
+        btwNummer: invoer.btwNummer ?? null,
+        adres: invoer.adres ?? null,
+        postcodePlaats: invoer.postcodePlaats ?? null,
+        email: invoer.email ?? null,
+        telefoon: invoer.telefoon ?? null,
+        iban: invoer.iban ?? null,
+        factuurVoettekst: invoer.factuurVoettekst ?? null,
+        huisstijlKleur: invoer.huisstijlKleur ?? null,
+        locale: invoer.locale ?? null,
+        betalingsverschilTolerantie: invoer.betalingsverschilTolerantie?.replace(',', '.') ?? null,
+      }),
+    );
 
     antwoord.json({ administratie: uitkomst });
   }),

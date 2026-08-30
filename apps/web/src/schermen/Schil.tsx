@@ -54,7 +54,7 @@ export function Schil({ children }: { children: ReactNode }) {
         )}
 
         <div className="kop__rechts">
-          <label>
+          <label className="kop__voorkeur">
             <span className="alleen-schermlezer">{t('instellingen.taal')}</span>
             <select
               className="veld__invoer"
@@ -70,7 +70,7 @@ export function Schil({ children }: { children: ReactNode }) {
             </select>
           </label>
 
-          <label>
+          <label className="kop__voorkeur">
             <span className="alleen-schermlezer">{t('instellingen.thema')}</span>
             <select
               className="veld__invoer"

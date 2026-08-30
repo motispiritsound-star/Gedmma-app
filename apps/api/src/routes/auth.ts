@@ -1,16 +1,16 @@
 /** Routes voor registreren, aanmelden, MFA en sessies. */
 import { Router } from 'express';
-import { config } from '../config.ts';
-import { inTransactie, db } from '../db/pool.ts';
 import { z, valideer } from '../http/valideer.ts';
 import { eisAangemeld, tenantVan, type Verzoek } from '../http/context.ts';
 import { SESSIE_COOKIE, eisAanmelding } from '../http/middleware.ts';
 import { ApiFout } from '../http/fout.ts';
 import {
+  actieveSessies,
   begintMfaOpzet,
   bevestigMfa,
   meldAan,
   meldAf,
+  heeftMfa,
   registreer,
   schakelMfaUit,
   trekSessiesIn,
@@ -177,11 +177,7 @@ authRoutes.get(
     }
     const aangemeld = verzoek.aangemeld;
     const organisaties = aangemeld.mfaVoldaan ? await organisatiesVan(aangemeld.gebruikerId) : [];
-    const mfa = await db().query<{ aantal: string }>(
-      `SELECT count(*)::text AS aantal FROM user_credential
-        WHERE user_id = $1 AND soort = 'totp' AND bevestigd_op IS NOT NULL`,
-      [aangemeld.gebruikerId],
-    );
+    const mfaIngeschakeld = await heeftMfa(aangemeld.gebruikerId);
 
     antwoord.json({
       aangemeld: true,
@@ -190,7 +186,7 @@ authRoutes.get(
         email: aangemeld.email,
         naam: aangemeld.naam,
         locale: aangemeld.locale,
-        mfaIngeschakeld: Number(mfa.rows[0]?.aantal ?? '0') > 0,
+        mfaIngeschakeld,
         mfaVoldaan: aangemeld.mfaVoldaan,
         impersonatie: aangemeld.supportGebruikerId !== null,
       },
@@ -211,27 +207,9 @@ authRoutes.get(
   eisAanmelding,
   asyncRoute(async (verzoek: Verzoek, antwoord) => {
     const aangemeld = eisAangemeld(verzoek);
-    const { rows } = await db().query<{
-      id: string;
-      aangemaakt_op: Date;
-      laatst_gezien_op: Date;
-      verloopt_op: Date;
-      user_agent: string | null;
-    }>(
-      `SELECT id, aangemaakt_op, laatst_gezien_op, verloopt_op, user_agent
-         FROM session WHERE user_id = $1 AND ingetrokken_op IS NULL AND verloopt_op > now()
-         ORDER BY laatst_gezien_op DESC`,
-      [aangemeld.gebruikerId],
-    );
+    const sessies = await actieveSessies(aangemeld.gebruikerId);
     antwoord.json({
-      sessies: rows.map((rij) => ({
-        id: rij.id,
-        huidige: rij.id === aangemeld.sessieId,
-        aangemaaktOp: rij.aangemaakt_op.toISOString(),
-        laatstGezienOp: rij.laatst_gezien_op.toISOString(),
-        verlooptOp: rij.verloopt_op.toISOString(),
-        apparaat: rij.user_agent ?? 'Onbekend apparaat',
-      })),
+      sessies: sessies.map((sessie) => ({ ...sessie, huidige: sessie.id === aangemeld.sessieId })),
     });
   }),
 );

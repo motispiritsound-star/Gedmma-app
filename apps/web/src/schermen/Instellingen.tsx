@@ -1,7 +1,7 @@
 /** Instellingen: onderneming, gebruikers, beveiliging, perioden en audit trail. */
 import { useState } from 'react';
 import { NavLink, Route, Routes } from 'react-router-dom';
-import { toonTijdstip } from '@gedmma/i18n';
+import { TALEN, toonTijdstip } from '@gedmma/i18n';
 import { useApp } from '../context/App.tsx';
 import { Etiket, Kaart, Keuzeveld, Knop, Laden, Melding, Tabelomhulsel, Veld } from '../ontwerp/index.tsx';
 import { useActie, useHaal } from './gebruik.ts';
@@ -33,13 +33,48 @@ export function Instellingen() {
       </nav>
 
       <Routes>
-        <Route index element={<Onderneming />} />
+        <Route
+          index
+          element={
+            <div className="stapel">
+              <Onderneming />
+              <Weergave />
+            </div>
+          }
+        />
         <Route path="gebruikers" element={<Gebruikers />} />
         <Route path="beveiliging" element={<Beveiliging />} />
         <Route path="perioden" element={<Perioden />} />
         <Route path="audit" element={<Audit />} />
       </Routes>
     </div>
+  );
+}
+
+/** Taal en weergave; op mobiel de enige plek waar deze keuzes staan. */
+function Weergave() {
+  const { t, taal, zetTaal, thema, zetThema } = useApp();
+  return (
+    <Kaart titel={t('instellingen.thema')}>
+      <div className="veldrij">
+        <Keuzeveld
+          label={t('instellingen.taal')}
+          value={taal}
+          onChange={(gebeurtenis) => zetTaal(gebeurtenis.target.value as typeof taal)}
+          opties={TALEN.map((item) => ({ waarde: item.code, tekst: item.naam }))}
+        />
+        <Keuzeveld
+          label={t('instellingen.thema')}
+          value={thema}
+          onChange={(gebeurtenis) => zetThema(gebeurtenis.target.value as typeof thema)}
+          opties={[
+            { waarde: 'systeem', tekst: t('instellingen.themaSysteem') },
+            { waarde: 'licht', tekst: t('instellingen.themaLicht') },
+            { waarde: 'donker', tekst: t('instellingen.themaDonker') },
+          ]}
+        />
+      </div>
+    </Kaart>
   );
 }
 

@@ -1,4 +1,4 @@
-import { Money, Rate, type ValutaCode } from '@gedmma/money';
+import { Money, type Rate, type ValutaCode } from '@gedmma/money';
 import { BoekhoudFout } from './fouten.ts';
 
 /** Soort grootboekrekening; bepaalt of hij op de balans of in de W&V staat. */

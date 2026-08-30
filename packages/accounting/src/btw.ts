@@ -1,4 +1,4 @@
-import { Money, Rate, type ValutaCode } from '@gedmma/money';
+import { Money, type Rate, type ValutaCode } from '@gedmma/money';
 import { BoekhoudFout } from './fouten.ts';
 
 /**

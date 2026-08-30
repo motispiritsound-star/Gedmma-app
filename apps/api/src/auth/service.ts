@@ -5,12 +5,12 @@
  * geen bruikbare sessies op. Bij elke wijziging van rechten of factoren wordt de
  * sessie geroteerd.
  */
-import { db, inTransactie, SYSTEEM_CONTEXT, type Db, type TenantContext } from '../db/pool.ts';
+import { db, inTransactie, SYSTEEM_CONTEXT, type TenantContext } from '../db/pool.ts';
 import { config } from '../config.ts';
 import { gelijkInConstanteTijd, hashIp, nieuwToken, ontsleutel, sha256, versleutel } from '../util/crypto.ts';
 import { beoordeelWachtwoord, scryptHasher } from './wachtwoord.ts';
 import { berekenCode, controleerCode, nieuweHerstelcodes, nieuwGeheim, otpauthUri } from './totp.ts';
-import { ApiFout, fout } from '../http/fout.ts';
+import { ApiFout } from '../http/fout.ts';
 import { auditeer } from '../modules/audit/service.ts';
 import { eisRuimte, LIMIETEN, reset } from '../http/ratelimit.ts';
 
@@ -183,6 +183,43 @@ export async function meldAan(invoer: {
   await reset(`aanmelden:account:${sha256(email)}`);
 
   return { token, sessieId, mfaNodig: heeftMfa, verlooptOp: verlooptOp.toISOString() };
+}
+
+/** Heeft deze gebruiker een bevestigde tweede factor? */
+export async function heeftMfa(gebruikerId: string): Promise<boolean> {
+  return heeftBevestigdeMfa(gebruikerId);
+}
+
+export type ActieveSessie = {
+  id: string;
+  aangemaaktOp: string;
+  laatstGezienOp: string;
+  verlooptOp: string;
+  apparaat: string;
+};
+
+/** De sessies waarmee een gebruiker op dit moment is aangemeld. */
+export async function actieveSessies(gebruikerId: string): Promise<ActieveSessie[]> {
+  const { rows } = await db().query<{
+    id: string;
+    aangemaakt_op: Date;
+    laatst_gezien_op: Date;
+    verloopt_op: Date;
+    user_agent: string | null;
+  }>(
+    `SELECT id, aangemaakt_op, laatst_gezien_op, verloopt_op, user_agent
+       FROM session
+      WHERE user_id = $1 AND ingetrokken_op IS NULL AND verloopt_op > now()
+      ORDER BY laatst_gezien_op DESC`,
+    [gebruikerId],
+  );
+  return rows.map((rij) => ({
+    id: rij.id,
+    aangemaaktOp: rij.aangemaakt_op.toISOString(),
+    laatstGezienOp: rij.laatst_gezien_op.toISOString(),
+    verlooptOp: rij.verloopt_op.toISOString(),
+    apparaat: rij.user_agent ?? 'Onbekend apparaat',
+  }));
 }
 
 async function heeftBevestigdeMfa(gebruikerId: string): Promise<boolean> {

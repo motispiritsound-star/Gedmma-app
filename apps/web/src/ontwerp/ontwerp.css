@@ -395,22 +395,38 @@ textarea.veld__invoer { padding: var(--ruimte-3); min-height: 6rem; resize: vert
 .rij--eind { justify-content: flex-end; }
 .stapel { display: flex; flex-direction: column; gap: var(--ruimte-4); }
 
-/* Mobiel: menu onderaan als tabbalk. */
+/* Mobiel: menu onderaan als tabbalk, vast aan het scherm. */
 @media (max-width: 52rem) {
+  .kop {
+    gap: var(--ruimte-2);
+    padding: 0 var(--ruimte-3);
+  }
+  /* Taal en weergave staan op mobiel in Instellingen; in de kop passen ze niet
+     zonder dat de pagina horizontaal gaat schuiven. */
+  .kop__rechts .kop__voorkeur { display: none; }
+  .kop select { max-width: 9rem; }
+
   .romp { flex-direction: column; }
+
   .menu {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
+    z-index: 30;
     border-right: none;
     border-top: 1px solid var(--kleur-rand);
-    position: sticky;
-    bottom: 0;
-    z-index: 20;
-    order: 2;
     padding: var(--ruimte-2);
     padding-bottom: max(var(--ruimte-2), env(safe-area-inset-bottom));
   }
   .menu__lijst { flex-direction: row; justify-content: space-between; }
   .menu__link { flex-direction: column; gap: 2px; font-size: var(--tekst-xs); padding: var(--ruimte-2); text-align: center; }
   .menu__link .menu__tekst { font-size: 0.65rem; }
-  .inhoud { padding: var(--ruimte-4) var(--ruimte-3); order: 1; }
+
+  .inhoud {
+    padding: var(--ruimte-4) var(--ruimte-3);
+    /* Ruimte voor de vaste tabbalk, zodat er niets achter verdwijnt. */
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  }
 }

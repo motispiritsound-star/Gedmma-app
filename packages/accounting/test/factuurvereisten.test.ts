@@ -5,7 +5,7 @@ import {
   eisFactuurvereisten,
   sjabloonVoor,
   SCHEMA_SJABLONEN,
-  BoekhoudFout,
+  type BoekhoudFout,
   type FactuurGegevens,
 } from '../src/index.ts';
 import { VK21, VKICL, VKVERLEGD } from './hulp.ts';

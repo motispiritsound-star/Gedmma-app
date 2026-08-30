@@ -534,6 +534,70 @@ export async function leesAdministratie(client: Db, administratieId: string): Pr
   return rij;
 }
 
+export type AdministratieWijziging = {
+  naam?: string | null;
+  kvkNummer?: string | null;
+  btwNummer?: string | null;
+  adres?: string | null;
+  postcodePlaats?: string | null;
+  email?: string | null;
+  telefoon?: string | null;
+  iban?: string | null;
+  factuurVoettekst?: string | null;
+  huisstijlKleur?: string | null;
+  locale?: string | null;
+  betalingsverschilTolerantie?: string | null;
+};
+
+/** Wijzigt de gegevens van de administratie; alleen wat is meegegeven. */
+export async function wijzigAdministratie(
+  client: Db,
+  context: TenantContext & { administratieId: string },
+  invoer: AdministratieWijziging,
+): Promise<Administratie> {
+  await client.query(
+    `UPDATE administration SET
+       naam = COALESCE($2, naam),
+       kvk_nummer = COALESCE($3, kvk_nummer),
+       btw_nummer = COALESCE($4, btw_nummer),
+       adres = COALESCE($5, adres),
+       postcode_plaats = COALESCE($6, postcode_plaats),
+       email = COALESCE($7, email),
+       telefoon = COALESCE($8, telefoon),
+       iban = COALESCE($9, iban),
+       factuur_voettekst = COALESCE($10, factuur_voettekst),
+       huisstijl_kleur = COALESCE($11, huisstijl_kleur),
+       locale = COALESCE($12, locale),
+       betalingsverschil_tolerantie = COALESCE($13::numeric, betalingsverschil_tolerantie),
+       gewijzigd_op = now()
+     WHERE id = $1`,
+    [
+      context.administratieId,
+      invoer.naam ?? null,
+      invoer.kvkNummer ?? null,
+      invoer.btwNummer ?? null,
+      invoer.adres ?? null,
+      invoer.postcodePlaats ?? null,
+      invoer.email ?? null,
+      invoer.telefoon ?? null,
+      invoer.iban ?? null,
+      invoer.factuurVoettekst ?? null,
+      invoer.huisstijlKleur ?? null,
+      invoer.locale ?? null,
+      invoer.betalingsverschilTolerantie ?? null,
+    ],
+  );
+
+  const administratie = await leesAdministratie(client, context.administratieId);
+  await auditeer(client, context, {
+    actie: 'administratie.gewijzigd',
+    onderwerpSoort: 'administration',
+    onderwerpId: context.administratieId,
+    gegevens: { velden: Object.keys(invoer).filter((sleutel) => invoer[sleutel as keyof AdministratieWijziging] != null) },
+  });
+  return administratie;
+}
+
 /** Weigert schrijfacties als de administratie alleen-lezen is. */
 export function eisSchrijfbaar(administratie: Administratie): void {
   if (administratie.status !== 'actief') {

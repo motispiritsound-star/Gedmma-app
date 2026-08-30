@@ -129,8 +129,9 @@ flowchart LR
 
 Regels die in code worden afgedwongen:
 
-1. **SQL staat alleen in `repo.ts`-bestanden.** Een route of service die zelf
-   query's schrijft, is een fout (gecontroleerd door een lint-regel).
+1. **SQL blijft binnen de module.** Query's staan in `repo.ts` (leesmodellen en
+   herbruikbare toegang) of in `service.ts` (schrijfacties binnen een
+   transactie). De routelaag bevat nooit SQL; een lint-regel weigert het daar.
 2. **Domeinlogica staat niet in routes.** Routes valideren invoer, roepen één
    servicefunctie aan en vertalen het resultaat.
 3. **`packages/accounting` doet geen I/O.** Alles daarin is puur en dus

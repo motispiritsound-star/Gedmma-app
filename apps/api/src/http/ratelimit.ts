@@ -4,6 +4,7 @@
  * De teller staat in de database, zodat hij ook klopt als er meerdere instanties
  * draaien. Voor de zwaarste paden (login) is dat belangrijker dan de extra query.
  */
+import { config } from '../config.ts';
 import { db } from '../db/pool.ts';
 import { fout } from './fout.ts';
 
@@ -25,6 +26,7 @@ export type Uitkomst = { toegestaan: boolean; over: number; herstelNa: number };
  * eenvoudig, voorspelbaar, en voor misbruikbestrijding voldoende.
  */
 export async function tel(sleutel: string, limiet: Limiet): Promise<Uitkomst> {
+  const grens = limiet.aantal * config.beveiliging.limietFactor;
   const { rows } = await db().query<{ teller: number; venster_tot: Date }>(
     `INSERT INTO rate_limit (sleutel, teller, venster_tot)
      VALUES ($1, 1, now() + make_interval(secs => $2))
@@ -39,7 +41,7 @@ export async function tel(sleutel: string, limiet: Limiet): Promise<Uitkomst> {
   const rij = rows[0];
   const teller = Number(rij?.teller ?? 1);
   const herstelNa = Math.max(0, Math.ceil(((rij?.venster_tot?.getTime() ?? Date.now()) - Date.now()) / 1000));
-  return { toegestaan: teller <= limiet.aantal, over: Math.max(0, limiet.aantal - teller), herstelNa };
+  return { toegestaan: teller <= grens, over: Math.max(0, grens - teller), herstelNa };
 }
 
 /** Telt en gooit meteen als de grens is bereikt. */

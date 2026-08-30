@@ -3,7 +3,7 @@
  * een uitleg in gewone taal en waar mogelijk een concrete volgende stap.
  * Zie docs/api.md voor de volledige lijst.
  */
-import { BoekhoudFout } from '@gedmma/accounting';
+import { type BoekhoudFout } from '@gedmma/accounting';
 
 export type FoutCode =
   | 'validation_failed'

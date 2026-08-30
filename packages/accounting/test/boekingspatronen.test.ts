@@ -8,7 +8,7 @@ import {
   boekInkoopfactuur,
   boekBanktransactie,
   boekKoersverschil,
-  BoekhoudFout,
+  type BoekhoudFout,
   type GeldigePost,
 } from '../src/index.ts';
 import { register, rekeningen, eur, VK21, VK9, VKICL, IN21, INVERLEGD, INGEEN } from './hulp.ts';

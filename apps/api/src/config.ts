@@ -86,6 +86,12 @@ export const config = {
     },
     /** Achter een reverse proxy: vertrouw X-Forwarded-For. */
     achterProxy: vlag('TRUST_PROXY', false),
+    /**
+     * Verruimt de snelheidsbegrenzing tijdens ontwikkelen en end-to-end tests,
+     * waar alle verzoeken van hetzelfde adres komen. In productie wordt de
+     * factor genegeerd: daar gelden altijd de echte limieten.
+     */
+    limietFactor: isProductie ? 1 : Math.max(1, getal('RATE_LIMIT_FACTOR', 1)),
   },
 
   opslag: {

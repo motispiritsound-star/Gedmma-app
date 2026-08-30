@@ -1,6 +1,7 @@
 /** Overzicht van offertes, facturen en creditnota's. */
 import { Link, useNavigate } from 'react-router-dom';
 import { toonBedrag, toonDatum } from '@gedmma/i18n';
+import { Money } from '@gedmma/money';
 import { useApp } from '../context/App.tsx';
 import { Etiket, Kaart, Knop, Laden, Leegstaat, Melding, Tabelomhulsel } from '../ontwerp/index.tsx';
 import { useHaal } from './gebruik.ts';
@@ -77,9 +78,10 @@ export function Facturen() {
               </thead>
               <tbody>
                 {gegevens?.items.map((factuur) => {
-                  const openstaand = (
-                    Number(factuur.totaal_inclusief) - Number(factuur.betaald_bedrag)
-                  ).toFixed(2);
+                  // Exact rekenen; een bedrag gaat nooit door een double.
+                  const openstaand = Money.vanTekst(factuur.totaal_inclusief, factuur.valuta)
+                    .min(Money.vanTekst(factuur.betaald_bedrag, factuur.valuta))
+                    .toString();
                   return (
                     <tr key={factuur.id}>
                       <td data-label={t('facturen.nummer')}>

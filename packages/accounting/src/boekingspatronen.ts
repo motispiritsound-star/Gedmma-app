@@ -1,4 +1,4 @@
-import { Money, Rate, type ValutaCode } from '@gedmma/money';
+import { Money, type Rate, type ValutaCode } from '@gedmma/money';
 import { bouwPost, credit, debet, type ConceptRegel, type GeldigePost } from './journaalpost.ts';
 import { BoekhoudFout } from './fouten.ts';
 import type { BtwCode } from './btw.ts';

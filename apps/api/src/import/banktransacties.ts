@@ -133,7 +133,9 @@ function zoekKolom(koppen: string[], soort: keyof typeof KOLOMNAMEN): number {
 
 /** Leest een bedrag zoals banken het schrijven: "1.234,56", "-1234.56", "1234,56". */
 export function leesBedrag(ruw: string): string {
-  let tekst = ruw.trim().replace(/\s| /g, '');
+  // \u00a0 is de harde spatie die banken als duizendtalscheiding gebruiken;
+  // die moet er net zo goed uit als een gewone spatie.
+  let tekst = ruw.trim().replace(/[\s\u00a0]/g, '');
   if (tekst === '') {
     throw new ImportFout(
       'Er staat een lege bedragkolom in het bestand.',
