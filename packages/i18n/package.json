@@ -1,0 +1,17 @@
+{
+  "name": "@gedmma/i18n",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Vertalingen en locale-bewuste opmaak voor web, mobiel en desktop.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "node --test --test-reporter=spec test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@gedmma/money": "*"
+  }
+}

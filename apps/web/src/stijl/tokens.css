@@ -1,0 +1,141 @@
+/*
+ * Design tokens.
+ *
+ * Een eigen, rustige set: een diepe blauwgroene accentkleur, veel wit
+ * (of veel donkergrijs), en typografie die op een telefoon net zo leesbaar is
+ * als op een breed scherm. Alle kleuren zijn getoetst op contrast volgens
+ * WCAG 2.2 AA (tekst minimaal 4,5:1, grote tekst en randen minimaal 3:1).
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Merkkleuren */
+  --kleur-accent: #0f5f6b;
+  --kleur-accent-sterk: #0a464f;
+  --kleur-accent-zacht: #e3f1f2;
+  --kleur-accent-tekst: #ffffff;
+
+  /* Grijstinten */
+  --kleur-grond: #f7f8f8;
+  --kleur-vlak: #ffffff;
+  --kleur-vlak-zacht: #f1f3f3;
+  --kleur-rand: #d5dada;
+  --kleur-rand-sterk: #9aa4a4;
+  --kleur-tekst: #14201f;
+  --kleur-tekst-zacht: #4d5a59;
+  --kleur-tekst-uit: #6b7877;
+
+  /* Betekeniskleuren */
+  --kleur-goed: #1c6b3f;
+  --kleur-goed-zacht: #e2f2e8;
+  --kleur-let-op: #8a5300;
+  --kleur-let-op-zacht: #fdf0dc;
+  --kleur-fout: #9b1c22;
+  --kleur-fout-zacht: #fbe6e7;
+  --kleur-info: #1c4f8a;
+  --kleur-info-zacht: #e4eefa;
+
+  /* Typografie */
+  --lettertype: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --lettertype-cijfers: ui-monospace, 'SF Mono', 'Cascadia Mono', 'Roboto Mono', Menlo, monospace;
+  --tekst-xs: 0.75rem;
+  --tekst-s: 0.875rem;
+  --tekst-m: 1rem;
+  --tekst-l: 1.125rem;
+  --tekst-xl: 1.375rem;
+  --tekst-xxl: 1.75rem;
+  --tekst-groot: 2.25rem;
+
+  /* Ruimte, op een schaal van 4px */
+  --ruimte-1: 0.25rem;
+  --ruimte-2: 0.5rem;
+  --ruimte-3: 0.75rem;
+  --ruimte-4: 1rem;
+  --ruimte-5: 1.5rem;
+  --ruimte-6: 2rem;
+  --ruimte-7: 3rem;
+
+  /* Vormen */
+  --rond-s: 6px;
+  --rond-m: 10px;
+  --rond-l: 16px;
+  --rond-rond: 999px;
+
+  --schaduw-1: 0 1px 2px rgb(20 32 31 / 8%);
+  --schaduw-2: 0 4px 12px rgb(20 32 31 / 10%);
+  --schaduw-3: 0 12px 32px rgb(20 32 31 / 14%);
+
+  --focus-ring: 0 0 0 3px var(--kleur-accent-zacht), 0 0 0 5px var(--kleur-accent);
+
+  --breedte-inhoud: 78rem;
+  --hoogte-kop: 3.5rem;
+  --breedte-menu: 15rem;
+}
+
+:root[data-thema='donker'] {
+  color-scheme: dark;
+
+  --kleur-accent: #4fbfcc;
+  --kleur-accent-sterk: #7ad4de;
+  --kleur-accent-zacht: #113136;
+  --kleur-accent-tekst: #08191c;
+
+  --kleur-grond: #0e1615;
+  --kleur-vlak: #16211f;
+  --kleur-vlak-zacht: #1e2b29;
+  --kleur-rand: #33403e;
+  --kleur-rand-sterk: #63736f;
+  --kleur-tekst: #eef3f2;
+  --kleur-tekst-zacht: #b6c2c0;
+  --kleur-tekst-uit: #94a3a0;
+
+  --kleur-goed: #6fd398;
+  --kleur-goed-zacht: #10291c;
+  --kleur-let-op: #f0b866;
+  --kleur-let-op-zacht: #2e2312;
+  --kleur-fout: #f58b90;
+  --kleur-fout-zacht: #2e1517;
+  --kleur-info: #8bb6ea;
+  --kleur-info-zacht: #131f2e;
+
+  --schaduw-1: 0 1px 2px rgb(0 0 0 / 40%);
+  --schaduw-2: 0 4px 12px rgb(0 0 0 / 45%);
+  --schaduw-3: 0 12px 32px rgb(0 0 0 / 55%);
+
+  --focus-ring: 0 0 0 3px var(--kleur-accent-zacht), 0 0 0 5px var(--kleur-accent);
+}
+
+/* Wie geen keuze heeft gemaakt, volgt het systeem. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-thema='licht']) {
+    color-scheme: dark;
+
+    --kleur-accent: #4fbfcc;
+    --kleur-accent-sterk: #7ad4de;
+    --kleur-accent-zacht: #113136;
+    --kleur-accent-tekst: #08191c;
+
+    --kleur-grond: #0e1615;
+    --kleur-vlak: #16211f;
+    --kleur-vlak-zacht: #1e2b29;
+    --kleur-rand: #33403e;
+    --kleur-rand-sterk: #63736f;
+    --kleur-tekst: #eef3f2;
+    --kleur-tekst-zacht: #b6c2c0;
+    --kleur-tekst-uit: #94a3a0;
+
+    --kleur-goed: #6fd398;
+    --kleur-goed-zacht: #10291c;
+    --kleur-let-op: #f0b866;
+    --kleur-let-op-zacht: #2e2312;
+    --kleur-fout: #f58b90;
+    --kleur-fout-zacht: #2e1517;
+    --kleur-info: #8bb6ea;
+    --kleur-info-zacht: #131f2e;
+
+    --schaduw-1: 0 1px 2px rgb(0 0 0 / 40%);
+    --schaduw-2: 0 4px 12px rgb(0 0 0 / 45%);
+    --schaduw-3: 0 12px 32px rgb(0 0 0 / 55%);
+  }
+}

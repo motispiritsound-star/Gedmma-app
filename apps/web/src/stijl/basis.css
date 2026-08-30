@@ -1,0 +1,109 @@
+/* Basisstijl: reset, typografie, formulieren, tabellen en hulpklassen. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--kleur-grond);
+  color: var(--kleur-tekst);
+  font-family: var(--lettertype);
+  font-size: var(--tekst-m);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  margin: 0 0 var(--ruimte-3);
+  line-height: 1.25;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: var(--tekst-xxl); }
+h2 { font-size: var(--tekst-xl); }
+h3 { font-size: var(--tekst-l); }
+
+p { margin: 0 0 var(--ruimte-3); }
+
+a {
+  color: var(--kleur-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+a:hover { color: var(--kleur-accent-sterk); }
+
+/* Zichtbare focus is niet onderhandelbaar: toetsenbordgebruikers moeten altijd
+   kunnen zien waar ze zijn. */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--rond-s);
+}
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* Alleen zichtbaar voor schermlezers. */
+.alleen-schermlezer {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.overslaan {
+  position: absolute;
+  left: var(--ruimte-2);
+  top: -3rem;
+  z-index: 100;
+  padding: var(--ruimte-2) var(--ruimte-4);
+  background: var(--kleur-accent);
+  color: var(--kleur-accent-tekst);
+  border-radius: var(--rond-m);
+  transition: top 120ms ease;
+}
+
+.overslaan:focus {
+  top: var(--ruimte-2);
+}
+
+/* Bedragen: cijfers uitlijnen zodat kolommen leesbaar blijven. */
+.bedrag {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+  white-space: nowrap;
+}
+
+.bedrag--negatief { color: var(--kleur-fout); }
+
+.uitleg {
+  color: var(--kleur-tekst-zacht);
+  font-size: var(--tekst-s);
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
