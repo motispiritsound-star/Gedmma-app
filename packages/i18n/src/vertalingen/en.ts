@@ -159,6 +159,8 @@ export const en: Partial<Woordenboek> = {
   // Invoice overview: filters and totals
   'facturen.zoeken': 'Search by number, customer or reference',
   'facturen.alles': 'All',
+  'facturen.alleSoorten': 'All types',
+  'facturen.alleStatussen': 'All invoices',
   'facturen.alleenOpenstaand': 'Outstanding only',
   'facturen.alleenVervallen': 'Overdue only',
   'facturen.aantalGevonden': 'found',

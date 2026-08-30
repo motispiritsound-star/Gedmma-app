@@ -161,6 +161,8 @@ export const fr: Partial<Woordenboek> = {
   // Apercu des factures : filtres et totaux
   'facturen.zoeken': 'Rechercher par numero, client ou reference',
   'facturen.alles': 'Tout',
+  'facturen.alleSoorten': 'Tous les types',
+  'facturen.alleStatussen': 'Toutes les factures',
   'facturen.alleenOpenstaand': 'Impayees seulement',
   'facturen.alleenVervallen': 'En retard seulement',
   'facturen.aantalGevonden': 'trouvees',

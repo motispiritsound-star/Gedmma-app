@@ -161,6 +161,8 @@ export const de: Partial<Woordenboek> = {
   // Rechnungsuebersicht: Filter und Summen
   'facturen.zoeken': 'Nach Nummer, Kunde oder Referenz suchen',
   'facturen.alles': 'Alle',
+  'facturen.alleSoorten': 'Alle Arten',
+  'facturen.alleStatussen': 'Alle Rechnungen',
   'facturen.alleenOpenstaand': 'Nur offene',
   'facturen.alleenVervallen': 'Nur ueberfaellige',
   'facturen.aantalGevonden': 'gefunden',

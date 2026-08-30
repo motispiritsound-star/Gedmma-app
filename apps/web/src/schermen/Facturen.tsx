@@ -166,7 +166,7 @@ export function Facturen() {
               value={filters.soort}
               onChange={(gebeurtenis) => stel('soort', gebeurtenis.target.value)}
             >
-              <option value="">{t('facturen.alles')}</option>
+              <option value="">{t('facturen.alleSoorten')}</option>
               <option value="factuur">{t('facturen.soort.factuur')}</option>
               <option value="offerte">{t('facturen.soort.offerte')}</option>
               <option value="creditnota">{t('facturen.soort.creditnota')}</option>
@@ -180,7 +180,7 @@ export function Facturen() {
               value={filters.alleen}
               onChange={(gebeurtenis) => stel('alleen', gebeurtenis.target.value as Filters['alleen'])}
             >
-              <option value="">{t('facturen.alles')}</option>
+              <option value="">{t('facturen.alleStatussen')}</option>
               <option value="openstaand">{t('facturen.alleenOpenstaand')}</option>
               <option value="vervallen">{t('facturen.alleenVervallen')}</option>
             </select>

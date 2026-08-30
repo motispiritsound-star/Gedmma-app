@@ -169,6 +169,8 @@ export const nl = {
   // Facturenoverzicht: filters en totalen
   'facturen.zoeken': 'Zoek op nummer, klant of referentie',
   'facturen.alles': 'Alles',
+  'facturen.alleSoorten': 'Alle soorten',
+  'facturen.alleStatussen': 'Alle facturen',
   'facturen.alleenOpenstaand': 'Alleen openstaand',
   'facturen.alleenVervallen': 'Alleen te laat',
   'facturen.aantalGevonden': 'gevonden',
