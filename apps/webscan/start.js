@@ -13,7 +13,11 @@ if (teOud) {
   process.exit(1);
 }
 
-const doel = process.argv[2] === '--proefrit' ? './demo/proefrit.ts' : './src/cli.ts';
+const hier = new URL('.', import.meta.url);
+const doel = new URL(
+  process.argv[2] === '--proefrit' ? 'demo/proefrit.ts' : 'src/cli.ts',
+  hier,
+).href;
 if (process.argv[2] === '--proefrit') process.argv.splice(2, 1);
 
 import(doel).catch((fout) => {

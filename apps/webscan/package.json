@@ -1,0 +1,35 @@
+{
+  "name": "@gedmma/webscan",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Webscan NL: geautomatiseerde websitescan voor Nederlandse bedrijven (bestaand product, blijft ongewijzigd draaien binnen de monorepo).",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "bin": {
+    "webscan": "./start.js"
+  },
+  "scripts": {
+    "proefrit": "node start.js --proefrit",
+    "webscan": "node start.js",
+    "dashboard": "node start.js serve",
+    "demo": "node demo/build.ts && node demo/page.ts",
+    "test": "node test/run.ts",
+    "test:api": "node test/server.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "commander": "^12.1.0",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.0",
+    "@types/topojson-client": "^3.1.5",
+    "topojson-client": "^3.1.0",
+    "typescript": "^5.7.0",
+    "world-atlas": "^2.0.2"
+  }
+}

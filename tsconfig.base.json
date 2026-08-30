@@ -4,23 +4,21 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "lib": [
-      "ES2023",
-      "DOM"
+      "ES2023"
     ],
     "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "exactOptionalPropertyTypes": false,
+    "noFallthroughCasesInSwitch": true,
     "noEmit": true,
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "erasableSyntaxOnly": true,
     "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "types": [
       "node"
     ]
-  },
-  "include": [
-    "src/**/*.ts",
-    "test/**/*.ts",
-    "demo/**/*.ts",
-    "tools/**/*.ts"
-  ]
+  }
 }
