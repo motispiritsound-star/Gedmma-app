@@ -67,6 +67,12 @@ export type BoekOpties = {
   definitief?: boolean;
   /** Nummerreeks voor het postnummer; standaard de dagboekcode. */
   nummerSleutel?: string;
+  /**
+   * Bij een tegenboeking: de post die hiermee wordt gestorneerd. Dit wordt bij
+   * het aanmaken meegegeven en niet achteraf bijgewerkt, want een definitieve
+   * post is onveranderbaar - ook voor onszelf.
+   */
+  storneertId?: string;
 };
 
 /**
@@ -100,8 +106,8 @@ export async function boek(
   const { rows } = await client.query<{ id: string }>(
     `INSERT INTO journal_entry
        (administration_id, journal_id, period_id, postnummer, boekdatum, omschrijving, valuta,
-        status, totaal_debet, totaal_credit, bron_soort, bron_id, aangemaakt_door)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,'concept',0,0,$8,$9,$10)
+        status, totaal_debet, totaal_credit, bron_soort, bron_id, storneert_id, aangemaakt_door)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,'concept',0,0,$8,$9,$10,$11)
      RETURNING id`,
     [
       context.administratieId,
@@ -113,6 +119,7 @@ export async function boek(
       post.valuta,
       post.bronSoort ?? 'manual',
       post.bronId ?? null,
+      opties.storneertId ?? null,
       context.gebruikerId,
     ],
   );
@@ -263,16 +270,12 @@ export async function storneer(
     omschrijving: opties.omschrijving ?? `Tegenboeking van ${gelezen.post.postnummer ?? gelezen.post.omschrijving}`,
   });
 
-  const resultaat = await boek(client, context, tegen, { definitief: true });
+  const resultaat = await boek(client, context, tegen, { definitief: true, storneertId: postId });
 
   await client.query(
     `UPDATE journal_entry SET status = 'gestorneerd', gestorneerd_door_id = $3
       WHERE administration_id = $1 AND id = $2`,
     [context.administratieId, postId, resultaat.postId],
-  );
-  await client.query(
-    `UPDATE journal_entry SET storneert_id = $3 WHERE administration_id = $1 AND id = $2`,
-    [context.administratieId, resultaat.postId, postId],
   );
 
   await auditeer(client, context, {

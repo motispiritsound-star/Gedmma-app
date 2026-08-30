@@ -137,8 +137,10 @@ export async function meldAan(invoer: {
     await inTransactie(SYSTEEM_CONTEXT, async (client) => {
       const pogingen = gebruiker.mislukte_pogingen + 1;
       await client.query(
-        `UPDATE app_user SET mislukte_pogingen = $2,
-                geblokkeerd_tot = CASE WHEN $2 >= $3 THEN now() + interval '15 minutes' ELSE geblokkeerd_tot END
+        `UPDATE app_user SET mislukte_pogingen = $2::int,
+                geblokkeerd_tot = CASE WHEN $2::int >= $3::int
+                                       THEN now() + interval '15 minutes'
+                                       ELSE geblokkeerd_tot END
           WHERE id = $1`,
         [gebruiker.id, pogingen, MAX_MISLUKT],
       );

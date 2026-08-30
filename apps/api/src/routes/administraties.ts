@@ -16,6 +16,7 @@ import { alleBoekjaren, alleBtwCodes, alleDagboeken, allePeriodes, alleRekeninge
 import { wijzigPeriodestatus } from '../modules/grootboek/service.ts';
 import { STANDAARD_BTWCODES } from '../modules/btw/codes.ts';
 import { SCHEMA_SJABLONEN } from '@gedmma/accounting';
+import { accepteerUitnodiging, ledenVan, nodigUit, trekToegangIn, wijzigRol } from '../modules/organisaties/leden.ts';
 import { asyncRoute, inContext } from './hulp.ts';
 
 export const organisatieRoutes = Router();
@@ -254,5 +255,86 @@ administratieRoutes.post(
       wijzigPeriodestatus(client, context, periodeId, invoer.status, invoer.reden),
     );
     antwoord.json({ periodeId, status: invoer.status });
+  }),
+);
+
+// --- Leden van een organisatie ---------------------------------------------
+
+/** Controleert dat de gebruiker gebruikers mag beheren in deze organisatie. */
+async function eisBeheerder(verzoek: Verzoek, organisatieId: string): Promise<void> {
+  const aangemeld = eisAangemeld(verzoek);
+  const organisaties = await organisatiesVan(aangemeld.gebruikerId);
+  const lidmaatschap = organisaties.find((o) => o.organisatie.id === organisatieId);
+  if (!lidmaatschap) throw fout.nietGevonden('Deze organisatie');
+  if (!['owner', 'admin'].includes(lidmaatschap.rol)) throw fout.geenRecht('gebruiker.beheren');
+}
+
+organisatieRoutes.get(
+  '/:organisatieId/leden',
+  asyncRoute(async (verzoek: Verzoek, antwoord) => {
+    const organisatieId = valideer(uuidSchema, verzoek.params.organisatieId);
+    await eisBeheerder(verzoek, organisatieId);
+    const aangemeld = eisAangemeld(verzoek);
+    const leden = await inTransactie(
+      { organisatieId, administratieId: null, gebruikerId: aangemeld.gebruikerId, actorSoort: 'gebruiker' },
+      (client) => ledenVan(client, organisatieId),
+    );
+    antwoord.json({ leden });
+  }),
+);
+
+organisatieRoutes.post(
+  '/:organisatieId/leden',
+  asyncRoute(async (verzoek: Verzoek, antwoord) => {
+    const organisatieId = valideer(uuidSchema, verzoek.params.organisatieId);
+    await eisBeheerder(verzoek, organisatieId);
+    const aangemeld = eisAangemeld(verzoek);
+    const invoer = valideer(
+      z.object({
+        email: z.string().email('Vul een geldig e-mailadres in'),
+        rol: z.enum(['admin', 'bookkeeper', 'accountant', 'employee', 'viewer']),
+        administratieIds: z.array(uuidSchema).max(200).optional(),
+        geldigTot: z.string().datetime().nullish(),
+      }),
+      verzoek.body,
+    );
+    const uitkomst = await inTransactie(
+      { organisatieId, administratieId: null, gebruikerId: aangemeld.gebruikerId, actorSoort: 'gebruiker' },
+      (client) => nodigUit(client, { organisatieId, administratieId: null, gebruikerId: aangemeld.gebruikerId, actorSoort: 'gebruiker' }, invoer),
+    );
+    antwoord.status(201).json({
+      membershipId: uitkomst.membershipId,
+      melding: 'De uitnodiging is verstuurd. Hij verloopt over veertien dagen.',
+    });
+  }),
+);
+
+organisatieRoutes.patch(
+  '/:organisatieId/leden/:membershipId',
+  asyncRoute(async (verzoek: Verzoek, antwoord) => {
+    const organisatieId = valideer(uuidSchema, verzoek.params.organisatieId);
+    const membershipId = valideer(uuidSchema, verzoek.params.membershipId);
+    await eisBeheerder(verzoek, organisatieId);
+    const aangemeld = eisAangemeld(verzoek);
+    const invoer = valideer(
+      z.object({ rol: z.enum(['admin', 'bookkeeper', 'accountant', 'employee', 'viewer']) }),
+      verzoek.body,
+    );
+    const context = { organisatieId, administratieId: null, gebruikerId: aangemeld.gebruikerId, actorSoort: 'gebruiker' as const };
+    await inTransactie(context, (client) => wijzigRol(client, context, membershipId, invoer.rol));
+    antwoord.json({ melding: 'De rol is gewijzigd. De gebruiker moet opnieuw aanmelden.' });
+  }),
+);
+
+organisatieRoutes.delete(
+  '/:organisatieId/leden/:membershipId',
+  asyncRoute(async (verzoek: Verzoek, antwoord) => {
+    const organisatieId = valideer(uuidSchema, verzoek.params.organisatieId);
+    const membershipId = valideer(uuidSchema, verzoek.params.membershipId);
+    await eisBeheerder(verzoek, organisatieId);
+    const aangemeld = eisAangemeld(verzoek);
+    const context = { organisatieId, administratieId: null, gebruikerId: aangemeld.gebruikerId, actorSoort: 'gebruiker' as const };
+    await inTransactie(context, (client) => trekToegangIn(client, context, membershipId));
+    antwoord.json({ melding: 'De toegang is ingetrokken.' });
   }),
 );

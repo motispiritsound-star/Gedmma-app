@@ -134,7 +134,12 @@ function zoekKolom(koppen: string[], soort: keyof typeof KOLOMNAMEN): number {
 /** Leest een bedrag zoals banken het schrijven: "1.234,56", "-1234.56", "1234,56". */
 export function leesBedrag(ruw: string): string {
   let tekst = ruw.trim().replace(/\s| /g, '');
-  if (tekst === '') return '0.00';
+  if (tekst === '') {
+    throw new ImportFout(
+      'Er staat een lege bedragkolom in het bestand.',
+      'Elke regel moet een bedrag hebben; controleer of je de juiste kolom hebt gekozen.',
+    );
+  }
   const negatief = tekst.startsWith('-') || (tekst.startsWith('(') && tekst.endsWith(')'));
   tekst = tekst.replace(/[()+-]/g, '');
 
@@ -277,9 +282,14 @@ export function leesMt940(inhoud: string): Afschrift {
   for (const ruweRegel of regels) {
     const regel = ruweRegel.trimEnd();
     if (regel.startsWith(':25:')) {
+      // Het veld bevat de rekening en soms de valuta erachter geplakt,
+      // bijvoorbeeld "NL91ABNA0417164300EUR". Die valutacode hoort er niet bij.
       iban = regel.slice(4).trim().replace(/\s/g, '').toUpperCase();
-      const match = /^([A-Z]{2}\d{2}[A-Z0-9]+)/.exec(iban);
-      if (match) iban = match[1] ?? iban;
+      const metValuta = /^([A-Z]{2}\d{2}[A-Z0-9]{6,26}?)(EUR|USD|GBP|CHF|SEK|NOK|DKK|PLN)$/.exec(iban);
+      if (metValuta) {
+        iban = metValuta[1] ?? iban;
+        valuta = metValuta[2] ?? valuta;
+      }
     } else if (regel.startsWith(':28C:')) {
       afschriftnummer = regel.slice(5).trim();
     } else if (regel.startsWith(':60F:') || regel.startsWith(':62F:')) {

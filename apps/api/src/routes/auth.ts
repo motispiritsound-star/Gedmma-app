@@ -18,6 +18,7 @@ import {
   wijzigWachtwoord,
 } from '../auth/service.ts';
 import { organisatiesVan } from '../modules/organisaties/service.ts';
+import { accepteerUitnodiging } from '../modules/organisaties/leden.ts';
 import { asyncRoute, cookieOpties } from './hulp.ts';
 
 export const authRoutes = Router();
@@ -145,6 +146,25 @@ authRoutes.post(
     }
     antwoord.clearCookie(SESSIE_COOKIE, cookieOpties());
     antwoord.json({ melding: 'Je bent afgemeld.' });
+  }),
+);
+
+authRoutes.post(
+  '/invitations/accept',
+  asyncRoute(async (verzoek: Verzoek, antwoord) => {
+    const invoer = valideer(
+      z.object({
+        token: z.string().min(20).max(200),
+        naam: z.string().min(2).max(200).optional(),
+        wachtwoord: z.string().min(1).optional(),
+      }),
+      verzoek.body,
+    );
+    const uitkomst = await accepteerUitnodiging(invoer);
+    antwoord.json({
+      organisatieId: uitkomst.organisatieId,
+      melding: 'De uitnodiging is geaccepteerd. Je kunt nu aanmelden.',
+    });
   }),
 );
 

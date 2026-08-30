@@ -131,8 +131,19 @@ export type Gebruiker = {
 
 let teller = 0;
 
+/**
+ * Wist de tellers van de snelheidsbegrenzing. In de tests komen alle verzoeken
+ * van hetzelfde adres, dus zonder dit lopen we tegen de limiet aan die juist
+ * bedoeld is om misbruik van buiten te stoppen. De limiet zelf wordt apart
+ * getest in ratelimit.test.ts.
+ */
+export async function wisSnelheidsbegrenzing(): Promise<void> {
+  await db().query('DELETE FROM rate_limit');
+}
+
 /** Registreert een gebruiker en meldt hem aan. */
 export async function maakGebruiker(naam = 'Test Gebruiker'): Promise<Gebruiker> {
+  await wisSnelheidsbegrenzing();
   teller += 1;
   const email = `test${teller}-${Date.now()}@voorbeeld.test`;
   const wachtwoord = 'een lang testwachtwoord';
