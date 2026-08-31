@@ -1,0 +1,1110 @@
+// WonderBox data model.
+//
+// Conventions used throughout:
+//   * All money is stored in minor units (eurocents) as Int, never Float.
+//   * Localised copy that belongs to a content node is a Json locale map
+//     ({ "nl": "...", "en": "..." }) resolved through lib/i18n/localised.ts,
+//     which implements the documented fallback chain.
+//   * Marketing copy for a sellable product lives in the explicit
+//     BoxTranslation table, because merchandisers edit it per market.
+//   * Soft deletion (deletedAt) exists only where a retention policy in
+//     SECURITY_AND_PRIVACY.md requires it; everything else is hard-deleted.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Identity, families and children
+// ---------------------------------------------------------------------------
+
+/// Operational roles are deliberately separate. A content editor must never be
+/// able to read a shipping address; ops must never be able to publish a story.
+enum UserRole {
+  PARENT
+  CONTENT_EDITOR
+  CONTENT_APPROVER
+  OPS
+  SUPPORT
+  ADMIN
+}
+
+model User {
+  id            String     @id @default(cuid())
+  email         String     @unique
+  passwordHash  String
+  displayName   String
+  roles         UserRole[] @default([PARENT])
+  locale        String     @default("nl")
+  familyId      String?
+  emailVerified Boolean    @default(false)
+  lastLoginAt   DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  /// Set when a data-deletion request is honoured; the row is anonymised, not
+  /// dropped, so that financial records stay auditable.
+  deletedAt     DateTime?
+
+  family          Family?         @relation(fields: [familyId], references: [id], onDelete: SetNull)
+  sessions        Session[]
+  auditLogs       AuditLog[]
+  activatedBoxes  ActivatedBox[]
+  contentVersions ContentVersion[]
+  approvals       Approval[]
+  consentsGranted ConsentRecord[]  @relation("ConsentGrantedBy")
+  purchaseOrders  PurchaseOrder[]
+  supportCases    SupportCase[]    @relation("SupportReporter")
+  assignedCases   SupportCase[]    @relation("SupportAssignee")
+
+  @@index([familyId])
+  @@index([deletedAt])
+}
+
+/// Server-side sessions. Only a SHA-256 hash of the cookie token is stored, so
+/// a database leak does not hand out live sessions.
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  lastSeenAt DateTime @default(now())
+  userAgent String?
+  ipHash    String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+/// The billing and ownership unit. Boxes, orders and progress belong to a
+/// family, never to an individual child.
+model Family {
+  id               String   @id @default(cuid())
+  name             String
+  locale           String   @default("nl")
+  paymentCustomerRef String? @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  deletedAt        DateTime?
+
+  users          User[]
+  children       ChildProfile[]
+  addresses      Address[]
+  subscriptions  Subscription[]
+  orders         Order[]
+  activationCodes ActivationCode[]
+  activatedBoxes ActivatedBox[]
+  progressEvents ProgressEvent[]
+  parentSummaries ParentSummary[]
+  supportCases   SupportCase[]
+  consentRecords ConsentRecord[]
+  invoices       Invoice[]
+}
+
+enum AgeBand {
+  AGE_5_6
+  AGE_7_8
+  AGE_9_10
+  AGE_11_12
+}
+
+/// A child is a preference bundle, not an account. Children never log in and
+/// have no credentials, email address or public presence.
+model ChildProfile {
+  id          String   @id @default(cuid())
+  familyId    String
+  displayName String
+  /// Birth *year* only. A full date of birth is more precision than the product
+  /// needs to pick an age band.
+  birthYear   Int
+  ageBand     AgeBand
+  interests   String[] @default([])
+  /// { "narrationSpeed": "slow", "extraPauseSeconds": 3, "highContrast": true }
+  accessibility Json   @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  family          Family          @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  progressEvents  ProgressEvent[]
+  parentSummaries ParentSummary[]
+  consentRecords  ConsentRecord[]
+
+  @@index([familyId])
+}
+
+// ---------------------------------------------------------------------------
+// Catalogue
+// ---------------------------------------------------------------------------
+
+model Theme {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  /// { "nl": "Ruimte", "en": "Space" }
+  name      Json
+  blurb     Json
+  colorToken String  @default("aurora")
+  iconKey   String   @default("sparkle")
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  boxProducts BoxProduct[]
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  RETIRED
+}
+
+model BoxProduct {
+  id          String        @id @default(cuid())
+  sku         String        @unique
+  slug        String        @unique
+  themeId     String
+  status      ProductStatus @default(DRAFT)
+  ageMin      Int
+  ageMax      Int
+  /// Retail price of a single box in minor units.
+  priceCents  Int
+  currency    String        @default("EUR")
+  heroImageKey String?
+  /// Position in the curriculum; the subscription engine ships these in order.
+  curriculumIndex Int       @default(0)
+
+  // --- One-off costs, amortised over a production run --------------------
+  // A kit sold to children needs EN 71 testing and a technical file before it
+  // may carry a CE mark, and the cards and box need designing. Those are the
+  // costs that decide whether a box is viable, and they are invisible if you
+  // only count the parts, so they are modelled explicitly.
+  certificationCostCents Int  @default(0)
+  artworkCostCents       Int  @default(0)
+  /// Units the one-off costs are spread across. Never zero.
+  amortiseOverUnits      Int  @default(1000)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  theme            Theme               @relation(fields: [themeId], references: [id])
+  translations     BoxTranslation[]
+  kitComponents    KitComponent[]
+  journey          LearningJourney?
+  orderItems       OrderItem[]
+  activationCodes  ActivationCode[]
+  activatedBoxes   ActivatedBox[]
+  safetyInstructions SafetyInstruction[]
+  subscriptionsNext Subscription[]     @relation("NextBox")
+  supportCases     SupportCase[]
+
+  @@index([themeId])
+  @@index([status])
+}
+
+/// Marketing copy per market. Unique per (product, locale) so a market cannot
+/// end up with two competing descriptions.
+model BoxTranslation {
+  id            String @id @default(cuid())
+  boxProductId  String
+  locale        String
+  name          String
+  tagline       String
+  description   String
+  materialsNote String?
+  /// Reviewed by a human before the box can go ACTIVE.
+  approved      Boolean @default(false)
+
+  boxProduct BoxProduct @relation(fields: [boxProductId], references: [id], onDelete: Cascade)
+
+  @@unique([boxProductId, locale])
+  @@index([locale])
+}
+
+// ---------------------------------------------------------------------------
+// Inventory and fulfilment
+// ---------------------------------------------------------------------------
+
+enum InventoryKind {
+  COMPONENT
+  PACKAGING
+  PRINTED
+  FINISHED_BOX
+}
+
+model InventoryItem {
+  id           String        @id @default(cuid())
+  sku          String        @unique
+  name         String
+  kind         InventoryKind @default(COMPONENT)
+  unit         String        @default("piece")
+  reorderLevel Int           @default(0)
+  createdAt    DateTime      @default(now())
+
+  // --- Procurement -------------------------------------------------------
+  // Everything below is what turns a catalogue entry into something you can
+  // actually buy and ship. Cost is the *net* purchase price per unit,
+  // excluding VAT, because input VAT is reclaimed and must not be counted as
+  // a cost. See COMMERCE_AND_FULFILMENT.md.
+  supplierId   String?
+  supplierSku  String?
+  costCents    Int           @default(0)
+  costCurrency String        @default("EUR")
+  /// Minimum order quantity the supplier will accept.
+  moq          Int           @default(1)
+  /// Working days between placing a purchase order and goods on the shelf.
+  leadTimeDays Int           @default(0)
+  /// Shipping weight per unit; feeds the parcel estimate.
+  weightGrams  Int           @default(0)
+  /// Buffer held on top of forecast demand, so one late delivery is survivable.
+  safetyStockUnits Int       @default(0)
+
+  supplier      Supplier?          @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  batches       InventoryBatch[]
+  kitComponents KitComponent[]
+  reservations  StockReservation[]
+  purchaseLines PurchaseOrderLine[]
+
+  @@index([supplierId])
+}
+
+/// How a purchase order actually reaches a supplier.
+enum SupplierChannel {
+  EMAIL
+  CSV
+  API
+  MANUAL
+}
+
+model Supplier {
+  id                 String          @id @default(cuid())
+  code               String          @unique
+  name               String
+  email              String?
+  phone              String?
+  channel            SupplierChannel @default(EMAIL)
+  currency           String          @default("EUR")
+  /// Default when an item does not state its own.
+  leadTimeDays       Int             @default(14)
+  /// Below this a supplier will not accept an order at all.
+  minOrderValueCents Int             @default(0)
+  /// Ceiling under which a proposed order may be sent without a human.
+  /// Zero — the default — means nothing is ever sent automatically.
+  autoApproveUnderCents Int          @default(0)
+  active             Boolean         @default(true)
+  notes              String?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  items          InventoryItem[]
+  purchaseOrders PurchaseOrder[]
+}
+
+enum PurchaseOrderStatus {
+  DRAFT
+  APPROVED
+  SENT
+  CONFIRMED
+  PARTIALLY_RECEIVED
+  RECEIVED
+  CANCELLED
+}
+
+/// A purchase order. Created by the replenishment job or by hand; only ever
+/// sent to a supplier once it is APPROVED, which for most suppliers means a
+/// person looked at it.
+model PurchaseOrder {
+  id            String              @id @default(cuid())
+  number        String              @unique
+  supplierId    String
+  status        PurchaseOrderStatus @default(DRAFT)
+  currency      String              @default("EUR")
+  subtotalCents Int                 @default(0)
+  /// When the goods are due, from the slowest line's lead time.
+  expectedAt    DateTime?
+  /// Identifies the replenishment run that produced this order, so re-running
+  /// the job cannot raise the same order twice.
+  originKey     String?             @unique
+  notes         String?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  approvedAt    DateTime?
+  approvedById  String?
+  sentAt        DateTime?
+  receivedAt    DateTime?
+  cancelledAt   DateTime?
+
+  supplier   Supplier            @relation(fields: [supplierId], references: [id])
+  approvedBy User?               @relation(fields: [approvedById], references: [id], onDelete: SetNull)
+  lines      PurchaseOrderLine[]
+
+  @@index([status, createdAt])
+  @@index([supplierId])
+}
+
+model PurchaseOrderLine {
+  id               String @id @default(cuid())
+  purchaseOrderId  String
+  inventoryItemId  String
+  quantity         Int
+  receivedQuantity Int    @default(0)
+  unitCostCents    Int
+  lineCents        Int
+
+  purchaseOrder PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  inventoryItem InventoryItem @relation(fields: [inventoryItemId], references: [id])
+
+  @@unique([purchaseOrderId, inventoryItemId])
+}
+
+/// One execution of a scheduled job. Kept so an operator can see that the
+/// machinery actually ran, and what it did — an automated process nobody can
+/// observe is indistinguishable from one that quietly stopped.
+model JobRun {
+  id         String    @id @default(cuid())
+  job        String
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  status     String    @default("running")
+  summary    Json      @default("{}")
+  error      String?
+  /// Set when a run was skipped because the same run had already happened.
+  skipped    Boolean   @default(false)
+
+  @@index([job, startedAt])
+}
+
+/// Physical stock arrives in batches so a recall can be scoped to one lot.
+model InventoryBatch {
+  id              String    @id @default(cuid())
+  inventoryItemId String
+  batchCode       String
+  quantityOnHand  Int       @default(0)
+  quantityReserved Int      @default(0)
+  receivedAt      DateTime  @default(now())
+  expiresAt       DateTime?
+  supplier        String?
+
+  inventoryItem InventoryItem      @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
+  reservations  StockReservation[]
+
+  @@unique([inventoryItemId, batchCode])
+  @@index([inventoryItemId])
+}
+
+/// Which parts go into which box, and how many.
+model KitComponent {
+  id              String  @id @default(cuid())
+  boxProductId    String
+  inventoryItemId String
+  quantity        Int     @default(1)
+  isConsumable    Boolean @default(true)
+  /// { "nl": "Twee AA-batterijen", "en": "Two AA batteries" }
+  note            Json?
+
+  boxProduct    BoxProduct    @relation(fields: [boxProductId], references: [id], onDelete: Cascade)
+  inventoryItem InventoryItem @relation(fields: [inventoryItemId], references: [id])
+
+  @@unique([boxProductId, inventoryItemId])
+}
+
+enum ReservationState {
+  RESERVED
+  COMMITTED
+  RELEASED
+}
+
+/// Stock is reserved when an order is placed and only decremented when the
+/// shipment actually leaves. Cancelling or refunding releases the reservation.
+model StockReservation {
+  id              String           @id @default(cuid())
+  orderId         String
+  inventoryItemId String
+  batchId         String?
+  quantity        Int
+  state           ReservationState @default(RESERVED)
+  createdAt       DateTime         @default(now())
+  settledAt       DateTime?
+
+  order         Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  inventoryItem InventoryItem   @relation(fields: [inventoryItemId], references: [id])
+  batch         InventoryBatch? @relation(fields: [batchId], references: [id])
+
+  @@index([orderId])
+  @@index([inventoryItemId, state])
+}
+
+// ---------------------------------------------------------------------------
+// Commerce
+// ---------------------------------------------------------------------------
+
+model SubscriptionPlan {
+  id             String   @id @default(cuid())
+  code           String   @unique
+  name           Json
+  description    Json
+  intervalMonths Int      @default(1)
+  priceCents     Int
+  currency       String   @default("EUR")
+  ageBand        AgeBand?
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+
+  subscriptions Subscription[]
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAUSED
+  PAST_DUE
+  CANCELLED
+}
+
+model Subscription {
+  id                 String             @id @default(cuid())
+  familyId           String
+  planId             String
+  status             SubscriptionStatus @default(ACTIVE)
+  startedAt          DateTime           @default(now())
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  /// Set when the parent asks to stop at the end of the paid period.
+  cancelAt           DateTime?
+  cancelledAt        DateTime?
+  /// A pause is a hard stop until this date. Renewals are skipped, not queued.
+  pausedUntil        DateTime?
+  /// A skip drops exactly one shipment and moves the period forward.
+  skipNextRenewal    Boolean            @default(false)
+  /// Reference in the payment provider (mock or Stripe).
+  providerRef        String?            @unique
+  nextBoxProductId   String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  family   Family           @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  plan     SubscriptionPlan @relation(fields: [planId], references: [id])
+  nextBox  BoxProduct?      @relation("NextBox", fields: [nextBoxProductId], references: [id])
+  orders   Order[]
+  invoices Invoice[]
+
+  @@index([familyId])
+  @@index([status, currentPeriodEnd])
+}
+
+model Address {
+  id         String   @id @default(cuid())
+  familyId   String
+  label      String   @default("home")
+  recipient  String
+  line1      String
+  line2      String?
+  postalCode String
+  city       String
+  region     String?
+  country    String   @default("NL")
+  phone      String?
+  isDefaultShipping Boolean @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  family            Family  @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  shippingForOrders Order[] @relation("ShippingAddress")
+  billingForOrders  Order[] @relation("BillingAddress")
+
+  @@index([familyId])
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID
+  FULFILLING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  number         String      @unique
+  familyId       String
+  subscriptionId String?
+  status         OrderStatus @default(PENDING_PAYMENT)
+  subtotalCents  Int
+  shippingCents  Int         @default(0)
+  taxCents       Int         @default(0)
+  totalCents     Int
+  refundedCents  Int         @default(0)
+  currency       String      @default("EUR")
+  shippingAddressId String
+  billingAddressId  String?
+  paymentIntentRef  String?  @unique
+  /// Guards against two clicks on "pay" creating two orders.
+  idempotencyKey String?     @unique
+  placedAt       DateTime    @default(now())
+  paidAt         DateTime?
+  cancelledAt    DateTime?
+  updatedAt      DateTime    @updatedAt
+
+  family          Family             @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  subscription    Subscription?      @relation(fields: [subscriptionId], references: [id])
+  shippingAddress Address            @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
+  billingAddress  Address?           @relation("BillingAddress", fields: [billingAddressId], references: [id])
+  items           OrderItem[]
+  shipments       Shipment[]
+  reservations    StockReservation[]
+  activationCodes ActivationCode[]
+  invoices        Invoice[]
+
+  @@index([familyId, placedAt])
+  @@index([status])
+}
+
+model OrderItem {
+  id             String @id @default(cuid())
+  orderId        String
+  boxProductId   String
+  sku            String
+  nameSnapshot   String
+  quantity       Int    @default(1)
+  unitPriceCents Int
+  totalCents     Int
+
+  order      Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  boxProduct BoxProduct @relation(fields: [boxProductId], references: [id])
+
+  @@index([orderId])
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PAID
+  VOID
+  REFUNDED
+}
+
+model Invoice {
+  id             String        @id @default(cuid())
+  number         String        @unique
+  familyId       String
+  orderId        String?
+  subscriptionId String?
+  status         InvoiceStatus @default(ISSUED)
+  totalCents     Int
+  taxCents       Int           @default(0)
+  currency       String        @default("EUR")
+  issuedAt       DateTime      @default(now())
+  paidAt         DateTime?
+  /// Key in private object storage; never a public URL.
+  documentKey    String?
+
+  family       Family        @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  order        Order?        @relation(fields: [orderId], references: [id])
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id])
+
+  @@index([familyId, issuedAt])
+}
+
+enum ShipmentStatus {
+  PENDING
+  LABEL_CREATED
+  IN_TRANSIT
+  DELIVERED
+  FAILED
+  RETURNED
+}
+
+model Shipment {
+  id           String         @id @default(cuid())
+  orderId      String
+  provider     String         @default("mock")
+  providerRef  String?        @unique
+  trackingCode String?
+  status       ShipmentStatus @default(PENDING)
+  labelKey     String?
+  shippedAt    DateTime?
+  deliveredAt  DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([status])
+}
+
+/// Payment and fulfilment webhooks are deduplicated here. Processing is only
+/// attempted once per (provider, externalId); see COMMERCE_AND_FULFILMENT.md.
+model WebhookEvent {
+  id          String    @id @default(cuid())
+  provider    String
+  externalId  String
+  type        String
+  payload     Json
+  receivedAt  DateTime  @default(now())
+  processedAt DateTime?
+  status      String    @default("received")
+  error       String?
+
+  @@unique([provider, externalId])
+  @@index([provider, type])
+}
+
+// ---------------------------------------------------------------------------
+// Activation
+// ---------------------------------------------------------------------------
+
+enum ActivationCodeState {
+  UNASSIGNED
+  ASSIGNED
+  ACTIVATED
+  REVOKED
+}
+
+/// Printed on the box. Only a hash is stored, so an operator with database
+/// access cannot read a code off the screen and claim someone else's box.
+model ActivationCode {
+  id           String              @id @default(cuid())
+  codeHash     String              @unique
+  /// Last four characters, for "the code ending in 9F2C" in support chats.
+  lastFour     String
+  boxProductId String
+  orderId      String?
+  familyId     String?
+  state        ActivationCodeState @default(UNASSIGNED)
+  createdAt    DateTime            @default(now())
+  assignedAt   DateTime?
+  activatedAt  DateTime?
+  revokedAt    DateTime?
+  /// Rate-limiting counter for wrong guesses against this specific code.
+  failedAttempts Int               @default(0)
+
+  boxProduct   BoxProduct    @relation(fields: [boxProductId], references: [id])
+  order        Order?        @relation(fields: [orderId], references: [id])
+  family       Family?       @relation(fields: [familyId], references: [id])
+  activatedBox ActivatedBox?
+
+  @@index([familyId, state])
+  @@index([boxProductId])
+}
+
+/// A box that a family has claimed. Playback authorisation hangs off this row.
+model ActivatedBox {
+  id               String   @id @default(cuid())
+  familyId         String
+  boxProductId     String
+  activationCodeId String   @unique
+  activatedByUserId String?
+  nickname         String?
+  activatedAt      DateTime @default(now())
+  lastPlayedAt     DateTime?
+
+  family         Family          @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  boxProduct     BoxProduct      @relation(fields: [boxProductId], references: [id])
+  activationCode ActivationCode  @relation(fields: [activationCodeId], references: [id])
+  activatedBy    User?           @relation(fields: [activatedByUserId], references: [id], onDelete: SetNull)
+  progressEvents ProgressEvent[]
+  parentSummaries ParentSummary[]
+
+  @@index([familyId])
+}
+
+// ---------------------------------------------------------------------------
+// Content
+// ---------------------------------------------------------------------------
+
+model LearningJourney {
+  id               String   @id @default(cuid())
+  boxProductId     String   @unique
+  slug             String   @unique
+  title            Json
+  summary          Json
+  estimatedMinutes Int      @default(60)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  boxProduct BoxProduct @relation(fields: [boxProductId], references: [id], onDelete: Cascade)
+  chapters   Chapter[]
+}
+
+model Chapter {
+  id               String   @id @default(cuid())
+  journeyId        String
+  key              String
+  orderIndex       Int
+  title            Json
+  intro            Json
+  estimatedMinutes Int      @default(15)
+  entryNodeKey     String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  journey        LearningJourney @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  nodes          DialogueNode[]
+  experiments    Experiment[]
+  audioAssets    AudioAsset[]
+  progressEvents ProgressEvent[]
+
+  @@unique([journeyId, key])
+  @@unique([journeyId, orderIndex])
+}
+
+enum DialogueNodeKind {
+  NARRATION
+  QUESTION
+  HINT
+  PAUSE
+  EXPERIMENT_STEP
+  SAFETY
+  CELEBRATION
+}
+
+/// One authored utterance. Nothing a child hears is generated at runtime: the
+/// graph is fixed, reviewed and versioned. See CONTENT_SAFETY.md.
+model DialogueNode {
+  id           String           @id @default(cuid())
+  chapterId    String
+  key          String
+  kind         DialogueNodeKind @default(NARRATION)
+  orderIndex   Int              @default(0)
+  /// Locale map of the exact words spoken.
+  text         Json
+  /// Seconds of silence after the narration, for a child to actually do the thing.
+  pauseSeconds Int?
+  isTerminal   Boolean          @default(false)
+  experimentId String?
+  safetyInstructionId String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  chapter           Chapter            @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  experiment        Experiment?        @relation(fields: [experimentId], references: [id], onDelete: SetNull)
+  safetyInstruction SafetyInstruction? @relation(fields: [safetyInstructionId], references: [id], onDelete: SetNull)
+  choices           DialogueChoice[]   @relation("NodeChoices")
+  incomingChoices   DialogueChoice[]   @relation("ChoiceTarget")
+  audioAssets       AudioAsset[]
+  progressEvents    ProgressEvent[]
+  supportCases      SupportCase[]
+
+  @@unique([chapterId, key])
+  @@index([chapterId, orderIndex])
+}
+
+model DialogueChoice {
+  id           String  @id @default(cuid())
+  nodeId       String
+  key          String
+  label        Json
+  targetNodeId String?
+  /// "Say it again" — loops back to the same node instead of branching.
+  isRepeat     Boolean @default(false)
+  /// "Slower please" — re-narrates at reduced speed.
+  isSlower     Boolean @default(false)
+  orderIndex   Int     @default(0)
+
+  node   DialogueNode  @relation("NodeChoices", fields: [nodeId], references: [id], onDelete: Cascade)
+  target DialogueNode? @relation("ChoiceTarget", fields: [targetNodeId], references: [id], onDelete: SetNull)
+
+  @@unique([nodeId, key])
+}
+
+enum AudioAssetKind {
+  NARRATION
+  CHAPTER_INTRO
+  CHOICE_PROMPT
+  SFX
+}
+
+/// Audio lives in private object storage. The `objectKey` is never handed to a
+/// browser; playback goes through a short-lived signed URL.
+model AudioAsset {
+  id         String         @id @default(cuid())
+  kind       AudioAssetKind @default(NARRATION)
+  locale     String
+  objectKey  String
+  mimeType   String         @default("audio/mpeg")
+  durationMs Int            @default(0)
+  bytes      Int            @default(0)
+  checksum   String
+  nodeId     String?
+  chapterId  String?
+  /// Transcript of what is actually said, for accessibility and for review.
+  transcript Json?
+  createdAt  DateTime       @default(now())
+
+  node    DialogueNode? @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+  chapter Chapter?      @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([nodeId, locale, kind])
+  @@index([chapterId, locale])
+}
+
+model Experiment {
+  id              String   @id @default(cuid())
+  chapterId       String
+  key             String
+  title           Json
+  objective       Json
+  /// Ordered locale-mapped steps: [{ "nl": "...", "en": "..." }, ...]
+  steps           Json
+  materials       Json
+  durationMinutes Int      @default(10)
+  requiresAdult   Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  chapter            Chapter             @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  safetyInstructions SafetyInstruction[]
+  dialogueNodes      DialogueNode[]
+
+  @@unique([chapterId, key])
+}
+
+enum SafetySeverity {
+  INFO
+  CAUTION
+  WARNING
+}
+
+model SafetyInstruction {
+  id            String         @id @default(cuid())
+  code          String         @unique
+  severity      SafetySeverity @default(CAUTION)
+  text          Json
+  requiresAdult Boolean        @default(false)
+  experimentId  String?
+  boxProductId  String?
+  createdAt     DateTime       @default(now())
+
+  experiment    Experiment?    @relation(fields: [experimentId], references: [id], onDelete: Cascade)
+  boxProduct    BoxProduct?    @relation(fields: [boxProductId], references: [id], onDelete: Cascade)
+  dialogueNodes DialogueNode[]
+}
+
+enum ContentState {
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  PUBLISHED
+  REJECTED
+  ARCHIVED
+}
+
+enum ContentSource {
+  HUMAN
+  AI_DRAFT
+  IMPORT
+}
+
+/// An immutable snapshot of a content entity at one version. Only PUBLISHED
+/// versions are ever served to a child; the check lives in one place
+/// (lib/content/publish.ts) and is covered by tests.
+model ContentVersion {
+  id          String        @id @default(cuid())
+  entityType  String
+  entityId    String
+  version     Int
+  state       ContentState  @default(DRAFT)
+  source      ContentSource @default(HUMAN)
+  /// Populated only for AI_DRAFT; identifies which provider produced the draft.
+  aiProvider  String?
+  aiModel     String?
+  snapshot    Json
+  notes       String?
+  createdById String
+  createdAt   DateTime      @default(now())
+  publishedAt DateTime?
+
+  createdBy User       @relation(fields: [createdById], references: [id])
+  approvals Approval[]
+
+  @@unique([entityType, entityId, version])
+  @@index([entityType, entityId, state])
+}
+
+enum ApprovalDecision {
+  APPROVED
+  REJECTED
+  CHANGES_REQUESTED
+}
+
+model Approval {
+  id               String           @id @default(cuid())
+  contentVersionId String
+  reviewerId       String
+  decision         ApprovalDecision
+  comment          String?
+  decidedAt        DateTime         @default(now())
+
+  contentVersion ContentVersion @relation(fields: [contentVersionId], references: [id], onDelete: Cascade)
+  reviewer       User           @relation(fields: [reviewerId], references: [id])
+
+  @@index([contentVersionId])
+}
+
+// ---------------------------------------------------------------------------
+// Progress and summaries
+// ---------------------------------------------------------------------------
+
+enum ProgressEventType {
+  CHAPTER_STARTED
+  NODE_PLAYED
+  CHOICE_SELECTED
+  REPEATED
+  CHAPTER_COMPLETED
+  JOURNEY_COMPLETED
+  PAUSED
+  RESUMED
+}
+
+/// Append-only. `clientEventId` is unique, which is the whole of the offline
+/// reconciliation story: replaying a queue can never double-count.
+model ProgressEvent {
+  id             String            @id @default(cuid())
+  clientEventId  String            @unique
+  familyId       String
+  activatedBoxId String
+  childProfileId String?
+  chapterId      String?
+  nodeId         String?
+  type           ProgressEventType
+  choiceKey      String?
+  listenedMs     Int               @default(0)
+  /// Device clock — may be skewed, so never used for ordering across devices.
+  occurredAt     DateTime
+  receivedAt     DateTime          @default(now())
+  deviceId       String?
+
+  family       Family        @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  activatedBox ActivatedBox  @relation(fields: [activatedBoxId], references: [id], onDelete: Cascade)
+  childProfile ChildProfile? @relation(fields: [childProfileId], references: [id], onDelete: SetNull)
+  chapter      Chapter?      @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  node         DialogueNode? @relation(fields: [nodeId], references: [id], onDelete: SetNull)
+
+  @@index([activatedBoxId, occurredAt])
+  @@index([familyId, receivedAt])
+}
+
+/// What the parent sees. Deliberately descriptive: what was done and which
+/// topics came up. No scores, no percentiles, no developmental claims.
+model ParentSummary {
+  id                  String   @id @default(cuid())
+  familyId            String
+  childProfileId      String?
+  activatedBoxId      String
+  periodStart         DateTime
+  periodEnd           DateTime
+  chaptersCompleted   Int      @default(0)
+  experimentsCompleted Int     @default(0)
+  minutesListened     Int      @default(0)
+  topics              String[] @default([])
+  /// Free-text prompts a parent can use at the dinner table. Authored, not generated.
+  conversationStarters Json    @default("[]")
+  generatedAt         DateTime @default(now())
+
+  family       Family        @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  childProfile ChildProfile? @relation(fields: [childProfileId], references: [id], onDelete: SetNull)
+  activatedBox ActivatedBox  @relation(fields: [activatedBoxId], references: [id], onDelete: Cascade)
+
+  @@unique([activatedBoxId, childProfileId, periodStart])
+  @@index([familyId])
+}
+
+// ---------------------------------------------------------------------------
+// Support, consent and audit
+// ---------------------------------------------------------------------------
+
+enum SupportCaseKind {
+  QUESTION
+  DELIVERY
+  BILLING
+  SAFETY_REPORT
+  CONTENT_CONCERN
+  DATA_REQUEST
+}
+
+enum SupportCaseStatus {
+  OPEN
+  TRIAGED
+  RESOLVED
+  CLOSED
+}
+
+model SupportCase {
+  id                  String            @id @default(cuid())
+  reference           String            @unique
+  familyId            String?
+  reporterUserId      String?
+  assigneeUserId      String?
+  kind                SupportCaseKind   @default(QUESTION)
+  status              SupportCaseStatus @default(OPEN)
+  severity            SafetySeverity    @default(INFO)
+  subject             String
+  body                String
+  relatedBoxProductId String?
+  relatedNodeId       String?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  resolvedAt          DateTime?
+  resolutionNote      String?
+
+  family       Family?       @relation(fields: [familyId], references: [id], onDelete: SetNull)
+  reporter     User?         @relation("SupportReporter", fields: [reporterUserId], references: [id], onDelete: SetNull)
+  assignee     User?         @relation("SupportAssignee", fields: [assigneeUserId], references: [id], onDelete: SetNull)
+  relatedBox   BoxProduct?   @relation(fields: [relatedBoxProductId], references: [id], onDelete: SetNull)
+  relatedNode  DialogueNode? @relation(fields: [relatedNodeId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+}
+
+enum ConsentType {
+  TERMS
+  PRIVACY
+  SPEECH_TO_TEXT
+  MARKETING_EMAIL
+}
+
+/// Consent is per family, granted by an adult, versioned, and revocable.
+/// SPEECH_TO_TEXT defaults to absent — the microphone stays off until a parent
+/// explicitly turns it on.
+model ConsentRecord {
+  id               String      @id @default(cuid())
+  familyId         String
+  childProfileId   String?
+  type             ConsentType
+  granted          Boolean     @default(false)
+  policyVersion    String
+  grantedByUserId  String
+  grantedAt        DateTime    @default(now())
+  revokedAt        DateTime?
+  /// { "ip": "hashed", "userAgent": "..." } — evidence for an audit, not tracking.
+  evidence         Json        @default("{}")
+
+  family        Family        @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  childProfile  ChildProfile? @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  grantedBy     User          @relation("ConsentGrantedBy", fields: [grantedByUserId], references: [id])
+
+  @@index([familyId, type])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?
+  actorRole   String?
+  action      String
+  entityType  String
+  entityId    String
+  metadata    Json     @default("{}")
+  ipHash      String?
+  createdAt   DateTime @default(now())
+
+  actor User? @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
