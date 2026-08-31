@@ -97,6 +97,6 @@ test('a weekly plan can be added and marked done', async ({ page }) => {
   await page.getByRole('button', { name: /^opslaan$/i }).click()
 
   await expect(page.getByText(/^gepland$/i).first()).toBeVisible()
-  await page.getByRole('button', { name: /markeer als gedaan/i }).first().click()
+  await page.getByRole('button', { name: /^gedaan$/i }).first().click()
   await expect(page.getByText(/^gedaan$/i).first()).toBeVisible()
 })

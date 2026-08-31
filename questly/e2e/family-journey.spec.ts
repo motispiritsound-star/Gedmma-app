@@ -137,10 +137,20 @@ test('the quest library filters down to matching adventures', async ({ page, con
   await page.goto('/quests')
   await expect(page.getByRole('heading', { name: /avonturenbibliotheek/i })).toBeVisible()
 
-  await page.getByLabel(/^categorie$/i).selectOption('cooking')
-  await page.getByRole('button', { name: /^filters$/i }).click()
+  // The panel starts collapsed, so adventures are visible without scrolling
+  // past a wall of selects.
+  const categorySelect = page.getByLabel(/^categorie$/i)
+  await expect(categorySelect).toBeHidden()
+
+  await page.getByText(/^filters$/i).first().click()
+  await categorySelect.selectOption('cooking')
+  await page.getByRole('button', { name: /toon resultaten/i }).click()
 
   await expect(page).toHaveURL(/category=cooking/)
+  // With a filter applied the panel reopens, so the reader can see what produced
+  // the result set.
+  await expect(page.getByLabel(/^categorie$/i)).toBeVisible()
+  await expect(page.getByText(/1 actief/i)).toBeVisible()
   const cards = page.locator('article')
   await expect(cards.first()).toBeVisible()
   const count = await cards.count()

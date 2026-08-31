@@ -4,7 +4,7 @@ import { CategoryIcon, IconClock, IconLock, IconShield, IconUsers } from '@/comp
 import { QuestIllustration } from '@/components/QuestIllustration'
 import { fill, type Dictionary, type Locale } from '@/modules/localisation'
 import { formatDuration } from '@/modules/localisation/format'
-import { ageBandLabel, difficultyLabel, settingLabel } from '@/modules/quests/labels'
+import { ageRangeLabel, difficultyLabel, settingLabel } from '@/modules/quests/labels'
 import type { QuestCardView } from '@/modules/quests/types'
 
 /**
@@ -81,13 +81,15 @@ export function QuestCard({
           </div>
           <div>
             <dt className="q-visually-hidden">{d.quest.ageBand}</dt>
-            <dd>{quest.ageBands.map((band) => ageBandLabel(band, locale)).join(' · ')}</dd>
+            <dd>{ageRangeLabel(quest.ageBands, locale)}</dd>
           </div>
           <div>
             <dt className="q-visually-hidden">{d.quest.difficulty}</dt>
-            <dd>
-              {difficultyLabel(quest.difficulty, locale)} · {settingLabel(quest.setting, locale)}
-            </dd>
+            <dd>{difficultyLabel(quest.difficulty, locale)}</dd>
+          </div>
+          <div className="col-span-2">
+            <dt className="q-visually-hidden">{d.quest.setting}</dt>
+            <dd>{settingLabel(quest.setting, locale)}</dd>
           </div>
         </dl>
 

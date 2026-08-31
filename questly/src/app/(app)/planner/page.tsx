@@ -4,6 +4,7 @@ import { ButtonLink } from '@/components/ui/Button'
 import { Callout } from '@/components/ui/States'
 import { PlannerWeek } from '@/components/planner/PlannerWeek'
 import { getTranslations } from '@/modules/localisation/server'
+import { formatDate, formatShortDate } from '@/modules/localisation/format'
 import { requireOnboardedFamilyPage } from '@/modules/auth/guards'
 import { listPlannedQuests } from '@/modules/progress/service'
 import { listQuests } from '@/modules/quests/queries'
@@ -89,7 +90,12 @@ export default async function PlannerPage({
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-semibold">{d.planner.title}</h1>
-          <p className="mt-1 text-ink-soft">{d.planner.subtitle}</p>
+          <p className="mt-1 text-ink-soft">
+            <span className="font-medium text-ink">
+              {formatShortDate(monday, locale)} – {formatDate(sunday, locale)}
+            </span>{' '}
+            · {d.planner.subtitle}
+          </p>
         </div>
         <nav aria-label={d.planner.title} className="flex items-center gap-2">
           <ButtonLink href={`/planner?week=${weekOffset - 1}`} variant="secondary" size="sm">
@@ -107,12 +113,13 @@ export default async function PlannerPage({
       <PlannerWeek
         days={days}
         locale={locale}
+        todayIso={new Date().toISOString().slice(0, 10)}
         quests={library.items.map((quest) => ({ id: quest.id, title: quest.title }))}
         labels={{
           nothingPlanned: d.planner.nothingPlanned,
           addToDay: d.planner.addToDay,
           choose: d.planner.choose,
-          markDone: d.planner.markDone,
+          markDone: d.planner.markDoneShort,
           skip: d.planner.skip,
           remove: d.planner.remove,
           planned: d.planner.planned,
@@ -120,6 +127,7 @@ export default async function PlannerPage({
           skipped: d.planner.skipped,
           save: d.common.save,
           cancel: d.common.cancel,
+          today: d.planner.today,
         }}
       />
     </div>

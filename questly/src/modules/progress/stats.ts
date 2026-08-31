@@ -11,6 +11,7 @@ import type { Locale } from '@/modules/localisation'
 export type CategoryProgress = {
   slug: string
   name: string
+  icon: string
   colorToken: string
   completed: number
   total: number
@@ -113,6 +114,7 @@ export async function getFamilyStats(familyId: string, locale: Locale): Promise<
     categories: categories.map((category) => ({
       slug: category.slug,
       name: pick(category),
+      icon: category.icon,
       colorToken: category.colorToken,
       completed: perCategory.get(category.id) ?? 0,
       total: totalByCategory.get(category.id) ?? 0,

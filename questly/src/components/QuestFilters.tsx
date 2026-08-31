@@ -44,26 +44,56 @@ export function QuestFilters({
     return Array.isArray(value) ? value : value ? [value] : []
   }
 
-  const hasFilters = [...searchParams.keys()].length > 0
+  // A GET form submits every field, empty ones included, so the query string is
+  // full of blanks. Only values that actually narrow the result set count.
+  const activeCount = [...searchParams.entries()].filter(([, value]) => value !== '').length
 
   return (
-    <form method="get" className="q-card p-5" aria-labelledby={`${formId}-heading`}>
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <h2 id={`${formId}-heading`} className="text-base font-semibold">
-          {d.common.filters}
-        </h2>
-        {hasFilters ? (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => router.push('/quests')}
+    <form method="get" className="q-card overflow-hidden p-0">
+      {/*
+        A wall of selects used to push every adventure below the fold. The panel
+        now opens only when it is being used - or when filters are already
+        applied, so a filtered view always shows what produced it.
+      */}
+      <details open={activeCount > 0} className="group">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4">
+          <span className="flex items-center gap-2.5 text-base font-semibold">
+            <svg
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.9"
+              strokeLinecap="round"
+              aria-hidden="true"
+              className="text-moss-600"
+            >
+              <path d="M3.5 6h17M6.5 12h11M10 18h4" />
+            </svg>
+            {d.common.filters}
+            {activeCount > 0 ? (
+              <span className="rounded-full bg-moss-50 px-2 py-0.5 text-xs font-semibold text-moss-700">
+                {activeCount} {d.library.activeFilters}
+              </span>
+            ) : null}
+          </span>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            aria-hidden="true"
+            className="text-ink-muted transition-transform group-open:rotate-180"
           >
-            {d.common.clearFilters}
-          </Button>
-        ) : null}
-      </div>
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </summary>
 
+      <div className="px-5 pb-5">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div className="flex flex-col gap-1.5">
           <label htmlFor={`${formId}-q`} className="text-sm font-semibold">
@@ -252,9 +282,16 @@ export function QuestFilters({
         {d.library.filterMaterials}
       </label>
 
-      <div className="mt-5">
-        <Button type="submit">{d.common.filters}</Button>
+      <div className="mt-5 flex flex-wrap gap-3">
+        <Button type="submit">{d.library.apply}</Button>
+        {activeCount > 0 ? (
+          <Button type="button" variant="ghost" onClick={() => router.push('/quests')}>
+            {d.common.clearFilters}
+          </Button>
+        ) : null}
       </div>
+      </div>
+      </details>
     </form>
   )
 }

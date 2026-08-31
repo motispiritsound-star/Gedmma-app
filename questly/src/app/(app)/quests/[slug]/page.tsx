@@ -17,7 +17,7 @@ import { getTranslations } from '@/modules/localisation/server'
 import { formatDuration } from '@/modules/localisation/format'
 import { requireOnboardedFamilyPage } from '@/modules/auth/guards'
 import { getQuestDetail } from '@/modules/quests/queries'
-import { ageBandLabel, difficultyLabel, settingLabel, severityLabel } from '@/modules/quests/labels'
+import { ageRangeLabel, difficultyLabel, settingLabel, severityLabel } from '@/modules/quests/labels'
 import { isAppError } from '@/lib/errors'
 import { prisma } from '@/lib/db'
 
@@ -102,9 +102,7 @@ export default async function QuestDetailPage({ params }: { params: Promise<{ sl
             </div>
             <div>
               <dt className="font-semibold text-ink-muted">{d.quest.ageBand}</dt>
-              <dd className="mt-0.5">
-                {quest.ageBands.map((band) => ageBandLabel(band, locale)).join(' · ')}
-              </dd>
+              <dd className="mt-0.5">{ageRangeLabel(quest.ageBands, locale)}</dd>
             </div>
             <div>
               <dt className="font-semibold text-ink-muted">{d.quest.difficulty}</dt>

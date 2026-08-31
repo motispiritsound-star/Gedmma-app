@@ -75,6 +75,36 @@ export const environmentLabel = (value: 'CITY' | 'SUBURB' | 'RURAL', locale: Loc
 export const timeOfDayLabel = (value: 'MORNING' | 'AFTERNOON' | 'EVENING', locale: Locale) =>
   pick(TIMES_OF_DAY[value], locale)
 
+/**
+ * Collapses contiguous age bands into one range: `6-8` plus `9-11` reads as
+ * "6-11 years" rather than "6-8 years · 9-11 years", which wrapped mid-phrase
+ * on a card. Non-contiguous selections fall back to a list.
+ */
+export function ageRangeLabel(bands: readonly AgeBand[], locale: Locale): string {
+  const order: AgeBand[] = ['AGE_6_8', 'AGE_9_11', 'AGE_12_15']
+  const bounds: Record<AgeBand, [number, number]> = {
+    AGE_6_8: [6, 8],
+    AGE_9_11: [9, 11],
+    AGE_12_15: [12, 15],
+  }
+  const indexes = order
+    .map((band, index) => (bands.includes(band) ? index : -1))
+    .filter((index) => index >= 0)
+
+  if (indexes.length === 0) return ''
+
+  const contiguous = indexes.every((value, position) =>
+    position === 0 ? true : value === (indexes[position - 1] ?? -2) + 1,
+  )
+  if (!contiguous) {
+    return indexes.map((index) => ageBandLabel(order[index] as AgeBand, locale)).join(' · ')
+  }
+
+  const first = bounds[order[indexes[0] as number] as AgeBand][0]
+  const last = bounds[order[indexes[indexes.length - 1] as number] as AgeBand][1]
+  return `${first}-${last} ${locale === 'nl' ? 'jaar' : 'years'}`
+}
+
 export const ALL_AGE_BANDS: AgeBand[] = ['AGE_6_8', 'AGE_9_11', 'AGE_12_15']
 export const ALL_DIFFICULTIES: Difficulty[] = ['EASY', 'MEDIUM', 'CHALLENGING']
 export const ALL_SETTINGS: Setting[] = ['INDOOR', 'OUTDOOR', 'BOTH']

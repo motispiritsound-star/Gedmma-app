@@ -123,7 +123,7 @@ export default async function DashboardPage() {
               <li key={category.slug}>
                 <div className="mb-1 flex items-center justify-between text-sm">
                   <span className="flex items-center gap-2 font-medium">
-                    <CategoryIcon icon="compass" size={15} aria-hidden="true" />
+                    <CategoryIcon icon={category.icon} size={15} aria-hidden="true" />
                     {category.name}
                   </span>
                   <span className="text-ink-muted">
