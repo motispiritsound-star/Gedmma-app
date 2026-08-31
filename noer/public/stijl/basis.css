@@ -1,0 +1,420 @@
+/* Noer — basisstijl.
+   Warm papier, diep groen, en een geometrisch stermotief dat door de hele app
+   terugkomt. Licht en donker, en drie maten voor drie leeftijden. */
+
+:root {
+  /* Eén set tokens voor licht en donker. light-dark() kiest per waarde, dus de
+     twee thema's kunnen niet meer uit elkaar lopen. Kiest een kijker zelf een
+     thema, dan zet dat hieronder color-scheme — en light-dark() volgt vanzelf. */
+  color-scheme: light dark;
+
+  /* Papier en inkt */
+  --papier:      light-dark(#faf5ec, #12191a);
+  --papier-diep: light-dark(#f2ead9, #0d1314);
+  --vlak:        light-dark(#fffdf8, #1a2425);
+  --vlak-2:      light-dark(#f5eddf, #222e2f);
+  --rand:        light-dark(#e7dcc8, #2e3d3e);
+  --rand-sterk:  light-dark(#d8c9ac, #425454);
+  --inkt:        light-dark(#2b2419, #f0ebe0);
+  --inkt-2:      light-dark(#6b5f4e, #b3ac9e);
+  --inkt-3:      light-dark(#9c8e79, #837d70);
+
+  /* Accenten */
+  --groen:       light-dark(#0f7a67, #35b394);
+  --groen-diep:  light-dark(#0a5748, #0d3d34);
+  --groen-licht: light-dark(#2fa48c, #56cfae);
+  --groen-zacht: light-dark(#ddefe9, #17332d);
+  --goud:        light-dark(#c08417, #e8b44c);
+  --goud-licht:  light-dark(#e8b44c, #f3cd7d);
+  --goud-zacht:  light-dark(#fbeed3, #372c15);
+  --terra:       light-dark(#c2593c, #e8836a);
+  --terra-zacht: light-dark(#fbe3da, #3a2320);
+  --blauw:       light-dark(#3a68bf, #7ea0f0);
+  --blauw-zacht: light-dark(#e0e8f8, #1d2a45);
+  --paars:       light-dark(#8654b4, #b387dd);
+  --paars-zacht: light-dark(#eee3f7, #2b2140);
+
+  /* Grafiek: één reeks, dus één kleur. Apart gecontroleerd op contrast. */
+  --staaf:       light-dark(#0b8f72, #2ea184);
+
+  --lijn-patroon: light-dark(rgba(15, 122, 103, .45), rgba(86, 207, 174, .35));
+
+  --straal: 16px;
+  --straal-groot: 26px;
+  --straal-xl: 34px;
+  --boog: 50% 50% var(--straal) var(--straal) / 34% 34% var(--straal) var(--straal);
+
+  /* Een schaduw is geen kleur, dus light-dark() zit hier in de kleur ervan. */
+  --schaduw-zacht: light-dark(rgba(60, 45, 20, .07), rgba(0, 0, 0, .34));
+  --schaduw-diep:  light-dark(rgba(60, 45, 20, .16), rgba(0, 0, 0, .5));
+  --schaduw-s: 0 1px 2px var(--schaduw-zacht);
+  --schaduw:   0 2px 4px var(--schaduw-zacht), 0 10px 24px -8px var(--schaduw-diep);
+  --schaduw-l: 0 4px 8px var(--schaduw-zacht), 0 20px 44px -12px var(--schaduw-diep);
+
+  --maat: 1rem;
+  --arabisch: 'Amiri Quran', 'Scheherazade New', 'Noto Naskh Arabic',
+              'Traditional Arabic', 'Geeza Pro', 'Times New Roman', serif;
+
+--girih: url("data:image/svg+xml,<svg xmlns='http%3A//www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='%23000' stroke-width='1.5'><rect x='24' y='24' width='32' height='32' rx='2'/><rect x='24' y='24' width='32' height='32' rx='2' transform='rotate%2845 40 40%29'/><rect x='-16' y='-16' width='32' height='32' rx='2'/><rect x='-16' y='-16' width='32' height='32' rx='2' transform='rotate%2845 0 0%29'/><rect x='64' y='-16' width='32' height='32' rx='2'/><rect x='64' y='-16' width='32' height='32' rx='2' transform='rotate%2845 80 0%29'/><rect x='-16' y='64' width='32' height='32' rx='2'/><rect x='-16' y='64' width='32' height='32' rx='2' transform='rotate%2845 0 80%29'/><rect x='64' y='64' width='32' height='32' rx='2'/><rect x='64' y='64' width='32' height='32' rx='2' transform='rotate%2845 80 80%29'/></g></svg>");
+}
+
+/* Kiest een kijker zelf licht of donker, dan wint dat van de systeeminstelling. */
+:root[data-theme="dark"] { color-scheme: dark; }
+:root[data-theme="light"] { color-scheme: light; }
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+  font-size: var(--maat);
+  line-height: 1.55;
+  color: var(--inkt);
+  background: var(--papier);
+  -webkit-text-size-adjust: 100%;
+  min-height: 100vh;
+}
+
+/* Een heel lichte sterrenhemel over de hele achtergrond. */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: var(--lijn-patroon);
+  -webkit-mask-image: var(--girih); mask-image: var(--girih);
+  -webkit-mask-size: 104px 104px; mask-size: 104px 104px;
+  opacity: .05;
+}
+
+body.leeftijd-klein { --maat: 1.22rem; --straal: 20px; --straal-groot: 30px; }
+body.leeftijd-midden { --maat: 1.06rem; }
+
+h1 { font-size: 1.75em; margin: 0 0 .2em; line-height: 1.15; letter-spacing: -.02em; font-weight: 800; }
+h2 { font-size: 1.16em; margin: 0 0 .4em; letter-spacing: -.01em; font-weight: 700; }
+h3 { font-size: 1em; margin: 0 0 .3em; }
+p { margin: 0 0 .6em; }
+a { color: var(--groen); }
+
+.ar {
+  font-family: var(--arabisch);
+  direction: rtl;
+  line-height: 1.9;
+  font-feature-settings: 'liga' 1, 'calt' 1;
+}
+
+.klein { font-size: .82em; color: var(--inkt-2); }
+.voetnoot { font-size: .78em; color: var(--inkt-3); text-align: center; margin: 1.6em .5em; }
+.onderschrift { color: var(--inkt-2); font-size: .9em; }
+
+/* --- Schil ------------------------------------------------------------- */
+
+#kopbalk {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: .6rem;
+  padding: .5rem .8rem;
+  background: color-mix(in srgb, var(--papier) 84%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid color-mix(in srgb, var(--rand) 70%, transparent);
+}
+#kopbalk.verborgen, #navigatie.verborgen { display: none; }
+
+.profielknop, .oudersknop {
+  display: flex; align-items: center; gap: .55rem;
+  background: none; border: 0; padding: .25rem .35rem;
+  border-radius: 999px; cursor: pointer; color: inherit; font: inherit;
+  min-width: 0;
+}
+.profielknop:hover, .oudersknop:hover { background: var(--vlak-2); }
+
+/* Avatar met een ring die de voortgang naar het volgende niveau toont. */
+.avatarring { position: relative; width: 2.7em; height: 2.7em; flex: none; }
+.avatarring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+.avatarring .spoor { stroke: var(--rand); }
+.avatarring .voortgang { stroke: var(--groen); stroke-linecap: round; transition: stroke-dasharray .5s ease; }
+.avatar {
+  position: absolute; inset: 4px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 1.05em;
+  box-shadow: inset 0 -2px 6px rgba(0, 0, 0, .1), inset 0 2px 4px rgba(255, 255, 255, .5);
+}
+.avatarring.groot { width: 4.2em; height: 4.2em; }
+.avatarring.groot .avatar { font-size: 1.8em; inset: 5px; }
+.niveaubadge {
+  position: absolute; right: -2px; bottom: -2px;
+  width: 1.25em; height: 1.25em; border-radius: 50%; font-size: .62em;
+  background: var(--goud-licht); color: #2b2419; font-weight: 800;
+  display: grid; place-items: center; border: 2px solid var(--papier);
+}
+
+.profieltekst { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.2; min-width: 0; }
+.profielnaam { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 8rem; }
+.niveaunaam { font-size: .72em; color: var(--inkt-2); white-space: nowrap; }
+
+.vlam {
+  margin-left: auto; flex: none;
+  display: inline-flex; align-items: center; gap: .2rem;
+  background: var(--goud-zacht); color: var(--goud);
+  border: 1px solid color-mix(in srgb, var(--goud) 25%, transparent);
+  border-radius: 999px; padding: .2em .7em .2em .5em; font-size: .85em; font-weight: 700;
+}
+.vlam:not(.aan) { background: var(--vlak-2); color: var(--inkt-3); border-color: transparent; }
+.oudersknop { flex: none; }
+
+#inhoud { max-width: 46rem; margin: 0 auto; padding: 1rem .85rem 6.5rem; }
+/* Terwijl de feedbackstrook openstaat, mag die niets afdekken. */
+body.feedback-open #inhoud { padding-bottom: 11rem; }
+
+#navigatie {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(.6rem + env(safe-area-inset-bottom));
+  z-index: 20; width: min(28rem, calc(100% - 1.2rem));
+  display: flex; gap: .15rem; padding: .35rem;
+  background: color-mix(in srgb, var(--vlak) 92%, transparent);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--rand);
+  border-radius: 999px;
+  box-shadow: var(--schaduw-l);
+}
+.navknop {
+  flex: 1 1 0;
+  display: flex; flex-direction: column; align-items: center; gap: .05rem;
+  padding: .4rem .2rem .3rem; border-radius: 999px;
+  font-size: .68em; text-decoration: none; color: var(--inkt-2);
+  transition: background .2s ease, color .2s ease;
+}
+.navknop.actief { color: #fff; background: linear-gradient(160deg, var(--groen-licht), var(--groen)); }
+.nav-icoon { display: block; }
+.navknop.actief .nav-icoon { transform: translateY(-1px); }
+
+/* --- Bouwstenen -------------------------------------------------------- */
+
+.kaart {
+  position: relative;
+  background: var(--vlak); border: 1px solid var(--rand);
+  border-radius: var(--straal-groot); padding: 1.1rem;
+  margin: 0 0 1rem; box-shadow: var(--schaduw);
+}
+.kaart.smal { max-width: 23rem; margin: 3rem auto; }
+.kaart.leeg { text-align: center; }
+
+.knop {
+  font: inherit; font-weight: 700;
+  padding: .62em 1.2em; border-radius: 999px; border: 0;
+  background: linear-gradient(160deg, var(--groen-licht), var(--groen));
+  color: #fff; cursor: pointer;
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--groen-diep) 70%, transparent), var(--schaduw-s);
+  transition: transform .1s ease, box-shadow .1s ease;
+}
+.knop:active { transform: translateY(2px); box-shadow: none; }
+.knop.groot { font-size: 1.08em; padding: .78em 1.6em; width: 100%; }
+.knop.stil {
+  background: var(--vlak-2); color: var(--inkt);
+  box-shadow: inset 0 0 0 1px var(--rand);
+}
+.knop.gevaar { background: linear-gradient(160deg, #d9705a, var(--terra)); box-shadow: var(--schaduw-s); }
+.knop.klein-knop { font-size: .85em; padding: .45em .95em; }
+.knoprij { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .7rem; }
+
+.balk { height: 12px; background: var(--vlak-2); border-radius: 999px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0, 0, 0, .06); }
+.balk i {
+  display: block; height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--groen-licht), var(--groen));
+  transition: width .5s cubic-bezier(.2, .8, .2, 1);
+}
+
+.sterren { color: var(--rand-sterk); letter-spacing: .08em; }
+.sterren .ster.vol { color: var(--goud-licht); text-shadow: 0 1px 3px color-mix(in srgb, var(--goud) 40%, transparent); }
+
+.stip { display: inline-block; width: .7em; height: .7em; border-radius: 50%; vertical-align: middle; }
+
+.schermkop { margin: .4rem 0 1.1rem; }
+.schermkop h1 { display: flex; align-items: baseline; gap: .4em; flex-wrap: wrap; }
+.schermkop.met-terug { display: flex; align-items: center; gap: .7rem; }
+.terug {
+  width: 2.4em; height: 2.4em; flex: none; border-radius: 50%;
+  border: 1px solid var(--rand); background: var(--vlak);
+  font-size: 1.05em; cursor: pointer; color: inherit; text-decoration: none;
+  display: grid; place-items: center; box-shadow: var(--schaduw-s);
+}
+.terug:hover { border-color: var(--groen); color: var(--groen); }
+.naam-ar { font-size: .85em; color: var(--inkt-2); font-weight: 400; }
+.soerainfo b { display: flex; align-items: baseline; gap: .4em; }
+.label {
+  font-size: .6em; background: var(--groen-zacht); color: var(--groen);
+  border-radius: 999px; padding: .25em .7em; margin-inline-start: .5em; vertical-align: middle;
+  font-weight: 700; letter-spacing: .02em;
+}
+
+input, select {
+  font: inherit; padding: .6em .8em; border-radius: var(--straal);
+  border: 1px solid var(--rand); background: var(--vlak); color: inherit;
+  width: 100%; max-width: 20rem;
+}
+input:focus-visible, select:focus-visible { outline: 2px solid var(--groen); outline-offset: 1px; }
+:focus-visible { outline: 2px solid var(--groen); outline-offset: 2px; }
+label { display: block; font-size: .85em; color: var(--inkt-2); margin: .8rem 0 .25rem; font-weight: 600; }
+.fout-melding { color: var(--terra); font-size: .85em; min-height: 1.2em; }
+
+/* --- Hero-band: de warme kop van een scherm ---------------------------- */
+
+.hero {
+  position: relative; overflow: hidden;
+  border-radius: var(--straal-xl);
+  padding: 1.3rem 1.2rem 1.4rem;
+  margin-bottom: 1.1rem;
+  color: #fff;
+  background: linear-gradient(150deg, var(--groen-licht) -10%, var(--groen) 45%, var(--groen-diep) 115%);
+  box-shadow: var(--schaduw-l);
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: #fff;
+  -webkit-mask-image: var(--girih); mask-image: var(--girih);
+  -webkit-mask-size: 80px 80px; mask-size: 80px 80px;
+  opacity: .13;
+}
+.hero::after {
+  content: ''; position: absolute; right: -18%; top: -55%;
+  width: 75%; aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, .22), transparent 68%);
+  pointer-events: none;
+}
+.hero > * { position: relative; }
+.hero h1 { color: #fff; margin-bottom: .1em; }
+.hero .bismillah { font-size: 1.6em; color: color-mix(in srgb, var(--goud-licht) 85%, #fff); margin: 0; }
+.hero .klein { color: rgba(255, 255, 255, .82); }
+.hero .balk { background: rgba(255, 255, 255, .22); box-shadow: none; }
+.hero .balk i { background: linear-gradient(90deg, var(--goud-licht), #fff); }
+
+.herorij { display: flex; align-items: flex-start; justify-content: space-between; gap: .8rem; }
+.herorij > div { flex: 1; min-width: 0; }
+.hero .bismillah { flex: none; white-space: nowrap; }
+.herodoel { margin-top: 1rem; }
+.herodoel .balk { height: 10px; }
+
+/* --- Tegels ------------------------------------------------------------ */
+
+.tegels { display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: .75rem; }
+.tegel {
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; gap: .1rem;
+  padding: .95rem .9rem 1rem; border-radius: var(--straal-groot);
+  background: var(--vlak); border: 1px solid var(--rand);
+  text-decoration: none; color: inherit; box-shadow: var(--schaduw);
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+.tegel::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(150deg,
+    color-mix(in srgb, var(--tegelkleur, var(--groen)) 12%, transparent),
+    transparent 62%);
+}
+.tegel:hover { transform: translateY(-2px); box-shadow: var(--schaduw-l); }
+.tegel:active { transform: translateY(0); }
+.tegel > * { position: relative; }
+.tegelbol {
+  width: 2.9rem; height: 2.9rem; border-radius: 32% 32% 38% 38% / 38% 38% 32% 32%;
+  display: grid; place-items: center; font-size: 1.5rem; margin-bottom: .45rem;
+  background: color-mix(in srgb, var(--tegelkleur, var(--groen)) 16%, var(--vlak));
+  box-shadow: inset 0 -2px 6px color-mix(in srgb, var(--tegelkleur, var(--groen)) 18%, transparent);
+}
+.tegel b { font-size: 1.02em; }
+
+.cijfers { display: grid; grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr)); gap: .55rem; margin: .9rem 0; }
+.cijfer {
+  background: var(--vlak-2); border-radius: var(--straal); padding: .7rem .5rem;
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: .05rem;
+  border: 1px solid color-mix(in srgb, var(--rand) 60%, transparent);
+}
+.cijfer b { font-size: 1.3em; font-weight: 800; }
+.cijfer-emoji { font-size: 1.35em; }
+
+/* --- Profielen --------------------------------------------------------- */
+
+.welkom { text-align: center; margin: 2.5rem 0 1.8rem; }
+.logo {
+  width: 6.5rem; height: 7rem; margin: 0 auto .8rem;
+  display: grid; place-items: center; position: relative; overflow: hidden;
+  border-radius: var(--boog);
+  background: linear-gradient(155deg, var(--groen-licht), var(--groen) 55%, var(--groen-diep));
+  box-shadow: var(--schaduw-l);
+}
+.logo::before {
+  content: ''; position: absolute; inset: 0; background: #fff;
+  -webkit-mask-image: var(--girih); mask-image: var(--girih);
+  -webkit-mask-size: 56px 56px; mask-size: 56px 56px; opacity: .2;
+}
+.logo .ar { font-size: 3.2rem; color: #fff; line-height: 1; position: relative; }
+.welkom h1 { font-size: 2.2rem; margin: 0; }
+.onder-logo { color: var(--inkt-2); }
+
+.profielen { display: grid; grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr)); gap: .8rem; }
+.profielkaart { position: relative; }
+.profielkies {
+  width: 100%; display: flex; flex-direction: column; align-items: center; gap: .4rem;
+  background: var(--vlak-2); border: 1px solid var(--rand); border-radius: var(--straal-groot);
+  padding: 1rem .5rem; cursor: pointer; font: inherit; color: inherit;
+  transition: transform .14s ease, border-color .14s ease;
+}
+.profielkies:hover { transform: translateY(-2px); border-color: var(--groen); }
+.wis {
+  position: absolute; top: -.4rem; right: -.4rem;
+  width: 1.8em; height: 1.8em; border-radius: 50%;
+  border: 1px solid var(--rand); background: var(--vlak); color: var(--inkt-2);
+  cursor: pointer; line-height: 1; box-shadow: var(--schaduw-s);
+}
+.kiezers { display: flex; flex-wrap: wrap; gap: .45rem; }
+.kiezer {
+  width: 2.8em; height: 2.8em; border-radius: 50%; font-size: 1.1em;
+  border: 2px solid var(--rand); background: var(--vlak); cursor: pointer;
+  transition: transform .12s ease;
+}
+.kiezer:hover { transform: scale(1.08); }
+.kiezer.aan { border-color: var(--groen); box-shadow: 0 0 0 3px var(--groen-zacht); }
+.kiezer.kleur { border-color: transparent; }
+
+@media (max-width: 26rem) {
+  .niveaunaam { display: none; }
+  .profielnaam { max-width: 6rem; }
+}
+
+/* --- Kleine aanvullingen ------------------------------------------------ */
+
+.vlam { text-decoration: none; }
+.verder, .ontdek { margin-bottom: 1.5rem; }
+.verder h2, .ontdek h2 { margin-bottom: .6rem; }
+.niveau-groot { display: flex; align-items: center; gap: 1rem; margin-bottom: .9rem; }
+.niveau-groot h2 { margin-bottom: .1em; }
+
+
+/* --- Iconen ------------------------------------------------------------- */
+
+.icoon { display: block; flex: none; }
+
+/* Eén maat voor alle ronde icoonknoppen: 44px, groot genoeg om te raken. */
+.icoonknop {
+  width: 2.75rem; height: 2.75rem; flex: none;
+  display: grid; place-items: center;
+  border-radius: 50%; border: 1px solid var(--rand);
+  background: var(--vlak); color: var(--inkt-2);
+  cursor: pointer; text-decoration: none; padding: 0;
+  box-shadow: var(--schaduw-s);
+  transition: color .15s ease, border-color .15s ease, transform .12s ease;
+}
+.icoonknop:hover { color: var(--groen); border-color: var(--groen); }
+.icoonknop:active { transform: scale(.94); }
+
+.kruimel {
+  font-size: .74em; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--inkt-3); margin: 0 0 .1em;
+}
+
+/* --- Profiel aanmaken: levend voorbeeld -------------------------------- */
+
+.voorbeeldkind {
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  padding: 1.2rem 1rem; margin-bottom: .5rem;
+  background: linear-gradient(165deg, var(--groen-zacht), var(--vlak) 75%);
+  border-radius: var(--straal-groot);
+  border: 1px solid color-mix(in srgb, var(--groen) 18%, var(--rand));
+}
+.voorbeeldkind .avatarring .spoor,
+.voorbeeldkind .avatarring .voortgang { stroke: transparent; }
+.voorbeeldnaam { font-size: 1.1em; }
