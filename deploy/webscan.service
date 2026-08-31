@@ -1,0 +1,39 @@
+# Het dashboard als systemd-dienst.
+#
+#   sudo cp deploy/webscan.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now webscan
+#   systemctl status webscan
+#
+# Draai het onder een eigen gebruiker (niet root) die alleen bij /srv/webscan kan.
+
+[Unit]
+Description=Webscan NL — websitescan en leaddashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=webscan
+Group=webscan
+WorkingDirectory=/srv/webscan
+
+# Achter een reverse proxy met certificaat: dan krijgt de sessiecookie Secure.
+Environment=WEBSCAN_HTTPS=1
+Environment=WEBSCAN_DB=/srv/webscan/data/webscan.db
+Environment=NODE_NO_WARNINGS=1
+# De rest (WEBSCAN_USER_AGENT, KVK_API_KEY) komt uit /srv/webscan/.env
+EnvironmentFile=-/srv/webscan/.env
+
+ExecStart=/usr/bin/node start.js serve --port 4321
+Restart=always
+RestartSec=5
+
+# Het proces heeft niets buiten zijn eigen map nodig.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/webscan/data
+
+[Install]
+WantedBy=multi-user.target

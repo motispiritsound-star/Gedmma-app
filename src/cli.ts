@@ -23,6 +23,7 @@ import { aanbodTekst, bewaarAanbod, leesAanbod } from './db/instellingen.ts';
 import { plaatsNieuws, nieuwsLijst, verwijderNieuws, SOORTEN } from './db/nieuws.ts';
 import { verrijkBedrijf, zonderRechtsvorm, CENT_PER_BEVRAGING } from './sources/kvk-verrijken.ts';
 import { werklijst, werkdruk } from './db/opvolging.ts';
+import { controle } from './db/controle.ts';
 import { prognose, bewaarDoel, leesDoel, tempo } from './db/prognose.ts';
 import { leesProvisie, bewaarProvisie, provisieVan } from './db/instellingen.ts';
 import { RECHTSVORMEN, benaderbaarheid, blokkeer, deblokkeer, herkenRechtsvorm,
@@ -30,6 +31,13 @@ import { RECHTSVORMEN, benaderbaarheid, blokkeer, deblokkeer, herkenRechtsvorm,
 
 const program = new Command();
 const euro = (cent: number): string => `€ ${(cent / 100).toFixed(2).replace('.', ',')}`;
+
+/** Nederlanders typen "24,50"; Number() maakt daar NaN van. Dit accepteert allebei. */
+const bedrag = (waarde: string): number => {
+  const getal = Number(String(waarde).replace(/\s|€/g, '').replace(',', '.'));
+  if (!Number.isFinite(getal) || getal < 0) throw new Error(`"${waarde}" is geen bedrag.`);
+  return getal;
+};
 
 async function vraagVerborgen(vraag: string): Promise<string> {
   const rl = createInterface({ input: process.stdin, output: process.stdout, terminal: true });
@@ -336,8 +344,8 @@ program
   .command('aanbod')
   .description('Toon of wijzig wat je aanbiedt; dit komt in alle mailsjablonen terecht')
   .option('--soort <soort>', 'gratis of startbedrag')
-  .option('--startbedrag <euro>', 'eenmalig bedrag voor de bouw', Number)
-  .option('--maandbedrag <euro>', 'bedrag per maand', Number)
+  .option('--startbedrag <euro>', 'eenmalig bedrag voor de bouw', bedrag)
+  .option('--maandbedrag <euro>', 'bedrag per maand', bedrag)
   .option('--inbegrepen <tekst>', 'wat er in het maandbedrag zit')
   .option('--bedrijfsnaam <naam>', 'jouw bedrijfsnaam in de ondertekening')
   .option('--telefoon <nummer>', 'jouw telefoonnummer in de ondertekening')
@@ -524,6 +532,91 @@ program
 
 // --------------------------------------------------------------------------
 program
+  .command('eerste-ronde')
+  .description('In één commando beginnen: bedrijven ophalen, scannen en je eerste leads tonen')
+  .option('-p, --plaats <plaats>', 'gemeente om mee te beginnen (leeg = heel Nederland)')
+  .option('-c, --categorie <categorie>', 'shop, horeca, office, craft, zorg, toerisme of all', 'all')
+  .option('-a, --aantal <aantal>', 'hoeveel bedrijven ophalen', Number, 300)
+  .option('--concurrency <aantal>', 'aantal gelijktijdige scans', Number, config.concurrency)
+  .action(async (options) => {
+    const waar = options.plaats ? `voor ${options.plaats}` : 'voor heel Nederland';
+    log.step(`1/3 · Bedrijven met een website ophalen ${waar} uit OpenStreetMap…`);
+
+    const source = getSource('osm');
+    let gevonden;
+    try {
+      gevonden = await source.fetch({ area: options.plaats, category: options.categorie, limit: options.aantal });
+    } catch (fout) {
+      log.error((fout as Error).message);
+      log.dim('Lukt het ophalen niet, begin dan met je eigen lijst: node start.js import --source csv --file bedrijven.csv');
+      process.exitCode = 1;
+      return;
+    }
+
+    const bruikbaar = gevonden.filter((bedrijf) => bedrijf.domain !== '');
+    if (bruikbaar.length === 0) {
+      log.warn(`Geen bedrijven met een website gevonden ${waar}.`);
+      log.dim('Probeer een andere schrijfwijze van de gemeente, of een andere categorie.');
+      return;
+    }
+    const resultaat = upsertCompanies(bruikbaar);
+    log.ok(`${resultaat.inserted} nieuw, ${resultaat.updated} bijgewerkt.`);
+
+    log.step(`2/3 · Scannen met ${options.concurrency} tegelijk (robots.txt wordt gerespecteerd)…`);
+    const teScannen = companiesToScan({ limit: bruikbaar.length, rescanAfterDays: 30 });
+    const uitkomsten = await scanAll(teScannen, { concurrency: options.concurrency });
+    log.ok(`${uitkomsten.length} sites gescand.`);
+
+    log.step('3/3 · Je eerste leads');
+    const beste = queryLeads({ maxScore: 55, metContact: true, sort: 'prioriteit', limit: 10 });
+    if (beste.length === 0) {
+      log.warn('Nog geen leads met contactgegevens. Haal er meer bedrijven bij met een groter --aantal.');
+    } else {
+      log.info('');
+      for (const lead of beste) {
+        const contact = lead.contact.phones[0] ?? lead.contact.emails[0] ?? 'geen contactgegevens';
+        log.info(`  ${String(lead.id).padStart(5)}  ${String(lead.score).padStart(3)}  `
+          + `${lead.name.padEnd(30).slice(0, 30)} ${contact.padEnd(24).slice(0, 24)} ${lead.topIssues[0]?.title ?? ''}`.slice(0, 150));
+      }
+      log.info('');
+      log.dim(`  node start.js mail ${beste[0]!.id}          de mail voor de bovenste lead`);
+      log.dim('  node start.js serve                 het dashboard erbij');
+      log.dim('  node start.js controle              is alles klaar voor de go-live?');
+      log.info('');
+    }
+  });
+
+// --------------------------------------------------------------------------
+program
+  .command('controle')
+  .description('Loopt na of alles klaarstaat voordat je echte bedrijven gaat benaderen')
+  .action(() => {
+    const uitkomst = controle();
+    const teken = { goed: '✓', 'let-op': '!', blokkeert: '✗' };
+
+    log.info('');
+    for (const punt of uitkomst.punten) {
+      const regel = `  ${teken[punt.staat]} ${punt.naam.padEnd(22)} ${punt.bevinding}`;
+      if (punt.staat === 'goed') log.ok(regel.trim().replace(/^✓\s*/, ''));
+      else if (punt.staat === 'let-op') log.warn(regel.trim().replace(/^!\s*/, ''));
+      else log.error(regel.trim().replace(/^✗\s*/, ''));
+      if (punt.actie) log.dim(`      → ${punt.actie}`);
+    }
+
+    log.info('');
+    if (uitkomst.klaar && uitkomst.waarschuwingen === 0) {
+      log.ok('Alles staat klaar. Veel succes met de eerste ronde.');
+    } else if (uitkomst.klaar) {
+      log.ok(`Je kunt beginnen. ${uitkomst.waarschuwingen} punt(en) om nog eens naar te kijken.`);
+    } else {
+      log.error(`${uitkomst.blokkades} punt(en) moeten eerst geregeld worden.`);
+      process.exitCode = 1;
+    }
+    log.info('');
+  });
+
+// --------------------------------------------------------------------------
+program
   .command('vandaag')
   .description('Wat er vandaag opgevolgd moet worden — het langst wachtende bovenaan')
   .option('-a, --agent <email>', 'alleen het werk van deze agent')
@@ -559,7 +652,7 @@ program
   .option('--doel <bedrag>', 'zet het doel voor de maandomzet, in euro')
   .action((options) => {
     if (options.doel !== undefined) {
-      bewaarDoel(Math.round(Number(options.doel) * 100));
+      bewaarDoel(Math.round(bedrag(options.doel) * 100));
       log.ok(`Doel gezet op ${euro(leesDoel())} per maand.`);
     }
 
@@ -598,7 +691,7 @@ program
   .action((options) => {
     if (options.perOpdracht !== undefined || options.percentage !== undefined) {
       bewaarProvisie({
-        perOpdrachtCent: options.perOpdracht !== undefined ? Math.round(Number(options.perOpdracht) * 100) : undefined,
+        perOpdrachtCent: options.perOpdracht !== undefined ? Math.round(bedrag(options.perOpdracht) * 100) : undefined,
         mrrPercentage: options.percentage !== undefined ? Number(options.percentage) : undefined,
       });
     }

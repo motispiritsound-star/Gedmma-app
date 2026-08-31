@@ -21,6 +21,8 @@ const staat = {
   getoond: 100,
   totaal: 0,
   weergave: 'kaart',
+  /** Heeft de gebruiker zelf al een scherm gekozen? Dan niet meer omschakelen. */
+  handmatig: false,
   afzender: {},
 };
 
@@ -138,8 +140,10 @@ async function start() {
   }
   const { druk } = await api(`/api/vandaag${vandaagWie === 'team' ? '?iedereen=1' : ''}`);
   zetWerkTeller(druk);
-  if (druk.totaal > 0) await wisselNaar('vandaag');
-  else zetPaginakop('kaart');
+  // Klikte je tijdens het laden al iets aan, dan houden we dat; anders opent hij
+  // op de werklijst zodra daar iets op staat.
+  if (druk.totaal > 0 && !staat.handmatig) await wisselNaar('vandaag');
+  else if (!staat.handmatig) zetPaginakop('kaart');
 }
 
 /** De titel boven het werkgebied hoort bij het scherm waar je in staat. */
@@ -853,7 +857,7 @@ async function haalMail(doel, id) {
 // Weergaven
 // --------------------------------------------------------------------------
 for (const knop of $('tabs').querySelectorAll('.tab')) {
-  knop.addEventListener('click', () => wisselNaar(knop.dataset.weergave));
+  knop.addEventListener('click', () => { staat.handmatig = true; wisselNaar(knop.dataset.weergave); });
 }
 
 async function wisselNaar(weergave) {
@@ -910,6 +914,7 @@ async function toonTeam() {
   const overzicht = await api('/api/overzicht');
   await vulAanbod();
   tekenPrognose(gegevens.prognose);
+  await tekenControle();
 
   $('omzettegels').innerHTML = [
     { waarde: overzicht.opdrachten.totaal, tekst: 'opdrachten binnen', klem: true },
@@ -941,6 +946,32 @@ async function toonTeam() {
       <span class="meter-naam">${isMijlpaal(stap.fase) ? '🎯 ' : ''}${esc(stap.label)}</span>
       <span class="meter-waarde">${stap.aantal}</span>
       <span class="meter-spoor"><i class="meter-vul" style="width:${Math.round((stap.aantal / grootste) * 100)}%"></i></span>
+    </div>`).join('');
+}
+
+/**
+ * Wat er nog geregeld moet worden voordat je echte bedrijven benadert. Staat er
+ * niets meer open, dan verdwijnt het blok — een checklist die altijd blijft
+ * staan leest niemand meer.
+ */
+async function tekenControle() {
+  const uitkomst = await api('/api/controle');
+  const open = uitkomst.punten.filter((punt) => punt.staat !== 'goed');
+  $('startvak').hidden = open.length === 0;
+  if (open.length === 0) return;
+
+  $('start-samenvatting').textContent = uitkomst.klaar
+    ? `${uitkomst.waarschuwingen} punt${uitkomst.waarschuwingen === 1 ? '' : 'en'} om nog eens naar te kijken`
+    : `${uitkomst.blokkades} punt${uitkomst.blokkades === 1 ? '' : 'en'} moet eerst geregeld worden`;
+
+  $('startlijst').innerHTML = open.map((punt) => `
+    <div class="startregel ${esc(punt.staat)}">
+      <span class="startteken" aria-hidden="true">${punt.staat === 'blokkeert' ? '!' : '·'}</span>
+      <div>
+        <b>${esc(punt.naam)}</b>
+        <div class="sub">${esc(punt.bevinding)}</div>
+        ${punt.actie ? `<div class="startactie mono">${esc(punt.actie)}</div>` : ''}
+      </div>
     </div>`).join('');
 }
 
@@ -1423,7 +1454,8 @@ async function vulPalet(zoek) {
   const schermen = SCHERMEN
     .filter((rij) => !zoek || rij.naam.toLowerCase().includes(zoek.toLowerCase()))
     .filter((rij) => rij.weergave !== 'team' || staat.ik.rol === 'eigenaar')
-    .map((rij) => ({ soort: 'scherm', naam: rij.naam, extra: 'Ga naar', doe: () => wisselNaar(rij.weergave) }));
+    .map((rij) => ({ soort: 'scherm', naam: rij.naam, extra: 'Ga naar',
+      doe: () => { staat.handmatig = true; return wisselNaar(rij.weergave); } }));
 
   let leads = [];
   if (zoek.trim().length >= 2) {
@@ -1432,7 +1464,7 @@ async function vulPalet(zoek) {
       leads = uitkomst.leads.map((lead) => ({
         soort: 'lead', naam: lead.name,
         extra: [lead.city, `score ${lead.score}`].filter(Boolean).join(' · '),
-        doe: async () => { await wisselNaar('kaart'); kiesLead({ id: lead.id }); },
+        doe: async () => { staat.handmatig = true; await wisselNaar('kaart'); kiesLead({ id: lead.id }); },
       }));
     } catch { /* zoeken mag stilletjes mislukken */ }
   }
@@ -1536,7 +1568,11 @@ document.addEventListener('keydown', (gebeurtenis) => {
   if (wachtOpG) {
     wachtOpG = false;
     const naar = { v: 'vandaag', k: 'kaart', m: 'mijn', t: 'team', n: 'nieuws' }[toets.toLowerCase()];
-    if (naar && !(naar === 'team' && staat.ik.rol !== 'eigenaar')) { gebeurtenis.preventDefault(); wisselNaar(naar); }
+    if (naar && !(naar === 'team' && staat.ik.rol !== 'eigenaar')) {
+      gebeurtenis.preventDefault();
+      staat.handmatig = true;
+      wisselNaar(naar);
+    }
     return;
   }
 

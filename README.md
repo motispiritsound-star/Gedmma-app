@@ -49,22 +49,33 @@ ouders, dan zegt het opstartscript dat meteen.
 
 ```bash
 cp .env.example .env          # zet je eigen contactgegevens in WEBSCAN_USER_AGENT
+#                               en WEBSCAN_DB op ./data/webscan.db
 
 # 1. Maak je eigen account aan
 node start.js gebruiker toevoegen --naam "Jouw naam" --email jij@voorbeeld.nl --rol eigenaar
 
-# 2. Bedrijven met een website ophalen (gratis, uit OpenStreetMap — mét positie)
-node start.js import --source osm --area Utrecht --category all --limit 300
+# 2. Leg vast wat je aanbiedt — dit komt in elke mail
+node start.js aanbod --maandbedrag 24,50 --bedrijfsnaam "Jouw bedrijf" --telefoon 06-12345678
 
-# 3. Hun websites scannen
-node start.js scan --limit 300
+# 3. Eén commando: bedrijven ophalen, scannen en je eerste leads tonen
+node start.js eerste-ronde --plaats Woerden --aantal 300
 
-# 4. Leg vast wat je aanbiedt
-node start.js aanbod --maandbedrag 49
+# 4. Nalopen of alles klaarstaat om te benaderen
+node start.js controle
 
-# 5. Alles bekijken op de kaart
+# 5. Aan het werk
 node start.js serve      # http://localhost:4321
 ```
+
+`eerste-ronde` doet in één keer wat je anders in drie commando's doet: bedrijven
+met een website ophalen uit OpenStreetMap, ze scannen, en de tien beste leads met
+contactgegevens op je scherm zetten. Begin met één gemeente die je kent — dan zie
+je meteen of de scores kloppen met wat je zelf van die bedrijven weet.
+
+`controle` loopt na wat er nog mist: een herkenbare user-agent, je bedrijfsnaam in
+de sjablonen, of je niet per ongeluk nog in de proefdatabase werkt, hoeveel
+bedrijven contactgegevens hebben en van hoeveel de rechtsvorm onbekend is. Zolang
+er iets rood staat, staat het ook in het dashboard onder **Team & omzet**.
 
 Zet `WEBSCAN_DB` in je `.env` op een ander bestand dan `data/demo.db`, zodat je
 echte werk niet tussen de proefgegevens komt te staan.
@@ -540,7 +551,10 @@ cd /srv/webscan && npm install --omit=dev
 node start.js gebruiker toevoegen --naam "Jouw naam" --email jij@voorbeeld.nl --rol eigenaar
 ```
 
-Draaiend houden met systemd (`/etc/systemd/system/webscan.service`):
+In `deploy/` staan drie bestanden die je zo kunt overnemen: een systemd-dienst,
+een Caddy-blok en een back-upscript.
+
+Draaiend houden met systemd (`deploy/webscan.service`):
 
 ```ini
 [Unit]
@@ -572,8 +586,18 @@ Caddy haalt en vernieuwt het certificaat zelf. Laat poort 4321 dicht in je
 firewall; alleen 80 en 443 hoeven open. Zet `WEBSCAN_HTTPS=1` zoals hierboven,
 anders krijgt de sessiecookie geen `Secure`-vlag.
 
-Back-up is één bestand: zet `data/webscan.db` (plus de `-wal`) elke nacht ergens
-anders neer. Dat is je hele administratie.
+Back-up is één bestand: je hele administratie zit in `data/webscan.db`. Gebruik
+`deploy/backup.sh` — die maakt met `sqlite3 .backup` een consistente kopie terwijl
+het dashboard doordraait, pakt hem in en ruimt kopieën ouder dan dertig dagen op:
+
+```bash
+sudo cp deploy/backup.sh /usr/local/bin/webscan-backup
+sudo chmod +x /usr/local/bin/webscan-backup
+crontab -e     #  15 3 * * *  /usr/local/bin/webscan-backup
+```
+
+Zet die back-ups daarna ergens ánders neer. Een kopie op dezelfde server is geen
+back-up.
 
 ## Voordat je het op internet zet
 
@@ -673,6 +697,7 @@ src/
     pipeline.ts       fases, belgeschiedenis, klanten, testimonials
     contact.ts        rechtsvorm, belregels, toestemming en de niet-benaderen-lijst
     opvolging.ts      de werklijst: wat moet er vandaag gebeuren
+    controle.ts       de controle vóór de go-live
     prognose.ts       wat de pijplijn waard is, en het doel
     nieuws.ts         het prikbord voor het team
     instellingen.ts   wat je aanbiedt en wat een agent verdient
@@ -783,6 +808,7 @@ demo/
   stijl-extra.css wat de demo bovenop het uiterlijk van het dashboard heeft
   page.ts         zet de scanresultaten en het uiterlijk in de pagina
   proefrit.ts     zet in één commando een werkende omgeving neer
+deploy/             systemd-dienst, Caddy-blok en back-upscript voor de server
 tools/benchmark.ts  meet de opslag- en zoeklaag met tienduizenden bedrijven
 test/             fixtures en controles
 ```

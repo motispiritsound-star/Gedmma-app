@@ -482,6 +482,17 @@ td.doen .knop { margin-left:5px; }
 #vandaag-rijen .tweede { white-space:normal; }
 #vandaag-rijen .tweede b { font-weight:500; color:var(--ink); }
 
+/* ---------- klaar voor de start ---------- */
+.startvak { margin-bottom:16px; overflow:hidden; }
+.startregel { display:flex; gap:11px; padding:12px 16px; border-top:1px solid var(--line); }
+.startregel:first-child { border-top:0; }
+.startregel b { font-weight:500; font-size:14px; }
+.startteken { display:grid; place-items:center; width:20px; height:20px; flex:none; margin-top:1px;
+  border-radius:50%; font:600 12px/1 var(--sans); background:var(--matig-wash); color:var(--matig); }
+.startregel.blokkeert .startteken { background:var(--slecht-wash); color:var(--slecht); }
+.startactie { margin-top:5px; padding:5px 8px; background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--r-xs); font-size:12px; color:var(--ink-2); overflow-x:auto; }
+
 /* ---------- prognose ---------- */
 .prognosevak { margin-bottom:16px; overflow:hidden; }
 .doelvorm { display:flex; align-items:center; gap:7px; }

@@ -350,6 +350,24 @@ check('de provisieregeling is opgeslagen',
 check('elke agent heeft een provisiebedrag',
   teamNa.team.every((rij: any) => typeof rij.provisie?.eenmaligCent === 'number'));
 
+console.log('\nDe controle voor de go-live:');
+const nazicht = (await eigenaar.doe('/api/controle')).inhoud;
+check('de controle noemt alle punten', nazicht.punten.length >= 8);
+check('een ontbrekende bedrijfsnaam blokkeert',
+  nazicht.punten.some((punt: any) => punt.naam === 'Je aanbod' && punt.staat === 'blokkeert'));
+check('elk punt dat niet goed staat heeft een actie',
+  nazicht.punten.filter((punt: any) => punt.staat !== 'goed').every((punt: any) => punt.actie));
+check('accounts staan goed',
+  nazicht.punten.some((punt: any) => punt.naam === 'Accounts' && punt.staat === 'goed'));
+check('een agent mag de controle niet zien', (await een.doe('/api/controle')).status === 403);
+
+await eigenaar.doe('/api/instellingen', {
+  method: 'PUT', body: JSON.stringify({ bedrijfsnaam: 'Bekkali Web', telefoon: '0612345678' }),
+});
+const naVullen = (await eigenaar.doe('/api/controle')).inhoud;
+check('na het invullen is het aanbod in orde',
+  naVullen.punten.some((punt: any) => punt.naam === 'Je aanbod' && punt.staat === 'goed'));
+
 console.log('\nNieuws voor het team:');
 const geplaatst = await eigenaar.doe('/api/nieuws', {
   method: 'POST',

@@ -1,0 +1,23 @@
+# Caddy regelt het certificaat zelf, vernieuwt het automatisch en zet alles
+# door naar het dashboard op localhost. Laat poort 4321 dicht in je firewall;
+# alleen 80 en 443 hoeven open te staan.
+#
+#   sudo cp deploy/Caddyfile /etc/caddy/Caddyfile   (of neem het blok over)
+#   sudo systemctl reload caddy
+
+webscan.jouwdomein.nl {
+    encode zstd gzip
+    reverse_proxy localhost:4321
+
+    # Het dashboard is voor je team, niet voor zoekmachines.
+    header {
+        X-Robots-Tag "noindex, nofollow"
+        Referrer-Policy "same-origin"
+        X-Content-Type-Options "nosniff"
+    }
+
+    log {
+        output file /var/log/caddy/webscan.log
+        format json
+    }
+}

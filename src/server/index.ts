@@ -17,6 +17,7 @@ import { SJABLONEN, renderSjabloon, stelSjabloonVoor } from '../report/templates
 import { aanbodTekst, bewaarAanbod, leesAanbod, leesProvisie, bewaarProvisie, provisieVan } from '../db/instellingen.ts';
 import { werklijst, werkdruk, legReactieVast } from '../db/opvolging.ts';
 import { prognose, leesDoel, bewaarDoel, tempo } from '../db/prognose.ts';
+import { controle } from '../db/controle.ts';
 import { toCsv } from '../util/csv.ts';
 import { verrijkBedrijf, CENT_PER_BEVRAGING } from '../sources/kvk-verrijken.ts';
 import { plaatsNieuws, nieuwsLijst, markeerGelezen, markeerAllesGelezen,
@@ -561,6 +562,11 @@ export async function startServer(port: number): Promise<void> {
       });
     }
     res.json({ aanbod, voorbeeld: aanbodTekst(aanbod), provisie: leesProvisie() });
+  });
+
+  /** De controle vóór de go-live; alleen de eigenaar kan er iets aan doen. */
+  app.get('/api/controle', vereistLogin, vereistEigenaar, (_req, res) => {
+    res.json(controle());
   });
 
   // --- team ---
