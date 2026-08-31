@@ -8,23 +8,26 @@
 //
 // Bij elke uitgave het versienummer van APP ophogen.
 
-const APP = 'noer-app-v4';
+const APP = 'noer-app-v5';
 const MEDIA = 'noer-media';
 const IS_MEDIA = (pad) => pad.includes('/audio/');
 
 const KERN = [
-  './', 'index.html', 'manifest.webmanifest', 'icoon.svg',
+  './', 'index.html', 'manifest.webmanifest',
+  'icoon.svg', 'icoon-192.png', 'icoon-512.png', 'icoon-masker.png', 'apple-touch-icon.png',
   'stijl/basis.css', 'stijl/leren.css',
   'js/app.js', 'js/ui.js', 'js/opslag.js', 'js/geluid.js', 'js/punten.js', 'js/iconen.js',
-  'js/route.js', 'js/opnames.js', 'js/zip.js',
+  'js/route.js', 'js/opnames.js', 'js/zip.js', 'js/versie.js',
   'js/schermen/start.js', 'js/schermen/thuis.js', 'js/schermen/letters.js',
   'js/schermen/qaida.js', 'js/schermen/koran.js', 'js/schermen/woorden.js',
   'js/schermen/voortgang.js', 'js/schermen/ouders.js', 'js/schermen/studio.js',
+  'js/schermen/over.js',
   'js/spellen/basis.js', 'js/spellen/klankjacht.js', 'js/spellen/vormenpuzzel.js',
   'js/spellen/leesladder.js', 'js/spellen/koppelen.js', 'js/spellen/geheugen.js',
   'js/spellen/ayapuzzel.js',
   'data/letters.js', 'data/harakat.js', 'data/qaida.js', 'data/koran.js',
   'data/woorden.js', 'data/badges.js', 'data/bronnen.js', 'data/hulp.js',
+  'data/koran-bron.json',
 ];
 
 self.addEventListener('install', (e) => {

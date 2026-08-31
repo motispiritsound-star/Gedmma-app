@@ -74,6 +74,11 @@ function dashboard(bak) {
       pinInstellen()),
 
     el('section', { class: 'kaart' },
+      el('h2', { tekst: 'Over deze app' }),
+      el('p', { class: 'klein', tekst: 'Wat er met jullie gegevens gebeurt, waar de Koran-tekst vandaan komt, en welke versie je voor je hebt.' }),
+      el('a', { class: 'knop stil', href: '#/over', tekst: 'Colofon en privacy' })),
+
+    el('section', { class: 'kaart' },
       el('h2', { tekst: 'Gegevens' }),
       el('p', { class: 'klein', tekst:
         'Alles blijft op dit apparaat staan. Er gaat niets naar een server, er zijn geen ' +

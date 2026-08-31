@@ -18,6 +18,9 @@ export function toon(bak) {
       el('p', { class: 'onder-logo', tekst: 'Arabisch lezen, stap voor stap' })),
     profielen.length ? profielenLijst(profielen) : null,
     nieuwFormulier(profielen.length > 0),
+    el('p', { class: 'voetnoot' },
+      'Alles blijft op dit apparaat. ',
+      el('a', { href: '#/over', tekst: 'Colofon en privacy' })),
   );
 }
 

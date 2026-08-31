@@ -16,6 +16,7 @@ import {
   ayaUrls, RECITEURS, vulIn, AUDIO, reciteurNu, bronBeschrijving,
 } from '../public/data/bronnen.js';
 import server, { veiligPad } from '../server.js';
+import { vingerafdrukVan } from '../tools/vingerafdruk.js';
 
 test('het alfabet heeft 28 letters, allemaal uniek', () => {
   assert.equal(LETTERS.length, 28);
@@ -234,6 +235,34 @@ test('geluidsbestanden krijgen een audio-type mee, ook die uit de studio', async
     assert.match(bron, new RegExp(`'\\${extensie}': 'audio/`),
       `${extensie} wordt niet als audio geserveerd; de app negeert het bestand dan`);
   }
+});
+
+test('de Koran-tekst is nog dezelfde als toen hij uit de bron kwam', async () => {
+  const stempel = JSON.parse(
+    await readFile(new URL('../public/data/koran-bron.json', import.meta.url), 'utf8'));
+
+  assert.ok(stempel.bron, 'er staat geen bron vermeld');
+  assert.ok(stempel.overgenomen, 'er staat geen datum bij');
+  assert.equal(stempel.aantalAyaat, SOERAS.reduce((n, s) => n + s.ayaat.length, 0));
+
+  // Elke wijziging in het Arabisch — ook één teken — verandert de vingerafdruk.
+  // Dan hoort iemand er bewust naar gekeken te hebben, en de stempel bij te
+  // werken met tools/koran-bron.js.
+  assert.equal(vingerafdrukVan(SOERAS), stempel.vingerafdruk,
+    'de Arabische tekst is veranderd zonder dat koran-bron.json is bijgewerkt');
+});
+
+test('de aya in de promofilm is dezelfde als die in de app', async () => {
+  // De film toont soera al-Ichlaas aya 1 woord voor woord. Wisselt de app van
+  // bron, dan moet de film mee — anders staat er straks een andere spelling in
+  // je promotiemateriaal dan in je app.
+  const film = await readFile(new URL('../promo/promo.html', import.meta.url), 'utf8');
+  const blok = film.slice(film.indexOf('id="aya"'), film.indexOf('id="blijft"'));
+  const inFilm = [...blok.matchAll(/data-na="[\d.]+">([^<]+)<\/span>/g)].map((m) => m[1]);
+
+  const aya = SOERA_OP_ID['al-ikhlas'].ayaat[0];
+  assert.deepEqual(inFilm, aya.ar.split(/\s+/),
+    'de film en de app tonen niet dezelfde tekst voor al-Ichlaas 1');
 });
 
 test('opzoektabellen antwoorden niet op sleutels uit Object.prototype', () => {

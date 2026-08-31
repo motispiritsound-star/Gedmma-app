@@ -652,3 +652,13 @@
   0%, 100% { box-shadow: 0 2px 0 #9c4530, 0 0 0 0 color-mix(in srgb, var(--terra) 55%, transparent); }
   50% { box-shadow: 0 2px 0 #9c4530, 0 0 0 10px transparent; }
 }
+
+/* --- Storing en colofon -------------------------------------------------- */
+
+/* Wat er ook stukgaat, een kind hoort geen wit scherm te zien. */
+.storing { border-top: 3px solid var(--terra); max-width: 30rem; margin: 3rem auto; }
+.storing .foutregel { color: var(--inkt-3); font-family: ui-monospace, monospace; font-size: .7em; margin-top: 1rem; }
+
+.lijstje { margin: .4rem 0 .8rem 1.1rem; padding: 0; }
+.lijstje li { margin-bottom: .3rem; font-size: .92em; }
+.kaart .knop.stil[href] { display: inline-block; text-decoration: none; }

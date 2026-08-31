@@ -16,6 +16,7 @@ import * as woorden from './schermen/woorden.js';
 import * as voortgangScherm from './schermen/voortgang.js';
 import * as ouders from './schermen/ouders.js';
 import * as studio from './schermen/studio.js';
+import * as over from './schermen/over.js';
 
 import { ga, huidigPad } from './route.js';
 
@@ -38,6 +39,7 @@ const ROUTES = [
   [/^\/ouders$/, () => ouders.toon(inhoud)],
   [/^\/studio$/, () => studio.toon(inhoud)],
   [/^\/studio\/([\w-]+)$/, (id) => studio.toonGroep(inhoud, id)],
+  [/^\/over$/, () => over.toon(inhoud)],
 ];
 
 const NAV = [
@@ -112,7 +114,14 @@ function router() {
 
   for (const [patroon, teken] of ROUTES) {
     const treffer = pad.match(patroon);
-    if (treffer) { teken(...treffer.slice(1)); window.scrollTo(0, 0); return; }
+    if (!treffer) continue;
+    try {
+      teken(...treffer.slice(1));
+    } catch (fout) {
+      toonStoring(fout);
+    }
+    window.scrollTo(0, 0);
+    return;
   }
   zet(inhoud, el('div', { class: 'kaart leeg' },
     el('h2', { tekst: 'Hier is niets' }),
@@ -130,6 +139,29 @@ setInterval(() => {
   }
 }, 30000);
 document.addEventListener('visibilitychange', () => { laatsteTik = Date.now(); });
+
+/**
+ * Wat er ook stukgaat: een kind hoort geen wit scherm te zien. Dit vangt alles
+ * wat nergens anders is opgevangen en zet er iets neer waar je uit komt.
+ * De voortgang staat in de opslag, dus opnieuw beginnen kost niets.
+ */
+function toonStoring(fout) {
+  console.error('Noer liep vast:', fout);
+  if (document.querySelector('.storing')) return;   // niet stapelen
+  zet(inhoud, el('section', { class: 'kaart storing' },
+    el('h2', { tekst: 'Er ging iets mis' }),
+    el('p', { tekst: 'Sorry, hier liep iets vast. Je voortgang is bewaard — die ben je niet kwijt.' }),
+    el('div', { class: 'knoprij' },
+      el('button', { class: 'knop', tekst: 'Probeer opnieuw',
+        opclick: () => { ga('/thuis'); router(); } }),
+      el('button', { class: 'knop stil', tekst: 'Pagina verversen',
+        opclick: () => window.location.reload() })),
+    el('p', { class: 'klein foutregel', tekst: String(fout?.message || fout || '').slice(0, 200) })));
+  kopbalk.classList.remove('verborgen');
+}
+
+window.addEventListener('error', (e) => toonStoring(e.error || e.message));
+window.addEventListener('unhandledrejection', (e) => toonStoring(e.reason));
 
 window.addEventListener('hashchange', router);
 opAndering(() => { if (actiefProfiel()) tekenKopbalk(); });

@@ -1,16 +1,26 @@
 {
   "name": "Noer — Arabisch en Koran voor kinderen",
   "short_name": "Noer",
-  "description": "Arabisch leren lezen en korte soera's uit je hoofd leren, spelenderwijs.",
+  "description": "Arabisch leren lezen en korte soera's uit je hoofd leren, spelenderwijs. Voor kinderen van 5 tot en met 13 jaar.",
   "lang": "nl",
   "dir": "ltr",
+  "categories": ["education", "kids"],
   "start_url": "./",
   "scope": "./",
+  "id": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#fcfcfb",
-  "theme_color": "#2f8f6f",
+  "background_color": "#faf5ec",
+  "theme_color": "#0f7a67",
   "icons": [
-    { "src": "icoon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    { "src": "icoon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icoon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icoon-masker.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icoon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Leren lezen", "url": "./#/qaida" },
+    { "name": "Koran", "url": "./#/koran" },
+    { "name": "Voor ouders", "url": "./#/ouders" }
   ]
 }

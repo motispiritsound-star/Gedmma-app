@@ -9,7 +9,10 @@
 // NOER_URL zet een ander adres, NOER_SCHERMAFDRUKKEN een map voor plaatjes.
 
 import { chromium } from 'playwright';
-import { mkdir, writeFile, rm } from 'node:fs/promises';
+import { mkdir, writeFile, rm, readFile } from 'node:fs/promises';
+import { createServer } from 'node:http';
+import { join, extname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const BASIS = process.env.NOER_URL || 'http://localhost:5173';
 const SCHERMEN = process.env.NOER_SCHERMAFDRUKKEN || null;
@@ -25,13 +28,17 @@ const page = await context.newPage();
 // De app kijkt of er een geluidsbestand ligt; is dat er niet, dan is een 404
 // het goede antwoord en geen fout. Alleen die overslaan.
 const optioneelGeluid = (regel) => /audio\/(letters|woorden|koran)\//.test(regel);
+// De storingstest gooit met opzet een fout; die hoort de app op te vangen en
+// niet als testfout te tellen.
+const eigenTestfout = (tekst) => tekst.includes('opzettelijke testfout');
 page.on('console', (m) => {
   if (m.type() !== 'error') return;
   const regel = m.location?.()?.url || m.text();
   if (m.text().includes('404') && optioneelGeluid(regel)) return;
+  if (eigenTestfout(m.text())) return;
   fouten.push(`console: ${m.text()} ${regel}`);
 });
-page.on('pageerror', (e) => fouten.push(`pageerror: ${e.message}`));
+page.on('pageerror', (e) => { if (!eigenTestfout(e.message)) fouten.push(`pageerror: ${e.message}`); });
 
 const stap = async (naam, fn) => {
   try { await fn(); console.log(`  ok  ${naam}`); }
@@ -355,12 +362,96 @@ await stap('verzonnen adressen leiden terug in plaats van stuk te lopen', async 
   await page.waitForSelector('.kaart.leeg');
 });
 
+await stap('colofon: privacy, bron van de tekst en versie', async () => {
+  await page.goto(`${BASIS}/#/over`);
+  await page.waitForSelector('.schermkop h1');
+  const tekst = await page.evaluate(() => document.getElementById('inhoud').innerText);
+  for (const stuk of ['Niets verlaat dit apparaat', 'Noer 1.', 'geen vertaling van de Koran']) {
+    if (!tekst.includes(stuk)) throw new Error(`het colofon mist "${stuk}"`);
+  }
+  // De bronvermelding van de Koran-tekst wordt uit koran-bron.json gelezen.
+  await page.waitForFunction(() =>
+    document.getElementById('inhoud').innerText.includes('overgenomen op'), null, { timeout: 5000 });
+});
+
+await stap('een fout geeft een uitweg, geen wit scherm', async () => {
+  await page.goto(`${BASIS}/#/thuis`);
+  await page.waitForSelector('.groet');
+  // Een echte, nergens opgevangen fout in de pagina.
+  await page.evaluate(() => setTimeout(() => { throw new Error('opzettelijke testfout'); }, 0));
+  await page.waitForSelector('.storing', { timeout: 5000 });
+  const uitweg = await page.locator('.storing button:has-text("Probeer opnieuw")').count();
+  if (!uitweg) throw new Error('het storingsscherm biedt geen weg terug');
+  await page.click('.storing button:has-text("Probeer opnieuw")');
+  await page.waitForSelector('.groet');
+});
+
+await stap('installeerbaar: manifest en iconen kloppen', async () => {
+  const manifest = await (await fetch(`${BASIS}/manifest.webmanifest`)).json();
+  if (manifest.start_url !== './' || manifest.scope !== './') {
+    throw new Error('start_url en scope moeten relatief zijn, anders breekt hosting onder een submap');
+  }
+  if (!manifest.icons.some((i) => i.purpose === 'maskable')) {
+    throw new Error('geen maskable icoon; Android knipt het dan verkeerd bij');
+  }
+  for (const icoon of manifest.icons) {
+    const antwoord = await fetch(`${BASIS}/${icoon.src}`);
+    if (!antwoord.ok) throw new Error(`icoon ontbreekt: ${icoon.src}`);
+    const type = antwoord.headers.get('content-type') || '';
+    if (!type.startsWith('image/')) throw new Error(`${icoon.src} komt binnen als ${type}`);
+  }
+  // iOS leest geen SVG-icoon; zonder dit bestand blijft het beginscherm leeg.
+  const apple = await fetch(`${BASIS}/apple-touch-icon.png`);
+  if (!apple.ok) throw new Error('apple-touch-icon.png ontbreekt');
+  const deel = await fetch(`${BASIS}/deelbeeld.png`);
+  if (!deel.ok) throw new Error('deelbeeld.png ontbreekt — gedeelde links tonen dan niets');
+});
+
+await stap('draait ook onder een submap, niet alleen in de wortel', async () => {
+  // Veel mensen zetten dit op example.nl/noer/ of op een projectpagina van
+  // GitHub. Eén absoluut pad ergens en de app blijft dan wit.
+  const wortel = fileURLToPath(new URL('../public/', import.meta.url));
+  const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
+    '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml',
+    '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
+  const server = createServer(async (verzoek, antwoord) => {
+    const pad = decodeURIComponent(verzoek.url.split('?')[0]);
+    if (!pad.startsWith('/noer/')) { antwoord.writeHead(404).end(); return; }
+    let doel = join(wortel, pad.slice('/noer/'.length));
+    try {
+      let inhoud;
+      try { inhoud = await readFile(doel); }
+      catch { doel = join(wortel, 'index.html'); inhoud = await readFile(doel); }
+      antwoord.writeHead(200, { 'content-type': types[extname(doel)] || 'application/octet-stream' }).end(inhoud);
+    } catch { antwoord.writeHead(404).end(); }
+  });
+  await new Promise((k) => server.listen(0, '127.0.0.1', k));
+  const poort = server.address().port;
+
+  const submapFouten = [];
+  const tab = await context.newPage();
+  tab.on('pageerror', (e) => submapFouten.push(e.message));
+  try {
+    await tab.goto(`http://127.0.0.1:${poort}/noer/`, { waitUntil: 'networkidle' });
+    await tab.waitForSelector('.welkom', { timeout: 8000 });
+    await tab.fill('#naam', 'Submap');
+    await tab.click('button[type=submit]');
+    await tab.waitForSelector('.groet', { timeout: 8000 });
+    await tab.goto(`http://127.0.0.1:${poort}/noer/#/koran`);
+    await tab.waitForSelector('.soerakaart', { timeout: 8000 });
+    if (submapFouten.length) throw new Error(`fouten onder een submap: ${submapFouten.join('; ')}`);
+  } finally {
+    await tab.close();
+    await new Promise((k) => server.close(k));
+  }
+});
+
 // Regressie: `node.append(null)` zet letterlijk "null" in beeld. Elk scherm
 // wordt daarop nagelopen.
 await stap('geen losse null of undefined in beeld', async () => {
   const routes = ['/thuis', '/letters', '/letters/ba', '/qaida', '/qaida/losse-letters',
     '/koran', '/koran/an-nas', '/woorden', '/woorden/kleuren', '/voortgang', '/ouders',
-    '/studio', '/studio/letter-klank', '/start'];
+    '/studio', '/studio/letter-klank', '/over', '/start'];
   const vies = [];
   for (const route of routes) {
     await page.goto(`${BASIS}/#${route}`);

@@ -197,18 +197,33 @@ vermeld altijd wie er reciteert.
 Goed, fout en klaar worden in de browser zelf opgewekt met een oscillator. Daar
 zijn geen bestanden voor nodig, en ze klinken overal hetzelfde.
 
-## Nog te doen vóór je dit uitgeeft
+## De Koran-tekst
 
-**De Koran-tekst moet nagekeken worden.** De Arabische tekst in
-`public/data/koran.js` is met zorg overgenomen, maar niet geverifieerd tegen
-een gecertificeerde bron. Vervang hem door een geverifieerde dataset
-(bijvoorbeeld de Uthmani-tekst van Tanzil) en laat hem nakijken door iemand met
-een idjaza. `npm test` controleert alleen de structuur — aantallen aya's,
-volgorde, of elke aya een vertaling heeft — en zegt niets over de juistheid van
-de tekst zelf.
+De Arabische tekst is niet met de hand ingetypt maar overgenomen uit een bron,
+en wordt bewaakt door een vingerafdruk:
 
-Hetzelfde geldt voor de Nederlandse betekenissen: dat is uitleg van de
-betekenis, geen vertaling van de Koran. Dat staat ook in de app.
+```bash
+node tools/koran-bron.js --controleer   # wijkt de tekst af van de bron?
+node tools/koran-bron.js --vernieuw     # neem de brontekst opnieuw over
+```
+
+Welke bron, wanneer en met welke vingerafdruk staat in
+`public/data/koran-bron.json`. Een test vergelijkt die vingerafdruk met de tekst
+die er staat, dus een losse wijziging — ook van één teken — valt meteen op.
+
+Wil je een andere bron, bijvoorbeeld een Tanzil-bestand dat je zelf hebt
+gedownload en gecontroleerd:
+
+```bash
+node tools/koran-bron.js --vernieuw --bestand quran.json
+```
+
+Wat dit niet vervangt: **iemand met kennis van zaken die de gekozen bron
+beoordeelt en de tekst naleest.** Het gereedschap vergelijkt tekens; of een
+bron deugt, is een oordeel. Zie `GO-LIVE.md`.
+
+De Nederlandse tekst bij de aya's is een weergave van de betekenis, geen
+vertaling van de Koran. Dat staat ook in de app.
 
 ## Privacy
 
@@ -271,6 +286,13 @@ niet in knoppen en menu's.
 De leerinhoud staat los van de code. Wil je een soera toevoegen, een thema
 uitbreiden of de lessen anders opbouwen, dan hoef je alleen in `data/` te zijn —
 `npm test` zegt daarna of het klopt.
+
+## Klaar voor go-live?
+
+`GO-LIVE.md` is de afvinklijst: wat af is en waar een test op zit, en wat een
+beslissing van jou is (de bron laten nalezen, de licentie van recitatie, je
+naam in het colofon, een licentie voor de code). Daar staat ook hoe je de app
+neerzet — het is een map met statische bestanden, meer niet.
 
 ## De promofilm
 
