@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { TALEN, type Taal } from '@gedmma/i18n';
 import { useApp, type Thema } from '../context/App.tsx';
 import { Knop, Melding } from '../ontwerp/index.tsx';
+import { Feedbackknop } from './Feedback.tsx';
 
 /**
  * Het hoofdmenu. Elk item heeft twee namen: de volledige naam voor het zijmenu
@@ -95,6 +96,19 @@ export function Schil({ children }: { children: ReactNode }) {
         {t('nav.naarInhoud')}
       </a>
 
+      {/* Op een test- of acceptatieomgeving hoort onmiskenbaar te zijn dat je
+          niet in de echte administratie zit. De server bepaalt of deze balk er
+          staat; de webapp verzint hem niet zelf. */}
+      {ik?.omgeving?.label && (
+        // Bewust geen role="status": dat is een live region voor meldingen die
+        // komen en gaan. Deze balk staat er permanent en is aanvullende
+        // informatie over de omgeving.
+        <aside className="omgevingsbalk" aria-label={t('omgeving.test')}>
+          <strong>{ik.omgeving.label}</strong>
+          <span>{t('omgeving.testUitleg')}</span>
+        </aside>
+      )}
+
       <header className="kop">
         <NavLink to="/" className="kop__merk">
           {t('app.naam')}
@@ -150,6 +164,8 @@ export function Schil({ children }: { children: ReactNode }) {
               <option value="donker">{t('instellingen.themaDonker')}</option>
             </select>
           </label>
+
+          <Feedbackknop />
 
           <Knop soort="stil" klein onClick={() => void afmelden()}>
             {t('nav.afmelden')}

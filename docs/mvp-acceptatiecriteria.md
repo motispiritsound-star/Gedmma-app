@@ -47,6 +47,9 @@ of het commando dat het aantoont. De MVP is pas gereed als alles op groen staat.
 | 35 | Dezelfde uren komen nooit twee keer op een factuur, en een gefactureerd uur ligt vast | `apps/api/test/uren.test.ts` |
 | 36 | Het facturenoverzicht filtert, zoekt en sorteert, met totalen over het hele filter | `apps/api/test/facturenoverzicht.test.ts`, `apps/web/e2e/verkoopoverzicht.spec.ts` |
 | 37 | Een testrun kan de ontwikkeldatabase niet legen | `apps/api/test/omgeving.test.ts` |
+| 38 | Iedereen die is aangemeld kan feedback geven; alleen een beheerder leest die | `apps/api/test/feedback.test.ts` |
+| 39 | Op een publieke omgeving kan registratie dicht, en blijft uitnodigen werken | `apps/api/test/feedback.test.ts` |
+| 40 | Een test- of acceptatieomgeving is als zodanig herkenbaar in de applicatie | `apps/api/test/feedback.test.ts`, `.omgevingsbalk` |
 
 ## Wat expliciet níet in de MVP zit
 

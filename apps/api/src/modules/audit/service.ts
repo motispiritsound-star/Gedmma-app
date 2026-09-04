@@ -80,6 +80,8 @@ export type AuditActie =
   | 'ai.voorstel_besloten'
   | 'ai.ingeschakeld'
   | 'ai.uitgeschakeld'
+  | 'feedback.gegeven'
+  | 'feedback.behandeld'
   | 'beveiliging.incident_geregistreerd'
   | 'beveiliging.veel_gegevens_geraadpleegd';
 

@@ -111,8 +111,16 @@ export function nieuweIdempotencyKey(): string {
 
 // --- Typen van de antwoorden ----------------------------------------------
 
+export type Omgeving = {
+  /** Leeg op een gewone omgeving; gevuld op een test- of acceptatieomgeving. */
+  label: string;
+  registratieOpen: boolean;
+  versie: string;
+};
+
 export type Ik = {
   aangemeld: boolean;
+  omgeving?: Omgeving;
   gebruiker?: {
     id: string;
     email: string;
@@ -130,6 +138,21 @@ export type Ik = {
     rol: string;
     administraties: { id: string; naam: string }[];
   }[];
+};
+
+export type Feedback = {
+  id: string;
+  naam: string | null;
+  gebruiker_naam: string | null;
+  administratie_naam: string | null;
+  soort: 'opmerking' | 'fout' | 'wens' | 'vraag';
+  bericht: string;
+  scherm: string | null;
+  versie_app: string | null;
+  status: 'nieuw' | 'opgepakt' | 'verwerkt' | 'afgewezen';
+  antwoord: string | null;
+  behandeld_op: string | null;
+  aangemaakt_op: string;
 };
 
 export type AdministratieAntwoord = {

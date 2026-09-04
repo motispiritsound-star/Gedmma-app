@@ -1,0 +1,101 @@
+# Productie- en testomgeving: database, API, webapp en een reverse proxy die
+# zelf een TLS-certificaat regelt.
+#
+# Alles wat per omgeving verschilt staat in .env naast dit bestand; zie
+# .env.productie.example en docs/testomgeving.md. In dit bestand staan geen
+# geheimen.
+#
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# Alleen Caddy is van buiten bereikbaar. De database en de API luisteren
+# uitsluitend op het interne netwerk; ze publiceren geen poort naar de host.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: gedmma_owner
+      POSTGRES_PASSWORD: ${DB_WACHTWOORD:?zet DB_WACHTWOORD in .env}
+      POSTGRES_DB: gedmma
+      # Wordt bij het aanmaken van de database gebruikt voor de applicatierol.
+      GEDMMA_APP_WACHTWOORD: ${DB_APP_WACHTWOORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./docker/db-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U gedmma_owner -d gedmma']
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: '4000'
+      DATABASE_URL: postgres://gedmma_app:${DB_APP_WACHTWOORD:?zet DB_APP_WACHTWOORD in .env}@db:5432/gedmma
+      DATABASE_MIGRATION_URL: postgres://gedmma_owner:${DB_WACHTWOORD}@db:5432/gedmma
+      DATABASE_APP_ROLE: gedmma_app
+      WEB_URL: https://${DOMEIN:?zet DOMEIN in .env}
+      PASSWORD_PEPPER: ${PASSWORD_PEPPER:?zet PASSWORD_PEPPER in .env}
+      DATA_ENCRYPTION_KEY: ${DATA_ENCRYPTION_KEY:?zet DATA_ENCRYPTION_KEY in .env}
+      STORAGE_DRIVER: lokaal
+      STORAGE_LOCAL_PATH: /data/opslag
+      MAIL_DRIVER: ${MAIL_DRIVER:-logboek}
+      MAIL_FROM: ${MAIL_FROM:-geen-antwoord@example.test}
+      SMTP_URL: ${SMTP_URL:-}
+      TRUST_PROXY: 'true'
+      # Op een publiek bereikbare omgeving hoort registratie dicht: er komt
+      # alleen iemand binnen die is uitgenodigd.
+      REGISTRATIE_OPEN: ${REGISTRATIE_OPEN:-nee}
+      # Leeg laten op een echte productieomgeving; gevuld toont de app een balk.
+      OMGEVING_LABEL: ${OMGEVING_LABEL:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - opslag:/data/opslag
+    healthcheck:
+      test: ['CMD', 'node', '-e', "fetch('http://127.0.0.1:4000/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/web.Dockerfile
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Caddy vraagt zelf een certificaat aan bij Let's Encrypt en vernieuwt het.
+  # Daarvoor moeten poort 80 en 443 open staan en moet DOMEIN naar deze server
+  # wijzen.
+  proxy:
+    image: caddy:2-alpine
+    depends_on:
+      - web
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      DOMEIN: ${DOMEIN}
+      BEHEER_EMAIL: ${BEHEER_EMAIL:?zet BEHEER_EMAIL in .env}
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  opslag:
+  caddy-data:
+  caddy-config:

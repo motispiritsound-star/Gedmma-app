@@ -123,6 +123,13 @@ export const omschrijvingen: Record<string, string> = {
     'Wijzigt de rol van een lid; lopende sessies worden ingetrokken.',
   'DELETE /api/v1/organisaties/{organisatieId}/leden/{membershipId}': 'Beëindigt de toegang van een lid.',
 
+  'POST /api/v1/organisaties/{organisatieId}/feedback':
+    'Legt een opmerking vast vanuit het scherm waar de gebruiker op dat moment staat.',
+  'GET /api/v1/organisaties/{organisatieId}/feedback':
+    'Geeft de binnengekomen opmerkingen; alleen voor wie de organisatie beheert.',
+  'PATCH /api/v1/organisaties/{organisatieId}/feedback/{feedbackId}':
+    'Zet een opmerking op opgepakt, verwerkt of afgewezen, met een antwoord erbij.',
+
   // --- Administratie --------------------------------------------------------
   'GET /api/v1/administraties/{administratieId}': 'Geeft de administratie met haar instellingen en status.',
   'PATCH /api/v1/administraties/{administratieId}': 'Wijzigt de instellingen van de administratie.',

@@ -28,6 +28,8 @@ onderbouwing en de operationele documentatie.
 | --- | --- |
 | [api.md](api.md) | API-ontwerp, foutcodes, paginering, idempotentie |
 | [deployment.md](deployment.md) | Lokale omgeving, containers, CI/CD, rollback |
+| [testomgeving.md](testomgeving.md) | Van een lege server naar een werkende omgeving op je eigen domein |
+| [testscript-accountant.md](testscript-accountant.md) | Wat je een accountant meegeeft die het pakket beoordeelt |
 | [testing.md](testing.md) | Teststrategie en testsoorten |
 | [migration-strategy.md](migration-strategy.md) | Import- en migratieframework |
 | [mobile-architecture.md](mobile-architecture.md) | Architectuur iOS/Android |

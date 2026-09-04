@@ -570,6 +570,34 @@ textarea.veld__invoer {
   flex-wrap: wrap;
 }
 
+/* --- Omgevingsbalk --------------------------------------------------------
+   Alleen zichtbaar op een test- of acceptatieomgeving. Hij moet opvallen zonder
+   de applicatie eronder onleesbaar te maken, en hij hoort in beide thema's te
+   werken. */
+
+.omgevingsbalk {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--ruimte-2) var(--ruimte-3);
+  padding: var(--ruimte-2) var(--ruimte-4);
+  background: var(--kleur-let-op-zacht);
+  color: var(--kleur-tekst);
+  border-bottom: 2px solid var(--kleur-let-op);
+  font-size: var(--tekst-s);
+}
+
+.omgevingsbalk strong {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: var(--tekst-xs);
+  color: var(--kleur-let-op);
+}
+
+.omgevingsbalk span {
+  color: var(--kleur-tekst-zacht);
+}
+
 /* --- Filterbalk ----------------------------------------------------------- */
 
 .filterbalk {

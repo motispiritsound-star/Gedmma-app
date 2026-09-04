@@ -1,0 +1,35 @@
+# Reverse proxy met automatische HTTPS.
+#
+# Caddy haalt zelf een certificaat op bij Let's Encrypt zodra het domein naar
+# deze server wijst en poort 80 en 443 bereikbaar zijn. Er is geen certbot,
+# geen cronjob en geen handmatige vernieuwing.
+
+{
+	email {$BEHEER_EMAIL}
+	# Geen serverkenmerk teruggeven; scheelt een gratis hint aan scanners.
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
+{$DOMEIN} {
+	encode zstd gzip
+
+	# De webcontainer serveert de bundel en stuurt /api door naar de API.
+	reverse_proxy web:8080
+
+	header {
+		# HSTS: pas aanzetten als je zeker weet dat het domein op https blijft.
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+		-Server
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

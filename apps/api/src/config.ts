@@ -58,6 +58,22 @@ export const config = {
   /** Basis-URL van de webapp; gebruikt in e-mails en voor CORS/Origin-controle. */
   webUrl: process.env.WEB_URL ?? 'http://localhost:5173',
 
+  /**
+   * Een korte aanduiding van deze omgeving, zichtbaar in de applicatie.
+   * Leeg betekent: geen banner. Bedoeld voor een test- of acceptatieomgeving,
+   * zodat niemand hem aanziet voor de echte administratie.
+   */
+  omgevingLabel: process.env.OMGEVING_LABEL ?? '',
+
+  /**
+   * Mag iedereen die het adres kent een account aanmaken?
+   *
+   * Op een publiek bereikbare omgeving hoort dit uit te staan: dan komen er
+   * alleen mensen binnen die zijn uitgenodigd. Buiten productie staat het aan,
+   * anders is er geen eerste account.
+   */
+  registratieOpen: vlag('REGISTRATIE_OPEN', !isProductie),
+
   database: {
     url:
       process.env.DATABASE_URL ??

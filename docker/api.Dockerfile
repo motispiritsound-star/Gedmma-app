@@ -27,6 +27,9 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY package.json ./
 COPY packages ./packages
 COPY apps/api ./apps/api
+# Het demoscript hoort erbij: een testomgeving moet zichzelf kunnen vullen met
+# verzonnen gegevens, zonder dat er iets vanaf een werkplek hoeft te draaien.
+COPY scripts ./scripts
 
 RUN mkdir -p /data/opslag && chown -R node:node /data /app
 USER node

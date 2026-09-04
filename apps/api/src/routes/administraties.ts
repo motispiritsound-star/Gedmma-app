@@ -16,6 +16,7 @@ import { alleBoekjaren, alleBtwCodes, alleDagboeken, allePeriodes, alleRekeninge
 import { wijzigPeriodestatus } from '../modules/grootboek/service.ts';
 import { STANDAARD_BTWCODES } from '../modules/btw/codes.ts';
 import { SCHEMA_SJABLONEN } from '@gedmma/accounting';
+import { behandelFeedback, meldFeedback, zoekFeedback } from '../modules/feedback/service.ts';
 import { ledenVan, nodigUit, trekToegangIn, wijzigRol } from '../modules/organisaties/leden.ts';
 import { asyncRoute, inContext } from './hulp.ts';
 
@@ -317,5 +318,105 @@ organisatieRoutes.delete(
     const context = { organisatieId, administratieId: null, gebruikerId: aangemeld.gebruikerId, actorSoort: 'gebruiker' as const };
     await inTransactie(context, (client) => trekToegangIn(client, context, membershipId));
     antwoord.json({ melding: 'De toegang is ingetrokken.' });
+  }),
+);
+
+// --- Feedback ---------------------------------------------------------------
+// Iets opmerken mag iedereen die is aangemeld: ook een meekijker, ook iemand
+// die alleen aan het proberen is. Het lezen en afhandelen ervan is voorbehouden
+// aan wie de organisatie beheert.
+
+/** Controleert dat de gebruiker lid is van deze organisatie. */
+async function eisLid(verzoek: Verzoek, organisatieId: string): Promise<void> {
+  const aangemeld = eisAangemeld(verzoek);
+  const organisaties = await organisatiesVan(aangemeld.gebruikerId);
+  if (!organisaties.some((o) => o.organisatie.id === organisatieId)) {
+    throw fout.nietGevonden('Deze organisatie');
+  }
+}
+
+organisatieRoutes.post(
+  '/:organisatieId/feedback',
+  asyncRoute(async (verzoek: Verzoek, antwoord) => {
+    const organisatieId = valideer(uuidSchema, verzoek.params.organisatieId);
+    await eisLid(verzoek, organisatieId);
+    const aangemeld = eisAangemeld(verzoek);
+
+    const invoer = valideer(
+      z.object({
+        soort: z.enum(['opmerking', 'fout', 'wens', 'vraag']).optional(),
+        bericht: z.string().min(3, 'Schrijf kort op wat je opvalt').max(5000),
+        naam: z.string().max(120).nullish(),
+        scherm: z.string().max(200).nullish(),
+        versieApp: z.string().max(60).nullish(),
+        administratieId: uuidSchema.nullish(),
+      }),
+      verzoek.body,
+    );
+
+    const context = {
+      organisatieId,
+      administratieId: invoer.administratieId ?? null,
+      gebruikerId: aangemeld.gebruikerId,
+      actorSoort: 'gebruiker' as const,
+    };
+    const uitkomst = await inTransactie(context, (client) => meldFeedback(client, context, invoer));
+
+    antwoord.status(201).json({
+      id: uitkomst.id,
+      melding: 'Dank je wel. Je opmerking staat genoteerd.',
+    });
+  }),
+);
+
+organisatieRoutes.get(
+  '/:organisatieId/feedback',
+  asyncRoute(async (verzoek: Verzoek, antwoord) => {
+    const organisatieId = valideer(uuidSchema, verzoek.params.organisatieId);
+    await eisBeheerder(verzoek, organisatieId);
+    const aangemeld = eisAangemeld(verzoek);
+
+    const opdracht = valideer(
+      z.object({
+        status: z.enum(['nieuw', 'opgepakt', 'verwerkt', 'afgewezen']).optional(),
+        limiet: z.coerce.number().int().min(1).max(500).default(100),
+      }),
+      verzoek.query,
+    );
+
+    const uitkomst = await inTransactie(
+      { organisatieId, administratieId: null, gebruikerId: aangemeld.gebruikerId, actorSoort: 'gebruiker' },
+      (client) => zoekFeedback(client, organisatieId, opdracht),
+    );
+    antwoord.json(uitkomst);
+  }),
+);
+
+organisatieRoutes.patch(
+  '/:organisatieId/feedback/:feedbackId',
+  asyncRoute(async (verzoek: Verzoek, antwoord) => {
+    const organisatieId = valideer(uuidSchema, verzoek.params.organisatieId);
+    const feedbackId = valideer(uuidSchema, verzoek.params.feedbackId);
+    await eisBeheerder(verzoek, organisatieId);
+    const aangemeld = eisAangemeld(verzoek);
+
+    const invoer = valideer(
+      z.object({
+        status: z.enum(['nieuw', 'opgepakt', 'verwerkt', 'afgewezen']),
+        antwoord: z.string().max(2000).nullish(),
+      }),
+      verzoek.body,
+    );
+
+    const context = {
+      organisatieId,
+      administratieId: null,
+      gebruikerId: aangemeld.gebruikerId,
+      actorSoort: 'gebruiker' as const,
+    };
+    const uitkomst = await inTransactie(context, (client) =>
+      behandelFeedback(client, context, feedbackId, invoer),
+    );
+    antwoord.json(uitkomst);
   }),
 );

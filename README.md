@@ -47,6 +47,12 @@ npm run dev
 
 Uitgebreide instructies staan in [docs/deployment.md](docs/deployment.md).
 
+Wil je hem online zetten zodat iemand anders kan meekijken — een accountant, een
+eerste klant — dan staat de route van niets naar een werkende omgeving op je
+eigen domein in [docs/testomgeving.md](docs/testomgeving.md). Het testscript dat
+je zo iemand meegeeft, staat in
+[docs/testscript-accountant.md](docs/testscript-accountant.md).
+
 ## Wat werkt er nu
 
 | Onderdeel | Status |

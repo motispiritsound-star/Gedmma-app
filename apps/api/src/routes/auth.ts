@@ -4,6 +4,7 @@ import { z, valideer } from '../http/valideer.ts';
 import { eisAangemeld, tenantVan, type Verzoek } from '../http/context.ts';
 import { SESSIE_COOKIE, eisAanmelding } from '../http/middleware.ts';
 import { ApiFout } from '../http/fout.ts';
+import { config } from '../config.ts';
 import {
   actieveSessies,
   begintMfaOpzet,
@@ -35,6 +36,14 @@ authRoutes.post(
       }),
       verzoek.body,
     );
+
+    if (!config.registratieOpen) {
+      throw new ApiFout(
+        'forbidden',
+        'Op deze omgeving kun je jezelf niet aanmelden.',
+        'Vraag de beheerder om een uitnodiging; die krijg je per e-mail.',
+      );
+    }
 
     await registreer({ ...invoer, ip: verzoek.ip });
 
@@ -171,8 +180,16 @@ authRoutes.post(
 authRoutes.get(
   '/me',
   asyncRoute(async (verzoek: Verzoek, antwoord) => {
+    // De omgeving hoort ook bij het aanmeldscherm: daar moet al zichtbaar zijn
+    // dat dit een testomgeving is, en of je jezelf kunt aanmelden.
+    const omgeving = {
+      label: config.omgevingLabel,
+      registratieOpen: config.registratieOpen,
+      versie: process.env.npm_package_version ?? '0.1.0',
+    };
+
     if (!verzoek.aangemeld) {
-      antwoord.json({ aangemeld: false });
+      antwoord.json({ aangemeld: false, omgeving });
       return;
     }
     const aangemeld = verzoek.aangemeld;
@@ -181,6 +198,7 @@ authRoutes.get(
 
     antwoord.json({
       aangemeld: true,
+      omgeving,
       gebruiker: {
         id: aangemeld.gebruikerId,
         email: aangemeld.email,

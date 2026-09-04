@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { NavLink, Route, Routes } from 'react-router-dom';
 import { TALEN, toonTijdstip } from '@gedmma/i18n';
 import { useApp } from '../context/App.tsx';
+import { Feedbackoverzicht } from './Feedback.tsx';
 import { Etiket, Kaart, Keuzeveld, Knop, Laden, Melding, Tabelomhulsel, Veld } from '../ontwerp/index.tsx';
 import { useActie, useHaal } from './gebruik.ts';
 
@@ -22,6 +23,7 @@ export function Instellingen() {
             { pad: '/instellingen/beveiliging', tekst: t('instellingen.beveiliging') },
             { pad: '/instellingen/perioden', tekst: t('instellingen.perioden') },
             { pad: '/instellingen/audit', tekst: t('instellingen.auditTrail') },
+            { pad: '/instellingen/feedback', tekst: t('feedback.overzicht') },
           ].map((item) => (
             <li key={item.pad}>
               <NavLink to={item.pad} end={item.einde} className="knop knop--tweede knop--klein">
@@ -46,6 +48,7 @@ export function Instellingen() {
         <Route path="beveiliging" element={<Beveiliging />} />
         <Route path="perioden" element={<Perioden />} />
         <Route path="audit" element={<Audit />} />
+        <Route path="feedback" element={<Feedbackoverzicht />} />
       </Routes>
     </div>
   );
