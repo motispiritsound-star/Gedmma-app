@@ -10,7 +10,7 @@ zie [deployment.md](deployment.md). Dit document is de korte, concrete route.
 
 | Wat | Waar | Ongeveer |
 | --- | --- | --- |
-| Een kleine Linux-server (2 vCPU, 4 GB, 40 GB schijf) | Hetzner, TransIP, DigitalOcean, Vultr | € 5 – 10 per maand |
+| Een kleine Linux-server (2 vCPU, 4 GB, 40 GB schijf) | zie de tabel hieronder | € 5 – 25 per maand |
 | Een domeinnaam of subdomein | Je eigen registrar | € 10 per jaar |
 | Docker en Docker Compose op die server | staat vaak al klaar in het image | — |
 
@@ -18,6 +18,26 @@ Kies een datacenter in Nederland of elders in de EER. Dat scheelt de discussie
 over doorgifte buiten de EER, en het is sneller voor Nederlandse gebruikers.
 
 ## 1. Server bestellen
+
+De provider is inwisselbaar: Mizen draait op elke gewone Linux-server met Docker.
+Deze zes hebben een datacenter in de EER.
+
+| Provider | Locatie | Ongeveer |
+| --- | --- | --- |
+| TransIP | Nederland | € 12 per maand |
+| Scaleway | Amsterdam, Parijs | € 10 per maand |
+| OVHcloud | Frankrijk, Duitsland | € 8 per maand |
+| DigitalOcean | Amsterdam | € 22 per maand |
+| Vultr | Amsterdam | € 19 per maand |
+| Hetzner | Falkenstein, Helsinki | € 5 per maand |
+
+De prijzen zijn een orde van grootte, geen offerte; kijk bij de provider zelf wat
+het vandaag kost. Het prijsverschil zit in support, netwerk en of je in Nederland
+zelf wilt staan, niet in of het werkt.
+
+Is een servertype niet beschikbaar of uitverkocht, dan zit meestal één datacenter
+vol. Kies een andere locatie, een maat groter, of een andere provider uit de
+tabel; de stappen hierna zijn voor alle zes gelijk.
 
 Neem Ubuntu 24.04 LTS. Voeg bij het bestellen je SSH-sleutel toe; log niet in
 met een wachtwoord.
