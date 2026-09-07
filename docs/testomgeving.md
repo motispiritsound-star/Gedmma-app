@@ -24,7 +24,7 @@ Deze zes hebben een datacenter in de EER.
 
 | Provider | Locatie | Ongeveer |
 | --- | --- | --- |
-| TransIP | Nederland | € 12 per maand |
+| TransIP | Nederland | € 26 per maand |
 | Scaleway | Amsterdam, Parijs | € 10 per maand |
 | OVHcloud | Frankrijk, Duitsland | € 8 per maand |
 | DigitalOcean | Amsterdam | € 22 per maand |
@@ -38,6 +38,13 @@ zelf wilt staan, niet in of het werkt.
 Is een servertype niet beschikbaar of uitverkocht, dan zit meestal één datacenter
 vol. Kies een andere locatie, een maat groter, of een andere provider uit de
 tabel; de stappen hierna zijn voor alle zes gelijk.
+
+Bij TransIP is de **BladeVPS X4** de maat die hierbij hoort: 2 vCore, 4 GB
+geheugen, ongeveer 150 GB SSD. De X2 eronder heeft 2 GB geheugen en dat is krap
+voor PostgreSQL, Node en Caddy naast elkaar. Neem geen controlepaneel (cPanel,
+Plesk, DirectAdmin): dat kost geld en Mizen gebruikt het niet. Biedt TransIP
+inmiddels een andere reeks aan, kies dan wat 2 vCPU, 4 GB geheugen en minstens
+40 GB schijf geeft; de naam doet er niet toe.
 
 Neem Ubuntu 24.04 LTS. Voeg bij het bestellen je SSH-sleutel toe; log niet in
 met een wachtwoord.
