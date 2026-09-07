@@ -1,30 +1,41 @@
 /*
  * Design tokens.
  *
- * Een eigen, rustige set: een diepe blauwgroene accentkleur, veel wit
- * (of veel donkergrijs), en typografie die op een telefoon net zo leesbaar is
- * als op een breed scherm. Alle kleuren zijn getoetst op contrast volgens
- * WCAG 2.2 AA (tekst minimaal 4,5:1, grote tekst en randen minimaal 3:1).
+ * Een eigen set, afgeleid van het logo: diep marineblauw met een frisse
+ * limoen. Veel wit in de lichte modus, veel marineblauw in de donkere, en
+ * typografie die op een telefoon net zo leesbaar is als op een breed scherm.
+ *
+ * Alle kleuren zijn getoetst op contrast volgens WCAG 2.2 AA (tekst minimaal
+ * 4,5:1, grote tekst en randen minimaal 3:1). Een uitkomst daarvan staat
+ * hieronder als regel: limoen haalt op wit maar 1,4:1 en is daar dus nooit
+ * een tekstkleur.
  */
 
 :root {
   color-scheme: light;
 
-  /* Merkkleuren */
-  --kleur-accent: #0f5f6b;
-  --kleur-accent-sterk: #0a464f;
-  --kleur-accent-zacht: #e3f1f2;
+  /* Merkkleuren, uit het logo: diep marineblauw en een frisse limoen.
+     Het blauw draagt de acties, want limoen op wit haalt met 1,4:1 bij lange na
+     geen leesbaar contrast. Limoen is daarom een vlak en een markering, nooit
+     een tekstkleur op een lichte grond. In de donkere modus draaien die rollen
+     om: daar is limoen juist de leesbare accentkleur. */
+  --kleur-merk-blauw: #1b1b3a;
+  --kleur-merk-limoen: #c3e84c;
+
+  --kleur-accent: #1b1b3a;
+  --kleur-accent-sterk: #2e2e63;
+  --kleur-accent-zacht: #edf7d6;
   --kleur-accent-tekst: #ffffff;
 
-  /* Grijstinten */
-  --kleur-grond: #f7f8f8;
+  /* Grijstinten, licht naar het merkblauw getrokken */
+  --kleur-grond: #f4f5f8;
   --kleur-vlak: #ffffff;
-  --kleur-vlak-zacht: #f1f3f3;
-  --kleur-rand: #d5dada;
-  --kleur-rand-sterk: #9aa4a4;
-  --kleur-tekst: #14201f;
-  --kleur-tekst-zacht: #4d5a59;
-  --kleur-tekst-uit: #6b7877;
+  --kleur-vlak-zacht: #f0f1f5;
+  --kleur-rand: #d7d8e2;
+  --kleur-rand-sterk: #9a9cae;
+  --kleur-tekst: #14142b;
+  --kleur-tekst-zacht: #4a4a63;
+  --kleur-tekst-uit: #6a6a80;
 
   /* Betekeniskleuren */
   --kleur-goed: #1c6b3f;
@@ -62,9 +73,9 @@
   --rond-l: 16px;
   --rond-rond: 999px;
 
-  --schaduw-1: 0 1px 2px rgb(20 32 31 / 8%);
-  --schaduw-2: 0 4px 12px rgb(20 32 31 / 10%);
-  --schaduw-3: 0 12px 32px rgb(20 32 31 / 14%);
+  --schaduw-1: 0 1px 2px rgb(27 27 58 / 8%);
+  --schaduw-2: 0 4px 12px rgb(27 27 58 / 10%);
+  --schaduw-3: 0 12px 32px rgb(27 27 58 / 14%);
 
   --focus-ring: 0 0 0 3px var(--kleur-accent-zacht), 0 0 0 5px var(--kleur-accent);
 
@@ -76,19 +87,24 @@
 :root[data-thema='donker'] {
   color-scheme: dark;
 
-  --kleur-accent: #4fbfcc;
-  --kleur-accent-sterk: #7ad4de;
-  --kleur-accent-zacht: #113136;
-  --kleur-accent-tekst: #08191c;
+  --kleur-merk-blauw: #1b1b3a;
+  --kleur-merk-limoen: #c3e84c;
 
-  --kleur-grond: #0e1615;
-  --kleur-vlak: #16211f;
-  --kleur-vlak-zacht: #1e2b29;
-  --kleur-rand: #33403e;
-  --kleur-rand-sterk: #63736f;
-  --kleur-tekst: #eef3f2;
-  --kleur-tekst-zacht: #b6c2c0;
-  --kleur-tekst-uit: #94a3a0;
+  /* Op een donkere grond is limoen wel leesbaar: 12,9:1. Hier draagt hij de
+     acties, met het merkblauw als tekst erop. */
+  --kleur-accent: #c3e84c;
+  --kleur-accent-sterk: #d3f06f;
+  --kleur-accent-zacht: #2a2a52;
+  --kleur-accent-tekst: #14142b;
+
+  --kleur-grond: #14142b;
+  --kleur-vlak: #1d1d3d;
+  --kleur-vlak-zacht: #26264d;
+  --kleur-rand: #35355e;
+  --kleur-rand-sterk: #6d6d90;
+  --kleur-tekst: #eef0f6;
+  --kleur-tekst-zacht: #b7bacb;
+  --kleur-tekst-uit: #9698ad;
 
   --kleur-goed: #6fd398;
   --kleur-goed-zacht: #10291c;
@@ -111,19 +127,19 @@
   :root:not([data-thema='licht']) {
     color-scheme: dark;
 
-    --kleur-accent: #4fbfcc;
-    --kleur-accent-sterk: #7ad4de;
-    --kleur-accent-zacht: #113136;
-    --kleur-accent-tekst: #08191c;
+    --kleur-accent: #c3e84c;
+    --kleur-accent-sterk: #d3f06f;
+    --kleur-accent-zacht: #2a2a52;
+    --kleur-accent-tekst: #14142b;
 
-    --kleur-grond: #0e1615;
-    --kleur-vlak: #16211f;
-    --kleur-vlak-zacht: #1e2b29;
-    --kleur-rand: #33403e;
-    --kleur-rand-sterk: #63736f;
-    --kleur-tekst: #eef3f2;
-    --kleur-tekst-zacht: #b6c2c0;
-    --kleur-tekst-uit: #94a3a0;
+    --kleur-grond: #14142b;
+    --kleur-vlak: #1d1d3d;
+    --kleur-vlak-zacht: #26264d;
+    --kleur-rand: #35355e;
+    --kleur-rand-sterk: #6d6d90;
+    --kleur-tekst: #eef0f6;
+    --kleur-tekst-zacht: #b7bacb;
+    --kleur-tekst-uit: #9698ad;
 
     --kleur-goed: #6fd398;
     --kleur-goed-zacht: #10291c;

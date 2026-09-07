@@ -4,7 +4,7 @@
  */
 import { useState } from 'react';
 import { NavLink, Route, Routes, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { toonBedrag, toonDatum } from '@gedmma/i18n';
+import { toonBedrag, toonDatum } from '@mizen/i18n';
 import { useApp } from '../context/App.tsx';
 import { Etiket, Kaart, Knop, Laden, Leegstaat, Melding, Tabelomhulsel, Veld } from '../ontwerp/index.tsx';
 import { huidigJaar, useHaal } from './gebruik.ts';

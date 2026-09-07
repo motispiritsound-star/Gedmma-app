@@ -1,9 +1,9 @@
 {
-  "name": "gedmma",
+  "name": "mizen",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Gedmma — boekhoud- en bedrijfsplatform voor Nederlandse zzp'ers, mkb, stichtingen, verenigingen en accountantskantoren.",
+  "description": "Mizen — boekhoud- en bedrijfsplatform voor Nederlandse zzp'ers, mkb, stichtingen, verenigingen en accountantskantoren.",
   "engines": {
     "node": ">=22.18.0"
   },
@@ -15,18 +15,19 @@
     "dev": "node scripts/dev.js",
     "demo": "node scripts/demo.js",
     "geheimen": "node scripts/geheimen.js",
-    "db:migrate": "npm run -w @gedmma/api migrate",
-    "db:seed": "npm run -w @gedmma/api seed",
-    "build": "npm run -w @gedmma/web build",
+    "contrast": "node scripts/contrast.js",
+    "db:migrate": "npm run -w @mizen/api migrate",
+    "db:seed": "npm run -w @mizen/api seed",
+    "build": "npm run -w @mizen/web build",
     "test": "node scripts/test.js",
-    "test:unit": "npm run -w @gedmma/money test && npm run -w @gedmma/accounting test",
-    "test:api": "npm run -w @gedmma/api test",
-    "test:webscan": "npm run -w @gedmma/webscan test",
-    "test:e2e": "npm run -w @gedmma/web test:e2e",
+    "test:unit": "npm run -w @mizen/money test && npm run -w @mizen/accounting test",
+    "test:api": "npm run -w @mizen/api test",
+    "test:webscan": "npm run -w @mizen/webscan test",
+    "test:e2e": "npm run -w @mizen/web test:e2e",
     "typecheck": "node scripts/typecheck.js",
     "lint": "node scripts/lint.js",
     "format": "node scripts/lint.js --fix",
-    "proefrit": "npm run -w @gedmma/webscan proefrit"
+    "proefrit": "npm run -w @mizen/webscan proefrit"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

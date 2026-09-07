@@ -479,10 +479,15 @@ textarea.veld__invoer {
 }
 
 .kop__merk {
-  font-weight: 750;
-  letter-spacing: -0.02em;
+  display: inline-flex;
+  align-items: center;
   color: var(--kleur-tekst);
   text-decoration: none;
+  border-radius: var(--rond-s);
+  /* Het merk is een tekening, geen tekst: geef de klikbare rand wat lucht zodat
+     de focusring er niet strak omheen zit. */
+  padding: var(--ruimte-1) var(--ruimte-2);
+  margin-left: calc(var(--ruimte-2) * -1);
 }
 .kop__rechts {
   margin-left: auto;

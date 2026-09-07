@@ -41,7 +41,7 @@ Legenda: **A** = aanwezig, **N** = niet aanwezig, **M** = MVP (fase 1),
 
 ## 3. Functionele modules (benchmark SnelStart)
 
-| Module | Benchmark biedt | Gedmma-plan |
+| Module | Benchmark biedt | Mizen-plan |
 | --- | --- | --- |
 | Dashboard | Kerncijfers, openstaande posten | M basis, F2 widgets + AI-acties |
 | Verkoopfacturen | Offerte → order → factuur, herinneringen, UBL | M (offerte/factuur/creditnota/PDF/UBL/e-mail), F2 (periodiek, aanmaningen), F3 (Peppol) |
@@ -60,7 +60,7 @@ Legenda: **A** = aanwezig, **N** = niet aanwezig, **M** = MVP (fase 1),
 | Desktop | Windows-app | F5 |
 | AI | Beperkt | F2 en verder, altijd met menselijke goedkeuring |
 
-## 4. Waar Gedmma aantoonbaar beter moet worden
+## 4. Waar Mizen aantoonbaar beter moet worden
 
 Deze punten zijn de reden van bestaan van het product en zijn daarom
 meetbaar gemaakt in [mvp-acceptatiecriteria.md](mvp-acceptatiecriteria.md) en
@@ -88,5 +88,5 @@ nagebouwde functionaliteit:
 * PSD2-bankkoppelingen (vereist een vergunninghoudende AISP/PISP).
 * Peppol-verzending (vereist een geaccrediteerde access point provider).
 * SBR/Digipoort-aanlevering (vereist PKIoverheid-certificaat en aansluiting).
-* Betaalverwerking (vereist een gecertificeerde PSP; geen kaartgegevens in Gedmma).
+* Betaalverwerking (vereist een gecertificeerde PSP; geen kaartgegevens in Mizen).
 * Automatische incasso (vereist machtigingenbeheer en een bankcontract).

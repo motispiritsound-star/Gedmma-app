@@ -4,7 +4,7 @@
 
 Een boekhouding is van de ondernemer, niet van de leverancier. Wie wil
 vertrekken, moet dat kunnen doen zonder te onderhandelen, zonder te betalen voor
-zijn eigen gegevens en zonder een formaat te krijgen dat alleen Gedmma kan
+zijn eigen gegevens en zonder een formaat te krijgen dat alleen Mizen kan
 lezen. Dat is ook de kant van [migration-strategy.md](migration-strategy.md) die
 naar buiten wijst: overstappen mag nooit op techniek stuklopen, in beide
 richtingen.
@@ -136,7 +136,7 @@ plan bestaat uit drie lagen, omdat elke laag afzonderlijk kan falen:
    moet hij zonder hulp van de exploitant te maken zijn. Klanten wordt
    aangeraden periodiek te exporteren; dat advies hoort in het product zelf
    thuis.
-2. **De software is te draaien door een ander.** Gedmma draait op PostgreSQL en
+2. **De software is te draaien door een ander.** Mizen draait op PostgreSQL en
    Node zonder eigen infrastructuurdiensten die alleen bij deze exploitant
    bestaan. De installatie staat volledig beschreven in
    [deployment.md](deployment.md), inclusief `docker-compose.yml` en de

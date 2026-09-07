@@ -4,7 +4,7 @@
  */
 import pg from 'pg';
 import { config } from '../config.ts';
-import { bekendeValutas, decimalenVan } from '@gedmma/money';
+import { bekendeValutas, decimalenVan } from '@mizen/money';
 
 /** Alle rechten die het systeem kent. `kritiek` betekent extra logging en functiescheiding. */
 export const RECHTEN: { sleutel: string; omschrijving: string; kritiek?: boolean }[] = [

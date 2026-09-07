@@ -128,7 +128,7 @@ overgelaten:
   breuk zou later, als het een bedrag wordt, een afronding introduceren.
 * **Het tarief reist mee met het uur.** Een tariefwijziging verandert
   geschreven uren dus niet met terugwerkende kracht.
-* **Een gefactureerd uur ligt vast.** Een trigger (`gedmma.uur_is_vast`)
+* **Een gefactureerd uur ligt vast.** Een trigger (`mizen.uur_is_vast`)
   weigert wijziging en verwijdering, en een `CHECK` bewaakt dat de status
   `gefactureerd` en de verwijzing naar de factuur altijd samen bestaan. Wie
   zich vergist, crediteert de factuur; dat is dezelfde weg als bij een
@@ -160,7 +160,7 @@ CREATE TABLE sales_invoice (
 ALTER TABLE sales_invoice ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sales_invoice FORCE ROW LEVEL SECURITY;
 CREATE POLICY tenant_isolation ON sales_invoice
-  USING (administration_id = current_setting('gedmma.administration_id', true)::uuid);
+  USING (administration_id = current_setting('mizen.administration_id', true)::uuid);
 ```
 
 `FORCE ROW LEVEL SECURITY` zorgt dat ook de eigenaar van de tabel aan de policy

@@ -58,7 +58,7 @@ per module mogelijk omdat de grenzen al kloppen.
 **Context.** De voorkeursstack noemt Prisma. Drie eisen botsen daarmee:
 
 1. **Row-level security.** Tenantisolatie werkt via
-   `set_config('gedmma.administration_id', ..., true)` aan het begin van elke
+   `set_config('mizen.administration_id', ..., true)` aan het begin van elke
    transactie. Prisma biedt daarvoor alleen `$executeRaw` binnen een interactieve
    transactie; de garantie dat het altijd gebeurt, moet je alsnog zelf bouwen.
 2. **Exacte bedragen.** Prisma's `Decimal` werkt, maar het typemodel nodigt uit

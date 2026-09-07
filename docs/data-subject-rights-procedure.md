@@ -4,7 +4,7 @@
 
 | Verzoek gaat over | Wie handelt af | Rol van de ander |
 | --- | --- | --- |
-| Een gebruikersaccount van Gedmma | de exploitant | — |
+| Een gebruikersaccount van Mizen | de exploitant | — |
 | Gegevens in de administratie van een klant (bijvoorbeeld een klant of leverancier van die klant) | **de klant** | de exploitant ondersteunt met inzage- en exportfuncties |
 
 Komt er bij de exploitant een verzoek binnen dat over de administratie van een

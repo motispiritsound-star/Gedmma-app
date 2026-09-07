@@ -26,7 +26,7 @@ const geenFloatOpBedragen = {
   selector:
     "CallExpression[callee.name='parseFloat'], CallExpression[callee.name='Number'][arguments.0.property.name=/bedrag|totaal|saldo|debet|credit|prijs/i]",
   message:
-    'Bedragen mogen nooit door een floating-pointconversie. Gebruik Money.vanTekst() uit @gedmma/money (zie ADR-006).',
+    'Bedragen mogen nooit door een floating-pointconversie. Gebruik Money.vanTekst() uit @mizen/money (zie ADR-006).',
 };
 
 export default tseslint.config(
@@ -69,7 +69,7 @@ export default tseslint.config(
       'no-restricted-syntax': ['error', geenFloatOpBedragen],
       'no-restricted-globals': [
         'error',
-        { name: 'parseFloat', message: 'Gebruik Money uit @gedmma/money voor bedragen.' },
+        { name: 'parseFloat', message: 'Gebruik Money uit @mizen/money voor bedragen.' },
       ],
     },
   },

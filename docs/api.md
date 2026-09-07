@@ -195,12 +195,12 @@ gebeurtenis heeft `type`, `at` en `data`. Types in de MVP: `import.progress`,
 
 ## Webhooks (fase 3)
 
-* Payload ondertekend met HMAC-SHA256 in `Gedmma-Signature`, met tijdstempel
+* Payload ondertekend met HMAC-SHA256 in `Mizen-Signature`, met tijdstempel
   tegen replay.
 * Minimaal vijf pogingen met exponentiële backoff, daarna dead-letter queue met
   handmatige herverzending.
 * Levering minstens één keer; consumenten moeten idempotent zijn. De
-  gebeurtenis-id staat in `Gedmma-Event-Id`.
+  gebeurtenis-id staat in `Mizen-Event-Id`.
 
 ## OpenAPI
 

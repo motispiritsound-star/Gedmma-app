@@ -34,17 +34,17 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_USER: gedmma_owner
-          POSTGRES_PASSWORD: gedmma_dev
-          POSTGRES_DB: gedmma_test
+          POSTGRES_USER: mizen_owner
+          POSTGRES_PASSWORD: mizen_dev
+          POSTGRES_DB: mizen_test
         ports: ['5432:5432']
         options: >-
-          --health-cmd "pg_isready -U gedmma_owner -d gedmma_test"
+          --health-cmd "pg_isready -U mizen_owner -d mizen_test"
           --health-interval 5s --health-timeout 5s --health-retries 20
     env:
-      DATABASE_URL: postgres://gedmma_app:gedmma_dev@127.0.0.1:5432/gedmma_test
-      DATABASE_MIGRATION_URL: postgres://gedmma_owner:gedmma_dev@127.0.0.1:5432/gedmma_test
-      DATABASE_APP_ROLE: gedmma_app
+      DATABASE_URL: postgres://mizen_app:mizen_dev@127.0.0.1:5432/mizen_test
+      DATABASE_MIGRATION_URL: postgres://mizen_owner:mizen_dev@127.0.0.1:5432/mizen_test
+      DATABASE_APP_ROLE: mizen_app
       PASSWORD_PEPPER: ci-peper
       DATA_ENCRYPTION_KEY: '1111111111111111111111111111111111111111111111111111111111111111'
       NODE_ENV: test
@@ -58,15 +58,15 @@ jobs:
 
       - name: Applicatierol aanmaken
         run: |
-          PGPASSWORD=gedmma_dev psql -h 127.0.0.1 -U gedmma_owner -d gedmma_test \
-            -c "CREATE ROLE gedmma_app LOGIN PASSWORD 'gedmma_dev';" \
-            -c "GRANT USAGE ON SCHEMA public TO gedmma_app;"
+          PGPASSWORD=mizen_dev psql -h 127.0.0.1 -U mizen_owner -d mizen_test \
+            -c "CREATE ROLE mizen_app LOGIN PASSWORD 'mizen_dev';" \
+            -c "GRANT USAGE ON SCHEMA public TO mizen_app;"
 
       # De rekenkern eerst: die is snel en vangt de meeste fouten.
       - run: npm run test:unit
-      - run: npm run -w @gedmma/i18n test
+      - run: npm run -w @mizen/i18n test
       - run: npm run test:api
-      - run: npm run -w @gedmma/web test
+      - run: npm run -w @mizen/web test
       - run: npm run test:webscan
 
   e2e:
@@ -76,17 +76,17 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_USER: gedmma_owner
-          POSTGRES_PASSWORD: gedmma_dev
-          POSTGRES_DB: gedmma
+          POSTGRES_USER: mizen_owner
+          POSTGRES_PASSWORD: mizen_dev
+          POSTGRES_DB: mizen
         ports: ['5432:5432']
         options: >-
-          --health-cmd "pg_isready -U gedmma_owner -d gedmma"
+          --health-cmd "pg_isready -U mizen_owner -d mizen"
           --health-interval 5s --health-timeout 5s --health-retries 20
     env:
-      DATABASE_URL: postgres://gedmma_app:gedmma_dev@127.0.0.1:5432/gedmma
-      DATABASE_MIGRATION_URL: postgres://gedmma_owner:gedmma_dev@127.0.0.1:5432/gedmma
-      DATABASE_APP_ROLE: gedmma_app
+      DATABASE_URL: postgres://mizen_app:mizen_dev@127.0.0.1:5432/mizen
+      DATABASE_MIGRATION_URL: postgres://mizen_owner:mizen_dev@127.0.0.1:5432/mizen
+      DATABASE_APP_ROLE: mizen_app
       PASSWORD_PEPPER: ci-peper
       DATA_ENCRYPTION_KEY: '1111111111111111111111111111111111111111111111111111111111111111'
       RATE_LIMIT_FACTOR: '200'
@@ -99,12 +99,12 @@ jobs:
       - run: npm ci --ignore-scripts
       - name: Applicatierol aanmaken
         run: |
-          PGPASSWORD=gedmma_dev psql -h 127.0.0.1 -U gedmma_owner -d gedmma \
-            -c "CREATE ROLE gedmma_app LOGIN PASSWORD 'gedmma_dev';" \
-            -c "GRANT USAGE ON SCHEMA public TO gedmma_app;"
+          PGPASSWORD=mizen_dev psql -h 127.0.0.1 -U mizen_owner -d mizen \
+            -c "CREATE ROLE mizen_app LOGIN PASSWORD 'mizen_dev';" \
+            -c "GRANT USAGE ON SCHEMA public TO mizen_app;"
       - run: npx playwright install --with-deps chromium
         working-directory: apps/web
-      - run: npm run -w @gedmma/web test:e2e
+      - run: npm run -w @mizen/web test:e2e
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
@@ -157,7 +157,7 @@ jobs:
           context: .
           file: docker/api.Dockerfile
           load: true
-          tags: gedmma-api:ci
+          tags: mizen-api:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -167,14 +167,14 @@ jobs:
           context: .
           file: docker/web.Dockerfile
           load: true
-          tags: gedmma-web:ci
+          tags: mizen-web:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Images scannen op kwetsbaarheden
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          image-ref: gedmma-api:ci
+          image-ref: mizen-api:ci
           severity: HIGH,CRITICAL
           exit-code: '1'
           ignore-unfixed: true

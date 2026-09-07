@@ -7,7 +7,7 @@
 
 ## In het kort
 
-Gedmma is boekhoudsoftware. We verwerken twee soorten gegevens:
+Mizen is boekhoudsoftware. We verwerken twee soorten gegevens:
 
 1. **Jouw accountgegevens** — die zijn van ons; wij bepalen wat we ermee doen en
    leggen dat hieronder uit.
@@ -63,7 +63,7 @@ staat in de [cookieverklaring](cookie-policy.md).
 
 ## Automatische verwerking en AI
 
-Gedmma kan voorstellen doen: welke factuur bij welke bankbetaling hoort, op welke
+Mizen kan voorstellen doen: welke factuur bij welke bankbetaling hoort, op welke
 rekening een bon waarschijnlijk hoort. Daarbij geldt:
 
 * een voorstel is een voorstel; jij bevestigt;

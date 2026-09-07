@@ -1,6 +1,6 @@
 /** Bonnen en inkoopfacturen vastleggen, met het originele document erbij. */
 import { useMemo, useState } from 'react';
-import { toonBedrag, toonDatum } from '@gedmma/i18n';
+import { toonBedrag, toonDatum } from '@mizen/i18n';
 import { useApp } from '../context/App.tsx';
 import { Etiket, Kaart, Keuzeveld, Knop, Laden, Leegstaat, Melding, Tabelomhulsel, Veld } from '../ontwerp/index.tsx';
 import { useActie, useHaal, vandaag } from './gebruik.ts';

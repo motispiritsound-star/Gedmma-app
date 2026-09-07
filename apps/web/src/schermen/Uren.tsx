@@ -14,7 +14,7 @@
  */
 import { useMemo, useState } from 'react';
 import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
-import { toonDatum } from '@gedmma/i18n';
+import { toonDatum } from '@mizen/i18n';
 import { useApp } from '../context/App.tsx';
 import {
   Etiket,

@@ -176,7 +176,7 @@ CREATE INDEX idx_line_contact ON journal_line (administration_id, contact_id) WH
 
 -- I5: een definitieve post is onveranderbaar. De enige toegestane wijziging is
 -- de overgang naar 'gestorneerd' met een verwijzing naar de tegenboeking.
-CREATE OR REPLACE FUNCTION gedmma.entry_onveranderbaar() RETURNS trigger
+CREATE OR REPLACE FUNCTION mizen.entry_onveranderbaar() RETURNS trigger
   LANGUAGE plpgsql AS $$
   BEGIN
     IF TG_OP = 'DELETE' THEN
@@ -210,10 +210,10 @@ CREATE OR REPLACE FUNCTION gedmma.entry_onveranderbaar() RETURNS trigger
 
 CREATE TRIGGER journal_entry_onveranderbaar
   BEFORE UPDATE OR DELETE ON journal_entry
-  FOR EACH ROW EXECUTE FUNCTION gedmma.entry_onveranderbaar();
+  FOR EACH ROW EXECUTE FUNCTION mizen.entry_onveranderbaar();
 
 -- I6: regels van een definitieve post zijn onveranderbaar.
-CREATE OR REPLACE FUNCTION gedmma.line_onveranderbaar() RETURNS trigger
+CREATE OR REPLACE FUNCTION mizen.line_onveranderbaar() RETURNS trigger
   LANGUAGE plpgsql AS $$
   DECLARE
     huidige_status text;
@@ -230,11 +230,11 @@ CREATE OR REPLACE FUNCTION gedmma.line_onveranderbaar() RETURNS trigger
 
 CREATE TRIGGER journal_line_onveranderbaar
   BEFORE INSERT OR UPDATE OR DELETE ON journal_line
-  FOR EACH ROW EXECUTE FUNCTION gedmma.line_onveranderbaar();
+  FOR EACH ROW EXECUTE FUNCTION mizen.line_onveranderbaar();
 
 -- I1, I3, I7 en I9: bij het definitief maken moet de post kloppen, in balans
 -- zijn, minimaal twee regels hebben en in een open periode vallen.
-CREATE OR REPLACE FUNCTION gedmma.entry_controleer_definitief() RETURNS trigger
+CREATE OR REPLACE FUNCTION mizen.entry_controleer_definitief() RETURNS trigger
   LANGUAGE plpgsql AS $$
   DECLARE
     som_debet   numeric(18,2);
@@ -283,10 +283,10 @@ CREATE OR REPLACE FUNCTION gedmma.entry_controleer_definitief() RETURNS trigger
 
 CREATE TRIGGER journal_entry_controleer
   BEFORE INSERT OR UPDATE ON journal_entry
-  FOR EACH ROW EXECUTE FUNCTION gedmma.entry_controleer_definitief();
+  FOR EACH ROW EXECUTE FUNCTION mizen.entry_controleer_definitief();
 
 -- Een regel hoort bij dezelfde administratie als zijn post en zijn rekening (I4).
-CREATE OR REPLACE FUNCTION gedmma.line_zelfde_administratie() RETURNS trigger
+CREATE OR REPLACE FUNCTION mizen.line_zelfde_administratie() RETURNS trigger
   LANGUAGE plpgsql AS $$
   DECLARE
     entry_admin   uuid;
@@ -305,9 +305,9 @@ CREATE OR REPLACE FUNCTION gedmma.line_zelfde_administratie() RETURNS trigger
 
 CREATE TRIGGER journal_line_zelfde_administratie
   BEFORE INSERT OR UPDATE ON journal_line
-  FOR EACH ROW EXECUTE FUNCTION gedmma.line_zelfde_administratie();
+  FOR EACH ROW EXECUTE FUNCTION mizen.line_zelfde_administratie();
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO {{APP_ROLE}};
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {{APP_ROLE}};
-GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA gedmma TO {{APP_ROLE}};
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA mizen TO {{APP_ROLE}};
 REVOKE UPDATE, DELETE ON audit_event FROM {{APP_ROLE}};

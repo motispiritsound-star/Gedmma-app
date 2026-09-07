@@ -7,7 +7,7 @@
  * een uitzondering op de isolatie te bestaan.
  */
 import { randomUUID } from 'node:crypto';
-import { sjabloonVoor, type RekeningSjabloon } from '@gedmma/accounting';
+import { sjabloonVoor, type RekeningSjabloon } from '@mizen/accounting';
 import { inTransactie, type Db, type TenantContext } from '../../db/pool.ts';
 import { ApiFout, fout } from '../../http/fout.ts';
 import { auditeer } from '../audit/service.ts';

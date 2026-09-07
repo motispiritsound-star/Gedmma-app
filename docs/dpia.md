@@ -7,7 +7,7 @@
 
 ## 1. Beschrijving van de verwerking
 
-Gedmma verwerkt namens ondernemers hun financiële administratie: relaties,
+Mizen verwerkt namens ondernemers hun financiële administratie: relaties,
 facturen, inkoopdocumenten en banktransacties. De exploitant is verwerker; de
 klant is verwerkingsverantwoordelijke.
 

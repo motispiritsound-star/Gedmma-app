@@ -13,12 +13,12 @@ verzoek afhandelt en wie een datalek meldt.
 
 | Gegevens | Verantwoordelijke | Verwerker |
 | --- | --- | --- |
-| Accounts, contracten, facturatie, support, beveiliging van het platform | de exploitant van Gedmma | — |
+| Accounts, contracten, facturatie, support, beveiliging van het platform | de exploitant van Mizen | — |
 | Alles in een administratie van een klant (relaties, facturen, documenten, banktransacties) | de klant | de exploitant |
 | Marketing aan prospects | de exploitant | — |
 
 Dat betekent concreet: als een klant van een klant wil weten welke gegevens er
-van hem zijn vastgelegd, is dat een vraag aan de klant, niet aan Gedmma. Gedmma
+van hem zijn vastgelegd, is dat een vraag aan de klant, niet aan Mizen. Mizen
 ondersteunt de klant daarbij met inzage- en exportfuncties.
 
 ## Per verwerking

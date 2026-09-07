@@ -2,8 +2,8 @@
  * Alle SQL van het grootboek. Buiten dit bestand staan geen query's over
  * rekeningen, dagboeken, perioden of journaalposten.
  */
-import { Money, Rate } from '@gedmma/money';
-import type { BtwCode } from '@gedmma/accounting';
+import { Money, Rate } from '@mizen/money';
+import type { BtwCode } from '@mizen/accounting';
 import type { Db } from '../../db/pool.ts';
 import { fout } from '../../http/fout.ts';
 

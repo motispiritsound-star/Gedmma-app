@@ -7,18 +7,18 @@
 # staat; buiten productie is er een zichtbare ontwikkelwaarde.
 set -eu
 
-WACHTWOORD="${GEDMMA_APP_WACHTWOORD:-gedmma_dev}"
+WACHTWOORD="${MIZEN_APP_WACHTWOORD:-mizen_dev}"
 
 psql --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" --set ON_ERROR_STOP=1 <<SQL
 DO \$\$
 BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'gedmma_app') THEN
-    CREATE ROLE gedmma_app LOGIN;
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'mizen_app') THEN
+    CREATE ROLE mizen_app LOGIN;
   END IF;
 END
 \$\$;
 
-ALTER ROLE gedmma_app WITH PASSWORD '${WACHTWOORD}';
-GRANT USAGE ON SCHEMA public TO gedmma_app;
+ALTER ROLE mizen_app WITH PASSWORD '${WACHTWOORD}';
+GRANT USAGE ON SCHEMA public TO mizen_app;
 GRANT ALL ON SCHEMA public TO ${POSTGRES_USER};
 SQL

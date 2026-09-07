@@ -25,7 +25,7 @@ met een wachtwoord.
 Heb je nog geen sleutel:
 
 ```bash
-ssh-keygen -t ed25519 -C "gedmma"
+ssh-keygen -t ed25519 -C "mizen"
 cat ~/.ssh/id_ed25519.pub    # deze regel plak je bij de provider
 ```
 
@@ -71,11 +71,11 @@ dpkg-reconfigure -f noninteractive unattended-upgrades
 De database en de API publiceren geen poort naar buiten; alleen Caddy luistert
 op 80 en 443. Poort 5432 hoort nooit open te staan.
 
-## 4. Gedmma neerzetten
+## 4. Mizen neerzetten
 
 ```bash
-git clone <deze repository> /opt/gedmma
-cd /opt/gedmma
+git clone <deze repository> /opt/mizen
+cd /opt/mizen
 
 # Geheimen genereren en het instellingenbestand vullen
 cp .env.productie.example .env
@@ -148,7 +148,7 @@ Zolang het een proefopstelling met verzonnen gegevens is, is een back-up vooral
 oefenen. Doe het toch — dan weet je dat het werkt voordat het ertoe doet.
 
 ```bash
-./scripts/backup.sh /opt/gedmma-backups
+./scripts/backup.sh /opt/mizen-backups
 ```
 
 Zet een dagelijkse taak neer en kopieer de bestanden naar een andere plek:
@@ -156,7 +156,7 @@ Zet een dagelijkse taak neer en kopieer de bestanden naar een andere plek:
 ```bash
 crontab -e
 # elke nacht om 03:15
-15 3 * * * cd /opt/gedmma && ./scripts/backup.sh /opt/gedmma-backups >> /var/log/gedmma-backup.log 2>&1
+15 3 * * * cd /opt/mizen && ./scripts/backup.sh /opt/mizen-backups >> /var/log/mizen-backup.log 2>&1
 ```
 
 Terugzetten gaat met `./scripts/herstel.sh`. Probeer dat een keer op een lege
@@ -165,7 +165,7 @@ server voordat je het nodig hebt; zie [disaster-recovery.md](disaster-recovery.m
 ## 8. Bijwerken naar een nieuwe versie
 
 ```bash
-cd /opt/gedmma
+cd /opt/mizen
 git pull
 docker compose -f docker-compose.prod.yml up -d --build
 ```

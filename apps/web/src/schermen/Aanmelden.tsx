@@ -4,6 +4,7 @@ import { verzoek } from '../api/client.ts';
 import { useApp } from '../context/App.tsx';
 import { toonFout, veldfouten } from '../context/fouten.ts';
 import { Knop, Melding, Veld } from '../ontwerp/index.tsx';
+import { Merk } from '../ontwerp/Merk.tsx';
 
 type Modus = 'aanmelden' | 'registreren' | 'mfa';
 
@@ -59,10 +60,14 @@ export function Aanmelden() {
 
   return (
     <main className="inhoud" style={{ maxWidth: '26rem', paddingTop: 'var(--ruimte-7)' }}>
-      <h1>{t('app.naam')}</h1>
-      <p className="uitleg" style={{ marginBottom: 'var(--ruimte-5)' }}>
-        {t('app.slogan')}
-      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--ruimte-2)', marginBottom: 'var(--ruimte-6)' }}>
+        <h1 style={{ margin: 0 }}>
+          <Merk hoogte={64} titel={t('app.naam')} />
+        </h1>
+        <p className="uitleg" style={{ margin: 0 }}>
+          {t('app.slogan')}
+        </p>
+      </div>
 
       {gelukt && <Melding soort="goed">{gelukt}</Melding>}
       {fout && (

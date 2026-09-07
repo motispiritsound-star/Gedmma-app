@@ -1,5 +1,5 @@
 /**
- * @gedmma/money — exacte bedragen, tarieven en aantallen.
+ * @mizen/money — exacte bedragen, tarieven en aantallen.
  *
  * Regel voor de hele monorepo: een financieel bedrag is nooit een `number`.
  * Uit de database komt een string (NUMERIC), die hier meteen een `Money` wordt.

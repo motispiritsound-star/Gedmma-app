@@ -25,7 +25,7 @@ export function appRol(): string {
   const uit = process.env.DATABASE_APP_ROLE;
   if (uit) return uit;
   const match = /^postgres(?:ql)?:\/\/([^:@/]+)/.exec(config.database.url);
-  return match?.[1] ?? 'gedmma_app';
+  return match?.[1] ?? 'mizen_app';
 }
 
 export function laadMigraties(): Migratie[] {
@@ -116,7 +116,7 @@ function databaseNaamVan(url: string): string {
  *
  *  1. nooit in productie;
  *  2. nooit tegen een database die niet herkenbaar een testdatabase is, tenzij
- *     iemand dat expliciet aanzet met GEDMMA_LEEG_TOESTAAN=ja.
+ *     iemand dat expliciet aanzet met MIZEN_LEEG_TOESTAAN=ja.
  *
  * Die tweede grendel staat er niet voor de sier: een testrun heeft een keer de
  * ontwikkeldatabase geleegd doordat de omgevingsvariabelen te laat werden
@@ -129,17 +129,17 @@ export async function leegDatabase(): Promise<void> {
 
   const naam = databaseNaamVan(config.database.migratieUrl);
   const isTestdatabase = /(^|[_-])test$/i.test(naam) || naam.endsWith('_test');
-  if (!isTestdatabase && process.env.GEDMMA_LEEG_TOESTAAN !== 'ja') {
+  if (!isTestdatabase && process.env.MIZEN_LEEG_TOESTAAN !== 'ja') {
     throw new Error(
       `leegDatabase() weigert de database "${naam}" te legen: de naam ziet er niet uit als een ` +
-        'testdatabase. Draai de tests tegen gedmma_test, of zet GEDMMA_LEEG_TOESTAAN=ja als je ' +
+        'testdatabase. Draai de tests tegen mizen_test, of zet MIZEN_LEEG_TOESTAAN=ja als je ' +
         'echt deze database wilt wissen.',
     );
   }
   const pool = new pg.Pool({ connectionString: config.database.migratieUrl, max: 1 });
   try {
     await pool.query('DROP SCHEMA IF EXISTS public CASCADE');
-    await pool.query('DROP SCHEMA IF EXISTS gedmma CASCADE');
+    await pool.query('DROP SCHEMA IF EXISTS mizen CASCADE');
     await pool.query('CREATE SCHEMA public');
     await pool.query(`GRANT ALL ON SCHEMA public TO CURRENT_USER`);
     await pool.query(`GRANT USAGE ON SCHEMA public TO ${appRol()}`);

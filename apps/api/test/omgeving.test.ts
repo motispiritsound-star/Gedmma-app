@@ -24,12 +24,12 @@ describe('testomgeving', () => {
     const echteUrl = config.database.migratieUrl;
     // De configuratie is bevroren bij het laden; daarom wijzen we hier tijdelijk
     // naar een andere naam via de omgeving en laden we de controle opnieuw.
-    const gewijzigd = echteUrl.replace(/\/[^/]+$/, '/gedmma_productie_achtig');
+    const gewijzigd = echteUrl.replace(/\/[^/]+$/, '/mizen_productie_achtig');
     Object.defineProperty(config.database, 'migratieUrl', { value: gewijzigd, configurable: true });
 
     await assert.rejects(
       () => leegDatabase(),
-      /weigert de database "gedmma_productie_achtig" te legen/,
+      /weigert de database "mizen_productie_achtig" te legen/,
       'een database zonder _test in de naam hoort geweigerd te worden',
     );
 

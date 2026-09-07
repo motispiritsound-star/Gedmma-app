@@ -38,7 +38,7 @@ describe('openapi', () => {
 
     assert.equal(antwoord.status, 200);
     assert.equal(antwoord.body.openapi, '3.1.0');
-    assert.equal(antwoord.body.info.title, 'Gedmma API');
+    assert.equal(antwoord.body.info.title, 'Mizen API');
 
     const eindpunten = inventariseer(koppelingen);
     for (const eindpunt of eindpunten) {

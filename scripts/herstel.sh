@@ -1,7 +1,7 @@
 #!/bin/sh
 # Zet een back-up terug.
 #
-#   ./scripts/herstel.sh backups/gedmma-20260904T090000Z.dump [backups/opslag-....tar.gz]
+#   ./scripts/herstel.sh backups/mizen-20260904T090000Z.dump [backups/opslag-....tar.gz]
 #
 # Dit overschrijft de huidige gegevens. Het script vraagt daarom eerst om een
 # bevestiging, en het weigert te draaien zonder bestandsnaam.
@@ -20,7 +20,7 @@ echo "API stoppen zodat er niet wordt geschreven tijdens het terugzetten ..."
 $COMPOSE stop api web
 
 echo "Database terugzetten ..."
-$COMPOSE exec -T db pg_restore -U gedmma_owner -d gedmma --clean --if-exists < "$DUMP"
+$COMPOSE exec -T db pg_restore -U mizen_owner -d mizen --clean --if-exists < "$DUMP"
 
 if [ -n "$OPSLAG" ]; then
   echo "Documenten terugzetten ..."

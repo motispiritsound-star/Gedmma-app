@@ -41,8 +41,8 @@ ALTER TABLE feedback ENABLE ROW LEVEL SECURITY;
 ALTER TABLE feedback FORCE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS tenant_isolatie ON feedback;
 CREATE POLICY tenant_isolatie ON feedback
-  USING (organization_id = gedmma.huidige_organisatie())
-  WITH CHECK (organization_id = gedmma.huidige_organisatie());
+  USING (organization_id = mizen.huidige_organisatie())
+  WITH CHECK (organization_id = mizen.huidige_organisatie());
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON feedback TO {{APP_ROLE}};
 

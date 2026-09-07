@@ -15,7 +15,7 @@ import type { Router } from 'express';
 
 export type Koppeling = { basis: string; router: Router };
 
-type Handler = { name?: string; gedmmaRecht?: string };
+type Handler = { name?: string; mizenRecht?: string };
 
 type Laag = {
   handle?: Handler;
@@ -63,7 +63,7 @@ export function inventariseer(koppelingen: Koppeling[]): Eindpunt[] {
     for (const laag of lagen) {
       if (!laag.route) continue;
       const paden = Array.isArray(laag.route.path) ? laag.route.path : [laag.route.path];
-      const recht = laag.route.stack.map((stap) => stap.handle?.gedmmaRecht).find((waarde) => waarde) ?? null;
+      const recht = laag.route.stack.map((stap) => stap.handle?.mizenRecht).find((waarde) => waarde) ?? null;
       const aanmeldingVereist =
         routerEistAanmelding ||
         recht !== null ||
@@ -328,10 +328,10 @@ export function bouwOpenApi(koppelingen: Koppeling[], versie: string): Record<st
   return {
     openapi: '3.1.0',
     info: {
-      title: 'Gedmma API',
+      title: 'Mizen API',
       version: versie,
       description:
-        'REST-API van het boekhoudplatform Gedmma. Bedragen zijn altijd decimale tekst, ' +
+        'REST-API van het boekhoudplatform Mizen. Bedragen zijn altijd decimale tekst, ' +
         'nooit een getal met een drijvende komma. Zie docs/api.md.',
     },
     servers: [{ url: '/', description: 'Dezelfde host als deze specificatie.' }],
@@ -340,7 +340,7 @@ export function bouwOpenApi(koppelingen: Koppeling[], versie: string): Record<st
         sessie: {
           type: 'apiKey',
           in: 'cookie',
-          name: 'gedmma_sessie',
+          name: 'mizen_sessie',
           description: 'Sessiecookie, gezet door POST /api/v1/auth/aanmelden.',
         },
       },

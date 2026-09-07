@@ -8,22 +8,22 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE EXTENSION IF NOT EXISTS citext;
 
 -- Hulpfuncties die de row-level security-policies gebruiken. Ze staan in het
--- schema `gedmma` zodat ze niet met tabelnamen kunnen botsen.
-CREATE SCHEMA IF NOT EXISTS gedmma;
+-- schema `mizen` zodat ze niet met tabelnamen kunnen botsen.
+CREATE SCHEMA IF NOT EXISTS mizen;
 
-CREATE OR REPLACE FUNCTION gedmma.huidige_administratie() RETURNS uuid
+CREATE OR REPLACE FUNCTION mizen.huidige_administratie() RETURNS uuid
   LANGUAGE sql STABLE AS $$
-    SELECT NULLIF(current_setting('gedmma.administratie_id', true), '')::uuid
+    SELECT NULLIF(current_setting('mizen.administratie_id', true), '')::uuid
   $$;
 
-CREATE OR REPLACE FUNCTION gedmma.huidige_organisatie() RETURNS uuid
+CREATE OR REPLACE FUNCTION mizen.huidige_organisatie() RETURNS uuid
   LANGUAGE sql STABLE AS $$
-    SELECT NULLIF(current_setting('gedmma.organisatie_id', true), '')::uuid
+    SELECT NULLIF(current_setting('mizen.organisatie_id', true), '')::uuid
   $$;
 
-CREATE OR REPLACE FUNCTION gedmma.huidige_gebruiker() RETURNS uuid
+CREATE OR REPLACE FUNCTION mizen.huidige_gebruiker() RETURNS uuid
   LANGUAGE sql STABLE AS $$
-    SELECT NULLIF(current_setting('gedmma.gebruiker_id', true), '')::uuid
+    SELECT NULLIF(current_setting('mizen.gebruiker_id', true), '')::uuid
   $$;
 
 -- ---------------------------------------------------------------------------
@@ -214,7 +214,7 @@ CREATE INDEX idx_audit_actie ON audit_event (actie, op DESC);
 
 -- Auditregels zijn append-only. De trigger is de tweede grendel naast het
 -- ontbreken van UPDATE/DELETE-rechten voor de applicatierol.
-CREATE OR REPLACE FUNCTION gedmma.audit_alleen_toevoegen() RETURNS trigger
+CREATE OR REPLACE FUNCTION mizen.audit_alleen_toevoegen() RETURNS trigger
   LANGUAGE plpgsql AS $$
   BEGIN
     RAISE EXCEPTION 'Auditregels kunnen niet worden gewijzigd of verwijderd (poging: %)', TG_OP
@@ -224,16 +224,16 @@ CREATE OR REPLACE FUNCTION gedmma.audit_alleen_toevoegen() RETURNS trigger
 
 CREATE TRIGGER audit_event_onveranderbaar
   BEFORE UPDATE OR DELETE ON audit_event
-  FOR EACH ROW EXECUTE FUNCTION gedmma.audit_alleen_toevoegen();
+  FOR EACH ROW EXECUTE FUNCTION mizen.audit_alleen_toevoegen();
 
 -- ---------------------------------------------------------------------------
 -- Rechten voor de applicatierol
 -- ---------------------------------------------------------------------------
 
-GRANT USAGE ON SCHEMA public, gedmma TO {{APP_ROLE}};
+GRANT USAGE ON SCHEMA public, mizen TO {{APP_ROLE}};
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO {{APP_ROLE}};
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {{APP_ROLE}};
-GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA gedmma TO {{APP_ROLE}};
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA mizen TO {{APP_ROLE}};
 
 -- De applicatie mag auditregels toevoegen en lezen, maar niet wijzigen.
 REVOKE UPDATE, DELETE ON audit_event FROM {{APP_ROLE}};

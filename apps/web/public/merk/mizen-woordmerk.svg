@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 134" role="img" aria-label="Mizen">
+  <!--
+    Het woordmerk.
+    De letters volgen `currentColor`, zodat het merk meekleurt met de tekst van
+    het thema waarin het staat; de twee bogen houden altijd het merkgroen. Zo
+    blijft het herkenbaar op een lichte en op een donkere achtergrond, zonder
+    twee bestanden.
+  -->
+  <g fill="none" stroke="#c3e84c" stroke-width="9" stroke-linecap="round">
+    <path d="M112 14 Q150 40 188 14" />
+    <path d="M112 120 Q150 94 188 120" />
+  </g>
+  <text x="150" y="90" text-anchor="middle" fill="currentColor"
+        font-family="'Century Gothic', 'URW Gothic', 'Futura', 'Avenir Next', system-ui, sans-serif"
+        font-size="62" font-weight="400" letter-spacing="1">mizen</text>
+</svg>

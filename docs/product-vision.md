@@ -9,9 +9,9 @@ historisch gebouwd voor de boekhouder en daarna aan de ondernemer verkocht.
 
 ## De belofte
 
-**Gedmma voert de administratie uit; de ondernemer bevestigt.**
+**Mizen voert de administratie uit; de ondernemer bevestigt.**
 
-Iemand zonder boekhoudkennis moet in Gedmma een volledige, juiste en
+Iemand zonder boekhoudkennis moet in Mizen een volledige, juiste en
 controleerbare administratie kunnen voeren, en op elk moment in gewone taal
 kunnen zien hoe zijn bedrijf ervoor staat. De boekhoudkundige juistheid is
 daarbij niet onderhandelbaar: onder de begrijpelijke buitenkant zit een strikte
@@ -61,7 +61,7 @@ Europese Data Act.
 ## Positionering ten opzichte van de benchmark
 
 SnelStart is de functionele maatstaf: alles wat een Nederlandse ondernemer daar
-kan, moet uiteindelijk in Gedmma kunnen. Het onderscheid zit in zes punten die
+kan, moet uiteindelijk in Mizen kunnen. Het onderscheid zit in zes punten die
 door de hele roadmap heen meetbaar zijn gemaakt:
 
 | Punt | Meetbaar gemaakt als |
@@ -73,10 +73,10 @@ door de hele roadmap heen meetbaar zijn gemaakt:
 | Mobiel | Volwaardige app, niet een verpakte website (fase 3) |
 | Samenwerking | Accountant werkt in dezelfde administratie zonder wachtwoorddeling (fase 4) |
 
-## Wat Gedmma nadrukkelijk niet is
+## Wat Mizen nadrukkelijk niet is
 
 * Geen bank of betaaldienstverlener. Betalingen lopen via vergunninghoudende
-  partijen; Gedmma bereidt voor en registreert.
+  partijen; Mizen bereidt voor en registreert.
 * Geen fiscaal adviseur. Het product rekent, signaleert en legt uit, en zegt
   erbij wanneer een accountant of fiscalist moet meekijken.
 * Geen zwarte doos. Elke automatische stap is achteraf uit te leggen en terug

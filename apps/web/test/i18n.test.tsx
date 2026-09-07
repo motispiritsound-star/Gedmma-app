@@ -5,7 +5,7 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, test } from 'vitest';
-import { TALEN, vertaal, nl } from '@gedmma/i18n';
+import { TALEN, vertaal, nl } from '@mizen/i18n';
 
 function alleBronbestanden(map: string): string[] {
   const uitkomst: string[] = [];

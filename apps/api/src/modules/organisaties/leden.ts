@@ -141,11 +141,11 @@ export async function nodigUit(
   const link = `${config.webUrl}/uitnodiging?token=${token}`;
   await mail().verstuur({
     aan: email,
-    onderwerp: 'Je bent uitgenodigd voor een administratie in Gedmma',
+    onderwerp: 'Je bent uitgenodigd voor een administratie in Mizen',
     tekst: [
       'Hallo,',
       '',
-      'Je bent uitgenodigd om mee te werken in een administratie in Gedmma.',
+      'Je bent uitgenodigd om mee te werken in een administratie in Mizen.',
       `Klik op de volgende link om de uitnodiging te accepteren: ${link}`,
       '',
       'De uitnodiging verloopt over veertien dagen.',
@@ -186,7 +186,7 @@ export async function accepteerUitnodiging(invoer: {
   const uitnodiging = await inTransactie(
     { organisatieId: null, administratieId: null, gebruikerId: null, actorSoort: 'systeem' },
     async (client) => {
-      await client.query(`SELECT set_config('gedmma.uitnodiging_hash', $1, true)`, [tokenHash]);
+      await client.query(`SELECT set_config('mizen.uitnodiging_hash', $1, true)`, [tokenHash]);
       const { rows } = await client.query<{
         id: string;
         user_id: string;

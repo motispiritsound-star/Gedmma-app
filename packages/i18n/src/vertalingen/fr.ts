@@ -2,7 +2,7 @@
 import type { Woordenboek } from '../index.ts';
 
 export const fr: Partial<Woordenboek> = {
-  'app.naam': 'Gedmma',
+  'app.naam': 'Mizen',
   'app.slogan': 'Votre comptabilité, en clair',
   'algemeen.opslaan': 'Enregistrer',
   'algemeen.annuleren': 'Annuler',

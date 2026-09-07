@@ -2,18 +2,18 @@
  * Het boeken zelf: van een gevalideerde post uit de rekenkern naar rijen in de
  * database, en van daar naar definitief of gestorneerd.
  *
- * De rekenkern (@gedmma/accounting) bepaalt of een post mag bestaan; deze laag
+ * De rekenkern (@mizen/accounting) bepaalt of een post mag bestaan; deze laag
  * bepaalt waar hij terechtkomt en zorgt dat de database dezelfde regels nog een
  * keer afdwingt. Dubbel, met opzet.
  */
-import { Money } from '@gedmma/money';
+import { Money } from '@mizen/money';
 import {
   bouwPost,
   keerPostOm,
   type GeldigePost,
   type Rekeningregister,
   type Systeemrol,
-} from '@gedmma/accounting';
+} from '@mizen/accounting';
 import type { Db, TenantContext } from '../../db/pool.ts';
 import { ApiFout, fout } from '../../http/fout.ts';
 import { auditeer } from '../audit/service.ts';

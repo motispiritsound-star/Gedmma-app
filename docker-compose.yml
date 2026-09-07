@@ -3,18 +3,18 @@ services:
   db:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: gedmma_owner
-      POSTGRES_PASSWORD: gedmma_dev
-      POSTGRES_DB: gedmma
+      POSTGRES_USER: mizen_owner
+      POSTGRES_PASSWORD: mizen_dev
+      POSTGRES_DB: mizen
       # Ontwikkelwaarde; het init-script maakt de applicatierol hiermee aan.
-      GEDMMA_APP_WACHTWOORD: gedmma_dev
+      MIZEN_APP_WACHTWOORD: mizen_dev
     ports:
       - '5432:5432'
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./docker/db-init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U gedmma_owner -d gedmma']
+      test: ['CMD-SHELL', 'pg_isready -U mizen_owner -d mizen']
       interval: 5s
       timeout: 5s
       retries: 20
@@ -26,9 +26,9 @@ services:
     environment:
       NODE_ENV: production
       PORT: '4000'
-      DATABASE_URL: postgres://gedmma_app:gedmma_dev@db:5432/gedmma
-      DATABASE_MIGRATION_URL: postgres://gedmma_owner:gedmma_dev@db:5432/gedmma
-      DATABASE_APP_ROLE: gedmma_app
+      DATABASE_URL: postgres://mizen_app:mizen_dev@db:5432/mizen
+      DATABASE_MIGRATION_URL: postgres://mizen_owner:mizen_dev@db:5432/mizen
+      DATABASE_APP_ROLE: mizen_app
       WEB_URL: http://localhost:8080
       # In een echte omgeving komen deze uit de secrets manager, nooit uit een
       # compose-bestand. Zie docs/security.md.

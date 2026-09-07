@@ -12,7 +12,7 @@ COPY packages/accounting/package.json packages/accounting/
 COPY packages/i18n/package.json packages/i18n/
 COPY apps/api/package.json apps/api/
 # --ignore-scripts: geen willekeurige postinstall-scripts in de bouwomgeving.
-RUN npm ci --omit=dev --ignore-scripts --workspace @gedmma/api --include-workspace-root
+RUN npm ci --omit=dev --ignore-scripts --workspace @mizen/api --include-workspace-root
 
 FROM node:22.18-bookworm-slim AS runtime
 WORKDIR /app

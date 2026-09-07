@@ -77,11 +77,11 @@ export const config = {
   database: {
     url:
       process.env.DATABASE_URL ??
-      'postgres://gedmma_app:gedmma_dev@127.0.0.1:5432/gedmma',
+      'postgres://mizen_app:mizen_dev@127.0.0.1:5432/mizen',
     /** Aparte verbinding voor migraties: die rol mag wel DDL uitvoeren. */
     migratieUrl:
       process.env.DATABASE_MIGRATION_URL ??
-      'postgres://gedmma_owner:gedmma_dev@127.0.0.1:5432/gedmma',
+      'postgres://mizen_owner:mizen_dev@127.0.0.1:5432/mizen',
     maxVerbindingen: getal('DATABASE_POOL_MAX', 10),
     statementTimeoutMs: getal('DATABASE_STATEMENT_TIMEOUT_MS', 15_000),
   },
@@ -125,7 +125,7 @@ export const config = {
 
   mail: {
     driver: (process.env.MAIL_DRIVER ?? 'logboek') as 'logboek' | 'smtp',
-    afzender: process.env.MAIL_FROM ?? 'geen-antwoord@gedmma.example',
+    afzender: process.env.MAIL_FROM ?? 'geen-antwoord@mizen.example',
   },
 
   ai: {

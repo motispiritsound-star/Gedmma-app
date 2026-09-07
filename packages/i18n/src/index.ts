@@ -1,11 +1,11 @@
 /**
- * @gedmma/i18n - vertalingen en opmaak.
+ * @mizen/i18n - vertalingen en opmaak.
  *
  * Regel: er staat geen gebruikersgerichte tekst in componenten. Alles loopt via
  * `t()`. De sleutels zijn beschrijvend (`facturen.leeg.titel`), zodat een
  * ontbrekende vertaling in de interface direct opvalt.
  */
-import { Money, type ValutaCode } from '@gedmma/money';
+import { Money, type ValutaCode } from '@mizen/money';
 import { nl } from './vertalingen/nl.ts';
 import { en } from './vertalingen/en.ts';
 import { de } from './vertalingen/de.ts';

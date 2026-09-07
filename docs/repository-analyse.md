@@ -52,12 +52,12 @@ Omvang: circa 8.800 regels TypeScript.
 ## Wat er met het bestaande product is gebeurd
 
 Niets is verwijderd of herschreven. Webscan NL is met `git mv` verplaatst naar
-`apps/webscan/` en is daar een zelfstandig workspace-pakket (`@gedmma/webscan`).
+`apps/webscan/` en is daar een zelfstandig workspace-pakket (`@mizen/webscan`).
 Alle gedocumenteerde commando's blijven werken:
 
 ```bash
 npm run proefrit                  # vanuit de root
-npm run -w @gedmma/webscan test   # eigen testsuite, ongewijzigd groen
+npm run -w @mizen/webscan test   # eigen testsuite, ongewijzigd groen
 ```
 
 De enige inhoudelijke wijziging in de code is dat `apps/webscan/start.js` zijn

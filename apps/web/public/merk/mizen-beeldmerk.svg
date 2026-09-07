@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Mizen">
+  <!--
+    Het beeldmerk: app-icoon en favicon.
+    Op zestien pixels is een woord onleesbaar; wat overblijft zijn de twee
+    bogen. Die zijn het onderscheidende deel van het merk, dus die staan hier
+    alleen, groot genoeg om ook heel klein te herkennen.
+  -->
+  <rect width="512" height="512" rx="104" fill="#1b1b3a" />
+  <g fill="none" stroke="#c3e84c" stroke-width="34" stroke-linecap="round">
+    <path d="M136 176 Q256 250 376 176" />
+    <path d="M136 336 Q256 262 376 336" />
+  </g>
+</svg>

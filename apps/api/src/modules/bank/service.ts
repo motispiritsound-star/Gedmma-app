@@ -5,8 +5,8 @@
  * gebruiker expliciet op "automatisch" heeft gezet). Zie docs/product-vision.md,
  * principe 3.
  */
-import { Money } from '@gedmma/money';
-import { boekBanktransactie, type Aflettering, type DirecteBoeking } from '@gedmma/accounting';
+import { Money } from '@mizen/money';
+import { boekBanktransactie, type Aflettering, type DirecteBoeking } from '@mizen/accounting';
 import type { Db, TenantContext } from '../../db/pool.ts';
 import { ApiFout, fout } from '../../http/fout.ts';
 import { auditeer } from '../audit/service.ts';

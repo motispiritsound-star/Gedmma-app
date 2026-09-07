@@ -68,7 +68,7 @@ export function controleerCode(geheim: string, code: string, opTijdstip = Date.n
 }
 
 /** De otpauth-URI voor de QR-code in een authenticator-app. */
-export function otpauthUri(geheim: string, email: string, uitgever = 'Gedmma'): string {
+export function otpauthUri(geheim: string, email: string, uitgever = 'Mizen'): string {
   const label = encodeURIComponent(`${uitgever}:${email}`);
   const parameters = new URLSearchParams({
     secret: geheim,

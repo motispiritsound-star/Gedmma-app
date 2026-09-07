@@ -10,7 +10,7 @@
  * geen echte persoonsgegevens en geen productiewachtwoorden in dit bestand.
  */
 
-import { Money } from '@gedmma/money';
+import { Money } from '@mizen/money';
 
 const basis = process.env.API_URL ?? 'http://127.0.0.1:4000';
 const EMAIL = 'demo@voorbeeld.test';

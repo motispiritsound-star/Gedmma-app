@@ -18,7 +18,7 @@ Openstaande beslissingen hebben grote gevolgen en horen bij de opdrachtgever.
 | A9 | Bewaartermijn standaard 7 jaar, 10 jaar voor onroerende zaken | Algemene Nederlandse fiscale bewaarplicht; te bevestigen bij de Belastingdienst per boekjaar | Instelbaar per tenant, administratie, documentsoort en land |
 | A10 | De exploitant is verwerker voor klantadministraties en verwerkingsverantwoordelijke voor eigen gebruikers- en facturatiegegevens | Standaard SaaS-rolverdeling | Juridische toets vereist vóór productie |
 | A11 | AI-functies staan standaard uit en gebruiken nooit klantdata voor training | Privacy by default | Aanzetten is een expliciete tenantkeuze met eigen registratie |
-| A12 | Bankkoppelingen lopen via een vergunninghoudende AISP; Gedmma is zelf geen betaaldienstverlener | PSD2 | Directe bankkoppeling zou een vergunning vereisen |
+| A12 | Bankkoppelingen lopen via een vergunninghoudende AISP; Mizen is zelf geen betaaldienstverlener | PSD2 | Directe bankkoppeling zou een vergunning vereisen |
 | A13 | De MVP draait op één applicatie-instantie met één database; horizontale schaling komt later | Fasering | De code is stateless op sessie na, dus schalen kan zonder herbouw |
 | A14 | E-mailimport van bonnen krijgt per administratie een uniek, niet-raadbaar adres | Voorkomt dat vreemden documenten kunnen injecteren | Fase 2 |
 | A15 | Nederlands is de taal van de code en documentatie; publieke API-velden zijn Engels | Aansluiting op wat er stond | Vastgelegd in ADR-009 |
@@ -37,7 +37,7 @@ Deze vragen hebben grote gevolgen en zijn bewust niet eenzijdig ingevuld.
 | O3 | Welk Peppol access point? | Bepaalt e-factureren naar de overheid | Adapter; keuze in fase 3 |
 | O4 | Welke AI-provider en onder welke voorwaarden (retentie, training, doorgifte)? | Bepaalt privacybeoordeling en of de functie überhaupt aan mag | Provider-abstractie; per tenant uit tenzij aangezet |
 | O5 | Welke hostingpartij en in welk land? | Bepaalt doorgiftebeoordeling, DPIA en continuïteit | Voorkeur NL/EER |
-| O6 | Wordt Gedmma ook aan consumenten aangeboden? | Consumentenrecht, herroeping, andere voorwaarden | Voorlopig alleen zakelijk |
+| O6 | Wordt Mizen ook aan consumenten aangeboden? | Consumentenrecht, herroeping, andere voorwaarden | Voorlopig alleen zakelijk |
 | O7 | Neemt de exploitant zelf accountancy- of complianceactiviteiten op zich? | Kan aanvullend toezicht en Wwft-verplichtingen meebrengen | Nee, tenzij apart juridisch beoordeeld |
 | O8 | Definitieve abonnementsvormen en limieten | Bepaalt feature flags en usage limits | Voorstel in `functional-requirements.md`, nog niet commercieel vastgesteld |
 | O9 | Wordt er een Functionaris Gegevensbescherming aangesteld? | Verplicht bij grootschalige verwerking; ook los daarvan verstandig | Aanbevolen |

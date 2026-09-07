@@ -1,6 +1,6 @@
 /** Zet een fout uit de API om naar tekst die een gebruiker snapt. */
 import { ApiFout, NetwerkFout } from '../api/client.ts';
-import type { Sleutel } from '@gedmma/i18n';
+import type { Sleutel } from '@mizen/i18n';
 
 export type Foutmelding = { titel: string; uitleg: string; code: string };
 

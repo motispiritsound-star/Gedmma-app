@@ -13,9 +13,9 @@
  * herkenbaar een testdatabase is.
  */
 process.env.NODE_ENV = 'test';
-process.env.DATABASE_URL = 'postgres://gedmma_app:gedmma_dev@127.0.0.1:5432/gedmma_test';
-process.env.DATABASE_MIGRATION_URL = 'postgres://gedmma_owner:gedmma_dev@127.0.0.1:5432/gedmma_test';
-process.env.DATABASE_APP_ROLE ??= 'gedmma_app';
+process.env.DATABASE_URL = 'postgres://mizen_app:mizen_dev@127.0.0.1:5432/mizen_test';
+process.env.DATABASE_MIGRATION_URL = 'postgres://mizen_owner:mizen_dev@127.0.0.1:5432/mizen_test';
+process.env.DATABASE_APP_ROLE ??= 'mizen_app';
 process.env.PASSWORD_PEPPER ??= 'test-peper';
 process.env.DATA_ENCRYPTION_KEY ??= '1'.repeat(64);
 process.env.LOG_LEVEL ??= 'error';

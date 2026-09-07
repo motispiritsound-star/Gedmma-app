@@ -3,7 +3,7 @@
 ## Uitgangspunt
 
 Overstappen mag nooit op techniek stuklopen. Dat geldt twee kanten op: naar
-Gedmma toe (migratie) en er weer vandaan
+Mizen toe (migratie) en er weer vandaan
 ([exit-and-portability-plan.md](exit-and-portability-plan.md)).
 
 Belangrijke randvoorwaarde: er wordt **nooit ongeautoriseerd of ongedocumenteerd
@@ -58,8 +58,8 @@ Na elke import wordt getoond:
 | Aantal regels gelezen, geïmporteerd, overgeslagen | telling |
 | Openingsbalans debet = credit | ja/nee |
 | Saldo per grootboekrekening voor en na | verschil |
-| Openstaande debiteuren volgens bron en volgens Gedmma | verschil |
-| Openstaande crediteuren volgens bron en volgens Gedmma | verschil |
+| Openstaande debiteuren volgens bron en volgens Mizen | verschil |
+| Openstaande crediteuren volgens bron en volgens Mizen | verschil |
 | Btw-saldi per vak | verschil |
 
 Een verschil blokkeert de import niet, maar wordt wel getoond en vastgelegd. Er

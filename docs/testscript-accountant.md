@@ -1,6 +1,6 @@
 # Testscript voor de accountant
 
-Bedankt dat je hiernaar wilt kijken. Dit is een proefversie van Gedmma, een
+Bedankt dat je hiernaar wilt kijken. Dit is een proefversie van Mizen, een
 Nederlands boekhoudpakket in aanbouw. We willen weten of het klopt en of het
 werkt zoals jij het zou willen — niet of het mooi is.
 

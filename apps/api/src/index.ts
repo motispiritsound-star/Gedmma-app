@@ -17,7 +17,7 @@ await seedBasisgegevens();
 
 const app = maakApp();
 const server = app.listen(config.poort, () => {
-  log.info('Gedmma API luistert', { poort: config.poort, omgeving: config.omgeving });
+  log.info('Mizen API luistert', { poort: config.poort, omgeving: config.omgeving });
 });
 
 const stopTaken = startTaakverwerker();

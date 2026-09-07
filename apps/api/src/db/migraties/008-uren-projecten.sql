@@ -96,7 +96,7 @@ CREATE INDEX idx_time_factuur ON time_entry (administration_id, sales_invoice_id
 
 -- Een gefactureerd uur is vastgelegd bewijs onder een factuur; wijzigen of
 -- weggooien mag daarna niet meer. Wie zich vergist, crediteert de factuur.
-CREATE OR REPLACE FUNCTION gedmma.uur_is_vast() RETURNS trigger AS $$
+CREATE OR REPLACE FUNCTION mizen.uur_is_vast() RETURNS trigger AS $$
 BEGIN
   IF TG_OP = 'DELETE' THEN
     IF OLD.status = 'gefactureerd' THEN
@@ -122,7 +122,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER uur_is_vast
   BEFORE UPDATE OR DELETE ON time_entry
-  FOR EACH ROW EXECUTE FUNCTION gedmma.uur_is_vast();
+  FOR EACH ROW EXECUTE FUNCTION mizen.uur_is_vast();
 
 -- Row-level security. Migratie 005 liep over de tabellen die er toen waren;
 -- nieuwe tabellen zetten hun eigen grendel. De metatest in
@@ -137,8 +137,8 @@ BEGIN
     EXECUTE format('DROP POLICY IF EXISTS tenant_isolatie ON public.%I', tabel);
     EXECUTE format($p$
       CREATE POLICY tenant_isolatie ON public.%I
-        USING (administration_id = gedmma.huidige_administratie())
-        WITH CHECK (administration_id = gedmma.huidige_administratie())
+        USING (administration_id = mizen.huidige_administratie())
+        WITH CHECK (administration_id = mizen.huidige_administratie())
     $p$, tabel);
   END LOOP;
 END $$;
@@ -149,7 +149,7 @@ END $$;
 -- test/tenant-isolatie.test.ts vangt die fout, maar hij hoort hier niet gemaakt
 -- te worden.
 GRANT SELECT, INSERT, UPDATE, DELETE ON project, project_activity, time_entry TO {{APP_ROLE}};
-GRANT EXECUTE ON FUNCTION gedmma.uur_is_vast() TO {{APP_ROLE}};
+GRANT EXECUTE ON FUNCTION mizen.uur_is_vast() TO {{APP_ROLE}};
 
 -- Vangnet, gelijk aan de eerdere migraties: het auditspoor blijft append-only.
 REVOKE UPDATE, DELETE ON audit_event FROM {{APP_ROLE}};

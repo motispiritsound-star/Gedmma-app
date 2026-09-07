@@ -12,7 +12,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { kiesTaal, maakVertaler, type Sleutel, type Taal } from '@gedmma/i18n';
+import { kiesTaal, maakVertaler, type Sleutel, type Taal } from '@mizen/i18n';
 import { bijUitloggen, verzoek, type AdministratieAntwoord, type Ik } from '../api/client.ts';
 
 export type Thema = 'systeem' | 'licht' | 'donker';
@@ -35,9 +35,9 @@ type AppToestand = {
 
 const Context = createContext<AppToestand | null>(null);
 
-const OPSLAG_TAAL = 'gedmma.taal';
-const OPSLAG_THEMA = 'gedmma.thema';
-const OPSLAG_ADMIN = 'gedmma.administratie';
+const OPSLAG_TAAL = 'mizen.taal';
+const OPSLAG_THEMA = 'mizen.thema';
+const OPSLAG_ADMIN = 'mizen.administratie';
 
 function leesOpslag(sleutel: string): string | null {
   try {

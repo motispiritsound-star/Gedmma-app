@@ -15,7 +15,7 @@ import {
 import { alleBoekjaren, alleBtwCodes, alleDagboeken, allePeriodes, alleRekeningen } from '../modules/grootboek/repo.ts';
 import { wijzigPeriodestatus } from '../modules/grootboek/service.ts';
 import { STANDAARD_BTWCODES } from '../modules/btw/codes.ts';
-import { SCHEMA_SJABLONEN } from '@gedmma/accounting';
+import { SCHEMA_SJABLONEN } from '@mizen/accounting';
 import { behandelFeedback, meldFeedback, zoekFeedback } from '../modules/feedback/service.ts';
 import { ledenVan, nodigUit, trekToegangIn, wijzigRol } from '../modules/organisaties/leden.ts';
 import { asyncRoute, inContext } from './hulp.ts';

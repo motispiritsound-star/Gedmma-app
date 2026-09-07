@@ -1,4 +1,4 @@
-import { Money, Rate } from '@gedmma/money';
+import { Money, Rate } from '@mizen/money';
 import type { BtwCode } from '../src/index.ts';
 import type { Rekeningregister, Systeemrol } from '../src/index.ts';
 

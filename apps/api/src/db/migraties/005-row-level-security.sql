@@ -31,31 +31,31 @@ BEGIN
       EXECUTE format($p$
         CREATE POLICY tenant_isolatie ON public.%I
           USING (administration_id IS NULL
-                 OR administration_id = gedmma.huidige_administratie())
+                 OR administration_id = mizen.huidige_administratie())
           WITH CHECK (administration_id IS NULL
-                 OR administration_id = gedmma.huidige_administratie())
+                 OR administration_id = mizen.huidige_administratie())
       $p$, tabel);
     ELSIF tabel = 'job' OR tabel = 'idempotency_key' THEN
       -- Taken en idempotentie kunnen ook buiten een administratie bestaan.
       EXECUTE format($p$
         CREATE POLICY tenant_isolatie ON public.%I
           USING (administration_id IS NULL
-                 OR administration_id = gedmma.huidige_administratie())
+                 OR administration_id = mizen.huidige_administratie())
           WITH CHECK (administration_id IS NULL
-                 OR administration_id = gedmma.huidige_administratie())
+                 OR administration_id = mizen.huidige_administratie())
       $p$, tabel);
     ELSIF tabel = 'privacy_request' OR tabel = 'retention_policy' THEN
       -- Privacyverzoeken hangen aan de organisatie; de administratie is optioneel.
       EXECUTE format($p$
         CREATE POLICY tenant_isolatie ON public.%I
-          USING (organization_id = gedmma.huidige_organisatie())
-          WITH CHECK (organization_id = gedmma.huidige_organisatie())
+          USING (organization_id = mizen.huidige_organisatie())
+          WITH CHECK (organization_id = mizen.huidige_organisatie())
       $p$, tabel);
     ELSE
       EXECUTE format($p$
         CREATE POLICY tenant_isolatie ON public.%I
-          USING (administration_id = gedmma.huidige_administratie())
-          WITH CHECK (administration_id = gedmma.huidige_administratie())
+          USING (administration_id = mizen.huidige_administratie())
+          WITH CHECK (administration_id = mizen.huidige_administratie())
       $p$, tabel);
     END IF;
   END LOOP;
@@ -68,32 +68,32 @@ ALTER TABLE administration FORCE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS tenant_isolatie ON administration;
 CREATE POLICY tenant_isolatie ON administration
   USING (
-    organization_id = gedmma.huidige_organisatie()
-    OR id = gedmma.huidige_administratie()
+    organization_id = mizen.huidige_organisatie()
+    OR id = mizen.huidige_administratie()
   )
-  WITH CHECK (organization_id = gedmma.huidige_organisatie());
+  WITH CHECK (organization_id = mizen.huidige_organisatie());
 
 ALTER TABLE organization ENABLE ROW LEVEL SECURITY;
 ALTER TABLE organization FORCE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS tenant_isolatie ON organization;
 CREATE POLICY tenant_isolatie ON organization
-  USING (id = gedmma.huidige_organisatie())
-  WITH CHECK (id = gedmma.huidige_organisatie());
+  USING (id = mizen.huidige_organisatie())
+  WITH CHECK (id = mizen.huidige_organisatie());
 
 -- Lidmaatschappen en toegangsregels horen bij een organisatie.
 ALTER TABLE membership ENABLE ROW LEVEL SECURITY;
 ALTER TABLE membership FORCE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS tenant_isolatie ON membership;
 CREATE POLICY tenant_isolatie ON membership
-  USING (organization_id = gedmma.huidige_organisatie())
-  WITH CHECK (organization_id = gedmma.huidige_organisatie());
+  USING (organization_id = mizen.huidige_organisatie())
+  WITH CHECK (organization_id = mizen.huidige_organisatie());
 
 ALTER TABLE processing_agreement ENABLE ROW LEVEL SECURITY;
 ALTER TABLE processing_agreement FORCE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS tenant_isolatie ON processing_agreement;
 CREATE POLICY tenant_isolatie ON processing_agreement
-  USING (organization_id = gedmma.huidige_organisatie())
-  WITH CHECK (organization_id = gedmma.huidige_organisatie());
+  USING (organization_id = mizen.huidige_organisatie())
+  WITH CHECK (organization_id = mizen.huidige_organisatie());
 
 -- Tabellen die bewust niet tenantgebonden zijn en dus geen policy krijgen:
 --   app_user, user_credential, session  -> horen bij een persoon, niet bij een tenant
@@ -106,5 +106,5 @@ CREATE POLICY tenant_isolatie ON processing_agreement
 -- lijst compleet is: elke nieuwe tabel met administration_id moet een policy
 -- hebben, anders faalt de build.
 
-COMMENT ON SCHEMA gedmma IS
+COMMENT ON SCHEMA mizen IS
   'Hulpfuncties voor row-level security. huidige_administratie() en huidige_organisatie() lezen de transactie-lokale sessiecontext die inTransactie() zet.';

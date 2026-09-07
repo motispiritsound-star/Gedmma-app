@@ -18,7 +18,7 @@ geverifieerd.** De kolom "Datum laatste controle" is daarom overal leeg en de
 kolom "Juridische validatie" beschrijft wat er nog moet gebeuren, niet wat er
 is gebeurd.
 
-Deze matrix onderbouwt geen enkele algemene uitspraak dat Gedmma "volledig
+Deze matrix onderbouwt geen enkele algemene uitspraak dat Mizen "volledig
 AVG-proof", "100% compliant" of "volledig conform de Nederlandse wetgeving" is.
 Wat er staat, is per regel wat er aantoonbaar is gebouwd en wat er ontbreekt.
 Zie ook [compliance/README.md](compliance/README.md).
@@ -37,7 +37,7 @@ Zie ook [compliance/README.md](compliance/README.md).
 
 **Verantwoordelijke partij** volgt de rolverdeling uit
 [privacy-role-matrix.md](privacy-role-matrix.md): *verwerker* is de exploitant
-van Gedmma, *verwerkingsverantwoordelijke* is de klant (de organisatie die de
+van Mizen, *verwerkingsverantwoordelijke* is de klant (de organisatie die de
 administratie voert), *leverancier* is het ontwikkelteam van het product.
 
 ---
@@ -113,7 +113,7 @@ administratie voert), *leverancier* is het ontwikkelteam van het product.
 | C-20 | Btw-code `VK-ICL`, ICP-overzicht per periode, controle op een ingevuld btw-identificatienummer | Waarschuwing als het nummer ontbreekt | — | `packages/accounting` | gedeeltelijk | Geen online validatie van het btw-nummer | Toets van de nultariefvoorwaarden | — |
 | C-21 | Tarieven en vakken zijn rijen met een geldigheidsperiode; een wijziging is een migratie met een nieuwe rij, oude boekingen blijven verwijzen naar de code die gold | Jaarlijkse herbeoordeling met eigenaar | — | [legal-source-register.md](legal-source-register.md) rijen L3 en L4 | gebouwd | Tarieven zijn ingevuld als aanname | Bevestiging van tarieven en vakindeling | — |
 | C-22 | `rgs_code` als optioneel veld op de grootboekrekening | Volledige mapping gepland in een latere fase | — | [data-model.md](data-model.md) | gedeeltelijk | Zonder volledige mapping is uitwisseling beperkt | — | — |
-| C-23 | — | Gepland; vereist een PKIoverheid-certificaat en een aansluitprocedure | — | [roadmap.md](roadmap.md) | buiten scope | Aangifte gebeurt tot die tijd handmatig buiten Gedmma | Toets vóór aansluiting | — |
+| C-23 | — | Gepland; vereist een PKIoverheid-certificaat en een aansluitprocedure | — | [roadmap.md](roadmap.md) | buiten scope | Aangifte gebeurt tot die tijd handmatig buiten Mizen | Toets vóór aansluiting | — |
 | C-24 | — | Gepland | — | [roadmap.md](roadmap.md) | buiten scope | Accountant kan nog niet in het standaardformaat overnemen; de generieke export vangt dit op | — | — |
 
 ---

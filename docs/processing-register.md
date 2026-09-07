@@ -31,7 +31,7 @@ kant.
 
 ## Bijzondere persoonsgegevens
 
-Gedmma is niet bedoeld voor bijzondere persoonsgegevens of het BSN. Het datamodel
+Mizen is niet bedoeld voor bijzondere persoonsgegevens of het BSN. Het datamodel
 kent er geen velden voor. Ze kunnen wel onbedoeld in een geüpload document
 voorkomen — een salarisstrook, een kopie van een identiteitsbewijs.
 

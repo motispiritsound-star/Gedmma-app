@@ -1,9 +1,9 @@
 {
-  "name": "@gedmma/api",
+  "name": "@mizen/api",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Gedmma API: modulaire monoliet met de boekhoudkundige kern, authenticatie en rapportage.",
+  "description": "Mizen API: modulaire monoliet met de boekhoudkundige kern, authenticatie en rapportage.",
   "engines": {
     "node": ">=22.18.0"
   },
@@ -16,8 +16,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@gedmma/accounting": "*",
-    "@gedmma/money": "*",
+    "@mizen/accounting": "*",
+    "@mizen/money": "*",
     "express": "^4.21.2",
     "fast-xml-parser": "^4.5.0",
     "pdfkit": "^0.15.1",

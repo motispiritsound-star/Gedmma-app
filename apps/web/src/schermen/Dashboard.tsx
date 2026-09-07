@@ -4,7 +4,7 @@
  * precies betekent.
  */
 import { Link } from 'react-router-dom';
-import { toonBedrag, toonDatum } from '@gedmma/i18n';
+import { toonBedrag, toonDatum } from '@mizen/i18n';
 import { useApp } from '../context/App.tsx';
 import { Etiket, Kaart, Kerncijfer, Laden, Leegstaat, Melding, Tabelomhulsel } from '../ontwerp/index.tsx';
 import { huidigJaar, useHaal } from './gebruik.ts';

@@ -6,8 +6,8 @@
  */
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Money } from '@gedmma/money';
-import { toonBedrag, toonDatum } from '@gedmma/i18n';
+import { Money } from '@mizen/money';
+import { toonBedrag, toonDatum } from '@mizen/i18n';
 import { nieuweIdempotencyKey } from '../api/client.ts';
 import type { BtwCode, Factuur, Factuurregel, Rekening, Relatie } from '../api/client.ts';
 import { useApp } from '../context/App.tsx';

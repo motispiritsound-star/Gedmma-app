@@ -1,7 +1,7 @@
 /** Instellingen: onderneming, gebruikers, beveiliging, perioden en audit trail. */
 import { useState } from 'react';
 import { NavLink, Route, Routes } from 'react-router-dom';
-import { TALEN, toonTijdstip } from '@gedmma/i18n';
+import { TALEN, toonTijdstip } from '@mizen/i18n';
 import { useApp } from '../context/App.tsx';
 import { Feedbackoverzicht } from './Feedback.tsx';
 import { Etiket, Kaart, Keuzeveld, Knop, Laden, Melding, Tabelomhulsel, Veld } from '../ontwerp/index.tsx';

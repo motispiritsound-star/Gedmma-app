@@ -2,7 +2,7 @@
 
 ## Uitgangspunt
 
-AI is in Gedmma een assistent, geen beslisser. Het verschil is niet retorisch: de
+AI is in Mizen een assistent, geen beslisser. Het verschil is niet retorisch: de
 software kent geen pad waarlangs een model zelf een definitieve boeking maakt,
 een betaling doet of iemand blokkeert.
 

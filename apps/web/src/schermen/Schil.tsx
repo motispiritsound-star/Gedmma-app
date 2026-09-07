@@ -1,9 +1,10 @@
 /** Kop, navigatie en inhoud. Werkt als zijmenu op groot scherm en als tabbalk op mobiel. */
 import type { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
-import { TALEN, type Taal } from '@gedmma/i18n';
+import { TALEN, type Taal } from '@mizen/i18n';
 import { useApp, type Thema } from '../context/App.tsx';
 import { Knop, Melding } from '../ontwerp/index.tsx';
+import { Merk } from '../ontwerp/Merk.tsx';
 import { Feedbackknop } from './Feedback.tsx';
 
 /**
@@ -110,11 +111,15 @@ export function Schil({ children }: { children: ReactNode }) {
       )}
 
       <header className="kop">
-        <NavLink to="/" className="kop__merk">
-          {t('app.naam')}
+        <NavLink to="/" className="kop__merk" aria-label={t('app.naam')}>
+          <Merk hoogte={34} titel={t('app.naam')} />
         </NavLink>
 
-        {alleAdministraties.length > 1 ? (
+        {/* Bij één administratie draagt de kop alleen het logo: de naam van je
+            eigen bedrijf hoef je niet op elk scherm te lezen, en hij staat in
+            Instellingen. Werk je in meerdere administraties, dan is de keuzelijst
+            geen versiering maar bediening, en blijft hij staan. */}
+        {alleAdministraties.length > 1 && (
           <label>
             <span className="alleen-schermlezer">{t('nav.administratieKiezen')}</span>
             <select
@@ -130,8 +135,6 @@ export function Schil({ children }: { children: ReactNode }) {
               ))}
             </select>
           </label>
-        ) : (
-          <span className="uitleg">{administratie?.administratie.naam}</span>
         )}
 
         <div className="kop__rechts">

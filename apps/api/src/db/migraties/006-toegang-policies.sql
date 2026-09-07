@@ -13,54 +13,54 @@
 DROP POLICY IF EXISTS tenant_isolatie ON membership;
 CREATE POLICY tenant_isolatie ON membership
   USING (
-    organization_id = gedmma.huidige_organisatie()
-    OR user_id = gedmma.huidige_gebruiker()
+    organization_id = mizen.huidige_organisatie()
+    OR user_id = mizen.huidige_gebruiker()
   )
-  WITH CHECK (organization_id = gedmma.huidige_organisatie());
+  WITH CHECK (organization_id = mizen.huidige_organisatie());
 
 DROP POLICY IF EXISTS tenant_isolatie ON organization;
 CREATE POLICY tenant_isolatie ON organization
   USING (
-    id = gedmma.huidige_organisatie()
+    id = mizen.huidige_organisatie()
     OR EXISTS (
       SELECT 1 FROM membership m
        WHERE m.organization_id = organization.id
-         AND m.user_id = gedmma.huidige_gebruiker()
+         AND m.user_id = mizen.huidige_gebruiker()
          AND m.status = 'actief'
     )
   )
-  WITH CHECK (id = gedmma.huidige_organisatie());
+  WITH CHECK (id = mizen.huidige_organisatie());
 
 DROP POLICY IF EXISTS tenant_isolatie ON administration;
 CREATE POLICY tenant_isolatie ON administration
   USING (
-    organization_id = gedmma.huidige_organisatie()
-    OR id = gedmma.huidige_administratie()
+    organization_id = mizen.huidige_organisatie()
+    OR id = mizen.huidige_administratie()
     OR EXISTS (
       SELECT 1 FROM membership m
        WHERE m.organization_id = administration.organization_id
-         AND m.user_id = gedmma.huidige_gebruiker()
+         AND m.user_id = mizen.huidige_gebruiker()
          AND m.status = 'actief'
     )
   )
-  WITH CHECK (organization_id = gedmma.huidige_organisatie());
+  WITH CHECK (organization_id = mizen.huidige_organisatie());
 
 -- administration_access hangt aan een lidmaatschap; je mag je eigen toegang zien.
 DROP POLICY IF EXISTS tenant_isolatie ON administration_access;
 CREATE POLICY tenant_isolatie ON administration_access
   USING (
-    administration_id = gedmma.huidige_administratie()
+    administration_id = mizen.huidige_administratie()
     OR EXISTS (
       SELECT 1 FROM membership m
        WHERE m.id = administration_access.membership_id
-         AND (m.organization_id = gedmma.huidige_organisatie()
-              OR m.user_id = gedmma.huidige_gebruiker())
+         AND (m.organization_id = mizen.huidige_organisatie()
+              OR m.user_id = mizen.huidige_gebruiker())
     )
   )
   WITH CHECK (
     EXISTS (
       SELECT 1 FROM membership m
        WHERE m.id = administration_access.membership_id
-         AND m.organization_id = gedmma.huidige_organisatie()
+         AND m.organization_id = mizen.huidige_organisatie()
     )
   );

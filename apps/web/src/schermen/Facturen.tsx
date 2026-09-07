@@ -8,8 +8,8 @@
  */
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { toonBedrag, toonDatum } from '@gedmma/i18n';
-import { Money } from '@gedmma/money';
+import { toonBedrag, toonDatum } from '@mizen/i18n';
+import { Money } from '@mizen/money';
 import { useApp } from '../context/App.tsx';
 import { Etiket, Kaart, Kerncijfer, Knop, Laden, Leegstaat, Melding, Tabelomhulsel } from '../ontwerp/index.tsx';
 import { useHaal } from './gebruik.ts';

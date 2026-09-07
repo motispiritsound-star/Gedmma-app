@@ -10,8 +10,8 @@
  * Dit is een berekening, geen belastingadvies. De uitkomst is bedoeld om te
  * controleren en aan te leveren, niet om blind in te dienen.
  */
-import { Money } from '@gedmma/money';
-import { vakOmschrijving } from '@gedmma/accounting';
+import { Money } from '@mizen/money';
+import { vakOmschrijving } from '@mizen/accounting';
 import type { Db } from '../../db/pool.ts';
 import { leesAdministratie } from '../organisaties/service.ts';
 import type { Periode } from '../rapportage/service.ts';

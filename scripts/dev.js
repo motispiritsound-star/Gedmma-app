@@ -26,7 +26,7 @@ function databaseUrl() {
     const match = /^DATABASE_URL\s*=\s*(.+)$/m.exec(readFileSync(envPad, 'utf8'));
     if (match) return match[1].trim().replace(/^["']|["']$/g, '');
   }
-  return 'postgres://gedmma_app:gedmma_dev@127.0.0.1:5432/gedmma';
+  return 'postgres://mizen_app:mizen_dev@127.0.0.1:5432/mizen';
 }
 
 function bereikbaar(host, poort) {
@@ -66,14 +66,14 @@ if (!(await bereikbaar(host, poort))) {
 }
 
 meld('Migraties uitvoeren ...');
-const migratie = spawnSync('npm', ['run', '--silent', '-w', '@gedmma/api', 'migrate'], {
+const migratie = spawnSync('npm', ['run', '--silent', '-w', '@mizen/api', 'migrate'], {
   cwd: repoRoot,
   stdio: 'inherit',
 });
 if (migratie.status !== 0) process.exit(migratie.status ?? 1);
 
 meld('Basisgegevens klaarzetten ...');
-const seed = spawnSync('npm', ['run', '--silent', '-w', '@gedmma/api', 'seed'], {
+const seed = spawnSync('npm', ['run', '--silent', '-w', '@mizen/api', 'seed'], {
   cwd: repoRoot,
   stdio: 'inherit',
 });
@@ -116,10 +116,10 @@ process.on('SIGINT', () => stopAlles(0));
 process.on('SIGTERM', () => stopAlles(0));
 
 meld('');
-meld('Gedmma start op:');
+meld('Mizen start op:');
 meld('  API      http://localhost:4000/health/ready');
 meld('  Webapp   http://localhost:5173');
 meld('');
 
-start('api', ['run', '--silent', '-w', '@gedmma/api', 'dev']);
-start('web', ['run', '--silent', '-w', '@gedmma/web', 'dev']);
+start('api', ['run', '--silent', '-w', '@mizen/api', 'dev']);
+start('web', ['run', '--silent', '-w', '@mizen/web', 'dev']);

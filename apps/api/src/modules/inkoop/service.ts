@@ -6,8 +6,8 @@
  * tweede regel wordt door een unieke index in de database afgedwongen, niet
  * alleen door deze code.
  */
-import { Money, Quantity } from '@gedmma/money';
-import { berekenFactuur, boekInkoopfactuur, type BerekendeRegel, type FactuurRegelInvoer } from '@gedmma/accounting';
+import { Money, Quantity } from '@mizen/money';
+import { berekenFactuur, boekInkoopfactuur, type BerekendeRegel, type FactuurRegelInvoer } from '@mizen/accounting';
 import type { Db, TenantContext } from '../../db/pool.ts';
 import { ApiFout, fout } from '../../http/fout.ts';
 import { auditeer } from '../audit/service.ts';

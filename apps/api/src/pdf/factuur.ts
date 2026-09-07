@@ -6,7 +6,7 @@
  * komen uit de instellingen van de administratie.
  */
 import PDFDocument from 'pdfkit';
-import { Money } from '@gedmma/money';
+import { Money } from '@mizen/money';
 
 export type FactuurPdfGegevens = {
   soort: 'factuur' | 'creditnota' | 'offerte' | 'proforma';
@@ -75,7 +75,10 @@ function datum(waarde: string | null, locale: string): string {
 /** Bouwt de pdf en levert hem als buffer op. */
 export async function maakFactuurPdf(gegevens: FactuurPdfGegevens): Promise<Buffer> {
   const locale = gegevens.locale || 'nl-NL';
-  const accent = gegevens.verkoper.kleur ?? '#1f4d6b';
+  // De ondernemer kan zijn eigen kleur instellen; zonder keuze pakt hij het
+  // merkblauw van Mizen. Op de factuur zelf staat verder alleen zijn eigen naam
+  // en gegevens: het is zijn factuur, niet onze reclame.
+  const accent = gegevens.verkoper.kleur ?? '#1b1b3a';
   const document = new PDFDocument({ size: 'A4', margin: 50, info: { Title: `${TITELS[gegevens.soort]} ${gegevens.documentnummer}` } });
 
   const stukken: Buffer[] = [];

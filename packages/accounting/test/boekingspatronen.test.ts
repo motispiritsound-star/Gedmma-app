@@ -1,7 +1,7 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import fc from 'fast-check';
-import { Money, Rate } from '@gedmma/money';
+import { Money, Rate } from '@mizen/money';
 import {
   berekenFactuur,
   boekVerkoopfactuur,

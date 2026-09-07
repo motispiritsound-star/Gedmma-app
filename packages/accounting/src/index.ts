@@ -1,5 +1,5 @@
 /**
- * @gedmma/accounting — de rekenkern van de boekhouding.
+ * @mizen/accounting — de rekenkern van de boekhouding.
  *
  * Alles in dit pakket is puur: geen database, geen netwerk, geen tijd. Daardoor
  * is elke regel property-based testbaar en is het gedrag bij een gegeven invoer

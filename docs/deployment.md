@@ -24,10 +24,10 @@ npm run dev
 ## Lokaal, zonder Docker
 
 ```bash
-sudo -u postgres createuser --login --pwprompt gedmma_owner   # eigenaar, mag DDL
-sudo -u postgres createuser --login --pwprompt gedmma_app     # applicatie, geen DDL
-sudo -u postgres createdb -O gedmma_owner gedmma
-sudo -u postgres psql -d gedmma -c 'GRANT USAGE ON SCHEMA public TO gedmma_app;'
+sudo -u postgres createuser --login --pwprompt mizen_owner   # eigenaar, mag DDL
+sudo -u postgres createuser --login --pwprompt mizen_app     # applicatie, geen DDL
+sudo -u postgres createdb -O mizen_owner mizen
+sudo -u postgres psql -d mizen -c 'GRANT USAGE ON SCHEMA public TO mizen_app;'
 
 cp .env.example .env
 # Zet DATABASE_URL en DATABASE_MIGRATION_URL met de wachtwoorden die je koos.

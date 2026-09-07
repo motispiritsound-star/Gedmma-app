@@ -1,7 +1,7 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import fc from 'fast-check';
-import { Money } from '@gedmma/money';
+import { Money } from '@mizen/money';
 import { bouwPost, keerPostOm, debet, credit, BoekhoudFout } from '../src/index.ts';
 import { eur } from './hulp.ts';
 

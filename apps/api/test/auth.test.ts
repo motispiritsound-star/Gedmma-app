@@ -211,8 +211,8 @@ describe('TOTP-implementatie', () => {
 
   test('de otpauth-URI bevat de uitgever en het adres', () => {
     const uri = otpauthUri('ABCDEFGHIJKLMNOP', 'test@voorbeeld.nl');
-    assert.match(uri, /issuer=Gedmma/);
-    assert.match(uri, /Gedmma%3Atest%40voorbeeld\.nl/);
+    assert.match(uri, /issuer=Mizen/);
+    assert.match(uri, /Mizen%3Atest%40voorbeeld\.nl/);
   });
 });
 

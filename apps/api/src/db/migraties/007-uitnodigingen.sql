@@ -10,17 +10,17 @@
 DROP POLICY IF EXISTS tenant_isolatie ON membership;
 CREATE POLICY tenant_isolatie ON membership
   USING (
-    organization_id = gedmma.huidige_organisatie()
-    OR user_id = gedmma.huidige_gebruiker()
+    organization_id = mizen.huidige_organisatie()
+    OR user_id = mizen.huidige_gebruiker()
     OR (
       uitnodiging_hash IS NOT NULL
-      AND uitnodiging_hash = NULLIF(current_setting('gedmma.uitnodiging_hash', true), '')
+      AND uitnodiging_hash = NULLIF(current_setting('mizen.uitnodiging_hash', true), '')
     )
   )
   WITH CHECK (
-    organization_id = gedmma.huidige_organisatie()
+    organization_id = mizen.huidige_organisatie()
     OR (
       uitnodiging_hash IS NOT NULL
-      AND uitnodiging_hash = NULLIF(current_setting('gedmma.uitnodiging_hash', true), '')
+      AND uitnodiging_hash = NULLIF(current_setting('mizen.uitnodiging_hash', true), '')
     )
   );

@@ -2,7 +2,7 @@
 
 ## Uitgangspunt
 
-Gedmma is een **modulaire monoliet** in één TypeScript-monorepo. Alle domeinen
+Mizen is een **modulaire monoliet** in één TypeScript-monorepo. Alle domeinen
 draaien in één proces met strikt gescheiden modules en expliciete grenzen, zodat
 een module later zonder herbouw naar een eigen service kan verhuizen. Voor een
 financieel systeem is dat de juiste keuze: een boeking, de btw-berekening, de
@@ -46,10 +46,10 @@ flowchart TB
   end
 
   subgraph packages["packages/ — herbruikbare kern"]
-    p_money["@gedmma/money<br/>exacte bedragen"]
-    p_acc["@gedmma/accounting<br/>double-entry, btw, invarianten"]
-    p_i18n["@gedmma/i18n<br/>nl/en/de/fr"]
-    p_contracts["@gedmma/contracts<br/>API-typen + validatieschema's"]
+    p_money["@mizen/money<br/>exacte bedragen"]
+    p_acc["@mizen/accounting<br/>double-entry, btw, invarianten"]
+    p_i18n["@mizen/i18n<br/>nl/en/de/fr"]
+    p_contracts["@mizen/contracts<br/>API-typen + validatieschema's"]
   end
 
   subgraph data["Opslag"]
@@ -147,8 +147,8 @@ Elke request krijgt een `TenantContext` met `organizationId`, `administrationId`
 databasetransactie in de PostgreSQL-sessie gezet:
 
 ```sql
-SELECT set_config('gedmma.administration_id', $1, true);
-SELECT set_config('gedmma.organization_id',   $2, true);
+SELECT set_config('mizen.administration_id', $1, true);
+SELECT set_config('mizen.organization_id',   $2, true);
 ```
 
 Row-level security-policies op elke tenantgebonden tabel lezen die waarden. Een

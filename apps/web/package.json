@@ -1,9 +1,9 @@
 {
-  "name": "@gedmma/web",
+  "name": "@mizen/web",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Gedmma webapp: eigen design system, donkere en lichte modus, nl/en/de/fr.",
+  "description": "Mizen webapp: eigen design system, donkere en lichte modus, nl/en/de/fr.",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
@@ -13,8 +13,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@gedmma/i18n": "*",
-    "@gedmma/money": "*",
+    "@mizen/i18n": "*",
+    "@mizen/money": "*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0"

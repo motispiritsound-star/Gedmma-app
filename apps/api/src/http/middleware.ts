@@ -10,9 +10,9 @@ import { leesSessie } from '../auth/service.ts';
 import { toegangVan } from '../modules/organisaties/service.ts';
 import { ApiFout, fout, vanBoekhoudFout, vanDatabaseFout } from './fout.ts';
 import type { Verzoek } from './context.ts';
-import { BoekhoudFout } from '@gedmma/accounting';
+import { BoekhoudFout } from '@mizen/accounting';
 
-export const SESSIE_COOKIE = 'gedmma_sessie';
+export const SESSIE_COOKIE = 'mizen_sessie';
 
 /** Geeft elke request een id dat in logs, audit en foutantwoorden terugkomt. */
 export function requestId(verzoek: Verzoek, antwoord: Response, volgende: NextFunction): void {
@@ -207,13 +207,13 @@ export function vereistRecht(recht: string): RechtMiddleware {
     }
     volgende();
   };
-  middleware.gedmmaRecht = recht;
+  middleware.mizenRecht = recht;
   return middleware;
 }
 
 export type RechtMiddleware = {
   (verzoek: Verzoek, antwoord: Response, volgende: NextFunction): void;
-  gedmmaRecht: string;
+  mizenRecht: string;
 };
 
 /** Logt elke request met duur en uitkomst. Zonder persoonsgegevens. */

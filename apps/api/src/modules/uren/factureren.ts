@@ -15,7 +15,7 @@
  *  - Dezelfde uren kunnen nooit twee keer op een factuur komen: dat is een
  *    databasecontrole, geen belofte van de applicatie.
  */
-import { Money, Quantity } from '@gedmma/money';
+import { Money, Quantity } from '@mizen/money';
 import type { Db, TenantContext } from '../../db/pool.ts';
 import { fout } from '../../http/fout.ts';
 import { auditeer } from '../audit/service.ts';

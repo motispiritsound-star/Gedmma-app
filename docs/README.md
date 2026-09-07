@@ -1,6 +1,6 @@
-# Documentatie Gedmma
+# Documentatie Mizen
 
-Gedmma is een boekhoud- en bedrijfsplatform voor Nederlandse zzp'ers, mkb-bedrijven,
+Mizen is een boekhoud- en bedrijfsplatform voor Nederlandse zzp'ers, mkb-bedrijven,
 stichtingen, verenigingen en accountantskantoren. Deze map bevat het ontwerp, de
 onderbouwing en de operationele documentatie.
 

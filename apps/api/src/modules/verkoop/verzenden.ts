@@ -4,8 +4,8 @@
  * De status wordt pas 'verzonden' als de maildriver bevestigt. Zo staat er
  * nooit "verzonden" bij een factuur die de klant niet heeft gekregen.
  */
-import { Money } from '@gedmma/money';
-import { vakOmschrijving } from '@gedmma/accounting';
+import { Money } from '@mizen/money';
+import { vakOmschrijving } from '@mizen/accounting';
 import type { Db, TenantContext } from '../../db/pool.ts';
 import { ApiFout } from '../../http/fout.ts';
 import { auditeer } from '../audit/service.ts';

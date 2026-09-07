@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/** `npm run -w @gedmma/api migrate` — voert openstaande migraties uit. */
+/** `npm run -w @mizen/api migrate` — voert openstaande migraties uit. */
 import { migreer } from './migreer.ts';
 
 const gedraaid = await migreer();

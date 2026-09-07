@@ -11,11 +11,11 @@ COPY packages/money/package.json packages/money/
 COPY packages/accounting/package.json packages/accounting/
 COPY packages/i18n/package.json packages/i18n/
 COPY apps/web/package.json apps/web/
-RUN npm ci --ignore-scripts --workspace @gedmma/web --include-workspace-root
+RUN npm ci --ignore-scripts --workspace @mizen/web --include-workspace-root
 COPY packages ./packages
 COPY apps/web ./apps/web
 COPY tsconfig.base.json ./
-RUN npm run --workspace @gedmma/web build
+RUN npm run --workspace @mizen/web build
 
 FROM nginx:1.27-alpine AS runtime
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf

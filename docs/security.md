@@ -19,14 +19,14 @@ applicatielaag die dezelfde grens onafhankelijk bewaakt.**
 
 ### Hoe het werkt
 
-1. De applicatie verbindt met de rol `gedmma_app`. Die rol heeft **geen**
+1. De applicatie verbindt met de rol `mizen_app`. Die rol heeft **geen**
    `BYPASSRLS` en is niet de eigenaar van de tabellen.
 2. Elke tenantgebonden tabel heeft `ENABLE ROW LEVEL SECURITY` én
    `FORCE ROW LEVEL SECURITY`.
 3. Aan het begin van elke transactie zet de applicatie de context:
-   `set_config('gedmma.administration_id', $1, true)` (transaction-scoped).
+   `set_config('mizen.administration_id', $1, true)` (transaction-scoped).
 4. De policy luidt:
-   `USING (administration_id = current_setting('gedmma.administration_id', true)::uuid)`.
+   `USING (administration_id = current_setting('mizen.administration_id', true)::uuid)`.
 5. **Zonder context levert elke query nul rijen op.** Dat is bewust: de faalstand
    is "niets zien", niet "alles zien".
 6. Een `WITH CHECK`-clausule voorkomt dat een `INSERT`/`UPDATE` een rij naar een

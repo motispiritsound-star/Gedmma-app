@@ -6,7 +6,7 @@
  * kan structureel niet voorkomen. Elke regel draagt de gegevens mee om door te
  * klikken naar de onderliggende boekingen.
  */
-import { Money } from '@gedmma/money';
+import { Money } from '@mizen/money';
 import type { Db } from '../../db/pool.ts';
 import { leesAdministratie } from '../organisaties/service.ts';
 

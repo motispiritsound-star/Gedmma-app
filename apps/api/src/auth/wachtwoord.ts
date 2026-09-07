@@ -19,7 +19,7 @@ const scrypt = promisify(scryptCallback) as (
 /** Wachtwoorden die zo vaak voorkomen dat ze niets waard zijn. */
 const VEELGEBRUIKT = new Set([
   'wachtwoord123', 'welkom123456', 'geheim123456', 'password1234', '123456789012',
-  'qwertyuiop12', 'administrator', 'boekhouding1', 'gedmma123456',
+  'qwertyuiop12', 'administrator', 'boekhouding1', 'mizen123456',
 ]);
 
 export type Wachtwoordoordeel = { goed: boolean; meldingen: string[] };

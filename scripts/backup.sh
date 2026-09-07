@@ -17,8 +17,8 @@ COMPOSE="docker compose -f docker-compose.prod.yml"
 mkdir -p "$MAP"
 
 echo "Database wegschrijven ..."
-$COMPOSE exec -T db pg_dump -U gedmma_owner -d gedmma --format=custom \
-  > "$MAP/gedmma-$STEMPEL.dump"
+$COMPOSE exec -T db pg_dump -U mizen_owner -d mizen --format=custom \
+  > "$MAP/mizen-$STEMPEL.dump"
 
 echo "Documenten wegschrijven ..."
 $COMPOSE run --rm --no-deps -T -v "$(cd "$MAP" && pwd):/backup" api \
@@ -26,7 +26,7 @@ $COMPOSE run --rm --no-deps -T -v "$(cd "$MAP" && pwd):/backup" api \
 
 echo ""
 echo "Klaar:"
-ls -lh "$MAP/gedmma-$STEMPEL.dump" "$MAP/opslag-$STEMPEL.tar.gz"
+ls -lh "$MAP/mizen-$STEMPEL.dump" "$MAP/opslag-$STEMPEL.tar.gz"
 echo ""
 echo "Zet deze bestanden weg op een andere plek dan deze server."
 echo "Controleer minstens eens per kwartaal of terugzetten ook echt werkt."

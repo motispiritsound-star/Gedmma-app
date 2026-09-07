@@ -4,17 +4,17 @@
 
 ## Wat we plaatsen
 
-Gedmma gebruikt zo min mogelijk. Er zijn geen trackingcookies, geen
+Mizen gebruikt zo min mogelijk. Er zijn geen trackingcookies, geen
 advertentienetwerken en geen cookies van derden.
 
 ### Zonder toestemming (noodzakelijk)
 
 | Naam | Soort | Waarvoor | Hoe lang |
 | --- | --- | --- | --- |
-| `gedmma_sessie` | Cookie, `HttpOnly`, `Secure`, `SameSite=Lax` | Je aangemeld houden | Tot je afmeldt, uiterlijk 12 uur |
-| `gedmma.taal` | Lokale opslag | Je taalkeuze onthouden | Tot je hem wist |
-| `gedmma.thema` | Lokale opslag | Je keuze voor licht of donker onthouden | Tot je hem wist |
-| `gedmma.administratie` | Lokale opslag | Onthouden in welke administratie je werkte | Tot je hem wist |
+| `mizen_sessie` | Cookie, `HttpOnly`, `Secure`, `SameSite=Lax` | Je aangemeld houden | Tot je afmeldt, uiterlijk 12 uur |
+| `mizen.taal` | Lokale opslag | Je taalkeuze onthouden | Tot je hem wist |
+| `mizen.thema` | Lokale opslag | Je keuze voor licht of donker onthouden | Tot je hem wist |
+| `mizen.administratie` | Lokale opslag | Onthouden in welke administratie je werkte | Tot je hem wist |
 
 Deze zijn noodzakelijk om de dienst te leveren: zonder de sessie kun je niet
 aanmelden, en zonder de administratiekeuze zou je bij elke pagina opnieuw moeten

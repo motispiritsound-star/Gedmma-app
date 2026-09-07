@@ -1,4 +1,4 @@
-# Gedmma
+# Mizen
 
 Boekhouden in gewone taal, voor Nederlandse zzp'ers, mkb-bedrijven, stichtingen,
 verenigingen en accountantskantoren.
@@ -8,7 +8,7 @@ transactie wordt dubbel geboekt, definitieve boekingen zijn onveranderbaar, en
 elk bedrag in elk rapport is doorklikbaar tot de journaalpost en het
 onderliggende document.
 
-> Deze repository bevat naast Gedmma ook **Webscan NL**, een bestaand product
+> Deze repository bevat naast Mizen ook **Webscan NL**, een bestaand product
 > dat hier al stond. Dat draait ongewijzigd verder in [`apps/webscan`](apps/webscan/README.md).
 
 ## In een minuut aan de slag
@@ -37,10 +37,10 @@ twaalf perioden en een bankrekening klaarstaan.
 ### Zonder Docker
 
 ```bash
-sudo -u postgres createuser --login --pwprompt gedmma_owner
-sudo -u postgres createuser --login --pwprompt gedmma_app
-sudo -u postgres createdb -O gedmma_owner gedmma
-sudo -u postgres psql -d gedmma -c 'GRANT USAGE ON SCHEMA public TO gedmma_app;'
+sudo -u postgres createuser --login --pwprompt mizen_owner
+sudo -u postgres createuser --login --pwprompt mizen_app
+sudo -u postgres createdb -O mizen_owner mizen
+sudo -u postgres psql -d mizen -c 'GRANT USAGE ON SCHEMA public TO mizen_app;'
 cp .env.example .env      # zet de wachtwoorden erin
 npm run dev
 ```

@@ -6,14 +6,14 @@
  * een sluitende reeks en wordt hij geboekt. Daarna is er geen weg terug behalve
  * een creditnota.
  */
-import { Money, Quantity, Rate } from '@gedmma/money';
+import { Money, Quantity, Rate } from '@mizen/money';
 import {
   berekenFactuur,
   boekVerkoopfactuur,
   eisFactuurvereisten,
   type BerekendeRegel,
   type FactuurRegelInvoer,
-} from '@gedmma/accounting';
+} from '@mizen/accounting';
 import type { Db, TenantContext } from '../../db/pool.ts';
 import { ApiFout, fout } from '../../http/fout.ts';
 import { auditeer } from '../audit/service.ts';

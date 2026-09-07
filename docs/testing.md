@@ -20,15 +20,23 @@ npm run test:api      # API tegen PostgreSQL
 npm run test:e2e      # browser, desktop en telefoonformaat
 ```
 
+Playwright haalt zijn eigen Chromium op. Staat er al een op de machine — in een
+CI-image bijvoorbeeld — zet dan `CHROMIUM_PAD` naar dat binaire bestand, dan
+downloadt hij niets:
+
+```bash
+CHROMIUM_PAD=/opt/pw-browsers/chromium npm run test:e2e
+```
+
 | Soort | Waar | Aantal | Wat het bewijst |
 | --- | --- | --- | --- |
 | Unit | `packages/money` | 23 | Bedragen zijn exact; verdelen verliest geen cent |
 | Property-based | `packages/money`, `packages/accounting` | in de bovenstaande | Invarianten gelden voor willekeurige invoer, niet alleen voor gekozen voorbeelden |
 | Unit | `packages/accounting` | 57 | Journaalpost-invarianten, btw per regel, boekingspatronen, factuurvereisten |
 | Unit | `packages/i18n` | 12 | Alle vier de talen compleet, opmaak per taal |
-| Integratie | `apps/api/test` | 114 | Alles hierboven, maar dan door de echte API en database |
+| Integratie | `apps/api/test` | 160 | Alles hierboven, maar dan door de echte API en database |
 | Component | `apps/web/test` | 17 | Toegankelijkheid van het design system, geen vaste teksten |
-| End-to-end | `apps/web/e2e` | 13 | Het echte scherm in een echte browser, ook op telefoonformaat |
+| End-to-end | `apps/web/e2e` | 21 | Het echte scherm in een echte browser, ook op telefoonformaat |
 
 ## De testsoorten uit de opdracht
 

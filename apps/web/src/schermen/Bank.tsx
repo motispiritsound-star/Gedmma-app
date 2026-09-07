@@ -5,7 +5,7 @@
  * boeken gebeurt alleen als iemand daar een regel voor heeft ingesteld.
  */
 import { useState } from 'react';
-import { toonBedrag, toonDatum } from '@gedmma/i18n';
+import { toonBedrag, toonDatum } from '@mizen/i18n';
 import { useApp } from '../context/App.tsx';
 import { Etiket, Kaart, Knop, Laden, Leegstaat, Melding, Tabelomhulsel } from '../ontwerp/index.tsx';
 import { useActie, useHaal } from './gebruik.ts';

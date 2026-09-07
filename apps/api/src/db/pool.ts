@@ -34,7 +34,7 @@ export function db(): pg.Pool {
     connectionString: config.database.url,
     max: config.database.maxVerbindingen,
     statement_timeout: config.database.statementTimeoutMs,
-    application_name: 'gedmma-api',
+    application_name: 'mizen-api',
   });
   pool.on('error', (fout) => log.error('Onverwachte fout op een inactieve databaseverbinding', { fout: fout.message }));
   return pool;
@@ -81,10 +81,10 @@ export async function inTransactie<T>(
     // `true` maakt de instelling transactie-lokaal: hij verdwijnt bij COMMIT of
     // ROLLBACK, zodat een hergebruikte verbinding nooit een oude tenant meeneemt.
     await client.query(
-      `SELECT set_config('gedmma.organisatie_id', $1, true),
-              set_config('gedmma.administratie_id', $2, true),
-              set_config('gedmma.gebruiker_id', $3, true),
-              set_config('gedmma.actor_soort', $4, true)`,
+      `SELECT set_config('mizen.organisatie_id', $1, true),
+              set_config('mizen.administratie_id', $2, true),
+              set_config('mizen.gebruiker_id', $3, true),
+              set_config('mizen.actor_soort', $4, true)`,
       [
         context.organisatieId ?? '',
         context.administratieId ?? '',

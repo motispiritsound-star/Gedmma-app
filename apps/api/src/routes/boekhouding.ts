@@ -1,6 +1,6 @@
 /** Routes voor relaties, verkoop, inkoop, bank, documenten, rapportage en audit. */
 import { Router } from 'express';
-import { Money } from '@gedmma/money';
+import { Money } from '@mizen/money';
 import { z, valideer, aantalSchema, bedragSchema, datumSchema, uuidSchema } from '../http/valideer.ts';
 import type { Verzoek } from '../http/context.ts';
 import { administratieContext, eisAanmelding, vereistRecht } from '../http/middleware.ts';
