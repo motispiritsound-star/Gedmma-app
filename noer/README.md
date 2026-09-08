@@ -287,6 +287,13 @@ De leerinhoud staat los van de code. Wil je een soera toevoegen, een thema
 uitbreiden of de lessen anders opbouwen, dan hoef je alleen in `data/` te zijn —
 `npm test` zegt daarna of het klopt.
 
+## Betaald aanbieden
+
+`LANCEREN.md` gaat over de stap van "de app werkt" naar "mensen betalen ervoor":
+waarom een abonnement niet kan op de huidige opzet, wat € 4,99 per maand netto
+oplevert, drie manieren om het wél te doen met een aanbeveling, en de
+juridische en fiscale lijst voor Nederland.
+
 ## Klaar voor go-live?
 
 `GO-LIVE.md` is de afvinklijst: wat af is en waar een test op zit, en wat een
