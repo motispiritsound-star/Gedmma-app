@@ -88,23 +88,38 @@ Staat er `already exists. Overwrite (y/n)?`, dan heb je al een sleutel: typ `n`
 en gebruik de bestaande. Kent je Windows het commando niet, installeer dan
 [Git voor Windows](https://git-scm.com/download/win) en gebruik Git Bash.
 
-## 2. DNS instellen
+## 2. Domein en DNS
+
+Heb je nog geen domein, bestel er dan een bij dezelfde partij als je server: dan
+staat het DNS-beheer in hetzelfde account en hoef je geen nameservers te
+verhuizen. Een `.nl` kost rond de € 10 per jaar.
+
+Eén domein is genoeg per product, niet per omgeving. Onder een domein maak je
+zoveel subdomeinen als je wilt, gratis en direct: `mizen.nl` levert ook
+`test.mizen.nl`, `demo.mizen.nl` en `app.mizen.nl` op. Een tweede product krijgt
+een eigen domein; een tweede omgeving niet.
 
 Zet bij je domeinregistrar één record:
 
-| Type | Naam | Waarde |
-| --- | --- | --- |
-| A | `test` | het IPv4-adres van je server |
+| Type | Naam | TTL | Waarde |
+| --- | --- | --- | --- |
+| A | `test` | 300 | het IPv4-adres van je server |
 
-Heb je ook IPv6, zet er dan een `AAAA`-record bij. Controleer daarna:
+Houd de TTL laag zolang je aan het uitproberen bent: een fout is dan binnen vijf
+minuten hersteld in plaats van pas de volgende dag. Heb je ook IPv6, zet er dan
+een `AAAA`-record bij met dat adres.
+
+Controleer daarna — `nslookup` zit standaard op zowel Windows als macOS, `dig`
+niet:
 
 ```bash
-dig +short test.jouwdomein.nl
+nslookup test.jouwdomein.nl
 ```
 
-Zolang hier niet het adres van je server uit komt, heeft verdergaan geen zin:
-het certificaat kan dan niet worden aangevraagd. DNS heeft soms een paar minuten
-nodig.
+Zolang hier niet het adres van je server uit komt, heeft verdergaan geen zin: het
+certificaat kan dan niet worden aangevraagd, en Let's Encrypt zet je na een
+handvol mislukte pogingen tijdelijk op de wachtbank. Vers bestelde domeinen
+hebben soms een half uur nodig.
 
 ## 3. Server klaarmaken
 
