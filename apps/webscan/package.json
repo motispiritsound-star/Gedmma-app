@@ -22,10 +22,10 @@
   "dependencies": {
     "cheerio": "^1.0.0",
     "commander": "^12.1.0",
-    "express": "^4.21.2"
+    "express": "^5.2.1"
   },
   "devDependencies": {
-    "@types/express": "^5.0.0",
+    "@types/express": "^5.0.6",
     "@types/node": "^22.10.0",
     "@types/topojson-client": "^3.1.5",
     "topojson-client": "^3.1.0",

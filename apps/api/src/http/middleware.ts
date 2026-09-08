@@ -165,8 +165,12 @@ export async function administratieContext(
   volgende: NextFunction,
 ): Promise<void> {
   try {
+    // Express typeert een routeparameter als string of string[], omdat een
+    // patroon hem meer dan een keer kan opleveren. Bij een tenantidentificatie
+    // is alles wat geen enkele tekenreeks is verdacht: dat weigeren we in plaats
+    // van er de eerste uit te pakken.
     const administratieId = verzoek.params.administratieId;
-    if (!administratieId) {
+    if (typeof administratieId !== 'string' || !administratieId) {
       volgende(fout.nietGevonden('Deze administratie'));
       return;
     }

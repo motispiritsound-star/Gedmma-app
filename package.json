@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Mizen — boekhoud- en bedrijfsplatform voor Nederlandse zzp'ers, mkb, stichtingen, verenigingen en accountantskantoren.",
+  "description": "Mizen \u2014 boekhoud- en bedrijfsplatform voor Nederlandse zzp'ers, mkb, stichtingen, verenigingen en accountantskantoren.",
   "engines": {
     "node": ">=22.18.0"
   },
