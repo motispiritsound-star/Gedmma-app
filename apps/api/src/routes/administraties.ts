@@ -5,6 +5,7 @@ import { z, valideer, datumSchema, uuidSchema } from '../http/valideer.ts';
 import { eisAangemeld, type Verzoek } from '../http/context.ts';
 import { administratieContext, eisAanmelding, vereistRecht } from '../http/middleware.ts';
 import { fout } from '../http/fout.ts';
+import { config } from '../config.ts';
 import {
   leesAdministratie,
   maakAdministratie,
@@ -284,9 +285,18 @@ organisatieRoutes.post(
       { organisatieId, administratieId: null, gebruikerId: aangemeld.gebruikerId, actorSoort: 'gebruiker' },
       (client) => nodigUit(client, { organisatieId, administratieId: null, gebruikerId: aangemeld.gebruikerId, actorSoort: 'gebruiker' }, invoer),
     );
+    // Met de logboek-driver gaat er geen e-mail de deur uit. Dan is de link
+    // alleen terug te vinden in de serverlog, en dat is geen werkbare manier om
+    // iemand binnen te halen. Hij gaat dus terug naar degene die uitnodigt, die
+    // hem zelf doorstuurt. Bij echte e-mail blijft de link uit het antwoord:
+    // een token dat over de lijn gaat terwijl dat niet hoeft, is er een te veel.
+    const perMail = config.mail.driver !== 'logboek';
     antwoord.status(201).json({
       membershipId: uitkomst.membershipId,
-      melding: 'De uitnodiging is verstuurd. Hij verloopt over veertien dagen.',
+      melding: perMail
+        ? 'De uitnodiging is verstuurd. Hij verloopt over veertien dagen.'
+        : 'De uitnodiging staat klaar en verloopt over veertien dagen. Er gaat geen e-mail uit op deze omgeving: stuur de link hieronder zelf door.',
+      uitnodigingsLink: perMail ? undefined : uitkomst.uitnodigingsLink,
     });
   }),
 );

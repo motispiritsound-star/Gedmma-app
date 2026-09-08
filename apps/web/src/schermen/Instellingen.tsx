@@ -177,14 +177,16 @@ function Gebruikers() {
   const [email, zetEmail] = useState('');
   const [rol, zetRol] = useState('bookkeeper');
   const [melding, zetMelding] = useState<string | null>(null);
+  const [link, zetLink] = useState<string | null>(null);
 
   async function nodigUit() {
-    const uitkomst = await actie.voerUit<{ melding: string }>(`/api/v1/organisaties/${organisatieId}/leden`, {
-      methode: 'POST',
-      body: { email, rol },
-    });
+    const uitkomst = await actie.voerUit<{ melding: string; uitnodigingsLink?: string }>(
+      `/api/v1/organisaties/${organisatieId}/leden`,
+      { methode: 'POST', body: { email, rol } },
+    );
     if (uitkomst) {
       zetMelding(uitkomst.melding);
+      zetLink(uitkomst.uitnodigingsLink ?? null);
       zetEmail('');
       leden.opnieuw();
     }
@@ -203,9 +205,21 @@ function Gebruikers() {
       <Kaart titel={t('instellingen.uitnodigen')}>
         {actie.fout && <Melding soort="fout" titel={actie.fout.titel}>{actie.fout.uitleg}</Melding>}
         {melding && <Melding soort="goed">{melding}</Melding>}
+        {link && (
+          <div className="uitnodigingslink">
+            <label className="veld">
+              <span className="veld__label">Link voor de genodigde</span>
+              <input className="veld__invoer" readOnly value={link} onFocus={(g) => g.target.select()} />
+            </label>
+            <p className="uitleg">
+              Stuur deze link zelf door. Hij verloopt over veertien dagen en werkt één keer; wie hem heeft, komt
+              binnen. Deel hem dus niet in een groepsgesprek.
+            </p>
+          </div>
+        )}
         <p className="uitleg">
-          De genodigde krijgt een e-mail met een link. Wachtwoorden worden nooit gedeeld; iedereen meldt zich met een
-          eigen account aan.
+          De genodigde meldt zich aan met een eigen account en kiest zelf een wachtwoord. Wachtwoorden worden nooit
+          gedeeld.
         </p>
         <div className="veldrij">
           <Veld label={t('relaties.email')} type="email" value={email} onChange={(g) => zetEmail(g.target.value)} />

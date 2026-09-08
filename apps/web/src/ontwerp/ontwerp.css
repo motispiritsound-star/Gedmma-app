@@ -739,3 +739,22 @@ textarea.veld__invoer {
     padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
   }
 }
+
+/* De link die je zelf moet doorsturen als er geen e-mail uitgaat. Hij springt
+   eruit omdat je hem anders over het hoofd ziet en de genodigde blijft wachten. */
+.uitnodigingslink {
+  margin: var(--ruimte-4) 0;
+  padding: var(--ruimte-4);
+  background: var(--kleur-accent-zacht);
+  border: 1px solid var(--kleur-rand);
+  border-radius: var(--rond-m);
+}
+
+.uitnodigingslink .veld__invoer {
+  font-family: var(--lettertype-cijfers);
+  font-size: var(--tekst-s);
+}
+
+.uitnodigingslink .uitleg:last-child {
+  margin-bottom: 0;
+}

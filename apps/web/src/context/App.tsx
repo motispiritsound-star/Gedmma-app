@@ -12,7 +12,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { kiesTaal, maakVertaler, type Sleutel, type Taal } from '@mizen/i18n';
+import { maakVertaler, type Sleutel, type Taal } from '@mizen/i18n';
 import { bijUitloggen, verzoek, type AdministratieAntwoord, type Ik } from '../api/client.ts';
 
 export type Thema = 'systeem' | 'licht' | 'donker';
@@ -60,7 +60,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [ik, zetIk] = useState<Ik | null>(null);
   const [bezig, zetBezig] = useState(true);
   const [taal, zetTaalIntern] = useState<Taal>(
-    () => (leesOpslag(OPSLAG_TAAL) as Taal | null) ?? kiesTaal(navigator.languages ?? ['nl']),
+    // Nederlands, tenzij de gebruiker zelf iets anders koos. Een Nederlands
+    // boekhoudpakket dat opent in de taal van de browser laat een deel van de
+    // gebruikers op een Engels aanmeldscherm landen, en daar staat geen
+    // taalkeuze. Wie wil wisselen, doet dat na het aanmelden; die keuze blijft
+    // bewaard.
+    () => (leesOpslag(OPSLAG_TAAL) as Taal | null) ?? 'nl',
   );
   const [thema, zetThemaIntern] = useState<Thema>(() => (leesOpslag(OPSLAG_THEMA) as Thema | null) ?? 'systeem');
   const [administratieId, zetAdministratieId] = useState<string | null>(() => leesOpslag(OPSLAG_ADMIN));
