@@ -2,7 +2,7 @@ import { cp, mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promi
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LEGAL_PAGES, SUPPORTED_LOCALES, legalPath } from '@buurklus/shared';
-import { inlineScriptHashes, renderHeaders, renderRedirects } from './edge.js';
+import { inlineScriptHashes, renderHeaders } from './edge.js';
 import { joinUrl } from './render.js';
 import {
   renderHome,
@@ -99,7 +99,6 @@ async function main() {
 
   // Last, because the policy is derived from the pages that were just written.
   written.push(await write('_headers', renderHeaders(await collectScriptHashes(OUT))));
-  written.push(await write('_redirects', renderRedirects()));
 
   const total = written.reduce((sum, file) => sum + file.bytes, 0);
   for (const file of written) {

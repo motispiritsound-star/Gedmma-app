@@ -57,8 +57,14 @@ Two files are generated into `apps/web/dist` and read by Pages:
   site, which is why it is generated rather than written by hand: a policy
   maintained by hand goes stale the first line of copy that changes, and then
   silently blocks the sign-up form.
-- `_redirects` — sends `www.buurklus.nl` to `buurklus.nl`, so one hostname
-  holds the ranking rather than two splitting it.
+There is deliberately no `_redirects`. The one redirect this site wants is www
+to the bare domain, and Workers allows only relative paths there — a relative
+rule cannot tell www from the bare domain, and a full URL is rejected outright
+(`Invalid _redirects configuration: Only relative URLs are allowed`), which
+fails the deploy. Attach only `buurklus.nl` as a custom domain, or add a
+**Rules → Redirect Rules** entry in the dashboard sending `www.buurklus.nl` to
+it. Every page already carries a canonical link to the bare domain, which is
+what tells Google which copy counts.
 
 `node apps/web/dist` is served locally by `npm run dev --workspace
 @buurklus/web`, which applies `_headers` too — so a policy mistake shows up on
@@ -94,7 +100,6 @@ works for both.
 curl -sI https://buurklus.nl/nl/ | grep -i "content-security-policy\|strict-transport"
 curl -s  https://buurklus.nl/robots.txt          # must Allow, and name the sitemap
 curl -s  https://buurklus.nl/sitemap.xml | head  # 14 URLs, both languages
-curl -sI https://www.buurklus.nl/ | grep -i location   # 301 to the bare domain
 ```
 
 Then open the site in a browser with the console visible. A blocked script or

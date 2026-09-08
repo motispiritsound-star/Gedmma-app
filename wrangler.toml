@@ -10,7 +10,7 @@
 #   npm run build --workspace @buurklus/web
 #   npx wrangler deploy
 
-name = "buurklus"
+name = "buurklus-site"
 compatibility_date = "2026-09-08"
 
 [assets]

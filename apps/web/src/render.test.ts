@@ -1,3 +1,6 @@
+import { existsSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
   AVAILABLE_PLANS,
@@ -18,7 +21,7 @@ import {
   missingOperatorFields,
 } from '@buurklus/shared';
 import { COPY } from './content.js';
-import { inlineScriptHashes, renderHeaders, renderRedirects } from './edge.js';
+import { inlineScriptHashes, renderHeaders } from './edge.js';
 import {
   API_URL,
   esc,
@@ -35,6 +38,8 @@ import {
   renderStyles,
 } from './render.js';
 import { JOIN_COPY } from './join-content.js';
+
+const DIST = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'dist');
 
 const legalPages = SUPPORTED_LOCALES.flatMap((locale) =>
   LEGAL_PAGES.map((document) => ({
@@ -655,10 +660,11 @@ describe('the files Cloudflare Pages reads', () => {
     expect(headers).toContain('Cache-Control: public, max-age=0, must-revalidate');
   });
 
-  it('sends www to the bare domain', () => {
-    expect(renderRedirects()).toContain(
-      'https://www.buurklus.nl/* https://buurklus.nl/:splat 301',
-    );
+  it('writes no _redirects file', () => {
+    // Workers rejects a full URL in _redirects, and a relative rule cannot tell
+    // www from the bare domain. That redirect belongs in the dashboard, so the
+    // build must not write the file at all — a rejected one fails the deploy.
+    expect(existsSync(path.join(DIST, '_redirects'))).toBe(false);
   });
 
   it('carries no inline style attribute for the policy to trip over', () => {
