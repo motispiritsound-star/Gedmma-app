@@ -60,13 +60,10 @@ export function Aanmelden() {
 
   return (
     <main className="inhoud" style={{ maxWidth: '26rem', paddingTop: 'var(--ruimte-7)' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--ruimte-2)', marginBottom: 'var(--ruimte-6)' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--ruimte-6)' }}>
         <h1 style={{ margin: 0 }}>
           <Merk hoogte={64} titel={t('app.naam')} />
         </h1>
-        <p className="uitleg" style={{ margin: 0 }}>
-          {t('app.slogan')}
-        </p>
       </div>
 
       {gelukt && <Melding soort="goed">{gelukt}</Melding>}

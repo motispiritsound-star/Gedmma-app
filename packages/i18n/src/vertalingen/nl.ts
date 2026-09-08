@@ -7,7 +7,6 @@
 export const nl = {
   // Algemeen
   'app.naam': 'Mizen',
-  'app.slogan': 'Je administratie, begrijpelijk',
   'algemeen.opslaan': 'Opslaan',
   'algemeen.annuleren': 'Annuleren',
   'algemeen.sluiten': 'Sluiten',

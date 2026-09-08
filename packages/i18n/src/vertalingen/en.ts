@@ -3,7 +3,6 @@ import type { Woordenboek } from '../index.ts';
 
 export const en: Partial<Woordenboek> = {
   'app.naam': 'Mizen',
-  'app.slogan': 'Your books, in plain language',
   'algemeen.opslaan': 'Save',
   'algemeen.annuleren': 'Cancel',
   'algemeen.sluiten': 'Close',
