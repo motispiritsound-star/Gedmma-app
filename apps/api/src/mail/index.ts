@@ -2,12 +2,15 @@
  * E-mail achter een adapter.
  *
  * In ontwikkeling en tests schrijft de logboek-driver de berichten weg zodat je
- * ze kunt controleren zonder echt te versturen. De SMTP-driver hoort bij de
- * productieomgeving; zolang die niet is geconfigureerd wordt dat expliciet
- * gemeld in plaats van stilzwijgend te doen alsof er is verzonden.
+ * ze kunt controleren zonder echt te versturen. In productie zet je
+ * MAIL_DRIVER=smtp en gaat het over een echte mailserver. Ontbreekt dan de
+ * SMTP_URL, dan valt de applicatie daar meteen over: stilzwijgend terugvallen
+ * op het logboek zou betekenen dat facturen en uitnodigingen nergens aankomen
+ * terwijl het scherm zegt dat ze verstuurd zijn.
  */
 import { config } from '../config.ts';
 import { log } from '../util/log.ts';
+import { smtpDriver } from './smtp.ts';
 
 export type Bijlage = { bestandsnaam: string; mime: string; inhoud: Buffer };
 
@@ -47,12 +50,19 @@ let driver: MailDriver | null = null;
 export function mail(): MailDriver {
   if (driver) return driver;
   if (config.mail.driver === 'smtp') {
-    throw new Error(
-      'De SMTP-driver is nog niet geimplementeerd. Zet MAIL_DRIVER=logboek voor ontwikkeling, of voeg de driver toe in apps/api/src/mail/smtp.ts.',
-    );
+    if (!config.mail.smtpUrl) {
+      throw new Error('MAIL_DRIVER staat op smtp, maar SMTP_URL is leeg. Zet hem in .env.');
+    }
+    driver = smtpDriver;
+    return driver;
   }
   driver = logboekDriver;
   return driver;
+}
+
+/** Alleen voor tests: de gekozen driver vergeten, zodat de volgende keuze opnieuw wordt gemaakt. */
+export function vergeetDriver(): void {
+  driver = null;
 }
 
 /** Alleen voor tests: alles wat de logboek-driver heeft "verzonden". */

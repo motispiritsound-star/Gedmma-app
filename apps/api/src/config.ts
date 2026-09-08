@@ -126,6 +126,8 @@ export const config = {
   mail: {
     driver: (process.env.MAIL_DRIVER ?? 'logboek') as 'logboek' | 'smtp',
     afzender: process.env.MAIL_FROM ?? 'geen-antwoord@mizen.example',
+    // Vorm: smtps://gebruiker:wachtwoord@server:465 (of smtp://...:587 met STARTTLS).
+    smtpUrl: process.env.SMTP_URL ?? '',
   },
 
   ai: {
