@@ -700,3 +700,41 @@ describe('the way out when the form cannot get through', () => {
     }
   });
 });
+
+describe('what the sign-up form asks of each side', () => {
+  it('makes the hidden attribute win over the layout', () => {
+    // Without this the browser's own [hidden] rule loses to any class that
+    // sets display, and .field is display:grid — which is exactly how the KvK
+    // number and the trade list ended up in front of somebody looking for a
+    // tradesperson, and how the thank-you panel sat open before anything had
+    // been sent.
+    expect(renderStyles()).toContain('[hidden] { display: none !important; }');
+  });
+
+  it('marks the business-only fields for professionals alone', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderJoin(locale);
+      const kvkField = html.match(/<div class="field"[^>]*data-role="([^"]+)"[^>]*>(?:(?!<\/div>)[\s\S])*?name="kvk"/);
+      expect(kvkField?.[1], `${locale} kvk field`).toBe('PRO');
+      // And they start hidden, so the page is right before any script runs.
+      expect(html, locale).toContain('data-role="PRO" hidden');
+      expect(html, locale).not.toContain('data-role="CUSTOMER" ');
+    }
+  });
+
+  it('names the customer side by what they have, not what they are hunting', () => {
+    expect(renderJoin('nl')).toContain('Ik heb een klus');
+    expect(renderJoin('en')).toContain('I have a job');
+  });
+
+  it('offers the KvK check to customers as a promise, never as a question', () => {
+    // The number is something Buurklus verifies on their behalf. A household
+    // has no KvK number and must never be asked for one.
+    expect(JOIN_COPY.nl.roles.customer.bullets.join(' ')).toContain('Je krijgt alleen reacties');
+    for (const locale of SUPPORTED_LOCALES) {
+      expect(JOIN_COPY[locale].roles.customer.bullets.join(' '), locale).not.toMatch(
+        /vul .*kvk|enter .*chamber/i,
+      );
+    }
+  });
+});

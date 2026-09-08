@@ -71,12 +71,12 @@ const nl: JoinCopy = {
   },
   roles: {
     customer: {
-      label: 'Ik zoek een vakman',
+      label: 'Ik heb een klus',
       title: 'Voor je huis',
       body: 'Je hebt een klus en je wilt weten wat het kost. Beschrijf hem één keer en laat vakmensen uit je eigen gemeente reageren met een prijs.',
       bullets: [
         'Tot 6 offertes op één klusomschrijving',
-        'Alleen bedrijven met een gecontroleerd KvK-nummer',
+        'Je krijgt alleen reacties van vakmensen met een gecontroleerd KvK-nummer',
         'Je adres en telefoonnummer blijven verborgen tot jij de klus gunt',
         'Altijd gratis voor particulieren',
       ],
@@ -173,12 +173,12 @@ const en: JoinCopy = {
   },
   roles: {
     customer: {
-      label: 'I am looking for a tradesperson',
+      label: 'I have a job',
       title: 'For your home',
       body: 'You have a job and you want to know what it costs. Describe it once and let tradespeople from your own municipality reply with a price.',
       bullets: [
         'Up to 6 quotes on one job description',
-        'Only businesses with a verified Chamber of Commerce number',
+        'You only hear from tradespeople with a verified Chamber of Commerce number',
         'Your address and phone number stay hidden until you award the job',
         'Always free for households',
       ],

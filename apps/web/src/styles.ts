@@ -73,6 +73,13 @@ export const STYLES = `
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* The browser hides [hidden] with display:none from its own stylesheet, and
+   any rule that sets display on a class beats it -- .field is display:grid, so
+   the sign-up form showed its KvK number and trade list to somebody looking
+   for a tradesperson, and the thank-you panel sat open before anything was
+   sent. The attribute has to win, so it says so. */
+[hidden] { display: none !important; }
+
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 
 body {
