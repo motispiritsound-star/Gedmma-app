@@ -49,12 +49,44 @@ inmiddels een andere reeks aan, kies dan wat 2 vCPU, 4 GB geheugen en minstens
 Neem Ubuntu 24.04 LTS. Voeg bij het bestellen je SSH-sleutel toe; log niet in
 met een wachtwoord.
 
-Heb je nog geen sleutel:
+Heb je nog geen sleutel, maak er dan een. Op Windows in PowerShell (Windows-toets,
+`powershell`, Enter), op macOS in Terminal (Cmd + spatie, `terminal`, Enter):
 
 ```bash
 ssh-keygen -t ed25519 -C "mizen"
-cat ~/.ssh/id_ed25519.pub    # deze regel plak je bij de provider
 ```
+
+Er volgen drie vragen:
+
+| Vraag | Antwoord |
+| --- | --- |
+| `Enter file in which to save the key` | alleen Enter; de standaardplek is goed |
+| `Enter passphrase` | een wachtwoordzin, of alleen Enter voor geen |
+| `Enter same passphrase again` | hetzelfde nog een keer |
+
+Terwijl je een wachtwoordzin typt beweegt er niets op het scherm; dat hoort zo.
+Met een wachtwoordzin typ je hem bij elke verbinding. Zonder gaat het makkelijker,
+maar dan geeft je laptop rechtstreeks toegang tot de server. Voor een testomgeving
+is dat te doen; zodra er echte klantgegevens in staan, neem een wachtwoordzin.
+
+Daarna de publieke sleutel ophalen — deze zet hem meteen op je klembord:
+
+```bash
+Get-Content ~/.ssh/id_ed25519.pub | Set-Clipboard   # Windows, PowerShell
+pbcopy < ~/.ssh/id_ed25519.pub                      # macOS
+cat ~/.ssh/id_ed25519.pub                           # of gewoon tonen
+```
+
+Wat je krijgt is één regel die begint met `ssh-ed25519` en eindigt op `mizen`.
+Die hele regel plak je bij de provider.
+
+Er staan twee bestanden in `~/.ssh`. Alleen `id_ed25519.pub` gaat naar de
+provider. `id_ed25519` zonder `.pub` is de privésleutel: die blijft op je eigen
+computer en gaat nergens anders heen — geen formulier, geen e-mail, geen chat.
+
+Staat er `already exists. Overwrite (y/n)?`, dan heb je al een sleutel: typ `n`
+en gebruik de bestaande. Kent je Windows het commando niet, installeer dan
+[Git voor Windows](https://git-scm.com/download/win) en gebruik Git Bash.
 
 ## 2. DNS instellen
 
