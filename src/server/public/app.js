@@ -152,6 +152,7 @@ const PAGINAS = {
   kaart: ['Kaart & leads', 'Alle gescande bedrijven, de slechtste sites eerst.'],
   mijn: ['Mijn lijst', 'De bedrijven die op jouw naam staan.'],
   team: ['Team & omzet', 'Wat het team doet en wat het oplevert.'],
+  draaiboek: ['Draaiboek', 'De stappen naar je eerste klanten, en wat je zegt aan de telefoon.'],
   nieuws: ['Nieuws', 'Berichten voor iedereen die meewerkt.'],
 };
 
@@ -522,7 +523,10 @@ function tekenDetail(doel, lead) {
           ${lead.toestemming_via ? `via ${esc(lead.toestemming_via)}` : ''} op ${esc(datum(lead.toestemming_op))}.</div></div>`
       : ''}
 
-    ${vrij ? '<div class="rij"><button class="knop sterk" data-actie="claim">Deze neem ik</button></div>' : ''}
+    <div class="rij">
+      ${vrij ? '<button class="knop sterk" data-actie="claim">Deze neem ik</button>' : ''}
+      <button class="knop" data-actie="script">Belscript</button>
+    </div>
 
     ${verschilVan(lead) !== null && Math.abs(verschilVan(lead)) >= 3
       ? `<div class="banner ${verschilVan(lead) < 0 ? 'verboden' : 'toegestaan'}">
@@ -713,6 +717,8 @@ function koppelDetailKnoppen(doel, lead) {
     } catch (fout) { zeg(fout.message, false); }
   };
 
+  doel.querySelector('[data-actie="script"]')?.addEventListener('click', () => toonScript(lead));
+
   doel.querySelector('[data-actie="claim"]')?.addEventListener('click', () =>
     post(`/api/leads/${lead.id}/claim`, {}, 'Deze lead staat nu op jouw naam.'));
 
@@ -866,12 +872,13 @@ async function wisselNaar(weergave) {
   for (const knop of $('tabs').querySelectorAll('.tab')) {
     knop.setAttribute('aria-pressed', String(knop.dataset.weergave === weergave));
   }
-  for (const naam of ['vandaag', 'kaart', 'mijn', 'team', 'nieuws']) $(`weergave-${naam}`).hidden = naam !== weergave;
+  for (const naam of ['vandaag', 'kaart', 'mijn', 'team', 'draaiboek', 'nieuws']) $(`weergave-${naam}`).hidden = naam !== weergave;
 
   if (weergave === 'vandaag') await toonVandaag();
   if (weergave === 'kaart') { kaart?.hermeet(); await ververs(); }
   if (weergave === 'mijn') await toonMijnLijst();
   if (weergave === 'team') await toonTeam();
+  if (weergave === 'draaiboek') await toonDraaiboek();
   if (weergave === 'nieuws') await toonNieuws();
 }
 
@@ -915,6 +922,7 @@ async function toonTeam() {
   await vulAanbod();
   tekenPrognose(gegevens.prognose);
   await tekenControle();
+  await toonPartners();
 
   $('omzettegels').innerHTML = [
     { waarde: overzicht.opdrachten.totaal, tekst: 'opdrachten binnen', klem: true },
@@ -1183,6 +1191,150 @@ for (const knop of $('vandaag-wie').querySelectorAll('.segmentknop')) {
 }
 
 // --------------------------------------------------------------------------
+// Het belscript bij een lead
+// --------------------------------------------------------------------------
+const scriptvenster = $('scriptvenster');
+for (const knop of scriptvenster.querySelectorAll('[data-sluit]')) {
+  knop.addEventListener('click', () => scriptvenster.close());
+}
+scriptvenster.addEventListener('click', (gebeurtenis) => {
+  if (gebeurtenis.target === scriptvenster) scriptvenster.close();
+});
+
+async function toonScript(lead) {
+  $('script-titel').textContent = `Belscript · ${lead.name}`;
+  $('script-inhoud').innerHTML = '<p class="sub">Even ophalen…</p>';
+  scriptvenster.showModal();
+  try {
+    const { delen } = await api(`/api/leads/${lead.id}/script`);
+    $('script-inhoud').innerHTML = delen.map((deel) => `
+      <div class="scriptdeel">
+        <span class="label-klein">${esc(deel.kop)}</span>
+        ${deel.regels.map((regel) => `<p class="zin">${esc(regel)}</p>`).join('')}
+        ${deel.waarom ? `<p class="waarom">${esc(deel.waarom)}</p>` : ''}
+      </div>`).join('');
+  } catch (fout) {
+    $('script-inhoud').innerHTML = `<p class="melding">${esc(fout.message)}</p>`;
+  }
+}
+
+// --------------------------------------------------------------------------
+// Draaiboek
+// --------------------------------------------------------------------------
+async function toonDraaiboek() {
+  const stand = await api('/api/draaiboek');
+  $('tel-draaiboek').textContent = `${stand.gedaan}/${stand.totaal}`;
+  const deel = Math.round((stand.gedaan / stand.totaal) * 100);
+
+  $('draaiboek-tegels').innerHTML = [
+    { waarde: `${stand.gedaan}/${stand.totaal}`, tekst: 'stappen gedaan', klem: true },
+    { waarde: `${deel}%`, tekst: 'van het draaiboek af' },
+    { waarde: stand.volgende ? stand.volgende.fase : 'klaar', tekst: 'waar je nu staat' },
+  ].map((tegel) => `<div class="tegel${tegel.klem ? ' klem' : ''}"><b>${esc(tegel.waarde)}</b><span>${tegel.tekst}</span></div>`).join('');
+
+  $('draaiboek-volgende').textContent = stand.volgende ? `Volgende: ${stand.volgende.titel}` : 'Alles afgevinkt';
+
+  let fase = '';
+  $('draaiboek-stappen').innerHTML = stand.stappen.map((stap) => {
+    const kop = stap.fase !== fase ? `<div class="fasekop">${esc(stap.fase)}</div>` : '';
+    fase = stap.fase;
+    return `${kop}
+      <label class="stap${stap.gedaan ? ' af' : ''}">
+        <input type="checkbox" data-stap="${esc(stap.id)}" ${stap.gedaan ? 'checked' : ''}>
+        <span>
+          <b>${esc(stap.titel)}</b>
+          <span class="sub">${esc(stap.uitleg)}</span>
+          ${stap.hoe ? `<span class="hoe mono">${esc(stap.hoe)}</span>` : ''}
+        </span>
+      </label>`;
+  }).join('');
+
+  for (const vakje of $('draaiboek-stappen').querySelectorAll('input[data-stap]')) {
+    vakje.addEventListener('change', async () => {
+      try {
+        await api(`/api/draaiboek/${vakje.dataset.stap}`, {
+          method: 'POST', body: JSON.stringify({ gedaan: vakje.checked }),
+        });
+        await toonDraaiboek();
+      } catch (fout) { toon(fout.message, 'fout'); }
+    });
+  }
+
+  $('bezwaren').innerHTML = stand.bezwaren.map((bezwaar) => `
+    <details class="bezwaar">
+      <summary>${esc(bezwaar.wat)}</summary>
+      ${bezwaar.antwoord.map((regel) => `<p class="zin">${esc(regel)}</p>`).join('')}
+      <p class="waarom">${esc(bezwaar.waarom)}</p>
+    </details>`).join('');
+
+  $('draaiboek-team').innerHTML = !stand.team ? '' : `
+    <hr><span class="label-klein">Hoe ver het team is</span>
+    ${stand.team.map((regel) => `
+      <div class="meter">
+        <span class="meter-naam">${esc(regel.naam)}</span>
+        <span class="meter-waarde">${regel.gedaan}/${regel.totaal}</span>
+        <span class="meter-spoor"><i class="meter-vul" style="width:${Math.round((regel.gedaan / regel.totaal) * 100)}%"></i></span>
+      </div>
+      <p class="sub" style="margin:-4px 0 12px">${esc(regel.volgende ?? 'alles gedaan')}</p>`).join('')}`;
+}
+
+// --------------------------------------------------------------------------
+// Partners
+// --------------------------------------------------------------------------
+async function toonPartners() {
+  const { partners, lagen } = await api('/api/partners');
+  $('lagen-samenvatting').textContent =
+    `${euro(lagen.eigenKlantenCent)} eigen klanten + ${euro(lagen.partnersCent)} partners = ${euro(lagen.totaalCent)} per maand`;
+
+  $('partner-rijen').innerHTML = partners.map((regel) => `
+    <tr data-partner="${regel.id}">
+      <td><div class="naam">${esc(regel.naam)}</div><div class="sub">${esc(regel.rol)}</div></td>
+      <td><input class="veld smal" data-veld="gebied" value="${esc(regel.gebied.join(', '))}"
+            placeholder="Woerden, Montfoort"></td>
+      <td><div class="rij" style="margin:0;flex-wrap:nowrap">
+            <input class="veld" data-veld="abonnement" type="number" min="0" step="5" style="width:78px"
+              value="${(regel.abonnementCent / 100).toFixed(0)}">
+            <select class="veld" data-veld="status" style="width:104px">
+              ${['geen', 'proef', 'actief', 'gestopt'].map((stand) =>
+                `<option value="${stand}" ${stand === regel.abonnementStatus ? 'selected' : ''}>${stand}</option>`).join('')}
+            </select>
+          </div></td>
+      <td class="mono">${regel.klanten} <span class="sub">${euro(regel.eigenMrrCent)}/mnd</span></td>
+      <td class="mono">${regel.bedrijvenInGebied.toLocaleString('nl-NL')}
+          <span class="sub">${regel.vrijInGebied} vrij</span></td>
+      <td class="fasekolom"><div class="rij" style="margin:0;justify-content:flex-end">
+            <button class="knop klein" data-doe="bewaar">Opslaan</button>
+            <button class="knop klein" data-doe="verdeel" ${regel.vrijInGebied === 0 ? 'disabled' : ''}>Toewijzen</button>
+          </div></td>
+    </tr>`).join('');
+
+  for (const rij of $('partner-rijen').querySelectorAll('tr[data-partner]')) {
+    const id = Number(rij.dataset.partner);
+    rij.querySelector('[data-doe="bewaar"]').addEventListener('click', async () => {
+      try {
+        await api(`/api/partners/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            gebied: rij.querySelector('[data-veld="gebied"]').value,
+            abonnement: Number(rij.querySelector('[data-veld="abonnement"]').value),
+            status: rij.querySelector('[data-veld="status"]').value,
+          }),
+        });
+        toon('Partner bijgewerkt.');
+        await toonPartners();
+      } catch (fout) { toon(fout.message, 'fout'); }
+    });
+    rij.querySelector('[data-doe="verdeel"]').addEventListener('click', async () => {
+      try {
+        const { toegewezen } = await api(`/api/partners/${id}/verdeel`, { method: 'POST' });
+        toon(`${toegewezen} bedrijven toegewezen.`);
+        await toonPartners();
+      } catch (fout) { toon(fout.message, 'fout'); }
+    });
+  }
+}
+
+// --------------------------------------------------------------------------
 // Nieuws
 // --------------------------------------------------------------------------
 const SOORT_LABEL = { bericht: 'Bericht', update: 'Verandering', resultaat: 'Resultaat', 'let-op': 'Let op' };
@@ -1447,6 +1599,7 @@ const SCHERMEN = [
   { weergave: 'kaart', naam: 'Kaart & leads' },
   { weergave: 'mijn', naam: 'Mijn lijst' },
   { weergave: 'team', naam: 'Team & omzet' },
+  { weergave: 'draaiboek', naam: 'Draaiboek' },
   { weergave: 'nieuws', naam: 'Nieuws' },
 ];
 
@@ -1567,7 +1720,7 @@ document.addEventListener('keydown', (gebeurtenis) => {
 
   if (wachtOpG) {
     wachtOpG = false;
-    const naar = { v: 'vandaag', k: 'kaart', m: 'mijn', t: 'team', n: 'nieuws' }[toets.toLowerCase()];
+    const naar = { v: 'vandaag', k: 'kaart', m: 'mijn', t: 'team', d: 'draaiboek', n: 'nieuws' }[toets.toLowerCase()];
     if (naar && !(naar === 'team' && staat.ik.rol !== 'eigenaar')) {
       gebeurtenis.preventDefault();
       staat.handmatig = true;

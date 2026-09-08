@@ -535,6 +535,29 @@ const MIGRATIES: { naam: string; sql: string }[] = [
       LEFT JOIN testimonials t  ON t.company_id = c.id;
     `,
   },
+
+  {
+    naam: '018-partners-en-draaiboek',
+    sql: `
+      -- Een tweede laag in het verdienmodel: naast eigen hostingklanten kun je
+      -- het systeem aan partners geven die hun eigen gebied bewerken. Zo'n
+      -- partner betaalt jou per maand en houdt zijn eigen klanten. Het gebied is
+      -- wat hij koopt: exclusiviteit in zijn regio.
+      ALTER TABLE gebruikers ADD COLUMN gebied            TEXT;
+      ALTER TABLE gebruikers ADD COLUMN abonnement_cent   INTEGER NOT NULL DEFAULT 0;
+      ALTER TABLE gebruikers ADD COLUMN abonnement_status TEXT NOT NULL DEFAULT 'geen';
+      ALTER TABLE gebruikers ADD COLUMN gestart_op        TEXT;
+
+      -- Waar iemand staat in het draaiboek. Per persoon, want een partner die
+      -- vorige week begon heeft een ander punt bereikt dan een die er een jaar zit.
+      CREATE TABLE draaiboek (
+        gebruiker_id INTEGER NOT NULL REFERENCES gebruikers(id) ON DELETE CASCADE,
+        stap         TEXT NOT NULL,
+        gedaan_op    TEXT NOT NULL DEFAULT (datetime('now')),
+        PRIMARY KEY (gebruiker_id, stap)
+      );
+    `,
+  },
 ];
 
 /** Brengt de database bij naar de nieuwste versie. Veilig om vaak aan te roepen. */

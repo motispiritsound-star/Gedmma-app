@@ -69,6 +69,10 @@
         <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 16.5v-4M7.7 16.5v-8M12.3 16.5v-5.5M17 16.5V4.5"/></svg>
         <span>Team &amp; omzet</span>
       </button>
+      <button class="tab" data-weergave="draaiboek" aria-pressed="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4h9l3 3v9H4z"/><path d="M6.5 9.5l1.6 1.6 3.4-3.6"/><path d="M6.5 13h7"/></svg>
+        <span>Draaiboek</span><span class="telpil" id="tel-draaiboek"></span>
+      </button>
       <button class="tab" data-weergave="nieuws" aria-pressed="false">
         <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4.5h12v11H4z"/><path d="M6.5 8h7M6.5 11h7M6.5 14h4"/></svg>
         <span>Nieuws</span><span class="teller" id="nieuws-teller" hidden></span>
@@ -292,6 +296,25 @@
         <div id="startlijst"></div>
       </div>
 
+      <div class="paneel partnervak" id="partnervak">
+        <div class="paneelbalk">
+          <span class="label-klein">Partners en gebieden</span>
+          <span class="sub" id="lagen-samenvatting"></span>
+        </div>
+        <div class="tabelrol">
+          <table>
+            <thead><tr>
+              <th scope="col">Wie</th><th scope="col">Gebied</th><th scope="col">Abonnement</th>
+              <th scope="col">Eigen klanten</th><th scope="col">In gebied</th><th scope="col"></th>
+            </tr></thead>
+            <tbody id="partner-rijen"></tbody>
+          </table>
+        </div>
+        <p class="demo-noot" style="margin:12px 16px 16px">Een partner werkt zijn eigen gebied en houdt zijn
+          eigen klanten; hij betaalt jou per maand voor het systeem en de exclusiviteit in die plaatsen.
+          Dat is de tweede laag naast je eigen hostingklanten.</p>
+      </div>
+
       <div class="paneel prognosevak">
         <div class="paneelbalk">
           <span class="label-klein">Wat de pijplijn waard is</span>
@@ -373,6 +396,29 @@
       </div>
     </section>
 
+    <!-- ---------- draaiboek ---------- -->
+    <section class="weergave" id="weergave-draaiboek" hidden>
+      <div class="tegels" id="draaiboek-tegels"></div>
+      <div class="werkvlak">
+        <div class="paneel">
+          <div class="paneelbalk">
+            <span class="label-klein">De stappen</span>
+            <span class="sub" id="draaiboek-volgende"></span>
+          </div>
+          <div id="draaiboek-stappen"></div>
+        </div>
+        <aside class="paneel detail">
+          <span class="label-klein">Bezwaren en wat je erop zegt</span>
+          <div id="bezwaren"></div>
+          <hr>
+          <span class="label-klein">Het belscript</span>
+          <p class="sub">Bij elke lead staat een belscript klaar dat is gevuld met wat de scan
+            daar gevonden heeft. Open een lead en klik op <b>Belscript</b>.</p>
+          <div id="draaiboek-team"></div>
+        </aside>
+      </div>
+    </section>
+
     <!-- ---------- nieuws ---------- -->
     <section class="weergave" id="weergave-nieuws" hidden>
       <div class="werkvlak nieuws">
@@ -424,6 +470,15 @@
     <kbd>esc</kbd>
   </div>
   <div class="palet-lijst" id="palet-lijst"></div>
+</dialog>
+
+<dialog class="venster breed" id="scriptvenster" aria-label="Belscript">
+  <div class="vensterkop"><h2 id="script-titel">Belscript</h2>
+    <button class="ikoonknop" data-sluit aria-label="Sluiten">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 6l8 8M14 6l-8 8"/></svg>
+    </button>
+  </div>
+  <div id="script-inhoud"></div>
 </dialog>
 
 <dialog class="venster" id="sneltoetsen" aria-label="Sneltoetsen">

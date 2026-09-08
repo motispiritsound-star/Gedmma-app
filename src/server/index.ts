@@ -18,6 +18,9 @@ import { aanbodTekst, bewaarAanbod, leesAanbod, leesProvisie, bewaarProvisie, pr
 import { werklijst, werkdruk, legReactieVast } from '../db/opvolging.ts';
 import { prognose, leesDoel, bewaarDoel, tempo } from '../db/prognose.ts';
 import { controle } from '../db/controle.ts';
+import { partnerOverzicht, bewaarPartner, verdeelGebied, tweeLagen, partner } from '../db/partners.ts';
+import { draaiboekVoor, zetStap, voortgangPerPersoon, STAPPEN } from '../db/draaiboek.ts';
+import { belscript, BEZWAREN } from '../report/scripts.ts';
 import { toCsv } from '../util/csv.ts';
 import { verrijkBedrijf, CENT_PER_BEVRAGING } from '../sources/kvk-verrijken.ts';
 import { plaatsNieuws, nieuwsLijst, markeerGelezen, markeerAllesGelezen,
@@ -314,6 +317,26 @@ export async function startServer(port: number): Promise<void> {
     return { klanten: aantal, testimonial: stem ?? null };
   };
 
+  /** Het belscript voor deze lead, gevuld met wat de scan gevonden heeft. */
+  app.get('/api/leads/:id/script', vereistLogin, (req: Verzoek, res) => {
+    const lead = getLead(Number(req.params.id));
+    if (!lead) { meld(res, 404, 'Die lead bestaat niet.'); return; }
+    const rapport = lead.report as { verdict?: never; signals?: never };
+    if (!rapport?.verdict) { meld(res, 409, 'Deze lead is nog niet gescand.'); return; }
+
+    const aanbod = leesAanbod();
+    res.json({
+      delen: belscript({
+        bedrijf: lead.name, domein: lead.domain, plaats: lead.city,
+        verdict: rapport.verdict, signals: rapport.signals ?? null,
+        aanbod: aanbodTekst(aanbod),
+        afzender: { naam: req.gebruiker!.naam, bedrijf: aanbod.bedrijfsnaam || undefined },
+        magBellen: magBellen(lead).mag,
+      }),
+      bezwaren: BEZWAREN,
+    });
+  });
+
   app.get('/api/leads/:id/mail', vereistLogin, (req: Verzoek, res) => {
     const lead = getLead(Number(req.params.id));
     if (!lead) { meld(res, 404, 'Die lead bestaat niet.'); return; }
@@ -562,6 +585,47 @@ export async function startServer(port: number): Promise<void> {
       });
     }
     res.json({ aanbod, voorbeeld: aanbodTekst(aanbod), provisie: leesProvisie() });
+  });
+
+  // --- het draaiboek: waar sta je, en wat is de volgende stap ---
+  app.get('/api/draaiboek', vereistLogin, (req: Verzoek, res) => {
+    res.json({
+      ...draaiboekVoor(req.gebruiker!.id),
+      bezwaren: BEZWAREN,
+      team: req.gebruiker!.rol === 'eigenaar' ? voortgangPerPersoon() : null,
+    });
+  });
+
+  app.post('/api/draaiboek/:stap', vereistLogin, (req: Verzoek, res) => {
+    const { gedaan } = req.body as { gedaan?: boolean };
+    try {
+      zetStap(req.gebruiker!.id, String(req.params.stap), Boolean(gedaan));
+      res.json(draaiboekVoor(req.gebruiker!.id));
+    } catch (fout) { meld(res, 400, (fout as Error).message); }
+  });
+
+  // --- partners: het tweede verdienmodel ---
+  app.get('/api/partners', vereistLogin, vereistEigenaar, (_req, res) => {
+    res.json({ partners: partnerOverzicht(), lagen: tweeLagen(), stappen: STAPPEN.length });
+  });
+
+  app.put('/api/partners/:id', vereistLogin, vereistEigenaar, (req, res) => {
+    const { gebied, abonnement, status } = req.body as
+      { gebied?: string; abonnement?: number; status?: string };
+    try {
+      res.json(bewaarPartner(Number(req.params.id), {
+        gebied,
+        abonnementCent: abonnement !== undefined ? Math.round(Number(abonnement) * 100) : undefined,
+        abonnementStatus: status as never,
+      }));
+    } catch (fout) { meld(res, 400, (fout as Error).message); }
+  });
+
+  /** Alle vrije bedrijven in het gebied van een partner op zijn naam zetten. */
+  app.post('/api/partners/:id/verdeel', vereistLogin, vereistEigenaar, (req, res) => {
+    const id = Number(req.params.id);
+    if (!partner(id)) { meld(res, 404, 'Die partner bestaat niet.'); return; }
+    res.json({ toegewezen: verdeelGebied(id) });
   });
 
   /** De controle vóór de go-live; alleen de eigenaar kan er iets aan doen. */

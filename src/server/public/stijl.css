@@ -506,6 +506,41 @@ td.doen .knop { margin-left:5px; }
 .prognosetabel .sub { display:block; font-size:11px; }
 .prognosetabel .voorraadrij td { color:var(--muted); }
 
+/* ---------- draaiboek en scripts ---------- */
+.fasekop { padding:14px 17px 8px; font:600 10.5px/1 var(--sans); letter-spacing:.09em;
+  text-transform:uppercase; color:var(--muted); background:var(--surface);
+  border-top:1px solid var(--line); }
+#draaiboek-stappen .fasekop:first-child { border-top:0; }
+.stap { display:grid; grid-template-columns:auto minmax(0,1fr); gap:12px; align-items:start;
+  padding:12px 17px; border-top:1px solid var(--line); cursor:pointer; }
+.stap:hover { background:var(--surface); }
+.stap input { accent-color:var(--accent); width:16px; height:16px; margin-top:2px; }
+.stap b { display:block; font-weight:500; }
+.stap .sub { display:block; margin-top:2px; }
+.stap .hoe { display:inline-block; margin-top:6px; padding:3px 7px; background:var(--surface-2);
+  border:1px solid var(--line); border-radius:var(--r-xs); font-size:11.5px; color:var(--ink-2); }
+.stap.af b { color:var(--muted); text-decoration:line-through; text-decoration-color:var(--line-strong); }
+
+.bezwaar { border-top:1px solid var(--line); padding:10px 0; }
+.bezwaar:first-of-type { border-top:0; }
+.bezwaar > summary { cursor:pointer; list-style:none; font-weight:500; font-size:14px; }
+.bezwaar > summary::-webkit-details-marker { display:none; }
+.bezwaar > summary::before { content:'“'; color:var(--muted); }
+.bezwaar > summary::after { content:'”  ▾'; color:var(--muted); font-size:12px; }
+.bezwaar[open] > summary::after { content:'”  ▴'; }
+.zin { margin:7px 0 0; color:var(--ink); font-size:13.5px; }
+.waarom { margin:8px 0 2px; padding-left:11px; border-left:2px solid var(--accent-rand);
+  color:var(--muted); font-size:12.5px; }
+
+.scriptdeel { padding:16px 0; border-top:1px solid var(--line); }
+.scriptdeel:first-child { border-top:0; padding-top:4px; }
+.venster.breed { width:min(660px, 94vw); max-height:82vh; overflow:auto; }
+
+/* ---------- partners ---------- */
+.partnervak { margin-bottom:16px; overflow:hidden; }
+.partnervak .veld.smal { width:100%; min-width:130px; }
+.partnervak td { vertical-align:middle; }
+
 /* ---------- nieuws ---------- */
 .nieuwsitem { border-bottom:1px solid var(--line); padding:15px 17px; }
 .nieuwsitem:last-child { border-bottom:0; }

@@ -391,6 +391,57 @@ Twee dingen die de prognose eerlijk houden:
   leads hebt gehad; tot dan staan er voorzichtige startwaarden, en er staat bij
   welke van de twee je ziet.
 
+## Het draaiboek in de app
+
+Onder **Draaiboek** staan de stappen naar je eerste klanten, in de volgorde die
+werkt: eerst je aanbod scherp, dan één gemeente, dan vijftig mails, dan pas
+opschalen. Je vinkt ze af terwijl je werkt, en de eigenaar ziet in één blik hoe
+ver iedereen is — wie na twee weken nog bij "je eerste vijftig mails" staat heeft
+geen software nodig maar een gesprek.
+
+Op hetzelfde scherm staan de **bezwaren** met wat je erop zegt: *"ik heb al een
+website"*, *"wat kost het?"*, *"waarom doet u dat gratis?"*, *"mijn neef doet mijn
+website"*. Niet om voor te lezen — met de reden erbij waarom het antwoord zo staat.
+
+En bij elke lead staat een **belscript** dat gevuld is met wat de scan daar
+gevonden heeft: de opening met dat ene concrete punt, de twee vragen die het
+gesprek openen, het aanbod in drie zinnen en een afsluiting met een datum. Mag je
+dat bedrijf niet bellen, dan zegt het script dat, en verwijst het naar de mail om
+toestemming te vragen.
+
+```bash
+node start.js draaiboek                      # waar sta je
+node start.js draaiboek --af eerste-mails    # een stap afvinken
+node start.js script 42                      # het belscript voor lead 42
+```
+
+## Partners: het tweede verdienmodel
+
+De eerste laag is je eigen werk: sites herbouwen en hosten, elke klant een bedrag
+per maand. Die laag groeit met jouw uren.
+
+De tweede laag groeit zonder jouw uren. Je geeft iemand anders het systeem, een
+**eigen gebied** en het draaiboek, en die bouwt daar zijn eigen klantenbestand mee
+op. Hij betaalt jou een bedrag per maand voor de toegang en de exclusiviteit in
+die plaatsen; de klanten die hij binnenhaalt blijven van hem.
+
+```bash
+node start.js partner zet sara@voorbeeld.nl --gebied "Woerden, Montfoort" --abonnement 95 --status actief
+node start.js partner verdeel sara@voorbeeld.nl    # vrije bedrijven in haar gebied op haar naam
+node start.js partner lijst                        # beide lagen naast elkaar
+```
+
+Het gebied is wat hij koopt. Zonder exclusiviteit betaalt niemand maandelijks voor
+gereedschap dat hij ook één keer zou kunnen aanschaffen — en gaan twee partners
+dezelfde bakker bellen. Onder **Team & omzet** staan de twee lagen naast elkaar:
+wat je eigen klanten opbrengen en wat je partners betalen.
+
+Kies er één om mee te beginnen. Werk je met **provisie**, dan is een agent iemand
+die voor jou verkoopt en meedeelt in wat hij binnenhaalt. Werk je met een
+**abonnement**, dan is een partner iemand die voor zichzelf werkt en jou betaalt
+voor het systeem. Allebei tegelijk bij dezelfde persoon is verwarrend voor jullie
+allebei.
+
 ## Wat een agent verdient
 
 Agents werven lukt alleen als er iets te verdienen valt, en klanten houden lukt
@@ -698,6 +749,8 @@ src/
     contact.ts        rechtsvorm, belregels, toestemming en de niet-benaderen-lijst
     opvolging.ts      de werklijst: wat moet er vandaag gebeuren
     controle.ts       de controle vóór de go-live
+    draaiboek.ts      de stappen naar je eerste klanten, per persoon bijgehouden
+    partners.ts       gebieden, abonnementen en de twee verdienlagen
     prognose.ts       wat de pijplijn waard is, en het doel
     nieuws.ts         het prikbord voor het team
     instellingen.ts   wat je aanbiedt en wat een agent verdient
@@ -717,7 +770,8 @@ src/
   report/
     leads.ts          leads opvragen, filteren en kaartpunten
     export.ts         CSV/JSON-export
-    templates.ts      de dertien mailsjablonen — hier pas je de teksten aan
+    templates.ts      de veertien mailsjablonen — hier pas je de teksten aan
+    scripts.ts        belscripts en bezwaren
     pitch.ts          het uitgebreide rapport
   server/
     index.ts          API met inloggen en rechten

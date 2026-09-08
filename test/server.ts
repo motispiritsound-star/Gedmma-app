@@ -350,6 +350,56 @@ check('de provisieregeling is opgeslagen',
 check('elke agent heeft een provisiebedrag',
   teamNa.team.every((rij: any) => typeof rij.provisie?.eenmaligCent === 'number'));
 
+console.log('\nDraaiboek, scripts en partners:');
+const boek = (await een.doe('/api/draaiboek')).inhoud;
+check('het draaiboek heeft stappen', boek.stappen.length >= 10);
+check('en begint op nul', boek.gedaan === 0 && boek.volgende !== null);
+check('de bezwaren staan erbij', boek.bezwaren.length >= 5);
+check('een agent ziet de teamvoortgang niet', boek.team === null);
+check('de eigenaar wel', Array.isArray((await eigenaar.doe('/api/draaiboek')).inhoud.team));
+
+const naAf = (await een.doe(`/api/draaiboek/${boek.stappen[0].id}`, {
+  method: 'POST', body: JSON.stringify({ gedaan: true }),
+})).inhoud;
+check('een stap afvinken telt', naAf.gedaan === 1);
+check('en blijft per persoon', (await eigenaar.doe('/api/draaiboek')).inhoud.gedaan === 0);
+check('een onbekende stap wordt geweigerd',
+  (await een.doe('/api/draaiboek/verzonnen', { method: 'POST', body: JSON.stringify({ gedaan: true }) })).status === 400);
+
+const scriptLead = leads.find((rij: any) => rij.domain === 'kapot2.test');
+const script = (await eigenaar.doe(`/api/leads/${scriptLead.id}/script`)).inhoud;
+check('er is een belscript met meerdere delen', script.delen.length >= 3, `${script.delen.length} delen`);
+check('het script noemt het bedrijf',
+  script.delen[0].regels.some((regel: string) => regel.includes(scriptLead.name)));
+
+// De eenmanszaak kreeg eerder in deze test toestemming; die trekken we in,
+// zodat het script weer moet zeggen dat bellen niet mag.
+const zonderToestemming = leads.find((rij: any) => rij.domain === 'dekraan.test');
+await eigenaar.doe(`/api/leads/${zonderToestemming.id}/toestemming`, {
+  method: 'POST', body: JSON.stringify({ intrekken: true }),
+});
+const geenBellen = (await eigenaar.doe(`/api/leads/${zonderToestemming.id}/script`)).inhoud;
+check('bij een eenmanszaak zonder toestemming zegt het script dat bellen niet mag',
+  geenBellen.delen.length === 1 && /niet/i.test(geenBellen.delen[0].kop),
+  geenBellen.delen[0]?.kop);
+
+const partnerLijst = (await eigenaar.doe('/api/partners')).inhoud;
+check('het partneroverzicht toont de twee lagen',
+  typeof partnerLijst.lagen.eigenKlantenCent === 'number' && typeof partnerLijst.lagen.partnersCent === 'number');
+check('een agent mag daar niet bij', (await een.doe('/api/partners')).status === 403);
+
+const wieAgent = partnerLijst.partners.find((rij: any) => rij.email === 'een@test.nl');
+const bijgewerkt = (await eigenaar.doe(`/api/partners/${wieAgent.id}`, {
+  method: 'PUT', body: JSON.stringify({ gebied: 'Utrecht, Amersfoort', abonnement: 95, status: 'actief' }),
+})).inhoud;
+check('gebied en abonnement worden opgeslagen',
+  bijgewerkt.gebied.length === 2 && bijgewerkt.abonnementCent === 9500 && bijgewerkt.abonnementStatus === 'actief');
+check('het abonnement telt mee in de tweede laag',
+  (await eigenaar.doe('/api/partners')).inhoud.lagen.partnersCent === 9500);
+
+const verdeeld = (await eigenaar.doe(`/api/partners/${wieAgent.id}/verdeel`, { method: 'POST' })).inhoud;
+check('vrije bedrijven in het gebied gaan op naam van de partner', verdeeld.toegewezen >= 1, `${verdeeld.toegewezen}`);
+
 console.log('\nDe controle voor de go-live:');
 const nazicht = (await eigenaar.doe('/api/controle')).inhoud;
 check('de controle noemt alle punten', nazicht.punten.length >= 8);

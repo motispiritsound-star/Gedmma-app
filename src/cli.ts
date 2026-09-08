@@ -24,6 +24,9 @@ import { plaatsNieuws, nieuwsLijst, verwijderNieuws, SOORTEN } from './db/nieuws
 import { verrijkBedrijf, zonderRechtsvorm, CENT_PER_BEVRAGING } from './sources/kvk-verrijken.ts';
 import { werklijst, werkdruk } from './db/opvolging.ts';
 import { controle } from './db/controle.ts';
+import { partnerOverzicht, bewaarPartner, verdeelGebied, tweeLagen } from './db/partners.ts';
+import { draaiboekVoor, zetStap, voortgangPerPersoon } from './db/draaiboek.ts';
+import { belscript, BEZWAREN, scriptTekst } from './report/scripts.ts';
 import { prognose, bewaarDoel, leesDoel, tempo } from './db/prognose.ts';
 import { leesProvisie, bewaarProvisie, provisieVan } from './db/instellingen.ts';
 import { RECHTSVORMEN, benaderbaarheid, blokkeer, deblokkeer, herkenRechtsvorm,
@@ -701,6 +704,128 @@ program
       const verdiend = provisieVan(regel, regeling);
       log.info(`  ${regel.naam.padEnd(24)} ${String(regel.opdrachten).padStart(3)} opdrachten  `
         + `${euro(verdiend.eenmaligCent).padStart(11)} eenmalig  ${euro(verdiend.perMaandCent).padStart(10)} per maand`);
+    }
+    log.info('');
+  });
+
+// --------------------------------------------------------------------------
+program
+  .command('script <id>')
+  .description('Het belscript voor deze lead, met de bezwaren erachter')
+  .action((id) => {
+    const lead = getLead(Number(id));
+    if (!lead) { log.error(`Geen lead met nummer ${id}.`); process.exitCode = 1; return; }
+    const rapport = lead.report as { verdict?: never; signals?: never };
+    if (!rapport?.verdict) { log.error('Deze lead is nog niet gescand.'); process.exitCode = 1; return; }
+
+    const aanbod = leesAanbod();
+    log.info('\n' + scriptTekst({
+      bedrijf: lead.name, domein: lead.domain, plaats: lead.city,
+      verdict: rapport.verdict, signals: rapport.signals ?? null,
+      aanbod: aanbodTekst(aanbod),
+      afzender: { bedrijf: aanbod.bedrijfsnaam || undefined },
+      magBellen: magBellen(lead).mag,
+    }) + '\n');
+
+    log.info('BEZWAREN');
+    for (const bezwaar of BEZWAREN) {
+      log.info(`\n  "${bezwaar.wat}"`);
+      for (const regel of bezwaar.antwoord) log.info(`    ${regel}`);
+      log.dim(`    → ${bezwaar.waarom}`);
+    }
+    log.info('');
+  });
+
+// --------------------------------------------------------------------------
+const partnerCommando = program.command('partner').description('Partners met een eigen gebied en abonnement');
+
+partnerCommando
+  .command('lijst')
+  .description('Wie er meewerkt, met gebied, abonnement en wat het oplevert')
+  .action(() => {
+    const lagen = tweeLagen();
+    log.info('');
+    log.info(`  Eigen klanten   ${euro(lagen.eigenKlantenCent).padStart(11)} per maand (${lagen.eigenKlanten} klanten)`);
+    log.info(`  Partners        ${euro(lagen.partnersCent).padStart(11)} per maand (${lagen.partnersActief} actief, ${lagen.partnersProef} op proef)`);
+    log.ok(`  Samen           ${euro(lagen.totaalCent).padStart(11)} per maand\n`);
+
+    for (const regel of partnerOverzicht()) {
+      const gebied = regel.gebied.length > 0 ? regel.gebied.join(', ') : 'geen gebied';
+      log.info(`  ${regel.naam.padEnd(22)} ${regel.rol.padEnd(9)} ${gebied}`);
+      log.dim(`      abonnement ${euro(regel.abonnementCent)} (${regel.abonnementStatus}) · `
+        + `${regel.klanten} eigen klanten (${euro(regel.eigenMrrCent)}/mnd) · `
+        + `${regel.bedrijvenInGebied} bedrijven in gebied, ${regel.vrijInGebied} nog vrij`);
+    }
+    log.info('');
+  });
+
+partnerCommando
+  .command('zet <email>')
+  .description('Geef een partner een gebied en een abonnement')
+  .option('-g, --gebied <plaatsen>', 'plaatsen, gescheiden door komma\'s')
+  .option('-a, --abonnement <euro>', 'wat hij jou per maand betaalt', bedrag)
+  .option('-s, --status <status>', 'geen, proef, actief of gestopt')
+  .action((email, options) => {
+    const account = gebruikerOpEmail(email);
+    if (!account) { log.error(`Geen gebruiker met e-mailadres ${email}.`); process.exitCode = 1; return; }
+    try {
+      const nieuw = bewaarPartner(account.id, {
+        gebied: options.gebied,
+        abonnementCent: options.abonnement !== undefined ? Math.round(options.abonnement * 100) : undefined,
+        abonnementStatus: options.status,
+      });
+      log.ok(`${nieuw.naam}: ${nieuw.gebied.join(', ') || 'geen gebied'} · `
+        + `${euro(nieuw.abonnementCent)} per maand (${nieuw.abonnementStatus}).`);
+    } catch (fout) { log.error((fout as Error).message); process.exitCode = 1; }
+  });
+
+partnerCommando
+  .command('verdeel <email>')
+  .description('Zet alle vrije bedrijven in zijn gebied op naam van de partner')
+  .option('-l, --limit <aantal>', 'hoeveel maximaal', Number, 500)
+  .action((email, options) => {
+    const account = gebruikerOpEmail(email);
+    if (!account) { log.error(`Geen gebruiker met e-mailadres ${email}.`); process.exitCode = 1; return; }
+    const aantal = verdeelGebied(account.id, options.limit);
+    log.ok(`${aantal} bedrijven staan nu op naam van ${account.naam}.`);
+  });
+
+// --------------------------------------------------------------------------
+program
+  .command('draaiboek')
+  .description('Waar sta je in het draaiboek, en wat is de volgende stap')
+  .option('-e, --email <adres>', 'van wie (standaard: de eerste eigenaar)')
+  .option('--af <stap>', 'vink een stap af')
+  .option('--terug <stap>', 'zet een stap weer open')
+  .action((options) => {
+    const account = options.email
+      ? gebruikerOpEmail(options.email)
+      : gebruikers().find((rij) => rij.rol === 'eigenaar' && rij.actief) ?? gebruikers()[0];
+    if (!account) { log.error('Geen account gevonden.'); process.exitCode = 1; return; }
+
+    try {
+      if (options.af) zetStap(account.id, options.af, true);
+      if (options.terug) zetStap(account.id, options.terug, false);
+    } catch (fout) { log.error((fout as Error).message); process.exitCode = 1; return; }
+
+    const stand = draaiboekVoor(account.id);
+    log.info(`\n  ${account.naam}: ${stand.gedaan} van de ${stand.totaal} stappen\n`);
+
+    let fase = '';
+    for (const stap of stand.stappen) {
+      if (stap.fase !== fase) { fase = stap.fase; log.info(`  ${fase.toUpperCase()}`); }
+      const teken = stap.gedaan ? '✓' : '·';
+      log.info(`    ${teken} ${stap.id.padEnd(18)} ${stap.titel}`);
+    }
+    if (stand.volgende) log.ok(`\n  Volgende stap: ${stand.volgende.titel}`);
+    else log.ok('\n  Alles afgevinkt.');
+
+    if (account.rol === 'eigenaar') {
+      log.info('\n  Het team:');
+      for (const regel of voortgangPerPersoon()) {
+        log.info(`    ${regel.naam.padEnd(22)} ${String(regel.gedaan).padStart(2)}/${regel.totaal}  `
+          + `${regel.volgende ?? 'klaar'}`);
+      }
     }
     log.info('');
   });
