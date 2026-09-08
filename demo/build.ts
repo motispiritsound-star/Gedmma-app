@@ -245,6 +245,29 @@ const { bewaarProvisie } = await import('../src/db/instellingen.ts');
 bewaarDoel(250_00);
 bewaarProvisie({ perOpdrachtCent: 5000, mrrPercentage: 10 });
 
+// Sara werkt als partner met een eigen gebied en een abonnement; Tom werkt op
+// provisie. Zo laat de proefrit beide vormen naast elkaar zien, en staan de twee
+// verdienlagen in het teamoverzicht.
+const { bewaarPartner } = await import('../src/db/partners.ts');
+bewaarPartner(sara!.id, {
+  gebied: ['Utrecht', 'Amersfoort', 'Woerden'],
+  abonnementCent: 95_00,
+  abonnementStatus: 'actief',
+});
+bewaarPartner(tom!.id, { gebied: ['Rotterdam', 'Dordrecht'], abonnementStatus: 'proef' });
+
+// De eigenaar is het draaiboek al doorgelopen tot aan het opschalen; Sara zit
+// halverwege. Dat maakt het scherm meteen begrijpelijk.
+const { zetStap } = await import('../src/db/draaiboek.ts');
+for (const stap of ['aanbod', 'doel', 'controle', 'eerste-ronde', 'scores-getoetst',
+  'eerste-mails', 'werklijst', 'eerste-gesprek', 'eerste-opdracht', 'eerste-live',
+  'eerste-testimonial']) {
+  zetStap(eigenaar!.id, stap, true);
+}
+for (const stap of ['aanbod', 'doel', 'controle', 'eerste-ronde', 'eerste-mails']) {
+  zetStap(sara!.id, stap, true);
+}
+
 // Een bedrijf dat zich heeft afgemeld, zodat de demo ook die kant laat zien.
 blokkeer(opDomein('dierenartsdepoot.nl'), 'gaf aan geen berichten meer te willen', tom!.id);
 
