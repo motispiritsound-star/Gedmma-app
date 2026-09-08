@@ -26,6 +26,24 @@ function legeRegel(btwCodeId: string, rekeningId: string): Regelinvoer {
   return { omschrijving: '', aantal: '1', prijs: '', btwCodeId, rekeningId };
 }
 
+/** Wat de server voorstelt te versturen, voordat het verstuurd is. */
+type Voorstel = {
+  ronde: number;
+  aan: string | null;
+  onderwerp: string;
+  tekst: string;
+  dagenTeLaat: number;
+};
+
+/** Een herinnering die al de deur uit is. */
+type Herinnering = {
+  id: string;
+  ronde: number;
+  dagen_te_laat: number;
+  verzonden_naar: string;
+  verzonden_op: string;
+};
+
 export function FactuurScherm() {
   const { id } = useParams<{ id: string }>();
   const [zoekparameters] = useSearchParams();
@@ -47,6 +65,10 @@ export function FactuurScherm() {
   const [notitie, zetNotitie] = useState('');
   const [regels, zetRegels] = useState<Regelinvoer[]>([]);
   const [melding, zetMelding] = useState<{ soort: 'goed' | 'let-op'; tekst: string } | null>(null);
+  const [voorstel, zetVoorstel] = useState<Voorstel | null>(null);
+  const [onderwerp, zetOnderwerp] = useState('');
+  const [tekst, zetTekst] = useState('');
+  const [eerder, zetEerder] = useState<Herinnering[]>([]);
 
   const verkoopcodes = useMemo(
     () => (btwcodes.gegevens?.btwcodes ?? []).filter((code) => code.soort !== 'inkoop' && code.geldig_tot === null),
@@ -87,6 +109,15 @@ export function FactuurScherm() {
 
   const valuta = bestaand.gegevens?.factuur.valuta ?? administratie?.administratie.valuta ?? 'EUR';
   const isConcept = nieuw || bestaand.gegevens?.factuur.status === 'concept';
+
+  // Een factuur is te laat zodra de vervaldatum voorbij is en er nog iets
+  // openstaat. De server beslist opnieuw; dit bepaalt alleen of de knop er staat.
+  const factuurNu = bestaand.gegevens?.factuur;
+  const isVervallen =
+    !isConcept &&
+    factuurNu?.status !== 'betaald' &&
+    !!factuurNu?.vervaldatum &&
+    factuurNu.vervaldatum < vandaag();
 
   // Live totaal, zodat de gebruiker meteen ziet wat er onder de streep staat.
   const totalen = useMemo(() => {
@@ -172,6 +203,36 @@ export function FactuurScherm() {
     }
   }
 
+  /**
+   * De herinnering wordt eerst opgehaald en getoond, niet meteen verstuurd. Een
+   * knop die ongezien post naar een klant stuurt is een knop waar je een keer
+   * per ongeluk op drukt.
+   */
+  async function haalHerinneringOp() {
+    const uitkomst = await actie.voerUit<{ voorstel: Voorstel; eerder: Herinnering[] }>(
+      `${basis}/verkoopfacturen/${id}/herinnering`,
+      { methode: 'GET' },
+    );
+    if (uitkomst) {
+      zetVoorstel(uitkomst.voorstel);
+      zetOnderwerp(uitkomst.voorstel.onderwerp);
+      zetTekst(uitkomst.voorstel.tekst);
+      zetEerder(uitkomst.eerder);
+    }
+  }
+
+  async function stuurHerinnering() {
+    const uitkomst = await actie.voerUit<{ ronde: number; verzondenNaar: string; melding: string }>(
+      `${basis}/verkoopfacturen/${id}/herinnering`,
+      { methode: 'POST', body: { onderwerp, tekst } },
+    );
+    if (uitkomst) {
+      zetVoorstel(null);
+      bestaand.opnieuw();
+      zetMelding({ soort: 'goed', tekst: uitkomst.melding });
+    }
+  }
+
   async function crediteer() {
     const uitkomst = await actie.voerUit<{ id: string }>(`${basis}/verkoopfacturen/${id}/crediteer`, {
       methode: 'POST',
@@ -217,6 +278,11 @@ export function FactuurScherm() {
           {!isConcept && magIk('verkoop.versturen') && factuur?.status !== 'betaald' && (
             <Knop soort="tweede" onClick={() => void verstuur()} bezig={actie.bezig}>
               {t('facturen.versturen')}
+            </Knop>
+          )}
+          {isVervallen && magIk('verkoop.versturen') && (
+            <Knop soort="tweede" onClick={() => void haalHerinneringOp()} bezig={actie.bezig}>
+              {t('facturen.herinnering')}
             </Knop>
           )}
           {!isConcept && factuur?.soort === 'factuur' && magIk('verkoop.schrijven') && (
@@ -363,6 +429,44 @@ export function FactuurScherm() {
           </div>
         </div>
       </Kaart>
+
+      {voorstel && (
+        <Kaart titel={`${t('facturen.herinnering')} ${voorstel.ronde}`}>
+          <p className="uitleg">
+            {t('facturen.herinneringUitleg', {
+              dagen: String(voorstel.dagenTeLaat),
+              aan: voorstel.aan ?? '—',
+            })}
+          </p>
+          <Veld
+            label={t('facturen.onderwerp')}
+            value={onderwerp}
+            onChange={(gebeurtenis) => zetOnderwerp(gebeurtenis.target.value)}
+          />
+          <Tekstveld
+            label={t('facturen.bericht')}
+            rows={16}
+            value={tekst}
+            onChange={(gebeurtenis) => zetTekst(gebeurtenis.target.value)}
+          />
+          <div className="rij">
+            <Knop onClick={() => void stuurHerinnering()} bezig={actie.bezig} disabled={!voorstel.aan}>
+              {t('facturen.herinneringVersturen')}
+            </Knop>
+            <Knop soort="stil" onClick={() => zetVoorstel(null)}>
+              {t('algemeen.annuleren')}
+            </Knop>
+          </div>
+          {eerder.length > 0 && (
+            <p className="uitleg" style={{ marginTop: 'var(--ruimte-4)' }}>
+              {t('facturen.herinneringEerder')}{' '}
+              {eerder
+                .map((herinnering) => `${herinnering.ronde}: ${toonDatum(herinnering.verzonden_op.slice(0, 10), taal)}`)
+                .join(' · ')}
+            </p>
+          )}
+        </Kaart>
+      )}
 
       {isConcept && (
         <Kaart>

@@ -12,9 +12,13 @@ import assert from 'node:assert/strict';
 import type { Transporter } from 'nodemailer';
 import { config } from '../src/config.ts';
 import { mail, vergeetDriver } from '../src/mail/index.ts';
-import { gebruikTransport, smtpDriver } from '../src/mail/smtp.ts';
+import { gebruikTransport, smtpDriver, verbindingsopties } from '../src/mail/smtp.ts';
 
-const oorspronkelijk = { driver: config.mail.driver, smtpUrl: config.mail.smtpUrl };
+// De configuratie is met opzet alleen-lezen: niets in de applicatie hoort hem
+// tijdens het draaien te wijzigen. Een test die de driverkeuze wil beproeven
+// moet dat wel, en zegt hier expliciet dat hij dat doet.
+const instelbaar = config.mail as { driver: 'logboek' | 'smtp'; smtpUrl: string };
+const oorspronkelijk = { driver: instelbaar.driver, smtpUrl: instelbaar.smtpUrl };
 
 /** Een transport dat niets verstuurt maar wel onthoudt wat het kreeg. */
 function neptransport(uitkomst: { messageId?: string; rejected?: string[] } = {}) {
@@ -34,27 +38,27 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  config.mail.driver = oorspronkelijk.driver;
-  config.mail.smtpUrl = oorspronkelijk.smtpUrl;
+  instelbaar.driver = oorspronkelijk.driver;
+  instelbaar.smtpUrl = oorspronkelijk.smtpUrl;
   vergeetDriver();
   gebruikTransport(null);
 });
 
 describe('welke driver wordt gekozen', () => {
   test('zonder instelling schrijft hij naar het logboek', () => {
-    config.mail.driver = 'logboek';
+    instelbaar.driver = 'logboek';
     assert.equal(mail(), mail(), 'de driver wordt hergebruikt en niet elke keer opnieuw gemaakt');
   });
 
   test('met smtp maar zonder SMTP_URL valt hij er meteen over', () => {
-    config.mail.driver = 'smtp';
-    config.mail.smtpUrl = '';
+    instelbaar.driver = 'smtp';
+    instelbaar.smtpUrl = '';
     assert.throws(() => mail(), /SMTP_URL/);
   });
 
   test('met smtp en een adres kiest hij de smtp-driver', () => {
-    config.mail.driver = 'smtp';
-    config.mail.smtpUrl = 'smtps://gebruiker:geheim@smtp.voorbeeld.test:465';
+    instelbaar.driver = 'smtp';
+    instelbaar.smtpUrl = 'smtps://gebruiker:geheim@smtp.voorbeeld.test:465';
     assert.equal(mail(), smtpDriver);
   });
 });
@@ -107,5 +111,36 @@ describe('wat de smtp-driver doorgeeft', () => {
       () => smtpDriver.verstuur({ aan: 'bestaat-niet@voorbeeld.test', onderwerp: 'Test', tekst: 'Test.' }),
       /weigerde/,
     );
+  });
+});
+
+describe('de SMTP_URL uit elkaar halen', () => {
+  test('smtps gaat versleuteld over 465', () => {
+    const opties = verbindingsopties('smtps://post@voorbeeld.test:geheim@smtp.voorbeeld.test');
+    assert.equal(opties.host, 'smtp.voorbeeld.test');
+    assert.equal(opties.port, 465);
+    assert.equal(opties.secure, true);
+  });
+
+  test('smtp begint onversleuteld op 587', () => {
+    const opties = verbindingsopties('smtp://gebruiker:geheim@smtp.voorbeeld.test');
+    assert.equal(opties.port, 587);
+    assert.equal(opties.secure, false);
+  });
+
+  test('een poort in de url gaat voor de standaard', () => {
+    assert.equal(verbindingsopties('smtps://a:b@smtp.voorbeeld.test:2465').port, 2465);
+  });
+
+  test('een wachtwoord met leestekens komt heel aan', () => {
+    // Een wachtwoord als `pas@woord/1` moet percent-gecodeerd in de url staan.
+    // Zonder decoderen komt er `pas%40woord%2F1` bij de mailserver aan, en dan
+    // krijg je een aanmeldfout die nergens naar het wachtwoord wijst.
+    const opties = verbindingsopties('smtps://gebruiker:pas%40woord%2F1@smtp.voorbeeld.test');
+    assert.deepEqual(opties.auth, { user: 'gebruiker', pass: 'pas@woord/1' });
+  });
+
+  test('zonder gebruikersnaam wordt er niet aangemeld', () => {
+    assert.equal(verbindingsopties('smtp://smtp.intern.test:25').auth, undefined);
   });
 });

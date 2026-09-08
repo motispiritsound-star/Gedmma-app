@@ -45,6 +45,7 @@ export type AuditActie =
   | 'verkoopfactuur.aangemaakt'
   | 'verkoopfactuur.definitief'
   | 'verkoopfactuur.verzonden'
+  | 'verkoopfactuur.herinnering_verzonden'
   | 'verkoopfactuur.gecrediteerd'
   | 'inkoopfactuur.aangemaakt'
   | 'inkoopfactuur.definitief'

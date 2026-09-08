@@ -15,6 +15,36 @@ import { log } from '../util/log.ts';
 import type { Bericht, MailDriver, Verzendresultaat } from './index.ts';
 
 /**
+ * Vertaalt de SMTP_URL naar verbindingsopties.
+ *
+ * De url wordt hier zelf uit elkaar gehaald in plaats van doorgegeven, omdat we
+ * er dan pooling bij kunnen zetten en omdat het wachtwoord percent-gecodeerd in
+ * de url staat: een wachtwoord met een `@` of een `/` erin komt anders verminkt
+ * bij de mailserver aan, met een aanmeldfout die nergens naar het wachtwoord
+ * wijst.
+ */
+export function verbindingsopties(smtpUrl: string) {
+  const url = new URL(smtpUrl);
+  // smtps praat versleuteld vanaf de eerste byte (meestal 465); smtp begint
+  // onversleuteld en schakelt over met STARTTLS (meestal 587).
+  const versleuteldVanafHetBegin = url.protocol === 'smtps:';
+  return {
+    host: url.hostname,
+    port: url.port ? Number(url.port) : versleuteldVanafHetBegin ? 465 : 587,
+    secure: versleuteldVanafHetBegin,
+    auth: url.username
+      ? { user: decodeURIComponent(url.username), pass: decodeURIComponent(url.password) }
+      : undefined,
+    // Berichten over dezelfde verbinding, met een rustige limiet: een
+    // herinneringsronde over honderd facturen mag geen reden zijn om als
+    // spammer te worden aangezien.
+    pool: true,
+    maxConnections: 3,
+    maxMessages: 50,
+  };
+}
+
+/**
  * De verbinding wordt pas gemaakt bij het eerste bericht. Zo valt de API niet
  * om als de mailserver even niet bereikbaar is terwijl er nog niets te
  * versturen valt.
@@ -26,15 +56,7 @@ function verbinding(): Transporter {
   if (!config.mail.smtpUrl) {
     throw new Error('MAIL_DRIVER staat op smtp, maar SMTP_URL is leeg. Zet hem in .env.');
   }
-  transport = createTransport(config.mail.smtpUrl, {
-    from: config.mail.afzender,
-    // Berichten over dezelfde verbinding, met een rustige limiet: een
-    // herinneringsronde over honderd facturen mag geen reden zijn om als
-    // spammer te worden aangezien.
-    pool: true,
-    maxConnections: 3,
-    maxMessages: 50,
-  });
+  transport = createTransport(verbindingsopties(config.mail.smtpUrl));
   return transport;
 }
 

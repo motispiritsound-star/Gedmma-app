@@ -171,6 +171,12 @@ export const omschrijvingen: Record<string, string> = {
     'Levert de factuur als UBL 2.1 volgens het EN 16931-profiel.',
   'POST /api/v1/administraties/{administratieId}/verkoopfacturen/{id}/verstuur':
     'Verstuurt de factuur per e-mail met PDF en UBL als bijlage.',
+  'GET /api/v1/administraties/{administratieId}/verkoopfacturen/{id}/herinnering':
+    'Stelt de eerstvolgende betalingsherinnering samen zonder hem te versturen, met de eerder verstuurde erbij.',
+  'POST /api/v1/administraties/{administratieId}/verkoopfacturen/{id}/herinnering':
+    'Verstuurt een betalingsherinnering en legt vast wat er is gegaan.',
+  'GET /api/v1/administraties/{administratieId}/verkoopfacturen/{id}/herinneringen':
+    'Geeft alle betalingsherinneringen die over deze factuur zijn verstuurd.',
 
   // --- Inkoop ---------------------------------------------------------------
   'GET /api/v1/administraties/{administratieId}/inkoopfacturen': 'Zoekt inkoopfacturen en bonnen.',

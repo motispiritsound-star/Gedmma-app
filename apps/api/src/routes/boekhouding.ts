@@ -25,6 +25,12 @@ import {
 } from '../modules/verkoop/service.ts';
 import { maakPdf, maakUblBestand, verstuurFactuur } from '../modules/verkoop/verzenden.ts';
 import {
+  bereidHerinneringVoor,
+  herinneringenVan,
+  stuurHerinnering,
+  vandaag,
+} from '../modules/verkoop/herinneren.ts';
+import {
   leesInkoopfactuur,
   maakInkoopDefinitief,
   maakInkoopfactuur,
@@ -327,6 +333,56 @@ boekhoudRoutes.post(
     );
     const uitkomst = await inContext(verzoek, (client, context) => verstuurFactuur(client, context, id, invoer));
     antwoord.json(uitkomst);
+  }),
+);
+
+/**
+ * Wat er zou worden verstuurd, zonder het te versturen. De gebruiker hoort de
+ * tekst te zien voordat hij bij zijn klant ligt.
+ */
+boekhoudRoutes.get(
+  '/verkoopfacturen/:id/herinnering',
+  vereistRecht('verkoop.versturen'),
+  asyncRoute(async (verzoek: Verzoek, antwoord) => {
+    const id = valideer(uuidSchema, verzoek.params.id);
+    const uitkomst = await inContext(verzoek, async (client, context) => ({
+      voorstel: await bereidHerinneringVoor(client, context.administratieId, id, vandaag()),
+      eerder: await herinneringenVan(client, context.administratieId, id),
+    }));
+    antwoord.json(uitkomst);
+  }),
+);
+
+boekhoudRoutes.post(
+  '/verkoopfacturen/:id/herinnering',
+  vereistRecht('verkoop.versturen'),
+  asyncRoute(async (verzoek: Verzoek, antwoord) => {
+    const id = valideer(uuidSchema, verzoek.params.id);
+    const invoer = valideer(
+      z.object({
+        aan: z.string().email().optional(),
+        onderwerp: z.string().max(200).optional(),
+        tekst: z.string().max(5000).optional(),
+      }),
+      verzoek.body ?? {},
+    );
+    const uitkomst = await inContext(verzoek, (client, context) =>
+      stuurHerinnering(client, context, id, { ...invoer, vandaag: vandaag() }),
+    );
+    antwoord.status(201).json(uitkomst);
+  }),
+);
+
+/** De geschiedenis: wat is er over deze factuur al gestuurd. */
+boekhoudRoutes.get(
+  '/verkoopfacturen/:id/herinneringen',
+  vereistRecht('verkoop.lezen'),
+  asyncRoute(async (verzoek: Verzoek, antwoord) => {
+    const id = valideer(uuidSchema, verzoek.params.id);
+    const herinneringen = await inContext(verzoek, (client, context) =>
+      herinneringenVan(client, context.administratieId, id),
+    );
+    antwoord.json({ herinneringen });
   }),
 );
 
