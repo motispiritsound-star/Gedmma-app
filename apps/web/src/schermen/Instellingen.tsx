@@ -1,10 +1,10 @@
 /** Instellingen: onderneming, gebruikers, beveiliging, perioden en audit trail. */
 import { useState } from 'react';
 import { NavLink, Route, Routes } from 'react-router-dom';
-import { TALEN, toonTijdstip } from '@mizen/i18n';
+import { TALEN, toonDatum, toonTijdstip } from '@mizen/i18n';
 import { useApp } from '../context/App.tsx';
 import { Feedbackoverzicht } from './Feedback.tsx';
-import { Etiket, Kaart, Keuzeveld, Knop, Laden, Melding, Tabelomhulsel, Veld } from '../ontwerp/index.tsx';
+import { Dialoog, Etiket, Kaart, Keuzeveld, Knop, Laden, Melding, Tabelomhulsel, Veld } from '../ontwerp/index.tsx';
 import { useActie, useHaal } from './gebruik.ts';
 
 export function Instellingen() {
@@ -165,10 +165,11 @@ type Lid = {
   email: string;
   rol: string;
   status: string;
+  uitnodiging_tot: string | null;
 };
 
 function Gebruikers() {
-  const { t, ik, administratie } = useApp();
+  const { t, taal, ik, administratie } = useApp();
   const organisatieId = ik?.organisaties?.find((organisatie) =>
     organisatie.administraties.some((admin) => admin.id === administratie?.administratie.id),
   )?.id;
@@ -178,6 +179,59 @@ function Gebruikers() {
   const [rol, zetRol] = useState('bookkeeper');
   const [melding, zetMelding] = useState<string | null>(null);
   const [link, zetLink] = useState<string | null>(null);
+  const [intrekken, zetIntrekken] = useState<Lid | null>(null);
+
+  /** Wat je kunt uitdelen. Eigenaar zit er niet bij: die draag je over. */
+  const ROLLEN = ['admin', 'bookkeeper', 'accountant', 'employee', 'viewer'] as const;
+
+  async function wijzigRol(lid: Lid, nieuweRol: string) {
+    zetMelding(null);
+    zetLink(null);
+    const uitkomst = await actie.voerUit<{ melding: string }>(
+      `/api/v1/organisaties/${organisatieId}/leden/${lid.membership_id}`,
+      { methode: 'PATCH', body: { rol: nieuweRol } },
+    );
+    if (uitkomst) {
+      zetMelding(uitkomst.melding);
+      leden.opnieuw();
+    }
+  }
+
+  /**
+   * Een uitnodigingslink is niet op te zoeken: van het token bewaren we alleen
+   * een hash, zodat niemand met databasetoegang bij andermans account kan. Kwijt
+   * betekent dus opnieuw aanmaken. Dat is hetzelfde verzoek als uitnodigen, met
+   * hetzelfde adres en dezelfde rol; het oude token vervalt daarmee.
+   */
+  async function nieuweLink(lid: Lid) {
+    zetMelding(null);
+    zetLink(null);
+    const uitkomst = await actie.voerUit<{ melding: string; uitnodigingsLink?: string }>(
+      `/api/v1/organisaties/${organisatieId}/leden`,
+      { methode: 'POST', body: { email: lid.email, rol: lid.rol } },
+    );
+    if (uitkomst) {
+      zetMelding(uitkomst.melding);
+      zetLink(uitkomst.uitnodigingsLink ?? null);
+      leden.opnieuw();
+    }
+  }
+
+  async function trekIn() {
+    const lid = intrekken;
+    if (!lid) return;
+    zetMelding(null);
+    zetLink(null);
+    const uitkomst = await actie.voerUit<{ melding: string }>(
+      `/api/v1/organisaties/${organisatieId}/leden/${lid.membership_id}`,
+      { methode: 'DELETE' },
+    );
+    zetIntrekken(null);
+    if (uitkomst) {
+      zetMelding(uitkomst.melding);
+      leden.opnieuw();
+    }
+  }
 
   async function nodigUit() {
     // De uitkomst van de vorige uitnodiging eerst weg: anders staat een geslaagde
@@ -258,26 +312,92 @@ function Gebruikers() {
                   <th scope="col">{t('relaties.email')}</th>
                   <th scope="col">{t('instellingen.rol')}</th>
                   <th scope="col">{t('algemeen.status')}</th>
+                  <th scope="col">{t('algemeen.acties')}</th>
                 </tr>
               </thead>
               <tbody>
-                {leden.gegevens?.leden.map((lid) => (
-                  <tr key={lid.membership_id}>
-                    <td data-label={t('relaties.naam')}>{lid.naam}</td>
-                    <td data-label={t('relaties.email')}>{lid.email}</td>
-                    <td data-label={t('instellingen.rol')}>
-                      <Etiket soort="info">{t(`rol.${lid.rol}` as 'rol.owner')}</Etiket>
-                    </td>
-                    <td data-label={t('algemeen.status')}>
-                      <Etiket soort={lid.status === 'actief' ? 'goed' : 'let-op'}>{lid.status}</Etiket>
-                    </td>
-                  </tr>
-                ))}
+                {leden.gegevens?.leden.map((lid) => {
+                  // De eigenaar en jezelf blijven buiten schot: een beheerder die zijn
+                  // eigen rol verlaagt of intrekt sluit zichzelf buiten, en de eigenaar
+                  // draag je over via de organisatie-instellingen, niet hier.
+                  const vast = lid.rol === 'owner' || lid.user_id === ik?.gebruiker?.id;
+                  return (
+                    <tr key={lid.membership_id}>
+                      <td data-label={t('relaties.naam')}>{lid.naam}</td>
+                      <td data-label={t('relaties.email')}>{lid.email}</td>
+                      <td data-label={t('instellingen.rol')}>
+                        {vast ? (
+                          <Etiket soort="info">{t(`rol.${lid.rol}` as 'rol.owner')}</Etiket>
+                        ) : (
+                          <label>
+                            <span className="alleen-schermlezer">
+                              {t('instellingen.rol')} — {lid.naam}
+                            </span>
+                            <select
+                              className="veld__invoer"
+                              value={lid.rol}
+                              onChange={(g) => void wijzigRol(lid, g.target.value)}
+                            >
+                              {ROLLEN.map((waarde) => (
+                                <option key={waarde} value={waarde}>
+                                  {t(`rol.${waarde}` as 'rol.admin')}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                        )}
+                      </td>
+                      <td data-label={t('algemeen.status')}>
+                        <Etiket soort={lid.status === 'actief' ? 'goed' : 'let-op'}>{lid.status}</Etiket>
+                        {lid.status === 'uitgenodigd' && lid.uitnodiging_tot && (
+                          <span className="uitleg uitleg--naast">
+                            {t('instellingen.uitnodigingTot')} {toonDatum(lid.uitnodiging_tot, taal)}
+                          </span>
+                        )}
+                      </td>
+                      <td data-label={t('algemeen.acties')}>
+                        <div className="knoprij">
+                          {lid.status === 'uitgenodigd' && (
+                            <Knop soort="tweede" klein onClick={() => void nieuweLink(lid)} bezig={actie.bezig}>
+                              {t('instellingen.nieuweLink')}
+                            </Knop>
+                          )}
+                          {!vast && (
+                            <Knop soort="gevaar" klein onClick={() => zetIntrekken(lid)}>
+                              {t('instellingen.toegangIntrekken')}
+                            </Knop>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </Tabelomhulsel>
         )}
       </Kaart>
+
+      <Dialoog
+        open={intrekken !== null}
+        titel={t('instellingen.toegangIntrekken')}
+        onSluiten={() => zetIntrekken(null)}
+        voet={
+          <>
+            <Knop soort="stil" onClick={() => zetIntrekken(null)}>
+              {t('algemeen.annuleren')}
+            </Knop>
+            <Knop soort="gevaar" onClick={() => void trekIn()} bezig={actie.bezig}>
+              {t('instellingen.toegangIntrekken')}
+            </Knop>
+          </>
+        }
+      >
+        <p>
+          {t('instellingen.intrekkenVraag')} <strong>{intrekken?.email}</strong>
+        </p>
+        <p className="uitleg">{t('instellingen.intrekkenUitleg')}</p>
+      </Dialoog>
     </div>
   );
 }

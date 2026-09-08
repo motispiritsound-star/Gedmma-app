@@ -21,6 +21,8 @@ export type Lid = {
   email: string;
   rol: string;
   status: string;
+  /** Tot wanneer een openstaande uitnodiging geldig is; null zodra hij is aanvaard. */
+  uitnodiging_tot: string | null;
   administraties: { id: string; naam: string; rol: string | null; geldig_tot: string | null }[];
 };
 
@@ -32,9 +34,10 @@ export async function ledenVan(client: Db, organisatieId: string): Promise<Lid[]
     email: string;
     rol: string;
     status: string;
+    uitnodiging_tot: string | null;
   }>(
     `SELECT m.id AS membership_id, u.id AS user_id, u.naam, u.email::text AS email,
-            r.sleutel AS rol, m.status
+            r.sleutel AS rol, m.status, m.uitnodiging_tot::text AS uitnodiging_tot
        FROM membership m
        JOIN app_user u ON u.id = m.user_id
        JOIN role r ON r.id = m.role_id

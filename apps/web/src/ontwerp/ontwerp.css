@@ -758,3 +758,24 @@ textarea.veld__invoer {
 .uitnodigingslink .uitleg:last-child {
   margin-bottom: 0;
 }
+
+/* Knoppen naast elkaar in een tabelcel. Ze wikkelen op een smal scherm, want
+   daar staat de tabel als kaarten onder elkaar. */
+.knoprij {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ruimte-2);
+}
+
+/* De rolkeuze staat in een tabelcel en moet de langste rolnaam kwijt kunnen;
+   zonder deze regel valt "Boekhouder" af op de rand van het vakje. */
+.tabel .veld__invoer {
+  min-width: 9rem;
+}
+
+/* Een terzijde naast een etiket, bijvoorbeeld tot wanneer een uitnodiging geldt. */
+.uitleg--naast {
+  display: inline-block;
+  margin-left: var(--ruimte-2);
+  font-size: var(--tekst-xs);
+}
