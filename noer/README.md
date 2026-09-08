@@ -245,6 +245,8 @@ noer/
   tools/bundel.js        bouwt de hele app tot één HTML-bestand
   tools/demo-zaad.js     het voorbeeldprofiel voor de demo-bundel
   tools/haal-recitatie.js  haalt aya-opnames op bij een bron die jij kiest
+  tools/landing-beelden.js maakt de schermafdrukken voor de landingspagina
+  tools/landing-bundel.js  propt de landingspagina in één bestand
   test/run.js            controles op de leerinhoud
   test/browser.js        doorloop van de hele app in een echte browser
   public/
@@ -290,9 +292,20 @@ uitbreiden of de lessen anders opbouwen, dan hoef je alleen in `data/` te zijn �
 ## Betaald aanbieden
 
 `LANCEREN.md` gaat over de stap van "de app werkt" naar "mensen betalen ervoor":
-waarom een abonnement niet kan op de huidige opzet, wat € 4,99 per maand netto
+waarom een abonnement niet kan op de huidige opzet, wat € 6,99 per maand netto
 oplevert, drie manieren om het wél te doen met een aanbeveling, en de
 juridische en fiscale lijst voor Nederland.
+
+In [`landing/`](landing/) staat de pagina waar een ouder terechtkomt vóór hij de
+app opent: wat het is, hoe je begint, wat het kost, en de vragen die je krijgt
+als je geld vraagt voor iets religieus. `landing/LEESMIJ.md` zegt wat je moet
+aanpassen voordat je hem online zet — om te beginnen het e-mailadres, dat er nu
+als `noer@voorbeeld.nl` in staat.
+
+```bash
+node tools/landing-beelden.js    # de schermafdrukken opnieuw maken
+node tools/landing-bundel.js     # de pagina als één bestand om te mailen
+```
 
 ## Klaar voor go-live?
 

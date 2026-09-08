@@ -36,31 +36,36 @@ Zodat je weet waar je aan begint. Alle bedragen inclusief btw waar dat hoort.
 
 | | |
 |---|---|
-| Prijs | € 4,99 per maand |
-| Af: 21% btw | € 0,87 |
+| Prijs | € 6,99 per maand |
+| Af: 21% btw | € 1,21 |
 | Af: betaalkosten (SEPA-incasso, ± € 0,25) | € 0,25 |
-| **Houd je over** | **± € 3,87 per maand per abonnee** |
+| **Houd je over** | **± € 5,53 per maand per abonnee** |
 
 Wat dat betekent in aantallen:
 
 | Abonnees | Per maand netto | Per jaar |
 |---:|---:|---:|
-| 50 | € 194 | € 2.322 |
-| 250 | € 968 | € 11.610 |
-| 1.000 | € 3.870 | € 46.440 |
+| 50 | € 277 | € 3.318 |
+| 250 | € 1.383 | € 16.590 |
+| 1.000 | € 5.530 | € 66.360 |
 
 Twee dingen die deze tabel te rooskleurig maken:
 
 **Opzeggingen.** Bij maandelijks opzegbare abonnementen op kinder-educatie is
 5 tot 10% per maand normaal. Bij 8% ben je na een jaar tweederde van je
 abonnees kwijt. Je moet dus blijven werven om stil te staan. Een jaarabonnement
-(bijvoorbeeld € 39 per jaar, ruim 35% korting) haalt die maandelijkse lekkage
-weg en scheelt bovendien elf transactiekosten per klant.
+(bijvoorbeeld € 59 per jaar, ruim 29% korting op € 83,88) haalt die
+maandelijkse lekkage weg en scheelt bovendien elf transactiekosten per klant.
 
 **Ondersteuning.** Een betalende klant stelt vragen. Reken op enkele minuten
 per klant per maand. Bij 250 abonnees is dat een dagdeel per week.
 
----
+**Over de prijs.** € 6,99 is meer dan een losse app en minder dan een uur
+bijles. Het vergelijkingspunt in het hoofd van een ouder is meestal niet een
+andere app maar de Koranles op zaterdag — en daar zit je ruim onder. Wat je
+daarvoor moet waarmaken is dat het kind er uit zichzelf naar teruggaat. Dat is
+de enige rechtvaardiging voor een maandbedrag: het wordt elke maand opnieuw
+gebruikt.
 
 ## Drie wegen, met een aanbeveling
 
@@ -73,7 +78,8 @@ Geen maandelijkse administratie, geen opzeggingen, geen incasso's.
   stukje server, of in het begin zelfs met de hand.
 - **Nadeel:** geen terugkerende omzet. En een code die één keer werkt is te
   delen; je verkoopt in feite op vertrouwen.
-- **Prijs:** eenmalig € 24,95 of € 29,95 voelt in deze hoek redelijk.
+- **Prijs:** eenmalig € 34,95 voelt in deze hoek redelijk — ongeveer een
+  half jaar abonnement, en de koper is er vanaf.
 
 ### 2. Abonnement — wat je vroeg
 
@@ -90,10 +96,10 @@ Geen maandelijkse administratie, geen opzeggingen, geen incasso's.
 Je verkoopt niet aan ouders maar aan de school. Eén contactpersoon, één
 factuur, en zij zetten het bij de ouders neer.
 
-- **Rekenvoorbeeld:** een weekendschool met 60 kinderen voor € 250 per jaar is
-  € 4,17 per kind per jaar. Dat lijkt weinig, maar het is één relatie in plaats
+- **Rekenvoorbeeld:** een weekendschool met 60 kinderen voor € 295 per jaar is
+  € 4,92 per kind per jaar. Dat lijkt weinig, maar het is één relatie in plaats
   van zestig, nauwelijks opzeggingen, en de school doet je marketing.
-- Twintig van zulke scholen is € 5.000 per jaar met een fractie van de
+- Twintig van zulke scholen is € 5.900 per jaar met een fractie van de
   ondersteuning die 100 losse abonnees kosten.
 - **Nodig:** in de eerste maanden helemaal niets technisch. Een gesprek, een
   factuur, en de app op hun apparaten.
