@@ -41,6 +41,16 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
     throw new Error(`Invalid environment configuration:\n${details}`);
   }
 
+  // '*' is a fine default while building against localhost. In production it
+  // invites every page on the internet to call this API from a reader's
+  // browser, so the deployment has to say which sites it serves.
+  if (parsed.data.NODE_ENV === 'production' && parsed.data.CORS_ORIGINS.trim() === '*') {
+    throw new Error(
+      'CORS_ORIGINS must name the sites allowed to call this API in production, ' +
+        'for example CORS_ORIGINS=https://buurklus.nl,https://www.buurklus.nl',
+    );
+  }
+
   if (parsed.data.PAYMENT_PROVIDER === 'mollie') {
     const missing = (['MOLLIE_API_KEY', 'PAYMENT_WEBHOOK_SECRET'] as const).filter(
       (key) => !parsed.data[key],

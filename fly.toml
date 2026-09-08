@@ -1,0 +1,46 @@
+# Fly.io deployment for the API. Amsterdam is not a preference: the database
+# holds names, addresses and phone numbers of people in the Netherlands, and
+# keeping it inside the EU means the privacy statement has no third-country
+# transfer to justify. Moving this region moves that obligation with it.
+#
+#   fly launch --no-deploy --copy-config
+#   fly postgres create --region ams --name buurklus-db
+#   fly postgres attach buurklus-db          # sets DATABASE_URL
+#   fly secrets set JWT_ACCESS_SECRET=... JWT_REFRESH_SECRET=...
+#   fly deploy
+
+app = "buurklus-api"
+primary_region = "ams"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "4000"
+  HOST = "0.0.0.0"
+  PUBLIC_APP_URL = "https://buurklus.nl"
+  PUBLIC_API_URL = "https://api.buurklus.nl"
+  # The browser refuses a cross-origin request the API does not invite. Only
+  # the site's own two hostnames are named; "*" would let any page on the
+  # internet post to this API from a reader's browser.
+  CORS_ORIGINS = "https://buurklus.nl,https://www.buurklus.nl"
+
+[http_service]
+  internal_port = 4000
+  force_https = true
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  # Zero is what makes this affordable before there is traffic: the machine
+  # suspends when nobody is asking and wakes on the next request.
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    path = "/health"
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "20s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

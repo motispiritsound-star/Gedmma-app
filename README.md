@@ -23,6 +23,9 @@ docs/
   ARCHITECTURE.md  Data model, API surface, and the decisions behind them
   PRIVACY.md       The processing register, and what the AVG needs that code
                    cannot provide
+  DEPLOY.md        Putting the site on Cloudflare Pages and the API on Fly
+  SEO.md           What the site already does to be found, and what does not
+                   come from code
 ```
 
 ## Running it
@@ -201,3 +204,8 @@ groundwork a Dutch marketplace needs is listed at the end of
 [docs/PRODUCT.md](docs/PRODUCT.md) and, for everything privacy-related, in
 [docs/PRIVACY.md](docs/PRIVACY.md) — company registration, VAT, the processing
 agreements, and the payment provider contract.
+
+The mechanics of the deploy itself — Cloudflare Pages settings, the nameserver
+change at the registrar, the Fly commands for the API — are in
+[docs/DEPLOY.md](docs/DEPLOY.md). The website can go live on its own; the API
+is only needed before the sign-up form can store anything.

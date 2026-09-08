@@ -47,6 +47,10 @@ export interface JoinCopy {
     validationConsent: string;
     validationKvk: string;
     noScript: string;
+    /** Offered whenever the form itself cannot get through. Only shown once
+     *  OPERATOR.email is filled in — an invitation to write to an address that
+     *  does not exist is worse than no invitation. */
+    mailFallback: string;
   };
   /** What we do with the address, said before it is typed rather than after. */
   promise: { title: string; items: string[] };
@@ -124,8 +128,8 @@ const nl: JoinCopy = {
     validationEmail: 'Vul een geldig e-mailadres in.',
     validationConsent: 'Zet een vinkje zodat we je mogen mailen.',
     validationKvk: 'Vul je KvK-nummer in: acht cijfers.',
-    noScript:
-      'Voor dit formulier is JavaScript nodig. Staat dat uit, mail ons dan rechtstreeks — dat werkt net zo goed.',
+    noScript: 'Voor dit formulier is JavaScript nodig. Zet het aan en probeer het opnieuw.',
+    mailFallback: 'Lukt het niet? Mail je aanmelding naar',
   },
   promise: {
     title: 'Wat we met je adres doen',
@@ -226,8 +230,8 @@ const en: JoinCopy = {
     validationEmail: 'Please enter a valid email address.',
     validationConsent: 'Please tick the box so we may email you.',
     validationKvk: 'Please enter your Chamber of Commerce number: eight digits.',
-    noScript:
-      'This form needs JavaScript. If it is switched off, email us directly — that works just as well.',
+    noScript: 'This form needs JavaScript. Switch it on and try again.',
+    mailFallback: 'Not working? Email your registration to',
   },
   promise: {
     title: 'What we do with your address',

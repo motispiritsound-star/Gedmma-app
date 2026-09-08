@@ -1,7 +1,8 @@
-import { cp, mkdir, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { cp, mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LEGAL_PAGES, SUPPORTED_LOCALES, legalPath } from '@buurklus/shared';
+import { inlineScriptHashes, renderHeaders, renderRedirects } from './edge.js';
 import { joinUrl } from './render.js';
 import {
   renderHome,
@@ -53,6 +54,22 @@ function joinPath(locale: (typeof SUPPORTED_LOCALES)[number]): string {
   return joinUrl(locale).replace(/^\/|\/$/g, '');
 }
 
+/**
+ * Walks the finished build and collects a CSP hash for every inline script in
+ * it. Reading the output rather than the templates is deliberate: what the
+ * browser hashes is the bytes it received, so those are the bytes hashed here.
+ */
+async function collectScriptHashes(dir: string): Promise<string[]> {
+  const hashes: string[] = [];
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) hashes.push(...(await collectScriptHashes(full)));
+    else if (entry.name.endsWith('.html'))
+      hashes.push(...inlineScriptHashes(await readFile(full, 'utf8')));
+  }
+  return hashes;
+}
+
 async function main() {
   await rm(OUT, { recursive: true, force: true });
   await mkdir(OUT, { recursive: true });
@@ -79,6 +96,10 @@ async function main() {
       written.push(await write(target, renderLegal(document.key, locale)));
     }
   }
+
+  // Last, because the policy is derived from the pages that were just written.
+  written.push(await write('_headers', renderHeaders(await collectScriptHashes(OUT))));
+  written.push(await write('_redirects', renderRedirects()));
 
   const total = written.reduce((sum, file) => sum + file.bytes, 0);
   for (const file of written) {

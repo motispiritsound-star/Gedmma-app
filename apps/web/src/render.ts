@@ -32,7 +32,20 @@ import type { LegalChrome, LegalCopy, LegalDocument, LegalSection } from './lega
 import { icon, solidIcon } from './icons.js';
 import { STYLES } from './styles.js';
 
-export const SITE_URL = 'https://buurklus.nl';
+/**
+ * The domain the finished site is served from. Every canonical URL, hreflang
+ * link, sitemap entry and social card is built from this, so a preview build
+ * that keeps the production value would tell Google that the preview *is*
+ * buurklus.nl — two copies of the same site competing with each other. The
+ * build therefore reads the value from the environment and, when it is not the
+ * production domain, tells crawlers to stay away (see renderRobots).
+ */
+export const CANONICAL_SITE_URL = 'https://buurklus.nl';
+
+export const SITE_URL = (process.env.PUBLIC_SITE_URL ?? CANONICAL_SITE_URL).replace(/\/+$/, '');
+
+/** True when this build is the one that belongs on the public domain. */
+export const IS_PRODUCTION_BUILD = SITE_URL === CANONICAL_SITE_URL;
 
 /** Escapes text destined for HTML. All copy goes through here. */
 export function esc(value: string): string {
@@ -159,6 +172,16 @@ function socialCard(locale: Locale, page: PageKind): string {
   return `${SITE_URL}/og/og-${locale}-${kind}.png`;
 }
 
+/**
+ * robots.txt keeps a crawler from *fetching* a preview page, but a URL that is
+ * linked from elsewhere can still be listed without ever being fetched. The
+ * meta tag is what actually keeps it out of the index, so preview builds carry
+ * both. It renders to nothing for the real site.
+ */
+function robotsMeta(): string {
+  return IS_PRODUCTION_BUILD ? '' : '<meta name="robots" content="noindex, nofollow">\n    ';
+}
+
 function head({ locale, page, title, description }: Omit<PageOptions, 'body'>): string {
   const canonical = `${SITE_URL}${pathFor(locale, page)}`;
   const card = socialCard(locale, page);
@@ -176,7 +199,7 @@ function head({ locale, page, title, description }: Omit<PageOptions, 'body'>): 
     <title>${esc(title)}</title>
     <meta name="description" content="${esc(description)}">
     <link rel="canonical" href="${canonical}">
-    ${alternates}
+    ${robotsMeta()}${alternates}
     <link rel="alternate" hreflang="x-default" href="${SITE_URL}/nl/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Buurklus">
@@ -405,9 +428,12 @@ function joinForm(locale: Locale): string {
       </label>
 
       <p class="join__error" id="joinError" role="alert" hidden></p>
+      ${mailFallback(copy.states.mailFallback, 'joinFallback')}
 
       <button class="btn btn--primary btn--block" type="submit" id="joinSubmit">${esc(f.submit)}</button>
-      <noscript><p class="join__error">${esc(copy.states.noScript)}</p></noscript>
+      <noscript><p class="join__error">${esc(copy.states.noScript)}</p>${mailFallback(
+        copy.states.mailFallback,
+      )}</noscript>
     </fieldset>
   </form>
 
@@ -494,6 +520,20 @@ function joinBody(locale: Locale): string {
       <div class="grid grid--3">${steps}</div>
     </div>
   </section>`;
+}
+
+/**
+ * A way through when the form cannot deliver: the operator's own address. It
+ * renders to nothing while OPERATOR.email is still empty, so the site never
+ * points at an inbox nobody reads. Give it an id and it starts out hidden, for
+ * the script to reveal when a request fails.
+ */
+export function mailFallback(lead: string, id?: string, email = OPERATOR.email): string {
+  if (!email) return '';
+  const address = esc(email);
+  return `<p class="join__fallback muted"${id ? ` id="${id}" hidden` : ''}>${esc(
+    lead,
+  )} <a href="mailto:${address}">${address}</a></p>`;
 }
 
 /**
@@ -621,8 +661,11 @@ function joinScript(locale: Locale): string {
       })
       .catch(function () {
         // A failed request means nothing reached us, and saying so stops
-        // somebody assuming they are on a list they are not on.
+        // somebody assuming they are on a list they are not on. The address
+        // below it is the way through while that lasts.
         show(config.strings.offlineBody);
+        var fallback = document.getElementById('joinFallback');
+        if (fallback) fallback.hidden = false;
       })
       .then(function () {
         button.disabled = false;
@@ -1066,10 +1109,10 @@ function homeBody(locale: Locale): string {
   <section class="section">
     <div class="wrap">
       <div class="banner">
-        <div style="display:grid;gap:1rem;align-content:start">
+        <div class="banner__copy">
           <h2>${esc(copy.proTeaser.title)}</h2>
           <p>${esc(copy.proTeaser.body)}</p>
-          <a class="btn btn--onDark" href="${pathFor(locale, 'pro')}" style="justify-self:start">${esc(copy.proTeaser.cta)}</a>
+          <a class="btn btn--onDark banner__cta" href="${pathFor(locale, 'pro')}">${esc(copy.proTeaser.cta)}</a>
         </div>
         <ul class="banner__list">
           ${copy.proTeaser.bullets
@@ -1255,7 +1298,7 @@ function proBody(locale: Locale): string {
       ${
         PLATFORM_IS_FREE
           ? ''
-          : `<p class="muted" style="margin-block-start:1.5rem;font-size:0.9rem">
+          : `<p class="muted planNote">
         ${esc(p.pricing.vatNote)}<br>
         ${esc(fill(p.pricing.trialNote, { days: TRIAL_DURATION_DAYS, credits: TRIAL_CREDITS }))}
       </p>`
@@ -1403,12 +1446,12 @@ export function renderNotFound(): string {
   </head>
   <body>
     <main class="section">
-      <div class="wrap wrap--narrow" style="text-align:center">
+      <div class="wrap wrap--narrow notFound">
         <h1>Deze pagina bestaat niet</h1>
         <p class="lede muted">
           De link klopt niet meer, of hij is verkeerd overgenomen. Hieronder kom je weer verder.
         </p>
-        <p style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;margin-block-start:1.5rem">
+        <p class="notFound__actions">
           <a class="btn btn--primary" href="/nl/">${esc(copy.nav.trades)}</a>
           <a class="btn btn--ghost" href="${pathFor('nl', 'join')}">${esc(copy.nav.cta)}</a>
           <a class="btn btn--ghost" href="/en/">English</a>
@@ -1421,5 +1464,11 @@ export function renderNotFound(): string {
 }
 
 export function renderRobots(): string {
+  // A preview deployment is the same site on a different hostname. Left
+  // crawlable it splits the ranking with the real domain and can outrank it,
+  // so anything that is not the production build is closed off completely.
+  if (!IS_PRODUCTION_BUILD) {
+    return `User-agent: *\nDisallow: /\n`;
+  }
   return `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
 }

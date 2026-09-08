@@ -414,11 +414,14 @@ h1, h2, .section__head h2, .cta h2 { text-wrap: balance; }
 .banner__list { display: grid; gap: 0.7rem; }
 .banner__list li { display: flex; gap: 0.6rem; align-items: start; color: var(--green-100); font-size: 0.97rem; }
 .banner__tick { color: var(--saffron-500); flex: none; }
+.banner__copy { display: grid; gap: 1rem; align-content: start; }
+.banner__cta { justify-self: start; }
 
 /* --- Pricing -------------------------------------------------------------- */
 .plans { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); align-items: start; }
 .plan { position: relative; }
 .plan--featured { border-color: var(--green-600); border-width: 2px; box-shadow: var(--shadow-raised); }
+.planNote { margin-block-start: 1.5rem; font-size: 0.9rem; }
 .plan__badge {
   position: absolute;
   inset-block-start: -0.85rem;
@@ -621,6 +624,7 @@ h1, h2, .section__head h2, .cta h2 { text-wrap: balance; }
 
 .btn--block { inline-size: 100%; justify-content: center; }
 .join__error { color: var(--terracotta-600); font-size: 0.9rem; margin: 0; font-weight: 600; }
+.join__fallback { font-size: 0.9rem; margin: 0; }
 
 .join__done {
   background: var(--white);
@@ -825,6 +829,17 @@ h1, h2, .section__head h2, .cta h2 { text-wrap: balance; }
 .hero__copy > *:nth-child(4) { animation-delay: 0.2s; }
 .hero__copy > *:nth-child(5) { animation-delay: 0.26s; }
 .hero .mock { animation-delay: 0.16s; animation-duration: 0.7s; }
+
+/* The 404 page. It borrows the section and wrap layout and only needs its own
+   centring, so it carries two rules rather than a stylesheet of its own. */
+.notFound { text-align: center; }
+.notFound__actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-block-start: 1.5rem;
+}
 
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }

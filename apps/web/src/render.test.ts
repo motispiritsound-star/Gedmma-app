@@ -18,9 +18,12 @@ import {
   missingOperatorFields,
 } from '@buurklus/shared';
 import { COPY } from './content.js';
+import { inlineScriptHashes, renderHeaders, renderRedirects } from './edge.js';
 import {
+  API_URL,
   esc,
   joinUrl,
+  mailFallback,
   renderHome,
   renderManifest,
   renderNotFound,
@@ -594,6 +597,100 @@ describe('the explainer on the home page', () => {
     for (const locale of SUPPORTED_LOCALES) {
       // A track nobody knows about is a track nobody turns on.
       expect(renderHome(locale), locale).toContain(esc(COPY[locale].video.subtitlesNote));
+    }
+  });
+});
+
+describe('the files Cloudflare Pages reads', () => {
+  const html = [
+    renderHome('nl'),
+    renderJoin('nl'),
+    renderLegal('PRIVACY', 'en'),
+    renderRootRedirect(),
+  ].join('\n');
+
+  it('hashes every inline script the pages carry', () => {
+    const hashes = inlineScriptHashes(html);
+    // The home page has the JSON-LD blocks, the sign-up page adds the form's
+    // behaviour, the root page its language redirect. If this number drops,
+    // a script is going out that the policy will refuse to run.
+    expect(hashes.length).toBeGreaterThanOrEqual(5);
+    for (const hash of hashes) expect(hash).toMatch(/^'sha256-[A-Za-z0-9+/]+=*'$/);
+  });
+
+  it('ignores scripts that are loaded from a file', () => {
+    // Those are covered by 'self'; hashing them would be meaningless.
+    expect(inlineScriptHashes('<script src="/a.js"></script>')).toEqual([]);
+    expect(inlineScriptHashes('<script defer src="/a.js"></script>')).toEqual([]);
+  });
+
+  it('hashes the script exactly as it is served', () => {
+    // Trimming here and not there is the classic way to write a policy that
+    // blocks the very script it lists, so the whitespace has to survive.
+    const [padded] = inlineScriptHashes('<script>  x  </script>');
+    const [bare] = inlineScriptHashes('<script>x</script>');
+    expect(padded).not.toEqual(bare);
+  });
+
+  it('names the API in connect-src, or the sign-up form cannot reach it', () => {
+    const headers = renderHeaders(inlineScriptHashes(html));
+    expect(headers).toContain(`connect-src 'self' ${new URL(API_URL).origin}`);
+    expect(headers).toContain("default-src 'self'");
+    expect(headers).toContain("object-src 'none'");
+    expect(headers).toContain("frame-ancestors 'none'");
+    for (const hash of inlineScriptHashes(html)) expect(headers).toContain(hash);
+  });
+
+  it('never allows inline script or style wholesale', () => {
+    expect(renderHeaders(inlineScriptHashes(html))).not.toContain('unsafe-inline');
+    expect(renderHeaders(inlineScriptHashes(html))).not.toContain('unsafe-eval');
+  });
+
+  it('keeps the pages revalidating and lets the fonts sit still', () => {
+    const headers = renderHeaders([]);
+    expect(headers).toContain('/fonts/*\n  Cache-Control: public, max-age=31536000, immutable');
+    // The stylesheet has no content hash in its name, so a year would strand
+    // readers on an old design.
+    expect(headers).toContain('/styles.css\n  Cache-Control: public, max-age=3600');
+    expect(headers).toContain('Cache-Control: public, max-age=0, must-revalidate');
+  });
+
+  it('sends www to the bare domain', () => {
+    expect(renderRedirects()).toContain(
+      'https://www.buurklus.nl/* https://buurklus.nl/:splat 301',
+    );
+  });
+
+  it('carries no inline style attribute for the policy to trip over', () => {
+    // style-src is 'self', so a single style="" anywhere breaks a page.
+    for (const page of [renderHome('nl'), renderJoin('en'), renderNotFound(), renderPro('nl')]) {
+      expect(page).not.toMatch(/\sstyle="/);
+    }
+  });
+});
+
+describe('the way out when the form cannot get through', () => {
+  it('stays silent while no address is published', () => {
+    // OPERATOR.email is still empty. Inviting people to write to an address
+    // that does not exist is worse than not inviting them.
+    expect(missingOperatorFields()).toContain('email');
+    expect(mailFallback('Mail ons', 'joinFallback')).toBe('');
+    expect(renderJoin('nl')).not.toContain('mailto:');
+  });
+
+  it('offers the address once there is one', () => {
+    const markup = mailFallback('Mail ons', 'joinFallback', 'hallo@buurklus.nl');
+    expect(markup).toContain('href="mailto:hallo@buurklus.nl"');
+    expect(markup).toContain('id="joinFallback"');
+    // Hidden until a request actually fails.
+    expect(markup).toContain('hidden');
+  });
+
+  it('says plainly that nothing was saved', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const script = renderJoin(locale);
+      expect(script, locale).toContain(esc(JOIN_COPY[locale].states.offlineBody));
+      expect(JOIN_COPY[locale].states.offlineBody.length).toBeGreaterThan(20);
     }
   });
 });
