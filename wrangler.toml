@@ -1,0 +1,21 @@
+# Deploying the website as a Cloudflare Worker serving static assets.
+#
+# There is no Worker script: `assets` without `main` publishes the built site
+# and nothing else, which is what a generated HTML site needs. The _headers and
+# _redirects files the build writes into apps/web/dist are read from there, so
+# the Content-Security-Policy and the www redirect apply here exactly as they
+# do locally.
+#
+#   npm run build --workspace @buurklus/shared
+#   npm run build --workspace @buurklus/web
+#   npx wrangler deploy
+
+name = "buurklus"
+compatibility_date = "2026-09-08"
+
+[assets]
+directory = "apps/web/dist"
+
+# An unknown path gets the site's own 404 page rather than a bare Cloudflare
+# error. The default handling of /nl/ -> /nl/index.html stays as it is.
+not_found_handling = "404-page"

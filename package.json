@@ -21,5 +21,8 @@
     "dev:api": "npm run dev --workspace @buurklus/api",
     "dev:mobile": "npm run start --workspace @buurklus/mobile",
     "dev:web": "npm run dev --workspace @buurklus/web"
+  },
+  "devDependencies": {
+    "wrangler": "^4.129.1"
   }
 }
