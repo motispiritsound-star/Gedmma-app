@@ -270,10 +270,18 @@ Er is nog geen scherm om dat te wijzigen; dat hoort bij facturatie en die is er
 nog niet. Op een testomgeving zet je het zelf om:
 
 ```bash
-docker compose -f docker-compose.prod.yml exec db \
-  psql -U mizen_owner -d mizen -c \
-  "UPDATE mizen.organization SET abonnement = 'mkb', max_administraties = 3, max_gebruikers = 10;"
+docker compose -f docker-compose.prod.yml exec db psql -U mizen_owner -d mizen -c "UPDATE organization SET abonnement = 'mkb', max_administraties = 3, max_gebruikers = 10;"
 ```
+
+Er hoort `UPDATE 1` te verschijnen. Controleer met:
+
+```bash
+docker compose -f docker-compose.prod.yml exec db psql -U mizen_owner -d mizen -c "SELECT naam, abonnement, max_gebruikers FROM organization;"
+```
+
+Let op het schema: de tabellen staan in `public`, niet in `mizen`. Dat schema
+bevat alleen de hulpfuncties voor de row-level security-policies. `organization`
+zonder prefix is dus goed; `mizen.organization` bestaat niet.
 
 De grenzen per abonnement staan in `apps/api/src/modules/organisaties/service.ts`.
 
