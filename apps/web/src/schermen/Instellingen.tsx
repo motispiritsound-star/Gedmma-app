@@ -180,6 +180,11 @@ function Gebruikers() {
   const [link, zetLink] = useState<string | null>(null);
 
   async function nodigUit() {
+    // De uitkomst van de vorige uitnodiging eerst weg: anders staat een geslaagde
+    // melding met link nog in beeld terwijl deze poging mislukte, en denk je dat
+    // het gelukt is.
+    zetMelding(null);
+    zetLink(null);
     const uitkomst = await actie.voerUit<{ melding: string; uitnodigingsLink?: string }>(
       `/api/v1/organisaties/${organisatieId}/leden`,
       { methode: 'POST', body: { email, rol } },

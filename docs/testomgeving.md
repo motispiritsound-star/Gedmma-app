@@ -245,15 +245,37 @@ In de applicatie: **Instellingen → Wie mag erbij → Uitnodigen**. Kies de rol
 **Accountant**: die mag boeken, rapporteren en perioden heropenen, maar geen
 gebruikers beheren.
 
-Staat `MAIL_DRIVER=logboek`, dan wordt de uitnodigingsmail niet verstuurd maar
-in de log geschreven. De link haal je er zo uit:
+Staat `MAIL_DRIVER=logboek`, dan gaat er geen e-mail de deur uit. De link komt
+dan direct op het scherm te staan, onder het uitnodigingsformulier. **Kopieer hem
+meteen**: hij staat er niet meer na een verversing, en hij is nergens anders
+terug te halen. Het token wordt alleen als hash bewaard en de log bevat alleen
+de ontvanger en het onderwerp, niet de inhoud van het bericht — dat is met
+opzet, maar het betekent ook dat een gemiste link weg is.
+
+Ben je hem toch kwijt: nodig hetzelfde e-mailadres opnieuw uit. Dat maakt een
+nieuw token aan voor dezelfde persoon, en kost geen extra gebruiker.
+
+Wil je echte e-mail, zet dan `MAIL_DRIVER=smtp` en vul `SMTP_URL` in. Dan blijft
+de link uit het scherm en gaat hij alleen naar de genodigde.
+
+### De grens van je abonnement
+
+Een organisatie wordt aangemaakt op het `zzp`-abonnement: één administratie en
+**twee gebruikers**. Wil je meer mensen laten meekijken — bijvoorbeeld een
+accountant die zowel de ondernemers- als de accountantskant wil zien, wat twee
+accounts vraagt — dan loop je daar tegenaan met de melding "De grens van je
+abonnement voor het aantal gebruikers is bereikt".
+
+Er is nog geen scherm om dat te wijzigen; dat hoort bij facturatie en die is er
+nog niet. Op een testomgeving zet je het zelf om:
 
 ```bash
-docker compose -f docker-compose.prod.yml logs api | grep -i uitnodiging | tail -5
+docker compose -f docker-compose.prod.yml exec db \
+  psql -U mizen_owner -d mizen -c \
+  "UPDATE mizen.organization SET abonnement = 'mkb', max_administraties = 3, max_gebruikers = 10;"
 ```
 
-Stuur die link zelf door. Wil je echte e-mail, zet dan `MAIL_DRIVER=smtp` en vul
-`SMTP_URL` in.
+De grenzen per abonnement staan in `apps/api/src/modules/organisaties/service.ts`.
 
 Geef er het testscript bij: [testscript-accountant.md](testscript-accountant.md).
 
