@@ -62,6 +62,24 @@ Voeg bij het bestellen je SSH-sleutel toe; log niet in met een wachtwoord. Laat
 je dat veld leeg, dan mailt Hetzner een root-wachtwoord — precies wat je hier
 niet wilt.
 
+Staat er al een kleinere server, met 2 GB geheugen? Draaien lukt daarop prima met
+een handvol testgebruikers, maar het bouwen in stap 4 piekt en loopt dan tegen
+het geheugen aan. Twee wegen: groter maken via het tabblad **Rescale** (server
+uit, type kiezen, rescalen — de schijf kan wel groeien, niet krimpen), of
+wisselgeheugen bijzetten:
+
+```bash
+fallocate -l 4G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+echo '/swapfile none swap sw 0 0' >> /etc/fstab
+```
+
+`free -h` toont daarna 4,0Gi op de regel `Swap:`. Trager dan echt geheugen, maar
+het verschil tussen een build die klaar komt en een die halverwege wordt
+afgeschoten.
+
 Heb je nog geen sleutel, maak er dan een. Op Windows in PowerShell (Windows-toets,
 `powershell`, Enter), op macOS in Terminal (Cmd + spatie, `terminal`, Enter):
 
@@ -111,6 +129,11 @@ per jaar.
 Laat het DNS-beheer bij die registrar staan. Je wijst daar één record naar het
 IP-adres van je server; nameservers verhuizen naar de cloudprovider levert je
 hier niets op.
+
+Zit er webhosting bij je domein, laat die dan met rust. Die draait de website op
+het domein zelf en op `www`; Mizen draait op je eigen server en staat daar los
+van. Je zet er alleen een subdomein naast — er valt niets te uploaden naar die
+hosting.
 
 Eén domein is genoeg per product, niet per omgeving. Onder een domein maak je
 zoveel subdomeinen als je wilt, gratis en direct: `mizen.nl` levert ook
