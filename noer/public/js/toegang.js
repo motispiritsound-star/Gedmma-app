@@ -55,6 +55,10 @@ export const magAlles = () => Boolean(stand.actief);
  * bus te werken.
  */
 export async function verversToegang() {
+  // Als los bestand is er geen server om iets aan te vragen. Dan niet naar
+  // buiten reiken: dat levert alleen een foutmelding op in de console van
+  // iemand die de app op een usb-stick heeft gekregen.
+  if (!window.location.protocol.startsWith('http')) return stand;
   try {
     const antwoord = await fetch(nieuweUrl('/api/toegang'), {
       headers: { accept: 'application/json' },

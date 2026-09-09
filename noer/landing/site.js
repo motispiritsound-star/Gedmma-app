@@ -43,6 +43,9 @@ export function bezig(knop, aan, tekstBezig = 'Even geduld…') {
 export async function vulKopbalk() {
   const knop = document.querySelector('[data-account-knop]');
   if (!knop) return;
+  // Als los bestand (een gebundelde pagina om te mailen) is er geen server om
+  // iets aan te vragen; dan blijft de knop staan zoals hij staat.
+  if (!window.location.protocol.startsWith('http')) return;
   const uit = await haal('/api/account').catch(() => ({ status: 0 }));
   if (uit.status === 200) {
     knop.textContent = 'Mijn account';

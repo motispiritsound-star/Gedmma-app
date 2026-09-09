@@ -5,8 +5,8 @@
 // en zijn wat een ouder ziet als die wil weten wie hierachter zit.
 
 export const UITGAVE = {
-  versie: '1.0.0',
-  datum: '2026-08-31',
+  versie: '1.1.0',
+  datum: '2026-09-09',
 
   /** Wie de app uitgeeft. Verschijnt in het colofon bij het auteursrecht. */
   houder: '',

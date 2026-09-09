@@ -25,6 +25,19 @@ const TYPES = { '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xm
 let html = await readFile(BRON, 'utf8');
 let ingesloten = 0;
 
+// De stijl en het script staan in losse bestanden; die moeten mee naar binnen,
+// anders is de gebundelde pagina een kale kolom tekst.
+for (const [heel, pad] of html.matchAll(/<link rel="stylesheet" href="([^"]+)">/g)) {
+  const css = await readFile(join(dirname(BRON), pad), 'utf8');
+  html = html.replace(heel, `<style>\n${css}</style>`);
+}
+// De pagina importeert één hulpje uit site.js. In een los bestand kan een
+// module niets ophalen, dus zetten we de inhoud ervoor in de plaats.
+for (const [heel, pad] of html.matchAll(/^import \{[^}]+\} from '\.\/([^']+)';$/gm)) {
+  const bron = await readFile(join(dirname(BRON), pad), 'utf8');
+  html = html.replace(heel, bron.replace(/^export /gm, ''));
+}
+
 // Elke src en elke og:image die naar een bestand wijst, wordt een data-url.
 const paden = [...html.matchAll(/(src|content|href)="((?!https?:|data:|#|mailto:)[^"]+\.(?:png|jpg|svg|webp))"/g)];
 for (const [heel, attribuut, pad] of paden) {
