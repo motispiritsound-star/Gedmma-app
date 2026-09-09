@@ -118,6 +118,17 @@ De sectie **"Wat er níet in zit"** — geen reclame, geen chat, geen ranglijst,
 geen meldingen — is er niet om ruimte te vullen. Het is precies waar een ouder
 op let, en het is het makkelijkst te controleren wat je zegt.
 
+## Beelden om te delen, en de flyer
+
+In `marketing/` staan vier beelden voor sociale media en de familiegroep, met
+`node tools/marketing-beelden.js` opnieuw te maken. `marketing/LEESMIJ.md` zegt
+welk formaat waar hoort, en er staan twee berichtjes in die je kunt
+doorsturen — een voor een groepsapp en een voor een moskee of weekendschool.
+
+`flyer.html` is één A4 voor dat laatste gesprek: open hem in de browser en sla
+hem op als pdf (Ctrl-P, marges op geen, achtergronden aanzetten). Dat hij op
+één vel past staat in de test; groeit de tekst, dan valt dat om.
+
 ## De koopweg testen
 
 ```bash

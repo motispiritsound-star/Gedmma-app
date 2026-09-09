@@ -137,6 +137,22 @@ await stap('en dan zit de app weer op slot', async () => {
     null, { timeout: 10000 });
 });
 
+await stap('de flyer past op één A4', async () => {
+  // Eén pagina is het hele punt van een flyer. Groeit de tekst, dan valt er
+  // stilletjes een tweede vel uit de printer met een halve alinea erop.
+  await page.goto(`${BASIS}/flyer.html`, { waitUntil: 'networkidle' });
+  const hoogte = await page.evaluate(() =>
+    document.querySelector('.blad').getBoundingClientRect().height);
+  // A4 is 297 mm; een browser rekent met 96 punten per inch.
+  const bladzijde = (297 / 25.4) * 96;
+  if (hoogte > bladzijde + 1) {
+    throw new Error(`de flyer is ${Math.round(hoogte)} hoog, een A4 is ${Math.round(bladzijde)}`);
+  }
+  const kapot = await page.evaluate(() =>
+    [...document.images].filter((i) => !i.complete || !i.naturalWidth).length);
+  if (kapot) throw new Error(`${kapot} beelden op de flyer laden niet`);
+});
+
 await context.close();
 await browser.close();
 
