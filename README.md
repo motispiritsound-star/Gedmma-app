@@ -1,3 +1,8 @@
+> **Let op:** deze repository bevat twee losse projecten.
+> `slimvos/` is de educatieve leerapp voor iOS en Android — zie
+> [`slimvos/README.md`](slimvos/README.md). De rest van deze repository is
+> Webscan NL, hieronder beschreven.
+
 # Webscan NL
 
 Scant geautomatiseerd de websites van Nederlandse bedrijven, geeft elke site een
