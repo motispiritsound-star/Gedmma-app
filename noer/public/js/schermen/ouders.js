@@ -16,6 +16,8 @@ import { opgenomenSleutels } from '../opnames.js';
 import { heeftArabischeStem, zegLetterKlank } from '../geluid.js';
 import { LETTER_OP_ID as LETTERS_OP_ID } from '../../data/letters.js';
 import { ga } from '../route.js';
+import { magOuderdeel, toegang, siteUrl, verversToegang } from '../toegang.js';
+import { slotje } from '../slot.js';
 
 let ontgrendeld = false;
 
@@ -52,6 +54,8 @@ function dashboard(bak) {
       el('a', { class: 'icoonknop', href: '#/thuis', 'aria-label': 'Terug naar het startscherm' }, icoon('terug')),
       el('h1', { tekst: 'Voor ouders' })),
 
+    abonnementKaart(bak),
+
     ...profielen.map((p) => kindKaart(p, p.id === actief?.id)),
 
     studioKaart(),
@@ -81,8 +85,12 @@ function dashboard(bak) {
     el('section', { class: 'kaart' },
       el('h2', { tekst: 'Gegevens' }),
       el('p', { class: 'klein', tekst:
-        'Alles blijft op dit apparaat staan. Er gaat niets naar een server, er zijn geen ' +
-        'accounts en er is geen reclame. Wis je de gegevens hieronder, dan zijn ze weg.' }),
+        'Alles wat je kind doet blijft op dit apparaat staan: de naam, de punten, de fouten, ' +
+        'de oefentijd. Daar gaat niets van naar een server, en er is geen reclame en geen tracker. ' +
+        'Wis je de gegevens hieronder, dan zijn ze weg.' }),
+      el('p', { class: 'klein', tekst:
+        'Van het abonnement staat wél iets op de server: het e-mailadres van de ouder en of er ' +
+        'betaald is. Meer niet — geen namen van kinderen, geen voortgang.' }),
       el('button', { class: 'knop gevaar', tekst: 'Alle gegevens wissen',
         opclick: async () => {
           if (await bevestig('Alles wissen?', 'Alle profielen en voortgang verdwijnen van dit apparaat.')) {
@@ -92,6 +100,39 @@ function dashboard(bak) {
           }
         } })),
   );
+}
+
+/**
+ * De stand van het abonnement, zoals de app die kent. Hij vraagt het meteen na
+ * bij de server; lukt dat niet (offline, of de app draait als los bestand),
+ * dan blijft staan wat er stond.
+ */
+function abonnementKaart(bak) {
+  const t = toegang();
+  const kaart = el('section', { class: 'kaart abonnementkaart' });
+
+  const teken = (stand) => {
+    const tot = stand.tot ? new Date(stand.tot).toLocaleDateString('nl-NL',
+      { day: 'numeric', month: 'long', year: 'numeric' }) : null;
+    zet(kaart,
+      el('h2', {}, 'Abonnement', stand.actief ? null : slotje(18)),
+      stand.actief
+        ? el('p', { tekst: stand.opgezegd
+            ? `Opgezegd. Je kunt nog tot ${tot} bij alles.`
+            : `Loopt. De volgende afschrijving is rond ${tot}.` })
+        : el('p', { tekst: 'Nu staat het gratis deel open: het alfabet, de eerste twee lessen, drie soera\'s en één woordthema. De rest gaat open met een abonnement.' }),
+      el('a', {
+        class: `knop ${stand.actief ? 'stil' : ''}`.trim(),
+        href: siteUrl(stand.actief ? 'account.html' : 'aanmelden.html'),
+        tekst: stand.actief ? 'Beheer je abonnement' : 'Noer openzetten — € 6,99 per maand',
+      }),
+      stand.actief ? null : el('p', { class: 'voetnoot', tekst: 'Elke maand opzegbaar. Ook een jaarabonnement van € 59.' }));
+  };
+
+  teken(t);
+  // Even navragen: misschien is er net betaald op een ander apparaat.
+  verversToegang().then((nieuw) => { if (kaart.isConnected) teken(nieuw); });
+  return kaart;
 }
 
 function kindKaart(p, isActief) {
@@ -116,9 +157,12 @@ function kindKaart(p, isActief) {
       el('div', { class: 'cijfer' }, el('b', { tekst: `${s.soerasAf.length}` }), el('span', { class: 'klein', tekst: 'soera\'s' })),
       el('div', { class: 'cijfer' }, el('b', { tekst: `${s.huidigeReeks}` }), el('span', { class: 'klein', tekst: 'dagen op rij' }))),
 
-    weekStrip(v),
+    magOuderdeel() ? weekStrip(v) : null,
 
-    zwak.length
+    !magOuderdeel()
+      ? el('p', { class: 'klein slotregel' }, slotje(16),
+          ' Het weekoverzicht en de letters die misgaan horen bij het abonnement.')
+      : zwak.length
       ? el('div', { class: 'zwakblok' },
           el('h3', { tekst: 'Hier gaat het nog mis' }),
           el('div', { class: 'zwakrij' }, ...zwak.map((z) => {
@@ -128,7 +172,7 @@ function kindKaart(p, isActief) {
               el('span', { class: 'klein', tekst: `${l.naam} · ${Math.round(z.deel * 100)}% fout` }));
           })),
           el('p', { class: 'klein', tekst: 'Tip: oefen deze letters samen hardop. Ze lijken vaak op elkaar in vorm of klank.' }))
-      : el('p', { class: 'klein', tekst: 'Nog geen letters die opvallend vaak fout gaan.' }),
+        : el('p', { class: 'klein', tekst: 'Nog geen letters die opvallend vaak fout gaan.' }),
 
     el('div', { class: 'instelrij' },
       el('label', { for: `leeftijd-${p.id}`, tekst: 'Leeftijd' }),
@@ -229,11 +273,14 @@ function studioKaart() {
       ? `${gedaan.size} opnames staan klaar op dit apparaat.`
       : 'Er staat nog niets ingesproken. De 28 letters kosten je ongeveer tien minuten.';
   });
+  const open = magOuderdeel();
   return el('section', { class: 'kaart studiokaart' },
-    el('h2', { tekst: 'Zelf inspreken' }),
+    el('h2', {}, 'Zelf inspreken', open ? null : slotje(18)),
     el('p', { tekst: 'Neem de letters, woorden en aya\'s in met je eigen stem. Je kind hoort dan een stem die het kent — en bij de Koran is het de enige manier waarop er geluid klinkt.' }),
-    regel,
-    el('a', { class: 'knop', href: '#/studio' }, icoon('microfoon', { maat: 20 }), 'Naar de opnamestudio'));
+    open ? regel : el('p', { class: 'klein', tekst: 'De opnamestudio hoort bij het abonnement.' }),
+    open
+      ? el('a', { class: 'knop', href: '#/studio' }, icoon('microfoon', { maat: 20 }), 'Naar de opnamestudio')
+      : el('a', { class: 'knop stil', href: siteUrl('account.html'), tekst: 'Bekijk het abonnement' }));
 }
 
 /** Laat horen wat de stem van dit apparaat ervan maakt, met één tik. */

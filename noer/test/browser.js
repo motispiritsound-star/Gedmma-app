@@ -14,7 +14,7 @@ import { createServer } from 'node:http';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const BASIS = process.env.NOER_URL || 'http://localhost:5173';
+const BASIS = (process.env.NOER_URL || 'http://localhost:5173/app').replace(/\/$/, '');
 const SCHERMEN = process.env.NOER_SCHERMAFDRUKKEN || null;
 
 const fouten = [];
@@ -40,6 +40,52 @@ page.on('console', (m) => {
 });
 page.on('pageerror', (e) => { if (!eigenTestfout(e.message)) fouten.push(`pageerror: ${e.message}`); });
 
+/**
+ * Het abonnement aan- of uitzetten via de echte weg: een account aanmaken, de
+ * betaling starten, en hem afronden zoals de ouder dat in zijn bank doet. Dat
+ * laatste kan alleen omdat de server in de proefstand draait (NOER_PROEF=1).
+ *
+ * Dit is met opzet niet een regel in de opslag: zo loopt hier hetzelfde pad
+ * als bij een echte ouder, inclusief het koekje en /api/toegang.
+ */
+const zetAbonnement = async (aan) => {
+  const uit = await page.evaluate(async (mag) => {
+    const post = async (pad, lichaam) => {
+      const a = await fetch(pad, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify(lichaam || {}),
+      });
+      return { status: a.status, ...(await a.json().catch(() => ({}))) };
+    };
+    if (!mag) {
+      await post('../api/account/uitloggen');
+      localStorage.removeItem('noer.toegang.v1');
+      return { uitgelogd: true };
+    }
+    const email = `test${Date.now()}@voorbeeld.nl`;
+    const aangemaakt = await post('../api/account/registreren', { email, wachtwoord: 'eenlangwachtwoord' });
+    if (aangemaakt.status !== 201) return { fout: `registreren gaf ${aangemaakt.status}` };
+    const gestart = await post('../api/abonnement/starten', { plan: 'maand' });
+    if (gestart.status !== 200) return { fout: `betaling starten gaf ${gestart.status}` };
+    const betaald = await post('../api/proef/betaal');
+    if (betaald.status !== 200) {
+      return { fout: `afrekenen gaf ${betaald.status} — draait de server met NOER_PROEF=1?` };
+    }
+    return betaald;
+  }, aan);
+  if (uit?.fout) throw new Error(uit.fout);
+  await page.reload({ waitUntil: 'networkidle' });
+  // De app vraagt de stand op ná het eerste scherm; wachten tot hij binnen is,
+  // anders meet de test de vorige stand.
+  await page.waitForFunction((mag) => {
+    try {
+      return Boolean(JSON.parse(localStorage.getItem('noer.toegang.v1') || '{}').actief) === mag;
+    } catch { return false; }
+  }, aan, { timeout: 10000 });
+};
+
 const stap = async (naam, fn) => {
   try { await fn(); console.log(`  ok  ${naam}`); }
   catch (e) { console.log(`FOUT  ${naam}: ${e.message}`); fouten.push(`${naam}: ${e.message}`); }
@@ -55,6 +101,64 @@ await stap('profiel aanmaken', async () => {
   if (!(await page.textContent('.groet h1')).includes('Yasmina')) throw new Error('naam niet in groet');
 });
 if (SCHERMEN) await page.screenshot({ path: `${SCHERMEN}/noer-thuis.png` });
+
+await stap('zonder abonnement: het gratis deel staat open, de rest zit op slot', async () => {
+  await zetAbonnement(false);
+
+  // Het alfabet blijft helemaal gratis; daar zit geen slot op.
+  await page.goto(`${BASIS}/#/letters`);
+  await page.waitForSelector('.lettertegel');
+  if (await page.locator('.lettertegel .slotmerk').count()) throw new Error('het alfabet hoort gratis te zijn');
+
+  // Les 1 en 2 zijn gratis, de rest niet.
+  await page.goto(`${BASIS}/#/qaida`);
+  await page.waitForSelector('.padstap');
+  const betaaldeLessen = await page.locator('.padstap.betaald').count();
+  if (betaaldeLessen !== 8) throw new Error(`${betaaldeLessen} lessen achter het slot, verwacht 8`);
+  if (!(await page.locator('.slotstrook').count())) throw new Error('geen uitleg onder het leerpad');
+
+  // Een les die niet in het gratis deel zit, rechtstreeks via het adres.
+  await page.goto(`${BASIS}/#/qaida/madd`);
+  await page.waitForSelector('.slotkaart');
+  if (await page.locator('.bladvak').count()) throw new Error('het oefenblad is zichtbaar zonder abonnement');
+
+  // Drie soera's zijn gratis, de rest zit dicht.
+  await page.goto(`${BASIS}/#/koran`);
+  await page.waitForSelector('.soerakaart');
+  const opSlot = await page.locator('.soerakaart.opslot').count();
+  if (opSlot < 5) throw new Error(`maar ${opSlot} soera's op slot`);
+  await page.goto(`${BASIS}/#/koran/al-masad`);
+  await page.waitForSelector('.slotkaart');
+  if (await page.locator('.aya').count()) throw new Error('de aya\'s staan er zonder abonnement');
+
+  // An-Naas hoort er wel gewoon te zijn.
+  await page.goto(`${BASIS}/#/koran/an-nas`);
+  await page.waitForSelector('.aya');
+
+  // De studio zit in het abonnement, ook via het adres.
+  await page.goto(`${BASIS}/#/studio`);
+  await page.waitForSelector('.slotkaart');
+  if (await page.locator('.groepregel').count()) throw new Error('de studio staat open zonder abonnement');
+
+  // Het ouderscherm blijft bereikbaar — daar zit de knop om alles te wissen.
+  await page.goto(`${BASIS}/#/ouders`);
+  await page.waitForSelector('.kindkaart');
+  const oudertekst = await page.evaluate(() => document.getElementById('inhoud').innerText);
+  if (!oudertekst.includes('Alle gegevens wissen')) throw new Error('wissen hoort altijd te kunnen');
+  if (await page.locator('.weekstrip .staaf').count()) throw new Error('het weekoverzicht hoort in het abonnement te zitten');
+});
+if (SCHERMEN) await page.screenshot({ path: `${SCHERMEN}/noer-slot.png` });
+
+await stap('met abonnement gaat alles open', async () => {
+  await zetAbonnement(true);
+  await page.goto(`${BASIS}/#/qaida`);
+  await page.waitForSelector('.padstap');
+  if (await page.locator('.padstap.betaald').count()) throw new Error('er zit nog een les op slot');
+  if (await page.locator('.slotstrook').count()) throw new Error('de slotstrook staat er nog');
+  await page.goto(`${BASIS}/#/koran`);
+  await page.waitForSelector('.soerakaart');
+  if (await page.locator('.soerakaart.opslot').count()) throw new Error('er zit nog een soera op slot');
+});
 
 await stap('alfabet openen', async () => {
   await page.click('a[href="#/letters"]');
@@ -209,7 +313,7 @@ await stap('opnemen, afspelen en wissen in de studio', async () => {
   }
 
   const bewaard = await page.evaluate(async () => {
-    const { alleOpnames } = await import('/js/opnames.js');
+    const { alleOpnames } = await import('./js/opnames.js');
     return (await alleOpnames()).map((r) => ({ sleutel: r.sleutel, bytes: r.blob.size }));
   });
   if (bewaard.length !== 1 || bewaard[0].bytes < 500) {
@@ -226,8 +330,8 @@ await stap('opnemen, afspelen en wissen in de studio', async () => {
 
   // En de export levert een echte zip op.
   const zip = await page.evaluate(async () => {
-    const { alleOpnames, padVan, extensieVan } = await import('/js/opnames.js');
-    const { zipBytes } = await import('/js/zip.js');
+    const { alleOpnames, padVan, extensieVan } = await import('./js/opnames.js');
+    const { zipBytes } = await import('./js/zip.js');
     const rijen = await alleOpnames();
     const bestanden = await Promise.all(rijen.map(async (r) => ({
       naam: padVan(r.sleutel, extensieVan(r.type)),
@@ -279,6 +383,12 @@ await stap('recitatie: naamsvermelding, en offline blijven werken', async () => 
 
   try {
     await page.goto(`${BASIS}/#/koran/an-nas`);
+    // De app onthoudt per sessie welke bestanden er niet waren. Die bestanden
+    // zijn er nu wel, dus die aantekening moet weg — anders hangt deze stap af
+    // van de vraag of een eerdere stap toevallig de pagina heeft herladen.
+    await page.evaluate(async () => (await import('./js/geluid.js')).vergeetBestanden());
+    await page.goto(`${BASIS}/#/koran`);
+    await page.goto(`${BASIS}/#/koran/an-nas`);
     await page.waitForSelector('.recitatie-bron');
     await page.waitForFunction(() => document.querySelector('.recitatie-bron')?.textContent.trim());
     const regel = await page.textContent('.recitatie-bron');
@@ -312,7 +422,7 @@ await stap('recitatie: naamsvermelding, en offline blijven werken', async () => 
       if (!offline) throw new Error('offline vindt de app zijn eigen gecachte aya niet');
 
       const bron = await page.evaluate(async () => {
-        const { bronVanRecitatie } = await import('/js/geluid.js');
+        const { bronVanRecitatie } = await import('./js/geluid.js');
         return bronVanRecitatie(114, 1);
       });
       if (bron?.soort !== 'bestand') {
@@ -366,7 +476,8 @@ await stap('colofon: privacy, bron van de tekst en versie', async () => {
   await page.goto(`${BASIS}/#/over`);
   await page.waitForSelector('.schermkop h1');
   const tekst = await page.evaluate(() => document.getElementById('inhoud').innerText);
-  for (const stuk of ['Niets verlaat dit apparaat', 'Noer 1.', 'geen vertaling van de Koran']) {
+  for (const stuk of ['Van je kind verlaat er niets dit apparaat', 'Noer 1.',
+    'geen vertaling van de Koran', 'e-mailadres van de ouder']) {
     if (!tekst.includes(stuk)) throw new Error(`het colofon mist "${stuk}"`);
   }
   // De bronvermelding van de Koran-tekst wordt uit koran-bron.json gelezen.

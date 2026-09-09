@@ -77,6 +77,14 @@
 
   try {
     localStorage.setItem(SLEUTEL, JSON.stringify(staat));
+    // De demo laat de hele app zien, dus staat het abonnement erin aan. Een
+    // los bestand kan het toch nergens navragen: er is geen server. In de
+    // echte app komt deze stand van /api/toegang.
+    var jaar = new Date();
+    jaar.setFullYear(jaar.getFullYear() + 1);
+    localStorage.setItem('noer.toegang.v1', JSON.stringify({
+      actief: true, staat: 'actief', plan: 'demo', tot: jaar.toISOString(), demo: true,
+    }));
   } catch (e) {
     // Niets aan te doen; de app werkt ook zonder.
   }

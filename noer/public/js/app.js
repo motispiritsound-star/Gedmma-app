@@ -19,6 +19,8 @@ import * as studio from './schermen/studio.js';
 import * as over from './schermen/over.js';
 
 import { ga, huidigPad } from './route.js';
+import { magOuderdeel, opToegang, toegang, verversToegang } from './toegang.js';
+import { slotKaart } from './slot.js';
 
 const inhoud = document.getElementById('inhoud');
 const kopbalk = document.getElementById('kopbalk');
@@ -37,8 +39,9 @@ const ROUTES = [
   [/^\/woorden\/([\w-]+)$/, (id) => woorden.toonThema(inhoud, id)],
   [/^\/voortgang$/, () => voortgangScherm.toon(inhoud)],
   [/^\/ouders$/, () => ouders.toon(inhoud)],
-  [/^\/studio$/, () => studio.toon(inhoud)],
-  [/^\/studio\/([\w-]+)$/, (id) => studio.toonGroep(inhoud, id)],
+  [/^\/studio$/, () => magOuderdeel() ? studio.toon(inhoud) : zet(inhoud, slotKaart(
+    { wat: 'De opnamestudio', terugPad: '#/ouders', terugTekst: 'Terug naar het ouderscherm' }))],
+  [/^\/studio\/([\w-]+)$/, (id) => magOuderdeel() ? studio.toonGroep(inhoud, id) : ga('/studio')],
   [/^\/over$/, () => over.toon(inhoud)],
 ];
 
@@ -168,6 +171,18 @@ opAndering(() => { if (actiefProfiel()) tekenKopbalk(); });
 
 if (actiefProfiel() && tikDagreeks()) geefXp(XP.nieuweDag);
 router();
+
+// De stand van het abonnement navragen. Dat mag rustig na het eerste scherm:
+// wat er gratis is staat al vast, en blijkt er meer open te staan, dan tekent
+// de router het scherm opnieuw. Zonder server of zonder internet gebeurt er
+// niets en blijft staan wat er stond.
+let vorigeToegang = toegang().actief;
+opToegang((nieuw) => {
+  if (nieuw.actief === vorigeToegang) return;
+  vorigeToegang = nieuw.actief;
+  router();
+});
+verversToegang();
 
 // #bundel-weg — een los HTML-bestand heeft geen service worker.
 if ('serviceWorker' in navigator) {

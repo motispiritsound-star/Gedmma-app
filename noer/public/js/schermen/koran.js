@@ -14,6 +14,8 @@ import { speelAya, bronVanRecitatie } from '../geluid.js';
 import { geefXp, XP, nieuweBadges } from '../punten.js';
 import * as ayapuzzel from '../spellen/ayapuzzel.js';
 import { ga } from '../route.js';
+import { magSoera, magAlles } from '../toegang.js';
+import { slotKaart, slotje, slotStrook } from '../slot.js';
 
 export function toon(bak) {
   const p = actiefProfiel();
@@ -28,14 +30,22 @@ export function toon(bak) {
     el('div', { class: 'soeralijst' }, ...beschikbaar.map((s) => {
       const stand = v.soeras[s.id] || { ayaGeleerd: [], af: false, sterren: 0 };
       const deel = stand.ayaGeleerd.length / s.aantalAyaat;
-      return el('a', { class: `soerakaart ${stand.af ? 'af' : ''}`.trim(), href: `#/koran/${s.id}` },
+      const open = magSoera(s.id);
+      return el('a', {
+        class: `soerakaart ${stand.af ? 'af' : ''} ${open ? '' : 'opslot'}`.trim(),
+        href: `#/koran/${s.id}`,
+        'aria-label': open ? null : `${s.naam}. Hoort bij het abonnement.`,
+      },
         el('span', { class: 'soeranr', tekst: String(s.nr) }),
         el('div', { class: 'soerainfo' },
           el('b', {}, s.naam, el('span', { class: 'ar naam-ar', dir: 'rtl', lang: 'ar', tekst: s.naamAr })),
           el('span', { class: 'klein', tekst: `${s.betekenis} · ${s.aantalAyaat} aya's · ${s.plaats}` }),
-          balk(deel, `${stand.ayaGeleerd.length} van ${s.aantalAyaat} aya's geleerd`)),
-        sterren(stand.sterren));
+          open ? balk(deel, `${stand.ayaGeleerd.length} van ${s.aantalAyaat} aya's geleerd`) : null),
+        open ? sterren(stand.sterren) : slotje());
     })),
+
+    magAlles() ? null : slotStrook(
+      `Nog ${beschikbaar.filter((s) => !magSoera(s.id)).length} soera's achter het slot`),
 
     beschikbaar.length < SOERAS.length ? el('p', { class: 'voetnoot', tekst:
       'Langere soera\'s komen erbij als je ouder wordt.' }) : null,
@@ -45,6 +55,12 @@ export function toon(bak) {
 export function toonSoera(bak, id) {
   const s = SOERA_OP_ID[id];
   if (!s) return ga('/koran');
+  if (!magSoera(id)) {
+    return zet(bak, slotKaart({
+      wat: `${s.naam} en de andere soera's`,
+      terugPad: '#/koran', terugTekst: 'Terug naar de soera\'s',
+    }));
+  }
   let modus = 'lezen';
 
   const teken = () => {

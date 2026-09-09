@@ -4,7 +4,9 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 import { LETTERS, LETTER_OP_ID, afleiders, MAKHRAJ } from '../public/data/letters.js';
 import { HARAKAT, TANWEEN, metHaraka, uitspraak } from '../public/data/harakat.js';
@@ -15,7 +17,9 @@ import { BADGES, BADGE_OP_ID } from '../public/data/badges.js';
 import {
   ayaUrls, RECITEURS, vulIn, AUDIO, reciteurNu, bronBeschrijving,
 } from '../public/data/bronnen.js';
-import server, { veiligPad } from '../server.js';
+import { veiligPad } from '../server/statisch.js';
+import { maakServer } from '../server/maak.js';
+import { instellingen } from '../server/instellingen.js';
 import { vingerafdrukVan } from '../tools/vingerafdruk.js';
 
 test('het alfabet heeft 28 letters, allemaal uniek', () => {
@@ -190,28 +194,42 @@ test('met streamen aan komt de reciteur er als tweede bij, nooit als eerste', ()
   }
 });
 
-test('een ontbrekend bestand is een 404, geen index.html met een 200', async (t) => {
+test('een ontbrekend bestand is een 404, geen index.html met een 200', async () => {
   // Zonder dit onderscheid krijgt een ontbrekende mp3 een 200 met de app erin,
   // en denkt de app dat er geluid is waar niets is.
+  const map = await mkdtemp(join(tmpdir(), 'noer-test-'));
+  const { server } = await maakServer({
+    instellingen: { ...instellingen, proef: true, gegevensMap: map },
+    log: () => {},
+  });
   await new Promise((klaar) => server.listen(0, '127.0.0.1', klaar));
   const poort = server.address().port;
   const haal = (pad) => fetch(`http://127.0.0.1:${poort}${pad}`);
   try {
     // Soera 999 bestaat niet, dus dit pad blijft leeg ook als iemand
     // tools/haal-recitatie.js heeft gedraaid.
-    const weg = await haal('/audio/koran/999/999.mp3');
+    const weg = await haal('/app/audio/koran/999/999.mp3');
     assert.equal(weg.status, 404, 'een ontbrekende mp3 hoort 404 te geven');
 
-    const pagina = await haal('/thuis');
+    const pagina = await haal('/app/thuis');
     assert.equal(pagina.status, 200);
     assert.match(pagina.headers.get('content-type'), /text\/html/,
       'een route zonder extensie hoort de app terug te geven');
 
-    const echt = await haal('/data/koran.js');
+    const echt = await haal('/app/data/koran.js');
     assert.equal(echt.status, 200);
     assert.match(echt.headers.get('content-type'), /javascript/);
+
+    // De site staat op /, de app op /app/. Wisselen die om, dan komt een
+    // bezoeker in de app terecht in plaats van op de verkooppagina.
+    const site = await haal('/');
+    assert.equal(site.status, 200);
+    const siteTekst = await site.text();
+    assert.match(siteTekst, /Noer/);
+    assert.ok(!siteTekst.includes('js/app.js'), 'op / hoort de site te staan, niet de app');
   } finally {
     await new Promise((klaar) => server.close(klaar));
+    await rm(map, { recursive: true, force: true });
   }
 });
 
@@ -229,8 +247,7 @@ test('de beschrijving naast de recitatie noemt de reciteur bij naam', () => {
 });
 
 test('geluidsbestanden krijgen een audio-type mee, ook die uit de studio', async () => {
-  const { veiligPad: _ } = await import('../server.js');
-  const bron = await readFile(new URL('../server.js', import.meta.url), 'utf8');
+  const bron = await readFile(new URL('../server/statisch.js', import.meta.url), 'utf8');
   for (const extensie of ['.mp3', '.webm', '.m4a', '.ogg', '.wav']) {
     assert.match(bron, new RegExp(`'\\${extensie}': 'audio/`),
       `${extensie} wordt niet als audio geserveerd; de app negeert het bestand dan`);
@@ -292,10 +309,25 @@ test('el() heeft geen innerHTML-ingang meer', async () => {
     'een ongebruikte innerHTML-ingang is een XSS-voetangel die ooit gebruikt wordt');
 });
 
-test('de server laat niets buiten public/ zien', () => {
-  assert.ok(veiligPad('/index.html').endsWith('public/index.html'));
-  assert.ok(veiligPad('/').endsWith('public/index.html'));
-  assert.equal(veiligPad('/../server.js'), null);
-  assert.equal(veiligPad('/..%2f..%2fetc/passwd'), null);
-  assert.equal(veiligPad('/%00'), null);
+test('de server laat niets buiten de eigen map zien', () => {
+  const wortel = '/var/noer/public';
+  assert.equal(veiligPad(wortel, '/index.html'), '/var/noer/public/index.html');
+  assert.equal(veiligPad(wortel, '/'), '/var/noer/public/index.html');
+  assert.equal(veiligPad(wortel, '/../server.js'), null);
+  assert.equal(veiligPad(wortel, '/..%2f..%2fetc/passwd'), null);
+  assert.equal(veiligPad(wortel, '/%00'), null);
+  // Een map die met dezelfde letters begint is een andere map.
+  assert.equal(veiligPad(wortel, '/../public-oud/x.js'), null);
+});
+
+test('de service worker bewaart de API niet', async () => {
+  // Een service worker onderschept álles wat een pagina in zijn bereik
+  // opvraagt, ook adressen buiten dat bereik. Zonder deze uitzondering blijft
+  // het antwoord op /api/toegang in de cache staan, en gaat een abonnement dat
+  // net betaald is nooit open. Dat is een keer echt gebeurd.
+  const bron = await readFile(new URL('../public/sw.js', import.meta.url), 'utf8');
+  const regel = bron.match(/if \(url\.pathname\.includes\('\/api\/'\)\) return;/);
+  assert.ok(regel, 'sw.js laat /api/ niet los');
+  assert.ok(bron.indexOf(regel[0]) < bron.indexOf('caches.match(e.request'),
+    'de uitzondering voor /api/ moet vóór de cache staan, anders doet hij niets');
 });

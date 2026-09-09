@@ -11,14 +11,22 @@ import * as klankjacht from '../spellen/klankjacht.js';
 import * as vormenpuzzel from '../spellen/vormenpuzzel.js';
 import * as koppelen from '../spellen/koppelen.js';
 import { ga } from '../route.js';
+import { magLes, magAlles } from '../toegang.js';
+import { slotKaart, slotStrook } from '../slot.js';
 
 const SPELLEN = { leesladder, klankjacht, vormenpuzzel, koppelen };
 
-/** Een les gaat pas open als de vorige twee sterren heeft. */
+/**
+ * Een les gaat pas open als de vorige twee sterren heeft. Dat is het slot van
+ * het leerpad; het abonnement is een tweede slot, en dat zit verderop.
+ */
 export function isOpen(les, v = voortgang()) {
   if (les.nr === 1) return true;
   return Boolean(v.lessen[LESSEN[les.nr - 2].id]?.af);
 }
+
+/** Verdiend én betaald: pas dan kun je een les echt doen. */
+const isBereikbaar = (les, v) => isOpen(les, v) && magLes(les.id);
 
 // Geometrie van het pad. Het is een vaste, smalle kolom — ook op een tablet,
 // net als in de leer-apps waar dit vandaan komt.
@@ -38,7 +46,7 @@ export function toon(bak) {
   const punten = padPunten();
   const hoogte = TOP + (LESSEN.length - 1) * RUIMTE + 92;
   const af = LESSEN.filter((l) => v.lessen[l.id]?.af).length;
-  const huidige = LESSEN.find((l) => !v.lessen[l.id]?.af && isOpen(l, v));
+  const huidige = LESSEN.find((l) => !v.lessen[l.id]?.af && isBereikbaar(l, v));
 
   // Eén lijnstuk per overgang: groen als de les erna al af is, anders grijs.
   const lijnen = punten.slice(1).map((b, i) => {
@@ -61,20 +69,27 @@ export function toon(bak) {
         preserveAspectRatio: 'none', 'aria-hidden': 'true' }, ...lijnen),
       ...punten.map(({ les, x, y }) => padBol(les, v, x, y, hoogte, les === huidige)),
     ),
+
+    magAlles() ? null : slotStrook(
+      `Nog ${LESSEN.filter((l) => !magLes(l.id)).length} lessen achter het slot`),
   );
 }
 
 function padBol(les, v, x, y, hoogte, isHuidig) {
   const stand = v.lessen[les.id] || { sterren: 0, af: false };
-  const open = isOpen(les, v);
+  const verdiend = isOpen(les, v);
+  const betaald = magLes(les.id);
+  const open = verdiend && betaald;
   const staat = stand.af ? 'af' : open ? 'open' : 'slot';
 
   const label = open
     ? `Les ${les.nr}: ${les.titel}. ${stand.sterren} van 3 sterren.`
-    : `Les ${les.nr}: ${les.titel}. Nog op slot — maak eerst les ${les.nr - 1} af.`;
+    : !betaald
+      ? `Les ${les.nr}: ${les.titel}. Hoort bij het abonnement.`
+      : `Les ${les.nr}: ${les.titel}. Nog op slot — maak eerst les ${les.nr - 1} af.`;
 
   return el(open ? 'a' : 'div', {
-    class: `padstap ${staat} ${isHuidig ? 'huidig' : ''}`.trim(),
+    class: `padstap ${staat} ${!betaald ? 'betaald' : ''} ${isHuidig ? 'huidig' : ''}`.trim(),
     href: open ? `#/qaida/${les.id}` : null,
     'aria-label': label,
     'aria-disabled': open ? null : 'true',
@@ -94,6 +109,12 @@ export function toonLes(bak, id) {
   const les = LES_OP_ID[id];
   if (!les) return ga('/qaida');
   const v = voortgang();
+  if (!magLes(les.id)) {
+    return zet(bak, slotKaart({
+      wat: `Les ${les.nr} en de andere lessen van de qaida`,
+      terugPad: '#/qaida', terugTekst: 'Terug naar het leerpad',
+    }));
+  }
   if (!isOpen(les, v)) return ga('/qaida');
   const stand = v.lessen[les.id] || { sterren: 0, goed: 0, fout: 0 };
 

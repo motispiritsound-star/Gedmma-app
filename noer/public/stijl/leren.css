@@ -662,3 +662,52 @@
 .lijstje { margin: .4rem 0 .8rem 1.1rem; padding: 0; }
 .lijstje li { margin-bottom: .3rem; font-size: .92em; }
 .kaart .knop.stil[href] { display: inline-block; text-decoration: none; }
+
+/* --- Het slot: wat er nog dicht zit ------------------------------------- */
+
+/* Een bol op het leerpad die niet op slot zit omdat je er nog niet bent, maar
+   omdat het abonnement niet loopt. Goud in plaats van grijs: het is geen
+   straf, het is er wel en het kan open. */
+.padstap.betaald .padbol {
+  opacity: 1;
+  background: var(--goud-zacht);
+  border: 2px solid color-mix(in srgb, var(--goud) 55%, transparent);
+  color: var(--goud);
+  box-shadow: none;
+}
+.padstap.betaald .padnaam { opacity: .75; }
+
+.slotmerk { display: inline-flex; align-items: center; color: var(--goud); margin-left: .35em; }
+
+.slotcirkel {
+  display: grid; place-items: center;
+  width: 3.4rem; height: 3.4rem; border-radius: 50%;
+  background: var(--goud-zacht); color: var(--goud);
+  margin: 0 auto .8rem;
+}
+.slotcirkel.klein { width: 2.2rem; height: 2.2rem; margin: 0; }
+
+.slotkaart { text-align: center; max-width: 27rem; margin: 2rem auto; }
+.slotkaart .knoprij { justify-content: center; }
+.slotkaart p { color: var(--inkt-2); }
+
+/* De strook onder een lijst. Hij is voor de ouder die meekijkt, dus rustig:
+   geen kleur die schreeuwt, geen knop die om een tik vraagt. */
+.slotstrook {
+  display: flex; align-items: center; gap: .8rem;
+  margin: 1.4rem auto 0; max-width: 30rem;
+  padding: .8rem 1rem;
+  background: var(--vlak); border: 1px dashed var(--rand-sterk);
+  border-radius: var(--straal); color: inherit; text-decoration: none;
+}
+.slotstrook:hover { border-color: var(--goud); }
+.slotstrook > span:nth-child(2) { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.slotstrook b { font-size: .95em; }
+.slotstrook .klein { color: var(--inkt-2); }
+.slotstrook .icoon { color: var(--inkt-3); flex-shrink: 0; }
+
+.soerakaart.opslot, .tegel.opslot { opacity: .72; }
+.soerakaart.opslot .soeranr { background: var(--goud-zacht); color: var(--goud); }
+
+.abonnementkaart .knop { margin-top: .6rem; }
+.slotregel { display: flex; align-items: center; gap: .35em; color: var(--inkt-2); }

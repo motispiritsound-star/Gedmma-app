@@ -8,6 +8,8 @@ import { zegWoord } from '../geluid.js';
 import { ronde, keuzeknoppen } from '../spellen/basis.js';
 import * as geheugen from '../spellen/geheugen.js';
 import { ga } from '../route.js';
+import { magThema, magAlles } from '../toegang.js';
+import { slotKaart, slotje, slotStrook } from '../slot.js';
 
 export function toon(bak) {
   const p = actiefProfiel();
@@ -20,11 +22,23 @@ export function toon(bak) {
       el('p', { tekst: 'Kies een thema. Tik op een kaartje om het woord te horen.' })),
     el('div', { class: 'tegels' }, ...beschikbaar.map((t) => {
       const stand = v.themas[t.id] || { gekend: [] };
-      return el('a', { class: 'tegel', href: `#/woorden/${t.id}`, stijl: { '--tegelkleur': 'var(--paars)' } },
+      const open = magThema(t.id);
+      return el('a', {
+        class: `tegel ${open ? '' : 'opslot'}`.trim(),
+        href: `#/woorden/${t.id}`,
+        stijl: { '--tegelkleur': 'var(--paars)' },
+        'aria-label': open ? null : `${t.naam}. Hoort bij het abonnement.`,
+      },
         el('span', { class: 'tegelbol emoji-bol', tekst: t.emoji }),
         el('b', { tekst: t.naam }),
-        el('span', { class: 'klein', tekst: `${stand.gekend.length}/${t.woorden.length} gekend` }));
+        open
+          ? el('span', { class: 'klein', tekst: `${stand.gekend.length}/${t.woorden.length} gekend` })
+          : slotje(16));
     })),
+
+    magAlles() ? null : slotStrook(
+      `Nog ${beschikbaar.filter((t) => !magThema(t.id)).length} thema's achter het slot`),
+
     beschikbaar.length < THEMAS.length ? el('p', { class: 'voetnoot', tekst:
       'Er komen meer thema\'s bij als je ouder wordt. Pas de leeftijd aan in het ouderscherm.' }) : null,
   );
@@ -33,6 +47,12 @@ export function toon(bak) {
 export function toonThema(bak, id) {
   const thema = THEMA_OP_ID[id];
   if (!thema) return ga('/woorden');
+  if (!magThema(id)) {
+    return zet(bak, slotKaart({
+      wat: `${thema.naam} en de andere woordthema's`,
+      terugPad: '#/woorden', terugTekst: 'Terug naar de thema\'s',
+    }));
+  }
   const v = voortgang();
   const gekend = new Set((v.themas[id] || { gekend: [] }).gekend);
 

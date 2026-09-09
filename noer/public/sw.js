@@ -8,7 +8,7 @@
 //
 // Bij elke uitgave het versienummer van APP ophogen.
 
-const APP = 'noer-app-v5';
+const APP = 'noer-app-v7';
 const MEDIA = 'noer-media';
 const IS_MEDIA = (pad) => pad.includes('/audio/');
 
@@ -18,6 +18,7 @@ const KERN = [
   'stijl/basis.css', 'stijl/leren.css',
   'js/app.js', 'js/ui.js', 'js/opslag.js', 'js/geluid.js', 'js/punten.js', 'js/iconen.js',
   'js/route.js', 'js/opnames.js', 'js/zip.js', 'js/versie.js',
+  'js/toegang.js', 'js/slot.js',
   'js/schermen/start.js', 'js/schermen/thuis.js', 'js/schermen/letters.js',
   'js/schermen/qaida.js', 'js/schermen/koran.js', 'js/schermen/woorden.js',
   'js/schermen/voortgang.js', 'js/schermen/ouders.js', 'js/schermen/studio.js',
@@ -57,6 +58,12 @@ async function bewaar(naam, verzoek, antwoord) {
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   if (url.origin !== self.location.origin) return;
+
+  // De API nooit bewaren en nooit uit de cache beantwoorden. Een service
+  // worker onderschept álles wat een pagina in zijn bereik opvraagt, ook
+  // buiten dat bereik — dus zonder deze regel bleef het antwoord op
+  // /api/toegang plakken en ging een net betaald abonnement nooit open.
+  if (url.pathname.includes('/api/')) return;
 
   // De app kijkt met HEAD of een geluidsbestand bestaat. Zonder dit antwoordt
   // dat offline altijd "nee", ook als het bestand gewoon in de cache staat —
