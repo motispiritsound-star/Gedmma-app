@@ -13,7 +13,9 @@ import { readFile } from 'node:fs/promises';
 export async function maakServer({ instellingen, mollie = null, log = console.log }) {
   const opslag = await opslagIn(instellingen.gegevensMap).open();
   const betaaldienst = mollie
-    || (instellingen.proef ? new NepMollie() : new Mollie(instellingen.mollieSleutel));
+    || (instellingen.proef
+      ? new NepMollie({ basisUrl: instellingen.basisUrl })
+      : new Mollie(instellingen.mollieSleutel));
 
   const api = maakApi({ opslag, mollie: betaaldienst, instellingen, log });
 

@@ -120,9 +120,10 @@ export function maakApi({ opslag, mollie, instellingen, log = console.log }) {
       if (!betalingId || typeof mollie.betaal !== 'function') {
         return stuurJson(antwoord, 409, { fout: 'Er staat geen betaling klaar.' });
       }
-      mollie.betaal(betalingId);
+      const { gelukt = true } = await leesJson(verzoek);
+      if (gelukt) mollie.betaal(betalingId); else mollie.mislukt(betalingId, 'canceled');
       await verwerkWebhook(diensten, betalingId);
-      return stuurJson(antwoord, 200, { betaald: true, ...toegangVan(opslag.account(account.id)) });
+      return stuurJson(antwoord, 200, { betaald: gelukt, ...toegangVan(opslag.account(account.id)) });
     }
 
     // --- Alles hieronder verandert iets ----------------------------------

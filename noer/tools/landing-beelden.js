@@ -4,10 +4,15 @@
 //
 //   npm start                        # in een ander venster
 //   node tools/landing-beelden.js
-//   node tools/landing-beelden.js --adres http://localhost:5173
+//   node tools/landing-beelden.js --adres http://localhost:5173/app
 //
 // Playwright is nodig (npm install). De beelden komen in landing/beelden/ en
 // zijn 390x844 op tweevoudige schaal — het formaat van een telefoon.
+//
+// De server moet in de proefstand draaien (NOER_PROEF=1): het gaat om beelden
+// van de hele app, dus er wordt onderweg een proefaccount aangemaakt en
+// afgerekend bij de nepbank. Anders staat de helft op slot op je eigen
+// verkooppagina.
 
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -22,7 +27,7 @@ const waarde = (v, standaard) => {
   const i = argumenten.indexOf(v);
   return i >= 0 && argumenten[i + 1] ? argumenten[i + 1] : standaard;
 };
-const ADRES = waarde('--adres', 'http://localhost:5173').replace(/\/$/, '');
+const ADRES = waarde('--adres', 'http://localhost:5173/app').replace(/\/$/, '');
 
 const zaad = await readFile(join(WORTEL, 'tools', 'demo-zaad.js'), 'utf8');
 
@@ -47,6 +52,34 @@ await pagina.evaluate(() => {
   staat.actief = 'demo';
   localStorage.setItem('noer.v1', JSON.stringify(staat));
 });
+
+// Een proefabonnement, anders zit de helft van de app op slot op de beelden.
+const abonnement = await pagina.evaluate(async () => {
+  const post = async (pad, lichaam) => {
+    const a = await fetch(pad, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify(lichaam || {}),
+    });
+    return { status: a.status, ...(await a.json().catch(() => ({}))) };
+  };
+  const aan = await post('../api/account/registreren',
+    { email: `beelden${Date.now()}@voorbeeld.nl`, wachtwoord: 'eenlangwachtwoord' });
+  if (aan.status !== 201) return { fout: `registreren gaf ${aan.status}` };
+  const start = await post('../api/abonnement/starten', { plan: 'maand' });
+  if (start.status !== 200) return { fout: `betaling starten gaf ${start.status}` };
+  const betaald = await post('../api/proef/betaal', { gelukt: true });
+  if (betaald.status !== 200) return { fout: `afrekenen gaf ${betaald.status}` };
+  return betaald;
+});
+if (abonnement?.fout) {
+  console.error(`\n  Geen proefabonnement: ${abonnement.fout}`);
+  console.error('  Draait de server met NOER_PROEF=1? Zonder abonnement staat de halve app op slot.\n');
+  await browser.close();
+  process.exit(1);
+}
+
 // De app leest localStorage één keer bij het laden, dus opnieuw laden.
 await pagina.reload({ waitUntil: 'networkidle' });
 

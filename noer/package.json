@@ -11,7 +11,8 @@
     "start": "node server.js",
     "test": "node --test test/run.js test/betalen.js",
     "test:browser": "node test/browser.js",
-    "test:betalen": "node --test test/betalen.js"
+    "test:betalen": "node --test test/betalen.js",
+    "test:koopweg": "node test/koopweg.js"
   },
   "devDependencies": {
     "playwright": "^1.49.0"

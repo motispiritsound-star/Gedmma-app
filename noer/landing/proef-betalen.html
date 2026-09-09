@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proefbank — hier zou Mollie staan</title>
+<meta name="theme-color" content="#0f7a67">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="stijl.css">
+<link rel="icon" href="beelden/icoon.svg" type="image/svg+xml">
+</head>
+<body>
+<main id="top">
+<section class="smal">
+  <div class="paneel">
+    <span class="stand aan">Proefstand</span>
+    <h1 style="margin-top:.8rem">Dit is geen echte bank</h1>
+    <p class="klein">De server draait met <b>NOER_PROEF=1</b>, dus Mollie is nagebootst. In het echt
+      sta je hier bij je eigen bank of bij het scherm van je creditcard. Kies wat je wilt oefenen —
+      er verschuift geen geld.</p>
+
+    <div class="regels" style="margin-top:1.4rem">
+      <div class="regel"><span>Betaling</span><b id="betaling">—</b></div>
+      <div class="regel"><span>Wat er daarna gebeurt</span><b>de webhook, en dan terug</b></div>
+    </div>
+
+    <button class="knop" id="betalen">Betalen — het lukt</button>
+    <button class="knop stil" id="afbreken">Afbreken — het mislukt</button>
+    <p class="melding" id="melding" role="status" aria-live="polite"></p>
+
+    <p class="fijn" style="margin-top:1.4rem">Deze pagina doet niets zodra je een echte
+      Mollie-sleutel instelt: dan stuurt Mollie je naar zijn eigen scherm. Zie BETALEN.md.</p>
+  </div>
+</section>
+</main>
+
+<script type="module">
+import { verstuur, meld, bezig } from './site.js';
+
+const params = new URLSearchParams(window.location.search);
+const terug = params.get('terug') || 'bedankt.html';
+document.getElementById('betaling').textContent = params.get('betaling') || 'onbekend';
+const melding = document.getElementById('melding');
+
+const rond = async (knop, gelukt) => {
+  bezig(knop, true);
+  const uit = await verstuur('/api/proef/betaal', { gelukt });
+  if (uit.status !== 200) {
+    bezig(knop, false);
+    return meld(melding, uit.fout || 'Dat lukte niet. Draait de server met NOER_PROEF=1?');
+  }
+  // Alleen terug naar een adres op deze site: een terugkeeradres uit de
+  // adresbalk is niet te vertrouwen, ook niet in een proefstand.
+  const doel = new URL(terug, window.location.origin);
+  window.location.href = doel.origin === window.location.origin ? doel.href : '/bedankt.html';
+};
+
+document.getElementById('betalen').addEventListener('click', (e) => rond(e.currentTarget, true));
+document.getElementById('afbreken').addEventListener('click', (e) => rond(e.currentTarget, false));
+</script>
+</body>
+</html>

@@ -98,7 +98,8 @@ export class Mollie {
  * `betaal(id)` is wat in het echt de ouder in zijn bank doet.
  */
 export class NepMollie {
-  constructor() {
+  constructor({ basisUrl = '' } = {}) {
+    this.basisUrl = basisUrl.replace(/\/$/, '');
     this.klanten = new Map();
     this.betalingen = new Map();
     this.abonnementen = new Map();
@@ -106,6 +107,9 @@ export class NepMollie {
   }
 
   #id(voorvoegsel) { return `${voorvoegsel}_${(++this.teller).toString().padStart(6, '0')}`; }
+
+  /** Het id dat de vorige #id() opleverde — het nummer staat al vast. */
+  #nu() { return `tr_${this.teller.toString().padStart(6, '0')}`; }
 
   async maakKlant({ naam, email }) {
     const klant = { id: this.#id('cst'), name: naam || email, email, mandaten: [] };
@@ -123,7 +127,9 @@ export class NepMollie {
       sequenceType: 'first',
       metadata,
       webhookUrl,
-      _links: { checkout: { href: `https://nep.mollie/betalen/${this.teller}?terug=${encodeURIComponent(terugUrl)}` } },
+      // Een nepbank op de site zelf, zodat je de hele weg kunt droogoefenen:
+      // afrekenen, terugkomen, en zien dat de app opengaat.
+      _links: { checkout: { href: `${this.basisUrl}/proef-betalen.html?betaling=${this.#nu()}&terug=${encodeURIComponent(terugUrl)}` } },
     };
     this.betalingen.set(betaling.id, betaling);
     return betaling;
