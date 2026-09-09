@@ -6,27 +6,30 @@ jurist stapt, en de rekensom die je vooraf wilt kennen.
 
 ---
 
-## Eerst het feit dat alles bepaalt
+## Waar dit bestand vandaan komt
 
-**Zoals de app nu gebouwd is, kun je er geen abonnement op verkopen.**
+Toen dit voor het eerst werd opgeschreven, stond er dat je er geen abonnement
+op kón verkopen: de app draaide alleen in de browser, dus er was niets om
+achter een slot te zetten. Dat is inmiddels gebouwd. Er staat een server bij,
+er zijn accounts, en Mollie int elke maand. Hoe dat werkt en wat je moet
+instellen staat in **`BETALEN.md`**; dit bestand gaat over de keuzes eromheen.
 
-Alles draait in de browser van de bezoeker. Geen server, geen accounts, geen
-database — dat was een bewuste keuze en het is de reden dat de app offline
-werkt en dat er geen kindergegevens rondgaan. Maar het betekent ook dat er
-niets is om achter een slot te zetten. Wie de pagina opent, heeft de hele app:
-rechtermuisknop, opslaan, en hij werkt voor altijd. Voor een abonnement is er
-iets nodig dat kan zeggen "deze persoon betaalt" — en dat kan alleen op een
-server, want alles in de browser is zichtbaar en aanpasbaar.
+Twee dingen uit dat oorspronkelijke stuk zijn blijven staan, omdat ze nog
+steeds waar zijn.
 
-Dat is geen fout in de app. Het is een keuze die je nu opnieuw maakt.
+**Het slot is een slot, geen kluis.** De app moet offline blijven werken en een
+kind hoort geen inlogscherm te zien, dus zit alle inhoud in de app zelf en is
+het slot een `if` in JavaScript. Wie een ontwikkelaarsvenster kan openen, komt
+erlangs. Dat is een afweging, geen vergissing — dezelfde die elke leer-app in
+de browser maakt. Wat je verkoopt is niet een bestand maar het geheel: dat het
+werkt, op elk apparaat, met updates en de opnamestudio erbij.
 
-Wat je ook kiest, één ding verandert sowieso: **de privacybelofte klopt straks
-niet meer.** In het colofon, in de README en in de app staat nu "niets verlaat
-dit apparaat" en "geen account". Zodra er accounts zijn, is dat onwaar. Die
-teksten moeten mee, en de eerlijke versie wordt: *het account van de ouder
-staat op onze server, wat je kind doet blijft op het apparaat.* Dat is nog
-steeds een sterke belofte — sterker dan wat de meeste apps kunnen zeggen —
-maar hij moet kloppen.
+**De privacybelofte is aangepast.** "Niets verlaat dit apparaat" klopte niet
+meer zodra er accounts zijn. In het colofon, in het ouderscherm en op
+`privacy.html` staat nu de eerlijke versie: *het account van de ouder staat op
+de server, wat je kind doet blijft op het apparaat.* Dat is nog steeds een
+sterkere belofte dan wat vrijwel elke andere kinder-app kan zeggen — en hij
+klopt.
 
 ---
 
@@ -81,15 +84,19 @@ Geen maandelijkse administratie, geen opzeggingen, geen incasso's.
 - **Prijs:** eenmalig € 34,95 voelt in deze hoek redelijk — ongeveer een
   half jaar abonnement, en de koper is er vanaf.
 
-### 2. Abonnement — wat je vroeg
+### 2. Abonnement — wat je vroeg, en wat er nu staat
 
-- **Nodig:** accounts, inloggen, wachtwoord vergeten, een betaalprovider met
-  incasso, facturen, een opzegknop, en een server die dat allemaal draagt.
-  Reken op een paar weken werk, en daarna doorlopend onderhoud en kosten.
+- **Gebouwd.** Accounts, inloggen, een abonnement via Mollie met iDEAL en
+  creditcard, maandelijkse incasso, een opzegknop, een bevestigingsmail, en
+  een gratis deel dat altijd open blijft. Zie `BETALEN.md`.
 - **Voordeel:** terugkerende omzet, en je kunt inhoud blijven toevoegen.
-- **Let op:** de app moet dan grotendeels achter het slot. Dat betekent ook dat
-  hij niet meer offline werkt voor wie niet is ingelogd, en dat de installatie
-  op het beginscherm minder waard wordt.
+- **Nog niet gebouwd:** wachtwoord vergeten (dat doe je met de hand),
+  facturen met een nummer, en aanmaningen bij een mislukte incasso. Bij de
+  eerste honderd klanten is dat te doen.
+- **Let op:** het gratis deel is met opzet ruim. Het hele alfabet, twee
+  leeslessen, drie soera's en een woordthema blijven open zonder account — ook
+  offline. Dat kost je wat omzet en levert je de kans op dat een kind
+  terugkomt, en dát is waar een ouder voor betaalt.
 
 ### 3. Moskeeën en weekendscholen — de onderschatte weg
 
@@ -200,19 +207,23 @@ familie en via WhatsApp, niet via een zoekterm in de App Store.
 - In de app een invoerveld dat de code controleert.
 - Kan met een heel klein stukje server. Enkele dagen werk.
 
-**Voor route 2 (abonnement)**
-- Accounts: registreren, inloggen, wachtwoord vergeten, e-mail bevestigen.
-- Abonnementbeheer: aanmaken, opzeggen, mislukte incasso, herstarten.
-- Een server met een database, en het onderhoud dat daarbij hoort.
-- De app splitsen in een gratis deel en een deel achter het slot.
-- Een klantenportaal met de opzegknop.
-- Facturen.
-- Reken op enkele weken, plus doorlopende kosten en aandacht.
+**Voor route 2 (abonnement) — dit staat er nu**
+- ✅ Accounts: registreren en inloggen. ❌ Wachtwoord vergeten, met de hand.
+- ✅ Abonnement aanmaken, opzeggen, hervatten. ❌ Aanmaningen bij een mislukte
+  incasso; Mollie probeert het zelf een paar keer en daarna stopt de toegang.
+- ✅ Een server zonder afhankelijkheden, met de gegevens in één JSON-bestand.
+  Een VPS van vijf euro trekt dit.
+- ✅ De app is gesplitst in een gratis deel en een deel achter het slot.
+- ✅ Een accountscherm met de opzegknop, even makkelijk te vinden als de
+  aanmeldknop — dat is een wettelijke eis, geen nette gewoonte.
+- ❌ Facturen met een factuurnummer. Voor consumenten hoeft dat niet, voor een
+  school wel; die stuur je voorlopig met de hand.
 
 **In alle gevallen**
-- Een landingspagina die uitlegt wat het is en wat het kost.
-- De privacyteksten in de app, de README en het colofon herschrijven.
-- Een e-mailadres dat je leest.
+- ✅ Een site die uitlegt wat het is en wat het kost, met voorwaarden en een
+  privacyverklaring.
+- ✅ De privacyteksten in de app en het colofon kloppen weer.
+- ❌ Een e-mailadres dat je leest. Overal staat nu nog `noer@voorbeeld.nl`.
 
 ---
 
@@ -231,4 +242,6 @@ familie en via WhatsApp, niet via een zoekterm in de App Store.
 4. **Daarna.** Bouw de manier van betalen die past bij wie er ja zei. Kwamen de
    ja's van scholen, dan heb je facturen nodig en geen abonnementssysteem.
    Kwamen ze van ouders, bouw dan eerst de eenmalige licentie.
-5. **Pas als het loopt.** Abonnementen, met een gratis deel ervoor.
+5. **Als het loopt.** Abonnementen, met een gratis deel ervoor. Dat staat er
+   inmiddels; wat er nog moet gebeuren voordat je hem aanzet staat in
+   `GO-LIVE.md` en `BETALEN.md`.

@@ -25,11 +25,11 @@ export const GRATIS = {
   themas: ['groeten'],
 };
 
-export function maakApi({ opslag, mollie, instellingen, log = console.log }) {
+export function maakApi({ opslag, mollie, instellingen, post = null, log = console.log }) {
   const inlogTeller = new Teller({ max: 10, venster: 15 * 60 * 1000 });
   const aanmeldTeller = new Teller({ max: 20, venster: 60 * 60 * 1000 });
   const veiligKoekje = instellingen.basisUrl.startsWith('https://');
-  const diensten = { opslag, mollie, instellingen, log };
+  const diensten = { opslag, mollie, instellingen, post, log };
 
   const huidigAccount = (verzoek) => {
     const id = leesSessie(koekjes(verzoek)[KOEKJE], instellingen.geheim);

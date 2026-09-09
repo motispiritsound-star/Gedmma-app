@@ -15,19 +15,21 @@ cd noer
 npm start
 ```
 
-Open **http://localhost:5173**, vul een naam en een leeftijd in en je bent
-binnen. De server noemt bij het starten ook het adres waarop je hem vanaf een
+Open **http://localhost:5173** voor de site en **/app/** voor de app zelf; vul
+daar een naam en een leeftijd in en je bent binnen. De server noemt bij het starten ook het adres waarop je hem vanaf een
 tablet of telefoon op hetzelfde wifi-netwerk kunt openen — handig om te testen,
 en goed om te weten dat iedereen op dat netwerk er dan bij kan. Er is geen installatie nodig: de app zelf heeft geen afhankelijkheden
 en geen buildstap, en er is geen account.
 
 ```bash
-npm test          # controles op de leerinhoud — draait zonder installatie
+npm test               # leerinhoud, server en betaalkant — zonder installatie
 npm run test:browser   # loopt de hele app door in een echte browser
+npm run test:koopweg   # de weg van een ouder: aanmelden, betalen, opzeggen
 ```
 
-De browsertest heeft Playwright nodig (`npm install`, en `npm start` in een
-ander venster). Hij maakt een profiel aan, opent elk scherm, speelt elk spel,
+De browsertesten hebben Playwright nodig (`npm install`, en `npm start` in een
+ander venster). De koopweg vraagt bovendien om de proefstand:
+`NOER_PROEF=1 NOER_GEHEIM=proefgeheim npm start`. Hij maakt een profiel aan, opent elk scherm, speelt elk spel,
 en let op fouten in de console en op lege of kapotte schermen.
 
 Op een tablet of telefoon kun je de app via het browsermenu op je beginscherm
@@ -227,9 +229,15 @@ vertaling van de Koran. Dat staat ook in de app.
 
 ## Privacy
 
-Alles staat in de `localStorage` van de browser: profielen, punten, fouten,
-oefentijd. Er is geen server, geen account, geen reclame en geen tracker. De
-knop "Alle gegevens wissen" in het ouderscherm maakt het apparaat weer leeg.
+Van je kind staat alles in de `localStorage` van de browser: profielen, punten,
+fouten, oefentijd. Daar gaat niets van naar een server, en er is geen reclame
+en geen tracker. De knop "Alle gegevens wissen" in het ouderscherm maakt het
+apparaat weer leeg.
+
+Van het abonnement staat er wél iets op de server: het e-mailadres van de
+ouder, een versleuteld wachtwoord, en of er betaald is. Geen namen van
+kinderen, geen voortgang, geen opnames. Zonder abonnement is er helemaal geen
+account nodig — het gratis deel werkt zonder.
 
 De pincode in het ouderscherm is een drempel voor kleine handjes, geen
 beveiliging — hij staat gewoon op het apparaat.
@@ -237,11 +245,25 @@ beveiliging — hij staat gewoon op het apparaat.
 ## Hoe het in elkaar zit
 
 Losse ES-modules, geen framework, geen buildstap. Wat je in de bestanden ziet,
-is wat de browser draait.
+is wat de browser draait. De server heeft ook geen enkele afhankelijkheid: Node
+kan fetch, hashen en http, en Mollie is gewoon REST.
+
+De site staat op `/`, de app op `/app/`, de API op `/api/`.
 
 ```
 noer/
-  server.js              kleine statische server, zonder afhankelijkheden
+  server.js              start de server
+  server/
+    instellingen.js      alles uit omgevingsvariabelen, op één plek
+    maak.js              de server in elkaar zetten (ook voor de tests)
+    api.js               de eindpunten: account, abonnement, toegang, webhook
+    accounts.js          wachtwoorden (scrypt), sessies, te veel pogingen
+    abonnement.js        wanneer iemand toegang heeft, en wat Mollie meldt
+    mollie.js            de betaalkoppeling, plus een nep-Mollie voor de tests
+    mail.js              bevestigingen via Resend of Postmark
+    opslag.js            één JSON-bestand, atomair weggeschreven
+    statisch.js          bestanden uitserveren
+  landing/               de site: verkopen, aanmelden, account, voorwaarden
   tools/bundel.js        bouwt de hele app tot één HTML-bestand
   tools/demo-zaad.js     het voorbeeldprofiel voor de demo-bundel
   tools/haal-recitatie.js  haalt aya-opnames op bij een bron die jij kiest
@@ -262,6 +284,8 @@ noer/
       bronnen.js         waar geluid vandaan komt
     js/
       app.js             router en schil
+      toegang.js         wat dit apparaat mag zien
+      slot.js            wat een kind ziet waar het abonnement nog niet loopt
       opslag.js          profielen en voortgang in localStorage
       geluid.js          opname → apparaatstem → stilte, plus effectgeluidjes
       punten.js          punten, niveaus, badges, zwakke punten
@@ -291,10 +315,24 @@ uitbreiden of de lessen anders opbouwen, dan hoef je alleen in `data/` te zijn �
 
 ## Betaald aanbieden
 
-`LANCEREN.md` gaat over de stap van "de app werkt" naar "mensen betalen ervoor":
-waarom een abonnement niet kan op de huidige opzet, wat € 6,99 per maand netto
-oplevert, drie manieren om het wél te doen met een aanbeveling, en de
-juridische en fiscale lijst voor Nederland.
+Er zit een abonnement in. € 6,99 per maand of € 59 per jaar, via Mollie, met
+iDEAL en creditcard, elke maand opzegbaar met één knop. Het gratis deel — het
+hele alfabet, de eerste twee leeslessen, Al-Faatiha, Al-Ichlaas, An-Naas en
+één woordthema — blijft open zonder account.
+
+```bash
+# droog oefenen: nep-Mollie, een nepbank op de site zelf, geen geld
+NOER_PROEF=1 NOER_GEHEIM=proefgeheim npm start
+```
+
+**`BETALEN.md`** is de handleiding: wat je bij de KvK en Mollie moet regelen,
+welke omgevingsvariabelen er zijn, hoe het abonnement precies loopt, hoe je het
+neerzet met systemd en Caddy, en wat er nog niet is (wachtwoord vergeten,
+facturen, aanmaningen).
+
+**`LANCEREN.md`** gaat over de keuzes eromheen: wat € 6,99 netto oplevert, drie
+manieren om het aan te bieden met een aanbeveling, en de juridische en fiscale
+lijst voor Nederland.
 
 In [`landing/`](landing/) staat de pagina waar een ouder terechtkomt vóór hij de
 app opent: wat het is, hoe je begint, wat het kost, en de vragen die je krijgt

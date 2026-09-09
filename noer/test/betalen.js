@@ -21,7 +21,7 @@ import { keurWachtwoord, maakSessie, leesSessie, hashWachtwoord, klopWachtwoord 
 /** Een server met een eigen map en een eigen nep-Mollie, per test. */
 async function opstelling() {
   const map = await mkdtemp(join(tmpdir(), 'noer-betalen-'));
-  const mollie = new NepMollie();
+  const mollie = new NepMollie({ basisUrl: 'https://noer.test' });
   const { server, opslag } = await maakServer({
     instellingen: {
       poort: 0,
@@ -437,7 +437,7 @@ test('de proefingang om te betalen bestaat alleen in de proefstand', async () =>
   // stand uit, dan hoort dit eindpunt niet te bestaan. Zonder deze controle
   // sluipt er een deurtje mee naar de live server.
   const map = await mkdtemp(join(tmpdir(), 'noer-echt-'));
-  const mollie = new NepMollie();
+  const mollie = new NepMollie({ basisUrl: 'https://noer.test' });
   const { server } = await maakServer({
     instellingen: {
       poort: 0, basisUrl: 'https://noer.test', mollieSleutel: 'test_nep',
@@ -474,4 +474,95 @@ test('de proefingang om te betalen bestaat alleen in de proefstand', async () =>
     await new Promise((klaar) => server.close(klaar));
     await rm(map, { recursive: true, force: true });
   }
+});
+
+test('na een geslaagde eerste betaling gaat er een bevestiging de deur uit', async () => {
+  // Wie online een abonnement afsluit, hoort een bevestiging te krijgen die hij
+  // kan bewaren. Dat is geen service maar artikel 6:230v BW.
+  const map = await mkdtemp(join(tmpdir(), 'noer-mail-'));
+  const mollie = new NepMollie({ basisUrl: 'https://noer.test' });
+  const verstuurd = [];
+  const { server } = await maakServer({
+    instellingen: {
+      poort: 0, basisUrl: 'https://noer.test', mollieSleutel: '',
+      geheim: 'geheim-voor-de-test-lang-genoeg', gegevensMap: map, proef: true,
+      wortel: new URL('..', import.meta.url).pathname,
+    },
+    mollie,
+    post: async (bericht) => { verstuurd.push(bericht); return { verstuurd: true }; },
+    log: () => {},
+  });
+  await new Promise((klaar) => server.listen(0, '127.0.0.1', klaar));
+  const basis = `http://127.0.0.1:${server.address().port}`;
+
+  let koekje = null;
+  const post = async (pad, lichaam) => {
+    const a = await fetch(`${basis}${pad}`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', ...(koekje ? { cookie: koekje } : {}) },
+      body: JSON.stringify(lichaam || {}),
+    });
+    for (const regel of a.headers.getSetCookie?.() || []) koekje = regel.split(';')[0];
+    return { status: a.status, ...(await a.json().catch(() => ({}))) };
+  };
+
+  try {
+    await post('/api/account/registreren', { email: 'ouder@voorbeeld.nl', wachtwoord: 'eenlangwachtwoord' });
+    assert.equal(verstuurd.length, 0, 'een account aanmaken is nog geen aankoop');
+
+    await post('/api/abonnement/starten', { plan: 'maand' });
+    const betaling = [...mollie.betalingen.values()].at(-1);
+    mollie.betaal(betaling.id);
+    await fetch(`${basis}/api/mollie/webhook`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: `id=${betaling.id}`,
+    });
+
+    assert.equal(verstuurd.length, 1, 'geen bevestiging verstuurd');
+    const [mail] = verstuurd;
+    assert.equal(mail.aan, 'ouder@voorbeeld.nl');
+    assert.match(mail.tekst, /6,99/, 'de bevestiging noemt het bedrag niet');
+    assert.match(mail.tekst, /per maand/, 'de bevestiging noemt de termijn niet');
+    assert.match(mail.tekst, /voorwaarden/, 'de bevestiging verwijst niet naar de voorwaarden');
+    assert.match(mail.tekst, /[Oo]pzeggen/, 'de bevestiging zegt niet hoe je eraf komt');
+
+    // De incasso van de volgende maand levert géén nieuwe mail op: post die
+    // niemand wil.
+    const abonnement = [...mollie.abonnementen.values()][0];
+    const incasso = mollie.maandelijkseIncasso(abonnement.id);
+    await fetch(`${basis}/api/mollie/webhook`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: `id=${incasso.id}`,
+    });
+    assert.equal(verstuurd.length, 1, 'elke maand een mail sturen is spam');
+
+    // Opzeggen bevestigt wel weer, met de datum tot wanneer het nog werkt.
+    await post('/api/abonnement/opzeggen', {});
+    assert.equal(verstuurd.length, 2);
+    assert.match(verstuurd[1].onderwerp, /opgezegd/i);
+    assert.match(verstuurd[1].tekst, /niets meer afgeschreven/);
+  } finally {
+    await new Promise((klaar) => server.close(klaar));
+    await rm(map, { recursive: true, force: true });
+  }
+});
+
+test('een maildienst die eruit ligt houdt geen betaling tegen', async () => {
+  const { maakPost } = await import('../server/mail.js');
+  const regels = [];
+  const stuur = maakPost({
+    dienst: 'resend', sleutel: 'nep', van: 'Noer <noer@test.nl>',
+    log: (r) => regels.push(r),
+    haal: async () => { throw new Error('netwerk weg'); },
+  });
+  const uit = await stuur({ aan: 'a@b.nl', onderwerp: 'Test', tekst: 'Hallo' });
+  assert.equal(uit.verstuurd, false);
+  assert.match(regels.join(' '), /mail mislukt/);
+
+  // En zonder ingestelde dienst schrijft hij het op in plaats van te klappen.
+  const zonder = maakPost({ dienst: '', sleutel: '', van: '', log: (r) => regels.push(r) });
+  assert.equal((await zonder({ aan: 'a@b.nl', onderwerp: 'Test', tekst: '' })).verstuurd, false);
+  assert.match(regels.join(' '), /niet verstuurd/);
 });

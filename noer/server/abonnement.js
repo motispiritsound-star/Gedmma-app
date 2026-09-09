@@ -6,6 +6,7 @@
 // dus je maakt de maand af. Dat is ook wat er op de site staat.
 
 import { PLANNEN } from './instellingen.js';
+import { BERICHTEN } from './mail.js';
 import { MollieFout } from './mollie.js';
 
 export const leegAbonnement = () => ({
@@ -88,7 +89,7 @@ export async function startAbonnement({ mollie, opslag, instellingen }, account,
  * Dat is met opzet zo: dan kan niemand met een verzonnen webhook een
  * abonnement aanzetten.
  */
-export async function verwerkWebhook({ mollie, opslag, instellingen, log = () => {} }, betalingId) {
+export async function verwerkWebhook({ mollie, opslag, instellingen, post = null, log = () => {} }, betalingId) {
   const betaling = await mollie.betaling(betalingId);
   const accountId = betaling.metadata?.accountId;
   const account = (accountId && opslag.account(accountId))
@@ -158,14 +159,35 @@ export async function verwerkWebhook({ mollie, opslag, instellingen, log = () =>
 
   account.abonnement = ab;
   await opslag.zetAccount(account);
+
+  // De bevestiging gaat alleen bij de eerste betaling de deur uit. Elke maand
+  // een mail sturen die zegt dat het abonnement nog steeds loopt, is post die
+  // niemand wil.
+  if (post && betaling.sequenceType === 'first') {
+    const plan = PLANNEN[ab.plan] || PLANNEN.maand;
+    const bericht = betaling.status === 'paid'
+      ? BERICHTEN.welkom({
+          plan: plan.id, bedrag: plan.bedrag.replace('.', ','),
+          tot: nederlandseDatum(ab.betaaldTot), site: instellingen.basisUrl,
+        })
+      : ['failed', 'canceled', 'expired'].includes(betaling.status)
+        ? BERICHTEN.mislukt({ site: instellingen.basisUrl })
+        : null;
+    if (bericht) await post({ aan: account.email, ...bericht });
+  }
+
   return { bekend: true, toegang: toegangVan(account), status: betaling.status };
 }
+
+/** 9 oktober 2026 — zoals een mens het leest, niet 2026-10-09. */
+export const nederlandseDatum = (iso) => new Date(iso).toLocaleDateString('nl-NL',
+  { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Amsterdam' });
 
 /**
  * Opzeggen. Bij Mollie stopt de incasso meteen; bij ons loopt de toegang door
  * tot het eind van de periode die al betaald is.
  */
-export async function zegOp({ mollie, opslag }, account) {
+export async function zegOp({ mollie, opslag, instellingen, post = null }, account) {
   const ab = { ...leegAbonnement(), ...account.abonnement };
   if (ab.mollieAbonnement && account.mollieKlant) {
     try {
@@ -180,6 +202,16 @@ export async function zegOp({ mollie, opslag }, account) {
   ab.opgezegdOp = new Date().toISOString();
   account.abonnement = ab;
   await opslag.zetAccount(account);
+
+  if (post && ab.betaaldTot) {
+    await post({
+      aan: account.email,
+      ...BERICHTEN.opgezegd({
+        tot: nederlandseDatum(ab.betaaldTot),
+        site: instellingen?.basisUrl || '',
+      }),
+    });
+  }
   return toegangVan(account);
 }
 

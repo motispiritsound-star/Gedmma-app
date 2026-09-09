@@ -9,6 +9,9 @@
 //   NOER_DATA             map voor de gegevens (standaard ./gegevens)
 //   PORT                  standaard 5173
 //   NOER_PROEF            1 = nep-Mollie, voor de tests en om droog te oefenen
+//   NOER_MAIL             resend of postmark; leeg = mail alleen in de log
+//   NOER_MAIL_SLEUTEL     de sleutel van die dienst
+//   NOER_MAIL_VAN         "Noer <noer@jouwdomein.nl>"
 
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -41,6 +44,9 @@ export const instellingen = {
   geheim: process.env.NOER_GEHEIM || '',
   gegevensMap: process.env.NOER_DATA || join(WORTEL, 'gegevens'),
   proef: process.env.NOER_PROEF === '1',
+  mailDienst: process.env.NOER_MAIL || '',
+  mailSleutel: process.env.NOER_MAIL_SLEUTEL || '',
+  mailVan: process.env.NOER_MAIL_VAN || 'Noer <noer@voorbeeld.nl>',
   wortel: WORTEL,
 };
 
@@ -55,6 +61,9 @@ export function watOntbreekt() {
   if (!instellingen.geheim) gemist.push('NOER_GEHEIM');
   if (!instellingen.proef && instellingen.basisUrl.startsWith('http://localhost')) {
     gemist.push('NOER_BASISURL (Mollie kan geen webhook naar localhost sturen)');
+  }
+  if (!instellingen.proef && !instellingen.mailDienst) {
+    gemist.push('NOER_MAIL (zonder maildienst krijgt niemand een bevestiging — dat moet wettelijk)');
   }
   return gemist;
 }

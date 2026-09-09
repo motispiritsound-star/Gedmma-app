@@ -5,19 +5,27 @@ import { createServer } from 'node:http';
 import { join } from 'node:path';
 
 import { maakApi } from './api.js';
+import { maakPost } from './mail.js';
 import { Mollie, NepMollie } from './mollie.js';
 import { opslagIn } from './opslag.js';
 import { stuurBestand, TYPES } from './statisch.js';
 import { readFile } from 'node:fs/promises';
 
-export async function maakServer({ instellingen, mollie = null, log = console.log }) {
+export async function maakServer({ instellingen, mollie = null, post = null, log = console.log }) {
   const opslag = await opslagIn(instellingen.gegevensMap).open();
   const betaaldienst = mollie
     || (instellingen.proef
       ? new NepMollie({ basisUrl: instellingen.basisUrl })
       : new Mollie(instellingen.mollieSleutel));
 
-  const api = maakApi({ opslag, mollie: betaaldienst, instellingen, log });
+  const verstuurMail = post || maakPost({
+    dienst: instellingen.mailDienst,
+    sleutel: instellingen.mailSleutel,
+    van: instellingen.mailVan,
+    log,
+  });
+
+  const api = maakApi({ opslag, mollie: betaaldienst, instellingen, post: verstuurMail, log });
 
   const site = join(instellingen.wortel, 'landing');
   const app = join(instellingen.wortel, 'public');
@@ -61,7 +69,7 @@ export async function maakServer({ instellingen, mollie = null, log = console.lo
     }
   });
 
-  return { server, opslag, mollie: betaaldienst };
+  return { server, opslag, mollie: betaaldienst, post: verstuurMail };
 }
 
 /** Een nette 404-pagina als die er is, en anders een regel tekst. Met de
