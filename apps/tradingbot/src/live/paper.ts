@@ -11,6 +11,8 @@ import {
   type Interval,
 } from '../types.js';
 import { PaperExecution } from './execution.js';
+import { silentNotifier, type Notifier } from './notify.js';
+import { STATE_VERSION, loadState, saveState } from './state.js';
 
 export interface PaperRunOptions {
   symbol: string;
@@ -25,6 +27,11 @@ export interface PaperRunOptions {
   maxBars?: number;
   /** Append every decision here as JSON lines, for later inspection. */
   journalPath?: string;
+  /** Persist the account here after every bar, so a restart resumes it. */
+  statePath?: string;
+  /** Pick up where a previous run left off, if `statePath` holds a run. */
+  resume?: boolean;
+  notifier?: Notifier;
   log?: (line: string) => void;
 }
 
@@ -38,7 +45,9 @@ export interface PaperRunOptions {
  * yourself that a table of ratios cannot.
  *
  * Run it for at least as long as the strategy's average holding period times
- * thirty. Anything shorter is a demo, not a test.
+ * thirty. Anything shorter is a demo, not a test — which is why `--state` and
+ * `--resume` exist: a run that silently restarts from its opening balance every
+ * time the process dies never accumulates the history that makes it meaningful.
  */
 export async function runPaper(options: PaperRunOptions): Promise<void> {
   const {
@@ -49,14 +58,33 @@ export async function runPaper(options: PaperRunOptions): Promise<void> {
     warmupBars,
     maxBars,
     journalPath,
+    statePath,
   } = options;
   const costs = options.costs ?? DEFAULT_COSTS;
   const limits = options.limits ?? DEFAULT_LIMITS;
+  const notifier = options.notifier ?? silentNotifier;
   const log = options.log ?? ((line: string) => console.log(line));
 
   const barMs = INTERVAL_MS[interval];
-  const execution = new PaperExecution(startingCash, costs);
-  const risk = new RiskManager(startingCash, limits);
+
+  const saved =
+    options.resume && statePath
+      ? loadState(statePath, { symbol, interval, strategy: strategy.name })
+      : null;
+
+  const execution = new PaperExecution(startingCash, costs, saved?.broker);
+  const risk = new RiskManager(saved?.risk.highWater ?? startingCash, limits, barMs < 86_400_000);
+  if (saved) {
+    risk.restoreFrom(saved.risk);
+    log(
+      `Resuming the run started ${saved.startedAt}: ` +
+        `${saved.broker.fills.length} fills so far, last bar ${new Date(saved.lastBarTime).toISOString()}.`,
+    );
+    if (risk.isTripped) {
+      log(`This run is already stopped: ${risk.trippedReason}. Nothing to do.`);
+      return;
+    }
+  }
 
   log(`Loading ${warmupBars} bars of warm-up history for ${symbol} ${interval}...`);
   const history = await fetchCandles({
@@ -72,16 +100,53 @@ export async function runPaper(options: PaperRunOptions): Promise<void> {
 
   const candles: Candle[] = [...history];
   const closes = candles.map((c) => c.close);
-  let lastSeen = candles[candles.length - 1]?.openTime ?? 0;
+  // On a resumed run the bars already acted on must not be traded again, so the
+  // cursor comes from the saved state rather than from the warm-up window.
+  let lastSeen = Math.max(
+    saved?.lastBarTime ?? 0,
+    candles[candles.length - 1]?.openTime ?? 0,
+  );
   let barsProcessed = 0;
+  const startedAt = saved?.startedAt ?? new Date().toISOString();
+
+  const persist = (): void => {
+    if (!statePath) return;
+    saveState(statePath, {
+      version: STATE_VERSION,
+      symbol,
+      interval,
+      strategy: strategy.name,
+      lastBarTime: lastSeen,
+      startedAt,
+      updatedAt: new Date().toISOString(),
+      broker: execution.state,
+      risk: risk.state,
+    });
+  };
 
   log(
     `Paper trading ${strategy.name} on ${symbol} ${interval}. ` +
       `No keys, no orders, no money at risk. Ctrl-C to stop.`,
   );
+  persist();
+  await notifier.send({
+    event: 'started',
+    symbol,
+    strategy: strategy.name,
+    message: `Paper run started on ${symbol} ${interval}`,
+    equity: execution.equity(candles[candles.length - 1]?.close ?? 0),
+  });
 
   for (;;) {
-    if (maxBars !== undefined && barsProcessed >= maxBars) return;
+    if (maxBars !== undefined && barsProcessed >= maxBars) {
+      await notifier.send({
+        event: 'stopped',
+        symbol,
+        strategy: strategy.name,
+        message: `Paper run finished after ${barsProcessed} bars`,
+      });
+      return;
+    }
 
     // Wait until a little past the moment the current bar should have closed,
     // then ask for it. Polling faster only burns rate limit: the bar does not
@@ -140,8 +205,31 @@ export async function runPaper(options: PaperRunOptions): Promise<void> {
         appendFileSync(journalPath, `${JSON.stringify(entry)}\n`, 'utf8');
       }
 
+      // State is written after the decision and before the next bar, so a crash
+      // at any point loses at most the bar currently being processed.
+      persist();
+
+      if (fill) {
+        await notifier.send({
+          event: 'fill',
+          symbol,
+          strategy: strategy.name,
+          message: `${fill.qty > 0 ? 'Bought' : 'Sold'} ${Math.abs(fill.qty).toFixed(6)}`,
+          equity: entry.equity,
+          weight: entry.weight,
+          price: fill.price,
+        });
+      }
+
       if (risk.isTripped) {
         log(`Kill switch: ${risk.trippedReason}. Stopping.`);
+        await notifier.send({
+          event: 'kill-switch',
+          symbol,
+          strategy: strategy.name,
+          message: risk.trippedReason ?? 'kill switch',
+          equity: entry.equity,
+        });
         return;
       }
     }

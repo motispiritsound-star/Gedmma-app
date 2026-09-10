@@ -1,8 +1,9 @@
-import { randomWalk } from '../data/synthetic.js';
+import { cryptoLikeUniverse, randomWalk } from '../data/synthetic.js';
 import type { RiskLimits } from '../risk/risk.js';
-import type { Strategy } from '../strategy/types.js';
+import type { PortfolioStrategy, Strategy } from '../strategy/types.js';
 import type { CostModel, Interval } from '../types.js';
 import { runBacktest } from './backtest.js';
+import { runPortfolioBacktest, type PortfolioLimits } from './portfolio.js';
 
 export interface NoiseTestOptions {
   makeStrategy: () => Strategy;
@@ -85,4 +86,83 @@ export function percentile(sorted: readonly number[], q: number): number {
   if (lower === upper) return low;
   const high = sorted[upper] as number;
   return low + (high - low) * (position - lower);
+}
+
+export interface PortfolioNoiseOptions {
+  makeStrategy: () => PortfolioStrategy;
+  interval: Interval;
+  /** How many symbols the generated universes contain. */
+  symbolCount: number;
+  bars: number;
+  runs: number;
+  startingCash: number;
+  seed?: number;
+  costs?: CostModel;
+  limits?: PortfolioLimits;
+}
+
+export interface PortfolioNoiseResult {
+  runs: number;
+  /** Excess return over the equal-weight benchmark, per run, sorted ascending. */
+  excessReturns: number[];
+  sharpes: number[];
+  /** How many runs beat simply holding the whole universe. */
+  beatBenchmark: number;
+  medianExcess: number;
+  p95Sharpe: number;
+}
+
+/**
+ * Run a multi-asset strategy over many universes that contain no cross-sectional
+ * momentum at all, and count how often it beats holding the lot.
+ *
+ * This is the check that catches the most seductive mistake in multi-asset
+ * backtesting. A single universe will hand a rotation strategy a spectacular
+ * result often enough to be worth posting: concentrating into three of ten
+ * volatile, correlated assets produces an enormous spread of outcomes, and the
+ * good half looks like skill. Run the same strategy over twenty-five universes
+ * built with the momentum deliberately switched off and the answer is usually
+ * that it beat the benchmark in fewer than half of them — which is what "no
+ * edge" looks like from the inside.
+ *
+ * A strategy that cannot beat this benchmark in clearly more than half of
+ * edgeless universes has no business being pointed at real money, whatever one
+ * backtest said.
+ */
+export function runPortfolioNoiseTest(options: PortfolioNoiseOptions): PortfolioNoiseResult {
+  const { makeStrategy, interval, symbolCount, bars, runs, startingCash } = options;
+  const baseSeed = options.seed ?? 1;
+  const symbols = Array.from({ length: symbolCount }, (_, i) => `SYN${String(i + 1).padStart(2, '0')}`);
+
+  const excessReturns: number[] = [];
+  const sharpes: number[] = [];
+  let beatBenchmark = 0;
+
+  for (let i = 0; i < runs; i += 1) {
+    // momentumPersistence is fixed at 0: the universes have nothing to find.
+    const universe = cryptoLikeUniverse(symbols, bars, interval, baseSeed + i * 7919, 0);
+    const result = runPortfolioBacktest({
+      universe,
+      strategy: makeStrategy(),
+      interval,
+      startingCash,
+      costs: options.costs,
+      limits: options.limits,
+    });
+    excessReturns.push(result.metrics.excessReturn);
+    sharpes.push(result.metrics.sharpe);
+    if (result.metrics.excessReturn > 0) beatBenchmark += 1;
+  }
+
+  const sortedExcess = [...excessReturns].sort((a, b) => a - b);
+  const sortedSharpe = [...sharpes].sort((a, b) => a - b);
+
+  return {
+    runs,
+    excessReturns: sortedExcess,
+    sharpes: sortedSharpe,
+    beatBenchmark,
+    medianExcess: percentile(sortedExcess, 0.5),
+    p95Sharpe: percentile(sortedSharpe, 0.95),
+  };
 }

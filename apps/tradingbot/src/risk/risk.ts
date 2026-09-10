@@ -1,3 +1,5 @@
+import type { CostModel } from '../types.js';
+
 /**
  * The rules that sit between a strategy's opinion and the account's money.
  *
@@ -95,6 +97,29 @@ export class RiskManager {
     this.dayIndex = 0;
   }
 
+  /**
+   * A snapshot of the state a restart would otherwise lose. The high-water mark
+   * is the important one: without it, a bot restarted mid-drawdown measures its
+   * drawdown from the bottom and cheerfully keeps trading.
+   */
+  get state(): RiskState {
+    return {
+      highWater: this.highWater,
+      dayStartEquity: this.dayStartEquity,
+      dayIndex: this.dayIndex,
+      tripped: this.tripped,
+      haltedDay: this.haltedDay,
+    };
+  }
+
+  restoreFrom(state: RiskState): void {
+    this.highWater = state.highWater;
+    this.dayStartEquity = state.dayStartEquity;
+    this.dayIndex = state.dayIndex;
+    this.tripped = state.tripped;
+    this.haltedDay = state.haltedDay;
+  }
+
   /** True once the drawdown kill switch has fired. It never un-fires. */
   get isTripped(): boolean {
     return this.tripped !== null;
@@ -172,6 +197,29 @@ export class RiskManager {
     if (price <= 0) return { action: 'hold', weight: currentWeight, reason: 'no valid price' };
     return { action: 'allow', weight: capped };
   }
+}
+
+/** The risk manager's memory, so a restart does not forget a drawdown. */
+export interface RiskState {
+  highWater: number;
+  dayStartEquity: number;
+  dayIndex: number;
+  tripped: string | null;
+  haltedDay: number | null;
+}
+
+/**
+ * The largest weight that can actually be held once the commission on the entry
+ * comes out of the same pot of cash.
+ *
+ * A target of exactly 1.0 spends every cent on the asset and leaves nothing for
+ * the fee, so the account finishes the fill a few cents overdrawn. A real
+ * exchange rejects that, and left in place it quietly turns a no-leverage
+ * backtest into a very slightly leveraged one — small, but the wrong direction,
+ * and it compounds across thousands of fills.
+ */
+export function feeAdjustedCeiling(ceiling: number, costs: CostModel): number {
+  return Math.max(0, ceiling * (1 - costs.feeBps / 10_000));
 }
 
 export function clamp(value: number, low: number, high: number): number {

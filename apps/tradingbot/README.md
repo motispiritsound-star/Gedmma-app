@@ -1,9 +1,10 @@
 # tradingbot
 
 A research harness for automated trading strategies. It downloads market data,
-backtests strategies against buy-and-hold, tells you how much of the result was
-luck, validates out of sample, and forward-tests on live prices with simulated
-money.
+backtests single-asset and multi-asset strategies against the right benchmark,
+measures how much of the result is luck or parameter-search selection, validates
+out of sample, and forward-tests on live prices with simulated money across
+restarts.
 
 **It places no real orders and contains no exchange credentials.** That is a
 design decision, not an unfinished feature — [docs/TRADING.md](../../docs/TRADING.md)
@@ -17,27 +18,40 @@ No API key is needed; Binance's market data is public.
 npm install
 
 # Inspect the data before trusting anything built on it.
-npm run bot --workspace @buurklus/tradingbot -- data --symbol BTCUSDT --interval 1d
+npm run bot -- data --symbol BTCUSDT --interval 1d
 
-# Backtest every strategy against buy-and-hold.
-npm run bot --workspace @buurklus/tradingbot -- backtest --symbol BTCUSDT --interval 1d --all
+# Backtest every single-asset strategy against buy-and-hold.
+npm run bot -- backtest --symbol BTCUSDT --interval 1d --all
 
-# Find out what this strategy "earns" on data with no edge in it.
-npm run bot --workspace @buurklus/tradingbot -- noise --strategy ema-cross --runs 200
+# Search the grid, then deflate the winner's Sharpe for the fact it was chosen.
+npm run bot -- significance --symbol BTCUSDT --strategy mean-reversion
 
-# The number that actually matters: parameters chosen in-sample, measured after.
-npm run bot --workspace @buurklus/tradingbot -- walkforward --strategy ema-cross --folds 5
+# What does this strategy "earn" on data with no edge in it?
+npm run bot -- noise --strategy ema-cross --runs 200
 
-# Forward-test on live prices with simulated money.
-npm run bot --workspace @buurklus/tradingbot -- paper --strategy ema-cross --interval 1h
+# How many independent bets is a basket of majors actually worth?
+npm run bot -- correlation --universe BTCUSDT,ETHUSDT,SOLUSDT,BNBUSDT,XRPUSDT
+
+# Multi-asset: hold the strongest few, rebalanced on a clock.
+npm run bot -- portfolio --universe BTCUSDT,ETHUSDT,SOLUSDT,BNBUSDT,XRPUSDT
+
+# The numbers that actually matter: parameters chosen in-sample, measured after.
+npm run bot -- walkforward --strategy ema-cross --folds 5
+npm run bot -- portfolio --universe BTCUSDT,ETHUSDT,SOLUSDT --validate
+
+# Forward-test on live prices with simulated money, surviving restarts.
+npm run bot -- paper --strategy ema-cross --interval 1h \
+  --state ./data/run.json --resume --journal ./data/run.jsonl
 ```
 
 From inside `apps/tradingbot` the prefix shortens to `npm run bot -- <command>`.
 `npm run bot -- help` lists every flag.
 
-If your network blocks exchange APIs, every command takes `--csv path.csv`
-(columns `openTime,open,high,low,close,volume`) or `--synthetic trend|revert|random`
-instead, and nothing touches the network.
+If your network blocks exchange APIs, nothing here needs it: every single-asset
+command takes `--csv path.csv` (columns `openTime,open,high,low,close,volume`)
+or `--synthetic trend|revert|random`, and the portfolio and correlation commands
+take `--synthetic crypto --symbols 10`, which generates a basket correlated the
+way crypto majors really are.
 
 ## Layout
 
@@ -47,54 +61,83 @@ src/
   data/
     binance.ts          Public klines, paged and rate-limit aware. Read-only.
     store.ts            CSV cache, plus an audit for gaps and bad bars
-    synthetic.ts        Seeded series with known properties, for tests and noise
+    align.ts            Several symbols onto one timeline, and what that costs
+    synthetic.ts        Seeded series and correlated universes with known properties
   indicators/           EMA, SMA, z-score, RSI, ATR — all backward-looking only
   strategy/
-    buyAndHold.ts       The benchmark, as a first-class strategy
+    buyAndHold.ts       The single-asset benchmark, as a first-class strategy
     emaCross.ts         Trend following
     meanReversion.ts    Dip buying, with hysteresis so it does not churn
     donchian.ts         Breakout
+    crossSectionalMomentum.ts
+                        Hold the strongest few of a universe, plus the
+                        equal-weight benchmark it has to beat
     registry.ts         Names and parameter grids the CLI can reach
-  risk/risk.ts          Weight cap, daily stop, drawdown kill switch
+  risk/risk.ts          Weight cap, daily stop, drawdown kill switch, fee reserve
   engine/
     broker.ts           Paper fills with fees, slippage and borrow cost
-    backtest.ts         The event loop, and the no-lookahead guarantee
+    backtest.ts         The single-asset event loop, and the no-lookahead guarantee
+    portfolio.ts        One cash pool across many symbols, with exposure caps
     metrics.ts          Sharpe, Sortino, drawdown, turnover, t-statistic
     walkforward.ts      In-sample selection, out-of-sample measurement
-    noise.ts            The same strategy on random walks, for comparison
+    portfolioWalkforward.ts  The same, for a universe
+    noise.ts            The strategy on random walks and on edgeless universes
+    stats.ts            Normal quantiles, skew, kurtosis, deflated Sharpe
+    significance.ts     Search the grid, then price in the search
+    correlation.ts      Average correlation and effective number of bets
   live/
     execution.ts        The adapter seam. One implementation, simulated.
     paper.ts            Live-data forward test
+    state.ts            Crash-safe account state, written atomically each bar
+    notify.ts           Optional https webhook for fills and the kill switch
   report.ts             Terminal reports, caveats included
   cli.ts                Commands and flags
 ```
 
-## The three decisions that make the numbers trustworthy
+## The decisions that make the numbers trustworthy
 
 **Orders fill at the next bar's open, never at the close that produced the
 signal.** Filling at the signal bar's close hands the strategy a price it could
 not have traded at, and it is worth more imaginary profit than any indicator
-here. `test/backtest.test.ts` asserts it on a gapping series: a strategy that
-goes long on a 100-close pays 200 when the next bar opens there.
+here. Both engines are tested on a gapping series: a strategy that goes long on
+a 100-close pays 200 when the next bar opens there.
 
-**Strategies are handed history that is grown, not sliced.** The array passed to
-`onBar` contains bars `0..i` because those are the only bars that have been
-pushed into it yet. Future bars are not hidden from the strategy — they do not
-exist in the data it holds.
+**Strategies are handed history that is grown, not sliced.** The arrays passed to
+`onBar` contain bars `0..i` because those are the only bars pushed into them yet.
+Future bars are not hidden from the strategy — they do not exist in the data it
+holds.
 
-**Trading costs money by default.** 10 bps fee, 5 bps slippage, 5 bps/day on
-shorts. A strategy that turns its book over daily pays roughly 55% of capital a
-year before it has predicted anything, and the report prints that bill next to
-the profit.
+**Trading costs money by default**: 10 bps fee, 5 bps slippage, 5 bps/day on
+shorts, and the weight cap is reduced by one entry's commission so a
+fully-invested target cannot leave the account a few cents overdrawn.
 
-## Reading a report
+**The benchmark is the right one.** A single-asset strategy is scored against
+holding that asset; a portfolio strategy against holding the whole universe in
+equal weight. Beating one coin by picking a different one is not a strategy.
 
-The caveats under the table are the point. They fire on too few trades, a
-t-statistic under 2, fees larger than the whole profit, turnover that real fills
-could not absorb, and — most often — the plain fact that buy-and-hold won.
+**Every result is scored against what luck produces.** `noise` runs the strategy
+on random walks; `noise --portfolio` runs it on universes built with the momentum
+switched off; `significance` deflates the Sharpe ratio for the size of the
+parameter search that produced it.
 
-`Excess over holding` is in percentage points against the asset itself. If it is
-negative, the strategy lost to doing nothing, whatever its Sharpe ratio says.
+## What the reports will tell you that you would rather not hear
+
+The caveats under each table are the point. They fire on too few trades, a
+t-statistic under 2, fees larger than the whole profit, turnover real fills could
+not absorb, a universe picked with hindsight, and — most often — the plain fact
+that holding won.
+
+Three findings worth knowing before you start, all reproducible from this repo:
+
+- **The textbook EMA crossover reaches Sharpe 1.53 on pure noise.** Five percent
+  of random walks give it better than 0.77. A backtest Sharpe of 1.2 is not an
+  edge; it is a number randomness hands out one run in twenty.
+- **Ten crypto-like majors are worth about 1.1 independent bets.** At an average
+  pairwise correlation near 0.9, "scans 50 markets simultaneously" is a claim
+  about CPU, not about risk.
+- **A rotation strategy beats equal-weight hold in well under half of universes
+  built with no momentum in them — and its best run is up 158%.** One good
+  multi-asset backtest is a draw from that distribution.
 
 ## Tests
 
@@ -102,7 +145,10 @@ negative, the strategy lost to doing nothing, whatever its Sharpe ratio says.
 npm test --workspace @buurklus/tradingbot
 ```
 
-The suite is mostly invariants rather than examples: no lookahead, fees charged
-on both legs, the kill switch never resetting, a walk-forward test window always
-starting after its training window, and the sanity check that a trend follower
-makes money on a trending series and loses it on a mean-reverting one.
+150 tests, mostly invariants rather than examples: no lookahead in either
+engine, fees charged on both legs and split across a partial exit, an account
+that never borrows, a kill switch that stays tripped across a restart, a
+restored high-water mark, a walk-forward test window that always starts after
+its training window, state files that refuse to load into the wrong run, and the
+sanity checks that each strategy makes money on the series built to suit it and
+loses on the one built against it.

@@ -98,6 +98,84 @@ have not found an edge — you have found a number that random data hands out
 one time in twenty. That 95th percentile is the bar a real result has to clear
 before the word "edge" means anything.
 
+## "Scans 50 markets" is a claim about CPU, not about risk
+
+This one deserves its own section, because it is the most persuasive-sounding
+line in every one of these posts and it is measurable.
+
+Run `npm run bot -- correlation` on a basket of majors. Eight crypto-like assets
+come back at an average pairwise correlation near 0.9, and the report converts
+that into the number that matters:
+
+```
+  Average pairwise correlation    0.893
+  Effective independent bets      1.10 of 8
+```
+
+For *n* equally weighted assets with average pairwise correlation ρ, the basket
+carries the same variance as `n / (1 + (n−1)ρ)` uncorrelated ones. At ρ = 0.9,
+fifty markets are worth about 1.1 bets. Every position is the same position
+wearing a different ticker, and on the day it matters they all draw down
+together. Scanning more markets buys you more chances to be wrong about the
+same thing, not diversification.
+
+This also kills the arbitrage story from the other end. Cross-venue
+mispricings exist precisely because venues are *not* perfectly linked — and the
+ones retail can see are the slow, wide, low-volume pairs where the spread is an
+illusion created by the fact that nobody can trade size there.
+
+## The number most backtests are missing
+
+Try twenty parameter sets and keep the best, and you have not measured a
+strategy. You have measured the maximum of twenty draws, which is a positive
+number even when every draw came from noise. The size of that inflation is
+computable, and `npm run bot -- significance` computes it:
+
+```
+  Configurations searched         4
+  Winner's Sharpe (annual, 1d)    1.30
+  Hurdle from the search alone    0.0025
+  Deflated Sharpe probability     0.999
+  Verdict                         significant
+```
+
+The deflated Sharpe ratio asks the question a raw Sharpe ratio does not: would a
+strategy with no edge have looked this good, given how many were tried, over how
+many observations, with returns this skewed and fat-tailed? Short series,
+negative skew and excess kurtosis all make a Sharpe ratio less trustworthy, and
+all three are normal in crypto. Report the deflated figure. A strategy that
+cannot clear the hurdle its own parameter search creates has nothing in it.
+
+The multi-asset version of the same trap is worse, because concentration
+manufactures variance. `noise --portfolio` runs a rotation strategy over
+universes generated with the momentum deliberately switched off:
+
+```
+  Beat equal-weight hold          7 of 25 runs
+  Best excess return              158.13%
+```
+
+Seven wins out of twenty-five, and a best run up 158%, on data containing
+nothing to rotate into. A single spectacular multi-asset backtest is one draw
+from that distribution. This is not a hypothetical: building this harness, the
+first seed tried showed the momentum strategy beating its benchmark by 200
+percentage points. Across twenty-five seeds it won six times.
+
+## What "runs 24/7" actually requires
+
+A bot described as running for months has to survive a restart, and almost none
+of them do. A process that dies and comes back with its opening balance has not
+been forward-testing for three months; it has run a fresh demo every few days,
+which is how people accumulate a long history of results that means nothing.
+
+So `paper --state run.json --resume` writes the account after every bar — cash,
+position, fills, open round trip, and the drawdown high-water mark — with a
+temporary file and a rename, because rename is atomic and a plain write is not.
+The high-water mark is the one people forget: a bot restarted mid-drawdown
+measures its drawdown from the bottom and cheerfully keeps trading. A state file
+belonging to a different symbol, interval or strategy is refused outright rather
+than loaded into the wrong run.
+
 ## What this harness is for
 
 It answers one question, in one order, and refuses to skip steps:
@@ -108,17 +186,22 @@ It answers one question, in one order, and refuses to skip steps:
 2. **`backtest`** — run a strategy over history, always against buy-and-hold.
    Most bots lose to simply holding the asset, and the report says so out loud
    when yours does.
-3. **`noise`** — find out what the same strategy produces from randomness, so
-   you know how much of your backtest was luck.
-4. **`walkforward`** — choose parameters on one stretch of history and measure
-   on the *next* one. This is the only number in the repository worth much.
-   A plain backtest lets you tune until the curve is pretty and then reports
-   the curve, which tells you nothing, because you chose the parameters after
-   seeing the data.
-5. **`paper`** — forward-test against live prices with simulated money, for
-   months, not days.
+3. **`correlation`** — before building anything multi-asset, find out how many
+   independent bets the universe is really worth.
+4. **`noise`** — find out what the same strategy produces from randomness, so
+   you know how much of your backtest was luck. `--portfolio` does it for a
+   universe.
+5. **`significance`** — search the parameter grid, then deflate the winner for
+   the size of the search.
+6. **`walkforward`** (and `portfolio --validate`) — choose parameters on one
+   stretch of history and measure on the *next* one. These are the only numbers
+   in the repository worth much. A plain backtest lets you tune until the curve
+   is pretty and then reports the curve, which tells you nothing, because you
+   chose the parameters after seeing the data.
+7. **`paper`** — forward-test against live prices with simulated money, with
+   `--state` and `--resume` so the run survives restarts, for months, not days.
 
-There is no sixth step in this repository. That boundary is deliberate, and
+There is no eighth step in this repository. That boundary is deliberate, and
 the next section explains it.
 
 ## Why there is no live trading code here
@@ -136,6 +219,26 @@ usually will — you have saved yourself the fees and learned something true.
 
 If it comes back genuinely good, implement the interface against the exchange
 and leave the rest of the system alone.
+
+## On the more careful write-ups
+
+Not every post about this is selling something. The better ones — a bot that
+scans a short list of pairs, checks risk before entry, logs every decision, and
+paper-trades first — describe a reasonable system, and that shape is what this
+harness implements. Three things still tend to be missing from them, and they
+are the three that decide whether the result means anything:
+
+- **The benchmark.** A momentum bot that made 40% in a year when the universe
+  made 60% lost. Reporting the 40% alone is the single most common omission.
+- **The search.** Parameters are tuned until the backtest looks good, and the
+  tuned result is reported as if it had been predicted. `significance` and
+  `walkforward` exist for exactly that gap.
+- **The spread.** One run is one draw. Without the distribution of results the
+  same strategy produces on data with no edge in it, a good-looking curve is
+  not evidence.
+
+A sound architecture measured carelessly still produces a number you cannot
+act on.
 
 ## If you do eventually put money on this
 

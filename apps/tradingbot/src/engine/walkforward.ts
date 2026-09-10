@@ -17,6 +17,45 @@ export interface WalkForwardOptions {
   limits?: RiskLimits;
 }
 
+export interface FoldRange {
+  index: number;
+  trainStart: number;
+  trainEnd: number;
+  testStart: number;
+  testEnd: number;
+}
+
+/**
+ * Cut a series into consecutive train/test pairs.
+ *
+ * The folds do not overlap and the test window always follows its own training
+ * window, which is the only arrangement that answers the question a backtest is
+ * asked. Shuffling bars or using k-fold cross-validation here — as people do
+ * when they treat a price series like a pile of independent rows — trains on the
+ * future and is worth nothing.
+ */
+export function makeFolds(length: number, folds: number, trainFraction: number): FoldRange[] {
+  if (folds < 1) throw new Error('Need at least one fold');
+  if (trainFraction <= 0 || trainFraction >= 1) throw new Error('trainFraction must be in (0, 1)');
+  const foldSize = Math.floor(length / folds);
+  if (foldSize < 50) {
+    throw new Error(
+      `${length} bars across ${folds} folds is ${foldSize} bars per fold — ` +
+        `too few to choose parameters from. Use more history or fewer folds.`,
+    );
+  }
+
+  const out: FoldRange[] = [];
+  for (let f = 0; f < folds; f += 1) {
+    const start = f * foldSize;
+    const end = f === folds - 1 ? length : start + foldSize;
+    const splitAt = start + Math.floor((end - start) * trainFraction);
+    if (splitAt - start < 30 || end - splitAt < 10) continue;
+    out.push({ index: f, trainStart: start, trainEnd: splitAt, testStart: splitAt, testEnd: end });
+  }
+  return out;
+}
+
 export interface Fold {
   index: number;
   trainFrom: number;
@@ -56,28 +95,17 @@ export interface WalkForwardResult {
 export function runWalkForward(options: WalkForwardOptions): WalkForwardResult {
   const { candles, factory, interval, startingCash, folds, trainFraction } = options;
 
-  if (folds < 1) throw new Error('Need at least one fold');
-  if (trainFraction <= 0 || trainFraction >= 1) throw new Error('trainFraction must be in (0, 1)');
-  const foldSize = Math.floor(candles.length / folds);
-  if (foldSize < 50) {
-    throw new Error(
-      `${candles.length} candles across ${folds} folds is ${foldSize} bars per fold — ` +
-        `too few to choose parameters from. Use more history or fewer folds.`,
-    );
-  }
+  const ranges = makeFolds(candles.length, folds, trainFraction);
 
   const results: Fold[] = [];
   const curve: EquityPoint[] = [];
   let equity = startingCash;
   let benchmark = startingCash;
 
-  for (let f = 0; f < folds; f += 1) {
-    const start = f * foldSize;
-    const end = f === folds - 1 ? candles.length : start + foldSize;
-    const splitAt = start + Math.floor((end - start) * trainFraction);
-    const train = candles.slice(start, splitAt);
-    const test = candles.slice(splitAt, end);
-    if (train.length < 30 || test.length < 10) continue;
+  for (const range of ranges) {
+    const f = range.index;
+    const train = candles.slice(range.trainStart, range.trainEnd);
+    const test = candles.slice(range.testStart, range.testEnd);
 
     let best: { params: never; metrics: Metrics; name: string } | null = null;
     for (const params of factory.grid) {

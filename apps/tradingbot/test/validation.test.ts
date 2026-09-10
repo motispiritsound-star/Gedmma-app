@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { meanRevertingSeries, trendingSeries } from '../src/data/synthetic.js';
+import { meanRevertingSeries, randomWalk, trendingSeries } from '../src/data/synthetic.js';
 import { runBacktest } from '../src/engine/backtest.js';
 import { percentile, runNoiseTest } from '../src/engine/noise.js';
+import { assessSignificance } from '../src/engine/significance.js';
 import { runWalkForward } from '../src/engine/walkforward.js';
 import { buildStrategy, factoryByName, strategyNames } from '../src/strategy/registry.js';
 import { donchian } from '../src/strategy/donchian.js';
@@ -206,5 +207,54 @@ describe('percentile', () => {
 
   it('is zero for an empty series rather than NaN', () => {
     expect(percentile([], 0.5)).toBe(0);
+  });
+});
+
+describe('assessSignificance', () => {
+  it('runs every configuration in the grid and ranks them', () => {
+    const factory = factoryByName('mean-reversion');
+    const result = assessSignificance({
+      candles: meanRevertingSeries(2000, '1d', 42),
+      factory: factory as never,
+      interval: '1d',
+      startingCash: 1000,
+      costs: FREE,
+      limits: LOOSE,
+    });
+    expect(result.trials).toHaveLength((factory?.grid.length ?? 0));
+    // Sorted best first, so the winner is the head of the list.
+    for (let i = 1; i < result.trials.length; i += 1) {
+      expect(result.trials[i - 1]?.sharpe).toBeGreaterThanOrEqual(
+        result.trials[i]?.sharpe as number,
+      );
+    }
+    expect(result.winner).toBe(result.trials[0]?.name);
+    expect(result.deflated.trials).toBe(result.trials.length);
+  });
+
+  it('finds a real edge significant on a series built to contain one', () => {
+    const result = assessSignificance({
+      candles: meanRevertingSeries(3000, '1d', 8),
+      factory: factoryByName('mean-reversion') as never,
+      interval: '1d',
+      startingCash: 1000,
+      costs: FREE,
+      limits: LOOSE,
+    });
+    expect(result.deflated.probability).toBeGreaterThan(0.9);
+  });
+
+  it('does not find an edge on a random walk', () => {
+    const result = assessSignificance({
+      candles: randomWalk(2000, '1d', 5),
+      factory: factoryByName('ema-cross') as never,
+      interval: '1d',
+      startingCash: 1000,
+      costs: { feeBps: 10, slippageBps: 5, borrowBpsPerDay: 5 },
+      limits: LOOSE,
+    });
+    // A random walk has nothing in it. Whatever the best of four configurations
+    // scored, it must not come back as evidence.
+    expect(result.deflated.verdict).not.toBe('significant');
   });
 });

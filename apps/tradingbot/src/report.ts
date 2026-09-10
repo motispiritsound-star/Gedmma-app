@@ -1,6 +1,11 @@
+import { survivorshipWarning } from './data/align.js';
 import type { BacktestResult } from './engine/backtest.js';
+import type { CorrelationReport } from './engine/correlation.js';
+import type { PortfolioResult } from './engine/portfolio.js';
+import type { PortfolioWalkForwardResult } from './engine/portfolioWalkforward.js';
+import type { SignificanceResult } from './engine/significance.js';
 import { caveats, pct, type Metrics } from './engine/metrics.js';
-import type { NoiseTestResult } from './engine/noise.js';
+import type { NoiseTestResult, PortfolioNoiseResult } from './engine/noise.js';
 import type { WalkForwardResult } from './engine/walkforward.js';
 
 const WIDTH = 74;
@@ -14,7 +19,7 @@ export function heading(text: string): string {
 }
 
 function row(label: string, value: string): string {
-  return `  ${label.padEnd(28)}${value}`;
+  return `  ${label.padEnd(30)}${value}`;
 }
 
 /** A ratio, with the unbounded cases spelled rather than printed as "Infinity". */
@@ -59,7 +64,7 @@ export function renderMetrics(m: Metrics, options: RenderOptions = {}): string {
     row('Buy-and-hold drawdown', pct(m.benchmarkMaxDrawdown)),
     row('Calmar', formatRatio(m.calmar)),
     '',
-    row('Round trips', String(m.trades)),
+    row(tradeStats ? 'Round trips' : 'Fills', String(m.trades)),
     ...(tradeStats
       ? [
           row('Win rate', pct(m.winRate)),
@@ -226,4 +231,231 @@ export function wrap(text: string, width: number, indent = '    '): string {
   }
   if (line !== '') lines.push(line);
   return lines.join(`\n${indent}`);
+}
+
+export function renderPortfolio(result: PortfolioResult): string {
+  const parts: string[] = [];
+  parts.push(heading(`Portfolio backtest: ${result.strategy}`));
+  parts.push(`  ${result.describe}`);
+  parts.push(`  ${result.symbols.length} symbols: ${result.symbols.join(', ')}`);
+  const first = result.curve[0];
+  const last = result.curve[result.curve.length - 1];
+  if (first && last) {
+    parts.push(
+      `  ${result.curve.length} aligned bars of ${result.interval}, ` +
+        `${formatDate(first.time)} to ${formatDate(last.time)}`,
+    );
+  }
+  parts.push(`  average positions held: ${result.averagePositions.toFixed(2)}`);
+  parts.push('');
+  parts.push(renderMetrics(result.metrics, { tradeStats: false }));
+  parts.push(row('Fees + slippage paid', formatMoney(result.metrics.feesPaid)));
+  parts.push(row('Turnover (x equity/yr)', result.metrics.annualTurnover.toFixed(1)));
+
+  const traded = Object.entries(result.tradedBySymbol)
+    .filter(([, notional]) => notional > 0)
+    .sort((a, b) => b[1] - a[1]);
+  const total = traded.reduce((s, [, n]) => s + n, 0);
+  if (traded.length > 0) {
+    parts.push('');
+    parts.push('  Share of notional traded, by symbol:');
+    for (const [symbol, notional] of traded) {
+      const share = total === 0 ? 0 : notional / total;
+      const bar = '█'.repeat(Math.max(1, Math.round(share * 30)));
+      parts.push(`    ${symbol.padEnd(12)}${pct(share).padStart(8)}  ${bar}`);
+    }
+  }
+
+  if (result.droppedBars > 0) {
+    parts.push('');
+    parts.push(
+      `  ${wrap(
+        `${result.droppedBars} timestamps were dropped because at least one symbol had ` +
+          `no bar there. They are not forward-filled: an invented price is one a ` +
+          `strategy will happily trade against.`,
+        WIDTH - 4,
+      )}`,
+    );
+  }
+
+  if (result.lateListings.length > 0) {
+    parts.push('');
+    parts.push('  Symbols that listed after the universe began, shortening the test:');
+    for (const listing of result.lateListings.slice(0, 6)) {
+      parts.push(`    ${listing.symbol.padEnd(12)}from ${formatDate(listing.firstTime)}`);
+    }
+  }
+
+  if (result.killSwitch) {
+    parts.push('');
+    parts.push(`  Kill switch fired: ${result.killSwitch}`);
+  }
+
+  parts.push(heading('Read this before believing the table above'));
+  parts.push(`  - ${wrap(survivorshipWarning(result.symbols), WIDTH - 4)}`);
+  for (const warning of caveats(result.metrics)) {
+    parts.push(`  - ${wrap(warning, WIDTH - 4)}`);
+  }
+  parts.push(
+    `  - ${wrap(
+      'The benchmark here is an equal-weight hold of this same universe, not a ' +
+        'single coin. Beating one coin by picking a different one is not a strategy.',
+      WIDTH - 4,
+    )}`,
+  );
+
+  return parts.join('\n');
+}
+
+export function renderPortfolioWalkForward(result: PortfolioWalkForwardResult): string {
+  const parts: string[] = [heading('Portfolio walk-forward (out-of-sample only)')];
+  parts.push(`  ${result.symbols.length} symbols: ${result.symbols.join(', ')}`);
+  parts.push('');
+  parts.push(
+    `  ${'fold'.padEnd(6)}${'test window'.padEnd(28)}${'in-sample'.padStart(11)}` +
+      `${'out-of-sample'.padStart(15)}${'sharpe'.padStart(9)}${'fills'.padStart(7)}`,
+  );
+  for (const fold of result.folds) {
+    parts.push(
+      `  ${String(fold.index).padEnd(6)}` +
+        `${`${formatDate(fold.testFrom)} → ${formatDate(fold.testTo)}`.slice(0, 27).padEnd(28)}` +
+        `${pct(fold.inSampleReturn).padStart(11)}${pct(fold.outOfSampleReturn).padStart(15)}` +
+        `${formatRatio(fold.outOfSampleSharpe).padStart(9)}` +
+        `${String(fold.outOfSampleFills).padStart(7)}`,
+    );
+    parts.push(`         chose ${fold.chosen}`);
+  }
+  parts.push('');
+  parts.push(renderMetrics(result.metrics, { tradeStats: false }));
+  parts.push('');
+  parts.push(
+    `  The winning parameters changed in ${result.parameterChanges} of ` +
+      `${Math.max(0, result.folds.length - 1)} fold transitions.`,
+  );
+  return parts.join('\n');
+}
+
+export function renderCorrelation(report: CorrelationReport): string {
+  const parts: string[] = [heading('How much diversification is actually here')];
+  parts.push(`  ${report.symbols.length} symbols over ${report.observations} aligned bars`);
+  parts.push('');
+  parts.push(row('Average pairwise correlation', report.averagePairwise.toFixed(3)));
+  if (report.highestPair) {
+    parts.push(
+      row(
+        'Most correlated pair',
+        `${report.highestPair.a}/${report.highestPair.b} ${report.highestPair.rho.toFixed(3)}`,
+      ),
+    );
+  }
+  if (report.lowestPair) {
+    parts.push(
+      row(
+        'Least correlated pair',
+        `${report.lowestPair.a}/${report.lowestPair.b} ${report.lowestPair.rho.toFixed(3)}`,
+      ),
+    );
+  }
+  parts.push(
+    row('Effective independent bets', `${report.effectiveBets.toFixed(2)} of ${report.symbols.length}`),
+  );
+  parts.push('');
+  parts.push(
+    `  ${wrap(
+      `Holding ${report.symbols.length} of these carries about as much independent risk ` +
+        `as holding ${report.effectiveBets.toFixed(1)}. "Scans 50 markets simultaneously" is ` +
+        `a claim about CPU, not about risk: in a basket this correlated, every position ` +
+        `is the same position wearing a different ticker, and they all draw down together ` +
+        `on the day it matters.`,
+      WIDTH - 4,
+    )}`,
+  );
+
+  if (report.symbols.length <= 12) {
+    parts.push('');
+    parts.push(`  ${''.padEnd(10)}${report.symbols.map((s) => s.slice(0, 6).padStart(7)).join('')}`);
+    for (const [i, symbol] of report.symbols.entries()) {
+      const cells = (report.matrix[i] as number[])
+        .map((rho) => rho.toFixed(2).padStart(7))
+        .join('');
+      parts.push(`  ${symbol.slice(0, 9).padEnd(10)}${cells}`);
+    }
+  }
+
+  return parts.join('\n');
+}
+
+export function renderSignificance(result: SignificanceResult, interval: string): string {
+  const d = result.deflated;
+  const parts: string[] = [heading('Is the best configuration actually significant?')];
+  parts.push(
+    `  ${'configuration'.padEnd(34)}${'sharpe'.padStart(9)}${'return'.padStart(11)}${'trades'.padStart(8)}`,
+  );
+  for (const trial of result.trials) {
+    parts.push(
+      `  ${trial.name.slice(0, 33).padEnd(34)}${formatRatio(trial.sharpe).padStart(9)}` +
+        `${pct(trial.totalReturn).padStart(11)}${String(trial.trades).padStart(8)}`,
+    );
+  }
+  parts.push('');
+  parts.push(row('Configurations searched', String(d.trials)));
+  parts.push(row(`Winner's Sharpe (annual, ${interval})`, formatRatio(result.winnerSharpeAnnual)));
+  parts.push(row("Winner's Sharpe (per bar)", d.observedSharpe.toFixed(4)));
+  parts.push(row('Hurdle from the search alone', d.selectionHurdle.toFixed(4)));
+  parts.push(row('Deflated Sharpe probability', d.probability.toFixed(3)));
+  parts.push(row('Verdict', d.verdict));
+  parts.push('');
+  parts.push(
+    `  ${wrap(
+      d.probability >= 0.95
+        ? `The winner clears the hurdle its own parameter search creates. That is the ` +
+            `minimum standard for reporting a Sharpe ratio at all — now check it out of ` +
+            `sample with walkforward, because significance in-sample is not persistence.`
+        : `Searching ${d.trials} configurations and keeping the best inflates the Sharpe ` +
+            `ratio even when none of them has an edge. Deflated for that search, for the ` +
+            `length of the series and for the fat tails of these returns, this result is ` +
+            `${d.verdict}. Report this number, not the raw Sharpe.`,
+      WIDTH - 4,
+    )}`,
+  );
+  return parts.join('\n');
+}
+
+export function renderPortfolioNoise(
+  result: PortfolioNoiseResult,
+  realExcess: number | null,
+): string {
+  const parts: string[] = [heading('What this strategy does on universes with no momentum in them')];
+  parts.push(
+    `  ${result.runs} generated universes, correlated like crypto majors, with the ` +
+      `relative-strength`,
+  );
+  parts.push('  persistence set to zero — there is nothing in them to rotate into.');
+  parts.push('');
+  parts.push(row('Beat equal-weight hold', `${result.beatBenchmark} of ${result.runs} runs`));
+  parts.push(row('Median excess return', pct(result.medianExcess)));
+  parts.push(row('Worst excess return', pct(result.excessReturns[0] ?? 0)));
+  parts.push(
+    row('Best excess return', pct(result.excessReturns[result.excessReturns.length - 1] ?? 0)),
+  );
+  parts.push(row('95th percentile Sharpe', formatRatio(result.p95Sharpe)));
+  if (realExcess !== null) {
+    parts.push('');
+    parts.push(row('On your universe', pct(realExcess)));
+  }
+  parts.push('');
+  const hitRate = result.runs === 0 ? 0 : result.beatBenchmark / result.runs;
+  parts.push(
+    `  ${wrap(
+      `Concentrating into a few of many volatile, correlated assets produces an ` +
+        `enormous spread of outcomes, and the good half looks like skill. Here the ` +
+        `strategy beat a plain equal-weight hold in ${pct(hitRate)} of universes that ` +
+        `contain no edge at all, with the best run up ${pct(
+          result.excessReturns[result.excessReturns.length - 1] ?? 0,
+        )}. One good backtest is a draw from this distribution. Judge a single result ` +
+        `against the spread, never on its own.`,
+      WIDTH - 4,
+    )}`,
+  );
+  return parts.join('\n');
 }

@@ -143,3 +143,144 @@ export function meanRevertingSeries(bars: number, interval: Interval, seed: numb
     seed,
   });
 }
+
+export interface UniverseOptions {
+  symbols: readonly string[];
+  bars: number;
+  interval: Interval;
+  /**
+   * How much of each symbol's move comes from one shared market factor, from 0
+   * to 1. This is the knob that matters: crypto majors move together at
+   * correlations near 0.9, which is why a basket of them diversifies almost
+   * nothing. The exact correlation it implies is derived in `generateUniverse`.
+   */
+  marketBeta: number;
+  /** Annualised volatility of the shared factor. */
+  marketVol: number;
+  /** Annualised volatility of each symbol's own idiosyncratic move. */
+  idiosyncraticVol: number;
+  /** Annualised drift of the shared factor. */
+  drift: number;
+  seed: number;
+  /**
+   * Per-symbol persistence of relative strength, from 0 to 1. Above zero a
+   * symbol that has outperformed tends to keep outperforming, which is the
+   * effect a cross-sectional momentum strategy claims to harvest. Set it to 0
+   * for a universe where that strategy should earn nothing.
+   */
+  momentumPersistence?: number;
+}
+
+/**
+ * A universe of correlated symbols driven by one shared factor.
+ *
+ * Built for two tests that cannot be run on a single series. The first is
+ * whether the portfolio engine is correct: with `momentumPersistence` above
+ * zero a cross-sectional strategy must make money, and at zero it must not. The
+ * second is the diversification question — generate twenty symbols at
+ * `marketBeta` 0.9 and the correlation report will show they are worth barely
+ * more than one independent bet, which is what a real basket of crypto majors
+ * looks like.
+ */
+export function generateUniverse(options: UniverseOptions): Map<string, Candle[]> {
+  const {
+    symbols,
+    bars,
+    interval,
+    marketBeta,
+    marketVol,
+    idiosyncraticVol,
+    drift,
+    seed,
+  } = options;
+  const persistence = options.momentumPersistence ?? 0;
+
+  const rng = makeRng(seed);
+  const normal = makeNormal(rng);
+  const barMs = INTERVAL_MS[interval];
+  const barsPerYear = (365 * 86_400_000) / barMs;
+  const dt = 1 / barsPerYear;
+  const marketSigma = marketVol * Math.sqrt(dt);
+  const idioSigma = idiosyncraticVol * Math.sqrt(dt);
+  const mu = (drift - 0.5 * marketVol * marketVol) * dt;
+  const startTime = Date.UTC(2020, 0, 1);
+
+  const out = new Map<string, Candle[]>(symbols.map((s) => [s, []]));
+  const logPrice = new Map<string, number>();
+  const trend = new Map<string, number>();
+  for (const [i, symbol] of symbols.entries()) {
+    // Staggered starting prices, so ranking is not trivially alphabetical.
+    logPrice.set(symbol, Math.log(100 * (1 + i * 0.37)));
+    trend.set(symbol, 0);
+  }
+
+  for (let t = 0; t < bars; t += 1) {
+    const marketShock = normal() * marketSigma;
+
+    for (const symbol of symbols) {
+      const previous = logPrice.get(symbol) as number;
+      const open = Math.exp(previous);
+
+      // Relative strength is carried forward as an AR(1) process, so a symbol
+      // that led last period is more likely to lead this one. The carried term
+      // is weighted by `persistence` as well as smoothed by it, which is what
+      // makes zero persistence mean *no* momentum rather than extra noise. With
+      // it at zero the pairwise correlation of the universe is exactly
+      //
+      //   ρ = (β·σmarket)² / ( (β·σmarket)² + (1−β²)·σidio² )
+      //
+      // so the defaults in `cryptoLikeUniverse` (β 0.9, σmarket 0.7, σidio 0.5)
+      // land near 0.89 — which is what a basket of crypto majors actually is.
+      const innovation = normal() * idioSigma;
+      const carried = persistence * (trend.get(symbol) as number) + (1 - persistence) * innovation;
+      trend.set(symbol, carried);
+
+      const step =
+        mu +
+        marketBeta * marketShock +
+        Math.sqrt(1 - marketBeta * marketBeta) * innovation +
+        persistence * carried;
+      const next = previous + step;
+      logPrice.set(symbol, next);
+      const close = Math.exp(next);
+
+      const wick = Math.abs(normal()) * idioSigma * 0.5;
+      (out.get(symbol) as Candle[]).push({
+        openTime: startTime + t * barMs,
+        open,
+        high: Math.max(open, close) * (1 + wick),
+        low: Math.min(open, close) * (1 - wick),
+        close,
+        volume: 100 + rng() * 100,
+      });
+    }
+  }
+
+  return out;
+}
+
+/** A universe that behaves like crypto majors: highly correlated, trending. */
+export function cryptoLikeUniverse(
+  symbols: readonly string[],
+  bars: number,
+  interval: Interval,
+  seed: number,
+  momentumPersistence = 0,
+): Map<string, Candle[]> {
+  return generateUniverse({
+    symbols,
+    bars,
+    interval,
+    marketBeta: 0.9,
+    marketVol: 0.7,
+    idiosyncraticVol: 0.5,
+    // Drift is quoted in arithmetic terms and converted to a log drift inside
+    // `generateUniverse`, where half the variance is subtracted. At 0.7 vol that
+    // subtraction is 24.5 points a year, so anything under ~0.25 here produces a
+    // universe whose median path falls — which is a fine thing to test against,
+    // but a poor default for checking whether a strategy can find an edge.
+    drift: 0.5,
+    seed,
+    momentumPersistence,
+  });
+}

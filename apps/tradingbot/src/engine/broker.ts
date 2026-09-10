@@ -9,6 +9,25 @@ import type { CostModel, Fill, Trade } from '../types.js';
  * only in a model where trading is free, so this broker makes it expensive by
  * default and the reports print the bill.
  */
+/**
+ * Everything a broker needs to pick up where it left off.
+ *
+ * A bot described as running 24/7 has to survive a restart, and the only thing
+ * that makes that true is writing this down after every bar. A paper account
+ * that silently resets to its starting cash whenever the process dies is not a
+ * forward test of anything — it is a fresh demo each time, which is exactly the
+ * failure mode that makes "running for three months" mean nothing.
+ */
+export interface BrokerState {
+  cash: number;
+  qty: number;
+  fees: number;
+  turnover: number;
+  fills: Fill[];
+  trades: Trade[];
+  openLeg: { time: number; price: number; qty: number; fee: number; bars: number } | null;
+}
+
 export class PaperBroker {
   private readonly costs: CostModel;
   private cashBalance: number;
@@ -51,6 +70,34 @@ export class PaperBroker {
 
   get trades(): readonly Trade[] {
     return this.tradeLog;
+  }
+
+  /** A snapshot that `restore` can turn back into this broker. */
+  get state(): BrokerState {
+    return {
+      cash: this.cashBalance,
+      qty: this.qtyHeld,
+      fees: this.feesTotal,
+      turnover: this.turnoverTotal,
+      fills: [...this.fillLog],
+      trades: [...this.tradeLog],
+      openLeg: this.openLeg === null ? null : { ...this.openLeg },
+    };
+  }
+
+  static restore(state: BrokerState, costs: CostModel): PaperBroker {
+    // Starting cash must be positive, but a restored account may legitimately
+    // hold no cash at all because it is fully invested, so the constructor is
+    // given a placeholder and the real balance is written over it.
+    const broker = new PaperBroker(1, costs);
+    broker.cashBalance = state.cash;
+    broker.qtyHeld = state.qty;
+    broker.feesTotal = state.fees;
+    broker.turnoverTotal = state.turnover;
+    broker.fillLog.push(...state.fills);
+    broker.tradeLog.push(...state.trades);
+    broker.openLeg = state.openLeg === null ? null : { ...state.openLeg };
+    return broker;
   }
 
   /** Cash plus the position marked at `price`. */

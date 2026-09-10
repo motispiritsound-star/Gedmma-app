@@ -72,8 +72,8 @@ Read [docs/TRADING.md](docs/TRADING.md) first. It places no real orders.
 ## Tests
 
 ```bash
-npm test          # 200 tests: 43 domain, 36 API integration, 16 app,
-                  # 16 website, 89 trading harness
+npm test          # 261 tests: 43 domain, 36 API integration, 16 app,
+                  # 16 website, 150 trading harness
 npm run typecheck
 ```
 

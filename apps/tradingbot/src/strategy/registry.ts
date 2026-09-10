@@ -1,8 +1,17 @@
 import { buyAndHold } from './buyAndHold.js';
+import {
+  crossSectionalMomentumFactory,
+  equalWeightHold,
+} from './crossSectionalMomentum.js';
 import { donchianFactory } from './donchian.js';
 import { emaCrossFactory } from './emaCross.js';
 import { meanReversionFactory } from './meanReversion.js';
-import type { Strategy, StrategyFactory } from './types.js';
+import type {
+  PortfolioStrategy,
+  PortfolioStrategyFactory,
+  Strategy,
+  StrategyFactory,
+} from './types.js';
 
 /**
  * Every strategy the CLI can name, with its parameter grid.
@@ -46,6 +55,44 @@ export function buildStrategy(name: string, gridIndex = 0): Strategy {
   if (params === undefined) {
     throw new Error(
       `Strategy "${name}" has ${factory.grid.length} parameter sets, asked for index ${gridIndex}`,
+    );
+  }
+  return factory.create(params);
+}
+
+/**
+ * The multi-asset strategies, kept in a separate registry from the single-asset
+ * ones because they are not interchangeable: a portfolio strategy needs a
+ * universe and returns a weight per symbol, and silently accepting one where the
+ * other belongs would produce a result rather than an error.
+ */
+export const PORTFOLIO_FACTORIES: readonly PortfolioStrategyFactory<never>[] = [
+  crossSectionalMomentumFactory as unknown as PortfolioStrategyFactory<never>,
+];
+
+export function portfolioFactoryByName(
+  name: string,
+): PortfolioStrategyFactory<never> | undefined {
+  return PORTFOLIO_FACTORIES.find((f) => f.name === name);
+}
+
+export function portfolioStrategyNames(): string[] {
+  return [...PORTFOLIO_FACTORIES.map((f) => f.name), 'equal-weight-hold'];
+}
+
+export function buildPortfolioStrategy(name: string, gridIndex = 0): PortfolioStrategy {
+  if (name === 'equal-weight-hold') return equalWeightHold();
+  const factory = portfolioFactoryByName(name);
+  if (!factory) {
+    throw new Error(
+      `Unknown portfolio strategy "${name}". Known: ${portfolioStrategyNames().join(', ')}`,
+    );
+  }
+  const params = factory.grid[gridIndex];
+  if (params === undefined) {
+    throw new Error(
+      `Portfolio strategy "${name}" has ${factory.grid.length} parameter sets, ` +
+        `asked for index ${gridIndex}`,
     );
   }
   return factory.create(params);

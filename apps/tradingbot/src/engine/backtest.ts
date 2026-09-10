@@ -1,4 +1,4 @@
-import { DEFAULT_LIMITS, RiskManager, type RiskLimits } from '../risk/risk.js';
+import { DEFAULT_LIMITS, RiskManager, feeAdjustedCeiling, type RiskLimits } from '../risk/risk.js';
 import type { Strategy } from '../strategy/types.js';
 import {
   DEFAULT_COSTS,
@@ -67,7 +67,13 @@ export function runBacktest(options: BacktestOptions): BacktestResult {
   const dailyLossEnforced = barMs < 86_400_000;
 
   const broker = new PaperBroker(startingCash, costs);
-  const risk = new RiskManager(startingCash, limits, dailyLossEnforced);
+  // The weight cap is reduced by one entry's commission, so a fully invested
+  // target does not leave the account overdrawn by the fee.
+  const risk = new RiskManager(
+    startingCash,
+    { ...limits, maxWeight: feeAdjustedCeiling(limits.maxWeight, costs) },
+    dailyLossEnforced,
+  );
   const curve: EquityPoint[] = [];
   const blocked: Record<string, number> = {};
 

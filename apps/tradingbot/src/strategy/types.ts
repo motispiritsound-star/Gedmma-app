@@ -40,3 +40,36 @@ export interface StrategyFactory<P> {
   readonly grid: readonly P[];
   create(params: P): Strategy;
 }
+
+/**
+ * What a multi-asset strategy sees. Same discipline as `StrategyContext`: each
+ * series in `history` has been grown one bar at a time, so it ends at the bar
+ * that just closed and contains nothing after it.
+ */
+export interface PortfolioContext {
+  readonly history: ReadonlyMap<string, readonly Candle[]>;
+  readonly currentWeights: ReadonlyMap<string, number>;
+  /** Index of the bar that just closed, on the aligned timeline. */
+  readonly barIndex: number;
+}
+
+/**
+ * A multi-asset strategy returns a target weight per symbol.
+ *
+ * It may return fewer symbols than the universe — anything absent is treated as
+ * zero — and it need not respect the exposure limits. The portfolio engine caps
+ * per symbol and in aggregate afterwards, so a strategy can express conviction
+ * without also having to implement risk management.
+ */
+export interface PortfolioStrategy {
+  readonly name: string;
+  readonly describe: string;
+  readonly warmupBars: number;
+  onBar(ctx: PortfolioContext): Map<string, number>;
+}
+
+export interface PortfolioStrategyFactory<P> {
+  readonly name: string;
+  readonly grid: readonly P[];
+  create(params: P): PortfolioStrategy;
+}

@@ -1,4 +1,4 @@
-import { PaperBroker } from '../engine/broker.js';
+import { PaperBroker, type BrokerState } from '../engine/broker.js';
 import type { CostModel, Fill } from '../types.js';
 
 /**
@@ -33,8 +33,15 @@ export class PaperExecution implements ExecutionAdapter {
   readonly kind = 'paper';
   private readonly broker: PaperBroker;
 
-  constructor(startingCash: number, costs: CostModel) {
-    this.broker = new PaperBroker(startingCash, costs);
+  constructor(startingCash: number, costs: CostModel, resumeFrom?: BrokerState) {
+    this.broker = resumeFrom
+      ? PaperBroker.restore(resumeFrom, costs)
+      : new PaperBroker(startingCash, costs);
+  }
+
+  /** The broker's state, for persisting a long run across restarts. */
+  get state(): BrokerState {
+    return this.broker.state;
   }
 
   equity(price: number): number {
