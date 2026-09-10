@@ -869,15 +869,42 @@ describe('the way an amount is printed', () => {
 
 describe('what the pricing section promises', () => {
   it('mentions the free month on the monthly plan only', () => {
-    // The trial belongs to one of the two ways to pay. It sits in the line
-    // under that card's price, so the other card needs no sentence saying it
-    // has none — both cards keep the same shape and line up on their own.
+    // The trial belongs to one of the two ways to pay, so it is stated on that
+    // card and nowhere else.
     for (const locale of SUPPORTED_LOCALES) {
       const offer = COPY[locale].pro.pricing.offer;
       const free = locale === 'nl' ? 'eerste maand is gratis' : 'first month is free';
-      expect(offer.monthly.note.toLowerCase(), `${locale} monthly`).toContain(free);
-      expect(offer.yearly.note.toLowerCase(), `${locale} yearly`).not.toContain(free);
+      const monthly = `${offer.monthly.lead} ${offer.monthly.note}`.toLowerCase();
+      const yearly = `${offer.yearly.lead} ${offer.yearly.note}`.toLowerCase();
+      expect(monthly, `${locale} monthly`).toContain(free);
+      expect(yearly, `${locale} yearly`).not.toContain(free);
       expect(renderPro(locale).toLowerCase().split(free).length - 1, `${locale} once`).toBe(1);
+    }
+  });
+
+  it('gives both cards a line between the heading and the price', () => {
+    // The two amounts are not comparable on their own: one is billed every
+    // month, the other is what a year up front works out to. Each card says
+    // which before it shows the figure, and having one on both is also what
+    // keeps the two prices on the same line as each other.
+    for (const locale of SUPPORTED_LOCALES) {
+      const offer = COPY[locale].pro.pricing.offer;
+      const html = renderPro(locale);
+      expect(html.split('class="plan__lead"').length - 1, `${locale} leads`).toBe(2);
+      expect(html, `${locale} monthly lead`).toContain(esc(offer.monthly.lead));
+      expect(html, `${locale} yearly lead`).toContain(esc(offer.yearly.lead));
+    }
+  });
+
+  it('sells the yearly card on what it gives, not on what it lacks', () => {
+    // It read "no trial month — you commit to a year straight away", which
+    // opens the cheaper option by naming two drawbacks. The card is the better
+    // deal of the two; it should say so.
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderPro(locale).toLowerCase();
+      for (const phrase of ['geen proefmaand', 'no trial month', 'meteen een jaar toe']) {
+        expect(html.includes(phrase), `${locale}: ${phrase}`).toBe(false);
+      }
     }
   });
 
@@ -905,8 +932,8 @@ describe('what the pricing section promises', () => {
 
 describe('the buttons under the two prices', () => {
   it('never promises the trial on the card that has none', () => {
-    // The yearly card says there is no trial month. A button underneath it
-    // reading "start your free month" contradicts the sentence above it.
+    // Only the monthly card comes with a free month. A button on the other one
+    // reading "start your free month" would promise something it does not give.
     for (const locale of SUPPORTED_LOCALES) {
       const offer = COPY[locale].pro.pricing.offer;
       expect(offer.ctaYearly, locale).not.toBe(offer.cta);

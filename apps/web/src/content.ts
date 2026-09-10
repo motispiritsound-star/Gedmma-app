@@ -98,8 +98,13 @@ export interface SiteCopy {
         title: string;
         intro: string;
         points: string[];
-        monthly: { label: string; note: string };
-        yearly: { label: string; note: string };
+        /**
+         * The line above the price. Each card needs one, because the two
+         * amounts are not comparable without it: one is what you pay every
+         * month, the other what a year up front works out to.
+         */
+        monthly: { label: string; lead: string; note: string };
+        yearly: { label: string; lead: string; note: string };
         perMonth: string;
         vat: string;
         notice: string;
@@ -326,11 +331,12 @@ const nl: SiteCopy = {
         ],
         monthly: {
           label: 'Maandelijks',
-          note:
-            'De eerste maand is gratis. Daarna elke maand opzegbaar, zonder opzegtermijn en zonder jaarcontract.',
+          lead: 'De eerste maand is gratis. Daarna:',
+          note: 'Elke maand opzegbaar. Geen opzegtermijn, geen jaarcontract.',
         },
         yearly: {
           label: 'Een jaar vooruit',
+          lead: 'Je maandprijs zakt dan naar:',
           note:
             'In één keer vooruit betaald, {{saving}}% goedkoper. Het jaarbedrag zie je bij het afrekenen.',
         },
@@ -599,11 +605,12 @@ const en: SiteCopy = {
         ],
         monthly: {
           label: 'Monthly',
-          note:
-            'The first month is free. After that, cancel any month — no notice period and no annual contract.',
+          lead: 'The first month is free. After that:',
+          note: 'Cancel any month. No notice period, no annual contract.',
         },
         yearly: {
           label: 'A year up front',
+          lead: 'Your monthly rate then drops to:',
           note:
             'Paid once for the year, {{saving}}% cheaper. The yearly total is shown at checkout.',
         },

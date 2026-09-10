@@ -483,6 +483,10 @@ h1, h2, .section__head h2, .cta h2 { text-wrap: balance; }
   padding: 0.25rem 0.75rem;
   border-radius: var(--radius-pill);
 }
+/* Sits between the heading and the amount, so it reads as one sentence that
+   ends in the price. Both cards carry one, which keeps the amounts on the
+   same line as each other. */
+.plan__lead { margin-block-start: 0.5rem; color: var(--ink-700); }
 .plan__price { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; margin-block-start: 0.5rem; }
 .plan__amount { font-size: 2.4rem; font-weight: 700; color: var(--green-700); letter-spacing: -0.02em; }
 .plan__period { font-size: 0.9rem; color: var(--ink-500); }
@@ -490,6 +494,14 @@ h1, h2, .section__head h2, .cta h2 { text-wrap: balance; }
 .plan__features { display: grid; gap: 0.6rem; margin-block: 1.1rem; padding-block-start: 1.1rem; border-block-start: 1px solid var(--ink-100); }
 .plan__features li { display: flex; gap: 0.55rem; align-items: start; font-size: 0.95rem; }
 .plan__tick { color: var(--green-600); flex: none; }
+/* The two notes are not the same length. Without a floor under them the
+   shorter one pulls its divider, features and button a line higher than the
+   other card's, which reads as a mistake when they stand side by side. Two
+   lines is what the longer note needs; the shorter one holds the space. Only
+   where they are side by side — stacked, there is nothing to line up with. */
+@media (min-width: 40rem) {
+  .plan .planned__note { min-block-size: 3.3em; min-block-size: 2lh; }
+}
 
 /* While Buurklus is free the section holds two panels rather than a row of
    tiers: the free account, and a plain answer to "what happens when it is not

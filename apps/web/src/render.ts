@@ -1409,6 +1409,7 @@ function offerCards(locale: Locale, copy: SiteCopy): string {
   return `<article class="card plan plan--featured">
     <span class="plan__badge">${esc(o.badge)}</span>
     <h3>${esc(o.monthly.label)}</h3>
+    <p class="plan__lead">${esc(fill(o.monthly.lead, values))}</p>
     ${price(plan.monthlyPriceEur)}
     <p class="planned__note">${esc(fill(o.monthly.note, values))}</p>
     <ul class="plan__features">${points}</ul>
@@ -1416,6 +1417,7 @@ function offerCards(locale: Locale, copy: SiteCopy): string {
   </article>
   <article class="card plan">
     <h3>${esc(o.yearly.label)}</h3>
+    <p class="plan__lead">${esc(fill(o.yearly.lead, values))}</p>
     ${price(monthlyRateOfYearly(plan))}
     <p class="planned__note">${esc(fill(o.yearly.note, values))}</p>
     <ul class="plan__features">${points}</ul>
