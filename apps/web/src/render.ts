@@ -1417,11 +1417,11 @@ function offerCards(locale: Locale, copy: SiteCopy): string {
   </article>
   <article class="card plan">
     <h3>${esc(o.yearly.label)}</h3>
-    <p class="plan__trial">${esc(fill(o.monthly.trial, values))}</p>
+    <p class="plan__trial">${esc(fill(o.yearly.trial, values))}</p>
     ${price(monthlyRateOfYearly(plan))}
     <p class="planned__note">${esc(fill(o.yearly.note, values))}</p>
     <ul class="plan__features">${points}</ul>
-    <a class="btn btn--ghost" href="${pathFor(locale, 'join')}">${esc(o.cta)}</a>
+    <a class="btn btn--ghost" href="${pathFor(locale, 'join')}">${esc(o.ctaYearly)}</a>
   </article>`;
 }
 

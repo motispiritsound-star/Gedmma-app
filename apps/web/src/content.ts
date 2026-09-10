@@ -99,11 +99,13 @@ export interface SiteCopy {
         intro: string;
         points: string[];
         monthly: { label: string; trial: string; note: string };
-        yearly: { label: string; note: string };
+        yearly: { label: string; trial: string; note: string };
         perMonth: string;
         vat: string;
         notice: string;
         cta: string;
+        /** The other card's button, which must not promise the trial. */
+        ctaYearly: string;
       };
       /** Sold separately and priced on request, so no figure appears here. */
       services: { title: string; intro: string; items: string[]; cta: string };
@@ -329,6 +331,7 @@ const nl: SiteCopy = {
         },
         yearly: {
           label: 'Een jaar vooruit',
+          trial: 'Geen proefmaand — je zegt meteen een jaar toe:',
           note:
             'In één keer vooruit betaald, {{saving}}% goedkoper. Het jaarbedrag zie je bij het afrekenen.',
         },
@@ -337,6 +340,7 @@ const nl: SiteCopy = {
         notice:
           'Verandert er iets aan de prijs, dan hoor je dat minstens {{notice}} dagen van tevoren en gaat het pas in als jij akkoord geeft. Er wordt nooit automatisch iets afgeschreven.',
         cta: 'Begin met je gratis maand',
+        ctaYearly: 'Kies een jaar vooruit',
       },
       services: {
         title: 'Meer dan alleen klussen ontvangen',
@@ -601,6 +605,7 @@ const en: SiteCopy = {
         },
         yearly: {
           label: 'A year up front',
+          trial: 'No trial month — you commit to a year straight away:',
           note:
             'Paid once for the year, {{saving}}% cheaper. The yearly total is shown at checkout.',
         },
@@ -609,6 +614,7 @@ const en: SiteCopy = {
         notice:
           'If the price changes you hear about it at least {{notice}} days beforehand, and it only takes effect once you agree. Nothing is ever debited automatically.',
         cta: 'Start your free month',
+        ctaYearly: 'Choose a year up front',
       },
       services: {
         title: 'More than receiving jobs',

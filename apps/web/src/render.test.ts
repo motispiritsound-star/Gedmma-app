@@ -868,14 +868,16 @@ describe('the way an amount is printed', () => {
 });
 
 describe('what the pricing section promises', () => {
-  it('offers the same free month on both ways of paying', () => {
-    // The trial is how somebody starts, not a property of one card. Putting it
-    // on one only would leave a reader guessing whether paying yearly costs
-    // them the free month.
+  it('offers the free month on the monthly plan only, and says so on the other', () => {
+    // The trial belongs to one of the two ways to pay. A blank where the line
+    // would be leaves a reader guessing, so the yearly card states plainly
+    // that there is no trial rather than staying quiet about it.
     for (const locale of SUPPORTED_LOCALES) {
       const html = renderPro(locale);
-      const trial = esc(COPY[locale].pro.pricing.offer.monthly.trial);
-      expect(html.split(trial).length - 1, locale).toBe(2);
+      const offer = COPY[locale].pro.pricing.offer;
+      expect(html.split(esc(offer.monthly.trial)).length - 1, `${locale} monthly`).toBe(1);
+      expect(html, `${locale} yearly`).toContain(esc(offer.yearly.trial));
+      expect(offer.yearly.trial.length, `${locale} not blank`).toBeGreaterThan(10);
     }
   });
 
@@ -898,5 +900,19 @@ describe('what the pricing section promises', () => {
 
   it('says the trial is a month, in the same number the API grants', () => {
     expect(TRIAL_DURATION_DAYS).toBe(30);
+  });
+});
+
+describe('the buttons under the two prices', () => {
+  it('never promises the trial on the card that has none', () => {
+    // The yearly card says there is no trial month. A button underneath it
+    // reading "start your free month" contradicts the sentence above it.
+    for (const locale of SUPPORTED_LOCALES) {
+      const offer = COPY[locale].pro.pricing.offer;
+      expect(offer.ctaYearly, locale).not.toBe(offer.cta);
+      const html = renderPro(locale);
+      expect(html.split(esc(offer.cta)).length - 1, `${locale} trial button`).toBe(1);
+      expect(html, `${locale} yearly button`).toContain(esc(offer.ctaYearly));
+    }
   });
 });
