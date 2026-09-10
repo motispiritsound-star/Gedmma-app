@@ -1,3 +1,18 @@
+# Gedmma-app
+
+This repository holds two separate things.
+
+**[`gedmma/`](gedmma/README.md) — Gedmma**, an app and website for learning
+Moroccan Arabic (Darija), aimed at children and teenagers. A single static
+progressive web app: 16 units, 303 words, eight kinds of exercise, spaced
+repetition, stories, games and an Arabic-script module. No account, no server,
+works offline. Start there — `cd gedmma && npm install && npm run dev`.
+
+The rest of this file describes **Buurklus**, an earlier project that still
+lives in `apps/` and `packages/`. The two share nothing but the repository.
+
+---
+
 # Buurklus
 
 Buurklus connects households in the Netherlands with tradespeople and service

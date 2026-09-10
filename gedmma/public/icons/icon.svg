@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#131b30"/><stop offset="100%" stop-color="#080c17"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffd166"/><stop offset="55%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#e2603c"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112.64" fill="url(#tile)"/>
+  <polygon points="420.08,188.04 330.59,256.00 420.08,323.96 308.74,308.74 323.96,420.08 256.00,330.59 188.04,420.08 203.26,308.74 91.92,323.96 181.41,256.00 91.92,188.04 203.26,203.26 188.04,91.92 256.00,181.41 323.96,91.92 308.74,203.26" fill="url(#gold)"  />
+  <polygon points="333.94,223.72 291.43,256.00 333.94,288.28 281.05,281.05 288.28,333.94 256.00,291.43 223.72,333.94 230.95,281.05 178.06,288.28 220.57,256.00 178.06,223.72 230.95,230.95 223.72,178.06 256.00,220.57 288.28,178.06 281.05,230.95" fill="#0d9488"  />
+  <circle cx="256" cy="256" r="28.16" fill="#fffaf3"/>
+</svg>

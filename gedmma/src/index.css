@@ -1,0 +1,168 @@
+@import "tailwindcss";
+
+/* Fonts travel with the app: the Arabic script must render on a device that
+   has no Arabic font installed, and an offline app cannot fetch one. */
+@font-face {
+  font-family: "Noto Naskh Arabic";
+  src: url("/fonts/noto-naskh-arabic-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+@font-face {
+  font-family: "Noto Naskh Arabic";
+  src: url("/fonts/noto-naskh-arabic-700.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+@font-face {
+  font-family: "Baloo 2";
+  src: url("/fonts/baloo2-600.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Baloo 2";
+  src: url("/fonts/baloo2-800.woff2") format("woff2");
+  font-weight: 800;
+  font-display: swap;
+}
+
+/* ------------------------------------------------------------------
+   Gedmma design tokens
+   A Moroccan palette: saffron, terracotta, zellige teal, mint and a
+   midnight ground. Every colour is defined here once and used by name,
+   so the dark theme is a re-definition and never a second stylesheet.
+------------------------------------------------------------------- */
+@theme {
+  --color-saffron-50: #fff8e6;
+  --color-saffron-100: #ffeeba;
+  --color-saffron-300: #ffd166;
+  --color-saffron-400: #fbbf24;
+  --color-saffron-500: #f59e0b;
+  --color-saffron-600: #d97706;
+
+  --color-terra-100: #ffe3d6;
+  --color-terra-300: #ff9f7a;
+  --color-terra-500: #e2603c;
+  --color-terra-600: #c34a2c;
+
+  --color-zellige-100: #d3f4ec;
+  --color-zellige-300: #6fded0;
+  --color-zellige-500: #14b8a6;
+  --color-zellige-600: #0d9488;
+  --color-zellige-700: #0f766e;
+
+  --color-mint-400: #4ade80;
+  --color-mint-500: #22c55e;
+  --color-mint-600: #16a34a;
+
+  --color-night-700: #1b2540;
+  --color-night-800: #131b30;
+  --color-night-900: #0d1220;
+  --color-night-950: #080c17;
+
+  --font-display: "Baloo 2", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+  --font-arabic: "Noto Naskh Arabic", "Noto Sans Arabic", "Geeza Pro", "Arabic Typesetting", "Tahoma", serif;
+
+  --radius-xl2: 1.25rem;
+}
+
+:root {
+  --surface: #fffaf3;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f4ece1;
+  --ink: #1a1625;
+  --ink-soft: #5b5468;
+  --line: #e7dccd;
+  --shadow-press: 0 4px 0 0 rgb(0 0 0 / 0.16);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --surface: #0d1220;
+  --surface-raised: #131b30;
+  --surface-sunken: #080c17;
+  --ink: #f3f0ea;
+  --ink-soft: #9aa3bb;
+  --line: #26314e;
+  --shadow-press: 0 4px 0 0 rgb(0 0 0 / 0.45);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --surface: #0d1220;
+    --surface-raised: #131b30;
+    --surface-sunken: #080c17;
+    --ink: #f3f0ea;
+    --ink-soft: #9aa3bb;
+    --line: #26314e;
+    --shadow-press: 0 4px 0 0 rgb(0 0 0 / 0.45);
+    color-scheme: dark;
+  }
+}
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+/* The zellige tile grid, drawn once as a background and reused. */
+.zellige {
+  background-image:
+    radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--color-zellige-500) 22%, transparent) 0 2px, transparent 3px),
+    radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--color-saffron-500) 16%, transparent) 0 2px, transparent 3px);
+  background-size: 34px 34px, 34px 34px;
+  background-position: 0 0, 17px 17px;
+}
+
+.ar {
+  font-family: var(--font-arabic);
+  direction: rtl;
+  unicode-bidi: isolate;
+  line-height: 1.9;
+}
+
+/* Chunky, pressable button — the whole app leans on this one gesture. */
+.btn3d {
+  box-shadow: var(--shadow-press);
+  transition: transform 90ms ease, box-shadow 90ms ease, filter 120ms ease;
+}
+.btn3d:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 0 transparent;
+}
+.btn3d:disabled { opacity: .5; }
+
+/* Dyslexia-friendly reading mode, switched on in Instellingen. */
+:root[data-reading="dyslexia"] body {
+  font-family: "Atkinson Hyperlegible", "Comic Sans MS", Verdana, sans-serif;
+  letter-spacing: .02em;
+  word-spacing: .08em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+:root[data-motion="calm"] *, :root[data-motion="calm"] *::before {
+  animation-duration: .01ms !important;
+  transition-duration: .01ms !important;
+}
+
+::selection { background: var(--color-saffron-300); color: #1a1625; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
