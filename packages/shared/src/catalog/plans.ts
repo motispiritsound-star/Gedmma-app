@@ -4,28 +4,42 @@ import type { BillingPeriod } from '../enums.js';
 
 /**
  * Buurklus monetises the professional side only: households post jobs and
- * receive quotes for free, professionals pay a monthly subscription that
- * includes a quota of lead credits. One credit is spent when a pro sends a
- * quote, and is refunded if the customer cancels before awarding the job.
+ * receive quotes for free, for good. Professionals pay one subscription, by
+ * the year, that includes a quota of lead credits. One credit is spent when a
+ * pro sends a quote, and is refunded if the customer cancels before awarding
+ * the job. There is no commission on the work itself -- the professional
+ * invoices the customer directly and Buurklus never sees that money.
+ *
+ * There is one paid plan rather than a ladder of them. A ladder needs a reason
+ * to exist on each rung, and dressing the same product up three times to
+ * manufacture one is how pricing pages become lies.
  *
  * Prices are stored excluding VAT, the way Dutch businesses quote to each
  * other; 21% btw is added at invoicing.
  *
- * At launch none of the paid plans is on sale: `available` is false on all
- * three and every professional is on the free plan. They stay in this file
- * because the billing code, the seed and the tests all need something real to
- * work against, and because switching them on later must be a deliberate
- * change to a flag rather than a rewrite. Nothing outside this file may assume
- * a paid plan exists -- read AVAILABLE_PLANS, not PLANS.
+ * There are two ways to pay for it and one price behind them: cancel-any-month
+ * at the full rate, or a year up front at a lower one. A discount for
+ * committing is honest; a lock-in that makes leaving hard is not, so there
+ * isn't one.
+ *
+ * It is not on sale yet: `available` is false, every professional is on the
+ * free plan, and the website says what the subscription will cost rather than
+ * charging for it. It stays in this file because the billing code, the seed
+ * and the tests all need something real to work against, and because switching
+ * it on later must be a deliberate change to a flag rather than a rewrite.
+ * Nothing outside this file may assume a paid plan exists -- read
+ * AVAILABLE_PLANS, not PLANS.
  */
 export interface PlanSeed {
   slug: string;
   name: LocalizedText;
   tagline: LocalizedText;
-  /** Monthly price in euros, excluding VAT. */
+  /** Monthly price in euros, excluding VAT. Zero on a plan sold by the year. */
   monthlyPriceEur: number;
-  /** Yearly price in euros, excluding VAT — two months free. */
+  /** Yearly price in euros, excluding VAT. What a renewal costs. */
   yearlyPriceEur: number;
+  /** Which billing periods this plan can actually be bought for. */
+  billingPeriods: readonly BillingPeriod[];
   /** Lead credits granted at the start of each billing month. */
   monthlyCredits: number;
   /** How many trades the pro may be listed under. */
@@ -66,6 +80,7 @@ export const PLANS: readonly PlanSeed[] = [
     },
     monthlyPriceEur: 0,
     yearlyPriceEur: 0,
+      billingPeriods: ['MONTHLY', 'YEARLY'],
     // Not a paywall but a brake: a quota this size is invisible to a working
     // professional and stops one account from carpet-bombing every job.
     monthlyCredits: 20,
@@ -83,74 +98,31 @@ export const PLANS: readonly PlanSeed[] = [
     ],
   },
   {
-    slug: 'zzp',
-    name: { nl: 'ZZP', en: 'Sole trader' },
+    slug: 'start',
+    name: { nl: 'Start', en: 'Start' },
     tagline: {
-      nl: 'Voor de zelfstandige vakman die begint',
-      en: 'For the self-employed tradesperson starting out',
+      nl: 'Eén abonnement, maandelijks opzegbaar of een jaar vooruit',
+      en: 'One subscription, cancel monthly or pay a year up front',
     },
-    monthlyPriceEur: 39,
-    yearlyPriceEur: 390,
-    monthlyCredits: 15,
-    maxCategories: 2,
-    maxCities: 1,
-    featured: false,
-    available: false,
-    leadHeadStartMinutes: 0,
-    teamSeats: 0,
-    perks: [
-      { nl: '15 offertes per maand', en: '15 quotes per month' },
-      { nl: '2 vakgebieden, 1 gemeente', en: '2 trades, 1 municipality' },
-      { nl: 'KvK-gecontroleerd profiel', en: 'Chamber of Commerce verified profile' },
-    ],
-  },
-  {
-    slug: 'vakman',
-    name: { nl: 'Vakman', en: 'Professional' },
-    tagline: {
-      nl: 'Voor bedrijven die hun agenda vol willen houden',
-      en: 'For businesses that want a full diary',
-    },
-    monthlyPriceEur: 89,
-    yearlyPriceEur: 890,
-    monthlyCredits: 50,
+    // Cancellable every month, or a year up front at a lower rate: 34.95 a
+    // month, or 24.95 a month when the year is paid at once. The discount is
+    // the reason to commit; there is no lock-in to make it stick.
+    monthlyPriceEur: 34.95,
+    yearlyPriceEur: 299.4,
+    billingPeriods: ['MONTHLY', 'YEARLY'],
+    monthlyCredits: 20,
     maxCategories: 5,
     maxCities: 3,
     featured: true,
     available: false,
-    leadHeadStartMinutes: 15,
-    teamSeats: 2,
+    leadHeadStartMinutes: 0,
+    teamSeats: 1,
     perks: [
-      { nl: '50 offertes per maand', en: '50 quotes per month' },
+      { nl: '20 offertes per maand', en: '20 quotes per month' },
       { nl: '5 vakgebieden, 3 gemeenten', en: '5 trades, 3 municipalities' },
-      { nl: 'Klussen 15 minuten eerder zien', en: '15-minute head start on new jobs' },
-      { nl: 'Vakman-badge op je profiel', en: '“Professional” badge on your profile' },
-      { nl: '2 medewerkersaccounts', en: '2 staff accounts' },
-    ],
-  },
-  {
-    slug: 'bedrijf',
-    name: { nl: 'Bedrijf', en: 'Business' },
-    tagline: {
-      nl: 'Voor bedrijven met meerdere ploegen en werkgebieden',
-      en: 'For companies with several teams and service areas',
-    },
-    monthlyPriceEur: 179,
-    yearlyPriceEur: 1790,
-    monthlyCredits: 150,
-    maxCategories: 15,
-    maxCities: null,
-    featured: true,
-    available: false,
-    leadHeadStartMinutes: 30,
-    teamSeats: 10,
-    perks: [
-      { nl: '150 offertes per maand', en: '150 quotes per month' },
-      { nl: 'Heel Nederland', en: 'The whole country' },
-      { nl: 'Klussen 30 minuten eerder zien', en: '30-minute head start on new jobs' },
-      { nl: 'Bovenaan in de zoekresultaten', en: 'Featured placement in search' },
-      { nl: '10 medewerkersaccounts', en: '10 staff accounts' },
-      { nl: 'Facturatie en vaste contactpersoon', en: 'Invoicing and a dedicated contact' },
+      { nl: 'KvK-gecontroleerd profiel', en: 'Chamber of Commerce verified profile' },
+      { nl: 'Geen commissie over je omzet', en: 'No commission on your turnover' },
+      { nl: 'Je factureert de klant zelf', en: 'You invoice the customer yourself' },
     ],
   },
 ];
@@ -183,10 +155,34 @@ export const DEFAULT_PLAN: PlanSeed = (() => {
  */
 export const PLATFORM_IS_FREE: boolean = AVAILABLE_PLANS.every(isFreePlan);
 
+/**
+ * The subscription the site announces while nothing is on sale: defined,
+ * priced, and deliberately not buyable yet. Null once everything defined is
+ * available, because then there is nothing left to announce — so a caller has
+ * to handle its absence rather than assume a price exists to print.
+ */
+export const ANNOUNCED_PLAN: PlanSeed | null =
+  PLANS.find((plan) => !plan.available && !isFreePlan(plan)) ?? null;
+
+/**
+ * What a year up front works out to per month. The site quotes this rather
+ * than the yearly total: a professional compares it against the monthly rate,
+ * and meets the total at checkout where they are deciding to pay it.
+ */
+export function monthlyRateOfYearly(plan: PlanSeed): number {
+  return plan.yearlyPriceEur / 12;
+}
+
 /** Price of one billing period in cents, excluding VAT. */
 export function planNetCents(plan: PlanSeed, period: BillingPeriod): number {
+  // A plan sold by the year has no monthly price, and returning its zero would
+  // quietly bill somebody nothing.
+  if (!plan.billingPeriods.includes(period)) {
+    throw new Error(`Plan ${plan.slug} is not sold per ${period.toLowerCase()}`);
+  }
   return eurosToCents(period === 'YEARLY' ? plan.yearlyPriceEur : plan.monthlyPriceEur);
 }
+
 
 export function planPricing(plan: PlanSeed, period: BillingPeriod): VatBreakdown {
   return applyVat(planNetCents(plan, period));

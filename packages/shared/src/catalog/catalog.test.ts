@@ -11,6 +11,7 @@ import {
   leadDelayMinutes,
   leadVisibleFrom,
   planCreditsForPeriod,
+  planNetCents,
   planPricing,
   yearlySavingPercent,
 } from './plans.js';
@@ -99,17 +100,39 @@ describe('subscription plans', () => {
     }
   });
 
-  it('prices a year at ten months, i.e. two months free', () => {
+  it('rewards paying a year up front', () => {
+    // 34.95 a month, or 24.95 a month when the year is paid at once.
     for (const plan of PAID_PLANS) {
-      expect(plan.yearlyPriceEur, plan.slug).toBe(plan.monthlyPriceEur * 10);
-      expect(yearlySavingPercent(plan), plan.slug).toBe(17);
+      expect(plan.billingPeriods, plan.slug).toEqual(['MONTHLY', 'YEARLY']);
+      expect(plan.yearlyPriceEur, plan.slug).toBeLessThan(plan.monthlyPriceEur * 12);
+      expect(yearlySavingPercent(plan), plan.slug).toBe(29);
+    }
+  });
+
+  it('divides the yearly price into whole months, because that is how it is sold', () => {
+    // The website advertises a monthly figure and the invoice carries the
+    // year. If the two do not divide exactly, one of them is a rounded lie.
+    for (const plan of PAID_PLANS) {
+      const perMonth = plan.yearlyPriceEur / 12;
+      expect(Math.round(perMonth * 100) / 100, plan.slug).toBe(perMonth);
     }
   });
 
   it('adds 21% btw to the advertised net price', () => {
-    const vakman = PLANS.find((plan) => plan.slug === 'vakman')!;
-    expect(planPricing(vakman, 'MONTHLY').grossCents).toBe(10_769);
-    expect(planCreditsForPeriod(vakman, 'YEARLY')).toBe(vakman.monthlyCredits * 12);
+    // The site quotes the net figure, because the businesses who pay it deduct
+    // the btw again. 34.95 becomes 42.29 a month; 299.40 becomes 362.27 a year.
+    const start = PLANS.find((plan) => plan.slug === 'start')!;
+    expect(planPricing(start, 'MONTHLY').grossCents).toBe(4_229);
+    expect(planPricing(start, 'YEARLY').grossCents).toBe(36_227);
+    expect(planCreditsForPeriod(start, 'YEARLY')).toBe(start.monthlyCredits * 12);
+  });
+
+
+  it('refuses to price a plan for a period it is not sold in', () => {
+    // Nothing is sold that way today, but a plan that stops offering monthly
+    // must not quietly bill its zero.
+    const yearlyOnly = { ...PLANS[1]!, monthlyPriceEur: 0, billingPeriods: ['YEARLY'] as const };
+    expect(() => planNetCents(yearlyOnly, 'MONTHLY')).toThrow(/not sold per month/);
   });
 
   it('charges nothing for a free plan, in either billing period', () => {
@@ -157,12 +180,11 @@ describe('what is on sale today', () => {
     expect(delay(0)).toBe(30);
   });
 
-  it('keeps the paid tiers defined so they can be switched back on', () => {
-    for (const slug of ['zzp', 'vakman', 'bedrijf']) {
-      const plan = PLANS.find((row) => row.slug === slug);
-      expect(plan, slug).toBeDefined();
-      expect(plan!.available, slug).toBe(false);
-      expect(plan!.monthlyPriceEur, slug).toBeGreaterThan(0);
-    }
+  it('keeps the subscription defined so it can be switched on', () => {
+    const plan = PLANS.find((row) => row.slug === 'start');
+    expect(plan).toBeDefined();
+    expect(plan!.available).toBe(false);
+    expect(plan!.yearlyPriceEur).toBeGreaterThan(0);
+    expect(plan!.billingPeriods).toEqual(['MONTHLY', 'YEARLY']);
   });
 });

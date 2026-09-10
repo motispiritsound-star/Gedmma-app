@@ -310,7 +310,7 @@ export const LEGAL_EN: LegalCopy = {
         paragraphs: [
           'Right now, nothing. Buurklus is free for customers and for tradespeople. There is no subscription, no commission, and we do not ask you for payment details.',
           'That will not last forever — a platform that costs nothing will one day not exist. If we start charging, the following applies, and we will hold to it: you hear about it at least 30 days in advance, by email and in the app; nothing is ever charged automatically; and without your explicit agreement your account stays free, with the same monthly allowance as now.',
-          'If you do start paying later, the prices shown in the app at that time apply, excluding VAT. Paid subscriptions can be cancelled monthly.',
+          'If you do start paying later, the prices shown in the app at that time apply, excluding VAT. There are two ways to pay: monthly, cancellable every month with no notice period; or a year up front at a lower rate, which then runs to the end of that year as you took it out. What you have paid in advance is not refunded if you stop early; what you have not paid is never owed later.',
         ],
       },
       {

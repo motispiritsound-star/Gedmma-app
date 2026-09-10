@@ -105,6 +105,24 @@ async function seedPlans() {
       update: data,
     });
   }
+  // A plan dropped from the catalogue has to leave the database too. Upserting
+  // alone leaves the old rows sitting there, still sellable, still priced —
+  // which is how a retired tier comes back to life on somebody's invoice.
+  // Anything still subscribed to it is left alone rather than orphaned; that
+  // is a migration, not a seed.
+  const slugs = PLANS.map((plan) => plan.slug);
+  const retired = await prisma.plan.findMany({
+    where: { slug: { notIn: slugs } },
+    select: { id: true, slug: true, _count: { select: { subscriptions: true } } },
+  });
+  for (const plan of retired) {
+    if (plan._count.subscriptions > 0) {
+      console.warn(`  ! pakket ${plan.slug} is vervallen maar heeft nog abonnees — niet verwijderd`);
+      continue;
+    }
+    await prisma.plan.delete({ where: { id: plan.id } });
+  }
+
   const live = PLANS.filter((plan) => plan.available).length;
   console.log(`  pakketten:   ${PLANS.length} (${live} te koop)`);
 }

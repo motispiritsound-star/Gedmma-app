@@ -1,6 +1,13 @@
 import type { FastifyInstance } from 'fastify';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { DEFAULT_PLAN, PLANS, TRIAL_CREDITS, applyVat, eurosToCents } from '@buurklus/shared';
+import {
+  CATEGORIES,
+  DEFAULT_PLAN,
+  PLANS,
+  TRIAL_CREDITS,
+  applyVat,
+  eurosToCents,
+} from '@buurklus/shared';
 import {
   auth,
   createPro,
@@ -125,7 +132,7 @@ describe('signing up as a professional', () => {
       method: 'POST',
       url: '/v1/subscriptions',
       headers: auth(pro.accessToken),
-      payload: { planSlug: 'vakman', period: 'MONTHLY', paymentMethod: 'IDEAL' },
+      payload: { planSlug: 'start', period: 'YEARLY', paymentMethod: 'IDEAL' },
     });
     expect(response.statusCode).toBe(404);
 
@@ -144,7 +151,7 @@ describe('signing up as a professional', () => {
 
     const subscription = await app.services.subscriptions.startInitialSubscription(
       pro.proId,
-      'vakman',
+      'start',
     );
     expect(subscription.status).toBe('TRIALING');
     expect(subscription.creditsRemaining).toBe(TRIAL_CREDITS);
@@ -156,45 +163,47 @@ describe('subscribing to a paid plan', () => {
   it('raises an invoice with 21% Dutch VAT and grants the plan credits', async () => {
     const pro = await createPro(app, { phone: '0614000010' });
     await sellPaidPlans();
-    const plan = PLANS.find((row) => row.slug === 'vakman')!;
+    const plan = PLANS.find((row) => row.slug === 'start')!;
     const before = await creditsOf(pro.proId);
 
     const response = await app.inject({
       method: 'POST',
       url: '/v1/subscriptions',
       headers: auth(pro.accessToken),
-      payload: { planSlug: 'vakman', period: 'MONTHLY', paymentMethod: 'IDEAL' },
+      payload: { planSlug: 'start', period: 'YEARLY', paymentMethod: 'IDEAL' },
     });
     expect(response.statusCode).toBe(200);
 
-    const expected = applyVat(eurosToCents(plan.monthlyPriceEur));
+    const expected = applyVat(eurosToCents(plan.yearlyPriceEur));
     const payment = response.json().payment;
     expect(payment.netCents).toBe(expected.netCents);
     expect(payment.vatCents).toBe(expected.vatCents);
     expect(payment.grossCents).toBe(expected.grossCents);
     expect(payment.reference).toMatch(/^BK-\d{4}-\d{6}$/);
 
-    // The mock gateway settles at once, so the plan's credits are already in.
+    // The mock gateway settles at once, so the credits are already in.
     const subscription = await prisma.subscription.findFirstOrThrow({ where: { proId: pro.proId } });
     expect(subscription.status).toBe('ACTIVE');
-    expect(subscription.creditsRemaining).toBe(before + plan.monthlyCredits);
+    expect(subscription.creditsRemaining).toBe(before + plan.monthlyCredits * 12);
     expect(subscription.currentPeriodEnd.getTime()).toBeGreaterThan(Date.now());
   });
 
-  it('bills a year at ten months and grants twelve months of credits', async () => {
+  it('bills a year up front at the lower monthly rate', async () => {
     const pro = await createPro(app, { phone: '0614000020' });
     await sellPaidPlans();
-    const plan = PLANS.find((row) => row.slug === 'zzp')!;
+    const plan = PLANS.find((row) => row.slug === 'start')!;
     const before = await creditsOf(pro.proId);
 
     const response = await app.inject({
       method: 'POST',
       url: '/v1/subscriptions',
       headers: auth(pro.accessToken),
-      payload: { planSlug: 'zzp', period: 'YEARLY', paymentMethod: 'IDEAL' },
+      payload: { planSlug: 'start', period: 'YEARLY', paymentMethod: 'IDEAL' },
     });
 
-    expect(response.json().payment.netCents).toBe(eurosToCents(plan.monthlyPriceEur * 10));
+    // 24.95 a month rather than 34.95, paid as one invoice for the year.
+    expect(response.json().payment.netCents).toBe(eurosToCents(plan.yearlyPriceEur));
+    expect(plan.yearlyPriceEur / 12).toBeLessThan(plan.monthlyPriceEur);
 
     const subscription = await prisma.subscription.findFirstOrThrow({ where: { proId: pro.proId } });
     expect(subscription.creditsRemaining).toBe(before + plan.monthlyCredits * 12);
@@ -220,7 +229,7 @@ describe('the payment callback', () => {
 
     // Create a pending invoice by hand: the mock gateway would settle instantly.
     const subscription = await prisma.subscription.findFirstOrThrow({ where: { proId: pro.proId } });
-    const plan = await prisma.plan.findUniqueOrThrow({ where: { slug: 'vakman' } });
+    const plan = await prisma.plan.findUniqueOrThrow({ where: { slug: 'start' } });
     await prisma.subscription.update({
       where: { id: subscription.id },
       data: { planId: plan.id, status: 'PAST_DUE' },
@@ -304,7 +313,7 @@ describe('the payment callback', () => {
 
 describe('cancelling', () => {
   it('keeps access to the end of the paid period by default', async () => {
-    const pro = await createPro(app, { phone: '0614000060', planSlug: 'vakman' });
+    const pro = await createPro(app, { phone: '0614000060', planSlug: 'start' });
 
     const response = await app.inject({
       method: 'POST',
@@ -328,7 +337,7 @@ describe('cancelling', () => {
   });
 
   it('ends access immediately when asked to', async () => {
-    const pro = await createPro(app, { phone: '0614000070', planSlug: 'vakman' });
+    const pro = await createPro(app, { phone: '0614000070', planSlug: 'start' });
 
     await app.inject({
       method: 'POST',
@@ -351,9 +360,18 @@ describe('cancelling', () => {
   });
 });
 
+/** One more trade slug than the paid plan permits. */
+function overTheTradeLimit(): string[] {
+  const plan = PLANS.find((row) => row.slug === 'start')!;
+  const slugs = CATEGORIES.map((category) => category.slug);
+  const wanted = plan.maxCategories + 1;
+  if (slugs.length < wanted) throw new Error('The catalog has too few trades to exceed the plan');
+  return slugs.slice(0, wanted);
+}
+
 describe('plan limits', () => {
   it('refuses more trades than the plan allows', async () => {
-    const pro = await createPro(app, { phone: '0614000080', planSlug: 'zzp' });
+    const pro = await createPro(app, { phone: '0614000080', planSlug: 'start' });
 
     const response = await app.inject({
       method: 'PUT',
@@ -365,8 +383,9 @@ describe('plan limits', () => {
         bio: 'Testbedrijf met een compleet team en ruime ervaring in binnen- en buitenwerk.',
         yearsExperience: 10,
         baseCitySlug: 'utrecht',
-        // The zzp plan allows two trades.
-        categorySlugs: ['binnenschilderwerk', 'lekkage', 'riool-ontstoppen'],
+        // One more trade than the plan allows, taken from the plan rather than
+        // written out — a limit that changes must not quietly pass this test.
+        categorySlugs: overTheTradeLimit(),
         citySlugs: ['utrecht'],
         kvk: '99614000080'.slice(-8),
       },

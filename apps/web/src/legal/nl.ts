@@ -311,7 +311,7 @@ export const LEGAL_NL: LegalCopy = {
         paragraphs: [
           'Op dit moment niets. Buurklus is gratis voor klanten en voor vakmensen. Er is geen abonnement, geen commissie, en we vragen je geen betaalgegevens.',
           'Dat blijft niet eeuwig zo — een platform dat niets kost, bestaat op een dag niet meer. Als we gaan rekenen, geldt het volgende, en daar houden we ons aan: je hoort het minstens 30 dagen van tevoren, per e-mail en in de app; er wordt nooit automatisch iets afgeschreven; en zonder dat jij uitdrukkelijk akkoord geeft blijft je account gratis, met hetzelfde maandtegoed als nu.',
-          'Ga je later wél betalen, dan gelden de prijzen die op dat moment in de app staan, exclusief btw. Betaalde abonnementen zijn maandelijks opzegbaar.',
+          'Ga je later wél betalen, dan gelden de prijzen die op dat moment in de app staan, exclusief btw. Er zijn twee manieren: maandelijks, en dan is het elke maand opzegbaar zonder opzegtermijn; of een jaar vooruit tegen een lager tarief, en dan loopt dat jaar uit zoals je het bent aangegaan. Wat je vooruit hebt betaald krijg je bij tussentijds stoppen niet terug; wat je nog niet hebt betaald ben je nooit alsnog verschuldigd.',
         ],
       },
       {

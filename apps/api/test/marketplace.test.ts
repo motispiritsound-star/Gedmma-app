@@ -100,7 +100,7 @@ describe('localised names on jobs', () => {
     const customer = await signIn(app, '0613000310');
     const job = await postJob(customer.accessToken);
     await releaseToAllPlans(job.id);
-    const pro = await createPro(app, { phone: '0613000311', planSlug: 'zzp' });
+    const pro = await createPro(app, { phone: '0613000311', planSlug: 'start' });
 
     const response = await app.inject({
       method: 'GET',
@@ -126,7 +126,7 @@ describe('the lead feed', () => {
       phone: '0613000011',
       categorySlugs: ['binnenschilderwerk'],
       citySlugs: ['utrecht'],
-      planSlug: 'zzp',
+      planSlug: 'start',
     });
 
     const response = await app.inject({
@@ -174,12 +174,12 @@ describe('the lead feed', () => {
     // Published just now: only the top tier's head start has run down.
     const artisan = await createPro(app, {
       phone: '0613000021',
-      planSlug: 'zzp',
+      planSlug: 'start',
       displayName: 'Artisan indépendant',
     });
     const entreprise = await createPro(app, {
       phone: '0613000022',
-      planSlug: 'bedrijf',
+      planSlug: 'start',
       displayName: 'Grande entreprise',
     });
 
@@ -225,7 +225,7 @@ describe('the lead feed', () => {
     });
     await releaseToAllPlans(job.id);
 
-    const pro = await createPro(app, { phone: '0613000031', planSlug: 'zzp' });
+    const pro = await createPro(app, { phone: '0613000031', planSlug: 'start' });
 
     const before = await app.inject({
       method: 'GET',
@@ -266,7 +266,7 @@ describe('quoting and lead credits', () => {
     const job = await postJob(customer.accessToken);
     await releaseToAllPlans(job.id);
 
-    const pro = await createPro(app, { phone: '0613000041', planSlug: 'zzp' });
+    const pro = await createPro(app, { phone: '0613000041', planSlug: 'start' });
     const before = await prisma.subscription.findFirstOrThrow({ where: { proId: pro.proId } });
 
     const response = await app.inject({
@@ -289,7 +289,7 @@ describe('quoting and lead credits', () => {
     const customer = await signIn(app, '0613000050');
     const job = await postJob(customer.accessToken);
     await releaseToAllPlans(job.id);
-    const pro = await createPro(app, { phone: '0613000051', planSlug: 'zzp' });
+    const pro = await createPro(app, { phone: '0613000051', planSlug: 'start' });
 
     const first = await app.inject({
       method: 'POST',
@@ -318,7 +318,7 @@ describe('quoting and lead credits', () => {
 
   it('stops a professional who has run out of credits', async () => {
     const customer = await signIn(app, '0613000060');
-    const pro = await createPro(app, { phone: '0613000061', planSlug: 'zzp' });
+    const pro = await createPro(app, { phone: '0613000061', planSlug: 'start' });
 
     await prisma.subscription.updateMany({
       where: { proId: pro.proId },
@@ -372,12 +372,12 @@ describe('awarding and reviewing', () => {
     const winner = await createPro(app, {
       phone: '0613000081',
       displayName: 'Peinture El Amrani',
-      planSlug: 'vakman',
+      planSlug: 'start',
     });
     const loser = await createPro(app, {
       phone: '0613000082',
       displayName: 'Décoration Atlas',
-      planSlug: 'vakman',
+      planSlug: 'start',
     });
 
     const winningQuote = await app.inject({
@@ -480,7 +480,7 @@ describe('awarding and reviewing', () => {
     const job = await postJob(customer.accessToken);
     await releaseToAllPlans(job.id);
 
-    const pro = await createPro(app, { phone: '0613000091', planSlug: 'zzp' });
+    const pro = await createPro(app, { phone: '0613000091', planSlug: 'start' });
     await app.inject({
       method: 'POST',
       url: `/v1/jobs/${job.id}/quotes`,
@@ -511,7 +511,7 @@ describe('awarding and reviewing', () => {
   it('shows a professional their own posted job as its customer', async () => {
     // A tradesperson hiring another trade for their own premises is a normal
     // case, and they must see their own address rather than the lead view.
-    const pro = await createPro(app, { phone: '0613000200', planSlug: 'zzp' });
+    const pro = await createPro(app, { phone: '0613000200', planSlug: 'start' });
 
     const posted = await app.inject({
       method: 'POST',
@@ -541,7 +541,7 @@ describe('awarding and reviewing', () => {
     const job = await postJob(customer.accessToken);
     await releaseToAllPlans(job.id);
 
-    const pro = await createPro(app, { phone: '0613000102', planSlug: 'zzp' });
+    const pro = await createPro(app, { phone: '0613000102', planSlug: 'start' });
     const quote = await app.inject({
       method: 'POST',
       url: `/v1/jobs/${job.id}/quotes`,
@@ -563,7 +563,7 @@ describe('messaging', () => {
     const customer = await signIn(app, '0613000110');
     const job = await postJob(customer.accessToken);
     await releaseToAllPlans(job.id);
-    const pro = await createPro(app, { phone: '0613000111', planSlug: 'zzp' });
+    const pro = await createPro(app, { phone: '0613000111', planSlug: 'start' });
 
     await app.inject({
       method: 'POST',

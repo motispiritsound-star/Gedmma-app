@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
+  ANNOUNCED_PLAN,
   AVAILABLE_PLANS,
   CITIES,
   DEFAULT_PLAN,
@@ -19,6 +20,7 @@ import {
   legalPath,
   localize,
   missingOperatorFields,
+  monthlyRateOfYearly,
 } from '@buurklus/shared';
 import { COPY } from './content.js';
 import { inlineScriptHashes, renderHeaders } from './edge.js';
@@ -30,6 +32,7 @@ import {
   esc,
   joinUrl,
   mailFallback,
+  money,
   renderHome,
   renderManifest,
   renderNotFound,
@@ -125,15 +128,38 @@ describe('content coming from @buurklus/shared', () => {
 });
 
 describe('the pricing section', () => {
-  it('names no plan the professional cannot have', () => {
-    // The paid tiers still exist in the catalog. A price on the page that
-    // nobody can buy is the sort of thing that ends up in a complaint.
+  it('announces what the subscription will cost, and never sells it yet', () => {
+    // The price is on the page on purpose: somebody deciding to join deserves
+    // to know what it becomes. What must not be there is a way to buy it, or
+    // the price without the promise that goes with it.
+    const plan = ANNOUNCED_PLAN;
+    expect(plan, 'a plan to announce').not.toBeNull();
+
     for (const locale of SUPPORTED_LOCALES) {
       const html = renderPro(locale);
-      for (const plan of PLANS.filter((row) => !row.available)) {
-        expect(html, `${locale} ${plan.slug}`).not.toContain(esc(localize(plan.name, locale)));
-        expect(html, `${locale} ${plan.slug} price`).not.toContain(`${plan.monthlyPriceEur}`);
-      }
+      const monthly = money(eurosToCents(plan!.monthlyPriceEur), locale);
+      const yearly = money(eurosToCents(monthlyRateOfYearly(plan!)), locale);
+
+      expect(html, `${locale} monthly rate`).toContain(esc(monthly));
+      expect(html, `${locale} yearly rate`).toContain(esc(yearly));
+
+      // Both rates are per month. The yearly total belongs at checkout.
+      expect(html, `${locale} yearly total`).not.toContain(
+        esc(money(eurosToCents(plan!.yearlyPriceEur), locale)),
+      );
+
+      // And the price never appears without the notice that protects it.
+      expect(html, `${locale} notice`).toContain(String(PRICING_NOTICE_DAYS));
+      expect(html, `${locale} free today`).toContain(esc(COPY[locale].pro.pricing.launch.badge));
+    }
+  });
+
+  it('offers no way to pay while nothing is on sale', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderPro(locale);
+      // No checkout, no card, no plan chooser — the only button is sign-up.
+      expect(html, locale).not.toMatch(/href="[^"]*\/(checkout|betalen|abonnement)/);
+      expect(html, locale).toContain(`href="${joinUrl(locale)}"`);
     }
   });
 
@@ -812,6 +838,30 @@ describe('the scripts that go out with the forms', () => {
     }
     for (const address of ['geen-adres', 'twee@@apen.nl', 'spatie in@adres.nl']) {
       expect(pattern.test(address), address).toBe(false);
+    }
+  });
+});
+
+describe('the way an amount is printed', () => {
+  it('keeps the cents when there are cents', () => {
+    // "€ 35" for a price of € 34,95 is not a rounding, it is a wrong price.
+    expect(money(3495, 'nl')).toContain('34,95');
+    expect(money(2495, 'nl')).toContain('24,95');
+    expect(money(3495, 'en')).toContain('34.95');
+  });
+
+  it('drops them when there are none', () => {
+    expect(money(0, 'nl')).not.toContain(',00');
+    expect(money(9500, 'nl')).not.toContain(',00');
+  });
+
+  it('prints every announced price in full', () => {
+    const plan = ANNOUNCED_PLAN!;
+    for (const amount of [plan.monthlyPriceEur, monthlyRateOfYearly(plan), plan.yearlyPriceEur]) {
+      const cents = eurosToCents(amount);
+      const printed = money(cents, 'nl').replace(/[^\d,]/g, '');
+      const expected = (cents / 100).toFixed(cents % 100 === 0 ? 0 : 2).replace('.', ',');
+      expect(printed, `${amount}`).toBe(expected);
     }
   });
 });

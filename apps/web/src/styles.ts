@@ -429,6 +429,49 @@ h1, h2, .section__head h2, .cta h2 { text-wrap: balance; }
 .plan { position: relative; }
 .plan--featured { border-color: var(--green-600); border-width: 2px; box-shadow: var(--shadow-raised); }
 .planNote { margin-block-start: 1.5rem; font-size: 0.9rem; }
+
+/* The "we have just started" note. Quiet on purpose: it is an honest word
+   about thin supply, not an apology, and a loud banner would read as one. */
+.earlyDays { padding-block: clamp(2rem, 4vw, 3rem); }
+.earlyDays__title {
+  font-weight: 600;
+  margin-block-end: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.earlyDays__title::before {
+  content: "";
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: 999px;
+  background: var(--saffron-500);
+  flex: none;
+}
+
+/* What the subscription will cost, next to the free account rather than
+   sprung on somebody later. */
+.planned { margin-block-start: 1.5rem; border-block-start: 1px solid var(--ink-100); padding-block-start: 1.25rem; }
+.planned__title { font-size: 1rem; font-weight: 600; margin-block: 0 0.5rem; }
+.planned__options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-block: 1rem;
+}
+.planned__option {
+  background: var(--ink-50);
+  border: 1px solid var(--ink-100);
+  border-radius: var(--radius-md);
+  padding: 0.9rem 1rem;
+}
+.planned__label { display: block; font-size: 0.85rem; color: var(--ink-500); font-weight: 600; }
+.planned__amount { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
+/* On its own line rather than trailing the amount: in a narrow column
+   "per maand" broke between the two words, which reads as a typo. */
+.planned__period { display: block; font-size: 0.9rem; color: var(--ink-500); }
+.planned__note { font-size: 0.85rem; color: var(--ink-500); margin-block-start: 0.4rem; }
+.planned__vat { font-size: 0.85rem; color: var(--ink-500); margin-block-start: 0.6rem; }
 .plan__badge {
   position: absolute;
   inset-block-start: -0.85rem;

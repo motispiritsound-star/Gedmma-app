@@ -50,6 +50,12 @@ export interface SiteCopy {
   trust: { title: string; items: { title: string; body: string }[] };
   proTeaser: { title: string; body: string; cta: string; bullets: string[] };
   faq: { title: string; items: { q: string; a: string }[] };
+  /**
+   * Said plainly rather than discovered: a marketplace that has just opened
+   * has thin supply, and somebody told that up front waits patiently where
+   * somebody who is not decides the site is broken.
+   */
+  earlyDays: { title: string; body: string };
   footer: {
     tagline: string;
     product: string;
@@ -97,6 +103,24 @@ export interface SiteCopy {
         later: string;
         cta: string;
       };
+      /**
+       * What the subscription will cost when it goes on sale. Both figures are
+       * per month; the yearly total is shown at checkout, where somebody is
+       * actually deciding to pay it.
+       */
+      planned: {
+        title: string;
+        intro: string;
+        monthlyLabel: string;
+        monthlyNote: string;
+        yearlyLabel: string;
+        yearlyNote: string;
+        perMonth: string;
+        vat: string;
+        notice: string;
+      };
+      /** Sold separately and priced on request, so no figure appears here. */
+      services: { title: string; intro: string; items: string[]; cta: string };
     };
     how: { title: string; steps: { title: string; body: string }[] };
     faq: { title: string; items: { q: string; a: string }[] };
@@ -231,6 +255,10 @@ const nl: SiteCopy = {
       },
     ],
   },
+  earlyDays: {
+    title: 'We zijn net begonnen',
+    body: 'Buurklus is in september 2026 van start gegaan. Hoe meer mensen en bedrijven meedoen, hoe beter het werkt: in het begin kan het langer duren voor er een vakman reageert, en soms krijg je nog geen zes offertes. Dat wordt elke maand beter, en tot die tijd zeggen we het liever eerlijk dan dat je erop zit te wachten.',
+  },
   footer: {
     tagline: 'Het platform dat mensen in Nederland verbindt met vakmensen en bedrijven die ze kunnen vertrouwen.',
     product: 'De dienst',
@@ -313,6 +341,30 @@ const nl: SiteCopy = {
         later:
           'Ooit gaat Buurklus geld kosten, anders bestaan we volgend jaar niet meer. Als het zover is hoor je dat minstens {{notice}} dagen van tevoren, per e-mail en in de app. Je gaat nooit vanzelf betalen: zonder dat jij akkoord geeft blijft je account gratis, met dezelfde {{credits}} offertes per maand.',
         cta: 'Gratis account aanmaken',
+      },
+      planned: {
+        title: 'Wat het straks gaat kosten',
+        intro:
+          'Eén abonnement, geen tarieven per lead en geen commissie over je omzet. Je factureert de klant zelf, en wat je verdient is van jou.',
+        monthlyLabel: 'Maandelijks',
+        monthlyNote: 'Elke maand opzegbaar. Geen opzegtermijn, geen jaarcontract.',
+        yearlyLabel: 'Een jaar vooruit',
+        yearlyNote:
+          'In één keer vooruit betaald, {{saving}}% goedkoper. Het jaarbedrag zie je bij het afrekenen.',
+        perMonth: 'per maand',
+        vat: 'Bedragen zijn exclusief btw. Als ondernemer trek je die weer af.',
+        notice:
+          'Zolang Buurklus gratis is betaal je niets. Gaat dat veranderen, dan hoor je het minstens {{notice}} dagen van tevoren en gaat het pas in als jij akkoord geeft.',
+      },
+      services: {
+        title: 'Meer dan alleen klussen ontvangen',
+        intro: 'Los van het abonnement, op aanvraag en op maat geprijsd:',
+        items: [
+          'Proactieve leadgenerator — wij gaan actief op zoek naar klussen die bij jouw vak en werkgebied passen',
+          'Websitescan — waar je eigen site bezoekers laat weglopen, met de punten die het meeste opleveren',
+          'Verbeteringen doorvoeren — wij regelen het, of we leggen uit hoe je het zelf doet',
+        ],
+        cta: 'Vraag ernaar',
       },
     },
     how: {
@@ -479,6 +531,10 @@ const en: SiteCopy = {
       },
     ],
   },
+  earlyDays: {
+    title: 'We have only just started',
+    body: 'Buurklus opened in September 2026. The more people and companies join, the better it works: early on it can take longer for a tradesperson to reply, and you may not get six quotes yet. That improves every month, and until it does we would rather say so than leave you waiting.',
+  },
   footer: {
     tagline: 'The platform connecting people in the Netherlands with tradespeople and companies they can trust.',
     product: 'The service',
@@ -561,6 +617,30 @@ const en: SiteCopy = {
         later:
           'Buurklus will cost money one day, or we will not be here next year. When that happens you will hear about it at least {{notice}} days in advance, by email and in the app. You will never start paying by default: without your agreement your account stays free, with the same {{credits}} quotes a month.',
         cta: 'Create a free account',
+      },
+      planned: {
+        title: 'What it will cost later',
+        intro:
+          'One subscription, no per-lead charges and no commission on your turnover. You invoice the customer yourself, and what you earn is yours.',
+        monthlyLabel: 'Monthly',
+        monthlyNote: 'Cancel any month. No notice period, no annual contract.',
+        yearlyLabel: 'A year up front',
+        yearlyNote:
+          'Paid once for the year, {{saving}}% cheaper. The yearly total is shown at checkout.',
+        perMonth: 'per month',
+        vat: 'Prices exclude VAT, which you deduct again as a business.',
+        notice:
+          'While Buurklus is free you pay nothing. If that changes you hear about it at least {{notice}} days beforehand, and it only starts once you agree.',
+      },
+      services: {
+        title: 'More than receiving jobs',
+        intro: 'Separate from the subscription, on request and priced to fit:',
+        items: [
+          'Proactive lead generator — we go looking for jobs that match your trade and your area',
+          'Website scan — where your own site loses visitors, and the fixes worth making first',
+          'Making the changes — we do it, or we show you how to do it yourself',
+        ],
+        cta: 'Ask about it',
       },
     },
     how: {

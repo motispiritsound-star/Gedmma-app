@@ -1,4 +1,7 @@
 import {
+  yearlySavingPercent,
+  monthlyRateOfYearly,
+  ANNOUNCED_PLAN,
   CONTACT_MESSAGE_MAX,
   CITIES,
   DEFAULT_PLAN,
@@ -64,11 +67,20 @@ function fill(template: string, values: Record<string, string | number>): string
 
 const NUMBER_TAGS: Record<Locale, string> = { nl: 'nl-NL', en: 'en-NL' };
 
-function money(cents: number, locale: Locale): string {
+/**
+ * Cents are shown when there are cents and hidden when there are none, so
+ * "€ 0" stays clean and € 34,95 stays € 34,95. Rounding a price to the euro
+ * is fine for an estimate and not fine for something somebody is asked to pay:
+ * this printed "€ 35" for a moment, and a price that is not the price is the
+ * kind of mistake that ends up in a complaint.
+ */
+export function money(cents: number, locale: Locale): string {
+  const digits = cents % 100 === 0 ? 0 : 2;
   return new Intl.NumberFormat(NUMBER_TAGS[locale], {
     style: 'currency',
     currency: 'EUR',
-    maximumFractionDigits: 0,
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
   }).format(centsToEuros(cents));
 }
 
@@ -1273,6 +1285,13 @@ function homeBody(locale: Locale): string {
     </div>
   </section>
 
+  <section class="section earlyDays">
+    <div class="wrap wrap--narrow">
+      <p class="earlyDays__title">${esc(copy.earlyDays.title)}</p>
+      <p class="muted">${esc(copy.earlyDays.body)}</p>
+    </div>
+  </section>
+
   <section class="section" id="trades">
     <div class="wrap">
       <div class="section__head">
@@ -1423,7 +1442,73 @@ function launchPanel(locale: Locale, copy: SiteCopy): string {
   <aside class="card plan plan--later">
     <h3>${esc(l.laterTitle)}</h3>
     <p class="muted">${esc(fill(l.later, values))}</p>
+    ${plannedPricing(locale, copy)}
   </aside>`;
+}
+
+/**
+ * What the subscription will cost, shown next to the free account rather than
+ * hidden until the day it starts costing money. Both rates are per month: the
+ * yearly total belongs at checkout, where somebody is deciding to pay it, not
+ * on a page where they are deciding whether to bother.
+ *
+ * Renders to nothing when there is no announced plan, so a build with
+ * everything already on sale cannot advertise a phantom price.
+ */
+function plannedPricing(locale: Locale, copy: SiteCopy): string {
+  const plan = ANNOUNCED_PLAN;
+  if (!plan) return '';
+
+  const p = copy.pro.pricing.planned;
+  const values = {
+    saving: count(yearlySavingPercent(plan), locale),
+    notice: count(PRICING_NOTICE_DAYS, locale),
+  };
+
+  const rate = (label: string, amount: number, note: string) => `
+    <div class="planned__option">
+      <span class="planned__label">${esc(label)}</span>
+      <span class="planned__amount">${esc(money(eurosToCents(amount), locale))}</span>
+      <span class="planned__period">${esc(p.perMonth)}</span>
+      <p class="planned__note">${esc(fill(note, values))}</p>
+    </div>`;
+
+  return `<div class="planned">
+    <h4 class="planned__title">${esc(p.title)}</h4>
+    <p class="muted">${esc(p.intro)}</p>
+    <div class="planned__options">
+      ${rate(p.monthlyLabel, plan.monthlyPriceEur, p.monthlyNote)}
+      ${rate(p.yearlyLabel, monthlyRateOfYearly(plan), p.yearlyNote)}
+    </div>
+    <p class="planned__vat">${esc(p.vat)}</p>
+    <p class="planned__vat">${esc(fill(p.notice, values))}</p>
+  </div>`;
+}
+
+/**
+ * The work that is quoted rather than subscribed to. No figure appears here
+ * on purpose: these are priced per job, and a number on this page would be
+ * one somebody holds you to.
+ */
+function proServices(locale: Locale, copy: SiteCopy): string {
+  const s = copy.pro.pricing.services;
+  const items = s.items
+    .map(
+      (item) =>
+        `<li><span class="plan__tick">${solidIcon('check', 17)}</span><span>${esc(item)}</span></li>`,
+    )
+    .join('');
+
+  return `<section class="section">
+    <div class="wrap wrap--narrow">
+      <div class="card joinCard--promise">
+        <h2>${esc(s.title)}</h2>
+        <p class="muted">${esc(s.intro)}</p>
+        <ul class="plan__features">${items}</ul>
+        <a class="btn btn--ghost" href="${pathFor(locale, 'contact')}">${esc(s.cta)}</a>
+      </div>
+    </div>
+  </section>`;
 }
 
 function proBody(locale: Locale): string {
@@ -1502,6 +1587,8 @@ function proBody(locale: Locale): string {
       }
     </div>
   </section>
+
+  ${proServices(locale, copy)}
 
   <section class="section" id="pro-how">
     <div class="wrap">
