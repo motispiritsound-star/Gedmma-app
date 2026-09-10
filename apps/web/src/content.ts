@@ -98,8 +98,8 @@ export interface SiteCopy {
         title: string;
         intro: string;
         points: string[];
-        monthly: { label: string; trial: string; note: string };
-        yearly: { label: string; trial: string; note: string };
+        monthly: { label: string; note: string };
+        yearly: { label: string; note: string };
         perMonth: string;
         vat: string;
         notice: string;
@@ -326,12 +326,11 @@ const nl: SiteCopy = {
         ],
         monthly: {
           label: 'Maandelijks',
-          trial: 'De eerste maand is gratis. Daarna:',
-          note: 'Elke maand opzegbaar. Geen opzegtermijn, geen jaarcontract.',
+          note:
+            'De eerste maand is gratis. Daarna elke maand opzegbaar, zonder opzegtermijn en zonder jaarcontract.',
         },
         yearly: {
           label: 'Een jaar vooruit',
-          trial: 'Geen proefmaand — je zegt meteen een jaar toe:',
           note:
             'In één keer vooruit betaald, {{saving}}% goedkoper. Het jaarbedrag zie je bij het afrekenen.',
         },
@@ -600,12 +599,11 @@ const en: SiteCopy = {
         ],
         monthly: {
           label: 'Monthly',
-          trial: 'The first month is free. After that:',
-          note: 'Cancel any month. No notice period, no annual contract.',
+          note:
+            'The first month is free. After that, cancel any month — no notice period and no annual contract.',
         },
         yearly: {
           label: 'A year up front',
-          trial: 'No trial month — you commit to a year straight away:',
           note:
             'Paid once for the year, {{saving}}% cheaper. The yearly total is shown at checkout.',
         },

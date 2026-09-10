@@ -868,16 +868,16 @@ describe('the way an amount is printed', () => {
 });
 
 describe('what the pricing section promises', () => {
-  it('offers the free month on the monthly plan only, and says so on the other', () => {
-    // The trial belongs to one of the two ways to pay. A blank where the line
-    // would be leaves a reader guessing, so the yearly card states plainly
-    // that there is no trial rather than staying quiet about it.
+  it('mentions the free month on the monthly plan only', () => {
+    // The trial belongs to one of the two ways to pay. It sits in the line
+    // under that card's price, so the other card needs no sentence saying it
+    // has none — both cards keep the same shape and line up on their own.
     for (const locale of SUPPORTED_LOCALES) {
-      const html = renderPro(locale);
       const offer = COPY[locale].pro.pricing.offer;
-      expect(html.split(esc(offer.monthly.trial)).length - 1, `${locale} monthly`).toBe(1);
-      expect(html, `${locale} yearly`).toContain(esc(offer.yearly.trial));
-      expect(offer.yearly.trial.length, `${locale} not blank`).toBeGreaterThan(10);
+      const free = locale === 'nl' ? 'eerste maand is gratis' : 'first month is free';
+      expect(offer.monthly.note.toLowerCase(), `${locale} monthly`).toContain(free);
+      expect(offer.yearly.note.toLowerCase(), `${locale} yearly`).not.toContain(free);
+      expect(renderPro(locale).toLowerCase().split(free).length - 1, `${locale} once`).toBe(1);
     }
   });
 
