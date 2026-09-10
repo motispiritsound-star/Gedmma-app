@@ -25,12 +25,27 @@ export interface JoinCopy {
     phoneHint: string;
     city: string;
     cityPlaceholder: string;
+    /** The pro's own trades. */
     trades: string;
     tradesHint: string;
+    /** The same checkboxes, asked of a customer: what the job is. */
+    tradesCustomer: string;
+    tradesCustomerHint: string;
+    /** A line about the job, in the customer's own words. */
+    job: string;
+    jobHint: string;
+    jobPlaceholder: string;
     kvk: string;
     kvkHint: string;
     optional: string;
+    /**
+     * What the tick actually agrees to, per side. It used to say only "tell me
+     * when you open"; a customer's job description is now passed on to
+     * tradespeople nearby, and consent that does not mention that is consent
+     * for something else.
+     */
     consent: string;
+    consentPro: string;
     submit: string;
     submitting: string;
   };
@@ -106,10 +121,19 @@ const nl: JoinCopy = {
     cityPlaceholder: 'Kies je gemeente',
     trades: 'Wat doe je?',
     tradesHint: 'Kies maximaal 5 vakgebieden.',
+    tradesCustomer: 'Waar gaat je klus over?',
+    tradesCustomerHint:
+      'Kies wat het dichtst in de buurt komt. Hiermee zoeken we vakmensen bij jou in de buurt die dit doen.',
+    job: 'Vertel kort wat er moet gebeuren',
+    jobHint: 'Eén of twee zinnen is genoeg. Dit lezen de vakmensen die reageren.',
+    jobPlaceholder: 'Bijvoorbeeld: woonkamer van 30 m² schilderen, muren en plafond.',
     kvk: 'KvK-nummer',
     kvkHint: 'Acht cijfers. Ook zzp’ers staan ingeschreven.',
     optional: 'niet verplicht',
-    consent: 'Ja, mail me wanneer Buurklus bij mij in de buurt opengaat.',
+    consent:
+      'Ja, mail me over mijn klus en leg mijn aanvraag voor aan vakmensen bij mij in de buurt.',
+    consentPro:
+      'Ja, mail me klussen uit mijn vakgebied en mijn regio, en laat me weten wanneer Buurklus opengaat.',
     submit: 'Aanmelden',
     submitting: 'Bezig…',
   },
@@ -134,8 +158,8 @@ const nl: JoinCopy = {
   promise: {
     title: 'Wat we met je adres doen',
     items: [
-      'We mailen je één keer als Buurklus bij jou opengaat, en verder alleen als er iets is dat je moet weten.',
-      'We verkopen je gegevens niet en delen ze met niemand.',
+      'We mailen je over je eigen klus, en als Buurklus bij jou opengaat. Verder alleen als er iets is dat je echt moet weten.',
+      'We verkopen je gegevens nooit. Vakmensen zien je klus en je gemeente — niet je naam, je adres of je telefoonnummer. Die krijgt alleen de vakman die jij zelf kiest.',
       'Afmelden kan altijd, in één mail, zonder gedoe.',
       'Blijft het stil, dan verwijderen we je gegevens vanzelf.',
     ],
@@ -208,10 +232,19 @@ const en: JoinCopy = {
     cityPlaceholder: 'Choose your municipality',
     trades: 'What do you do?',
     tradesHint: 'Pick up to 5 trades.',
+    tradesCustomer: 'What is your job about?',
+    tradesCustomerHint:
+      'Pick whatever comes closest. We use it to find tradespeople near you who do this work.',
+    job: 'Briefly, what needs doing?',
+    jobHint: 'A sentence or two is plenty. The tradespeople who reply read this.',
+    jobPlaceholder: 'For example: paint a 30 m² living room, walls and ceiling.',
     kvk: 'Chamber of Commerce number',
     kvkHint: 'Eight digits. Sole traders are registered too.',
     optional: 'optional',
-    consent: 'Yes, email me when Buurklus opens near me.',
+    consent:
+      'Yes, email me about my job and put my request to tradespeople near me.',
+    consentPro:
+      'Yes, email me jobs in my trade and my area, and tell me when Buurklus opens.',
     submit: 'Sign up',
     submitting: 'Sending…',
   },
@@ -236,8 +269,8 @@ const en: JoinCopy = {
   promise: {
     title: 'What we do with your address',
     items: [
-      'We email you once when Buurklus opens for you, and after that only when there is something you need to know.',
-      'We do not sell your data and we share it with nobody.',
+      'We email you about your own job, and when Buurklus opens for you. After that only when there is something you really need to know.',
+      'We never sell your data. Tradespeople see your job and your municipality — not your name, address or phone number. Only the one you choose gets those.',
       'You can unsubscribe at any time, in one email, without a fuss.',
       'If nothing happens, your details are deleted on their own.',
     ],

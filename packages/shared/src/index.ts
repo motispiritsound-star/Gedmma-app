@@ -3,6 +3,7 @@ export * from './enums.js';
 export * from './phone.js';
 export * from './money.js';
 export * from './geo.js';
+export * from './matching.js';
 export * from './identifiers.js';
 export * from './legal.js';
 export * from './catalog/categories.js';

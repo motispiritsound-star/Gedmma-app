@@ -158,6 +158,12 @@ export const CHROME_NL: LegalChrome = {
         'Je laten weten wanneer Buurklus in jouw gemeente opengaat, en vooraf kunnen zien of daar genoeg vakmensen én klanten zijn.',
       basis: 'Toestemming',
     },
+    {
+      data: 'Waar je klus over gaat en wat je er zelf over schrijft',
+      purpose:
+        'Je aanvraag voorleggen aan vakmensen in en rond jouw gemeente die dit werk doen. Zij zien de klus en de gemeente; je naam, adres en telefoonnummer krijgen ze niet. Die geef je zelf aan de vakman met wie je verder wilt.',
+      basis: 'Toestemming',
+    },
   ],
 };
 

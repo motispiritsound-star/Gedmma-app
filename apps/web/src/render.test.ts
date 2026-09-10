@@ -1128,3 +1128,54 @@ describe('counting visitors', () => {
     });
   });
 });
+
+describe('what the sign-up form asks a customer', () => {
+  it('asks for the trade and the job, not only the municipality', () => {
+    // Without these two, a request cannot be matched to anybody: the operator
+    // would know that somebody in Utrecht wants something, and nothing more.
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderJoin(locale);
+      const form = JOIN_COPY[locale].form;
+      expect(html, `${locale} trades`).toContain(esc(form.tradesCustomer));
+      expect(html, `${locale} job`).toContain(esc(form.job));
+      expect(html, `${locale} field`).toContain('name="jobNote"');
+      expect(html, `${locale} placeholder`).toContain(esc(form.jobPlaceholder));
+    }
+  });
+
+  it('offers the same trades to both sides', () => {
+    // One list, compared against itself. A separate set of customer trades
+    // would drift from the pro list and match nothing.
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderJoin(locale);
+      const boxes = html.split('type="checkbox" name="categorySlugs"').length - 1;
+      expect(boxes, `${locale} boxes`).toBe(ROOT_CATEGORIES.length);
+
+      // And they are not inside a block that is hidden from a customer: the
+      // field they sit in must open without a data-role of its own.
+      const before = html.slice(0, html.indexOf('type="checkbox" name="categorySlugs"'));
+      const opening = before.slice(before.lastIndexOf('<div class="field'));
+      expect(opening.startsWith('<div class="field">'), `${locale} visible`).toBe(true);
+    }
+  });
+
+  it('asks each side to agree to what actually happens to them', () => {
+    // A customer's job is put to tradespeople nearby. Consent that says only
+    // "tell me when you open" does not cover that.
+    for (const locale of SUPPORTED_LOCALES) {
+      const form = JOIN_COPY[locale].form;
+      const html = renderJoin(locale);
+      expect(form.consent, `${locale} differ`).not.toBe(form.consentPro);
+      expect(html, `${locale} customer`).toContain(esc(form.consent));
+      expect(html, `${locale} pro`).toContain(esc(form.consentPro));
+    }
+  });
+
+  it('promises only what the introduction mail actually does', () => {
+    // The mail to the pros carries the job, the trade and the municipality —
+    // never the customer's address, name or telephone number.
+    const items = JOIN_COPY.nl.promise.items.join(' ').toLowerCase();
+    expect(items).toContain('gemeente');
+    expect(items).not.toContain('delen ze met niemand');
+  });
+});

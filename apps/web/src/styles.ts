@@ -647,7 +647,7 @@ h1, h2, .section__head h2, .cta h2 { text-wrap: balance; }
 .field label, .field__label { font-weight: 600; font-size: 0.92rem; }
 .field__optional { font-weight: 400; color: var(--ink-300); font-size: 0.85rem; }
 .field__hint { font-size: 0.82rem; color: var(--ink-500); margin: 0; }
-.field input, .field select {
+.field input, .field select, .field textarea {
   font: inherit;
   color: var(--ink-900);
   background: var(--white);
@@ -659,7 +659,10 @@ h1, h2, .section__head h2, .cta h2 { text-wrap: balance; }
   min-block-size: 44px;
   inline-size: 100%;
 }
-.field input:focus-visible, .field select:focus-visible {
+/* The one field somebody types a sentence into: same box, room to grow, and
+   never wider than its column. */
+.field textarea { resize: vertical; min-block-size: 5rem; max-inline-size: 100%; line-height: 1.5; }
+.field input:focus-visible, .field select:focus-visible, .field textarea:focus-visible {
   outline: 2px solid var(--green-600);
   outline-offset: 1px;
   border-color: var(--green-600);

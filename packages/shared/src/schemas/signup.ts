@@ -41,8 +41,18 @@ export const signupSchema = z
     name: z.string().trim().min(2).max(120).optional().or(z.literal('')),
     /** Where they are, as a city slug from the catalog. */
     citySlug: z.string().trim().max(64).optional().or(z.literal('')),
-    /** What a professional does, as category slugs. Ignored for a customer. */
+    /**
+     * Trades. What a professional does, or what a customer needs done — the
+     * same field on purpose, because matching the two is comparing one list
+     * against the other and a second field would only be a second thing to
+     * keep in step.
+     */
     categorySlugs: z.array(z.string().max(64)).max(5).optional(),
+    /**
+     * A customer's own words about the job. Optional, and short: it is read by
+     * a tradesperson deciding whether to reply, not by an estimator.
+     */
+    jobNote: z.string().trim().max(400).optional().or(z.literal('')),
     kvk: optionalKvkSchema,
     locale: localeSchema.optional(),
     /**

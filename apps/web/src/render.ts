@@ -471,10 +471,26 @@ function joinForm(locale: Locale): string {
         </select>
       </div>
 
-      <div class="field" data-role="PRO" hidden>
-        <span class="field__label">${esc(f.trades)}</span>
+      <!-- One set of checkboxes for both sides. A pro says what they do, a
+           customer says what they need, and matching the two is comparing the
+           same list against itself. -->
+      <div class="field">
+        <span class="field__label">
+          <span data-role-label="CUSTOMER">${esc(f.tradesCustomer)}</span><span data-role-label="PRO" hidden>${esc(f.trades)}</span>
+        </span>
         <div class="chips chips--wrap">${trades}</div>
-        <p class="field__hint">${esc(f.tradesHint)}</p>
+        <p class="field__hint">
+          <span data-role-label="CUSTOMER">${esc(f.tradesCustomerHint)}</span><span data-role-label="PRO" hidden>${esc(f.tradesHint)}</span>
+        </p>
+      </div>
+
+      <div class="field" data-role="CUSTOMER">
+        <label for="jobNote">
+          ${esc(f.job)} <span class="field__optional">${esc(f.optional)}</span>
+        </label>
+        <textarea id="jobNote" name="jobNote" rows="3" maxlength="400"
+                  placeholder="${esc(f.jobPlaceholder)}"></textarea>
+        <p class="field__hint">${esc(f.jobHint)}</p>
       </div>
 
       <div class="field">
@@ -494,7 +510,7 @@ function joinForm(locale: Locale): string {
 
       <label class="check">
         <input type="checkbox" id="consent" name="consent" required>
-        <span>${esc(f.consent)}
+        <span><span data-role-label="CUSTOMER">${esc(f.consent)}</span><span data-role-label="PRO" hidden>${esc(f.consentPro)}</span>
           <a href="${privacyHref}">${esc(
             locale === 'en' ? 'Read the privacy statement' : 'Lees het privacybeleid',
           )}</a></span>
@@ -700,9 +716,11 @@ function joinScript(locale: Locale): string {
       consent: true,
       website: form.website.value,
     };
+    payload.categorySlugs = trades.slice(0, 5);
     if (role === 'PRO') {
       payload.kvk = kvk;
-      payload.categorySlugs = trades.slice(0, 5);
+    } else {
+      payload.jobNote = form.jobNote.value.trim();
     }
 
     button.disabled = true;

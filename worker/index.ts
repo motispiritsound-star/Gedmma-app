@@ -11,12 +11,15 @@
  */
 import { EmailMessage } from 'cloudflare:email';
 import { buildNotification } from './notification.js';
+import { accessTokenFrom, verifyAccessJwt } from './access.js';
+import { ADMIN_STYLES, renderAdminPage, type ContactMessage } from './admin.js';
 import {
   contactSchema,
   documentVersion,
   signupSchema,
   type ContactInput,
   type SignupInput,
+  type SignupRecord,
 } from '@buurklus/shared';
 
 export interface Env {
@@ -27,6 +30,10 @@ export interface Env {
   NOTIFY_TO: string;
   /** The address they appear to come from. Must be on this domain. */
   NOTIFY_FROM: string;
+  /** The Cloudflare Access team name, e.g. "buurklus". Guards /beheer. */
+  ACCESS_TEAM_DOMAIN?: string;
+  /** The Access application's Audience tag. */
+  ACCESS_AUD?: string;
 }
 
 /** How many submissions one address may make in an hour before we stop. */
@@ -116,28 +123,32 @@ async function handleSignup(request: Request, env: Env): Promise<Response> {
     category_slugs: input.categorySlugs?.length ? input.categorySlugs.join(',') : null,
     kvk: input.kvk ?? null,
     locale: input.locale ?? 'nl',
+    job_note: input.jobNote || null,
   };
 
   if (existing) {
     await env.DB.prepare(
       `UPDATE signups SET updated_at = ?, role = ?, name = ?, phone = ?, city_slug = ?,
-       category_slugs = ?, kvk = ?, locale = ?, consent_at = ?, consent_ip = ?,
-       consent_version = ?, unsubscribed_at = NULL WHERE id = ?`,
+       category_slugs = ?, kvk = ?, locale = ?, job_note = ?, consent_at = ?, consent_ip = ?,
+       consent_version = ?, unsubscribed_at = NULL,
+       -- A new request from the same address is a new request, even if the
+       -- last one was dealt with weeks ago.
+       handled_at = NULL WHERE id = ?`,
     )
       .bind(
         now, row.role, row.name, row.phone, row.city_slug, row.category_slugs, row.kvk,
-        row.locale, now, ip, documentVersion('PRIVACY'), existing.id,
+        row.locale, row.job_note, now, ip, documentVersion('PRIVACY'), existing.id,
       )
       .run();
   } else {
     await env.DB.prepare(
       `INSERT INTO signups (id, created_at, updated_at, role, email, name, phone, city_slug,
-       category_slugs, kvk, locale, consent_at, consent_ip, consent_version)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       category_slugs, kvk, locale, job_note, consent_at, consent_ip, consent_version)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
       .bind(
         crypto.randomUUID(), now, now, row.role, row.email, row.name, row.phone, row.city_slug,
-        row.category_slugs, row.kvk, row.locale, now, ip, documentVersion('PRIVACY'),
+        row.category_slugs, row.kvk, row.locale, row.job_note, now, ip, documentVersion('PRIVACY'),
       )
       .run();
   }
@@ -152,6 +163,7 @@ async function handleSignup(request: Request, env: Env): Promise<Response> {
     `Telefoon:  ${row.phone ?? '—'}`,
     row.kvk ? `KvK:       ${row.kvk}` : null,
     row.category_slugs ? `Vakgebied: ${row.category_slugs}` : null,
+    row.job_note ? `Klus:      ${row.job_note}` : null,
     '',
     existing ? 'Dit adres stond al op de lijst; de gegevens zijn bijgewerkt.' : 'Nieuw op de lijst.',
     `Tijdstip:  ${now}`,
@@ -191,9 +203,134 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
   return json({ ok: true, notified });
 }
 
+
+// ---------------------------------------------------------------------------
+// The operator's own page
+// ---------------------------------------------------------------------------
+
+/** Rows come out of SQLite as strings; the rest of the code wants a record. */
+function toSignup(row: Record<string, unknown>): SignupRecord {
+  const text = (key: string) => (typeof row[key] === 'string' ? (row[key] as string) : null);
+  return {
+    id: String(row.id),
+    role: row.role === 'PRO' ? 'PRO' : 'CUSTOMER',
+    email: String(row.email),
+    name: text('name'),
+    phone: text('phone'),
+    citySlug: text('city_slug'),
+    categorySlugs: (text('category_slugs') ?? '').split(',').filter(Boolean),
+    kvk: text('kvk'),
+    jobNote: text('job_note'),
+    createdAt: String(row.created_at),
+    handledAt: text('handled_at'),
+    unsubscribedAt: text('unsubscribed_at'),
+  };
+}
+
+/**
+ * No valid Access token, no page — including when Access was never configured.
+ * The alternative is a page that is public exactly when somebody forgot to
+ * protect it, which is the moment it must not be.
+ */
+async function requireOperator(request: Request, env: Env): Promise<string | Response> {
+  if (!env.ACCESS_TEAM_DOMAIN || !env.ACCESS_AUD) {
+    console.error('beheer: ACCESS_TEAM_DOMAIN or ACCESS_AUD is not set');
+    return new Response('Beheer is niet ingeschakeld.', {
+      status: 503,
+      headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' },
+    });
+  }
+
+  const token = accessTokenFrom(request);
+  if (!token) return new Response('Niet ingelogd.', { status: 401, headers: { 'cache-control': 'no-store' } });
+
+  try {
+    const identity = await verifyAccessJwt(token, {
+      teamDomain: env.ACCESS_TEAM_DOMAIN,
+      aud: env.ACCESS_AUD,
+    });
+    return identity.email;
+  } catch (error) {
+    console.error('beheer: token rejected', String(error));
+    return new Response('Geen toegang.', { status: 403, headers: { 'cache-control': 'no-store' } });
+  }
+}
+
+/** Nothing on this page may be cached, indexed, framed or scripted. */
+function adminResponse(body: string, contentType: string): Response {
+  return new Response(body, {
+    headers: {
+      'content-type': contentType,
+      'cache-control': 'no-store, private',
+      'x-robots-tag': 'noindex, nofollow',
+      'referrer-policy': 'no-referrer',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'DENY',
+      'content-security-policy':
+        "default-src 'none'; style-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+    },
+  });
+}
+
+async function handleAdmin(request: Request, env: Env, viewer: string): Promise<Response> {
+  const [signups, messages] = await Promise.all([
+    env.DB.prepare('SELECT * FROM signups ORDER BY created_at DESC LIMIT 1000').all(),
+    env.DB.prepare('SELECT * FROM contact_messages ORDER BY created_at DESC LIMIT 200').all(),
+  ]);
+
+  const html = renderAdminPage({
+    viewer,
+    now: new Date(),
+    signups: (signups.results as Record<string, unknown>[]).map(toSignup),
+    messages: (messages.results as Record<string, unknown>[]).map((row) => ({
+      id: String(row.id),
+      createdAt: String(row.created_at),
+      name: String(row.name),
+      email: String(row.email),
+      message: String(row.message),
+      handledAt: typeof row.handled_at === 'string' ? row.handled_at : null,
+    })) satisfies ContactMessage[],
+  });
+
+  return adminResponse(html, 'text/html; charset=utf-8');
+}
+
+/** Marking something done is a plain form post: no script, nothing to hash. */
+async function handleAdminHandled(request: Request, env: Env): Promise<Response> {
+  const form = await request.formData();
+  const id = String(form.get('id') ?? '');
+  const kind = String(form.get('soort') ?? '');
+  const table = kind === 'bericht' ? 'contact_messages' : kind === 'aanvraag' ? 'signups' : null;
+  if (!table || !id) return fail('invalid');
+
+  await env.DB.prepare(`UPDATE ${table} SET handled_at = ? WHERE id = ?`)
+    .bind(new Date().toISOString(), id)
+    .run();
+
+  // See Other, so a reload of the page does not repeat the post.
+  return new Response(null, { status: 303, headers: { location: '/beheer', 'cache-control': 'no-store' } });
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+
+    if (url.pathname === '/beheer/stijl.css') {
+      return adminResponse(ADMIN_STYLES, 'text/css; charset=utf-8');
+    }
+
+    if (url.pathname === '/beheer' || url.pathname === '/beheer/afgehandeld') {
+      const operator = await requireOperator(request, env);
+      if (operator instanceof Response) return operator;
+      try {
+        if (url.pathname === '/beheer') return await handleAdmin(request, env, operator);
+        if (request.method !== 'POST') return fail('method_not_allowed', 405);
+        return await handleAdminHandled(request, env);
+      } catch (error) {
+        console.error(error);
+        return fail('server_error', 500);
+      }
+    }
 
     if (url.pathname === '/api/signup' || url.pathname === '/api/contact') {
       if (request.method !== 'POST') return fail('method_not_allowed', 405);

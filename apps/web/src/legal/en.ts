@@ -157,6 +157,12 @@ export const CHROME_EN: LegalChrome = {
         'Telling you when Buurklus opens in your municipality, and seeing beforehand whether there are enough tradespeople and customers there.',
       basis: 'Consent',
     },
+    {
+      data: 'What your job is about and what you write about it yourself',
+      purpose:
+        'Putting your request to tradespeople in and around your municipality who do this work. They see the job and the municipality; they do not get your name, address or phone number. You give those yourself to the tradesperson you want to go on with.',
+      basis: 'Consent',
+    },
   ],
 };
 

@@ -176,6 +176,38 @@ exemption does not apply. Keep this register, and keep it current.
 - **Retention:** 90 days. The dormant-account warning is exempt, because it is
   the evidence that someone was told before their account was erased.
 
+### 11. Introducing a request to tradespeople
+
+- **Purpose:** getting somebody who needs a job done in touch with somebody who
+  can do it. Until the marketplace itself is running, this happens from the
+  waiting list: a customer says what they need and where, and the operator puts
+  that to the tradespeople who signed up for that trade in that area.
+- **Categories:** the trades ticked on the form, the municipality, and the
+  sentence or two the customer writes about the job. From the tradesperson's
+  side: their email address, which is where the request is sent.
+- **Lawful basis:** Article 6(1)(a) consent, on both sides. The customer's tick
+  now says the request will be put to tradespeople nearby, and the
+  tradesperson's says they will receive jobs in their trade and area — the
+  earlier wording said only "tell me when you open", which would not have
+  covered this. `documentVersion('PRIVACY')` records which wording each
+  signature agreed to.
+- **Recipients:** the tradespeople the request is sent to. They receive the job,
+  the trade and the municipality — never the customer's name, address, email or
+  telephone number. Those the customer hands over themselves, to the one they
+  choose. The mail leaves from the operator's own mailbox and carries the
+  addresses in bcc, so no tradesperson learns who else was asked.
+- **Retention:** as the waiting-list entry itself. `handled_at` marks a request
+  as dealt with; it does not delete anything, and a fresh sign-up from the same
+  address clears it again because a new request is a new request.
+- **Where it lives:** `job_note` and `handled_at` in the `signups` table in
+  Cloudflare D1, added by `migrations/0002_job_note_and_handled.sql`. The
+  matching itself is `packages/shared/src/matching.ts` — deliberately a pure
+  function, so what is disclosed to whom is decided in one readable place
+  rather than inside a query.
+- **Access:** the operator's page at `/beheer`, behind Cloudflare Access. The
+  Worker refuses to serve it without a verified Access token, including when
+  Access has not been configured at all — see docs/BEHEER.md.
+
 ## The awkward parts, written out rather than hidden
 
 **Keeping a rating after erasure.** When a customer erases their account, the
