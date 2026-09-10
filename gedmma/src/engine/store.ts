@@ -135,6 +135,11 @@ const subscribe = (l: () => void) => {
   return () => void listeners.delete(l)
 }
 
+/**
+ * Selectors must return something stable: a primitive, or a slice of state
+ * that keeps its identity between updates. Building a new array or object in
+ * the selector makes every render look like a change, and React will loop.
+ */
 export function useStore<T>(select: (s: State) => T): T {
   return useSyncExternalStore(
     subscribe,

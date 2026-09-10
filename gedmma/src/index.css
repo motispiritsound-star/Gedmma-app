@@ -130,6 +130,11 @@ body {
   direction: rtl;
   unicode-bidi: isolate;
   line-height: 1.9;
+  /* Inline-block, so an Arabic run inside a left-aligned Dutch list sits at
+     the start of the line instead of being pushed to the right edge by its
+     own direction. */
+  display: inline-block;
+  max-width: 100%;
 }
 
 /* Chunky, pressable button — the whole app leans on this one gesture. */

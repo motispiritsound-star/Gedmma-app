@@ -13,7 +13,7 @@ type Game = 'menu' | 'race' | 'memory'
 /** Two quick games that use whatever the learner has already met. */
 export function Games() {
   const [game, setGame] = useState<Game>('menu')
-  const seen = useStore((s) => Object.keys(s.cards))
+  const seen = useStore((s) => Object.keys(s.cards).length)
 
   if (game === 'race') return <TimeRace onExit={() => setGame('menu')} />
   if (game === 'memory') return <Memory onExit={() => setGame('menu')} />
@@ -59,7 +59,7 @@ export function Games() {
       </div>
 
       <p className="mt-6 text-center text-sm text-[var(--ink-soft)]">
-        Je hebt {seen.length} woorden gezien. De spellen kiezen daar zoveel mogelijk uit.
+        Je hebt {seen} woorden gezien. De spellen kiezen daar zoveel mogelijk uit.
       </p>
     </div>
   )

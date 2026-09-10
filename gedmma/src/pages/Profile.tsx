@@ -36,12 +36,12 @@ export function Profile() {
             {level}
           </span>
         </div>
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 basis-40">
           <h1 className="font-display text-2xl font-extrabold">{state.name || 'Leerling'}</h1>
           <p className="text-sm text-[var(--ink-soft)]">Niveau {level} · {into}/{span} XP naar het volgende</p>
           <Progress value={into / span} tone="saffron" className="mt-2" />
         </div>
-        <Link to="/instellingen"><Button variant="secondary">Aanpassen</Button></Link>
+        <Link to="/instellingen" className="w-full sm:w-auto"><Button variant="secondary" className="w-full">Aanpassen</Button></Link>
       </Card>
 
       <div className="mb-4 flex flex-wrap gap-2">

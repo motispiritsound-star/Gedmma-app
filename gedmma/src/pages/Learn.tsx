@@ -67,9 +67,9 @@ export function Learn() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
-      <Card className="mb-6 flex items-center gap-4 overflow-hidden p-5">
+      <Card className="mb-6 flex flex-col items-center gap-4 overflow-hidden p-5 sm:flex-row">
         <Mascot mood={state.streak > 0 ? 'juich' : 'blij'} size={72} />
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 text-center sm:text-start">
           <h1 className="font-display text-xl font-extrabold sm:text-2xl">
             {state.name ? `Ahlan, ${state.name}!` : 'Ahlan! Klaar voor Darija?'}
           </h1>
@@ -79,7 +79,7 @@ export function Learn() {
               : 'Alles herhaald. Op naar de volgende les.'}
           </p>
         </div>
-        <div className="flex shrink-0 flex-col gap-2">
+        <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto">
           <Link to={`/les/${next}`}><Button className="w-full">Ga verder</Button></Link>
           {due > 0 && <Link to="/herhalen"><Button variant="secondary" className="w-full">Herhalen</Button></Link>}
         </div>

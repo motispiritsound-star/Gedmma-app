@@ -136,12 +136,12 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
               key={id}
               disabled={locked}
               onClick={() => choose(id)}
-              className={`btn3d rounded-2xl border-2 p-4 text-start transition ${optionButton(chosen, id, w.id, locked)}`}
+              className={`btn3d rounded-2xl border-2 p-4 transition ${mode === 'script' ? 'text-center' : 'text-start'} ${optionButton(chosen, id, w.id, locked)}`}
             >
               {mode === 'betekenis' && <span className="font-display text-lg font-bold">{o.emoji} {meaning(o)}</span>}
               {mode === 'darija' && <WordText word={o} />}
-              {mode === 'luister' && <span className="ar block text-2xl font-bold">{o.ar}</span>}
-              {mode === 'script' && <span className="ar block text-center text-3xl font-bold">{o.ar}</span>}
+              {mode === 'luister' && <span className="ar text-2xl font-bold">{o.ar}</span>}
+              {mode === 'script' && <span className="ar text-3xl font-bold">{o.ar}</span>}
             </button>
           )
         })}

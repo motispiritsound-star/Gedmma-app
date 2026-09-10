@@ -69,7 +69,7 @@ export function Words() {
                 <button className="flex w-full items-center gap-3 p-3 text-start" onClick={() => setOpen(isOpen ? null : w.id)} aria-expanded={isOpen}>
                   <span className="text-2xl" aria-hidden="true">{w.emoji ?? '•'}</span>
                   <span className="min-w-0 flex-1">
-                    <span className="ar block text-xl font-bold">{w.ar}</span>
+                    <span className="ar text-xl font-bold">{w.ar}</span>
                     <span className="block text-sm">
                       <span className="font-display font-bold text-zellige-600 dark:text-zellige-300">{w.tr}</span>
                       <span className="text-[var(--ink-soft)]"> — {w.nl}</span>

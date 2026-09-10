@@ -9,11 +9,11 @@ import { Button, Card, SectionTitle, Sheet } from '../ui/kit'
 function Row({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-wrap items-center gap-3 border-b border-[var(--line)] p-4 last:border-0">
-      <div className="min-w-0 flex-1">
+      <div className="min-w-40 flex-1">
         <div className="font-display font-extrabold">{title}</div>
         {hint && <div className="text-sm text-[var(--ink-soft)]">{hint}</div>}
       </div>
-      <div className="shrink-0">{children}</div>
+      <div className="ms-auto max-w-full">{children}</div>
     </div>
   )
 }
