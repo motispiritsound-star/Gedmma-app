@@ -6,14 +6,17 @@ import {
 import { arabicVoice, canListen, canSpeak, say } from '../engine/audio'
 import { Button, Card, SectionTitle, Sheet } from '../ui/kit'
 
-function Row({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
+/** The embedded demo runs in a sandbox where a page cannot hand over a file. */
+const DEMO = import.meta.env.VITE_DEMO === '1'
+
+function Row({ title, hint, children }: { title: string; hint?: string; children?: React.ReactNode }) {
   return (
     <div className="flex flex-wrap items-center gap-3 border-b border-[var(--line)] p-4 last:border-0">
       <div className="min-w-40 flex-1">
         <div className="font-display font-extrabold">{title}</div>
         {hint && <div className="text-sm text-[var(--ink-soft)]">{hint}</div>}
       </div>
-      <div className="ms-auto max-w-full">{children}</div>
+      {children && <div className="ms-auto max-w-full">{children}</div>}
     </div>
   )
 }
@@ -150,9 +153,13 @@ export function SettingsPage() {
 
       <h2 className="mb-2 font-display text-lg font-extrabold">Je gegevens</h2>
       <Card className="mb-6">
-        <Row title="Voortgang opslaan" hint="Een bestand dat je zelf bewaart of naar een ander apparaat brengt.">
-          <Button variant="secondary" onClick={download}>Download</Button>
-        </Row>
+        {DEMO ? (
+          <Row title="Voortgang opslaan" hint="In de geïnstalleerde app download je hier een kopie van je voortgang. Deze demo draait in een venster dat geen bestanden mag doorgeven." />
+        ) : (
+          <Row title="Voortgang opslaan" hint="Een bestand dat je zelf bewaart of naar een ander apparaat brengt.">
+            <Button variant="secondary" onClick={download}>Download</Button>
+          </Row>
+        )}
         <Row title="Voortgang terugzetten" hint={imported ?? 'Kies een eerder opgeslagen bestand.'}>
           <>
             <input

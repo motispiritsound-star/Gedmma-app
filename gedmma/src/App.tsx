@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect } from 'react'
-import { BrowserRouter, NavLink, Route, Routes, useLocation } from 'react-router-dom'
+import { BrowserRouter, HashRouter, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Landing } from './pages/Landing'
 import { Learn } from './pages/Learn'
@@ -29,7 +29,9 @@ function useTheme() {
   const { theme, motion: motionPref, reading } = useStore((s) => s.settings)
   useEffect(() => {
     const root = document.documentElement
-    if (theme === 'system') root.removeAttribute('data-theme')
+    // In the standalone demo the host stamps its own theme on the root; leave
+    // that stamp alone until the learner picks a theme here.
+    if (theme === 'system') { if (!DEMO) root.removeAttribute('data-theme') }
     else root.setAttribute('data-theme', theme)
     root.setAttribute('data-motion', motionPref)
     root.setAttribute('data-reading', reading)
@@ -104,10 +106,17 @@ function Chrome() {
   )
 }
 
+/**
+ * The demo build is one HTML file with no server behind it, so it routes on the
+ * hash instead of on the path.
+ */
+const DEMO = import.meta.env.VITE_DEMO === '1'
+const Router = DEMO ? HashRouter : BrowserRouter
+
 export default function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <Chrome />
-    </BrowserRouter>
+    </Router>
   )
 }

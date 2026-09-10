@@ -30,3 +30,6 @@ apps/web/dist/
 
 # Browser-test screenshots
 gedmma/shots/
+
+# Single-file demo build
+gedmma/dist-demo/

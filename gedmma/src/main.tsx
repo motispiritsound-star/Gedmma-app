@@ -10,7 +10,7 @@ createRoot(document.getElementById('root')!).render(
 )
 
 // The service worker makes the app installable and usable without a network.
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
+if ('serviceWorker' in navigator && import.meta.env.PROD && import.meta.env.VITE_DEMO !== '1') {
   window.addEventListener('load', () => {
     void navigator.serviceWorker.register('/sw.js')
   })

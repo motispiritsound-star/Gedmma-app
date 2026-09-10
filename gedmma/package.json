@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "icons": "node scripts/make-icons.mjs",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node scripts/smoke.mjs",
+    "build:demo": "vite build --mode demo && node scripts/make-demo.mjs"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.4",
