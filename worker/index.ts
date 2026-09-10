@@ -62,11 +62,18 @@ async function overLimit(env: Env, table: 'signups' | 'contact_messages', ip: st
   return (row?.n ?? 0) >= MAX_PER_IP_PER_HOUR;
 }
 
-async function notify(env: Env, subject: string, lines: string[]) {
+/**
+ * `replyTo` is the whole point of the notification: pressing reply in a mail
+ * client then writes to the person who filled in the form, not to a no-reply
+ * address nobody reads. The envelope sender stays this domain, because that is
+ * what Email Routing is allowed to send as.
+ */
+async function notify(env: Env, subject: string, lines: string[], replyTo?: string) {
   const message = createMimeMessage();
   message.setSender({ name: 'Buurklus', addr: env.NOTIFY_FROM });
   message.setRecipient(env.NOTIFY_TO);
   message.setSubject(subject);
+  if (replyTo) message.setHeader('Reply-To', replyTo);
   message.addMessage({ contentType: 'text/plain', data: lines.join('\n') });
 
   await env.NOTIFY.send(new EmailMessage(env.NOTIFY_FROM, env.NOTIFY_TO, message.asRaw()));
@@ -138,7 +145,7 @@ async function handleSignup(request: Request, env: Env): Promise<Response> {
     '',
     existing ? 'Dit adres stond al op de lijst; de gegevens zijn bijgewerkt.' : 'Nieuw op de lijst.',
     `Tijdstip:  ${now}`,
-  ].filter((line): line is string => line !== null)).catch(() => {});
+  ].filter((line): line is string => line !== null), input.email).catch(() => {});
 
   return json({ ok: true, alreadyRegistered: Boolean(existing) });
 }
@@ -168,8 +175,8 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
     '',
     input.message,
     '',
-    '— Antwoorden kan rechtstreeks naar het adres hierboven.',
-  ]).catch(() => {});
+    '— Druk op beantwoorden; dat gaat rechtstreeks naar de afzender.',
+  ], input.email).catch(() => {});
 
   return json({ ok: true });
 }
