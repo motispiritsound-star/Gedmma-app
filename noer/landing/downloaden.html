@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Noer downloaden — Android en iPhone</title>
+<meta name="description" content="Zet Noer op je telefoon of tablet. Werkt op Android, iPhone en iPad. Geen appwinkel nodig, wel gewoon een icoon op je beginscherm.">
+<meta name="theme-color" content="#0f7a67">
+<link rel="stylesheet" href="stijl.css">
+<link rel="icon" href="beelden/icoon.svg" type="image/svg+xml">
+</head>
+<body>
+<header class="top">
+  <div class="binnen topbinnen">
+    <a class="merkje" href="index.html"><span class="zegel"><span class="ar">نُور</span></span> Noer</a>
+    <nav>
+      <a href="index.html#prijs">Prijs</a>
+      <a class="knop" href="aanmelden.html">Eerste week gratis</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="smal">
+  <h1>Noer op je telefoon of tablet</h1>
+  <p class="groot-p" style="margin-top:1rem">Eén tik en Noer staat tussen je andere apps: eigen
+    icoon, eigen scherm, geen adresbalk, en hij werkt ook zonder internet. Hieronder staat hoe,
+    voor jouw apparaat.</p>
+
+  <!-- Op Android kan de browser het installeren zelf aanbieden. Kan dat, dan
+       verschijnt hier een echte knop; kan het niet, dan blijven de stappen staan. -->
+  <div class="paneel" id="installeerpaneel" hidden>
+    <h2>Klaar om te installeren</h2>
+    <p class="klein">Je browser kan Noer meteen installeren. Eén tik en het icoon staat op je
+      beginscherm.</p>
+    <button class="knop" id="installeerknop">Installeer Noer</button>
+    <p class="melding" id="installeermelding" role="status" aria-live="polite"></p>
+  </div>
+
+  <div class="paneel" id="algeinstalleerd" hidden>
+    <h2>Noer staat al op dit apparaat</h2>
+    <p class="klein">Je hebt hem al geïnstalleerd. Zoek het icoon met de ster op je beginscherm,
+      of open hem hier.</p>
+    <a class="knop" href="/app/">Open Noer</a>
+  </div>
+
+  <div class="tabrij" role="tablist" aria-label="Kies je apparaat">
+    <button class="tab" role="tab" id="tab-android" aria-selected="true" aria-controls="android">Android</button>
+    <button class="tab" role="tab" id="tab-ios" aria-selected="false" aria-controls="ios">iPhone en iPad</button>
+    <button class="tab" role="tab" id="tab-laptop" aria-selected="false" aria-controls="laptop">Laptop</button>
+  </div>
+
+  <div class="paneel" id="android" role="tabpanel" aria-labelledby="tab-android">
+    <h2>Android-telefoon of -tablet</h2>
+    <ol class="stappenlijst" style="margin-top:1.2rem">
+      <li><span>Open deze pagina in <b>Chrome</b> en tik op de knop hieronder.</span></li>
+      <li><span>Verschijnt er geen knop: tik rechtsboven op de <b>drie puntjes</b>.</span></li>
+      <li><span>Kies <b>App installeren</b> of <b>Toevoegen aan startscherm</b> en bevestig.</span></li>
+      <li><span>Het icoon staat nu op je beginscherm, net als elke andere app.</span></li>
+    </ol>
+    <a class="knop" href="/app/" style="margin-top:1.4rem">Open Noer</a>
+  </div>
+
+  <div class="paneel" id="ios" role="tabpanel" aria-labelledby="tab-ios" hidden>
+    <h2>iPhone of iPad</h2>
+    <p class="klein">Dit werkt alleen in <b>Safari</b>. Gebruik je Chrome op je iPhone, open
+      noer.nl dan eerst in Safari — daar zit de knop.</p>
+    <ol class="stappenlijst" style="margin-top:1.2rem">
+      <li><span>Open Noer in Safari.</span></li>
+      <li><span>Tik onderin op het <b>deelteken</b>: het vierkantje met het pijltje omhoog.</span></li>
+      <li><span>Scroll naar beneden en tik op <b>Zet op beginscherm</b>.</span></li>
+      <li><span>Tik rechtsboven op <b>Voeg toe</b>. Klaar.</span></li>
+    </ol>
+    <a class="knop" href="/app/" style="margin-top:1.4rem">Open Noer in Safari</a>
+  </div>
+
+  <div class="paneel" id="laptop" role="tabpanel" aria-labelledby="tab-laptop" hidden>
+    <h2>Laptop of computer</h2>
+    <p class="klein">Het kan, maar Noer is gemaakt voor aanraken. Op een tablet leert een kind
+      prettiger dan met een muis.</p>
+    <ol class="stappenlijst" style="margin-top:1.2rem">
+      <li><span>Open Noer in Chrome of Edge.</span></li>
+      <li><span>Klik rechts in de adresbalk op het <b>installeer-icoontje</b>, of open het menu
+        en kies <b>Installeren</b>.</span></li>
+      <li><span>In Safari op een Mac: <b>Archief → Voeg toe aan Dock</b>.</span></li>
+    </ol>
+    <a class="knop" href="/app/" style="margin-top:1.4rem">Open Noer</a>
+  </div>
+
+  <div class="paneel">
+    <h2>Waarom niet uit de App Store?</h2>
+    <p class="klein">Omdat het niet hoeft, en omdat het je geld kost. Apple en Google houden
+      dertig procent van elk abonnement in, en elke verbetering moet eerst langs een goedkeuring
+      die dagen duurt. Noer draait in de browser, en een browser zit al op elk apparaat.</p>
+    <p class="klein" style="margin-top:.8rem">Wat je krijgt is precies hetzelfde: een icoon op je
+      beginscherm, een app die zonder adresbalk opent, die offline werkt en die zichzelf
+      bijwerkt. Het enige verschil is dat je hem hier ophaalt in plaats van in een winkel.</p>
+  </div>
+
+  <div class="paneel">
+    <h2>Meerdere kinderen, meerdere apparaten</h2>
+    <p class="klein">In de app maak je per kind een profiel; die staan naast elkaar op één
+      apparaat en je wisselt met één tik. Wil je Noer op de tablet én op jouw telefoon, log dan op
+      beide apparaten één keer in met je account — daarna staat alles open.</p>
+    <p class="klein" style="margin-top:.8rem">Wat een kind doet — de punten, de sterren, welke
+      letters nog misgaan — blijft op dat apparaat staan. De voortgang op de tablet verhuist dus
+      niet mee naar de telefoon. Dat is de prijs van geen kinderdata op onze server, en die
+      vinden we het waard.</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="binnen voetrij">
+    <a class="merkje" href="index.html"><span class="zegel"><span class="ar">نُور</span></span> Noer</a>
+    <nav>
+      <a href="account.html">Mijn abonnement</a>
+      <a href="voorwaarden.html">Voorwaarden</a>
+      <a href="privacy.html">Privacy</a>
+    </nav>
+  </div>
+</footer>
+
+<script type="module">
+// Deze pagina staat op zichzelf: hij haalt niets op en heeft geen server
+// nodig. Ook in de gratis uitgave, waar site.js niet meegaat, moet hij het
+// gewoon doen.
+const meld = (node, tekst, soort) => {
+  node.textContent = tekst;
+  node.className = `melding ${soort}`;
+};
+
+// --- Tabbladen ----------------------------------------------------------
+const tabs = [...document.querySelectorAll('.tab')];
+const kies = (id) => {
+  for (const t of tabs) {
+    const aan = t.id === `tab-${id}`;
+    t.setAttribute('aria-selected', String(aan));
+    document.getElementById(t.getAttribute('aria-controls')).hidden = !aan;
+  }
+};
+for (const t of tabs) t.addEventListener('click', () => kies(t.id.replace('tab-', '')));
+
+const ua = navigator.userAgent;
+if (/iPhone|iPad|iPod/i.test(ua)) kies('ios');
+else if (/Android/i.test(ua)) kies('android');
+else if (!/Mobile/i.test(ua)) kies('laptop');
+
+// --- De echte installeerknop --------------------------------------------
+//
+// Chrome op Android (en op de laptop) laat weten dat hij de app kan
+// installeren, maar alleen als reactie op een tik van de gebruiker. Dus
+// vangen we die melding op en bewaren hem tot iemand op de knop drukt.
+let uitnodiging = null;
+const paneel = document.getElementById('installeerpaneel');
+const knop = document.getElementById('installeerknop');
+const melding = document.getElementById('installeermelding');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  uitnodiging = e;
+  paneel.hidden = false;
+});
+
+knop.addEventListener('click', async () => {
+  if (!uitnodiging) return;
+  uitnodiging.prompt();
+  const { outcome } = await uitnodiging.userChoice;
+  uitnodiging = null;
+  if (outcome === 'accepted') {
+    meld(melding, 'Gelukt. Het icoon staat op je beginscherm.', 'goed');
+    knop.disabled = true;
+  } else {
+    meld(melding, 'Niet geïnstalleerd. Je kunt het altijd later nog doen.', 'fout');
+    paneel.hidden = true;
+  }
+});
+
+window.addEventListener('appinstalled', () => {
+  paneel.hidden = true;
+  document.getElementById('algeinstalleerd').hidden = false;
+});
+
+// Draait de pagina al als geïnstalleerde app, dan is er niets te installeren.
+if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+  document.getElementById('algeinstalleerd').hidden = false;
+}
+</script>
+</body>
+</html>

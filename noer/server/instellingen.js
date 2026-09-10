@@ -18,11 +18,29 @@ import { fileURLToPath } from 'node:url';
 
 const WORTEL = fileURLToPath(new URL('..', import.meta.url));
 
+/**
+ * De eerste week is gratis, daarna gaat de incasso lopen.
+ *
+ * Om elke maand te kunnen incasseren is er een machtiging nodig, en een
+ * machtiging ontstaat bij Mollie alleen uit een echte eerste betaling. Die kan
+ * niet nul zijn. Daarom staat er een verificatiebedrag van één cent: de ouder
+ * ziet die afschrijving, weet dat zijn rekening klopt, en de proefweek begint.
+ * Het eerste maandbedrag valt pas op dag acht.
+ *
+ * Dat ene cent moet je wél overal noemen waar je "gratis" zegt. Een afschrijving
+ * die iemand niet verwacht, kost je meer vertrouwen dan hij oplevert.
+ */
+export const PROEF = {
+  dagen: 7,
+  verificatiebedrag: '0.01',
+  omschrijving: 'Noer — controle van je rekening (proefweek)',
+};
+
 export const PLANNEN = {
   maand: {
     id: 'maand',
     naam: 'Noer, per maand',
-    bedrag: '6.99',
+    bedrag: '7.99',
     interval: '1 month',
     omschrijving: 'Noer — maandabonnement',
     periode: 'per maand',
@@ -30,7 +48,7 @@ export const PLANNEN = {
   jaar: {
     id: 'jaar',
     naam: 'Noer, per jaar',
-    bedrag: '59.00',
+    bedrag: '79.00',
     interval: '12 months',
     omschrijving: 'Noer — jaarabonnement',
     periode: 'per jaar',

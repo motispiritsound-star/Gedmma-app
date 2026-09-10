@@ -5,7 +5,7 @@ Er zijn twee momenten, en je hoeft ze niet tegelijk te doen.
 | | Wat het is | Wat het kost | Hoe lang |
 |---|---|---|---|
 | **1. Gratis online** | de app staat er, iedereen kan hem gebruiken | € 0, of ± € 10 per jaar met een eigen domein | een kwartier |
-| **2. Betaald** | abonnementen, € 6,99 per maand | ± € 5 per maand + eenmalig ± € 80 | één tot twee weken |
+| **2. Betaald** | abonnementen, eerste week gratis, daarna € 7,99 per maand | ± € 5 per maand + eenmalig ± € 80 | één tot twee weken |
 
 De volgorde is niet toevallig. Het duurdere en langzamere deel — KvK, Mollie,
 een server — heb je pas nodig als er iemand wil betalen. En of dat zo is, weet
@@ -104,7 +104,7 @@ Wat er dan bij komt, in de volgorde waarin je het regelt:
    laten nalezen.
 
 Alles bij elkaar: **eenmalig ± € 80, daarna ± € 5 per maand.** Eén abonnee
-betaalt de server. Bij vijftig abonnees houd je er ruim € 270 per maand aan
+betaalt de server. Bij vijftig abonnees houd je er ruim € 300 per maand aan
 over. De rekensom staat in `LANCEREN.md`, de handleiding in `BETALEN.md`.
 
 ### De knop omzetten
@@ -125,6 +125,39 @@ hoor je ruim van tevoren te melden, en dat staat ook zo in de open uitgave op
 de startpagina: *"wie er nu bij is, hoort dat ruim van tevoren."*
 
 ---
+
+## En de appwinkels?
+
+Noer is een installeerbare webapp: `downloaden.html` zet hem met één tik op het
+beginscherm van een Android-toestel of een iPhone, met eigen icoon, offline en
+zonder adresbalk. Daar zit geen winkel tussen die dertig procent meeneemt.
+
+Wil je er tóch in staan, dan kost Google Play eenmalig $ 25 en een dag werk, en
+Apple $ 99 per jaar plus een Mac plus het gesprek met de beoordelaar. Wat dat
+precies inhoudt en wanneer het de moeite waard is, staat in `APPWINKEL.md`.
+Begin er niet mee vóór je weet dat mensen je niet kunnen vinden.
+
+## Als betalen meteen beschikbaar moet zijn
+
+Wil je vanaf dag één abonnementen kunnen aannemen, dan vervalt de gratis route:
+je hebt een draaiende server nodig, en Mollie. Dan is dit het kritieke pad, en
+er zit één ding in dat je niet kunt versnellen.
+
+| Wanneer | Wat |
+|---|---|
+| Dag 1 | KvK-afspraak maken (online), domein kopen, VPS nemen |
+| Dag 1–5 | KvK-afspraak — je krijgt je nummer aan de balie mee |
+| Dag 5 | Mollie aanmelden met dat nummer, iDEAL en incasso aanzetten |
+| Dag 6–8 | Mollie controleert. **Dit is de wachttijd die je niet kunt inkorten.** |
+| Ondertussen | server neerzetten, domein koppelen, met een testsleutel de hele koopweg aflopen |
+| Dag 8 | live-sleutel invullen, `modus` op `abonnement`, open |
+
+Reken dus op **anderhalve week**, met KvK en de controle van Mollie als enige
+echte vertraging. Al het technische werk kun je in die dagen doen.
+
+Wat je in de tussentijd wél kunt: de site online zetten met de open uitgave,
+zodat mensen hem al kunnen gebruiken en je de eerste reacties hoort. Zet je
+later de knop om, dan houdt iedereen die er al is zijn app en zijn voortgang.
 
 ## Wat ik zou doen
 

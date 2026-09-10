@@ -27,10 +27,10 @@
   </div>
 
   <div class="paneel" id="hierna" hidden>
-    <h2>Zet Noer op het beginscherm</h2>
+    <h2>Zet Noer op je beginscherm</h2>
     <p class="klein">Dan opent je kind hem met één tik, net als elke andere app, en werkt hij ook
       zonder internet. Het duurt een halve minuut.</p>
-    <a class="knop stil" href="installeren.html">Laat zien hoe</a>
+    <a class="knop stil" href="downloaden.html">Laat zien hoe</a>
   </div>
 </section>
 </main>
@@ -72,10 +72,12 @@ async function kijk(pogingen = 0) {
 
   if (uit.actief) {
     stand.textContent = '';
-    kop.textContent = 'Noer staat open';
-    tekst.textContent = uit.tot
-      ? `Alles is nu open. De volgende afschrijving is rond ${datum(uit.tot)}.`
-      : 'Alles is nu open.';
+    kop.textContent = uit.proef ? 'Je week is begonnen' : 'Noer staat open';
+    tekst.textContent = uit.proef && uit.tot
+      ? `Alles is open tot ${datum(uit.tot)}. Daarna gaat het abonnement in; opzeggen kan tot die dag met één knop, en dan wordt er niets geïncasseerd.`
+      : uit.tot
+        ? `Alles is nu open. De volgende afschrijving is rond ${datum(uit.tot)}.`
+        : 'Alles is nu open.';
     acties.replaceChildren(knop('Beginnen', '/app/'), knop('Mijn abonnement', 'account.html', true));
     document.getElementById('hierna').hidden = false;
     return;
@@ -83,8 +85,8 @@ async function kijk(pogingen = 0) {
 
   if (uit.staat === 'mislukt') {
     stand.textContent = '';
-    kop.textContent = 'De betaling is niet doorgegaan';
-    tekst.textContent = 'Er is niets afgeschreven. Dat gebeurt weleens — je kunt het gewoon opnieuw proberen.';
+    kop.textContent = 'Het is niet gelukt';
+    tekst.textContent = 'De controle van je rekening is niet doorgegaan, dus je week is niet begonnen. Er is niets afgeschreven. Dat gebeurt weleens — je kunt het gewoon opnieuw proberen.';
     acties.replaceChildren(knop('Opnieuw proberen', 'aanmelden.html'), knop('Open het gratis deel', '/app/', true));
     return;
   }

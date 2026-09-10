@@ -26,11 +26,29 @@ const stap = async (naam, fn) => {
 const email = `koopweg${Date.now()}@voorbeeld.nl`;
 const wachtwoord = 'eenlangwachtwoord';
 
-await stap('de startpagina noemt de prijs en wijst naar de app', async () => {
+await stap('de startpagina noemt de prijs, de gratis week en het downloaden', async () => {
   await page.goto(`${BASIS}/`, { waitUntil: 'networkidle' });
   const tekst = await page.textContent('body');
-  if (!tekst.includes('6,99')) throw new Error('de prijs staat er niet');
-  if (!(await page.locator('a[href="/app/"]').count())) throw new Error('geen link naar de app');
+  if (!tekst.includes('7,99')) throw new Error('de prijs staat er niet');
+  if (!/[Ee]erste week gratis/.test(tekst)) throw new Error('de gratis week staat er niet');
+  if (!(await page.locator('a[href="downloaden.html"]').count())) {
+    throw new Error('geen knop om te downloaden');
+  }
+});
+
+await stap('de downloadpagina legt Android en iPhone allebei uit', async () => {
+  await page.goto(`${BASIS}/downloaden.html`, { waitUntil: 'networkidle' });
+  for (const naam of ['android', 'ios', 'laptop']) {
+    await page.click(`#tab-${naam}`);
+    const zichtbaar = await page.locator(`#${naam}`).isVisible();
+    if (!zichtbaar) throw new Error(`het tabblad ${naam} gaat niet open`);
+  }
+  await page.click('#tab-ios');
+  const ios = await page.textContent('#ios');
+  if (!ios.includes('Zet op beginscherm')) throw new Error('de iPhone-stappen kloppen niet');
+  if (!(await page.locator('#installeerpaneel').count())) {
+    throw new Error('er is geen plek voor de installeerknop van Chrome');
+  }
 });
 
 await stap('zonder abonnement kun je meteen beginnen', async () => {
@@ -51,7 +69,7 @@ await stap('het slot wijst naar de site', async () => {
   if (!href.includes('aanmelden.html')) throw new Error(`het slot wijst naar ${href}`);
 });
 
-await stap('een account aanmaken en een abonnement kiezen', async () => {
+await stap('een account aanmaken en de gratis week starten', async () => {
   await page.goto(`${BASIS}/aanmelden.html`, { waitUntil: 'networkidle' });
   await page.fill('#email', email);
   await page.fill('#wachtwoord', wachtwoord);
@@ -65,13 +83,13 @@ await stap('afbreken bij de bank geeft geen toegang', async () => {
   await page.waitForURL(/bedankt/, { timeout: 10000 });
   await page.waitForSelector('h1');
   const kop = await page.textContent('h1');
-  if (!kop.includes('niet doorgegaan')) throw new Error(`de bedanktpagina zegt: ${kop}`);
+  if (!kop.includes('niet gelukt')) throw new Error(`de bedanktpagina zegt: ${kop}`);
   const toegang = await page.evaluate(() =>
     fetch('/api/toegang', { credentials: 'same-origin' }).then((r) => r.json()));
   if (toegang.actief) throw new Error('een afgebroken betaling gaf toch toegang');
 });
 
-await stap('opnieuw proberen en nu wel betalen', async () => {
+await stap('opnieuw proberen en nu wel doorgaan', async () => {
   await page.goto(`${BASIS}/aanmelden.html`, { waitUntil: 'networkidle' });
   await page.fill('#email', email);
   await page.fill('#wachtwoord', wachtwoord);
@@ -79,7 +97,11 @@ await stap('opnieuw proberen en nu wel betalen', async () => {
   await page.waitForURL(/proef-betalen/, { timeout: 10000 });
   await page.click('#betalen');
   await page.waitForURL(/bedankt/, { timeout: 10000 });
-  await page.waitForSelector('h1:has-text("Noer staat open")', { timeout: 20000 });
+  await page.waitForSelector('h1:has-text("Je week is begonnen")', { timeout: 20000 });
+  const tekst = await page.textContent('#tekst');
+  if (!/opzeggen kan tot die dag/i.test(tekst)) {
+    throw new Error(`de bedanktpagina legt de gratis week niet uit: ${tekst}`);
+  }
 });
 
 await stap('in de app is alles nu open', async () => {
@@ -99,17 +121,19 @@ await stap('het accountscherm toont de stand en de betaling', async () => {
   await page.waitForSelector('#paneel:not([hidden])');
   const tekst = await page.textContent('#paneel');
   if (!tekst.includes(email)) throw new Error('het e-mailadres staat er niet');
-  if (!tekst.includes('Actief')) throw new Error('de stand zegt niet dat het abonnement loopt');
+  if (!tekst.includes('Gratis week')) throw new Error('de stand zegt niet dat de gratis week loopt');
+  if (!tekst.includes('Eerste incasso')) throw new Error('er staat niet wanneer er geïncasseerd wordt');
+  if (!tekst.includes('7,99')) throw new Error('het maandbedrag staat er niet bij');
   const betalingen = await page.textContent('#betalingen');
-  if (!betalingen.includes('6,99')) throw new Error('de betaling staat niet in de lijst');
+  if (!betalingen.includes('0,01')) throw new Error('de verificatiebetaling staat niet in de lijst');
 });
 
-await stap('opzeggen kan met één knop, en de maand loopt door', async () => {
+await stap('opzeggen tijdens de gratis week kost niets', async () => {
   page.once('dialog', (d) => d.accept());
   await page.click('button:has-text("Abonnement opzeggen")');
   await page.waitForSelector('.melding.goed');
   const melding = await page.textContent('.melding.goed');
-  if (!melding.includes('Er wordt niets meer afgeschreven')) throw new Error(melding);
+  if (!melding.includes('niets geïncasseerd')) throw new Error(melding);
   await page.waitForSelector('button:has-text("Toch doorgaan")');
   const toegang = await page.evaluate(() =>
     fetch('/api/toegang', { credentials: 'same-origin' }).then((r) => r.json()));

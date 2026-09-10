@@ -82,6 +82,34 @@ testbetalingen die je zelf op "betaald" of "mislukt" zet. Doe dat vóór je een
 live-sleutel invult; het is het enige moment waarop je de webhook echt kunt
 zien binnenkomen.
 
+## De gratis week
+
+De eerste zeven dagen zijn gratis, en daarna wordt er elke maand geïncasseerd.
+Dat vraagt om één ding dat mensen verrast als je het niet uitlegt.
+
+Om te kunnen incasseren is er een **machtiging** nodig, en bij Mollie ontstaat
+een machtiging alleen uit een echte betaling. Die kan niet nul zijn. Daarom
+staat de eerste betaling op **€ 0,01**: de ouder ziet die afschrijving, weet
+dat zijn rekening klopt, en de week begint. Het abonnement wordt meteen
+aangemaakt met een startdatum op **dag acht**; pas dan valt het eerste
+maandbedrag.
+
+Die ene cent moet je overal noemen waar je "gratis" zegt. Hij staat nu op de
+aanmeldpagina in een apart kader, in de voorwaarden, in de bevestigingsmail en
+in de veelgestelde vragen. Haal hem daar niet weg: een afschrijving die iemand
+niet verwacht, kost je meer vertrouwen dan hij oplevert.
+
+Zegt iemand op binnen die week, dan stopt het abonnement bij Mollie meteen —
+vóór de eerste incasso valt — en houdt hij zijn week uit. Daar zit een test op
+(`opzeggen tijdens de proefweek kost niets`), want dit is precies het punt
+waar diensten hun slechte naam vandaan halen.
+
+De lengte en het verificatiebedrag staan in `server/instellingen.js` onder
+`PROEF`. Wil je liever geen cent afschrijven, dan is het alternatief: geen
+machtiging vragen bij aanmelding, de week gratis geven, en op dag zes mailen
+dat ze moeten betalen. Dat is netter maar levert veel minder betalende klanten
+op, want elke extra handeling kost je de helft.
+
 ## Hoe het abonnement werkt
 
 Dit is de volgorde die Mollie voorschrijft. Hij is niet in te korten.
@@ -91,19 +119,19 @@ ouder                    Noer                         Mollie
   |  aanmelden.html       |                              |
   |---------------------->| account aanmaken             |
   |                       |----------------------------->| klant (cst_…)
-  |                       |  eerste betaling, 'first'    |
+  |                       |  eerste betaling € 0,01      |
   |                       |----------------------------->| betaling (tr_…)
   |<-- naar de bank ------|<-- betaal-adres -------------|
-  |  betaalt bij de bank  |                              |
+  |  bevestigt bij de bank|                              |
   |                       |<-- webhook: id=tr_… ---------|
   |                       |--- "en wat is de stand?" --->|
   |                       |<-- 'paid' + mandaat ---------|
-  |                       |  betaald tot = +1 maand      |
-  |                       |--- abonnement aanmaken ----->| sub_…
+  |                       |  gratis tot = +7 dagen       |
+  |                       |--- abonnement, start dag 8 ->| sub_…
   |<-- bedankt.html ------|                              |
   |                       |                              |
-  |         een maand later                              |
-  |                       |<-- webhook: incasso ---------| int het zelf
+  |         op dag acht                                  |
+  |                       |<-- webhook: incasso € 7,99 --| int het zelf
   |                       |  betaald tot = +1 maand      |
 ```
 
@@ -115,17 +143,19 @@ Drie dingen die daarin belangrijk zijn:
 - **Dezelfde webhook mag twee keer binnenkomen** — dat gebeurt ook. De tweede
   keer verandert er niets; er zit een test op.
 - **Het abonnement wordt pas aangemaakt ná de eerste betaling**, want pas dan
-  is er een machtiging. Lukt dat aanmaken niet, dan houdt de ouder zijn maand
-  en komt er een regel in de log. Kijk daar af en toe naar.
+  is er een machtiging. Lukt dat aanmaken niet, dan houdt de ouder zijn gratis
+  week en komt er een regel in de log — maar loopt er daarna niets. Kijk daar
+  af en toe naar; het is het enige stille falen dat hier zit.
 
 De webhook antwoordt altijd met 200, ook als er iets misgaat. Een foutcode
 laat Mollie het urenlang blijven proberen, en dat lost niets op.
 
 ## Opzeggen
 
-Eén knop in `account.html`, zonder termijn en zonder mailtje. Bij Mollie stopt
-de incasso meteen; de toegang loopt door tot het eind van de betaalde periode.
-Binnen die periode weer aanzetten kost niets.
+Eén knop in `account.html`, zonder termijn en zonder mailtje — ook tijdens de
+gratis week. Bij Mollie stopt de incasso meteen; de toegang loopt door tot het
+eind van de betaalde periode, of tot het eind van de week. Binnen die periode
+weer aanzetten kost niets.
 
 Dat de opzegknop even makkelijk te vinden moet zijn als de aanmeldknop is
 sinds 2022 wet (de "opzegknop" uit de Wet oneerlijke handelspraktijken). Houd
@@ -222,6 +252,9 @@ Eerlijk zijn over de gaten is goedkoper dan er later achter komen.
 - **Aanmaningen.** Mislukt een incasso, dan probeert Mollie het zelf nog een
   paar keer en stopt de toegang daarna vanzelf. Er gaat geen mail uit met "je
   betaling is mislukt, werk je gegevens bij".
+- **Een herinnering vóór de eerste incasso.** De bevestigingsmail noemt de
+  datum, maar er gaat op dag zes niets uit. Dat is het eerste dat ik zou
+  bouwen: het scheelt terugboekingen en boze mail.
 - **Een school- of klaslicentie in de software.** De prijs staat op de site,
   maar de afhandeling is een gesprek en een factuur met de hand.
 - **Een boekhoudkoppeling.** Exporteren doe je uit het Mollie-dashboard.

@@ -351,7 +351,8 @@ test('de open uitgave is echt open, en belooft niets over betalen', async () => 
     assert.match(versie, /modus: 'open'/, 'de app staat niet in de open stand');
 
     const index = await lees('index.html');
-    assert.ok(!index.includes('6,99'), 'er staat nog een prijs op de startpagina');
+    assert.ok(!index.includes('7,99'), 'er staat nog een prijs op de startpagina');
+    assert.ok(!index.includes('0,01'), 'er staat nog een verificatiebetaling op de startpagina');
     assert.ok(!index.includes('aanmelden.html'), 'er wijst nog iets naar een pagina die er niet is');
     assert.ok(!index.includes('inloggen.html'), 'er staat nog een inlogknop op de site');
     assert.match(index, /Nu gratis/);
@@ -376,4 +377,29 @@ test('de open uitgave is echt open, en belooft niets over betalen', async () => 
   } finally {
     await rm(map, { recursive: true, force: true });
   }
+});
+
+test('de prijs op de site is dezelfde als de prijs die Mollie int', async () => {
+  // Als deze twee uit elkaar lopen, incasseer je iets anders dan je hebt
+  // afgesproken. Dat is geen schoonheidsfoutje maar een juridisch probleem.
+  const { PLANNEN, PROEF } = await import('../server/instellingen.js');
+  const komma = (bedrag) => String(bedrag).replace('.', ',');
+
+  const paginas = {
+    'index.html': [komma(PLANNEN.maand.bedrag)],
+    'aanmelden.html': [komma(PLANNEN.maand.bedrag), komma(PLANNEN.jaar.bedrag), komma(PROEF.verificatiebedrag)],
+    'voorwaarden.html': [komma(PLANNEN.maand.bedrag), komma(PLANNEN.jaar.bedrag), komma(PROEF.verificatiebedrag)],
+  };
+
+  for (const [naam, bedragen] of Object.entries(paginas)) {
+    const html = await readFile(new URL(`../landing/${naam}`, import.meta.url), 'utf8');
+    for (const bedrag of bedragen) {
+      assert.ok(html.includes(bedrag), `${naam} noemt € ${bedrag} niet`);
+    }
+  }
+
+  // En de gratis week moet er als getal in staan, niet als "een week".
+  const voorwaarden = await readFile(new URL('../landing/voorwaarden.html', import.meta.url), 'utf8');
+  assert.match(voorwaarden, /zeven dagen/i, 'de voorwaarden noemen de lengte van de gratis week niet');
+  assert.equal(PROEF.dagen, 7, 'de voorwaarden zeggen zeven dagen; de code zegt iets anders');
 });

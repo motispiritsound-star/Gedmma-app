@@ -14,7 +14,7 @@
   <div class="binnen topbinnen">
     <a class="merkje" href="index.html"><span class="zegel"><span class="ar">نُور</span></span> Noer</a>
     <nav>
-      <a href="installeren.html">Op je beginscherm</a>
+      <a href="downloaden.html">Op je beginscherm</a>
       <a class="knop" href="/app/">Open Noer</a>
     </nav>
   </div>
@@ -116,10 +116,16 @@ async function teken() {
   regels.replaceChildren(...[
     regel('E-mailadres', a.email),
     regel('Toegang', merkje(
-      ab.actief ? (ab.opgezegd ? 'Loopt af' : 'Actief') : 'Niet actief', ab.actief)),
+      ab.actief
+        ? (ab.opgezegd ? 'Loopt af' : ab.proef ? 'Gratis week' : 'Actief')
+        : 'Niet actief', ab.actief)),
     ab.plan && regel('Abonnement', ab.plan === 'jaar' ? 'Per jaar' : 'Per maand'),
     ab.prijs && regel('Bedrag', `${euro(ab.prijs)} ${ab.periode}`),
-    ab.tot && regel(ab.opgezegd ? 'Toegang tot' : 'Volgende afschrijving', datum(ab.tot)),
+    ab.tot && regel(
+      ab.opgezegd ? 'Toegang tot' : ab.proef ? 'Gratis tot' : 'Volgende afschrijving',
+      datum(ab.tot)),
+    ab.proef && !ab.opgezegd && ab.prijs
+      && regel('Eerste incasso', `${datum(ab.tot)} · ${euro(ab.prijs)}`),
   ].filter(Boolean));
 
   acties.replaceChildren();
@@ -139,14 +145,17 @@ async function teken() {
     }));
   } else {
     acties.append(knop('Abonnement opzeggen', true, async (k) => {
-      const zeker = window.confirm(
-        `Weet je het zeker? Je houdt toegang tot ${datum(ab.tot)}; daarna wordt er niets meer afgeschreven.`);
+      const zeker = window.confirm(ab.proef
+        ? `Weet je het zeker? Je gratis week loopt gewoon door tot ${datum(ab.tot)}, en er wordt niets geïncasseerd.`
+        : `Weet je het zeker? Je houdt toegang tot ${datum(ab.tot)}; daarna wordt er niets meer afgeschreven.`);
       if (!zeker) return;
       bezig(k, true);
       const r = await verstuur('/api/abonnement/opzeggen', {});
       bezig(k, false);
       if (r.status === 200) {
-        meld(melding, `Opgezegd. Er wordt niets meer afgeschreven; je kunt nog tot ${datum(ab.tot)} bij alles.`, 'goed');
+        meld(melding, ab.proef
+          ? `Opgezegd. Er wordt niets geïncasseerd; je gratis week loopt nog tot ${datum(ab.tot)}.`
+          : `Opgezegd. Er wordt niets meer afgeschreven; je kunt nog tot ${datum(ab.tot)} bij alles.`, 'goed');
         teken();
       } else meld(melding, r.fout || 'Opzeggen lukte niet. Mail ons, dan doen we het met de hand.');
     }));

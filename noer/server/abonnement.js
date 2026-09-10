@@ -5,13 +5,13 @@
 // toekomst ligt. Opzeggen zet die datum niet terug — je hebt de maand betaald,
 // dus je maakt de maand af. Dat is ook wat er op de site staat.
 
-import { PLANNEN } from './instellingen.js';
+import { PLANNEN, PROEF } from './instellingen.js';
 import { BERICHTEN } from './mail.js';
 import { MollieFout } from './mollie.js';
 
 export const leegAbonnement = () => ({
   plan: null,
-  staat: 'geen',          // geen | wacht | actief | opgezegd | mislukt
+  staat: 'geen',          // geen | wacht | proef | actief | opgezegd | mislukt
   mollieAbonnement: null,
   eersteBetaling: null,
   laatsteBetaling: null,
@@ -37,6 +37,10 @@ export function plusPeriode(datum, interval) {
 
 export const alsDatum = (d) => new Date(d).toISOString().slice(0, 10);
 
+/** Dagen erbij — voor de proefweek, die niet in maanden rekent. */
+export const plusDagen = (datum, dagen) =>
+  new Date(new Date(datum).getTime() + dagen * 86400000);
+
 /** Wat de app moet weten: mag dit account bij het betaalde deel? */
 export function toegangVan(account, nu = Date.now()) {
   const ab = account?.abonnement || leegAbonnement();
@@ -47,6 +51,10 @@ export function toegangVan(account, nu = Date.now()) {
     plan: ab.plan,
     tot: ab.betaaldTot,
     opgezegd: ab.staat === 'opgezegd',
+    proef: ab.staat === 'proef',
+    // Wat er straks van de rekening gaat, en wanneer. Dat hoort een ouder te
+    // kunnen zien zonder te hoeven rekenen.
+    bedrag: PLANNEN[ab.plan]?.bedrag || null,
   };
 }
 
@@ -64,9 +72,11 @@ export async function startAbonnement({ mollie, opslag, instellingen }, account,
     await opslag.zetAccount(account);
   }
 
+  // De eerste betaling is de verificatie van één cent; die levert de
+  // machtiging op waarmee vanaf dag acht het maandbedrag wordt geïncasseerd.
   const betaling = await mollie.maakEersteBetaling(account.mollieKlant, {
-    bedrag: plan.bedrag,
-    omschrijving: plan.omschrijving,
+    bedrag: PROEF.verificatiebedrag,
+    omschrijving: PROEF.omschrijving,
     terugUrl: `${instellingen.basisUrl}/bedankt.html`,
     webhookUrl: `${instellingen.basisUrl}/api/mollie/webhook`,
     metadata: { accountId: account.id, plan: plan.id },
@@ -124,13 +134,22 @@ export async function verwerkWebhook({ mollie, opslag, instellingen, post = null
     const vanaf = ab.betaaldTot && Date.parse(ab.betaaldTot) > Date.now()
       ? new Date(ab.betaaldTot) : new Date();
     ab.plan = plan.id;
-    ab.betaaldTot = plusPeriode(vanaf, plan.interval).toISOString();
     ab.laatsteBetaling = betaling.id;
-    if (ab.staat !== 'opgezegd') ab.staat = 'actief';
+
+    if (betaling.sequenceType === 'first') {
+      // De verificatie is binnen: de proefweek begint. Er is nog niets voor
+      // het abonnement betaald, dus de teller staat op zeven dagen.
+      ab.betaaldTot = plusDagen(new Date(), PROEF.dagen).toISOString();
+      ab.proefTot = ab.betaaldTot;
+      if (ab.staat !== 'opgezegd') ab.staat = 'proef';
+    } else {
+      ab.betaaldTot = plusPeriode(vanaf, plan.interval).toISOString();
+      if (ab.staat !== 'opgezegd') ab.staat = 'actief';
+    }
 
     // Na de eerste betaling staat er een mandaat, en pas dan mag het
-    // abonnement worden aangemaakt. De eerste incasso is aan het eind van
-    // deze periode, want die is nu net betaald.
+    // abonnement worden aangemaakt. De eerste incasso valt op de dag dat de
+    // proefweek afloopt, niet eerder.
     if (betaling.sequenceType === 'first' && !ab.mollieAbonnement) {
       try {
         const nieuw = await mollie.maakAbonnement(account.mollieKlant, {
@@ -143,9 +162,10 @@ export async function verwerkWebhook({ mollie, opslag, instellingen, post = null
         });
         ab.mollieAbonnement = nieuw.id;
       } catch (fout) {
-        // De ouder heeft betaald; die krijgt zijn maand. Dat het abonnement
-        // niet doorloopt is een probleem voor later, en het moet opvallen.
-        ab.staat = 'actief';
+        // De verificatie is gelukt, dus de proefweek loopt. Dat het abonnement
+        // daarna niet doorloopt is een probleem voor later, en het moet
+        // opvallen — anders eindigt de proefweek stilletjes in niets.
+        ab.abonnementFoutOp = new Date().toISOString();
         ab.abonnementFout = fout instanceof MollieFout ? fout.message : String(fout);
         log(`abonnement aanmaken mislukt voor ${account.id}: ${ab.abonnementFout}`);
       }
@@ -168,7 +188,9 @@ export async function verwerkWebhook({ mollie, opslag, instellingen, post = null
     const bericht = betaling.status === 'paid'
       ? BERICHTEN.welkom({
           plan: plan.id, bedrag: plan.bedrag.replace('.', ','),
-          tot: nederlandseDatum(ab.betaaldTot), site: instellingen.basisUrl,
+          proefTot: nederlandseDatum(ab.betaaldTot),
+          verificatie: PROEF.verificatiebedrag.replace('.', ','),
+          site: instellingen.basisUrl,
         })
       : ['failed', 'canceled', 'expired'].includes(betaling.status)
         ? BERICHTEN.mislukt({ site: instellingen.basisUrl })

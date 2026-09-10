@@ -10,7 +10,7 @@ map op `/` neer en de app op `/app/`.
 | `inloggen.html` | terugkomen |
 | `account.html` | je abonnement, je betalingen, je wachtwoord, de opzegknop |
 | `bedankt.html` | waar Mollie je heen stuurt na het betalen |
-| `installeren.html` | Noer op je beginscherm zetten, per apparaat |
+| `downloaden.html` | Noer op je beginscherm zetten, per apparaat |
 | `voorwaarden.html` | de voorwaarden |
 | `privacy.html` | de privacyverklaring |
 | `niet-gevonden.html` | de 404 |
@@ -33,11 +33,13 @@ de vier hulpjes die de formulieren nodig hebben.
    Vergeet `NOER_MAIL_VAN` niet; dat is het adres waarvandaan de bevestiging
    verstuurd wordt.
 
-2. **De prijs, als je hem verandert.** Zoek op `6,99` — dat staat één keer, in
-   het prijsblok. Tussen het euroteken en het bedrag staat een vaste spatie
-   (U+00A0, geen gewone spatie), zodat "€ 6,99" nooit over twee regels breekt.
-   Neem die mee als je het bedrag overtypt. Hetzelfde geldt voor de € 59 per
-   jaar en de € 295 voor scholen.
+2. **De prijs, als je hem verandert.** Het bedrag dat Mollie int staat in
+   `server/instellingen.js` onder `PLANNEN` — dat is de waarheid. Op de site
+   staat hij als tekst op een handvol plekken: zoek op `7,99` en `79`. Tussen
+   het euroteken en het bedrag staat soms een vaste spatie (U+00A0), zodat
+   "€ 7,99" nooit over twee regels breekt; neem die mee als je overtypt.
+   Vergeet de € 295 voor scholen op de flyer niet, en `tools/marketing-sjabloon.html`.
+   Er is een test die controleert dat de site en Mollie hetzelfde zeggen.
 
 3. **De gele plekken in `voorwaarden.html` en `privacy.html`.** Alles met
    `class="invullen"` moet ingevuld: bedrijfsnaam, KvK-nummer, btw-nummer,

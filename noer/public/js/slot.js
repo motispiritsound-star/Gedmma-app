@@ -35,6 +35,6 @@ export function slotKaart({ wat, terugPad = '#/thuis', terugTekst = 'Terug' }) {
 export function slotStrook(tekst) {
   return el('a', { class: 'slotstrook', href: siteUrl('aanmelden.html') },
     el('span', { class: 'slotcirkel klein' }, icoon('slot', { maat: 18 })),
-    el('span', {}, el('b', { tekst: tekst }), el('span', { class: 'klein', tekst: 'Zet Noer open — € 6,99 per maand, elke maand opzegbaar.' })),
+    el('span', {}, el('b', { tekst: tekst }), el('span', { class: 'klein', tekst: 'Eerste week gratis, daarna € 7,99 per maand — elke maand opzegbaar.' })),
     icoon('pijlRechts', { maat: 20 }));
 }

@@ -329,10 +329,16 @@ inclusief wat erbij komt kijken als je later abonnementen wilt aanzetten.
 
 ## Betaald aanbieden
 
-Er zit een abonnement in. € 6,99 per maand of € 59 per jaar, via Mollie, met
-iDEAL en creditcard, elke maand opzegbaar met één knop. Het gratis deel — het
-hele alfabet, de eerste twee leeslessen, Al-Faatiha, Al-Ichlaas, An-Naas en
-één woordthema — blijft open zonder account.
+Er zit een abonnement in. **De eerste week is gratis**, daarna € 7,99 per maand
+of € 79 per jaar, via Mollie, met iDEAL en creditcard, elke maand opzegbaar met
+één knop — ook tijdens die week. Het gratis deel — het hele alfabet, de eerste
+twee leeslessen, Al-Faatiha, Al-Ichlaas, An-Naas en één woordthema — blijft
+altijd open zonder account.
+
+Om te kunnen incasseren is er een machtiging nodig, en die ontstaat alleen uit
+een echte betaling. Daarom staat er bij het aanmelden één verificatiebetaling
+van € 0,01. Dat is het enige dat er tijdens de gratis week van een rekening
+gaat, en het staat op vier plekken uitgelegd.
 
 ```bash
 # droog oefenen: nep-Mollie, een nepbank op de site zelf, geen geld
@@ -344,7 +350,11 @@ welke omgevingsvariabelen er zijn, hoe het abonnement precies loopt, hoe je het
 neerzet met systemd en Caddy, en wat er nog niet is (wachtwoord vergeten,
 facturen, aanmaningen).
 
-**`LANCEREN.md`** gaat over de keuzes eromheen: wat € 6,99 netto oplevert, drie
+**`APPWINKEL.md`** gaat over de vraag of Noer in de App Store en Google Play
+moet: wat het kost, wat het oplevert, en hoe je met Android begint als het
+antwoord ja wordt.
+
+**`LANCEREN.md`** gaat over de keuzes eromheen: wat € 7,99 netto oplevert, drie
 manieren om het aan te bieden met een aanbeveling, en de juridische en fiscale
 lijst voor Nederland.
 

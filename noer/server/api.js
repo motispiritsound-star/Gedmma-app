@@ -6,7 +6,7 @@ import {
   maakSessie, nieuwId, Teller,
 } from './accounts.js';
 import { hervat, startAbonnement, toegangVan, verwerkWebhook, zegOp } from './abonnement.js';
-import { PLANNEN } from './instellingen.js';
+import { PLANNEN, PROEF } from './instellingen.js';
 import { koekje, koekjes, leesFormulier, leesJson, stuurJson } from './http.js';
 import { normaliseerEmail } from './opslag.js';
 
@@ -77,6 +77,7 @@ export function maakApi({ opslag, mollie, instellingen, post = null, log = conso
       return stuurJson(antwoord, 200, {
         ingelogd: Boolean(account),
         gratis: GRATIS,
+        proefweek: PROEF.dagen,
         ...(account ? toegangVan(account) : { actief: false, staat: 'geen', plan: null, tot: null }),
       });
     }
@@ -84,7 +85,8 @@ export function maakApi({ opslag, mollie, instellingen, post = null, log = conso
     if (pad === '/api/status' && methode === 'GET') {
       return stuurJson(antwoord, 200, {
         draait: true,
-        proef: instellingen.proef,
+        proefstand: instellingen.proef,
+        proefweek: { dagen: PROEF.dagen, verificatiebedrag: PROEF.verificatiebedrag },
         plannen: Object.values(PLANNEN).map(({ id, naam, bedrag, periode }) => ({ id, naam, bedrag, periode })),
       });
     }

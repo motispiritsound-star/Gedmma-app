@@ -43,6 +43,15 @@ await mkdir(UIT, { recursive: true });
 
 for (const naam of await readdir(join(WORTEL, 'landing'))) {
   if (ALLEEN_MET_SERVER.has(naam)) continue;
+  // Het koppelbestand voor een Android-app hoort er alleen te staan als het
+  // is ingevuld. Een halve handtekening online zetten helpt niemand.
+  if (naam === '.well-known') {
+    const links = await readFile(join(WORTEL, 'landing', '.well-known', 'assetlinks.json'), 'utf8');
+    if (links.includes('VUL_HIER')) {
+      console.log('  overgeslagen: .well-known/assetlinks.json (nog niet ingevuld — zie APPWINKEL.md)');
+      continue;
+    }
+  }
   await cp(join(WORTEL, 'landing', naam), join(UIT, naam), { recursive: true });
 }
 await rm(join(UIT, 'marketing', 'LEESMIJ.md'), { force: true });
@@ -85,7 +94,7 @@ index = index.slice(0, begin) + `<section id="prijs">
       dagelijks gebruikt. Wie er nu bij is, hoort dat ruim van tevoren — en houdt wat hij heeft.</p>
     <div class="knoprij">
       <a class="knop" href="/app/">Begin vandaag</a>
-      <a class="knop stil" href="installeren.html">Op je beginscherm zetten</a>
+      <a class="knop stil" href="downloaden.html">Op je beginscherm zetten</a>
     </div>
   </div>
 </section>` + index.slice(eind);
@@ -102,20 +111,29 @@ index = vervang(index,
   'Er is geen reclame en geen meetsoftware, en er is geen account: je hoeft nergens iets in te vullen.');
 
 index = vervang(index,
-  '<p>Met één knop in je account, op elk moment. Je houdt toegang tot het einde van de periode die je betaald hebt. Geen opzegtermijn, geen telefoontje, geen mailtje.</p>',
+  "<p>Met één knop in je account, op elk moment — ook tijdens de gratis week. Zeg je binnen die week op, dan wordt er niets geïncasseerd. Daarna houd je toegang tot het einde van de maand die je betaald hebt. Geen opzegtermijn, geen telefoontje, geen mailtje.</p>",
   '<p>Er is nu niets om op te zeggen: Noer is gratis en er is geen account. Komt er later een abonnement, dan geldt daarvoor: opzeggen met één knop, op elk moment, zonder opzegtermijn.</p>');
 
+// De vraag over de cent gaat over incasseren; in een open uitgave incasseert
+// niemand iets.
+index = index.replace(/<details class="vraag"><summary>Er wordt € 0,01 afgeschreven[\s\S]*?<\/details>\s*/, '');
+
 index = vervang(index,
-  'Bevalt het, dan zet je de rest\n      open voor € 6,99 per maand — en zeg je op met dezelfde knop.',
-  'Alles staat open, en het kost\n      voorlopig niets.');
+  'De eerste week is alles open en gratis; daarna is het € 7,99 per maand, en zeg je op\n      met dezelfde knop waarmee je begon.',
+  'Alles staat open, en het kost voorlopig niets.');
+
+index = vervang(index,
+  'Eerste week gratis · Werkt offline',
+  'Helemaal gratis · Werkt offline');
 
 // De knoppen die naar een server wijzen, wijzen nu naar de app zelf.
 index = index
   .replace(/<a href="inloggen\.html" data-account-knop>Inloggen<\/a>\s*/g, '')
-  .replace(/href="aanmelden\.html"/g, 'href="/app/"')
-  .replace(/>Noer openzetten</g, '>Begin gratis<')
+  .replace(/href="aanmelden\.html"/g, 'href="downloaden.html"')
+  .replace(/>Begin je gratis week</g, '>Begin gratis<')
   .replace(/>Kies het jaarabonnement</g, '>Begin gratis<')
-  .replace(/>Zet alles open</g, '>Op je beginscherm zetten<')
+  .replace(/>Start je gratis week</g, '>Op je beginscherm zetten<')
+  .replace(/>Eerste week gratis</g, '>Download Noer<')
   .replace(/<a href="account\.html">Mijn abonnement<\/a>\s*/g, '')
   .replace(/<script type="module">\s*import \{ vulKopbalk \} from '\.\/site\.js';\s*vulKopbalk\(\);\s*<\/script>/g, '');
 
@@ -135,13 +153,17 @@ flyer = vervang(flyer, '<span>per jaar, 60 kinderen</span>', '<span>voor de hele
 await writeFile(flyerPad, flyer);
 
 // De andere pagina's verwijzen ook naar het account; die verwijzingen weg.
-for (const naam of ['installeren.html', 'voorwaarden.html', 'privacy.html', 'flyer.html', 'niet-gevonden.html']) {
+for (const naam of ['downloaden.html', 'voorwaarden.html', 'privacy.html', 'flyer.html', 'niet-gevonden.html']) {
   const pad = join(UIT, naam);
   let tekst;
   try { tekst = await readFile(pad, 'utf8'); } catch { continue; }
   await writeFile(pad, tekst
     .replace(/<a href="account\.html">Mijn abonnement<\/a>\s*/g, '')
-    .replace(/href="aanmelden\.html"/g, 'href="/app/"'));
+    .replace(/href="aanmelden\.html"/g, 'href="/app/"')
+    .replace(/>Eerste week gratis</g, '>Open Noer<')
+    // Op de downloadpagina gaat een alinea over wat een abonnement kost.
+    .replace(/<p class="klein" style="margin-top:.8rem">Wat je krijgt is precies hetzelfde/,
+      '<p class="klein" style="margin-top:.8rem">Noer is nu gratis. Wat je krijgt is precies hetzelfde'));
 }
 
 // --- Wat de host moet weten -----------------------------------------------

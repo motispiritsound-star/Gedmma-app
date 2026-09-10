@@ -39,31 +39,38 @@ Zodat je weet waar je aan begint. Alle bedragen inclusief btw waar dat hoort.
 
 | | |
 |---|---|
-| Prijs | € 6,99 per maand |
-| Af: 21% btw | € 1,21 |
+| Prijs | € 7,99 per maand |
+| Af: 21% btw | € 1,39 |
 | Af: betaalkosten (SEPA-incasso, ± € 0,25) | € 0,25 |
-| **Houd je over** | **± € 5,53 per maand per abonnee** |
+| **Houd je over** | **± € 6,35 per maand per abonnee** |
 
 Wat dat betekent in aantallen:
 
 | Abonnees | Per maand netto | Per jaar |
 |---:|---:|---:|
-| 50 | € 277 | € 3.318 |
-| 250 | € 1.383 | € 16.590 |
-| 1.000 | € 5.530 | € 66.360 |
+| 50 | € 318 | € 3.812 |
+| 250 | € 1.588 | € 19.059 |
+| 1.000 | € 6.353 | € 76.236 |
+
+De eerste week is gratis, dus je eerste maand met een nieuwe abonnee levert
+zeven dagen minder op. Bij een gelijkmatige instroom is dat ongeveer een kwart
+van één maandbedrag per klant, eenmalig. De verificatiebetaling van één cent
+kost je € 0,29 aan transactiekosten — reken die bij je wervingskosten, niet bij
+je omzet.
 
 Twee dingen die deze tabel te rooskleurig maken:
 
 **Opzeggingen.** Bij maandelijks opzegbare abonnementen op kinder-educatie is
 5 tot 10% per maand normaal. Bij 8% ben je na een jaar tweederde van je
 abonnees kwijt. Je moet dus blijven werven om stil te staan. Een jaarabonnement
-(bijvoorbeeld € 59 per jaar, ruim 29% korting op € 83,88) haalt die
+(€ 79 per jaar, ruim 17% korting op € 95,88) haalt die
 maandelijkse lekkage weg en scheelt bovendien elf transactiekosten per klant.
+Het staat er als € 79 per jaar tegenover € 95,88 aan maandbedragen.
 
 **Ondersteuning.** Een betalende klant stelt vragen. Reken op enkele minuten
 per klant per maand. Bij 250 abonnees is dat een dagdeel per week.
 
-**Over de prijs.** € 6,99 is meer dan een losse app en minder dan een uur
+**Over de prijs.** € 7,99 is meer dan een losse app en minder dan een uur
 bijles. Het vergelijkingspunt in het hoofd van een ouder is meestal niet een
 andere app maar de Koranles op zaterdag — en daar zit je ruim onder. Wat je
 daarvoor moet waarmaken is dat het kind er uit zichzelf naar teruggaat. Dat is
@@ -87,8 +94,9 @@ Geen maandelijkse administratie, geen opzeggingen, geen incasso's.
 ### 2. Abonnement — wat je vroeg, en wat er nu staat
 
 - **Gebouwd.** Accounts, inloggen, een abonnement via Mollie met iDEAL en
-  creditcard, maandelijkse incasso, een opzegknop, een bevestigingsmail, en
-  een gratis deel dat altijd open blijft. Zie `BETALEN.md`.
+  creditcard, een gratis week vooraf, maandelijkse incasso daarna, een
+  opzegknop die ook tijdens die week werkt, een bevestigingsmail, en een gratis
+  deel dat altijd open blijft. Zie `BETALEN.md`.
 - **Voordeel:** terugkerende omzet, en je kunt inhoud blijven toevoegen.
 - **Nog niet gebouwd:** wachtwoord vergeten (dat doe je met de hand),
   facturen met een nummer, en aanmaningen bij een mislukte incasso. Bij de

@@ -60,23 +60,28 @@ export function maakPost({ dienst, sleutel, van, log = console.log, haal = fetch
 // eraf komt.
 
 export const BERICHTEN = {
-  welkom: ({ plan, bedrag, tot, site }) => ({
-    onderwerp: 'Je abonnement op Noer',
+  welkom: ({ plan, bedrag, proefTot, verificatie, site }) => ({
+    onderwerp: 'Je proefweek bij Noer is begonnen',
     tekst: [
       'Assalaamoe ʿalaikoem,',
       '',
-      'Je abonnement op Noer staat aan. Alles is nu open: de tien leeslessen, alle',
+      'Je proefweek is begonnen. Alles is nu open: de tien leeslessen, alle',
       "soera's, de woordthema's, de opnamestudio en het ouderscherm.",
       '',
-      `Wat je hebt afgesloten: Noer ${plan === 'jaar' ? 'per jaar' : 'per maand'}, € ${bedrag} ${plan === 'jaar' ? 'per jaar' : 'per maand'}, inclusief btw.`,
-      `De volgende afschrijving is rond ${tot}.`,
+      `Deze week is gratis. Om je rekening te kunnen controleren hebben we eenmalig`,
+      `€ ${verificatie} afgeschreven; meer is er niet gebeurd.`,
       '',
-      'Opzeggen kan op elk moment met één knop in je account. Je houdt dan toegang',
-      'tot het eind van de periode die je al betaald hebt.',
+      `Vanaf ${proefTot} gaat het abonnement in: € ${bedrag} ${plan === 'jaar' ? 'per jaar' : 'per maand'}, inclusief btw,`,
+      'dat we dan automatisch incasseren.',
+      '',
+      'Wil je dat niet, zeg dan vóór die datum op met één knop in je account. Dan',
+      'wordt er niets afgeschreven en houd je de proefweek uit. Ook daarna kun je',
+      'op elk moment opzeggen; je houdt dan toegang tot het eind van de maand die',
+      'je betaald hebt.',
       '',
       `Je account:      ${site}/account.html`,
       `Noer openen:     ${site}/app/`,
-      `Op je beginscherm zetten: ${site}/installeren.html`,
+      `Op je beginscherm zetten:  ${site}/downloaden.html`,
       `De voorwaarden:  ${site}/voorwaarden.html`,
       '',
       'Bewaar deze mail; hij is de bevestiging van je aankoop.',

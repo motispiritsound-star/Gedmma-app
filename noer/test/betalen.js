@@ -15,7 +15,8 @@ import { join } from 'node:path';
 
 import { maakServer } from '../server/maak.js';
 import { NepMollie } from '../server/mollie.js';
-import { plusPeriode } from '../server/abonnement.js';
+import { plusPeriode, plusDagen } from '../server/abonnement.js';
+import { PROEF, PLANNEN } from '../server/instellingen.js';
 import { keurWachtwoord, maakSessie, leesSessie, hashWachtwoord, klopWachtwoord } from '../server/accounts.js';
 
 /** Een server met een eigen map en een eigen nep-Mollie, per test. */
@@ -169,7 +170,7 @@ test('zonder abonnement is er geen toegang tot het betaalde deel', async () => {
   } finally { await o.sluit(); }
 });
 
-test('betalen geeft toegang, en zet meteen het abonnement voor de maanden erna klaar', async () => {
+test('de eerste betaling is de verificatie, en start de proefweek', async () => {
   const o = await opstelling();
   try {
     const klant = o.maakKlant();
@@ -182,7 +183,8 @@ test('betalen geeft toegang, en zet meteen het abonnement voor de maanden erna k
     assert.match(start.lichaam.betaalUrl, /^https:\/\//);
 
     const betaling = [...o.mollie.betalingen.values()].at(-1);
-    assert.equal(betaling.amount.value, '6.99');
+    assert.equal(betaling.amount.value, PROEF.verificatiebedrag,
+      'de eerste week is gratis; de eerste betaling is alleen de controle van de rekening');
     assert.equal(betaling.sequenceType, 'first', 'zonder eerste betaling komt er geen machtiging');
 
     // Zolang er niet betaald is, gebeurt er niets — ook niet als de webhook
@@ -195,15 +197,17 @@ test('betalen geeft toegang, en zet meteen het abonnement voor de maanden erna k
 
     const toegang = (await klant('/api/toegang')).lichaam;
     assert.equal(toegang.actief, true);
-    assert.equal(toegang.staat, 'actief');
+    assert.equal(toegang.staat, 'proef');
+    assert.equal(toegang.proef, true);
     const dagen = (Date.parse(toegang.tot) - Date.now()) / 86400000;
-    assert.ok(dagen > 27 && dagen < 32, `betaald tot hoort een maand verder te liggen, niet ${dagen} dagen`);
+    assert.ok(dagen > 6.5 && dagen < 7.5, `de proefweek hoort zeven dagen te duren, niet ${dagen}`);
 
     const abonnementen = [...o.mollie.abonnementen.values()];
-    assert.equal(abonnementen.length, 1, 'na de eerste betaling hoort er een doorlopend abonnement te staan');
+    assert.equal(abonnementen.length, 1, 'na de verificatie hoort het abonnement klaar te staan');
     assert.equal(abonnementen[0].interval, '1 month');
+    assert.equal(abonnementen[0].amount.value, '7.99', 'het maandbedrag klopt niet');
     assert.equal(abonnementen[0].startDate, toegang.tot.slice(0, 10),
-      'de eerste incasso hoort aan het eind van de betaalde periode te vallen, niet meteen');
+      'de eerste incasso hoort op de dag te vallen dat de proefweek afloopt, niet eerder');
   } finally { await o.sluit(); }
 });
 
@@ -222,21 +226,45 @@ test('dezelfde webhook twee keer geeft geen maand cadeau', async () => {
   } finally { await o.sluit(); }
 });
 
-test('de incasso van de volgende maand verlengt de toegang', async () => {
+test('de eerste incasso na de proefweek maakt er een gewoon abonnement van', async () => {
   const o = await opstelling();
   try {
     const klant = o.maakKlant();
     await abonneer(klant, o.mollie);
-    const eerst = (await klant('/api/toegang')).lichaam.tot;
+    const proefEind = (await klant('/api/toegang')).lichaam.tot;
 
     const abonnement = [...o.mollie.abonnementen.values()][0];
     const incasso = o.mollie.maandelijkseIncasso(abonnement.id);
+    assert.equal(incasso.amount.value, '7.99', 'er wordt niet het maandbedrag geïncasseerd');
     await klant('/api/mollie/webhook', { methode: 'POST', rauw: `id=${incasso.id}` });
 
-    const tot = (await klant('/api/toegang')).lichaam.tot;
-    assert.ok(Date.parse(tot) > Date.parse(eerst), 'de betaalde periode hoort op te schuiven');
-    const maanden = (Date.parse(tot) - Date.parse(eerst)) / 86400000;
-    assert.ok(maanden > 27 && maanden < 32, `precies één periode erbij, niet ${maanden} dagen`);
+    const na = (await klant('/api/toegang')).lichaam;
+    assert.equal(na.staat, 'actief', 'na de eerste incasso is het geen proef meer');
+    assert.equal(na.proef, false);
+    const dagen = (Date.parse(na.tot) - Date.parse(proefEind)) / 86400000;
+    assert.ok(dagen > 27 && dagen < 32, `precies één maand erbij, niet ${dagen} dagen`);
+  } finally { await o.sluit(); }
+});
+
+test('opzeggen tijdens de proefweek kost niets', async () => {
+  // Dit is het moment waarop het misgaat bij de meeste diensten: je zegt op
+  // binnen de gratis week en er wordt tóch geïncasseerd. Hier hoort het
+  // abonnement bij Mollie meteen te stoppen, vóór de eerste incasso valt.
+  const o = await opstelling();
+  try {
+    const klant = o.maakKlant();
+    await abonneer(klant, o.mollie);
+    const proef = (await klant('/api/toegang')).lichaam;
+    assert.equal(proef.staat, 'proef');
+
+    await klant('/api/abonnement/opzeggen', { methode: 'POST', json: {} });
+
+    const abonnement = [...o.mollie.abonnementen.values()][0];
+    assert.equal(abonnement.status, 'canceled', 'de incasso van dag acht loopt gewoon door');
+
+    const na = (await klant('/api/toegang')).lichaam;
+    assert.equal(na.actief, true, 'de proefweek maak je af');
+    assert.equal(na.tot, proef.tot, 'de proefweek hoort niet korter te worden door op te zeggen');
   } finally { await o.sluit(); }
 });
 
@@ -285,7 +313,7 @@ test('een mislukte eerste betaling geeft geen toegang', async () => {
   } finally { await o.sluit(); }
 });
 
-test('het jaarabonnement kost 59 euro en loopt twaalf maanden', async () => {
+test('het jaarabonnement kost 79 euro en begint ook na de proefweek', async () => {
   const o = await opstelling();
   try {
     const klant = o.maakKlant();
@@ -293,10 +321,21 @@ test('het jaarabonnement kost 59 euro en loopt twaalf maanden', async () => {
     const toegang = (await klant('/api/toegang')).lichaam;
     assert.equal(toegang.plan, 'jaar');
     const dagen = (Date.parse(toegang.tot) - Date.now()) / 86400000;
-    assert.ok(dagen > 360 && dagen < 370, `een jaar, niet ${dagen} dagen`);
-    assert.equal([...o.mollie.betalingen.values()][0].amount.value, '59.00');
-    assert.equal([...o.mollie.abonnementen.values()][0].interval, '12 months');
+    assert.ok(dagen > 6.5 && dagen < 7.5, `ook bij een jaarabonnement is de proefweek zeven dagen, niet ${dagen}`);
+    assert.equal([...o.mollie.betalingen.values()][0].amount.value, PROEF.verificatiebedrag);
+    const abonnement = [...o.mollie.abonnementen.values()][0];
+    assert.equal(abonnement.interval, '12 months');
+    assert.equal(abonnement.amount.value, '79.00');
   } finally { await o.sluit(); }
+});
+
+test('de prijzen staan op één plek, en dat is niet in een sjabloon', () => {
+  // Als de prijs op de site en de prijs die Mollie int uit elkaar lopen,
+  // incasseer je iets anders dan je hebt afgesproken.
+  assert.equal(PLANNEN.maand.bedrag, '7.99');
+  assert.equal(PLANNEN.jaar.bedrag, '79.00');
+  assert.equal(PROEF.dagen, 7);
+  assert.equal(plusDagen('2026-03-01T12:00:00Z', 7).toISOString().slice(0, 10), '2026-03-08');
 });
 
 test('een webhook voor een onbekende betaling laat de server niet omvallen', async () => {
@@ -522,8 +561,10 @@ test('na een geslaagde eerste betaling gaat er een bevestiging de deur uit', asy
     assert.equal(verstuurd.length, 1, 'geen bevestiging verstuurd');
     const [mail] = verstuurd;
     assert.equal(mail.aan, 'ouder@voorbeeld.nl');
-    assert.match(mail.tekst, /6,99/, 'de bevestiging noemt het bedrag niet');
+    assert.match(mail.tekst, /7,99/, 'de bevestiging noemt het bedrag niet');
     assert.match(mail.tekst, /per maand/, 'de bevestiging noemt de termijn niet');
+    assert.match(mail.tekst, /0,01/, 'de bevestiging verzwijgt de afschrijving van één cent');
+    assert.match(mail.tekst, /gratis/, 'de bevestiging noemt de proefweek niet');
     assert.match(mail.tekst, /voorwaarden/, 'de bevestiging verwijst niet naar de voorwaarden');
     assert.match(mail.tekst, /[Oo]pzeggen/, 'de bevestiging zegt niet hoe je eraf komt');
 

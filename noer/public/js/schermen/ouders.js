@@ -116,19 +116,22 @@ function abonnementKaart(bak) {
     if (stand.staat === 'open') return kaart.remove();
     const tot = stand.tot ? new Date(stand.tot).toLocaleDateString('nl-NL',
       { day: 'numeric', month: 'long', year: 'numeric' }) : null;
+    const bedrag = stand.bedrag ? `€ ${String(stand.bedrag).replace('.', ',')}` : '€ 7,99';
     zet(kaart,
       el('h2', {}, 'Abonnement', stand.actief ? null : slotje(18)),
       stand.actief
         ? el('p', { tekst: stand.opgezegd
-            ? `Opgezegd. Je kunt nog tot ${tot} bij alles.`
-            : `Loopt. De volgende afschrijving is rond ${tot}.` })
+            ? `Opgezegd. Je kunt nog tot ${tot} bij alles, en er wordt niets meer afgeschreven.`
+            : stand.proef
+              ? `Je proefweek loopt tot ${tot}. Daarna gaat het abonnement in: ${bedrag} per maand.`
+              : `Loopt. De volgende afschrijving is rond ${tot}.` })
         : el('p', { tekst: 'Nu staat het gratis deel open: het alfabet, de eerste twee lessen, drie soera\'s en één woordthema. De rest gaat open met een abonnement.' }),
       el('a', {
         class: `knop ${stand.actief ? 'stil' : ''}`.trim(),
         href: siteUrl(stand.actief ? 'account.html' : 'aanmelden.html'),
-        tekst: stand.actief ? 'Beheer je abonnement' : 'Noer openzetten — € 6,99 per maand',
+        tekst: stand.actief ? 'Beheer je abonnement' : 'Eerste week gratis proberen',
       }),
-      stand.actief ? null : el('p', { class: 'voetnoot', tekst: 'Elke maand opzegbaar. Ook een jaarabonnement van € 59.' }));
+      stand.actief ? null : el('p', { class: 'voetnoot', tekst: 'Daarna € 7,99 per maand, elke maand opzegbaar.' }));
   };
 
   teken(t);
