@@ -52,6 +52,34 @@ export const SITE_URL = (process.env.PUBLIC_SITE_URL ?? CANONICAL_SITE_URL).repl
 /** True when this build is the one that belongs on the public domain. */
 export const IS_PRODUCTION_BUILD = SITE_URL === CANONICAL_SITE_URL;
 
+/**
+ * Cloudflare Web Analytics counts visits without a cookie and without
+ * following anybody between sites, which is why it is the one measurement on
+ * here: it needs no consent banner and there is nothing to ask consent for.
+ *
+ * The token comes from the dashboard and is set as a build variable, so a fork
+ * or a preview build measures nothing by default. Read on every call rather
+ * than captured at import, so the build and its tests can differ.
+ */
+export function analyticsToken(): string {
+  const token = (process.env.CF_ANALYTICS_TOKEN ?? '').trim();
+  if (!token) return '';
+  // It ends up inside an HTML attribute. Cloudflare issues a hex string; if it
+  // is ever something else, failing the build beats writing an unknown value
+  // into every page.
+  if (!/^[A-Za-z0-9]{16,64}$/.test(token)) {
+    throw new Error('CF_ANALYTICS_TOKEN does not look like a Cloudflare token');
+  }
+  return token;
+}
+
+/** The beacon, or nothing at all when no token is configured. */
+function analyticsBeacon(): string {
+  const token = analyticsToken();
+  if (!token) return '';
+  return `\n    <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${token}"}'></script>`;
+}
+
 /** Escapes text destined for HTML. All copy goes through here. */
 export function esc(value: string): string {
   return value
@@ -258,7 +286,7 @@ function head({ locale, page, title, description, social }: Omit<PageOptions, 'b
     <link rel="manifest" href="/site.webmanifest">
     <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css">
-    ${structuredData(locale, page)}
+    ${structuredData(locale, page)}${analyticsBeacon()}
   </head>
   <body>`;
 }

@@ -34,6 +34,7 @@ import {
   joinUrl,
   mailFallback,
   money,
+  analyticsToken,
   renderHome,
   SITE_URL,
   renderManifest,
@@ -1066,5 +1067,64 @@ describe('what a shared link says under the title', () => {
         `<meta property="og:description" content="${esc(copy.proDescription)}">`,
       );
     }
+  });
+});
+
+describe('counting visitors', () => {
+  // Every test here puts the variable back. Leaving it set would arm the
+  // beacon for every other test in this file.
+  function withToken<T>(value: string | undefined, run: () => T): T {
+    const before = process.env.CF_ANALYTICS_TOKEN;
+    if (value === undefined) delete process.env.CF_ANALYTICS_TOKEN;
+    else process.env.CF_ANALYTICS_TOKEN = value;
+    try {
+      return run();
+    } finally {
+      if (before === undefined) delete process.env.CF_ANALYTICS_TOKEN;
+      else process.env.CF_ANALYTICS_TOKEN = before;
+    }
+  }
+
+  it('measures nothing until a token is configured', () => {
+    withToken(undefined, () => {
+      expect(analyticsToken()).toBe('');
+      expect(renderHome('nl')).not.toContain('cloudflareinsights');
+      expect(renderHeaders([])).toContain("connect-src 'self';");
+      expect(renderHeaders([])).not.toContain('cloudflareinsights');
+    });
+  });
+
+  it('loads the beacon and opens the policy for it together', () => {
+    // The two have to move as one. A beacon without the policy is a script the
+    // browser blocks in silence, and the dashboard then shows nobody visiting
+    // a site that has visitors.
+    withToken('abc123def4567890abc123def4567890', () => {
+      const html = renderHome('nl');
+      expect(html).toContain(
+        '<script defer src="https://static.cloudflareinsights.com/beacon.min.js"',
+      );
+      expect(html).toContain('"token":"abc123def4567890abc123def4567890"');
+      const headers = renderHeaders([]);
+      expect(headers).toContain('https://static.cloudflareinsights.com');
+      expect(headers).toContain("connect-src 'self' https://cloudflareinsights.com");
+    });
+  });
+
+  it('refuses a token that could carry markup into the page', () => {
+    withToken(`x" onload="alert(1)`, () => {
+      expect(() => analyticsToken()).toThrow(/CF_ANALYTICS_TOKEN/);
+    });
+  });
+
+  it('sets no cookie and asks for no consent, because it needs none', () => {
+    // The cookie statement says the site runs no analytics that recognise
+    // you. This one does not: no cookie, no identifier, nothing followed
+    // between sites. If that ever stops being true the statement has to change
+    // before the measurement does.
+    withToken('abc123def4567890abc123def4567890', () => {
+      const html = renderHome('nl');
+      expect(html).not.toContain('document.cookie');
+      expect(html).toContain('defer');
+    });
   });
 });

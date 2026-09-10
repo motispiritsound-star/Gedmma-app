@@ -105,6 +105,49 @@ curl -s  https://buurklus.nl/sitemap.xml | head  # 14 URLs, both languages
 Then open the site in a browser with the console visible. A blocked script or
 stylesheet shows up there as a Content-Security-Policy error and nowhere else.
 
+## 3b. Counting visitors
+
+Cloudflare's own numbers need no setup at all. In the dashboard, the worker
+(**Compute (Workers) → buurklus-site → Metrics**) counts requests it served,
+and the domain (**buurklus.nl → Analytics & Logs**) counts requests and
+estimates unique visitors from what passes through the proxy. Both are traffic
+seen at the edge: bots included, and a page read from a browser's cache not
+counted at all.
+
+For visits rather than requests — which pages, where people came from, how many
+came back — switch on **Web Analytics**:
+
+1. Cloudflare dashboard → **Analytics & Logs → Web Analytics** → *Add a site*,
+   hostname `buurklus.nl`. Choose the manual/JS-snippet option; copy the token
+   out of the snippet it shows (the long hex string after `"token":`).
+2. **Compute (Workers) → buurklus-site → Settings → Variables and Secrets**,
+   add `CF_ANALYTICS_TOKEN` with that value, for Production.
+3. Redeploy (any push does it, or *Deployments → Retry*).
+
+Both halves are generated from that one variable: the beacon in every page's
+`<head>` and the two hosts it needs in the Content-Security-Policy. Setting one
+without the other is the failure that looks like success — the browser blocks
+the script silently and the dashboard reports nobody visiting. With no variable
+set, no beacon is written and the policy stays closed, which is what a fork or a
+preview build should do.
+
+Check it landed:
+
+```sh
+curl -s  https://buurklus.nl/nl/ | grep -o 'cloudflareinsights[^"]*'
+curl -sI https://buurklus.nl/nl/ | grep -io 'connect-src[^;]*'
+```
+
+It sets no cookie, stores no identifier and follows nobody between sites, so it
+needs no consent banner and the cookie statement stays true as written. Anything
+that does track — Google Analytics, an advertising pixel — is a different
+decision with a different privacy statement, and the policy would have to be
+opened for it by hand.
+
+Google's own numbers are separate and worth having: **Search Console** shows
+what people searched for before they clicked, which analytics cannot see. See
+docs/SEO.md.
+
 ## 4. The API on Fly.io
 
 Only needed when the sign-up form should store sign-ups. Until then the form

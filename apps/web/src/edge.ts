@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { IS_PRODUCTION_BUILD } from './render.js';
+import { analyticsToken, IS_PRODUCTION_BUILD } from './render.js';
 
 /**
  * Cloudflare Pages reads two plain-text files from the root of the published
@@ -27,6 +27,14 @@ export function inlineScriptHashes(html: string): string[] {
 }
 
 function contentSecurityPolicy(scriptHashes: string[]): string {
+  // Cloudflare Web Analytics loads one script and posts what it counts back to
+  // Cloudflare. Both hosts are named only when a token is configured: an
+  // allowance for a script the site does not load is an allowance an attacker
+  // can use and the site cannot miss.
+  const measuring = analyticsToken() !== '';
+  const scripts = measuring ? "'self' https://static.cloudflareinsights.com" : "'self'";
+  const connects = measuring ? "'self' https://cloudflareinsights.com" : "'self'";
+
   // The forms post to this same origin, so 'self' covers them and no second
   // hostname has to be trusted here.
   return [
@@ -41,8 +49,8 @@ function contentSecurityPolicy(scriptHashes: string[]): string {
     "font-src 'self'",
     "style-src 'self'",
     "media-src 'self'",
-    "connect-src 'self'",
-    `script-src 'self' ${[...new Set(scriptHashes)].sort().join(' ')}`,
+    `connect-src ${connects}`,
+    `script-src ${scripts} ${[...new Set(scriptHashes)].sort().join(' ')}`,
     'upgrade-insecure-requests',
   ].join('; ');
 }
