@@ -89,35 +89,21 @@ export interface SiteCopy {
       vatNote: string;
       trialNote: string;
       /**
-       * Shown instead of the price cards while nothing is for sale. Kept in
-       * the same shape in both languages so the page cannot advertise a price
-       * in one and a free platform in the other.
+       * What Buurklus costs, shown whether or not it is on sale yet. There is
+       * no "free for now" wording: the price is the price, and a trial month
+       * is how somebody finds out whether it is worth paying.
        */
-      launch: {
+      offer: {
         badge: string;
         title: string;
-        cardTitle: string;
-        subtitle: string;
-        points: string[];
-        laterTitle: string;
-        later: string;
-        cta: string;
-      };
-      /**
-       * What the subscription will cost when it goes on sale. Both figures are
-       * per month; the yearly total is shown at checkout, where somebody is
-       * actually deciding to pay it.
-       */
-      planned: {
-        title: string;
         intro: string;
-        monthlyLabel: string;
-        monthlyNote: string;
-        yearlyLabel: string;
-        yearlyNote: string;
+        points: string[];
+        monthly: { label: string; trial: string; note: string };
+        yearly: { label: string; note: string };
         perMonth: string;
         vat: string;
         notice: string;
+        cta: string;
       };
       /** Sold separately and priced on request, so no figure appears here. */
       services: { title: string; intro: string; items: string[]; cta: string };
@@ -325,36 +311,32 @@ const nl: SiteCopy = {
       popular: 'Meest gekozen',
       vatNote: 'Prijzen zijn exclusief btw. Bij facturatie komt 21% btw erbij.',
       trialNote: 'Elk nieuw account begint met {{days}} dagen proefperiode en {{credits}} gratis offertes.',
-      launch: {
-        badge: 'Nu gratis',
-        title: 'Buurklus kost je voorlopig niets',
-        cardTitle: 'Gratis account',
-        subtitle:
-          'We zijn net begonnen en willen eerst genoeg klussen in elke gemeente. Zolang dat zo is betaal je niets: geen abonnement, geen commissie, geen betaalgegevens.',
+      offer: {
+        badge: 'Eerste maand gratis',
+        title: 'Wat Buurklus kost',
+        intro:
+          'Buurklus verdient pas iets als jij er iets aan hebt. Jij krijgt opdrachten en tevreden klanten; wij zorgen dat het eromheen digitaal soepel loopt — de aanvraag, de offerte, het contact en de afspraken op één plek. Eén vast bedrag per maand, geen commissie over je omzet en geen tarief per lead. Wat je factureert is van jou.',
         points: [
           '{{credits}} offertes per maand, elke maand opnieuw',
           '{{trades}} vakgebieden en {{cities}} gemeenten',
-          'Geen commissie over je omzet',
-          'Geen creditcard en geen opzegtermijn',
+          'KvK-gecontroleerd profiel',
+          'Geen commissie over je omzet — je factureert de klant zelf',
         ],
-        laterTitle: 'En straks?',
-        later:
-          'Ooit gaat Buurklus geld kosten, anders bestaan we volgend jaar niet meer. Als het zover is hoor je dat minstens {{notice}} dagen van tevoren, per e-mail en in de app. Je gaat nooit vanzelf betalen: zonder dat jij akkoord geeft blijft je account gratis, met dezelfde {{credits}} offertes per maand.',
-        cta: 'Gratis account aanmaken',
-      },
-      planned: {
-        title: 'Wat het straks gaat kosten',
-        intro:
-          'Eén abonnement, geen tarieven per lead en geen commissie over je omzet. Je factureert de klant zelf, en wat je verdient is van jou.',
-        monthlyLabel: 'Maandelijks',
-        monthlyNote: 'Elke maand opzegbaar. Geen opzegtermijn, geen jaarcontract.',
-        yearlyLabel: 'Een jaar vooruit',
-        yearlyNote:
-          'In één keer vooruit betaald, {{saving}}% goedkoper. Het jaarbedrag zie je bij het afrekenen.',
+        monthly: {
+          label: 'Maandelijks',
+          trial: 'De eerste maand is gratis. Daarna:',
+          note: 'Elke maand opzegbaar. Geen opzegtermijn, geen jaarcontract.',
+        },
+        yearly: {
+          label: 'Een jaar vooruit',
+          note:
+            'In één keer vooruit betaald, {{saving}}% goedkoper. Het jaarbedrag zie je bij het afrekenen.',
+        },
         perMonth: 'per maand',
         vat: 'Bedragen zijn exclusief btw. Als ondernemer trek je die weer af.',
         notice:
-          'Zolang Buurklus gratis is betaal je niets. Gaat dat veranderen, dan hoor je het minstens {{notice}} dagen van tevoren en gaat het pas in als jij akkoord geeft.',
+          'Verandert er iets aan de prijs, dan hoor je dat minstens {{notice}} dagen van tevoren en gaat het pas in als jij akkoord geeft. Er wordt nooit automatisch iets afgeschreven.',
+        cta: 'Begin met je gratis maand',
       },
       services: {
         title: 'Meer dan alleen klussen ontvangen',
@@ -601,36 +583,32 @@ const en: SiteCopy = {
       popular: 'Most chosen',
       vatNote: 'Prices exclude VAT. 21% Dutch VAT is added at invoicing.',
       trialNote: 'Every new account starts with {{days}} days of trial and {{credits}} free quotes.',
-      launch: {
-        badge: 'Free right now',
-        title: 'Buurklus costs you nothing for the time being',
-        cardTitle: 'Free account',
-        subtitle:
-          'We have just started, and we want enough jobs in every municipality first. Until then you pay nothing: no subscription, no commission, no payment details.',
-        points: [
-          '{{credits}} quotes a month, renewed every month',
-          '{{trades}} trades and {{cities}} municipalities',
-          'No commission on your turnover',
-          'No card and no notice period',
-        ],
-        laterTitle: 'And later?',
-        later:
-          'Buurklus will cost money one day, or we will not be here next year. When that happens you will hear about it at least {{notice}} days in advance, by email and in the app. You will never start paying by default: without your agreement your account stays free, with the same {{credits}} quotes a month.',
-        cta: 'Create a free account',
-      },
-      planned: {
-        title: 'What it will cost later',
+      offer: {
+        badge: 'First month free',
+        title: 'What Buurklus costs',
         intro:
-          'One subscription, no per-lead charges and no commission on your turnover. You invoice the customer yourself, and what you earn is yours.',
-        monthlyLabel: 'Monthly',
-        monthlyNote: 'Cancel any month. No notice period, no annual contract.',
-        yearlyLabel: 'A year up front',
-        yearlyNote:
-          'Paid once for the year, {{saving}}% cheaper. The yearly total is shown at checkout.',
+          'Buurklus only earns something once you do. You get jobs and satisfied customers; we make sure everything around them runs smoothly — the request, the quote, the conversation and the appointments, in one place. One fixed amount a month, no commission on your turnover and no charge per lead. What you invoice is yours.',
+        points: [
+          '{{credits}} quotes a month, every month',
+          '{{trades}} trades and {{cities}} municipalities',
+          'Chamber of Commerce verified profile',
+          'No commission on your turnover — you invoice the customer yourself',
+        ],
+        monthly: {
+          label: 'Monthly',
+          trial: 'The first month is free. After that:',
+          note: 'Cancel any month. No notice period, no annual contract.',
+        },
+        yearly: {
+          label: 'A year up front',
+          note:
+            'Paid once for the year, {{saving}}% cheaper. The yearly total is shown at checkout.',
+        },
         perMonth: 'per month',
         vat: 'Prices exclude VAT, which you deduct again as a business.',
         notice:
-          'While Buurklus is free you pay nothing. If that changes you hear about it at least {{notice}} days beforehand, and it only starts once you agree.',
+          'If the price changes you hear about it at least {{notice}} days beforehand, and it only takes effect once you agree. Nothing is ever debited automatically.',
+        cta: 'Start your free month',
       },
       services: {
         title: 'More than receiving jobs',

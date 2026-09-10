@@ -1,4 +1,6 @@
 import {
+  isFreePlan,
+  AVAILABLE_PLANS,
   yearlySavingPercent,
   monthlyRateOfYearly,
   ANNOUNCED_PLAN,
@@ -19,7 +21,6 @@ import {
   PRICING_NOTICE_DAYS,
   ROOT_CATEGORIES,
   SUPPORTED_LOCALES,
-  TRIAL_CREDITS,
   TRIAL_DURATION_DAYS,
   applyVat,
   centsToEuros,
@@ -1361,47 +1362,6 @@ function homeBody(locale: Locale): string {
 // Professionals page
 // ---------------------------------------------------------------------------
 
-/**
- * Exactly one plan carries the badge. `featured` on a plan means it ranks above
- * cheaper tiers in the customer-facing directory — not "most popular" — and two
- * tiers carry it, so badging on `featured` claimed two plans were the most
- * chosen. The recommendation is the cheapest featured tier.
- */
-const RECOMMENDED_PLAN = PLANS.find((plan) => plan.featured)?.slug ?? PLANS[1]?.slug;
-
-function planCard(plan: PlanSeed, locale: Locale, copy: SiteCopy): string {
-  const isRecommended = plan.slug === RECOMMENDED_PLAN;
-  const net = eurosToCents(plan.monthlyPriceEur);
-  const gross = applyVat(net).grossCents;
-  const p = copy.pro.pricing;
-
-  const features = [
-    `${count(plan.monthlyCredits, locale)} ${p.quotes}`,
-    `${count(plan.maxCategories, locale)} ${p.trades}`,
-    plan.maxCities === null ? p.citiesAll : `${count(plan.maxCities, locale)} ${p.cities}`,
-    plan.leadHeadStartMinutes > 0
-      ? fill(p.headStart, { minutes: count(plan.leadHeadStartMinutes, locale) })
-      : p.noHeadStart,
-    ...(plan.teamSeats > 0 ? [`${count(plan.teamSeats, locale)} ${p.seats}`] : []),
-  ];
-
-  return `<article class="card plan${isRecommended ? ' plan--featured' : ''}">
-    ${isRecommended ? `<span class="plan__badge">${esc(p.popular)}</span>` : ''}
-    <h3>${esc(localize(plan.name, locale))}</h3>
-    <p class="muted">${esc(localize(plan.tagline, locale))}</p>
-    <div class="plan__price">
-      <span class="plan__amount">${esc(money(net, locale))}</span>
-      <span class="plan__period">${esc(p.perMonth)} ${esc(p.excludingVat)}</span>
-    </div>
-    <span class="plan__gross">${esc(money(gross, locale))} ${esc(p.includingVat)}</span>
-    <ul class="plan__features">
-      ${features
-        .map((f) => `<li><span class="plan__tick">${solidIcon('check', 17)}</span><span>${esc(f)}</span></li>`)
-        .join('')}
-    </ul>
-    <a class="btn ${isRecommended ? 'btn--primary' : 'btn--ghost'}" href="${pathFor(locale, 'join')}">${esc(p.choose)}</a>
-  </article>`;
-}
 
 /**
  * What the pricing section shows while nothing is on sale. The paid cards say
@@ -1410,79 +1370,59 @@ function planCard(plan: PlanSeed, locale: Locale, copy: SiteCopy): string {
  * what the free account actually gives you, and -- the part that matters --
  * that it will not start charging you without asking.
  */
-function launchPanel(locale: Locale, copy: SiteCopy): string {
-  const l = copy.pro.pricing.launch;
+/**
+ * What Buurklus costs, as two cards side by side.
+ *
+ * There is no "free for now" card any more. A trial month is an invitation to
+ * find out whether the thing is worth paying for; a permanently free tier is a
+ * different promise, and mixing the two leaves somebody unsure which one they
+ * are being made. The price is stated whether or not it can be paid yet.
+ */
+function offerCards(locale: Locale, copy: SiteCopy): string {
+  const o = copy.pro.pricing.offer;
+  const plan = ANNOUNCED_PLAN ?? AVAILABLE_PLANS.find((row) => !isFreePlan(row)) ?? null;
+  if (!plan) return '';
+
   const values = {
-    credits: count(DEFAULT_PLAN.monthlyCredits, locale),
-    trades: count(DEFAULT_PLAN.maxCategories, locale),
+    credits: count(plan.monthlyCredits, locale),
+    trades: count(plan.maxCategories, locale),
     cities:
-      DEFAULT_PLAN.maxCities === null
-        ? copy.pro.pricing.citiesAll
-        : count(DEFAULT_PLAN.maxCities, locale),
+      plan.maxCities === null ? copy.pro.pricing.citiesAll : count(plan.maxCities, locale),
+    saving: count(yearlySavingPercent(plan), locale),
     notice: count(PRICING_NOTICE_DAYS, locale),
+    days: count(TRIAL_DURATION_DAYS, locale),
   };
 
-  const points = l.points
+  const points = o.points
     .map(
       (point) =>
         `<li><span class="plan__tick">${solidIcon('check', 17)}</span><span>${esc(fill(point, values))}</span></li>`,
     )
     .join('');
 
-  return `<article class="card plan plan--launch">
-    <span class="plan__badge">${esc(l.badge)}</span>
-    <h3>${esc(l.cardTitle)}</h3>
+  const price = (amount: number) => `
     <div class="plan__price">
-      <span class="plan__amount">${esc(money(0, locale))}</span>
-      <span class="plan__period">${esc(copy.pro.pricing.perMonth)}</span>
-    </div>
-    <ul class="plan__features">${points}</ul>
-    <a class="btn btn--primary" href="${pathFor(locale, 'join')}">${esc(l.cta)}</a>
-  </article>
-  <aside class="card plan plan--later">
-    <h3>${esc(l.laterTitle)}</h3>
-    <p class="muted">${esc(fill(l.later, values))}</p>
-    ${plannedPricing(locale, copy)}
-  </aside>`;
-}
-
-/**
- * What the subscription will cost, shown next to the free account rather than
- * hidden until the day it starts costing money. Both rates are per month: the
- * yearly total belongs at checkout, where somebody is deciding to pay it, not
- * on a page where they are deciding whether to bother.
- *
- * Renders to nothing when there is no announced plan, so a build with
- * everything already on sale cannot advertise a phantom price.
- */
-function plannedPricing(locale: Locale, copy: SiteCopy): string {
-  const plan = ANNOUNCED_PLAN;
-  if (!plan) return '';
-
-  const p = copy.pro.pricing.planned;
-  const values = {
-    saving: count(yearlySavingPercent(plan), locale),
-    notice: count(PRICING_NOTICE_DAYS, locale),
-  };
-
-  const rate = (label: string, amount: number, note: string) => `
-    <div class="planned__option">
-      <span class="planned__label">${esc(label)}</span>
-      <span class="planned__amount">${esc(money(eurosToCents(amount), locale))}</span>
-      <span class="planned__period">${esc(p.perMonth)}</span>
-      <p class="planned__note">${esc(fill(note, values))}</p>
+      <span class="plan__amount">${esc(money(eurosToCents(amount), locale))}</span>
+      <span class="plan__period">${esc(o.perMonth)}</span>
     </div>`;
 
-  return `<div class="planned">
-    <h4 class="planned__title">${esc(p.title)}</h4>
-    <p class="muted">${esc(p.intro)}</p>
-    <div class="planned__options">
-      ${rate(p.monthlyLabel, plan.monthlyPriceEur, p.monthlyNote)}
-      ${rate(p.yearlyLabel, monthlyRateOfYearly(plan), p.yearlyNote)}
-    </div>
-    <p class="planned__vat">${esc(p.vat)}</p>
-    <p class="planned__vat">${esc(fill(p.notice, values))}</p>
-  </div>`;
+  return `<article class="card plan plan--featured">
+    <span class="plan__badge">${esc(o.badge)}</span>
+    <h3>${esc(o.monthly.label)}</h3>
+    <p class="plan__trial">${esc(fill(o.monthly.trial, values))}</p>
+    ${price(plan.monthlyPriceEur)}
+    <p class="planned__note">${esc(fill(o.monthly.note, values))}</p>
+    <ul class="plan__features">${points}</ul>
+    <a class="btn btn--primary" href="${pathFor(locale, 'join')}">${esc(o.cta)}</a>
+  </article>
+  <article class="card plan">
+    <h3>${esc(o.yearly.label)}</h3>
+    <p class="plan__trial">${esc(fill(o.monthly.trial, values))}</p>
+    ${price(monthlyRateOfYearly(plan))}
+    <p class="planned__note">${esc(fill(o.yearly.note, values))}</p>
+    <ul class="plan__features">${points}</ul>
+    <a class="btn btn--ghost" href="${pathFor(locale, 'join')}">${esc(o.cta)}</a>
+  </article>`;
 }
 
 /**
@@ -1565,26 +1505,14 @@ function proBody(locale: Locale): string {
   <section class="section section--tint" id="pricing">
     <div class="wrap">
       <div class="section__head">
-        <h2>${esc(PLATFORM_IS_FREE ? p.pricing.launch.title : p.pricing.title)}</h2>
-        <p class="lede muted">${esc(
-          PLATFORM_IS_FREE ? p.pricing.launch.subtitle : p.pricing.subtitle,
-        )}</p>
+        <h2>${esc(p.pricing.offer.title)}</h2>
+        <p class="lede muted">${esc(p.pricing.offer.intro)}</p>
       </div>
-      <div class="plans${PLATFORM_IS_FREE ? ' plans--launch' : ''}">${
-        PLATFORM_IS_FREE
-          ? launchPanel(locale, copy)
-          : PLANS.filter((plan) => plan.available)
-              .map((plan) => planCard(plan, locale, copy))
-              .join('')
-      }</div>
-      ${
-        PLATFORM_IS_FREE
-          ? ''
-          : `<p class="muted planNote">
-        ${esc(p.pricing.vatNote)}<br>
-        ${esc(fill(p.pricing.trialNote, { days: TRIAL_DURATION_DAYS, credits: TRIAL_CREDITS }))}
-      </p>`
-      }
+      <div class="plans">${offerCards(locale, copy)}</div>
+      <p class="muted planNote">
+        ${esc(p.pricing.offer.vat)}<br>
+        ${esc(fill(p.pricing.offer.notice, { notice: PRICING_NOTICE_DAYS }))}
+      </p>
     </div>
   </section>
 

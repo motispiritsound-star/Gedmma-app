@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
+  TRIAL_DURATION_DAYS,
   ANNOUNCED_PLAN,
   AVAILABLE_PLANS,
   CITIES,
@@ -128,7 +129,7 @@ describe('content coming from @buurklus/shared', () => {
 });
 
 describe('the pricing section', () => {
-  it('announces what the subscription will cost, and never sells it yet', () => {
+  it('states what the subscription costs, and offers no way to pay yet', () => {
     // The price is on the page on purpose: somebody deciding to join deserves
     // to know what it becomes. What must not be there is a way to buy it, or
     // the price without the promise that goes with it.
@@ -150,7 +151,7 @@ describe('the pricing section', () => {
 
       // And the price never appears without the notice that protects it.
       expect(html, `${locale} notice`).toContain(String(PRICING_NOTICE_DAYS));
-      expect(html, `${locale} free today`).toContain(esc(COPY[locale].pro.pricing.launch.badge));
+      expect(html, `${locale} trial month`).toContain(esc(COPY[locale].pro.pricing.offer.badge));
     }
   });
 
@@ -175,11 +176,11 @@ describe('the pricing section', () => {
     }
   });
 
-  it('carries exactly one badge, on the free plan', () => {
+  it('carries exactly one badge, on the plan being pushed', () => {
     for (const locale of SUPPORTED_LOCALES) {
       const html = renderPro(locale);
       expect(html.split('plan__badge').length - 1, `${locale} badges`).toBe(1);
-      expect(html, locale).toContain(esc(COPY[locale].pro.pricing.launch.badge));
+      expect(html, locale).toContain(esc(COPY[locale].pro.pricing.offer.badge));
       // And the "most chosen" badge is gone while there is nothing to choose.
       expect(html, locale).not.toContain(esc(COPY[locale].pro.pricing.popular));
     }
@@ -863,5 +864,39 @@ describe('the way an amount is printed', () => {
       const expected = (cents / 100).toFixed(cents % 100 === 0 ? 0 : 2).replace('.', ',');
       expect(printed, `${amount}`).toBe(expected);
     }
+  });
+});
+
+describe('what the pricing section promises', () => {
+  it('offers the same free month on both ways of paying', () => {
+    // The trial is how somebody starts, not a property of one card. Putting it
+    // on one only would leave a reader guessing whether paying yearly costs
+    // them the free month.
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderPro(locale);
+      const trial = esc(COPY[locale].pro.pricing.offer.monthly.trial);
+      expect(html.split(trial).length - 1, locale).toBe(2);
+    }
+  });
+
+  it('no longer calls the platform free', () => {
+    // The offer changed: a trial month, then a price. "Free for now" was a
+    // different promise, and leaving the words about would make two.
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderPro(locale).toLowerCase();
+      for (const phrase of ['voorlopig niets', 'zolang buurklus gratis', 'free for now']) {
+        expect(html.includes(phrase), `${locale}: ${phrase}`).toBe(false);
+      }
+    }
+  });
+
+  it('keeps the notice promise, now about a change in price', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      expect(renderPro(locale), locale).toContain(String(PRICING_NOTICE_DAYS));
+    }
+  });
+
+  it('says the trial is a month, in the same number the API grants', () => {
+    expect(TRIAL_DURATION_DAYS).toBe(30);
   });
 });

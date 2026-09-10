@@ -57,7 +57,13 @@ export interface PlanSeed {
   perks: LocalizedText[];
 }
 
-export const TRIAL_DURATION_DAYS = 14;
+/**
+ * One free month, not two weeks. A tradesperson needs to see a job come in,
+ * quote it, and hear back before they can judge whether Buurklus is worth
+ * anything — and in a trade that runs on appointments a fortnight is often not
+ * long enough for that to have happened once.
+ */
+export const TRIAL_DURATION_DAYS = 30;
 export const TRIAL_CREDITS = 5;
 
 /**
