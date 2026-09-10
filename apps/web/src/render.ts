@@ -1,4 +1,5 @@
 import {
+  CONTACT_MESSAGE_MAX,
   CITIES,
   DEFAULT_PLAN,
   LEGAL_PAGES,
@@ -25,6 +26,7 @@ import {
   type PlanSeed,
 } from '@buurklus/shared';
 import { COPY, type SiteCopy } from './content.js';
+import { CONTACT_COPY } from './contact-content.js';
 import { JOIN_COPY } from './join-content.js';
 import { CHROME_NL, LEGAL_NL } from './legal/nl.js';
 import { CHROME_EN, LEGAL_EN } from './legal/en.js';
@@ -75,7 +77,7 @@ function count(value: number, locale: Locale): string {
 }
 
 /** Every page the site publishes, marketing and legal alike. */
-type PageKind = 'home' | 'pro' | 'join' | LegalPageKey;
+type PageKind = 'home' | 'pro' | 'join' | 'contact' | LegalPageKey;
 
 /**
  * Where someone lands from every call to action on the site. Dutch and English
@@ -83,10 +85,15 @@ type PageKind = 'home' | 'pro' | 'join' | LegalPageKey;
  * find the sign-up page.
  */
 const JOIN_PATHS: Record<Locale, string> = { nl: '/nl/aanmelden/', en: '/en/join/' };
+const CONTACT_PATHS: Record<Locale, string> = { nl: '/nl/contact/', en: '/en/contact/' };
 
 /** Exported so the build writes the file where the site's own links point. */
 export function joinUrl(locale: Locale): string {
   return JOIN_PATHS[locale];
+}
+
+export function contactUrl(locale: Locale): string {
+  return CONTACT_PATHS[locale];
 }
 
 /**
@@ -94,7 +101,17 @@ export function joinUrl(locale: Locale): string {
  * a staging build talks to a staging API; the default is the production host,
  * because a site built without the variable set should still work.
  */
-export const API_URL = process.env.PUBLIC_API_URL ?? 'https://api.buurklus.nl';
+/**
+ * The forms post to this site's own origin now: the Worker that serves these
+ * pages also answers /api/signup and /api/contact. Same origin means no CORS
+ * to configure, no second hostname in the Content-Security-Policy, and no way
+ * for the form to keep working while the site itself is down.
+ *
+ * apps/api — the full marketplace — will live at its own hostname when it is
+ * deployed. This is not that.
+ */
+export const SIGNUP_ENDPOINT = '/api/signup';
+export const CONTACT_ENDPOINT = '/api/contact';
 
 interface PageOptions {
   locale: Locale;
@@ -111,6 +128,7 @@ const isLegal = (page: PageKind): page is LegalPageKey => LEGAL_KEYS.has(page);
 function pathFor(locale: Locale, page: PageKind): string {
   if (isLegal(page)) return legalPath(page, locale);
   if (page === 'join') return JOIN_PATHS[locale];
+  if (page === 'contact') return CONTACT_PATHS[locale];
   return page === 'pro' ? `/${locale}/pro/` : `/${locale}/`;
 }
 
@@ -301,6 +319,7 @@ function footer(locale: Locale, page: PageKind): string {
             <li><a href="${pathFor(locale, 'join')}">${esc(copy.nav.cta)}</a></li>
             <li><a href="${pathFor(locale, 'pro')}">${esc(copy.nav.pros)}</a></li>
             <li><a href="${pathFor(locale, 'home')}#faq">${esc(l.help)}</a></li>
+            <li><a href="${pathFor(locale, 'contact')}">${esc(l.contact)}</a></li>
           </ul>
         </div>
         <div>
@@ -544,7 +563,7 @@ export function mailFallback(lead: string, id?: string, email = OPERATOR.email):
 function joinScript(locale: Locale): string {
   const copy = JOIN_COPY[locale];
   const state = {
-    api: `${API_URL}/v1/signups`,
+    api: SIGNUP_ENDPOINT,
     locale,
     strings: copy.states,
     submit: copy.form.submit,
@@ -686,6 +705,177 @@ export function renderJoin(locale: Locale): string {
     title: copy.meta.title,
     description: copy.meta.description,
     body: joinBody(locale) + joinScript(locale),
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Contact
+// ---------------------------------------------------------------------------
+
+function contactBody(locale: Locale): string {
+  const copy = CONTACT_COPY[locale];
+  const f = copy.form;
+  const privacyHref = legalPath('PRIVACY', locale);
+
+  const promises = copy.privacy.items
+    .map((item) => `<li><span class="check">${solidIcon('check', 15)}</span>${esc(item)}</li>`)
+    .join('');
+
+  return `
+  <section class="section">
+    <div class="wrap">
+      <div class="join__grid">
+        <div class="join__pitch">
+          <div class="joinCard">
+            <h1>${esc(copy.title)}</h1>
+            <p class="lede muted">${esc(copy.lede)}</p>
+          </div>
+          <div class="joinCard joinCard--promise">
+            <h2>${esc(copy.privacy.title)}</h2>
+            <ul class="plan__features">${promises}</ul>
+            <p class="field__hint"><a href="${privacyHref}">${esc(copy.privacy.link)}</a></p>
+          </div>
+          <div class="joinCard">
+            <h2>${esc(copy.alternatives.title)}</h2>
+            <p class="muted">${esc(copy.alternatives.body)}</p>
+          </div>
+        </div>
+
+        <div class="join__panel">
+          <form class="join__form" id="contactForm" novalidate>
+            <fieldset>
+              <legend>${esc(f.legend)}</legend>
+
+              <div class="field">
+                <label for="contactName">${esc(f.name)}</label>
+                <input id="contactName" name="name" type="text" autocomplete="name" required>
+              </div>
+
+              <div class="field">
+                <label for="contactEmail">${esc(f.email)}</label>
+                <input id="contactEmail" name="email" type="email" autocomplete="email" required>
+                <p class="field__hint">${esc(f.emailHint)}</p>
+              </div>
+
+              <div class="field">
+                <label for="contactMessage">${esc(f.message)}</label>
+                <textarea id="contactMessage" name="message" rows="7" maxlength="${CONTACT_MESSAGE_MAX}" required></textarea>
+                <p class="field__hint">${esc(f.messageHint)}</p>
+              </div>
+
+              <div class="honeypot" aria-hidden="true">
+                <label for="contactWebsite">Website</label>
+                <input id="contactWebsite" name="website" type="text" tabindex="-1" autocomplete="off">
+              </div>
+
+              <p class="join__error" id="contactError" role="alert" hidden></p>
+              ${mailFallback(JOIN_COPY[locale].states.mailFallback, 'contactFallback')}
+
+              <button class="btn btn--primary btn--block" type="submit" id="contactSubmit">${esc(f.submit)}</button>
+              <noscript><p class="join__error">${esc(copy.states.noScript)}</p>${mailFallback(
+                JOIN_COPY[locale].states.mailFallback,
+              )}</noscript>
+            </fieldset>
+          </form>
+
+          <div class="join__done" id="contactDone" role="status" hidden>
+            <span class="join__doneMark">${solidIcon('check', 26)}</span>
+            <h3>${esc(copy.states.successTitle)}</h3>
+            <p>${esc(copy.states.successBody)}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>`;
+}
+
+/** Inline for the same reasons as the sign-up form: no build step, one request. */
+function contactScript(locale: Locale): string {
+  const copy = CONTACT_COPY[locale];
+  const state = {
+    api: CONTACT_ENDPOINT,
+    locale,
+    strings: copy.states,
+    submit: copy.form.submit,
+    submitting: copy.form.submitting,
+  };
+
+  return `<script>
+(function () {
+  var config = ${JSON.stringify(state).replace(/<\//g, '<\\/')};
+  var form = document.getElementById('contactForm');
+  var done = document.getElementById('contactDone');
+  var error = document.getElementById('contactError');
+  var button = document.getElementById('contactSubmit');
+  if (!form) return;
+
+  function show(message) {
+    error.textContent = message;
+    error.hidden = !message;
+  }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    show('');
+
+    var name = form.name.value.trim();
+    var email = form.email.value.trim();
+    var message = form.message.value.trim();
+
+    // Checked here to save a round trip and give a useful message; the server
+    // checks all of it again, because a browser is not a boundary.
+    if (name.length < 2) { show(config.strings.errorName); form.name.focus(); return; }
+    if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)) { show(config.strings.errorEmail); form.email.focus(); return; }
+    if (message.length < 10) { show(config.strings.errorMessage); form.message.focus(); return; }
+
+    button.disabled = true;
+    button.textContent = config.submitting;
+
+    fetch(config.api, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        message: message,
+        locale: config.locale,
+        website: form.website.value,
+      }),
+    })
+      .then(function (response) {
+        return response.json().catch(function () { return {}; }).then(function (body) {
+          return { status: response.status, ok: response.ok, body: body };
+        });
+      })
+      .then(function (result) {
+        if (result.status === 429) { show(config.strings.tooMany); return; }
+        if (!result.ok) { show(config.strings.errorBody); return; }
+        form.hidden = true;
+        done.hidden = false;
+        done.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      })
+      .catch(function () {
+        show(config.strings.offlineBody);
+        var fallback = document.getElementById('contactFallback');
+        if (fallback) fallback.hidden = false;
+      })
+      .then(function () {
+        button.disabled = false;
+        button.textContent = config.submit;
+      });
+  });
+})();
+</script>`;
+}
+
+export function renderContact(locale: Locale): string {
+  const copy = CONTACT_COPY[locale];
+  return page({
+    locale,
+    page: 'contact',
+    title: copy.meta.title,
+    description: copy.meta.description,
+    body: contactBody(locale) + contactScript(locale),
   });
 }
 
@@ -1385,7 +1575,7 @@ export function renderRootRedirect(): string {
 }
 
 export function renderSitemap(): string {
-  const kinds: PageKind[] = ['home', 'pro', 'join', ...LEGAL_PAGES.map((page) => page.key)];
+  const kinds: PageKind[] = ['home', 'pro', 'join', 'contact', ...LEGAL_PAGES.map((page) => page.key)];
   const urls = SUPPORTED_LOCALES.flatMap((locale) =>
     kinds.map((kind) => `${SITE_URL}${pathFor(locale, kind)}`),
   );

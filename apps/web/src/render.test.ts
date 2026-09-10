@@ -23,7 +23,10 @@ import {
 import { COPY } from './content.js';
 import { inlineScriptHashes, renderHeaders } from './edge.js';
 import {
-  API_URL,
+  CONTACT_ENDPOINT,
+  contactUrl,
+  renderContact,
+  SIGNUP_ENDPOINT,
   esc,
   joinUrl,
   mailFallback,
@@ -37,6 +40,7 @@ import {
   renderSitemap,
   renderStyles,
 } from './render.js';
+import { CONTACT_COPY } from './contact-content.js';
 import { JOIN_COPY } from './join-content.js';
 
 const DIST = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'dist');
@@ -444,12 +448,13 @@ describe('the registration page', () => {
     }
   });
 
-  it('posts to one API host, and never to a third party', () => {
+  it('posts to one place, its own origin, and never to a third party', () => {
     for (const locale of SUPPORTED_LOCALES) {
       const html = renderJoin(locale);
       const posts = [...html.matchAll(/fetch\(config\.api/g)];
       expect(posts.length, locale).toBe(1);
-      expect(html, locale).toContain('/v1/signups');
+      expect(html, locale).toContain(SIGNUP_ENDPOINT);
+      expect(html, locale).not.toMatch(/fetch\(['"`]https?:/);
     }
   });
 
@@ -637,9 +642,11 @@ describe('the files Cloudflare Pages reads', () => {
     expect(padded).not.toEqual(bare);
   });
 
-  it('names the API in connect-src, or the sign-up form cannot reach it', () => {
+  it('trusts only its own origin for the forms', () => {
     const headers = renderHeaders(inlineScriptHashes(html));
-    expect(headers).toContain(`connect-src 'self' ${new URL(API_URL).origin}`);
+    // Same origin, so nothing else needs trusting.
+    expect(headers).toContain("connect-src 'self';");
+    expect(headers).not.toMatch(/connect-src[^;]*https:/);
     expect(headers).toContain("default-src 'self'");
     expect(headers).toContain("object-src 'none'");
     expect(headers).toContain("frame-ancestors 'none'");
@@ -735,6 +742,76 @@ describe('what the sign-up form asks of each side', () => {
       expect(JOIN_COPY[locale].roles.customer.bullets.join(' '), locale).not.toMatch(
         /vul .*kvk|enter .*chamber/i,
       );
+    }
+  });
+});
+
+describe('the contact page', () => {
+  it('exists in both languages and is linked from the footer', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderContact(locale);
+      expect(html, locale).toContain(esc(CONTACT_COPY[locale].title));
+      expect(html, locale).toContain('id="contactForm"');
+      // The footer of every page points at it, or nobody will find it.
+      expect(renderHome(locale), locale).toContain(`href="${contactUrl(locale)}"`);
+    }
+  });
+
+  it('is in the sitemap', () => {
+    const sitemap = renderSitemap();
+    for (const locale of SUPPORTED_LOCALES) {
+      expect(sitemap, locale).toContain(`${contactUrl(locale)}</loc>`);
+    }
+  });
+
+  it('asks for three things and no more', () => {
+    // A contact form is the easiest place on a site to over-collect. Every
+    // field here has to be justified in the privacy statement.
+    const html = renderContact('nl');
+    const names = [...html.matchAll(/<(?:input|textarea|select)[^>]*name="([^"]+)"/g)].map(
+      (match) => match[1],
+    );
+    expect(new Set(names)).toEqual(new Set(['name', 'email', 'message', 'website']));
+  });
+
+  it('carries the honeypot a person never sees', () => {
+    expect(renderContact('nl')).toContain('class="honeypot"');
+    expect(renderContact('nl')).toContain('name="website"');
+  });
+
+  it('posts to this site rather than somewhere else', () => {
+    expect(renderContact('nl')).toContain(`"api":"${CONTACT_ENDPOINT}"`);
+    expect(renderJoin('nl')).toContain(`"api":"${SIGNUP_ENDPOINT}"`);
+    for (const html of [renderContact('en'), renderJoin('en')]) {
+      expect(html).not.toContain('https://api.buurklus.nl');
+    }
+  });
+});
+
+describe('the scripts that go out with the forms', () => {
+  // The email check is written inside a template literal, so a backslash has
+  // to survive two rounds of escaping to reach the browser. It did not: the
+  // pattern shipped as [^@s], which rejects every address containing the
+  // letter s — including test@voorbeeld.nl. This is that bug, held down.
+  const EMAIL_PATTERN = String.raw`/^[^@\s]+@[^@\s]+\.[^@\s]+$/`;
+
+  it('ships an email check that has not lost its backslashes', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      expect(renderContact(locale), `contact ${locale}`).toContain(EMAIL_PATTERN);
+      expect(renderJoin(locale), `join ${locale}`).toContain(EMAIL_PATTERN);
+    }
+  });
+
+  it('accepts an ordinary Dutch address with that pattern', () => {
+    const source = renderContact('nl').match(/\/\^\[\^@\\s\][^\n]*?\$\//)?.[0];
+    expect(source).toBeDefined();
+    // eslint-disable-next-line no-eval -- reading back exactly what ships.
+    const pattern = new RegExp(source!.slice(1, -1));
+    for (const address of ['test@voorbeeld.nl', 'jan.smit@buurklus.nl', 'a@b.co']) {
+      expect(pattern.test(address), address).toBe(true);
+    }
+    for (const address of ['geen-adres', 'twee@@apen.nl', 'spatie in@adres.nl']) {
+      expect(pattern.test(address), address).toBe(false);
     }
   });
 });

@@ -23,6 +23,10 @@
     "dev:web": "npm run dev --workspace @buurklus/web"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260910.1",
     "wrangler": "^4.129.1"
+  },
+  "dependencies": {
+    "mimetext": "^3.0.28"
   }
 }

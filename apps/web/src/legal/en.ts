@@ -97,6 +97,12 @@ export const CHROME_EN: LegalChrome = {
   ],
   dataCategories: [
     {
+      data: 'A message through the contact form: your name, your email address and what you write',
+      purpose:
+        'Answering your question. The address is used to reply and nothing else — it does not put you on a mailing list.',
+      basis: 'Legitimate interest (Article 6(1)(f)): somebody who writes to us wants an answer',
+    },
+    {
       data: 'Your mobile number',
       purpose: 'Signing you in and recognising your account. You sign in with a code by SMS, without a password.',
       basis: 'Performance of the contract (art. 6(1)(b))',

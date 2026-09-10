@@ -140,7 +140,33 @@ exemption does not apply. Keep this register, and keep it current.
 - **Note:** the form carries a honeypot field. A request that fills it in is
   dropped and nothing is stored, so a bot leaves no personal data behind either.
 
-### 9. Notifications
+### 9. Messages through the contact form
+
+- **Purpose:** answering someone who writes in with a question, a tip or a
+  fault report.
+- **Data subjects:** anybody who fills in the contact form on the website. Not
+  necessarily a user: most people who write in do not have an account.
+- **Categories:** name, email address, the text of the message, language, IP
+  address, and the moment it arrived.
+- **Lawful basis:** Article 6(1)(f) legitimate interest. Somebody who writes to
+  us wants an answer, and answering them needs their address. The balancing
+  test is short because the interests point the same way: the processing is
+  what the data subject asked for, the data is what they typed themselves, and
+  nothing is done with it beyond the reply.
+- **Recipients:** nobody outside the operator. A notification of the message is
+  emailed to the operator's own verified address through Cloudflare Email
+  Routing; the message is not forwarded anywhere else.
+- **Retention:** one year after the message has been dealt with. The clock runs
+  from `handled_at`, not from arrival, so a conversation that is still open is
+  not deleted mid-sentence.
+- **Note:** the form carries a honeypot field, exactly as the waiting list
+  does. A request that fills it in is answered as if all is well and nothing is
+  stored.
+- **Where it lives:** Cloudflare D1, not the marketplace database. The website
+  is served by a Worker and keeps these two tables next to it; `apps/api` and
+  its PostgreSQL are for the marketplace itself and are not deployed yet.
+
+### 10. Notifications
 
 - **Purpose:** telling someone a quote arrived or a message is waiting.
 - **Categories:** rendered title and body, deep link, read state.

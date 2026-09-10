@@ -12,6 +12,7 @@ export * from './schemas/auth.js';
 export * from './schemas/job.js';
 export * from './schemas/quote.js';
 export * from './schemas/pro.js';
+export * from './schemas/contact.js';
 export * from './schemas/signup.js';
 export * from './schemas/subscription.js';
 export * from './schemas/common.js';

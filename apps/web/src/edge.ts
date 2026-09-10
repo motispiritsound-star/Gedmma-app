@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { API_URL, IS_PRODUCTION_BUILD } from './render.js';
+import { IS_PRODUCTION_BUILD } from './render.js';
 
 /**
  * Cloudflare Pages reads two plain-text files from the root of the published
@@ -27,9 +27,8 @@ export function inlineScriptHashes(html: string): string[] {
 }
 
 function contentSecurityPolicy(scriptHashes: string[]): string {
-  // connect-src has to name the API host: the sign-up form posts there, and
-  // under default-src 'self' the browser would refuse the request.
-  const api = new URL(API_URL).origin;
+  // The forms post to this same origin, so 'self' covers them and no second
+  // hostname has to be trusted here.
   return [
     "default-src 'self'",
     "base-uri 'self'",
@@ -42,7 +41,7 @@ function contentSecurityPolicy(scriptHashes: string[]): string {
     "font-src 'self'",
     "style-src 'self'",
     "media-src 'self'",
-    `connect-src 'self' ${api}`,
+    "connect-src 'self'",
     `script-src 'self' ${[...new Set(scriptHashes)].sort().join(' ')}`,
     'upgrade-insecure-requests',
   ].join('; ');

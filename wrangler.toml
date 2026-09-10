@@ -1,21 +1,44 @@
-# Deploying the website as a Cloudflare Worker serving static assets.
+# The site and its small back end, deployed together as one Worker.
 #
-# There is no Worker script: `assets` without `main` publishes the built site
-# and nothing else, which is what a generated HTML site needs. The _headers and
-# _redirects files the build writes into apps/web/dist are read from there, so
-# the Content-Security-Policy and the www redirect apply here exactly as they
-# do locally.
+# `assets` publishes the built website; `main` adds the two endpoints the
+# forms post to. Requests for a file that exists are served straight from the
+# asset store without waking the script — only /api/* runs code.
 #
 #   npm run build --workspace @buurklus/shared
 #   npm run build --workspace @buurklus/web
 #   npx wrangler deploy
 
 name = "buurklus-site"
+main = "worker/index.ts"
 compatibility_date = "2026-09-08"
+compatibility_flags = ["nodejs_compat"]
 
 [assets]
 directory = "apps/web/dist"
-
+binding = "ASSETS"
 # An unknown path gets the site's own 404 page rather than a bare Cloudflare
 # error. The default handling of /nl/ -> /nl/index.html stays as it is.
 not_found_handling = "404-page"
+# Without this, /api/signup would be answered by the 404 page before the
+# script ever saw it.
+run_worker_first = ["/api/*"]
+
+[vars]
+# Where a notification goes, and what it appears to come from. The recipient
+# has to be a verified destination in Email Routing; the sender has to be on a
+# domain Email Routing serves. Neither is a secret, so both live here in plain
+# sight rather than in a secret nobody can read back.
+NOTIFY_TO = "abekkali@live.nl"
+NOTIFY_FROM = "no-reply@buurklus.nl"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "buurklus"
+# Filled in from the dashboard: Storage & Databases -> D1 -> buurklus.
+database_id = "REPLACE_WITH_DATABASE_ID"
+
+# Email Routing will only let a Worker send to an address that has been
+# verified, which is exactly what a notification to the operator is.
+[[send_email]]
+name = "NOTIFY"
+destination_address = "abekkali@live.nl"

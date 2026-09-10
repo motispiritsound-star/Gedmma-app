@@ -98,6 +98,12 @@ export const CHROME_NL: LegalChrome = {
   ],
   dataCategories: [
     {
+      data: 'Een bericht via het contactformulier: je naam, je e-mailadres en wat je schrijft',
+      purpose:
+        'Je vraag beantwoorden. We gebruiken het adres alleen om te antwoorden — je komt er niet mee op een mailinglijst.',
+      basis: 'Gerechtvaardigd belang (art. 6 lid 1 sub f): wie ons schrijft, wil antwoord',
+    },
+    {
       data: 'Je mobiele nummer',
       purpose: 'Inloggen en je account herkennen. Je logt in met een code per sms, zonder wachtwoord.',
       basis: 'Uitvoering van de overeenkomst (art. 6 lid 1 sub b)',

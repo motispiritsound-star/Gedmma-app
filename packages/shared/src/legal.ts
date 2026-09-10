@@ -214,6 +214,14 @@ export const RETENTION: readonly RetentionRule[] = [
     },
   },
   {
+    key: 'contactMessage',
+    days: DAYS_PER_YEAR,
+    reason: {
+      nl: 'Een bericht via het contactformulier bewaren we een jaar nadat het is afgehandeld, zodat we een eerder gesprek nog kunnen terugvinden als iemand erop terugkomt. Daarna wordt het verwijderd.',
+      en: 'A message sent through the contact form is kept for a year after it has been dealt with, so an earlier conversation can still be found if somebody comes back to it. After that it is deleted.',
+    },
+  },
+  {
     key: 'signup',
     days: 2 * DAYS_PER_YEAR,
     reason: {

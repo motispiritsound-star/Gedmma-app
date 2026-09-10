@@ -3,9 +3,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LEGAL_PAGES, SUPPORTED_LOCALES, legalPath } from '@buurklus/shared';
 import { inlineScriptHashes, renderHeaders } from './edge.js';
-import { joinUrl } from './render.js';
+import { contactUrl, joinUrl } from './render.js';
 import {
   renderHome,
+  renderContact,
   renderJoin,
   renderLegal,
   renderPro,
@@ -54,6 +55,10 @@ function joinPath(locale: (typeof SUPPORTED_LOCALES)[number]): string {
   return joinUrl(locale).replace(/^\/|\/$/g, '');
 }
 
+function contactPath(locale: (typeof SUPPORTED_LOCALES)[number]): string {
+  return contactUrl(locale).replace(/^\/|\/$/g, '');
+}
+
 /**
  * Walks the finished build and collects a CSP hash for every inline script in
  * it. Reading the output rather than the templates is deliberate: what the
@@ -88,6 +93,7 @@ async function main() {
     written.push(await write(`${locale}/index.html`, renderHome(locale)));
     written.push(await write(`${locale}/pro/index.html`, renderPro(locale)));
     written.push(await write(`${joinPath(locale)}/index.html`, renderJoin(locale)));
+    written.push(await write(`${contactPath(locale)}/index.html`, renderContact(locale)));
 
     for (const document of LEGAL_PAGES) {
       // The path in @buurklus/shared is what the app links to, so the file is
