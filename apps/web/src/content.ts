@@ -13,6 +13,14 @@ export interface SiteCopy {
     proTitle: string;
     proDescription: string;
     ogLocale: string;
+    /**
+     * What a shared link says under the title. Search and social want
+     * different sentences from the same page: a result in Google is scanned
+     * for whether the site can do the job, a post in a timeline is read by
+     * somebody who was not looking for anything. Only the second one has to
+     * be worth passing on.
+     */
+    social: string;
   };
   /** ctaShort is used below 560px, where the full label wraps to three lines. */
   nav: {
@@ -35,6 +43,32 @@ export interface SiteCopy {
     note: string;
   };
   proof: { trades: string; cities: string; free: string; verified: string };
+  /**
+   * The local case, which is the whole point of the name: the person who can
+   * do the job may already live in the street. Three examples rather than a
+   * claim -- "local" on its own is a word every marketplace uses.
+   */
+  neighbours: {
+    eyebrow: string;
+    title: string;
+    body: string;
+    examples: { title: string; body: string }[];
+  };
+  /**
+   * A neighbourhood platform grows by being passed around one street at a
+   * time, so the page asks, and hands over a sentence worth pasting.
+   */
+  share: {
+    title: string;
+    body: string;
+    /** Travels with the link into WhatsApp and e-mail. */
+    text: string;
+    subject: string;
+    facebook: string;
+    whatsapp: string;
+    linkedin: string;
+    email: string;
+  };
   video: {
     title: string;
     subtitle: string;
@@ -129,6 +163,8 @@ const nl: SiteCopy = {
     proDescription:
       'Vul je agenda met klussen die bij je vakgebied en je werkgebied passen. Nu gratis, zonder abonnement en zonder commissie.',
     ogLocale: 'nl_NL',
+    social:
+      'Eindelijk een plek voor klussen in je eigen buurt. Misschien is de buurman wel de schilder die je zoekt, of legt iemand twee straten verderop je laminaat.',
   },
   nav: {
     trades: 'Vakgebieden',
@@ -153,6 +189,38 @@ const nl: SiteCopy = {
     cities: 'gemeenten',
     free: 'gratis voor klanten',
     verified: 'bedrijven met KvK-controle',
+  },
+  neighbours: {
+    eyebrow: 'Uit je eigen wijk',
+    title: 'De vakman die je zoekt, woont misschien om de hoek',
+    body:
+      'Eindelijk een plek voor klussen in je eigen buurt. Jij plaatst je klus, vakmensen en bedrijven uit je gemeente reageren erop. Korte lijnen, bekende gezichten, en wat je uitgeeft blijft in de wijk.',
+    examples: [
+      {
+        title: 'Misschien is de buurman schilder',
+        body: 'Twee straten verderop, kent de huizen in de straat en hoeft geen halve dag te rijden.',
+      },
+      {
+        title: 'Of legt iemand in de wijk laminaat',
+        body: 'Vakwerk om de hoek, zonder voorrijkosten van de andere kant van het land.',
+      },
+      {
+        title: 'De buurvrouw tekent tuinen',
+        body: 'Ook het kleinere werk mag: een tuinontwerp, advies, of een middag meedenken.',
+      },
+    ],
+  },
+  share: {
+    title: 'Ken je iemand die hier iets aan heeft?',
+    body:
+      'Buurklus wordt beter naarmate meer mensen uit dezelfde buurt meedoen. Deel het in je buurtapp, je buurtgroep of op Facebook — daar zitten precies de mensen om wie het gaat.',
+    text:
+      'Eindelijk een plek voor klussen in je eigen buurt: jij plaatst je klus, lokale vakmensen en bedrijven reageren erop. Misschien is de buurman wel de schilder die je zoekt.',
+    subject: 'Buurklus — klussen in je eigen buurt',
+    facebook: 'Delen op Facebook',
+    whatsapp: 'Sturen via WhatsApp',
+    linkedin: 'Delen op LinkedIn',
+    email: 'Delen via e-mail',
   },
   video: {
     title: 'Zo werkt het, in 25 seconden',
@@ -403,6 +471,8 @@ const en: SiteCopy = {
     proDescription:
       'Fill your diary with jobs that match your trade and your service area. Free right now, with no subscription and no commission.',
     ogLocale: 'en_NL',
+    social:
+      'At last, somewhere to post the jobs around your own house. The neighbour might be the painter you are looking for, or the person two streets away might lay your floor.',
   },
   nav: {
     trades: 'Trades',
@@ -427,6 +497,38 @@ const en: SiteCopy = {
     cities: 'municipalities',
     free: 'free for customers',
     verified: 'businesses checked at the Chamber of Commerce',
+  },
+  neighbours: {
+    eyebrow: 'From your own streets',
+    title: 'The tradesperson you need may live around the corner',
+    body:
+      'At last, somewhere for the jobs around your own house. You post the job, tradespeople and businesses from your municipality answer it. Short lines, familiar faces, and what you spend stays in the neighbourhood.',
+    examples: [
+      {
+        title: 'The neighbour might be a painter',
+        body: 'Two streets away, knows the houses in the road and has no half-day drive to make.',
+      },
+      {
+        title: 'Someone nearby lays floors',
+        body: 'Proper work from around the corner, without a call-out charge from the far side of the country.',
+      },
+      {
+        title: 'The neighbour draws gardens',
+        body: 'The smaller work counts too: a garden plan, advice, or an afternoon of thinking along.',
+      },
+    ],
+  },
+  share: {
+    title: 'Know someone this would help?',
+    body:
+      'Buurklus gets better the more people from the same neighbourhood are on it. Share it in your neighbourhood app, your local group or on Facebook — that is exactly where those people are.',
+    text:
+      'At last, somewhere to post the jobs around your own house: you post the job, local tradespeople and businesses answer it. The neighbour might be the painter you are looking for.',
+    subject: 'Buurklus — jobs in your own neighbourhood',
+    facebook: 'Share on Facebook',
+    whatsapp: 'Send on WhatsApp',
+    linkedin: 'Share on LinkedIn',
+    email: 'Share by e-mail',
   },
   video: {
     title: 'How it works, in 25 seconds',

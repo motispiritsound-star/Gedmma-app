@@ -425,6 +425,34 @@ h1, h2, .section__head h2, .cta h2 { text-wrap: balance; }
 .banner__cta { justify-self: start; }
 
 /* --- Pricing -------------------------------------------------------------- */
+/* The three neighbours. Wider cards than the trade grid on purpose: each one
+   is a small story rather than a label, and three of them across a row is what
+   keeps them readable. */
+.neighbours { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.neighbour {
+  background: var(--white);
+  border: 1px solid var(--ink-100);
+  border-radius: var(--radius-lg);
+  padding: 1.4rem;
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+}
+.neighbour__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.6rem;
+  block-size: 2.6rem;
+  border-radius: var(--radius-md);
+  background: var(--green-50);
+  color: var(--green-700);
+}
+.neighbour h3 { font-size: 1.05rem; }
+.share { text-align: center; display: grid; gap: 0.7rem; justify-items: center; }
+.share__copy { display: grid; gap: 0.7rem; max-inline-size: 42rem; }
+.share__row { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-block-start: 0.6rem; }
+.share__btn { background: var(--white); }
 .plans { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); align-items: start; }
 .plan { position: relative; }
 .plan--featured { border-color: var(--green-600); border-width: 2px; box-shadow: var(--shadow-raised); }

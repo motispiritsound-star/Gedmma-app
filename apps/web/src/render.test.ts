@@ -35,6 +35,7 @@ import {
   mailFallback,
   money,
   renderHome,
+  SITE_URL,
   renderManifest,
   renderNotFound,
   renderJoin,
@@ -940,6 +941,113 @@ describe('the buttons under the two prices', () => {
       const html = renderPro(locale);
       expect(html.split(esc(offer.cta)).length - 1, `${locale} trial button`).toBe(1);
       expect(html, `${locale} yearly button`).toContain(esc(offer.ctaYearly));
+    }
+  });
+});
+
+describe('the neighbourhood section', () => {
+  it('puts all three neighbours on the home page, each with an icon', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const copy = COPY[locale].neighbours;
+      const html = renderHome(locale);
+      expect(copy.examples.length, `${locale} examples`).toBe(3);
+      expect(html, `${locale} title`).toContain(esc(copy.title));
+      expect(html, `${locale} body`).toContain(esc(copy.body));
+      for (const example of copy.examples) {
+        expect(html, `${locale}: ${example.title}`).toContain(esc(example.title));
+        expect(html, `${locale}: ${example.body}`).toContain(esc(example.body));
+      }
+      // One icon per example. The icons live in the renderer and the examples
+      // in the copy, so a fourth example would otherwise silently reuse the
+      // first icon.
+      expect(html.split('neighbour__icon').length - 1, `${locale} icons`).toBe(
+        copy.examples.length,
+      );
+    }
+  });
+
+  it('is on the home page only, and above the video', () => {
+    // It is the argument for the name: the job may be done by somebody in the
+    // street. Below the film it would be read by whoever had already stayed.
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderHome(locale);
+      expect(html.indexOf('id="buurt"'), `${locale} present`).toBeGreaterThan(-1);
+      expect(html.indexOf('id="buurt"'), `${locale} order`).toBeLessThan(
+        html.indexOf('id="video"'),
+      );
+      expect(renderPro(locale).includes('id="buurt"'), `${locale} pro`).toBe(false);
+    }
+  });
+});
+
+describe('the share row', () => {
+  it('hands each network the home page of the language being read', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderHome(locale);
+      const home = encodeURIComponent(`${SITE_URL}/${locale}/`);
+      expect(html, `${locale} facebook`).toContain(
+        `https://www.facebook.com/sharer/sharer.php?u=${home}`,
+      );
+      expect(html, `${locale} linkedin`).toContain(
+        `https://www.linkedin.com/sharing/share-offsite/?url=${home}`,
+      );
+    }
+  });
+
+  it('sends the sentence along where the network takes one', () => {
+    // Facebook and LinkedIn read the page's own tags and ignore anything
+    // passed in the URL. WhatsApp and mail carry only what they are given, so
+    // an unshared link there would arrive as a bare URL with no case made.
+    for (const locale of SUPPORTED_LOCALES) {
+      const html = renderHome(locale);
+      const text = encodeURIComponent(COPY[locale].share.text);
+      expect(html, `${locale} whatsapp`).toContain(`https://wa.me/?text=${text}`);
+      expect(html, `${locale} mail`).toContain(
+        `mailto:?subject=${encodeURIComponent(COPY[locale].share.subject)}`,
+      );
+    }
+  });
+
+  it('opens every one of them safely in a new tab', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const section = renderHome(locale).split('id="delen"')[1]!.split('</section>')[0]!;
+      const links = [...section.matchAll(/<a[^>]*>/g)].map((match) => match[0]!);
+      expect(links.length, `${locale} count`).toBe(4);
+      for (const link of links) {
+        expect(link, `${locale} target`).toContain('target="_blank"');
+        expect(link, `${locale} rel`).toContain('rel="noopener noreferrer"');
+      }
+    }
+  });
+});
+
+describe('what a shared link says under the title', () => {
+  it('makes the neighbourly case, while search keeps the plain one', () => {
+    // The two audiences are different: a search result is read by somebody
+    // already looking for a tradesperson, a post in a timeline by somebody who
+    // was not looking for anything at all.
+    for (const locale of SUPPORTED_LOCALES) {
+      const copy = COPY[locale].meta;
+      const html = renderHome(locale);
+      expect(copy.social, `${locale} differs`).not.toBe(copy.description);
+      expect(html, `${locale} og`).toContain(
+        `<meta property="og:description" content="${esc(copy.social)}">`,
+      );
+      expect(html, `${locale} twitter`).toContain(
+        `<meta name="twitter:description" content="${esc(copy.social)}">`,
+      );
+      expect(html, `${locale} search`).toContain(
+        `<meta name="description" content="${esc(copy.description)}">`,
+      );
+    }
+  });
+
+  it('falls back to the search description on every other page', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const copy = COPY[locale].meta;
+      expect(renderPro(locale), `${locale} pro`).toContain(
+        `<meta property="og:description" content="${esc(copy.proDescription)}">`,
+      );
     }
   });
 });

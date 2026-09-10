@@ -131,6 +131,12 @@ interface PageOptions {
   page: PageKind;
   title: string;
   description: string;
+  /**
+   * What a shared link says under the title, where it differs from the search
+   * description. Falls back to that one, which is what every page but the
+   * home page wants.
+   */
+  social?: string;
   body: string;
 }
 
@@ -213,9 +219,10 @@ function robotsMeta(): string {
   return IS_PRODUCTION_BUILD ? '' : '<meta name="robots" content="noindex, nofollow">\n    ';
 }
 
-function head({ locale, page, title, description }: Omit<PageOptions, 'body'>): string {
+function head({ locale, page, title, description, social }: Omit<PageOptions, 'body'>): string {
   const canonical = `${SITE_URL}${pathFor(locale, page)}`;
   const card = socialCard(locale, page);
+  const shared = social ?? description;
   // Every language of this page is declared, plus x-default pointing at Dutch.
   const alternates = SUPPORTED_LOCALES.map(
     (other) =>
@@ -235,7 +242,7 @@ function head({ locale, page, title, description }: Omit<PageOptions, 'body'>): 
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Buurklus">
     <meta property="og:title" content="${esc(title)}">
-    <meta property="og:description" content="${esc(description)}">
+    <meta property="og:description" content="${esc(shared)}">
     <meta property="og:url" content="${canonical}">
     <meta property="og:locale" content="${COPY[locale].meta.ogLocale}">
     <meta property="og:image" content="${card}">
@@ -244,7 +251,7 @@ function head({ locale, page, title, description }: Omit<PageOptions, 'body'>): 
     <meta property="og:image:alt" content="${esc(title)}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${esc(title)}">
-    <meta name="twitter:description" content="${esc(description)}">
+    <meta name="twitter:description" content="${esc(shared)}">
     <meta name="twitter:image" content="${card}">
     <meta name="theme-color" content="#0F6F5C">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -1157,6 +1164,93 @@ function heroMock(locale: Locale, copy: SiteCopy, variant: 'home' | 'pro' = 'hom
   </div>`;
 }
 
+/**
+ * The local case, up near the top where it belongs: the name says "buurt" and
+ * this is the section that earns it. Three concrete neighbours rather than the
+ * word "local", which every marketplace claims and none of them illustrate.
+ */
+function neighbourhood(locale: Locale, copy: SiteCopy): string {
+  // One icon per example, in the order the examples are written: a painter, a
+  // floor, a garden. A test holds the two lists to the same length.
+  const icons = ['color-palette-outline', 'layers-outline', 'leaf-outline'];
+  const examples = copy.neighbours.examples
+    .map(
+      (example, index) => `<article class="neighbour">
+        <span class="neighbour__icon">${icon(icons[index] ?? icons[0]!, 24)}</span>
+        <h3>${esc(example.title)}</h3>
+        <p class="muted">${esc(example.body)}</p>
+      </article>`,
+    )
+    .join('');
+
+  return `<section class="section" id="buurt">
+    <div class="wrap">
+      <div class="section__head">
+        <span class="eyebrow">${solidIcon('check', 14)} ${esc(copy.neighbours.eyebrow)}</span>
+        <h2>${esc(copy.neighbours.title)}</h2>
+        <p class="lede muted">${esc(copy.neighbours.body)}</p>
+      </div>
+      <div class="neighbours">${examples}</div>
+    </div>
+  </section>`;
+}
+
+/**
+ * Asking to be passed on, with the sentence already written.
+ *
+ * A neighbourhood platform spreads one street at a time, and the person who
+ * shares it is doing the introduction -- so the link carries the case rather
+ * than the bare URL. Facebook and LinkedIn read the page's own social
+ * description; WhatsApp and e-mail take whatever text they are handed, so
+ * they are handed the same sentence.
+ */
+function shareLinks(locale: Locale, copy: SiteCopy): string {
+  const url = `${SITE_URL}${pathFor(locale, 'home')}`;
+  const text = copy.share.text;
+  const links: { label: string; href: string }[] = [
+    {
+      label: copy.share.facebook,
+      href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+    },
+    {
+      label: copy.share.whatsapp,
+      href: `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`,
+    },
+    {
+      label: copy.share.linkedin,
+      href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+    },
+    {
+      label: copy.share.email,
+      href: `mailto:?subject=${encodeURIComponent(copy.share.subject)}&body=${encodeURIComponent(
+        `${text}\n\n${url}`,
+      )}`,
+    },
+  ];
+
+  // rel="noopener" on every one: these open in a new tab, and a page opened
+  // that way can otherwise reach back at the page that opened it.
+  const buttons = links
+    .map(
+      (link) =>
+        `<a class="btn btn--ghost share__btn" href="${esc(link.href)}" target="_blank" rel="noopener noreferrer">${esc(link.label)}</a>`,
+    )
+    .join('');
+
+  // The sentence is capped at a readable width, the row of buttons is not:
+  // four of them under a 46rem column wrap three-and-one, which looks like a
+  // mistake rather than a row.
+  return `<section class="section section--tint" id="delen">
+    <div class="wrap share">
+      <div class="share__copy">
+        <h2>${esc(copy.share.title)}</h2>
+        <p class="muted">${esc(copy.share.body)}</p>
+      </div>
+      <div class="share__row">${buttons}</div>
+    </div>
+  </section>`;
+}
+
 function homeBody(locale: Locale): string {
   const copy = COPY[locale];
   const shownCities = CITIES.slice(0, 18);
@@ -1245,6 +1339,8 @@ function homeBody(locale: Locale): string {
       </div>
     </div>
   </div>
+
+  ${neighbourhood(locale, copy)}
 
   <section class="section" id="video">
     <div class="wrap">
@@ -1346,6 +1442,8 @@ function homeBody(locale: Locale): string {
       <div class="faq">${faq}</div>
     </div>
   </section>
+
+  ${shareLinks(locale, copy)}
 
   <section class="section" id="cta">
     <div class="wrap">
@@ -1552,6 +1650,7 @@ export function renderHome(locale: Locale): string {
     page: 'home',
     title: copy.meta.title,
     description: copy.meta.description,
+    social: copy.meta.social,
     body: homeBody(locale),
   });
 }
