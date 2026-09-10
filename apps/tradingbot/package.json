@@ -1,0 +1,22 @@
+{
+  "name": "@buurklus/tradingbot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Backtest-first crypto trading research harness: data, strategies, paper execution, risk limits",
+  "bin": {
+    "tradingbot": "./dist/cli.js"
+  },
+  "scripts": {
+    "bot": "tsx src/cli.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}

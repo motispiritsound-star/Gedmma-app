@@ -15,6 +15,8 @@ apps/
   api/        Fastify + Prisma + PostgreSQL
   mobile/     Expo (React Native) for iOS and Android
   web/        The public website, generated from the shared catalogs
+  tradingbot/ A standalone trading research harness. Unrelated to the
+              marketplace, and deliberately incapable of placing a real order.
 packages/
   shared/     Domain rules used by all three: locales, money, Dutch business
               identifiers, catalogs, validation schemas
@@ -26,6 +28,8 @@ docs/
   DEPLOY.md        Putting the site on Cloudflare Pages and the API on Fly
   SEO.md           What the site already does to be found, and what does not
                    come from code
+  TRADING.md       What the trading harness measures, and the arithmetic behind
+                   the "$68 into $750,000" posts it was written in answer to
 ```
 
 ## Running it
@@ -55,10 +59,21 @@ it logs the code and also returns it as `debugCode`, which the app prefills.
 To point the app at an API that is not on localhost, edit `extra.apiUrl` in
 `apps/mobile/app.json`.
 
+The trading harness in `apps/tradingbot` needs neither the database nor a key,
+and runs on its own:
+
+```bash
+npm run bot -- help
+npm run bot -- backtest --symbol BTCUSDT --interval 1d --all
+```
+
+Read [docs/TRADING.md](docs/TRADING.md) first. It places no real orders.
+
 ## Tests
 
 ```bash
-npm test          # 111 tests: 43 domain, 36 API integration, 16 app, 16 website
+npm test          # 200 tests: 43 domain, 36 API integration, 16 app,
+                  # 16 website, 89 trading harness
 npm run typecheck
 ```
 

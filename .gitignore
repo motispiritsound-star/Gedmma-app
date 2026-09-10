@@ -27,3 +27,7 @@ apps/mobile/dist-plain/
 
 # Generated website
 apps/web/dist/
+
+# Downloaded market data. Candles are reproducible from the exchange and a year
+# of minute bars is tens of megabytes of numbers nobody should review in a diff.
+apps/tradingbot/data/

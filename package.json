@@ -20,7 +20,8 @@
     "db:seed": "npm run db:seed --workspace @buurklus/api",
     "dev:api": "npm run dev --workspace @buurklus/api",
     "dev:mobile": "npm run start --workspace @buurklus/mobile",
-    "dev:web": "npm run dev --workspace @buurklus/web"
+    "dev:web": "npm run dev --workspace @buurklus/web",
+    "bot": "npm run bot --workspace @buurklus/tradingbot --"
   },
   "devDependencies": {
     "wrangler": "^4.129.1"
