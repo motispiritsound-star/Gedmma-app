@@ -83,7 +83,7 @@ export function Words() {
                   <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="border-t border-[var(--line)] p-4">
                     <div className="flex items-center gap-4">
                       <WordText word={w} size="md" />
-                      <SpeakButton text={w.ar} />
+                      <SpeakButton ar={w.ar} tr={w.tr} />
                       <div className="ms-auto text-end text-sm text-[var(--ink-soft)]">
                         <div>{w.en}</div>
                         <Pill className="mt-1">{TOPIC_LABELS[w.topic].emoji} {TOPIC_LABELS[w.topic].nl}</Pill>

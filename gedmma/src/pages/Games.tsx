@@ -123,7 +123,11 @@ function TimeRace({ onExit }: { onExit: () => void }) {
     const good = id === target.id
     if (good) {
       setScore((s) => s + 1)
-      setStreak((s) => s + 1)
+      setStreak((s) => {
+        const next = s + 1
+        if (next % 5 === 0) sfx.streak()
+        return next
+      })
       sfx.correct()
       gradeWord(target.id, 'goed')
     } else {
@@ -146,7 +150,7 @@ function TimeRace({ onExit }: { onExit: () => void }) {
       <Card className="mt-6 p-6 text-center">
         <div className="text-4xl" aria-hidden="true">{target.emoji}</div>
         <div className="ar mt-2 text-4xl font-bold">{target.ar}</div>
-        <button className="mt-1 text-sm font-bold text-zellige-600 underline dark:text-zellige-300" onClick={() => say(target.ar)}>
+        <button className="mt-1 text-sm font-bold text-zellige-600 underline dark:text-zellige-300" onClick={() => say(target.ar, { tr: target.tr })}>
           {target.tr} · luister
         </button>
       </Card>
@@ -194,7 +198,7 @@ function Memory({ onExit }: { onExit: () => void }) {
   const flip = (tile: Tile) => {
     if (found.includes(tile.wordId) || open.includes(tile.key) || open.length === 2) return
     sfx.tap()
-    if (tile.face === 'ar') say(word(tile.wordId).ar)
+    if (tile.face === 'ar') say(word(tile.wordId).ar, { tr: word(tile.wordId).tr })
     const next = [...open, tile.key]
     setOpen(next)
     if (next.length === 2) {
@@ -207,7 +211,7 @@ function Memory({ onExit }: { onExit: () => void }) {
         if (matched) {
           setFound((f) => [...f, pairId])
           gradeWord(pairId, 'goed')
-          sfx.correct()
+          sfx.match()
         } else sfx.wrong()
         setOpen([])
       }, matched ? 300 : 800)

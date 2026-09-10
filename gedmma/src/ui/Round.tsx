@@ -168,7 +168,7 @@ export function RoundRunner({
                 {detail && verdict !== 'goed' && <p className="mt-0.5 text-xs text-[var(--ink-soft)]">Jij had: “{detail}”</p>}
                 {target.note && verdict !== 'goed' && <p className="mt-1 text-xs text-[var(--ink-soft)]">💡 {target.note}</p>}
               </div>
-              <SpeakButton text={target.ar} className="mt-1" />
+              <SpeakButton ar={target.ar} tr={target.tr} className="mt-1" />
             </div>
             <Button variant={verdict === 'fout' ? 'danger' : 'success'} className="mt-3 w-full" autoFocus onClick={next}>
               {index + 1 >= queue.length ? 'Afronden' : 'Verder'}

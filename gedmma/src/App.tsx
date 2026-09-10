@@ -16,6 +16,7 @@ const SettingsPage = lazy(() => import('./pages/Settings').then((m) => ({ defaul
 import { NotFound } from './pages/NotFound'
 import { TopBar } from './ui/TopBar'
 import { useStore } from './engine/store'
+import { listenForFirstGesture } from './engine/audio'
 
 const TABS = [
   { to: '/leren', label: 'Leren', icon: '🧭' },
@@ -47,6 +48,9 @@ function Chrome() {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [location.pathname])
+
+  // Browsers keep a page silent until somebody has interacted with it.
+  useEffect(listenForFirstGesture, [])
 
   return (
     <div className="min-h-full pb-24 sm:pb-0">

@@ -20,6 +20,10 @@ export interface Settings {
   sound: boolean
   speech: boolean
   hearts: boolean
+  /** The voice the learner picked, by voiceURI. Empty means: pick the best. */
+  voiceURI: string
+  /** Read the Latin spelling with a European voice when there is no Arabic one. */
+  fallbackVoice: boolean
   motion: 'full' | 'calm'
   reading: 'normal' | 'dyslexia'
   dailyGoal: number
@@ -90,6 +94,8 @@ const initial = (): State => ({
     sound: true,
     speech: true,
     hearts: true,
+    voiceURI: '',
+    fallbackVoice: true,
     motion: 'full',
     reading: 'normal',
     dailyGoal: 30,

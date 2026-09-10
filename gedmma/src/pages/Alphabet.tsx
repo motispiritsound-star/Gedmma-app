@@ -32,7 +32,7 @@ export function Alphabet() {
         {LETTERS.map((l) => (
           <button
             key={l.id}
-            onClick={() => { setPicked(l.id); sfx.tap(); say(l.ar) }}
+            onClick={() => { setPicked(l.id); sfx.tap(); say(l.ar, { tr: l.name }) }}
             className={`ar aspect-square rounded-2xl border-2 text-2xl font-bold transition ${l.id === picked ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)] bg-[var(--surface-raised)] hover:border-zellige-400'}`}
             aria-label={l.name}
           >
@@ -49,7 +49,7 @@ export function Alphabet() {
             <p className="text-[var(--ink-soft)]">Klinkt als: {letter.sound}</p>
             <p className="mt-1 text-sm">Schrijfwijze in het Latijn: <strong>{letter.tr}</strong></p>
           </div>
-          <SpeakButton text={letter.ar} />
+          <SpeakButton ar={letter.ar} tr={letter.name} />
         </div>
 
         <div className="mt-5 grid grid-cols-3 gap-3 text-center">
@@ -70,7 +70,7 @@ export function Alphabet() {
               <div className="ar text-2xl font-bold">{example.ar}</div>
               <div className="text-sm text-[var(--ink-soft)]">{example.tr} — {example.nl}</div>
             </div>
-            <SpeakButton text={example.ar} className="ms-auto" />
+            <SpeakButton ar={example.ar} tr={example.tr} className="ms-auto" />
           </div>
         )}
       </Card>

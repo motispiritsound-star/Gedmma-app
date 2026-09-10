@@ -4,8 +4,10 @@ import { UNITS } from '../content/curriculum'
 import { ACCENTS, Button, Card, Progress } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 import {
-  dueWordIds, isDone, lessonUnlocked, nextLesson, progressOfUnit, unitUnlocked, useStore,
+  dueWordIds, isDone, lessonUnlocked, markTipSeen, nextLesson, progressOfUnit, unitUnlocked, useStore,
 } from '../engine/store'
+import { missingArabicVoice } from '../engine/audio'
+import { useVoices } from '../ui/useVoices'
 import type { Lesson } from '../content/types'
 
 const KIND_ICON: Record<Lesson['kind'], string> = {
@@ -64,6 +66,9 @@ export function Learn() {
   const state = useStore((s) => s)
   const due = dueWordIds(state).length
   const next = nextLesson(state)
+  // Only worth saying once, and only on a device that actually lacks the voice.
+  const installed = useVoices()
+  const noArabicVoice = installed.length > 0 && missingArabicVoice() && !state.seenTips.includes('stem')
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
@@ -84,6 +89,23 @@ export function Learn() {
           {due > 0 && <Link to="/herhalen"><Button variant="secondary" className="w-full">Herhalen</Button></Link>}
         </div>
       </Card>
+
+      {noArabicVoice && (
+        <Card className="mb-6 p-5">
+          <div className="flex flex-wrap items-start gap-3">
+            <span className="text-2xl" aria-hidden="true">🔈</span>
+            <div className="min-w-0 flex-1">
+              <p className="font-display font-extrabold">Dit apparaat heeft geen Arabische stem</p>
+              <p className="mt-1 text-sm text-[var(--ink-soft)]">
+                Gedmma leest de woorden nu voor in de Latijnse schrijfwijze met een Franse stem — herkenbaar, maar
+                geen echt Marokkaans. Een Arabische stem installeren kan meestal via de instellingen van je apparaat,
+                bij spraak of tekst-naar-spraak.
+              </p>
+            </div>
+            <Button variant="ghost" onClick={() => markTipSeen('stem')}>Begrepen</Button>
+          </div>
+        </Card>
+      )}
 
       <ol className="space-y-10">
         {UNITS.map((unit, ui) => {

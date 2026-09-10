@@ -133,7 +133,7 @@ export function StoryReader() {
               className={`flex ${mine ? 'justify-start' : 'justify-end'}`}
             >
               <button
-                onClick={() => { setShown((s) => (open ? s.filter((x) => x !== i) : [...s, i])); say(line.ar) }}
+                onClick={() => { setShown((s) => (open ? s.filter((x) => x !== i) : [...s, i])); say(line.ar, { tr: line.tr }) }}
                 className={`max-w-[85%] rounded-3xl border-2 p-4 text-start transition ${
                   mine ? 'rounded-bl-md border-[var(--line)] bg-[var(--surface-raised)]' : 'rounded-br-md border-zellige-500/40 bg-zellige-500/10'
                 }`}

@@ -75,15 +75,34 @@ jonge kinderen), en herhalen kost sowieso nooit een hartje.
 
 ## Geluid zonder audiobestanden
 
-De uitspraak komt van de spraaksynthese die al op het apparaat staat, met
-voorkeur voor een Marokkaanse stem en dan de rest van de Arabische stemmen
-(`src/engine/audio.ts`). De geluidjes zijn synthetisch, met de Web Audio API.
-Daardoor weegt de hele app een paar honderd kilobyte en doet hij het offline.
+Er zit geen enkele mp3 in deze app, en toch klinkt hij. De effecten worden ter
+plekke gemaakt met de Web Audio API (`src/engine/audio.ts`): een getokkelde
+snaar van vier boventonen, een handtrom met een diepe *dum* en een droge *tek*,
+en een klok via frequentiemodulatie. De melodietjes staan in **hijaz op D**, de
+toonladder achter een groot deel van de Marokkaanse muziek — daardoor klinkt
+een afgeronde les als iets dat bij deze app hoort. Een fout krijgt een lage,
+zachte trom in plaats van een zoemer: een fout is geen alarm.
 
-Dat betekent ook een eerlijke beperking: op de meeste apparaten spreekt de stem
-Modern Standaard Arabisch, niet echt Marokkaans. Goed genoeg om een woord te
-herkennen, geen vervanging voor familie horen praten. Staat er helemaal geen
-Arabische stem op het toestel, dan zegt het instellingenscherm dat.
+Browsers houden een pagina stil tot iemand hem heeft aangeraakt, en een
+ingebed venster is nog strenger. De eerste tik of toetsaanslag opent daarom de
+mixer en warmt de spraakmotor op, zodat het eerste woord dat een kind
+tegenkomt ook echt te horen is.
+
+De **uitspraak** komt van de spraaksynthese die al op het apparaat staat, met
+voorkeur voor een Marokkaanse stem en dan de rest van de Arabische stemmen. Bij
+instellingen kies je zelf een stem uit de lijst en test je hem.
+
+Twee eerlijke beperkingen, die de app zelf ook benoemt:
+
+- Op de meeste apparaten spreekt de Arabische stem **Modern Standaard Arabisch**,
+  geen Marokkaans. Goed genoeg om een woord te herkennen, geen vervanging voor
+  familie horen praten.
+- Staat er **helemaal geen Arabische stem** op het apparaat, dan leest Gedmma de
+  Latijnse schrijfwijze voor met een **Franse** stem: `sh` wordt `ch`, `u` en `w`
+  worden `ou`, `kh` en `gh` worden een Franse `r`, en de ع vervalt — Frans komt
+  van de Europese talen het dichtst bij Darija in de buurt. Het leerpad zegt
+  eenmalig dat dit gebeurt en hoe je een Arabische stem installeert, en je kunt
+  het uitzetten.
 
 Spreekoefeningen gebruiken de spraakherkenning van de browser. In Chrome gaat de
 opname daarvoor naar Google; wie dat niet wil, zet spreekoefeningen uit. Dat

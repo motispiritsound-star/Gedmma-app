@@ -24,12 +24,12 @@ export function WordText({ word, size = 'md', showNl = false }: { word: Word; si
   )
 }
 
-export function SpeakButton({ text, className = '', label = 'Luister' }: { text: string; className?: string; label?: string }) {
+export function SpeakButton({ ar, tr, className = '', label = 'Luister' }: { ar: string; tr?: string; className?: string; label?: string }) {
   return (
     <motion.button
       whileTap={{ scale: 0.9 }}
-      onClick={() => { sfx.tap(); say(text) }}
-      onDoubleClick={() => say(text, { slow: true })}
+      onClick={() => { sfx.tap(); say(ar, { tr }) }}
+      onDoubleClick={() => say(ar, { tr, slow: true })}
       title="Klik om te horen, dubbelklik voor langzaam"
       aria-label={label}
       className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 border-zellige-500 text-zellige-600 transition hover:bg-zellige-500 hover:text-white dark:text-zellige-300 ${className}`}

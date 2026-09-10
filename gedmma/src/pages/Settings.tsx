@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import {
   exportProgress, importProgress, resetProgress, setSetting, setState, useStore, type Settings,
 } from '../engine/store'
-import { arabicVoice, canListen, canSpeak, say } from '../engine/audio'
+import { arabicVoices, canListen, canSpeak, say, sfx, voicePlan } from '../engine/audio'
+import { useVoices } from '../ui/useVoices'
 import { Button, Card, SectionTitle, Sheet } from '../ui/kit'
 
 /** The embedded demo runs in a sandbox where a page cannot hand over a file. */
@@ -55,6 +56,14 @@ export function SettingsPage() {
   const state = useStore((s) => s)
   const s = state.settings
   const set = <K extends keyof Settings>(k: K) => (v: Settings[K]) => setSetting(k, v)
+  const all = useVoices()
+  const arabic = arabicVoices()
+  const plan = voicePlan()
+  const voiceStatus =
+    plan.mode === 'arabisch' ? `Nu in gebruik: ${plan.voice.name} (${plan.voice.lang}).`
+    : plan.mode === 'benadering' ? `Geen Arabische stem gevonden. Gedmma leest de Latijnse schrijfwijze met ${plan.voice.name} — dat benadert het, meer niet.`
+    : canSpeak() ? 'Er is geen stem beschikbaar. Zet hieronder de benaderende uitspraak aan, of installeer een Arabische stem op je apparaat.'
+    : 'Deze browser kan geen spraak afspelen.'
   const [confirmReset, setConfirmReset] = useState(false)
   const [imported, setImported] = useState<string | null>(null)
   const file = useRef<HTMLInputElement>(null)
@@ -114,23 +123,45 @@ export function SettingsPage() {
         </Row>
       </Card>
 
-      <h2 className="mb-2 font-display text-lg font-extrabold">Geluid</h2>
+      <h2 className="mb-2 font-display text-lg font-extrabold">Geluid en uitspraak</h2>
       <Card className="mb-6">
-        <Row title="Geluid en uitspraak" hint={canSpeak() ? 'Gebruikt de stem van je apparaat.' : 'Deze browser heeft geen spraak.'}>
+        <Row title="Geluid" hint="Uitspraak, en de trom en snaar bij goed en fout.">
           <Toggle on={s.sound} onChange={set('sound')} label="Geluid" />
         </Row>
-        <Row title="Spreeksnelheid" hint="Langzamer helpt bij nieuwe woorden.">
+        <Row title="Effecten testen" hint="Zo klinkt een goede beurt, een fout en het einde van een les.">
+          <Button variant="secondary" onClick={() => sfx.demo()}>Speel</Button>
+        </Row>
+        <Row title="Uitspraak" hint={voiceStatus}>
+          <Button variant="secondary" onClick={() => say('السلام عليكم', { tr: 'ssalamu 3alaykum' })}>Test</Button>
+        </Row>
+        <Row title="Stem" hint={canSpeak() ? `${arabic.length} Arabische ${arabic.length === 1 ? 'stem' : 'stemmen'} van de ${all.length} op dit apparaat.` : 'Deze browser heeft geen spraak.'}>
+          <select
+            id="voice"
+            value={s.voiceURI}
+            onChange={(e) => setSetting('voiceURI', e.target.value)}
+            className="max-w-56 rounded-xl border-2 border-[var(--line)] bg-[var(--surface)] px-3 py-2 outline-none focus:border-zellige-500"
+          >
+            <option value="">Automatisch kiezen</option>
+            {all.map((v) => (
+              <option key={v.voiceURI} value={v.voiceURI}>{v.name} — {v.lang}</option>
+            ))}
+          </select>
+        </Row>
+        <Row title="Spreeksnelheid" hint="Langzamer helpt bij nieuwe woorden. Dubbeltik op een luisterknop voor extra traag.">
           <Choice
             value={s.voiceRate}
             onChange={set('voiceRate')}
             options={[{ value: 0.7, label: 'Traag' }, { value: 0.85, label: 'Normaal' }, { value: 1, label: 'Snel' }]}
           />
         </Row>
-        <Row title="Spreekoefeningen" hint={canListen() ? 'Je microfoon luistert alleen tijdens de oefening.' : 'Deze browser kan niet meeluisteren.'}>
-          <Toggle on={s.speech} onChange={set('speech')} label="Spreekoefeningen" />
+        <Row
+          title="Benaderende uitspraak"
+          hint="Heeft dit apparaat geen Arabische stem, lees de Latijnse schrijfwijze dan voor met een Franse stem. Het is een benadering, geen Marokkaans."
+        >
+          <Toggle on={s.fallbackVoice} onChange={set('fallbackVoice')} label="Benaderende uitspraak" />
         </Row>
-        <Row title="Stem testen" hint={arabicVoice() ? `Gevonden stem: ${arabicVoice()?.name}` : 'Geen Arabische stem gevonden — de uitspraak klinkt dan onnatuurlijk.'}>
-          <Button variant="secondary" onClick={() => say('السلام عليكم')}>Test</Button>
+        <Row title="Spreekoefeningen" hint={canListen() ? 'Je microfoon luistert alleen tijdens de oefening zelf.' : 'Deze browser kan niet meeluisteren.'}>
+          <Toggle on={s.speech} onChange={set('speech')} label="Spreekoefeningen" />
         </Row>
       </Card>
 

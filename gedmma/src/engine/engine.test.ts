@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { DAY, dueCards, newCard, review, strengthLabel } from './srs'
 import { buildRound, buildReviewRound, checkSpoken, checkTyped, normalise, tokenize } from './exercises'
+import { latinise } from './audio'
 import { LESSONS, UNITS } from '../content/curriculum'
 import { word } from '../content/lexicon'
 
@@ -149,5 +150,29 @@ describe('checking what the learner typed', () => {
 
   it('normalises predictably', () => {
     expect(normalise('Ssalamu 3alaykum!')).toBe(normalise('salamu alaykum'))
+  })
+})
+
+describe('pronunciation fallback', () => {
+  // A device with no Arabic voice reads the Latin spelling with a French one,
+  // so the spelling has to be rewritten into something French reads roughly
+  // right: ch for sh, ou for u and w, a uvular r for kh and gh, no ayn.
+  it('rewrites the sounds French cannot read as written', () => {
+    expect(latinise('shukran')).toBe('choukran')
+    expect(latinise('khobz')).toBe('robz')
+    expect(latinise('ghali')).toBe('rali')
+    expect(latinise('3afak')).toBe('afak')
+    expect(latinise('wakha')).toBe('ouara')
+    expect(latinise('sh7al')).toBe('chhal')
+  })
+
+  it('leaves an ou that is already there alone', () => {
+    expect(latinise('jouj')).toBe('jouj')
+    expect(latinise('kesksu')).toBe('kesksou')
+  })
+
+  it('keeps whole phrases readable', () => {
+    expect(latinise('  Ssalamu 3alaykum  ')).toBe('ssalamou alaykoum')
+    expect(latinise('')).toBe('')
   })
 })

@@ -42,7 +42,7 @@ function Prompt({ children, hint }: { children: React.ReactNode; hint: string })
 
 function NewWord({ exercise, onAnswer }: ExerciseProps) {
   const w = word(exercise.wordId)
-  useEffect(() => { say(w.ar) }, [w.ar])
+  useEffect(() => { say(w.ar, { tr: w.tr }) }, [w.ar, w.tr])
   return (
     <div>
       <Prompt hint="Nieuw woord">
@@ -50,7 +50,7 @@ function NewWord({ exercise, onAnswer }: ExerciseProps) {
           <div className="text-5xl" aria-hidden="true">{w.emoji ?? '✨'}</div>
           <WordText word={w} size="lg" />
           <p className="text-center font-display text-xl font-extrabold">{w.nl}</p>
-          <SpeakButton text={w.ar} />
+          <SpeakButton ar={w.ar} tr={w.tr} />
           {w.note && (
             <p className="mt-1 rounded-2xl bg-saffron-500/10 px-4 py-2 text-center text-sm text-[var(--ink-soft)]">
               💡 {w.note}
@@ -73,8 +73,8 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
 
   useEffect(() => {
     setChosen(null)
-    if (mode === 'luister') say(w.ar)
-  }, [exercise.id, mode, w.ar])
+    if (mode === 'luister') say(w.ar, { tr: w.tr })
+  }, [exercise.id, mode, w.ar, w.tr])
 
   const hint =
     mode === 'betekenis' ? 'Wat betekent dit?'
@@ -95,7 +95,7 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
           <Card className="flex items-center justify-center gap-4 p-6">
             <span className="text-4xl" aria-hidden="true">{w.emoji}</span>
             <WordText word={w} size="lg" />
-            <SpeakButton text={w.ar} />
+            <SpeakButton ar={w.ar} tr={w.tr} />
           </Card>
         )}
         {mode === 'darija' && (
@@ -108,14 +108,14 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
           <div className="flex flex-col items-center gap-3">
             <motion.button
               whileTap={{ scale: 0.92 }}
-              onClick={() => say(w.ar)}
-              onDoubleClick={() => say(w.ar, { slow: true })}
+              onClick={() => say(w.ar, { tr: w.tr })}
+              onDoubleClick={() => say(w.ar, { tr: w.tr, slow: true })}
               className="grid h-28 w-28 place-items-center rounded-full bg-gradient-to-br from-zellige-300 to-zellige-700 text-5xl text-white shadow-lg"
               aria-label="Speel het woord af"
             >
               🔊
             </motion.button>
-            <button className="text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => say(w.ar, { slow: true })}>
+            <button className="text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => say(w.ar, { tr: w.tr, slow: true })}>
               Langzamer
             </button>
           </div>
@@ -166,7 +166,7 @@ function Match({ exercise, onAnswer }: ExerciseProps) {
     if (solved.includes(id)) return
     sfx.tap()
     setPicked(id)
-    say(word(id).ar)
+    say(word(id).ar, { tr: word(id).tr })
   }
 
   const tapRight = (id: string) => {
@@ -371,7 +371,7 @@ function Speak({ exercise, onAnswer, locked }: ExerciseProps) {
         <Prompt hint="Zeg het hardop">
           <Card className="p-6 text-center">
             <WordText word={w} size="lg" showNl />
-            <div className="mt-3 flex justify-center"><SpeakButton text={w.ar} /></div>
+            <div className="mt-3 flex justify-center"><SpeakButton ar={w.ar} tr={w.tr} /></div>
           </Card>
         </Prompt>
         <p className="mb-4 text-center text-sm text-[var(--ink-soft)]">
@@ -387,7 +387,7 @@ function Speak({ exercise, onAnswer, locked }: ExerciseProps) {
       <Prompt hint="Zeg het hardop">
         <Card className="flex flex-col items-center gap-3 p-6">
           <WordText word={w} size="lg" showNl />
-          <SpeakButton text={w.ar} />
+          <SpeakButton ar={w.ar} tr={w.tr} />
         </Card>
       </Prompt>
 
