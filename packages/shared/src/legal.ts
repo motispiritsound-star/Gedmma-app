@@ -241,8 +241,8 @@ export const RETENTION: readonly RetentionRule[] = [
     key: 'invoice',
     days: 7 * DAYS_PER_YEAR,
     reason: {
-      nl: 'Facturen en betaalgegevens moeten zeven jaar bewaard blijven; dat is de fiscale bewaarplicht uit artikel 52 van de Algemene wet inzake rijksbelastingen. Ze worden losgekoppeld van je account maar niet vernietigd.',
-      en: 'Invoices and payment records must be kept for seven years under Dutch tax law (Article 52 AWR). They are detached from your account but not destroyed.',
+      nl: 'Facturen en betaalgegevens moeten van de Belastingdienst zeven jaar bewaard blijven. Ze worden losgekoppeld van je account maar niet vernietigd.',
+      en: 'Invoices and payment records must be kept for seven years under Dutch tax rules. They are detached from your account but not destroyed.',
     },
   },
   {

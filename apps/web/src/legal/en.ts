@@ -16,10 +16,7 @@ export const CHROME_EN: LegalChrome = {
     COOKIES: 'Cookie statement',
   },
   lastUpdated: 'Last updated',
-  incompleteTitle: 'Not finished yet',
-  incompleteBody:
-    'Buurklus is not yet registered as a company. These details belong here and are still missing. Until they are filled in, this document is incomplete and no rights can be derived from it.',
-  incompleteFields: {
+  operatorFields: {
     legalName: 'the name of the company behind Buurklus',
     kvk: 'the Chamber of Commerce number',
     vatId: 'the VAT identification number',
@@ -45,31 +42,31 @@ export const CHROME_EN: LegalChrome = {
   },
   rights: [
     {
-      right: 'Access (art. 15)',
+      right: 'Access',
       how: 'In the app under Privacy and data → Download your data. You get a file with everything we hold, straight away.',
     },
     {
-      right: 'Portability (art. 20)',
+      right: 'Portability',
       how: 'That same file is JSON: readable by a person and usable by another system.',
     },
     {
-      right: 'Rectification (art. 16)',
+      right: 'Rectification',
       how: 'Your name, email and profile you change yourself in the app. If something else is wrong, email us.',
     },
     {
-      right: 'Erasure (art. 17)',
+      right: 'Erasure',
       how: 'In the app under Privacy and data → Delete account. This cannot be undone.',
     },
     {
-      right: 'Restriction (art. 18)',
+      right: 'Restriction',
       how: 'If you think we are processing something we should not, email us. We pause the processing while we look into it.',
     },
     {
-      right: 'Objection (art. 21)',
+      right: 'Objection',
       how: 'You can object by email to processing based on legitimate interest, such as fraud prevention.',
     },
     {
-      right: 'Withdrawing consent (art. 7(3))',
+      right: 'Withdrawing consent',
       how: 'Only relevant to marketing email. One switch in the app, and your account keeps working.',
     },
   ],
@@ -100,12 +97,12 @@ export const CHROME_EN: LegalChrome = {
       data: 'A message through the contact form: your name, your email address and what you write',
       purpose:
         'Answering your question. The address is used to reply and nothing else — it does not put you on a mailing list.',
-      basis: 'Legitimate interest (Article 6(1)(f)): somebody who writes to us wants an answer',
+      basis: 'Legitimate interest: somebody who writes to us wants an answer',
     },
     {
       data: 'Your mobile number',
       purpose: 'Signing you in and recognising your account. You sign in with a code by SMS, without a password.',
-      basis: 'Performance of the contract (art. 6(1)(b))',
+      basis: 'Performance of the contract',
     },
     {
       data: 'Your name and email address',
@@ -132,12 +129,12 @@ export const CHROME_EN: LegalChrome = {
       data: 'Business details of tradespeople: Chamber of Commerce number, VAT id, IBAN',
       purpose:
         'Checking that a tradesperson really is registered and — if there is ever anything to pay — invoicing.',
-      basis: 'Performance of the contract and legal obligation (art. 6(1)(c))',
+      basis: 'Performance of the contract and legal obligation',
     },
     {
       data: 'When and from which IP address you agreed to the terms',
       purpose: 'Being able to demonstrate which text you accepted, and when.',
-      basis: 'Legal obligation (art. 7(1)) and legitimate interest',
+      basis: 'Legal obligation and legitimate interest',
     },
     {
       data: 'Sign-in codes, sessions and device tokens',
@@ -147,18 +144,18 @@ export const CHROME_EN: LegalChrome = {
     {
       data: 'Invoices and payment records',
       purpose: 'Bookkeeping and the statutory retention period for tax records.',
-      basis: 'Legal obligation (art. 52 AWR)',
+      basis: 'Legal obligation: the Dutch tax retention duty',
     },
     {
       data: 'Consent for marketing email',
       purpose: 'Sending you something about Buurklus occasionally, if you asked for it.',
-      basis: 'Consent (art. 6(1)(a))',
+      basis: 'Consent',
     },
     {
       data: 'Your waiting-list registration: email address, municipality, and for a business also trades and Chamber of Commerce number',
       purpose:
         'Telling you when Buurklus opens in your municipality, and seeing beforehand whether there are enough tradespeople and customers there.',
-      basis: 'Consent (art. 6(1)(a))',
+      basis: 'Consent',
     },
   ],
 };
@@ -174,7 +171,8 @@ export const LEGAL_EN: LegalCopy = {
       {
         heading: 'Who is responsible',
         paragraphs: [
-          'The controller is the party that decides what happens to your data. For Buurklus that is:',
+          'Buurklus decides which data is needed, what it is used for and how long it is kept. That makes Buurklus responsible for the processing of your data on this platform.',
+          'If you have a question about your data, want to see it, correct it or have it deleted, or are unhappy about something, use the contact form on this site. It reaches us directly and you will get an answer.',
         ],
         generated: 'operator',
       },
@@ -227,7 +225,7 @@ export const LEGAL_EN: LegalCopy = {
         heading: 'What happens when you delete your account',
         paragraphs: [
           'Your name, phone number, email address, address, photos and message texts are erased. The account itself stays as an empty shell, because things hang off it that are not yours alone.',
-          'Your reviews stay, without your name and without the text: the rating is the tradesperson’s reputation and the basis on which other customers choose. The other half of a conversation is not yours to erase. And invoices have to be kept for seven years under Dutch tax law; those are detached from your account but not destroyed. The GDPR expressly allows this (art. 17(3)).',
+          'Your reviews stay, without your name and without the text: the rating is the tradesperson’s reputation and the basis on which other customers choose. The other half of a conversation is not yours to erase. And invoices have to be kept for seven years under Dutch tax law; those are detached from your account but not destroyed. Privacy law expressly allows this.',
         ],
       },
       {
@@ -268,6 +266,10 @@ export const LEGAL_EN: LegalCopy = {
     sections: [
       {
         heading: 'Who we are',
+        paragraphs: [
+          'Buurklus is a Dutch platform that brings households and tradespeople together. These terms are between you and the party operating Buurklus.',
+          'Questions about these terms, your account or an invoice go through the contact form on this site.',
+        ],
         generated: 'operator',
       },
       {
@@ -422,7 +424,7 @@ export const LEGAL_EN: LegalCopy = {
       {
         heading: 'No cookie banner, and why not',
         paragraphs: [
-          'Consent is needed for cookies and similar techniques that are not strictly necessary: advertising cookies, analytics that recognise you, social plug-ins. We use none of them. What is left is the technique needed to keep you signed in, and that requires no consent (art. 11.7a(3) of the Dutch Telecommunications Act).',
+          'Consent is needed for cookies and similar techniques that are not strictly necessary: advertising cookies, analytics that recognise you, social plug-ins. We use none of them. What is left is the technique needed to keep you signed in, and that requires no consent.',
           'A banner asking for consent to something that needs no consent is not extra care, it is noise. So there is not one.',
         ],
       },

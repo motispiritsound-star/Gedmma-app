@@ -54,9 +54,7 @@ export interface LegalChrome {
   pageNames: Record<LegalPageKey, string>;
   lastUpdated: string;
   /** Heading above the list of what the operator still has to fill in. */
-  incompleteTitle: string;
-  incompleteBody: string;
-  incompleteFields: Record<string, string>;
+  operatorFields: Record<string, string>;
   backToSite: string;
   otherDocuments: string;
   /** Says which language version prevails. */

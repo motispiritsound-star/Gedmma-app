@@ -14,7 +14,6 @@ import {
   SUPERVISORY_AUTHORITY,
   legalPage,
   legalPath,
-  missingOperatorFields,
   type LegalPageKey,
   PLANS,
   PLATFORM_IS_FREE,
@@ -930,8 +929,10 @@ function table(headings: string[], rows: string[][]): string {
  */
 function operatorBlock(locale: Locale): string {
   const chrome = CHROME[locale];
-  const missing = missingOperatorFields();
 
+  // Whatever is known is listed; what is not known is simply not listed. The
+  // section around this block says who is responsible and how to reach them in
+  // plain sentences, so an empty list leaves no hole in the document.
   const fields: [string, string | null][] = [
     ['legalName', OPERATOR.legalName],
     ['kvk', OPERATOR.kvk],
@@ -940,22 +941,11 @@ function operatorBlock(locale: Locale): string {
     ['email', OPERATOR.email],
   ];
   const known = fields.filter((entry): entry is [string, string] => entry[1] !== null);
+  if (known.length === 0) return '';
 
-  const knownList = known.length
-    ? `<ul class="legalList">${known
-        .map(([field, value]) => `<li>${esc(chrome.incompleteFields[field] ?? field)}: ${esc(value)}</li>`)
-        .join('')}</ul>`
-    : '';
-
-  if (missing.length === 0) return knownList;
-
-  return `${knownList}<aside class="notice notice--warn">
-    <h3>${esc(chrome.incompleteTitle)}</h3>
-    <p>${esc(chrome.incompleteBody)}</p>
-    <ul class="legalList">${missing
-      .map((field) => `<li>${esc(chrome.incompleteFields[field] ?? field)}</li>`)
-      .join('')}</ul>
-  </aside>`;
+  return `<ul class="legalList">${known
+    .map(([field, value]) => `<li>${esc(chrome.operatorFields[field] ?? field)}: ${esc(value)}</li>`)
+    .join('')}</ul>`;
 }
 
 /** Days as something a person reads: "1 dag", "7 jaar". */

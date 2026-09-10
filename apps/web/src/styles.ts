@@ -773,18 +773,6 @@ h1, h2, .section__head h2, .cta h2 { text-wrap: balance; }
 .legalTable th { background: var(--ink-50); font-weight: 600; color: var(--ink-900); }
 .legalTable td { color: var(--ink-700); line-height: 1.55; }
 
-.notice {
-  border-radius: var(--radius-md);
-  padding: 1.1rem 1.25rem;
-  margin-block-end: 1rem;
-  border: 1px solid var(--ink-100);
-  background: var(--ink-50);
-}
-/* Deliberately loud: it marks a document that is not finished, and quiet
-   styling would let it be published as though it were. */
-.notice--warn { background: var(--saffron-100); border-color: var(--saffron-500); }
-.notice h3 { margin-block: 0 0.4rem; font-size: 1rem; }
-.notice p { margin-block: 0 0.6rem; }
 
 .legal__authority { margin-block: 0 1rem; }
 .legal__authority a { color: var(--green-700); }

@@ -331,15 +331,32 @@ describe('the legal pages', () => {
     }
   });
 
-  it('admits what is still missing rather than printing a blank', () => {
-    // There is no registered company yet. A privacy statement with an empty
-    // controller reads as answered; this one says out loud that it is not.
-    expect(missingOperatorFields().length).toBeGreaterThan(0);
+  it('says who is responsible and how to reach them, in sentences', () => {
+    // The company details are not published, so the section carries the answer
+    // itself rather than a list with holes in it: who decides what happens to
+    // the data, and the way to ask about it.
     for (const locale of SUPPORTED_LOCALES) {
       const html = renderLegal('PRIVACY', locale);
-      expect(html, locale).toContain('notice--warn');
-      for (const field of missingOperatorFields()) {
-        expect(html, `${locale} ${field}`).toMatch(/KvK|Chamber of Commerce/);
+      const responsible = locale === 'nl' ? 'verantwoordelijk' : 'responsible';
+      const route = locale === 'nl' ? 'contactformulier' : 'contact form';
+      expect(html.toLowerCase(), `${locale} responsible`).toContain(responsible);
+      expect(html.toLowerCase(), `${locale} route`).toContain(route);
+      // No dangling colon left over from the list that used to follow it.
+      expect(html, `${locale} no list intro`).not.toContain('Voor Buurklus is dat:');
+      expect(html, `${locale} no warning`).not.toContain('notice--warn');
+    }
+  });
+
+  it('makes its case in plain language, without citing articles', () => {
+    // Article numbers are for lawyers checking the work; the people reading
+    // this want to know what happens to their data. The obligation is to be
+    // clear, and a table cell reading "art. 6 lid 1 sub f" is not.
+    const citation = /\bart(?:icle|\.)\s*\d|\blid \d|\(\d+\)\(\w\)/i;
+    for (const key of LEGAL_PAGES.map((page) => page.key)) {
+      for (const locale of SUPPORTED_LOCALES) {
+        const text = renderLegal(key, locale).replace(/<[^>]+>/g, ' ');
+        const hit = citation.exec(text);
+        expect(hit?.[0], `${key} ${locale}`).toBe(undefined);
       }
     }
   });

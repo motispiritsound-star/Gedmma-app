@@ -17,10 +17,7 @@ export const CHROME_NL: LegalChrome = {
     COOKIES: 'Cookieverklaring',
   },
   lastUpdated: 'Laatst gewijzigd',
-  incompleteTitle: 'Nog niet compleet',
-  incompleteBody:
-    'Buurklus is nog niet als bedrijf ingeschreven. Deze gegevens horen hier te staan en ontbreken nog. Zolang dat zo is, is dit document niet af en kun je er geen rechten aan ontlenen.',
-  incompleteFields: {
+  operatorFields: {
     legalName: 'de naam van het bedrijf achter Buurklus',
     kvk: 'het KvK-nummer',
     vatId: 'het btw-identificatienummer',
@@ -46,31 +43,31 @@ export const CHROME_NL: LegalChrome = {
   },
   rights: [
     {
-      right: 'Inzage (art. 15)',
+      right: 'Inzage',
       how: 'In de app onder Privacy en gegevens → Je gegevens downloaden. Je krijgt meteen een bestand met alles wat we van je hebben.',
     },
     {
-      right: 'Overdraagbaarheid (art. 20)',
+      right: 'Overdraagbaarheid',
       how: 'Datzelfde bestand is JSON: leesbaar voor een mens en bruikbaar voor een ander systeem.',
     },
     {
-      right: 'Rectificatie (art. 16)',
+      right: 'Rectificatie',
       how: 'Je naam, e-mailadres en profiel pas je zelf aan in de app. Klopt er iets anders niet, mail ons dan.',
     },
     {
-      right: 'Verwijdering (art. 17)',
+      right: 'Verwijdering',
       how: 'In de app onder Privacy en gegevens → Account verwijderen. Dit kan niet ongedaan gemaakt worden.',
     },
     {
-      right: 'Beperking (art. 18)',
+      right: 'Beperking',
       how: 'Denk je dat we gegevens ten onrechte verwerken, mail ons dan. We zetten de verwerking stil terwijl we het uitzoeken.',
     },
     {
-      right: 'Bezwaar (art. 21)',
+      right: 'Bezwaar',
       how: 'Tegen verwerking op grond van gerechtvaardigd belang, bijvoorbeeld fraudebestrijding, kun je bezwaar maken per e-mail.',
     },
     {
-      right: 'Toestemming intrekken (art. 7 lid 3)',
+      right: 'Toestemming intrekken',
       how: 'Alleen relevant voor commerciële berichten. Eén schakelaar in de app, en je account blijft gewoon werken.',
     },
   ],
@@ -101,12 +98,12 @@ export const CHROME_NL: LegalChrome = {
       data: 'Een bericht via het contactformulier: je naam, je e-mailadres en wat je schrijft',
       purpose:
         'Je vraag beantwoorden. We gebruiken het adres alleen om te antwoorden — je komt er niet mee op een mailinglijst.',
-      basis: 'Gerechtvaardigd belang (art. 6 lid 1 sub f): wie ons schrijft, wil antwoord',
+      basis: 'Gerechtvaardigd belang: wie ons schrijft, wil antwoord',
     },
     {
       data: 'Je mobiele nummer',
       purpose: 'Inloggen en je account herkennen. Je logt in met een code per sms, zonder wachtwoord.',
-      basis: 'Uitvoering van de overeenkomst (art. 6 lid 1 sub b)',
+      basis: 'Uitvoering van de overeenkomst',
     },
     {
       data: 'Je naam en e-mailadres',
@@ -133,12 +130,12 @@ export const CHROME_NL: LegalChrome = {
       data: 'Bedrijfsgegevens van vakmensen: KvK-nummer, btw-id, IBAN',
       purpose:
         'Controleren dat een vakman echt staat ingeschreven, en — als er ooit betaald wordt — factureren.',
-      basis: 'Uitvoering van de overeenkomst en wettelijke verplichting (art. 6 lid 1 sub c)',
+      basis: 'Uitvoering van de overeenkomst en wettelijke verplichting',
     },
     {
       data: 'Wanneer en vanaf welk IP-adres je akkoord ging met de voorwaarden',
       purpose: 'Kunnen aantonen wélke tekst je hebt geaccepteerd en wanneer.',
-      basis: 'Wettelijke verplichting (art. 7 lid 1) en gerechtvaardigd belang',
+      basis: 'Wettelijke verplichting en gerechtvaardigd belang',
     },
     {
       data: 'Inlogcodes, sessies en apparaat-tokens',
@@ -148,18 +145,18 @@ export const CHROME_NL: LegalChrome = {
     {
       data: 'Facturen en betaalgegevens',
       purpose: 'Boekhouding en de fiscale bewaarplicht.',
-      basis: 'Wettelijke verplichting (art. 52 AWR)',
+      basis: 'Wettelijke verplichting: de fiscale bewaarplicht',
     },
     {
       data: 'Toestemming voor commerciële e-mail',
       purpose: 'Je af en toe iets sturen over Buurklus, als je daarom hebt gevraagd.',
-      basis: 'Toestemming (art. 6 lid 1 sub a)',
+      basis: 'Toestemming',
     },
     {
       data: 'Je aanmelding op de wachtlijst: e-mailadres, gemeente, en bij een bedrijf ook vakgebieden en KvK-nummer',
       purpose:
         'Je laten weten wanneer Buurklus in jouw gemeente opengaat, en vooraf kunnen zien of daar genoeg vakmensen én klanten zijn.',
-      basis: 'Toestemming (art. 6 lid 1 sub a)',
+      basis: 'Toestemming',
     },
   ],
 };
@@ -175,7 +172,8 @@ export const LEGAL_NL: LegalCopy = {
       {
         heading: 'Wie is verantwoordelijk',
         paragraphs: [
-          'De verwerkingsverantwoordelijke is de partij die bepaalt wat er met je gegevens gebeurt. Voor Buurklus is dat:',
+          'Buurklus bepaalt welke gegevens nodig zijn, waarvoor ze worden gebruikt en hoe lang ze bewaard blijven. Daarmee is Buurklus verantwoordelijk voor de verwerking van je gegevens op dit platform.',
+          'Heb je een vraag over je gegevens, wil je ze inzien, corrigeren of laten verwijderen, of ben je ergens niet tevreden over? Neem dan contact op via het contactformulier op deze site. Dat bericht komt rechtstreeks bij ons binnen en je krijgt er antwoord op.',
         ],
         generated: 'operator',
       },
@@ -228,7 +226,7 @@ export const LEGAL_NL: LegalCopy = {
         heading: 'Wat er gebeurt als je je account verwijdert',
         paragraphs: [
           'Je naam, telefoonnummer, e-mailadres, adres, foto’s en berichtteksten worden gewist. Je account blijft als lege huls bestaan, want er hangen dingen aan die niet van jou alleen zijn.',
-          'Je beoordelingen blijven staan, zonder je naam en zonder de tekst: het cijfer is de reputatie van de vakman en de basis waarop andere klanten kiezen. De andere kant van een gesprek is niet van jou om te wissen. En facturen moeten we zeven jaar bewaren van de Belastingdienst; die worden losgekoppeld van je account maar niet vernietigd. De AVG staat dit uitdrukkelijk toe (art. 17 lid 3).',
+          'Je beoordelingen blijven staan, zonder je naam en zonder de tekst: het cijfer is de reputatie van de vakman en de basis waarop andere klanten kiezen. De andere kant van een gesprek is niet van jou om te wissen. En facturen moeten we zeven jaar bewaren van de Belastingdienst; die worden losgekoppeld van je account maar niet vernietigd. De privacywetgeving laat dit uitdrukkelijk toe.',
         ],
       },
       {
@@ -269,6 +267,10 @@ export const LEGAL_NL: LegalCopy = {
     sections: [
       {
         heading: 'Wie we zijn',
+        paragraphs: [
+          'Buurklus is een Nederlands platform dat klanten en vakmensen bij elkaar brengt. Je sluit deze voorwaarden met de partij die Buurklus exploiteert.',
+          'Vragen over deze voorwaarden, je account of een factuur gaan via het contactformulier op deze site.',
+        ],
         generated: 'operator',
       },
       {
@@ -423,7 +425,7 @@ export const LEGAL_NL: LegalCopy = {
       {
         heading: 'Geen cookiebanner, en waarom niet',
         paragraphs: [
-          'Toestemming is nodig voor cookies en vergelijkbare technieken die niet strikt noodzakelijk zijn: advertentiecookies, analytics die je herkent, sociale plug-ins. Die gebruiken we geen van alle. Wat overblijft is techniek die nodig is om je ingelogd te houden, en daarvoor is geen toestemming vereist (art. 11.7a lid 3 Telecommunicatiewet).',
+          'Toestemming is nodig voor cookies en vergelijkbare technieken die niet strikt noodzakelijk zijn: advertentiecookies, analytics die je herkent, sociale plug-ins. Die gebruiken we geen van alle. Wat overblijft is techniek die nodig is om je ingelogd te houden, en daarvoor is geen toestemming vereist.',
           'Een banner die om toestemming vraagt voor iets waar geen toestemming voor nodig is, is geen extra zorgvuldigheid maar ruis. Daarom staat hij er niet.',
         ],
       },
