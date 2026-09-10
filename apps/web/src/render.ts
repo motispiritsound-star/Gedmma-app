@@ -266,20 +266,27 @@ function header(locale: Locale, page: PageKind): string {
     page !== 'pro'
       ? `<a href="${pathFor(locale, 'home')}#trades">${esc(copy.nav.trades)}</a>
          <a href="${pathFor(locale, 'home')}#how">${esc(copy.nav.how)}</a>
-         <a href="${pathFor(locale, 'pro')}">${esc(copy.nav.pros)}</a>`
+         <a href="${pathFor(locale, 'pro')}">${esc(copy.nav.pros)}</a>
+         <a href="${pathFor(locale, 'contact')}">${esc(copy.footer.links.contact)}</a>`
       : `<a href="#pricing">${esc(copy.nav.pricing)}</a>
          <a href="#pro-how">${esc(copy.pro.how.title)}</a>
-         <a href="${pathFor(locale, 'home')}">${esc(copy.nav.forCustomers)}</a>`;
+         <a href="${pathFor(locale, 'home')}">${esc(copy.nav.forCustomers)}</a>
+         <a href="${pathFor(locale, 'contact')}">${esc(copy.footer.links.contact)}</a>`;
 
   // Both labels ship; the stylesheet picks the short one on narrow screens,
   // where the full French label wraps onto three lines and eats the header.
   const ctaLabels = (long: string, short: string) =>
     `<span class="nav__ctaLong">${esc(long)}</span><span class="nav__ctaShort">${esc(short)}</span>`;
 
-  const cta =
-    page === 'home'
-      ? `<a class="btn btn--primary btn--sm nav__cta" href="${pathFor(locale, 'join')}">${ctaLabels(copy.nav.cta, copy.nav.ctaShort)}</a>`
-      : `<a class="btn btn--primary btn--sm nav__cta" href="#pricing">${ctaLabels(copy.pro.hero.cta, copy.pro.hero.ctaShort)}</a>`;
+  // The call to action goes to the sign-up page from everywhere. It used to
+  // point at "#pricing" on every page that was not the home page, which is a
+  // section that exists only on two of them — so on the other twelve the
+  // button did nothing at all except put a # in the address bar.
+  const cta = `<a class="btn btn--primary btn--sm nav__cta" href="${pathFor(locale, 'join')}">${
+    page === 'pro'
+      ? ctaLabels(copy.pro.hero.cta, copy.pro.hero.ctaShort)
+      : ctaLabels(copy.nav.cta, copy.nav.ctaShort)
+  }</a>`;
 
   return `<header class="header">
     <div class="wrap header__inner">

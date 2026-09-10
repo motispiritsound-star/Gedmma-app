@@ -10,7 +10,7 @@
  * Requests for anything else fall through to the static site.
  */
 import { EmailMessage } from 'cloudflare:email';
-import { createMimeMessage } from 'mimetext';
+import { buildNotification } from './notification.js';
 import {
   contactSchema,
   documentVersion,
@@ -63,20 +63,30 @@ async function overLimit(env: Env, table: 'signups' | 'contact_messages', ip: st
 }
 
 /**
- * `replyTo` is the whole point of the notification: pressing reply in a mail
- * client then writes to the person who filled in the form, not to a no-reply
- * address nobody reads. The envelope sender stays this domain, because that is
- * what Email Routing is allowed to send as.
+ * Sends it, and says whether it went. The caller must not let a failure here
+ * cost somebody their place on the list — but it must not hide it either, so
+ * the reason is logged where `wrangler tail` and the dashboard can show it.
  */
-async function notify(env: Env, subject: string, lines: string[], replyTo?: string) {
-  const message = createMimeMessage();
-  message.setSender({ name: 'Buurklus', addr: env.NOTIFY_FROM });
-  message.setRecipient(env.NOTIFY_TO);
-  message.setSubject(subject);
-  if (replyTo) message.setHeader('Reply-To', replyTo);
-  message.addMessage({ contentType: 'text/plain', data: lines.join('\n') });
-
-  await env.NOTIFY.send(new EmailMessage(env.NOTIFY_FROM, env.NOTIFY_TO, message.asRaw()));
+async function notify(
+  env: Env,
+  subject: string,
+  lines: string[],
+  replyTo?: { name?: string; addr: string },
+): Promise<boolean> {
+  try {
+    const raw = buildNotification({
+      from: env.NOTIFY_FROM,
+      to: env.NOTIFY_TO,
+      subject,
+      lines,
+      replyTo,
+    });
+    await env.NOTIFY.send(new EmailMessage(env.NOTIFY_FROM, env.NOTIFY_TO, raw));
+    return true;
+  } catch (error) {
+    console.error('notification failed', { subject, error: String(error) });
+    return false;
+  }
 }
 
 async function handleSignup(request: Request, env: Env): Promise<Response> {
@@ -134,7 +144,7 @@ async function handleSignup(request: Request, env: Env): Promise<Response> {
 
   // The sign-up is saved before the notification is attempted. A mail server
   // having a bad minute must never cost somebody their place on the list.
-  await notify(env, `Aanmelding: ${row.role === 'PRO' ? 'vakman' : 'klant'} — ${input.email}`, [
+  const notified = await notify(env, `Aanmelding: ${row.role === 'PRO' ? 'vakman' : 'klant'} — ${input.email}`, [
     `Rol:       ${row.role === 'PRO' ? 'Vakman of bedrijf' : 'Klant met een klus'}`,
     `E-mail:    ${input.email}`,
     `Naam:      ${row.name ?? '—'}`,
@@ -145,9 +155,9 @@ async function handleSignup(request: Request, env: Env): Promise<Response> {
     '',
     existing ? 'Dit adres stond al op de lijst; de gegevens zijn bijgewerkt.' : 'Nieuw op de lijst.',
     `Tijdstip:  ${now}`,
-  ].filter((line): line is string => line !== null), input.email).catch(() => {});
+  ].filter((line): line is string => line !== null), { name: row.name ?? undefined, addr: input.email });
 
-  return json({ ok: true, alreadyRegistered: Boolean(existing) });
+  return json({ ok: true, alreadyRegistered: Boolean(existing), notified });
 }
 
 async function handleContact(request: Request, env: Env): Promise<Response> {
@@ -169,16 +179,16 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
     .bind(crypto.randomUUID(), now, input.name, input.email, input.message, input.locale ?? 'nl', ip)
     .run();
 
-  await notify(env, `Bericht van ${input.name}`, [
+  const notified = await notify(env, `Bericht van ${input.name}`, [
     `Van:      ${input.name} <${input.email}>`,
     `Tijdstip: ${now}`,
     '',
     input.message,
     '',
     '— Druk op beantwoorden; dat gaat rechtstreeks naar de afzender.',
-  ], input.email).catch(() => {});
+  ], { name: input.name, addr: input.email });
 
-  return json({ ok: true });
+  return json({ ok: true, notified });
 }
 
 export default {
