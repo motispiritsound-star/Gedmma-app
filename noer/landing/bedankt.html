@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bedankt — Noer staat open</title>
+<meta name="theme-color" content="#0f7a67">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="stijl.css">
+<link rel="icon" href="beelden/icoon.svg" type="image/svg+xml">
+</head>
+<body>
+<header class="top">
+  <div class="binnen topbinnen">
+    <a class="merkje" href="index.html"><span class="zegel"><span class="ar">نُور</span></span> Noer</a>
+    <nav><a class="knop" href="/app/">Open Noer</a></nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="smal">
+  <div class="paneel midden" id="paneel">
+    <p class="klein" id="stand">Even kijken of de betaling binnen is…</p>
+    <h1 id="kop">Bedankt</h1>
+    <p id="tekst">Een moment.</p>
+    <div id="acties"></div>
+  </div>
+
+  <div class="paneel" id="hierna" hidden>
+    <h2>Zet Noer op je beginscherm</h2>
+    <p class="klein">Dan opent je kind hem met één tik, net als elke andere app, en werkt hij ook
+      zonder internet. Het duurt een halve minuut.</p>
+    <a class="knop stil" href="downloaden.html">Laat zien hoe</a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="binnen voetrij">
+    <a class="merkje" href="index.html"><span class="zegel"><span class="ar">نُور</span></span> Noer</a>
+    <nav>
+      <a href="account.html">Mijn abonnement</a>
+      <a href="voorwaarden.html">Voorwaarden</a>
+      <a href="mailto:noer@voorbeeld.nl">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+<script type="module">
+import { haal, datum } from './site.js';
+
+const stand = document.getElementById('stand');
+const kop = document.getElementById('kop');
+const tekst = document.getElementById('tekst');
+const acties = document.getElementById('acties');
+
+const knop = (label, href, stil) => {
+  const a = document.createElement('a');
+  a.className = `knop ${stil ? 'stil' : ''}`.trim();
+  a.href = href;
+  a.textContent = label;
+  return a;
+};
+
+/**
+ * Mollie stuurt de ouder hierheen zodra hij klaar is bij de bank, maar de
+ * webhook die de betaling bevestigt kan een tel later binnenkomen. Daarom
+ * kijken we een paar keer, met wat ruimte ertussen, in plaats van één keer.
+ */
+async function kijk(pogingen = 0) {
+  const uit = await haal('/api/toegang');
+
+  if (uit.actief) {
+    stand.textContent = '';
+    kop.textContent = uit.proef ? 'Je week is begonnen' : 'Noer staat open';
+    tekst.textContent = uit.proef && uit.tot
+      ? `Alles is open tot ${datum(uit.tot)}. Daarna gaat het abonnement in; opzeggen kan tot die dag met één knop, en dan wordt er niets geïncasseerd.`
+      : uit.tot
+        ? `Alles is nu open. De volgende afschrijving is rond ${datum(uit.tot)}.`
+        : 'Alles is nu open.';
+    acties.replaceChildren(knop('Beginnen', '/app/'), knop('Mijn abonnement', 'account.html', true));
+    document.getElementById('hierna').hidden = false;
+    return;
+  }
+
+  if (uit.staat === 'mislukt') {
+    stand.textContent = '';
+    kop.textContent = 'Het is niet gelukt';
+    tekst.textContent = 'De controle van je rekening is niet doorgegaan, dus je week is niet begonnen. Er is niets afgeschreven. Dat gebeurt weleens — je kunt het gewoon opnieuw proberen.';
+    acties.replaceChildren(knop('Opnieuw proberen', 'aanmelden.html'), knop('Open het gratis deel', '/app/', true));
+    return;
+  }
+
+  if (pogingen < 8) {
+    stand.textContent = `Even kijken of de betaling binnen is… (${pogingen + 1})`;
+    setTimeout(() => kijk(pogingen + 1), 1500);
+    return;
+  }
+
+  stand.textContent = '';
+  kop.textContent = 'De betaling is nog onderweg';
+  tekst.textContent = 'Bij iDEAL is dat meestal een kwestie van seconden, bij een creditcard soms wat langer. '
+    + 'Ververs deze pagina zo nog eens, of kijk in je account. Duurt het langer dan een uur, mail ons dan.';
+  acties.replaceChildren(knop('Ververs', 'bedankt.html'), knop('Mijn abonnement', 'account.html', true));
+}
+
+kijk();
+</script>
+</body>
+</html>

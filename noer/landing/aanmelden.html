@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eerste week gratis — Noer</title>
+<meta name="description" content="Zeven dagen alles open, daarna € 7,99 per maand. Elke maand opzegbaar, met iDEAL of creditcard.">
+<meta name="theme-color" content="#0f7a67">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="stijl.css">
+<link rel="icon" href="beelden/icoon.svg" type="image/svg+xml">
+</head>
+<body>
+<header class="top">
+  <div class="binnen topbinnen">
+    <a class="merkje" href="index.html"><span class="zegel"><span class="ar">نُور</span></span> Noer</a>
+    <nav>
+      <a href="index.html#prijs">Prijs</a>
+      <a href="index.html#vragen">Vragen</a>
+      <a class="knop" href="inloggen.html" data-account-knop>Inloggen</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="smal">
+  <div class="paneel">
+    <h1>Eerste week gratis</h1>
+    <p class="klein">Zeven dagen alles open. Daarna gaat het abonnement in, en dat zeg je op met
+      één knop. Het account is van jou, de ouder — in de app zelf komt geen account en geen naam
+      van een kind.</p>
+
+    <div class="melding goed" style="margin-top:1.2rem">
+      <b>Wat er nu gebeurt</b><br>
+      Om te kunnen incasseren heeft je bank een machtiging nodig, en die ontstaat alleen uit een
+      echte betaling. Daarom schrijven we nu eenmalig <b>€&nbsp;0,01</b> af. Meer niet. Je week
+      begint meteen en het eerste maandbedrag valt pas op dag acht.
+    </div>
+
+    <form id="formulier" novalidate>
+      <div class="veld">
+        <label for="email">Je e-mailadres</label>
+        <input id="email" name="email" type="email" autocomplete="email" required
+               inputmode="email" placeholder="jij@voorbeeld.nl">
+        <span class="fijn">Hier komt de bevestiging van de betaling. Verder gebruiken we het niet.</span>
+      </div>
+
+      <div class="veld">
+        <label for="wachtwoord">Kies een wachtwoord</label>
+        <input id="wachtwoord" name="wachtwoord" type="password" autocomplete="new-password"
+               minlength="10" required>
+        <span class="fijn">Minstens tien tekens. Een zin is makkelijker te onthouden dan een kreet met tekens erin.</span>
+      </div>
+
+      <fieldset style="border:0;margin-top:1.6rem">
+        <legend style="font-weight:700;font-size:.92rem">Wat wordt het?</legend>
+        <div class="keuzerij">
+          <label class="keuze">
+            <input type="radio" name="plan" value="maand" checked>
+            <span>
+              <b>Per maand</b>
+              <span class="fijn">Na de gratis week. Elke maand opzegbaar, met één knop in je account.</span>
+            </span>
+            <span class="prijs">€&nbsp;7,99</span>
+          </label>
+          <label class="keuze">
+            <input type="radio" name="plan" value="jaar">
+            <span>
+              <b>Per jaar</b>
+              <span class="fijn">Na de gratis week. Twee maanden goedkoper; loopt daarna door tot je opzegt.</span>
+            </span>
+            <span class="prijs">€&nbsp;79,00</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <button class="knop" type="submit">Start mijn gratis week</button>
+      <p class="melding" id="melding" role="status" aria-live="polite"></p>
+      <p class="fijn" style="margin-top:1rem">
+        Je regelt het bij Mollie, met iDEAL, creditcard, Bancontact of Apple Pay. Wij zien je
+        rekeningnummer niet. Door verder te gaan ga je akkoord met de
+        <a href="voorwaarden.html">voorwaarden</a> en de <a href="privacy.html">privacyverklaring</a>.
+      </p>
+    </form>
+  </div>
+
+  <div class="paneel">
+    <h2>Eerst kijken kan ook</h2>
+    <p class="klein">Het alfabet, de eerste twee leeslessen, Al-Faatiha, Al-Ichlaas, An-Naas en
+      één woordthema staan altijd open. Daar heb je geen account voor nodig.</p>
+    <a class="knop stil" href="/app/">Open Noer zonder account</a>
+  </div>
+
+  <p class="fijn midden" style="margin-top:2rem">
+    Heb je al een account? <a href="inloggen.html">Log in</a>.
+  </p>
+</section>
+</main>
+
+<footer>
+  <div class="binnen voetrij">
+    <a class="merkje" href="index.html"><span class="zegel"><span class="ar">نُور</span></span> Noer</a>
+    <nav>
+      <a href="voorwaarden.html">Voorwaarden</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="mailto:noer@voorbeeld.nl">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+<script type="module">
+import { verstuur, meld, bezig, vulKopbalk } from './site.js';
+
+vulKopbalk();
+
+const formulier = document.getElementById('formulier');
+const melding = document.getElementById('melding');
+
+formulier.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const knop = formulier.querySelector('button[type=submit]');
+  const email = formulier.email.value.trim();
+  const wachtwoord = formulier.wachtwoord.value;
+  const plan = formulier.querySelector('input[name=plan]:checked').value;
+
+  if (!email.includes('@')) return meld(melding, 'Vul een geldig e-mailadres in.');
+  if (wachtwoord.length < 10) return meld(melding, 'Kies een wachtwoord van minstens tien tekens.');
+
+  bezig(knop, true);
+  meld(melding, '', 'goed');
+
+  let account = await verstuur('/api/account/registreren', { email, wachtwoord });
+  if (account.status === 409) {
+    // Bestaat al: dan is dit waarschijnlijk iemand die terugkomt. Even
+    // inloggen met hetzelfde wachtwoord; klopt dat niet, dan zeggen we dat.
+    account = await verstuur('/api/account/inloggen', { email, wachtwoord });
+    if (account.status !== 200) {
+      bezig(knop, false);
+      return meld(melding, 'Op dit adres bestaat al een account, maar dit wachtwoord hoort er niet bij. Log in.');
+    }
+  }
+  if (account.status !== 200 && account.status !== 201) {
+    bezig(knop, false);
+    return meld(melding, account.fout || 'Het account aanmaken lukte niet. Probeer het zo nog eens.');
+  }
+
+  const betaling = await verstuur('/api/abonnement/starten', { plan });
+  if (betaling.status === 409) {
+    window.location.href = 'account.html';
+    return;
+  }
+  if (betaling.status !== 200 || !betaling.betaalUrl) {
+    bezig(knop, false);
+    return meld(melding, betaling.fout || 'De betaling kon niet worden gestart. Probeer het zo nog eens.');
+  }
+  window.location.href = betaling.betaalUrl;
+});
+</script>
+</body>
+</html>

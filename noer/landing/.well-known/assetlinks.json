@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "nl.noer.app",
+    "sha256_cert_fingerprints": [
+      "VUL_HIER_DE_VINGERAFDRUK_IN_UIT_BUBBLEWRAP"
+    ]
+  }
+}]

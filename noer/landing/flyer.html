@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Noer voor de moskee en de weekendschool — flyer</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="beelden/icoon.svg" type="image/svg+xml">
+<style>
+/* Eén A4 om af te drukken of als pdf te bewaren. Ctrl-P, "opslaan als pdf",
+   marges op geen. Op het scherm staat hij op een grijze ondergrond zodat je
+   ziet waar het papier ophoudt. */
+
+:root {
+  --papier: #faf5ec;
+  --vlak: #fffdf8;
+  --rand: #e7dcc8;
+  --inkt: #2b2419;
+  --inkt-2: #6b5f4e;
+  --inkt-3: #9c8e79;
+  --groen: #0f7a67;
+  --groen-licht: #2fa48c;
+  --groen-diep: #0a5748;
+  --goud: #c08417;
+  --goud-zacht: #fbeed3;
+  --arabisch: 'Amiri Quran', 'Scheherazade New', 'Noto Naskh Arabic', 'Times New Roman', serif;
+  --schrift: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+  --girih: url("data:image/svg+xml,<svg xmlns='http%3A//www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='%23000' stroke-width='1.5'><rect x='24' y='24' width='32' height='32' rx='2'/><rect x='24' y='24' width='32' height='32' rx='2' transform='rotate%2845 40 40%29'/><rect x='-16' y='-16' width='32' height='32' rx='2'/><rect x='-16' y='-16' width='32' height='32' rx='2' transform='rotate%2845 0 0%29'/><rect x='64' y='-16' width='32' height='32' rx='2'/><rect x='64' y='-16' width='32' height='32' rx='2' transform='rotate%2845 80 0%29'/><rect x='-16' y='64' width='32' height='32' rx='2'/><rect x='-16' y='64' width='32' height='32' rx='2' transform='rotate%2845 0 80%29'/><rect x='64' y='64' width='32' height='32' rx='2'/><rect x='64' y='64' width='32' height='32' rx='2' transform='rotate%2845 80 80%29'/></g></svg>");
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #4a4a4a; font-family: var(--schrift); color: var(--inkt); padding: 24px; }
+
+.blad {
+  width: 210mm; min-height: 297mm; margin: 0 auto; background: var(--papier);
+  padding: 11mm 13mm 6mm; display: grid; align-content: start; gap: 3.5mm;
+  box-shadow: 0 10px 40px rgba(0,0,0,.4);
+}
+
+.kop { display: flex; align-items: center; gap: 4mm; }
+.zegel {
+  width: 13mm; height: 14mm; display: grid; place-items: center; flex: none;
+  border-radius: 50% 50% 3mm 3mm / 34% 34% 3mm 3mm; position: relative; overflow: hidden;
+  background: linear-gradient(155deg, var(--groen-licht), var(--groen) 55%, var(--groen-diep));
+}
+.zegel::before {
+  content: ''; position: absolute; inset: 0; background: #fff;
+  -webkit-mask-image: var(--girih); mask-image: var(--girih);
+  -webkit-mask-size: 7mm 7mm; opacity: .22;
+}
+.zegel span { font-family: var(--arabisch); color: #fff; font-size: 6mm; position: relative; }
+.kop b { font-size: 7mm; letter-spacing: -.01em; }
+.kop .onder { font-size: 3.6mm; color: var(--inkt-2); }
+
+h1 { font-size: 9.5mm; line-height: 1.08; letter-spacing: -.02em; font-weight: 800; }
+h1 em { font-style: normal; color: var(--groen); }
+.lead { font-size: 4.2mm; line-height: 1.5; color: var(--inkt-2); max-width: 150mm; }
+
+.rij { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4mm; }
+.blok {
+  background: var(--vlak); border: 0.3mm solid var(--rand); border-radius: 4mm;
+  padding: 4mm; display: grid; gap: 1.2mm; align-content: start;
+}
+.blok h2 { font-size: 4.4mm; }
+.blok p { font-size: 3.4mm; line-height: 1.4; color: var(--inkt-2); }
+
+.uitgelicht {
+  background: linear-gradient(150deg, var(--groen-licht) -10%, var(--groen) 45%, var(--groen-diep) 115%);
+  color: #fff; border-radius: 5mm; padding: 5.5mm 6mm; position: relative; overflow: hidden;
+  display: grid; grid-template-columns: 1fr auto; gap: 5mm; align-items: center;
+}
+.uitgelicht::before {
+  content: ''; position: absolute; inset: 0; background: #fff;
+  -webkit-mask-image: var(--girih); mask-image: var(--girih);
+  -webkit-mask-size: 14mm 14mm; opacity: .12;
+}
+.uitgelicht > * { position: relative; }
+.uitgelicht h2 { font-size: 5.4mm; margin-bottom: 1.5mm; }
+.uitgelicht p { font-size: 3.8mm; line-height: 1.5; opacity: .92; max-width: 105mm; }
+.prijs { text-align: right; }
+.prijs b { display: block; font-size: 10mm; font-weight: 800; line-height: 1; letter-spacing: -.02em; }
+.prijs span { font-size: 3.5mm; opacity: .9; }
+
+.lijst { display: grid; gap: 2mm; }
+.lijst li { display: flex; gap: 3mm; font-size: 3.5mm; line-height: 1.4; }
+.vink { color: var(--groen); font-weight: 800; }
+
+.beelden { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+.beelden div { border-radius: 3mm; overflow: hidden; border: 0.3mm solid var(--rand); background: #fff; height: 38mm; }
+/* De schermafdrukken zijn telefoonformaat en dus veel te hoog voor een A4.
+   Alleen de bovenkant, dat is waar het scherm zich laat herkennen. */
+.beelden img { width: 100%; display: block; height: 100%; object-fit: cover; object-position: top; }
+
+.voet {
+  border-top: 0.3mm solid var(--rand); padding-top: 4mm; margin-top: 1mm;
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 5mm;
+}
+.voet p { font-size: 3.4mm; color: var(--inkt-3); line-height: 1.5; }
+.contact { text-align: right; font-size: 3.8mm; }
+.contact b { display: block; font-size: 5mm; color: var(--groen); }
+
+.merkje-goud {
+  display: inline-block; background: var(--goud-zacht); color: var(--goud);
+  border-radius: 2mm; padding: 1mm 2.5mm; font-size: 3.2mm; font-weight: 700;
+}
+
+/* Op een telefoon is een A4 onleesbaar breed. Alleen op het scherm dus, en
+   alleen om te lezen: bij het afdrukken geldt het blok hieronder. */
+@media screen and (max-width: 230mm) {
+  body { padding: 0; }
+  .blad { width: 100%; min-height: auto; padding: 8mm 6mm; }
+  .rij { grid-template-columns: 1fr; }
+  .uitgelicht { grid-template-columns: 1fr; }
+  .prijs { text-align: left; }
+  .beelden { grid-template-columns: repeat(2, 1fr); }
+  .voet { flex-direction: column; align-items: flex-start; }
+  .contact { text-align: left; }
+}
+
+@media print {
+  body { background: #fff; padding: 0; }
+  .blad { box-shadow: none; width: auto; min-height: auto; margin: 0; }
+  @page { size: A4; margin: 0; }
+}
+</style>
+</head>
+<body>
+<div class="blad">
+
+  <div class="kop">
+    <span class="zegel"><span>نُور</span></span>
+    <div>
+      <b>Noer</b>
+      <div class="onder">Arabisch lezen en de Koran, voor kinderen van 5 tot en met 13</div>
+    </div>
+  </div>
+
+  <h1>Wat de kinderen thuis oefenen,<br>zien jullie <em>hier terug</em>.</h1>
+
+  <p class="lead">Een uur per week in de klas is te weinig om te leren lezen. Noer is de app
+    waarmee kinderen thuis tien minuten per dag doorgaan — met dezelfde opbouw als jullie eigen
+    lessen: de Qaida Noeraniyah, van losse letter tot vloeiend lezen.</p>
+
+  <div class="rij">
+    <div class="blok">
+      <h2>Dezelfde opbouw</h2>
+      <p>Tien lessen in de volgorde van de Qaida: losse letters, harakat, tanween, madd, leen,
+        soekoen, sjadda, en dan alles door elkaar. Een les gaat pas open als de vorige zit.</p>
+    </div>
+    <div class="blok">
+      <h2>Jullie stem erin</h2>
+      <p>In de opnamestudio spreekt de leerkracht de letters en aya's zelf in. De kinderen horen
+        thuis de stem die ze in de klas ook horen — geen computerstem.</p>
+    </div>
+    <div class="blok">
+      <h2>Zonder gedoe</h2>
+      <p>Geen appwinkel, geen installatie, geen account voor het kind. Een link openen en op het
+        beginscherm zetten. Werkt daarna ook zonder internet.</p>
+    </div>
+  </div>
+
+  <div class="uitgelicht">
+    <div>
+      <h2>Eén licentie voor de hele klas</h2>
+      <p>Zestig kinderen voor € 295 per jaar — € 4,92 per kind. Eén factuur op naam van de
+        school, geen abonnementen die ouders zelf moeten regelen, en een afspraak om de
+        leerkrachten er een uur mee wegwijs te maken. Los thuis: € 7,99 per maand, eerste
+        week gratis.</p>
+    </div>
+    <div class="prijs">
+      <b>€ 295</b>
+      <span>per jaar, 60 kinderen</span>
+    </div>
+  </div>
+
+  <ul class="lijst">
+    <li><span class="vink">✓</span><span>De Arabische Koran-tekst komt uit een controleerbare bron en wordt bewaakt door een vingerafdruk; een wijziging valt op.</span></li>
+    <li><span class="vink">✓</span><span>Geen reclame, geen ranglijsten, geen chat, geen meldingen. Er is niets in de app dat om aandacht vraagt.</span></li>
+    <li><span class="vink">✓</span><span>Wat een kind doet blijft op het apparaat van het gezin staan. Er gaan geen gegevens van kinderen naar een server.</span></li>
+  </ul>
+
+  <div class="beelden">
+    <div><img src="beelden/leerpad.png" alt="Het leerpad met de tien lessen"></div>
+    <div><img src="beelden/letter.png" alt="Een letterkaart met de vier vormen"></div>
+    <div><img src="beelden/koran.png" alt="Een soera met de betekenis erbij"></div>
+    <div><img src="beelden/studio.png" alt="De opnamestudio waarin je de letters zelf inspreekt"></div>
+  </div>
+
+  <div class="voet">
+    <p><span class="merkje-goud">Eerst proberen</span> Het alfabet, twee leeslessen en drie
+      soera's zijn altijd gratis, zonder account — en de eerste week staat alles open. Laat het
+      de leerkrachten gebruiken voordat jullie beslissen.</p>
+    <div class="contact">
+      <b>noer.nl</b>
+      noer@voorbeeld.nl
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

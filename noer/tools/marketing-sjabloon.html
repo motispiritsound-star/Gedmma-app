@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Beelden om te delen</title>
+<style>
+/* Elke kaart is precies zo groot als het beeld dat eruit moet komen. Ze staan
+   onder elkaar; het gereedschap fotografeert ze één voor één. */
+@import url('');
+
+:root {
+  --papier: #faf5ec;
+  --vlak: #fffdf8;
+  --inkt: #2b2419;
+  --inkt-2: #6b5f4e;
+  --groen: #0f7a67;
+  --groen-licht: #2fa48c;
+  --groen-diep: #0a5748;
+  --goud: #c08417;
+  --goud-licht: #e8b44c;
+  --arabisch: 'Amiri Quran', 'Scheherazade New', 'Noto Naskh Arabic', 'Times New Roman', serif;
+  --schrift: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+  --girih: url("data:image/svg+xml,<svg xmlns='http%3A//www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='%23000' stroke-width='1.5'><rect x='24' y='24' width='32' height='32' rx='2'/><rect x='24' y='24' width='32' height='32' rx='2' transform='rotate%2845 40 40%29'/><rect x='-16' y='-16' width='32' height='32' rx='2'/><rect x='-16' y='-16' width='32' height='32' rx='2' transform='rotate%2845 0 0%29'/><rect x='64' y='-16' width='32' height='32' rx='2'/><rect x='64' y='-16' width='32' height='32' rx='2' transform='rotate%2845 80 0%29'/><rect x='-16' y='64' width='32' height='32' rx='2'/><rect x='-16' y='64' width='32' height='32' rx='2' transform='rotate%2845 0 80%29'/><rect x='64' y='64' width='32' height='32' rx='2'/><rect x='64' y='64' width='32' height='32' rx='2' transform='rotate%2845 80 80%29'/></g></svg>");
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #333; font-family: var(--schrift); display: grid; gap: 40px; padding: 40px; justify-items: start; }
+
+.kaart {
+  position: relative; overflow: hidden; color: #fff;
+  background: linear-gradient(150deg, var(--groen-licht) -10%, var(--groen) 45%, var(--groen-diep) 115%);
+  display: grid;
+}
+.kaart::before {
+  content: ''; position: absolute; inset: 0; background: #fff;
+  -webkit-mask-image: var(--girih); mask-image: var(--girih);
+  -webkit-mask-size: 90px 90px; opacity: .13;
+}
+.kaart.licht {
+  background: var(--papier); color: var(--inkt);
+}
+.kaart.licht::before { background: var(--groen); opacity: .07; }
+.kaart > * { position: relative; }
+
+.merk { display: flex; align-items: center; gap: 14px; font-weight: 800; }
+.zegel {
+  width: 54px; height: 60px; display: grid; place-items: center; flex: none;
+  border-radius: 50% 50% 14px 14px / 34% 34% 14px 14px;
+  background: rgba(255,255,255,.18); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.4);
+}
+.licht .zegel { background: linear-gradient(155deg, var(--groen-licht), var(--groen) 55%, var(--groen-diep)); }
+.zegel span { font-family: var(--arabisch); font-size: 24px; color: #fff; }
+
+.inhoud { padding: 64px; display: grid; align-content: center; gap: 22px; }
+h1 { font-size: 62px; line-height: 1.08; letter-spacing: -.02em; font-weight: 800; text-wrap: balance; }
+h1 .goud { color: var(--goud-licht); }
+.licht h1 .goud { color: var(--goud); }
+p.onder { font-size: 26px; line-height: 1.4; opacity: .9; max-width: 22em; }
+.voet { display: flex; align-items: center; gap: 16px; font-size: 22px; font-weight: 700; opacity: .92; }
+.prijsbal {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,.16); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.35);
+  border-radius: 999px; padding: 10px 22px; font-size: 22px; font-weight: 700;
+}
+.licht .prijsbal { background: #fff; box-shadow: inset 0 0 0 1.5px rgba(0,0,0,.1); color: var(--inkt); }
+
+.ar-groot {
+  font-family: var(--arabisch); direction: rtl; font-size: 92px; line-height: 1.5;
+  color: var(--goud-licht); text-align: center;
+}
+.licht .ar-groot { color: var(--goud); }
+
+.toestel {
+  border-radius: 34px; overflow: hidden; background: #fffdf8; padding: 9px;
+  box-shadow: 0 30px 80px -20px rgba(0,0,0,.55); flex: none;
+}
+.toestel img { display: block; width: 100%; border-radius: 26px; }
+
+/* 1200x630 — de link zoals hij in WhatsApp en op sociale media verschijnt */
+#deel { width: 1200px; height: 630px; grid-template-columns: 1fr 430px; align-items: center; }
+#deel .inhoud { padding: 60px 0 60px 64px; }
+#deel h1 { font-size: 56px; }
+#deel .toestel { width: 300px; transform: rotate(4deg); margin-left: 40px; }
+
+/* 1080x1080 — Instagram, Facebook, een berichtje in de familiegroep */
+#vierkant { width: 1080px; height: 1080px; }
+#vierkant .inhoud { padding: 90px; align-content: space-between; }
+#vierkant h1 { font-size: 84px; }
+#vierkant p.onder { font-size: 34px; }
+#vierkant .voet { font-size: 28px; }
+
+/* 1080x1080 — dezelfde maat, maar met een aya in beeld */
+#overlevering { width: 1080px; height: 1080px; }
+#overlevering .inhoud { padding: 90px; align-content: center; justify-items: center; text-align: center; gap: 40px; }
+#overlevering h1 { font-size: 54px; }
+#overlevering p.onder { font-size: 30px; margin-inline: auto; }
+
+/* 1080x1920 — een verhaal op Instagram of WhatsApp */
+#verhaal { width: 1080px; height: 1920px; }
+#verhaal .inhoud { padding: 110px 90px; align-content: space-between; }
+#verhaal h1 { font-size: 90px; }
+#verhaal p.onder { font-size: 36px; }
+/* De telefoon wordt bovenaan afgesneden in plaats van in zijn geheel te
+   passen: anders duwt hij de knop onderaan het beeld uit. */
+#verhaal .toestel { width: 560px; height: 700px; margin-inline: auto; }
+#verhaal .toestel img { height: 100%; object-fit: cover; object-position: top; }
+#verhaal .voet { font-size: 32px; }
+</style>
+</head>
+<body>
+
+<div class="kaart" id="deel">
+  <div class="inhoud">
+    <div class="merk"><span class="zegel"><span>نُور</span></span> Noer</div>
+    <h1>Je kind leert Arabisch lezen op de tablet die je <span class="goud">al hebt</span>.</h1>
+    <p class="onder">Van de eerste letter tot een soera uit het hoofd. Tien minuten per dag.</p>
+    <div class="voet"><span class="prijsbal">Eerste week gratis</span> noer.nl</div>
+  </div>
+  <div class="toestel"><img src="../landing/beelden/leerpad.png" alt=""></div>
+</div>
+
+<div class="kaart" id="vierkant">
+  <div class="inhoud">
+    <div class="merk"><span class="zegel"><span>نُور</span></span> Noer</div>
+    <h1>Tien minuten per dag.<br>Meer is het niet.</h1>
+    <p class="onder">Het Arabische alfabet, leren lezen volgens de Qaida, en twaalf korte
+      soera's uit je hoofd. Spelenderwijs, voor kinderen van 5 tot en met 13.
+      Eerste week gratis, daarna € 7,99 per maand.</p>
+    <div class="voet"><span class="prijsbal">Eerste week gratis</span> noer.nl</div>
+  </div>
+</div>
+
+<div class="kaart licht" id="overlevering">
+  <div class="inhoud">
+    <div class="merk"><span class="zegel"><span>نُور</span></span> Noer</div>
+    <div class="ar-groot">خَيْرُكُمْ مَنْ تَعَلَّمَ<br>ٱلْقُرْآنَ وَعَلَّمَهُ</div>
+    <h1>"De beste onder jullie is wie de Koran leert en onderwijst."</h1>
+    <p class="onder">Begin bij één letter per dag. noer.nl</p>
+  </div>
+</div>
+
+<div class="kaart" id="verhaal">
+  <div class="inhoud">
+    <div>
+      <div class="merk"><span class="zegel"><span>نُور</span></span> Noer</div>
+      <h1 style="margin-top:60px">Je leerde hem lopen.<br><span class="goud">Dit kun je ook.</span></h1>
+      <p class="onder" style="margin-top:28px">Arabisch lezen en de Koran, spelenderwijs, op de
+        tablet die er al ligt.</p>
+    </div>
+    <div class="toestel"><img src="../landing/beelden/letter.png" alt=""></div>
+    <div class="voet"><span class="prijsbal">Eerste week gratis</span> noer.nl</div>
+  </div>
+</div>
+
+</body>
+</html>

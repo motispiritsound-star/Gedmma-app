@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inloggen — Noer</title>
+<meta name="theme-color" content="#0f7a67">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="stijl.css">
+<link rel="icon" href="beelden/icoon.svg" type="image/svg+xml">
+</head>
+<body>
+<header class="top">
+  <div class="binnen topbinnen">
+    <a class="merkje" href="index.html"><span class="zegel"><span class="ar">نُور</span></span> Noer</a>
+    <nav>
+      <a href="index.html#prijs">Prijs</a>
+      <a class="knop" href="aanmelden.html">Abonnement nemen</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="smal">
+  <div class="paneel">
+    <h1>Inloggen</h1>
+    <p class="klein">Voor je abonnement. Je kind hoeft nergens in te loggen.</p>
+
+    <form id="formulier" novalidate>
+      <div class="veld">
+        <label for="email">E-mailadres</label>
+        <input id="email" type="email" autocomplete="email" inputmode="email" required>
+      </div>
+      <div class="veld">
+        <label for="wachtwoord">Wachtwoord</label>
+        <input id="wachtwoord" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="knop" type="submit">Inloggen</button>
+      <p class="melding" id="melding" role="status" aria-live="polite"></p>
+    </form>
+
+    <p class="fijn" style="margin-top:1.4rem">
+      Wachtwoord kwijt? Mail naar <a href="mailto:noer@voorbeeld.nl">noer@voorbeeld.nl</a> vanaf het
+      adres waarmee je je hebt aangemeld, dan zetten we het voor je terug.
+    </p>
+  </div>
+
+  <p class="fijn midden" style="margin-top:2rem">
+    Nog geen abonnement? <a href="aanmelden.html">Zet Noer open</a>.
+  </p>
+</section>
+</main>
+
+<footer>
+  <div class="binnen voetrij">
+    <a class="merkje" href="index.html"><span class="zegel"><span class="ar">نُور</span></span> Noer</a>
+    <nav>
+      <a href="voorwaarden.html">Voorwaarden</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="mailto:noer@voorbeeld.nl">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+<script type="module">
+import { verstuur, meld, bezig } from './site.js';
+
+const formulier = document.getElementById('formulier');
+const melding = document.getElementById('melding');
+
+formulier.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const knop = formulier.querySelector('button[type=submit]');
+  bezig(knop, true);
+  const uit = await verstuur('/api/account/inloggen', {
+    email: formulier.email.value.trim(),
+    wachtwoord: formulier.wachtwoord.value,
+  });
+  if (uit.status === 200) {
+    window.location.href = 'account.html';
+    return;
+  }
+  bezig(knop, false);
+  meld(melding, uit.fout || 'Inloggen lukte niet. Probeer het nog eens.');
+});
+</script>
+</body>
+</html>

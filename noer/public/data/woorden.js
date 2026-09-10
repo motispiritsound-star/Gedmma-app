@@ -1,0 +1,116 @@
+// Woordenschat per thema. tr = uitspraak in Nederlandse letters.
+
+import { opSleutel } from './hulp.js';
+
+export const THEMAS = [
+  { id: 'groeten', naam: 'Groeten', emoji: '👋', vanaf: 5, woorden: [
+    { ar: 'ٱلسَّلَامُ عَلَيْكُمْ', tr: 'as-salaamoe ʿalaikoem', nl: 'vrede zij met jullie', emoji: '🤝' },
+    { ar: 'وَعَلَيْكُمُ ٱلسَّلَام', tr: 'wa ʿalaikoemoes-salaam', nl: 'en met jullie ook', emoji: '🙌' },
+    { ar: 'بِسْمِ ٱللَّه', tr: 'bismillaah', nl: 'in de naam van Allah', emoji: '✨' },
+    { ar: 'ٱلْحَمْدُ لِلَّه', tr: 'alhamdoelillaah', nl: 'alle lof is voor Allah', emoji: '💚' },
+    { ar: 'شُكْرًا', tr: 'sjoekran', nl: 'dank je wel', emoji: '🙏' },
+    { ar: 'نَعَمْ', tr: 'naʿam', nl: 'ja', emoji: '✅' },
+    { ar: 'لَا', tr: 'laa', nl: 'nee', emoji: '❌' },
+    { ar: 'مَعَ ٱلسَّلَامَة', tr: 'maʿas-salaama', nl: 'tot ziens', emoji: '👋' },
+  ] },
+  { id: 'kleuren', naam: 'Kleuren', emoji: '🎨', vanaf: 5, woorden: [
+    { ar: 'أَحْمَر', tr: 'ahmar', nl: 'rood', emoji: '🔴' },
+    { ar: 'أَزْرَق', tr: 'azraq', nl: 'blauw', emoji: '🔵' },
+    { ar: 'أَخْضَر', tr: 'achdar', nl: 'groen', emoji: '🟢' },
+    { ar: 'أَصْفَر', tr: 'asfar', nl: 'geel', emoji: '🟡' },
+    { ar: 'أَبْيَض', tr: 'abjad', nl: 'wit', emoji: '⚪' },
+    { ar: 'أَسْوَد', tr: 'aswad', nl: 'zwart', emoji: '⚫' },
+    { ar: 'بُرْتُقَالِيّ', tr: 'boertoeqaali', nl: 'oranje', emoji: '🟠' },
+    { ar: 'بَنَفْسَجِيّ', tr: 'banafsadji', nl: 'paars', emoji: '🟣' },
+  ] },
+  { id: 'cijfers', naam: 'Tellen', emoji: '🔢', vanaf: 5, woorden: [
+    { ar: 'وَاحِد', tr: 'waahid', nl: 'één', emoji: '1️⃣' },
+    { ar: 'ٱثْنَان', tr: 'ithnaan', nl: 'twee', emoji: '2️⃣' },
+    { ar: 'ثَلَاثَة', tr: 'thalaatha', nl: 'drie', emoji: '3️⃣' },
+    { ar: 'أَرْبَعَة', tr: 'arbaʿa', nl: 'vier', emoji: '4️⃣' },
+    { ar: 'خَمْسَة', tr: 'chamsa', nl: 'vijf', emoji: '5️⃣' },
+    { ar: 'سِتَّة', tr: 'sitta', nl: 'zes', emoji: '6️⃣' },
+    { ar: 'سَبْعَة', tr: 'sabʿa', nl: 'zeven', emoji: '7️⃣' },
+    { ar: 'ثَمَانِيَة', tr: 'thamaanija', nl: 'acht', emoji: '8️⃣' },
+    { ar: 'تِسْعَة', tr: 'tisʿa', nl: 'negen', emoji: '9️⃣' },
+    { ar: 'عَشَرَة', tr: 'ʿasjara', nl: 'tien', emoji: '🔟' },
+  ] },
+  { id: 'dieren', naam: 'Dieren', emoji: '🐫', vanaf: 5, woorden: [
+    { ar: 'قِطّ', tr: 'qitt', nl: 'kat', emoji: '🐱' },
+    { ar: 'كَلْب', tr: 'kalb', nl: 'hond', emoji: '🐶' },
+    { ar: 'حِصَان', tr: 'hisaan', nl: 'paard', emoji: '🐴' },
+    { ar: 'جَمَل', tr: 'djamal', nl: 'kameel', emoji: '🐫' },
+    { ar: 'أَسَد', tr: 'asad', nl: 'leeuw', emoji: '🦁' },
+    { ar: 'طَيْر', tr: 'tair', nl: 'vogel', emoji: '🐦' },
+    { ar: 'سَمَك', tr: 'samak', nl: 'vis', emoji: '🐟' },
+    { ar: 'دَجَاجَة', tr: 'dadjaadja', nl: 'kip', emoji: '🐔' },
+    { ar: 'نَحْلَة', tr: 'nahla', nl: 'bij', emoji: '🐝' },
+    { ar: 'فِيل', tr: 'fiel', nl: 'olifant', emoji: '🐘' },
+  ] },
+  { id: 'gezin', naam: 'Gezin', emoji: '👨‍👩‍👧', vanaf: 6, woorden: [
+    { ar: 'أَب', tr: 'ab', nl: 'vader', emoji: '👨' },
+    { ar: 'أُمّ', tr: 'oemm', nl: 'moeder', emoji: '👩' },
+    { ar: 'أَخ', tr: 'ach', nl: 'broer', emoji: '👦' },
+    { ar: 'أُخْت', tr: 'oecht', nl: 'zus', emoji: '👧' },
+    { ar: 'جَدّ', tr: 'djadd', nl: 'opa', emoji: '👴' },
+    { ar: 'جَدَّة', tr: 'djadda', nl: 'oma', emoji: '👵' },
+    { ar: 'ٱبْن', tr: 'ibn', nl: 'zoon', emoji: '🧒' },
+    { ar: 'بِنْت', tr: 'bint', nl: 'dochter', emoji: '👧' },
+  ] },
+  { id: 'lichaam', naam: 'Mijn lichaam', emoji: '✋', vanaf: 6, woorden: [
+    { ar: 'رَأْس', tr: 'ra-s', nl: 'hoofd', emoji: '🧠' },
+    { ar: 'عَيْن', tr: 'ʿain', nl: 'oog', emoji: '👁️' },
+    { ar: 'أُذُن', tr: 'oedhoen', nl: 'oor', emoji: '👂' },
+    { ar: 'أَنْف', tr: 'anf', nl: 'neus', emoji: '👃' },
+    { ar: 'فَم', tr: 'fam', nl: 'mond', emoji: '👄' },
+    { ar: 'يَد', tr: 'jad', nl: 'hand', emoji: '✋' },
+    { ar: 'رِجْل', tr: 'ridjl', nl: 'been', emoji: '🦵' },
+    { ar: 'قَلْب', tr: 'qalb', nl: 'hart', emoji: '❤️' },
+  ] },
+  { id: 'eten', naam: 'Eten en drinken', emoji: '🍎', vanaf: 6, woorden: [
+    { ar: 'خُبْز', tr: 'choebz', nl: 'brood', emoji: '🍞' },
+    { ar: 'مَاء', tr: 'maa', nl: 'water', emoji: '💧' },
+    { ar: 'حَلِيب', tr: 'halieb', nl: 'melk', emoji: '🥛' },
+    { ar: 'تَمْر', tr: 'tamr', nl: 'dadel', emoji: '🌴' },
+    { ar: 'عَسَل', tr: 'ʿasal', nl: 'honing', emoji: '🍯' },
+    { ar: 'تُفَّاح', tr: 'toeffaah', nl: 'appel', emoji: '🍎' },
+    { ar: 'بَيْض', tr: 'baid', nl: 'ei', emoji: '🥚' },
+    { ar: 'أَرُزّ', tr: 'aroezz', nl: 'rijst', emoji: '🍚' },
+  ] },
+  { id: 'moskee', naam: 'Moskee en gebed', emoji: '🕌', vanaf: 7, woorden: [
+    { ar: 'مَسْجِد', tr: 'masdjid', nl: 'moskee', emoji: '🕌' },
+    { ar: 'صَلَاة', tr: 'salaat', nl: 'gebed', emoji: '🧎' },
+    { ar: 'قُرْآن', tr: 'qoer-aan', nl: 'Koran', emoji: '📖' },
+    { ar: 'وُضُوء', tr: 'woedoe', nl: 'wassing', emoji: '🚿' },
+    { ar: 'سَجَّادَة', tr: 'sadjdjaada', nl: 'gebedskleed', emoji: '🟩' },
+    { ar: 'أَذَان', tr: 'adhaan', nl: 'oproep tot gebed', emoji: '📣' },
+    { ar: 'دُعَاء', tr: 'doeʿaa', nl: 'smeekbede', emoji: '🤲' },
+    { ar: 'قِبْلَة', tr: 'qibla', nl: 'gebedsrichting', emoji: '🧭' },
+  ] },
+  { id: 'school', naam: 'School', emoji: '🏫', vanaf: 7, woorden: [
+    { ar: 'مَدْرَسَة', tr: 'madrasa', nl: 'school', emoji: '🏫' },
+    { ar: 'مُعَلِّم', tr: 'moeʿallim', nl: 'leraar', emoji: '🧑‍🏫' },
+    { ar: 'قَلَم', tr: 'qalam', nl: 'pen', emoji: '✏️' },
+    { ar: 'دَفْتَر', tr: 'daftar', nl: 'schrift', emoji: '📓' },
+    { ar: 'كِتَاب', tr: 'kitaab', nl: 'boek', emoji: '📚' },
+    { ar: 'بَاب', tr: 'baab', nl: 'deur', emoji: '🚪' },
+    { ar: 'كُرْسِيّ', tr: 'koersi', nl: 'stoel', emoji: '🪑' },
+    { ar: 'نَافِذَة', tr: 'naafidha', nl: 'raam', emoji: '🪟' },
+  ] },
+  { id: 'natuur', naam: 'Natuur', emoji: '🌙', vanaf: 7, woorden: [
+    { ar: 'شَمْس', tr: 'sjams', nl: 'zon', emoji: '☀️' },
+    { ar: 'قَمَر', tr: 'qamar', nl: 'maan', emoji: '🌙' },
+    { ar: 'نَجْمَة', tr: 'nadjma', nl: 'ster', emoji: '⭐' },
+    { ar: 'سَمَاء', tr: 'samaa', nl: 'hemel', emoji: '🌌' },
+    { ar: 'بَحْر', tr: 'bahr', nl: 'zee', emoji: '🌊' },
+    { ar: 'جَبَل', tr: 'djabal', nl: 'berg', emoji: '⛰️' },
+    { ar: 'شَجَرَة', tr: 'sjadjara', nl: 'boom', emoji: '🌳' },
+    { ar: 'مَطَر', tr: 'matar', nl: 'regen', emoji: '🌧️' },
+  ] },
+];
+
+export const THEMA_OP_ID = opSleutel(THEMAS);
+
+export function themasVoorLeeftijd(leeftijd) {
+  return THEMAS.filter((t) => t.vanaf <= leeftijd);
+}

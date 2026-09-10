@@ -1,0 +1,8 @@
+{
+  "bron": "quran-json (Uthmani-tekst uit The Noble Qur'an Encyclopedia, quranenc.com)",
+  "url": "https://raw.githubusercontent.com/risan/quran-json/main/dist/quran.json",
+  "overgenomen": "2026-08-31",
+  "aantalAyaat": 58,
+  "vingerafdruk": "sha256:2f5b5b672372a8afcbee0a86bb3b48c6024da9f157b2ae2225fb51c50071d29d",
+  "let_op": "Dit zegt dat de app dezelfde tekens heeft als de bron hierboven. Of die bron deugt, hoort een mens te beoordelen."
+}

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mijn abonnement — Noer</title>
+<meta name="theme-color" content="#0f7a67">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="stijl.css">
+<link rel="icon" href="beelden/icoon.svg" type="image/svg+xml">
+</head>
+<body>
+<header class="top">
+  <div class="binnen topbinnen">
+    <a class="merkje" href="index.html"><span class="zegel"><span class="ar">نُور</span></span> Noer</a>
+    <nav>
+      <a href="downloaden.html">Op je beginscherm</a>
+      <a class="knop" href="/app/">Open Noer</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="smal">
+  <div class="paneel" id="paneel" hidden>
+    <h1>Mijn abonnement</h1>
+    <div class="regels" id="regels"></div>
+    <div id="acties"></div>
+    <p class="melding" id="melding" role="status" aria-live="polite"></p>
+  </div>
+
+  <div class="paneel" id="laden">
+    <p class="klein">Even kijken hoe het ervoor staat…</p>
+  </div>
+
+  <div class="paneel" id="betalingen" hidden>
+    <h2>Betalingen</h2>
+    <div class="regels" id="betaalregels"></div>
+    <p class="fijn">Een factuur nodig voor de administratie? Mail
+      <a href="mailto:noer@voorbeeld.nl">noer@voorbeeld.nl</a> met de datum erbij.</p>
+  </div>
+
+  <div class="paneel" id="wachtwoordpaneel" hidden>
+    <h2>Wachtwoord wijzigen</h2>
+    <form id="wachtwoordformulier" novalidate>
+      <div class="veld">
+        <label for="oud">Huidig wachtwoord</label>
+        <input id="oud" type="password" autocomplete="current-password" required>
+      </div>
+      <div class="veld">
+        <label for="nieuw">Nieuw wachtwoord</label>
+        <input id="nieuw" type="password" autocomplete="new-password" minlength="10" required>
+      </div>
+      <button class="knop stil" type="submit">Wachtwoord opslaan</button>
+      <p class="melding" id="wachtwoordmelding" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+
+  <p class="fijn midden" style="margin-top:2rem">
+    <a href="#" id="uitloggen">Uitloggen</a> ·
+    <a href="voorwaarden.html">Voorwaarden</a> ·
+    <a href="privacy.html">Privacy</a>
+  </p>
+</section>
+</main>
+
+<script type="module">
+import { verstuur, haal, meld, bezig, euro, datum } from './site.js';
+
+const paneel = document.getElementById('paneel');
+const laden = document.getElementById('laden');
+const regels = document.getElementById('regels');
+const acties = document.getElementById('acties');
+const melding = document.getElementById('melding');
+
+const regel = (naam, waarde) => {
+  const r = document.createElement('div');
+  r.className = 'regel';
+  const a = document.createElement('span'); a.textContent = naam;
+  const b = document.createElement('b');
+  if (waarde instanceof Node) b.append(waarde); else b.textContent = waarde;
+  r.append(a, b);
+  return r;
+};
+
+const merkje = (tekst, aan) => {
+  const s = document.createElement('span');
+  s.className = `stand ${aan ? 'aan' : 'uit'}`;
+  s.textContent = tekst;
+  return s;
+};
+
+const knop = (tekst, stil, opklik) => {
+  const k = document.createElement('button');
+  k.className = `knop ${stil ? 'stil' : ''}`.trim();
+  k.textContent = tekst;
+  k.addEventListener('click', () => opklik(k));
+  return k;
+};
+
+async function teken() {
+  const uit = await haal('/api/account');
+  if (uit.status === 401) { window.location.href = 'inloggen.html'; return; }
+  if (uit.status !== 200) {
+    laden.textContent = 'De gegevens konden niet worden opgehaald. Probeer de pagina te verversen.';
+    return;
+  }
+
+  const a = uit.account;
+  const ab = a.abonnement;
+  laden.hidden = true;
+  paneel.hidden = false;
+  document.getElementById('wachtwoordpaneel').hidden = false;
+
+  // Filteren, want replaceChildren(null) zet er letterlijk "null" neer.
+  regels.replaceChildren(...[
+    regel('E-mailadres', a.email),
+    regel('Toegang', merkje(
+      ab.actief
+        ? (ab.opgezegd ? 'Loopt af' : ab.proef ? 'Gratis week' : 'Actief')
+        : 'Niet actief', ab.actief)),
+    ab.plan && regel('Abonnement', ab.plan === 'jaar' ? 'Per jaar' : 'Per maand'),
+    ab.prijs && regel('Bedrag', `${euro(ab.prijs)} ${ab.periode}`),
+    ab.tot && regel(
+      ab.opgezegd ? 'Toegang tot' : ab.proef ? 'Gratis tot' : 'Volgende afschrijving',
+      datum(ab.tot)),
+    ab.proef && !ab.opgezegd && ab.prijs
+      && regel('Eerste incasso', `${datum(ab.tot)} · ${euro(ab.prijs)}`),
+  ].filter(Boolean));
+
+  acties.replaceChildren();
+  if (!ab.actief) {
+    const k = document.createElement('a');
+    k.className = 'knop';
+    k.href = 'aanmelden.html';
+    k.textContent = 'Noer openzetten';
+    acties.append(k);
+  } else if (ab.opgezegd) {
+    acties.append(knop('Toch doorgaan', false, async (k) => {
+      bezig(k, true);
+      const r = await verstuur('/api/abonnement/hervatten', {});
+      bezig(k, false);
+      if (r.status === 200 && r.hervat) { meld(melding, 'Je abonnement loopt weer door.', 'goed'); teken(); }
+      else meld(melding, r.fout || 'Dat lukte niet. Neem contact op.');
+    }));
+  } else {
+    acties.append(knop('Abonnement opzeggen', true, async (k) => {
+      const zeker = window.confirm(ab.proef
+        ? `Weet je het zeker? Je gratis week loopt gewoon door tot ${datum(ab.tot)}, en er wordt niets geïncasseerd.`
+        : `Weet je het zeker? Je houdt toegang tot ${datum(ab.tot)}; daarna wordt er niets meer afgeschreven.`);
+      if (!zeker) return;
+      bezig(k, true);
+      const r = await verstuur('/api/abonnement/opzeggen', {});
+      bezig(k, false);
+      if (r.status === 200) {
+        meld(melding, ab.proef
+          ? `Opgezegd. Er wordt niets geïncasseerd; je gratis week loopt nog tot ${datum(ab.tot)}.`
+          : `Opgezegd. Er wordt niets meer afgeschreven; je kunt nog tot ${datum(ab.tot)} bij alles.`, 'goed');
+        teken();
+      } else meld(melding, r.fout || 'Opzeggen lukte niet. Mail ons, dan doen we het met de hand.');
+    }));
+  }
+
+  const betalingen = a.betalingen || [];
+  if (betalingen.length) {
+    document.getElementById('betalingen').hidden = false;
+    document.getElementById('betaalregels').replaceChildren(...betalingen.map((b) =>
+      regel(datum(b.op), `${b.bedrag ? euro(b.bedrag) : ''} · ${
+        { paid: 'betaald', failed: 'mislukt', canceled: 'afgebroken', expired: 'verlopen', open: 'openstaand' }[b.status] || b.status}`)));
+  }
+}
+
+teken();
+
+const wf = document.getElementById('wachtwoordformulier');
+const wm = document.getElementById('wachtwoordmelding');
+wf.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const k = wf.querySelector('button');
+  bezig(k, true);
+  const r = await verstuur('/api/account/wachtwoord', {
+    oud: wf.oud.value, nieuw: wf.nieuw.value,
+  });
+  bezig(k, false);
+  if (r.status === 200) { meld(wm, 'Je wachtwoord is gewijzigd.', 'goed'); wf.reset(); }
+  else meld(wm, r.fout || 'Dat lukte niet.');
+});
+
+document.getElementById('uitloggen').addEventListener('click', async (e) => {
+  e.preventDefault();
+  await verstuur('/api/account/uitloggen', {});
+  window.location.href = 'index.html';
+});
+</script>
+</body>
+</html>
