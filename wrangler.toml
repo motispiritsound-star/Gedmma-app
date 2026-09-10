@@ -35,7 +35,7 @@ NOTIFY_FROM = "no-reply@buurklus.nl"
 binding = "DB"
 database_name = "buurklus"
 # Filled in from the dashboard: Storage & Databases -> D1 -> buurklus.
-database_id = "REPLACE_WITH_DATABASE_ID"
+database_id = "d717dbc4-320a-4f18-8788-f4ce02e9a8bf"
 
 # Email Routing will only let a Worker send to an address that has been
 # verified, which is exactly what a notification to the operator is.
