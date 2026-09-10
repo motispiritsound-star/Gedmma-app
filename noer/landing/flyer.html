@@ -104,6 +104,19 @@ h1 em { font-style: normal; color: var(--groen); }
   border-radius: 2mm; padding: 1mm 2.5mm; font-size: 3.2mm; font-weight: 700;
 }
 
+/* Op een telefoon is een A4 onleesbaar breed. Alleen op het scherm dus, en
+   alleen om te lezen: bij het afdrukken geldt het blok hieronder. */
+@media screen and (max-width: 230mm) {
+  body { padding: 0; }
+  .blad { width: 100%; min-height: auto; padding: 8mm 6mm; }
+  .rij { grid-template-columns: 1fr; }
+  .uitgelicht { grid-template-columns: 1fr; }
+  .prijs { text-align: left; }
+  .beelden { grid-template-columns: repeat(2, 1fr); }
+  .voet { flex-direction: column; align-items: flex-start; }
+  .contact { text-align: left; }
+}
+
 @media print {
   body { background: #fff; padding: 0; }
   .blad { box-shadow: none; width: auto; min-height: auto; margin: 0; }

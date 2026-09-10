@@ -269,6 +269,7 @@ noer/
   tools/haal-recitatie.js  haalt aya-opnames op bij een bron die jij kiest
   tools/landing-beelden.js maakt de schermafdrukken voor de landingspagina
   tools/landing-bundel.js  propt de landingspagina in één bestand
+  tools/statisch.js        bouwt de open uitgave: alles open, geen server
   test/run.js            controles op de leerinhoud
   test/browser.js        doorloop van de hele app in een echte browser
   public/
@@ -312,6 +313,19 @@ niet in knoppen en menu's.
 De leerinhoud staat los van de code. Wil je een soera toevoegen, een thema
 uitbreiden of de lessen anders opbouwen, dan hoef je alleen in `data/` te zijn —
 `npm test` zegt daarna of het klopt.
+
+## Online zetten
+
+De goedkoopste en snelste manier is de **open uitgave**: alles staat open,
+geen server, geen account, geen betaling.
+
+```bash
+node tools/statisch.js      # -> uit/
+```
+
+Sleep die map naar netlify.com/drop en je bent live. Kosten: niets, of een
+tientje per jaar met een eigen domein. **`ONLINE.md`** heeft de hele lijst,
+inclusief wat erbij komt kijken als je later abonnementen wilt aanzetten.
 
 ## Betaald aanbieden
 

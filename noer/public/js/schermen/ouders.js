@@ -112,6 +112,8 @@ function abonnementKaart(bak) {
   const kaart = el('section', { class: 'kaart abonnementkaart' });
 
   const teken = (stand) => {
+    // In een open uitgave is er geen abonnement en dus niets te tonen.
+    if (stand.staat === 'open') return kaart.remove();
     const tot = stand.tot ? new Date(stand.tot).toLocaleDateString('nl-NL',
       { day: 'numeric', month: 'long', year: 'numeric' }) : null;
     zet(kaart,

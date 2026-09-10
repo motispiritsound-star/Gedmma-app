@@ -140,6 +140,10 @@ await stap('en dan zit de app weer op slot', async () => {
 await stap('de flyer past op één A4', async () => {
   // Eén pagina is het hele punt van een flyer. Groeit de tekst, dan valt er
   // stilletjes een tweede vel uit de printer met een halve alinea erop.
+  // Op een smal scherm herschikt de flyer zich om leesbaar te zijn; die versie
+  // gaat nooit naar de printer. Meten doen we dus op de breedte waarop het
+  // A4-blad zelf te zien is.
+  await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto(`${BASIS}/flyer.html`, { waitUntil: 'networkidle' });
   const hoogte = await page.evaluate(() =>
     document.querySelector('.blad').getBoundingClientRect().height);
@@ -151,6 +155,14 @@ await stap('de flyer past op één A4', async () => {
   const kapot = await page.evaluate(() =>
     [...document.images].filter((i) => !i.complete || !i.naturalWidth).length);
   if (kapot) throw new Error(`${kapot} beelden op de flyer laden niet`);
+
+  // En op een telefoon hoort hij te herschikken in plaats van over de rand te
+  // lopen: een flyer die je niet kunt doorsturen is een halve flyer.
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForTimeout(200);
+  const overloop = await page.evaluate(() =>
+    document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  if (overloop > 1) throw new Error(`de flyer loopt ${overloop}px over de rand op een telefoon`);
 });
 
 await context.close();

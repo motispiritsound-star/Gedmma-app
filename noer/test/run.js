@@ -4,8 +4,9 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
+import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 
 import { LETTERS, LETTER_OP_ID, afleiders, MAKHRAJ } from '../public/data/letters.js';
@@ -330,4 +331,49 @@ test('de service worker bewaart de API niet', async () => {
   assert.ok(regel, 'sw.js laat /api/ niet los');
   assert.ok(bron.indexOf(regel[0]) < bron.indexOf('caches.match(e.request'),
     'de uitzondering voor /api/ moet vóór de cache staan, anders doet hij niets');
+});
+
+test('de open uitgave is echt open, en belooft niets over betalen', async () => {
+  // De goedkoopste manier om live te gaan is de open uitgave: een map met
+  // bestanden, gratis ergens neergezet. Als daar per ongeluk een slot of een
+  // prijs in blijft staan, staat er iets op internet dat niet klopt.
+  const map = await mkdtemp(join(tmpdir(), 'noer-open-'));
+  const { execFile } = await import('node:child_process');
+  const { promisify } = await import('node:util');
+  await promisify(execFile)(process.execPath, [
+    fileURLToPath(new URL('../tools/statisch.js', import.meta.url)), '--uit', map,
+  ]);
+
+  try {
+    const lees = (pad) => readFile(join(map, pad), 'utf8');
+
+    const versie = await lees('app/js/versie.js');
+    assert.match(versie, /modus: 'open'/, 'de app staat niet in de open stand');
+
+    const index = await lees('index.html');
+    assert.ok(!index.includes('6,99'), 'er staat nog een prijs op de startpagina');
+    assert.ok(!index.includes('aanmelden.html'), 'er wijst nog iets naar een pagina die er niet is');
+    assert.ok(!index.includes('inloggen.html'), 'er staat nog een inlogknop op de site');
+    assert.match(index, /Nu gratis/);
+
+    // De pagina's die een server nodig hebben, horen er niet te zijn.
+    const bestanden = await readdir(map);
+    for (const naam of ['aanmelden.html', 'inloggen.html', 'account.html', 'bedankt.html', 'proef-betalen.html']) {
+      assert.ok(!bestanden.includes(naam), `${naam} kan niet zonder server en hoort hier niet`);
+    }
+
+    // De privacyverklaring van de open uitgave zegt iets anders dan die van de
+    // betaalde. Een privacyverklaring die niet klopt is erger dan geen.
+    const privacy = await lees('privacy.html');
+    assert.match(privacy, /wij verwerken geen persoonsgegevens/i);
+    assert.ok(!privacy.includes('Mollie'), 'de open uitgave heeft geen betaaldienst');
+
+    const flyer = await lees('flyer.html');
+    assert.ok(!flyer.includes('295'), 'de flyer noemt nog een licentieprijs');
+
+    // De service worker moet mee, anders werkt de app niet offline.
+    assert.ok((await readdir(join(map, 'app'))).includes('sw.js'));
+  } finally {
+    await rm(map, { recursive: true, force: true });
+  }
 });

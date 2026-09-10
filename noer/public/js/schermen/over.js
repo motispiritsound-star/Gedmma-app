@@ -7,6 +7,7 @@
 import { el, zet } from '../ui.js';
 import { icoon } from '../iconen.js';
 import { UITGAVE, versieRegel } from '../versie.js';
+
 import { SOERAS } from '../../data/koran.js';
 import { LETTERS } from '../../data/letters.js';
 import { LESSEN } from '../../data/qaida.js';
@@ -36,12 +37,17 @@ export function toon(bak) {
         el('li', { tekst: 'Opnames uit de studio staan in de database van deze browser.' }),
         el('li', { tekst: 'Er is geen reclame en geen meetsoftware.' }),
         el('li', { tekst: 'Er gaat alleen iets naar internet als je zelf een reciteur aanzet die gestreamd wordt.' })),
-      el('p', { tekst: 'Van het abonnement staat er wél iets op de server.' }),
-      el('ul', { class: 'lijstje' },
-        el('li', { tekst: 'Het e-mailadres van de ouder, een versleuteld wachtwoord, en of er betaald is.' }),
-        el('li', { tekst: 'Bij Mollie, die de betaling afhandelt, staan de betaalgegevens. Die komen hier niet langs.' }),
-        el('li', { tekst: 'Geen namen van kinderen, geen voortgang, geen opnames. Die zijn hier ook niet te zien.' })),
-      el('p', { class: 'klein', tekst: 'Wis je de gegevens van deze site in je browser, of gebruik je de knop in het ouderscherm, dan is alles wat van je kind is weg. Het account zeg je op via de site; daar kun je het ook laten verwijderen.' })),
+      // In de open uitgave is er geen account en geen server; dan hoort er ook
+      // niet te staan dat er iets op staat.
+      UITGAVE.modus === 'open'
+        ? el('p', { class: 'klein', tekst: 'Er is geen account en geen server. Wis je de gegevens van deze site in je browser, of gebruik je de knop in het ouderscherm, dan is alles weg. Er blijft nergens anders iets staan.' })
+        : el('div', {},
+            el('p', { tekst: 'Van het abonnement staat er wél iets op de server.' }),
+            el('ul', { class: 'lijstje' },
+              el('li', { tekst: 'Het e-mailadres van de ouder, een versleuteld wachtwoord, en of er betaald is.' }),
+              el('li', { tekst: 'Bij Mollie, die de betaling afhandelt, staan de betaalgegevens. Die komen hier niet langs.' }),
+              el('li', { tekst: 'Geen namen van kinderen, geen voortgang, geen opnames. Die zijn hier ook niet te zien.' })),
+            el('p', { class: 'klein', tekst: 'Wis je de gegevens van deze site in je browser, of gebruik je de knop in het ouderscherm, dan is alles wat van je kind is weg. Het account zeg je op via de site; daar kun je het ook laten verwijderen.' }))),
 
     el('section', { class: 'kaart' },
       el('h2', { tekst: 'Waar de inhoud vandaan komt' }),

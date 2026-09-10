@@ -87,6 +87,19 @@ niemand anders voor je nemen.
 - [x] De pincode in het ouderscherm staat in de app zelf omschreven als een
       drempel, niet als beveiliging.
 
+## Vandaag al online, gratis
+
+De hele lijst hierboven gaat over de betaalde uitgave. Wil je alleen online
+zijn, dan kan dat vandaag en zonder kosten:
+
+```bash
+node tools/statisch.js      # -> uit/, alles open, geen server
+```
+
+Sleep die map naar netlify.com/drop. Wat je dan nog moet invullen — je naam op
+de privacypagina, een e-mailadres dat je leest, en het colofon — staat in
+`ONLINE.md`, samen met wat erbij komt kijken als je later abonnementen aanzet.
+
 ## Neerzetten
 
 Zolang je niets verkoopt, is de app een map met statische bestanden en doet

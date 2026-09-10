@@ -10,7 +10,12 @@
 // openbreekt, kan dat; wie ervoor betaalt, koopt geen bestand maar het geheel
 // — de app, de opnames, de updates. Zie BETALEN.md.
 
+import { UITGAVE } from './versie.js';
+
 const SLEUTEL = 'noer.toegang.v1';
+
+/** In de open uitgave is er niets om te ontgrendelen: alles staat open. */
+const ALLES_OPEN = UITGAVE.modus === 'open';
 
 // Wat er altijd bij hoort, ook zonder abonnement. De server zegt hetzelfde;
 // dit is wat de app aanhoudt als hij er niet bij kan.
@@ -46,8 +51,8 @@ const luisteraars = new Set();
 export const opToegang = (fn) => { luisteraars.add(fn); return () => luisteraars.delete(fn); };
 
 /** De stand zoals de app hem nu kent. Nooit null, altijd meteen bruikbaar. */
-export const toegang = () => stand;
-export const magAlles = () => Boolean(stand.actief);
+export const toegang = () => (ALLES_OPEN ? { ...stand, actief: true, staat: 'open' } : stand);
+export const magAlles = () => ALLES_OPEN || Boolean(stand.actief);
 
 /**
  * Bij de server navragen. Lukt dat niet — geen netwerk, los bestand, geen
@@ -55,6 +60,8 @@ export const magAlles = () => Boolean(stand.actief);
  * bus te werken.
  */
 export async function verversToegang() {
+  // Een open uitgave heeft geen server en niets te vragen.
+  if (ALLES_OPEN) return toegang();
   // Als los bestand is er geen server om iets aan te vragen. Dan niet naar
   // buiten reiken: dat levert alleen een foutmelding op in de console van
   // iemand die de app op een usb-stick heeft gekregen.
