@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { bpsCommission } from '../src/costs/commission.js';
 import { alignUniverse, survivorshipWarning } from '../src/data/align.js';
 import { cryptoLikeUniverse, generateUniverse } from '../src/data/synthetic.js';
 import { analyseCorrelation, correlation } from '../src/engine/correlation.js';
@@ -13,7 +14,7 @@ import {
 import type { PortfolioStrategy } from '../src/strategy/types.js';
 import type { Candle, CostModel } from '../src/types.js';
 
-const FREE: CostModel = { feeBps: 0, slippageBps: 0, borrowBpsPerDay: 0 };
+const FREE: CostModel = { commission: bpsCommission(0), slippageBps: 0, borrowBpsPerDay: 0 };
 const LOOSE = {
   maxWeight: 1,
   maxDailyLossPct: 1,
@@ -182,7 +183,7 @@ describe('the portfolio engine', () => {
       }),
       interval: '1d',
       startingCash: 1000,
-      costs: { feeBps: 10, slippageBps: 5, borrowBpsPerDay: 0 },
+      costs: { commission: bpsCommission(10), slippageBps: 5, borrowBpsPerDay: 0 },
       limits: LOOSE,
     });
     // weight is gross notional over equity, so 1 − weight is the cash share.

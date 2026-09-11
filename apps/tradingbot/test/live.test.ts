@@ -2,6 +2,7 @@ import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { bpsCommission } from '../src/costs/commission.js';
 import { PaperBroker } from '../src/engine/broker.js';
 import { PaperExecution } from '../src/live/execution.js';
 import { silentNotifier, webhookNotifier } from '../src/live/notify.js';
@@ -9,7 +10,7 @@ import { STATE_VERSION, loadState, saveState, type PaperState } from '../src/liv
 import { RiskManager } from '../src/risk/risk.js';
 import { DEFAULT_COSTS, type CostModel } from '../src/types.js';
 
-const FREE: CostModel = { feeBps: 0, slippageBps: 0, borrowBpsPerDay: 0 };
+const FREE: CostModel = { commission: bpsCommission(0), slippageBps: 0, borrowBpsPerDay: 0 };
 
 function tempPath(name: string): string {
   return join(mkdtempSync(join(tmpdir(), 'bot-live-')), name);

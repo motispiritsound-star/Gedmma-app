@@ -19,6 +19,16 @@ export interface Metrics {
   feesPaid: number;
   /** Notional traded per unit of starting equity, annualised. */
   annualTurnover: number;
+  /**
+   * Commission and slippage per year, as a fraction of starting equity.
+   *
+   * The number that actually decides whether a broker's fee schedule is
+   * survivable. A per-order floor looks trivial against one trade and ruinous
+   * against two hundred: ten symbols rebalanced weekly at a 0.35 minimum costs
+   * 364 a year, which on a 500 account is 73% before the strategy has predicted
+   * anything.
+   */
+  annualFeeDrag: number;
   /** Fraction of bars with a non-zero position. */
   timeInMarket: number;
   /**
@@ -105,6 +115,7 @@ export function computeMetrics(
     profitFactor: grossLoss === 0 ? (grossWin > 0 ? Infinity : 0) : grossWin / grossLoss,
     feesPaid,
     annualTurnover: (turnover / first.equity) / years,
+    annualFeeDrag: first.equity > 0 ? feesPaid / first.equity / years : 0,
     timeInMarket: curve.filter((p) => p.weight !== 0).length / curve.length,
     tStat: barVol === 0 ? 0 : (barMean / barVol) * Math.sqrt(rets.length),
     benchmarkReturn,
@@ -143,6 +154,7 @@ function emptyMetrics(startEquity: number): Metrics {
     profitFactor: 0,
     feesPaid: 0,
     annualTurnover: 0,
+    annualFeeDrag: 0,
     timeInMarket: 0,
     tStat: 0,
     benchmarkReturn: 0,
@@ -183,6 +195,13 @@ export function caveats(m: Metrics): string[] {
     out.push(
       `Fees and slippage came to ${m.feesPaid.toFixed(2)}, more than the entire ` +
         `profit or loss. The strategy is mostly paying the exchange.`,
+    );
+  }
+  if (m.annualFeeDrag > 0.05) {
+    out.push(
+      `Commission and slippage cost ${pct(m.annualFeeDrag)} of the account per year at ` +
+        `this trade frequency. Trade larger size per order, trade far less often, or ` +
+        `accept that the account is too small for this schedule.`,
     );
   }
   if (m.annualTurnover > 50) {

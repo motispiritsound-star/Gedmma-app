@@ -1,6 +1,13 @@
 #!/usr/bin/env node
 import { writeFileSync } from 'node:fs';
 import { fetchCandles } from './data/binance.js';
+import {
+  bpsCommission,
+  describeCommission,
+  ibkrFixedShares,
+  ibkrTieredShares,
+  type CommissionModel,
+} from './costs/commission.js';
 import { alignUniverse } from './data/align.js';
 import {
   auditSeries,
@@ -28,7 +35,12 @@ import {
 import { runPortfolioWalkForward } from './engine/portfolioWalkforward.js';
 import { assessSignificance } from './engine/significance.js';
 import { runWalkForward } from './engine/walkforward.js';
-import { runPaper } from './live/paper.js';
+import { runLive, runPaper } from './live/paper.js';
+import { IbkrClient } from './broker/ibkrClient.js';
+import { IbkrExecution, isPaperAccount } from './broker/ibkrExecution.js';
+import { ibkrDataSource } from './data/ibkrData.js';
+import { DEFAULT_SIZING, type SizingConfig } from './risk/sizing.js';
+import { hasStops, type StopConfig } from './risk/stops.js';
 import { silentNotifier, webhookNotifier } from './live/notify.js';
 import {
   formatDate,
@@ -66,16 +78,22 @@ interface Args {
   command: string;
   flags: Map<string, string>;
   bools: Set<string>;
+  /** Positional words after the command, for subcommands like `ibkr status`. */
+  rest: string[];
 }
 
 function parseArgs(argv: readonly string[]): Args {
   const flags = new Map<string, string>();
   const bools = new Set<string>();
+  const rest: string[] = [];
   const command = argv[0] ?? 'help';
 
   for (let i = 1; i < argv.length; i += 1) {
     const token = argv[i] as string;
-    if (!token.startsWith('--')) continue;
+    if (!token.startsWith('--')) {
+      rest.push(token);
+      continue;
+    }
     const key = token.slice(2);
     const next = argv[i + 1];
     if (next === undefined || next.startsWith('--')) {
@@ -86,7 +104,7 @@ function parseArgs(argv: readonly string[]): Args {
     }
   }
 
-  return { command, flags, bools };
+  return { command, flags, bools, rest };
 }
 
 function num(args: Args, key: string, fallback: number): number {
@@ -109,9 +127,45 @@ function interval(args: Args): Interval {
   return raw;
 }
 
+/**
+ * Build the cost model from the flags.
+ *
+ * `--commission` picks the shape. A crypto exchange charges basis points; a
+ * broker charges per share with a floor, and the floor is what a small account
+ * actually pays, so the two cannot share one number.
+ */
 function costsFrom(args: Args): CostModel {
+  const scheme = str(args, 'commission', 'bps');
+  let commission: CommissionModel;
+  switch (scheme) {
+    case 'bps':
+      commission = bpsCommission(num(args, 'fee-bps', 10));
+      break;
+    case 'ibkr-tiered':
+      commission = ibkrTieredShares();
+      break;
+    case 'ibkr-fixed':
+      commission = ibkrFixedShares();
+      break;
+    case 'per-unit':
+      commission = {
+        kind: 'per-unit',
+        perUnit: num(args, 'per-unit', 0.0035),
+        minimumPerOrder: num(args, 'min-commission', 0.35),
+        maxFractionOfNotional: num(args, 'max-commission-pct', 0.01),
+      };
+      break;
+    case 'per-order':
+      commission = { kind: 'per-order', amount: num(args, 'per-order', 1) };
+      break;
+    default:
+      throw new Error(
+        `--commission must be bps, ibkr-tiered, ibkr-fixed, per-unit or per-order ` +
+          `(got "${scheme}")`,
+      );
+  }
   return {
-    feeBps: num(args, 'fee-bps', DEFAULT_COSTS.feeBps),
+    commission,
     slippageBps: num(args, 'slippage-bps', DEFAULT_COSTS.slippageBps),
     borrowBpsPerDay: num(args, 'borrow-bps', DEFAULT_COSTS.borrowBpsPerDay),
   };
@@ -124,6 +178,29 @@ function limitsFrom(args: Args): RiskLimits {
     maxDrawdownPct: num(args, 'max-drawdown', DEFAULT_LIMITS.maxDrawdownPct),
     rebalanceThreshold: num(args, 'rebalance-threshold', DEFAULT_LIMITS.rebalanceThreshold),
     minOrderQuote: num(args, 'min-order', DEFAULT_LIMITS.minOrderQuote),
+  };
+}
+
+/**
+ * Protective exits from the flags. Absent, the strategy's own signal is the only
+ * thing that ever closes a position.
+ */
+function stopsFrom(args: Args): StopConfig | undefined {
+  const config: StopConfig = {
+    initialPct: args.flags.has('stop-loss') ? num(args, 'stop-loss', 0) : undefined,
+    trailingPct: args.flags.has('trailing-stop') ? num(args, 'trailing-stop', 0) : undefined,
+    takeProfitPct: args.flags.has('take-profit') ? num(args, 'take-profit', 0) : undefined,
+    cooldownBars: args.flags.has('cooldown') ? num(args, 'cooldown', 0) : undefined,
+  };
+  return hasStops(config) ? config : undefined;
+}
+
+function sizingFrom(args: Args): SizingConfig | undefined {
+  if (!args.flags.has('target-vol')) return undefined;
+  return {
+    targetAnnualVol: num(args, 'target-vol', DEFAULT_SIZING.targetAnnualVol),
+    lookback: num(args, 'vol-lookback', DEFAULT_SIZING.lookback),
+    maxLeverage: num(args, 'max-weight', DEFAULT_SIZING.maxLeverage),
   };
 }
 
@@ -318,15 +395,24 @@ async function cmdBacktest(args: Args): Promise<void> {
   for (const name of names) {
     const strategy = buildStrategy(name, name === 'buy-and-hold' ? 0 : gridIndex);
     results.push(
-      runBacktest({ candles, strategy, interval: iv, startingCash: cash, costs, limits }),
+      runBacktest({
+        candles,
+        strategy,
+        interval: iv,
+        startingCash: cash,
+        costs,
+        limits,
+        stops: stopsFrom(args),
+        sizing: sizingFrom(args),
+      }),
     );
   }
 
   console.log(heading('Source'));
   console.log(`  ${label}`);
   console.log(
-    `  costs: ${costs.feeBps} bps fee, ${costs.slippageBps} bps slippage, ` +
-      `${costs.borrowBpsPerDay} bps/day borrow`,
+    `  costs: ${describeCommission(costs.commission)}, ${costs.slippageBps} bps ` +
+      `slippage, ${costs.borrowBpsPerDay} bps/day borrow`,
   );
 
   const primary = results[0] as BacktestResult;
@@ -454,8 +540,9 @@ async function cmdPortfolio(args: Args): Promise<void> {
   console.log(heading('Source'));
   console.log(`  ${label}`);
   console.log(
-    `  costs: ${costs.feeBps} bps fee, ${costs.slippageBps} bps slippage; ` +
-      `caps: ${limits.maxWeightPerSymbol} per symbol, ${limits.maxGrossExposure} gross`,
+    `  costs: ${describeCommission(costs.commission)}, ${costs.slippageBps} bps ` +
+      `slippage; caps: ${limits.maxWeightPerSymbol} per symbol, ` +
+      `${limits.maxGrossExposure} gross`,
   );
 
   if (args.bools.has('validate')) {
@@ -557,6 +644,8 @@ async function cmdPaper(args: Args): Promise<void> {
     limits: limitsFrom(args),
     maxBars: args.flags.has('max-bars') ? num(args, 'max-bars', 0) : undefined,
     journalPath: args.flags.get('journal'),
+    stops: stopsFrom(args),
+    sizing: sizingFrom(args),
     statePath: args.flags.get('state'),
     resume: args.bools.has('resume'),
     notifier: webhook
@@ -564,6 +653,223 @@ async function cmdPaper(args: Args): Promise<void> {
           console.log(line);
         })
       : silentNotifier,
+  });
+}
+
+/** A client pointed at whatever gateway the flags name. */
+function ibkrClientFrom(args: Args): IbkrClient {
+  return new IbkrClient({
+    baseUrl: str(args, 'gateway', 'https://localhost:5000/v1/api'),
+    log: (line) => {
+      console.log(line);
+    },
+  });
+}
+
+async function cmdIbkr(args: Args): Promise<void> {
+  const sub = str(args, 'sub', '') || (args.rest[0] ?? 'status');
+  const client = ibkrClientFrom(args);
+
+  switch (sub) {
+    case 'status': {
+      console.log(heading(`IBKR gateway at ${client.baseUrl}`));
+      const status = await client.authStatus();
+      console.log(`  authenticated   ${status.authenticated}`);
+      console.log(`  connected       ${status.connected}`);
+      console.log(`  competing       ${status.competing}`);
+      if (status.message !== '') console.log(`  message         ${status.message}`);
+
+      if (status.competing) {
+        console.log('');
+        console.log(
+          `  ${wrap(
+            'Another session has taken this login over — Client Portal or TWS open ' +
+              'somewhere else. Requests will keep succeeding while orders quietly do ' +
+              'not reach the exchange. Log out there before trading here.',
+            70,
+          )}`,
+        );
+      }
+      if (!status.authenticated) {
+        console.log('');
+        console.log(
+          `  ${wrap(
+            `Not logged in. Open ${new URL(client.baseUrl).origin} in a browser and ` +
+              `sign in, then run this again. docs/IBKR.md has the setup.`,
+            70,
+          )}`,
+        );
+        return;
+      }
+
+      const accounts = await client.accounts();
+      console.log('');
+      console.log('  accounts:');
+      for (const id of accounts) {
+        const kind = isPaperAccount(id) ? 'paper' : 'REAL MONEY';
+        console.log(`    ${id.padEnd(14)}${kind}`);
+      }
+      for (const id of accounts) {
+        const ledger = await client.ledger(id);
+        for (const entry of ledger) {
+          console.log(
+            `    ${id} ${entry.currency.padEnd(5)} cash ${entry.cash.toFixed(2)}  ` +
+              `net liquidation ${entry.netLiquidation.toFixed(2)}`,
+          );
+        }
+      }
+      return;
+    }
+
+    case 'search': {
+      const symbol = str(args, 'symbol', '');
+      if (symbol === '') throw new Error('ibkr search needs --symbol AAPL');
+      const matches = await client.searchContracts(symbol);
+      console.log(heading(`Contracts matching ${symbol.toUpperCase()}`));
+      if (matches.length === 0) {
+        console.log('  nothing matched');
+        return;
+      }
+      console.log(
+        `  ${'conid'.padEnd(12)}${'symbol'.padEnd(10)}${'type'.padEnd(8)}${'ccy'.padEnd(5)}description`,
+      );
+      for (const match of matches.slice(0, 25)) {
+        console.log(
+          `  ${String(match.conid).padEnd(12)}${match.symbol.padEnd(10)}` +
+            `${match.secType.padEnd(8)}${match.currency.padEnd(5)}` +
+            `${match.description.slice(0, 40)}`,
+        );
+      }
+      console.log('');
+      console.log(
+        `  ${wrap(
+          'Use the conid, not the ticker, everywhere else. One symbol is several ' +
+            'contracts on several venues in several currencies, and guessing which ' +
+            'one is meant is how an order lands on the wrong exchange.',
+          70,
+        )}`,
+      );
+      return;
+    }
+
+    case 'bars': {
+      const conid = num(args, 'conid', 0);
+      if (conid <= 0) throw new Error('ibkr bars needs --conid, from "ibkr search"');
+      const iv = interval(args);
+      const bars = num(args, 'bars', 300);
+      const source = ibkrDataSource({ client, outsideRth: args.bools.has('outside-rth') });
+      const candles = await source.recent(String(conid), iv, bars);
+      const audit = auditSeries(candles, iv);
+
+      console.log(heading(`IBKR bars for conid ${conid}, ${iv}`));
+      console.log(`  candles          ${audit.count}`);
+      console.log(
+        `  range            ${audit.firstTime ? formatDate(audit.firstTime) : '-'} to ` +
+          `${audit.lastTime ? formatDate(audit.lastTime) : '-'}`,
+      );
+      console.log(`  invalid ranges   ${audit.invalidRanges}`);
+      console.log('');
+      console.log(
+        `  ${wrap(
+          'The missing-bar count is not reported here on purpose: these are regular ' +
+            'trading hours only, so most timestamps in the range legitimately have no ' +
+            'bar. That is also why a strategy written on 24/7 crypto bars is a ' +
+            'different strategy on this data — it now has overnight gaps it never saw.',
+          70,
+        )}`,
+      );
+
+      const out = args.flags.get('out');
+      if (out) {
+        writeCandles(out, candles);
+        console.log(`\n  Written to ${out}. Backtest it with --csv ${out}.`);
+      }
+      return;
+    }
+
+    default:
+      throw new Error(`Unknown ibkr subcommand "${sub}". Try status, search or bars.`);
+  }
+}
+
+/**
+ * Run a strategy against a real IBKR account.
+ *
+ * Dry run unless `--send` is passed, and a non-paper account needs
+ * `--i-accept-real-money` on top of that. Both gates exist because everything
+ * upstream of this command is about finding out whether a strategy is worth money,
+ * and the honest answer is usually no.
+ */
+async function cmdTrade(args: Args): Promise<void> {
+  const conid = num(args, 'conid', 0);
+  if (conid <= 0) throw new Error('trade needs --conid, from "ibkr search"');
+  const account = str(args, 'account', '');
+  if (account === '') throw new Error('trade needs --account (a DU... paper account to start with)');
+
+  const client = ibkrClientFrom(args);
+  const strategy = buildStrategy(str(args, 'strategy', 'ema-cross'), num(args, 'grid', 0));
+  const send = args.bools.has('send');
+
+  // The adapter validates the account and the caps without touching the network,
+  // so a typo in an account number is caught before anyone starts a gateway.
+  const execution = new IbkrExecution({
+    client,
+    accountId: account,
+    conid,
+    allowRealMoney: args.bools.has('i-accept-real-money'),
+    maxOrderValue: num(args, 'max-order-value', 1000),
+    minOrderValue: num(args, 'min-order', 0),
+    wholeUnitsOnly: !args.bools.has('fractional'),
+    dryRun: !send,
+    log: (line) => {
+      console.log(line);
+    },
+  });
+
+  const status = await client.authStatus();
+  if (!status.authenticated) {
+    throw new Error(
+      `The gateway at ${client.baseUrl} is not logged in. Sign in at ` +
+        `${new URL(client.baseUrl).origin} first.`,
+    );
+  }
+  if (status.competing) {
+    throw new Error(
+      'Another session holds this login, so orders placed here would not reach the ' +
+        'exchange. Log out of Client Portal or TWS elsewhere, then retry.',
+    );
+  }
+
+  console.log(heading('Live run'));
+  console.log(`  strategy        ${strategy.name}`);
+  console.log(`  contract        ${conid}`);
+  console.log(`  account         ${account} (${isPaperAccount(account) ? 'paper' : 'REAL MONEY'})`);
+  console.log(`  execution       ${execution.label}`);
+  console.log(`  max order value ${num(args, 'max-order-value', 1000)}`);
+  if (!send) {
+    console.log('');
+    console.log(
+      `  ${wrap(
+        'Dry run: every order is logged and nothing is sent. Add --send once you ' +
+          'have read the log and agree with what it was about to do.',
+        70,
+      )}`,
+    );
+  }
+
+  await runLive({
+    instrument: String(conid),
+    interval: interval(args),
+    strategy,
+    data: ibkrDataSource({ client, outsideRth: args.bools.has('outside-rth') }),
+    execution,
+    startingCash: num(args, 'cash', 0),
+    warmupBars: num(args, 'warmup', Math.max(250, strategy.warmupBars * 3)),
+    limits: limitsFrom(args),
+    stops: stopsFrom(args),
+    sizing: sizingFrom(args),
+    maxBars: args.flags.has('max-bars') ? num(args, 'max-bars', 0) : undefined,
+    journalPath: args.flags.get('journal'),
   });
 }
 
@@ -584,6 +890,8 @@ Commands
   correlation   How many independent bets a universe is really worth
   portfolio     Multi-asset backtest across a universe (--validate for walk-forward)
   paper         Forward-test on live prices with simulated money
+  ibkr          Talk to a local IBKR gateway: status, search, bars
+  trade         Run a strategy against an IBKR account. Dry run unless --send.
 
 Data (single-symbol commands)
   --symbol BTCUSDT      Binance symbol, downloaded and cached on first use
@@ -612,9 +920,31 @@ Strategy
 
 Money and costs
   --cash 1000           Starting equity, in quote currency
-  --fee-bps 10          Commission per fill, basis points
+  --commission bps      bps | ibkr-tiered | ibkr-fixed | per-unit | per-order.
+                        A broker charges a floor per order, not a percentage, and
+                        on small orders the floor is all you pay. Use the shape
+                        that matches your statement.
+  --fee-bps 10          Rate for --commission bps
+  --per-unit 0.0035     Rate per share/contract for --commission per-unit
+  --min-commission 0.35 Floor per order for --commission per-unit
+  --max-commission-pct 0.01
+  --per-order 1         Flat amount for --commission per-order
   --slippage-bps 5      Slippage per fill, basis points
   --borrow-bps 5        Daily cost of a short, basis points
+
+Protective exits (omit them and only the strategy ever closes a position)
+  --stop-loss 0.05      Exit 5% against the entry. Fills at the worse of the
+                        stop and the bar's open, so gaps cost what they cost.
+  --trailing-stop 0.08  Exit 8% below the best price since entry
+  --take-profit 0.15    Exit 15% in your favour
+  --cooldown 5          Bars to stay flat after a stop. Without it a trend
+                        strategy buys straight back in and the stop only
+                        bought you two commissions.
+
+Position sizing
+  --target-vol 0.2      Scale the weight so realised volatility lands near 20%
+                        a year. Only ever scales down past --max-weight.
+  --vol-lookback 30     Bars used to estimate current volatility
 
 Risk
   --max-weight 1        1 means no leverage. Raising this is how accounts die.
@@ -629,6 +959,19 @@ Walk-forward
   --folds 5             Train/test pairs
   --train-fraction 0.7  Share of each fold used to choose parameters
   --validate            On \`portfolio\`, run the walk-forward instead of a backtest
+
+IBKR (everything runs against a gateway on your own machine — no API keys)
+  --gateway https://localhost:5000/v1/api
+  --symbol AAPL         For: ibkr search
+  --conid 265598        For: ibkr bars, trade. Get it from ibkr search.
+  --account DU1234567   For: trade. Paper accounts start with DU.
+  --outside-rth         Include pre- and post-market bars. Off by default.
+  --send                Actually place orders. Without it, trade is a dry run.
+  --i-accept-real-money Required on top of --send for a non-DU account.
+  --max-order-value 1000
+                        Hard cap per order, enforced in the execution layer
+  --fractional          Allow fractional units. Off: whole units, rounded toward
+                        zero so rounding can never increase exposure.
 
 Output and 24/7 operation
   --out curve.csv       Write the equity curve
@@ -669,6 +1012,12 @@ async function main(): Promise<void> {
       break;
     case 'significance':
       await cmdSignificance(args);
+      break;
+    case 'ibkr':
+      await cmdIbkr(args);
+      break;
+    case 'trade':
+      await cmdTrade(args);
       break;
     default:
       usage();

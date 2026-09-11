@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
+import { bpsCommission } from '../src/costs/commission.js';
 import { PaperBroker } from '../src/engine/broker.js';
 import type { CostModel } from '../src/types.js';
 
-const FREE: CostModel = { feeBps: 0, slippageBps: 0, borrowBpsPerDay: 0 };
-const REALISTIC: CostModel = { feeBps: 10, slippageBps: 5, borrowBpsPerDay: 5 };
+const FREE: CostModel = { commission: bpsCommission(0), slippageBps: 0, borrowBpsPerDay: 0 };
+const REALISTIC: CostModel = { commission: bpsCommission(10), slippageBps: 5, borrowBpsPerDay: 5 };
 
 describe('PaperBroker', () => {
   it('puts the whole account into the asset at weight 1', () => {
@@ -15,7 +16,7 @@ describe('PaperBroker', () => {
   });
 
   it('charges the fee on the way in and the way out', () => {
-    const broker = new PaperBroker(1000, { ...FREE, feeBps: 10 });
+    const broker = new PaperBroker(1000, { ...FREE, commission: bpsCommission(10) });
     broker.rebalanceTo(1, 100, 0);
     broker.rebalanceTo(0, 100, 1);
     // Two fills at 10 bps of roughly 1000 each: about 2 in total, and the price
@@ -45,7 +46,7 @@ describe('PaperBroker', () => {
   });
 
   it('records a profitable round trip net of both fees', () => {
-    const broker = new PaperBroker(1000, { ...FREE, feeBps: 10 });
+    const broker = new PaperBroker(1000, { ...FREE, commission: bpsCommission(10) });
     broker.rebalanceTo(1, 100, 0);
     broker.rebalanceTo(0, 110, 1);
     expect(broker.trades).toHaveLength(1);
@@ -96,7 +97,7 @@ describe('PaperBroker', () => {
 
 describe('partial exits', () => {
   it('splits the entry fee between the part closed and the part still open', () => {
-    const broker = new PaperBroker(1000, { ...FREE, feeBps: 10 });
+    const broker = new PaperBroker(1000, { ...FREE, commission: bpsCommission(10) });
     broker.rebalanceTo(1, 100, 0);
     const entryFee = broker.fees;
 

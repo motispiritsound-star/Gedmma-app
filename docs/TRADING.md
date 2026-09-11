@@ -204,7 +204,21 @@ It answers one question, in one order, and refuses to skip steps:
 There is no eighth step in this repository. That boundary is deliberate, and
 the next section explains it.
 
-## Why there is no live trading code here
+## Connecting it to a broker
+
+There is now an Interactive Brokers adapter, and
+[IBKR.md](IBKR.md) covers it: how the local gateway works, why there are still no
+API keys anywhere in the repository, the three gates in front of a real order, and
+the four facts about IBKR that change what a strategy built on 24/7 crypto bars is
+actually worth. The short version of that last part: you probably cannot trade
+crypto at IBKR at all as an EU retail client, markets close so stops gap, the
+commission floor rather than the rate is what a small account pays, and unpaid
+market data is fifteen minutes old.
+
+The section below still describes the design, and still holds for every venue the
+harness does not have an adapter for.
+
+## Why live trading is a separate, gated step
 
 `ExecutionAdapter` in `src/live/execution.ts` is the seam where a real exchange
 would go. There is exactly one implementation and it is simulated.

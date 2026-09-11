@@ -71,6 +71,7 @@ export function renderMetrics(m: Metrics, options: RenderOptions = {}): string {
           row('Profit factor', formatRatio(m.profitFactor)),
           row('Fees + slippage paid', formatMoney(m.feesPaid)),
           row('Turnover (x equity/yr)', m.annualTurnover.toFixed(1)),
+          row('Cost drag per year', pct(m.annualFeeDrag)),
         ]
       : []),
     row('Time in market', pct(m.timeInMarket)),
@@ -117,6 +118,43 @@ export function renderBacktest(result: BacktestResult): string {
         WIDTH - 4,
       )}`,
     );
+  }
+
+  const drag = result.commissionDrag;
+  if (drag.perRoundTrip > 0.001) {
+    parts.push('');
+    parts.push(
+      row(
+        'Commission per round trip',
+        `${pct(drag.perRoundTrip)} of a ${drag.atNotional.toFixed(0)} position`,
+      ),
+    );
+  }
+
+  if (result.stops) {
+    parts.push('');
+    const fired = Object.entries(result.stops.byReason).filter(([, n]) => n > 0);
+    if (fired.length === 0) {
+      parts.push('  Protective exits were configured and never fired.');
+    } else {
+      parts.push('  Protective exits:');
+      for (const [reason, count] of fired) {
+        parts.push(`    ${String(count).padStart(6)}  ${reason}`);
+      }
+      parts.push(row('  average gap past the stop', pct(result.stops.averageSlippagePastTrigger)));
+      parts.push(row('  worst gap past the stop', pct(result.stops.worstSlippagePastTrigger)));
+      if (result.stops.worstSlippagePastTrigger > 0) {
+        parts.push(
+          `  ${wrap(
+            'A stop becomes a market order when it is touched, so a market that gapped ' +
+              'past it fills wherever it reopened. A backtest that fills every stop at ' +
+              'the stop price reports those two lines as zero, and hides exactly the ' +
+              'losses a stop cannot protect you from.',
+            WIDTH - 4,
+          )}`,
+        );
+      }
+    }
   }
 
   const blocked = Object.entries(result.blocked).filter(([, n]) => n > 0);

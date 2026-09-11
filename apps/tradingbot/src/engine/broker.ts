@@ -1,3 +1,4 @@
+import { commissionFor } from '../costs/commission.js';
 import type { CostModel, Fill, Trade } from '../types.js';
 
 /**
@@ -154,7 +155,7 @@ export class PaperBroker {
     if (delta === 0) return null;
 
     const notional = Math.abs(delta) * fillPrice;
-    const fee = notional * (this.costs.feeBps / 10_000);
+    const fee = commissionFor(this.costs.commission, delta, fillPrice);
 
     const wasQty = this.qtyHeld;
     this.cashBalance -= delta * fillPrice + fee;

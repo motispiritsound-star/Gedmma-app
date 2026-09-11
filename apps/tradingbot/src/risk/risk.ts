@@ -1,3 +1,4 @@
+import { maxFractionOfNotional } from '../costs/commission.js';
 import type { CostModel } from '../types.js';
 
 /**
@@ -218,8 +219,13 @@ export interface RiskState {
  * backtest into a very slightly leveraged one — small, but the wrong direction,
  * and it compounds across thousands of fills.
  */
-export function feeAdjustedCeiling(ceiling: number, costs: CostModel): number {
-  return Math.max(0, ceiling * (1 - costs.feeBps / 10_000));
+export function feeAdjustedCeiling(ceiling: number, costs: CostModel, equity = 0): number {
+  // A floor-based commission is a bigger share of a small order than a large
+  // one, so the reserve has to be computed against the notional actually being
+  // traded. With no equity to go on, the model's own proportional term is used.
+  const notional = equity > 0 ? ceiling * equity : 1;
+  const fraction = maxFractionOfNotional(costs.commission, notional);
+  return Math.max(0, ceiling * (1 - Math.min(1, fraction)));
 }
 
 export function clamp(value: number, low: number, high: number): number {

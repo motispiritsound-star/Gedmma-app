@@ -1,3 +1,4 @@
+import { commissionFor } from '../costs/commission.js';
 import { alignUniverse } from '../data/align.js';
 import {
   DEFAULT_LIMITS,
@@ -93,8 +94,8 @@ export function runPortfolioBacktest(options: PortfolioBacktestOptions): Portfol
   // Both ceilings hold back one entry's commission; see `feeAdjustedCeiling`.
   const effectiveLimits: PortfolioLimits = {
     ...limits,
-    maxWeight: feeAdjustedCeiling(limits.maxWeight, costs),
-    maxGrossExposure: feeAdjustedCeiling(limits.maxGrossExposure, costs),
+    maxWeight: feeAdjustedCeiling(limits.maxWeight, costs, startingCash),
+    maxGrossExposure: feeAdjustedCeiling(limits.maxGrossExposure, costs, startingCash),
   };
   const risk = new RiskManager(startingCash, effectiveLimits, dailyLossEnforced);
 
@@ -218,7 +219,7 @@ export function runPortfolioBacktest(options: PortfolioBacktestOptions): Portfol
         if (notional < limits.minOrderQuote) continue;
       }
 
-      const fee = notional * (costs.feeBps / 10_000);
+      const fee = commissionFor(costs.commission, delta, fillPrice);
       cash -= delta * fillPrice + fee;
       qty.set(symbol, currentQty + delta);
       fees += fee;
@@ -241,7 +242,7 @@ export function runPortfolioBacktest(options: PortfolioBacktestOptions): Portfol
     if (q === 0) continue;
     const price = closeAt(symbol, lastIndex) * (1 - (costs.slippageBps / 10_000) * Math.sign(q));
     const notional = Math.abs(q) * price;
-    const fee = notional * (costs.feeBps / 10_000);
+    const fee = commissionFor(costs.commission, q, price);
     cash += q * price - fee;
     fees += fee;
     turnover += notional;

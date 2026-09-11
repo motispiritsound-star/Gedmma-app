@@ -1,3 +1,5 @@
+import { bpsCommission, type CommissionModel } from './costs/commission.js';
+
 /**
  * The vocabulary every other module shares.
  *
@@ -61,7 +63,13 @@ export interface Fill {
   /** Commission in quote currency, always positive. */
   fee: number;
   /** Why the broker filled this — useful when reading a trade log. */
-  reason: 'rebalance' | 'liquidate' | 'kill-switch';
+  reason:
+    | 'rebalance'
+    | 'liquidate'
+    | 'kill-switch'
+    | 'stop-loss'
+    | 'trailing-stop'
+    | 'take-profit';
 }
 
 /**
@@ -97,8 +105,12 @@ export interface EquityPoint {
 
 /** What it costs to trade. Defaults are Binance spot taker fees, unrounded. */
 export interface CostModel {
-  /** Commission per fill, in basis points of notional. 10 bps = 0.10%. */
-  feeBps: number;
+  /**
+   * What the broker charges per fill. A basis-point rate is only one of the
+   * shapes this takes; see `costs/commission.ts` for why that matters more than
+   * it looks, and for the IBKR schedules.
+   */
+  commission: CommissionModel;
   /**
    * The gap between the price you see and the price you get, in basis points.
    * On BTCUSDT with small size this is small; on a thin altcoin it is the
@@ -114,7 +126,7 @@ export interface CostModel {
 }
 
 export const DEFAULT_COSTS: CostModel = {
-  feeBps: 10,
+  commission: bpsCommission(10),
   slippageBps: 5,
   borrowBpsPerDay: 5,
 };

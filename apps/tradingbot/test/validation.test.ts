@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { bpsCommission } from '../src/costs/commission.js';
 import { meanRevertingSeries, randomWalk, trendingSeries } from '../src/data/synthetic.js';
 import { runBacktest } from '../src/engine/backtest.js';
 import { percentile, runNoiseTest } from '../src/engine/noise.js';
@@ -10,7 +11,7 @@ import { emaCross } from '../src/strategy/emaCross.js';
 import { meanReversion } from '../src/strategy/meanReversion.js';
 import type { CostModel } from '../src/types.js';
 
-const FREE: CostModel = { feeBps: 0, slippageBps: 0, borrowBpsPerDay: 0 };
+const FREE: CostModel = { commission: bpsCommission(0), slippageBps: 0, borrowBpsPerDay: 0 };
 const LOOSE = {
   maxWeight: 1,
   maxDailyLossPct: 1,
@@ -250,7 +251,7 @@ describe('assessSignificance', () => {
       factory: factoryByName('ema-cross') as never,
       interval: '1d',
       startingCash: 1000,
-      costs: { feeBps: 10, slippageBps: 5, borrowBpsPerDay: 5 },
+      costs: { commission: bpsCommission(10), slippageBps: 5, borrowBpsPerDay: 5 },
       limits: LOOSE,
     });
     // A random walk has nothing in it. Whatever the best of four configurations

@@ -30,6 +30,8 @@ docs/
                    come from code
   TRADING.md       What the trading harness measures, and the arithmetic behind
                    the "$68 into $750,000" posts it was written in answer to
+  IBKR.md          Wiring the harness to Interactive Brokers, and the four things
+                   about IBKR that change what a crypto-built strategy is worth
 ```
 
 ## Running it
@@ -67,13 +69,15 @@ npm run bot -- help
 npm run bot -- backtest --symbol BTCUSDT --interval 1d --all
 ```
 
-Read [docs/TRADING.md](docs/TRADING.md) first. It places no real orders.
+Read [docs/TRADING.md](docs/TRADING.md) first. It places no real orders by
+default, and [docs/IBKR.md](docs/IBKR.md) covers the Interactive Brokers
+connection and the gates in front of it.
 
 ## Tests
 
 ```bash
-npm test          # 261 tests: 43 domain, 36 API integration, 16 app,
-                  # 16 website, 150 trading harness
+npm test          # 324 tests: 43 domain, 36 API integration, 16 app,
+                  # 16 website, 213 trading harness
 npm run typecheck
 ```
 

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { bpsCommission } from '../src/costs/commission.js';
 import { runBacktest } from '../src/engine/backtest.js';
 import { meanRevertingSeries, trendingSeries } from '../src/data/synthetic.js';
 import { buyAndHold } from '../src/strategy/buyAndHold.js';
@@ -7,7 +8,7 @@ import { meanReversion } from '../src/strategy/meanReversion.js';
 import type { Strategy } from '../src/strategy/types.js';
 import type { Candle, CostModel } from '../src/types.js';
 
-const FREE: CostModel = { feeBps: 0, slippageBps: 0, borrowBpsPerDay: 0 };
+const FREE: CostModel = { commission: bpsCommission(0), slippageBps: 0, borrowBpsPerDay: 0 };
 const LOOSE = {
   maxWeight: 1,
   maxDailyLossPct: 1,
@@ -94,7 +95,7 @@ describe('costs', () => {
       strategy: buyAndHold(),
       interval: '1d',
       startingCash: 1000,
-      costs: { feeBps: 10, slippageBps: 0, borrowBpsPerDay: 0 },
+      costs: { commission: bpsCommission(10), slippageBps: 0, borrowBpsPerDay: 0 },
       limits: LOOSE,
     });
     expect(result.metrics.endEquity).toBeCloseTo(1000 - result.metrics.feesPaid, 6);
@@ -117,7 +118,7 @@ describe('costs', () => {
       strategy: strategy(),
       interval: '1h',
       startingCash: 1000,
-      costs: { feeBps: 100, slippageBps: 50, borrowBpsPerDay: 0 },
+      costs: { commission: bpsCommission(100), slippageBps: 50, borrowBpsPerDay: 0 },
       limits: LOOSE,
     });
     expect(free.metrics.totalReturn).toBeGreaterThan(expensive.metrics.totalReturn);

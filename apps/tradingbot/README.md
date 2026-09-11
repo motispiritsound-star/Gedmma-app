@@ -6,9 +6,12 @@ measures how much of the result is luck or parameter-search selection, validates
 out of sample, and forward-tests on live prices with simulated money across
 restarts.
 
-**It places no real orders and contains no exchange credentials.** That is a
-design decision, not an unfinished feature — [docs/TRADING.md](../../docs/TRADING.md)
-explains why, along with the arithmetic on the "$68 into $750,000" posts.
+It can place real orders through Interactive Brokers, behind three deliberate
+gates, and it still contains **no API keys of any kind** — IBKR's gateway runs on
+your own machine and holds the session.
+[docs/IBKR.md](../../docs/IBKR.md) covers that, and
+[docs/TRADING.md](../../docs/TRADING.md) covers what the harness measures and the
+arithmetic on the "$68 into $750,000" posts.
 
 ## Quick start
 
@@ -42,7 +45,15 @@ npm run bot -- portfolio --universe BTCUSDT,ETHUSDT,SOLUSDT --validate
 # Forward-test on live prices with simulated money, surviving restarts.
 npm run bot -- paper --strategy ema-cross --interval 1h \
   --state ./data/run.json --resume --journal ./data/run.jsonl
+
+# Interactive Brokers: find a contract, pull its bars, trade the paper account.
+npm run bot -- ibkr status
+npm run bot -- ibkr search --symbol AAPL
+npm run bot -- ibkr bars --conid 265598 --interval 1d --out aapl.csv
+npm run bot -- trade --conid 265598 --account DU1234567 --strategy ema-cross
 ```
+
+The last one is a dry run: it logs every order and sends nothing until `--send`.
 
 From inside `apps/tradingbot` the prefix shortens to `npm run bot -- <command>`.
 `npm run bot -- help` lists every flag.
@@ -58,8 +69,15 @@ way crypto majors really are.
 ```
 src/
   types.ts              Candles, fills, trades, the cost model
+  costs/commission.ts   What a broker actually charges: bps, per-unit with a
+                        floor and a cap, per-order, per-contract
+  broker/
+    ibkrClient.ts       IBKR Client Portal Web API, loopback only, no keys
+    ibkrExecution.ts    Live execution behind three gates, dry run by default
   data/
     binance.ts          Public klines, paged and rate-limit aware. Read-only.
+    source.ts           The DataSource seam: Binance or IBKR, same strategy
+    ibkrData.ts         Bars from the IBKR gateway, regular hours by default
     store.ts            CSV cache, plus an audit for gaps and bad bars
     align.ts            Several symbols onto one timeline, and what that costs
     synthetic.ts        Seeded series and correlated universes with known properties
@@ -73,7 +91,10 @@ src/
                         Hold the strongest few of a universe, plus the
                         equal-weight benchmark it has to beat
     registry.ts         Names and parameter grids the CLI can reach
-  risk/risk.ts          Weight cap, daily stop, drawdown kill switch, fee reserve
+  risk/
+    risk.ts             Weight cap, daily stop, drawdown kill switch, fee reserve
+    stops.ts            Stop, trailing stop and take-profit, filled through gaps
+    sizing.ts           Volatility targeting, which only ever scales down
   engine/
     broker.ts           Paper fills with fees, slippage and borrow cost
     backtest.ts         The single-asset event loop, and the no-lookahead guarantee
@@ -86,8 +107,8 @@ src/
     significance.ts     Search the grid, then price in the search
     correlation.ts      Average correlation and effective number of bets
   live/
-    execution.ts        The adapter seam. One implementation, simulated.
-    paper.ts            Live-data forward test
+    execution.ts        The adapter seam, and why a live fill is not synchronous
+    paper.ts            One live loop, driving a simulator or a real broker
     state.ts            Crash-safe account state, written atomically each bar
     notify.ts           Optional https webhook for fills and the kill switch
   report.ts             Terminal reports, caveats included
@@ -107,9 +128,21 @@ a 100-close pays 200 when the next bar opens there.
 Future bars are not hidden from the strategy — they do not exist in the data it
 holds.
 
-**Trading costs money by default**: 10 bps fee, 5 bps slippage, 5 bps/day on
-shorts, and the weight cap is reduced by one entry's commission so a
-fully-invested target cannot leave the account a few cents overdrawn.
+**Trading costs money by default**, in the shape the broker actually charges it.
+A crypto exchange takes basis points; IBKR takes a rate per share with a floor per
+order, and on a small account the floor is all you ever pay. The report prints
+`Cost drag per year` from the fees the run actually paid at its actual trade
+frequency, and warns above 5%. The weight cap is reduced by one entry's commission
+so a fully-invested target cannot leave the account overdrawn.
+
+**A stop does not fill at the stop price.** It becomes a market order when
+touched, so a market that gapped past it fills wherever it reopened. Stops here
+fill at the worse of the trigger and the bar's open, and the report prints the
+average and worst gap past the trigger — the two numbers a naive backtest reports
+as zero while hiding exactly the losses a stop cannot protect you from. When one
+bar contains both the stop and the take-profit, the stop is assumed, because OHLC
+data cannot say which came first and guessing in your own favour is how a coin
+flip becomes an edge.
 
 **The benchmark is the right one.** A single-asset strategy is scored against
 holding that asset; a portfolio strategy against holding the whole universe in
@@ -138,6 +171,11 @@ Three findings worth knowing before you start, all reproducible from this repo:
 - **A rotation strategy beats equal-weight hold in well under half of universes
   built with no momentum in them — and its best run is up 158%.** One good
   multi-asset backtest is a draw from that distribution.
+- **A 5% stop that gaps fills 15.8% below its trigger**, turning a backtested
+  €950 into €800 on the same bars. Run `backtest --stop-loss 0.05` on anything
+  with overnight gaps and read the two slippage lines.
+- **Ten symbols rebalanced weekly at a €0.35 order minimum costs €364 a year**,
+  which on a €500 account is 73% before the strategy has predicted anything.
 
 ## Tests
 
@@ -145,10 +183,13 @@ Three findings worth knowing before you start, all reproducible from this repo:
 npm test --workspace @buurklus/tradingbot
 ```
 
-150 tests, mostly invariants rather than examples: no lookahead in either
-engine, fees charged on both legs and split across a partial exit, an account
-that never borrows, a kill switch that stays tripped across a restart, a
-restored high-water mark, a walk-forward test window that always starts after
-its training window, state files that refuse to load into the wrong run, and the
-sanity checks that each strategy makes money on the series built to suit it and
-loses on the one built against it.
+213 tests, mostly invariants rather than examples: no lookahead in either engine,
+fees charged on both legs and split across a partial exit, a commission floor that
+bites before its percentage cap, an account that never borrows, stops that fill
+through a gap and lose to a take-profit in the same bar, a cooldown that blocks
+re-entry but never an exit, order quantities rounded toward zero, a live account
+refused without an explicit flag, a gateway URL refused unless it is loopback, a
+kill switch that stays tripped across a restart, a restored high-water mark, a
+walk-forward test window that always starts after its training window, state files
+that refuse to load into the wrong run, and the sanity checks that each strategy
+makes money on the series built to suit it and loses on the one built against it.
