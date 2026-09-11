@@ -78,8 +78,8 @@ the two broker connections and the gates in front of each.
 ## Tests
 
 ```bash
-npm test          # 405 tests: 43 domain, 36 API integration, 16 app,
-                  # 16 website, 294 trading harness
+npm test          # 448 tests: 43 domain, 36 API integration, 16 app,
+                  # 16 website, 337 trading harness
 npm run typecheck
 ```
 

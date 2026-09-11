@@ -20,6 +20,38 @@ export function normalCdf(x: number): number {
   return 0.5 * (1 + erf(x / Math.SQRT2));
 }
 
+/**
+ * The upper tail, `1 − Φ(z)`, computed so that it stays meaningful far out.
+ *
+ * `1 - normalCdf(z)` is useless past about z = 5: the CDF approximation has an
+ * absolute error around 1.5e-7, so everything smaller than that subtracts to zero
+ * and a probability of 1e-19 prints as "impossible". That distinction matters when
+ * the answer is the point — "zero" reads as rounding, where "2e-19" reads as the
+ * actual number.
+ *
+ * So from z = 2 upward this switches to the Mills ratio as a continued fraction,
+ * `φ(z)/(z + 1/(z + 2/(z + 3/(z + …))))`, which is accurate precisely where the
+ * polynomial is not. Checked against reference values, sixteen levels of the
+ * fraction are exact to five significant figures from z = 2 outward — so the
+ * switch-over is seamless as well as more accurate, and the whole range where
+ * significance tests live is covered by the better method rather than the worse one.
+ */
+const MILLS_FROM = 2;
+const MILLS_LEVELS = 16;
+
+export function normalSurvival(z: number): number {
+  if (Number.isNaN(z)) return Number.NaN;
+  if (z < MILLS_FROM) return 1 - normalCdf(z);
+
+  const density = Math.exp((-z * z) / 2) / Math.sqrt(2 * Math.PI);
+  // Evaluated from the bottom up, which is the numerically stable direction.
+  let fraction = 0;
+  for (let k = MILLS_LEVELS; k >= 1; k -= 1) {
+    fraction = k / (z + fraction);
+  }
+  return density / (z + fraction);
+}
+
 export function erf(x: number): number {
   const sign = x < 0 ? -1 : 1;
   const z = Math.abs(x);

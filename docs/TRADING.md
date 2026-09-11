@@ -303,6 +303,143 @@ measures its drawdown from the bottom and cheerfully keeps trading. A state file
 belonging to a different symbol, interval or strategy is refused outright rather
 than loaded into the wrong run.
 
+## Measuring a goal instead of a strategy
+
+`bot target` is the only command here that measures what you *want* rather than
+what you have. It is the cheapest thing in the repository to run and the most
+likely to change what you do next, so it is worth running first.
+
+```bash
+npm run bot -- target --capital 10000 --goal 1000000 --years 1 \
+  --symbol BTCUSDT --interval 1d --monthly 500
+```
+
+### The rate, spelled out
+
+€10,000 to €1,000,000 in a year is 100x. That is:
+
+| Per | Rate, net of all costs, sustained |
+| --- | --- |
+| trading day | **1.84%**, 252 times |
+| week | 9.26%, 52 times |
+| month | **46.78%**, twelve times |
+
+Not on average — every period, including the bad ones, because a month at −20%
+has to be made back before the run resumes.
+
+### The ceiling on compounding, which no leverage gets past
+
+This is the part that settles it, and it is three lines of algebra. Leverage does
+not improve a strategy; it scales the return and the volatility together. For a
+strategy with annualised Sharpe `S` and volatility `σ`, leverage `L` gives an
+arithmetic drift of `L·S·σ` and a variance of `L²σ²`, so the growth rate that
+actually compounds — the logarithmic one — is
+
+```
+g(L) = L·S·σ − ½·L²·σ²
+```
+
+A downward parabola in `L`. It peaks at `L* = S/σ` (the Kelly fraction), and the
+peak value is
+
+```
+g(L*) = S²/2
+```
+
+**The fastest any strategy can compound, at any leverage, is S²/2 per year.** Past
+the optimum, more leverage makes you poorer: variance grows quadratically while
+return grows linearly. No setting, no amount of work and no cleverness gets around
+it, because it is not a fact about strategies — it is a fact about compounding.
+
+So 100x in a year requires `S ≥ √(2·ln 100) = 3.03`, and that only puts the
+*median* outcome on target. For context: Renaissance Medallion, the best documented
+record in the history of finance, ran at about 39% a year net. Good systematic
+retail strategies that genuinely work land at a Sharpe between 0.5 and 1.0. The
+textbook EMA crossover in this repository reaches **1.53 on pure noise**, which is
+why a measured Sharpe above 1 is evidence of very little.
+
+### What chasing it costs
+
+```
+  sharpe   leverage    median  P(target)   P(−50%)  P(−90%)  wiped by
+  3.03        10.1x    100.0x     50.00%    49.11%    8.90%     9.89%
+  2.00         6.7x      7.4x      9.64%    46.07%    5.97%    15.00%
+  1.50         5.0x      3.1x      1.02%    41.94%    3.28%    20.00%
+  1.00         3.3x      1.6x    0.0020%    32.81%    0.61%    30.00%
+  0.50         1.7x      1.1x   1.6e-17%    11.48% 0.00013%    60.00%
+```
+
+At a Sharpe of 0.5 — a real, respectable, achievable number — the probability of
+100x in a year is 1.6 × 10⁻¹⁷ percent. That is not "unlikely". At a Sharpe of 3,
+which nobody has, it is a coin flip, with a 49% chance of being down half along the
+way and a 9% chance of being down ninety percent.
+
+### And then the part the mathematics leaves out
+
+Everything above treats a drawdown as recoverable. With leverage it is not. At
+10.1x, a single adverse move of 9.89% takes the account to zero, and zero does not
+recover. So the command measures that against the market itself:
+
+```
+  leverage examined             10.1x
+  wiped out by a move of        9.89%
+  bars examined                 2000
+  bars that would have done it  9
+  worst adverse move in them    12.72%
+  chance of one in a year       80.72%
+```
+
+Measured open-to-low, because the exchange liquidates on the low and not on the
+close. On a series at 60% annualised volatility — *less* volatile than Bitcoin has
+been — nine bars in two thousand would have ended it, which is a **81% chance of
+liquidation within the year.**
+
+So the honest summary of the plan is: you need a Sharpe ratio nobody has, and if
+you had it, the leverage it requires would most likely liquidate you before you
+arrived.
+
+### Full automation does not change any of this
+
+It is worth being explicit, because automation is usually offered as the thing
+that makes the difference. It changes execution, not expected return. A bot removes
+hesitation, emotion and the missed entry; it does not raise `S`, and `S²/2` is the
+only thing standing between you and the target.
+
+Where automation does change the picture, it is for the worse:
+
+- **A kill switch cannot outrun a gap.** The drawdown stop in this harness acts at
+  a bar close. At 10x leverage a 10% gap is a liquidation, and it completes before
+  any bar closes. The protection arrives after the event it was meant to prevent.
+- **Nobody is watching.** The whole point of running unattended is that you are
+  asleep. That is fine when the worst case is a bad day and fatal when the worst
+  case is an absorbing barrier.
+- **It scales a mistake perfectly.** A sign error, a stale price, a symbol mapped
+  to the wrong contract: a human notices after one trade. A bot executes it two
+  hundred times before breakfast, with perfect discipline.
+
+Automation is genuinely worth having — on a strategy that is unlevered, validated
+out of sample, and whose worst case you have decided you can live with. It is the
+last step, not the one that makes an impossible target possible.
+
+### What the same money does at returns that exist
+
+```
+  annual return               years to 100x
+  39% (the record)                     14.0
+  25%                                  20.6
+  20%                                  25.3
+  15%                                  33.0
+  10%                                  48.3
+```
+
+And the comparison nobody makes: €10,000 plus €500 a month at 7% is about
+**€105,000 after ten years** and **€292,000 after twenty** — achieved by adding
+money rather than by multiplying it, with no leverage, no liquidation risk and no
+edge required. Over a decade the amount you add usually matters more than the rate
+you earn, and it is the one input you control exactly.
+
+It is a worse story and a better plan.
+
 ## What this harness is for
 
 It answers one question, in one order, and refuses to skip steps:

@@ -4,6 +4,16 @@ import type { CorrelationReport } from './engine/correlation.js';
 import type { PortfolioResult } from './engine/portfolio.js';
 import type { PortfolioWalkForwardResult } from './engine/portfolioWalkforward.js';
 import type { SignificanceResult } from './engine/significance.js';
+import {
+  assessGoal,
+  minimumSharpeFor,
+  requiredRatePerPeriod,
+  targetMultiple,
+  withContributions,
+  yearsToMultiple,
+  type Goal,
+  type LiquidationExposure,
+} from './engine/feasibility.js';
 import { caveats, pct, type Metrics } from './engine/metrics.js';
 import { bootstrapDrawdowns, minimumTrackRecordLength } from './engine/robustness.js';
 import type { NoiseTestResult, PortfolioNoiseResult } from './engine/noise.js';
@@ -22,6 +32,190 @@ export function heading(text: string): string {
 
 function row(label: string, value: string): string {
   return `  ${label.padEnd(30)}${value}`;
+}
+
+
+/** A probability, written so that very small ones stay readable. */
+export function formatProbability(p: number): string {
+  if (p >= 0.001) return `${(p * 100).toFixed(2)}%`;
+  if (p >= 1e-6) return `${(p * 100).toPrecision(2)}%`;
+  if (p <= 0) return '0';
+  return `${(p * 100).toExponential(1)}%`;
+}
+
+/**
+ * What a return target requires, and what it costs to chase.
+ *
+ * This is the one report in the repository that measures a goal rather than a
+ * strategy. It is here because the question is answerable exactly, the answer does
+ * not depend on the quality of anyone's code, and almost nobody computes it before
+ * committing money.
+ */
+export function renderGoal(
+  goal: Goal,
+  options: {
+    volatility?: number;
+    sharpes?: readonly number[];
+    monthlyContribution?: number;
+    /** Measured against real bars, when some were supplied. */
+    exposure?: { label: string; exposure: LiquidationExposure };
+  } = {},
+): string {
+  const volatility = options.volatility ?? 0.3;
+  const multiple = targetMultiple(goal);
+  const minimum = minimumSharpeFor(goal);
+  const sharpes = options.sharpes ?? [minimum, 3, 2, 1.5, 1, 0.5];
+
+  const parts: string[] = [];
+  parts.push(heading('The goal'));
+  parts.push(row('from', formatMoney(goal.startingCapital)));
+  parts.push(row('to', formatMoney(goal.targetCapital)));
+  parts.push(row('within', `${goal.horizonYears} year${goal.horizonYears === 1 ? '' : 's'}`));
+  parts.push(row('which is', `${multiple.toFixed(multiple < 10 ? 1 : 0)}x`));
+
+  parts.push(heading('What that rate is, spelled out'));
+  parts.push(row('per trading day (252/yr)', pct(requiredRatePerPeriod(goal, 252))));
+  parts.push(row('per calendar day', pct(requiredRatePerPeriod(goal, 365))));
+  parts.push(row('per week', pct(requiredRatePerPeriod(goal, 52))));
+  parts.push(row('per month', pct(requiredRatePerPeriod(goal, 12))));
+  parts.push(row('per year', pct(requiredRatePerPeriod(goal, 1))));
+  parts.push('');
+  parts.push(
+    `  ${wrap(
+      'Every one of those is net of commission, slippage and your own market impact, ' +
+        'and has to hold on the bad months as well as the good ones. Read the monthly ' +
+        'figure and ask what it would take to do that twelve times running.',
+      WIDTH - 4,
+    )}`,
+  );
+
+  parts.push(heading('The ceiling on compounding, which no leverage gets around'));
+  parts.push(
+    `  ${wrap(
+      'Leverage scales return and volatility together, so log growth is ' +
+        'L·S·σ − ½L²σ². That peaks at L = S/σ and the peak value is S²/2. The fastest ' +
+        'any strategy can compound, at any leverage, is therefore S²/2 per year — past ' +
+        'the optimum more leverage makes you poorer, because variance grows ' +
+        'quadratically while return grows linearly.',
+      WIDTH - 4,
+    )}`,
+  );
+  parts.push('');
+  parts.push(row('Sharpe ratio required', minimum.toFixed(2)));
+  parts.push('');
+  parts.push(
+    `  ${wrap(
+      'For comparison: Renaissance Medallion, the best documented record in the ' +
+        'history of finance, ran at roughly 39% a year net over three decades. Good ' +
+        'systematic retail strategies that genuinely work land between 0.5 and 1.0. ' +
+        'The EMA crossover in this repository reaches 1.53 on pure noise, which is ' +
+        'why a measured Sharpe above 1 is evidence of very little.',
+      WIDTH - 4,
+    )}`,
+  );
+
+  parts.push(heading(`Odds at growth-optimal leverage, assuming ${pct(volatility)} strategy volatility`));
+  parts.push(
+    `  ${'sharpe'.padEnd(8)}${'leverage'.padStart(9)}${'median'.padStart(10)}` +
+      `${'P(target)'.padStart(11)}${'P(−50%)'.padStart(10)}${'P(−90%)'.padStart(9)}` +
+      `${'wiped by'.padStart(10)}`,
+  );
+  for (const sharpe of sharpes) {
+    const odds = assessGoal(goal, { sharpe, volatility, kellyFraction: 1 });
+    const median =
+      odds.medianMultiple >= 100
+        ? `${odds.medianMultiple.toExponential(1)}x`
+        : `${odds.medianMultiple.toFixed(1)}x`;
+    parts.push(
+      `  ${sharpe.toFixed(2).padEnd(8)}${`${odds.leverage.toFixed(1)}x`.padStart(9)}` +
+        `${median.padStart(10)}${formatProbability(odds.probabilityOfTarget).padStart(11)}` +
+        `${formatProbability(odds.probabilityOfHalving).padStart(10)}` +
+        `${formatProbability(odds.probabilityOfNinetyPercentLoss).padStart(9)}` +
+        `${(Number.isFinite(odds.liquidationMove) ? pct(odds.liquidationMove) : 'n/a').padStart(10)}`,
+    );
+  }
+  parts.push('');
+  parts.push(
+    `  ${wrap(
+      'Growth-optimal is not prudent, it is simply fastest. At that leverage the ' +
+        'probability of being down 50% at some point is about a half, and of being ' +
+        'down 90% about a tenth. That is what optimal costs, before anything goes ' +
+        'wrong. The last column is the single adverse move that takes a levered ' +
+        'account to zero — and zero does not recover, which is the one thing the ' +
+        'mathematics above does not model.',
+      WIDTH - 4,
+    )}`,
+  );
+
+  if (options.exposure) {
+    const { label, exposure } = options.exposure;
+    parts.push(heading('What that leverage means in this actual market'));
+    parts.push(`  ${label}`);
+    parts.push('');
+    parts.push(row('leverage examined', `${exposure.leverage.toFixed(1)}x`));
+    parts.push(row('wiped out by a move of', pct(exposure.liquidationMove)));
+    parts.push(row('bars examined', String(exposure.barsExamined)));
+    parts.push(
+      row('bars that would have done it', String(exposure.barsThatWouldHaveLiquidated)),
+    );
+    parts.push(row('worst adverse move in them', pct(exposure.worstAdverseMove)));
+    parts.push(row('chance of one in a year', formatProbability(exposure.annualProbability)));
+    parts.push('');
+    parts.push(
+      `  ${wrap(
+        exposure.barsThatWouldHaveLiquidated > 0
+          ? 'Measured from each bar\u2019s open to its low, because the exchange liquidates ' +
+              'on the low and not on the close. Every one of those bars ends the account. ' +
+              'The growth mathematics above treats a drawdown as something you recover ' +
+              'from; a liquidation is an absorbing barrier, and it only has to happen ' +
+              'once. This is the line that makes the table above academic.'
+          : 'No bar in this series would have done it, which is the one encouraging ' +
+              'line here — but absence over one sample of history is not a guarantee, ' +
+              'and these moves cluster rather than arriving independently.',
+        WIDTH - 4,
+      )}`,
+    );
+  }
+
+  parts.push(heading('The same target, at returns that exist'));
+  parts.push(`  ${'annual return'.padEnd(26)}${'years to get there'.padStart(20)}`);
+  for (const rate of [0.39, 0.25, 0.2, 0.15, 0.1, 0.07]) {
+    const years = yearsToMultiple(multiple, rate);
+    const label = rate === 0.39 ? `${pct(rate)} (the record)` : pct(rate);
+    parts.push(`  ${label.padEnd(26)}${years.toFixed(1).padStart(20)}`);
+  }
+
+  const monthly = options.monthlyContribution ?? 0;
+  if (monthly > 0) {
+    parts.push(heading('Adding money, for comparison'));
+    for (const years of [5, 10, 20]) {
+      for (const rate of [0.07]) {
+        const balance = withContributions({
+          startingCapital: goal.startingCapital,
+          monthlyContribution: monthly,
+          annualReturn: rate,
+          years,
+        });
+        parts.push(
+          row(
+            `${formatMoney(monthly)}/month at ${pct(rate)}, ${years}y`,
+            formatMoney(balance),
+          ),
+        );
+      }
+    }
+    parts.push('');
+    parts.push(
+      `  ${wrap(
+        'Over a decade the amount you add usually matters more than the rate you earn, ' +
+          'and it is the one input you control exactly. It is a worse story and a ' +
+          'better plan.',
+        WIDTH - 4,
+      )}`,
+    );
+  }
+
+  return parts.join('\n');
 }
 
 /** A ratio, with the unbounded cases spelled rather than printed as "Infinity". */

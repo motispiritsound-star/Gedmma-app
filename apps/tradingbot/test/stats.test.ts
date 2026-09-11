@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   deflatedSharpe,
+  normalSurvival,
   expectedMaxSharpe,
   kurtosis,
   normalCdf,
@@ -13,6 +14,60 @@ describe('normalCdf', () => {
     expect(normalCdf(0)).toBeCloseTo(0.5, 6);
     expect(normalCdf(1.959964)).toBeCloseTo(0.975, 5);
     expect(normalCdf(-1.644854)).toBeCloseTo(0.05, 5);
+  });
+});
+
+/** Where `normalSurvival` changes method. Kept here so the test can probe the join. */
+const MILLS_JOIN = 2;
+
+describe('normalSurvival', () => {
+  it('agrees with the CDF below the switch-over, where the CDF is fine', () => {
+    for (const z of [0, 1, 1.5, 1.9]) {
+      expect(normalSurvival(z)).toBeCloseTo(1 - normalCdf(z), 9);
+    }
+  });
+
+  it('matches reference values across the range significance tests live in', () => {
+    const reference: [number, number][] = [
+      [2, 2.2750132e-2],
+      [2.5, 6.2096653e-3],
+      [3, 1.3498980e-3],
+      [3.5, 2.3262908e-4],
+      [4, 3.1671242e-5],
+      [5, 2.8665157e-7],
+    ];
+    for (const [z, want] of reference) {
+      expect(normalSurvival(z) / want).toBeCloseTo(1, 4);
+    }
+  });
+
+  it('stays accurate far out in the tail, where 1 − Φ(z) is exactly zero', () => {
+    expect(normalSurvival(6) / 9.865876e-10).toBeCloseTo(1, 4);
+    expect(normalSurvival(8) / 6.220961e-16).toBeCloseTo(1, 3);
+    expect(normalSurvival(10) / 7.619853e-24).toBeCloseTo(1, 3);
+
+    // This is the failure it exists to fix. The naive subtraction gives exactly
+    // zero, which reads as "impossible, by rounding" rather than as the answer —
+    // and when the answer is the whole point, that difference matters.
+    expect(1 - normalCdf(10)).toBe(0);
+    expect(normalSurvival(10)).toBeGreaterThan(0);
+  });
+
+  it('decreases monotonically across the switch-over point', () => {
+    let previous = normalSurvival(1.5);
+    for (const z of [1.9, 1.999, 2, 2.001, 2.5, 3, 5, 8, 12]) {
+      const current = normalSurvival(z);
+      expect(current).toBeLessThan(previous);
+      previous = current;
+    }
+  });
+
+  it('joins the two branches without a visible step', () => {
+    // Both methods evaluated at the same point, so this measures the join itself
+    // rather than the function's genuine decay over an interval.
+    const polynomial = 1 - normalCdf(MILLS_JOIN);
+    const fraction = normalSurvival(MILLS_JOIN);
+    expect(fraction / polynomial).toBeCloseTo(1, 3);
   });
 });
 

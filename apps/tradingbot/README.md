@@ -19,6 +19,10 @@ No API key is needed; Binance's market data is public.
 ```bash
 npm install
 
+# Start here: measure the goal, not the strategy. It is the cheapest command
+# in the repository and the most likely to change what you do next.
+npm run bot -- target --capital 10000 --goal 1000000 --years 1 --symbol BTCUSDT
+
 # Inspect the data before trusting anything built on it.
 npm run bot -- data --symbol BTCUSDT --interval 1d
 
@@ -117,6 +121,9 @@ src/
                         purge-and-embargo gap between the two
     robustness.ts       How long a track record must be, and the spread of
                         drawdowns the same trades produce in a different order
+    feasibility.ts      What a return goal requires: the rate, the Sharpe the
+                        S²/2 growth ceiling implies, the odds, and how often the
+                        market itself would liquidate the leverage it needs
     portfolioWalkforward.ts  The same, for a universe
     noise.ts            The strategy on random walks and on edgeless universes
     stats.ts            Normal quantiles, skew, kurtosis, deflated Sharpe
@@ -221,6 +228,10 @@ Three findings worth knowing before you start, all reproducible from this repo:
   not shorten that by a single day, it just costs more in fees.
 - **Reshuffling the same trades turns a 21.87% drawdown into 28.60% one run in
   twenty, and 47.65% at worst.** The backtest showed you one ordering.
+- **The fastest any strategy can compound, at any leverage, is S²/2 per year.**
+  Turning €10,000 into €1,000,000 in a year therefore needs a sustained Sharpe of
+  3.03 — and at the 10x leverage that implies, a crypto-like series liquidates the
+  account within a year with 81% probability. `bot target` derives both.
 
 ## Tests
 
@@ -228,7 +239,7 @@ Three findings worth knowing before you start, all reproducible from this repo:
 npm test --workspace @buurklus/tradingbot
 ```
 
-294 tests, mostly invariants rather than examples: no lookahead in either engine,
+337 tests, mostly invariants rather than examples: no lookahead in either engine,
 fees charged on both legs and split across a partial exit, a commission floor that
 bites before its percentage cap, an account that never borrows, stops that fill
 through a gap and lose to a take-profit in the same bar, a cooldown that blocks
@@ -238,7 +249,10 @@ Kraken signature checked against Kraken's own published test vector, a still-for
 candle dropped, an HTTP 200 carrying an error array treated as the failure it is,
 market impact that grows with the square root of participation rather than linearly,
 an embargo that refuses to starve a training window, a track record requirement that
-quadruples when the edge halves, a kill switch that stays tripped across a restart, a restored high-water mark, a
+quadruples when the edge halves, log growth that falls when leverage passes the
+Kelly optimum, a normal tail that stays meaningful at 10⁻²⁴ where `1 − Φ(z)` is
+exactly zero, a liquidation counted from the open to the low because that is where
+the exchange acts, a kill switch that stays tripped across a restart, a restored high-water mark, a
 walk-forward test window that always starts after its training window, state files
 that refuse to load into the wrong run, and the sanity checks that each strategy
 makes money on the series built to suit it and loses on the one built against it.

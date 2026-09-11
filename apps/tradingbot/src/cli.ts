@@ -10,6 +10,7 @@ import {
   type CommissionModel,
 } from './costs/commission.js';
 import { DEFAULT_IMPACT, type ImpactModel } from './costs/slippage.js';
+import { assessGoal, liquidationExposure, minimumSharpeFor } from './engine/feasibility.js';
 import { alignUniverse } from './data/align.js';
 import {
   auditSeries,
@@ -50,6 +51,7 @@ import { silentNotifier, webhookNotifier } from './live/notify.js';
 import {
   formatDate,
   heading,
+  renderGoal,
   renderBacktest,
   renderComparison,
   renderCorrelation,
@@ -1106,6 +1108,52 @@ async function cmdTradeIbkr(args: Args): Promise<void> {
   });
 }
 
+/**
+ * Measure a return target rather than a strategy.
+ *
+ * Put here, as a first-class command, because it is the cheapest thing in the
+ * repository to run and the most likely to change what someone does next.
+ */
+async function cmdTarget(args: Args): Promise<void> {
+  // Deliberately not --from / --to: those already mean the start and end of a data
+  // window on every other command, and reusing them here had the loader parsing a
+  // euro amount as a date.
+  const goal = {
+    startingCapital: num(args, 'capital', 10_000),
+    targetCapital: num(args, 'goal', 100_000),
+    horizonYears: num(args, 'years', 1),
+  };
+  const volatility = num(args, 'vol', 0.3);
+
+  // When bars are available, the abstract leverage figure gets measured against the
+  // market it would actually be used in.
+  let exposure;
+  if (args.flags.has('csv') || args.flags.has('symbol') || args.flags.has('synthetic')) {
+    const { candles, label } = await loadCandles(args);
+    const odds = assessGoal(goal, {
+      sharpe: minimumSharpeFor(goal),
+      volatility,
+      kellyFraction: 1,
+    });
+    exposure = {
+      label,
+      exposure: liquidationExposure({
+        candles,
+        interval: interval(args),
+        leverage: odds.leverage,
+      }),
+    };
+  }
+
+  console.log(
+    renderGoal(goal, {
+      volatility,
+      monthlyContribution: args.flags.has('monthly') ? num(args, 'monthly', 0) : undefined,
+      exposure,
+    }),
+  );
+}
+
 function usage(): void {
   console.log(`
 Trading research harness — backtest first, paper second, and that is where it stops.
@@ -1113,6 +1161,8 @@ Trading research harness — backtest first, paper second, and that is where it 
   npm run bot -- <command> [flags]
 
 Commands
+  target        Measure a return goal: the rate it needs, the Sharpe ratio that
+                implies, and the odds and drawdowns of chasing it
   data          Download or inspect candles, and audit them for gaps
   backtest      Run a strategy over history, against buy-and-hold
   significance  Search a strategy's grid, then deflate the winner's Sharpe for
@@ -1231,6 +1281,15 @@ IBKR (everything runs against a gateway on your own machine — no API keys)
   --fractional          Allow fractional units. Off: whole units, rounded toward
                         zero so rounding can never increase exposure.
 
+Goal (for: target)
+  --capital 10000       Starting capital
+  --goal 100000         Target capital
+  --years 1             Horizon
+  --vol 0.3             Assumed strategy volatility, annualised
+  --monthly 500         Also show what adding this much a month does
+                        Pass --csv / --symbol / --synthetic as well and the
+                        leverage is measured against those actual bars.
+
 Output and 24/7 operation
   --out curve.csv       Write the equity curve
   --journal log.jsonl   Paper trading: append every decision
@@ -1270,6 +1329,9 @@ async function main(): Promise<void> {
       break;
     case 'significance':
       await cmdSignificance(args);
+      break;
+    case 'target':
+      await cmdTarget(args);
       break;
     case 'ibkr':
       await cmdIbkr(args);
