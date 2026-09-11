@@ -161,6 +161,133 @@ from that distribution. This is not a hypothetical: building this harness, the
 first seed tried showed the momentum strategy beating its benchmark by 200
 percentage points. Across twenty-five seeds it won six times.
 
+## What the Claude-built bots that exist actually show
+
+Worth checking, since the whole premise of the post this started with is that
+this has been done successfully. Several real open-source projects exist, and some
+are decent pieces of engineering:
+
+- **OpenTrade** — a harness for Claude Code / Codex agents to trade a Robinhood
+  agentic-trading account, with guardrails, monitors and schedules.
+- **cbt-framework** — an AI backtesting framework for Claude Code, 21 commands
+  across four exchanges.
+- **claude-trading-bot** — Claude Code driving TradingView and MetaTrader 5, with
+  Telegram alerts and trailing stops.
+- **Claude-Trading-Agent-Build** — the Claude API wired to live market data and an
+  exchange, with a configurable pre-trade safety check.
+- **claude-trading-skills** — Claude Code skills for market analysis, screeners and
+  strategy development.
+
+What they have in common is real plumbing, explicit disclaimers, and instructions
+to validate in paper trading first. What none of them has is a **verified live
+track record.** Not a backtest, not a screenshot: an audited record of money
+actually made over a period long enough to mean anything.
+
+The single most informative data point is a project that *corrected itself*. One
+repository had claimed an "institutional-grade" rating and a +42.68% backtest, and
+removed both on the grounds that neither was supported by evidence. That is to its
+credit — it is exactly what should happen. It also tells you what such claims are
+worth before somebody checks them, and every number in the viral posts is in the
+un-checked category.
+
+So the honest summary of the ecosystem is: **it has produced infrastructure, not
+evidence of edge.** Which is consistent with everything else on this page, and it
+is why this harness is built to disprove strategies rather than to showcase them.
+If you find something here that survives `significance`, `noise` and
+`walkforward`, you will have more than any of those repositories is claiming.
+
+## An edge is a property of a strategy *at a size*
+
+The execution-focused backtesters (NautilusTrader is the usual reference) exist
+because the fast research tools are, in the field's own words, accurate about
+signals and untruthful about microstructure. A fixed slippage figure says a €50
+order and a €50,000 order in the same asset cost the same to execute. They do not.
+Past a small share of the volume trading alongside you, your own order moves the
+price, and the move grows roughly with the square root of your participation:
+
+```
+impact ≈ k · σ · √(Q / V)
+```
+
+The exponent being a half rather than a one is the whole problem: impact per unit
+*falls* with size, so it is invisible while you are small and then suddenly is not.
+`--impact` turns it on, and the consequence is that a backtest stops being
+size-independent. Same strategy, same bars, only the account:
+
+| Account | Total return | Sharpe | Average slippage | Largest share of a bar |
+| ------- | ------------ | ------ | ---------------- | ---------------------- |
+| €1,000 | +231.59% | 0.95 | 5.7 bps | 0.13% |
+| €100,000 | +37.07% | 0.35 | 78.5 bps | 5.43% |
+| €2,000,000 | −37.79% | −0.49 | 267.7 bps | 63.09% |
+
+That is a capacity limit, and every strategy has one. Quote a result together with
+the size it was measured at, or the result does not mean anything. And note the
+direction of the good news: a small account is the one case where this cost is
+genuinely negligible — which is the only structural advantage a small account has,
+and it is worth not giving away by trading something thin.
+
+## Train and test were never as separate as they looked
+
+A walk-forward with training strictly before testing still leaks. A strategy with a
+hundred-bar lookback, evaluated on the first test bar, is reading ninety-nine bars
+that were in the training set, and serial correlation carries more. The field treats
+the fix as standard — purging and embargoing, from López de Prado — and it is
+simply a gap: drop the last *N* bars of each training window so neither side sees
+them.
+
+`walkforward` now does this by default, with *N* set to the longest warm-up in the
+strategy's grid, and prints how many bars it withheld. It costs training data and
+buys an out-of-sample number that is actually out of sample.
+
+## How long until you would know
+
+This document has been answering "how long should I paper trade?" with a rule of
+thumb — thirty times the holding period — which is not wrong but is not derived
+from anything. The minimum track record length is derived, and falls out of the
+same expression that deflates a Sharpe ratio:
+
+```
+MinTRL = 1 + [1 − γ₃·SR + (γ₄−1)/4·SR²] · (Z_α / SR)²
+```
+
+Every backtest report now prints it. Two properties are worth internalising:
+
+**Required length goes with the inverse square of the edge.** Half the Sharpe
+ratio needs four times the evidence. A strategy that looks respectable at Sharpe
+0.95 on daily bars needs about **three years** of running before that number could
+be told apart from zero at 95% confidence.
+
+**A finer interval does not get you there faster.** For a given annualised Sharpe,
+the calendar time required is the same on hourly bars as on daily ones: twenty-four
+times as many observations, each covering a twenty-fourth of the time. An
+annualised Sharpe is a claim about a year, and sampling the same year more often
+does not produce more independent evidence about it. Anyone who switches to a
+shorter timeframe hoping to validate faster is paying more in fees for the same
+wait.
+
+## The drawdown you got was one sample
+
+A backtest reports the one drawdown history happened to deal, which is a sample of
+size one from the thing that actually decides whether you can run the strategy.
+Three losses in a row instead of spread out is the difference between a bad month
+and switching the bot off at the bottom.
+
+So the report reshuffles the trades that actually happened, a thousand times, and
+gives the distribution:
+
+```
+  Drawdown history dealt         21.87%
+  Reshuffled: median             15.25%
+  Reshuffled: 1 in 4 beyond      20.25%
+  Reshuffled: 1 in 20 beyond     28.60%
+  Reshuffled: worst of 1000      47.65%
+```
+
+This says nothing about whether the edge is real — `noise` and `significance` are
+for that. It says: *given* these trades, plan for the 1-in-4 figure rather than the
+one you were shown, and decide in advance whether you would sit through the
+1-in-20. Most people find out that they would not, at the worst possible moment.
+
 ## What "runs 24/7" actually requires
 
 A bot described as running for months has to survive a restart, and almost none
@@ -199,7 +326,8 @@ It answers one question, in one order, and refuses to skip steps:
    is pretty and then reports the curve, which tells you nothing, because you
    chose the parameters after seeing the data.
 7. **`paper`** — forward-test against live prices with simulated money, with
-   `--state` and `--resume` so the run survives restarts, for months, not days.
+   `--state` and `--resume` so the run survives restarts. For as long as the
+   minimum track record length says, which the backtest report now prints.
 
 There is no eighth step in this repository. That boundary is deliberate, and
 the next section explains it.

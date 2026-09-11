@@ -13,6 +13,12 @@ export interface WalkForwardOptions {
   folds: number;
   /** Fraction of each fold used for choosing parameters. The rest is the test. */
   trainFraction: number;
+  /**
+   * Bars dropped from the end of each training window, so training and testing do
+   * not overlap through the strategy's own lookback. Defaults to the longest
+   * warm-up in the grid; see `makeFolds`.
+   */
+  embargoBars?: number;
   costs?: CostModel;
   limits?: RiskLimits;
 }
@@ -26,17 +32,34 @@ export interface FoldRange {
 }
 
 /**
- * Cut a series into consecutive train/test pairs.
+ * Cut a series into consecutive train/test pairs, with a gap between them.
  *
  * The folds do not overlap and the test window always follows its own training
  * window, which is the only arrangement that answers the question a backtest is
- * asked. Shuffling bars or using k-fold cross-validation here — as people do
+ * asked. Shuffling bars or using plain k-fold cross-validation here — as people do
  * when they treat a price series like a pile of independent rows — trains on the
  * future and is worth nothing.
+ *
+ * `embargoBars` is the part that was missing, and the field treats it as standard:
+ * purging and embargoing, from López de Prado. Even with train strictly before
+ * test, the two are not independent. A strategy with a hundred-bar lookback,
+ * evaluated on the first test bar, is reading ninety-nine bars that were in the
+ * training set — and serial correlation carries the rest. Dropping the last
+ * `embargoBars` of each training window opens a gap that neither side sees, which
+ * costs training data and buys an out-of-sample number that is actually out of
+ * sample. Set it to the strategy's lookback; `runWalkForward` does that by default.
  */
-export function makeFolds(length: number, folds: number, trainFraction: number): FoldRange[] {
+export function makeFolds(
+  length: number,
+  folds: number,
+  trainFraction: number,
+  embargoBars = 0,
+): FoldRange[] {
   if (folds < 1) throw new Error('Need at least one fold');
   if (trainFraction <= 0 || trainFraction >= 1) throw new Error('trainFraction must be in (0, 1)');
+  if (embargoBars < 0 || !Number.isFinite(embargoBars)) {
+    throw new Error(`embargoBars must be a non-negative number, got ${embargoBars}`);
+  }
   const foldSize = Math.floor(length / folds);
   if (foldSize < 50) {
     throw new Error(
@@ -50,8 +73,16 @@ export function makeFolds(length: number, folds: number, trainFraction: number):
     const start = f * foldSize;
     const end = f === folds - 1 ? length : start + foldSize;
     const splitAt = start + Math.floor((end - start) * trainFraction);
-    if (splitAt - start < 30 || end - splitAt < 10) continue;
-    out.push({ index: f, trainStart: start, trainEnd: splitAt, testStart: splitAt, testEnd: end });
+    const trainEnd = splitAt - Math.floor(embargoBars);
+    if (trainEnd - start < 30 || end - splitAt < 10) continue;
+    out.push({ index: f, trainStart: start, trainEnd, testStart: splitAt, testEnd: end });
+  }
+  if (out.length === 0) {
+    throw new Error(
+      `No fold survived an embargo of ${embargoBars} bars: every training window ` +
+        `shrank below the 30-bar floor. Use more history, fewer folds, or a strategy ` +
+        `with a shorter lookback.`,
+    );
   }
   return out;
 }
@@ -72,6 +103,8 @@ export interface Fold {
 
 export interface WalkForwardResult {
   folds: Fold[];
+  /** Bars withheld between each train and test window. */
+  embargoBars: number;
   /** The out-of-sample equity curve, stitched across folds. */
   curve: EquityPoint[];
   metrics: Metrics;
@@ -95,7 +128,12 @@ export interface WalkForwardResult {
 export function runWalkForward(options: WalkForwardOptions): WalkForwardResult {
   const { candles, factory, interval, startingCash, folds, trainFraction } = options;
 
-  const ranges = makeFolds(candles.length, folds, trainFraction);
+  // The longest warm-up in the grid is the window through which training leaks,
+  // so that is the default embargo rather than an arbitrary constant.
+  const embargoBars =
+    options.embargoBars ??
+    Math.max(0, ...factory.grid.map((params) => factory.create(params).warmupBars));
+  const ranges = makeFolds(candles.length, folds, trainFraction, embargoBars);
 
   const results: Fold[] = [];
   const curve: EquityPoint[] = [];
@@ -186,5 +224,5 @@ export function runWalkForward(options: WalkForwardOptions): WalkForwardResult {
     if (results[i]?.chosen !== results[i - 1]?.chosen) parameterChanges += 1;
   }
 
-  return { folds: results, curve, metrics: { ...metrics, trades }, parameterChanges };
+  return { folds: results, embargoBars, curve, metrics: { ...metrics, trades }, parameterChanges };
 }

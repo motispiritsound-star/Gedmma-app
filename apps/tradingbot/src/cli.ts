@@ -9,6 +9,7 @@ import {
   krakenSpot,
   type CommissionModel,
 } from './costs/commission.js';
+import { DEFAULT_IMPACT, type ImpactModel } from './costs/slippage.js';
 import { alignUniverse } from './data/align.js';
 import {
   auditSeries,
@@ -138,6 +139,26 @@ function interval(args: Args): Interval {
  * broker charges per share with a floor, and the floor is what a small account
  * actually pays, so the two cannot share one number.
  */
+/**
+ * The market-impact model, off unless asked for.
+ *
+ * Off by default because it makes a result size-dependent, and a size-dependent
+ * result that nobody asked for is confusing. On, because a result that is not
+ * size-dependent is wrong.
+ */
+function impactFrom(args: Args): ImpactModel | undefined {
+  if (!args.bools.has('impact') && !args.flags.has('impact-k')) return undefined;
+  return {
+    coefficient: num(args, 'impact-k', DEFAULT_IMPACT.coefficient),
+    negligibleParticipation: num(
+      args,
+      'impact-floor',
+      DEFAULT_IMPACT.negligibleParticipation,
+    ),
+    maxBps: num(args, 'max-impact-bps', DEFAULT_IMPACT.maxBps),
+  };
+}
+
 function costsFrom(args: Args): CostModel {
   const scheme = str(args, 'commission', 'bps');
   let commission: CommissionModel;
@@ -179,6 +200,7 @@ function costsFrom(args: Args): CostModel {
     commission,
     slippageBps: num(args, 'slippage-bps', DEFAULT_COSTS.slippageBps),
     borrowBpsPerDay: num(args, 'borrow-bps', DEFAULT_COSTS.borrowBpsPerDay),
+    impact: impactFrom(args),
   };
 }
 
@@ -460,6 +482,7 @@ async function cmdWalkForward(args: Args): Promise<void> {
     startingCash: num(args, 'cash', 1000),
     folds: num(args, 'folds', 5),
     trainFraction: num(args, 'train-fraction', 0.7),
+    embargoBars: args.flags.has('embargo') ? num(args, 'embargo', 0) : undefined,
     costs: costsFrom(args),
     limits: limitsFrom(args),
   });
@@ -573,6 +596,7 @@ async function cmdPortfolio(args: Args): Promise<void> {
           startingCash: cash,
           folds: num(args, 'folds', 5),
           trainFraction: num(args, 'train-fraction', 0.7),
+          embargoBars: args.flags.has('embargo') ? num(args, 'embargo', 0) : undefined,
           costs,
           limits,
         }),
@@ -1144,7 +1168,14 @@ Money and costs
   --min-commission 0.35 Floor per order for --commission per-unit
   --max-commission-pct 0.01
   --per-order 1         Flat amount for --commission per-order
-  --slippage-bps 5      Slippage per fill, basis points
+  --slippage-bps 5      Spread cost per fill, basis points — what a small order
+                        pays. Size costs extra; see --impact.
+  --impact              Charge market impact on top of the spread: your own order
+                        moves the price, roughly with the square root of your
+                        share of the bar's volume. Makes the result
+                        size-dependent, which is the truth.
+  --impact-k 1          Impact coefficient. Calibrate against your own fills.
+  --max-impact-bps 500  Ceiling, so one thin bar cannot dominate a run
   --borrow-bps 5        Daily cost of a short, basis points
 
 Protective exits (omit them and only the strategy ever closes a position)
@@ -1173,6 +1204,9 @@ Risk
 Walk-forward
   --folds 5             Train/test pairs
   --train-fraction 0.7  Share of each fold used to choose parameters
+  --embargo N           Bars dropped between each train and test window, so the
+                        two do not overlap through the strategy's own lookback.
+                        Defaults to the longest warm-up in the grid.
   --validate            On \`portfolio\`, run the walk-forward instead of a backtest
 
 Kraken (public data needs no key; trading reads KRAKEN_API_KEY and

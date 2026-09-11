@@ -14,6 +14,8 @@ export interface PortfolioWalkForwardOptions {
   startingCash: number;
   folds: number;
   trainFraction: number;
+  /** See `makeFolds`. Defaults to the longest warm-up in the grid. */
+  embargoBars?: number;
   costs?: CostModel;
   limits?: PortfolioLimits;
 }
@@ -31,6 +33,7 @@ export interface PortfolioFold {
 
 export interface PortfolioWalkForwardResult {
   folds: PortfolioFold[];
+  embargoBars: number;
   curve: EquityPoint[];
   metrics: Metrics;
   parameterChanges: number;
@@ -53,7 +56,10 @@ export function runPortfolioWalkForward(
 
   const symbols = [...universe.keys()];
   const length = Math.min(...symbols.map((s) => universe.get(s)?.length ?? 0));
-  const ranges = makeFolds(length, folds, trainFraction);
+  const embargoBars =
+    options.embargoBars ??
+    Math.max(0, ...factory.grid.map((params) => factory.create(params).warmupBars));
+  const ranges = makeFolds(length, folds, trainFraction, embargoBars);
 
   const slice = (from: number, to: number): Map<string, readonly Candle[]> =>
     new Map(symbols.map((s) => [s, (universe.get(s) as readonly Candle[]).slice(from, to)]));
@@ -125,6 +131,7 @@ export function runPortfolioWalkForward(
 
   return {
     folds: results,
+    embargoBars,
     curve,
     // Round trips are not stitched across folds, so the fill count stands in for
     // the trade count and the trade-level statistics are left unreported rather

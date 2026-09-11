@@ -1,4 +1,5 @@
 import { bpsCommission, type CommissionModel } from './costs/commission.js';
+import type { ImpactModel } from './costs/slippage.js';
 
 /**
  * The vocabulary every other module shares.
@@ -112,11 +113,21 @@ export interface CostModel {
    */
   commission: CommissionModel;
   /**
-   * The gap between the price you see and the price you get, in basis points.
-   * On BTCUSDT with small size this is small; on a thin altcoin it is the
-   * single biggest number in the model, and the one people leave at zero.
+   * The spread cost: the gap between the price you see and the price you get for
+   * an order small enough not to matter, in basis points. On BTCUSDT this is
+   * small; on a thin altcoin it is the single biggest number in the model, and
+   * the one people leave at zero.
    */
   slippageBps: number;
+  /**
+   * What your own order does to the price, on top of the spread.
+   *
+   * Omitted, a €50 order and a €50,000 order in the same asset cost the same to
+   * execute, which is the optimistic lie every fixed-cost backtest tells. Set it
+   * and the result becomes size-dependent, which is the truth — and means a
+   * result has to be quoted with the size it was measured at.
+   */
+  impact?: ImpactModel;
   /**
    * Daily cost of holding a short, in basis points of notional. Spot cannot
    * short at all; this exists so that a short-enabled backtest is not quietly

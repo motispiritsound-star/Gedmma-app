@@ -68,6 +68,19 @@ export interface BacktestResult {
    * any edge the strategy could have.
    */
   commissionDrag: { perRoundTrip: number; atNotional: number };
+  /**
+   * What the fills cost in slippage and how much of each bar they were. Quote any
+   * result together with the size it was measured at: with an impact model in
+   * play, the same strategy on the same bars is cheaper small than large.
+   */
+  execution: {
+    averageSlippageBps: number;
+    worstParticipation: number;
+    cappedFills: number;
+    impactCost: number;
+    /** False when the series carried no volume, so impact could not be modelled. */
+    volumeAvailable: boolean;
+  };
 }
 
 /**
@@ -142,7 +155,7 @@ export function runBacktest(options: BacktestOptions): BacktestResult {
       }
       const hit = stopTracker.check(bar);
       if (hit) {
-        broker.flatten(hit.price, bar.openTime, hit.reason);
+        broker.flatten(hit.price, bar.openTime, hit.reason, bar);
         stopCounts[hit.reason] += 1;
         slippages.push(hit.slippedBy);
         stopTracker.close();
@@ -193,13 +206,15 @@ export function runBacktest(options: BacktestOptions): BacktestResult {
 
     const verdict = risk.evaluate(rawTarget, currentWeight, equity, next.open);
     if (verdict.action === 'flatten') {
-      broker.flatten(next.open, next.openTime, risk.isTripped ? 'kill-switch' : 'liquidate');
+      broker.flatten(next.open, next.openTime, risk.isTripped ? 'kill-switch' : 'liquidate', next);
       blocked[verdict.reason] = (blocked[verdict.reason] ?? 0) + 1;
     } else if (verdict.action === 'hold') {
       blocked[verdict.reason] = (blocked[verdict.reason] ?? 0) + 1;
     } else {
       const before = broker.qty;
-      broker.rebalanceTo(verdict.weight, next.open, next.openTime);
+      // The fill happens inside the *next* bar, so that is the bar whose volume
+      // and range decide what the order costs.
+      broker.rebalanceTo(verdict.weight, next.open, next.openTime, 'rebalance', next);
       // A fill that opens or reverses a position resets the protective levels to
       // the price it was actually opened at.
       if (stopsOn && broker.qty !== 0 && (before === 0 || Math.sign(before) !== Math.sign(broker.qty))) {
@@ -213,7 +228,7 @@ export function runBacktest(options: BacktestOptions): BacktestResult {
   // Close the book at the last price so the final equity is money, not a mark.
   const finalBar = candles[candles.length - 1] as Candle;
   if (broker.qty !== 0) {
-    broker.flatten(finalBar.close, finalBar.openTime);
+    broker.flatten(finalBar.close, finalBar.openTime, 'liquidate', finalBar);
     const lastPoint = curve[curve.length - 1];
     if (lastPoint) {
       lastPoint.equity = broker.equity(finalBar.close);
@@ -238,6 +253,10 @@ export function runBacktest(options: BacktestOptions): BacktestResult {
     commissionDrag: {
       perRoundTrip: roundTripDrag(costs.commission, fullSizeNotional, firstClose),
       atNotional: fullSizeNotional,
+    },
+    execution: {
+      ...broker.execution,
+      volumeAvailable: candles.some((c) => c.volume > 0),
     },
     stops: stopsOn
       ? {

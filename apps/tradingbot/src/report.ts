@@ -5,7 +5,9 @@ import type { PortfolioResult } from './engine/portfolio.js';
 import type { PortfolioWalkForwardResult } from './engine/portfolioWalkforward.js';
 import type { SignificanceResult } from './engine/significance.js';
 import { caveats, pct, type Metrics } from './engine/metrics.js';
+import { bootstrapDrawdowns, minimumTrackRecordLength } from './engine/robustness.js';
 import type { NoiseTestResult, PortfolioNoiseResult } from './engine/noise.js';
+import type { EquityPoint, Interval } from './types.js';
 import type { WalkForwardResult } from './engine/walkforward.js';
 
 const WIDTH = 74;
@@ -120,6 +122,44 @@ export function renderBacktest(result: BacktestResult): string {
     );
   }
 
+  const execution = result.execution;
+  if (execution.worstParticipation > 0) {
+    parts.push('');
+    parts.push(row('Average slippage paid', `${execution.averageSlippageBps.toFixed(1)} bps`));
+    parts.push(row('Cost of own market impact', formatMoney(execution.impactCost)));
+    parts.push(row('Largest share of a bar', pct(execution.worstParticipation)));
+    if (execution.worstParticipation > 0.05) {
+      parts.push(
+        `  ${wrap(
+          `At least one order was ${pct(execution.worstParticipation)} of a bar's entire ` +
+            `volume. The square-root impact model is being extrapolated well past where ` +
+            `it was ever fitted, so the real fill would be worse than this — probably ` +
+            `much worse. This size is not tradeable in this market.`,
+          WIDTH - 4,
+        )}`,
+      );
+    }
+    if (execution.cappedFills > 0) {
+      parts.push(
+        `  ${wrap(
+          `${execution.cappedFills} fills hit the impact ceiling, meaning the model ` +
+            `wanted to charge more than it was allowed to. Those fills are understated.`,
+          WIDTH - 4,
+        )}`,
+      );
+    }
+  } else if (!execution.volumeAvailable) {
+    parts.push('');
+    parts.push(
+      `  ${wrap(
+        'This series carries no volume, so market impact could not be modelled at all: ' +
+          'the slippage above is the spread only, and a large order is priced exactly ' +
+          'like a small one. That is the optimistic assumption.',
+        WIDTH - 4,
+      )}`,
+    );
+  }
+
   const drag = result.commissionDrag;
   if (drag.perRoundTrip > 0.001) {
     parts.push('');
@@ -166,6 +206,8 @@ export function renderBacktest(result: BacktestResult): string {
     }
   }
 
+  parts.push(renderRobustness(result));
+
   const warnings = caveats(result.metrics);
   if (warnings.length > 0) {
     parts.push(heading('Read this before believing the table above'));
@@ -175,6 +217,96 @@ export function renderBacktest(result: BacktestResult): string {
   }
 
   return parts.join('\n');
+}
+
+/**
+ * How long this equity curve would have to run before its Sharpe ratio could be
+ * told apart from zero. Shared by the single-asset and portfolio reports, because
+ * the question does not change with the number of instruments.
+ */
+export function renderTrackRecord(
+  curve: readonly EquityPoint[],
+  sharpeAnnual: number,
+  interval: Interval,
+): string {
+  const parts: string[] = [];
+  const returns: number[] = [];
+  for (let i = 1; i < curve.length; i += 1) {
+    const previous = curve[i - 1]?.equity ?? 0;
+    const current = curve[i]?.equity ?? 0;
+    if (previous > 0) returns.push(current / previous - 1);
+  }
+
+  const required = minimumTrackRecordLength({ returns, sharpeAnnual, interval });
+
+  if (required.hopeless) {
+    parts.push(
+      `  ${wrap(
+        'The measured edge is zero or negative, so no length of track record would ' +
+          'establish one. There is nothing here to forward-test.',
+        WIDTH - 4,
+      )}`,
+    );
+    return parts.join('\n');
+  }
+
+  parts.push(row('Track record needed (95%)', `${Math.ceil(required.bars)} bars`));
+  parts.push(row('  which is', formatDuration(required.days)));
+  parts.push(
+    `  ${wrap(
+      'That is how long this strategy would have to run before its Sharpe ratio ' +
+        'could be told apart from zero at 95% confidence. Required length goes with ' +
+        'the inverse square of the edge, so half the Sharpe needs four times the ' +
+        'evidence — and a finer bar size does not shorten it by a day. It is also the ' +
+        'honest answer to "how long should I paper trade".',
+      WIDTH - 4,
+    )}`,
+  );
+  return parts.join('\n');
+}
+
+/**
+ * Two questions the table above cannot answer: how long until you would know, and
+ * how bad does the ride get.
+ */
+export function renderRobustness(result: BacktestResult): string {
+  const parts: string[] = [heading('How long until you would know, and how bad it gets')];
+  parts.push(renderTrackRecord(result.curve, result.metrics.sharpe, result.interval));
+
+  if (result.trades.length >= 5) {
+    const shuffled = bootstrapDrawdowns({
+      trades: result.trades,
+      startingEquity: result.metrics.startEquity,
+    });
+    parts.push('');
+    parts.push(row('Drawdown history dealt', pct(result.metrics.maxDrawdown)));
+    parts.push(row('Reshuffled: median', pct(shuffled.median)));
+    parts.push(row('Reshuffled: 1 in 4 beyond', pct(shuffled.p75)));
+    parts.push(row('Reshuffled: 1 in 20 beyond', pct(shuffled.p95)));
+    parts.push(row('Reshuffled: worst of 1000', pct(shuffled.worst)));
+    parts.push(row('Orderings that lost money', pct(shuffled.losingShare)));
+    parts.push(
+      `  ${wrap(
+        'Same trades, different order, a thousand times. The drawdown the backtest ' +
+          'reported is one sample from this, and three losses in a row instead of ' +
+          'spread out is the difference between a bad month and switching the bot off ' +
+          `at the bottom. Plan for the ${pct(shuffled.p75)} figure, not the ` +
+          `${pct(result.metrics.maxDrawdown)} one, and decide now whether you would sit ` +
+          'through it.',
+        WIDTH - 4,
+      )}`,
+    );
+  }
+
+  return parts.join('\n');
+}
+
+/** Days as something a human plans around. */
+export function formatDuration(days: number): string {
+  if (!Number.isFinite(days)) return 'longer than any plan';
+  if (days < 90) return `${Math.ceil(days)} days`;
+  if (days < 730) return `${(days / 30.44).toFixed(1)} months`;
+  return `${(days / 365).toFixed(1)} years`;
 }
 
 export function renderComparison(results: readonly BacktestResult[]): string {
@@ -216,6 +348,11 @@ export function renderWalkForward(result: WalkForwardResult): string {
     `  The winning parameters changed in ${result.parameterChanges} of ` +
       `${Math.max(0, result.folds.length - 1)} fold transitions.`,
   );
+  parts.push(
+    `  ${result.embargoBars} bars were withheld between each training and test window, ` +
+      `so the two`,
+  );
+  parts.push('  do not overlap through the strategy\u2019s own lookback.');
   if (result.parameterChanges > result.folds.length / 2) {
     parts.push(
       `  ${wrap(
@@ -328,6 +465,9 @@ export function renderPortfolio(result: PortfolioResult): string {
     parts.push('');
     parts.push(`  Kill switch fired: ${result.killSwitch}`);
   }
+
+  parts.push(heading('How long until you would know'));
+  parts.push(renderTrackRecord(result.curve, result.metrics.sharpe, result.interval));
 
   parts.push(heading('Read this before believing the table above'));
   parts.push(`  - ${wrap(survivorshipWarning(result.symbols), WIDTH - 4)}`);

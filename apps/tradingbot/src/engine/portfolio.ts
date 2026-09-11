@@ -1,4 +1,5 @@
 import { commissionFor } from '../costs/commission.js';
+import { slippageFor } from '../costs/slippage.js';
 import { alignUniverse } from '../data/align.js';
 import {
   DEFAULT_LIMITS,
@@ -201,10 +202,18 @@ export function runPortfolioBacktest(options: PortfolioBacktestOptions): Portfol
 
       const currentQty = qty.get(symbol) as number;
       const desiredRough = (target * marked) / reference;
-      const side = Math.sign(desiredRough - currentQty);
+      const roughDelta = desiredRough - currentQty;
+      const side = Math.sign(roughDelta);
       if (side === 0) continue;
 
-      const fillPrice = reference * (1 + (side * costs.slippageBps) / 10_000);
+      // The fill lands in the next bar, so that bar's volume and range price it.
+      const slippage = slippageFor({
+        spreadBps: costs.slippageBps,
+        impact: costs.impact,
+        orderNotional: Math.abs(roughDelta) * reference,
+        market: aligned.series.get(symbol)?.[i + 1],
+      });
+      const fillPrice = reference * (1 + (side * slippage.totalBps) / 10_000);
       const desiredQty = (target * marked) / fillPrice;
       const delta = desiredQty - currentQty;
       const notional = Math.abs(delta) * fillPrice;

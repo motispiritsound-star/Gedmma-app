@@ -77,8 +77,10 @@ way crypto majors really are.
 ```
 src/
   types.ts              Candles, fills, trades, the cost model
-  costs/commission.ts   What a broker actually charges: bps, per-unit with a
+  costs/
+    commission.ts       What a broker actually charges: bps, per-unit with a
                         floor and a cap, per-order, per-contract
+    slippage.ts         The spread, plus what your own order does to the price
   broker/
     ibkrClient.ts       IBKR Client Portal Web API, loopback only, no keys
     ibkrExecution.ts    Live execution behind three gates, dry run by default
@@ -111,7 +113,10 @@ src/
     backtest.ts         The single-asset event loop, and the no-lookahead guarantee
     portfolio.ts        One cash pool across many symbols, with exposure caps
     metrics.ts          Sharpe, Sortino, drawdown, turnover, t-statistic
-    walkforward.ts      In-sample selection, out-of-sample measurement
+    walkforward.ts      In-sample selection, out-of-sample measurement, with a
+                        purge-and-embargo gap between the two
+    robustness.ts       How long a track record must be, and the spread of
+                        drawdowns the same trades produce in a different order
     portfolioWalkforward.ts  The same, for a universe
     noise.ts            The strategy on random walks and on edgeless universes
     stats.ts            Normal quantiles, skew, kurtosis, deflated Sharpe
@@ -145,6 +150,23 @@ order, and on a small account the floor is all you ever pay. The report prints
 `Cost drag per year` from the fees the run actually paid at its actual trade
 frequency, and warns above 5%. The weight cap is reduced by one entry's commission
 so a fully-invested target cannot leave the account overdrawn.
+
+**An edge is a property of a strategy at a size.** `--impact` charges what your own
+order does to the price — roughly with the square root of your share of the bar's
+volume — so the same strategy on the same bars is cheaper at €1,000 than at
+€2,000,000, because it is. A result quoted without the size it was measured at does
+not mean anything.
+
+**Train and test get a gap between them.** Even with training strictly before
+testing, a hundred-bar lookback evaluated on the first test bar reads ninety-nine
+training bars. `walkforward` withholds the strategy's longest warm-up between the
+two windows by default and prints how many bars it dropped.
+
+**Every report says how long until you would know.** The minimum track record
+length, from the same expression that deflates a Sharpe ratio, replacing the rule of
+thumb this repo used to offer. And the drawdown distribution from reshuffling the
+trades that actually happened, because the one the backtest dealt was a sample of
+size one.
 
 **A stop does not fill at the stop price.** It becomes a market order when
 touched, so a market that gapped past it fills wherever it reopened. Stops here
@@ -191,6 +213,14 @@ Three findings worth knowing before you start, all reproducible from this repo:
   one with a Sharpe of −2.78.** Same bars, same signals; only the fee schedule of
   the venue you can actually use. Every crypto backtest here was run at 10 bps
   until `--commission kraken` existed.
+- **The same strategy goes from +231% to −37% purely by raising the account from
+  €1,000 to €2,000,000**, once its own market impact is charged. Every strategy has
+  a capacity limit; `--impact` finds yours.
+- **A Sharpe of 0.95 on daily bars needs about three years of running** before it
+  could be told apart from zero at 95% confidence — and moving to hourly bars does
+  not shorten that by a single day, it just costs more in fees.
+- **Reshuffling the same trades turns a 21.87% drawdown into 28.60% one run in
+  twenty, and 47.65% at worst.** The backtest showed you one ordering.
 
 ## Tests
 
@@ -198,15 +228,17 @@ Three findings worth knowing before you start, all reproducible from this repo:
 npm test --workspace @buurklus/tradingbot
 ```
 
-257 tests, mostly invariants rather than examples: no lookahead in either engine,
+294 tests, mostly invariants rather than examples: no lookahead in either engine,
 fees charged on both legs and split across a partial exit, a commission floor that
 bites before its percentage cap, an account that never borrows, stops that fill
 through a gap and lose to a take-profit in the same bar, a cooldown that blocks
 re-entry but never an exit, order quantities rounded toward zero, a live account
 refused without an explicit flag, a gateway URL refused unless it is loopback, a
 Kraken signature checked against Kraken's own published test vector, a still-forming
-candle dropped, an HTTP 200 carrying an error array treated as the failure it is, a
-kill switch that stays tripped across a restart, a restored high-water mark, a
+candle dropped, an HTTP 200 carrying an error array treated as the failure it is,
+market impact that grows with the square root of participation rather than linearly,
+an embargo that refuses to starve a training window, a track record requirement that
+quadruples when the edge halves, a kill switch that stays tripped across a restart, a restored high-water mark, a
 walk-forward test window that always starts after its training window, state files
 that refuse to load into the wrong run, and the sanity checks that each strategy
 makes money on the series built to suit it and loses on the one built against it.

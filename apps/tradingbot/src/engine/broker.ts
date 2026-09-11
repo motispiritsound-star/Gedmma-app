@@ -1,4 +1,5 @@
 import { commissionFor } from '../costs/commission.js';
+import { slippageFor, type MarketContext, type SlippageBreakdown } from '../costs/slippage.js';
 import type { CostModel, Fill, Trade } from '../types.js';
 
 /**
@@ -37,6 +38,11 @@ export class PaperBroker {
   private readonly tradeLog: Trade[] = [];
   private feesTotal = 0;
   private turnoverTotal = 0;
+  /** Notional-weighted slippage, so the average reflects where the size was. */
+  private slippageWeighted = 0;
+  private worstParticipation = 0;
+  private cappedFills = 0;
+  private impactCostTotal = 0;
 
   /** The leg that opened the position currently held, for round-trip accounting. */
   private openLeg: { time: number; price: number; qty: number; fee: number; bars: number } | null =
@@ -63,6 +69,30 @@ export class PaperBroker {
   /** Total notional traded, in quote currency. Divide by equity for turnover. */
   get turnover(): number {
     return this.turnoverTotal;
+  }
+
+  /**
+   * What the fills actually cost in slippage, and how much of the market they
+   * were.
+   *
+   * `averageSlippageBps` is weighted by notional rather than by fill count,
+   * because a flat average lets a hundred tiny orders hide the one that moved the
+   * price. `worstParticipation` is the number to look at before believing any of
+   * it: above a few percent of a bar's volume the square-root model is being
+   * extrapolated past where it was ever fitted.
+   */
+  get execution(): {
+    averageSlippageBps: number;
+    worstParticipation: number;
+    cappedFills: number;
+    impactCost: number;
+  } {
+    return {
+      averageSlippageBps: this.turnoverTotal > 0 ? this.slippageWeighted / this.turnoverTotal : 0,
+      worstParticipation: this.worstParticipation,
+      cappedFills: this.cappedFills,
+      impactCost: this.impactCostTotal,
+    };
   }
 
   get fills(): readonly Fill[] {
@@ -136,19 +166,29 @@ export class PaperBroker {
     referencePrice: number,
     time: number,
     reason: Fill['reason'] = 'rebalance',
+    market?: MarketContext,
   ): Fill | null {
     if (referencePrice <= 0) return null;
     const equity = this.equity(referencePrice);
     if (equity <= 0) return null;
 
-    // Slippage depends on the side, and the side depends on the size, so the
-    // desired size is computed once at the unslipped price to settle the sign
-    // and then again at the price that sign implies. The residual error is
-    // second order in the slippage and not worth iterating away.
+    // Slippage depends on the side and now on the size, and the size depends on
+    // the fill price, which depends on the slippage. The loop is broken by sizing
+    // once at the unslipped price to settle both the sign and the notional, then
+    // pricing the fill from those. The residual is second order in the slippage
+    // and not worth iterating away.
     const roughTarget = (targetWeight * equity) / referencePrice;
-    const side = Math.sign(roughTarget - this.qtyHeld);
+    const roughDelta = roughTarget - this.qtyHeld;
+    const side = Math.sign(roughDelta);
     if (side === 0) return null;
-    const fillPrice = referencePrice * (1 + (side * this.costs.slippageBps) / 10_000);
+
+    const slippage: SlippageBreakdown = slippageFor({
+      spreadBps: this.costs.slippageBps,
+      impact: this.costs.impact,
+      orderNotional: Math.abs(roughDelta) * referencePrice,
+      market,
+    });
+    const fillPrice = referencePrice * (1 + (side * slippage.totalBps) / 10_000);
 
     const desiredQty = (targetWeight * equity) / fillPrice;
     const delta = desiredQty - this.qtyHeld;
@@ -156,6 +196,13 @@ export class PaperBroker {
 
     const notional = Math.abs(delta) * fillPrice;
     const fee = commissionFor(this.costs.commission, delta, fillPrice);
+
+    this.slippageWeighted += slippage.totalBps * notional;
+    this.impactCostTotal += (slippage.impactBps / 10_000) * notional;
+    if (slippage.participation > this.worstParticipation) {
+      this.worstParticipation = slippage.participation;
+    }
+    if (slippage.capped) this.cappedFills += 1;
 
     const wasQty = this.qtyHeld;
     this.cashBalance -= delta * fillPrice + fee;
@@ -171,9 +218,14 @@ export class PaperBroker {
   }
 
   /** Sell or buy back everything. Used by the risk layer and at the final bar. */
-  flatten(referencePrice: number, time: number, reason: Fill['reason'] = 'liquidate'): Fill | null {
+  flatten(
+    referencePrice: number,
+    time: number,
+    reason: Fill['reason'] = 'liquidate',
+    market?: MarketContext,
+  ): Fill | null {
     if (this.qtyHeld === 0) return null;
-    return this.rebalanceTo(0, referencePrice, time, reason);
+    return this.rebalanceTo(0, referencePrice, time, reason, market);
   }
 
   /** Called once per bar so an open round trip can report how long it lasted. */
