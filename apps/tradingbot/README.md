@@ -6,12 +6,11 @@ measures how much of the result is luck or parameter-search selection, validates
 out of sample, and forward-tests on live prices with simulated money across
 restarts.
 
-It can place real orders through Interactive Brokers, behind three deliberate
-gates, and it still contains **no API keys of any kind** — IBKR's gateway runs on
-your own machine and holds the session.
-[docs/IBKR.md](../../docs/IBKR.md) covers that, and
-[docs/TRADING.md](../../docs/TRADING.md) covers what the harness measures and the
-arithmetic on the "$68 into $750,000" posts.
+It can place real orders through **Interactive Brokers** or **Kraken**, behind
+deliberate gates, and it never sends one without being told to twice.
+[docs/IBKR.md](../../docs/IBKR.md) and [docs/KRAKEN.md](../../docs/KRAKEN.md) cover
+the two connections; [docs/TRADING.md](../../docs/TRADING.md) covers what the
+harness measures and the arithmetic on the "$68 into $750,000" posts.
 
 ## Quick start
 
@@ -51,9 +50,18 @@ npm run bot -- ibkr status
 npm run bot -- ibkr search --symbol AAPL
 npm run bot -- ibkr bars --conid 265598 --interval 1d --out aapl.csv
 npm run bot -- trade --conid 265598 --account DU1234567 --strategy ema-cross
+
+# Kraken: the venue where EU retail spot crypto actually lives.
+npm run bot -- kraken pairs --pair XBTEUR
+npm run bot -- kraken bars --pair XBTEUR --interval 1d --out xbteur.csv
+npm run bot -- backtest --csv xbteur.csv --commission kraken
+npm run bot -- trade --broker kraken --pair XBTEUR --commission kraken
 ```
 
-The last one is a dry run: it logs every order and sends nothing until `--send`.
+Neither `trade` sends anything. IBKR's is a dry run until `--send`; Kraken's hands
+every order to the exchange's own `validate` endpoint, which checks it and executes
+nothing, and needs `--send --i-accept-real-money` to do more — because Kraken has
+no paper account for spot, so there is no harmless version of sending.
 
 From inside `apps/tradingbot` the prefix shortens to `npm run bot -- <command>`.
 `npm run bot -- help` lists every flag.
@@ -74,10 +82,13 @@ src/
   broker/
     ibkrClient.ts       IBKR Client Portal Web API, loopback only, no keys
     ibkrExecution.ts    Live execution behind three gates, dry run by default
+    krakenClient.ts     Kraken's signed REST API; key from the environment only
+    krakenExecution.ts  Spot execution, validated by Kraken unless told to send
   data/
     binance.ts          Public klines, paged and rate-limit aware. Read-only.
-    source.ts           The DataSource seam: Binance or IBKR, same strategy
+    source.ts           The DataSource seam: Binance, IBKR or Kraken
     ibkrData.ts         Bars from the IBKR gateway, regular hours by default
+    kraken.ts           Kraken public data, 720-bar ceiling and all
     store.ts            CSV cache, plus an audit for gaps and bad bars
     align.ts            Several symbols onto one timeline, and what that costs
     synthetic.ts        Seeded series and correlated universes with known properties
@@ -176,6 +187,10 @@ Three findings worth knowing before you start, all reproducible from this repo:
   with overnight gaps and read the two slippage lines.
 - **Ten symbols rebalanced weekly at a €0.35 order minimum costs €364 a year**,
   which on a €500 account is 73% before the strategy has predicted anything.
+- **Kraken's 40 bps taker fee turns an hourly strategy with a Sharpe of 3.04 into
+  one with a Sharpe of −2.78.** Same bars, same signals; only the fee schedule of
+  the venue you can actually use. Every crypto backtest here was run at 10 bps
+  until `--commission kraken` existed.
 
 ## Tests
 
@@ -183,12 +198,14 @@ Three findings worth knowing before you start, all reproducible from this repo:
 npm test --workspace @buurklus/tradingbot
 ```
 
-213 tests, mostly invariants rather than examples: no lookahead in either engine,
+257 tests, mostly invariants rather than examples: no lookahead in either engine,
 fees charged on both legs and split across a partial exit, a commission floor that
 bites before its percentage cap, an account that never borrows, stops that fill
 through a gap and lose to a take-profit in the same bar, a cooldown that blocks
 re-entry but never an exit, order quantities rounded toward zero, a live account
 refused without an explicit flag, a gateway URL refused unless it is loopback, a
+Kraken signature checked against Kraken's own published test vector, a still-forming
+candle dropped, an HTTP 200 carrying an error array treated as the failure it is, a
 kill switch that stays tripped across a restart, a restored high-water mark, a
 walk-forward test window that always starts after its training window, state files
 that refuse to load into the wrong run, and the sanity checks that each strategy

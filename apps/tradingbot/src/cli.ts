@@ -6,6 +6,7 @@ import {
   describeCommission,
   ibkrFixedShares,
   ibkrTieredShares,
+  krakenSpot,
   type CommissionModel,
 } from './costs/commission.js';
 import { alignUniverse } from './data/align.js';
@@ -38,7 +39,10 @@ import { runWalkForward } from './engine/walkforward.js';
 import { runLive, runPaper } from './live/paper.js';
 import { IbkrClient } from './broker/ibkrClient.js';
 import { IbkrExecution, isPaperAccount } from './broker/ibkrExecution.js';
+import { KrakenClient, credentialsFromEnv } from './broker/krakenClient.js';
+import { KrakenExecution } from './broker/krakenExecution.js';
 import { ibkrDataSource } from './data/ibkrData.js';
+import { fetchPair, krakenDataSource, MAX_OHLC_BARS } from './data/kraken.js';
 import { DEFAULT_SIZING, type SizingConfig } from './risk/sizing.js';
 import { hasStops, type StopConfig } from './risk/stops.js';
 import { silentNotifier, webhookNotifier } from './live/notify.js';
@@ -147,6 +151,12 @@ function costsFrom(args: Args): CostModel {
     case 'ibkr-fixed':
       commission = ibkrFixedShares();
       break;
+    case 'kraken':
+      commission = krakenSpot({
+        thirtyDayVolumeUsd: num(args, 'volume-30d', 0),
+        role: str(args, 'role', 'taker') === 'maker' ? 'maker' : 'taker',
+      });
+      break;
     case 'per-unit':
       commission = {
         kind: 'per-unit',
@@ -160,7 +170,8 @@ function costsFrom(args: Args): CostModel {
       break;
     default:
       throw new Error(
-        `--commission must be bps, ibkr-tiered, ibkr-fixed, per-unit or per-order ` +
+        `--commission must be bps, kraken, ibkr-tiered, ibkr-fixed, per-unit or ` +
+          `per-order ` +
           `(got "${scheme}")`,
       );
   }
@@ -792,6 +803,113 @@ async function cmdIbkr(args: Args): Promise<void> {
   }
 }
 
+async function cmdKraken(args: Args): Promise<void> {
+  const sub = args.rest[0] ?? 'pairs';
+
+  switch (sub) {
+    case 'status': {
+      console.log(heading('Kraken'));
+      const credentials = credentialsFromEnv();
+      if (!credentials) {
+        console.log('  credentials     not set (KRAKEN_API_KEY / KRAKEN_API_SECRET)');
+        console.log('');
+        console.log(
+          `  ${wrap(
+            'Public data works without credentials, so `kraken pairs` and `kraken bars` ' +
+              'are available either way. Only trading needs a key, and that key should ' +
+              'have withdrawals switched off.',
+            70,
+          )}`,
+        );
+        return;
+      }
+      const client = new KrakenClient({ credentials });
+      const balances = await client.balances();
+      const trade = await client.tradeBalance();
+      console.log('  credentials     set');
+      console.log(`  account equity  ${trade.equity.toFixed(2)} (Kraken's own figure)`);
+      console.log('');
+      console.log('  balances:');
+      for (const [asset, amount] of Object.entries(balances)) {
+        if (amount !== 0) console.log(`    ${asset.padEnd(10)}${amount}`);
+      }
+      const open = await client.openOrders();
+      const count = Object.keys(open).length;
+      console.log('');
+      console.log(`  open orders     ${count}`);
+      if (count > 0) {
+        console.log(
+          `  ${wrap(
+            'Open orders the bot did not place will confuse its idea of the position, ' +
+              'because it reads the balance rather than tracking its own fills. Clear ' +
+              'them, or trade from a dedicated account.',
+            70,
+          )}`,
+        );
+      }
+      return;
+    }
+
+    case 'pairs': {
+      const name = str(args, 'pair', 'XBTEUR');
+      const pair = await fetchPair(name);
+      console.log(heading(`Kraken pair ${pair.altname}`));
+      console.log(`  canonical name  ${pair.name}`);
+      console.log(`  base / quote    ${pair.base} / ${pair.quote}`);
+      console.log(`  minimum order   ${pair.orderMin} ${pair.base}`);
+      console.log(`  volume decimals ${pair.volumeDecimals}`);
+      console.log(`  price decimals  ${pair.priceDecimals}`);
+      console.log('');
+      console.log(
+        `  ${wrap(
+          'Use the short name for orders and for --pair. An order with one decimal ' +
+            'too many, or below the minimum, is rejected outright — and a bot that ' +
+            'discovers that when it wants to exit has a position it cannot close.',
+          70,
+        )}`,
+      );
+      return;
+    }
+
+    case 'bars': {
+      const name = str(args, 'pair', 'XBTEUR');
+      const iv = interval(args);
+      const bars = Math.min(MAX_OHLC_BARS, num(args, 'bars', MAX_OHLC_BARS));
+      const candles = await krakenDataSource().recent(name, iv, bars);
+      const audit = auditSeries(candles, iv);
+
+      console.log(heading(`Kraken bars for ${name}, ${iv}`));
+      console.log(`  candles          ${audit.count}`);
+      console.log(
+        `  range            ${audit.firstTime ? formatDate(audit.firstTime) : '-'} to ` +
+          `${audit.lastTime ? formatDate(audit.lastTime) : '-'}`,
+      );
+      console.log(`  missing bars     ${audit.missingBars}`);
+      console.log(`  invalid ranges   ${audit.invalidRanges}`);
+      console.log('');
+      console.log(
+        `  ${wrap(
+          `Kraken returns at most ${MAX_OHLC_BARS} bars from this endpoint, whatever ` +
+            `you ask for. That is under two years of daily history and twelve hours of ` +
+            `minute history — not enough to walk-forward anything. For a real backtest, ` +
+            `download Kraken's historical OHLCVT archive and use --csv.`,
+          70,
+        )}`,
+      );
+
+      const out = args.flags.get('out');
+      if (out) {
+        writeCandles(out, candles);
+        console.log(`\n  Written to ${out}. Backtest it with --csv ${out} --commission kraken.`);
+      }
+      return;
+    }
+
+    default:
+      throw new Error(`Unknown kraken subcommand "${sub}". Try status, pairs or bars.`);
+  }
+}
+
 /**
  * Run a strategy against a real IBKR account.
  *
@@ -801,6 +919,97 @@ async function cmdIbkr(args: Args): Promise<void> {
  * and the honest answer is usually no.
  */
 async function cmdTrade(args: Args): Promise<void> {
+  const broker = str(args, 'broker', 'ibkr');
+  switch (broker) {
+    case 'ibkr':
+      await cmdTradeIbkr(args);
+      return;
+    case 'kraken':
+      await cmdTradeKraken(args);
+      return;
+    default:
+      throw new Error(`--broker must be ibkr or kraken (got "${broker}")`);
+  }
+}
+
+/**
+ * Run a strategy against a Kraken spot account.
+ *
+ * The gates differ from IBKR's on purpose, because the venues differ. IBKR has a
+ * paper account, so a full rehearsal with fake money is possible and `--send`
+ * against a DU account is harmless. Kraken has no paper account for spot: an order
+ * that is sent is real. So without `--send` every order goes to Kraken's own
+ * `validate` endpoint — the exchange checks the decimals, the minimum, the pair and
+ * the key's permissions, and executes nothing — and `--send` additionally requires
+ * `--i-accept-real-money`.
+ */
+async function cmdTradeKraken(args: Args): Promise<void> {
+  const pairName = str(args, 'pair', '');
+  if (pairName === '') throw new Error('trade --broker kraken needs --pair, e.g. --pair XBTEUR');
+
+  const credentials = credentialsFromEnv();
+  if (!credentials) {
+    throw new Error(
+      'Set KRAKEN_API_KEY and KRAKEN_API_SECRET in the environment. Create the key ' +
+        'with "Withdraw Funds" switched OFF — a key that can only trade turns a ' +
+        'compromise into an annoyance. See docs/KRAKEN.md.',
+    );
+  }
+
+  const client = new KrakenClient({ credentials });
+  const pair = await fetchPair(pairName);
+  const strategy = buildStrategy(str(args, 'strategy', 'ema-cross'), num(args, 'grid', 0));
+  const send = args.bools.has('send');
+
+  const execution = new KrakenExecution({
+    client,
+    pair,
+    send,
+    allowRealMoney: args.bools.has('i-accept-real-money'),
+    maxOrderValue: num(args, 'max-order-value', 50),
+    log: (line) => {
+      console.log(line);
+    },
+  });
+
+  console.log(heading('Live run'));
+  console.log(`  strategy        ${strategy.name}`);
+  console.log(`  pair            ${pair.altname} (${pair.name})`);
+  console.log(`  minimum order   ${pair.orderMin} ${pair.base}`);
+  console.log(`  execution       ${execution.label}`);
+  console.log(`  max order value ${num(args, 'max-order-value', 50)} ${pair.quote}`);
+  if (!send) {
+    console.log('');
+    console.log(
+      `  ${wrap(
+        'Every order will be handed to Kraken for validation and executed by ' +
+          'nobody. Read what comes back before adding --send, and remember that ' +
+          'Kraken has no paper account: --send is real money.',
+        70,
+      )}`,
+    );
+  }
+
+  await runLive({
+    instrument: pair.altname,
+    interval: interval(args),
+    strategy,
+    data: krakenDataSource(),
+    execution,
+    startingCash: num(args, 'cash', 0),
+    warmupBars: Math.min(
+      MAX_OHLC_BARS,
+      num(args, 'warmup', Math.max(250, strategy.warmupBars * 3)),
+    ),
+    limits: limitsFrom(args),
+    stops: stopsFrom(args),
+    sizing: sizingFrom(args),
+    maxBars: args.flags.has('max-bars') ? num(args, 'max-bars', 0) : undefined,
+    journalPath: args.flags.get('journal'),
+  });
+}
+
+async function cmdTradeIbkr(args: Args): Promise<void> {
   const conid = num(args, 'conid', 0);
   if (conid <= 0) throw new Error('trade needs --conid, from "ibkr search"');
   const account = str(args, 'account', '');
@@ -891,7 +1100,9 @@ Commands
   portfolio     Multi-asset backtest across a universe (--validate for walk-forward)
   paper         Forward-test on live prices with simulated money
   ibkr          Talk to a local IBKR gateway: status, search, bars
-  trade         Run a strategy against an IBKR account. Dry run unless --send.
+  kraken        Kraken spot: status, pairs, bars. Public data needs no key.
+  trade         Run a strategy against a broker. --broker ibkr | kraken.
+                Never sends an order without --send.
 
 Data (single-symbol commands)
   --symbol BTCUSDT      Binance symbol, downloaded and cached on first use
@@ -920,11 +1131,15 @@ Strategy
 
 Money and costs
   --cash 1000           Starting equity, in quote currency
-  --commission bps      bps | ibkr-tiered | ibkr-fixed | per-unit | per-order.
+  --commission bps      bps | kraken | ibkr-tiered | ibkr-fixed | per-unit |
+                        per-order.
                         A broker charges a floor per order, not a percentage, and
                         on small orders the floor is all you pay. Use the shape
                         that matches your statement.
   --fee-bps 10          Rate for --commission bps
+  --volume-30d 0        Your 30-day volume, which sets the Kraken tier
+  --role taker          taker | maker for --commission kraken. Taker is the
+                        honest default: every order here is a market order.
   --per-unit 0.0035     Rate per share/contract for --commission per-unit
   --min-commission 0.35 Floor per order for --commission per-unit
   --max-commission-pct 0.01
@@ -959,6 +1174,15 @@ Walk-forward
   --folds 5             Train/test pairs
   --train-fraction 0.7  Share of each fold used to choose parameters
   --validate            On \`portfolio\`, run the walk-forward instead of a backtest
+
+Kraken (public data needs no key; trading reads KRAKEN_API_KEY and
+        KRAKEN_API_SECRET from the environment, never from a flag)
+  --pair XBTEUR         Kraken's short pair name
+  --send                Actually place orders. Without it, Kraken validates the
+                        order server-side and executes nothing.
+  --i-accept-real-money Required alongside --send: Kraken has no paper account
+                        for spot, so there is no harmless version of sending.
+  --max-order-value 50  Hard cap per order, in quote currency
 
 IBKR (everything runs against a gateway on your own machine — no API keys)
   --gateway https://localhost:5000/v1/api
@@ -1015,6 +1239,9 @@ async function main(): Promise<void> {
       break;
     case 'ibkr':
       await cmdIbkr(args);
+      break;
+    case 'kraken':
+      await cmdKraken(args);
       break;
     case 'trade':
       await cmdTrade(args);

@@ -57,6 +57,55 @@ export function ibkrFixedShares(): CommissionModel {
   return { kind: 'per-unit', perUnit: 0.005, minimumPerOrder: 1, maxFractionOfNotional: 0.01 };
 }
 
+/**
+ * Kraken's spot schedule, as basis points by 30-day volume.
+ *
+ * The top row is the one that matters to almost everyone, and it is the reason
+ * this table exists: **40 bps taker is four times what this harness defaulted to**
+ * for a crypto exchange, and 80 bps a round trip. Every backtest run at 10 bps and
+ * then pointed at Kraken was measuring a different, cheaper world.
+ *
+ * Kraken prices by tier and by pair, the tiers have been restructured more than
+ * once, and secondary sources disagree about them. Treat this as a starting point
+ * and replace it with the schedule on your own account page.
+ */
+export const KRAKEN_SPOT_TIERS: readonly {
+  /** Lower bound of the tier, in USD of 30-day volume. */
+  fromVolumeUsd: number;
+  makerBps: number;
+  takerBps: number;
+}[] = [
+  { fromVolumeUsd: 0, makerBps: 25, takerBps: 40 },
+  { fromVolumeUsd: 10_000, makerBps: 20, takerBps: 35 },
+  { fromVolumeUsd: 50_000, makerBps: 14, takerBps: 24 },
+  { fromVolumeUsd: 100_000, makerBps: 12, takerBps: 22 },
+  { fromVolumeUsd: 250_000, makerBps: 10, takerBps: 20 },
+  { fromVolumeUsd: 500_000, makerBps: 8, takerBps: 18 },
+  { fromVolumeUsd: 1_000_000, makerBps: 6, takerBps: 16 },
+  { fromVolumeUsd: 2_500_000, makerBps: 4, takerBps: 14 },
+  { fromVolumeUsd: 5_000_000, makerBps: 2, takerBps: 12 },
+  { fromVolumeUsd: 10_000_000, makerBps: 0, takerBps: 10 },
+];
+
+/**
+ * Kraken's spot commission for a given 30-day volume and order role.
+ *
+ * `taker` is the default and the honest one for this harness: every order it
+ * places is a market order, and a market order is always a taker. A maker order
+ * is cheaper and may simply not fill, and an unfilled order leaves the bot's idea
+ * of its position wrong — which is a problem this harness does not model, so it
+ * does not get to claim the cheaper fee either.
+ */
+export function krakenSpot(options: { thirtyDayVolumeUsd?: number; role?: 'maker' | 'taker' } = {}): CommissionModel {
+  const volume = options.thirtyDayVolumeUsd ?? 0;
+  const role = options.role ?? 'taker';
+  let tier = KRAKEN_SPOT_TIERS[0] as (typeof KRAKEN_SPOT_TIERS)[number];
+  for (const candidate of KRAKEN_SPOT_TIERS) {
+    if (volume >= candidate.fromVolumeUsd) tier = candidate;
+  }
+  return bpsCommission(role === 'maker' ? tier.makerBps : tier.takerBps);
+}
+
 /** What one fill costs. `quantity` is in units of the instrument. */
 export function commissionFor(model: CommissionModel, quantity: number, price: number): number {
   const units = Math.abs(quantity);

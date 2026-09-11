@@ -206,14 +206,24 @@ the next section explains it.
 
 ## Connecting it to a broker
 
-There is now an Interactive Brokers adapter, and
-[IBKR.md](IBKR.md) covers it: how the local gateway works, why there are still no
-API keys anywhere in the repository, the three gates in front of a real order, and
-the four facts about IBKR that change what a strategy built on 24/7 crypto bars is
-actually worth. The short version of that last part: you probably cannot trade
-crypto at IBKR at all as an EU retail client, markets close so stops gap, the
-commission floor rather than the rate is what a small account pays, and unpaid
-market data is fifteen minutes old.
+There are two adapters now, and which one you need depends on what you want to
+trade.
+
+[IBKR.md](IBKR.md) covers Interactive Brokers: a gateway on your own machine, so
+still no API keys anywhere in this repository, three gates in front of a real
+order, and four facts that change what a strategy built on 24/7 crypto bars is
+worth. The short version: as an EU retail client you probably cannot trade spot
+crypto at IBKR at all, markets close so stops gap, the commission *floor* rather
+than the rate is what a small account pays, and unpaid market data is fifteen
+minutes old.
+
+[KRAKEN.md](KRAKEN.md) covers Kraken, which is where EU retail spot crypto
+actually lives — so the strategies in here have a venue. It also carries the most
+expensive single finding in this repository. Kraken's taker fee is 40 basis points
+against the 10 this harness defaulted to, and on hourly bars that difference turns
+a strategy with a Sharpe of 3.04 into one with a Sharpe of −2.78. Same bars, same
+signals, only the bill. Every crypto result here was a measurement of a cheaper
+world until `--commission kraken` existed.
 
 The section below still describes the design, and still holds for every venue the
 harness does not have an adapter for.
