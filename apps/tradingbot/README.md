@@ -35,6 +35,10 @@ npm run bot -- significance --symbol BTCUSDT --strategy mean-reversion
 # What does this strategy "earn" on data with no edge in it?
 npm run bot -- noise --strategy ema-cross --runs 200
 
+# Long-only on a company chart: does the timing actually time anything?
+npm run bot -- backtest --csv aapl.csv --commission ibkr-tiered --all
+npm run bot -- timing --csv aapl.csv --strategy trend-filter --runs 500
+
 # How many independent bets is a basket of majors actually worth?
 npm run bot -- correlation --universe BTCUSDT,ETHUSDT,SOLUSDT,BNBUSDT,XRPUSDT
 
@@ -104,6 +108,10 @@ src/
     emaCross.ts         Trend following
     meanReversion.ts    Dip buying, with hysteresis so it does not churn
     donchian.ts         Breakout
+    trendFilter.ts      Long-only: hold above the long average while rising.
+                        Three parameters, and the most supported rule there is.
+    taConfluence.ts     Trend, momentum and a pullback entry — five parameters,
+                        and a worked demonstration of what they cost
     crossSectionalMomentum.ts
                         Hold the strongest few of a universe, plus the
                         equal-weight benchmark it has to beat
@@ -126,6 +134,8 @@ src/
                         market itself would liquidate the leverage it needs
     portfolioWalkforward.ts  The same, for a universe
     noise.ts            The strategy on random walks and on edgeless universes
+    timing.ts           Shuffles when the positions happened, keeping exposure
+                        and costs, to test whether the signal chose moments
     stats.ts            Normal quantiles, skew, kurtosis, deflated Sharpe
     significance.ts     Search the grid, then price in the search
     correlation.ts      Average correlation and effective number of bets
@@ -157,6 +167,12 @@ order, and on a small account the floor is all you ever pay. The report prints
 `Cost drag per year` from the fees the run actually paid at its actual trade
 frequency, and warns above 5%. The weight cap is reduced by one entry's commission
 so a fully-invested target cannot leave the account overdrawn.
+
+**Long-only is enforced in the risk layer, not per strategy.** A spot balance and
+an ordinary share account cannot short whatever a signal asks for, so a negative
+target weight is *refused* and reported rather than quietly floored at zero — a
+result produced by reinterpreting a strategy's signal is a result for a different
+strategy. `--allow-short` opts out.
 
 **An edge is a property of a strategy at a size.** `--impact` charges what your own
 order does to the price — roughly with the square root of your share of the bar's
@@ -228,6 +244,11 @@ Three findings worth knowing before you start, all reproducible from this repo:
   not shorten that by a single day, it just costs more in fees.
 - **Reshuffling the same trades turns a 21.87% drawdown into 28.60% one run in
   twenty, and 47.65% at worst.** The backtest showed you one ordering.
+- **Not one of the five long-only strategies here beats random timing with the same
+  exposure** — on a fixture built specifically to contain the regimes trend
+  following exploits. What the trend filter earned came from how much time it was
+  invested, not from which periods it chose. `bot timing` measures it, and has a
+  clairvoyant positive control so the test can be trusted to reject when it should.
 - **The fastest any strategy can compound, at any leverage, is S²/2 per year.**
   Turning €10,000 into €1,000,000 in a year therefore needs a sustained Sharpe of
   3.03 — and at the 10x leverage that implies, a crypto-like series liquidates the
@@ -239,7 +260,7 @@ Three findings worth knowing before you start, all reproducible from this repo:
 npm test --workspace @buurklus/tradingbot
 ```
 
-337 tests, mostly invariants rather than examples: no lookahead in either engine,
+376 tests, mostly invariants rather than examples: no lookahead in either engine,
 fees charged on both legs and split across a partial exit, a commission floor that
 bites before its percentage cap, an account that never borrows, stops that fill
 through a gap and lose to a take-profit in the same bar, a cooldown that blocks
@@ -252,7 +273,10 @@ an embargo that refuses to starve a training window, a track record requirement 
 quadruples when the edge halves, log growth that falls when leverage passes the
 Kelly optimum, a normal tail that stays meaningful at 10⁻²⁴ where `1 − Φ(z)` is
 exactly zero, a liquidation counted from the open to the low because that is where
-the exchange acts, a kill switch that stays tripped across a restart, a restored high-water mark, a
+the exchange acts, a shuffled schedule that preserves exposure and trade count
+exactly, a clairvoyant strategy the timing test must detect and a random walk it must
+not, a short refused rather than floored, an unadjusted 2-for-1 split recognised as a
+split rather than a crash, a kill switch that stays tripped across a restart, a restored high-water mark, a
 walk-forward test window that always starts after its training window, state files
 that refuse to load into the wrong run, and the sanity checks that each strategy
 makes money on the series built to suit it and loses on the one built against it.

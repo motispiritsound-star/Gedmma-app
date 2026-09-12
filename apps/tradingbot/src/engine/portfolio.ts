@@ -194,6 +194,14 @@ export function runPortfolioBacktest(options: PortfolioBacktestOptions): Portfol
       }
     }
 
+    // Gross exposure is measured as a sum of absolute weights, so the long-only
+    // rule has to be applied per symbol here as well as in aggregate above.
+    if ((limits.longOnly ?? true) === true) {
+      for (const [symbol, weight] of targets) {
+        if (weight < 0) targets.set(symbol, 0);
+      }
+    }
+
     const nextTime = aligned.times[i + 1] as number;
     for (const symbol of symbols) {
       const target = targets.get(symbol) ?? 0;

@@ -9,6 +9,7 @@ import {
   minimumSharpeFor,
   requiredRatePerPeriod,
   targetMultiple,
+  unleveredGrowth,
   withContributions,
   yearsToMultiple,
   type Goal,
@@ -17,6 +18,7 @@ import {
 import { caveats, pct, type Metrics } from './engine/metrics.js';
 import { bootstrapDrawdowns, minimumTrackRecordLength } from './engine/robustness.js';
 import type { NoiseTestResult, PortfolioNoiseResult } from './engine/noise.js';
+import type { TimingTestResult } from './engine/timing.js';
 import type { EquityPoint, Interval } from './types.js';
 import type { WalkForwardResult } from './engine/walkforward.js';
 
@@ -34,6 +36,63 @@ function row(label: string, value: string): string {
   return `  ${label.padEnd(30)}${value}`;
 }
 
+
+
+/**
+ * Whether the entries and exits carry information, or whether the return came from
+ * being invested at all.
+ */
+export function renderTiming(result: TimingTestResult): string {
+  const parts: string[] = [heading('Does the timing actually time anything?')];
+
+  if (result.runs === 0) {
+    parts.push(
+      `  ${wrap(
+        'The schedule has too few separate in-market stretches to shuffle — there is ' +
+          'nothing to permute. Run it over more history, or on a strategy that trades ' +
+          'more than a handful of times.',
+        WIDTH - 4,
+      )}`,
+    );
+    return parts.join('\n');
+  }
+
+  parts.push(
+    `  ${wrap(
+      `The strategy's own schedule was kept — ${pct(result.timeInMarket)} of bars in the ` +
+        `market, across ${result.episodes} separate stretches — and only *when* those ` +
+        `stretches happened was shuffled, ${result.runs} times. Same exposure, same ` +
+        `number of trades, same commission. The only thing destroyed is the signal.`,
+      WIDTH - 4,
+    )}`,
+  );
+  parts.push('');
+  parts.push(row('The strategy returned', pct(result.realReturn)));
+  parts.push(row('Random timing: median', pct(result.medianShuffledReturn)));
+  parts.push(row('Random timing: 95th pct', pct(result.p95ShuffledReturn)));
+  parts.push(row('Random timing: best', pct(result.bestShuffledReturn)));
+  parts.push(row('Shuffles that beat it', `${result.beatenBy} of ${result.runs}`));
+  parts.push(row('Percentile of the real run', result.percentileOfReal.toFixed(3)));
+  parts.push(row('Verdict', result.verdict));
+  parts.push('');
+
+  const message =
+    result.verdict === 'the timing adds value'
+      ? `Only ${pct(1 - result.percentileOfReal)} of random schedules with the same ` +
+        `exposure did better, so the choice of moments is carrying information. That is ` +
+        `the rarest result in this repository — now check it out of sample with ` +
+        `walkforward, because a signal that informs one stretch of history need not ` +
+        `inform the next.`
+      : `${result.beatenBy} of ${result.runs} random schedules with the same exposure and ` +
+        `the same costs did better. The indicators are not choosing moments; they are ` +
+        `choosing how much time to be invested, and the return is the market's own drift ` +
+        `collected over that time. That is not worthless — sitting out the worst stretches ` +
+        `has value — but it is a much smaller claim than buying and selling at the right ` +
+        `moments, and a simple rule would do it with fewer parameters to overfit.`;
+  parts.push(`  ${wrap(message, WIDTH - 4)}`);
+
+  return parts.join('\n');
+}
 
 /** A probability, written so that very small ones stay readable. */
 export function formatProbability(p: number): string {
@@ -174,6 +233,33 @@ export function renderGoal(
               'and these moves cluster rather than arriving independently.',
         WIDTH - 4,
       )}`,
+    );
+  }
+
+  parts.push(heading('The same target, with no leverage at all'));
+  parts.push(
+    `  ${wrap(
+      'Setting L = 1 in the same expression gives S·σ − ½σ². Without leverage the ' +
+        'ceiling depends on the asset\u2019s volatility as well as the Sharpe ratio, and ' +
+        'it is a far smaller number. Removing leverage does not merely reduce the risk ' +
+        'of a plan: it lowers what the plan can possibly return, and that is the trade ' +
+        'being made rather than a footnote to it. What it buys is that the worst case ' +
+        'becomes a bad few years instead of zero.',
+      WIDTH - 4,
+    )}`,
+  );
+  parts.push('');
+  parts.push(
+    `  ${'sharpe'.padEnd(8)}${'log growth'.padStart(12)}${'compounded'.padStart(12)}` +
+      `${'years to target'.padStart(18)}`,
+  );
+  for (const sharpe of [2, 1.5, 1, 0.75, 0.5]) {
+    const growth = unleveredGrowth(sharpe, volatility);
+    const compounded = Math.exp(growth) - 1;
+    const years = compounded > 0 ? yearsToMultiple(multiple, compounded) : Infinity;
+    parts.push(
+      `  ${sharpe.toFixed(2).padEnd(8)}${pct(growth).padStart(12)}${pct(compounded).padStart(12)}` +
+        `${(Number.isFinite(years) ? years.toFixed(1) : 'never').padStart(18)}`,
     );
   }
 
@@ -507,14 +593,34 @@ export function renderComparison(results: readonly BacktestResult[]): string {
   const parts: string[] = [heading('Side by side')];
   parts.push(
     `  ${'strategy'.padEnd(30)}${'return'.padStart(10)}${'excess'.padStart(10)}` +
-      `${'sharpe'.padStart(9)}${'maxDD'.padStart(9)}${'trades'.padStart(8)}`,
+      `${'sharpe'.padStart(9)}${'maxDD'.padStart(9)}${'trades'.padStart(8)}  `,
   );
+  let anyKilled = false;
   for (const r of results) {
     const m = r.metrics;
+    // A row whose kill switch fired is not comparable with one whose did not: it
+    // stopped trading partway through. Without the marker the table silently
+    // credits a strategy for surviving a limit that ended its benchmark.
+    const killed = r.killSwitch !== null;
+    if (killed) anyKilled = true;
     parts.push(
       `  ${r.strategy.slice(0, 29).padEnd(30)}${pct(m.totalReturn).padStart(10)}` +
         `${pct(m.excessReturn).padStart(10)}${formatRatio(m.sharpe).padStart(9)}` +
-        `${pct(m.maxDrawdown).padStart(9)}${String(m.trades).padStart(8)}`,
+        `${pct(m.maxDrawdown).padStart(9)}${String(m.trades).padStart(8)}` +
+        `${killed ? '  *' : '   '}`,
+    );
+  }
+  if (anyKilled) {
+    parts.push('');
+    parts.push(
+      `  ${wrap(
+        '* The drawdown kill switch fired on this row, so it stopped trading partway ' +
+          'through and the rest of its bars are flat. It is not comparable with a row ' +
+          'that survived, and a strategy that looks good here may simply have been ' +
+          'less exposed when the limit was hit. Raise --max-drawdown above what you ' +
+          'would actually sit through and run it again.',
+        WIDTH - 4,
+      )}`,
     );
   }
   return parts.join('\n');

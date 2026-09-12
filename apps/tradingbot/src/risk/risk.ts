@@ -36,6 +36,17 @@ export interface RiskLimits {
   rebalanceThreshold: number;
   /** Skip any order below this notional, the way a real exchange would. */
   minOrderQuote: number;
+  /**
+   * Refuse a negative target weight outright. Defaults to true.
+   *
+   * Enforced here rather than left to each strategy, because "long only" is a
+   * property of the account and not of the signal: a spot crypto balance and an
+   * ordinary share dealing account cannot short at all, whatever a strategy asks
+   * for. A clamp in the risk layer holds even when a strategy is misconfigured,
+   * and a strategy that wanted a short is told it was refused rather than quietly
+   * being read as flat.
+   */
+  longOnly?: boolean;
 }
 
 /**
@@ -60,7 +71,9 @@ export const DEFAULT_LIMITS: RiskLimits = {
 export type RiskVerdict =
   | { action: 'allow'; weight: number }
   | { action: 'hold'; weight: number; reason: string }
-  | { action: 'flatten'; reason: string };
+  | { action: 'flatten'; reason: string }
+  /** The strategy asked for something the account cannot do. */
+  | { action: 'refuse'; weight: number; reason: string };
 
 /**
  * Tracks the state a risk decision needs: the high-water mark and where the
@@ -180,7 +193,20 @@ export class RiskManager {
       return { action: 'hold', weight: 0, reason: 'daily loss limit reached' };
     }
 
-    const capped = clamp(target, -this.limits.maxWeight, this.limits.maxWeight);
+    const longOnly = this.limits.longOnly ?? true;
+    if (longOnly && target < 0) {
+      // Refused, not silently floored at zero: a strategy asking to short an
+      // account that cannot is a configuration error, and a result produced by
+      // reinterpreting its signal is a result for a different strategy.
+      return {
+        action: currentWeight > 0 ? 'allow' : 'refuse',
+        weight: 0,
+        reason: `this account is long-only and the strategy asked for ${target.toFixed(2)}`,
+      };
+    }
+
+    const floor = longOnly ? 0 : -this.limits.maxWeight;
+    const capped = clamp(target, floor, this.limits.maxWeight);
     const delta = Math.abs(capped - currentWeight);
 
     // Closing a position is always allowed, however small the change: refusing

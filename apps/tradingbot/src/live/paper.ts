@@ -226,6 +226,8 @@ export async function runLive(options: LiveRunOptions): Promise<void> {
       } else if (verdict.action === 'flatten') {
         outcome = await execution.flatten(bar.close, bar.openTime);
         stopTracker.close();
+      } else if (verdict.action === 'refuse') {
+        log(`  refused: ${verdict.reason}`);
       } else if (verdict.action === 'allow') {
         const before = currentWeight;
         outcome = await execution.rebalanceTo(verdict.weight, bar.close, bar.openTime);

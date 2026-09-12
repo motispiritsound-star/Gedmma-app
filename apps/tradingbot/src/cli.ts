@@ -23,6 +23,7 @@ import {
 } from './data/store.js';
 import {
   cryptoLikeUniverse,
+  equityLikeSeries,
   meanRevertingSeries,
   randomWalk,
   trendingSeries,
@@ -30,6 +31,7 @@ import {
 import { analyseCorrelation } from './engine/correlation.js';
 import { runBacktest, type BacktestResult } from './engine/backtest.js';
 import { runNoiseTest, runPortfolioNoiseTest } from './engine/noise.js';
+import { runTimingTest } from './engine/timing.js';
 import {
   DEFAULT_PORTFOLIO_LIMITS,
   runPortfolioBacktest,
@@ -60,6 +62,7 @@ import {
   renderPortfolioNoise,
   renderPortfolioWalkForward,
   renderSignificance,
+  renderTiming,
   renderWalkForward,
   rule,
   wrap,
@@ -208,6 +211,7 @@ function costsFrom(args: Args): CostModel {
 
 function limitsFrom(args: Args): RiskLimits {
   return {
+    longOnly: !args.bools.has('allow-short'),
     maxWeight: num(args, 'max-weight', DEFAULT_LIMITS.maxWeight),
     maxDailyLossPct: num(args, 'max-daily-loss', DEFAULT_LIMITS.maxDailyLossPct),
     maxDrawdownPct: num(args, 'max-drawdown', DEFAULT_LIMITS.maxDrawdownPct),
@@ -269,10 +273,13 @@ async function loadCandles(args: Args): Promise<{ candles: Candle[]; label: stri
       random: randomWalk,
       trend: trendingSeries,
       revert: meanRevertingSeries,
+      equity: equityLikeSeries,
     };
     const maker = makers[synthetic];
     if (!maker) {
-      throw new Error(`--synthetic must be one of random, trend, revert (got "${synthetic}")`);
+      throw new Error(
+        `--synthetic must be one of random, trend, revert, equity (got "${synthetic}")`,
+      );
     }
     return { candles: maker(bars, iv, seed), label: `synthetic:${synthetic} seed ${seed}` };
   }
@@ -400,6 +407,28 @@ async function cmdData(args: Args): Promise<void> {
   console.log(`  duplicates       ${audit.duplicates}`);
   console.log(`  out of order     ${audit.outOfOrder}`);
   console.log(`  invalid ranges   ${audit.invalidRanges}`);
+
+  if (audit.suspectedActions.length > 0) {
+    console.log('');
+    console.log('  Gaps that look like unadjusted corporate actions:');
+    for (const suspect of audit.suspectedActions.slice(0, 10)) {
+      console.log(
+        `    ${formatDate(suspect.time)}  ratio ${suspect.ratio.toFixed(3)}  ` +
+          `looks like a ${suspect.looksLike}`,
+      );
+    }
+    console.log('');
+    console.log(
+      `  ${wrap(
+        'Each of those is a large overnight gap landing almost exactly on a ratio that ' +
+          'a split produces. In a series that has not been adjusted, a 2-for-1 split ' +
+          'looks identical to a 50% overnight crash: a trend filter sells into it and a ' +
+          'dip-buyer buys it, and both results are fiction. Get an adjusted series, or ' +
+          'check these dates by hand before trusting anything built on this data.',
+        70,
+      )}`,
+    );
+  }
 
   if (audit.missingBars > 0) {
     console.log('');
@@ -563,6 +592,34 @@ async function cmdNoise(args: Args): Promise<void> {
   }
 
   console.log(renderNoise(noise, realSharpe));
+}
+
+/**
+ * The test a chart-reading system most needs: does it choose moments, or just
+ * choose how long to be invested?
+ */
+async function cmdTiming(args: Args): Promise<void> {
+  const iv = interval(args);
+  const { candles, label } = await loadCandles(args);
+  const strategy = buildStrategy(str(args, 'strategy', 'trend-filter'), num(args, 'grid', 0));
+
+  console.log(heading('Source'));
+  console.log(`  ${label}`);
+  console.log(`  ${strategy.describe}`);
+  console.log(
+    renderTiming(
+      runTimingTest({
+        candles,
+        strategy,
+        interval: iv,
+        startingCash: num(args, 'cash', 10_000),
+        runs: num(args, 'runs', 500),
+        seed: num(args, 'seed', 11),
+        costs: costsFrom(args),
+        limits: limitsFrom(args),
+      }),
+    ),
+  );
 }
 
 async function cmdPortfolio(args: Args): Promise<void> {
@@ -1170,6 +1227,8 @@ Commands
   noise         Run the strategy on random walks to see what luck alone produces
                 (--portfolio for the multi-asset version: many edgeless universes)
   walkforward   Choose parameters in-sample, measure out-of-sample. Trust this one.
+  timing        Does the strategy choose moments, or just choose how long to be
+                invested? Shuffles when its positions happened and compares.
   correlation   How many independent bets a universe is really worth
   portfolio     Multi-asset backtest across a universe (--validate for walk-forward)
   paper         Forward-test on live prices with simulated money
@@ -1184,7 +1243,10 @@ Data (single-symbol commands)
   --from 2021-01-01     Start of the window
   --to 2024-01-01       End of the window
   --csv path.csv        Use a CSV instead of the network
-  --synthetic trend     Generated data: random, trend, revert
+  --synthetic trend     Generated data: random, trend, revert, equity
+                        "equity" switches between persistent bull and bear
+                        regimes, which is the structure a trend filter exists to
+                        exploit — and "random" has none, by construction.
   --bars 1500           How many synthetic bars
   --seed 42             Synthetic seed
   --data-dir ./data     Where the cache lives
@@ -1244,6 +1306,9 @@ Position sizing
 
 Risk
   --max-weight 1        1 means no leverage. Raising this is how accounts die.
+  --allow-short         Permit negative target weights. Off by default: a spot
+                        crypto balance and an ordinary share account cannot
+                        short, so a strategy asking to is refused, not floored.
   --max-daily-loss 0.1  Stop trading for the day after this loss
   --max-drawdown 0.35   Kill switch, measured from the equity high
   --rebalance-threshold 0.05
@@ -1320,6 +1385,9 @@ async function main(): Promise<void> {
       break;
     case 'paper':
       await cmdPaper(args);
+      break;
+    case 'timing':
+      await cmdTiming(args);
       break;
     case 'portfolio':
       await cmdPortfolio(args);

@@ -252,6 +252,22 @@ export function withContributions(options: {
   return balance;
 }
 
+/**
+ * The growth rate a strategy can reach with no leverage at all.
+ *
+ * Setting L = 1 in `g(L) = L·S·σ − ½L²σ²` gives `S·σ − ½σ²`. Unlike the levered
+ * ceiling it depends on the asset's volatility as well as the Sharpe ratio, and it
+ * is a far smaller number: at a Sharpe of 1 on a 20%-volatility equity it is about
+ * 18% a year of log growth, which is roughly 20% compounded.
+ *
+ * Worth computing explicitly, because removing leverage does not merely reduce the
+ * risk of a plan — it lowers the ceiling on what the plan can possibly return, and
+ * that is the trade being made rather than a detail of it.
+ */
+export function unleveredGrowth(sharpe: number, volatility: number): number {
+  return sharpe * volatility - 0.5 * volatility * volatility;
+}
+
 export interface LiquidationExposure {
   leverage: number;
   /** The adverse move that takes the account to zero. */

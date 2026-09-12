@@ -34,6 +34,8 @@ docs/
                    about IBKR that change what a crypto-built strategy is worth
   KRAKEN.md        Wiring it to Kraken, which can trade EU retail spot crypto —
                    and what its 40 bps taker fee does to a backtest run at 10
+  EQUITIES.md      Long-only technical analysis on company charts: what removing
+                   leverage costs, and whether the timing times anything
 ```
 
 ## Running it
@@ -78,8 +80,8 @@ the two broker connections and the gates in front of each.
 ## Tests
 
 ```bash
-npm test          # 448 tests: 43 domain, 36 API integration, 16 app,
-                  # 16 website, 337 trading harness
+npm test          # 487 tests: 43 domain, 36 API integration, 16 app,
+                  # 16 website, 376 trading harness
 npm run typecheck
 ```
 

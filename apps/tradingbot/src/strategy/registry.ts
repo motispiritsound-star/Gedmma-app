@@ -6,6 +6,8 @@ import {
 import { donchianFactory } from './donchian.js';
 import { emaCrossFactory } from './emaCross.js';
 import { meanReversionFactory } from './meanReversion.js';
+import { taConfluenceFactory } from './taConfluence.js';
+import { trendFilterFactory } from './trendFilter.js';
 import type {
   PortfolioStrategy,
   PortfolioStrategyFactory,
@@ -26,6 +28,8 @@ import type {
 // registry only ever needs to treat them as opaque, so `unknown` is the honest
 // element type here.
 export const FACTORIES: readonly StrategyFactory<never>[] = [
+  trendFilterFactory as unknown as StrategyFactory<never>,
+  taConfluenceFactory as unknown as StrategyFactory<never>,
   emaCrossFactory as unknown as StrategyFactory<never>,
   meanReversionFactory as unknown as StrategyFactory<never>,
   donchianFactory as unknown as StrategyFactory<never>,

@@ -284,3 +284,108 @@ export function cryptoLikeUniverse(
     momentumPersistence,
   });
 }
+
+export interface EquityLikeOptions {
+  bars: number;
+  interval: Interval;
+  startPrice: number;
+  /** Annualised drift and volatility while the market is rising. */
+  bullDrift: number;
+  bullVol: number;
+  /** Annualised drift and volatility while it is falling. Bears are faster. */
+  bearDrift: number;
+  bearVol: number;
+  /** Chance per bar of leaving the regime it is in. Lower means longer regimes. */
+  bullExitProb: number;
+  bearExitProb: number;
+  seed: number;
+}
+
+/**
+ * A series that behaves like an index rather than a random walk.
+ *
+ * The distinction matters more than any indicator. A geometric random walk has no
+ * exploitable structure by construction, so no timing rule can beat holding it —
+ * which is exactly why `noise` uses one. Real equity markets are not that: they
+ * spend long stretches rising quietly and shorter stretches falling fast, and the
+ * regimes persist long enough to be identified while they are happening.
+ *
+ * That persistence is the only thing a trend filter can possibly be exploiting. It
+ * is modelled here as a two-state switch because that is the honest minimum: if a
+ * rule cannot make money on a series where the structure is present and known, it
+ * is broken; if it makes money on a random walk, the test is broken.
+ *
+ * The defaults are roughly index-like — a bull at 12% with 14% volatility, a bear
+ * at −25% with 30%, bulls lasting years and bears months — but do not read any
+ * backtest on this as evidence about a real market. It is a test fixture, not a
+ * simulation of anything.
+ */
+export function generateEquityLike(options: EquityLikeOptions): Candle[] {
+  const {
+    bars,
+    interval,
+    startPrice,
+    bullDrift,
+    bullVol,
+    bearDrift,
+    bearVol,
+    bullExitProb,
+    bearExitProb,
+    seed,
+  } = options;
+
+  const rng = makeRng(seed);
+  const normal = makeNormal(rng);
+  const barMs = INTERVAL_MS[interval];
+  const barsPerYear = (365 * 86_400_000) / barMs;
+  const dt = 1 / barsPerYear;
+  const startTime = Date.UTC(2010, 0, 1);
+
+  const out: Candle[] = [];
+  let logPrice = Math.log(startPrice);
+  let bull = true;
+
+  for (let i = 0; i < bars; i += 1) {
+    // The regime is decided before the bar is drawn, so no bar is generated from a
+    // state that had not been entered yet.
+    if (bull ? rng() < bullExitProb : rng() < bearExitProb) bull = !bull;
+
+    const drift = bull ? bullDrift : bearDrift;
+    const vol = bull ? bullVol : bearVol;
+    const sigma = vol * Math.sqrt(dt);
+    const mu = (drift - 0.5 * vol * vol) * dt;
+
+    const open = Math.exp(logPrice);
+    logPrice += mu + normal() * sigma;
+    const close = Math.exp(logPrice);
+
+    const wick = Math.abs(normal()) * sigma * 0.6;
+    out.push({
+      openTime: startTime + i * barMs,
+      open,
+      high: Math.max(open, close) * (1 + wick),
+      low: Math.min(open, close) * (1 - wick),
+      close,
+      volume: 1_000_000 * (0.5 + rng()),
+    });
+  }
+
+  return out;
+}
+
+/** An index-like series with persistent bull and bear regimes. */
+export function equityLikeSeries(bars: number, interval: Interval, seed: number): Candle[] {
+  return generateEquityLike({
+    bars,
+    interval,
+    startPrice: 100,
+    bullDrift: 0.12,
+    bullVol: 0.14,
+    bearDrift: -0.25,
+    bearVol: 0.3,
+    // On daily bars: bulls of about two years, bears of about four months.
+    bullExitProb: 1 / 500,
+    bearExitProb: 1 / 90,
+    seed,
+  });
+}

@@ -75,6 +75,80 @@ export interface SeriesAudit {
   outOfOrder: number;
   /** Bars where high < low, or the close sits outside the range. */
   invalidRanges: number;
+  /**
+   * Overnight gaps that look like an unadjusted split rather than a price move.
+   *
+   * The quietest way an equity backtest goes wrong. A 2-for-1 split in a
+   * price series that has not been adjusted for it looks exactly like a 50%
+   * overnight crash: a trend filter sells into it, a dip-buyer buys it, and both
+   * results are fiction. Crypto has no splits, so this list is empty there and
+   * costs nothing to check.
+   */
+  suspectedActions: CorporateActionSuspect[];
+}
+
+export interface CorporateActionSuspect {
+  time: number;
+  /** Previous close divided by this bar's open. */
+  ratio: number;
+  /** The simple ratio it sits close to, written the way a split is quoted. */
+  looksLike: string;
+}
+
+/**
+ * Ratios that a split or reverse split produces. Anything landing very close to
+ * one of these, on a large gap, is far more likely to be a corporate action than
+ * a genuine overnight move of that size.
+ */
+const SPLIT_RATIOS: readonly { value: number; label: string }[] = [
+  { value: 2, label: '2-for-1' },
+  { value: 3, label: '3-for-1' },
+  { value: 4, label: '4-for-1' },
+  { value: 5, label: '5-for-1' },
+  { value: 10, label: '10-for-1' },
+  { value: 20, label: '20-for-1' },
+  { value: 1.5, label: '3-for-2' },
+  { value: 1 / 2, label: '1-for-2 reverse' },
+  { value: 1 / 3, label: '1-for-3 reverse' },
+  { value: 1 / 4, label: '1-for-4 reverse' },
+  { value: 1 / 5, label: '1-for-5 reverse' },
+  { value: 1 / 10, label: '1-for-10 reverse' },
+];
+
+/**
+ * Flag overnight gaps that look like unadjusted corporate actions.
+ *
+ * Deliberately a suspicion rather than a correction. A genuine crash that happens
+ * to land within the tolerance of a round ratio would be flagged too, and silently
+ * "fixing" a real price move is worse than asking a human to look. Two conditions
+ * have to hold: the gap is large, and it is close to a ratio that a split produces.
+ */
+export function detectUnadjustedActions(
+  candles: readonly Candle[],
+  options: { minimumGap?: number; tolerance?: number } = {},
+): CorporateActionSuspect[] {
+  const minimumGap = options.minimumGap ?? 0.2;
+  const tolerance = options.tolerance ?? 0.02;
+  const out: CorporateActionSuspect[] = [];
+
+  for (let i = 1; i < candles.length; i += 1) {
+    const previous = candles[i - 1] as Candle;
+    const current = candles[i] as Candle;
+    if (previous.close <= 0 || current.open <= 0) continue;
+
+    const ratio = previous.close / current.open;
+    const gap = Math.abs(ratio - 1);
+    if (gap < minimumGap) continue;
+
+    for (const candidate of SPLIT_RATIOS) {
+      if (Math.abs(ratio - candidate.value) / candidate.value <= tolerance) {
+        out.push({ time: current.openTime, ratio, looksLike: candidate.label });
+        break;
+      }
+    }
+  }
+
+  return out;
 }
 
 export function auditSeries(candles: readonly Candle[], interval: Interval): SeriesAudit {
@@ -108,6 +182,7 @@ export function auditSeries(candles: readonly Candle[], interval: Interval): Ser
     duplicates,
     outOfOrder,
     invalidRanges,
+    suspectedActions: detectUnadjustedActions(candles),
   };
 }
 

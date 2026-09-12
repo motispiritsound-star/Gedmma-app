@@ -265,6 +265,45 @@ does not produce more independent evidence about it. Anyone who switches to a
 shorter timeframe hoping to validate faster is paying more in fees for the same
 wait.
 
+## Does the timing time anything?
+
+The sharpest test for any chart-reading system, and the one it is least likely to
+have had. A long-only strategy invested 60% of the time, in a market that rose, will
+make money. Whether it made money *because* it chose those moments is a separate
+question, and a backtest cannot answer it because there is nothing to compare
+against.
+
+`bot timing` builds the comparison. It keeps the strategy's own schedule — how long
+it held, how long it stood aside, how often it switched — and shuffles only *when*
+those stretches happened. Same exposure, same trade count, same commission, same
+distribution of holding periods. The only thing destroyed is the signal.
+
+It has a positive control, because a null test that can never reject the null is
+worthless: a deliberately clairvoyant strategy is detected at the 98th percentile,
+and a trend filter over a random walk correctly is not.
+
+Run over a fixture built *specifically* to contain persistent bull and bear regimes
+— the structure trend following exists to exploit — not one of the five strategies
+in this repository beat random timing with the same exposure:
+
+```
+  strategy          returned   random median   beaten by   verdict
+  trend-filter       +69.3%        +59.9%      175 of 400  no better than random
+  donchian           +42.0%        +27.8%      134 of 400  no better than random
+  ema-cross          +29.1%        +50.3%      291 of 400  no better than random
+  mean-reversion     +27.8%        +13.4%      119 of 400  no better than random
+  ta-confluence       +3.3%         +4.1%      203 of 400  no better than random
+```
+
+That is not a claim that technical analysis never works. It is a claim about these
+five rules on this fixture, and it says what trend-filter's advantage over the
+others actually was: **how much time it spent invested, not which periods it
+chose.** Being out of the market 41% of the time cut the worst drawdown from 37.5%
+to 24.5%, which is worth something real and is a far smaller claim than timing.
+
+[EQUITIES.md](EQUITIES.md) works the whole thing through for long-only equities,
+which is the shape this test matters most for.
+
 ## The drawdown you got was one sample
 
 A backtest reports the one drawdown history happened to deal, which is a sample of
@@ -457,16 +496,19 @@ It answers one question, in one order, and refuses to skip steps:
    universe.
 5. **`significance`** — search the parameter grid, then deflate the winner for
    the size of the search.
-6. **`walkforward`** (and `portfolio --validate`) — choose parameters on one
+6. **`timing`** — shuffle when the positions happened, keeping the exposure and the
+   costs, and find out whether the signal chose moments or only chose how long to
+   be invested.
+7. **`walkforward`** (and `portfolio --validate`) — choose parameters on one
    stretch of history and measure on the *next* one. These are the only numbers
    in the repository worth much. A plain backtest lets you tune until the curve
    is pretty and then reports the curve, which tells you nothing, because you
    chose the parameters after seeing the data.
-7. **`paper`** — forward-test against live prices with simulated money, with
+8. **`paper`** — forward-test against live prices with simulated money, with
    `--state` and `--resume` so the run survives restarts. For as long as the
    minimum track record length says, which the backtest report now prints.
 
-There is no eighth step in this repository. That boundary is deliberate, and
+There is no ninth step in this repository. That boundary is deliberate, and
 the next section explains it.
 
 ## Connecting it to a broker

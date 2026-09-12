@@ -205,7 +205,9 @@ export function runBacktest(options: BacktestOptions): BacktestResult {
       : afterCooldown;
 
     const verdict = risk.evaluate(rawTarget, currentWeight, equity, next.open);
-    if (verdict.action === 'flatten') {
+    if (verdict.action === 'refuse') {
+      blocked[verdict.reason] = (blocked[verdict.reason] ?? 0) + 1;
+    } else if (verdict.action === 'flatten') {
       broker.flatten(next.open, next.openTime, risk.isTripped ? 'kill-switch' : 'liquidate', next);
       blocked[verdict.reason] = (blocked[verdict.reason] ?? 0) + 1;
     } else if (verdict.action === 'hold') {
