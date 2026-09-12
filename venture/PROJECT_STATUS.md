@@ -2,67 +2,95 @@
 
 Updated 2026-09-12.
 
-## Where this stands in one paragraph
+## Where this stands
 
-The evidence machinery and the unit-economics engine are built and tested.
-Broad research is running across four workstreams: category discovery, EU
-regulatory constraints, DTC success patterns, and business-model/sourcing. No
-product has been selected, and deliberately so — the brief's sequence puts
-research before store building, and a store built before the commercial
-hypothesis is settled is just an expensive opinion. **No Shopify store exists
-and none can be created from this environment** (see `ACCESS-AND-LIMITS.md`).
+A business has been selected on evidence, its economics inverted to produce a
+sourcing specification, and a storefront built and tested in code. **No Shopify
+store exists, no supplier has been contacted, and nothing has been launched or
+spent.** The venture is not launch-ready; it is **decision-ready**, pending four
+verifications, two of which are free.
+
+Start with `EXECUTIVE-SUMMARY.md`. Read `ACCESS-AND-LIMITS.md` before trusting
+any number anywhere in this directory.
 
 ## Completed
 
-- `venture/` workspace isolated from Buurklus (D-001)
-- Research methodology and evidence grading (`research/METHODOLOGY.md`)
-- Evidence ledger opened (`research/evidence-ledger.md`)
-- Decision log opened — 3 decisions recorded
-- Access and limits documented honestly
-- **Unit-economics engine built and tested** — 20 tests, zero dependencies.
-  Provenance-aware: refuses to certify verdicts built on unverified inputs.
+**Foundations**
+- Workspace isolated from Buurklus; nothing outside `venture/` touched (D-001)
+- Research methodology, evidence ledger (12 entries), decision log (6 decisions)
+- Engineering conventions in `CLAUDE.md`, including EU rules treated as
+  engineering constraints
+
+**Research** — four parallel workstreams, all in `research/`
+- Category discovery: 48 candidates long-listed, 9 survived screening
+- EU compliance: GPSR, EPR, VAT/OSS, customs, consumer law, Omnibus
+- DTC success patterns: ~25 brands studied, plus weak comparators
+- Business model and sourcing routes compared
+
+**Selection**
+- Padel accessories chosen: 80.0 on the scorecard, first under all five
+  alternative weightings tested
+- Business case written with the red-team argued properly, not as a formality
+- Positioning and brand direction; POLDER as candidate name
+- Markets sequenced NL → BE → DE, with Spain deliberately deferred
+
+**Finance** — `finance/`, 45 tests, zero dependencies
+- Provenance-aware unit-economics engine that refuses to certify unverified
+  inputs
+- Opportunity scorer that reports the 37.5% of the model it cannot fill
+- Required-to-believe solver producing the €23.65 sourcing ceiling
+- Twelve-month forecast, three scenarios, with the cash trough reported
+
+**Storefront** — `shopify/`, 15 tests
+- Online Store 2.0 theme, architecture derived from the benchmark research
+- Omnibus-safe reference pricing, GPSR Art. 19 block, no fakeable social proof
+- Budgets enforced by tests; all guardrails mutation-tested
+
+**Plans**
+- Measurement and consent architecture (`marketing/measurement-plan.md`)
+- Launch checklist with blocked items marked BLOCKED (`qa/launch-checklist.md`)
 
 ## In progress
 
 | Workstream | State |
 |---|---|
-| Category & trend discovery (40–50 candidates, screened) | Running |
-| EU compliance constraints (GPSR, EPR, VAT/OSS, consumer law) | Running |
-| DTC success-pattern benchmark (18–25 brands + weak competitors) | Running |
-| Business model & sourcing landscape | Running |
+| Launch plan, creative bank, lifecycle flows | Writing |
+| GPSR runbook, fulfilment, returns, customer-service SOPs | Writing |
 
-## Not started (gated on the above)
+## Not done, and honestly so
 
-Product selection · supplier scorecard · positioning and brand · offer design ·
-Shopify theme build · content · analytics plan · lifecycle flows · paid and
-organic plans · QA · launch readiness.
+- **Policies** — privacy, terms, shipping, returns, cookies are not drafted
+- **SEO content map** — keyword research is impossible without a keyword tool;
+  no search-volume figure appears anywhere in this project
+- **Product content** — nothing to photograph and no store to publish to
+- **Creator/UGC outreach, CRO experiment backlog** — both depend on a live store
 
 ## Blocked — needs a human
 
-Nothing is blocked *yet* in a way that stops research. The following will block
-implementation, and are listed now so they can be started in parallel:
-
-| # | What | Why it needs you |
+| # | What | Why |
 |---|---|---|
-| 1 | Confirm the operating entity is Netherlands-based | Assumed (D-002). Drives VAT/OSS, GPSR importer status, supplier and market choice. The single most consequential assumption in the project. |
-| 2 | Shopify account + Partner/dev store | No store can be created from here. Blocks all store configuration and every QA item requiring a live checkout. |
-| 3 | Budget authorisation | Samples, domain, apps, ad spend. Nothing has been or can be spent from here. |
-| 4 | Supplier contact | All sourcing economics are placeholders until real quotes exist. No supplier has been contacted. |
+| 1 | Confirm the entity is NL-based | Assumed (D-002); drives VAT, GPSR status, markets |
+| 2 | Shopify account | No store can be created from here |
+| 3 | Budget authorisation | Samples, domain, apps, ad spend |
+| 4 | Supplier contact | All sourcing economics are placeholders |
+| 5 | Legal and tax verification | **All compliance findings are secondary-source** |
 
-## Key risks being tracked
+## Risks being tracked
 
-1. **EU product-safety and producer-responsibility law may invalidate the
-   cheapest business models.** Under investigation now, before product selection,
-   precisely so it cannot invalidate a decision already made (D-003).
-2. **No keyword tool access** means no search-volume evidence anywhere in this
-   project. Demand is assessed qualitatively and labelled accordingly.
-3. **Search tooling is US-biased** while the venture targets the EU.
-4. **Fabrication pressure.** A brief this large creates strong incentive to fill
-   gaps with plausible numbers. The provenance system exists to make that
-   visible rather than to rely on discipline.
+1. **Clubs may not engage an unknown brand** — the most dangerous unknown.
+   Removes the cheapest channel and forces reliance on paid social.
+2. **Supplier cost above €23.65** — €5.65 over swings year one by €11,409.
+3. **Retail price band below €59** — kills the model outright.
+4. **Subscription retention** — the difference between the downside and upside
+   cases is almost entirely this, not advertising.
+5. **Evidence quality** — page fetching was blocked for every domain, so no
+   primary source, competitor page, supplier price or legal text was read.
+   Nothing exceeds MEDIUM confidence.
 
 ## Next highest-value action
 
-Reconcile the four research workstreams as they land — critically, not by
-concatenation — and let the compliance findings screen the category long-list
-before any product is shortlisted.
+**Check real retail prices for padel bags and grips at Dutch retailers.** Free,
+half an hour, and it determines whether the price ladder — and therefore the
+whole economic model — holds. Then phone ten padel clubs.
+
+Everything else should wait for those two answers.
