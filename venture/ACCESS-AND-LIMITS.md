@@ -12,7 +12,8 @@ of the line they are standing on.
 
 | Capability | Status | What it means |
 |---|---|---|
-| Web research (search + page fetch) | **Available** | Real sources, real URLs, verifiable |
+| Web search | **Available** | Returns result titles, URLs and summarised content |
+| Web page fetch (reading a specific page) | **BLOCKED** | See "The egress restriction" below — this is severe |
 | Local filesystem + Git | **Available** | Real code, committed and pushed |
 | GitHub | **Available** | Branches, commits, PRs |
 | Shopify Admin / Partner account | **NOT available** | No store exists, none can be created |
@@ -27,6 +28,40 @@ of the line they are standing on.
 
 There is no Shopify MCP server connected to this session and no credentials of
 any kind were supplied. This was verified, not assumed.
+
+## The egress restriction, and why it caps research depth
+
+This session's network policy blocks outbound access to essentially every
+website. Fetching a named page was attempted and refused for all of:
+`shopify.com`, `shopify.dev`, `help.shopify.com`, `printful.com`,
+`searchlab.nl`, `commerce.nearform.com`, and `en.wikipedia.org`. The proxy
+returns an organisation policy denial, which its own documentation says must be
+reported rather than worked around.
+
+**Web search still works and returns summarised content with URLs. Reading any
+specific page does not.**
+
+The consequences are concrete and they are not cosmetic:
+
+- **Shopify's own documentation and pricing are unreachable.** Plan prices, plan
+  feature limits, Shopify Markets capabilities, Payments availability in the
+  Netherlands and current theme-platform APIs could not be verified from source.
+  Everything of this kind in this project is marked `UNVERIFIED` and must be
+  checked against Shopify's site by a human before it is relied on.
+- **No supplier pricing page was read.** Sourcing economics were already
+  placeholders; they remain so, with no independent corroboration.
+- **No competitor page was actually examined.** The benchmark study rests on
+  search-result summaries, not on teardowns of live storefronts. Statements about
+  a named brand's page architecture are therefore weaker evidence than they would
+  appear, and are tagged accordingly.
+- **No regulation text was read.** Compliance findings rest on secondary
+  summaries. For product-safety and tax obligations this is not good enough to
+  act on, and every such finding is marked as requiring professional
+  verification.
+
+The honest summary: this project's research establishes *direction and the right
+questions* well. It does not establish *verified figures*, and no figure in it
+should be treated as though it did.
 
 ## The consequence, stated plainly
 
