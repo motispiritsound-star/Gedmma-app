@@ -100,7 +100,7 @@ Rather than invent a supplier cost and compute a flattering margin, the model
 **inverts the question and solves for the cost ceiling**:
 
 > At a €79 starter set and a €27 cold CAC, the complete set must land at or below
-> **€23.65** to break even — **€15.65** to clear €8 of profit per order.
+> **€22.90** to break even — **€14.90** to clear €8 of profit per order.
 
 That is an RFQ limit and a kill criterion in one number.
 
@@ -110,9 +110,9 @@ The price ladder is the single most decision-relevant output in the project:
 |---:|---|
 | €39 | **cannot fund acquisition at all** |
 | €49 | **cannot fund acquisition at all** |
-| €59 | €7.83 — implausible for a quality set |
-| €79 | €23.65 |
-| €99 | €39.47 |
+| €59 | €7.08 — implausible for a quality set |
+| €79 | €22.90 |
+| €99 | €38.72 |
 
 **The premium position is not a brand preference. It is the only arithmetic that
 works.** A commodity-priced padel set cannot pay for its own customer.
@@ -157,13 +157,14 @@ than left to whoever edits the store later:
   is free text and is not the Omnibus-required "lowest price in 30 days", so the
   theme refuses to render it and reads a maintained metafield instead — showing
   nothing when absent. Failing closed is the point.
-- **GPSR Art. 19 information renders in the offer**, not the footer, and a
-  product missing it shows a loud staff-only warning rather than publishing
-  quietly.
+- **A product without GPSR Art. 19 data cannot be bought.** The information
+  renders in the offer rather than the footer, and when it is missing the theme
+  disables add-to-cart — on the server, with the client-side script prevented
+  from re-enabling it.
 - **It cannot fake social proof.** Review markup is emitted only behind a genuine
   non-zero rating count.
 
-15 automated checks run without a store — schema validity, template references,
+20 automated checks run without a store — schema validity, template references,
 Dutch translation coverage, a 50 KB JavaScript budget, alt text, focus outlines,
 and the compliance guardrails. All were mutation-tested to confirm they fail when
 the rule they protect is broken.
@@ -210,7 +211,7 @@ itself points staff at when compliance data is missing.
 | # | Risk | Impact | Likelihood | Mitigation / status |
 |---:|---|---|---|---|
 | 1 | **Clubs won't engage an unknown brand** | High | Medium | The cheapest acquisition channel disappears and economics fall back on paid social — the exact thing the strategy avoids. **Ten phone calls settles it.** Untested |
-| 2 | **Supplier cost lands above the ceiling** | High | Medium | €5.65 over swings year one by €11,409. RFQ before ad account. Untested |
+| 2 | **Supplier cost lands above the ceiling** | High | Medium | €4.90 over swings year one by €9,895. RFQ before ad account. Untested |
 | 3 | **Retail price band sits below €59** | High | Unknown | Kills the model outright. **30 minutes of browsing settles it.** Untested |
 | 4 | **Grip subscription doesn't retain** | High | Medium | The whole thesis. Downside vs upside is driven by this, not by ads |
 | 5 | **Compliance research is secondary-source only** | High | Certain | No primary legal text could be opened. Professional verification required, not optional |
@@ -231,7 +232,7 @@ before a euro is spent:**
 |---|---|---|---|
 | 1 | **Check real padel bag and grip prices** at bol.com and two club webshops | 30 min | Determines whether the entire price ladder holds. Nothing else should be acted on before this |
 | 2 | **Phone ten Dutch padel clubs.** Would they stock or co-promote? | 2 hours | The most dangerous unknown in the business case |
-| 3 | **Send the RFQ** to 3+ manufacturers against the €23.65 ceiling | Free | Fills 37.5% of the scoring model that is currently blank |
+| 3 | **Send the RFQ** to 3+ manufacturers against the €22.90 ceiling | Free | Fills 37.5% of the scoring model that is currently blank |
 | 4 | **Trademark search** POLDER at BOIP and EUIPO, classes 18/25/28 | Low | Before any brand asset is produced |
 
 **Then, if those survive:**

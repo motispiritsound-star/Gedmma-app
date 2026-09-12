@@ -2,24 +2,18 @@
 import { writeFileSync } from 'node:fs';
 import { v } from './economics.js';
 import { forecast, formatForecast, BUDGET_SCENARIOS, SUBSCRIPTION_CONTRIBUTION_MARGIN } from './forecast.js';
+import { sourcingSpecification } from './required-to-believe.js';
+import { starterSet, CAC_COLD } from './product-spec.js';
 
-// Priced at the point the ladder says works, costed at a plausible fraction of
-// the ceiling. BOTH are unverified; that is the headline of this document.
-const spec = {
-  pricePerUnitInclVat: v(79, 'UNVERIFIED', 'no NL retail price observed'),
-  unitsPerOrder: v(1, 'ASSUMPTION'),
-  vatRate: v(0.21, 'FACT'),
-  unitCost: v(18, 'UNVERIFIED', 'no supplier quote — under the EUR 23.65 ceiling, not measured'),
-  packagingPerOrder: v(1.80, 'ASSUMPTION'),
-  pickPackPerOrder: v(2.20, 'ASSUMPTION'),
-  outboundShipCost: v(5.50, 'ASSUMPTION'),
-  paymentPctFee: v(0.019, 'ASSUMPTION'),
-  paymentFixedFee: v(0.25, 'ASSUMPTION'),
-  refundRate: v(0.02, 'ASSUMPTION'),
-  returnRate: v(0.06, 'ASSUMPTION'),
-  returnShipCost: v(6.00, 'ASSUMPTION'),
-  supportCostPerOrder: v(0.90, 'ASSUMPTION'),
-};
+const spec = starterSet(79, 18);
+
+
+// Derive the ceiling rather than restating it, so this document cannot drift out
+// of step with the economics engine when a cost input changes.
+const CEILING = sourcingSpecification(
+  starterSet(79, 0),
+  { plannedCac: CAC_COLD },
+).maxUnitCost;
 
 const shared = { months: 12, cacInflation: 1.02, subscriptionValue: 20, fixedMonthlyCost: 450 };
 const spend = (arr) => [...arr, ...Array(12 - arr.length).fill(arr.at(-1))];
@@ -39,7 +33,7 @@ const results = Object.entries(SCENARIOS).map(([k, a]) => [k, forecast(spec, a),
 // generously. Re-run it at the sourcing ceiling to show how thin the margin for
 // error on that single unverified number really is.
 const atCeiling = forecast(
-  { ...spec, unitCost: v(23.65, 'UNVERIFIED', 'the sourcing ceiling from unit-economics.md') },
+  { ...spec, unitCost: v(CEILING, 'UNVERIFIED', 'the sourcing ceiling from unit-economics.md') },
   SCENARIOS.Base,
 );
 
@@ -66,7 +60,7 @@ this need before it turns**, and **which assumption would hurt most if wrong**.
 | Input | Value | Provenance |
 |---|---|---|
 | Starter set price (incl. VAT) | EUR 79 | **UNVERIFIED** — no NL retail price observed |
-| Landed cost of the set | EUR 18 | **UNVERIFIED** — no supplier contacted; sits under the EUR 23.65 ceiling but is not a quote |
+| Landed cost of the set | EUR 18 | **UNVERIFIED** — no supplier contacted; sits under the EUR ${CEILING.toFixed(2)} ceiling but is not a quote |
 | Subscription contribution per renewal | EUR ${(20 * SUBSCRIPTION_CONTRIBUTION_MARGIN).toFixed(2)} | ASSUMPTION (EUR 20 at ${(SUBSCRIPTION_CONTRIBUTION_MARGIN * 100).toFixed(0)}% margin) |
 | Fixed monthly cost | EUR 450 | ASSUMPTION — platform, apps, tools. **Shopify pricing could not be verified; shopify.com is blocked** |
 | CAC inflation | 2% per month | ASSUMPTION, directionally supported by reported CPM rises |
@@ -98,16 +92,16 @@ ${results.map(([k, r]) => `| ${k} | ${r.breakEvenMonth ?? '**never**'} | EUR ${M
 
 Base turns profitable immediately — but only because the landed cost was assumed
 at EUR 18. That number is **UNVERIFIED**: no supplier has quoted it. Re-running
-the identical base case with the cost at the EUR 23.65 ceiling from
+the identical base case with the cost at the EUR ${CEILING.toFixed(2)} ceiling from
 *../strategy/unit-economics.md*:
 
-| | Base @ EUR 18 cost | Base @ EUR 23.65 ceiling |
+| | Base @ EUR 18 cost | Base @ EUR ${CEILING.toFixed(2)} ceiling |
 |---|---:|---:|
 | First profitable month | ${results[1][1].breakEvenMonth ?? 'never'} | ${atCeiling.breakEvenMonth ?? '**never**'} |
 | Cash required | EUR ${Math.abs(Math.min(0, results[1][1].cashTrough)).toFixed(0)} | EUR ${Math.abs(Math.min(0, atCeiling.cashTrough)).toFixed(0)} |
 | Cumulative at month 12 | EUR ${results[1][1].finalCumulative.toFixed(0)} | EUR ${atCeiling.finalCumulative.toFixed(0)} |
 
-A EUR 5.65 difference in the cost of one product — well inside the range a single
+A EUR ${(CEILING - 18).toFixed(2)} difference in the cost of one product — well inside the range a single
 supplier negotiation moves — swings the twelve-month position by
 EUR ${(results[1][1].finalCumulative - atCeiling.finalCumulative).toFixed(0)}.
 **This is why the RFQ comes before the ad account.**

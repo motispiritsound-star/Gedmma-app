@@ -53,7 +53,7 @@ because it converts an unknown into a false assurance. The honest headline:
 
 | | Item | State | Note |
 |---|---|---|---|
-| ☑ | Theme built | **DONE** | OS 2.0, 15 automated checks passing |
+| ☑ | Theme built | **DONE** | OS 2.0, 20 automated checks passing |
 | ☑ | Mobile-first architecture | **DONE** | Section order from Baymard-derived research |
 | ☑ | Accessibility standards applied | **DONE** | WCAG 2.2 AA targeted; focus, contrast, target size, semantics enforced by tests |
 | ☑ | Performance budget enforced | **DONE** | <50 KB JS, zero third-party scripts, tested |
@@ -85,8 +85,8 @@ because it converts an unknown into a false assurance. The honest headline:
 |---|---|---|---|
 | ☑ | Compliance constraints researched | **DONE** | GPSR, EPR, VAT/OSS, consumer law, Omnibus |
 | ☑ | Unlawful conversion tactics prohibited in code | **DONE** | Reference pricing, fake reviews and fake scarcity blocked by theme + tests |
-| ☑ | GPSR Art. 19 disclosure built | **DONE** | Renders in the offer; loud staff warning when data is missing |
-| ☐ | Policies drafted | **OPEN** | Privacy, terms, shipping, returns, cookies not yet written |
+| ☑ | GPSR Art. 19 disclosure built | **DONE** | Renders in the offer, and **purchase is disabled when the data is missing** — server-side, with the client script blocked from re-enabling it |
+| ◐ | Policies drafted | **PARTIAL** | Shipping, returns and cookies drafted in `../legal/`; privacy is an outline only because no processors exist yet. All need legal review |
 | ☐ | Cookie consent implemented | **BLOCKED** | Design documented; no store to implement on |
 | ☐ | Withdrawal button implemented | **BLOCKED** | Reported mandatory from 19 June 2026 — **verify scope, it is the most commonly misread item in the research** |
 | ☐ | VAT/OSS registration | **HUMAN** | Requires professional advice |
@@ -110,8 +110,8 @@ because it converts an unknown into a false assurance. The honest headline:
 
 | | Item | State | Note |
 |---|---|---|---|
-| ☑ | Automated theme checks | **DONE** | 15 checks, mutation-tested to confirm they fail when the rule they protect is broken |
-| ☑ | Economics engine tests | **DONE** | 37 tests |
+| ☑ | Automated theme checks | **DONE** | 20 checks, mutation-tested to confirm they fail when the rule they protect is broken |
+| ☑ | Economics engine tests | **DONE** | 47 tests |
 | ☐ | Cross-browser testing | **BLOCKED** | Nothing rendered |
 | ☐ | Real-device mobile testing | **BLOCKED** | |
 | ☐ | Broken-link and redirect check | **BLOCKED** | |

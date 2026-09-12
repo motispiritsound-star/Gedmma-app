@@ -34,14 +34,14 @@ any number anywhere in this directory.
 - Positioning and brand direction; POLDER as candidate name
 - Markets sequenced NL → BE → DE, with Spain deliberately deferred
 
-**Finance** — `finance/`, 45 tests, zero dependencies
+**Finance** — `finance/`, 47 tests, zero dependencies
 - Provenance-aware unit-economics engine that refuses to certify unverified
   inputs
 - Opportunity scorer that reports the 37.5% of the model it cannot fill
-- Required-to-believe solver producing the €23.65 sourcing ceiling
+- Required-to-believe solver producing the €22.90 sourcing ceiling
 - Twelve-month forecast, three scenarios, with the cash trough reported
 
-**Storefront** — `shopify/`, 15 tests
+**Storefront** — `shopify/`, 20 tests
 - Online Store 2.0 theme, architecture derived from the benchmark research
 - Omnibus-safe reference pricing, GPSR Art. 19 block, no fakeable social proof
 - Budgets enforced by tests; all guardrails mutation-tested
@@ -50,18 +50,17 @@ any number anywhere in this directory.
 - Measurement and consent architecture (`marketing/measurement-plan.md`)
 - Launch checklist with blocked items marked BLOCKED (`qa/launch-checklist.md`)
 
-## In progress
-
-| Workstream | State |
-|---|---|
-| Launch plan, creative bank, lifecycle flows | Writing |
-| GPSR runbook, fulfilment, returns, customer-service SOPs | Writing |
+**Plans and operations**
+- Launch plan, creative bank and lifecycle flows (`marketing/`)
+- GPSR runbook, fulfilment, returns and customer-service SOPs (`operations/`)
+- Policy drafts and an SEO plan, both honest about their gaps (`legal/`, `marketing/seo-plan.md`)
 
 ## Not done, and honestly so
 
-- **Policies** — privacy, terms, shipping, returns, cookies are not drafted
-- **SEO content map** — keyword research is impossible without a keyword tool;
-  no search-volume figure appears anywhere in this project
+- **Privacy notice** — an outline only. It must describe processing that
+  actually happens, and no store, ESP or 3PL exists yet
+- **Keyword research** — impossible without a keyword tool; no search-volume
+  figure appears anywhere in this project
 - **Product content** — nothing to photograph and no store to publish to
 - **Creator/UGC outreach, CRO experiment backlog** — both depend on a live store
 
@@ -79,7 +78,7 @@ any number anywhere in this directory.
 
 1. **Clubs may not engage an unknown brand** — the most dangerous unknown.
    Removes the cheapest channel and forces reliance on paid social.
-2. **Supplier cost above €23.65** — €5.65 over swings year one by €11,409.
+2. **Supplier cost above €22.90** — €4.90 over swings year one by €9,895.
 3. **Retail price band below €59** — kills the model outright.
 4. **Subscription retention** — the difference between the downside and upside
    cases is almost entirely this, not advertising.

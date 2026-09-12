@@ -23,15 +23,15 @@ in one number.
 
 **At a EUR 79.00 starter set and a EUR 27.08 cold-traffic CAC:**
 
-> Landed cost must stay at or below EUR 23.65 per unit to leave EUR 27.08 of contribution at a EUR 27.08 CAC. Above that the order does not pay for its own acquisition.
+> Landed cost must stay at or below EUR 22.90 per unit to leave EUR 27.08 of contribution at a EUR 27.08 CAC. Above that the order does not pay for its own acquisition.
 
 Allowing EUR 8.00 of first-order profit rather than bare breakeven tightens this to
-**EUR 15.65**.
+**EUR 14.90**.
 
 That is the number to put on an RFQ. A quote above it is not a negotiation, it is
 a no.
 
-At the ceiling the order carries a 63.8% gross margin and a
+At the ceiling the order carries a 64.9% gross margin and a
 41.5% pre-ad contribution margin, implying a break-even ROAS of
 **2.92x** on VAT-inclusive reported revenue.
 
@@ -43,12 +43,12 @@ achievable, the order cannot fund its own acquisition even if the goods were fre
 | Retail (incl. VAT) | Max landed cost @ EUR 27.08 CAC | Max landed cost @ EUR 20.00 CAC |
 |---:|---:|---:|
 | EUR 39.00 | **not achievable** | **not achievable** |
-| EUR 49.00 | **not achievable** | EUR 7.00 |
-| EUR 59.00 | EUR 7.83 | EUR 14.91 |
-| EUR 69.00 | EUR 15.74 | EUR 22.82 |
-| EUR 79.00 | EUR 23.65 | EUR 30.73 |
-| EUR 89.00 | EUR 31.56 | EUR 38.64 |
-| EUR 99.00 | EUR 39.47 | EUR 46.55 |
+| EUR 49.00 | **not achievable** | EUR 6.25 |
+| EUR 59.00 | EUR 7.08 | EUR 14.16 |
+| EUR 69.00 | EUR 14.99 | EUR 22.07 |
+| EUR 79.00 | EUR 22.90 | EUR 29.98 |
+| EUR 89.00 | EUR 30.81 | EUR 37.89 |
+| EUR 99.00 | EUR 38.72 | EUR 45.80 |
 
 **This table is the most decision-relevant output in the project.** It says the
 entry price cannot sit at the bottom of the category. A EUR 39.00 order cannot fund a
@@ -66,11 +66,11 @@ profit is zero by construction and every shock pushes it negative.
 |---|---:|---:|---:|---:|---:|:--:|
 | Base case | EUR 27.08 | 41.5% | 2.92x | EUR 27.08 | EUR 0.00 | yes |
 | CAC +25% | EUR 27.08 | 41.5% | 2.92x | EUR 33.85 | EUR -6.77 | NO |
-| Supplier cost +10% | EUR 24.72 | 37.9% | 3.20x | EUR 27.08 | EUR -2.36 | NO |
+| Supplier cost +10% | EUR 24.79 | 38.0% | 3.19x | EUR 27.08 | EUR -2.29 | NO |
 | Shipping +20% | EUR 25.82 | 39.5% | 3.06x | EUR 27.08 | EUR -1.26 | NO |
 | Conversion -20% (CAC +25%) | EUR 27.08 | 41.5% | 2.92x | EUR 33.85 | EUR -6.77 | NO |
-| Refunds +50% | EUR 25.88 | 39.6% | 3.05x | EUR 27.08 | EUR -1.20 | NO |
-| Compound: CAC +25%, COGS +10%, shipping +20%, refunds +50% | EUR 22.17 | 34.0% | 3.56x | EUR 33.85 | EUR -11.68 | NO |
+| Refunds +50% | EUR 25.50 | 39.1% | 3.10x | EUR 27.08 | EUR -1.58 | NO |
+| Compound: CAC +25%, COGS +10%, shipping +20%, refunds +50% | EUR 21.87 | 33.5% | 3.61x | EUR 33.85 | EUR -11.98 | NO |
 
 Fragile under: CAC +25%; Supplier cost +10%; Shipping +20%; Conversion -20% (CAC +25%); Refunds +50%.
 Compound shock survived: no.
@@ -78,7 +78,7 @@ Compound shock survived: no.
 **Read this correctly.** Every shock fails because the ceiling is defined as
 break-even. The table's value is the *magnitude* of each failure: it shows how
 much headroom a quote must come in under the ceiling to leave a business that
-survives a bad quarter. A quote at EUR 23.65 is not a viable
+survives a bad quarter. A quote at EUR 22.90 is not a viable
 business; it is the point at which the business stops existing.
 
 ## Repeat purchase — the load-bearing assumption

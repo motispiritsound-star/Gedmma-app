@@ -18,6 +18,27 @@
   Blocks are used throughout so the merchant can reorder without a developer.
 {%- endcomment -%}
 
+{%- liquid
+  comment
+    GPSR gate. A product whose Article 19 data is absent cannot lawfully be
+    offered in the EU, so it must not be purchasable. This is computed here
+    rather than inside the snippet because the buy button needs the answer.
+
+    The gate can be switched off in theme settings for merchants selling outside
+    the EU, but it defaults ON — the safe default is the one that refuses.
+  endcomment
+  assign c = product.metafields.compliance
+  assign gpsr_ready = false
+  if c.component_details != blank
+    assign gpsr_ready = true
+  elsif c.manufacturer_name != blank and c.manufacturer_address != blank
+    assign gpsr_ready = true
+  endif
+  if settings.enforce_gpsr_gate == false
+    assign gpsr_ready = true
+  endif
+-%}
+
 <div class="page-width section">
   {% render 'breadcrumbs', product: product %}
 
@@ -66,6 +87,7 @@
 
     <div class="product__info">
       <product-form
+        data-gpsr-ready="{{ gpsr_ready }}"
         data-money-format="{{ shop.money_format | escape }}"
         data-add-label="{{ 'product.add_to_cart' | t | escape }}"
         data-sold-out-label="{{ 'product.sold_out' | t | escape }}"
@@ -158,9 +180,17 @@
                     type="submit"
                     class="button button--full"
                     data-submit
-                    {% unless variant.available %}disabled{% endunless %}
+                    {% unless variant.available and gpsr_ready %}disabled{% endunless %}
                   >
-                    {% if variant.available %}{{ 'product.add_to_cart' | t }}{% else %}{{ 'product.sold_out' | t }}{% endif %}
+                    {%- liquid
+                      if gpsr_ready == false
+                        echo 'product.unavailable' | t
+                      elsif variant.available
+                        echo 'product.add_to_cart' | t
+                      else
+                        echo 'product.sold_out' | t
+                      endif
+                    -%}
                   </button>
                 {%- endform -%}
 

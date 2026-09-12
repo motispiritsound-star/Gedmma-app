@@ -21,7 +21,7 @@ this need before it turns**, and **which assumption would hurt most if wrong**.
 | Input | Value | Provenance |
 |---|---|---|
 | Starter set price (incl. VAT) | EUR 79 | **UNVERIFIED** — no NL retail price observed |
-| Landed cost of the set | EUR 18 | **UNVERIFIED** — no supplier contacted; sits under the EUR 23.65 ceiling but is not a quote |
+| Landed cost of the set | EUR 18 | **UNVERIFIED** — no supplier contacted; sits under the EUR 22.90 ceiling but is not a quote |
 | Subscription contribution per renewal | EUR 14.00 | ASSUMPTION (EUR 20 at 70% margin) |
 | Fixed monthly cost | EUR 450 | ASSUMPTION — platform, apps, tools. **Shopify pricing could not be verified; shopify.com is blocked** |
 | CAC inflation | 2% per month | ASSUMPTION, directionally supported by reported CPM rises |
@@ -45,89 +45,89 @@ business actually lives.
 
 | Month | Ad spend | CAC | Orders | Subscribers | Revenue | Contribution | Operating profit | Cumulative |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | 800 | 38.00 | 25 | 3 | 2039 | 865 | -385 | -385 |
-| 2 | 1500 | 38.76 | 43 | 8 | 3543 | 1517 | -433 | -818 |
-| 3 | 2500 | 39.54 | 68 | 15 | 5637 | 2428 | -522 | -1340 |
-| 4 | 3500 | 40.33 | 91 | 23 | 7691 | 3331 | -619 | -1959 |
-| 5 | 4500 | 41.13 | 114 | 34 | 9700 | 4225 | -725 | -2684 |
-| 6 | 6000 | 41.96 | 148 | 46 | 12628 | 5515 | -935 | -3619 |
-| 7 | 6000 | 42.79 | 146 | 57 | 12637 | 5578 | -872 | -4491 |
-| 8 | 6000 | 43.65 | 143 | 66 | 12614 | 5618 | -832 | -5323 |
-| 9 | 6000 | 44.52 | 141 | 73 | 12564 | 5637 | -813 | -6136 |
-| 10 | 6000 | 45.41 | 138 | 78 | 12493 | 5640 | -810 | -6946 |
-| 11 | 6000 | 46.32 | 136 | 83 | 12405 | 5629 | -821 | -7766 |
-| 12 | 6000 | 47.25 | 134 | 86 | 12302 | 5607 | -843 | -8609 |
+| 1 | 800 | 38.00 | 25 | 3 | 2039 | 843 | -407 | -407 |
+| 2 | 1500 | 38.76 | 43 | 8 | 3543 | 1480 | -470 | -877 |
+| 3 | 2500 | 39.54 | 68 | 15 | 5637 | 2369 | -581 | -1458 |
+| 4 | 3500 | 40.33 | 91 | 23 | 7691 | 3252 | -698 | -2156 |
+| 5 | 4500 | 41.13 | 114 | 34 | 9700 | 4125 | -825 | -2981 |
+| 6 | 6000 | 41.96 | 148 | 46 | 12628 | 5386 | -1064 | -4045 |
+| 7 | 6000 | 42.79 | 146 | 57 | 12637 | 5452 | -998 | -5043 |
+| 8 | 6000 | 43.65 | 143 | 66 | 12614 | 5493 | -957 | -6000 |
+| 9 | 6000 | 44.52 | 141 | 73 | 12564 | 5515 | -935 | -6935 |
+| 10 | 6000 | 45.41 | 138 | 78 | 12493 | 5520 | -930 | -7865 |
+| 11 | 6000 | 46.32 | 136 | 83 | 12405 | 5511 | -939 | -8804 |
+| 12 | 6000 | 47.25 | 134 | 86 | 12302 | 5491 | -959 | -9763 |
 
 First profitable month: **none within the horizon**  
-Deepest cumulative position: **EUR -8609** — this is the cash required, not the ad budget  
-Cumulative at month 12: **EUR -8609**
+Deepest cumulative position: **EUR -9763** — this is the cash required, not the ad budget  
+Cumulative at month 12: **EUR -9763**
 
 ### Base
 
 | Month | Ad spend | CAC | Orders | Subscribers | Revenue | Contribution | Operating profit | Cumulative |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | 800 | 27.00 | 40 | 10 | 3329 | 1441 | 191 | 191 |
-| 2 | 1500 | 27.54 | 66 | 26 | 5698 | 2515 | 565 | 755 |
-| 3 | 2500 | 28.09 | 102 | 49 | 8999 | 4020 | 1070 | 1825 |
-| 4 | 3500 | 28.65 | 136 | 79 | 12340 | 5581 | 1631 | 3456 |
-| 5 | 4500 | 29.23 | 170 | 115 | 15709 | 7187 | 2237 | 5693 |
-| 6 | 6000 | 29.81 | 219 | 161 | 20506 | 9440 | 2990 | 8683 |
-| 7 | 6000 | 30.41 | 217 | 202 | 21189 | 9960 | 3510 | 12192 |
-| 8 | 6000 | 31.01 | 216 | 240 | 21825 | 10439 | 3989 | 16181 |
-| 9 | 6000 | 31.63 | 214 | 274 | 22424 | 10883 | 4433 | 20614 |
-| 10 | 6000 | 32.27 | 214 | 306 | 22994 | 11299 | 4849 | 25463 |
-| 11 | 6000 | 32.91 | 213 | 335 | 23547 | 11693 | 5243 | 30706 |
-| 12 | 6000 | 33.57 | 214 | 361 | 24091 | 12071 | 5621 | 36327 |
+| 1 | 800 | 27.00 | 40 | 10 | 3329 | 1406 | 156 | 156 |
+| 2 | 1500 | 27.54 | 66 | 26 | 5698 | 2458 | 508 | 664 |
+| 3 | 2500 | 28.09 | 102 | 49 | 8999 | 3932 | 982 | 1645 |
+| 4 | 3500 | 28.65 | 136 | 79 | 12340 | 5462 | 1512 | 3157 |
+| 5 | 4500 | 29.23 | 170 | 115 | 15709 | 7039 | 2089 | 5247 |
+| 6 | 6000 | 29.81 | 219 | 161 | 20506 | 9250 | 2800 | 8046 |
+| 7 | 6000 | 30.41 | 217 | 202 | 21189 | 9771 | 3321 | 11367 |
+| 8 | 6000 | 31.01 | 216 | 240 | 21825 | 10251 | 3801 | 15168 |
+| 9 | 6000 | 31.63 | 214 | 274 | 22424 | 10696 | 4246 | 19414 |
+| 10 | 6000 | 32.27 | 214 | 306 | 22994 | 11113 | 4663 | 24078 |
+| 11 | 6000 | 32.91 | 213 | 335 | 23547 | 11507 | 5057 | 29135 |
+| 12 | 6000 | 33.57 | 214 | 361 | 24091 | 11885 | 5435 | 34570 |
 
 First profitable month: **1**  
-Deepest cumulative position: **EUR 191** — this is the cash required, not the ad budget  
-Cumulative at month 12: **EUR 36327**
+Deepest cumulative position: **EUR 156** — this is the cash required, not the ad budget  
+Cumulative at month 12: **EUR 34570**
 
 ### Upside
 
 | Month | Ad spend | CAC | Orders | Subscribers | Revenue | Contribution | Operating profit | Cumulative |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | 800 | 20.00 | 58 | 23 | 5046 | 2230 | 980 | 980 |
-| 2 | 1500 | 20.40 | 95 | 60 | 8717 | 3966 | 2016 | 2997 |
-| 3 | 2500 | 20.81 | 146 | 116 | 13849 | 6416 | 3466 | 6462 |
-| 4 | 3500 | 21.22 | 196 | 188 | 19248 | 9073 | 5123 | 11586 |
-| 5 | 4500 | 21.65 | 245 | 277 | 24906 | 11930 | 6980 | 18566 |
-| 6 | 6000 | 22.08 | 317 | 390 | 32796 | 15852 | 9402 | 27968 |
-| 7 | 6000 | 22.52 | 320 | 498 | 35254 | 17491 | 11041 | 39009 |
-| 8 | 6000 | 22.97 | 326 | 604 | 37798 | 19148 | 12698 | 51706 |
-| 9 | 6000 | 23.43 | 333 | 707 | 40476 | 20848 | 14398 | 66104 |
-| 10 | 6000 | 23.90 | 344 | 809 | 43347 | 22623 | 16173 | 82277 |
-| 11 | 6000 | 24.38 | 358 | 912 | 46477 | 24507 | 18057 | 100335 |
-| 12 | 6000 | 24.87 | 375 | 1016 | 49946 | 26543 | 20093 | 120428 |
+| 1 | 800 | 20.00 | 58 | 23 | 5046 | 2180 | 930 | 930 |
+| 2 | 1500 | 20.40 | 95 | 60 | 8717 | 3884 | 1934 | 2863 |
+| 3 | 2500 | 20.81 | 146 | 116 | 13849 | 6289 | 3339 | 6202 |
+| 4 | 3500 | 21.22 | 196 | 188 | 19248 | 8903 | 4953 | 11155 |
+| 5 | 4500 | 21.65 | 245 | 277 | 24906 | 11717 | 6767 | 17922 |
+| 6 | 6000 | 22.08 | 317 | 390 | 32796 | 15576 | 9126 | 27048 |
+| 7 | 6000 | 22.52 | 320 | 498 | 35254 | 17213 | 10763 | 37811 |
+| 8 | 6000 | 22.97 | 326 | 604 | 37798 | 18864 | 12414 | 50225 |
+| 9 | 6000 | 23.43 | 333 | 707 | 40476 | 20558 | 14108 | 64333 |
+| 10 | 6000 | 23.90 | 344 | 809 | 43347 | 22324 | 15874 | 80207 |
+| 11 | 6000 | 24.38 | 358 | 912 | 46477 | 24196 | 17746 | 97953 |
+| 12 | 6000 | 24.87 | 375 | 1016 | 49946 | 26217 | 19767 | 117720 |
 
 First profitable month: **1**  
-Deepest cumulative position: **EUR 980** — this is the cash required, not the ad budget  
-Cumulative at month 12: **EUR 120428**
+Deepest cumulative position: **EUR 930** — this is the cash required, not the ad budget  
+Cumulative at month 12: **EUR 117720**
 
 ## Reading the results
 
 | Scenario | First profitable month | Cash required (deepest trough) | Cumulative at month 12 |
 |---|---|---:|---:|
-| Downside | **never** | EUR 8609 | EUR -8609 |
-| Base | 1 | EUR 0 | EUR 36327 |
-| Upside | 1 | EUR 0 | EUR 120428 |
+| Downside | **never** | EUR 9763 | EUR -9763 |
+| Base | 1 | EUR 0 | EUR 34570 |
+| Upside | 1 | EUR 0 | EUR 117720 |
 
 ### The base case is not as comfortable as it looks
 
 Base turns profitable immediately — but only because the landed cost was assumed
 at EUR 18. That number is **UNVERIFIED**: no supplier has quoted it. Re-running
-the identical base case with the cost at the EUR 23.65 ceiling from
+the identical base case with the cost at the EUR 22.90 ceiling from
 *../strategy/unit-economics.md*:
 
-| | Base @ EUR 18 cost | Base @ EUR 23.65 ceiling |
+| | Base @ EUR 18 cost | Base @ EUR 22.90 ceiling |
 |---|---:|---:|
 | First profitable month | 1 | 2 |
-| Cash required | EUR 0 | EUR 33 |
-| Cumulative at month 12 | EUR 36327 | EUR 24918 |
+| Cash required | EUR 0 | EUR 38 |
+| Cumulative at month 12 | EUR 34570 | EUR 24675 |
 
-A EUR 5.65 difference in the cost of one product — well inside the range a single
+A EUR 4.90 difference in the cost of one product — well inside the range a single
 supplier negotiation moves — swings the twelve-month position by
-EUR 11409.
+EUR 9895.
 **This is why the RFQ comes before the ad account.**
 
 **The cash trough matters more than the profit line.** It is the money that must

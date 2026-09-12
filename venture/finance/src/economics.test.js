@@ -275,3 +275,38 @@ test('default gates encode the brief thresholds', () => {
   assert.equal(DEFAULT_GATES.minGrossMarginPct, 0.6);
   assert.equal(DEFAULT_GATES.requireFirstOrderProfit, true);
 });
+
+test('a warranty reserve is carried for claims beyond the withdrawal window', () => {
+  // The 14-day refund and return provisions do not cover the EU two-year
+  // conformity guarantee, and for the first 12 months the burden of proof is
+  // reversed against the merchant. A durable good priced without this reserve
+  // looks more profitable than it is.
+  const without = computeOrderEconomics(simpleSpec());
+  const withReserve = computeOrderEconomics(
+    simpleSpec({
+      warrantyClaimRate: v(0.03, 'ASSUMPTION', 'replacement rate months 2-24'),
+      warrantyCostPerClaim: v(25, 'ASSUMPTION', 'goods plus carriage both ways'),
+    }),
+  );
+
+  assert.ok(Math.abs(withReserve.costs.warranty - 0.75) < 1e-9);
+  assert.ok(
+    withReserve.contributionBeforeAds < without.contributionBeforeAds,
+    'the reserve must reduce contribution',
+  );
+});
+
+test('the warranty reserve is stressed alongside refunds', () => {
+  const spec = simpleSpec({
+    warrantyClaimRate: v(0.04, 'ASSUMPTION'),
+    warrantyCostPerClaim: v(25, 'ASSUMPTION'),
+  });
+  const suite = runStressSuite(spec, { plannedCac: 10 });
+  const base = suite.find((s) => s.id === 'base');
+  const worse = suite.find((s) => s.id === 'refund+50');
+
+  assert.ok(
+    worse.contributionBeforeAds < base.contributionBeforeAds,
+    'a rise in failure rates must hit the warranty reserve too, not only refunds',
+  );
+});

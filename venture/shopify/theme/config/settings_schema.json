@@ -10,49 +10,161 @@
   {
     "name": "Colours",
     "settings": [
-      { "type": "header", "content": "Contrast is an accessibility requirement, not a preference. Text on background must reach 4.5:1 and UI components 3:1 (WCAG 2.2 AA)." },
-      { "type": "color", "id": "color_background", "label": "Background", "default": "#ffffff" },
-      { "type": "color", "id": "color_text", "label": "Text", "default": "#14181d" },
-      { "type": "color", "id": "color_muted", "label": "Muted text", "default": "#5b6672", "info": "Must still reach 4.5:1 on the background." },
-      { "type": "color", "id": "color_surface", "label": "Surface", "default": "#f3f5f7" },
-      { "type": "color", "id": "color_border", "label": "Border", "default": "#d9dee3" },
-      { "type": "color", "id": "color_accent", "label": "Accent", "default": "#0b5fa5" },
-      { "type": "color", "id": "color_accent_text", "label": "Text on accent", "default": "#ffffff" }
+      {
+        "type": "header",
+        "content": "Contrast is an accessibility requirement, not a preference. Text on background must reach 4.5:1 and UI components 3:1 (WCAG 2.2 AA)."
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text",
+        "default": "#14181d"
+      },
+      {
+        "type": "color",
+        "id": "color_muted",
+        "label": "Muted text",
+        "default": "#5b6672",
+        "info": "Must still reach 4.5:1 on the background."
+      },
+      {
+        "type": "color",
+        "id": "color_surface",
+        "label": "Surface",
+        "default": "#f3f5f7"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Border",
+        "default": "#d9dee3"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent",
+        "default": "#0b5fa5"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_text",
+        "label": "Text on accent",
+        "default": "#ffffff"
+      }
     ]
   },
   {
     "name": "Typography",
     "settings": [
-      { "type": "font_picker", "id": "font_body", "label": "Body font", "default": "assistant_n4" },
-      { "type": "header", "content": "Two weights only. Each additional weight is another font file on the critical path." }
+      {
+        "type": "font_picker",
+        "id": "font_body",
+        "label": "Body font",
+        "default": "assistant_n4"
+      },
+      {
+        "type": "header",
+        "content": "Two weights only. Each additional weight is another font file on the critical path."
+      }
     ]
   },
   {
     "name": "Layout",
     "settings": [
-      { "type": "image_picker", "id": "logo", "label": "Logo" },
-      { "type": "image_picker", "id": "favicon", "label": "Favicon" },
-      { "type": "range", "id": "page_width", "min": 1000, "max": 1600, "step": 40, "unit": "px", "label": "Page width", "default": 1240 }
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon"
+      },
+      {
+        "type": "range",
+        "id": "page_width",
+        "min": 1000,
+        "max": 1600,
+        "step": 40,
+        "unit": "px",
+        "label": "Page width",
+        "default": 1240
+      }
     ]
   },
   {
     "name": "Promises",
     "settings": [
-      { "type": "header", "content": "Only state what can actually be honoured. Every promise here is repeated on product pages and becomes a contractual commitment." },
-      { "type": "text", "id": "guarantee_name", "label": "Guarantee name", "info": "Name it and give it a number, e.g. \"60-day court trial\"." },
-      { "type": "richtext", "id": "guarantee_body", "label": "Guarantee terms", "info": "Include the exclusions. A guarantee with published exclusions is more credible, not less, and suppresses returns." },
-      { "type": "richtext", "id": "shipping_summary", "label": "Shipping summary" },
-      { "type": "richtext", "id": "returns_summary", "label": "Returns summary", "info": "EU consumers have 14 days to withdraw without reason. State who pays return postage — if you do not say so in advance, you pay it." }
+      {
+        "type": "checkbox",
+        "id": "enforce_gpsr_gate",
+        "label": "Block purchase when GPSR data is missing",
+        "default": true,
+        "info": "Leave on when selling into the EU. A product without Article 19 manufacturer and safety information cannot lawfully be offered, so the theme disables add-to-cart rather than publishing it silently. Switch off only if selling exclusively outside the EU."
+      },
+      {
+        "type": "header",
+        "content": "Only state what can actually be honoured. Every promise here is repeated on product pages and becomes a contractual commitment."
+      },
+      {
+        "type": "text",
+        "id": "guarantee_name",
+        "label": "Guarantee name",
+        "info": "Name it and give it a number, e.g. \"60-day court trial\"."
+      },
+      {
+        "type": "richtext",
+        "id": "guarantee_body",
+        "label": "Guarantee terms",
+        "info": "Include the exclusions. A guarantee with published exclusions is more credible, not less, and suppresses returns."
+      },
+      {
+        "type": "richtext",
+        "id": "shipping_summary",
+        "label": "Shipping summary"
+      },
+      {
+        "type": "richtext",
+        "id": "returns_summary",
+        "label": "Returns summary",
+        "info": "EU consumers have 14 days to withdraw without reason. State who pays return postage — if you do not say so in advance, you pay it."
+      }
     ]
   },
   {
     "name": "Company details",
     "settings": [
-      { "type": "header", "content": "Required by EU distance-selling information duties. A Dutch trader must show KvK and btw numbers." },
-      { "type": "text", "id": "company_legal_name", "label": "Registered company name" },
-      { "type": "textarea", "id": "company_address", "label": "Registered address" },
-      { "type": "text", "id": "kvk_number", "label": "KvK number" },
-      { "type": "text", "id": "vat_number", "label": "btw / VAT number" }
+      {
+        "type": "header",
+        "content": "Required by EU distance-selling information duties. A Dutch trader must show KvK and btw numbers."
+      },
+      {
+        "type": "text",
+        "id": "company_legal_name",
+        "label": "Registered company name"
+      },
+      {
+        "type": "textarea",
+        "id": "company_address",
+        "label": "Registered address"
+      },
+      {
+        "type": "text",
+        "id": "kvk_number",
+        "label": "KvK number"
+      },
+      {
+        "type": "text",
+        "id": "vat_number",
+        "label": "btw / VAT number"
+      }
     ]
   }
 ]

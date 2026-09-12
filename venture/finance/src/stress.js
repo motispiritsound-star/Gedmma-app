@@ -59,6 +59,7 @@ export function runStressSuite(spec, acquisition) {
       returnShipCost: shock(spec.returnShipCost, s.ship),
       refundRate: shock(spec.refundRate, s.refund),
       returnRate: shock(spec.returnRate, s.refund),
+      warrantyClaimRate: shock(spec.warrantyClaimRate, s.refund),
     };
 
     const order = computeOrderEconomics(shocked);

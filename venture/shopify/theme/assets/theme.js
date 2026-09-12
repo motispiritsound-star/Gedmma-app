@@ -114,10 +114,16 @@
       if (this.stickyPrice) this.stickyPrice.textContent = money(variant.price, this.dataset.moneyFormat);
 
       if (this.submit) {
-        this.submit.disabled = !variant.available;
-        this.submit.textContent = variant.available
-          ? this.dataset.addLabel || 'Add to cart'
-          : this.dataset.soldOutLabel || 'Sold out';
+        // The GPSR gate is server-rendered and must win. Without this check the
+        // variant logic would cheerfully re-enable a button that Liquid
+        // deliberately disabled for a product that cannot lawfully be sold.
+        const gated = this.dataset.gpsrReady === 'false';
+        this.submit.disabled = gated || !variant.available;
+        if (!gated) {
+          this.submit.textContent = variant.available
+            ? this.dataset.addLabel || 'Add to cart'
+            : this.dataset.soldOutLabel || 'Sold out';
+        }
       }
 
       const gallery = document.querySelector('product-gallery');
@@ -125,6 +131,14 @@
     }
 
     async onSubmit(event) {
+      // The gate again, and this time it is load-bearing: form.requestSubmit()
+      // from the sticky bar submits regardless of whether the button is
+      // disabled, so a disabled button alone would not actually stop a sale.
+      if (this.dataset.gpsrReady === 'false') {
+        event.preventDefault();
+        return;
+      }
+
       // Without fetch support this stays a normal form POST and still works.
       if (!window.fetch) return;
       event.preventDefault();
@@ -150,7 +164,7 @@
         // on a page where the button silently did nothing.
         this.form.submit();
       } finally {
-        this.submit.disabled = false;
+        this.submit.disabled = this.dataset.gpsrReady === 'false';
       }
     }
   }

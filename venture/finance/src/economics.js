@@ -92,6 +92,8 @@ function present(...inputs) {
  * @property {Input} [restockingLoss]     value lost per returned unit (grading down)
  * @property {Input} [supportCostPerOrder]
  * @property {Input} [commissionRate]     affiliate/creator share of gross
+ * @property {Input} [warrantyClaimRate]  share of orders needing a replacement in months 2-24
+ * @property {Input} [warrantyCostPerClaim] cost of honouring one claim (goods + carriage both ways)
  */
 
 /**
@@ -155,6 +157,13 @@ export function computeOrderEconomics(spec) {
       read(spec.restockingLoss) * units +
       pickPack);
 
+  // Warranty reserve. The refund and return provisions above only cover the
+  // 14-day withdrawal window. EU law gives a two-year conformity guarantee, and
+  // for the first twelve months the burden of proof is reversed in the
+  // consumer's favour — so a claim in month 8 is effectively ours to honour.
+  // A model without this reserve understates the true cost of a durable good.
+  const warranty = read(spec.warrantyClaimRate) * read(spec.warrantyCostPerClaim);
+
   const support = read(spec.supportCostPerOrder);
   const commission = grossInclVat * commissionRate;
 
@@ -166,6 +175,7 @@ export function computeOrderEconomics(spec) {
     payment,
     refundProvision,
     returnProvision,
+    warranty,
     support,
     commission,
   };
@@ -202,6 +212,8 @@ export function computeOrderEconomics(spec) {
         spec.returnRate,
         spec.returnShipCost,
         spec.restockingLoss,
+        spec.warrantyClaimRate,
+        spec.warrantyCostPerClaim,
         spec.supportCostPerOrder,
         spec.commissionRate,
       ),

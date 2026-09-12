@@ -8,84 +8,110 @@
   number; and any warnings or safety information, in a language the consumer
   easily understands.
 
-  Two implementation notes that matter:
+  Three implementation notes that matter:
 
   1. Footer or terms-page placement does not satisfy this. The information must
-     be on, or one click from, the product page. That is why this snippet
-     renders inline on the PDP rather than in the footer.
+     be on, or one click from, the product page.
 
-  2. The local-language requirement means Dutch for NL, German for DE. These
-     fields are therefore translatable metafields, not theme settings — the
-     content differs per product AND per market.
+  2. The local-language requirement means Dutch for NL, German for DE, and
+     French as well as Dutch for Belgium. These are translatable metafields,
+     not theme settings — the content differs per product AND per market.
 
-  Source: research/eu-compliance-constraints.md §2.3. That research rests on
-  secondary summaries; the primary text could not be opened from the build
-  environment. REQUIRES PROFESSIONAL VERIFICATION before launch.
+  3. A SET IS NOT ONE PRODUCT. The starter set is a single Shopify product but
+     several physical products, possibly from different factories. Article 19
+     applies to each of them, so `compliance.component_details` renders
+     per-component information when a set is being sold. Rendering one
+     manufacturer block for a three-component set would be wrong.
+
+  FAIL-CLOSED BEHAVIOUR: when the required data is absent this snippet renders a
+  customer-visible notice, and `main-product.liquid` disables the add-to-cart
+  button. An earlier version showed the warning only in the theme editor, which
+  meant a live product with empty metafields displayed nothing at all and failed
+  silently — precisely the outcome the design was supposed to prevent.
+
+  Source: research/eu-compliance-constraints.md §2.3 and
+  operations/gpsr-runbook.md. Secondary sources only; the primary text could not
+  be opened from the build environment.
+  REQUIRES PROFESSIONAL VERIFICATION before launch.
 
   Accepts: product
 {%- endcomment -%}
 
 {%- liquid
   assign m = product.metafields.compliance
-  assign has_manufacturer = false
-  if m.manufacturer_name != blank
-    assign has_manufacturer = true
+  assign has_single = false
+  assign has_components = false
+
+  if m.manufacturer_name != blank and m.manufacturer_address != blank
+    assign has_single = true
+  endif
+  if m.component_details != blank
+    assign has_components = true
   endif
 -%}
 
-{%- if has_manufacturer -%}
+{%- if has_components or has_single -%}
   <section class="regulatory" aria-labelledby="regulatory-heading-{{ product.id }}">
     <h2 id="regulatory-heading-{{ product.id }}" class="text-s">
       {{ 'product.regulatory.heading' | t }}
     </h2>
 
-    <dl>
-      <dt>{{ 'product.regulatory.manufacturer' | t }}</dt>
-      <dd>
-        {{ m.manufacturer_name | escape }}<br>
-        {{ m.manufacturer_address | escape | newline_to_br }}<br>
-        {%- if m.manufacturer_email != blank -%}
-          <a href="mailto:{{ m.manufacturer_email }}">{{ m.manufacturer_email }}</a>
-        {%- endif -%}
-      </dd>
-
+    {%- if has_components -%}
       {%- comment -%}
-        Only rendered when the manufacturer is outside the EU. For this venture
-        the merchant is the NL-established responsible person in most cases, so
-        this block will usually be empty — but the theme must support the other
-        case or it cannot list a third-party product lawfully.
+        A set: each component carries its own manufacturer and identification.
+        Maintained as rich text by operations rather than as separate metafields,
+        because the component count varies per set.
       {%- endcomment -%}
-      {%- if m.responsible_person_name != blank -%}
-        <dt>{{ 'product.regulatory.responsible_person' | t }}</dt>
+      <div class="rte">{{ m.component_details }}</div>
+    {%- else -%}
+      <dl>
+        <dt>{{ 'product.regulatory.manufacturer' | t }}</dt>
         <dd>
-          {{ m.responsible_person_name | escape }}<br>
-          {{ m.responsible_person_address | escape | newline_to_br }}<br>
-          {%- if m.responsible_person_email != blank -%}
-            <a href="mailto:{{ m.responsible_person_email }}">{{ m.responsible_person_email }}</a>
+          {{ m.manufacturer_name | escape }}<br>
+          {{ m.manufacturer_address | escape | newline_to_br }}<br>
+          {%- if m.manufacturer_email != blank -%}
+            <a href="mailto:{{ m.manufacturer_email }}">{{ m.manufacturer_email }}</a>
           {%- endif -%}
         </dd>
-      {%- endif -%}
 
-      {%- if m.product_identifier != blank -%}
-        <dt>{{ 'product.regulatory.identification' | t }}</dt>
-        <dd>{{ m.product_identifier | escape }}</dd>
-      {%- endif -%}
+        {%- comment -%}
+          Rendered only when the manufacturer is outside the EU. For this venture
+          the merchant is usually the NL-established responsible person, so this
+          block is normally empty — but the theme must support the other case or
+          it cannot list a third-party product lawfully.
+        {%- endcomment -%}
+        {%- if m.responsible_person_name != blank -%}
+          <dt>{{ 'product.regulatory.responsible_person' | t }}</dt>
+          <dd>
+            {{ m.responsible_person_name | escape }}<br>
+            {{ m.responsible_person_address | escape | newline_to_br }}<br>
+            {%- if m.responsible_person_email != blank -%}
+              <a href="mailto:{{ m.responsible_person_email }}">{{ m.responsible_person_email }}</a>
+            {%- endif -%}
+          </dd>
+        {%- endif -%}
 
-      {%- if m.country_of_origin != blank -%}
-        <dt>{{ 'product.regulatory.origin' | t }}</dt>
-        <dd>{{ m.country_of_origin | escape }}</dd>
-      {%- endif -%}
+        {%- if m.product_identifier != blank -%}
+          <dt>{{ 'product.regulatory.identification' | t }}</dt>
+          <dd>{{ m.product_identifier | escape }}</dd>
+        {%- endif -%}
 
-      {%- if m.materials != blank -%}
-        <dt>{{ 'product.regulatory.materials' | t }}</dt>
-        <dd>{{ m.materials | escape }}</dd>
-      {%- endif -%}
+        {%- if m.country_of_origin != blank -%}
+          <dt>{{ 'product.regulatory.origin' | t }}</dt>
+          <dd>{{ m.country_of_origin | escape }}</dd>
+        {%- endif -%}
 
-      {%- if m.care_instructions != blank -%}
-        <dt>{{ 'product.regulatory.care' | t }}</dt>
-        <dd>{{ m.care_instructions | escape }}</dd>
-      {%- endif -%}
-    </dl>
+        {%- if m.materials != blank -%}
+          <dt>{{ 'product.regulatory.materials' | t }}</dt>
+          <dd>{{ m.materials | escape }}</dd>
+        {%- endif -%}
+
+        {%- if m.care_instructions != blank -%}
+          <dt>{{ 'product.regulatory.care' | t }}</dt>
+          <dd>{{ m.care_instructions | escape }}</dd>
+        {%- endif -%}
+      </dl>
+    {%- endif -%}
 
     {%- if m.warnings != blank -%}
       <div role="note">
@@ -94,19 +120,29 @@
       </div>
     {%- endif -%}
   </section>
+
 {%- else -%}
   {%- comment -%}
-    Deliberately loud. A product without compliance data must not be quietly
-    published: under GPSR it cannot lawfully be offered, and a silent empty
-    block is exactly how that gets missed. Visible only to staff.
+    Missing data. Two audiences, two messages.
+
+    Customers see a plain, non-alarming notice explaining the product is
+    unavailable — shown because the add-to-cart is disabled and an unexplained
+    dead button is worse than an explained one.
+
+    Staff additionally see exactly what is missing and where to fix it.
   {%- endcomment -%}
-  {%- if request.design_mode or content_for_header contains 'preview_bar_injector' -%}
-    <section class="regulatory" style="border-color: #c00; color: #c00;">
-      <strong>Missing GPSR data for “{{ product.title }}”.</strong>
-      This product cannot lawfully be offered in the EU until
-      <code>compliance.manufacturer_name</code>, <code>manufacturer_address</code>
-      and <code>manufacturer_email</code> metafields are populated.
-      See <code>venture/operations/gpsr-runbook.md</code>.
-    </section>
-  {%- endif -%}
+  <section class="regulatory" role="status">
+    <p>{{ 'product.regulatory.unavailable' | t }}</p>
+
+    {%- if request.design_mode -%}
+      <p>
+        <strong>Staff: missing GPSR data for “{{ product.title }}”.</strong>
+        This product cannot lawfully be offered in the EU, so purchase is
+        disabled. Populate either <code>compliance.component_details</code> (for
+        a multi-item set) or <code>compliance.manufacturer_name</code> plus
+        <code>compliance.manufacturer_address</code> (for a single item).
+        See <code>venture/operations/gpsr-runbook.md</code> §8.
+      </p>
+    {%- endif -%}
+  </section>
 {%- endif -%}

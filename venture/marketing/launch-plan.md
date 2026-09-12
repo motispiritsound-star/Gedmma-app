@@ -47,7 +47,7 @@ From `unit-economics.md`, all `ESTIMATE`/`ASSUMPTION`:
 - Entry order value **€79 incl. VAT**. A €39 order cannot fund cold acquisition
   at all; a €49 order leaves almost nothing. The starter set exists to lift the
   order above that floor — it is an economic necessity, not merchandising.
-- At the sourcing ceiling (€23.65 landed) contribution is €27.08 and first-order
+- At the sourcing ceiling (€22.90 landed) contribution is €27.08 and first-order
   profit is **exactly zero**. Every stress scenario fails at the ceiling.
 - ~**49.8%** of modelled lifetime value comes from repeat purchase. The grip
   subscription is not an upsell; it is the half of the business that makes cold
@@ -548,7 +548,7 @@ events:
 
 1. Price check shows quality bags clustering below ~€45 → the €79 set has no
    room and cold acquisition cannot be funded. **Stop in week 1.**
-2. Supplier quote above €23.65 landed → the order cannot pay for its own
+2. Supplier quote above €22.90 landed → the order cannot pay for its own
    acquisition. **Stop before Phase 3.**
 3. Ten clubs, ten refusals → the cheapest channel is gone and everything rests on
    paid social, which is the environment the thesis was built to avoid. **Not an

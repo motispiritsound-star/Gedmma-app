@@ -233,3 +233,66 @@ test('the product page carries the GPSR information block', () => {
     'GPSR Art. 19 information must appear in the offer itself, not only in the footer',
   );
 });
+
+/* --- The GPSR purchase gate ----------------------------------------------- */
+
+test('a product without GPSR data cannot be purchased', () => {
+  const pdp = read(join(THEME, 'sections', 'main-product.liquid'));
+
+  assert.match(pdp, /assign gpsr_ready = false/, 'the gate must default to closed');
+  assert.match(
+    pdp,
+    /\{%\s*unless variant\.available and gpsr_ready\s*%\}disabled\{%\s*endunless\s*%\}/,
+    'add-to-cart must be disabled when the gate is closed',
+  );
+});
+
+test('the gate defaults to on in theme settings', () => {
+  const schema = JSON.parse(read(join(THEME, 'config', 'settings_schema.json')));
+  const setting = schema
+    .flatMap((g) => g.settings ?? [])
+    .find((s) => s.id === 'enforce_gpsr_gate');
+
+  assert.ok(setting, 'enforce_gpsr_gate setting is missing');
+  assert.equal(setting.default, true, 'the safe default is the one that refuses');
+});
+
+test('JavaScript cannot re-enable a gated buy button', () => {
+  const js = read(join(THEME, 'assets', 'theme.js'));
+
+  // Three separate paths could defeat the server-rendered gate.
+  assert.match(js, /const gated = this\.dataset\.gpsrReady === 'false'/, 'variant change path');
+  assert.match(
+    js,
+    /if \(this\.dataset\.gpsrReady === 'false'\) \{\s*event\.preventDefault\(\);\s*return;/,
+    'submit path — requestSubmit() from the sticky bar bypasses a disabled button',
+  );
+  assert.match(
+    js,
+    /this\.submit\.disabled = this\.dataset\.gpsrReady === 'false';/,
+    'the finally block must not re-enable a gated button',
+  );
+});
+
+test('the missing-compliance notice is visible to customers, not only to staff', () => {
+  const snippet = read(join(THEME, 'snippets', 'regulatory-information.liquid'));
+  const elseBranch = snippet.slice(snippet.lastIndexOf('{%- else -%}'));
+
+  // The earlier version wrapped the whole notice in a design-mode check, so a
+  // live product with empty metafields rendered nothing at all.
+  const customerNotice = elseBranch.indexOf("'product.regulatory.unavailable' | t");
+  const staffCheck = elseBranch.indexOf('request.design_mode');
+
+  assert.ok(customerNotice > -1, 'a customer-facing notice must exist');
+  assert.ok(
+    staffCheck === -1 || customerNotice < staffCheck,
+    'the customer notice must render outside the design-mode check',
+  );
+});
+
+test('a set can declare per-component manufacturers', () => {
+  // A starter set is one Shopify product but several physical products, each
+  // needing its own Article 19 data.
+  const snippet = read(join(THEME, 'snippets', 'regulatory-information.liquid'));
+  assert.match(snippet, /component_details/, 'multi-component sets must be representable');
+});

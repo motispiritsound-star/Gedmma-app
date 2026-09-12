@@ -4,33 +4,13 @@ import { writeFileSync } from 'node:fs';
 import { v, computeOrderEconomics, computeAcquisitionTargets, computeLifetimeValue, computeReturnOnAcquisition } from './economics.js';
 import { runStressSuite, evaluateGates, formatSuiteMarkdown } from './stress.js';
 import { sourcingSpecification, priceLadder } from './required-to-believe.js';
+import { starterSet as set, CAC_COLD, CAC_BLENDED } from './product-spec.js';
 
-// The starter set: bag + grips + protector, sold as one unit.
-// unitCost is deliberately a probe value — it is what we are solving FOR.
-const set = (price) => ({
-  pricePerUnitInclVat: v(price, 'UNVERIFIED', 'no NL retailer page could be opened to observe a price band'),
-  unitsPerOrder:       v(1, 'ASSUMPTION', 'the set is the default entry SKU'),
-  vatRate:             v(0.21, 'FACT', 'Dutch standard btw'),
-  unitCost:            v(0, 'UNVERIFIED', 'solved for, not assumed — no supplier contacted'),
-  packagingPerOrder:   v(1.80, 'ASSUMPTION', 'branded mailer and insert'),
-  pickPackPerOrder:    v(2.20, 'ASSUMPTION', 'NL 3PL pick and pack'),
-  outboundShipCost:    v(5.50, 'ASSUMPTION', 'NL parcel'),
-  shippingChargedInclVat: v(0, 'ASSUMPTION', 'free shipping — a policy choice'),
-  paymentPctFee:       v(0.019, 'ASSUMPTION', 'blended iDEAL/card — iDEAL is typically a flat fee and cheaper'),
-  paymentFixedFee:     v(0.25, 'ASSUMPTION'),
-  refundRate:          v(0.02, 'ASSUMPTION'),
-  returnRate:          v(0.06, 'ASSUMPTION', 'no sizing, so well below the ~30% EU apparel norm'),
-  returnShipCost:      v(6.00, 'ASSUMPTION'),
-  restockingLoss:      v(2.00, 'ASSUMPTION'),
-  supportCostPerOrder: v(0.90, 'ASSUMPTION'),
-});
 
-const CAC_COLD = 27.08;   // derived by the sourcing research from NL Meta CPM ranges
-const CAC_BLEND = 20.00;  // blended with community/organic — more optimistic
 
 const PRICES = [39, 49, 59, 69, 79, 89, 99];
 const ladderCold = priceLadder(set(0), PRICES, { plannedCac: CAC_COLD });
-const ladderBlend = priceLadder(set(0), PRICES, { plannedCac: CAC_BLEND });
+const ladderBlend = priceLadder(set(0), PRICES, { plannedCac: CAC_BLENDED });
 
 const HEADLINE = 79;
 const spec = sourcingSpecification(set(HEADLINE), { plannedCac: CAC_COLD, requiredFirstOrderProfit: 0 });
@@ -93,7 +73,7 @@ ${pct(spec.contributionMarginAtCeiling)} pre-ad contribution margin, implying a 
 Maximum landed cost of the complete set, by retail price. Where a row is not
 achievable, the order cannot fund its own acquisition even if the goods were free.
 
-| Retail (incl. VAT) | Max landed cost @ ${eur(CAC_COLD)} CAC | Max landed cost @ ${eur(CAC_BLEND)} CAC |
+| Retail (incl. VAT) | Max landed cost @ ${eur(CAC_COLD)} CAC | Max landed cost @ ${eur(CAC_BLENDED)} CAC |
 |---:|---:|---:|
 ${PRICES.map((p, i) => {
   const c = ladderCold[i], b = ladderBlend[i];
