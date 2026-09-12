@@ -1,0 +1,9 @@
+{
+  "name": "venture-finance",
+  "private": true,
+  "type": "module",
+  "description": "Unit-economics engine for the commerce venture. Zero dependencies.",
+  "scripts": {
+    "test": "node --test \"src/**/*.test.js\""
+  }
+}
