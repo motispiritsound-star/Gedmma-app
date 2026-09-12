@@ -64,3 +64,74 @@ product unviable for a small seller, and can undermine an entire business model.
 **Rationale** Screening early is nearly free. Discovering it after brand,
 photography and inventory spend is not.
 **Reversibility** FREE
+
+---
+
+## D-004 — Reject dropshipping; adopt own-brand, own-stock, EU-fulfilled
+**Date** 2026-09-12
+**Decision** The business holds its own stock under its own brand, fulfilled from
+an NL/EU 3PL, with a deliberately small catalogue. No-inventory dropshipping is
+rejected outright, including EU-warehoused dropshipping as a permanent model.
+**Evidence** E-002 (GPSR importer/manufacturer obligations, technical file per
+SKU, Art. 19 disclosure in the offer), E-003 (€150 de minimis abolished 1 July
+2026, flat per-line customs charge borne by the seller).
+**Alternatives** (a) China direct dropshipping — rejected, structurally
+non-compliant and economically broken. (b) EU-warehoused dropshipping as the
+business — rejected as a permanent model; gross margin will not fund paid
+acquisition. Retained only as an optional short validation instrument. (c) Print
+on demand — rejected, wrong for a durable technical product. (d) Private label on
+own stock — chosen.
+**Rationale** Compliance cost is per SKU, not per order, which forces a small
+catalogue and rewards owning the product. Holding stock is also the only route
+found that reaches first-order breakeven at a realistic Dutch CAC.
+**Risk** Capital requirement and inventory risk rise materially; a wrong product
+choice is now expensive rather than free. Mitigated by keeping the launch
+catalogue to a single hero plus consumables.
+**Reversibility** COSTLY once stock is purchased. FREE until then.
+
+---
+
+## D-005 — Padel accessories, with a wet-weather bag as hero and grips as the consumable
+**Date** 2026-09-12
+**Decision** Padel accessories is the selected category. The hero product is a
+padel bag designed for outdoor play in Northern European weather; the retention
+engine is an overgrip subscription; the default entry SKU is a set rather than a
+single unit.
+**Evidence** E-006 (only cleanly triangulated demand in the long-list: 876k NL
+players, 3,570 courts, 6th globally, +25% courts YoY), E-009 (no sizing — avoids
+the worst returns regime in the world), E-011 and E-005 (rising CPMs and basket
+deflation make replenishment the decisive economic property), E-002 (low
+regulatory burden, and GPSR favours an EU-established seller).
+**Alternatives** Dutch utility-cycling accessories (69.6), problem-specific dog
+gear (68.4), wet-weather protection (64.4) — all scored and retained.
+**Rationale** Padel scored 80.0 and **held first place under all five alternative
+weightings tested**, including a moat-heavy scheme built specifically to punish
+its weakest dimension. The ranking is therefore not an artefact of the weights.
+The climatic angle exists because the category's established brands are Spanish
+and Latin American and design for dry climates, which is a genuine gap rather
+than a positioning slogan.
+**Risks** (1) Incumbents hold club distribution — the most dangerous unknown.
+(2) Overgrips are commodities; the bag must carry the brand. (3) Court shortage
+is capping participation growth, so the business must be underwritten on the
+existing base, not on continued growth. (4) 37.5% of the scoring model is blank
+for want of supplier data.
+**Reversibility** CHEAP today — nothing has been bought and no brand assets are
+committed. Becomes COSTLY at first stock purchase.
+
+---
+
+## D-006 — Launch in the Netherlands alone; add markets one at a time
+**Date** 2026-09-12
+**Decision** Launch NL-only. Belgium second, Germany a deliberate later decision.
+Spain deferred despite being the largest European padel market.
+**Evidence** E-004 — EPR is per-country and per-waste-stream with no volume
+threshold in DE or FR; PPWR reportedly requires an authorised representative per
+member state from 12 August 2026.
+**Rationale** Market count is a fixed-cost multiplier independent of revenue.
+Launching four markets at once multiplies a fixed cost across a revenue base that
+does not exist yet. European benchmark brands sequence markets one or two at a
+time for the same reason. Spain is deferred on strategy rather than cost: a
+wet-weather proposition has no reason to exist in a dry climate.
+**Risk** Slower international growth than the brief's ambition implies. Recorded
+as a deliberate trade, not an oversight.
+**Reversibility** FREE
