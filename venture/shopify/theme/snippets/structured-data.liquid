@@ -1,0 +1,50 @@
+{%- comment -%}
+  Structured data.
+
+  Deliberate omission: no AggregateRating is emitted unless a real rating
+  metafield exists with a non-zero count. Emitting review markup without genuine
+  reviews is both a Google structured-data violation and, in the EU, an unfair
+  commercial practice. The theme fails closed.
+{%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": {{ shop.name | json }},
+  "url": {{ shop.url | json }}
+  {%- if settings.logo -%}
+    , "logo": {{ settings.logo | image_url: width: 500 | prepend: 'https:' | json }}
+  {%- endif -%}
+}
+</script>
+
+{%- if template.name == 'product' -%}
+  {%- assign rating = product.metafields.reviews.rating.value -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "description": {{ product.description | strip_html | truncate: 400 | json }},
+    "sku": {{ product.selected_or_first_available_variant.sku | json }},
+    "brand": { "@type": "Brand", "name": {{ product.vendor | json }} },
+    {%- if product.featured_media -%}
+      "image": {{ product.featured_media | image_url: width: 1200 | prepend: 'https:' | json }},
+    {%- endif -%}
+    {%- if rating and product.metafields.reviews.rating_count > 0 -%}
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": {{ rating.rating | json }},
+        "reviewCount": {{ product.metafields.reviews.rating_count | json }}
+      },
+    {%- endif -%}
+    "offers": {
+      "@type": "Offer",
+      "price": {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
+      "priceCurrency": {{ cart.currency.iso_code | json }},
+      "availability": "https://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}",
+      "url": {{ canonical_url | json }}
+    }
+  }
+  </script>
+{%- endif -%}

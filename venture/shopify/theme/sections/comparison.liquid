@@ -1,0 +1,61 @@
+{%- comment -%}
+  Comparison against the category default.
+
+  Wins the comparison on our own page rather than losing it on a search results
+  page. One row must be one we do NOT win — an all-green table reads as
+  marketing, and under the Omnibus Directive a misleading comparison is an
+  unfair commercial practice. Honesty here is both persuasion and compliance.
+{%- endcomment -%}
+<div class="page-width section">
+  {%- if section.settings.heading != blank -%}<h2>{{ section.settings.heading }}</h2>{%- endif -%}
+
+  <div class="comparison">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">{{ section.settings.feature_label | default: 'Feature' }}</th>
+          <th scope="col">{{ section.settings.us_label | default: 'Us' }}</th>
+          <th scope="col">{{ section.settings.them_label | default: 'Typical' }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for block in section.blocks -%}
+          <tr {{ block.shopify_attributes }}>
+            <th scope="row">{{ block.settings.feature }}</th>
+            <td data-us="true">{{ block.settings.us }}</td>
+            <td>{{ block.settings.them }}</td>
+          </tr>
+        {%- endfor -%}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Comparison",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "text", "id": "feature_label", "label": "Column 1 label" },
+    { "type": "text", "id": "us_label", "label": "Column 2 label" },
+    { "type": "text", "id": "them_label", "label": "Column 3 label" }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Row",
+      "settings": [
+        { "type": "text", "id": "feature", "label": "Feature" },
+        { "type": "text", "id": "us", "label": "Us" },
+        { "type": "text", "id": "them", "label": "Typical" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparison",
+      "blocks": [{ "type": "row" }, { "type": "row" }, { "type": "row" }, { "type": "row" }, { "type": "row" }]
+    }
+  ]
+}
+{% endschema %}

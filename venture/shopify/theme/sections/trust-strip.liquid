@@ -1,0 +1,38 @@
+{%- comment -%}
+  The "is this a real company?" answer, placed immediately under the hero rather
+  than in the footer. For an unknown brand this is the single highest-leverage
+  placement decision on the homepage.
+
+  Four items maximum: a named guarantee, a shipping promise with a TIME, a
+  returns promise, and one third-party mark.
+{%- endcomment -%}
+<div class="page-width">
+  <ul class="trust-strip">
+    {%- for block in section.blocks -%}
+      <li class="trust-strip__item" {{ block.shopify_attributes }}>
+        <span class="trust-strip__title">{{ block.settings.title }}</span>
+        {%- if block.settings.detail != blank -%}
+          <span class="trust-strip__detail">{{ block.settings.detail }}</span>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+</div>
+
+{% schema %}
+{
+  "name": "Trust strip",
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "info": "Name it and give it a number. \"60-day trial\" beats \"satisfaction guaranteed\"." },
+        { "type": "text", "id": "detail", "label": "Detail" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Trust strip" }]
+}
+{% endschema %}

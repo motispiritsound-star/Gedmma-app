@@ -1,0 +1,32 @@
+{%- comment -%}
+  Reference ("was") pricing under the Omnibus Directive (EU) 2019/2161.
+
+  The rule: when a price reduction is announced, the reference price shown must
+  be the LOWEST price the trader applied during at least the 30 days before the
+  reduction. Shopify's native `compare_at_price` is not that number — it is a
+  free-text field the merchant types, and using it directly to display a "was"
+  price is how stores end up making an unlawful price claim without noticing.
+
+  So this snippet deliberately does NOT read compare_at_price. It reads a
+  metafield that operations is responsible for maintaining from real price
+  history, and it renders nothing at all when that metafield is absent.
+
+  Failing closed is the point: no reference price is lawful; a wrong one is not.
+
+  Source: research/eu-compliance-constraints.md §6.4.
+  REQUIRES PROFESSIONAL VERIFICATION before launch.
+
+  Accepts: product
+{%- endcomment -%}
+
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign lowest_30 = product.metafields.pricing.lowest_price_30d.value
+-%}
+
+{%- if lowest_30 and lowest_30 > variant.price -%}
+  <p class="text-s text-muted">
+    <s>{{ lowest_30 | money }}</s>
+    <span>{{ 'product.price.lowest_30d' | t }}</span>
+  </p>
+{%- endif -%}

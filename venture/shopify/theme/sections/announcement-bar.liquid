@@ -1,0 +1,32 @@
+{%- comment -%}
+  A single announcement. Not a carousel.
+
+  A rotating bar shows each message to roughly a third of visitors while costing
+  the attention of all of them, and this is the one element guaranteed to be
+  seen. One message, chosen as the commercially strongest fact.
+{%- endcomment -%}
+{%- if section.settings.text != blank -%}
+  <div class="announcement">
+    {%- if section.settings.link != blank -%}
+      <a href="{{ section.settings.link }}" style="color: inherit;">{{ section.settings.text }}</a>
+    {%- else -%}
+      {{ section.settings.text }}
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Message",
+      "info": "One message only. Choose the single strongest commercial fact — free-shipping threshold, or duties and VAT included."
+    },
+    { "type": "url", "id": "link", "label": "Link" }
+  ],
+  "presets": [{ "name": "Announcement bar" }]
+}
+{% endschema %}

@@ -1,0 +1,33 @@
+{%- comment -%}
+  FAQ. Native <details> accordions, and the cheapest SEO surface on the page.
+  Answers the long-tail objections without a page jump.
+{%- endcomment -%}
+<div class="page-width section">
+  {%- if section.settings.heading != blank -%}<h2>{{ section.settings.heading }}</h2>{%- endif -%}
+  <div class="accordion">
+    {%- for block in section.blocks -%}
+      <details class="accordion__item" {{ block.shopify_attributes }}>
+        <summary class="accordion__summary">{{ block.settings.question }}</summary>
+        <div class="accordion__panel rte">{{ block.settings.answer }}</div>
+      </details>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "settings": [{ "type": "text", "id": "heading", "label": "Heading", "default": "Questions" }],
+  "blocks": [
+    {
+      "type": "qa",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question" },
+        { "type": "richtext", "id": "answer", "label": "Answer" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "FAQ", "blocks": [{ "type": "qa" }, { "type": "qa" }, { "type": "qa" }] }]
+}
+{% endschema %}

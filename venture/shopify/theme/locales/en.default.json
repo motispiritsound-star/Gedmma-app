@@ -1,0 +1,39 @@
+{
+  "general": { "home": "Home", "cart": "Cart", "meta": { "tags": "Tagged {{ tags }}", "page": "Page {{ page }}" } },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "menu": "Menu",
+    "primary_nav": "Primary",
+    "breadcrumbs": "Breadcrumb",
+    "close": "Close"
+  },
+  "localization": { "country": "Country", "language": "Language", "update": "Update", "heading": "Country and language" },
+  "product": {
+    "add_to_cart": "Add to cart",
+    "sold_out": "Sold out",
+    "added": "Added to cart",
+    "per_unit": "each",
+    "most_popular": "Most popular",
+    "choose_option": "Choose an option",
+    "gallery": { "thumbnails": "Product images" },
+    "rating": { "count": "{{ count }} reviews" },
+    "price": { "lowest_30d": "Lowest price in the 30 days before this reduction" },
+    "details": {
+      "specifications": "Specifications",
+      "included": "What's included",
+      "shipping": "Shipping",
+      "returns": "Returns",
+      "statutory_rights": "This is in addition to your statutory rights. EU consumers have a two-year legal guarantee of conformity."
+    },
+    "regulatory": {
+      "heading": "Product and safety information",
+      "manufacturer": "Manufacturer",
+      "responsible_person": "EU responsible person",
+      "identification": "Product identification",
+      "origin": "Country of origin",
+      "materials": "Materials",
+      "care": "Care",
+      "warnings": "Warnings and safety information"
+    }
+  }
+}

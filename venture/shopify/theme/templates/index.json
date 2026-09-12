@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "hero":       { "type": "hero", "settings": {} },
+    "trust":      { "type": "trust-strip", "settings": {} },
+    "comparison": { "type": "comparison", "settings": {} },
+    "faq":        { "type": "faq", "settings": {} }
+  },
+  "order": ["hero", "trust", "comparison", "faq"]
+}

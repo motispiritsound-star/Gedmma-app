@@ -1,0 +1,39 @@
+{%- comment -%}
+  Country and language selector.
+
+  Prompt, never auto-redirect. Auto-redirecting on IP strands travellers, breaks
+  shared links and confuses crawlers; European multi-market brands consistently
+  offer a choice instead. Rendered only when more than one market or locale is
+  actually published, so it does not appear during the NL-only launch.
+{%- endcomment -%}
+{%- if localization.available_countries.size > 1 or localization.available_languages.size > 1 -%}
+  <form method="post" action="{{ routes.root_url }}localization" id="localization-form" accept-charset="UTF-8">
+    <input type="hidden" name="form_type" value="localization">
+    <input type="hidden" name="_method" value="put">
+    <input type="hidden" name="return_to" value="{{ request.path }}">
+
+    {%- if localization.available_countries.size > 1 -%}
+      <label class="visually-hidden" for="country-select">{{ 'localization.country' | t }}</label>
+      <select id="country-select" name="country_code" onchange="this.form.submit()">
+        {%- for country in localization.available_countries -%}
+          <option value="{{ country.iso_code }}" {% if country.iso_code == localization.country.iso_code %}selected{% endif %}>
+            {{ country.name }} ({{ country.currency.iso_code }})
+          </option>
+        {%- endfor -%}
+      </select>
+    {%- endif -%}
+
+    {%- if localization.available_languages.size > 1 -%}
+      <label class="visually-hidden" for="language-select">{{ 'localization.language' | t }}</label>
+      <select id="language-select" name="locale_code" onchange="this.form.submit()">
+        {%- for language in localization.available_languages -%}
+          <option value="{{ language.iso_code }}" {% if language.iso_code == localization.language.iso_code %}selected{% endif %}>
+            {{ language.endonym_name }}
+          </option>
+        {%- endfor -%}
+      </select>
+    {%- endif -%}
+
+    <noscript><button type="submit">{{ 'localization.update' | t }}</button></noscript>
+  </form>
+{%- endif -%}

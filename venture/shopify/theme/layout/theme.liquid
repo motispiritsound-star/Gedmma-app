@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}" dir="{{ settings.text_direction | default: 'ltr' }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_background }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- comment -%}
+      Preconnect only to Shopify's own CDN. Every additional origin costs a DNS
+      lookup and a TLS handshake on the critical path, and the theme carries no
+      third-party assets by design (see venture/CLAUDE.md performance budget).
+    {%- endcomment -%}
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    <title>
+      {{- page_title -}}
+      {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {% render 'meta-tags' %}
+    {% render 'structured-data' %}
+
+    {%- comment -%}
+      Fonts are loaded with font-display: swap via the stylesheet rather than a
+      render-blocking <link>. Two weights only.
+    {%- endcomment -%}
+    <link rel="stylesheet" href="{{ 'theme.css' | asset_url }}">
+
+    {%- comment -%}
+      Design tokens are emitted from theme settings so the merchant controls the
+      palette from the editor without touching CSS.
+    {%- endcomment -%}
+    <style>
+      :root {
+        --color-bg: {{ settings.color_background }};
+        --color-fg: {{ settings.color_text }};
+        --color-muted: {{ settings.color_muted }};
+        --color-accent: {{ settings.color_accent }};
+        --color-accent-fg: {{ settings.color_accent_text }};
+        --color-border: {{ settings.color_border }};
+        --color-surface: {{ settings.color_surface }};
+        --font-body: {{ settings.font_body.family }}, {{ settings.font_body.fallback_families }};
+        --page-width: {{ settings.page_width }}px;
+      }
+    </style>
+
+    {{ content_for_header }}
+
+    <script src="{{ 'theme.js' | asset_url }}" defer></script>
+  </head>
+
+  <body class="template-{{ template.name | handle }}">
+    <a class="skip-link" href="#main">{{ 'accessibility.skip_to_content' | t }}</a>
+
+    {% sections 'header-group' %}
+
+    <main id="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {%- comment -%}
+      Live region for asynchronous updates (cart additions, form errors) so
+      screen-reader users are told what sighted users can see.
+    {%- endcomment -%}
+    <div id="a11y-status" class="visually-hidden" role="status" aria-live="polite"></div>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "venture-shopify",
+  "private": true,
+  "type": "module",
+  "description": "Shopify theme source and validation. Zero dependencies.",
+  "scripts": {
+    "test": "node --test \"test/**/*.test.js\""
+  }
+}

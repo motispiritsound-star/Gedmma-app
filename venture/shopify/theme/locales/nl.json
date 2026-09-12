@@ -1,0 +1,39 @@
+{
+  "general": { "home": "Home", "cart": "Winkelwagen", "meta": { "tags": "Tag {{ tags }}", "page": "Pagina {{ page }}" } },
+  "accessibility": {
+    "skip_to_content": "Naar de inhoud",
+    "menu": "Menu",
+    "primary_nav": "Hoofdmenu",
+    "breadcrumbs": "Kruimelpad",
+    "close": "Sluiten"
+  },
+  "localization": { "country": "Land", "language": "Taal", "update": "Bijwerken", "heading": "Land en taal" },
+  "product": {
+    "add_to_cart": "In winkelwagen",
+    "sold_out": "Uitverkocht",
+    "added": "Toegevoegd aan winkelwagen",
+    "per_unit": "per stuk",
+    "most_popular": "Meest gekozen",
+    "choose_option": "Kies een optie",
+    "gallery": { "thumbnails": "Productafbeeldingen" },
+    "rating": { "count": "{{ count }} beoordelingen" },
+    "price": { "lowest_30d": "Laagste prijs in de 30 dagen voor deze verlaging" },
+    "details": {
+      "specifications": "Specificaties",
+      "included": "Wat je krijgt",
+      "shipping": "Verzending",
+      "returns": "Retourneren",
+      "statutory_rights": "Dit komt bovenop je wettelijke rechten. Je hebt wettelijk twee jaar garantie op conformiteit."
+    },
+    "regulatory": {
+      "heading": "Product- en veiligheidsinformatie",
+      "manufacturer": "Fabrikant",
+      "responsible_person": "Verantwoordelijke persoon in de EU",
+      "identification": "Productidentificatie",
+      "origin": "Land van herkomst",
+      "materials": "Materialen",
+      "care": "Onderhoud",
+      "warnings": "Waarschuwingen en veiligheidsinformatie"
+    }
+  }
+}

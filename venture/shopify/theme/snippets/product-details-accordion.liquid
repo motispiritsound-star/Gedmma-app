@@ -1,0 +1,61 @@
+{%- comment -%}
+  Depth content for the product page: specs, guarantee, shipping, returns and
+  FAQ, as collapsed accordions.
+
+  Native <details>/<summary>, so it works with JavaScript disabled, is keyboard
+  operable for free, and is announced correctly by screen readers without ARIA.
+  Horizontal tabs are avoided deliberately — Baymard identifies them as the
+  worst-performing PDP layout for content discovery.
+
+  Accepts: product
+{%- endcomment -%}
+
+<div class="page-width section--tight">
+  <div class="accordion">
+    {%- if product.metafields.custom.specifications != blank -%}
+      <details class="accordion__item">
+        <summary class="accordion__summary">{{ 'product.details.specifications' | t }}</summary>
+        <div class="accordion__panel rte">{{ product.metafields.custom.specifications }}</div>
+      </details>
+    {%- endif -%}
+
+    {%- if product.metafields.custom.whats_included != blank -%}
+      <details class="accordion__item">
+        <summary class="accordion__summary">{{ 'product.details.included' | t }}</summary>
+        <div class="accordion__panel rte">{{ product.metafields.custom.whats_included }}</div>
+      </details>
+    {%- endif -%}
+
+    {%- comment -%}
+      The guarantee term is stated on the product page itself, not only on a
+      policy page. Benchmarked from brands that do this; it also reduces support
+      contact, and under EU law the 2-year legal conformity guarantee exists
+      regardless and must not be presented as a commercial favour.
+    {%- endcomment -%}
+    {%- if settings.guarantee_body != blank -%}
+      <details class="accordion__item">
+        <summary class="accordion__summary">
+          {{ settings.guarantee_name | default: 'Guarantee' }}
+        </summary>
+        <div class="accordion__panel rte">
+          {{ settings.guarantee_body }}
+          <p class="text-s text-muted">{{ 'product.details.statutory_rights' | t }}</p>
+        </div>
+      </details>
+    {%- endif -%}
+
+    {%- if settings.shipping_summary != blank -%}
+      <details class="accordion__item">
+        <summary class="accordion__summary">{{ 'product.details.shipping' | t }}</summary>
+        <div class="accordion__panel rte">{{ settings.shipping_summary }}</div>
+      </details>
+    {%- endif -%}
+
+    {%- if settings.returns_summary != blank -%}
+      <details class="accordion__item">
+        <summary class="accordion__summary">{{ 'product.details.returns' | t }}</summary>
+        <div class="accordion__panel rte">{{ settings.returns_summary }}</div>
+      </details>
+    {%- endif -%}
+  </div>
+</div>

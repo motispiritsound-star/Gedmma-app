@@ -1,0 +1,62 @@
+{%- comment -%}
+  Header. At most five top-level items — navigation depth beyond that degrades
+  findability on mobile. The market/language control is visible rather than
+  buried in the footer, because a visitor who cannot find their country assumes
+  the store does not serve it.
+{%- endcomment -%}
+<header class="header">
+  <mobile-nav class="page-width header__inner">
+    <button
+      class="icon-button header__toggle"
+      type="button"
+      data-nav-toggle
+      aria-expanded="false"
+      aria-controls="nav-panel"
+    >
+      <span class="visually-hidden">{{ 'accessibility.menu' | t }}</span>
+      <span aria-hidden="true">☰</span>
+    </button>
+
+    <a class="header__logo" href="{{ routes.root_url }}">
+      {%- if settings.logo -%}
+        {{ settings.logo | image_url: width: 300 | image_tag: widths: '150, 300', alt: shop.name | escape, height: 32 }}
+      {%- else -%}
+        {{ shop.name }}
+      {%- endif -%}
+    </a>
+
+    <nav class="header__nav" aria-label="{{ 'accessibility.primary_nav' | t }}">
+      {%- for link in section.settings.menu.links limit: 5 -%}
+        <a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>{{ link.title }}</a>
+      {%- endfor -%}
+    </nav>
+
+    <div class="header__actions">
+      {% render 'market-selector' %}
+      <a class="icon-button" href="{{ routes.cart_url }}">
+        <span class="visually-hidden">{{ 'general.cart' | t }}</span>
+        <span aria-hidden="true">🛒</span>
+        <cart-count {% if cart.item_count == 0 %}hidden{% endif %}>{{ cart.item_count }}</cart-count>
+      </a>
+    </div>
+
+    <div id="nav-panel" class="page-width" data-nav-panel hidden>
+      <nav aria-label="{{ 'accessibility.primary_nav' | t }}">
+        <ul>
+          {%- for link in section.settings.menu.links limit: 5 -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    </div>
+  </mobile-nav>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu", "info": "Five items maximum." }
+  ]
+}
+{% endschema %}

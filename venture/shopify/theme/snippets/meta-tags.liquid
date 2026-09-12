@@ -1,0 +1,20 @@
+{%- comment -%}
+  Social and locale meta. hreflang is emitted from Shopify's published locales
+  so alternates stay correct as markets are added — hand-maintained hreflang
+  drifts the moment a market is switched on.
+{%- endcomment -%}
+<meta property="og:site_name" content="{{ shop.name }}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:title" content="{{ page_title | escape }}">
+<meta property="og:type" content="{% if template.name == 'product' %}product{% else %}website{% endif %}">
+{%- if page_description -%}
+  <meta property="og:description" content="{{ page_description | escape }}">
+{%- endif -%}
+{%- if template.name == 'product' and product.featured_media -%}
+  <meta property="og:image" content="https:{{ product.featured_media | image_url: width: 1200 }}">
+  <meta name="twitter:card" content="summary_large_image">
+{%- endif -%}
+
+{%- for locale in shop.published_locales -%}
+  <link rel="alternate" hreflang="{{ locale.iso_code }}" href="{{ canonical_url | localized_url: locale.iso_code }}">
+{%- endfor -%}

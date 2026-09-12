@@ -1,0 +1,15 @@
+{%- comment -%}
+  Breadcrumbs. Orientation for paid traffic that lands deep, and a structured-
+  data surface. Accepts: product (optional)
+{%- endcomment -%}
+<nav class="text-s" aria-label="{{ 'accessibility.breadcrumbs' | t }}">
+  <a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a>
+  {%- if collection and collection.url != blank -%}
+    <span aria-hidden="true">/</span>
+    <a href="{{ collection.url }}">{{ collection.title }}</a>
+  {%- endif -%}
+  {%- if product -%}
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">{{ product.title }}</span>
+  {%- endif -%}
+</nav>

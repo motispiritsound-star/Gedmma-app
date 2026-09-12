@@ -1,0 +1,301 @@
+{%- comment -%}
+  Product page.
+
+  Element order follows research/success-patterns.md §4, which derives it from
+  Baymard's PDP findings. The ordering decisions that are deliberate rather than
+  conventional:
+
+  - The tier selector sits ABOVE add-to-cart. It is the primary AOV lever, and
+    the economics require a set rather than a single unit to clear acquisition
+    cost (strategy/unit-economics.md). Below the button it would be decoration.
+  - Specs are collapsed accordions, never horizontal tabs — Baymard flags tabs
+    as the worst-performing layout for content discovery.
+  - The trust row sits directly beneath add-to-cart, the reassurance-at-
+    commitment slot most stores waste.
+  - The GPSR block is on the page, not in the footer, because Art. 19 requires
+    it in the offer itself.
+
+  Blocks are used throughout so the merchant can reorder without a developer.
+{%- endcomment -%}
+
+<div class="page-width section">
+  {% render 'breadcrumbs', product: product %}
+
+  <div class="product">
+    {%- comment -%} Gallery — answers "what is it, how big, what do I get". {%- endcomment -%}
+    <product-gallery class="gallery">
+      <div class="gallery__main">
+        {%- if product.featured_media -%}
+          {{
+            product.featured_media
+            | image_url: width: 1200
+            | image_tag:
+              widths: '400, 600, 800, 1200',
+              sizes: '(min-width: 990px) 55vw, 100vw',
+              alt: product.featured_media.alt | default: product.title | escape,
+              fetchpriority: 'high',
+              data-gallery-main: ''
+          }}
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'gallery__placeholder' }}
+        {%- endif -%}
+      </div>
+
+      {%- if product.media.size > 1 -%}
+        <div class="gallery__thumbs" role="group" aria-label="{{ 'product.gallery.thumbnails' | t }}">
+          {%- for media in product.media -%}
+            <button
+              type="button"
+              class="gallery__thumb"
+              data-gallery-thumb
+              data-media-id="{{ media.id }}"
+              data-full="{{ media | image_url: width: 1200 }}"
+              data-alt="{{ media.alt | default: product.title | escape }}"
+              aria-current="{% if forloop.first %}true{% else %}false{% endif %}"
+            >
+              {{
+                media
+                | image_url: width: 140
+                | image_tag: widths: '68, 136', alt: '', loading: 'lazy'
+              }}
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </product-gallery>
+
+    <div class="product__info">
+      <product-form
+        data-money-format="{{ shop.money_format | escape }}"
+        data-add-label="{{ 'product.add_to_cart' | t | escape }}"
+        data-sold-out-label="{{ 'product.sold_out' | t | escape }}"
+        data-added-label="{{ 'product.added' | t | escape }}"
+        data-per-unit-label="{{ 'product.per_unit' | t | escape }}"
+      >
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+
+            {%- when 'title' -%}
+              <h1 class="product__title" {{ block.shopify_attributes }}>{{ product.title }}</h1>
+              {%- if block.settings.promise != blank -%}
+                <p class="product__promise">{{ block.settings.promise }}</p>
+              {%- endif -%}
+
+            {%- when 'rating' -%}
+              {%- comment -%}
+                Clickable and anchored to the reviews section. Rendered only when
+                a rating metafield genuinely exists — never a placeholder, and
+                never a supplier's rating. Fabricated social proof is unlawful
+                under the Omnibus Directive and prohibited by venture/CLAUDE.md.
+              {%- endcomment -%}
+              {%- assign rating = product.metafields.reviews.rating.value -%}
+              {%- if rating and rating.rating > 0 -%}
+                <a class="product__rating" href="#reviews" {{ block.shopify_attributes }}>
+                  <span aria-hidden="true">★</span>
+                  <strong>{{ rating.rating | round: 1 }}</strong>
+                  <span>
+                    {{-
+                      'product.rating.count'
+                      | t: count: product.metafields.reviews.rating_count
+                    -}}
+                  </span>
+                </a>
+              {%- endif -%}
+
+            {%- when 'price' -%}
+              <div class="product__price" {{ block.shopify_attributes }}>
+                <span data-price>{{ product.selected_or_first_available_variant.price | money }}</span>
+                <span class="product__unit-price" data-unit-price></span>
+              </div>
+              {% render 'price-compare', product: product %}
+
+            {%- when 'tiers' -%}
+              {%- comment -%}
+                Good / better / best. Each option shows per-unit price and total
+                saving, which is what makes the larger option legible rather than
+                merely more expensive.
+              {%- endcomment -%}
+              <fieldset class="tiers" {{ block.shopify_attributes }}>
+                <legend class="visually-hidden">{{ 'product.choose_option' | t }}</legend>
+                {%- for variant in product.variants -%}
+                  {%- assign units = variant.metafields.custom.units | default: 1 -%}
+                  <label class="tier">
+                    <input
+                      type="radio"
+                      name="tier"
+                      value="{{ variant.id }}"
+                      data-units="{{ units }}"
+                      {% if variant == product.selected_or_first_available_variant %}checked{% endif %}
+                      {% unless variant.available %}disabled{% endunless %}
+                    >
+                    <span>
+                      <span class="tier__label">{{ variant.title }}</span>
+                      {%- if units > 1 -%}
+                        <span class="tier__meta">
+                          {{ variant.price | divided_by: units | money }} {{ 'product.per_unit' | t }}
+                        </span>
+                      {%- endif -%}
+                      {%- unless variant.available -%}
+                        <span class="tier__meta">{{ 'product.sold_out' | t }}</span>
+                      {%- endunless -%}
+                    </span>
+                    <span>
+                      {%- if variant.metafields.custom.most_popular -%}
+                        <span class="tier__badge">{{ 'product.most_popular' | t }}</span>
+                      {%- endif -%}
+                      <span class="tier__label">{{ variant.price | money }}</span>
+                    </span>
+                  </label>
+                {%- endfor -%}
+              </fieldset>
+
+            {%- when 'buy' -%}
+              {%- assign variant = product.selected_or_first_available_variant -%}
+              <div {{ block.shopify_attributes }}>
+                {%- form 'product', product, id: 'product-form', novalidate: 'novalidate' -%}
+                  <input type="hidden" name="id" value="{{ variant.id }}" data-variant-id>
+                  <button
+                    type="submit"
+                    class="button button--full"
+                    data-submit
+                    {% unless variant.available %}disabled{% endunless %}
+                  >
+                    {% if variant.available %}{{ 'product.add_to_cart' | t }}{% else %}{{ 'product.sold_out' | t }}{% endif %}
+                  </button>
+                {%- endform -%}
+
+                {%- comment -%}
+                  A date range reads better than a duration. This must be driven
+                  by real fulfilment data — see operations/fulfilment.md. Never
+                  promise a date the 3PL has not committed to.
+                {%- endcomment -%}
+                {%- if block.settings.delivery_estimate != blank -%}
+                  <p class="product__delivery">{{ block.settings.delivery_estimate }}</p>
+                {%- endif -%}
+
+                <script type="application/json" data-variant-data>
+                  [
+                    {%- for v in product.variants -%}
+                      {
+                        "id": {{ v.id }},
+                        "price": {{ v.price }},
+                        "available": {{ v.available }},
+                        "featured_media_id": {{ v.featured_media.id | default: 'null' }}
+                      }{% unless forloop.last %},{% endunless %}
+                    {%- endfor -%}
+                  ]
+                </script>
+              </div>
+
+            {%- when 'trust_row' -%}
+              <ul class="atc-trust" {{ block.shopify_attributes }}>
+                {%- if block.settings.guarantee != blank -%}<li>{{ block.settings.guarantee }}</li>{%- endif -%}
+                {%- if block.settings.returns != blank -%}<li>{{ block.settings.returns }}</li>{%- endif -%}
+                {%- if block.settings.shipping != blank -%}<li>{{ block.settings.shipping }}</li>{%- endif -%}
+                {%- if block.settings.payment != blank -%}<li>{{ block.settings.payment }}</li>{%- endif -%}
+              </ul>
+
+            {%- when 'benefits' -%}
+              <ul class="stack" {{ block.shopify_attributes }}>
+                {%- for i in (1..3) -%}
+                  {%- assign key = 'benefit_' | append: i -%}
+                  {%- assign text = block.settings[key] -%}
+                  {%- if text != blank -%}<li>{{ text }}</li>{%- endif -%}
+                {%- endfor -%}
+              </ul>
+
+            {%- when 'description' -%}
+              <div class="rte" {{ block.shopify_attributes }}>{{ product.description }}</div>
+
+          {%- endcase -%}
+        {%- endfor -%}
+      </product-form>
+
+      {% render 'regulatory-information', product: product %}
+    </div>
+  </div>
+</div>
+
+{%- comment -%} Depth content: objections answered where they first occur. {%- endcomment -%}
+{% render 'product-details-accordion', product: product %}
+
+<sticky-atc class="sticky-atc" data-watch="[data-submit]">
+  {%- if product.featured_media -%}
+    {{ product.featured_media | image_url: width: 88 | image_tag: widths: '44, 88', alt: '', loading: 'lazy' }}
+  {%- endif -%}
+  <span class="sticky-atc__text">
+    <span class="sticky-atc__title">{{ product.title }}</span>
+    <strong data-sticky-price>{{ product.selected_or_first_available_variant.price | money }}</strong>
+  </span>
+  <button type="button" class="button" data-sticky-submit>{{ 'product.add_to_cart' | t }}</button>
+</sticky-atc>
+
+{% schema %}
+{
+  "name": "Product",
+  "tag": "section",
+  "blocks": [
+    {
+      "type": "title",
+      "name": "Title and promise",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "promise",
+          "label": "One-line benefit",
+          "info": "What it does for the customer, not what it is."
+        }
+      ]
+    },
+    { "type": "rating", "name": "Rating", "limit": 1, "settings": [] },
+    { "type": "price", "name": "Price", "limit": 1, "settings": [] },
+    {
+      "type": "tiers",
+      "name": "Quantity tiers",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Uses variants. Set variant metafields custom.units and custom.most_popular to show per-unit pricing and the popular badge."
+        }
+      ]
+    },
+    {
+      "type": "buy",
+      "name": "Add to cart",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "delivery_estimate",
+          "label": "Delivery estimate",
+          "info": "Use a date range, not a duration. Only promise what fulfilment has committed to."
+        }
+      ]
+    },
+    {
+      "type": "trust_row",
+      "name": "Trust row",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "guarantee", "label": "Guarantee", "info": "Name it and give it a number." },
+        { "type": "text", "id": "returns", "label": "Returns" },
+        { "type": "text", "id": "shipping", "label": "Shipping" },
+        { "type": "text", "id": "payment", "label": "Payment" }
+      ]
+    },
+    {
+      "type": "benefits",
+      "name": "Benefits",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "benefit_1", "label": "Benefit 1" },
+        { "type": "text", "id": "benefit_2", "label": "Benefit 2" },
+        { "type": "text", "id": "benefit_3", "label": "Benefit 3" }
+      ]
+    },
+    { "type": "description", "name": "Description", "limit": 1, "settings": [] }
+  ]
+}
+{% endschema %}

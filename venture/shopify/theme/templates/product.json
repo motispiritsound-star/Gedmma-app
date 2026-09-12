@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title":  { "type": "title",     "settings": { "promise": "" } },
+        "rating": { "type": "rating",    "settings": {} },
+        "price":  { "type": "price",     "settings": {} },
+        "tiers":  { "type": "tiers",     "settings": {} },
+        "buy":    { "type": "buy",       "settings": { "delivery_estimate": "" } },
+        "trust":  { "type": "trust_row", "settings": {} },
+        "bens":   { "type": "benefits",  "settings": {} },
+        "desc":   { "type": "description", "settings": {} }
+      },
+      "block_order": ["title", "rating", "price", "tiers", "buy", "trust", "bens", "desc"]
+    },
+    "comparison": { "type": "comparison", "settings": {} },
+    "faq":        { "type": "faq", "settings": {} }
+  },
+  "order": ["main", "comparison", "faq"]
+}
