@@ -51,7 +51,8 @@ any number anywhere in this directory.
 
 **Plans and operations**
 - Measurement and consent architecture, launch plan, creative bank, lifecycle
-  flows, SEO plan, product content pack and CRO backlog (`marketing/`)
+  flows, SEO plan, product content pack, CRO backlog and creator programme
+  (`marketing/`)
 - GPSR runbook, fulfilment, returns and customer-service SOPs (`operations/`)
 - Policy drafts, honest about their gaps (`legal/`)
 - App decision register — three apps at launch, with the refusals argued
@@ -66,9 +67,8 @@ any number anywhere in this directory.
   figure appears anywhere in this project
 - **Product photography** — nothing exists to photograph. Copy is written and
   paste-ready; every measurable claim is a `[SUPPLIER CONFIRMS]` placeholder
-- **Creator outreach** — strategy is settled (seeding, not paid placement,
-  because NL padel creator rates are unverified); the operational templates are
-  not written
+- **Keyword-driven content** — the SEO plan has an architecture and a research
+  protocol, but no keyword list, because no keyword tool existed
 
 ## Blocked — needs a human
 

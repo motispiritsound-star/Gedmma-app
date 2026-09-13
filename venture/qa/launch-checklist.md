@@ -104,6 +104,7 @@ because it converts an unknown into a false assurance. The honest headline:
 | ☑ | Diagnosis rules defined | **DONE** | Reading → cause → action |
 | ☑ | Creative testing backlog exists | **DONE** | `../marketing/cro-backlog.md` — eight build-now items, eight gated on volume |
 | ☑ | 90-day marketing plan exists | **DONE** | `../marketing/launch-plan.md` |
+| ☑ | Creator programme defined | **DONE** | Seeding not paid placement, with usage-rights request in writing (`../marketing/creator-program.md`) |
 | ☐ | Consent verified to gate tags | **BLOCKED** | |
 | ☐ | Purchase event fires once with correct value | **BLOCKED** | Duplicate purchase events inflate ROAS and cause overspending |
 | ☐ | Merchant Center feed validated | **BLOCKED** | |
