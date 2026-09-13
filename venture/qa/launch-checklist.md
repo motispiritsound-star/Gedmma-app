@@ -60,7 +60,9 @@ because it converts an unknown into a false assurance. The honest headline:
 | ☐ | Theme validated by `shopify theme check` | **BLOCKED** | CLI needs a store. **Shopify's docs were also unreachable — treat first deploy as validation** |
 | ☐ | Store configured | **BLOCKED** | No store |
 | ☐ | Metafield definitions created | **BLOCKED** | Specified in `../shopify/README.md`; several components render nothing without them |
-| ☐ | Products created with original content | **BLOCKED** | No store, and no product exists to photograph |
+| ◐ | Product content written | **PARTIAL** | Copy is paste-ready in `../marketing/product-content.md`; every measurable claim is a `[SUPPLIER CONFIRMS]` placeholder. **A placeholder reaching the storefront is a bug** |
+| ☐ | Products created in Shopify | **BLOCKED** | No store, and nothing exists to photograph |
+| ☑ | App stack decided | **DONE** | Three apps at launch; nine classes refused with reasons (`../shopify/app-register.md`) |
 | ☐ | Checkout tested | **BLOCKED** | |
 | ☐ | Test order completed | **BLOCKED** | |
 | ☐ | Shipping rates configured | **BLOCKED** | Needs real 3PL and carrier rates |
@@ -100,6 +102,8 @@ because it converts an unknown into a false assurance. The honest headline:
 | ☑ | Measurement plan written | **DONE** | Consent-first; Shopify order data as source of truth |
 | ☑ | UTM standard defined | **DONE** | Includes the physical club/QR channel so it does not become invisible |
 | ☑ | Diagnosis rules defined | **DONE** | Reading → cause → action |
+| ☑ | Creative testing backlog exists | **DONE** | `../marketing/cro-backlog.md` — eight build-now items, eight gated on volume |
+| ☑ | 90-day marketing plan exists | **DONE** | `../marketing/launch-plan.md` |
 | ☐ | Consent verified to gate tags | **BLOCKED** | |
 | ☐ | Purchase event fires once with correct value | **BLOCKED** | Duplicate purchase events inflate ROAS and cause overspending |
 | ☐ | Merchant Center feed validated | **BLOCKED** | |
@@ -111,7 +115,7 @@ because it converts an unknown into a false assurance. The honest headline:
 | | Item | State | Note |
 |---|---|---|---|
 | ☑ | Automated theme checks | **DONE** | 20 checks, mutation-tested to confirm they fail when the rule they protect is broken |
-| ☑ | Economics engine tests | **DONE** | 47 tests |
+| ☑ | Economics engine tests | **DONE** | 59 tests |
 | ☐ | Cross-browser testing | **BLOCKED** | Nothing rendered |
 | ☐ | Real-device mobile testing | **BLOCKED** | |
 | ☐ | Broken-link and redirect check | **BLOCKED** | |

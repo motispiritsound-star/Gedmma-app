@@ -34,26 +34,29 @@ any number anywhere in this directory.
 - Positioning and brand direction; POLDER as candidate name
 - Markets sequenced NL → BE → DE, with Spain deliberately deferred
 
-**Finance** — `finance/`, 47 tests, zero dependencies
+**Finance** — `finance/`, 59 tests, zero dependencies
 - Provenance-aware unit-economics engine that refuses to certify unverified
   inputs
 - Opportunity scorer that reports the 37.5% of the model it cannot fill
 - Required-to-believe solver producing the €22.90 sourcing ceiling
 - Twelve-month forecast, three scenarios, with the cash trough reported
+- Margin guard that escalates on supplier cost rises and solves the reprice —
+  advisory only, because automating a withdrawal on a bad cost feed is how a
+  catalogue empties itself
 
 **Storefront** — `shopify/`, 20 tests
 - Online Store 2.0 theme, architecture derived from the benchmark research
 - Omnibus-safe reference pricing, GPSR Art. 19 block, no fakeable social proof
 - Budgets enforced by tests; all guardrails mutation-tested
 
-**Plans**
-- Measurement and consent architecture (`marketing/measurement-plan.md`)
-- Launch checklist with blocked items marked BLOCKED (`qa/launch-checklist.md`)
-
 **Plans and operations**
-- Launch plan, creative bank and lifecycle flows (`marketing/`)
+- Measurement and consent architecture, launch plan, creative bank, lifecycle
+  flows, SEO plan, product content pack and CRO backlog (`marketing/`)
 - GPSR runbook, fulfilment, returns and customer-service SOPs (`operations/`)
-- Policy drafts and an SEO plan, both honest about their gaps (`legal/`, `marketing/seo-plan.md`)
+- Policy drafts, honest about their gaps (`legal/`)
+- App decision register — three apps at launch, with the refusals argued
+  (`shopify/app-register.md`)
+- Launch checklist with blocked items marked BLOCKED (`qa/launch-checklist.md`)
 
 ## Not done, and honestly so
 
@@ -61,8 +64,11 @@ any number anywhere in this directory.
   actually happens, and no store, ESP or 3PL exists yet
 - **Keyword research** — impossible without a keyword tool; no search-volume
   figure appears anywhere in this project
-- **Product content** — nothing to photograph and no store to publish to
-- **Creator/UGC outreach, CRO experiment backlog** — both depend on a live store
+- **Product photography** — nothing exists to photograph. Copy is written and
+  paste-ready; every measurable claim is a `[SUPPLIER CONFIRMS]` placeholder
+- **Creator outreach** — strategy is settled (seeding, not paid placement,
+  because NL padel creator rates are unverified); the operational templates are
+  not written
 
 ## Blocked — needs a human
 

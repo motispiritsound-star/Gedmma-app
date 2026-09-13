@@ -71,6 +71,28 @@ console.log(formatSuiteMarkdown(suite));
 console.log(evaluateGates(suite).verdict);
 ```
 
+## The margin guard
+
+`margin-guard.js` answers the brief's requirement (§34) that a supplier price
+rise must not be allowed to quietly destroy margins. It exists as code because
+the failure it prevents is silent: a supplier raises a price 8%, the store keeps
+selling, the ad account keeps spending against a break-even ROAS that is no
+longer true, and nothing looks wrong until a bank balance does.
+
+Given the current landed cost and a baseline, it escalates through
+`OK → WATCH → STOP_PROMOTION → REPRICE → WITHDRAW`, reports how much
+contribution the change actually cost, and solves for the price that restores it.
+
+It **advises and never acts**. Automatically hiding products or pausing campaigns
+on a cost feed is exactly the automation that does serious financial damage when
+the feed is wrong.
+
+One result worth knowing: **the obvious reprice is not enough.** When a cost
+rises EUR 6, adding EUR 6 to a VAT-inclusive price leaves you EUR 1.25 per order
+short — about a fifth of the increase — because VAT and the percentage payment
+fee scale with the price too. The correct price is EUR 86.59, not EUR 85.00.
+There is a test asserting the shortcut under-recovers.
+
 ## Stress scenarios
 
 Base, CAC +25%, supplier cost +10%, shipping +20%, conversion −20%, refunds +50%,

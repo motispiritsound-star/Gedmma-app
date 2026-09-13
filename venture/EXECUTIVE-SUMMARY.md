@@ -199,6 +199,13 @@ break-even is running 21% looser than it thinks** — 2.00x is really 2.42x.
 
 → `marketing/measurement-plan.md`
 
+**A margin guard** sits alongside the model: if a supplier cost rises it
+escalates from watch to stop-promotion to reprice, and solves for the price that
+restores contribution. It advises and never acts — automating a withdrawal on a
+cost feed is how a bad feed empties a catalogue. It also shows that the obvious
+reprice is wrong: adding a €6 cost rise to a VAT-inclusive price leaves €1.25
+per order unrecovered, because VAT and payment fees scale with price too.
+
 ## L. Operations
 
 Fulfilment, returns and support procedures, plus a GPSR runbook that the theme
