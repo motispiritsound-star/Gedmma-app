@@ -20,7 +20,8 @@
     "knowledge:check": "tsx src/knowledge-check.ts",
     "workbook": "tsx src/workbook.ts",
     "approve": "tsx src/approve.ts",
-    "niches": "tsx src/compare-niches.ts"
+    "niches": "tsx src/compare-niches.ts",
+    "animatic": "tsx src/animatic.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.125.0",

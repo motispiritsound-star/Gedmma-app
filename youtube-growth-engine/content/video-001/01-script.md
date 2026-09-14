@@ -11,23 +11,22 @@
 
 ## HOOK — 0:00–0:08
 
-> De bekendste moskee ter wereld had bij de bouw geen koepel, geen minaret en
-> geen vloer.
+> De bekendste moskee ter wereld had geen minaret.
 >
-> Dat was geen armoede.
+> Niet omdat er geen geld was. Dat was een keuze.
 
-*[4,5 seconden tot de tegenintuïtieve claim staat. Geen aanloop, geen groet.]*
+*[3,6 seconden tot de claim staat. Geen aanloop, geen groet.]*
+*[Eerste versie duurde 7,3 s — `npm run animatic` rekende dat na en wees hem af.]*
 
 ## BELOFTE — 0:08–0:22
 
-> In de komende tien minuten weet je welk onderdeel van een moskee er als eerste
-> was, welk onderdeel er pas eeuwen later bij kwam, en waarom dat verschil
-> uitmaakt voor de moskee bij jou om de hoek.
->
-> En er is één onderdeel dat vandaag in vrijwel elke moskee staat, en dat in
-> Medina volledig ontbrak. Daar komen we op terug.
+> In zes minuten weet je wat er als eerste stond, wat er pas eeuwen later bij
+> kwam, en waarom dat uitmaakt voor de moskee bij jou om de hoek.
 
-**🔓 HAAK 1 geopend:** het ontbrekende onderdeel.
+*[Beloning staat op 16 s. Norm is 30.]*
+
+**🔓 HAAK 1 geopend** (aan het begin van segment 1): er is één onderdeel dat
+vandaag in vrijwel elke moskee staat en dat in Medina volledig ontbrak.
 
 ---
 
@@ -204,11 +203,26 @@ stelling en eigen beelden. Geen knipsel.]*
 
 | | |
 |---|---|
-| Hook tot de claim | 4,5 s ✅ (norm: ≤ 5) |
-| Eerste inhoudelijke beloning | 0:22 ✅ (norm: ≤ 30 s) |
+| Hook tot de claim | 3,6 s ✅ (norm: ≤ 5) |
+| Eerste inhoudelijke beloning | 0:16 ✅ (norm: ≤ 30 s) |
 | Open loops | 3 ✅ |
 | Gesloten | 3 ✅ |
 | Haak per ~45 s | benaderd via wendingen binnen segmenten |
 | Tegenargument | segment 4 ✅ |
 | Verboden opening gebruikt | nee ✅ |
-| Geschatte woorden | ~1.450 → ~11 minuten ✅ |
+| Gesproken woorden | 860 → **6 minuten** ⚠️ zie hieronder |
+
+## Over de lengte
+
+Het gesproken script is zes minuten, niet de tien uit de eerste opzet. Het
+verschil zat in opmaak en aantekeningen, niet in inhoud.
+
+Zes minuten met alleen wat ergens over gaat, is beter dan elf minuten met
+vulling — dat laatste is precies waar de retentiepoort op let. Eén gevolg om te
+kennen: **onder de acht minuten vervallen midrolls.** Dat maakt nu niets uit,
+want die komen pas na de YPP-drempel, maar het is een keuze en geen toeval.
+
+De natuurlijke plek om te groeien is segment 5: de drie Nederlandse moskeeën.
+Dat is jouw eigen inbreng en het is het deel dat in geen enkele andere video
+staat. Met drie uitgewerkte voorbeelden komt de video op ongeveer acht minuten,
+en dan is die grens er vanzelf bij.
