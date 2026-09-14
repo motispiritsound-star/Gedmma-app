@@ -1,0 +1,20 @@
+# De wachtrij. `npm run produce` pakt hier het volgende onderwerp uit als je
+# geen --topic meegeeft, en houdt rekening met seizoen en prioriteit.
+
+topics:
+  - topic: "de eerste moskee in Medina"
+    why: "Iedereen kent moskeeën als gebouw, bijna niemand weet hoe de eerste eruitzag"
+    mustAnswer:
+      - "Wat stond er als eerste?"
+      - "Wat kwam er pas later bij, en waarom?"
+    priority: normaal
+    season: ""
+    status: open
+
+  # - topic: "..."
+  #   why: "..."
+  #   mustAnswer:
+  #     - "..."
+  #   priority: hoog        # hoog | normaal | laag
+  #   season: ramadan       # leeg, of: ramadan | eid-al-fitr | eid-al-adha
+  #   status: open          # open | gepland | gemaakt | afgevallen

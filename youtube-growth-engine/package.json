@@ -15,7 +15,9 @@
     "doctor": "tsx src/doctor.ts",
     "youtube:connect": "tsx src/connect-youtube.ts",
     "produce": "tsx src/produce.ts",
-    "upload": "tsx src/upload.ts"
+    "upload": "tsx src/upload.ts",
+    "studio": "tsx src/studio.ts",
+    "knowledge:check": "tsx src/knowledge-check.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.125.0",

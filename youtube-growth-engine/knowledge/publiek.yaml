@@ -1,0 +1,55 @@
+# Wie kijkt er, en waar zitten ze mee?
+#
+# Dit is het waardevolste bestand van de map. Jouw gevoel voor wat islamitische
+# gezinnen aanspreekt is het enige deel van dit systeem dat een concurrent niet
+# kan kopiëren, en het gaat rechtstreeks naar de stelling- en scriptstap.
+
+audience:
+  description: >
+    Nederlandse islamitische gezinnen. Het kind kijkt mee met een ouder.
+    Overwegend Marokkaanse en Turkse achtergrond, dus malikitisch en
+    hanafitisch. Vaak tweede of derde generatie: het Nederlands is de
+    eerste taal, de religieuze kennis komt uit huis en van de moskee.
+
+  # Vragen die in je omgeving echt langskomen. Eén per regel.
+  # Deze voeden de publieksvraag onder elke video.
+  questions:
+    - "Waarom doen wij dit eigenlijk zo, en mijn buurman anders?"
+    - "Hoe leg ik dit uit aan een kind van acht zonder het plat te slaan?"
+    # - "..."
+
+  # Waar dit publiek op afknapt. Net zo belangrijk als wat ze willen.
+  turnoffs:
+    - "Belerend toon, alsof de kijker iets fout doet"
+    - "Eén mening als dé regel presenteren"
+    - "Kinderachtige stem of kleutercartoon bij een serieus verhaal"
+    # - "..."
+
+# --- Het makersprofiel -------------------------------------------------------
+# Dit is de `CreatorProfile` uit de opdracht. Het staat hier en niet in een
+# apart model, want het zegt hetzelfde.
+#
+# `unfairAdvantage` is het veld dat het meeste verschil maakt: in het
+# nichescoremodel zijn hier 15 van de 100 punten mee gemoeid, en het is het
+# enige onderdeel dat een concurrent niet kan inhalen.
+
+creator:
+  interests: []
+  expertise: []
+  unfairAdvantage:
+    # - "spreek Nederlands, Arabisch en Darija"
+    # - "ken de vragen die in Nederlandse Marokkaanse gezinnen echt langskomen"
+    # - "toegang tot een geleerde die per video meeleest"
+  languages: ["nl"]
+  markets: ["NL", "BE"]
+  contentLanguage: "nl"
+  onCamera: faceless        # ja | faceless | gemengd
+  formats: ["long-form"]
+  contentStyles: ["verhalend", "educatief"]
+  hoursPerWeek: 0
+  monthlyBudgetEur: 100
+  tools: []
+  uploadsPerWeek: 1
+  revenueGoals: ["werkboeken", "affiliate", "lidmaatschappen"]
+  wontCover: []
+  existingChannel: ""

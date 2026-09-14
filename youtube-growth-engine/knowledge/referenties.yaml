@@ -1,0 +1,15 @@
+# Video's en kanalen die je goed vindt.
+#
+# De TITEL blijft in quarantaine: het model ziet alleen de vórm ervan — getal,
+# ontkenning, vraag, lengte — en nooit de tekst. Daarna wordt elke gegenereerde
+# titel tegen elke titel hier gemeten, en te dichtbij valt af.
+#
+# `whyItWorks` is het veld waar het echt om gaat. Dat is jouw analyse, en die
+# kan geen enkele API ophalen.
+
+references:
+  # - title: "De grootste moskeeën ter wereld"
+  #   url: "https://youtu.be/..."
+  #   whyItWorks: >
+  #     De eerste vijf seconden laten al zien hoe groot het is. Geen aanloop.
+  #     Wat mij betreft mist hij de vraag eronder: waaróm zo groot?

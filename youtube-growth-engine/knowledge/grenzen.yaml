@@ -1,0 +1,8 @@
+# Wat dit kanaal niet doet. Komt bovenop de vaste regels uit docs/12,
+# nooit ervoor in de plaats — deze lijst kan niets toestaan, alleen verbieden.
+
+boundaries:
+  # - avoid: "vergelijkingen tussen stromingen"
+  #   why: "levert ruzie in de reacties op en dient de kijker niet"
+  # - avoid: "actualiteit en politiek"
+  #   why: "demonetisatierisico, en het verandert sneller dan wij publiceren"

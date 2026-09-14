@@ -26,11 +26,19 @@ export interface LlmProvider extends ProviderMeta {
     topic: string
     audienceInsight: string
     referencePatterns: string[]
+    /** Afgebakende naslag uit `knowledge/`. Data, nooit instructie. */
+    knowledgeBrief?: string
+    /** Aanleiding en de vragen die deze video moet beantwoorden. */
+    topicBrief?: string
+    /** Extra grenzen van dit kanaal. Kan alleen verbieden, nooit toestaan. */
+    boundaries?: string
   }): Promise<ProviderResult<{ thesis: string; originalityBrief: string } | null>>
 
   research(input: {
     thesis: string
     language: LanguageCode
+    /** Bronnen die de maker aandraagt. Een startpunt, geen vrijbrief. */
+    trustedSources?: string
   }): Promise<ProviderResult<{ brief: string; sources: Source[] }>>
 
   writeScript(input: {
@@ -39,6 +47,8 @@ export interface LlmProvider extends ProviderMeta {
     sources: Source[]
     language: LanguageCode
     targetSeconds: number
+    knowledgeBrief?: string
+    boundaries?: string
   }): Promise<ProviderResult<{ script: Script; claims: Claim[] }>>
 
   buildShotlist(input: {
@@ -51,6 +61,11 @@ export interface LlmProvider extends ProviderMeta {
     script: Script
     language: LanguageCode
     hasPhotorealisticScenes: boolean
+    /**
+     * Referentietitels. De implementatie geeft hier ALLEEN de vorm van door aan
+     * het model — nooit de tekst. Zie `extractTitlePattern`.
+     */
+    seedTitles?: string[]
   }): Promise<ProviderResult<VideoMetadata>>
 
   /** Gespreksvragen bij een hoofdstuk van het werkboek. */
@@ -93,6 +108,10 @@ export interface ImageProvider extends ProviderMeta {
     width: number
     height: number
     outPath: string
+    /** Huisstijl uit `knowledge/huisstijl.yaml`. */
+    styleBrief?: string
+    /** Wat er nooit in beeld komt, bovenop het afbeeldingsverbod. */
+    avoid?: string[]
   }): Promise<ProviderResult<{ path: string; figureCheck: 'pass' | 'fail' }>>
 }
 

@@ -1,0 +1,17 @@
+# Hoe het eruitziet en klinkt. `visualKeywords` gaat mee in elke beeldprompt.
+
+houseStyle:
+  visualKeywords:
+    - "gestileerde 2D-illustratie"
+    - "warm tegenlicht"
+    - "rustige compositie"
+  visualAvoid:
+    - "fotorealisme"
+    - "kleutercartoon"
+    - "moderne kleding of voorwerpen in historische scènes"
+  palette:
+    - "#14332b"
+    - "#f2efe6"
+    - "#c9a961"
+  voice: >
+    Rustig, warm, niet plechtig. Vertelt alsof het aan tafel gebeurt.

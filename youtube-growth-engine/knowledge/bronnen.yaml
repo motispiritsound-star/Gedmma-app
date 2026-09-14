@@ -1,0 +1,25 @@
+# Bronnen die jij vertrouwt, en de vertaling die je hebt gekozen.
+#
+# Aangedragen zijn is geen gradering: het systeem begint hier, maar controleert
+# ze net zo streng als elke andere bron.
+
+trustedSources:
+  # - work: "Sahih al-Bukhari"
+  #   kind: primary
+  #   where: "uitgave / bibliotheek / URL"
+  #   note: "gebruik met nummer én gradering"
+
+  # - work: "naam van de Koranvertaling die je mag gebruiken"
+  #   kind: primary
+  #   where: "waar de toestemming staat"
+  #   note: "hieruit wordt woordelijk geciteerd, nooit geparafraseerd"
+
+# Arabische tekst komt NOOIT uit een model. Alleen wat hier staat, mét een naam
+# bij `verifiedBy`, mag in beeld of in het script. Zie docs/12 §3.
+arabicAssets:
+  # - id: "ar-2-144"
+  #   arabic: "..."
+  #   transliteration: "..."
+  #   translation: "..."
+  #   source: "Koran 2:144"
+  #   verifiedBy: "naam van wie het controleerde"
