@@ -220,6 +220,13 @@ export class MockLlmProvider implements LlmProvider {
     return ok(meta, 6, `mock:metadata:${input.language}`)
   }
 
+  async writeWorkbookQuestions(input: { script: Script; count: number }) {
+    const questions = input.script.segments
+      .slice(0, input.count)
+      .map((s) => `${s.title}: wat zou jij hierover aan iemand thuis vertellen?`)
+    return ok(questions, 4, 'mock:workbook-questions')
+  }
+
   async translateScript(input: { script: Script; to: LanguageCode }) {
     // Hervoicen hergebruikt onderzoek, bronnen, shotlist en beeld: ~26% van
     // de kosten van een nieuwe video. Zie docs/11 §4.

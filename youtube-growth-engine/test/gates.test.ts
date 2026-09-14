@@ -9,6 +9,7 @@ import type { Asset, Claim, Production, Shot, Source } from '../src/domain/types
 
 const base = (over: Partial<Production> = {}): Production => ({
   id: 'p1', state: 'scripted', createdAt: '2026-01-01T00:00:00.000Z', topic: 't',
+  seedTitles: [],
   claims: [], sources: [], shots: [], assetIds: [], variants: [], gateResults: [],
   ...over,
 })

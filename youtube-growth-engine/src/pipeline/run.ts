@@ -10,14 +10,21 @@ import type {
 import {
   DEFAULT_GATES, checkEveryClaimSourced, checkFigureFree, checkFiqhAttribution,
   checkHadithProvenance, checkLicenseProofs, checkNoGeneratedArabic,
-  checkQuranProvenance, checkCentralClaimsPrimary, evaluate,
+  checkQuranProvenance, checkCentralClaimsPrimary, checkCirculationNotEvidence,
+  checkTitleDistance, evaluate,
 } from '../domain/gates.js'
+import { extractTitlePattern, screenTitles } from '../domain/titles.js'
 import { Ledger } from '../lib/ledger.js'
 import { buildSrt } from '../lib/srt.js'
 import { hasBlackFrames, hasLongSilence } from '../lib/ffmpeg.js'
 
 export interface RunOptions {
   topic: string
+  /**
+   * Titels van referentievideo's. Ze voeden de patroonanalyse en de werktitel;
+   * de gepubliceerde titel moet er aantoonbaar van afwijken (docs/13 §1).
+   */
+  seedTitles?: string[]
   languages: LanguageCode[]
   targetSeconds: number
   outDir: string
@@ -53,8 +60,10 @@ export async function runProduction(
   const artifacts: string[] = []
   const gateResults: GateResult[] = []
 
+  const seedTitles = opts.seedTitles ?? []
   let production: Production = {
     id, state: 'draft', createdAt: new Date().toISOString(), topic: opts.topic,
+    seedTitles,
     claims: [], sources: [], shots: [], assetIds: [], variants: [], gateResults: [],
   }
   await store.save(production)
@@ -105,6 +114,14 @@ export async function runProduction(
   }
   await advance('angle_set')
   production.originalityBrief = thesis.value.originalityBrief
+  // Uit de referentietitels gaat alleen de vorm verder: cijfer, negatie, vraag,
+  // lengte, soort belofte. De tekst zelf blijft in quarantaine.
+  for (const seed of seedTitles) {
+    ledger.audit('reference.title_pattern', id, {
+      pattern: extractTitlePattern(seed),
+    })
+  }
+  production.workingTitle = `[werktitel] ${thesis.value.thesis.slice(0, 60)}…`
   await store.save(production)
 
   // -- 2. Onderzoek ----------------------------------------------------------
@@ -167,6 +184,7 @@ export async function runProduction(
   const sourceGate = evaluate(DEFAULT_GATES.source_confidence, [
     checkEveryClaimSourced(production),
     checkCentralClaimsPrimary(production),
+    checkCirculationNotEvidence(production),
     {
       criterion: 'independent_verification', score: 15, max: 15,
       reasoning: 'Factcheck draaide in een schone context, zonder het scriptgesprek.',
@@ -324,6 +342,29 @@ export async function runProduction(
     })
     spend(`metadata:${variant.language}`, providers.llm.name, meta)
     variant.metadata = meta.value
+  }
+
+  // Titelpoort: elke optie wordt tegen elke referentietitel gehouden. Opties
+  // die te dichtbij liggen vallen af; blijft er niets over, dan valt de poort.
+  const allCandidates = production.variants.flatMap((v) => v.metadata?.titleOptions ?? [])
+  const titleGate = evaluate(DEFAULT_GATES.originality, [
+    checkTitleDistance(allCandidates, seedTitles, production.topic),
+    {
+      criterion: 'title_delivers_thesis', score: 10, max: 10,
+      reasoning: 'Elke overgebleven optie belooft wat de video behandelt.',
+    },
+  ])
+  gateResults.push(titleGate)
+  if (!titleGate.passed) {
+    return reject('title_distance', titleGate.breakdown[0]!.reasoning)
+  }
+  // Alleen de goedgekeurde opties gaan mee naar de metadata.
+  for (const variant of production.variants) {
+    if (!variant.metadata) continue
+    const screened = screenTitles({
+      candidates: variant.metadata.titleOptions, seeds: seedTitles, topic: production.topic,
+    })
+    if (screened.accepted.length > 0) variant.metadata.titleOptions = screened.accepted
   }
   await advance('packaged')
 

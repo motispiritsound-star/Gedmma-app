@@ -37,7 +37,13 @@ export type ClaimClass = 'quran' | 'hadith' | 'fiqh' | 'history' | 'general'
 
 export interface Source {
   id: string
-  kind: 'primary' | 'secondary'
+  /**
+   * `circulated` = "dit is wat overal rondgaat". Dat is uitdrukkelijk géén
+   * bewijs: bij islamitische content is wijdverbreide herhaling eerder een
+   * waarschuwing dan een bevestiging, omdat juist zwakke en verzonnen
+   * overleveringen het vaakst worden doorgegeven. Zie docs/12 §8.
+   */
+  kind: 'primary' | 'secondary' | 'circulated'
   /** Bijv. 'Koran', 'Sahih al-Bukhari', 'CBS', 'Sira Ibn Hisham'. */
   work: string
   /** Soera:ayah, hadithnummer, paginanummer of URL. */
@@ -188,6 +194,14 @@ export interface Production {
   state: ProductionState
   createdAt: string
   topic: string
+  /**
+   * Titels van referentievideo's, als invoer. Ze staan in quarantaine: ze
+   * voeden de werktitel en de patroonanalyse, maar mogen de gepubliceerde
+   * metadata niet halen. `screenTitles` bewaakt dat. Zie docs/13 §1.
+   */
+  seedTitles: string[]
+  /** Interne werktitel tijdens de productie; nooit de gepubliceerde titel. */
+  workingTitle?: string
   /** Waarom deze video naast de referentie bestaansrecht heeft. */
   originalityBrief?: string
   researchBrief?: string

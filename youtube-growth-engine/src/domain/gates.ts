@@ -1,4 +1,5 @@
 import type { Claim, GateKey, GateResult, Production, Shot, Asset } from './types.js'
+import { screenTitles } from './titles.js'
 
 export interface GateSpec {
   key: GateKey
@@ -254,5 +255,68 @@ export function checkCentralClaimsPrimary(p: Production): Criterion {
       ? `Alle ${central.length} centrale claims steunen op minstens één primaire bron.`
       : `${weak.length} centrale claim(s) steunen alleen op secundaire bronnen: ` +
         weak.map((c) => `"${c.text.slice(0, 50)}…"`).join('; '),
+  }
+}
+
+/**
+ * "Het staat overal" is geen bewijs. Bij islamitische content is het eerder een
+ * waarschuwing: juist zwakke en verzonnen overleveringen worden het vaakst
+ * doorgegeven, omdat ze aansprekend zijn. Een bron van soort `circulated` kan
+ * daarom nooit een centrale claim dragen.
+ */
+export function checkCirculationNotEvidence(p: Production): Criterion {
+  const central = p.claims.filter((c) => c.claimClass !== 'general')
+  const leaning = central.filter((c) => {
+    const sources = c.sourceIds.map((id) => p.sources.find((s) => s.id === id))
+    const kinds = sources.map((s) => s?.kind)
+    return kinds.length > 0 && kinds.every((k) => k === 'circulated')
+  })
+  return {
+    criterion: 'circulation_not_evidence',
+    score: leaning.length === 0 ? 10 : 0,
+    max: 10,
+    reasoning: leaning.length === 0
+      ? 'Geen centrale claim leunt op "dit gaat overal rond".'
+      : `${leaning.length} centrale claim(s) steunen alleen op wijdverbreide herhaling. ` +
+        'Dat is geen bewijs maar een waarschuwing: de meest doorgegeven ' +
+        'overleveringen zijn vaak juist de zwakke. Zoek de primaire bron op of ' +
+        'schrap de claim.',
+  }
+}
+
+/**
+ * De gepubliceerde titel moet aantoonbaar afwijken van elke referentietitel.
+ * Onderwerpwoorden tellen niet mee — je kunt niet over Medina schrijven zonder
+ * "Medina" te zeggen.
+ */
+export function checkTitleDistance(
+  candidates: string[],
+  seeds: string[],
+  topic: string,
+): Criterion {
+  if (seeds.length === 0) {
+    return {
+      criterion: 'title_distance',
+      score: 15, max: 15,
+      reasoning: 'Geen referentietitels aangeleverd; niets om afstand tot te meten.',
+    }
+  }
+  const outcome = screenTitles({ candidates, seeds, topic })
+  return {
+    criterion: 'title_distance',
+    score: outcome.ok ? 15 : 0,
+    max: 15,
+    reasoning: outcome.ok
+      ? `${outcome.accepted.length} van ${candidates.length} titelopties staan ver genoeg ` +
+        `van de referentietitels.` +
+        (outcome.rejected.length > 0
+          ? ` Afgevallen: ${outcome.rejected.map((r) => `"${r.title}"`).join(', ')}.`
+          : '')
+      : 'Alle titelopties liggen te dicht bij een referentietitel: ' +
+        outcome.rejected
+          .map((r) =>
+            `"${r.title}" deelt ${Math.round(r.distance.bigramOverlap * 100)}% van zijn ` +
+            `woordparen met "${r.seed}"`)
+          .join('; '),
   }
 }

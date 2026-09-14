@@ -21,6 +21,8 @@ import {
   FfmpegRenderProvider, MockImageProvider, MockMusicProvider,
   MockSearchProvider, MockTtsProvider, MockVideoClipProvider,
 } from './providers/mock/media.js'
+import { LocalEbookProvider } from './providers/ebook.js'
+import { deriveWorkbook } from './pipeline/ebook.js'
 import type { Providers } from './providers/contracts.js'
 
 const OUT = join(process.cwd(), 'out')
@@ -35,6 +37,7 @@ function makeProviders(llm: MockLlmProvider): Providers {
     videoClip: new MockVideoClipProvider(),
     music: new MockMusicProvider(),
     render: new FfmpegRenderProvider(),
+    ebook: new LocalEbookProvider(),
   }
 }
 
@@ -67,7 +70,7 @@ async function main(): Promise<void> {
   console.log('\n================ YOUTUBE GROWTH ENGINE — M1 ================\n')
 
   // --- 1. Geen stelling ----------------------------------------------------
-  console.log('[1/3] Concept zonder invulbare stelling')
+  console.log('[1/4] Concept zonder invulbare stelling')
   const noThesis = await runProduction(
     makeProviders(new MockLlmProvider()), store, ledger,
     {
@@ -79,7 +82,7 @@ async function main(): Promise<void> {
   console.log(`    -> afgewezen op "${noThesis.rejectedAt}", kosten ${eur(noThesis.costCents)}\n`)
 
   // --- 2. Hadith zonder gradering ------------------------------------------
-  console.log('[2/3] Script met een hadith zonder gradering')
+  console.log('[2/4] Script met een hadith zonder gradering')
   const badHadith = await runProduction(
     makeProviders(new MockLlmProviderWithUngradedHadith()), store, ledger,
     {
@@ -90,12 +93,35 @@ async function main(): Promise<void> {
   reportGates(badHadith)
   console.log(`    -> afgewezen op "${badHadith.rejectedAt}", kosten ${eur(badHadith.costCents)}\n`)
 
-  // --- 3. Volledige productie, Nederlands en Duits -------------------------
-  console.log('[3/3] Volledig onderbouwde productie, NL + DE')
+  // --- 3. Titel te dicht bij de referentie ---------------------------------
+  // De titels van de referentievideo's mogen het proces in als invoer. Ze mogen
+  // er niet uit komen: de gepubliceerde titel moet aantoonbaar afwijken.
+  console.log('[3/4] Titelopties te dicht bij een referentietitel')
+  const copiedTitle = await runProduction(
+    makeProviders(new MockLlmProvider()), store, ledger,
+    {
+      topic: 'medina', languages: ['nl'], targetSeconds: 120, outDir: OUT,
+      seedTitles: [
+        'De eerste moskee had geen koepel. Dat was geen toeval.',
+        'Wat er als eerste stond, en wat er pas later bij kwam',
+        'Waarom een moskee eruitziet zoals hij eruitziet',
+      ],
+      verifiedArabicAssetIds: new Set(['ar-2-144']), vocalsAndDuffOnly: true,
+    },
+  )
+  reportGates(copiedTitle)
+  console.log(`    -> afgewezen op "${copiedTitle.rejectedAt}", kosten ${eur(copiedTitle.costCents)}\n`)
+
+  // --- 4. Volledige productie, Nederlands en Duits -------------------------
+  console.log('[4/4] Volledig onderbouwde productie, NL + DE')
   const good = await runProduction(
     makeProviders(new MockLlmProvider()), store, ledger,
     {
       topic: 'medina', languages: ['nl', 'de'], targetSeconds: 120, outDir: OUT,
+      seedTitles: [
+        'Ik bouwde een moskee in 24 uur',
+        'De grootste moskeeen ter wereld, op volgorde',
+      ],
       verifiedArabicAssetIds: new Set(['ar-2-144']), vocalsAndDuffOnly: true,
     },
   )
@@ -109,7 +135,7 @@ async function main(): Promise<void> {
   }
   console.log(`    ${'TOTAAL'.padEnd(37)} ${eur(good.costCents).padStart(10)}`)
 
-  const rejectedCost = noThesis.costCents + badHadith.costCents
+  const rejectedCost = noThesis.costCents + badHadith.costCents + copiedTitle.costCents
   console.log(`\n    Kosten van afgewezen producties: ${eur(rejectedCost)}`)
   console.log('    Dat is de prijs van kwaliteit, en die hoor je te kennen.')
 
@@ -117,6 +143,29 @@ async function main(): Promise<void> {
     rpmEur: 4.5, monthlyFixedEur: 45, videosThisMonth: 5,
   })
   console.log(`\n    Break-even bij RPM EUR 4,50: ${breakEven.toLocaleString('nl-NL')} views`)
+
+  // --- Werkboek: dezelfde inhoud, tweede inkomstenbron ---------------------
+  const providers = makeProviders(new MockLlmProvider())
+  const workbook = await deriveWorkbook(
+    providers.llm, providers.ebook, store, ledger,
+    [good.production.id],
+    {
+      title: 'Wat er als eerste stond',
+      subtitle: 'Een werkboek voor thuis, bij de video-serie over de vroege moskee',
+      language: 'nl', outDir: OUT,
+    },
+  )
+  console.log('\n--- Werkboek uit dezelfde productie ---')
+  console.log(`    ${workbook.chapterCount} hoofdstuk(ken)`)
+  console.log(`    Extra kosten bovenop de video: ${eur(workbook.marginalCostCents)}`)
+  console.log(`    ${workbook.htmlPath.replace(process.cwd() + '/', '')}`)
+  if (workbook.pdfPath) console.log(`    ${workbook.pdfPath.replace(process.cwd() + '/', '')}`)
+  else console.log('    (geen headless browser gevonden; HTML is drukklaar)')
+
+  console.log('\n--- Titelopties die de poort haalden ---')
+  for (const v of good.production.variants) {
+    for (const t of v.metadata?.titleOptions ?? []) console.log(`    [${v.language}] ${t}`)
+  }
 
   // --- Idempotentie ---------------------------------------------------------
   const key = `upload:${good.production.id}:v1`

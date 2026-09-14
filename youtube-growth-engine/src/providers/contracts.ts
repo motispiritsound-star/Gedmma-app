@@ -53,6 +53,13 @@ export interface LlmProvider extends ProviderMeta {
     hasPhotorealisticScenes: boolean
   }): Promise<ProviderResult<VideoMetadata>>
 
+  /** Gespreksvragen bij een hoofdstuk van het werkboek. */
+  writeWorkbookQuestions(input: {
+    script: Script
+    language: LanguageCode
+    count: number
+  }): Promise<ProviderResult<string[]>>
+
   /** Vertaalt een bestaand script; hergebruikt onderzoek, bronnen en beeld. */
   translateScript(input: {
     script: Script
@@ -120,10 +127,32 @@ export interface RenderProvider extends ProviderMeta {
 
 export interface Providers {
   llm: LlmProvider
+  ebook: EbookProvider
   search: SearchProvider
   tts: TtsProvider
   image: ImageProvider
   videoClip: VideoClipProvider
   music: MusicProvider
   render: RenderProvider
+}
+
+/**
+ * Een ebook of werkboek uit materiaal dat de pipeline toch al maakt: het
+ * script, de bronnen en de illustraties liggen er. Dit is de goedkoopste
+ * inkomstenbron in het hele systeem, omdat de productiekosten al betaald zijn.
+ */
+export interface EbookProvider extends ProviderMeta {
+  compile(input: {
+    title: string
+    subtitle: string
+    language: LanguageCode
+    chapters: {
+      heading: string
+      body: string
+      imagePath?: string
+      questions: string[]
+      sources: { work: string; locator: string }[]
+    }[]
+    outDir: string
+  }): Promise<ProviderResult<{ htmlPath: string; pdfPath?: string }>>
 }

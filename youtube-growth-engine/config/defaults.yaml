@@ -50,14 +50,10 @@ format:
     aspect: "9:16"
 
 cadence:
-  source: default             # ZIE docs/11 §3 — jouw vraag 6 was 2 long-form/week
-  requested_by_user:
-    long_form_per_week: 2
-    shorts_per_week: 1
-  recommended:
-    long_form_per_week: 1
-    languages_per_video: 2    # nl + de
-    shorts_per_week: 1
+  source: user                # akkoord gegeven op 1 long-form per week
+  long_form_per_week: 1
+  shorts_per_week: 1
+  languages_per_video: 1      # nl tijdens de pilot; de erbij vanaf video 11
   max_publications_per_day: 1
   pilot_video_count: 10
   # Reden voor de afwijking: 2 long-form/week van 10+ minuten past niet in
@@ -85,13 +81,45 @@ presentation:
   no_voice_cloning: true
 
 revenue:
-  source: default             # vraag 9 — jij beantwoordde daar de socials-vraag
-  priority:
-    - eigen_product_of_dienst
+  source: user                # "AdSense, ebooks, en verder improviseren"
+  priority:                   # gerangschikt op opbrengst per uur werk, zie docs/13
+    - ebooks_en_werkboeken    # al gebouwd: EUR 0,04 extra per hoofdstuk
     - affiliate
+    - lidmaatschappen         # vanaf drempel 1: 500 abonnees + 3.000 kijkuren
+    - youtube_shopping        # zelfde drempel; verkoopt de werkboeken onder de video
+    - advertenties            # vanaf drempel 2: 1.000 abonnees + 4.000 kijkuren
     - sponsoring
-    - advertenties
-  # Nog te bevestigen. Zie docs/11 §7 voor de openstaande vraag.
+  # De twee YPP-drempels staan in docs/13 §1. Drempel 1 ligt 40% dichterbij dan
+  # drempel 2 en opent Shopping — dat is de route, niet AdSense.
+  seasonal_peak: ramadan      # publiekspiek en koopkrachtpiek vallen samen
+
+religious:
+  source: user
+  # VERPLICHT INVULLEN vóór de eerste echte productie. Zie docs/HANDLEIDING.md
+  # stap 6: de meeste Nederlandse Koranvertalingen zijn auteursrechtelijk
+  # beschermd werk, en "het is de Koran" dekt de vertaling niet.
+  quran_translation: "NOG TE KIEZEN"
+  quran_translation_licence: ""
+  # De gekwalificeerde reviewer. Niet automatiseerbaar; zie docs/12 §5.
+  reviewer_name: ""
+  reviewer_fee_eur_per_video: 20
+  # Arabische tekst komt nooit uit een model. Id's uit de geverifieerde
+  # bibliotheek, met per item de mens die hem controleerde.
+  verified_arabic_asset_ids: []
+
+references:
+  source: user
+  channels:
+    - "youtube.com/@MrBeast"        # alleen tempo en inzet-leesbaarheid
+    - "youtube.com/@IShowSpeed"     # alleen tempo; format is niet overdraagbaar
+  # Titels van referentievideo's mogen als invoer mee. Ze staan in quarantaine:
+  # het model ziet alleen de VORM (getal, ontkenning, vraag, lengte), nooit de
+  # tekst, en de gepubliceerde titel wordt tegen elke seed gemeten. Zie docs/13.
+  seed_titles: []
+  # Nog aan te leveren: de titels achter 8dQ3lizkjuE, -1stLOoDxb0, znyI0p4L-F0
+  # en kanaal UC5vfWTTPnKdFp-8s0KbqJhw. Die kon ik niet ophalen.
+  reuse_mode: "A"             # zie docs/14: A = klassiek bronmateriaal opnieuw
+                              # vertellen. Bevestig of dit klopt.
 
 social_distribution:
   source: user                # vraag 9

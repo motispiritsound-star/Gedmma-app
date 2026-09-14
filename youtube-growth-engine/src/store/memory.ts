@@ -15,6 +15,8 @@ export interface Store {
   putLicense(l: LicenseProof): Promise<void>
   /** Idempotente upload: dezelfde sleutel geeft het bestaande videoId terug. */
   claimUpload(key: string, videoId: string): Promise<{ videoId: string; created: boolean }>
+  /** Kijkt of een sleutel al een videoId heeft, zonder er een te claimen. */
+  peekUpload(key: string): Promise<string | undefined>
 }
 
 export class MemoryStore implements Store {
@@ -56,6 +58,10 @@ export class MemoryStore implements Store {
   }
 
   async putLicense(l: LicenseProof): Promise<void> { this.licenses.set(l.id, l) }
+
+  async peekUpload(key: string): Promise<string | undefined> {
+    return this.uploads.get(key) || undefined
+  }
 
   async claimUpload(key: string, videoId: string): Promise<{ videoId: string; created: boolean }> {
     const existing = this.uploads.get(key)
