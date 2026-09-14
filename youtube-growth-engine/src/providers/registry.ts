@@ -10,6 +10,7 @@ import { FalImageProvider } from './fal/image.js'
 import { FalVideoProvider } from './fal/video.js'
 import { GeminiImageProvider } from './google/image.js'
 import { ElevenLabsTtsProvider } from './elevenlabs/tts.js'
+import { LocalClipProvider } from './local/clips.js'
 
 /**
  * Kiest de providers op grond van wat er in de omgeving staat. Ontbreekt een
@@ -81,8 +82,16 @@ function pickImage(): { provider: ImageProvider; missing?: string } {
 }
 
 function pickVideo(): { provider: VideoClipProvider; missing?: string } {
+  // Handgemaakte clips gaan voor: heb je ze geëxporteerd uit een tool zonder
+  // API, dan wil je die gebruiken en niet ernaast nog eens laten genereren.
+  if (process.env['LOCAL_CLIPS_DIR']) {
+    return { provider: new LocalClipProvider() }
+  }
   if (process.env['FAL_KEY']) return { provider: new FalVideoProvider() }
-  return { provider: new MockVideoClipProvider(), missing: 'FAL_KEY' }
+  return {
+    provider: new MockVideoClipProvider(),
+    missing: 'FAL_KEY — of LOCAL_CLIPS_DIR als je clips met de hand aanlevert',
+  }
 }
 
 export function buildProviders(): BuiltProviders {

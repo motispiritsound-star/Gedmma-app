@@ -154,3 +154,93 @@ candidates:
       geautomatiseerde kanalen daadwerkelijk zijn beëindigd. Veroudert bovendien
       binnen maanden, dus je bouwt geen archief op dat blijft opleveren. Ik raad
       hem af, en dat is geen smaakoordeel maar de uitkomst van het model.
+
+  # --- Eerder gescoord, hier opnieuw onder dezelfde regels -------------------
+  # Deze stonden in een oudere lijst die je terugstuurde. Die getallen waren
+  # niet vergelijkbaar met de huidige: ze waren berekend mét categorie 2 en met
+  # een profiel dat toen drie voorsprongen had. Hieronder staan ze onder
+  # precies dezelfde regels als de rest, zodat het één ranglijst is.
+
+  - key: islamitisch-gezin
+    proposition: >
+      Korte cinematische verhalen uit de vroege islam die elke aflevering
+      eindigen bij een keuze die een Nederlands gezin vandaag ook maakt
+    usesAdvantage: true
+    scores:
+      audience_demand: 13
+      creator_advantage: 15
+      original_positioning: 13
+      evergreen: 9
+      scalability: 9
+      title_thumbnail: 9
+      competition: 8
+      production_feasibility: 4
+      credibility: 4
+      monetisation: 4
+    notes: >
+      DOOR JOU AFGEWEZEN — staat hier alleen om de ranglijst compleet te maken.
+      Scoorde 85 in de oude telling, maar dat was mét de voorsprongcategorie en
+      met een profiel dat toen drie voorsprongen had. Zonder die categorie valt
+      precies weg wat deze niche sterk maakte.
+
+  - key: halal-food-europa
+    proposition: >
+      Engelstalige evergreen gidsen voor de beste halal-eetervaringen in grote
+      Europese steden
+    usesAdvantage: true
+    scores:
+      audience_demand: 12
+      creator_advantage: 11
+      original_positioning: 11
+      evergreen: 10
+      scalability: 9
+      title_thumbnail: 9
+      competition: 6
+      production_feasibility: 2
+      credibility: 4
+      monetisation: 4
+    notes: >
+      Valt op productie: je hebt echte beelden van echte zaken nodig, en die kun
+      je niet genereren zonder te misleiden. Met reizen erbij past het niet in
+      EUR 100 per maand.
+
+  - key: wonen-verborgen-kosten
+    proposition: >
+      Wonen, verbouwen en de verborgen kosten daarvan, uitgelegd met cijfers
+      uit openbare Nederlandse bronnen
+    usesAdvantage: true
+    scores:
+      audience_demand: 13
+      creator_advantage: 11
+      original_positioning: 11
+      evergreen: 9
+      scalability: 9
+      title_thumbnail: 8
+      competition: 7
+      production_feasibility: 4
+      credibility: 4
+      monetisation: 4
+    notes: >
+      Sterk, en hij overlapt grotendeels met De Rekening — die is scherper
+      afgebakend en scoort daardoor hoger. Kies er één van de twee.
+
+  - key: persoonlijke-financien
+    proposition: >
+      Nederlandse persoonlijke financiën voor starters: hypotheek, pensioen en
+      de kosten die niemand uitlegt
+    usesAdvantage: false
+    scores:
+      audience_demand: 14
+      creator_advantage: 12
+      original_positioning: 8
+      evergreen: 9
+      scalability: 9
+      title_thumbnail: 8
+      competition: 3
+      production_feasibility: 4
+      credibility: 3
+      monetisation: 5
+    notes: >
+      Hoogste advertentiewaarde, drukste veld, en elke claim moet naar een
+      primaire bron met drempel 95. De Rekening pakt dezelfde vraag zonder in
+      het gevoelige regime te vallen.
