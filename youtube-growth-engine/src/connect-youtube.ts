@@ -14,14 +14,51 @@ import {
 } from './providers/youtube/auth.js'
 import { FileTokenStore } from './providers/youtube/file-token-store.js'
 
+/**
+ * Google's foutcodes zeggen niets. Ze gaan vrijwel altijd over één van drie
+ * dingen, en dit vertaalt ze naar wat je moet doen.
+ */
+function uitleg(error: string): string {
+  if (error === 'access_denied') {
+    return 'Google blokkeerde de toegang. Bijna altijd één van twee dingen:\n\n' +
+      '  1. Je staat niet als testgebruiker bij het OAuth-toestemmingsscherm.\n' +
+      '     Google Cloud Console > APIs & Services > OAuth consent screen >\n' +
+      '     Audience > Test users > Add users > je eigen Google-adres.\n\n' +
+      '  2. Je koos bij het toestemmingsscherm "Internal" terwijl je geen\n' +
+      '     Workspace-organisatie hebt. Zet hem op "External".\n\n' +
+      'Beide kosten een minuut. Daarna dit commando opnieuw.'
+  }
+  if (error === 'admin_policy_enforced') {
+    return 'De beheerder van je Google Workspace blokkeert deze app. Gebruik een\n' +
+      'gewoon Gmail-account in plaats van een zakelijk account, of vraag je\n' +
+      'beheerder om de YouTube Data API vrij te geven.'
+  }
+  if (error === 'invalid_scope') {
+    return 'Een van de gevraagde rechten bestaat niet of staat niet aan.\n' +
+      'Controleer of YouTube Data API v3 én YouTube Analytics API aanstaan\n' +
+      'onder APIs & Services > Library.'
+  }
+  return `Google gaf terug: ${error}`
+}
+
 function required(name: string): string {
   const value = process.env[name]
   if (!value) {
     console.error(
-      `\n${name} ontbreekt.\n\n` +
-      'Ga naar Google Cloud Console > APIs & Services > Credentials, maak een\n' +
-      'OAuth client ID van het type "Desktop app", en zet client id en secret in .env.\n' +
-      'Zet in dezelfde console YouTube Data API v3 en YouTube Analytics API aan.\n',
+      `\n${name} ontbreekt. De hele route, in volgorde:\n\n` +
+      '  1. console.cloud.google.com — maak een project\n' +
+      '  2. APIs & Services > Library — zet AAN:\n' +
+      '       - YouTube Data API v3\n' +
+      '       - YouTube Analytics API\n' +
+      '  3. APIs & Services > OAuth consent screen\n' +
+      '       - User type: External\n' +
+      '       - App name en support e-mail invullen\n' +
+      '       - Audience > Test users > voeg JEZELF toe\n' +
+      '         (zonder deze stap blokkeert Google je straks met access_denied)\n' +
+      '  4. APIs & Services > Credentials > Create credentials\n' +
+      '       > OAuth client ID > type: Desktop app\n' +
+      '  5. Zet client id en secret in .env\n' +
+      '  6. Dit commando opnieuw\n',
     )
     process.exit(1)
   }
@@ -78,7 +115,11 @@ async function main(): Promise<void> {
         server.close(() => resolve())
       }
 
-      if (error) { finish(`Google gaf terug: ${error}`, false); return }
+      if (error) {
+        finish(uitleg(error), false)
+        console.error(`\n${uitleg(error)}\n`)
+        return
+      }
       if (returnedState !== state) { finish('De state kwam niet overeen. Probeer opnieuw.', false); return }
       if (!code) { finish('Geen code ontvangen.', false); return }
 

@@ -99,7 +99,15 @@ Dit is de omslachtigste stap en daarna nooit meer.
    project, en zet onder *APIs & Services → Library* deze twee aan:
    - YouTube Data API v3
    - YouTube Analytics API
-3. **OAuth client.** *APIs & Services → Credentials → Create credentials →
+3. **Toestemmingsscherm** — *APIs & Services → OAuth consent screen*. Dit is de
+   stap waar iedereen op vastloopt en hij staat in geen enkele tutorial goed:
+   - **User type: External.** Kies je "Internal" zonder Workspace-organisatie,
+     dan werkt het niet.
+   - App-naam en support-e-mail invullen.
+   - **Audience → Test users → voeg jezelf toe.** Doe je dit niet, dan blokkeert
+     Google je straks met `access_denied` en zoek je een uur naar de reden.
+
+4. **OAuth client.** *APIs & Services → Credentials → Create credentials →
    OAuth client ID*, type **Desktop app**. Zet client id en secret in `.env`:
 
 ```bash
@@ -107,11 +115,14 @@ GOOGLE_OAUTH_CLIENT_ID=...apps.googleusercontent.com
 GOOGLE_OAUTH_CLIENT_SECRET=...
 ```
 
-4. **Koppelen:**
+5. **Koppelen:**
 
 ```bash
 npm run youtube:connect
 ```
+
+Gaat er iets mis, dan vertaalt dat commando Google's foutcode naar wat je moet
+doen — `access_denied` betekent vrijwel altijd de testgebruiker uit stap 3.
 
 Er verschijnt een link, je geeft toestemming in je browser, klaar.
 
