@@ -1,8 +1,8 @@
 # Wat dit kanaal niet doet. Komt bovenop de vaste regels uit docs/12 en kan
 # alleen verbieden, nooit toestaan.
 #
-# Deze lijst geldt ONGEACHT het onderwerp. Ook als het kanaal over wonen,
-# geld of geschiedenis gaat, blijft de norm staan.
+# Deze lijst geldt ONGEACHT het onderwerp en blijft staan na de nichewissel:
+# hij ging over wat wel en niet mag, niet over waar de video's over gaan.
 
 boundaries:
   - avoid: "naaktheid, onthullende kleding, of beeld dat op verleiding speelt"
@@ -17,3 +17,7 @@ boundaries:
     why: "kortetermijnklikken tegen langetermijnvertrouwen"
   - avoid: "mensen belachelijk maken of afrekenen"
     why: "past niet bij een kanaal dat gezinnen samen kijken"
+  - avoid: "voor-en-na-beelden van lichamen, of beeld dat op schaamte over het lichaam speelt"
+    why: "gezondheidsniche, en het botst met de contentnorm hierboven"
+  - avoid: "wondermiddelen, detox, of iets dat als genezing wordt gepresenteerd"
+    why: "medische misinformatie, en het kost je het kanaal"

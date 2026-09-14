@@ -320,3 +320,143 @@ export function checkTitleDistance(
           .join('; '),
   }
 }
+
+// ---------------------------------------------------------------------------
+// Medisch profiel (docs/16). Dezelfde machinerie als het religieuze profiel:
+// een gezaghebbende tekst, een bevinding met vindplaats, een oordeel dat
+// toegeschreven moet worden, een cijfer. Alleen de namen verschillen, en de
+// drempels liggen hoger omdat mensen naar gezondheidsinformatie handelen.
+// ---------------------------------------------------------------------------
+
+/** Onderzoeksopzetten, van sterk naar zwak. */
+const STRONG_DESIGNS = ['systematische review', 'meta-analyse', 'rct', 'richtlijn']
+const WEAK_DESIGNS = ['dierstudie', 'casus', 'patiëntenserie', 'in vitro']
+
+/**
+ * Richtlijnen en standaarden: WHO, Gezondheidsraad, NHG, Voedingscentrum,
+ * Cochrane. Vereist het werk, het onderdeel én het jaar — een richtlijn uit
+ * 2009 zegt iets anders dan die van vorig jaar, en dat verschil is de video.
+ */
+export function checkGuidelineProvenance(p: Production): Criterion {
+  const claims = p.claims.filter((c) => c.claimClass === 'guideline')
+  const bad = claims.filter((c) => {
+    const sources = c.sourceIds.map((id) => p.sources.find((s) => s.id === id))
+    return sources.length === 0 || sources.some(
+      (s) => !s || s.kind !== 'primary' || !s.work || !s.locator || !s.year,
+    )
+  })
+  return {
+    criterion: 'guideline_provenance',
+    score: bad.length === 0 ? 20 : 0,
+    max: 20,
+    reasoning: bad.length === 0
+      ? `${claims.length} verwijzing(en) naar een richtlijn, elk met werk, vindplaats en jaar.`
+      : `${bad.length} richtlijnclaim(s) zonder primaire bron, vindplaats of jaartal. ` +
+        'Een richtlijn zonder jaartal is geen bron: ze worden herzien.',
+  }
+}
+
+/**
+ * Onderzoeksbevindingen. Vereist tijdschrift, jaar, opzet en deelnemersaantal.
+ * Dit is het medische equivalent van een hadith zonder gradering: een studie
+ * zonder opzet en omvang klinkt als bewijs en is het niet.
+ */
+export function checkStudyProvenance(p: Production): Criterion {
+  const claims = p.claims.filter((c) => c.claimClass === 'study')
+  const problems: string[] = []
+
+  for (const c of claims) {
+    const sources = c.sourceIds.map((id) => p.sources.find((s) => s.id === id))
+    if (sources.length === 0 || sources.some((s) => !s)) {
+      problems.push(`"${c.text.slice(0, 50)}…" heeft geen bron`)
+      continue
+    }
+    for (const s of sources) {
+      if (!s) continue
+      if (!s.grading || !s.gradedBy || !s.year) {
+        problems.push(`${s.work}: opzet, tijdschrift of jaar ontbreekt`)
+        continue
+      }
+      const design = s.grading.toLowerCase()
+      if (WEAK_DESIGNS.some((w) => design.includes(w)) && !c.notesScholarlyDifference) {
+        problems.push(
+          `${s.work} is een ${s.grading} en het script benoemt die beperking niet. ` +
+          'Een dierstudie is geen uitspraak over mensen.',
+        )
+      }
+      if (s.participants !== undefined && s.participants < 30 &&
+          !STRONG_DESIGNS.some((d) => design.includes(d))) {
+        problems.push(`${s.work} heeft ${s.participants} deelnemers; te weinig om op te steunen`)
+      }
+    }
+  }
+
+  return {
+    criterion: 'study_provenance',
+    score: problems.length === 0 ? 25 : 0,
+    max: 25,
+    reasoning: problems.length === 0
+      ? `${claims.length} onderzoeksverwijzing(en), elk met tijdschrift, jaar, opzet en omvang.`
+      : problems.join(' | '),
+  }
+}
+
+/**
+ * Adviezen. Nooit als feit, nooit persoonlijk. "Neem dit supplement" is
+ * individueel advies; "de Gezondheidsraad adviseert X voor volwassenen" is
+ * toegeschreven en algemeen.
+ */
+export function checkRecommendationAttribution(claims: Claim[]): Criterion {
+  const advice = claims.filter((c) => c.claimClass === 'recommendation')
+  const unattributed = advice.filter((c) => !c.attributedTo)
+  return {
+    criterion: 'recommendation_attributed',
+    score: unattributed.length === 0 ? 15 : 0,
+    max: 15,
+    reasoning: unattributed.length === 0
+      ? `${advice.length} advies/adviezen, elk toegeschreven aan wie het geeft.`
+      : `${unattributed.length} advies/adviezen zonder bron. Een kijker die hiernaar ` +
+        'handelt, moet kunnen zien van wie het komt.',
+  }
+}
+
+/** Cijfers verouderen. Zonder jaartal is een percentage een bewering. */
+export function checkStatisticYear(p: Production): Criterion {
+  const stats = p.claims.filter((c) => c.claimClass === 'statistic')
+  const undated = stats.filter((c) => {
+    const sources = c.sourceIds.map((id) => p.sources.find((s) => s.id === id))
+    return sources.length === 0 || sources.some((s) => !s?.year)
+  })
+  return {
+    criterion: 'statistic_dated',
+    score: undated.length === 0 ? 10 : 0,
+    max: 10,
+    reasoning: undated.length === 0
+      ? `${stats.length} cijfer(s), elk met bron en jaartal.`
+      : `${undated.length} cijfer(s) zonder jaartal.`,
+  }
+}
+
+/**
+ * De grens tussen uitleg en advies. Het script mag uitleggen wat er bekend is;
+ * het mag de kijker niet vertellen wat die moet doen met zijn eigen lichaam.
+ */
+const PERSONAL_ADVICE = [
+  /\bjij moet\b/i, /\bstop met\b/i, /\bneem (dagelijks|elke dag)\b/i,
+  /\bslik\b/i, /\bgenees\b/i, /\bbehandel je\b/i, /\bvervang je medicijn/i,
+  /\bga (niet )?naar de (dokter|huisarts) als je\b/i,
+]
+
+export function checkNoPersonalMedicalAdvice(claims: Claim[]): Criterion {
+  const hits = claims.filter((c) => PERSONAL_ADVICE.some((re) => re.test(c.text)))
+  return {
+    criterion: 'no_personal_medical_advice',
+    score: hits.length === 0 ? 15 : 0,
+    max: 15,
+    reasoning: hits.length === 0
+      ? 'Het script legt uit en schrijft niets voor.'
+      : `${hits.length} zin(nen) lezen als persoonlijk medisch advies: ` +
+        hits.map((c) => `"${c.text.slice(0, 60)}…"`).join('; ') +
+        ' Herschrijf naar wat er bekend is, niet naar wat de kijker moet doen.',
+  }
+}

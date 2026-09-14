@@ -32,8 +32,21 @@ export type ProductionState =
   | 'measured'
   | 'rejected'
 
-/** Klassen uit docs/12 §1. A t/m D hebben een harde herkomsteis. */
-export type ClaimClass = 'quran' | 'hadith' | 'fiqh' | 'history' | 'general'
+/**
+ * Klassen van claim. Elk profiel heeft zijn eigen set, maar de structuur is
+ * dezelfde: een gezaghebbende tekst, een bevinding met een vindplaats, een
+ * oordeel dat toegeschreven moet worden, een cijfer, en de rest.
+ *
+ * Religieus (docs/12):  quran | hadith | fiqh | history
+ * Medisch (docs/16):    guideline | study | recommendation | statistic
+ */
+export type ClaimClass =
+  | 'quran' | 'hadith' | 'fiqh' | 'history'
+  | 'guideline' | 'study' | 'recommendation' | 'statistic'
+  | 'general'
+
+/** Welke herkomstregels gelden. Zie config/defaults.yaml. */
+export type ClaimProfile = 'religieus' | 'medisch' | 'algemeen'
 
 export interface Source {
   id: string
@@ -48,10 +61,18 @@ export interface Source {
   work: string
   /** Soera:ayah, hadithnummer, paginanummer of URL. */
   locator: string
-  /** Alleen voor hadith: sahih | hasan | da'if | mawdu'. */
+  /**
+   * Religieus: de gradering van een hadith (sahih | hasan | da'if | mawdu').
+   * Medisch: de opzet van het onderzoek (systematische review | RCT |
+   * cohort | patiëntcontrole | dierstudie | casus).
+   */
   grading?: string
-  /** Wie de gradering gaf. Verplicht zodra `grading` is gezet. */
+  /** Wie de gradering gaf, of welk tijdschrift het publiceerde. */
   gradedBy?: string
+  /** Publicatiejaar. Bij medische claims verplicht: onderzoek veroudert. */
+  year?: number
+  /** Aantal deelnemers. Een studie van twaalf mensen is geen bewijs. */
+  participants?: number
   /** Voor Koranvertalingen: de bij naam genoemde gepubliceerde vertaling. */
   translation?: string
   retrievedAt: string

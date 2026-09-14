@@ -1,0 +1,33 @@
+{
+  "id": "video-002",
+  "title": "\"Zitten is het nieuwe roken\" is niet waar",
+  "language": "nl",
+  "aspect": "16:9",
+  "speakingRate": 2.2,
+  "scenes": [
+    { "n": 1, "visual": "Bureaustoel in leeg kantoor, hard zijlicht, lange schaduw",
+      "narration": "Je hebt het vast gehoord. Zitten is het nieuwe roken." },
+    { "n": 2, "visual": "Dezelfde stoel, de zin als typografie eroverheen die uiteenvalt",
+      "narration": "Er is geen onderzoek dat dat zegt." },
+    { "n": 3, "visual": "Twee kolommen die zich vullen: totale zittijd naast langste blok",
+      "narration": "En de echte bevinding is interessanter dan de mythe. Het gaat niet om hoeveel uur je op een dag zit. Het gaat om hoe lang je achter elkaar zit." },
+    { "n": 4, "visual": "Tijdlijn waarop de uitspraak opduikt en zich vertakt over media",
+      "narration": "Eerst: waar komt die zin vandaan? Hij is niet uit een onderzoek gekomen. Hij is uit een interview gekomen, en daarna duizend keer geciteerd zonder dat iemand terugkeek." },
+    { "n": 5, "visual": "Netwerk van bronnen die naar elkaar wijzen, geen enkele naar buiten",
+      "narration": "En dat is precies het patroon dat je moet herkennen. Een claim die overal rondgaat, waarvan elke bron naar een andere bron verwijst en niemand naar een onderzoek. Wijdverbreide herhaling is geen bewijs. Bij gezondheid is het eerder een waarschuwing." },
+    { "n": 6, "visual": "Twee cirkels naast elkaar, sterk verschillend van grootte",
+      "narration": "Waarom de vergelijking mank gaat, is ook zonder cijfers te zien. Roken brengt een stof je longen in die daar schade aanricht. Zitten is de afwezigheid van beweging. Dat zijn twee verschillende soorten dingen, en je kunt ze niet op één schaal zetten." },
+    { "n": 7, "visual": "Grafiek met twee lijnen: totale zittijd vlak, onderbroken zittijd dalend",
+      "narration": "Dan de bevinding die er wél toe doet. Onderzoekers zijn gaan meten hoe zittijd verdeeld is over de dag. Niet alleen het totaal, maar ook: hoe lang duurde het langste aaneengesloten blok?" },
+    { "n": 8, "visual": "Twee dagindelingen naast elkaar, zelfde totaal, andere blokken",
+      "narration": "Twee mensen kunnen allebei acht uur zitten. De één in blokken van twintig minuten met steeds even opstaan. De ander in twee blokken van vier uur. Zelfde totaal. En daar zit het verschil waar het onderzoek naar kijkt." },
+    { "n": 9, "visual": "Ruimte voor het cijfer: leeg vlak met een kader",
+      "narration": "Hier hoort het cijfer uit het onderzoek te staan, met tijdschrift, jaar, opzet en het aantal deelnemers. Dat wordt ingevuld nadat het is nagekeken, niet ervoor." },
+    { "n": 10, "visual": "Balk die aangeeft wat de Gezondheidsraad adviseert, met jaartal",
+      "narration": "Wat adviseren de Nederlandse richtlijnen hier eigenlijk over? Ook dat wordt toegeschreven, met jaartal, want richtlijnen worden herzien." },
+    { "n": 11, "visual": "Weegschaal met aan één kant een klein onderzoek, aan de andere een stapel",
+      "narration": "En nu het eerlijke tegenargument. Dit veld heeft veel kleine onderzoeken. Veertig deelnemers, soms minder. Dat is genoeg om een vermoeden te wekken en te weinig om op te steunen. Als dat het beste is wat er ligt, dan is de eerlijke conclusie dat dit minder goed onderzocht is dan de stelligheid doet vermoeden." },
+    { "n": 12, "visual": "Bureaustoel weer, maar nu met een lichtspoor van opstaan en zitten",
+      "narration": "Dus. De rokenvergelijking klopt niet en heeft nooit geklopt. Wat het onderzoek wel onderscheidt is totaal tegenover aaneengesloten. Het gaat niet om hoeveel uur je zit. Het gaat om hoe lang achter elkaar. En als je één ding onthoudt van deze video, is dat het. Wat is jouw langste blok op een werkdag? Zet het eronder." }
+  ]
+}
