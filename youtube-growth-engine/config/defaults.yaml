@@ -92,7 +92,16 @@ budget:
 
 presentation:
   source: default             # vraag 8 — jij liet de keuze aan mij
-  narrator: "synthetische voice-over, warm en rustig, geen presentator in beeld"
+  narrator: "synthetische voice-over, filmisch — geen presentator in beeld"
+  # Filmachtig betekent hier iets meetbaars, niet alleen een gevoel:
+  voice_direction:
+    toonhoogte: "laag tot midden, geen opgewekte omhoog-intonatie aan zinseinden"
+    tempo: 2.0              # woorden per seconde, rustiger dan de norm van 2.2
+    pauzes: "lang genoeg om een zin te laten landen; stilte is onderdeel van het verhaal"
+    emotie: "ingehouden — het verhaal draagt de spanning, niet de stem"
+    houding: "vertelt iets dat hij zelf interessant vindt, niet iets dat hij verkoopt"
+  # Let op: tempo 2.0 in plaats van 2.2 maakt elke video ongeveer 10% langer.
+  # Bij video 1 is dat 5:50 -> ongeveer 6:25.
   visual_style: "gestileerde 2D-illustratie, cinematisch, geen kleutercartoon"
   animation_method: limited_animation
   # Beperkte animatie (vaste karakterbladen + compositing) in plaats van
