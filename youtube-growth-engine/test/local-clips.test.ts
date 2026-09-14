@@ -1,4 +1,4 @@
-import { mkdtemp, writeFile, mkdir } from 'node:fs/promises'
+import { copyFile, mkdtemp, writeFile, mkdir } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { execFile } from 'node:child_process'
@@ -8,18 +8,29 @@ import { LocalClipProvider } from '../src/providers/local/clips.js'
 
 const run = promisify(execFile)
 
+/**
+ * Eén echte MP4 voor de hele suite, daarna kopiëren. FFmpeg per testbestand
+ * aanroepen maakte deze test traag genoeg om onder belasting om te vallen — en
+ * een test die van de machinebelasting afhangt, test niets.
+ */
+let sjabloon: string | undefined
+async function mp4Sjabloon(): Promise<string> {
+  if (sjabloon) return sjabloon
+  const dir = await mkdtemp(join(tmpdir(), 'clip-tpl-'))
+  const pad = join(dir, 'sjabloon.mp4')
+  await run('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y',
+    '-f', 'lavfi', '-i', 'color=c=black:s=64x64:d=3',
+    '-pix_fmt', 'yuv420p', pad])
+  sjabloon = pad
+  return pad
+}
+
 async function clipDir(names: string[]): Promise<string> {
   const dir = await mkdtemp(join(tmpdir(), 'clips-'))
   await mkdir(dir, { recursive: true })
   for (const name of names) {
-    if (name.endsWith('.mp4')) {
-      // Een echt bestandje, zodat ffprobe er de lengte uit kan lezen.
-      await run('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y',
-        '-f', 'lavfi', '-i', 'color=c=black:s=64x64:d=3',
-        '-pix_fmt', 'yuv420p', join(dir, name)])
-    } else {
-      await writeFile(join(dir, name), 'geen video')
-    }
+    if (name.endsWith('.mp4')) await copyFile(await mp4Sjabloon(), join(dir, name))
+    else await writeFile(join(dir, name), 'geen video')
   }
   return dir
 }
