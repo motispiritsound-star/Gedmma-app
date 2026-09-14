@@ -1,0 +1,124 @@
+# Kandidaat-proposities, met per categorie een score en de onderbouwing.
+#
+# Deze scores zijn mijn redactionele oordeel. De CODE rekent, begrenst en
+# classificeert — zie src/studio/niche.ts. Twee begrenzingen die hier zwaar
+# meewegen en die geen enkel enthousiasme kan omzeilen:
+#
+#   - geen eigen voorsprong in het profiel  -> categorie 2 wordt 5 van de 15
+#   - geen actuele externe data             -> vraag en concurrentie krijgen een plafond
+#
+# Wil je een propositie toevoegen: kopieer een blok en vul het in.
+
+candidates:
+  - key: islamitisch-gezin
+    proposition: >
+      Korte cinematische verhalen uit de vroege islam die elke aflevering
+      eindigen bij een keuze die een Nederlands gezin vandaag ook maakt
+    usesAdvantage: true
+    scores:
+      audience_demand: 13
+      creator_advantage: 15
+      original_positioning: 13
+      evergreen: 9
+      scalability: 9
+      title_thumbnail: 9
+      competition: 8
+      production_feasibility: 4
+      credibility: 4
+      monetisation: 4
+    notes: >
+      Vraag is echt en nauwelijks bediend in het Nederlands. Voorsprong is de
+      kern: taal, publiekskennis en een reviewer. Zwakte is de verdienkant —
+      religieuze content trekt geen premiumadverteerders, dus het geld komt van
+      werkboeken en niet van AdSense.
+
+  - key: persoonlijke-financien
+    proposition: >
+      Nederlandse persoonlijke financiën voor starters: hypotheek, pensioen en
+      de kosten die niemand uitlegt
+    usesAdvantage: false
+    scores:
+      audience_demand: 14
+      creator_advantage: 12
+      original_positioning: 8
+      evergreen: 9
+      scalability: 9
+      title_thumbnail: 8
+      competition: 3
+      production_feasibility: 4
+      credibility: 3
+      monetisation: 5
+    notes: >
+      Hoogste advertentiewaarde van de vijf. Maar je hebt hier geen voorsprong,
+      het veld is vol met mensen die wél financieel geschoold zijn, en elke
+      claim moet naar een primaire bron — bij geld is de factcheckdrempel 95.
+      Het is bovendien een gevoelig onderwerp, dus volautomatisch publiceren
+      blijft permanent uit.
+
+  - key: ai-voor-mkb
+    proposition: >
+      AI-automatisering voor kleine Nederlandse bedrijven, elke week één
+      werkend voorbeeld
+    usesAdvantage: false
+    scores:
+      audience_demand: 14
+      creator_advantage: 10
+      original_positioning: 6
+      evergreen: 5
+      scalability: 8
+      title_thumbnail: 7
+      competition: 2
+      production_feasibility: 4
+      credibility: 2
+      monetisation: 5
+    notes: >
+      De hoogste RPM en de slechtste keuze voor een geautomatiseerd kanaal.
+      Dit is precies de niche waar YouTube in januari 2026 zestien kanalen
+      beëindigde. Bronbasis is zwak: het meeste komt van sociale media, en dat
+      telt volgens je eigen opdracht als hypothese en niet als feit. Veroudert
+      bovendien binnen maanden, dus evergreen is er niet bij.
+
+  - key: halal-food-europa
+    proposition: >
+      Engelstalige evergreen gidsen voor de beste halal-eetervaringen in grote
+      Europese steden
+    usesAdvantage: true
+    scores:
+      audience_demand: 12
+      creator_advantage: 11
+      original_positioning: 11
+      evergreen: 10
+      scalability: 9
+      title_thumbnail: 9
+      competition: 6
+      production_feasibility: 2
+      credibility: 4
+      monetisation: 4
+    notes: >
+      Verrassend sterk: je culturele kennis telt hier wél als voorsprong, en
+      Engels opent een veel grotere markt. Het valt op productie. Faceless
+      werkt hier slecht — je hebt echte beelden van echte zaken nodig, en die
+      kun je niet genereren zonder te misleiden. Met reizen erbij past het niet
+      in EUR 100 per maand.
+
+  - key: wonen-verborgen-kosten
+    proposition: >
+      Wonen, verbouwen en de verborgen kosten daarvan, uitgelegd met cijfers
+      uit openbare Nederlandse bronnen
+    usesAdvantage: false
+    scores:
+      audience_demand: 13
+      creator_advantage: 9
+      original_positioning: 11
+      evergreen: 9
+      scalability: 9
+      title_thumbnail: 8
+      competition: 7
+      production_feasibility: 4
+      credibility: 4
+      monetisation: 4
+    notes: >
+      De sterkste van de niet-islamitische opties. Uitstekende gratis primaire
+      bronnen (CBS, Kadaster, RVO, NIBUD), dun Nederlands veld, en je kunt het
+      met grafieken vertellen — dus goedkoop beeld. Maar je voorsprong is hier
+      alleen je taal, en dat is er één.

@@ -1,8 +1,19 @@
-# Wat dit kanaal niet doet. Komt bovenop de vaste regels uit docs/12,
-# nooit ervoor in de plaats — deze lijst kan niets toestaan, alleen verbieden.
+# Wat dit kanaal niet doet. Komt bovenop de vaste regels uit docs/12 en kan
+# alleen verbieden, nooit toestaan.
+#
+# Deze lijst geldt ONGEACHT het onderwerp. Ook als het kanaal over wonen,
+# geld of geschiedenis gaat, blijft de norm staan.
 
 boundaries:
-  # - avoid: "vergelijkingen tussen stromingen"
-  #   why: "levert ruzie in de reacties op en dient de kijker niet"
-  # - avoid: "actualiteit en politiek"
-  #   why: "demonetisatierisico, en het verandert sneller dan wij publiceren"
+  - avoid: "naaktheid, onthullende kleding, of beeld dat op verleiding speelt"
+    why: "islamitisch niet verantwoord, en het is ook niet nodig om te boeien"
+  - avoid: "schelden, grof taalgebruik, beledigingen"
+    why: "zelfde norm, en het kost adverteerders"
+  - avoid: "alcohol, gokken, rente-producten als iets aantrekkelijks tonen"
+    why: "wordt in beeld of woord makkelijk normaliserend"
+  - avoid: "muziek met melodische instrumenten als dat niet uitdrukkelijk is aangezet"
+    why: "zie music_policy in config/defaults.yaml"
+  - avoid: "roddel, bloot op de thumbnail, of spanning die op schaamte leunt"
+    why: "kortetermijnklikken tegen langetermijnvertrouwen"
+  - avoid: "mensen belachelijk maken of afrekenen"
+    why: "past niet bij een kanaal dat gezinnen samen kijken"

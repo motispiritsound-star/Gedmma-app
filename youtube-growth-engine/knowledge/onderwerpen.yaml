@@ -7,9 +7,9 @@ topics:
     mustAnswer:
       - "Wat stond er als eerste?"
       - "Wat kwam er pas later bij, en waarom?"
-    priority: normaal
+    priority: hoog
     season: ""
-    status: open
+    status: gepland     # script geschreven: content/video-001/
 
   # - topic: "..."
   #   why: "..."

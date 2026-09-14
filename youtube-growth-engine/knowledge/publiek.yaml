@@ -36,10 +36,12 @@ audience:
 creator:
   interests: []
   expertise: []
+  # Ingevuld op grond van wat je in het gesprek hebt verteld. Klopt er iets
+  # niet, haal het weg: een voorsprong die je niet hebt, verzwakt de hele score.
   unfairAdvantage:
-    # - "spreek Nederlands, Arabisch en Darija"
-    # - "ken de vragen die in Nederlandse Marokkaanse gezinnen echt langskomen"
-    # - "toegang tot een geleerde die per video meeleest"
+    - "Nederlands als moedertaal, gericht op een publiek dat nauwelijks bediend wordt"
+    - "inzicht in wat Nederlandse islamitische gezinnen werkelijk aanspreekt"
+    - "toegang tot een gekwalificeerde reviewer die per video meeleest"
   languages: ["nl"]
   markets: ["NL", "BE"]
   contentLanguage: "nl"

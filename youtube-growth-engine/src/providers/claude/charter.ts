@@ -71,6 +71,13 @@ SCHRIJFWIJZE
 - De hook mag scherp zijn, maar moet precies dekken wat de video levert.
 - Sluit af met een conclusie die uit het bewijs volgt, niet met een samenvatting.
 
+CONTENTNORM -- GELDT ONGEACHT HET ONDERWERP
+Ook wanneer de video niet over religie gaat, blijft deze norm staan: geen
+naaktheid of onthullende kleding, geen beeld dat op verleiding speelt, geen
+grof taalgebruik of beledigingen, geen alcohol of gokken als iets aantrekkelijks,
+geen roddel, en niemand wordt belachelijk gemaakt. Spanning bouw je met inzet en
+met wat de kijker nog niet wist, nooit met schaamte of schokeffect.
+
 TOON
 Ingetogen. Het publiek is een gezin dat samen kijkt: het kind blijft voor het
 verhaal, de ouder voor iets dat die zelf niet wist. Schrijf voor allebei, spreek

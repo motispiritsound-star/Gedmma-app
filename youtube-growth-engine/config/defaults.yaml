@@ -6,6 +6,17 @@ project:
   standalone: true            # source: user (vraag 10) — los van Buurklus
   repo_path: youtube-growth-engine
 
+channel:
+  source: user
+  handle: "@Dailyislamicreminders2026"
+  url: "https://www.youtube.com/@Dailyislamicreminders2026"
+  # LET OP — twee dingen om over te beslissen:
+  # 1. "Daily" belooft dagelijks. Het plan is 1 long-form per week plus 1 Short.
+  #    Dat is geen probleem voor de kijker, wel voor de verwachting die de naam
+  #    schept. Overweeg een naam zonder frequentie erin.
+  # 2. "2026" veroudert over een jaar en staat in je handle, dus in elke link.
+  # Beide zijn nu makkelijk te wijzigen en over honderd video's niet meer.
+
 niche:
   source: user                # vraag 2
   label: "Islamitische content voor gezinnen, jongeren en kinderen"

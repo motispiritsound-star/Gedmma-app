@@ -19,7 +19,8 @@
     "studio": "tsx src/studio.ts",
     "knowledge:check": "tsx src/knowledge-check.ts",
     "workbook": "tsx src/workbook.ts",
-    "approve": "tsx src/approve.ts"
+    "approve": "tsx src/approve.ts",
+    "niches": "tsx src/compare-niches.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.125.0",
