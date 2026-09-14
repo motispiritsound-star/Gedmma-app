@@ -23,7 +23,8 @@
     "niches": "tsx src/compare-niches.ts",
     "animatic": "tsx src/animatic.ts",
     "stijlvoorbeeld": "node scripts/stijlvoorbeeld/build.mjs",
-    "release": "tsx src/release.ts"
+    "release": "tsx src/release.ts",
+    "lengte": "tsx src/lengte.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.125.0",
