@@ -17,7 +17,9 @@
     "produce": "tsx src/produce.ts",
     "upload": "tsx src/upload.ts",
     "studio": "tsx src/studio.ts",
-    "knowledge:check": "tsx src/knowledge-check.ts"
+    "knowledge:check": "tsx src/knowledge-check.ts",
+    "workbook": "tsx src/workbook.ts",
+    "approve": "tsx src/approve.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.125.0",

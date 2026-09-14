@@ -168,13 +168,16 @@ export class MockLlmProvider implements LlmProvider {
     return ok({ script, claims }, 41, 'mock:script')
   }
 
-  async buildShotlist(input: { totalSeconds: number }) {
+  async buildShotlist(input: { totalSeconds: number; verifiedArabicAssetIds: string[] }) {
     // Elke verhalende scène is figureFree: geen menselijke figuren. Zie docs/12 §2.
     const plan: { d: string; free: boolean; arabic?: string }[] = [
       { d: 'Palmstammen tegen ochtendlicht, lage camera, langzame duw', free: true },
       { d: 'Zandvloer in close-up, korrels in tegenlicht', free: true },
       { d: 'Plattegrond die zich lijnvoor lijn opbouwt', free: true },
-      { d: 'Kalligrafie van de ayah, opbouwend', free: true, arabic: 'ar-2-144' },
+      // Alleen kalligrafie wanneer er een gecontroleerde asset voor is.
+      input.verifiedArabicAssetIds.includes('ar-2-144')
+        ? { d: 'Kalligrafie van de ayah, opbouwend', free: true, arabic: 'ar-2-144' }
+        : { d: 'Lege nis, licht dat langs de wand strijkt', free: true },
       { d: 'Kompasroos die van noord naar zuid draait', free: true },
       { d: 'Silhouet van een daklijn zonder minaret', free: true },
       { d: 'Dezelfde daklijn, eeuwen later, met minaret', free: true },

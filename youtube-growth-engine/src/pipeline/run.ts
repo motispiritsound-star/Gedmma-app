@@ -21,6 +21,17 @@ import { hasBlackFrames, hasLongSilence } from '../lib/ffmpeg.js'
 export interface RunOptions {
   topic: string
   /**
+   * 16:9 voor long-form, 9:16 voor een Short. Een Short is een eigen productie
+   * met een eigen stelling, geen knipsel uit de long-form — dat laatste is
+   * precies het sjabloongedrag dat de originaliteitspoort moet afvangen.
+   */
+  aspect?: '16:9' | '9:16'
+  /** Hoeveel thumbnailconcepten er als echt beeld worden gemaakt. */
+  thumbnailCount?: number
+  /** Huisstijl uit knowledge/huisstijl.yaml; gaat mee in elke beeldprompt. */
+  styleBrief?: string
+  visualAvoid?: string[]
+  /**
    * Titels van referentievideo's. Ze voeden de patroonanalyse en de werktitel;
    * de gepubliceerde titel moet er aantoonbaar van afwijken (docs/13 §1).
    */
@@ -148,6 +159,7 @@ export async function runProduction(
   const shotlist = await providers.llm.buildShotlist({
     script: written.value.script, claims: written.value.claims,
     totalSeconds: opts.targetSeconds,
+    verifiedArabicAssetIds: [...opts.verifiedArabicAssetIds],
   })
   spend('shotlist', providers.llm.name, shotlist)
   production.shots = shotlist.value
@@ -278,12 +290,18 @@ export async function runProduction(
 
   // -- 10. Beeld -------------------------------------------------------------
   // Beperkte animatie: gegenereerde stills, geanimeerd in de montage.
+  const vertical = opts.aspect === '9:16'
+  const frameWidth = vertical ? 1080 : 1920
+  const frameHeight = vertical ? 1920 : 1080
+
   const assets: Asset[] = []
   for (const shot of production.shots) {
     const outPath = join(opts.outDir, `${id}-shot-${shot.index}.png`)
     const img = await providers.image.generate({
       prompt: shot.description, figureFree: shot.figureFree,
-      width: 1920, height: 1080, outPath,
+      width: frameWidth, height: frameHeight, outPath,
+      ...(opts.styleBrief ? { styleBrief: opts.styleBrief } : {}),
+      ...(opts.visualAvoid ? { avoid: opts.visualAvoid } : {}),
     })
     spend('image', providers.image.name, img)
     const asset: Asset = {
@@ -322,10 +340,10 @@ export async function runProduction(
 
   for (const variant of production.variants) {
     const voicePath = join(opts.outDir, `${id}-${variant.language}-voice.wav`)
-    const out = join(opts.outDir, `${id}-${variant.language}-16x9.mp4`)
+    const out = join(opts.outDir, `${id}-${variant.language}-${vertical ? '9x16' : '16x9'}.mp4`)
     const render = await providers.render.assemble({
       shots: shotsForRender, voiceOverPath: voicePath, musicPath: music.value.path,
-      width: 1280, height: 720, outPath: out,
+      width: vertical ? 720 : 1280, height: vertical ? 1280 : 720, outPath: out,
     })
     spend(`render:${variant.language}`, providers.render.name, render)
     variant.videoPath = out
@@ -342,6 +360,40 @@ export async function runProduction(
     })
     spend(`metadata:${variant.language}`, providers.llm.name, meta)
     variant.metadata = meta.value
+  }
+
+  // Thumbnails als echt bestand, niet alleen als concept. Het pad bevat
+  // "thumb", en daarop stuurt `SplitImageProvider` ze naar het model dat
+  // leesbare tekst in beeld kan — waar een thumbnail op staat of valt.
+  const thumbnailCount = opts.thumbnailCount ?? (vertical ? 0 : 3)
+  const thumbnails: string[] = []
+  for (let i = 0; i < thumbnailCount; i += 1) {
+    const title = production.variants[0]?.metadata?.titleOptions[i]
+      ?? production.variants[0]?.metadata?.titleOptions[0]
+      ?? production.topic
+    const openingShot = production.shots[0]?.description ?? production.topic
+    const outPath = join(opts.outDir, `${id}-thumb-${i + 1}.png`)
+    const img = await providers.image.generate({
+      prompt:
+        `Thumbnail voor "${title}". Eén dominant beeld: ${openingShot}. ` +
+        'Sterk contrast tussen voor- en achtergrond, veel rust, alles binnen de ' +
+        'veilige marge. Laat ruimte vrij voor twee tot vier woorden tekst.',
+      figureFree: true,
+      width: 1280, height: 720, outPath,
+      ...(opts.styleBrief ? { styleBrief: opts.styleBrief } : {}),
+      ...(opts.visualAvoid ? { avoid: opts.visualAvoid } : {}),
+    })
+    spend('thumbnail', providers.image.name, img)
+    const asset: Asset = {
+      id: `${id}-thumb${i + 1}`, kind: 'thumbnail', uri: img.value.path,
+      sha256: stepHash(id, 'thumbnail', i).slice(0, 64),
+      origin: 'generated', provider: providers.image.name,
+      licenseProofId: license.id, figureCheck: img.value.figureCheck,
+    }
+    await store.putAsset(asset)
+    production.assetIds.push(asset.id)
+    thumbnails.push(img.value.path)
+    artifacts.push(img.value.path)
   }
 
   // Titelpoort: elke optie wordt tegen elke referentietitel gehouden. Opties

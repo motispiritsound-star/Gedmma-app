@@ -9,6 +9,7 @@ import { ClaudeLlmProvider } from './claude/llm.js'
 import { FalImageProvider } from './fal/image.js'
 import { FalVideoProvider } from './fal/video.js'
 import { GeminiImageProvider } from './google/image.js'
+import { ElevenLabsTtsProvider } from './elevenlabs/tts.js'
 
 /**
  * Kiest de providers op grond van wat er in de omgeving staat. Ontbreekt een
@@ -101,8 +102,14 @@ export function buildProviders(): BuiltProviders {
   const video = pickVideo()
   note('videoclips', video.provider, video.missing)
 
-  const tts = new MockTtsProvider()
-  note('stem', tts, process.env['TTS_API_KEY'] ? undefined : 'TTS_API_KEY — en eerst de stemtest')
+  // De stem wordt pas echt als er én een sleutel én een gekozen stem is. Dat
+  // tweede is geen formaliteit: de stemtest uit stap 5 kan niemand overslaan.
+  const canSpeak = Boolean(process.env['TTS_API_KEY'] && process.env['TTS_VOICE_ID'])
+  const tts = canSpeak ? new ElevenLabsTtsProvider() : new MockTtsProvider()
+  note('stem', tts, canSpeak ? undefined
+    : process.env['TTS_API_KEY']
+      ? 'TTS_VOICE_ID — kies de stem pas ná de stemtest uit stap 5'
+      : 'TTS_API_KEY en TTS_VOICE_ID')
 
   const search = new MockSearchProvider()
   const music = new MockMusicProvider()

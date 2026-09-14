@@ -184,24 +184,48 @@ RELIGIOUS_REVIEWER_NAME="naam"
 
 ---
 
-## Stap 8 — Echte stem en echte beelden
+## Stap 8 — Echte stem en echte beelden (10 min, jij)
 
-**Dit deel is nog niet gebouwd**, omdat het van jouw providerkeuze uit stap 5
-afhangt. Zodra je zegt welke stem- en beeldaanbieder je wilt, bouw ik de
-adapters — dat is een dag werk, en daarna is de pipeline compleet.
+De adapters staan er. Je hoeft alleen sleutels in `.env` te zetten.
 
-Tot dan draait alles met placeholderbeeld: je ziet de montage, de timing, de
-ondertiteling en de poorten werken, maar de video is nog niet publiceerbaar.
+```bash
+# Beeld en videoclips — per aanroep, maandelijks opzegbaar
+FAL_KEY=
+
+# Alleen voor thumbnails: beter in leesbare tekst in beeld
+GEMINI_API_KEY=
+
+# Stem — pas invullen ná de stemtest uit stap 5
+TTS_API_KEY=
+TTS_VOICE_ID=
+```
+
+Ontbreekt er een? Dan valt alleen die rol terug op de mock en draait de rest
+gewoon door. `npm run produce` zegt bij elke stap wat echt is en wat niet.
+
+Wat dit per maand kost bij 1 video per week, gemeten:
+
+```
+194 stills + 26 thumbnails + 108 seconden clip  =  EUR 12,70
+```
+
+Zie [`docs/15`](15-tools-en-connectors.md) voor waarom dit per aanroep gaat en
+niet via een abonnement.
 
 ---
 
 ## Stap 9 — Je eerste video (30 min, grotendeels het systeem)
 
 ```bash
-npm run produce -- --topic "de eerste moskee in Medina" \
-                   --seed-title "titel van een referentievideo" \
-                   --seed-title "nog een referentietitel"
+npm run produce -- --topic "de eerste moskee in Medina"
+
+# of een Short — een eigen productie met een eigen stelling,
+# geen knipsel uit de long-form
+npm run produce -- --topic "..." --format short
 ```
+
+Onderwerpen uit `knowledge/onderwerpen.yaml` worden automatisch gebruikt; met
+`--topic` overrule je dat.
 
 **Het systeem doet**, in ongeveer twintig minuten:
 
@@ -220,7 +244,26 @@ thumbnails, het script met bronnen, alle scores en de kosten. Vier knoppen:
 goedkeuren, aanpassen, opnieuw genereren, afwijzen.
 
 **Let op de volgorde:** eerst je reviewer, dan jij. De video staat op
-`awaiting_reviewer` tot dat is gebeurd.
+`awaiting_reviewer` tot dat is gebeurd, en er is geen codepad dat die volgorde
+omzeilt.
+
+```bash
+# 1. Het dossier lezen: script, en per claim de bron ernaast
+npm run approve -- --production <id>
+
+# 2. Je reviewer tekent
+npm run approve -- --production <id> --reviewer "naam" --notes "..."
+
+# 3. Jij keurt goed
+npm run approve -- --production <id> --mine
+
+# of afwijzen, met reden
+npm run approve -- --production <id> --reject "de toon klopt niet"
+```
+
+Het dossier toont per bewering de vindplaats — soera en ayah, of collectie,
+nummer en gradering. Dat is wat je reviewer nodig heeft, en het is de reden dat
+het nakijken twintig minuten kost in plaats van een uur.
 
 ---
 
@@ -243,6 +286,31 @@ Daarna, in YouTube Studio:
 Een tweede upload van dezelfde inhoud doet niets en geeft hetzelfde videoId
 terug. Je kunt het commando dus veilig opnieuw draaien als je twijfelt of het
 gelukt is.
+
+---
+
+## Stap 11 — Het werkboek: je eerste inkomsten
+
+Dit is de enige inkomstenbron die vanaf video één werkt. Geen abonneedrempel,
+geen wachttijd.
+
+```bash
+npm run workbook -- --title "Wat er als eerste stond" \
+                    --subtitle "Een werkboek voor thuis" \
+                    --price 7.50
+```
+
+Je krijgt een drukklare PDF met per hoofdstuk de illustratie, de kern van het
+verhaal, drie open gespreksvragen en de bronnen met vindplaats. Extra kosten:
+ongeveer **EUR 0,04 per hoofdstuk** — onderzoek, script en beeld waren al
+betaald door de video.
+
+Alleen goedgekeurde producties komen erin. Een werkboek wordt verkocht en blijft
+staan; ongecontroleerde religieuze inhoud daarin is erger dan in een video.
+
+Verkopen kan via Gumroad of Payhip: die nemen betaling, btw en levering over
+voor een percentage. **Ik maak geen account voor je aan** — dat vraagt jouw
+identiteit.
 
 ---
 

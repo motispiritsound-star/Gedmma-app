@@ -55,6 +55,13 @@ export interface LlmProvider extends ProviderMeta {
     script: Script
     claims: Claim[]
     totalSeconds: number
+    /**
+     * Id's van Arabische assets die een mens heeft gecontroleerd. Alleen deze
+     * mogen in een shot voorkomen; is de lijst leeg, dan komt er geen Arabisch
+     * in beeld. Een scène plannen die je niet mag vullen, is een blokkade die
+     * je zelf hebt gemaakt.
+     */
+    verifiedArabicAssetIds: string[]
   }): Promise<ProviderResult<Shot[]>>
 
   writeMetadata(input: {

@@ -10,14 +10,20 @@ export interface WorkbookOptions {
   language: LanguageCode
   outDir: string
   questionsPerChapter?: number
+  /** Verkoopprijs, voor de break-evenberekening. Jij bepaalt hem, niet ik. */
+  priceEur?: number
 }
 
 export interface WorkbookResult {
   htmlPath: string
   pdfPath?: string
   chapterCount: number
+  /** Producties die niet mee mochten, met de reden. */
+  skipped: string[]
   /** Extra kosten bovenop wat de video's al kostten. */
   marginalCostCents: number
+  /** Wat je moet verkopen om de productie van dit werkboek terug te verdienen. */
+  breakEvenCopies: number
 }
 
 /**
@@ -41,12 +47,22 @@ export async function deriveWorkbook(
 ): Promise<WorkbookResult> {
   const before = productionIds.reduce((sum, id) => sum + ledger.spentOn(id), 0)
   const chapters: Parameters<EbookProvider['compile']>[0]['chapters'] = []
+  const skipped: string[] = []
 
   for (const id of productionIds) {
     const production = await store.get(id)
     if (!production) continue
-    // Alleen wat de poorten heeft gehaald. Afgewezen materiaal blijft afgewezen.
-    if (production.state === 'rejected') continue
+
+    // Alleen materiaal dat de reviewer én jou is gepasseerd. Een werkboek wordt
+    // verkocht: religieuze inhoud daarin ongecontroleerd laten is erger dan een
+    // video publiceren, want een gekocht boek blijft staan en gaat rond.
+    const cleared: typeof production.state[] = [
+      'approved', 'uploaded_private', 'scheduled', 'published', 'measured',
+    ]
+    if (!cleared.includes(production.state)) {
+      skipped.push(`${id} staat op "${production.state}" en is nog niet goedgekeurd`)
+      continue
+    }
 
     const variant = production.variants.find((v) => v.language === opts.language)
     const script = variant?.script
@@ -80,10 +96,15 @@ export async function deriveWorkbook(
 
   const after = productionIds.reduce((sum, id) => sum + ledger.spentOn(id), 0)
 
+  const marginalCostCents = after - before + compiled.costCents
+  const priceCents = (opts.priceEur ?? 7.5) * 100
+
   return {
     htmlPath: compiled.value.htmlPath,
     ...(compiled.value.pdfPath ? { pdfPath: compiled.value.pdfPath } : {}),
     chapterCount: chapters.length,
-    marginalCostCents: after - before + compiled.costCents,
+    skipped,
+    marginalCostCents,
+    breakEvenCopies: Math.max(1, Math.ceil(marginalCostCents / priceCents)),
   }
 }

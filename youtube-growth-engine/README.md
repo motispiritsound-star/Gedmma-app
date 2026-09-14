@@ -17,16 +17,20 @@ npm run demo       # hele pipeline op mockproviders, echte MP4 in out/ — kost 
 npm run doctor     # vertelt precies wat er nog ontbreekt en wat je eraan doet
 npm run studio     # niche, positionering, titel lab, thumbnail lab, kwaliteitspoort
 npm run knowledge:check   # wat er uit knowledge/ is aangekomen, en waar het landt
-npm test           # 86 tests
+npm test           # 95 tests
 npm run typecheck
 ```
 
 Als alles staat:
 
 ```bash
-npm run youtube:connect                       # eenmalig koppelen
-npm run produce -- --topic "..." --seed-title "..."
-npm run upload  -- --production <id>          # gaat PRIVÉ, nooit openbaar
+npm run youtube:connect                          # eenmalig koppelen
+npm run produce -- --topic "..."                 # of --format short
+npm run approve -- --production <id>             # dossier lezen
+npm run approve -- --production <id> --reviewer "naam"
+npm run approve -- --production <id> --mine
+npm run upload  -- --production <id>             # gaat PRIVÉ, nooit openbaar
+npm run workbook -- --price 7.50                 # verkoopbaar werkboek
 ```
 
 De demo draait drie producties die samen de belangrijkste eigenschap van het

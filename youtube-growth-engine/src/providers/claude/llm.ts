@@ -303,7 +303,9 @@ lijst staat, laat je weg — je verzint er geen bron bij en je zwakt hem niet af
     return { ...result, value: { script, claims } }
   }
 
-  async buildShotlist(input: { script: Script; claims: Claim[]; totalSeconds: number }) {
+  async buildShotlist(input: {
+    script: Script; claims: Claim[]; totalSeconds: number; verifiedArabicAssetIds: string[]
+  }) {
     const result = await this.ask(this.worker, ShotlistSchema, `
 SCRIPT:
 ${[input.script.hook, input.script.promise,
@@ -318,7 +320,13 @@ afgebeeld. Beschrijf dan wat er wél in beeld is: landschap, architectuur,
 objecten, kalligrafie, licht, silhouetten, handen zonder gezicht.
 
 Mik op een visuele wisseling elke 2 tot 6 seconden waar het tempo dat vraagt,
-en op rustiger scenes waar de inhoud ruimte nodig heeft.`, 'shotlist')
+en op rustiger scenes waar de inhoud ruimte nodig heeft.
+
+ARABISCHE TEKST: ${input.verifiedArabicAssetIds.length > 0
+  ? `alleen deze gecontroleerde assets mag je gebruiken: ${input.verifiedArabicAssetIds.join(', ')}. ` +
+    'Een ander id verzinnen kan niet; laat het veld dan leeg.'
+  : 'er is geen gecontroleerde Arabische asset beschikbaar. Laat arabicAssetId ' +
+    'overal leeg en plan geen scene met Arabisch schrift.'}`, 'shotlist')
 
     const shots: Shot[] = result.value.shots.map((s, index) => ({
       index,

@@ -12,6 +12,8 @@ import { Ledger } from './lib/ledger.js'
 import { JsonFileStore } from './store/json-file.js'
 import { runProduction } from './pipeline/run.js'
 import { buildProviders, monthlyEstimate } from './providers/registry.js'
+import { loadKnowledge, verifiedArabicIds } from './knowledge/load.js'
+import { visualAvoid, visualBrief } from './knowledge/prompt.js'
 import type { LanguageCode } from './domain/types.js'
 
 function arg(name: string): string | undefined {
@@ -37,7 +39,8 @@ async function main(): Promise<void> {
   }
   const languages = (arg('lang') ?? 'nl').split(',') as LanguageCode[]
   const seedTitles = allArgs('seed-title')
-  const targetSeconds = Number(arg('seconds') ?? 660)
+  const isShort = arg('format') === 'short'
+  const targetSeconds = Number(arg('seconds') ?? (isShort ? 45 : 660))
   const outDir = join(process.cwd(), 'out', new Date().toISOString().slice(0, 10))
   await mkdir(outDir, { recursive: true })
 
@@ -63,14 +66,23 @@ async function main(): Promise<void> {
     `${estimate.thumbnails} thumbnails, ${estimate.clips} s clip ` +
     `= ${cents(estimate.totalCents)} aan beeld.`)
   console.log(`\nOnderwerp: ${topic}`)
+  console.log(`Vorm: ${isShort ? 'Short (9:16, 45 s)' : 'long-form (16:9)'}`)
   if (seedTitles.length > 0) {
     console.log(`Referentietitels: ${seedTitles.length} (alleen de vorm gaat naar het model)`)
   }
   console.log('')
 
+  const { pack } = await loadKnowledge()
+  const styleBrief = visualBrief(pack)
   const result = await runProduction(providers, store, ledger, {
     topic, languages, targetSeconds, outDir, seedTitles,
-    verifiedArabicAssetIds: new Set((process.env['VERIFIED_ARABIC_IDS'] ?? '').split(',').filter(Boolean)),
+    aspect: isShort ? '9:16' : '16:9',
+    ...(styleBrief ? { styleBrief } : {}),
+    visualAvoid: visualAvoid(pack),
+    verifiedArabicAssetIds: new Set([
+      ...verifiedArabicIds(pack),
+      ...(process.env['VERIFIED_ARABIC_IDS'] ?? '').split(',').filter(Boolean),
+    ]),
     vocalsAndDuffOnly: process.env['MUSIC_POLICY'] !== 'any',
   })
 
