@@ -9,11 +9,10 @@ project:
 channel:
   source: user
   handle: "@Dailyislamicreminders2026"
-  # PAST NIET MEER BIJ DE NICHE. Naam, handle en het publiek dat zich al
-  # abonneerde horen bij islamitische content. Gezondheid vraagt een nieuw
-  # kanaal. Nog niets gepubliceerd, dus dat kost niets — maar het moet vóór de
-  # eerste upload gebeuren.
-  status: "te vervangen"
+  status: "past bij de niche"
+  # Twee dingen blijven ter overweging, geen blokkade:
+  #   - "Daily" belooft dagelijks; het plan is 1 long-form per week.
+  #   - "2026" veroudert, en het staat in je handle dus in elke link.
   url: "https://www.youtube.com/@Dailyislamicreminders2026"
   # LET OP — twee dingen om over te beslissen:
   # 1. "Daily" belooft dagelijks. Het plan is 1 long-form per week plus 1 Short.
@@ -23,19 +22,16 @@ channel:
   # Beide zijn nu makkelijk te wijzigen en over honderd video's niet meer.
 
 niche:
-  source: user                # gewijzigd: geen islamitische onderwerpen meer
-  label: "Kantoorwerk en gezondheid, met Nederlandse cijfers"
+  source: user                # definitief
+  label: "Islamitische content voor gezinnen, jongeren en kinderen"
   proposition: >
-    Wat acht uur zitten met je lichaam doet, uitgelegd met Nederlandse
-    arbo-cijfers en onderzoek, voor kantoorwerkers van dertig tot vijftig
-  score: 81                   # npm run niches
-  claim_profile: medisch      # zie docs/16 — drempel 95, vier eisen per studie
-  # Eerdere kandidaten en hun score staan in knowledge/niches.yaml.
-  # AI (55) en gaming (53) stonden onderaan van de vijf.
-
-vorige_niche:
-  label: "Islamitische content voor gezinnen"
-  oude_pillars:
+    Korte cinematische verhalen uit de vroege islam die elke aflevering
+    eindigen bij een keuze die een Nederlands gezin vandaag ook maakt
+  claim_profile: religieus    # zie docs/12 — drempel 95, herkomst per klasse
+  # Alle tien kandidaten en hun score staan in knowledge/niches.yaml.
+  # Video 002 (kantoorwerk en gezondheid) blijft staan in content/video-002/
+  # als uitgewerkt alternatief; hij is niet weggegooid.
+  pillars:
     - arabisch_leren
     - islamitische_verhalen_en_waarden
     - ramadan_en_bijzondere_momenten

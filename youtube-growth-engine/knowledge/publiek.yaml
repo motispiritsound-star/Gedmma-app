@@ -38,18 +38,13 @@ creator:
   expertise: []
   # Ingevuld op grond van wat je in het gesprek hebt verteld. Klopt er iets
   # niet, haal het weg: een voorsprong die je niet hebt, verzwakt de hele score.
-  # Bijgewerkt na de nichewissel. Twee van de drie voorsprongen waren
-  # islamitisch-specifiek en gingen mee met de oude niche: het publiekinzicht
-  # en de reviewer. Wat overblijft is de taal — één voorsprong, en de code
-  # begrenst categorie 2 daarom op 11 van de 15 in plaats van 15.
-  #
-  # Wil je terug naar 15: vul aan met iets dat echt van jou is. Een beroep, een
-  # opleiding, toegang tot mensen, een taal die anderen niet spreken. Verzin
-  # niets — een voorsprong die je niet hebt, verzwakt de hele score.
+  # Alle drie gelden weer: twee ervan zijn islamitisch-specifiek en die niche
+  # is terug. Verzin hier niets bij — een voorsprong die je niet hebt, verzwakt
+  # de hele score in plaats van hem te verhogen.
   unfairAdvantage:
     - "Nederlands als moedertaal, gericht op een publiek dat nauwelijks bediend wordt"
-  # - "..."
-  # - "..."
+    - "inzicht in wat Nederlandse islamitische gezinnen werkelijk aanspreekt"
+    - "toegang tot een gekwalificeerde reviewer die per video meeleest"
 
   languages: ["nl"]
   markets: ["NL", "BE"]

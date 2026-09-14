@@ -1,0 +1,81 @@
+# De bronnencheck als data, zodat `npm run release` kan zien wat er nog open
+# staat. Zet `status` op `rond` zodra je reviewer het heeft nagekeken, en vul
+# `bron` in met wat er gevonden is.
+#
+# status:  open | rond | vervallen
+#   open       nog niet nagekeken
+#   rond       nagekeken en de claim blijft staan, met bron erbij
+#   vervallen  niet rondgekomen; de claim gaat uit het script
+#
+# Punten met `blokkerend: true` houden de publicatie tegen tot ze rond of
+# vervallen zijn. Een blokkerend punt dat vervalt, betekent een ander script.
+
+video: video-001
+reviewer: ""              # naam van wie het nakeek
+nagekeken_op: ""          # datum
+
+punten:
+  - nr: 1
+    claim: "De oproep tot het gebed werd gedaan vanaf een dak, niet vanaf een toren"
+    klasse: hadith
+    blokkerend: true
+    status: open
+    bron: ""
+    opmerking: "Hier rust de hele stelling op. Geen volledige herkomst = claim omzetten naar 'de vroege beschrijvingen noemen geen toren'."
+
+  - nr: 2
+    claim: "Koran 2:144 beschrijft de verandering van de gebedsrichting"
+    klasse: quran
+    blokkerend: true
+    status: open
+    bron: ""
+    opmerking: "Juiste ayah, of past 2:142-150 beter? Vertaling woordelijk uit de gekozen uitgave."
+
+  - nr: 3
+    claim: "De afmetingen liggen rond de dertig bij dertig meter"
+    klasse: history
+    blokkerend: false
+    status: open
+    bron: ""
+    opmerking: "Script aanpassen aan de uitkomst. Lopen de bronnen uiteen, dan zegt de video dat."
+
+  - nr: 4
+    claim: "Minaretten verschijnen ruim na de vroegste periode, om praktische redenen"
+    klasse: history
+    blokkerend: false
+    status: open
+    bron: ""
+
+  - nr: 5
+    claim: "Geleerden verschillen over versiering in een gebedsruimte"
+    klasse: fiqh
+    blokkerend: false
+    status: open
+    bron: ""
+    opmerking: "Blijft de formulering neutraal? Geen positie als 'de' regel."
+
+  - nr: 6
+    claim: "Nederland telt enkele honderden moskeeën, een minderheid met minaret"
+    klasse: general
+    blokkerend: false
+    status: open
+    bron: ""
+    opmerking: "Script aanpassen aan het cijfer, met jaartal."
+
+  - nr: 7
+    claim: "Drie Nederlandse moskeeën als voorbeeld"
+    klasse: general
+    blokkerend: false
+    status: open
+    bron: ""
+    opmerking: "Jouw keuze. Plaats en bouwjaar noteren, toon neutraal."
+
+beeld:
+  - punt: "Geen enkele scène toont een menselijke figuur"
+    status: rond
+    opmerking: "Alle 22 scènes zijn figuurvrij in de shotlist."
+  - punt: "Geen Arabisch schrift, tenzij uit de gecontroleerde bibliotheek"
+    status: rond
+    opmerking: "Er staat geen Arabische tekst in de shotlist."
+  - punt: "Geen muziek met melodische instrumenten"
+    status: open

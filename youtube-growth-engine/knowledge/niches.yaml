@@ -9,10 +9,12 @@
 #   3. Minstens vijftig video's zonder in herhaling te vallen.
 #   4. Geen niche waar geautomatiseerde kanalen worden beëindigd.
 
-# Categorie 2 (eigen voorsprong) telt op verzoek niet mee: die brengt de maker
-# zelf in. De overige 85 punten worden herschaald naar 100.
-scoring:
-  excludeCategories: [creator_advantage]
+# Categorie 2 telt weer mee. Bij deze niche is dat het verschil: de voorsprong
+# is er echt en hij is niet te kopiëren. Weglaten onderdrukt precies het stuk
+# dat deze keuze sterk maakt.
+#
+# Wil je hem er weer uit: zet `excludeCategories: [creator_advantage]` terug.
+scoring: {}
 
 candidates:
   - key: hoe-nederland-werkt
