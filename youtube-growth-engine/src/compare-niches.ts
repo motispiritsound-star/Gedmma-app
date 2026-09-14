@@ -9,8 +9,13 @@ import { readFile } from 'node:fs/promises'
 import { parse } from 'yaml'
 import { loadKnowledge } from './knowledge/load.js'
 import { NICHE_BANDS, NICHE_CATEGORIES, checkFocus, scoreNiche } from './studio/niche.js'
-import { capCategory, formatScorecard } from './studio/scoring.js'
+import { capCategory, excludeCategories, formatScorecard } from './studio/scoring.js'
 import { CreatorProfileSchema } from './knowledge/types.js'
+
+interface Scoring {
+  /** Categorieën die niet meetellen. De rest wordt herschaald naar 100. */
+  excludeCategories?: string[]
+}
 
 interface Candidate {
   key: string
@@ -22,13 +27,21 @@ interface Candidate {
 }
 
 async function main(): Promise<void> {
-  const raw = parse(await readFile('knowledge/niches.yaml', 'utf8')) as { candidates: Candidate[] }
+  const raw = parse(await readFile('knowledge/niches.yaml', 'utf8')) as {
+    candidates: Candidate[]; scoring?: Scoring
+  }
+  const excluded = raw.scoring?.excludeCategories ?? []
   const { pack } = await loadKnowledge()
   const hypothesisOnly = process.env['EXTERNAL_DATA'] !== 'true'
 
   console.log('\n================ NICHES VERGELEKEN ================\n')
-  console.log(`Eigen voorsprong in het profiel: ${pack.creator.unfairAdvantage.length} punt(en)`)
-  for (const a of pack.creator.unfairAdvantage) console.log(`  - ${a}`)
+  if (excluded.length > 0) {
+    console.log(`Weggelaten categorieën: ${excluded.join(', ')} — de rest is herschaald naar 100.`)
+    console.log('De score meet daarmee nog alleen de markt, niet jouw positie erin.')
+  } else {
+    console.log(`Eigen voorsprong in het profiel: ${pack.creator.unfairAdvantage.length} punt(en)`)
+    for (const a of pack.creator.unfairAdvantage) console.log(`  - ${a}`)
+  }
   if (hypothesisOnly) {
     console.log('\nGeen externe data: publieksvraag en concurrentiekans krijgen een plafond.')
     console.log('Koppel vidIQ om die eraf te halen.')
@@ -49,9 +62,14 @@ async function main(): Promise<void> {
       : CreatorProfileSchema.parse({ ...pack.creator, unfairAdvantage: [] })
 
     let card = scoreNiche(rows, profile, { hypothesisOnly })
-    if (!c.usesAdvantage) {
+    if (!c.usesAdvantage && !excluded.includes('creator_advantage')) {
       card = capCategory(card, 'creator_advantage', 5,
         'Deze niche gebruikt de voorsprong van de maker niet.')
+      const band = [...NICHE_BANDS].sort((a, b) => b.min - a.min).find((b) => card.total >= b.min)
+      card = { ...card, classification: band?.label ?? card.classification }
+    }
+    if (excluded.length > 0) {
+      card = excludeCategories(card, excluded)
       const band = [...NICHE_BANDS].sort((a, b) => b.min - a.min).find((b) => card.total >= b.min)
       card = { ...card, classification: band?.label ?? card.classification }
     }
@@ -75,14 +93,15 @@ async function main(): Promise<void> {
   console.log(`  WINNAAR: ${winner.candidate.key} (${winner.card.total}/100)`)
   if (runnerUp) {
     const gap = winner.card.total - runnerUp.card.total
-    const advantageGap =
-      (winner.card.categories.find((c) => c.key === 'creator_advantage')?.score ?? 0) -
-      (runnerUp.card.categories.find((c) => c.key === 'creator_advantage')?.score ?? 0)
-    console.log(`  Verschil met nummer twee: ${gap} punt(en), waarvan ${advantageGap} uit eigen voorsprong.`)
-    if (advantageGap >= gap && gap > 0) {
-      console.log('\n  Let op wat dat betekent: het verschil zit volledig in iets dat')
-      console.log('  een concurrent niet kan kopiëren. Zonder die voorsprong zouden')
-      console.log('  deze twee gelijk staan.')
+    console.log(`  Verschil met nummer twee: ${gap} punt(en).`)
+    if (excluded.length === 0) {
+      const advantageGap =
+        (winner.card.categories.find((c) => c.key === 'creator_advantage')?.score ?? 0) -
+        (runnerUp.card.categories.find((c) => c.key === 'creator_advantage')?.score ?? 0)
+      if (advantageGap >= gap && gap > 0) {
+        console.log('\n  Het verschil zit volledig in iets dat een concurrent niet kan')
+        console.log('  kopiëren. Zonder die voorsprong zouden deze twee gelijk staan.')
+      }
     }
   }
   console.log()

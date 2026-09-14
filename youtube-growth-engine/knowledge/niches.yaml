@@ -1,106 +1,71 @@
-# Kandidaten binnen gezondheid, AI en gaming.
+# Zes kanaalvoorstellen, door mij gekozen op wat past bij wat je hebt:
+# Nederlands, faceless, EUR 100 per maand, 1 video per week, en een contentnorm
+# die naaktheid, alcohol en gokken uitsluit.
 #
-# "Gezondheid" is geen propositie maar een onderwerp — de focustoets wijst dat
-# af. Elke regel hieronder is daarom een toegespitst kanaalvoorstel.
-#
-# De scores zijn mijn redactionele oordeel. De CODE rekent en begrenst:
-#   - voorsprong die deze niche niet gebruikt  -> categorie 2 wordt 5 van de 15
-#   - minder dan drie voorsprongen             -> categorie 2 maximaal 11
-#   - geen actuele externe data                -> vraag en concurrentie geplafonneerd
+# Vier eisen heb ik op alles losgelaten:
+#   1. Beeld moet met grafieken en illustratie kunnen — geen opnames op locatie,
+#      geen beeld van bestaande merken of producten.
+#   2. Bronnen moeten gratis, Nederlandstalig en gezaghebbend zijn.
+#   3. Minstens vijftig video's zonder in herhaling te vallen.
+#   4. Geen niche waar geautomatiseerde kanalen worden beëindigd.
+
+# Categorie 2 (eigen voorsprong) telt op verzoek niet mee: die brengt de maker
+# zelf in. De overige 85 punten worden herschaald naar 100.
+scoring:
+  excludeCategories: [creator_advantage]
 
 candidates:
-  - key: gezondheid-nl-bronnen
+  - key: hoe-nederland-werkt
     proposition: >
-      Nederlandse gezondheidsuitleg die per bewering laat zien wat het RIVM,
-      het Voedingscentrum of een systematische review er werkelijk over zegt
+      Hoe de infrastructuur van Nederland werkelijk werkt — water, stroom,
+      spoor, data — uitgelegd met de cijfers van de beheerders zelf
+    usesAdvantage: true
+    scores:
+      audience_demand: 13
+      creator_advantage: 12
+      original_positioning: 13
+      evergreen: 10
+      scalability: 10
+      title_thumbnail: 9
+      competition: 8
+      production_feasibility: 5
+      credibility: 5
+      monetisation: 4
+    notes: >
+      De sterkste die ik kan bedenken voor jouw situatie. Rijkswaterstaat,
+      TenneT, ProRail, CBS en de waterschappen publiceren alles gratis en
+      gedetailleerd, en vrijwel niemand gebruikt het. Diagrammen zijn hier geen
+      noodoplossing maar de beste vorm, dus het beeld is spotgoedkoop. Nul
+      beleidsrisico, nul auteursrechtrisico, en het onderwerp raakt nooit op:
+      sluizen, hoogspanning, het spoorwegnet, zeekabels, drinkwater, dijken,
+      gemalen, het frequentiespectrum. Zwakke plek is de advertentiewaarde —
+      dit is geen premiumcategorie.
+
+  - key: verborgen-kosten
+    proposition: >
+      Wat Nederlandse huishoudens betalen zonder het te weten — abonnementen,
+      energiecontracten, verzekeringen — nagerekend met openbare cijfers
     usesAdvantage: true
     scores:
       audience_demand: 14
       creator_advantage: 11
-      original_positioning: 11
-      evergreen: 10
-      scalability: 10
-      title_thumbnail: 9
-      competition: 6
-      production_feasibility: 4
-      credibility: 3
-      monetisation: 5
-    notes: >
-      Je taal telt hier wél als voorsprong: het Nederlandse veld is dun en de
-      primaire bronnen zijn gratis, Nederlandstalig en gezaghebbend. Evergreen,
-      goedkoop in beeld (grafieken), en de invalshoek "wat staat er echt in de
-      bron" is een positie die niemand anders inneemt. Zwakke plek is
-      geloofwaardigheid: gezondheid is een gevoelig onderwerp, dus de
-      bronnendrempel gaat naar 95 en volautomatisch publiceren blijft uit.
-
-  - key: gezondheid-en-generiek
-    proposition: >
-      Engelstalige gezondheidsvideo's over slaap, voeding en beweging voor een
-      breed publiek
-    usesAdvantage: false
-    scores:
-      audience_demand: 15
-      creator_advantage: 12
-      original_positioning: 6
-      evergreen: 10
-      scalability: 10
-      title_thumbnail: 9
-      competition: 2
-      production_feasibility: 4
-      credibility: 3
-      monetisation: 5
-    notes: >
-      De grootste markt en de hoogste advertentiewaarde van alle vijf. En het
-      drukste veld dat er bestaat, met kanalen die artsen in dienst hebben.
-      Zonder voorsprong sta je daar met lege handen.
-
-  - key: ai-voor-mkb
-    proposition: >
-      AI-automatisering voor kleine Nederlandse bedrijven, elke week één
-      werkend voorbeeld
-    usesAdvantage: false
-    scores:
-      audience_demand: 14
-      creator_advantage: 10
-      original_positioning: 6
-      evergreen: 5
-      scalability: 8
-      title_thumbnail: 7
-      competition: 2
-      production_feasibility: 4
-      credibility: 2
-      monetisation: 5
-    notes: >
-      Hoge RPM, en de slechtste keuze voor een geautomatiseerd kanaal. Dit is de
-      niche waar YouTube in januari 2026 zestien kanalen beëindigde wegens
-      massaal geproduceerde content. Veroudert binnen maanden, dus evergreen is
-      er niet bij, en de bronbasis is grotendeels sociale media.
-
-  - key: gaming-faceless
-    proposition: >
-      Faceless gamingkanaal met uitleg, ranglijsten en verhalen uit bekende
-      games
-    usesAdvantage: false
-    scores:
-      audience_demand: 14
-      creator_advantage: 8
-      original_positioning: 5
-      evergreen: 4
+      original_positioning: 12
+      evergreen: 9
       scalability: 9
-      title_thumbnail: 9
-      competition: 2
-      production_feasibility: 2
+      title_thumbnail: 10
+      competition: 7
+      production_feasibility: 5
       credibility: 4
-      monetisation: 2
+      monetisation: 5
     notes: >
-      Twee harde problemen. Gaming heeft de laagste RPM van alle grote niches —
-      je hebt vijf tot tien keer zoveel views nodig voor hetzelfde bedrag. En
-      faceless gaming draait op gameplaybeelden, en die zijn van iemand anders:
-      dat botst frontaal met de auteursrechtregel dat er geen bestand van een
-      andere maker het systeem in komt. Eigen beeld genereren van bestaande
-      games kan niet zonder de merkrechten te raken.
+      Hoogste vraag van de zes en uitstekende titel- en thumbnailpotentie: een
+      bedrag in beeld werkt altijd. Bronnen zijn gratis (ACM, CBS, Nibud,
+      Consumentenbond) en het is consumenteninformatie, geen financieel advies —
+      dat scheelt de zware drempel die persoonlijke financiën wel heeft. Let op:
+      blijf bij nagerekende kosten en ga niet adviseren over sparen of
+      beleggen, want dan kom je alsnog in het gevoelige regime.
 
-  - key: gezondheid-nl-werkplek
+  - key: kantoorwerk-lichaam
     proposition: >
       Wat acht uur zitten met je lichaam doet, uitgelegd met Nederlandse
       arbo-cijfers en onderzoek, voor kantoorwerkers van dertig tot vijftig
@@ -117,8 +82,75 @@ candidates:
       credibility: 4
       monetisation: 5
     notes: >
-      Smaller dan algemene gezondheid, en daardoor sterker: een scherp
-      afgebakend publiek, Nederlandse cijfers die niemand gebruikt, en het is
-      geen medisch advies maar arbeidsomstandigheden — waardoor de
-      geloofwaardigheidsdrempel haalbaar blijft. Adverteerders in deze hoek
-      (bureaustoelen, arbodiensten, verzekeraars) betalen goed.
+      De niche waar video 002 al voor geschreven is. Goede adverteerders
+      (bureaustoelen, arbodiensten, verzekeraars) en het is arbo en geen
+      medisch advies, dus de drempel is haalbaar. Schaalbaarheid is de zwakste
+      van de top drie: na dertig video's over zitten, schermen en houding moet
+      je verbreden.
+
+  - key: slaap-nl
+    proposition: >
+      Slaap uitgelegd met wat er werkelijk in het onderzoek staat, voor
+      Nederlanders die slecht slapen en alles al geprobeerd hebben
+    usesAdvantage: true
+    scores:
+      audience_demand: 14
+      creator_advantage: 11
+      original_positioning: 9
+      evergreen: 10
+      scalability: 7
+      title_thumbnail: 8
+      competition: 4
+      production_feasibility: 5
+      credibility: 3
+      monetisation: 5
+    notes: >
+      Enorme vraag en perfect evergreen, maar het drukste deel van de
+      gezondheidshoek: er zijn al veel kanalen, waarvan sommige met artsen. En
+      het raakt sneller aan medisch advies dan arbo doet, dus de drempel van 95
+      bijt hier harder. Als tweede kanaal sterk, als eerste te zwaar.
+
+  - key: hoe-games-geld-verdienen
+    proposition: >
+      Hoe de game-industrie werkelijk geld verdient — battle passes, loot,
+      prijsstelling — uitgelegd met eigen diagrammen en openbare jaarcijfers
+    usesAdvantage: false
+    scores:
+      audience_demand: 13
+      creator_advantage: 9
+      original_positioning: 11
+      evergreen: 8
+      scalability: 8
+      title_thumbnail: 9
+      competition: 5
+      production_feasibility: 4
+      credibility: 4
+      monetisation: 3
+    notes: >
+      De enige vorm van gaming die ik kan verantwoorden: geen gameplaybeelden,
+      alleen eigen diagrammen en jaarverslagen van beursgenoteerde uitgevers.
+      Daarmee vervalt het auteursrechtprobleem. Blijft over: de lage RPM van de
+      gamingcategorie, en merknamen in beeld blijven opletten. Als je gaming
+      wilt, is dit de manier. Maar het is niet de beste keuze.
+
+  - key: ai-op-je-werk
+    proposition: >
+      Wat AI op een Nederlandse werkvloer wel en niet kan, elke week één
+      nagerekend voorbeeld
+    usesAdvantage: false
+    scores:
+      audience_demand: 14
+      creator_advantage: 10
+      original_positioning: 7
+      evergreen: 5
+      scalability: 8
+      title_thumbnail: 7
+      competition: 2
+      production_feasibility: 4
+      credibility: 3
+      monetisation: 5
+    notes: >
+      Hoogste advertentiewaarde, en de enige categorie in deze lijst waar
+      geautomatiseerde kanalen daadwerkelijk zijn beëindigd. Veroudert bovendien
+      binnen maanden, dus je bouwt geen archief op dat blijft opleveren. Ik raad
+      hem af, en dat is geen smaakoordeel maar de uitkomst van het model.

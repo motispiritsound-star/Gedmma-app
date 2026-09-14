@@ -117,3 +117,35 @@ export function formatScorecard(card: Scorecard, width = 34): string {
   }
   return lines.join('\n')
 }
+
+/**
+ * Laat categorieën weg en herschaalt naar 100.
+ *
+ * Bedoeld voor het geval dat de maker zegt: die categorie ben ik zelf, reken
+ * hem niet mee. Dat mag, en het heeft één gevolg dat de moeite is om te weten:
+ * eigen voorsprong is de enige categorie die een concurrent niet kan
+ * inhalen. Haal je hem weg, dan meet de score nog uitsluitend de markt — en
+ * meet hij dus voor jou hetzelfde als voor ieder ander die deze niche overweegt.
+ */
+export function excludeCategories(
+  card: Scorecard, keys: string[], rescaleTo = 100,
+): Scorecard {
+  const kept = card.categories.filter((c) => !keys.includes(c.key))
+  const dropped = card.categories.filter((c) => keys.includes(c.key))
+  if (dropped.length === 0) return card
+
+  const maxKept = kept.reduce((sum, c) => sum + c.max, 0)
+  const earned = kept.reduce((sum, c) => sum + c.score, 0)
+  const total = maxKept === 0 ? 0 : Math.round((earned / maxKept) * rescaleTo)
+
+  return {
+    ...card,
+    categories: kept,
+    total,
+    adjustments: [
+      ...card.adjustments,
+      `${dropped.map((d) => d.key).join(', ')} weggelaten op verzoek; ` +
+      `${earned}/${maxKept} herschaald naar ${total}/${rescaleTo}.`,
+    ],
+  }
+}
