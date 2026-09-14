@@ -1,0 +1,293 @@
+// Het canonieke datamodel. M1 draait op een in-memory implementatie achter
+// dezelfde `Store`-interface, zodat `npm run demo` zonder infrastructuur werkt;
+// de PostgreSQL-implementatie komt in M2.
+//
+// Twee constraints dragen regels die anders procedures zouden zijn:
+//   - Asset.licenseProofId is verplicht: een asset zonder licentiebewijs kan de
+//     montage niet in.
+//   - Upload.idempotencyKey is uniek: dezelfde inhoud kan niet twee keer
+//     geüpload worden.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Channel {
+  id          String       @id @default(uuid())
+  name        String
+  language    String
+  youtubeId   String?      @unique
+  productions Production[]
+  createdAt   DateTime     @default(now())
+}
+
+model Production {
+  id               String            @id @default(uuid())
+  channel          Channel           @relation(fields: [channelId], references: [id])
+  channelId        String
+  state            String
+  topic            String
+  thesis           String?
+  originalityBrief String?
+  researchBrief    String?
+  rejectedReason   String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  steps       ProductionStep[]
+  gateResults GateResult[]
+  sources     Source[]
+  claims      Claim[]
+  shots       Shot[]
+  assets      Asset[]
+  variants    LanguageVariant[]
+  uploads     Upload[]
+  costs       CostEntry[]
+  metrics     Metric[]
+  experiments Experiment[]
+
+  @@index([state])
+}
+
+/// Idempotentie: dezelfde (productie, stap, invoerhash) levert het opgeslagen
+/// resultaat en geen nieuwe provideraanroep.
+model ProductionStep {
+  id           String     @id @default(uuid())
+  production   Production @relation(fields: [productionId], references: [id])
+  productionId String
+  step         String
+  inputHash    String
+  output       Json
+  costCents    Int        @default(0)
+  startedAt    DateTime   @default(now())
+  finishedAt   DateTime?
+
+  @@unique([productionId, step, inputHash])
+}
+
+model GateResult {
+  id           String     @id @default(uuid())
+  production   Production @relation(fields: [productionId], references: [id])
+  productionId String
+  gate         String
+  score        Int
+  threshold    Int
+  passed       Boolean
+  blocking     Boolean
+  /// Deelscores met onderbouwing. Een kaal getal is niet verbeterbaar.
+  breakdown    Json
+  evaluatedAt  DateTime   @default(now())
+
+  @@index([productionId, gate])
+}
+
+model Source {
+  id           String     @id @default(uuid())
+  production   Production @relation(fields: [productionId], references: [id])
+  productionId String
+  kind         String     // primary | secondary
+  work         String
+  locator      String
+  /// Alleen voor hadith. Zonder gradering blokkeert de religieuze poort.
+  grading      String?
+  gradedBy     String?
+  /// Voor Koranverwijzingen: de bij naam genoemde gepubliceerde vertaling.
+  translation  String?
+  retrievedAt  DateTime   @default(now())
+  claims       ClaimSource[]
+}
+
+model Claim {
+  id                       String        @id @default(uuid())
+  production               Production    @relation(fields: [productionId], references: [id])
+  productionId             String
+  text                     String
+  /// quran | hadith | fiqh | history | general
+  claimClass               String
+  atSecond                 Int
+  attributedTo             String?
+  notesScholarlyDifference Boolean       @default(false)
+  sources                  ClaimSource[]
+
+  @@index([productionId, claimClass])
+}
+
+/// Elke claim wijst naar minstens één bron. Een claim zonder bron blokkeert de
+/// build; hij wordt niet gemarkeerd en niet afgezwakt.
+model ClaimSource {
+  claim    Claim  @relation(fields: [claimId], references: [id])
+  claimId  String
+  source   Source @relation(fields: [sourceId], references: [id])
+  sourceId String
+
+  @@id([claimId, sourceId])
+}
+
+model Shot {
+  id            String     @id @default(uuid())
+  production    Production @relation(fields: [productionId], references: [id])
+  productionId  String
+  index         Int
+  fromSecond    Float
+  toSecond      Float
+  description   String
+  /// True = in deze scène mag geen menselijke figuur worden afgebeeld.
+  figureFree    Boolean    @default(false)
+  /// Arabische tekst komt uit de geverifieerde bibliotheek, nooit uit een model.
+  arabicAssetId String?
+
+  @@unique([productionId, index])
+}
+
+model LicenseProof {
+  id            String  @id @default(uuid())
+  holder        String
+  terms         String
+  commercialUse Boolean
+  evidenceUri   String
+  assets        Asset[]
+}
+
+model Asset {
+  id             String       @id @default(uuid())
+  production     Production   @relation(fields: [productionId], references: [id])
+  productionId   String
+  kind           String
+  uri            String
+  sha256         String
+  origin         String       // generated | licensed | own
+  provider       String
+  promptUsed     String?
+  modelVersion   String?
+  /// Verplicht. Dit is de belangrijkste constraint in het model.
+  licenseProof   LicenseProof @relation(fields: [licenseProofId], references: [id])
+  licenseProofId String
+  figureCheck    String?      // pass | fail | not_applicable
+  createdAt      DateTime     @default(now())
+
+  @@index([sha256])
+}
+
+/// Taal is een dimensie van een productie, geen kopie ervan: onderzoek,
+/// bronnen, shotlist en beeld worden gedeeld.
+model LanguageVariant {
+  id           String     @id @default(uuid())
+  production   Production @relation(fields: [productionId], references: [id])
+  productionId String
+  language     String
+  script       Json?
+  voiceAssetId String?
+  srtPath      String?
+  metadata     Json?
+  videoPath    String?
+
+  @@unique([productionId, language])
+}
+
+model Upload {
+  id             String     @id @default(uuid())
+  production     Production @relation(fields: [productionId], references: [id])
+  productionId   String
+  language       String
+  /// Afgeleid van productionId + contentHash. Voorkomt dubbele uploads.
+  idempotencyKey String     @unique
+  youtubeVideoId String?
+  privacyStatus  String     @default("private")
+  publishAt      DateTime?
+  createdAt      DateTime   @default(now())
+}
+
+model CostEntry {
+  id           String     @id @default(uuid())
+  production   Production @relation(fields: [productionId], references: [id])
+  productionId String
+  step         String
+  provider     String
+  costCents    Int
+  latencyMs    Int
+  providerRef  String
+  at           DateTime   @default(now())
+
+  @@index([productionId])
+  @@index([at])
+}
+
+/// Analytics worden opgeslagen met de datum waarop ze zijn opgehaald en
+/// overschrijven niet: opbrengstcijfers worden dagen later nog bijgesteld.
+model Metric {
+  id           String     @id @default(uuid())
+  production   Production @relation(fields: [productionId], references: [id])
+  productionId String
+  language     String
+  day          DateTime
+  asOf         DateTime
+  impressions  Int?
+  ctr          Float?
+  views        Int?
+  retention30s Float?
+  avgViewSec   Float?
+  avgViewPct   Float?
+  returning    Int?
+  subsGained   Int?
+  revenueCents Int?
+  raw          Json?
+
+  @@unique([productionId, language, day, asOf])
+}
+
+/// De verwachting wordt vóór publicatie vastgelegd en is daarna onveranderlijk:
+/// achteraf bijstellen maakt een experiment waardeloos.
+model Experiment {
+  id           String     @id @default(uuid())
+  production   Production @relation(fields: [productionId], references: [id])
+  productionId String
+  variable     String
+  hypothesis   String
+  expectation  String
+  measuredBy   String
+  outcome      String?
+  concludedAt  DateTime?
+  createdAt    DateTime   @default(now())
+}
+
+/// Metadata van referentievideo's verloopt na 30 dagen (API-voorwaarden);
+/// de afgeleide patroonanalyse blijft.
+model ReferenceVideo {
+  id          String               @id @default(uuid())
+  youtubeId   String               @unique
+  title       String
+  channelId   String
+  fetchedAt   DateTime             @default(now())
+  expiresAt   DateTime
+  raw         Json
+  observations PatternObservation[]
+}
+
+model PatternObservation {
+  id          String          @id @default(uuid())
+  reference   ReferenceVideo? @relation(fields: [referenceId], references: [id])
+  referenceId String?
+  /// Uitsluitend abstracte patronen. Geen formuleringen, geen beelden.
+  pattern     String
+  dimension   String
+  note        String
+  createdAt   DateTime        @default(now())
+}
+
+/// Append-only. Poortuitslagen, goedkeuringen, drempelwijzigingen, uploads en
+/// elke provideraanroep met kosten.
+model AuditEvent {
+  id           String   @id @default(uuid())
+  productionId String?
+  kind         String
+  detail       Json
+  at           DateTime @default(now())
+
+  @@index([productionId])
+  @@index([kind, at])
+}

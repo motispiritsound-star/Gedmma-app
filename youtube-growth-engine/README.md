@@ -4,10 +4,26 @@ Een grotendeels geautomatiseerd productiesysteem voor een YouTube-kanaal dat
 **originele** video's maakt: referentievideo's dienen alleen als analytische
 input, nooit als sjabloon.
 
-> **Status: Fase 1 — analyse en ontwerp. Er is nog geen code gebouwd.**
-> Dit is de oplevering die volgens de opdracht vóór de bouw komt: interpretatie,
-> vragen, businessmodel, compliance, architectuur, toolvergelijking, kosten,
-> workflow, implementatieplan en risico's.
+> **Status: M1 — het skelet draait op mockproviders.**
+> Fase 1 (analyse en ontwerp) is af, de keuzes staan in `config/defaults.yaml`,
+> en `npm run demo` doorloopt de hele pipeline zonder één API-credential.
+
+```bash
+npm install
+npm run demo      # hele pipeline, mockproviders, echte MP4 in out/
+npm test          # 33 tests
+npm run typecheck
+```
+
+De demo draait drie producties die samen de belangrijkste eigenschap van het
+systeem laten zien — **het weigert vaker dan het publiceert, en het weigert
+vroeg**:
+
+| | Productie | Uitkomst | Kosten |
+|---|---|---|---|
+| 1 | Concept zonder invulbare stelling | afgewezen op `thesis` | € 0,03 |
+| 2 | Script met een hadith zonder gradering | afgewezen op `religious_integrity` | € 1,60 |
+| 3 | Volledig onderbouwd, NL + DE | `awaiting_reviewer`, twee echte MP4's | € 2,56 |
 
 ## Leeswijzer
 
@@ -24,16 +40,19 @@ input, nooit als sjabloon.
 | [`docs/08-implementatieplan.md`](docs/08-implementatieplan.md) | M0–M7, met de Definition of Done erop gemapt |
 | [`docs/09-risico-register.md`](docs/09-risico-register.md) | Risico's en beheersmaatregelen |
 | [`docs/10-bronnen-en-verificatiestatus.md`](docs/10-bronnen-en-verificatiestatus.md) | Elke feitelijke claim met bron en verificatiestatus |
+| [`docs/11-nichedossier-islamitische-gezinscontent.md`](docs/11-nichedossier-islamitische-gezinscontent.md) | Fase 1 op de gekozen niche: made-for-kids, de budgetsom, de taalhefboom, de referenties |
+| [`docs/12-religieuze-integriteitspoort.md`](docs/12-religieuze-integriteitspoort.md) | Herkomstregels voor Koran, hadith en fiqh; het afbeeldingsverbod; Arabische tekst |
+| [`config/defaults.yaml`](config/defaults.yaml) | Je vastgelegde keuzes, met per keuze wie hem maakte |
 
 ## Wat er nu werkt, wordt gesimuleerd of ontbreekt
 
 | | Stand |
 |---|---|
-| **Werkt volledig** | Niets in code — dit is een ontwerp-oplevering. |
-| **Gesimuleerd** | Niets nog. De proof of concept (M1) draait straks volledig op mockproviders. |
-| **Ontbrekende credentials** | Alles: Google Cloud/OAuth (YouTube Data + Analytics), Anthropic, een TTS-provider, een beeldgenerator, een videogenerator, een muzieklicentie, objectopslag. |
+| **Werkt volledig** | De state machine, de poortenmotor, de religieuze integriteitspoort, de kostenregistratie met plafonds, de idempotente upload-claim, de ondertiteling uit TTS-timestamps, de technische QC (zwarte frames, stiltes) en de FFmpeg-montage. Die laatste is meteen de productierenderer. |
+| **Gesimuleerd** | Taalmodel, zoeken, spraak, beeld, videoclips en muziek. Elke mock zit achter hetzelfde contract als de echte provider; vervangen is één regel in de registry. |
+| **Ontbrekende credentials** | Anthropic, Google Cloud/OAuth (YouTube Data + Analytics), TTS, beeldgenerator, videogenerator, muzieklicentie, objectopslag. |
 | **Betaalde diensten later nodig** | Zie [`docs/05-toolvergelijking.md`](docs/05-toolvergelijking.md). Ik maak geen accounts aan en sluit niets af. |
-| **Menselijke handelingen die nooit verdwijnen** | Kanaal aanmaken en verifiëren, OAuth-toestemming geven, AdSense koppelen, merk- en stemkeuze, eindgoedkeuring per video, elk gevoelig onderwerp, elke sponsordeal. |
+| **Menselijke handelingen die nooit verdwijnen** | Kanaal aanmaken en verifiëren, OAuth-toestemming geven, AdSense koppelen, stemtest, **de gekwalificeerde religieuze reviewer** (zie [`docs/12`](docs/12-religieuze-integriteitspoort.md) §5), eindgoedkeuring per video, elke sponsordeal. |
 
 ## Verificatie
 
