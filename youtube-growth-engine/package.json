@@ -21,7 +21,8 @@
     "workbook": "tsx src/workbook.ts",
     "approve": "tsx src/approve.ts",
     "niches": "tsx src/compare-niches.ts",
-    "animatic": "tsx src/animatic.ts"
+    "animatic": "tsx src/animatic.ts",
+    "stijlvoorbeeld": "node scripts/stijlvoorbeeld/build.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.125.0",
