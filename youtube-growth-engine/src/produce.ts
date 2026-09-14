@@ -11,15 +11,8 @@ import { join } from 'node:path'
 import { Ledger } from './lib/ledger.js'
 import { JsonFileStore } from './store/json-file.js'
 import { runProduction } from './pipeline/run.js'
-import { MockLlmProvider } from './providers/mock/llm.js'
-import { ClaudeLlmProvider } from './providers/claude/llm.js'
-import {
-  FfmpegRenderProvider, MockImageProvider, MockMusicProvider,
-  MockSearchProvider, MockTtsProvider, MockVideoClipProvider,
-} from './providers/mock/media.js'
-import { LocalEbookProvider } from './providers/ebook.js'
+import { buildProviders, monthlyEstimate } from './providers/registry.js'
 import type { LanguageCode } from './domain/types.js'
-import type { LlmProvider, Providers } from './providers/contracts.js'
 
 function arg(name: string): string | undefined {
   const i = process.argv.indexOf(`--${name}`)
@@ -48,19 +41,7 @@ async function main(): Promise<void> {
   const outDir = join(process.cwd(), 'out', new Date().toISOString().slice(0, 10))
   await mkdir(outDir, { recursive: true })
 
-  const hasKey = Boolean(process.env['ANTHROPIC_API_KEY'])
-  const llm: LlmProvider = hasKey ? new ClaudeLlmProvider() : new MockLlmProvider()
-
-  const providers: Providers = {
-    llm,
-    search: new MockSearchProvider(),
-    tts: new MockTtsProvider(),
-    image: new MockImageProvider(),
-    videoClip: new MockVideoClipProvider(),
-    music: new MockMusicProvider(),
-    render: new FfmpegRenderProvider(),
-    ebook: new LocalEbookProvider(),
-  }
+  const { providers, report } = buildProviders()
 
   const store = new JsonFileStore(process.env['STORE_PATH'] ?? '.data/producties.json')
   const ledger = new Ledger({
@@ -70,15 +51,17 @@ async function main(): Promise<void> {
   })
 
   console.log('\n--- Wat er nu draait ---')
-  console.log(`  redactie    ${llm.name.padEnd(16)} ${llm.simulated ? 'GESIMULEERD' : 'ECHT'}`)
-  for (const [role, p] of Object.entries(providers)) {
-    if (role === 'llm') continue
-    console.log(`  ${role.padEnd(11)} ${p.name.padEnd(16)} ${p.simulated ? 'GESIMULEERD' : 'ECHT'}`)
+  for (const r of report) {
+    console.log(`  ${r.role.padEnd(12)} ${r.name.padEnd(24)} ${r.simulated ? 'GESIMULEERD' : 'ECHT'}`)
+    if (r.missing) console.log(`  ${' '.repeat(12)} ontbreekt: ${r.missing}`)
   }
-  if (!hasKey) {
-    console.log('\n  ANTHROPIC_API_KEY staat niet; de redactie draait op het mockmodel.')
-    console.log('  Zie stap 3 van docs/HANDLEIDING.md.')
-  }
+
+  const estimate = monthlyEstimate({
+    longFormPerMonth: 4.3, imagesPerVideo: 45, thumbnailsPerVideo: 6, clipSecondsPerVideo: 25,
+  })
+  console.log(`\n  Bij dit tempo per maand: ${estimate.images} stills, ` +
+    `${estimate.thumbnails} thumbnails, ${estimate.clips} s clip ` +
+    `= ${cents(estimate.totalCents)} aan beeld.`)
   console.log(`\nOnderwerp: ${topic}`)
   if (seedTitles.length > 0) {
     console.log(`Referentietitels: ${seedTitles.length} (alleen de vorm gaat naar het model)`)

@@ -78,23 +78,46 @@ koopt speelruimte die je bij 1 video per week niet opmaakt.
    kanaal geldt het alleen voor hedendaagse gezinsscènes — nooit voor de
    historische verhalen, want daar wordt geen figuur afgebeeld.
 
-### Het alternatief dat beter bij "maximaal automatiseren" past
+### De keuze die ik heb gemaakt, en gebouwd
 
-Per aanroep betalen in plaats van abonneren:
+Per aanroep betalen in plaats van abonneren, met het werk verdeeld over twee
+modellen die elk ergens het beste in zijn:
 
-| | Higgsfield Plus | Losse API's |
-|---|---|---|
-| Beeld | inbegrepen | ~€0,02–0,08 per beeld → ≈ €15–25/mnd |
-| Videoclips | inbegrepen | ~€0,10 per seconde → ≈ €12/mnd bij 130 s |
-| **Per maand** | **€35, een jaar vast** | **€27–37, maandelijks opzegbaar** |
-| API | te verifiëren | dat ís het product |
-| Aantal leveranciers | één | twee tot drie |
-| Schaalt mee omlaag | nee | ja — een maand niets maken kost niets |
-| Past op de adapters | deels | volledig |
+| Rol | Keuze | Prijs | Waarom |
+|---|---|---|---|
+| Scenestills | **fal.ai** (Seedream V4 of FLUX) | ~$0,03 per beeld | vier keer goedkoper dan de rest, echte API |
+| Thumbnails | **Gemini 3 Pro Image** | ~$0,134 per beeld ($0,067 in batch) | aantoonbaar beter in leesbare tekst in beeld, en dat is precies waar een thumbnail op staat of valt |
+| Videoclips | **fal.ai** (Kling 3.0) | ~$0,029 per seconde | laagste prijs per seconde die ik vond |
 
-Bij jouw volume is per-aanroep ongeveer even duur, maandelijks opzegbaar, en het
-sluit aan op de `ImageProvider`- en `VideoClipProvider`-adapters die er al zijn.
-De prijs ervoor is meer opzetwerk en geen gezamenlijk dashboard.
+Het duurdere model gaat alleen naar de ~26 thumbnails per maand, niet naar de
+~194 stills. Dat onderscheid scheelt op jaarbasis ruim honderd euro en het zit
+in `SplitImageProvider`: het pad van het bestand bepaalt welk model wordt
+aangeroepen.
+
+**Eén ding om zelf te controleren:** commerciële rechten volgen het **model**,
+niet het platform. fal.ai geeft de licentie van het onderliggende model door.
+Kijk dus naar de voorwaarden van het model dat in `FAL_IMAGE_MODEL` staat, en
+leg het bewijs vast als `LicenseProof` — de database weigert anders de asset.
+
+### De gemeten uitkomst
+
+De adapters staan er nu, en de raming die `npm run produce` afdrukt bij 1
+long-form per week:
+
+```
+194 stills + 26 thumbnails + 108 seconden clip  =  EUR 12,70 per maand
+```
+
+Tegenover **EUR 35 per maand, een jaar vast**. Met hergeneratie erbij (factor
+1,4) kom je op ongeveer EUR 18. Dat is de helft, en je kunt elke maand stoppen.
+
+| | per aanroep | Higgsfield Plus |
+|---|---:|---:|
+| Beeld en clips per maand | **EUR 12,70 – 18** | EUR 35 |
+| Verplichting | geen | 12 maanden |
+| Een maand niets maken | EUR 0 | EUR 35 |
+| API | ja, dat is het product | te verifieren |
+| Twaalf maanden | EUR 150 – 216 | EUR 420 |
 
 ### Advies
 

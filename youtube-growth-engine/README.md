@@ -15,7 +15,9 @@ input, nooit als sjabloon.
 npm install
 npm run demo       # hele pipeline op mockproviders, echte MP4 in out/ — kost niets
 npm run doctor     # vertelt precies wat er nog ontbreekt en wat je eraan doet
-npm test           # 49 tests
+npm run studio     # niche, positionering, titel lab, thumbnail lab, kwaliteitspoort
+npm run knowledge:check   # wat er uit knowledge/ is aangekomen, en waar het landt
+npm test           # 86 tests
 npm run typecheck
 ```
 
@@ -57,7 +59,9 @@ vroeg**:
 | [`docs/12-religieuze-integriteitspoort.md`](docs/12-religieuze-integriteitspoort.md) | Herkomstregels voor Koran, hadith en fiqh; het afbeeldingsverbod; Arabische tekst |
 | [`docs/13-monetisatie.md`](docs/13-monetisatie.md) | De twee YPP-drempels, ebooks als pipeline-output, het seizoen dat twee kanten op werkt |
 | [`docs/14-hergebruik.md`](docs/14-hergebruik.md) | Waar de grens ligt bij hergebruik, en waarom "het staat overal" geen bewijs is |
+| [`docs/15-tools-en-connectors.md`](docs/15-tools-en-connectors.md) | De providerkeuze, de vidIQ-connector, en waarom geen jaarabonnement |
 | **[`docs/HANDLEIDING.md`](docs/HANDLEIDING.md)** | **Stap voor stap naar je eerste upload** |
+| [`knowledge/`](knowledge/) | Jouw invoer: makersprofiel, publiek, onderwerpen, referenties, bronnen, huisstijl |
 | [`config/defaults.yaml`](config/defaults.yaml) | Je vastgelegde keuzes, met per keuze wie hem maakte |
 
 ## Wat er nu werkt, wordt gesimuleerd of ontbreekt

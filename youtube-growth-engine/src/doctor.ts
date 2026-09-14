@@ -101,8 +101,15 @@ async function main(): Promise<void> {
     'Doe eerst de stemtest uit stap 5 van de handleiding.',
   ))
   checks.push(envCheck(
-    'IMAGE_API_KEY', 'Beeldgeneratie',
-    'Kies een aanbieder waarvan de voorwaarden commercieel gebruik toestaan.',
+    'FAL_KEY', 'Beeld en videoclips (fal.ai)',
+    'Maak een sleutel op fal.ai. Per aanroep afgerekend, maandelijks opzegbaar. ' +
+    'Controleer de licentie van het MODEL dat je kiest — die bepaalt de ' +
+    'commerciële rechten, niet het platform.',
+  ))
+  checks.push(envCheck(
+    'GEMINI_API_KEY', 'Thumbnails met leesbare tekst (Gemini)',
+    'Optioneel maar aanbevolen: beter in tekst in beeld. Zonder deze sleutel ' +
+    'maakt fal.ai ook de thumbnails.', true,
   ))
   checks.push(envCheck(
     'MUSIC_API_KEY', 'Muziek', 'Optioneel tot je nasheeds of achtergrond wilt.', true,
