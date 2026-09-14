@@ -5,6 +5,36 @@ cannot do, and four things about IBKR that change what a strategy built on crypt
 data is actually worth. Read the last section before the first one if you are
 short of time.
 
+## Before anything else: run the check
+
+One thing has to be said plainly, because it decides how to read the rest of this
+page. The client here was written against Interactive Brokers' published
+documentation, and **no request from this repository has ever reached a real
+gateway** — the environment it was built in blocks outbound connections entirely.
+Every endpoint path, every field name and every response shape is an assumption
+that has been tested against a fake gateway and never against theirs.
+
+Assumptions of that kind fail quietly, which is the dangerous part. If IBKR returns
+account equity under a different field name than the client reads, nothing raises:
+`Number(undefined)` is `NaN`, the guard turns it into `0`, and the bot reports an
+empty account and sits there doing nothing while looking perfectly healthy.
+
+So the first command to run is:
+
+```bash
+npm run bot -- ibkr check
+```
+
+It walks every endpoint the bot depends on, in the order it depends on them, and
+for each one reports the specific fields the client reads and whether they were
+actually present. A field shown with a leading `!` was missing. The output is meant
+to be pasted back verbatim when a step fails: it names the endpoint, what was
+expected and what arrived, which is enough to fix it directly.
+
+When every step passes, that run is the first real evidence the integration works,
+and the check prints the next commands with your own account and contract IDs
+already filled in.
+
 ## How the connection works
 
 IBKR's Client Portal Web API runs against a gateway **on your own machine**. You
@@ -18,8 +48,8 @@ bin/run.sh root/conf.yaml
 # 2. Open https://localhost:5000 in a browser and log in. Accept the
 #    self-signed certificate warning — the certificate is the gateway's own.
 
-# 3. Check the bot can see it.
-npm run bot -- ibkr status
+# 3. Validate every endpoint the bot needs, and every field it reads.
+npm run bot -- ibkr check
 ```
 
 That design has one very good consequence: **there are no API keys anywhere in
@@ -193,14 +223,18 @@ year, not after.
 
 ## The order to do this in
 
-1. `ibkr search` and `ibkr bars` to get real bars for a real instrument.
-2. `backtest --csv ... --commission ibkr-tiered --cash <your balance>` and read
+1. `ibkr check`, and do not skip it — it is the only thing that has ever tested
+   this integration against a real gateway.
+2. `ibkr search` and `ibkr bars` to get real bars for a real instrument.
+3. `backtest --csv ... --commission ibkr-tiered --cash <your balance>` and read
    the cost drag line before anything else.
-3. `significance` and `noise` to find out how much of the result is the parameter
+4. `timing` — does the strategy choose moments, or only how long to be invested?
+   See [EQUITIES.md](EQUITIES.md); this is the step that most often ends it.
+5. `significance` and `noise` to find out how much of the result is the parameter
    search and how much is luck.
-4. `walkforward`. If this is flat, stop here. You have saved the money.
-5. `trade --account DU... ` as a dry run, and read the journal.
-6. `trade --account DU... --send` for months, not days.
-7. Only then, and only if steps 3–6 all came back good, is there a conversation
+6. `walkforward`. If this is flat, stop here. You have saved the money.
+7. `trade --account DU... ` as a dry run, and read the journal.
+8. `trade --account DU... --send` for months, not days.
+9. Only then, and only if steps 4–8 all came back good, is there a conversation
    to have about real money. [docs/TRADING.md](TRADING.md) has the arithmetic on
    what that conversation is realistically worth.

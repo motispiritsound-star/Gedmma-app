@@ -42,6 +42,7 @@ import { assessSignificance } from './engine/significance.js';
 import { runWalkForward } from './engine/walkforward.js';
 import { runLive, runPaper } from './live/paper.js';
 import { IbkrClient } from './broker/ibkrClient.js';
+import { runConnectionCheck } from './broker/ibkrCheck.js';
 import { IbkrExecution, isPaperAccount } from './broker/ibkrExecution.js';
 import { KrakenClient, credentialsFromEnv } from './broker/krakenClient.js';
 import { KrakenExecution } from './broker/krakenExecution.js';
@@ -55,6 +56,7 @@ import {
   heading,
   renderGoal,
   renderBacktest,
+  renderCheck,
   renderComparison,
   renderCorrelation,
   renderNoise,
@@ -765,6 +767,15 @@ async function cmdIbkr(args: Args): Promise<void> {
   const client = ibkrClientFrom(args);
 
   switch (sub) {
+    case 'check': {
+      // The first thing to run, and the only one that validates the assumptions
+      // the client was written on rather than trusting them.
+      const report = await runConnectionCheck({ client, symbol: str(args, 'symbol', 'AAPL') });
+      console.log(renderCheck(report, client.baseUrl));
+      if (!report.ok) process.exitCode = 1;
+      return;
+    }
+
     case 'status': {
       console.log(heading(`IBKR gateway at ${client.baseUrl}`));
       const status = await client.authStatus();
@@ -882,7 +893,7 @@ async function cmdIbkr(args: Args): Promise<void> {
     }
 
     default:
-      throw new Error(`Unknown ibkr subcommand "${sub}". Try status, search or bars.`);
+      throw new Error(`Unknown ibkr subcommand "${sub}". Try check, status, search or bars.`);
   }
 }
 
@@ -1232,7 +1243,9 @@ Commands
   correlation   How many independent bets a universe is really worth
   portfolio     Multi-asset backtest across a universe (--validate for walk-forward)
   paper         Forward-test on live prices with simulated money
-  ibkr          Talk to a local IBKR gateway: status, search, bars
+  ibkr          Talk to a local IBKR gateway: check, status, search, bars.
+                Run "ibkr check" first — it validates every endpoint and field
+                the bot depends on and says exactly which one is wrong.
   kraken        Kraken spot: status, pairs, bars. Public data needs no key.
   trade         Run a strategy against a broker. --broker ibkr | kraken.
                 Never sends an order without --send.
@@ -1335,7 +1348,7 @@ Kraken (public data needs no key; trading reads KRAKEN_API_KEY and
 
 IBKR (everything runs against a gateway on your own machine — no API keys)
   --gateway https://localhost:5000/v1/api
-  --symbol AAPL         For: ibkr search
+  --symbol AAPL         For: ibkr search, ibkr check
   --conid 265598        For: ibkr bars, trade. Get it from ibkr search.
   --account DU1234567   For: trade. Paper accounts start with DU.
   --outside-rth         Include pre- and post-market bars. Off by default.

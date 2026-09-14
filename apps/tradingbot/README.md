@@ -53,8 +53,8 @@ npm run bot -- portfolio --universe BTCUSDT,ETHUSDT,SOLUSDT --validate
 npm run bot -- paper --strategy ema-cross --interval 1h \
   --state ./data/run.json --resume --journal ./data/run.jsonl
 
-# Interactive Brokers: find a contract, pull its bars, trade the paper account.
-npm run bot -- ibkr status
+# Interactive Brokers: validate every endpoint and field the bot depends on.
+npm run bot -- ibkr check
 npm run bot -- ibkr search --symbol AAPL
 npm run bot -- ibkr bars --conid 265598 --interval 1d --out aapl.csv
 npm run bot -- trade --conid 265598 --account DU1234567 --strategy ema-cross
@@ -92,6 +92,9 @@ src/
   broker/
     ibkrClient.ts       IBKR Client Portal Web API, loopback only, no keys
     ibkrExecution.ts    Live execution behind three gates, dry run by default
+    ibkrCheck.ts        Walks every endpoint and checks the fields the client
+                        reads are really there — the integration has never been
+                        exercised against a real gateway from here
     krakenClient.ts     Kraken's signed REST API; key from the environment only
     krakenExecution.ts  Spot execution, validated by Kraken unless told to send
   data/
@@ -260,7 +263,7 @@ Three findings worth knowing before you start, all reproducible from this repo:
 npm test --workspace @buurklus/tradingbot
 ```
 
-376 tests, mostly invariants rather than examples: no lookahead in either engine,
+388 tests, mostly invariants rather than examples: no lookahead in either engine,
 fees charged on both legs and split across a partial exit, a commission floor that
 bites before its percentage cap, an account that never borrows, stops that fill
 through a gap and lose to a take-profit in the same bar, a cooldown that blocks

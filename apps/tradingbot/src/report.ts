@@ -1,3 +1,4 @@
+import type { CheckReport } from './broker/ibkrCheck.js';
 import { survivorshipWarning } from './data/align.js';
 import type { BacktestResult } from './engine/backtest.js';
 import type { CorrelationReport } from './engine/correlation.js';
@@ -90,6 +91,101 @@ export function renderTiming(result: TimingTestResult): string {
         `has value — but it is a much smaller claim than buying and selling at the right ` +
         `moments, and a simple rule would do it with fewer parameters to overfit.`;
   parts.push(`  ${wrap(message, WIDTH - 4)}`);
+
+  return parts.join('\n');
+}
+
+
+const STATUS_MARK: Record<string, string> = {
+  pass: 'ok  ',
+  warn: 'warn',
+  fail: 'FAIL',
+  skipped: '--  ',
+};
+
+/**
+ * The connection check, written to be pasted back when something fails.
+ *
+ * Every step names the endpoint it called, the specific fields the client reads
+ * out of the response, and whether each was actually there — because the way this
+ * integration fails is not a crash. A renamed field reads as `undefined`, becomes
+ * zero, and the bot reports an empty account while looking perfectly healthy.
+ */
+export function renderCheck(report: CheckReport, gatewayUrl: string): string {
+  const parts: string[] = [heading(`Connection check against ${gatewayUrl}`)];
+
+  for (const step of report.steps) {
+    parts.push('');
+    parts.push(`  [${STATUS_MARK[step.status] ?? '?'}] ${step.name}`);
+    parts.push(`         ${step.endpoint}`);
+    parts.push(`         ${wrap(step.detail, WIDTH - 10, '         ')}`);
+    if (step.fields && step.fields.length > 0) {
+      const line = step.fields
+        .map((f) => `${f.found ? '' : '!'}${f.name}${f.found && f.value ? `=${f.value}` : ''}`)
+        .join('  ');
+      parts.push(`         fields: ${wrap(line, WIDTH - 18, '                 ')}`);
+    }
+    if (step.raw !== undefined) {
+      parts.push(`         raw: ${wrap(step.raw, WIDTH - 15, '              ')}`);
+    }
+  }
+
+  parts.push(heading(report.ok ? 'Everything the bot needs is working' : 'Not ready yet'));
+  if (report.ok) {
+    parts.push(
+      `  ${wrap(
+        'Every endpoint answered and every field the client reads was present. This is ' +
+          'the part that could not be tested while the harness was written, because the ' +
+          'environment it was built in cannot reach a gateway at all — so this run is ' +
+          'the first real evidence that the integration works.',
+        WIDTH - 4,
+      )}`,
+    );
+    parts.push('');
+    parts.push('  Next, in order:');
+    const account = report.accounts.find((id) => /^DU/i.test(id)) ?? report.accounts[0];
+    if (report.sampleConid !== null) {
+      parts.push(
+        `    npm run bot -- ibkr bars --conid ${report.sampleConid} --interval 1d ` +
+          `--bars 1000 --out chart.csv`,
+      );
+      parts.push('    npm run bot -- data --csv chart.csv --interval 1d');
+      parts.push(
+        '    npm run bot -- backtest --csv chart.csv --interval 1d --cash 10000 ' +
+          '--commission ibkr-tiered --all',
+      );
+      parts.push(
+        '    npm run bot -- timing --csv chart.csv --interval 1d --strategy trend-filter',
+      );
+    }
+    if (account !== undefined && report.sampleConid !== null) {
+      parts.push(
+        `    npm run bot -- trade --conid ${report.sampleConid} --account ${account} ` +
+          `--strategy trend-filter   # dry run, sends nothing`,
+      );
+    }
+    if (report.accounts.some((id) => !/^DU/i.test(id))) {
+      parts.push('');
+      parts.push(
+        `  ${wrap(
+          'One of the accounts above is not a paper account. The trade command refuses ' +
+            'those unless told twice, but it is worth knowing which is which before you ' +
+            'type an account number.',
+          WIDTH - 4,
+        )}`,
+      );
+    }
+  } else {
+    parts.push(
+      `  ${wrap(
+        'Paste the failing step above back and it can be fixed directly: it names the ' +
+          'endpoint, the fields the client expected, and what actually arrived. A field ' +
+          'marked with a leading ! was missing, which is the failure mode that otherwise ' +
+          'shows up as an account with zero equity and a bot that never trades.',
+        WIDTH - 4,
+      )}`,
+    );
+  }
 
   return parts.join('\n');
 }

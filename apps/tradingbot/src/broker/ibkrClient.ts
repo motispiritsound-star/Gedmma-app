@@ -377,6 +377,20 @@ export class IbkrClient {
   }
 
   /**
+   * One request, with the parsed body handed back untouched.
+   *
+   * Exported for the connection check and for nothing else. Every typed method on
+   * this client reads specific field names out of IBKR's responses, and those names
+   * came from their documentation rather than from a round trip that this
+   * repository was ever able to make. When one of them is wrong, the typed method
+   * returns a plausible-looking zero and says nothing — so the check command asks
+   * for the raw body and compares it against what the client expects.
+   */
+  async raw(method: 'GET' | 'POST' | 'DELETE', path: string, body?: unknown): Promise<unknown> {
+    return this.call<unknown>(method, path, body);
+  }
+
+  /**
    * `/iserver/accounts` has to be called once before market data works. Failing
    * to do so returns an error that says nothing about the real cause.
    */
