@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <!-- The name is a brand and stays the same in every language; this file
-         exists so Android and Google Play know the app speaks this one. -->
-    <string name="app_name">Gedmma</string>
-    <string name="title_activity_main">Gedmma</string>
-    <string name="package_name">app.gedmma.learn</string>
-    <string name="custom_url_scheme">app.gedmma.learn</string>
-</resources>

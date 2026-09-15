@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">Gedmma</string>
-    <string name="title_activity_main">Gedmma</string>
-    <string name="package_name">app.gedmma.learn</string>
-    <string name="custom_url_scheme">app.gedmma.learn</string>
-</resources>

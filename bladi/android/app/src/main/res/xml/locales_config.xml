@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The languages the app itself speaks. Android 13 and later reads this to
+  offer "App language" in the system settings, so a French-speaking family on
+  a Dutch phone can switch Bladi alone without changing the whole device.
+-->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="nl" />
+    <locale android:name="fr" />
+    <locale android:name="de" />
+    <locale android:name="es" />
+    <locale android:name="en" />
+</locale-config>

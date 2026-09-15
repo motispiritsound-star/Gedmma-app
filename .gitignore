@@ -29,12 +29,12 @@ apps/mobile/dist-plain/
 apps/web/dist/
 
 # Browser-test screenshots
-gedmma/shots/
+bladi/shots/
 
 # Single-file demo build
-gedmma/dist-demo/
+bladi/dist-demo/
 
 # The native shells live with the app they wrap (the rules above are for the
 # older Expo project in apps/mobile).
-!gedmma/android/
-!gedmma/ios/
+!bladi/android/
+!bladi/ios/

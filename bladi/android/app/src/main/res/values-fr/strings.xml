@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <!-- The name is a brand and stays the same in every language; this file
+         exists so Android and Google Play know the app speaks this one. -->
+    <string name="app_name">Bladi</string>
+    <string name="title_activity_main">Bladi</string>
+    <string name="package_name">app.bladi.learn</string>
+    <string name="custom_url_scheme">app.bladi.learn</string>
+</resources>

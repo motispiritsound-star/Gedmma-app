@@ -2,7 +2,7 @@
 
 This repository holds two separate things.
 
-**[`gedmma/`](gedmma/README.md) — Gedmma**, an app and website for learning
+**[`bladi/`](bladi/README.md) — Gedmma**, an app and website for learning
 Moroccan Arabic (Darija), aimed at children and teenagers. A single static
 progressive web app: 16 units, 303 words, eight kinds of exercise, spaced
 repetition, stories, games and an Arabic-script module. No account, no server,
