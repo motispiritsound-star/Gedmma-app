@@ -1,0 +1,64 @@
+# De afleveringenwachtrij. Dit is wat "geautomatiseerd" in dit project betekent:
+# de machine pakt het volgende onderwerp en maakt de video af tot het punt waar
+# een mens moet kijken. Verder komt hij niet, en dat is opzet — zie docs/20.
+#
+# status:
+#   gepland              nog niet aangeraakt; hier pakt --volgende uit
+#   in-productie         draait nu (blijft zo staan als er iets crasht)
+#   wacht-op-goedkeuring klaar; reviewer en jij moeten tekenen
+#   gepubliceerd         staat online (zet je zelf, na openbaar maken in Studio)
+#   afgeblazen           gaat niet door; met een reden erbij
+#
+# Volgorde in dit bestand is de volgorde van produceren. Wil je iets naar
+# voren halen, verplaats het dan gewoon naar boven.
+
+kanaal: dailyislamicreminders2026
+
+afleveringen:
+  - nr: 1
+    onderwerp: "de eerste moskee in Medina"
+    status: wacht-op-goedkeuring
+    productie: ""
+    notitie: >
+      Handmatig geschreven, staat in content/video-001. Wacht op de
+      bronnencheck van de reviewer.
+
+  - nr: 2
+    onderwerp: "waarom vroege moskeeën geen minaret hadden en wanneer de eerste verscheen"
+    status: gepland
+    productie: ""
+    notitie: >
+      Vervolg op 1, andere invalshoek: niet het gebouw maar het onderdeel.
+      Let op dat het geen herhaling van video 1 wordt — de originaliteitspoort
+      meet ook afstand tot je eigen catalogus.
+
+  - nr: 3
+    onderwerp: "de bibliotheken van Cordoba en wat er met de boeken gebeurde"
+    status: gepland
+    productie: ""
+    notitie: >
+      Geschiedenis, geen leerstelling. Rijk aan beeld en volledig te vertellen
+      zonder één vers.
+
+  - nr: 4
+    onderwerp: "hoe karavaanroutes werkten: water, afstand en waarom steden stonden waar ze stonden"
+    status: gepland
+    productie: ""
+    notitie: >
+      Infrastructuurverhaal in de vorm die op dit kanaal werkt: één mechanisme,
+      met kaarten en diagrammen.
+
+  - nr: 5
+    onderwerp: "het astrolabium: wat het deed en hoe je er de gebedstijden mee bepaalde"
+    status: gepland
+    productie: ""
+    notitie: >
+      Techniek en vakmanschap. Uitstekend thumbnailmateriaal.
+
+  - nr: 6
+    onderwerp: "hoe een Nederlands gezin de ramadan praktisch rondkrijgt met school en werk"
+    status: gepland
+    productie: ""
+    notitie: >
+      De enige in deze reeks over vandaag in plaats van vroeger. Hier zit je
+      eigen voorsprong, en daarmee de hoogste kans op binding met je publiek.
