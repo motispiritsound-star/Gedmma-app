@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom'
 import {
   exportProgress, importProgress, resetProgress, setSetting, setState, useStore, type Settings,
 } from '../engine/store'
-import { arabicVoices, canListen, canSpeak, keepAwake, mixerState, say, sfx, unlockAudio, voicePlan } from '../engine/audio'
+import {
+  arabicVoices, canListen, canSpeak, keepAwake, mixerState, prepareSamples, say, sfx, unlockAudio, voicePlan,
+} from '../engine/audio'
 import { LIST_PRICE, TRIAL_DAYS } from '../engine/billing'
 import { LANGS, useT, type Lang } from '../i18n'
 import { useVoices } from '../ui/useVoices'
@@ -197,6 +199,13 @@ export function SettingsPage() {
           <Button variant="secondary" onClick={() => sfx.demo()}>{t.settings.speel}</Button>
         </Row>
         <SoundCheck />
+        <Row title={t.settings.mediakanaal} hint={t.settings.mediakanaalHint}>
+          <Toggle
+            on={s.mediaSound}
+            onChange={(v) => { setSetting('mediaSound', v); if (v) void prepareSamples() }}
+            label={t.settings.mediakanaal}
+          />
+        </Row>
         <Row title={t.settings.uitspraak} hint={voiceStatus}>
           <Button variant="secondary" onClick={() => say('السلام عليكم', { tr: 'ssalamu 3alaykum' })}>
             {t.common.test}
@@ -241,6 +250,9 @@ export function SettingsPage() {
       <Card className="mb-6">
         <Row title={t.settings.hartjes} hint={t.settings.hartjesHint}>
           <Toggle on={s.hearts} onChange={set('hearts')} label={t.settings.hartjes} />
+        </Row>
+        <Row title={t.settings.film} hint={t.settings.filmHint}>
+          <Toggle on={s.film} onChange={set('film')} label={t.settings.film} />
         </Row>
         <Row title={t.settings.beweging} hint={t.settings.bewegingHint}>
           <Choice

@@ -16,6 +16,7 @@ const Unlock = lazy(() => import('./pages/Unlock').then((m) => ({ default: m.Unl
 const Privacy = lazy(() => import('./pages/Privacy').then((m) => ({ default: m.Privacy })))
 const SettingsPage = lazy(() => import('./pages/Settings').then((m) => ({ default: m.SettingsPage })))
 import { NotFound } from './pages/NotFound'
+const FilmPreview = lazy(() => import('./ui/Film').then((m) => ({ default: m.FilmPreview })))
 import { TopBar } from './ui/TopBar'
 import { Welcome } from './ui/Welcome'
 import { useStore } from './engine/store'
@@ -95,6 +96,9 @@ function Chrome() {
             <Route path="/instellingen" element={<SettingsPage />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/volledig" element={<Unlock />} />
+            {/* Working on a scene of the film is otherwise a matter of
+                finishing a lesson to see one frame of it. */}
+            {import.meta.env.DEV && <Route path="/film/:scene" element={<FilmPreview />} />}
             <Route path="*" element={<NotFound />} />
           </Routes>
           </Suspense>

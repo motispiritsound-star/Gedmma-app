@@ -157,6 +157,17 @@ export const nl = {
     metZinnen: (n: number): string => (n === 1 ? 'Er komt ook 1 zin terug.' : `Er komen ook ${n} zinnen terug.`),
   },
 
+  film: {
+    overslaan: 'Overslaan',
+    scenes: [
+      'Op de souq, met muntthee',
+      'Door de duinen van de Sahara',
+      'De blauwe straten van Chefchaouen',
+      'Aan de kust, met een bal',
+      'Feest, met de darbuka',
+    ],
+  },
+
   quests: {
     titel: 'Missies van vandaag',
     uitleg: 'Elke missie die je haalt levert edelstenen op. Morgen staan er weer nieuwe klaar.',
@@ -391,6 +402,10 @@ export const nl = {
     mixerGeen: 'Deze browser heeft geen geluidsmotor.',
     mixerAanzetten: 'Aanzetten',
     mixerStil: 'Hoor je de uitspraak wél maar de spelgeluidjes niet? Op een iPhone zet het schuifje aan de zijkant alleen de effecten uit, niet de stem — zet het op bellen. In een ingesloten venster helpt het om de app in een eigen tabblad te openen.',
+    mediakanaal: 'Geluid via het mediakanaal',
+    mediakanaalHint: 'Hoor je de uitspraak wel en de spelgeluidjes niet? Zet dit aan. De effecten gaan dan als kleine geluidsbestandjes naar buiten, net als muziek — dat werkt ook als je iPhone op stil staat. Ze reageren een tikje trager.',
+    film: 'Filmpje na de les',
+    filmHint: 'Een kort tekenfilmpje van Fnek als je een les afrondt.',
     uitspraak: 'Uitspraak',
     stem: 'Stem',
     stemAuto: 'Automatisch kiezen',

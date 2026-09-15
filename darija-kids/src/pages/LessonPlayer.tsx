@@ -10,6 +10,7 @@ import { sfx } from '../engine/audio'
 import { Button, Card, Sheet } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 import { RoundRunner, type RoundResult } from '../ui/Round'
+import { Film } from '../ui/Film'
 import { useLang, useT } from '../i18n'
 import { lessonTitle, tipOf, unitSubtitle } from '../content/localise'
 
@@ -28,7 +29,11 @@ export function LessonPlayer() {
   const [won, setWon] = useState<Badge[]>([])
   const [attempt, setAttempt] = useState(0)
   // What finishing itself paid, on top of the answers that already paid out.
-  const [bonus, setBonus] = useState({ xp: 0, gems: 0 })
+  const [bonus, setBonus] = useState({ xp: 0, gems: 0, levelled: false })
+  // The little film runs before the score, so the reward arrives before the
+  // report card does.
+  const [film, setFilm] = useState(false)
+  const lessonsDone = useStore((s) => Object.keys(s.lessons).length)
 
   // The round is built once per attempt, from what the learner already knows.
   const exercises = useMemo(
@@ -57,17 +62,26 @@ export function LessonPlayer() {
     const before = getState()
     const levelBefore = levelOf(before.xp).level
     completeLesson(lesson.id, r.score, bonusXp)
-    setBonus({ xp: bonusXp, gems: getState().gems - before.gems })
+    const now = getState()
+    const levelled = levelOf(now.xp).level > levelBefore
+    setBonus({ xp: bonusXp, gems: now.gems - before.gems, levelled })
     const badges = awardBadges()
     setWon(badges)
     setResult(r)
+    // The film carries its own music, so the flourish waits until after it.
+    if (now.settings.film && now.settings.motion === 'full') setFilm(true)
+    else celebrate(r, levelled, badges.length)
+  }
+
+  /** The sound and the confetti for a finished lesson, wherever it lands. */
+  const celebrate = (r: RoundResult, levelled: boolean, badges: number) => {
     // A checkpoint that went well gets the room clapping; an ordinary lesson
     // gets the ordinary flourish.
     if (lesson.kind === 'toets' && r.score >= 0.8) sfx.cheer()
     else sfx.finish()
     // Stack the rewards in the order they happened, not on top of each other.
-    if (levelOf(getState().xp).level > levelBefore) setTimeout(() => sfx.levelUp(), 1400)
-    if (badges.length) setTimeout(() => sfx.badge(), 2400)
+    if (levelled) setTimeout(() => sfx.levelUp(), 1400)
+    if (badges) setTimeout(() => sfx.badge(), 2400)
     if (getState().settings.motion === 'full') {
       void confetti({
         particleCount: r.perfect ? 160 : 90,
@@ -76,6 +90,19 @@ export function LessonPlayer() {
         colors: ['#f59e0b', '#14b8a6', '#e2603c', '#22c55e'],
       })
     }
+  }
+
+  if (film && result) {
+    return (
+      <Film
+        scene={lessonsDone}
+        onDone={() => {
+          setFilm(false)
+          // The level-up and the badges still get their turn, after the film.
+          celebrate(result, bonus.levelled, won.length)
+        }}
+      />
+    )
   }
 
   if (result) {
@@ -128,7 +155,7 @@ export function LessonPlayer() {
           <Button
             variant="secondary"
             className="w-full"
-            onClick={() => { setResult(null); setWon([]); setAttempt((a) => a + 1) }}
+            onClick={() => { setResult(null); setWon([]); setBonus({ xp: 0, gems: 0, levelled: false }); setAttempt((a) => a + 1) }}
           >
             {t.common.nogEenKeer}
           </Button>

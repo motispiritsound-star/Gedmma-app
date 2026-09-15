@@ -152,6 +152,17 @@ export const de: Strings = {
     metZinnen: (n: number): string => (n === 1 ? 'Auch 1 Satz kommt zurück.' : `Auch ${n} Sätze kommen zurück.`),
   },
 
+  film: {
+    overslaan: 'Überspringen',
+    scenes: [
+      'Auf dem Souk, mit Minztee',
+      'Durch die Dünen der Sahara',
+      'Die blauen Gassen von Chefchaouen',
+      'Am Meer, mit einem Ball',
+      'Fest, mit der Darbuka',
+    ],
+  },
+
   quests: {
     titel: 'Missionen von heute',
     uitleg: 'Jede geschaffte Mission bringt Edelsteine. Morgen warten neue.',
@@ -385,6 +396,10 @@ export const de: Strings = {
     mixerGeen: 'Dieser Browser hat keine Audio-Engine.',
     mixerAanzetten: 'Einschalten',
     mixerStil: 'Du hörst die Aussprache, aber keine Spielgeräusche? Auf einem iPhone schaltet der kleine Schalter an der Seite nur die Effekte stumm, nicht die Stimme — stell ihn auf Klingeln. In einem eingebetteten Fenster hilft es, die App in einem eigenen Tab zu öffnen.',
+    mediakanaal: 'Ton über den Medienkanal',
+    mediakanaalHint: 'Du hörst die Aussprache, aber keine Spielgeräusche? Schalte das ein. Die Effekte gehen dann als kleine Audiodateien hinaus, wie Musik — das funktioniert auch, wenn dein iPhone lautlos ist. Sie reagieren eine Spur langsamer.',
+    film: 'Filmchen nach der Lektion',
+    filmHint: 'Ein kurzer Zeichentrick mit Fnek, wenn du eine Lektion abschließt.',
     uitspraak: 'Aussprache',
     stem: 'Stimme',
     stemAuto: 'Automatisch wählen',

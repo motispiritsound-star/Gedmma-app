@@ -35,6 +35,14 @@ export interface Settings {
   showScript: boolean
   showTranslit: boolean
   sound: boolean
+  /**
+   * Play the effects as little files through the media channel instead of
+   * synthesising them live. Slower to react, but an iPhone with the side
+   * switch on silent mutes the live mixer and not this.
+   */
+  mediaSound: boolean
+  /** The short animated scene after a finished lesson. */
+  film: boolean
   speech: boolean
   hearts: boolean
   /** The voice the learner picked, by voiceURI. Empty means: pick the best. */
@@ -170,6 +178,8 @@ const initial = (): State => ({
     showScript: true,
     showTranslit: true,
     sound: true,
+    mediaSound: false,
+    film: true,
     speech: true,
     hearts: true,
     voiceURI: '',

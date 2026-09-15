@@ -366,6 +366,7 @@ function Speak({ exercise, onAnswer, locked }: ExerciseProps) {
 
   const start = async () => {
     if (locked || status !== 'klaar') return
+    sfx.tap()
     setStatus('luistert')
     setHeard('')
     try {

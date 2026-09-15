@@ -16,7 +16,8 @@
     "build:demo": "vite build --mode demo && node scripts/make-demo.mjs",
     "sync": "npm run build && cap sync",
     "android": "npm run build && cap sync android && cap open android",
-    "assets": "node scripts/make-store-assets.mjs && @capacitor/assets generate --android"
+    "assets": "node scripts/make-store-assets.mjs && @capacitor/assets generate --android",
+    "soundcheck": "node scripts/soundcheck.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",

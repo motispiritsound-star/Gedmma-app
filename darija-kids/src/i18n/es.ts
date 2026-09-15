@@ -152,6 +152,17 @@ export const es: Strings = {
     metZinnen: (n: number): string => (n === 1 ? 'También vuelve 1 frase.' : `También vuelven ${n} frases.`),
   },
 
+  film: {
+    overslaan: 'Saltar',
+    scenes: [
+      'En el zoco, con té con menta',
+      'Por las dunas del Sáhara',
+      'Las calles azules de Chefchauen',
+      'En la costa, con un balón',
+      'Fiesta, con la darbuka',
+    ],
+  },
+
   quests: {
     titel: 'Misiones de hoy',
     uitleg: 'Cada misión que completas da gemas. Mañana habrá otras nuevas.',
@@ -385,6 +396,10 @@ export const es: Strings = {
     mixerGeen: 'Este navegador no tiene motor de audio.',
     mixerAanzetten: 'Activar',
     mixerStil: '¿Oyes la pronunciación pero no los efectos? En un iPhone, el interruptor lateral silencia solo los efectos, no la voz: ponlo en timbre. En una ventana incrustada, abre la aplicación en su propia pestaña.',
+    mediakanaal: 'Sonido por el canal multimedia',
+    mediakanaalHint: '¿Oyes la pronunciación pero no los efectos? Activa esto. Los efectos salen como pequeños archivos de audio, igual que la música, y así suenan aunque el iPhone esté en silencio. Reaccionan un poquito más lentos.',
+    film: 'Peli corta tras la lección',
+    filmHint: 'Un pequeño dibujo animado de Fnek cuando terminas una lección.',
     uitspraak: 'Pronunciación',
     stem: 'Voz',
     stemAuto: 'Elegir automáticamente',

@@ -48,6 +48,7 @@ Tests en controles:
 npm test           # 63 tests: leerstof, vertalingen, herhaalsysteem, oefeningen, betaalgrens
 npm run typecheck
 npm run smoke      # klikt de gebouwde app door in een echte browser (na `npm run preview`)
+npm run soundcheck # rendert elke klank en meet of hij écht geluid maakt (na `npm run dev`)
 npm run icons      # tekent de iconen en het deelplaatje opnieuw
 ```
 
@@ -62,6 +63,8 @@ npm run icons      # tekent de iconen en het deelplaatje opnieuw
 | **100 zinnen** | twee aan het eind van elke les, gemaakt van de woorden die die les net leerde — horen, bouwen, herkennen |
 | **17 soorten oefeningen** | kiezen, luisteren, schrift herkennen, koppelen, zin bouwen, typen, inspreken, vier soorten lettervragen, vier soorten zinsvragen, en een introkaart per nieuw woord, letter en zin |
 | **Dagmissies** | vier missies per dag — lessen, goede antwoorden, herhalen en zinnen — met edelstenen die je zelf ophaalt |
+| **Filmpje na de les** | acht seconden Marokko, getekend in SVG: de souq, de Sahara, Chefchaouen, de kust en een feest, elk met een eigen deuntje in hijaz |
+| **34 klanken** | elke knop, elk antwoord, elke beloning en de quiz — gesynthetiseerd, geen enkel geluidsbestand in de build |
 | **31 letters** | het hele Arabische alfabet plus پ, ڤ en ݣ, met hun vorm aan begin, midden en eind — unit 1 van het pad, in groepjes van vier |
 | **4 verhalen** | gesprekken waarin je op elke zin kunt tikken voor de vertaling, met vragen erna |
 | **3 spellen** | tijdrace, geheugenspel en letterspel — ze gebruiken de woorden die je al zag |
@@ -98,6 +101,36 @@ zelf: bij elk goed antwoord vliegt er een `+2 XP` omhoog, de vlam in de hoek
 telt je reeks mee, en elke vijfde op rij levert een edelsteen op. Daarboven
 staan vier dagmissies (`src/ui/Quests.tsx`) waarvan er één altijd over herhalen
 gaat — het deel van taalleren dat nooit dringend voelt en het altijd is.
+
+**En een filmpje.** Wie een les afrondt krijgt acht seconden Marokko
+(`src/ui/Film.tsx`): thee inschenken op de souq, de duinen door, de blauwe
+straten van Chefchaouen, een bal aan de kust, of een feest met de darbuka. Het
+is getekend in SVG en niet gefilmd — geen bestand om te downloaden, werkt in
+het vliegtuig — met per scène een eigen deuntje in hijaz en een Darija-woord
+dat Fnek aan het eind uitspreekt. Overslaan kan met één tik, en helemaal uit
+kan bij instellingen.
+
+## Hoe het klinkt
+
+Alle 34 klanken worden gesynthetiseerd (`src/engine/instruments.ts`): een
+getokkelde snaar, een darbuka, een marimba, een bel, applaus. Er zit geen enkel
+geluidsbestand in de build, en toch klinkt elke knop anders dan de volgende —
+vooruit gaat omhoog, terug gaat omlaag, "snap ik" zijn twee tonen die bij
+elkaar horen.
+
+Ze staan los van de speler, want er zijn twee manieren naar buiten. Normaal
+speelt `src/engine/audio.ts` ze live. Maar Web Audio is op een telefoon
+kwetsbaar: iOS geeft de geluidssessie na elk uitgesproken woord geschorst
+terug, en een iPhone met het schuifje op stil speelt wél de uitspraak (die gaat
+via de spraakmotor) en géén enkel effect. Daarom kan dezelfde klankenbank ook
+vooraf gerenderd worden — offline, wat geen browser blokkeert — naar kleine
+WAV'jes die via gewone `<audio>`-elementen naar buiten gaan, over het
+mediakanaal, langs het schuifje heen. Dat staat als schakelaar bij
+instellingen, en springt vanzelf aan als de mixer weigert te starten.
+
+Of een klank écht geluid maakt is niet iets om aan te nemen:
+`npm run soundcheck` rendert ze allemaal en meet piek en gemiddelde. Een klank
+die naar stilte rendert is een kapotte klank, wat de code ook beweert.
 
 **Antwoorden mogen slordig zijn.** Er is geen officiële spelling voor Darija in
 Latijnse letters, dus `checkTyped()` is streng op het woord en soepel op de

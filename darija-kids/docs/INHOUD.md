@@ -52,6 +52,28 @@ Regels die gelden:
 - **Frans, Duits en Spaans** komen uit `src/content/lang/*.ts`, sleutel
   `sentences`. Een ontbrekende vertaling is een testfout.
 
+## Een scène voor het filmpje toevoegen
+
+Het filmpje na een les staat in `src/ui/Film.tsx`. Een scène is een functie die
+SVG teruggeeft; de app kiest er één op volgorde, zodat kinderen ze afwisselend
+te zien krijgen.
+
+Voor een nieuwe scène heb je vier dingen nodig:
+
+1. **De tekening** — een functie zoals `Souk()`, die `<Sky>`, wat decor en
+   `<Walk>` (Fnek die oversteekt) combineert. Alles binnen viewBox `0 0 400 260`.
+2. **Een lucht** — een kleurenpaar in `SKIES`, van boven naar de horizon.
+3. **Een deuntje** — een reeks noten in `MELODIES` in
+   `src/engine/instruments.ts`. Blijf in hijaz op D (de toonladder die er
+   Marokkaans uit laat klinken); de darbuka eronder komt vanzelf.
+4. **Een woord en een onderschrift** — een Darija-woord in `PHRASES`, en een
+   regel in `film.scenes` in álle vijf de `src/i18n/*.ts`.
+
+Tijdens het ontwikkelen (`npm run dev`) kun je een scène los bekijken op
+`/film/0` tot en met `/film/4` — je hoeft er geen les voor af te maken. Laat
+daarna `npm run soundcheck` even lopen: die rendert ook het nieuwe deuntje en
+zegt of het echt geluid maakt.
+
 ## Een letter aanpassen
 
 `src/content/alphabet.ts` bevat de 31 letters met hun begin-, midden- en

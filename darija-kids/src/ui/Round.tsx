@@ -88,9 +88,14 @@ export function RoundRunner({
   // and a mistake resets both.
   const [combo, setCombo] = useState(0)
   const [burst, setBurst] = useState<Burst | null>(null)
+  const finishRef = useRef(() => {})
   // Every burst needs its own key, or answering the same card twice would
   // reuse the element and the animation would not replay.
   const burstId = useRef(0)
+  // One step per card. A teaching card has no feedback bar to sit behind, so
+  // two quick taps used to move two places at once — and a round that stepped
+  // past its own end simply stopped, with nothing left to press.
+  const stepping = useRef(false)
   const tally = useRef({ right: 0, asked: 0, perfect: true, start: Date.now(), xp: 0, gems: 0, best: 0 })
 
   // The checkpoint announces itself, and then keeps time. The pulse speeds up
@@ -104,8 +109,18 @@ export function RoundRunner({
     if (quiz && index > 0) sfx.quizTick(index, queue.length)
   }, [quiz, index, queue.length])
 
+  useEffect(() => {
+    stepping.current = false
+  }, [index])
+
   const current = queue[index]
   const hearts = heartsNow(state)
+
+  // A round that has run out of cards is a finished round, whatever put it
+  // there. Better to hand over the score than to sit on a loading line.
+  useEffect(() => {
+    if (!current && queue.length > 0) finishRef.current()
+  }, [current, queue.length])
 
   if (heartsOn && hearts <= 0) {
     return (
@@ -151,6 +166,17 @@ export function RoundRunner({
   }
 
   /** Records the answer against whatever kind of thing was being asked. */
+  finishRef.current = finish
+
+  /** Moves to the next card, or hands over the score. Once per card. */
+  const step = () => {
+    if (stepping.current) return
+    stepping.current = true
+    if (index + 1 >= queue.length) finish()
+    else setIndex((i) => i + 1)
+  }
+
+  /** Records the answer against whatever kind of thing was being asked. */
   const record = (exercise: Exercise, grade: Grade) => {
     if (isLetterExercise(exercise)) gradeExtra(letterKey(exercise.letterId!), grade)
     else if (isSentenceExercise(exercise)) gradeExtra(sentenceKey(exercise.sentenceId!), grade)
@@ -164,9 +190,9 @@ export function RoundRunner({
 
     // Teaching cards are not questions: they cost nothing and are worth nothing.
     if (exercise.kind === 'nieuw' || exercise.kind === 'letter-nieuw' || exercise.kind === 'zin-nieuw') {
+      if (stepping.current) return
       record(exercise, 'goed')
-      if (index + 1 >= queue.length) finish()
-      else setIndex((i) => i + 1)
+      step()
       return
     }
 
@@ -203,11 +229,11 @@ export function RoundRunner({
   }
 
   const next = () => {
+    if (stepping.current) return
     setVerdict(null)
     setDetail('')
     setBurst(null)
-    if (index + 1 >= queue.length) finish()
-    else setIndex((i) => i + 1)
+    step()
   }
 
   return (

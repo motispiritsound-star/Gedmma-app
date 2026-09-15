@@ -152,6 +152,17 @@ export const en: Strings = {
     metZinnen: (n: number): string => (n === 1 ? '1 sentence comes back too.' : `${n} sentences come back too.`),
   },
 
+  film: {
+    overslaan: 'Skip',
+    scenes: [
+      'At the souq, with mint tea',
+      'Through the dunes of the Sahara',
+      'The blue streets of Chefchaouen',
+      'On the coast, with a ball',
+      'A feast, with the darbuka',
+    ],
+  },
+
   quests: {
     titel: 'Today’s missions',
     uitleg: 'Every mission you finish pays gems. Tomorrow there are new ones.',
@@ -385,6 +396,10 @@ export const en: Strings = {
     mixerGeen: 'This browser has no audio engine.',
     mixerAanzetten: 'Turn on',
     mixerStil: 'Hearing the pronunciation but none of the game sounds? On an iPhone the little switch on the side mutes the effects but not the voice — flip it back to ring. Inside an embedded frame, open the app in its own tab instead.',
+    mediakanaal: 'Sound through the media channel',
+    mediakanaalHint: 'Hearing the pronunciation but none of the game sounds? Turn this on. The effects then go out as little audio files, like music does — which works even with an iPhone on silent. They react a touch slower.',
+    film: 'Little film after a lesson',
+    filmHint: 'A short cartoon with Fnek when you finish a lesson.',
     uitspraak: 'Pronunciation',
     stem: 'Voice',
     stemAuto: 'Choose automatically',

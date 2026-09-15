@@ -152,6 +152,17 @@ export const fr: Strings = {
     metZinnen: (n: number): string => (n === 1 ? '1 phrase revient aussi.' : `${n} phrases reviennent aussi.`),
   },
 
+  film: {
+    overslaan: 'Passer',
+    scenes: [
+      'Au souk, avec du thé à la menthe',
+      'Dans les dunes du Sahara',
+      'Les rues bleues de Chefchaouen',
+      'Au bord de la mer, avec un ballon',
+      'La fête, au son de la derbouka',
+    ],
+  },
+
   quests: {
     titel: 'Les missions du jour',
     uitleg: 'Chaque mission réussie rapporte des gemmes. Demain, il y en a de nouvelles.',
@@ -385,6 +396,10 @@ export const fr: Strings = {
     mixerGeen: 'Ce navigateur n’a pas de moteur audio.',
     mixerAanzetten: 'Activer',
     mixerStil: 'Tu entends la prononciation mais pas les bruitages ? Sur un iPhone, le petit bouton sur le côté coupe les effets mais pas la voix — remets-le sur sonnerie. Dans une fenêtre intégrée, ouvre plutôt l’application dans son propre onglet.',
+    mediakanaal: 'Son par le canal média',
+    mediakanaalHint: 'Tu entends la prononciation mais pas les bruitages ? Active ceci. Les effets sortent alors comme de petits fichiers audio, comme de la musique — ça marche même quand ton iPhone est en silencieux. La réaction est un poil plus lente.',
+    film: 'Petit film après la leçon',
+    filmHint: 'Un court dessin animé de Fnek quand tu termines une leçon.',
     uitspraak: 'Prononciation',
     stem: 'Voix',
     stemAuto: 'Choisir automatiquement',

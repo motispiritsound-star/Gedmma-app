@@ -1,16 +1,27 @@
 import { getState } from './store'
 import { spokenForm } from '../content/pronunciation'
+import { ARGS, busFor, LENGTH, VOICES, type SoundName, type Stage } from './instruments'
 
 /**
- * Sound, without a single audio file.
+ * Playing sound, and saying words.
  *
- * Two separate jobs live here. The effects are synthesised with the Web Audio
- * API — a plucked string, a hand drum, a bell — so the whole app stays a few
- * hundred kilobytes and still sounds like something. Pronunciation uses the
- * speech synthesiser already in the device, asked for a Moroccan voice and
- * falling back through the other Arabic voices; if the device has no Arabic
- * voice at all it reads the Latin spelling with a French voice instead, which
- * is a rough approximation and says so in the interface.
+ * The notes themselves live in instruments.ts. This file is about getting them
+ * out of the device, which turns out to be the hard half: browsers keep audio
+ * silent until the page has been touched, iOS hands the audio session back
+ * suspended after every spoken word, and an iPhone with the side switch on
+ * silent mutes Web Audio while happily reading the same word out loud through
+ * the speech engine.
+ *
+ * So there are two ways out. Live synthesis is the fast one and the default.
+ * When it cannot be heard — the switch, a context that will not resume — the
+ * same notes are rendered once into little WAV files and played through
+ * ordinary <audio> elements, which go out over the media channel and ignore
+ * the switch entirely.
+ *
+ * Pronunciation is separate again: the speech synthesiser already on the
+ * device, asked for a Moroccan voice and falling back through the other Arabic
+ * ones; with no Arabic voice at all it reads the Latin spelling with a French
+ * voice, which is a rough approximation and says so in the interface.
  */
 
 /* -------------------------------------------------------------- the mixer */
@@ -25,20 +36,7 @@ function audio(): AudioContext | null {
   if (!ctx) {
     claimPlaybackSession()
     ctx = new Ctor()
-    // One limiter on the way out, so two sounds at once cannot clip.
-    const comp = ctx.createDynamicsCompressor()
-    // A real ceiling rather than a suggestion: the bus below runs hot on
-    // purpose, and a reward can stack five sounds inside the same 200 ms.
-    comp.threshold.value = -4
-    comp.knee.value = 10
-    comp.ratio.value = 8
-    comp.attack.value = 0.003
-    comp.release.value = 0.16
-    bus = ctx.createGain()
-    // Phone speakers are small and children hold them at arm's length. The
-    // limiter above is what keeps this from clipping.
-    bus.gain.value = 1.35
-    bus.connect(comp).connect(ctx.destination)
+    bus = busFor(ctx)
   }
   if (ctx.state === 'suspended') void ctx.resume()
   return ctx
@@ -51,7 +49,8 @@ function audio(): AudioContext | null {
  * with the side switch on silent plays the pronunciation (that goes through
  * the speech engine) and none of the effects — which is exactly what "I hear
  * the words but no sounds" looks like. Safari 16.4 and up honour this;
- * everywhere else the property simply is not there.
+ * everywhere else the property simply is not there, which is what the sample
+ * path below is for.
  */
 function claimPlaybackSession(): void {
   const session = (navigator as unknown as { audioSession?: { type: string } }).audioSession
@@ -84,6 +83,7 @@ export function unlockAudio(): void {
   if (unlocked) return
   unlocked = true
   audio()
+  if (samplesWanted()) void warmSamples()
   if (typeof speechSynthesis !== 'undefined') {
     try {
       const warm = new SpeechSynthesisUtterance(' ')
@@ -133,6 +133,139 @@ export const audioBlocked = (): boolean => unlocked && mixerState() === 'geblokk
 
 const on = () => getState().settings.sound
 
+/* ------------------------------------------------- the same notes, as files */
+
+/**
+ * The way out for a device that will not play synthesised audio.
+ *
+ * Each sound is rendered once, offline — which no browser blocks, because
+ * nothing reaches a speaker — into a small WAV, and played back through an
+ * <audio> element. Media elements are not subject to the ringer switch, so
+ * this is what makes an iPhone on silent audible; it costs a few hundred
+ * kilobytes of memory per sound and a little latency, which is why it is not
+ * the default.
+ */
+const samples = new Map<string, string>()
+const pending = new Set<string>()
+
+const key = (name: SoundName, arg: number) => `${name}:${arg}`
+
+/** The rendered variant closest to the value asked for. */
+function nearestArg(name: SoundName, arg: number): number {
+  const options = ARGS[name]
+  let best = options[0]!
+  for (const option of options) {
+    if (Math.abs(option - arg) < Math.abs(best - arg)) best = option
+  }
+  return best
+}
+
+function encodeWav(buffer: AudioBuffer): ArrayBuffer {
+  const samples16 = buffer.getChannelData(0)
+  const out = new ArrayBuffer(44 + samples16.length * 2)
+  const view = new DataView(out)
+  const text = (at: number, s: string) => {
+    for (let i = 0; i < s.length; i++) view.setUint8(at + i, s.charCodeAt(i))
+  }
+  text(0, 'RIFF')
+  view.setUint32(4, 36 + samples16.length * 2, true)
+  text(8, 'WAVEfmt ')
+  view.setUint32(16, 16, true)
+  view.setUint16(20, 1, true)
+  view.setUint16(22, 1, true)
+  view.setUint32(24, buffer.sampleRate, true)
+  view.setUint32(28, buffer.sampleRate * 2, true)
+  view.setUint16(32, 2, true)
+  view.setUint16(34, 16, true)
+  text(36, 'data')
+  view.setUint32(40, samples16.length * 2, true)
+  for (let i = 0; i < samples16.length; i++) {
+    const v = Math.max(-1, Math.min(1, samples16[i]!))
+    view.setInt16(44 + i * 2, v < 0 ? v * 0x8000 : v * 0x7fff, true)
+  }
+  return out
+}
+
+async function render(name: SoundName, arg: number): Promise<string | null> {
+  const Ctor =
+    (typeof OfflineAudioContext !== 'undefined' ? OfflineAudioContext : undefined) ??
+    (window as unknown as { webkitOfflineAudioContext?: typeof OfflineAudioContext }).webkitOfflineAudioContext
+  if (!Ctor) return null
+  const rate = 44100
+  const oac = new Ctor(1, Math.ceil((LENGTH[name] + 0.3) * rate), rate)
+  const stage: Stage = { ac: oac, out: busFor(oac) }
+  VOICES[name](stage, arg)
+  const rendered = await oac.startRendering()
+  return URL.createObjectURL(new Blob([encodeWav(rendered)], { type: 'audio/wav' }))
+}
+
+/** Renders a sound if it is not there yet, and returns it once it is. */
+async function sample(name: SoundName, arg: number): Promise<string | null> {
+  const id = key(name, arg)
+  const have = samples.get(id)
+  if (have) return have
+  if (pending.has(id)) return null
+  pending.add(id)
+  try {
+    const url = await render(name, arg)
+    if (url) samples.set(id, url)
+    return url
+  } catch {
+    return null
+  } finally {
+    pending.delete(id)
+  }
+}
+
+/** The handful worth having ready before the first tap needs them. */
+const WARM: [SoundName, number][] = [
+  ['tap', 0], ['nav', 0], ['back', 0], ['confirm', 0], ['pick', 0],
+  ['correct', 0], ['correct', 1], ['correct', 2], ['wrong', 0],
+]
+
+async function warmSamples(): Promise<void> {
+  for (const [name, arg] of WARM) await sample(name, arg)
+}
+
+/** A small pool, so two sounds can overlap without cutting each other off. */
+const pool: HTMLAudioElement[] = []
+
+function element(): HTMLAudioElement | null {
+  if (typeof Audio === 'undefined') return null
+  const free = pool.find((a) => a.paused || a.ended)
+  if (free) return free
+  if (pool.length >= 8) return pool[0]!
+  const made = new Audio()
+  made.preload = 'auto'
+  ;(made as unknown as { playsInline: boolean }).playsInline = true
+  pool.push(made)
+  return made
+}
+
+function playSample(name: SoundName, arg: number): void {
+  const wanted = nearestArg(name, arg)
+  const ready = samples.get(key(name, wanted))
+  const start = (url: string) => {
+    const el = element()
+    if (!el) return
+    if (el.src !== url) el.src = url
+    el.currentTime = 0
+    void el.play().catch(() => {})
+  }
+  if (ready) start(ready)
+  else void sample(name, wanted).then((url) => url && start(url))
+}
+
+/**
+ * Whether to go through files rather than the live mixer: because the learner
+ * asked for it — the switch that makes an iPhone on silent audible — or
+ * because the mixer has been asked to start and refuses.
+ */
+function samplesWanted(): boolean {
+  if (typeof window === 'undefined') return false
+  return getState().settings.mediaSound || audioBlocked()
+}
+
 /**
  * Plays something, once the mixer is actually awake.
  *
@@ -141,449 +274,70 @@ const on = () => getState().settings.sound
  * the moment it resumes, and are simply never heard. Waiting for the resume is
  * the difference between a silent first answer and a satisfying one.
  */
-function schedule(play: () => void): void {
+function play(name: SoundName, arg = 0): void {
   if (!on()) return
+  if (samplesWanted()) {
+    playSample(name, arg)
+    return
+  }
   const ac = audio()
   if (!ac) return
-  if (ac.state === 'running') play()
-  else void ac.resume().then(play).catch(() => {})
-}
-
-/* ------------------------------------------------------------ instruments */
-
-/** A plucked string: four partials that die away at different speeds. */
-function pluck(freq: number, at = 0, dur = 0.9, level = 0.22): void {
-  const ac = audio()
-  if (!ac || !bus) return
-  const t = ac.currentTime + at
-  const partials: [number, number, number][] = [[1, 1, 1], [2, 0.42, 0.6], [3, 0.2, 0.42], [4.2, 0.1, 0.3]]
-  for (const [ratio, amp, life] of partials) {
-    const osc = ac.createOscillator()
-    const gain = ac.createGain()
-    osc.type = ratio === 1 ? 'triangle' : 'sine'
-    osc.frequency.setValueAtTime(freq * ratio, t)
-    gain.gain.setValueAtTime(0.0001, t)
-    gain.gain.exponentialRampToValueAtTime(level * amp, t + 0.008)
-    gain.gain.exponentialRampToValueAtTime(0.0001, t + dur * life)
-    osc.connect(gain).connect(bus)
-    osc.start(t)
-    osc.stop(t + dur * life + 0.05)
+  const now = () => {
+    if (!bus || !ctx) return
+    VOICES[name]({ ac: ctx, out: bus }, arg)
   }
-}
-
-let noiseBuffer: AudioBuffer | null = null
-
-function noise(ac: AudioContext): AudioBuffer {
-  if (!noiseBuffer) {
-    noiseBuffer = ac.createBuffer(1, ac.sampleRate, ac.sampleRate)
-    const data = noiseBuffer.getChannelData(0)
-    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1
+  if (ac.state === 'running') {
+    now()
+    return
   }
-  return noiseBuffer
-}
-
-/** A hand drum. "dum" is the deep centre stroke, "tek" the dry rim. */
-function drum(kind: 'dum' | 'tek', at = 0, level = 0.3): void {
-  const ac = audio()
-  if (!ac || !bus) return
-  const t = ac.currentTime + at
-
-  const skin = ac.createBufferSource()
-  skin.buffer = noise(ac)
-  const band = ac.createBiquadFilter()
-  band.type = kind === 'dum' ? 'lowpass' : 'bandpass'
-  band.frequency.value = kind === 'dum' ? 320 : 2600
-  band.Q.value = kind === 'dum' ? 1 : 2.5
-  const skinGain = ac.createGain()
-  const skinLife = kind === 'dum' ? 0.16 : 0.07
-  skinGain.gain.setValueAtTime(level * (kind === 'dum' ? 0.5 : 0.34), t)
-  skinGain.gain.exponentialRampToValueAtTime(0.0001, t + skinLife)
-  skin.connect(band).connect(skinGain).connect(bus)
-  skin.start(t)
-  skin.stop(t + skinLife + 0.02)
-
-  if (kind === 'dum') {
-    const body = ac.createOscillator()
-    const bodyGain = ac.createGain()
-    body.type = 'sine'
-    body.frequency.setValueAtTime(150, t)
-    body.frequency.exponentialRampToValueAtTime(56, t + 0.18)
-    bodyGain.gain.setValueAtTime(level, t)
-    bodyGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22)
-    body.connect(bodyGain).connect(bus)
-    body.start(t)
-    body.stop(t + 0.24)
+  // The mixer is asleep. Wake it and play — but if waking does not happen
+  // promptly, make the sound the other way rather than swallow it. Whichever
+  // gets there first wins, so a press never sounds twice.
+  let sounded = false
+  const once = (make: () => void) => {
+    if (sounded) return
+    sounded = true
+    make()
   }
+  void ac.resume().then(() => once(now)).catch(() => once(() => playSample(name, arg)))
+  setTimeout(() => once(() => playSample(name, arg)), 250)
 }
 
-/** A struck bell, by frequency modulation. */
-function bell(freq: number, at = 0, dur = 1.1, level = 0.16): void {
-  const ac = audio()
-  if (!ac || !bus) return
-  const t = ac.currentTime + at
-  const carrier = ac.createOscillator()
-  const mod = ac.createOscillator()
-  const modGain = ac.createGain()
-  const out = ac.createGain()
-  carrier.frequency.value = freq
-  mod.frequency.value = freq * 1.41
-  modGain.gain.setValueAtTime(freq * 2.4, t)
-  modGain.gain.exponentialRampToValueAtTime(1, t + dur * 0.6)
-  out.gain.setValueAtTime(0.0001, t)
-  out.gain.exponentialRampToValueAtTime(level, t + 0.01)
-  out.gain.exponentialRampToValueAtTime(0.0001, t + dur)
-  mod.connect(modGain).connect(carrier.frequency)
-  carrier.connect(out).connect(bus)
-  mod.start(t)
-  carrier.start(t)
-  mod.stop(t + dur)
-  carrier.stop(t + dur + 0.05)
-}
-
-function click(at = 0, level = 0.09): void {
-  const ac = audio()
-  if (!ac || !bus) return
-  const t = ac.currentTime + at
-  const src = ac.createBufferSource()
-  src.buffer = noise(ac)
-  const hp = ac.createBiquadFilter()
-  hp.type = 'highpass'
-  hp.frequency.value = 1800
-  const gain = ac.createGain()
-  gain.gain.setValueAtTime(level, t)
-  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.035)
-  src.connect(hp).connect(gain).connect(bus)
-  src.start(t)
-  src.stop(t + 0.05)
-}
-
-/**
- * Two scales, and they do different jobs.
- *
- * Hijaz on D is the sound of a great deal of Moroccan music, and it carries
- * the app's own moments — finishing a lesson, a drum under a tap. The bright
- * pentatonic is what rewards are built from: every note in it agrees with
- * every other, so a run can climb as long as a child keeps answering, and it
- * never lands on a sour note. That climb is the thing that makes a streak feel
- * like a streak.
- */
-const HIJAZ = {
-  Eb3: 155.56, D4: 293.66, Eb4: 311.13, Fs4: 369.99, A4: 440.0, D5: 587.33, D6: 1174.66,
-}
-
-/** C major pentatonic across two octaves, for the rising reward. */
-const CLIMB = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5, 1174.66, 1318.51, 1567.98, 1760.0]
-
-/** A wooden, bell-like note: the sound most games reward you with. */
-function marimba(freq: number, at = 0, dur = 0.55, level = 0.22): void {
-  const ac = audio()
-  if (!ac || !bus) return
-  const t = ac.currentTime + at
-  for (const [ratio, amp, life] of [[1, 1, 1], [4, 0.28, 0.4], [9.2, 0.08, 0.22]] as const) {
-    const osc = ac.createOscillator()
-    const gain = ac.createGain()
-    osc.type = 'sine'
-    osc.frequency.setValueAtTime(freq * ratio, t)
-    gain.gain.setValueAtTime(0.0001, t)
-    gain.gain.exponentialRampToValueAtTime(level * amp, t + 0.006)
-    gain.gain.exponentialRampToValueAtTime(0.0001, t + dur * life)
-    osc.connect(gain).connect(bus)
-    osc.start(t)
-    osc.stop(t + dur * life + 0.05)
+/** Renders everything up front, for the switch in the settings screen. */
+export async function prepareSamples(): Promise<void> {
+  for (const [name, args] of Object.entries(ARGS) as [SoundName, number[]][]) {
+    for (const arg of args) await sample(name, arg)
   }
-}
-
-/** The bubble-pop under every reward: a short blip that slides upward. */
-function pop(at = 0, from = 420, to = 900, level = 0.12): void {
-  const ac = audio()
-  if (!ac || !bus) return
-  const t = ac.currentTime + at
-  const osc = ac.createOscillator()
-  const gain = ac.createGain()
-  osc.type = 'sine'
-  osc.frequency.setValueAtTime(from, t)
-  osc.frequency.exponentialRampToValueAtTime(to, t + 0.07)
-  gain.gain.setValueAtTime(level, t)
-  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.1)
-  osc.connect(gain).connect(bus)
-  osc.start(t)
-  osc.stop(t + 0.12)
-}
-
-/** Glitter: a handful of tiny high bells, scattered over a moment. */
-function sparkle(at = 0, count = 5, level = 0.09): void {
-  const top = CLIMB.slice(4)
-  for (let i = 0; i < count; i++) {
-    const freq = top[(i * 3 + 2) % top.length]! * (i % 2 ? 2 : 1)
-    bell(freq, at + i * 0.045, 0.8, level)
-  }
-}
-
-/** Air moving: the run-up before something good happens. */
-function whoosh(at = 0, level = 0.1): void {
-  const ac = audio()
-  if (!ac || !bus) return
-  const t = ac.currentTime + at
-  const src = ac.createBufferSource()
-  src.buffer = noise(ac)
-  const band = ac.createBiquadFilter()
-  band.type = 'bandpass'
-  band.Q.value = 1.2
-  band.frequency.setValueAtTime(400, t)
-  band.frequency.exponentialRampToValueAtTime(4000, t + 0.3)
-  const gain = ac.createGain()
-  gain.gain.setValueAtTime(0.0001, t)
-  gain.gain.exponentialRampToValueAtTime(level, t + 0.12)
-  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.34)
-  src.connect(band).connect(gain).connect(bus)
-  src.start(t)
-  src.stop(t + 0.36)
-}
-
-/**
- * A button. Not a tick of noise but an actual little note, because a 35 ms
- * hiss is the first thing a phone speaker throws away.
- */
-function blip(freq: number, at = 0, dur = 0.16, level = 0.3, glide = 1): void {
-  const ac = audio()
-  if (!ac || !bus) return
-  const t = ac.currentTime + at
-  const osc = ac.createOscillator()
-  const gain = ac.createGain()
-  osc.type = 'triangle'
-  osc.frequency.setValueAtTime(freq, t)
-  if (glide !== 1) osc.frequency.exponentialRampToValueAtTime(freq * glide, t + dur * 0.8)
-  gain.gain.setValueAtTime(0.0001, t)
-  gain.gain.exponentialRampToValueAtTime(level, t + 0.006)
-  gain.gain.exponentialRampToValueAtTime(0.0001, t + dur)
-  osc.connect(gain).connect(bus)
-  osc.start(t)
-  osc.stop(t + dur + 0.03)
-}
-
-/** Air rushing upward: the run-up to something about to start. */
-function riser(at = 0, dur = 1.1, level = 0.16): void {
-  const ac = audio()
-  if (!ac || !bus) return
-  const t = ac.currentTime + at
-  const src = ac.createBufferSource()
-  src.buffer = noise(ac)
-  src.loop = true
-  const band = ac.createBiquadFilter()
-  band.type = 'bandpass'
-  band.Q.value = 3
-  band.frequency.setValueAtTime(220, t)
-  band.frequency.exponentialRampToValueAtTime(5200, t + dur)
-  const gain = ac.createGain()
-  gain.gain.setValueAtTime(0.0001, t)
-  gain.gain.exponentialRampToValueAtTime(level, t + dur * 0.8)
-  gain.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.12)
-  src.connect(band).connect(gain).connect(bus)
-  src.start(t)
-  src.stop(t + dur + 0.16)
-}
-
-/**
- * A room full of people clapping: noise in the range hands actually make,
- * chopped up fast enough that the ear hears claps rather than hiss.
- */
-function applause(at = 0, dur = 1.9, level = 0.3): void {
-  const ac = audio()
-  if (!ac || !bus) return
-  const t = ac.currentTime + at
-  const src = ac.createBufferSource()
-  src.buffer = noise(ac)
-  src.loop = true
-  const band = ac.createBiquadFilter()
-  band.type = 'bandpass'
-  band.frequency.value = 1900
-  band.Q.value = 0.6
-  const hp = ac.createBiquadFilter()
-  hp.type = 'highpass'
-  hp.frequency.value = 700
-  const gain = ac.createGain()
-  gain.gain.setValueAtTime(0.0001, t)
-  gain.gain.exponentialRampToValueAtTime(level, t + 0.18)
-  gain.gain.setValueAtTime(level, t + dur * 0.5)
-  gain.gain.exponentialRampToValueAtTime(0.0001, t + dur)
-  // The flutter that turns hiss into hands.
-  const clap = ac.createOscillator()
-  const clapDepth = ac.createGain()
-  clap.type = 'sawtooth'
-  clap.frequency.value = 16
-  clapDepth.gain.value = level * 0.5
-  clap.connect(clapDepth).connect(gain.gain)
-  src.connect(band).connect(hp).connect(gain).connect(bus)
-  src.start(t)
-  src.stop(t + dur + 0.05)
-  clap.start(t)
-  clap.stop(t + dur + 0.05)
-}
-
-/** Someone in the back putting two fingers in their mouth. */
-function whistle(at = 0, level = 0.12): void {
-  const ac = audio()
-  if (!ac || !bus) return
-  const t = ac.currentTime + at
-  const osc = ac.createOscillator()
-  const gain = ac.createGain()
-  osc.type = 'sine'
-  osc.frequency.setValueAtTime(1500, t)
-  osc.frequency.exponentialRampToValueAtTime(2400, t + 0.18)
-  osc.frequency.exponentialRampToValueAtTime(1900, t + 0.34)
-  gain.gain.setValueAtTime(0.0001, t)
-  gain.gain.exponentialRampToValueAtTime(level, t + 0.05)
-  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.38)
-  osc.connect(gain).connect(bus)
-  osc.start(t)
-  osc.stop(t + 0.4)
 }
 
 export const sfx = {
   /** Any button at all: short, wooden, unmistakably a press. */
-  tap: () => schedule(() => {
-    click(0, 0.1)
-    marimba(CLIMB[3]!, 0.005, 0.18, 0.2)
-  }),
-
+  tap: () => play('tap'),
   /** Going somewhere: a tab, a link, a card that opens. */
-  nav: () => schedule(() => {
-    click(0, 0.08)
-    blip(520, 0.005, 0.13, 0.22, 1.35)
-  }),
-
+  nav: () => play('nav'),
   /** Back, close, cancel — the same step, downward. */
-  back: () => schedule(() => {
-    click(0, 0.07)
-    blip(480, 0.005, 0.15, 0.2, 0.7)
-  }),
-
+  back: () => play('back'),
   /** "Snap ik!" — understood, move on. Two notes that agree with each other. */
-  confirm: () => schedule(() => {
-    click(0, 0.08)
-    marimba(HIJAZ.D4, 0.01, 0.35, 0.26)
-    marimba(HIJAZ.A4, 0.1, 0.4, 0.22)
-    drum('tek', 0.01, 0.16)
-  }),
-
+  confirm: () => play('confirm'),
   /** A switch in the settings, and anything else with two states. */
-  toggle: (on: boolean) => schedule(() => {
-    click(0, 0.07)
-    blip(on ? 460 : 620, 0.005, 0.14, 0.22, on ? 1.5 : 0.62)
-  }),
-
+  toggle: (state: boolean) => play('toggle', state ? 1 : 0),
   /** The moment an answer is chosen, before it is judged. */
-  pick: () => schedule(() => {
-    click(0, 0.09)
-    pop(0.01, 300, 560, 0.13)
-    blip(392, 0.01, 0.12, 0.18)
-  }),
-
+  pick: () => play('pick'),
+  correct: (combo = 0) => play('correct', Math.min(Math.max(0, combo), 9)),
+  wrong: () => play('wrong'),
+  finish: () => play('finish'),
+  badge: () => play('badge'),
+  levelUp: () => play('levelUp'),
+  streak: () => play('streak'),
+  match: () => play('match'),
   /** A checkpoint is about to start: drums, a run-up, and three notes. */
-  quizStart: () => schedule(() => {
-    for (const [i, at] of [0, 0.16, 0.3, 0.42, 0.52, 0.6, 0.67, 0.73].entries()) {
-      drum('dum', at, 0.14 + i * 0.03)
-    }
-    riser(0, 0.9, 0.16)
-    marimba(HIJAZ.D4, 0.9, 0.5, 0.26)
-    marimba(HIJAZ.Eb4, 1.02, 0.5, 0.26)
-    marimba(HIJAZ.Fs4, 1.14, 1.1, 0.3)
-    bell(HIJAZ.D5, 1.2, 1.3, 0.12)
-  }),
-
-  /**
-   * The pulse under a checkpoint question: a clock that speeds up as the
-   * checkpoint runs out. Quiet on purpose — it is tension, not a sound effect.
-   */
-  quizTick: (step: number, total: number) => schedule(() => {
-    const late = total > 0 ? Math.min(1, step / total) : 0
-    const gap = 0.28 - late * 0.12
-    drum('dum', 0, 0.1 + late * 0.06)
-    drum('tek', gap, 0.07 + late * 0.05)
-    if (late > 0.6) blip(HIJAZ.Eb3 * 2, gap * 2, 0.12, 0.08)
-  }),
-
+  quizStart: () => play('quizStart'),
+  /** The pulse under a checkpoint question, tightening as it runs out. */
+  quizTick: (step: number, total: number) => play('quizTick', total > 0 ? Math.min(1, step / total) : 0),
   /** A checkpoint passed: a room that claps, and a whistle from the back. */
-  cheer: () => schedule(() => {
-    applause(0.12, 2.1, 0.3)
-    whistle(0.45)
-    whistle(0.95, 0.09)
-    for (const [i, note] of [HIJAZ.D4, HIJAZ.Fs4, HIJAZ.A4, HIJAZ.D5].entries()) {
-      marimba(note, i * 0.1, 0.8, 0.26)
-      drum(i === 3 ? 'dum' : 'tek', i * 0.1, 0.22)
-    }
-    bell(HIJAZ.D6, 0.5, 1.6, 0.13)
-    sparkle(0.6, 7, 0.1)
-  }),
-
-  /**
-   * A right answer. The note climbs one step up the pentatonic for every
-   * answer in a row, so a run sounds like it is going somewhere — and resets
-   * the moment the run breaks.
-   */
-  correct: (combo = 0) => schedule(() => {
-    const step = Math.min(combo, CLIMB.length - 1)
-    pop(0, 420 + step * 40, 820 + step * 90, 0.14)
-    marimba(CLIMB[step]!, 0.03, 0.6, 0.26)
-    marimba(CLIMB[Math.min(step + 2, CLIMB.length - 1)]!, 0.09, 0.55, 0.2)
-    bell(CLIMB[Math.min(step + 4, CLIMB.length - 1)]! * 2, 0.12, 0.7, 0.1)
-    drum('tek', 0.02, 0.14)
-    sparkle(0.18, combo >= 3 ? 3 : 1, 0.08)
-  }),
-
-  wrong: () => schedule(() => {
-    // Low and soft rather than a buzzer: a mistake is not an alarm.
-    drum('dum', 0, 0.24)
-    pluck(HIJAZ.Eb3, 0.04, 0.5, 0.14)
-  }),
-
-  /** Finishing a lesson: the Moroccan phrase, then glitter over it. */
-  finish: () => schedule(() => {
-    const line: [number, number][] = [[HIJAZ.D4, 0], [HIJAZ.Fs4, 0.12], [HIJAZ.A4, 0.24], [HIJAZ.D5, 0.36]]
-    for (const [note, at] of line) {
-      marimba(note, at, 0.8, 0.24)
-      drum(at === 0.36 ? 'dum' : 'tek', at, 0.2)
-    }
-    sparkle(0.46, 6)
-    bell(HIJAZ.D6, 0.5, 1.4, 0.12)
-  }),
-
-  /** A badge: the big one, with a run-up. */
-  badge: () => schedule(() => {
-    whoosh(0)
-    drum('dum', 0.22, 0.26)
-    for (const [i, note] of [CLIMB[2]!, CLIMB[4]!, CLIMB[6]!, CLIMB[8]!].entries()) {
-      marimba(note, 0.24 + i * 0.07, 0.7, 0.22)
-    }
-    sparkle(0.5, 7, 0.11)
-  }),
-
-  /** A new level: shorter than a badge, but unmistakably upward. */
-  levelUp: () => schedule(() => {
-    whoosh(0, 0.08)
-    for (const [i, note] of [CLIMB[0]!, CLIMB[2]!, CLIMB[4]!, CLIMB[5]!].entries()) {
-      marimba(note, 0.1 + i * 0.06, 0.6, 0.22)
-    }
-    bell(CLIMB[7]!, 0.36, 1.2, 0.13)
-    sparkle(0.4, 4)
-  }),
-
-  /** A run worth noticing, on its own. */
-  streak: () => schedule(() => {
-    CLIMB.slice(0, 6).forEach((note, i) => marimba(note, i * 0.05, 0.45, 0.2))
-    sparkle(0.3, 3)
-  }),
-
-  heart: () => schedule(() => drum('dum', 0, 0.2)),
-
-  /** Two cards that match. */
-  match: () => schedule(() => {
-    pop(0, 500, 1100, 0.13)
-    marimba(CLIMB[5]!, 0.03, 0.5, 0.24)
-    bell(CLIMB[8]!, 0.08, 0.7, 0.11)
-  }),
-
-  tick: () => schedule(() => click(0, 0.05)),
+  cheer: () => play('cheer'),
+  /** The tune under the film after a lesson; one per scene. */
+  film: (scene: number) => play('film', scene),
 
   /** Used by the settings screen to show what the effects sound like. */
   demo: () => {
