@@ -108,7 +108,26 @@ Dit is de omslachtigste stap en daarna nooit meer.
      Google je straks met `access_denied` en zoek je een uur naar de reden.
 
 4. **OAuth client.** *APIs & Services → Credentials → Create credentials →
-   OAuth client ID*, type **Desktop app**. Zet client id en secret in `.env`:
+   OAuth client ID*, type **Desktop app**. Klik na het aanmaken op
+   **Download JSON**.
+
+   Laat dat bestand vervolgens uitlezen — dan hoef je niets over te typen, en
+   overtypen is precies waar een client secret stukgaat op één weggevallen
+   teken:
+
+```bash
+npm run google:env
+```
+
+   Hij zoekt zelf het nieuwste `client_secret_*.json` in je Downloads-map, maakt
+   `.env` aan als die er nog niet is, en zet de twee waarden erin. Staat het
+   bestand ergens anders, geef het pad dan mee:
+
+```bash
+npm run google:env -- /pad/naar/client_secret_....json
+```
+
+   Liever met de hand? Dan zijn dit de twee regels in `.env`:
 
 ```bash
 GOOGLE_OAUTH_CLIENT_ID=...apps.googleusercontent.com
