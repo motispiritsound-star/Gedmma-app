@@ -6,6 +6,7 @@
  * tenzij je de toegang intrekt.
  */
 import { createServer } from 'node:http'
+import { spawn } from 'node:child_process'
 import { randomBytes } from 'node:crypto'
 import { URL } from 'node:url'
 import {
@@ -13,6 +14,35 @@ import {
   type OAuthConfig,
 } from './providers/youtube/auth.js'
 import { FileTokenStore } from './providers/youtube/file-token-store.js'
+
+/**
+ * Opent de toestemmingspagina zelf. De link staat er ook nog, want dit kan
+ * mislukken zonder dat we het merken: in een SSH-sessie, een container, of een
+ * afgeschermde werkplek is er geen browser om te openen.
+ *
+ * De reden dat dit erin zit, is dat de link te lang is om over te typen en in
+ * een terminalvenster over meerdere regels breekt. Zelf kopiëren gaat daardoor
+ * net zo vaak mis als goed, en een half geplakte link geeft een foutmelding
+ * die nergens op slaat.
+ */
+function openBrowser(url: string): void {
+  const [commando, args] = process.platform === 'win32'
+    // cmd /c start: het eerste argument van start is de venstertitel, dus die
+    // lege string hoort erbij. En & in een URL splitst het commando, tenzij je
+    // hem afschermt.
+    ? ['cmd', ['/c', 'start', '', url.replace(/&/g, '^&')]]
+    : process.platform === 'darwin'
+      ? ['open', [url]]
+      : ['xdg-open', [url]]
+
+  try {
+    const kind = spawn(commando as string, args as string[], {
+      stdio: 'ignore', detached: true, windowsVerbatimArguments: process.platform === 'win32',
+    })
+    kind.on('error', () => { /* geen browser; de link staat er nog */ })
+    kind.unref()
+  } catch { /* zelfde */ }
+}
 
 /**
  * Google's foutcodes zeggen niets. Ze gaan vrijwel altijd over één van drie
@@ -85,8 +115,12 @@ async function main(): Promise<void> {
   const state = randomBytes(16).toString('hex')
   const store = new FileTokenStore(process.env['YOUTUBE_TOKEN_PATH'] ?? '.tokens/youtube.json')
 
-  console.log('\nOpen deze link in je browser en geef toestemming:\n')
-  console.log(buildAuthUrl(config, state))
+  const authUrl = buildAuthUrl(config, state)
+  openBrowser(authUrl)
+
+  console.log('\nJe browser zou nu open moeten gaan met de toestemmingspagina.')
+  console.log('Gebeurt er niets? Open deze link dan zelf:\n')
+  console.log(authUrl)
   console.log('\nScopes die je geeft:')
   for (const s of scopes) console.log(`  - ${s}`)
   if (!wantsCaptions) {
