@@ -144,76 +144,152 @@ const nederland = (vulling, laagVulling) => `
              L 110 222 L 92 150 Z" fill="${laagVulling}" opacity="0.85"/>` : ''}
   </g>`
 
+
+/** Buis in doorsnede, met een vulling die de inhoud verraadt. */
+const pipe = (x, y, w, h, vulling, tekst) => `
+  <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="7"
+    fill="${vulling}" stroke="${P.ink}" stroke-width="3"/>
+  ${tekst ? label(x + 26, y + h / 2 + 9, tekst, 24, P.paper) : ''}`
+
+/** Regen als losse druppels, altijd hetzelfde patroon zodat het rustig blijft. */
+const rain = (x, y, kolommen, rijen = 3) =>
+  Array.from({ length: kolommen * rijen }, (_, i) => {
+    const k = i % kolommen, r = Math.floor(i / kolommen)
+    return `<circle cx="${x + k * 34}" cy="${y + r * 22 + (k % 2) * 8}" r="4"
+      fill="${P.clean}"/>`
+  }).join('')
+
+/** Genummerde stap in de keten. */
+const step = (x, y, n, tekst, pomp = false) => `
+  <circle cx="${x}" cy="${y}" r="26" fill="${pomp ? P.accent : P.ink}"/>
+  ${label(x, y + 9, String(n), 26, P.paper, 'middle')}
+  ${label(x, y + 58, tekst, 19, P.ink, 'middle')}`
+
 export const SCENES = [
   {
     id: '01-druppel',
-    caption: 'Regenwater in Nederland gaat niet naar beneden. Het gaat omhoog.',
+    caption: 'Regenwater in Nederland gaat niet naar beneden.',
     svg: `${sheet()}
-      <rect x="380" y="430" width="520" height="34" fill="${P.line}" opacity="0.5"/>
-      <rect x="380" y="430" width="520" height="6" fill="${P.ink}" opacity="0.3"/>
-      <circle cx="640" cy="404" r="20" fill="${P.clean}"/>
-      <path d="M 640 372 q -16 20 -16 32 a 16 16 0 0 0 32 0 q 0 -12 -16 -32 Z" fill="${P.clean}"/>
-      ${arrow(760, 280, 760, 150)}
-      <g opacity="0.35">${arrow(520, 150, 520, 280, P.soft, 5)}</g>
-      <line x1="480" y1="140" x2="560" y2="290" stroke="${P.accent}" stroke-width="6"/>
-      ${label(800, 220, 'omhoog', 34)}
-      ${note(430, 330, 'niet omlaag')}`,
+      <rect x="360" y="430" width="560" height="34" fill="${P.line}" opacity="0.5"/>
+      <rect x="360" y="430" width="560" height="6" fill="${P.ink}" opacity="0.3"/>
+      <path d="M 640 372 q -18 22 -18 36 a 18 18 0 0 0 36 0 q 0 -14 -18 -36 Z" fill="${P.clean}"/>
+      ${arrow(640, 250, 640, 350, P.soft, 5)}
+      ${note(660, 300, 'je verwacht: omlaag')}`,
   },
   {
-    id: '02-kaart',
-    caption: 'Zesentwintig procent van Nederland ligt onder zeeniveau.',
+    id: '02-omhoog',
+    caption: 'Het gaat omhoog.',
     svg: `${sheet()}
-      ${nederland(P.paper, P.clean)}
-      ${label(90, 200, '26%', 78, P.accent)}
-      ${label(90, 250, 'ligt onder', 28)}
-      ${label(90, 288, 'zeeniveau', 28)}
-      ${note(90, 340, 'bron: nog na te lopen — zie bronnencheck punt 1')}`,
+      <rect x="360" y="430" width="560" height="34" fill="${P.line}" opacity="0.5"/>
+      <path d="M 640 372 q -18 22 -18 36 a 18 18 0 0 0 36 0 q 0 -14 -18 -36 Z" fill="${P.clean}"/>
+      <g opacity="0.25">${arrow(460, 250, 460, 350, P.soft, 5)}</g>
+      <line x1="424" y1="246" x2="496" y2="354" stroke="${P.accent}" stroke-width="7"/>
+      ${arrow(800, 350, 800, 210, P.accent, 7)}
+      ${label(840, 290, 'omhoog', 40)}`,
   },
   {
     id: '03-emmer',
-    caption: 'Water dat daar terechtkomt, blijft daar liggen tot iemand het optilt.',
+    caption: 'Gooi een emmer water op straat en hij zakt weg. Maar niet naar de zee.',
     svg: `${sheet()}
-      ${doorsnede(1)}
-      ${label(70, 130, 'Beneden is geen optie', 40)}
-      ${note(70, 176, 'de polder is het laagste punt in de omgeving')}
-      ${arrow(300, 240, 300, 452, P.soft, 5)}
-      ${note(322, 350, 'hierheen stroomt het')}`,
+      <path d="M 300 260 L 360 400 L 470 400 L 530 260 Z"
+        fill="none" stroke="${P.ink}" stroke-width="4"/>
+      <path d="M 320 306 L 352 380 L 478 380 L 510 306 Z" fill="${P.clean}"/>
+      <path d="M 528 300 q 90 30 120 120" fill="none" stroke="${P.clean}" stroke-width="7"/>
+      <rect x="600" y="410" width="620" height="28" fill="${P.line}" opacity="0.5"/>
+      ${arrow(760, 452, 760, 530, P.clean, 6)}
+      ${note(786, 500, 'zakt weg')}
+      ${label(600, 300, 'maar waarheen?', 32)}`,
   },
   {
-    id: '04-gemengd',
+    id: '04-kaart-nap',
+    caption: 'Zesentwintig procent van Nederland ligt onder zeeniveau.',
+    svg: `${sheet()}
+      ${nederland(P.paper, P.clean)}
+      ${label(90, 210, '26%', 82, P.accent)}
+      ${label(90, 262, 'onder zeeniveau', 28)}
+      ${note(90, 306, 'nog na te lopen — bronnencheck punt 1')}`,
+  },
+  {
+    id: '05-kaart-overstroom',
+    caption: 'Negenenvijftig procent kan onder water lopen bij een overstroming.',
+    svg: `${sheet()}
+      ${nederland(P.dike, P.clean)}
+      ${label(90, 210, '59%', 82, P.deep)}
+      ${label(90, 262, 'overstroombaar', 28)}
+      ${note(90, 306, 'dit getal staat ter discussie — punt 2')}
+      ${note(90, 340, 'gaat eruit als de bron het niet bevestigt')}`,
+  },
+  {
+    id: '06-trap',
+    caption: 'Tussen jouw stoep en de zee staat een reeks pompen die het water trapsgewijs omhoog brengt.',
+    svg: `${sheet()}
+      ${[0, 1, 2, 3].map((i) => `
+        <rect x="${150 + i * 250}" y="${470 - i * 80}" width="230" height="${80 + i * 80}"
+          fill="${P.dike}" stroke="${P.line}" stroke-width="2"/>
+        ${arrow(265 + i * 250, 450 - i * 80, 265 + i * 250, 390 - i * 80, P.accent, 5)}`).join('')}
+      ${label(70, 130, 'Trapsgewijs omhoog', 40)}
+      ${note(70, 176, 'elke trede is een pomp')}`,
+  },
+  {
+    id: '07-doorsnede-leeg',
+    caption: 'Ik loop de hele reeks met je af. Van de tegel voor je deur tot de zee.',
+    svg: `${sheet()}${doorsnede(1)}
+      ${label(70, 110, 'De doorsnede', 38)}
+      ${note(70, 152, 'deze tekening blijft de hele video staan')}`,
+  },
+  {
+    id: '08-stoeprand',
+    caption: 'Bij de stoeprand splitst het al.',
+    svg: `${sheet()}
+      <rect x="0" y="300" width="1280" height="40" fill="${P.line}" opacity="0.45"/>
+      <rect x="520" y="270" width="40" height="70" fill="${P.line}" opacity="0.8"/>
+      ${rain(180, 130, 8, 3)}
+      ${pipe(140, 420, 980, 64, P.mixed, 'onder de straat')}
+      ${arrow(360, 350, 360, 410, P.clean, 5)}
+      ${arrow(900, 350, 900, 410, P.clean, 5)}
+      ${label(70, 200, 'De stoeprand', 38)}`,
+  },
+  {
+    id: '09-gemengd',
     caption: 'Een gemengd stelsel: één buis, waarin regenwater en afvalwater samenkomen.',
     svg: `${sheet()}
       ${label(70, 110, 'GEMENGD STELSEL', 32)}
       ${note(70, 148, 'de meeste Nederlandse woonwijken')}
-      <rect x="120" y="250" width="1040" height="30" fill="${P.line}" opacity="0.4"/>
-      ${arrow(320, 300, 420, 400, P.clean, 6)}
-      ${arrow(760, 300, 660, 400, P.mixed, 6)}
-      ${note(200, 330, 'regen van je dak')}
-      ${note(790, 330, 'afvalwater uit je huis')}
-      <rect x="120" y="420" width="1040" height="64" rx="8"
-        fill="${P.mixed}" stroke="${P.ink}" stroke-width="3"/>
-      ${label(150, 462, 'één buis', 28, P.paper)}
-      ${arrow(1100, 500, 1100, 548, P.ink, 5)}
-      ${note(1120, 540, 'naar de zuivering')}`,
+      ${arrow(320, 230, 430, 360, P.clean, 6)}
+      ${arrow(900, 230, 790, 360, P.mixed, 6)}
+      ${note(200, 210, 'regen van je dak')}
+      ${note(880, 210, 'afvalwater uit je huis')}
+      ${pipe(120, 390, 1040, 70, P.mixed, 'één buis')}
+      ${arrow(1060, 480, 1060, 536, P.ink, 5)}
+      ${note(880, 524, 'naar de zuivering', 'end')}`,
   },
   {
-    id: '05-gescheiden',
+    id: '10-gescheiden',
     caption: 'Een gescheiden stelsel: twee buizen. Dat verschil is het belangrijkste in deze video.',
     svg: `${sheet()}
       ${label(70, 110, 'GESCHEIDEN STELSEL', 32)}
       ${note(70, 148, 'nieuwere wijken')}
-      <rect x="120" y="250" width="1040" height="30" fill="${P.line}" opacity="0.4"/>
-      <rect x="120" y="380" width="1040" height="56" rx="8"
-        fill="${P.clean}" stroke="${P.ink}" stroke-width="3"/>
-      ${label(150, 418, 'regenwater', 26, P.paper)}
-      <rect x="120" y="490" width="1040" height="56" rx="8"
-        fill="${P.mixed}" stroke="${P.ink}" stroke-width="3"/>
-      ${label(150, 528, 'afvalwater', 26, P.paper)}
-      ${note(880, 356, 'naar de sloot')}
-      ${note(880, 580, 'naar de zuivering')}`,
+      ${pipe(120, 280, 1040, 62, P.clean, 'regenwater')}
+      ${pipe(120, 420, 1040, 62, P.mixed, 'afvalwater')}
+      ${note(1160, 262, 'naar de sloot', 'end')}
+      ${note(1160, 522, 'naar de zuivering', 'end')}`,
   },
   {
-    id: '06-polder',
+    id: '11-vergelijk',
+    caption: 'Dat verschil lijkt technisch. Aan het eind van deze video zie je waarom het dat niet is.',
+    svg: `${sheet()}
+      ${label(70, 110, 'Eén buis of twee', 38)}
+      ${pipe(80, 250, 520, 74, P.mixed)}
+      ${label(110, 300, 'alles samen', 24, P.paper)}
+      ${pipe(680, 220, 520, 58, P.clean)}
+      ${label(710, 258, 'regen', 22, P.paper)}
+      ${pipe(680, 300, 520, 58, P.mixed)}
+      ${label(710, 338, 'afval', 22, P.paper)}
+      <line x1="640" y1="200" x2="640" y2="480" stroke="${P.line}" stroke-width="2"/>
+      ${note(80, 420, 'onthoud dit — het komt terug in segment vijf')}`,
+  },
+  {
+    id: '12-polder',
     caption: 'Een polder is een bak. Dijken eromheen, en een waterstand die kunstmatig op peil blijft.',
     svg: `${sheet()}
       ${dike(215, 400, 548, 48, 130)}
@@ -223,18 +299,54 @@ export const SCENES = [
       ${note(70, 176, 'een bak met een vaste waterstand')}
       <line x1="280" y1="452" x2="1000" y2="452"
         stroke="${P.accent}" stroke-width="3" stroke-dasharray="9 6"/>
-      ${label(600, 432, 'peil', 24, P.accent)}
-      ${arrow(640, 250, 640, 430, P.clean, 5)}
-      ${note(662, 330, 'sloten komen hier samen')}`,
+      ${label(600, 432, 'peil', 24, P.accent)}`,
   },
   {
-    id: '07-doorsnede-2',
+    id: '13-doorsnede-1',
+    caption: 'De polder is het laagste punt. Alles komt hier samen.',
+    svg: `${sheet()}${doorsnede(1)}
+      ${arrow(240, 250, 240, 440, P.clean, 5)}
+      ${note(262, 340, 'hierheen stroomt het')}`,
+  },
+  {
+    id: '14-sloten',
+    caption: 'Al het water verzamelt zich op het laagste punt. Daar staat een poldergemaal.',
+    svg: `${sheet()}
+      ${label(70, 110, 'Sloten komen samen', 38)}
+      ${[0, 1, 2, 3, 4].map((i) =>
+        `<path d="M ${140 + i * 30} ${230 + i * 12} L 620 430" fill="none"
+          stroke="${P.clean}" stroke-width="6" opacity="0.85"/>`).join('')}
+      ${[0, 1, 2, 3, 4].map((i) =>
+        `<path d="M ${1140 - i * 30} ${230 + i * 12} L 660 430" fill="none"
+          stroke="${P.clean}" stroke-width="6" opacity="0.85"/>`).join('')}
+      <circle cx="640" cy="446" r="34" fill="${P.clean}"/>
+      ${pump(640, 476)}
+      ${note(700, 500, 'het laagste punt')}`,
+  },
+  {
+    id: '15-doorsnede-2',
     caption: 'Een poldergemaal tilt water uit de polder omhoog en zet het in de boezem.',
     svg: `${sheet()}${doorsnede(2)}
-      ${label(70, 110, 'Stap één: omhoog', 36)}`,
+      ${label(70, 110, 'Stap één: omhoog', 38)}`,
   },
   {
-    id: '08-boezem-vol',
+    id: '16-boezemnet',
+    caption: 'De boezem is een net van kanalen dat het water van tientallen polders opvangt.',
+    svg: `${sheet()}
+      ${label(70, 110, 'DE BOEZEM', 38)}
+      ${note(70, 152, 'geen meer, geen rivier — een net')}
+      <g stroke="${P.clean}" stroke-width="9" fill="none" stroke-linecap="round">
+        <path d="M 140 300 L 520 300 L 700 220 L 1120 220"/>
+        <path d="M 520 300 L 640 460 L 1060 460"/>
+        <path d="M 300 300 L 300 470"/>
+        <path d="M 860 220 L 860 330 L 1160 330"/>
+      </g>
+      ${[[300, 470], [640, 460], [1060, 460], [1160, 330]].map(([x, y]) =>
+        `<circle cx="${x}" cy="${y}" r="13" fill="${P.accent}"/>`).join('')}
+      ${note(140, 520, 'elke stip is een poldergemaal dat erin uitkomt')}`,
+  },
+  {
+    id: '17-boezem-vol',
     caption: 'Maar een wachtkamer heeft een plafond. Staat de boezem te hoog, dan vallen de poldergemalen stil.',
     svg: `${sheet()}
       ${dike(470, 350, 548, 44, 126)}
@@ -245,49 +357,58 @@ export const SCENES = [
       ${note(70, 164, 'het gemaal staat stil — dat is geen storing')}
       <line x1="540" y1="384" x2="1240" y2="384"
         stroke="${P.accent}" stroke-width="4" stroke-dasharray="9 6"/>
-      ${label(1230, 364, 'maximum', 22, P.accent, 'end')}
-      <g opacity="0.3">${arrow(430, 462, 430, 400, P.soft, 5)}</g>
-      <line x1="396" y1="398" x2="464" y2="466" stroke="${P.accent}" stroke-width="6"/>`,
+      ${label(1230, 364, 'maximum', 22, P.accent, 'end')}`,
   },
   {
-    id: '09-doorsnede-3',
-    caption: 'Stoep, buis, sloot, polder, gemaal, boezem, gemaal, zee. Zeven stappen, waarvan twee een pomp.',
+    id: '18-doorsnede-3',
+    caption: 'Van de boezem moet het water nog één keer omhoog.',
     svg: `${sheet()}${doorsnede(3)}
-      ${label(70, 110, 'De hele keten', 36)}`,
+      ${label(70, 110, 'Stap twee', 38)}`,
   },
   {
-    id: '10-schaal',
-    caption: 'Ongeveer tweehonderdzestig kubieke meter per seconde: één olympisch zwembad per tien seconden.',
+    id: '19-kanaal',
+    caption: 'Aan het eind van het Noordzeekanaal staat het grootste gemaal van Europa.',
     svg: `${sheet()}
-      ${label(70, 120, '260 m³ / seconde', 52)}
-      ${note(70, 166, 'gemaal IJmuiden — grootste van Europa, na te lopen')}
-      <rect x="70" y="250" width="420" height="190" rx="6"
+      ${label(70, 110, 'Het Noordzeekanaal', 38)}
+      <rect x="120" y="300" width="900" height="120" fill="${P.clean}"/>
+      <rect x="1080" y="250" width="180" height="220" fill="${P.deep}"/>
+      ${dike(1050, 250, 470, 34, 74)}
+      ${pump(1050, 178)}
+      ${note(140, 470, 'kanaal')}
+      ${note(1120, 500, 'Noordzee')}
+      ${arrow(1010, 360, 1090, 360, P.accent, 6)}`,
+  },
+  {
+    id: '20-schaal',
+    caption: 'Ongeveer tweehonderdzestig kubieke meter water per seconde.',
+    svg: `${sheet()}
+      ${label(70, 130, '260 m³ / seconde', 56)}
+      ${note(70, 176, 'gemaal IJmuiden — nog na te lopen, punt 4')}
+      <rect x="70" y="260" width="420" height="190" rx="6"
         fill="${P.clean}" stroke="${P.ink}" stroke-width="3"/>
       ${Array.from({ length: 7 }, (_, i) =>
-        `<line x1="${70 + (i + 1) * 52}" y1="250" x2="${70 + (i + 1) * 52}" y2="440"
+        `<line x1="${70 + (i + 1) * 52}" y1="260" x2="${70 + (i + 1) * 52}" y2="450"
           stroke="${P.paper}" stroke-width="2" opacity="0.5"/>`).join('')}
-      ${label(90, 480, 'één olympisch zwembad = 2500 m³', 24)}
-      ${arrow(530, 345, 650, 345)}
-      <circle cx="830" cy="345" r="110" fill="none" stroke="${P.ink}" stroke-width="5"/>
-      <line x1="830" y1="345" x2="830" y2="255" stroke="${P.ink}" stroke-width="5" stroke-linecap="round"/>
-      <line x1="830" y1="345" x2="895" y2="382" stroke="${P.accent}" stroke-width="5" stroke-linecap="round"/>
-      ${label(830, 500, '10 seconden', 30, P.ink, 'middle')}
-      ${note(830, 536, 'zes zwembaden per minuut', 'middle')}`,
+      ${label(90, 492, 'één olympisch zwembad = 2500 m³', 24)}
+      ${arrow(530, 355, 650, 355)}
+      <circle cx="830" cy="355" r="106" fill="none" stroke="${P.ink}" stroke-width="5"/>
+      <line x1="830" y1="355" x2="830" y2="269" stroke="${P.ink}" stroke-width="5" stroke-linecap="round"/>
+      <line x1="830" y1="355" x2="893" y2="390" stroke="${P.accent}" stroke-width="5" stroke-linecap="round"/>
+      ${label(1120, 340, '10 sec', 34, P.ink, 'middle')}
+      ${note(1120, 380, 'per zwembad', 'middle')}`,
   },
   {
-    id: '11-getij',
+    id: '21-getij',
     caption: 'Bij laag water loopt het er vanzelf uit. Pas als de zee te hoog staat, gaan de pompen aan.',
     svg: `${sheet()}
       ${label(70, 110, 'Spuien of pompen', 38)}
       ${note(70, 152, 'het getij bepaalt wat er nodig is')}
-
       ${label(70, 248, 'LAAG WATER', 26)}
-      ${note(70, 278, 'het loopt er vanzelf uit — spuien')}
+      ${note(70, 278, 'het loopt er vanzelf uit')}
       ${dike(300, 316, 540, 34, 92)}
       ${water(60, 340, 208, 200, P.clean)}
       ${water(392, 442, 206, 98, P.deep)}
       ${arrow(300, 360, 300, 452, P.clean, 6)}
-
       ${label(700, 248, 'HOOG WATER', 26)}
       ${note(700, 278, 'de zee staat hoger')}
       ${dike(986, 316, 540, 34, 92)}
@@ -298,24 +419,87 @@ export const SCENES = [
       <line x1="645" y1="230" x2="645" y2="548" stroke="${P.line}" stroke-width="2"/>`,
   },
   {
-    id: '12-overstort',
+    id: '22-keten',
+    caption: 'Stoep, buis, sloot, polder, gemaal, boezem, gemaal, zee. Zeven stappen, waarvan twee een pomp.',
+    svg: `${sheet()}
+      ${label(70, 130, 'De hele keten', 38)}
+      ${['stoep', 'buis', 'sloot', 'polder', 'gemaal', 'boezem', 'gemaal', 'zee']
+        .map((t, i) => {
+          const x = 110 + i * 151
+          const pomp = t === 'gemaal'
+          return `<circle cx="${x}" cy="330" r="21"
+              fill="${pomp ? P.accent : P.ink}"/>
+            ${label(x, 386, t, 19, P.ink, 'middle')}`
+        }).join('')}
+      ${[0, 1, 2, 3, 4, 5, 6].map((i) => {
+        const van = 131 + i * 151, tot = 240 + i * 151
+        return `<line x1="${van}" y1="330" x2="${tot}" y2="330"
+            stroke="${P.line}" stroke-width="4"/>
+          <circle cx="${(van + tot) / 2}" cy="330" r="15" fill="${P.paper}"
+            stroke="${P.line}" stroke-width="2"/>
+          ${label((van + tot) / 2, 337, String(i + 1), 17, P.soft, 'middle')}`
+      }).join('')}
+      ${note(110, 470, 'acht plekken, zeven stappen ertussen')}
+      ${note(110, 498, 'twee van die stappen zijn een pomp — oranje')}`,
+  },
+  {
+    id: '23-bui-te-groot',
+    caption: 'Een rioolstelsel wordt niet gebouwd om elke denkbare bui te verwerken.',
+    svg: `${sheet()}
+      ${label(70, 110, 'De bui past niet', 38)}
+      ${rain(160, 200, 26, 4)}
+      ${pipe(140, 400, 1000, 70, P.mixed, 'de buis')}
+      ${arrow(300, 330, 300, 390, P.clean, 6)}
+      ${arrow(640, 330, 640, 390, P.clean, 6)}
+      ${arrow(980, 330, 980, 390, P.clean, 6)}
+      ${note(140, 520, 'er wordt gebouwd op een bui met een bepaalde kans')}
+      ${note(140, 548, 'en op een frequentie waarop water op straat aanvaardbaar is')}`,
+  },
+  {
+    id: '24-overstort',
     caption: 'Kan de buis het niet meer aan, dan gaat een mengsel van regen- en afvalwater het oppervlaktewater in.',
     svg: `${sheet()}
       ${label(70, 110, 'DE OVERSTORT', 36)}
       ${note(70, 152, 'de rem die voorkomt dat het bij jou binnenkomt')}
-      <rect x="70" y="330" width="700" height="80" rx="8"
-        fill="${P.mixed}" stroke="${P.ink}" stroke-width="3"/>
-      ${label(100, 382, 'gemengd stelsel — vol', 26, P.paper)}
+      ${pipe(70, 330, 700, 80, P.mixed, 'gemengd stelsel — vol')}
       <path d="M 770 330 L 900 330 L 900 470 L 1210 470 L 1210 542 L 820 542 L 820 410 L 770 410 Z"
         fill="${P.mixed}" stroke="${P.ink}" stroke-width="3"/>
       ${arrow(940, 506, 1150, 506, P.accent, 6)}
       ${label(1210, 450, 'de sloot in', 26, P.ink, 'end')}
-      <g>${Array.from({ length: 18 }, (_, i) =>
-        `<circle cx="${150 + i * 34}" cy="${250 + (i % 3) * 22}" r="4" fill="${P.clean}"/>`).join('')}</g>
-      ${note(150, 220, 'de bui')}`,
+      ${rain(150, 220, 18, 2)}`,
   },
   {
-    id: '13-frequentie',
+    id: '25-kleurverschil',
+    caption: 'Het is dezelfde bui. Het is een andere buis.',
+    svg: `${sheet()}
+      ${label(70, 110, 'Dezelfde bui', 38)}
+      ${label(70, 250, 'GESCHEIDEN', 26)}
+      ${pipe(70, 280, 480, 64, P.clean)}
+      ${arrow(560, 312, 660, 312, P.clean, 6)}
+      <circle cx="740" cy="312" r="46" fill="${P.clean}"/>
+      ${note(800, 318, 'schoon regenwater de sloot in')}
+      ${label(70, 430, 'GEMENGD', 26)}
+      ${pipe(70, 460, 480, 64, P.mixed)}
+      ${arrow(560, 492, 660, 492, P.mixed, 6)}
+      <circle cx="740" cy="492" r="46" fill="${P.mixed}"/>
+      ${note(800, 498, 'een mengsel de sloot in')}`,
+  },
+  {
+    id: '26-gemaal-stil',
+    caption: 'Dat is het systeem dat kiest waar het water blijft staan.',
+    svg: `${sheet()}
+      ${dike(640, 350, 548, 44, 126)}
+      ${water(80, 430, 490, 118, P.clean)}
+      ${water(760, 384, 480, 164, P.clean)}
+      ${pump(640, 288, false)}
+      ${label(70, 120, 'Liever hier dan overal', 38)}
+      ${note(70, 164, 'het gemaal staat stil, en dat is een keuze')}
+      ${label(100, 410, 'polder', 24)}
+      ${label(1160, 364, 'boezem', 24, P.ink, 'end')}
+      ${note(100, 590, '')}`,
+  },
+  {
+    id: '27-aanname',
     caption: 'Elk onderdeel is gedimensioneerd op een aanname: zoveel water, zo vaak.',
     svg: `${sheet()}
       ${label(70, 110, 'De aanname', 38)}
@@ -324,21 +508,61 @@ export const SCENES = [
       <line x1="150" y1="540" x2="150" y2="240" stroke="${P.ink}" stroke-width="3"/>
       ${note(150, 218, 'zwaarte van de bui')}
       ${note(1180, 576, 'hoe vaak', 'end')}
-      <line x1="150" y1="420" x2="1180" y2="420"
+      <line x1="150" y1="400" x2="1180" y2="400"
         stroke="${P.line}" stroke-width="3" stroke-dasharray="10 7"/>
-      ${label(1170, 402, 'waar de buis op is berekend', 20, P.soft, 'end')}
-      <path d="M 200 516 C 420 585 560 540 700 470 C 840 400 980 330 1140 300"
-        fill="none" stroke="${P.clean}" stroke-width="5"/>
-      <path d="M 200 494 C 420 560 560 500 700 415 C 840 330 980 270 1140 250"
-        fill="none" stroke="${P.accent}" stroke-width="5" stroke-dasharray="12 8"/>
-      ${label(700, 200, 'de lijn verschuift', 26, P.accent, 'middle')}`,
+      ${label(1170, 382, 'waar de buis op is berekend', 20, P.soft, 'end')}
+      <path d="M 200 516 C 420 508 560 470 700 420 C 840 370 980 320 1140 300"
+        fill="none" stroke="${P.clean}" stroke-width="5"/>`,
   },
   {
-    id: '14-slot',
+    id: '28-verschuift',
+    caption: 'Valt er vaker een bui die zwaarder is, dan verandert er niets aan de buis.',
+    svg: `${sheet()}
+      ${label(70, 110, 'De lijn verschuift', 38)}
+      <line x1="150" y1="540" x2="1180" y2="540" stroke="${P.ink}" stroke-width="3"/>
+      <line x1="150" y1="540" x2="150" y2="240" stroke="${P.ink}" stroke-width="3"/>
+      ${note(1180, 576, 'hoe vaak', 'end')}
+      <line x1="150" y1="400" x2="1180" y2="400"
+        stroke="${P.line}" stroke-width="3" stroke-dasharray="10 7"/>
+      <path d="M 200 516 C 420 508 560 470 700 420 C 840 370 980 320 1140 300"
+        fill="none" stroke="${P.clean}" stroke-width="5" opacity="0.4"/>
+      <path d="M 200 494 C 420 482 560 430 700 370 C 840 310 980 268 1140 252"
+        fill="none" stroke="${P.accent}" stroke-width="5" stroke-dasharray="12 8"/>
+      ${arrow(700, 412, 700, 366, P.accent, 5)}
+      ${note(730, 390, 'vaker boven de streep')}`,
+  },
+  {
+    id: '29-natte-voeten',
+    caption: 'Er verandert alleen iets aan hoe vaak je natte voeten hebt.',
+    svg: `${sheet()}
+      ${label(70, 130, 'Niet de capaciteit', 40, P.soft)}
+      <line x1="70" y1="150" x2="620" y2="150" stroke="${P.soft}" stroke-width="4"/>
+      ${label(70, 260, 'De frequentie', 40)}
+      ${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => `
+        <rect x="${90 + i * 96}" y="${400 - (i % 4) * 14}" width="58" height="${60 + (i % 4) * 14}"
+          fill="${i % 4 === 3 ? P.accent : P.line}" opacity="${i % 4 === 3 ? 1 : 0.55}"/>`).join('')}
+      ${note(90, 500, 'elke staaf een jaar; oranje is een jaar met water op straat')}`,
+  },
+  {
+    id: '30-frequentie',
     caption: 'Niet de capaciteit van het grootste gemaal van Europa. De frequentie.',
     svg: `${sheet()}
       ${label(640, 330, 'FREQUENTIE', 88, P.ink, 'middle')}
       <line x1="360" y1="370" x2="920" y2="370" stroke="${P.accent}" stroke-width="6"/>
       ${note(640, 430, 'dat is het getal waar je naar moet kijken', 'middle')}`,
+  },
+  {
+    id: '31-volgende',
+    caption: 'Volgende week: waar de stroom uit je stopcontact vandaan komt, en hoeveel ervan onderweg verdwijnt.',
+    svg: `${sheet()}
+      ${label(70, 130, 'Volgende week', 38)}
+      <g stroke="${P.ink}" stroke-width="5" fill="none">
+        <path d="M 180 300 L 180 460 M 140 300 L 220 300 M 150 340 L 210 340"/>
+        <path d="M 560 300 L 560 460 M 520 300 L 600 300 M 530 340 L 590 340"/>
+        <path d="M 940 300 L 940 460 M 900 300 L 980 300 M 910 340 L 970 340"/>
+      </g>
+      <path d="M 180 316 q 190 60 380 0 q 190 -60 380 0 q 120 38 220 20"
+        fill="none" stroke="${P.accent}" stroke-width="5"/>
+      ${note(70, 520, 'hoogspanning, en het verlies onderweg')}`,
   },
 ]
