@@ -37,6 +37,10 @@ const SECTIONS_NL: Section[] = [
   ['De app-winkels', [
     'Download je de app uit de App Store of Google Play, dan weten Apple of Google dát je hem hebt gedownload, en kunnen zij technische crashgegevens verzamelen volgens hun eigen voorwaarden. Dat staat los van ons: wij krijgen daar geen persoonsgegevens uit.',
   ]],
+  ['Betalen', [
+    'De eerste units zijn gratis. Koop je de volledige cursus, dan gaat die betaling helemaal via de App Store of Google Play: zij innen het bedrag, zij rekenen de btw af en zij weten wie je bent. Gedmma krijgt van hen alleen te horen dát er betaald is — geen kaartgegevens, geen adres, geen naam.',
+    'De aankoop is eenmalig; er is geen abonnement dat doorloopt. Voordat er iets gekocht kan worden, staat er een rekensom die een volwassene moet beantwoorden.',
+  ]],
   ['Je gegevens weghalen', [
     'Bij Instellingen kun je je voortgang als bestand opslaan, terugzetten op een ander apparaat, of alles in één keer wissen. Wissen is definitief: er staat geen kopie ergens anders.',
     'De app van je apparaat verwijderen wist alles wat de app bewaarde.',
@@ -60,6 +64,10 @@ const SECTIONS_FR: Section[] = [
   ]],
   ['Les magasins d’applications', [
     'Si tu télécharges l’application sur l’App Store ou Google Play, Apple ou Google savent que tu l’as téléchargée et peuvent collecter des données techniques de plantage selon leurs propres conditions. Cela ne dépend pas de nous et ne nous transmet aucune donnée personnelle.',
+  ]],
+  ['Le paiement', [
+    'Les premières unités sont gratuites. Si tu achètes le cours complet, ce paiement passe entièrement par l’App Store ou Google Play : ce sont eux qui encaissent, qui reversent la TVA et qui savent qui tu es. Gedmma apprend seulement qu’un paiement a eu lieu — aucune donnée de carte, aucune adresse, aucun nom.',
+    'L’achat est unique ; il n’y a pas d’abonnement qui court. Avant tout achat, une petite opération doit être résolue par un adulte.',
   ]],
   ['Supprimer tes données', [
     'Dans les réglages, tu peux enregistrer ta progression dans un fichier, la restaurer sur un autre appareil, ou tout effacer d’un coup. L’effacement est définitif : il n’existe aucune copie ailleurs.',
@@ -85,6 +93,10 @@ const SECTIONS_DE: Section[] = [
   ['Die App-Stores', [
     'Lädst du die App im App Store oder bei Google Play, wissen Apple oder Google, dass du sie geladen hast, und können nach ihren eigenen Bedingungen technische Absturzdaten erheben. Das liegt außerhalb unseres Einflusses; personenbezogene Daten erhalten wir daraus nicht.',
   ]],
+  ['Bezahlen', [
+    'Die ersten Einheiten sind kostenlos. Kaufst du den kompletten Kurs, läuft diese Zahlung vollständig über den App Store oder Google Play: sie ziehen den Betrag ein, sie führen die Mehrwertsteuer ab und sie wissen, wer du bist. Gedmma erfährt nur, dass bezahlt wurde — keine Kartendaten, keine Adresse, kein Name.',
+    'Der Kauf ist einmalig; es läuft kein Abo weiter. Vor jedem Kauf steht eine kleine Rechenaufgabe, die ein Erwachsener lösen muss.',
+  ]],
   ['Deine Daten löschen', [
     'In den Einstellungen kannst du deinen Fortschritt als Datei sichern, auf einem anderen Gerät zurückholen oder alles auf einmal löschen. Löschen ist endgültig: es gibt keine Kopie woanders.',
     'Die App vom Gerät zu entfernen löscht alles, was sie gespeichert hatte.',
@@ -108,6 +120,10 @@ const SECTIONS_EN: Section[] = [
   ]],
   ['The app stores', [
     'If you download the app from the App Store or Google Play, Apple or Google know that you downloaded it and may collect technical crash data under their own terms. That is outside our control and gives us no personal data.',
+  ]],
+  ['Paying', [
+    'The first units are free. If you buy the full course, that payment runs entirely through the App Store or Google Play: they take the money, they account for the VAT and they know who you are. Gedmma is only told that a payment happened — no card details, no address, no name.',
+    'The purchase is one-off; there is no subscription running on. Before anything can be bought, a small sum has to be answered by an adult.',
   ]],
   ['Removing your data', [
     'In the settings you can save your progress as a file, restore it on another device, or erase everything at once. Erasing is final: there is no copy anywhere else.',

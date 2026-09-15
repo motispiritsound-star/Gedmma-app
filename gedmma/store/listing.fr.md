@@ -37,9 +37,12 @@ Chaque mot et chaque phrase peut être écouté : une touche pour la vitesse nor
 DANS TA LANGUE
 Français, néerlandais, allemand et anglais. Tu choisis au démarrage et tu peux changer à tout moment : traductions, explications et histoires suivent.
 
+COMMENCER GRATUITEMENT
+Les cinq premières unités sont gratuites : de quoi te présenter, décrire ta famille et compter jusqu'à cent. Pour le cours complet, c'est un achat unique — pas d'abonnement, rien à repayer ensuite.
+
 FAIT POUR ÊTRE CONFIÉ À UN ENFANT
 • Pas de compte, pas d'e-mail, pas de connexion
-• Pas de publicité et rien à acheter
+• Pas de publicité et pas d'abonnement
 • Pas de chat, pas de partage, pas d'envoi de fichiers
 • Toute la progression reste sur l'appareil
 • Les cœurs peuvent être désactivés — se tromper fait partie de l'apprentissage
@@ -61,7 +64,7 @@ Le darija change d'une ville et d'une famille à l'autre, et n'a pas d'orthograp
 `Gedmma — apprendre darija`
 
 **Description courte (max 80)**
-`L'arabe marocain pour les enfants : leçons courtes, vraie prononciation, gratuit.`
+`L'arabe marocain pour enfants : leçons courtes, vraie prononciation, début gratuit.`
 
 **Description complète (max 4000)**
 Le même texte que la description App Store ci-dessus.

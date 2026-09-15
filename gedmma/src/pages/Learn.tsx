@@ -4,7 +4,8 @@ import { UNITS } from '../content/curriculum'
 import { ACCENTS, Button, Card, Progress } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 import {
-  dueWordIds, isDone, lessonUnlocked, markTipSeen, nextLesson, progressOfUnit, unitUnlocked, useStore,
+  dueWordIds, FREE_UNITS, isDone, lessonUnlocked, markTipSeen, nextLesson, progressOfUnit,
+  unitBehindPaywall, unitUnlocked, useStore,
 } from '../engine/store'
 import { missingArabicVoice } from '../engine/audio'
 import { useVoices } from '../ui/useVoices'
@@ -111,6 +112,7 @@ export function Learn() {
       <ol className="space-y-10">
         {UNITS.map((unit, ui) => {
           const open = unitUnlocked(unit.id, state)
+          const paid = unitBehindPaywall(unit.id, state)
           const pct = progressOfUnit(unit.id, state)
           return (
             <li key={unit.id}>
@@ -140,6 +142,16 @@ export function Learn() {
                     <Node key={lesson.id} lesson={lesson} index={i} accent={ACCENTS[unit.accent]!} />
                   ))}
                 </ul>
+              ) : paid ? (
+                // The offer belongs at the paywall itself, once — not stamped
+                // on all eleven units behind it.
+                ui === FREE_UNITS && (
+                  <Card className="mt-4 flex flex-wrap items-center gap-3 p-5">
+                    <span className="text-2xl" aria-hidden="true">🔑</span>
+                    <p className="min-w-0 flex-1 font-display font-extrabold">{t.unlock.slotTitel}</p>
+                    <Link to="/volledig"><Button>{t.unlock.slotKnop}</Button></Link>
+                  </Card>
+                )
               ) : (
                 <p className="mt-4 text-center text-sm text-[var(--ink-soft)]">{t.learn.unitSlot(ui)}</p>
               )}

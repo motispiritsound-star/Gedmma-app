@@ -37,9 +37,12 @@ Jedes Wort und jeder Satz lässt sich anhören: einmal tippen für normal, zweim
 IN DEINER SPRACHE
 Deutsch, Niederländisch, Französisch und Englisch. Du wählst beim Start und kannst jederzeit wechseln: Übersetzungen, Erklärungen und Geschichten wechseln mit.
 
+KOSTENLOS ANFANGEN
+Die ersten fünf Einheiten sind kostenlos: genug, um dich vorzustellen, deine Familie zu beschreiben und bis hundert zu zählen. Den ganzen Kurs gibt es für einen einmaligen Kauf — kein Abo, nie wieder nachzahlen.
+
 GEMACHT, UM ES EINEM KIND ZU GEBEN
 • Kein Konto, keine E-Mail, kein Login
-• Keine Werbung und nichts zu kaufen
+• Keine Werbung und kein Abo
 • Kein Chat, kein Teilen, kein Hochladen
 • Der gesamte Fortschritt bleibt auf dem Gerät
 • Herzen lassen sich ganz abschalten — Fehler gehören dazu
@@ -61,7 +64,7 @@ Darija unterscheidet sich von Stadt zu Stadt und von Familie zu Familie und hat 
 `Gedmma — Darija lernen`
 
 **Kurzbeschreibung (max. 80)**
-`Marokkanisches Arabisch für Kinder: kurze Lektionen, echte Aussprache, gratis.`
+`Marokkanisch für Kinder: kurze Lektionen, echte Aussprache, gratis starten.`
 
 **Vollständige Beschreibung (max. 4000)**
 Derselbe Text wie die App-Store-Beschreibung oben.

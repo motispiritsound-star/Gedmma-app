@@ -285,7 +285,7 @@ export const fr: Strings = {
       {
         emoji: '❤️',
         titel: 'Sans punition',
-        body: 'Les cœurs peuvent être désactivés. Réviser ne coûte jamais de cœur. Pas de publicité, pas d’achats, pas de notifications qui ramènent l’enfant vers l’écran.',
+        body: 'Les cœurs peuvent être désactivés. Réviser ne coûte jamais de cœur. Pas de publicité et pas de notifications qui ramènent l’enfant vers l’écran. Le cours complet est un achat unique, sans abonnement, et il se fait en tant qu’adulte, derrière une petite opération à résoudre.',
       },
     ],
     privacyTitel: 'La vie privée, en bref',
@@ -295,6 +295,7 @@ export const fr: Strings = {
       '✅ Pas de publicité, pas de traceurs, pas de cookies tiers.',
       '✅ La prononciation vient de la voix déjà installée sur l’appareil ; aucun son n’est envoyé.',
       '⚠️ Les exercices de prononciation utilisent la reconnaissance vocale du navigateur. Avec Chrome, l’enregistrement passe par Google — désactive-les si tu ne le souhaites pas.',
+      '✅ Si tu achètes le cours complet, le paiement passe entièrement par Apple ou Google. Nous ne voyons ni carte, ni adresse, ni nom.',
     ],
     privacyInstellingen: 'Effacer la progression ou l’emporter sur un autre appareil se fait dans les réglages.',
     thuisTitel: 'Aider à la maison',
@@ -399,7 +400,7 @@ export const fr: Strings = {
     titelAccent: 'darija',
     titel2: ', la langue de la maison.',
     intro:
-      'L’arabe marocain pour les enfants et les ados. Des leçons courtes, de vrais mots, des jeux et un parcours qui s’adapte à ce que tu ne connais pas encore. Gratuit, sans publicité, fonctionne hors ligne.',
+      'L’arabe marocain pour les enfants et les ados. Des leçons courtes, de vrais mots, des jeux et un parcours qui s’adapte à ce que tu ne connais pas encore. Commence gratuitement, sans publicité, fonctionne hors ligne.',
     startLes1: 'Commencer la leçon 1',
     bekijkWoorden: 'Voir les mots',
     cijfers: (woorden, units, letters) =>
@@ -423,7 +424,7 @@ export const fr: Strings = {
     oudersTitel: 'Fait pour être donné à un enfant',
     oudersPunten: [
       ['🔒', 'Pas de compte.', 'Pas d’e-mail, pas de mot de passe, pas de profil.'],
-      ['📵', 'Pas de publicité', 'et rien à acheter.'],
+      ['📵', 'Pas de publicité', 'et pas d’abonnement.'],
       ['💾', 'Tout reste sur l’appareil.', 'La progression est dans le navigateur, pas sur un serveur.'],
       ['❤️', 'Les cœurs peuvent être coupés.', 'Se tromper est permis, sans punition.'],
       ['🏫', 'Prêt pour la classe.', 'Tourne sur n’importe quel chromebook, sans installation.'],
@@ -453,7 +454,7 @@ export const fr: Strings = {
       ],
       [
         'Est-ce que c’est payant ?',
-        'Non. Pas d’abonnement, pas de publicité, pas d’achats intégrés. Il n’y a pas non plus de compte : ta progression reste dans ton navigateur.',
+        'Les cinq premières unités sont gratuites — de quoi te présenter, décrire ta famille et compter jusqu’à cent. Pour le cours complet, tu l’achètes une seule fois dans l’application, via l’App Store ou Google Play. Pas d’abonnement, pas de publicité, et pas de compte : ta progression reste à toi.',
       ],
       [
         'Ça marche hors ligne ?',
@@ -469,6 +470,35 @@ export const fr: Strings = {
       'La première leçon dure deux minutes, et après tu sais dire bonjour, merci et au revoir en darija.',
     ctaKnop: 'Commencer',
     voetnoot: '« Gedmma » veut dire en avant. Exactement ce que tu fais ici.',
+  },
+
+  unlock: {
+    titel: 'Gedmma Complet',
+    sub: 'Un seul paiement, à toi pour toujours',
+    intro: (vrij) =>
+      `Les ${vrij} premières unités sont gratuites — de quoi te présenter et compter jusqu'à cent. Le reste du cours s'achète une seule fois.`,
+    krijgt: [
+      'Les 16 unités, de la nourriture et l\'école jusqu\'à la négociation au souq',
+      'Les 303 mots et phrases, avec la prononciation',
+      'Toutes les histoires et leurs questions',
+      'Chaque leçon que nous ajouterons ensuite, sans rien repayer',
+      'Hors ligne, sur tous tes appareils avec le même compte du magasin',
+    ],
+    koop: 'Tout débloquer',
+    koopPrijs: (prijs) => `Tout débloquer — ${prijs}`,
+    geenAbo: 'Achat unique, pas d\'abonnement. Le paiement passe par l\'App Store ou Google Play, exactement comme d\'habitude.',
+    herstel: 'Restaurer l\'achat',
+    herstelHint: 'Nouvel appareil, ou application réinstallée ? Restaure ton achat ici — c\'est gratuit.',
+    alleenInApp: 'L\'achat se fait dans l\'application Gedmma de l\'App Store ou de Google Play. Sur ce site, les premières unités restent gratuites.',
+    bezig: 'En cours…',
+    alOpen: 'Tu as Gedmma Complet. Tout est ouvert — shukran !',
+    mislukt: (fout) => `Quelque chose s'est mal passé : ${fout}`,
+    poortTitel: 'Une question pour un adulte',
+    poortBody: (som) => `On n'achète qu'avec un parent à côté. Combien font ${som} ?`,
+    poortFout: 'Ce n\'est pas tout à fait ça. Réessaie.',
+    poortKnop: 'Continuer',
+    slotTitel: 'Cette unité fait partie de Gedmma Complet',
+    slotKnop: 'Voir',
   },
 
   welcome: {

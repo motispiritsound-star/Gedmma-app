@@ -37,9 +37,12 @@ Every word and sentence can be heard: one tap for normal, two for slow. If your 
 IN YOUR LANGUAGE
 English, Dutch, French and German. You choose at the start and can switch any time: translations, explanations and stories all follow.
 
+FREE TO START
+The first five units are free: enough to introduce yourself, describe your family and count to a hundred. For the whole course there is one purchase — no subscription, nothing to pay again.
+
 MADE TO HAND TO A CHILD
 • No account, no email, no login
-• No adverts and nothing to buy
+• No adverts and no subscription
 • No chat, no sharing, no uploads
 • All progress stays on the device
 • Hearts can be switched off entirely — mistakes are part of learning
@@ -61,7 +64,7 @@ Darija differs from city to city and family to family, and has no official spell
 `Gedmma — learn Darija`
 
 **Short description (max 80)**
-`Moroccan Arabic for children: short lessons, real pronunciation, free.`
+`Moroccan Arabic for children: short lessons, real pronunciation, free to start.`
 
 **Full description (max 4000)**
 The same text as the App Store description above.

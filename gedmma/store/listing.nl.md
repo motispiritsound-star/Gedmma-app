@@ -37,9 +37,12 @@ Elk woord en elke zin kun je horen, één tik voor normaal en twee voor langzaam
 IN JOUW TAAL
 Nederlands, Frans, Duits en Engels. Je kiest bij de start en kunt altijd wisselen: alle vertalingen, uitleg en verhalen wisselen mee.
 
+GRATIS BEGINNEN
+De eerste vijf units zijn gratis: genoeg om jezelf voor te stellen, je familie te beschrijven en tot honderd te tellen. Wil je de hele cursus, dan is dat één aankoop — geen abonnement, nooit meer bijbetalen.
+
 GEMAAKT OM AAN EEN KIND TE GEVEN
 • Geen account, geen e-mailadres, geen inloggen
-• Geen advertenties en niets te kopen
+• Geen advertenties en geen abonnement
 • Geen chat, geen delen, geen uploaden
 • Alle voortgang blijft op het toestel zelf
 • Hartjes kunnen helemaal uit — fouten maken hoort erbij
@@ -61,7 +64,7 @@ Darija verschilt per stad en per familie, en heeft geen officiële spelling. Wij
 `Gedmma — Darija leren`
 
 **Korte beschrijving (max 80)**
-`Marokkaans-Arabisch leren voor kinderen: korte lessen, echte uitspraak, gratis.`
+`Marokkaans-Arabisch voor kinderen: korte lessen, echte uitspraak, gratis beginnen.`
 
 **Volledige beschrijving (max 4000)**
 Dezelfde tekst als de App Store-beschrijving hierboven.

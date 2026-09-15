@@ -25,6 +25,26 @@ function* leaves(value: unknown, path = ''): Generator<[string, string]> {
 }
 
 describe('interface languages', () => {
+  it('starts in the language of the device, and otherwise of the country', () => {
+    // The device language decides whenever we speak it.
+    expect(detectLang(['fr-FR'])).toBe('fr')
+    expect(detectLang(['nl-BE'])).toBe('nl')
+    expect(detectLang(['fr-BE'])).toBe('fr')
+    expect(detectLang(['de-AT'])).toBe('de')
+    expect(detectLang(['de-CH', 'fr-CH'])).toBe('de')
+    expect(detectLang(['en-GB'])).toBe('en')
+
+    // A phone in a language we do not speak falls back to its country.
+    expect(detectLang(['ar-MA'])).toBe('fr')
+    expect(detectLang(['ar', 'ar-NL'])).toBe('nl')
+    expect(detectLang(['tr-DE'])).toBe('de')
+    expect(detectLang(['es-ES'])).toBe('en')
+
+    // A second preference still counts, before the country does.
+    expect(detectLang(['ar-FR', 'nl-NL'])).toBe('nl')
+    expect(detectLang([])).toBe('en')
+  })
+
   it('knows the four languages', () => {
     expect(LANG_CODES).toEqual(['nl', 'fr', 'de', 'en'])
     expect(isLang('fr')).toBe(true)

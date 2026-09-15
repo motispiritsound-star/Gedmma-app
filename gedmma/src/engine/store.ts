@@ -12,6 +12,13 @@ import type { Strings } from '../i18n/nl'
 
 const KEY = 'gedmma.v1'
 export const MAX_HEARTS = 5
+
+/**
+ * How much of the course is free. The first five units — hello, introducing
+ * yourself, family, numbers and colours — are enough to hold a first
+ * conversation; everything past that is the one-off purchase.
+ */
+export const FREE_UNITS = 5
 export const HEART_REFILL_MS = 20 * 60_000
 
 export interface Settings {
@@ -57,6 +64,9 @@ export interface State {
   lessons: Record<string, LessonRecord>
   cards: Record<string, Card>
   badges: string[]
+  /** True once the full course has been bought, in either store. */
+  unlocked: boolean
+  unlockedAt: number | null
   langPicked: boolean
   seenTips: string[]
   settings: Settings
@@ -89,6 +99,8 @@ const initial = (): State => ({
   lessons: {},
   cards: {},
   badges: [],
+  unlocked: false,
+  unlockedAt: null,
   /** False until somebody has picked a language on the welcome screen. */
   langPicked: false,
   seenTips: [],
@@ -268,8 +280,18 @@ export function completeLesson(lessonId: string, score: number, xp: number): voi
 
 export const isDone = (lessonId: string, s: State = state): boolean => !!s.lessons[lessonId]
 
-/** A unit opens once the one before it is finished. The first is always open. */
+/** True when this unit is past the free part and has not been bought. */
+export function unitBehindPaywall(unitId: string, s: State = state): boolean {
+  const i = UNITS.findIndex((u) => u.id === unitId)
+  return i >= FREE_UNITS && !s.unlocked
+}
+
+/**
+ * A unit opens once the one before it is finished — and, past the free part,
+ * once the course has been bought. The first unit is always open.
+ */
 export function unitUnlocked(unitId: string, s: State = state): boolean {
+  if (unitBehindPaywall(unitId, s)) return false
   const i = UNITS.findIndex((u) => u.id === unitId)
   if (i <= 0) return true
   return UNITS[i - 1]!.lessons.every((l) => isDone(l.id, s))
@@ -282,13 +304,22 @@ export function lessonUnlocked(lessonId: string, s: State = state): boolean {
   return i === 0 || isDone(unit.lessons[i - 1]!.id, s)
 }
 
-/** The lesson the “Ga verder” button should open. */
+/**
+ * The lesson the “continue” button should open: the first unfinished one that
+ * is actually open. When everything open is finished it points back at the
+ * last one rather than at something locked — the path itself offers the way
+ * past the paywall.
+ */
 export function nextLesson(s: State = state): string {
+  let last = LESSONS[0]!.id
   for (const unit of UNITS) {
     if (!unitUnlocked(unit.id, s)) break
-    for (const lesson of unit.lessons) if (!isDone(lesson.id, s)) return lesson.id
+    for (const lesson of unit.lessons) {
+      if (!isDone(lesson.id, s)) return lesson.id
+      last = lesson.id
+    }
   }
-  return LESSONS.at(-1)!.id
+  return last
 }
 
 export function progressOfUnit(unitId: string, s: State = state): number {
@@ -341,8 +372,9 @@ export function markTipSeen(id: string): void {
 }
 
 export function resetProgress(): void {
-  const keep = state.settings
-  state = { ...initial(), settings: keep }
+  const { settings, unlocked, unlockedAt } = state
+  // Starting over is about progress, not about the purchase.
+  state = { ...initial(), settings, unlocked, unlockedAt }
   emit()
 }
 

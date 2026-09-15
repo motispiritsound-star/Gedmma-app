@@ -9,8 +9,12 @@ Wat hier al staat, en wat alleen jij kunt doen:
 
 | | |
 |---|---|
-| ✅ Klaar | Capacitor-config, het complete Android-project, alle app-iconen en splashschermen, winkelteksten in vier talen, een privacypagina in de app |
-| 🧑‍💻 Jij | Een Apple Developer-account (€ 99/jaar) en een Mac, een Google Play-account (€ 22 eenmalig), de naam en het e-mailadres van de uitgever, screenshots, en het indienen zelf |
+| ✅ Klaar | Capacitor-config, het complete Android-project, alle app-iconen en splashschermen, winkelteksten in vier talen, een privacypagina in de app, en de in-app-aankoop inclusief ouderpoort en herstelknop |
+| 🧑‍💻 Jij | Een Apple Developer-account (€ 99/jaar) en een Mac, een Google Play-account (€ 22 eenmalig), een KvK-inschrijving als je betaald verkoopt, je bankrekening in beide consoles, screenshots, en het indienen zelf |
+
+Voor alles rond geld — het product aanmaken, je bankrekening koppelen, btw,
+commissie en uitbetaling — staat een eigen document klaar:
+[docs/PAYMENTS.md](PAYMENTS.md).
 
 ## Eerst invullen
 
@@ -53,7 +57,8 @@ In de Play Console vul je verder in:
 - **Doelgroep**: vink de leeftijdsgroepen onder 13 aan. Daarmee valt de app
   onder het **Families-beleid**: geen advertenties, geen analytics van derden,
   geen aankopen — daar voldoet de app aan omdat die dingen er niet in zitten.
-- **Inhoudsclassificatie**: de vragenlijst levert PEGI 3 / Iedereen op.
+- **Inhoudsclassificatie**: de vragenlijst levert PEGI 3 / Iedereen op. Vink
+  daar "bevat in-app-aankopen: ja" en "bevat advertenties: nee" aan.
 - **Handelaarsstatus (DSA)**: sinds 2025 verplicht voor de EU. Publiceer je als
   particulier, dan kies je "geen handelaar"; als bedrijf vul je je KvK-gegevens
   in.
@@ -83,11 +88,39 @@ In App Store Connect vul je in:
 - **Leeftijdsclassificatie**: 4+.
 - **Categorie**: Onderwijs. Zet je hem in de **Kids-categorie** (6-8 of 9-11),
   dan gelden strengere regels: geen advertenties, geen analytics van derden, en
-  een ouderpoort vóór elke link naar buiten. De app heeft geen van die dingen —
-  er staat geen enkele externe link in — dus daar voldoet hij aan.
+  een ouderpoort vóór elke link naar buiten én vóór een aankoop. De app heeft
+  geen advertenties, geen analytics en geen externe links, en de aankoop zit
+  achter een rekensom die een volwassene moet beantwoorden.
+- **In-app-aankopen**: zet "Offers In-App Purchases" aan en maak het product
+  aan zoals beschreven in [docs/PAYMENTS.md](PAYMENTS.md).
 - **Toestemmingsteksten**: de app vraagt geen camera, geen locatie en geen
   microfoon. Voeg dus ook geen `NSMicrophoneUsageDescription` toe zolang dat zo
   blijft; een toestemming die je niet gebruikt, is een afwijzing waard.
+
+### De taal van de gebruiker
+
+Er is **één app voor alle landen**; er hoeft niets per land te worden verpakt.
+De app kijkt bij de eerste start naar de taal van het toestel — een telefoon in
+Frankrijk staat op Frans, een in Vlaanderen op Nederlands, een in Wallonië op
+Frans — en stelt die taal voor in het welkomstscherm. Spreekt het toestel een
+taal die wij niet hebben (bijvoorbeeld Arabisch), dan beslist het land:
+Marokko, Algerije en Tunesië krijgen Frans, Oostenrijk en Zwitserland Duits,
+enzovoort. Wisselen kan altijd bij Instellingen, en op Android 13 en later ook
+via "App-taal" in de systeeminstellingen, omdat `locales_config.xml` de vier
+talen aanmeldt.
+
+Twee dingen moet je in de consoles zelf nog doen, want die gaan over de
+**winkelpagina**, niet over de app:
+
+- **Google Play**: voeg per taal een winkelvermelding toe (nl-NL, fr-FR, de-DE,
+  en-GB) met de teksten uit `store/`. Play toont de bezoeker automatisch de
+  vermelding in zijn eigen taal. Beschikbaarheid zet je op alle landen waar je
+  wilt verkopen; Vlaanderen en Wallonië zijn allebei gewoon "België".
+- **App Store Connect**: voeg dezelfde vier lokalisaties toe onder de
+  app-informatie. Apple toont de vermelding in de taal van het App Store-account
+  van de bezoeker. Zet in het iOS-project daarnaast `CFBundleLocalizations` in
+  `Info.plist` op `nl, fr, de, en`, zodat Apple op de productpagina toont dat de
+  app die vier talen spreekt.
 
 ### Spreekoefeningen in de winkelversies
 

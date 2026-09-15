@@ -121,6 +121,17 @@ export function SettingsPage() {
         </Row>
       </Card>
 
+      <h2 className="mb-2 font-display text-lg font-extrabold">{t.unlock.titel}</h2>
+      <Card className="mb-6">
+        <Row title={t.unlock.titel} hint={state.unlocked ? t.unlock.alOpen : t.unlock.geenAbo}>
+          <Link to="/volledig">
+            <Button variant={state.unlocked ? 'secondary' : 'primary'}>
+              {state.unlocked ? t.unlock.herstel : t.unlock.koop}
+            </Button>
+          </Link>
+        </Row>
+      </Card>
+
       <h2 className="mb-2 font-display text-lg font-extrabold">{t.settings.lezenTitel}</h2>
       <Card className="mb-6">
         <Row title={t.settings.schrift} hint={t.settings.schriftHint}>

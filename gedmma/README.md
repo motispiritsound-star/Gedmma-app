@@ -54,6 +54,7 @@ npm run icons      # tekent de iconen en het deelplaatje opnieuw
 | | |
 |---|---|
 | **4 interfacetalen** | Nederlands, Frans, Duits en Engels — interface, betekenissen, uitleg, tips en verhalen |
+| **Gratis beginnen** | de eerste vijf units zijn open; de rest is één aankoop via de App Store of Google Play |
 | **16 units** | van *Salam!* tot afdingen op de souq, oplopend van A0 naar A2 |
 | **303 woorden en zinnen** | elk met Arabisch schrift, Latijnse schrijfwijze en een betekenis in alle vier de talen |
 | **8 soorten oefeningen** | kiezen, luisteren, schrift herkennen, koppelen, zin bouwen, typen, inspreken, en een introkaart per nieuw woord |
@@ -97,9 +98,13 @@ staat apart in `src/i18n/`, waar `Strings` is afgeleid van het Nederlandse
 bestand: een vergeten sleutel in het Frans is een compileerfout, geen Nederlands
 woord op het scherm van een Frans kind.
 
-De taal wordt bij de eerste start voorgesteld op basis van de browsertaal, in
-een welkomstscherm waarin je hem meteen kunt wijzigen; daarna staat hij bij
-Instellingen en op de website in de bovenbalk. De tests bewaken dat elke taal
+De taal wordt bij de eerste start voorgesteld op basis van het apparaat — een
+telefoon in Frankrijk staat op Frans, een in Vlaanderen op Nederlands, een in
+Wallonië op Frans — in een welkomstscherm waarin je hem meteen kunt wijzigen.
+Spreekt het toestel een taal die wij niet hebben, dan beslist het land: Marokko,
+Algerije en Tunesië krijgen Frans, Oostenrijk en Zwitserland Duits. Daarna staat
+de keuze bij Instellingen en op de website in de bovenbalk. Er is dus één app
+voor alle landen; alleen de winkelvermelding zet je per taal klaar. De tests bewaken dat elke taal
 compleet is: gelijke sleutels, een betekenis en een weetje per woord, elke unit,
 les, tip en verhaalregel vertaald.
 
@@ -139,6 +144,23 @@ Twee eerlijke beperkingen, die de app zelf ook benoemt:
 Spreekoefeningen gebruiken de spraakherkenning van de browser. In Chrome gaat de
 opname daarvoor naar Google; wie dat niet wil, zet spreekoefeningen uit. Dat
 staat ook zo op de ouderpagina.
+
+## Wat het kost
+
+De eerste vijf units zijn gratis — genoeg om jezelf voor te stellen, je familie
+te beschrijven en tot honderd te tellen. De rest van de cursus is één aankoop
+(`app.gedmma.learn.full`), eenmalig en zonder abonnement, afgehandeld door de
+App Store of Google Play. De grens staat op één plek: `FREE_UNITS` in
+`src/engine/store.ts`.
+
+De app zelf zet geen prijs: die komt uit de winkel, in de munt van de koper.
+Voor een aankoop staat een ouderpoort — een rekensom die een volwassene moet
+beantwoorden — omdat Apple dat eist voor kinder-apps en het sowieso hoort. Een
+knop **Aankoop terugzetten** is er ook, verplicht bij beide winkels en handig
+bij een nieuw toestel.
+
+Hoe het geld op je rekening komt — product aanmaken, bankrekening koppelen,
+commissie, btw en uitbetaling — staat in [docs/PAYMENTS.md](docs/PAYMENTS.md).
 
 ## Privacy
 

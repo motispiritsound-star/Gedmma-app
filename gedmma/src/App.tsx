@@ -12,6 +12,7 @@ const StoryReader = lazy(() => import('./pages/Stories').then((m) => ({ default:
 const Games = lazy(() => import('./pages/Games').then((m) => ({ default: m.Games })))
 const Profile = lazy(() => import('./pages/Profile').then((m) => ({ default: m.Profile })))
 const Parents = lazy(() => import('./pages/Parents').then((m) => ({ default: m.Parents })))
+const Unlock = lazy(() => import('./pages/Unlock').then((m) => ({ default: m.Unlock })))
 const Privacy = lazy(() => import('./pages/Privacy').then((m) => ({ default: m.Privacy })))
 const SettingsPage = lazy(() => import('./pages/Settings').then((m) => ({ default: m.SettingsPage })))
 import { NotFound } from './pages/NotFound'
@@ -19,6 +20,7 @@ import { TopBar } from './ui/TopBar'
 import { Welcome } from './ui/Welcome'
 import { useStore } from './engine/store'
 import { listenForFirstGesture } from './engine/audio'
+import { initBilling } from './engine/billing'
 import { localeOf, useLang, useT } from './i18n'
 
 const TABS = [
@@ -57,6 +59,9 @@ function Chrome() {
   // Browsers keep a page silent until somebody has interacted with it.
   useEffect(listenForFirstGesture, [])
 
+  // Connects to the App Store or Play Store; does nothing on the web.
+  useEffect(() => { void initBilling() }, [])
+
   // The document language follows the interface, for screen readers and hyphenation.
   useEffect(() => {
     document.documentElement.lang = localeOf(lang)
@@ -89,6 +94,7 @@ function Chrome() {
             <Route path="/ouders" element={<Parents />} />
             <Route path="/instellingen" element={<SettingsPage />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/volledig" element={<Unlock />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           </Suspense>

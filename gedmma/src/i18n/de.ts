@@ -285,7 +285,7 @@ export const de: Strings = {
       {
         emoji: '❤️',
         titel: 'Ohne Strafe',
-        body: 'Herzen lassen sich ganz abschalten. Wiederholen kostet nie ein Herz. Es gibt keine Werbung, keine Käufe und keine Benachrichtigungen, die ein Kind zurückholen.',
+        body: 'Herzen lassen sich ganz abschalten. Wiederholen kostet nie ein Herz. Es gibt keine Werbung und keine Benachrichtigungen, die ein Kind zurückholen. Der komplette Kurs ist ein einmaliger Kauf, kein Abo, und wird als Erwachsener hinter einer kleinen Rechenaufgabe gekauft.',
       },
     ],
     privacyTitel: 'Datenschutz, kurz',
@@ -295,6 +295,7 @@ export const de: Strings = {
       '✅ Keine Werbung, keine Tracker, keine Cookies von Dritten.',
       '✅ Die Aussprache kommt von der Stimme, die schon auf dem Gerät ist; es wird kein Ton verschickt.',
       '⚠️ Sprechübungen nutzen die Spracherkennung des Browsers. Bei Chrome heißt das, dass die Aufnahme zu Google geht — schalte Sprechübungen aus, wenn das nicht erwünscht ist.',
+      '✅ Kaufst du den kompletten Kurs, läuft die Zahlung vollständig über Apple oder Google. Wir sehen weder Kartendaten noch Adresse noch Namen.',
     ],
     privacyInstellingen: 'Fortschritt löschen oder auf ein anderes Gerät mitnehmen geht in den Einstellungen.',
     thuisTitel: 'Zu Hause mithelfen',
@@ -399,7 +400,7 @@ export const de: Strings = {
     titelAccent: 'Darija',
     titel2: ', die Sprache von zu Hause.',
     intro:
-      'Marokkanisches Arabisch für Kinder und Jugendliche. Kurze Lektionen, echte Wörter, Spiele und ein Pfad, der sich daran anpasst, was du noch nicht kennst. Kostenlos, ohne Werbung, funktioniert offline.',
+      'Marokkanisches Arabisch für Kinder und Jugendliche. Kurze Lektionen, echte Wörter, Spiele und ein Pfad, der sich daran anpasst, was du noch nicht kennst. Kostenlos starten, ohne Werbung, funktioniert offline.',
     startLes1: 'Mit Lektion 1 starten',
     bekijkWoorden: 'Die Wörter ansehen',
     cijfers: (woorden, units, letters) =>
@@ -423,7 +424,7 @@ export const de: Strings = {
     oudersTitel: 'Gemacht, um es einem Kind zu geben',
     oudersPunten: [
       ['🔒', 'Kein Konto.', 'Keine E-Mail, kein Passwort, kein Profil.'],
-      ['📵', 'Keine Werbung', 'und nichts zu kaufen.'],
+      ['📵', 'Keine Werbung', 'und kein Abo.'],
       ['💾', 'Alles bleibt auf dem Gerät.', 'Der Fortschritt steht im Browser, nicht auf einem Server.'],
       ['❤️', 'Herzen lassen sich abschalten.', 'Fehler machen ist erlaubt, ohne Strafe.'],
       ['🏫', 'Bereit für die Klasse.', 'Läuft auf jedem Chromebook, ohne Installation.'],
@@ -453,7 +454,7 @@ export const de: Strings = {
       ],
       [
         'Kostet es etwas?',
-        'Nein. Kein Abo, keine Werbung, keine In-App-Käufe. Es gibt auch kein Konto: dein Fortschritt bleibt in deinem Browser.',
+        'Die ersten fünf Einheiten sind kostenlos — genug, um dich vorzustellen, deine Familie zu beschreiben und bis hundert zu zählen. Den ganzen Kurs kaufst du einmal in der App, über den App Store oder Google Play. Kein Abo, keine Werbung und kein Konto: dein Fortschritt bleibt deiner.',
       ],
       [
         'Funktioniert es offline?',
@@ -469,6 +470,35 @@ export const de: Strings = {
       'Die erste Lektion dauert zwei Minuten, und danach kannst du auf Darija hallo sagen, danke sagen und dich verabschieden.',
     ctaKnop: 'Jetzt starten',
     voetnoot: '„Gedmma“ heißt vorwärts. Genau das machst du hier.',
+  },
+
+  unlock: {
+    titel: 'Gedmma Komplett',
+    sub: 'Einmal bezahlen, für immer deins',
+    intro: (vrij) =>
+      `Die ersten ${vrij} Einheiten sind kostenlos — genug, um dich vorzustellen und bis hundert zu zählen. Den Rest des Kurses kaufst du einmal.`,
+    krijgt: [
+      'Alle 16 Einheiten, von Essen und Schule bis zum Handeln auf dem Souk',
+      'Alle 303 Wörter und Sätze, mit Aussprache',
+      'Alle Geschichten und ihre Fragen',
+      'Jede Lektion, die wir später hinzufügen, ohne Nachzahlen',
+      'Offline, auf allen Geräten mit demselben Store-Konto',
+    ],
+    koop: 'Alles freischalten',
+    koopPrijs: (prijs) => `Alles freischalten — ${prijs}`,
+    geenAbo: 'Einmaliger Kauf, kein Abo. Die Zahlung läuft über den App Store oder Google Play, genau wie gewohnt.',
+    herstel: 'Kauf wiederherstellen',
+    herstelHint: 'Neues Gerät oder App neu installiert? Hol deinen Kauf hier zurück — das kostet nichts.',
+    alleenInApp: 'Gekauft wird in der Gedmma-App aus dem App Store oder von Google Play. Auf dieser Website bleiben die ersten Einheiten kostenlos.',
+    bezig: 'Einen Moment…',
+    alOpen: 'Du hast Gedmma Komplett. Alles ist offen — shukran!',
+    mislukt: (fout) => `Da ist etwas schiefgegangen: ${fout}`,
+    poortTitel: 'Kurz etwas für einen Erwachsenen',
+    poortBody: (som) => `Kaufen geht nur mit einem Elternteil daneben. Wie viel ist ${som}?`,
+    poortFout: 'Das stimmt noch nicht ganz. Versuch es noch einmal.',
+    poortKnop: 'Weiter',
+    slotTitel: 'Diese Einheit gehört zu Gedmma Komplett',
+    slotKnop: 'Ansehen',
   },
 
   welcome: {

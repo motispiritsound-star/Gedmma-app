@@ -213,6 +213,7 @@ export function Landing() {
           <Link to="/verhalen" className="hover:underline">{t.nav.verhalen}</Link>
           <Link to="/ouders" className="hover:underline">{t.nav.ouders}</Link>
           <Link to="/instellingen" className="hover:underline">{t.nav.instellingen}</Link>
+          <Link to="/volledig" className="hover:underline">{t.unlock.titel}</Link>
           <Link to="/privacy" className="hover:underline">{t.nav.privacy}</Link>
         </nav>
       </footer>
