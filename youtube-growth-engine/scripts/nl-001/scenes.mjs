@@ -200,7 +200,7 @@ function gemaal(cx, basis, schaal = 1, aan = true) {
     const rx = cx - b / 2 + 14 * schaal + i * (22 * schaal)
     return `<rect x="${n2(rx)}" y="${n2(top + 20 * schaal)}"
       width="${n2(12 * schaal)}" height="${n2(20 * schaal)}" rx="1"
-      fill="${aan ? P.vuur : P.nacht}" opacity="${aan ? 0.95 : 0.6}"/>`
+      fill="${P.vuur}" opacity="${aan ? 0.95 : 0.3}"/>`
   }).join('')
   return `
     ${aan ? `<defs><radialGradient id="g${Math.round(cx)}" cx="0.5" cy="0.5" r="0.5">
@@ -571,17 +571,18 @@ export const SCENES = [
     id: '21-getij', caption: 'Bij laag water loopt het er vanzelf uit. Pas als de zee te hoog staat, gaan de pompen aan.',
     frames: 28,
     svg: (t) => {
-      const h = Math.sin(t * 6.283) * 0.5 + 0.5
+      const h = 0.5 + 0.5 * Math.tanh(3.2 * Math.sin(t * 6.283))
+      const pompt = h > 0.5
       return `${doek(44)}
       ${grond(0, 540, 1280, 180)}
       ${water(40, 400, 560, 140, { fase: t, seed: 85 })}
       ${water(760, 470 - h * 150, 500, 70 + h * 150, { tint: P.ver, fase: t + 0.4, glans: 0.9, seed: 87 })}
       ${dijk(640, 326, 544, 28, 238)}
       ${gemaal(640, 330, 0.85, h > 0.55)}
-      ${h > 0.55
-        ? pijl(640, 420, 640, 352, P.accent, 7)
-        : pijl(700, 430, 800, 490, P.koel, 7)}
-      ${kopje(60, 130, h > 0.55 ? 'hoog water — pompen' : 'laag water — spuien')}
+      ${pompt
+        ? pijl(640, 430, 640, 356, P.accent, 7)
+        : pijl(690, 420, 810, 496, P.koel, 7)}
+      ${kopje(60, 130, pompt ? 'hoog water — pompen' : 'laag water — spuien')}
       ${titel(60, 186, 'Het getij beslist', 46)}
       ${afwerking(44)}`
     },
