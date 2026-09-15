@@ -1,0 +1,139 @@
+# NL-001 — elke bewering met de bron ernaast.
+#
+# Op dit kanaal is dit geen formaliteit maar het product zelf: de claims zijn
+# getallen uit openbare bronnen. Dat is ook precies waarom dit kanaal op
+# CLAIM_PROFILE=controleerbaar mag draaien — de controle is "staat het getal in
+# de bron" en niet "is dit oordeel juist".
+#
+# Ik heb de bronnen NIET zelf kunnen openen: de egressregels van de omgeving
+# waarin ik draai blokkeren rijkswaterstaat.nl, cbs.nl en riool.net. Alles
+# hieronder komt uit zoekresultaten. Daarom staat alles op `open` en moet er
+# één keer een mens langs met de primaire bron erbij. Dat is werk van twintig
+# minuten en het hoeft maar één keer.
+
+video: nl-001
+kanaal: hoe-nederland-werkt
+reviewer: ""
+nagekeken_op: ""
+
+punten:
+  - nr: 1
+    claim: "26% van Nederland ligt onder zeeniveau"
+    klasse: statistiek
+    blokkerend: true
+    status: open
+    bron: "PBL / Rijkswaterstaat-Waterdienst, via secundaire weergave"
+    opmerking: >
+      Dit getal draagt segment 1. Zoek de primaire publicatie en noteer het
+      jaartal erbij — "onder zeeniveau" is een definitiekwestie (ten opzichte
+      van NAP, gemiddeld zeeniveau, of hoogwater) en die definitie hoort in de
+      video genoemd te worden als de bron hem noemt.
+
+  - nr: 2
+    claim: "59% van Nederland kan onder water lopen bij overstroming vanuit zee of rivier"
+    klasse: statistiek
+    blokkerend: true
+    status: open
+    bron: "secundaire weergave; PBL heeft over dit type formulering eerder een correctie uitgegeven"
+    opmerking: >
+      LET OP. Het PBL heeft ooit een correctie moeten publiceren op precies dit
+      soort formulering in een IPCC-rapport. Als de primaire bron een ander
+      percentage of een andere formulering geeft, gaat dit getal uit het script
+      en blijft alleen punt 1 staan. De video werkt ook met één getal.
+
+  - nr: 3
+    claim: "In de meeste Nederlandse woonwijken ligt een gemengd stelsel; nieuwere wijken hebben een gescheiden stelsel"
+    klasse: algemeen
+    blokkerend: false
+    status: open
+    bron: "Stichting RIONED"
+    opmerking: "Klopt 'de meeste' nog? Zo niet, vervangen door het aandeel dat RIONED noemt."
+
+  - nr: 4
+    claim: "Gemaal IJmuiden is het grootste van Europa en verzet ongeveer 260 m³ per seconde"
+    klasse: statistiek
+    blokkerend: true
+    status: open
+    bron: "Rijkswaterstaat; Nederlandse Gemalenstichting"
+    opmerking: >
+      De bronnen lopen licht uiteen: 260 m³/s komt overeen met 15.600 m³/min,
+      terwijl elders 16.000 m³/min staat, en het aantal pompen wordt zowel als
+      vijf als als zes genoemd. Het script zegt daarom "ongeveer". Klopt dat
+      niet, dan het exacte getal van Rijkswaterstaat aanhouden.
+
+  - nr: 5
+    claim: "Een olympisch zwembad bevat 2500 m³, dus het gemaal pompt er ongeveer één leeg per tien seconden"
+    klasse: berekening
+    blokkerend: false
+    status: open
+    bron: "eigen rekensom op basis van punt 4"
+    opmerking: >
+      50 × 25 × 2 meter = 2500 m³. Bij 260 m³/s is dat 9,6 seconden. Als punt 4
+      verandert, verandert dit mee. Reken het na in plaats van het over te nemen.
+
+  - nr: 6
+    claim: "Bij laag water wordt gespuid onder vrij verval; de pompen gaan pas aan als de zee te hoog staat"
+    klasse: mechanisme
+    blokkerend: true
+    status: open
+    bron: "Rijkswaterstaat, Spui- en Gemaalcomplex IJmuiden"
+    opmerking: >
+      Dit is de wending van segment 4 en het moet kloppen als mechanisme, niet
+      als vuistregel. Controleer of spuien en pompen elkaar zo afwisselen als
+      het script zegt.
+
+  - nr: 7
+    claim: "Nederland heeft ruim vijfduizend gemalen; een aparte telling van poldergemalen komt op bijna achtduizend"
+    klasse: statistiek
+    blokkerend: false
+    status: open
+    bron: "Unie van Waterschappen; Nederlandse Gemalenstichting"
+    opmerking: >
+      Het script noemt het verschil met opzet en trekt er geen conclusie uit.
+      Dat is de lijn van dit kanaal: lopen bronnen uiteen, dan zegt de video dat.
+      Controleer wel of het twee tellingen van hetzelfde zijn of van iets anders
+      — dat laatste zou het punt veranderen.
+
+  - nr: 8
+    claim: "Rioolstelsels worden ontworpen op een bui met een bepaalde kans, en er geldt een aanvaardbare frequentie van water op straat"
+    klasse: mechanisme
+    blokkerend: true
+    status: open
+    bron: "Stichting RIONED, maatstaven en ontwerpgrondslagen"
+    opmerking: >
+      Dit is de kern van segment 5 en van de hele video. In zoekresultaten kwam
+      zowel "T=100, 70 mm per uur" als "wateroverlast eens per twee jaar
+      aanvaardbaar" langs, en dat zijn twee heel verschillende maatstaven die
+      niet allebei de norm kunnen zijn. Het script noemt daarom BEWUST geen
+      getal. Zoek op wat RIONED werkelijk als maatstaf hanteert. Komt daar een
+      helder getal uit, dan mag het alsnog het script in — dat maakt de video
+      sterker.
+
+  - nr: 9
+    claim: "Bij een gemengd stelsel treden overstorten op waarbij een mengsel van regen- en afvalwater het oppervlaktewater in gaat"
+    klasse: mechanisme
+    blokkerend: true
+    status: open
+    bron: "waterschap Vechtstromen; Stichting RIONED"
+    opmerking: >
+      Ook hier stond een frequentie in de zoekresultaten (zes tot tien keer per
+      jaar) die het script niet noemt, om dezelfde reden. Bevestig het
+      mechanisme; het getal is optioneel.
+
+  - nr: 10
+    claim: "Poldergemalen worden stilgezet wanneer het boezempeil te hoog staat"
+    klasse: mechanisme
+    blokkerend: true
+    status: open
+    bron: "waterschappen, peilbeheer"
+    opmerking: >
+      Dit sluit haak 3 en verbindt segment 3 met segment 5. Klopt het niet, dan
+      vervalt die verbinding en moet segment 5 anders worden opgebouwd.
+
+# --- Telling ---------------------------------------------------------------
+# Gesproken woorden: 1049
+# Duur bij 2,2 w/s:  477 seconden (7:57)
+# Hook:              10 woorden, 4,5 seconden
+# Eerste beloning:   0:28
+# Open haken:        6 (norm bij deze duur: 6)
+# Alle haken gesloten: ja

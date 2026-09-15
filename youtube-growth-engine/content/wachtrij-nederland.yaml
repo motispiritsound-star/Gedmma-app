@@ -15,11 +15,12 @@ claimprofiel: controleerbaar
 afleveringen:
   - nr: 1
     onderwerp: "waar het water heen gaat als het hard regent: gemalen, boezems en waarom je straat droog blijft"
-    status: gepland
+    status: wacht-op-goedkeuring
     productie: ""
     notitie: >
-      Bronnen: waterschappen en Rijkswaterstaat, allemaal gratis en openbaar.
-      Beeld is één doorsnede die de hele video draagt.
+      Handgeschreven, staat in content/nl-001. Script, shotlist, titels en
+      bronnencheck zijn klaar. Wacht op het nalopen van de tien bronpunten;
+      vier daarvan zijn blokkerend.
 
   - nr: 2
     onderwerp: "hoe stroom van de windmolen naar je stopcontact komt, en waar hij onderweg verdwijnt"
