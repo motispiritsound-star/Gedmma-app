@@ -63,15 +63,19 @@ const lucht = (id = 'l') => `
 /** Wolkenbanden: lange, lage strepen. Nederlandse luchten, geen schapenwolkjes. */
 const wolken = (seed = 7) => {
   const r = rnd(seed)
-  return Array.from({ length: 9 }, () => {
-    const y = 60 + r() * 240
-    const x = -120 + r() * 1300
-    const w = 240 + r() * 520
-    const h = 9 + r() * 20
-    const o = 0.05 + r() * 0.13
+  const banden = Array.from({ length: 7 }, () => {
+    const y = 90 + r() * 230
+    const x = -160 + r() * 1400
+    const w = 380 + r() * 620
+    const h = 6 + r() * 13
+    const o = 0.03 + r() * 0.07
     return `<ellipse cx="${n2(x)}" cy="${n2(y)}" rx="${n2(w / 2)}" ry="${n2(h)}"
-      fill="${P.bot}" opacity="${o.toFixed(3)}"/>`
+      fill="${P.horizon}" opacity="${o.toFixed(3)}"/>`
   }).join('')
+  return `<defs><filter id="wz${seed}" x="-25%" y="-200%" width="150%" height="500%">
+      <feGaussianBlur stdDeviation="16"/>
+    </filter></defs>
+    <g filter="url(#wz${seed})">${banden}</g>`
 }
 
 /** Korrel over het hele beeld. Haalt de digitale vlakheid eraf. */
@@ -148,8 +152,12 @@ function grond(x, y, w, h) {
   const korrels = Array.from({ length: Math.round(w / 7) }, () =>
     `<circle cx="${n2(x + r() * w)}" cy="${n2(y + 6 + r() * (h - 8))}"
       r="${(0.6 + r() * 1.5).toFixed(2)}" fill="${P.bot}" opacity="${(0.03 + r() * 0.07).toFixed(3)}"/>`).join('')
-  return `${lagen}${korrels}
-    <rect x="${n2(x)}" y="${n2(y)}" width="${n2(w)}" height="3" fill="${P.horizon}" opacity="0.35"/>`
+  return `<defs><linearGradient id="gr${Math.round(y)}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${P.ver}" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="${P.klei}" stop-opacity="0"/>
+    </linearGradient></defs>
+    ${lagen}${korrels}
+    <rect x="${n2(x)}" y="${n2(y)}" width="${n2(w)}" height="26" fill="url(#gr${Math.round(y)})"/>`
 }
 
 /** Grasrand: korte streepjes op een lijn. Geeft een dijk een bovenkant. */
@@ -275,7 +283,7 @@ function doorsnede(stap, t = 0) {
   s += bijschrift(52, polder - 10, 'vast peil')
 
   if (stap >= 2) {
-    s += dijk(468, boezem - 26, voet, 30, 132)
+    s += dijk(468, boezem - 18, voet, 26, 224)
     s += water(516, boezem, 300, voet - boezem, { fase: t + 0.3, seed: 33 })
     s += kopje(524, boezem - 34, 'boezem')
     s += bijschrift(524, boezem - 10, 'geen vast peil')
@@ -284,8 +292,8 @@ function doorsnede(stap, t = 0) {
   }
 
   if (stap >= 3) {
-    s += dijk(878, zee - 26, voet, 30, 132)
-    s += water(926, zee, 340, voet - zee, { tint: P.mid, fase: t + 0.6, seed: 45 })
+    s += dijk(878, zee - 18, voet, 26, 236)
+    s += water(926, zee, 340, voet - zee, { tint: P.ver, fase: t + 0.6, glans: 0.9, seed: 45 })
     s += kopje(936, zee - 34, 'zee')
     s += gemaal(878, zee - 26, 0.62)
     s += pijl(838, boezem - 6, 838, zee + 8, P.accent, 5)
@@ -449,8 +457,8 @@ export const SCENES = [
     id: '12-polder', caption: 'Een polder is een bak. Dijken eromheen, en een waterstand die kunstmatig op peil blijft.',
     svg: `${doek(26)}
       ${grond(0, 500, 1280, 220)}
-      ${dijk(190, 372, 520, 34, 140)}
-      ${dijk(1090, 372, 520, 34, 140)}
+      ${dijk(150, 396, 524, 30, 230)}
+      ${dijk(1130, 396, 524, 30, 230)}
       ${water(276, 432, 728, 92, { fase: 0.4, seed: 55 })}
       ${kopje(60, 130, 'de polder')}
       ${titel(60, 186, 'Een bak met een peil', 46)}
@@ -513,7 +521,7 @@ export const SCENES = [
     id: '17-boezem-vol', caption: 'Maar een wachtkamer heeft een plafond. Staat de boezem te hoog, dan vallen de poldergemalen stil.',
     svg: `${doek(36)}
       ${grond(0, 540, 1280, 180)}
-      ${dijk(468, 336, 540, 30, 130)}
+      ${dijk(468, 330, 544, 26, 226)}
       ${water(46, 452, 372, 88, { fase: 0.2, glans: 0.4, seed: 71 })}
       ${water(520, 372, 720, 168, { fase: 0.6, glans: 0.8, seed: 73 })}
       ${gemaal(468, 336, 0.62, false)}
@@ -537,7 +545,7 @@ export const SCENES = [
     svg: `${doek(40)}
       ${grond(0, 540, 1280, 180)}
       ${water(60, 380, 940, 160, { fase: 0.3, seed: 77 })}
-      ${dijk(1040, 330, 540, 34, 120)}
+      ${dijk(1040, 326, 544, 28, 210)}
       ${water(1120, 300, 160, 240, { tint: P.mid, fase: 0.7, glans: 0.9, seed: 79 })}
       ${gemaal(1040, 330, 0.95)}
       ${kopje(60, 130, 'het noordzeekanaal')}
@@ -566,7 +574,7 @@ export const SCENES = [
       const h = Math.sin(t * 6.283) * 0.5 + 0.5
       return `${doek(44)}
       ${grond(0, 540, 1280, 180)}
-      ${dijk(640, 330, 540, 34, 150)}
+      ${dijk(640, 326, 544, 28, 238)}
       ${water(40, 400, 560, 140, { fase: t, seed: 85 })}
       ${water(760, 470 - h * 150, 500, 70 + h * 150, { tint: P.mid, fase: t + 0.4, glans: 0.9, seed: 87 })}
       ${gemaal(640, 330, 0.85, h > 0.55)}
@@ -647,7 +655,7 @@ export const SCENES = [
     id: '26-gemaal-stil', caption: 'Dat is het systeem dat kiest waar het water blijft staan.',
     svg: `${doek(54)}
       ${grond(0, 540, 1280, 180)}
-      ${dijk(640, 340, 540, 30, 130)}
+      ${dijk(640, 334, 544, 26, 232)}
       ${water(60, 424, 500, 116, { fase: 0.2, glans: 0.4, seed: 95 })}
       ${water(740, 376, 500, 164, { fase: 0.6, seed: 97 })}
       ${gemaal(640, 340, 0.7, false)}
