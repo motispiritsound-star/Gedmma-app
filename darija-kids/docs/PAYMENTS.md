@@ -11,15 +11,16 @@ zij houden de proefperiode bij, en zij storten maandelijks op jouw rekening.
 > bankrekening, en de winkels betalen uit wat er binnenkwam minus hun
 > commissie.
 
-## Eerst dit: twee dingen kunnen net niet zoals gevraagd
+## Twee dingen om te weten voor je begint
 
-**1. Een proefperiode van twee dagen bestaat niet.** Apple biedt als kortste
-gratis periode **3 dagen** (daarna 1 week, 2 weken, 1 maand, …) en Google Play
-hanteert eveneens **3 dagen** als minimum. Twee dagen is in geen van beide
-consoles instelbaar. De app staat daarom op drie dagen; dat getal staat op één
-plek, `TRIAL_DAYS` in `src/engine/billing.ts`, en moet gelijk zijn aan wat je
-in de winkels instelt. Wil je liever géén proefperiode, zet hem dan in de
-winkels uit en `TRIAL_DAYS` op 0 — de teksten passen zich aan.
+**1. De proefperiode is drie dagen.** Dat is ook het minimum van beide
+winkels: Apple biedt als kortste gratis periode 3 dagen (daarna 1 week, 2
+weken, 1 maand, …) en Google Play hanteert hetzelfde minimum, dus korter kan
+sowieso niet. Het getal staat op één plek, `TRIAL_DAYS` in
+`src/engine/billing.ts`, en moet gelijk zijn aan wat je in de winkels instelt.
+Wil je later langer geven — een week doet het in dit soort apps vaak beter —
+dan is dat één getal hier en één instelling daar. Helemaal geen proefperiode
+kan ook: `TRIAL_DAYS` op 0, en de teksten passen zich aan.
 
 **2. € 6,45 is bij Apple mogelijk niet exact instelbaar.** Apple werkt met
 vaste prijspunten; ligt 6,45 er niet tussen, dan is **€ 6,49** de dichtstbijzijnde.

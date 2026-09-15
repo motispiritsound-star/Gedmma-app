@@ -18,12 +18,11 @@ import { FREE_UNITS, getState, setState } from './store'
 export const SUBSCRIPTION = 'app.darijakids.monthly'
 
 /**
- * The free trial, in days.
+ * The free trial, in days. Three is both the chosen length and the shortest
+ * either store offers, so there is no reason to go lower.
  *
- * Both stores set the shortest free trial at **three days** — two is not an
- * option Apple or Google offers — so this is as close to two as the stores
- * allow. It is only ever wording: the real trial lives in the store product,
- * and this number has to match what is configured there.
+ * This number is only wording: the real trial lives in the store product, and
+ * the two have to say the same thing.
  */
 export const TRIAL_DAYS = 3
 
