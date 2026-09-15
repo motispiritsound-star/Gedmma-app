@@ -64,6 +64,9 @@ export const es: Strings = {
     geenStem: 'Este dispositivo no tiene voz árabe',
     geenStemUitleg:
       'Darija Kids lee las palabras en escritura latina con una voz francesa: se reconocen, pero no es marroquí de verdad. Normalmente puedes instalar una voz árabe en los ajustes del dispositivo, en la sección de voz o texto a voz.',
+    geluidUit: 'No sale ningún sonido',
+    geluidUitUitleg: 'El navegador bloquea los efectos hasta que tocas algo. En un iPhone, el interruptor lateral también los silencia, aunque la pronunciación sí se oye.',
+    geluidAan: 'Activar sonido',
     begrepen: 'Entendido',
   },
 
@@ -376,6 +379,12 @@ export const es: Strings = {
     effecten: 'Probar los efectos',
     effectenHint: 'Así suenan un acierto, un fallo y el final de una lección.',
     speel: 'Escuchar',
+    geluidscheck: 'Prueba de sonido',
+    mixerOk: 'Los efectos suenan.',
+    mixerGeblokkeerd: 'El navegador todavía bloquea los efectos. Toca al lado.',
+    mixerGeen: 'Este navegador no tiene motor de audio.',
+    mixerAanzetten: 'Activar',
+    mixerStil: '¿Oyes la pronunciación pero no los efectos? En un iPhone, el interruptor lateral silencia solo los efectos, no la voz: ponlo en timbre. En una ventana incrustada, abre la aplicación en su propia pestaña.',
     uitspraak: 'Pronunciación',
     stem: 'Voz',
     stemAuto: 'Elegir automáticamente',

@@ -23,21 +23,53 @@ function audio(): AudioContext | null {
   const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
   if (!Ctor) return null
   if (!ctx) {
+    claimPlaybackSession()
     ctx = new Ctor()
     // One limiter on the way out, so two sounds at once cannot clip.
     const comp = ctx.createDynamicsCompressor()
-    // Gentle: enough to stop two sounds at once clipping, not so much that a
-    // short bright note gets flattened into nothing.
-    comp.threshold.value = -8
-    comp.ratio.value = 4
-    comp.attack.value = 0.005
-    comp.release.value = 0.2
+    // A real ceiling rather than a suggestion: the bus below runs hot on
+    // purpose, and a reward can stack five sounds inside the same 200 ms.
+    comp.threshold.value = -4
+    comp.knee.value = 10
+    comp.ratio.value = 8
+    comp.attack.value = 0.003
+    comp.release.value = 0.16
     bus = ctx.createGain()
-    bus.gain.value = 1
+    // Phone speakers are small and children hold them at arm's length. The
+    // limiter above is what keeps this from clipping.
+    bus.gain.value = 1.35
     bus.connect(comp).connect(ctx.destination)
   }
   if (ctx.state === 'suspended') void ctx.resume()
   return ctx
+}
+
+/**
+ * Asks iOS to treat this page as playback rather than as an incidental beep.
+ *
+ * Without it, Safari routes Web Audio through the ringer channel: an iPhone
+ * with the side switch on silent plays the pronunciation (that goes through
+ * the speech engine) and none of the effects — which is exactly what "I hear
+ * the words but no sounds" looks like. Safari 16.4 and up honour this;
+ * everywhere else the property simply is not there.
+ */
+function claimPlaybackSession(): void {
+  const session = (navigator as unknown as { audioSession?: { type: string } }).audioSession
+  if (!session) return
+  try {
+    session.type = 'playback'
+  } catch {
+    /* an older Safari that has the object but not the setter */
+  }
+}
+
+/** What the mixer is doing, for the sound check in the settings screen. */
+export function mixerState(): 'speelt' | 'geblokkeerd' | 'geen' {
+  if (typeof window === 'undefined') return 'geen'
+  const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+  if (!Ctor) return 'geen'
+  if (!ctx) return 'geblokkeerd'
+  return ctx.state === 'running' ? 'speelt' : 'geblokkeerd'
 }
 
 /**
@@ -65,14 +97,39 @@ export function unlockAudio(): void {
 
 const GESTURES = ['pointerdown', 'keydown', 'touchstart'] as const
 
+/**
+ * Nudges the mixer awake. Cheap, and safe to call on every tap.
+ *
+ * A context does not only start out suspended — iOS suspends it again after
+ * the speech engine has spoken, after a call, after the screen locks. Resuming
+ * is only allowed from inside a real gesture, so the safest moment is every
+ * gesture, not just the first one of the session.
+ */
+export function keepAwake(): void {
+  const ac = ctx
+  if (ac && ac.state !== 'running') void ac.resume().catch(() => {})
+}
+
 export function listenForFirstGesture(): () => void {
   if (typeof window === 'undefined') return () => {}
-  const wake = () => unlockAudio()
-  for (const event of GESTURES) window.addEventListener(event, wake, { once: true, passive: true })
+  const wake = () => {
+    unlockAudio()
+    keepAwake()
+  }
+  for (const event of GESTURES) window.addEventListener(event, wake, { passive: true })
   return () => {
     for (const event of GESTURES) window.removeEventListener(event, wake)
   }
 }
+
+/**
+ * True when the app has been touched and the mixer still will not start.
+ *
+ * Before the first gesture every browser reports the mixer as blocked, which
+ * is normal and not worth saying out loud; after one, it means something is
+ * genuinely holding the sound back and the learner deserves to be told.
+ */
+export const audioBlocked = (): boolean => unlocked && mixerState() === 'geblokkeerd'
 
 const on = () => getState().settings.sound
 
@@ -283,13 +340,180 @@ function whoosh(at = 0, level = 0.1): void {
   src.stop(t + 0.36)
 }
 
+/**
+ * A button. Not a tick of noise but an actual little note, because a 35 ms
+ * hiss is the first thing a phone speaker throws away.
+ */
+function blip(freq: number, at = 0, dur = 0.16, level = 0.3, glide = 1): void {
+  const ac = audio()
+  if (!ac || !bus) return
+  const t = ac.currentTime + at
+  const osc = ac.createOscillator()
+  const gain = ac.createGain()
+  osc.type = 'triangle'
+  osc.frequency.setValueAtTime(freq, t)
+  if (glide !== 1) osc.frequency.exponentialRampToValueAtTime(freq * glide, t + dur * 0.8)
+  gain.gain.setValueAtTime(0.0001, t)
+  gain.gain.exponentialRampToValueAtTime(level, t + 0.006)
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + dur)
+  osc.connect(gain).connect(bus)
+  osc.start(t)
+  osc.stop(t + dur + 0.03)
+}
+
+/** Air rushing upward: the run-up to something about to start. */
+function riser(at = 0, dur = 1.1, level = 0.16): void {
+  const ac = audio()
+  if (!ac || !bus) return
+  const t = ac.currentTime + at
+  const src = ac.createBufferSource()
+  src.buffer = noise(ac)
+  src.loop = true
+  const band = ac.createBiquadFilter()
+  band.type = 'bandpass'
+  band.Q.value = 3
+  band.frequency.setValueAtTime(220, t)
+  band.frequency.exponentialRampToValueAtTime(5200, t + dur)
+  const gain = ac.createGain()
+  gain.gain.setValueAtTime(0.0001, t)
+  gain.gain.exponentialRampToValueAtTime(level, t + dur * 0.8)
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.12)
+  src.connect(band).connect(gain).connect(bus)
+  src.start(t)
+  src.stop(t + dur + 0.16)
+}
+
+/**
+ * A room full of people clapping: noise in the range hands actually make,
+ * chopped up fast enough that the ear hears claps rather than hiss.
+ */
+function applause(at = 0, dur = 1.9, level = 0.3): void {
+  const ac = audio()
+  if (!ac || !bus) return
+  const t = ac.currentTime + at
+  const src = ac.createBufferSource()
+  src.buffer = noise(ac)
+  src.loop = true
+  const band = ac.createBiquadFilter()
+  band.type = 'bandpass'
+  band.frequency.value = 1900
+  band.Q.value = 0.6
+  const hp = ac.createBiquadFilter()
+  hp.type = 'highpass'
+  hp.frequency.value = 700
+  const gain = ac.createGain()
+  gain.gain.setValueAtTime(0.0001, t)
+  gain.gain.exponentialRampToValueAtTime(level, t + 0.18)
+  gain.gain.setValueAtTime(level, t + dur * 0.5)
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + dur)
+  // The flutter that turns hiss into hands.
+  const clap = ac.createOscillator()
+  const clapDepth = ac.createGain()
+  clap.type = 'sawtooth'
+  clap.frequency.value = 16
+  clapDepth.gain.value = level * 0.5
+  clap.connect(clapDepth).connect(gain.gain)
+  src.connect(band).connect(hp).connect(gain).connect(bus)
+  src.start(t)
+  src.stop(t + dur + 0.05)
+  clap.start(t)
+  clap.stop(t + dur + 0.05)
+}
+
+/** Someone in the back putting two fingers in their mouth. */
+function whistle(at = 0, level = 0.12): void {
+  const ac = audio()
+  if (!ac || !bus) return
+  const t = ac.currentTime + at
+  const osc = ac.createOscillator()
+  const gain = ac.createGain()
+  osc.type = 'sine'
+  osc.frequency.setValueAtTime(1500, t)
+  osc.frequency.exponentialRampToValueAtTime(2400, t + 0.18)
+  osc.frequency.exponentialRampToValueAtTime(1900, t + 0.34)
+  gain.gain.setValueAtTime(0.0001, t)
+  gain.gain.exponentialRampToValueAtTime(level, t + 0.05)
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.38)
+  osc.connect(gain).connect(bus)
+  osc.start(t)
+  osc.stop(t + 0.4)
+}
+
 export const sfx = {
-  tap: () => schedule(() => click(0)),
+  /** Any button at all: short, wooden, unmistakably a press. */
+  tap: () => schedule(() => {
+    click(0, 0.1)
+    marimba(CLIMB[3]!, 0.005, 0.18, 0.2)
+  }),
+
+  /** Going somewhere: a tab, a link, a card that opens. */
+  nav: () => schedule(() => {
+    click(0, 0.08)
+    blip(520, 0.005, 0.13, 0.22, 1.35)
+  }),
+
+  /** Back, close, cancel — the same step, downward. */
+  back: () => schedule(() => {
+    click(0, 0.07)
+    blip(480, 0.005, 0.15, 0.2, 0.7)
+  }),
+
+  /** "Snap ik!" — understood, move on. Two notes that agree with each other. */
+  confirm: () => schedule(() => {
+    click(0, 0.08)
+    marimba(HIJAZ.D4, 0.01, 0.35, 0.26)
+    marimba(HIJAZ.A4, 0.1, 0.4, 0.22)
+    drum('tek', 0.01, 0.16)
+  }),
+
+  /** A switch in the settings, and anything else with two states. */
+  toggle: (on: boolean) => schedule(() => {
+    click(0, 0.07)
+    blip(on ? 460 : 620, 0.005, 0.14, 0.22, on ? 1.5 : 0.62)
+  }),
 
   /** The moment an answer is chosen, before it is judged. */
   pick: () => schedule(() => {
-    click(0, 0.07)
-    pop(0.01, 300, 520, 0.08)
+    click(0, 0.09)
+    pop(0.01, 300, 560, 0.13)
+    blip(392, 0.01, 0.12, 0.18)
+  }),
+
+  /** A checkpoint is about to start: drums, a run-up, and three notes. */
+  quizStart: () => schedule(() => {
+    for (const [i, at] of [0, 0.16, 0.3, 0.42, 0.52, 0.6, 0.67, 0.73].entries()) {
+      drum('dum', at, 0.14 + i * 0.03)
+    }
+    riser(0, 0.9, 0.16)
+    marimba(HIJAZ.D4, 0.9, 0.5, 0.26)
+    marimba(HIJAZ.Eb4, 1.02, 0.5, 0.26)
+    marimba(HIJAZ.Fs4, 1.14, 1.1, 0.3)
+    bell(HIJAZ.D5, 1.2, 1.3, 0.12)
+  }),
+
+  /**
+   * The pulse under a checkpoint question: a clock that speeds up as the
+   * checkpoint runs out. Quiet on purpose — it is tension, not a sound effect.
+   */
+  quizTick: (step: number, total: number) => schedule(() => {
+    const late = total > 0 ? Math.min(1, step / total) : 0
+    const gap = 0.28 - late * 0.12
+    drum('dum', 0, 0.1 + late * 0.06)
+    drum('tek', gap, 0.07 + late * 0.05)
+    if (late > 0.6) blip(HIJAZ.Eb3 * 2, gap * 2, 0.12, 0.08)
+  }),
+
+  /** A checkpoint passed: a room that claps, and a whistle from the back. */
+  cheer: () => schedule(() => {
+    applause(0.12, 2.1, 0.3)
+    whistle(0.45)
+    whistle(0.95, 0.09)
+    for (const [i, note] of [HIJAZ.D4, HIJAZ.Fs4, HIJAZ.A4, HIJAZ.D5].entries()) {
+      marimba(note, i * 0.1, 0.8, 0.26)
+      drum(i === 3 ? 'dum' : 'tek', i * 0.1, 0.22)
+    }
+    bell(HIJAZ.D6, 0.5, 1.6, 0.13)
+    sparkle(0.6, 7, 0.1)
   }),
 
   /**
@@ -363,10 +587,12 @@ export const sfx = {
 
   /** Used by the settings screen to show what the effects sound like. */
   demo: () => {
-    sfx.correct(0)
-    setTimeout(() => sfx.correct(2), 420)
-    setTimeout(() => sfx.correct(5), 840)
-    setTimeout(() => sfx.badge(), 1400)
+    sfx.tap()
+    setTimeout(() => sfx.correct(0), 260)
+    setTimeout(() => sfx.correct(2), 680)
+    setTimeout(() => sfx.correct(5), 1100)
+    setTimeout(() => sfx.wrong(), 1600)
+    setTimeout(() => sfx.cheer(), 2200)
   },
 }
 
@@ -489,6 +715,8 @@ export function say(arabic: string, opts: SayOptions = {}): void {
   // The approximation is easier to follow a little slower than the real thing.
   utter.rate = opts.slow ? 0.55 : plan.mode === 'benadering' ? s.settings.voiceRate * 0.9 : s.settings.voiceRate
   utter.pitch = 1
+  // Speaking can hand the audio session back suspended on iOS; take it again.
+  utter.onend = () => keepAwake()
   speechSynthesis.speak(utter)
 }
 

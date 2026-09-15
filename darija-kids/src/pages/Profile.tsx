@@ -4,6 +4,7 @@ import { allWords } from '../content/lexicon'
 import {
   BADGES, levelOf, progressOfUnit, setState, today, useStore,
 } from '../engine/store'
+import { sfx } from '../engine/audio'
 import { Button, Card, Progress, SectionTitle, Stat } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 import { useLang, useT } from '../i18n'
@@ -52,7 +53,7 @@ export function Profile() {
         {AVATARS.map((a) => (
           <button
             key={a}
-            onClick={() => setState({ avatar: a })}
+            onClick={() => { sfx.tap(); setState({ avatar: a }) }}
             className={`grid h-11 w-11 place-items-center rounded-2xl border-2 text-2xl ${state.avatar === a ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
             aria-label={t.profile.kies(a)}
           >

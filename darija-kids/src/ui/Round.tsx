@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Exercise, Verdict } from '../engine/exercises'
 import { isLetterExercise, isSentenceExercise } from '../engine/exercises'
@@ -60,7 +60,7 @@ interface Burst {
 }
 
 export function RoundRunner({
-  exercises, onFinish, onQuit, useHearts = true, quitLabel, review = false,
+  exercises, onFinish, onQuit, useHearts = true, quitLabel, review = false, quiz = false,
 }: {
   exercises: Exercise[]
   onFinish: (result: RoundResult) => void
@@ -70,6 +70,8 @@ export function RoundRunner({
   quitLabel?: string
   /** A review round: right answers also count towards the repetition mission. */
   review?: boolean
+  /** A checkpoint: drums at the start, and a pulse under every question. */
+  quiz?: boolean
 }) {
   const t = useT()
   const lang = useLang()
@@ -90,6 +92,17 @@ export function RoundRunner({
   // reuse the element and the animation would not replay.
   const burstId = useRef(0)
   const tally = useRef({ right: 0, asked: 0, perfect: true, start: Date.now(), xp: 0, gems: 0, best: 0 })
+
+  // The checkpoint announces itself, and then keeps time. The pulse speeds up
+  // towards the end, which is the whole difference between a list of questions
+  // and something that feels like it is running out.
+  useEffect(() => {
+    if (quiz) sfx.quizStart()
+  }, [quiz])
+
+  useEffect(() => {
+    if (quiz && index > 0) sfx.quizTick(index, queue.length)
+  }, [quiz, index, queue.length])
 
   const current = queue[index]
   const hearts = heartsNow(state)
@@ -200,7 +213,7 @@ export function RoundRunner({
   return (
     <div className="mx-auto flex min-h-screen max-w-2xl flex-col px-4 py-4">
       <div className="flex items-center gap-3">
-        <button onClick={() => setQuit(true)} aria-label={t.common.sluiten} className="text-2xl text-[var(--ink-soft)] hover:text-[var(--ink)]">✕</button>
+        <button onClick={() => { sfx.back(); setQuit(true) }} aria-label={t.common.sluiten} className="text-2xl text-[var(--ink-soft)] hover:text-[var(--ink)]">✕</button>
         <Progress value={index / Math.max(1, queue.length)} tone="mint" />
         <AnimatePresence>
           {combo >= 2 && (

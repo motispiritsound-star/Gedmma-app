@@ -1,5 +1,6 @@
 import { Link, NavLink } from 'react-router-dom'
 import { heartsNow, levelOf, MAX_HEARTS, msUntilNextHeart, useStore, xpToday } from '../engine/store'
+import { sfx } from '../engine/audio'
 import { Progress } from './kit'
 import { useT } from '../i18n'
 
@@ -26,7 +27,7 @@ export function TopBar() {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--surface)]/90 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-2.5">
-        <Link to="/" className="flex items-center gap-2 font-display text-xl font-extrabold">
+        <Link to="/" onClick={() => sfx.nav()} className="flex items-center gap-2 font-display text-xl font-extrabold">
           <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-saffron-400 to-terra-500 text-night-950">د</span>
           <span className="hidden sm:inline">Darija Kids</span>
         </Link>
@@ -36,6 +37,7 @@ export function TopBar() {
             <NavLink
               key={l.to}
               to={l.to}
+              onClick={() => sfx.nav()}
               className={({ isActive }) =>
                 `rounded-xl px-3 py-1.5 text-sm font-bold transition ${isActive ? 'bg-[var(--surface-sunken)] text-zellige-600 dark:text-zellige-300' : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'}`
               }

@@ -84,6 +84,9 @@ function TimeRace({ onExit }: { onExit: () => void }) {
     [round],
   )
 
+  // Sixty seconds against the clock — announce it like the quiz it is.
+  useEffect(() => { sfx.quizStart() }, [round])
+
   useEffect(() => {
     if (left <= 0) return
     const t = setTimeout(() => setLeft((l) => l - 1), 1000)
@@ -93,7 +96,8 @@ function TimeRace({ onExit }: { onExit: () => void }) {
   useEffect(() => {
     if (left === 0) {
       addXp(Math.min(30, Math.round(score * 1.5)))
-      sfx.finish()
+      if (score >= 10) sfx.cheer()
+      else sfx.finish()
     }
   }, [left])
 
@@ -116,6 +120,7 @@ function TimeRace({ onExit }: { onExit: () => void }) {
 
   const answer = (id: string) => {
     if (chosen) return
+    sfx.pick()
     setChosen(id)
     const good = id === target.id
     if (good) {
@@ -139,7 +144,7 @@ function TimeRace({ onExit }: { onExit: () => void }) {
   return (
     <div className="mx-auto max-w-md px-4 py-6">
       <div className="flex items-center justify-between font-display text-lg font-extrabold">
-        <button onClick={onExit} aria-label={t.common.stoppen} className="text-[var(--ink-soft)]">✕</button>
+        <button onClick={() => { sfx.back(); onExit() }} aria-label={t.common.stoppen} className="text-[var(--ink-soft)]">✕</button>
         <span className={left <= 10 ? 'text-terra-500' : ''}>⏱️ {left}s</span>
         <span>✅ {score}{streak >= 3 ? ` 🔥${streak}` : ''}</span>
       </div>
@@ -147,7 +152,7 @@ function TimeRace({ onExit }: { onExit: () => void }) {
       <Card className="mt-6 p-6 text-center">
         <div className="text-4xl" aria-hidden="true">{target.emoji}</div>
         <div className="ar mt-2 text-4xl font-bold">{target.ar}</div>
-        <button className="mt-1 text-sm font-bold text-zellige-600 underline dark:text-zellige-300" onClick={() => say(target.ar, { tr: target.tr })}>
+        <button className="mt-1 text-sm font-bold text-zellige-600 underline dark:text-zellige-300" onClick={() => { sfx.tap(); say(target.ar, { tr: target.tr }) }}>
           {target.tr} · {t.games.luisterLink}
         </button>
       </Card>
@@ -226,7 +231,7 @@ function Memory({ onExit }: { onExit: () => void }) {
   return (
     <div className="mx-auto max-w-md px-4 py-6">
       <div className="flex items-center justify-between font-display text-lg font-extrabold">
-        <button onClick={onExit} aria-label={t.common.stoppen} className="text-[var(--ink-soft)]">✕</button>
+        <button onClick={() => { sfx.back(); onExit() }} aria-label={t.common.stoppen} className="text-[var(--ink-soft)]">✕</button>
         <span>🃏 {found.length}/{tiles.length / 2}</span>
         <span>{tries} {t.common.beurten}</span>
       </div>

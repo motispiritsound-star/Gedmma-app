@@ -1,9 +1,9 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   exportProgress, importProgress, resetProgress, setSetting, setState, useStore, type Settings,
 } from '../engine/store'
-import { arabicVoices, canListen, canSpeak, say, sfx, voicePlan } from '../engine/audio'
+import { arabicVoices, canListen, canSpeak, keepAwake, mixerState, say, sfx, unlockAudio, voicePlan } from '../engine/audio'
 import { LIST_PRICE, TRIAL_DAYS } from '../engine/billing'
 import { LANGS, useT, type Lang } from '../i18n'
 import { useVoices } from '../ui/useVoices'
@@ -12,7 +12,7 @@ import { Button, Card, SectionTitle, Sheet } from '../ui/kit'
 /** The embedded demo runs in a sandbox where a page cannot hand over a file. */
 const DEMO = import.meta.env.VITE_DEMO === '1'
 
-function Row({ title, hint, children }: { title: string; hint?: string; children?: React.ReactNode }) {
+function Row({ title, hint, children }: { title: string; hint?: React.ReactNode; children?: React.ReactNode }) {
   return (
     <div className="flex flex-wrap items-center gap-3 border-b border-[var(--line)] p-4 last:border-0">
       <div className="min-w-40 flex-1">
@@ -30,11 +30,46 @@ function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) =
       role="switch"
       aria-checked={on}
       aria-label={label}
-      onClick={() => onChange(!on)}
+      onClick={() => { sfx.toggle(!on); onChange(!on) }}
       className={`h-8 w-14 rounded-full border-2 p-0.5 transition ${on ? 'border-mint-600 bg-mint-500' : 'border-[var(--line)] bg-[var(--surface-sunken)]'}`}
     >
       <span className={`block h-6 w-6 rounded-full bg-white shadow transition ${on ? 'translate-x-6' : ''}`} />
     </button>
+  )
+}
+
+/**
+ * Whether the mixer is actually running, said out loud.
+ *
+ * "I hear the words but no sounds" is the one report that cannot be debugged
+ * from here, because the two go through different parts of the device. This
+ * row answers it: it either says the effects are playing, or it says what is
+ * holding them back and offers the tap that usually frees them.
+ */
+function SoundCheck() {
+  const t = useT()
+  const [mixer, setMixer] = useState(mixerState())
+  useEffect(() => {
+    const id = setInterval(() => setMixer(mixerState()), 700)
+    return () => clearInterval(id)
+  }, [])
+
+  const hint =
+    mixer === 'speelt' ? t.settings.mixerOk
+    : mixer === 'geen' ? t.settings.mixerGeen
+    : t.settings.mixerGeblokkeerd
+
+  return (
+    <Row title={t.settings.geluidscheck} hint={<><span>{hint}</span><br /><span>{t.settings.mixerStil}</span></>}>
+      {mixer !== 'geen' && (
+        <Button
+          variant={mixer === 'speelt' ? 'secondary' : 'primary'}
+          onClick={() => { unlockAudio(); keepAwake(); setMixer(mixerState()) }}
+        >
+          {mixer === 'speelt' ? '🔊' : t.settings.mixerAanzetten}
+        </Button>
+      )}
+    </Row>
   )
 }
 
@@ -48,7 +83,7 @@ function Choice<T extends string | number>({ value, options, onChange }: {
       {options.map((o) => (
         <button
           key={String(o.value)}
-          onClick={() => onChange(o.value)}
+          onClick={() => { sfx.nav(); onChange(o.value) }}
           className={`rounded-xl px-3 py-1.5 text-sm font-bold ${value === o.value ? 'bg-[var(--surface-raised)] shadow' : 'text-[var(--ink-soft)]'}`}
         >
           {o.label}
@@ -96,7 +131,7 @@ export function SettingsPage() {
             {LANGS.map((l) => (
               <button
                 key={l.code}
-                onClick={() => setSetting('lang', l.code as Lang)}
+                onClick={() => { sfx.nav(); setSetting('lang', l.code as Lang) }}
                 className={`rounded-xl border-2 px-3 py-2 text-sm font-bold ${s.lang === l.code ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
               >
                 <span aria-hidden="true">{l.flag}</span> {l.name}
@@ -161,6 +196,7 @@ export function SettingsPage() {
         <Row title={t.settings.effecten} hint={t.settings.effectenHint}>
           <Button variant="secondary" onClick={() => sfx.demo()}>{t.settings.speel}</Button>
         </Row>
+        <SoundCheck />
         <Row title={t.settings.uitspraak} hint={voiceStatus}>
           <Button variant="secondary" onClick={() => say('السلام عليكم', { tr: 'ssalamu 3alaykum' })}>
             {t.common.test}

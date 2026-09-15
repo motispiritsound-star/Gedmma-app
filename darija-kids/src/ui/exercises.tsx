@@ -66,7 +66,7 @@ function NewWord({ exercise, onAnswer }: ExerciseProps) {
           )}
         </Card>
       </Prompt>
-      <Button className="w-full" onClick={() => onAnswer('goed')}>{t.lesson.snapIk}</Button>
+      <Button className="w-full" sound="confirm" onClick={() => onAnswer('goed')}>{t.lesson.snapIk}</Button>
     </div>
   )
 }
@@ -118,14 +118,14 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
           <div className="flex flex-col items-center gap-3">
             <motion.button
               whileTap={{ scale: 0.92 }}
-              onClick={() => say(w.ar, { tr: w.tr })}
+              onClick={() => { sfx.tap(); say(w.ar, { tr: w.tr }) }}
               onDoubleClick={() => say(w.ar, { tr: w.tr, slow: true })}
               className="grid h-28 w-28 place-items-center rounded-full bg-gradient-to-br from-zellige-300 to-zellige-700 text-5xl text-white shadow-lg"
               aria-label={t.lesson.speelAf}
             >
               🔊
             </motion.button>
-            <button className="text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => say(w.ar, { tr: w.tr, slow: true })}>
+            <button className="text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => { sfx.tap(); say(w.ar, { tr: w.tr, slow: true }) }}>
               {t.lesson.langzamer}
             </button>
           </div>
@@ -417,7 +417,11 @@ function Speak({ exercise, onAnswer, locked }: ExerciseProps) {
         <p className="text-sm text-[var(--ink-soft)]">
           {status === 'luistert' ? t.lesson.ikLuister : status === 'denkt' ? t.lesson.ikHoorde(heard) : t.lesson.tikEnZeg}
         </p>
-        <button className="text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => onAnswer('bijna', 'overgeslagen')} disabled={locked}>
+        <button
+          className="text-sm font-bold text-[var(--ink-soft)] underline"
+          onClick={() => { sfx.back(); onAnswer('bijna', 'overgeslagen') }}
+          disabled={locked}
+        >
           {t.lesson.slaOver}
         </button>
       </div>
@@ -484,7 +488,7 @@ function NewLetter({ exercise, onAnswer }: ExerciseProps) {
           )}
         </Card>
       </Prompt>
-      <Button className="w-full" onClick={() => onAnswer('goed')}>{t.lesson.snapIk}</Button>
+      <Button className="w-full" sound="confirm" onClick={() => onAnswer('goed')}>{t.lesson.snapIk}</Button>
       <p className="sr-only">{lang}</p>
     </div>
   )
@@ -583,7 +587,7 @@ function NewSentence({ exercise, onAnswer }: ExerciseProps) {
           <p className="text-xs text-[var(--ink-soft)]">{t.lesson.zinLangzaam}</p>
         </Card>
       </Prompt>
-      <Button className="w-full" onClick={() => onAnswer('goed')}>{t.lesson.snapIk}</Button>
+      <Button className="w-full" sound="confirm" onClick={() => onAnswer('goed')}>{t.lesson.snapIk}</Button>
     </div>
   )
 }
@@ -693,14 +697,14 @@ function SentenceChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { 
           <div className="flex flex-col items-center gap-3">
             <motion.button
               whileTap={{ scale: 0.92 }}
-              onClick={() => say(z.ar, { tr: z.tr })}
+              onClick={() => { sfx.tap(); say(z.ar, { tr: z.tr }) }}
               onDoubleClick={() => say(z.ar, { tr: z.tr, slow: true })}
               className="grid h-28 w-28 place-items-center rounded-full bg-gradient-to-br from-zellige-300 to-zellige-700 text-5xl text-white shadow-lg"
               aria-label={t.lesson.speelAf}
             >
               🔊
             </motion.button>
-            <button className="text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => say(z.ar, { tr: z.tr, slow: true })}>
+            <button className="text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => { sfx.tap(); say(z.ar, { tr: z.tr, slow: true }) }}>
               {t.lesson.langzamer}
             </button>
           </div>

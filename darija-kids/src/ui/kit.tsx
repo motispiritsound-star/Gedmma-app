@@ -14,14 +14,29 @@ const VARIANTS: Record<Variant, string> = {
   danger: 'bg-terra-500 text-white border-terra-600 hover:bg-terra-300',
 }
 
+/**
+ * What a button sounds like, from what it is for. A press that moves you
+ * forward should not sound like one that takes you back, and nothing in the
+ * app should be pressable in silence.
+ */
+type Press = 'tap' | 'nav' | 'back' | 'confirm'
+
+const PRESS: Record<Variant, Press> = {
+  primary: 'tap',
+  success: 'confirm',
+  secondary: 'nav',
+  ghost: 'nav',
+  danger: 'back',
+}
+
 export function Button({
-  variant = 'primary', className = '', children, onClick, mute, ...rest
-}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant; mute?: boolean }) {
+  variant = 'primary', className = '', children, onClick, mute, sound, ...rest
+}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant; mute?: boolean; sound?: Press }) {
   return (
     <button
       {...rest}
       onClick={(e) => {
-        if (!mute) sfx.tap()
+        if (!mute) sfx[sound ?? PRESS[variant]]()
         onClick?.(e)
       }}
       className={`btn3d select-none rounded-2xl border-2 px-5 py-3 font-display text-base font-extrabold tracking-wide uppercase disabled:cursor-not-allowed ${VARIANTS[variant]} ${className}`}

@@ -64,6 +64,9 @@ export const en: Strings = {
     geenStem: 'This device has no Arabic voice',
     geenStemUitleg:
       'Darija Kids now reads the words in Latin spelling with a French voice — recognisable, but not real Moroccan. You can usually install an Arabic voice in your device settings, under speech or text-to-speech.',
+    geluidUit: 'No sound is coming out',
+    geluidUitUitleg: 'The browser holds the game sounds back until you tap something. On an iPhone the switch on the side mutes them too — the pronunciation still comes through.',
+    geluidAan: 'Turn sound on',
     begrepen: 'Got it',
   },
 
@@ -376,6 +379,12 @@ export const en: Strings = {
     effecten: 'Test the effects',
     effectenHint: 'This is what a right answer, a mistake and the end of a lesson sound like.',
     speel: 'Play',
+    geluidscheck: 'Sound check',
+    mixerOk: 'The effects are playing.',
+    mixerGeblokkeerd: 'The browser is still holding the effects back. Tap beside this.',
+    mixerGeen: 'This browser has no audio engine.',
+    mixerAanzetten: 'Turn on',
+    mixerStil: 'Hearing the pronunciation but none of the game sounds? On an iPhone the little switch on the side mutes the effects but not the voice — flip it back to ring. Inside an embedded frame, open the app in its own tab instead.',
     uitspraak: 'Pronunciation',
     stem: 'Voice',
     stemAuto: 'Choose automatically',

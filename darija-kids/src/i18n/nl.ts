@@ -69,6 +69,9 @@ export const nl = {
     geenStem: 'Dit apparaat heeft geen Arabische stem',
     geenStemUitleg:
       'Darija Kids leest de woorden nu voor in de Latijnse schrijfwijze met een Franse stem — herkenbaar, maar geen echt Marokkaans. Een Arabische stem installeren kan meestal via de instellingen van je apparaat, bij spraak of tekst-naar-spraak.',
+    geluidUit: 'Er komt geen geluid uit',
+    geluidUitUitleg: 'De browser houdt de spelgeluidjes tegen tot je iets aantikt. Op een iPhone zet het schuifje aan de zijkant ze ook uit — de uitspraak hoor je dan wel.',
+    geluidAan: 'Geluid aan',
     begrepen: 'Begrepen',
   },
 
@@ -382,6 +385,12 @@ export const nl = {
     effecten: 'Effecten testen',
     effectenHint: 'Zo klinkt een goede beurt, een fout en het einde van een les.',
     speel: 'Speel',
+    geluidscheck: 'Geluidscheck',
+    mixerOk: 'De effecten spelen.',
+    mixerGeblokkeerd: 'De browser houdt de effecten nog tegen. Tik hiernaast.',
+    mixerGeen: 'Deze browser heeft geen geluidsmotor.',
+    mixerAanzetten: 'Aanzetten',
+    mixerStil: 'Hoor je de uitspraak wél maar de spelgeluidjes niet? Op een iPhone zet het schuifje aan de zijkant alleen de effecten uit, niet de stem — zet het op bellen. In een ingesloten venster helpt het om de app in een eigen tabblad te openen.',
     uitspraak: 'Uitspraak',
     stem: 'Stem',
     stemAuto: 'Automatisch kiezen',

@@ -83,8 +83,9 @@ export function StoryReader() {
                         key={option}
                         disabled={given !== undefined}
                         onClick={() => {
+                          sfx.pick()
                           setAnswers((a) => { const next = [...a]; next[qi] = oi; return next })
-                          if (oi === q.answer) sfx.correct(); else sfx.wrong()
+                          if (oi === q.answer) sfx.correct(right); else sfx.wrong()
                         }}
                         className={`btn3d rounded-2xl border-2 p-3 text-start font-semibold ${
                           state === 'goed' ? 'border-mint-500 bg-mint-500/15'
@@ -110,6 +111,7 @@ export function StoryReader() {
               className="mt-4"
               onClick={() => {
                 completeLesson(`verhaal-${story.id}`, right / story.quiz.length, 12)
+                if (right / story.quiz.length >= 0.8) sfx.cheer()
                 navigate('/verhalen')
               }}
             >
@@ -123,7 +125,7 @@ export function StoryReader() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <Link to="/verhalen" className="text-sm font-bold text-[var(--ink-soft)]">← {t.stories.alleVerhalen}</Link>
+      <Link to="/verhalen" onClick={() => sfx.back()} className="text-sm font-bold text-[var(--ink-soft)]">← {t.stories.alleVerhalen}</Link>
       <h1 className="mt-2 font-display text-2xl font-extrabold">{story.emoji} {local.title}</h1>
       <p className="text-[var(--ink-soft)]">{local.intro}</p>
 
@@ -140,7 +142,7 @@ export function StoryReader() {
               className={`flex ${mine ? 'justify-start' : 'justify-end'}`}
             >
               <button
-                onClick={() => { setShown((s) => (open ? s.filter((x) => x !== i) : [...s, i])); say(line.ar, { tr: line.tr }) }}
+                onClick={() => { sfx.tap(); setShown((s) => (open ? s.filter((x) => x !== i) : [...s, i])); say(line.ar, { tr: line.tr }) }}
                 className={`max-w-[85%] rounded-3xl border-2 p-4 text-start transition ${
                   mine ? 'rounded-bl-md border-[var(--line)] bg-[var(--surface-raised)]' : 'rounded-br-md border-zellige-500/40 bg-zellige-500/10'
                 }`}
@@ -157,7 +159,7 @@ export function StoryReader() {
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Button variant="secondary" onClick={() => setShown(story.lines.map((_, i) => i))}>{t.stories.allesVertalen}</Button>
-        <Button onClick={() => setQuiz(true)}>{t.stories.vragen}</Button>
+        <Button onClick={() => { sfx.quizStart(); setQuiz(true) }}>{t.stories.vragen}</Button>
       </div>
     </div>
   )

@@ -61,10 +61,13 @@ export function LessonPlayer() {
     const badges = awardBadges()
     setWon(badges)
     setResult(r)
-    sfx.finish()
+    // A checkpoint that went well gets the room clapping; an ordinary lesson
+    // gets the ordinary flourish.
+    if (lesson.kind === 'toets' && r.score >= 0.8) sfx.cheer()
+    else sfx.finish()
     // Stack the rewards in the order they happened, not on top of each other.
-    if (levelOf(getState().xp).level > levelBefore) setTimeout(() => sfx.levelUp(), 900)
-    if (badges.length) setTimeout(() => sfx.badge(), 1700)
+    if (levelOf(getState().xp).level > levelBefore) setTimeout(() => sfx.levelUp(), 1400)
+    if (badges.length) setTimeout(() => sfx.badge(), 2400)
     if (getState().settings.motion === 'full') {
       void confetti({
         particleCount: r.perfect ? 160 : 90,
@@ -139,6 +142,7 @@ export function LessonPlayer() {
       <RoundRunner
         key={attempt}
         exercises={exercises}
+        quiz={lesson.kind === 'toets'}
         onFinish={finish}
         onQuit={() => navigate('/leren')}
       />

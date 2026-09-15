@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { LETTERS } from '../content/alphabet'
 import { maybeWord } from '../content/lexicon'
@@ -97,21 +97,30 @@ function LetterGame({ onDone }: { onDone: () => void }) {
   const [score, setScore] = useState(0)
   const [chosen, setChosen] = useState<string | null>(null)
 
+  // Drums first: ten rounds in a row is a quiz, not a page.
+  useEffect(() => { sfx.quizStart() }, [])
+
   const rnd = mulberry32(1337 + round)
   const target = shuffle(LETTERS, rnd)[0]!
   const options = shuffle([target, ...shuffle(LETTERS.filter((l) => l.id !== target.id), rnd).slice(0, 3)], rnd)
 
   const pick = (id: string) => {
     if (chosen) return
+    sfx.pick()
     setChosen(id)
-    if (id === target.id) { setScore((s) => s + 1); sfx.correct() } else sfx.wrong()
+    if (id === target.id) { setScore((s) => s + 1); sfx.correct(score) } else sfx.wrong()
     setTimeout(() => {
       setChosen(null)
       if (round + 1 >= 10) {
-        completeLesson('letters', (score + (id === target.id ? 1 : 0)) / 10, 15)
-        sfx.finish()
+        const final = (score + (id === target.id ? 1 : 0)) / 10
+        completeLesson('letters', final, 15)
+        if (final >= 0.8) sfx.cheer()
+        else sfx.finish()
         onDone()
-      } else setRound((r) => r + 1)
+      } else {
+        sfx.quizTick(round + 1, 10)
+        setRound((r) => r + 1)
+      }
     }, 750)
   }
 

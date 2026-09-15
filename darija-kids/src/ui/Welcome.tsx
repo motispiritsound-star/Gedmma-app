@@ -1,4 +1,5 @@
 import { LANGS, useT, type Lang } from '../i18n'
+import { sfx } from '../engine/audio'
 import { FREE_UNITS, LIST_PRICE, TRIAL_DAYS } from '../engine/billing'
 import { setSetting, setState, useStore } from '../engine/store'
 import { Button, Sheet } from './kit'
@@ -29,7 +30,7 @@ export function Welcome() {
           {LANGS.map((l) => (
             <li key={l.code}>
               <button
-                onClick={() => setSetting('lang', l.code as Lang)}
+                onClick={() => { sfx.nav(); setSetting('lang', l.code as Lang) }}
                 aria-pressed={lang === l.code}
                 className={`flex w-full items-center gap-3 rounded-2xl border-2 p-3 text-start ${
                   lang === l.code ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'

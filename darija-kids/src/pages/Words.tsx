@@ -5,6 +5,7 @@ import { allWords, searchWords, TOPIC_EMOJI, TOPICS } from '../content/lexicon'
 import { meaningOf, noteOf } from '../content/localise'
 import { useLang, useT } from '../i18n'
 import { strengthLabel } from '../engine/srs'
+import { sfx } from '../engine/audio'
 import { useStore } from '../engine/store'
 import { Card, Pill, SectionTitle } from '../ui/kit'
 import { SpeakButton, WordText } from '../ui/WordChip'
@@ -39,7 +40,7 @@ export function Words() {
       <ul className="no-scrollbar -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1">
         <li>
           <button
-            onClick={() => setTopic('alles')}
+            onClick={() => { sfx.nav(); setTopic('alles') }}
             className={`whitespace-nowrap rounded-full border-2 px-3 py-1.5 text-sm font-bold ${topic === 'alles' ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
           >
             {t.words.alles}
@@ -48,7 +49,7 @@ export function Words() {
         {TOPICS.map((topicKey) => (
           <li key={topicKey}>
             <button
-              onClick={() => setTopic(topicKey)}
+              onClick={() => { sfx.nav(); setTopic(topicKey) }}
               className={`whitespace-nowrap rounded-full border-2 px-3 py-1.5 text-sm font-bold ${topic === topicKey ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
             >
               {TOPIC_EMOJI[topicKey]} {t.topics[topicKey]}
@@ -66,7 +67,11 @@ export function Words() {
           return (
             <li key={w.id}>
               <Card className="overflow-hidden">
-                <button className="flex w-full items-center gap-3 p-3 text-start" onClick={() => setOpen(isOpen ? null : w.id)} aria-expanded={isOpen}>
+                <button
+                  className="flex w-full items-center gap-3 p-3 text-start"
+                  onClick={() => { if (isOpen) sfx.back(); else sfx.tap(); setOpen(isOpen ? null : w.id) }}
+                  aria-expanded={isOpen}
+                >
                   <span className="text-2xl" aria-hidden="true">{w.emoji ?? '•'}</span>
                   <span className="min-w-0 flex-1">
                     <span className="ar text-xl font-bold">{w.ar}</span>

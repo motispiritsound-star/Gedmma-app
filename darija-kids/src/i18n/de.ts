@@ -64,6 +64,9 @@ export const de: Strings = {
     geenStem: 'Dieses Gerät hat keine arabische Stimme',
     geenStemUitleg:
       'Darija Kids liest die Wörter jetzt in lateinischer Schreibweise mit einer französischen Stimme vor — erkennbar, aber kein echtes Marokkanisch. Eine arabische Stimme lässt sich meist in den Geräteeinstellungen unter Sprachausgabe installieren.',
+    geluidUit: 'Es kommt kein Ton',
+    geluidUitUitleg: 'Der Browser hält die Spielgeräusche zurück, bis du etwas antippst. Auf einem iPhone schaltet der Schalter an der Seite sie ebenfalls stumm — die Aussprache hörst du trotzdem.',
+    geluidAan: 'Ton an',
     begrepen: 'Verstanden',
   },
 
@@ -376,6 +379,12 @@ export const de: Strings = {
     effecten: 'Effekte testen',
     effectenHint: 'So klingen eine richtige Antwort, ein Fehler und das Ende einer Lektion.',
     speel: 'Abspielen',
+    geluidscheck: 'Soundcheck',
+    mixerOk: 'Die Effekte spielen.',
+    mixerGeblokkeerd: 'Der Browser hält die Effekte noch zurück. Tippe daneben.',
+    mixerGeen: 'Dieser Browser hat keine Audio-Engine.',
+    mixerAanzetten: 'Einschalten',
+    mixerStil: 'Du hörst die Aussprache, aber keine Spielgeräusche? Auf einem iPhone schaltet der kleine Schalter an der Seite nur die Effekte stumm, nicht die Stimme — stell ihn auf Klingeln. In einem eingebetteten Fenster hilft es, die App in einem eigenen Tab zu öffnen.',
     uitspraak: 'Aussprache',
     stem: 'Stimme',
     stemAuto: 'Automatisch wählen',
