@@ -18,7 +18,13 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { parse } from 'yaml'
 import { JsonFileStore } from './store/json-file.js'
 
-const BESTAND = 'content/wachtrij.yaml'
+/** Per kanaal één wachtrij. --bestand kiest welke. */
+const STANDAARD_BESTAND = 'content/wachtrij.yaml'
+
+function bestandUitArgv(argv: string[]): string {
+  const i = argv.indexOf('--bestand')
+  return (i >= 0 ? argv[i + 1] : undefined) ?? STANDAARD_BESTAND
+}
 
 export type Status =
   | 'gepland' | 'in-productie' | 'wacht-op-goedkeuring' | 'gepubliceerd' | 'afgeblazen'
@@ -74,7 +80,7 @@ export function zetStatus(
   for (let i = 0; i < regels.length; i++) {
     if (new RegExp(`^\\s*-\\s+nr:\\s*${nr}\\s*$`).test(regels[i] ?? '')) { start = i; break }
   }
-  if (start === -1) throw new Error(`aflevering ${nr} staat niet in ${BESTAND}`)
+  if (start === -1) throw new Error(`aflevering ${nr} staat niet in de wachtrij`)
 
   let eind = regels.length
   for (let i = start + 1; i < regels.length; i++) {
@@ -116,7 +122,11 @@ export function blokkade(env: NodeJS.ProcessEnv): string | undefined {
 const merk = { gepland: '  ', 'in-productie': '..', 'wacht-op-goedkeuring': '!!',
   gepubliceerd: 'OK', afgeblazen: 'XX' } as const
 
-async function toon(rij: Wachtrij): Promise<void> {
+async function toon(rij: Wachtrij, bestand: string): Promise<void> {
+  // De aanwijzing moet het commando zijn dat je echt moet typen, inclusief de
+  // wachtrij waar je naar kijkt. Een hint die naar een ander kanaal wijst, is
+  // erger dan geen hint.
+  const staart = bestand === STANDAARD_BESTAND ? '' : ` --bestand ${bestand}`
   console.log(`\n=============== WACHTRIJ — ${rij.kanaal ?? 'kanaal onbekend'} ===============\n`)
   for (const a of rij.afleveringen) {
     console.log(`  [${merk[a.status]}] ${String(a.nr).padStart(2)}. ${a.onderwerp}`)
@@ -135,8 +145,10 @@ async function toon(rij: Wachtrij): Promise<void> {
 
   const nu = volgende(rij)
   console.log(nu
-    ? `\n  Volgende: ${nu.nr}. ${nu.onderwerp}\n  Draai: npm run wachtrij -- --volgende\n`
-    : '\n  Niets meer gepland. Voeg toe met: npm run wachtrij -- --toevoegen "onderwerp"\n')
+    ? `\n  Volgende: ${nu.nr}. ${nu.onderwerp}\n` +
+      `  Draai: npm run wachtrij --${staart} --volgende\n`
+    : `\n  Niets meer gepland. Voeg toe met:\n` +
+      `  npm run wachtrij --${staart} --toevoegen "onderwerp"\n`)
 }
 
 /** Draait `npm run produce` en geeft de uitvoer rechtstreeks door. */
@@ -151,6 +163,7 @@ function produceer(onderwerp: string): Promise<number> {
 }
 
 async function main(): Promise<void> {
+  const BESTAND = bestandUitArgv(process.argv)
   const tekst = await readFile(BESTAND, 'utf8')
   const rij = parse(tekst) as Wachtrij
 
@@ -171,7 +184,7 @@ async function main(): Promise<void> {
   }
 
   if (!process.argv.includes('--volgende')) {
-    await toon(rij)
+    await toon(rij, BESTAND)
     return
   }
 

@@ -1,0 +1,58 @@
+# Kanaal 2 — "Hoe Nederland werkt"
+#
+# Dit is het kanaal met de laagste drempel van alle kandidaten: het beeld is
+# diagrammen en kaarten, dus er is geen generatieve video nodig, en de claims
+# zijn getallen uit openbare Nederlandse bronnen die iedereen kan nalezen.
+#
+# Daarom mag dit kanaal op CLAIM_PROFILE=controleerbaar draaien en dus op
+# PUBLISH_MODE=uitgesteld. Zie docs/21 voor wat dat betekent en waar de grens
+# ligt: zodra een aflevering gaat duiden in plaats van rekenen, hoort hij hier
+# niet meer en gaat hij terug naar handmatig.
+
+kanaal: hoe-nederland-werkt
+claimprofiel: controleerbaar
+
+afleveringen:
+  - nr: 1
+    onderwerp: "waar het water heen gaat als het hard regent: gemalen, boezems en waarom je straat droog blijft"
+    status: gepland
+    productie: ""
+    notitie: >
+      Bronnen: waterschappen en Rijkswaterstaat, allemaal gratis en openbaar.
+      Beeld is één doorsnede die de hele video draagt.
+
+  - nr: 2
+    onderwerp: "hoe stroom van de windmolen naar je stopcontact komt, en waar hij onderweg verdwijnt"
+    status: gepland
+    productie: ""
+    notitie: >
+      TenneT publiceert de netgegevens. Het verlies onderweg is het getal waar
+      de video op draait — dat is de hele aflevering.
+
+  - nr: 3
+    onderwerp: "waarom treinen vertragen terwijl er niets kapot is: hoe het spoor is ingedeeld"
+    status: gepland
+    productie: ""
+    notitie: >
+      ProRail-cijfers. Dienstregeling als systeem, niet als klacht.
+
+  - nr: 4
+    onderwerp: "wat er onder de straat ligt: gas, water, data en wie waarvan eigenaar is"
+    status: gepland
+    productie: ""
+    notitie: >
+      Sterkste thumbnail van de reeks: één doorsnede van een straat.
+
+  - nr: 5
+    onderwerp: "hoe drinkwater wordt gemaakt en waarom het in Nederland geen fles hoeft"
+    status: gepland
+    productie: ""
+    notitie: >
+      Vewin en de drinkwaterbedrijven publiceren alles. Evergreen.
+
+  - nr: 6
+    onderwerp: "de zeekabels die op onze kust aanlanden en wat er gebeurt als er één breekt"
+    status: gepland
+    productie: ""
+    notitie: >
+      Blijf bij openbare gegevens en vermijd speculatie over wie wat zou doen.

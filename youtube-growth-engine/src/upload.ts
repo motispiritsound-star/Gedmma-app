@@ -11,6 +11,9 @@ import { JsonFileStore } from './store/json-file.js'
 import { FileTokenStore } from './providers/youtube/file-token-store.js'
 import { YouTubeUploader } from './providers/youtube/upload.js'
 import { OAuthRevokedError } from './providers/youtube/auth.js'
+import {
+  besluit, leesStand, leesUren, type Claimprofiel,
+} from './domain/publicatie.js'
 
 function arg(name: string): string | undefined {
   const i = process.argv.indexOf(`--${name}`)
@@ -64,6 +67,25 @@ async function main(): Promise<void> {
     onQuota: (units) => console.log(`  quotumverbruik (schatting): ${units} eenheden`),
   })
 
+  // Het claimprofiel komt uit de instellingen, maar staat standaard op
+  // 'oordeel'. Een kanaal moet zichzelf dus uitdrukkelijk als controleerbaar
+  // aanmerken voordat er iets vanzelf online kan gaan; vergeten betekent hier
+  // veilig, niet snel.
+  const profiel: Claimprofiel =
+    process.env['CLAIM_PROFILE'] === 'controleerbaar' ? 'controleerbaar' : 'oordeel'
+  const plan = besluit({
+    stand: leesStand(process.env['PUBLISH_MODE']),
+    profiel,
+    urenUitstel: leesUren(process.env['PUBLISH_DELAY_HOURS']),
+  })
+
+  console.log(`\nPublicatie: ${plan.stand}`)
+  console.log(`  ${plan.uitleg}`)
+  if (plan.teruggezet) {
+    console.log('  (De gevraagde stand is teruggezet. Dat kan niet met een ' +
+      'instelling ongedaan worden gemaakt.)')
+  }
+
   for (const variant of production.variants) {
     if (!variant.videoPath || !variant.metadata) continue
     const title = variant.metadata.titleOptions[0]
@@ -82,7 +104,8 @@ async function main(): Promise<void> {
         description: variant.metadata.description,
         tags: variant.metadata.tags,
         categoryId: process.env['YOUTUBE_CATEGORY_ID'] ?? '27',
-        privacyStatus: 'private',
+        privacyStatus: plan.privacyStatus,
+        ...(plan.publishAt ? { publishAt: plan.publishAt } : {}),
         containsSyntheticMedia: variant.metadata.aiDisclosureRequired,
         madeForKids: process.env['MADE_FOR_KIDS'] === 'true',
       })
@@ -104,7 +127,7 @@ async function main(): Promise<void> {
     }
   }
 
-  console.log('\nDe video staat PRIVÉ op je kanaal. Openbaar maken doe jij.\n')
+  console.log(`\n${plan.uitleg}\n`)
 }
 
 main().catch((error: unknown) => {
