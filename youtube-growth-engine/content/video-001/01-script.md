@@ -68,10 +68,9 @@ vandaag in vrijwel elke moskee staat en dat in Medina volledig ontbrak.
 >
 > De gebedsrichting veranderde.
 >
-> In de Koran, in soera Al-Baqara, wordt die verandering beschreven.
+> Eerst richtten de gebeden zich naar Jeruzalem. Daarna naar Mekka.
 >
-> *[CITAAT — soera 2, ayah 144. Woordelijk over te nemen uit de gekozen
-> Nederlandse vertaling. NIET PARAFRASEREN. Zie bronnencheck, punt 1.]*
+> Het staat in soera Al-Baqara, vers honderdvierenveertig.
 >
 > Stel je voor wat dat praktisch betekent. Er staat een gebouw. Het is gebouwd
 > met een richting in gedachten. En die richting klopt niet meer.

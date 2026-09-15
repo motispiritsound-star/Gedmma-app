@@ -110,15 +110,35 @@ async function main(): Promise<void> {
   }
 
   // --- 3. Productiemiddelen ------------------------------------------------
+  // Of er een vertaling nodig is, blijkt uit het script en niet uit een
+  // instelling. Anders is "geen vertaling nodig" in config/defaults.yaml een
+  // vinkje waarmee je een blokkade wegklikt die er wel degelijk is.
+  const citeert = await (async () => {
+    for (const bestand of await readdir(dir).catch(() => [] as string[])) {
+      if (!bestand.endsWith('.md')) continue
+      const tekst = await readFile(join(dir, bestand), 'utf8').catch(() => '')
+      if (/\[CITAAT|citaat\s*[—-]\s*soera|woordelijk (over te nemen|citeren)/i.test(tekst)) {
+        return true
+      }
+    }
+    return false
+  })()
+
+  const vertalingGekozen = await (async () => {
+    try {
+      const cfg = await readFile('config/defaults.yaml', 'utf8')
+      const m = /quran_translation:\s*"?([^"\n]+)"?/.exec(cfg)?.[1]?.trim()
+      const licentie = /quran_translation_licence:\s*"?([^"\n]*)"?/.exec(cfg)?.[1]?.trim()
+      if (m === undefined || m === '') return false
+      return !m.startsWith('NOG') && !m.startsWith('geen') && Boolean(licentie)
+    } catch { return false }
+  })()
+
   add({
-    wat: 'Koranvertaling gekozen en gelicentieerd',
-    klaar: await (async () => {
-      try {
-        const cfg = await readFile('config/defaults.yaml', 'utf8')
-        const m = /quran_translation:\s*"?([^"\n]+)"?/.exec(cfg)?.[1]?.trim()
-        return Boolean(m) && !m!.startsWith('NOG')
-      } catch { return false }
-    })(),
+    wat: citeert
+      ? 'Koranvertaling gekozen en gelicentieerd'
+      : 'Koranvertaling — niet nodig, dit script citeert niet',
+    klaar: citeert ? vertalingGekozen : true,
     wie: 'jij', blokkerend: true, minuten: 15,
     doen: 'kies een vertaling waarvan het gebruik aantoonbaar mag, en zet hem in config/defaults.yaml',
   })

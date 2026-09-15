@@ -21,3 +21,12 @@ boundaries:
     why: "gezondheidsniche, en het botst met de contentnorm hierboven"
   - avoid: "wondermiddelen, detox, of iets dat als genezing wordt gepresenteerd"
     why: "medische misinformatie, en het kost je het kanaal"
+  - avoid: "woordelijk citeren uit een Nederlandse Koranvertaling zonder aantoonbare toestemming"
+    why: >
+      De Arabische tekst is vrij, een vertaling is een zelfstandig werk en blijft
+      beschermd tot zeventig jaar na het overlijden van de vertaler. Gratis te
+      lezen op een website is geen licentie. De vaste lijn is daarom: de
+      gebeurtenis vertellen en de vindplaats noemen, niet de vertaling
+      naspreken. Komt er schriftelijke toestemming, dan mag citeren wel — zet de
+      uitgave en de vindplaats van die toestemming in config/defaults.yaml.
+      Zie docs/19.

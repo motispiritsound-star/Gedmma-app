@@ -129,8 +129,12 @@ religious:
   # VERPLICHT INVULLEN vóór de eerste echte productie. Zie docs/HANDLEIDING.md
   # stap 6: de meeste Nederlandse Koranvertalingen zijn auteursrechtelijk
   # beschermd werk, en "het is de Koran" dekt de vertaling niet.
-  quran_translation: "NOG TE KIEZEN"
-  quran_translation_licence: ""
+  # "geen" is toegestaan en betekent: de scripts citeren niet woordelijk uit de
+  # Koran. `npm run release` controleert dat ook echt, door de scripts te lezen.
+  # Wil je wel citeren, zet hier de uitgave neer en in de regel eronder waar de
+  # toestemming staat.
+  quran_translation: "geen — scripts citeren niet woordelijk"
+  quran_translation_licence: "n.v.t. zolang er niet geciteerd wordt"
   # De gekwalificeerde reviewer. Niet automatiseerbaar; zie docs/12 §5.
   reviewer_name: ""
   reviewer_fee_eur_per_video: 20

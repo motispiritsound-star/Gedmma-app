@@ -24,12 +24,16 @@ punten:
     opmerking: "Hier rust de hele stelling op. Geen volledige herkomst = claim omzetten naar 'de vroege beschrijvingen noemen geen toren'."
 
   - nr: 2
-    claim: "Koran 2:144 beschrijft de verandering van de gebedsrichting"
+    claim: "De gebedsrichting ging van Jeruzalem naar Mekka; dit staat beschreven in soera 2, vers 144"
     klasse: quran
     blokkerend: true
     status: open
     bron: ""
-    opmerking: "Juiste ayah, of past 2:142-150 beter? Vertaling woordelijk uit de gekozen uitgave."
+    opmerking: >
+      Het script citeert niet woordelijk: het benoemt de gebeurtenis en de
+      vindplaats. Twee vragen dus, allebei kort. Klopt de richting (Jeruzalem
+      naar Mekka), en is 2:144 de juiste verwijzing, of hoort 2:142-150 erbij?
+      Is de formulering "staat beschreven in" correct zonder citaat?
 
   - nr: 3
     claim: "De afmetingen liggen rond de dertig bij dertig meter"
