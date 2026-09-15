@@ -27,6 +27,38 @@ Regels die gelden:
 - **De uitleg is voor een kind**, niet voor een taalkundige. Eén zin, concreet,
   liefst iets dat je kunt gebruiken.
 
+## Een zin toevoegen
+
+`src/content/sentences.ts` hangt zinnen aan een les-id. Elke les krijgt er twee;
+ze komen aan het eind van de ronde, nadat de losse woorden geoefend zijn.
+
+```ts
+'eten-1': [
+  S('eten-1-a', 'بغيت أتاي بالسكر عافاك', 'bghit atay b ssokkar 3afak',
+    'Ik wil thee met suiker, alsjeblieft.', 'I would like tea with sugar, please.'),
+],
+```
+
+Regels die gelden:
+
+- **Het id begint met het les-id.** De les pakt zijn zinnen automatisch op; je
+  hoeft `curriculum.ts` niet aan te raken.
+- **Het Arabisch plakt de voorzetsels vast** zoals Marokkanen ze typen:
+  وبسلامة, بالسكر, فالدار. De Latijnse schrijfwijze houdt ze juist los, want
+  daar wordt het woordenbankje uit geknipt.
+- **De uitspraak gaat per woord.** Staat er een woord in dat de stem verkeerd
+  leest, zet het dan in `SPOKEN_WORD` in `src/content/pronunciation.ts` — één
+  keer, en elke zin waarin het voorkomt klinkt meteen goed.
+- **Frans, Duits en Spaans** komen uit `src/content/lang/*.ts`, sleutel
+  `sentences`. Een ontbrekende vertaling is een testfout.
+
+## Een letter aanpassen
+
+`src/content/alphabet.ts` bevat de 31 letters met hun begin-, midden- en
+eindvorm, en `LETTER_GROUPS` bepaalt in welke lessen ze vallen — gegroepeerd op
+skelet, want ب ت ث verschillen alleen in puntjes. De unit *Lhruf* wordt daar
+automatisch uit gebouwd; de tips staan in `curriculum.ts`.
+
 ## Een les of unit toevoegen
 
 `src/content/curriculum.ts`. Een unit is een lijst lessen, en de toets aan het

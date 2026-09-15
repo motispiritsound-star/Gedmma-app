@@ -1,13 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
-import type { Exercise } from '../engine/exercises'
-import { checkSpoken, checkTyped, tokenize, type Verdict } from '../engine/exercises'
+import type { Exercise, LetterForm } from '../engine/exercises'
+import { checkSpoken, checkTyped, normalise, tokenize, type Verdict } from '../engine/exercises'
 import { word } from '../content/lexicon'
+import { connects, letter } from '../content/alphabet'
+import { sentence } from '../content/sentences'
+import { sentenceMeaning } from '../content/localise'
+import { maybeWord } from '../content/lexicon'
 import { canListen, listenOnce, say, sfx } from '../engine/audio'
 import { useStore } from '../engine/store'
 import { Button, Card } from './kit'
 import { SpeakButton, useMeaning, useNote, WordText } from './WordChip'
-import { useT } from '../i18n'
+import { useLang, useT } from '../i18n'
 
 /**
  * One component per exercise type. Each of them reports a single verdict and
@@ -421,6 +425,306 @@ function Speak({ exercise, onAnswer, locked }: ExerciseProps) {
   )
 }
 
+
+/* ---------------------------------------------------------------- letters */
+
+/** The name a form goes by on screen. */
+function useFormName(): (form: LetterForm) => string {
+  const t = useT()
+  return (form) => (form === 'initial' ? t.alphabet.begin : form === 'medial' ? t.alphabet.midden : t.alphabet.eind)
+}
+
+/** The same three positions, as they fit into a question. */
+function useFormPlace(): (form: LetterForm) => string {
+  const t = useT()
+  return (form) => (form === 'initial' ? t.alphabet.posBegin : form === 'medial' ? t.alphabet.posMidden : t.alphabet.posEind)
+}
+
+function NewLetter({ exercise, onAnswer }: ExerciseProps) {
+  const t = useT()
+  const lang = useLang()
+  const formName = useFormName()
+  const l = letter(exercise.letterId!)
+  const example = l.exampleWordId ? maybeWord(l.exampleWordId) : undefined
+  useEffect(() => { say(l.ar, { tr: l.name }) }, [l.ar, l.name])
+
+  return (
+    <div>
+      <Prompt hint={t.lesson.nieuweLetter}>
+        <Card className="flex flex-col items-center gap-3 p-6">
+          <div className="ar text-7xl font-bold">{l.ar}</div>
+          <p className="font-display text-2xl font-extrabold">{l.name}</p>
+          <p className="text-center text-[var(--ink-soft)]">{t.alphabet.klinktAls(l.sound)}</p>
+          <SpeakButton ar={l.ar} tr={l.name} />
+
+          <ul className="mt-2 grid w-full grid-cols-3 gap-2 text-center">
+            {(['initial', 'medial', 'final'] as LetterForm[]).map((form) => (
+              <li key={form} className="rounded-2xl bg-[var(--surface-sunken)] p-3">
+                <div className="ar text-3xl font-bold">{l.forms[form]}</div>
+                <div className="mt-1 text-xs font-bold uppercase text-[var(--ink-soft)]">{formName(form)}</div>
+              </li>
+            ))}
+          </ul>
+
+          {!connects(l.id) && (
+            <p className="rounded-2xl bg-saffron-500/10 px-4 py-2 text-center text-sm text-[var(--ink-soft)]">
+              ✂️ {t.lesson.plaktNiet}
+            </p>
+          )}
+
+          {example && (
+            <div className="mt-1 flex w-full items-center gap-3 rounded-2xl bg-zellige-500/10 p-3">
+              <span className="text-2xl" aria-hidden="true">{example.emoji ?? '📝'}</span>
+              <div className="min-w-0 flex-1">
+                <div className="ar text-xl font-bold">{example.ar}</div>
+                <div className="text-sm text-[var(--ink-soft)]">{example.tr}</div>
+              </div>
+              <SpeakButton ar={example.ar} tr={example.tr} />
+            </div>
+          )}
+        </Card>
+      </Prompt>
+      <Button className="w-full" onClick={() => onAnswer('goed')}>{t.lesson.snapIk}</Button>
+      <p className="sr-only">{lang}</p>
+    </div>
+  )
+}
+
+/** One question about a letter: which glyph, which name, or which shape. */
+function LetterChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'klank' | 'naam' | 'vorm' }) {
+  const t = useT()
+  const formPlace = useFormPlace()
+  const [chosen, setChosen] = useState<string | null>(null)
+  const l = letter(exercise.letterId!)
+  const form = exercise.form ?? 'initial'
+  const ids = exercise.letterOptions ?? []
+
+  useEffect(() => {
+    setChosen(null)
+    if (mode === 'klank') say(l.ar, { tr: l.name })
+  }, [exercise.id, mode, l.ar, l.name])
+
+  const choose = (id: string) => {
+    if (locked) return
+    sfx.pick()
+    setChosen(id)
+    onAnswer(id === l.id ? 'goed' : 'fout')
+  }
+
+  const hint =
+    mode === 'klank' ? t.lesson.welkeLetter
+    : mode === 'naam' ? t.lesson.hoeHeetLetter
+    : t.lesson.welkeVorm(formPlace(form))
+
+  return (
+    <div>
+      <Prompt hint={hint}>
+        {mode === 'klank' ? (
+          <Card className="p-6 text-center">
+            <p className="font-display text-3xl font-extrabold">{l.name}</p>
+            <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.alphabet.klinktAls(l.sound)}</p>
+            <div className="mt-3 flex justify-center"><SpeakButton ar={l.ar} tr={l.name} /></div>
+          </Card>
+        ) : (
+          <Card className="flex items-center justify-center gap-4 p-6">
+            <span className="ar text-6xl font-bold">{l.ar}</span>
+            <SpeakButton ar={l.ar} tr={l.name} />
+          </Card>
+        )}
+      </Prompt>
+
+      <div className={`grid gap-3 ${mode === 'naam' ? 'sm:grid-cols-2' : 'grid-cols-2'}`}>
+        {ids.map((id) => {
+          const o = letter(id)
+          return (
+            <button
+              key={id}
+              disabled={locked}
+              onClick={() => choose(id)}
+              className={`btn3d rounded-2xl border-2 p-4 text-center transition ${optionButton(chosen, id, l.id, locked)}`}
+            >
+              {mode === 'naam'
+                ? <span className="font-display text-lg font-bold">{o.name} <span className="text-[var(--ink-soft)]">· {o.tr}</span></span>
+                : <span className="ar text-4xl font-bold">{mode === 'vorm' ? o.forms[form] : o.ar}</span>}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+/* -------------------------------------------------------------- sentences */
+
+/** What a sentence means, in the language the learner picked. */
+function useSentenceMeaning() {
+  const lang = useLang()
+  return (id: string) => sentenceMeaning(sentence(id), lang)
+}
+
+function NewSentence({ exercise, onAnswer }: ExerciseProps) {
+  const t = useT()
+  const meaning = useSentenceMeaning()
+  const { showScript, showTranslit } = useStore((s) => s.settings)
+  const z = sentence(exercise.sentenceId!)
+  useEffect(() => { say(z.ar, { tr: z.tr }) }, [z.ar, z.tr])
+
+  return (
+    <div>
+      <Prompt hint={t.lesson.nieuweZin}>
+        <Card className="flex flex-col items-center gap-3 p-6 text-center">
+          <span className="text-3xl" aria-hidden="true">💬</span>
+          {showScript && <p className="ar text-3xl font-bold leading-relaxed">{z.ar}</p>}
+          {(showTranslit || !showScript) && (
+            <p className="font-display text-lg font-bold text-zellige-600 dark:text-zellige-300">{z.tr}</p>
+          )}
+          <p className="font-display text-xl font-extrabold">{meaning(z.id)}</p>
+          <SpeakButton ar={z.ar} tr={z.tr} />
+          <p className="text-xs text-[var(--ink-soft)]">{t.lesson.zinLangzaam}</p>
+        </Card>
+      </Prompt>
+      <Button className="w-full" onClick={() => onAnswer('goed')}>{t.lesson.snapIk}</Button>
+    </div>
+  )
+}
+
+function SentenceBuild({ exercise, onAnswer, locked }: ExerciseProps) {
+  const t = useT()
+  const meaning = useSentenceMeaning()
+  const z = sentence(exercise.sentenceId!)
+  const answer = tokenize(z.tr)
+  const [bank, setBank] = useState<string[]>(exercise.tokens ?? [])
+  const [line, setLine] = useState<string[]>([])
+
+  useEffect(() => {
+    setBank(exercise.tokens ?? [])
+    setLine([])
+  }, [exercise.id])
+
+  const take = (i: number) => {
+    if (locked) return
+    sfx.tap()
+    setLine((l) => [...l, bank[i]!])
+    setBank((b) => b.filter((_, j) => j !== i))
+  }
+  const putBack = (i: number) => {
+    if (locked) return
+    sfx.tap()
+    setBank((b) => [...b, line[i]!])
+    setLine((l) => l.filter((_, j) => j !== i))
+  }
+
+  const submit = () => {
+    sfx.pick()
+    const got = line.join(' ')
+    // Word order is the whole exercise, so the tiles have to be in the right
+    // order; the spelling itself is already decided by the tiles.
+    const verdict: Verdict =
+      got === answer.join(' ') ? 'goed' : normalise(got) === normalise(z.tr) ? 'bijna' : 'fout'
+    onAnswer(verdict, got)
+  }
+
+  return (
+    <div>
+      <Prompt hint={t.lesson.bouwZin}>
+        <Card className="p-5 text-center">
+          <p className="font-display text-xl font-extrabold">{meaning(z.id)}</p>
+          <div className="mt-2 flex justify-center"><SpeakButton ar={z.ar} tr={z.tr} /></div>
+        </Card>
+      </Prompt>
+
+      <div className="mb-4 min-h-16 rounded-2xl border-2 border-dashed border-[var(--line)] p-3">
+        <ul className="flex flex-wrap gap-2">
+          {line.map((token, i) => (
+            <li key={`${token}-${i}`}>
+              <button className="btn3d rounded-xl border-2 border-zellige-500 bg-zellige-500/10 px-3 py-2 font-display font-bold" onClick={() => putBack(i)}>
+                {token}
+              </button>
+            </li>
+          ))}
+          {line.length === 0 && <li className="px-2 py-2 text-sm text-[var(--ink-soft)]">{t.lesson.bouwUitleg}</li>}
+        </ul>
+      </div>
+
+      <ul className="mb-5 flex flex-wrap gap-2">
+        {bank.map((token, i) => (
+          <li key={`${token}-${i}`}>
+            <button className="btn3d rounded-xl border-2 border-[var(--line)] bg-[var(--surface-raised)] px-3 py-2 font-display font-bold" onClick={() => take(i)}>
+              {token}
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      <Button className="w-full" disabled={locked || line.length === 0} onClick={submit}>{t.lesson.controleer}</Button>
+    </div>
+  )
+}
+
+function SentenceChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'betekenis' | 'luister' }) {
+  const t = useT()
+  const meaning = useSentenceMeaning()
+  const [chosen, setChosen] = useState<string | null>(null)
+  const z = sentence(exercise.sentenceId!)
+  const ids = exercise.sentenceOptions ?? []
+
+  useEffect(() => {
+    setChosen(null)
+    if (mode === 'luister') say(z.ar, { tr: z.tr })
+  }, [exercise.id, mode, z.ar, z.tr])
+
+  const choose = (id: string) => {
+    if (locked) return
+    sfx.pick()
+    setChosen(id)
+    onAnswer(id === z.id ? 'goed' : 'fout')
+  }
+
+  return (
+    <div>
+      <Prompt hint={mode === 'betekenis' ? t.lesson.watBetekentZin : t.lesson.welkeZinHoorJe}>
+        {mode === 'betekenis' ? (
+          <Card className="flex flex-col items-center gap-2 p-6 text-center">
+            <p className="ar text-2xl font-bold leading-relaxed">{z.ar}</p>
+            <p className="font-display font-bold text-zellige-600 dark:text-zellige-300">{z.tr}</p>
+            <SpeakButton ar={z.ar} tr={z.tr} />
+          </Card>
+        ) : (
+          <div className="flex flex-col items-center gap-3">
+            <motion.button
+              whileTap={{ scale: 0.92 }}
+              onClick={() => say(z.ar, { tr: z.tr })}
+              onDoubleClick={() => say(z.ar, { tr: z.tr, slow: true })}
+              className="grid h-28 w-28 place-items-center rounded-full bg-gradient-to-br from-zellige-300 to-zellige-700 text-5xl text-white shadow-lg"
+              aria-label={t.lesson.speelAf}
+            >
+              🔊
+            </motion.button>
+            <button className="text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => say(z.ar, { tr: z.tr, slow: true })}>
+              {t.lesson.langzamer}
+            </button>
+          </div>
+        )}
+      </Prompt>
+
+      <div className="grid gap-3">
+        {ids.map((id) => (
+          <button
+            key={id}
+            disabled={locked}
+            onClick={() => choose(id)}
+            className={`btn3d rounded-2xl border-2 p-4 text-start transition ${optionButton(chosen, id, z.id, locked)}`}
+          >
+            {mode === 'betekenis'
+              ? <span className="font-display text-base font-bold">{meaning(id)}</span>
+              : <span className="ar text-xl font-bold">{sentence(id).ar}</span>}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 /* ------------------------------------------------------------------ router */
 
 export function ExerciseView(props: ExerciseProps) {
@@ -435,5 +739,13 @@ export function ExerciseView(props: ExerciseProps) {
     case 'bouw': return <Build {...props} />
     case 'tik': return <Type {...props} />
     case 'spreek': return speechOn ? <Speak {...props} /> : <Type {...props} />
+    case 'letter-nieuw': return <NewLetter {...props} />
+    case 'letter-klank': return <LetterChoice {...props} mode="klank" />
+    case 'letter-naam': return <LetterChoice {...props} mode="naam" />
+    case 'letter-vorm': return <LetterChoice {...props} mode="vorm" />
+    case 'zin-nieuw': return <NewSentence {...props} />
+    case 'zin-bouw': return <SentenceBuild {...props} />
+    case 'zin-betekenis': return <SentenceChoice {...props} mode="betekenis" />
+    case 'zin-luister': return <SentenceChoice {...props} mode="luister" />
   }
 }

@@ -4,7 +4,7 @@ import confetti from 'canvas-confetti'
 import { lessonById, unitOfLesson } from '../content/curriculum'
 import { buildRound } from '../engine/exercises'
 import {
-  awardBadges, completeLesson, getState, knownWordIds, levelOf, markTipSeen, useStore, type Badge,
+  awardBadges, completeLesson, getState, knownIds, levelOf, markTipSeen, useStore, type Badge,
 } from '../engine/store'
 import { sfx } from '../engine/audio'
 import { Button, Card, Sheet } from '../ui/kit'
@@ -27,10 +27,12 @@ export function LessonPlayer() {
   const [result, setResult] = useState<RoundResult | null>(null)
   const [won, setWon] = useState<Badge[]>([])
   const [attempt, setAttempt] = useState(0)
+  // What finishing itself paid, on top of the answers that already paid out.
+  const [bonus, setBonus] = useState({ xp: 0, gems: 0 })
 
   // The round is built once per attempt, from what the learner already knows.
   const exercises = useMemo(
-    () => (lesson ? buildRound(lesson, { known: knownWordIds(getState()), toets: lesson.kind === 'toets' }) : []),
+    () => (lesson ? buildRound(lesson, { known: knownIds(getState()), toets: lesson.kind === 'toets' }) : []),
     [lessonId, attempt],
   )
 
@@ -49,9 +51,13 @@ export function LessonPlayer() {
   }
 
   const finish = (r: RoundResult) => {
-    const bonus = (r.perfect ? 5 : 0) + (lesson.kind === 'toets' ? 10 : 0) + (r.seconds < 180 ? 2 : 0)
-    const levelBefore = levelOf(getState().xp).level
-    completeLesson(lesson.id, r.score, Math.round(10 + r.score * 10 + bonus))
+    // The answers have already paid out; this is what finishing adds on top.
+    const extra = (r.perfect ? 5 : 0) + (lesson.kind === 'toets' ? 10 : 0) + (r.seconds < 180 ? 2 : 0)
+    const bonusXp = Math.round(10 + r.score * 10 + extra)
+    const before = getState()
+    const levelBefore = levelOf(before.xp).level
+    completeLesson(lesson.id, r.score, bonusXp)
+    setBonus({ xp: bonusXp, gems: getState().gems - before.gems })
     const badges = awardBadges()
     setWon(badges)
     setResult(r)
@@ -83,9 +89,25 @@ export function LessonPlayer() {
         </div>
         <div className="grid grid-cols-3 gap-3">
           <Card className="p-3"><div className="font-display text-2xl font-extrabold">{Math.round(result.score * 100)}%</div><div className="text-xs text-[var(--ink-soft)]">{t.common.goed}</div></Card>
-          <Card className="p-3"><div className="font-display text-2xl font-extrabold">{lesson.words.length}</div><div className="text-xs text-[var(--ink-soft)]">{t.common.woorden}</div></Card>
+          <Card className="p-3"><div className="font-display text-2xl font-extrabold">🔥 {result.bestCombo}</div><div className="text-xs text-[var(--ink-soft)]">{t.lesson.besteReeks}</div></Card>
           <Card className="p-3"><div className="font-display text-2xl font-extrabold">🔥 {streak}</div><div className="text-xs text-[var(--ink-soft)]">{t.common.dagen}</div></Card>
         </div>
+
+        {/* What this round actually paid, split the way it was earned. */}
+        <Card className="mt-3 flex items-center justify-around gap-2 p-4">
+          <div>
+            <div className="font-display text-2xl font-extrabold text-mint-600 dark:text-mint-300">
+              {t.lesson.xpPlus(result.xp + bonus.xp)}
+            </div>
+            <div className="text-xs text-[var(--ink-soft)]">{t.lesson.xpOpgehaald(result.xp, bonus.xp)}</div>
+          </div>
+          <div>
+            <div className="font-display text-2xl font-extrabold text-saffron-600 dark:text-saffron-300">
+              💎 {t.lesson.gemPlus(result.gems + bonus.gems)}
+            </div>
+            <div className="text-xs text-[var(--ink-soft)]">{t.lesson.edelstenen}</div>
+          </div>
+        </Card>
 
         {won.length > 0 && (
           <Card className="mt-4 p-4">

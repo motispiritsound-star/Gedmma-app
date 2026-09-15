@@ -26,7 +26,7 @@ Een les duurt twee tot vier minuten. Je leert een woord horen, herkennen, lezen 
 
 WAT JE LEERT
 • 304 woorden en zinnen, van salam tot afdingen op de souq
-• 16 units die oplopen van beginner (A0) tot A2
+• 17 units die oplopen van beginner (A0) tot A2
 • Het hele Arabische alfabet, met de vorm van elke letter aan het begin, in het midden en aan het eind
 • Vier gesprekken om te lezen, met een vraag erna
 • Drie spelletjes: tijdrace, geheugenspel en letterspel
@@ -38,7 +38,7 @@ IN JOUW TAAL
 Nederlands, Frans, Duits, Spaans en Engels. Je kiest bij de start en kunt altijd wisselen: alle vertalingen, uitleg en verhalen wisselen mee.
 
 GRATIS BEGINNEN
-De eerste vijf units zijn en blijven gratis: genoeg om jezelf voor te stellen, je familie te beschrijven en tot honderd te tellen. De hele cursus hoort bij de volledige toegang: de eerste dagen gratis, daarna € 6,45 per maand inclusief btw. Maandelijks opzegbaar in je eigen App Store- of Google Play-account; zeg je op vóór het einde van de proefperiode, dan betaal je niets.
+Het alfabet en de eerste vijf units zijn en blijven gratis: genoeg om het Arabische schrift te lezen, jezelf voor te stellen en tot honderd te tellen. De hele cursus hoort bij de volledige toegang: de eerste dagen gratis, daarna € 6,49 per maand inclusief btw. Maandelijks opzegbaar in je eigen App Store- of Google Play-account; zeg je op vóór het einde van de proefperiode, dan betaal je niets.
 
 GEMAAKT OM AAN EEN KIND TE GEVEN
 • Geen account, geen e-mailadres, geen inloggen
@@ -56,7 +56,7 @@ Darija verschilt per stad en per familie, en heeft geen officiële spelling. Wij
 ```
 
 **Wat is er nieuw (versie 1.0)**
-`De eerste versie: 16 units, 304 woorden, het Arabische alfabet, verhalen en spelletjes. In het Nederlands, Frans, Duits, Spaans en Engels.`
+`De eerste versie: 17 units, 304 woorden, 100 zinnen, het Arabische alfabet, verhalen en spelletjes. In het Nederlands, Frans, Duits, Spaans en Engels.`
 
 ## Google Play
 

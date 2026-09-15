@@ -42,3 +42,39 @@ export const LETTERS: Letter[] = [
   L('va', 'ڤ', 'va', 'v', 'v van video — extra letter', 'ڤـ', 'ـڤـ', 'ـڤ'),
   L('ga', 'ݣ', 'ga', 'g', 'g van het Engelse “go” — extra letter, zoals in ݣناوة (gnawa)', 'ݣـ', 'ـݣـ', 'ـݣ', 'gnawa'),
 ]
+
+const index = new Map(LETTERS.map((l) => [l.id, l]))
+
+/** Throws on an unknown id: a lesson pointing at nothing is a content bug. */
+export function letter(id: string): Letter {
+  const found = index.get(id)
+  if (!found) throw new Error(`Onbekende letter-id: ${id}`)
+  return found
+}
+
+export const maybeLetter = (id: string) => index.get(id)
+
+/**
+ * The six letters that never connect to the letter after them.
+ *
+ * This is the first thing that makes Arabic writing click: a word can break in
+ * the middle without being two words. Their "initial" and "medial" forms are
+ * therefore the same shape as the isolated and final one.
+ */
+export const NON_CONNECTING = new Set(['alif', 'dal', 'dhal', 'ra', 'zay', 'waw'])
+
+export const connects = (id: string): boolean => !NON_CONNECTING.has(id)
+
+/**
+ * The teaching order: letters grouped by the skeleton they share, the way
+ * every Arabic reading course does it, because ب ت ث differ only in dots.
+ */
+export const LETTER_GROUPS: string[][] = [
+  ['alif', 'ba', 'ta', 'tha'],
+  ['jim', 'ha', 'kha', 'dal', 'dhal'],
+  ['ra', 'zay', 'sin', 'shin'],
+  ['sad', 'dad', 'ta-emf', 'za-emf'],
+  ['ayn', 'ghayn', 'fa', 'qaf'],
+  ['kaf', 'lam', 'mim', 'nun'],
+  ['ha-soft', 'waw', 'ya', 'pa', 'va', 'ga'],
+]

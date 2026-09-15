@@ -4,7 +4,8 @@ import { nl } from './nl'
 import { UNITS, LESSONS } from '../content/curriculum'
 import { allWords } from '../content/lexicon'
 import { STORIES } from '../content/stories'
-import { meaningOf, noteOf, lessonTitle, packOf, storyOf, tipOf, unitSubtitle } from '../content/localise'
+import { meaningOf, noteOf, lessonTitle, packOf, sentenceMeaning, storyOf, tipOf, unitSubtitle } from '../content/localise'
+import { ALL_SENTENCES } from '../content/sentences'
 import { BADGES } from '../engine/store'
 
 /**
@@ -120,6 +121,12 @@ describe('content packs', () => {
         expect(unitSubtitle(unit, lang)).toBe(pack.units[unit.id])
       }
       for (const lesson of LESSONS) {
+        // A letter lesson is titled with the letters it teaches — ا ب ت ث is
+        // the same in every language, so there is nothing to translate.
+        if (lesson.letters?.length && lesson.kind === 'letters') {
+          expect(lessonTitle(lesson, lang)).toBe(lesson.title)
+          continue
+        }
         const key = lesson.kind === 'toets' ? 'toets' : lesson.id
         expect(pack.lessons[key], `${lang}/${lesson.id}`).toBeTruthy()
         expect(lessonTitle(lesson, lang)).toBe(pack.lessons[key])
@@ -127,6 +134,18 @@ describe('content packs', () => {
           expect(pack.tips[lesson.id], `${lang}/${lesson.id}`).toBeTruthy()
           expect(tipOf(lesson, lang)!.body).toBe(pack.tips[lesson.id]!.body)
         }
+      }
+    }
+  })
+
+  it('translates every sentence into every language', () => {
+    for (const lang of LANG_CODES) {
+      for (const z of ALL_SENTENCES) {
+        const text = sentenceMeaning(z, lang)
+        expect(text, `${lang}/${z.id}`).toBeTruthy()
+        // English is the fallback, so anywhere else matching it exactly would
+        // mean the pack simply has no entry.
+        if (lang !== 'en' && lang !== 'nl') expect(text, `${lang}/${z.id}`).not.toBe(z.en)
       }
     }
   })

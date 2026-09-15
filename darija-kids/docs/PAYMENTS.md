@@ -1,8 +1,8 @@
 # Het abonnement, en hoe het geld bij jou komt
 
-De eerste **vijf units** zijn gratis en blijven gratis. De rest van de cursus
+Het alfabet en de eerste **vijf units** zijn gratis en blijven gratis. De rest van de cursus
 hoort bij **volledige toegang**: een paar dagen gratis proberen, daarna
-**€ 6,45 per maand inclusief btw**, maandelijks opzegbaar. De betaling loopt
+**€ 6,49 per maand inclusief btw**, maandelijks opzegbaar. De betaling loopt
 volledig via de App Store en Google Play — zij innen, zij rekenen de btw af,
 zij houden de proefperiode bij, en zij storten maandelijks op jouw rekening.
 
@@ -22,13 +22,12 @@ Wil je later langer geven — een week doet het in dit soort apps vaak beter —
 dan is dat één getal hier en één instelling daar. Helemaal geen proefperiode
 kan ook: `TRIAL_DAYS` op 0, en de teksten passen zich aan.
 
-**2. € 6,45 is bij Apple mogelijk niet exact instelbaar.** Apple werkt met
-vaste prijspunten; ligt 6,45 er niet tussen, dan is **€ 6,49** de dichtstbijzijnde.
-Google Play laat je wél een vrij bedrag per land invullen, dus daar kan 6,45
-precies. Dit hoeft niets aan de app te veranderen: die toont altijd de prijs
-die de winkel zelf teruggeeft, in de munt van de koper. Alleen de website valt
-terug op `LIST_PRICE` in `src/engine/billing.ts` — pas dat aan als het 6,49
-wordt.
+**2. € 6,49 is precies een Apple-prijspunt.** Apple werkt met vaste
+prijspunten en 6,49 is er één van, dus je stelt het bedrag daar zonder omweg
+in. Google Play laat je per land een vrij bedrag invullen, dus daar vul je
+6,49 gewoon in. De app toont sowieso altijd de prijs die de winkel zelf
+teruggeeft, in de munt van de koper; alleen de website valt terug op
+`LIST_PRICE` in `src/engine/billing.ts`.
 
 ## Wat er in de app al zit
 
@@ -66,7 +65,7 @@ Gebruik in beide winkels **hetzelfde id**, anders werkt de code niet:
 | Eerst | maak een **subscription group** (bijv. "Darija Kids") | maak een abonnement met een **basisplan** |
 | Product-id | `app.darijakids.monthly` | `app.darijakids.monthly` |
 | Duur | 1 maand, automatisch verlengend | maandelijks, automatisch verlengend |
-| Prijs | € 6,45 (of het dichtstbijzijnde prijspunt) | € 6,45 |
+| Prijs | € 6,49 | € 6,49 |
 | Gratis periode | **Introductory Offer → Free Trial → 3 dagen** | **Aanbieding → Gratis proefperiode → 3 dagen** |
 | Naam voor de koper | Volledige toegang | Volledige toegang |
 
@@ -99,7 +98,7 @@ die worden apart beoordeeld.
 
 In de EU zijn Apple en Google voor digitale producten zelf de verkoper richting
 de klant: zij rekenen de btw van het land van de koper en dragen die af. De
-€ 6,45 die de klant ziet is dus inclusief btw, en jij ontvangt het bedrag ná
+€ 6,49 die de klant ziet is dus inclusief btw, en jij ontvangt het bedrag ná
 commissie en ná btw. Jij stuurt geen facturen naar kopers.
 
 Wat je zelf moet regelen: die inkomsten zijn belastbaar, en omdat je met een

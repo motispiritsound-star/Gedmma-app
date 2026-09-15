@@ -113,6 +113,21 @@ export const en: Strings = {
     nieuweBeloning: (n) => (n > 1 ? 'New rewards!' : 'New reward!'),
     bestaatNiet: 'This lesson does not exist.',
     terugNaarPad: 'Back to the path',
+    nieuweLetter: 'New letter',
+    plaktNiet: 'This letter never joins to the one after it.',
+    welkeLetter: 'Which letter is this?',
+    hoeHeetLetter: 'What is this letter called?',
+    welkeVorm: (positie: string): string => `What shape does this letter take ${positie}?`,
+    nieuweZin: 'New sentence',
+    zinLangzaam: 'Tap the speaker, double-tap for slow.',
+    watBetekentZin: 'What does this sentence mean?',
+    welkeZinHoorJe: 'Which sentence do you hear?',
+    xpPlus: (n: number): string => `+${n} XP`,
+    gemPlus: (n: number): string => `+${n}`,
+    opRij: (n: number): string => `${n} right in a row`,
+    besteReeks: 'best run',
+    xpOpgehaald: (antwoorden: number, bonus: number): string => `${antwoorden} from answers + ${bonus} bonus`,
+    edelstenen: 'gems',
     lof: ['Mzyan!', 'Bravo!', 'Wallah mzyan!', 'Nice!', 'Sahit!', 'Perfect!'],
   },
 
@@ -131,6 +146,21 @@ export const en: Strings = {
     zonderHartjes: 'No hearts. Mistakes cost nothing here.',
     startHerhaling: 'Start reviewing',
     zwakste: 'These are the least solid so far',
+    metZinnen: (n: number): string => (n === 1 ? '1 sentence comes back too.' : `${n} sentences come back too.`),
+  },
+
+  quests: {
+    titel: 'Today’s missions',
+    uitleg: 'Every mission you finish pays gems. Tomorrow there are new ones.',
+    klaar: 'Every mission done — sahit! New ones tomorrow.',
+    binnen: 'Done ✅',
+    beloning: (n: number): string => `${n} gems`,
+    taak: {
+      lessen: (n: number): string => (n === 1 ? 'Finish 1 lesson' : `Finish ${n} lessons`),
+      goed: (n: number): string => `Give ${n} right answers`,
+      herhaald: (n: number): string => `Review ${n} words`,
+      zinnen: (n: number): string => `Build ${n} sentences`,
+    },
   },
 
   strength: {
@@ -179,6 +209,9 @@ export const en: Strings = {
     begin: 'start',
     midden: 'middle',
     eind: 'end',
+    posBegin: 'at the start',
+    posMidden: 'in the middle',
+    posEind: 'at the end',
     spel: 'Letter game',
     spelUitleg: 'Ten rounds: which letter goes with this name?',
     alGehaald: 'already done ✅',
@@ -253,6 +286,9 @@ export const en: Strings = {
     verhaal: { naam: 'Storyteller', hint: 'Finish a story' },
     'niveau-5': { naam: 'Level 5', hint: 'Reach level 5' },
     'niveau-10': { naam: 'Level 10', hint: 'Reach level 10' },
+    alfabet: { naam: 'Alphabet done', hint: 'Finish the whole letters unit' },
+    'zinnen-50': { naam: 'Fifty sentences', hint: 'Build 50 sentences' },
+    missies: { naam: 'Every mission', hint: 'Finish all of one day’s missions' },
   },
 
   parents: {
@@ -454,7 +490,7 @@ export const en: Strings = {
       ],
       [
         'Does it cost anything?',
-        'The first five units are free and stay free — enough to introduce yourself, describe your family and count to a hundred. The whole course comes with a subscription of € 6.45 a month including VAT, with the first days free. You subscribe inside the app through the App Store or Google Play, and you cancel in the same place whenever you like. No adverts and no account: your progress stays yours.',
+        'The alphabet and the first five units are free and stay free — enough to read the Arabic script, introduce yourself and count to a hundred. The whole course comes with a subscription of € 6.49 a month including VAT, with the first days free. You subscribe inside the app through the App Store or Google Play, and you cancel in the same place whenever you like. No adverts and no account: your progress stays yours.',
       ],
       [
         'Does it work offline?',
@@ -473,12 +509,17 @@ export const en: Strings = {
   },
 
   unlock: {
+    tijdlijn: (dagen: number, prijs: string): [string, string, string][] => [
+      ['🎁', `Today: ${dagen} days free`, 'Everything is open and you pay nothing yet.'],
+      ['📅', `After ${dagen} days: ${prijs} a month`, 'The store charges it monthly, VAT included.'],
+      ['🛑', 'Cancel any time', `One tap in your store account. Cancel within ${dagen} days and you pay nothing.`],
+    ],
     titel: 'Full access',
     sub: (dagen, prijs) => `${dagen} days free, then ${prijs} a month`,
     intro: (vrij) =>
       `The first ${vrij} units are free and stay free — enough to introduce yourself and count to a hundred. The rest of the course comes with the subscription.`,
     krijgt: [
-      'All 16 units, from food and school to haggling at the souq',
+      'All 17 units, from the alphabet and food to haggling at the souq',
       'Every word and phrase in the course, with pronunciation',
       'Every story and its questions',
       'Every new lesson we add',
@@ -504,6 +545,9 @@ export const en: Strings = {
     slotKnop: 'See it',
   },
   welcome: {
+    plan: (dagen: number, prijs: string): string =>
+      `You start free. After ${dagen} days the full course is ${prijs} a month — or you simply stop.`,
+    gratisDeel: (vrij: number): string => `The first ${vrij} units stay free, subscription or not.`,
     titel: 'Ahlan! Welcome to Darija Kids',
     body: 'Which language do you want to learn in? You can always change it later.',
     knop: 'Yallah, let us start',

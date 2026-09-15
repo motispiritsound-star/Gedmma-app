@@ -1,8 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { DAY, dueCards, newCard, review, strengthLabel } from './srs'
-import { buildRound, buildReviewRound, checkSpoken, checkTyped, normalise, tokenize } from './exercises'
+import {
+  buildRound, buildReviewRound, checkSpoken, checkTyped, isLetterExercise, isSentenceExercise,
+  normalise, tokenize,
+} from './exercises'
 import { latinise, phoneticOf } from './audio'
 import { LESSONS, UNITS } from '../content/curriculum'
+import { letter } from '../content/alphabet'
+import { sentence } from '../content/sentences'
 import { word } from '../content/lexicon'
 
 const now = 1_700_000_000_000
@@ -68,12 +73,20 @@ describe('rounds', () => {
     expect(round.some((e) => e.kind === 'nieuw')).toBe(false)
   })
 
-  it('only ever asks about words the lesson teaches', () => {
+  it('only ever asks about what the lesson teaches', () => {
     for (const l of LESSONS) {
       for (const e of buildRound(l, { seed: 3 })) {
-        expect(l.words, `${l.id}/${e.kind}`).toContain(e.wordId)
-        for (const id of e.options ?? []) expect(() => word(id)).not.toThrow()
-        for (const id of e.pairIds ?? []) expect(l.words).toContain(id)
+        if (isLetterExercise(e)) {
+          expect(l.letters, `${l.id}/${e.kind}`).toContain(e.letterId)
+          for (const id of e.letterOptions ?? []) expect(() => letter(id)).not.toThrow()
+        } else if (isSentenceExercise(e)) {
+          expect(l.sentences, `${l.id}/${e.kind}`).toContain(e.sentenceId)
+          for (const id of e.sentenceOptions ?? []) expect(() => sentence(id)).not.toThrow()
+        } else {
+          expect(l.words, `${l.id}/${e.kind}`).toContain(e.wordId)
+          for (const id of e.options ?? []) expect(() => word(id)).not.toThrow()
+          for (const id of e.pairIds ?? []) expect(l.words).toContain(id)
+        }
       }
     }
   })
@@ -81,6 +94,17 @@ describe('rounds', () => {
   it('always includes the right answer among the options', () => {
     for (const l of LESSONS.slice(0, 12)) {
       for (const e of buildRound(l, { seed: 11 })) {
+        if (isLetterExercise(e)) {
+          if (e.letterOptions) expect(e.letterOptions, e.id).toContain(e.letterId)
+          continue
+        }
+        if (isSentenceExercise(e)) {
+          if (e.sentenceOptions) expect(e.sentenceOptions, e.id).toContain(e.sentenceId)
+          if (e.tokens) {
+            for (const t of tokenize(sentence(e.sentenceId!).tr)) expect(e.tokens, e.id).toContain(t)
+          }
+          continue
+        }
         if (e.options) expect(e.options, e.id).toContain(e.wordId)
         if (e.tokens) {
           for (const t of tokenize(word(e.wordId).tr)) expect(e.tokens, e.id).toContain(t)
@@ -91,10 +115,40 @@ describe('rounds', () => {
 
   it('keeps a round short enough for one sitting', () => {
     for (const l of LESSONS) {
-      const round = buildRound(l, { known: new Set(l.words), seed: 5 })
-      expect(round.length, l.id).toBeLessThanOrEqual(14)
+      // Nothing new to teach: what is left is the drilling plus the sentences.
+      const round = buildRound(l, { known: new Set([...l.words, ...(l.letters ?? []), ...(l.sentences ?? [])]), seed: 5 })
+      expect(round.length, l.id).toBeLessThanOrEqual(20)
       expect(round.length, l.id).toBeGreaterThanOrEqual(4)
     }
+  })
+
+  it('ends a word lesson with its sentences, and only at the end', () => {
+    for (const l of LESSONS) {
+      if (!l.sentences?.length || l.letters?.length) continue
+      const round = buildRound(l, { seed: 8 })
+      const first = round.findIndex(isSentenceExercise)
+      expect(first, l.id).toBeGreaterThan(0)
+      expect(round.slice(first).every(isSentenceExercise), l.id).toBe(true)
+      // Every sentence it does reach is heard, built and then recognised.
+      const built = round.filter((e) => e.kind === 'zin-bouw')
+      expect(built.length, l.id).toBeGreaterThan(0)
+    }
+  })
+
+  it('teaches letters before drilling them, three shapes and all', () => {
+    const first = LESSONS.find((l) => l.id === 'hruf-1')!
+    const round = buildRound(first, { seed: 4 })
+    const teaching = round.filter((e) => e.kind === 'letter-nieuw').map((e) => e.letterId)
+    expect(new Set(teaching)).toEqual(new Set(first.letters))
+    expect(round.some((e) => e.kind === 'letter-vorm')).toBe(true)
+    expect(round.every((e) => e.wordId === '')).toBe(true)
+  })
+
+  it('leaves the teaching cards out of the letter checkpoint', () => {
+    const toets = LESSONS.find((l) => l.id === 'hruf-toets')!
+    const round = buildRound(toets, { seed: 4 })
+    expect(round.some((e) => e.kind === 'letter-nieuw')).toBe(false)
+    expect(round.length).toBeLessThanOrEqual(16)
   })
 
   it('drops teaching cards and speaking from a checkpoint', () => {
@@ -108,6 +162,13 @@ describe('rounds', () => {
     const round = buildReviewRound(['khobz', 'atay', 'mesh', 'kelb'], 42)
     expect(round.length).toBe(4)
     for (const e of round) expect(['khobz', 'atay', 'mesh', 'kelb']).toContain(e.wordId)
+  })
+
+  it('mixes due sentences into a review round', () => {
+    const round = buildReviewRound(['khobz', 'atay'], 42, ['eten-1-a', 'eten-1-b'])
+    const zinnen = round.filter(isSentenceExercise)
+    expect(zinnen.length).toBe(2)
+    for (const e of zinnen) expect(['eten-1-a', 'eten-1-b']).toContain(e.sentenceId)
   })
 
   it('is deterministic for the same seed', () => {

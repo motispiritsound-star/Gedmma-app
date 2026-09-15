@@ -26,7 +26,7 @@ Une leçon dure deux à quatre minutes. Tu apprends à entendre un mot, à le re
 
 CE QUE TU APPRENDS
 • 304 mots et phrases, de salam à la négociation au souq
-• 16 unités qui montent de débutant (A0) jusqu'à A2
+• 17 unités qui montent de débutant (A0) jusqu'à A2
 • Tout l'alphabet arabe, avec la forme de chaque lettre au début, au milieu et à la fin
 • Quatre conversations à lire, avec des questions à la fin
 • Trois jeux : course contre la montre, memory et jeu des lettres
@@ -38,7 +38,7 @@ DANS TA LANGUE
 Français, néerlandais, allemand, espagnol et anglais. Tu choisis au démarrage et tu peux changer à tout moment : traductions, explications et histoires suivent.
 
 COMMENCER GRATUITEMENT
-Les cinq premières unités sont et restent gratuites : de quoi te présenter, décrire ta famille et compter jusqu'à cent. Le cours complet va avec l'accès complet : les premiers jours offerts, puis 6,45 € par mois TTC. Résiliable chaque mois dans ton compte App Store ou Google Play ; en résiliant avant la fin de l'essai, tu ne paies rien.
+L'alphabet et les cinq premières unités sont et restent gratuits : de quoi lire l'écriture arabe, te présenter et compter jusqu'à cent. Le cours complet va avec l'accès complet : les premiers jours offerts, puis 6,49 € par mois TTC. Résiliable chaque mois dans ton compte App Store ou Google Play ; en résiliant avant la fin de l'essai, tu ne paies rien.
 
 FAIT POUR ÊTRE CONFIÉ À UN ENFANT
 • Pas de compte, pas d'e-mail, pas de connexion
@@ -56,7 +56,7 @@ Le darija change d'une ville et d'une famille à l'autre, et n'a pas d'orthograp
 ```
 
 **Nouveautés (version 1.0)**
-`Première version : 16 unités, 304 mots, l'alphabet arabe, des histoires et des jeux. En français, néerlandais, allemand, espagnol et anglais.`
+`Première version : 17 unités, 304 mots, 100 phrases, l'alphabet arabe, des histoires et des jeux. En français, néerlandais, allemand, espagnol et anglais.`
 
 ## Google Play
 

@@ -1,20 +1,32 @@
 import { useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Exercise, Verdict } from '../engine/exercises'
+import { isLetterExercise, isSentenceExercise } from '../engine/exercises'
 import type { Grade } from '../engine/srs'
 import { word } from '../content/lexicon'
-import { gradeWord, heartsNow, loseHeart, useStore } from '../engine/store'
+import { letter } from '../content/alphabet'
+import { sentence } from '../content/sentences'
+import { sentenceMeaning } from '../content/localise'
+import {
+  bumpQuest, countSentence, gradeExtra, gradeWord, heartsNow, letterKey, loseHeart,
+  scoreCorrect, sentenceKey, useStore,
+} from '../engine/store'
 import { sfx } from '../engine/audio'
 import { Button, Progress, Sheet } from './kit'
 import { Mascot } from './Mascot'
 import { ExerciseView } from './exercises'
 import { SpeakButton, useMeaning, useNote } from './WordChip'
-import { useT } from '../i18n'
+import { useLang, useT } from '../i18n'
 
 /**
  * The thing that runs a list of exercises: progress bar, hearts, the feedback
  * bar, and putting a wrong answer back at the end of the queue. Lessons,
  * checkpoints and review sessions are all the same runner with other input.
+ *
+ * Rewards are paid on the spot. XP and gems land the moment an answer is
+ * right, float up off the card so they are impossible to miss, and the run
+ * counter in the corner climbs with them — a child should be able to see what
+ * an answer was worth without waiting for the end of the lesson.
  */
 
 const GRADE_OF: Record<Verdict, Grade> = { goed: 'goed', bijna: 'moeizaam', fout: 'fout' }
@@ -24,10 +36,31 @@ export interface RoundResult {
   asked: number
   perfect: boolean
   seconds: number
+  /** XP already paid out during the round, answer by answer. */
+  xp: number
+  /** Gems earned from runs of right answers. */
+  gems: number
+  /** The longest run of right answers in a row. */
+  bestCombo: number
+}
+
+/** What the feedback bar shows, whatever kind of thing was being asked. */
+interface Subject {
+  ar: string
+  tr: string
+  meaning: string
+  note?: string
+}
+
+/** One floating reward, on its way up off the card. */
+interface Burst {
+  id: number
+  xp: number
+  gems: number
 }
 
 export function RoundRunner({
-  exercises, onFinish, onQuit, useHearts = true, quitLabel,
+  exercises, onFinish, onQuit, useHearts = true, quitLabel, review = false,
 }: {
   exercises: Exercise[]
   onFinish: (result: RoundResult) => void
@@ -35,8 +68,11 @@ export function RoundRunner({
   useHearts?: boolean
   /** Defaults to the “stop this lesson?” wording. */
   quitLabel?: string
+  /** A review round: right answers also count towards the repetition mission. */
+  review?: boolean
 }) {
   const t = useT()
+  const lang = useLang()
   const state = useStore((s) => s)
   const meaning = useMeaning()
   const note = useNote()
@@ -46,9 +82,14 @@ export function RoundRunner({
   const [verdict, setVerdict] = useState<Verdict | null>(null)
   const [detail, setDetail] = useState('')
   const [quit, setQuit] = useState(false)
-  const tally = useRef({ right: 0, asked: 0, perfect: true, start: Date.now() })
-  // How many right in a row: the sound climbs with it, and a mistake resets it.
-  const combo = useRef(0)
+  // How many right in a row: the sound climbs with it, the counter shows it,
+  // and a mistake resets both.
+  const [combo, setCombo] = useState(0)
+  const [burst, setBurst] = useState<Burst | null>(null)
+  // Every burst needs its own key, or answering the same card twice would
+  // reuse the element and the animation would not replay.
+  const burstId = useRef(0)
+  const tally = useRef({ right: 0, asked: 0, perfect: true, start: Date.now(), xp: 0, gems: 0, best: 0 })
 
   const current = queue[index]
   const hearts = heartsNow(state)
@@ -68,24 +109,49 @@ export function RoundRunner({
     return <div className="mx-auto max-w-md px-4 py-20 text-center text-[var(--ink-soft)]">{t.common.laden}</div>
   }
 
-  const target = word(current.wordId)
+  const subject: Subject = isLetterExercise(current)
+    ? (() => {
+        const l = letter(current.letterId!)
+        return { ar: l.ar, tr: l.name, meaning: t.alphabet.klinktAls(l.sound) }
+      })()
+    : isSentenceExercise(current)
+      ? (() => {
+          const z = sentence(current.sentenceId!)
+          return { ar: z.ar, tr: z.tr, meaning: sentenceMeaning(z, lang) }
+        })()
+      : (() => {
+          const w = word(current.wordId)
+          return { ar: w.ar, tr: w.tr, meaning: meaning(w), note: note(w) }
+        })()
 
   const finish = () => {
-    const { right, asked, perfect, start } = tally.current
+    const { right, asked, perfect, start, xp, gems, best } = tally.current
     onFinish({
       score: asked === 0 ? 1 : Math.max(0, Math.min(1, right / asked)),
       asked,
       perfect,
       seconds: (Date.now() - start) / 1000,
+      xp,
+      gems,
+      bestCombo: best,
     })
+  }
+
+  /** Records the answer against whatever kind of thing was being asked. */
+  const record = (exercise: Exercise, grade: Grade) => {
+    if (isLetterExercise(exercise)) gradeExtra(letterKey(exercise.letterId!), grade)
+    else if (isSentenceExercise(exercise)) gradeExtra(sentenceKey(exercise.sentenceId!), grade)
+    else if (exercise.kind === 'koppel') for (const id of exercise.pairIds ?? []) gradeWord(id, grade)
+    else gradeWord(exercise.wordId, grade)
   }
 
   const answer = (v: Verdict, d?: string) => {
     if (verdict) return
     const exercise = current
 
-    if (exercise.kind === 'nieuw') {
-      gradeWord(exercise.wordId, 'goed')
+    // Teaching cards are not questions: they cost nothing and are worth nothing.
+    if (exercise.kind === 'nieuw' || exercise.kind === 'letter-nieuw' || exercise.kind === 'zin-nieuw') {
+      record(exercise, 'goed')
       if (index + 1 >= queue.length) finish()
       else setIndex((i) => i + 1)
       return
@@ -94,32 +160,39 @@ export function RoundRunner({
     setVerdict(v)
     setDetail(d ?? '')
     tally.current.asked += 1
-    if (v === 'goed') {
-      tally.current.right += 1
-      sfx.correct(combo.current)
-      combo.current += 1
-      if (combo.current % 5 === 0) sfx.streak()
-    } else if (v === 'bijna') {
-      tally.current.right += 0.5
+    if (isSentenceExercise(exercise)) countSentence()
+    if (review) bumpQuest('herhaald')
+
+    if (v === 'fout') {
       tally.current.perfect = false
-      sfx.correct(Math.min(combo.current, 2))
-      combo.current += 1
-    } else {
-      tally.current.perfect = false
-      combo.current = 0
+      setCombo(0)
       sfx.wrong()
       if (heartsOn) loseHeart()
+    } else {
+      const run = combo + 1
+      setCombo(run)
+      tally.current.best = Math.max(tally.current.best, run)
+      if (v === 'goed') tally.current.right += 1
+      else {
+        tally.current.right += 0.5
+        tally.current.perfect = false
+      }
+      const paid = scoreCorrect(run, review)
+      tally.current.xp += paid.xp
+      tally.current.gems += paid.gems
+      setBurst({ id: ++burstId.current, xp: paid.xp, gems: paid.gems })
+      sfx.correct(v === 'goed' ? run - 1 : Math.min(run - 1, 2))
+      if (run % 5 === 0) sfx.streak()
     }
 
-    if (exercise.kind === 'koppel') for (const id of exercise.pairIds ?? []) gradeWord(id, GRADE_OF[v])
-    else gradeWord(exercise.wordId, GRADE_OF[v])
-
+    record(exercise, GRADE_OF[v])
     if (v === 'fout') setQueue((q) => [...q, { ...exercise, id: `${exercise.id}-again` }])
   }
 
   const next = () => {
     setVerdict(null)
     setDetail('')
+    setBurst(null)
     if (index + 1 >= queue.length) finish()
     else setIndex((i) => i + 1)
   }
@@ -129,10 +202,48 @@ export function RoundRunner({
       <div className="flex items-center gap-3">
         <button onClick={() => setQuit(true)} aria-label={t.common.sluiten} className="text-2xl text-[var(--ink-soft)] hover:text-[var(--ink)]">✕</button>
         <Progress value={index / Math.max(1, queue.length)} tone="mint" />
+        <AnimatePresence>
+          {combo >= 2 && (
+            <motion.span
+              key={combo}
+              initial={{ scale: 0.6, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.6, opacity: 0 }}
+              className="shrink-0 rounded-full bg-saffron-500/20 px-2.5 py-1 font-display text-sm font-extrabold text-saffron-600 dark:text-saffron-300"
+              aria-label={t.lesson.opRij(combo)}
+            >
+              🔥 {combo}
+            </motion.span>
+          )}
+        </AnimatePresence>
         {heartsOn && <span className="shrink-0 font-bold" aria-label={t.lesson.hartjesOver(hearts)}>❤️ {hearts}</span>}
       </div>
 
-      <div className="flex flex-1 flex-col justify-center py-6">
+      <div className="relative flex flex-1 flex-col justify-center py-6">
+        {/* The reward, on its way up. Announced politely, so a screen reader
+            hears what an answer was worth without losing its place. */}
+        <AnimatePresence>
+          {burst && (
+            <motion.div
+              key={burst.id}
+              initial={{ opacity: 0, y: 10, scale: 0.8 }}
+              animate={{ opacity: [0, 1, 1, 0], y: -64, scale: 1 }}
+              transition={{ duration: 1.3, times: [0, 0.15, 0.6, 1] }}
+              className="pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-center gap-2"
+              role="status"
+            >
+              <span className="rounded-full bg-mint-500 px-3 py-1 font-display text-sm font-extrabold text-night-950 shadow-lg">
+                {t.lesson.xpPlus(burst.xp)}
+              </span>
+              {burst.gems > 0 && (
+                <span className="rounded-full bg-saffron-500 px-3 py-1 font-display text-sm font-extrabold text-night-950 shadow-lg">
+                  💎 {t.lesson.gemPlus(burst.gems)}
+                </span>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <AnimatePresence mode="wait">
           <motion.div
             key={current.id}
@@ -163,18 +274,23 @@ export function RoundRunner({
             <div className="flex items-start gap-3">
               <span className="text-3xl" aria-hidden="true">{verdict === 'goed' ? '🎉' : verdict === 'bijna' ? '👌' : '💡'}</span>
               <div className="min-w-0 flex-1">
-                <p className="font-display text-lg font-extrabold">
+                <p className="flex flex-wrap items-center gap-2 font-display text-lg font-extrabold">
                   {verdict === 'goed' ? t.lesson.lof[index % t.lesson.lof.length] : verdict === 'bijna' ? t.lesson.bijnaGoed : t.lesson.juisteAntwoord}
+                  {verdict !== 'fout' && burst && (
+                    <span className="rounded-full bg-mint-500/25 px-2 py-0.5 text-xs font-extrabold text-mint-700 dark:text-mint-200">
+                      {t.lesson.xpPlus(burst.xp)}
+                    </span>
+                  )}
                 </p>
                 <p className="mt-0.5 flex flex-wrap items-center gap-2 text-sm">
-                  <span className="ar text-xl font-bold">{target.ar}</span>
-                  <span className="font-display font-bold text-zellige-600 dark:text-zellige-300">{target.tr}</span>
-                  <span className="text-[var(--ink-soft)]">— {meaning(target)}</span>
+                  <span className="ar text-xl font-bold">{subject.ar}</span>
+                  <span className="font-display font-bold text-zellige-600 dark:text-zellige-300">{subject.tr}</span>
+                  <span className="text-[var(--ink-soft)]">— {subject.meaning}</span>
                 </p>
                 {detail && verdict !== 'goed' && <p className="mt-0.5 text-xs text-[var(--ink-soft)]">{t.lesson.jijHad(detail)}</p>}
-                {note(target) && verdict !== 'goed' && <p className="mt-1 text-xs text-[var(--ink-soft)]">💡 {note(target)}</p>}
+                {subject.note && verdict !== 'goed' && <p className="mt-1 text-xs text-[var(--ink-soft)]">💡 {subject.note}</p>}
               </div>
-              <SpeakButton ar={target.ar} tr={target.tr} className="mt-1" />
+              <SpeakButton ar={subject.ar} tr={subject.tr} className="mt-1" />
             </div>
             <Button variant={verdict === 'fout' ? 'danger' : 'success'} className="mt-3 w-full" autoFocus onClick={next}>
               {index + 1 >= queue.length ? t.lesson.afronden : t.common.verder}

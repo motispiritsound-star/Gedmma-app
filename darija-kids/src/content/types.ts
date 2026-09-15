@@ -35,8 +35,16 @@ export interface Lesson {
   id: string
   title: string
   kind: LessonKind
-  /** Word ids taught here, in teaching order. */
+  /** Word ids taught here, in teaching order. Empty for a letter lesson. */
   words: string[]
+  /** Letter ids taught here. Only letter lessons have these. */
+  letters?: string[]
+  /**
+   * Sentence ids practised after the words, at the end of the round. Every
+   * word lesson ends this way: single words are worth little until they stand
+   * next to each other in a sentence.
+   */
+  sentences?: string[]
   tip?: LessonTip
 }
 
@@ -52,6 +60,23 @@ export interface Unit {
   /** Tailwind-ish accent key, resolved in the UI to a real gradient. */
   accent: 'saffron' | 'terra' | 'zellige' | 'mint' | 'violet' | 'sky'
   lessons: Lesson[]
+}
+
+/**
+ * A short sentence built from the words of one lesson.
+ *
+ * Sentences are content, not generated: Darija word order, the ka- prefix and
+ * the clitics that glue words together are not something to guess at, so every
+ * sentence here is written out.
+ */
+export interface Sentence {
+  id: string
+  /** Arabic script, with the clitics attached the way Moroccans write them. */
+  ar: string
+  /** Latin spelling. The word bank of the build exercise is made from this. */
+  tr: string
+  nl: string
+  en: string
 }
 
 export interface Letter {

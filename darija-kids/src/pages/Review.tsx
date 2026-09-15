@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { buildReviewRound } from '../engine/exercises'
-import { addXp, dueWordIds, getState, useStore } from '../engine/store'
+import { addXp, dueSentenceIds, dueWordIds, getState, useStore } from '../engine/store'
 import { strengthLabel } from '../engine/srs'
 import { word } from '../content/lexicon'
 import { Button, Card, SectionTitle, Stat } from '../ui/kit'
@@ -21,15 +21,17 @@ export function Review() {
   const navigate = useNavigate()
   const state = useStore((s) => s)
   const due = dueWordIds(state)
+  const dueSentences = dueSentenceIds(state)
   const [running, setRunning] = useState(false)
   const [result, setResult] = useState<RoundResult | null>(null)
-  const exercises = useMemo(() => buildReviewRound(due, Date.now()), [running])
+  const exercises = useMemo(() => buildReviewRound(due, Date.now(), dueSentences), [running])
 
   if (running) {
     return (
       <RoundRunner
         exercises={exercises}
         useHearts={false}
+        review
         quitLabel={t.lesson.stoppenHerhalen}
         onQuit={() => setRunning(false)}
         onFinish={(r) => {
@@ -55,6 +57,10 @@ export function Review() {
           <Mascot mood="juich" size={64} />
           <div>
             <p className="font-display text-lg font-extrabold">{t.review.rondeKlaar(Math.round(result.score * 100))}</p>
+            <p className="text-sm font-bold text-mint-600 dark:text-mint-300">
+              {t.lesson.xpPlus(result.xp + Math.round(5 + result.score * 10))}
+              {result.gems > 0 && <> · 💎 {t.lesson.gemPlus(result.gems)}</>}
+            </p>
             <p className="text-sm text-[var(--ink-soft)]">{t.review.nogInWachtrij(dueWordIds(getState()).length)}</p>
           </div>
         </Card>
@@ -78,6 +84,11 @@ export function Review() {
           <Mascot mood="denk" size={90} className="mx-auto" />
           <p className="mt-3 font-display text-xl font-extrabold">{t.review.klaarVoor(Math.min(12, due.length))}</p>
           <p className="mt-1 text-[var(--ink-soft)]">{t.review.zonderHartjes}</p>
+          {dueSentences.length > 0 && (
+            <p className="mt-1 text-sm font-bold text-zellige-600 dark:text-zellige-300">
+              {t.review.metZinnen(Math.min(4, dueSentences.length))}
+            </p>
+          )}
           <Button className="mt-4 w-full sm:w-auto" onClick={() => { setResult(null); setRunning(true) }}>
             {t.review.startHerhaling}
           </Button>

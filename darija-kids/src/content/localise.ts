@@ -1,5 +1,5 @@
 import type { Lang } from '../i18n/languages'
-import type { Lesson, LessonTip, Story, Unit, Word } from './types'
+import type { Lesson, LessonTip, Sentence, Story, Unit, Word } from './types'
 import type { ContentPack } from './lang/types'
 import { fr } from './lang/fr'
 import { de } from './lang/de'
@@ -19,6 +19,13 @@ export function meaningOf(word: Word, lang: Lang): string {
   if (lang === 'nl') return word.nl
   if (lang === 'en') return word.en
   return PACKS[lang].meanings[word.id] ?? word.en
+}
+
+/** What a sentence means, in the language the learner picked. */
+export function sentenceMeaning(zin: Sentence, lang: Lang): string {
+  if (lang === 'nl') return zin.nl
+  if (lang === 'en') return zin.en
+  return PACKS[lang].sentences[zin.id] ?? zin.en
 }
 
 export function noteOf(word: Word, lang: Lang): string | undefined {

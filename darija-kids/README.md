@@ -45,7 +45,7 @@ npm run preview    # de gebouwde site op :4173
 Tests en controles:
 
 ```bash
-npm test           # 51 tests: leerstof, vertalingen, herhaalsysteem, oefeningen, betaalgrens
+npm test           # 63 tests: leerstof, vertalingen, herhaalsysteem, oefeningen, betaalgrens
 npm run typecheck
 npm run smoke      # klikt de gebouwde app door in een echte browser (na `npm run preview`)
 npm run icons      # tekent de iconen en het deelplaatje opnieuw
@@ -56,11 +56,13 @@ npm run icons      # tekent de iconen en het deelplaatje opnieuw
 | | |
 |---|---|
 | **5 interfacetalen** | Nederlands, Frans, Duits, Spaans en Engels — interface, betekenissen, uitleg, tips en verhalen |
-| **Gratis beginnen** | de eerste vijf units zijn open; de rest is één aankoop via de App Store of Google Play |
-| **16 units** | van *Salam!* tot afdingen op de souq, oplopend van A0 naar A2 |
-| **304 woorden en zinnen** | elk met Arabisch schrift, Latijnse schrijfwijze en een betekenis in alle vijf de talen |
-| **8 soorten oefeningen** | kiezen, luisteren, schrift herkennen, koppelen, zin bouwen, typen, inspreken, en een introkaart per nieuw woord |
-| **31 letters** | het hele Arabische alfabet plus پ, ڤ en ݣ, met hun vorm aan begin, midden en eind |
+| **Gratis beginnen** | het alfabet en de eerste vijf units zijn open; de rest is één aankoop via de App Store of Google Play |
+| **17 units** | van het Arabische alfabet en *Salam!* tot afdingen op de souq, oplopend van A0 naar A2 |
+| **304 woorden** | elk met Arabisch schrift, Latijnse schrijfwijze en een betekenis in alle vijf de talen |
+| **100 zinnen** | twee aan het eind van elke les, gemaakt van de woorden die die les net leerde — horen, bouwen, herkennen |
+| **17 soorten oefeningen** | kiezen, luisteren, schrift herkennen, koppelen, zin bouwen, typen, inspreken, vier soorten lettervragen, vier soorten zinsvragen, en een introkaart per nieuw woord, letter en zin |
+| **Dagmissies** | vier missies per dag — lessen, goede antwoorden, herhalen en zinnen — met edelstenen die je zelf ophaalt |
+| **31 letters** | het hele Arabische alfabet plus پ, ڤ en ݣ, met hun vorm aan begin, midden en eind — unit 1 van het pad, in groepjes van vier |
 | **4 verhalen** | gesprekken waarin je op elke zin kunt tikken voor de vertaling, met vragen erna |
 | **3 spellen** | tijdrace, geheugenspel en letterspel — ze gebruiken de woorden die je al zag |
 
@@ -77,6 +79,25 @@ maximaal veertien oefeningen: eerst een introkaart voor elk nieuw woord, dan
 herkennen, dan een koppelraster om het ritme te breken, en tot slot produceren —
 typen, een zin bouwen of hardop zeggen. Hetzelfde woord komt op twee manieren
 langs. De opbouw is deterministisch (één seed per les), zodat hij te testen is.
+
+**Eerst het schrift.** Unit 1 is het alfabet, in groepjes van vier of vijf
+letters die hetzelfde skelet delen — ب ت ث zijn hetzelfde streepje met andere
+puntjes. Elke letter komt langs met zijn klank en zijn drie vormen, en wordt
+daarna teruggevraagd: welke letter hoor je, hoe heet deze, en welke vorm hoort
+bij het midden van een woord. Wie daarna aan de woorden begint, leest ze in
+plaats van ze te herkennen als plaatje.
+
+**En dan een zin.** Elke les eindigt met twee zinnen die van diezelfde woorden
+gemaakt zijn (`src/content/sentences.ts`). Je hoort de zin eerst in zijn geheel,
+bouwt hem daarna terug uit een woordenbankje, en kiest tot slot welke zin erbij
+hoort. Woordvolgorde en de kleine plakwoordjes van het Darija leer je niet van
+losse woorden.
+
+**Beloningen die je ziet.** XP en edelstenen worden uitbetaald op het moment
+zelf: bij elk goed antwoord vliegt er een `+2 XP` omhoog, de vlam in de hoek
+telt je reeks mee, en elke vijfde op rij levert een edelsteen op. Daarboven
+staan vier dagmissies (`src/ui/Quests.tsx`) waarvan er één altijd over herhalen
+gaat — het deel van taalleren dat nooit dringend voelt en het altijd is.
 
 **Antwoorden mogen slordig zijn.** Er is geen officiële spelling voor Darija in
 Latijnse letters, dus `checkTyped()` is streng op het woord en soepel op de
@@ -149,9 +170,9 @@ staat ook zo op de ouderpagina.
 
 ## Wat het kost
 
-De eerste vijf units zijn gratis en blijven gratis — genoeg om jezelf voor te
+Het alfabet en de eerste vijf units zijn gratis en blijven gratis — genoeg om jezelf voor te
 stellen, je familie te beschrijven en tot honderd te tellen. De rest van de
-cursus hoort bij **volledige toegang**: een paar dagen gratis, daarna **€ 6,45
+cursus hoort bij **volledige toegang**: een paar dagen gratis, daarna **€ 6,49
 per maand inclusief btw**, maandelijks opzegbaar. De App Store en Google Play
 regelen de proefperiode, de afschrijving en de btw; het product heet
 `app.darijakids.monthly`. De grens tussen gratis en betaald staat op één plek:
@@ -164,9 +185,9 @@ daarna kost, dat het doorloopt tot je opzegt — en staat er een ouderpoort voor
 een rekensom die een volwassene moet beantwoorden. Opzeggen kan met één tik
 vanuit de app, via het winkelaccount.
 
-Twee dingen die de winkels bepalen en niet wij: de kortste gratis periode is
-**drie dagen** (twee bestaat er niet), en Apple werkt met vaste prijspunten,
-dus daar kan € 6,45 uitkomen op € 6,49. Beide staan uitgelegd in
+Eén ding bepalen de winkels en niet wij: de kortste gratis periode is **drie
+dagen** — twee bestaat er niet. De prijs zelf past wel precies, want € 6,49 is
+een van Apples vaste prijspunten. Beide staan uitgelegd in
 [docs/PAYMENTS.md](docs/PAYMENTS.md), samen met de bank- en belastinginstellingen
 waarmee het geld op je rekening komt.
 

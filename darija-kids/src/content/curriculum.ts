@@ -1,9 +1,15 @@
 import type { Lesson, LessonKind, LessonTip, Unit } from './types'
+import { LETTER_GROUPS } from './alphabet'
+import { sentenceIdsOf } from './sentences'
 
 /**
  * The learning path. Units are ordered; a unit opens when the one before it is
  * finished. Each unit ends in a toets (checkpoint) that is generated from
  * everything the unit taught, so a checkpoint can never drift from its lessons.
+ *
+ * The path opens with the script itself. Reading ب as a b rather than as a
+ * drawing changes what every later lesson looks like, and four letters at a
+ * time is a short enough hop that a seven-year-old keeps up.
  */
 
 interface LessonSpec {
@@ -23,19 +29,100 @@ const unit = (
   accent: Unit['accent'],
   specs: LessonSpec[],
 ): Unit => {
-  const lessons: Lesson[] = specs.map((s, i) => ({
-    id: `${id}-${i + 1}`,
-    title: s.title,
-    kind: s.kind ?? 'woorden',
-    words: s.words,
-    tip: s.tip,
-  }))
+  const lessons: Lesson[] = specs.map((s, i) => {
+    const lessonId = `${id}-${i + 1}`
+    return {
+      id: lessonId,
+      title: s.title,
+      kind: s.kind ?? 'woorden',
+      words: s.words,
+      // Every lesson ends with its own words standing in a sentence.
+      sentences: sentenceIdsOf(lessonId),
+      tip: s.tip,
+    }
+  })
   const all = [...new Set(lessons.flatMap((l) => l.words))]
-  lessons.push({ id: `${id}-toets`, title: 'Toets', kind: 'toets', words: all })
+  lessons.push({
+    id: `${id}-toets`,
+    title: 'Toets',
+    kind: 'toets',
+    words: all,
+    sentences: lessons.flatMap((l) => l.sentences ?? []),
+  })
   return { id, ar, title, subtitle, emoji, level, accent, lessons }
 }
 
+/** The titles and tips of the alphabet unit, one entry per group of letters. */
+const LETTER_LESSONS: { title: string; tip?: LessonTip }[] = [
+  {
+    title: 'ا ب ت ث',
+    tip: {
+      title: 'Van rechts naar links',
+      body: 'Arabisch lees en schrijf je van rechts naar links. Letters plakken aan elkaar, en daardoor ziet dezelfde letter er anders uit aan het begin, in het midden en aan het eind van een woord. ب، ت en ث zijn precies hetzelfde streepje — alleen de puntjes verschillen.',
+    },
+  },
+  {
+    title: 'ج ح خ د ذ',
+    tip: {
+      title: 'Zes letters plakken niet door',
+      body: 'ا د ذ ر ز و verbinden nooit met de letter erná. Daarom valt een woord soms middenin uit elkaar zonder dat het twee woorden zijn. De rest van de letters plakt wél aan beide kanten vast.',
+    },
+  },
+  { title: 'ر ز س ش' },
+  {
+    title: 'ص ض ط ظ',
+    tip: {
+      title: 'De zware letters',
+      body: 'ص ض ط ظ zijn de donkere broertjes van س د ت ز. Je maakt ze met je tong plat en achter in je mond, alsof je met een volle mond praat. Het verschil hoor je: سيف (zwaard) en صيف (zomer).',
+    },
+  },
+  {
+    title: 'ع غ ف ق',
+    tip: {
+      title: 'De beroemdste klank',
+      body: 'ع is de klank die het Arabisch beroemd maakt: een knijp diep in je keel. In appjes schrijven Marokkanen er een 3 voor, omdat de 3 op de ع lijkt. غ is de brouwende g van de Franse r, en ق een k helemaal achterin.',
+    },
+  },
+  { title: 'ك ل م ن' },
+  {
+    title: 'ه و ي + پ ڤ ݣ',
+    tip: {
+      title: "Drie Marokkaanse extra's",
+      body: 'Het Arabisch heeft geen p, v of g. Marokkanen hebben ze er zelf bij gemaakt door puntjes toe te voegen: پ (p), ڤ (v) en ݣ (g), zoals in ݣناوة — gnawa.',
+    },
+  },
+]
+
+const lettersUnit = (): Unit => {
+  const lessons: Lesson[] = LETTER_GROUPS.map((group, i) => ({
+    id: `hruf-${i + 1}`,
+    title: LETTER_LESSONS[i]!.title,
+    kind: 'letters',
+    words: [],
+    letters: group,
+    tip: LETTER_LESSONS[i]!.tip,
+  }))
+  lessons.push({
+    id: 'hruf-toets',
+    title: 'Toets',
+    kind: 'toets',
+    words: [],
+    letters: LETTER_GROUPS.flat(),
+  })
+  return {
+    id: 'hruf',
+    ar: 'الحروف',
+    title: 'Lhruf',
+    subtitle: 'Het Arabische alfabet, letter voor letter',
+    emoji: '🔤',
+    level: 'A0',
+    accent: 'sky',
+    lessons,
+  }
+}
+
 export const UNITS: Unit[] = [
+  lettersUnit(),
   unit('groeten', 'السلام', 'Salam!', 'Hallo zeggen en dag zeggen', '👋', 'A0', 'saffron', [
     {
       title: 'Hallo en dag',

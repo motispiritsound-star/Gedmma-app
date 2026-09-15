@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { UNITS, LESSONS } from './curriculum'
 import { allWords, maybeWord, searchWords } from './lexicon'
 import { LETTERS } from './alphabet'
-import { SPOKEN } from './pronunciation'
+import { SPOKEN, SPOKEN_WORD, spokenForm } from './pronunciation'
+import { ALL_SENTENCES, maybeSentence } from './sentences'
 import { STORIES } from './stories'
 
 describe('lexicon', () => {
@@ -57,7 +58,42 @@ describe('curriculum', () => {
   it('has unique lesson ids and non-empty lessons', () => {
     const ids = LESSONS.map((l) => l.id)
     expect(new Set(ids).size).toBe(ids.length)
-    for (const l of LESSONS) expect(l.words.length, l.id).toBeGreaterThan(2)
+    for (const l of LESSONS) {
+      const taught = l.letters?.length ?? l.words.length
+      expect(taught, l.id).toBeGreaterThan(2)
+    }
+  })
+
+  it('opens the path with the alphabet, and teaches every letter once', () => {
+    const first = UNITS[0]!
+    expect(first.id).toBe('hruf')
+    const taught = first.lessons.filter((l) => l.kind === 'letters').flatMap((l) => l.letters ?? [])
+    expect(new Set(taught).size).toBe(taught.length)
+    expect(new Set(taught)).toEqual(new Set(LETTERS.map((l) => l.id)))
+    // And the checkpoint asks about all of them.
+    expect(new Set(first.lessons.at(-1)!.letters)).toEqual(new Set(taught))
+  })
+
+  it('ends every word lesson with sentences made from its words', () => {
+    for (const lesson of LESSONS) {
+      if (lesson.kind === 'toets' || lesson.letters?.length) continue
+      expect(lesson.sentences?.length, lesson.id).toBeGreaterThanOrEqual(2)
+      for (const id of lesson.sentences ?? []) expect(maybeSentence(id), `${lesson.id} → ${id}`).toBeDefined()
+    }
+  })
+
+  it('writes every sentence out in full, in both source languages', () => {
+    const ids = ALL_SENTENCES.map((z) => z.id)
+    expect(new Set(ids).size).toBe(ids.length)
+    for (const z of ALL_SENTENCES) {
+      expect(z.ar, z.id).toMatch(/[؀-ۿݐ-ݿ]/)
+      expect(z.tr.split(/\s+/).length, z.id).toBeGreaterThan(1)
+      expect(z.nl, z.id).not.toBe('')
+      expect(z.en, z.id).not.toBe('')
+      // The word bank is cut from the Latin spelling, so it may not carry the
+      // clitics that the Arabic writes against the next word.
+      expect(z.tr, z.id).not.toMatch(/\s$/)
+    }
   })
 
   it('teaches a decent share of the lexicon', () => {
@@ -67,19 +103,51 @@ describe('curriculum', () => {
 })
 
 describe('pronunciation overrides', () => {
-  it('only overrides words that exist', () => {
-    const scripts = new Set(allWords.map((w) => w.ar))
+  /** Every Arabic token the app ever hands to the voice. */
+  const spokenTokens = new Set(
+    [...allWords.map((w) => w.ar), ...ALL_SENTENCES.map((z) => z.ar)]
+      .flatMap((text) => text.split(/\s+/))
+      .map((token) => token.replace(/[؟?!.,]/g, '')),
+  )
+
+  const CLITICS = ['وبال', 'وفال', 'ولل', 'وال', 'بال', 'فال', 'كال', 'لل', 'ال', 'و', 'ب', 'ف', 'ل', 'ك']
+
+  it('only overrides words that are actually said somewhere', () => {
+    for (const key of Object.keys(SPOKEN_WORD)) {
+      const used = [...spokenTokens].some(
+        (token) => token === key || CLITICS.some((c) => token === c + key),
+      )
+      expect(used, `${key} komt in geen enkel woord of zin voor`).toBe(true)
+    }
     for (const key of Object.keys(SPOKEN)) {
-      expect(scripts.has(key), `${key} hoort bij geen enkel woord`).toBe(true)
+      expect(spokenTokens.has(key) || allWords.some((w) => w.ar === key), key).toBe(true)
     }
   })
 
   it('changes the spelling rather than the word', () => {
     // An override may only add diacritics or drop punctuation; if the letters
     // themselves differ, the voice would be saying something else.
-    const bare = (s: string) => s.replace(/[\u064b-\u0652\u0670]/g, '').replace(/[؟?!.,]/g, '').trim()
-    for (const [written, spoken] of Object.entries(SPOKEN)) {
-      expect(bare(spoken), written).toBe(bare(written))
+    const bare = (s: string) => s.replace(/[\u064b-\u0652\u0670\s]/g, '').replace(/[؟?!.,]/g, '')
+    for (const table of [SPOKEN_WORD, SPOKEN]) {
+      for (const [written, spoken] of Object.entries(table)) {
+        expect(bare(spoken), written).toBe(bare(written))
+      }
+    }
+  })
+
+  it('fixes a word wherever it turns up, prefix and all', () => {
+    expect(spokenForm('بسلامة')).toBe('بْسلامة')
+    // Inside a sentence, with the "and" Moroccans write against the next word.
+    expect(spokenForm('شكرا بزاف وبسلامة')).toBe('شكرا بزاف وبْسلامة')
+    // A question mark would make some voices pause mid-sentence.
+    expect(spokenForm('شحال هادا؟')).toBe('شْحال هادا')
+    // Nothing to fix means nothing changes.
+    expect(spokenForm('شكرا')).toBe('شكرا')
+  })
+
+  it('says every sentence without leaving a word to the voice’s guess', () => {
+    for (const z of ALL_SENTENCES) {
+      expect(spokenForm(z.ar), z.id).not.toMatch(/[؟?!]/)
     }
   })
 })

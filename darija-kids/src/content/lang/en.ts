@@ -63,7 +63,10 @@ export const en: ContentPack = {
     rabat: "The capital.",
   },
 
+  sentences: {},
+
   units: {
+    hruf: 'The Arabic alphabet, letter by letter',
     groeten: "Saying hello and goodbye",
     "ik-en-jij": "Me, you, and who you are",
     familie: "Introducing your family",
@@ -137,6 +140,26 @@ export const en: ContentPack = {
   },
 
   tips: {
+    'hruf-1': {
+      title: 'Right to left',
+      body: 'Arabic is read and written from right to left. Letters join up, so the same letter looks different at the start, in the middle and at the end of a word. ب، ت and ث are exactly the same stroke — only the dots differ.',
+    },
+    'hruf-2': {
+      title: 'Six letters never join forward',
+      body: 'ا د ذ ر ز و never join to the letter after them. That is why a word sometimes breaks apart in the middle without being two words. Every other letter sticks on both sides.',
+    },
+    'hruf-4': {
+      title: 'The heavy letters',
+      body: 'ص ض ط ظ are the dark cousins of س د ت ز. You make them with your tongue flat and far back, as if you were talking with your mouth full. You can hear the difference: سيف (sword) and صيف (summer).',
+    },
+    'hruf-5': {
+      title: 'The most famous sound',
+      body: 'ع is the sound Arabic is famous for: a squeeze deep in your throat. In messages Moroccans write a 3 for it, because a 3 looks like ع. غ is the rasping French r, and ق a k right at the back.',
+    },
+    'hruf-7': {
+      title: 'Three Moroccan extras',
+      body: 'Arabic has no p, v or g. Moroccans made them themselves by adding dots: پ (p), ڤ (v) and ݣ (g), as in ݣناوة — gnawa.',
+    },
     "groeten-1": {
       title: "What is Darija?",
       body: "Darija is the language of the street in Morocco. It looks like Arabic, but with its own words from Amazigh, French and Spanish. Here you learn both the Arabic script and the letters Moroccans use in their messages.",

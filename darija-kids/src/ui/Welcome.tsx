@@ -1,4 +1,5 @@
 import { LANGS, useT, type Lang } from '../i18n'
+import { FREE_UNITS, LIST_PRICE, TRIAL_DAYS } from '../engine/billing'
 import { setSetting, setState, useStore } from '../engine/store'
 import { Button, Sheet } from './kit'
 import { Mascot } from './Mascot'
@@ -7,7 +8,9 @@ import { Mascot } from './Mascot'
  * Shown once, before anything else: which language do you learn in?
  *
  * The browser's own language is already selected, so a French child sees
- * French straight away and only has to confirm.
+ * French straight away and only has to confirm. The price is on this screen
+ * too, in one line: a parent should know what the app costs before the first
+ * lesson, not at the moment the path runs into a lock.
  */
 export function Welcome() {
   const t = useT()
@@ -42,7 +45,12 @@ export function Welcome() {
           ))}
         </ul>
 
-        <Button className="mt-5 w-full" onClick={() => setState({ langPicked: true })}>{t.welcome.knop}</Button>
+        <div className="mt-5 rounded-2xl bg-[var(--surface-sunken)] p-4 text-start">
+          <p className="text-sm font-bold">🎁 {t.welcome.plan(TRIAL_DAYS, LIST_PRICE)}</p>
+          <p className="mt-1 text-xs text-[var(--ink-soft)]">{t.welcome.gratisDeel(FREE_UNITS)}</p>
+        </div>
+
+        <Button className="mt-4 w-full" onClick={() => setState({ langPicked: true })}>{t.welcome.knop}</Button>
       </div>
     </Sheet>
   )

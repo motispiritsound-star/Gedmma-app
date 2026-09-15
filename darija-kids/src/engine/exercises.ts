@@ -1,5 +1,7 @@
 import type { Lesson, Word } from '../content/types'
 import { allWords, word } from '../content/lexicon'
+import { LETTERS } from '../content/alphabet'
+import { ALL_SENTENCES, sentence } from '../content/sentences'
 import { mulberry32, pick, seedFrom, shuffle } from './random'
 
 /**
@@ -21,24 +23,51 @@ export type ExerciseKind =
   | 'bouw'             // word bank, for sentences
   | 'tik'              // type it
   | 'spreek'           // say it out loud
+  | 'letter-nieuw'     // meet a letter, with its three shapes
+  | 'letter-klank'     // name and sound → pick the letter
+  | 'letter-naam'      // letter → pick the name
+  | 'letter-vorm'      // which shape does this letter take here?
+  | 'zin-nieuw'        // meet a sentence, read out in full
+  | 'zin-bouw'         // build the sentence from a word bank
+  | 'zin-betekenis'    // sentence → meaning
+  | 'zin-luister'      // audio → the written sentence
+
+export type LetterForm = 'initial' | 'medial' | 'final'
 
 export interface Exercise {
   id: string
   kind: ExerciseKind
-  /** The word being asked. Absent for 'koppel', which asks several at once. */
+  /** The word being asked. Empty for letter and sentence exercises. */
   wordId: string
   /** Word ids offered as answers, already shuffled. */
   options?: string[]
-  /** Scrambled tokens for 'bouw'. */
+  /** Scrambled tokens for 'bouw' and 'zin-bouw'. */
   tokens?: string[]
   /** Word ids for 'koppel'. */
   pairIds?: string[]
+  /** The letter being asked, for every letter- exercise. */
+  letterId?: string
+  /** Letter ids offered as answers, already shuffled. */
+  letterOptions?: string[]
+  /** Which of the three shapes 'letter-vorm' asks about. */
+  form?: LetterForm
+  /** The sentence being asked, for every zin- exercise. */
+  sentenceId?: string
+  /** Sentence ids offered as answers, already shuffled. */
+  sentenceOptions?: string[]
 }
+
+/** True when this exercise is about a letter rather than a word. */
+export const isLetterExercise = (e: Exercise): boolean => e.kind.startsWith('letter-')
+
+/** True when this exercise is about a whole sentence. */
+export const isSentenceExercise = (e: Exercise): boolean => e.kind.startsWith('zin-')
 
 export interface RoundOptions {
   /** Word ids the learner has already met, so they skip the teaching card. */
   known?: Set<string>
-  /** Hard mode: no teaching cards, more producing, less recognising. */
+  /** Hard mode: no teaching cards, more producing, less recognising.
+   *  Defaults to whether the lesson is a checkpoint. */
   toets?: boolean
   max?: number
   seed?: number
@@ -59,6 +88,8 @@ const options = (target: Word, rnd: () => number, count = 4): string[] =>
 export const tokenize = (phrase: string): string[] =>
   phrase.split(/\s+/).filter(Boolean)
 
+const allSentenceIds = ALL_SENTENCES.map((z) => z.id)
+
 /** Extra word-bank tiles, so a sentence is not solvable by counting tiles. */
 const bankFor = (target: Word, rnd: () => number): string[] => {
   const answer = tokenize(target.tr)
@@ -72,8 +103,110 @@ const bankFor = (target: Word, rnd: () => number): string[] => {
   return shuffle([...answer, ...noise], rnd)
 }
 
+/* ----------------------------------------------------------------- letters */
+
+const letterOptions = (id: string, rnd: () => number, count = 4): string[] =>
+  shuffle([id, ...shuffle(LETTERS.filter((l) => l.id !== id), rnd).slice(0, count - 1).map((l) => l.id)], rnd)
+
+const FORMS: LetterForm[] = ['initial', 'medial', 'final']
+
+/**
+ * A round about the script itself.
+ *
+ * Four or five letters at a time, each one met, then recognised by its sound,
+ * named back, and finally picked out in the shape it takes inside a word —
+ * which is the part that turns a row of drawings into reading.
+ */
+function buildLetterRound(lesson: Lesson, opts: RoundOptions): Exercise[] {
+  const { known = new Set<string>(), toets = lesson.kind === 'toets' } = opts
+  const ids = lesson.letters ?? []
+  const rnd = mulberry32(opts.seed ?? seedFrom(`${lesson.id}-letters-${ids.length}`))
+  const out: Exercise[] = []
+  let n = 0
+  const add = (e: Omit<Exercise, 'id'>) => out.push({ ...e, id: `${lesson.id}-${n++}` })
+
+  if (!toets) {
+    for (const id of ids) if (!known.has(id)) add({ kind: 'letter-nieuw', wordId: '', letterId: id })
+  }
+
+  for (const id of shuffle(ids, rnd)) {
+    add({ kind: 'letter-klank', wordId: '', letterId: id, letterOptions: letterOptions(id, rnd) })
+  }
+
+  for (const id of shuffle(ids, rnd)) {
+    add({ kind: 'letter-naam', wordId: '', letterId: id, letterOptions: letterOptions(id, rnd) })
+  }
+
+  for (const id of shuffle(ids, rnd)) {
+    add({
+      kind: 'letter-vorm',
+      wordId: '',
+      letterId: id,
+      form: pick(FORMS, rnd),
+      letterOptions: letterOptions(id, rnd),
+    })
+  }
+
+  const teach = out.filter((e) => e.kind === 'letter-nieuw')
+  const drill = shuffle(out.filter((e) => e.kind !== 'letter-nieuw'), rnd)
+  const max = opts.max ?? (toets ? 16 : 12)
+  return [...teach, ...drill.slice(0, Math.max(4, max - teach.length))]
+}
+
+/* --------------------------------------------------------------- sentences */
+
+/** Word-bank tiles for a sentence: its own words, plus a few that fit nowhere. */
+const sentenceBank = (tr: string, rnd: () => number): string[] => {
+  const answer = tokenize(tr)
+  const noise = shuffle(
+    allWords.filter((w) => !w.phrase).flatMap((w) => tokenize(w.tr)).filter((t) => !answer.includes(t)),
+    rnd,
+  ).slice(0, answer.length > 4 ? 2 : 3)
+  return shuffle([...answer, ...noise], rnd)
+}
+
+const sentenceOptionsFor = (id: string, pool: string[], rnd: () => number, count = 3): string[] =>
+  shuffle([id, ...shuffle(pool.filter((other) => other !== id), rnd).slice(0, count - 1)], rnd)
+
+/**
+ * The last stretch of every lesson: the words it just taught, standing in a
+ * sentence. Heard in full first, then rebuilt from a word bank, then matched
+ * to its meaning — the same sentence three ways, which is what makes the word
+ * order stick rather than the words alone.
+ */
+function sentenceStage(
+  lesson: Lesson,
+  ids: string[],
+  rnd: () => number,
+  known: Set<string>,
+  toets: boolean,
+): Exercise[] {
+  const out: Exercise[] = []
+  let n = 0
+  const add = (e: Omit<Exercise, 'id'>) => out.push({ ...e, id: `${lesson.id}-zin-${n++}` })
+  // Everything a distractor could be drawn from: the other sentences of this
+  // lesson first, so the options are about word order rather than topic.
+  const pool = ids.length >= 3 ? ids : [...ids, ...allSentenceIds]
+
+  for (const id of shuffle(ids, rnd).slice(0, toets ? 3 : 2)) {
+    const zin = sentence(id)
+    if (!toets && !known.has(id)) add({ kind: 'zin-nieuw', wordId: '', sentenceId: id })
+    add({ kind: 'zin-bouw', wordId: '', sentenceId: id, tokens: sentenceBank(zin.tr, rnd) })
+    add({
+      kind: toets || rnd() > 0.5 ? 'zin-luister' : 'zin-betekenis',
+      wordId: '',
+      sentenceId: id,
+      sentenceOptions: sentenceOptionsFor(id, pool, rnd),
+    })
+  }
+  return out
+}
+
 export function buildRound(lesson: Lesson, opts: RoundOptions = {}): Exercise[] {
-  const { known = new Set<string>(), toets = false, max = toets ? 14 : 13, allowSpeech = true } = opts
+  if (lesson.letters?.length) return buildLetterRound(lesson, opts)
+  // A checkpoint is a checkpoint even when nobody said so: teaching cards in
+  // one would mean handing over the answers.
+  const { known = new Set<string>(), toets = lesson.kind === 'toets', max = toets ? 14 : 13, allowSpeech = true } = opts
   const rnd = mulberry32(opts.seed ?? seedFrom(lesson.id + (toets ? '-toets' : '') + lesson.words.length))
   const words = lesson.words.map(word)
   const out: Exercise[] = []
@@ -118,14 +251,30 @@ export function buildRound(lesson: Lesson, opts: RoundOptions = {}): Exercise[] 
   // Teaching cards always survive the cap; the drilling behind them is trimmed.
   const teach = out.filter((e) => e.kind === 'nieuw')
   const drill = out.filter((e) => e.kind !== 'nieuw')
-  return [...teach, ...drill.slice(0, Math.max(4, max - teach.length))]
+  const sentences = sentenceStage(lesson, lesson.sentences ?? [], rnd, known, toets)
+  return [...teach, ...drill.slice(0, Math.max(4, max - teach.length)), ...sentences]
 }
 
-/** A review round built from whatever the scheduler says is due. */
-export function buildReviewRound(wordIds: string[], seed = Date.now()): Exercise[] {
+/**
+ * A review round built from whatever the scheduler says is due — words first,
+ * then the sentences they live in, because a sentence is only worth reviewing
+ * once its words are back.
+ */
+export function buildReviewRound(wordIds: string[], seed = Date.now(), sentenceIds: string[] = []): Exercise[] {
   const rnd = mulberry32(seed >>> 0)
   const out: Exercise[] = []
   let n = 0
+  for (const id of shuffle(sentenceIds, rnd).slice(0, 4)) {
+    const kind: ExerciseKind = pick(['zin-bouw', 'zin-betekenis', 'zin-luister'] as const, rnd)
+    out.push({
+      id: `review-zin-${n++}`,
+      kind,
+      wordId: '',
+      sentenceId: id,
+      tokens: kind === 'zin-bouw' ? sentenceBank(sentence(id).tr, rnd) : undefined,
+      sentenceOptions: kind === 'zin-bouw' ? undefined : sentenceOptionsFor(id, allSentenceIds, rnd),
+    })
+  }
   for (const id of shuffle(wordIds, rnd).slice(0, 12)) {
     const w = word(id)
     const kind: ExerciseKind = w.phrase
@@ -139,7 +288,7 @@ export function buildReviewRound(wordIds: string[], seed = Date.now()): Exercise
       tokens: kind === 'bouw' ? bankFor(w, rnd) : undefined,
     })
   }
-  return out
+  return shuffle(out, rnd)
 }
 
 /* ----------------------------------------------------------------- checking */

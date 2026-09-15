@@ -68,6 +68,21 @@ export function Unlock() {
         </>
       ) : (
         <>
+          {/* What happens and when, in three lines, before anything is asked. */}
+          <Card className="mb-4 p-5">
+            <ol className="space-y-3">
+              {t.unlock.tijdlijn(TRIAL_DAYS, price).map(([emoji, titel, body]) => (
+                <li key={titel} className="flex gap-3">
+                  <span className="text-xl" aria-hidden="true">{emoji}</span>
+                  <div className="min-w-0">
+                    <p className="font-display font-extrabold">{titel}</p>
+                    <p className="text-sm text-[var(--ink-soft)]">{body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </Card>
+
           <Card className="p-6">
             <p className="text-[var(--ink-soft)]">{t.unlock.intro(FREE_UNITS)}</p>
             <ul className="mt-4 space-y-2">

@@ -31,7 +31,7 @@ export const TRIAL_DAYS = 3
  * can tell us. Inside the app the price always comes from the store itself, in
  * the buyer's own currency and including their VAT.
  */
-export const LIST_PRICE = '€ 6,45'
+export const LIST_PRICE = '€ 6,49'
 
 export { FREE_UNITS }
 

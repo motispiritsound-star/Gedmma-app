@@ -10,6 +10,8 @@ export interface ContentPack {
   meanings: Record<string, string>
   /** Word id → the short usage note under a new word. */
   notes: Record<string, string>
+  /** Sentence id → the sentence in this language. */
+  sentences: Record<string, string>
   /** Unit id → the line under the unit's Darija name. */
   units: Record<string, string>
   /** Lesson id → its title. The key `toets` covers every checkpoint. */

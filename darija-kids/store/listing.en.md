@@ -26,7 +26,7 @@ A lesson takes two to four minutes. You learn to hear a word, recognise it, read
 
 WHAT YOU LEARN
 • 304 words and phrases, from salam to haggling at the souq
-• 16 units climbing from beginner (A0) to A2
+• 17 units climbing from beginner (A0) to A2
 • The complete Arabic alphabet, with each letter's shape at the start, middle and end
 • Four conversations to read, with questions afterwards
 • Three games: time race, memory and the letter game
@@ -38,7 +38,7 @@ IN YOUR LANGUAGE
 English, Dutch, French, German and Spanish. You choose at the start and can switch any time: translations, explanations and stories all follow.
 
 FREE TO START
-The first five units are free and stay free: enough to introduce yourself, describe your family and count to a hundred. The whole course comes with full access: the first days free, then € 6.45 a month including VAT. Cancel monthly in your own App Store or Google Play account; cancel before the trial ends and you pay nothing.
+The alphabet and the first five units are free and stay free: enough to read the Arabic script, introduce yourself and count to a hundred. The whole course comes with full access: the first days free, then € 6.49 a month including VAT. Cancel monthly in your own App Store or Google Play account; cancel before the trial ends and you pay nothing.
 
 MADE TO HAND TO A CHILD
 • No account, no email, no login
@@ -56,7 +56,7 @@ Darija differs from city to city and family to family, and has no official spell
 ```
 
 **What's new (version 1.0)**
-`The first release: 16 units, 304 words, the Arabic alphabet, stories and games. In English, Dutch, French, German and Spanish.`
+`The first release: 17 units, 304 words, 100 sentences, the Arabic alphabet, stories and games. In English, Dutch, French, German and Spanish.`
 
 ## Google Play
 

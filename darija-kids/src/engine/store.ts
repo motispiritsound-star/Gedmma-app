@@ -14,11 +14,18 @@ const KEY = 'darijakids.v1'
 export const MAX_HEARTS = 5
 
 /**
- * How much of the course is free. The first five units — hello, introducing
- * yourself, family, numbers and colours — are enough to hold a first
- * conversation; everything past that is the one-off purchase.
+ * How much of the course is free. The alphabet plus the first five units —
+ * hello, introducing yourself, family, numbers and colours — are enough to
+ * read the script and hold a first conversation; everything past that is the
+ * subscription.
  */
-export const FREE_UNITS = 5
+export const FREE_UNITS = 6
+
+/** What one right answer is worth, paid out the moment it happens. */
+export const XP_PER_CORRECT = 2
+
+/** A gem every time a run reaches another multiple of this. */
+export const COMBO_GEM_EVERY = 5
 export const HEART_REFILL_MS = 20 * 60_000
 
 export interface Settings {
@@ -63,6 +70,15 @@ export interface State {
   daily: Record<string, number>
   lessons: Record<string, LessonRecord>
   cards: Record<string, Card>
+  /**
+   * The scheduler for everything that is not a word: letters as `l:ba`,
+   * sentences as `z:groeten-1-a`. Kept apart from `cards` so that "words seen"
+   * stays a count of words.
+   */
+  extraCards: Record<string, Card>
+  /** How many sentences have been answered, ever. */
+  sentencesDone: number
+  quests: QuestProgress
   badges: string[]
   /** True once the full course has been bought, in either store. */
   unlocked: boolean
@@ -71,6 +87,47 @@ export interface State {
   seenTips: string[]
   settings: Settings
 }
+
+/**
+ * The missions of the day.
+ *
+ * Counting is the whole trick: a child can see the number go up while they
+ * answer, which is a different feeling from a number that only appears at the
+ * end of a lesson. The counters reset at midnight; the gems, once claimed, do
+ * not.
+ */
+export interface QuestProgress {
+  day: string
+  /** Right answers today. */
+  goed: number
+  /** Answers given in a review round today. */
+  herhaald: number
+  /** Sentences answered today. */
+  zinnen: number
+  /** Lessons finished today. */
+  lessen: number
+  claimed: QuestId[]
+}
+
+export type QuestId = 'lessen' | 'goed' | 'herhaald' | 'zinnen'
+
+export interface Quest {
+  id: QuestId
+  emoji: string
+  goal: number
+  gems: number
+}
+
+/** Four missions, the same four every day: predictable beats surprising. */
+export const QUESTS: Quest[] = [
+  { id: 'lessen', emoji: '📗', goal: 1, gems: 3 },
+  { id: 'goed', emoji: '✅', goal: 20, gems: 5 },
+  { id: 'herhaald', emoji: '🔁', goal: 10, gems: 5 },
+  { id: 'zinnen', emoji: '💬', goal: 4, gems: 4 },
+]
+
+const emptyQuests = (day: string): QuestProgress =>
+  ({ day, goed: 0, herhaald: 0, zinnen: 0, lessen: 0, claimed: [] })
 
 export const today = (d = new Date()): string =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -98,6 +155,9 @@ const initial = (): State => ({
   daily: {},
   lessons: {},
   cards: {},
+  extraCards: {},
+  sentencesDone: 0,
+  quests: emptyQuests(today()),
   badges: [],
   unlocked: false,
   unlockedAt: null,
@@ -240,6 +300,76 @@ export function levelOf(xp: number): { level: number; into: number; span: number
   return { level, into, span }
 }
 
+/* ------------------------------------------------------------- the missions */
+
+/** Today's counters, rolled over if the app was last open yesterday. */
+export function questsToday(s: State = state): QuestProgress {
+  return s.quests.day === today() ? s.quests : emptyQuests(today())
+}
+
+type Counter = 'goed' | 'herhaald' | 'zinnen' | 'lessen'
+
+export function bumpQuest(counter: Counter, by = 1): void {
+  setState((s) => {
+    const q = questsToday(s)
+    return { quests: { ...q, [counter]: q[counter] + by } }
+  })
+}
+
+export interface QuestState extends Quest {
+  done: number
+  claimed: boolean
+  /** Reached, and the gems are still on the table. */
+  claimable: boolean
+}
+
+export function questState(quest: Quest, s: State = state): QuestState {
+  const q = questsToday(s)
+  const done = Math.min(q[quest.id], quest.goal)
+  const claimed = q.claimed.includes(quest.id)
+  return { ...quest, done, claimed, claimable: !claimed && q[quest.id] >= quest.goal }
+}
+
+/** Hands over the gems of a finished mission. Returns how many, or 0. */
+export function claimQuest(id: QuestId): number {
+  const quest = QUESTS.find((q) => q.id === id)
+  if (!quest || !questState(quest).claimable) return 0
+  setState((s) => {
+    const q = questsToday(s)
+    return { gems: s.gems + quest.gems, quests: { ...q, claimed: [...q.claimed, id] } }
+  })
+  return quest.gems
+}
+
+export const questsLeft = (s: State = state): number =>
+  QUESTS.filter((q) => !questState(q, s).claimed).length
+
+export function addGems(n: number): void {
+  if (n > 0) setState((s) => ({ gems: s.gems + n }))
+}
+
+/**
+ * A right answer, paid immediately.
+ *
+ * Returns the gems this answer happened to earn, so the screen can show them
+ * rising off the button rather than quietly adding them to a counter in the
+ * corner.
+ */
+export function scoreCorrect(combo: number, review = false): { xp: number; gems: number } {
+  addXp(XP_PER_CORRECT)
+  bumpQuest('goed')
+  if (review) bumpQuest('herhaald')
+  const gems = combo > 0 && combo % COMBO_GEM_EVERY === 0 ? 1 : 0
+  addGems(gems)
+  return { xp: XP_PER_CORRECT, gems }
+}
+
+/** A sentence was answered — for the daily mission and the badge. */
+export function countSentence(): void {
+  bumpQuest('zinnen')
+  setState((s) => ({ sentencesDone: s.sentencesDone + 1 }))
+}
+
 /* -------------------------------------------------------------- vocabulary */
 
 export function gradeWord(wordId: string, grade: Grade): void {
@@ -249,7 +379,36 @@ export function gradeWord(wordId: string, grade: Grade): void {
   })
 }
 
+/** Letters and sentences share one scheduler, keyed by a prefixed id. */
+export const letterKey = (id: string) => `l:${id}`
+export const sentenceKey = (id: string) => `z:${id}`
+
+export function gradeExtra(key: string, grade: Grade): void {
+  setState((s) => {
+    const card = s.extraCards[key] ?? newCard(key)
+    return { extraCards: { ...s.extraCards, [key]: review(card, grade) } }
+  })
+}
+
+export const extraStrength = (key: string, s: State = state): number => s.extraCards[key]?.strength ?? 0
+
+/** The sentences the scheduler wants back, strongest-forgotten first. */
+export function dueSentenceIds(s: State = state, now = Date.now()): string[] {
+  return Object.values(s.extraCards)
+    .filter((c) => c.id.startsWith('z:') && c.due <= now)
+    .sort((a, b) => a.strength - b.strength || a.due - b.due)
+    .map((c) => c.id.slice(2))
+}
+
 export const knownWordIds = (s: State = state): Set<string> => new Set(Object.keys(s.cards))
+
+/**
+ * Everything already met, whatever kind of thing it is: words by id, letters
+ * and sentences with their prefix stripped back off. A round uses this to
+ * decide which teaching cards to skip.
+ */
+export const knownIds = (s: State = state): Set<string> =>
+  new Set([...Object.keys(s.cards), ...Object.keys(s.extraCards).map((k) => k.slice(2))])
 
 export function dueWordIds(s: State = state, now = Date.now()): string[] {
   return Object.values(s.cards)
@@ -278,6 +437,7 @@ export function completeLesson(lessonId: string, score: number, xp: number): voi
     }
   })
   addXp(xp)
+  bumpQuest('lessen')
   awardBadges()
 }
 
@@ -352,6 +512,9 @@ export const BADGES: Badge[] = [
   { id: 'alle-woorden', emoji: '🎯', earned: (s) => Object.keys(s.cards).length >= 250 },
   { id: 'perfect', emoji: '💎', earned: (s) => Object.values(s.lessons).some((l) => l.bestScore >= 1) },
   { id: 'letters', emoji: '🔤', earned: (s) => isDone('letters', s) },
+  { id: 'alfabet', emoji: '🅰️', earned: (s) => UNITS[0]!.lessons.every((l) => isDone(l.id, s)) },
+  { id: 'zinnen-50', emoji: '💬', earned: (s) => s.sentencesDone >= 50 },
+  { id: 'missies', emoji: '🎯', earned: (s) => questsToday(s).claimed.length >= QUESTS.length },
   { id: 'verhaal', emoji: '📖', earned: (s) => Object.keys(s.lessons).some((id) => id.startsWith('verhaal-')) },
   { id: 'niveau-5', emoji: '⭐', earned: (s) => levelOf(s.xp).level >= 5 },
   { id: 'niveau-10', emoji: '🌟', earned: (s) => levelOf(s.xp).level >= 10 },

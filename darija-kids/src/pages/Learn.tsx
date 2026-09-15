@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { UNITS } from '../content/curriculum'
 import { ACCENTS, Button, Card, Progress } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
+import { Quests } from '../ui/Quests'
 import {
   dueWordIds, FREE_UNITS, isDone, lessonUnlocked, markTipSeen, nextLesson, progressOfUnit,
   unitBehindPaywall, unitUnlocked, useStore,
@@ -95,6 +96,8 @@ export function Learn() {
           {due > 0 && <Link to="/herhalen"><Button variant="secondary" className="w-full">{t.learn.herhalen}</Button></Link>}
         </div>
       </Card>
+
+      <Quests />
 
       {noArabicVoice && (
         <Card className="mb-6 p-5">
