@@ -283,19 +283,19 @@ function doorsnede(stap, t = 0) {
   s += bijschrift(52, polder - 10, 'vast peil')
 
   if (stap >= 2) {
-    s += dijk(468, boezem - 18, voet, 26, 224)
     s += water(516, boezem, 300, voet - boezem, { fase: t + 0.3, seed: 33 })
+    s += dijk(468, boezem - 18, voet, 26, 224)
     s += kopje(524, boezem - 34, 'boezem')
     s += bijschrift(524, boezem - 10, 'geen vast peil')
-    s += gemaal(468, boezem - 26, 0.62)
+    s += gemaal(468, boezem - 18, 0.62)
     s += pijl(430, polder - 6, 430, boezem + 8, P.accent, 5)
   }
 
   if (stap >= 3) {
-    s += dijk(878, zee - 18, voet, 26, 236)
     s += water(926, zee, 340, voet - zee, { tint: P.ver, fase: t + 0.6, glans: 0.9, seed: 45 })
+    s += dijk(878, zee - 18, voet, 26, 236)
     s += kopje(936, zee - 34, 'zee')
-    s += gemaal(878, zee - 26, 0.62)
+    s += gemaal(878, zee - 18, 0.62)
     s += pijl(838, boezem - 6, 838, zee + 8, P.accent, 5)
   }
 
@@ -457,9 +457,9 @@ export const SCENES = [
     id: '12-polder', caption: 'Een polder is een bak. Dijken eromheen, en een waterstand die kunstmatig op peil blijft.',
     svg: `${doek(26)}
       ${grond(0, 500, 1280, 220)}
+      ${water(276, 432, 728, 92, { fase: 0.4, seed: 55 })}
       ${dijk(150, 396, 524, 30, 230)}
       ${dijk(1130, 396, 524, 30, 230)}
-      ${water(276, 432, 728, 92, { fase: 0.4, seed: 55 })}
       ${kopje(60, 130, 'de polder')}
       ${titel(60, 186, 'Een bak met een peil', 46)}
       <line x1="276" y1="432" x2="1004" y2="432" stroke="${P.accent}"
@@ -521,9 +521,9 @@ export const SCENES = [
     id: '17-boezem-vol', caption: 'Maar een wachtkamer heeft een plafond. Staat de boezem te hoog, dan vallen de poldergemalen stil.',
     svg: `${doek(36)}
       ${grond(0, 540, 1280, 180)}
-      ${dijk(468, 330, 544, 26, 226)}
       ${water(46, 452, 372, 88, { fase: 0.2, glans: 0.4, seed: 71 })}
       ${water(520, 372, 720, 168, { fase: 0.6, glans: 0.8, seed: 73 })}
+      ${dijk(468, 330, 544, 26, 226)}
       ${gemaal(468, 336, 0.62, false)}
       ${kopje(60, 130, 'het gemaal staat stil')}
       ${titel(60, 186, 'De wachtkamer is vol', 46)}
@@ -545,8 +545,8 @@ export const SCENES = [
     svg: `${doek(40)}
       ${grond(0, 540, 1280, 180)}
       ${water(60, 380, 940, 160, { fase: 0.3, seed: 77 })}
+      ${water(1120, 300, 160, 240, { tint: P.ver, fase: 0.7, glans: 0.9, seed: 79 })}
       ${dijk(1040, 326, 544, 28, 210)}
-      ${water(1120, 300, 160, 240, { tint: P.mid, fase: 0.7, glans: 0.9, seed: 79 })}
       ${gemaal(1040, 330, 0.95)}
       ${kopje(60, 130, 'het noordzeekanaal')}
       ${titel(60, 186, 'Het eindpunt', 46)}
@@ -574,9 +574,9 @@ export const SCENES = [
       const h = Math.sin(t * 6.283) * 0.5 + 0.5
       return `${doek(44)}
       ${grond(0, 540, 1280, 180)}
-      ${dijk(640, 326, 544, 28, 238)}
       ${water(40, 400, 560, 140, { fase: t, seed: 85 })}
-      ${water(760, 470 - h * 150, 500, 70 + h * 150, { tint: P.mid, fase: t + 0.4, glans: 0.9, seed: 87 })}
+      ${water(760, 470 - h * 150, 500, 70 + h * 150, { tint: P.ver, fase: t + 0.4, glans: 0.9, seed: 87 })}
+      ${dijk(640, 326, 544, 28, 238)}
       ${gemaal(640, 330, 0.85, h > 0.55)}
       ${h > 0.55
         ? pijl(640, 420, 640, 352, P.accent, 7)
@@ -655,9 +655,9 @@ export const SCENES = [
     id: '26-gemaal-stil', caption: 'Dat is het systeem dat kiest waar het water blijft staan.',
     svg: `${doek(54)}
       ${grond(0, 540, 1280, 180)}
-      ${dijk(640, 334, 544, 26, 232)}
       ${water(60, 424, 500, 116, { fase: 0.2, glans: 0.4, seed: 95 })}
       ${water(740, 376, 500, 164, { fase: 0.6, seed: 97 })}
+      ${dijk(640, 334, 544, 26, 232)}
       ${gemaal(640, 340, 0.7, false)}
       ${kopje(60, 130, 'een keuze, geen storing')}
       ${titel(60, 186, 'Liever hier dan overal', 46)}

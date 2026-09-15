@@ -1,4 +1,6 @@
-import type { Claim, GateKey, GateResult, Production, Shot, Asset } from './types.js'
+import type {
+  Claim, GateKey, GateResult, LicenseProof, Production, Shot, Asset,
+} from './types.js'
 import { screenTitles } from './titles.js'
 
 export interface GateSpec {
@@ -222,15 +224,70 @@ export function checkEveryClaimSourced(p: Production): Criterion {
 }
 
 /** Elke asset die de montage in mag, heeft een licentiebewijs. */
-export function checkLicenseProofs(assets: Asset[]): Criterion {
+/**
+ * Elke asset heeft een licentiebewijs, en dat bewijs staat commercieel gebruik
+ * toe.
+ *
+ * Dat tweede deel stond er eerst niet in, en dat was een gat met een naam. Het
+ * Beeldarchief van Rijkswaterstaat geeft beeld vrij voor EDUCATIEF gebruik en
+ * sluit commercieel gebruik uit. Een asset daaruit had keurig een
+ * licentiebewijs en kwam er dus doorheen — precies de bron die een
+ * gemonetiseerd kanaal niet mag gebruiken, en precies het onderwerp waar de
+ * verleiding het grootst is.
+ *
+ * `proofs` mag ontbreken; dan controleert deze poort alleen de aanwezigheid,
+ * zoals vroeger. Dat is geen versoepeling maar een overgang: een aanroeper die
+ * de bewijzen niet meegeeft, krijgt het oude gedrag en niet stilzwijgend een
+ * groen licht op iets wat niet gecontroleerd is.
+ */
+export function checkLicenseProofs(
+  assets: Asset[], proofs?: LicenseProof[],
+): Criterion {
   const missing = assets.filter((a) => !a.licenseProofId)
+  if (missing.length > 0) {
+    return {
+      criterion: 'license_proofs_present',
+      score: 0,
+      max: 10,
+      reasoning: `${missing.length} asset(s) zonder licentiebewijs.`,
+    }
+  }
+
+  if (proofs === undefined) {
+    return {
+      criterion: 'license_proofs_present',
+      score: 10,
+      max: 10,
+      reasoning: `Alle ${assets.length} assets hebben een licentiebewijs. ` +
+        'Of die bewijzen commercieel gebruik toestaan, is hier niet gecontroleerd.',
+    }
+  }
+
+  const perId = new Map(proofs.map((p) => [p.id, p]))
+  const zoek = assets.map((a) => ({ asset: a, proof: perId.get(a.licenseProofId) }))
+
+  const onbekend = zoek.filter((x) => !x.proof)
+  if (onbekend.length > 0) {
+    return {
+      criterion: 'license_proofs_present',
+      score: 0,
+      max: 10,
+      reasoning: `${onbekend.length} asset(s) verwijzen naar een licentiebewijs ` +
+        'dat niet bestaat. Een verwijzing is geen bewijs.',
+    }
+  }
+
+  const nietCommercieel = zoek.filter((x) => x.proof && !x.proof.commercialUse)
   return {
     criterion: 'license_proofs_present',
-    score: missing.length === 0 ? 10 : 0,
+    score: nietCommercieel.length === 0 ? 10 : 0,
     max: 10,
-    reasoning: missing.length === 0
-      ? `Alle ${assets.length} assets hebben een licentiebewijs.`
-      : `${missing.length} asset(s) zonder licentiebewijs.`,
+    reasoning: nietCommercieel.length === 0
+      ? `Alle ${assets.length} assets hebben een licentiebewijs dat commercieel ` +
+        'gebruik toestaat.'
+      : `${nietCommercieel.length} asset(s) staan op een licentie die commercieel ` +
+        `gebruik NIET toestaat: ${nietCommercieel.map((x) => x.proof?.holder).join(', ')}. ` +
+        'Dit kanaal is commercieel, dus die mogen er niet in.',
   }
 }
 

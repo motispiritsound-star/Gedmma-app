@@ -1,0 +1,122 @@
+# Beeldbronnen die dit project mag gebruiken, met de voorwaarden erbij.
+#
+# De aanname die hier onderuit gaat: "van de overheid" betekent NIET "zonder
+# auteursrecht". De Auteurswet (art. 15b) zegt dat werken die door of namens de
+# overheid openbaar zijn gemaakt en waarvan de overheid rechthebbende is, vrij
+# mogen worden hergebruikt — TENZIJ het auteursrecht uitdrukkelijk is
+# voorbehouden. Veel overheidsdiensten houden dat voorbehoud wel degelijk.
+#
+# En er is een tweede zeef die strenger is dan de eerste: dit kanaal is
+# commercieel. Een bron die "vrij voor educatief gebruik" zegt, is daarmee voor
+# ons dicht. Dat is precies waar de meest voor de hand liggende bron op valt.
+#
+# status:
+#   A  bij de rechthebbende zelf gelezen
+#   B  via secundaire bronnen; zelf nalezen voor eerste gebruik
+#   C  onduidelijk; niet gebruiken tot het A of B is
+
+bronnen:
+  - key: rijksmuseum
+    naam: "Rijksmuseum — Rijksstudio"
+    url: "https://www.rijksmuseum.nl/nl/rijksstudio"
+    soort: [afbeelding]
+    licentie: "CC0 / publiek domein"
+    commercieel: true
+    naamsvermelding: false
+    gelijk_delen: false
+    status: B
+    waarom: >
+      De sterkste bron voor dit kanaal, en niet alleen omdat hij vrij is.
+      Nederlandse landschapsschilderijen, oude polderkaarten, prenten van
+      watermolens en gemalen — precies het materiaal waar de beeldtaal van deze
+      video al op gebaseerd is. Alleen werken die zelf niet meer onder
+      auteursrecht vallen; het museum claimt op die reproducties niets.
+
+  - key: nationaal-archief
+    naam: "Nationaal Archief — fotocollectie"
+    url: "https://www.nationaalarchief.nl/onderzoeken/open-data/fotos"
+    soort: [foto]
+    licentie: "CC0, maar ALLEEN waar het er expliciet bij staat"
+    commercieel: true
+    naamsvermelding: false
+    gelijk_delen: false
+    status: B
+    waarom: >
+      Persfoto's uit de twintigste eeuw, waaronder de watersnood en de aanleg
+      van werken. Let op de voorwaarde: staat er geen downloadknop en geen
+      CC0- of publiek-domeinvermelding bij, dan mag de foto NIET hergebruikt
+      worden. Vermelding is niet verplicht maar wordt op prijs gesteld, en wij
+      doen het toch — het kost niets en het maakt de video controleerbaar.
+
+  - key: open-beelden
+    naam: "Open Beelden — Beeld en Geluid"
+    url: "https://openbeelden.nl"
+    soort: [video]
+    licentie: "wisselt per item; veel Polygoon-materiaal is CC BY-SA"
+    commercieel: true
+    naamsvermelding: true
+    gelijk_delen: true
+    status: B
+    waarom: >
+      De enige echte bron van bewegend archiefbeeld: Polygoon-journaals over de
+      Zuiderzeewerken, de watersnood, de bouw van tunnels en gemalen.
+      LET OP HET GELIJK-DELEN-BEDING. CC BY-SA staat commercieel gebruik toe,
+      maar afgeleide werken moeten onder dezelfde voorwaarden worden gedeeld.
+      Wat dat betekent voor een video waarin zo'n fragment zit, is een vraag
+      voor een jurist en niet voor mij. Tot die vraag beantwoord is: gebruik
+      hier alleen items die als CC0 of publiek domein staan aangemerkt.
+
+  - key: eigen-tekening
+    naam: "Eigen tekening (scripts/nl-001)"
+    url: "intern"
+    soort: [afbeelding, animatie]
+    licentie: "eigen werk"
+    commercieel: true
+    naamsvermelding: false
+    gelijk_delen: false
+    status: A
+    waarom: >
+      De basis van dit kanaal en dat blijft zo. Zie de waarschuwing onderaan.
+
+  - key: nasa
+    naam: "NASA — beeld en video"
+    url: "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+    soort: [foto, video]
+    licentie: "buiten het Amerikaanse auteursrecht; niet het logo"
+    commercieel: true
+    naamsvermelding: true
+    gelijk_delen: false
+    status: A
+    waarom: >
+      Niet voor dit kanaal maar voor het ruimtevaartvoorstel uit docs/18.
+      Het NASA-insigne en logotype zijn uitdrukkelijk NIET vrij.
+
+# --- Uitdrukkelijk NIET gebruiken ------------------------------------------
+geblokkeerd:
+  - key: rijkswaterstaat-beeldbank
+    naam: "Rijkswaterstaat Beeldarchief"
+    url: "https://www.rijkswaterstaat.nl/over-ons/onze-organisatie/ons-beeldarchief"
+    reden: >
+      De voorwaarden staan gratis gebruik toe voor EDUCATIEVE doeleinden en
+      sluiten commercieel gebruik uit. Dit kanaal is commercieel, dus deze bron
+      is voor ons dicht — hoe verleidelijk ook, want het is precies het
+      onderwerp. Rijkswaterstaat blijft wel bruikbaar als BRON VOOR CIJFERS;
+      een getal uit een rapport overnemen is iets anders dan hun foto plaatsen.
+    status: B
+
+  - key: google-afbeeldingen
+    naam: "Zoekresultaten in een zoekmachine"
+    url: "n.v.t."
+    reden: >
+      Geen bron maar een vindmiddel. Dat een afbeelding in een zoekresultaat
+      staat, zegt niets over de rechten erop. Deze regel staat hier omdat dit
+      de meest gemaakte fout is.
+    status: A
+
+# --- De waarschuwing die boven alles staat ---------------------------------
+# Archiefbeeld met een voice-over eroverheen is letterlijk het schoolvoorbeeld
+# in YouTube's beleid voor hergebruikte content. Vrij materiaal is dus geen
+# vrijbrief maar een ingrediënt: de eigen tekeningen, de eigen analyse en de
+# eigen verhaallijn blijven de hoofdmoot, en geleend beeld is de uitzondering
+# die iets laat zien wat je niet kunt tekenen. Zie docs/03 en docs/14.
+max_geleend_aandeel: 0.25

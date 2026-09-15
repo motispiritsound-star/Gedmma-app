@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import type { Providers } from '../providers/contracts.js'
 import type { Store } from '../store/memory.js'
 import type {
-  Asset, GateResult, LanguageCode, Production, Script,
+  Asset, GateResult, LanguageCode, LicenseProof, Production, Script,
 } from '../domain/types.js'
 import {
   DEFAULT_GATES, checkEveryClaimSourced, checkFigureFree, checkFiqhAttribution,
@@ -249,6 +249,9 @@ export async function runProduction(
   // -- 9. Voice-over per taal ------------------------------------------------
   const license = { id: 'lic-gen-1', holder: 'eigen generatie', terms: 'commercieel gebruik toegestaan', commercialUse: true, evidenceUri: 'mock://licentie' }
   await store.putLicense(license)
+  // De poort hieronder krijgt de bewijzen zelf te zien, niet alleen de
+  // verwijzingen ernaar. Zie checkLicenseProofs: een verwijzing is geen bewijs.
+  const licenses: LicenseProof[] = [license]
 
   for (const [index, language] of opts.languages.entries()) {
     let script = production.variants[0]!.script!
@@ -319,7 +322,7 @@ export async function runProduction(
   // De figuurcontrole nu op de werkelijke assets. Zie docs/12 §2.
   const figureGate = evaluate(
     { key: 'religious_integrity', threshold: 100, blocking: true, hardCriteria: ['figure_free_respected'] },
-    [checkFigureFree(production.shots, assets), checkLicenseProofs(assets)],
+    [checkFigureFree(production.shots, assets), checkLicenseProofs(assets, licenses)],
   )
   gateResults.push(figureGate)
   if (!figureGate.passed) return reject('figure_check', 'Figuur afgebeeld in een figuurvrije scène.')

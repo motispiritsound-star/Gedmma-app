@@ -2,10 +2,13 @@ import { describe, expect, it } from 'vitest'
 import {
   DEFAULT_GATES, ThresholdLoweringError, checkCentralClaimsPrimary,
   checkEveryClaimSourced, checkFigureFree, checkFiqhAttribution,
-  checkHadithProvenance, checkNoGeneratedArabic, checkQuranProvenance,
+  checkHadithProvenance, checkLicenseProofs, checkNoGeneratedArabic,
+  checkQuranProvenance,
   evaluate, withThresholds,
 } from '../src/domain/gates.js'
-import type { Asset, Claim, Production, Shot, Source } from '../src/domain/types.js'
+import type {
+  Asset, Claim, LicenseProof, Production, Shot, Source,
+} from '../src/domain/types.js'
 
 const base = (over: Partial<Production> = {}): Production => ({
   id: 'p1', state: 'scripted', createdAt: '2026-01-01T00:00:00.000Z', topic: 't',
@@ -162,5 +165,58 @@ describe('bronnen', () => {
 
     expect(checkCentralClaimsPrimary(base({ claims: [historisch], sources: [secundair] })).score).toBe(0)
     expect(checkCentralClaimsPrimary(base({ claims: [algemeen], sources: [secundair] })).score).toBe(15)
+  })
+})
+
+describe('checkLicenseProofs met bewijzen erbij', () => {
+  const asset = (id: string, proofId: string): Asset => ({
+    id, kind: 'image', uri: `f/${id}.png`, sha256: 'x'.repeat(64),
+    origin: 'licensed', provider: 'archief', licenseProofId: proofId,
+  })
+  const bewijs = (id: string, commercieel: boolean, holder: string): LicenseProof => ({
+    id, holder, terms: commercieel ? 'commercieel toegestaan' : 'alleen educatief',
+    commercialUse: commercieel, evidenceUri: `https://example.test/${id}`,
+  })
+
+  it('keurt goed wanneer elk bewijs commercieel gebruik toestaat', () => {
+    const c = checkLicenseProofs(
+      [asset('a1', 'p1'), asset('a2', 'p1')],
+      [bewijs('p1', true, 'Rijksmuseum')],
+    )
+    expect(c.score).toBe(c.max)
+  })
+
+  it('blokkeert een bron die alleen educatief gebruik toestaat', () => {
+    const c = checkLicenseProofs(
+      [asset('a1', 'p1')],
+      [bewijs('p1', false, 'Rijkswaterstaat Beeldarchief')],
+    )
+    expect(c.score).toBe(0)
+    expect(c.reasoning).toContain('Rijkswaterstaat')
+  })
+
+  it('blokkeert ook als er één niet-commercieel bewijs tussen zit', () => {
+    const c = checkLicenseProofs(
+      [asset('a1', 'p1'), asset('a2', 'p2')],
+      [bewijs('p1', true, 'Rijksmuseum'), bewijs('p2', false, 'Rijkswaterstaat')],
+    )
+    expect(c.score).toBe(0)
+  })
+
+  it('blokkeert een verwijzing naar een bewijs dat niet bestaat', () => {
+    const c = checkLicenseProofs([asset('a1', 'weg')], [bewijs('p1', true, 'x')])
+    expect(c.score).toBe(0)
+    expect(c.reasoning).toContain('verwijzing is geen bewijs')
+  })
+
+  it('blokkeert nog steeds een asset zonder bewijs-id', () => {
+    const zonder = { ...asset('a1', 'p1'), licenseProofId: '' }
+    expect(checkLicenseProofs([zonder], [bewijs('p1', true, 'x')]).score).toBe(0)
+  })
+
+  it('zegt het eerlijk wanneer de bewijzen niet zijn meegegeven', () => {
+    const c = checkLicenseProofs([asset('a1', 'p1')])
+    expect(c.score).toBe(c.max)
+    expect(c.reasoning).toContain('niet gecontroleerd')
   })
 })
