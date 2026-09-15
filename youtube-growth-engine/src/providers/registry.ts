@@ -10,7 +10,23 @@ import { FalImageProvider } from './fal/image.js'
 import { FalVideoProvider } from './fal/video.js'
 import { GeminiImageProvider } from './google/image.js'
 import { ElevenLabsTtsProvider } from './elevenlabs/tts.js'
+import { GoogleTtsProvider } from './google/tts.js'
 import { LocalClipProvider } from './local/clips.js'
+
+/**
+ * Welke spraakleverancier bij de ingestelde stem hoort.
+ *
+ * `TTS_PROVIDER` wint altijd. Staat die er niet, dan leiden we het af uit de
+ * vorm van de stemnaam: Google gebruikt `nl-NL-Chirp3-HD-Aoede` en ElevenLabs
+ * een ondoorzichtige sleutel van twintig tekens. Dat scheelt een instelling die
+ * je anders vergeet en waarvan de foutmelding nergens naar wijst.
+ */
+export function kiesStem(env: NodeJS.ProcessEnv): 'google' | 'elevenlabs' {
+  const expliciet = (env['TTS_PROVIDER'] ?? '').trim().toLowerCase()
+  if (expliciet === 'google' || expliciet === 'elevenlabs') return expliciet
+  const stem = env['TTS_VOICE_ID'] ?? ''
+  return /^[a-z]{2}-[A-Z]{2}-/.test(stem) ? 'google' : 'elevenlabs'
+}
 
 /**
  * Kiest de providers op grond van wat er in de omgeving staat. Ontbreekt een
@@ -114,7 +130,11 @@ export function buildProviders(): BuiltProviders {
   // De stem wordt pas echt als er én een sleutel én een gekozen stem is. Dat
   // tweede is geen formaliteit: de stemtest uit stap 5 kan niemand overslaan.
   const canSpeak = Boolean(process.env['TTS_API_KEY'] && process.env['TTS_VOICE_ID'])
-  const tts = canSpeak ? new ElevenLabsTtsProvider() : new MockTtsProvider()
+  const tts = canSpeak
+    ? (kiesStem(process.env) === 'google'
+        ? new GoogleTtsProvider()
+        : new ElevenLabsTtsProvider())
+    : new MockTtsProvider()
   note('stem', tts, canSpeak ? undefined
     : process.env['TTS_API_KEY']
       ? 'TTS_VOICE_ID — kies de stem pas ná de stemtest uit stap 5'

@@ -101,16 +101,37 @@ de **stem**, dan niet.
 In `.env`:
 
 ```bash
+TTS_PROVIDER=google
+TTS_VOICE_ID=nl-NL-Chirp3-HD-Aoede
 TTS_API_KEY=...
-TTS_VOICE_ID=...
 ```
 
-Eén ding om te weten voordat je Google of Azure kiest: de adapter in dit
-project is geschreven voor ElevenLabs, omdat die tijdstempels per teken
-teruggeeft waaruit de ondertiteling rechtstreeks volgt. Kies je Google of
-Azure, dan moet ik daar een adapter voor schrijven — een half uur werk, en de
-ondertiteling komt dan uit de scripttiming in plaats van uit de audio. Zeg het
-zodra je gekozen hebt, dan bouw ik hem.
+De adapter staat er (`src/providers/google/tts.ts`). `TTS_PROVIDER` mag je
+weglaten: dan wordt de leverancier afgeleid uit de vorm van de stemnaam.
+
+De sleutel maak je in dezelfde Google Cloud Console waar je de YouTube-koppeling
+al hebt gezet: *APIs & Services → Library → Cloud Text-to-Speech API* aanzetten,
+daarna *Credentials → Create credentials → API key*. **Beperk die sleutel tot
+alleen de Text-to-Speech API** — hij gaat bij deze API in de URL mee en komt
+daarmee in serverlogboeken terecht.
+
+## Hoe de ondertiteling nu tot stand komt
+
+Dit is het enige wat je met Google inlevert, en het is opgelost in plaats van
+geaccepteerd.
+
+ElevenLabs geeft een tijdstempel per teken terug; daar kwam de ondertiteling
+rechtstreeks uit. Chirp 3 doet dat niet. In plaats van de timing te schatten,
+spreekt de adapter **per zin** in, meet elk stukje audio met ffprobe, en plakt
+ze pas daarna aan elkaar. Elke zin weet daardoor precies wanneer hij begint —
+gemeten, niet berekend.
+
+Binnen een zin wordt naar tekenaantal verdeeld, en dát is een schatting. Hij
+zit hooguit enkele honderden milliseconden mis op een regel die toch als geheel
+in beeld staat.
+
+Bijkomend voordeel: als één zin verkeerd klinkt, kun je die ene opnieuw laten
+inspreken in plaats van de hele voice-over.
 
 ## Bronnen
 
