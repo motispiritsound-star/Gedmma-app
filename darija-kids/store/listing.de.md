@@ -1,0 +1,70 @@
+# Store-Texte — Deutsch
+
+Für App Store Connect (Deutschland, Österreich, Schweiz) und Google Play Console (de-DE).
+
+## App Store
+
+**Name (max. 30)**
+`Darija Kids`
+
+**Untertitel (max. 30)**
+`Marokkanisch für Kinder`
+
+**Schlüsselwörter (max. 100)**
+`darija,marokkanisch,arabisch,marokko,sprache,kinder,lernen,wortschatz,arabische schrift,gratis`
+
+**Werbetext (max. 170)**
+`Neu: Die App spricht Deutsch, Niederländisch, Französisch, Spanisch und Englisch — und liest jedes Wort mit der Stimme deines eigenen Geräts vor.`
+
+**Beschreibung (max. 4000)**
+
+```
+Darija Kids bringt Kindern und Jugendlichen Darija bei: das marokkanische Arabisch, das die Menschen in Marokko zu Hause und auf der Straße sprechen. Nicht das Hocharabisch aus dem Lehrbuch — die Sprache, in der man mit jeddti telefoniert.
+
+KURZE LEKTIONEN, DIE HÄNGEN BLEIBEN
+Eine Lektion dauert zwei bis vier Minuten. Du lernst ein Wort zu hören, zu erkennen, in arabischer Schrift zu lesen, selbst zu schreiben und laut zu sagen. Jedes Wort kommt genau dann zurück, bevor du es vergisst.
+
+WAS DU LERNST
+• 304 Wörter und Sätze, von salam bis zum Handeln auf dem Souk
+• 16 Einheiten, die von Anfänger (A0) bis A2 steigen
+• Das komplette arabische Alphabet, mit der Form jedes Buchstabens am Anfang, in der Mitte und am Ende
+• Vier Gespräche zum Lesen, mit Fragen danach
+• Drei Spiele: Zeitrennen, Memory und Buchstabenspiel
+
+ALLES KLINGT
+Jedes Wort und jeder Satz lässt sich anhören: einmal tippen für normal, zweimal für langsam. Hat dein Gerät keine arabische Stimme, sagt die App das ehrlich und liest die lateinische Schreibweise so gut wie möglich vor.
+
+IN DEINER SPRACHE
+Deutsch, Niederländisch, Französisch, Spanisch und Englisch. Du wählst beim Start und kannst jederzeit wechseln: Übersetzungen, Erklärungen und Geschichten wechseln mit.
+
+KOSTENLOS ANFANGEN
+Die ersten fünf Einheiten sind und bleiben kostenlos: genug, um dich vorzustellen, deine Familie zu beschreiben und bis hundert zu zählen. Der ganze Kurs gehört zum vollen Zugang: die ersten Tage gratis, danach 6,45 € pro Monat inklusive Mehrwertsteuer. Monatlich kündbar im eigenen App-Store- oder Google-Play-Konto; wer vor Ende der Testphase kündigt, zahlt nichts.
+
+GEMACHT, UM ES EINEM KIND ZU GEBEN
+• Kein Konto, keine E-Mail, kein Login
+• Keine Werbung, keine versteckten Kosten
+• Kein Chat, kein Teilen, kein Hochladen
+• Der gesamte Fortschritt bleibt auf dem Gerät
+• Herzen lassen sich ganz abschalten — Fehler gehören dazu
+• Funktioniert ohne Internet, im Flugzeug wie in Marokko
+
+FÜR ELTERN UND LEHRKRÄFTE
+In der App gibt es eine Seite dazu, wie hier gelernt wird, was die App tut und was nicht, und wie man zu Hause mithilft. Im Unterricht läuft Darija Kids auf jedem Gerät, ohne Installation und ohne Konto.
+
+EHRLICH ZUR SPRACHE
+Darija unterscheidet sich von Stadt zu Stadt und von Familie zu Familie und hat keine offizielle Rechtschreibung. Wir wählen die Form, die man in Casablanca und Rabat am häufigsten hört. Sagt deine Oma es anders, hat deine Oma recht — das sagt die App auch selbst.
+```
+
+**Neuheiten (Version 1.0)**
+`Die erste Version: 16 Einheiten, 304 Wörter, das arabische Alphabet, Geschichten und Spiele. Auf Deutsch, Niederländisch, Französisch, Spanisch und Englisch.`
+
+## Google Play
+
+**Titel (max. 30)**
+`Darija Kids`
+
+**Kurzbeschreibung (max. 80)**
+`Marokkanisch für Kinder: kurze Lektionen, echte Aussprache, gratis starten.`
+
+**Vollständige Beschreibung (max. 4000)**
+Derselbe Text wie die App-Store-Beschreibung oben.
