@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { UNITS, LESSONS } from './curriculum'
 import { allWords, maybeWord, searchWords } from './lexicon'
 import { LETTERS } from './alphabet'
+import { SPOKEN } from './pronunciation'
 import { STORIES } from './stories'
 
 describe('lexicon', () => {
@@ -62,6 +63,24 @@ describe('curriculum', () => {
   it('teaches a decent share of the lexicon', () => {
     const taught = new Set(LESSONS.flatMap((l) => l.words))
     expect(taught.size).toBeGreaterThan(allWords.length * 0.9)
+  })
+})
+
+describe('pronunciation overrides', () => {
+  it('only overrides words that exist', () => {
+    const scripts = new Set(allWords.map((w) => w.ar))
+    for (const key of Object.keys(SPOKEN)) {
+      expect(scripts.has(key), `${key} hoort bij geen enkel woord`).toBe(true)
+    }
+  })
+
+  it('changes the spelling rather than the word', () => {
+    // An override may only add diacritics or drop punctuation; if the letters
+    // themselves differ, the voice would be saying something else.
+    const bare = (s: string) => s.replace(/[\u064b-\u0652\u0670]/g, '').replace(/[؟?!.,]/g, '').trim()
+    for (const [written, spoken] of Object.entries(SPOKEN)) {
+      expect(bare(spoken), written).toBe(bare(written))
+    }
   })
 })
 

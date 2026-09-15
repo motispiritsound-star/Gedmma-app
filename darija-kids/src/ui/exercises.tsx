@@ -89,6 +89,7 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
 
   const choose = (id: string) => {
     if (locked) return
+    sfx.pick()
     setChosen(id)
     onAnswer(id === w.id ? 'goed' : 'fout')
   }
@@ -260,6 +261,7 @@ function Build({ exercise, onAnswer, locked }: ExerciseProps) {
   }
 
   const submit = () => {
+    sfx.pick()
     const got = line.join(' ')
     onAnswer(got === answer.join(' ') ? 'goed' : checkTyped(got, w), got)
   }
@@ -317,6 +319,7 @@ function Type({ exercise, onAnswer, locked }: ExerciseProps) {
 
   const submit = () => {
     if (locked || !value.trim()) return
+    sfx.pick()
     onAnswer(checkTyped(value, w), value)
   }
 

@@ -1,4 +1,5 @@
 import { getState } from './store'
+import { spokenForm } from '../content/pronunciation'
 
 /**
  * Sound, without a single audio file.
@@ -25,10 +26,14 @@ function audio(): AudioContext | null {
     ctx = new Ctor()
     // One limiter on the way out, so two sounds at once cannot clip.
     const comp = ctx.createDynamicsCompressor()
-    comp.threshold.value = -12
-    comp.ratio.value = 6
+    // Gentle: enough to stop two sounds at once clipping, not so much that a
+    // short bright note gets flattened into nothing.
+    comp.threshold.value = -8
+    comp.ratio.value = 4
+    comp.attack.value = 0.005
+    comp.release.value = 0.2
     bus = ctx.createGain()
-    bus.gain.value = 0.9
+    bus.gain.value = 1
     bus.connect(comp).connect(ctx.destination)
   }
   if (ctx.state === 'suspended') void ctx.resume()
@@ -70,6 +75,22 @@ export function listenForFirstGesture(): () => void {
 }
 
 const on = () => getState().settings.sound
+
+/**
+ * Plays something, once the mixer is actually awake.
+ *
+ * A browser that has not been touched yet keeps the context suspended, and its
+ * clock stops with it — so notes scheduled against that clock land in the past
+ * the moment it resumes, and are simply never heard. Waiting for the resume is
+ * the difference between a silent first answer and a satisfying one.
+ */
+function schedule(play: () => void): void {
+  if (!on()) return
+  const ac = audio()
+  if (!ac) return
+  if (ac.state === 'running') play()
+  else void ac.resume().then(play).catch(() => {})
+}
 
 /* ------------------------------------------------------------ instruments */
 
@@ -263,86 +284,85 @@ function whoosh(at = 0, level = 0.1): void {
 }
 
 export const sfx = {
-  tap: () => { if (on()) click(0) },
+  tap: () => schedule(() => click(0)),
+
+  /** The moment an answer is chosen, before it is judged. */
+  pick: () => schedule(() => {
+    click(0, 0.07)
+    pop(0.01, 300, 520, 0.08)
+  }),
 
   /**
    * A right answer. The note climbs one step up the pentatonic for every
    * answer in a row, so a run sounds like it is going somewhere — and resets
    * the moment the run breaks.
    */
-  correct: (combo = 0) => {
-    if (!on()) return
+  correct: (combo = 0) => schedule(() => {
     const step = Math.min(combo, CLIMB.length - 1)
-    pop(0, 380 + step * 40, 760 + step * 90)
-    marimba(CLIMB[step]!, 0.03, 0.5)
-    marimba(CLIMB[Math.min(step + 2, CLIMB.length - 1)]!, 0.1, 0.45, 0.16)
-    drum('tek', 0.02, 0.12)
-    if (combo >= 3) sparkle(0.16, 2, 0.07)
-  },
+    pop(0, 420 + step * 40, 820 + step * 90, 0.14)
+    marimba(CLIMB[step]!, 0.03, 0.6, 0.26)
+    marimba(CLIMB[Math.min(step + 2, CLIMB.length - 1)]!, 0.09, 0.55, 0.2)
+    bell(CLIMB[Math.min(step + 4, CLIMB.length - 1)]! * 2, 0.12, 0.7, 0.1)
+    drum('tek', 0.02, 0.14)
+    sparkle(0.18, combo >= 3 ? 3 : 1, 0.08)
+  }),
 
-  wrong: () => {
-    if (!on()) return
+  wrong: () => schedule(() => {
     // Low and soft rather than a buzzer: a mistake is not an alarm.
     drum('dum', 0, 0.24)
     pluck(HIJAZ.Eb3, 0.04, 0.5, 0.14)
-  },
+  }),
 
   /** Finishing a lesson: the Moroccan phrase, then glitter over it. */
-  finish: () => {
-    if (!on()) return
+  finish: () => schedule(() => {
     const line: [number, number][] = [[HIJAZ.D4, 0], [HIJAZ.Fs4, 0.12], [HIJAZ.A4, 0.24], [HIJAZ.D5, 0.36]]
     for (const [note, at] of line) {
-      marimba(note, at, 0.8)
+      marimba(note, at, 0.8, 0.24)
       drum(at === 0.36 ? 'dum' : 'tek', at, 0.2)
     }
     sparkle(0.46, 6)
-    bell(HIJAZ.D6, 0.5, 1.4, 0.1)
-  },
+    bell(HIJAZ.D6, 0.5, 1.4, 0.12)
+  }),
 
   /** A badge: the big one, with a run-up. */
-  badge: () => {
-    if (!on()) return
+  badge: () => schedule(() => {
     whoosh(0)
     drum('dum', 0.22, 0.26)
     for (const [i, note] of [CLIMB[2]!, CLIMB[4]!, CLIMB[6]!, CLIMB[8]!].entries()) {
-      marimba(note, 0.24 + i * 0.07, 0.7, 0.2)
+      marimba(note, 0.24 + i * 0.07, 0.7, 0.22)
     }
-    sparkle(0.5, 7, 0.1)
-  },
+    sparkle(0.5, 7, 0.11)
+  }),
 
   /** A new level: shorter than a badge, but unmistakably upward. */
-  levelUp: () => {
-    if (!on()) return
+  levelUp: () => schedule(() => {
     whoosh(0, 0.08)
     for (const [i, note] of [CLIMB[0]!, CLIMB[2]!, CLIMB[4]!, CLIMB[5]!].entries()) {
-      marimba(note, 0.1 + i * 0.06, 0.6, 0.2)
+      marimba(note, 0.1 + i * 0.06, 0.6, 0.22)
     }
-    bell(CLIMB[7]!, 0.36, 1.2, 0.12)
+    bell(CLIMB[7]!, 0.36, 1.2, 0.13)
     sparkle(0.4, 4)
-  },
+  }),
 
   /** A run worth noticing, on its own. */
-  streak: () => {
-    if (!on()) return
-    CLIMB.slice(0, 6).forEach((note, i) => marimba(note, i * 0.05, 0.45, 0.18))
+  streak: () => schedule(() => {
+    CLIMB.slice(0, 6).forEach((note, i) => marimba(note, i * 0.05, 0.45, 0.2))
     sparkle(0.3, 3)
-  },
+  }),
 
-  heart: () => { if (on()) drum('dum', 0, 0.2) },
+  heart: () => schedule(() => drum('dum', 0, 0.2)),
 
   /** Two cards that match. */
-  match: () => {
-    if (!on()) return
-    pop(0, 500, 1100)
-    marimba(CLIMB[5]!, 0.03, 0.5)
-    bell(CLIMB[8]!, 0.08, 0.7, 0.1)
-  },
+  match: () => schedule(() => {
+    pop(0, 500, 1100, 0.13)
+    marimba(CLIMB[5]!, 0.03, 0.5, 0.24)
+    bell(CLIMB[8]!, 0.08, 0.7, 0.11)
+  }),
 
-  tick: () => { if (on()) click(0, 0.05) },
+  tick: () => schedule(() => click(0, 0.05)),
 
   /** Used by the settings screen to show what the effects sound like. */
   demo: () => {
-    if (!on()) return
     sfx.correct(0)
     setTimeout(() => sfx.correct(2), 420)
     setTimeout(() => sfx.correct(5), 840)
@@ -457,7 +477,9 @@ export function say(arabic: string, opts: SayOptions = {}): void {
   const plan = voicePlan()
   if (plan.mode === 'geen') return
 
-  const text = plan.mode === 'arabisch' ? arabic : latinise(opts.tr ?? '', phoneticOf(plan.voice.lang))
+  // An Arabic voice gets the form written for speaking, which is the same
+  // word with the vowels Darija does not say left out.
+  const text = plan.mode === 'arabisch' ? spokenForm(arabic) : latinise(opts.tr ?? '', phoneticOf(plan.voice.lang))
   if (!text.trim()) return
 
   speechSynthesis.cancel()
