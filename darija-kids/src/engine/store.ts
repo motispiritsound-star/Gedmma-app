@@ -147,6 +147,20 @@ const dayBefore = (iso: string): string => {
   return today(dt)
 }
 
+/**
+ * True on an iPhone or iPad whose Safari is too old to be told that this page
+ * is playback. There the side switch mutes the synthesiser and not the speech
+ * engine — the exact shape of "I hear the words but none of the sounds" — and
+ * only the media channel gets past it.
+ */
+function prefersMediaChannel(): boolean {
+  if (typeof navigator === 'undefined') return false
+  const apple = /iPad|iPhone|iPod/.test(navigator.userAgent)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  const modern = 'audioSession' in navigator
+  return apple && !modern
+}
+
 const initial = (): State => ({
   version: 1,
   name: '',
@@ -178,7 +192,7 @@ const initial = (): State => ({
     showScript: true,
     showTranslit: true,
     sound: true,
-    mediaSound: false,
+    mediaSound: prefersMediaChannel(),
     film: true,
     speech: true,
     hearts: true,

@@ -28,18 +28,52 @@ import { ARGS, busFor, LENGTH, VOICES, type SoundName, type Stage } from './inst
 
 let ctx: AudioContext | null = null
 let bus: GainNode | null = null
+/** The last node before the speaker, where a level means something. */
+let tail: AudioNode | null = null
+
+/** Set when building a live mixer threw — a locked-down frame, mostly. */
+let liveBroken = false
 
 function audio(): AudioContext | null {
-  if (typeof window === 'undefined') return null
+  if (typeof window === 'undefined' || liveBroken) return null
   const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
   if (!Ctor) return null
   if (!ctx) {
     claimPlaybackSession()
-    ctx = new Ctor()
-    bus = busFor(ctx)
+    try {
+      ctx = new Ctor()
+      const ends = busFor(ctx)
+      bus = ends.bus
+      tail = ends.out
+    } catch {
+      // Some embedded frames refuse to hand out a context at all. Rendering
+      // the same notes offline is not blocked, so that path takes over.
+      liveBroken = true
+      ctx = null
+      bus = null
+      tail = null
+      return null
+    }
   }
   if (ctx.state === 'suspended') void ctx.resume()
   return ctx
+}
+
+/**
+ * A tap on the signal on its way out, so "is there actually sound?" can be
+ * answered with a number instead of a shrug. Costs nothing when unused.
+ */
+let meter: AnalyserNode | null = null
+
+function levelMeter(): AnalyserNode | null {
+  const ac = audio()
+  if (!ac || !tail) return null
+  if (!meter) {
+    meter = ac.createAnalyser()
+    meter.fftSize = 2048
+    tail.connect(meter)
+  }
+  return meter
 }
 
 /**
@@ -67,6 +101,7 @@ export function mixerState(): 'speelt' | 'geblokkeerd' | 'geen' {
   if (typeof window === 'undefined') return 'geen'
   const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
   if (!Ctor) return 'geen'
+  if (liveBroken) return 'geen'
   if (!ctx) return 'geblokkeerd'
   return ctx.state === 'running' ? 'speelt' : 'geblokkeerd'
 }
@@ -193,7 +228,7 @@ async function render(name: SoundName, arg: number): Promise<string | null> {
   if (!Ctor) return null
   const rate = 44100
   const oac = new Ctor(1, Math.ceil((LENGTH[name] + 0.3) * rate), rate)
-  const stage: Stage = { ac: oac, out: busFor(oac) }
+  const stage: Stage = { ac: oac, out: busFor(oac).bus }
   VOICES[name](stage, arg)
   const rendered = await oac.startRendering()
   return URL.createObjectURL(new Blob([encodeWav(rendered)], { type: 'audio/wav' }))
@@ -263,7 +298,7 @@ function playSample(name: SoundName, arg: number): void {
  */
 function samplesWanted(): boolean {
   if (typeof window === 'undefined') return false
-  return getState().settings.mediaSound || audioBlocked()
+  return liveBroken || getState().settings.mediaSound || audioBlocked()
 }
 
 /**
@@ -301,6 +336,64 @@ function play(name: SoundName, arg = 0): void {
   }
   void ac.resume().then(() => once(now)).catch(() => once(() => playSample(name, arg)))
   setTimeout(() => once(() => playSample(name, arg)), 250)
+}
+
+/** What the app can find out about its own sound, by trying it. */
+export interface SoundProbe {
+  /** What the mixer says it is doing. */
+  mixer: 'speelt' | 'geblokkeerd' | 'geen'
+  /** The loudest thing measured leaving the synthesiser, 0 to 1. */
+  level: number
+  /** True when a rendered file really started playing through the speaker. */
+  media: boolean
+}
+
+const sleep = (ms: number) => new Promise((done) => setTimeout(done, ms))
+
+/**
+ * Plays a sound both ways and measures what came out.
+ *
+ * This is the one question a learner cannot answer for us: "I hear nothing"
+ * covers a blocked browser, a muted phone, a lost Bluetooth speaker and a bug,
+ * and they need different answers. A level above zero means the app is making
+ * sound and something past it is swallowing it; a level of zero means the app
+ * is at fault, and that is ours to fix.
+ */
+export async function probeSound(): Promise<SoundProbe> {
+  unlockAudio()
+  keepAwake()
+  const scope = levelMeter()
+  let level = 0
+
+  if (scope && ctx && bus) {
+    VOICES.tap({ ac: ctx, out: bus }, 0)
+    const frame = new Float32Array(scope.fftSize)
+    for (let i = 0; i < 24; i++) {
+      scope.getFloatTimeDomainData(frame)
+      for (const v of frame) level = Math.max(level, Math.abs(v))
+      await sleep(20)
+    }
+  }
+
+  // And the other road out, which is the one that ignores a silent switch.
+  let media = false
+  const url = await sample('tap', 0)
+  if (url) {
+    const el = element()
+    if (el) {
+      el.src = url
+      el.currentTime = 0
+      try {
+        await el.play()
+        await sleep(220)
+        media = el.currentTime > 0
+      } catch {
+        media = false
+      }
+    }
+  }
+
+  return { mixer: mixerState(), level, media }
 }
 
 /** Renders everything up front, for the switch in the settings screen. */

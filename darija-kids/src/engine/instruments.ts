@@ -512,8 +512,15 @@ export const ARGS: Record<SoundName, number[]> = {
   quizStart: [0], quizTick: [0, 0.3, 0.6, 0.9], cheer: [0], film: [0, 1, 2, 3, 4],
 }
 
-/** The limiter every path shares, so a sample sounds like the live version. */
-export function busFor(ac: BaseAudioContext): GainNode {
+/**
+ * The limiter every path shares, so a sample sounds like the live version.
+ *
+ * Both ends come back: `bus` is what instruments play into, `out` is the last
+ * node before the speaker — which is where a level has to be measured, because
+ * the sum going in can be well over one and the point of the limiter is that
+ * what comes out is not.
+ */
+export function busFor(ac: BaseAudioContext): { bus: GainNode; out: AudioNode } {
   const comp = ac.createDynamicsCompressor()
   comp.threshold.value = -4
   comp.knee.value = 10
@@ -525,5 +532,5 @@ export function busFor(ac: BaseAudioContext): GainNode {
   // limiter above is what keeps this from clipping.
   gain.gain.value = 1.35
   gain.connect(comp).connect(ac.destination)
-  return gain
+  return { bus: gain, out: comp }
 }

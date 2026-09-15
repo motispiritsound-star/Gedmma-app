@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   exportProgress, importProgress, resetProgress, setSetting, setState, useStore, type Settings,
 } from '../engine/store'
 import {
-  arabicVoices, canListen, canSpeak, keepAwake, mixerState, prepareSamples, say, sfx, unlockAudio, voicePlan,
+  arabicVoices, canListen, canSpeak, prepareSamples, probeSound, say, sfx, voicePlan, type SoundProbe,
 } from '../engine/audio'
 import { LIST_PRICE, TRIAL_DAYS } from '../engine/billing'
 import { LANGS, useT, type Lang } from '../i18n'
@@ -41,37 +41,66 @@ function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) =
 }
 
 /**
- * Whether the mixer is actually running, said out loud.
+ * The sound check: plays a sound both ways and says what came out.
  *
- * "I hear the words but no sounds" is the one report that cannot be debugged
- * from here, because the two go through different parts of the device. This
- * row answers it: it either says the effects are playing, or it says what is
- * holding them back and offers the tap that usually frees them.
+ * "I hear nothing" is the one report that cannot be read off the code, because
+ * the app, the browser, the phone's mute switch and the speaker are four
+ * different places a sound can die. So rather than guess, this measures: if
+ * the level is above zero the app is making sound and something past it is
+ * swallowing it, and if it is zero the fault is ours.
  */
 function SoundCheck() {
   const t = useT()
-  const [mixer, setMixer] = useState(mixerState())
-  useEffect(() => {
-    const id = setInterval(() => setMixer(mixerState()), 700)
-    return () => clearInterval(id)
-  }, [])
+  const [probe, setProbe] = useState<SoundProbe | null>(null)
+  const [busy, setBusy] = useState(false)
 
-  const hint =
-    mixer === 'speelt' ? t.settings.mixerOk
-    : mixer === 'geen' ? t.settings.mixerGeen
-    : t.settings.mixerGeblokkeerd
+  const run = async () => {
+    setBusy(true)
+    try {
+      setProbe(await probeSound())
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const heard = probe && (probe.level > 0.02 || probe.media)
+  const verdict = !probe
+    ? t.settings.checkNiets
+    : probe.mixer === 'geen' && !probe.media
+      ? t.settings.mixerGeen
+      : heard
+        ? t.settings.checkGoed(probe.level.toFixed(2))
+        : t.settings.checkStil
 
   return (
-    <Row title={t.settings.geluidscheck} hint={<><span>{hint}</span><br /><span>{t.settings.mixerStil}</span></>}>
-      {mixer !== 'geen' && (
+    <div className="border-b border-[var(--line)] p-4 last:border-0">
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="font-display font-extrabold">{t.settings.geluidscheck}</div>
+        {/* Muted: the measurement should be of the probe's own sound, not of
+            the probe's sound plus this button's. */}
         <Button
-          variant={mixer === 'speelt' ? 'secondary' : 'primary'}
-          onClick={() => { unlockAudio(); keepAwake(); setMixer(mixerState()) }}
+          variant={heard ? 'secondary' : 'primary'}
+          mute
+          disabled={busy}
+          className="ms-auto"
+          onClick={() => void run()}
         >
-          {mixer === 'speelt' ? '🔊' : t.settings.mixerAanzetten}
+          {busy ? t.settings.checkBezig : t.settings.checkKnop}
         </Button>
+      </div>
+
+      <p className="mt-2 text-sm text-[var(--ink-soft)]">{verdict}</p>
+      {probe ? (
+        <p className="mt-1 text-xs font-bold text-[var(--ink-soft)]">
+          {t.settings.checkRegel(
+            probe.level.toFixed(2),
+            probe.media ? t.settings.checkMedia : t.settings.checkGeenMedia,
+          )}
+        </p>
+      ) : (
+        <p className="mt-1 text-xs text-[var(--ink-soft)]">{t.settings.mixerStil}</p>
       )}
-    </Row>
+    </div>
   )
 }
 

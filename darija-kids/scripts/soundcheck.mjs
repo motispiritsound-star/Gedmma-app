@@ -27,7 +27,7 @@ const rows = await page.evaluate(async () => {
     for (const arg of bank.ARGS[name]) {
       const rate = 44100
       const oac = new OfflineAudioContext(1, Math.ceil((bank.LENGTH[name] + 0.3) * rate), rate)
-      voice({ ac: oac, out: bank.busFor(oac) }, arg)
+      voice({ ac: oac, out: bank.busFor(oac).bus }, arg)
       const buf = await oac.startRendering()
       const data = buf.getChannelData(0)
       let peak = 0
