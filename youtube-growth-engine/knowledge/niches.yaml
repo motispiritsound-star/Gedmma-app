@@ -246,3 +246,68 @@ candidates:
       Hoogste advertentiewaarde, drukste veld, en elke claim moet naar een
       primaire bron met drempel 95. De Rekening pakt dezelfde vraag zonder in
       het gevoelige regime te vallen.
+
+  # --- Toegevoegd na je vraag over @moroccan.supernova -----------------------
+  # Dat kanaal doet ruimtevaart en astronomie in Marokkaans Darija. Ik heb het
+  # format uit elkaar gehaald en de vraag gesteld die ertoe doet: wat maakt het
+  # werkzaam? Niet het onderwerp — ruimtevaart is een van de drukste hoeken van
+  # YouTube. Wat het werkzaam maakt is dat ruimtevaart IN DARIJA nauwelijks
+  # bestaat. Het overdraagbare bezit is het taalgat, niet het thema.
+  #
+  # Daarom staan hier twee varianten van hetzelfde format, zodat je kunt zien
+  # wat de vertaalkeuze kost.
+
+  - key: ruimtevaart-nl
+    proposition: >
+      Ruimtevaart en astronomie in het Nederlands verteld, opgebouwd uit het
+      publieke archief van NASA en ESA, voor kijkers die het Engelse aanbod
+      niet volgen
+    usesAdvantage: true
+    scores:
+      audience_demand: 13
+      creator_advantage: 8
+      original_positioning: 10
+      evergreen: 10
+      scalability: 10
+      title_thumbnail: 10
+      competition: 7
+      production_feasibility: 5
+      credibility: 4
+      monetisation: 3
+    notes: >
+      Dit is het format van @moroccan.supernova, vertaald op de as die het
+      draagt: taal. Sterkste productiescore van de hele lijst, en dat komt door
+      één feit — NASA-beeld valt in de Verenigde Staten buiten het auteursrecht
+      en mag redactioneel commercieel worden gebruikt, mits zonder het NASA-logo
+      en zonder de suggestie van goedkeuring. Beeldkosten vallen daarmee vrijwel
+      weg, en dat is precies de post die dit project duur maakt. Thumbnails zijn
+      de makkelijkste van alle kandidaten. Twee zwaktes, allebei echt: van je
+      drie voorsprongen draagt alleen de taal over, en "archiefbeeld met een
+      voice-over" is exact het profiel waar YouTube op hergebruikte content
+      handhaaft. Eigen diagrammen en een eigen verhaallijn zijn hier geen
+      stijlkeuze maar de voorwaarde om te mogen bestaan.
+
+  - key: america-supernova
+    proposition: >
+      Engelstalige afleveringen over het Amerikaanse ruimtevaartprogramma,
+      opgebouwd uit hetzelfde publieke NASA-archief
+    usesAdvantage: false
+    scores:
+      audience_demand: 14
+      creator_advantage: 5
+      original_positioning: 4
+      evergreen: 10
+      scalability: 10
+      title_thumbnail: 10
+      competition: 2
+      production_feasibility: 5
+      credibility: 4
+      monetisation: 4
+    notes: >
+      Dezelfde video's, dezelfde kosten, andere taal — en dertien punten lager.
+      Het verschil is geen smaakoordeel: in het Engels concurreer je met de
+      grootste kanalen van het platform, met dezelfde gratis beelden en een
+      voorsprong in budget van een factor duizend. Precies datgene wat het
+      Marokkaanse kanaal ruimte geeft, gooi je hier weg. Verdienpotentie ligt
+      wel hoger dan Nederlands, maar niet genoeg om de concurrentiekans te
+      compenseren.
