@@ -2,6 +2,8 @@ import { useSyncExternalStore } from 'react'
 import type { Card } from './srs'
 import { newCard, review, type Grade } from './srs'
 import { LESSONS, UNITS } from '../content/curriculum'
+import { detectLang, isLang, type Lang } from '../i18n/languages'
+import type { Strings } from '../i18n/nl'
 
 /**
  * All progress lives in the browser. Nothing is uploaded, there is no account,
@@ -14,7 +16,8 @@ export const HEART_REFILL_MS = 20 * 60_000
 
 export interface Settings {
   theme: 'system' | 'light' | 'dark'
-  lang: 'nl' | 'en'
+  /** Interface and meanings; the Darija itself never changes. */
+  lang: Lang
   showScript: boolean
   showTranslit: boolean
   sound: boolean
@@ -54,6 +57,7 @@ export interface State {
   lessons: Record<string, LessonRecord>
   cards: Record<string, Card>
   badges: string[]
+  langPicked: boolean
   seenTips: string[]
   settings: Settings
 }
@@ -85,10 +89,12 @@ const initial = (): State => ({
   lessons: {},
   cards: {},
   badges: [],
+  /** False until somebody has picked a language on the welcome screen. */
+  langPicked: false,
   seenTips: [],
   settings: {
     theme: 'system',
-    lang: 'nl',
+    lang: detectLang(),
     showScript: true,
     showTranslit: true,
     sound: true,
@@ -110,7 +116,9 @@ function load(): State {
     if (!raw) return initial()
     const parsed = JSON.parse(raw) as Partial<State>
     const base = initial()
-    return { ...base, ...parsed, settings: { ...base.settings, ...(parsed.settings ?? {}) } }
+    const merged = { ...base, ...parsed, settings: { ...base.settings, ...(parsed.settings ?? {}) } }
+    if (!isLang(merged.settings.lang)) merged.settings.lang = base.settings.lang
+    return merged
   } catch {
     return initial()
   }
@@ -291,27 +299,28 @@ export function progressOfUnit(unitId: string, s: State = state): number {
 
 /* ------------------------------------------------------------------ badges */
 
+/** Badge names and hints are interface text; they live in the string files. */
+export type BadgeId = keyof Strings['badges']
+
 export interface Badge {
-  id: string
-  name: string
+  id: BadgeId
   emoji: string
-  hint: string
   earned: (s: State) => boolean
 }
 
 export const BADGES: Badge[] = [
-  { id: 'eerste-stap', name: 'Eerste stap', emoji: '👣', hint: 'Rond je eerste les af', earned: (s) => Object.keys(s.lessons).length >= 1 },
-  { id: 'salam', name: 'Salam!', emoji: '👋', hint: 'Maak de unit Salam! helemaal af', earned: (s) => UNITS[0]!.lessons.every((l) => isDone(l.id, s)) },
-  { id: 'vlam-3', name: 'Drie op een rij', emoji: '🔥', hint: 'Leer drie dagen achter elkaar', earned: (s) => s.bestStreak >= 3 },
-  { id: 'vlam-7', name: 'Week vol vuur', emoji: '🔥', hint: 'Leer zeven dagen achter elkaar', earned: (s) => s.bestStreak >= 7 },
-  { id: 'vlam-30', name: 'Maandheld', emoji: '🏆', hint: 'Dertig dagen op rij', earned: (s) => s.bestStreak >= 30 },
-  { id: 'honderd', name: 'Honderd woorden', emoji: '📚', hint: 'Leer 100 woorden', earned: (s) => Object.keys(s.cards).length >= 100 },
-  { id: 'alle-woorden', name: 'Woordenjager', emoji: '🎯', hint: 'Kom 250 woorden tegen', earned: (s) => Object.keys(s.cards).length >= 250 },
-  { id: 'perfect', name: 'Foutloos', emoji: '💎', hint: 'Rond een les zonder fout af', earned: (s) => Object.values(s.lessons).some((l) => l.bestScore >= 1) },
-  { id: 'letters', name: 'Leest Arabisch', emoji: '🔤', hint: 'Doe de letteroefening', earned: (s) => isDone('letters', s) },
-  { id: 'verhaal', name: 'Verhalenverteller', emoji: '📖', hint: 'Lees een verhaal uit', earned: (s) => Object.keys(s.lessons).some((id) => id.startsWith('verhaal-')) },
-  { id: 'niveau-5', name: 'Niveau 5', emoji: '⭐', hint: 'Bereik niveau 5', earned: (s) => levelOf(s.xp).level >= 5 },
-  { id: 'niveau-10', name: 'Niveau 10', emoji: '🌟', hint: 'Bereik niveau 10', earned: (s) => levelOf(s.xp).level >= 10 },
+  { id: 'eerste-stap', emoji: '👣', earned: (s) => Object.keys(s.lessons).length >= 1 },
+  { id: 'salam', emoji: '👋', earned: (s) => UNITS[0]!.lessons.every((l) => isDone(l.id, s)) },
+  { id: 'vlam-3', emoji: '🔥', earned: (s) => s.bestStreak >= 3 },
+  { id: 'vlam-7', emoji: '🔥', earned: (s) => s.bestStreak >= 7 },
+  { id: 'vlam-30', emoji: '🏆', earned: (s) => s.bestStreak >= 30 },
+  { id: 'honderd', emoji: '📚', earned: (s) => Object.keys(s.cards).length >= 100 },
+  { id: 'alle-woorden', emoji: '🎯', earned: (s) => Object.keys(s.cards).length >= 250 },
+  { id: 'perfect', emoji: '💎', earned: (s) => Object.values(s.lessons).some((l) => l.bestScore >= 1) },
+  { id: 'letters', emoji: '🔤', earned: (s) => isDone('letters', s) },
+  { id: 'verhaal', emoji: '📖', earned: (s) => Object.keys(s.lessons).some((id) => id.startsWith('verhaal-')) },
+  { id: 'niveau-5', emoji: '⭐', earned: (s) => levelOf(s.xp).level >= 5 },
+  { id: 'niveau-10', emoji: '🌟', earned: (s) => levelOf(s.xp).level >= 10 },
 ]
 
 /** Returns the badges won by this action, so the UI can celebrate them. */

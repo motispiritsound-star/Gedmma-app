@@ -255,8 +255,14 @@ export const sfx = {
 /* -------------------------------------------------------- speech synthesis */
 
 const ARABIC_ORDER = ['ar-ma', 'ar-dz', 'ar-tn', 'ar-eg', 'ar-sa', 'ar-jo', 'ar-lb', 'ar']
-/** French first: Morocco's second language handles ch, ou and a uvular r. */
-const FALLBACK_ORDER = ['fr-ma', 'fr-fr', 'fr', 'es', 'it', 'nl']
+
+/**
+ * Which European voice to borrow when the device has no Arabic one, best fit
+ * first. French leads because Morocco's second language handles ch, ou and a
+ * uvular r; Spanish and German follow; English is last because its vowels are
+ * the furthest away.
+ */
+const FALLBACK_ORDER = ['fr-ma', 'fr', 'es', 'de', 'nl', 'it', 'en']
 
 export const canSpeak = (): boolean => typeof speechSynthesis !== 'undefined'
 
@@ -291,23 +297,38 @@ export function arabicVoice(): SpeechSynthesisVoice | null {
 /** True when the device has no Arabic voice, so the interface can say so. */
 export const missingArabicVoice = (): boolean => canSpeak() && voices().length > 0 && arabicVoices().length === 0
 
+/* ------------------------------------------------- borrowing another voice */
+
+export type Phonetic = 'fr' | 'es' | 'de' | 'nl' | 'it' | 'en'
+
 /**
- * Rewrites the Latin spelling of Darija into something a French voice reads
- * roughly right: ch for sh, ou for u and w, a uvular r for kh and gh, and the
- * ayn simply dropped, because no European language has it.
+ * Darija written for a voice that does not speak it.
+ *
+ * Every language spells the same sound differently, so a French voice needs
+ * "choukran" and a German one "schukran" to say the same word. Each list is
+ * applied in order; the ayn is simply dropped, because no European language
+ * has it.
  */
-export function latinise(tr: string): string {
-  return tr
-    .toLowerCase()
-    .replace(/sh|ch/g, 'ch')
-    .replace(/kh|gh/g, 'r')
-    .replace(/7/g, 'h')
-    .replace(/[9q]/g, 'k')
-    .replace(/3/g, '')
-    .replace(/(?<!o)u/g, 'ou')
-    .replace(/w/g, 'ou')
-    .replace(/\s+/g, ' ')
-    .trim()
+const RULES: Record<Phonetic, [RegExp, string][]> = {
+  fr: [[/sh|ch/g, 'ch'], [/kh|gh/g, 'r'], [/7/g, 'h'], [/[9q]/g, 'k'], [/3/g, ''], [/(?<!o)u/g, 'ou'], [/w/g, 'ou']],
+  de: [[/ou/g, 'u'], [/sh|ch/g, 'sch'], [/j/g, 'sch'], [/kh/g, 'ch'], [/gh/g, 'r'], [/7/g, 'h'], [/[9q]/g, 'k'], [/3/g, ''], [/z/g, 's'], [/w/g, 'u']],
+  // j becomes zj before sh becomes sj, or the new j would be rewritten again.
+  nl: [[/ou/g, 'oe'], [/j/g, 'zj'], [/sh|ch/g, 'sj'], [/kh/g, 'ch'], [/gh/g, 'g'], [/7/g, 'h'], [/[9q]/g, 'k'], [/3/g, ''], [/u/g, 'oe']],
+  es: [[/sh|ch/g, 'sh'], [/kh|7/g, 'j'], [/gh/g, 'g'], [/[9q]/g, 'k'], [/3/g, ''], [/w/g, 'u']],
+  it: [[/sh|ch/g, 'sc'], [/kh|gh/g, 'gh'], [/7/g, 'h'], [/[9q]/g, 'c'], [/3/g, '']],
+  en: [[/kh|gh/g, 'kh'], [/7/g, 'h'], [/[9q]/g, 'k'], [/3/g, ''], [/(?<!o)u/g, 'oo']],
+}
+
+/** The phonetic ruleset for a voice, from its language tag. */
+export function phoneticOf(lang: string): Phonetic {
+  const code = lang.toLowerCase().split('-')[0] as Phonetic
+  return code in RULES ? code : 'fr'
+}
+
+export function latinise(tr: string, target: Phonetic = 'fr'): string {
+  let out = tr.toLowerCase()
+  for (const [pattern, replacement] of RULES[target]) out = out.replace(pattern, replacement)
+  return out.replace(/\s+/g, ' ').trim()
 }
 
 export type VoicePlan =
@@ -338,7 +359,7 @@ export function say(arabic: string, opts: SayOptions = {}): void {
   const plan = voicePlan()
   if (plan.mode === 'geen') return
 
-  const text = plan.mode === 'arabisch' ? arabic : latinise(opts.tr ?? '')
+  const text = plan.mode === 'arabisch' ? arabic : latinise(opts.tr ?? '', phoneticOf(plan.voice.lang))
   if (!text.trim()) return
 
   speechSynthesis.cancel()
@@ -416,15 +437,4 @@ export function listenOnce(timeoutMs = 6000): Promise<string> {
     rec.onend = () => done('')
     try { rec.start() } catch (e) { done(null, e) }
   })
-}
-
-/** Nudges the browser into asking for microphone permission up front. */
-export async function primeMicrophone(): Promise<boolean> {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-    stream.getTracks().forEach((t) => t.stop())
-    return true
-  } catch {
-    return false
-  }
 }

@@ -8,12 +8,16 @@ import { shuffle, mulberry32 } from '../engine/random'
 import { Button, Card, SectionTitle } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 import { SpeakButton } from '../ui/WordChip'
+import { useLang, useT } from '../i18n'
+import { meaningOf } from '../content/localise'
 
 /**
  * The Arabic script, one letter at a time — plus a short game that asks you to
  * pick the letter you just heard the name of.
  */
 export function Alphabet() {
+  const t = useT()
+  const lang = useLang()
   const [picked, setPicked] = useState(LETTERS[0]!.id)
   const [game, setGame] = useState(false)
   const letter = LETTERS.find((l) => l.id === picked)!
@@ -24,9 +28,7 @@ export function Alphabet() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
-      <SectionTitle sub="28 letters plus drie Marokkaanse extra's. Ze veranderen van vorm aan het begin, in het midden en aan het eind van een woord.">
-        Het Arabische schrift
-      </SectionTitle>
+      <SectionTitle sub={t.alphabet.uitleg}>{t.alphabet.titel}</SectionTitle>
 
       <div className="mb-6 grid grid-cols-6 gap-2 sm:grid-cols-8">
         {LETTERS.map((l) => (
@@ -46,8 +48,8 @@ export function Alphabet() {
           <div className="ar text-7xl font-bold">{letter.ar}</div>
           <div className="min-w-0 flex-1">
             <h2 className="font-display text-2xl font-extrabold">{letter.name}</h2>
-            <p className="text-[var(--ink-soft)]">Klinkt als: {letter.sound}</p>
-            <p className="mt-1 text-sm">Schrijfwijze in het Latijn: <strong>{letter.tr}</strong></p>
+            <p className="text-[var(--ink-soft)]">{t.alphabet.klinktAls(letter.sound)}</p>
+            <p className="mt-1 text-sm">{t.alphabet.latijn}: <strong>{letter.tr}</strong></p>
           </div>
           <SpeakButton ar={letter.ar} tr={letter.name} />
         </div>
@@ -57,7 +59,7 @@ export function Alphabet() {
             <div key={form} className="rounded-2xl bg-[var(--surface-sunken)] p-3">
               <div className="ar text-3xl font-bold">{letter.forms[form]}</div>
               <div className="mt-1 text-xs font-bold uppercase text-[var(--ink-soft)]">
-                {form === 'initial' ? 'begin' : form === 'medial' ? 'midden' : 'eind'}
+                {form === 'initial' ? t.alphabet.begin : form === 'medial' ? t.alphabet.midden : t.alphabet.eind}
               </div>
             </div>
           ))}
@@ -68,7 +70,7 @@ export function Alphabet() {
             <span className="text-3xl" aria-hidden="true">{example.emoji ?? '📝'}</span>
             <div>
               <div className="ar text-2xl font-bold">{example.ar}</div>
-              <div className="text-sm text-[var(--ink-soft)]">{example.tr} — {example.nl}</div>
+              <div className="text-sm text-[var(--ink-soft)]">{example.tr} — {meaningOf(example, lang)}</div>
             </div>
             <SpeakButton ar={example.ar} tr={example.tr} className="ms-auto" />
           </div>
@@ -78,20 +80,19 @@ export function Alphabet() {
       <Card className="mt-6 flex flex-wrap items-center gap-4 p-5">
         <Mascot mood="denk" size={64} />
         <div className="min-w-0 flex-1">
-          <p className="font-display text-lg font-extrabold">Letterspel</p>
-          <p className="text-sm text-[var(--ink-soft)]">Tien rondes: welke letter hoort bij deze naam? {done && '· al gehaald ✅'}</p>
+          <p className="font-display text-lg font-extrabold">{t.alphabet.spel}</p>
+          <p className="text-sm text-[var(--ink-soft)]">{t.alphabet.spelUitleg} {done ? `· ${t.alphabet.alGehaald}` : ''}</p>
         </div>
-        <Button onClick={() => setGame(true)}>Spelen</Button>
+        <Button onClick={() => setGame(true)}>{t.common.spelen}</Button>
       </Card>
 
-      <p className="mt-6 text-center text-sm text-[var(--ink-soft)]">
-        Arabisch schrijf je van rechts naar links. Korte klinkers schrijf je meestal niet op — die hoor je erbij.
-      </p>
+      <p className="mt-6 text-center text-sm text-[var(--ink-soft)]">{t.alphabet.voetnoot}</p>
     </div>
   )
 }
 
 function LetterGame({ onDone }: { onDone: () => void }) {
+  const t = useT()
   const [round, setRound] = useState(0)
   const [score, setScore] = useState(0)
   const [chosen, setChosen] = useState<string | null>(null)
@@ -116,9 +117,9 @@ function LetterGame({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="mx-auto max-w-md px-4 py-10 text-center">
-      <p className="text-sm font-bold text-[var(--ink-soft)]">Ronde {round + 1} van 10 · {score} goed</p>
+      <p className="text-sm font-bold text-[var(--ink-soft)]">{t.alphabet.ronde(round + 1, score)}</p>
       <h1 className="mt-4 font-display text-3xl font-extrabold">{target.name}</h1>
-      <p className="text-[var(--ink-soft)]">Klinkt als: {target.sound}</p>
+      <p className="text-[var(--ink-soft)]">{t.alphabet.klinktAls(target.sound)}</p>
 
       <div className="mt-8 grid grid-cols-2 gap-3">
         {options.map((l) => (
@@ -137,7 +138,7 @@ function LetterGame({ onDone }: { onDone: () => void }) {
         ))}
       </div>
 
-      <Button variant="ghost" className="mt-8" onClick={onDone}>Stoppen</Button>
+      <Button variant="ghost" className="mt-8" onClick={onDone}>{t.common.stoppen}</Button>
     </div>
   )
 }

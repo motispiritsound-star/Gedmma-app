@@ -1,22 +1,32 @@
 # Gedmma · قدّام
 
-**Marokkaans-Arabisch (Darija) leren, voor kinderen en jongeren.**
+**Marokkaans-Arabisch (Darija) leren, voor kinderen en jongeren — in het
+Nederlands, Frans, Duits en Engels.**
 
-Gedmma is één app die twee dingen tegelijk is: een website die uitlegt waar het
-over gaat, en een installeerbare leer-app die daarna offline werkt. Geen
-account, geen advertenties, geen server — alle voortgang staat in de browser
-van het kind zelf.
+Gedmma is één app die drie dingen tegelijk is: een website die uitlegt waar het
+over gaat, een installeerbare leer-app die daarna offline werkt, en — via
+Capacitor — dezelfde app voor de App Store en Google Play. Geen account, geen
+advertenties, geen server: alle voortgang staat op het apparaat van het kind
+zelf.
+
+Bedoeld voor Marokkaanse gezinnen in Nederland, België, Frankrijk, Duitsland,
+Oostenrijk en Zwitserland — en voor iedereen daarbuiten die Darija wil leren.
 
 *Gedmma* komt van **qeddam** (قدّام): vooruit.
 
 ```
 gedmma/
-  src/content/     de leerstof: woorden, units, letters, verhalen
-  src/engine/      herhaalsysteem, oefeninggenerator, voortgang, geluid
-  src/ui/          bouwstenen, de oefeningen en de ronde-loop
-  src/pages/       de schermen, inclusief de publieke website
-  scripts/         icoontjes en deelplaatje renderen, browsertest
-  public/          fonts, iconen, manifest, service worker
+  src/content/       de leerstof: woorden, units, letters, verhalen
+    lang/            dezelfde leerstof in het Frans, Duits en Engels
+  src/i18n/          de interface in vier talen, en de privacyverklaring
+  src/engine/        herhaalsysteem, oefeninggenerator, voortgang, geluid
+  src/ui/            bouwstenen, de oefeningen en de ronde-loop
+  src/pages/         de schermen, inclusief de publieke website
+  scripts/           iconen, deelplaatje en winkelplaatjes renderen, browsertest
+  public/            fonts, iconen, manifest, service worker
+  android/           het Android-project (Capacitor)
+  store/             winkelteksten per taal, klaar om te plakken
+  docs/STORES.md     de route naar de App Store en Google Play
 ```
 
 ## Aan de praat
@@ -43,8 +53,9 @@ npm run icons      # tekent de iconen en het deelplaatje opnieuw
 
 | | |
 |---|---|
+| **4 interfacetalen** | Nederlands, Frans, Duits en Engels — interface, betekenissen, uitleg, tips en verhalen |
 | **16 units** | van *Salam!* tot afdingen op de souq, oplopend van A0 naar A2 |
-| **303 woorden en zinnen** | elk met Arabisch schrift, Latijnse schrijfwijze, Nederlands én Engels |
+| **303 woorden en zinnen** | elk met Arabisch schrift, Latijnse schrijfwijze en een betekenis in alle vier de talen |
 | **8 soorten oefeningen** | kiezen, luisteren, schrift herkennen, koppelen, zin bouwen, typen, inspreken, en een introkaart per nieuw woord |
 | **31 letters** | het hele Arabische alfabet plus پ, ڤ en ݣ, met hun vorm aan begin, midden en eind |
 | **4 verhalen** | gesprekken waarin je op elke zin kunt tikken voor de vertaling, met vragen erna |
@@ -73,6 +84,25 @@ net zo goed.
 **Fouten kosten niets als jij dat wilt.** Hartjes kunnen uit (aanrader voor
 jonge kinderen), en herhalen kost sowieso nooit een hartje.
 
+## Vier talen
+
+Het Darija zelf verandert nooit: het Arabische schrift en de Latijnse
+schrijfwijze zijn overal hetzelfde. Wat meewisselt is alles wat een kind in
+zijn eigen taal leest.
+
+Nederlands is de bron (`src/content/words.ts`, `curriculum.ts`, `stories.ts`);
+Frans, Duits en Engels zijn **packs** (`src/content/lang/`) die de betekenissen,
+de weetjes, de titels op het pad en de verhalen overschrijven. De interface
+staat apart in `src/i18n/`, waar `Strings` is afgeleid van het Nederlandse
+bestand: een vergeten sleutel in het Frans is een compileerfout, geen Nederlands
+woord op het scherm van een Frans kind.
+
+De taal wordt bij de eerste start voorgesteld op basis van de browsertaal, in
+een welkomstscherm waarin je hem meteen kunt wijzigen; daarna staat hij bij
+Instellingen en op de website in de bovenbalk. De tests bewaken dat elke taal
+compleet is: gelijke sleutels, een betekenis en een weetje per woord, elke unit,
+les, tip en verhaalregel vertaald.
+
 ## Geluid zonder audiobestanden
 
 Er zit geen enkele mp3 in deze app, en toch klinkt hij. De effecten worden ter
@@ -97,12 +127,14 @@ Twee eerlijke beperkingen, die de app zelf ook benoemt:
 - Op de meeste apparaten spreekt de Arabische stem **Modern Standaard Arabisch**,
   geen Marokkaans. Goed genoeg om een woord te herkennen, geen vervanging voor
   familie horen praten.
-- Staat er **helemaal geen Arabische stem** op het apparaat, dan leest Gedmma de
-  Latijnse schrijfwijze voor met een **Franse** stem: `sh` wordt `ch`, `u` en `w`
-  worden `ou`, `kh` en `gh` worden een Franse `r`, en de ع vervalt — Frans komt
-  van de Europese talen het dichtst bij Darija in de buurt. Het leerpad zegt
-  eenmalig dat dit gebeurt en hoe je een Arabische stem installeert, en je kunt
-  het uitzetten.
+- Staat er **helemaal geen Arabische stem** op het apparaat, dan leent Gedmma een
+  Europese stem en herschrijft hij de Latijnse schrijfwijze zodat díe stem hem
+  ongeveer goed leest. Elke taal spelt dezelfde klank anders, dus de herschrijving
+  hangt af van de gevonden stem: een Franse stem krijgt `choukran`, een Duitse
+  `schukran`, een Nederlandse `sjoekran`. Frans staat vooraan in de voorkeurslijst
+  omdat het van de Europese talen het dichtst bij Darija komt. Het leerpad zegt
+  eenmalig dat dit gebeurt en hoe je een echte Arabische stem installeert, en je
+  kunt het uitzetten.
 
 Spreekoefeningen gebruiken de spraakherkenning van de browser. In Chrome gaat de
 opname daarvoor naar Google; wie dat niet wil, zet spreekoefeningen uit. Dat
@@ -131,7 +163,24 @@ schrift heeft en dat elke toets precies dekt wat de unit leerde.
 
 ## Publiceren
 
-`npm run build` maakt een map met statische bestanden; elke statische host doet
-het. Zorg alleen dat onbekende paden `index.html` terugkrijgen — voor Cloudflare
-Pages en Netlify regelt `public/_redirects` dat al. Zie
-[docs/DEPLOY.md](docs/DEPLOY.md).
+**Als website.** `npm run build` maakt een map met statische bestanden; elke
+statische host doet het. Zorg alleen dat onbekende paden `index.html`
+terugkrijgen — voor Cloudflare Pages en Netlify regelt `public/_redirects` dat
+al. Zie [docs/DEPLOY.md](docs/DEPLOY.md).
+
+**Als app in de winkels.** Dezelfde build zit via Capacitor in een echte iOS- en
+Android-app. Het Android-project staat compleet in `android/`, inclusief alle
+iconen; voor iOS is een Mac met Xcode nodig (een eis van Apple). De teksten voor
+beide winkels staan kant-en-klaar in `store/`, per taal. De hele route — accounts,
+kosten, kindercategorie, privacyantwoorden, screenshots — staat in
+[docs/STORES.md](docs/STORES.md).
+
+```bash
+npm run build          # web-build in dist/
+npx cap sync android   # diezelfde build in het Android-project
+npm run android        # en openen in Android Studio
+```
+
+Vul vóór publicatie `src/content/operator.ts` in: zonder naam en e-mailadres van
+de uitgever zet de privacypagina er zichtbaar een waarschuwing boven, en weigeren
+beide winkels de app.

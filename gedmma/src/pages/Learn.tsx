@@ -9,13 +9,18 @@ import {
 import { missingArabicVoice } from '../engine/audio'
 import { useVoices } from '../ui/useVoices'
 import type { Lesson } from '../content/types'
+import { useLang, useT } from '../i18n'
+import { lessonTitle, unitSubtitle } from '../content/localise'
 
 const KIND_ICON: Record<Lesson['kind'], string> = {
   woorden: '📗', zinnen: '💬', letters: '🔤', verhaal: '📖', toets: '🏅',
 }
 
 function Node({ lesson, index, accent }: { lesson: Lesson; index: number; accent: string }) {
+  const t = useT()
+  const lang = useLang()
   const state = useStore((s) => s)
+  const title = lessonTitle(lesson, lang)
   const done = isDone(lesson.id, state)
   const open = lessonUnlocked(lesson.id, state)
   const record = state.lessons[lesson.id]
@@ -38,9 +43,9 @@ function Node({ lesson, index, accent }: { lesson: Lesson; index: number; accent
         <span aria-hidden="true">{open ? KIND_ICON[lesson.kind] : '🔒'}</span>
       </motion.div>
       <div className="text-center">
-        <div className="text-xs font-bold">{lesson.title}</div>
+        <div className="text-xs font-bold">{title}</div>
         {record && (
-          <div className="text-[11px] text-saffron-500" aria-label={`${record.stars} van 3 sterren`}>
+          <div className="text-[11px] text-saffron-500" aria-label={t.learn.sterren(record.stars)}>
             {'★'.repeat(record.stars)}{'☆'.repeat(3 - record.stars)}
           </div>
         )}
@@ -50,19 +55,21 @@ function Node({ lesson, index, accent }: { lesson: Lesson; index: number; accent
 
   if (!open) {
     return (
-      <li className="py-3" aria-disabled="true" title="Rond eerst de vorige les af">
+      <li className="py-3" aria-disabled="true" title={t.learn.eersteVorige}>
         {body}
       </li>
     )
   }
   return (
     <li className="py-3">
-      <Link to={`/les/${lesson.id}`} aria-label={`${lesson.title} openen`}>{body}</Link>
+      <Link to={`/les/${lesson.id}`} aria-label={t.learn.lesOpenen(title)}>{body}</Link>
     </li>
   )
 }
 
 export function Learn() {
+  const t = useT()
+  const lang = useLang()
   const state = useStore((s) => s)
   const due = dueWordIds(state).length
   const next = nextLesson(state)
@@ -76,17 +83,15 @@ export function Learn() {
         <Mascot mood={state.streak > 0 ? 'juich' : 'blij'} size={72} />
         <div className="min-w-0 flex-1 text-center sm:text-start">
           <h1 className="font-display text-xl font-extrabold sm:text-2xl">
-            {state.name ? `Ahlan, ${state.name}!` : 'Ahlan! Klaar voor Darija?'}
+            {state.name ? t.learn.welkomNaam(state.name) : t.learn.welkom}
           </h1>
           <p className="text-sm text-[var(--ink-soft)]">
-            {due > 0
-              ? `${due} ${due === 1 ? 'woord wacht' : 'woorden wachten'} op een herhaling.`
-              : 'Alles herhaald. Op naar de volgende les.'}
+            {due > 0 ? t.learn.wachten(due) : t.learn.allesHerhaald}
           </p>
         </div>
         <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto">
-          <Link to={`/les/${next}`}><Button className="w-full">Ga verder</Button></Link>
-          {due > 0 && <Link to="/herhalen"><Button variant="secondary" className="w-full">Herhalen</Button></Link>}
+          <Link to={`/les/${next}`}><Button className="w-full">{t.learn.gaVerder}</Button></Link>
+          {due > 0 && <Link to="/herhalen"><Button variant="secondary" className="w-full">{t.learn.herhalen}</Button></Link>}
         </div>
       </Card>
 
@@ -95,14 +100,10 @@ export function Learn() {
           <div className="flex flex-wrap items-start gap-3">
             <span className="text-2xl" aria-hidden="true">🔈</span>
             <div className="min-w-0 flex-1">
-              <p className="font-display font-extrabold">Dit apparaat heeft geen Arabische stem</p>
-              <p className="mt-1 text-sm text-[var(--ink-soft)]">
-                Gedmma leest de woorden nu voor in de Latijnse schrijfwijze met een Franse stem — herkenbaar, maar
-                geen echt Marokkaans. Een Arabische stem installeren kan meestal via de instellingen van je apparaat,
-                bij spraak of tekst-naar-spraak.
-              </p>
+              <p className="font-display font-extrabold">{t.learn.geenStem}</p>
+              <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.learn.geenStemUitleg}</p>
             </div>
-            <Button variant="ghost" onClick={() => markTipSeen('stem')}>Begrepen</Button>
+            <Button variant="ghost" onClick={() => markTipSeen('stem')}>{t.learn.begrepen}</Button>
           </div>
         </Card>
       )}
@@ -123,7 +124,7 @@ export function Learn() {
                       </h2>
                       <span className="rounded-full bg-night-950/15 px-2 py-0.5 text-[11px] font-bold">{unit.level}</span>
                     </div>
-                    <p className="text-sm font-semibold opacity-80">{unit.subtitle}</p>
+                    <p className="text-sm font-semibold opacity-80">{unitSubtitle(unit, lang)}</p>
                   </div>
                   <span className="ar ms-auto hidden text-2xl font-bold opacity-70 sm:block">{unit.ar}</span>
                 </div>
@@ -140,9 +141,7 @@ export function Learn() {
                   ))}
                 </ul>
               ) : (
-                <p className="mt-4 text-center text-sm text-[var(--ink-soft)]">
-                  🔒 Maak unit {ui} af om deze te openen.
-                </p>
+                <p className="mt-4 text-center text-sm text-[var(--ink-soft)]">{t.learn.unitSlot(ui)}</p>
               )}
             </li>
           )
@@ -150,14 +149,12 @@ export function Learn() {
       </ol>
 
       <Card className="mt-10 p-5 text-center">
-        <p className="font-display text-lg font-extrabold">Klaar met het pad?</p>
-        <p className="mt-1 text-sm text-[var(--ink-soft)]">
-          Ga verder met de verhalen, de letters en de spelletjes — daar komt alles terug.
-        </p>
+        <p className="font-display text-lg font-extrabold">{t.learn.klaarMetPad}</p>
+        <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.learn.klaarMetPadUitleg}</p>
         <div className="mt-3 flex flex-wrap justify-center gap-2">
-          <Link to="/verhalen"><Button variant="secondary">📖 Verhalen</Button></Link>
-          <Link to="/letters"><Button variant="secondary">🔤 Letters</Button></Link>
-          <Link to="/spelen"><Button variant="secondary">🎮 Spelen</Button></Link>
+          <Link to="/verhalen"><Button variant="secondary">📖 {t.nav.verhalen}</Button></Link>
+          <Link to="/letters"><Button variant="secondary">🔤 {t.nav.letters}</Button></Link>
+          <Link to="/spelen"><Button variant="secondary">🎮 {t.nav.spelen}</Button></Link>
         </div>
       </Card>
     </div>

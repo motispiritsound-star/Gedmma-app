@@ -22,6 +22,20 @@ page.on('pageerror', (e) => problems.push(String(e)))
 
 const shot = async (name) => { await page.screenshot({ path: `${OUT}/${name}.png`, fullPage: false }); console.log('· ' + name) }
 
+// A fresh visitor is asked for a language before anything else.
+await page.goto(`${BASE}/`, { waitUntil: 'networkidle' })
+await page.waitForTimeout(400)
+await shot('00-welkom')
+const welcome = page.getByRole('dialog')
+if (!(await welcome.count())) throw new Error('het welkomstscherm verscheen niet')
+
+// The rest of the walk runs in Dutch, so the labels below are predictable.
+await page.evaluate(() => {
+  const raw = JSON.parse(localStorage.getItem('gedmma.v1') ?? '{}')
+  raw.langPicked = true
+  raw.settings = { ...(raw.settings ?? {}), lang: 'nl' }
+  localStorage.setItem('gedmma.v1', JSON.stringify(raw))
+})
 await page.goto(`${BASE}/`, { waitUntil: 'networkidle' })
 await shot('01-landing')
 
@@ -41,7 +55,7 @@ await shot('03-nieuw-woord')
 
 for (let i = 0; i < 6; i++) {
   const snap = page.getByRole('button', { name: 'Snap ik!' })
-  if (await snap.count()) { await snap.click(); await page.waitForTimeout(250); continue }
+  if (await snap.count()) { await snap.click({ force: true }); await page.waitForTimeout(250); continue }
   break
 }
 await shot('04-oefening')
@@ -49,10 +63,10 @@ await shot('04-oefening')
 // Answer whatever exercise is on screen, twice.
 for (let i = 0; i < 2; i++) {
   const options = page.locator('.btn3d').filter({ hasNot: page.locator('input') })
-  if (await options.count()) await options.first().click()
+  if (await options.count()) await options.first().click({ force: true })
   await page.waitForTimeout(400)
   const verder = page.getByRole('button', { name: /Verder|Afronden/ })
-  if (await verder.count()) await verder.click()
+  if (await verder.count()) await verder.click({ force: true })
   await page.waitForTimeout(300)
 }
 await shot('05-feedback')
@@ -74,6 +88,12 @@ await shot('09-profiel')
 // And the desktop view of the landing page.
 const wide = await browser.newPage({ viewport: { width: 1280, height: 900 } })
 await wide.goto(`${BASE}/`, { waitUntil: 'networkidle' })
+await wide.evaluate(() => {
+  const raw = JSON.parse(localStorage.getItem('gedmma.v1') ?? '{}')
+  raw.langPicked = true
+  localStorage.setItem('gedmma.v1', JSON.stringify(raw))
+})
+await wide.reload({ waitUntil: 'networkidle' })
 await wide.screenshot({ path: `${OUT}/10-landing-breed.png` })
 console.log('· 10-landing-breed')
 

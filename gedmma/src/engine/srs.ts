@@ -79,11 +79,13 @@ export function dueCards(cards: Card[], now = Date.now(), limit = 20): Card[] {
     .slice(0, limit)
 }
 
-/** A learner-facing label: how solid a word is right now. */
-export function strengthLabel(strength: number): string {
-  if (strength >= 0.85) return 'Vastgezet'
-  if (strength >= 0.6) return 'Sterk'
-  if (strength >= 0.35) return 'Wordt beter'
-  if (strength > 0) return 'Wankel'
-  return 'Nieuw'
+/** How solid a word is, as a key the interface turns into words. */
+export type Strength = 'vastgezet' | 'sterk' | 'beter' | 'wankel' | 'nieuw'
+
+export function strengthLabel(strength: number): Strength {
+  if (strength >= 0.85) return 'vastgezet'
+  if (strength >= 0.6) return 'sterk'
+  if (strength >= 0.35) return 'beter'
+  if (strength > 0) return 'wankel'
+  return 'nieuw'
 }

@@ -6,37 +6,43 @@ import { say, sfx } from '../engine/audio'
 import { completeLesson, useStore } from '../engine/store'
 import { Button, Card, SectionTitle } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
+import { useLang, useT } from '../i18n'
+import { storyOf } from '../content/localise'
 
 export function Stories() {
+  const t = useT()
+  const lang = useLang()
   const lessons = useStore((s) => s.lessons)
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
-      <SectionTitle sub="Korte gesprekken zoals ze echt klinken. Tik op een zin voor de vertaling, of laat hem voorlezen.">
-        Verhalen
-      </SectionTitle>
+      <SectionTitle sub={t.stories.uitleg}>{t.stories.titel}</SectionTitle>
       <ul className="grid gap-4 sm:grid-cols-2">
-        {STORIES.map((s) => (
+        {STORIES.map((s) => {
+          const local = storyOf(s, lang)
+          return (
           <li key={s.id}>
             <Link to={`/verhalen/${s.id}`}>
               <Card className="flex h-full items-center gap-4 p-5 transition hover:border-zellige-500">
                 <span className="text-4xl" aria-hidden="true">{s.emoji}</span>
                 <div className="min-w-0">
-                  <h2 className="font-display text-lg font-extrabold">{s.title}</h2>
-                  <p className="text-sm text-[var(--ink-soft)]">{s.intro}</p>
+                  <h2 className="font-display text-lg font-extrabold">{local.title}</h2>
+                  <p className="text-sm text-[var(--ink-soft)]">{local.intro}</p>
                   <p className="mt-1 text-xs font-bold uppercase text-zellige-600 dark:text-zellige-300">
-                    {s.level} · {s.lines.length} zinnen {lessons[`verhaal-${s.id}`] ? '· gelezen ✅' : ''}
+                    {s.level} · {t.stories.zinnen(s.lines.length)} {lessons[`verhaal-${s.id}`] ? `· ${t.stories.gelezen}` : ''}
                   </p>
                 </div>
               </Card>
             </Link>
           </li>
-        ))}
+        )})}
       </ul>
     </div>
   )
 }
 
 export function StoryReader() {
+  const t = useT()
+  const lang = useLang()
   const { storyId = '' } = useParams()
   const navigate = useNavigate()
   const story = storyById(storyId)
@@ -48,12 +54,13 @@ export function StoryReader() {
     return (
       <div className="mx-auto max-w-md px-4 py-16 text-center">
         <Mascot mood="denk" />
-        <p className="mt-4 font-display text-xl font-extrabold">Dit verhaal bestaat niet.</p>
-        <Link to="/verhalen" className="mt-4 inline-block"><Button>Alle verhalen</Button></Link>
+        <p className="mt-4 font-display text-xl font-extrabold">{t.stories.bestaatNiet}</p>
+        <Link to="/verhalen" className="mt-4 inline-block"><Button>{t.stories.alleVerhalen}</Button></Link>
       </div>
     )
   }
 
+  const local = storyOf(story, lang)
   const speakers = [...new Set(story.lines.map((l) => l.speaker))]
 
   if (quiz) {
@@ -61,9 +68,9 @@ export function StoryReader() {
     const right = answers.filter((a, i) => a === story.quiz[i]!.answer).length
     return (
       <div className="mx-auto max-w-2xl px-4 py-6">
-        <SectionTitle sub={story.title}>Snapte je het?</SectionTitle>
+        <SectionTitle sub={local.title}>{t.stories.snapteJeHet}</SectionTitle>
         <ol className="space-y-5">
-          {story.quiz.map((q, qi) => (
+          {local.quiz.map((q, qi) => (
             <li key={q.q}>
               <Card className="p-5">
                 <p className="font-display text-lg font-extrabold">{qi + 1}. {q.q}</p>
@@ -98,7 +105,7 @@ export function StoryReader() {
         {finished && (
           <Card className="mt-6 p-5 text-center">
             <Mascot mood={right === story.quiz.length ? 'juich' : 'blij'} size={80} className="mx-auto" />
-            <p className="mt-2 font-display text-xl font-extrabold">{right} van de {story.quiz.length} goed</p>
+            <p className="mt-2 font-display text-xl font-extrabold">{t.stories.goedVan(right, story.quiz.length)}</p>
             <Button
               className="mt-4"
               onClick={() => {
@@ -106,7 +113,7 @@ export function StoryReader() {
                 navigate('/verhalen')
               }}
             >
-              Klaar
+              {t.common.klaar}
             </Button>
           </Card>
         )}
@@ -116,12 +123,12 @@ export function StoryReader() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <Link to="/verhalen" className="text-sm font-bold text-[var(--ink-soft)]">← Alle verhalen</Link>
-      <h1 className="mt-2 font-display text-2xl font-extrabold">{story.emoji} {story.title}</h1>
-      <p className="text-[var(--ink-soft)]">{story.intro}</p>
+      <Link to="/verhalen" className="text-sm font-bold text-[var(--ink-soft)]">← {t.stories.alleVerhalen}</Link>
+      <h1 className="mt-2 font-display text-2xl font-extrabold">{story.emoji} {local.title}</h1>
+      <p className="text-[var(--ink-soft)]">{local.intro}</p>
 
       <div className="mt-6 space-y-3">
-        {story.lines.map((line, i) => {
+        {local.lines.map((line, i) => {
           const mine = line.speaker === speakers[0]
           const open = shown.includes(i)
           return (
@@ -141,7 +148,7 @@ export function StoryReader() {
                 <div className="text-xs font-bold uppercase text-[var(--ink-soft)]">{line.speaker}</div>
                 <div className="ar mt-1 text-2xl font-bold">{line.ar}</div>
                 <div className="mt-1 text-sm font-semibold text-zellige-600 dark:text-zellige-300">{line.tr}</div>
-                {open && <div className="mt-2 border-t border-[var(--line)] pt-2 text-sm">{line.nl}</div>}
+                {open && <div className="mt-2 border-t border-[var(--line)] pt-2 text-sm">{line.text}</div>}
               </button>
             </motion.div>
           )
@@ -149,8 +156,8 @@ export function StoryReader() {
       </div>
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
-        <Button variant="secondary" onClick={() => setShown(story.lines.map((_, i) => i))}>Alles vertalen</Button>
-        <Button onClick={() => setQuiz(true)}>Vragen over het verhaal</Button>
+        <Button variant="secondary" onClick={() => setShown(story.lines.map((_, i) => i))}>{t.stories.allesVertalen}</Button>
+        <Button onClick={() => setQuiz(true)}>{t.stories.vragen}</Button>
       </div>
     </div>
   )

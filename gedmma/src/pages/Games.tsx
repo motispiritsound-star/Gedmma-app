@@ -7,11 +7,14 @@ import { say, sfx } from '../engine/audio'
 import { addXp, getState, gradeWord, useStore } from '../engine/store'
 import { Button, Card, SectionTitle, Stat } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
+import { useLang, useT } from '../i18n'
+import { meaningOf } from '../content/localise'
 
 type Game = 'menu' | 'race' | 'memory'
 
 /** Two quick games that use whatever the learner has already met. */
 export function Games() {
+  const t = useT()
   const [game, setGame] = useState<Game>('menu')
   const seen = useStore((s) => Object.keys(s.cards).length)
 
@@ -20,47 +23,39 @@ export function Games() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
-      <SectionTitle sub="Even geen les — gewoon spelen. Alles wat je hier tegenkomt telt mee voor je woorden.">
-        Spelen
-      </SectionTitle>
+      <SectionTitle sub={t.games.uitleg}>{t.games.titel}</SectionTitle>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Card className="flex flex-col p-5">
           <span className="text-4xl" aria-hidden="true">⏱️</span>
-          <h2 className="mt-2 font-display text-xl font-extrabold">Tijdrace</h2>
-          <p className="flex-1 text-sm text-[var(--ink-soft)]">
-            Zestig seconden. Hoeveel woorden herken je? Elke goede kost minder tijd dan een foute.
-          </p>
-          <Button className="mt-4" onClick={() => setGame('race')}>Start</Button>
+          <h2 className="mt-2 font-display text-xl font-extrabold">{t.games.race}</h2>
+          <p className="flex-1 text-sm text-[var(--ink-soft)]">{t.games.raceUitleg}</p>
+          <Button className="mt-4" onClick={() => setGame('race')}>{t.common.start}</Button>
         </Card>
 
         <Card className="flex flex-col p-5">
           <span className="text-4xl" aria-hidden="true">🃏</span>
-          <h2 className="mt-2 font-display text-xl font-extrabold">Geheugenspel</h2>
-          <p className="flex-1 text-sm text-[var(--ink-soft)]">
-            Zoek de paren: het Darija-woord en de Nederlandse betekenis liggen omgedraaid op tafel.
-          </p>
-          <Button className="mt-4" onClick={() => setGame('memory')}>Start</Button>
+          <h2 className="mt-2 font-display text-xl font-extrabold">{t.games.memory}</h2>
+          <p className="flex-1 text-sm text-[var(--ink-soft)]">{t.games.memoryUitleg}</p>
+          <Button className="mt-4" onClick={() => setGame('memory')}>{t.common.start}</Button>
         </Card>
 
         <Card className="flex flex-col p-5">
           <span className="text-4xl" aria-hidden="true">🔤</span>
-          <h2 className="mt-2 font-display text-xl font-extrabold">Letterspel</h2>
-          <p className="flex-1 text-sm text-[var(--ink-soft)]">Herken de Arabische letters aan hun naam.</p>
-          <Link to="/letters" className="mt-4"><Button variant="secondary" className="w-full">Naar de letters</Button></Link>
+          <h2 className="mt-2 font-display text-xl font-extrabold">{t.games.letters}</h2>
+          <p className="flex-1 text-sm text-[var(--ink-soft)]">{t.games.lettersUitleg}</p>
+          <Link to="/letters" className="mt-4"><Button variant="secondary" className="w-full">{t.games.naarLetters}</Button></Link>
         </Card>
 
         <Card className="flex flex-col p-5">
           <span className="text-4xl" aria-hidden="true">📖</span>
-          <h2 className="mt-2 font-display text-xl font-extrabold">Verhalen</h2>
-          <p className="flex-1 text-sm text-[var(--ink-soft)]">Lees een gesprek en beantwoord de vragen.</p>
-          <Link to="/verhalen" className="mt-4"><Button variant="secondary" className="w-full">Naar de verhalen</Button></Link>
+          <h2 className="mt-2 font-display text-xl font-extrabold">{t.games.verhalen}</h2>
+          <p className="flex-1 text-sm text-[var(--ink-soft)]">{t.games.verhalenUitleg}</p>
+          <Link to="/verhalen" className="mt-4"><Button variant="secondary" className="w-full">{t.games.naarVerhalen}</Button></Link>
         </Card>
       </div>
 
-      <p className="mt-6 text-center text-sm text-[var(--ink-soft)]">
-        Je hebt {seen} woorden gezien. De spellen kiezen daar zoveel mogelijk uit.
-      </p>
+      <p className="mt-6 text-center text-sm text-[var(--ink-soft)]">{t.games.gezien(seen)}</p>
     </div>
   )
 }
@@ -73,6 +68,8 @@ function poolOfWords(count = 40) {
 }
 
 function TimeRace({ onExit }: { onExit: () => void }) {
+  const t = useT()
+  const lang = useLang()
   const [left, setLeft] = useState(60)
   const [score, setScore] = useState(0)
   const [streak, setStreak] = useState(0)
@@ -104,14 +101,14 @@ function TimeRace({ onExit }: { onExit: () => void }) {
     return (
       <div className="mx-auto max-w-md px-4 py-12 text-center">
         <Mascot mood="juich" size={120} className="mx-auto" />
-        <h1 className="mt-4 font-display text-3xl font-extrabold">Tijd om!</h1>
+        <h1 className="mt-4 font-display text-3xl font-extrabold">{t.games.tijdOm}</h1>
         <div className="mt-4 grid grid-cols-2 gap-3">
-          <Stat value={score} label="goed" emoji="✅" />
-          <Stat value={`+${Math.min(30, Math.round(score * 1.5))}`} label="XP" emoji="⚡" />
+          <Stat value={score} label={t.common.goed} emoji="✅" />
+          <Stat value={`+${Math.min(30, Math.round(score * 1.5))}`} label={t.common.xp} emoji="⚡" />
         </div>
         <div className="mt-6 space-y-3">
-          <Button className="w-full" onClick={() => { setLeft(60); setScore(0); setRound((r) => r + 1) }}>Nog een keer</Button>
-          <Button variant="secondary" className="w-full" onClick={onExit}>Terug</Button>
+          <Button className="w-full" onClick={() => { setLeft(60); setScore(0); setRound((r) => r + 1) }}>{t.common.nogEenKeer}</Button>
+          <Button variant="secondary" className="w-full" onClick={onExit}>{t.common.terug}</Button>
         </div>
       </div>
     )
@@ -142,7 +139,7 @@ function TimeRace({ onExit }: { onExit: () => void }) {
   return (
     <div className="mx-auto max-w-md px-4 py-6">
       <div className="flex items-center justify-between font-display text-lg font-extrabold">
-        <button onClick={onExit} aria-label="Stoppen" className="text-[var(--ink-soft)]">✕</button>
+        <button onClick={onExit} aria-label={t.common.stoppen} className="text-[var(--ink-soft)]">✕</button>
         <span className={left <= 10 ? 'text-terra-500' : ''}>⏱️ {left}s</span>
         <span>✅ {score}{streak >= 3 ? ` 🔥${streak}` : ''}</span>
       </div>
@@ -151,7 +148,7 @@ function TimeRace({ onExit }: { onExit: () => void }) {
         <div className="text-4xl" aria-hidden="true">{target.emoji}</div>
         <div className="ar mt-2 text-4xl font-bold">{target.ar}</div>
         <button className="mt-1 text-sm font-bold text-zellige-600 underline dark:text-zellige-300" onClick={() => say(target.ar, { tr: target.tr })}>
-          {target.tr} · luister
+          {target.tr} · {t.games.luisterLink}
         </button>
       </Card>
 
@@ -167,7 +164,7 @@ function TimeRace({ onExit }: { onExit: () => void }) {
               : 'border-[var(--line)] bg-[var(--surface-raised)]'
             }`}
           >
-            {o.emoji} {o.nl}
+            {o.emoji} {meaningOf(o, lang)}
           </motion.button>
         ))}
       </div>
@@ -178,6 +175,8 @@ function TimeRace({ onExit }: { onExit: () => void }) {
 interface Tile { key: string; wordId: string; face: 'ar' | 'nl' }
 
 function Memory({ onExit }: { onExit: () => void }) {
+  const t = useT()
+  const lang = useLang()
   const [deal, setDeal] = useState(0)
   const tiles = useMemo<Tile[]>(() => {
     const rnd = mulberry32(Date.now() % 65536 + deal)
@@ -227,9 +226,9 @@ function Memory({ onExit }: { onExit: () => void }) {
   return (
     <div className="mx-auto max-w-md px-4 py-6">
       <div className="flex items-center justify-between font-display text-lg font-extrabold">
-        <button onClick={onExit} aria-label="Stoppen" className="text-[var(--ink-soft)]">✕</button>
+        <button onClick={onExit} aria-label={t.common.stoppen} className="text-[var(--ink-soft)]">✕</button>
         <span>🃏 {found.length}/{tiles.length / 2}</span>
-        <span>{tries} beurten</span>
+        <span>{tries} {t.common.beurten}</span>
       </div>
 
       <div className="mt-6 grid grid-cols-3 gap-2.5">
@@ -250,7 +249,7 @@ function Memory({ onExit }: { onExit: () => void }) {
               {shown ? (
                 tile.face === 'ar'
                   ? <span className="ar text-lg font-bold">{w.ar}</span>
-                  : <span className="text-sm font-bold">{w.emoji} {w.nl}</span>
+                  : <span className="text-sm font-bold">{w.emoji} {meaningOf(w, lang)}</span>
               ) : (
                 <span className="text-2xl" aria-hidden="true">🌟</span>
               )}
@@ -262,11 +261,11 @@ function Memory({ onExit }: { onExit: () => void }) {
       {complete && (
         <Card className="mt-6 p-5 text-center">
           <Mascot mood="juich" size={80} className="mx-auto" />
-          <p className="mt-2 font-display text-xl font-extrabold">Alle paren gevonden!</p>
-          <p className="text-sm text-[var(--ink-soft)]">In {tries} beurten · +15 XP</p>
+          <p className="mt-2 font-display text-xl font-extrabold">{t.games.allePairs}</p>
+          <p className="text-sm text-[var(--ink-soft)]">{t.games.inBeurten(tries, 15)}</p>
           <div className="mt-4 flex justify-center gap-3">
-            <Button onClick={() => { setDeal((d) => d + 1); setFound([]); setOpen([]); setTries(0) }}>Nieuw spel</Button>
-            <Button variant="secondary" onClick={onExit}>Terug</Button>
+            <Button onClick={() => { setDeal((d) => d + 1); setFound([]); setOpen([]); setTries(0) }}>{t.games.nieuwSpel}</Button>
+            <Button variant="secondary" onClick={onExit}>{t.common.terug}</Button>
           </div>
         </Card>
       )}

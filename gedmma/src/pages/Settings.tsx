@@ -4,6 +4,7 @@ import {
   exportProgress, importProgress, resetProgress, setSetting, setState, useStore, type Settings,
 } from '../engine/store'
 import { arabicVoices, canListen, canSpeak, say, sfx, voicePlan } from '../engine/audio'
+import { LANGS, useT, type Lang } from '../i18n'
 import { useVoices } from '../ui/useVoices'
 import { Button, Card, SectionTitle, Sheet } from '../ui/kit'
 
@@ -36,7 +37,11 @@ function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) =
   )
 }
 
-function Choice<T extends string | number>({ value, options, onChange }: { value: T; options: { value: T; label: string }[]; onChange: (v: T) => void }) {
+function Choice<T extends string | number>({ value, options, onChange }: {
+  value: T
+  options: { value: T; label: string }[]
+  onChange: (v: T) => void
+}) {
   return (
     <div className="flex flex-wrap gap-1 rounded-2xl bg-[var(--surface-sunken)] p-1">
       {options.map((o) => (
@@ -53,147 +58,172 @@ function Choice<T extends string | number>({ value, options, onChange }: { value
 }
 
 export function SettingsPage() {
+  const t = useT()
   const state = useStore((s) => s)
   const s = state.settings
   const set = <K extends keyof Settings>(k: K) => (v: Settings[K]) => setSetting(k, v)
+  const [confirmReset, setConfirmReset] = useState(false)
+  const [imported, setImported] = useState<string | null>(null)
+  const file = useRef<HTMLInputElement>(null)
+
   const all = useVoices()
   const arabic = arabicVoices()
   const plan = voicePlan()
   const voiceStatus =
-    plan.mode === 'arabisch' ? `Nu in gebruik: ${plan.voice.name} (${plan.voice.lang}).`
-    : plan.mode === 'benadering' ? `Geen Arabische stem gevonden. Gedmma leest de Latijnse schrijfwijze met ${plan.voice.name} — dat benadert het, meer niet.`
-    : canSpeak() ? 'Er is geen stem beschikbaar. Zet hieronder de benaderende uitspraak aan, of installeer een Arabische stem op je apparaat.'
-    : 'Deze browser kan geen spraak afspelen.'
-  const [confirmReset, setConfirmReset] = useState(false)
-  const [imported, setImported] = useState<string | null>(null)
-  const file = useRef<HTMLInputElement>(null)
+    plan.mode === 'arabisch' ? t.settings.stemInGebruik(plan.voice.name, plan.voice.lang)
+    : plan.mode === 'benadering' ? t.settings.stemBenadering(plan.voice.name)
+    : canSpeak() ? t.settings.stemGeen
+    : t.settings.stemOnmogelijk
 
   const download = () => {
     const blob = new Blob([exportProgress()], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `gedmma-voortgang-${new Date().toISOString().slice(0, 10)}.json`
+    a.download = `gedmma-${new Date().toISOString().slice(0, 10)}.json`
     a.click()
     URL.revokeObjectURL(url)
   }
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <SectionTitle sub="Alles staat op dit apparaat. Er is geen account en er gaat niets naar een server.">
-        Instellingen
-      </SectionTitle>
+      <SectionTitle sub={t.settings.uitleg}>{t.settings.titel}</SectionTitle>
 
       <Card className="mb-6">
-        <Row title="Naam" hint="Hoe de app je aanspreekt.">
+        <Row title={t.settings.taal} hint={t.settings.taalHint}>
+          <div className="flex flex-wrap gap-2">
+            {LANGS.map((l) => (
+              <button
+                key={l.code}
+                onClick={() => setSetting('lang', l.code as Lang)}
+                className={`rounded-xl border-2 px-3 py-2 text-sm font-bold ${s.lang === l.code ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
+              >
+                <span aria-hidden="true">{l.flag}</span> {l.name}
+              </button>
+            ))}
+          </div>
+        </Row>
+        <Row title={t.settings.naam} hint={t.settings.naamHint}>
           <input
+            id="name"
             value={state.name}
             onChange={(e) => setState({ name: e.target.value.slice(0, 24) })}
-            placeholder="Je naam"
+            placeholder={t.settings.naamPlaceholder}
             className="w-40 rounded-xl border-2 border-[var(--line)] bg-[var(--surface)] px-3 py-2 outline-none focus:border-zellige-500"
           />
         </Row>
-        <Row title="Dagdoel" hint="Hoeveel XP je per dag wilt halen.">
+        <Row title={t.settings.dagdoel} hint={t.settings.dagdoelHint}>
           <Choice
             value={s.dailyGoal}
             onChange={set('dailyGoal')}
-            options={[
-              { value: 15, label: 'Rustig 15' },
-              { value: 30, label: 'Normaal 30' },
-              { value: 50, label: 'Stevig 50' },
-              { value: 80, label: 'Streber 80' },
-            ]}
+            options={[15, 30, 50, 80].map((v, i) => ({ value: v, label: t.settings.dagdoelOpties[i]! }))}
           />
         </Row>
       </Card>
 
-      <h2 className="mb-2 font-display text-lg font-extrabold">Lezen en schrift</h2>
+      <h2 className="mb-2 font-display text-lg font-extrabold">{t.settings.lezenTitel}</h2>
       <Card className="mb-6">
-        <Row title="Arabisch schrift tonen" hint="خبز naast of in plaats van khobz.">
-          <Toggle on={s.showScript} onChange={set('showScript')} label="Arabisch schrift tonen" />
+        <Row title={t.settings.schrift} hint={t.settings.schriftHint}>
+          <Toggle on={s.showScript} onChange={set('showScript')} label={t.settings.schrift} />
         </Row>
-        <Row title="Latijnse letters tonen" hint="De schrijfwijze met 3, 7 en 9.">
-          <Toggle on={s.showTranslit} onChange={set('showTranslit')} label="Latijnse letters tonen" />
+        <Row title={t.settings.latijn} hint={t.settings.latijnHint}>
+          <Toggle on={s.showTranslit} onChange={set('showTranslit')} label={t.settings.latijn} />
         </Row>
-        <Row title="Betekenissen in" hint="De taal waarin de vertaling verschijnt.">
-          <Choice value={s.lang} onChange={set('lang')} options={[{ value: 'nl', label: 'Nederlands' }, { value: 'en', label: 'English' }]} />
-        </Row>
-        <Row title="Lettertype" hint="Extra rustig lettertype met meer ruimte tussen de letters.">
-          <Choice value={s.reading} onChange={set('reading')} options={[{ value: 'normal', label: 'Normaal' }, { value: 'dyslexia', label: 'Dyslexie' }]} />
+        <Row title={t.settings.lettertype} hint={t.settings.lettertypeHint}>
+          <Choice
+            value={s.reading}
+            onChange={set('reading')}
+            options={[{ value: 'normal', label: t.settings.normaal }, { value: 'dyslexia', label: t.settings.dyslexie }]}
+          />
         </Row>
       </Card>
 
-      <h2 className="mb-2 font-display text-lg font-extrabold">Geluid en uitspraak</h2>
+      <h2 className="mb-2 font-display text-lg font-extrabold">{t.settings.geluidTitel}</h2>
       <Card className="mb-6">
-        <Row title="Geluid" hint="Uitspraak, en de trom en snaar bij goed en fout.">
-          <Toggle on={s.sound} onChange={set('sound')} label="Geluid" />
+        <Row title={t.settings.geluid} hint={t.settings.geluidHint}>
+          <Toggle on={s.sound} onChange={set('sound')} label={t.settings.geluid} />
         </Row>
-        <Row title="Effecten testen" hint="Zo klinkt een goede beurt, een fout en het einde van een les.">
-          <Button variant="secondary" onClick={() => sfx.demo()}>Speel</Button>
+        <Row title={t.settings.effecten} hint={t.settings.effectenHint}>
+          <Button variant="secondary" onClick={() => sfx.demo()}>{t.settings.speel}</Button>
         </Row>
-        <Row title="Uitspraak" hint={voiceStatus}>
-          <Button variant="secondary" onClick={() => say('السلام عليكم', { tr: 'ssalamu 3alaykum' })}>Test</Button>
+        <Row title={t.settings.uitspraak} hint={voiceStatus}>
+          <Button variant="secondary" onClick={() => say('السلام عليكم', { tr: 'ssalamu 3alaykum' })}>
+            {t.common.test}
+          </Button>
         </Row>
-        <Row title="Stem" hint={canSpeak() ? `${arabic.length} Arabische ${arabic.length === 1 ? 'stem' : 'stemmen'} van de ${all.length} op dit apparaat.` : 'Deze browser heeft geen spraak.'}>
+        <Row
+          title={t.settings.stem}
+          hint={canSpeak() ? t.settings.stemAantal(arabic.length, all.length) : t.settings.geenSpraak}
+        >
           <select
             id="voice"
             value={s.voiceURI}
             onChange={(e) => setSetting('voiceURI', e.target.value)}
             className="max-w-56 rounded-xl border-2 border-[var(--line)] bg-[var(--surface)] px-3 py-2 outline-none focus:border-zellige-500"
           >
-            <option value="">Automatisch kiezen</option>
+            <option value="">{t.settings.stemAuto}</option>
             {all.map((v) => (
               <option key={v.voiceURI} value={v.voiceURI}>{v.name} — {v.lang}</option>
             ))}
           </select>
         </Row>
-        <Row title="Spreeksnelheid" hint="Langzamer helpt bij nieuwe woorden. Dubbeltik op een luisterknop voor extra traag.">
+        <Row title={t.settings.snelheid} hint={t.settings.snelheidHint}>
           <Choice
             value={s.voiceRate}
             onChange={set('voiceRate')}
-            options={[{ value: 0.7, label: 'Traag' }, { value: 0.85, label: 'Normaal' }, { value: 1, label: 'Snel' }]}
+            options={[
+              { value: 0.7, label: t.settings.traag },
+              { value: 0.85, label: t.settings.normaal },
+              { value: 1, label: t.settings.snel },
+            ]}
           />
         </Row>
-        <Row
-          title="Benaderende uitspraak"
-          hint="Heeft dit apparaat geen Arabische stem, lees de Latijnse schrijfwijze dan voor met een Franse stem. Het is een benadering, geen Marokkaans."
-        >
-          <Toggle on={s.fallbackVoice} onChange={set('fallbackVoice')} label="Benaderende uitspraak" />
+        <Row title={t.settings.benadering} hint={t.settings.benaderingHint}>
+          <Toggle on={s.fallbackVoice} onChange={set('fallbackVoice')} label={t.settings.benadering} />
         </Row>
-        <Row title="Spreekoefeningen" hint={canListen() ? 'Je microfoon luistert alleen tijdens de oefening zelf.' : 'Deze browser kan niet meeluisteren.'}>
-          <Toggle on={s.speech} onChange={set('speech')} label="Spreekoefeningen" />
+        <Row title={t.settings.spreekoefeningen} hint={canListen() ? t.settings.spreekJa : t.settings.spreekNee}>
+          <Toggle on={s.speech} onChange={set('speech')} label={t.settings.spreekoefeningen} />
         </Row>
       </Card>
 
-      <h2 className="mb-2 font-display text-lg font-extrabold">Spelen</h2>
+      <h2 className="mb-2 font-display text-lg font-extrabold">{t.settings.spelenTitel}</h2>
       <Card className="mb-6">
-        <Row title="Hartjes" hint="Uit betekent: fouten maken kost niets. Aanrader voor jonge kinderen.">
-          <Toggle on={s.hearts} onChange={set('hearts')} label="Hartjes" />
+        <Row title={t.settings.hartjes} hint={t.settings.hartjesHint}>
+          <Toggle on={s.hearts} onChange={set('hearts')} label={t.settings.hartjes} />
         </Row>
-        <Row title="Beweging" hint="Rustig zet animaties en confetti uit.">
-          <Choice value={s.motion} onChange={set('motion')} options={[{ value: 'full', label: 'Vol' }, { value: 'calm', label: 'Rustig' }]} />
+        <Row title={t.settings.beweging} hint={t.settings.bewegingHint}>
+          <Choice
+            value={s.motion}
+            onChange={set('motion')}
+            options={[{ value: 'full', label: t.settings.vol }, { value: 'calm', label: t.settings.rustig }]}
+          />
         </Row>
-        <Row title="Thema">
+        <Row title={t.settings.thema}>
           <Choice
             value={s.theme}
             onChange={set('theme')}
-            options={[{ value: 'system', label: 'Systeem' }, { value: 'light', label: 'Licht' }, { value: 'dark', label: 'Donker' }]}
+            options={[
+              { value: 'system', label: t.settings.systeem },
+              { value: 'light', label: t.settings.licht },
+              { value: 'dark', label: t.settings.donker },
+            ]}
           />
         </Row>
       </Card>
 
-      <h2 className="mb-2 font-display text-lg font-extrabold">Je gegevens</h2>
+      <h2 className="mb-2 font-display text-lg font-extrabold">{t.settings.gegevensTitel}</h2>
       <Card className="mb-6">
         {DEMO ? (
-          <Row title="Voortgang opslaan" hint="In de geïnstalleerde app download je hier een kopie van je voortgang. Deze demo draait in een venster dat geen bestanden mag doorgeven." />
+          <Row title={t.settings.opslaan} hint={t.settings.opslaanDemo} />
         ) : (
-          <Row title="Voortgang opslaan" hint="Een bestand dat je zelf bewaart of naar een ander apparaat brengt.">
-            <Button variant="secondary" onClick={download}>Download</Button>
+          <Row title={t.settings.opslaan} hint={t.settings.opslaanHint}>
+            <Button variant="secondary" onClick={download}>{t.settings.download}</Button>
           </Row>
         )}
-        <Row title="Voortgang terugzetten" hint={imported ?? 'Kies een eerder opgeslagen bestand.'}>
+        <Row title={t.settings.terugzetten} hint={imported ?? t.settings.terugzettenHint}>
           <>
             <input
+              id="restore"
               ref={file}
               type="file"
               accept="application/json"
@@ -201,29 +231,29 @@ export function SettingsPage() {
               onChange={async (e) => {
                 const f = e.target.files?.[0]
                 if (!f) return
-                setImported(importProgress(await f.text()) ? 'Gelukt — je voortgang staat terug.' : 'Dat bestand herkende ik niet.')
+                setImported(importProgress(await f.text()) ? t.settings.terugzettenGelukt : t.settings.terugzettenMislukt)
               }}
             />
-            <Button variant="secondary" onClick={() => file.current?.click()}>Kies bestand</Button>
+            <Button variant="secondary" onClick={() => file.current?.click()}>{t.settings.kiesBestand}</Button>
           </>
         </Row>
-        <Row title="Alles wissen" hint="Woorden, reeks, beloningen — alles begint opnieuw.">
-          <Button variant="danger" onClick={() => setConfirmReset(true)}>Wissen</Button>
+        <Row title={t.settings.wissen} hint={t.settings.wissenHint}>
+          <Button variant="danger" onClick={() => setConfirmReset(true)}>{t.settings.wissenKnop}</Button>
         </Row>
       </Card>
 
       <p className="text-center text-sm text-[var(--ink-soft)]">
-        Ouder of leerkracht? Lees <Link to="/ouders" className="font-bold underline">wat Gedmma wel en niet doet</Link>.
+        <Link to="/ouders" className="font-bold underline">{t.settings.oudersLink}</Link>
       </p>
 
       <Sheet open={confirmReset} onClose={() => setConfirmReset(false)} labelledBy="reset-title">
-        <h2 id="reset-title" className="font-display text-xl font-extrabold">Weet je het zeker?</h2>
-        <p className="mt-2 text-[var(--ink-soft)]">
-          Alle voortgang op dit apparaat verdwijnt. Download eerst een kopie als je hem wilt bewaren.
-        </p>
+        <h2 id="reset-title" className="font-display text-xl font-extrabold">{t.settings.wissenZeker}</h2>
+        <p className="mt-2 text-[var(--ink-soft)]">{t.settings.wissenUitleg}</p>
         <div className="mt-5 flex gap-3">
-          <Button variant="secondary" className="flex-1" onClick={() => setConfirmReset(false)}>Annuleren</Button>
-          <Button variant="danger" className="flex-1" onClick={() => { resetProgress(); setConfirmReset(false) }}>Wissen</Button>
+          <Button variant="secondary" className="flex-1" onClick={() => setConfirmReset(false)}>{t.common.annuleren}</Button>
+          <Button variant="danger" className="flex-1" onClick={() => { resetProgress(); setConfirmReset(false) }}>
+            {t.settings.wissenKnop}
+          </Button>
         </div>
       </Sheet>
     </div>

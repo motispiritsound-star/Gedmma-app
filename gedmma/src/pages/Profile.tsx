@@ -6,11 +6,15 @@ import {
 } from '../engine/store'
 import { Button, Card, Progress, SectionTitle, Stat } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
+import { useLang, useT } from '../i18n'
+import { unitSubtitle } from '../content/localise'
 
 const AVATARS = ['🦊', '🦉', '🐪', '🦁', '🐈', '🦋', '⭐', '🌙', '🫖', '⚽']
 
 /** Everything the learner has built up, on one page. */
 export function Profile() {
+  const t = useT()
+  const lang = useLang()
   const state = useStore((s) => s)
   const { level, into, span } = levelOf(state.xp)
   const seen = Object.keys(state.cards).length
@@ -21,7 +25,7 @@ export function Profile() {
     const d = new Date()
     d.setDate(d.getDate() - (6 - i))
     const key = today(d)
-    return { key, day: ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'][d.getDay()]!, xp: state.daily[key] ?? 0 }
+    return { key, day: t.profile.dagen[d.getDay()]!, xp: state.daily[key] ?? 0 }
   })
   const peak = Math.max(state.settings.dailyGoal, ...week.map((w) => w.xp))
 
@@ -37,11 +41,11 @@ export function Profile() {
           </span>
         </div>
         <div className="min-w-0 flex-1 basis-40">
-          <h1 className="font-display text-2xl font-extrabold">{state.name || 'Leerling'}</h1>
-          <p className="text-sm text-[var(--ink-soft)]">Niveau {level} · {into}/{span} XP naar het volgende</p>
+          <h1 className="font-display text-2xl font-extrabold">{state.name || t.profile.leerling}</h1>
+          <p className="text-sm text-[var(--ink-soft)]">{t.common.niveau} {level} · {t.profile.naarNiveau(into, span)}</p>
           <Progress value={into / span} tone="saffron" className="mt-2" />
         </div>
-        <Link to="/instellingen" className="w-full sm:w-auto"><Button variant="secondary" className="w-full">Aanpassen</Button></Link>
+        <Link to="/instellingen" className="w-full sm:w-auto"><Button variant="secondary" className="w-full">{t.profile.aanpassen}</Button></Link>
       </Card>
 
       <div className="mb-4 flex flex-wrap gap-2">
@@ -50,7 +54,7 @@ export function Profile() {
             key={a}
             onClick={() => setState({ avatar: a })}
             className={`grid h-11 w-11 place-items-center rounded-2xl border-2 text-2xl ${state.avatar === a ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
-            aria-label={`Kies ${a}`}
+            aria-label={t.profile.kies(a)}
           >
             {a}
           </button>
@@ -58,14 +62,14 @@ export function Profile() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat value={state.xp} label="XP totaal" emoji="⚡" />
-        <Stat value={`${state.streak} / ${state.bestStreak}`} label="reeks / record" emoji="🔥" />
-        <Stat value={`${seen}/${allWords.length}`} label="woorden gezien" emoji="📚" />
-        <Stat value={solid} label="vastgezet" emoji="🔒" />
+        <Stat value={state.xp} label={t.profile.xpTotaal} emoji="⚡" />
+        <Stat value={`${state.streak} / ${state.bestStreak}`} label={t.profile.reeksRecord} emoji="🔥" />
+        <Stat value={`${seen}/${allWords.length}`} label={t.profile.woordenGezien} emoji="📚" />
+        <Stat value={solid} label={t.profile.vastgezet} emoji="🔒" />
       </div>
 
-      <SectionTitle sub="De laatste zeven dagen. De stippellijn is je dagdoel.">
-        <span className="mt-8 block">Deze week</span>
+      <SectionTitle sub={t.profile.dezeWeekUitleg}>
+        <span className="mt-8 block">{t.profile.dezeWeek}</span>
       </SectionTitle>
       <Card className="p-5">
         <div className="relative flex h-36 items-end gap-2">
@@ -87,7 +91,7 @@ export function Profile() {
         </div>
       </Card>
 
-      <SectionTitle><span className="mt-8 block">Beloningen</span></SectionTitle>
+      <SectionTitle><span className="mt-8 block">{t.profile.beloningen}</span></SectionTitle>
       <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {BADGES.map((b) => {
           const earned = state.badges.includes(b.id)
@@ -95,15 +99,15 @@ export function Profile() {
             <li key={b.id}>
               <Card className={`h-full p-4 text-center ${earned ? '' : 'opacity-55'}`}>
                 <div className="text-3xl" aria-hidden="true">{earned ? b.emoji : '🔒'}</div>
-                <div className="mt-1 font-display font-extrabold">{b.name}</div>
-                <div className="text-xs text-[var(--ink-soft)]">{b.hint}</div>
+                <div className="mt-1 font-display font-extrabold">{t.badges[b.id].naam}</div>
+                <div className="text-xs text-[var(--ink-soft)]">{t.badges[b.id].hint}</div>
               </Card>
             </li>
           )
         })}
       </ul>
 
-      <SectionTitle><span className="mt-8 block">Units</span></SectionTitle>
+      <SectionTitle><span className="mt-8 block">{t.profile.units}</span></SectionTitle>
       <ul className="space-y-2">
         {UNITS.map((u) => {
           const pct = progressOfUnit(u.id, state)
@@ -114,6 +118,7 @@ export function Profile() {
                 <span className="text-2xl" aria-hidden="true">{u.emoji}</span>
                 <div className="min-w-0 flex-1">
                   <div className="font-display font-extrabold">{u.title}</div>
+                  <div className="text-xs text-[var(--ink-soft)]">{unitSubtitle(u, lang)}</div>
                   <Progress value={pct} className="mt-1 h-2" />
                 </div>
                 <span className="shrink-0 text-sm font-bold text-saffron-500">★ {stars}</span>
@@ -126,11 +131,9 @@ export function Profile() {
       <Card className="mt-8 flex flex-wrap items-center gap-4 p-5">
         <Mascot mood="blij" size={64} />
         <p className="min-w-0 flex-1 text-sm text-[var(--ink-soft)]">
-          {doneLessons === 0
-            ? 'Je hebt nog geen les afgerond. Begin bij Salam! — die duurt twee minuten.'
-            : `Je hebt ${doneLessons} lessen afgerond. Blijf komen: een korte dag telt net zo goed als een lange.`}
+          {doneLessons === 0 ? t.profile.nogGeenLes : t.profile.lessenAf(doneLessons)}
         </p>
-        <Link to="/leren"><Button>Verder leren</Button></Link>
+        <Link to="/leren"><Button>{t.profile.verderLeren}</Button></Link>
       </Card>
     </div>
   )

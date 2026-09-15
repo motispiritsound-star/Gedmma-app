@@ -12,19 +12,22 @@ const StoryReader = lazy(() => import('./pages/Stories').then((m) => ({ default:
 const Games = lazy(() => import('./pages/Games').then((m) => ({ default: m.Games })))
 const Profile = lazy(() => import('./pages/Profile').then((m) => ({ default: m.Profile })))
 const Parents = lazy(() => import('./pages/Parents').then((m) => ({ default: m.Parents })))
+const Privacy = lazy(() => import('./pages/Privacy').then((m) => ({ default: m.Privacy })))
 const SettingsPage = lazy(() => import('./pages/Settings').then((m) => ({ default: m.SettingsPage })))
 import { NotFound } from './pages/NotFound'
 import { TopBar } from './ui/TopBar'
+import { Welcome } from './ui/Welcome'
 import { useStore } from './engine/store'
 import { listenForFirstGesture } from './engine/audio'
+import { localeOf, useLang, useT } from './i18n'
 
 const TABS = [
-  { to: '/leren', label: 'Leren', icon: '🧭' },
-  { to: '/herhalen', label: 'Herhalen', icon: '🔁' },
-  { to: '/woorden', label: 'Woorden', icon: '📚' },
-  { to: '/spelen', label: 'Spelen', icon: '🎮' },
-  { to: '/profiel', label: 'Jij', icon: '🦊' },
-]
+  { to: '/leren', key: 'leren', icon: '🧭' },
+  { to: '/herhalen', key: 'herhalen', icon: '🔁' },
+  { to: '/woorden', key: 'woorden', icon: '📚' },
+  { to: '/spelen', key: 'spelen', icon: '🎮' },
+  { to: '/profiel', key: 'jij', icon: '🦊' },
+] as const
 
 function useTheme() {
   const { theme, motion: motionPref, reading } = useStore((s) => s.settings)
@@ -40,6 +43,8 @@ function useTheme() {
 }
 
 function Chrome() {
+  const t = useT()
+  const lang = useLang()
   const location = useLocation()
   const inLesson = location.pathname.startsWith('/les/') || location.pathname.startsWith('/herhalen/')
   const isLanding = location.pathname === '/'
@@ -52,8 +57,14 @@ function Chrome() {
   // Browsers keep a page silent until somebody has interacted with it.
   useEffect(listenForFirstGesture, [])
 
+  // The document language follows the interface, for screen readers and hyphenation.
+  useEffect(() => {
+    document.documentElement.lang = localeOf(lang)
+  }, [lang])
+
   return (
     <div className="min-h-full pb-24 sm:pb-0">
+      <Welcome />
       {!inLesson && !isLanding && <TopBar />}
       <AnimatePresence mode="wait">
         <motion.main
@@ -63,7 +74,7 @@ function Chrome() {
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.18 }}
         >
-          <Suspense fallback={<div className="px-4 py-20 text-center text-[var(--ink-soft)]">Even laden…</div>}>
+          <Suspense fallback={<div className="px-4 py-20 text-center text-[var(--ink-soft)]">{t.common.laden}</div>}>
           <Routes location={location}>
             <Route path="/" element={<Landing />} />
             <Route path="/leren" element={<Learn />} />
@@ -77,6 +88,7 @@ function Chrome() {
             <Route path="/profiel" element={<Profile />} />
             <Route path="/ouders" element={<Parents />} />
             <Route path="/instellingen" element={<SettingsPage />} />
+            <Route path="/privacy" element={<Privacy />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           </Suspense>
@@ -85,7 +97,7 @@ function Chrome() {
 
       {!inLesson && !isLanding && (
         <nav
-          aria-label="Hoofdmenu"
+          aria-label={t.nav.menu}
           className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--line)] bg-[var(--surface-raised)]/95 backdrop-blur sm:hidden"
           style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
         >
@@ -99,7 +111,7 @@ function Chrome() {
                   }
                 >
                   <span className="text-xl" aria-hidden="true">{tab.icon}</span>
-                  {tab.label}
+                  {t.nav[tab.key]}
                 </NavLink>
               </li>
             ))}

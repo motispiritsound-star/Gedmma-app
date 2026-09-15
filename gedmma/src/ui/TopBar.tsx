@@ -1,25 +1,23 @@
 import { Link, NavLink } from 'react-router-dom'
 import { heartsNow, levelOf, MAX_HEARTS, msUntilNextHeart, useStore, xpToday } from '../engine/store'
 import { Progress } from './kit'
+import { useT } from '../i18n'
 
 const LINKS = [
-  { to: '/leren', label: 'Leren' },
-  { to: '/herhalen', label: 'Herhalen' },
-  { to: '/woorden', label: 'Woorden' },
-  { to: '/letters', label: 'Letters' },
-  { to: '/verhalen', label: 'Verhalen' },
-  { to: '/spelen', label: 'Spelen' },
-  { to: '/profiel', label: 'Jij' },
-]
-
-function heartHint(ms: number): string {
-  if (ms <= 0) return 'Alle hartjes vol'
-  const min = Math.ceil(ms / 60_000)
-  return `Volgend hartje over ${min} min`
-}
+  { to: '/leren', key: 'leren' },
+  { to: '/herhalen', key: 'herhalen' },
+  { to: '/woorden', key: 'woorden' },
+  { to: '/letters', key: 'letters' },
+  { to: '/verhalen', key: 'verhalen' },
+  { to: '/spelen', key: 'spelen' },
+  { to: '/profiel', key: 'jij' },
+] as const
 
 export function TopBar() {
+  const t = useT()
   const state = useStore((s) => s)
+  const heartHint = (ms: number) =>
+    ms <= 0 ? t.topbar.hartjesVol : t.topbar.volgendHartje(Math.ceil(ms / 60_000))
   const hearts = heartsNow(state)
   const { level, into, span } = levelOf(state.xp)
   const goal = state.settings.dailyGoal
@@ -33,7 +31,7 @@ export function TopBar() {
           <span className="hidden sm:inline">Gedmma</span>
         </Link>
 
-        <nav className="ms-2 hidden flex-1 items-center gap-1 sm:flex" aria-label="Onderdelen">
+        <nav className="ms-2 hidden flex-1 items-center gap-1 sm:flex" aria-label={t.nav.onderdelen}>
           {LINKS.map((l) => (
             <NavLink
               key={l.to}
@@ -42,19 +40,19 @@ export function TopBar() {
                 `rounded-xl px-3 py-1.5 text-sm font-bold transition ${isActive ? 'bg-[var(--surface-sunken)] text-zellige-600 dark:text-zellige-300' : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'}`
               }
             >
-              {l.label}
+              {t.nav[l.key]}
             </NavLink>
           ))}
         </nav>
 
         <div className="ms-auto flex items-center gap-2.5 text-sm font-bold">
-          <span title={`Niveau ${level}`} className="hidden items-center gap-1 sm:flex">
+          <span title={`${t.common.niveau} ${level}`} className="hidden items-center gap-1 sm:flex">
             <span className="grid h-7 w-7 place-items-center rounded-lg bg-zellige-500/15 text-zellige-600 dark:text-zellige-300">{level}</span>
           </span>
-          <span title={`${state.streak} dagen op rij`} className="flex items-center gap-1">
+          <span title={t.topbar.dagenOpRij(state.streak)} className="flex items-center gap-1">
             <span aria-hidden="true">🔥</span>{state.streak}
           </span>
-          <span title="Edelstenen" className="flex items-center gap-1">
+          <span title={t.topbar.edelstenen} className="flex items-center gap-1">
             <span aria-hidden="true">💎</span>{state.gems}
           </span>
           {state.settings.hearts && (
@@ -68,7 +66,7 @@ export function TopBar() {
       <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 pb-2">
         <Progress value={Math.min(1, done / goal)} tone="saffron" className="h-2" />
         <span className="shrink-0 text-xs font-bold text-[var(--ink-soft)]">
-          {done}/{goal} XP · niveau {level} ({into}/{span})
+          {t.topbar.voortgang(done, goal, level, into, span)}
         </span>
       </div>
     </header>

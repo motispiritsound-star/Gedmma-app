@@ -2,11 +2,19 @@ import { motion } from 'framer-motion'
 import type { Word } from '../content/types'
 import { say, sfx } from '../engine/audio'
 import { useStore } from '../engine/store'
+import { useLang, useT } from '../i18n'
+import { meaningOf, noteOf } from '../content/localise'
 
 /** The meaning in the language the learner picked in Instellingen. */
 export function useMeaning(): (w: Word) => string {
-  const lang = useStore((s) => s.settings.lang)
-  return (w: Word) => (lang === 'en' ? w.en : w.nl)
+  const lang = useLang()
+  return (w: Word) => meaningOf(w, lang)
+}
+
+/** The usage note under a new word, in the learner's language. */
+export function useNote(): (w: Word) => string | undefined {
+  const lang = useLang()
+  return (w: Word) => noteOf(w, lang)
 }
 
 /** One word, shown the way the learner has chosen to see words. */
@@ -24,14 +32,15 @@ export function WordText({ word, size = 'md', showNl = false }: { word: Word; si
   )
 }
 
-export function SpeakButton({ ar, tr, className = '', label = 'Luister' }: { ar: string; tr?: string; className?: string; label?: string }) {
+export function SpeakButton({ ar, tr, className = '', label }: { ar: string; tr?: string; className?: string; label?: string }) {
+  const t = useT()
   return (
     <motion.button
       whileTap={{ scale: 0.9 }}
       onClick={() => { sfx.tap(); say(ar, { tr }) }}
       onDoubleClick={() => say(ar, { tr, slow: true })}
-      title="Klik om te horen, dubbelklik voor langzaam"
-      aria-label={label}
+      title={t.lesson.luisterTitel}
+      aria-label={label ?? t.lesson.luister}
       className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 border-zellige-500 text-zellige-600 transition hover:bg-zellige-500 hover:text-white dark:text-zellige-300 ${className}`}
     >
       <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">

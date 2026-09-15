@@ -8,12 +8,16 @@ import { Button, Card, SectionTitle, Stat } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 import { RoundRunner, type RoundResult } from '../ui/Round'
 import { sfx } from '../engine/audio'
+import { useLang, useT } from '../i18n'
+import { meaningOf } from '../content/localise'
 
 /**
  * Herhalen: whatever the scheduler says is due, in a round without hearts.
  * Review should never be the thing that stops you from practising.
  */
 export function Review() {
+  const t = useT()
+  const lang = useLang()
   const navigate = useNavigate()
   const state = useStore((s) => s)
   const due = dueWordIds(state)
@@ -26,7 +30,7 @@ export function Review() {
       <RoundRunner
         exercises={exercises}
         useHearts={false}
-        quitLabel="Stoppen met herhalen?"
+        quitLabel={t.lesson.stoppenHerhalen}
         onQuit={() => setRunning(false)}
         onFinish={(r) => {
           addXp(Math.round(5 + r.score * 10))
@@ -44,49 +48,45 @@ export function Review() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
-      <SectionTitle sub="Woorden komen terug net voordat je ze vergeet. Dat is het hele idee.">
-        Herhalen
-      </SectionTitle>
+      <SectionTitle sub={t.review.uitleg}>{t.review.titel}</SectionTitle>
 
       {result && (
         <Card className="mb-6 flex items-center gap-4 p-5">
           <Mascot mood="juich" size={64} />
           <div>
-            <p className="font-display text-lg font-extrabold">Ronde klaar — {Math.round(result.score * 100)}% goed</p>
-            <p className="text-sm text-[var(--ink-soft)]">Nog {dueWordIds(getState()).length} woorden in de wachtrij.</p>
+            <p className="font-display text-lg font-extrabold">{t.review.rondeKlaar(Math.round(result.score * 100))}</p>
+            <p className="text-sm text-[var(--ink-soft)]">{t.review.nogInWachtrij(dueWordIds(getState()).length)}</p>
           </div>
         </Card>
       )}
 
       <div className="mb-6 grid grid-cols-3 gap-3">
-        <Stat value={due.length} label="nu te herhalen" emoji="⏰" />
-        <Stat value={Object.keys(state.cards).length} label="woorden gezien" emoji="📚" />
-        <Stat value={Object.values(state.cards).filter((c) => c.strength >= 0.85).length} label="vastgezet" emoji="🔒" />
+        <Stat value={due.length} label={t.review.nuTeHerhalen} emoji="⏰" />
+        <Stat value={Object.keys(state.cards).length} label={t.review.woordenGezien} emoji="📚" />
+        <Stat value={Object.values(state.cards).filter((c) => c.strength >= 0.85).length} label={t.review.vastgezet} emoji="🔒" />
       </div>
 
       {due.length === 0 ? (
         <Card className="p-6 text-center">
           <Mascot mood="slaap" size={90} className="mx-auto" />
-          <p className="mt-3 font-display text-xl font-extrabold">Niets te herhalen</p>
-          <p className="mt-1 text-[var(--ink-soft)]">
-            Kom later terug, of leer nieuwe woorden — die komen vanzelf in de wachtrij.
-          </p>
-          <Link to="/leren" className="mt-4 inline-block"><Button>Naar het leerpad</Button></Link>
+          <p className="mt-3 font-display text-xl font-extrabold">{t.review.nietsTeHerhalen}</p>
+          <p className="mt-1 text-[var(--ink-soft)]">{t.review.nietsUitleg}</p>
+          <Link to="/leren" className="mt-4 inline-block"><Button>{t.review.naarPad}</Button></Link>
         </Card>
       ) : (
         <Card className="p-6 text-center">
           <Mascot mood="denk" size={90} className="mx-auto" />
-          <p className="mt-3 font-display text-xl font-extrabold">{Math.min(12, due.length)} woorden, een paar minuten</p>
-          <p className="mt-1 text-[var(--ink-soft)]">Zonder hartjes. Fouten kosten hier niets.</p>
+          <p className="mt-3 font-display text-xl font-extrabold">{t.review.klaarVoor(Math.min(12, due.length))}</p>
+          <p className="mt-1 text-[var(--ink-soft)]">{t.review.zonderHartjes}</p>
           <Button className="mt-4 w-full sm:w-auto" onClick={() => { setResult(null); setRunning(true) }}>
-            Start herhaling
+            {t.review.startHerhaling}
           </Button>
         </Card>
       )}
 
       {weakest.length > 0 && (
         <>
-          <h3 className="mt-8 mb-3 font-display text-lg font-extrabold">Deze zitten nog het minst vast</h3>
+          <h3 className="mt-8 mb-3 font-display text-lg font-extrabold">{t.review.zwakste}</h3>
           <ul className="grid gap-2 sm:grid-cols-2">
             {weakest.map((card) => {
               const w = word(card.id)
@@ -96,10 +96,10 @@ export function Review() {
                     <span className="text-2xl" aria-hidden="true">{w.emoji ?? '•'}</span>
                     <div className="min-w-0 flex-1">
                       <div className="ar text-lg font-bold">{w.ar}</div>
-                      <div className="text-sm text-[var(--ink-soft)]">{w.tr} — {w.nl}</div>
+                      <div className="text-sm text-[var(--ink-soft)]">{w.tr} — {meaningOf(w, lang)}</div>
                     </div>
                     <span className="shrink-0 rounded-full bg-[var(--surface-sunken)] px-2 py-1 text-xs font-bold">
-                      {strengthLabel(card.strength)}
+                      {t.strength[strengthLabel(card.strength)]}
                     </span>
                   </Card>
                 </li>
@@ -110,7 +110,7 @@ export function Review() {
       )}
 
       <div className="mt-8 text-center">
-        <Button variant="ghost" onClick={() => navigate('/leren')}>Terug naar het pad</Button>
+        <Button variant="ghost" onClick={() => navigate('/leren')}>{t.lesson.terugNaarPad}</Button>
       </div>
     </div>
   )

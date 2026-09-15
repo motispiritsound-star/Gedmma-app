@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { DAY, dueCards, newCard, review, strengthLabel } from './srs'
 import { buildRound, buildReviewRound, checkSpoken, checkTyped, normalise, tokenize } from './exercises'
-import { latinise } from './audio'
+import { latinise, phoneticOf } from './audio'
 import { LESSONS, UNITS } from '../content/curriculum'
 import { word } from '../content/lexicon'
 
@@ -47,9 +47,9 @@ describe('spaced repetition', () => {
     expect(dueCards([strong, weak, future], now).map((c) => c.id)).toEqual(['b', 'a'])
   })
 
-  it('labels strength for the learner', () => {
-    expect(strengthLabel(0)).toBe('Nieuw')
-    expect(strengthLabel(0.9)).toBe('Vastgezet')
+  it('labels strength as a key the interface can translate', () => {
+    expect(strengthLabel(0)).toBe('nieuw')
+    expect(strengthLabel(0.9)).toBe('vastgezet')
   })
 })
 
@@ -154,9 +154,8 @@ describe('checking what the learner typed', () => {
 })
 
 describe('pronunciation fallback', () => {
-  // A device with no Arabic voice reads the Latin spelling with a French one,
-  // so the spelling has to be rewritten into something French reads roughly
-  // right: ch for sh, ou for u and w, a uvular r for kh and gh, no ayn.
+  // A device with no Arabic voice borrows a European one, and every language
+  // spells the same sound differently — so the rewrite depends on the voice.
   it('rewrites the sounds French cannot read as written', () => {
     expect(latinise('shukran')).toBe('choukran')
     expect(latinise('khobz')).toBe('robz')
@@ -174,5 +173,25 @@ describe('pronunciation fallback', () => {
   it('keeps whole phrases readable', () => {
     expect(latinise('  Ssalamu 3alaykum  ')).toBe('ssalamou alaykoum')
     expect(latinise('')).toBe('')
+  })
+
+  it('spells for a German voice the German way', () => {
+    expect(latinise('shukran', 'de')).toBe('schukran')
+    expect(latinise('khobz', 'de')).toBe('chobs')
+    expect(latinise('jouj', 'de')).toBe('schusch')
+    expect(latinise('3afak', 'de')).toBe('afak')
+  })
+
+  it('spells for a Dutch voice the Dutch way', () => {
+    expect(latinise('shukran', 'nl')).toBe('sjoekran')
+    expect(latinise('khobz', 'nl')).toBe('chobz')
+    expect(latinise('ghali', 'nl')).toBe('gali')
+    expect(latinise('jouj', 'nl')).toBe('zjoezj')
+  })
+
+  it('picks the ruleset from the voice, not from the interface', () => {
+    expect(phoneticOf('de-DE')).toBe('de')
+    expect(phoneticOf('fr-CA')).toBe('fr')
+    expect(phoneticOf('pt-BR')).toBe('fr')
   })
 })

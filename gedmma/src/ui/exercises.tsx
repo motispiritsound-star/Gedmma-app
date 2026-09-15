@@ -6,7 +6,8 @@ import { word } from '../content/lexicon'
 import { canListen, listenOnce, say, sfx } from '../engine/audio'
 import { useStore } from '../engine/store'
 import { Button, Card } from './kit'
-import { SpeakButton, useMeaning, WordText } from './WordChip'
+import { SpeakButton, useMeaning, useNote, WordText } from './WordChip'
+import { useT } from '../i18n'
 
 /**
  * One component per exercise type. Each of them reports a single verdict and
@@ -41,24 +42,27 @@ function Prompt({ children, hint }: { children: React.ReactNode; hint: string })
 /* --------------------------------------------------------------- new word */
 
 function NewWord({ exercise, onAnswer }: ExerciseProps) {
+  const t = useT()
+  const meaning = useMeaning()
+  const note = useNote()
   const w = word(exercise.wordId)
   useEffect(() => { say(w.ar, { tr: w.tr }) }, [w.ar, w.tr])
   return (
     <div>
-      <Prompt hint="Nieuw woord">
+      <Prompt hint={t.lesson.nieuwWoord}>
         <Card className="flex flex-col items-center gap-3 p-6">
           <div className="text-5xl" aria-hidden="true">{w.emoji ?? '✨'}</div>
           <WordText word={w} size="lg" />
-          <p className="text-center font-display text-xl font-extrabold">{w.nl}</p>
+          <p className="text-center font-display text-xl font-extrabold">{meaning(w)}</p>
           <SpeakButton ar={w.ar} tr={w.tr} />
-          {w.note && (
+          {note(w) && (
             <p className="mt-1 rounded-2xl bg-saffron-500/10 px-4 py-2 text-center text-sm text-[var(--ink-soft)]">
-              💡 {w.note}
+              💡 {note(w)}
             </p>
           )}
         </Card>
       </Prompt>
-      <Button className="w-full" onClick={() => onAnswer('goed')}>Snap ik!</Button>
+      <Button className="w-full" onClick={() => onAnswer('goed')}>{t.lesson.snapIk}</Button>
     </div>
   )
 }
@@ -67,6 +71,7 @@ function NewWord({ exercise, onAnswer }: ExerciseProps) {
 
 function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'betekenis' | 'darija' | 'luister' | 'script' }) {
   const [chosen, setChosen] = useState<string | null>(null)
+  const t = useT()
   const meaning = useMeaning()
   const w = word(exercise.wordId)
   const options = exercise.options ?? []
@@ -77,10 +82,10 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
   }, [exercise.id, mode, w.ar, w.tr])
 
   const hint =
-    mode === 'betekenis' ? 'Wat betekent dit?'
-    : mode === 'darija' ? 'Hoe zeg je dit in het Darija?'
-    : mode === 'luister' ? 'Wat hoor je?'
-    : 'Welk schrift hoort hierbij?'
+    mode === 'betekenis' ? t.lesson.watBetekent
+    : mode === 'darija' ? t.lesson.hoeZegJe
+    : mode === 'luister' ? t.lesson.watHoorJe
+    : t.lesson.welkSchrift
 
   const choose = (id: string) => {
     if (locked) return
@@ -111,12 +116,12 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
               onClick={() => say(w.ar, { tr: w.tr })}
               onDoubleClick={() => say(w.ar, { tr: w.tr, slow: true })}
               className="grid h-28 w-28 place-items-center rounded-full bg-gradient-to-br from-zellige-300 to-zellige-700 text-5xl text-white shadow-lg"
-              aria-label="Speel het woord af"
+              aria-label={t.lesson.speelAf}
             >
               🔊
             </motion.button>
             <button className="text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => say(w.ar, { tr: w.tr, slow: true })}>
-              Langzamer
+              {t.lesson.langzamer}
             </button>
           </div>
         )}
@@ -153,6 +158,7 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
 /* ------------------------------------------------------------------ match */
 
 function Match({ exercise, onAnswer }: ExerciseProps) {
+  const t = useT()
   const meaning = useMeaning()
   const ids = exercise.pairIds ?? []
   const words = ids.map(word)
@@ -198,8 +204,8 @@ function Match({ exercise, onAnswer }: ExerciseProps) {
 
   return (
     <div>
-      <Prompt hint="Koppel de paren">
-        <p className="text-sm text-[var(--ink-soft)]">Tik links op een woord en dan rechts op de betekenis.</p>
+      <Prompt hint={t.lesson.koppelParen}>
+        <p className="text-sm text-[var(--ink-soft)]">{t.lesson.koppelUitleg}</p>
       </Prompt>
       <div className="grid grid-cols-2 gap-3">
         <ul className="space-y-3">
@@ -228,6 +234,7 @@ function Match({ exercise, onAnswer }: ExerciseProps) {
 /* ------------------------------------------------------------------- build */
 
 function Build({ exercise, onAnswer, locked }: ExerciseProps) {
+  const t = useT()
   const meaning = useMeaning()
   const w = word(exercise.wordId)
   const answer = tokenize(w.tr)
@@ -259,7 +266,7 @@ function Build({ exercise, onAnswer, locked }: ExerciseProps) {
 
   return (
     <div>
-      <Prompt hint="Bouw de zin">
+      <Prompt hint={t.lesson.bouwZin}>
         <Card className="p-5 text-center">
           <p className="font-display text-xl font-extrabold">{meaning(w)}</p>
           <p className="mt-1 text-sm text-[var(--ink-soft)]">{w.phrase ? w.tr.replace(/\s+/g, ' · ') : w.en}</p>
@@ -275,7 +282,7 @@ function Build({ exercise, onAnswer, locked }: ExerciseProps) {
               </button>
             </li>
           ))}
-          {line.length === 0 && <li className="px-2 py-2 text-sm text-[var(--ink-soft)]">Tik de woorden hieronder aan…</li>}
+          {line.length === 0 && <li className="px-2 py-2 text-sm text-[var(--ink-soft)]">{t.lesson.bouwUitleg}</li>}
         </ul>
       </div>
 
@@ -289,7 +296,7 @@ function Build({ exercise, onAnswer, locked }: ExerciseProps) {
         ))}
       </ul>
 
-      <Button className="w-full" disabled={locked || line.length === 0} onClick={submit}>Controleer</Button>
+      <Button className="w-full" disabled={locked || line.length === 0} onClick={submit}>{t.lesson.controleer}</Button>
     </div>
   )
 }
@@ -297,6 +304,7 @@ function Build({ exercise, onAnswer, locked }: ExerciseProps) {
 /* --------------------------------------------------------------------- type */
 
 function Type({ exercise, onAnswer, locked }: ExerciseProps) {
+  const t = useT()
   const meaning = useMeaning()
   const w = word(exercise.wordId)
   const [value, setValue] = useState('')
@@ -314,14 +322,14 @@ function Type({ exercise, onAnswer, locked }: ExerciseProps) {
 
   return (
     <div>
-      <Prompt hint="Schrijf het in Darija">
+      <Prompt hint={t.lesson.schrijfDarija}>
         <Card className="p-6 text-center">
           <div className="text-4xl" aria-hidden="true">{w.emoji}</div>
           <p className="mt-2 font-display text-2xl font-extrabold">{meaning(w)}</p>
         </Card>
       </Prompt>
 
-      <label className="sr-only" htmlFor="answer">Jouw antwoord</label>
+      <label className="sr-only" htmlFor="answer">{t.lesson.jouwAntwoord}</label>
       <input
         id="answer"
         ref={input}
@@ -332,13 +340,11 @@ function Type({ exercise, onAnswer, locked }: ExerciseProps) {
         spellCheck={false}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && submit()}
-        placeholder="bijv. khobz of خبز"
+        placeholder={t.lesson.schrijfPlaceholder}
         className="w-full rounded-2xl border-2 border-[var(--line)] bg-[var(--surface-raised)] px-4 py-4 text-center font-display text-2xl font-bold outline-none focus:border-zellige-500"
       />
-      <p className="mt-2 text-center text-xs text-[var(--ink-soft)]">
-        Latijnse letters of Arabisch schrift mag allebei. 3 = ع, 7 = ح, 9 = ق.
-      </p>
-      <Button className="mt-4 w-full" disabled={locked || !value.trim()} onClick={submit}>Controleer</Button>
+      <p className="mt-2 text-center text-xs text-[var(--ink-soft)]">{t.lesson.schrijfHint}</p>
+      <Button className="mt-4 w-full" disabled={locked || !value.trim()} onClick={submit}>{t.lesson.controleer}</Button>
     </div>
   )
 }
@@ -346,6 +352,7 @@ function Type({ exercise, onAnswer, locked }: ExerciseProps) {
 /* -------------------------------------------------------------------- speak */
 
 function Speak({ exercise, onAnswer, locked }: ExerciseProps) {
+  const t = useT()
   const w = word(exercise.wordId)
   const [status, setStatus] = useState<'klaar' | 'luistert' | 'denkt'>('klaar')
   const [heard, setHeard] = useState('')
@@ -361,30 +368,28 @@ function Speak({ exercise, onAnswer, locked }: ExerciseProps) {
       onAnswer(text ? checkSpoken(text, w) : 'fout', text)
     } catch {
       setStatus('klaar')
-      onAnswer('bijna', 'microfoon werkte niet')
+      onAnswer('bijna', t.lesson.spreekIn)
     }
   }
 
   if (!canListen()) {
     return (
       <div>
-        <Prompt hint="Zeg het hardop">
+        <Prompt hint={t.lesson.zegHardop}>
           <Card className="p-6 text-center">
             <WordText word={w} size="lg" showNl />
             <div className="mt-3 flex justify-center"><SpeakButton ar={w.ar} tr={w.tr} /></div>
           </Card>
         </Prompt>
-        <p className="mb-4 text-center text-sm text-[var(--ink-soft)]">
-          Deze browser kan niet meeluisteren. Zeg het toch hardop — het helpt echt.
-        </p>
-        <Button className="w-full" onClick={() => onAnswer('goed')}>Gezegd!</Button>
+        <p className="mb-4 text-center text-sm text-[var(--ink-soft)]">{t.lesson.geenMicrofoon}</p>
+        <Button className="w-full" onClick={() => onAnswer('goed')}>{t.lesson.gezegd}</Button>
       </div>
     )
   }
 
   return (
     <div>
-      <Prompt hint="Zeg het hardop">
+      <Prompt hint={t.lesson.zegHardop}>
         <Card className="flex flex-col items-center gap-3 p-6">
           <WordText word={w} size="lg" showNl />
           <SpeakButton ar={w.ar} tr={w.tr} />
@@ -398,15 +403,15 @@ function Speak({ exercise, onAnswer, locked }: ExerciseProps) {
           animate={status === 'luistert' ? { scale: [1, 1.08, 1] } : { scale: 1 }}
           transition={{ repeat: status === 'luistert' ? Infinity : 0, duration: 1 }}
           className={`grid h-28 w-28 place-items-center rounded-full text-5xl text-white shadow-lg ${status === 'luistert' ? 'bg-terra-500' : 'bg-gradient-to-br from-zellige-300 to-zellige-700'}`}
-          aria-label="Spreek in"
+          aria-label={t.lesson.spreekIn}
         >
           🎤
         </motion.button>
         <p className="text-sm text-[var(--ink-soft)]">
-          {status === 'luistert' ? 'Ik luister…' : status === 'denkt' ? `Ik hoorde: ${heard || '…'}` : 'Tik en zeg het woord'}
+          {status === 'luistert' ? t.lesson.ikLuister : status === 'denkt' ? t.lesson.ikHoorde(heard) : t.lesson.tikEnZeg}
         </p>
         <button className="text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => onAnswer('bijna', 'overgeslagen')} disabled={locked}>
-          Sla over
+          {t.lesson.slaOver}
         </button>
       </div>
     </div>
