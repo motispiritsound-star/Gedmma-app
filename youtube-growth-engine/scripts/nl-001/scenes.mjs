@@ -278,33 +278,33 @@ function doorsnede(stap, t = 0) {
   let s = ''
 
   s += grond(0, voet, 1280, 164)
-  s += water(46, polder, 372, voet - polder, { fase: t, seed: 21 })
+  s += water(46, polder, 354, voet - polder, { fase: t, seed: 21 })       // 46–400
   s += kopje(52, polder - 34, 'polder')
   s += bijschrift(52, polder - 10, 'vast peil')
 
   if (stap >= 2) {
-    s += water(516, boezem, 300, voet - boezem, { fase: t + 0.3, seed: 33 })
-    s += dijk(468, boezem - 18, voet, 26, 224)
-    s += kopje(524, boezem - 34, 'boezem')
-    s += bijschrift(524, boezem - 10, 'geen vast peil')
-    s += gemaal(468, boezem - 18, 0.62)
-    s += pijl(430, polder - 6, 430, boezem + 8, P.accent, 5)
+    s += water(540, boezem, 300, voet - boezem, { fase: t + 0.3, seed: 33 }) // 540–840
+    s += dijk(470, boezem - 18, voet, 26, 120)   // voet 350–590; boezem blijft 590–805
+    s += kopje(600, boezem - 34, 'boezem')
+    s += bijschrift(600, boezem - 10, 'geen vast peil')
+    s += gemaal(470, boezem - 18, 0.62)
+    s += pijl(470, polder - 4, 470, boezem + 14, P.accent, 5)
   }
 
   if (stap >= 3) {
-    s += water(926, zee, 340, voet - zee, { tint: P.ver, fase: t + 0.6, glans: 0.9, seed: 45 })
-    s += dijk(878, zee - 18, voet, 26, 236)
-    s += kopje(936, zee - 34, 'zee')
-    s += gemaal(878, zee - 18, 0.62)
-    s += pijl(838, boezem - 6, 838, zee + 8, P.accent, 5)
+    s += water(980, zee, 290, voet - zee, { tint: P.ver, fase: t + 0.6, glans: 0.9, seed: 45 }) // 980–1270
+    s += dijk(920, zee - 18, voet, 26, 115)      // voet 805–1035; zee blijft 1035–1270
+    s += kopje(1046, zee - 34, 'zee')
+    s += gemaal(920, zee - 18, 0.62)
+    s += pijl(920, boezem - 4, 920, zee + 14, P.accent, 5)
   }
 
   if (stap >= 2) {
-    s += `<line x1="46" y1="${polder}" x2="1250" y2="${polder}" stroke="${P.schuim}"
+    s += `<line x1="46" y1="${polder}" x2="1270" y2="${polder}" stroke="${P.schuim}"
       stroke-width="1.2" stroke-dasharray="6 9" opacity="0.32"/>`
   }
   if (stap >= 3) {
-    s += `<line x1="516" y1="${boezem}" x2="1250" y2="${boezem}" stroke="${P.schuim}"
+    s += `<line x1="540" y1="${boezem}" x2="1270" y2="${boezem}" stroke="${P.schuim}"
       stroke-width="1.2" stroke-dasharray="6 9" opacity="0.32"/>`
   }
   return s
