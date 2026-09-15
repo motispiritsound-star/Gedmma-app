@@ -56,6 +56,31 @@ een weigering, want dit is commercieel gebruik.
 Het kost je niets om het te vragen, maar het is geen route waarop je video 1
 kunt laten wachten.
 
+### B2. As-Soennah — de vertaling die je zelf aandroeg
+
+*De interpretatie van de betekenissen van de Koran*, van Aboe Ismail en
+studenten, uitgegeven door **Stichting as-Soennah**, eerste druk 2015
+(ISBN 9789081939966, pocket 9789492132031).
+
+Inhoudelijk is dit een betere keuze dan Keyzer voor wat jij maakt: hedendaags
+Nederlands, gericht op begrijpelijkheid, en het past bij de toon van je kanaal.
+
+Maar het verandert niets aan de vergunningsvraag, en dat is het punt waar ik
+niet omheen kan. De vertalers leven, de uitgave wordt gewoon in de boekhandel
+verkocht, en dat de tekst gratis op aboeismail.nl te lezen staat is **geen
+licentie**. Vrij te lezen en vrij te gebruiken zijn twee verschillende dingen.
+Voor een gemonetiseerd YouTube-kanaal heb je toestemming nodig.
+
+Het goede nieuws: as-Soennah is een Nederlandse stichting die je gewoon kunt
+mailen, en een Nederlandstalig gezinskanaal dat netjes bronvermeldt is precies
+het soort gebruik waar zo'n stichting doorgaans niet moeilijk over doet. Vragen
+kost een e-mail. Wachten op het antwoord kost je alleen tijd als je video 1
+ervan af laat hangen — en dat hoeft niet, zie C.
+
+De website zelf kon ik niet openen (geblokkeerd vanuit deze omgeving), dus of er
+al gebruiksvoorwaarden op staan heb ik niet kunnen zien. Kijk daar zelf even:
+staat er een regel over overname, dan heb je je antwoord mogelijk al.
+
 ### C. Het script zo maken dat er geen citaat nodig is
 
 De video gaat over een gebouw, niet over tafsir. De zin die er staat is:
@@ -75,10 +100,10 @@ beantwoordt.
 
 ## Wat ik zou doen
 
-**C voor video 1, B ernaast in gang zetten.**
+**C voor video 1, B2 ernaast in gang zetten.**
 
 C haalt vandaag een blokkade weg zonder iets in te leveren wat de video nodig
-heeft. B geeft je voor latere video's, waar een citaat wél het hart van de
+heeft. B2 geeft je voor latere video's, waar een citaat wél het hart van de
 aflevering is, een vertaling die leest zoals de rest van je kanaal klinkt. A
 houd ik achter de hand: bruikbaar, maar de taal past niet bij wat je maakt.
 
