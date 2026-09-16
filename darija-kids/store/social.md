@@ -7,6 +7,48 @@ dat mag (Facebook-groepen, LinkedIn). Zet er het beeld uit
 Eén ding vooraf: de sterkste post is niet deze tekst, maar een filmpje van je
 eigen kind dat iets in het Darija tegen oma zegt. Gebruik deze als bijschrift.
 
+De introfilm staat klaar in `store/video/<taal>/` — 27,5 seconden echte app met
+geluid, in vier formaten. `intro-verhaal` voor stories, reels en TikTok,
+`intro-vierkant` voor de feed, `intro-breed` voor YouTube en de site, en
+`intro-appstore` voor de App Store zelf.
+
+---
+
+## De leuzen
+
+Eén grap, twee kanten: de app is voor de kinderen, en de ouder leert stiekem
+mee. Dat is wat een post laat delen — niet de functielijst. De introfilm draagt
+de eerste, in tweeën geknipt: hij opent op de kinderen en landt, vijf schermen
+later, op de ouder.
+
+1. Laat je kinderen hun moedertaal leren. En pik zelf stiekem wat mee.
+2. Voor je kinderen. Maar stiekem ook een beetje voor jou.
+3. Laat je kinderen leren. Doe vooral alsof jij alles al wist.
+4. Goed voor hun moedertaal. Handig voor jouw geheugen.
+5. Zij leren de taal van thuis. Jij frist 'm stiekem weer op.
+6. Voor kleine taalhelden. En grote die wat roestig zijn.
+7. Laat je kinderen hun roots ontdekken. Misschien vind jij die van jou ook terug.
+8. Schermtijd voor je kinderen. Taaltraining voor het hele gezin.
+9. Zij denken dat het voor hen is. Wij weten beter.
+10. Voor hun woordenschat. En jouw vergeten woorden.
+
+Dezelfde grap in de andere vier talen:
+
+| | |
+|---|---|
+| **fr** | Laisse tes enfants apprendre leur langue maternelle. Et rafraîchis la tienne sans rien dire. |
+| | Pour tes enfants. Et un petit peu pour toi, en douce. |
+| | Du temps d'écran pour eux. Un cours de langue pour toute la famille. |
+| **de** | Lass deine Kinder ihre Muttersprache lernen. Und frisch deins ganz nebenbei auf. |
+| | Für deine Kinder. Und heimlich auch ein bisschen für dich. |
+| | Bildschirmzeit für die Kinder. Sprachtraining für die ganze Familie. |
+| **es** | Deja que tus hijos aprendan su lengua materna. Y refresca la tuya de paso. |
+| | Para tus hijos. Y un poquito para ti, en secreto. |
+| | Tiempo de pantalla para ellos. Clase de idiomas para toda la familia. |
+| **en** | Let your children learn their mother tongue. And quietly pick some up yourself. |
+| | For your children. But a little bit for you, too. |
+| | Screen time for them. Language practice for the whole family. |
+
 ---
 
 ## Nederlands

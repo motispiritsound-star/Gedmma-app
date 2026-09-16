@@ -72,7 +72,14 @@ In deze map staat alles klaar:
 - `marketing/<taal>/feature-graphic.png` — 1024×500
 - `marketing/<taal>/social-vierkant.png` — 1080×1080
 - `marketing/<taal>/social-verhaal.png` — 1080×1920
+- `video/<taal>/intro-breed.mp4` — introfilm met geluid, 1920×1080, 27,5 s
+- `video/<taal>/intro-vierkant.mp4` en `intro-verhaal.mp4` — dezelfde film,
+  vierkant en verticaal
 - `../assets/icon.png` — het app-icoon, 1024×1024
+
+De introfilm is geen montage van mock-ups: elk scherm erin is de app zelf, en
+de muziek — marimba en darbuka in hijaz — wordt door de app gemaakt, niet
+ingekocht.
 
 Het beeldmerk is de achtpuntige khatam uit Marokkaanse zellige. De mascotte
 heet **Fnek** en is een fennek.

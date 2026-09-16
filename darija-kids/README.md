@@ -71,6 +71,16 @@ npm run icons      # tekent de iconen en het deelplaatje opnieuw
 | **4 verhalen** | gesprekken waarin je op elke zin kunt tikken voor de vertaling, met vragen erna |
 | **3 spellen** | tijdrace, geheugenspel en letterspel — ze gebruiken de woorden die je al zag |
 
+### Wat er nog niet in zit
+
+**Schrijven.** De letters staan er al met hun vorm aan begin, midden en eind, en
+de volgende stap is een optionele schrijfoefening: het kind trekt de letter over
+een grijze voorbeeldletter heen, met de vinger of een pen, en de app kijkt hoe
+goed de lijn gevolgd is. Optioneel, want overtrekken op een telefoonscherm is
+niet voor ieder kind, en het hoort er pas bij als er meer lessen staan om het
+aan op te hangen. Het wordt een schakelaar bij Instellingen en een extra
+rondetype naast horen, kiezen en herhalen — geen aparte hoek van de app.
+
 ## Hoe het leert
 
 **Spaced repetition.** Elk woord is een kaartje met een eigen ritme
@@ -268,6 +278,14 @@ npm run build          # web-build in dist/
 npx cap sync android   # diezelfde build in het Android-project
 npm run android        # en openen in Android Studio
 ```
+
+De beelden voor beide winkels maakt de repo zelf: `npm run screenshots` voor de
+schermafbeeldingen, `npm run marketing` voor de feature graphic en de
+socialbeelden, en `npm run intro` voor de introfilm — bijna een halve minuut
+echte app met geluid, in vier formaten en vijf talen. Die film is geen montage
+van mock-ups: `scripts/make-intro.mjs` start een server, fotografeert de app en
+laat `dev/intro.ts` het geheel tekenen en opnemen, met een soundtrack die door
+dezelfde instrumenten wordt gespeeld als de app zelf gebruikt.
 
 Vul vóór publicatie `src/content/operator.ts` in: zonder naam en e-mailadres van
 de uitgever zet de privacypagina er zichtbaar een waarschuwing boven, en weigeren

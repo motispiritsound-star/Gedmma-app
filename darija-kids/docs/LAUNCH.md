@@ -85,7 +85,13 @@ app verandert:
 npm run build && npm run preview   # in een tweede venster laten draaien
 npm run screenshots                # store/screenshots/<taal>/<toestel>/
 npm run marketing                  # store/marketing/<taal>/
+npm run intro                      # store/video/<taal>/ — duurt een kwartier
 ```
+
+`npm run intro` start zijn eigen server, fotografeert de app en neemt de
+introfilm op met geluid. Controleer een opname daarna met
+`node scripts/checkvideo.mjs store/video/nl/intro-appstore.mp4`: die zegt hoe
+lang hij is, hoe groot, en of er echt geluid op staat.
 
 | Winkel | Wat | Vandaan |
 |---|---|---|
@@ -94,15 +100,24 @@ npm run marketing                  # store/marketing/<taal>/
 | Beide | Titel, ondertitel, zoekwoorden | `store/keywords.md` |
 | App Store | iPhone 6.9" (1290×2796) | `store/screenshots/<taal>/iphone/` |
 | App Store | iPad 13" (2048×2732) | `store/screenshots/<taal>/ipad/` |
+| App Store | App preview 886×1920, 15–30 s | `store/video/<taal>/intro-appstore.mp4` |
 | App Store | Privacy-URL en voorwaarden-URL | je eigen site |
 | Play | Telefoon (1080×1920) | `store/screenshots/<taal>/play/` |
 | Play | Tablet 7" en 10" | `store/screenshots/<taal>/play-7/` en `play-10/` |
 | Play | Feature graphic 1024×500 | `store/marketing/<taal>/feature-graphic.png` |
+| Play | Promotievideo (YouTube-link) | zet `store/video/<taal>/intro-breed.mp4` op YouTube |
 | Play | Privacy-URL | je eigen site |
 
 De volgorde van de schermafbeeldingen is de volgorde van de bestandsnamen. De
 eerste twee zijn de enige die de meeste mensen zien — daar staat niet voor
 niets het leerpad en het alfabet.
+
+De App Store wil een app preview van 15 tot 30 seconden; de onze duurt 27,5 en
+staat in 886×1920, precies wat de 6.9"-sleuf vraagt. Google Play neemt geen
+bestand aan maar een YouTube-link: zet `intro-breed.mp4` daar neer als niet-
+vermelde video en plak de link in de Play Console. De vierkante en de verticale
+versie zijn voor Instagram, Facebook, TikTok en advertenties — die horen niet
+bij een winkel, maar wel bij een lancering.
 
 ---
 

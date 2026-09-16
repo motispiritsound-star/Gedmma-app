@@ -14,6 +14,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
+import { GO_ON, GOT_IT, seeded } from './lib/profile.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
@@ -113,36 +114,6 @@ const SHOTS = [
   },
 ]
 
-/** A profile that looks like somebody has been using this for a fortnight. */
-const seeded = (lang) => {
-  const day = (n) => {
-    const d = new Date(Date.now() - n * 86400000)
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-  }
-  const lessons = {}
-  for (const id of ['hruf-1', 'hruf-2', 'hruf-3', 'hruf-4', 'groeten-1', 'groeten-2', 'groeten-3']) {
-    lessons[id] = { stars: 3, runs: 2, bestScore: 1, lastDone: Date.now() - 86400000 }
-  }
-  const cards = {}
-  for (const [i, id] of ['salam', 'shukran', 'afak', 'bslama', 'merhba', 'khobz', 'atay', 'lma', 'mama', 'baba',
-    'khoya', 'khti', 'wahed', 'jouj', 'tlata', 'hmer', 'zreq', 'khder', 'mesh', 'kelb'].entries()) {
-    cards[id] = { id, due: Date.now() + i * 3600000, strength: 0.4 + (i % 6) * 0.1, seen: 3, lapses: 0 }
-  }
-  const daily = {}
-  for (let i = 0; i < 7; i++) daily[day(i)] = [40, 55, 30, 62, 45, 80, 35][i]
-  return {
-    version: 1, name: 'Nour', avatar: '🦊', createdAt: Date.now() - 14 * 86400000,
-    xp: 640, gems: 34, hearts: 5, heartsAt: Date.now(), streak: 9, bestStreak: 12,
-    lastDay: day(0), freezes: 1, daily, lessons, cards, extraCards: {}, sentencesDone: 22,
-    quests: { day: day(0), goed: 14, herhaald: 6, zinnen: 2, lessen: 1, claimed: [] },
-    badges: ['eerste-stap', 'salam', 'vlam-3', 'vlam-7', 'letters', 'alfabet'],
-    unlocked: true, unlockedAt: Date.now() - 7 * 86400000, langPicked: true, seenTips: ['stem'],
-    settings: { lang, theme: 'light', showScript: true, showTranslit: true, sound: true, mediaSound: false,
-      mediaSoundPicked: true, film: true, speech: true, hearts: true, voiceURI: '', fallbackVoice: true,
-      motion: 'full', reading: 'normal', dailyGoal: 50, voiceRate: 0.85 },
-  }
-}
-
 /** The frame around the shot: a caption, then the screen itself. */
 const frame = (device, capture, caption) => {
   const pad = Math.round(device.w * 0.055)
@@ -196,11 +167,11 @@ const shoot = async (browser, composer, lang, deviceKey) => {
     await page.waitForTimeout(700)
     if (shot.lesson) {
       // A lesson opens on its tip; step past it to an actual question.
-      const tip = page.getByRole('button', { name: /Aan de slag|Allons-y|Los geht|A por ello|Let’s go/ })
+      const tip = page.getByRole('button', { name: GO_ON })
       if (await tip.count()) await tip.first().click()
       await page.waitForTimeout(500)
       for (let i = 0; i < 4; i++) {
-        const snap = page.locator('button', { hasText: /^(Snap ik!|Compris !|Verstanden!|¡Lo pillo!|Got it!)$/ })
+        const snap = page.locator('button', { hasText: GOT_IT })
         if (!(await snap.count())) break
         await snap.first().click({ force: true })
         await page.waitForTimeout(350)
