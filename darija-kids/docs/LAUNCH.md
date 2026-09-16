@@ -19,6 +19,10 @@ keuze in §1. Begin dus met die keuze, en doe de rest van deze lijst ondertussen
 
 ## De checklist
 
+> Liever afvinken dan lezen? `npm run checklist` maakt hiervan
+> `store/lanceer-checklist.html`: één bestand dat je dubbelklikt, met echte
+> vakjes die onthouden wat je hebt gedaan.
+
 Alles op één plek, in de volgorde waarin het moet. Wat de code kon doen staat
 al aangevinkt; de rest heeft een mens met een bankrekening en een paspoort
 nodig. De paragraafnummers verwijzen naar de uitleg hieronder.

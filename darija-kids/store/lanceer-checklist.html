@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="nl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Darija Kids — lanceerchecklist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+  :root {
+    --ground:#fbf6ee; --panel:#fff; --sunken:#f3ebdd;
+    --ink:#221a16; --ink-soft:#5f5449; --ink-faint:#8b8075;
+    --line:#e4d8c5; --line-firm:#cfbfa6;
+    --alam:#c1272d; --khatim:#006233; --zellige:#0f766e; --saffron:#d97706;
+    --f-display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+    --f-body:"IBM Plex Sans",system-ui,sans-serif;
+    --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --ground:#15110e; --panel:#1e1813; --sunken:#261e18;
+    --ink:#f4ece1; --ink-soft:#b5a798; --ink-faint:#8a7d70;
+    --line:#35291f; --line-firm:#4b3a2b;
+    --alam:#f08a8e; --khatim:#63c68c; --zellige:#5ccfc0; --saffron:#f0a828;
+  } }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-body);line-height:1.55}
+  .wrap{max-width:46rem;margin:0 auto;padding:24px 16px 80px}
+  .eyebrow{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+  h1{font-family:var(--f-display);font-size:clamp(1.7rem,6vw,2.4rem);margin:4px 0 6px}
+  .lede{color:var(--ink-soft);max-width:54ch}
+  h2{font-family:var(--f-display);font-size:1.15rem;margin:28px 0 10px;display:flex;align-items:baseline;gap:10px}
+  h2 .van{font-family:var(--f-mono);font-size:.72rem;font-weight:500;color:var(--ink-faint);letter-spacing:.06em}
+
+  .balk{position:sticky;top:0;z-index:5;background:var(--ground);padding:12px 0 10px;border-bottom:1px solid var(--line);margin-bottom:6px}
+  .meter{height:12px;border-radius:99px;background:var(--sunken);overflow:hidden;border:1px solid var(--line)}
+  .meter i{display:block;height:100%;background:var(--khatim);width:0;transition:width .25s ease}
+  .stand{font-family:var(--f-mono);font-size:.78rem;color:var(--ink-soft);margin-top:7px;display:flex;gap:14px;flex-wrap:wrap}
+  .stand b{color:var(--ink)}
+  button.klein{font-family:var(--f-body);font-weight:600;font-size:.78rem;padding:5px 11px;border-radius:9px;
+    border:1px solid var(--line-firm);background:var(--panel);color:var(--ink-soft);cursor:pointer}
+  button.klein:hover{color:var(--ink)}
+
+  ul{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+  li{background:var(--panel);border:1px solid var(--line);border-radius:13px}
+  li label{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;cursor:pointer}
+  li input{appearance:none;flex:0 0 auto;width:22px;height:22px;margin-top:1px;border-radius:7px;
+    border:2px solid var(--line-firm);background:var(--sunken);cursor:pointer;position:relative}
+  li input:checked{background:var(--khatim);border-color:var(--khatim)}
+  li input:checked::after{content:"";position:absolute;left:6px;top:2px;width:5px;height:11px;
+    border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(42deg)}
+  li.af{opacity:.55}
+  li.af span.tekst{text-decoration:line-through;text-decoration-color:var(--ink-faint)}
+  .tekst{min-width:0}
+  code{font-family:var(--f-mono);font-size:.84em;background:var(--sunken);padding:1px 5px;border-radius:5px;
+    border:1px solid var(--line);word-break:break-word}
+  .para{font-family:var(--f-mono);font-size:.7rem;color:var(--ink-faint);white-space:nowrap}
+  a{color:var(--zellige);word-break:break-word}
+
+  table{width:100%;border-collapse:collapse;margin-top:4px}
+  td{padding:7px 4px;border-bottom:1px solid var(--line);vertical-align:top;font-size:.9rem}
+  td:first-child{width:38%;color:var(--ink-soft)}
+  .vink{color:var(--khatim);font-weight:700}
+  footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-faint);font-size:.82rem}
+</style>
+</head><body>
+<div class="wrap">
+  <p class="eyebrow">Darija Kids</p>
+  <h1>Lanceerchecklist</h1>
+  <p class="lede">
+    Alles van "de app is af" tot "hij staat in de winkel", in de volgorde waarin
+    het moet. Wat de code kon doen staat al aan. Je vinkjes blijven bewaard als
+    je deze pagina later weer opent.
+  </p>
+
+  <div class="balk">
+    <div class="meter"><i id="vuller"></i></div>
+    <div class="stand">
+      <span id="stand"></span>
+      <span id="rest"></span>
+      <button class="klein" id="wis" type="button">Alles uitvinken</button>
+    </div>
+  </div>
+
+  <h2>Vandaag — dit blokkeert alle andere stappen<span class="van" id="tel-0"></span></h2>
+  <ul>
+    <li data-blok="0">
+      <label>
+        <input type="checkbox" data-id="0-0">
+        <span class="tekst"><code>src/content/operator.ts</code> invullen: naam, e-mail, adres, land, telefoon, KvK <span class="para">§0</span></span>
+      </label>
+    </li>
+    <li data-blok="0">
+      <label>
+        <input type="checkbox" data-id="0-1">
+        <span class="tekst">D-U-N-S-nummer aanvragen als je de organisatieroute bij Google kiest — die klok loopt het langst <span class="para">§1</span></span>
+      </label>
+    </li>
+    <li data-blok="0">
+      <label>
+        <input type="checkbox" data-id="0-2">
+        <span class="tekst">KvK-inschrijving regelen als je die nog niet hebt <span class="para">§1</span></span>
+      </label>
+    </li>
+    <li data-blok="0">
+      <label>
+        <input type="checkbox" data-id="0-3">
+        <span class="tekst">Domein kopen en de website online zetten <span class="para">§0b</span></span>
+      </label>
+    </li>
+  </ul>
+
+  <h2>De accounts<span class="van" id="tel-1"></span></h2>
+  <ul>
+    <li data-blok="1">
+      <label>
+        <input type="checkbox" data-id="1-0">
+        <span class="tekst">Google Play Console aanmaken, $ 25 eenmalig <span class="para">§1</span></span>
+      </label>
+    </li>
+    <li data-blok="1">
+      <label>
+        <input type="checkbox" data-id="1-1">
+        <span class="tekst">Apple Developer Program, € 99 per jaar <span class="para">§1</span></span>
+      </label>
+    </li>
+    <li data-blok="1">
+      <label>
+        <input type="checkbox" data-id="1-2">
+        <span class="tekst">Identiteit laten verifiëren bij allebei</span>
+      </label>
+    </li>
+    <li data-blok="1">
+      <label>
+        <input type="checkbox" data-id="1-3">
+        <span class="tekst">Bankrekening en belastinggegevens invullen in beide consoles <span class="para">§2</span></span>
+      </label>
+    </li>
+    <li data-blok="1">
+      <label>
+        <input type="checkbox" data-id="1-4">
+        <span class="tekst">Apple: de <strong>Paid Applications</strong>-overeenkomst tekenen — zonder handtekening verkoop je niets</span>
+      </label>
+    </li>
+    <li data-blok="1">
+      <label>
+        <input type="checkbox" data-id="1-5">
+        <span class="tekst">Apple: aanmelden voor het <strong>Small Business Program</strong>, 15% in plaats van 30%</span>
+      </label>
+    </li>
+  </ul>
+
+  <h2>De producten<span class="van" id="tel-2"></span></h2>
+  <ul>
+    <li data-blok="2">
+      <label>
+        <input type="checkbox" data-id="2-0">
+        <span class="tekst"><code>app.darijakids.yearly</code> — € 59,88 per jaar, 3 dagen gratis <span class="para">§2</span></span>
+      </label>
+    </li>
+    <li data-blok="2">
+      <label>
+        <input type="checkbox" data-id="2-1">
+        <span class="tekst"><code>app.darijakids.monthly</code> — € 6,99 per maand, 3 dagen gratis <span class="para">§2</span></span>
+      </label>
+    </li>
+    <li data-blok="2">
+      <label>
+        <input type="checkbox" data-id="2-2">
+        <span class="tekst">Beide in <strong>dezelfde abonnementsgroep</strong>, anders kan niemand overstappen</span>
+      </label>
+    </li>
+    <li data-blok="2">
+      <label>
+        <input type="checkbox" data-id="2-3">
+        <span class="tekst"><code>app.darijakids.ebook</code> — € 14,99 eenmalig, <strong>niet-verbruikbaar</strong>, geen abonnement <span class="para">§2</span></span>
+      </label>
+    </li>
+    <li data-blok="2">
+      <label>
+        <input type="checkbox" data-id="2-4">
+        <span class="tekst">Bij Apple: € 59,99 in plaats van € 59,88 — dat prijspunt bestaat daar niet</span>
+      </label>
+    </li>
+  </ul>
+
+  <h2>Wat je uploadt<span class="van" id="tel-3"></span></h2>
+  <ul>
+    <li data-blok="3">
+      <label>
+        <input type="checkbox" data-id="3-0" data-vast="1">
+        <span class="tekst">Schermafbeeldingen in zes talen — <code>npm run screenshots</code></span>
+      </label>
+    </li>
+    <li data-blok="3">
+      <label>
+        <input type="checkbox" data-id="3-1" data-vast="1">
+        <span class="tekst">App preview 886×1920, onder de 30 seconden — <code>npm run intro</code></span>
+      </label>
+    </li>
+    <li data-blok="3">
+      <label>
+        <input type="checkbox" data-id="3-2" data-vast="1">
+        <span class="tekst">Winkelteksten in zes talen — <code>store/listing.*.md</code></span>
+      </label>
+    </li>
+    <li data-blok="3">
+      <label>
+        <input type="checkbox" data-id="3-3" data-vast="1">
+        <span class="tekst">Icoon en splashscherm — <code>npm run assets</code></span>
+      </label>
+    </li>
+    <li data-blok="3">
+      <label>
+        <input type="checkbox" data-id="3-4" data-vast="1">
+        <span class="tekst">Het e-boek in zes talen — <code>npm run ebook</code></span>
+      </label>
+    </li>
+    <li data-blok="3">
+      <label>
+        <input type="checkbox" data-id="3-5">
+        <span class="tekst">Android: <code>npm run sync &amp;&amp; npm run android</code>, dan een <strong>AAB</strong> bouwen en ondertekenen <span class="para">§3</span></span>
+      </label>
+    </li>
+    <li data-blok="3">
+      <label>
+        <input type="checkbox" data-id="3-6">
+        <span class="tekst">iOS: op een Mac <code>npx cap add ios</code>, dan archiveren in Xcode <span class="para">§3</span></span>
+      </label>
+    </li>
+  </ul>
+
+  <h2>De formulieren<span class="van" id="tel-4"></span></h2>
+  <ul>
+    <li data-blok="4">
+      <label>
+        <input type="checkbox" data-id="4-0">
+        <span class="tekst">Apple <strong>App Privacy</strong> <span class="para">§4</span> — zonder postdienst: &quot;Data Not Collected&quot;</span>
+      </label>
+    </li>
+    <li data-blok="4">
+      <label>
+        <input type="checkbox" data-id="4-1">
+        <span class="tekst">Google <strong>Data safety</strong> <span class="para">§4</span> — idem</span>
+      </label>
+    </li>
+    <li data-blok="4">
+      <label>
+        <input type="checkbox" data-id="4-2">
+        <span class="tekst">Leeftijdsclassificatie 4+ / onder 13, en dus de <strong>Kids</strong>- of <strong>Families</strong>-regels</span>
+      </label>
+    </li>
+    <li data-blok="4">
+      <label>
+        <input type="checkbox" data-id="4-3">
+        <span class="tekst">Handelaarsgegevens in beide consoles — dezelfde als in <code>operator.ts</code></span>
+      </label>
+    </li>
+    <li data-blok="4">
+      <label>
+        <input type="checkbox" data-id="4-4">
+        <span class="tekst">Privacy-URL en support-URL invullen (<code>/privacy</code> en <code>/ouders</code> op je domein)</span>
+      </label>
+    </li>
+    <li data-blok="4">
+      <label>
+        <input type="checkbox" data-id="4-5">
+        <span class="tekst">De notitie aan de reviewer overnemen <span class="para">§5</span></span>
+      </label>
+    </li>
+  </ul>
+
+  <h2>Voor je op verzenden drukt<span class="van" id="tel-5"></span></h2>
+  <ul>
+    <li data-blok="5">
+      <label>
+        <input type="checkbox" data-id="5-0" data-vast="1">
+        <span class="tekst"><code>npm test</code> — 103 tests</span>
+      </label>
+    </li>
+    <li data-blok="5">
+      <label>
+        <input type="checkbox" data-id="5-1" data-vast="1">
+        <span class="tekst"><code>npm run typecheck</code></span>
+      </label>
+    </li>
+    <li data-blok="5">
+      <label>
+        <input type="checkbox" data-id="5-2" data-vast="1">
+        <span class="tekst"><code>npm run sweep -- --breed</code> — elk scherm, zes talen, licht en donker, 320/390/820 px</span>
+      </label>
+    </li>
+    <li data-blok="5">
+      <label>
+        <input type="checkbox" data-id="5-3" data-vast="1">
+        <span class="tekst"><code>npm run soundcheck</code> — alle 34 klanken</span>
+      </label>
+    </li>
+    <li data-blok="5">
+      <label>
+        <input type="checkbox" data-id="5-4" data-vast="1">
+        <span class="tekst"><code>npm run lettercheck</code> — alle 28 letters</span>
+      </label>
+    </li>
+    <li data-blok="5">
+      <label>
+        <input type="checkbox" data-id="5-5" data-vast="1">
+        <span class="tekst"><code>npm run bonuscheck</code>, <code>npm run historycheck</code></span>
+      </label>
+    </li>
+    <li data-blok="5">
+      <label>
+        <input type="checkbox" data-id="5-6">
+        <span class="tekst"><code>npm run feedbackcheck</code> — kan pas als <code>operator.ts</code> is ingevuld</span>
+      </label>
+    </li>
+    <li data-blok="5">
+      <label>
+        <input type="checkbox" data-id="5-7">
+        <span class="tekst">Op een écht toestel gespeeld, met geluid aan</span>
+      </label>
+    </li>
+  </ul>
+
+  <h2>De uitspraak<span class="van" id="tel-6"></span></h2>
+  <ul>
+    <li data-blok="6">
+      <label>
+        <input type="checkbox" data-id="6-0" data-vast="1">
+        <span class="tekst">28 van de 28 letters ingesproken door een mens</span>
+      </label>
+    </li>
+    <li data-blok="6">
+      <label>
+        <input type="checkbox" data-id="6-1">
+        <span class="tekst">De herkomst en licentie van die opnames vastleggen in <code>store/press-kit.md</code> — zonder commerciële licentie mogen ze niet mee in een betaalde app</span>
+      </label>
+    </li>
+    <li data-blok="6">
+      <label>
+        <input type="checkbox" data-id="6-2">
+        <span class="tekst">De woorden van de eerste zes units inspreken (<code>/opname</code>, dan <code>npm run add-clip</code>)</span>
+      </label>
+    </li>
+    <li data-blok="6">
+      <label>
+        <input type="checkbox" data-id="6-3">
+        <span class="tekst">Het controleblad aflopen: <code>npm run sheet</code></span>
+      </label>
+    </li>
+  </ul>
+
+  <h2>Publiceren<span class="van" id="tel-7"></span></h2>
+  <ul>
+    <li data-blok="7">
+      <label>
+        <input type="checkbox" data-id="7-0">
+        <span class="tekst">Google: gesloten test met 12 testers, 14 dagen — <strong>alleen op de persoonlijke route</strong> <span class="para">§6</span></span>
+      </label>
+    </li>
+    <li data-blok="7">
+      <label>
+        <input type="checkbox" data-id="7-1">
+        <span class="tekst">Apple: indienen en wachten op review (1–3 dagen)</span>
+      </label>
+    </li>
+    <li data-blok="7">
+      <label>
+        <input type="checkbox" data-id="7-2">
+        <span class="tekst">Google: productie aanvragen</span>
+      </label>
+    </li>
+    <li data-blok="7">
+      <label>
+        <input type="checkbox" data-id="7-3">
+        <span class="tekst">Beide op <strong>handmatig vrijgeven</strong> zetten, zodat je zelf de dag kiest</span>
+      </label>
+    </li>
+    <li data-blok="7">
+      <label>
+        <input type="checkbox" data-id="7-4">
+        <span class="tekst">De eerste week uitvoeren <span class="para">§7</span></span>
+      </label>
+    </li>
+  </ul>
+
+  <h2>Alle links op één plek</h2>
+  <p class="lede">De Apple-links zijn nagelopen en werken. De rest kon ik vanaf
+  hier niet bereiken — ze staan op naam en zijn stabiel, maar loop ze even na.</p>
+  <h2 style="font-size:1rem;margin-top:18px">Aanmelden</h2>
+  <table>
+    <tr><td>Apple Developer Program</td><td><a href="https://developer.apple.com/programs/enroll/" target="_blank" rel="noreferrer">https://developer.apple.com/programs/enroll/</a> <span class="vink">nagelopen</span></td></tr>
+    <tr><td>App Store Connect</td><td><a href="https://appstoreconnect.apple.com" target="_blank" rel="noreferrer">https://appstoreconnect.apple.com</a></td></tr>
+    <tr><td>Google Play Console aanmelden</td><td><a href="https://play.google.com/console/signup" target="_blank" rel="noreferrer">https://play.google.com/console/signup</a></td></tr>
+    <tr><td>Google Play Console</td><td><a href="https://play.google.com/console" target="_blank" rel="noreferrer">https://play.google.com/console</a></td></tr>
+    <tr><td>D-U-N-S-nummer aanvragen</td><td><a href="https://developer.apple.com/enroll/duns-lookup/" target="_blank" rel="noreferrer">https://developer.apple.com/enroll/duns-lookup/</a></td></tr>
+    <tr><td>KvK inschrijven</td><td><a href="https://www.kvk.nl/starten/inschrijven-bij-de-kvk/" target="_blank" rel="noreferrer">https://www.kvk.nl/starten/inschrijven-bij-de-kvk/</a></td></tr>
+    <tr><td>KvK: adres afschermen</td><td><a href="https://www.kvk.nl/over-het-handelsregister/adresgegevens-afschermen/" target="_blank" rel="noreferrer">https://www.kvk.nl/over-het-handelsregister/adresgegevens-afschermen/</a></td></tr>
+    <tr><td>Belastingdienst, kleineondernemersregeling</td><td><a href="https://www.belastingdienst.nl/kor" target="_blank" rel="noreferrer">https://www.belastingdienst.nl/kor</a></td></tr>
+  </table>
+  <h2 style="font-size:1rem;margin-top:18px">De regels waar je app aan wordt getoetst</h2>
+  <table>
+    <tr><td>App Review Guidelines</td><td><a href="https://developer.apple.com/app-store/review/guidelines/" target="_blank" rel="noreferrer">https://developer.apple.com/app-store/review/guidelines/</a> <span class="vink">nagelopen</span></td></tr>
+    <tr><td>Apple, apps voor kinderen</td><td><a href="https://developer.apple.com/app-store/kids-apps/" target="_blank" rel="noreferrer">https://developer.apple.com/app-store/kids-apps/</a> <span class="vink">nagelopen</span></td></tr>
+    <tr><td>Apple, privacylabels</td><td><a href="https://developer.apple.com/app-store/app-privacy-details/" target="_blank" rel="noreferrer">https://developer.apple.com/app-store/app-privacy-details/</a> <span class="vink">nagelopen</span></td></tr>
+    <tr><td>Apple, Small Business Program</td><td><a href="https://developer.apple.com/app-store/small-business-program/" target="_blank" rel="noreferrer">https://developer.apple.com/app-store/small-business-program/</a> <span class="vink">nagelopen</span></td></tr>
+    <tr><td>Apple, maten van schermafbeeldingen</td><td><a href="https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications/" target="_blank" rel="noreferrer">https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications/</a> <span class="vink">nagelopen</span></td></tr>
+    <tr><td>Google, beleid voor ontwikkelaars</td><td><a href="https://play.google.com/about/developer-content-policy/" target="_blank" rel="noreferrer">https://play.google.com/about/developer-content-policy/</a></td></tr>
+    <tr><td>Google, Families-beleid</td><td><a href="https://support.google.com/googleplay/android-developer/answer/9893335" target="_blank" rel="noreferrer">https://support.google.com/googleplay/android-developer/answer/9893335</a></td></tr>
+    <tr><td>Google, Data safety-formulier</td><td><a href="https://support.google.com/googleplay/android-developer/answer/10787469" target="_blank" rel="noreferrer">https://support.google.com/googleplay/android-developer/answer/10787469</a></td></tr>
+    <tr><td>Google, gesloten test met 12 testers</td><td><a href="https://support.google.com/googleplay/android-developer/answer/14151465" target="_blank" rel="noreferrer">https://support.google.com/googleplay/android-developer/answer/14151465</a></td></tr>
+  </table>
+  <h2 style="font-size:1rem;margin-top:18px">Als je de postdienst aanzet</h2>
+  <table>
+    <tr><td>Cloudflare (worker en database)</td><td><a href="https://dash.cloudflare.com" target="_blank" rel="noreferrer">https://dash.cloudflare.com</a></td></tr>
+    <tr><td>Brevo (de mail)</td><td><a href="https://www.brevo.com" target="_blank" rel="noreferrer">https://www.brevo.com</a></td></tr>
+    <tr><td>Alles erover</td><td><code><code>server/LEES-MIJ.md</code></code></td></tr>
+  </table>
+  <h2 style="font-size:1rem;margin-top:18px">Hosting voor de website</h2>
+  <table>
+    <tr><td>Netlify</td><td><a href="https://app.netlify.com" target="_blank" rel="noreferrer">https://app.netlify.com</a></td></tr>
+    <tr><td>Cloudflare Pages</td><td><a href="https://pages.cloudflare.com" target="_blank" rel="noreferrer">https://pages.cloudflare.com</a></td></tr>
+    <tr><td>Uitgeschreven</td><td><code>DEPLOY.md</code></td></tr>
+  </table>
+  <h2 style="font-size:1rem;margin-top:18px">De rest van deze map</h2>
+  <table>
+    <tr><td>Het geld en de producten</td><td><code>PAYMENTS.md</code></td></tr>
+    <tr><td>De consoles, veld voor veld</td><td><code>STORES.md</code></td></tr>
+    <tr><td>Online zetten</td><td><code>DEPLOY.md</code></td></tr>
+    <tr><td>Een woord of zin aanpassen</td><td><code>INHOUD.md</code></td></tr>
+    <tr><td>Wie dit koopt en waarom</td><td><code>MARKT.md</code></td></tr>
+    <tr><td>Opnames maken en toevoegen</td><td><code><code>src/audio/LEES-MIJ.md</code></code></td></tr>
+  </table>
+
+  <footer>
+    Gemaakt uit <code>docs/LAUNCH.md</code> met <code>npm run checklist</code>, zodat de
+    twee niet uit elkaar kunnen lopen. Staat daar de uitleg bij elke stap.
+  </footer>
+</div>
+
+<script>
+const VAST = ["3-0","3-1","3-2","3-3","3-4","5-0","5-1","5-2","5-3","5-4","5-5","6-0"]
+const vakjes = [...document.querySelectorAll('input[type=checkbox]')]
+let staat = {}
+try { staat = JSON.parse(localStorage.getItem('darija.lanceer') || '{}') } catch (e) { staat = {} }
+// Wat de code al gedaan heeft staat aan en blijft aan, tenzij je het zelf uitzet.
+for (const id of VAST) if (!(id in staat)) staat[id] = true
+
+const bewaar = () => { try { localStorage.setItem('darija.lanceer', JSON.stringify(staat)) } catch (e) {} }
+
+function teken() {
+  let af = 0
+  const perBlok = {}
+  for (const v of vakjes) {
+    const id = v.dataset.id
+    const aan = !!staat[id]
+    v.checked = aan
+    v.closest('li').classList.toggle('af', aan)
+    const b = v.closest('li').dataset.blok
+    perBlok[b] = perBlok[b] || { af: 0, n: 0 }
+    perBlok[b].n++
+    if (aan) { af++; perBlok[b].af++ }
+  }
+  const n = vakjes.length
+  document.getElementById('vuller').style.width = (af / n * 100) + '%'
+  document.getElementById('stand').innerHTML = '<b>' + af + ' van ' + n + '</b> gedaan'
+  document.getElementById('rest').textContent = af === n ? 'klaar om in te dienen' : (n - af) + ' te gaan'
+  for (const [b, t] of Object.entries(perBlok)) {
+    const el = document.getElementById('tel-' + b)
+    if (el) el.textContent = t.af + '/' + t.n
+  }
+}
+
+for (const v of vakjes) {
+  v.addEventListener('change', () => { staat[v.dataset.id] = v.checked; bewaar(); teken() })
+}
+document.getElementById('wis').addEventListener('click', () => { staat = {}; bewaar(); teken() })
+teken()
+</script>
+</body></html>

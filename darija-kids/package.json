@@ -31,7 +31,8 @@
     "ebook": "node scripts/make-ebook.mjs",
     "voice": "node scripts/make-voice.mjs",
     "sweep": "node scripts/sweep.mjs",
-    "nieuw": "node scripts/nieuwe-gebruiker.mjs"
+    "nieuw": "node scripts/nieuwe-gebruiker.mjs",
+    "checklist": "node scripts/make-checklist.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
