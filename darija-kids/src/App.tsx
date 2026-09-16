@@ -20,6 +20,7 @@ const Terms = lazy(() => import('./pages/Terms').then((m) => ({ default: m.Terms
 const SettingsPage = lazy(() => import('./pages/Settings').then((m) => ({ default: m.SettingsPage })))
 import { NotFound } from './pages/NotFound'
 const FilmPreview = lazy(() => import('./ui/Film').then((m) => ({ default: m.FilmPreview })))
+const HistoryPreview = lazy(() => import('./ui/HistoryCard').then((m) => ({ default: m.HistoryPreview })))
 import { TopBar } from './ui/TopBar'
 import { Welcome } from './ui/Welcome'
 import { useStore } from './engine/store'
@@ -111,6 +112,7 @@ function Chrome() {
             {/* Working on a scene of the film is otherwise a matter of
                 finishing a lesson to see one frame of it. */}
             {import.meta.env.DEV && <Route path="/film/:scene" element={<FilmPreview />} />}
+            {import.meta.env.DEV && <Route path="/kaart/:cardId" element={<HistoryPreview />} />}
             <Route path="*" element={<NotFound />} />
           </Routes>
           </Suspense>

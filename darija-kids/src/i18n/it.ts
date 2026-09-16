@@ -470,6 +470,9 @@ export const it: Strings = {
     schrijvenHint: 'Il giro bonus in cui ricalchi lettere e parole sullo schermo. Spegnilo se disegnare con il dito non funziona.',
     film: 'Filmato dopo la lezione',
     filmHint: 'Un cartone breve con Fnek quando finisci una lezione.',
+    voorlezen: 'Lettura ad alta voce',
+    voorlezenHint: "Legge le carte di storia ad alta voce nella lingua dell'app. Se il tuo dispositivo non ha una voce per quella lingua resta in silenzio: il testo c'è comunque.",
+    voorlezenGeenStem: 'Questo dispositivo non ha una voce per questa lingua, quindi la lettura resta muta.',
     uitspraak: 'Pronuncia',
     stem: 'Voce',
     stemAuto: 'Scegli automaticamente',
@@ -689,6 +692,9 @@ export const it: Strings = {
   },
 
   history: {
+    doorvertellen: 'Continua il racconto',
+    vertelHet: 'Leggi ad alta voce',
+    stopVertellen: 'Stop',
     kaart: 'Carta di storia',
     wistJeDat: 'Lo sapevi?',
     bewaard: 'Questa carta è ora nella tua collezione.',

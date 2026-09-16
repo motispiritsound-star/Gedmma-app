@@ -672,6 +672,80 @@ export function say(arabic: string, opts: SayOptions = {}): void {
   speechSynthesis.speak(utter)
 }
 
+/* ------------------------------------------------------- telling a story */
+
+/**
+ * Reads a piece of the interface aloud, in the interface's own language.
+ *
+ * This is not `say`: nothing here is Darija, and nothing is transliterated.
+ * It is the narrator on a history card, so it wants the learner's own
+ * language and the plainest voice the device has for it.
+ *
+ * A device with no voice for that language says nothing at all rather than
+ * reading Dutch in a Spanish accent — the text is on screen either way, and
+ * `onDone` still fires so a film never waits for a voice that is not coming.
+ */
+export function narrate(
+  text: string,
+  locale: string,
+  opts: { onDone?: () => void } = {},
+): () => void {
+  const done = opts.onDone
+  const s = getState()
+  if (!text.trim() || !s.settings.sound || !s.settings.voorlezen || !canSpeak()) {
+    done?.()
+    return () => {}
+  }
+  const want = locale.toLowerCase().split('-')[0]
+  const voice = bestOf([locale.toLowerCase(), want], voices())
+  if (!voice) {
+    done?.()
+    return () => {}
+  }
+
+  unlockAudio()
+  speechSynthesis.cancel()
+  const utter = new SpeechSynthesisUtterance(text)
+  utter.voice = voice
+  utter.lang = voice.lang
+  // A story is not a vocabulary drill: it reads at a normal, even pace.
+  utter.rate = 1
+  utter.pitch = 1
+  let over = false
+  const finish = () => {
+    if (over) return
+    over = true
+    keepAwake()
+    if (apple()) sessionLost = true
+    done?.()
+  }
+  utter.onend = finish
+  // Some engines drop an utterance silently when the tab loses focus.
+  utter.onerror = finish
+  speechSynthesis.speak(utter)
+
+  return () => {
+    over = true
+    speechSynthesis.cancel()
+  }
+}
+
+/**
+ * Roughly how long a piece of text takes to read, in milliseconds.
+ *
+ * The fallback when there is no voice: the film still has to move on, and it
+ * should move on at about the speed somebody reads it.
+ */
+export const readingTime = (text: string): number =>
+  Math.min(22000, Math.max(2600, (text.length / 14) * 1000))
+
+/** Whether this device can read the interface language aloud at all. */
+export const canNarrate = (locale: string): boolean => {
+  if (!canSpeak()) return false
+  const want = locale.toLowerCase().split('-')[0]
+  return Boolean(bestOf([locale.toLowerCase(), want], voices()))
+}
+
 /** Some browsers only fill the voice list asynchronously. */
 export function onVoicesReady(cb: () => void): () => void {
   if (!canSpeak()) return () => {}

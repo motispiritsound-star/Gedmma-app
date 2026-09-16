@@ -470,6 +470,9 @@ export const fr: Strings = {
     schrijvenHint: 'Le tour bonus où tu traces les lettres et les mots à l’écran. À désactiver si dessiner au doigt ne marche pas.',
     film: 'Petit film après la leçon',
     filmHint: 'Un court dessin animé de Fnek quand tu termines une leçon.',
+    voorlezen: 'Lecture à voix haute',
+    voorlezenHint: "Lit les cartes d'histoire à voix haute dans la langue de l'app. Si votre appareil n'a pas de voix pour cette langue, rien n'est lu — le texte reste là.",
+    voorlezenGeenStem: "Cet appareil n'a pas de voix pour cette langue : la lecture reste silencieuse.",
     uitspraak: 'Prononciation',
     stem: 'Voix',
     stemAuto: 'Choisir automatiquement',
@@ -689,6 +692,9 @@ export const fr: Strings = {
   },
 
   history: {
+    doorvertellen: 'Continuer le récit',
+    vertelHet: 'Lire à voix haute',
+    stopVertellen: 'Stop',
     kaart: "Carte d'histoire",
     wistJeDat: 'Le savais-tu ?',
     bewaard: 'Cette carte est maintenant dans ta collection.',

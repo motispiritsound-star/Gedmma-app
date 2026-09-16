@@ -134,24 +134,40 @@ het vliegtuig — met per scène een eigen deuntje in hijaz en een Darija-woord
 dat Fnek aan het eind uitspreekt. Overslaan kan met één tik, en helemaal uit
 kan bij instellingen.
 
-**Na een toets iets anders: een kaart uit de geschiedenis.** Elk checkpoint
-levert er een op (`src/content/history.ts`, `src/ui/HistoryCard.tsx`): veertien
-kaarten in chronologische volgorde, van Walili — het Romeinse Volubilis — tot
-het Tifinagh dat in 2011 officieel werd, met Fatima al-Fihri, Tariq ibn Ziyad,
-al-Idrisi, Ibn Battuta en de leeuw van de Atlas ertussen. Anders dan het
-filmpje loopt die kaart niet op een klok: er staat tekst op, en tekst op
-andermans tempo is tekst die niemand uitleest, dus hij wacht op een tik. De
-kaart blijft: `/geschiedenis` bewaart de hele verzameling, ook de veertien
-sloten die nog dicht zitten. Alle teksten staan in zes talen en houden zich
-aan één regel — alleen wat vaststaat, geen politiek van vandaag, en waar een
-verhaal een verhaal is staat dat erbij.
+**Na een toets iets anders: een kort fragment uit de geschiedenis.** Elk
+checkpoint levert er een op (`src/content/history.ts`, `src/ui/HistoryCard.tsx`,
+`src/ui/HistoryScene.tsx`): veertien kaarten in chronologische volgorde, van
+Walili — het Romeinse Volubilis — tot het Tifinagh dat in 2011 officieel werd,
+met Fatima al-Fihri, Tariq ibn Ziyad, al-Idrisi, Ibn Battuta en de leeuw van
+de Atlas ertussen.
+
+Het is een filmpje en geen pagina. Een bewegend tafereel — zes decors dragen
+veertien kaarten, want een kust die terugkomt voor Tariq, al-Idrisi, al-Wazzan
+én de Amerikaanse schepen gaat op een plek lijken — met de tekening die zichzelf
+lijn voor lijn maakt, en een verteller die het voorleest in de taal waarin de
+app staat (`narrate` in `src/engine/audio.ts`). Drie beats: waar en wanneer, dan
+het verhaal, dan *wist je dat?* — de regel die aan tafel wordt naverteld. Een
+beat eindigt wanneer de verteller klaar is, dus het tempo is het tempo van het
+vertellen; een toestel zonder stem voor die taal leest niets voor en valt terug
+op ongeveer de snelheid waarop je het leest. De tekst staat er sowieso, en het
+fragment wacht nooit op een stem die niet komt. Voorlezen kan uit bij
+instellingen, en in de verzameling zit onder elke kaart een knop om hem opnieuw
+te laten voorlezen.
+
+De kaart blijft: `/geschiedenis` bewaart de hele verzameling, ook de sloten die
+nog dicht zitten. Alle teksten staan in zes talen en houden zich aan één regel —
+alleen wat vaststaat, geen politiek van vandaag, en waar een verhaal een verhaal
+is staat dat erbij. Tijdens het bouwen is elk fragment los te bekijken op
+`/kaart/:id`, net zoals `/film/:scene` al bestond.
 
 **En de vlag zit in de vormtaal.** De khatim — de vijfpuntige ster uit de
 Marokkaanse vlag, één doorlopende lijn die zichzelf vijf keer kruist — is de
 ster geworden waarmee een les wordt beoordeeld (`src/ui/Khatim.tsx`). Het rood
 en groen van de vlag staan als `alam` en `khatim` in de tokens en dragen het
-geschiedenisscherm. `npm run historycheck` speelt een echte toets uit, wacht op
-de kaart en leest de verzameling in alle zes talen na.
+geschiedenisscherm. `npm run historycheck` speelt een echte toets uit, kijkt het
+fragment beat voor beat uit, leest de verzameling in alle zes talen na en zet
+er een neptoestel met stemmen naast om te controleren dat de verteller de
+juiste taal pakt.
 
 ## Hoe het klinkt
 

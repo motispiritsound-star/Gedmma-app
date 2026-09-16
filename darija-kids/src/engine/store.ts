@@ -50,6 +50,15 @@ export interface Settings {
   /** The short animated scene after a finished lesson. */
   film: boolean
   /**
+   * Whether a history card is read aloud in the interface language.
+   *
+   * Separate from `sound`, because the two are different wishes: a classroom
+   * may want the tune and not the narrator, and a child who reads slowly
+   * wants the narrator most of all. Silent when the device has no voice for
+   * the language, and the card says nothing about it — the text is there.
+   */
+  voorlezen: boolean
+  /**
    * The tracing bonus: drawing a letter over a ghost of itself.
    *
    * On by default, off for a child who cannot draw on a screen — a finger on
@@ -250,6 +259,7 @@ const initial = (): State => ({
     mediaSound: prefersMediaChannel(),
     mediaSoundPicked: false,
     film: true,
+    voorlezen: true,
     schrijven: true,
     speech: true,
     hearts: true,

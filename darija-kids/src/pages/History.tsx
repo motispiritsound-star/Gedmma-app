@@ -7,7 +7,7 @@ import { useStore } from '../engine/store'
 import { sfx } from '../engine/audio'
 import { useLang, useT } from '../i18n'
 import { Button, Card, Progress, SectionTitle } from '../ui/kit'
-import { HistoryFace } from '../ui/HistoryCard'
+import { HistoryFace, HistoryTeller } from '../ui/HistoryCard'
 import { Medaillon } from '../ui/Motief'
 
 /**
@@ -73,6 +73,7 @@ export function History() {
                     className="border-t border-[var(--line)] p-4"
                   >
                     <HistoryFace card={card} compact />
+                    <HistoryTeller card={card} />
                   </motion.div>
                 )}
               </Card>

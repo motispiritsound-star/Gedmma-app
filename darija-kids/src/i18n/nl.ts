@@ -477,6 +477,9 @@ export const nl = {
     schrijvenHint: 'De bonusronde waarin je letters en woorden natekent op het scherm. Uit als tekenen met je vinger niet lukt.',
     film: 'Filmpje na de les',
     filmHint: 'Een kort tekenfilmpje van Fnek als je een les afrondt.',
+    voorlezen: 'Voorlezen',
+    voorlezenHint: 'Leest de geschiedeniskaarten hardop voor in de taal van de app. Heeft je toestel geen stem voor die taal, dan blijft het stil — de tekst staat er gewoon.',
+    voorlezenGeenStem: 'Dit toestel heeft geen stem voor deze taal, dus voorlezen blijft stil.',
     uitspraak: 'Uitspraak',
     stem: 'Stem',
     stemAuto: 'Automatisch kiezen',
@@ -707,6 +710,9 @@ export const nl = {
    * The history cards after a checkpoint, and the collection that keeps them.
    */
   history: {
+    doorvertellen: 'Vertel verder',
+    vertelHet: 'Lees voor',
+    stopVertellen: 'Stop',
     kaart: 'Kaart uit de geschiedenis',
     wistJeDat: 'Wist je dat?',
     bewaard: 'Deze kaart staat nu in je verzameling.',

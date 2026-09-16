@@ -470,6 +470,9 @@ export const es: Strings = {
     schrijvenHint: 'La ronda bonus en la que calcas letras y palabras en la pantalla. Desactívalo si dibujar con el dedo no funciona.',
     film: 'Peli corta tras la lección',
     filmHint: 'Un pequeño dibujo animado de Fnek cuando terminas una lección.',
+    voorlezen: 'Lectura en voz alta',
+    voorlezenHint: 'Lee las cartas de historia en voz alta en el idioma de la app. Si tu dispositivo no tiene voz para ese idioma, se queda en silencio: el texto sigue ahí.',
+    voorlezenGeenStem: 'Este dispositivo no tiene voz para este idioma, así que la lectura se queda en silencio.',
     uitspraak: 'Pronunciación',
     stem: 'Voz',
     stemAuto: 'Elegir automáticamente',
@@ -689,6 +692,9 @@ export const es: Strings = {
   },
 
   history: {
+    doorvertellen: 'Sigue contando',
+    vertelHet: 'Leer en voz alta',
+    stopVertellen: 'Parar',
     kaart: 'Carta de historia',
     wistJeDat: '¿Sabías que...?',
     bewaard: 'Esta carta ya está en tu colección.',

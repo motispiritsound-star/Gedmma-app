@@ -470,6 +470,9 @@ export const en: Strings = {
     schrijvenHint: 'The bonus round where you trace letters and words on the screen. Off if drawing with a finger does not work.',
     film: 'Little film after a lesson',
     filmHint: 'A short cartoon with Fnek when you finish a lesson.',
+    voorlezen: 'Reading aloud',
+    voorlezenHint: 'Reads the history cards aloud in the language the app is set to. If your device has no voice for that language it stays quiet — the text is there either way.',
+    voorlezenGeenStem: 'This device has no voice for this language, so reading aloud stays silent.',
     uitspraak: 'Pronunciation',
     stem: 'Voice',
     stemAuto: 'Choose automatically',
@@ -689,6 +692,9 @@ export const en: Strings = {
   },
 
   history: {
+    doorvertellen: 'Tell me more',
+    vertelHet: 'Read it aloud',
+    stopVertellen: 'Stop',
     kaart: 'History card',
     wistJeDat: 'Did you know?',
     bewaard: 'This card is in your collection now.',

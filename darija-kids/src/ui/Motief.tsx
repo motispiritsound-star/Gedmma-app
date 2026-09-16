@@ -103,14 +103,27 @@ function Kaart() {
   )
 }
 
+/**
+ * Two footprints walking away from you.
+ *
+ * Filled rather than outlined, unlike everything else here: an outlined foot
+ * at this size read as a pair of spectacles, and a journey is the one thing
+ * this card cannot afford to be vague about.
+ */
 function Voetstappen() {
+  const foot = (x: number, y: number) => (
+    <g transform={`translate(${x} ${y}) rotate(-18)`} fill="currentColor" stroke="none">
+      <ellipse cx="0" cy="-17" rx="9.5" ry="17" />
+      <circle cx="-7.5" cy="-36" r="3.6" />
+      <circle cx="0" cy="-39" r="3.8" />
+      <circle cx="7.5" cy="-36" r="3.2" />
+    </g>
+  )
   return (
     <g {...line}>
-      <path d="M12 82c16-6 22-22 38-28s26-18 38-24" strokeWidth="3" strokeDasharray="1 9" opacity=".7" />
-      {[[18, 78], [34, 66], [48, 54], [62, 40], [76, 28]].map(([x, y], i) => (
-        <ellipse key={i} cx={x} cy={y} rx="5" ry="7.5" transform={`rotate(${-36 + i * 4} ${x} ${y})`} />
-      ))}
-      <path d="M78 14l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" fill="currentColor" stroke="none" />
+      <path d="M6 94c16-6 20-20 34-28s28-18 40-34" strokeWidth="3.5" strokeDasharray="3 9" opacity=".5" />
+      {foot(28, 92)}
+      {foot(68, 58)}
     </g>
   )
 }
@@ -148,16 +161,32 @@ function Schip() {
   )
 }
 
+/**
+ * A lion, and unmistakably one.
+ *
+ * The first attempt was a circle inside a circle with four whiskers, which
+ * read as a smiley face. The mane is what makes a lion a lion, so it is drawn
+ * as a ring of points — inner radius, outer radius, all the way round.
+ */
 function Leeuw() {
+  const points = 16
+  const mane = Array.from({ length: points * 2 }, (_, i) => {
+    const angle = (i / (points * 2)) * Math.PI * 2 - Math.PI / 2
+    const r = i % 2 === 0 ? 45 : 32
+    return `${(50 + r * Math.cos(angle)).toFixed(1)} ${(50 + r * Math.sin(angle)).toFixed(1)}`
+  }).join('L')
+
   return (
     <g {...line}>
-      <path d="M50 12c22 0 38 16 38 38s-16 38-38 38-38-16-38-38 16-38 38-38z" />
-      <path d="M50 24c14 0 24 10 24 24S64 74 50 74 26 62 26 48s10-24 24-24z" strokeWidth="3" opacity=".7" />
-      <circle cx="41" cy="44" r="3" fill="currentColor" stroke="none" />
-      <circle cx="59" cy="44" r="3" fill="currentColor" stroke="none" />
-      <path d="M46 56h8l-4 5z" fill="currentColor" stroke="none" />
-      <path d="M42 64c3 4 13 4 16 0" strokeWidth="3" />
-      <path d="M30 50H18M30 58l-11 4M70 50h12M70 58l11 4" strokeWidth="3" opacity=".7" />
+      <path d={`M${mane}Z`} strokeWidth="3" strokeLinejoin="round" />
+      <circle cx="50" cy="50" r="27" />
+      {/* ears, peeking over the mane */}
+      <path d="M32 33a7 7 0 0 1 9-3M68 33a7 7 0 0 0-9-3" strokeWidth="3" />
+      <circle cx="41" cy="46" r="2.8" fill="currentColor" stroke="none" />
+      <circle cx="59" cy="46" r="2.8" fill="currentColor" stroke="none" />
+      <path d="M45 57h10l-5 5z" fill="currentColor" stroke="none" />
+      <path d="M50 62v4M50 66c-3 4-9 3-10-1M50 66c3 4 9 3 10-1" strokeWidth="2.6" />
+      <path d="M38 58H26M38 63l-11 3M62 58h12M62 63l11 3" strokeWidth="2.4" opacity=".75" />
     </g>
   )
 }

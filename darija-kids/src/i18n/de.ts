@@ -470,6 +470,9 @@ export const de: Strings = {
     schrijvenHint: 'Die Bonusrunde, in der du Buchstaben und Wörter auf dem Bildschirm nachzeichnest. Aus, wenn Malen mit dem Finger nicht klappt.',
     film: 'Filmchen nach der Lektion',
     filmHint: 'Ein kurzer Zeichentrick mit Fnek, wenn du eine Lektion abschließt.',
+    voorlezen: 'Vorlesen',
+    voorlezenHint: 'Liest die Geschichtskarten laut in der Sprache der App vor. Hat dein Gerät keine Stimme dafür, bleibt es still — der Text steht trotzdem da.',
+    voorlezenGeenStem: 'Dieses Gerät hat keine Stimme für diese Sprache, das Vorlesen bleibt still.',
     uitspraak: 'Aussprache',
     stem: 'Stimme',
     stemAuto: 'Automatisch wählen',
@@ -689,6 +692,9 @@ export const de: Strings = {
   },
 
   history: {
+    doorvertellen: 'Weitererzählen',
+    vertelHet: 'Vorlesen',
+    stopVertellen: 'Stopp',
     kaart: 'Geschichtskarte',
     wistJeDat: 'Wusstest du schon?',
     bewaard: 'Diese Karte ist jetzt in deiner Sammlung.',

@@ -4,10 +4,11 @@ import {
   exportProgress, importProgress, resetProgress, setSetting, setState, useStore, type Settings,
 } from '../engine/store'
 import {
-  arabicVoices, canListen, canSpeak, prepareSamples, probeSound, say, sfx, voicePlan, type SoundProbe,
+  arabicVoices, canListen, canNarrate, canSpeak, prepareSamples, probeSound, say, sfx, voicePlan,
+  type SoundProbe,
 } from '../engine/audio'
 import { LIST_PRICE, TRIAL_DAYS } from '../engine/billing'
-import { LANGS, useT, type Lang } from '../i18n'
+import { LANGS, localeOf, useT, type Lang } from '../i18n'
 import { useVoices } from '../ui/useVoices'
 import { Button, Card, SectionTitle, Sheet } from '../ui/kit'
 import { FeedbackButton } from '../ui/Feedback'
@@ -239,6 +240,15 @@ export function SettingsPage() {
             }}
             label={t.settings.mediakanaal}
           />
+        </Row>
+        {/* The narrator on a history card is not the Darija voice: it reads
+            the learner's own language, and a device may have one and not the
+            other. So it says out loud which of the two it cannot do. */}
+        <Row
+          title={t.settings.voorlezen}
+          hint={canNarrate(localeOf(s.lang)) ? t.settings.voorlezenHint : t.settings.voorlezenGeenStem}
+        >
+          <Toggle on={s.voorlezen} onChange={set('voorlezen')} label={t.settings.voorlezen} />
         </Row>
         <Row title={t.settings.uitspraak} hint={voiceStatus}>
           <Button variant="secondary" onClick={() => say('السلام عليكم', { tr: 'ssalamu 3alaykum' })}>

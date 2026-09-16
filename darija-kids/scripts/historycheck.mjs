@@ -116,10 +116,12 @@ const cardText = (await page.locator('body').innerText()).replace(/\n+/g, ' / ')
 if (!/kaart uit de geschiedenis/i.test(cardText)) {
   fails.push(`geen geschiedeniskaart na de toets — scherm: ${cardText.slice(0, 200)}`)
 } else {
-  console.log(`kaart: ${cardText.split(' / ').slice(0, 5).join(' · ')}`)
-  if (!/Wist je dat\?/.test(cardText)) fails.push('de kaart mist het "wist je dat"-blok')
+  console.log(`kaart: ${cardText.split(' / ').slice(0, 4).join(' · ')}`)
+  // Beat two tells the story; the punchline is deliberately still held back.
+  if (!/Tweeduizend jaar geleden/.test(cardText)) fails.push('het verhaal staat niet op de kaart')
+  if (/Wist je dat\?/.test(cardText)) fails.push('de clou stond er al voordat hij verteld was')
 }
-if (SHOTS) await page.screenshot({ path: `${SHOTS}/hist-kaart.png` })
+if (SHOTS) await page.screenshot({ path: `${SHOTS}/hist-beat-verhaal.png` })
 
 // It has to be in the collection before the button is even pressed: the card
 // is earned by passing, not by watching.
@@ -127,6 +129,21 @@ const afterCard = await store()
 if (!afterCard.history?.length) fails.push('de kaart belandde niet in de verzameling')
 else console.log(`verzameling: ${JSON.stringify(afterCard.history)}`)
 
+// The fragment plays in beats and only offers "Verder" when it has finished
+// telling; tapping through it is what a child in a hurry would do too.
+for (let i = 0; i < 6; i++) {
+  const beat = await page.locator('[data-card]').getAttribute('data-beat')
+  if (beat === 'klaar') break
+  await page.locator('[data-card] button').first().click({ force: true })
+  await page.waitForTimeout(350)
+}
+const lastBeat = await page.locator('[data-card]').getAttribute('data-beat')
+if (lastBeat !== 'klaar') fails.push(`het fragment bleef hangen op "${lastBeat}"`)
+else console.log('fragment: opening -> verhaal -> wist -> klaar')
+const endText = (await page.locator('body').innerText()).replace(/\n+/g, ' / ')
+if (!/Wist je dat\?/.test(endText)) fails.push('de clou kwam nooit')
+if (!/olijfpersen/.test(endText)) fails.push('de clou is leeg')
+if (SHOTS) await page.screenshot({ path: `${SHOTS}/hist-beat-wist.png` })
 await page.getByRole('button', { name: /^(Verder|Continue)$/ }).first().click({ force: true })
 await page.waitForTimeout(700)
 if (!/Les klaar|Foutloos/.test(await page.locator('body').innerText())) {
@@ -172,6 +189,8 @@ for (const lang of ['nl', 'fr', 'de', 'es', 'it', 'en']) {
   await page.locator('button[aria-expanded]').nth(3).click()
   await page.waitForTimeout(250)
   const body = await page.locator('button[aria-expanded="true"]').locator('..').innerText()
+  const teller = await page.locator('button').filter({ hasText: /^[\u25b6\u25fc]/ }).count()
+  if (teller !== 1) fails.push(`${lang}: ${teller} voorleesknoppen op een open kaart, verwacht 1`)
   if (body.length < 200) fails.push(`${lang}: kaart 4 heeft nauwelijks tekst`)
   console.log(`${lang}: 14 kaarten · ${body.replace(/\s+/g, ' ').slice(0, 58)}`)
   if (SHOTS && lang === 'fr') await page.screenshot({ path: `${SHOTS}/hist-fr.png` })
@@ -205,6 +224,49 @@ for (const lang of ['nl', 'fr', 'de', 'es', 'it', 'en']) {
   else if (light === dark) fails.push(`licht en donker geven hetzelfde jaartal: ${light}`)
   else console.log(`thema op een donkere telefoon: licht ${light} · donker ${dark}`)
   await phone.close()
+}
+
+/**
+ * The narrator, on a device that has a voice.
+ *
+ * Headless Chromium ships none, which is the honest test of the fallback —
+ * the beats above ran on their timers and the fragment still finished. This
+ * is the other half: a made-up voice list per language, and a check that the
+ * card asks for the right one and actually hands it the right words.
+ */
+{
+  const spoken = await browser.newPage({ viewport: { width: 390, height: 844 } })
+  const asked = []
+  await spoken.exposeFunction('gesproken', (lang, text) => asked.push({ lang, text }))
+  await spoken.addInitScript(() => {
+    const fake = ['nl-NL', 'fr-FR', 'de-DE', 'es-ES', 'it-IT', 'en-GB', 'ar-MA'].map((lang) => ({
+      lang, name: `Test ${lang}`, voiceURI: `test-${lang}`, localService: true, default: false,
+    }))
+    Object.defineProperty(speechSynthesis, 'getVoices', { value: () => fake })
+    // The real utterance refuses a voice that is not a real SpeechSynthesisVoice,
+    // and there is no way to make one, so the utterance is a double as well.
+    window.SpeechSynthesisUtterance = class { constructor(text) { this.text = text } }
+    speechSynthesis.speak = (u) => {
+      window.gesproken(u.voice ? u.voice.lang : '', u.text)
+      setTimeout(() => u.onend && u.onend(new Event('end')), 60)
+    }
+  })
+
+  for (const lang of ['nl', 'fr', 'it']) {
+    asked.length = 0
+    await spoken.goto(`${BASE}/`, { waitUntil: 'networkidle' })
+    await spoken.evaluate((s) => localStorage.setItem('darijakids.v1', JSON.stringify(s)), seeded(lang))
+    await spoken.goto(`${BASE}/kaart/fatima`, { waitUntil: 'networkidle' })
+    await spoken.waitForTimeout(4200)
+    const mine = asked.filter((a) => a.text.length > 30)
+    if (mine.length < 2) fails.push(`${lang}: de verteller zei ${mine.length} stukken, verwacht 2`)
+    else if (!mine.every((a) => a.lang.startsWith(lang))) {
+      fails.push(`${lang}: voorgelezen met ${mine.map((a) => a.lang).join(', ')}`)
+    } else console.log(`verteller ${lang}: ${mine.length} stukken in ${mine[0].lang} · "${mine[0].text.slice(0, 40)}…"`)
+    const beat = await spoken.locator('[data-card]').getAttribute('data-beat')
+    if (beat !== 'klaar') fails.push(`${lang}: het fragment eindigde op "${beat}" met een stem erbij`)
+  }
+  await spoken.close()
 }
 
 await browser.close()
