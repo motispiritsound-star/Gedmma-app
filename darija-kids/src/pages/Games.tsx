@@ -8,6 +8,7 @@ import { addXp, getState, gradeWord, useStore } from '../engine/store'
 import { Button, Card, SectionTitle, Stat } from '../ui/kit'
 import { BonusCard } from './Bonus'
 import { Mascot } from '../ui/Mascot'
+import { Khatim } from '../ui/Khatim'
 import { useLang, useT } from '../i18n'
 import { meaningOf } from '../content/localise'
 
@@ -189,7 +190,14 @@ function Memory({ onExit }: { onExit: () => void }) {
   const [deal, setDeal] = useState(0)
   const tiles = useMemo<Tile[]>(() => {
     const rnd = mulberry32(Date.now() % 65536 + deal)
-    const chosen = shuffle(poolOfWords(60).filter((w) => !w.phrase), rnd).slice(0, 6)
+    // A tile is a small square. "Zorg goed voor jezelf (doei)" does not fit in
+    // one and turns the board into a wall of text, so the long ones sit this
+    // game out — there are plenty of short words and they make better pairs.
+    const past = (w: { phrase?: boolean; id: string }) =>
+      !w.phrase && meaningOf(word(w.id), lang).length <= 18
+    const bruikbaar = poolOfWords(60).filter(past)
+    const chosen = shuffle(bruikbaar.length >= 6 ? bruikbaar : poolOfWords(60).filter((w) => !w.phrase), rnd)
+      .slice(0, 6)
     return shuffle(
       chosen.flatMap((w) => [
         { key: `${w.id}-ar`, wordId: w.id, face: 'ar' as const },
@@ -197,7 +205,7 @@ function Memory({ onExit }: { onExit: () => void }) {
       ]),
       rnd,
     )
-  }, [deal])
+  }, [deal, lang])
 
   const [open, setOpen] = useState<string[]>([])
   const [found, setFound] = useState<string[]>([])
@@ -220,6 +228,9 @@ function Memory({ onExit }: { onExit: () => void }) {
           setFound((f) => [...f, pairId])
           gradeWord(pairId, 'goed')
           sfx.match()
+          // Say it once more on the way out: the moment the pair clicks is
+          // when the word and its meaning are both in mind.
+          setTimeout(() => say(word(pairId).ar, { tr: word(pairId).tr }), 260)
         } else sfx.wrong()
         setOpen([])
       }, matched ? 300 : 800)
@@ -236,7 +247,10 @@ function Memory({ onExit }: { onExit: () => void }) {
     <div className="mx-auto max-w-md px-4 py-6">
       <div className="flex items-center justify-between font-display text-lg font-extrabold">
         <button onClick={() => { sfx.back(); onExit() }} aria-label={t.common.stoppen} className="text-[var(--ink-soft)]">✕</button>
-        <span>🃏 {found.length}/{tiles.length / 2}</span>
+        <span className="flex items-center gap-2">
+          <Khatim size={20} className="text-saffron-500" />
+          {found.length}/{tiles.length / 2}
+        </span>
         <span>{tries} {t.common.beurten}</span>
       </div>
 
@@ -256,11 +270,28 @@ function Memory({ onExit }: { onExit: () => void }) {
               }`}
             >
               {shown ? (
-                tile.face === 'ar'
-                  ? <span className="ar text-lg font-bold">{w.ar}</span>
-                  : <span className="text-sm font-bold">{w.emoji} {meaningOf(w, lang)}</span>
+                tile.face === 'ar' ? (
+                  <span className="flex h-full flex-col items-center justify-center gap-0.5">
+                    <span className="ar text-lg leading-tight font-bold">{w.ar}</span>
+                    {/* Without this the Arabic side is unreadable to a child
+                        who is still learning the script, and the pair becomes
+                        a coin toss instead of a word. */}
+                    <span className="text-[11px] font-extrabold text-zellige-600 dark:text-zellige-300">
+                      {w.tr}
+                    </span>
+                  </span>
+                ) : (
+                  <span className="flex h-full flex-col items-center justify-center gap-0.5">
+                    <span className="text-xl" aria-hidden="true">{w.emoji}</span>
+                    <span className="text-[11px] leading-tight font-bold">{meaningOf(w, lang)}</span>
+                  </span>
+                )
               ) : (
-                <span className="text-2xl" aria-hidden="true">🌟</span>
+                <Khatim
+                  size={34}
+                  filled={false}
+                  className="mx-auto text-khatim-500/45 dark:text-khatim-300/40"
+                />
               )}
             </motion.button>
           )

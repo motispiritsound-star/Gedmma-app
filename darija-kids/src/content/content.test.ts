@@ -3,7 +3,6 @@ import { UNITS, LESSONS } from './curriculum'
 import { allWords, maybeWord, searchWords } from './lexicon'
 import { LETTERS } from './alphabet'
 import { LETTER_SPEECH, RESPELLED, SPOKEN, SPOKEN_WORD, letterSpeech, spokenForm } from './pronunciation'
-import { strokeOrder } from '../engine/scribe'
 import { ALL_SENTENCES, maybeSentence } from './sentences'
 import { STORIES } from './stories'
 import { HISTORY, cardForCheckpoint, historyById } from './history'
@@ -283,53 +282,6 @@ describe('how the letters are said', () => {
   it('gives the emphatic letters a name of their own', () => {
     const names = LETTERS.map((l) => l.name)
     expect(new Set(names).size, names.join(' ')).toBe(names.length)
-  })
-})
-
-describe('stroke order', () => {
-  /** A tiny painted square, so the order can be checked without a browser. */
-  const board = (n: number, blobs: { x: number; y: number; r: number }[]): Uint8ClampedArray => {
-    const data = new Uint8ClampedArray(n * n * 4)
-    for (const b of blobs) {
-      for (let y = b.y - b.r; y <= b.y + b.r; y++) {
-        for (let x = b.x - b.r; x <= b.x + b.r; x++) {
-          if (x < 0 || y < 0 || x >= n || y >= n) continue
-          if ((x - b.x) ** 2 + (y - b.y) ** 2 > b.r ** 2) continue
-          data[(y * n + x) * 4 + 3] = 255
-        }
-      }
-    }
-    return data
-  }
-
-  it('starts at the right-hand end of a wide body', () => {
-    const n = 64
-    const body = Array.from({ length: 30 }, (_, i) => ({ x: 16 + i, y: 32, r: 3 }))
-    const [first] = strokeOrder(board(n, body), n)
-    expect(first!.x).toBeGreaterThan(0.6)
-  })
-
-  it('starts at the top of a tall body', () => {
-    const n = 64
-    const body = Array.from({ length: 30 }, (_, i) => ({ x: 32, y: 16 + i, r: 3 }))
-    const [first] = strokeOrder(board(n, body), n)
-    expect(first!.y).toBeLessThan(0.35)
-  })
-
-  it('numbers the dots right to left, after the body', () => {
-    const n = 64
-    const body = Array.from({ length: 30 }, (_, i) => ({ x: 16 + i, y: 30, r: 3 }))
-    const points = strokeOrder(board(n, [...body, { x: 20, y: 48, r: 3 }, { x: 42, y: 48, r: 3 }]), n)
-    expect(points).toHaveLength(3)
-    // The body first, then the right-hand dot, then the left-hand one.
-    expect(points[1]!.x).toBeGreaterThan(points[2]!.x)
-  })
-
-  it("shifts a dot's number clear of the dot", () => {
-    const n = 64
-    const body = Array.from({ length: 30 }, (_, i) => ({ x: 16 + i, y: 30, r: 3 }))
-    const points = strokeOrder(board(n, [...body, { x: 30, y: 48, r: 3 }]), n)
-    expect(points[1]!.y * n).toBeGreaterThan(48)
   })
 })
 

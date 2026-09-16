@@ -28,8 +28,14 @@ describe('tracing', () => {
     expect(trace(90, 100, 10, 120).verdict).toBe('goed')
   })
 
+  // A six-year-old's finger overshoots the ends and misses the middle of a
+  // curve. That is still writing the letter, and it used to come back "bijna".
+  it('passes a wobbly but recognisable letter', () => {
+    expect(trace(62, 100, 55, 130).verdict).toBe('goed')
+  })
+
   it('calls a half-drawn letter close rather than wrong', () => {
-    expect(trace(55, 100, 20, 110).verdict).toBe('bijna')
+    expect(trace(40, 100, 20, 110).verdict).toBe('bijna')
   })
 
   it('fails a letter that was barely touched', () => {
