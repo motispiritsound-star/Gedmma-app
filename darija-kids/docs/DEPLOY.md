@@ -28,7 +28,7 @@ Op andere hosts:
 |---|---|
 | Build command | `npm ci && npm run build` |
 | Build output directory | `dist` |
-| Root directory | `bladi` |
+| Root directory | `darija-kids` |
 | Node-versie | 20 of hoger |
 
 ## Na een nieuwe versie

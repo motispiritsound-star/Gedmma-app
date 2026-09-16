@@ -1,14 +1,17 @@
 import { Link } from 'react-router-dom'
 import { OPERATOR, operatorKnown } from '../content/operator'
-import { PRIVACY } from '../i18n/privacy'
+import { TERMS } from '../i18n/terms'
 import { useLang, useT } from '../i18n'
 import { Button, Card, SectionTitle } from '../ui/kit'
 
-/** The statement both app stores ask for, and the GDPR requires anyway. */
-export function Privacy() {
+/**
+ * The terms both stores insist on before they will sell a subscription, and
+ * the page a parent should be able to read before they pay for one.
+ */
+export function Terms() {
   const t = useT()
   const lang = useLang()
-  const text = PRIVACY[lang]
+  const text = TERMS[lang]
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
@@ -17,7 +20,7 @@ export function Privacy() {
 
       {!operatorKnown() && (
         <Card className="mt-6 border-saffron-500 bg-saffron-500/10 p-4 text-sm">
-          ⚠️ {text.missing}
+          ⚠️ {t.terms.uitgeverOntbreekt}
         </Card>
       )}
 
@@ -40,8 +43,7 @@ export function Privacy() {
       )}
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
-        <Link to="/ouders"><Button variant="secondary">{t.nav.ouders}</Button></Link>
-        <Link to="/voorwaarden"><Button variant="secondary">{t.nav.voorwaarden}</Button></Link>
+        <Link to="/privacy"><Button variant="secondary">{t.nav.privacy}</Button></Link>
         <Link to="/leren"><Button>{t.nav.leren}</Button></Link>
       </div>
     </div>

@@ -40,6 +40,7 @@ export const nl = {
     ouders: 'Voor ouders',
     instellingen: 'Instellingen',
     privacy: 'Privacy',
+    voorwaarden: 'Voorwaarden',
     menu: 'Hoofdmenu',
     onderdelen: 'Onderdelen',
   },
@@ -587,6 +588,10 @@ export const nl = {
     titel: 'Ahlan! Welkom bij Darija Kids',
     body: 'In welke taal wil je leren? Je kunt dit later altijd wisselen.',
     knop: 'Yallah, beginnen',
+  },
+
+  terms: {
+    uitgeverOntbreekt: 'Deze voorwaarden zijn nog niet compleet: de naam en het e-mailadres van de uitgever staan er nog niet in. Vul ze in src/content/operator.ts in vóór je de app indient.',
   },
 
   notFound: {

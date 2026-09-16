@@ -125,6 +125,8 @@ export function Unlock() {
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link to="/leren"><Button variant="ghost">{t.lesson.terugNaarPad}</Button></Link>
+        {/* Both stores require these two to be reachable before a purchase. */}
+        <Link to="/voorwaarden"><Button variant="ghost">{t.nav.voorwaarden}</Button></Link>
         <Link to="/privacy"><Button variant="ghost">{t.nav.privacy}</Button></Link>
       </div>
 

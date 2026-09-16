@@ -36,6 +36,7 @@ export const de: Strings = {
     ouders: 'Für Eltern',
     instellingen: 'Einstellungen',
     privacy: 'Datenschutz',
+    voorwaarden: 'Bedingungen',
     menu: 'Hauptmenü',
     onderdelen: 'Bereiche',
   },
@@ -581,6 +582,10 @@ export const de: Strings = {
     titel: 'Ahlan! Willkommen bei Darija Kids',
     body: 'In welcher Sprache möchtest du lernen? Du kannst das später jederzeit ändern.',
     knop: 'Yallah, los',
+  },
+
+  terms: {
+    uitgeverOntbreekt: 'Diese Bedingungen sind noch nicht vollständig: Name und E-Mail-Adresse des Herausgebers fehlen. Trage sie in src/content/operator.ts ein, bevor du die App einreichst.',
   },
 
   notFound: {

@@ -29,7 +29,7 @@ privacy-URL zodra de site online staat (bijvoorbeeld
 
 ## Android
 
-Het project staat in `bladi/android/` en is compleet. Je hebt Android Studio
+Het project staat in `darija-kids/android/` en is compleet. Je hebt Android Studio
 nodig (dat draait op Windows, macOS en Linux) en een Google
 Play Console-account.
 
@@ -43,7 +43,7 @@ In Android Studio: **Build → Generate Signed App Bundle**. Bewaar de keystore
 die je daar aanmaakt op een veilige plek — raak je hem kwijt, dan kun je nooit
 meer een update van dezelfde app publiceren.
 
-Instellingen die al goed staan: applicatie-id `app.bladi.learn`, minimaal
+Instellingen die al goed staan: applicatie-id `app.darijakids.learn`, minimaal
 Android 7 (API 24), doel-API 36, geen cleartext-verkeer, versie 1.0 (code 1).
 Voor elke volgende release hoog je `versionCode` en `versionName` op in
 `android/app/build.gradle`.
@@ -55,8 +55,10 @@ In de Play Console vul je verder in:
   spraakherkenning in de webweergave niet beschikbaar is op Android, dus de app
   vraagt geen microfoontoestemming.
 - **Doelgroep**: vink de leeftijdsgroepen onder 13 aan. Daarmee valt de app
-  onder het **Families-beleid**: geen advertenties, geen analytics van derden,
-  geen aankopen — daar voldoet de app aan omdat die dingen er niet in zitten.
+  onder het **Families-beleid**. Dat verbiedt advertenties en analytics van
+  derden — die zitten er niet in — en staat in-app-aankopen wél toe, mits de
+  prijs en de verlenging vóór de aankoop in beeld staan en er een ouderpoort
+  voor zit. Dat is precies hoe het abonnementsscherm gebouwd is.
 - **Inhoudsclassificatie**: de vragenlijst levert PEGI 3 / Iedereen op. Vink
   daar "bevat in-app-aankopen: ja" en "bevat advertenties: nee" aan.
   Abonnementen voor kinder-apps worden strenger bekeken: de prijs en de
@@ -74,14 +76,14 @@ van dit project. Op die Mac:
 ```bash
 npm install
 npm run build
-npx cap add ios        # maakt bladi/ios/ aan (alleen de eerste keer)
+npx cap add ios        # maakt darija-kids/ios/ aan (alleen de eerste keer)
 npx cap sync ios
 npx @capacitor/assets generate --ios   # iconen en splashschermen
 npx cap open ios       # opent Xcode
 ```
 
 In Xcode stel je je Team in (Signing & Capabilities), controleer je dat de
-bundle-id `app.bladi.learn` is, en archiveer je via **Product → Archive** naar
+bundle-id `app.darijakids.learn` is, en archiveer je via **Product → Archive** naar
 App Store Connect.
 
 In App Store Connect vul je in:

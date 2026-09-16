@@ -32,7 +32,8 @@ const SECTIONS_NL: Section[] = [
     'De spreekoefeningen zijn de enige uitzondering: die gebruiken de spraakherkenning van je browser. In Chrome en in sommige andere browsers betekent dat dat de opname naar de maker van die browser gaat (bij Chrome: Google) om te worden omgezet in tekst. Darija Kids krijgt alleen de tekst te zien en bewaart die niet. Wil je dat niet, zet spreekoefeningen dan uit bij Instellingen; de rest van de app werkt gewoon door.',
   ]],
   ['Kinderen', [
-    'Deze app is gemaakt voor kinderen. Daarom is er bewust geen account, geen chat, geen mogelijkheid om iets te delen of te uploaden, geen aankoop en geen advertentie. Er is niets dat een kind kan invullen dat bij ons terechtkomt.',
+    'Deze app is gemaakt voor kinderen. Daarom is er bewust geen account, geen chat, geen mogelijkheid om iets te delen of te uploaden, en geen advertentie. Er is niets dat een kind kan invullen dat bij ons terechtkomt.',
+    'Er is één aankoop: het abonnement voor de volledige cursus. Die zit achter een rekensom die een kind niet zomaar oplost, en de betaling loopt volledig via de App Store of Google Play — wij zien geen kaartgegevens en geen naam.',
   ]],
   ['De app-winkels', [
     'Download je de app uit de App Store of Google Play, dan weten Apple of Google dát je hem hebt gedownload, en kunnen zij technische crashgegevens verzamelen volgens hun eigen voorwaarden. Dat staat los van ons: wij krijgen daar geen persoonsgegevens uit.',
@@ -60,7 +61,8 @@ const SECTIONS_FR: Section[] = [
     'Les exercices de prononciation sont la seule exception : ils utilisent la reconnaissance vocale de ton navigateur. Dans Chrome et quelques autres, cela signifie que l’enregistrement part chez l’éditeur du navigateur (pour Chrome : Google) pour être transformé en texte. Darija Kids ne voit que le texte et ne le conserve pas. Si tu préfères l’éviter, désactive les exercices de prononciation dans les réglages ; le reste de l’application continue de fonctionner.',
   ]],
   ['Les enfants', [
-    'Cette application est faite pour des enfants. C’est pourquoi il n’y a volontairement ni compte, ni chat, ni partage, ni envoi de fichiers, ni achat, ni publicité. Il n’y a rien qu’un enfant puisse remplir qui nous parvienne.',
+    'Cette application est faite pour des enfants. C’est pourquoi il n’y a volontairement ni compte, ni chat, ni partage, ni envoi de fichiers, ni publicité. Il n’y a rien qu’un enfant puisse remplir qui nous parvienne.',
+    'Il y a un achat : l’abonnement au cours complet. Il est protégé par un calcul qu’un enfant ne résout pas en passant, et le paiement passe entièrement par l’App Store ou Google Play — nous ne voyons ni données bancaires ni nom.',
   ]],
   ['Les magasins d’applications', [
     'Si tu télécharges l’application sur l’App Store ou Google Play, Apple ou Google savent que tu l’as téléchargée et peuvent collecter des données techniques de plantage selon leurs propres conditions. Cela ne dépend pas de nous et ne nous transmet aucune donnée personnelle.',
@@ -88,7 +90,8 @@ const SECTIONS_DE: Section[] = [
     'Die Sprechübungen sind die einzige Ausnahme: sie nutzen die Spracherkennung deines Browsers. Bei Chrome und einigen anderen heißt das, dass die Aufnahme zum Hersteller des Browsers geht (bei Chrome: Google), um in Text umgewandelt zu werden. Darija Kids sieht nur den Text und speichert ihn nicht. Wenn dir das nicht recht ist, schalte die Sprechübungen in den Einstellungen aus; der Rest der App funktioniert weiter.',
   ]],
   ['Kinder', [
-    'Diese App ist für Kinder gemacht. Deshalb gibt es bewusst kein Konto, keinen Chat, kein Teilen, kein Hochladen, keine Käufe und keine Werbung. Es gibt nichts, was ein Kind eingeben könnte und das bei uns ankäme.',
+    'Diese App ist für Kinder gemacht. Deshalb gibt es bewusst kein Konto, keinen Chat, kein Teilen, kein Hochladen und keine Werbung. Es gibt nichts, was ein Kind eingeben könnte und das bei uns ankäme.',
+    'Einen Kauf gibt es: das Abo für den ganzen Kurs. Es liegt hinter einer Rechenaufgabe, die ein Kind nicht nebenbei löst, und die Zahlung läuft vollständig über den App Store oder Google Play — wir sehen weder Kartendaten noch Namen.',
   ]],
   ['Die App-Stores', [
     'Lädst du die App im App Store oder bei Google Play, wissen Apple oder Google, dass du sie geladen hast, und können nach ihren eigenen Bedingungen technische Absturzdaten erheben. Das liegt außerhalb unseres Einflusses; personenbezogene Daten erhalten wir daraus nicht.',
@@ -116,7 +119,8 @@ const SECTIONS_EN: Section[] = [
     'The speaking exercises are the one exception: they use your browser’s speech recognition. In Chrome and some others that means the recording goes to the browser’s maker (for Chrome: Google) to be turned into text. Darija Kids only sees the text and does not keep it. If you would rather avoid that, switch speaking exercises off in the settings; the rest of the app carries on working.',
   ]],
   ['Children', [
-    'This app is made for children. That is why there is deliberately no account, no chat, no sharing, no uploading, no purchases and no advertising. There is nothing a child can fill in that reaches us.',
+    'This app is made for children. That is why there is deliberately no account, no chat, no sharing, no uploading and no advertising. There is nothing a child can fill in that reaches us.',
+    'There is one purchase: the subscription to the full course. It sits behind a sum a child will not solve in passing, and the payment runs entirely through the App Store or Google Play — we see no card details and no name.',
   ]],
   ['The app stores', [
     'If you download the app from the App Store or Google Play, Apple or Google know that you downloaded it and may collect technical crash data under their own terms. That is outside our control and gives us no personal data.',
@@ -145,6 +149,7 @@ const SECTIONS_ES: Section[] = [
   ]],
   ['Los niños', [
     'Esta aplicación está hecha para niños. Por eso no hay, a propósito, ni cuenta, ni chat, ni manera de compartir o subir nada, ni publicidad. No hay nada que un niño pueda rellenar y que llegue hasta nosotros.',
+    'Hay una compra: la suscripción al curso completo. Está detrás de una cuenta que un niño no resuelve de pasada, y el pago va entero por la App Store o Google Play: no vemos ni datos de tarjeta ni nombre.',
   ]],
   ['Las tiendas de aplicaciones', [
     'Si descargas la aplicación en la App Store o en Google Play, Apple o Google saben que la has descargado y pueden recoger datos técnicos de fallos según sus propias condiciones. Eso queda fuera de nuestro alcance y no nos aporta ningún dato personal.',

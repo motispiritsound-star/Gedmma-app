@@ -17,18 +17,18 @@ leren.
 land*. De taal die erbij hoort, leer je hier.
 
 ```
-bladi/
+darija-kids/
   src/content/       de leerstof: woorden, units, letters, verhalen
     lang/            dezelfde leerstof in het Frans, Duits, Spaans en Engels
   src/i18n/          de interface in vijf talen, en de privacyverklaring
   src/engine/        herhaalsysteem, oefeninggenerator, voortgang, geluid
   src/ui/            bouwstenen, de oefeningen en de ronde-loop
   src/pages/         de schermen, inclusief de publieke website
-  scripts/           iconen, deelplaatje en winkelplaatjes renderen, browsertest
+  scripts/           iconen, schermafbeeldingen en winkelbeelden renderen, tests
   public/            fonts, iconen, manifest, service worker
   android/           het Android-project (Capacitor)
-  store/             winkelteksten per taal, klaar om te plakken
-  docs/STORES.md     de route naar de App Store en Google Play
+  store/             winkelteksten, persmap, socialposts, zoekwoorden
+  docs/LAUNCH.md     de lanceerlijst: van inschrijving tot eerste downloader
 ```
 
 ## Aan de praat
@@ -48,7 +48,9 @@ Tests en controles:
 npm test           # 63 tests: leerstof, vertalingen, herhaalsysteem, oefeningen, betaalgrens
 npm run typecheck
 npm run smoke      # klikt de gebouwde app door in een echte browser (na `npm run preview`)
-npm run soundcheck # rendert elke klank en meet of hij écht geluid maakt (na `npm run dev`)
+npm run soundcheck  # rendert elke klank en meet of hij écht geluid maakt (na `npm run dev`)
+npm run screenshots # fotografeert de app in alle winkelformaten (na `npm run preview`)
+npm run marketing   # tekent de feature graphic en de socialbeelden
 npm run icons      # tekent de iconen en het deelplaatje opnieuw
 ```
 
@@ -257,7 +259,8 @@ Android-app. Het Android-project staat compleet in `android/`, inclusief alle
 iconen; voor iOS is een Mac met Xcode nodig (een eis van Apple). De teksten voor
 beide winkels staan kant-en-klaar in `store/`, per taal. De hele route — accounts,
 kosten, kindercategorie, privacyantwoorden, screenshots — staat in
-[docs/STORES.md](docs/STORES.md).
+[docs/STORES.md](docs/STORES.md), en de volledige lanceerlijst — van KvK tot
+de eerste twintig recensies — in [docs/LAUNCH.md](docs/LAUNCH.md).
 
 ```bash
 npm run build          # web-build in dist/

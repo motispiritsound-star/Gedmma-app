@@ -14,6 +14,7 @@ const Profile = lazy(() => import('./pages/Profile').then((m) => ({ default: m.P
 const Parents = lazy(() => import('./pages/Parents').then((m) => ({ default: m.Parents })))
 const Unlock = lazy(() => import('./pages/Unlock').then((m) => ({ default: m.Unlock })))
 const Privacy = lazy(() => import('./pages/Privacy').then((m) => ({ default: m.Privacy })))
+const Terms = lazy(() => import('./pages/Terms').then((m) => ({ default: m.Terms })))
 const SettingsPage = lazy(() => import('./pages/Settings').then((m) => ({ default: m.SettingsPage })))
 import { NotFound } from './pages/NotFound'
 const FilmPreview = lazy(() => import('./ui/Film').then((m) => ({ default: m.FilmPreview })))
@@ -95,6 +96,7 @@ function Chrome() {
             <Route path="/ouders" element={<Parents />} />
             <Route path="/instellingen" element={<SettingsPage />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/voorwaarden" element={<Terms />} />
             <Route path="/volledig" element={<Unlock />} />
             {/* Working on a scene of the film is otherwise a matter of
                 finishing a lesson to see one frame of it. */}
