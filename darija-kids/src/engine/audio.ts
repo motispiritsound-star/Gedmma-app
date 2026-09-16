@@ -653,6 +653,14 @@ export interface SayOptions {
    */
   latin?: Partial<Record<Phonetic, string>>
   slow?: boolean
+  /**
+   * Overrides the reading speed for this one utterance, 0…1.
+   *
+   * A letter is not a word. A word wants the pace of speech; a single letter
+   * wants to be held long enough to hear the vowel in it, and at the speed
+   * that reads a sentence a long "qāf" arrives as a short "qaf".
+   */
+  rate?: number
 }
 
 export function say(arabic: string, opts: SayOptions = {}): void {
@@ -675,7 +683,9 @@ export function say(arabic: string, opts: SayOptions = {}): void {
   utter.voice = plan.voice
   utter.lang = plan.voice.lang
   // The approximation is easier to follow a little slower than the real thing.
-  utter.rate = opts.slow ? 0.55 : plan.mode === 'benadering' ? s.settings.voiceRate * 0.9 : s.settings.voiceRate
+  utter.rate = opts.slow
+    ? 0.55
+    : opts.rate ?? (plan.mode === 'benadering' ? s.settings.voiceRate * 0.9 : s.settings.voiceRate)
   utter.pitch = 1
   utter.onend = () => {
     // Speaking can hand the session back suspended, or not hand it back at all.
@@ -768,9 +778,13 @@ export const canNarrate = (locale: string): boolean => {
  * says. And a device without an Arabic voice gets a spelling written for the
  * language that voice speaks, rather than one mangled by the word rules.
  */
+export const LETTER_RATE = 0.7
+
 export function sayLetter(letter: { id: string; ar: string; name: string }, opts: { slow?: boolean } = {}): void {
   const speech = letterSpeech(letter.id, letter.ar, letter.name)
-  say(speech.ar, { tr: speech.tr, latin: speech.latin, slow: opts.slow })
+  // Slower than a word on purpose: a letter name is two sounds and a long
+  // vowel, and at talking speed the vowel disappears.
+  say(speech.ar, { tr: speech.tr, latin: speech.latin, slow: opts.slow, rate: LETTER_RATE })
 }
 
 /** Some browsers only fill the voice list asynchronously. */
