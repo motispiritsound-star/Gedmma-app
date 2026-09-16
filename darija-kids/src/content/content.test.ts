@@ -7,7 +7,7 @@ import { ALL_SENTENCES, maybeSentence } from './sentences'
 import { STORIES } from './stories'
 import { HISTORY, cardForCheckpoint, historyById } from './history'
 import { historyOf } from './localise'
-import { EIGEN_IDS, eigenVoorkeur, UITSPRAAK, voorkeurVoor, zwevendeIds } from './eigen'
+import { EIGEN_IDS, eigenVoorkeur, OPNAME_NODIG, UITSPRAAK, voorkeurVoor, zwevendeIds } from './eigen'
 import { LANGS } from '../i18n/languages'
 
 describe('lexicon', () => {
@@ -337,5 +337,23 @@ describe('welke stem welk woord zegt', () => {
       const geleend = eigenVoorkeur(w.ar) !== undefined
       expect(geleend, `${id} staat op "${weg}"`).toBe(weg === 'geleend')
     }
+  })
+})
+
+describe('wat nog opgenomen moet worden', () => {
+  it('verwijst naar bestaande woorden', () => {
+    const bekend = new Set(allWords.map((w) => w.id))
+    for (const id of OPNAME_NODIG) expect(bekend.has(id), id).toBe(true)
+  })
+
+  it('noemt geen woord twee keer', () => {
+    expect(new Set(OPNAME_NODIG).size).toBe(OPNAME_NODIG.length)
+  })
+
+  // Een woord waar geen stem raad mee weet is niet ook nog eens een woord
+  // waarvan is vastgelegd welke stem het zegt. Stond het in allebei, dan zou
+  // de lijst zeggen dat het goed komt terwijl het wacht op een mens.
+  it('staat niet ook als getest genoteerd', () => {
+    for (const id of OPNAME_NODIG) expect(UITSPRAAK[id], id).toBeUndefined()
   })
 })

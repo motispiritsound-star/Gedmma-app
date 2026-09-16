@@ -4,6 +4,7 @@ import { allWords } from '../content/lexicon'
 import { ALL_SENTENCES } from '../content/sentences'
 import { letterSpeech } from '../content/pronunciation'
 import { clipCounts, hasClip } from '../engine/clips'
+import { OPNAME_NODIG } from '../content/eigen'
 import { say, sayLetter, sfx } from '../engine/audio'
 import { Button, Card, Progress, SectionTitle } from '../ui/kit'
 
@@ -24,6 +25,9 @@ import { Button, Card, Progress, SectionTitle } from '../ui/kit'
  */
 
 type Row = { id: string; ar: string; tr: string; naam: string; folder: string }
+
+/** Woorden waarvan is vastgesteld dat geen enkele stem ze goed zegt. */
+const EERST = new Set(OPNAME_NODIG)
 type Take = { url: string; blob: Blob }
 
 const ROWS: Record<'letters' | 'woorden' | 'zinnen', () => Row[]> = {
@@ -58,12 +62,17 @@ export function Record() {
   const telling = clipCounts()
   const rijen = useMemo(() => {
     const naald = zoek.trim().toLowerCase()
-    return ROWS[tab]().filter((r) => {
+    const gevonden = ROWS[tab]().filter((r) => {
       if (nogNiet && hasClip(r.id) && !takes[r.id]) return false
       if (!naald) return true
       return `${r.id} ${r.tr} ${r.naam} ${r.ar}`.toLowerCase().includes(naald)
     })
+    // Van deze is gehoord dat geen stem ze goed zegt, dus hier is de winst het
+    // grootst. Met honderd woorden te gaan is de volgorde het halve werk.
+    return [...gevonden].sort((a, b) => Number(EERST.has(b.id)) - Number(EERST.has(a.id)))
   }, [tab, zoek, nogNiet, takes])
+
+  const teDoen = OPNAME_NODIG.filter((id) => !hasClip(id)).length
 
   /** One microphone, opened once: asking per item is hundreds of prompts. */
   const microphone = async (): Promise<MediaStream | null> => {
@@ -149,6 +158,13 @@ export function Record() {
             </div>
           ))}
         </div>
+        {teDoen > 0 && (
+          <p className="mt-3 rounded-2xl bg-terra-500/10 px-3 py-2 text-sm">
+            <strong className="font-display">{teDoen} met voorrang.</strong> Van deze woorden is
+            vastgesteld dat geen enkele stem ze goed zegt. Ze staan bovenaan, met
+            een rood streepje.
+          </p>
+        )}
         {trouble && <p className="mt-2 font-bold text-terra-500">{trouble}</p>}
       </Card>
 
@@ -182,7 +198,9 @@ export function Record() {
           const recording = busy === row.id
           return (
             <li key={row.id}>
-              <Card className="flex flex-wrap items-center gap-3 p-3">
+              <Card className={`flex flex-wrap items-center gap-3 p-3 ${
+                EERST.has(row.id) && !hasClip(row.id) ? 'border-s-4 border-s-terra-500' : ''
+              }`}>
                 <div className="min-w-0 flex-1">
                   <div className="ar text-xl font-bold">{row.ar}</div>
                   <div className="font-display font-extrabold text-zellige-600 dark:text-zellige-300">
@@ -191,6 +209,9 @@ export function Record() {
                   <div className="text-xs text-[var(--ink-soft)]">
                     {row.naam} · <code>{row.id}</code>
                     {hasClip(row.id) && ' · al opgenomen'}
+                    {EERST.has(row.id) && !hasClip(row.id) && (
+                      <span className="font-bold text-terra-500"> · geen stem zegt dit goed</span>
+                    )}
                   </div>
                 </div>
 

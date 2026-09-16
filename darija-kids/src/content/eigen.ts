@@ -33,28 +33,25 @@ import type { Target } from './pronunciation'
 export type Weg = 'arabisch' | 'geleend'
 
 export const UITSPRAAK: Record<string, Weg> = {
-  // Voornaamwoorden en familie: het Standaardarabisch schuift er klinkers in
-  // die Darija juist weglaat.
-  nta: 'geleend', nti: 'geleend', ntuma: 'geleend', hna: 'geleend',
-  khoya: 'geleend', khti: 'geleend', jedda: 'geleend',
-  ammti: 'geleend', khalti: 'geleend',
-  weld: 'geleend', drari: 'geleend', sahbi: 'geleend', sahbti: 'geleend',
+  // Getest en goed met de Arabische stem.
+  afak: 'arabisch',
 
-  // De kleine woorden die een zin bij elkaar houden.
-  afak: 'geleend', bslama: 'geleend', thalla: 'geleend', iyeh: 'geleend',
-  wakha: 'geleend', yallah: 'geleend', bezzaf: 'geleend',
-
-  // Tellen: de Marokkaanse vormen zijn niet de Standaardarabische.
-  tlata: 'geleend', tmnya: 'geleend', tnach: 'geleend', tltach: 'geleend',
-  khmstach: 'geleend', mya: 'geleend',
-
-  // Kleuren. `hmer` is teruggezet: "hmer" begint met h + m, en daar maakt een
-  // Franse stem niets van — dan is de Arabische stem alsnog beter.
-  hmer: 'arabisch', khder: 'geleend', sfer: 'geleend',
-
-  // Plaatsen, eten en cultuur.
-  bhar: 'geleend', sahra: 'geleend', tomobil: 'geleend', tamazight: 'geleend',
-  henna: 'geleend', gnawa: 'geleend', rabat: 'geleend', tanja: 'geleend',
+  // Getest en beter met een geleende stem, die de Latijnse schrijfwijze leest.
+  nta: 'geleend',
+  nti: 'geleend',
+  khoya: 'geleend',
+  jedda: 'geleend',
+  weld: 'geleend',
+  tlata: 'geleend',
+  mya: 'geleend',
+  bhar: 'geleend',
+  sahra: 'geleend',
+  tomobil: 'geleend',
+  tamazight: 'geleend',
+  henna: 'geleend',
+  gnawa: 'geleend',
+  rabat: 'geleend',
+  tanja: 'geleend',
   msemmen: 'geleend',
 }
 
@@ -63,6 +60,40 @@ export const GETEST_IDS: string[] = Object.keys(UITSPRAAK)
 
 /** De woorden die naar een geleende stem gaan. */
 export const EIGEN_IDS: string[] = GETEST_IDS.filter((id) => UITSPRAAK[id] === 'geleend')
+
+/**
+ * De woorden waarvoor geen enkele stem deugt.
+ *
+ * Voor deze is beide wegen geprobeerd en afgeluisterd, en geen van de zeven
+ * stemmen zegt ze goed. Dat is geen falen van de code maar de grens ervan: een
+ * synthesizer die op Standaardarabisch is getraind kan "bzaf" niet zeggen, en
+ * een Franse stem kan "hmer" niet beginnen. Er is maar één uitweg, en dat is
+ * iemand die het inspreekt.
+ *
+ * Deze lijst is dus geen instelling maar een werkbriefje: het is wat er nog
+ * opgenomen moet worden, in de volgorde waarin het gemeld is. De opnamestudio
+ * op `/opname` zet ze bovenaan, en zodra er een bestand in `src/audio/woorden/`
+ * staat verdwijnt dat woord er vanzelf uit — de map is de waarheid, niet deze
+ * lijst.
+ *
+ * Tot die tijd hoort een woord hier de best beschikbare benadering te krijgen
+ * en niets te beloven. Het alfabet is het bewijs dat het werkt: dat stond hier
+ * ook, en staat er nu niet meer.
+ */
+export const OPNAME_NODIG: string[] = [
+  // Groeten en de kleine woorden.
+  'maalish', 'bslama', 'thalla', 'iyeh', 'wakha', 'yallah', 'bezzaf',
+  // Wie er aan tafel zit.
+  'hna', 'ntuma', 'mama', 'khti', 'ammi', 'ammti', 'khalti', 'drari',
+  'sahbi', 'sahbti',
+  // Tellen.
+  'tmnya', '3achra', 'hdach', 'tnach', 'tltach', 'khmstach',
+  // Kleuren.
+  'hmer', 'khder', 'sfer', 'byed', 'khel', 'rmadi',
+  // Eten en drinken.
+  'lma', 'zebda', '3sel', 'jben', 'lhem', 'djaj', 'khodra', 'fakya',
+  'matisha', 'melha', 'kesksu', 'harira',
+]
 
 /**
  * Which borrowed voice suits a word, read off its own Latin spelling.
@@ -105,8 +136,8 @@ const OP_SCRIPT: Map<string, Target[]> = (() => {
 
 export const eigenVoorkeur = (arabic: string): Target[] | undefined => OP_SCRIPT.get(arabic)
 
-/** Elk id in de lijst dat geen woord meer is, zodat de test het opmerkt. */
+/** Elk id in een van de lijsten dat geen woord meer is, zodat de test het opmerkt. */
 export const zwevendeIds = (): string[] => {
   const bekend = new Set<string>([...allWords.map((w) => w.id), ...ALL_SENTENCES.map((z) => z.id)])
-  return GETEST_IDS.filter((id) => !bekend.has(id))
+  return [...GETEST_IDS, ...OPNAME_NODIG].filter((id) => !bekend.has(id))
 }
