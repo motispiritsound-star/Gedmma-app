@@ -172,26 +172,32 @@ export const LETTER_SPEECH: Record<string, LetterSpeech> = {
   alif: { ar: 'أَلِف', base: 'alif' },
   ba: { ar: 'بَاء', base: 'baa', say: { fr: 'ba' } },
   ta: { ar: 'تَاء', base: 'taa', say: { fr: 'ta' } },
-  tha: { ar: 'ثَاء', base: 'thaa', say: { fr: 'tha' } },
+  tha: { ar: 'ثَاء', base: 'thaa', say: { fr: 'tha', de: 'thaa', it: 'taa', es: 'zaa' } },
   // ج is the zh of "journaal" — the one the old rules turned into "ziem".
   jim: { ar: 'جِيم', base: 'jeem', say: { nl: 'zjiem', de: 'schiem', fr: 'jim', es: 'yim', it: 'gim' } },
-  ha: { ar: 'حَاء', base: 'haa' },
-  kha: { ar: 'خَاء', base: 'khaa', say: { nl: 'chaa', de: 'chaa' } },
+  // ح has no European equivalent; Spanish and French get their own /x/-ish
+  // letter, the rest get a plain h and the app says so on the page.
+  ha: { ar: 'حَاء', base: 'haa', say: { es: 'jaa' } },
+  kha: { ar: 'خَاء', base: 'khaa', say: { nl: 'chaa', de: 'chaa', es: 'jaa' } },
   dal: { ar: 'دَال', base: 'daal', say: { fr: 'dal' } },
-  dhal: { ar: 'ذَال', base: 'dhaal', say: { fr: 'dhal' } },
+  dhal: { ar: 'ذَال', base: 'dhaal', say: { fr: 'dhal', nl: 'dzaal', de: 'dhaal' } },
   ra: { ar: 'رَاء', base: 'raa', say: { fr: 'ra' } },
+  // German s before a vowel is already /z/, which is exactly what ز wants.
   zay: { ar: 'زَاي', base: 'zaay', say: { nl: 'zaai', de: 'saai', es: 'sai', it: 'sai', fr: 'zaï' } },
-  sin: { ar: 'سِين', base: 'seen', say: { nl: 'sien', de: 'sien', fr: 'sine', es: 'sin', it: 'sin' } },
-  shin: { ar: 'شِين', base: 'sheen', say: { nl: 'sjien', de: 'schien', fr: 'chine', it: 'scin', es: 'shin' } },
-  sad: { ar: 'صَاد', base: 'saad', say: { fr: 'sad' } },
+  // and the same rule means س has to be spelled with a double s in German,
+  // or the voice reads it as ز.
+  sin: { ar: 'سِين', base: 'seen', say: { nl: 'sien', de: 'ssien', fr: 'sine', es: 'sin', it: 'sin' } },
+  shin: { ar: 'شِين', base: 'sheen', say: { nl: 'sjien', de: 'schien', fr: 'chine', it: 'scin', es: 'chin' } },
+  sad: { ar: 'صَاد', base: 'saad', say: { fr: 'sad', de: 'ssaad' } },
   dad: { ar: 'ضَاد', base: 'daad', say: { fr: 'dad' } },
   'ta-emf': { ar: 'طَاء', base: 'taa', say: { fr: 'ta' } },
   'za-emf': { ar: 'ظَاء', base: 'zaa', say: { de: 'saa', es: 'sa', it: 'sa', fr: 'za' } },
   ayn: { ar: 'عَين', base: 'ayn', say: { nl: 'ain', de: 'ain', fr: 'aïn', es: 'ain', it: 'ain' } },
   ghayn: { ar: 'غَين', base: 'ghayn', say: { nl: 'gain', de: 'rain', fr: 'raïn', es: 'gain', it: 'gain' } },
   fa: { ar: 'فَاء', base: 'faa', say: { fr: 'fa' } },
-  qaf: { ar: 'قَاف', base: 'qaaf', say: { fr: 'qaf' } },
-  kaf: { ar: 'كَاف', base: 'kaaf', say: { fr: 'kaf' } },
+  // French and Italian q needs a u after it, and German q is read /kv/.
+  qaf: { ar: 'قَاف', base: 'qaaf', say: { nl: 'kaaf', fr: 'kaf', de: 'kaaf', es: 'caaf', it: 'caaf' } },
+  kaf: { ar: 'كَاف', base: 'kaaf', say: { fr: 'kaf', es: 'caaf', it: 'caaf' } },
   lam: { ar: 'لَام', base: 'laam', say: { fr: 'lam' } },
   mim: { ar: 'مِيم', base: 'meem', say: { nl: 'miem', de: 'miem', fr: 'mime', es: 'mim', it: 'mim' } },
   nun: { ar: 'نُون', base: 'noon', say: { nl: 'noen', de: 'nuun', fr: 'noune', es: 'nun', it: 'nun' } },
@@ -200,7 +206,7 @@ export const LETTER_SPEECH: Record<string, LetterSpeech> = {
   ya: { ar: 'يَاء', base: 'yaa', say: { nl: 'jaa', de: 'jaa', fr: 'ya', es: 'ya', it: 'ia' } },
   pa: { ar: 'پَاء', base: 'paa', say: { fr: 'pa' } },
   va: { ar: 'ڤَاء', base: 'vaa', say: { de: 'waa' } },
-  ga: { ar: 'ݣَاف', base: 'gaaf', say: { fr: 'gaf' } },
+  ga: { ar: 'ݣَاف', base: 'gaaf', say: { fr: 'gaf', it: 'ghaaf', es: 'gaaf' } },
 }
 
 /**

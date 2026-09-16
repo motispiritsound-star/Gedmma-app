@@ -86,7 +86,7 @@ export const STORIES: Story[] = [
       { speaker: 'Sofia', ar: 'أ خويا، فين المش؟', tr: 'a khoya, fin lmesh?', nl: 'Broer, waar is de kat?' },
       { speaker: 'Amine', ar: 'ما عرفتش. كان تحت الطبلة.', tr: 'ma 3reftsh. kan teht ttebla.', nl: 'Ik weet het niet. Hij was onder de tafel.' },
       { speaker: 'Sofia', ar: 'واش شفتيه فوق السطح؟', tr: 'wesh sheftih fuq stah?', nl: 'Heb je hem op het dakterras gezien?' },
-      { speaker: 'Amine', ar: 'لا. يالله نقلبو!', tr: 'la. yallah nqellbu!', nl: 'Nee. Kom, we gaan zoeken!' },
+      { speaker: 'Amine', ar: 'لا. يلاه نقلبو!', tr: 'la. yallah nqellbu!', nl: 'Nee. Kom, we gaan zoeken!' },
       { speaker: 'Sofia', ar: 'كاينة شي حاجة كتحرك فالكوزينة.', tr: 'kayna shi haja kathrrek fkuzina.', nl: 'Er beweegt iets in de keuken.' },
       { speaker: 'Amine', ar: 'شوف! هو حدا الباب.', tr: 'shuf! huwa hda lbab.', nl: 'Kijk! Hij is naast de deur.' },
       { speaker: 'Sofia', ar: 'المش كان جوعان.', tr: 'lmesh kan ju3an.', nl: 'De kat had honger.' },
