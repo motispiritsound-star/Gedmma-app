@@ -303,6 +303,7 @@ export const nl = {
     },
     schrijfVraag: 'Teken de letter na met je vinger',
     schrijfVraagWoord: 'Teken het woord na met je vinger',
+    volgorde: 'Begin bij 1 en volg de nummers: Arabisch schrijf je van rechts naar links, de puntjes komen als laatste',
     schrijfHint: 'Volg de grijze vorm. Je mag zoveel streken zetten als je wilt — en wissen mag altijd.',
     schrijfLabel: (glyph: string): string => `Tekenveld om ${glyph} na te tekenen`,
     schrijfVorm: (vorm: string): string => `de vorm ${vorm}`,

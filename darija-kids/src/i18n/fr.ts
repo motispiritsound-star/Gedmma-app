@@ -296,6 +296,7 @@ export const fr: Strings = {
     },
     schrijfVraag: 'Trace la lettre avec ton doigt',
     schrijfVraagWoord: 'Trace le mot avec ton doigt',
+    volgorde: "Commence au 1 et suis les numéros : l'arabe s'écrit de droite à gauche, et les points viennent en dernier",
     schrijfHint: 'Suis la forme grise. Autant de traits que tu veux — et tu peux toujours effacer.',
     schrijfLabel: (glyph) => `Zone de dessin pour tracer ${glyph}`,
     schrijfVorm: (vorm) => `la forme ${vorm}`,

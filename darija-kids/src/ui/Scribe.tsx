@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { countTrace, MASK, penWidth, scoreTrace, slack, type TraceScore } from '../engine/scribe'
+import {
+  countTrace, MASK, penWidth, scoreTrace, slack, strokeOrder, type StrokePoint, type TraceScore,
+} from '../engine/scribe'
 import { sfx } from '../engine/audio'
 import { Button } from './kit'
 import { useT } from '../i18n'
@@ -81,10 +83,40 @@ export function Scribe({
   /** Where the child's ink lives, at mask resolution, for the counting. */
   const ink = useRef<CanvasRenderingContext2D | null>(null)
   const drawing = useRef(false)
+  /** Where the pen starts, and where it goes next. Redrawn over the ink. */
+  const order = useRef<StrokePoint[]>([])
   const last = useRef<{ x: number; y: number } | null>(null)
   const [drawn, setDrawn] = useState(false)
   const [ready, setReady] = useState(false)
   const [size, setSize] = useState(BOARD)
+
+  /**
+   * Draws the numbers on top of the ghost: where the pen starts, and where it
+   * goes next. They stay while the child is drawing — a number covered by
+   * your own hand is no help, but one that vanishes the moment you touch the
+   * glass is worse.
+   */
+  const paintOrder = (ctx: CanvasRenderingContext2D, n: number, points: StrokePoint[]) => {
+    const r = Math.max(11, n * 0.052)
+    ctx.save()
+    ctx.font = `800 ${Math.round(r * 1.15)}px "Baloo 2", system-ui, sans-serif`
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    points.forEach((point, i) => {
+      const x = point.x * n
+      const y = point.y * n
+      ctx.beginPath()
+      ctx.arc(x, y, r, 0, Math.PI * 2)
+      ctx.fillStyle = i === 0 ? 'rgba(193,39,45,.92)' : 'rgba(0,98,51,.88)'
+      ctx.fill()
+      ctx.lineWidth = 2
+      ctx.strokeStyle = 'rgba(255,255,255,.9)'
+      ctx.stroke()
+      ctx.fillStyle = '#fff'
+      ctx.fillText(String(i + 1), x, y + 0.5)
+    })
+    ctx.restore()
+  }
 
   /** Clears the board back to the ghost, and the ink with it. */
   const wipe = useCallback(() => {
@@ -97,6 +129,15 @@ export function Scribe({
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     ctx.clearRect(0, 0, size, size)
     paintGlyph(ctx, size, glyph, 'rgba(120,113,108,.26)')
+
+    // The order is read off the ghost itself, so it is right for whatever the
+    // font drew: one letter, a joined shape, or a whole word.
+    const ghost = square(MASK)
+    paintGlyph(ghost, MASK, glyph, '#000')
+    const points = strokeOrder(ghost.getImageData(0, 0, MASK, MASK).data, MASK)
+    order.current = points
+    paintOrder(ctx, size, points)
+
     ink.current?.clearRect(0, 0, MASK, MASK)
     setDrawn(false)
   }, [glyph, size])
@@ -148,6 +189,8 @@ export function Scribe({
       ctx.moveTo(from.x * size, from.y * size)
       ctx.lineTo(to.x * size, to.y * size)
       ctx.stroke()
+      // The ink goes underneath the numbers, not over them.
+      paintOrder(ctx, size, order.current)
     }
     const mask = ink.current
     if (mask) {
@@ -223,7 +266,9 @@ export function Scribe({
         />
       </div>
 
-      <p className="mt-3 text-center text-xs text-[var(--ink-soft)]">{t.bonus.schrijfHint}</p>
+      <p className="mt-3 text-center text-xs text-[var(--ink-soft)]">
+        {t.bonus.volgorde} · {t.bonus.schrijfHint}
+      </p>
 
       <div className="mt-4 flex gap-3">
         <Button variant="secondary" className="flex-1" sound="back" disabled={locked || !drawn} onClick={wipe}>

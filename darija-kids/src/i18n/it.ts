@@ -296,6 +296,7 @@ export const it: Strings = {
     },
     schrijfVraag: 'Ricalca la lettera con il dito',
     schrijfVraagWoord: 'Ricalca la parola con il dito',
+    volgorde: "Comincia dall'1 e segui i numeri: l'arabo si scrive da destra a sinistra e i puntini vengono per ultimi",
     schrijfHint: 'Segui la forma grigia. Quante pennellate vuoi, e cancellare si può sempre.',
     schrijfLabel: (glyph) => `Area di disegno per ricalcare ${glyph}`,
     schrijfVorm: (vorm) => `la forma ${vorm}`,

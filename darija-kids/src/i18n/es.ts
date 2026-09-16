@@ -296,6 +296,7 @@ export const es: Strings = {
     },
     schrijfVraag: 'Calca la letra con el dedo',
     schrijfVraagWoord: 'Calca la palabra con el dedo',
+    volgorde: 'Empieza por el 1 y sigue los números: el árabe se escribe de derecha a izquierda y los puntos van al final',
     schrijfHint: 'Sigue la forma gris. Tantos trazos como quieras, y siempre puedes borrar.',
     schrijfLabel: (glyph) => `Zona de dibujo para calcar ${glyph}`,
     schrijfVorm: (vorm) => `la forma ${vorm}`,

@@ -296,6 +296,7 @@ export const de: Strings = {
     },
     schrijfVraag: 'Zeichne den Buchstaben mit dem Finger nach',
     schrijfVraagWoord: 'Zeichne das Wort mit dem Finger nach',
+    volgorde: 'Fang bei 1 an und folge den Zahlen: Arabisch schreibt man von rechts nach links, die Punkte kommen zuletzt',
     schrijfHint: 'Folge der grauen Form. So viele Striche du willst — und löschen geht immer.',
     schrijfLabel: (glyph) => `Zeichenfeld zum Nachzeichnen von ${glyph}`,
     schrijfVorm: (vorm) => `die Form ${vorm}`,
