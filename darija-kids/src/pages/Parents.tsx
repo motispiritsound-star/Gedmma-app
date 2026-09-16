@@ -5,6 +5,7 @@ import { levelOf, today, useStore } from '../engine/store'
 import { useT } from '../i18n'
 import { Button, Card, SectionTitle, Stat } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
+import { OperatorBlock } from '../ui/Operator'
 
 /** For the adult in the room: what the app does, and how the child is doing. */
 export function Parents() {
@@ -83,6 +84,10 @@ export function Parents() {
           </p>
         </div>
       </Card>
+
+      {/* This page doubles as the support URL both stores ask for, so the
+          way to reach a human belongs on it. */}
+      <OperatorBlock />
 
       <div className="mt-8 text-center">
         <Link to="/leren"><Button>{t.parents.naarPad}</Button></Link>

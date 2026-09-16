@@ -180,6 +180,47 @@ Dezelfde grap in de andere vier talen:
 
 ---
 
+## De accounts, en wat er de eerste week op moet
+
+Claim de namen voordat je lanceert — op alle vier dezelfde, ook waar je nog
+niets gaat doen, zodat niemand anders ze pakt.
+
+| Waar | Naam | Waarvoor |
+|---|---|---|
+| Instagram | `@darijakids` | het hart: reels, carrousels, reacties van ouders |
+| TikTok | `@darijakids` | hetzelfde beeld, ander publiek — jonger, en het deelt harder |
+| YouTube | `Darija Kids` | alleen om de introfilm ergens te laten staan: Google Play wil een YouTube-link, geen bestand |
+| Facebook | `Darija Kids` (pagina) | niet voor de pagina zelf, maar omdat je vanuit ouder­groepen ergens naartoe moet linken |
+
+Meer dan vier is een belofte die je niet waarmaakt. Eén account dat leeft doet
+meer dan vier die stilstaan.
+
+**De eerste week, dag voor dag.** Alles wat je nodig hebt staat al klaar in
+`video/<taal>/` en `marketing/<taal>/`.
+
+1. **Dag 1 — de introfilm.** `intro-verhaal.mp4` als reel en als TikTok, met
+   leus 1 uit de lijst hierboven als bijschrift.
+2. **Dag 2 — het alfabet.** Eén letter, zijn drie vormen, en hoe hij klinkt.
+   Dit is het beeld dat het verst reist: mensen die geen Arabisch lezen vinden
+   het fascinerend dat één letter er aan het begin anders uitziet dan aan het
+   eind.
+3. **Dag 3 — de vraag.** *"Wat zegt jouw familie voor brood?"* Geen link, geen
+   verzoek. Reacties zijn wat een account op gang brengt, en je krijgt er
+   gratis redactiewerk bij.
+4. **Dag 4 — het schrijven.** Een opname van een kinderhand die een letter
+   overtrekt in de bonusronde. Dit is de duidelijkste "dit is echt voor
+   kinderen"-video die de app kan opleveren.
+5. **Dag 5 — jij.** Waarom je dit bouwde, in je eigen woorden, zonder montage.
+   Dat is bij een app als deze de best presterende post die er is.
+6. **Dag 6 en 7 — de groepen.** Nu pas de lange berichten hierboven, in
+   Facebook-groepen en familie-apps. Je account staat er dan niet leeg bij als
+   iemand gaat kijken.
+
+Daarna twee posts per week is genoeg, en houd één ding vol: elke keer dat
+iemand in de reacties zegt dat hun familie een woord anders zegt, zet je dat
+woord in de app en zeg je dat terug. Dat is geen marketing, maar het werkt als
+niets anders.
+
 ## Waar je het plaatst
 
 De mensen die hierop zitten te wachten zitten al bij elkaar:

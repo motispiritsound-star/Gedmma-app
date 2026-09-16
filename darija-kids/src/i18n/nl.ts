@@ -256,6 +256,16 @@ export const nl = {
     bestaatNiet: 'Dit verhaal bestaat niet.',
   },
 
+  operator: {
+    titel: 'Wie deze app verkoopt',
+    naam: 'Handelaar',
+    adres: 'Adres',
+    telefoon: 'Telefoon',
+    email: 'E-mail',
+    kvk: 'KvK-nummer',
+    btw: 'Btw-nummer',
+  },
+
   bonus: {
     titel: 'Bonus',
     uitleg: 'De cursus houdt een keer op. Een taal niet. Hier staat altijd iets klaar, gemaakt van wat je al kent.',

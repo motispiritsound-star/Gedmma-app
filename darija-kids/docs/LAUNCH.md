@@ -5,44 +5,107 @@ kan doen is gedaan; wat hier overblijft is wat een mens met een bankrekening
 en een paspoort moet doen.
 
 Reken op **vier tot zes weken** tussen je eerste account en je eerste
-downloader. Niet omdat het werk zoveel is, maar omdat Google sinds 2024 van
-nieuwe persoonlijke accounts eist dat twaalf testers je app **veertien dagen
-aaneengesloten** in een gesloten test hebben gehad vóór je mag publiceren. Die
-twee weken begin je dus als eerste, niet als laatste.
+downloader. Niet omdat het werk zoveel is, maar omdat er één wachttijd van twee
+tot vier weken in zit die je niet kunt inhalen — welke dat is, hangt af van de
+keuze in §1. Begin dus met die keuze, en doe de rest van deze lijst ondertussen.
 
 ---
 
 ## 0. Vandaag nog: de twee dingen die alles blokkeren
 
-**Vul `src/content/operator.ts` in.** Naam, e-mailadres en land van de
-uitgever. Zolang dat leeg is staat er een waarschuwing op je privacy- én
-voorwaardenpagina, en beide winkels weigeren een app zonder werkende
-contactgegevens.
+**Vul `src/content/operator.ts` in.** Sinds de Digital Services Act is wie in
+een appwinkel verkoopt een *handelaar*, en horen naam, adres, telefoonnummer,
+e-mailadres en KvK-nummer zichtbaar te zijn voor de koper. Beide winkels vragen
+ze in de console en zetten ze op je pagina in de winkel; dit bestand zet
+dezelfde gegevens ook in de app, onderaan de privacy- en de
+voorwaardenpagina. Zolang naam en e-mail leeg zijn staat er in plaats daarvan
+een waarschuwing.
 
 ```ts
 export const OPERATOR = {
-  name: 'Jouw naam of bedrijfsnaam',
+  name: 'Jouw naam of handelsnaam',
   email: 'hallo@jouwdomein.nl',
+  address: 'Straat 1, 1234 AB Stad',
   country: 'Nederland',
+  phone: '+31 6 12345678',
+  registration: '12345678',   // je KvK-nummer
+  vat: '',                    // leeg laten onder de KOR
 }
 ```
 
-**Zet de website online.** Beide winkels willen een privacy-URL die werkt, en
-Apple wil daarnaast een URL met je voorwaarden. Die twee pagina's zitten al in
-de app: zodra de site staat zijn het `https://jouwdomein.nl/privacy` en
-`https://jouwdomein.nl/voorwaarden`. Hoe je hem online zet staat in
-[DEPLOY.md](DEPLOY.md) — met een gratis Netlify- of Vercel-account ben je in
-een kwartier klaar.
+Het adres moet een echt adres zijn — een postbus wordt niet geaccepteerd. Werk
+je vanuit huis, dan wordt dat je zichtbare handelaarsadres; wie dat niet wil,
+kan bij de KvK een **bezoekadres afschermen** of een zakelijk postadres huren,
+maar regel dat vóór je de winkelaccounts aanmaakt.
+
+**Zet de website online.** Dit blokkeert allebei de winkelaccounts, en het is
+een kwartier werk.
 
 ---
 
-## 1. Inschrijven en accounts
+## 0b. De website is de app
+
+Je hoeft geen aparte site te bouwen. Dezelfde build is een gewone statische
+website, en die website levert precies de drie adressen op die de winkels van
+je vragen voordat ze een app aannemen:
+
+| Wat de winkel vraagt | Wat je invult |
+|---|---|
+| Privacy policy URL (beide) | `https://jouwdomein.nl/privacy` |
+| EULA / voorwaarden (Apple, verplicht bij abonnementen) | `https://jouwdomein.nl/voorwaarden` |
+| Support URL (Apple, verplicht) | `https://jouwdomein.nl/ouders` |
+| Marketing URL (Apple, optioneel) | `https://jouwdomein.nl` |
+
+Op alle drie die pagina's staat onderaan je handelaarsblok, zodra
+`operator.ts` is ingevuld. De voorpagina is de landingspagina: wat het is, voor
+wie, en een knop om het meteen te proberen — bezoekers kunnen de hele gratis
+cursus in de browser doen zonder iets te installeren, wat de beste demo is die
+er bestaat.
+
+**Domein.** Kies er één en koop hem voordat je de winkelaccounts aanmaakt: de
+naam komt in beide consoles te staan en is later lastig te wijzigen.
+`darijakids.nl` en `darijakids.app` zijn de logische; een `.nl` is bij een
+Nederlandse registrar rond de € 10 per jaar.
+
+**Hosting.** Cloudflare Pages, Netlify of Vercel — gratis, en ze bouwen
+rechtstreeks uit deze repo. De instellingen staan in [DEPLOY.md](DEPLOY.md).
+Eén ding moet goed: onbekende paden moeten `index.html` terugkrijgen, anders
+geeft `/privacy` een 404 en wordt je app afgekeurd op precies die link.
+
+**E-mail.** `hallo@jouwdomein.nl` moet echt werken — beide winkels sturen er
+post naartoe en kopers mogen er klagen. Een doorstuuradres naar je eigen inbox
+is genoeg; dat kan gratis bij de meeste registrars.
+
+---
+
+## 1. De accounts, en de ene keuze die telt
 
 | Wat | Waar | Kost | Duurt |
 |---|---|---|---|
 | KvK-inschrijving | kvk.nl | € 82,25 | een afspraak, daarna direct |
-| Google Play Console | play.google.com/console | € 22 eenmalig | 1–2 dagen verificatie |
+| Google Play Console | play.google.com/console | $ 25 eenmalig | 1–2 dagen verificatie |
 | Apple Developer Program | developer.apple.com | € 99 per jaar | 1–2 dagen, soms langer |
+| D-U-N-S-nummer (alleen voor de organisatieroute) | dnb.com | gratis | tot 30 dagen |
+
+**Apple is simpel.** Een eenmanszaak is geen aparte rechtspersoon, dus schrijf
+je in als *individual / sole proprietor*. Dat scheelt een D-U-N-S-nummer: die
+eis geldt alleen voor organisaties met rechtspersoonlijkheid. Je eigen naam
+wordt dan de verkopersnaam in de App Store.
+
+**Google is een keuze, en het is de belangrijkste van deze hele lijst.**
+
+| | Persoonlijk account | Organisatieaccount |
+|---|---|---|
+| Nodig | alleen je identiteitsbewijs | D-U-N-S-nummer + KvK-uittreksel |
+| Wachttijd vooraf | geen | tot 30 dagen op je D-U-N-S |
+| Gesloten test vóór publiceren | **12 testers, 14 dagen aaneengesloten, per app** | **niet nodig** |
+| Naam in de winkel | je eigen naam | je handelsnaam |
+
+Beide routes kosten ongeveer evenveel tijd, maar niet dezelfde soort tijd:
+wachten op een nummer doe je terwijl je doorwerkt, twaalf mensen twee weken
+lang een testversie laten installeren is echt werk en het kan mislukken. Met
+een KvK-nummer op zak is de organisatieroute daarom bijna altijd de betere —
+vraag het D-U-N-S-nummer **vandaag** aan, want die klok loopt het langst.
 
 Een KvK-nummer is nodig zodra je structureel verkoopt. Zonder inschrijving kun
 je wel een gratis app publiceren, maar geen abonnement — beide winkels vragen
@@ -172,9 +235,11 @@ Apple leest dit veld echt. Zet er dit in:
 
 ---
 
-## 6. De gesloten test bij Google (begin hier)
+## 6. De gesloten test bij Google (alleen op de persoonlijke route)
 
-Nieuwe persoonlijke Play-accounts moeten dit doen vóór ze mogen publiceren:
+Heb je in §1 voor een organisatieaccount gekozen, dan slaat deze paragraaf over
+en mag je meteen productie aanvragen. Anders moet dit af vóór je mag
+publiceren, en geldt het **per app**:
 
 1. Maak een **gesloten test** aan en upload je AAB.
 2. Verzamel **12 testers** die het opt-in-adres gebruiken. Familie en vrienden
@@ -183,7 +248,9 @@ Nieuwe persoonlijke Play-accounts moeten dit doen vóór ze mogen publiceren:
 3. Houd dat **14 dagen aaneengesloten** vol.
 4. Pas daarna kun je "productie" aanvragen.
 
-Zet dit als eerste in gang en doe de rest van deze lijst ondertussen.
+Zet dit als eerste in gang en doe de rest van deze lijst ondertussen. Testers
+die de app installeren en meteen weer verwijderen tellen niet: Google kijkt
+naar dagelijkse activiteit over die veertien dagen.
 
 ---
 

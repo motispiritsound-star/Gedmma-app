@@ -3,6 +3,7 @@ import { OPERATOR, operatorKnown } from '../content/operator'
 import { TERMS } from '../i18n/terms'
 import { useLang, useT } from '../i18n'
 import { Button, Card, SectionTitle } from '../ui/kit'
+import { OperatorBlock } from '../ui/Operator'
 
 /**
  * The terms both stores insist on before they will sell a subscription, and
@@ -41,6 +42,8 @@ export function Terms() {
           {OPERATOR.name ? ` — ${OPERATOR.name}${OPERATOR.country ? `, ${OPERATOR.country}` : ''}` : ''}
         </p>
       )}
+
+      <OperatorBlock />
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link to="/privacy"><Button variant="secondary">{t.nav.privacy}</Button></Link>

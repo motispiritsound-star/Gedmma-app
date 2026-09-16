@@ -3,6 +3,7 @@ import { OPERATOR, operatorKnown } from '../content/operator'
 import { PRIVACY } from '../i18n/privacy'
 import { useLang, useT } from '../i18n'
 import { Button, Card, SectionTitle } from '../ui/kit'
+import { OperatorBlock } from '../ui/Operator'
 
 /** The statement both app stores ask for, and the GDPR requires anyway. */
 export function Privacy() {
@@ -38,6 +39,8 @@ export function Privacy() {
           {OPERATOR.name ? ` — ${OPERATOR.name}${OPERATOR.country ? `, ${OPERATOR.country}` : ''}` : ''}
         </p>
       )}
+
+      <OperatorBlock />
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link to="/ouders"><Button variant="secondary">{t.nav.ouders}</Button></Link>

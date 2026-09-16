@@ -250,6 +250,16 @@ export const de: Strings = {
     bestaatNiet: 'Diese Geschichte gibt es nicht.',
   },
 
+  operator: {
+    titel: 'Wer diese App verkauft',
+    naam: 'Händler',
+    adres: 'Anschrift',
+    telefoon: 'Telefon',
+    email: 'E-Mail',
+    kvk: 'Handelsregisternummer',
+    btw: 'Umsatzsteuer-ID',
+  },
+
   bonus: {
     titel: 'Bonus',
     uitleg: 'Der Kurs hört irgendwann auf. Eine Sprache nicht. Hier wartet immer etwas, gebaut aus dem, was du schon kennst.',
