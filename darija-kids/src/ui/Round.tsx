@@ -308,6 +308,9 @@ export function RoundRunner({
             exit={{ y: 90 }}
             transition={{ type: 'spring', stiffness: 260, damping: 28 }}
             role="status"
+            // Says how it went, for anyone reading the page rather than
+            // looking at it — the camera that films the app included.
+            data-verdict={verdict}
             // On its way out it is still on the screen, and a second tap on a
             // button that is leaving used to land on the card behind it and
             // skip a question. Nothing leaving is pressable.

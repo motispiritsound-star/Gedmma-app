@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { buildReviewRound } from '../engine/exercises'
 import { addXp, dueSentenceIds, dueWordIds, getState, useStore } from '../engine/store'
 import { strengthLabel } from '../engine/srs'
@@ -22,9 +22,15 @@ export function Review() {
   const state = useStore((s) => s)
   const due = dueWordIds(state)
   const dueSentences = dueSentenceIds(state)
-  const [running, setRunning] = useState(false)
-  const [result, setResult] = useState<RoundResult | null>(null)
-  const exercises = useMemo(() => buildReviewRound(due, Date.now(), dueSentences), [running])
+  // The round has its own address, so the top bar and the tab bar step aside
+  // for it the way they do for a lesson — a question with five tabs under it
+  // is a question you can tap your way out of by accident.
+  const running = useParams().running === 'bezig'
+  const result = (useLocation().state as { klaar?: RoundResult } | null)?.klaar ?? null
+  const [seed, setSeed] = useState(() => Date.now())
+  const exercises = useMemo(() => buildReviewRound(due, seed, dueSentences), [seed, running])
+
+  if (running && exercises.length === 0) return <Navigate to="/herhalen" replace />
 
   if (running) {
     return (
@@ -33,12 +39,12 @@ export function Review() {
         useHearts={false}
         review
         quitLabel={t.lesson.stoppenHerhalen}
-        onQuit={() => setRunning(false)}
+        onQuit={() => navigate('/herhalen', { replace: true })}
         onFinish={(r) => {
           addXp(Math.round(5 + r.score * 10))
           sfx.finish()
-          setRunning(false)
-          setResult(r)
+          setSeed(Date.now())
+          navigate('/herhalen', { replace: true, state: { klaar: r } })
         }}
       />
     )
@@ -89,7 +95,7 @@ export function Review() {
               {t.review.metZinnen(Math.min(4, dueSentences.length))}
             </p>
           )}
-          <Button className="mt-4 w-full sm:w-auto" onClick={() => { setResult(null); setRunning(true) }}>
+          <Button className="mt-4 w-full sm:w-auto" onClick={() => { setSeed(Date.now()); navigate('/herhalen/bezig') }}>
             {t.review.startHerhaling}
           </Button>
         </Card>

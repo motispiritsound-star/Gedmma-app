@@ -31,18 +31,9 @@ const problems = []
 page.on('console', (m) => m.type() === 'error' && problems.push(m.text()))
 page.on('pageerror', (e) => problems.push(String(e)))
 
-/** A profile with letters and sentences behind it, so every bonus is open. */
-const card = (id) => ({ id, ease: 2.4, interval: 1, due: Date.now() + 8.64e7, reps: 2, lapses: 0, strength: 0.5 })
+/** The shared profile already has letters and sentences behind it. */
 await page.goto(`${BASE}/`, { waitUntil: 'networkidle' })
-const state = seeded('nl')
-state.extraCards = {}
-for (const id of ['alif', 'ba', 'ta', 'jim', 'ha', 'kha', 'dal', 'ra', 'sin', 'shin', 'mim', 'nun']) {
-  state.extraCards[`l:${id}`] = card(`l:${id}`)
-}
-for (const id of ['groeten-1-a', 'groeten-1-b', 'groeten-2-a', 'groeten-2-b', 'groeten-3-a', 'groeten-3-b']) {
-  state.extraCards[`z:${id}`] = card(`z:${id}`)
-}
-await page.evaluate((s) => localStorage.setItem('darijakids.v1', JSON.stringify(s)), state)
+await page.evaluate((s) => localStorage.setItem('darijakids.v1', JSON.stringify(s)), seeded('nl'))
 
 /** Draws over the ghost letter: one short stroke per column of it. */
 const traceGhost = () => page.evaluate(() => {
@@ -93,7 +84,7 @@ const traceRound = async (max = 40) => {
       await onward.first().click({ force: true })
       // One tap is one tap: the bar slides out, and a second tap on a button
       // that is leaving must not skip the next question.
-      await page.locator('[role="status"]').first().waitFor({ state: 'detached', timeout: 3000 }).catch(() => {})
+      await page.locator('[data-verdict]').first().waitFor({ state: 'detached', timeout: 3000 }).catch(() => {})
       await page.waitForTimeout(100)
       continue
     }

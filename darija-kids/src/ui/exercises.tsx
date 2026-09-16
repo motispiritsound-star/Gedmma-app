@@ -147,6 +147,9 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
               key={id}
               disabled={locked}
               onClick={() => choose(id)}
+              // Marks the buttons that are answers, so the camera that films
+              // the app knows what to press. Nothing else hangs off it.
+              data-answer=""
               className={`btn3d rounded-2xl border-2 p-4 transition ${mode === 'script' ? 'text-center' : 'text-start'} ${optionButton(chosen, id, w.id, locked)}`}
             >
               {mode === 'betekenis' && <span className="font-display text-lg font-bold">{o.emoji} {meaning(o)}</span>}
@@ -605,6 +608,9 @@ function LetterChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mo
               key={id}
               disabled={locked}
               onClick={() => choose(id)}
+              // Marks the buttons that are answers, so the camera that films
+              // the app knows what to press. Nothing else hangs off it.
+              data-answer=""
               className={`btn3d rounded-2xl border-2 p-4 text-center transition ${optionButton(chosen, id, l.id, locked)}`}
             >
               {mode === 'naam'
@@ -777,6 +783,7 @@ function SentenceChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { 
             key={id}
             disabled={locked}
             onClick={() => choose(id)}
+            data-answer=""
             className={`btn3d rounded-2xl border-2 p-4 text-start transition ${optionButton(chosen, id, z.id, locked)}`}
           >
             {mode === 'betekenis'

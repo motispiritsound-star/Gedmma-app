@@ -14,7 +14,7 @@ import { busFor, VOICES, type SoundName, type Stage } from '../src/engine/instru
 
 /* ------------------------------------------------------------------ the copy */
 
-type ShotId = 'leren' | 'letters' | 'les' | 'woorden' | 'profiel'
+type ShotId = 'leren' | 'letters' | 'les' | 'schrijven' | 'profiel'
 
 interface Copy {
   /** Under the title, in the opening card. */
@@ -24,6 +24,8 @@ interface Copy {
   /** The last card. */
   cta: string
   price: string
+  /** One line of plain numbers, so the film ends on something checkable. */
+  feiten: string
 }
 
 /**
@@ -38,10 +40,11 @@ const COPY: Record<string, Copy> = {
       'Laat je kinderen hun\nmoedertaal leren.',
       'Het Arabische alfabet,\nletter voor letter.',
       'Horen, kiezen, herhalen —\ntot het blijft hangen.',
-      '304 woorden, 100 zinnen,\nallemaal uitgesproken.',
+      'En schrijven, met je vinger.\nLetter voor letter.',
       'En pik zelf stiekem\nwat mee.',
     ],
     cta: 'Gratis beginnen',
+    feiten: '17 units · 304 woorden · 100 zinnen',
     price: 'Vanaf € 4,99 per maand',
   },
   fr: {
@@ -50,10 +53,11 @@ const COPY: Record<string, Copy> = {
       'Laisse tes enfants apprendre\nleur langue maternelle.',
       'L’alphabet arabe,\nlettre par lettre.',
       'Écouter, choisir, répéter —\njusqu’à ce que ça reste.',
-      '304 mots, 100 phrases,\ntous prononcés.',
+      'Et écrire, au doigt.\nLettre par lettre.',
       'Et rafraîchis la tienne\nsans rien dire.',
     ],
     cta: 'Commencer gratuitement',
+    feiten: '17 unités · 304 mots · 100 phrases',
     price: 'À partir de 4,99 € par mois',
   },
   de: {
@@ -62,10 +66,11 @@ const COPY: Record<string, Copy> = {
       'Lass deine Kinder ihre\nMuttersprache lernen.',
       'Das arabische Alphabet,\nBuchstabe für Buchstabe.',
       'Hören, wählen, wiederholen —\nbis es sitzt.',
-      '304 Wörter, 100 Sätze,\nalle zum Anhören.',
+      'Und schreiben, mit dem Finger.\nBuchstabe für Buchstabe.',
       'Und frisch deins ganz\nnebenbei auf.',
     ],
     cta: 'Kostenlos starten',
+    feiten: '17 Einheiten · 304 Wörter · 100 Sätze',
     price: 'Ab 4,99 € pro Monat',
   },
   es: {
@@ -74,10 +79,11 @@ const COPY: Record<string, Copy> = {
       'Deja que tus hijos aprendan\nsu lengua materna.',
       'El alfabeto árabe,\nletra a letra.',
       'Escuchar, elegir, repetir —\nhasta que se queda.',
-      '304 palabras, 100 frases,\ntodas pronunciadas.',
+      'Y escribir, con el dedo.\nLetra a letra.',
       'Y refresca la tuya\nde paso.',
     ],
     cta: 'Empezar gratis',
+    feiten: '17 unidades · 304 palabras · 100 frases',
     price: 'Desde 4,99 € al mes',
   },
   en: {
@@ -86,15 +92,16 @@ const COPY: Record<string, Copy> = {
       'Let your children learn\ntheir mother tongue.',
       'The Arabic alphabet,\nletter by letter.',
       'Listen, choose, repeat —\nuntil it sticks.',
-      '304 words, 100 sentences,\nevery one spoken.',
+      'And writing, with a finger.\nLetter by letter.',
       'And quietly pick some up\nyourself.',
     ],
     cta: 'Start free',
+    feiten: '17 units · 304 words · 100 sentences',
     price: 'From € 4.99 a month',
   },
 }
 
-const SHOTS: ShotId[] = ['leren', 'letters', 'les', 'woorden', 'profiel']
+const SHOTS: ShotId[] = ['leren', 'letters', 'les', 'schrijven', 'profiel']
 
 /* ------------------------------------------------------------- the timetable */
 
@@ -103,10 +110,10 @@ const SHOTS: ShotId[] = ['leren', 'letters', 'les', 'woorden', 'profiel']
  * longer than thirty seconds, and a recording always runs a little over what
  * it was asked for. So: 3.6 to open, four per screen, 3.8 to ask.
  */
-const TITLE = 3.6
-const HOLD = 4.0
+const TITLE = 3.0
+const HOLD = 4.4
 const END = TITLE + SHOTS.length * HOLD
-export const DURATION = END + 3.8
+export const DURATION = END + 3.3
 
 interface Beat { kind: 'title' | 'shot' | 'cta'; at: number; until: number; shot?: number }
 
@@ -164,6 +171,87 @@ const SHAPES: Record<ShapeId, Shape> = {
 
 /** The app is laid out at 390×844, so every phone in the film has that shape. */
 const PHONE_RATIO = 390 / 844
+
+const ease = (p: number): number => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2)
+const clamp01 = (n: number): number => Math.min(1, Math.max(0, n))
+
+/* ------------------------------------------------------------- the gestures */
+
+/**
+ * What happens on one screen while it is on show.
+ *
+ * A scene is not a photograph but a handful of frames of the real app plus the
+ * gesture that got it from one to the next: where the finger went, which of
+ * the app's own sounds it made, and which frame it lands on. Captured by
+ * scripts/make-intro.mjs by actually doing it.
+ */
+export interface Act {
+  /** Seconds after the card appears. */
+  at: number
+  /** How long the gesture lasts. A tap is a moment; a traced letter is not. */
+  dur: number
+  /** The finger's route across the screen, in fractions of it. */
+  path: { x: number; y: number }[]
+  /** The frame it ends on. */
+  frame: number
+  /** Frames to flip to partway through, as [how far along, which frame]. */
+  steps?: [number, number][]
+  /** The app's own sound when the finger lands, and when the gesture is done. */
+  sound?: SoundName
+  endSound?: SoundName
+}
+
+export interface Scene {
+  frames: HTMLImageElement[]
+  acts: Act[]
+}
+
+/**
+ * Which frame of a scene is on screen `u` seconds in.
+ *
+ * A screen only changes once the gesture that changes it is done — an answer
+ * that lights up before the finger has landed reads as a cut, not a tap. The
+ * steps are for gestures long enough to show their own progress, like a letter
+ * appearing under a finger: each is [how far along, which frame].
+ */
+function frameAt(scene: Scene, u: number): HTMLImageElement {
+  let index = 0
+  for (const act of scene.acts) {
+    if (u < act.at) break
+    const through = clamp01((u - act.at) / Math.max(act.dur, 0.001))
+    for (const [mark, which] of act.steps ?? []) if (through >= mark) index = which
+    if (through >= 1) index = act.frame
+  }
+  return scene.frames[Math.min(index, scene.frames.length - 1)] ?? scene.frames[0]!
+}
+
+/** Where the finger is, and how solid, `u` seconds into a scene. */
+function fingerAt(scene: Scene, u: number): { x: number; y: number; alpha: number; act: Act } | null {
+  const REACH = 0.5
+  const LINGER = 0.3
+  for (const act of scene.acts) {
+    if (!act.path.length) continue
+    if (u < act.at - REACH || u > act.at + act.dur + LINGER) continue
+    const first = act.path[0]!
+    const last = act.path[act.path.length - 1]!
+
+    if (u < act.at) {
+      // On its way in, from below and a little to the side.
+      const p = ease(clamp01((u - (act.at - REACH)) / REACH))
+      return { x: first.x + (1 - p) * 0.16, y: first.y + (1 - p) * 0.34, alpha: p, act }
+    }
+    if (u > act.at + act.dur) {
+      return { x: last.x, y: last.y, alpha: 1 - clamp01((u - act.at - act.dur) / LINGER), act }
+    }
+    const through = clamp01((u - act.at) / Math.max(act.dur, 0.001))
+    const step = through * (act.path.length - 1)
+    const a = act.path[Math.floor(step)]!
+    const b = act.path[Math.min(Math.ceil(step), act.path.length - 1)]!
+    const mix = step - Math.floor(step)
+    return { x: a.x + (b.x - a.x) * mix, y: a.y + (b.y - a.y) * mix, alpha: 1, act }
+  }
+  return null
+}
 
 /* --------------------------------------------------------------- the drawings */
 
@@ -294,13 +382,15 @@ function lines(
 }
 
 /** A phone: the screenshot, a cream bezel around it, and a shadow under it. */
+interface Screen { x: number; y: number; w: number; h: number }
+
 function phone(
   ctx: CanvasRenderingContext2D,
   shot: HTMLImageElement,
   cx: number,
   cy: number,
   height: number,
-): void {
+): Screen {
   const w = height * PHONE_RATIO
   const bezel = Math.round(w * 0.028)
   const r = w * 0.085
@@ -320,6 +410,69 @@ function phone(
   roundRect(ctx, x + bezel, y + bezel, w - bezel * 2, height - bezel * 2, r - bezel)
   ctx.clip()
   ctx.drawImage(shot, x + bezel, y + bezel, w - bezel * 2, height - bezel * 2)
+  ctx.restore()
+
+  return { x: x + bezel, y: y + bezel, w: w - bezel * 2, h: height - bezel * 2 }
+}
+
+/**
+ * A fingertip, and the rings it leaves behind.
+ *
+ * The whole point of the film is that somebody is *using* this, and a
+ * screenshot cannot show that. So there is a finger, it goes where a finger
+ * would go, and where it lands the app answers with its own sound.
+ */
+function finger(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, alpha: number): void {
+  ctx.save()
+  ctx.globalAlpha = alpha
+  ctx.fillStyle = 'rgba(13,148,136,.22)'
+  ctx.beginPath()
+  ctx.arc(x, y, r * 1.9, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.fillStyle = 'rgba(255,250,243,.92)'
+  ctx.strokeStyle = 'rgba(43,29,22,.35)'
+  ctx.lineWidth = Math.max(2, r * 0.12)
+  ctx.beginPath()
+  ctx.arc(x, y, r, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.stroke()
+  ctx.restore()
+}
+
+/** One ring going out from where the finger touched down. */
+function ripple(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, p: number): void {
+  if (p <= 0 || p >= 1) return
+  ctx.save()
+  ctx.globalAlpha = (1 - p) * 0.7
+  ctx.strokeStyle = '#0d9488'
+  ctx.lineWidth = Math.max(2, r * 0.18) * (1 - p)
+  ctx.beginPath()
+  ctx.arc(x, y, r * (0.5 + p * 3), 0, Math.PI * 2)
+  ctx.stroke()
+  ctx.restore()
+}
+
+/** Paper, thrown once. Deterministic, so every take of the film is the same. */
+function confetti(ctx: CanvasRenderingContext2D, w: number, h: number, t: number): void {
+  if (t <= 0) return
+  const colours = ['#f59e0b', '#0d9488', '#e2603c', '#ffd166', '#5eead4']
+  ctx.save()
+  for (let i = 0; i < 70; i++) {
+    const seed = (i * 9301 + 49297) % 233280 / 233280
+    const other = (i * 4801 + 9973) % 233280 / 233280
+    const x = seed * w
+    const fall = t * (0.45 + other * 0.5)
+    const y = -0.1 * h + fall * h * 1.3
+    if (y > h + 40) continue
+    const size = w * (0.012 + other * 0.012)
+    ctx.save()
+    ctx.globalAlpha = clamp01(1.8 - fall * 1.6)
+    ctx.translate(x + Math.sin(t * 3 + i) * w * 0.03, y)
+    ctx.rotate(t * (2 + other * 4) + i)
+    ctx.fillStyle = colours[i % colours.length]!
+    ctx.fillRect(-size / 2, -size / 4, size, size / 2)
+    ctx.restore()
+  }
   ctx.restore()
 }
 
@@ -366,8 +519,8 @@ const CUES: [SoundName, number, number][] = [
   // the ask, over the tail of the last tune rather than after it
   ['cheer', 0, END],
   ['levelUp', 0, END + 0.9],
-  // a tap at every turn of the page, the same one the app makes
-  ...BEATS.slice(1, -1).map((b): [SoundName, number, number] => ['nav', 0, b.at]),
+  // a turn of the page between the cards — the gestures bring their own
+  ...BEATS.slice(1).map((b): [SoundName, number, number] => ['nav', 0, b.at]),
 ]
 
 /** A stage that plays into the mix `at` seconds from the start. */
@@ -378,12 +531,31 @@ function stageAt(ac: BaseAudioContext, bus: AudioNode, at: number): Stage {
   return { ac, out: delay }
 }
 
+/**
+ * Every sound a gesture makes, at the moment it makes it.
+ *
+ * The tap, the right answer, the gems landing: these are not sound effects
+ * added to a film, they are what the app does when you press that button, and
+ * they are here for the same reason the screens are real.
+ */
+function gestureCues(cast: Cast): [SoundName, number, number][] {
+  const out: [SoundName, number, number][] = []
+  cast.scenes.forEach((scene, i) => {
+    const start = TITLE + i * HOLD
+    for (const act of scene.acts) {
+      if (act.sound) out.push([act.sound, 0, start + act.at])
+      if (act.endSound) out.push([act.endSound, act.endSound === 'correct' ? 2 : 0, start + act.at + act.dur])
+    }
+  })
+  return out
+}
+
 /** Renders the whole soundtrack up front, so nothing can glitch while taping. */
-async function soundtrack(): Promise<AudioBuffer> {
+async function soundtrack(cast: Cast): Promise<AudioBuffer> {
   const rate = 48000
   const off = new OfflineAudioContext(2, Math.ceil((DURATION + 1) * rate), rate)
   const { bus } = busFor(off)
-  for (const [name, arg, at] of CUES) VOICES[name](stageAt(off, bus, at), arg)
+  for (const [name, arg, at] of [...CUES, ...gestureCues(cast)]) VOICES[name](stageAt(off, bus, at), arg)
   const rendered = await off.startRendering()
 
   // Four tunes, applause and a taps track can sum past the limiter's ceiling,
@@ -406,13 +578,10 @@ async function soundtrack(): Promise<AudioBuffer> {
 
 /* ------------------------------------------------------------------ the film */
 
-const ease = (p: number): number => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2)
-const clamp01 = (n: number): number => Math.min(1, Math.max(0, n))
-
 interface Cast {
   mark: HTMLImageElement
   fnek: HTMLImageElement
-  shots: HTMLImageElement[]
+  scenes: Scene[]
   copy: Copy
 }
 
@@ -454,6 +623,7 @@ function card(
             { gap: size * 0.34, height: size * 0.9, draw: (y) => lines(ctx, 'Darija Kids', shape.hero.cx, y + size * 0.45, size * 0.9, ink) },
             { gap: size * 0.45, height: size * 1.3, draw: (y) => pill(ctx, cast.copy.cta, shape.hero.cx, y + size * 0.65, size * 0.62, '#f59e0b', INK) },
             { gap: size * 0.3, height: size * 0.5, draw: (y) => lines(ctx, cast.copy.price, shape.hero.cx, y + size * 0.25, size * 0.44, ink, 600) },
+            { gap: size * 0.22, height: size * 0.44, draw: (y) => lines(ctx, cast.copy.feiten, shape.hero.cx, y + size * 0.22, size * 0.36, ink, 600) },
             { gap: size * 0.4, height: unit * 0.14, draw: (y) => ctx.drawImage(cast.fnek, shape.hero.cx - unit * 0.07, y, unit * 0.14, unit * 0.14) },
           ]
     const total = rows.reduce((sum, r) => sum + r.gap + r.height, 0)
@@ -465,10 +635,27 @@ function card(
     }
   } else {
     const i = beat.shot ?? 0
+    const scene = cast.scenes[i]
     lines(ctx, cast.copy.lines[i] ?? '', shape.text.cx, shape.text.cy + rise, shape.text.size, ink)
+    if (!scene) { ctx.restore(); return }
+
+    // How far into this screen we are — which is what decides everything the
+    // finger does, so the gesture stays put while the card fades in and out.
+    const u = t - beat.at
     // The phone slides up as it appears, and breathes a little while it stands.
-    const drift = Math.sin((t - beat.at) * 0.7) * h * 0.004
-    phone(ctx, cast.shots[i]!, shape.phone.cx, shape.phone.cy + rise * 1.6 + drift, shape.phone.height)
+    const drift = Math.sin(u * 0.7) * h * 0.004
+    const screen = phone(ctx, frameAt(scene, u), shape.phone.cx, shape.phone.cy + rise * 1.6 + drift, shape.phone.height)
+
+    const hand = fingerAt(scene, u)
+    if (hand) {
+      const x = screen.x + hand.x * screen.w
+      const y = screen.y + hand.y * screen.h
+      const r = screen.w * 0.05
+      // A tap leaves one ring; a traced letter leaves one where it started.
+      ripple(ctx, screen.x + hand.act.path[0]!.x * screen.w, screen.y + hand.act.path[0]!.y * screen.h,
+        r, (u - hand.act.at) / 0.55)
+      finger(ctx, x, y, r, hand.alpha)
+    }
   }
 
   ctx.restore()
@@ -505,14 +692,17 @@ function frame(ctx: CanvasRenderingContext2D, shape: Shape, cast: Cast, t: numbe
   const tail = ease(clamp01((DURATION - t) / 0.5))
   if (before) card(ctx, shape, cast, before, t, (1 - over) * tail, -over * lift * 0.5)
   card(ctx, shape, cast, beat, t, over * tail, (1 - over) * lift)
+
+  // One throw of paper over the last card, while the applause is playing.
+  if (beat.kind === 'cta') confetti(ctx, w, h, (t - beat.at) / 2.6)
 }
 
 /* ------------------------------------------------------------------ the tape */
 
 declare global {
   interface Window {
-    /** The screens, as data URLs, handed over by scripts/make-intro.mjs. */
-    darijaShots?: Record<string, Record<string, string>>
+    /** The scenes, handed over by scripts/make-intro.mjs. */
+    darijaShots?: Record<string, Record<string, { frames: string[]; acts: Act[] }>>
     darijaIntro: {
       duration: number
       shapes: string[]
@@ -534,12 +724,13 @@ async function load(lang: string): Promise<Cast> {
   // reload halfway through a take loses the take.
   const taken = window.darijaShots?.[lang]
   if (!taken) throw new Error(`geen schermen voor ${lang}`)
-  const [mark, fnek, ...shots] = await Promise.all([
-    svgImage(MARK_SVG),
-    svgImage(FNEK_SVG),
-    ...SHOTS.map((id) => image(taken[id] ?? '')),
-  ])
-  cast = { mark: mark!, fnek: fnek!, shots: shots as HTMLImageElement[], copy: COPY[lang] ?? COPY.nl! }
+  const [mark, fnek] = await Promise.all([svgImage(MARK_SVG), svgImage(FNEK_SVG)])
+  const scenes = await Promise.all(SHOTS.map(async (id): Promise<Scene> => {
+    const shot = taken[id]
+    if (!shot?.frames.length) throw new Error(`geen beelden voor ${id}`)
+    return { frames: await Promise.all(shot.frames.map(image)), acts: shot.acts ?? [] }
+  }))
+  cast = { mark, fnek, scenes, copy: COPY[lang] ?? COPY.nl! }
   castLang = lang
   return cast
 }
@@ -572,7 +763,7 @@ window.darijaIntro = {
   async record(lang, shape) {
     const dressed = await load(lang)
     const { canvas, ctx } = prepare(shape)
-    const music = await soundtrack()
+    const music = await soundtrack(dressed)
 
     const ac = new AudioContext({ sampleRate: 48000 })
     await ac.resume()

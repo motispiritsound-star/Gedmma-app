@@ -90,7 +90,7 @@ function Chrome() {
             <Route path="/" element={<Landing />} />
             <Route path="/leren" element={<Learn />} />
             <Route path="/les/:lessonId" element={<LessonPlayer />} />
-            <Route path="/herhalen" element={<Review />} />
+            <Route path="/herhalen/:running?" element={<Review />} />
             <Route path="/woorden" element={<Words />} />
             <Route path="/letters" element={<Alphabet />} />
             <Route path="/verhalen" element={<Stories />} />
