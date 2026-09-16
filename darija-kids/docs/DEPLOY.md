@@ -15,12 +15,33 @@ niet als bestand. De host moet onbekende paden beantwoorden met `index.html`
 /*    /index.html   200
 ```
 
+Voor gewone Apache-hosting — mijndomein, Strato, een eigen VPS — staat het in
+`public/.htaccess`, dat automatisch meekomt in `dist/`.
+
 Op andere hosts:
 
 - **Vercel** — `vercel.json` met een rewrite van `/(.*)` naar `/index.html`.
 - **GitHub Pages** — kopieer `dist/index.html` naar `dist/404.html`.
 - **Nginx** — `try_files $uri $uri/ /index.html;`.
 - **Caddy** — `try_files {path} /index.html`.
+
+## Op je bestaande hosting zetten
+
+Heb je al een hostingpakket (mijndomein en vergelijkbaar), dan kan de app daar
+gewoon op:
+
+1. `npm run build`
+2. Zet de **inhoud** van `dist/` in de map van je domein — meestal `httpdocs`,
+   `public_html` of `www`. Met FTP, of via de bestandsbeheerder in het
+   klantenpaneel. Let op dat `.htaccess` meegaat: veel FTP-programma's
+   verbergen bestanden die met een punt beginnen.
+3. Open `https://jouwdomein.nl/privacy`. Krijg je de app te zien, dan staat het
+   goed. Krijg je een 404, dan is `mod_rewrite` uit of is `.htaccess` niet
+   meegekomen.
+
+Het kan, maar het hoeft niet: Cloudflare Pages en Netlify zijn gratis, bouwen
+zelf uit deze repo en zetten de site op servers over de hele wereld. Dan hoef
+je bij een nieuwe versie niets te uploaden — je pusht, en de site is bij.
 
 ## Cloudflare Pages
 

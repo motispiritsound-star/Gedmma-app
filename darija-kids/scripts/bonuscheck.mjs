@@ -12,7 +12,7 @@
  */
 import { chromium } from 'playwright'
 import { createServer } from 'vite'
-import { seeded } from './lib/profile.mjs'
+import { CHECK, ONWARD, seeded } from './lib/profile.mjs'
 
 const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 const PORT = 4313
@@ -79,7 +79,7 @@ const fails = []
 const traceRound = async (max = 40) => {
   for (let i = 0; i < max; i++) {
     if (page.url().endsWith('/bonus')) return true
-    const onward = page.getByRole('button', { name: /^(Verder|Afronden)$/i })
+    const onward = page.getByRole('button', { name: ONWARD })
     if (await onward.count()) {
       await onward.first().click({ force: true })
       // One tap is one tap: the bar slides out, and a second tap on a button
@@ -91,7 +91,7 @@ const traceRound = async (max = 40) => {
     if (await page.locator('canvas').count()) {
       if (!(await traceGhost())) { fails.push('geen spookletter op het canvas'); return false }
       await page.waitForTimeout(100)
-      await page.getByRole('button', { name: /^Controleer$/i }).click({ force: true })
+      await page.getByRole('button', { name: CHECK }).click({ force: true })
       await page.waitForTimeout(200)
       continue
     }

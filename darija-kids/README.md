@@ -282,8 +282,10 @@ Android-app. Het Android-project staat compleet in `android/`, inclusief alle
 iconen; voor iOS is een Mac met Xcode nodig (een eis van Apple). De teksten voor
 beide winkels staan kant-en-klaar in `store/`, per taal. De hele route — accounts,
 kosten, kindercategorie, privacyantwoorden, screenshots — staat in
-[docs/STORES.md](docs/STORES.md), en de volledige lanceerlijst — van KvK tot
-de eerste twintig recensies — in [docs/LAUNCH.md](docs/LAUNCH.md).
+[docs/STORES.md](docs/STORES.md), de volledige lanceerlijst — van KvK tot
+de eerste twintig recensies — in [docs/LAUNCH.md](docs/LAUNCH.md), en het plan
+per land — waar het publiek zit, in welke volgorde en wat je welke week doet —
+in [docs/MARKT.md](docs/MARKT.md).
 
 ```bash
 npm run build          # web-build in dist/
@@ -293,7 +295,8 @@ npm run android        # en openen in Android Studio
 
 De beelden voor beide winkels maakt de repo zelf: `npm run screenshots` voor de
 schermafbeeldingen, `npm run marketing` voor de feature graphic en de
-socialbeelden, en `npm run intro` voor de introfilm — bijna een halve minuut
+socialbeelden, `npm run brand` voor het merkpakket — logo, profielfoto's,
+omslagen en een flyer op A5 — en `npm run intro` voor de introfilm — bijna een halve minuut
 echte app met geluid, in vier formaten en vijf talen. Die film is geen montage
 van mock-ups: `scripts/make-intro.mjs` start een server, fotografeert de app en
 laat `dev/intro.ts` het geheel tekenen en opnemen, met een soundtrack die door

@@ -17,7 +17,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
 import { createServer } from 'vite'
-import { GO_ON, GOT_IT, seeded } from './lib/profile.mjs'
+import { CHECK, GO_ON, GOT_IT, ONWARD, seeded } from './lib/profile.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
@@ -135,7 +135,7 @@ const SCENES = [
 
       /** Gets past whatever is on screen: a tap on the bar, then the next card. */
       const onward = async () => {
-        const next = page.getByRole('button', { name: /^(Verder|Afronden)$/i })
+        const next = page.getByRole('button', { name: ONWARD })
         if (!(await next.count())) return false
         await next.first().click({ force: true })
         await page.locator('[data-verdict]').first().waitFor({ state: 'detached', timeout: 3000 }).catch(() => {})
@@ -152,7 +152,7 @@ const SCENES = [
           // can be sure of. Answer them any way at all and move on — this is a
           // review round, so a wrong answer costs nothing.
           const input = page.locator('input#answer')
-          const check = page.getByRole('button', { name: /^Controleer$/i })
+          const check = page.getByRole('button', { name: CHECK })
           const snap = page.locator('button', { hasText: GOT_IT })
           if (await input.count()) {
             await input.fill('...')
@@ -161,7 +161,7 @@ const SCENES = [
           } else if (await check.count()) {
             // A word bank: take tiles until the check button wakes up.
             const tiles = page.locator('main button:not([disabled])')
-              .filter({ hasNotText: /Controleer|Stoppen|Langzamer/ })
+              .filter({ hasNotText: CHECK })
             for (let k = 0; k < 10 && (await check.first().isDisabled()); k++) {
               if (!(await tiles.count())) break
               await tiles.first().click({ force: true })
@@ -264,7 +264,7 @@ const SCENES = [
         frames.push(await shot(page, scroll))
       }
 
-      await page.getByRole('button', { name: /^Controleer$/i }).click({ force: true })
+      await page.getByRole('button', { name: CHECK }).click({ force: true })
       await wait(page, 450)
       frames.push(await shot(page, scroll))
 

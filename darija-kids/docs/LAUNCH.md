@@ -148,6 +148,7 @@ app verandert:
 npm run build && npm run preview   # in een tweede venster laten draaien
 npm run screenshots                # store/screenshots/<taal>/<toestel>/
 npm run marketing                  # store/marketing/<taal>/
+npm run brand                      # brand/ — logo, socials, flyer
 npm run intro                      # store/video/<taal>/ — duurt een kwartier
 ```
 
@@ -159,6 +160,7 @@ lang hij is, hoe groot, en of er echt geluid op staat.
 | Winkel | Wat | Vandaan |
 |---|---|---|
 | Beide | App-icoon 1024×1024 | `assets/icon.png` |
+| Overal | Logo, profielfoto, omslagen, flyer | `brand/` (`npm run brand`) |
 | Beide | Beschrijvingen in 5 talen | `store/listing.<taal>.md` |
 | Beide | Titel, ondertitel, zoekwoorden | `store/keywords.md` |
 | App Store | iPhone 6.9" (1290×2796) | `store/screenshots/<taal>/iphone/` |

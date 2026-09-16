@@ -65,5 +65,11 @@ export const GO_ON = /Aan de slag|Allons-y|Los geht|A por ello|Let’s go/
 /** The button under an explanation card, in every language. */
 export const GOT_IT = /^(Snap ik!|Compris !|Verstanden!|¡Lo pillo!|Got it!)$/
 
+/** The button under an answer that checks it, in every language. */
+export const CHECK = /^(Controleer|Vérifier|Prüfen|Comprobar|Check)$/
+
+/** The button that moves on to the next card, in every language. */
+export const ONWARD = /^(Verder|Afronden|Continuer|Terminer|Weiter|Abschließen|Seguir|Terminar|Continue|Finish)$/
+
 /** The button that starts a review round, in every language. */
 export const START_REVIEW = /Start herhaling|Commencer la révision|Wiederholung starten|Empezar el repaso|Start reviewing/

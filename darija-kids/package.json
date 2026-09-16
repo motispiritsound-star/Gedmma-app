@@ -21,7 +21,8 @@
     "screenshots": "node scripts/make-screenshots.mjs",
     "marketing": "node scripts/make-marketing.mjs",
     "intro": "node scripts/make-intro.mjs",
-    "bonuscheck": "node scripts/bonuscheck.mjs"
+    "bonuscheck": "node scripts/bonuscheck.mjs",
+    "brand": "node scripts/make-brand.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
