@@ -6,6 +6,7 @@ import { useT } from '../i18n'
 import { Button, Card, SectionTitle, Stat } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 import { OperatorBlock } from '../ui/Operator'
+import { FeedbackButton } from '../ui/Feedback'
 
 /** For the adult in the room: what the app does, and how the child is doing. */
 export function Parents() {
@@ -86,7 +87,14 @@ export function Parents() {
       </Card>
 
       {/* This page doubles as the support URL both stores ask for, so the
-          way to reach a human belongs on it. */}
+          way to reach a human belongs on it — and belongs above the fine
+          print, not buried under it. */}
+      <h2 className="mb-3 mt-8 font-display text-xl font-extrabold">{t.feedback.titel}</h2>
+      <Card className="mb-8 p-5">
+        <p className="text-sm text-[var(--ink-soft)]">{t.feedback.uitleg}</p>
+        <FeedbackButton className="js-feedback mt-4" />
+      </Card>
+
       <OperatorBlock />
 
       <div className="mt-8 text-center">

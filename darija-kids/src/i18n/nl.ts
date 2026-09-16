@@ -660,6 +660,48 @@ export const nl = {
     knop: 'Yallah, beginnen',
   },
 
+  /**
+   * The way back to a human.
+   *
+   * No form, no server: the parent's own mail app opens with the subject
+   * already written, so they can see exactly what goes. The four reasons
+   * become that subject line, which means the mailbox sorts itself.
+   */
+  feedback: {
+    voet: 'Contact',
+    knop: 'Tips of vragen? Mail ons',
+    titel: 'Laat het ons weten',
+    uitleg: 'Er komt geen formulier aan te pas: je eigen mailapp gaat open met het onderwerp er al in. Je ziet precies wat je verstuurt.',
+    beginRegel: 'Hoi Darija Kids,',
+    overWoord: (woord: string): string => `Dit gaat over het woord: ${woord}`,
+    anders: 'Zegt jouw familie dit anders?',
+    ofMail: 'Gaat je mailapp niet open? Mail dan naar',
+    onderwerp: {
+      woord: 'een woord klinkt anders',
+      probleem: 'iets werkt niet',
+      idee: 'een idee',
+      vraag: 'een vraag',
+    },
+    soort: {
+      woord: {
+        naam: 'Een woord klinkt bij ons anders',
+        hint: 'Darija verschilt per stad en per familie. Vertel hoe jullie het zeggen — daar wordt de app beter van.',
+      },
+      probleem: {
+        naam: 'Er gaat iets mis',
+        hint: 'Een knop die niets doet, geluid dat wegblijft, een les die vastloopt.',
+      },
+      idee: {
+        naam: 'Ik heb een idee',
+        hint: 'Een woord dat mist, een onderwerp voor een nieuwe unit, iets wat je kind graag zou willen.',
+      },
+      vraag: {
+        naam: 'Ik heb een vraag',
+        hint: 'Over het abonnement, over privacy, of over hoe je thuis het beste helpt.',
+      },
+    },
+  },
+
   terms: {
     uitgeverOntbreekt: 'Deze voorwaarden zijn nog niet compleet: de naam en het e-mailadres van de uitgever staan er nog niet in. Vul ze in src/content/operator.ts in vóór je de app indient.',
   },

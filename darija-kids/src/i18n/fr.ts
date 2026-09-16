@@ -652,6 +652,41 @@ export const fr: Strings = {
     knop: 'Yallah, on commence',
   },
 
+  feedback: {
+    voet: 'Contact',
+    knop: 'Une remarque, une question ? Écrivez-nous',
+    titel: 'Dites-le-nous',
+    uitleg: "Pas de formulaire : votre application de courrier s'ouvre avec l'objet déjà rempli. Vous voyez exactement ce que vous envoyez.",
+    beginRegel: 'Bonjour Darija Kids,',
+    overWoord: (woord: string): string => `Il s'agit du mot : ${woord}`,
+    anders: 'Votre famille le dit autrement ?',
+    ofMail: "Votre application de courrier ne s'ouvre pas ? Écrivez à",
+    onderwerp: {
+      woord: 'un mot se dit autrement',
+      probleem: 'quelque chose ne marche pas',
+      idee: 'une idée',
+      vraag: 'une question',
+    },
+    soort: {
+      woord: {
+        naam: 'Chez nous, ce mot se dit autrement',
+        hint: "La darija change d'une ville et d'une famille à l'autre. Dites-nous comment vous le dites : c'est comme ça que l'app s'améliore.",
+      },
+      probleem: {
+        naam: 'Quelque chose ne va pas',
+        hint: 'Un bouton sans effet, le son qui ne vient pas, une leçon qui se bloque.',
+      },
+      idee: {
+        naam: "J'ai une idée",
+        hint: "Un mot qui manque, un thème pour une nouvelle unité, une envie de votre enfant.",
+      },
+      vraag: {
+        naam: "J'ai une question",
+        hint: "Sur l'abonnement, sur la vie privée, ou sur la meilleure façon d'aider à la maison.",
+      },
+    },
+  },
+
   terms: {
     uitgeverOntbreekt: 'Ces conditions ne sont pas complètes : le nom et l’adresse e-mail de l’éditeur manquent encore. Renseigne-les dans src/content/operator.ts avant de soumettre l’application.',
   },

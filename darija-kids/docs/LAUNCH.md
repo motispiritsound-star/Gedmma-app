@@ -21,6 +21,13 @@ dezelfde gegevens ook in de app, onderaan de privacy- en de
 voorwaardenpagina. Zolang naam en e-mail leeg zijn staat er in plaats daarvan
 een waarschuwing.
 
+Datzelfde e-mailadres is ook de feedbackknop. Die staat op de oudersspagina
+(de support-URL die beide winkels vragen), in de instellingen, onderaan de
+voorpagina en onder elk woord in het woordenboek — maar hij is onzichtbaar
+zolang dit bestand leeg is, want een knop die nergens heen gaat is erger dan
+geen knop. Kies een adres dat je leest: `hallo@darijakids.com` of
+`feedback@darijakids.com` bij je domein, niet je privéadres.
+
 ```ts
 export const OPERATOR = {
   name: 'Jouw naam of handelsnaam',

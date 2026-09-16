@@ -11,6 +11,7 @@ import { LANGS, useLang, useT, type Lang } from '../i18n'
 import { Button, Card } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 import { useMeaning } from '../ui/WordChip'
+import { FeedbackLink } from '../ui/Feedback'
 
 const TASTER = ['salam', 'shukran', 'atay', 'bnin', 'yallah', 'khobz', 'mzyan', 'bslama']
 
@@ -215,6 +216,7 @@ export function Landing() {
           <Link to="/instellingen" className="hover:underline">{t.nav.instellingen}</Link>
           <Link to="/volledig" className="hover:underline">{t.unlock.titel}</Link>
           <Link to="/privacy" className="hover:underline">{t.nav.privacy}</Link>
+          <FeedbackLink />
         </nav>
       </footer>
     </div>

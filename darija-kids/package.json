@@ -21,6 +21,7 @@
     "screenshots": "node scripts/make-screenshots.mjs",
     "marketing": "node scripts/make-marketing.mjs",
     "intro": "node scripts/make-intro.mjs",
+    "feedbackcheck": "node scripts/feedbackcheck.mjs",
     "bonuscheck": "node scripts/bonuscheck.mjs",
     "brand": "node scripts/make-brand.mjs"
   },

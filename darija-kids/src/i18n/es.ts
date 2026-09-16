@@ -652,6 +652,41 @@ export const es: Strings = {
     knop: 'Yallah, empezamos',
   },
 
+  feedback: {
+    voet: 'Contacto',
+    knop: '¿Ideas o preguntas? Escríbenos',
+    titel: 'Cuéntanoslo',
+    uitleg: 'Sin formularios: se abre tu propia app de correo con el asunto ya escrito. Ves exactamente lo que envías.',
+    beginRegel: 'Hola Darija Kids:',
+    overWoord: (woord: string): string => `Se trata de la palabra: ${woord}`,
+    anders: '¿En tu familia lo dicen de otra manera?',
+    ofMail: '¿No se abre tu app de correo? Escribe a',
+    onderwerp: {
+      woord: 'una palabra suena distinta',
+      probleem: 'algo no funciona',
+      idee: 'una idea',
+      vraag: 'una pregunta',
+    },
+    soort: {
+      woord: {
+        naam: 'En casa esa palabra suena distinta',
+        hint: 'El darija cambia de ciudad en ciudad y de familia en familia. Cuéntanos cómo lo decís vosotros: así mejora la app.',
+      },
+      probleem: {
+        naam: 'Algo va mal',
+        hint: 'Un botón que no hace nada, el sonido que no sale, una lección que se queda colgada.',
+      },
+      idee: {
+        naam: 'Tengo una idea',
+        hint: 'Una palabra que falta, un tema para una unidad nueva, algo que le haría ilusión a tu hijo.',
+      },
+      vraag: {
+        naam: 'Tengo una pregunta',
+        hint: 'Sobre la suscripción, sobre la privacidad, o sobre cómo ayudar mejor en casa.',
+      },
+    },
+  },
+
   terms: {
     uitgeverOntbreekt: 'Estas condiciones aún no están completas: faltan el nombre y el correo de quien publica. Rellénalos en src/content/operator.ts antes de enviar la aplicación.',
   },

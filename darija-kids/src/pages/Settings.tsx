@@ -10,6 +10,7 @@ import { LIST_PRICE, TRIAL_DAYS } from '../engine/billing'
 import { LANGS, useT, type Lang } from '../i18n'
 import { useVoices } from '../ui/useVoices'
 import { Button, Card, SectionTitle, Sheet } from '../ui/kit'
+import { FeedbackButton } from '../ui/Feedback'
 
 /** The embedded demo runs in a sandbox where a page cannot hand over a file. */
 const DEMO = import.meta.env.VITE_DEMO === '1'
@@ -339,6 +340,13 @@ export function SettingsPage() {
         </Row>
         <Row title={t.settings.wissen} hint={t.settings.wissenHint}>
           <Button variant="danger" onClick={() => setConfirmReset(true)}>{t.settings.wissenKnop}</Button>
+        </Row>
+      </Card>
+
+      <h2 className="mb-2 font-display text-lg font-extrabold">{t.feedback.titel}</h2>
+      <Card className="mb-6 divide-y divide-[var(--line)]">
+        <Row title={t.feedback.knop} hint={t.feedback.uitleg}>
+          <FeedbackButton className="js-feedback" label={t.feedback.voet} />
         </Row>
       </Card>
 

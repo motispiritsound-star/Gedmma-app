@@ -304,4 +304,6 @@ dezelfde instrumenten wordt gespeeld als de app zelf gebruikt.
 
 Vul vóór publicatie `src/content/operator.ts` in: zonder naam en e-mailadres van
 de uitgever zet de privacypagina er zichtbaar een waarschuwing boven, en weigeren
-beide winkels de app.
+beide winkels de app. Datzelfde adres is de feedbackknop — `npm run feedbackcheck`
+loopt hem in alle zes talen na, van de oudersspagina tot de correctie onder een
+woord, en leest de opgebouwde `mailto:` terug uit de echte pagina.

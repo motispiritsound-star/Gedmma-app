@@ -9,6 +9,7 @@ import { sfx } from '../engine/audio'
 import { useStore } from '../engine/store'
 import { Card, Pill, SectionTitle } from '../ui/kit'
 import { SpeakButton, WordText } from '../ui/WordChip'
+import { WordFeedback } from '../ui/Feedback'
 
 /** The dictionary: every word the app knows, searchable in four ways. */
 export function Words() {
@@ -95,6 +96,9 @@ export function Words() {
                       </div>
                     </div>
                     {noteOf(w, lang) && <p className="mt-3 rounded-2xl bg-saffron-500/10 px-4 py-2 text-sm">💡 {noteOf(w, lang)}</p>}
+                    {/* The feedback that actually improves a language app:
+                        somebody whose family says this word differently. */}
+                    <WordFeedback word={`${w.tr} (${w.ar})`} />
                   </motion.div>
                 )}
               </Card>

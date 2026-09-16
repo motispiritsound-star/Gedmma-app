@@ -652,6 +652,41 @@ export const de: Strings = {
     knop: 'Yallah, los',
   },
 
+  feedback: {
+    voet: 'Kontakt',
+    knop: 'Tipps oder Fragen? Schreib uns',
+    titel: 'Sag es uns',
+    uitleg: 'Kein Formular: Deine eigene Mail-App öffnet sich mit fertigem Betreff. Du siehst genau, was rausgeht.',
+    beginRegel: 'Hallo Darija Kids,',
+    overWoord: (woord: string): string => `Es geht um das Wort: ${woord}`,
+    anders: 'Sagt eure Familie das anders?',
+    ofMail: 'Öffnet sich deine Mail-App nicht? Dann schreib an',
+    onderwerp: {
+      woord: 'ein Wort klingt anders',
+      probleem: 'etwas funktioniert nicht',
+      idee: 'eine Idee',
+      vraag: 'eine Frage',
+    },
+    soort: {
+      woord: {
+        naam: 'Bei uns klingt das Wort anders',
+        hint: 'Darija ist von Stadt zu Stadt und von Familie zu Familie verschieden. Erzähl uns, wie ihr es sagt — davon wird die App besser.',
+      },
+      probleem: {
+        naam: 'Etwas geht schief',
+        hint: 'Ein Knopf ohne Wirkung, fehlender Ton, eine Lektion, die hängen bleibt.',
+      },
+      idee: {
+        naam: 'Ich habe eine Idee',
+        hint: 'Ein fehlendes Wort, ein Thema für eine neue Einheit, ein Wunsch deines Kindes.',
+      },
+      vraag: {
+        naam: 'Ich habe eine Frage',
+        hint: 'Zum Abo, zum Datenschutz, oder wie man zu Hause am besten hilft.',
+      },
+    },
+  },
+
   terms: {
     uitgeverOntbreekt: 'Diese Bedingungen sind noch nicht vollständig: Name und E-Mail-Adresse des Herausgebers fehlen. Trage sie in src/content/operator.ts ein, bevor du die App einreichst.',
   },
