@@ -3,43 +3,66 @@ import { ALL_SENTENCES } from './sentences'
 import type { Target } from './pronunciation'
 
 /**
- * The words a Standard Arabic voice gets wrong.
+ * Welke stem welk woord zegt.
  *
- * Most of what this app teaches is written in Arabic script, and for a good
- * part of it a Standard Arabic voice is fine: شكرا is "shukran" in Rabat and
- * in Cairo alike. But a slice of the vocabulary is Darija's own, and there the
- * same voice reads the letters by Standard Arabic's rules and says something
- * nobody in Morocco says — نتا becomes "anta", جدتي becomes "jaddatī", بزاف
- * becomes "bazzāfan".
+ * Er zijn drie wegen, en per woord is er maar één goed:
  *
- * Diacritics do not save those. Writing the vowels out makes the classical
- * reading *more* certain, not less; two rounds of trying proved it. What works
- * better, until there is a recording, is to stop handing the word to an Arabic
- * voice at all and hand its Latin spelling to a European one instead: a French
- * voice reading "bezzaf" lands closer to Morocco than an Arabic voice reading
- * بزاف.
+ *   opname     — een mens die het zegt. Altijd het beste, en het enige dat
+ *                gegarandeerd klopt. Staat in `src/audio/`, en wint overal.
+ *   arabisch   — de Arabische stem van het toestel, die het Arabische schrift
+ *                leest. Goed voor alles wat Darija met het Standaardarabisch
+ *                deelt: شكرا is "shukran" in Rabat en in Caïro.
+ *   geleend    — een Franse, Nederlandse of Spaanse stem die de Latijnse
+ *                schrijfwijze leest. Soms beter voor Darija's eigen woorden,
+ *                waar een Arabische stem er "anta" of "jaddatī" van maakt.
  *
- * So this is a list of ids that must never reach an Arabic voice. It grows by
- * listening, not by reasoning: every id here was reported wrong by a Moroccan
- * ear. `npm run sheet` produces the next batch.
+ * Wat hier níét staat is een mening. Dit is een lijst van wat **getest** is:
+ * een woord staat er pas in als iemand die Darija spreekt beide kanten heeft
+ * gehoord en gekozen. Wat er niet in staat gaat naar de Arabische stem — de
+ * oorspronkelijke weg, en voor het merendeel van de woordenschat de juiste.
  *
- * None of this is a substitute for a recording. It is what the app does while
- * the recording does not exist yet.
+ * Want de geleende weg is geen wondermiddel. Hij werkt alleen als de Latijnse
+ * schrijfwijze uitspreekbaar is in de taal die hem leest, en dat is precies
+ * waar Darija lastig doet: "hmer" begint met twee medeklinkers waar het Frans
+ * geen raad mee weet, dus dan is de Arabische stem alsnog dichterbij.
+ *
+ * De lijst groeit door te luisteren, niet door te redeneren. `npm run sheet`
+ * zet elk woord naast elkaar met een knop per stem; wat daar gekozen wordt
+ * hoort hier terecht te komen.
  */
-export const EIGEN_IDS: string[] = [
-  // Pronouns and family — where Standard Arabic inserts vowels Darija drops.
-  'nta', 'nti', 'ntuma', 'hna', 'khoya', 'khti', 'jedda', 'ammti', 'khalti',
-  'weld', 'drari', 'sahbi', 'sahbti',
-  // Everyday words and the little ones that hold a sentence together.
-  'afak', 'bslama', 'thalla', 'iyeh', 'wakha', 'yallah', 'bezzaf',
-  // Numbers: the Darija forms are not the Standard Arabic ones at all.
-  'tlata', 'tmnya', 'tnach', 'tltach', 'khmstach', 'mya',
-  // Colours in their Moroccan short form.
-  'hmer', 'khder', 'sfer',
-  // Places, food and culture.
-  'bhar', 'sahra', 'tomobil', 'tamazight', 'henna', 'gnawa', 'rabat', 'tanja',
-  'msemmen',
-]
+export type Weg = 'arabisch' | 'geleend'
+
+export const UITSPRAAK: Record<string, Weg> = {
+  // Voornaamwoorden en familie: het Standaardarabisch schuift er klinkers in
+  // die Darija juist weglaat.
+  nta: 'geleend', nti: 'geleend', ntuma: 'geleend', hna: 'geleend',
+  khoya: 'geleend', khti: 'geleend', jedda: 'geleend',
+  ammti: 'geleend', khalti: 'geleend',
+  weld: 'geleend', drari: 'geleend', sahbi: 'geleend', sahbti: 'geleend',
+
+  // De kleine woorden die een zin bij elkaar houden.
+  afak: 'geleend', bslama: 'geleend', thalla: 'geleend', iyeh: 'geleend',
+  wakha: 'geleend', yallah: 'geleend', bezzaf: 'geleend',
+
+  // Tellen: de Marokkaanse vormen zijn niet de Standaardarabische.
+  tlata: 'geleend', tmnya: 'geleend', tnach: 'geleend', tltach: 'geleend',
+  khmstach: 'geleend', mya: 'geleend',
+
+  // Kleuren. `hmer` is teruggezet: "hmer" begint met h + m, en daar maakt een
+  // Franse stem niets van — dan is de Arabische stem alsnog beter.
+  hmer: 'arabisch', khder: 'geleend', sfer: 'geleend',
+
+  // Plaatsen, eten en cultuur.
+  bhar: 'geleend', sahra: 'geleend', tomobil: 'geleend', tamazight: 'geleend',
+  henna: 'geleend', gnawa: 'geleend', rabat: 'geleend', tanja: 'geleend',
+  msemmen: 'geleend',
+}
+
+/** Elk woord waarover een keuze is vastgelegd, welke dan ook. */
+export const GETEST_IDS: string[] = Object.keys(UITSPRAAK)
+
+/** De woorden die naar een geleende stem gaan. */
+export const EIGEN_IDS: string[] = GETEST_IDS.filter((id) => UITSPRAAK[id] === 'geleend')
 
 /**
  * Which borrowed voice suits a word, read off its own Latin spelling.
@@ -82,8 +105,8 @@ const OP_SCRIPT: Map<string, Target[]> = (() => {
 
 export const eigenVoorkeur = (arabic: string): Target[] | undefined => OP_SCRIPT.get(arabic)
 
-/** Every id in the list that no longer matches a word, for the test to catch. */
+/** Elk id in de lijst dat geen woord meer is, zodat de test het opmerkt. */
 export const zwevendeIds = (): string[] => {
   const bekend = new Set<string>([...allWords.map((w) => w.id), ...ALL_SENTENCES.map((z) => z.id)])
-  return EIGEN_IDS.filter((id) => !bekend.has(id))
+  return GETEST_IDS.filter((id) => !bekend.has(id))
 }

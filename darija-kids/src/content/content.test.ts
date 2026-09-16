@@ -7,7 +7,7 @@ import { ALL_SENTENCES, maybeSentence } from './sentences'
 import { STORIES } from './stories'
 import { HISTORY, cardForCheckpoint, historyById } from './history'
 import { historyOf } from './localise'
-import { EIGEN_IDS, eigenVoorkeur, voorkeurVoor, zwevendeIds } from './eigen'
+import { EIGEN_IDS, eigenVoorkeur, UITSPRAAK, voorkeurVoor, zwevendeIds } from './eigen'
 import { LANGS } from '../i18n/languages'
 
 describe('lexicon', () => {
@@ -312,5 +312,30 @@ describe('woorden die een Arabische stem verkeerd leest', () => {
   it('bevat geen letters', () => {
     const letters = new Set(LETTERS.map((l) => l.id))
     for (const id of EIGEN_IDS) expect(letters.has(id), id).toBe(false)
+  })
+})
+
+describe('welke stem welk woord zegt', () => {
+  it('legt per woord één van de twee wegen vast', () => {
+    for (const [id, weg] of Object.entries(UITSPRAAK)) {
+      expect(['arabisch', 'geleend'], id).toContain(weg)
+    }
+  })
+
+  // Een woord dat niet getest is hoort naar de Arabische stem te gaan: dat is
+  // de oorspronkelijke weg, en voor het merendeel van de woordenschat de
+  // juiste. Stilzwijgend uitwijken naar een geleende stem zou een oordeel zijn
+  // dat niemand heeft geveld.
+  it('laat een woord zonder oordeel naar de Arabische stem gaan', () => {
+    const onbekend = allWords.find((w) => !(w.id in UITSPRAAK))!
+    expect(eigenVoorkeur(onbekend.ar)).toBeUndefined()
+  })
+
+  it('stuurt alleen de woorden met "geleend" naar een andere stem', () => {
+    for (const [id, weg] of Object.entries(UITSPRAAK)) {
+      const w = [...allWords, ...ALL_SENTENCES].find((x) => x.id === id)!
+      const geleend = eigenVoorkeur(w.ar) !== undefined
+      expect(geleend, `${id} staat op "${weg}"`).toBe(weg === 'geleend')
+    }
   })
 })

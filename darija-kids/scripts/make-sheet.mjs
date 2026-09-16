@@ -480,8 +480,13 @@ function toon() {
   const stukken = []
 
   if (gekozen.length) {
-    stukken.push('GOEDE STEM GEVONDEN (' + gekozen.length + '):')
-    stukken.push(gekozen.map((i) => i.id + ' = ' + keuzes[i.id]).join('\\n'))
+    // Precies zoals het in src/content/eigen.ts moet komen te staan, zodat
+    // het overnemen knippen en plakken is.
+    stukken.push('IN eigen.ts ZETTEN (' + gekozen.length + '):')
+    stukken.push(gekozen
+      .map((i) => '  ' + i.id + ": '" + (keuzes[i.id] === 'ar' ? 'arabisch' : 'geleend') + "',"
+        + (keuzes[i.id] === 'ar' ? '' : '   // ' + keuzes[i.id]))
+      .join('\\n'))
   }
 
   const zonder = fout.filter((i) => !keuzes[i.id])
