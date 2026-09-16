@@ -24,6 +24,7 @@
     "feedbackcheck": "node scripts/feedbackcheck.mjs",
     "historycheck": "node scripts/historycheck.mjs",
     "lettercheck": "node scripts/lettercheck.mjs",
+    "sheet": "node scripts/make-sheet.mjs",
     "bonuscheck": "node scripts/bonuscheck.mjs",
     "brand": "node scripts/make-brand.mjs"
   },

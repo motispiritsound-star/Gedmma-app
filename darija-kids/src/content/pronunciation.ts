@@ -183,34 +183,43 @@ export interface LetterSpeech {
   /** The spelling to borrow a European voice with. */
   base: string
   say?: Partial<Record<Target, string>>
+  /**
+   * Which languages can actually make this sound, best first.
+   *
+   * Only used when the device has no Arabic voice. A Dutch mouth has no ث at
+   * all — "thaa" comes out as "taa", which is ت — while Castilian z is
+   * exactly that sound. So the letter asks for the voice that can say it,
+   * rather than taking whichever one the device happened to offer.
+   */
+  prefer?: Target[]
 }
 
 export const LETTER_SPEECH: Record<string, LetterSpeech> = {
   alif: { ar: 'أَلِفْ', base: 'alif' },
   ba: { ar: 'بَاءْ', base: 'baa', say: { fr: 'ba' } },
   ta: { ar: 'تَاءْ', base: 'taa', say: { fr: 'ta' } },
-  tha: { ar: 'ثَاءْ', base: 'thaa', say: { fr: 'tha', de: 'thaa', it: 'taa', es: 'zaa' } },
+  tha: { ar: 'ثَاءْ', base: 'thaa', say: { fr: 'tha', de: 'thaa', it: 'taa', es: 'zaa' }, prefer: ['es', 'en'] },
   // ج is the zh of "journaal" — the one the old rules turned into "ziem".
-  jim: { ar: 'جِيمْ', base: 'jeem', say: { nl: 'zjiem', de: 'schiem', fr: 'jim', es: 'yim', it: 'gim' } },
+  jim: { ar: 'جِيمْ', base: 'jeem', say: { nl: 'zjiem', de: 'schiem', fr: 'jim', es: 'yim', it: 'gim' }, prefer: ['fr'] },
   // ح has no European equivalent; Spanish and French get their own /x/-ish
   // letter, the rest get a plain h and the app says so on the page.
-  ha: { ar: 'حَاءْ', base: 'haa', say: { es: 'jaa' } },
-  kha: { ar: 'خَاءْ', base: 'khaa', say: { nl: 'chaa', de: 'chaa', es: 'jaa' } },
+  ha: { ar: 'حَاءْ', base: 'haa', say: { es: 'jaa' }, prefer: ['es', 'de', 'nl'] },
+  kha: { ar: 'خَاءْ', base: 'khaa', say: { nl: 'chaa', de: 'chaa', es: 'jaa' }, prefer: ['nl', 'de', 'es'] },
   dal: { ar: 'دَالْ', base: 'daal', say: { fr: 'dal' } },
-  dhal: { ar: 'ذَالْ', base: 'dhaal', say: { fr: 'dhal', nl: 'dzaal', de: 'dhaal' } },
-  ra: { ar: 'رَاءْ', base: 'raa', say: { fr: 'ra' } },
+  dhal: { ar: 'ذَالْ', base: 'dhaal', say: { fr: 'dhal', nl: 'dzaal', de: 'dhaal' }, prefer: ['en'] },
+  ra: { ar: 'رَاءْ', base: 'raa', say: { fr: 'ra' }, prefer: ['es', 'it'] },
   // German s before a vowel is already /z/, which is exactly what ز wants.
-  zay: { ar: 'زَايْ', base: 'zaay', say: { nl: 'zaai', de: 'saai', es: 'sai', it: 'sai', fr: 'zaï' } },
+  zay: { ar: 'زَايْ', base: 'zaay', say: { nl: 'zaai', de: 'saai', es: 'sai', it: 'sai', fr: 'zaï' }, prefer: ['fr', 'nl', 'en'] },
   // and the same rule means س has to be spelled with a double s in German,
   // or the voice reads it as ز.
   sin: { ar: 'سِينْ', base: 'seen', say: { nl: 'sien', de: 'ssien', fr: 'sine', es: 'sin', it: 'sin' } },
-  shin: { ar: 'شِينْ', base: 'sheen', say: { nl: 'sjien', de: 'schien', fr: 'chine', it: 'scin', es: 'chin' } },
+  shin: { ar: 'شِينْ', base: 'sheen', say: { nl: 'sjien', de: 'schien', fr: 'chine', it: 'scin', es: 'chin' }, prefer: ['fr', 'de', 'en'] },
   sad: { ar: 'صَادْ', base: 'saad', say: { fr: 'sad', de: 'ssaad' } },
   dad: { ar: 'ضَادْ', base: 'daad', say: { fr: 'dad' } },
   'ta-emf': { ar: 'طَاءْ', base: 'taa', say: { fr: 'ta' } },
-  'za-emf': { ar: 'ظَاءْ', base: 'zaa', say: { de: 'saa', es: 'sa', it: 'sa', fr: 'za' } },
+  'za-emf': { ar: 'ظَاءْ', base: 'zaa', say: { de: 'saa', es: 'sa', it: 'sa', fr: 'za' }, prefer: ['en'] },
   ayn: { ar: 'عَينْ', base: 'ayn', say: { nl: 'ain', de: 'ain', fr: 'aïn', es: 'ain', it: 'ain' } },
-  ghayn: { ar: 'غَينْ', base: 'ghayn', say: { nl: 'gain', de: 'rain', fr: 'raïn', es: 'gain', it: 'gain' } },
+  ghayn: { ar: 'غَينْ', base: 'ghayn', say: { nl: 'gain', de: 'rain', fr: 'raïn', es: 'gain', it: 'gain' }, prefer: ['fr', 'de'] },
   fa: { ar: 'فَاءْ', base: 'faa', say: { fr: 'fa' } },
   // French and Italian q needs a u after it, and German q is read /kv/.
   qaf: { ar: 'قَافْ', base: 'qaaf', say: { nl: 'kaaf', fr: 'kaf', de: 'kaaf', es: 'caaf', it: 'caaf' } },
@@ -219,8 +228,8 @@ export const LETTER_SPEECH: Record<string, LetterSpeech> = {
   mim: { ar: 'مِيمْ', base: 'meem', say: { nl: 'miem', de: 'miem', fr: 'mime', es: 'mim', it: 'mim' } },
   nun: { ar: 'نُونْ', base: 'noon', say: { nl: 'noen', de: 'nuun', fr: 'noune', es: 'nun', it: 'nun' } },
   'ha-soft': { ar: 'هَاءْ', base: 'haa' },
-  waw: { ar: 'وَاوْ', base: 'waw', say: { nl: 'waauw', de: 'uau', fr: 'waou', es: 'uau', it: 'uau' } },
-  ya: { ar: 'يَاءْ', base: 'yaa', say: { nl: 'jaa', de: 'jaa', fr: 'ya', es: 'ya', it: 'ia' } },
+  waw: { ar: 'وَاوْ', base: 'waw', say: { nl: 'waauw', de: 'uau', fr: 'waou', es: 'uau', it: 'uau' }, prefer: ['en', 'fr'] },
+  ya: { ar: 'يَاءْ', base: 'yaa', say: { nl: 'jaa', de: 'jaa', fr: 'ya', es: 'ya', it: 'ia' }, prefer: ['nl', 'de'] },
 }
 
 /**
@@ -231,14 +240,15 @@ export function letterSpeech(id: string, fallbackAr: string, fallbackName: strin
   ar: string
   tr: string
   latin: Record<string, string>
+  prefer: string[]
 } {
   const entry = LETTER_SPEECH[id]
-  if (!entry) return { ar: fallbackAr, tr: fallbackName, latin: {} }
+  if (!entry) return { ar: fallbackAr, tr: fallbackName, latin: {}, prefer: [] }
   const latin: Record<string, string> = {}
   for (const target of ['fr', 'de', 'nl', 'es', 'it', 'en'] as Target[]) {
     latin[target] = entry.say?.[target] ?? entry.base
   }
-  return { ar: entry.ar, tr: entry.base, latin }
+  return { ar: entry.ar, tr: entry.base, latin, prefer: entry.prefer ?? [] }
 }
 
 /** Everything `SpeakButton` needs for one letter. */

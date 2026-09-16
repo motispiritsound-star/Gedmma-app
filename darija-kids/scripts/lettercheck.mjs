@@ -80,6 +80,28 @@ const tapEveryLetter = async (page, said) => {
   return out
 }
 
+/** Same walk, but it also writes down which voice each letter came out of. */
+const tapEveryLetterWithLang = async (page, said) => {
+  await page.goto(`${BASE}/`, { waitUntil: 'networkidle' })
+  await page.evaluate((s) => localStorage.setItem('darijakids.v1', JSON.stringify(s)), seeded('nl'))
+  await page.goto(`${BASE}/letters`, { waitUntil: 'networkidle' })
+  await page.waitForTimeout(900)
+  said.length = 0
+  const tiles = page.locator('main button.aspect-square')
+  const out = []
+  for (let i = 0; i < await tiles.count(); i++) {
+    said.length = 0
+    await tiles.nth(i).click({ force: true })
+    await page.waitForTimeout(90)
+    out.push({
+      name: (await tiles.nth(i).getAttribute('aria-label')) ?? `#${i}`,
+      text: said[0]?.text ?? '',
+      lang: said[0]?.lang ?? '',
+    })
+  }
+  return out
+}
+
 /* ------------------------------------------ with an Arabic voice present */
 
 console.log('met een Arabische stem')
@@ -131,6 +153,34 @@ console.log('\nmet alleen een Nederlandse stem')
   if (map.get('jim') === 'ziem') fails.push('ج klinkt nog steeds als "ziem"')
   console.log(`  ج → ${map.get('jim')} · ش → ${map.get('shin')} · ز → ${map.get('zay')} · ي → ${map.get('ya')}`)
   console.log(`  ${new Set([...map.values()]).size} verschillende klanken over ${map.size} letters`)
+  await page.close()
+}
+
+/* ------------------- a device with several voices and no Arabic one ------ */
+
+console.log('\nmet een Nederlandse, Spaanse en Franse stem (geen Arabisch)')
+{
+  const { page, said } = await listener(['nl-NL', 'es-ES', 'fr-FR', 'it-IT', 'en-GB'])
+  const spoken = await tapEveryLetterWithLang(page, said)
+  const byId = new Map(spoken.map((s) => [s.name, s]))
+
+  // The letters a Dutch mouth cannot make should be handed to one that can.
+  const wanted = { tha: 'es', ra: 'es', jim: 'fr', ghayn: 'fr', ya: 'nl', kha: 'nl' }
+  for (const [name, taal] of Object.entries(wanted)) {
+    const row = byId.get(name)
+    if (!row) { fails.push(`${name}: niet gevonden`); continue }
+    if (!row.lang.toLowerCase().startsWith(taal)) {
+      fails.push(`${name}: uitgesproken door ${row.lang}, verwacht ${taal}`)
+    }
+  }
+  // ث and ت must not come out as the same sound from the same mouth.
+  const tha = byId.get('tha')
+  const ta = byId.get('ta')
+  if (tha && ta && tha.lang === ta.lang && tha.text === ta.text) {
+    fails.push(`ث en ت klinken allebei als "${tha.text}" uit dezelfde mond`)
+  }
+  console.log(`  \u062B \u2192 ${tha?.text} (${tha?.lang}) \u00b7 \u0631 \u2192 ${byId.get('ra')?.text} (${byId.get('ra')?.lang})`)
+  console.log(`  \u062C \u2192 ${byId.get('jim')?.text} (${byId.get('jim')?.lang})`)
   await page.close()
 }
 

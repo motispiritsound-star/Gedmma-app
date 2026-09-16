@@ -630,13 +630,28 @@ export type VoicePlan =
   | { mode: 'benadering'; voice: SpeechSynthesisVoice }
   | { mode: 'geen' }
 
-/** What this device can actually do, decided fresh for every utterance. */
-export function voicePlan(): VoicePlan {
+/**
+ * What this device can actually do, decided fresh for every utterance.
+ *
+ * `prefer` names the languages whose mouths can make this particular sound,
+ * and it is only consulted when there is no Arabic voice to borrow from.
+ * Without it every letter is read by one stand-in, and a Dutch voice has no
+ * way at all to say ث — "thaa" comes out as "taa", which is ت, a different
+ * letter. A Castilian voice says it perfectly, because Spanish z *is* that
+ * sound. Same story for ر, where the rolled r lives in Spanish and Italian,
+ * and for ج, whose zh is French.
+ *
+ * The cost is that the alphabet may be recited in more than one accent. That
+ * is a smaller price than two letters sounding identical.
+ */
+export function voicePlan(prefer: Phonetic[] = []): VoicePlan {
   if (!canSpeak()) return { mode: 'geen' }
   const arabic = arabicVoice()
   if (arabic) return { mode: 'arabisch', voice: arabic }
   if (!getState().settings.fallbackVoice) return { mode: 'geen' }
-  const standIn = bestOf(FALLBACK_ORDER, voices()) ?? voices()[0]
+  const standIn = (prefer.length ? bestOf(prefer, voices()) : null)
+    ?? bestOf(FALLBACK_ORDER, voices())
+    ?? voices()[0]
   return standIn ? { mode: 'benadering', voice: standIn } : { mode: 'geen' }
 }
 
@@ -654,6 +669,8 @@ export interface SayOptions {
    */
   latin?: Partial<Record<Phonetic, string>>
   slow?: boolean
+  /** Languages whose voice can make this sound, best first. */
+  prefer?: Phonetic[]
   /**
    * Overrides the reading speed for this one utterance, 0…1.
    *
@@ -668,7 +685,7 @@ export function say(arabic: string, opts: SayOptions = {}): void {
   const s = getState()
   if (!s.settings.sound || !canSpeak()) return
   unlockAudio()
-  const plan = voicePlan()
+  const plan = voicePlan(opts.prefer)
   if (plan.mode === 'geen') return
 
   // An Arabic voice gets the form written for speaking, which is the same
@@ -801,7 +818,13 @@ function speakLetter(letter: { id: string; ar: string; name: string }, opts: { s
   const speech = letterSpeech(letter.id, letter.ar, letter.name)
   // Slower than a word on purpose: a letter name is two sounds and a long
   // vowel, and at talking speed the vowel disappears.
-  say(speech.ar, { tr: speech.tr, latin: speech.latin, slow: opts.slow, rate: LETTER_RATE })
+  say(speech.ar, {
+    tr: speech.tr,
+    latin: speech.latin,
+    prefer: speech.prefer as Phonetic[],
+    slow: opts.slow,
+    rate: LETTER_RATE,
+  })
 }
 
 /** Some browsers only fill the voice list asynchronously. */
