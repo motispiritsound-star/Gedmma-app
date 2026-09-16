@@ -30,10 +30,9 @@ om bij te werken — de map ís de lijst.
 Precies deze namen, anders wordt het bestand niet gevonden:
 
 ```
-alif  ba    ta    tha   jim   ha    kha   dal   dhal  ra
-zay   sin   shin  sad   dad   ta-emf za-emf ayn  ghayn fa
-qaf   kaf   lam   mim   nun   ha-soft waw  ya    pa    va
-ga
+alif  ba    ta      tha    jim   ha      kha  dal   dhal  ra
+zay   sin   shin    sad    dad   ta-emf  za-emf ayn  ghayn fa
+qaf   kaf   lam     mim    nun   ha-soft waw  ya
 ```
 
 Let op de twee paren die anders heten dan je zou denken: `ta-emf` is ط (de
@@ -54,6 +53,25 @@ kamers klinken.
 meestgebruikte woorden dekken het grootste deel van wat een kind in de eerste
 week hoort.
 
+## De gaten alvast vullen met een motor
+
+`npm run voice` laat een betaalde spraakmotor alles inspreken waar nog geen
+opname van is, en zet de bestanden hier neer. Azure is de enige grote aanbieder
+met een Marokkaanse stem (`ar-MA`), en ook die is Standaardarabisch met een
+Marokkaans accent — geen Darija. Wat eruit komt is dus een **beginpunt, geen
+eindpunt**: beter dan de stem van een willekeurige telefoon, en vooral: het is
+te beluisteren en per stuk te vervangen.
+
+```
+AZURE_SLEUTEL=... npm run voice -- --stem azure --hoeveel 10   # eerst tien horen
+AZURE_SLEUTEL=... npm run voice -- --stem azure                # de rest
+```
+
+Een echte opname wordt **nooit** overschreven. Wat de motor maakte staat in
+`src/audio/gemaakt.json`, zodat een volgende ronde weet wat van een mens is en
+wat niet. Loop daarna `npm run sheet` af en vervang alles wat een Marokkaans
+oor afkeurt door een opname van een mens.
+
 ## Als je opnames van iemand anders gebruikt
 
 Dan is de licentie het enige dat telt: een bestand mag pas mee in een app die
@@ -65,6 +83,6 @@ CC BY-NC niet, "geen licentie vermeld" ook niet). Zet de herkomst erbij in
 
 - **Kort en strak.** Alleen de naam van de letter, stilte ervoor en erna
   weggeknipt. De app speelt het bestand zoals het is.
-- **Eén stem voor alle eenendertig.** Twee sprekers door elkaar valt meer op
+- **Eén stem voor alle achtentwintig.** Twee sprekers door elkaar valt meer op
   dan een synthetische stem.
 - **Gewoon een telefoon is goed genoeg,** mits het stil is in de kamer.
