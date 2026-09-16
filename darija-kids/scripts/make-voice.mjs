@@ -29,6 +29,16 @@
  *   --opnieuw              also overwrite clips this script made earlier
  *   --hoeveel <n>          stop after n clips, to hear a handful first
  *   --lijst                print what there is to say and stop, no key needed
+ *   --schrift <soort>      arabisch (standaard) of latijn
+ *   --proef <map>          schrijf naar die map in plaats van naar src/audio,
+ *                          om eerst te luisteren zonder iets te vervangen
+ *
+ * Over `--schrift`: een motor die op Standaardarabisch is getraind moet het
+ * Arabische schrift krijgen, want daar is hij op getraind. Een stem die Darija
+ * kent doet het vaak beter met de Latijnse schrijfwijze die Marokkanen zelf in
+ * berichten gebruiken — "bzaf" in plaats van بزاف — omdat daar staat wat er
+ * gezegd wordt en niet wat er geschreven wordt. Het is twee keer draaien en
+ * luisteren; welke wint hangt van de stem af.
  */
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -51,6 +61,9 @@ const STEM = arg('stem', 'azure')
 const ALLEEN = arg('alleen', null)
 const OPNIEUW = vlag('opnieuw')
 const HOEVEEL = Number(arg('hoeveel', 0)) || Infinity
+const SCHRIFT = arg('schrift', 'arabisch')
+/** Een proef gaat ergens anders heen en raakt de app niet aan. */
+const PROEF = arg('proef', null)
 const MAPPEN = ALLEEN ? [ALLEEN] : ['letters', 'woorden', 'zinnen']
 
 /**
@@ -68,11 +81,32 @@ const STEMMEN = {
     sleutel: process.env.AZURE_SLEUTEL,
     sleutelNaam: 'AZURE_SLEUTEL',
   },
+  /**
+   * ElevenLabs, en dit is de interessante.
+   *
+   * Azure heeft een Marokkaanse stem die Standaardarabisch spreekt. ElevenLabs
+   * heeft stemmen die op Darija zelf zijn getraind — een gekloonde stem van een
+   * Marokkaanse spreker. Dat is een ander soort ding: geen accent over een
+   * andere taal heen, maar de taal.
+   *
+   * Zet ELEVEN_STEM op de id van de stem uit je eigen bibliotheek. Twee dingen
+   * om eerst te regelen, want ze zijn geen detail:
+   *
+   *  - **Commercieel gebruik.** Wat een gratis account maakt mag niet in een
+   *    app die geld kost. Dat komt met een betaald abonnement, en je hebt het
+   *    zwart op wit nodig voordat dit meegaat naar de winkel.
+   *  - **De stem zelf.** Een stem uit de Voice Library heeft eigen voorwaarden
+   *    van degene die hem deelde. Lees die, ook als het abonnement in orde is.
+   */
   eleven: {
-    /** Set ELEVEN_STEM to the id of a Moroccan voice you have the rights to. */
     naam: process.env.ELEVEN_STEM ?? '',
     sleutel: process.env.ELEVEN_SLEUTEL,
     sleutelNaam: 'ELEVEN_SLEUTEL',
+    model: process.env.ELEVEN_MODEL ?? 'eleven_multilingual_v2',
+    /** De drie schuiven, als getallen tussen 0 en 1. */
+    vast: Number(process.env.ELEVEN_STABILITY ?? 0.5),
+    gelijkend: Number(process.env.ELEVEN_SIMILARITY ?? 0.75),
+    tempo: Number(process.env.ELEVEN_SPEED ?? 0.92),
   },
 }
 
@@ -102,7 +136,15 @@ async function eleven(tekst, stem) {
     {
       method: 'POST',
       headers: { 'xi-api-key': stem.sleutel, 'content-type': 'application/json' },
-      body: JSON.stringify({ text: tekst, model_id: 'eleven_multilingual_v2' }),
+      body: JSON.stringify({
+        text: tekst,
+        model_id: stem.model,
+        voice_settings: {
+          stability: stem.vast,
+          similarity_boost: stem.gelijkend,
+          speed: stem.tempo,
+        },
+      }),
     },
   )
   if (!antwoord.ok) throw new Error(`eleven ${antwoord.status}: ${(await antwoord.text()).slice(0, 160)}`)
@@ -143,22 +185,30 @@ const werk = await page.evaluate(async () => {
     import('/src/content/pronunciation.ts'),
   ])
   return {
-    letters: alphabet.LETTERS.map((l) => ({
-      id: l.id, tekst: pronunciation.letterSpeech(l.id, l.ar, l.name).ar, tr: l.tr,
-    })),
+    letters: alphabet.LETTERS.map((l) => {
+      const spraak = pronunciation.letterSpeech(l.id, l.ar, l.name)
+      // De Latijnse vorm van een letter is zijn náám — "alif", niet "a". Een
+      // stem die "a" krijgt zegt een klank waar een letternaam hoort.
+      return { id: l.id, ar: spraak.ar, tr: spraak.tr }
+    }),
     woorden: lexicon.allWords.filter((w) => !w.phrase).map((w) => ({
-      id: w.id, tekst: pronunciation.spokenForm(w.ar), tr: w.tr,
+      id: w.id, ar: pronunciation.spokenForm(w.ar), tr: w.tr,
     })),
     zinnen: [
       ...lexicon.allWords.filter((w) => w.phrase).map((w) => ({
-        id: w.id, tekst: pronunciation.spokenForm(w.ar), tr: w.tr,
+        id: w.id, ar: pronunciation.spokenForm(w.ar), tr: w.tr,
       })),
       ...sentences.ALL_SENTENCES.map((z) => ({
-        id: z.id, tekst: pronunciation.spokenForm(z.ar), tr: z.tr,
+        id: z.id, ar: pronunciation.spokenForm(z.ar), tr: z.tr,
       })),
     ],
   }
 })
+
+// Welke van de twee schrijfwijzen de motor krijgt.
+for (const map of Object.keys(werk)) {
+  for (const rij of werk[map]) rij.tekst = SCHRIFT === 'latijn' ? rij.tr : rij.ar
+}
 await browser.close()
 await server.close()
 
@@ -201,9 +251,12 @@ let stuk = 0
 for (const map of MAPPEN) {
   const rijen = werk[map]
   if (!rijen) { console.error(`onbekende map: ${map}`); continue }
-  const uit = path.join(ROOT, 'src', 'audio', map)
+  const uit = PROEF ? path.join(ROOT, PROEF, map) : path.join(ROOT, 'src', 'audio', map)
   await mkdir(uit, { recursive: true })
-  const aanwezig = new Set((await readdir(uit).catch(() => [])).map((f) => f.replace(/\.[^.]+$/, '')))
+  // Een proef vervangt niets, dus daar telt niet wat er al staat.
+  const aanwezig = PROEF
+    ? new Set()
+    : new Set((await readdir(uit).catch(() => [])).map((f) => f.replace(/\.[^.]+$/, '')))
 
   for (const rij of rijen) {
     if (gedaan >= HOEVEEL) break
@@ -219,7 +272,7 @@ for (const map of MAPPEN) {
       const klaar = bewerk(rate, samples)
       if (!klaar) { console.error(`${rij.id}: alleen stilte`); stuk++; continue }
       await writeFile(path.join(uit, `${rij.id}.wav`), writeWav(rate, klaar.samples))
-      boekje[`${map}/${rij.id}`] = { stem: stem.naam, op: new Date().toISOString().slice(0, 10) }
+      if (!PROEF) boekje[`${map}/${rij.id}`] = { stem: stem.naam, op: new Date().toISOString().slice(0, 10) }
       gedaan++
       process.stdout.write(`\r${map}: ${gedaan} gemaakt, ${over} overgeslagen`)
     } catch (e) {
@@ -232,7 +285,9 @@ for (const map of MAPPEN) {
   process.stdout.write('\n')
 }
 
-await writeFile(BOEKJE, `${JSON.stringify(boekje, null, 2)}\n`)
+if (!PROEF) await writeFile(BOEKJE, `${JSON.stringify(boekje, null, 2)}\n`)
 
 console.log(`\n${gedaan} gemaakt · ${over} al aanwezig · ${stuk} mislukt`)
-console.log('Luister ze na met `npm run sheet` en vervang alles wat fout klinkt door een echte opname.')
+console.log(PROEF
+  ? `Het staat in ${PROEF}/ en de app is niet aangeraakt. Luister het door; deugt het, draai dan zonder --proef.`
+  : 'Luister ze na met `npm run sheet` en vervang alles wat fout klinkt door een echte opname.')

@@ -56,16 +56,52 @@ week hoort.
 ## De gaten alvast vullen met een motor
 
 `npm run voice` laat een betaalde spraakmotor alles inspreken waar nog geen
-opname van is, en zet de bestanden hier neer. Azure is de enige grote aanbieder
-met een Marokkaanse stem (`ar-MA`), en ook die is Standaardarabisch met een
-Marokkaans accent — geen Darija. Wat eruit komt is dus een **beginpunt, geen
-eindpunt**: beter dan de stem van een willekeurige telefoon, en vooral: het is
-te beluisteren en per stuk te vervangen.
+opname van is, en zet de bestanden hier neer. Er zijn twee soorten aanbieders en
+het verschil is groot:
+
+**Azure** heeft een Marokkaanse stem (`ar-MA`), maar die spreekt
+Standaardarabisch met een Marokkaans accent. Geen Darija. Bruikbaar als
+beginpunt, niet als eindpunt.
+
+**ElevenLabs** heeft stemmen die op Darija zélf zijn getraind — een gekloonde
+stem van een Marokkaanse spreker. Dat is een ander soort ding: geen accent over
+een andere taal heen, maar de taal. Dit is de weg om te proberen.
 
 ```
-AZURE_SLEUTEL=... npm run voice -- --stem azure --hoeveel 10   # eerst tien horen
-AZURE_SLEUTEL=... npm run voice -- --stem azure                # de rest
+# eerst tien horen, zonder iets in de app te vervangen
+ELEVEN_SLEUTEL=... ELEVEN_STEM=<stem-id> \
+  npm run voice -- --stem eleven --hoeveel 10 --proef proef
+
+# hetzelfde, maar met de Latijnse schrijfwijze in plaats van het Arabische schrift
+ELEVEN_SLEUTEL=... ELEVEN_STEM=<stem-id> \
+  npm run voice -- --stem eleven --schrift latijn --hoeveel 10 --proef proef-latijn
+
+# deugt het? dan zonder --proef, en het staat in de app
+ELEVEN_SLEUTEL=... ELEVEN_STEM=<stem-id> npm run voice -- --stem eleven
 ```
+
+Draai die twee proeven allebei en luister ze naast elkaar. Een motor die op
+Standaardarabisch is getraind moet het Arabische schrift krijgen; een stem die
+Darija kent doet het vaak beter met de Latijnse schrijfwijze die Marokkanen zelf
+in berichten gebruiken — "bzaf" in plaats van بزاف, omdat daar staat wat er
+*gezegd* wordt en niet wat er geschreven wordt. Welke wint hangt van de stem af,
+en dat hoor je in tien bestanden.
+
+De schuiven staan in de omgeving: `ELEVEN_MODEL`, `ELEVEN_STABILITY`,
+`ELEVEN_SIMILARITY` en `ELEVEN_SPEED`.
+
+### Voordat er ook maar iets van meegaat naar de winkel
+
+Twee dingen, en het zijn geen details:
+
+- **Commercieel gebruik.** Wat een gratis account maakt mag niet in een app die
+  geld kost. Dat komt met een betaald abonnement, en je wilt het zwart op wit
+  hebben.
+- **De stem zelf.** Een stem uit de Voice Library heeft eigen voorwaarden van
+  degene die hem deelde, los van je abonnement. Lees die apart.
+
+Zet allebei vast in `store/press-kit.md`, met datum en bron, net als bij een
+opname van een mens.
 
 Een echte opname wordt **nooit** overschreven. Wat de motor maakte staat in
 `src/audio/gemaakt.json`, zodat een volgende ronde weet wat van een mens is en
