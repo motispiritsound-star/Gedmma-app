@@ -8,7 +8,7 @@ Para App Store Connect (España) y Google Play Console (es-ES).
 `Darija Kids`
 
 **Subtítulo (máx. 30)**
-`Árabe marroquí para niños`
+`Para peques, y para ti también`
 
 **Palabras clave (máx. 100)**
 `dariya,darija,marroquí,árabe,marruecos,idioma,niños,aprender,vocabulario,gratis`
@@ -19,19 +19,41 @@ Para App Store Connect (España) y Google Play Console (es-ES).
 **Descripción (máx. 4000)**
 
 ```
+Para los jóvenes — y en secreto para los mayores que quieren pulir su dariya.
+
 Darija Kids enseña dariya a niños y adolescentes: el árabe marroquí que la gente habla en casa y en la calle en Marruecos. No el árabe estándar de los manuales, sino la lengua en la que se llama a jeddti.
 
 LECCIONES CORTAS QUE SE QUEDAN
 Una lección dura de dos a cuatro minutos. Aprendes a oír una palabra, reconocerla, leerla en escritura árabe, escribirla y decirla en voz alta. Cada palabra vuelve justo antes de que la olvides.
 
-QUÉ APRENDES
-• 304 palabras y frases, de salam hasta regatear en el zoco
-• 17 unidades que suben de principiante (A0) hasta A2
+EL CAMINO: DIECISIETE UNIDADES, DE LA LETRA A LA CONVERSACIÓN
+No listas sueltas sino una ruta, en la que cada unidad se apoya en la anterior. Al final de cada una un test, y solo entonces se abre la siguiente.
+
+PRINCIPIANTE (A0) — las seis primeras
+1. Lhruf — el alfabeto árabe, letra a letra
+2. ¡Salam! — saludar y despedirse
+3. Ana w nta — yo, tú y quién eres
+4. L3a'ila — presentar a tu familia
+5. L3dad — contar hasta cien
+6. Lalwan — los colores a tu alrededor
+Después de esto tu hijo sabe presentarse, saludar, contar y leer la escritura árabe.
+
+MÁS ALLÁ (A1) — ocho unidades
+7. Lmakla — comer, beber, el té · 8. Ddar — en casa · 9. Lmedrasa — en clase · 10. Lhayawanat — animales · 11. Lweqt — días, hora y tiempo · 12. Ljism — cuerpo y emociones · 13. Kanhder — decir lo que haces · 14. Su'al — hacer preguntas
+Después de esto tu hijo mantiene una conversación sobre casa, escuela y cómo le va.
+
+AUTÓNOMO (A2) — las tres últimas
+15. Fssouq — en el mercado · 16. Fin ghadi? — preguntar el camino · 17. Lmghrib dyalna — país, ciudades y fiestas
+Después de esto tu hijo se maneja en el propio Marruecos: regatear, preguntar, participar.
+
+LO QUE HAY A LO LARGO DEL CAMINO
+• 304 palabras y frases, cada una en cinco tipos de ejercicio
 • Todo el alfabeto árabe, con la forma de cada letra al principio, en medio y al final
 • Cuatro conversaciones para leer, con preguntas después
 • Tres juegos: carrera contrarreloj, memoria y juego de letras
 • Cinco rondas bonus que no se agotan, entre ellas calcar letras con el dedo
 • Catorce cortos sobre la historia de Marruecos, uno después de cada test
+• Un montón de repaso que detecta solo lo que empieza a flojear
 
 Y CUANDO EL CURSO SE ACABA
 Ahí empieza. Las rondas bonus se hacen con lo que ya conoces, así que son distintas cada vez: escribir, dictado, construir frases, un maratón de treinta preguntas y seis palabras en voz alta. El medidor de arriba cuenta lo que se sostiene ahora mismo, y baja solo si pasas tiempo sin volver.

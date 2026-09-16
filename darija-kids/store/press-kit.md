@@ -3,10 +3,15 @@
 Alles wat een journalist, blogger of moskee-nieuwsbrief nodig heeft, op één
 plek. Overnemen mag; toestemming vragen hoeft niet.
 
+## De leus
+
+**Voor jong — en stiekem ook voor oud die zijn Darija wil bijspijkeren.**
+
 ## In één zin
 
 Darija Kids leert kinderen en jongeren het Marokkaans-Arabisch dat hun familie
-thuis spreekt — met uitspraak, het Arabische schrift, korte lessen en een kort
+thuis spreekt, langs één pad van zeventien units dat begint bij het alfabet en
+eindigt bij afdingen op de souq — met uitspraak, korte lessen en een kort
 filmpje uit de Marokkaanse geschiedenis na elke toets, in zes talen en zonder
 advertenties.
 
@@ -40,7 +45,28 @@ Italiaans of Engels — en kiest die zelf op basis van het toestel.
 | Account | Geen — er wordt niets verzameld en niets verstuurd |
 | Offline | Ja, volledig |
 
+## Het pad
+
+Zeventien units, en niet als losse lijstjes: elke unit bouwt op de vorige, elke
+unit eindigt in een toets, en pas daarna gaat de volgende open.
+
+| | Units | Wat je kind daarna kan |
+|---|---|---|
+| **A0** | 1 Lhruf · 2 Salam! · 3 Ana w nta · 4 L3a'ila · 5 L3dad · 6 Lalwan | zichzelf voorstellen, groeten, tellen, het Arabische schrift lezen |
+| **A1** | 7 Lmakla · 8 Ddar · 9 Lmedrasa · 10 Lhayawanat · 11 Lweqt · 12 Ljism · 13 Kanhder · 14 Su'al | een gesprek voeren over thuis, school en hoe het gaat |
+| **A2** | 15 Fssouq · 16 Fin ghadi? · 17 Lmghrib dyalna | zich redden in Marokko zelf: afdingen, de weg vragen, meepraten |
+
+Langs dat pad staan de onderdelen: het alfabet met alle drie de vormen van elke
+letter, 304 woorden in vijf soorten oefeningen, vier gesprekken om te lezen,
+drie spelletjes, vijf bonusrondes die niet opraken, veertien
+geschiedenisfilmpjes, en een herhaalstapel die zelf bijhoudt wat begint te
+wankelen.
+
 ## Wat het anders maakt
+
+**Het is één route, geen woordenlijst.** De meeste taalapps zijn een verzameling
+oefeningen; dit is een pad met een begin en een eind. Een kind ziet waar het is,
+wat er open staat en wat er nog wacht — en een ouder ziet dat ook.
 
 **Het is Darija, niet Standaardarabisch.** De taal die je met je oma spreekt,
 niet die uit het schoolboek. Dat verschil is de hele reden dat de app bestaat.

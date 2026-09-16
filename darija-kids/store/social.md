@@ -14,11 +14,24 @@ geluid, in vier formaten. `intro-verhaal` voor stories, reels en TikTok,
 
 ---
 
-## De leuzen
+## De leus
+
+**Voor jong — en stiekem ook voor oud die zijn Darija wil bijspijkeren.**
+
+Dat is de zin die overal bovenaan hoort: op de winkelpagina, in de film, onder
+elke post. Hij doet twee dingen tegelijk. Hij zegt waar de app voor is, en hij
+geeft de volwassene die hem leest een reden om niet door te scrollen — want die
+verstaat oma wel maar antwoordt in het Nederlands, en dat weet hij van zichzelf.
+
+Daaronder komt het pad: zeventien units van het alfabet tot afdingen op de souq.
+Niet "304 woorden" — dat is een getal. Wel "van letter tot gesprek" — dat is een
+route waarvan iemand het eind wil zien.
+
+### De varianten
 
 Eén grap, twee kanten: de app is voor de kinderen, en de ouder leert stiekem
 mee. Dat is wat een post laat delen — niet de functielijst. De introfilm draagt
-de eerste, in tweeën geknipt: hij opent op de kinderen en landt, vijf schermen
+de eerste, in tweeën geknipt: hij opent op de kinderen en landt, zes schermen
 later, op de ouder.
 
 1. Laat je kinderen hun moedertaal leren. En pik zelf stiekem wat mee.

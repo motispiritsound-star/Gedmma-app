@@ -19,19 +19,41 @@ Für App Store Connect (Deutschland, Österreich, Schweiz) und Google Play Conso
 **Beschreibung (max. 4000)**
 
 ```
+Für die Jungen — und heimlich für die Älteren, die ihr Darija aufpolieren wollen.
+
 Darija Kids bringt Kindern und Jugendlichen Darija bei: das marokkanische Arabisch, das die Menschen in Marokko zu Hause und auf der Straße sprechen. Nicht das Hocharabisch aus dem Lehrbuch — die Sprache, in der man mit jeddti telefoniert.
 
 KURZE LEKTIONEN, DIE HÄNGEN BLEIBEN
 Eine Lektion dauert zwei bis vier Minuten. Du lernst ein Wort zu hören, zu erkennen, in arabischer Schrift zu lesen, selbst zu schreiben und laut zu sagen. Jedes Wort kommt genau dann zurück, bevor du es vergisst.
 
-WAS DU LERNST
-• 304 Wörter und Sätze, von salam bis zum Handeln auf dem Souk
-• 17 Einheiten, die von Anfänger (A0) bis A2 steigen
+DER WEG: SIEBZEHN EINHEITEN, VOM BUCHSTABEN BIS ZUM GESPRÄCH
+Keine losen Listen, sondern eine Route, auf der jede Einheit auf der vorigen aufbaut. Am Ende jeder ein Test, und erst danach öffnet sich die nächste.
+
+ANFANG (A0) — die ersten sechs
+1. Lhruf — das arabische Alphabet, Buchstabe für Buchstabe
+2. Salam! — hallo und tschüss sagen
+3. Ana w nta — ich, du und wer du bist
+4. L3a'ila — die Familie vorstellen
+5. L3dad — bis hundert zählen
+6. Lalwan — die Farben um dich herum
+Danach kann dein Kind sich vorstellen, grüßen, zählen und die arabische Schrift lesen.
+
+WEITER (A1) — acht Einheiten
+7. Lmakla — essen, trinken, Tee · 8. Ddar — im Haus · 9. Lmedrasa — in der Klasse · 10. Lhayawanat — Tiere · 11. Lweqt — Tage, Zeit und Wetter · 12. Ljism — Körper und Gefühle · 13. Kanhder — sagen, was du tust · 14. Su'al — Fragen stellen
+Danach führt dein Kind ein Gespräch über zu Hause, die Schule und wie es geht.
+
+SELBSTÄNDIG (A2) — die letzten drei
+15. Fssouq — auf dem Markt · 16. Fin ghadi? — nach dem Weg fragen · 17. Lmghrib dyalna — Land, Städte und Feste
+Danach kommt dein Kind in Marokko selbst zurecht: handeln, fragen, mitreden.
+
+WAS AM WEG STEHT
+• 304 Wörter und Sätze, jedes in fünf Übungsarten
 • Das komplette arabische Alphabet, mit der Form jedes Buchstabens am Anfang, in der Mitte und am Ende
 • Vier Gespräche zum Lesen, mit Fragen danach
 • Drei Spiele: Zeitrennen, Memory und Buchstabenspiel
 • Fünf Bonusrunden, die nicht ausgehen — darunter Buchstaben mit dem Finger nachzeichnen
 • Vierzehn kurze Filme aus der Geschichte Marokkos, einer nach jedem Test
+• Ein Wiederholstapel, der selbst merkt, was zu wackeln beginnt
 
 UND WENN DER KURS ZU ENDE IST
 Dann fängt es an. Die Bonusrunden werden aus dem gebaut, was du schon kennst, also sind sie jedes Mal anders: Schreiben, Diktat, Sätze bauen, ein Marathon aus dreißig Fragen und sechs Wörter laut. Die Anzeige oben misst, was gerade fest sitzt — und sinkt von selbst, wenn du länger wegbleibst.

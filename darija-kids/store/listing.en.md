@@ -8,7 +8,7 @@ For App Store Connect (UK, Ireland, rest of world) and Google Play Console (en-G
 `Darija Kids`
 
 **Subtitle (max 30)**
-`Moroccan Arabic for children`
+`For the kids, quietly for you`
 
 **Keywords (max 100)**
 `darija,moroccan,arabic,morocco,language,kids,learn,vocabulary,arabic script,free`
@@ -19,19 +19,41 @@ For App Store Connect (UK, Ireland, rest of world) and Google Play Console (en-G
 **Description (max 4000)**
 
 ```
+For the young — and quietly for the grown-ups brushing up their Darija.
+
 Darija Kids teaches children and teenagers Darija: the Moroccan Arabic people speak at home and in the street in Morocco. Not the Modern Standard Arabic of textbooks — the language you call jeddti in.
 
 SHORT LESSONS THAT STICK
 A lesson takes two to four minutes. You learn to hear a word, recognise it, read it in Arabic script, type it and say it out loud. Every word comes back exactly before you forget it.
 
-WHAT YOU LEARN
-• 304 words and phrases, from salam to haggling at the souq
-• 17 units climbing from beginner (A0) to A2
+THE PATH: SEVENTEEN UNITS, FROM LETTER TO CONVERSATION
+Not scattered lists but one route, each unit built on the one before it. A test at the end of each, and the next only opens after that.
+
+BEGINNER (A0) — the first six
+1. Lhruf — the Arabic alphabet, letter by letter
+2. Salam! — saying hello and goodbye
+3. Ana w nta — me, you and who you are
+4. L3a'ila — introducing your family
+5. L3dad — counting to a hundred
+6. Lalwan — the colours around you
+After this your child can introduce themselves, greet, count and read Arabic script.
+
+FURTHER (A1) — eight units
+7. Lmakla — eating, drinking, tea · 8. Ddar — around the house · 9. Lmedrasa — in class · 10. Lhayawanat — animals · 11. Lweqt — days, time and weather · 12. Ljism — body and feelings · 13. Kanhder — saying what you do · 14. Su'al — asking questions
+After this your child can hold a conversation about home, school and how things are going.
+
+ON THEIR OWN (A2) — the last three
+15. Fssouq — at the market · 16. Fin ghadi? — asking the way · 17. Lmghrib dyalna — country, cities and celebration
+After this your child manages in Morocco itself: haggling, asking directions, joining in.
+
+WHAT STANDS ALONG THE PATH
+• 304 words and phrases, each in five kinds of exercise
 • The complete Arabic alphabet, with each letter's shape at the start, middle and end
 • Four conversations to read, with questions afterwards
 • Three games: time race, memory and the letter game
 • Five bonus rounds that never run out, including tracing letters with your finger
 • Fourteen short films from the history of Morocco, one after every test
+• A review pile that notices by itself what is starting to wobble
 
 AND WHEN THE COURSE IS DONE
 That is when it starts. The bonus rounds are built from what you already know, so they are different every time: writing, dictation, building sentences, a marathon of thirty questions and six words out loud. The meter at the top counts what is standing up right now — and it slips on its own if you stay away.

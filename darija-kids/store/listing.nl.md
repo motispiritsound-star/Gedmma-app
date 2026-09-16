@@ -8,7 +8,7 @@ Voor App Store Connect (Nederland, België) en Google Play Console (nl-NL).
 `Darija Kids`
 
 **Ondertitel (max 30)**
-`Marokkaans-Arabisch voor kids`
+`Voor jong, stiekem ook voor oud`
 
 **Trefwoorden (max 100, komma's zonder spaties)**
 `darija,marokkaans,arabisch,marokko,taal,kinderen,leren,woordenschat,arabisch schrift,gratis`
@@ -19,19 +19,41 @@ Voor App Store Connect (Nederland, België) en Google Play Console (nl-NL).
 **Beschrijving (max 4000)**
 
 ```
-Darija Kids leert kinderen en jongeren Darija: het Marokkaans-Arabisch dat mensen in Marokko thuis en op straat spreken. Niet het Standaardarabisch uit een schoolboek — de taal waarin je met jeddti belt.
+Voor jong — en stiekem ook voor oud die zijn Darija wil bijspijkeren.
+
+Darija Kids leert kinderen en jongeren Darija: het Marokkaans-Arabisch dat mensen in Marokko thuis en op straat spreken. Niet het Standaardarabisch uit een schoolboek — de taal waarin je met jeddti belt. En omdat het pad bij de letters begint en eindigt bij afdingen op de souq, loopt een ouder die zijn eigen Darija wil opfrissen dezelfde route — alleen sneller.
 
 KORTE LESSEN DIE BLIJVEN HANGEN
 Een les duurt twee tot vier minuten. Je leert een woord horen, herkennen, lezen in Arabisch schrift, zelf typen en hardop zeggen. Elk woord komt precies terug voordat je het vergeet.
 
-WAT JE LEERT
-• 304 woorden en zinnen, van salam tot afdingen op de souq
-• 17 units die oplopen van beginner (A0) tot A2
-• Het hele Arabische alfabet, met de vorm van elke letter aan het begin, in het midden en aan het eind
-• Vier gesprekken om te lezen, met een vraag erna
+HET PAD: ZEVENTIEN UNITS, VAN LETTER TOT GESPREK
+Geen losse lijstjes maar één route, waarop elke unit voortbouwt op de vorige. Na elke unit een toets, en pas daarna gaat de volgende open.
+
+BEGINNER (A0) — de eerste zes units
+1. Lhruf — het Arabische alfabet, letter voor letter
+2. Salam! — hallo zeggen en dag zeggen
+3. Ana w nta — ik, jij en wie je bent
+4. L3a'ila — je familie voorstellen
+5. L3dad — tellen tot honderd
+6. Lalwan — kleuren om je heen
+Hierna kan je kind zichzelf voorstellen, groeten, tellen en het Arabische schrift lezen.
+
+VERDER (A1) — acht units
+7. Lmakla — eten, drinken en thee · 8. Ddar — in en om het huis · 9. Lmedrasa — in de klas · 10. Lhayawanat — dieren · 11. Lweqt — dagen, tijd en weer · 12. Ljism — lichaam en gevoelens · 13. Kanhder — zeggen wat je doet · 14. Su'al — vragen stellen
+Hierna kan je kind een gesprek voeren over thuis, school en hoe het gaat.
+
+ZELFSTANDIG (A2) — de laatste drie
+15. Fssouq — op de markt · 16. Fin ghadi? — de weg vragen · 17. Lmghrib dyalna — land, steden en feest
+Hierna redt je kind zich in Marokko zelf: afdingen, de weg vragen, meepraten.
+
+DE ONDERDELEN LANGS DAT PAD
+• 304 woorden en zinnen, elk in vijf soorten oefeningen
+• Het hele Arabische alfabet, met de vorm van elke letter aan begin, midden en eind
+• Vier gesprekken om te lezen, met vragen erna
 • Drie spelletjes: tijdrace, geheugenspel en letterspel
 • Vijf bonusrondes die niet opraken, waaronder letters natekenen met je vinger
 • Veertien korte filmpjes uit de geschiedenis van Marokko, één na elke toets
+• Een herhaalstapel die zelf bijhoudt wat begint te wankelen
 
 EN ALS DE CURSUS UIT IS
 Dan begint het pas. De bonusrondes worden gemaakt van wat je al kent, dus ze zijn elke keer anders: schrijven, dictee, zinnen bouwen, een marathon van dertig vragen en zes woorden hardop. De meter bovenaan telt wat nú stevig staat — en zakt vanzelf als je een tijd wegblijft.

@@ -68,6 +68,31 @@ const spot = async (page, locator) => {
 
 const SCENES = [
   {
+    id: 'pad',
+    /**
+     * The path itself, scrolling.
+     *
+     * The film used to open on a reward; it opens on the route now, because
+     * the route is what the app is. Seventeen units from the alphabet to
+     * haggling at the souq, and a parent who sees where it ends understands
+     * in one shot what "an app for Darija" actually means.
+     */
+    take: async (page) => {
+      await page.goto(`${BASE}/leren`, { waitUntil: 'networkidle' })
+      await wait(page, 900)
+      // Start where the units are, not at the greeting above them: this scene
+      // is about the route, and a screenshot of a welcome card is not it.
+      const frames = []
+      for (const y of [1150, 2330, 2780]) {
+        await page.evaluate((to) => window.scrollTo({ top: to, behavior: 'instant' }), y)
+        await wait(page, 260)
+        frames.push(await shot(page, y))
+      }
+      await page.evaluate(() => window.scrollTo(0, 0))
+      return { frames, acts: [] }
+    },
+  },
+  {
     id: 'leren',
     /** A daily mission is finished; claiming it throws gems across the card. */
     take: async (page) => {
