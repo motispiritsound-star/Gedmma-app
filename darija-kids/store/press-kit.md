@@ -136,6 +136,37 @@ de **khatim** terug — de vijfpuntige ster uit de Marokkaanse vlag, één
 doorlopende lijn die zichzelf vijf keer kruist: in de app is dat de ster
 waarmee een les wordt beoordeeld. De mascotte heet **Fnek** en is een fennek.
 
+## De stemmen — herkomst en toestemming
+
+Dit hoort ingevuld te zijn vóór de app wordt ingediend, en het is geen
+formaliteit: elke opname in de app is iemands stem. Een winkel kan ernaar
+vragen, en de spreker kan er later op terugkomen als er niets op papier staat.
+
+| Wat | Wie | Wanneer | Toestemming |
+|---|---|---|---|
+| De 28 letters | *invullen* | *invullen* | *nog vast te leggen* |
+| De woorden | *invullen* | | |
+| De zinnen | *invullen* | | |
+
+Per regel hoort vast te liggen:
+
+- **Wie het insprak**, met naam en een manier om diegene te bereiken.
+- **Dat het commercieel gebruikt mag worden**, met zoveel woorden. "Ik vond het
+  leuk om te doen" is geen toestemming; "je mag dit gebruiken in de app die je
+  verkoopt" wel. Een appje is genoeg, bewaar het.
+- **Of de stem gekloond mag worden.** Dat is een aparte vraag, ook als het
+  inspreken al geregeld is: een kloon zegt straks dingen die de spreker nooit
+  heeft gezegd. Wie een stem laat klonen bij een dienst als ElevenLabs moet daar
+  bovendien apart verklaren dat de spreker daarmee heeft ingestemd.
+- **Bij materiaal van een ander**: de licentie, en dat die commercieel gebruik
+  toestaat. CC0 en CC BY mogen, CC BY-NC niet, en "geen licentie vermeld" ook
+  niet. Een gevonden opname, een college of een spraakbericht is niet vrij
+  omdat het te downloaden is.
+
+Dat laatste is waar het meestal misgaat. Een spraakbericht dat iemand jou
+stuurde is een bericht aan jou, geen materiaal voor een product — hoe goed het
+Darija erin ook is.
+
 ## Contact
 
 Vul hier de naam, het e-mailadres en eventueel het telefoonnummer van de

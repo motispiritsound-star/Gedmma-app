@@ -84,7 +84,8 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 ### De uitspraak
 
 - [x] 28 van de 28 letters ingesproken door een mens
-- [ ] De herkomst en licentie van die opnames vastleggen in `store/press-kit.md` — zonder commerciële licentie mogen ze niet mee in een betaalde app
+- [ ] Wie de 28 letters insprak, en schriftelijk dat het commercieel gebruikt mag worden — de tabel staat klaar in `store/press-kit.md`
+- [ ] Bij een gekloonde stem: apart vastleggen dat de spreker daarmee instemt
 - [ ] De woorden van de eerste zes units inspreken (`/opname`, dan `npm run add-clip`)
 - [ ] Het controleblad aflopen: `npm run sheet`
 
