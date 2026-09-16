@@ -151,9 +151,9 @@ describe('pronunciation overrides', () => {
   })
 
   it('fixes a word wherever it turns up, prefix and all', () => {
-    expect(spokenForm('بسلامة')).toBe('بْسلامة')
+    expect(spokenForm('بسلامة')).toBe('بْسْلَامَة')
     // Inside a sentence, with the "and" Moroccans write against the next word.
-    expect(spokenForm('شكرا بزاف وبسلامة')).toBe('شكرا بزاف وبْسلامة')
+    expect(spokenForm('شكرا بزاف وبسلامة')).toBe('شكرا بَزَّافْ وبْسْلَامَة')
     // A question mark would make some voices pause mid-sentence.
     expect(spokenForm('شحال هادا؟')).toBe('شْحال هادا')
     // Nothing to fix means nothing changes.

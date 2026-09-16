@@ -179,8 +179,10 @@ const html = `<title>Alles Uitspreken</title>
   <h1>Alles uitspreken</h1>
   <p class="lede">
     ${counts} — alles wat de app hardop kan zeggen, precies zoals de app het zegt.
-    Luister, en tik <b>Fout</b> bij wat niet klopt. Onderaan staat je lijst klaar om
-    te kopiëren. Je vinkjes blijven staan als je later terugkomt.
+    Luister, en tik <b>Fout</b> bij wat niet klopt. Klinkt het bijna goed? Verander
+    de tekst in het veld eronder en druk op Enter om het te horen — dat is
+    preciezer dan "fout". Onderaan staat alles klaar om te kopiëren, en je werk
+    blijft bewaard als je later terugkomt.
   </p>
 
   <div class="bar">
@@ -226,9 +228,16 @@ let stemmen = []
 let tab = 'letters'
 let alleenFout = false
 let staat = {}
+let anders = {}
 
 try { staat = JSON.parse(localStorage.getItem('darija.check') || '{}') } catch (e) { staat = {} }
-const bewaar = () => { try { localStorage.setItem('darija.check', JSON.stringify(staat)) } catch (e) {} }
+try { anders = JSON.parse(localStorage.getItem('darija.anders') || '{}') } catch (e) { anders = {} }
+const bewaar = () => {
+  try {
+    localStorage.setItem('darija.check', JSON.stringify(staat))
+    localStorage.setItem('darija.anders', JSON.stringify(anders))
+  } catch (e) {}
+}
 
 const arabisch = (v) => v && v.lang.toLowerCase().startsWith('ar')
 const taalVan = (v) => {
@@ -300,6 +309,31 @@ function teken() {
         : 'zegt: ' + p.tekst + ' (' + (p.v ? p.v.lang : 'geen stem') + ')') +
       ' \\u00b7 ' + item.id + '</div>'
 
+    if (!item.opname) {
+      const veld = document.createElement('input')
+      veld.type = 'text'
+      veld.value = anders[item.id] ?? plan(item).tekst
+      veld.setAttribute('aria-label', 'uitspraak van ' + item.tr)
+      veld.style.cssText = 'width:100%;margin-top:5px;font-family:var(--f-mono);font-size:.8rem'
+      veld.addEventListener('input', () => {
+        if (veld.value === plan(item).tekst) delete anders[item.id]
+        else anders[item.id] = veld.value
+        bewaar()
+      })
+      veld.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') return
+        speechSynthesis.cancel()
+        const v = plan(item).v
+        if (!v) return
+        const u = new SpeechSynthesisUtterance(veld.value)
+        u.voice = v
+        u.lang = v.lang
+        u.rate = Number(tempo.value)
+        speechSynthesis.speak(u)
+      })
+      midden.append(veld)
+    }
+
     const knoppen = document.createElement('div')
     knoppen.className = 'knoppen'
     const goed = document.createElement('button')
@@ -362,7 +396,7 @@ document.getElementById('kopieer').addEventListener('click', async () => {
   toon()
   try { await navigator.clipboard.writeText(uitvoer.textContent) } catch (e) {}
 })
-document.getElementById('wis').addEventListener('click', () => { staat = {}; bewaar(); teken(); tel(); toon() })
+document.getElementById('wis').addEventListener('click', () => { staat = {}; anders = {}; bewaar(); teken(); tel(); toon() })
 
 function laad() {
   stemmen = speechSynthesis.getVoices()

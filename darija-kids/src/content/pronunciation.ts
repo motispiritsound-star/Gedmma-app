@@ -37,8 +37,29 @@ export const RESPELLED: Record<string, string> = {
 export const SPOKEN_WORD: Record<string, string> = {
   ...RESPELLED,
 
+  // ---------------------------------------------------------------------
+  // De veertien die bij het nalopen fout klonken.
+  //
+  // Eén oorzaak: de app schrijft Darija zoals Marokkanen het typen, zonder
+  // klinkertekens, en een Arabische stem is getraind op Standaardarabisch.
+  // Die vult dan de klassieke klinkers in — نتا wordt "natā", حنا wordt
+  // "ḥinnā", جدتي wordt "jaddatī". Het antwoord is niet anders spellen maar
+  // volledig vocaliseren: dan is er niets meer te raden.
+  'نتا': 'نْتَا',            // nta
+  'نتي': 'نْتِي',            // nti
+  'نتوما': 'نْتُومَا',        // ntuma
+  'حنا': 'حْنَا',            // hna
+  'خويا': 'خُويَا',          // khoya
+  'ختي': 'خْتِي',            // khti
+  'جدتي': 'جَدّْتِي',         // jeddti, niet het Standaardarabische "jaddati"
+  'بزاف': 'بَزَّافْ',         // bezzaf
+  'واخا': 'وَاخَا',          // wakha
+  'ايه': 'ايَهْ',            // iyeh
+  'تهلا': 'تْهَلَّا',         // thalla
+  'عافاك': 'عَافَاكْ',        // 3afak
+
   // groeten
-  'بسلامة': 'بْسلامة',       // bslama, not "bi-salaama"
+  'بسلامة': 'بْسْلَامَة',     // bslama, niet "bi-salaama"
   'مزيان': 'مْزيان',         // mzyan
   'سمح': 'سْمح',             // smeh liya
   'بشوية': 'بْشوية',         // bshwiya
@@ -196,18 +217,18 @@ export interface LetterSpeech {
 
 export const LETTER_SPEECH: Record<string, LetterSpeech> = {
   alif: { ar: 'أَلِفْ', base: 'alif' },
-  ba: { ar: 'بَاءْ', base: 'baa', say: { fr: 'ba' } },
-  ta: { ar: 'تَاءْ', base: 'taa', say: { fr: 'ta' } },
-  tha: { ar: 'ثَاءْ', base: 'thaa', say: { fr: 'tha', de: 'thaa', it: 'taa', es: 'zaa' }, prefer: ['es', 'en'] },
+  ba: { ar: 'بَاء', base: 'baa', say: { fr: 'ba' } },
+  ta: { ar: 'تَاء', base: 'taa', say: { fr: 'ta' } },
+  tha: { ar: 'ثَاء', base: 'thaa', say: { fr: 'tha', de: 'thaa', it: 'taa', es: 'zaa' }, prefer: ['es', 'en'] },
   // ج is the zh of "journaal" — the one the old rules turned into "ziem".
   jim: { ar: 'جِيمْ', base: 'jeem', say: { nl: 'zjiem', de: 'schiem', fr: 'jim', es: 'yim', it: 'gim' }, prefer: ['fr'] },
   // ح has no European equivalent; Spanish and French get their own /x/-ish
   // letter, the rest get a plain h and the app says so on the page.
-  ha: { ar: 'حَاءْ', base: 'haa', say: { es: 'jaa' }, prefer: ['es', 'de', 'nl'] },
-  kha: { ar: 'خَاءْ', base: 'khaa', say: { nl: 'chaa', de: 'chaa', es: 'jaa' }, prefer: ['nl', 'de', 'es'] },
+  ha: { ar: 'حَاء', base: 'haa', say: { es: 'jaa' }, prefer: ['es', 'de', 'nl'] },
+  kha: { ar: 'خَاء', base: 'khaa', say: { nl: 'chaa', de: 'chaa', es: 'jaa' }, prefer: ['nl', 'de', 'es'] },
   dal: { ar: 'دَالْ', base: 'daal', say: { fr: 'dal' } },
   dhal: { ar: 'ذَالْ', base: 'dhaal', say: { fr: 'dhal', nl: 'dzaal', de: 'dhaal' }, prefer: ['en'] },
-  ra: { ar: 'رَاءْ', base: 'raa', say: { fr: 'ra' }, prefer: ['es', 'it'] },
+  ra: { ar: 'رَاء', base: 'raa', say: { fr: 'ra' }, prefer: ['es', 'it'] },
   // German s before a vowel is already /z/, which is exactly what ز wants.
   zay: { ar: 'زَايْ', base: 'zaay', say: { nl: 'zaai', de: 'saai', es: 'sai', it: 'sai', fr: 'zaï' }, prefer: ['fr', 'nl', 'en'] },
   // and the same rule means س has to be spelled with a double s in German,
@@ -216,20 +237,20 @@ export const LETTER_SPEECH: Record<string, LetterSpeech> = {
   shin: { ar: 'شِينْ', base: 'sheen', say: { nl: 'sjien', de: 'schien', fr: 'chine', it: 'scin', es: 'chin' }, prefer: ['fr', 'de', 'en'] },
   sad: { ar: 'صَادْ', base: 'saad', say: { fr: 'sad', de: 'ssaad' } },
   dad: { ar: 'ضَادْ', base: 'daad', say: { fr: 'dad' } },
-  'ta-emf': { ar: 'طَاءْ', base: 'taa', say: { fr: 'ta' } },
-  'za-emf': { ar: 'ظَاءْ', base: 'zaa', say: { de: 'saa', es: 'sa', it: 'sa', fr: 'za' }, prefer: ['en'] },
-  ayn: { ar: 'عَينْ', base: 'ayn', say: { nl: 'ain', de: 'ain', fr: 'aïn', es: 'ain', it: 'ain' } },
-  ghayn: { ar: 'غَينْ', base: 'ghayn', say: { nl: 'gain', de: 'rain', fr: 'raïn', es: 'gain', it: 'gain' }, prefer: ['fr', 'de'] },
-  fa: { ar: 'فَاءْ', base: 'faa', say: { fr: 'fa' } },
+  'ta-emf': { ar: 'طَاء', base: 'taa', say: { fr: 'ta' } },
+  'za-emf': { ar: 'ظَاء', base: 'zaa', say: { de: 'saa', es: 'sa', it: 'sa', fr: 'za' }, prefer: ['en'] },
+  ayn: { ar: 'عَيْن', base: 'ayn', say: { nl: 'ain', de: 'ain', fr: 'aïn', es: 'ain', it: 'ain' } },
+  ghayn: { ar: 'غَيْن', base: 'ghayn', say: { nl: 'gain', de: 'rain', fr: 'raïn', es: 'gain', it: 'gain' }, prefer: ['fr', 'de'] },
+  fa: { ar: 'فَاء', base: 'faa', say: { fr: 'fa' } },
   // French and Italian q needs a u after it, and German q is read /kv/.
   qaf: { ar: 'قَافْ', base: 'qaaf', say: { nl: 'kaaf', fr: 'kaf', de: 'kaaf', es: 'caaf', it: 'caaf' } },
   kaf: { ar: 'كَافْ', base: 'kaaf', say: { fr: 'kaf', es: 'caaf', it: 'caaf' } },
   lam: { ar: 'لَامْ', base: 'laam', say: { fr: 'lam' } },
   mim: { ar: 'مِيمْ', base: 'meem', say: { nl: 'miem', de: 'miem', fr: 'mime', es: 'mim', it: 'mim' } },
   nun: { ar: 'نُونْ', base: 'noon', say: { nl: 'noen', de: 'nuun', fr: 'noune', es: 'nun', it: 'nun' } },
-  'ha-soft': { ar: 'هَاءْ', base: 'haa' },
+  'ha-soft': { ar: 'هَاء', base: 'haa' },
   waw: { ar: 'وَاوْ', base: 'waw', say: { nl: 'waauw', de: 'uau', fr: 'waou', es: 'uau', it: 'uau' }, prefer: ['en', 'fr'] },
-  ya: { ar: 'يَاءْ', base: 'yaa', say: { nl: 'jaa', de: 'jaa', fr: 'ya', es: 'ya', it: 'ia' }, prefer: ['nl', 'de'] },
+  ya: { ar: 'يَاء', base: 'yaa', say: { nl: 'jaa', de: 'jaa', fr: 'ya', es: 'ya', it: 'ia' }, prefer: ['nl', 'de'] },
 }
 
 /**
