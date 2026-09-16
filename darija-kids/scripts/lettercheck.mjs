@@ -174,7 +174,10 @@ console.log('\nmet alleen een Nederlandse stem')
     if (got !== expect) fails.push(`${name}: zei "${got}" in plaats van "${expect}"`)
   }
   if (map.get('jim') === 'ziem') fails.push('ج klinkt nog steeds als "ziem"')
-  console.log(`  ج → ${map.get('jim')} · ش → ${map.get('shin')} · ز → ${map.get('zay')} · ي → ${map.get('ya')}`)
+  // A letter with a recording never reaches the voice, so it has no entry
+  // here. Printing "undefined" for it makes a passing run look broken.
+  const zei = (naam) => map.get(naam) ?? 'opname'
+  console.log(`  ج → ${zei('jim')} · ش → ${zei('shin')} · ز → ${zei('zay')} · ي → ${zei('ya')}`)
   console.log(`  ${new Set([...map.values()]).size} verschillende klanken over ${map.size} letters`)
   await page.close()
 }
