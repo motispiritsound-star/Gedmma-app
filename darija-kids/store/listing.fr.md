@@ -30,6 +30,10 @@ CE QUE TU APPRENDS
 • Tout l'alphabet arabe, avec la forme de chaque lettre au début, au milieu et à la fin
 • Quatre conversations à lire, avec des questions à la fin
 • Trois jeux : course contre la montre, memory et jeu des lettres
+• Cinq tours bonus qui ne s’épuisent pas, dont tracer les lettres au doigt
+
+ET QUAND LE COURS EST FINI
+Ça commence. Les tours bonus sont faits de ce que tu connais déjà, donc ils sont différents à chaque fois : écrire, dictée, construire des phrases, un marathon de trente questions et six mots à voix haute. Le compteur en haut mesure ce qui tient debout maintenant — et il baisse tout seul si tu t’absentes.
 
 TOUT SE PRONONCE
 Chaque mot et chaque phrase peut être écouté : une touche pour la vitesse normale, deux pour la version lente. Si ton appareil n'a pas de voix arabe, l'application le dit honnêtement et lit l'écriture latine du mieux qu'elle peut.

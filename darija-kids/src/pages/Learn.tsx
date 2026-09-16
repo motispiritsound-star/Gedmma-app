@@ -5,6 +5,7 @@ import { UNITS } from '../content/curriculum'
 import { ACCENTS, Button, Card, Progress } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 import { Quests } from '../ui/Quests'
+import { BonusCard } from './Bonus'
 import {
   dueWordIds, FREE_UNITS, isDone, lessonUnlocked, markTipSeen, nextLesson, progressOfUnit,
   unitBehindPaywall, unitUnlocked, useStore,
@@ -108,6 +109,10 @@ export function Learn() {
       </Card>
 
       <Quests />
+
+      {/* Right under the missions, because the fifth one is a bonus round and
+          this is where a child who has finished today's lesson ends up. */}
+      <div className="mb-6"><BonusCard /></div>
 
       {muted && state.settings.sound && (
         <Card className="mb-6 flex flex-wrap items-center gap-3 p-5">

@@ -63,23 +63,35 @@ npm run icons      # tekent de iconen en het deelplaatje opnieuw
 | **17 units** | van het Arabische alfabet en *Salam!* tot afdingen op de souq, oplopend van A0 naar A2 |
 | **304 woorden** | elk met Arabisch schrift, Latijnse schrijfwijze en een betekenis in alle vijf de talen |
 | **100 zinnen** | twee aan het eind van elke les, gemaakt van de woorden die die les net leerde — horen, bouwen, herkennen |
-| **17 soorten oefeningen** | kiezen, luisteren, schrift herkennen, koppelen, zin bouwen, typen, inspreken, vier soorten lettervragen, vier soorten zinsvragen, en een introkaart per nieuw woord, letter en zin |
-| **Dagmissies** | vier missies per dag — lessen, goede antwoorden, herhalen en zinnen — met edelstenen die je zelf ophaalt |
+| **19 soorten oefeningen** | kiezen, luisteren, schrift herkennen, koppelen, zin bouwen, typen, dictee, natekenen, inspreken, vijf soorten lettervragen, vier soorten zinsvragen, en een introkaart per nieuw woord, letter en zin |
+| **Dagmissies** | vijf missies per dag — lessen, goede antwoorden, herhalen, zinnen en een bonusronde — met edelstenen die je zelf ophaalt |
 | **Filmpje na de les** | acht seconden Marokko, getekend in SVG: de souq, de Sahara, Chefchaouen, de kust en een feest, elk met een eigen deuntje in hijaz |
 | **34 klanken** | elke knop, elk antwoord, elke beloning en de quiz — gesynthetiseerd, geen enkel geluidsbestand in de build |
 | **31 letters** | het hele Arabische alfabet plus پ, ڤ en ݣ, met hun vorm aan begin, midden en eind — unit 1 van het pad, in groepjes van vier |
 | **4 verhalen** | gesprekken waarin je op elke zin kunt tikken voor de vertaling, met vragen erna |
 | **3 spellen** | tijdrace, geheugenspel en letterspel — ze gebruiken de woorden die je al zag |
+| **5 bonusrondes** | schrijven, dictee, zinnensmid, marathon en spreekuur: ze worden gemaakt van wat je al kent, dus ze raken niet op |
 
-### Wat er nog niet in zit
+### De bonus: wat er is als er niets meer is
 
-**Schrijven.** De letters staan er al met hun vorm aan begin, midden en eind, en
-de volgende stap is een optionele schrijfoefening: het kind trekt de letter over
-een grijze voorbeeldletter heen, met de vinger of een pen, en de app kijkt hoe
-goed de lijn gevolgd is. Optioneel, want overtrekken op een telefoonscherm is
-niet voor ieder kind, en het hoort er pas bij als er meer lessen staan om het
-aan op te hangen. Het wordt een schakelaar bij Instellingen en een extra
-rondetype naast horen, kiezen en herhalen — geen aparte hoek van de app.
+Zeventien units houden een keer op. Een taal niet, en een app die op de dag van
+de laatste les klaar is, is de dag daarna weg. Daarom staat naast het pad een
+tweede stapel: vijf bonusrondes die uit je eigen voortgang worden gemaakt, elke
+keer anders, en die dezelfde kaarten beoordelen als een gewone les. De vijfde
+dagmissie is er één doen.
+
+| | |
+|---|---|
+| ✍️ **Schrijven** | Trek de letter over een grijze voorbeeldletter heen, met je vinger. Ook de vorm aan het begin, in het midden en aan het eind — de vorm die je in een woord echt nodig hebt. Geen handschriftherkenning: er wordt geteld hoeveel van de letter je raakte en hoeveel van je lijn ernaast lag. Uit te zetten bij Instellingen, want tekenen op glas is niet ieders hand. |
+| 👂 **Dictee** | Je hoort een woord en ziet niets. Schrijf op wat je hoort. |
+| 🧩 **Zinnensmid** | Bouw zinnen uit losse woorden en herken ze terug aan hun klank. |
+| ⚡ **Marathon** | Dertig vragen door alles heen, met de drums van een checkpoint eronder. Wat blijft staan is je langste reeks goede antwoorden. |
+| 🎤 **Spreekuur** | Zes woorden hardop, als het toestel kan luisteren. |
+
+Bovenaan staat de enige eerlijke voortgangsbalk in de app: **meesterschap** telt
+wat nú stevig staat *en* nog niet terug moet. Hij zakt vanzelf als je een tijd
+wegblijft. Dat is geen straf — het is hoe een taal werkt, en het is de reden dat
+dit scherm nooit af is.
 
 ## Hoe het leert
 

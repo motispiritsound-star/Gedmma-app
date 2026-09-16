@@ -30,6 +30,7 @@ het toestel.
 | Leeftijd | Vanaf ongeveer 7 jaar zelfstandig, jonger samen met een ouder |
 | Talen | Nederlands, Frans, Duits, Spaans, Engels |
 | Inhoud | 17 units (A0–A2), 304 woorden, 100 zinnen, 31 letters, 4 verhalen, 3 spellen |
+| Daarna | 5 bonusrondes die uit je eigen voortgang worden gemaakt — schrijven, dictee, zinnen, marathon, spreken — dus de app is nooit uit |
 | Prijs | Gratis beginnen; volledige cursus € 59,88 per jaar (€ 4,99 per maand) of € 6,99 per maand, eerste 3 dagen gratis |
 | Platforms | iPhone, iPad, Android, en elke browser |
 | Advertenties | Geen |
@@ -52,6 +53,13 @@ gemaakt van precies die woorden, maken er taal van.
 **Alles klinkt.** Elk woord, elke zin en elke letter kan worden voorgelezen.
 Ook de knoppen, de beloningen en de toets hebben hun eigen geluid — een
 gesynthetiseerde darbuka, marimba en bel, zonder één geluidsbestand in de app.
+
+**De app is nooit uit.** Naast het pad staan vijf bonusrondes die uit de eigen
+voortgang van het kind worden gemaakt — letters natekenen met de vinger,
+dictee, zinnen bouwen, een marathon en hardop spreken. Ze zijn elke keer anders
+omdat ze elke keer opnieuw worden samengesteld, en de meter erboven telt wat nú
+stevig staat: die zakt vanzelf als er een tijd niemand terugkomt. De dag dat de
+laatste unit af is, is niet de dag dat de app weg kan.
 
 **Niets gaat de deur uit.** Geen account, geen server, geen analytics, geen
 cookies van derden. De voortgang staat in de browser van het toestel zelf.

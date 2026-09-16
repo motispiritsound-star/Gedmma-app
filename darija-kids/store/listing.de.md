@@ -30,6 +30,10 @@ WAS DU LERNST
 • Das komplette arabische Alphabet, mit der Form jedes Buchstabens am Anfang, in der Mitte und am Ende
 • Vier Gespräche zum Lesen, mit Fragen danach
 • Drei Spiele: Zeitrennen, Memory und Buchstabenspiel
+• Fünf Bonusrunden, die nicht ausgehen — darunter Buchstaben mit dem Finger nachzeichnen
+
+UND WENN DER KURS ZU ENDE IST
+Dann fängt es an. Die Bonusrunden werden aus dem gebaut, was du schon kennst, also sind sie jedes Mal anders: Schreiben, Diktat, Sätze bauen, ein Marathon aus dreißig Fragen und sechs Wörter laut. Die Anzeige oben misst, was gerade fest sitzt — und sinkt von selbst, wenn du länger wegbleibst.
 
 ALLES KLINGT
 Jedes Wort und jeder Satz lässt sich anhören: einmal tippen für normal, zweimal für langsam. Hat dein Gerät keine arabische Stimme, sagt die App das ehrlich und liest die lateinische Schreibweise so gut wie möglich vor.

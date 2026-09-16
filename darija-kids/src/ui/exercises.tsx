@@ -10,6 +10,7 @@ import { maybeWord } from '../content/lexicon'
 import { canListen, listenOnce, say, sfx } from '../engine/audio'
 import { useStore } from '../engine/store'
 import { Button, Card } from './kit'
+import { Scribe } from './Scribe'
 import { SpeakButton, useMeaning, useNote, WordText } from './WordChip'
 import { useLang, useT } from '../i18n'
 
@@ -309,7 +310,7 @@ function Build({ exercise, onAnswer, locked }: ExerciseProps) {
 
 /* --------------------------------------------------------------------- type */
 
-function Type({ exercise, onAnswer, locked }: ExerciseProps) {
+function Type({ exercise, onAnswer, locked, mode = 'betekenis' }: ExerciseProps & { mode?: 'betekenis' | 'dictee' }) {
   const t = useT()
   const meaning = useMeaning()
   const w = word(exercise.wordId)
@@ -321,6 +322,12 @@ function Type({ exercise, onAnswer, locked }: ExerciseProps) {
     input.current?.focus()
   }, [exercise.id])
 
+  // Dictation says it once by itself; after that the speaker is there to ask
+  // again, as often as it takes.
+  useEffect(() => {
+    if (mode === 'dictee') say(w.ar, { tr: w.tr })
+  }, [mode, w.ar, w.tr])
+
   const submit = () => {
     if (locked || !value.trim()) return
     sfx.pick()
@@ -329,10 +336,19 @@ function Type({ exercise, onAnswer, locked }: ExerciseProps) {
 
   return (
     <div>
-      <Prompt hint={t.lesson.schrijfDarija}>
+      <Prompt hint={mode === 'dictee' ? t.bonus.dicteeVraag : t.lesson.schrijfDarija}>
         <Card className="p-6 text-center">
-          <div className="text-4xl" aria-hidden="true">{w.emoji}</div>
-          <p className="mt-2 font-display text-2xl font-extrabold">{meaning(w)}</p>
+          {mode === 'dictee' ? (
+            <div className="flex flex-col items-center gap-2">
+              <SpeakButton ar={w.ar} tr={w.tr} className="scale-125" />
+              <p className="text-sm text-[var(--ink-soft)]">{t.bonus.dicteeHint}</p>
+            </div>
+          ) : (
+            <>
+              <div className="text-4xl" aria-hidden="true">{w.emoji}</div>
+              <p className="mt-2 font-display text-2xl font-extrabold">{meaning(w)}</p>
+            </>
+          )}
         </Card>
       </Prompt>
 
@@ -352,6 +368,49 @@ function Type({ exercise, onAnswer, locked }: ExerciseProps) {
       />
       <p className="mt-2 text-center text-xs text-[var(--ink-soft)]">{t.lesson.schrijfHint}</p>
       <Button className="mt-4 w-full" disabled={locked || !value.trim()} onClick={submit}>{t.lesson.controleer}</Button>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ writing */
+
+/**
+ * Trace it.
+ *
+ * A letter is asked in one of its three shapes — with the little connecting
+ * strokes the font draws on either side — because that is the form a child
+ * will actually have to write inside a word.
+ */
+function Trace({ exercise, onAnswer, locked }: ExerciseProps) {
+  const t = useT()
+  const meaning = useMeaning()
+  const formName = useFormName()
+  const isLetter = exercise.kind === 'letter-schrijf'
+  const l = isLetter ? letter(exercise.letterId!) : null
+  const w = isLetter ? null : word(exercise.wordId)
+  const form = exercise.form ?? 'initial'
+  const glyph = l ? l.forms[form] : w!.ar
+  const spoken = l ? l.name : w!.tr
+
+  return (
+    <div>
+      <Card className="mb-4 flex items-center gap-3 p-4">
+        <div className="ar text-3xl font-bold">{glyph}</div>
+        <div className="min-w-0 flex-1">
+          <p className="font-display font-extrabold">{spoken}</p>
+          <p className="text-sm text-[var(--ink-soft)]">
+            {l ? t.bonus.schrijfVorm(formName(form)) : meaning(w!)}
+          </p>
+        </div>
+        <SpeakButton ar={l ? l.ar : w!.ar} tr={spoken} />
+      </Card>
+
+      <Scribe
+        glyph={glyph}
+        hint={l ? t.bonus.schrijfVraag : t.bonus.schrijfVraagWoord}
+        locked={locked}
+        onDone={(score) => onAnswer(score.verdict, t.bonus.gedekt(Math.round(score.coverage * 100)))}
+      />
     </div>
   )
 }
@@ -743,11 +802,14 @@ export function ExerciseView(props: ExerciseProps) {
     case 'koppel': return <Match {...props} />
     case 'bouw': return <Build {...props} />
     case 'tik': return <Type {...props} />
+    case 'dictee': return <Type {...props} mode="dictee" />
+    case 'schrijf': return <Trace {...props} />
     case 'spreek': return speechOn ? <Speak {...props} /> : <Type {...props} />
     case 'letter-nieuw': return <NewLetter {...props} />
     case 'letter-klank': return <LetterChoice {...props} mode="klank" />
     case 'letter-naam': return <LetterChoice {...props} mode="naam" />
     case 'letter-vorm': return <LetterChoice {...props} mode="vorm" />
+    case 'letter-schrijf': return <Trace {...props} />
     case 'zin-nieuw': return <NewSentence {...props} />
     case 'zin-bouw': return <SentenceBuild {...props} />
     case 'zin-betekenis': return <SentenceChoice {...props} mode="betekenis" />

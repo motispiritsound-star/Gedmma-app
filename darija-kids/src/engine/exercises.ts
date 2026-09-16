@@ -22,11 +22,14 @@ export type ExerciseKind =
   | 'koppel'           // match pairs
   | 'bouw'             // word bank, for sentences
   | 'tik'              // type it
+  | 'dictee'           // hear it, write it — no meaning on screen
+  | 'schrijf'          // trace the word in Arabic script
   | 'spreek'           // say it out loud
   | 'letter-nieuw'     // meet a letter, with its three shapes
   | 'letter-klank'     // name and sound → pick the letter
   | 'letter-naam'      // letter → pick the name
   | 'letter-vorm'      // which shape does this letter take here?
+  | 'letter-schrijf'   // trace the letter, in one of its three shapes
   | 'zin-nieuw'        // meet a sentence, read out in full
   | 'zin-bouw'         // build the sentence from a word bank
   | 'zin-betekenis'    // sentence → meaning
@@ -49,7 +52,7 @@ export interface Exercise {
   letterId?: string
   /** Letter ids offered as answers, already shuffled. */
   letterOptions?: string[]
-  /** Which of the three shapes 'letter-vorm' asks about. */
+  /** Which of the three shapes 'letter-vorm' and 'letter-schrijf' ask about. */
   form?: LetterForm
   /** The sentence being asked, for every zin- exercise. */
   sentenceId?: string
@@ -59,6 +62,10 @@ export interface Exercise {
 
 /** True when this exercise is about a letter rather than a word. */
 export const isLetterExercise = (e: Exercise): boolean => e.kind.startsWith('letter-')
+
+/** True when this exercise is traced rather than answered. */
+export const isScribeExercise = (e: Exercise): boolean =>
+  e.kind === 'schrijf' || e.kind === 'letter-schrijf'
 
 /** True when this exercise is about a whole sentence. */
 export const isSentenceExercise = (e: Exercise): boolean => e.kind.startsWith('zin-')
@@ -289,6 +296,129 @@ export function buildReviewRound(wordIds: string[], seed = Date.now(), sentenceI
     })
   }
   return shuffle(out, rnd)
+}
+
+/* -------------------------------------------------------------------- bonus */
+
+/**
+ * The bonus rounds.
+ *
+ * These are not lessons and they never run out: each one is built from
+ * whatever the learner has already met, so the day the last unit is finished
+ * is the day these become the whole app. They also grade the same cards a
+ * lesson would, which is the point — the circle keeps turning instead of
+ * closing.
+ */
+
+/** Only single words can be traced; a whole phrase will not fit in the square. */
+const traceable = (ids: string[]): string[] => ids.filter((id) => !word(id).phrase)
+
+/**
+ * Tracing: letters and words, drawn over a ghost of themselves.
+ *
+ * A letter is asked in one of its three shapes rather than standing alone,
+ * because the shape inside a word is the part a child has to feel rather than
+ * recognise.
+ */
+export function buildScribeRound(
+  letterIds: string[], wordIds: string[], seed = Date.now(), max = 6,
+): Exercise[] {
+  const rnd = mulberry32(seed >>> 0)
+  const out: Exercise[] = []
+  let n = 0
+  const letters = shuffle(letterIds, rnd).slice(0, Math.ceil(max / 2))
+  const words = shuffle(traceable(wordIds), rnd).slice(0, max - letters.length)
+  for (const id of letters) {
+    out.push({ id: `schrijf-${n++}`, kind: 'letter-schrijf', wordId: '', letterId: id, form: pick(FORMS, rnd) })
+  }
+  for (const id of words) out.push({ id: `schrijf-${n++}`, kind: 'schrijf', wordId: id })
+  return shuffle(out, rnd)
+}
+
+/** Dictation: hear it, write it. Nothing on screen but the speaker. */
+export function buildDictationRound(
+  wordIds: string[], sentenceIds: string[], seed = Date.now(), max = 8,
+): Exercise[] {
+  const rnd = mulberry32(seed >>> 0)
+  const out: Exercise[] = []
+  let n = 0
+  for (const id of shuffle(sentenceIds, rnd).slice(0, Math.min(3, Math.floor(max / 3)))) {
+    out.push({
+      id: `dictee-${n++}`, kind: 'zin-luister', wordId: '', sentenceId: id,
+      sentenceOptions: sentenceOptionsFor(id, allSentenceIds, rnd),
+    })
+  }
+  for (const id of shuffle(wordIds, rnd).slice(0, max - out.length)) {
+    out.push({ id: `dictee-${n++}`, kind: 'dictee', wordId: id })
+  }
+  return shuffle(out, rnd)
+}
+
+/**
+ * The marathon: everything met, every kind of question, in one long run.
+ *
+ * It does not stop at the first mistake — a child who is having a bad round
+ * should not be thrown out of it. What it keeps is the longest run of right
+ * answers, and that is the record worth beating.
+ */
+export function buildMarathonRound(
+  wordIds: string[], letterIds: string[], sentenceIds: string[], seed = Date.now(), max = 30,
+): Exercise[] {
+  const rnd = mulberry32(seed >>> 0)
+  const out: Exercise[] = []
+  let n = 0
+
+  for (const id of shuffle(sentenceIds, rnd).slice(0, Math.round(max * 0.2))) {
+    const kind: ExerciseKind = pick(['zin-bouw', 'zin-betekenis', 'zin-luister'] as const, rnd)
+    out.push({
+      id: `marathon-${n++}`, kind, wordId: '', sentenceId: id,
+      tokens: kind === 'zin-bouw' ? sentenceBank(sentence(id).tr, rnd) : undefined,
+      sentenceOptions: kind === 'zin-bouw' ? undefined : sentenceOptionsFor(id, allSentenceIds, rnd),
+    })
+  }
+  for (const id of shuffle(letterIds, rnd).slice(0, Math.round(max * 0.2))) {
+    const kind: ExerciseKind = pick(['letter-klank', 'letter-naam', 'letter-vorm'] as const, rnd)
+    out.push({
+      id: `marathon-${n++}`, kind, wordId: '', letterId: id,
+      letterOptions: letterOptions(id, rnd),
+      form: kind === 'letter-vorm' ? pick(FORMS, rnd) : undefined,
+    })
+  }
+  for (const id of shuffle(wordIds, rnd).slice(0, max - out.length)) {
+    const w = word(id)
+    const kind: ExerciseKind = w.phrase
+      ? pick(['kies-betekenis', 'bouw'] as const, rnd)
+      : pick(['kies-betekenis', 'kies-darija', 'luister', 'script', 'tik', 'dictee'] as const, rnd)
+    out.push({
+      id: `marathon-${n++}`, kind, wordId: id,
+      options: kind === 'bouw' || kind === 'tik' || kind === 'dictee' ? undefined : options(w, rnd),
+      tokens: kind === 'bouw' ? bankFor(w, rnd) : undefined,
+    })
+  }
+  return shuffle(out, rnd)
+}
+
+/** The sentence forge: build it, hear it, mean it. */
+export function buildSentenceRound(sentenceIds: string[], seed = Date.now(), max = 6): Exercise[] {
+  const rnd = mulberry32(seed >>> 0)
+  let n = 0
+  return shuffle(sentenceIds, rnd).slice(0, max).map((id): Exercise => {
+    const kind: ExerciseKind = pick(['zin-bouw', 'zin-bouw', 'zin-luister', 'zin-betekenis'] as const, rnd)
+    return {
+      id: `zinnen-${n++}`, kind, wordId: '', sentenceId: id,
+      tokens: kind === 'zin-bouw' ? sentenceBank(sentence(id).tr, rnd) : undefined,
+      sentenceOptions: kind === 'zin-bouw' ? undefined : sentenceOptionsFor(id, allSentenceIds, rnd),
+    }
+  })
+}
+
+/** Saying it out loud, for a device that can listen. */
+export function buildSpeakRound(wordIds: string[], seed = Date.now(), max = 6): Exercise[] {
+  const rnd = mulberry32(seed >>> 0)
+  let n = 0
+  return shuffle(wordIds, rnd).slice(0, max).map((id): Exercise => ({
+    id: `spreken-${n++}`, kind: 'spreek', wordId: id,
+  }))
 }
 
 /* ----------------------------------------------------------------- checking */

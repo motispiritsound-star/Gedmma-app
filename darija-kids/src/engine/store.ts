@@ -49,6 +49,13 @@ export interface Settings {
   mediaSoundPicked: boolean
   /** The short animated scene after a finished lesson. */
   film: boolean
+  /**
+   * The tracing bonus: drawing a letter over a ghost of itself.
+   *
+   * On by default, off for a child who cannot draw on a screen — a finger on
+   * glass is not everybody's hand, and nothing else in the app needs it.
+   */
+  schrijven: boolean
   speech: boolean
   hearts: boolean
   /** The voice the learner picked, by voiceURI. Empty means: pick the best. */
@@ -93,6 +100,7 @@ export interface State {
   /** How many sentences have been answered, ever. */
   sentencesDone: number
   quests: QuestProgress
+  bonus: BonusProgress
   badges: string[]
   /** True once the full course has been bought, in either store. */
   unlocked: boolean
@@ -120,10 +128,12 @@ export interface QuestProgress {
   zinnen: number
   /** Lessons finished today. */
   lessen: number
+  /** Bonus rounds finished today. */
+  bonus: number
   claimed: QuestId[]
 }
 
-export type QuestId = 'lessen' | 'goed' | 'herhaald' | 'zinnen'
+export type QuestId = 'lessen' | 'goed' | 'herhaald' | 'zinnen' | 'bonus'
 
 export interface Quest {
   id: QuestId
@@ -132,16 +142,43 @@ export interface Quest {
   gems: number
 }
 
-/** Four missions, the same four every day: predictable beats surprising. */
+/**
+ * Five missions, the same five every day: predictable beats surprising.
+ *
+ * The last one is the one that still works when the course is finished — there
+ * is always a bonus round to do, and there always will be.
+ */
 export const QUESTS: Quest[] = [
   { id: 'lessen', emoji: '📗', goal: 1, gems: 3 },
   { id: 'goed', emoji: '✅', goal: 20, gems: 5 },
   { id: 'herhaald', emoji: '🔁', goal: 10, gems: 5 },
   { id: 'zinnen', emoji: '💬', goal: 4, gems: 4 },
+  { id: 'bonus', emoji: '⭐', goal: 1, gems: 4 },
 ]
 
 const emptyQuests = (day: string): QuestProgress =>
-  ({ day, goed: 0, herhaald: 0, zinnen: 0, lessen: 0, claimed: [] })
+  ({ day, goed: 0, herhaald: 0, zinnen: 0, lessen: 0, bonus: 0, claimed: [] })
+
+/**
+ * What the bonus rounds have added up to.
+ *
+ * `reeks` and `getekend` never reset: they are the two numbers a child can
+ * keep beating after every unit is done.
+ */
+export interface BonusProgress {
+  day: string
+  /** Bonus rounds finished today. */
+  today: number
+  /** Bonus rounds finished, ever. */
+  total: number
+  /** The longest run of right answers in a marathon, ever. */
+  reeks: number
+  /** Letters and words traced, ever. */
+  getekend: number
+}
+
+const emptyBonus = (day: string): BonusProgress =>
+  ({ day, today: 0, total: 0, reeks: 0, getekend: 0 })
 
 export const today = (d = new Date()): string =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -188,6 +225,7 @@ const initial = (): State => ({
   extraCards: {},
   sentencesDone: 0,
   quests: emptyQuests(today()),
+  bonus: emptyBonus(today()),
   badges: [],
   unlocked: false,
   unlockedAt: null,
@@ -203,6 +241,7 @@ const initial = (): State => ({
     mediaSound: prefersMediaChannel(),
     mediaSoundPicked: false,
     film: true,
+    schrijven: true,
     speech: true,
     hearts: true,
     voiceURI: '',
@@ -214,6 +253,26 @@ const initial = (): State => ({
   },
 })
 
+/**
+ * A saved game, brought up to the shape this version expects.
+ *
+ * Every nested object is merged field by field rather than replaced, because a
+ * save written by an older version is missing whatever was added since — and a
+ * counter that is missing rather than zero turns into NaN the first time
+ * something adds one to it, which is how a mission silently stops working for
+ * everybody who already had the app.
+ */
+function hydrate(parsed: Partial<State>): State {
+  const base = initial()
+  return {
+    ...base,
+    ...parsed,
+    settings: { ...base.settings, ...(parsed.settings ?? {}) },
+    quests: { ...base.quests, ...(parsed.quests ?? {}) },
+    bonus: { ...base.bonus, ...(parsed.bonus ?? {}) },
+  }
+}
+
 /** Keys this app used under its earlier names, newest first. */
 const OLD_KEYS = ['bladi.v1', 'gedmma.v1']
 
@@ -222,9 +281,8 @@ function load(): State {
   try {
     const raw = localStorage.getItem(KEY) ?? OLD_KEYS.map((k) => localStorage.getItem(k)).find(Boolean)
     if (!raw) return initial()
-    const parsed = JSON.parse(raw) as Partial<State>
+    const merged = hydrate(JSON.parse(raw) as Partial<State>)
     const base = initial()
-    const merged = { ...base, ...parsed, settings: { ...base.settings, ...(parsed.settings ?? {}) } }
     if (!isLang(merged.settings.lang)) merged.settings.lang = base.settings.lang
     // Nobody has chosen yet, so the app is still allowed to change its mind —
     // otherwise a visitor who opened the app before this existed would be
@@ -344,7 +402,7 @@ export function questsToday(s: State = state): QuestProgress {
   return s.quests.day === today() ? s.quests : emptyQuests(today())
 }
 
-type Counter = 'goed' | 'herhaald' | 'zinnen' | 'lessen'
+type Counter = 'goed' | 'herhaald' | 'zinnen' | 'lessen' | 'bonus'
 
 export function bumpQuest(counter: Counter, by = 1): void {
   setState((s) => {
@@ -380,6 +438,51 @@ export function claimQuest(id: QuestId): number {
 
 export const questsLeft = (s: State = state): number =>
   QUESTS.filter((q) => !questState(q, s).claimed).length
+
+/* --------------------------------------------------------------- the bonus */
+
+/** Today's bonus counters, rolled over if the app was last open yesterday. */
+export function bonusToday(s: State = state): BonusProgress {
+  return s.bonus.day === today() ? s.bonus : { ...s.bonus, day: today(), today: 0 }
+}
+
+/**
+ * A finished bonus round.
+ *
+ * `reeks` is the longest run of right answers it contained, and only a longer
+ * one replaces it; `getekend` counts the letters and words that were traced,
+ * which is the number the writing badge watches.
+ */
+export function finishBonus(bestCombo: number, traced = 0): void {
+  bumpQuest('bonus')
+  setState((s) => {
+    const b = bonusToday(s)
+    return {
+      bonus: {
+        ...b,
+        today: b.today + 1,
+        total: b.total + 1,
+        reeks: Math.max(b.reeks, bestCombo),
+        getekend: b.getekend + traced,
+      },
+    }
+  })
+}
+
+/**
+ * How much of everything met is standing up right now.
+ *
+ * Deliberately a number that can fall: a card counts only while it is both
+ * strong and not yet due back, so a week away from the app lowers it without
+ * anybody being punished for it. That is the whole point — there is no state
+ * of the app in which there is nothing left to do.
+ */
+export function mastery(s: State = state, now = Date.now()): { strong: number; met: number; share: number } {
+  const cards = [...Object.values(s.cards), ...Object.values(s.extraCards)]
+  const strong = cards.filter((c) => c.strength >= 0.6 && c.due > now).length
+  const met = cards.length
+  return { strong, met, share: met === 0 ? 0 : strong / met }
+}
 
 export function addGems(n: number): void {
   if (n > 0) setState((s) => ({ gems: s.gems + n }))
@@ -552,6 +655,9 @@ export const BADGES: Badge[] = [
   { id: 'alfabet', emoji: '🅰️', earned: (s) => UNITS[0]!.lessons.every((l) => isDone(l.id, s)) },
   { id: 'zinnen-50', emoji: '💬', earned: (s) => s.sentencesDone >= 50 },
   { id: 'missies', emoji: '🎯', earned: (s) => questsToday(s).claimed.length >= QUESTS.length },
+  { id: 'schrijver', emoji: '✍️', earned: (s) => s.bonus.getekend >= 25 },
+  { id: 'reeks-20', emoji: '⚡', earned: (s) => s.bonus.reeks >= 20 },
+  { id: 'bonus-25', emoji: '⭐', earned: (s) => s.bonus.total >= 25 },
   { id: 'verhaal', emoji: '📖', earned: (s) => Object.keys(s.lessons).some((id) => id.startsWith('verhaal-')) },
   { id: 'niveau-5', emoji: '⭐', earned: (s) => levelOf(s.xp).level >= 5 },
   { id: 'niveau-10', emoji: '🌟', earned: (s) => levelOf(s.xp).level >= 10 },
@@ -589,7 +695,7 @@ export function importProgress(json: string): boolean {
   try {
     const parsed = JSON.parse(json) as State
     if (parsed.version !== 1) return false
-    state = { ...initial(), ...parsed }
+    state = hydrate(parsed)
     emit()
     return true
   } catch {

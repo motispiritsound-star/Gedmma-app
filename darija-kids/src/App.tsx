@@ -10,6 +10,7 @@ const Alphabet = lazy(() => import('./pages/Alphabet').then((m) => ({ default: m
 const Stories = lazy(() => import('./pages/Stories').then((m) => ({ default: m.Stories })))
 const StoryReader = lazy(() => import('./pages/Stories').then((m) => ({ default: m.StoryReader })))
 const Games = lazy(() => import('./pages/Games').then((m) => ({ default: m.Games })))
+const Bonus = lazy(() => import('./pages/Bonus').then((m) => ({ default: m.Bonus })))
 const Profile = lazy(() => import('./pages/Profile').then((m) => ({ default: m.Profile })))
 const Parents = lazy(() => import('./pages/Parents').then((m) => ({ default: m.Parents })))
 const Unlock = lazy(() => import('./pages/Unlock').then((m) => ({ default: m.Unlock })))
@@ -50,7 +51,10 @@ function Chrome() {
   const t = useT()
   const lang = useLang()
   const location = useLocation()
-  const inLesson = location.pathname.startsWith('/les/') || location.pathname.startsWith('/herhalen/')
+  // A round is a round: no tabs along the bottom to tap out of it by accident.
+  const inLesson = location.pathname.startsWith('/les/')
+    || location.pathname.startsWith('/herhalen/')
+    || location.pathname.startsWith('/bonus/')
   const isLanding = location.pathname === '/'
   useTheme()
 
@@ -92,6 +96,10 @@ function Chrome() {
             <Route path="/verhalen" element={<Stories />} />
             <Route path="/verhalen/:storyId" element={<StoryReader />} />
             <Route path="/spelen" element={<Games />} />
+            {/* One route with an optional part, not two: a second Route would
+                be a second element, and the page would be thrown away and
+                rebuilt on the way out of a round — taking the score with it. */}
+            <Route path="/bonus/:bonusId?" element={<Bonus />} />
             <Route path="/profiel" element={<Profile />} />
             <Route path="/ouders" element={<Parents />} />
             <Route path="/instellingen" element={<SettingsPage />} />

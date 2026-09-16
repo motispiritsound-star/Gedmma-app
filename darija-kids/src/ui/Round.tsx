@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Exercise, Verdict } from '../engine/exercises'
-import { isLetterExercise, isSentenceExercise } from '../engine/exercises'
+import { isLetterExercise, isScribeExercise, isSentenceExercise } from '../engine/exercises'
 import type { Grade } from '../engine/srs'
 import { word } from '../content/lexicon'
 import { letter } from '../content/alphabet'
@@ -229,7 +229,11 @@ export function RoundRunner({
   }
 
   const next = () => {
-    if (stepping.current) return
+    // The feedback bar slides out rather than vanishing, and a button that is
+    // still on its way off the screen is still a button. Without the verdict
+    // check a second tap lands after the card has already changed, and skips
+    // the next question without ever asking it.
+    if (stepping.current || !verdict) return
     setVerdict(null)
     setDetail('')
     setBurst(null)
@@ -304,6 +308,10 @@ export function RoundRunner({
             exit={{ y: 90 }}
             transition={{ type: 'spring', stiffness: 260, damping: 28 }}
             role="status"
+            // On its way out it is still on the screen, and a second tap on a
+            // button that is leaving used to land on the card behind it and
+            // skip a question. Nothing leaving is pressable.
+            style={{ pointerEvents: verdict ? 'auto' : 'none' }}
             className={`sticky bottom-0 -mx-4 border-t-2 px-4 py-4 ${
               verdict === 'goed' ? 'border-mint-500 bg-mint-500/15'
               : verdict === 'bijna' ? 'border-saffron-500 bg-saffron-500/15'
@@ -326,7 +334,13 @@ export function RoundRunner({
                   <span className="font-display font-bold text-zellige-600 dark:text-zellige-300">{subject.tr}</span>
                   <span className="text-[var(--ink-soft)]">— {subject.meaning}</span>
                 </p>
-                {detail && verdict !== 'goed' && <p className="mt-0.5 text-xs text-[var(--ink-soft)]">{t.lesson.jijHad(detail)}</p>}
+                {/* A traced letter has no answer to quote back — the detail is
+                    already a sentence about how the line went. */}
+                {detail && verdict !== 'goed' && (
+                  <p className="mt-0.5 text-xs text-[var(--ink-soft)]">
+                    {isScribeExercise(current) ? detail : t.lesson.jijHad(detail)}
+                  </p>
+                )}
                 {subject.note && verdict !== 'goed' && <p className="mt-1 text-xs text-[var(--ink-soft)]">💡 {subject.note}</p>}
               </div>
               <SpeakButton ar={subject.ar} tr={subject.tr} className="mt-1" />

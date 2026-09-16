@@ -30,6 +30,10 @@ QUÉ APRENDES
 • Todo el alfabeto árabe, con la forma de cada letra al principio, en medio y al final
 • Cuatro conversaciones para leer, con preguntas después
 • Tres juegos: carrera contrarreloj, memoria y juego de letras
+• Cinco rondas bonus que no se agotan, entre ellas calcar letras con el dedo
+
+Y CUANDO EL CURSO SE ACABA
+Ahí empieza. Las rondas bonus se hacen con lo que ya conoces, así que son distintas cada vez: escribir, dictado, construir frases, un maratón de treinta preguntas y seis palabras en voz alta. El medidor de arriba cuenta lo que se sostiene ahora mismo, y baja solo si pasas tiempo sin volver.
 
 TODO SUENA
 Cada palabra y cada frase se puede escuchar: un toque para la velocidad normal, dos para la lenta. Si tu dispositivo no tiene voz árabe, la aplicación lo dice con honestidad y lee la escritura latina lo mejor que puede.

@@ -30,6 +30,10 @@ WAT JE LEERT
 • Het hele Arabische alfabet, met de vorm van elke letter aan het begin, in het midden en aan het eind
 • Vier gesprekken om te lezen, met een vraag erna
 • Drie spelletjes: tijdrace, geheugenspel en letterspel
+• Vijf bonusrondes die niet opraken, waaronder letters natekenen met je vinger
+
+EN ALS DE CURSUS UIT IS
+Dan begint het pas. De bonusrondes worden gemaakt van wat je al kent, dus ze zijn elke keer anders: schrijven, dictee, zinnen bouwen, een marathon van dertig vragen en zes woorden hardop. De meter bovenaan telt wat nú stevig staat — en zakt vanzelf als je een tijd wegblijft.
 
 ALLES KLINKT
 Elk woord en elke zin kun je horen, één tik voor normaal en twee voor langzaam. Heeft je toestel geen Arabische stem, dan zegt de app dat eerlijk en leest hij de Latijnse schrijfwijze zo goed mogelijk voor.

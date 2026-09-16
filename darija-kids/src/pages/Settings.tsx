@@ -287,6 +287,10 @@ export function SettingsPage() {
         <Row title={t.settings.film} hint={t.settings.filmHint}>
           <Toggle on={s.film} onChange={set('film')} label={t.settings.film} />
         </Row>
+
+        <Row title={t.settings.schrijven} hint={t.settings.schrijvenHint}>
+          <Toggle on={s.schrijven} onChange={set('schrijven')} label={t.settings.schrijven} />
+        </Row>
         <Row title={t.settings.beweging} hint={t.settings.bewegingHint}>
           <Choice
             value={s.motion}

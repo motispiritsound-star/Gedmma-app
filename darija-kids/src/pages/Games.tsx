@@ -6,6 +6,7 @@ import { mulberry32, shuffle } from '../engine/random'
 import { say, sfx } from '../engine/audio'
 import { addXp, getState, gradeWord, useStore } from '../engine/store'
 import { Button, Card, SectionTitle, Stat } from '../ui/kit'
+import { BonusCard } from './Bonus'
 import { Mascot } from '../ui/Mascot'
 import { useLang, useT } from '../i18n'
 import { meaningOf } from '../content/localise'
@@ -24,6 +25,9 @@ export function Games() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
       <SectionTitle sub={t.games.uitleg}>{t.games.titel}</SectionTitle>
+
+      {/* Not a game, but the same promise: something to do that is not a lesson. */}
+      <div className="mb-4"><BonusCard /></div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Card className="flex flex-col p-5">

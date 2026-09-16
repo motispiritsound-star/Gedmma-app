@@ -30,7 +30,7 @@ export const seeded = (lang) => {
     badges: ['eerste-stap', 'salam', 'vlam-3', 'vlam-7', 'letters', 'alfabet'],
     unlocked: true, unlockedAt: Date.now() - 7 * 86400000, langPicked: true, seenTips: ['stem'],
     settings: { lang, theme: 'light', showScript: true, showTranslit: true, sound: true, mediaSound: false,
-      mediaSoundPicked: true, film: true, speech: true, hearts: true, voiceURI: '', fallbackVoice: true,
+      mediaSoundPicked: true, film: true, schrijven: true, speech: true, hearts: true, voiceURI: '', fallbackVoice: true,
       motion: 'full', reading: 'normal', dailyGoal: 50, voiceRate: 0.85 },
   }
 }

@@ -30,6 +30,10 @@ WHAT YOU LEARN
 • The complete Arabic alphabet, with each letter's shape at the start, middle and end
 • Four conversations to read, with questions afterwards
 • Three games: time race, memory and the letter game
+• Five bonus rounds that never run out, including tracing letters with your finger
+
+AND WHEN THE COURSE IS DONE
+That is when it starts. The bonus rounds are built from what you already know, so they are different every time: writing, dictation, building sentences, a marathon of thirty questions and six words out loud. The meter at the top counts what is standing up right now — and it slips on its own if you stay away.
 
 EVERYTHING SOUNDS
 Every word and sentence can be heard: one tap for normal, two for slow. If your device has no Arabic voice, the app says so honestly and reads the Latin spelling as closely as it can.
