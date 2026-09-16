@@ -38,7 +38,7 @@ IN DEINER SPRACHE
 Deutsch, Niederländisch, Französisch, Spanisch und Englisch. Du wählst beim Start und kannst jederzeit wechseln: Übersetzungen, Erklärungen und Geschichten wechseln mit.
 
 KOSTENLOS ANFANGEN
-Das Alphabet und die ersten fünf Einheiten sind und bleiben kostenlos: genug, um die arabische Schrift zu lesen, dich vorzustellen und bis hundert zu zählen. Der ganze Kurs gehört zum vollen Zugang: die ersten Tage gratis, danach 6,49 € pro Monat inklusive Mehrwertsteuer. Monatlich kündbar im eigenen App-Store- oder Google-Play-Konto; wer vor Ende der Testphase kündigt, zahlt nichts.
+Das Alphabet und die ersten fünf Einheiten sind und bleiben kostenlos: genug, um die arabische Schrift zu lesen, dich vorzustellen und bis hundert zu zählen. Der ganze Kurs gehört zum vollen Zugang: die ersten Tage gratis, danach 59,88 € für ein ganzes Jahr (4,99 € pro Monat) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Kündbar im eigenen App-Store- oder Google-Play-Konto; wer vor Ende der Testphase kündigt, zahlt nichts.
 
 GEMACHT, UM ES EINEM KIND ZU GEBEN
 • Kein Konto, keine E-Mail, kein Login

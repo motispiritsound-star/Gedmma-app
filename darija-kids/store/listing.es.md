@@ -38,7 +38,7 @@ EN TU IDIOMA
 Español, neerlandés, francés, alemán e inglés. La aplicación propone el idioma de tu dispositivo y puedes cambiarlo cuando quieras: traducciones, explicaciones e historias cambian con él.
 
 EMPEZAR GRATIS
-El alfabeto y las cinco primeras unidades son y seguirán siendo gratis: suficiente para leer la escritura árabe, presentarte y contar hasta cien. El curso completo va con el acceso completo: los primeros días gratis y después 6,49 € al mes con IVA incluido. Cancelable cada mes en tu cuenta de la App Store o de Google Play; si cancelas antes de que termine la prueba, no pagas nada.
+El alfabeto y las cinco primeras unidades son y seguirán siendo gratis: suficiente para leer la escritura árabe, presentarte y contar hasta cien. El curso completo va con el acceso completo: los primeros días gratis y después 59,88 € por un año entero (4,99 € al mes) o 6,99 € al mes, con IVA incluido. Cancelable en tu cuenta de la App Store o de Google Play; si cancelas antes de que termine la prueba, no pagas nada.
 
 HECHA PARA DÁRSELA A UN NIÑO
 • Sin cuenta, sin correo, sin inicio de sesión

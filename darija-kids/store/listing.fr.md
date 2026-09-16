@@ -38,7 +38,7 @@ DANS TA LANGUE
 Français, néerlandais, allemand, espagnol et anglais. Tu choisis au démarrage et tu peux changer à tout moment : traductions, explications et histoires suivent.
 
 COMMENCER GRATUITEMENT
-L'alphabet et les cinq premières unités sont et restent gratuits : de quoi lire l'écriture arabe, te présenter et compter jusqu'à cent. Le cours complet va avec l'accès complet : les premiers jours offerts, puis 6,49 € par mois TTC. Résiliable chaque mois dans ton compte App Store ou Google Play ; en résiliant avant la fin de l'essai, tu ne paies rien.
+L'alphabet et les cinq premières unités sont et restent gratuits : de quoi lire l'écriture arabe, te présenter et compter jusqu'à cent. Le cours complet va avec l'accès complet : les premiers jours offerts, puis 59,88 € pour une année entière (4,99 € par mois) ou 6,99 € par mois, TTC. Résiliable dans ton compte App Store ou Google Play ; en résiliant avant la fin de l'essai, tu ne paies rien.
 
 FAIT POUR ÊTRE CONFIÉ À UN ENFANT
 • Pas de compte, pas d'e-mail, pas de connexion

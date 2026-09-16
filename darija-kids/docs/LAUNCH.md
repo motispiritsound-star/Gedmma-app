@@ -60,11 +60,16 @@ je hebt hem één dag nodig), of met Android beginnen en iOS later doen.
 Volledig uitgeschreven in [PAYMENTS.md](PAYMENTS.md). In het kort, in beide
 consoles hetzelfde:
 
-- Product-id: `app.darijakids.monthly` — exact deze, anders vindt de code hem niet
-- Duur: 1 maand, automatisch verlengend
-- Prijs: € 6,49 inclusief btw
-- Gratis periode: 3 dagen
-- Naam voor de koper: "Volledige toegang"
+Er zijn **twee** producten, in dezelfde abonnementsgroep:
+
+| Product-id | Duur | Prijs | Naam voor de koper |
+|---|---|---|---|
+| `app.darijakids.yearly` | 1 jaar, verlengt automatisch | € 59,88 (Apple: € 59,99) | Een jaar volledige toegang |
+| `app.darijakids.monthly` | 1 maand, verlengt automatisch | € 6,99 | Volledige toegang per maand |
+
+Allebei met **3 dagen gratis**. De ids moeten exact zo, anders vindt de code ze
+niet. Zelfde groep, zodat overstappen van maand naar jaar geen dubbele
+afschrijving oplevert.
 
 Koppel in dezelfde consoles je bankrekening en vul je belastinggegevens in.
 Zonder dat wordt er niets uitbetaald, ook al verkoop je.
@@ -145,7 +150,8 @@ Apple leest dit veld echt. Zet er dit in:
 > vermenigvuldiging die je moet beantwoorden voordat de aankoop opent. Elk
 > juist antwoord werkt.
 >
-> Het abonnement is app.darijakids.monthly, € 6,49 per maand met 3 dagen gratis.
+> De abonnementen zijn app.darijakids.yearly (€ 59,88 per jaar) en
+> app.darijakids.monthly (€ 6,99 per maand), beide met 3 dagen gratis.
 > De voorwaarden en het privacybeleid staan in de app onder het
 > abonnementsscherm, en online op [je URL].
 

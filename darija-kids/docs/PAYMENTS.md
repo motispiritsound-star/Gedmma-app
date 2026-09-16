@@ -2,12 +2,14 @@
 
 Het alfabet en de eerste **vijf units** zijn gratis en blijven gratis. De rest van de cursus
 hoort bij **volledige toegang**: een paar dagen gratis proberen, daarna
-**€ 6,49 per maand inclusief btw**, maandelijks opzegbaar. De betaling loopt
+**€ 59,88 voor een jaar vooruit (€ 4,99 per maand) of € 6,99 per maand**,
+inclusief btw en altijd opzegbaar. De betaling loopt
 volledig via de App Store en Google Play — zij innen, zij rekenen de btw af,
 zij houden de proefperiode bij, en zij storten maandelijks op jouw rekening.
 
-> **Kort:** je maakt in beide winkels één abonnementsproduct aan met id
-> `app.darijakids.monthly`, zet de prijs en de gratis periode, koppelt je
+> **Kort:** je maakt in beide winkels twee abonnementsproducten aan —
+> `app.darijakids.yearly` en `app.darijakids.monthly` — in dezelfde
+> abonnementsgroep, zet de prijzen en de gratis periode, koppelt je
 > bankrekening, en de winkels betalen uit wat er binnenkwam minus hun
 > commissie.
 
@@ -22,12 +24,18 @@ Wil je later langer geven — een week doet het in dit soort apps vaak beter —
 dan is dat één getal hier en één instelling daar. Helemaal geen proefperiode
 kan ook: `TRIAL_DAYS` op 0, en de teksten passen zich aan.
 
-**2. € 6,49 is precies een Apple-prijspunt.** Apple werkt met vaste
-prijspunten en 6,49 is er één van, dus je stelt het bedrag daar zonder omweg
-in. Google Play laat je per land een vrij bedrag invullen, dus daar vul je
-6,49 gewoon in. De app toont sowieso altijd de prijs die de winkel zelf
-teruggeeft, in de munt van de koper; alleen de website valt terug op
-`LIST_PRICE` in `src/engine/billing.ts`.
+**2. Beide bedragen zijn Apple-prijspunten.** Apple werkt met vaste
+prijspunten; € 6,99 en € 59,99 zijn er twee van. Let op: Apple heeft géén
+59,88 — kies daar € 59,99, of het dichtstbijzijnde punt dat Apple je aanbiedt.
+Google Play laat je per land een vrij bedrag invullen, dus daar kan 59,88
+precies. Dat verschil van elf cent hoeft niemand op te lossen: de app toont
+altijd de prijs die de winkel zelf teruggeeft, in de munt van de koper. Alleen
+de website valt terug op wat er in `PLANS` in `src/engine/billing.ts` staat.
+
+**3. Zet beide producten in dezelfde abonnementsgroep.** Dan kan iemand die
+maandelijks betaalt overstappen op een jaar zonder dubbel te betalen, en regelt
+de winkel de verrekening. Staan ze in aparte groepen, dan kan iemand per
+ongeluk twee abonnementen hebben.
 
 ## Wat er in de app al zit
 
@@ -63,9 +71,9 @@ Gebruik in beide winkels **hetzelfde id**, anders werkt de code niet:
 |---|---|---|
 | Waar | Jouw app → **Subscriptions** | Jouw app → **Producten → Abonnementen** |
 | Eerst | maak een **subscription group** (bijv. "Darija Kids") | maak een abonnement met een **basisplan** |
-| Product-id | `app.darijakids.monthly` | `app.darijakids.monthly` |
-| Duur | 1 maand, automatisch verlengend | maandelijks, automatisch verlengend |
-| Prijs | € 6,49 | € 6,49 |
+| Product-id | `app.darijakids.yearly` en `app.darijakids.monthly` | dezelfde twee |
+| Duur | 1 jaar en 1 maand, beide automatisch verlengend | idem |
+| Prijs | € 59,99 en € 6,99 | € 59,88 en € 6,99 |
 | Gratis periode | **Introductory Offer → Free Trial → 3 dagen** | **Aanbieding → Gratis proefperiode → 3 dagen** |
 | Naam voor de koper | Volledige toegang | Volledige toegang |
 
@@ -98,7 +106,7 @@ die worden apart beoordeeld.
 
 In de EU zijn Apple en Google voor digitale producten zelf de verkoper richting
 de klant: zij rekenen de btw van het land van de koper en dragen die af. De
-€ 6,49 die de klant ziet is dus inclusief btw, en jij ontvangt het bedrag ná
+€ 59,88 per jaar of € 6,99 per maand die de klant ziet is dus inclusief btw, en jij ontvangt het bedrag ná
 commissie en ná btw. Jij stuurt geen facturen naar kopers.
 
 Wat je zelf moet regelen: die inkomsten zijn belastbaar, en omdat je met een

@@ -207,10 +207,11 @@ staat ook zo op de ouderpagina.
 
 Het alfabet en de eerste vijf units zijn gratis en blijven gratis — genoeg om jezelf voor te
 stellen, je familie te beschrijven en tot honderd te tellen. De rest van de
-cursus hoort bij **volledige toegang**: een paar dagen gratis, daarna **€ 6,49
-per maand inclusief btw**, maandelijks opzegbaar. De App Store en Google Play
-regelen de proefperiode, de afschrijving en de btw; het product heet
-`app.darijakids.monthly`. De grens tussen gratis en betaald staat op één plek:
+cursus hoort bij **volledige toegang**: een paar dagen gratis, daarna
+**€ 59,88 voor een heel jaar** — € 4,99 per maand — of **€ 6,99 per maand**,
+beide inclusief btw en opzegbaar. De App Store en Google Play regelen de
+proefperiode, de afschrijving en de btw; de producten heten
+`app.darijakids.yearly` en `app.darijakids.monthly`. De grens tussen gratis en betaald staat op één plek:
 `FREE_UNITS` in `src/engine/store.ts`, de proefperiode en de vangnetprijs in
 `src/engine/billing.ts`.
 
@@ -221,8 +222,8 @@ een rekensom die een volwassene moet beantwoorden. Opzeggen kan met één tik
 vanuit de app, via het winkelaccount.
 
 Eén ding bepalen de winkels en niet wij: de kortste gratis periode is **drie
-dagen** — twee bestaat er niet. De prijs zelf past wel precies, want € 6,49 is
-een van Apples vaste prijspunten. Beide staan uitgelegd in
+dagen** — twee bestaat er niet. En Apple kent geen € 59,88: daar wordt het
+jaarabonnement € 59,99. Beide staan uitgelegd in
 [docs/PAYMENTS.md](docs/PAYMENTS.md), samen met de bank- en belastinginstellingen
 waarmee het geld op je rekening komt.
 

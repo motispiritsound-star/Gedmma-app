@@ -521,7 +521,7 @@ export const de: Strings = {
       ],
       [
         'Kostet es etwas?',
-        'Das Alphabet und die ersten fünf Einheiten sind und bleiben kostenlos — genug, um die arabische Schrift zu lesen, dich vorzustellen und bis hundert zu zählen. Der ganze Kurs läuft über ein Abo von 6,49 € pro Monat inklusive Mehrwertsteuer, die ersten Tage gratis. Abgeschlossen wird es in der App über den App Store oder Google Play, und dort kündigst du es auch, wann du willst. Keine Werbung und kein Konto: dein Fortschritt bleibt deiner.',
+        'Das Alphabet und die ersten fünf Einheiten sind und bleiben kostenlos — genug, um die arabische Schrift zu lesen, dich vorzustellen und bis hundert zu zählen. Der ganze Kurs läuft über ein Abo: 59,88 € für ein ganzes Jahr (das sind 4,99 € pro Monat) oder 6,99 € pro Monat, inklusive Mehrwertsteuer und mit den ersten Tagen gratis. Abgeschlossen wird es in der App über den App Store oder Google Play, und dort kündigst du es auch, wann du willst. Keine Werbung und kein Konto: dein Fortschritt bleibt deiner.',
       ],
       [
         'Funktioniert es offline?',
@@ -540,13 +540,13 @@ export const de: Strings = {
   },
 
   unlock: {
-    tijdlijn: (dagen: number, prijs: string): [string, string, string][] => [
+    tijdlijn: (dagen, prijs, jaar) => [
       ['🎁', `Heute: ${dagen} Tage gratis`, 'Alles ist offen und du zahlst noch nichts.'],
-      ['📅', `Nach ${dagen} Tagen: ${prijs} pro Monat`, 'Der Store bucht monatlich ab, inklusive Mehrwertsteuer.'],
+      ['📅', `Nach ${dagen} Tagen: ${prijs} ${jaar ? 'pro Jahr' : 'pro Monat'}`, jaar ? 'Der Store bucht einmal im Jahr ab, inklusive Mehrwertsteuer.' : 'Der Store bucht monatlich ab, inklusive Mehrwertsteuer.'],
       ['🛑', 'Jederzeit kündbar', `Ein Tippen im Store-Konto. Kündigst du binnen ${dagen} Tagen, zahlst du nichts.`],
     ],
     titel: 'Voller Zugang',
-    sub: (dagen, prijs) => `${dagen} Tage gratis, danach ${prijs} pro Monat`,
+    sub: (dagen, prijs, jaar) => `${dagen} Tage gratis, danach ${prijs} ${jaar ? 'pro Jahr' : 'pro Monat'}`,
     intro: (vrij) =>
       `Die ersten ${vrij} Einheiten sind und bleiben kostenlos — genug, um dich vorzustellen und bis hundert zu zählen. Der Rest des Kurses gehört zum Abo.`,
     krijgt: [
@@ -556,6 +556,12 @@ export const de: Strings = {
       'Jede neue Lektion, die wir hinzufügen',
       'Offline, auf allen Geräten mit demselben Store-Konto',
     ],
+    plan: { jaar: 'Ein Jahr', maand: 'Pro Monat' },
+    voordeligst: (pct: number): string => `${pct} % günstiger`,
+    perMaand: (prijs: string): string => (prijs ? `${prijs} pro Monat, im Voraus bezahlt` : 'pro Jahr, im Voraus bezahlt'),
+    perMaandLos: 'jeden Monat neu',
+    voorwaardenJaar: (dagen: number, prijs: string): string =>
+      `Nach ${dagen} Gratistagen werden ${prijs} für ein ganzes Jahr über dein App-Store- oder Google-Play-Konto abgebucht, danach jedes Jahr erneut, bis du kündigst. Kündigst du vor Ende der Testphase, zahlst du nichts. Preis inklusive Mehrwertsteuer.`,
     koop: (dagen) => `${dagen} Tage gratis starten`,
     voorwaarden: (dagen, prijs) =>
       `Nach ${dagen} kostenlosen Tagen werden ${prijs} pro Monat über dein App-Store- oder Google-Play-Konto abgebucht, bis du kündigst. Kündigst du vor Ende der Testphase, zahlst du nichts. Preis inklusive Mehrwertsteuer.`,
@@ -563,8 +569,8 @@ export const de: Strings = {
     herstelHint: 'Neues Gerät oder App neu installiert? Hol dein Abo hier zurück — das kostet nichts.',
     beheer: 'Abo verwalten',
     beheerHint: 'Gekündigt wird im App-Store- oder Google-Play-Konto. Diese Schaltfläche bringt dich direkt dorthin.',
-    alleenInApp: (prijs) =>
-      `Abgeschlossen wird das Abo in der App aus dem App Store oder von Google Play (${prijs} pro Monat). Auf dieser Website bleiben die ersten Einheiten kostenlos.`,
+    alleenInApp: (prijs, jaar) =>
+      `Abgeschlossen wird das Abo in der App aus dem App Store oder von Google Play (${prijs} ${jaar ? 'pro Jahr' : 'pro Monat'}). Auf dieser Website bleiben die ersten Einheiten kostenlos.`,
     bezig: 'Einen Moment…',
     alOpen: 'Dein Abo läuft. Alles ist offen — shukran!',
     mislukt: (fout) => `Da ist etwas schiefgegangen: ${fout}`,
@@ -577,7 +583,7 @@ export const de: Strings = {
   },
   welcome: {
     plan: (dagen: number, prijs: string): string =>
-      `Du fängst kostenlos an. Nach ${dagen} Tagen kostet der ganze Kurs ${prijs} pro Monat — oder du hörst einfach auf.`,
+      `Du fängst kostenlos an. Nach ${dagen} Tagen kostet der ganze Kurs ab ${prijs} pro Monat — oder du hörst einfach auf.`,
     gratisDeel: (vrij: number): string => `Die ersten ${vrij} Einheiten bleiben immer kostenlos, auch ohne Abo.`,
     titel: 'Ahlan! Willkommen bei Darija Kids',
     body: 'In welcher Sprache möchtest du lernen? Du kannst das später jederzeit ändern.',

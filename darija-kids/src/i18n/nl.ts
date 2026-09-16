@@ -527,7 +527,7 @@ export const nl = {
       ],
       [
         'Kost het iets?',
-        'Het alfabet en de eerste vijf units zijn en blijven gratis — genoeg om het Arabische schrift te lezen, jezelf voor te stellen en tot honderd te tellen. Wil je de hele cursus, dan is dat een abonnement van € 6,49 per maand inclusief btw, met de eerste dagen gratis. Je sluit het af in de app via de App Store of Google Play en je zegt daar ook op, wanneer je wilt. Geen advertenties en geen account: je voortgang blijft van jou.',
+        'Het alfabet en de eerste vijf units zijn en blijven gratis — genoeg om het Arabische schrift te lezen, jezelf voor te stellen en tot honderd te tellen. Wil je de hele cursus, dan is dat een abonnement: € 59,88 voor een heel jaar (dat is € 4,99 per maand) of € 6,99 per maand, inclusief btw en met de eerste dagen gratis. Je sluit het af in de app via de App Store of Google Play en je zegt daar ook op, wanneer je wilt. Geen advertenties en geen account: je voortgang blijft van jou.',
       ],
       [
         'Werkt het offline?',
@@ -546,13 +546,14 @@ export const nl = {
   },
 
   unlock: {
-    tijdlijn: (dagen: number, prijs: string): [string, string, string][] => [
+    tijdlijn: (dagen: number, prijs: string, jaar: boolean): [string, string, string][] => [
       ['🎁', `Vandaag: ${dagen} dagen gratis`, 'Alles staat open en je betaalt nog niets.'],
-      ['📅', `Na ${dagen} dagen: ${prijs} per maand`, 'De winkel schrijft het maandelijks af, inclusief btw.'],
+      ['📅', `Na ${dagen} dagen: ${prijs} ${jaar ? 'per jaar' : 'per maand'}`, jaar ? 'De winkel schrijft het één keer per jaar af, inclusief btw.' : 'De winkel schrijft het maandelijks af, inclusief btw.'],
       ['🛑', 'Altijd opzegbaar', `Eén tik in je winkelaccount. Zeg je op binnen ${dagen} dagen, dan betaal je niets.`],
     ],
     titel: 'Volledige toegang',
-    sub: (dagen: number, prijs: string): string => `${dagen} dagen gratis, daarna ${prijs} per maand`,
+    sub: (dagen: number, prijs: string, jaar: boolean): string =>
+      `${dagen} dagen gratis, daarna ${prijs} ${jaar ? 'per jaar' : 'per maand'}`,
     intro: (vrij: number): string =>
       `De eerste ${vrij} units zijn en blijven gratis — genoeg om jezelf voor te stellen en tot honderd te tellen. De rest van de cursus hoort bij het abonnement.`,
     krijgt: [
@@ -562,6 +563,12 @@ export const nl = {
       'Elke nieuwe les die we toevoegen',
       'Werkt offline, op al je apparaten met dezelfde winkelaccount',
     ],
+    plan: { jaar: 'Een jaar', maand: 'Per maand' },
+    voordeligst: (pct: number): string => `${pct}% voordeliger`,
+    perMaand: (prijs: string): string => (prijs ? `${prijs} per maand, vooruit betaald` : 'per jaar, vooruit betaald'),
+    perMaandLos: 'elke maand opnieuw',
+    voorwaardenJaar: (dagen: number, prijs: string): string =>
+      `Na ${dagen} gratis dagen wordt ${prijs} voor een heel jaar afgeschreven via je App Store- of Google Play-account, en daarna elk jaar opnieuw tot je opzegt. Zeg je op vóór het einde van de proefperiode, dan betaal je niets. De prijs is inclusief btw.`,
     koop: (dagen: number): string => `Start ${dagen} dagen gratis`,
     voorwaarden: (dagen: number, prijs: string): string =>
       `Na ${dagen} gratis dagen wordt ${prijs} per maand afgeschreven via je App Store- of Google Play-account, tot je opzegt. Zeg je op vóór het einde van de proefperiode, dan betaal je niets. De prijs is inclusief btw.`,
@@ -569,8 +576,8 @@ export const nl = {
     herstelHint: 'Nieuw toestel, of de app opnieuw geïnstalleerd? Zet je abonnement hier terug — dat kost niets.',
     beheer: 'Abonnement beheren',
     beheerHint: 'Opzeggen doe je bij je App Store- of Google Play-account. Deze knop brengt je er meteen heen.',
-    alleenInApp: (prijs: string): string =>
-      `Een abonnement afsluiten kan in de app uit de App Store of Google Play (${prijs} per maand). Op deze website blijven de eerste units gewoon gratis.`,
+    alleenInApp: (prijs: string, jaar: boolean): string =>
+      `Een abonnement afsluiten kan in de app uit de App Store of Google Play (${prijs} ${jaar ? 'per jaar' : 'per maand'}). Op deze website blijven de eerste units gewoon gratis.`,
     bezig: 'Bezig…',
     alOpen: 'Je abonnement loopt. Alles staat open — shukran!',
     mislukt: (fout: string): string => `Er ging iets mis: ${fout}`,
@@ -583,7 +590,7 @@ export const nl = {
   },
   welcome: {
     plan: (dagen: number, prijs: string): string =>
-      `Je begint gratis. Na ${dagen} dagen is de volledige cursus ${prijs} per maand — of je stopt gewoon.`,
+      `Je begint gratis. Na ${dagen} dagen is de volledige cursus vanaf ${prijs} per maand — of je stopt gewoon.`,
     gratisDeel: (vrij: number): string => `De eerste ${vrij} units blijven altijd gratis, ook zonder abonnement.`,
     titel: 'Ahlan! Welkom bij Darija Kids',
     body: 'In welke taal wil je leren? Je kunt dit later altijd wisselen.',

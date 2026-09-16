@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  FREE_UNITS, LIST_PRICE, manageSubscription, restorePurchases, subscribe, TRIAL_DAYS, useBilling,
+  FREE_UNITS, manageSubscription, PLANS, planOf, restorePurchases, subscribe, TRIAL_DAYS,
+  useBilling, YEAR_SAVING, type PlanId,
 } from '../engine/billing'
 import { useStore } from '../engine/store'
 import { useT } from '../i18n'
+import { sfx } from '../engine/audio'
 import { Button, Card, SectionTitle, Sheet } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 
@@ -22,9 +24,13 @@ export function Unlock() {
   const [gate, setGate] = useState(false)
   const [answer, setAnswer] = useState('')
   const [wrong, setWrong] = useState(false)
+  // A year up front is the offer, so it is what the screen opens on.
+  const [plan, setPlan] = useState<PlanId>('jaar')
 
-  // The price the store quotes, in the buyer's currency; otherwise our own.
-  const price = billing.price ?? LIST_PRICE
+  /** The price the store quotes, in the buyer's currency; otherwise our own. */
+  const priceOf = (id: PlanId) => billing.prices[id] ?? planOf(id).list
+  const price = priceOf(plan)
+  const jaar = plan === 'jaar'
 
   // A different sum each visit, so it cannot be learned by heart.
   const sum = useMemo(() => {
@@ -45,12 +51,12 @@ export function Unlock() {
     setGate(false)
     setAnswer('')
     setWrong(false)
-    void subscribe()
+    void subscribe(plan)
   }
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <SectionTitle sub={t.unlock.sub(TRIAL_DAYS, price)}>{t.unlock.titel}</SectionTitle>
+      <SectionTitle sub={t.unlock.sub(TRIAL_DAYS, price, jaar)}>{t.unlock.titel}</SectionTitle>
 
       {subscribed ? (
         <>
@@ -71,7 +77,7 @@ export function Unlock() {
           {/* What happens and when, in three lines, before anything is asked. */}
           <Card className="mb-4 p-5">
             <ol className="space-y-3">
-              {t.unlock.tijdlijn(TRIAL_DAYS, price).map(([emoji, titel, body]) => (
+              {t.unlock.tijdlijn(TRIAL_DAYS, price, jaar).map(([emoji, titel, body]) => (
                 <li key={titel} className="flex gap-3">
                   <span className="text-xl" aria-hidden="true">{emoji}</span>
                   <div className="min-w-0">
@@ -94,17 +100,50 @@ export function Unlock() {
               ))}
             </ul>
 
+            {/* Two plans, and the one that is cheaper per month is the one
+                the eye lands on. */}
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {PLANS.map((option) => {
+                const picked = plan === option.id
+                return (
+                  <button
+                    key={option.id}
+                    onClick={() => { sfx.pick(); setPlan(option.id) }}
+                    aria-pressed={picked}
+                    className={`btn3d relative rounded-2xl border-2 p-4 text-start transition ${
+                      picked ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)] bg-[var(--surface-raised)]'
+                    }`}
+                  >
+                    {option.best && (
+                      <span className="absolute -top-3 end-3 rounded-full bg-saffron-500 px-2.5 py-1 text-[11px] font-extrabold text-night-950">
+                        {t.unlock.voordeligst(YEAR_SAVING)}
+                      </span>
+                    )}
+                    <div className="font-display text-lg font-extrabold">{t.unlock.plan[option.id]}</div>
+                    <div className="mt-1 font-display text-2xl font-extrabold">{priceOf(option.id)}</div>
+                    <div className="mt-0.5 text-xs text-[var(--ink-soft)]">
+                      {option.id === 'jaar'
+                        ? t.unlock.perMaand(billing.prices.jaar ? '' : option.perMonth)
+                        : t.unlock.perMaandLos}
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+
             <div className="mt-6">
               {billing.available ? (
                 <Button className="w-full py-4 text-lg" disabled={billing.busy} onClick={() => { setWrong(false); setGate(true) }}>
                   {billing.busy ? t.unlock.bezig : t.unlock.koop(TRIAL_DAYS)}
                 </Button>
               ) : (
-                <p className="rounded-2xl bg-saffron-500/10 px-4 py-3 text-sm">{t.unlock.alleenInApp(price)}</p>
+                <p className="rounded-2xl bg-saffron-500/10 px-4 py-3 text-sm">{t.unlock.alleenInApp(price, jaar)}</p>
               )}
               {/* Both stores require the terms to be visible before buying. */}
               <p className="mt-3 text-xs leading-relaxed text-[var(--ink-soft)]">
-                {t.unlock.voorwaarden(TRIAL_DAYS, price)}
+                {jaar
+                  ? t.unlock.voorwaardenJaar(TRIAL_DAYS, price)
+                  : t.unlock.voorwaarden(TRIAL_DAYS, price)}
               </p>
               {billing.error && (
                 <p className="mt-3 text-center text-sm text-terra-500">{t.unlock.mislukt(billing.error)}</p>

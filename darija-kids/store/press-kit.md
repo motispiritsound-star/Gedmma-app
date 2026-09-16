@@ -30,7 +30,7 @@ het toestel.
 | Leeftijd | Vanaf ongeveer 7 jaar zelfstandig, jonger samen met een ouder |
 | Talen | Nederlands, Frans, Duits, Spaans, Engels |
 | Inhoud | 17 units (A0–A2), 304 woorden, 100 zinnen, 31 letters, 4 verhalen, 3 spellen |
-| Prijs | Gratis beginnen; volledige cursus € 6,49 per maand, eerste 3 dagen gratis |
+| Prijs | Gratis beginnen; volledige cursus € 59,88 per jaar (€ 4,99 per maand) of € 6,99 per maand, eerste 3 dagen gratis |
 | Platforms | iPhone, iPad, Android, en elke browser |
 | Advertenties | Geen |
 | Account | Geen — er wordt niets verzameld en niets verstuurd |
