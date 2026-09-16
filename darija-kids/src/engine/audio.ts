@@ -118,6 +118,9 @@ export function unlockAudio(): void {
   if (unlocked) return
   unlocked = true
   audio()
+  // Both roads are opened here, inside the first real tap, because that is
+  // the only moment a browser will let either of them start.
+  primePool()
   if (samplesWanted()) void warmSamples()
   if (typeof speechSynthesis !== 'undefined') {
     try {
@@ -263,32 +266,74 @@ async function warmSamples(): Promise<void> {
 }
 
 /** A small pool, so two sounds can overlap without cutting each other off. */
+const POOL = 8
 const pool: HTMLAudioElement[] = []
 
-function element(): HTMLAudioElement | null {
-  if (typeof Audio === 'undefined') return null
-  const free = pool.find((a) => a.paused || a.ended)
-  if (free) return free
-  if (pool.length >= 8) return pool[0]!
-  const made = new Audio()
-  made.preload = 'auto'
-  ;(made as unknown as { playsInline: boolean }).playsInline = true
-  pool.push(made)
-  return made
+function makePool(): void {
+  if (typeof Audio === 'undefined' || pool.length) return
+  for (let i = 0; i < POOL; i++) {
+    const made = new Audio()
+    made.preload = 'auto'
+    ;(made as unknown as { playsInline: boolean }).playsInline = true
+    pool.push(made)
+  }
 }
+
+function element(): HTMLAudioElement | null {
+  makePool()
+  return pool.find((a) => a.paused || a.ended) ?? pool[0] ?? null
+}
+
+/** Sixteen samples of nothing, to wake an element up with. */
+const SILENCE =
+  'data:audio/wav;base64,UklGRkQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=='
+
+/**
+ * Wakes every player in the pool, inside the gesture that called this.
+ *
+ * iOS will only let an <audio> element be started from code later if it has
+ * already been started once by a real tap. Without this, the sounds that come
+ * from a timer rather than a press — the level-up, the badge, the music under
+ * the film — would be the only silent ones, which is a maddening thing to
+ * debug from the other side of a screen.
+ */
+function primePool(): void {
+  makePool()
+  for (const el of pool) {
+    el.src = SILENCE
+    el.volume = 0
+    void el
+      .play()
+      .then(() => {
+        el.pause()
+        el.currentTime = 0
+        el.volume = 1
+      })
+      .catch(() => {
+        el.volume = 1
+      })
+  }
+}
+
+/** Set when the media channel turned out not to play at all. */
+let mediaBroken = false
 
 function playSample(name: SoundName, arg: number): void {
   const wanted = nearestArg(name, arg)
-  const ready = samples.get(key(name, wanted))
   const start = (url: string) => {
     const el = element()
     if (!el) return
     if (el.src !== url) el.src = url
     el.currentTime = 0
-    void el.play().catch(() => {})
+    void el.play().catch(() => {
+      // This road is closed after all; take the other one, now and from here on.
+      mediaBroken = true
+      playLive(name, arg)
+    })
   }
+  const ready = samples.get(key(name, wanted))
   if (ready) start(ready)
-  else void sample(name, wanted).then((url) => url && start(url))
+  else void sample(name, wanted).then((url) => (url ? start(url) : playLive(name, arg)))
 }
 
 /**
@@ -298,7 +343,9 @@ function playSample(name: SoundName, arg: number): void {
  */
 function samplesWanted(): boolean {
   if (typeof window === 'undefined') return false
-  return liveBroken || getState().settings.mediaSound || audioBlocked()
+  if (liveBroken) return true
+  if (mediaBroken) return false
+  return getState().settings.mediaSound || audioBlocked()
 }
 
 /**
@@ -309,12 +356,8 @@ function samplesWanted(): boolean {
  * the moment it resumes, and are simply never heard. Waiting for the resume is
  * the difference between a silent first answer and a satisfying one.
  */
-function play(name: SoundName, arg = 0): void {
-  if (!on()) return
-  if (samplesWanted()) {
-    playSample(name, arg)
-    return
-  }
+/** The live road: synthesise the notes straight onto the speakers. */
+function playLive(name: SoundName, arg: number): void {
   const ac = audio()
   if (!ac) return
   const now = () => {
@@ -336,6 +379,12 @@ function play(name: SoundName, arg = 0): void {
   }
   void ac.resume().then(() => once(now)).catch(() => once(() => playSample(name, arg)))
   setTimeout(() => once(() => playSample(name, arg)), 250)
+}
+
+function play(name: SoundName, arg = 0): void {
+  if (!on()) return
+  if (samplesWanted()) playSample(name, arg)
+  else playLive(name, arg)
 }
 
 /** What the app can find out about its own sound, by trying it. */

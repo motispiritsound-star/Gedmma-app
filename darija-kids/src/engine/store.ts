@@ -41,6 +41,12 @@ export interface Settings {
    * switch on silent mutes the live mixer and not this.
    */
   mediaSound: boolean
+  /**
+   * True once somebody has actually flipped the switch above. Until then the
+   * app keeps deciding for itself, so a device that turns out to need the
+   * media channel gets it on the next visit rather than never.
+   */
+  mediaSoundPicked: boolean
   /** The short animated scene after a finished lesson. */
   film: boolean
   speech: boolean
@@ -148,17 +154,19 @@ const dayBefore = (iso: string): string => {
 }
 
 /**
- * True on an iPhone or iPad whose Safari is too old to be told that this page
- * is playback. There the side switch mutes the synthesiser and not the speech
- * engine — the exact shape of "I hear the words but none of the sounds" — and
- * only the media channel gets past it.
+ * True on an iPhone or iPad.
+ *
+ * There the switch on the side mutes the synthesiser and leaves the speech
+ * engine alone — the exact shape of "I hear the words but none of the sounds".
+ * Asking for a playback audio session is supposed to settle it, and on paper
+ * it does; in practice the only route that reliably gets past that switch is
+ * the media channel, and a few milliseconds of extra delay is a cheap price
+ * for a button that can be heard.
  */
 function prefersMediaChannel(): boolean {
   if (typeof navigator === 'undefined') return false
-  const apple = /iPad|iPhone|iPod/.test(navigator.userAgent)
+  return /iPad|iPhone|iPod/.test(navigator.userAgent)
     || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
-  const modern = 'audioSession' in navigator
-  return apple && !modern
 }
 
 const initial = (): State => ({
@@ -193,6 +201,7 @@ const initial = (): State => ({
     showTranslit: true,
     sound: true,
     mediaSound: prefersMediaChannel(),
+    mediaSoundPicked: false,
     film: true,
     speech: true,
     hearts: true,
@@ -217,6 +226,10 @@ function load(): State {
     const base = initial()
     const merged = { ...base, ...parsed, settings: { ...base.settings, ...(parsed.settings ?? {}) } }
     if (!isLang(merged.settings.lang)) merged.settings.lang = base.settings.lang
+    // Nobody has chosen yet, so the app is still allowed to change its mind —
+    // otherwise a visitor who opened the app before this existed would be
+    // stuck with whatever the default happened to be that day.
+    if (!merged.settings.mediaSoundPicked) merged.settings.mediaSound = prefersMediaChannel()
     return merged
   } catch {
     return initial()

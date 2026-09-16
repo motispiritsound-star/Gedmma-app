@@ -231,7 +231,11 @@ export function SettingsPage() {
         <Row title={t.settings.mediakanaal} hint={t.settings.mediakanaalHint}>
           <Toggle
             on={s.mediaSound}
-            onChange={(v) => { setSetting('mediaSound', v); if (v) void prepareSamples() }}
+            onChange={(v) => {
+              setSetting('mediaSound', v)
+              setSetting('mediaSoundPicked', true)
+              if (v) void prepareSamples()
+            }}
             label={t.settings.mediakanaal}
           />
         </Row>
