@@ -3,15 +3,17 @@
 Het alfabet en de eerste **vijf units** zijn gratis en blijven gratis. De rest van de cursus
 hoort bij **volledige toegang**: een paar dagen gratis proberen, daarna
 **€ 59,88 voor een jaar vooruit (€ 4,99 per maand) of € 6,99 per maand**,
-inclusief btw en altijd opzegbaar. De betaling loopt
+inclusief btw en altijd opzegbaar. Daarnaast staat er één ding los te koop:
+het **e-boek** voor **€ 14,99 eenmalig** — bij het jaarabonnement zit het erbij.
+De betaling loopt
 volledig via de App Store en Google Play — zij innen, zij rekenen de btw af,
 zij houden de proefperiode bij, en zij storten maandelijks op jouw rekening.
 
 > **Kort:** je maakt in beide winkels twee abonnementsproducten aan —
 > `app.darijakids.yearly` en `app.darijakids.monthly` — in dezelfde
-> abonnementsgroep, zet de prijzen en de gratis periode, koppelt je
-> bankrekening, en de winkels betalen uit wat er binnenkwam minus hun
-> commissie.
+> abonnementsgroep, plus één eenmalig product `app.darijakids.ebook`, zet de
+> prijzen en de gratis periode, koppelt je bankrekening, en de winkels betalen
+> uit wat er binnenkwam minus hun commissie.
 
 ## Twee dingen om te weten voor je begint
 
@@ -80,6 +82,35 @@ Gebruik in beide winkels **hetzelfde id**, anders werkt de code niet:
 Bij Apple hoort bij elk abonnement een schermafbeelding en een beschrijving;
 die worden apart beoordeeld.
 
+### En het e-boek, als derde product
+
+Het e-boek is **geen abonnement** maar een eenmalige aankoop, en dat is in beide
+winkels een ander soort product:
+
+| | App Store Connect | Google Play Console |
+|---|---|---|
+| Waar | Jouw app → **In-App Purchases** | Jouw app → **Producten → Eenmalige producten** |
+| Soort | **Non-Consumable** | **Eenmalig product**, niet verbruikbaar |
+| Product-id | `app.darijakids.ebook` | hetzelfde id |
+| Prijs | € 14,99 | € 14,99 |
+| Naam voor de koper | Het e-boek | Het e-boek |
+
+Niet-verbruikbaar betekent: één keer betalen, voor altijd, en terug te zetten op
+een nieuw toestel met **Aankoop terugzetten**. Zo staat het ook in de app —
+`grantEbook()` in `src/engine/billing.ts` neemt het nooit meer terug, ook niet
+als het abonnement stopt.
+
+**Wie een jaar vooruit betaalt krijgt het boek erbij.** Dat regelt de app zelf:
+zodra de winkel zegt dat `app.darijakids.yearly` van deze koper is, staat het
+boek open. Er is dus geen bundelproduct nodig, en iemand die per maand betaalt
+kan het boek los kopen.
+
+Het boek zelf zit **in de app**, als `public/ebook/darija-kids-<taal>.pdf`, in
+alle zes talen. Geen downloadlink die verloopt, geen account: wie het gekocht
+heeft opent het offline. Zet het opnieuw met `npm run ebook` zodra er woorden
+bij de cursus komen — het boek wordt uit dezelfde bestanden gezet als de lessen,
+dus het kan niet uit de pas gaan lopen.
+
 ## Dat het geld op jouw rekening komt
 
 ### Apple
@@ -106,8 +137,8 @@ die worden apart beoordeeld.
 
 In de EU zijn Apple en Google voor digitale producten zelf de verkoper richting
 de klant: zij rekenen de btw van het land van de koper en dragen die af. De
-€ 59,88 per jaar of € 6,99 per maand die de klant ziet is dus inclusief btw, en jij ontvangt het bedrag ná
-commissie en ná btw. Jij stuurt geen facturen naar kopers.
+€ 59,88 per jaar, € 6,99 per maand of € 14,99 voor het boek die de klant ziet is dus inclusief btw, en jij
+ontvangt het bedrag ná commissie en ná btw. Jij stuurt geen facturen naar kopers.
 
 Wat je zelf moet regelen: die inkomsten zijn belastbaar, en omdat je met een
 doorlopend abonnement een **handelaar** bent, vragen beide winkels sinds 2025

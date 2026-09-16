@@ -114,6 +114,14 @@ export interface State {
   /** True once the full course has been bought, in either store. */
   unlocked: boolean
   unlockedAt: number | null
+  /**
+   * True once the e-book has been paid for — with the year up front, which has
+   * it in the price, or bought on its own.
+   *
+   * Kept apart from `unlocked` because it never expires: a book that was paid
+   * for stays paid for, also when the subscription that came with it ends.
+   */
+  ebook: boolean
   langPicked: boolean
   seenTips: string[]
   /**
@@ -246,6 +254,7 @@ const initial = (): State => ({
   badges: [],
   unlocked: false,
   unlockedAt: null,
+  ebook: false,
   /** False until somebody has picked a language on the welcome screen. */
   langPicked: false,
   seenTips: [],
@@ -709,9 +718,9 @@ export const checkpointsDone = (s: State = state): number =>
   Object.keys(s.lessons).filter((id) => id.endsWith('-toets')).length
 
 export function resetProgress(): void {
-  const { settings, unlocked, unlockedAt } = state
+  const { settings, unlocked, unlockedAt, ebook } = state
   // Starting over is about progress, not about the purchase.
-  state = { ...initial(), settings, unlocked, unlockedAt }
+  state = { ...initial(), settings, unlocked, unlockedAt, ebook }
   emit()
 }
 

@@ -70,6 +70,8 @@ Italiano, olandese, francese, tedesco, spagnolo e inglese. L'app propone la ling
 INIZIARE GRATIS
 L'alfabeto e le prime cinque unità sono e restano gratis: abbastanza per leggere la scrittura araba, presentarsi e contare fino a cento. Il corso intero va con l'accesso completo: i primi giorni gratis e poi 59,88 € per un anno intero (4,99 € al mese) oppure 6,99 € al mese, IVA inclusa. Disdicibile dal tuo account App Store o Google Play; se disdici prima della fine della prova, non paghi niente.
 
+E una cosa si compra a parte: l'e-book, l'intero corso su carta — tutte e 28 le lettere con le loro tre forme, le 17 unità con le spiegazioni di grammatica, tutte le parole e tutte le frasi. 14,99 €, una volta sola, e compreso con l'abbonamento annuale.
+
 FATTA PER DARLA IN MANO A UN BAMBINO
 • Nessun account, nessuna e-mail, nessun accesso
 • Nessuna pubblicità, nessun costo nascosto

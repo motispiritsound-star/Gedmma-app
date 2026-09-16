@@ -46,8 +46,26 @@ export const PLANS: Plan[] = [
 
 export const planOf = (id: PlanId): Plan => PLANS.find((p) => p.id === id) ?? PLANS[0]!
 
-/** Every product the app knows how to sell. */
+/** Every subscription the app knows how to sell. */
 export const PRODUCTS = PLANS.map((p) => p.product)
+
+/**
+ * The e-book: the whole course on paper, bought once and kept.
+ *
+ * It comes with the year up front — a buyer who pays for a year does not pay
+ * for it twice — and is sold on its own to anyone paying by the month. A
+ * one-off, not a subscription, so it is a non-consumable in both stores.
+ *
+ * Create this id too, as a one-time purchase rather than a subscription.
+ */
+export const EBOOK = {
+  product: 'app.darijakids.ebook',
+  /** The fallback price for the website, where no store can be asked. */
+  list: '€ 14,99',
+}
+
+/** Where the book itself lives, per language of the app. */
+export const ebookFile = (lang: string): string => `ebook/darija-kids-${lang}.pdf`
 
 /**
  * The free trial, in days. Three is both the chosen length and the shortest
@@ -98,7 +116,7 @@ interface CdvStore {
 }
 interface CdvPurchase {
   store: CdvStore
-  ProductType: { PAID_SUBSCRIPTION: string }
+  ProductType: { PAID_SUBSCRIPTION: string; NON_CONSUMABLE: string }
   Platform: { GOOGLE_PLAY: string; APPLE_APPSTORE: string }
 }
 
@@ -114,6 +132,18 @@ export const isSubscribed = (): boolean => getState().unlocked
 function grant(): void {
   if (getState().unlocked) return
   setState({ unlocked: true, unlockedAt: Date.now() })
+}
+
+export const hasEbook = (): boolean => getState().ebook
+
+/**
+ * The book is never taken back. It was paid for once — with the year or on its
+ * own — and a book that disappears when a subscription lapses is not a book
+ * anyone bought.
+ */
+function grantEbook(): void {
+  if (getState().ebook) return
+  setState({ ebook: true })
 }
 
 /**
@@ -134,8 +164,8 @@ export interface BillingState {
   available: boolean
   /** The monthly price as the store formats it, or null until known. */
   price: string | null
-  /** Each plan's price in the buyer's own currency, once the store has said. */
-  prices: Partial<Record<PlanId, string>>
+  /** Each product's price in the buyer's own currency, once the store has said. */
+  prices: Partial<Record<PlanId | 'ebook', string>>
   busy: boolean
   /** Set when a purchase failed, in the store's own words. */
   error: string | null
@@ -173,24 +203,29 @@ export async function initBilling(): Promise<void> {
 
   const { store, ProductType, Platform } = api
 
-  store.register(
-    PRODUCTS.flatMap((id) => [
+  store.register([
+    ...PRODUCTS.flatMap((id) => [
       { id, type: ProductType.PAID_SUBSCRIPTION, platform: Platform.GOOGLE_PLAY },
       { id, type: ProductType.PAID_SUBSCRIPTION, platform: Platform.APPLE_APPSTORE },
     ]),
-  )
+    { id: EBOOK.product, type: ProductType.NON_CONSUMABLE, platform: Platform.GOOGLE_PLAY },
+    { id: EBOOK.product, type: ProductType.NON_CONSUMABLE, platform: Platform.APPLE_APPSTORE },
+  ])
 
   // A purchase the store approves is the purchase: there is no server behind
   // this app to check a receipt against, and a family that paid should not
   // wait on one.
   store.when().approved((transaction) => {
-    if (transaction.products.some((p) => PRODUCTS.includes(p.productId))) grant()
+    const bought = transaction.products.map((p) => p.productId)
+    if (bought.some((id) => PRODUCTS.includes(id))) grant()
+    // The year has the book in it; by the month it is bought separately.
+    if (bought.includes(EBOOK.product) || bought.includes(planOf('jaar').product)) grantEbook()
     transaction.finish()
     publish({ busy: false, error: null })
   })
 
   const refresh = () => {
-    const prices: Partial<Record<PlanId, string>> = {}
+    const prices: Partial<Record<PlanId | 'ebook', string>> = {}
     let owned: boolean | undefined
     for (const plan of PLANS) {
       const product = store.get(plan.product)
@@ -198,6 +233,9 @@ export async function initBilling(): Promise<void> {
       // Either plan being owned opens the whole course.
       if (product?.owned !== undefined) owned = (owned ?? false) || product.owned
     }
+    const book = store.get(EBOOK.product)
+    if (book?.pricing?.price) prices.ebook = book.pricing.price
+    if (book?.owned || store.get(planOf('jaar').product)?.owned) grantEbook()
     publish({ prices, price: prices.maand ?? null })
     if (owned !== undefined) syncFromStore(owned)
   }
@@ -224,6 +262,20 @@ export async function subscribe(plan: PlanId = 'jaar'): Promise<void> {
   }
 }
 
+/** Opens the store's own payment sheet for the e-book on its own. */
+export async function buyEbook(): Promise<void> {
+  const api = plugin()
+  if (!api) return
+  publish({ busy: true, error: null })
+  try {
+    const offer = api.store.get(EBOOK.product)?.getOffer()
+    if (!offer) throw new Error('product-onbekend')
+    await offer.order()
+  } catch (e) {
+    publish({ busy: false, error: e instanceof Error ? e.message : String(e) })
+  }
+}
+
 /**
  * Brings back a subscription bought earlier — a new phone, a reinstall, a
  * second device on the same account. Both stores require this to exist.
@@ -240,6 +292,7 @@ export async function restorePurchases(): Promise<void> {
       if (product?.owned !== undefined) owned = (owned ?? false) || product.owned
     }
     if (owned !== undefined) syncFromStore(owned)
+    if (api.store.get(EBOOK.product)?.owned || api.store.get(planOf('jaar').product)?.owned) grantEbook()
   } catch (e) {
     publish({ error: e instanceof Error ? e.message : String(e) })
   } finally {

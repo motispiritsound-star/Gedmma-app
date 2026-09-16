@@ -70,6 +70,8 @@ Français, néerlandais, allemand, espagnol, italien et anglais. Tu choisis au d
 COMMENCER GRATUITEMENT
 L'alphabet et les cinq premières unités sont et restent gratuits : de quoi lire l'écriture arabe, te présenter et compter jusqu'à cent. Le cours complet va avec l'accès complet : les premiers jours offerts, puis 59,88 € pour une année entière (4,99 € par mois) ou 6,99 € par mois, TTC. Résiliable dans ton compte App Store ou Google Play ; en résiliant avant la fin de l'essai, tu ne paies rien.
 
+Et une chose s'achète à part : l'e-book, tout le cours sur papier — les 28 lettres avec leurs trois formes, les 17 unités avec les explications de grammaire, tous les mots et toutes les phrases. 14,99 €, une seule fois, et compris avec l'abonnement annuel.
+
 FAIT POUR ÊTRE CONFIÉ À UN ENFANT
 • Pas de compte, pas d'e-mail, pas de connexion
 • Pas de publicité, pas de frais cachés

@@ -27,7 +27,8 @@
     "sheet": "node scripts/make-sheet.mjs",
     "add-clip": "node scripts/add-clip.mjs",
     "bonuscheck": "node scripts/bonuscheck.mjs",
-    "brand": "node scripts/make-brand.mjs"
+    "brand": "node scripts/make-brand.mjs",
+    "ebook": "node scripts/make-ebook.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",

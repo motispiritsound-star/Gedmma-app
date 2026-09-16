@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  FREE_UNITS, manageSubscription, PLANS, planOf, restorePurchases, subscribe, TRIAL_DAYS,
-  useBilling, YEAR_SAVING, type PlanId,
+  buyEbook, EBOOK, ebookFile, FREE_UNITS, manageSubscription, PLANS, planOf, restorePurchases,
+  subscribe, TRIAL_DAYS, useBilling, YEAR_SAVING, type PlanId,
 } from '../engine/billing'
 import { useStore } from '../engine/store'
 import { useT } from '../i18n'
@@ -21,6 +21,8 @@ export function Unlock() {
   const t = useT()
   const billing = useBilling()
   const subscribed = useStore((s) => s.unlocked)
+  const boek = useStore((s) => s.ebook)
+  const lang = useStore((s) => s.settings.lang)
   const [gate, setGate] = useState(false)
   const [answer, setAnswer] = useState('')
   const [wrong, setWrong] = useState(false)
@@ -126,6 +128,11 @@ export function Unlock() {
                         ? t.unlock.perMaand(billing.prices.jaar ? '' : option.perMonth)
                         : t.unlock.perMaandLos}
                     </div>
+                    {option.id === 'jaar' && (
+                      <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-zellige-500/15 px-2 py-0.5 text-[11px] font-extrabold text-zellige-700 dark:text-zellige-200">
+                        📖 {t.unlock.boek.inclusief}
+                      </div>
+                    )}
                   </button>
                 )
               })}
@@ -161,6 +168,53 @@ export function Unlock() {
           )}
         </>
       )}
+
+      {/* The book stands on its own: a subscriber can still want it, and
+          somebody who has it should always be able to open it again. */}
+      <Card className="mt-4 p-6">
+        <div className="flex flex-wrap items-baseline gap-3">
+          <h2 className="font-display text-xl font-extrabold">📖 {t.unlock.boek.titel}</h2>
+          {!boek && (
+            <span className="font-display text-lg font-extrabold text-zellige-600 dark:text-zellige-300">
+              {billing.prices.ebook ?? EBOOK.list}
+            </span>
+          )}
+        </div>
+        <p className="mt-2 text-sm text-[var(--ink-soft)]">{t.unlock.boek.sub}</p>
+        <ul className="mt-3 space-y-1.5">
+          {t.unlock.boek.bevat.map((line) => (
+            <li key={line} className="flex gap-2 text-sm">
+              <span aria-hidden="true">•</span>
+              <span>{line}</span>
+            </li>
+          ))}
+        </ul>
+
+        {boek ? (
+          <>
+            <a href={ebookFile(lang)} target="_blank" rel="noreferrer" className="mt-5 inline-block">
+              <Button onClick={() => sfx.tap()}>{t.unlock.boek.open}</Button>
+            </a>
+            <p className="mt-3 text-xs text-[var(--ink-soft)]">{t.unlock.boek.vanJou}</p>
+          </>
+        ) : billing.available ? (
+          <>
+            <Button
+              variant="secondary"
+              className="mt-5 w-full py-3"
+              disabled={billing.busy}
+              onClick={() => { sfx.tap(); void buyEbook() }}
+            >
+              {billing.busy ? t.unlock.bezig : t.unlock.boek.koop(billing.prices.ebook ?? EBOOK.list)}
+            </Button>
+            <p className="mt-3 text-xs text-[var(--ink-soft)]">{t.unlock.boek.bijJaar}</p>
+          </>
+        ) : (
+          <p className="mt-5 rounded-2xl bg-saffron-500/10 px-4 py-3 text-sm">
+            {t.unlock.boek.alleenInApp(EBOOK.list)}
+          </p>
+        )}
+      </Card>
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link to="/leren"><Button variant="ghost">{t.lesson.terugNaarPad}</Button></Link>

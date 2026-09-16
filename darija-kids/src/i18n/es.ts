@@ -648,6 +648,24 @@ export const es: Strings = {
     poortKnop: 'Continuar',
     slotTitel: 'Esta unidad forma parte del acceso completo',
     slotKnop: 'Verlo',
+    /** El libro electrónico: pago único, incluido en la suscripción anual. */
+    boek: {
+      titel: 'El libro electrónico',
+      sub: 'Todas las palabras, todas las letras y la gramática: el camino entero en papel. Para imprimir, o para leer en una tableta junto a la app.',
+      bevat: [
+        'El alfabeto: 28 letras con sus tres formas y una palabra de ejemplo',
+        'El camino: las 17 unidades con todas las explicaciones de gramática juntas',
+        'Todas las palabras por tema, con la grafía latina',
+        'Todas las frases del curso',
+      ],
+      inclusief: 'libro incluido',
+      bijJaar: 'Con la suscripción anual el libro va incluido: no hace falta comprarlo aparte.',
+      koop: (prijs: string): string => `Comprar el libro — ${prijs} una sola vez`,
+      open: 'Abrir el libro',
+      vanJou: 'El libro es tuyo. Sigue siéndolo aunque algún día dejes la suscripción.',
+      alleenInApp: (prijs: string): string =>
+        `El libro se compra en la app de la App Store o de Google Play (${prijs}, pago único). Con la suscripción anual va incluido.`,
+    },
   },
   welcome: {
     plan: (dagen: number, prijs: string): string =>

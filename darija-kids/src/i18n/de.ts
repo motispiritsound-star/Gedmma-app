@@ -648,6 +648,24 @@ export const de: Strings = {
     poortKnop: 'Weiter',
     slotTitel: 'Diese Einheit gehört zum vollen Zugang',
     slotKnop: 'Ansehen',
+    /** Das E-Book: einmalig zu kaufen, im Jahresabo enthalten. */
+    boek: {
+      titel: 'Das E-Book',
+      sub: 'Alle Wörter, alle Buchstaben und die Grammatik — der ganze Weg auf Papier. Zum Ausdrucken oder zum Lesen auf dem Tablet neben der App.',
+      bevat: [
+        'Das Alphabet: 28 Buchstaben mit allen drei Formen und einem Beispielwort',
+        'Der Weg: alle 17 Einheiten mit den Grammatikerklärungen beisammen',
+        'Alle Wörter nach Thema, mit der lateinischen Schreibweise',
+        'Alle Sätze des Kurses',
+      ],
+      inclusief: 'inkl. E-Book',
+      bijJaar: 'Im Jahresabo ist das E-Book enthalten — dann muss es nicht extra gekauft werden.',
+      koop: (prijs: string): string => `E-Book kaufen — ${prijs} einmalig`,
+      open: 'E-Book öffnen',
+      vanJou: 'Das E-Book gehört dir. Es bleibt deins, auch wenn das Abo irgendwann endet.',
+      alleenInApp: (prijs: string): string =>
+        `Das E-Book kaufst du in der App aus dem App Store oder von Google Play (${prijs}, einmalig). Im Jahresabo ist es enthalten.`,
+    },
   },
   welcome: {
     plan: (dagen: number, prijs: string): string =>

@@ -70,6 +70,8 @@ Deutsch, Niederländisch, Französisch, Spanisch, Italienisch und Englisch. Du w
 KOSTENLOS ANFANGEN
 Das Alphabet und die ersten fünf Einheiten sind und bleiben kostenlos: genug, um die arabische Schrift zu lesen, dich vorzustellen und bis hundert zu zählen. Der ganze Kurs gehört zum vollen Zugang: die ersten Tage gratis, danach 59,88 € für ein ganzes Jahr (4,99 € pro Monat) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Kündbar im eigenen App-Store- oder Google-Play-Konto; wer vor Ende der Testphase kündigt, zahlt nichts.
 
+Und eines ist einzeln zu haben: das E-Book, der ganze Kurs auf Papier — alle 28 Buchstaben mit ihren drei Formen, alle 17 Einheiten mit den Grammatikerklärungen, alle Wörter und alle Sätze. 14,99 €, einmalig, und im Jahresabo enthalten.
+
 GEMACHT, UM ES EINEM KIND ZU GEBEN
 • Kein Konto, keine E-Mail, kein Login
 • Keine Werbung, keine versteckten Kosten

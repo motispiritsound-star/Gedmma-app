@@ -130,14 +130,21 @@ je hebt hem één dag nodig), of met Android beginnen en iOS later doen.
 Volledig uitgeschreven in [PAYMENTS.md](PAYMENTS.md). In het kort, in beide
 consoles hetzelfde:
 
-Er zijn **twee** producten, in dezelfde abonnementsgroep:
+Er zijn **twee abonnementen**, in dezelfde abonnementsgroep:
 
 | Product-id | Duur | Prijs | Naam voor de koper |
 |---|---|---|---|
 | `app.darijakids.yearly` | 1 jaar, verlengt automatisch | € 59,88 (Apple: € 59,99) | Een jaar volledige toegang |
 | `app.darijakids.monthly` | 1 maand, verlengt automatisch | € 6,99 | Volledige toegang per maand |
 
-Allebei met **3 dagen gratis**. De ids moeten exact zo, anders vindt de code ze
+En **één eenmalig product**, geen abonnement:
+
+| Product-id | Soort | Prijs | Naam voor de koper |
+|---|---|---|---|
+| `app.darijakids.ebook` | eenmalig, niet verbruikbaar | € 14,99 | Het e-boek |
+
+Bij het jaarabonnement zit het e-boek erbij; dat regelt de app, dus er is geen
+apart bundelproduct nodig. De abonnementen allebei met **3 dagen gratis**. De ids moeten exact zo, anders vindt de code ze
 niet. Zelfde groep, zodat overstappen van maand naar jaar geen dubbele
 afschrijving oplevert.
 
@@ -238,7 +245,9 @@ Apple leest dit veld echt. Zet er dit in:
 > juist antwoord werkt.
 >
 > De abonnementen zijn app.darijakids.yearly (€ 59,88 per jaar) en
-> app.darijakids.monthly (€ 6,99 per maand), beide met 3 dagen gratis.
+> app.darijakids.monthly (€ 6,99 per maand), beide met 3 dagen gratis. Los
+> daarvan staat app.darijakids.ebook (€ 14,99 eenmalig): het e-boek met de hele
+> cursus, dat bij het jaarabonnement is inbegrepen.
 > De voorwaarden en het privacybeleid staan in de app onder het
 > abonnementsscherm, en online op [je URL].
 

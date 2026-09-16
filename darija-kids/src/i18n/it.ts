@@ -648,6 +648,24 @@ export const it: Strings = {
     poortKnop: 'Avanti',
     slotTitel: 'Questa unità fa parte dell’accesso completo',
     slotKnop: 'Guarda',
+    /** L'e-book: acquisto unico, incluso nell'abbonamento annuale. */
+    boek: {
+      titel: "L'e-book",
+      sub: "Tutte le parole, tutte le lettere e la grammatica: l'intero percorso su carta. Da stampare, o da leggere su un tablet accanto all'app.",
+      bevat: [
+        "L'alfabeto: 28 lettere con tutte e tre le forme e una parola d'esempio",
+        'Il percorso: le 17 unità con le spiegazioni di grammatica tutte insieme',
+        'Tutte le parole per argomento, con la grafia latina',
+        'Tutte le frasi del corso',
+      ],
+      inclusief: 'e-book incluso',
+      bijJaar: "Con l'abbonamento annuale l'e-book è compreso: non serve comprarlo a parte.",
+      koop: (prijs: string): string => `Compra l'e-book — ${prijs} una volta sola`,
+      open: "Apri l'e-book",
+      vanJou: "L'e-book è tuo. Resta tuo anche se un giorno lasci l'abbonamento.",
+      alleenInApp: (prijs: string): string =>
+        `L'e-book si compra nell'app dell'App Store o di Google Play (${prijs}, una volta sola). Con l'abbonamento annuale è compreso.`,
+    },
   },
   welcome: {
     plan: (dagen: number, prijs: string): string =>

@@ -656,6 +656,24 @@ export const nl = {
     poortKnop: 'Verder',
     slotTitel: 'Deze unit hoort bij de volledige toegang',
     slotKnop: 'Bekijken',
+    /** Het e-boek: eenmalig te koop, en bij het jaarabonnement inbegrepen. */
+    boek: {
+      titel: 'Het e-boek',
+      sub: 'Alle woorden, alle letters en de grammatica — het hele pad op papier. Om te printen, of te lezen op een tablet naast de app.',
+      bevat: [
+        'Het alfabet: 28 letters met alle drie de vormen en een voorbeeldwoord',
+        'Het pad: alle 17 units met de grammatica-uitleg bij elkaar',
+        'Alle woorden op onderwerp, met de Latijnse schrijfwijze',
+        'Alle zinnen van de cursus',
+      ],
+      inclusief: 'incl. e-boek',
+      bijJaar: 'Bij een jaarabonnement zit het e-boek erbij — dan hoef je het niet apart te kopen.',
+      koop: (prijs: string): string => `Koop het e-boek — ${prijs} eenmalig`,
+      open: 'Open het e-boek',
+      vanJou: 'Het e-boek is van jou. Het blijft van jou, ook als je ooit stopt met het abonnement.',
+      alleenInApp: (prijs: string): string =>
+        `Het e-boek koop je in de app uit de App Store of Google Play (${prijs}, eenmalig). Bij een jaarabonnement zit het erbij.`,
+    },
   },
   welcome: {
     plan: (dagen: number, prijs: string): string =>

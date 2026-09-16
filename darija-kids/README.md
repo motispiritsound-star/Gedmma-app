@@ -268,7 +268,16 @@ cursus hoort bij **volledige toegang**: een paar dagen gratis, daarna
 **€ 59,88 voor een heel jaar** — € 4,99 per maand — of **€ 6,99 per maand**,
 beide inclusief btw en opzegbaar. De App Store en Google Play regelen de
 proefperiode, de afschrijving en de btw; de producten heten
-`app.darijakids.yearly` en `app.darijakids.monthly`. De grens tussen gratis en betaald staat op één plek:
+`app.darijakids.yearly` en `app.darijakids.monthly`.
+
+Los daarvan is er één ding te koop dat geen abonnement is: **het e-boek**, de
+hele cursus op papier — alle 28 letters met hun drie vormen, alle 17 units met
+de grammatica-uitleg, alle woorden en alle zinnen. **€ 14,99, één keer**, en bij
+het jaarabonnement zit het erbij. Het boek wordt met `npm run ebook` uit
+dezelfde bestanden gezet als de lessen, staat als PDF in `public/ebook/` in alle
+zes talen, en blijft van wie het kocht — ook als het abonnement stopt.
+
+De grens tussen gratis en betaald staat op één plek:
 `FREE_UNITS` in `src/engine/store.ts`, de proefperiode en de vangnetprijs in
 `src/engine/billing.ts`.
 

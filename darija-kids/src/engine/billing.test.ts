@@ -1,5 +1,9 @@
+import { existsSync, statSync } from 'node:fs'
+import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { UNITS } from '../content/curriculum'
+import { LANG_CODES } from '../i18n/languages'
+import { EBOOK, ebookFile, PRODUCTS } from './billing'
 import {
   FREE_UNITS, getState, isDone, nextLesson, resetProgress, setState,
   unitBehindPaywall, unitUnlocked, type State,
@@ -59,5 +63,31 @@ describe('what is free and what is paid', () => {
     expect(getState().unlocked).toBe(true)
     expect(getState().xp).toBe(0)
     setState({ unlocked: false, unlockedAt: null })
+  })
+})
+
+describe('the e-book', () => {
+  it('is sold under its own product id, not one of the subscriptions', () => {
+    expect(PRODUCTS).not.toContain(EBOOK.product)
+    expect(new Set([...PRODUCTS, EBOOK.product]).size).toBe(PRODUCTS.length + 1)
+  })
+
+  it('has a file for every language the app speaks', () => {
+    for (const lang of LANG_CODES) {
+      const file = path.join(process.cwd(), 'public', ebookFile(lang))
+      expect(existsSync(file), file).toBe(true)
+      // A PDF that never got past the cover would still exist; a real one
+      // is hundreds of kilobytes.
+      expect(statSync(file).size, file).toBeGreaterThan(100_000)
+    }
+  })
+
+  // It was paid for once. A subscription that lapses does not take it back,
+  // and neither does starting the course over.
+  it('stays after progress is wiped', () => {
+    setState({ ebook: true, xp: 500 })
+    resetProgress()
+    expect(getState().ebook).toBe(true)
+    setState({ ebook: false })
   })
 })
