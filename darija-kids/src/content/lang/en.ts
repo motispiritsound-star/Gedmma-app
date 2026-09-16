@@ -261,6 +261,7 @@ export const en: ContentPack = {
       wist: "Morocco, Maroc, Marruecos: all of those names come from Marrakesh. Europe named the whole country after that one city.",
     },
     zaynab: {
+      jaar: '11th century',
       titel: 'Zaynab an-Nafzawiyya',
       body: "Zaynab was an Amazigh woman from a merchant family, and she married Yusuf ibn Tashfin. The chroniclers of the time describe her as his adviser: she knew the trade, she knew the money, and she knew who was better left alone.",
       wist: "In an age when almost nothing was written down about women, she is in the books by name.",
@@ -291,6 +292,7 @@ export const en: ContentPack = {
       wist: "The friendship treaty signed afterwards still stands — the oldest treaty the United States has never broken.",
     },
     leeuw: {
+      jaar: '19th century',
       titel: 'The lion of the Atlas',
       body: "A lion with a dark, heavy mane lived in the Atlas mountains. He was bigger than most lions, and he was the only lion anywhere that lived not on the savannah but in the mountains.",
       wist: "In the wild he is gone, but his descendants still live in Rabat zoo — and the national team is named after him: the Atlas Lions.",

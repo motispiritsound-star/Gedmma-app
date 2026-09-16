@@ -232,6 +232,18 @@ describe('history cards', () => {
     }
   })
 
+  // "1777" reads the same everywhere; "19e eeuw" does not, and a Dutch
+  // century under an English card is the kind of thing nobody reports.
+  it('translates a year that is a word, not a number', () => {
+    for (const card of HISTORY) {
+      if (!/\p{Letter}/u.test(card.jaar)) continue
+      for (const { code } of LANGS) {
+        if (code === 'nl') continue
+        expect(historyOf(card, code).jaar, `${code}/${card.id}`).not.toBe(card.jaar)
+      }
+    }
+  })
+
   it('hands out a card for every checkpoint, for ever', () => {
     expect(cardForCheckpoint(0)).toBe(HISTORY[0])
     expect(cardForCheckpoint(HISTORY.length)).toBe(HISTORY[0])

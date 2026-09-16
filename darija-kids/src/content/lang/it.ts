@@ -501,6 +501,7 @@ export const it: ContentPack = {
       wist: "Marocco, Maroc, Marruecos: tutti questi nomi vengono da Marrakech. L'Europa chiamò l'intero paese come quell'unica città.",
     },
     zaynab: {
+      jaar: 'XI secolo',
       titel: 'Zaynab an-Nafzawiyya',
       body: "Zaynab era una donna amazigh di una famiglia di mercanti, e sposò Yusuf ibn Tashfin. I cronisti dell'epoca la descrivono come la sua consigliera: conosceva il commercio, conosceva il denaro e sapeva con chi era meglio non litigare.",
       wist: "In un'epoca in cui delle donne non si scriveva quasi mai nulla, lei compare nei libri con nome e cognome.",
@@ -531,6 +532,7 @@ export const it: ContentPack = {
       wist: "Il trattato di amicizia firmato dopo è ancora in vigore — il più antico trattato che gli Stati Uniti non abbiano mai rotto.",
     },
     leeuw: {
+      jaar: 'XIX secolo',
       titel: "Il leone dell'Atlante",
       body: "Sulle montagne dell'Atlante viveva un leone dalla criniera scura e folta. Era più grande della maggior parte dei leoni ed era l'unico a vivere non nella savana, ma in montagna.",
       wist: "In natura è scomparso, ma i suoi discendenti vivono ancora allo zoo di Rabat — e la nazionale porta il suo nome: i Leoni dell'Atlante.",

@@ -18,8 +18,13 @@ export interface ContentPack {
   lessons: Record<string, string>
   /** Lesson id → the tip shown once before that lesson. */
   tips: Record<string, { title: string; body: string }>
-  /** History card id → the three pieces of text on it. */
-  history: Record<string, { titel: string; body: string; wist: string }>
+  /**
+   * History card id → the pieces of text on it.
+   *
+   * `jaar` only where the year is a word rather than a number: "11e eeuw" has
+   * to be translated, "1777" does not.
+   */
+  history: Record<string, { titel: string; body: string; wist: string; jaar?: string }>
   stories: Record<string, {
     title: string
     intro: string

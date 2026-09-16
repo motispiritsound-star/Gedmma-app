@@ -501,6 +501,7 @@ export const es: ContentPack = {
       wist: 'Marruecos, Maroc, Morocco: todos esos nombres vienen de Marrakech. Europa llamó al país entero como a esa única ciudad.',
     },
     zaynab: {
+      jaar: 'siglo XI',
       titel: 'Zaynab an-Nafzawiyya',
       body: 'Zaynab era una mujer amazigh de una familia de comerciantes, y se casó con Yúsuf ibn Tashfín. Los cronistas de la época la describen como su consejera: conocía el comercio, conocía el dinero y sabía con quién más valía no enemistarse.',
       wist: 'En una época en la que casi nunca se escribía nada sobre las mujeres, ella aparece en los libros con nombre y apellido.',
@@ -531,6 +532,7 @@ export const es: ContentPack = {
       wist: 'El tratado de amistad que se firmó después sigue vigente — el tratado más antiguo que Estados Unidos nunca ha roto.',
     },
     leeuw: {
+      jaar: 'siglo XIX',
       titel: 'El león del Atlas',
       body: 'En las montañas del Atlas vivía un león de melena oscura y espesa. Era mayor que casi todos los leones y era el único que no vivía en la sabana, sino en la montaña.',
       wist: 'En libertad ha desaparecido, pero sus descendientes siguen en el zoo de Rabat — y la selección nacional lleva su nombre: los Leones del Atlas.',
