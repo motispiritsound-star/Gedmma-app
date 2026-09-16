@@ -9,7 +9,7 @@
  *
  * Run with: node scripts/make-sheet.mjs [--out <bestand>]
  */
-import { writeFile } from 'node:fs/promises'
+import { readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { chromium } from 'playwright'
 import { createServer } from 'vite'
@@ -81,6 +81,25 @@ const data = await page.evaluate(async () => {
 
 await browser.close()
 await server.close()
+
+/**
+ * The recordings travel with the page, as data.
+ *
+ * The sheet has to say what the app says, and for a recorded letter the app
+ * says a file rather than a voice. A few hundred kilobytes of WAV is nothing
+ * next to being able to hear the real thing.
+ */
+const CLIPS = path.join(process.cwd(), 'src', 'audio', 'letters')
+const opnames = {}
+for (const name of await readdir(CLIPS).catch(() => [])) {
+  const ext = path.extname(name).slice(1).toLowerCase()
+  if (!['wav', 'webm', 'm4a', 'mp3', 'ogg'].includes(ext)) continue
+  const type = ext === 'm4a' ? 'audio/mp4' : ext === 'wav' ? 'audio/wav' : `audio/${ext}`
+  const bytes = await readFile(path.join(CLIPS, name))
+  opnames[path.basename(name, path.extname(name))] = `data:${type};base64,${bytes.toString('base64')}`
+}
+for (const l of data.letters) l.opname = opnames[l.id] ?? null
+console.log(`${Object.keys(opnames).length} opnames meegebakken`)
 
 const counts = `${data.letters.length} letters, ${data.woorden.length} woorden, ${data.zinnen.length} zinnen`
 console.log(counts)
@@ -230,6 +249,14 @@ function plan(item) {
 }
 
 function zeg(item) {
+  // A recording wins, the same way it does in the app.
+  if (item.opname) {
+    speechSynthesis.cancel()
+    const a = new Audio(item.opname)
+    a.playbackRate = Math.max(0.5, Math.min(1.5, Number(tempo.value) + 0.3))
+    void a.play()
+    return
+  }
   const { v, tekst } = plan(item)
   if (!v || !tekst) return
   speechSynthesis.cancel()
@@ -268,7 +295,7 @@ function teken() {
     midden.innerHTML =
       '<div><span class="ar">' + item.ar + '</span> <span class="tr">' + item.tr + '</span></div>' +
       '<div class="nl">' + item.naam + (item.klank ? ' \\u00b7 ' + item.klank : '') + '</div>' +
-      '<div class="spreek">' + (arabisch(p.v)
+      '<div class="spreek">' + (item.opname ? 'opname van een spreker' : arabisch(p.v)
         ? 'zegt: <span class="ar">' + p.tekst + '</span>'
         : 'zegt: ' + p.tekst + ' (' + (p.v ? p.v.lang : 'geen stem') + ')') +
       ' \\u00b7 ' + item.id + '</div>'

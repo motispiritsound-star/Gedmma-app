@@ -29,6 +29,26 @@ await server.listen()
 const browser = await chromium.launch({ executablePath: CHROME })
 const fails = []
 
+/**
+ * Which letters are spoken by a person rather than by a voice.
+ *
+ * They are checked in their own pass at the bottom; the voice passes skip
+ * them, because a letter with a recording is supposed to say nothing at all
+ * through the speech engine.
+ */
+const opgenomen = await (async () => {
+  const page = await browser.newPage()
+  await page.goto(`${BASE}/`, { waitUntil: 'networkidle' })
+  const ids = await page.evaluate(async () => Object.keys((await import('/src/engine/clips.ts')).CLIPS))
+  await page.close()
+  return new Set(ids)
+})()
+
+/** Tile labels are the display name; clips are keyed on the letter id. */
+const LETTER_ID = {
+  'ḥa': 'ha', 'ha': 'ha-soft', 'ṭa': 'ta-emf', 'ẓa': 'za-emf', 'ṣad': 'sad', 'ḍad': 'dad',
+}
+
 /** A page whose speech engine writes down what it was asked to say. */
 const listener = async (voices) => {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 })
@@ -73,9 +93,11 @@ const tapEveryLetter = async (page, said) => {
   const out = []
   for (let i = 0; i < count; i++) {
     said.length = 0
+    const name = (await tiles.nth(i).getAttribute('aria-label')) ?? `#${i}`
+    if (opgenomen.has(LETTER_ID[name] ?? name)) continue
     await tiles.nth(i).click({ force: true })
     await page.waitForTimeout(90)
-    out.push({ name: (await tiles.nth(i).getAttribute('aria-label')) ?? `#${i}`, said: said.map((s) => s.text) })
+    out.push({ name, said: said.map((s) => s.text) })
   }
   return out
 }
@@ -91,13 +113,11 @@ const tapEveryLetterWithLang = async (page, said) => {
   const out = []
   for (let i = 0; i < await tiles.count(); i++) {
     said.length = 0
+    const name = (await tiles.nth(i).getAttribute('aria-label')) ?? `#${i}`
+    if (opgenomen.has(LETTER_ID[name] ?? name)) continue
     await tiles.nth(i).click({ force: true })
     await page.waitForTimeout(90)
-    out.push({
-      name: (await tiles.nth(i).getAttribute('aria-label')) ?? `#${i}`,
-      text: said[0]?.text ?? '',
-      lang: said[0]?.lang ?? '',
-    })
+    out.push({ name, text: said[0]?.text ?? '', lang: said[0]?.lang ?? '' })
   }
   return out
 }
@@ -147,6 +167,9 @@ console.log('\nmet alleen een Nederlandse stem')
     mim: 'miem',
   }
   for (const [name, expect] of Object.entries(wanted)) {
+    // A letter that somebody has recorded is not spoken at all any more, and
+    // that is checked in its own pass rather than here.
+    if (opgenomen.has(LETTER_ID[name] ?? name)) continue
     const got = map.get(name)
     if (got !== expect) fails.push(`${name}: zei "${got}" in plaats van "${expect}"`)
   }
@@ -167,6 +190,7 @@ console.log('\nmet een Nederlandse, Spaanse en Franse stem (geen Arabisch)')
   // The letters a Dutch mouth cannot make should be handed to one that can.
   const wanted = { tha: 'es', ra: 'es', jim: 'fr', ghayn: 'fr', ya: 'nl', kha: 'nl' }
   for (const [name, taal] of Object.entries(wanted)) {
+    if (opgenomen.has(LETTER_ID[name] ?? name)) continue
     const row = byId.get(name)
     if (!row) { fails.push(`${name}: niet gevonden`); continue }
     if (!row.lang.toLowerCase().startsWith(taal)) {
@@ -181,6 +205,32 @@ console.log('\nmet een Nederlandse, Spaanse en Franse stem (geen Arabisch)')
   }
   console.log(`  \u062B \u2192 ${tha?.text} (${tha?.lang}) \u00b7 \u0631 \u2192 ${byId.get('ra')?.text} (${byId.get('ra')?.lang})`)
   console.log(`  \u062C \u2192 ${byId.get('jim')?.text} (${byId.get('jim')?.lang})`)
+  await page.close()
+}
+
+/* --------------------------- a letter with a recording never uses a voice */
+
+console.log('\nletters met een opname')
+{
+  const { page, said } = await listener(['ar-MA', 'nl-NL'])
+  if (!opgenomen.size) console.log('  (nog geen)')
+  else {
+    await page.goto(`${BASE}/`, { waitUntil: 'networkidle' })
+    await page.evaluate((s) => localStorage.setItem('darijakids.v1', JSON.stringify(s)), seeded('nl'))
+    await page.goto(`${BASE}/letters`, { waitUntil: 'networkidle' })
+    await page.waitForTimeout(900)
+    const tiles = page.locator('main button.aspect-square')
+    for (let i = 0; i < await tiles.count(); i++) {
+      const name = (await tiles.nth(i).getAttribute('aria-label')) ?? `#${i}`
+      const id = LETTER_ID[name] ?? name
+      if (!opgenomen.has(id)) continue
+      said.length = 0
+      await tiles.nth(i).click({ force: true })
+      await page.waitForTimeout(220)
+      if (said.length) fails.push(`${id}: heeft een opname maar ging toch naar de stem ("${said[0].text}")`)
+    }
+    console.log(`  ${opgenomen.size} opgenomen: ${[...opgenomen].join(', ')} — geen daarvan ging naar de stem`)
+  }
   await page.close()
 }
 
