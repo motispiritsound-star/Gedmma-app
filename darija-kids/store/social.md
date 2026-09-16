@@ -67,7 +67,7 @@ Dezelfde grap in de andere vier talen:
 >
 > Hij begint bij het Arabische alfabet, gaat via eten, familie en tellen naar
 > afdingen op de souq, en alles kun je horen. In het Nederlands, Frans, Duits,
-> Spaans en Engels, dus ook voor neefjes en nichtjes over de grens.
+> Spaans, Italiaans en Engels, dus ook voor neefjes en nichtjes over de grens.
 >
 > De eerste zes units zijn gratis, er zitten geen advertenties in en er wordt
 > niets van je kind verzameld.
@@ -79,7 +79,7 @@ Dezelfde grap in de andere vier talen:
 > Standaardarabisch, een schrijftaal die thuis niet gesproken wordt.
 >
 > Daarom bouwde ik Darija Kids: 17 units van het Arabische alfabet tot de souq,
-> 304 woorden, 100 zinnen, in vijf interfacetalen. Zonder account, zonder
+> 304 woorden, 100 zinnen, in zes interfacetalen. Zonder account, zonder
 > advertenties, volledig offline.
 
 **Drie haakjes voor een reel of TikTok**
@@ -106,7 +106,7 @@ Dezelfde grap in de andere vier talen:
 >
 > Elle commence par l’alphabet arabe, passe par la nourriture, la famille et
 > les chiffres, et finit par négocier au souk. Tout se prononce. En français,
-> néerlandais, allemand, espagnol et anglais, donc aussi pour les cousins.
+> néerlandais, allemand, espagnol, italien et anglais, donc aussi pour les cousins.
 >
 > Les six premières unités sont gratuites, il n’y a aucune publicité et rien
 > n’est collecté sur ton enfant.
@@ -129,7 +129,7 @@ Dezelfde grap in de andere vier talen:
 >
 > Sie beginnt beim arabischen Alphabet, geht über Essen, Familie und Zahlen bis
 > zum Handeln auf dem Souk, und alles lässt sich anhören. Auf Deutsch,
-> Niederländisch, Französisch, Spanisch und Englisch.
+> Niederländisch, Französisch, Spanisch, Italienisch und Englisch.
 >
 > Die ersten sechs Einheiten sind kostenlos, es gibt keine Werbung und es wird
 > nichts über dein Kind gesammelt.
@@ -151,7 +151,7 @@ Dezelfde grap in de andere vier talen:
 >
 > Empieza por el alfabeto árabe, pasa por la comida, la familia y los números,
 > y acaba regateando en el zoco. Todo se puede escuchar. En español, neerlandés,
-> francés, alemán e inglés.
+> francés, alemán, italiano e inglés.
 >
 > Las seis primeras unidades son gratis, no hay publicidad y no se recoge nada
 > sobre tu hijo.
@@ -173,7 +173,7 @@ Dezelfde grap in de andere vier talen:
 >
 > It starts at the Arabic alphabet, goes through food, family and numbers, and
 > ends at haggling in the souq. Everything can be heard out loud. In English,
-> Dutch, French, German and Spanish.
+> Dutch, French, German, Spanish and Italian.
 >
 > The first six units are free, there are no adverts, and nothing about your
 > child is collected.

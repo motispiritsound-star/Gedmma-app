@@ -1,9 +1,10 @@
-/** The four interface languages: the Moroccan diaspora's everyday languages. */
+/** The interface languages: the Moroccan diaspora's everyday languages. */
 export const LANGS = [
   { code: 'nl', name: 'Nederlands', flag: '🇳🇱', where: 'Nederland en België' },
   { code: 'fr', name: 'Français', flag: '🇫🇷', where: 'France, Belgique, Suisse' },
   { code: 'de', name: 'Deutsch', flag: '🇩🇪', where: 'Deutschland, Österreich, Schweiz' },
   { code: 'es', name: 'Español', flag: '🇪🇸', where: 'España' },
+  { code: 'it', name: 'Italiano', flag: '🇮🇹', where: 'Italia' },
   { code: 'en', name: 'English', flag: '🇬🇧', where: 'everywhere else' },
 ] as const
 
@@ -15,8 +16,8 @@ export const isLang = (value: unknown): value is Lang =>
   typeof value === 'string' && (LANG_CODES as readonly string[]).includes(value)
 
 /**
- * Which country speaks which of our four, for a device whose language we do
- * not support — an Arabic or Amazigh phone in Lyon, a Spanish one in Utrecht.
+ * Which country speaks which of ours, for a device whose language we do not
+ * support — an Arabic or Amazigh phone in Lyon, a Spanish one in Utrecht.
  * The device language is checked first and wins; this is the fallback.
  *
  * Belgium is the awkward one: a Dutch phone (nl-BE) resolves to Dutch a step
@@ -29,6 +30,7 @@ const COUNTRY: Record<string, Lang> = {
   BE: 'fr', FR: 'fr', LU: 'fr', MC: 'fr', MA: 'fr', DZ: 'fr', TN: 'fr',
   DE: 'de', AT: 'de', CH: 'de', LI: 'de',
   ES: 'es', MX: 'es', AR: 'es', CO: 'es', CL: 'es', PE: 'es', VE: 'es', UY: 'es',
+  IT: 'it', SM: 'it', VA: 'it',
   GB: 'en', IE: 'en', US: 'en', CA: 'en', AU: 'en', NZ: 'en', ZA: 'en',
 }
 
@@ -60,4 +62,4 @@ function deviceTags(): readonly string[] {
 
 /** BCP-47 tag for the interface, used for <html lang> and date formatting. */
 export const localeOf = (lang: Lang): string =>
-  ({ nl: 'nl-NL', fr: 'fr-FR', de: 'de-DE', es: 'es-ES', en: 'en-GB' })[lang]
+  ({ nl: 'nl-NL', fr: 'fr-FR', de: 'de-DE', es: 'es-ES', it: 'it-IT', en: 'en-GB' })[lang]

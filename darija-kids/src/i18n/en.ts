@@ -575,7 +575,7 @@ export const en: Strings = {
       ],
       [
         'Which languages does the app speak?',
-        'Dutch, French, German, Spanish and English. The app proposes your device’s language by itself — a phone in France starts in French, one in Flanders in Dutch — and you can change it any time in the settings. Every translation, explanation and story follows.',
+        'Dutch, French, German, Spanish, Italian and English. The app proposes your device’s language by itself — a phone in France starts in French, one in Flanders in Dutch — and you can change it any time in the settings. Every translation, explanation and story follows.',
       ],
       [
         'Do I need to read Arabic?',

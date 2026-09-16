@@ -86,6 +86,19 @@ const COPY: Record<string, Copy> = {
     feiten: '17 unidades · 304 palabras · 100 frases',
     price: 'Desde 4,99 € al mes',
   },
+  it: {
+    sub: 'Arabo marocchino per bambini',
+    lines: [
+      'Fai imparare ai tuoi figli\nla lingua di casa.',
+      'L\u2019alfabeto arabo,\nlettera per lettera.',
+      'Sentire, scegliere, ripetere —\nfinché resta.',
+      'E scrivere, con il dito.\nLettera per lettera.',
+      'E tu, ripassala\nsenza dirlo a nessuno.',
+    ],
+    cta: 'Inizia gratis',
+    price: 'Da 4,99 € al mese',
+    feiten: '17 unità · 304 parole · 100 frasi',
+  },
   en: {
     sub: 'Moroccan Arabic for children',
     lines: [

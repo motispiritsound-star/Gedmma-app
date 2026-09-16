@@ -361,7 +361,7 @@ const browser = await chromium.launch({
   ],
 })
 
-const langs = arg('lang', 'nl,fr,de,es,en').split(',')
+const langs = arg('lang', 'nl,fr,de,es,it,en').split(',')
 const shapes = arg('shape', 'appstore,verhaal,vierkant,breed').split(',')
 const still = arg('still', null)
 

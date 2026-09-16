@@ -14,7 +14,7 @@ For App Store Connect (UK, Ireland, rest of world) and Google Play Console (en-G
 `darija,moroccan,arabic,morocco,language,kids,learn,vocabulary,arabic script,free`
 
 **Promotional text (max 170)**
-`New: the app speaks English, Dutch, French, German and Spanish — and reads every word aloud with your own device's voice.`
+`New: the app speaks English, Dutch, French, German, Spanish and Italian — and reads every word aloud with your own device's voice.`
 
 **Description (max 4000)**
 
@@ -39,7 +39,7 @@ EVERYTHING SOUNDS
 Every word and sentence can be heard: one tap for normal, two for slow. If your device has no Arabic voice, the app says so honestly and reads the Latin spelling as closely as it can.
 
 IN YOUR LANGUAGE
-English, Dutch, French, German and Spanish. You choose at the start and can switch any time: translations, explanations and stories all follow.
+English, Dutch, French, German, Spanish and Italian. You choose at the start and can switch any time: translations, explanations and stories all follow.
 
 FREE TO START
 The alphabet and the first five units are free and stay free: enough to read the Arabic script, introduce yourself and count to a hundred. The whole course comes with full access: the first days free, then € 59.88 for a whole year (€ 4.99 a month) or € 6.99 a month, including VAT. Cancel in your own App Store or Google Play account; cancel before the trial ends and you pay nothing.
@@ -60,7 +60,7 @@ Darija differs from city to city and family to family, and has no official spell
 ```
 
 **What's new (version 1.0)**
-`The first release: 17 units, 304 words, 100 sentences, the Arabic alphabet, stories and games. In English, Dutch, French, German and Spanish.`
+`The first release: 17 units, 304 words, 100 sentences, the Arabic alphabet, stories and games. In English, Dutch, French, German, Spanish and Italian.`
 
 ## Google Play
 

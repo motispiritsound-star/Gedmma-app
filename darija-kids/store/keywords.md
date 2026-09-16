@@ -17,6 +17,7 @@ dat is verspilde ruimte. Geen spaties na de komma's, ook dat is ruimte.
 | Français | Darija Kids | L'arabe marocain pour enfants |
 | Deutsch | Darija Kids | Marokkanisch-Arabisch für Kids |
 | Español | Darija Kids | Árabe marroquí para niños |
+| Italiano | Darija Kids | Arabo marocchino per bambini |
 | English | Darija Kids | Moroccan Arabic for children |
 
 **Zoekwoorden** (elk precies binnen de 100 tekens):
@@ -26,6 +27,7 @@ nl: darija,marokkaans,arabisch,marokko,taal,leren,kind,school,woorden,uitspraak,
 fr: darija,marocain,arabe,maroc,langue,apprendre,enfant,ecole,mots,prononciation,alphabet,famille
 de: darija,marokkanisch,arabisch,marokko,sprache,lernen,kind,schule,woerter,aussprache,alphabet
 es: dariya,marroqui,arabe,marruecos,idioma,aprender,nino,escuela,palabras,pronunciacion,alfabeto
+it: darija,marocchino,arabo,marocco,lingua,imparare,bambini,scuola,parole,pronuncia,alfabeto
 en: darija,moroccan,arabic,morocco,language,learn,kids,school,words,pronunciation,alphabet,family
 ```
 
@@ -44,6 +46,7 @@ hele zinnen — een lijst losse woorden werkt averechts.
 | Français | Darija Kids : marocain | Apprends le darija : l'arabe marocain pour enfants, prononcé |
 | Deutsch | Darija Kids: Marokkanisch | Lerne Darija: marokkanisches Arabisch für Kinder, mit Aussprache |
 | Español | Darija Kids: marroquí | Aprende dariya: árabe marroquí para niños, con pronunciación |
+| Italiano | Darija Kids: marocchino | Impara il darija: arabo marocchino per bambini, con la pronuncia |
 | English | Darija Kids: Moroccan | Learn Darija: Moroccan Arabic for children, spoken aloud |
 
 De volledige beschrijvingen staan per taal klaar in `listing.<taal>.md`.
@@ -53,8 +56,8 @@ De volledige beschrijvingen staan per taal klaar in `listing.<taal>.md`.
 Dit zijn de zoektermen waar deze app op moet uitkomen, ongeveer op volgorde van
 hoe vaak ze voorkomen:
 
-1. *darija leren* / *apprendre le darija* / *darija lernen*
-2. *marokkaans leren* / *marocain apprendre*
+1. *darija leren* / *apprendre le darija* / *darija lernen* / *imparare il darija*
+2. *marokkaans leren* / *marocain apprendre* / *marocchino imparare*
 3. *marokkaans arabisch kinderen*
 4. *arabisch voor kinderen* — hier concurreer je met apps voor Standaardarabisch
 5. *darija app*

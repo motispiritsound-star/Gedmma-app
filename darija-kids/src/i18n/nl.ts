@@ -582,7 +582,7 @@ export const nl = {
       ],
       [
         'In welke talen kan de app?',
-        'Nederlands, Frans, Duits, Spaans en Engels. De app stelt zelf de taal van je toestel voor — een telefoon in Frankrijk krijgt Frans, een in Vlaanderen Nederlands — en je kunt altijd wisselen bij instellingen. Alle vertalingen, uitleg en verhalen wisselen mee.',
+        'Nederlands, Frans, Duits, Spaans, Italiaans en Engels. De app stelt zelf de taal van je toestel voor — een telefoon in Frankrijk krijgt Frans, een in Vlaanderen Nederlands — en je kunt altijd wisselen bij instellingen. Alle vertalingen, uitleg en verhalen wisselen mee.',
       ],
       [
         'Moet ik Arabisch kunnen lezen?',

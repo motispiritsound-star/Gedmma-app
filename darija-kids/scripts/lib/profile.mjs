@@ -60,16 +60,16 @@ export const seeded = (lang, opts = {}) => {
 }
 
 /** The button that leaves a lesson's opening tip, in every language. */
-export const GO_ON = /Aan de slag|Allons-y|Los geht|A por ello|Let’s go/
+export const GO_ON = /Aan de slag|Allons-y|Los geht|A por ello|Si comincia|Let’s go/
 
 /** The button under an explanation card, in every language. */
-export const GOT_IT = /^(Snap ik!|Compris !|Verstanden!|¡Lo pillo!|Got it!)$/
+export const GOT_IT = /^(Snap ik!|Compris !|Verstanden!|¡Lo pillo!|Ho capito!|Got it!)$/
 
 /** The button under an answer that checks it, in every language. */
-export const CHECK = /^(Controleer|Vérifier|Prüfen|Comprobar|Check)$/
+export const CHECK = /^(Controleer|Vérifier|Prüfen|Comprobar|Controlla|Check)$/
 
 /** The button that moves on to the next card, in every language. */
-export const ONWARD = /^(Verder|Afronden|Continuer|Terminer|Weiter|Abschließen|Seguir|Terminar|Continue|Finish)$/
+export const ONWARD = /^(Verder|Afronden|Continuer|Terminer|Weiter|Abschließen|Seguir|Terminar|Avanti|Concludi|Continue|Finish)$/
 
 /** The button that starts a review round, in every language. */
-export const START_REVIEW = /Start herhaling|Commencer la révision|Wiederholung starten|Empezar el repaso|Start reviewing/
+export const START_REVIEW = /Start herhaling|Commencer la révision|Wiederholung starten|Empezar el repaso|Inizia il ripasso|Start reviewing/

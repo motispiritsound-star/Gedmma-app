@@ -1,7 +1,7 @@
 # Darija Kids · قدّام
 
 **Marokkaans-Arabisch (Darija) leren, voor kinderen en jongeren — in het
-Nederlands, Frans, Duits, Spaans en Engels.**
+Nederlands, Frans, Duits, Spaans, Italiaans en Engels.**
 
 Darija Kids is één app die drie dingen tegelijk is: een website die uitlegt waar het
 over gaat, een installeerbare leer-app die daarna offline werkt, en — via
@@ -19,8 +19,8 @@ land*. De taal die erbij hoort, leer je hier.
 ```
 darija-kids/
   src/content/       de leerstof: woorden, units, letters, verhalen
-    lang/            dezelfde leerstof in het Frans, Duits, Spaans en Engels
-  src/i18n/          de interface in vijf talen, en de privacyverklaring
+    lang/            dezelfde leerstof in het Frans, Duits, Spaans, Italiaans en Engels
+  src/i18n/          de interface in zes talen, en de privacyverklaring
   src/engine/        herhaalsysteem, oefeninggenerator, voortgang, geluid
   src/ui/            bouwstenen, de oefeningen en de ronde-loop
   src/pages/         de schermen, inclusief de publieke website
@@ -58,7 +58,7 @@ npm run icons      # tekent de iconen en het deelplaatje opnieuw
 
 | | |
 |---|---|
-| **5 interfacetalen** | Nederlands, Frans, Duits, Spaans en Engels — interface, betekenissen, uitleg, tips en verhalen |
+| **6 interfacetalen** | Nederlands, Frans, Duits, Spaans, Italiaans en Engels — interface, betekenissen, uitleg, tips en verhalen |
 | **Gratis beginnen** | het alfabet en de eerste vijf units zijn open; de rest is één aankoop via de App Store of Google Play |
 | **17 units** | van het Arabische alfabet en *Salam!* tot afdingen op de souq, oplopend van A0 naar A2 |
 | **304 woorden** | elk met Arabisch schrift, Latijnse schrijfwijze en een betekenis in alle vijf de talen |
@@ -172,7 +172,7 @@ schrijfwijze zijn overal hetzelfde. Wat meewisselt is alles wat een kind in
 zijn eigen taal leest.
 
 Nederlands is de bron (`src/content/words.ts`, `curriculum.ts`, `stories.ts`);
-Frans, Duits, Spaans en Engels zijn **packs** (`src/content/lang/`) die de betekenissen,
+Frans, Duits, Spaans, Italiaans en Engels zijn **packs** (`src/content/lang/`) die de betekenissen,
 de weetjes, de titels op het pad en de verhalen overschrijven. De interface
 staat apart in `src/i18n/`, waar `Strings` is afgeleid van het Nederlandse
 bestand: een vergeten sleutel in het Frans is een compileerfout, geen Nederlands
@@ -297,7 +297,7 @@ De beelden voor beide winkels maakt de repo zelf: `npm run screenshots` voor de
 schermafbeeldingen, `npm run marketing` voor de feature graphic en de
 socialbeelden, `npm run brand` voor het merkpakket — logo, profielfoto's,
 omslagen en een flyer op A5 — en `npm run intro` voor de introfilm — bijna een halve minuut
-echte app met geluid, in vier formaten en vijf talen. Die film is geen montage
+echte app met geluid, in vier formaten en zes talen. Die film is geen montage
 van mock-ups: `scripts/make-intro.mjs` start een server, fotografeert de app en
 laat `dev/intro.ts` het geheel tekenen en opnemen, met een soundtrack die door
 dezelfde instrumenten wordt gespeeld als de app zelf gebruikt.

@@ -14,7 +14,7 @@ Voor App Store Connect (Nederland, België) en Google Play Console (nl-NL).
 `darija,marokkaans,arabisch,marokko,taal,kinderen,leren,woordenschat,arabisch schrift,gratis`
 
 **Promotietekst (max 170)**
-`Nieuw: de app spreekt Nederlands, Frans, Duits, Spaans en Engels — en leest elk woord voor met de stem van je eigen toestel.`
+`Nieuw: de app spreekt Nederlands, Frans, Duits, Spaans, Italiaans en Engels — en leest elk woord voor met de stem van je eigen toestel.`
 
 **Beschrijving (max 4000)**
 
@@ -39,7 +39,7 @@ ALLES KLINKT
 Elk woord en elke zin kun je horen, één tik voor normaal en twee voor langzaam. Heeft je toestel geen Arabische stem, dan zegt de app dat eerlijk en leest hij de Latijnse schrijfwijze zo goed mogelijk voor.
 
 IN JOUW TAAL
-Nederlands, Frans, Duits, Spaans en Engels. Je kiest bij de start en kunt altijd wisselen: alle vertalingen, uitleg en verhalen wisselen mee.
+Nederlands, Frans, Duits, Spaans, Italiaans en Engels. Je kiest bij de start en kunt altijd wisselen: alle vertalingen, uitleg en verhalen wisselen mee.
 
 GRATIS BEGINNEN
 Het alfabet en de eerste vijf units zijn en blijven gratis: genoeg om het Arabische schrift te lezen, jezelf voor te stellen en tot honderd te tellen. De hele cursus hoort bij de volledige toegang: de eerste dagen gratis, daarna € 59,88 voor een heel jaar (€ 4,99 per maand) of € 6,99 per maand, inclusief btw. Opzegbaar in je eigen App Store- of Google Play-account; zeg je op vóór het einde van de proefperiode, dan betaal je niets.
@@ -60,7 +60,7 @@ Darija verschilt per stad en per familie, en heeft geen officiële spelling. Wij
 ```
 
 **Wat is er nieuw (versie 1.0)**
-`De eerste versie: 17 units, 304 woorden, 100 zinnen, het Arabische alfabet, verhalen en spelletjes. In het Nederlands, Frans, Duits, Spaans en Engels.`
+`De eerste versie: 17 units, 304 woorden, 100 zinnen, het Arabische alfabet, verhalen en spelletjes. In het Nederlands, Frans, Duits, Spaans, Italiaans en Engels.`
 
 ## Google Play
 

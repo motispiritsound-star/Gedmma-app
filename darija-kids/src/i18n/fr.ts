@@ -575,7 +575,7 @@ export const fr: Strings = {
       ],
       [
         'Dans quelles langues ?',
-        'Néerlandais, français, allemand, espagnol et anglais. L’application propose d’elle-même la langue de ton appareil — un téléphone en France démarre en français, un en Flandre en néerlandais — et tu peux en changer à tout moment dans les réglages. Toutes les traductions, explications et histoires suivent.',
+        'Néerlandais, français, allemand, espagnol, italien et anglais. L’application propose d’elle-même la langue de ton appareil — un téléphone en France démarre en français, un en Flandre en néerlandais — et tu peux en changer à tout moment dans les réglages. Toutes les traductions, explications et histoires suivent.',
       ],
       [
         'Faut-il savoir lire l’arabe ?',

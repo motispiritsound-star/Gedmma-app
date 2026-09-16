@@ -14,7 +14,7 @@ Pour App Store Connect (France, Belgique, Suisse) et Google Play Console (fr-FR)
 `darija,marocain,arabe,maroc,langue,enfants,apprendre,vocabulaire,écriture arabe,gratuit`
 
 **Texte promotionnel (max 170)**
-`Nouveau : l'application parle français, néerlandais, allemand, espagnol et anglais — et lit chaque mot avec la voix de ton propre appareil.`
+`Nouveau : l'application parle français, néerlandais, allemand, espagnol, italien et anglais — et lit chaque mot avec la voix de ton propre appareil.`
 
 **Description (max 4000)**
 
@@ -39,7 +39,7 @@ TOUT SE PRONONCE
 Chaque mot et chaque phrase peut être écouté : une touche pour la vitesse normale, deux pour la version lente. Si ton appareil n'a pas de voix arabe, l'application le dit honnêtement et lit l'écriture latine du mieux qu'elle peut.
 
 DANS TA LANGUE
-Français, néerlandais, allemand, espagnol et anglais. Tu choisis au démarrage et tu peux changer à tout moment : traductions, explications et histoires suivent.
+Français, néerlandais, allemand, espagnol, italien et anglais. Tu choisis au démarrage et tu peux changer à tout moment : traductions, explications et histoires suivent.
 
 COMMENCER GRATUITEMENT
 L'alphabet et les cinq premières unités sont et restent gratuits : de quoi lire l'écriture arabe, te présenter et compter jusqu'à cent. Le cours complet va avec l'accès complet : les premiers jours offerts, puis 59,88 € pour une année entière (4,99 € par mois) ou 6,99 € par mois, TTC. Résiliable dans ton compte App Store ou Google Play ; en résiliant avant la fin de l'essai, tu ne paies rien.
@@ -60,7 +60,7 @@ Le darija change d'une ville et d'une famille à l'autre, et n'a pas d'orthograp
 ```
 
 **Nouveautés (version 1.0)**
-`Première version : 17 unités, 304 mots, 100 phrases, l'alphabet arabe, des histoires et des jeux. En français, néerlandais, allemand, espagnol et anglais.`
+`Première version : 17 unités, 304 mots, 100 phrases, l'alphabet arabe, des histoires et des jeux. En français, néerlandais, allemand, espagnol, italien et anglais.`
 
 ## Google Play
 

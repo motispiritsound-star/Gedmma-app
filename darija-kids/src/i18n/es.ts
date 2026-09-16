@@ -575,7 +575,7 @@ export const es: Strings = {
       ],
       [
         '¿En qué idiomas está?',
-        'Neerlandés, francés, alemán, español e inglés. La aplicación propone por sí misma el idioma de tu dispositivo —un teléfono en Francia arranca en francés, uno en Flandes en neerlandés— y siempre puedes cambiarlo en los ajustes. Todas las traducciones, explicaciones e historias cambian con él.',
+        'Neerlandés, francés, alemán, español, italiano e inglés. La aplicación propone por sí misma el idioma de tu dispositivo —un teléfono en Francia arranca en francés, uno en Flandes en neerlandés— y siempre puedes cambiarlo en los ajustes. Todas las traducciones, explicaciones e historias cambian con él.',
       ],
       [
         '¿Hace falta saber leer árabe?',

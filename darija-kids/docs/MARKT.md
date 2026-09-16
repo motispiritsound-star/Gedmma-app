@@ -20,7 +20,7 @@ Ongeveer 6,2 miljoen Marokkanen wonen buiten Marokko. Zo liggen ze verdeeld:
 |---|---|---|---|
 | **Frankrijk** | ± 1,55 miljoen | Frans ✅ | verreweg het grootst, en het moeilijkst: veel concurrentie om aandacht |
 | **Spanje** | ± 920.000 | Spaans ✅ | groot, jong, en vrijwel geen app die hier iets voor doet |
-| *Italië* | ± 680.000 | — ❌ | **groter dan België en Nederland samen. De app spreekt geen Italiaans.** |
+| **Italië** | ± 680.000 | Italiaans ✅ | **groter dan België en Nederland samen, en er is vrijwel niets** |
 | **België** | ± 410.000 | Nederlands + Frans ✅ | twee talen in één land; Brussel en Antwerpen zijn de kern |
 | **Nederland** | ± 390.000 | Nederlands ✅ | jouw thuisbasis, jouw netwerk, jouw eerste honderd gebruikers |
 | **Duitsland** | ± 127.000 | Duits ✅ | klein, maar niemand bedient het |
@@ -29,16 +29,16 @@ Ongeveer 6,2 miljoen Marokkanen wonen buiten Marokko. Zo liggen ze verdeeld:
 
 Twee dingen springen eruit.
 
+**Italië is de grootste onbediende markt van de lijst.** Meer Marokkanen dan
+België en Nederland samen, en geen enkele app die Darija aanbiedt in het
+Italiaans. De app spreekt het sinds deze versie, dus het is geen vooruitzicht
+maar een land dat je meteen kunt aanzetten.
+
 **Engels kost je niets.** De app, de winkelteksten, de film en de beelden staan
 al in het Engels klaar. Zet bij het publiceren gewoon *alle* landen aan en laat
 de Engelse listing het werk doen in het VK, de VS, Canada, Ierland en
 Australië. Je hoeft er niets extra's voor te doen en je marketing richt zich er
 niet op — het is gratis bereik.
-
-**Italiaans is het grootste gat.** Italië heeft meer Marokkanen dan België en
-Nederland samen en de app spreekt er geen woord. Dat is de eerstvolgende taal
-die je toevoegt — niet Engels, want dat heb je al. Het is een dag werk: één
-bestand in `src/i18n/`, één winkeltekst, en de beelden rollen er vanzelf uit.
 
 ---
 
@@ -48,9 +48,9 @@ Niet alles tegelijk aanzetten. De eerste weken gebruik je om te ontdekken wat
 er stuk is, en dat doe je liever waar het je niets kost.
 
 ```
-Week 1–2   België + Nederland        zacht, klein, je eigen netwerk
-Week 3–4   Frankrijk + Spanje        de twee grote markten
-Week 5      Duitsland + Engelstalig  wat er dan bij komt kost geen werk meer
+Week 1–2   België + Nederland             zacht, klein, je eigen netwerk
+Week 3–4   Frankrijk + Spanje + Italië    de drie grote markten
+Week 5      Duitsland + Engelstalig       wat er dan bij komt kost geen werk meer
 ```
 
 Waarom klein beginnen: de eerste recensies bepalen de rest. Een app met vier
@@ -90,7 +90,7 @@ Dit staat allemaal al in de repo. Loop het na, vul aan wat mist:
 
 | | Waar | Klaar? |
 |---|---|---|
-| Winkelteksten in 5 talen | `store/listing.<taal>.md` | ✅ |
+| Winkelteksten in 6 talen | `store/listing.<taal>.md` | ✅ |
 | Titels, ondertitels, zoekwoorden | `store/keywords.md` | ✅ |
 | Schermafbeeldingen, alle formaten | `npm run screenshots` | ✅ |
 | Introfilm met geluid, 4 formaten | `npm run intro` | ✅ |
@@ -183,6 +183,12 @@ het Nederlands en in Brussel in het Frans — dezelfde app, twee gesprekken.
 gericht op Franse consumenten moet in het Frans (dat regelt de app al), en het
 woord dat mensen daar zelf gebruiken is vaker *darija* dan *marocain* — die
 volgorde staat al goed in `store/keywords.md`.
+
+**Italië.** De verrassing van de lijst: 680.000 Marokkanen, geconcentreerd in
+Lombardije, Emilia-Romagna, Piemonte en Veneto, en geen enkele concurrent die
+Darija in het Italiaans aanbiedt. De gemeenschap is bovendien jonger dan de
+Nederlandse: meer gezinnen met kinderen in de doelgroep. Begin bij de
+Facebook-groepen van Milaan, Turijn en Bologna.
 
 **Spanje.** Groot, jong, en er is bijna niets. De gemeenschap zit geconcentreerd
 in Catalonië, Andalusië en Madrid. Let op de spelling: in het Spaans schrijft

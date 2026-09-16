@@ -42,7 +42,7 @@ ongeluk twee abonnementen hebben.
 - Het abonnementsproduct, de knop, de prijs uit de winkel, en de verplichte
   knoppen **Aankoop terugzetten** en **Abonnement beheren** (die laatste opent
   het opzegscherm van de winkel zelf).
-- De **verplichte voorwaardentekst** vóór de aankoop, in vijf talen: hoe lang
+- De **verplichte voorwaardentekst** vóór de aankoop, in zes talen: hoe lang
   gratis, wat het daarna kost, dat het maandelijks doorloopt tot je opzegt, en
   dat opzeggen vóór het einde van de proefperiode niets kost.
 - Een **ouderpoort**: een rekensom die een volwassene moet beantwoorden. Apple
@@ -124,7 +124,7 @@ Een doorlopende afschrijving bij een **kinder-app** wordt strenger bekeken dan
 een eenmalige aankoop. Zorg dat dit klopt, want hierop worden apps afgewezen:
 
 - De **prijs, de looptijd en de verlenging** staan vóór de aankoop in beeld —
-  dat doet de app al, in vijf talen.
+  dat doet de app al, in zes talen.
 - Er staat een **ouderpoort** voor. Ook geregeld.
 - Je **privacyverklaring en gebruiksvoorwaarden** zijn bereikbaar vanuit de
   winkelvermelding én vanuit de app. De privacyverklaring staat op `/privacy`;

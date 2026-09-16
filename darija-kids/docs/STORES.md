@@ -9,7 +9,7 @@ Wat hier al staat, en wat alleen jij kunt doen:
 
 | | |
 |---|---|
-| ✅ Klaar | Capacitor-config, het complete Android-project, alle app-iconen en splashschermen, winkelteksten in vijf talen, een privacypagina in de app, en het abonnement inclusief proefperiode, ouderpoort, herstel- en opzegknop |
+| ✅ Klaar | Capacitor-config, het complete Android-project, alle app-iconen en splashschermen, winkelteksten in zes talen, een privacypagina in de app, en het abonnement inclusief proefperiode, ouderpoort, herstel- en opzegknop |
 | 🧑‍💻 Jij | Een Apple Developer-account (€ 99/jaar) en een Mac, een Google Play-account (€ 22 eenmalig), een KvK-inschrijving als je betaald verkoopt, je bankrekening in beide consoles, screenshots, en het indienen zelf |
 
 Voor alles rond geld — het product aanmaken, je bankrekening koppelen, btw,
@@ -127,7 +127,7 @@ Twee dingen moet je in de consoles zelf nog doen, want die gaan over de
   app-informatie. Apple toont de vermelding in de taal van het App Store-account
   van de bezoeker. Zet in het iOS-project daarnaast `CFBundleLocalizations` in
   `Info.plist` op `nl, fr, de, es, en`, zodat Apple op de productpagina toont dat de
-  app die vijf talen spreekt.
+  app die zes talen spreekt.
 
 ### Spreekoefeningen in de winkelversies
 

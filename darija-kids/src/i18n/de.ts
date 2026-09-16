@@ -575,7 +575,7 @@ export const de: Strings = {
       ],
       [
         'In welchen Sprachen gibt es die App?',
-        'Niederländisch, Französisch, Deutsch, Spanisch und Englisch. Die App schlägt selbst die Sprache deines Geräts vor — ein Handy in Frankreich startet auf Französisch, eines in Flandern auf Niederländisch — und du kannst jederzeit in den Einstellungen wechseln. Alle Übersetzungen, Erklärungen und Geschichten wechseln mit.',
+        'Niederländisch, Französisch, Deutsch, Spanisch, Italienisch und Englisch. Die App schlägt selbst die Sprache deines Geräts vor — ein Handy in Frankreich startet auf Französisch, eines in Flandern auf Niederländisch — und du kannst jederzeit in den Einstellungen wechseln. Alle Übersetzungen, Erklärungen und Geschichten wechseln mit.',
       ],
       [
         'Muss ich Arabisch lesen können?',

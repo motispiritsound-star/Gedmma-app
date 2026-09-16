@@ -166,6 +166,40 @@ const SECTIONS_ES: Section[] = [
   ]],
 ]
 
+const SECTIONS_IT: Section[] = [
+  ['Che cosa ricevi', [
+    'Puoi usare Darija Kids sui dispositivi collegati al tuo account del negozio, per te e per la tua famiglia. È un diritto d’uso, non una proprietà: l’app, le lezioni, le voci e i disegni restano di chi la pubblica.',
+    'Quello che non si può fare: rivendere o noleggiare l’app, copiare le lezioni per offrirle altrove, o provare a smontare il codice per ricavarne qualcos’altro.',
+  ]],
+  ['La parte gratuita', [
+    'L’alfabeto arabo e le prime cinque unità sono gratis e lo restano. Non c’è niente da sottoscrivere e niente da compilare.',
+  ]],
+  ['L’abbonamento', [
+    `Il corso completo va con un abbonamento, e scegli tu: ${yearPrice} per un anno intero pagato in anticipo — sono ${yearPerMonth} al mese — oppure ${price} al mese. Entrambi IVA inclusa. Inizi con ${days} giorni gratis; poi l’importo viene addebitato tramite il tuo account App Store o Google Play, e così ogni anno o ogni mese, finché non disdici.`,
+    'La disdetta si fa in quell’account del negozio, non da noi: non ci possiamo arrivare. Se disdici prima che finiscano i giorni gratis, non paghi niente. Se disdici più tardi, l’accesso resta fino alla fine del periodo già pagato: l’anno o il mese.',
+    'Apple e Google sono il venditore: incassano loro, versano loro l’IVA e fissano le proprie regole di rimborso. Una richiesta di rimborso va quindi a loro.',
+    'Se un giorno il prezzo cambia, il negozio te lo comunica prima che entri in vigore e puoi disdire invece di proseguire.',
+  ]],
+  ['Lo sottoscrive una persona adulta', [
+    'L’app è per bambini, quindi si può sottoscrivere solo dopo un calcolo che un bambino non risolve di sfuggita. Chi sottoscrive dichiara con ciò di essere maggiorenne e di poter pagare con quell’account.',
+  ]],
+  ['Sulla lingua', [
+    'Il darija cambia da città a città, da regione a regione e da famiglia a famiglia, e non ha un’ortografia ufficiale. Scegliamo la forma che si sente di più a Casablanca e Rabat. Se la tua famiglia lo dice in un altro modo, la tua famiglia ha ragione: non è un difetto dell’app.',
+    'La pronuncia viene dalla voce già presente sul tuo dispositivo. Parla arabo standard, quindi non ha un vero accento marocchino. Facciamo il possibile perché le parole suonino bene, ma una voce di telefono non sostituisce una persona.',
+  ]],
+  ['Quello che non promettiamo', [
+    'Consegniamo l’app così com’è. Facciamo il possibile perché funzioni e continui a migliorare, ma non promettiamo che sia priva di difetti, che sia sempre disponibile, né che con essa tu raggiunga un livello preciso.',
+    'Non rispondiamo dei danni derivanti dall’uso, salvo dove la legge non lo consente: in caso di dolo o colpa grave, per esempio, e per quanto riguarda i diritti che ti restano come consumatore in ogni caso.',
+  ]],
+  ['Se le condizioni cambiano', [
+    'Se cambia qualcosa di importante, aggiorniamo questa pagina e mettiamo in alto la data nuova. Se continui a usare l’app dopo, vale il testo nuovo. Quello che hai già pagato non cambia.',
+  ]],
+  ['Apple e Google', [
+    'Questo accordo è fra te e chi pubblica l’app, non fra te e Apple o Google. Loro non sono parte in causa e non rispondono né dell’app né dei suoi contenuti. Apple può però far valere queste condizioni nei tuoi confronti: è Apple stessa a pretendere che ciò sia scritto qui.',
+    'A queste condizioni si applica il diritto dei Paesi Bassi. Se vivi in un altro paese dell’UE, mantieni comunque la protezione che il diritto del tuo paese ti riconosce.',
+  ]],
+]
+
 const SECTIONS_EN: Section[] = [
   ['What you get', [
     'You may use Darija Kids on the devices tied to your own store account, for yourself and your family. That is a right to use it, not ownership: the app, the lessons, the voices and the drawings stay with the publisher.',
@@ -242,6 +276,13 @@ export const TERMS: Record<Lang, TermsText> = {
     'Este es el acuerdo entre tú y quien publica Darija Kids. Es corto, porque la aplicación hace pocas cosas que necesiten un acuerdo: te enseña un idioma y no guarda nada sobre ti.',
     '¿Dudas sobre estas condiciones?',
     SECTIONS_ES,
+  ),
+  it: build(
+    'Condizioni d’uso',
+    'Ultima modifica: settembre 2026',
+    'Questo è l’accordo fra te e chi pubblica Darija Kids. È corto, perché l’app fa poche cose che abbiano bisogno di un accordo: ti insegna una lingua e non conserva niente su di te.',
+    'Domande su queste condizioni?',
+    SECTIONS_IT,
   ),
   en: build(
     'Terms of use',

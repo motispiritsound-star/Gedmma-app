@@ -1,7 +1,7 @@
 import type { Lang } from './languages'
 
 /**
- * The privacy statement, in the four interface languages.
+ * The privacy statement, in every interface language.
  *
  * It is short because there is little to say: nothing leaves the device. The
  * two things that could — the browser's speech recognition and the store's own
@@ -103,6 +103,35 @@ const SECTIONS_DE: Section[] = [
   ['Deine Daten löschen', [
     'In den Einstellungen kannst du deinen Fortschritt als Datei sichern, auf einem anderen Gerät zurückholen oder alles auf einmal löschen. Löschen ist endgültig: es gibt keine Kopie woanders.',
     'Die App vom Gerät zu entfernen löscht alles, was sie gespeichert hatte.',
+  ]],
+]
+
+const SECTIONS_IT: Section[] = [
+  ['Che cosa raccogliamo', [
+    'Niente. Darija Kids non ha un account, non chiede un indirizzo e-mail e non manda dati a nessun server.',
+    'I tuoi progressi — parole imparate, serie, premi e impostazioni — restano nella memoria del tuo browser o della tua app, sul tuo dispositivo. Noi non possiamo accedervi.',
+  ]],
+  ['Pubblicità e misurazioni', [
+    'Nessuna pubblicità, nessun tracciatore, nessuna analitica, nessun cookie di terzi. Non contiamo nemmeno quante persone usano l’app.',
+  ]],
+  ['L’audio', [
+    'La pronuncia viene dalla voce già installata sul tuo dispositivo. Per questo non viene registrato né inviato niente.',
+    'Gli esercizi di pronuncia sono l’unica eccezione: usano il riconoscimento vocale del tuo browser. Su Chrome e su qualche altro questo significa che la registrazione va al produttore del browser (nel caso di Chrome, Google) per essere trasformata in testo. Darija Kids vede solo il testo e non lo conserva. Se preferisci evitarlo, spegni gli esercizi di pronuncia nelle impostazioni; il resto dell’app continua a funzionare.',
+  ]],
+  ['I bambini', [
+    'Questa app è fatta per i bambini. Per questo, apposta, non c’è né un account, né una chat, né un modo per condividere o caricare qualcosa, né pubblicità. Non c’è niente che un bambino possa compilare e che arrivi fino a noi.',
+    'C’è un solo acquisto: l’abbonamento al corso completo. Sta dietro un calcolo che un bambino non risolve di sfuggita, e il pagamento passa interamente dall’App Store o da Google Play: non vediamo né i dati della carta né il nome.',
+  ]],
+  ['I negozi di app', [
+    'Se scarichi l’app dall’App Store o da Google Play, Apple o Google sanno che l’hai scaricata e possono raccogliere dati tecnici sui crash secondo le loro condizioni. Questo è fuori dalla nostra portata e non ci fornisce nessun dato personale.',
+  ]],
+  ['Il pagamento', [
+    'Le prime unità sono gratis. Se prendi l’accesso completo, quel pagamento passa interamente dall’App Store o da Google Play: sono loro a incassare, loro a versare l’IVA, loro a gestire la prova gratuita e loro a sapere chi sei. Darija Kids viene a sapere soltanto che l’abbonamento è attivo: niente dati della carta, niente indirizzo, niente nome.',
+    'È un abbonamento che continua finché non lo disdici, e la disdetta si fa nel tuo account del negozio; noi non possiamo farlo al posto tuo e non vediamo nemmeno quando lo fai. Prima di sottoscrivere qualsiasi cosa c’è un piccolo calcolo che deve risolvere una persona adulta.',
+  ]],
+  ['Cancellare i tuoi dati', [
+    'Nelle impostazioni puoi salvare i tuoi progressi come file, recuperarli su un altro dispositivo o cancellare tutto in una volta. Cancellare è definitivo: non c’è nessuna copia da nessun’altra parte.',
+    'Disinstallare l’app cancella tutto quello che era stato salvato.',
   ]],
 ]
 
@@ -208,6 +237,14 @@ export const PRIVACY: Record<Lang, PrivacyText> = {
     'Antes de publicar en una tienda de aplicaciones, aquí deben figurar el nombre y el correo del editor. Todavía no están rellenados en src/content/operator.ts.',
     '¿Alguna duda sobre privacidad? Escribe a',
     SECTIONS_ES,
+  ),
+  it: build(
+    'Privacy',
+    'Ultimo aggiornamento: settembre 2026',
+    'Darija Kids è fatta per poterla mettere in mano a un bambino. Ecco, in breve, che cosa vuol dire.',
+    'Prima di pubblicare in un negozio di app, qui devono comparire il nome e l’indirizzo e-mail di chi pubblica. Non sono ancora stati inseriti in src/content/operator.ts.',
+    'Domande sulla privacy? Scrivi a',
+    SECTIONS_IT,
   ),
   en: build(
     'Privacy',

@@ -14,7 +14,7 @@ Para App Store Connect (España) y Google Play Console (es-ES).
 `dariya,darija,marroquí,árabe,marruecos,idioma,niños,aprender,vocabulario,gratis`
 
 **Texto promocional (máx. 170)**
-`Nuevo: la aplicación habla español, neerlandés, francés, alemán e inglés, y lee cada palabra con la voz de tu propio dispositivo.`
+`Nuevo: la aplicación habla español, neerlandés, francés, alemán, italiano e inglés, y lee cada palabra con la voz de tu propio dispositivo.`
 
 **Descripción (máx. 4000)**
 
@@ -39,7 +39,7 @@ TODO SUENA
 Cada palabra y cada frase se puede escuchar: un toque para la velocidad normal, dos para la lenta. Si tu dispositivo no tiene voz árabe, la aplicación lo dice con honestidad y lee la escritura latina lo mejor que puede.
 
 EN TU IDIOMA
-Español, neerlandés, francés, alemán e inglés. La aplicación propone el idioma de tu dispositivo y puedes cambiarlo cuando quieras: traducciones, explicaciones e historias cambian con él.
+Español, neerlandés, francés, alemán, italiano e inglés. La aplicación propone el idioma de tu dispositivo y puedes cambiarlo cuando quieras: traducciones, explicaciones e historias cambian con él.
 
 EMPEZAR GRATIS
 El alfabeto y las cinco primeras unidades son y seguirán siendo gratis: suficiente para leer la escritura árabe, presentarte y contar hasta cien. El curso completo va con el acceso completo: los primeros días gratis y después 59,88 € por un año entero (4,99 € al mes) o 6,99 € al mes, con IVA incluido. Cancelable en tu cuenta de la App Store o de Google Play; si cancelas antes de que termine la prueba, no pagas nada.
@@ -60,7 +60,7 @@ El dariya cambia de ciudad a ciudad y de familia a familia, y no tiene ortograf�
 ```
 
 **Novedades (versión 1.0)**
-`La primera versión: 17 unidades, 304 palabras, 100 frases, el alfabeto árabe, historias y juegos. En español, neerlandés, francés, alemán e inglés.`
+`La primera versión: 17 unidades, 304 palabras, 100 frases, el alfabeto árabe, historias y juegos. En español, neerlandés, francés, alemán, italiano e inglés.`
 
 ## Google Play
 

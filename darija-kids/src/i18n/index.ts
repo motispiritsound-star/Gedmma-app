@@ -3,13 +3,14 @@ import { nl, type Strings } from './nl'
 import { fr } from './fr'
 import { de } from './de'
 import { es } from './es'
+import { it } from './it'
 import { en } from './en'
 import type { Lang } from './languages'
 
 export type { Strings } from './nl'
 export * from './languages'
 
-export const STRINGS: Record<Lang, Strings> = { nl, fr, de, es, en }
+export const STRINGS: Record<Lang, Strings> = { nl, fr, de, es, it, en }
 
 /** The interface strings for the language the learner picked. */
 export function useT(): Strings {

@@ -51,6 +51,10 @@ const COPY = {
     flyer: 'Enseña dariya\na tus hijos', body: 'El idioma de casa, no el árabe del libro de texto. El alfabeto árabe, 304 palabras y 100 frases, todo pronunciado. A partir de los 7 años.',
     vormen: ['Inicio', 'Medio', 'Final'],
     punten: ['Sin cuenta, sin publicidad', 'Funciona sin conexión', 'En español, neerlandés, francés, alemán e inglés'] },
+  it: { pay: 'Arabo marocchino per bambini', cta: 'Inizia gratis',
+    flyer: 'Insegna il darija\na tuo figlio', body: 'La lingua di casa — non l\u2019arabo del manuale. L\u2019alfabeto arabo, 304 parole e 100 frasi, tutto pronunciato. Da circa 7 anni.',
+    vormen: ['Inizio', 'Mezzo', 'Fine'],
+    punten: ['Nessun account, nessuna pubblicità', 'Funziona senza connessione', 'In italiano, olandese, francese, tedesco, spagnolo e inglese'] },
   en: { pay: 'Moroccan Arabic for children', cta: 'Start free',
     flyer: 'Teach your child\nDarija', body: 'The language of home — not textbook Arabic. The Arabic alphabet, 304 words and 100 sentences, all spoken aloud. From about age 7.',
     vormen: ['Start', 'Middle', 'End'],
@@ -311,7 +315,7 @@ for (const [file, svg] of LOGOS) {
   </style>${svg}`, width, height)
 }
 
-for (const lang of arg('lang', 'nl,fr,de,es,en').split(',')) {
+for (const lang of arg('lang', 'nl,fr,de,es,it,en').split(',')) {
   const copy = COPY[lang]
   if (!copy) throw new Error(`onbekende taal: ${lang}`)
   for (const sheet of SHEETS) {

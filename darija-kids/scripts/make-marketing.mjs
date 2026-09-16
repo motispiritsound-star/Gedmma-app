@@ -28,6 +28,7 @@ const COPY = {
   fr: { head: 'Apprends le darija,\nla langue de la maison', sub: 'L’arabe marocain pour les enfants', cta: 'Commencer gratuitement', badge: 'Dès 7 ans' },
   de: { head: 'Lerne Darija,\ndie Sprache von zu Hause', sub: 'Marokkanisches Arabisch für Kinder', cta: 'Kostenlos starten', badge: 'Ab 7 Jahren' },
   es: { head: 'Aprende dariya,\nel idioma de casa', sub: 'Árabe marroquí para niños', cta: 'Empezar gratis', badge: 'A partir de 7 años' },
+  it: { head: 'Impara il darija,\nla lingua di casa', sub: 'Arabo marocchino per bambini', cta: 'Inizia gratis', badge: 'Dai 7 anni' },
   en: { head: 'Learn Darija,\nthe language of home', sub: 'Moroccan Arabic for children', cta: 'Start free', badge: 'Ages 7 and up' },
 }
 
@@ -153,7 +154,7 @@ await mkdir(OUT, { recursive: true })
 const browser = await chromium.launch({ executablePath: CHROME })
 const page = await (await browser.newContext({ deviceScaleFactor: 1 })).newPage()
 
-for (const lang of arg('lang', 'nl,fr,de,es,en').split(',')) {
+for (const lang of arg('lang', 'nl,fr,de,es,it,en').split(',')) {
   const copy = COPY[lang]
   if (!copy) throw new Error(`onbekende taal: ${lang}`)
   const dir = path.join(OUT, lang)

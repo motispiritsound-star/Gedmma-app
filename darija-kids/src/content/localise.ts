@@ -4,6 +4,7 @@ import type { ContentPack } from './lang/types'
 import { fr } from './lang/fr'
 import { de } from './lang/de'
 import { es } from './lang/es'
+import { it } from './lang/it'
 import { en } from './lang/en'
 
 /**
@@ -11,7 +12,7 @@ import { en } from './lang/en'
  * Every other language is a pack that overrides what a learner reads, while
  * the Arabic script and the Latin spelling of Darija stay exactly as they are.
  */
-const PACKS: Record<Exclude<Lang, 'nl'>, ContentPack> = { fr, de, es, en }
+const PACKS: Record<Exclude<Lang, 'nl'>, ContentPack> = { fr, de, es, it, en }
 
 export const packOf = (lang: Lang): ContentPack | null => (lang === 'nl' ? null : PACKS[lang])
 

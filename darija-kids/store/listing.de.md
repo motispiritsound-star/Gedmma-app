@@ -14,7 +14,7 @@ Für App Store Connect (Deutschland, Österreich, Schweiz) und Google Play Conso
 `darija,marokkanisch,arabisch,marokko,sprache,kinder,lernen,wortschatz,arabische schrift,gratis`
 
 **Werbetext (max. 170)**
-`Neu: Die App spricht Deutsch, Niederländisch, Französisch, Spanisch und Englisch — und liest jedes Wort mit der Stimme deines eigenen Geräts vor.`
+`Neu: Die App spricht Deutsch, Niederländisch, Französisch, Spanisch, Italienisch und Englisch — und liest jedes Wort mit der Stimme deines eigenen Geräts vor.`
 
 **Beschreibung (max. 4000)**
 
@@ -39,7 +39,7 @@ ALLES KLINGT
 Jedes Wort und jeder Satz lässt sich anhören: einmal tippen für normal, zweimal für langsam. Hat dein Gerät keine arabische Stimme, sagt die App das ehrlich und liest die lateinische Schreibweise so gut wie möglich vor.
 
 IN DEINER SPRACHE
-Deutsch, Niederländisch, Französisch, Spanisch und Englisch. Du wählst beim Start und kannst jederzeit wechseln: Übersetzungen, Erklärungen und Geschichten wechseln mit.
+Deutsch, Niederländisch, Französisch, Spanisch, Italienisch und Englisch. Du wählst beim Start und kannst jederzeit wechseln: Übersetzungen, Erklärungen und Geschichten wechseln mit.
 
 KOSTENLOS ANFANGEN
 Das Alphabet und die ersten fünf Einheiten sind und bleiben kostenlos: genug, um die arabische Schrift zu lesen, dich vorzustellen und bis hundert zu zählen. Der ganze Kurs gehört zum vollen Zugang: die ersten Tage gratis, danach 59,88 € für ein ganzes Jahr (4,99 € pro Monat) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Kündbar im eigenen App-Store- oder Google-Play-Konto; wer vor Ende der Testphase kündigt, zahlt nichts.
@@ -60,7 +60,7 @@ Darija unterscheidet sich von Stadt zu Stadt und von Familie zu Familie und hat 
 ```
 
 **Neuheiten (Version 1.0)**
-`Die erste Version: 17 Einheiten, 304 Wörter, 100 Sätze, das arabische Alphabet, Geschichten und Spiele. Auf Deutsch, Niederländisch, Französisch, Spanisch und Englisch.`
+`Die erste Version: 17 Einheiten, 304 Wörter, 100 Sätze, das arabische Alphabet, Geschichten und Spiele. Auf Deutsch, Niederländisch, Französisch, Spanisch, Italienisch und Englisch.`
 
 ## Google Play
 

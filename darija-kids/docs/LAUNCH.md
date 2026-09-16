@@ -161,7 +161,7 @@ lang hij is, hoe groot, en of er echt geluid op staat.
 |---|---|---|
 | Beide | App-icoon 1024×1024 | `assets/icon.png` |
 | Overal | Logo, profielfoto, omslagen, flyer | `brand/` (`npm run brand`) |
-| Beide | Beschrijvingen in 5 talen | `store/listing.<taal>.md` |
+| Beide | Beschrijvingen in 6 talen | `store/listing.<taal>.md` |
 | Beide | Titel, ondertitel, zoekwoorden | `store/keywords.md` |
 | App Store | iPhone 6.9" (1290×2796) | `store/screenshots/<taal>/iphone/` |
 | App Store | iPad 13" (2048×2732) | `store/screenshots/<taal>/ipad/` |
@@ -259,7 +259,7 @@ naar dagelijkse activiteit over die veertien dagen.
 ## 7. Lanceren
 
 De eerste week bepaalt meer dan de rest van het jaar. `store/social.md` heeft
-de berichten in vijf talen; `store/press-kit.md` is wat je een journalist of
+de berichten in zes talen; `store/press-kit.md` is wat je een journalist of
 een nieuwsbrief stuurt.
 
 Wat werkt, op volgorde:
@@ -291,5 +291,5 @@ voor je kunnen doen.
   `docs/INHOUD.md` legt uit hoe je een woord of een zin aanpast.
 - Bij elke update: `versionCode` en `versionName` omhoog in
   `android/app/build.gradle`, en het buildnummer in Xcode.
-- Houd de vijf talen gelijk. Een test faalt als er een vertaling ontbreekt, dus
+- Houd de zes talen gelijk. Een test faalt als er een vertaling ontbreekt, dus
   dat gaat vanzelf goed zolang je `npm test` draait.

@@ -41,6 +41,8 @@ describe('interface languages', () => {
     expect(detectLang(['tr-DE'])).toBe('de')
     expect(detectLang(['es-ES'])).toBe('es')
     expect(detectLang(['ar-ES'])).toBe('es')
+    expect(detectLang(['it-IT'])).toBe('it')
+    expect(detectLang(['ar-IT'])).toBe('it')
     expect(detectLang(['pt-PT'])).toBe('en')
 
     // A second preference still counts, before the country does.
@@ -48,8 +50,8 @@ describe('interface languages', () => {
     expect(detectLang([])).toBe('en')
   })
 
-  it('knows the four languages', () => {
-    expect(LANG_CODES).toEqual(['nl', 'fr', 'de', 'es', 'en'])
+  it('knows its languages', () => {
+    expect(LANG_CODES).toEqual(['nl', 'fr', 'de', 'es', 'it', 'en'])
     expect(isLang('fr')).toBe(true)
     expect(isLang('ar')).toBe(false)
     expect(localeOf('de')).toBe('de-DE')
@@ -94,10 +96,10 @@ describe('content packs', () => {
     }
   })
 
-  it('has a French, German and Spanish meaning for every single word', () => {
+  it('has a French, German, Spanish and Italian meaning for every single word', () => {
     // meaningOf() falls back to English when an entry is missing, and that
     // fallback would be invisible here — so look in the pack itself.
-    for (const lang of ['fr', 'de', 'es'] as const) {
+    for (const lang of ['fr', 'de', 'es', 'it'] as const) {
       const pack = packOf(lang)!
       for (const w of allWords) {
         expect(pack.meanings[w.id], `${lang}/${w.id}`).toBeTruthy()

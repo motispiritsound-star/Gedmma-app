@@ -53,6 +53,7 @@ const SHOTS = [
       fr: 'Un parcours de 17 unités,\nde l’alphabet au souk',
       de: 'Ein Pfad aus 17 Einheiten,\nvom Alphabet bis zum Souk',
       es: 'Un camino de 17 unidades,\ndel alfabeto al zoco',
+      it: 'Un percorso di 17 unità,\ndall\u2019alfabeto al souk',
       en: 'A path of 17 units,\nfrom the alphabet to the souq',
     },
   },
@@ -64,6 +65,7 @@ const SHOTS = [
       fr: 'L’écriture arabe,\nlettre par lettre',
       de: 'Die arabische Schrift,\nBuchstabe für Buchstabe',
       es: 'La escritura árabe,\nletra a letra',
+      it: 'La scrittura araba,\nlettera per lettera',
       en: 'The Arabic script,\nletter by letter',
     },
   },
@@ -76,6 +78,7 @@ const SHOTS = [
       fr: 'Des leçons courtes,\nsonores et gratifiantes',
       de: 'Kurze Lektionen, die klingen\nund sofort belohnen',
       es: 'Lecciones cortas que suenan\ny recompensan al momento',
+      it: 'Lezioni brevi che suonano\ne premiano subito',
       en: 'Short lessons that sound,\nand reward straight away',
     },
   },
@@ -87,6 +90,7 @@ const SHOTS = [
       fr: '304 mots et 100 phrases,\nchacun avec la prononciation',
       de: '304 Wörter und 100 Sätze,\njedes mit Aussprache',
       es: '304 palabras y 100 frases,\ncada una con pronunciación',
+      it: '304 parole e 100 frasi,\nognuna pronunciata',
       en: '304 words and 100 sentences,\nevery one spoken',
     },
   },
@@ -98,6 +102,7 @@ const SHOTS = [
       fr: 'De vraies conversations,\nphrase par phrase',
       de: 'Echte Gespräche,\nSatz für Satz übersetzbar',
       es: 'Conversaciones de verdad,\nfrase a frase',
+      it: 'Conversazioni vere,\nfrase per frase',
       en: 'Real conversations,\ntranslated line by line',
     },
   },
@@ -109,6 +114,7 @@ const SHOTS = [
       fr: 'Récompenses, séries\net un objectif quotidien',
       de: 'Belohnungen, Serien\nund ein Tagesziel',
       es: 'Recompensas, rachas\ny un objetivo diario',
+      it: 'Premi, serie\ne un obiettivo giornaliero',
       en: 'Rewards, streaks\nand a daily goal',
     },
   },
@@ -190,7 +196,7 @@ const shoot = async (browser, composer, lang, deviceKey) => {
   await context.close()
 }
 
-const langs = (arg('lang', 'nl,fr,de,es,en')).split(',')
+const langs = (arg('lang', 'nl,fr,de,es,it,en')).split(',')
 const devices = (arg('device', Object.keys(DEVICES).join(','))).split(',')
 
 await mkdir(OUT, { recursive: true })
