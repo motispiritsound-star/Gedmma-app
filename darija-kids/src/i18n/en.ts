@@ -474,6 +474,7 @@ export const en: Strings = {
     voorlezen: 'Reading aloud',
     voorlezenHint: 'Reads the history cards aloud in the language the app is set to. If your device has no voice for that language it stays quiet — the text is there either way.',
     voorlezenGeenStem: 'This device has no voice for this language, so reading aloud stays silent.',
+    geenDarija: 'No phone voice speaks Darija: they are all trained on Standard Arabic. What you hear is an approximation, except where the app carries a real recording.',
     uitspraak: 'Pronunciation',
     stem: 'Voice',
     stemAuto: 'Choose automatically',

@@ -1,29 +1,50 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { LETTERS } from '../content/alphabet'
+import { allWords } from '../content/lexicon'
+import { ALL_SENTENCES } from '../content/sentences'
 import { letterSpeech } from '../content/pronunciation'
-import { hasClip, clipCount } from '../engine/clips'
-import { sayLetter, sfx } from '../engine/audio'
-import { Button, Card, SectionTitle } from '../ui/kit'
+import { clipCounts, hasClip } from '../engine/clips'
+import { say, sayLetter, sfx } from '../engine/audio'
+import { Button, Card, Progress, SectionTitle } from '../ui/kit'
 
 /**
  * The recording booth.
  *
- * A phone voice reading تَاءْ is close; a Moroccan saying it is right. This is
- * how the second kind gets in: hold the button, say the letter, listen back,
- * save. Ten minutes for all thirty-one, and the files drop straight into
- * `src/audio/letters/` where the app picks them up with no list to update.
+ * There is no Darija voice on any phone — every engine is trained on Modern
+ * Standard Arabic, which is a different language with the same letters. So
+ * the app cannot synthesise its way to a right answer; somebody has to say
+ * the words. This is where that happens: hold the button, say it, listen
+ * back, save. The file lands with the right name and the app picks it up.
  *
- * What it deliberately does not do is upload anything. The recording exists
- * in this browser tab and in the file you save; it never leaves the device,
- * which is the same promise the rest of the app makes.
+ * Nothing is uploaded. The recording lives in this tab and in the file you
+ * keep, which is the promise the rest of the app makes.
  *
  * Reachable while developing and in the demo build, not in the app a child
  * uses.
  */
 
+type Row = { id: string; ar: string; tr: string; naam: string; folder: string }
 type Take = { url: string; blob: Blob }
 
+const ROWS: Record<'letters' | 'woorden' | 'zinnen', () => Row[]> = {
+  letters: () => LETTERS.map((l) => ({
+    id: l.id, ar: l.ar, tr: l.tr, naam: letterSpeech(l.id, l.ar, l.name).ar, folder: 'letters',
+  })),
+  woorden: () => allWords.filter((w) => !w.phrase).map((w) => ({
+    id: w.id, ar: w.ar, tr: w.tr, naam: w.nl, folder: 'woorden',
+  })),
+  zinnen: () => [
+    ...allWords.filter((w) => w.phrase).map((w) => ({
+      id: w.id, ar: w.ar, tr: w.tr, naam: w.nl, folder: 'woorden',
+    })),
+    ...ALL_SENTENCES.map((z) => ({ id: z.id, ar: z.ar, tr: z.tr, naam: z.nl, folder: 'zinnen' })),
+  ],
+}
+
 export function Record() {
+  const [tab, setTab] = useState<'letters' | 'woorden' | 'zinnen'>('letters')
+  const [zoek, setZoek] = useState('')
+  const [nogNiet, setNogNiet] = useState(true)
   const [takes, setTakes] = useState<Record<string, Take>>({})
   const [busy, setBusy] = useState<string | null>(null)
   const [trouble, setTrouble] = useState('')
@@ -32,11 +53,19 @@ export function Record() {
 
   useEffect(() => () => {
     stream.current?.getTracks().forEach((t) => t.stop())
-    for (const take of Object.values(takes)) URL.revokeObjectURL(take.url)
   }, [])
 
-  /** One microphone, opened once and kept: asking per letter is thirty-one
-   *  permission prompts on some browsers. */
+  const telling = clipCounts()
+  const rijen = useMemo(() => {
+    const naald = zoek.trim().toLowerCase()
+    return ROWS[tab]().filter((r) => {
+      if (nogNiet && hasClip(r.id) && !takes[r.id]) return false
+      if (!naald) return true
+      return `${r.id} ${r.tr} ${r.naam} ${r.ar}`.toLowerCase().includes(naald)
+    })
+  }, [tab, zoek, nogNiet, takes])
+
+  /** One microphone, opened once: asking per item is hundreds of prompts. */
   const microphone = async (): Promise<MediaStream | null> => {
     if (stream.current) return stream.current
     try {
@@ -61,7 +90,7 @@ export function Record() {
     rec.onstop = () => {
       const blob = new Blob(chunks, { type: rec.mimeType || 'audio/webm' })
       setTakes((all) => {
-        all[id] && URL.revokeObjectURL(all[id]!.url)
+        if (all[id]) URL.revokeObjectURL(all[id].url)
         return { ...all, [id]: { blob, url: URL.createObjectURL(blob) } }
       })
     }
@@ -76,62 +105,99 @@ export function Record() {
     setBusy(null)
   }
 
-  const save = (id: string) => {
-    const take = takes[id]
+  const save = (row: Row) => {
+    const take = takes[row.id]
     if (!take) return
     const ext = take.blob.type.includes('webm') ? 'webm' : take.blob.type.includes('mp4') ? 'm4a' : 'ogg'
     const link = document.createElement('a')
     link.href = take.url
-    link.download = `${id}.${ext}`
+    link.download = `${row.id}.${ext}`
     link.click()
   }
 
-  const done = Object.keys(takes).length
+  const speel = (row: Row) => {
+    sfx.tap()
+    const letter = LETTERS.find((l) => l.id === row.id)
+    if (tab === 'letters' && letter) sayLetter(letter)
+    else say(row.ar, { tr: row.tr })
+  }
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <SectionTitle sub="Spreek de eenendertig letters zelf in. Er gaat niets naar een server — de opname blijft in deze browser en in het bestand dat je opslaat.">
-        Letters opnemen
+      <SectionTitle sub="Geen enkele telefoonstem spreekt Darija — ze zijn allemaal op Standaardarabisch getraind. Dit is de enige weg naar een echte uitspraak: iemand die het zegt.">
+        Opnemen
       </SectionTitle>
 
       <Card className="mb-5 p-4 text-sm">
         <p>
           <strong className="font-display">Zo werkt het:</strong> houd <em>Opnemen</em> vast terwijl je
-          de naam van de letter zegt, laat los, luister terug. Tevreden? <em>Opslaan</em> zet het
-          bestand in je downloads met de juiste naam. Zet die bestanden daarna in{' '}
-          <code>src/audio/letters/</code> en de app gebruikt ze overal.
+          het zegt, laat los, luister terug. <em>Opslaan</em> zet het bestand met de juiste naam
+          in je downloads. Die bestanden horen in <code>src/audio/{tab}/</code>.
         </p>
-        <p className="mt-2 text-[var(--ink-soft)]">
-          {clipCount()} van {LETTERS.length} letters hebben al een opname in de app ·{' '}
-          {done} opgenomen in deze sessie
-        </p>
+        <div className="mt-3 grid gap-2">
+          {([
+            ['Letters', telling.letters, telling.lettersTotal],
+            ['Woorden', telling.woorden, telling.woordenTotal],
+            ['Zinnen', telling.zinnen, telling.zinnenTotal],
+          ] as const).map(([naam, done, all]) => (
+            <div key={naam} className="flex items-center gap-3">
+              <span className="w-20 shrink-0 text-xs font-bold">{naam}</span>
+              <Progress value={done / all} className="h-2 flex-1" />
+              <span className="w-16 shrink-0 text-end text-xs tabular-nums text-[var(--ink-soft)]">
+                {done}/{all}
+              </span>
+            </div>
+          ))}
+        </div>
         {trouble && <p className="mt-2 font-bold text-terra-500">{trouble}</p>}
       </Card>
 
+      <div className="mb-4 flex flex-wrap gap-2">
+        {(['letters', 'woorden', 'zinnen'] as const).map((key) => (
+          <Button
+            key={key}
+            variant={tab === key ? 'primary' : 'secondary'}
+            onClick={() => { sfx.tap(); setTab(key) }}
+          >
+            {key}
+          </Button>
+        ))}
+        <Button variant={nogNiet ? 'primary' : 'secondary'} onClick={() => setNogNiet((v) => !v)}>
+          Alleen wat mist
+        </Button>
+        <input
+          value={zoek}
+          onChange={(e) => setZoek(e.target.value)}
+          placeholder="zoek…"
+          aria-label="zoek"
+          className="min-w-0 flex-1 rounded-2xl border-2 border-[var(--line)] bg-[var(--surface)] px-4 py-2 text-sm"
+        />
+      </div>
+
+      <p className="mb-3 text-sm text-[var(--ink-soft)]">{rijen.length} te doen</p>
+
       <ul className="space-y-2">
-        {LETTERS.map((l) => {
-          const speech = letterSpeech(l.id, l.ar, l.name)
-          const take = takes[l.id]
-          const recording = busy === l.id
+        {rijen.slice(0, 120).map((row) => {
+          const take = takes[row.id]
+          const recording = busy === row.id
           return (
-            <li key={l.id}>
+            <li key={row.id}>
               <Card className="flex flex-wrap items-center gap-3 p-3">
-                <span className="ar w-12 shrink-0 text-center text-3xl font-bold">{l.ar}</span>
                 <div className="min-w-0 flex-1">
-                  <div className="font-display font-extrabold">
-                    {l.name} <span className="font-normal text-[var(--ink-soft)]">· {l.tr}</span>
+                  <div className="ar text-xl font-bold">{row.ar}</div>
+                  <div className="font-display font-extrabold text-zellige-600 dark:text-zellige-300">
+                    {row.tr}
                   </div>
-                  <div className="ar text-lg text-khatim-500 dark:text-khatim-400">{speech.ar}</div>
-                  <code className="text-[11px] text-[var(--ink-soft)]">
-                    {l.id}{hasClip(l.id) ? ' · al opgenomen' : ''}
-                  </code>
+                  <div className="text-xs text-[var(--ink-soft)]">
+                    {row.naam} · <code>{row.id}</code>
+                    {hasClip(row.id) && ' · al opgenomen'}
+                  </div>
                 </div>
 
-                <Button variant="secondary" onClick={() => sayLetter(l)}>Voorbeeld</Button>
-
+                <Button variant="secondary" onClick={() => speel(row)}>Hoor</Button>
                 <Button
                   variant={recording ? 'danger' : 'primary'}
-                  onPointerDown={() => { if (!recording) void start(l.id) }}
+                  onPointerDown={() => { if (!recording) void start(row.id) }}
                   onPointerUp={stop}
                   onPointerLeave={() => { if (recording) stop() }}
                 >
@@ -141,9 +207,9 @@ export function Record() {
                 {take && (
                   <>
                     <Button variant="secondary" onClick={() => { sfx.tap(); void new Audio(take.url).play() }}>
-                      Terugluisteren
+                      Terug
                     </Button>
-                    <Button variant="secondary" onClick={() => save(l.id)}>Opslaan</Button>
+                    <Button variant="secondary" onClick={() => save(row)}>Opslaan</Button>
                   </>
                 )}
               </Card>
@@ -151,6 +217,12 @@ export function Record() {
           )
         })}
       </ul>
+
+      {rijen.length > 120 && (
+        <p className="mt-4 text-center text-sm text-[var(--ink-soft)]">
+          De eerste 120 staan hier. Zoek of vink <em>Alleen wat mist</em> aan om verder te komen.
+        </p>
+      )}
     </div>
   )
 }

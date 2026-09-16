@@ -250,7 +250,10 @@ export function SettingsPage() {
         >
           <Toggle on={s.voorlezen} onChange={set('voorlezen')} label={t.settings.voorlezen} />
         </Row>
-        <Row title={t.settings.uitspraak} hint={voiceStatus}>
+        {/* The honest line. Every engine on every phone reads Standard
+            Arabic, so without a recording the app is approximating a
+            different language, and it says so rather than pretending. */}
+        <Row title={t.settings.uitspraak} hint={`${voiceStatus} ${t.settings.geenDarija}`}>
           <Button variant="secondary" onClick={() => say('السلام عليكم', { tr: 'ssalamu 3alaykum' })}>
             {t.common.test}
           </Button>

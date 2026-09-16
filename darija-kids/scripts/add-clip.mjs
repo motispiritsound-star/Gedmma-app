@@ -9,8 +9,9 @@
  * write them where the app looks.
  *
  * Run with:
- *   node scripts/add-clip.mjs <bestand>=<letter-id> [...]
+ *   node scripts/add-clip.mjs <bestand>=<id> [...] [--map <map>]
  *   node scripts/add-clip.mjs opname.wav=ya andere.wav=waw
+ *   node scripts/add-clip.mjs salam.wav=salam --map woorden
  *
  * WAV in, WAV out — no encoder to install. A one-second clip at 16 kHz is
  * about 20 kB, so the whole alphabet is well under a megabyte.
@@ -20,7 +21,8 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const OUT = path.join(ROOT, 'src', 'audio', 'letters')
+/** Which folder an id belongs in. `--map letters` forces one. */
+const FOLDERS = ['letters', 'woorden', 'zinnen']
 
 /** The peak every clip is levelled to. Short of 1.0, so nothing clips. */
 const PEAK = 0.89
@@ -115,12 +117,19 @@ function fade(samples, rate) {
   }
 }
 
-const jobs = process.argv.slice(2).filter((a) => a.includes('='))
+const jobs = process.argv.slice(2).filter((a) => a.includes('=') && !a.startsWith('--'))
 if (!jobs.length) {
   console.error('gebruik: node scripts/add-clip.mjs <bestand>=<letter-id> [...]')
   process.exit(1)
 }
 
+const gevraagd = process.argv.indexOf('--map')
+const map = gevraagd > 0 ? process.argv[gevraagd + 1] : 'letters'
+if (!FOLDERS.includes(map)) {
+  console.error(`--map moet een van ${FOLDERS.join(', ')} zijn`)
+  process.exit(1)
+}
+const OUT = path.join(ROOT, 'src', 'audio', map)
 await mkdir(OUT, { recursive: true })
 for (const job of jobs) {
   const cut = job.lastIndexOf('=')

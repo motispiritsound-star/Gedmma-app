@@ -474,6 +474,7 @@ export const de: Strings = {
     voorlezen: 'Vorlesen',
     voorlezenHint: 'Liest die Geschichtskarten laut in der Sprache der App vor. Hat dein Gerät keine Stimme dafür, bleibt es still — der Text steht trotzdem da.',
     voorlezenGeenStem: 'Dieses Gerät hat keine Stimme für diese Sprache, das Vorlesen bleibt still.',
+    geenDarija: 'Keine Handystimme spricht Darija: sie sind alle auf Hocharabisch trainiert. Was du hörst, ist also eine Annäherung — außer dort, wo eine echte Aufnahme in der App steckt.',
     uitspraak: 'Aussprache',
     stem: 'Stimme',
     stemAuto: 'Automatisch wählen',

@@ -474,6 +474,7 @@ export const es: Strings = {
     voorlezen: 'Lectura en voz alta',
     voorlezenHint: 'Lee las cartas de historia en voz alta en el idioma de la app. Si tu dispositivo no tiene voz para ese idioma, se queda en silencio: el texto sigue ahí.',
     voorlezenGeenStem: 'Este dispositivo no tiene voz para este idioma, así que la lectura se queda en silencio.',
+    geenDarija: 'Ninguna voz de teléfono habla dariya: todas están entrenadas con árabe estándar. Lo que oyes es una aproximación, salvo donde la app lleva una grabación de verdad.',
     uitspraak: 'Pronunciación',
     stem: 'Voz',
     stemAuto: 'Elegir automáticamente',

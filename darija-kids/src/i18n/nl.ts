@@ -481,6 +481,7 @@ export const nl = {
     voorlezen: 'Voorlezen',
     voorlezenHint: 'Leest de geschiedeniskaarten hardop voor in de taal van de app. Heeft je toestel geen stem voor die taal, dan blijft het stil — de tekst staat er gewoon.',
     voorlezenGeenStem: 'Dit toestel heeft geen stem voor deze taal, dus voorlezen blijft stil.',
+    geenDarija: 'Geen enkele telefoonstem spreekt Darija: ze zijn allemaal op Standaardarabisch getraind. Wat je hoort is dus een benadering, behalve waar een echte opname in de app zit.',
     uitspraak: 'Uitspraak',
     stem: 'Stem',
     stemAuto: 'Automatisch kiezen',

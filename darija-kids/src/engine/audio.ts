@@ -1,6 +1,6 @@
 import { getState } from './store'
 import { letterSpeech, spokenForm } from '../content/pronunciation'
-import { hasClip, playClip } from './clips'
+import { clipFor, CLIPS, playClip } from './clips'
 import { ARGS, busFor, LENGTH, VOICES, type SoundName, type Stage } from './instruments'
 
 /**
@@ -683,7 +683,19 @@ export interface SayOptions {
 
 export function say(arabic: string, opts: SayOptions = {}): void {
   const s = getState()
-  if (!s.settings.sound || !canSpeak()) return
+  if (!s.settings.sound) return
+
+  // A recording always wins. No engine on any phone speaks Darija — they are
+  // all trained on Standard Arabic — so a person saying the word is not a
+  // nicety here, it is the only way to be right.
+  const clip = clipFor(arabic)
+  if (clip) {
+    unlockAudio()
+    void playClip(clip, audio(), bus, { rate: opts.slow ? 0.7 : 1 })
+    return
+  }
+
+  if (!canSpeak()) return
   unlockAudio()
   const plan = voicePlan(opts.prefer)
   if (plan.mode === 'geen') return
@@ -804,9 +816,10 @@ export function sayLetter(letter: { id: string; ar: string; name: string }, opts
   // A recording beats any voice, so it goes first. It is asynchronous — the
   // file has to be decoded once — and the synthesised voice only steps in if
   // it did not play, so nothing is ever said twice.
-  if (hasClip(letter.id)) {
+  const clip = CLIPS[letter.id]
+  if (clip) {
     unlockAudio()
-    void playClip(letter.id, audio(), bus, { rate: opts.slow ? 0.7 : 1 }).then((played) => {
+    void playClip(clip, audio(), bus, { rate: opts.slow ? 0.7 : 1 }).then((played) => {
       if (!played) speakLetter(letter, opts)
     })
     return
