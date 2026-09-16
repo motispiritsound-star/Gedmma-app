@@ -29,7 +29,8 @@
     "bonuscheck": "node scripts/bonuscheck.mjs",
     "brand": "node scripts/make-brand.mjs",
     "ebook": "node scripts/make-ebook.mjs",
-    "voice": "node scripts/make-voice.mjs"
+    "voice": "node scripts/make-voice.mjs",
+    "sweep": "node scripts/sweep.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",

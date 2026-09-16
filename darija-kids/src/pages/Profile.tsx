@@ -100,11 +100,18 @@ export function Profile() {
         {BADGES.map((b) => {
           const earned = state.badges.includes(b.id)
           return (
-            <li key={b.id}>
-              <Card className={`h-full p-4 text-center ${earned ? '' : 'opacity-55'}`}>
+            // A grid cell will not shrink below its content, and German names
+            // its badges "Geschichtenerzähler" — one word, wider than half a
+            // narrow phone, and the whole page slid sideways because of it.
+            <li key={b.id} className="min-w-0">
+              <Card className={`h-full min-w-0 p-4 text-center ${earned ? '' : 'opacity-55'}`}>
                 <div className="text-3xl" aria-hidden="true">{earned ? b.emoji : '🔒'}</div>
-                <div className="mt-1 font-display font-extrabold">{t.badges[b.id].naam}</div>
-                <div className="text-xs text-[var(--ink-soft)]">{t.badges[b.id].hint}</div>
+                <div lang={lang} className="mt-1 hyphens-auto break-words font-display font-extrabold">
+                  {t.badges[b.id].naam}
+                </div>
+                <div lang={lang} className="hyphens-auto text-xs text-[var(--ink-soft)]">
+                  {t.badges[b.id].hint}
+                </div>
               </Card>
             </li>
           )

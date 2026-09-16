@@ -1,6 +1,7 @@
 import type { ReactNode, ButtonHTMLAttributes } from 'react'
 import { motion } from 'framer-motion'
 import { sfx } from '../engine/audio'
+import { useStore } from '../engine/store'
 
 /** The building blocks the whole app is assembled from. */
 
@@ -107,11 +108,21 @@ export function SectionTitle({ children, sub }: { children: ReactNode; sub?: Rea
 
 /** A big number with a label — used for streaks, XP and the parent report. */
 export function Stat({ value, label, emoji }: { value: ReactNode; label: string; emoji?: string }) {
+  // Hyphenation needs to know the language, or the browser will not break.
+  const lang = useStore((s) => s.settings.lang)
   return (
-    <Card className="p-4 text-center">
+    // `min-w-0` because a grid cell refuses to shrink below its content, and
+    // one long German word — "nachgezeichnet" — was enough to push the whole
+    // page sideways on a narrow phone. `hyphens` lets it break instead.
+    <Card className="min-w-0 p-4 text-center">
       {emoji && <div className="text-2xl">{emoji}</div>}
       <div className="font-display text-3xl font-extrabold">{value}</div>
-      <div className="text-xs font-semibold uppercase tracking-wide text-[var(--ink-soft)]">{label}</div>
+      <div
+        lang={lang}
+        className="hyphens-auto break-words text-xs font-semibold uppercase tracking-wide text-[var(--ink-soft)]"
+      >
+        {label}
+      </div>
     </Card>
   )
 }

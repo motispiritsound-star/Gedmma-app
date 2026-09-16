@@ -206,8 +206,14 @@ console.log('\nmet een Nederlandse, Spaanse en Franse stem (geen Arabisch)')
   if (tha && ta && tha.lang === ta.lang && tha.text === ta.text) {
     fails.push(`ث en ت klinken allebei als "${tha.text}" uit dezelfde mond`)
   }
-  console.log(`  \u062B \u2192 ${tha?.text} (${tha?.lang}) \u00b7 \u0631 \u2192 ${byId.get('ra')?.text} (${byId.get('ra')?.lang})`)
-  console.log(`  \u062C \u2192 ${byId.get('jim')?.text} (${byId.get('jim')?.lang})`)
+  // Same as above: a recorded letter has no row here, and printing
+  // "undefined (undefined)" made a clean run look like a failure.
+  const uit = (naam) => {
+    const r = byId.get(naam)
+    return r ? `${r.text} (${r.lang})` : 'opname'
+  }
+  console.log(`  \u062B \u2192 ${uit('tha')} \u00b7 \u0631 \u2192 ${uit('ra')}`)
+  console.log(`  \u062C \u2192 ${uit('jim')}`)
   await page.close()
 }
 

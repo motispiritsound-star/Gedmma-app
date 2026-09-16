@@ -27,19 +27,26 @@ export function TopBar() {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--surface)]/90 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-2.5">
-        <Link to="/" onClick={() => sfx.nav()} className="flex items-center gap-2 font-display text-xl font-extrabold">
+        <Link to="/" onClick={() => sfx.nav()} className="flex shrink-0 items-center gap-2 font-display text-xl font-extrabold">
           <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-saffron-400 to-terra-500 text-night-950">د</span>
           <span className="hidden sm:inline">Darija Kids</span>
         </Link>
 
-        <nav className="ms-2 hidden flex-1 items-center gap-1 sm:flex" aria-label={t.nav.onderdelen}>
+        {/* The five labels are short in Dutch and long in Spanish, and at
+            tablet width the row used to push the counters off the screen —
+            the whole page then scrolled sideways. The nav is the part that
+            gives: it shrinks, and slides if it has to. */}
+        <nav
+          className="ms-2 hidden min-w-0 flex-1 items-center gap-1 overflow-x-auto sm:flex [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          aria-label={t.nav.onderdelen}
+        >
           {LINKS.map((l) => (
             <NavLink
               key={l.to}
               to={l.to}
               onClick={() => sfx.nav()}
               className={({ isActive }) =>
-                `rounded-xl px-3 py-1.5 text-sm font-bold transition ${isActive ? 'bg-[var(--surface-sunken)] text-zellige-600 dark:text-zellige-300' : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'}`
+                `shrink-0 whitespace-nowrap rounded-xl px-3 py-1.5 text-sm font-bold transition ${isActive ? 'bg-[var(--surface-sunken)] text-zellige-600 dark:text-zellige-300' : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'}`
               }
             >
               {t.nav[l.key]}
@@ -47,7 +54,7 @@ export function TopBar() {
           ))}
         </nav>
 
-        <div className="ms-auto flex items-center gap-2.5 text-sm font-bold">
+        <div className="ms-auto flex shrink-0 items-center gap-2.5 text-sm font-bold">
           <span title={`${t.common.niveau} ${level}`} className="hidden items-center gap-1 sm:flex">
             <span className="grid h-7 w-7 place-items-center rounded-lg bg-zellige-500/15 text-zellige-600 dark:text-zellige-300">{level}</span>
           </span>
