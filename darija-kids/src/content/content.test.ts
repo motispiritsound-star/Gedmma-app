@@ -8,6 +8,7 @@ import { ALL_SENTENCES, maybeSentence } from './sentences'
 import { STORIES } from './stories'
 import { HISTORY, cardForCheckpoint, historyById } from './history'
 import { historyOf } from './localise'
+import { EIGEN_IDS, eigenVoorkeur, voorkeurVoor, zwevendeIds } from './eigen'
 import { LANGS } from '../i18n/languages'
 
 describe('lexicon', () => {
@@ -329,5 +330,35 @@ describe('stroke order', () => {
     const body = Array.from({ length: 30 }, (_, i) => ({ x: 16 + i, y: 30, r: 3 }))
     const points = strokeOrder(board(n, [...body, { x: 30, y: 48, r: 3 }]), n)
     expect(points[1]!.y * n).toBeGreaterThan(48)
+  })
+})
+
+describe('woorden die een Arabische stem verkeerd leest', () => {
+  it('verwijst alleen naar woorden die bestaan', () => {
+    expect(zwevendeIds()).toEqual([])
+  })
+
+  it('geeft elk woord een stem die de klanken aankan', () => {
+    for (const id of EIGEN_IDS) {
+      const voorkeur = eigenVoorkeur(
+        [...allWords, ...ALL_SENTENCES].find((w) => w.id === id)!.ar,
+      )
+      expect(voorkeur, id).toBeDefined()
+      expect(voorkeur!.length, id).toBe(6)
+    }
+  })
+
+  // Dutch and German are the only two of the six with خ; French turns it into
+  // an r, which is a different letter.
+  it('stuurt kh naar een taal die kh kan zeggen', () => {
+    expect(voorkeurVoor('khoya')[0]).toBe('nl')
+    expect(voorkeurVoor('bezzaf')[0]).toBe('fr')
+  })
+
+  // A letter's name is Standard Arabic too, so an Arabic voice is right for it
+  // — the list is for Darija's own vocabulary and must not swallow letters.
+  it('bevat geen letters', () => {
+    const letters = new Set(LETTERS.map((l) => l.id))
+    for (const id of EIGEN_IDS) expect(letters.has(id), id).toBe(false)
   })
 })

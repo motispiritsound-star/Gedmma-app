@@ -1,6 +1,7 @@
 import { getState } from './store'
 import { letterSpeech, spokenForm } from '../content/pronunciation'
 import { clipFor, CLIPS, playClip } from './clips'
+import { eigenVoorkeur } from '../content/eigen'
 import { ARGS, busFor, LENGTH, VOICES, type SoundName, type Stage } from './instruments'
 
 /**
@@ -644,8 +645,28 @@ export type VoicePlan =
  * The cost is that the alphabet may be recited in more than one accent. That
  * is a smaller price than two letters sounding identical.
  */
-export function voicePlan(prefer: Phonetic[] = []): VoicePlan {
+/**
+ * Which voice says this, and in which alphabet.
+ *
+ * `prefer` says *which* European voice to borrow if one has to be borrowed —
+ * ج needs a French mouth, خ a Dutch one. It does not mean "borrow one".
+ *
+ * `liefstGeleend` does mean that, and it is reserved for the words where an
+ * Arabic voice is not merely second best but wrong: Darija's own vocabulary,
+ * which a Standard-Arabic-trained engine reads by Standard Arabic's rules and
+ * turns into something nobody in Morocco says. For the *names of the letters*
+ * the opposite holds — أَلِف and عَيْن are the same in Rabat and in Cairo, and an
+ * Arabic voice is the best thing on the phone. So that flag is set per word,
+ * from `EIGEN_IDS`, and never for a letter.
+ */
+export function voicePlan(prefer: Phonetic[] = [], liefstGeleend = false): VoicePlan {
   if (!canSpeak()) return { mode: 'geen' }
+
+  if (liefstGeleend && getState().settings.fallbackVoice) {
+    const borrowed = bestOf(prefer.length ? prefer : FALLBACK_ORDER, voices())
+    if (borrowed) return { mode: 'benadering', voice: borrowed }
+  }
+
   const arabic = arabicVoice()
   if (arabic) return { mode: 'arabisch', voice: arabic }
   if (!getState().settings.fallbackVoice) return { mode: 'geen' }
@@ -697,7 +718,10 @@ export function say(arabic: string, opts: SayOptions = {}): void {
 
   if (!canSpeak()) return
   unlockAudio()
-  const plan = voicePlan(opts.prefer)
+  // A word on the list is one an Arabic voice reads wrongly, so it is sent to
+  // a borrowed one; the list also says which borrowed one suits it.
+  const eigen = eigenVoorkeur(arabic)
+  const plan = voicePlan(opts.prefer ?? eigen ?? [], eigen !== undefined)
   if (plan.mode === 'geen') return
 
   // An Arabic voice gets the form written for speaking, which is the same

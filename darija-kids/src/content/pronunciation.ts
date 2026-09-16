@@ -196,7 +196,7 @@ export function spokenForm(arabic: string): string {
  * apart. What the table can do is stop them being *wrong*, and it does.
  */
 
-type Target = 'fr' | 'de' | 'nl' | 'es' | 'it' | 'en'
+export type Target = 'fr' | 'de' | 'nl' | 'es' | 'it' | 'en'
 
 export interface LetterSpeech {
   /** The letter's name in Arabic script, for a voice that reads Arabic. */
