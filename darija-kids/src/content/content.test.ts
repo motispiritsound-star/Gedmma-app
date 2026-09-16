@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { UNITS, LESSONS } from './curriculum'
 import { allWords, maybeWord, searchWords } from './lexicon'
 import { LETTERS } from './alphabet'
-import { LETTER_SPEECH, SPOKEN, SPOKEN_WORD, letterSpeech, spokenForm } from './pronunciation'
+import { LETTER_SPEECH, RESPELLED, SPOKEN, SPOKEN_WORD, letterSpeech, spokenForm } from './pronunciation'
 import { strokeOrder } from '../engine/scribe'
 import { ALL_SENTENCES, maybeSentence } from './sentences'
 import { STORIES } from './stories'
@@ -134,8 +134,19 @@ describe('pronunciation overrides', () => {
     const bare = (s: string) => s.replace(/[\u064b-\u0652\u0670\s]/g, '').replace(/[؟?!.,]/g, '')
     for (const table of [SPOKEN_WORD, SPOKEN]) {
       for (const [written, spoken] of Object.entries(table)) {
+        // Unless it is one of the handful that says out loud why it differs.
+        if (written in RESPELLED) continue
         expect(bare(spoken), written).toBe(bare(written))
       }
+    }
+  })
+
+  it('keeps the list of respelled words short and explained', () => {
+    // Every entry costs a comment and a reason; a table of them would be the
+    // hole the guard above exists to close.
+    expect(Object.keys(RESPELLED).length).toBeLessThanOrEqual(8)
+    for (const [written, spoken] of Object.entries(RESPELLED)) {
+      expect(spoken, written).not.toBe(written)
     }
   })
 
@@ -157,8 +168,11 @@ describe('pronunciation overrides', () => {
 })
 
 describe('alphabet and stories', () => {
-  it('covers the Arabic alphabet plus the Moroccan extras', () => {
-    expect(LETTERS.length).toBeGreaterThanOrEqual(31)
+  it('covers the Arabic alphabet, and only the Arabic alphabet', () => {
+    // Twenty-eight. پ, ڤ and ݣ are Moroccan inventions for loanwords, not
+    // letters of the alphabet, and a child taught thirty-one has three to
+    // unlearn.
+    expect(LETTERS.length).toBe(28)
     expect(LETTERS.map((l) => l.tr)).toContain('3')
     for (const l of LETTERS) {
       if (l.exampleWordId) expect(maybeWord(l.exampleWordId), l.id).toBeDefined()

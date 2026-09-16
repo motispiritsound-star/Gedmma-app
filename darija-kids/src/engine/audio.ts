@@ -1,5 +1,6 @@
 import { getState } from './store'
 import { letterSpeech, spokenForm } from '../content/pronunciation'
+import { hasClip, playClip } from './clips'
 import { ARGS, busFor, LENGTH, VOICES, type SoundName, type Stage } from './instruments'
 
 /**
@@ -781,6 +782,22 @@ export const canNarrate = (locale: string): boolean => {
 export const LETTER_RATE = 0.7
 
 export function sayLetter(letter: { id: string; ar: string; name: string }, opts: { slow?: boolean } = {}): void {
+  if (!getState().settings.sound) return
+
+  // A recording beats any voice, so it goes first. It is asynchronous — the
+  // file has to be decoded once — and the synthesised voice only steps in if
+  // it did not play, so nothing is ever said twice.
+  if (hasClip(letter.id)) {
+    unlockAudio()
+    void playClip(letter.id, audio(), bus, { rate: opts.slow ? 0.7 : 1 }).then((played) => {
+      if (!played) speakLetter(letter, opts)
+    })
+    return
+  }
+  speakLetter(letter, opts)
+}
+
+function speakLetter(letter: { id: string; ar: string; name: string }, opts: { slow?: boolean }): void {
   const speech = letterSpeech(letter.id, letter.ar, letter.name)
   // Slower than a word on purpose: a letter name is two sounds and a long
   // vowel, and at talking speed the vowel disappears.

@@ -61,8 +61,8 @@ const tapEveryLetter = async (page, said) => {
 
   const tiles = page.locator('main button.aspect-square')
   const count = await tiles.count()
-  if (count < 30) {
-    fails.push(`maar ${count} lettertegels op /letters, verwacht 31`)
+  if (count !== 28) {
+    fails.push(`${count} lettertegels op /letters, verwacht 28`)
     return []
   }
   // Anything the page said while it was still settling belongs to the page,

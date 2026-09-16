@@ -76,7 +76,7 @@ zegt of het echt geluid maakt.
 
 ## Een letter aanpassen
 
-`src/content/alphabet.ts` bevat de 31 letters met hun begin-, midden- en
+`src/content/alphabet.ts` bevat de 28 letters met hun begin-, midden- en
 eindvorm, en `LETTER_GROUPS` bepaalt in welke lessen ze vallen — gegroepeerd op
 skelet, want ب ت ث verschillen alleen in puntjes. De unit *Lhruf* wordt daar
 automatisch uit gebouwd; de tips staan in `curriculum.ts`.

@@ -157,8 +157,8 @@ export const en: ContentPack = {
       body: 'ع is the sound Arabic is famous for: a squeeze deep in your throat. In messages Moroccans write a 3 for it, because a 3 looks like ع. غ is the rasping French r, and ق a k right at the back.',
     },
     'hruf-7': {
-      title: 'Three Moroccan extras',
-      body: 'Arabic has no p, v or g. Moroccans made them themselves by adding dots: پ (p), ڤ (v) and ݣ (g), as in ݣناوة — gnawa.',
+      title: 'The last three',
+      body: 'That is all twenty-eight letters. و and ي are the two that are sometimes a consonant (w, y) and sometimes a long vowel (oo, ee) — the word tells you which.',
     },
     "groeten-1": {
       title: "What is Darija?",

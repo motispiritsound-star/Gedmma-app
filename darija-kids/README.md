@@ -67,7 +67,7 @@ npm run icons      # tekent de iconen en het deelplaatje opnieuw
 | **Dagmissies** | vijf missies per dag — lessen, goede antwoorden, herhalen, zinnen en een bonusronde — met edelstenen die je zelf ophaalt |
 | **Filmpje na de les** | acht seconden Marokko, getekend in SVG: de souq, de Sahara, Chefchaouen, de kust en een feest, elk met een eigen deuntje in hijaz |
 | **34 klanken** | elke knop, elk antwoord, elke beloning en de quiz — gesynthetiseerd, geen enkel geluidsbestand in de build |
-| **31 letters** | het hele Arabische alfabet plus پ, ڤ en ݣ, met hun vorm aan begin, midden en eind — unit 1 van het pad, in groepjes van vier |
+| **28 letters** | het hele Arabische alfabet, met de vorm van elke letter aan begin, midden en eind — unit 1 van het pad, in groepjes van vier |
 | **4 verhalen** | gesprekken waarin je op elke zin kunt tikken voor de vertaling, met vragen erna |
 | **3 spellen** | tijdrace, geheugenspel en letterspel — ze gebruiken de woorden die je al zag |
 | **5 bonusrondes** | schrijven, dictee, zinnensmid, marathon en spreekuur: ze worden gemaakt van wat je al kent, dus ze raken niet op |

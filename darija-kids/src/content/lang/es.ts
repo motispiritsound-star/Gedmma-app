@@ -397,8 +397,8 @@ export const es: ContentPack = {
       body: 'ع es el sonido que hizo famoso al árabe: un apretón hondo en la garganta. En los mensajes los marroquíes escriben un 3, porque el 3 se parece a la ع. غ es la r francesa que raspa, y ق una k muy al fondo.',
     },
     'hruf-7': {
-      title: 'Tres extras marroquíes',
-      body: 'El árabe no tiene p, v ni g. Los marroquíes las fabricaron añadiendo puntos: پ (p), ڤ (v) y ݣ (g), como en ݣناوة — gnawa.',
+      title: 'Las tres últimas',
+      body: 'Con estas ya conoces las veintiocho letras. و y ي son las dos que a veces son consonante (w, y) y a veces vocal larga (u, i): te lo dice la palabra.',
     },
     "groeten-1": {
       title: "¿Qué es el dariya?",

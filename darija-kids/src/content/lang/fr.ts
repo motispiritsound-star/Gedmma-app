@@ -399,8 +399,8 @@ export const fr: ContentPack = {
       body: "ع est le son qui a rendu l'arabe célèbre : un serrement au fond de la gorge. Dans les messages, les Marocains écrivent un 3, parce que le 3 ressemble au ع. غ est le r français qui roule dans la gorge, et ق un k tout au fond.",
     },
     'hruf-7': {
-      title: 'Trois lettres marocaines en plus',
-      body: "L'arabe n'a ni p, ni v, ni g. Les Marocains les ont fabriquées eux-mêmes en ajoutant des points : پ (p), ڤ (v) et ݣ (g), comme dans ݣناوة — gnawa.",
+      title: 'Les trois dernières',
+      body: "Avec celles-ci tu connais les vingt-huit lettres. و et ي sont les deux qui sont tantôt une consonne (w, y), tantôt une voyelle longue (ou, i) — c'est le mot qui te dit laquelle.",
     },
     "groeten-1": {
       title: "C'est quoi, le darija ?",

@@ -6,8 +6,14 @@ const L = (
 ): Letter => ({ id, ar, name, tr, sound, forms: { initial, medial, final }, exampleWordId })
 
 /**
- * The Arabic alphabet as it is used for Darija, plus the three extra letters
- * Moroccans invented for sounds Arabic does not have (p, v, g).
+ * The Arabic alphabet as it is used for Darija: the twenty-eight letters, and
+ * nothing else.
+ *
+ * Moroccans do write پ, ڤ and ݣ for the p, v and g of loanwords, and they used
+ * to be in here. They are out again: this is an alphabet course, and the
+ * alphabet is twenty-eight letters. A child who meets ݣ in ݣناوة on a poster
+ * has an alphabet to read it with; a child taught thirty-one has three extra
+ * letters to unlearn.
  */
 export const LETTERS: Letter[] = [
   L('alif', 'ا', 'alif', 'a', 'aa, zoals in “maan”', 'ا', 'ـا', 'ـا', 'ana'),
@@ -38,9 +44,6 @@ export const LETTERS: Letter[] = [
   L('ha-soft', 'ه', 'ha', 'h', 'gewone h', 'هـ', 'ـهـ', 'ـه', 'hnaya'),
   L('waw', 'و', 'waw', 'w / oe', 'w van water, of oe', 'و', 'ـو', 'ـو', 'wakha'),
   L('ya', 'ي', 'ya', 'y / ie', 'j van jas, of ie', 'يـ', 'ـيـ', 'ـي', 'yedd'),
-  L('pa', 'پ', 'pa', 'p', 'p van pen — extra letter voor leenwoorden', 'پـ', 'ـپـ', 'ـپ'),
-  L('va', 'ڤ', 'va', 'v', 'v van video — extra letter', 'ڤـ', 'ـڤـ', 'ـڤ'),
-  L('ga', 'ݣ', 'ga', 'g', 'g van het Engelse “go” — extra letter, zoals in ݣناوة (gnawa)', 'ݣـ', 'ـݣـ', 'ـݣ', 'gnawa'),
 ]
 
 const index = new Map(LETTERS.map((l) => [l.id, l]))
@@ -76,5 +79,5 @@ export const LETTER_GROUPS: string[][] = [
   ['sad', 'dad', 'ta-emf', 'za-emf'],
   ['ayn', 'ghayn', 'fa', 'qaf'],
   ['kaf', 'lam', 'mim', 'nun'],
-  ['ha-soft', 'waw', 'ya', 'pa', 'va', 'ga'],
+  ['ha-soft', 'waw', 'ya'],
 ]

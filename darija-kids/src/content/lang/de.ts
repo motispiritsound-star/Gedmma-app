@@ -397,8 +397,8 @@ export const de: ContentPack = {
       body: 'ع ist der Laut, der das Arabische berühmt gemacht hat: ein Drücken tief in der Kehle. In Nachrichten schreiben Marokkaner dafür eine 3, weil die 3 wie ein ع aussieht. غ ist das gerollte französische r, und ق ein k ganz weit hinten.',
     },
     'hruf-7': {
-      title: 'Drei marokkanische Extras',
-      body: 'Arabisch hat kein p, v oder g. Marokkaner haben sie sich selbst gebaut, indem sie Punkte hinzugefügt haben: پ (p), ڤ (v) und ݣ (g), wie in ݣناوة — gnawa.',
+      title: 'Die letzten drei',
+      body: 'Damit kennst du alle achtundzwanzig Buchstaben. و und ي sind die beiden, die mal ein Mitlaut sind (w, j) und mal ein langer Selbstlaut (u, i) — welcher von beiden, hörst du am Wort.',
     },
     "groeten-1": {
       title: "Was ist Darija?",

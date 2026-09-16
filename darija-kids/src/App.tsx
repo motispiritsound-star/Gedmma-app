@@ -22,6 +22,7 @@ import { NotFound } from './pages/NotFound'
 const FilmPreview = lazy(() => import('./ui/Film').then((m) => ({ default: m.FilmPreview })))
 const HistoryPreview = lazy(() => import('./ui/HistoryCard').then((m) => ({ default: m.HistoryPreview })))
 const Speech = lazy(() => import('./pages/Speech').then((m) => ({ default: m.Speech })))
+const Record = lazy(() => import('./pages/Record').then((m) => ({ default: m.Record })))
 import { TopBar } from './ui/TopBar'
 import { Welcome } from './ui/Welcome'
 import { useStore } from './engine/store'
@@ -118,6 +119,7 @@ function Chrome() {
             {PREVIEWS && <Route path="/film/:scene" element={<FilmPreview />} />}
             {PREVIEWS && <Route path="/kaart/:cardId" element={<HistoryPreview />} />}
             {PREVIEWS && <Route path="/uitspraak" element={<Speech />} />}
+            {PREVIEWS && <Route path="/opname" element={<Record />} />}
             <Route path="*" element={<NotFound />} />
           </Routes>
           </Suspense>

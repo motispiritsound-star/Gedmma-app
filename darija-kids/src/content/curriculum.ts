@@ -85,10 +85,10 @@ const LETTER_LESSONS: { title: string; tip?: LessonTip }[] = [
   },
   { title: 'ك ل م ن' },
   {
-    title: 'ه و ي + پ ڤ ݣ',
+    title: 'ه و ي',
     tip: {
-      title: "Drie Marokkaanse extra's",
-      body: 'Het Arabisch heeft geen p, v of g. Marokkanen hebben ze er zelf bij gemaakt door puntjes toe te voegen: پ (p), ڤ (v) en ݣ (g), zoals in ݣناوة — gnawa.',
+      title: 'De laatste drie',
+      body: 'Hiermee ken je alle achtentwintig letters. و en ي zijn de twee die soms een medeklinker zijn (w, j) en soms een lange klinker (oe, ie) — welke van de twee hoor je aan het woord.',
     },
   },
 ]

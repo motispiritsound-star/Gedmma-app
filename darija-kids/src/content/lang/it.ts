@@ -397,8 +397,8 @@ export const it: ContentPack = {
       body: 'ع è il suono che ha reso famoso l’arabo: una stretta profonda in gola. Nei messaggi i marocchini scrivono un 3, perché il 3 assomiglia alla ع. غ è la r francese che raschia, e ق una k molto in fondo.',
     },
     'hruf-7': {
-      title: 'Tre extra marocchine',
-      body: 'L’arabo non ha p, v né g. I marocchini se le sono costruite aggiungendo puntini: پ (p), ڤ (v) e ݣ (g), come in ݣناوة — gnawa.',
+      title: 'Le ultime tre',
+      body: 'Con queste conosci tutte e ventotto le lettere. و e ي sono le due che a volte sono consonante (w, i) e a volte vocale lunga (u, i) — te lo dice la parola.',
     },
     "groeten-1": {
       title: "Che cos’è il darija?",

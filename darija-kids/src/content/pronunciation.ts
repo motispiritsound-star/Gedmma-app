@@ -18,8 +18,25 @@
  * change what is said.
  */
 
+/**
+ * Words whose spoken form may differ in letters, not just in diacritics.
+ *
+ * The rule everywhere else is that an override adds vowels and nothing more,
+ * so a typo cannot quietly change what the app says. A handful of words break
+ * that rule for a reason, and each one has to be named here and explained, or
+ * the test refuses it.
+ */
+export const RESPELLED: Record<string, string> = {
+  // An Arabic voice sees الله inside يالله, reaches for the divine name, and
+  // reads three careful syllables — "yā-li-lāh". Moroccans say two. The word
+  // stays written the way everyone types it; only the voice hears يَلاه.
+  'يالله': 'يَلاه',
+}
+
 /** Word → the same word, spelled for the voice. */
 export const SPOKEN_WORD: Record<string, string> = {
+  ...RESPELLED,
+
   // groeten
   'بسلامة': 'بْسلامة',       // bslama, not "bi-salaama"
   'مزيان': 'مْزيان',         // mzyan
@@ -204,9 +221,6 @@ export const LETTER_SPEECH: Record<string, LetterSpeech> = {
   'ha-soft': { ar: 'هَاءْ', base: 'haa' },
   waw: { ar: 'وَاوْ', base: 'waw', say: { nl: 'waauw', de: 'uau', fr: 'waou', es: 'uau', it: 'uau' } },
   ya: { ar: 'يَاءْ', base: 'yaa', say: { nl: 'jaa', de: 'jaa', fr: 'ya', es: 'ya', it: 'ia' } },
-  pa: { ar: 'پَاءْ', base: 'paa', say: { fr: 'pa' } },
-  va: { ar: 'ڤَاءْ', base: 'vaa', say: { de: 'waa' } },
-  ga: { ar: 'ݣَافْ', base: 'gaaf', say: { fr: 'gaf', it: 'ghaaf', es: 'gaaf' } },
 }
 
 /**
