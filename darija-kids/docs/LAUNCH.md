@@ -4,10 +4,93 @@ Eén lijst, van "de app is af" tot "hij staat in de winkel". Alles wat de code
 kan doen is gedaan; wat hier overblijft is wat een mens met een bankrekening
 en een paspoort moet doen.
 
+De app zelf staat er klaar voor: 103 tests groen, elk scherm nagelopen in zes
+talen op drie schermbreedtes, alle 34 klanken gemeten, alle 28 letters
+ingesproken door een mens, en de winkelteksten, schermafbeeldingen, films en
+het e-boek klaar in zes talen. Wat nog écht ontbreekt staat in de eerste twee
+blokken van de checklist hieronder: de handelaarsgegevens en de accounts.
+
 Reken op **vier tot zes weken** tussen je eerste account en je eerste
 downloader. Niet omdat het werk zoveel is, maar omdat er één wachttijd van twee
 tot vier weken in zit die je niet kunt inhalen — welke dat is, hangt af van de
 keuze in §1. Begin dus met die keuze, en doe de rest van deze lijst ondertussen.
+
+---
+
+## De checklist
+
+Alles op één plek, in de volgorde waarin het moet. Wat de code kon doen staat
+al aangevinkt; de rest heeft een mens met een bankrekening en een paspoort
+nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
+
+### Vandaag — dit blokkeert alle andere stappen
+
+- [ ] `src/content/operator.ts` invullen: naam, e-mail, adres, land, telefoon, KvK (§0)
+- [ ] D-U-N-S-nummer aanvragen als je de organisatieroute bij Google kiest — die klok loopt het langst (§1)
+- [ ] KvK-inschrijving regelen als je die nog niet hebt (§1)
+- [ ] Domein kopen en de website online zetten (§0b)
+
+### De accounts
+
+- [ ] Google Play Console aanmaken, $ 25 eenmalig (§1)
+- [ ] Apple Developer Program, € 99 per jaar (§1)
+- [ ] Identiteit laten verifiëren bij allebei
+- [ ] Bankrekening en belastinggegevens invullen in beide consoles (§2)
+- [ ] Apple: de **Paid Applications**-overeenkomst tekenen — zonder handtekening verkoop je niets
+- [ ] Apple: aanmelden voor het **Small Business Program**, 15% in plaats van 30%
+
+### De producten
+
+- [ ] `app.darijakids.yearly` — € 59,88 per jaar, 3 dagen gratis (§2)
+- [ ] `app.darijakids.monthly` — € 6,99 per maand, 3 dagen gratis (§2)
+- [ ] Beide in **dezelfde abonnementsgroep**, anders kan niemand overstappen
+- [ ] `app.darijakids.ebook` — € 14,99 eenmalig, **niet-verbruikbaar**, geen abonnement (§2)
+- [ ] Bij Apple: € 59,99 in plaats van € 59,88 — dat prijspunt bestaat daar niet
+
+### Wat je uploadt
+
+- [x] Schermafbeeldingen in zes talen — `npm run screenshots`
+- [x] App preview 886×1920, onder de 30 seconden — `npm run intro`
+- [x] Winkelteksten in zes talen — `store/listing.*.md`
+- [x] Icoon en splashscherm — `npm run assets`
+- [x] Het e-boek in zes talen — `npm run ebook`
+- [ ] Android: `npm run sync && npm run android`, dan een **AAB** bouwen en ondertekenen (§3)
+- [ ] iOS: op een Mac `npx cap add ios`, dan archiveren in Xcode (§3)
+
+### De formulieren
+
+- [ ] Apple **App Privacy** (§4) — zonder postdienst: "Data Not Collected"
+- [ ] Google **Data safety** (§4) — idem
+- [ ] Leeftijdsclassificatie 4+ / onder 13, en dus de **Kids**- of **Families**-regels
+- [ ] Handelaarsgegevens in beide consoles — dezelfde als in `operator.ts`
+- [ ] Privacy-URL en support-URL invullen (`/privacy` en `/ouders` op je domein)
+- [ ] De notitie aan de reviewer overnemen (§5)
+
+### Voor je op verzenden drukt
+
+- [x] `npm test` — 103 tests
+- [x] `npm run typecheck`
+- [x] `npm run sweep -- --breed` — elk scherm, zes talen, licht en donker, 320/390/820 px
+- [x] `npm run soundcheck` — alle 34 klanken
+- [x] `npm run lettercheck` — alle 28 letters
+- [x] `npm run bonuscheck`, `npm run historycheck`
+- [ ] `npm run feedbackcheck` — kan pas als `operator.ts` is ingevuld
+- [ ] Op een écht toestel gespeeld, met geluid aan
+
+### De uitspraak
+
+- [x] 28 van de 28 letters ingesproken door een mens
+- [ ] De herkomst en licentie van die opnames vastleggen in `store/press-kit.md` — zonder commerciële licentie mogen ze niet mee in een betaalde app
+- [ ] De woorden van de eerste zes units inspreken (`/opname`, dan `npm run add-clip`)
+- [ ] Het controleblad aflopen: `npm run sheet`
+
+### Publiceren
+
+- [ ] Google: gesloten test met 12 testers, 14 dagen — **alleen op de persoonlijke route** (§6)
+- [ ] Apple: indienen en wachten op review (1–3 dagen)
+- [ ] Google: productie aanvragen
+- [ ] Beide op **handmatig vrijgeven** zetten, zodat je zelf de dag kiest
+- [ ] De eerste week uitvoeren (§7)
 
 ---
 
@@ -89,10 +172,10 @@ is genoeg; dat kan gratis bij de meeste registrars.
 
 | Wat | Waar | Kost | Duurt |
 |---|---|---|---|
-| KvK-inschrijving | kvk.nl | € 82,25 | een afspraak, daarna direct |
-| Google Play Console | play.google.com/console | $ 25 eenmalig | 1–2 dagen verificatie |
-| Apple Developer Program | developer.apple.com | € 99 per jaar | 1–2 dagen, soms langer |
-| D-U-N-S-nummer (alleen voor de organisatieroute) | dnb.com | gratis | tot 30 dagen |
+| KvK-inschrijving | [kvk.nl/starten](https://www.kvk.nl/starten/inschrijven-bij-de-kvk/) | € 82,25 | een afspraak, daarna direct |
+| Google Play Console | [play.google.com/console/signup](https://play.google.com/console/signup) | $ 25 eenmalig | 1–2 dagen verificatie |
+| Apple Developer Program | [developer.apple.com/programs/enroll](https://developer.apple.com/programs/enroll/) | € 99 per jaar | 1–2 dagen, soms langer |
+| D-U-N-S-nummer (alleen voor de organisatieroute) | [developer.apple.com/enroll/duns-lookup](https://developer.apple.com/enroll/duns-lookup/) | gratis | tot 30 dagen |
 
 **Apple is simpel.** Een eenmanszaak is geen aparte rechtspersoon, dus schrijf
 je in als *individual / sole proprietor*. Dat scheelt een D-U-N-S-nummer: die
@@ -264,6 +347,9 @@ Heb je in §1 voor een organisatieaccount gekozen, dan slaat deze paragraaf over
 en mag je meteen productie aanvragen. Anders moet dit af vóór je mag
 publiceren, en geldt het **per app**:
 
+De regel zelf staat bij Google onder
+[Testvereisten voor nieuwe accounts](https://support.google.com/googleplay/android-developer/answer/14151465).
+
 1. Maak een **gesloten test** aan en upload je AAB.
 2. Verzamel **12 testers** die het opt-in-adres gebruiken. Familie en vrienden
    mogen, maar ze moeten het écht installeren — Google meet dagelijkse
@@ -279,9 +365,22 @@ naar dagelijkse activiteit over die veertien dagen.
 
 ## 7. Lanceren
 
-De eerste week bepaalt meer dan de rest van het jaar. `store/social.md` heeft
-de berichten in zes talen; `store/press-kit.md` is wat je een journalist of
-een nieuwsbrief stuurt.
+De eerste week bepaalt meer dan de rest van het jaar. Het materiaal ligt klaar:
+
+| Wat | Waar | Waarmee gemaakt |
+|---|---|---|
+| Winkelteksten, zes talen | `store/listing.{nl,fr,de,es,it,en}.md` | met de hand |
+| Berichten voor social, zes talen | `store/social.md` | met de hand |
+| Perskit | `store/press-kit.md` | met de hand |
+| Zoekwoorden per winkel | `store/keywords.md` | met de hand |
+| Schermafbeeldingen | `store/screenshots/` | `npm run screenshots` |
+| Beelden voor social en de site | `store/marketing/` | `npm run marketing` |
+| Films, vier formaten per taal | `store/video/` | `npm run intro` |
+| Het e-boek, zes talen | `public/ebook/` | `npm run ebook` |
+
+De films, schermafbeeldingen en marketingbeelden staan niet in git — ze worden
+uit de app zelf gemaakt, dus draai die drie commando's op de dag dat je ze
+nodig hebt en ze kloppen met wat er in de winkel staat.
 
 Wat werkt, op volgorde:
 
@@ -314,3 +413,64 @@ voor je kunnen doen.
   `android/app/build.gradle`, en het buildnummer in Xcode.
 - Houd de zes talen gelijk. Een test faalt als er een vertaling ontbreekt, dus
   dat gaat vanzelf goed zolang je `npm test` draait.
+
+---
+
+## Alle links op één plek
+
+De Apple-links heb ik gecontroleerd; die werken. De rest kon ik vanaf hier niet
+bereiken — ze staan er op naam en zijn stabiel, maar loop ze even na.
+
+### Aanmelden
+
+| | |
+|---|---|
+| Apple Developer Program | https://developer.apple.com/programs/enroll/ ✓ |
+| App Store Connect | https://appstoreconnect.apple.com |
+| Google Play Console aanmelden | https://play.google.com/console/signup |
+| Google Play Console | https://play.google.com/console |
+| D-U-N-S-nummer aanvragen | https://developer.apple.com/enroll/duns-lookup/ |
+| KvK inschrijven | https://www.kvk.nl/starten/inschrijven-bij-de-kvk/ |
+| KvK: adres afschermen | https://www.kvk.nl/over-het-handelsregister/adresgegevens-afschermen/ |
+| Belastingdienst, kleineondernemersregeling | https://www.belastingdienst.nl/kor |
+
+### De regels waar je app aan wordt getoetst
+
+| | |
+|---|---|
+| App Review Guidelines | https://developer.apple.com/app-store/review/guidelines/ ✓ |
+| Apple, apps voor kinderen | https://developer.apple.com/app-store/kids-apps/ ✓ |
+| Apple, privacylabels | https://developer.apple.com/app-store/app-privacy-details/ ✓ |
+| Apple, Small Business Program | https://developer.apple.com/app-store/small-business-program/ ✓ |
+| Apple, maten van schermafbeeldingen | https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications/ ✓ |
+| Google, beleid voor ontwikkelaars | https://play.google.com/about/developer-content-policy/ |
+| Google, Families-beleid | https://support.google.com/googleplay/android-developer/answer/9893335 |
+| Google, Data safety-formulier | https://support.google.com/googleplay/android-developer/answer/10787469 |
+| Google, gesloten test met 12 testers | https://support.google.com/googleplay/android-developer/answer/14151465 |
+
+### Als je de postdienst aanzet
+
+| | |
+|---|---|
+| Cloudflare (worker en database) | https://dash.cloudflare.com |
+| Brevo (de mail) | https://www.brevo.com |
+| Alles erover | [`server/LEES-MIJ.md`](../server/LEES-MIJ.md) |
+
+### Hosting voor de website
+
+| | |
+|---|---|
+| Netlify | https://app.netlify.com |
+| Cloudflare Pages | https://pages.cloudflare.com |
+| Uitgeschreven | [DEPLOY.md](DEPLOY.md) |
+
+### De rest van deze map
+
+| | |
+|---|---|
+| Het geld en de producten | [PAYMENTS.md](PAYMENTS.md) |
+| De consoles, veld voor veld | [STORES.md](STORES.md) |
+| Online zetten | [DEPLOY.md](DEPLOY.md) |
+| Een woord of zin aanpassen | [INHOUD.md](INHOUD.md) |
+| Wie dit koopt en waarom | [MARKT.md](MARKT.md) |
+| Opnames maken en toevoegen | [`src/audio/LEES-MIJ.md`](../src/audio/LEES-MIJ.md) |
