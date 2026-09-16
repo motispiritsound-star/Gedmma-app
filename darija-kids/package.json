@@ -32,7 +32,8 @@
     "voice": "node scripts/make-voice.mjs",
     "sweep": "node scripts/sweep.mjs",
     "nieuw": "node scripts/nieuwe-gebruiker.mjs",
-    "checklist": "node scripts/make-checklist.mjs"
+    "checklist": "node scripts/make-checklist.mjs",
+    "opnamelijst": "node scripts/make-opnamelijst.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
