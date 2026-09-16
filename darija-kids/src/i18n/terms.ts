@@ -1,5 +1,5 @@
 import type { Lang } from './languages'
-import { LIST_PRICE, TRIAL_DAYS } from '../engine/billing'
+import { planOf, TRIAL_DAYS } from '../engine/billing'
 
 /**
  * The terms of use, in all five interface languages.
@@ -25,7 +25,9 @@ export interface TermsText {
 
 type Section = [title: string, body: string[]]
 
-const price = LIST_PRICE
+const price = planOf('maand').list
+const yearPrice = planOf('jaar').list
+const yearPerMonth = planOf('jaar').perMonth
 const days = String(TRIAL_DAYS)
 
 const SECTIONS_NL: Section[] = [
@@ -37,8 +39,8 @@ const SECTIONS_NL: Section[] = [
     'Het Arabische alfabet en de eerste vijf units zijn gratis en blijven gratis. Daar hoef je niets voor af te sluiten en niets voor in te vullen.',
   ]],
   ['Het abonnement', [
-    `De volledige cursus loopt via een abonnement van ${price} per maand, inclusief btw. Je begint met ${days} dagen gratis; daarna wordt het bedrag maandelijks afgeschreven via je App Store- of Google Play-account, net zolang tot je opzegt.`,
-    'Opzeggen doe je in dat winkelaccount, niet bij ons — wij kunnen er niet bij. Zeg je op vóór het einde van de gratis dagen, dan betaal je niets. Zeg je later op, dan loopt je toegang door tot het einde van de maand die je al betaald hebt.',
+    `De volledige cursus loopt via een abonnement. Je kiest zelf: ${yearPrice} voor een heel jaar vooruit — dat is ${yearPerMonth} per maand — of ${price} per maand. Beide zijn inclusief btw. Je begint met ${days} dagen gratis; daarna wordt het bedrag afgeschreven via je App Store- of Google Play-account en daarna telkens opnieuw, jaarlijks of maandelijks, net zolang tot je opzegt.`,
+    'Opzeggen doe je in dat winkelaccount, niet bij ons — wij kunnen er niet bij. Zeg je op vóór het einde van de gratis dagen, dan betaal je niets. Zeg je later op, dan loopt je toegang door tot het einde van de periode die je al betaald hebt — het jaar of de maand.',
     'Apple en Google zijn de verkoper: zij innen het geld, dragen de btw af en bepalen hun eigen regels voor terugbetaling. Een verzoek om je geld terug gaat dus naar hen.',
     'Verandert de prijs ooit, dan laat de winkel dat weten vóór het ingaat, en kun je opzeggen in plaats van mee te gaan.',
   ]],
@@ -71,8 +73,8 @@ const SECTIONS_FR: Section[] = [
     'L’alphabet arabe et les cinq premières unités sont gratuits et le restent. Il n’y a rien à souscrire et rien à remplir pour cela.',
   ]],
   ['L’abonnement', [
-    `Le cours complet passe par un abonnement de ${price} par mois, TTC. Tu commences par ${days} jours offerts ; ensuite le montant est prélevé chaque mois via ton compte App Store ou Google Play, jusqu’à ce que tu résilies.`,
-    'La résiliation se fait dans ce compte de boutique, pas chez nous — nous n’y avons pas accès. Si tu résilies avant la fin des jours offerts, tu ne paies rien. Plus tard, ton accès continue jusqu’à la fin du mois déjà payé.',
+    `Le cours complet passe par un abonnement, au choix : ${yearPrice} pour une année entière payée d’avance — soit ${yearPerMonth} par mois — ou ${price} par mois. Les deux sont TTC. Tu commences par ${days} jours offerts ; ensuite le montant est prélevé via ton compte App Store ou Google Play, puis à chaque échéance, annuelle ou mensuelle, jusqu’à ce que tu résilies.`,
+    'La résiliation se fait dans ce compte de boutique, pas chez nous — nous n’y avons pas accès. Si tu résilies avant la fin des jours offerts, tu ne paies rien. Plus tard, ton accès continue jusqu’à la fin de la période déjà payée — l’année ou le mois.',
     'Apple et Google sont le vendeur : ils encaissent, reversent la TVA et fixent leurs propres règles de remboursement. Une demande de remboursement leur revient donc.',
     'Si le prix change un jour, la boutique te prévient avant que cela s’applique, et tu peux résilier au lieu de suivre.',
   ]],
@@ -105,8 +107,8 @@ const SECTIONS_DE: Section[] = [
     'Das arabische Alphabet und die ersten fünf Einheiten sind kostenlos und bleiben es. Dafür musst du nichts abschließen und nichts ausfüllen.',
   ]],
   ['Das Abo', [
-    `Der ganze Kurs läuft über ein Abo von ${price} pro Monat, inklusive Mehrwertsteuer. Du beginnst mit ${days} Tagen gratis; danach wird der Betrag monatlich über dein App-Store- oder Google-Play-Konto abgebucht, bis du kündigst.`,
-    'Gekündigt wird in diesem Store-Konto, nicht bei uns — wir kommen da nicht heran. Kündigst du vor Ende der Gratistage, zahlst du nichts. Kündigst du später, läuft dein Zugang bis zum Ende des bereits bezahlten Monats.',
+    `Der ganze Kurs läuft über ein Abo, und du hast die Wahl: ${yearPrice} für ein ganzes Jahr im Voraus — das sind ${yearPerMonth} pro Monat — oder ${price} pro Monat. Beides inklusive Mehrwertsteuer. Du beginnst mit ${days} Tagen gratis; danach wird der Betrag über dein App-Store- oder Google-Play-Konto abgebucht und danach jeweils erneut, jährlich oder monatlich, bis du kündigst.`,
+    'Gekündigt wird in diesem Store-Konto, nicht bei uns — wir kommen da nicht heran. Kündigst du vor Ende der Gratistage, zahlst du nichts. Kündigst du später, läuft dein Zugang bis zum Ende des bereits bezahlten Zeitraums — des Jahres oder des Monats.',
     'Apple und Google sind der Verkäufer: Sie kassieren, führen die Mehrwertsteuer ab und legen ihre eigenen Regeln für Erstattungen fest. Ein Erstattungswunsch geht also an sie.',
     'Ändert sich der Preis irgendwann, sagt der Store das vorher, und du kannst kündigen, statt mitzugehen.',
   ]],
@@ -139,8 +141,8 @@ const SECTIONS_ES: Section[] = [
     'El alfabeto árabe y las cinco primeras unidades son gratis y lo seguirán siendo. No hay que contratar nada ni rellenar nada para eso.',
   ]],
   ['La suscripción', [
-    `El curso completo va con una suscripción de ${price} al mes, con IVA incluido. Empiezas con ${days} días gratis; después se cobra el importe cada mes a través de tu cuenta de la App Store o de Google Play, hasta que canceles.`,
-    'Se cancela en esa cuenta de la tienda, no con nosotros: no tenemos acceso. Si cancelas antes de que acaben los días gratis, no pagas nada. Si cancelas más tarde, mantienes el acceso hasta el final del mes ya pagado.',
+    `El curso completo va con una suscripción, y eliges tú: ${yearPrice} por un año entero pagado por adelantado —son ${yearPerMonth} al mes— o ${price} al mes. Ambas con IVA incluido. Empiezas con ${days} días gratis; después se cobra el importe a través de tu cuenta de la App Store o de Google Play, y así cada año o cada mes, hasta que canceles.`,
+    'Se cancela en esa cuenta de la tienda, no con nosotros: no tenemos acceso. Si cancelas antes de que acaben los días gratis, no pagas nada. Si cancelas más tarde, mantienes el acceso hasta el final del periodo ya pagado: el año o el mes.',
     'Apple y Google son el vendedor: cobran, liquidan el IVA y fijan sus propias normas de devolución. Una petición de devolución va, por tanto, a ellos.',
     'Si algún día cambia el precio, la tienda te avisa antes de que se aplique y puedes cancelar en lugar de seguir.',
   ]],
@@ -173,8 +175,8 @@ const SECTIONS_EN: Section[] = [
     'The Arabic alphabet and the first five units are free and stay free. There is nothing to sign up for and nothing to fill in.',
   ]],
   ['The subscription', [
-    `The full course runs on a subscription of ${price} a month, VAT included. You start with ${days} days free; after that the amount is charged monthly through your App Store or Google Play account, until you cancel.`,
-    'Cancelling happens in that store account, not with us — we cannot reach it. Cancel before the free days end and you pay nothing. Cancel later and your access runs to the end of the month you already paid for.',
+    `The full course runs on a subscription, and you choose: ${yearPrice} for a whole year up front — that is ${yearPerMonth} a month — or ${price} a month. Both include VAT. You start with ${days} days free; after that the amount is charged through your App Store or Google Play account, and again every year or every month, until you cancel.`,
+    'Cancelling happens in that store account, not with us — we cannot reach it. Cancel before the free days end and you pay nothing. Cancel later and your access runs to the end of the period you already paid for — the year or the month.',
     'Apple and Google are the seller: they take the payment, settle the VAT and set their own refund rules. A request for your money back therefore goes to them.',
     'If the price ever changes, the store tells you before it applies, and you can cancel rather than follow it.',
   ]],
