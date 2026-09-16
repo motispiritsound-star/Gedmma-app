@@ -13,13 +13,15 @@
  *   node scripts/add-clip.mjs opname.wav=ya andere.wav=waw
  *   node scripts/add-clip.mjs salam.wav=salam --map woorden
  *
- * WAV in, WAV out — no encoder to install. A one-second clip at 16 kHz is
- * about 20 kB, so the whole alphabet is well under a megabyte.
+ * Elk formaat erin, WAV eruit: een spraakmemo van een telefoon (.m4a), iets
+ * uit WhatsApp (.ogg) of uit een browser (.webm) gaat eerst door ffmpeg heen.
+ * Een clip van een seconde op 16 kHz is ongeveer 20 kB, dus het hele alfabet
+ * blijft ruim onder een megabyte.
  */
 import { readFile, writeFile, mkdir } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { bewerk, readWav, writeWav, PEAK } from './lib/wav.mjs'
+import { bewerk, naarWav, readWav, writeWav, PEAK } from './lib/wav.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 /** Which folder an id belongs in. `--map letters` forces one. */
@@ -44,7 +46,7 @@ for (const job of jobs) {
   const file = job.slice(0, cut)
   const id = job.slice(cut + 1)
   try {
-    const { rate, samples } = readWav(await readFile(file))
+    const { rate, samples } = readWav(await naarWav(file))
     const klaar = bewerk(rate, samples)
     if (!klaar) { console.error(`${id}: alleen stilte, overgeslagen`); continue }
 

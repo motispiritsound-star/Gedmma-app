@@ -58,10 +58,27 @@ meestal een woord overgeslagen of zijn er twee aan elkaar geplakt — dan is
 opnieuw opnemen sneller dan repareren, want vanaf dat punt staat alles onder de
 verkeerde naam.
 
-Een ruwe opname is nooit meteen goed: `npm run add-clip opname.wav=salam --map
+Een ruwe opname is nooit meteen goed: `npm run add-clip opname.m4a=salam --map
 woorden` snijdt de stilte eromheen weg, zet alles op dezelfde sterkte en fadet
-de randen, zodat twee opnames achter elkaar niet als twee verschillende
-kamers klinken.
+de randen, zodat twee opnames achter elkaar niet als twee verschillende kamers
+klinken. Elk formaat mag — een spraakmemo van een telefoon (`.m4a`), iets uit
+WhatsApp (`.ogg`), iets uit een browser (`.webm`).
+
+### Of één spraakmemo voor de hele lijst
+
+Wie de lijst achter elkaar inspreekt hoeft maar één bestand te sturen:
+
+```
+npm run knip -- opname.m4a --voorrang --proef   # eerst kijken
+npm run knip -- opname.m4a --voorrang           # en dan opslaan
+```
+
+Dat zoekt de stiltes op, knipt de opname in losse woorden en zet ze onder de
+namen uit `OPNAME_NODIG`, in die volgorde. Klopt het aantal stukken niet met
+het aantal woorden, dan slaat hij niets op en zegt hij wat hij wél vond — want
+is er één woord overgeslagen, dan staat vanaf dat punt alles onder de verkeerde
+naam, en dat is erger dan niets. Een andere pauzelengte proberen kan met
+`--pauze 0.25` of `--pauze 0.4`.
 
 **Begin bij de letters en de eerste unit.** Achtentwintig letters en de dertig
 meestgebruikte woorden dekken het grootste deel van wat een kind in de eerste

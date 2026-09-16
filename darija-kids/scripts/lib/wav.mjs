@@ -121,3 +121,35 @@ export function bewerk(rate, samples) {
   fade(uit, rate)
   return { samples: uit, piek, was: samples.length / rate, nu: uit.length / rate }
 }
+
+/* ------------------------------------------------ alles wat geen WAV is */
+
+/**
+ * Elk geluidsbestand naar mono 16 kHz WAV, via ffmpeg.
+ *
+ * Een spraakmemo van een telefoon is een .m4a, WhatsApp stuurt .ogg, en een
+ * browser levert .webm. Dit leest ze alle drie, zodat wie iets instuurt zich
+ * geen zorgen hoeft te maken over het formaat — en dat is precies de drempel
+ * die je niet wilt opwerpen bij iemand die je een dienst bewijst.
+ *
+ * 16 kHz mono is ruim voor spraak: alles wat een stem doet zit onder de 8 kHz,
+ * en het scheelt driekwart aan bestandsgrootte in een app die offline werkt.
+ */
+export async function naarWav(pad) {
+  const { execFile } = await import('node:child_process')
+  const { promisify } = await import('node:util')
+  const { readFile: lees, unlink } = await import('node:fs/promises')
+  const { tmpdir } = await import('node:os')
+  const path = (await import('node:path')).default
+  const ffmpeg = (await import('ffmpeg-static')).default
+
+  if (pad.toLowerCase().endsWith('.wav')) return lees(pad)
+
+  const uit = path.join(tmpdir(), `knip-${Date.now()}-${Math.random().toString(36).slice(2)}.wav`)
+  try {
+    await promisify(execFile)(ffmpeg, ['-hide_banner', '-loglevel', 'error', '-y', '-i', pad, '-ac', '1', '-ar', '16000', uit])
+    return await lees(uit)
+  } finally {
+    await unlink(uit).catch(() => {})
+  }
+}
