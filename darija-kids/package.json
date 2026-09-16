@@ -25,6 +25,7 @@
     "historycheck": "node scripts/historycheck.mjs",
     "lettercheck": "node scripts/lettercheck.mjs",
     "sheet": "node scripts/make-sheet.mjs",
+    "add-clip": "node scripts/add-clip.mjs",
     "bonuscheck": "node scripts/bonuscheck.mjs",
     "brand": "node scripts/make-brand.mjs"
   },
