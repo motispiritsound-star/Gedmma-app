@@ -42,7 +42,21 @@ zware t, niet ت) en `ha-soft` is ه (de gewone h, niet ح).
 
 `/opname` in de app — in de ontwikkelversie en in de demo — neemt ze één voor
 één op met de microfoon, laat je terugluisteren en zet ze klaar om op te slaan.
-Daar staat ook hoe ver je bent per soort.
+Daar staat ook hoe ver je bent per soort, en de woorden waarvan is vastgesteld
+dat geen enkele stem ze goed zegt staan bovenaan.
+
+**Of alles in één keer.** Onder *woorden* staat "Liever alles achter elkaar
+inlezen?". Dan druk je één keer op opnemen, leest de lijst van het scherm voor
+met een adempauze van een halve seconde tussen de woorden, en drukt op stop. De
+app zoekt de stiltes op, knipt de opname in losse bestanden en legt elk stuk
+naast het woord waar het bij hoort. Twintig woorden in één adem, in plaats van
+twintig keer een knop vasthouden.
+
+Het blijft te controleren: je ziet per woord wat eruit kwam, je hoort het terug,
+en je slaat pas op als het aantal stukken klopt. Klopt het niet, dan is er
+meestal een woord overgeslagen of zijn er twee aan elkaar geplakt — dan is
+opnieuw opnemen sneller dan repareren, want vanaf dat punt staat alles onder de
+verkeerde naam.
 
 Een ruwe opname is nooit meteen goed: `npm run add-clip opname.wav=salam --map
 woorden` snijdt de stilte eromheen weg, zet alles op dezelfde sterkte en fadet

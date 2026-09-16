@@ -7,6 +7,7 @@ import { clipCounts, hasClip } from '../engine/clips'
 import { OPNAME_NODIG } from '../content/eigen'
 import { say, sayLetter, sfx } from '../engine/audio'
 import { Button, Card, Progress, SectionTitle } from '../ui/kit'
+import { Reeks } from '../ui/Reeks'
 
 /**
  * The recording booth.
@@ -52,6 +53,7 @@ export function Record() {
   const [takes, setTakes] = useState<Record<string, Take>>({})
   const [busy, setBusy] = useState<string | null>(null)
   const [trouble, setTrouble] = useState('')
+  const [reeks, setReeks] = useState(false)
   const recorder = useRef<MediaRecorder | null>(null)
   const stream = useRef<MediaStream | null>(null)
 
@@ -167,6 +169,23 @@ export function Record() {
         )}
         {trouble && <p className="mt-2 font-bold text-terra-500">{trouble}</p>}
       </Card>
+
+      {/* De hele lijst in één keer, voor wie er niet eenenveertig keer voor
+          gaat zitten. Alleen waar er ook echt een lijst met voorrang is. */}
+      {teDoen > 0 && tab === 'woorden' && (
+        reeks
+          ? (
+            <Reeks
+              woorden={ROWS.woorden().filter((r) => EERST.has(r.id) && !hasClip(r.id)).slice(0, 20)}
+              klaar={() => setReeks(false)}
+            />
+          )
+          : (
+            <Button variant="secondary" className="mb-4 w-full" onClick={() => { sfx.tap(); setReeks(true) }}>
+              🎙️ Liever alles achter elkaar inlezen?
+            </Button>
+          )
+      )}
 
       <div className="mb-4 flex flex-wrap gap-2">
         {(['letters', 'woorden', 'zinnen'] as const).map((key) => (
