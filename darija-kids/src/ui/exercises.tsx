@@ -7,12 +7,13 @@ import { connects, letter } from '../content/alphabet'
 import { sentence } from '../content/sentences'
 import { sentenceMeaning } from '../content/localise'
 import { maybeWord } from '../content/lexicon'
-import { canListen, listenOnce, say, sfx } from '../engine/audio'
+import { canListen, listenOnce, say, sayLetter, sfx } from '../engine/audio'
 import { useStore } from '../engine/store'
 import { Button, Card } from './kit'
 import { Scribe } from './Scribe'
 import { SpeakButton, useMeaning, useNote, WordText } from './WordChip'
 import { useLang, useT } from '../i18n'
+import { letterVoice } from '../content/pronunciation'
 
 /**
  * One component per exercise type. Each of them reports a single verdict and
@@ -513,7 +514,7 @@ function NewLetter({ exercise, onAnswer }: ExerciseProps) {
   const formName = useFormName()
   const l = letter(exercise.letterId!)
   const example = l.exampleWordId ? maybeWord(l.exampleWordId) : undefined
-  useEffect(() => { say(l.ar, { tr: l.name }) }, [l.ar, l.name])
+  useEffect(() => { sayLetter(l) }, [l.id])
 
   return (
     <div>
@@ -522,7 +523,7 @@ function NewLetter({ exercise, onAnswer }: ExerciseProps) {
           <div className="ar text-7xl font-bold">{l.ar}</div>
           <p className="font-display text-2xl font-extrabold">{l.name}</p>
           <p className="text-center text-[var(--ink-soft)]">{t.alphabet.klinktAls(l.sound)}</p>
-          <SpeakButton ar={l.ar} tr={l.name} />
+          <SpeakButton {...letterVoice(l)} />
 
           <ul className="mt-2 grid w-full grid-cols-3 gap-2 text-center">
             {(['initial', 'medial', 'final'] as LetterForm[]).map((form) => (
@@ -568,8 +569,8 @@ function LetterChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mo
 
   useEffect(() => {
     setChosen(null)
-    if (mode === 'klank') say(l.ar, { tr: l.name })
-  }, [exercise.id, mode, l.ar, l.name])
+    if (mode === 'klank') sayLetter(l)
+  }, [exercise.id, mode, l.id])
 
   const choose = (id: string) => {
     if (locked) return
@@ -590,12 +591,12 @@ function LetterChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mo
           <Card className="p-6 text-center">
             <p className="font-display text-3xl font-extrabold">{l.name}</p>
             <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.alphabet.klinktAls(l.sound)}</p>
-            <div className="mt-3 flex justify-center"><SpeakButton ar={l.ar} tr={l.name} /></div>
+            <div className="mt-3 flex justify-center"><SpeakButton {...letterVoice(l)} /></div>
           </Card>
         ) : (
           <Card className="flex items-center justify-center gap-4 p-6">
             <span className="ar text-6xl font-bold">{l.ar}</span>
-            <SpeakButton ar={l.ar} tr={l.name} />
+            <SpeakButton {...letterVoice(l)} />
           </Card>
         )}
       </Prompt>

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { UNITS, LESSONS } from './curriculum'
 import { allWords, maybeWord, searchWords } from './lexicon'
 import { LETTERS } from './alphabet'
-import { SPOKEN, SPOKEN_WORD, spokenForm } from './pronunciation'
+import { LETTER_SPEECH, SPOKEN, SPOKEN_WORD, letterSpeech, spokenForm } from './pronunciation'
 import { ALL_SENTENCES, maybeSentence } from './sentences'
 import { STORIES } from './stories'
 import { HISTORY, cardForCheckpoint, historyById } from './history'
@@ -221,5 +221,39 @@ describe('history cards', () => {
     expect(cardForCheckpoint(0)).toBe(HISTORY[0])
     expect(cardForCheckpoint(HISTORY.length)).toBe(HISTORY[0])
     for (let n = 0; n < 60; n++) expect(historyById(cardForCheckpoint(n).id)).toBeDefined()
+  })
+})
+
+describe('how the letters are said', () => {
+  it('gives every letter an Arabic name and a borrowed spelling', () => {
+    for (const l of LETTERS) {
+      const speech = LETTER_SPEECH[l.id]
+      expect(speech, l.id).toBeDefined()
+      // The name, not the shape: a voice handed one bare glyph says anything.
+      expect(speech!.ar.length, l.id).toBeGreaterThan(l.ar.length)
+      expect(speech!.base, l.id).toMatch(/^[a-z']+$/)
+    }
+  })
+
+  it('has a spelling for all six borrowed voices', () => {
+    for (const l of LETTERS) {
+      const { latin } = letterSpeech(l.id, l.ar, l.name)
+      for (const target of ['nl', 'fr', 'de', 'es', 'it', 'en']) {
+        expect(latin[target], `${l.id}/${target}`).toBeTruthy()
+      }
+    }
+  })
+
+  it('never says ج as a plain z', () => {
+    // The bug this table exists for: "jim" through the Dutch word rules came
+    // out "ziem", which is the sound of ز, not of ج.
+    const { latin } = letterSpeech('jim', 'ج', 'jim')
+    expect(latin.nl).toBe('zjiem')
+    expect(latin.nl).not.toMatch(/^z[aeiou]/)
+  })
+
+  it('gives the emphatic letters a name of their own', () => {
+    const names = LETTERS.map((l) => l.name)
+    expect(new Set(names).size, names.join(' ')).toBe(names.length)
   })
 })

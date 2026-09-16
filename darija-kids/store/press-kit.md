@@ -6,8 +6,9 @@ plek. Overnemen mag; toestemming vragen hoeft niet.
 ## In één zin
 
 Darija Kids leert kinderen en jongeren het Marokkaans-Arabisch dat hun familie
-thuis spreekt — met uitspraak, het Arabische schrift en korte lessen, in vijf
-talen en zonder advertenties.
+thuis spreekt — met uitspraak, het Arabische schrift, korte lessen en een kort
+filmpje uit de Marokkaanse geschiedenis na elke toets, in zes talen en zonder
+advertenties.
 
 ## In één alinea
 
@@ -17,9 +18,10 @@ Bestaande taalapps helpen daar niet bij: die leren Modern Standaardarabisch,
 een schrijftaal die niemand thuis spreekt. Darija Kids leert juist wél de
 straattaal van Casablanca en Rabat: 304 woorden, 100 zinnen, het hele Arabische
 alfabet, verhalen en spelletjes, in een pad van 17 units dat begint bij de
-letters en eindigt bij afdingen op de souq. De app spreekt de taal van het kind
-— Nederlands, Frans, Duits, Spaans of Engels — en kiest die zelf op basis van
-het toestel.
+letters en eindigt bij afdingen op de souq. Na elke toets krijgt het kind een
+kort filmpje uit de geschiedenis van Marokko, voorgelezen in zijn eigen taal.
+De app spreekt de taal van het kind — Nederlands, Frans, Duits, Spaans,
+Italiaans of Engels — en kiest die zelf op basis van het toestel.
 
 ## De feiten
 
@@ -28,8 +30,9 @@ het toestel.
 | Naam | Darija Kids |
 | Wat | Marokkaans-Arabisch (Darija) leren voor kinderen en jongeren |
 | Leeftijd | Vanaf ongeveer 7 jaar zelfstandig, jonger samen met een ouder |
-| Talen | Nederlands, Frans, Duits, Spaans, Engels |
+| Talen | Nederlands, Frans, Duits, Spaans, Italiaans, Engels |
 | Inhoud | 17 units (A0–A2), 304 woorden, 100 zinnen, 31 letters, 4 verhalen, 3 spellen |
+| Geschiedenis | 14 korte filmpjes over Marokko, één na elke toets, voorgelezen in de taal van het kind |
 | Daarna | 5 bonusrondes die uit je eigen voortgang worden gemaakt — schrijven, dictee, zinnen, marathon, spreken — dus de app is nooit uit |
 | Prijs | Gratis beginnen; volledige cursus € 59,88 per jaar (€ 4,99 per maand) of € 6,99 per maand, eerste 3 dagen gratis |
 | Platforms | iPhone, iPad, Android, en elke browser |
@@ -61,6 +64,16 @@ omdat ze elke keer opnieuw worden samengesteld, en de meter erboven telt wat nú
 stevig staat: die zakt vanzelf als er een tijd niemand terugkomt. De dag dat de
 laatste unit af is, is niet de dag dat de app weg kan.
 
+**Er zit geschiedenis in.** Elke toets levert een kort filmpje op uit de
+geschiedenis van Marokko: veertien stuks op chronologische volgorde, van de
+Romeinse stad Walili tot het Tifinagh dat in 2011 een officieel alfabet werd.
+Fatima al-Fihri, die in 859 met haar erfenis de oudste universiteit ter wereld
+stichtte. Tariq, naar wie Gibraltar heet. De 120.000 kilometer van Ibn Battuta.
+Ze worden voorgelezen in de taal van het kind, ze eindigen op een "wist je
+dat?", en ze blijven staan in een verzameling die je kunt teruglezen. De
+teksten houden zich aan één regel: alleen wat vaststaat, geen politiek van
+vandaag, en waar een verhaal een verhaal is staat dat erbij.
+
 **Niets gaat de deur uit.** Geen account, geen server, geen analytics, geen
 cookies van derden. De voortgang staat in de browser van het toestel zelf.
 
@@ -71,6 +84,9 @@ cookies van derden. De voortgang staat in de browser van het toestel zelf.
 
 > "Darija verschilt per stad en per familie. Zegt jouw oma het anders, dan
 > heeft jouw oma gelijk. Dat staat ook zo in de app."
+
+> "Een kind dat een toets haalt, krijgt geen sticker maar Fatima al-Fihri.
+> Taal zonder waar hij vandaan komt is een woordenlijst."
 
 ## Beeldmateriaal
 
@@ -89,8 +105,10 @@ De introfilm is geen montage van mock-ups: elk scherm erin is de app zelf, en
 de muziek — marimba en darbuka in hijaz — wordt door de app gemaakt, niet
 ingekocht.
 
-Het beeldmerk is de achtpuntige khatam uit Marokkaanse zellige. De mascotte
-heet **Fnek** en is een fennek.
+Het beeldmerk is de achtpuntige khatam uit Marokkaanse zellige. Daarnaast komt
+de **khatim** terug — de vijfpuntige ster uit de Marokkaanse vlag, één
+doorlopende lijn die zichzelf vijf keer kruist: in de app is dat de ster
+waarmee een les wordt beoordeeld. De mascotte heet **Fnek** en is een fennek.
 
 ## Contact
 

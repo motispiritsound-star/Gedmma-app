@@ -34,6 +34,20 @@ en: darija,moroccan,arabic,morocco,language,learn,kids,school,words,pronunciatio
 Vergeet niet dat Apple ook zoekt op de **categorie** en op de naam van je
 uitgever. Kies **Onderwijs** als hoofdcategorie en **Naslagwerken** als tweede.
 
+**Geschiedenis als tweede ingang.** De veertien filmpjes maken de app ook
+vindbaar voor mensen die niet naar een taalcursus zochten maar naar iets over
+Marokko voor hun kind. Dat is een ander en veel groter publiek, en er is bijna
+geen concurrentie op. Honderd tekens zijn vol, dus dit gaat niet in het
+zoekwoordveld erbij — het gaat in de **beschrijving** (die Google leest) en in
+de **promotietekst** (die Apple toont). De namen zelf zijn de zoektermen:
+Ibn Battuta, Fatima al-Qarawiyyin, Tariq ibn Ziyad, Amazigh, Tifinagh. Wie daar
+op zoekt en jouw app vindt, vindt iets wat niemand anders maakt.
+
+Overweeg voor versie 1.1, als de eerste cijfers binnen zijn, één taal om te
+testen met een ondertitel die de geschiedenis noemt in plaats van de leeftijd —
+bijvoorbeeld `Darija & Marokko voor kids`. Verander nooit meer dan één veld
+tegelijk, anders weet je niet wat het deed.
+
 ## Google Play
 
 Google leest de titel (30 tekens), de korte beschrijving (80 tekens) en de

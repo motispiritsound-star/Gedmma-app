@@ -14,7 +14,7 @@ Für App Store Connect (Deutschland, Österreich, Schweiz) und Google Play Conso
 `darija,marokkanisch,arabisch,marokko,sprache,kinder,lernen,wortschatz,arabische schrift,gratis`
 
 **Werbetext (max. 170)**
-`Neu: Die App spricht Deutsch, Niederländisch, Französisch, Spanisch, Italienisch und Englisch — und liest jedes Wort mit der Stimme deines eigenen Geräts vor.`
+`Neu: Nach jedem Test ein kurzer Film aus der Geschichte Marokkos, vorgelesen in deiner eigenen Sprache.`
 
 **Beschreibung (max. 4000)**
 
@@ -31,9 +31,13 @@ WAS DU LERNST
 • Vier Gespräche zum Lesen, mit Fragen danach
 • Drei Spiele: Zeitrennen, Memory und Buchstabenspiel
 • Fünf Bonusrunden, die nicht ausgehen — darunter Buchstaben mit dem Finger nachzeichnen
+• Vierzehn kurze Filme aus der Geschichte Marokkos, einer nach jedem Test
 
 UND WENN DER KURS ZU ENDE IST
 Dann fängt es an. Die Bonusrunden werden aus dem gebaut, was du schon kennst, also sind sie jedes Mal anders: Schreiben, Diktat, Sätze bauen, ein Marathon aus dreißig Fragen und sechs Wörter laut. Die Anzeige oben misst, was gerade fest sitzt — und sinkt von selbst, wenn du länger wegbleibst.
+
+NACH JEDEM TEST EIN STÜCK MAROKKO
+Jeder Checkpoint bringt einen kurzen Film: vierzehn Karten in der Reihenfolge der Geschichte, von der römischen Stadt Walili bis zum Tifinagh-Alphabet, das 2011 amtlich wurde. Fatima al-Fihri, die 859 die älteste Universität der Welt gründete und ihr ganzes Erbe dafür ausgab. Tariq, nach dem Gibraltar heißt. Die 120.000 Kilometer von Ibn Battuta. Der Löwe des Atlas. Sie werden in deiner Sprache vorgelesen, enden mit einem „Wusstest du schon?" und bleiben in deiner Sammlung.
 
 ALLES KLINGT
 Jedes Wort und jeder Satz lässt sich anhören: einmal tippen für normal, zweimal für langsam. Hat dein Gerät keine arabische Stimme, sagt die App das ehrlich und liest die lateinische Schreibweise so gut wie möglich vor.
@@ -60,7 +64,7 @@ Darija unterscheidet sich von Stadt zu Stadt und von Familie zu Familie und hat 
 ```
 
 **Neuheiten (Version 1.0)**
-`Die erste Version: 17 Einheiten, 304 Wörter, 100 Sätze, das arabische Alphabet, Geschichten und Spiele. Auf Deutsch, Niederländisch, Französisch, Spanisch, Italienisch und Englisch.`
+`Die erste Version: 17 Einheiten, 304 Wörter, 100 Sätze, das arabische Alphabet, Geschichten, Spiele und vierzehn kurze Geschichtsfilme. Auf Deutsch, Niederländisch, Französisch, Spanisch, Italienisch und Englisch.`
 
 ## Google Play
 

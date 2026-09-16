@@ -180,6 +180,93 @@ Dezelfde grap in de andere vier talen:
 
 ---
 
+## Veertien posts die je al hebt
+
+De geschiedenisfilmpjes zijn het beste marketingmateriaal in de app, en je
+hoeft er niets extra's voor te maken. Veertien fragmenten van een halve minuut,
+elk met een feit dat mensen willen doorsturen — dat is veertien weken aan
+content die geen reclame is.
+
+Waarom dit werkt waar een functielijst niet werkt:
+
+- **Het is geen advertentie.** "Gibraltar heet naar een Amazigh-legerleider"
+  is iets dat mensen delen. "Onze app heeft 304 woorden" niet.
+- **Het bereikt een tweede publiek.** Mensen die niet naar een taalcursus
+  zochten maar wel iets over Marokko voor hun kind willen. Veel groter, en
+  bijna geen concurrentie.
+- **Het is trots zonder politiek.** Fatima al-Fihri, al-Idrisi en Ibn Battuta
+  zijn voor iedereen. Houd het daarbij.
+- **Het is al in zes talen klaar.** Dezelfde post werkt in Nederland,
+  Frankrijk, Duitsland, Spanje, Italië, Engeland en Amerika.
+
+**Het ritme.** Eén kaart per week, in chronologische volgorde, zodat mensen
+gaan wachten op de volgende. Neem het fragment op zoals het in de app draait
+(schermopname, geluid aan — de verteller is de voice-over), zet er drie
+seconden tekst voor en laat het eindigen op de "wist je dat?". Post de eerste
+drie vóór de lancering, zodat er al iets staat als de app er is.
+
+**De vier sterkste om mee te beginnen:** Fatima al-Fihri (859), Tariq ibn Ziyad
+(711), Ibn Battuta (1325) en het eerste land dat de Verenigde Staten erkende
+(1777) — die laatste doet het bijzonder goed in het Engelstalige gebied.
+
+Eén voorbeeld per taal:
+
+**Nederlands**
+
+> In 859 erfde een vrouw in Fes geld van haar vader.
+> Ze gaf het allemaal uit aan één ding: een school.
+> Die school geeft nog steeds les. Elfhonderd jaar, zonder pauze.
+>
+> Fatima al-Fihri staat in Darija Kids — met dertien andere kaarten uit de
+> geschiedenis van Marokko, voorgelezen in de taal van je kind.
+
+**Français**
+
+> En 859, une femme de Fès hérita de l'argent de son père.
+> Elle le dépensa entièrement pour une seule chose : une école.
+> Cette école enseigne toujours. Onze siècles, sans interruption.
+>
+> Fatima al-Fihri est dans Darija Kids — avec treize autres cartes de
+> l'histoire du Maroc, lues à voix haute dans la langue de votre enfant.
+
+**Deutsch**
+
+> 859 erbte eine Frau in Fes das Geld ihres Vaters.
+> Sie gab es vollständig für eine einzige Sache aus: eine Schule.
+> Diese Schule unterrichtet bis heute. Elfhundert Jahre, ohne Pause.
+>
+> Fatima al-Fihri steckt in Darija Kids — zusammen mit dreizehn weiteren Karten
+> aus der Geschichte Marokkos, vorgelesen in der Sprache deines Kindes.
+
+**Español**
+
+> En 859, una mujer de Fez heredó el dinero de su padre.
+> Lo gastó entero en una sola cosa: una escuela.
+> Esa escuela sigue dando clase. Once siglos, sin pausa.
+>
+> Fátima al-Fihri está en Darija Kids, junto a otras trece cartas de la
+> historia de Marruecos, leídas en voz alta en el idioma de tu hijo.
+
+**Italiano**
+
+> Nell'859 una donna di Fès ereditò il denaro di suo padre.
+> Lo spese tutto per una cosa sola: una scuola.
+> Quella scuola insegna ancora. Undici secoli, senza pause.
+>
+> Fatima al-Fihri è dentro Darija Kids — con altre tredici carte della storia
+> del Marocco, lette ad alta voce nella lingua di tuo figlio.
+
+**English**
+
+> In 859, a woman in Fes inherited her father's money.
+> She spent all of it on one thing: a school.
+> That school is still teaching. Eleven hundred years, without a break.
+>
+> Fatima al-Fihri is in Darija Kids — with thirteen more cards from the history
+> of Morocco, read aloud in your child's own language.
+
+---
+
 ## De accounts, en wat er de eerste week op moet
 
 Claim de namen voordat je lanceert — op alle vier dezelfde, ook waar je nog

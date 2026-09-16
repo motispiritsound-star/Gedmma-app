@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import type { Word } from '../content/types'
-import { say, sfx } from '../engine/audio'
+import { say, sfx, type SayOptions } from '../engine/audio'
 import { useStore } from '../engine/store'
 import { useLang, useT } from '../i18n'
 import { meaningOf, noteOf } from '../content/localise'
@@ -32,13 +32,20 @@ export function WordText({ word, size = 'md', showNl = false }: { word: Word; si
   )
 }
 
-export function SpeakButton({ ar, tr, className = '', label }: { ar: string; tr?: string; className?: string; label?: string }) {
+export function SpeakButton({ ar, tr, latin, className = '', label }: {
+  ar: string
+  tr?: string
+  /** An exact spelling per borrowed voice — the letters use this. */
+  latin?: SayOptions['latin']
+  className?: string
+  label?: string
+}) {
   const t = useT()
   return (
     <motion.button
       whileTap={{ scale: 0.9 }}
-      onClick={() => { sfx.tap(); say(ar, { tr }) }}
-      onDoubleClick={() => say(ar, { tr, slow: true })}
+      onClick={() => { sfx.tap(); say(ar, { tr, latin }) }}
+      onDoubleClick={() => say(ar, { tr, latin, slow: true })}
       title={t.lesson.luisterTitel}
       aria-label={label ?? t.lesson.luister}
       className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 border-zellige-500 text-zellige-600 transition hover:bg-zellige-500 hover:text-white dark:text-zellige-300 ${className}`}

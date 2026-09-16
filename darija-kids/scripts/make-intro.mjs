@@ -201,6 +201,36 @@ const SCENES = [
     },
   },
   {
+    id: 'geschiedenis',
+    /**
+     * The fragment a checkpoint hands over.
+     *
+     * Filmed through the dev-only /kaart route rather than by sitting a whole
+     * checkpoint first: the film wants the fragment, not the twenty questions
+     * in front of it. What it photographs is the real thing either way — the
+     * moving backdrop, the drawing that made itself, and the tap that turns
+     * the story into its "did you know".
+     */
+    take: async (page) => {
+      await page.goto(`${BASE}/kaart/fatima`, { waitUntil: 'networkidle' })
+      // Long enough for the drawing to finish and the telling to begin.
+      await wait(page, 2900)
+      const card = page.locator('[data-card]')
+      if (!(await card.count())) return { frames: [await shot(page)], acts: [] }
+
+      const onward = page.locator('[data-card] button').first()
+      const target = await spot(page, onward)
+      const frames = [await shot(page)]
+      await onward.click({ force: true })
+      await wait(page, 700)
+      frames.push(await shot(page))
+      return {
+        frames,
+        acts: [{ at: 1.5, dur: 0.16, path: [target], frame: 1, sound: 'tap', endSound: 'badge' }],
+      }
+    },
+  },
+  {
     id: 'schrijven',
     /**
      * The writing bonus, drawn.

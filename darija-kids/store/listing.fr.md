@@ -14,7 +14,7 @@ Pour App Store Connect (France, Belgique, Suisse) et Google Play Console (fr-FR)
 `darija,marocain,arabe,maroc,langue,enfants,apprendre,vocabulaire,écriture arabe,gratuit`
 
 **Texte promotionnel (max 170)**
-`Nouveau : l'application parle français, néerlandais, allemand, espagnol, italien et anglais — et lit chaque mot avec la voix de ton propre appareil.`
+`Nouveau : après chaque test, un court film sur l'histoire du Maroc, lu à voix haute dans ta propre langue.`
 
 **Description (max 4000)**
 
@@ -31,9 +31,13 @@ CE QUE TU APPRENDS
 • Quatre conversations à lire, avec des questions à la fin
 • Trois jeux : course contre la montre, memory et jeu des lettres
 • Cinq tours bonus qui ne s’épuisent pas, dont tracer les lettres au doigt
+• Quatorze courts films sur l’histoire du Maroc, un après chaque test
 
 ET QUAND LE COURS EST FINI
 Ça commence. Les tours bonus sont faits de ce que tu connais déjà, donc ils sont différents à chaque fois : écrire, dictée, construire des phrases, un marathon de trente questions et six mots à voix haute. Le compteur en haut mesure ce qui tient debout maintenant — et il baisse tout seul si tu t’absentes.
+
+APRÈS CHAQUE TEST, UN MORCEAU DU MAROC
+Chaque étape donne droit à un court film : quatorze cartes dans l’ordre de l’histoire, de la ville romaine de Walili jusqu’à l’alphabet tifinagh devenu officiel en 2011. Fatima al-Fihri, qui fonda en 859 la plus ancienne université du monde en y consacrant tout son héritage. Tariq, dont Gibraltar porte le nom. Les 120 000 kilomètres d’Ibn Battuta. Le lion de l’Atlas. Ils sont lus à voix haute dans ta langue, finissent sur un « le savais-tu ? » et restent dans ta collection.
 
 TOUT SE PRONONCE
 Chaque mot et chaque phrase peut être écouté : une touche pour la vitesse normale, deux pour la version lente. Si ton appareil n'a pas de voix arabe, l'application le dit honnêtement et lit l'écriture latine du mieux qu'elle peut.
@@ -60,7 +64,7 @@ Le darija change d'une ville et d'une famille à l'autre, et n'a pas d'orthograp
 ```
 
 **Nouveautés (version 1.0)**
-`Première version : 17 unités, 304 mots, 100 phrases, l'alphabet arabe, des histoires et des jeux. En français, néerlandais, allemand, espagnol, italien et anglais.`
+`Première version : 17 unités, 304 mots, 100 phrases, l'alphabet arabe, des histoires, des jeux et quatorze courts films d'histoire. En français, néerlandais, allemand, espagnol, italien et anglais.`
 
 ## Google Play
 

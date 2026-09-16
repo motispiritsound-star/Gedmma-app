@@ -123,6 +123,18 @@ if (!/kaart uit de geschiedenis/i.test(cardText)) {
 }
 if (SHOTS) await page.screenshot({ path: `${SHOTS}/hist-beat-verhaal.png` })
 
+// Without a voice the story beat is paced by reading time; a beat that ends
+// the instant it begins is the bug that let a fragment flash past its own
+// story on every device that cannot speak.
+{
+  await page.locator('[data-card][data-beat="verhaal"]').waitFor({ timeout: 5000 })
+    .catch(() => fails.push('het fragment kwam nooit bij het verhaal'))
+  await page.waitForTimeout(2500)
+  const still = await page.locator('[data-card]').getAttribute('data-beat')
+  if (still !== 'verhaal') fails.push(`het verhaal schoot door naar "${still}" binnen vier seconden`)
+  else console.log('tempo: het verhaal blijft staan zonder stem')
+}
+
 // It has to be in the collection before the button is even pressed: the card
 // is earned by passing, not by watching.
 const afterCard = await store()

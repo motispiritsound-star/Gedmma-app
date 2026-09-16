@@ -14,13 +14,13 @@ import { busFor, VOICES, type SoundName, type Stage } from '../src/engine/instru
 
 /* ------------------------------------------------------------------ the copy */
 
-type ShotId = 'leren' | 'letters' | 'les' | 'schrijven' | 'profiel'
+type ShotId = 'leren' | 'letters' | 'les' | 'geschiedenis' | 'schrijven' | 'profiel'
 
 interface Copy {
   /** Under the title, in the opening card. */
   sub: string
   /** One line per screen, in the order of SHOTS. */
-  lines: [string, string, string, string, string]
+  lines: [string, string, string, string, string, string]
   /** The last card. */
   cta: string
   price: string
@@ -40,6 +40,7 @@ const COPY: Record<string, Copy> = {
       'Laat je kinderen hun\nmoedertaal leren.',
       'Het Arabische alfabet,\nletter voor letter.',
       'Horen, kiezen, herhalen —\ntot het blijft hangen.',
+      'En na elke toets\neen stukje Marokko.',
       'En schrijven, met je vinger.\nLetter voor letter.',
       'En pik zelf stiekem\nwat mee.',
     ],
@@ -53,6 +54,7 @@ const COPY: Record<string, Copy> = {
       'Laisse tes enfants apprendre\nleur langue maternelle.',
       'L’alphabet arabe,\nlettre par lettre.',
       'Écouter, choisir, répéter —\njusqu’à ce que ça reste.',
+      'Et après chaque test,\nun morceau du Maroc.',
       'Et écrire, au doigt.\nLettre par lettre.',
       'Et rafraîchis la tienne\nsans rien dire.',
     ],
@@ -66,6 +68,7 @@ const COPY: Record<string, Copy> = {
       'Lass deine Kinder ihre\nMuttersprache lernen.',
       'Das arabische Alphabet,\nBuchstabe für Buchstabe.',
       'Hören, wählen, wiederholen —\nbis es sitzt.',
+      'Und nach jedem Test\nein Stück Marokko.',
       'Und schreiben, mit dem Finger.\nBuchstabe für Buchstabe.',
       'Und frisch deins ganz\nnebenbei auf.',
     ],
@@ -79,6 +82,7 @@ const COPY: Record<string, Copy> = {
       'Deja que tus hijos aprendan\nsu lengua materna.',
       'El alfabeto árabe,\nletra a letra.',
       'Escuchar, elegir, repetir —\nhasta que se queda.',
+      'Y tras cada test,\nun trozo de Marruecos.',
       'Y escribir, con el dedo.\nLetra a letra.',
       'Y refresca la tuya\nde paso.',
     ],
@@ -92,6 +96,7 @@ const COPY: Record<string, Copy> = {
       'Fai imparare ai tuoi figli\nla lingua di casa.',
       'L\u2019alfabeto arabo,\nlettera per lettera.',
       'Sentire, scegliere, ripetere —\nfinché resta.',
+      'E dopo ogni test\nun pezzo di Marocco.',
       'E scrivere, con il dito.\nLettera per lettera.',
       'E tu, ripassala\nsenza dirlo a nessuno.',
     ],
@@ -105,6 +110,7 @@ const COPY: Record<string, Copy> = {
       'Let your children learn\ntheir mother tongue.',
       'The Arabic alphabet,\nletter by letter.',
       'Listen, choose, repeat —\nuntil it sticks.',
+      'And after every test,\na piece of Morocco.',
       'And writing, with a finger.\nLetter by letter.',
       'And quietly pick some up\nyourself.',
     ],
@@ -114,17 +120,18 @@ const COPY: Record<string, Copy> = {
   },
 }
 
-const SHOTS: ShotId[] = ['leren', 'letters', 'les', 'schrijven', 'profiel']
+const SHOTS: ShotId[] = ['leren', 'letters', 'les', 'geschiedenis', 'schrijven', 'profiel']
 
 /* ------------------------------------------------------------- the timetable */
 
 /**
  * Under half a minute, on purpose: the App Store rejects an app preview
  * longer than thirty seconds, and a recording always runs a little over what
- * it was asked for. So: 3.6 to open, four per screen, 3.8 to ask.
+ * it was asked for. Six screens rather than five now, so each one holds a
+ * little less: three to open, 3.7 per screen, 3.3 to ask. Just over 28.
  */
 const TITLE = 3.0
-const HOLD = 4.4
+const HOLD = 3.7
 const END = TITLE + SHOTS.length * HOLD
 export const DURATION = END + 3.3
 

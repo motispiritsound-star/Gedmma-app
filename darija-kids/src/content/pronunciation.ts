@@ -136,3 +136,93 @@ export function spokenForm(arabic: string): string {
   if (whole) return whole
   return arabic.split(/\s+/).filter(Boolean).map(spokenToken).join(' ')
 }
+
+/* ------------------------------------------------------------- letters */
+
+/**
+ * How a letter is said, which is not the same as what it looks like.
+ *
+ * Two problems fixed here. The first: the app used to hand the voice the bare
+ * glyph — "ت" — and a speech engine given one letter says whatever it likes.
+ * A letter has a *name*, and the name is what a teacher says out loud, so
+ * that is what an Arabic voice now gets: تاء, not ت.
+ *
+ * The second: a device without an Arabic voice borrows a European one, and
+ * "jim" run through the Dutch rules came out "ziem" — the wrong sound for ج
+ * entirely. So every letter carries a spelling per language, written for that
+ * language's own reading habits: Dutch sj, German sch, French ch, all for the
+ * same ش. `base` is the fallback for a language with nothing special to say.
+ *
+ * Emphatic and plain pairs — ت/ط, ح/ه, ز/ظ — are one sound to a European
+ * voice and always will be; the Arabic voice is the one that tells them
+ * apart. What the table can do is stop them being *wrong*, and it does.
+ */
+
+type Target = 'fr' | 'de' | 'nl' | 'es' | 'it' | 'en'
+
+export interface LetterSpeech {
+  /** The letter's name in Arabic script, for a voice that reads Arabic. */
+  ar: string
+  /** The spelling to borrow a European voice with. */
+  base: string
+  say?: Partial<Record<Target, string>>
+}
+
+export const LETTER_SPEECH: Record<string, LetterSpeech> = {
+  alif: { ar: 'أَلِف', base: 'alif' },
+  ba: { ar: 'بَاء', base: 'baa', say: { fr: 'ba' } },
+  ta: { ar: 'تَاء', base: 'taa', say: { fr: 'ta' } },
+  tha: { ar: 'ثَاء', base: 'thaa', say: { fr: 'tha' } },
+  // ج is the zh of "journaal" — the one the old rules turned into "ziem".
+  jim: { ar: 'جِيم', base: 'jeem', say: { nl: 'zjiem', de: 'schiem', fr: 'jim', es: 'yim', it: 'gim' } },
+  ha: { ar: 'حَاء', base: 'haa' },
+  kha: { ar: 'خَاء', base: 'khaa', say: { nl: 'chaa', de: 'chaa' } },
+  dal: { ar: 'دَال', base: 'daal', say: { fr: 'dal' } },
+  dhal: { ar: 'ذَال', base: 'dhaal', say: { fr: 'dhal' } },
+  ra: { ar: 'رَاء', base: 'raa', say: { fr: 'ra' } },
+  zay: { ar: 'زَاي', base: 'zaay', say: { nl: 'zaai', de: 'saai', es: 'sai', it: 'sai', fr: 'zaï' } },
+  sin: { ar: 'سِين', base: 'seen', say: { nl: 'sien', de: 'sien', fr: 'sine', es: 'sin', it: 'sin' } },
+  shin: { ar: 'شِين', base: 'sheen', say: { nl: 'sjien', de: 'schien', fr: 'chine', it: 'scin', es: 'shin' } },
+  sad: { ar: 'صَاد', base: 'saad', say: { fr: 'sad' } },
+  dad: { ar: 'ضَاد', base: 'daad', say: { fr: 'dad' } },
+  'ta-emf': { ar: 'طَاء', base: 'taa', say: { fr: 'ta' } },
+  'za-emf': { ar: 'ظَاء', base: 'zaa', say: { de: 'saa', es: 'sa', it: 'sa', fr: 'za' } },
+  ayn: { ar: 'عَين', base: 'ayn', say: { nl: 'ain', de: 'ain', fr: 'aïn', es: 'ain', it: 'ain' } },
+  ghayn: { ar: 'غَين', base: 'ghayn', say: { nl: 'gain', de: 'rain', fr: 'raïn', es: 'gain', it: 'gain' } },
+  fa: { ar: 'فَاء', base: 'faa', say: { fr: 'fa' } },
+  qaf: { ar: 'قَاف', base: 'qaaf', say: { fr: 'qaf' } },
+  kaf: { ar: 'كَاف', base: 'kaaf', say: { fr: 'kaf' } },
+  lam: { ar: 'لَام', base: 'laam', say: { fr: 'lam' } },
+  mim: { ar: 'مِيم', base: 'meem', say: { nl: 'miem', de: 'miem', fr: 'mime', es: 'mim', it: 'mim' } },
+  nun: { ar: 'نُون', base: 'noon', say: { nl: 'noen', de: 'nuun', fr: 'noune', es: 'nun', it: 'nun' } },
+  'ha-soft': { ar: 'هَاء', base: 'haa' },
+  waw: { ar: 'وَاو', base: 'waw', say: { nl: 'waauw', de: 'uau', fr: 'waou', es: 'uau', it: 'uau' } },
+  ya: { ar: 'يَاء', base: 'yaa', say: { nl: 'jaa', de: 'jaa', fr: 'ya', es: 'ya', it: 'ia' } },
+  pa: { ar: 'پَاء', base: 'paa', say: { fr: 'pa' } },
+  va: { ar: 'ڤَاء', base: 'vaa', say: { de: 'waa' } },
+  ga: { ar: 'ݣَاف', base: 'gaaf', say: { fr: 'gaf' } },
+}
+
+/**
+ * What to hand `say()` for a letter: its Arabic name, and a spelling for
+ * every voice that cannot read it.
+ */
+export function letterSpeech(id: string, fallbackAr: string, fallbackName: string): {
+  ar: string
+  tr: string
+  latin: Record<string, string>
+} {
+  const entry = LETTER_SPEECH[id]
+  if (!entry) return { ar: fallbackAr, tr: fallbackName, latin: {} }
+  const latin: Record<string, string> = {}
+  for (const target of ['fr', 'de', 'nl', 'es', 'it', 'en'] as Target[]) {
+    latin[target] = entry.say?.[target] ?? entry.base
+  }
+  return { ar: entry.ar, tr: entry.base, latin }
+}
+
+/** Everything `SpeakButton` needs for one letter. */
+export const letterVoice = (l: { id: string; ar: string; name: string }) => {
+  const speech = letterSpeech(l.id, l.ar, l.name)
+  return { ar: speech.ar, tr: speech.tr, latin: speech.latin, label: l.name }
+}

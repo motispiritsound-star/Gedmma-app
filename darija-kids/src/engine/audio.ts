@@ -1,5 +1,5 @@
 import { getState } from './store'
-import { spokenForm } from '../content/pronunciation'
+import { letterSpeech, spokenForm } from '../content/pronunciation'
 import { ARGS, busFor, LENGTH, VOICES, type SoundName, type Stage } from './instruments'
 
 /**
@@ -642,6 +642,16 @@ export function voicePlan(): VoicePlan {
 export interface SayOptions {
   /** The Latin spelling, read out when the device has no Arabic voice. */
   tr?: string
+  /**
+   * A spelling per borrowed voice, used as written instead of running `tr`
+   * through the rules below.
+   *
+   * The rules are built for whole words and they mangle the names of the
+   * letters: "jim" came out of the Dutch ones as "ziem", which is not the
+   * sound ج makes. Where a caller knows exactly how a thing should be spelled
+   * for a French or a German voice, it says so and the rules stay out of it.
+   */
+  latin?: Partial<Record<Phonetic, string>>
   slow?: boolean
 }
 
@@ -654,7 +664,10 @@ export function say(arabic: string, opts: SayOptions = {}): void {
 
   // An Arabic voice gets the form written for speaking, which is the same
   // word with the vowels Darija does not say left out.
-  const text = plan.mode === 'arabisch' ? spokenForm(arabic) : latinise(opts.tr ?? '', phoneticOf(plan.voice.lang))
+  const target = plan.mode === 'arabisch' ? null : phoneticOf(plan.voice.lang)
+  const text = target === null
+    ? spokenForm(arabic)
+    : opts.latin?.[target] ?? latinise(opts.tr ?? '', target)
   if (!text.trim()) return
 
   speechSynthesis.cancel()
@@ -689,19 +702,18 @@ export function narrate(
   text: string,
   locale: string,
   opts: { onDone?: () => void } = {},
-): () => void {
+): { spoken: boolean; stop: () => void } {
   const done = opts.onDone
   const s = getState()
-  if (!text.trim() || !s.settings.sound || !s.settings.voorlezen || !canSpeak()) {
-    done?.()
-    return () => {}
-  }
+  const silent = { spoken: false, stop: () => {} }
+  // `onDone` means "the narrator has finished", and a narrator that never
+  // started has not finished — firing it here made a card skip its own story
+  // in the blink of an eye on every device without a voice. The caller reads
+  // `spoken` and paces itself instead.
+  if (!text.trim() || !s.settings.sound || !s.settings.voorlezen || !canSpeak()) return silent
   const want = locale.toLowerCase().split('-')[0]
   const voice = bestOf([locale.toLowerCase(), want], voices())
-  if (!voice) {
-    done?.()
-    return () => {}
-  }
+  if (!voice) return silent
 
   unlockAudio()
   speechSynthesis.cancel()
@@ -724,9 +736,12 @@ export function narrate(
   utter.onerror = finish
   speechSynthesis.speak(utter)
 
-  return () => {
-    over = true
-    speechSynthesis.cancel()
+  return {
+    spoken: true,
+    stop: () => {
+      over = true
+      speechSynthesis.cancel()
+    },
   }
 }
 
@@ -744,6 +759,18 @@ export const canNarrate = (locale: string): boolean => {
   if (!canSpeak()) return false
   const want = locale.toLowerCase().split('-')[0]
   return Boolean(bestOf([locale.toLowerCase(), want], voices()))
+}
+
+/**
+ * Says a letter out loud — its name, not the shape.
+ *
+ * "ت" handed to a speech engine is a coin toss; "تاء" is the word a teacher
+ * says. And a device without an Arabic voice gets a spelling written for the
+ * language that voice speaks, rather than one mangled by the word rules.
+ */
+export function sayLetter(letter: { id: string; ar: string; name: string }, opts: { slow?: boolean } = {}): void {
+  const speech = letterSpeech(letter.id, letter.ar, letter.name)
+  say(speech.ar, { tr: speech.tr, latin: speech.latin, slow: opts.slow })
 }
 
 /** Some browsers only fill the voice list asynchronously. */

@@ -78,12 +78,15 @@ function useTelling(text: string, locale: string, on: boolean, onDone: () => voi
       over = true
       done.current()
     }
-    const stop = narrate(text, locale, { onDone: finish })
-    const timer = setTimeout(finish, readingTime(text) + 1400)
+    // Two signals, and which one arrives first depends on the device: the
+    // narrator's own end, and a timer at about reading speed. Without a voice
+    // the timer is the only one — which is the whole point of it.
+    const telling = narrate(text, locale, { onDone: finish })
+    const timer = setTimeout(finish, readingTime(text) + (telling.spoken ? 1400 : 0))
     return () => {
       over = true
       clearTimeout(timer)
-      stop()
+      telling.stop()
     }
   }, [text, locale, on])
 }
@@ -233,12 +236,16 @@ export function HistoryTeller({ card }: { card: Card }) {
       return
     }
     sfx.tap()
-    setTelling(true)
-    stop.current = narrate(
+    const out = narrate(
       `${c.titel}. ${c.body} ${t.history.wistJeDat} ${c.wist}`,
       localeOf(lang),
       { onDone: () => setTelling(false) },
     )
+    // Nothing to stop and nothing to show when the device has no voice: the
+    // button would otherwise say "stop" over a silence that never ends.
+    if (!out.spoken) return
+    stop.current = out.stop
+    setTelling(true)
   }
 
   return (

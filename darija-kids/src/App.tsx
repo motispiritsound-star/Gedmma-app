@@ -111,8 +111,11 @@ function Chrome() {
             <Route path="/volledig" element={<Unlock />} />
             {/* Working on a scene of the film is otherwise a matter of
                 finishing a lesson to see one frame of it. */}
-            {import.meta.env.DEV && <Route path="/film/:scene" element={<FilmPreview />} />}
-            {import.meta.env.DEV && <Route path="/kaart/:cardId" element={<HistoryPreview />} />}
+            {/* Also in the demo build: the point of the demo is that somebody
+                can look at the thing, and reaching a history fragment the long
+                way round means sitting a whole checkpoint first. */}
+            {PREVIEWS && <Route path="/film/:scene" element={<FilmPreview />} />}
+            {PREVIEWS && <Route path="/kaart/:cardId" element={<HistoryPreview />} />}
             <Route path="*" element={<NotFound />} />
           </Routes>
           </Suspense>
@@ -152,6 +155,7 @@ function Chrome() {
  * hash instead of on the path.
  */
 const DEMO = import.meta.env.VITE_DEMO === '1'
+const PREVIEWS = import.meta.env.DEV || DEMO
 const Router = DEMO ? HashRouter : BrowserRouter
 
 export default function App() {

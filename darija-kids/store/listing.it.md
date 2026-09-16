@@ -14,7 +14,7 @@ Per App Store Connect (Italia) e Google Play Console (it-IT).
 `darija,marocchino,arabo,marocco,lingua,bambini,imparare,vocaboli,alfabeto,famiglia`
 
 **Testo promozionale (max 170)**
-`Novità: l'app parla italiano, olandese, francese, tedesco, spagnolo e inglese, e legge ogni parola con la voce del tuo dispositivo.`
+`Novità: dopo ogni test un cortometraggio sulla storia del Marocco, letto ad alta voce nella tua lingua.`
 
 **Descrizione (max 4000)**
 
@@ -31,9 +31,13 @@ CHE COSA IMPARI
 • Quattro conversazioni da leggere, con domande alla fine
 • Tre giochi: corsa contro il tempo, memory e gioco delle lettere
 • Cinque giri bonus che non si esauriscono, fra cui ricalcare le lettere con il dito
+• Quattordici cortometraggi sulla storia del Marocco, uno dopo ogni test
 
 E QUANDO IL CORSO FINISCE
 Lì comincia. I giri bonus si costruiscono con quello che già conosci, quindi sono diversi ogni volta: scrivere, dettato, costruire frasi, una maratona di trenta domande e sei parole ad alta voce. L'indicatore in alto conta quello che sta in piedi in questo momento, e scende da solo se passi del tempo senza tornare.
+
+DOPO OGNI TEST UN PEZZO DI MAROCCO
+Ogni checkpoint regala un cortometraggio: quattordici carte in ordine storico, dalla città romana di Walili fino all'alfabeto tifinagh diventato ufficiale nel 2011. Fatima al-Fihri, che nell'859 fondò la più antica università del mondo spendendoci tutta la sua eredità. Tariq, da cui Gibilterra prende il nome. I 120.000 chilometri di Ibn Battuta. Il leone dell'Atlante. Vengono letti ad alta voce nella tua lingua, finiscono con un «lo sapevi?» e restano nella tua collezione.
 
 TUTTO SI SENTE
 Ogni parola e ogni frase si possono ascoltare: un tocco per la velocità normale, due per quella lenta. Se il tuo dispositivo non ha una voce araba, l'app lo dice onestamente e legge la scrittura latina come meglio può.
@@ -60,7 +64,7 @@ Il darija cambia da città a città e da famiglia a famiglia, e non ha un'ortogr
 ```
 
 **Novità (versione 1.0)**
-`La prima versione: 17 unità, 304 parole, 100 frasi, l'alfabeto arabo, storie e giochi. In italiano, olandese, francese, tedesco, spagnolo e inglese.`
+`La prima versione: 17 unità, 304 parole, 100 frasi, l'alfabeto arabo, storie, giochi e quattordici cortometraggi di storia. In italiano, olandese, francese, tedesco, spagnolo e inglese.`
 
 ## Google Play
 

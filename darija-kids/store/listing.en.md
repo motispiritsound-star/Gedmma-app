@@ -14,7 +14,7 @@ For App Store Connect (UK, Ireland, rest of world) and Google Play Console (en-G
 `darija,moroccan,arabic,morocco,language,kids,learn,vocabulary,arabic script,free`
 
 **Promotional text (max 170)**
-`New: the app speaks English, Dutch, French, German, Spanish and Italian — and reads every word aloud with your own device's voice.`
+`New: a short film from the history of Morocco after every test, read aloud in your own language.`
 
 **Description (max 4000)**
 
@@ -31,9 +31,13 @@ WHAT YOU LEARN
 • Four conversations to read, with questions afterwards
 • Three games: time race, memory and the letter game
 • Five bonus rounds that never run out, including tracing letters with your finger
+• Fourteen short films from the history of Morocco, one after every test
 
 AND WHEN THE COURSE IS DONE
 That is when it starts. The bonus rounds are built from what you already know, so they are different every time: writing, dictation, building sentences, a marathon of thirty questions and six words out loud. The meter at the top counts what is standing up right now — and it slips on its own if you stay away.
+
+A PIECE OF MOROCCO AFTER EVERY TEST
+Every checkpoint hands over a short film: fourteen cards in the order they happened, from the Roman town of Walili to the Tifinagh alphabet that became official in 2011. Fatima al-Fihri, who founded the world's oldest university in 859 and spent her entire inheritance on it. Tariq, who Gibraltar is named after. Ibn Battuta's 120,000 kilometres. The lion of the Atlas. They are read aloud in your language, they end on a "did you know?", and they stay in your collection.
 
 EVERYTHING SOUNDS
 Every word and sentence can be heard: one tap for normal, two for slow. If your device has no Arabic voice, the app says so honestly and reads the Latin spelling as closely as it can.
@@ -60,7 +64,7 @@ Darija differs from city to city and family to family, and has no official spell
 ```
 
 **What's new (version 1.0)**
-`The first release: 17 units, 304 words, 100 sentences, the Arabic alphabet, stories and games. In English, Dutch, French, German, Spanish and Italian.`
+`The first release: 17 units, 304 words, 100 sentences, the Arabic alphabet, stories, games and fourteen short history films. In English, Dutch, French, German, Spanish and Italian.`
 
 ## Google Play
 

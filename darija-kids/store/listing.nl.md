@@ -14,7 +14,7 @@ Voor App Store Connect (Nederland, België) en Google Play Console (nl-NL).
 `darija,marokkaans,arabisch,marokko,taal,kinderen,leren,woordenschat,arabisch schrift,gratis`
 
 **Promotietekst (max 170)**
-`Nieuw: de app spreekt Nederlands, Frans, Duits, Spaans, Italiaans en Engels — en leest elk woord voor met de stem van je eigen toestel.`
+`Nieuw: na elke toets een kort filmpje uit de geschiedenis van Marokko, voorgelezen in jouw eigen taal.`
 
 **Beschrijving (max 4000)**
 
@@ -31,9 +31,13 @@ WAT JE LEERT
 • Vier gesprekken om te lezen, met een vraag erna
 • Drie spelletjes: tijdrace, geheugenspel en letterspel
 • Vijf bonusrondes die niet opraken, waaronder letters natekenen met je vinger
+• Veertien korte filmpjes uit de geschiedenis van Marokko, één na elke toets
 
 EN ALS DE CURSUS UIT IS
 Dan begint het pas. De bonusrondes worden gemaakt van wat je al kent, dus ze zijn elke keer anders: schrijven, dictee, zinnen bouwen, een marathon van dertig vragen en zes woorden hardop. De meter bovenaan telt wat nú stevig staat — en zakt vanzelf als je een tijd wegblijft.
+
+NA ELKE TOETS EEN STUKJE MAROKKO
+Elk checkpoint levert een kort filmpje op: veertien kaarten op volgorde van de geschiedenis, van de Romeinse stad Walili tot het Tifinagh-alfabet dat in 2011 officieel werd. Fatima al-Fihri, die in 859 de oudste universiteit ter wereld stichtte en haar hele erfenis eraan opmaakte. Tariq, naar wie Gibraltar heet. De 120.000 kilometer van Ibn Battuta. De leeuw van de Atlas. Ze worden voorgelezen in jouw taal, ze eindigen op een "wist je dat?" en ze blijven in je verzameling staan.
 
 ALLES KLINKT
 Elk woord en elke zin kun je horen, één tik voor normaal en twee voor langzaam. Heeft je toestel geen Arabische stem, dan zegt de app dat eerlijk en leest hij de Latijnse schrijfwijze zo goed mogelijk voor.
@@ -60,7 +64,7 @@ Darija verschilt per stad en per familie, en heeft geen officiële spelling. Wij
 ```
 
 **Wat is er nieuw (versie 1.0)**
-`De eerste versie: 17 units, 304 woorden, 100 zinnen, het Arabische alfabet, verhalen en spelletjes. In het Nederlands, Frans, Duits, Spaans, Italiaans en Engels.`
+`De eerste versie: 17 units, 304 woorden, 100 zinnen, het Arabische alfabet, verhalen, spelletjes en veertien geschiedenisfilmpjes. In het Nederlands, Frans, Duits, Spaans, Italiaans en Engels.`
 
 ## Google Play
 

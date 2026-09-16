@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { LETTERS } from '../content/alphabet'
 import { maybeWord } from '../content/lexicon'
-import { say, sfx } from '../engine/audio'
+import { sayLetter, sfx } from '../engine/audio'
 import { completeLesson, useStore } from '../engine/store'
 import { shuffle, mulberry32 } from '../engine/random'
 import { Button, Card, SectionTitle } from '../ui/kit'
@@ -10,6 +10,7 @@ import { Mascot } from '../ui/Mascot'
 import { SpeakButton } from '../ui/WordChip'
 import { useLang, useT } from '../i18n'
 import { meaningOf } from '../content/localise'
+import { letterVoice } from '../content/pronunciation'
 
 /**
  * The Arabic script, one letter at a time — plus a short game that asks you to
@@ -34,7 +35,7 @@ export function Alphabet() {
         {LETTERS.map((l) => (
           <button
             key={l.id}
-            onClick={() => { setPicked(l.id); sfx.tap(); say(l.ar, { tr: l.name }) }}
+            onClick={() => { setPicked(l.id); sfx.tap(); sayLetter(l) }}
             className={`ar aspect-square rounded-2xl border-2 text-2xl font-bold transition ${l.id === picked ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)] bg-[var(--surface-raised)] hover:border-zellige-400'}`}
             aria-label={l.name}
           >
@@ -51,7 +52,7 @@ export function Alphabet() {
             <p className="text-[var(--ink-soft)]">{t.alphabet.klinktAls(letter.sound)}</p>
             <p className="mt-1 text-sm">{t.alphabet.latijn}: <strong>{letter.tr}</strong></p>
           </div>
-          <SpeakButton ar={letter.ar} tr={letter.name} />
+          <SpeakButton {...letterVoice(letter)} />
         </div>
 
         <div className="mt-5 grid grid-cols-3 gap-3 text-center">

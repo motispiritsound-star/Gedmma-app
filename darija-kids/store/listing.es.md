@@ -14,7 +14,7 @@ Para App Store Connect (España) y Google Play Console (es-ES).
 `dariya,darija,marroquí,árabe,marruecos,idioma,niños,aprender,vocabulario,gratis`
 
 **Texto promocional (máx. 170)**
-`Nuevo: la aplicación habla español, neerlandés, francés, alemán, italiano e inglés, y lee cada palabra con la voz de tu propio dispositivo.`
+`Nuevo: después de cada test, un corto sobre la historia de Marruecos, leído en voz alta en tu propio idioma.`
 
 **Descripción (máx. 4000)**
 
@@ -31,9 +31,13 @@ QUÉ APRENDES
 • Cuatro conversaciones para leer, con preguntas después
 • Tres juegos: carrera contrarreloj, memoria y juego de letras
 • Cinco rondas bonus que no se agotan, entre ellas calcar letras con el dedo
+• Catorce cortos sobre la historia de Marruecos, uno después de cada test
 
 Y CUANDO EL CURSO SE ACABA
 Ahí empieza. Las rondas bonus se hacen con lo que ya conoces, así que son distintas cada vez: escribir, dictado, construir frases, un maratón de treinta preguntas y seis palabras en voz alta. El medidor de arriba cuenta lo que se sostiene ahora mismo, y baja solo si pasas tiempo sin volver.
+
+DESPUÉS DE CADA TEST, UN TROZO DE MARRUECOS
+Cada control te da un corto: catorce cartas en orden histórico, desde la ciudad romana de Walili hasta el alfabeto tifinagh que se hizo oficial en 2011. Fátima al-Fihri, que en 859 fundó la universidad más antigua del mundo y gastó en ella toda su herencia. Táriq, de quien Gibraltar toma el nombre. Los 120.000 kilómetros de Ibn Battuta. El león del Atlas. Se leen en voz alta en tu idioma, terminan con un «¿sabías que...?» y se quedan en tu colección.
 
 TODO SUENA
 Cada palabra y cada frase se puede escuchar: un toque para la velocidad normal, dos para la lenta. Si tu dispositivo no tiene voz árabe, la aplicación lo dice con honestidad y lee la escritura latina lo mejor que puede.
@@ -60,7 +64,7 @@ El dariya cambia de ciudad a ciudad y de familia a familia, y no tiene ortograf�
 ```
 
 **Novedades (versión 1.0)**
-`La primera versión: 17 unidades, 304 palabras, 100 frases, el alfabeto árabe, historias y juegos. En español, neerlandés, francés, alemán, italiano e inglés.`
+`La primera versión: 17 unidades, 304 palabras, 100 frases, el alfabeto árabe, historias, juegos y catorce cortos de historia. En español, neerlandés, francés, alemán, italiano e inglés.`
 
 ## Google Play
 
