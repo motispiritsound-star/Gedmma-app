@@ -56,6 +56,8 @@ export const de: Strings = {
     welkom: 'Ahlan! Bereit für Darija?',
     wachten: (n) => (n === 1 ? '1 Wort wartet auf eine Wiederholung.' : `${n} Wörter warten auf eine Wiederholung.`),
     allesHerhaald: 'Alles wiederholt. Auf zur nächsten Lektion.',
+    eersteKeer: 'Deine allererste Lektion steht bereit. Wir fangen beim Alphabet an.',
+    beginnen: 'Anfangen',
     gaVerder: 'Weiter',
     herhalen: 'Wiederholen',
     lesOpenen: (titel) => `${titel} öffnen`,

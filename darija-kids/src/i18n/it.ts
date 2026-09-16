@@ -56,6 +56,8 @@ export const it: Strings = {
     welkom: 'Ahlan! Pronto per il darija?',
     wachten: (n) => (n === 1 ? "1 parola aspetta un ripasso." : `${n} parole aspettano un ripasso.`),
     allesHerhaald: 'Tutto ripassato. Avanti con la prossima lezione.',
+    eersteKeer: 'La tua primissima lezione è pronta. Cominciamo dall’alfabeto.',
+    beginnen: 'Comincia',
     gaVerder: 'Continua',
     herhalen: 'Ripassa',
     lesOpenen: (titel) => `Apri ${titel}`,

@@ -30,7 +30,8 @@
     "brand": "node scripts/make-brand.mjs",
     "ebook": "node scripts/make-ebook.mjs",
     "voice": "node scripts/make-voice.mjs",
-    "sweep": "node scripts/sweep.mjs"
+    "sweep": "node scripts/sweep.mjs",
+    "nieuw": "node scripts/nieuwe-gebruiker.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",

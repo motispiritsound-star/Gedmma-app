@@ -56,6 +56,8 @@ export const en: Strings = {
     welkom: 'Ahlan! Ready for Darija?',
     wachten: (n) => (n === 1 ? '1 word is waiting for a review.' : `${n} words are waiting for a review.`),
     allesHerhaald: 'All reviewed. On to the next lesson.',
+    eersteKeer: 'Your very first lesson is ready. We start with the alphabet.',
+    beginnen: 'Start',
     gaVerder: 'Continue',
     herhalen: 'Review',
     lesOpenen: (titel) => `Open ${titel}`,

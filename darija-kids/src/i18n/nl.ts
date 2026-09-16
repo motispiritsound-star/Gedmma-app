@@ -61,6 +61,8 @@ export const nl = {
     welkom: 'Ahlan! Klaar voor Darija?',
     wachten: (n: number): string => (n === 1 ? '1 woord wacht op een herhaling.' : `${n} woorden wachten op een herhaling.`),
     allesHerhaald: 'Alles herhaald. Op naar de volgende les.',
+    eersteKeer: 'Je allereerste les staat klaar. We beginnen bij het alfabet.',
+    beginnen: 'Beginnen',
     gaVerder: 'Ga verder',
     herhalen: 'Herhalen',
     lesOpenen: (titel: string): string => `${titel} openen`,

@@ -76,6 +76,8 @@ export function Learn() {
   const state = useStore((s) => s)
   const due = dueWordIds(state).length
   const next = nextLesson(state)
+  /** Niemand heeft nog iets afgerond: dit is de allereerste keer openen. */
+  const eersteKeer = Object.keys(state.lessons).length === 0
   // Only worth saying once, and only on a device that actually lacks the voice.
   const installed = useVoices()
   const noArabicVoice = installed.length > 0 && missingArabicVoice() && !state.seenTips.includes('stem')
@@ -98,11 +100,16 @@ export function Learn() {
             {state.name ? t.learn.welkomNaam(state.name) : t.learn.welkom}
           </h1>
           <p className="text-sm text-[var(--ink-soft)]">
-            {due > 0 ? t.learn.wachten(due) : t.learn.allesHerhaald}
+            {/* Op dag één is er niets herhaald en niets om mee verder te gaan.
+                "Alles herhaald. Op naar de volgende les." was het eerste wat
+                een nieuwe gebruiker las, boven een knop die "Ga verder" zei. */}
+            {eersteKeer ? t.learn.eersteKeer : due > 0 ? t.learn.wachten(due) : t.learn.allesHerhaald}
           </p>
         </div>
         <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto">
-          <Link to={`/les/${next}`}><Button className="w-full">{t.learn.gaVerder}</Button></Link>
+          <Link to={`/les/${next}`}>
+            <Button className="w-full">{eersteKeer ? t.learn.beginnen : t.learn.gaVerder}</Button>
+          </Link>
           {due > 0 && <Link to="/herhalen"><Button variant="secondary" className="w-full">{t.learn.herhalen}</Button></Link>}
         </div>
       </Card>
