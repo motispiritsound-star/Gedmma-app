@@ -73,7 +73,8 @@ Das Alphabet und die ersten fünf Einheiten sind und bleiben kostenlos: genug, u
 Und eines ist einzeln zu haben: das E-Book, der ganze Kurs auf Papier — alle 28 Buchstaben mit ihren drei Formen, alle 17 Einheiten mit den Grammatikerklärungen, alle Wörter und alle Sätze. 14,99 €, einmalig, und im Jahresabo enthalten.
 
 GEMACHT, UM ES EINEM KIND ZU GEBEN
-• Kein Konto, keine E-Mail, kein Login
+• Kein Konto, kein Login — ein Kind trägt hier nichts ein
+• Nur ein Elternteil kann, hinter einer Rechenaufgabe, eine Adresse für Neues hinterlassen
 • Keine Werbung, keine versteckten Kosten
 • Kein Chat, kein Teilen, kein Hochladen
 • Der gesamte Fortschritt bleibt auf dem Gerät

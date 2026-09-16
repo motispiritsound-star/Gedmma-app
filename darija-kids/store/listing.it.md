@@ -73,7 +73,8 @@ L'alfabeto e le prime cinque unità sono e restano gratis: abbastanza per legger
 E una cosa si compra a parte: l'e-book, l'intero corso su carta — tutte e 28 le lettere con le loro tre forme, le 17 unità con le spiegazioni di grammatica, tutte le parole e tutte le frasi. 14,99 €, una volta sola, e compreso con l'abbonamento annuale.
 
 FATTA PER DARLA IN MANO A UN BAMBINO
-• Nessun account, nessuna e-mail, nessun accesso
+• Nessun account, nessun accesso: un bambino qui non scrive niente
+• Solo un genitore può, dietro un calcolo, lasciare un indirizzo per le novità
 • Nessuna pubblicità, nessun costo nascosto
 • Nessuna chat, niente da condividere, niente da caricare
 • Tutti i progressi restano sul dispositivo

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   buyEbook, EBOOK, ebookFile, FREE_UNITS, manageSubscription, PLANS, planOf, restorePurchases,
@@ -7,8 +7,9 @@ import {
 import { useStore } from '../engine/store'
 import { useT } from '../i18n'
 import { sfx } from '../engine/audio'
-import { Button, Card, SectionTitle, Sheet } from '../ui/kit'
+import { Button, Card, SectionTitle } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
+import { OuderPoort } from '../ui/OuderPoort'
 
 /**
  * The one thing in this app that costs money.
@@ -24,8 +25,6 @@ export function Unlock() {
   const boek = useStore((s) => s.ebook)
   const lang = useStore((s) => s.settings.lang)
   const [gate, setGate] = useState(false)
-  const [answer, setAnswer] = useState('')
-  const [wrong, setWrong] = useState(false)
   // A year up front is the offer, so it is what the screen opens on.
   const [plan, setPlan] = useState<PlanId>('jaar')
 
@@ -34,27 +33,9 @@ export function Unlock() {
   const price = priceOf(plan)
   const jaar = plan === 'jaar'
 
-  // A different sum each visit, so it cannot be learned by heart.
-  const sum = useMemo(() => {
-    const a = 3 + Math.floor(Math.random() * 6)
-    const b = 4 + Math.floor(Math.random() * 6)
-    return { text: `${a} × ${b}`, value: a * b }
-  }, [gate])
-
   useEffect(() => {
     if (subscribed) setGate(false)
   }, [subscribed])
-
-  const confirm = () => {
-    if (Number(answer.trim()) !== sum.value) {
-      setWrong(true)
-      return
-    }
-    setGate(false)
-    setAnswer('')
-    setWrong(false)
-    void subscribe(plan)
-  }
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
@@ -140,7 +121,7 @@ export function Unlock() {
 
             <div className="mt-6">
               {billing.available ? (
-                <Button className="w-full py-4 text-lg" disabled={billing.busy} onClick={() => { setWrong(false); setGate(true) }}>
+                <Button className="w-full py-4 text-lg" disabled={billing.busy} onClick={() => setGate(true)}>
                   {billing.busy ? t.unlock.bezig : t.unlock.koop(TRIAL_DAYS)}
                 </Button>
               ) : (
@@ -223,24 +204,11 @@ export function Unlock() {
         <Link to="/privacy"><Button variant="ghost">{t.nav.privacy}</Button></Link>
       </div>
 
-      <Sheet open={gate} onClose={() => setGate(false)} labelledBy="gate-title">
-        <h2 id="gate-title" className="font-display text-xl font-extrabold">{t.unlock.poortTitel}</h2>
-        <p className="mt-2 text-[var(--ink-soft)]">{t.unlock.poortBody(sum.text)}</p>
-        <label className="sr-only" htmlFor="gate-answer">{t.unlock.poortBody(sum.text)}</label>
-        <input
-          id="gate-answer"
-          inputMode="numeric"
-          value={answer}
-          onChange={(e) => { setAnswer(e.target.value); setWrong(false) }}
-          onKeyDown={(e) => e.key === 'Enter' && confirm()}
-          className="mt-4 w-full rounded-2xl border-2 border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-center font-display text-2xl font-bold outline-none focus:border-zellige-500"
-        />
-        {wrong && <p className="mt-2 text-center text-sm text-terra-500">{t.unlock.poortFout}</p>}
-        <div className="mt-5 flex gap-3">
-          <Button variant="secondary" className="flex-1" onClick={() => setGate(false)}>{t.common.annuleren}</Button>
-          <Button className="flex-1" onClick={confirm}>{t.unlock.poortKnop}</Button>
-        </div>
-      </Sheet>
+      <OuderPoort
+        open={gate}
+        onClose={() => setGate(false)}
+        onGoed={() => { setGate(false); void subscribe(plan) }}
+      />
     </div>
   )
 }

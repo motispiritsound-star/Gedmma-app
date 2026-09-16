@@ -84,6 +84,17 @@ export interface LessonRecord {
   lastDone: number
 }
 
+/** What a parent chose on the "for parents" screen, kept on the device. */
+export interface Aanmelding {
+  id: string
+  email: string
+  status: 'wacht' | 'bevestigd'
+  nieuws: boolean
+  voortgang: boolean
+  /** When the five counts last went out, so they go at most once a day. */
+  gemeld?: number
+}
+
 export interface State {
   version: 1
   name: string
@@ -122,6 +133,13 @@ export interface State {
    * for stays paid for, also when the subscription that came with it ends.
    */
   ebook: boolean
+  /**
+   * The parent's sign-up for mail, or null when nobody asked for any.
+   *
+   * Only what the screen needs to say what was chosen, plus the id the weekly
+   * counts go under. The list lives on the server; this is the receipt.
+   */
+  post: Aanmelding | null
   langPicked: boolean
   seenTips: string[]
   /**
@@ -255,6 +273,7 @@ const initial = (): State => ({
   unlocked: false,
   unlockedAt: null,
   ebook: false,
+  post: null,
   /** False until somebody has picked a language on the welcome screen. */
   langPicked: false,
   seenTips: [],

@@ -7,6 +7,7 @@ import { Button, Card, SectionTitle, Stat } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 import { OperatorBlock } from '../ui/Operator'
 import { FeedbackButton } from '../ui/Feedback'
+import { PostAanmelding } from '../ui/PostAanmelding'
 
 /** For the adult in the room: what the app does, and how the child is doing. */
 export function Parents() {
@@ -49,6 +50,8 @@ export function Parents() {
           </Card>
         ))}
       </div>
+
+      <PostAanmelding />
 
       <h2 className="mb-3 font-display text-xl font-extrabold">{t.parents.privacyTitel}</h2>
       <Card className="mb-8 p-5">

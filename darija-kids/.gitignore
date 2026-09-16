@@ -3,3 +3,6 @@ store/marketing/
 store/video/
 shots/
 brand/
+server/node_modules/
+server/.wrangler/
+server/.dev.vars

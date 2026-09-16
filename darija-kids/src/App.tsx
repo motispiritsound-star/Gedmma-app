@@ -28,6 +28,7 @@ import { Welcome } from './ui/Welcome'
 import { useStore } from './engine/store'
 import { listenForFirstGesture, sfx } from './engine/audio'
 import { initBilling } from './engine/billing'
+import { meldVoortgang } from './engine/post'
 import { localeOf, useLang, useT } from './i18n'
 
 const TABS = [
@@ -71,6 +72,8 @@ function Chrome() {
 
   // Connects to the App Store or Play Store; does nothing on the web.
   useEffect(() => { void initBilling() }, [])
+  // Once a day at most, and only for a parent who asked for the weekly note.
+  useEffect(() => { void meldVoortgang() }, [])
 
   // The document language follows the interface, for screen readers and hyphenation.
   useEffect(() => {

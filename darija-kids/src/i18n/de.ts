@@ -667,6 +667,21 @@ export const de: Strings = {
         `Das E-Book kaufst du in der App aus dem App Store oder von Google Play (${prijs}, einmalig). Im Jahresabo ist es enthalten.`,
     },
   },
+  post: {
+    titel: 'Auf dem Laufenden bleiben',
+    uitleg: 'Möchtest du hören, wenn eine neue Einheit dazukommt, oder wie die Woche lief? Dann trag hier deine Adresse ein. Das ist für die Eltern — nicht umsonst steht eine Rechenaufgabe davor.',
+    email: 'E-Mail-Adresse eines Elternteils',
+    nieuws: 'Schick mir Neues: Einheiten, Geschichten und Angebote.',
+    voortgang: 'Schick mir einmal pro Woche, wie das Lernen läuft.',
+    knop: 'Anmelden',
+    bezig: 'Einen Moment…',
+    wacht: (email: string): string => `In ${email} wartet eine Mail. Tipp auf den Knopf darin — vorher schreiben wir nichts.`,
+    bevestigd: (email: string): string => `Du bist mit ${email} angemeldet.`,
+    mis: 'Das hat gerade nicht geklappt. Versuch es gleich noch einmal.',
+    wijzig: 'Etwas anderes wählen',
+    klein: 'Abmelden geht mit einem Tipp unten in jeder Mail, Daten löschen ebenso. Vom Lernen schicken wir nur Zahlen mit — nie Antworten, nie den Namen deines Kindes.',
+    geenServer: 'In dieser Version gibt es noch keinen Postdienst.',
+  },
   welcome: {
     plan: (dagen: number, prijs: string): string =>
       `Du fängst kostenlos an. Nach ${dagen} Tagen kostet der ganze Kurs ab ${prijs} pro Monat — oder du hörst einfach auf.`,

@@ -73,7 +73,8 @@ El alfabeto y las cinco primeras unidades son y seguirán siendo gratis: suficie
 Y hay una cosa que se vende aparte: el libro electrónico, el curso entero en papel: las 28 letras con sus tres formas, las 17 unidades con las explicaciones de gramática, todas las palabras y todas las frases. 14,99 €, una sola vez, e incluido con la suscripción anual.
 
 HECHA PARA DÁRSELA A UN NIÑO
-• Sin cuenta, sin correo, sin inicio de sesión
+• Sin cuenta y sin inicio de sesión: un niño no escribe nada aquí
+• Solo un adulto puede dejar, tras una cuenta, una dirección para las novedades
 • Sin publicidad, sin costes ocultos
 • Sin chat, sin compartir, sin subir nada
 • Todo el progreso se queda en el dispositivo

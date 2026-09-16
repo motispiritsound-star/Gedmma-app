@@ -6,8 +6,9 @@ Nederlands, Frans, Duits, Spaans, Italiaans en Engels.**
 Darija Kids is één app die drie dingen tegelijk is: een website die uitlegt waar het
 over gaat, een installeerbare leer-app die daarna offline werkt, en — via
 Capacitor — dezelfde app voor de App Store en Google Play. Geen account, geen
-advertenties, geen server: alle voortgang staat op het apparaat van het kind
-zelf.
+advertenties: alle voortgang staat op het apparaat van het kind zelf. Het
+enige dat het toestel ooit verlaat is een e-mailadres dat een ouder er zelf
+achterlaat, achter de ouderpoort, met een vinkje dat leeg begint.
 
 Bedoeld voor Marokkaanse gezinnen in Nederland, België, Frankrijk, Duitsland,
 Oostenrijk, Zwitserland en Spanje — en voor iedereen daarbuiten die Darija wil
@@ -295,11 +296,21 @@ waarmee het geld op je rekening komt.
 
 ## Privacy
 
-Geen account, geen backend, geen analytics, geen cookies van derden. Alles —
-voortgang, kaartjes, instellingen — staat onder één sleutel in `localStorage`.
-Bij instellingen kun je die als bestand downloaden, terugzetten op een ander
-apparaat, of alles wissen. De fonts staan op onze eigen domein, dus het openen
+Geen account, geen analytics, geen cookies van derden. Alles — voortgang,
+kaartjes, instellingen — staat onder één sleutel in `localStorage`. Bij
+instellingen kun je die als bestand downloaden, terugzetten op een ander
+apparaat, of alles wissen. De fonts staan op ons eigen domein, dus het openen
 van een pagina belt niemand.
+
+Van een kind gaat er niets weg. Er is één ding dat het toestel wél kan
+verlaten, en dat is van de ouder: op het ouderscherm kan een ouder een
+e-mailadres achterlaten voor nieuws of voor de wekelijkse mail. Dat staat
+achter dezelfde rekensom als de aankoop, met twee vinkjes die allebei leeg
+beginnen, en er wordt pas iets gestuurd nadat er in de mailbox op is geklikt.
+Wat er met die mail meegaat zijn vijf getallen — units, lessen, woorden, reeks,
+punten — en nooit een antwoord of een naam. Zonder `VITE_POST` in de omgeving
+staat het formulier er niet eens. De hele dienst staat in
+[`server/`](server/LEES-MIJ.md) en past in vier bestanden.
 
 ## De taal zelf
 

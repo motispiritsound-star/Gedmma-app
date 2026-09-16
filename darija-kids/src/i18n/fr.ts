@@ -667,6 +667,21 @@ export const fr: Strings = {
         `L'e-book s'achète dans l'app de l'App Store ou de Google Play (${prijs}, une seule fois). Avec l'abonnement annuel, il est compris.`,
     },
   },
+  post: {
+    titel: 'Rester au courant',
+    uitleg: "Envie de savoir quand une nouvelle unité arrive, ou comment s'est passée la semaine ? Laissez votre adresse ci-dessous. C'est pour le parent — ce n'est pas pour rien qu'un calcul le précède.",
+    email: "Adresse e-mail d'un parent",
+    nieuws: 'Envoyez-moi les nouveautés : unités, histoires et offres.',
+    voortgang: 'Envoyez-moi une fois par semaine comment se passe l’apprentissage.',
+    knop: "S'inscrire",
+    bezig: 'En cours…',
+    wacht: (email: string): string => `Un message vous attend sur ${email}. Touchez le bouton qu'il contient : nous n'écrivons rien avant.`,
+    bevestigd: (email: string): string => `Vous êtes inscrit avec ${email}.`,
+    mis: "Cela n'a pas marché. Réessayez dans un instant.",
+    wijzig: 'Choisir autre chose',
+    klein: "Se désinscrire se fait en un clic en bas de chaque message, et effacer ses données aussi. De l'apprentissage nous n'envoyons que des nombres — jamais de réponses, jamais le prénom de votre enfant.",
+    geenServer: "Cette version n'a pas encore de service de courrier.",
+  },
   welcome: {
     plan: (dagen: number, prijs: string): string =>
       `Tu commences gratuitement. Après ${dagen} jours, le cours complet coûte à partir de ${prijs} par mois — ou tu t’arrêtes.`,

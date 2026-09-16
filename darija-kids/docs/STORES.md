@@ -50,10 +50,23 @@ Voor elke volgende release hoog je `versionCode` en `versionName` op in
 
 In de Play Console vul je verder in:
 
-- **Datavaststelling (Data safety)**: geen gegevens verzameld, geen gegevens
-  gedeeld. Dat is letterlijk waar; de enige uitzondering om te melden is dat
-  spraakherkenning in de webweergave niet beschikbaar is op Android, dus de app
-  vraagt geen microfoontoestemming.
+- **Datavaststelling (Data safety)**: zonder `VITE_POST` in de build verzamelt
+  en deelt de app niets, en dat vink je dan ook zo aan. Zet je de postdienst uit
+  [`server/`](../server/LEES-MIJ.md) wél aan, dan verandert dit formulier en moet
+  je het eerlijk invullen:
+  - **Verzameld:** *E-mailadres*, onder "Persoonlijke informatie". Doel:
+    *Accountbeheer is het niet* — kies **Berichten van de app** / marketing.
+    Optioneel: ja. Versleuteld onderweg: ja. Te verwijderen op verzoek: ja (de
+    wis-link onderaan elke mail).
+  - **Verzameld:** *App-activiteit → andere acties*, alleen als de ouder om de
+    wekelijkse mail vroeg: vijf aantallen, geen inhoud. Optioneel: ja.
+  - **Gedeeld:** met de mailprovider, als verwerker. Google rekent een
+    verwerker niet als "delen", maar noem hem wel in de privacyverklaring.
+  - **Van kinderen verzamelen we niets.** Het formulier staat achter de
+    ouderpoort en vraagt uitdrukkelijk om het adres van een ouder — leg dat
+    ook zo uit in het veld voor toelichting.
+  Verder is te melden dat spraakherkenning in de webweergave niet beschikbaar is
+  op Android, dus de app vraagt geen microfoontoestemming.
 - **Doelgroep**: vink de leeftijdsgroepen onder 13 aan. Daarmee valt de app
   onder het **Families-beleid**. Dat verbiedt advertenties en analytics van
   derden — die zitten er niet in — en staat in-app-aankopen wél toe, mits de
@@ -88,14 +101,22 @@ App Store Connect.
 
 In App Store Connect vul je in:
 
-- **App Privacy**: "Data Not Collected". De app verzamelt niets, en dat is
-  precies wat je aanvinkt.
+- **App Privacy**: zonder `VITE_POST` in de build is het "Data Not Collected",
+  en dat is precies wat je aanvinkt. Staat de postdienst aan, dan wordt het:
+  *Contact Info → Email Address*, gebruikt voor **Product Personalization** en
+  **App Functionality**, **niet** gekoppeld aan de gebruiker voor tracking en
+  **niet** gebruikt voor tracking. Zet in de toelichting dat het adres van een
+  ouder is en achter een ouderpoort wordt gevraagd — in de Kids-categorie kijkt
+  Apple daar als eerste naar.
 - **Leeftijdsclassificatie**: 4+.
 - **Categorie**: Onderwijs. Zet je hem in de **Kids-categorie** (6-8 of 9-11),
   dan gelden strengere regels: geen advertenties, geen analytics van derden, en
   een ouderpoort vóór elke link naar buiten én vóór een aankoop. De app heeft
   geen advertenties, geen analytics en geen externe links, en de aankoop zit
-  achter een rekensom die een volwassene moet beantwoorden.
+  achter een rekensom die een volwassene moet beantwoorden. Datzelfde geldt
+  voor het e-mailformulier op het ouderscherm: in de Kids-categorie mag je een
+  kind niets vragen, dus staat het achter dezelfde poort en gaat het
+  uitdrukkelijk om het adres van de ouder.
 - **Abonnementen**: zet "Offers In-App Purchases" aan, maak de subscription
   group en het product aan zoals beschreven in
   [docs/PAYMENTS.md](PAYMENTS.md), en voeg een pagina met

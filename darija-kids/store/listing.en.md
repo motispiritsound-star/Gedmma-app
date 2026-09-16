@@ -73,7 +73,8 @@ The alphabet and the first five units are free and stay free: enough to read the
 And one thing is sold on its own: the e-book, the whole course on paper — all 28 letters with their three shapes, all 17 units with the grammar notes, every word and every sentence. € 14.99, once, and included with a yearly plan.
 
 MADE TO HAND TO A CHILD
-• No account, no email, no login
+• No account, no login — a child fills in nothing here
+• Only a parent can leave an address for news, behind a sum
 • No adverts, no hidden costs
 • No chat, no sharing, no uploads
 • All progress stays on the device

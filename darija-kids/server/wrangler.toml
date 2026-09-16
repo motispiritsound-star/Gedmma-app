@@ -1,0 +1,28 @@
+name = "darija-kids-post"
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+
+# Where the app posts to and where the links in the mails point. Set this to
+# the worker's own address once it is deployed.
+[vars]
+BASIS = "https://post.darijakids.app"
+AFZENDER_NAAM = "Darija Kids"
+AFZENDER_EMAIL = "post@darijakids.app"
+
+# The list itself. Create it once with:
+#   npx wrangler d1 create darija-kids
+#   npx wrangler d1 execute darija-kids --remote --file schema.sql
+# and paste the id it prints here.
+[[d1_databases]]
+binding = "DB"
+database_name = "darija-kids"
+database_id = "vul-hier-het-id-in"
+
+# One run a week. Monday morning, because a week that is reported on Monday is
+# a week somebody can still do something about.
+[triggers]
+crons = ["0 7 * * 1"]
+
+# Two secrets, never in this file:
+#   npx wrangler secret put MAIL_SLEUTEL
+#   npx wrangler secret put ZOUT

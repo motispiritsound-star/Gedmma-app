@@ -675,6 +675,27 @@ export const nl = {
         `Het e-boek koop je in de app uit de App Store of Google Play (${prijs}, eenmalig). Bij een jaarabonnement zit het erbij.`,
     },
   },
+  /**
+   * De aanmelding voor mail, op het ouderscherm en achter de ouderpoort.
+   *
+   * Twee vakjes in plaats van één, allebei leeg: nieuws en voortgang zijn twee
+   * verschillende vragen, en een vooraf aangevinkt vakje is geen toestemming.
+   */
+  post: {
+    titel: 'Op de hoogte blijven',
+    uitleg: 'Wil je horen wanneer er een nieuwe unit bij komt, of hoe de week ging? Laat hieronder je e-mailadres achter. Dit is voor de ouder — we vragen er niet voor niets een rekensom voor.',
+    email: 'E-mailadres van een ouder',
+    nieuws: 'Stuur me nieuws over nieuwe units, verhalen en aanbiedingen.',
+    voortgang: 'Stuur me één keer per week hoe het leren gaat.',
+    knop: 'Aanmelden',
+    bezig: 'Bezig…',
+    wacht: (email: string): string => `Er staat een mail klaar in ${email}. Tik op de knop erin, dan sturen we pas iets.`,
+    bevestigd: (email: string): string => `Je staat aangemeld met ${email}.`,
+    mis: 'Het lukte even niet. Probeer het zo nog eens.',
+    wijzig: 'Iets anders kiezen',
+    klein: 'Uitschrijven kan met één tik onderaan elke mail, en je gegevens laten wissen ook. Wat we van het leren meesturen zijn alleen aantallen — nooit antwoorden, nooit de naam van je kind.',
+    geenServer: 'In deze versie zit nog geen postdienst.',
+  },
   welcome: {
     plan: (dagen: number, prijs: string): string =>
       `Je begint gratis. Na ${dagen} dagen is de volledige cursus vanaf ${prijs} per maand — of je stopt gewoon.`,

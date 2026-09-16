@@ -73,7 +73,8 @@ Het alfabet en de eerste vijf units zijn en blijven gratis: genoeg om het Arabis
 En er is één ding dat los te koop is: het e-boek, de hele cursus op papier — alle 28 letters met hun drie vormen, alle 17 units met de grammatica-uitleg, alle woorden en alle zinnen. € 14,99, één keer, en bij een jaarabonnement zit het erbij.
 
 GEMAAKT OM AAN EEN KIND TE GEVEN
-• Geen account, geen e-mailadres, geen inloggen
+• Geen account en geen inloggen — een kind vult hier niets in
+• Alleen een ouder kan, achter een rekensom, een e-mailadres achterlaten voor nieuws
 • Geen advertenties, geen verborgen kosten
 • Geen chat, geen delen, geen uploaden
 • Alle voortgang blijft op het toestel zelf

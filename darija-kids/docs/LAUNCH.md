@@ -250,6 +250,11 @@ Apple leest dit veld echt. Zet er dit in:
 > cursus, dat bij het jaarabonnement is inbegrepen.
 > De voorwaarden en het privacybeleid staan in de app onder het
 > abonnementsscherm, en online op [je URL].
+>
+> Onder "Jij → Voor ouders" kan een ouder een e-mailadres achterlaten voor
+> nieuws of een wekelijkse voortgangsmail. Dat staat achter dezelfde
+> ouderpoort, beide vinkjes beginnen leeg, en er wordt niets gestuurd voordat
+> het adres per mail is bevestigd. Een kind kan daar niets invullen.
 
 ---
 

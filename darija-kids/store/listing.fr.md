@@ -73,7 +73,8 @@ L'alphabet et les cinq premières unités sont et restent gratuits : de quoi lir
 Et une chose s'achète à part : l'e-book, tout le cours sur papier — les 28 lettres avec leurs trois formes, les 17 unités avec les explications de grammaire, tous les mots et toutes les phrases. 14,99 €, une seule fois, et compris avec l'abonnement annuel.
 
 FAIT POUR ÊTRE CONFIÉ À UN ENFANT
-• Pas de compte, pas d'e-mail, pas de connexion
+• Pas de compte, pas de connexion — un enfant ne remplit rien ici
+• Seul un parent peut, derrière un calcul, laisser une adresse pour les nouveautés
 • Pas de publicité, pas de frais cachés
 • Pas de chat, pas de partage, pas d'envoi de fichiers
 • Toute la progression reste sur l'appareil
