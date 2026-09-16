@@ -42,6 +42,7 @@ export const nl = {
     privacy: 'Privacy',
     voorwaarden: 'Voorwaarden',
     bonus: 'Bonus',
+    geschiedenis: 'Geschiedenis',
     menu: 'Hoofdmenu',
     onderdelen: 'Onderdelen',
   },
@@ -700,6 +701,22 @@ export const nl = {
         hint: 'Over het abonnement, over privacy, of over hoe je thuis het beste helpt.',
       },
     },
+  },
+
+  /**
+   * The history cards after a checkpoint, and the collection that keeps them.
+   */
+  history: {
+    kaart: 'Kaart uit de geschiedenis',
+    wistJeDat: 'Wist je dat?',
+    bewaard: 'Deze kaart staat nu in je verzameling.',
+    paginaTitel: 'Geschiedenis van Marokko',
+    paginaBody: 'Veertien kaarten, van de Romeinse stad in de heuvels tot het alfabet dat in 2011 officieel werd. Na elke toets krijg je er een.',
+    verzameld: (n: number, totaal: number): string => `${n} van de ${totaal} kaarten`,
+    hoeKrijgJe: 'Elke toets die je haalt levert de volgende kaart op.',
+    compleet: 'Alle kaarten binnen. Tweeduizend jaar in je zak.',
+    nogNiet: 'Nog niet verdiend',
+    link: 'Je geschiedeniskaarten',
   },
 
   terms: {

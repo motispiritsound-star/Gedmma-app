@@ -18,6 +18,8 @@ export interface ContentPack {
   lessons: Record<string, string>
   /** Lesson id → the tip shown once before that lesson. */
   tips: Record<string, { title: string; body: string }>
+  /** History card id → the three pieces of text on it. */
+  history: Record<string, { titel: string; body: string; wist: string }>
   stories: Record<string, {
     title: string
     intro: string

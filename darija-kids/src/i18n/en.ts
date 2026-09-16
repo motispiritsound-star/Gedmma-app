@@ -38,6 +38,7 @@ export const en: Strings = {
     privacy: 'Privacy',
     voorwaarden: 'Terms',
     bonus: 'Bonus',
+    geschiedenis: 'History',
     menu: 'Main menu',
     onderdelen: 'Sections',
   },
@@ -685,6 +686,19 @@ export const en: Strings = {
         hint: 'About the subscription, about privacy, or about how best to help at home.',
       },
     },
+  },
+
+  history: {
+    kaart: 'History card',
+    wistJeDat: 'Did you know?',
+    bewaard: 'This card is in your collection now.',
+    paginaTitel: 'The history of Morocco',
+    paginaBody: 'Fourteen cards, from the Roman town in the hills to the alphabet that became official in 2011. You get one after every test.',
+    verzameld: (n: number, totaal: number): string => `${n} of ${totaal} cards`,
+    hoeKrijgJe: 'Every test you pass hands over the next card.',
+    compleet: 'Every card in. Two thousand years in your pocket.',
+    nogNiet: 'Not earned yet',
+    link: 'Your history cards',
   },
 
   terms: {

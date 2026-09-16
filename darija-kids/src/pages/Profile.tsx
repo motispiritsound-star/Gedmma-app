@@ -7,6 +7,9 @@ import {
 import { sfx } from '../engine/audio'
 import { Button, Card, Progress, SectionTitle, Stat } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
+import { Khatim } from '../ui/Khatim'
+import { Medaillon } from '../ui/Motief'
+import { HISTORY } from '../content/history'
 import { useLang, useT } from '../i18n'
 import { unitSubtitle } from '../content/localise'
 
@@ -108,6 +111,27 @@ export function Profile() {
         })}
       </ul>
 
+      {/* The history cards live here rather than on the tab bar: they are
+          something you have, like the badges above, not somewhere you go. */}
+      <SectionTitle><span className="mt-8 block">{t.nav.geschiedenis}</span></SectionTitle>
+      <Link to="/geschiedenis" className="block">
+        <Card className="flex items-center gap-4 p-4">
+          <Medaillon
+            motief={HISTORY[Math.max(0, state.history.length - 1)]!.motief}
+            size={62}
+            className="shrink-0 text-khatim-500 dark:text-khatim-400"
+          />
+          <div className="min-w-0 flex-1">
+            <div className="font-display font-extrabold">{t.history.link}</div>
+            <div className="text-sm text-[var(--ink-soft)]">
+              {t.history.verzameld(state.history.length, HISTORY.length)}
+            </div>
+            <Progress value={state.history.length / HISTORY.length} className="mt-1 h-2" />
+          </div>
+          <span className="shrink-0 text-[var(--ink-soft)]" aria-hidden="true">›</span>
+        </Card>
+      </Link>
+
       <SectionTitle><span className="mt-8 block">{t.profile.units}</span></SectionTitle>
       <ul className="space-y-2">
         {UNITS.map((u) => {
@@ -122,7 +146,9 @@ export function Profile() {
                   <div className="text-xs text-[var(--ink-soft)]">{unitSubtitle(u, lang)}</div>
                   <Progress value={pct} className="mt-1 h-2" />
                 </div>
-                <span className="shrink-0 text-sm font-bold text-saffron-500">★ {stars}</span>
+                <span className="flex shrink-0 items-center gap-1 text-sm font-bold text-saffron-500">
+                  <Khatim size={14} /> {stars}
+                </span>
               </Card>
             </li>
           )

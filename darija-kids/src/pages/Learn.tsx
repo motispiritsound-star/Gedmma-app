@@ -12,6 +12,7 @@ import {
 } from '../engine/store'
 import { audioBlocked, keepAwake, missingArabicVoice, sfx, unlockAudio } from '../engine/audio'
 import { useVoices } from '../ui/useVoices'
+import { Khatims } from '../ui/Khatim'
 import type { Lesson } from '../content/types'
 import { useLang, useT } from '../i18n'
 import { lessonTitle, unitSubtitle } from '../content/localise'
@@ -49,9 +50,7 @@ function Node({ lesson, index, accent }: { lesson: Lesson; index: number; accent
       <div className="text-center">
         <div className="text-xs font-bold">{title}</div>
         {record && (
-          <div className="text-[11px] text-saffron-500" aria-label={t.learn.sterren(record.stars)}>
-            {'★'.repeat(record.stars)}{'☆'.repeat(3 - record.stars)}
-          </div>
+          <Khatims stars={record.stars} size={12} label={t.learn.sterren(record.stars)} />
         )}
       </div>
     </div>

@@ -12,6 +12,7 @@ const StoryReader = lazy(() => import('./pages/Stories').then((m) => ({ default:
 const Games = lazy(() => import('./pages/Games').then((m) => ({ default: m.Games })))
 const Bonus = lazy(() => import('./pages/Bonus').then((m) => ({ default: m.Bonus })))
 const Profile = lazy(() => import('./pages/Profile').then((m) => ({ default: m.Profile })))
+const History = lazy(() => import('./pages/History').then((m) => ({ default: m.History })))
 const Parents = lazy(() => import('./pages/Parents').then((m) => ({ default: m.Parents })))
 const Unlock = lazy(() => import('./pages/Unlock').then((m) => ({ default: m.Unlock })))
 const Privacy = lazy(() => import('./pages/Privacy').then((m) => ({ default: m.Privacy })))
@@ -101,6 +102,7 @@ function Chrome() {
                 rebuilt on the way out of a round — taking the score with it. */}
             <Route path="/bonus/:bonusId?" element={<Bonus />} />
             <Route path="/profiel" element={<Profile />} />
+            <Route path="/geschiedenis" element={<History />} />
             <Route path="/ouders" element={<Parents />} />
             <Route path="/instellingen" element={<SettingsPage />} />
             <Route path="/privacy" element={<Privacy />} />

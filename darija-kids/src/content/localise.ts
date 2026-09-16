@@ -1,6 +1,7 @@
 import type { Lang } from '../i18n/languages'
 import type { Lesson, LessonTip, Sentence, Story, Unit, Word } from './types'
 import type { ContentPack } from './lang/types'
+import type { HistoryCard } from './history'
 import { fr } from './lang/fr'
 import { de } from './lang/de'
 import { es } from './lang/es'
@@ -47,6 +48,13 @@ export function lessonTitle(lesson: Lesson, lang: Lang): string {
 export function tipOf(lesson: Lesson, lang: Lang): LessonTip | undefined {
   if (!lesson.tip) return undefined
   return lang === 'nl' ? lesson.tip : PACKS[lang].tips[lesson.id] ?? lesson.tip
+}
+
+/** A history card in the learner's own language; the year never changes. */
+export function historyOf(card: HistoryCard, lang: Lang): HistoryCard {
+  if (lang === 'nl') return card
+  const pack = PACKS[lang].history[card.id]
+  return pack ? { ...card, ...pack } : card
 }
 
 export interface LocalisedStory {

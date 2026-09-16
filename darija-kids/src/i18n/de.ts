@@ -38,6 +38,7 @@ export const de: Strings = {
     privacy: 'Datenschutz',
     voorwaarden: 'Bedingungen',
     bonus: 'Bonus',
+    geschiedenis: 'Geschichte',
     menu: 'Hauptmenü',
     onderdelen: 'Bereiche',
   },
@@ -685,6 +686,19 @@ export const de: Strings = {
         hint: 'Zum Abo, zum Datenschutz, oder wie man zu Hause am besten hilft.',
       },
     },
+  },
+
+  history: {
+    kaart: 'Geschichtskarte',
+    wistJeDat: 'Wusstest du schon?',
+    bewaard: 'Diese Karte ist jetzt in deiner Sammlung.',
+    paginaTitel: 'Geschichte Marokkos',
+    paginaBody: 'Vierzehn Karten, von der römischen Stadt in den Hügeln bis zum Alphabet, das 2011 amtlich wurde. Nach jedem Test bekommst du eine.',
+    verzameld: (n: number, totaal: number): string => `${n} von ${totaal} Karten`,
+    hoeKrijgJe: 'Jeder bestandene Test bringt die nächste Karte.',
+    compleet: 'Alle Karten beisammen. Zweitausend Jahre in der Tasche.',
+    nogNiet: 'Noch nicht verdient',
+    link: 'Deine Geschichtskarten',
   },
 
   terms: {

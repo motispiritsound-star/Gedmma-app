@@ -474,6 +474,78 @@ export const es: ContentPack = {
     },
   },
 
+  history: {
+    walili: {
+      titel: 'Walili, la ciudad de mosaico',
+      body: 'Cerca de Mequinez están los restos de Volubilis — Walili en árabe. Hace dos mil años vivían aquí miles de personas, con baños, prensas de aceituna y calles empedradas. Los suelos estaban cubiertos de mosaicos, y parte de ellos siguen ahí.',
+      wist: 'Las prensas de aceituna de Walili funcionan con la misma idea que las que todavía se usan hoy en Marruecos.',
+    },
+    tariq: {
+      titel: 'Táriq ibn Ziyad',
+      body: 'Táriq ibn Ziyad era un jefe militar amazigh del norte de África. En 711 cruzó el estrecho con su ejército hacia el sur de España, junto al gran peñón que se alza del mar.',
+      wist: 'Ese peñón sigue llevando su nombre: Yabal Táriq, «la montaña de Táriq» — de ahí Gibraltar.',
+    },
+    fes: {
+      titel: 'Fez se convierte en ciudad',
+      body: 'Idrís I fundó hacia 789 una pequeña aldea junto al río; su hijo Idrís II la convirtió en una ciudad de verdad. Llegaron familias de Kairuán y de Córdoba, cada una a su propio barrio.',
+      wist: 'El casco antiguo de Fez es una de las mayores zonas del mundo sin coches — todo se hace a pie o en burro.',
+    },
+    fatima: {
+      titel: 'Fátima al-Fihri',
+      body: 'Fátima al-Fihri heredó dinero de su padre y lo gastó entero en una sola cosa: una mezquita con una escuela al lado, la Qarawiyyin de Fez. Allí se enseñaba matemáticas, medicina, lengua y astronomía.',
+      wist: 'La UNESCO llama a la Qarawiyyin la universidad más antigua del mundo que nunca ha cerrado — más de mil cien años de clases, sin pausa.',
+    },
+    marrakech: {
+      titel: 'Marrakech y el nombre del país',
+      body: 'Los almorávides levantaron Marrakech en la llanura bajo el Atlas, y Yúsuf ibn Tashfín la hizo su capital. Para que la ciudad viviera, excavaron kilómetros de canales subterráneos llamados jetaras.',
+      wist: 'Marruecos, Maroc, Morocco: todos esos nombres vienen de Marrakech. Europa llamó al país entero como a esa única ciudad.',
+    },
+    zaynab: {
+      titel: 'Zaynab an-Nafzawiyya',
+      body: 'Zaynab era una mujer amazigh de una familia de comerciantes, y se casó con Yúsuf ibn Tashfín. Los cronistas de la época la describen como su consejera: conocía el comercio, conocía el dinero y sabía con quién más valía no enemistarse.',
+      wist: 'En una época en la que casi nunca se escribía nada sobre las mujeres, ella aparece en los libros con nombre y apellido.',
+    },
+    idrisi: {
+      titel: 'Al-Idrisi dibuja el mundo',
+      body: 'Al-Idrisi nació en Ceuta y ya de niño viajó por el norte de África y España. En la corte del rey Roger, en Sicilia, hizo un mapa del mundo con todo lo que marineros y viajeros le habían contado.',
+      wist: 'En su mapa el sur está arriba. Que haya un lado «bueno» arriba no es más que un acuerdo — y ese acuerdo se dio la vuelta después.',
+    },
+    battuta: {
+      titel: 'Ibn Battuta',
+      body: 'Ibn Battuta salió de Tánger a los veintiún años, solo, y no volvió hasta casi treinta años después. Vio Malí, Egipto, Persia, la India y China, y luego hizo que escribieran su relato.',
+      wist: 'Recorrió unos 120.000 kilómetros — tres vueltas a la Tierra, a pie, a caballo y en barco.',
+    },
+    wazzan: {
+      titel: 'Hassan al-Wazzan',
+      body: 'Hassan al-Wazzan creció en Fez y viajó por África como diplomático. Por el camino lo capturaron unos piratas y acabó en Italia, donde escribió un libro sobre todo lo que había visto.',
+      wist: 'Durante trescientos años Europa leyó sobre todo su libro cuando quería saber algo de África — escrito por un chico de Fez.',
+    },
+    mansour: {
+      titel: 'El palacio Badi',
+      body: 'El sultán Áhmad al-Mansur mandó construir en Marrakech el palacio Badi, con patios, estanques y mármol de Italia. Badi significa «lo maravilloso», y así estaba pensado.',
+      wist: 'Se cuenta que el mármol se pagó con azúcar marroquí, kilo por kilo — el azúcar valía entonces más que la piedra.',
+    },
+    amerika: {
+      titel: 'El primer país que dijo que sí',
+      body: 'Estados Unidos acababa de nacer y casi nadie quería tratos con él. El sultán Sidi Mohammed ben Abdallah fue el primero en abrir sus puertos a los barcos estadounidenses.',
+      wist: 'El tratado de amistad que se firmó después sigue vigente — el tratado más antiguo que Estados Unidos nunca ha roto.',
+    },
+    leeuw: {
+      titel: 'El león del Atlas',
+      body: 'En las montañas del Atlas vivía un león de melena oscura y espesa. Era mayor que casi todos los leones y era el único que no vivía en la sabana, sino en la montaña.',
+      wist: 'En libertad ha desaparecido, pero sus descendientes siguen en el zoo de Rabat — y la selección nacional lleva su nombre: los Leones del Atlas.',
+    },
+    istiqlal: {
+      titel: 'Independiente',
+      body: 'Desde 1912 Marruecos estuvo bajo administración francesa y española. Tras años de resistencia, huelgas y negociaciones, el país volvió a ser independiente en 1956, con Mohammed V como rey.',
+      wist: 'La estrella de la bandera se traza con una sola línea continua que se cruza cinco veces — se llama jatim, el sello.',
+    },
+    tifinagh: {
+      titel: 'Tamazight, negro sobre blanco',
+      body: 'El amazigh — tamazight — se habla en el norte de África desde hace miles de años y tiene su propio alfabeto: el tifinagh. En 2011 pasó a ser, en la Constitución, lengua oficial de Marruecos junto al árabe.',
+      wist: 'La letra que se ve por todas partes en Marruecos se llama yaz. Amazigh significa «hombre libre».',
+    },
+  },
   stories: {
     jedda: {
       title: "En casa de jeddti (la abuela)",

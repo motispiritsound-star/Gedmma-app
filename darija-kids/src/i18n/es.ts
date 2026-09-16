@@ -38,6 +38,7 @@ export const es: Strings = {
     privacy: 'Privacidad',
     voorwaarden: 'Condiciones',
     bonus: 'Bonus',
+    geschiedenis: 'Historia',
     menu: 'Menú principal',
     onderdelen: 'Secciones',
   },
@@ -685,6 +686,19 @@ export const es: Strings = {
         hint: 'Sobre la suscripción, sobre la privacidad, o sobre cómo ayudar mejor en casa.',
       },
     },
+  },
+
+  history: {
+    kaart: 'Carta de historia',
+    wistJeDat: '¿Sabías que...?',
+    bewaard: 'Esta carta ya está en tu colección.',
+    paginaTitel: 'Historia de Marruecos',
+    paginaBody: 'Catorce cartas, desde la ciudad romana en las colinas hasta el alfabeto que se hizo oficial en 2011. Consigues una después de cada test.',
+    verzameld: (n: number, totaal: number): string => `${n} de ${totaal} cartas`,
+    hoeKrijgJe: 'Cada test superado te da la siguiente carta.',
+    compleet: 'Todas las cartas reunidas. Dos mil años en el bolsillo.',
+    nogNiet: 'Todavía no conseguida',
+    link: 'Tus cartas de historia',
   },
 
   terms: {

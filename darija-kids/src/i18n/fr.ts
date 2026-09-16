@@ -38,6 +38,7 @@ export const fr: Strings = {
     privacy: 'Confidentialité',
     voorwaarden: 'Conditions',
     bonus: 'Bonus',
+    geschiedenis: 'Histoire',
     menu: 'Menu principal',
     onderdelen: 'Sections',
   },
@@ -685,6 +686,19 @@ export const fr: Strings = {
         hint: "Sur l'abonnement, sur la vie privée, ou sur la meilleure façon d'aider à la maison.",
       },
     },
+  },
+
+  history: {
+    kaart: "Carte d'histoire",
+    wistJeDat: 'Le savais-tu ?',
+    bewaard: 'Cette carte est maintenant dans ta collection.',
+    paginaTitel: 'Histoire du Maroc',
+    paginaBody: "Quatorze cartes, de la ville romaine dans les collines jusqu'à l'alphabet devenu officiel en 2011. Tu en reçois une après chaque test.",
+    verzameld: (n: number, totaal: number): string => `${n} cartes sur ${totaal}`,
+    hoeKrijgJe: 'Chaque test réussi donne la carte suivante.',
+    compleet: 'Toutes les cartes réunies. Deux mille ans dans ta poche.',
+    nogNiet: 'Pas encore gagnée',
+    link: "Tes cartes d'histoire",
   },
 
   terms: {

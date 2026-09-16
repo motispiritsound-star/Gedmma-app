@@ -234,6 +234,78 @@ export const en: ContentPack = {
     },
   },
 
+  history: {
+    walili: {
+      titel: 'Walili, the mosaic town',
+      body: "Near Meknes lie the remains of Volubilis — Walili in Arabic. Two thousand years ago thousands of people lived here, with baths, olive presses and paved streets. The floors were covered in mosaics, and some of it is still there.",
+      wist: "The olive presses of Walili work on the same idea as the ones still used in Morocco today.",
+    },
+    tariq: {
+      titel: 'Tariq ibn Ziyad',
+      body: "Tariq ibn Ziyad was an Amazigh commander from North Africa. In 711 he took his army across the strait to southern Spain, by the great rock that rises out of the sea there.",
+      wist: "That rock still carries his name: Jabal Tariq, 'Tariq's mountain' — worn down over the centuries into Gibraltar.",
+    },
+    fes: {
+      titel: 'Fes becomes a city',
+      body: "Idris I founded a small village by the river around 789; his son Idris II turned it into a real city. Families from Kairouan and from Córdoba settled there, each in their own quarter.",
+      wist: "The old city of Fes is one of the largest car-free areas in the world — everything goes on foot or by donkey.",
+    },
+    fatima: {
+      titel: 'Fatima al-Fihri',
+      body: "Fatima al-Fihri inherited money from her father and spent every bit of it on one thing: a mosque with a school attached, the Qarawiyyin in Fes. Mathematics, medicine, language and astronomy were taught there.",
+      wist: "UNESCO calls the Qarawiyyin the oldest university in the world that has never closed — eleven hundred years of teaching, without a break.",
+    },
+    marrakech: {
+      titel: 'Marrakesh and the name of the country',
+      body: "The Almoravids built Marrakesh on the plain below the Atlas, and Yusuf ibn Tashfin made it his capital. To keep the city alive they dug miles of underground water channels, called khettara.",
+      wist: "Morocco, Maroc, Marruecos: all of those names come from Marrakesh. Europe named the whole country after that one city.",
+    },
+    zaynab: {
+      titel: 'Zaynab an-Nafzawiyya',
+      body: "Zaynab was an Amazigh woman from a merchant family, and she married Yusuf ibn Tashfin. The chroniclers of the time describe her as his adviser: she knew the trade, she knew the money, and she knew who was better left alone.",
+      wist: "In an age when almost nothing was written down about women, she is in the books by name.",
+    },
+    idrisi: {
+      titel: 'Al-Idrisi draws the world',
+      body: "Al-Idrisi was born in Ceuta and travelled through North Africa and Spain while still a boy. At King Roger's court in Sicily he made a map of the world out of everything sailors and travellers had told him.",
+      wist: "On his map, south is at the top. That there is a 'right' way up is only an agreement — and that agreement was turned over later.",
+    },
+    battuta: {
+      titel: 'Ibn Battuta',
+      body: "Ibn Battuta left Tangier at twenty-one, on his own, and did not come back for almost thirty years. He saw Mali, Egypt, Persia, India and China, and afterwards had his account written down.",
+      wist: "He covered some 120,000 kilometres — three times around the Earth, on foot, on horseback and by ship.",
+    },
+    wazzan: {
+      titel: 'Hassan al-Wazzan',
+      body: "Hassan al-Wazzan grew up in Fes and travelled across Africa as a diplomat. On the way he was captured by pirates and ended up in Italy, where he wrote a book about everything he had seen.",
+      wist: "For three hundred years Europe mostly read his book when it wanted to know anything about Africa — written by a boy from Fes.",
+    },
+    mansour: {
+      titel: 'The Badi Palace',
+      body: "Sultan Ahmad al-Mansur had the Badi Palace built in Marrakesh, with courtyards, pools and marble from Italy. Badi means 'the marvellous', and that was exactly the idea.",
+      wist: "The story goes that the marble was paid for in Moroccan sugar, kilo for kilo — sugar was worth more than stone back then.",
+    },
+    amerika: {
+      titel: 'The first country to say yes',
+      body: "The United States were a brand-new country and hardly anybody wanted anything to do with them. Sultan Sidi Mohammed ben Abdallah was the first to open his ports to American ships.",
+      wist: "The friendship treaty signed afterwards still stands — the oldest treaty the United States has never broken.",
+    },
+    leeuw: {
+      titel: 'The lion of the Atlas',
+      body: "A lion with a dark, heavy mane lived in the Atlas mountains. He was bigger than most lions, and he was the only lion anywhere that lived not on the savannah but in the mountains.",
+      wist: "In the wild he is gone, but his descendants still live in Rabat zoo — and the national team is named after him: the Atlas Lions.",
+    },
+    istiqlal: {
+      titel: 'Independent',
+      body: "From 1912 Morocco was under French and Spanish administration. After years of resistance, strikes and negotiation the country became independent again in 1956, with Mohammed V as king.",
+      wist: "The star on the flag is drawn with one unbroken line that crosses itself five times — it is called the khatim, the seal.",
+    },
+    tifinagh: {
+      titel: 'Tamazight, in black and white',
+      body: "Amazigh — Tamazight — has been spoken across North Africa for thousands of years and has an alphabet of its own: Tifinagh. In 2011 the constitution made it an official language of Morocco, alongside Arabic.",
+      wist: "The letter you see everywhere in Morocco is called yaz. Amazigh means 'free person'.",
+    },
+  },
   stories: {
     jedda: {
       title: "At jeddti's (grandma's)",

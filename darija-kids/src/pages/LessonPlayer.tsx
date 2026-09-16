@@ -2,15 +2,19 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import confetti from 'canvas-confetti'
 import { lessonById, unitOfLesson } from '../content/curriculum'
+import { cardForCheckpoint, type HistoryCard } from '../content/history'
 import { buildRound } from '../engine/exercises'
 import {
-  awardBadges, completeLesson, getState, knownIds, levelOf, markTipSeen, useStore, type Badge,
+  awardBadges, checkpointsDone, collectHistory, completeLesson, getState, knownIds, levelOf,
+  markTipSeen, useStore, type Badge,
 } from '../engine/store'
 import { sfx } from '../engine/audio'
 import { Button, Card, Sheet } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 import { RoundRunner, type RoundResult } from '../ui/Round'
 import { Film } from '../ui/Film'
+import { HistoryFilm } from '../ui/HistoryCard'
+import { Khatims } from '../ui/Khatim'
 import { useLang, useT } from '../i18n'
 import { lessonTitle, tipOf, unitSubtitle } from '../content/localise'
 
@@ -31,8 +35,10 @@ export function LessonPlayer() {
   // What finishing itself paid, on top of the answers that already paid out.
   const [bonus, setBonus] = useState({ xp: 0, gems: 0, levelled: false })
   // The little film runs before the score, so the reward arrives before the
-  // report card does.
+  // report card does. After a checkpoint it is a history card instead: a piece
+  // of where the language comes from, in place of nine seconds of scenery.
   const [film, setFilm] = useState(false)
+  const [card, setCard] = useState<HistoryCard | null>(null)
   const lessonsDone = useStore((s) => Object.keys(s.lessons).length)
 
   // The round is built once per attempt, from what the learner already knows.
@@ -69,7 +75,14 @@ export function LessonPlayer() {
     setWon(badges)
     setResult(r)
     // The film carries its own music, so the flourish waits until after it.
-    if (now.settings.film && now.settings.motion === 'full') setFilm(true)
+    if (lesson.kind === 'toets') {
+      // The card is earned by passing the checkpoint, not by watching it, so
+      // it goes into the collection even if the film is switched off.
+      const earned = cardForCheckpoint(checkpointsDone(now) - 1)
+      collectHistory(earned.id)
+      if (now.settings.film) setCard(earned)
+      else celebrate(r, levelled, badges.length)
+    } else if (now.settings.film && now.settings.motion === 'full') setFilm(true)
     else celebrate(r, levelled, badges.length)
   }
 
@@ -90,6 +103,18 @@ export function LessonPlayer() {
         colors: ['#f59e0b', '#14b8a6', '#e2603c', '#22c55e'],
       })
     }
+  }
+
+  if (card && result) {
+    return (
+      <HistoryFilm
+        card={card}
+        onDone={() => {
+          setCard(null)
+          celebrate(result, bonus.levelled, won.length)
+        }}
+      />
+    )
   }
 
   if (film && result) {
@@ -114,9 +139,7 @@ export function LessonPlayer() {
         <p className="mt-1 text-[var(--ink-soft)]">
           {lessonTitle(lesson, lang)} · {unit ? unitSubtitle(unit, lang) : ''}
         </p>
-        <div className="my-4 text-3xl text-saffron-500" aria-label={t.learn.sterren(stars)}>
-          {'★'.repeat(stars)}{'☆'.repeat(3 - stars)}
-        </div>
+        <Khatims stars={stars} size={40} className="my-4 justify-center" label={t.learn.sterren(stars)} />
         <div className="grid grid-cols-3 gap-3">
           <Card className="p-3"><div className="font-display text-2xl font-extrabold">{Math.round(result.score * 100)}%</div><div className="text-xs text-[var(--ink-soft)]">{t.common.goed}</div></Card>
           <Card className="p-3"><div className="font-display text-2xl font-extrabold">🔥 {result.bestCombo}</div><div className="text-xs text-[var(--ink-soft)]">{t.lesson.besteReeks}</div></Card>

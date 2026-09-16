@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+/* Tailwind's own `dark:` follows the operating system, while the surfaces
+   below follow `data-theme` on the root — which a learner sets in the
+   settings. Left alone, the two disagree: somebody with a dark phone who
+   picked the light theme gets dark-mode text colours on a cream background.
+   This teaches `dark:` the same rule the tokens already use. */
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) { @slot; }
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) { @slot; }
+  }
+}
+
 /* Fonts travel with the app: the Arabic script must render on a device that
    has no Arabic font installed, and an offline app cannot fetch one. */
 @font-face {
@@ -57,6 +69,15 @@
   --color-mint-400: #4ade80;
   --color-mint-500: #22c55e;
   --color-mint-600: #16a34a;
+
+  /* The two colours of the Moroccan flag, used where the app means Morocco
+     rather than merely warmth: the khatim, the history cards, the flag. */
+  --color-alam-100: #fbdcdd;
+  --color-alam-500: #c1272d;
+  --color-alam-600: #9e1f24;
+  --color-khatim-100: #cfe8db;
+  --color-khatim-400: #0b8046;
+  --color-khatim-500: #006233;
 
   --color-night-700: #1b2540;
   --color-night-800: #131b30;

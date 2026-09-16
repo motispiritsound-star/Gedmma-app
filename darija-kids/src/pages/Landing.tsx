@@ -12,6 +12,7 @@ import { Button, Card } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 import { useMeaning } from '../ui/WordChip'
 import { FeedbackLink } from '../ui/Feedback'
+import { Vlag } from '../ui/Khatim'
 
 const TASTER = ['salam', 'shukran', 'atay', 'bnin', 'yallah', 'khobz', 'mzyan', 'bslama']
 
@@ -67,7 +68,11 @@ export function Landing() {
 
           <div className="grid items-center gap-8 py-14 sm:py-20 md:grid-cols-2">
             <div>
-              <p className="ar inline-block text-2xl font-bold text-zellige-600 dark:text-zellige-300">الدارجة</p>
+              {/* Which country, before the first word of the sentence. */}
+              <span className="flex items-center gap-3">
+                <Vlag size={34} className="rounded shadow-sm" />
+                <p className="ar inline-block text-2xl font-bold text-zellige-600 dark:text-zellige-300">الدارجة</p>
+              </span>
               <h1 className="mt-1 font-display text-4xl leading-tight font-extrabold sm:text-6xl">
                 {t.landing.titel1}
                 <span className="bg-gradient-to-r from-saffron-500 to-terra-500 bg-clip-text text-transparent">

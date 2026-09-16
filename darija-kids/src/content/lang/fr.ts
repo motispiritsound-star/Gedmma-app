@@ -476,6 +476,78 @@ export const fr: ContentPack = {
     },
   },
 
+  history: {
+    walili: {
+      titel: 'Walili, la ville en mosaïque',
+      body: "Près de Meknès se trouvent les ruines de Volubilis — Walili en arabe. Il y a deux mille ans, des milliers de personnes y vivaient, avec des bains, des pressoirs à olives et des rues pavées. Les sols étaient couverts de mosaïques, et une partie est encore là.",
+      wist: "Les pressoirs de Walili fonctionnent sur le même principe que ceux qu'on utilise encore au Maroc aujourd'hui.",
+    },
+    tariq: {
+      titel: 'Tariq ibn Ziyad',
+      body: "Tariq ibn Ziyad était un chef de guerre amazigh d'Afrique du Nord. En 711, il traversa le détroit avec son armée vers le sud de l'Espagne, près du grand rocher qui sort de la mer.",
+      wist: "Ce rocher porte toujours son nom : Jabal Tariq, « la montagne de Tariq » — devenu Gibraltar.",
+    },
+    fes: {
+      titel: 'Fès devient une ville',
+      body: "Idris Ier fonda vers 789 un petit village au bord de la rivière ; son fils Idris II en fit une vraie ville. Des familles venues de Kairouan et de Cordoue s'y installèrent, chacune dans son quartier.",
+      wist: "La vieille ville de Fès est l'une des plus grandes zones au monde interdites aux voitures — tout se fait à pied ou à dos d'âne.",
+    },
+    fatima: {
+      titel: 'Fatima al-Fihri',
+      body: "Fatima al-Fihri hérita de l'argent de son père et le dépensa entièrement pour une seule chose : une mosquée avec une école, la Qarawiyyin de Fès. On y enseignait les mathématiques, la médecine, la langue et l'astronomie.",
+      wist: "L'UNESCO appelle la Qarawiyyin la plus ancienne université du monde encore en activité — plus de onze siècles de cours, sans interruption.",
+    },
+    marrakech: {
+      titel: 'Marrakech et le nom du pays',
+      body: "Les Almoravides bâtirent Marrakech dans la plaine au pied de l'Atlas, et Youssef ibn Tachfine en fit sa capitale. Pour faire vivre la ville, ils creusèrent des kilomètres de canaux souterrains appelés khettaras.",
+      wist: "Maroc, Marruecos, Morocco : tous ces noms viennent de Marrakech. L'Europe a nommé le pays entier d'après cette seule ville.",
+    },
+    zaynab: {
+      titel: 'Zaynab an-Nafzawiyya',
+      body: "Zaynab était une femme amazighe issue d'une famille de marchands, et elle épousa Youssef ibn Tachfine. Les chroniqueurs de l'époque la décrivent comme sa conseillère : elle connaissait le commerce, l'argent, et savait avec qui il valait mieux ne pas se fâcher.",
+      wist: "À une époque où l'on n'écrivait presque jamais rien sur les femmes, elle figure dans les livres avec son nom complet.",
+    },
+    idrisi: {
+      titel: 'Al-Idrissi dessine le monde',
+      body: "Al-Idrissi naquit à Ceuta et voyagea dès l'enfance en Afrique du Nord et en Espagne. À la cour du roi Roger en Sicile, il réalisa une carte du monde à partir de tout ce que marins et voyageurs lui avaient raconté.",
+      wist: "Sur sa carte, le sud est en haut. Qu'il y ait un « bon » côté vers le haut n'est qu'une convention — et elle a été retournée depuis.",
+    },
+    battuta: {
+      titel: 'Ibn Battuta',
+      body: "Ibn Battuta quitta Tanger seul, à vingt et un ans, et ne revint que près de trente ans plus tard. Il vit le Mali, l'Égypte, la Perse, l'Inde et la Chine, puis fit écrire son récit.",
+      wist: "Il parcourut environ 120 000 kilomètres — trois fois le tour de la Terre, à pied, à cheval et en bateau.",
+    },
+    wazzan: {
+      titel: 'Hassan al-Wazzan',
+      body: "Hassan al-Wazzan grandit à Fès et voyagea en Afrique comme diplomate. En chemin, il fut capturé par des pirates et se retrouva en Italie, où il écrivit un livre sur tout ce qu'il avait vu.",
+      wist: "Pendant trois cents ans, l'Europe a surtout lu son livre pour savoir quelque chose de l'Afrique — écrit par un garçon de Fès.",
+    },
+    mansour: {
+      titel: 'Le palais Badi',
+      body: "Le sultan Ahmed al-Mansour fit construire à Marrakech le palais Badi, avec ses cours, ses bassins et son marbre venu d'Italie. Badi veut dire « le merveilleux », et c'était bien l'intention.",
+      wist: "On raconte que le marbre fut payé en sucre marocain, kilo pour kilo — le sucre valait alors plus cher que la pierre.",
+    },
+    amerika: {
+      titel: 'Le premier pays à dire oui',
+      body: "Les États-Unis venaient de naître et presque personne ne voulait avoir affaire à eux. Le sultan Sidi Mohammed ben Abdallah fut le premier à ouvrir ses ports aux navires américains.",
+      wist: "Le traité d'amitié signé ensuite tient toujours — le plus ancien traité que les États-Unis n'aient jamais rompu.",
+    },
+    leeuw: {
+      titel: "Le lion de l'Atlas",
+      body: "Dans les montagnes de l'Atlas vivait un lion à la crinière sombre et épaisse. Il était plus grand que la plupart des lions et, seul de son espèce, il vivait non dans la savane mais en montagne.",
+      wist: "Il a disparu à l'état sauvage, mais ses descendants vivent encore au zoo de Rabat — et l'équipe nationale porte son nom : les Lions de l'Atlas.",
+    },
+    istiqlal: {
+      titel: 'Indépendant',
+      body: "À partir de 1912, le Maroc fut placé sous administration française et espagnole. Après des années de résistance, de grèves et de négociations, le pays redevint indépendant en 1956, avec Mohammed V comme roi.",
+      wist: "L'étoile du drapeau se trace d'un seul trait continu qui se croise cinq fois — on l'appelle le khatim, le sceau.",
+    },
+    tifinagh: {
+      titel: 'Le tamazight, noir sur blanc',
+      body: "L'amazigh — le tamazight — se parle en Afrique du Nord depuis des milliers d'années et possède son propre alphabet : le tifinagh. En 2011, il est devenu une langue officielle du Maroc dans la Constitution, aux côtés de l'arabe.",
+      wist: "La lettre qu'on voit partout au Maroc s'appelle yaz. Amazigh veut dire « homme libre ».",
+    },
+  },
   stories: {
     jedda: {
       title: "Chez jeddti (grand-mère)",

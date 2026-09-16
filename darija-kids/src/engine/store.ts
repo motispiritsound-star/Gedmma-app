@@ -107,6 +107,14 @@ export interface State {
   unlockedAt: number | null
   langPicked: boolean
   seenTips: string[]
+  /**
+   * Which history cards have been earned, oldest first.
+   *
+   * A checkpoint hands one out, and it stays: the collection page is the only
+   * place they can be read back, and a card that vanished with the film would
+   * be a reward that evaporates.
+   */
+  history: string[]
   settings: Settings
 }
 
@@ -232,6 +240,7 @@ const initial = (): State => ({
   /** False until somebody has picked a language on the welcome screen. */
   langPicked: false,
   seenTips: [],
+  history: [],
   settings: {
     theme: 'system',
     lang: detectLang(),
@@ -679,6 +688,15 @@ export function setSetting<K extends keyof Settings>(key: K, value: Settings[K])
 export function markTipSeen(id: string): void {
   if (!state.seenTips.includes(id)) setState((s) => ({ seenTips: [...s.seenTips, id] }))
 }
+
+/** Adds a history card to the collection. Re-earning one changes nothing. */
+export function collectHistory(id: string): void {
+  if (!state.history.includes(id)) setState((s) => ({ history: [...s.history, id] }))
+}
+
+/** How many checkpoints have been passed — which card comes next. */
+export const checkpointsDone = (s: State = state): number =>
+  Object.keys(s.lessons).filter((id) => id.endsWith('-toets')).length
 
 export function resetProgress(): void {
   const { settings, unlocked, unlockedAt } = state

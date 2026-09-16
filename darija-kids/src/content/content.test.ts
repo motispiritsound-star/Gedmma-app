@@ -5,6 +5,9 @@ import { LETTERS } from './alphabet'
 import { SPOKEN, SPOKEN_WORD, spokenForm } from './pronunciation'
 import { ALL_SENTENCES, maybeSentence } from './sentences'
 import { STORIES } from './stories'
+import { HISTORY, cardForCheckpoint, historyById } from './history'
+import { historyOf } from './localise'
+import { LANGS } from '../i18n/languages'
 
 describe('lexicon', () => {
   it('has no duplicate ids', () => {
@@ -173,5 +176,50 @@ describe('alphabet and stories', () => {
         expect(q.options[q.answer], `${s.id}: ${q.q}`).toBeDefined()
       }
     }
+  })
+})
+
+describe('history cards', () => {
+  it('has no duplicate ids', () => {
+    const ids = HISTORY.map((c) => c.id)
+    expect(new Set(ids).size).toBe(ids.length)
+  })
+
+  it('fills in every field, in Dutch', () => {
+    for (const c of HISTORY) {
+      expect(c.jaar, c.id).not.toBe('')
+      expect(c.titel, c.id).not.toBe('')
+      // Long enough to be worth a screen, short enough to read after a test.
+      expect(c.body.length, c.id).toBeGreaterThan(120)
+      expect(c.body.length, c.id).toBeLessThan(420)
+      expect(c.wist.length, c.id).toBeGreaterThan(40)
+      expect(c.wist.length, c.id).toBeLessThan(220)
+    }
+  })
+
+  it('runs in chronological order', () => {
+    const years = HISTORY.map((c) => c.vanaf)
+    expect(years).toEqual([...years].sort((a, b) => a - b))
+  })
+
+  it('is translated into every language', () => {
+    for (const { code } of LANGS) {
+      for (const card of HISTORY) {
+        const c = historyOf(card, code)
+        expect(c.titel, `${code}/${card.id}`).not.toBe('')
+        expect(c.wist, `${code}/${card.id}`).not.toBe('')
+        expect(c.body.length, `${code}/${card.id}`).toBeGreaterThan(100)
+        if (code !== 'nl') {
+          // A pack that forgot a card would silently fall back to Dutch.
+          expect(c.body, `${code}/${card.id}`).not.toBe(card.body)
+        }
+      }
+    }
+  })
+
+  it('hands out a card for every checkpoint, for ever', () => {
+    expect(cardForCheckpoint(0)).toBe(HISTORY[0])
+    expect(cardForCheckpoint(HISTORY.length)).toBe(HISTORY[0])
+    for (let n = 0; n < 60; n++) expect(historyById(cardForCheckpoint(n).id)).toBeDefined()
   })
 })

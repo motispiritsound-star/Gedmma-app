@@ -49,7 +49,7 @@ export const seeded = (lang, opts = {}) => {
     quests: { day: day(0), goed: 14, herhaald: 6, zinnen: 2, lessen: 1, claimed: [] },
     badges: ['eerste-stap', 'salam', 'vlam-3', 'vlam-7', 'letters', 'alfabet'],
     unlocked: true, unlockedAt: Date.now() - 7 * 86400000, langPicked: true, seenTips: ['stem'],
-    settings: { lang, theme: 'light', showScript: true, showTranslit: true, sound: true, mediaSound: false,
+    settings: { lang, theme: opts.theme ?? 'light', showScript: true, showTranslit: true, sound: true, mediaSound: false,
       mediaSoundPicked: true, film: true, schrijven: true, speech: true,
       // The camera guesses its way to a right answer, and five wrong guesses
       // in a row would end the lesson before it had filmed one.
