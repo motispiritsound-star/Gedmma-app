@@ -20,7 +20,7 @@ const FilmPreview = lazy(() => import('./ui/Film').then((m) => ({ default: m.Fil
 import { TopBar } from './ui/TopBar'
 import { Welcome } from './ui/Welcome'
 import { useStore } from './engine/store'
-import { listenForFirstGesture } from './engine/audio'
+import { listenForFirstGesture, sfx } from './engine/audio'
 import { initBilling } from './engine/billing'
 import { localeOf, useLang, useT } from './i18n'
 
@@ -116,6 +116,7 @@ function Chrome() {
               <li key={tab.to} className="flex-1">
                 <NavLink
                   to={tab.to}
+                  onClick={() => sfx.nav()}
                   className={({ isActive }) =>
                     `flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-bold ${isActive ? 'text-zellige-600 dark:text-zellige-300' : 'text-[var(--ink-soft)]'}`
                   }

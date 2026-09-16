@@ -34,6 +34,35 @@ let tail: AudioNode | null = null
 /** Set when building a live mixer threw — a locked-down frame, mostly. */
 let liveBroken = false
 
+/** iPhones and iPads, where the audio session has a mind of its own. */
+function apple(): boolean {
+  if (typeof navigator === 'undefined') return false
+  return /iPad|iPhone|iPod/.test(navigator.userAgent)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+}
+
+/**
+ * Set when the speech engine has spoken on a device that takes the audio
+ * session away with it.
+ *
+ * On iOS the synthesiser does not share: once it has said a word, the Web
+ * Audio context keeps reporting that it is running while producing nothing at
+ * all, which is why the only press a learner could hear was the one before the
+ * first spoken word. Resuming does not help, because as far as the context is
+ * concerned nothing is wrong. A fresh context is the only way back.
+ */
+let sessionLost = false
+
+function rebuildContext(): void {
+  const old = ctx
+  ctx = null
+  bus = null
+  tail = null
+  meter = null
+  sessionLost = false
+  if (old) void old.close().catch(() => {})
+}
+
 function audio(): AudioContext | null {
   if (typeof window === 'undefined' || liveBroken) return null
   const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
@@ -122,7 +151,9 @@ export function unlockAudio(): void {
   // the only moment a browser will let either of them start.
   primePool()
   if (samplesWanted()) void warmSamples()
-  if (typeof speechSynthesis !== 'undefined') {
+  // Warming up the speech engine costs an iPhone its audio session, and it is
+  // the mixer that pays — so there, the first word can be a moment slower.
+  if (typeof speechSynthesis !== 'undefined' && !apple()) {
     try {
       const warm = new SpeechSynthesisUtterance(' ')
       warm.volume = 0
@@ -184,7 +215,8 @@ const on = () => getState().settings.sound
  * the default.
  */
 const samples = new Map<string, string>()
-const pending = new Set<string>()
+/** Renders in flight, so a second caller waits for the first instead of losing its sound. */
+const pending = new Map<string, Promise<string | null>>()
 
 const key = (name: SoundName, arg: number) => `${name}:${arg}`
 
@@ -238,21 +270,26 @@ async function render(name: SoundName, arg: number): Promise<string | null> {
 }
 
 /** Renders a sound if it is not there yet, and returns it once it is. */
-async function sample(name: SoundName, arg: number): Promise<string | null> {
+function sample(name: SoundName, arg: number): Promise<string | null> {
   const id = key(name, arg)
   const have = samples.get(id)
-  if (have) return have
-  if (pending.has(id)) return null
-  pending.add(id)
-  try {
-    const url = await render(name, arg)
-    if (url) samples.set(id, url)
-    return url
-  } catch {
-    return null
-  } finally {
-    pending.delete(id)
-  }
+  if (have) return Promise.resolve(have)
+  // A render already under way is worth waiting for. Walking away from it is
+  // how the very first press of a session ended up silent: the warm-up had
+  // just claimed the same sound.
+  const running = pending.get(id)
+  if (running) return running
+  const job = render(name, arg)
+    .then((url) => {
+      if (url) samples.set(id, url)
+      return url
+    })
+    .catch(() => null)
+    .finally(() => {
+      pending.delete(id)
+    })
+  pending.set(id, job)
+  return job
 }
 
 /** The handful worth having ready before the first tap needs them. */
@@ -315,7 +352,15 @@ function primePool(): void {
   }
 }
 
-/** Set when the media channel turned out not to play at all. */
+/**
+ * How many times in a row a file refused to play.
+ *
+ * One refusal is not a verdict — the speech engine can interrupt a player mid
+ * word, and the next press is usually fine. Three in a row is a road that is
+ * genuinely closed, and then the live mixer takes over.
+ */
+let mediaMisses = 0
+const GIVE_UP = 3
 let mediaBroken = false
 
 function playSample(name: SoundName, arg: number): void {
@@ -325,11 +370,16 @@ function playSample(name: SoundName, arg: number): void {
     if (!el) return
     if (el.src !== url) el.src = url
     el.currentTime = 0
-    void el.play().catch(() => {
-      // This road is closed after all; take the other one, now and from here on.
-      mediaBroken = true
-      playLive(name, arg)
-    })
+    void el
+      .play()
+      .then(() => {
+        mediaMisses = 0
+      })
+      .catch(() => {
+        mediaMisses += 1
+        if (mediaMisses >= GIVE_UP) mediaBroken = true
+        playLive(name, arg)
+      })
   }
   const ready = samples.get(key(name, wanted))
   if (ready) start(ready)
@@ -358,6 +408,9 @@ function samplesWanted(): boolean {
  */
 /** The live road: synthesise the notes straight onto the speakers. */
 function playLive(name: SoundName, arg: number): void {
+  // Something spoke, and on this device that means the mixer is playing to
+  // nobody. Start a new one before the next sound rather than after it.
+  if (sessionLost) rebuildContext()
   const ac = audio()
   if (!ac) return
   const now = () => {
@@ -611,8 +664,11 @@ export function say(arabic: string, opts: SayOptions = {}): void {
   // The approximation is easier to follow a little slower than the real thing.
   utter.rate = opts.slow ? 0.55 : plan.mode === 'benadering' ? s.settings.voiceRate * 0.9 : s.settings.voiceRate
   utter.pitch = 1
-  // Speaking can hand the audio session back suspended on iOS; take it again.
-  utter.onend = () => keepAwake()
+  utter.onend = () => {
+    // Speaking can hand the session back suspended, or not hand it back at all.
+    keepAwake()
+    if (apple()) sessionLost = true
+  }
   speechSynthesis.speak(utter)
 }
 
