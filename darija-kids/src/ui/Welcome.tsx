@@ -36,7 +36,7 @@ export function Welcome() {
                   lang === l.code ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'
                 }`}
               >
-                <span className="text-2xl" aria-hidden="true">{l.flag}</span>
+                <span className="font-display text-2xl font-extrabold" aria-hidden="true">{l.badge}</span>
                 <span className="min-w-0">
                   <span className="block font-display font-extrabold">{l.name}</span>
                   <span className="block text-xs text-[var(--ink-soft)]">{l.where}</span>

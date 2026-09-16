@@ -165,7 +165,7 @@ export function SettingsPage() {
                 onClick={() => { sfx.nav(); setSetting('lang', l.code as Lang) }}
                 className={`rounded-xl border-2 px-3 py-2 text-sm font-bold ${s.lang === l.code ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
               >
-                <span aria-hidden="true">{l.flag}</span> {l.name}
+                <span className="font-display font-extrabold" aria-hidden="true">{l.badge}</span> {l.name}
               </button>
             ))}
           </div>

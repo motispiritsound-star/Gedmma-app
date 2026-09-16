@@ -55,6 +55,8 @@ describe('interface languages', () => {
     expect(isLang('fr')).toBe(true)
     expect(isLang('ar')).toBe(false)
     expect(localeOf('de')).toBe('de-DE')
+    // English is not British: the row covers the US, Canada and Australia too.
+    expect(localeOf('en')).toBe('en')
     expect(isLang(detectLang())).toBe(true)
   })
 

@@ -44,9 +44,9 @@ export function Landing() {
                   title={l.name}
                   aria-label={l.name}
                   aria-pressed={lang === l.code}
-                  className={`rounded-xl px-2 py-1 text-lg ${lang === l.code ? 'bg-zellige-500/15' : 'opacity-60 hover:opacity-100'}`}
+                  className={`rounded-xl px-2 py-1 font-display text-lg font-extrabold ${lang === l.code ? 'bg-zellige-500/15' : 'opacity-60 hover:opacity-100'}`}
                 >
-                  {l.flag}
+                  {l.badge}
                 </button>
               ))}
             </div>

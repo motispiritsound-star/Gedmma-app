@@ -1,11 +1,14 @@
 /** The interface languages: the Moroccan diaspora's everyday languages. */
 export const LANGS = [
-  { code: 'nl', name: 'Nederlands', flag: '🇳🇱', where: 'Nederland en België' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷', where: 'France, Belgique, Suisse' },
-  { code: 'de', name: 'Deutsch', flag: '🇩🇪', where: 'Deutschland, Österreich, Schweiz' },
-  { code: 'es', name: 'Español', flag: '🇪🇸', where: 'España' },
-  { code: 'it', name: 'Italiano', flag: '🇮🇹', where: 'Italia' },
-  { code: 'en', name: 'English', flag: '🇬🇧', where: 'everywhere else' },
+  { code: 'nl', name: 'Nederlands', badge: '🇳🇱', where: 'Nederland en België' },
+  { code: 'fr', name: 'Français', badge: '🇫🇷', where: 'France, Belgique, Suisse' },
+  { code: 'de', name: 'Deutsch', badge: '🇩🇪', where: 'Deutschland, Österreich, Schweiz' },
+  { code: 'es', name: 'Español', badge: '🇪🇸', where: 'España' },
+  { code: 'it', name: 'Italiano', badge: '🇮🇹', where: 'Italia' },
+  // Not a flag: this row is for the United States, Canada, Australia and
+  // everywhere else too, and the Union Jack told four fifths of them they were
+  // in the wrong place.
+  { code: 'en', name: 'English', badge: 'EN', where: 'everywhere else' },
 ] as const
 
 export type Lang = (typeof LANGS)[number]['code']
@@ -60,6 +63,11 @@ function deviceTags(): readonly string[] {
   return navigator.languages?.length ? navigator.languages : [navigator.language]
 }
 
-/** BCP-47 tag for the interface, used for <html lang> and date formatting. */
+/**
+ * BCP-47 tag for the interface, for <html lang>.
+ *
+ * English stays plain `en`: the app is as much for a reader in Detroit or
+ * Melbourne as for one in Birmingham, and `en-GB` claims otherwise.
+ */
 export const localeOf = (lang: Lang): string =>
-  ({ nl: 'nl-NL', fr: 'fr-FR', de: 'de-DE', es: 'es-ES', it: 'it-IT', en: 'en-GB' })[lang]
+  ({ nl: 'nl-NL', fr: 'fr-FR', de: 'de-DE', es: 'es-ES', it: 'it-IT', en: 'en' })[lang]
