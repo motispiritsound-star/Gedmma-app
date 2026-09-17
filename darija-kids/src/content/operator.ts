@@ -15,12 +15,17 @@
 export const OPERATOR = {
   /** The name the stores show as the seller. For a sole trader: your own. */
   name: 'Venship',
-  email: '',
+  email: 'Venship@outlook.com',
   /** Street, postcode and town. A PO box is not accepted as a trader address. */
   address: '',
   country: 'Nederland',
-  /** A phone number that is answered. A mobile is fine. */
-  phone: '',
+  /**
+   * A phone number that is answered. A mobile is fine.
+   *
+   * In its international form, because the listing is read in six countries
+   * and a leading zero only works from inside the Netherlands.
+   */
+  phone: '+31 6 29479436',
   /** KvK number in the Netherlands, or the equivalent trade-register number. */
   registration: '77780868',
   /** Only when you are registered for VAT — under the Dutch KOR, leave empty. */
