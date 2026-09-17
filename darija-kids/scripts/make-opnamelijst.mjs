@@ -26,6 +26,15 @@ const arg = (naam, terug) => {
   return i > 0 ? process.argv[i + 1] : terug
 }
 const UIT = arg('uit', path.join(ROOT, 'store', 'opnamelijst.html'))
+/**
+ * Hoeveel regels je in één opname doet.
+ *
+ * Eén lange opname van honderdvijftig woorden is een half uur waarin één
+ * verspreking alles erna een plaats laat opschuiven. Twintig is kort genoeg om
+ * zonder morren over te doen, en lang genoeg om niet de hele avond te starten
+ * en te stoppen.
+ */
+const BLOK = Number(arg('blok', 20))
 
 const server = await createServer({
   configFile: 'vite.config.ts',
@@ -107,6 +116,9 @@ const html = `<!doctype html>
   .let{border-inline-start:4px solid var(--alam);background:var(--panel);border-radius:0 12px 12px 0;padding:11px 14px;margin:14px 0}
   code{font-family:var(--f-mono);font-size:.85em;background:var(--sunken);padding:1px 5px;border-radius:5px;border:1px solid var(--line)}
   ol.lijst{list-style:none;margin:0;padding:0;counter-reset:w}
+  ol.lijst li.grens{counter-increment:none;border:0;background:none;padding:14px 0 6px;
+    justify-content:center;color:var(--alam);font-weight:600;font-size:.8rem}
+  ol.lijst li.grens::before{content:none}
   ol.lijst li{counter-increment:w;display:flex;gap:14px;align-items:baseline;
     background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px}
   ol.lijst li::before{content:counter(w);font-family:var(--f-mono);font-size:.78rem;color:var(--ink-faint);
@@ -177,7 +189,7 @@ const html = `<!doctype html>
 
   <h2>De lijst</h2>
   <ol class="lijst">
-${woorden.map((w) => `    <li>
+${woorden.map((w, i) => `${i && i % BLOK === 0 ? `    <li class="grens"><span class="mid">— hier stoppen: blok ${i / BLOK + 1} begint —</span></li>\n` : ''}    <li>
       <span class="ar">${esc(w.ar)}</span>
       <span class="mid">
         <span class="tr">${esc(w.tr)}</span>
