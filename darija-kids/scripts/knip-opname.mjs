@@ -76,11 +76,25 @@ const eigenIds = arg('ids', null)
  * stuk dat erbij hoorde deugt niet en gaat er met --sla-over uit. Bleven ze in
  * de lijst staan, dan klopt het aantal niet meer en weigert de knipper terecht.
  */
-const { ids, afgekeurd } = await page.evaluate(async (eigen) => {
-  const e = await import('/src/content/eigen.ts')
+const { ids, mappen, afgekeurd } = await page.evaluate(async (eigen) => {
+  const [e, lex, zin] = await Promise.all([
+    import('/src/content/eigen.ts'),
+    import('/src/content/lexicon.ts'),
+    import('/src/content/sentences.ts'),
+  ])
+  // Een zin hoort in src/audio/zinnen en een woord in src/audio/woorden. Eén
+  // opname kan allebei bevatten, dus bepaalt elk id zijn eigen map.
+  const mapVan = new Map()
+  for (const w of lex.allWords) mapVan.set(w.id, 'woorden')
+  for (const z of zin.ALL_SENTENCES) if (!mapVan.has(z.id)) mapVan.set(z.id, 'zinnen')
   const weg = new Set(e.OPNIEUW)
   const lijst = eigen ? eigen.split(',').map((s) => s.trim()).filter(Boolean) : e.OPNAME_NODIG
-  return { ids: lijst.filter((id) => !weg.has(id)), afgekeurd: lijst.filter((id) => weg.has(id)) }
+  const ids = lijst.filter((id) => !weg.has(id))
+  return {
+    ids,
+    mappen: ids.map((id) => mapVan.get(id) ?? 'woorden'),
+    afgekeurd: lijst.filter((id) => weg.has(id)),
+  }
 }, eigenIds)
 if (afgekeurd.length) console.log(`buiten de telling, wacht op een nieuwe opname: ${afgekeurd.join(', ')}`)
 
@@ -167,8 +181,13 @@ function knipsel(stuk) {
   return uit
 }
 
-const uit = path.join(ROOT, 'src', 'audio', MAP)
-if (!PROEF) await mkdir(uit, { recursive: true })
+/** Met --map gaat alles in één map; zonder volgt elk woord of elke zin zijn eigen. */
+const mapVoor = (i) => (arg('map', null) ? MAP : mappen[i])
+if (!PROEF) {
+  for (const map of new Set(ids.map((_, i) => mapVoor(i)))) {
+    await mkdir(path.join(ROOT, 'src', 'audio', map), { recursive: true })
+  }
+}
 
 /** Wat er van een pauze binnen een woord overblijft als het weer aan elkaar gaat. */
 const BINNENPAUZE = 0.16
@@ -178,12 +197,16 @@ for (const [i, stuk] of stukken.entries()) {
   const deel = knipsel(stuk)
   const klaar = bewerk(rate, deel)
   if (!klaar) { console.error(`${id}: alleen stilte`); continue }
-  const regel = `${String(i + 1).padStart(2)}  ${id.padEnd(10)} ${stuk.van.toFixed(2)}s  ${klaar.nu.toFixed(2)}s`
+  const map = mapVoor(i)
+  const regel = `${String(i + 1).padStart(2)}  ${`${map}/${id}`.padEnd(24)} ${stuk.van.toFixed(2)}s  ${klaar.nu.toFixed(2)}s`
   if (PROEF) { console.log(`${regel}   (proef, niets opgeslagen)`); continue }
-  await writeFile(path.join(uit, `${id}.wav`), writeWav(rate, klaar.samples))
+  await writeFile(path.join(ROOT, 'src', 'audio', map, `${id}.wav`), writeWav(rate, klaar.samples))
   console.log(regel)
 }
 
+const perMap = [...new Set(ids.map((_, i) => mapVoor(i)))]
+  .map((map) => `${ids.filter((_, i) => mapVoor(i) === map).length} in src/audio/${map}/`)
+  .join(', ')
 console.log(PROEF
   ? '\nProef: er is niets opgeslagen. Klopt de koppeling, draai dan zonder --proef.'
-  : `\n${stukken.length} opnames staan in src/audio/${MAP}/.`)
+  : `\n${stukken.length} opnames: ${perMap}.`)

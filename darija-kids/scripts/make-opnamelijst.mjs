@@ -37,22 +37,30 @@ const browser = await chromium.launch({ executablePath: CHROME })
 const page = await browser.newPage()
 await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'networkidle' })
 
-const al = new Set(
-  (await readdir(path.join(ROOT, 'src', 'audio', 'woorden')).catch(() => []))
-    .map((f) => f.replace(/\.[^.]+$/, '')),
-)
+/** Wat er al is ingesproken, in welke map dan ook. */
+const al = new Set()
+for (const map of ['letters', 'woorden', 'zinnen']) {
+  for (const f of await readdir(path.join(ROOT, 'src', 'audio', map)).catch(() => [])) {
+    if (/\.(wav|webm|m4a|mp3|ogg)$/i.test(f)) al.add(f.replace(/\.[^.]+$/, ''))
+  }
+}
 
 const woorden = await page.evaluate(async (al) => {
-  const [eigen, lex] = await Promise.all([
+  const [eigen, lex, zin] = await Promise.all([
     import('/src/content/eigen.ts'),
     import('/src/content/lexicon.ts'),
+    import('/src/content/sentences.ts'),
   ])
-  const opId = new Map(lex.allWords.map((w) => [w.id, w]))
+  // Een zin hoort in een andere map dan een woord, en die map staat in de
+  // bestandsnaam eronder — anders landt een opname waar niemand hem zoekt.
+  const opId = new Map()
+  for (const w of lex.allWords) opId.set(w.id, { ...w, map: 'woorden' })
+  for (const z of zin.ALL_SENTENCES) if (!opId.has(z.id)) opId.set(z.id, { ...z, map: 'zinnen' })
   return eigen.OPNAME_NODIG
     .filter((id) => !al.includes(id))
     .map((id) => {
       const w = opId.get(id)
-      return w ? { id, ar: w.ar, tr: w.tr, nl: w.nl, emoji: w.emoji ?? '' } : null
+      return w ? { id, ar: w.ar, tr: w.tr, nl: w.nl, emoji: w.emoji ?? '', map: w.map } : null
     })
     .filter(Boolean)
 }, [...al])
@@ -60,7 +68,9 @@ const woorden = await page.evaluate(async (al) => {
 await browser.close()
 await server.close()
 
-console.log(`${woorden.length} woorden op de lijst`)
+console.log(`${woorden.length} op de lijst`
+  + ` (${woorden.filter((w) => w.map === 'woorden').length} woorden,`
+  + ` ${woorden.filter((w) => w.map === 'zinnen').length} zinnen)`)
 
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
 
@@ -167,7 +177,7 @@ ${woorden.map((w) => `    <li>
       <span class="mid">
         <span class="tr">${esc(w.tr)}</span>
         <span class="nl"> — ${esc(w.emoji)} ${esc(w.nl)}</span>
-        <div class="naam">${esc(w.id)}.wav</div>
+        <div class="naam">${esc(w.map)}/${esc(w.id)}.wav</div>
       </span>
     </li>`).join('\n')}
   </ol>

@@ -111,6 +111,18 @@ export const OPNAME_NODIG: string[] = [
   // Zinnetjes: de begroetingen en het kennismaken, waar geen stem doorheen komt.
   'labas-hamdullah', 'kif-dayr', 'kif-dayra', 'barakallah', 'smeh-liya',
   'smiti', 'shnu-smitek', 'mtsherfin',
+  // Langere uitdrukkingen, uit hetzelfde nakijken.
+  '3endi-3achr-snin', 'kanhder-shwiya', 'hada-khoya', 'bghit-nakol', 'fhemt',
+  'mafhemtsh', 'kayderni-rasi', 'fin-kayn', 'shhal-hada', 'bghit-hada',
+  // Hele zinnen. Een stem die één woord nog haalt, struikelt over een zin.
+  'groeten-1-b', 'groeten-2-a', 'groeten-2-b', 'groeten-3-a', 'groeten-3-b',
+  'groeten-4-a', 'groeten-4-b',
+  'ik-en-jij-1-b', 'ik-en-jij-2-a', 'ik-en-jij-2-b', 'ik-en-jij-3-a',
+  'ik-en-jij-3-b',
+  'familie-2-a', 'familie-2-b', 'familie-3-a', 'familie-3-b',
+  'cijfers-1-a', 'cijfers-1-b', 'cijfers-2-a', 'cijfers-2-b', 'cijfers-3-b',
+  'cijfers-4-a',
+  'kleuren-1-b', 'kleuren-2-a',
 ]
 
 /**

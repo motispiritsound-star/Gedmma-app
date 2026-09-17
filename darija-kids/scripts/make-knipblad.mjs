@@ -63,11 +63,16 @@ await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'networkidle' })
 
 const eigenIds = arg('ids', null)
 const woorden = await page.evaluate(async (eigen) => {
-  const [e, lex] = await Promise.all([
+  const [e, lex, zin] = await Promise.all([
     import('/src/content/eigen.ts'),
     import('/src/content/lexicon.ts'),
+    import('/src/content/sentences.ts'),
   ])
-  const opId = new Map(lex.allWords.map((w) => [w.id, w]))
+  // Op de opnamelijst staan ook zinnen, en die moeten hier net zo goed bij
+  // naam te noemen zijn als een woord.
+  const opId = new Map()
+  for (const w of lex.allWords) opId.set(w.id, w)
+  for (const z of zin.ALL_SENTENCES) if (!opId.has(z.id)) opId.set(z.id, z)
   const ids = eigen ? eigen.split(',').map((s) => s.trim()).filter(Boolean) : e.OPNAME_NODIG
   return ids.map((id) => {
     const w = opId.get(id)

@@ -342,8 +342,10 @@ describe('welke stem welk woord zegt', () => {
 })
 
 describe('wat nog opgenomen moet worden', () => {
-  it('verwijst naar bestaande woorden', () => {
-    const bekend = new Set(allWords.map((w) => w.id))
+  // Zinnen staan er net zo goed op als woorden: een stem die één woord nog
+  // haalt, struikelt over een hele zin, en dan is een opname net zo nodig.
+  it('verwijst naar bestaande woorden of zinnen', () => {
+    const bekend = new Set([...allWords.map((w) => w.id), ...ALL_SENTENCES.map((z) => z.id)])
     for (const id of OPNAME_NODIG) expect(bekend.has(id), id).toBe(true)
   })
 
