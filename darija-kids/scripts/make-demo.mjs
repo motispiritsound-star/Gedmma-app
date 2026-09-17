@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = path.join(ROOT, 'dist-demo')
-const OUT = process.argv[2] ?? path.join(DIST, 'darija-kids-demo.html')
+const OUT = process.argv[2] ?? path.join(DIST, 'darijaforkids-demo.html')
 
 const assets = await readdir(path.join(DIST, 'assets'))
 const cssFile = assets.find((f) => f.endsWith('.css'))
@@ -39,7 +39,7 @@ const safe = (code) => code.replaceAll('</script', '<\\/script').replaceAll('<!-
 // Without this a file:// page falls back to Latin-1 and every Arabic letter,
 // emoji and accent turns to mojibake.
 const html = `<meta charset="utf-8" />
-<title>Darija Kids</title>
+<title>Darijaforkids</title>
 <meta name="description" content="Marokkaans-Arabisch (Darija) leren voor kinderen en jongeren: korte lessen, echte uitspraak, spelletjes en een leerpad dat zich aanpast." />
 <style>
 ${css}

@@ -1,4 +1,4 @@
-# Persmap — Darija Kids
+# Persmap — Darijaforkids
 
 Alles wat een journalist, blogger of moskee-nieuwsbrief nodig heeft, op één
 plek. Overnemen mag; toestemming vragen hoeft niet.
@@ -9,7 +9,7 @@ plek. Overnemen mag; toestemming vragen hoeft niet.
 
 ## In één zin
 
-Darija Kids leert kinderen en jongeren het Marokkaans-Arabisch dat hun familie
+Darijaforkids leert kinderen en jongeren het Marokkaans-Arabisch dat hun familie
 thuis spreekt, langs één pad van zeventien units dat begint bij het alfabet en
 eindigt bij afdingen op de souq — met uitspraak, korte lessen en een kort
 filmpje uit de Marokkaanse geschiedenis na elke toets, in zes talen en zonder
@@ -20,7 +20,7 @@ advertenties.
 Kinderen van Marokkaanse ouders in Nederland, België, Frankrijk, Duitsland en
 Spanje verstaan hun oma vaak wel, maar antwoorden in het Nederlands of Frans.
 Bestaande taalapps helpen daar niet bij: die leren Modern Standaardarabisch,
-een schrijftaal die niemand thuis spreekt. Darija Kids leert juist wél de
+een schrijftaal die niemand thuis spreekt. Darijaforkids leert juist wél de
 straattaal van Casablanca en Rabat: 304 woorden, 100 zinnen, het hele Arabische
 alfabet, verhalen en spelletjes, in een pad van 17 units dat begint bij de
 letters en eindigt bij afdingen op de souq. Na elke toets krijgt het kind een
@@ -32,7 +32,7 @@ Italiaans of Engels — en kiest die zelf op basis van het toestel.
 
 | | |
 |---|---|
-| Naam | Darija Kids |
+| Naam | Darijaforkids |
 | Wat | Marokkaans-Arabisch (Darija) leren voor kinderen en jongeren |
 | Leeftijd | Vanaf ongeveer 7 jaar zelfstandig, jonger samen met een ouder |
 | Talen | Nederlands, Frans, Duits, Spaans, Italiaans, Engels |

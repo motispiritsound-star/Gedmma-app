@@ -2,7 +2,7 @@
 <!--
   The languages the app itself speaks. Android 13 and later reads this to
   offer "App language" in the system settings, so a French-speaking family on
-  a Dutch phone can switch Darija Kids alone without changing the whole device.
+  a Dutch phone can switch Darijaforkids alone without changing the whole device.
 -->
 <locale-config xmlns:android="http://schemas.android.com/apk/res/android">
     <locale android:name="nl" />

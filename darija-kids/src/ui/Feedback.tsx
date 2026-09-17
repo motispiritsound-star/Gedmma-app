@@ -27,7 +27,7 @@ const EMOJI: Record<Reason, string> = { woord: '🗣️', probleem: '🐞', idee
 
 /** What the app knows about itself, so a parent does not have to describe it. */
 function footer(lang: string, reason: Reason): string {
-  const lines = [`Darija Kids ${version} · ${lang}`]
+  const lines = [`Darijaforkids ${version} · ${lang}`]
   if (reason === 'probleem' && typeof navigator !== 'undefined') {
     const installed = typeof matchMedia !== 'undefined' && matchMedia('(display-mode: standalone)').matches
     lines.push(`${installed ? 'app' : 'browser'} · ${navigator.userAgent}`)

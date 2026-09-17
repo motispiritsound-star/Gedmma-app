@@ -177,7 +177,7 @@ const html = `<!doctype html>
 </style>
 </head><body>
 <div class="wrap">
-  <p class="eyebrow">Darija Kids</p>
+  <p class="eyebrow">Darijaforkids</p>
   <h1>Staat elk stuk bij het goede woord?</h1>
   <p class="lede">
     Er kwamen <strong>${stukken.length}</strong> stukken uit de opname en er zijn

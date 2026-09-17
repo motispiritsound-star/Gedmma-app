@@ -40,8 +40,8 @@ export interface Plan {
 }
 
 export const PLANS: Plan[] = [
-  { id: 'jaar', product: 'app.darijakids.yearly', list: '€ 59,88', perMonth: '€ 4,99', best: true },
-  { id: 'maand', product: 'app.darijakids.monthly', list: '€ 6,99', perMonth: '€ 6,99' },
+  { id: 'jaar', product: 'app.darijaforkids.yearly', list: '€ 59,88', perMonth: '€ 4,99', best: true },
+  { id: 'maand', product: 'app.darijaforkids.monthly', list: '€ 6,99', perMonth: '€ 6,99' },
 ]
 
 export const planOf = (id: PlanId): Plan => PLANS.find((p) => p.id === id) ?? PLANS[0]!
@@ -59,13 +59,13 @@ export const PRODUCTS = PLANS.map((p) => p.product)
  * Create this id too, as a one-time purchase rather than a subscription.
  */
 export const EBOOK = {
-  product: 'app.darijakids.ebook',
+  product: 'app.darijaforkids.ebook',
   /** The fallback price for the website, where no store can be asked. */
   list: '€ 14,99',
 }
 
 /** Where the book itself lives, per language of the app. */
-export const ebookFile = (lang: string): string => `ebook/darija-kids-${lang}.pdf`
+export const ebookFile = (lang: string): string => `ebook/darijaforkids-${lang}.pdf`
 
 /**
  * The free trial, in days. Three is both the chosen length and the shortest

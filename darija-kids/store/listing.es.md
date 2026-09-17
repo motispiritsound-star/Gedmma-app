@@ -5,7 +5,7 @@ Para App Store Connect (España) y Google Play Console (es-ES).
 ## App Store
 
 **Nombre (máx. 30)**
-`Darija Kids`
+`Darijaforkids`
 
 **Subtítulo (máx. 30)**
 `Para peques, y para ti también`
@@ -21,7 +21,7 @@ Para App Store Connect (España) y Google Play Console (es-ES).
 ```
 Para los jóvenes — y en secreto para los mayores que quieren pulir su dariya.
 
-Darija Kids enseña dariya a niños y adolescentes: el árabe marroquí que la gente habla en casa y en la calle en Marruecos. No el árabe estándar de los manuales, sino la lengua en la que se llama a jeddti.
+Darijaforkids enseña dariya a niños y adolescentes: el árabe marroquí que la gente habla en casa y en la calle en Marruecos. No el árabe estándar de los manuales, sino la lengua en la que se llama a jeddti.
 
 LECCIONES CORTAS QUE SE QUEDAN
 Una lección dura de dos a cuatro minutos. Aprendes a oír una palabra, reconocerla, leerla en escritura árabe, escribirla y decirla en voz alta. Cada palabra vuelve justo antes de que la olvides.
@@ -82,7 +82,7 @@ HECHA PARA DÁRSELA A UN NIÑO
 • Funciona sin internet, en el avión y en el propio Marruecos
 
 PARA FAMILIAS Y DOCENTES
-La aplicación incluye una página que explica cómo se aprende aquí, qué hace y qué no hace, y cómo ayudar en casa. En clase, Darija Kids funciona en cualquier dispositivo sin instalación ni cuenta.
+La aplicación incluye una página que explica cómo se aprende aquí, qué hace y qué no hace, y cómo ayudar en casa. En clase, Darijaforkids funciona en cualquier dispositivo sin instalación ni cuenta.
 
 CON HONESTIDAD SOBRE LA LENGUA
 El dariya cambia de ciudad a ciudad y de familia a familia, y no tiene ortografía oficial. Usamos la forma que más se oye en Casablanca y Rabat. ¿Tu abuela lo dice de otra manera? Entonces ella tiene razón, y la propia aplicación lo dice.
@@ -94,7 +94,7 @@ El dariya cambia de ciudad a ciudad y de familia a familia, y no tiene ortograf�
 ## Google Play
 
 **Título (máx. 30)**
-`Darija Kids`
+`Darijaforkids`
 
 **Descripción breve (máx. 80)**
 `Árabe marroquí para niños: lecciones cortas, pronunciación real, empieza gratis.`

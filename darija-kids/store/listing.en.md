@@ -5,7 +5,7 @@ For App Store Connect (UK, Ireland, rest of world) and Google Play Console (en-G
 ## App Store
 
 **Name (max 30)**
-`Darija Kids`
+`Darijaforkids`
 
 **Subtitle (max 30)**
 `For the kids, quietly for you`
@@ -21,7 +21,7 @@ For App Store Connect (UK, Ireland, rest of world) and Google Play Console (en-G
 ```
 For the young — and quietly for the grown-ups brushing up their Darija.
 
-Darija Kids teaches children and teenagers Darija: the Moroccan Arabic people speak at home and in the street in Morocco. Not the Modern Standard Arabic of textbooks — the language you call jeddti in.
+Darijaforkids teaches children and teenagers Darija: the Moroccan Arabic people speak at home and in the street in Morocco. Not the Modern Standard Arabic of textbooks — the language you call jeddti in.
 
 SHORT LESSONS THAT STICK
 A lesson takes two to four minutes. You learn to hear a word, recognise it, read it in Arabic script, type it and say it out loud. Every word comes back exactly before you forget it.
@@ -82,7 +82,7 @@ MADE TO HAND TO A CHILD
 • Works without internet, on a plane and in Morocco
 
 FOR PARENTS AND TEACHERS
-The app has a page explaining how the learning works, what the app does and does not do, and how to help at home. In class, Darija Kids runs on any device without installation or an account.
+The app has a page explaining how the learning works, what the app does and does not do, and how to help at home. In class, Darijaforkids runs on any device without installation or an account.
 
 HONEST ABOUT THE LANGUAGE
 Darija differs from city to city and family to family, and has no official spelling. We use the form heard most in Casablanca and Rabat. If your grandmother says it differently, she is right — the app says so itself.
@@ -94,7 +94,7 @@ Darija differs from city to city and family to family, and has no official spell
 ## Google Play
 
 **Title (max 30)**
-`Darija Kids`
+`Darijaforkids`
 
 **Short description (max 80)**
 `Moroccan Arabic for children: short lessons, real pronunciation, free to start.`

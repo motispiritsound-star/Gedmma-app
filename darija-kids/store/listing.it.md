@@ -5,7 +5,7 @@ Per App Store Connect (Italia) e Google Play Console (it-IT).
 ## App Store
 
 **Nome (max 30)**
-`Darija Kids`
+`Darijaforkids`
 
 **Sottotitolo (max 30)**
 `Per i piccoli, e anche per te`
@@ -21,7 +21,7 @@ Per App Store Connect (Italia) e Google Play Console (it-IT).
 ```
 Per i giovani — e di nascosto per i grandi che vogliono rispolverare il loro darija.
 
-Darija Kids insegna il darija a bambini e ragazzi: l'arabo marocchino che in Marocco si parla in casa e per strada. Non l'arabo standard dei manuali, ma la lingua con cui si telefona a jeddti.
+Darijaforkids insegna il darija a bambini e ragazzi: l'arabo marocchino che in Marocco si parla in casa e per strada. Non l'arabo standard dei manuali, ma la lingua con cui si telefona a jeddti.
 
 LEZIONI BREVI CHE RESTANO
 Una lezione dura dai due ai quattro minuti. Impari a sentire una parola, riconoscerla, leggerla in scrittura araba, scriverla e dirla ad alta voce. Ogni parola torna poco prima che tu la dimentichi.
@@ -82,7 +82,7 @@ FATTA PER DARLA IN MANO A UN BAMBINO
 • Funziona senza internet, in aereo e in Marocco stesso
 
 PER FAMIGLIE E INSEGNANTI
-L'app contiene una pagina che spiega come si impara qui, che cosa fa e che cosa non fa, e come aiutare a casa. In classe Darija Kids funziona su qualsiasi dispositivo, senza installazione e senza account.
+L'app contiene una pagina che spiega come si impara qui, che cosa fa e che cosa non fa, e come aiutare a casa. In classe Darijaforkids funziona su qualsiasi dispositivo, senza installazione e senza account.
 
 ONESTAMENTE, SULLA LINGUA
 Il darija cambia da città a città e da famiglia a famiglia, e non ha un'ortografia ufficiale. Usiamo la forma che si sente di più a Casablanca e Rabat. Tua nonna lo dice diversamente? Allora ha ragione lei, e l'app stessa lo dice.
@@ -94,7 +94,7 @@ Il darija cambia da città a città e da famiglia a famiglia, e non ha un'ortogr
 ## Google Play
 
 **Titolo (max 30)**
-`Darija Kids`
+`Darijaforkids`
 
 **Descrizione breve (max 80)**
 `Arabo marocchino per bambini: lezioni brevi, pronuncia vera, inizi gratis.`

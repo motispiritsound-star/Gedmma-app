@@ -38,7 +38,7 @@ export function briefHtml(b: Brief): string {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:540px;background:#fffdf8;border:1px solid ${KLEUR.lijn};border-radius:16px">
   <tr><td style="padding:28px 28px 8px">
-    <div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${KLEUR.saffraan}">Darija Kids</div>
+    <div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${KLEUR.saffraan}">Darijaforkids</div>
     <h1 style="margin:10px 0 0;font-size:24px;line-height:1.2">${esc(b.kop)}</h1>
   </td></tr>
   <tr><td style="padding:12px 28px 0;font-size:16px;line-height:1.55;color:${KLEUR.zacht}">${esc(b.body)}</td></tr>
@@ -81,7 +81,7 @@ export function pagina(taal: string, kop: string, body: string): Response {
 <title>${esc(kop)}</title></head>
 <body style="margin:0;display:grid;place-items:center;min-height:100vh;background:#faf6ef;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:${KLEUR.inkt};padding:24px">
 <div style="max-width:420px;text-align:center">
-  <div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${KLEUR.saffraan}">Darija Kids</div>
+  <div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${KLEUR.saffraan}">Darijaforkids</div>
   <h1 style="margin:12px 0 0;font-size:26px;line-height:1.2">${esc(kop)}</h1>
   <p style="margin:12px 0 0;font-size:16px;line-height:1.55;color:${KLEUR.zacht}">${esc(body)}</p>
 </div>

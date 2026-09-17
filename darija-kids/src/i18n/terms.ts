@@ -32,7 +32,7 @@ const days = String(TRIAL_DAYS)
 
 const SECTIONS_NL: Section[] = [
   ['Wat je krijgt', [
-    'Je mag Darija Kids gebruiken op de apparaten die bij jouw eigen winkelaccount horen, voor jezelf en je gezin. Dat is een gebruiksrecht, geen eigendom: de app, de lessen, de stemmen en de tekeningen blijven van de uitgever.',
+    'Je mag Darijaforkids gebruiken op de apparaten die bij jouw eigen winkelaccount horen, voor jezelf en je gezin. Dat is een gebruiksrecht, geen eigendom: de app, de lessen, de stemmen en de tekeningen blijven van de uitgever.',
     'Wat niet mag: de app doorverkopen of verhuren, de lessen kopiëren om ze elders aan te bieden, of proberen de code uit elkaar te halen om er iets anders van te maken.',
   ]],
   ['Het gratis deel', [
@@ -66,7 +66,7 @@ const SECTIONS_NL: Section[] = [
 
 const SECTIONS_FR: Section[] = [
   ['Ce que tu obtiens', [
-    'Tu peux utiliser Darija Kids sur les appareils liés à ton propre compte de boutique, pour toi et ta famille. C’est un droit d’usage, pas une propriété : l’application, les leçons, les voix et les dessins restent à l’éditeur.',
+    'Tu peux utiliser Darijaforkids sur les appareils liés à ton propre compte de boutique, pour toi et ta famille. C’est un droit d’usage, pas une propriété : l’application, les leçons, les voix et les dessins restent à l’éditeur.',
     'Ce qui n’est pas permis : revendre ou louer l’application, copier les leçons pour les proposer ailleurs, ou tenter de démonter le code pour en faire autre chose.',
   ]],
   ['La partie gratuite', [
@@ -100,7 +100,7 @@ const SECTIONS_FR: Section[] = [
 
 const SECTIONS_DE: Section[] = [
   ['Was du bekommst', [
-    'Du darfst Darija Kids auf den Geräten deines eigenen Store-Kontos nutzen, für dich und deine Familie. Das ist ein Nutzungsrecht, kein Eigentum: Die App, die Lektionen, die Stimmen und die Zeichnungen bleiben beim Herausgeber.',
+    'Du darfst Darijaforkids auf den Geräten deines eigenen Store-Kontos nutzen, für dich und deine Familie. Das ist ein Nutzungsrecht, kein Eigentum: Die App, die Lektionen, die Stimmen und die Zeichnungen bleiben beim Herausgeber.',
     'Was nicht erlaubt ist: die App weiterverkaufen oder vermieten, die Lektionen kopieren, um sie anderswo anzubieten, oder versuchen, den Code auseinanderzunehmen und daraus etwas anderes zu bauen.',
   ]],
   ['Der kostenlose Teil', [
@@ -134,7 +134,7 @@ const SECTIONS_DE: Section[] = [
 
 const SECTIONS_ES: Section[] = [
   ['Qué recibes', [
-    'Puedes usar Darija Kids en los dispositivos vinculados a tu propia cuenta de la tienda, para ti y tu familia. Es un derecho de uso, no una propiedad: la aplicación, las lecciones, las voces y los dibujos siguen siendo de quien la publica.',
+    'Puedes usar Darijaforkids en los dispositivos vinculados a tu propia cuenta de la tienda, para ti y tu familia. Es un derecho de uso, no una propiedad: la aplicación, las lecciones, las voces y los dibujos siguen siendo de quien la publica.',
     'Lo que no se puede: revender o alquilar la aplicación, copiar las lecciones para ofrecerlas en otro sitio, o intentar desmontar el código para hacer otra cosa con él.',
   ]],
   ['La parte gratuita', [
@@ -168,7 +168,7 @@ const SECTIONS_ES: Section[] = [
 
 const SECTIONS_IT: Section[] = [
   ['Che cosa ricevi', [
-    'Puoi usare Darija Kids sui dispositivi collegati al tuo account del negozio, per te e per la tua famiglia. È un diritto d’uso, non una proprietà: l’app, le lezioni, le voci e i disegni restano di chi la pubblica.',
+    'Puoi usare Darijaforkids sui dispositivi collegati al tuo account del negozio, per te e per la tua famiglia. È un diritto d’uso, non una proprietà: l’app, le lezioni, le voci e i disegni restano di chi la pubblica.',
     'Quello che non si può fare: rivendere o noleggiare l’app, copiare le lezioni per offrirle altrove, o provare a smontare il codice per ricavarne qualcos’altro.',
   ]],
   ['La parte gratuita', [
@@ -202,7 +202,7 @@ const SECTIONS_IT: Section[] = [
 
 const SECTIONS_EN: Section[] = [
   ['What you get', [
-    'You may use Darija Kids on the devices tied to your own store account, for yourself and your family. That is a right to use it, not ownership: the app, the lessons, the voices and the drawings stay with the publisher.',
+    'You may use Darijaforkids on the devices tied to your own store account, for yourself and your family. That is a right to use it, not ownership: the app, the lessons, the voices and the drawings stay with the publisher.',
     'What is not allowed: reselling or renting out the app, copying the lessons to offer them elsewhere, or trying to take the code apart to make something else of it.',
   ]],
   ['The free part', [
@@ -252,42 +252,42 @@ export const TERMS: Record<Lang, TermsText> = {
   nl: build(
     'Gebruiksvoorwaarden',
     'Laatst gewijzigd: september 2026',
-    'Dit zijn de afspraken tussen jou en de uitgever van Darija Kids. Ze zijn kort, want de app doet weinig dat afspraken nodig heeft: hij leert je een taal en bewaart niets over je.',
+    'Dit zijn de afspraken tussen jou en de uitgever van Darijaforkids. Ze zijn kort, want de app doet weinig dat afspraken nodig heeft: hij leert je een taal en bewaart niets over je.',
     'Vragen over deze voorwaarden?',
     SECTIONS_NL,
   ),
   fr: build(
     'Conditions d’utilisation',
     'Dernière modification : septembre 2026',
-    'Voici l’accord entre toi et l’éditeur de Darija Kids. Il est court, parce que l’application fait peu de choses qui demandent un accord : elle t’apprend une langue et ne garde rien sur toi.',
+    'Voici l’accord entre toi et l’éditeur de Darijaforkids. Il est court, parce que l’application fait peu de choses qui demandent un accord : elle t’apprend une langue et ne garde rien sur toi.',
     'Une question sur ces conditions ?',
     SECTIONS_FR,
   ),
   de: build(
     'Nutzungsbedingungen',
     'Zuletzt geändert: September 2026',
-    'Das ist die Vereinbarung zwischen dir und dem Herausgeber von Darija Kids. Sie ist kurz, denn die App tut wenig, wofür man eine Vereinbarung braucht: Sie bringt dir eine Sprache bei und speichert nichts über dich.',
+    'Das ist die Vereinbarung zwischen dir und dem Herausgeber von Darijaforkids. Sie ist kurz, denn die App tut wenig, wofür man eine Vereinbarung braucht: Sie bringt dir eine Sprache bei und speichert nichts über dich.',
     'Fragen zu diesen Bedingungen?',
     SECTIONS_DE,
   ),
   es: build(
     'Condiciones de uso',
     'Última modificación: septiembre de 2026',
-    'Este es el acuerdo entre tú y quien publica Darija Kids. Es corto, porque la aplicación hace pocas cosas que necesiten un acuerdo: te enseña un idioma y no guarda nada sobre ti.',
+    'Este es el acuerdo entre tú y quien publica Darijaforkids. Es corto, porque la aplicación hace pocas cosas que necesiten un acuerdo: te enseña un idioma y no guarda nada sobre ti.',
     '¿Dudas sobre estas condiciones?',
     SECTIONS_ES,
   ),
   it: build(
     'Condizioni d’uso',
     'Ultima modifica: settembre 2026',
-    'Questo è l’accordo fra te e chi pubblica Darija Kids. È corto, perché l’app fa poche cose che abbiano bisogno di un accordo: ti insegna una lingua e non conserva niente su di te.',
+    'Questo è l’accordo fra te e chi pubblica Darijaforkids. È corto, perché l’app fa poche cose che abbiano bisogno di un accordo: ti insegna una lingua e non conserva niente su di te.',
     'Domande su queste condizioni?',
     SECTIONS_IT,
   ),
   en: build(
     'Terms of use',
     'Last changed: September 2026',
-    'This is the agreement between you and the publisher of Darija Kids. It is short, because the app does little that needs an agreement: it teaches you a language and keeps nothing about you.',
+    'This is the agreement between you and the publisher of Darijaforkids. It is short, because the app does little that needs an agreement: it teaches you a language and keeps nothing about you.',
     'Questions about these terms?',
     SECTIONS_EN,
   ),

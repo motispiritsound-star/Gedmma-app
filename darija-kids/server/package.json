@@ -1,11 +1,11 @@
 {
-  "name": "darija-kids-post",
+  "name": "darijaforkids-post",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "schema": "wrangler d1 execute darija-kids --remote --file schema.sql",
+    "schema": "wrangler d1 execute darijaforkids --remote --file schema.sql",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

@@ -10,8 +10,8 @@ volledig via de App Store en Google Play — zij innen, zij rekenen de btw af,
 zij houden de proefperiode bij, en zij storten maandelijks op jouw rekening.
 
 > **Kort:** je maakt in beide winkels twee abonnementsproducten aan —
-> `app.darijakids.yearly` en `app.darijakids.monthly` — in dezelfde
-> abonnementsgroep, plus één eenmalig product `app.darijakids.ebook`, zet de
+> `app.darijaforkids.yearly` en `app.darijaforkids.monthly` — in dezelfde
+> abonnementsgroep, plus één eenmalig product `app.darijaforkids.ebook`, zet de
 > prijzen en de gratis periode, koppelt je bankrekening, en de winkels betalen
 > uit wat er binnenkwam minus hun commissie.
 
@@ -72,8 +72,8 @@ Gebruik in beide winkels **hetzelfde id**, anders werkt de code niet:
 | | App Store Connect | Google Play Console |
 |---|---|---|
 | Waar | Jouw app → **Subscriptions** | Jouw app → **Producten → Abonnementen** |
-| Eerst | maak een **subscription group** (bijv. "Darija Kids") | maak een abonnement met een **basisplan** |
-| Product-id | `app.darijakids.yearly` en `app.darijakids.monthly` | dezelfde twee |
+| Eerst | maak een **subscription group** (bijv. "Darijaforkids") | maak een abonnement met een **basisplan** |
+| Product-id | `app.darijaforkids.yearly` en `app.darijaforkids.monthly` | dezelfde twee |
 | Duur | 1 jaar en 1 maand, beide automatisch verlengend | idem |
 | Prijs | € 59,99 en € 6,99 | € 59,88 en € 6,99 |
 | Gratis periode | **Introductory Offer → Free Trial → 3 dagen** | **Aanbieding → Gratis proefperiode → 3 dagen** |
@@ -91,7 +91,7 @@ winkels een ander soort product:
 |---|---|---|
 | Waar | Jouw app → **In-App Purchases** | Jouw app → **Producten → Eenmalige producten** |
 | Soort | **Non-Consumable** | **Eenmalig product**, niet verbruikbaar |
-| Product-id | `app.darijakids.ebook` | hetzelfde id |
+| Product-id | `app.darijaforkids.ebook` | hetzelfde id |
 | Prijs | € 14,99 | € 14,99 |
 | Naam voor de koper | Het e-boek | Het e-boek |
 
@@ -101,7 +101,7 @@ een nieuw toestel met **Aankoop terugzetten**. Zo staat het ook in de app —
 als het abonnement stopt.
 
 **Wie een jaar vooruit betaalt krijgt het boek erbij.** Dat regelt de app zelf:
-zodra de winkel zegt dat `app.darijakids.yearly` van deze koper is, staat het
+zodra de winkel zegt dat `app.darijaforkids.yearly` van deze koper is, staat het
 boek open. Er is dus geen bundelproduct nodig, en iemand die per maand betaalt
 kan het boek los kopen.
 

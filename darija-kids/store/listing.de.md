@@ -5,7 +5,7 @@ Für App Store Connect (Deutschland, Österreich, Schweiz) und Google Play Conso
 ## App Store
 
 **Name (max. 30)**
-`Darija Kids`
+`Darijaforkids`
 
 **Untertitel (max. 30)**
 `Marokkanisch für Kinder`
@@ -21,7 +21,7 @@ Für App Store Connect (Deutschland, Österreich, Schweiz) und Google Play Conso
 ```
 Für die Jungen — und heimlich für die Älteren, die ihr Darija aufpolieren wollen.
 
-Darija Kids bringt Kindern und Jugendlichen Darija bei: das marokkanische Arabisch, das die Menschen in Marokko zu Hause und auf der Straße sprechen. Nicht das Hocharabisch aus dem Lehrbuch — die Sprache, in der man mit jeddti telefoniert.
+Darijaforkids bringt Kindern und Jugendlichen Darija bei: das marokkanische Arabisch, das die Menschen in Marokko zu Hause und auf der Straße sprechen. Nicht das Hocharabisch aus dem Lehrbuch — die Sprache, in der man mit jeddti telefoniert.
 
 KURZE LEKTIONEN, DIE HÄNGEN BLEIBEN
 Eine Lektion dauert zwei bis vier Minuten. Du lernst ein Wort zu hören, zu erkennen, in arabischer Schrift zu lesen, selbst zu schreiben und laut zu sagen. Jedes Wort kommt genau dann zurück, bevor du es vergisst.
@@ -82,7 +82,7 @@ GEMACHT, UM ES EINEM KIND ZU GEBEN
 • Funktioniert ohne Internet, im Flugzeug wie in Marokko
 
 FÜR ELTERN UND LEHRKRÄFTE
-In der App gibt es eine Seite dazu, wie hier gelernt wird, was die App tut und was nicht, und wie man zu Hause mithilft. Im Unterricht läuft Darija Kids auf jedem Gerät, ohne Installation und ohne Konto.
+In der App gibt es eine Seite dazu, wie hier gelernt wird, was die App tut und was nicht, und wie man zu Hause mithilft. Im Unterricht läuft Darijaforkids auf jedem Gerät, ohne Installation und ohne Konto.
 
 EHRLICH ZUR SPRACHE
 Darija unterscheidet sich von Stadt zu Stadt und von Familie zu Familie und hat keine offizielle Rechtschreibung. Wir wählen die Form, die man in Casablanca und Rabat am häufigsten hört. Sagt deine Oma es anders, hat deine Oma recht — das sagt die App auch selbst.
@@ -94,7 +94,7 @@ Darija unterscheidet sich von Stadt zu Stadt und von Familie zu Familie und hat 
 ## Google Play
 
 **Titel (max. 30)**
-`Darija Kids`
+`Darijaforkids`
 
 **Kurzbeschreibung (max. 80)**
 `Marokkanisch für Kinder: kurze Lektionen, echte Aussprache, gratis starten.`

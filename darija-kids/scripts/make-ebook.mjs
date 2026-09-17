@@ -35,7 +35,7 @@ const LANG = arg('lang', 'nl')
  * Het boek gaat mee in de app zelf: wie het koopt heeft het offline, zonder
  * account en zonder downloadlink die ooit verloopt. Vandaar `public/`.
  */
-const OUT = arg('out', path.join(ROOT, 'public', 'ebook', `darija-kids-${LANG}.pdf`))
+const OUT = arg('out', path.join(ROOT, 'public', 'ebook', `darijaforkids-${LANG}.pdf`))
 
 const server = await createServer({
   configFile: 'vite.config.ts',

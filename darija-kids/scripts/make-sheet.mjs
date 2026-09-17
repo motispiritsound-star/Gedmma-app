@@ -276,7 +276,7 @@ const html = `<title>Alles Uitspreken</title>
 </style>
 
 <div class="wrap">
-  <span class="eyebrow">Darija Kids</span>
+  <span class="eyebrow">Darijaforkids</span>
   <h1>Alles uitspreken</h1>
   <p class="lede">
     ${counts} — ${onderschrift}.

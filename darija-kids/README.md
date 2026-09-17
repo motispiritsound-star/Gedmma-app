@@ -1,9 +1,9 @@
-# Darija Kids · قدّام
+# Darijaforkids · قدّام
 
 **Marokkaans-Arabisch (Darija) leren, voor kinderen en jongeren — in het
 Nederlands, Frans, Duits, Spaans, Italiaans en Engels.**
 
-Darija Kids is één app die drie dingen tegelijk is: een website die uitlegt waar het
+Darijaforkids is één app die drie dingen tegelijk is: een website die uitlegt waar het
 over gaat, een installeerbare leer-app die daarna offline werkt, en — via
 Capacitor — dezelfde app voor de App Store en Google Play. Geen account, geen
 advertenties: alle voortgang staat op het apparaat van het kind zelf. Het
@@ -14,7 +14,7 @@ Bedoeld voor Marokkaanse gezinnen in Nederland, België, Frankrijk, Duitsland,
 Oostenrijk, Zwitserland en Spanje — en voor iedereen daarbuiten die Darija wil
 leren.
 
-**Darija Kids** (بلادي) is wat Marokkanen in het buitenland Marokko noemen: *mijn
+**Darijaforkids** (بلادي) is wat Marokkanen in het buitenland Marokko noemen: *mijn
 land*. De taal die erbij hoort, leer je hier.
 
 ```
@@ -248,7 +248,7 @@ Twee eerlijke beperkingen, die de app zelf ook benoemt:
 - Op de meeste apparaten spreekt de Arabische stem **Modern Standaard Arabisch**,
   geen Marokkaans. Goed genoeg om een woord te herkennen, geen vervanging voor
   familie horen praten.
-- Staat er **helemaal geen Arabische stem** op het apparaat, dan leent Darija Kids een
+- Staat er **helemaal geen Arabische stem** op het apparaat, dan leent Darijaforkids een
   Europese stem en herschrijft hij de Latijnse schrijfwijze zodat díe stem hem
   ongeveer goed leest. Elke taal spelt dezelfde klank anders, dus de herschrijving
   hangt af van de gevonden stem: een Franse stem krijgt `choukran`, een Duitse
@@ -269,7 +269,7 @@ cursus hoort bij **volledige toegang**: een paar dagen gratis, daarna
 **€ 59,88 voor een heel jaar** — € 4,99 per maand — of **€ 6,99 per maand**,
 beide inclusief btw en opzegbaar. De App Store en Google Play regelen de
 proefperiode, de afschrijving en de btw; de producten heten
-`app.darijakids.yearly` en `app.darijakids.monthly`.
+`app.darijaforkids.yearly` en `app.darijaforkids.monthly`.
 
 Los daarvan is er één ding te koop dat geen abonnement is: **het e-boek**, de
 hele cursus op papier — alle 28 letters met hun drie vormen, alle 17 units met

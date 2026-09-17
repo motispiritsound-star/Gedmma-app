@@ -1,5 +1,5 @@
 /**
- * The only server Darija Kids has.
+ * The only server Darijaforkids has.
  *
  * It exists for one thing: a grown-up who wants to hear from us. It holds an
  * e-mail address, what that address agreed to, and — if they asked for the
@@ -25,7 +25,7 @@ export interface Env {
   DB: D1Database
   /** The mail provider's key. `wrangler secret put MAIL_SLEUTEL`. */
   MAIL_SLEUTEL: string
-  /** Where this worker itself answers, e.g. https://post.darijakids.app */
+  /** Where this worker itself answers, e.g. https://post.darijaforkids.app */
   BASIS: string
   AFZENDER_NAAM: string
   AFZENDER_EMAIL: string

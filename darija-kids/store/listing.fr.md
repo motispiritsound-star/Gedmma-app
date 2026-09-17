@@ -5,7 +5,7 @@ Pour App Store Connect (France, Belgique, Suisse) et Google Play Console (fr-FR)
 ## App Store
 
 **Nom (max 30)**
-`Darija Kids`
+`Darijaforkids`
 
 **Sous-titre (max 30)**
 `Pour les petits, et pour vous`
@@ -21,7 +21,7 @@ Pour App Store Connect (France, Belgique, Suisse) et Google Play Console (fr-FR)
 ```
 Pour les jeunes — et discrètement pour les grands qui veulent réviser leur darija.
 
-Darija Kids apprend le darija aux enfants et aux ados : l'arabe marocain que les gens parlent à la maison et dans la rue au Maroc. Pas l'arabe standard des manuels — la langue dans laquelle on appelle jeddti.
+Darijaforkids apprend le darija aux enfants et aux ados : l'arabe marocain que les gens parlent à la maison et dans la rue au Maroc. Pas l'arabe standard des manuels — la langue dans laquelle on appelle jeddti.
 
 DES LEÇONS COURTES QUI RESTENT
 Une leçon dure deux à quatre minutes. Tu apprends à entendre un mot, à le reconnaître, à le lire en écriture arabe, à l'écrire et à le dire à voix haute. Chaque mot revient juste avant que tu l'oublies.
@@ -82,7 +82,7 @@ FAIT POUR ÊTRE CONFIÉ À UN ENFANT
 • Fonctionne sans internet, en avion comme au Maroc
 
 POUR LES PARENTS ET LES ENSEIGNANTS
-L'application contient une page qui explique comment on y apprend, ce qu'elle fait et ne fait pas, et comment aider à la maison. En classe, Darija Kids tourne sur n'importe quel appareil, sans installation ni compte.
+L'application contient une page qui explique comment on y apprend, ce qu'elle fait et ne fait pas, et comment aider à la maison. En classe, Darijaforkids tourne sur n'importe quel appareil, sans installation ni compte.
 
 HONNÊTE SUR LA LANGUE
 Le darija change d'une ville et d'une famille à l'autre, et n'a pas d'orthographe officielle. Nous choisissons la forme la plus courante à Casablanca et à Rabat. Si ta grand-mère le dit autrement, c'est elle qui a raison — l'application le dit elle-même.
@@ -94,7 +94,7 @@ Le darija change d'une ville et d'une famille à l'autre, et n'a pas d'orthograp
 ## Google Play
 
 **Titre (max 30)**
-`Darija Kids`
+`Darijaforkids`
 
 **Description courte (max 80)**
 `L'arabe marocain pour enfants : leçons courtes, vraie prononciation, début gratuit.`

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Darija Kids</string>
-    <string name="title_activity_main">Darija Kids</string>
-    <string name="package_name">app.darijakids.learn</string>
-    <string name="custom_url_scheme">app.darijakids.learn</string>
+    <string name="app_name">Darijaforkids</string>
+    <string name="title_activity_main">Darijaforkids</string>
+    <string name="package_name">app.darijaforkids.learn</string>
+    <string name="custom_url_scheme">app.darijaforkids.learn</string>
 </resources>

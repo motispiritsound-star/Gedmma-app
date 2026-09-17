@@ -9,8 +9,8 @@ import type { CapacitorConfig } from '@capacitor/cli'
  * so it works on a plane and in Morocco without a signal.
  */
 const config: CapacitorConfig = {
-  appId: 'app.darijakids.learn',
-  appName: 'Darija Kids',
+  appId: 'app.darijaforkids.learn',
+  appName: 'Darijaforkids',
   webDir: 'dist',
   backgroundColor: '#0d1220',
   android: {

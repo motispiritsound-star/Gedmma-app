@@ -79,8 +79,8 @@ for (const lang of ['nl', 'fr', 'de', 'es', 'it', 'en']) {
     else ok('four reasons, each with its own subject')
     for (const l of reasons) {
       if (l.to !== OPERATOR.email) fail(`${lang}: mail goes to ${l.to}, not ${OPERATOR.email}`)
-      if (!l.subject.startsWith('Darija Kids \u00b7 ')) fail(`${lang}: subject "${l.subject}" is missing the app name`)
-      if (!/Darija Kids \d/.test(l.body)) fail(`${lang}: body has no version footer`)
+      if (!l.subject.startsWith('Darijaforkids \u00b7 ')) fail(`${lang}: subject "${l.subject}" is missing the app name`)
+      if (!/Darijaforkids \d/.test(l.body)) fail(`${lang}: body has no version footer`)
       subjects.add(l.subject)
     }
     const withUA = reasons.filter((l) => l.body.includes('Mozilla')).length

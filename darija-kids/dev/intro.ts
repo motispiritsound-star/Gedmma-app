@@ -641,12 +641,12 @@ function card(
       beat.kind === 'title'
         ? [
             { gap: 0, height: mark, draw: (y) => ctx.drawImage(cast.mark, shape.hero.cx - mark / 2, y, mark, mark) },
-            { gap: size * 0.5, height: size * 1.34, draw: (y) => lines(ctx, 'Darija Kids', shape.hero.cx, y + size * 0.67, size * 1.34, ink) },
+            { gap: size * 0.5, height: size * 1.34, draw: (y) => lines(ctx, 'Darijaforkids', shape.hero.cx, y + size * 0.67, size * 1.34, ink) },
             { gap: size * 0.3, height: size * 0.62, draw: (y) => lines(ctx, cast.copy.sub, shape.hero.cx, y + size * 0.31, size * 0.55, ink, 600) },
           ]
         : [
             { gap: 0, height: mark, draw: (y) => ctx.drawImage(cast.mark, shape.hero.cx - mark / 2, y, mark, mark) },
-            { gap: size * 0.34, height: size * 0.9, draw: (y) => lines(ctx, 'Darija Kids', shape.hero.cx, y + size * 0.45, size * 0.9, ink) },
+            { gap: size * 0.34, height: size * 0.9, draw: (y) => lines(ctx, 'Darijaforkids', shape.hero.cx, y + size * 0.45, size * 0.9, ink) },
             { gap: size * 0.45, height: size * 1.3, draw: (y) => pill(ctx, cast.copy.cta, shape.hero.cx, y + size * 0.65, size * 0.62, '#f59e0b', INK) },
             { gap: size * 0.3, height: size * 0.5, draw: (y) => lines(ctx, cast.copy.price, shape.hero.cx, y + size * 0.25, size * 0.44, ink, 600) },
             { gap: size * 0.22, height: size * 0.44, draw: (y) => lines(ctx, cast.copy.feiten, shape.hero.cx, y + size * 0.22, size * 0.36, ink, 600) },

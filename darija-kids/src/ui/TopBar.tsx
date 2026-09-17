@@ -29,7 +29,7 @@ export function TopBar() {
       <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-2.5">
         <Link to="/" onClick={() => sfx.nav()} className="flex shrink-0 items-center gap-2 font-display text-xl font-extrabold">
           <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-saffron-400 to-terra-500 text-night-950">د</span>
-          <span className="hidden sm:inline">Darija Kids</span>
+          <span className="hidden sm:inline">Darijaforkids</span>
         </Link>
 
         {/* The five labels are short in Dutch and long in Spanish, and at

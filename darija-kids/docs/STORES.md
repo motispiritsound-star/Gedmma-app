@@ -43,7 +43,7 @@ In Android Studio: **Build → Generate Signed App Bundle**. Bewaar de keystore
 die je daar aanmaakt op een veilige plek — raak je hem kwijt, dan kun je nooit
 meer een update van dezelfde app publiceren.
 
-Instellingen die al goed staan: applicatie-id `app.darijakids.learn`, minimaal
+Instellingen die al goed staan: applicatie-id `app.darijaforkids.learn`, minimaal
 Android 7 (API 24), doel-API 36, geen cleartext-verkeer, versie 1.0 (code 1).
 Voor elke volgende release hoog je `versionCode` en `versionName` op in
 `android/app/build.gradle`.
@@ -96,7 +96,7 @@ npx cap open ios       # opent Xcode
 ```
 
 In Xcode stel je je Team in (Signing & Capabilities), controleer je dat de
-bundle-id `app.darijakids.learn` is, en archiveer je via **Product → Archive** naar
+bundle-id `app.darijaforkids.learn` is, en archiveer je via **Product → Archive** naar
 App Store Connect.
 
 In App Store Connect vul je in:

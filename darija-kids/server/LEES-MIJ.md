@@ -1,6 +1,6 @@
 # De post
 
-De enige server die Darija Kids heeft. Hij bestaat voor één ding: een
+De enige server die Darijaforkids heeft. Hij bestaat voor één ding: een
 volwassene die iets van ons wil horen.
 
 Wat erin staat is een e-mailadres, waar dat adres ja tegen heeft gezegd, en —
@@ -59,7 +59,7 @@ beschermen.
 cd server
 npm install
 
-npx wrangler d1 create darija-kids        # het id in wrangler.toml plakken
+npx wrangler d1 create darijaforkids        # het id in wrangler.toml plakken
 npm run schema                            # de tabellen aanmaken
 
 npx wrangler secret put MAIL_SLEUTEL      # de sleutel van de mailprovider

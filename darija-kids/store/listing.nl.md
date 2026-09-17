@@ -5,7 +5,7 @@ Voor App Store Connect (Nederland, België) en Google Play Console (nl-NL).
 ## App Store
 
 **Naam (max 30)**
-`Darija Kids`
+`Darijaforkids`
 
 **Ondertitel (max 30)**
 `Voor jong, stiekem ook voor oud`
@@ -21,7 +21,7 @@ Voor App Store Connect (Nederland, België) en Google Play Console (nl-NL).
 ```
 Voor jong — en stiekem ook voor oud die zijn Darija wil bijspijkeren.
 
-Darija Kids leert kinderen en jongeren Darija: het Marokkaans-Arabisch dat mensen in Marokko thuis en op straat spreken. Niet het Standaardarabisch uit een schoolboek — de taal waarin je met jeddti belt. En omdat het pad bij de letters begint en eindigt bij afdingen op de souq, loopt een ouder die zijn eigen Darija wil opfrissen dezelfde route — alleen sneller.
+Darijaforkids leert kinderen en jongeren Darija: het Marokkaans-Arabisch dat mensen in Marokko thuis en op straat spreken. Niet het Standaardarabisch uit een schoolboek — de taal waarin je met jeddti belt. En omdat het pad bij de letters begint en eindigt bij afdingen op de souq, loopt een ouder die zijn eigen Darija wil opfrissen dezelfde route — alleen sneller.
 
 KORTE LESSEN DIE BLIJVEN HANGEN
 Een les duurt twee tot vier minuten. Je leert een woord horen, herkennen, lezen in Arabisch schrift, zelf typen en hardop zeggen. Elk woord komt precies terug voordat je het vergeet.
@@ -82,7 +82,7 @@ GEMAAKT OM AAN EEN KIND TE GEVEN
 • Werkt zonder internet, ook in het vliegtuig en in Marokko
 
 VOOR OUDERS EN LEERKRACHTEN
-In de app staat een pagina met hoe er geleerd wordt, wat de app wel en niet doet, en hoe je thuis meehelpt. In de klas draait Darija Kids op elk toestel zonder installatie of account.
+In de app staat een pagina met hoe er geleerd wordt, wat de app wel en niet doet, en hoe je thuis meehelpt. In de klas draait Darijaforkids op elk toestel zonder installatie of account.
 
 EERLIJK OVER DE TAAL
 Darija verschilt per stad en per familie, en heeft geen officiële spelling. Wij kiezen de vorm die je in Casablanca en Rabat het meest hoort. Zegt jouw oma het anders, dan heeft jouw oma gelijk — dat zegt de app zelf ook.
@@ -94,7 +94,7 @@ Darija verschilt per stad en per familie, en heeft geen officiële spelling. Wij
 ## Google Play
 
 **Titel (max 30)**
-`Darija Kids`
+`Darijaforkids`
 
 **Korte beschrijving (max 80)**
 `Marokkaans-Arabisch voor kinderen: korte lessen, echte uitspraak, gratis beginnen.`

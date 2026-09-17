@@ -3,7 +3,7 @@ import type { Strings } from './nl'
 /** L'interface en français. */
 export const fr: Strings = {
   common: {
-    appName: 'Darija Kids',
+    appName: 'Darijaforkids',
     verder: 'Continuer',
     terug: 'Retour',
     sluiten: 'Fermer',
@@ -68,7 +68,7 @@ export const fr: Strings = {
     klaarMetPadUitleg: 'Continue avec les histoires, les lettres et les jeux — tout y revient.',
     geenStem: 'Cet appareil n’a pas de voix arabe',
     geenStemUitleg:
-      'Darija Kids lit les mots en écriture latine avec une voix française — reconnaissable, mais pas du vrai marocain. Tu peux souvent installer une voix arabe dans les réglages de ton appareil, à la rubrique synthèse vocale.',
+      'Darijaforkids lit les mots en écriture latine avec une voix française — reconnaissable, mais pas du vrai marocain. Tu peux souvent installer une voix arabe dans les réglages de ton appareil, à la rubrique synthèse vocale.',
     geluidUit: 'Aucun son ne sort',
     geluidUitUitleg: 'Le navigateur bloque les bruitages tant que tu n’as rien touché. Sur un iPhone, le bouton sur le côté les coupe aussi — la prononciation, elle, passe quand même.',
     geluidAan: 'Activer le son',
@@ -485,7 +485,7 @@ export const fr: Strings = {
     geenSpraak: 'Ce navigateur n’a pas de synthèse vocale.',
     stemInGebruik: (naam, taal) => `Voix utilisée : ${naam} (${taal}).`,
     stemBenadering: (naam) =>
-      `Aucune voix arabe trouvée. Darija Kids lit l’écriture latine avec ${naam} — c’est une approximation, rien de plus.`,
+      `Aucune voix arabe trouvée. Darijaforkids lit l’écriture latine avec ${naam} — c’est une approximation, rien de plus.`,
     stemGeen: 'Aucune voix disponible. Active la prononciation approchée ci-dessous, ou installe une voix arabe sur ton appareil.',
     stemOnmogelijk: 'Ce navigateur ne peut pas lire de texte à voix haute.',
     snelheid: 'Vitesse de parole',
@@ -525,7 +525,7 @@ export const fr: Strings = {
     wissenKnop: 'Effacer',
     wissenZeker: 'Tu es sûr ?',
     wissenUitleg: 'Toute la progression sur cet appareil disparaît. Télécharge d’abord une copie si tu veux la garder.',
-    oudersLink: 'Parent ou enseignant ? Lis ce que Darija Kids fait et ne fait pas.',
+    oudersLink: 'Parent ou enseignant ? Lis ce que Darijaforkids fait et ne fait pas.',
   },
 
   landing: {
@@ -569,7 +569,7 @@ export const fr: Strings = {
     oudersKnop: 'Lire les explications pour les parents',
     citaat: '« Kifash kanqolo… ? »',
     citaatBody:
-      'La plus belle leçon ne vient pas d’une application. Laisse ton enfant t’apprendre un mot par jour — expliquer est la meilleure façon d’ancrer quelque chose. Darija Kids donne les mots, vous donnez la conversation.',
+      'La plus belle leçon ne vient pas d’une application. Laisse ton enfant t’apprendre un mot par jour — expliquer est la meilleure façon d’ancrer quelque chose. Darijaforkids donne les mots, vous donnez la conversation.',
     mascotte: 'Fnek, le fennec, montre le chemin. Il est patient.',
     vragenTitel: 'Questions',
     faq: [
@@ -595,7 +595,7 @@ export const fr: Strings = {
       ],
       [
         'Ça marche hors ligne ?',
-        'Oui. Darija Kids s’installe comme une application sur ton téléphone, ta tablette ou ton ordinateur, et fonctionne ensuite sans internet — pratique en voiture, en avion ou au Maroc.',
+        'Oui. Darijaforkids s’installe comme une application sur ton téléphone, ta tablette ou ton ordinateur, et fonctionne ensuite sans internet — pratique en voiture, en avion ou au Maroc.',
       ],
       [
         'Quel darija apprend-on ?',
@@ -688,7 +688,7 @@ export const fr: Strings = {
     plan: (dagen: number, prijs: string): string =>
       `Tu commences gratuitement. Après ${dagen} jours, le cours complet coûte à partir de ${prijs} par mois — ou tu t’arrêtes.`,
     gratisDeel: (vrij: number): string => `Les ${vrij} premières unités restent gratuites, même sans abonnement.`,
-    titel: 'Ahlan ! Bienvenue sur Darija Kids',
+    titel: 'Ahlan ! Bienvenue sur Darijaforkids',
     body: 'Dans quelle langue veux-tu apprendre ? Tu pourras toujours changer plus tard.',
     knop: 'Yallah, on commence',
   },
@@ -698,7 +698,7 @@ export const fr: Strings = {
     knop: 'Une remarque, une question ? Écrivez-nous',
     titel: 'Dites-le-nous',
     uitleg: "Pas de formulaire : votre application de courrier s'ouvre avec l'objet déjà rempli. Vous voyez exactement ce que vous envoyez.",
-    beginRegel: 'Bonjour Darija Kids,',
+    beginRegel: 'Bonjour Darijaforkids,',
     overWoord: (woord: string): string => `Il s'agit du mot : ${woord}`,
     anders: 'Votre famille le dit autrement ?',
     ofMail: "Votre application de courrier ne s'ouvre pas ? Écrivez à",

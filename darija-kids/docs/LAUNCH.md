@@ -45,10 +45,10 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 
 ### De producten
 
-- [ ] `app.darijakids.yearly` — € 59,88 per jaar, 3 dagen gratis (§2)
-- [ ] `app.darijakids.monthly` — € 6,99 per maand, 3 dagen gratis (§2)
+- [ ] `app.darijaforkids.yearly` — € 59,88 per jaar, 3 dagen gratis (§2)
+- [ ] `app.darijaforkids.monthly` — € 6,99 per maand, 3 dagen gratis (§2)
 - [ ] Beide in **dezelfde abonnementsgroep**, anders kan niemand overstappen
-- [ ] `app.darijakids.ebook` — € 14,99 eenmalig, **niet-verbruikbaar**, geen abonnement (§2)
+- [ ] `app.darijaforkids.ebook` — € 14,99 eenmalig, **niet-verbruikbaar**, geen abonnement (§2)
 - [ ] Bij Apple: € 59,99 in plaats van € 59,88 — dat prijspunt bestaat daar niet
 
 ### Wat je uploadt
@@ -113,8 +113,8 @@ Datzelfde e-mailadres is ook de feedbackknop. Die staat op de oudersspagina
 (de support-URL die beide winkels vragen), in de instellingen, onderaan de
 voorpagina en onder elk woord in het woordenboek — maar hij is onzichtbaar
 zolang dit bestand leeg is, want een knop die nergens heen gaat is erger dan
-geen knop. Kies een adres dat je leest: `hallo@darijakids.com` of
-`feedback@darijakids.com` bij je domein, niet je privéadres.
+geen knop. Kies een adres dat je leest: `hallo@darijaforkids.com` of
+`feedback@darijaforkids.com` bij je domein, niet je privéadres.
 
 ```ts
 export const OPERATOR = {
@@ -159,7 +159,7 @@ er bestaat.
 
 **Domein.** Kies er één en koop hem voordat je de winkelaccounts aanmaakt: de
 naam komt in beide consoles te staan en is later lastig te wijzigen.
-`darijakids.nl` en `darijakids.app` zijn de logische; een `.nl` is bij een
+`darijakids.nl` en `darijaforkids.app` zijn de logische; een `.nl` is bij een
 Nederlandse registrar rond de € 10 per jaar.
 
 **Hosting.** Cloudflare Pages, Netlify of Vercel — gratis, en ze bouwen
@@ -222,14 +222,14 @@ Er zijn **twee abonnementen**, in dezelfde abonnementsgroep:
 
 | Product-id | Duur | Prijs | Naam voor de koper |
 |---|---|---|---|
-| `app.darijakids.yearly` | 1 jaar, verlengt automatisch | € 59,88 (Apple: € 59,99) | Een jaar volledige toegang |
-| `app.darijakids.monthly` | 1 maand, verlengt automatisch | € 6,99 | Volledige toegang per maand |
+| `app.darijaforkids.yearly` | 1 jaar, verlengt automatisch | € 59,88 (Apple: € 59,99) | Een jaar volledige toegang |
+| `app.darijaforkids.monthly` | 1 maand, verlengt automatisch | € 6,99 | Volledige toegang per maand |
 
 En **één eenmalig product**, geen abonnement:
 
 | Product-id | Soort | Prijs | Naam voor de koper |
 |---|---|---|---|
-| `app.darijakids.ebook` | eenmalig, niet verbruikbaar | € 14,99 | Het e-boek |
+| `app.darijaforkids.ebook` | eenmalig, niet verbruikbaar | € 14,99 | Het e-boek |
 
 Bij het jaarabonnement zit het e-boek erbij; dat regelt de app, dus er is geen
 apart bundelproduct nodig. De abonnementen allebei met **3 dagen gratis**. De ids moeten exact zo, anders vindt de code ze
@@ -324,7 +324,7 @@ voldoet aan de regels van beide; het is een marketingkeuze, geen technische.
 
 Apple leest dit veld echt. Zet er dit in:
 
-> Darija Kids leert kinderen Marokkaans-Arabisch. Er is geen account en geen
+> Darijaforkids leert kinderen Marokkaans-Arabisch. Er is geen account en geen
 > login nodig — de app opent direct in de eerste les.
 >
 > Om het abonnement te testen: tik onderin op "Leren", scrol naar unit 7 en tik
@@ -332,9 +332,9 @@ Apple leest dit veld echt. Zet er dit in:
 > vermenigvuldiging die je moet beantwoorden voordat de aankoop opent. Elk
 > juist antwoord werkt.
 >
-> De abonnementen zijn app.darijakids.yearly (€ 59,88 per jaar) en
-> app.darijakids.monthly (€ 6,99 per maand), beide met 3 dagen gratis. Los
-> daarvan staat app.darijakids.ebook (€ 14,99 eenmalig): het e-boek met de hele
+> De abonnementen zijn app.darijaforkids.yearly (€ 59,88 per jaar) en
+> app.darijaforkids.monthly (€ 6,99 per maand), beide met 3 dagen gratis. Los
+> daarvan staat app.darijaforkids.ebook (€ 14,99 eenmalig): het e-boek met de hele
 > cursus, dat bij het jaarabonnement is inbegrepen.
 > De voorwaarden en het privacybeleid staan in de app onder het
 > abonnementsscherm, en online op [je URL].

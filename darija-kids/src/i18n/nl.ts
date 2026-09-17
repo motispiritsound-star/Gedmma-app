@@ -7,7 +7,7 @@
  */
 export const nl = {
   common: {
-    appName: 'Darija Kids',
+    appName: 'Darijaforkids',
     verder: 'Verder',
     terug: 'Terug',
     sluiten: 'Sluiten',
@@ -73,7 +73,7 @@ export const nl = {
     klaarMetPadUitleg: 'Ga verder met de verhalen, de letters en de spelletjes — daar komt alles terug.',
     geenStem: 'Dit apparaat heeft geen Arabische stem',
     geenStemUitleg:
-      'Darija Kids leest de woorden nu voor in de Latijnse schrijfwijze met een Franse stem — herkenbaar, maar geen echt Marokkaans. Een Arabische stem installeren kan meestal via de instellingen van je apparaat, bij spraak of tekst-naar-spraak.',
+      'Darijaforkids leest de woorden nu voor in de Latijnse schrijfwijze met een Franse stem — herkenbaar, maar geen echt Marokkaans. Een Arabische stem installeren kan meestal via de instellingen van je apparaat, bij spraak of tekst-naar-spraak.',
     geluidUit: 'Er komt geen geluid uit',
     geluidUitUitleg: 'De browser houdt de spelgeluidjes tegen tot je iets aantikt. Op een iPhone zet het schuifje aan de zijkant ze ook uit — de uitspraak hoor je dan wel.',
     geluidAan: 'Geluid aan',
@@ -492,7 +492,7 @@ export const nl = {
     geenSpraak: 'Deze browser heeft geen spraak.',
     stemInGebruik: (naam: string, taal: string): string => `Nu in gebruik: ${naam} (${taal}).`,
     stemBenadering: (naam: string): string =>
-      `Geen Arabische stem gevonden. Darija Kids leest de Latijnse schrijfwijze met ${naam} — dat benadert het, meer niet.`,
+      `Geen Arabische stem gevonden. Darijaforkids leest de Latijnse schrijfwijze met ${naam} — dat benadert het, meer niet.`,
     stemGeen: 'Er is geen stem beschikbaar. Zet hieronder de benaderende uitspraak aan, of installeer een Arabische stem op je apparaat.',
     stemOnmogelijk: 'Deze browser kan geen spraak afspelen.',
     snelheid: 'Spreeksnelheid',
@@ -532,7 +532,7 @@ export const nl = {
     wissenKnop: 'Wissen',
     wissenZeker: 'Weet je het zeker?',
     wissenUitleg: 'Alle voortgang op dit apparaat verdwijnt. Download eerst een kopie als je hem wilt bewaren.',
-    oudersLink: 'Ouder of leerkracht? Lees wat Darija Kids wel en niet doet.',
+    oudersLink: 'Ouder of leerkracht? Lees wat Darijaforkids wel en niet doet.',
   },
 
   landing: {
@@ -576,7 +576,7 @@ export const nl = {
     oudersKnop: 'Lees de uitleg voor ouders',
     citaat: '“Kifash kanqolo…?”',
     citaatBody:
-      'De mooiste les komt niet uit een app. Laat je kind je elke dag één woord leren — uitleggen is de beste manier om iets vast te zetten. Darija Kids geeft de woorden, jullie geven het gesprek.',
+      'De mooiste les komt niet uit een app. Laat je kind je elke dag één woord leren — uitleggen is de beste manier om iets vast te zetten. Darijaforkids geeft de woorden, jullie geven het gesprek.',
     mascotte: 'Fnek, de fennek, wijst de weg. Hij heeft geduld.',
     vragenTitel: 'Vragen',
     faq: [
@@ -602,7 +602,7 @@ export const nl = {
       ],
       [
         'Werkt het offline?',
-        'Ja. Darija Kids installeert zich als app op je telefoon, tablet of laptop en werkt daarna zonder internet — handig in de auto, het vliegtuig of in Marokko zelf.',
+        'Ja. Darijaforkids installeert zich als app op je telefoon, tablet of laptop en werkt daarna zonder internet — handig in de auto, het vliegtuig of in Marokko zelf.',
       ],
       [
         'Welk Darija leren jullie?',
@@ -702,7 +702,7 @@ export const nl = {
     plan: (dagen: number, prijs: string): string =>
       `Je begint gratis. Na ${dagen} dagen is de volledige cursus vanaf ${prijs} per maand — of je stopt gewoon.`,
     gratisDeel: (vrij: number): string => `De eerste ${vrij} units blijven altijd gratis, ook zonder abonnement.`,
-    titel: 'Ahlan! Welkom bij Darija Kids',
+    titel: 'Ahlan! Welkom bij Darijaforkids',
     body: 'In welke taal wil je leren? Je kunt dit later altijd wisselen.',
     knop: 'Yallah, beginnen',
   },
@@ -719,7 +719,7 @@ export const nl = {
     knop: 'Tips of vragen? Mail ons',
     titel: 'Laat het ons weten',
     uitleg: 'Er komt geen formulier aan te pas: je eigen mailapp gaat open met het onderwerp er al in. Je ziet precies wat je verstuurt.',
-    beginRegel: 'Hoi Darija Kids,',
+    beginRegel: 'Hoi Darijaforkids,',
     overWoord: (woord: string): string => `Dit gaat over het woord: ${woord}`,
     anders: 'Zegt jouw familie dit anders?',
     ofMail: 'Gaat je mailapp niet open? Mail dan naar',

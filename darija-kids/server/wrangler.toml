@@ -1,21 +1,21 @@
-name = "darija-kids-post"
+name = "darijaforkids-post"
 main = "src/index.ts"
 compatibility_date = "2026-09-01"
 
 # Where the app posts to and where the links in the mails point. Set this to
 # the worker's own address once it is deployed.
 [vars]
-BASIS = "https://post.darijakids.app"
-AFZENDER_NAAM = "Darija Kids"
-AFZENDER_EMAIL = "post@darijakids.app"
+BASIS = "https://post.darijaforkids.app"
+AFZENDER_NAAM = "Darijaforkids"
+AFZENDER_EMAIL = "post@darijaforkids.app"
 
 # The list itself. Create it once with:
-#   npx wrangler d1 create darija-kids
-#   npx wrangler d1 execute darija-kids --remote --file schema.sql
+#   npx wrangler d1 create darijaforkids
+#   npx wrangler d1 execute darijaforkids --remote --file schema.sql
 # and paste the id it prints here.
 [[d1_databases]]
 binding = "DB"
-database_name = "darija-kids"
+database_name = "darijaforkids"
 database_id = "vul-hier-het-id-in"
 
 # One run a week. Monday morning, because a week that is reported on Monday is

@@ -3,7 +3,7 @@ import type { Strings } from './nl'
 /** Die Oberfläche auf Deutsch. */
 export const de: Strings = {
   common: {
-    appName: 'Darija Kids',
+    appName: 'Darijaforkids',
     verder: 'Weiter',
     terug: 'Zurück',
     sluiten: 'Schließen',
@@ -68,7 +68,7 @@ export const de: Strings = {
     klaarMetPadUitleg: 'Mach weiter mit den Geschichten, den Buchstaben und den Spielen — dort kommt alles wieder vor.',
     geenStem: 'Dieses Gerät hat keine arabische Stimme',
     geenStemUitleg:
-      'Darija Kids liest die Wörter jetzt in lateinischer Schreibweise mit einer französischen Stimme vor — erkennbar, aber kein echtes Marokkanisch. Eine arabische Stimme lässt sich meist in den Geräteeinstellungen unter Sprachausgabe installieren.',
+      'Darijaforkids liest die Wörter jetzt in lateinischer Schreibweise mit einer französischen Stimme vor — erkennbar, aber kein echtes Marokkanisch. Eine arabische Stimme lässt sich meist in den Geräteeinstellungen unter Sprachausgabe installieren.',
     geluidUit: 'Es kommt kein Ton',
     geluidUitUitleg: 'Der Browser hält die Spielgeräusche zurück, bis du etwas antippst. Auf einem iPhone schaltet der Schalter an der Seite sie ebenfalls stumm — die Aussprache hörst du trotzdem.',
     geluidAan: 'Ton an',
@@ -485,7 +485,7 @@ export const de: Strings = {
     geenSpraak: 'Dieser Browser hat keine Sprachausgabe.',
     stemInGebruik: (naam, taal) => `Jetzt in Gebrauch: ${naam} (${taal}).`,
     stemBenadering: (naam) =>
-      `Keine arabische Stimme gefunden. Darija Kids liest die lateinische Schreibweise mit ${naam} — das kommt nur in die Nähe.`,
+      `Keine arabische Stimme gefunden. Darijaforkids liest die lateinische Schreibweise mit ${naam} — das kommt nur in die Nähe.`,
     stemGeen: 'Es ist keine Stimme verfügbar. Schalte unten die angenäherte Aussprache ein oder installiere eine arabische Stimme.',
     stemOnmogelijk: 'Dieser Browser kann nichts vorlesen.',
     snelheid: 'Sprechtempo',
@@ -525,7 +525,7 @@ export const de: Strings = {
     wissenKnop: 'Löschen',
     wissenZeker: 'Bist du sicher?',
     wissenUitleg: 'Der gesamte Fortschritt auf diesem Gerät verschwindet. Lade vorher eine Kopie herunter, wenn du ihn behalten willst.',
-    oudersLink: 'Elternteil oder Lehrkraft? Lies, was Darija Kids tut und was nicht.',
+    oudersLink: 'Elternteil oder Lehrkraft? Lies, was Darijaforkids tut und was nicht.',
   },
 
   landing: {
@@ -569,7 +569,7 @@ export const de: Strings = {
     oudersKnop: 'Die Erklärung für Eltern lesen',
     citaat: '„Kifash kanqolo…?“',
     citaatBody:
-      'Die schönste Lektion kommt nicht aus einer App. Lass dein Kind dir jeden Tag ein Wort beibringen — erklären ist die beste Art, etwas zu festigen. Darija Kids liefert die Wörter, ihr liefert das Gespräch.',
+      'Die schönste Lektion kommt nicht aus einer App. Lass dein Kind dir jeden Tag ein Wort beibringen — erklären ist die beste Art, etwas zu festigen. Darijaforkids liefert die Wörter, ihr liefert das Gespräch.',
     mascotte: 'Fnek, der Wüstenfuchs, zeigt den Weg. Er hat Geduld.',
     vragenTitel: 'Fragen',
     faq: [
@@ -595,7 +595,7 @@ export const de: Strings = {
       ],
       [
         'Funktioniert es offline?',
-        'Ja. Darija Kids installiert sich als App auf Handy, Tablet oder Laptop und läuft danach ohne Internet — praktisch im Auto, im Flugzeug oder in Marokko selbst.',
+        'Ja. Darijaforkids installiert sich als App auf Handy, Tablet oder Laptop und läuft danach ohne Internet — praktisch im Auto, im Flugzeug oder in Marokko selbst.',
       ],
       [
         'Welches Darija lernt man hier?',
@@ -688,7 +688,7 @@ export const de: Strings = {
     plan: (dagen: number, prijs: string): string =>
       `Du fängst kostenlos an. Nach ${dagen} Tagen kostet der ganze Kurs ab ${prijs} pro Monat — oder du hörst einfach auf.`,
     gratisDeel: (vrij: number): string => `Die ersten ${vrij} Einheiten bleiben immer kostenlos, auch ohne Abo.`,
-    titel: 'Ahlan! Willkommen bei Darija Kids',
+    titel: 'Ahlan! Willkommen bei Darijaforkids',
     body: 'In welcher Sprache möchtest du lernen? Du kannst das später jederzeit ändern.',
     knop: 'Yallah, los',
   },
@@ -698,7 +698,7 @@ export const de: Strings = {
     knop: 'Tipps oder Fragen? Schreib uns',
     titel: 'Sag es uns',
     uitleg: 'Kein Formular: Deine eigene Mail-App öffnet sich mit fertigem Betreff. Du siehst genau, was rausgeht.',
-    beginRegel: 'Hallo Darija Kids,',
+    beginRegel: 'Hallo Darijaforkids,',
     overWoord: (woord: string): string => `Es geht um das Wort: ${woord}`,
     anders: 'Sagt eure Familie das anders?',
     ofMail: 'Öffnet sich deine Mail-App nicht? Dann schreib an',

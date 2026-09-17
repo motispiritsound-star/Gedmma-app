@@ -13,12 +13,12 @@ dat is verspilde ruimte. Geen spaties na de komma's, ook dat is ruimte.
 
 | Taal | Naam | Ondertitel |
 |---|---|---|
-| Nederlands | Darija Kids | Marokkaans-Arabisch voor kids |
-| Français | Darija Kids | L'arabe marocain pour enfants |
-| Deutsch | Darija Kids | Marokkanisch-Arabisch für Kids |
-| Español | Darija Kids | Árabe marroquí para niños |
-| Italiano | Darija Kids | Arabo marocchino per bambini |
-| English | Darija Kids | Moroccan Arabic for children |
+| Nederlands | Darijaforkids | Marokkaans-Arabisch voor kids |
+| Français | Darijaforkids | L'arabe marocain pour enfants |
+| Deutsch | Darijaforkids | Marokkanisch-Arabisch für Kids |
+| Español | Darijaforkids | Árabe marroquí para niños |
+| Italiano | Darijaforkids | Arabo marocchino per bambini |
+| English | Darijaforkids | Moroccan Arabic for children |
 
 **Zoekwoorden** (elk precies binnen de 100 tekens):
 
@@ -56,12 +56,12 @@ hele zinnen — een lijst losse woorden werkt averechts.
 
 | Taal | Titel | Korte beschrijving |
 |---|---|---|
-| Nederlands | Darija Kids: Marokkaans | Leer Darija: Marokkaans-Arabisch voor kinderen, met uitspraak |
-| Français | Darija Kids : marocain | Apprends le darija : l'arabe marocain pour enfants, prononcé |
-| Deutsch | Darija Kids: Marokkanisch | Lerne Darija: marokkanisches Arabisch für Kinder, mit Aussprache |
-| Español | Darija Kids: marroquí | Aprende dariya: árabe marroquí para niños, con pronunciación |
-| Italiano | Darija Kids: marocchino | Impara il darija: arabo marocchino per bambini, con la pronuncia |
-| English | Darija Kids: Moroccan | Learn Darija: Moroccan Arabic for children, spoken aloud |
+| Nederlands | Darijaforkids: Marokkaans | Leer Darija: Marokkaans-Arabisch voor kinderen, met uitspraak |
+| Français | Darijaforkids : marocain | Apprends le darija : l'arabe marocain pour enfants, prononcé |
+| Deutsch | Darijaforkids: Marokkanisch | Lerne Darija: marokkanisches Arabisch für Kinder, mit Aussprache |
+| Español | Darijaforkids: marroquí | Aprende dariya: árabe marroquí para niños, con pronunciación |
+| Italiano | Darijaforkids: marocchino | Impara il darija: arabo marocchino per bambini, con la pronuncia |
+| English | Darijaforkids: Moroccan | Learn Darija: Moroccan Arabic for children, spoken aloud |
 
 De volledige beschrijvingen staan per taal klaar in `listing.<taal>.md`.
 

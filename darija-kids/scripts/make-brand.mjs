@@ -8,7 +8,7 @@
  *
  * Run with:
  *   node scripts/make-brand.mjs
- *   node scripts/make-brand.mjs --url darijakids.com --lang nl,fr
+ *   node scripts/make-brand.mjs --url darijaforkids.com --lang nl,fr
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -24,7 +24,7 @@ const arg = (name, fallback) => {
   return i > 0 ? process.argv[i + 1] : fallback
 }
 
-const SITE = arg('url', 'darijakids.com')
+const SITE = arg('url', 'darijaforkids.com')
 
 /* ------------------------------------------------------------- the colours */
 
@@ -142,7 +142,7 @@ const wordmarkSvg = async (ink, { pay = '', mono = null } = {}) => {
     ${star(96, 96, 44, mono ?? '#0d9488')}
     <circle cx="96" cy="96" r="14" fill="${mono ?? ink}"/>
   </g>
-  <text x="228" y="${pay ? 140 : 148}" font-family="'Baloo 2'" font-weight="800" font-size="132" fill="${ink}">Darija Kids</text>
+  <text x="228" y="${pay ? 140 : 148}" font-family="'Baloo 2'" font-weight="800" font-size="132" fill="${ink}">Darijaforkids</text>
   ${pay ? `<text x="232" y="212" font-family="'Baloo 2'" font-weight="800" font-size="46" fill="${ink}" opacity=".72">${pay}</text>` : ''}
 </svg>`
 }
@@ -181,7 +181,7 @@ const SHEETS = [
       <div style="flex:1;display:flex;align-items:center;gap:56px;padding:0 90px;color:${CREAM}">
         <div style="flex:0 0 auto">${markSvg(200)}</div>
         <div style="flex:1 1 auto;min-width:0">
-          <div style="font-size:92px;font-weight:800;letter-spacing:-.02em">Darija Kids</div>
+          <div style="font-size:92px;font-weight:800;letter-spacing:-.02em">Darijaforkids</div>
           <div style="margin-top:14px;font-size:38px;opacity:.85">${copy.pay}</div>
           <div style="margin-top:26px;display:inline-block;background:#f59e0b;color:${INK};font-size:32px;font-weight:800;padding:16px 36px;border-radius:999px">${SITE}</div>
         </div>
@@ -196,7 +196,7 @@ const SHEETS = [
         <div style="width:1546px;height:423px;display:flex;align-items:center;gap:48px;color:${CREAM}">
           <div style="flex:0 0 auto">${markSvg(200)}</div>
           <div style="flex:1 1 auto;min-width:0">
-            <div style="font-size:96px;font-weight:800;letter-spacing:-.02em">Darija Kids</div>
+            <div style="font-size:96px;font-weight:800;letter-spacing:-.02em">Darijaforkids</div>
             <div style="margin-top:10px;font-size:40px;opacity:.85">${copy.pay}</div>
           </div>
           <div style="flex:0 0 auto;background:#f59e0b;color:${INK};font-size:34px;font-weight:800;padding:18px 40px;border-radius:999px">${SITE}</div>
@@ -210,7 +210,7 @@ const SHEETS = [
       <div style="flex:1;display:flex;align-items:center;gap:44px;padding:0 70px;color:${CREAM}">
         <div style="flex:0 0 auto">${markSvg(150)}</div>
         <div style="flex:1 1 auto;min-width:0">
-          <div style="font-size:74px;font-weight:800;letter-spacing:-.02em">Darija Kids</div>
+          <div style="font-size:74px;font-weight:800;letter-spacing:-.02em">Darijaforkids</div>
           <div style="margin-top:8px;font-size:32px;opacity:.85">${copy.pay} · ${SITE}</div>
         </div>
       </div>`, NIGHT),
@@ -222,7 +222,7 @@ const SHEETS = [
       <div style="flex:1;display:flex;align-items:center;gap:40px;padding:0 72px;color:${CREAM}">
         <div style="flex:0 0 auto">${markSvg(130)}</div>
         <div style="flex:1 1 auto;min-width:0">
-          <div style="font-size:62px;font-weight:800;letter-spacing:-.02em">Darija Kids</div>
+          <div style="font-size:62px;font-weight:800;letter-spacing:-.02em">Darijaforkids</div>
           <div style="margin-top:6px;font-size:28px;opacity:.85">${copy.pay} · ${SITE}</div>
         </div>
       </div>`, NIGHT),

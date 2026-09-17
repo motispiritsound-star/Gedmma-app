@@ -77,7 +77,7 @@ const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<
 const html = `<!doctype html>
 <html lang="nl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Darija Kids — wat er ingesproken moet worden</title>
+<title>Darijaforkids — wat er ingesproken moet worden</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;600&family=Noto+Naskh+Arabic:wght@400;700&display=swap">
@@ -124,7 +124,7 @@ const html = `<!doctype html>
 </style>
 </head><body>
 <div class="wrap">
-  <p class="eyebrow">Darija Kids</p>
+  <p class="eyebrow">Darijaforkids</p>
   <h1>Deze ${woorden.length} woorden, één voor één</h1>
   <p class="lede">
     Van deze woorden staat er nog geen stem in de app: geen computerstem zegt
@@ -135,7 +135,7 @@ const html = `<!doctype html>
   <div class="hoe">
     <strong class="tr" style="font-size:1rem">De snelste manier</strong>
     <ol>
-      <li>Open <code>darija-kids-demo.html</code> — het bestand dat je van mij
+      <li>Open <code>darijaforkids-demo.html</code> — het bestand dat je van mij
         kreeg — en tik onderin op <strong>Jij</strong>, dan op
         <strong>Aanpassen</strong>. Helemaal onderaan staat bij
         <em>Voor de makers</em> de knop <strong>Opnamestudio</strong>.</li>

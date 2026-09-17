@@ -69,7 +69,7 @@ Dezelfde grap in de andere vier talen:
 **Kort (Instagram, TikTok, Stories)**
 
 > Je kind verstaat oma wel, maar antwoordt in het Nederlands. 🇲🇦
-> Darija Kids leert de taal van thuis — niet het Arabisch uit het schoolboek.
+> Darijaforkids leert de taal van thuis — niet het Arabisch uit het schoolboek.
 > Gratis beginnen 👇
 
 **Facebook-groep of familie-app**
@@ -91,7 +91,7 @@ Dezelfde grap in de andere vier talen:
 > wel, maar spreken het niet. Bestaande taalapps helpen niet: die leren Modern
 > Standaardarabisch, een schrijftaal die thuis niet gesproken wordt.
 >
-> Daarom bouwde ik Darija Kids: 17 units van het Arabische alfabet tot de souq,
+> Daarom bouwde ik Darijaforkids: 17 units van het Arabische alfabet tot de souq,
 > 304 woorden, 100 zinnen, in zes interfacetalen. Zonder account, zonder
 > advertenties, volledig offline.
 
@@ -108,7 +108,7 @@ Dezelfde grap in de andere vier talen:
 **Court**
 
 > Ton enfant comprend mamie, mais répond en français. 🇲🇦
-> Darija Kids enseigne la langue de la maison — pas l’arabe du manuel.
+> Darijaforkids enseigne la langue de la maison — pas l’arabe du manuel.
 > Gratuit pour commencer 👇
 
 **Groupe Facebook ou famille**
@@ -131,7 +131,7 @@ Dezelfde grap in de andere vier talen:
 **Kurz**
 
 > Dein Kind versteht Oma, antwortet aber auf Deutsch. 🇲🇦
-> Darija Kids bringt die Sprache von zu Hause bei — nicht das Schulbucharabisch.
+> Darijaforkids bringt die Sprache von zu Hause bei — nicht das Schulbucharabisch.
 > Kostenlos anfangen 👇
 
 **Facebook-Gruppe oder Familie**
@@ -154,7 +154,7 @@ Dezelfde grap in de andere vier talen:
 **Corto**
 
 > Tu hijo entiende a la abuela, pero responde en español. 🇲🇦
-> Darija Kids enseña el idioma de casa, no el árabe del libro de texto.
+> Darijaforkids enseña el idioma de casa, no el árabe del libro de texto.
 > Empieza gratis 👇
 
 **Grupo de Facebook o familia**
@@ -176,7 +176,7 @@ Dezelfde grap in de andere vier talen:
 **Short**
 
 > Your child understands grandma, but answers in English. 🇲🇦
-> Darija Kids teaches the language of home — not textbook Arabic.
+> Darijaforkids teaches the language of home — not textbook Arabic.
 > Free to start 👇
 
 **Facebook group or family chat**
@@ -230,7 +230,7 @@ Eén voorbeeld per taal:
 > Ze gaf het allemaal uit aan één ding: een school.
 > Die school geeft nog steeds les. Elfhonderd jaar, zonder pauze.
 >
-> Fatima al-Fihri staat in Darija Kids — met dertien andere kaarten uit de
+> Fatima al-Fihri staat in Darijaforkids — met dertien andere kaarten uit de
 > geschiedenis van Marokko, voorgelezen in de taal van je kind.
 
 **Français**
@@ -239,7 +239,7 @@ Eén voorbeeld per taal:
 > Elle le dépensa entièrement pour une seule chose : une école.
 > Cette école enseigne toujours. Onze siècles, sans interruption.
 >
-> Fatima al-Fihri est dans Darija Kids — avec treize autres cartes de
+> Fatima al-Fihri est dans Darijaforkids — avec treize autres cartes de
 > l'histoire du Maroc, lues à voix haute dans la langue de votre enfant.
 
 **Deutsch**
@@ -248,7 +248,7 @@ Eén voorbeeld per taal:
 > Sie gab es vollständig für eine einzige Sache aus: eine Schule.
 > Diese Schule unterrichtet bis heute. Elfhundert Jahre, ohne Pause.
 >
-> Fatima al-Fihri steckt in Darija Kids — zusammen mit dreizehn weiteren Karten
+> Fatima al-Fihri steckt in Darijaforkids — zusammen mit dreizehn weiteren Karten
 > aus der Geschichte Marokkos, vorgelesen in der Sprache deines Kindes.
 
 **Español**
@@ -257,7 +257,7 @@ Eén voorbeeld per taal:
 > Lo gastó entero en una sola cosa: una escuela.
 > Esa escuela sigue dando clase. Once siglos, sin pausa.
 >
-> Fátima al-Fihri está en Darija Kids, junto a otras trece cartas de la
+> Fátima al-Fihri está en Darijaforkids, junto a otras trece cartas de la
 > historia de Marruecos, leídas en voz alta en el idioma de tu hijo.
 
 **Italiano**
@@ -266,7 +266,7 @@ Eén voorbeeld per taal:
 > Lo spese tutto per una cosa sola: una scuola.
 > Quella scuola insegna ancora. Undici secoli, senza pause.
 >
-> Fatima al-Fihri è dentro Darija Kids — con altre tredici carte della storia
+> Fatima al-Fihri è dentro Darijaforkids — con altre tredici carte della storia
 > del Marocco, lette ad alta voce nella lingua di tuo figlio.
 
 **English**
@@ -275,7 +275,7 @@ Eén voorbeeld per taal:
 > She spent all of it on one thing: a school.
 > That school is still teaching. Eleven hundred years, without a break.
 >
-> Fatima al-Fihri is in Darija Kids — with thirteen more cards from the history
+> Fatima al-Fihri is in Darijaforkids — with thirteen more cards from the history
 > of Morocco, read aloud in your child's own language.
 
 ---
@@ -287,10 +287,10 @@ niets gaat doen, zodat niemand anders ze pakt.
 
 | Waar | Naam | Waarvoor |
 |---|---|---|
-| Instagram | `@darijakids` | het hart: reels, carrousels, reacties van ouders |
-| TikTok | `@darijakids` | hetzelfde beeld, ander publiek — jonger, en het deelt harder |
-| YouTube | `Darija Kids` | alleen om de introfilm ergens te laten staan: Google Play wil een YouTube-link, geen bestand |
-| Facebook | `Darija Kids` (pagina) | niet voor de pagina zelf, maar omdat je vanuit ouder­groepen ergens naartoe moet linken |
+| Instagram | `@darijaforkids` | het hart: reels, carrousels, reacties van ouders |
+| TikTok | `@darijaforkids` | hetzelfde beeld, ander publiek — jonger, en het deelt harder |
+| YouTube | `Darijaforkids` | alleen om de introfilm ergens te laten staan: Google Play wil een YouTube-link, geen bestand |
+| Facebook | `Darijaforkids` (pagina) | niet voor de pagina zelf, maar omdat je vanuit ouder­groepen ergens naartoe moet linken |
 
 Meer dan vier is een belofte die je niet waarmaakt. Eén account dat leeft doet
 meer dan vier die stilstaan.

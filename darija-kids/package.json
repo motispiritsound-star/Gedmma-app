@@ -1,9 +1,9 @@
 {
-  "name": "darija-kids",
+  "name": "darijaforkids",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Darija Kids - leer Marokkaans-Arabisch (Darija) voor kinderen en jongeren",
+  "description": "Darijaforkids - leer Marokkaans-Arabisch (Darija) voor kinderen en jongeren",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
