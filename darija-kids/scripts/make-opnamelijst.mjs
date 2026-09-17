@@ -167,6 +167,11 @@ const html = `<!doctype html>
         dat verkeerd staat is erger dan een woord dat ontbreekt.</li>
       <li>Ga bij een verspreking gewoon door en zeg het woord opnieuw; los
         opnemen kan altijd nog.</li>
+      <li><strong>Neem op in blokken van twintig.</strong> De nummers naast de
+        regels tellen door, dus zeg er bij elke opname bij welke nummers erin
+        zitten. Eén lange opname van honderdvijftig woorden is een half uur
+        waarin één verspreking alles erna een plaats laat opschuiven; een blok
+        van twintig is in een minuut opnieuw gedaan.</li>
     </ol>
   </div>
 

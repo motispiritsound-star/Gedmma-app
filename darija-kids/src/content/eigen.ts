@@ -133,6 +133,20 @@ export const OPNAME_NODIG: string[] = [
   'werkwoorden-2-a', 'werkwoorden-3-b', 'werkwoorden-4-a', 'werkwoorden-4-b',
   'weg-1-a', 'weg-1-b',
   'cultuur-1-a', 'cultuur-2-b',
+  // De rest van de zinnen, ongehoord afgekeurd. Van de zesenzeventig die wel
+  // zijn nagehoord haalde er geen enkele het; doorluisteren zou het antwoord
+  // niet meer veranderen, alleen uitstellen.
+  'salam-alaykum', 'wa-alaykum', 'sbah-lkhir', 'msa-lkhir', 'labas',
+  'la-shukran-wajib', 'lila-saida', 'ana-men-hulanda', 'ana-men-lmghrib', 'fin-sakn',
+  'shhal-f-3merek', 'hadi-khti', 'shnu-lloun', '3awd-afak', 'shhal-sa3a', 'kanbghik',
+  'shnu-hada', 'ghali-bezzaf', '3id-mubarak',
+  'groeten-1-a', 'ik-en-jij-1-a', 'familie-1-a', 'familie-1-b', 'cijfers-3-a',
+  'cijfers-4-b', 'kleuren-1-a', 'kleuren-2-b', 'huis-3-b', 'school-1-a', 'dieren-3-b',
+  'tijd-2-b', 'tijd-3-a', 'lichaam-1-b', 'lichaam-2-a', 'lichaam-3-b',
+  'werkwoorden-1-a', 'werkwoorden-1-b', 'werkwoorden-2-b', 'werkwoorden-3-a',
+  'vragen-1-a', 'vragen-1-b', 'vragen-2-a', 'vragen-2-b', 'winkelen-1-a',
+  'winkelen-1-b', 'winkelen-2-a', 'winkelen-2-b', 'winkelen-3-a', 'winkelen-3-b',
+  'weg-2-a', 'weg-2-b', 'cultuur-1-b', 'cultuur-2-a',
 ]
 
 /**
