@@ -80,6 +80,22 @@ is er één woord overgeslagen, dan staat vanaf dat punt alles onder de verkeerd
 naam, en dat is erger dan niets. Een andere pauzelengte proberen kan met
 `--pauze 0.25` of `--pauze 0.4`.
 
+Helpt dat niet, dan is er echt iets te veel of te weinig gezegd — een woord dat
+opnieuw is gezegd, een kuch, een woord dat in tweeën viel. Dat is niet uit te
+rekenen; alleen wie de taal spreekt hoort waar het spoor gaat lopen:
+
+```
+npm run knipblad -- opname.m4a --voorrang
+```
+
+Dat maakt `store/knipblad.html`: elk stuk speelbaar, met het woord waar het
+volgens de telling bij hoort. Luister van boven naar beneden, schrap wat niet
+meetelt — alles erna schuift een plaats terug — en onderaan komt de regel eruit:
+
+```
+npm run knip -- opname.m4a --voorrang --sla-over 7,24,41,73
+```
+
 **Begin bij de letters en de eerste unit.** Achtentwintig letters en de dertig
 meestgebruikte woorden dekken het grootste deel van wat een kind in de eerste
 week hoort.

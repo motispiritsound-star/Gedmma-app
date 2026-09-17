@@ -34,7 +34,8 @@
     "nieuw": "node scripts/nieuwe-gebruiker.mjs",
     "checklist": "node scripts/make-checklist.mjs",
     "opnamelijst": "node scripts/make-opnamelijst.mjs",
-    "knip": "node scripts/knip-opname.mjs"
+    "knip": "node scripts/knip-opname.mjs",
+    "knipblad": "node scripts/make-knipblad.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",

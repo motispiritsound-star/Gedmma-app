@@ -21,6 +21,9 @@
  *   --map <map>    letters, woorden (standaard) of zinnen
  *   --pauze <s>    hoe lang het stil moet zijn voor een grens, standaard 0,3
  *   --proef        alleen laten zien wat eruit komt, niets opslaan
+ *   --sla-over 7,24  stuknummers die niet meetellen: een woord dat opnieuw is
+ *                  gezegd, een kuch, of een woord dat in twee stukken uiteen
+ *                  viel. De nummers komen uit het knipblad.
  */
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -47,6 +50,8 @@ if (!BESTAND || BESTAND.startsWith('--')) {
 const MAP = arg('map', 'woorden')
 const PAUZE = Number(arg('pauze', 0.3))
 const PROEF = vlag('proef')
+/** Stuknummers (vanaf 1) die overgeslagen worden, uit het knipblad. */
+const OVER = new Set((arg('sla-over', '') || '').split(',').map((n) => Number(n.trim())).filter(Boolean))
 
 /* ------------------------------------------------ welke woorden erin zitten */
 
@@ -86,7 +91,12 @@ const stukken = await page.evaluate(async ({ lijst, rate, pauze }) => {
 await browser.close()
 await server.close()
 
-console.log(`${stukken.length} stukken gevonden, ${ids.length} woorden gevraagd`)
+const gevonden = stukken.length
+const bruikbaar = stukken.filter((_, i) => !OVER.has(i + 1))
+if (OVER.size) console.log(`${gevonden} stukken gevonden, ${OVER.size} overgeslagen`)
+console.log(`${bruikbaar.length} stukken bruikbaar, ${ids.length} woorden gevraagd`)
+stukken.length = 0
+stukken.push(...bruikbaar)
 
 if (stukken.length !== ids.length) {
   console.error(
