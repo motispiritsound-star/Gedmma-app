@@ -123,6 +123,10 @@ export const OPNAME_NODIG: string[] = [
   'cijfers-1-a', 'cijfers-1-b', 'cijfers-2-a', 'cijfers-2-b', 'cijfers-3-b',
   'cijfers-4-a',
   'kleuren-1-b', 'kleuren-2-a',
+  'eten-1-a', 'eten-1-b', 'eten-2-a', 'eten-2-b', 'eten-3-a', 'eten-3-b',
+  'eten-4-a', 'eten-4-b', 'eten-5-a', 'eten-5-b',
+  'huis-1-a', 'huis-1-b', 'huis-2-a', 'huis-2-b', 'huis-3-a',
+  'school-1-b',
 ]
 
 /**
