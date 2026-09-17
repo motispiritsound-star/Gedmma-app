@@ -108,6 +108,9 @@ export const OPNAME_NODIG: string[] = [
   'tamazight', 'babouche', 'rabat', 'tanja',
   // Cijfers.
   'reb3a',
+  // Zinnetjes: de begroetingen en het kennismaken, waar geen stem doorheen komt.
+  'labas-hamdullah', 'kif-dayr', 'kif-dayra', 'barakallah', 'smeh-liya',
+  'smiti', 'shnu-smitek', 'mtsherfin',
 ]
 
 /**

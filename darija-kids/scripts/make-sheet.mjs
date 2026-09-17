@@ -13,9 +13,14 @@
  * inmiddels een opname hebben. Dat is het blad waarmee je een verse opname
  * nakijkt: alleen wat nieuw is, zonder de rest er weer bij.
  *
- * Met `--nog-niet` juist het omgekeerde: alles waar nog géén opname bij zit.
- * Daar spreekt dus nog een computerstem, en dat is precies de lijst die je
- * langsloopt om te bepalen wat een mens moet inspreken.
+ * Met `--nog-niet` blijft over wat nog een oordeel nodig heeft: geen opname,
+ * en ook nog niet op de opnamelijst. Wat al is afgekeurd wacht op een stem en
+ * hoeft niet nog eens beoordeeld te worden; het opnieuw laten zien kost tijd
+ * en zaait twijfel over wat er al besloten is.
+ *
+ * Met `--soort zinnen` blijft één soort over. Nakijken gaat per soort — de
+ * woorden zijn een andere bezigheid dan de zinnen — en wat al is nagekeken
+ * hoort niet opnieuw voorbij te komen.
  */
 import { readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -32,6 +37,10 @@ const arg = (name, fallback) => {
 const OUT = arg('out', 'uitspraak-alles.html')
 const VOORRANG = process.argv.includes('--voorrang')
 const NOGNIET = process.argv.includes('--nog-niet')
+const SOORT = arg('soort', null)
+if (SOORT && !['letters', 'woorden', 'zinnen'].includes(SOORT)) {
+  throw new Error(`--soort kan letters, woorden of zinnen zijn, niet ${SOORT}`)
+}
 
 const server = await createServer({
   configFile: 'vite.config.ts',
@@ -145,16 +154,25 @@ if (VOORRANG) {
 }
 
 /**
- * Alles waar nog geen mens op staat.
+ * Alles wat nog een oordeel nodig heeft.
  *
- * Wat een opname heeft is klaar — daar valt niets meer te beoordelen, en het
- * maakt het blad alleen zwaar, want elke opname reist als data mee. Wat
- * overblijft wordt door een computerstem gezegd, en dat is wat er nagehoord
- * moet worden.
+ * Twee dingen vallen af. Wat een opname heeft is klaar — daar valt niets meer
+ * te beoordelen, en het maakt het blad alleen zwaar, want elke opname reist
+ * als data mee. En wat al is afgekeurd staat op de opnamelijst en wacht op een
+ * stem; dat opnieuw voorleggen is dubbel werk en zaait twijfel over wat er al
+ * besloten is. Over houd je wat nog door een computerstem wordt gezegd zonder
+ * dat iemand er iets van heeft gevonden.
  */
 if (NOGNIET) {
+  const nodig = new Set(data.nodig)
   for (const soort of ['letters', 'woorden', 'zinnen']) {
-    data[soort] = data[soort].filter((i) => !i.opname)
+    data[soort] = data[soort].filter((i) => !i.opname && !nodig.has(i.id))
+  }
+}
+
+if (SOORT) {
+  for (const soort of ['letters', 'woorden', 'zinnen']) {
+    if (soort !== SOORT) data[soort] = []
   }
 }
 delete data.nodig
@@ -169,7 +187,7 @@ console.log(counts)
 
 /** Wat er onder de kop staat hangt af van waar het blad over gaat. */
 const onderschrift =
-  NOGNIET ? 'alles waar nog geen opname bij zit, en dat dus nog door een computerstem wordt gezegd'
+  NOGNIET ? 'alles wat nog geen oordeel heeft: geen opname, en ook nog niet afgekeurd'
   : VOORRANG ? 'de opnames die er net bij zijn gekomen'
   : 'alles wat de app hardop kan zeggen, precies zoals de app het zegt'
 
