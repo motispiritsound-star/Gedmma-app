@@ -69,11 +69,20 @@ const page = await browser.newPage()
 await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'networkidle' })
 
 const eigenIds = arg('ids', null)
-const ids = await page.evaluate(async (eigen) => {
-  if (eigen) return eigen.split(',').map((s) => s.trim()).filter(Boolean)
+/**
+ * Woorden waarvan de opname is afgekeurd blijven buiten de telling.
+ *
+ * Ze staan wel op de opnamelijst — er moet nog een stem bij komen — maar het
+ * stuk dat erbij hoorde deugt niet en gaat er met --sla-over uit. Bleven ze in
+ * de lijst staan, dan klopt het aantal niet meer en weigert de knipper terecht.
+ */
+const { ids, afgekeurd } = await page.evaluate(async (eigen) => {
   const e = await import('/src/content/eigen.ts')
-  return e.OPNAME_NODIG
+  const weg = new Set(e.OPNIEUW)
+  const lijst = eigen ? eigen.split(',').map((s) => s.trim()).filter(Boolean) : e.OPNAME_NODIG
+  return { ids: lijst.filter((id) => !weg.has(id)), afgekeurd: lijst.filter((id) => weg.has(id)) }
 }, eigenIds)
+if (afgekeurd.length) console.log(`buiten de telling, wacht op een nieuwe opname: ${afgekeurd.join(', ')}`)
 
 if (!ids.length) {
   console.error('geen woorden gevraagd: gebruik --voorrang of --ids')
@@ -106,8 +115,10 @@ const gevonden = stukken.length
 const geplakt = []
 for (const [i, s] of stukken.entries()) {
   const vorige = geplakt.at(-1)
-  if (PLAK.has(i + 1) && vorige && !OVER.has(i + 1)) vorige.tot = s.tot
-  else geplakt.push({ ...s, nr: i + 1 })
+  if (PLAK.has(i + 1) && vorige && !OVER.has(i + 1)) {
+    vorige.delen.push({ van: s.van, tot: s.tot })
+    vorige.tot = s.tot
+  } else geplakt.push({ ...s, nr: i + 1, delen: [{ van: s.van, tot: s.tot }] })
 }
 const bruikbaar = geplakt.filter((s) => !OVER.has(s.nr))
 if (PLAK.size) console.log(`${gevonden} stukken gevonden, ${PLAK.size} aan het vorige geplakt`)
@@ -132,12 +143,39 @@ if (stukken.length !== ids.length) {
 
 /* ------------------------------------------------------------ wegschrijven */
 
+/**
+ * De klank van één woord, uit één of meer stukken opname.
+ *
+ * Bij één stuk is dat een rechte snee. Bij een woord dat in tweeën viel zou
+ * dat de hele denkpauze meenemen — "bit ...... n3as" — en zo zegt niemand het.
+ * De helften gaan dus aan elkaar met een korte adem ertussen, net genoeg om te
+ * horen dat het twee lettergrepen zijn.
+ */
+function knipsel(stuk) {
+  const snee = (d) => samples.slice(Math.floor(d.van * rate), Math.ceil(d.tot * rate))
+  if (stuk.delen.length === 1) return snee(stuk.delen[0])
+  const stilte = new Float32Array(Math.round(BINNENPAUZE * rate))
+  const stukjes = []
+  for (const [i, d] of stuk.delen.entries()) {
+    if (i) stukjes.push(stilte)
+    stukjes.push(snee(d))
+  }
+  const totaal = stukjes.reduce((n, s) => n + s.length, 0)
+  const uit = new Float32Array(totaal)
+  let at = 0
+  for (const s of stukjes) { uit.set(s, at); at += s.length }
+  return uit
+}
+
 const uit = path.join(ROOT, 'src', 'audio', MAP)
 if (!PROEF) await mkdir(uit, { recursive: true })
 
+/** Wat er van een pauze binnen een woord overblijft als het weer aan elkaar gaat. */
+const BINNENPAUZE = 0.16
+
 for (const [i, stuk] of stukken.entries()) {
   const id = ids[i]
-  const deel = samples.slice(Math.floor(stuk.van * rate), Math.ceil(stuk.tot * rate))
+  const deel = knipsel(stuk)
   const klaar = bewerk(rate, deel)
   if (!klaar) { console.error(`${id}: alleen stilte`); continue }
   const regel = `${String(i + 1).padStart(2)}  ${id.padEnd(10)} ${stuk.van.toFixed(2)}s  ${klaar.nu.toFixed(2)}s`
