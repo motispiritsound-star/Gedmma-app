@@ -8,6 +8,10 @@
  * worse than no sheet.
  *
  * Run with: node scripts/make-sheet.mjs [--out <bestand>]
+ *
+ * Met `--voorrang` staan alleen de woorden van de opnamelijst erop die
+ * inmiddels een opname hebben. Dat is het blad waarmee je een verse opname
+ * nakijkt: alleen wat nieuw is, zonder de rest er weer bij.
  */
 import { readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -22,6 +26,7 @@ const arg = (name, fallback) => {
   return i > 0 ? process.argv[i + 1] : fallback
 }
 const OUT = arg('out', 'uitspraak-alles.html')
+const VOORRANG = process.argv.includes('--voorrang')
 
 const server = await createServer({
   configFile: 'vite.config.ts',
@@ -78,6 +83,7 @@ const data = await page.evaluate(async () => {
   }
 
   return {
+    nodig: eigen.OPNAME_NODIG,
     letters,
     woorden: lexicon.allWords.filter((w) => !w.phrase).map(woord),
     zinnen: [
@@ -119,6 +125,21 @@ for (const soort of ['letters', 'woorden', 'zinnen']) {
     i.machine = i.opname !== null && gemaakteIds.has(i.id)
   }
 }
+/**
+ * Alleen wat vers is, als daarom gevraagd wordt.
+ *
+ * Een blad met alles erop is het juiste blad om de app mee na te lopen, maar
+ * het verkeerde om één opname mee na te kijken: dan staat er honderdvijftig
+ * regels ruis omheen die je vorige week al hebt gehoord.
+ */
+if (VOORRANG) {
+  const nodig = new Set(data.nodig)
+  data.letters = []
+  data.zinnen = []
+  data.woorden = data.woorden.filter((w) => nodig.has(w.id) && w.opname)
+}
+delete data.nodig
+
 console.log(`${Object.keys(opnames).length} opnames meegebakken`)
 
 const counts = `${data.letters.length} letters, ${data.woorden.length} woorden, ${data.zinnen.length} zinnen`
@@ -235,7 +256,7 @@ const html = `<title>Alles Uitspreken</title>
       <span class="tel" id="tempoUit">0,70</span>
     </div>
     <div class="rij">
-      <button data-tab="letters" class="aan">Letters</button>
+      <button data-tab="letters">Letters</button>
       <button data-tab="woorden">Woorden</button>
       <button data-tab="zinnen">Zinnen</button>
       <input id="zoek" type="search" placeholder="zoeken…" aria-label="zoeken">
@@ -267,7 +288,14 @@ const stand = document.getElementById('stand')
 const zoek = document.getElementById('zoek')
 const uitvoer = document.getElementById('uitvoer')
 let stemmen = []
-let tab = 'letters'
+/**
+ * Het tabblad waar het blad op opent.
+ *
+ * Meestal letters, want dat is de eerste. Maar een blad dat maar over één
+ * soort gaat opent anders op een lege lijst met "Niets gevonden" erin, en dan
+ * denk je dat het blad stuk is.
+ */
+let tab = ['letters', 'woorden', 'zinnen'].find((s) => (DATA[s] ?? []).length) ?? 'letters'
 let alleenFout = false
 let staat = {}
 let anders = {}
@@ -550,6 +578,8 @@ function toon() {
 
   uitvoer.textContent = stukken.length ? stukken.join('\\n') : 'Nog niets aangevinkt.'
 }
+
+for (const k of document.querySelectorAll('[data-tab]')) k.classList.toggle('aan', k.dataset.tab === tab)
 
 for (const knop of document.querySelectorAll('[data-tab]')) {
   knop.addEventListener('click', () => {
