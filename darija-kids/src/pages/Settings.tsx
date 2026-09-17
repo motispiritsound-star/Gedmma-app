@@ -363,6 +363,28 @@ export function SettingsPage() {
         </Row>
       </Card>
 
+      {/*
+        * De opnamestudio staat alleen in de demo en in de ontwikkelversie, en
+        * had tot nu toe geen enkele ingang: je moest /opname in de adresbalk
+        * typen om er te komen. Wie de woorden inspreekt is geen kind en geen
+        * ouder maar wij, dus staat het er in het Nederlands en alleen hier.
+        */}
+      {DEMO && (
+        <>
+          <h2 className="mb-2 font-display text-lg font-extrabold">Voor de makers</h2>
+          <Card className="mb-6">
+            <Row
+              title="Opnamestudio"
+              hint="Woorden en letters inspreken. Staat niet in de app die een kind gebruikt."
+            >
+              <Link to="/opname">
+                <Button variant="secondary">Openen</Button>
+              </Link>
+            </Row>
+          </Card>
+        </>
+      )}
+
       <p className="text-center text-sm text-[var(--ink-soft)]">
         <Link to="/ouders" className="font-bold underline">{t.settings.oudersLink}</Link>
       </p>

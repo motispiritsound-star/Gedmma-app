@@ -125,8 +125,12 @@ const html = `<!doctype html>
   <div class="hoe">
     <strong class="tr" style="font-size:1rem">De snelste manier</strong>
     <ol>
-      <li>Open de demo, ga naar <strong>Jij → Opnemen → woorden</strong>.</li>
-      <li>Tik op <em>Liever alles achter elkaar inlezen?</em></li>
+      <li>Open <code>darija-kids-demo.html</code> — het bestand dat je van mij
+        kreeg — en tik onderin op <strong>Jij</strong>, dan op
+        <strong>Aanpassen</strong>. Helemaal onderaan staat bij
+        <em>Voor de makers</em> de knop <strong>Opnamestudio</strong>.</li>
+      <li>Tik daar op <strong>WOORDEN</strong> (hij opent op Letters) en dan op
+        <em>Liever alles achter elkaar inlezen?</em></li>
       <li>Tik op <strong>Opnemen</strong> en lees deze lijst voor, met steeds
         <strong>een adempauze van een halve seconde</strong> tussen twee woorden.</li>
       <li>Tik op <strong>Stop</strong>. De app knipt ze uit elkaar en zet ze
