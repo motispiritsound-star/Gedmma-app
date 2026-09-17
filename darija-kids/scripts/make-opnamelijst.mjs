@@ -117,9 +117,9 @@ const html = `<!doctype html>
   <p class="eyebrow">Darija Kids</p>
   <h1>Deze ${woorden.length} woorden, één voor één</h1>
   <p class="lede">
-    Van deze woorden is vastgesteld dat geen enkele computerstem ze goed zegt.
-    Zeg ze zoals je ze thuis zou zeggen — niet netjes, niet langzaam, gewoon
-    normaal.
+    Van deze woorden staat er nog geen stem in de app: geen computerstem zegt
+    ze goed, en wat er al aan opnames was is bij het nahoren afgekeurd. Zeg ze
+    zoals je ze thuis zou zeggen — niet netjes, niet langzaam, gewoon normaal.
   </p>
 
   <div class="hoe">
@@ -136,11 +136,12 @@ const html = `<!doctype html>
   </div>
 
   <div class="let">
-    <strong>Stuur ze als <code>.wav</code> of <code>.webm</code>.</strong>
-    Een spraakmemo van een iPhone is een <code>.m4a</code>, en daar kan ik hier
-    niets mee — de studio in de app levert meteen het goede formaat en de goede
-    namen. Neem je ze toch los op, noem het bestand dan naar de naam die onder
-    elk woord staat.
+    <strong>Elk formaat mag.</strong> Een spraakmemo van een iPhone
+    (<code>.m4a</code>) gaat net zo goed als <code>.wav</code> of
+    <code>.webm</code> — die reken ik hier om. De studio in de app is wel het
+    makkelijkst, want die levert meteen de goede namen. Neem je ze los op, noem
+    het bestand dan naar de naam die onder elk woord staat, of spreek ze
+    achter elkaar in en zeg erbij in welke volgorde.
   </div>
 
   <div class="hoe">

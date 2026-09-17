@@ -8,6 +8,7 @@ import { STORIES } from './stories'
 import { HISTORY, cardForCheckpoint, historyById } from './history'
 import { historyOf } from './localise'
 import { EIGEN_IDS, eigenVoorkeur, OPNAME_NODIG, OPNIEUW, UITSPRAAK, voorkeurVoor, zwevendeIds } from './eigen'
+import { hasClip } from '../engine/clips'
 import { LANGS } from '../i18n/languages'
 
 describe('lexicon', () => {
@@ -361,5 +362,11 @@ describe('wat nog opgenomen moet worden', () => {
   // valt het van de lijst en komt er nooit meer een stem bij.
   it('houdt een afgekeurde opname op de lijst', () => {
     for (const id of OPNIEUW) expect(OPNAME_NODIG.includes(id), id).toBe(true)
+  })
+
+  // Afkeuren is pas afkeuren als het bestand ook weg is. Blijft het staan, dan
+  // speelt de app de opname af die net is afgewezen en wijst niets daarop.
+  it('heeft geen bestand meer voor een afgekeurde opname', () => {
+    for (const id of OPNIEUW) expect(hasClip(id), id).toBe(false)
   })
 })
