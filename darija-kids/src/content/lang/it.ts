@@ -56,7 +56,7 @@ export const it: ContentPack = {
     // huis
     dar: "la casa", bit: "la stanza", "bit-n3as": "la camera da letto", kuzina: "la cucina",
     hemmam: "il bagno", bab: "la porta", sherjem: "la finestra", tebla: "il tavolo",
-    kursi: "la sedia", namusiya: "il letto", telfaza: "la televisione", telifun: "il telefono",
+    kursi: "la sedia", lfrash: "il letto", telfaza: "la televisione", telifun: "il telefono",
     sarut: "la chiave", dou: "la luce, la lampada", zerbiya: "il tappeto",
     mraya: "lo specchio", stah: "la terrazza",
 
@@ -68,9 +68,9 @@ export const it: ContentPack = {
     mafhemtsh: "non ho capito", "3awd-afak": "ripeti, per favore", bshwiya: "piano",
 
     // dieren
-    hayawanat: "gli animali", mesh: "il gatto", kelb: "il cane", "3wd": "il cavallo",
+    hayawanat: "gli animali", mesh: "il gatto", kelb: "il cane", kaydar: "il cavallo",
     hmar: "l'asino", bgra: "la mucca", khruf: "la pecora", m3za: "la capra",
-    jmel: "il cammello, il dromedario", djaja: "la gallina", tir: "l'uccello",
+    jmel: "il cammello, il dromedario", djaja: "la gallina", twiar: "l'uccello",
     far: "il topo", nemla: "la formica", sba3: "il leone", qerd: "la scimmia",
     fil: "l'elefante", hensh: "il serpente", fertetto: "la farfalla",
 

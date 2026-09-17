@@ -57,7 +57,7 @@ export const fr: ContentPack = {
     // huis
     dar: "la maison", bit: "la pièce, la chambre", "bit-n3as": "la chambre à coucher",
     kuzina: "la cuisine", hemmam: "la salle de bain", bab: "la porte",
-    sherjem: "la fenêtre", tebla: "la table", kursi: "la chaise", namusiya: "le lit",
+    sherjem: "la fenêtre", tebla: "la table", kursi: "la chaise", lfrash: "le lit",
     telfaza: "la télévision", telifun: "le téléphone", sarut: "la clé",
     dou: "la lumière, la lampe", zerbiya: "le tapis", mraya: "le miroir",
     stah: "la terrasse sur le toit",
@@ -71,9 +71,9 @@ export const fr: ContentPack = {
     bshwiya: "doucement, lentement",
 
     // dieren
-    hayawanat: "les animaux", mesh: "le chat", kelb: "le chien", "3wd": "le cheval",
+    hayawanat: "les animaux", mesh: "le chat", kelb: "le chien", kaydar: "le cheval",
     hmar: "l'âne", bgra: "la vache", khruf: "le mouton", m3za: "la chèvre",
-    jmel: "le chameau, le dromadaire", djaja: "la poule", tir: "l'oiseau",
+    jmel: "le chameau, le dromadaire", djaja: "la poule", twiar: "l'oiseau",
     far: "la souris", nemla: "la fourmi", sba3: "le lion", qerd: "le singe",
     fil: "l'éléphant", hensh: "le serpent", fertetto: "le papillon",
 

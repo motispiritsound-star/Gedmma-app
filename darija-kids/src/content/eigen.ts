@@ -79,12 +79,12 @@ export const OPNAME_NODIG: string[] = [
   // Groeten en gevoel.
   'mzyan', '3etshan', '3eyyan', 'bshwiya',
   // Het huis.
-  'dar', 'bit-n3as', 'sherjem', 'namusiya', 'sarut', 'zerbiya', 'mraya',
+  'dar', 'bit-n3as', 'sherjem', 'lfrash', 'sarut', 'zerbiya', 'mraya',
   'stah',
   // School.
   'qism', 'ostad', 'ostada', 'kunash', 'sebbura',
   // Dieren.
-  '3wd', 'hmar', 'bgra', 'm3za', 'djaja', 'tir', 'fil', 'hensh', 'fertetto',
+  'kaydar', 'hmar', 'bgra', 'm3za', 'djaja', 'twiar', 'fil', 'hensh', 'fertetto',
   'hut',
   // Tijd.
   'ghedda', '3shiya', 'lil', 'shher', '3am', 'lethnin', 'ttlat', 'larb3',

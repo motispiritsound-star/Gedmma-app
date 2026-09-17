@@ -244,7 +244,7 @@ export const UNITS: Unit[] = [
 
   unit('huis', 'الدار', 'Ddar', 'In en om het huis', '🏠', 'A1', 'sky', [
     { title: 'De kamers', words: ['dar', 'bit', 'bit-n3as', 'kuzina', 'hemmam', 'stah'] },
-    { title: 'Meubels', words: ['bab', 'sherjem', 'tebla', 'kursi', 'namusiya'] },
+    { title: 'Meubels', words: ['bab', 'sherjem', 'tebla', 'kursi', 'lfrash'] },
     { title: 'Spullen', words: ['telfaza', 'telifun', 'sarut', 'dou', 'zerbiya', 'mraya'] },
   ]),
 
@@ -263,8 +263,8 @@ export const UNITS: Unit[] = [
   ]),
 
   unit('dieren', 'الحيوانات', 'Lhayawanat', 'Dieren dichtbij en ver weg', '🐾', 'A1', 'mint', [
-    { title: 'Om het huis', words: ['mesh', 'kelb', 'tir', 'far', 'djaja'] },
-    { title: 'Op de boerderij', words: ['3wd', 'hmar', 'bgra', 'khruf', 'm3za', 'jmel'] },
+    { title: 'Om het huis', words: ['mesh', 'kelb', 'twiar', 'far', 'djaja'] },
+    { title: 'Op de boerderij', words: ['kaydar', 'hmar', 'bgra', 'khruf', 'm3za', 'jmel'] },
     { title: 'Wild', words: ['sba3', 'qerd', 'fil', 'hensh', 'nemla', 'fertetto', 'hayawanat'] },
   ]),
 
