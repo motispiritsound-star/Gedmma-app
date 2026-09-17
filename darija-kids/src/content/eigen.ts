@@ -84,7 +84,7 @@ export const OPNAME_NODIG: string[] = [
   // School.
   'qism', 'ostad', 'ostada', 'kunash', 'sebbura',
   // Dieren.
-  'kaydar', 'hmar', 'bgra', 'm3za', 'djaja', 'twiar', 'fil', 'hensh', 'fertetto',
+  'kaydar', 'hmar', 'bgra', 'm3za', 'dzaza', 'twiar', 'fil', 'hensh', 'fertetto',
   'hut',
   // Tijd.
   'ghedda', '3shiya', 'lil', 'shher', '3am', 'lethnin', 'ttlat', 'larb3',
@@ -108,6 +108,19 @@ export const OPNAME_NODIG: string[] = [
   'tamazight', 'babouche', 'rabat', 'tanja',
   // Cijfers.
   'reb3a',
+]
+
+/**
+ * Woorden waarvan de opname is afgekeurd.
+ *
+ * Ze blijven op OPNAME_NODIG staan, want er moet nog altijd een opname komen.
+ * Maar het stuk dat er in de doorlopende opname bij hoort deugt niet — een
+ * verspreking, een woord dat toch anders bleek te heten — dus dat stuk gaat
+ * eruit en het woord wacht op een losse opname.
+ */
+export const OPNIEUW: string[] = [
+  // De opname zei nog djaja; het woord heet dzaza.
+  'dzaza',
 ]
 
 

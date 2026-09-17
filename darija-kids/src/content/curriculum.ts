@@ -263,7 +263,7 @@ export const UNITS: Unit[] = [
   ]),
 
   unit('dieren', 'الحيوانات', 'Lhayawanat', 'Dieren dichtbij en ver weg', '🐾', 'A1', 'mint', [
-    { title: 'Om het huis', words: ['mesh', 'kelb', 'twiar', 'far', 'djaja'] },
+    { title: 'Om het huis', words: ['mesh', 'kelb', 'twiar', 'far', 'dzaza'] },
     { title: 'Op de boerderij', words: ['kaydar', 'hmar', 'bgra', 'khruf', 'm3za', 'jmel'] },
     { title: 'Wild', words: ['sba3', 'qerd', 'fil', 'hensh', 'nemla', 'fertetto', 'hayawanat'] },
   ]),

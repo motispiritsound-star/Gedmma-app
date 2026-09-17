@@ -73,7 +73,7 @@ export const fr: ContentPack = {
     // dieren
     hayawanat: "les animaux", mesh: "le chat", kelb: "le chien", kaydar: "le cheval",
     hmar: "l'âne", bgra: "la vache", khruf: "le mouton", m3za: "la chèvre",
-    jmel: "le chameau, le dromadaire", djaja: "la poule", twiar: "l'oiseau",
+    jmel: "le chameau, le dromadaire", dzaza: "la poule", twiar: "l'oiseau",
     far: "la souris", nemla: "la fourmi", sba3: "le lion", qerd: "le singe",
     fil: "l'éléphant", hensh: "le serpent", fertetto: "le papillon",
 

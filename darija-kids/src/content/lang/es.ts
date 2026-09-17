@@ -70,7 +70,7 @@ export const es: ContentPack = {
     // dieren
     hayawanat: "los animales", mesh: "el gato", kelb: "el perro", kaydar: "el caballo",
     hmar: "el burro", bgra: "la vaca", khruf: "la oveja", m3za: "la cabra",
-    jmel: "el camello, el dromedario", djaja: "la gallina", twiar: "el pájaro",
+    jmel: "el camello, el dromedario", dzaza: "la gallina", twiar: "el pájaro",
     far: "el ratón", nemla: "la hormiga", sba3: "el león", qerd: "el mono",
     fil: "el elefante", hensh: "la serpiente", fertetto: "la mariposa",
 

@@ -200,7 +200,7 @@ export const WORDS: Word[] = [
   w('khruf', 'خروف', 'khruf', 'schaap', 'sheep', 'dieren', '🐑'),
   w('m3za', 'معزة', 'm3za', 'geit', 'goat', 'dieren', '🐐', 'In Souss klimmen ze in de arganbomen.'),
   w('jmel', 'جمل', 'jmel', 'kameel, dromedaris', 'camel', 'dieren', '🐪'),
-  w('djaja', 'دجاجة', 'djaja', 'kip (dier)', 'hen', 'dieren', '🐓'),
+  w('dzaza', 'دزازة', 'dzaza', 'kip (dier)', 'hen', 'dieren', '🐓'),
   w('twiar', 'طوير', 'twiar', 'vogel', 'bird', 'dieren', '🐦'),
   w('far', 'فار', 'far', 'muis', 'mouse', 'dieren', '🐁'),
   w('nemla', 'نملة', 'nemla', 'mier', 'ant', 'dieren', '🐜'),

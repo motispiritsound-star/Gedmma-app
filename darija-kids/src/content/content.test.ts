@@ -7,7 +7,7 @@ import { ALL_SENTENCES, maybeSentence } from './sentences'
 import { STORIES } from './stories'
 import { HISTORY, cardForCheckpoint, historyById } from './history'
 import { historyOf } from './localise'
-import { EIGEN_IDS, eigenVoorkeur, OPNAME_NODIG, UITSPRAAK, voorkeurVoor, zwevendeIds } from './eigen'
+import { EIGEN_IDS, eigenVoorkeur, OPNAME_NODIG, OPNIEUW, UITSPRAAK, voorkeurVoor, zwevendeIds } from './eigen'
 import { LANGS } from '../i18n/languages'
 
 describe('lexicon', () => {
@@ -355,5 +355,11 @@ describe('wat nog opgenomen moet worden', () => {
   // de lijst zeggen dat het goed komt terwijl het wacht op een mens.
   it('staat niet ook als getest genoteerd', () => {
     for (const id of OPNAME_NODIG) expect(UITSPRAAK[id], id).toBeUndefined()
+  })
+
+  // Een afgekeurde opname blijft een woord dat opgenomen moet worden; anders
+  // valt het van de lijst en komt er nooit meer een stem bij.
+  it('houdt een afgekeurde opname op de lijst', () => {
+    for (const id of OPNIEUW) expect(OPNAME_NODIG.includes(id), id).toBe(true)
   })
 })
