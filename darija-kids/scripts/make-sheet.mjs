@@ -12,6 +12,10 @@
  * Met `--voorrang` staan alleen de woorden van de opnamelijst erop die
  * inmiddels een opname hebben. Dat is het blad waarmee je een verse opname
  * nakijkt: alleen wat nieuw is, zonder de rest er weer bij.
+ *
+ * Met `--nog-niet` juist het omgekeerde: alles waar nog géén opname bij zit.
+ * Daar spreekt dus nog een computerstem, en dat is precies de lijst die je
+ * langsloopt om te bepalen wat een mens moet inspreken.
  */
 import { readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -27,6 +31,7 @@ const arg = (name, fallback) => {
 }
 const OUT = arg('out', 'uitspraak-alles.html')
 const VOORRANG = process.argv.includes('--voorrang')
+const NOGNIET = process.argv.includes('--nog-niet')
 
 const server = await createServer({
   configFile: 'vite.config.ts',
@@ -138,12 +143,35 @@ if (VOORRANG) {
   data.zinnen = []
   data.woorden = data.woorden.filter((w) => nodig.has(w.id) && w.opname)
 }
+
+/**
+ * Alles waar nog geen mens op staat.
+ *
+ * Wat een opname heeft is klaar — daar valt niets meer te beoordelen, en het
+ * maakt het blad alleen zwaar, want elke opname reist als data mee. Wat
+ * overblijft wordt door een computerstem gezegd, en dat is wat er nagehoord
+ * moet worden.
+ */
+if (NOGNIET) {
+  for (const soort of ['letters', 'woorden', 'zinnen']) {
+    data[soort] = data[soort].filter((i) => !i.opname)
+  }
+}
 delete data.nodig
 
 console.log(`${Object.keys(opnames).length} opnames meegebakken`)
 
-const counts = `${data.letters.length} letters, ${data.woorden.length} woorden, ${data.zinnen.length} zinnen`
+const counts = ['letters', 'woorden', 'zinnen']
+  .filter((soort) => data[soort].length)
+  .map((soort) => `${data[soort].length} ${soort}`)
+  .join(', ')
 console.log(counts)
+
+/** Wat er onder de kop staat hangt af van waar het blad over gaat. */
+const onderschrift =
+  NOGNIET ? 'alles waar nog geen opname bij zit, en dat dus nog door een computerstem wordt gezegd'
+  : VOORRANG ? 'de opnames die er net bij zijn gekomen'
+  : 'alles wat de app hardop kan zeggen, precies zoals de app het zegt'
 
 const html = `<title>Alles Uitspreken</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -233,7 +261,7 @@ const html = `<title>Alles Uitspreken</title>
   <span class="eyebrow">Darija Kids</span>
   <h1>Alles uitspreken</h1>
   <p class="lede">
-    ${counts} — alles wat de app hardop kan zeggen, precies zoals de app het zegt.
+    ${counts} — ${onderschrift}.
   </p>
   <p class="lede" style="margin-top:8px">
     Tik <b>&#9654;</b> om te horen wat een kind hoort. Klopt het niet, dan is de
@@ -579,7 +607,11 @@ function toon() {
   uitvoer.textContent = stukken.length ? stukken.join('\\n') : 'Nog niets aangevinkt.'
 }
 
-for (const k of document.querySelectorAll('[data-tab]')) k.classList.toggle('aan', k.dataset.tab === tab)
+for (const k of document.querySelectorAll('[data-tab]')) {
+  // Een tabblad zonder regels is een knop die "Niets gevonden" oplevert.
+  k.hidden = (DATA[k.dataset.tab] ?? []).length === 0
+  k.classList.toggle('aan', k.dataset.tab === tab)
+}
 
 for (const knop of document.querySelectorAll('[data-tab]')) {
   knop.addEventListener('click', () => {
