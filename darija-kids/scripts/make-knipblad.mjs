@@ -14,6 +14,12 @@
  *
  * Draaien met:
  *   node scripts/make-knipblad.mjs opname.m4a --voorrang
+ *   node scripts/make-knipblad.mjs opname.m4a --voorrang --rond 3,16,43,47
+ *
+ * Met `--rond` staan alleen de stukken rond die nummers erin. Alle stukken
+ * meebakken maakt het blad een paar megabyte, en dat opent niet op een
+ * telefoon; een handvol wel. Handig als er al een vermoeden is waar het
+ * misgaat en alleen dat nog nagehoord hoeft te worden.
  */
 import { writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -37,6 +43,9 @@ if (!BESTAND || BESTAND.startsWith('--')) {
 }
 const UIT = arg('uit', path.join(ROOT, 'store', 'knipblad.html'))
 const PAUZE = Number(arg('pauze', 0.3))
+/** Alleen de stukken rond deze nummers, met dit aantal ernaast. */
+const ROND = (arg('rond', '') || '').split(',').map((n) => Number(n.trim())).filter(Boolean)
+const RAAM = Number(arg('raam', 2))
 
 const server = await createServer({
   configFile: 'vite.config.ts',
@@ -73,8 +82,25 @@ await server.close()
 
 console.log(`${stukken.length} stukken, ${woorden.length} woorden`)
 
+/**
+ * Welke stukken er in het blad komen.
+ *
+ * Standaard alle. Met `--rond` alleen de omgeving van de nummers die je
+ * opgeeft, want een blad van drie megabyte opent niet op een telefoon en het
+ * gaat meestal maar om een paar plekken.
+ */
+const zichtbaar = new Set()
+if (ROND.length) {
+  for (const n of ROND) {
+    for (let d = Math.max(1, n - RAAM); d <= Math.min(stukken.length, n + RAAM); d++) zichtbaar.add(d)
+  }
+} else {
+  for (let d = 1; d <= stukken.length; d++) zichtbaar.add(d)
+}
+
 /** Elk stuk reist mee als data, zodat het blad één bestand blijft. */
-const klank = stukken.map((s) => {
+const klank = stukken.map((s, i) => {
+  if (!zichtbaar.has(i + 1)) return ''
   const deel = samples.slice(Math.floor(s.van * rate), Math.ceil(s.tot * rate))
   const klaar = bewerk(rate, deel)
   const wav = writeWav(rate, klaar ? klaar.samples : deel)
@@ -156,6 +182,7 @@ const html = `<!doctype html>
 
 <script>
 const KLANK = ${JSON.stringify(klank)}
+const ZICHTBAAR = ${JSON.stringify([...zichtbaar].sort((a, b) => a - b))}
 const STUKKEN = ${JSON.stringify(stukken.map((s) => [+s.van.toFixed(2), +(s.tot - s.van).toFixed(2)]))}
 const WOORDEN = ${JSON.stringify(woorden)}
 const lijst = document.getElementById('lijst')
@@ -175,9 +202,11 @@ function speel(i) {
 function teken() {
   lijst.innerHTML = ''
   let w = 0
+  const TOON = new Set(ZICHTBAAR)
   for (let i = 0; i < STUKKEN.length; i++) {
     const weg = over.has(i + 1)
     const woord = weg ? null : WOORDEN[w++]
+    if (!TOON.has(i + 1)) { if (!weg) w = w; continue }
     const li = document.createElement('li')
     if (weg) li.className = 'over'
     li.innerHTML =
