@@ -97,7 +97,7 @@ export const OPNAME_NODIG: string[] = [
   'kanakol', 'kanshreb', 'kansme3', 'kanktab', 'bghit', 'ma3endish', 'ndir',
   'sir',
   // Vragen.
-  'shkun', 'imta', '3lash', 'kifash', 'wesh',
+  'shkun', 'fuqash', '3lash', 'kifash', 'wesh',
   // Winkelen.
   'souq', 'flus', 'derhem', 'ghali', 'rkhis', '3tini', 'kbir', 'jdid',
   'qdim',

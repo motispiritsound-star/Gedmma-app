@@ -99,7 +99,7 @@ export const it: ContentPack = {
     sir: "vai! (a un ragazzo)", aji: "vieni!", shuf: "guarda!",
 
     // vragen
-    shnu: "che cosa", shkun: "chi", fin: "dove", imta: "quando", "3lash": "perché",
+    shnu: "che cosa", shkun: "chi", fin: "dove", fuqash: "quando", "3lash": "perché",
     kifash: "come", wesh: "forse…? (domanda sì o no)",
     "shnu-hada": "che cos'è questo?", "fin-kayn": "dov'è…?",
 

@@ -319,7 +319,7 @@ export const UNITS: Unit[] = [
   unit('vragen', 'السؤال', "Su'al", 'Vragen stellen', '❓', 'A1', 'saffron', [
     {
       title: 'De vraagwoorden',
-      words: ['shnu', 'shkun', 'fin', 'imta', '3lash', 'kifash', 'wesh'],
+      words: ['shnu', 'shkun', 'fin', 'fuqash', '3lash', 'kifash', 'wesh'],
       tip: {
         title: 'Vragen staan achteraan',
         body: 'Anders dan in het Nederlands blijft de zin gewoon staan: “smitek shnu?” (jouw naam wat?) kan net zo goed als “shnu smitek?”.',

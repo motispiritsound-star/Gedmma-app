@@ -102,7 +102,7 @@ export const de: ContentPack = {
     ndir: "ich mache", sir: "geh! (zu einem Jungen)", aji: "komm!", shuf: "schau!",
 
     // vragen
-    shnu: "was", shkun: "wer", fin: "wo", imta: "wann", "3lash": "warum",
+    shnu: "was", shkun: "wer", fin: "wo", fuqash: "wann", "3lash": "warum",
     kifash: "wie", wesh: "ob …? (Ja/Nein-Frage)", "shnu-hada": "was ist das?",
     "fin-kayn": "wo ist …?",
 

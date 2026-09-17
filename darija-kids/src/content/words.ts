@@ -285,7 +285,7 @@ export const WORDS: Word[] = [
   w('shnu', 'شنو', 'shnu', 'wat', 'what', 'vragen', '❓'),
   w('shkun', 'شكون', 'shkun', 'wie', 'who', 'vragen', '🕵️'),
   w('fin', 'فين', 'fin', 'waar', 'where', 'vragen', '📍'),
-  w('imta', 'امتى', 'imta', 'wanneer', 'when', 'vragen', '🕐'),
+  w('fuqash', 'فوقاش', 'fuqash', 'wanneer', 'when', 'vragen', '🕐'),
   w('3lash', 'علاش', '3lash', 'waarom', 'why', 'vragen', '🤔'),
   w('kifash', 'كيفاش', 'kifash', 'hoe', 'how', 'vragen', '🛠️'),
   w('wesh', 'واش', 'wesh', 'of...? (ja/nee-vraag)', 'question marker', 'vragen', '❔', 'Zet het vooraan om een ja/nee-vraag te maken: wesh nta mzyan?'),

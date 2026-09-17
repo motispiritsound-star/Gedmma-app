@@ -46,6 +46,10 @@ const PAUZE = Number(arg('pauze', 0.3))
 /** Alleen de stukken rond deze nummers, met dit aantal ernaast. */
 const ROND = (arg('rond', '') || '').split(',').map((n) => Number(n.trim())).filter(Boolean)
 const RAAM = Number(arg('raam', 2))
+/** Stukken waarvan al vaststaat dat ze niet meetellen; die staan meteen doorgestreept. */
+const WEG = (arg('weg', '') || '').split(',').map((n) => Number(n.trim())).filter(Boolean)
+/** Stukken waarvan al vaststaat dat ze bij het vorige horen. */
+const VAST = (arg('vast', '') || '').split(',').map((n) => Number(n.trim())).filter(Boolean)
 
 const server = await createServer({
   configFile: 'vite.config.ts',
@@ -109,6 +113,16 @@ const klank = stukken.map((s, i) => {
 
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
 
+/**
+ * Een eigen sleutel per blad.
+ *
+ * De vinkjes staan in localStorage zodat je halverwege kunt stoppen. Maar twee
+ * bladen van dezelfde opname delen dan hun vinkjes, en een blad dat op een
+ * ander stuk begint erft daarmee nummers die nergens op slaan. Dus draagt elk
+ * blad zijn eigen sleutel: bestand, bereik, en wat er al weg is.
+ */
+const SLEUTEL = `darija.knip.${path.basename(BESTAND)}.${[...zichtbaar][0] ?? 0}-${[...zichtbaar].at(-1) ?? 0}.${WEG.join('_')}.${VAST.join('_')}`
+
 const html = `<!doctype html>
 <html lang="nl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -137,6 +151,8 @@ const html = `<!doctype html>
   li{display:flex;gap:11px;align-items:center;background:var(--panel);border:1px solid var(--line);
     border-radius:12px;padding:9px 12px}
   li.over{opacity:.45;border-style:dashed}
+  li.vast{border-style:dashed;border-color:var(--saffron)}
+  button.klein.vastaan{background:var(--saffron);border-color:var(--saffron);color:#fff}
   li.over .woord{text-decoration:line-through}
   .nr{font-family:var(--f-mono);font-size:.72rem;color:var(--ink-faint);min-width:1.8rem;text-align:end}
   button.speel{flex:0 0 auto;width:38px;height:38px;border-radius:11px;border:2px solid var(--zellige);
@@ -188,9 +204,22 @@ const WOORDEN = ${JSON.stringify(woorden)}
 const lijst = document.getElementById('lijst')
 const stand = document.getElementById('stand')
 const uitvoer = document.getElementById('uitvoer')
-let over = new Set()
-try { over = new Set(JSON.parse(localStorage.getItem('darija.knip') || '[]')) } catch (e) {}
-const bewaar = () => { try { localStorage.setItem('darija.knip', JSON.stringify([...over])) } catch (e) {} }
+const SLEUTEL = ${JSON.stringify(SLEUTEL)}
+const WEG = ${JSON.stringify(WEG)}
+const VAST = ${JSON.stringify(VAST)}
+let over = new Set(WEG)
+let plak = new Set(VAST)
+try {
+  const bewaard = localStorage.getItem(SLEUTEL)
+  if (bewaard) {
+    const d = JSON.parse(bewaard)
+    over = new Set(d.over ?? d)
+    plak = new Set(d.plak ?? [])
+  }
+} catch (e) {}
+const bewaar = () => {
+  try { localStorage.setItem(SLEUTEL, JSON.stringify({ over: [...over], plak: [...plak] })) } catch (e) {}
+}
 
 let bezig = null
 function speel(i) {
@@ -205,10 +234,12 @@ function teken() {
   const TOON = new Set(ZICHTBAAR)
   for (let i = 0; i < STUKKEN.length; i++) {
     const weg = over.has(i + 1)
-    const woord = weg ? null : WOORDEN[w++]
+    const vast = !weg && plak.has(i + 1)
+    const woord = weg || vast ? null : WOORDEN[w++]
     if (!TOON.has(i + 1)) { if (!weg) w = w; continue }
     const li = document.createElement('li')
     if (weg) li.className = 'over'
+    else if (vast) li.className = 'vast'
     li.innerHTML =
       '<span class="nr">' + (i + 1) + '</span>' +
       '<button class="speel" type="button" aria-label="speel stuk ' + (i + 1) + '">\\u25B6</button>' +
@@ -216,7 +247,7 @@ function teken() {
         (woord
           ? '<span class="ar">' + woord.ar + '</span> <span class="tr">' + woord.tr + '</span>' +
             '<div class="nl">' + woord.nl + '</div>'
-          : '<span class="tr">telt niet mee</span>') +
+          : '<span class="tr">' + (vast ? 'tweede helft van het vorige' : 'telt niet mee') + '</span>') +
       '</span>' +
       '<span class="tijd">' + STUKKEN[i][0].toFixed(1) + 's \\u00b7 ' + STUKKEN[i][1].toFixed(2) + 's</span>'
     const knop = document.createElement('button')
@@ -224,14 +255,32 @@ function teken() {
     knop.className = 'klein' + (weg ? ' aan' : '')
     knop.textContent = weg ? 'telt niet mee' : 'schrap'
     knop.addEventListener('click', () => {
-      if (over.has(i + 1)) over.delete(i + 1); else over.add(i + 1)
+      if (over.has(i + 1)) over.delete(i + 1)
+      else { over.add(i + 1); plak.delete(i + 1) }
+      bewaar(); teken(); toon()
+    })
+    /**
+     * Een woord dat in tweeën viel hoort niet geschrapt maar geplakt.
+     *
+     * "bit n3as" is één woord met een pauze erin, en die pauze is lang genoeg
+     * om erop te knippen. Schrappen gooit dan de helft van het woord weg. Deze
+     * knop zegt: dit stuk hoort bij het vorige, plak ze aan elkaar.
+     */
+    const plakknop = document.createElement('button')
+    plakknop.type = 'button'
+    plakknop.className = 'klein' + (vast ? ' vastaan' : '')
+    plakknop.textContent = vast ? 'bij het vorige' : 'plak vast'
+    plakknop.disabled = i === 0
+    plakknop.addEventListener('click', () => {
+      if (plak.has(i + 1)) plak.delete(i + 1)
+      else { plak.add(i + 1); over.delete(i + 1) }
       bewaar(); teken(); toon()
     })
     li.querySelector('.speel').addEventListener('click', () => speel(i))
-    li.append(knop)
+    li.append(knop, plakknop)
     lijst.append(li)
   }
-  const rest = STUKKEN.length - over.size
+  const rest = STUKKEN.length - over.size - plak.size
   stand.className = 'stand ' + (rest === WOORDEN.length ? 'goed' : 'mis')
   stand.textContent = rest === WOORDEN.length
     ? rest + ' stukken voor ' + WOORDEN.length + ' woorden \\u2014 dat klopt'
@@ -239,17 +288,22 @@ function teken() {
       (rest > WOORDEN.length ? (rest - WOORDEN.length) + ' te veel' : (WOORDEN.length - rest) + ' te weinig')
 }
 
+const opVolgorde = (s) => [...s].sort((a, b) => a - b).join(',')
+
 function toon() {
-  uitvoer.textContent = over.size
-    ? '--sla-over ' + [...over].sort((a, b) => a - b).join(',')
-    : 'Nog niets geschrapt.'
+  const delen = []
+  if (over.size) delen.push('--sla-over ' + opVolgorde(over))
+  if (plak.size) delen.push('--plak ' + opVolgorde(plak))
+  uitvoer.textContent = delen.length ? delen.join(' ') : 'Nog niets aangetikt.'
 }
 
 document.getElementById('kopieer').addEventListener('click', async () => {
   toon()
   try { await navigator.clipboard.writeText(uitvoer.textContent) } catch (e) {}
 })
-document.getElementById('wis').addEventListener('click', () => { over = new Set(); bewaar(); teken(); toon() })
+document.getElementById('wis').addEventListener('click', () => {
+  over = new Set(WEG); plak = new Set(VAST); bewaar(); teken(); toon()
+})
 teken(); toon()
 </script>
 </body></html>

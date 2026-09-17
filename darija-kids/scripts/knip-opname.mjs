@@ -21,6 +21,8 @@
  *   --map <map>    letters, woorden (standaard) of zinnen
  *   --pauze <s>    hoe lang het stil moet zijn voor een grens, standaard 0,3
  *   --proef        alleen laten zien wat eruit komt, niets opslaan
+ *   --plak 7,25    stuknummers die bij het vorige stuk horen: één woord met
+ *                  een pauze erin, zoals "bit n3as", dat op die pauze uiteenviel
  *   --sla-over 7,24  stuknummers die niet meetellen: een woord dat opnieuw is
  *                  gezegd, een kuch, of een woord dat in twee stukken uiteen
  *                  viel. De nummers komen uit het knipblad.
@@ -52,6 +54,7 @@ const PAUZE = Number(arg('pauze', 0.3))
 const PROEF = vlag('proef')
 /** Stuknummers (vanaf 1) die overgeslagen worden, uit het knipblad. */
 const OVER = new Set((arg('sla-over', '') || '').split(',').map((n) => Number(n.trim())).filter(Boolean))
+const PLAK = new Set((arg('plak', '') || '').split(',').map((n) => Number(n.trim())).filter(Boolean))
 
 /* ------------------------------------------------ welke woorden erin zitten */
 
@@ -92,8 +95,23 @@ await browser.close()
 await server.close()
 
 const gevonden = stukken.length
-const bruikbaar = stukken.filter((_, i) => !OVER.has(i + 1))
-if (OVER.size) console.log(`${gevonden} stukken gevonden, ${OVER.size} overgeslagen`)
+
+/**
+ * Eerst plakken, dan schrappen.
+ *
+ * Een woord met een pauze erin valt in twee stukken uiteen; die horen aan
+ * elkaar, met de pauze en al, anders mist het woord zijn tweede helft. Pas
+ * daarna gaat eruit wat helemaal niet meetelt.
+ */
+const geplakt = []
+for (const [i, s] of stukken.entries()) {
+  const vorige = geplakt.at(-1)
+  if (PLAK.has(i + 1) && vorige && !OVER.has(i + 1)) vorige.tot = s.tot
+  else geplakt.push({ ...s, nr: i + 1 })
+}
+const bruikbaar = geplakt.filter((s) => !OVER.has(s.nr))
+if (PLAK.size) console.log(`${gevonden} stukken gevonden, ${PLAK.size} aan het vorige geplakt`)
+if (OVER.size) console.log(`${OVER.size} overgeslagen`)
 console.log(`${bruikbaar.length} stukken bruikbaar, ${ids.length} woorden gevraagd`)
 stukken.length = 0
 stukken.push(...bruikbaar)

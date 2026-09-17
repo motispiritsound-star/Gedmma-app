@@ -183,7 +183,7 @@ export const SENTENCES: Record<string, Sentence[]> = {
   ],
   'vragen-1': [
     S('vragen-1-a', 'شكون هادا؟ هادا خويا', 'shkun hada? hada khoya', 'Wie is dit? Dit is mijn broer.', 'Who is this? This is my brother.'),
-    S('vragen-1-b', 'فين غادي؟ وامتى؟', 'fin ghadi? w imta?', 'Waar ga je heen? En wanneer?', 'Where are you going? And when?'),
+    S('vragen-1-b', 'فين غادي؟ وفوقاش؟', 'fin ghadi? w fuqash?', 'Waar ga je heen? En wanneer?', 'Where are you going? And when?'),
   ],
   'vragen-2': [
     S('vragen-2-a', 'شنو هادا؟ هادا كتاب', 'shnu hada? hada ktab', 'Wat is dit? Dit is een boek.', 'What is this? This is a book.'),
