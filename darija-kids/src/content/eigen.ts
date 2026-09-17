@@ -81,19 +81,12 @@ export const EIGEN_IDS: string[] = GETEST_IDS.filter((id) => UITSPRAAK[id] === '
  * ook, en staat er nu niet meer.
  */
 export const OPNAME_NODIG: string[] = [
-  // Groeten en de kleine woorden.
-  'maalish', 'bslama', 'thalla', 'iyeh', 'wakha', 'yallah', 'bezzaf',
-  // Wie er aan tafel zit.
-  'hna', 'ntuma', 'mama', 'khti', 'ammi', 'ammti', 'khalti', 'drari',
-  'sahbi', 'sahbti',
-  // Tellen.
-  'tmnya', '3achra', 'hdach', 'tnach', 'tltach', 'khmstach',
-  // Kleuren.
-  'hmer', 'khder', 'sfer', 'byed', 'khel', 'rmadi',
-  // Eten en drinken.
-  'lma', 'zebda', '3sel', 'jben', 'lhem', 'djaj', 'khodra', 'fakya',
-  'matisha', 'melha', 'kesksu', 'harira',
+  // Leeg, en dat is de bedoeling: de eenenveertig die hier stonden zijn op
+  // 17 september 2026 in één doorlopende opname ingesproken en staan nu in
+  // src/audio/woorden/. Komt er een woord bij waar geen stem raad mee weet,
+  // dan hoort het hier — en verdwijnt het weer zodra het bestand er staat.
 ]
+
 
 /**
  * Which borrowed voice suits a word, read off its own Latin spelling.

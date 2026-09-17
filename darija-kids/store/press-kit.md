@@ -145,8 +145,9 @@ vragen, en de spreker kan er later op terugkomen als er niets op papier staat.
 | Wat | Wie | Wanneer | Toestemming |
 |---|---|---|---|
 | De 28 letters | *invullen* | *invullen* | *nog vast te leggen* |
-| De woorden | *invullen* | | |
-| De zinnen | *invullen* | | |
+| 41 woorden (groeten, familie, cijfers, kleuren, eten) | de uitgever zelf | 17 september 2026 | eigen stem, eigen app |
+| De overige woorden | *nog op te nemen* | | |
+| De zinnen | *nog op te nemen* | | |
 
 Per regel hoort vast te liggen:
 
