@@ -44,14 +44,9 @@ export const UITSPRAAK: Record<string, Weg> = {
   weld: 'geleend',
   tlata: 'geleend',
   mya: 'geleend',
-  bhar: 'geleend',
-  sahra: 'geleend',
   tomobil: 'geleend',
-  tamazight: 'geleend',
   henna: 'geleend',
   gnawa: 'geleend',
-  rabat: 'geleend',
-  tanja: 'geleend',
   msemmen: 'geleend',
 }
 
@@ -81,11 +76,40 @@ export const EIGEN_IDS: string[] = GETEST_IDS.filter((id) => UITSPRAAK[id] === '
  * ook, en staat er nu niet meer.
  */
 export const OPNAME_NODIG: string[] = [
-  // Leeg, en dat is de bedoeling: de eenenveertig die hier stonden zijn op
-  // 17 september 2026 in één doorlopende opname ingesproken en staan nu in
-  // src/audio/woorden/. Komt er een woord bij waar geen stem raad mee weet,
-  // dan hoort het hier — en verdwijnt het weer zodra het bestand er staat.
+  // Groeten en gevoel.
+  'mzyan', '3etshan', '3eyyan', 'bshwiya',
+  // Het huis.
+  'dar', 'bit-n3as', 'sherjem', 'namusiya', 'sarut', 'zerbiya', 'mraya',
+  'stah',
+  // School.
+  'qism', 'ostad', 'ostada', 'kunash', 'sebbura',
+  // Dieren.
+  '3wd', 'hmar', 'bgra', 'm3za', 'djaja', 'tir', 'fil', 'hensh', 'fertetto',
+  'hut',
+  // Tijd.
+  'ghedda', '3shiya', 'lil', 'shher', '3am', 'lethnin', 'ttlat', 'larb3',
+  'lekhmis',
+  // Weer.
+  'shta', 'rih', 'skhun', 'telj',
+  // Het lichaam.
+  'ras', 'sh3ar', '3in', 'nif', 'fomm', 'rjel',
+  // Werkwoorden.
+  'kanakol', 'kanshreb', 'kansme3', 'kanktab', 'bghit', 'ma3endish', 'ndir',
+  'sir',
+  // Vragen.
+  'shkun', 'imta', '3lash', 'kifash', 'wesh',
+  // Winkelen.
+  'souq', 'flus', 'derhem', 'ghali', 'rkhis', '3tini', 'kbir', 'jdid',
+  'qdim',
+  // De weg.
+  'limen', 'mor', 'fuq', 'teht', 'hda', 'hnaya', 'temma', 'zenqa',
+  // Marokko.
+  'bhar', 'sahra', 'jame3', 'bshklit', 'mghrib', 'bladi', 'darija',
+  'tamazight', 'babouche', 'rabat', 'tanja',
+  // Cijfers.
+  'reb3a',
 ]
+
 
 
 /**

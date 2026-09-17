@@ -183,6 +183,7 @@ const html = `<title>Alles Uitspreken</title>
   .wijzig input{width:100%;font-size:.85rem;padding:4px 7px}
   .wijzig input.ar{font-family:var(--f-ar);direction:rtl;font-size:1.05rem}
   li.gewijzigd{border-color:var(--saffron);box-shadow:inset 3px 0 0 var(--saffron)}
+  li.oud{border-color:var(--saffron);background:color-mix(in oklab, var(--saffron) 8%, var(--panel))}
   .kiesrij{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
   .kiesrij .mini{font-family:var(--f-mono);font-size:.7rem;text-transform:uppercase;
     letter-spacing:.06em;padding:3px 8px;border-radius:7px;border:1px solid var(--line-firm);
@@ -378,7 +379,9 @@ function teken() {
   lijst.innerHTML = ''
   for (const item of rijen) {
     const li = document.createElement('li')
-    if (staat[item.id] === 'fout') li.className = 'fout'
+    const oudOordeel = staat[item.id] === 'fout' && item.opname
+    if (oudOordeel) li.className = 'oud'
+    else if (staat[item.id] === 'fout') li.className = 'fout'
     else if (staat[item.id] === 'ok') li.className = 'ok'
 
     const speel = document.createElement('button')
@@ -393,7 +396,9 @@ function teken() {
       '<div><span class="ar">' + item.ar + '</span> <span class="tr">' + item.tr + '</span></div>' +
       '<div class="nl">' + item.naam + (item.klank ? ' \\u00b7 ' + item.klank : '') + '</div>' +
       '<div class="spreek">' + (item.opname
-        ? (item.machine ? 'MOTOR \\u2014 nog geen mens' : 'OPNAME van een spreker')
+        ? (item.machine ? 'MOTOR \\u2014 nog geen mens'
+          : oudOordeel ? 'OPNAME \\u2014 je oordeel hieronder is van v\\u00f3\\u00f3r die opname'
+          : 'OPNAME van een spreker')
         : arabisch(p.v)
           ? 'zegt: <span class="ar">' + p.tekst + '</span> (arabische stem)'
           : 'zegt: ' + p.tekst + ' (' + (p.v ? p.v.lang : 'geen stem') + (item.geleend ? ', geleend' : '') + ')') +
@@ -500,7 +505,13 @@ function tel() {
 
 function toon() {
   const alles = [...DATA.letters, ...DATA.woorden, ...DATA.zinnen]
-  const fout = alles.filter((i) => staat[i.id] === 'fout')
+  // Een "fout" op iets dat intussen een opname heeft gekregen gaat over de
+  // oude situatie: je oordeelde over een stem die er niet meer is. Zo'n
+  // vinkje blijft in je browser staan en zou dat woord anders eindeloos op
+  // de lijst houden — vandaar dat het apart komt te staan en om een nieuw
+  // oordeel vraagt in plaats van om een opname.
+  const verouderd = alles.filter((i) => staat[i.id] === 'fout' && i.opname)
+  const fout = alles.filter((i) => staat[i.id] === 'fout' && !i.opname)
   const gekozen = alles.filter((i) => keuzes[i.id])
   const stukken = []
 
@@ -518,6 +529,11 @@ function toon() {
   if (zonder.length) {
     stukken.push('\\nFOUT, GEEN STEM DIE HET GOED ZEGT (' + zonder.length + ') \\u2014 deze moeten opgenomen worden:')
     stukken.push(zonder.map((i) => i.id + '  ' + i.ar + '  ' + i.tr).join('\\n'))
+  }
+
+  if (verouderd.length) {
+    stukken.push('\\nOUD OORDEEL, HEEFT INMIDDELS EEN OPNAME (' + verouderd.length + ') \\u2014 luister opnieuw:')
+    stukken.push(verouderd.map((i) => i.id + '  ' + i.ar + '  ' + i.tr).join('\\n'))
   }
 
   const verbeterd = alles.filter((i) => wijzig[i.id])
