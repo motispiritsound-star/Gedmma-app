@@ -126,7 +126,13 @@ export const OPNAME_NODIG: string[] = [
   'eten-1-a', 'eten-1-b', 'eten-2-a', 'eten-2-b', 'eten-3-a', 'eten-3-b',
   'eten-4-a', 'eten-4-b', 'eten-5-a', 'eten-5-b',
   'huis-1-a', 'huis-1-b', 'huis-2-a', 'huis-2-b', 'huis-3-a',
-  'school-1-b',
+  'school-1-b', 'school-2-a', 'school-2-b', 'school-3-a', 'school-3-b',
+  'dieren-1-a', 'dieren-1-b', 'dieren-2-a', 'dieren-2-b', 'dieren-3-a',
+  'tijd-1-a', 'tijd-1-b', 'tijd-2-a', 'tijd-3-b', 'tijd-4-a', 'tijd-4-b',
+  'lichaam-1-a', 'lichaam-2-b', 'lichaam-3-a',
+  'werkwoorden-2-a', 'werkwoorden-3-b', 'werkwoorden-4-a', 'werkwoorden-4-b',
+  'weg-1-a', 'weg-1-b',
+  'cultuur-1-a', 'cultuur-2-b',
 ]
 
 /**
