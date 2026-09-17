@@ -176,6 +176,13 @@ const html = `<title>Alles Uitspreken</title>
   button.mis{border-color:var(--alam);color:var(--alam)}
   button.mis.aan{background:var(--alam);color:#fff}
   button.klein{padding:5px 9px;font-size:.82rem;border-radius:8px}
+  .wijzig{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .wijzig label{display:flex;flex-direction:column;gap:2px;flex:1 1 9rem;min-width:0}
+  .wijzig span{font-family:var(--f-mono);font-size:.62rem;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-faint)}
+  .wijzig input{width:100%;font-size:.85rem;padding:4px 7px}
+  .wijzig input.ar{font-family:var(--f-ar);direction:rtl;font-size:1.05rem}
+  li.gewijzigd{border-color:var(--saffron);box-shadow:inset 3px 0 0 var(--saffron)}
   .kiesrij{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
   .kiesrij .mini{font-family:var(--f-mono);font-size:.7rem;text-transform:uppercase;
     letter-spacing:.06em;padding:3px 8px;border-radius:7px;border:1px solid var(--line-firm);
@@ -265,15 +272,19 @@ let staat = {}
 let anders = {}
 /** item id -> the language whose voice you judged right ('ar' for Arabic). */
 let keuzes = {}
+/** item id -> { ar, tr }: een verbeterde spelling of transcriptie. */
+let wijzig = {}
 
 try { staat = JSON.parse(localStorage.getItem('darija.check') || '{}') } catch (e) { staat = {} }
 try { anders = JSON.parse(localStorage.getItem('darija.anders') || '{}') } catch (e) { anders = {} }
 try { keuzes = JSON.parse(localStorage.getItem('darija.keuzes') || '{}') } catch (e) { keuzes = {} }
+try { wijzig = JSON.parse(localStorage.getItem('darija.wijzig') || '{}') } catch (e) { wijzig = {} }
 const bewaar = () => {
   try {
     localStorage.setItem('darija.check', JSON.stringify(staat))
     localStorage.setItem('darija.anders', JSON.stringify(anders))
     localStorage.setItem('darija.keuzes', JSON.stringify(keuzes))
+    localStorage.setItem('darija.wijzig', JSON.stringify(wijzig))
   } catch (e) {}
 }
 
@@ -388,29 +399,41 @@ function teken() {
           : 'zegt: ' + p.tekst + ' (' + (p.v ? p.v.lang : 'geen stem') + (item.geleend ? ', geleend' : '') + ')') +
       ' \\u00b7 ' + item.id + '</div>'
 
-    if (!item.opname) {
+    // Twee velden die er altijd staan, ook bij een woord met een opname: een
+    // verkeerd gespeld woord blijft verkeerd gespeld, hoe goed het ook klinkt.
+    // Wat je hier verandert komt onderaan terug in de vorm die in words.ts
+    // hoort, zodat overnemen knippen en plakken is.
+    const wijzigRij = document.createElement('div')
+    wijzigRij.className = 'wijzig'
+    for (const [sleutel, label, oorspronkelijk] of [
+      ['ar', 'Arabisch', item.ar],
+      ['tr', 'uitspraak', item.tr],
+    ]) {
+      const wrap = document.createElement('label')
+      wrap.innerHTML = '<span>' + label + '</span>'
       const veld = document.createElement('input')
       veld.type = 'text'
-      veld.value = anders[item.id] ?? plan(item).tekst
-      veld.setAttribute('aria-label', 'uitspraak van ' + item.tr)
-      veld.style.cssText = 'width:100%;margin-top:5px;font-family:var(--f-mono);font-size:.8rem'
+      veld.value = (wijzig[item.id] && wijzig[item.id][sleutel]) ?? oorspronkelijk
+      veld.setAttribute('aria-label', label + ' van ' + item.tr)
+      if (sleutel === 'ar') veld.className = 'ar'
       veld.addEventListener('input', () => {
-        if (veld.value === plan(item).tekst) delete anders[item.id]
-        else anders[item.id] = veld.value
+        const nu = wijzig[item.id] || {}
+        if (veld.value.trim() === oorspronkelijk) delete nu[sleutel]
+        else nu[sleutel] = veld.value.trim()
+        if (Object.keys(nu).length) wijzig[item.id] = nu
+        else delete wijzig[item.id]
         bewaar()
+        veld.closest('li').classList.toggle('gewijzigd', !!wijzig[item.id])
+        // Anders zegt de teller bovenaan niets over het werk dat je net deed.
+        tel()
       })
-      veld.addEventListener('keydown', (e) => {
-        if (e.key !== 'Enter') return
-        speechSynthesis.cancel()
-        const v = plan(item).v
-        if (!v) return
-        const u = new SpeechSynthesisUtterance(veld.value)
-        u.voice = v
-        u.lang = v.lang
-        u.rate = Number(tempo.value)
-        speechSynthesis.speak(u)
-      })
-      midden.append(veld)
+      wrap.append(veld)
+      wijzigRij.append(wrap)
+    }
+    midden.append(wijzigRij)
+    if (wijzig[item.id]) li.classList.add('gewijzigd')
+
+    if (!item.opname) {
 
       // Hearing the alternatives is the point: "klinkt fout" cannot be acted
       // on, "de Spaanse is goed" can. What you pick lands in the list below.
@@ -469,8 +492,10 @@ function tel() {
   const alles = [...DATA.letters, ...DATA.woorden, ...DATA.zinnen]
   const gedaan = alles.filter((i) => staat[i.id]).length
   const fout = alles.filter((i) => staat[i.id] === 'fout').length
+  const verbeterd = Object.keys(wijzig).length
   stand.innerHTML = gedaan + ' van ' + alles.length + ' nagelopen'
     + (fout ? ' \\u00b7 <span class="bad">' + fout + ' fout</span>' : '')
+    + (verbeterd ? ' \\u00b7 ' + verbeterd + ' spelling aangepast' : '')
 }
 
 function toon() {
@@ -495,10 +520,16 @@ function toon() {
     stukken.push(zonder.map((i) => i.id + '  ' + i.ar + '  ' + i.tr).join('\\n'))
   }
 
-  const anderstekst = Object.keys(anders)
-  if (anderstekst.length) {
-    stukken.push('\\nZELF ANDERS GESCHREVEN (' + anderstekst.length + '):')
-    stukken.push(anderstekst.map((id) => id + ' = ' + anders[id]).join('\\n'))
+  const verbeterd = alles.filter((i) => wijzig[i.id])
+  if (verbeterd.length) {
+    stukken.push('\\nSPELLING VERBETEREN (' + verbeterd.length + '):')
+    stukken.push(verbeterd.map((i) => {
+      const w = wijzig[i.id]
+      const regels = [i.id + ':']
+      if (w.ar) regels.push('  ar: ' + i.ar + ' -> ' + w.ar)
+      if (w.tr) regels.push('  tr: ' + i.tr + ' -> ' + w.tr)
+      return regels.join('\\n')
+    }).join('\\n'))
   }
 
   uitvoer.textContent = stukken.length ? stukken.join('\\n') : 'Nog niets aangevinkt.'
@@ -523,7 +554,7 @@ document.getElementById('kopieer').addEventListener('click', async () => {
   toon()
   try { await navigator.clipboard.writeText(uitvoer.textContent) } catch (e) {}
 })
-document.getElementById('wis').addEventListener('click', () => { staat = {}; anders = {}; keuzes = {}; bewaar(); teken(); tel(); toon() })
+document.getElementById('wis').addEventListener('click', () => { staat = {}; anders = {}; keuzes = {}; wijzig = {}; bewaar(); teken(); tel(); toon() })
 
 function laad() {
   stemmen = speechSynthesis.getVoices()
