@@ -11,7 +11,7 @@
  *
  * Draaien met: node scripts/make-opnamelijst.mjs [--uit <bestand>]
  */
-import { readdir, writeFile } from 'node:fs/promises'
+import { readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
@@ -35,6 +35,15 @@ const UIT = arg('uit', path.join(ROOT, 'store', 'opnamelijst.html'))
  * en te stoppen.
  */
 const BLOK = Number(arg('blok', 20))
+/**
+ * Alleen wat nog wacht, met de nummers die het al had.
+ *
+ * Een nieuwe lijst hernummert vanaf één, en dan wijst "blok 5" naar andere
+ * regels dan toen hij werd voorgelezen. Met --rest blijft de vastgelegde
+ * volgorde staan: wat is ingesproken valt weg, de rest houdt zijn nummer en
+ * zijn blok. De vastlegging zelf wordt dan niet overschreven.
+ */
+const REST = process.argv.includes('--rest')
 
 const server = await createServer({
   configFile: 'vite.config.ts',
@@ -54,7 +63,12 @@ for (const map of ['letters', 'woorden', 'zinnen']) {
   }
 }
 
-const woorden = await page.evaluate(async (al) => {
+/** Met --rest de vastgelegde volgorde, anders de lijst zoals hij nu geldt. */
+const vastgelegd = REST
+  ? JSON.parse(await readFile(path.join(ROOT, 'store', 'opnamelijst.json'), 'utf8'))
+  : null
+
+const woorden = await page.evaluate(async ({ al, vast }) => {
   const [eigen, lex, zin] = await Promise.all([
     import('/src/content/eigen.ts'),
     import('/src/content/lexicon.ts'),
@@ -65,14 +79,16 @@ const woorden = await page.evaluate(async (al) => {
   const opId = new Map()
   for (const w of lex.allWords) opId.set(w.id, { ...w, map: 'woorden' })
   for (const z of zin.ALL_SENTENCES) if (!opId.has(z.id)) opId.set(z.id, { ...z, map: 'zinnen' })
-  return eigen.OPNAME_NODIG
-    .filter((id) => !al.includes(id))
-    .map((id) => {
+  const bron = vast ?? eigen.OPNAME_NODIG
+  return bron
+    .map((id, i) => ({ id, nr: i + 1 }))
+    .filter(({ id }) => !al.includes(id))
+    .map(({ id, nr }) => {
       const w = opId.get(id)
-      return w ? { id, ar: w.ar, tr: w.tr, nl: w.nl, emoji: w.emoji ?? '', map: w.map } : null
+      return w ? { id, nr, ar: w.ar, tr: w.tr, nl: w.nl, emoji: w.emoji ?? '', map: w.map } : null
     })
     .filter(Boolean)
-}, [...al])
+}, { al: [...al], vast: vastgelegd?.ids ?? null })
 
 await browser.close()
 await server.close()
@@ -115,13 +131,13 @@ const html = `<!doctype html>
   .hoe li{margin:5px 0}
   .let{border-inline-start:4px solid var(--alam);background:var(--panel);border-radius:0 12px 12px 0;padding:11px 14px;margin:14px 0}
   code{font-family:var(--f-mono);font-size:.85em;background:var(--sunken);padding:1px 5px;border-radius:5px;border:1px solid var(--line)}
-  ol.lijst{list-style:none;margin:0;padding:0;counter-reset:w}
-  ol.lijst li.grens{counter-increment:none;border:0;background:none;padding:14px 0 6px;
+  ol.lijst{list-style:none;margin:0;padding:0}
+  ol.lijst li.grens{border:0;background:none;padding:14px 0 6px;
     justify-content:center;color:var(--alam);font-weight:600;font-size:.8rem}
   ol.lijst li.grens::before{content:none}
-  ol.lijst li{counter-increment:w;display:flex;gap:14px;align-items:baseline;
+  ol.lijst li{display:flex;gap:14px;align-items:baseline;
     background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px}
-  ol.lijst li::before{content:counter(w);font-family:var(--f-mono);font-size:.78rem;color:var(--ink-faint);
+  ol.lijst li::before{content:attr(data-nr);font-family:var(--f-mono);font-size:.78rem;color:var(--ink-faint);
     min-width:1.6rem;text-align:end}
   .ar{font-family:var(--f-ar);direction:rtl;font-size:1.9rem;font-weight:700;line-height:1.35;min-width:5.5rem}
   .mid{min-width:0;flex:1}
@@ -137,11 +153,17 @@ const html = `<!doctype html>
 </head><body>
 <div class="wrap">
   <p class="eyebrow">Darijaforkids</p>
-  <h1>Deze ${woorden.length} woorden, één voor één</h1>
+  <h1>${REST
+    ? `Nog ${woorden.length} regels, vanaf nummer ${woorden[0]?.nr ?? 1}`
+    : `Deze ${woorden.length} woorden, één voor één`}</h1>
   <p class="lede">
-    Van deze woorden staat er nog geen stem in de app: geen computerstem zegt
-    ze goed, en wat er al aan opnames was is bij het nahoren afgekeurd. Zeg ze
-    zoals je ze thuis zou zeggen — niet netjes, niet langzaam, gewoon normaal.
+    ${REST
+      ? 'Wat je al hebt ingesproken staat er niet meer op, maar de nummers zijn'
+        + ' gebleven: regel 83 blijft regel 83, ook nu de regels ervoor weg zijn.'
+        + ' Zo blijven de blokken kloppen.'
+      : 'Van deze woorden staat er nog geen stem in de app: geen computerstem zegt'
+        + ' ze goed, en wat er al aan opnames was is bij het nahoren afgekeurd.'}
+    Zeg ze zoals je ze thuis zou zeggen — niet netjes, niet langzaam, gewoon normaal.
   </p>
 
   <div class="hoe">
@@ -189,7 +211,7 @@ const html = `<!doctype html>
 
   <h2>De lijst</h2>
   <ol class="lijst">
-${woorden.map((w, i) => `${i && i % BLOK === 0 ? `    <li class="grens"><span class="mid">— hier stoppen: blok ${i / BLOK + 1} begint —</span></li>\n` : ''}    <li>
+${woorden.map((w, i) => `${w.nr > 1 && (w.nr - 1) % BLOK === 0 ? `    <li class="grens"><span class="mid">— hier stoppen: blok ${(w.nr - 1) / BLOK + 1} begint —</span></li>\n` : ''}    <li data-nr="${w.nr}">
       <span class="ar">${esc(w.ar)}</span>
       <span class="mid">
         <span class="tr">${esc(w.tr)}</span>
@@ -218,10 +240,12 @@ await writeFile(UIT, html)
  * telt zijn blokken daarin, niet in de lijst van vandaag.
  */
 const SNAPSHOT = path.join(ROOT, 'store', 'opnamelijst.json')
-await writeFile(SNAPSHOT, JSON.stringify({
+if (!REST) await writeFile(SNAPSHOT, JSON.stringify({
   gemaakt: new Date().toISOString().slice(0, 10),
   blok: BLOK,
   ids: woorden.map((w) => w.id),
 }, null, 2) + '\n')
-console.log(`volgorde vastgelegd in ${path.relative(ROOT, SNAPSHOT)}`)
+console.log(REST
+  ? `nummering overgenomen uit ${path.relative(ROOT, SNAPSHOT)} van ${vastgelegd.gemaakt}`
+  : `volgorde vastgelegd in ${path.relative(ROOT, SNAPSHOT)}`)
 console.log(`${path.relative(ROOT, UIT)} — ${(html.length / 1024).toFixed(0)} kB`)
