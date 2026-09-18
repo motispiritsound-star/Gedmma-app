@@ -27,10 +27,10 @@
  * the test refuses it.
  */
 export const RESPELLED: Record<string, string> = {
-  // An Arabic voice sees الله inside يالله, reaches for the divine name, and
-  // reads three careful syllables — "yā-li-lāh". Moroccans say two. The word
-  // stays written the way everyone types it; only the voice hears يَلاه.
-  'يالله': 'يَلاه',
+  // Leeg. Hier stond يالله: een Arabische stem zag الله erin, greep naar de
+  // godsnaam en las drie zorgvuldige lettergrepen waar Marokkanen er twee
+  // zeggen. Het woord wordt nu يلا geschreven — zoals het gezegd wordt — en
+  // bovendien zegt een opname het, dus er valt niets meer te herspellen.
 }
 
 /** Word → the same word, spelled for the voice. */

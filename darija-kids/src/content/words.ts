@@ -37,7 +37,7 @@ export const WORDS: Word[] = [
   w('iyeh', 'ايه', 'iyeh', 'ja', 'yes', 'groeten', '✅', 'Ook: “ah”. Formeel: na3am.'),
   w('la', 'لا', 'la', 'nee', 'no', 'groeten', '❌'),
   w('wakha', 'واخا', 'wakha', 'oké, goed', 'okay', 'groeten', '👌', 'Het meest gebruikte woord van Marokko.'),
-  w('yallah', 'يالله', 'yallah', 'kom op, laten we gaan', "let's go", 'groeten', '🏃', ''),
+  w('yallah', 'يلا', 'yalla', 'kom op, laten we gaan', "let's go", 'groeten', '🏃', ''),
   w('mzyan', 'مزيان', 'mzyan', 'goed, mooi', 'good, nice', 'groeten', '🌟', 'Vrouwelijk: mzyana.'),
   w('bezzaf', 'بزاف', 'bezzaf', 'heel veel', 'a lot', 'groeten', '💯'),
   w('inshallah', 'إن شاء الله', 'inshallah', 'als God het wil (hopelijk)', 'God willing', 'groeten', '🌤️', 'Gebruikt voor alles wat nog moet gebeuren.'),
