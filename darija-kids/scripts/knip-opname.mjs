@@ -77,7 +77,7 @@ const eigenIds = arg('ids', null)
  * stuk dat erbij hoorde deugt niet en gaat er met --sla-over uit. Bleven ze in
  * de lijst staan, dan klopt het aantal niet meer en weigert de knipper terecht.
  */
-const { ids, mappen, mapVan, metClip, klaar } = await page.evaluate(async (eigen) => {
+const { ids, mappen, mapVan, tekstVan, metClip, klaar } = await page.evaluate(async (eigen) => {
   const [e, abc, lex, zin, clips] = await Promise.all([
     import('/src/content/eigen.ts'),
     import('/src/content/alphabet.ts'),
@@ -105,6 +105,11 @@ const { ids, mappen, mapVan, metClip, klaar } = await page.evaluate(async (eigen
     ids,
     mappen: ids.map((id) => mapVan.get(id) ?? 'woorden'),
     mapVan: Object.fromEntries(mapVan),
+    tekstVan: Object.fromEntries([
+      ...abc.LETTERS.map((l) => [l.id, l.tr]),
+      ...lex.allWords.map((w) => [w.id, w.tr]),
+      ...zin.ALL_SENTENCES.map((z) => [z.id, z.tr]),
+    ]),
     // Wat een stem heeft, ongeacht op welke lijst het staat. Een blok moet dat
     // aan de opnames zelf kunnen zien en niet aan een lijst waar het misschien
     // niet op voorkomt.
@@ -306,6 +311,33 @@ for (const [i, stuk] of stukken.entries()) {
   if (PROEF) { console.log(`${regel}   (proef, niets opgeslagen)`); continue }
   await writeFile(path.join(ROOT, 'src', 'audio', map, `${id}.wav`), writeWav(rate, klaar.samples))
   console.log(regel)
+}
+
+/**
+ * Een stuk dat veel te lang duurt voor wat er staat.
+ *
+ * Zegt iemand twee regels achter elkaar met nauwelijks adem ertussen, dan ziet
+ * de knipper er één woord in. De telling klopt dan nog steeds — er kan
+ * tegelijk een regel te veel in de opname zitten — en dan schuift alles daarna
+ * een plaats op zonder dat iets dat laat merken. Behalve de lengte: een woord
+ * van vier letters dat twee seconden duurt is geen woord meer.
+ *
+ * Het model komt uit de opnames die er al staan; ruw, maar ruim genoeg om
+ * alleen aan te slaan op wat echt niet kan.
+ */
+const verdacht = []
+for (const [i, stuk] of stukken.entries()) {
+  // Letters slaan we over: hun transcriptie is één teken maar je zegt hun
+  // naam, dus het model rekent ze structureel te kort.
+  if (mapVoor(i) === 'letters') continue
+  const verwacht = 0.09 * (tekstVan[ids[i]] ?? '').length + 0.31
+  const duur = stuk.tot - stuk.van
+  if (duur > verwacht * 1.8 + 0.25) verdacht.push(`${ids[i]} (${duur.toFixed(2)}s, verwacht ~${verwacht.toFixed(2)}s)`)
+}
+if (verdacht.length) {
+  console.warn(`\nLet op: ${verdacht.length} ${verdacht.length === 1 ? 'stuk duurt' : 'stukken duren'}`
+    + ` veel langer dan het woord ervoor staat.\nMogelijk zijn er twee regels aan elkaar gezegd:`
+    + `\n  ${verdacht.join('\n  ')}\nProbeer --pauze 0.2 en kijk of er een stuk bij komt.`)
 }
 
 const perMap = [...new Set(ids.map((_, i) => mapVoor(i)))]

@@ -157,10 +157,17 @@ wie, en een knop om het meteen te proberen — bezoekers kunnen de hele gratis
 cursus in de browser doen zonder iets te installeren, wat de beste demo is die
 er bestaat.
 
-**Domein.** `darijaforkids.eu` is vastgelegd. Die is neutraal voor alle zes de
-markten, wat een landextensie niet is: een Fransman die `.fr` ziet leest er een
-Frans product in. Hij staat in de winkelconsoles, in de mailserver en op het
-merkmateriaal, dus wijzig hem niet meer nadat de accounts zijn aangemaakt.
+**Domein.** `darijaforkids.eu` is vastgelegd en is de echte: hij staat in de
+winkelconsoles, in de mailserver en op het merkmateriaal, dus wijzig hem niet
+meer nadat de accounts zijn aangemaakt. Die extensie is neutraal voor alle zes
+de markten, wat een landextensie niet is — een Fransman die `.fr` ziet leest er
+een Frans product in.
+
+`darijaforkids.nl` is er ook, en die blijft een doorverwijzing. Eén website,
+twee deuren: een Nederlandse ouder die de naam hoort typt `.nl`, en dan hoort
+daar niet een leeg scherm te staan. Zet er een 301 naar `darijaforkids.eu` op
+en verder niets — twee vindbare websites met dezelfde inhoud is slechter dan
+één.
 
 **Hosting.** Cloudflare Pages, Netlify of Vercel — gratis, en ze bouwen
 rechtstreeks uit deze repo. De instellingen staan in [DEPLOY.md](DEPLOY.md).
