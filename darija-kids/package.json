@@ -18,6 +18,7 @@
     "android": "npm run build && cap sync android && cap open android",
     "assets": "node scripts/make-store-assets.mjs && @capacitor/assets generate --android",
     "soundcheck": "node scripts/soundcheck.mjs",
+    "stand": "node scripts/make-stand.mjs",
     "screenshots": "node scripts/make-screenshots.mjs",
     "marketing": "node scripts/make-marketing.mjs",
     "intro": "node scripts/make-intro.mjs",
