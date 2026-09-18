@@ -35,14 +35,18 @@ const page = await browser.newPage()
 await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'networkidle' })
 
 const data = await page.evaluate(async () => {
-  const [clips, lex, zin, op] = await Promise.all([
+  const [clips, abc, lex, zin, op] = await Promise.all([
     import('/src/engine/clips.ts'),
+    import('/src/content/alphabet.ts'),
     import('/src/content/lexicon.ts'),
     import('/src/content/sentences.ts'),
     import('/src/content/operator.ts'),
   ])
+  // Letters horen er net zo goed bij: er staat er een op de opnamelijst, en
+  // zonder die kennis telt hij als niet ingesproken terwijl hij er staat.
   const opId = new Map()
-  for (const w of lex.allWords) opId.set(w.id, { ar: w.ar, tr: w.tr, nl: w.nl })
+  for (const l of abc.LETTERS) opId.set(l.id, { ar: l.ar, tr: l.tr, nl: `de letter ${l.name}` })
+  for (const w of lex.allWords) if (!opId.has(w.id)) opId.set(w.id, { ar: w.ar, tr: w.tr, nl: w.nl })
   for (const z of zin.ALL_SENTENCES) if (!opId.has(z.id)) opId.set(z.id, { ar: z.ar, tr: z.tr, nl: z.nl })
   return {
     telling: clips.clipCounts(),

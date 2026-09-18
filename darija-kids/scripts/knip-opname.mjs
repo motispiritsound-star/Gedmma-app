@@ -77,17 +77,20 @@ const eigenIds = arg('ids', null)
  * stuk dat erbij hoorde deugt niet en gaat er met --sla-over uit. Bleven ze in
  * de lijst staan, dan klopt het aantal niet meer en weigert de knipper terecht.
  */
-const { ids, mappen, mapVan, klaar } = await page.evaluate(async (eigen) => {
-  const [e, lex, zin, clips] = await Promise.all([
+const { ids, mappen, mapVan, metClip, klaar } = await page.evaluate(async (eigen) => {
+  const [e, abc, lex, zin, clips] = await Promise.all([
     import('/src/content/eigen.ts'),
+    import('/src/content/alphabet.ts'),
     import('/src/content/lexicon.ts'),
     import('/src/content/sentences.ts'),
     import('/src/engine/clips.ts'),
   ])
-  // Een zin hoort in src/audio/zinnen en een woord in src/audio/woorden. Eén
-  // opname kan allebei bevatten, dus bepaalt elk id zijn eigen map.
+  // Een letter hoort in src/audio/letters, een zin in zinnen en een woord in
+  // woorden. Eén opname kan ze alle drie bevatten — de lijst begint met een
+  // letter en gaat verder met woorden — dus bepaalt elk id zijn eigen map.
   const mapVan = new Map()
-  for (const w of lex.allWords) mapVan.set(w.id, 'woorden')
+  for (const l of abc.LETTERS) mapVan.set(l.id, 'letters')
+  for (const w of lex.allWords) if (!mapVan.has(w.id)) mapVan.set(w.id, 'woorden')
   for (const z of zin.ALL_SENTENCES) if (!mapVan.has(z.id)) mapVan.set(z.id, 'zinnen')
   const lijst = eigen ? eigen.split(',').map((s) => s.trim()).filter(Boolean) : e.OPNAME_NODIG
   // Precies de volgorde van de opnamelijst: wat al een stem heeft valt eruit,
@@ -102,6 +105,10 @@ const { ids, mappen, mapVan, klaar } = await page.evaluate(async (eigen) => {
     ids,
     mappen: ids.map((id) => mapVan.get(id) ?? 'woorden'),
     mapVan: Object.fromEntries(mapVan),
+    // Wat een stem heeft, ongeacht op welke lijst het staat. Een blok moet dat
+    // aan de opnames zelf kunnen zien en niet aan een lijst waar het misschien
+    // niet op voorkomt.
+    metClip: [...mapVan.keys()].filter((id) => clips.hasClip(id)),
     klaar: lijst.length - ids.length,
   }
 }, eigenIds)
@@ -145,7 +152,7 @@ if (BLOK) {
    * zoals wanneer er de vorige keer twee regels zijn doorgelezen. Met
    * --opnieuw doe je het hele blok toch over.
    */
-  const klaarIn = new Set(vast.ids.filter((id) => !ids.includes(id)))
+  const klaarIn = new Set(metClip)
   const deel = process.argv.includes('--opnieuw') ? heel : heel.filter((id) => !klaarIn.has(id))
   ids.length = 0; ids.push(...deel)
   mappen.length = 0; mappen.push(...deel.map((id) => mapVan[id] ?? 'woorden'))

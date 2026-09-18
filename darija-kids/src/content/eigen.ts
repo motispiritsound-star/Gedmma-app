@@ -158,8 +158,7 @@ export const OPNAME_NODIG: string[] = [
  * eruit en het woord wacht op een losse opname.
  */
 export const OPNIEUW: string[] = [
-  // De letter خ: twee keer ingesproken, twee keer afgekeurd.
-  'kha',
+  // Leeg: de خ is voor de derde keer ingesproken.
 ]
 
 
