@@ -25,7 +25,7 @@ export interface Env {
   DB: D1Database
   /** The mail provider's key. `wrangler secret put MAIL_SLEUTEL`. */
   MAIL_SLEUTEL: string
-  /** Where this worker itself answers, e.g. https://post.darijaforkids.app */
+  /** Where this worker itself answers, e.g. https://post.darijaforkids.eu */
   BASIS: string
   AFZENDER_NAAM: string
   AFZENDER_EMAIL: string

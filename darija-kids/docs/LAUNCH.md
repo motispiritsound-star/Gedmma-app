@@ -113,8 +113,8 @@ Datzelfde e-mailadres is ook de feedbackknop. Die staat op de oudersspagina
 (de support-URL die beide winkels vragen), in de instellingen, onderaan de
 voorpagina en onder elk woord in het woordenboek — maar hij is onzichtbaar
 zolang dit bestand leeg is, want een knop die nergens heen gaat is erger dan
-geen knop. Kies een adres dat je leest: `hallo@darijaforkids.com` of
-`feedback@darijaforkids.com` bij je domein, niet je privéadres.
+geen knop. Kies een adres dat je leest: `hallo@darijaforkids.eu` of
+`feedback@darijaforkids.eu` bij je domein, niet je privéadres.
 
 ```ts
 export const OPERATOR = {
@@ -146,10 +146,10 @@ je vragen voordat ze een app aannemen:
 
 | Wat de winkel vraagt | Wat je invult |
 |---|---|
-| Privacy policy URL (beide) | `https://jouwdomein.nl/privacy` |
-| EULA / voorwaarden (Apple, verplicht bij abonnementen) | `https://jouwdomein.nl/voorwaarden` |
-| Support URL (Apple, verplicht) | `https://jouwdomein.nl/ouders` |
-| Marketing URL (Apple, optioneel) | `https://jouwdomein.nl` |
+| Privacy policy URL (beide) | `https://darijaforkids.eu/privacy` |
+| EULA / voorwaarden (Apple, verplicht bij abonnementen) | `https://darijaforkids.eu/voorwaarden` |
+| Support URL (Apple, verplicht) | `https://darijaforkids.eu/ouders` |
+| Marketing URL (Apple, optioneel) | `https://darijaforkids.eu` |
 
 Op alle drie die pagina's staat onderaan je handelaarsblok, zodra
 `operator.ts` is ingevuld. De voorpagina is de landingspagina: wat het is, voor
@@ -157,10 +157,10 @@ wie, en een knop om het meteen te proberen — bezoekers kunnen de hele gratis
 cursus in de browser doen zonder iets te installeren, wat de beste demo is die
 er bestaat.
 
-**Domein.** Kies er één en koop hem voordat je de winkelaccounts aanmaakt: de
-naam komt in beide consoles te staan en is later lastig te wijzigen.
-`darijakids.nl` en `darijaforkids.app` zijn de logische; een `.nl` is bij een
-Nederlandse registrar rond de € 10 per jaar.
+**Domein.** `darijaforkids.eu` is vastgelegd. Die is neutraal voor alle zes de
+markten, wat een landextensie niet is: een Fransman die `.fr` ziet leest er een
+Frans product in. Hij staat in de winkelconsoles, in de mailserver en op het
+merkmateriaal, dus wijzig hem niet meer nadat de accounts zijn aangemaakt.
 
 **Hosting.** Cloudflare Pages, Netlify of Vercel — gratis, en ze bouwen
 rechtstreeks uit deze repo. De instellingen staan in [DEPLOY.md](DEPLOY.md).

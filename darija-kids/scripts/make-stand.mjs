@@ -175,9 +175,8 @@ const html = `<!doctype html>
       <li><strong>Btw-nummer</strong>, of de bevestiging dat je onder de kleineondernemersregeling valt.</li>
       <li><strong>Verkopersnaam</strong>: tonen de winkels <em>Venship</em> of <em>Darijaforkids</em>?</li>
       <li><strong>De letter خ (kha)</strong> — die opname is twee keer afgekeurd en wacht nog.</li>
-      <li><strong>Domein en sociale media</strong>: <code>darijaforkids.app</code>,
-        <code>darijaforkids.com</code> en <code>@darijaforkids</code> staan in de teksten maar
-        zijn nog niet vastgelegd.</li>
+      <li><strong>Sociale media</strong>: <code>@darijaforkids</code> op Instagram en TikTok.
+        Het domein <code>darijaforkids.eu</code> is vastgelegd.</li>
     </ul>
   </div>
 

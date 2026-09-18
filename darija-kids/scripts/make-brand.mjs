@@ -8,7 +8,7 @@
  *
  * Run with:
  *   node scripts/make-brand.mjs
- *   node scripts/make-brand.mjs --url darijaforkids.com --lang nl,fr
+ *   node scripts/make-brand.mjs --url darijaforkids.eu --lang nl,fr
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -24,7 +24,7 @@ const arg = (name, fallback) => {
   return i > 0 ? process.argv[i + 1] : fallback
 }
 
-const SITE = arg('url', 'darijaforkids.com')
+const SITE = arg('url', 'darijaforkids.eu')
 
 /* ------------------------------------------------------------- the colours */
 

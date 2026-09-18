@@ -5,9 +5,9 @@ compatibility_date = "2026-09-01"
 # Where the app posts to and where the links in the mails point. Set this to
 # the worker's own address once it is deployed.
 [vars]
-BASIS = "https://post.darijaforkids.app"
+BASIS = "https://post.darijaforkids.eu"
 AFZENDER_NAAM = "Darijaforkids"
-AFZENDER_EMAIL = "post@darijaforkids.app"
+AFZENDER_EMAIL = "post@darijaforkids.eu"
 
 # The list itself. Create it once with:
 #   npx wrangler d1 create darijaforkids
