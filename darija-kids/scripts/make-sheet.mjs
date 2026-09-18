@@ -147,10 +147,12 @@ for (const soort of ['letters', 'woorden', 'zinnen']) {
  * regels ruis omheen die je vorige week al hebt gehoord.
  */
 if (VOORRANG) {
+  // Alles van de opnamelijst dat inmiddels een stem heeft — ook de zinnen en
+  // de uitdrukkingen, want die staan er net zo goed op als de losse woorden.
   const nodig = new Set(data.nodig)
-  data.letters = []
-  data.zinnen = []
-  data.woorden = data.woorden.filter((w) => nodig.has(w.id) && w.opname)
+  for (const soort of ['letters', 'woorden', 'zinnen']) {
+    data[soort] = data[soort].filter((i) => nodig.has(i.id) && i.opname)
+  }
 }
 
 /**

@@ -360,10 +360,16 @@ describe('wat nog opgenomen moet worden', () => {
     for (const id of OPNAME_NODIG) expect(UITSPRAAK[id], id).toBeUndefined()
   })
 
-  // Een afgekeurde opname blijft een woord dat opgenomen moet worden; anders
-  // valt het van de lijst en komt er nooit meer een stem bij.
-  it('houdt een afgekeurde opname op de lijst', () => {
-    for (const id of OPNIEUW) expect(OPNAME_NODIG.includes(id), id).toBe(true)
+  // Een afgekeurde opname moet wel ergens over gaan: een letter, een woord of
+  // een zin die de app kent. Staat er iets op dat nergens bij hoort, dan wacht
+  // er iets op een stem wat niemand ooit zal horen.
+  it('wijst naar iets dat de app kent', () => {
+    const bekend = new Set([
+      ...LETTERS.map((l) => l.id),
+      ...allWords.map((w) => w.id),
+      ...ALL_SENTENCES.map((z) => z.id),
+    ])
+    for (const id of OPNIEUW) expect(bekend.has(id), id).toBe(true)
   })
 
   // Afkeuren is pas afkeuren als het bestand ook weg is. Blijft het staan, dan

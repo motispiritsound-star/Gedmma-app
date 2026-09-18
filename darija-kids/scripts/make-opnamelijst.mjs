@@ -44,6 +44,16 @@ const BLOK = Number(arg('blok', 20))
  * zijn blok. De vastlegging zelf wordt dan niet overschreven.
  */
 const REST = process.argv.includes('--rest')
+/**
+ * Alles wat nog een mens nodig heeft, niet alleen de opnamelijst.
+ *
+ * OPNAME_NODIG is de lijst van wat geen enkele stem goed zegt. Maar er is meer
+ * dat nog geen stem heeft: de woorden die met een geleende stem door de keuring
+ * kwamen, en een letter waarvan de opname is afgekeurd. Wie de app helemaal in
+ * één stem wil horen, heeft die lijst nodig — letters eerst, dan woorden, dan
+ * zinnen, in de volgorde waarin de app ze leert.
+ */
+const ALLES = process.argv.includes('--alles')
 
 const server = await createServer({
   configFile: 'vite.config.ts',
@@ -68,7 +78,7 @@ const vastgelegd = REST
   ? JSON.parse(await readFile(path.join(ROOT, 'store', 'opnamelijst.json'), 'utf8'))
   : null
 
-const woorden = await page.evaluate(async ({ al, vast }) => {
+const woorden = await page.evaluate(async ({ al, vast, alles }) => {
   const [eigen, lex, zin] = await Promise.all([
     import('/src/content/eigen.ts'),
     import('/src/content/lexicon.ts'),
@@ -77,9 +87,18 @@ const woorden = await page.evaluate(async ({ al, vast }) => {
   // Een zin hoort in een andere map dan een woord, en die map staat in de
   // bestandsnaam eronder — anders landt een opname waar niemand hem zoekt.
   const opId = new Map()
-  for (const w of lex.allWords) opId.set(w.id, { ...w, map: 'woorden' })
+  for (const l of (await import('/src/content/alphabet.ts')).LETTERS) {
+    opId.set(l.id, { ar: l.ar, tr: l.tr, nl: `de letter ${l.name}`, emoji: '', map: 'letters' })
+  }
+  for (const w of lex.allWords) if (!opId.has(w.id)) opId.set(w.id, { ...w, map: 'woorden' })
   for (const z of zin.ALL_SENTENCES) if (!opId.has(z.id)) opId.set(z.id, { ...z, map: 'zinnen' })
-  const bron = vast ?? eigen.OPNAME_NODIG
+  const bron = vast ?? (alles
+    ? [
+      ...(await import('/src/content/alphabet.ts')).LETTERS.map((l) => l.id),
+      ...lex.allWords.map((w) => w.id),
+      ...zin.ALL_SENTENCES.map((z) => z.id),
+    ]
+    : eigen.OPNAME_NODIG)
   return bron
     .map((id, i) => ({ id, nr: i + 1 }))
     .filter(({ id }) => !al.includes(id))
@@ -88,14 +107,15 @@ const woorden = await page.evaluate(async ({ al, vast }) => {
       return w ? { id, nr, ar: w.ar, tr: w.tr, nl: w.nl, emoji: w.emoji ?? '', map: w.map } : null
     })
     .filter(Boolean)
-}, { al: [...al], vast: vastgelegd?.ids ?? null })
+}, { al: [...al], vast: vastgelegd?.ids ?? null, alles: ALLES })
 
 await browser.close()
 await server.close()
 
-console.log(`${woorden.length} op de lijst`
-  + ` (${woorden.filter((w) => w.map === 'woorden').length} woorden,`
-  + ` ${woorden.filter((w) => w.map === 'zinnen').length} zinnen)`)
+console.log(`${woorden.length} op de lijst (`
+  + ['letters', 'woorden', 'zinnen']
+    .map((m) => `${woorden.filter((w) => w.map === m).length} ${m}`)
+    .join(', ') + ')')
 
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
 
@@ -155,14 +175,20 @@ const html = `<!doctype html>
   <p class="eyebrow">Darijaforkids</p>
   <h1>${REST
     ? `Nog ${woorden.length} regels, vanaf nummer ${woorden[0]?.nr ?? 1}`
-    : `Deze ${woorden.length} woorden, één voor één`}</h1>
+    : ALLES
+      ? `Alles wat nog geen stem heeft — ${woorden.length} regels`
+      : `Deze ${woorden.length} woorden, één voor één`}</h1>
   <p class="lede">
     ${REST
       ? 'Wat je al hebt ingesproken staat er niet meer op, maar de nummers zijn'
         + ' gebleven: regel 83 blijft regel 83, ook nu de regels ervoor weg zijn.'
         + ' Zo blijven de blokken kloppen.'
-      : 'Van deze woorden staat er nog geen stem in de app: geen computerstem zegt'
-        + ' ze goed, en wat er al aan opnames was is bij het nahoren afgekeurd.'}
+      : ALLES
+        ? 'Alles in de app dat nog geen menselijke stem heeft, op volgorde: eerst de'
+          + ' letters, dan de woorden zoals de lessen ze leren, dan de zinnen. Is dit'
+          + ' af, dan zegt niets in de app nog iets met een computerstem.'
+        : 'Van deze woorden staat er nog geen stem in de app: geen computerstem zegt'
+          + ' ze goed, en wat er al aan opnames was is bij het nahoren afgekeurd.'}
     Zeg ze zoals je ze thuis zou zeggen — niet netjes, niet langzaam, gewoon normaal.
   </p>
 
