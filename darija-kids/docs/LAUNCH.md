@@ -4,11 +4,16 @@ Eén lijst, van "de app is af" tot "hij staat in de winkel". Alles wat de code
 kan doen is gedaan; wat hier overblijft is wat een mens met een bankrekening
 en een paspoort moet doen.
 
-De app zelf staat er klaar voor: 103 tests groen, elk scherm nagelopen in zes
-talen op drie schermbreedtes, alle 34 klanken gemeten, alle 28 letters
-ingesproken door een mens, en de winkelteksten, schermafbeeldingen, films en
-het e-boek klaar in zes talen. Wat nog écht ontbreekt staat in de eerste twee
-blokken van de checklist hieronder: de handelaarsgegevens en de accounts.
+De app zelf staat er klaar voor: 118 tests groen, elk scherm nagelopen in zes
+talen op drie schermbreedtes, alle 34 klanken gemeten, en de winkelteksten,
+schermafbeeldingen, films en het e-boek klaar in zes talen.
+
+En de stem is af. Alle 28 letters, alle 304 woorden en alle 100 zinnen worden
+gezegd door iemand die Darija spreekt — 432 opnames, geen enkele meer door een
+computerstem. Dat was de grootste onbekende van dit project en die is weg.
+
+Wat nu nog ontbreekt staat in de eerste blokken van de checklist hieronder, en
+dat is geen code meer: accounts, formulieren en een Mac.
 
 Reken op **vier tot zes weken** tussen je eerste account en je eerste
 downloader. Niet omdat het werk zoveel is, maar omdat er één wachttijd van twee
@@ -29,10 +34,11 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 
 ### Vandaag — dit blokkeert alle andere stappen
 
-- [ ] `src/content/operator.ts` invullen: naam, e-mail, adres, land, telefoon, KvK (§0)
+- [x] `src/content/operator.ts` invullen: naam, e-mail, adres, land, telefoon, KvK, btw (§0)
+- [x] KvK-inschrijving — Venship, 77780868
+- [x] Domein kopen — `darijaforkids.eu`, met `darijaforkids.nl` als doorverwijzing
+- [ ] De website online zetten op dat domein (§0b)
 - [ ] D-U-N-S-nummer aanvragen als je de organisatieroute bij Google kiest — die klok loopt het langst (§1)
-- [ ] KvK-inschrijving regelen als je die nog niet hebt (§1)
-- [ ] Domein kopen en de website online zetten (§0b)
 
 ### De accounts
 
@@ -72,22 +78,23 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 
 ### Voor je op verzenden drukt
 
-- [x] `npm test` — 103 tests
+- [x] `npm test` — 118 tests
 - [x] `npm run typecheck`
 - [x] `npm run sweep -- --breed` — elk scherm, zes talen, licht en donker, 320/390/820 px
 - [x] `npm run soundcheck` — alle 34 klanken
-- [x] `npm run lettercheck` — alle 28 letters
+- [x] `npm run lettercheck` — alle 432 opnames, geen enkele viel terug op de stem
 - [x] `npm run bonuscheck`, `npm run historycheck`
-- [ ] `npm run feedbackcheck` — kan pas als `operator.ts` is ingevuld
+- [x] `npm run feedbackcheck` — vierentwintig onderwerpregels, elke taal zijn eigen
 - [ ] Op een écht toestel gespeeld, met geluid aan
 
 ### De uitspraak
 
 - [x] 28 van de 28 letters ingesproken door een mens
-- [ ] Wie de 28 letters insprak, en schriftelijk dat het commercieel gebruikt mag worden — de tabel staat klaar in `store/press-kit.md`
-- [ ] Bij een gekloonde stem: apart vastleggen dat de spreker daarmee instemt
-- [ ] De woorden van de eerste zes units inspreken (`/opname`, dan `npm run add-clip`)
-- [ ] Het controleblad aflopen: `npm run sheet`
+- [x] 304 van de 304 woorden ingesproken
+- [x] 100 van de 100 zinnen ingesproken
+- [x] Alle 432 opnames nagehoord en goedgekeurd — `npm run sheet`
+- [x] Alle 432 gemeten op stilte, lengte en oversturing
+- [ ] Wie insprak, en schriftelijk dat het commercieel gebruikt mag worden — de tabel staat klaar in `store/press-kit.md`
 
 ### Publiceren
 
@@ -99,9 +106,23 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 
 ---
 
-## 0. Vandaag nog: de twee dingen die alles blokkeren
+## 0. De handelaarsgegevens — gedaan
 
-**Vul `src/content/operator.ts` in.** Sinds de Digital Services Act is wie in
+Dit stond hier als eerste blokkade en is inmiddels ingevuld. Wat erin staat en
+waarom het moet, blijft hieronder staan: je typt dezelfde gegevens straks over
+in twee winkelconsoles, en ze horen daar letterlijk hetzelfde te luiden.
+
+| | |
+|---|---|
+| Handelaar | Darijaforkids |
+| Bedrijf | Venship |
+| Adres | Christoffel Boumeisterlaan 17, 3907 KN Veenendaal |
+| Telefoon | +31 6 29479436 |
+| E-mail | Venship@outlook.com |
+| KvK | 77780868 |
+| Btw | NL003000506B28 |
+
+**Waarom het in `src/content/operator.ts` staat.** Sinds de Digital Services Act is wie in
 een appwinkel verkoopt een *handelaar*, en horen naam, adres, telefoonnummer,
 e-mailadres en KvK-nummer zichtbaar te zijn voor de koper. Beide winkels vragen
 ze in de console en zetten ze op je pagina in de winkel; dit bestand zet
