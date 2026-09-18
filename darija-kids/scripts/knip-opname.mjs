@@ -93,7 +93,11 @@ const { ids, mappen, mapVan, klaar } = await page.evaluate(async (eigen) => {
   // Precies de volgorde van de opnamelijst: wat al een stem heeft valt eruit,
   // de rest staat er in dezelfde rij. Alleen zo slaat een bloknummer nergens
   // een regel over en wijst het naar wat er is voorgelezen.
-  const ids = lijst.filter((id) => !clips.hasClip(id))
+  //
+  // Een lijst die met --ids is opgegeven blijft heel. Die is met opzet zo
+  // opgeschreven, en soms staat er juist iets op dat al een opname heeft —
+  // een regel die opnieuw is voorgelezen hoort de oude te vervangen.
+  const ids = eigen ? lijst : lijst.filter((id) => !clips.hasClip(id))
   return {
     ids,
     mappen: ids.map((id) => mapVan.get(id) ?? 'woorden'),
