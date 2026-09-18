@@ -8,15 +8,20 @@ Er is geen server, geen database en geen omgevingsvariabele nodig.
 
 Het is een single-page app: `/leren`, `/les/groeten-1` en `/woorden` bestaan
 niet als bestand. De host moet onbekende paden beantwoorden met `index.html`
-(status 200, geen redirect). Voor Cloudflare Pages en Netlify staat dat al in
-`public/_redirects`:
+(status 200, geen redirect). Elke host krijgt dat op zijn eigen manier, en die
+staan alle drie al klaar:
 
-```
-/*    /index.html   200
-```
+| Host | Waar het staat |
+|---|---|
+| Cloudflare Workers | `not_found_handling` in `wrangler.toml` |
+| Netlify | `[[redirects]]` in `netlify.toml` |
+| Apache — mijndomein, Strato, een eigen VPS | `public/.htaccess`, komt mee in `dist/` |
 
-Voor gewone Apache-hosting — mijndomein, Strato, een eigen VPS — staat het in
-`public/.htaccess`, dat automatisch meekomt in `dist/`.
+Er stond ook een `public/_redirects`, want zo doen Pages en Netlify het van
+huis uit. Dat bestand komt mee in `dist/`, en Cloudflare Workers leest het ook
+— maar weigert de regel `/* /index.html 200` als een oneindige lus en laat de
+hele publicatie stranden. Vandaar dat elke host zijn eigen bestand krijgt en
+er geen gedeeld bestand meer is dat over de rest heen valt.
 
 ## Uit de repo laten bouwen
 
