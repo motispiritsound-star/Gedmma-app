@@ -1,0 +1,14 @@
+# Netlify bouwt de app rechtstreeks uit deze repo.
+#
+# De app staat in een submap, dus `base` wijst daarheen; alles daarna is
+# relatief aan die map. De omleiding van onbekende paden naar index.html staat
+# al in darija-kids/public/_redirects en komt vanzelf mee in dist/.
+[build]
+  base = "darija-kids"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # De browsers voor de tests horen niet bij een bouw van de website.
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"

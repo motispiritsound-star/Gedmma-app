@@ -18,6 +18,28 @@ niet als bestand. De host moet onbekende paden beantwoorden met `index.html`
 Voor gewone Apache-hosting — mijndomein, Strato, een eigen VPS — staat het in
 `public/.htaccess`, dat automatisch meekomt in `dist/`.
 
+## Uit de repo laten bouwen
+
+Dat is de minste moeite op den duur: je zet het één keer op en daarna gaat
+elke wijziging vanzelf live.
+
+**Netlify** leest `netlify.toml` in de wortel van de repo; daar staat alles al
+in. Je kiest de repo, kiest de branch, en drukt op bouwen.
+
+**Cloudflare Pages** vraagt dezelfde dingen in het scherm:
+
+| Veld | Waarde |
+|---|---|
+| Framework preset | None |
+| Root directory | `darija-kids` |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Omgevingsvariabele | `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD` = `1` |
+
+Die laatste is nodig omdat de repo Playwright meebrengt voor de controles, en
+die browsers hoeven niet mee in een bouw van de website — zonder die variabele
+haalt npm er een paar honderd megabyte aan browsers bij die niemand gebruikt.
+
 Op andere hosts:
 
 - **Vercel** — `vercel.json` met een rewrite van `/(.*)` naar `/index.html`.
