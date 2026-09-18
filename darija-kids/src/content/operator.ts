@@ -23,7 +23,12 @@ export const OPERATOR = {
    * that company's. Empty when the seller trades under its own name.
    */
   bedrijf: 'Venship',
-  email: 'Venship@outlook.com',
+  /**
+   * On the domain, not on a mailbox somebody happens to own: a buyer reads the
+   * address the app is sold under, and a shop whose contact address is at a
+   * free provider looks like a shop that may not be there next year.
+   */
+  email: 'info@darijaforkids.eu',
   /** Street, postcode and town. A PO box is not accepted as a trader address. */
   address: 'Christoffel Boumeisterlaan 17, 3907 KN Veenendaal',
   country: 'Nederland',

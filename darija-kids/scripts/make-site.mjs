@@ -148,7 +148,6 @@ const footer = (lang) => {
         <h3>${esc(c.contactTitel)}</h3>
         <ul>
           <li><a href="${mailto}">${esc(OPERATOR.email)}</a></li>
-          <li><a href="tel:${OPERATOR.phone.replace(/[^\d+]/g, '')}">${esc(OPERATOR.phone)}</a></li>
         </ul>
       </div>
       <div>
@@ -157,7 +156,7 @@ const footer = (lang) => {
       </div>
     </div>
     <div class="bottom">
-      <span>© ${new Date().getFullYear()} ${esc(OPERATOR.bedrijf || OPERATOR.name)}</span>
+      <span>© ${new Date().getFullYear()} ${esc(OPERATOR.name)}</span>
       <span>${esc(OPERATOR.country)}</span>
       <span>KvK ${esc(OPERATOR.registration)}</span>
     </div>
@@ -408,14 +407,22 @@ const homePage = (lang, media) => {
 
 /* -------------------------------------------------------------- handelaar */
 
+/**
+ * Who sells the app — the public half of it.
+ *
+ * The app shows more than this page does: the Digital Services Act makes a
+ * trader's address and phone number visible to a buyer, and Apple and Google
+ * both publish them on the listing where the buying actually happens. The
+ * website sells nothing. It is a shop window on the open internet, where a
+ * home address and a mobile number are an invitation to everybody with a
+ * scraper, so it carries the name, the e-mail and the register numbers and
+ * leaves the rest to the stores and to src/ui/Operator.tsx.
+ */
 function traderTable(lang) {
   if (!traderKnown()) return ''
   const t = STRINGS[lang]
   const rows = [
     [t.operator.naam, esc(OPERATOR.name)],
-    ...(OPERATOR.bedrijf && OPERATOR.bedrijf !== OPERATOR.name ? [[t.operator.bedrijf, esc(OPERATOR.bedrijf)]] : []),
-    [t.operator.adres, esc([OPERATOR.address, OPERATOR.country].filter(Boolean).join(', '))],
-    [t.operator.telefoon, `<a href="tel:${OPERATOR.phone.replace(/[^\d+]/g, '')}">${esc(OPERATOR.phone)}</a>`],
     [t.operator.email, `<a href="${mailto}">${esc(OPERATOR.email)}</a>`],
     [t.operator.kvk, esc(OPERATOR.registration)],
     ...(OPERATOR.vat ? [[t.operator.btw, esc(OPERATOR.vat)]] : []),

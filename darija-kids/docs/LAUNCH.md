@@ -118,7 +118,7 @@ in twee winkelconsoles, en ze horen daar letterlijk hetzelfde te luiden.
 | Bedrijf | Venship |
 | Adres | Christoffel Boumeisterlaan 17, 3907 KN Veenendaal |
 | Telefoon | +31 6 29479436 |
-| E-mail | Venship@outlook.com |
+| E-mail | info@darijaforkids.eu |
 | KvK | 77780868 |
 | Btw | NL003000506B28 |
 
@@ -134,8 +134,9 @@ Datzelfde e-mailadres is ook de feedbackknop. Die staat op de oudersspagina
 (de support-URL die beide winkels vragen), in de instellingen, onderaan de
 voorpagina en onder elk woord in het woordenboek — maar hij is onzichtbaar
 zolang dit bestand leeg is, want een knop die nergens heen gaat is erger dan
-geen knop. Kies een adres dat je leest: `hallo@darijaforkids.eu` of
-`feedback@darijaforkids.eu` bij je domein, niet je privéadres.
+geen knop. Het is `info@darijaforkids.eu` geworden: op het eigen domein, want
+een winkel waarvan het contactadres bij een gratis provider staat, ziet eruit
+als een winkel die er volgend jaar niet meer is.
 
 ```ts
 export const OPERATOR = {
@@ -214,9 +215,18 @@ websites met dezelfde inhoud is slechter dan één.
 **Hosting.** Cloudflare Workers, uit deze repo. De instellingen staan in
 [DEPLOY.md](DEPLOY.md).
 
-**E-mail.** `Venship@outlook.com` staat nu in `operator.ts` en werkt. Een
-adres op het eigen domein (`post@darijaforkids.eu`) staat beter op een
-winkelpagina; dat kan later, en dan hoeft alleen `operator.ts` te wijzigen.
+**E-mail.** `info@darijaforkids.eu` staat in `operator.ts` en op de website.
+Dat adres moet nog worden aangemaakt: het eenvoudigst is Cloudflare Email
+Routing — gratis, zet zelf de MX-regels klaar en stuurt de post door naar een
+bestaande inbox. Beide winkels sturen post naar dit adres en kopers mogen er
+klagen, dus het moet echt werken voordat de accounts worden aangemaakt.
+
+**Wat er op de website staat, en wat niet.** De handelaarsgegevens hierboven
+staan volledig in de app en in beide winkelconsoles — daar hoort het, want
+daar wordt gekocht. Op darijaforkids.eu staan alleen de handelsnaam, het
+e-mailadres, het KvK-nummer en het btw-nummer. Het huisadres en het
+mobiele nummer staan er niet: de website verkoopt niets, en op het open
+internet is een huisadres vooral een uitnodiging.
 
 ---
 
