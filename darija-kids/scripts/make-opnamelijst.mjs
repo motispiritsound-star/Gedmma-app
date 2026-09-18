@@ -208,4 +208,20 @@ ${woorden.map((w, i) => `${i && i % BLOK === 0 ? `    <li class="grens"><span cl
 `
 
 await writeFile(UIT, html)
+
+/**
+ * De volgorde vastleggen, want die verschuift onder je handen.
+ *
+ * De lijst laat weg wat al een stem heeft. Zodra er een blok binnenkomt is de
+ * lijst dus korter, en wijst "blok 3" naar heel andere regels dan toen hij werd
+ * voorgelezen. Daarom schrijft de lijst zijn eigen volgorde weg: de knipper
+ * telt zijn blokken daarin, niet in de lijst van vandaag.
+ */
+const SNAPSHOT = path.join(ROOT, 'store', 'opnamelijst.json')
+await writeFile(SNAPSHOT, JSON.stringify({
+  gemaakt: new Date().toISOString().slice(0, 10),
+  blok: BLOK,
+  ids: woorden.map((w) => w.id),
+}, null, 2) + '\n')
+console.log(`volgorde vastgelegd in ${path.relative(ROOT, SNAPSHOT)}`)
 console.log(`${path.relative(ROOT, UIT)} — ${(html.length / 1024).toFixed(0)} kB`)

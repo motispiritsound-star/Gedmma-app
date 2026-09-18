@@ -158,12 +158,7 @@ export const OPNAME_NODIG: string[] = [
  * eruit en het woord wacht op een losse opname.
  */
 export const OPNIEUW: string[] = [
-  // De opname zei nog djaja; het woord heet dzaza.
-  'dzaza',
-  // Bij het nahoren afgekeurd: de uitspraak zelf klopte niet.
-  'reb3a', '3in', 'fuqash',
-  // Bij het nahoren afgekeurd: er liep iets door de opname heen.
-  '3tini', 'jdid',
+  // Leeg: dzaza, reb3a, 3in, fuqash, 3tini en jdid zijn opnieuw ingesproken.
 ]
 
 

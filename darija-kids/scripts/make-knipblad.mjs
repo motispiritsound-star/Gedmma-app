@@ -21,7 +21,7 @@
  * telefoon; een handvol wel. Handig als er al een vermoeden is waar het
  * misgaat en alleen dat nog nagehoord hoeft te worden.
  */
-import { writeFile } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
@@ -61,7 +61,23 @@ const browser = await chromium.launch({ executablePath: CHROME })
 const page = await browser.newPage()
 await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'networkidle' })
 
-const eigenIds = arg('ids', null)
+/**
+ * Eén blok uit de vastgelegde volgorde, net als bij het knippen.
+ *
+ * De opnamelijst wordt korter met elk blok dat binnenkomt, dus een bloknummer
+ * slaat alleen ergens op in de lijst zoals die is voorgelezen. Die staat in
+ * store/opnamelijst.json.
+ */
+const BLOKNR = Number(arg('blok', 0))
+let eigenIds = arg('ids', null)
+if (BLOKNR) {
+  const vast = JSON.parse(await readFile(path.join(ROOT, 'store', 'opnamelijst.json'), 'utf8'))
+  const grootte = Number(arg('blokgrootte', vast.blok || 20))
+  const eerste = (BLOKNR - 1) * grootte
+  eigenIds = vast.ids.slice(eerste, eerste + grootte).join(',')
+  console.log(`blok ${BLOKNR} uit de lijst van ${vast.gemaakt}: regel ${eerste + 1} en verder`)
+}
+
 const woorden = await page.evaluate(async (eigen) => {
   const [e, lex, zin] = await Promise.all([
     import('/src/content/eigen.ts'),
