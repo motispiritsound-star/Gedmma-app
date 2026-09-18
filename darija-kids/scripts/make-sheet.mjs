@@ -21,6 +21,11 @@
  * Met `--soort zinnen` blijft één soort over. Nakijken gaat per soort — de
  * woorden zijn een andere bezigheid dan de zinnen — en wat al is nagekeken
  * hoort niet opnieuw voorbij te komen.
+ *
+ * Met `--lijst` kijkt --voorrang naar de vastgelegde opnamelijst in plaats van
+ * naar OPNAME_NODIG. Die laatste gaat over wat geen stem goed zei; de eerste
+ * over wat er is voorgelezen. Na een ronde opnemen is dat tweede de lijst die
+ * je wilt nahoren.
  */
 import { readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -37,6 +42,7 @@ const arg = (name, fallback) => {
 const OUT = arg('out', 'uitspraak-alles.html')
 const VOORRANG = process.argv.includes('--voorrang')
 const NOGNIET = process.argv.includes('--nog-niet')
+const UITLIJST = process.argv.includes('--lijst')
 const SOORT = arg('soort', null)
 if (SOORT && !['letters', 'woorden', 'zinnen'].includes(SOORT)) {
   throw new Error(`--soort kan letters, woorden of zinnen zijn, niet ${SOORT}`)
@@ -149,7 +155,9 @@ for (const soort of ['letters', 'woorden', 'zinnen']) {
 if (VOORRANG) {
   // Alles van de opnamelijst dat inmiddels een stem heeft — ook de zinnen en
   // de uitdrukkingen, want die staan er net zo goed op als de losse woorden.
-  const nodig = new Set(data.nodig)
+  const nodig = new Set(UITLIJST
+    ? JSON.parse(await readFile(path.join(process.cwd(), 'store', 'opnamelijst.json'), 'utf8')).ids
+    : data.nodig)
   for (const soort of ['letters', 'woorden', 'zinnen']) {
     data[soort] = data[soort].filter((i) => nodig.has(i.id) && i.opname)
   }
