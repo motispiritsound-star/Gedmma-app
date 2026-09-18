@@ -158,7 +158,11 @@ export const OPNAME_NODIG: string[] = [
  * eruit en het woord wacht op een losse opname.
  */
 export const OPNIEUW: string[] = [
-  // Leeg: de خ is voor de derde keer ingesproken.
+  // Deze twee zijn nooit voorgelezen. In de opname met de dieren en de tijd
+  // stonden twee stukken die nergens bij hoorden, en daardoor leek de reeks
+  // twee regels langer dan hij was; de laatste twee kregen de opname van hun
+  // buren. Die staat is eruit — nu wachten ze gewoon op een stem.
+  'lichaam-2-b', 'lichaam-3-a',
 ]
 
 
