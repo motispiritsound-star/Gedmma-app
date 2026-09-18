@@ -207,7 +207,11 @@ if (PLAK_AUTO) {
  */
 const geplakt = []
 for (const [i, s] of stukken.entries()) {
-  const vorige = geplakt.at(-1)
+  // Plakken gaat naar het laatste stuk dat blíjft. Een stuk dat is geschrapt
+  // telt niet meer mee, dus wie eraan vastplakt verdwijnt met het geschrapte
+  // stuk mee — en dan klopt de telling nog wel, maar ontbreekt de helft van
+  // wat er gezegd is. Precies wat het knipblad ook laat zien.
+  const vorige = [...geplakt].reverse().find((g) => !OVER.has(g.nr))
   if (PLAK.has(i + 1) && vorige && !OVER.has(i + 1)) {
     vorige.delen.push({ van: s.van, tot: s.tot })
     vorige.tot = s.tot
