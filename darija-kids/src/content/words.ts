@@ -125,7 +125,7 @@ export const WORDS: Word[] = [
   w('khobz', 'خبز', 'khobz', 'brood', 'bread', 'eten', '🍞', 'In Marokko eet je bijna alles met khobz.'),
   w('zebda', 'زبدة', 'zebda', 'boter', 'butter', 'eten', '🧈'),
   w('3sel', 'عسل', '3sel', 'honing', 'honey', 'eten', '🍯'),
-  w('bid', 'بيض', 'bid', 'eieren', 'eggs', 'eten', '🥚'),
+  w('bid', 'البيض', 'lbid', 'eieren', 'eggs', 'eten', '🥚'),
   w('jben', 'جبن', 'jben', 'kaas', 'cheese', 'eten', '🧀'),
   w('lhem', 'لحم', 'lhem', 'vlees', 'meat', 'eten', '🥩'),
   w('djaj', 'دجاج', 'djaj', 'kip', 'chicken', 'eten', '🍗'),

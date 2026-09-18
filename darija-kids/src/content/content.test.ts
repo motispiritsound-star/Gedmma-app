@@ -341,6 +341,26 @@ describe('welke stem welk woord zegt', () => {
   })
 })
 
+// Een opname wordt opgezocht op zijn Arabische tekst, niet op zijn sleutel:
+// elke aanroep heeft het schrift al in handen en geen van alle de sleutel. Dat
+// werkt zolang geen twee regels hetzelfde schrijven. Doen ze dat wel — بيض is
+// zowel "wit" als "eieren" — dan krijgt de tweede de opname van de eerste, en
+// zegt de app het verkeerde woord zonder dat iets dat laat merken.
+describe('het schrift wijst één ding aan', () => {
+  it('heeft geen twee regels met dezelfde Arabische tekst', () => {
+    const perScript = new Map<string, string[]>()
+    for (const i of [
+      ...LETTERS.map((l) => ({ id: l.id, ar: l.ar })),
+      ...allWords.map((w) => ({ id: w.id, ar: w.ar })),
+      ...ALL_SENTENCES.map((z) => ({ id: z.id, ar: z.ar })),
+    ]) {
+      perScript.set(i.ar, [...(perScript.get(i.ar) ?? []), i.id])
+    }
+    const dubbel = [...perScript.entries()].filter(([, ids]) => ids.length > 1)
+    expect(dubbel.map(([ar, ids]) => `${ar}: ${ids.join(' + ')}`)).toEqual([])
+  })
+})
+
 describe('wat nog opgenomen moet worden', () => {
   // Zinnen staan er net zo goed op als woorden: een stem die één woord nog
   // haalt, struikelt over een hele zin, en dan is een opname net zo nodig.
