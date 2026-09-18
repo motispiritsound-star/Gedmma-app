@@ -130,15 +130,25 @@ if (BLOK) {
   }
   const grootte = Number(arg('blokgrootte', vast.blok || 20))
   const eerste = (BLOK - 1) * grootte
-  const deel = vast.ids.slice(eerste, eerste + grootte)
-  if (!deel.length) {
+  const heel = vast.ids.slice(eerste, eerste + grootte)
+  if (!heel.length) {
     console.error(`\nBlok ${BLOK} bestaat niet: de lijst telt ${vast.ids.length} regels.`)
     process.exit(1)
   }
+  /*
+   * Wat al een stem heeft telt niet mee, want het staat ook niet meer op de
+   * lijst die is voorgelezen. Een blok kan daardoor korter zijn dan twintig —
+   * zoals wanneer er de vorige keer twee regels zijn doorgelezen. Met
+   * --opnieuw doe je het hele blok toch over.
+   */
+  const klaarIn = new Set(vast.ids.filter((id) => !ids.includes(id)))
+  const deel = process.argv.includes('--opnieuw') ? heel : heel.filter((id) => !klaarIn.has(id))
   ids.length = 0; ids.push(...deel)
   mappen.length = 0; mappen.push(...deel.map((id) => mapVan[id] ?? 'woorden'))
+  const over = heel.length - deel.length
   console.log(`blok ${BLOK} uit de lijst van ${vast.gemaakt}:`
-    + ` regel ${eerste + 1} tot en met ${eerste + deel.length}`)
+    + ` regel ${eerste + 1} tot en met ${eerste + heel.length}`
+    + (over ? `, waarvan ${over} al ingesproken — ${deel.length} regels verwacht` : ''))
 }
 
 if (!ids.length) {
