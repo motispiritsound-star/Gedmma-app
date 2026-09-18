@@ -256,6 +256,7 @@ export const it: Strings = {
   operator: {
     titel: 'Chi vende questa app',
     naam: 'Operatore',
+    bedrijf: 'Azienda',
     adres: 'Indirizzo',
     telefoon: 'Telefono',
     email: 'E-mail',

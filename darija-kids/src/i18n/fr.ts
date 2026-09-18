@@ -256,6 +256,7 @@ export const fr: Strings = {
   operator: {
     titel: 'Qui vend cette application',
     naam: 'Professionnel',
+    bedrijf: 'Société',
     adres: 'Adresse',
     telefoon: 'Téléphone',
     email: 'E-mail',

@@ -14,10 +14,18 @@
  */
 export const OPERATOR = {
   /** The name the stores show as the seller. For a sole trader: your own. */
-  name: 'Venship',
+  name: 'Darijaforkids',
+  /**
+   * The legal entity behind that name, when they differ.
+   *
+   * A buyer who wants to complain should not have to guess who "Darijaforkids"
+   * is; the trade register knows it as Venship, and the KvK number below is
+   * that company's. Empty when the seller trades under its own name.
+   */
+  bedrijf: 'Venship',
   email: 'Venship@outlook.com',
   /** Street, postcode and town. A PO box is not accepted as a trader address. */
-  address: '',
+  address: 'Christoffel Boumeisterlaan 17, 3907 KN Veenendaal',
   country: 'Nederland',
   /**
    * A phone number that is answered. A mobile is fine.
@@ -29,7 +37,7 @@ export const OPERATOR = {
   /** KvK number in the Netherlands, or the equivalent trade-register number. */
   registration: '77780868',
   /** Only when you are registered for VAT — under the Dutch KOR, leave empty. */
-  vat: '',
+  vat: 'NL003000506B28',
 }
 
 /** Enough to name a data controller and write to them. */

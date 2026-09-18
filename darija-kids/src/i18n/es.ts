@@ -256,6 +256,7 @@ export const es: Strings = {
   operator: {
     titel: 'Quién vende esta aplicación',
     naam: 'Comerciante',
+    bedrijf: 'Empresa',
     adres: 'Dirección',
     telefoon: 'Teléfono',
     email: 'Correo electrónico',

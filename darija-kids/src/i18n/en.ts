@@ -256,6 +256,7 @@ export const en: Strings = {
   operator: {
     titel: 'Who sells this app',
     naam: 'Trader',
+    bedrijf: 'Company',
     adres: 'Address',
     telefoon: 'Phone',
     email: 'E-mail',

@@ -262,6 +262,7 @@ export const nl = {
   operator: {
     titel: 'Wie deze app verkoopt',
     naam: 'Handelaar',
+    bedrijf: 'Bedrijf',
     adres: 'Adres',
     telefoon: 'Telefoon',
     email: 'E-mail',

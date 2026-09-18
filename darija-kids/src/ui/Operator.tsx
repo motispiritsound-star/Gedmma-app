@@ -16,6 +16,9 @@ export function OperatorBlock() {
 
   const rows: [string, string][] = [
     [t.operator.naam, OPERATOR.name],
+    ...(OPERATOR.bedrijf && OPERATOR.bedrijf !== OPERATOR.name
+      ? ([[t.operator.bedrijf, OPERATOR.bedrijf]] as [string, string][])
+      : []),
     [t.operator.adres, [OPERATOR.address, OPERATOR.country].filter(Boolean).join(', ')],
     [t.operator.telefoon, OPERATOR.phone],
     [t.operator.email, OPERATOR.email],
