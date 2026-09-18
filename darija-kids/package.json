@@ -6,7 +6,7 @@
   "description": "Darijaforkids - leer Marokkaans-Arabisch (Darija) voor kinderen en jongeren",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/make-site.mjs",
     "preview": "vite preview --port 4173",
     "typecheck": "tsc -b --noEmit",
     "test": "vitest run",
@@ -14,8 +14,8 @@
     "icons": "node scripts/make-icons.mjs",
     "smoke": "node scripts/smoke.mjs",
     "build:demo": "vite build --mode demo && node scripts/make-demo.mjs",
-    "sync": "npm run build && cap sync",
-    "android": "npm run build && cap sync android && cap open android",
+    "sync": "npm run build:app && cap sync",
+    "android": "npm run build:app && cap sync android && cap open android",
     "assets": "node scripts/make-store-assets.mjs && @capacitor/assets generate --android",
     "soundcheck": "node scripts/soundcheck.mjs",
     "stand": "node scripts/make-stand.mjs",
@@ -36,7 +36,10 @@
     "checklist": "node scripts/make-checklist.mjs",
     "opnamelijst": "node scripts/make-opnamelijst.mjs",
     "knip": "node scripts/knip-opname.mjs",
-    "knipblad": "node scripts/make-knipblad.mjs"
+    "knipblad": "node scripts/make-knipblad.mjs",
+    "build:app": "tsc -b && vite build",
+    "site": "node scripts/make-site.mjs",
+    "siteassets": "node scripts/make-siteassets.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",

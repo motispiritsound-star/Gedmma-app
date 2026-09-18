@@ -37,7 +37,7 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 - [x] `src/content/operator.ts` invullen: naam, e-mail, adres, land, telefoon, KvK, btw (§0)
 - [x] KvK-inschrijving — Venship, 77780868
 - [x] Domein kopen — `darijaforkids.eu`, met `darijaforkids.nl` als doorverwijzing
-- [ ] De website online zetten op dat domein (§0b)
+- [x] De website online zetten op dat domein (§0b)
 - [ ] D-U-N-S-nummer aanvragen als je de organisatieroute bij Google kiest — die klok loopt het langst (§1)
 
 ### De accounts
@@ -159,11 +159,19 @@ een kwartier werk.
 
 ---
 
-## 0b. De website is de app
+## 0b. De website — de etalage, niet de winkel
 
-Je hoeft geen aparte site te bouwen. Dezelfde build is een gewone statische
-website, en die website levert precies de drie adressen op die de winkels van
-je vragen voordat ze een app aannemen:
+De website staat online: **https://darijaforkids.eu**, met `www` erbij.
+Cloudflare bouwt hem uit deze repo en levert het certificaat.
+
+**De app staat er met opzet niet op.** Dat was eerst wel zo — dezelfde build
+was ook de website — en dat is teruggedraaid, om één reden: wie de hele
+cursus gratis in een browser kan doen, haalt hem niet uit de winkel. En de
+winkel is waar de app verkocht wordt. Wat er nu staat is een etalage die naar
+de App Store en Google Play wijst.
+
+Die etalage levert nog steeds precies de drie adressen die de winkels vragen
+voordat ze een app aannemen:
 
 | Wat de winkel vraagt | Wat je invult |
 |---|---|
@@ -172,32 +180,43 @@ je vragen voordat ze een app aannemen:
 | Support URL (Apple, verplicht) | `https://darijaforkids.eu/ouders` |
 | Marketing URL (Apple, optioneel) | `https://darijaforkids.eu` |
 
-Op alle drie die pagina's staat onderaan je handelaarsblok, zodra
-`operator.ts` is ingevuld. De voorpagina is de landingspagina: wat het is, voor
-wie, en een knop om het meteen te proberen — bezoekers kunnen de hele gratis
-cursus in de browser doen zonder iets te installeren, wat de beste demo is die
-er bestaat.
+Op alle drie die pagina's staat onderaan het handelaarsblok uit `operator.ts`.
+Elke pagina bestaat in zes talen; de Nederlandse staat op de adressen
+hierboven, de andere onder `/fr/`, `/de/`, `/es/`, `/it/` en `/en/` met hun
+eigen woorden in het adres. Vul in de winkelconsoles per land de bijbehorende
+taal in als daar ruimte voor is.
 
-**Domein.** `darijaforkids.eu` is vastgelegd en is de echte: hij staat in de
-winkelconsoles, in de mailserver en op het merkmateriaal, dus wijzig hem niet
-meer nadat de accounts zijn aangemaakt. Die extensie is neutraal voor alle zes
-de markten, wat een landextensie niet is — een Fransman die `.fr` ziet leest er
-een Frans product in.
+**Wat er op de voorpagina staat.** De film van een halve minuut, de zes
+schermen, waarom het blijft hangen, het hele leerpad, de vragen, en twee keer
+een downloadknop. Plus het stuk dat nergens anders staat: dat elk woord door
+een mens is ingesproken en niet door een spraakcomputer — 432 opnames. Dat is
+het enige wat geen enkele concurrent kan kopiëren zonder het opnieuw te doen.
 
-`darijaforkids.nl` is er ook, en die blijft een doorverwijzing. Eén website,
-twee deuren: een Nederlandse ouder die de naam hoort typt `.nl`, en dan hoort
-daar niet een leeg scherm te staan. Zet er een 301 naar `darijaforkids.eu` op
-en verder niets — twee vindbare websites met dezelfde inhoud is slechter dan
-één.
+**De downloadknoppen wachten nog.** Zolang `src/site/links.ts` leeg is, staat
+er "Binnenkort" op en eronder een mailadres. Zodra App Store Connect en de
+Play Console de echte adressen geven, zet je die daar neer en pushen — dan
+worden het gewone knoppen. Vergeet daarbij de officiële badges van Apple en
+Google niet; die schrijven voor hoe hun knop eruit hoort te zien.
 
-**Hosting.** Cloudflare Pages, Netlify of Vercel — gratis, en ze bouwen
-rechtstreeks uit deze repo. De instellingen staan in [DEPLOY.md](DEPLOY.md).
-Eén ding moet goed: onbekende paden moeten `index.html` terugkrijgen, anders
-geeft `/privacy` een 404 en wordt je app afgekeurd op precies die link.
+**Domein.** `darijaforkids.eu` is vastgelegd bij MijnDomein en draait op de
+nameservers van Cloudflare. Hij staat in de winkelconsoles, in de mailserver
+en op het merkmateriaal, dus wijzig hem niet meer nadat de accounts zijn
+aangemaakt. Die extensie is neutraal voor alle zes de markten, wat een
+landextensie niet is — een Fransman die `.fr` ziet leest er een Frans product
+in.
 
-**E-mail.** `hallo@jouwdomein.nl` moet echt werken — beide winkels sturen er
-post naartoe en kopers mogen er klagen. Een doorstuuradres naar je eigen inbox
-is genoeg; dat kan gratis bij de meeste registrars.
+`darijaforkids.nl` is er ook en staat nog op de nameservers van MijnDomein.
+Die wordt een doorverwijzing: één website, twee deuren. Een Nederlandse ouder
+die de naam hoort typt `.nl`, en dan hoort daar niet een leeg scherm te staan.
+Zet er een 301 naar `darijaforkids.eu` op en verder niets — twee vindbare
+websites met dezelfde inhoud is slechter dan één.
+
+**Hosting.** Cloudflare Workers, uit deze repo. De instellingen staan in
+[DEPLOY.md](DEPLOY.md).
+
+**E-mail.** `Venship@outlook.com` staat nu in `operator.ts` en werkt. Een
+adres op het eigen domein (`post@darijaforkids.eu`) staat beter op een
+winkelpagina; dat kan later, en dan hoeft alleen `operator.ts` te wijzigen.
 
 ---
 

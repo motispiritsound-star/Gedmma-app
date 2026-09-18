@@ -603,7 +603,7 @@ export const nl = {
       ],
       [
         'Werkt het offline?',
-        'Ja. Darijaforkids installeert zich als app op je telefoon, tablet of laptop en werkt daarna zonder internet — handig in de auto, het vliegtuig of in Marokko zelf.',
+        'Ja. Alles zit in de app zelf — de lessen, de opnames en de letters. Eenmaal gedownload werkt hij zonder internet: handig in de auto, het vliegtuig of in Marokko zelf.',
       ],
       [
         'Welk Darija leren jullie?',

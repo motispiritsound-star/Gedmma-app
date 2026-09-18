@@ -596,7 +596,7 @@ export const es: Strings = {
       ],
       [
         '¿Funciona sin conexión?',
-        'Sí. Darijaforkids se instala como aplicación en el móvil, la tableta o el portátil y después funciona sin internet: práctico en el coche, en el avión o en el propio Marruecos.',
+        'Sí. Todo está dentro de la propia app: las lecciones, las grabaciones y las letras. Una vez descargada funciona sin internet, práctico en el coche, en el avión o en el propio Marruecos.',
       ],
       [
         '¿Qué dariya se aprende aquí?',

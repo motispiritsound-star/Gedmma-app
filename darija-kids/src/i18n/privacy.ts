@@ -29,7 +29,7 @@ const SECTIONS_NL: Section[] = [
     'Er zijn geen advertenties, geen trackers, geen analytics en geen cookies van derden. We tellen niet hoeveel mensen de app gebruiken.',
   ]],
   ['Geluid', [
-    'De uitspraak komt van de stem die al op je apparaat staat. Er wordt daarvoor niets opgenomen en niets verstuurd.',
+    'De uitspraak komt uit opnames die in de app zelf zitten: een Marokkaanse stem die alles heeft ingesproken. Ze worden op je eigen apparaat afgespeeld. Is er voor iets geen opname, dan valt de app terug op de stem die al op je apparaat staat. In beide gevallen wordt er niets opgenomen en niets verstuurd.',
     'De spreekoefeningen zijn de enige uitzondering: die gebruiken de spraakherkenning van je browser. In Chrome en in sommige andere browsers betekent dat dat de opname naar de maker van die browser gaat (bij Chrome: Google) om te worden omgezet in tekst. Darijaforkids krijgt alleen de tekst te zien en bewaart die niet. Wil je dat niet, zet spreekoefeningen dan uit bij Instellingen; de rest van de app werkt gewoon door.',
   ]],
   ['Kinderen', [
@@ -67,7 +67,7 @@ const SECTIONS_FR: Section[] = [
     'Pas de publicité, pas de traceurs, pas d’analytics, pas de cookies tiers. Nous ne comptons même pas le nombre d’utilisateurs.',
   ]],
   ['Le son', [
-    'La prononciation vient de la voix déjà installée sur ton appareil. Rien n’est enregistré ni envoyé pour cela.',
+    'La prononciation vient d’enregistrements contenus dans l’application elle-même : une voix marocaine qui a tout dit. Ils sont joués sur ton propre appareil. S’il n’existe pas d’enregistrement pour quelque chose, l’application se rabat sur la voix déjà installée sur ton appareil. Dans les deux cas, rien n’est enregistré ni envoyé.',
     'Les exercices de prononciation sont la seule exception : ils utilisent la reconnaissance vocale de ton navigateur. Dans Chrome et quelques autres, cela signifie que l’enregistrement part chez l’éditeur du navigateur (pour Chrome : Google) pour être transformé en texte. Darijaforkids ne voit que le texte et ne le conserve pas. Si tu préfères l’éviter, désactive les exercices de prononciation dans les réglages ; le reste de l’application continue de fonctionner.',
   ]],
   ['Les enfants', [
@@ -105,7 +105,7 @@ const SECTIONS_DE: Section[] = [
     'Keine Werbung, keine Tracker, keine Analytics, keine Cookies von Dritten. Wir zählen nicht einmal, wie viele Menschen die App benutzen.',
   ]],
   ['Ton', [
-    'Die Aussprache kommt von der Stimme, die bereits auf deinem Gerät installiert ist. Dafür wird nichts aufgenommen und nichts verschickt.',
+    'Die Aussprache kommt aus Aufnahmen, die in der App selbst stecken: eine marokkanische Stimme, die alles eingesprochen hat. Sie werden auf deinem eigenen Gerät abgespielt. Gibt es für etwas keine Aufnahme, greift die App auf die Stimme zurück, die bereits auf deinem Gerät installiert ist. In beiden Fällen wird nichts aufgenommen und nichts verschickt.',
     'Die Sprechübungen sind die einzige Ausnahme: sie nutzen die Spracherkennung deines Browsers. Bei Chrome und einigen anderen heißt das, dass die Aufnahme zum Hersteller des Browsers geht (bei Chrome: Google), um in Text umgewandelt zu werden. Darijaforkids sieht nur den Text und speichert ihn nicht. Wenn dir das nicht recht ist, schalte die Sprechübungen in den Einstellungen aus; der Rest der App funktioniert weiter.',
   ]],
   ['Kinder', [
@@ -143,7 +143,7 @@ const SECTIONS_IT: Section[] = [
     'Nessuna pubblicità, nessun tracciatore, nessuna analitica, nessun cookie di terzi. Non contiamo nemmeno quante persone usano l’app.',
   ]],
   ['L’audio', [
-    'La pronuncia viene dalla voce già installata sul tuo dispositivo. Per questo non viene registrato né inviato niente.',
+    'La pronuncia viene da registrazioni contenute nell’app stessa: una voce marocchina che ha letto tutto. Vengono riprodotte sul tuo dispositivo. Se per qualcosa non esiste una registrazione, l’app ripiega sulla voce già installata sul dispositivo. In entrambi i casi non viene registrato né inviato niente.',
     'Gli esercizi di pronuncia sono l’unica eccezione: usano il riconoscimento vocale del tuo browser. Su Chrome e su qualche altro questo significa che la registrazione va al produttore del browser (nel caso di Chrome, Google) per essere trasformata in testo. Darijaforkids vede solo il testo e non lo conserva. Se preferisci evitarlo, spegni gli esercizi di pronuncia nelle impostazioni; il resto dell’app continua a funzionare.',
   ]],
   ['I bambini', [
@@ -181,7 +181,7 @@ const SECTIONS_EN: Section[] = [
     'No adverts, no trackers, no analytics, no third-party cookies. We do not even count how many people use the app.',
   ]],
   ['Sound', [
-    'Pronunciation comes from the voice already installed on your device. Nothing is recorded or sent for it.',
+    'Pronunciation comes from recordings held inside the app itself: a Moroccan voice that read everything out. They are played on your own device. Where there is no recording for something, the app falls back on the voice already installed on your device. In neither case is anything recorded or sent.',
     'The speaking exercises are the one exception: they use your browser’s speech recognition. In Chrome and some others that means the recording goes to the browser’s maker (for Chrome: Google) to be turned into text. Darijaforkids only sees the text and does not keep it. If you would rather avoid that, switch speaking exercises off in the settings; the rest of the app carries on working.',
   ]],
   ['Children', [
@@ -219,7 +219,7 @@ const SECTIONS_ES: Section[] = [
     'Sin publicidad, sin rastreadores, sin analítica, sin cookies de terceros. Ni siquiera contamos cuánta gente usa la aplicación.',
   ]],
   ['El sonido', [
-    'La pronunciación viene de la voz que ya está instalada en tu dispositivo. Para eso no se graba ni se envía nada.',
+    'La pronunciación viene de grabaciones que están dentro de la propia app: una voz marroquí que lo ha leído todo. Se reproducen en tu propio dispositivo. Si de algo no hay grabación, la app recurre a la voz que ya está instalada en el dispositivo. En ninguno de los dos casos se graba ni se envía nada.',
     'Los ejercicios de pronunciación son la única excepción: usan el reconocimiento de voz de tu navegador. En Chrome y en algún otro eso significa que la grabación va al fabricante del navegador (en el caso de Chrome, Google) para convertirla en texto. Darijaforkids solo ve el texto y no lo guarda. Si prefieres evitarlo, desactiva los ejercicios de pronunciación en los ajustes; el resto de la aplicación sigue funcionando.',
   ]],
   ['Los niños', [

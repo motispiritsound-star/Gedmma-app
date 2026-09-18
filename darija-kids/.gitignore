@@ -8,3 +8,5 @@ server/.wrangler/
 server/.dev.vars
 store/knipblad.html
 scripts/.*.mjs
+# De website is bouwresultaat; site-assets/ is de bron en gaat wel mee.
+/site/

@@ -596,7 +596,7 @@ export const fr: Strings = {
       ],
       [
         'Ça marche hors ligne ?',
-        'Oui. Darijaforkids s’installe comme une application sur ton téléphone, ta tablette ou ton ordinateur, et fonctionne ensuite sans internet — pratique en voiture, en avion ou au Maroc.',
+        'Oui. Tout est dans l’application elle-même — les leçons, les enregistrements et les lettres. Une fois téléchargée, elle fonctionne sans internet : pratique en voiture, en avion ou au Maroc.',
       ],
       [
         'Quel darija apprend-on ?',

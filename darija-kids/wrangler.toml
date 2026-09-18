@@ -1,19 +1,27 @@
 # De website van Darijaforkids, als Worker die alleen bestanden serveert.
 #
-# Cloudflare stuurt nieuwe projecten tegenwoordig naar Workers in plaats van
-# naar Pages, en die weg vraagt om een wrangler.toml. Deze staat met opzet in
-# darija-kids en niet in de wortel van de repo: daar staat er al een, van een
-# ander project, met een andere naam. Twee projecten die elkaars naam gebruiken
-# publiceren over elkaar heen.
+# Wat hier staat is de website, niet de app: darijaforkids.eu is een etalage
+# met de film, de schermen, de uitleg en de drie pagina's die de winkels eisen.
+# De app zelf wordt uit de App Store en Google Play gehaald en staat dus met
+# opzet niet online — `npm run site` schrijft site/, `npm run build` schrijft
+# dist/, en alleen de eerste gaat de lucht in.
+#
+# Deze toml staat met opzet in darija-kids en niet in de wortel van de repo:
+# daar staat er al een, van een ander project, met een andere naam. Twee
+# projecten die elkaars naam gebruiken publiceren over elkaar heen.
 #
 # Er is geen Worker-script. `assets` zonder `main` betekent: zet deze map neer
-# en verder niets. De app is een gewone statische site.
+# en verder niets.
 name = "darijaforkids"
 compatibility_date = "2026-09-18"
 
 [assets]
-directory = "dist"
-# /privacy en /leren bestaan niet als bestand — het is één pagina die zelf
-# bepaalt wat je ziet. Zonder deze regel geeft de host daar een 404, en precies
-# die adressen controleren Apple en Google voordat ze een app aannemen.
-not_found_handling = "single-page-application"
+directory = "site"
+# /privacy is het bestand /privacy/index.html. Deze stand laat Cloudflare dat
+# zelf uitzoeken, zodat het adres dat in App Store Connect en de Play Console
+# staat ook echt een pagina oplevert — zonder omleiding, want een reviewer
+# volgt die niet altijd.
+html_handling = "auto-trailing-slash"
+# Een adres dat niet bestaat is een fout, geen startpagina. Dat was anders
+# toen de app hier stond: die had één pagina die zelf uitzocht wat je zag.
+not_found_handling = "404-page"
