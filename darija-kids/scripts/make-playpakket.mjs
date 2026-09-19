@@ -55,11 +55,26 @@ for (const lang of LANGS) {
   const feature = path.join(ROOT, 'store', 'marketing', lang, 'feature-graphic.png')
   await cp(feature, path.join(map, 'uitgelicht-1024x500.png')).catch(() => gemist.push(feature))
 
-  const uit = path.join(ROOT, 'store', 'screenshots', lang, 'play')
-  const schermen = (await readdir(uit).catch(() => [])).filter((f) => f.endsWith('.png')).sort()
-  if (!schermen.length) gemist.push(uit)
-  for (const [i, file] of schermen.slice(0, MAX_SCHERMEN).entries()) {
-    await cp(path.join(uit, file), path.join(map, 'schermen', `${i + 1}-${file.replace(/^\d+-/, '')}`))
+  // Play vraagt de schermen per soort toestel apart: telefoon, 7-inch tablet
+  // en 10-inch tablet. Een app die alleen telefoonschermen aanlevert komt in
+  // de winkel op een tablet met een waarschuwing te staan dat hij daar
+  // misschien niet goed op werkt — en dat leest een ouder als "niet voor mijn
+  // iPad-generatie".
+  for (const [bron, naar] of [['play', 'schermen'], ['play-7', 'schermen-tablet-7inch'], ['play-10', 'schermen-tablet-10inch']]) {
+    const uit = path.join(ROOT, 'store', 'screenshots', lang, bron)
+    const schermen = (await readdir(uit).catch(() => [])).filter((f) => f.endsWith('.png')).sort()
+    if (!schermen.length) { gemist.push(uit); continue }
+    await mkdir(path.join(map, naar), { recursive: true })
+    for (const [i, file] of schermen.slice(0, MAX_SCHERMEN).entries()) {
+      // Als JPEG, niet als PNG. De 10-inch schermen zijn 1600x2560 en wegen
+      // als PNG een megabyte per stuk; zes talen maal drie toestelsoorten is
+      // dan een pakket van bijna negentig megabyte dat niemand nog gemaild
+      // krijgt. Play neemt JPEG net zo goed aan, en op kwaliteit 92 is het
+      // verschil op een winkelpagina niet te zien.
+      const doel = path.join(map, naar, `${i + 1}-${file.replace(/^\d+-/, '').replace(/\.png$/, '.jpg')}`)
+      await run(ffmpeg, ['-hide_banner', '-loglevel', 'error', '-y',
+        '-i', path.join(uit, file), '-q:v', '3', doel])
+    }
   }
 
   const teksten = path.join(ROOT, 'store', `listing.${lang}.md`)
@@ -82,6 +97,8 @@ PER TAAL, onder Groeien > Winkelaanwezigheid > Hoofdvermelding in de winkel:
   Korte beschrijving       -> uit teksten.md, "Korte beschrijving (max 80)"
   Volledige beschrijving   -> uit teksten.md, "Volledige beschrijving"
   Telefoonschermen         -> alles uit de map schermen/ (het zijn er acht)
+  7-inch tabletschermen    -> alles uit schermen-tablet-7inch/
+  10-inch tabletschermen   -> alles uit schermen-tablet-10inch/
   Uitgelichte afbeelding   -> uitgelicht-1024x500.png
 
 EEN KEER, niet per taal:
@@ -93,8 +110,12 @@ EEN KEER, niet per taal:
 
 LET OP
 
-  De schermen zijn 1080x1920. Play wil minimaal twee en maximaal acht per
-  taal; er staan er precies acht.
+  De telefoonschermen zijn 1080x1920, de 7-inch 1200x1920 en de 10-inch
+  1600x2560. Play wil minimaal twee en maximaal acht per soort; er staan er
+  precies acht.
+
+  De tabletschermen zijn geen bijzaak: zonder die twee mappen zet Play bij je
+  app op een tablet een waarschuwing dat hij daar mogelijk niet goed werkt.
 
   De teksten in teksten.md zijn op de tekens geteld die Play toelaat. Plak ze
   zoals ze zijn — een titel van 31 tekens wordt geweigerd.
