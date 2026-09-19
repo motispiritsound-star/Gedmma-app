@@ -83,8 +83,8 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 - [x] Winkelteksten in zes talen — `store/play-pakket/<taal>/teksten.md`
 - [x] Icoon en splashscherm — `npm run assets`
 - [x] Het e-boek in zes talen — `npm run ebook`
-- [ ] Apple: naam, ondertitel, trefwoorden, beschrijving en screenshots per taal
-- [ ] Google: de winkelvermelding per taal, begin bij en-US (§PLAY 6)
+- [ ] Apple: naam, ondertitel, trefwoorden, beschrijving en screenshots per taal — pakket met `npm run applepakket`
+- [ ] Google: de winkelvermelding per taal, begin bij en-US (§PLAY 6) — pakket met `npm run playpakket`
 - [ ] Android: een **AAB** bouwen en ondertekenen, keystore op twee plekken bewaren (§3)
 - [ ] **Een Mac regelen** — zonder macOS geen iOS-build, en dus geen App Store (§3)
 - [ ] iOS: `npx cap add ios`, archiveren in Xcode, naar TestFlight
