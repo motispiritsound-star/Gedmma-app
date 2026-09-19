@@ -47,7 +47,7 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 - [ ] Identiteit laten verifiëren bij allebei
 - [ ] Bankrekening en belastinggegevens invullen in beide consoles (§2)
 - [x] Apple: de **Paid Applications**-overeenkomst tekenen — getekend; wacht nog op bank en belastingformulier
-- [ ] Apple: aanmelden voor het **Small Business Program**, 15% in plaats van 30%
+- [x] Apple: aanmelden voor het **Small Business Program**, 15% in plaats van 30%
 
 ### De producten
 
