@@ -1,6 +1,6 @@
 # Het abonnement, en hoe het geld bij jou komt
 
-Het alfabet en de eerste **vijf units** zijn gratis en blijven gratis. De rest van de cursus
+Het Arabische alfabet en de **unit daarna** zijn gratis en blijven gratis. De rest van de cursus
 hoort bij **volledige toegang**: een paar dagen gratis proberen, daarna
 **€ 59,99 voor een jaar vooruit (€ 5,00 per maand) of € 6,99 per maand**,
 inclusief btw en altijd opzegbaar. Daarnaast staat er één ding los te koop:

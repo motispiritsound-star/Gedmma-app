@@ -592,7 +592,7 @@ export const fr: Strings = {
       ],
       [
         'Est-ce que c’est payant ?',
-        'L’alphabet et les cinq premières unités sont et restent gratuits — de quoi lire l’écriture arabe, te présenter et compter jusqu’à cent. Pour le cours complet, c’est un abonnement : 5,00 € par mois avec un abonnement annuel (59,99 € en une fois) ou 6,99 € par mois, TTC et avec les premiers jours offerts. Sur iPhone et iPad, un seul abonnement vaut pour toute la famille : jusqu’à six personnes, chacune avec sa propre progression. Sur Android, il vaut pour le compte Google qui le souscrit. Tu le souscris dans l’application via l’App Store ou Google Play, et tu le résilies au même endroit quand tu veux. Pas de publicité et pas de compte : ta progression reste à toi.',
+        'L’alphabet arabe et l’unité qui suit — dire bonjour, merci et au revoir — sont et restent gratuits. Pour le cours complet, c’est un abonnement : 5,00 € par mois avec un abonnement annuel (59,99 € en une fois) ou 6,99 € par mois, TTC et avec les premiers jours offerts. Sur iPhone et iPad, un seul abonnement vaut pour toute la famille : jusqu’à six personnes, chacune avec sa propre progression. Sur Android, il vaut pour le compte Google qui le souscrit. Tu le souscris dans l’application via l’App Store ou Google Play, et tu le résilies au même endroit quand tu veux. Pas de publicité et pas de compte : ta progression reste à toi.',
       ],
       [
         'Ça marche hors ligne ?',
@@ -620,7 +620,7 @@ export const fr: Strings = {
     sub: (dagen, prijs, gezin) =>
       `${dagen} jours gratuits, puis ${prijs} par mois${gezin ? ' pour toute la famille' : ''}`,
     intro: (vrij) =>
-      `Les ${vrij} premières unités sont et restent gratuites — de quoi te présenter et compter jusqu'à cent. Le reste du cours fait partie de l'abonnement.`,
+      `Les ${vrij} premières unités sont et restent gratuites — l'alphabet arabe, et dire bonjour, merci et au revoir. Le reste du cours fait partie de l'abonnement.`,
     krijgt: (gezin) => [
       "Les 17 unités, de l'alphabet et la nourriture jusqu'à la négociation au souq",
       'Tous les mots et phrases du cours, avec la prononciation',

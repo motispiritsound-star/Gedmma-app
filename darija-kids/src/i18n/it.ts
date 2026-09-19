@@ -592,7 +592,7 @@ export const it: Strings = {
       ],
       [
         'Costa qualcosa?',
-        'L’alfabeto e le prime cinque unità sono e restano gratis: abbastanza per leggere la scrittura araba, presentarti e contare fino a cento. Il corso completo va con un abbonamento: 5,00 € al mese con l’abbonamento annuale (59,99 € in una volta) oppure 6,99 € al mese, IVA inclusa e i primi giorni gratis. Su iPhone e iPad un abbonamento vale per tutta la famiglia: fino a sei persone, ognuna con i propri progressi. Su Android vale per l’account Google che lo sottoscrive. Si sottoscrive dentro l’app tramite App Store o Google Play, e lì stesso si disdice quando vuoi. Nessuna pubblicità e nessun account: i tuoi progressi restano tuoi.',
+        'L’alfabeto arabo e l’unità che segue — salutare, ringraziare e congedarti — sono e restano gratis. Il corso completo va con un abbonamento: 5,00 € al mese con l’abbonamento annuale (59,99 € in una volta) oppure 6,99 € al mese, IVA inclusa e i primi giorni gratis. Su iPhone e iPad un abbonamento vale per tutta la famiglia: fino a sei persone, ognuna con i propri progressi. Su Android vale per l’account Google che lo sottoscrive. Si sottoscrive dentro l’app tramite App Store o Google Play, e lì stesso si disdice quando vuoi. Nessuna pubblicità e nessun account: i tuoi progressi restano tuoi.',
       ],
       [
         'Funziona senza connessione?',
@@ -620,7 +620,7 @@ export const it: Strings = {
     sub: (dagen, prijs, gezin) =>
       `${dagen} giorni gratis, poi ${prijs} al mese${gezin ? ' per tutta la famiglia' : ''}`,
     intro: (vrij) =>
-      `Le prime ${vrij} unità sono e restano gratis: abbastanza per presentarti e contare fino a cento. Il resto del corso va con l’abbonamento.`,
+      `Le prime ${vrij} unità sono e restano gratis: l’alfabeto arabo, e salutare, ringraziare e congedarti. Il resto del corso va con l’abbonamento.`,
     krijgt: (gezin) => [
       'Tutte le 17 unità, dall’alfabeto e il cibo fino a contrattare al souk',
       'Tutte le parole e le frasi del corso, con la pronuncia',

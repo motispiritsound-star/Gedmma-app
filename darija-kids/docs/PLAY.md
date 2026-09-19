@@ -62,8 +62,8 @@ account.
 | Gratis of betaald | **Gratis** |
 
 De app is gratis met aankopen in de app. Kies je "betaald", dan kun je dat
-nooit meer terugdraaien en verlies je het gratis pad van zes units waar je hele
-marketing op rust.
+nooit meer terugdraaien en verlies je het gratis begin waar je hele marketing
+op rust.
 
 De standaardtaal is en-US omdat dat is wat iemand ziet in elk land waarvoor je
 geen vertaling hebt. Nederlands voeg je straks toe als vertaling.

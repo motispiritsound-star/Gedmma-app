@@ -14,12 +14,17 @@ const KEY = 'darijakids.v1'
 export const MAX_HEARTS = 5
 
 /**
- * How much of the course is free. The alphabet plus the first five units —
- * hello, introducing yourself, family, numbers and colours — are enough to
- * read the script and hold a first conversation; everything past that is the
- * subscription.
+ * How much of the course is free: the alphabet, and the unit after it.
+ *
+ * Two units is enough to read the Arabic script and to say hello, thank you
+ * and goodbye — a whole thing, finished, that a child can show to someone. It
+ * is deliberately not enough to introduce yourself or count to a hundred: the
+ * question "and then?" is the point at which someone decides, and it should
+ * come while they are still enjoying it rather than weeks later.
+ *
+ * Everything past this is the subscription, with three free days first.
  */
-export const FREE_UNITS = 6
+export const FREE_UNITS = 2
 
 /** What one right answer is worth, paid out the moment it happens. */
 export const XP_PER_CORRECT = 2

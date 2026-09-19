@@ -68,7 +68,7 @@ IN YOUR LANGUAGE
 English, Dutch, French, German, Spanish and Italian. You choose at the start and can switch any time: translations, explanations and stories all follow.
 
 FREE TO START
-The alphabet and the first five units are free and stay free: enough to read the Arabic script, introduce yourself and count to a hundred. The whole course comes with full access: the first days free, then € 5.00 a month on the yearly plan (€ 59.99 charged once) or € 6.99 a month, including VAT. Cancel in your own App Store or Google Play account; cancel before the trial ends and you pay nothing.
+The Arabic script and the unit after it — saying hello, thank you and goodbye — are free and stay free. The whole course comes with full access: the first days free, then € 5.00 a month on the yearly plan (€ 59.99 charged once) or € 6.99 a month, including VAT. Cancel in your own App Store or Google Play account; cancel before the trial ends and you pay nothing.
 
 And one thing is sold on its own: the e-book, the whole course on paper — all 28 letters with their three shapes, all 17 units with the grammar notes, every word and every sentence. € 14.99, once, and included with a yearly plan.
 

@@ -33,7 +33,7 @@ const ROUTES = [
   '/uitspraak', '/opname', '/kaart/tariq', '/film/walili',
 ]
 
-/** A learner who is not on their first day: six units in, subscription running. */
+/** A learner who is not on their first day: well past the free part, subscription running. */
 const HALVERWEGE = {
   xp: 940, streak: 12, bestStreak: 12, unlocked: true, unlockedAt: 1, ebook: true,
   langPicked: true,

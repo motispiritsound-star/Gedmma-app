@@ -85,8 +85,8 @@ Dezelfde grap in de andere vier talen:
 > afdingen op de souq, en alles kun je horen. In het Nederlands, Frans, Duits,
 > Spaans, Italiaans en Engels, dus ook voor neefjes en nichtjes over de grens.
 >
-> De eerste zes units zijn gratis, er zitten geen advertenties in en er wordt
-> niets van je kind verzameld.
+> Het alfabet en hallo leren zeggen zijn gratis, er zitten geen advertenties in
+> en er wordt niets van je kind verzameld.
 
 **LinkedIn**
 
@@ -124,8 +124,8 @@ Dezelfde grap in de andere vier talen:
 > les chiffres, et finit par négocier au souk. Tout se prononce. En français,
 > néerlandais, allemand, espagnol, italien et anglais, donc aussi pour les cousins.
 >
-> Les six premières unités sont gratuites, il n’y a aucune publicité et rien
-> n’est collecté sur ton enfant.
+> L’alphabet et les premières salutations sont gratuits, il n’y a aucune
+> publicité et rien n’est collecté sur ton enfant.
 
 ---
 
@@ -147,8 +147,8 @@ Dezelfde grap in de andere vier talen:
 > zum Handeln auf dem Souk, und alles lässt sich anhören. Auf Deutsch,
 > Niederländisch, Französisch, Spanisch, Italienisch und Englisch.
 >
-> Die ersten sechs Einheiten sind kostenlos, es gibt keine Werbung und es wird
-> nichts über dein Kind gesammelt.
+> Das Alphabet und die ersten Begrüßungen sind kostenlos, es gibt keine Werbung
+> und es wird nichts über dein Kind gesammelt.
 
 ---
 
@@ -169,8 +169,8 @@ Dezelfde grap in de andere vier talen:
 > y acaba regateando en el zoco. Todo se puede escuchar. En español, neerlandés,
 > francés, alemán, italiano e inglés.
 >
-> Las seis primeras unidades son gratis, no hay publicidad y no se recoge nada
-> sobre tu hijo.
+> El alfabeto y los primeros saludos son gratis, no hay publicidad y no se
+> recoge nada sobre tu hijo.
 
 ---
 
@@ -191,8 +191,8 @@ Dezelfde grap in de andere vier talen:
 > arriva a contrattare al souk. Tutto si può ascoltare. In italiano, olandese,
 > francese, tedesco, spagnolo e inglese, quindi anche per i cugini all’estero.
 >
-> Le prime sei unità sono gratis, non ci sono pubblicità e non si raccoglie
-> nulla su tuo figlio.
+> L’alfabeto e i primi saluti sono gratis, non ci sono pubblicità e non si
+> raccoglie nulla su tuo figlio.
 
 **Tre ganci per un reel o TikTok**
 
@@ -223,8 +223,8 @@ Dezelfde grap in de andere vier talen:
 > ends at haggling in the souq. Everything can be heard out loud. In English,
 > Dutch, French, German, Spanish and Italian.
 >
-> The first six units are free, there are no adverts, and nothing about your
-> child is collected.
+> The alphabet and the first greetings are free, there are no adverts, and
+> nothing about your child is collected.
 
 ---
 
@@ -240,12 +240,12 @@ dat beginnen gratis is, en tot slot het stuk dat mensen doorsturen.
 
 | | |
 |---|---|
-| **nl** | Hij verstaat alles wat jeddti zegt. Antwoorden lukt alleen niet — en dat is precies het moment waarop een taal uit een familie verdwijnt. Darijaforkids begint bij het alfabet en eindigt bij afdingen op de souq. De eerste zes units zijn gratis. |
-| **fr** | Il comprend tout ce que dit jeddti. C'est répondre qui ne vient pas — et c'est exactement là qu'une langue quitte une famille. Darijaforkids commence à l'alphabet et finit au souk. Les six premières unités sont gratuites. |
-| **de** | Er versteht alles, was jeddti sagt. Nur antworten klappt nicht — und genau da verlässt eine Sprache eine Familie. Darijaforkids beginnt beim Alphabet und endet beim Handeln auf dem Souk. Die ersten sechs Einheiten sind gratis. |
-| **es** | Entiende todo lo que dice jeddti. Lo que no sale es responder, y ahí es justo donde un idioma se va de una familia. Darijaforkids empieza por el alfabeto y acaba regateando en el zoco. Las seis primeras unidades son gratis. |
-| **it** | Capisce tutto quello che dice jeddti. È rispondere che non gli viene — ed è esattamente lì che una lingua esce da una famiglia. Darijaforkids parte dall'alfabeto e arriva al souk. Le prime sei unità sono gratis. |
-| **en** | He understands everything jeddti says. It is answering that does not come — and that is exactly where a language leaves a family. Darijaforkids starts at the alphabet and ends at haggling in the souq. The first six units are free. |
+| **nl** | Hij verstaat alles wat jeddti zegt. Antwoorden lukt alleen niet — en dat is precies het moment waarop een taal uit een familie verdwijnt. Darijaforkids begint bij het alfabet en eindigt bij afdingen op de souq. Het alfabet is gratis. |
+| **fr** | Il comprend tout ce que dit jeddti. C'est répondre qui ne vient pas — et c'est exactement là qu'une langue quitte une famille. Darijaforkids commence à l'alphabet et finit au souk. L'alphabet est gratuit. |
+| **de** | Er versteht alles, was jeddti sagt. Nur antworten klappt nicht — und genau da verlässt eine Sprache eine Familie. Darijaforkids beginnt beim Alphabet und endet beim Handeln auf dem Souk. Das Alphabet ist gratis. |
+| **es** | Entiende todo lo que dice jeddti. Lo que no sale es responder, y ahí es justo donde un idioma se va de una familia. Darijaforkids empieza por el alfabeto y acaba regateando en el zoco. El alfabeto es gratis. |
+| **it** | Capisce tutto quello che dice jeddti. È rispondere che non gli viene — ed è esattamente lì che una lingua esce da una famiglia. Darijaforkids parte dall'alfabeto e arriva al souk. L'alfabeto è gratis. |
+| **en** | He understands everything jeddti says. It is answering that does not come — and that is exactly where a language leaves a family. Darijaforkids starts at the alphabet and ends at haggling in the souq. The alphabet is free. |
 
 ### 2 — 432 opnames, geen computerstem
 
@@ -269,16 +269,16 @@ dat beginnen gratis is, en tot slot het stuk dat mensen doorsturen.
 | **it** | Tutte e 28 le lettere, con la loro forma all'inizio, in mezzo e alla fine di una parola. Tuo figlio impara a leggere la scrittura prima di accorgersi che dovrebbe essere difficile. |
 | **en** | All 28 letters, with their shape at the start, in the middle and at the end of a word. Your child learns to read the script before realising it is supposed to be hard. |
 
-### 4 — De eerste zes units zijn gratis
+### 4 — Het alfabet is gratis
 
 | | |
 |---|---|
-| **nl** | Zes units gratis, en dat blijven ze: het alfabet, groeten, jezelf voorstellen, je familie, tellen tot honderd en de kleuren. Genoeg om een gesprek te beginnen. Geen account, geen advertenties, werkt offline. |
-| **fr** | Six unités gratuites, et elles le restent : l'alphabet, les salutations, se présenter, la famille, compter jusqu'à cent et les couleurs. De quoi commencer une conversation. Sans compte, sans publicité, hors ligne. |
-| **de** | Sechs Einheiten gratis, und das bleiben sie: das Alphabet, Begrüßungen, sich vorstellen, die Familie, bis hundert zählen und die Farben. Genug, um ein Gespräch anzufangen. Kein Konto, keine Werbung, offline. |
-| **es** | Seis unidades gratis, y siguen siéndolo: el alfabeto, los saludos, presentarse, la familia, contar hasta cien y los colores. Suficiente para empezar una conversación. Sin cuenta, sin anuncios, sin conexión. |
-| **it** | Sei unità gratis, e restano gratis: l'alfabeto, i saluti, presentarsi, la famiglia, contare fino a cento e i colori. Abbastanza per cominciare una conversazione. Senza account, senza pubblicità, offline. |
-| **en** | Six units free, and they stay free: the alphabet, greetings, introducing yourself, your family, counting to a hundred and the colours. Enough to start a conversation. No account, no adverts, works offline. |
+| **nl** | Het Arabische alfabet is gratis, en blijft dat. De unit erna ook: hallo zeggen, bedanken, afscheid nemen. Genoeg om je kind iets te laten zeggen tegen jeddti nog voor je iets hebt uitgegeven. Geen account, geen advertenties, werkt offline. |
+| **fr** | L'alphabet arabe est gratuit, et le reste. L'unité suivante aussi : dire bonjour, merci, au revoir. De quoi faire dire quelque chose à ton enfant avant même d'avoir dépensé un euro. Sans compte, sans publicité, hors ligne. |
+| **de** | Das arabische Alphabet ist gratis und bleibt es. Die Einheit danach auch: Hallo, Danke, Tschüss. Genug, damit dein Kind etwas sagen kann, bevor du einen Cent ausgegeben hast. Kein Konto, keine Werbung, offline. |
+| **es** | El alfabeto árabe es gratis, y lo sigue siendo. La unidad siguiente también: saludar, dar las gracias, despedirse. Suficiente para que tu hijo diga algo antes de que hayas gastado un euro. Sin cuenta, sin anuncios, sin conexión. |
+| **it** | L'alfabeto arabo è gratis, e resta gratis. Anche l'unità dopo: salutare, ringraziare, congedarsi. Abbastanza perché tuo figlio dica qualcosa prima che tu abbia speso un euro. Senza account, senza pubblicità, offline. |
+| **en** | The Arabic script is free, and stays free. So is the unit after it: hello, thank you, goodbye. Enough for your child to say something before you have spent a penny. No account, no adverts, works offline. |
 
 ### 5 — Veertien filmpjes uit de geschiedenis van Marokko
 
