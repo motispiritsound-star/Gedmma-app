@@ -58,6 +58,9 @@ Dezelfde grap in de andere vier talen:
 | **es** | Deja que tus hijos aprendan su lengua materna. Y refresca la tuya de paso. |
 | | Para tus hijos. Y un poquito para ti, en secreto. |
 | | Tiempo de pantalla para ellos. Clase de idiomas para toda la familia. |
+| **it** | Lascia che i tuoi figli imparino la lingua di casa. E rispolvera la tua, senza dirlo. |
+| | Per i tuoi figli. E un pochino anche per te. |
+| | Tempo sullo schermo per loro. Lezione di lingua per tutta la famiglia. |
 | **en** | Let your children learn their mother tongue. And quietly pick some up yourself. |
 | | For your children. But a little bit for you, too. |
 | | Screen time for them. Language practice for the whole family. |
@@ -171,6 +174,38 @@ Dezelfde grap in de andere vier talen:
 
 ---
 
+## Italiano
+
+**Corto**
+
+> Tuo figlio capisce la nonna, ma risponde in italiano. 🇲🇦
+> Darijaforkids insegna la lingua di casa, non l’arabo del libro di scuola.
+> Inizia gratis 👇
+
+**Gruppo Facebook o chat di famiglia**
+
+> Ho fatto l’app che cercavo io stesso: insegna il darija ai bambini. Non
+> l’arabo standard — la lingua che si sente a casa e per strada.
+>
+> Parte dall’alfabeto arabo, passa per il cibo, la famiglia e i numeri, e
+> arriva a contrattare al souk. Tutto si può ascoltare. In italiano, olandese,
+> francese, tedesco, spagnolo e inglese, quindi anche per i cugini all’estero.
+>
+> Le prime sei unità sono gratis, non ci sono pubblicità e non si raccoglie
+> nulla su tuo figlio.
+
+**Tre ganci per un reel o TikTok**
+
+1. «Tuo figlio capisce la nonna — ma risponde in italiano.»
+2. «Duolingo non ha il darija. Per questo l’ho fatta io.»
+3. «شحال هادا؟ — se stai leggendo questo, hai già cominciato.»
+
+> L’Italia è il mercato più grande che nessuno serve: più marocchini che in
+> Belgio e Paesi Bassi messi insieme, e nessuna app che offra il darija in
+> italiano. Vedi [docs/MARKT.md](../docs/MARKT.md).
+
+---
+
 ## English
 
 **Short**
@@ -190,6 +225,76 @@ Dezelfde grap in de andere vier talen:
 >
 > The first six units are free, there are no adverts, and nothing about your
 > child is collected.
+
+---
+
+## Bijschriften bij de vijf posts
+
+De beelden staan in `brand/social/posts/<taal>/` — vijf berichten, elk in
+vierkant voor de feed en staand voor stories, reels en TikTok. Hieronder wat
+eronder komt. Eén post per keer, twee per week, in deze volgorde: eerst het
+probleem dat de lezer herkent, dan wat de app anders doet, dan het schrift, dan
+dat beginnen gratis is, en tot slot het stuk dat mensen doorsturen.
+
+### 1 — Je kind verstaat oma wel
+
+| | |
+|---|---|
+| **nl** | Hij verstaat alles wat jeddti zegt. Antwoorden lukt alleen niet — en dat is precies het moment waarop een taal uit een familie verdwijnt. Darijaforkids begint bij het alfabet en eindigt bij afdingen op de souq. De eerste zes units zijn gratis. |
+| **fr** | Il comprend tout ce que dit jeddti. C'est répondre qui ne vient pas — et c'est exactement là qu'une langue quitte une famille. Darijaforkids commence à l'alphabet et finit au souk. Les six premières unités sont gratuites. |
+| **de** | Er versteht alles, was jeddti sagt. Nur antworten klappt nicht — und genau da verlässt eine Sprache eine Familie. Darijaforkids beginnt beim Alphabet und endet beim Handeln auf dem Souk. Die ersten sechs Einheiten sind gratis. |
+| **es** | Entiende todo lo que dice jeddti. Lo que no sale es responder, y ahí es justo donde un idioma se va de una familia. Darijaforkids empieza por el alfabeto y acaba regateando en el zoco. Las seis primeras unidades son gratis. |
+| **it** | Capisce tutto quello che dice jeddti. È rispondere che non gli viene — ed è esattamente lì che una lingua esce da una famiglia. Darijaforkids parte dall'alfabeto e arriva al souk. Le prime sei unità sono gratis. |
+| **en** | He understands everything jeddti says. It is answering that does not come — and that is exactly where a language leaves a family. Darijaforkids starts at the alphabet and ends at haggling in the souq. The first six units are free. |
+
+### 2 — 432 opnames, geen computerstem
+
+| | |
+|---|---|
+| **nl** | 432 opnames. Elke letter, elk woord en elke zin gezegd door iemand die Darija spreekt — geen enkele door een computer. Je hoort het verschil meteen, en daarom blijft het hangen. |
+| **fr** | 432 enregistrements. Chaque lettre, chaque mot, chaque phrase dits par quelqu'un qui parle darija — pas une seule voix de synthèse. La différence s'entend tout de suite, et c'est pour ça que ça reste. |
+| **de** | 432 Aufnahmen. Jeder Buchstabe, jedes Wort, jeder Satz von jemandem gesprochen, der Darija spricht — keine einzige Computerstimme. Man hört den Unterschied sofort, und deshalb bleibt es hängen. |
+| **es** | 432 grabaciones. Cada letra, cada palabra y cada frase dichas por alguien que habla dariya, ninguna por un ordenador. La diferencia se nota enseguida, y por eso se queda. |
+| **it** | 432 registrazioni. Ogni lettera, ogni parola e ogni frase dette da chi parla darija — nessuna voce sintetica. La differenza si sente subito, ed è per questo che resta. |
+| **en** | 432 recordings. Every letter, every word and every sentence said by someone who speaks Darija — not one by a computer. You hear the difference straight away, and that is why it sticks. |
+
+### 3 — Het Arabische schrift, letter voor letter
+
+| | |
+|---|---|
+| **nl** | Alle 28 letters, met hun vorm aan het begin, in het midden en aan het eind van een woord. Je kind leert het schrift lezen voordat het doorheeft dat dat moeilijk hoort te zijn. |
+| **fr** | Les 28 lettres, avec leur forme au début, au milieu et à la fin d'un mot. Ton enfant apprend à lire l'écriture avant de comprendre que c'est censé être difficile. |
+| **de** | Alle 28 Buchstaben, mit ihrer Form am Anfang, in der Mitte und am Ende eines Wortes. Dein Kind lernt die Schrift lesen, bevor es merkt, dass das schwer sein soll. |
+| **es** | Las 28 letras, con su forma al principio, en medio y al final de una palabra. Tu hijo aprende a leer la escritura antes de darse cuenta de que debería ser difícil. |
+| **it** | Tutte e 28 le lettere, con la loro forma all'inizio, in mezzo e alla fine di una parola. Tuo figlio impara a leggere la scrittura prima di accorgersi che dovrebbe essere difficile. |
+| **en** | All 28 letters, with their shape at the start, in the middle and at the end of a word. Your child learns to read the script before realising it is supposed to be hard. |
+
+### 4 — De eerste zes units zijn gratis
+
+| | |
+|---|---|
+| **nl** | Zes units gratis, en dat blijven ze: het alfabet, groeten, jezelf voorstellen, je familie, tellen tot honderd en de kleuren. Genoeg om een gesprek te beginnen. Geen account, geen advertenties, werkt offline. |
+| **fr** | Six unités gratuites, et elles le restent : l'alphabet, les salutations, se présenter, la famille, compter jusqu'à cent et les couleurs. De quoi commencer une conversation. Sans compte, sans publicité, hors ligne. |
+| **de** | Sechs Einheiten gratis, und das bleiben sie: das Alphabet, Begrüßungen, sich vorstellen, die Familie, bis hundert zählen und die Farben. Genug, um ein Gespräch anzufangen. Kein Konto, keine Werbung, offline. |
+| **es** | Seis unidades gratis, y siguen siéndolo: el alfabeto, los saludos, presentarse, la familia, contar hasta cien y los colores. Suficiente para empezar una conversación. Sin cuenta, sin anuncios, sin conexión. |
+| **it** | Sei unità gratis, e restano gratis: l'alfabeto, i saluti, presentarsi, la famiglia, contare fino a cento e i colori. Abbastanza per cominciare una conversazione. Senza account, senza pubblicità, offline. |
+| **en** | Six units free, and they stay free: the alphabet, greetings, introducing yourself, your family, counting to a hundred and the colours. Enough to start a conversation. No account, no adverts, works offline. |
+
+### 5 — Veertien filmpjes uit de geschiedenis van Marokko
+
+| | |
+|---|---|
+| **nl** | In 859 erfde een vrouw in Fes geld van haar vader. Ze gaf het uit aan één ding: een school. Die school geeft nog steeds les. Veertien van zulke kaarten zitten in de app — na elke toets krijg je er een, voorgelezen in de taal van je kind. |
+| **fr** | En 859, une femme de Fès hérita de l'argent de son père. Elle le dépensa pour une seule chose : une école. Cette école enseigne encore. Quatorze cartes comme celle-ci sont dans l'application — une après chaque test, lue dans la langue de ton enfant. |
+| **de** | 859 erbte eine Frau in Fes das Geld ihres Vaters. Sie gab es für eine einzige Sache aus: eine Schule. Diese Schule unterrichtet bis heute. Vierzehn solcher Karten stecken in der App — eine nach jedem Test, vorgelesen in der Sprache deines Kindes. |
+| **es** | En 859 una mujer de Fez heredó el dinero de su padre. Lo gastó en una sola cosa: una escuela. Esa escuela sigue dando clase. Catorce cartas así están en la aplicación: una después de cada test, leída en el idioma de tu hijo. |
+| **it** | Nell'859 una donna di Fès ereditò il denaro di suo padre. Lo spese per una cosa sola: una scuola. Quella scuola insegna ancora. Quattordici carte come questa sono nell'app — una dopo ogni test, letta nella lingua di tuo figlio. |
+| **en** | In 859 a woman in Fes inherited her father's money. She spent it on one thing: a school. That school is still teaching. Fourteen cards like it are in the app — one after every test, read aloud in your child's own language. |
+
+Zet er telkens `darijaforkids.eu` onder, of de directe winkellink zodra je die
+hebt. Geen hashtag-muur: drie is genoeg, en de beste zijn de woorden die
+mensen zelf zouden typen — #darija #marokko #tweedetaal en wat de taal van het
+land eraan toevoegt.
 
 ---
 

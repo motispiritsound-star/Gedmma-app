@@ -96,10 +96,28 @@ Dit staat allemaal al in de repo. Loop het na, vul aan wat mist:
 | Introfilm met geluid, 4 formaten | `npm run intro` | ✅ |
 | Logo, profielfoto's, omslagen, flyer | `npm run brand` | ✅ |
 | Feature graphic voor Play | `npm run marketing` | ✅ |
+| **Vijf posts per taal, vierkant en staand** | `npm run social` | ✅ |
 | Persbericht en citaten | `store/press-kit.md` | ✅ |
 | Berichten per taal en per kanaal | `store/social.md` | ✅ |
-| Handelaarsgegevens | `src/content/operator.ts` | ⬜ jij |
-| Website online | [DEPLOY.md](DEPLOY.md) | ⬜ jij |
+| Handelaarsgegevens | `src/content/operator.ts` | ✅ |
+| Website online | [DEPLOY.md](DEPLOY.md) | ✅ |
+| Winkeladressen in de downloadknoppen | `src/site/links.ts` | ⬜ jij, zodra je ze hebt |
+
+**De vijf posts zijn de campagne, in volgorde.** Ze staan in
+`brand/social/posts/<taal>/`, elk in 1080×1080 voor de feed en 1080×1920 voor
+stories, reels en TikTok:
+
+| | Wat het zegt | Waarom het die plek heeft |
+|---|---|---|
+| 1 | Je kind verstaat oma wel — antwoorden lukt alleen niet | het probleem dat de lezer bij zichzelf herkent, vóór er iets verkocht wordt |
+| 2 | 432 opnames, geen computerstem | het enige dat een concurrent niet kan naschrijven zonder het opnieuw op te nemen |
+| 3 | Het Arabische schrift, letter voor letter | het stuk waarvan ouders niet wisten dat het erin zat |
+| 4 | De eerste zes units zijn gratis | de drempel weg, pas nadat de waarde is getoond |
+| 5 | Veertien filmpjes uit de geschiedenis van Marokko | het stuk dat mensen doorsturen |
+
+Het beeld eronder is telkens het echte scherm waar dat ding gebeurt, geen
+mock-up. De bijschriften horen erbij en staan in
+[store/social.md](../store/social.md).
 
 ---
 
@@ -114,8 +132,36 @@ Claim de namen nu, ook waar je voorlopig niets doet.
 | **YouTube** | alleen omdat Google Play een YouTube-link wil in plaats van een bestand | de introfilm, niet-vermeld, en verder niets |
 | **Facebook** | niet voor de pagina, maar omdat je vanuit oudergroepen ergens naartoe moet linken | de introfilm en een vastgezette post |
 
-Beelden staan klaar in `brand/social/`. Meer dan vier accounts is een belofte
-die je niet waarmaakt: één dat leeft doet meer dan vier die stilstaan.
+Beelden staan klaar in `brand/social/`: profielfoto, omslagen voor Facebook,
+LinkedIn, X en YouTube in zes talen, en de vijf posts uit §4. Meer dan vier
+accounts is een belofte die je niet waarmaakt: één dat leeft doet meer dan vier
+die stilstaan.
+
+**Claim overal dezelfde naam, ook waar je niets doet.** Eén naam is het halve
+werk van doorverteld worden; twee namen is een kruising waar mensen verkeerd
+afslaan.
+
+| Voorkeur | Als die bezet is |
+|---|---|
+| `darijaforkids` | `darijaforkids.eu` · `darija4kids` · `wearedarijaforkids` |
+
+**De bio, voor elk profiel dezelfde drie regels.** Kort, want op Instagram en
+TikTok is er niet meer ruimte, en de derde regel is de enige klikbare:
+
+```
+Marokkaans-Arabisch voor kinderen 🇲🇦
+De taal van thuis — niet die uit het schoolboek
+darijaforkids.eu
+```
+
+```
+Moroccan Arabic for children 🇲🇦
+The language of home — not the one from the textbook
+darijaforkids.eu
+```
+
+Zet als profielfoto `brand/social/profielfoto.png` en als omslag de versie in
+de taal van het land waar je post.
 
 De volledige eerste week, dag voor dag, staat in [store/social.md](../store/social.md).
 

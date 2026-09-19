@@ -40,7 +40,8 @@
     "build:app": "tsc -b && vite build",
     "site": "node scripts/make-site.mjs",
     "siteassets": "node scripts/make-siteassets.mjs",
-    "playpakket": "node scripts/make-playpakket.mjs"
+    "playpakket": "node scripts/make-playpakket.mjs",
+    "social": "node scripts/make-social.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
