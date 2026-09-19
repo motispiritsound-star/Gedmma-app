@@ -658,8 +658,8 @@ export const en: Strings = {
       bevat: [
         'The alphabet: 28 letters with all three shapes and an example word',
         'The path: all 17 units with the grammar notes in one place',
-        'Every word by topic, with the Latin spelling',
-        'Every sentence in the course',
+        'All 304 words by topic, with the Latin spelling',
+        'All 100 sentences in the course',
       ],
       inclusief: 'e-book included',
       bijJaar: 'The yearly plan has the e-book in it — no need to buy it separately.',

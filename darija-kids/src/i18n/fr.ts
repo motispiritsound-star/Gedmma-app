@@ -658,8 +658,8 @@ export const fr: Strings = {
       bevat: [
         "L'alphabet : 28 lettres avec leurs trois formes et un mot d'exemple",
         'Le parcours : les 17 unités et toutes les explications de grammaire réunies',
-        'Tous les mots par thème, avec la graphie latine',
-        'Toutes les phrases du cours',
+        'Les 304 mots par thème, avec la graphie latine',
+        'Les 100 phrases du cours',
       ],
       inclusief: 'e-book inclus',
       bijJaar: "Avec l'abonnement annuel, l'e-book est compris — inutile de l'acheter à part.",

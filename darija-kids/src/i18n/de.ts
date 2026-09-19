@@ -658,8 +658,8 @@ export const de: Strings = {
       bevat: [
         'Das Alphabet: 28 Buchstaben mit allen drei Formen und einem Beispielwort',
         'Der Weg: alle 17 Einheiten mit den Grammatikerklärungen beisammen',
-        'Alle Wörter nach Thema, mit der lateinischen Schreibweise',
-        'Alle Sätze des Kurses',
+        'Alle 304 Wörter nach Thema, mit der lateinischen Schreibweise',
+        'Alle 100 Sätze des Kurses',
       ],
       inclusief: 'inkl. E-Book',
       bijJaar: 'Im Jahresabo ist das E-Book enthalten — dann muss es nicht extra gekauft werden.',

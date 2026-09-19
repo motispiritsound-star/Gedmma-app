@@ -658,8 +658,8 @@ export const es: Strings = {
       bevat: [
         'El alfabeto: 28 letras con sus tres formas y una palabra de ejemplo',
         'El camino: las 17 unidades con todas las explicaciones de gramática juntas',
-        'Todas las palabras por tema, con la grafía latina',
-        'Todas las frases del curso',
+        'Las 304 palabras por tema, con la grafía latina',
+        'Las 100 frases del curso',
       ],
       inclusief: 'libro incluido',
       bijJaar: 'Con la suscripción anual el libro va incluido: no hace falta comprarlo aparte.',

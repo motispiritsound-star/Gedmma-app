@@ -665,8 +665,8 @@ export const nl = {
       bevat: [
         'Het alfabet: 28 letters met alle drie de vormen en een voorbeeldwoord',
         'Het pad: alle 17 units met de grammatica-uitleg bij elkaar',
-        'Alle woorden op onderwerp, met de Latijnse schrijfwijze',
-        'Alle zinnen van de cursus',
+        'Alle 304 woorden op onderwerp, met de Latijnse schrijfwijze',
+        'Alle 100 zinnen van de cursus',
       ],
       inclusief: 'incl. e-boek',
       bijJaar: 'Bij een jaarabonnement zit het e-boek erbij — dan hoef je het niet apart te kopen.',
