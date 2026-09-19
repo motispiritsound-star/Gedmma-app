@@ -1,12 +1,12 @@
-store/screenshots/
-store/marketing/
-store/video/
-shots/
-brand/
+/store/screenshots/
+/store/marketing/
+/store/video/
+/shots/
+/brand/
 server/node_modules/
 server/.wrangler/
 server/.dev.vars
-store/knipblad.html
+/store/knipblad.html
 scripts/.*.mjs
 # De website is bouwresultaat; site-assets/ is de bron en gaat wel mee.
 /site/

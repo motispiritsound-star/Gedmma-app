@@ -517,6 +517,16 @@ const notFoundPage = () => layout({
 
 /* -------------------------------------------------------------- schrijven */
 
+/**
+ * Wat er ontbreekt, verzameld in plaats van meteen geroepen.
+ *
+ * Een etalage zonder schermen en zonder film is geen etalage, maar hij bouwt
+ * wel: dat is precies hoe zo'n site een keer de lucht in ging met lege vakken
+ * waar de telefoons hadden moeten staan. Vandaar dat dit script er aan het
+ * eind op stukloopt in plaats van een waarschuwing te laten langsscrollen.
+ */
+const missing = []
+
 await rm(OUT, { recursive: true, force: true })
 await mkdir(OUT, { recursive: true })
 
@@ -529,7 +539,7 @@ await cp(path.join(ROOT, 'src', 'site', 'site.css'), path.join(OUT, 'site.css'))
 const assets = path.join(ROOT, 'site-assets')
 for (const entry of ['shots', 'film']) {
   await cp(path.join(assets, entry), path.join(OUT, entry), { recursive: true }).catch(() => {
-    console.warn(`site-assets/${entry} ontbreekt — draai eerst: node scripts/make-siteassets.mjs`)
+    missing.push(`site-assets/${entry}`)
   })
 }
 
@@ -551,8 +561,8 @@ for (const { code: lang } of LANGS) {
   await write(PATHS[lang].terms, docPage(lang, 'terms', TERMS[lang]))
   await write(PATHS[lang].parents, parentsPage(lang))
   pages += 4
-  if (!shots.length) console.warn(`${lang}: geen schermen`)
-  if (!film) console.warn(`${lang}: geen film`)
+  if (!shots.length) missing.push(`de schermen voor ${lang}`)
+  if (!film) missing.push(`de film voor ${lang}`)
 }
 
 await writeFile(path.join(OUT, '404.html'), notFoundPage())
@@ -589,5 +599,11 @@ Allow: /
 
 Sitemap: ${SITE_URL}/sitemap.xml
 `)
+
+if (missing.length) {
+  console.error(`\nDit ontbreekt:\n  ${[...new Set(missing)].join('\n  ')}\n`)
+  console.error('site-assets/ hoort in de repo te staan. Draai `npm run siteassets` en commit wat eruit komt.')
+  process.exit(1)
+}
 
 console.log(`${pages} pagina's in ${LANGS.length} talen → ${path.relative(ROOT, OUT)}/`)
