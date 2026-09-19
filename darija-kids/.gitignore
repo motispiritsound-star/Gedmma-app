@@ -12,3 +12,5 @@ server/.dev.vars
 scripts/.*.mjs
 # De website is bouwresultaat; site-assets/ is de bron en gaat wel mee.
 /site/
+# En de demo ook: één bestand van 22 MB dat `npm run build:demo` zo weer maakt.
+/dist-demo/
