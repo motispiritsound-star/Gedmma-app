@@ -44,37 +44,71 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 
 - [x] Google Play Console aanmaken, $ 25 eenmalig (§1)
 - [x] Apple Developer Program, € 99 per jaar (§1)
-- [ ] Identiteit laten verifiëren bij allebei
-- [ ] Bankrekening en belastinggegevens invullen in beide consoles (§2)
-- [x] Apple: de **Paid Applications**-overeenkomst tekenen — getekend; wacht nog op bank en belastingformulier
+- [x] Apple: de **Paid Applications**-overeenkomst tekenen
 - [x] Apple: aanmelden voor het **Small Business Program**, 15% in plaats van 30%
+- [x] Apple: W-8BEN belastingformulier ingevuld
+- [ ] Apple: handelaarsverificatie (DSA) — **in review**, niets te doen dan wachten
+- [ ] Apple: naamcorrectie van "Adi" naar "Adil" — zaak **102968992781** loopt
+- [ ] Apple: bankgegevens — ingediend, wordt verwerkt
+- [ ] Google: identiteitsverificatie — documenten aangeleverd, **wachten**
+- [ ] Google: nakijken of het account als **organisatie** staat, niet als particulier — scheelt twee weken (§6)
+- [ ] Google: bankrekening en belastinggegevens invullen (§2)
 
-### De producten
+### De producten — Apple
 
-- [ ] `app.darijaforkids.yearly` — € 59,88 per jaar, 3 dagen gratis (§2)
-- [ ] `app.darijaforkids.monthly` — € 6,99 per maand, 3 dagen gratis (§2)
-- [ ] Beide in **dezelfde abonnementsgroep**, anders kan niemand overstappen
-- [ ] `app.darijaforkids.ebook` — € 14,99 eenmalig, **niet-verbruikbaar**, geen abonnement (§2)
-- [ ] Bij Apple: € 59,99 in plaats van € 59,88 — dat prijspunt bestaat daar niet
+- [x] Abonnementsgroep `Volledige toegang`, met groepsnaam `Darijaforkids`
+- [x] `app.darijaforkids.yearly` — `Een jaar`, 1 jaar, **€ 59,99**
+- [x] `app.darijaforkids.monthly` — `Per maand`, 1 maand, **€ 6,99**
+- [x] Beide: 3 dagen gratis als **Introductory Offer**, alle 175 landen
+- [x] Beide: **Family Sharing** aan
+- [x] Beide: naam en beschrijving in het Nederlands
+- [x] Beide: review-screenshot van 1290 × 2796
+- [x] **Levels**: Jaar op 1, Maand op 2 — zodat overstappen een upgrade is
+- [ ] `app.darijaforkids.ebook` — **niet-verbruikbaar**, € 14,99, Family Sharing aan
+
+### De producten — Google Play
+
+Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
+
+- [ ] Abonnement `app.darijaforkids.yearly`, basisabonnement 1 jaar, **€ 59,99**
+- [ ] Abonnement `app.darijaforkids.monthly`, basisabonnement 1 maand, € 6,99
+- [ ] Beide een aanbieding **gratis proefperiode, 3 dagen**
+- [ ] Eenmalig product `app.darijaforkids.ebook`, € 14,99, **Gezinsbibliotheek aan**
 
 ### Wat je uploadt
 
-- [x] Schermafbeeldingen in zes talen — `npm run screenshots`
+- [x] Schermafbeeldingen in zes talen, tien per taal — `npm run screenshots`
+- [x] Een aanbodplaatje met vlag, prijs en gezinsregel — staat op plek drie
 - [x] App preview 886×1920, onder de 30 seconden — `npm run intro`
-- [x] Winkelteksten in zes talen — `store/listing.*.md`
+- [x] Winkelteksten in zes talen — `store/play-pakket/<taal>/teksten.md`
 - [x] Icoon en splashscherm — `npm run assets`
 - [x] Het e-boek in zes talen — `npm run ebook`
-- [ ] Android: `npm run sync && npm run android`, dan een **AAB** bouwen en ondertekenen (§3)
-- [ ] iOS: op een Mac `npx cap add ios`, dan archiveren in Xcode (§3)
+- [ ] Apple: naam, ondertitel, trefwoorden, beschrijving en screenshots per taal
+- [ ] Google: de winkelvermelding per taal, begin bij en-US (§PLAY 6)
+- [ ] Android: een **AAB** bouwen en ondertekenen, keystore op twee plekken bewaren (§3)
+- [ ] **Een Mac regelen** — zonder macOS geen iOS-build, en dus geen App Store (§3)
+- [ ] iOS: `npx cap add ios`, archiveren in Xcode, naar TestFlight
 
 ### De formulieren
 
-- [ ] Apple **App Privacy** (§4) — zonder postdienst: "Data Not Collected"
-- [ ] Google **Data safety** (§4) — idem
-- [ ] Leeftijdsclassificatie 4+ / onder 13, en dus de **Kids**- of **Families**-regels
+- [ ] Apple **App Privacy** — *No, we do not collect data from this app* (§4)
+- [ ] Apple **Age Rating** — overal None, wordt 4+
+- [ ] Apple: categorie **Education**; de Kids Category pas bij een latere versie
+- [ ] Google **Gegevensbeveiliging** — verzamelt en deelt niets (§4)
+- [ ] Google **Doelgroep en inhoud** — onder 13, dus Families-beleid
+- [ ] Google **Inhoudsclassificatie** en **Advertenties: nee**
 - [ ] Handelaarsgegevens in beide consoles — dezelfde als in `operator.ts`
 - [ ] Privacy-URL en support-URL invullen (`/privacy` en `/ouders` op je domein)
 - [ ] De notitie aan de reviewer overnemen (§5)
+
+### Nog recht te zetten in de app
+
+- [ ] De gezinsregel per platform juist maken: Apple deelt abonnementen met het
+      gezin, Google **niet** — op Android klopt "voor het hele gezin" niet
+- [ ] De prijs overal gelijktrekken als je € 59,99 aanhoudt; teksten en website
+      noemen nu nog € 59,88
+- [ ] `src/site/links.ts` vullen met de echte winkeladressen zodra je ze hebt —
+      dan worden "Binnenkort" weer gewone downloadknoppen
 
 ### Voor je op verzenden drukt
 
@@ -98,8 +132,10 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 
 ### Publiceren
 
+- [ ] Google: interne test — jezelf toevoegen en de app op je eigen telefoon zetten
 - [ ] Google: gesloten test met 12 testers, 14 dagen — **alleen op de persoonlijke route** (§6)
-- [ ] Apple: indienen en wachten op review (1–3 dagen)
+- [ ] Apple: de app indienen, met de drie producten eraan gekoppeld
+- [ ] Apple: wachten op review (1–3 dagen)
 - [ ] Google: productie aanvragen
 - [ ] Beide op **handmatig vrijgeven** zetten, zodat je zelf de dag kiest
 - [ ] De eerste week uitvoeren (§7)
