@@ -592,7 +592,7 @@ export const de: Strings = {
       ],
       [
         'Kostet es etwas?',
-        'Das Alphabet und die ersten fünf Einheiten sind und bleiben kostenlos — genug, um die arabische Schrift zu lesen, dich vorzustellen und bis hundert zu zählen. Der ganze Kurs läuft über ein Abo: 4,99 € pro Monat im Jahresabo (59,88 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer und mit den ersten Tagen gratis. Abgeschlossen wird es in der App über den App Store oder Google Play, und dort kündigst du es auch, wann du willst. Keine Werbung und kein Konto: dein Fortschritt bleibt deiner.',
+        'Das Alphabet und die ersten fünf Einheiten sind und bleiben kostenlos — genug, um die arabische Schrift zu lesen, dich vorzustellen und bis hundert zu zählen. Der ganze Kurs läuft über ein Abo: 4,99 € pro Monat im Jahresabo (59,88 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer und mit den ersten Tagen gratis. Ein Abo gilt für die ganze Familie: bis zu sechs Personen, jede mit ihrem eigenen Fortschritt. Abgeschlossen wird es in der App über den App Store oder Google Play, und dort kündigst du es auch, wann du willst. Keine Werbung und kein Konto: dein Fortschritt bleibt deiner.',
       ],
       [
         'Funktioniert es offline?',
@@ -617,7 +617,7 @@ export const de: Strings = {
       ['🛑', 'Jederzeit kündbar', `Ein Tippen im Store-Konto. Kündigst du binnen ${dagen} Tagen, zahlst du nichts.`],
     ],
     titel: 'Voller Zugang',
-    sub: (dagen, prijs) => `${dagen} Tage gratis, danach ${prijs} pro Monat`,
+    sub: (dagen, prijs) => `${dagen} Tage gratis, danach ${prijs} pro Monat für die ganze Familie`,
     intro: (vrij) =>
       `Die ersten ${vrij} Einheiten sind und bleiben kostenlos — genug, um dich vorzustellen und bis hundert zu zählen. Der Rest des Kurses gehört zum Abo.`,
     krijgt: [
@@ -625,7 +625,8 @@ export const de: Strings = {
       'Alle Wörter und Sätze des Kurses, mit Aussprache',
       'Alle Geschichten und ihre Fragen',
       'Jede neue Lektion, die wir hinzufügen',
-      'Offline, auf allen Geräten mit demselben Store-Konto',
+      'Für die ganze Familie: bis zu sechs Personen teilen ein Abo',
+      'Offline, auf allen deinen Geräten',
     ],
     plan: { jaar: 'Ein Jahr', maand: 'Pro Monat' },
     voordeligst: (pct: number): string => `${pct} % günstiger`,

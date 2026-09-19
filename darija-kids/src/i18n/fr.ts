@@ -592,7 +592,7 @@ export const fr: Strings = {
       ],
       [
         'Est-ce que c’est payant ?',
-        'L’alphabet et les cinq premières unités sont et restent gratuits — de quoi lire l’écriture arabe, te présenter et compter jusqu’à cent. Pour le cours complet, c’est un abonnement : 4,99 € par mois avec un abonnement annuel (59,88 € en une fois) ou 6,99 € par mois, TTC et avec les premiers jours offerts. Tu le souscris dans l’application via l’App Store ou Google Play, et tu le résilies au même endroit quand tu veux. Pas de publicité et pas de compte : ta progression reste à toi.',
+        'L’alphabet et les cinq premières unités sont et restent gratuits — de quoi lire l’écriture arabe, te présenter et compter jusqu’à cent. Pour le cours complet, c’est un abonnement : 4,99 € par mois avec un abonnement annuel (59,88 € en une fois) ou 6,99 € par mois, TTC et avec les premiers jours offerts. Un seul abonnement vaut pour toute la famille : jusqu’à six personnes, chacune avec sa propre progression. Tu le souscris dans l’application via l’App Store ou Google Play, et tu le résilies au même endroit quand tu veux. Pas de publicité et pas de compte : ta progression reste à toi.',
       ],
       [
         'Ça marche hors ligne ?',
@@ -617,7 +617,7 @@ export const fr: Strings = {
       ['🛑', 'Résiliable à tout moment', `Un geste dans ton compte. Résilie sous ${dagen} jours et tu ne paies rien.`],
     ],
     titel: 'Accès complet',
-    sub: (dagen, prijs) => `${dagen} jours gratuits, puis ${prijs} par mois`,
+    sub: (dagen, prijs) => `${dagen} jours gratuits, puis ${prijs} par mois pour toute la famille`,
     intro: (vrij) =>
       `Les ${vrij} premières unités sont et restent gratuites — de quoi te présenter et compter jusqu'à cent. Le reste du cours fait partie de l'abonnement.`,
     krijgt: [
@@ -625,7 +625,8 @@ export const fr: Strings = {
       'Tous les mots et phrases du cours, avec la prononciation',
       'Toutes les histoires et leurs questions',
       'Chaque nouvelle leçon que nous ajoutons',
-      'Hors ligne, sur tous tes appareils avec le même compte du magasin',
+      'Pour toute la famille : jusqu’à six personnes partagent un abonnement',
+      'Hors ligne, sur tous tes appareils',
     ],
     plan: { jaar: 'Un an', maand: 'Par mois' },
     voordeligst: (pct: number): string => `${pct} % moins cher`,

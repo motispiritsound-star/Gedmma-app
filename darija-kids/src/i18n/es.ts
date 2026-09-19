@@ -592,7 +592,7 @@ export const es: Strings = {
       ],
       [
         '¿Cuesta dinero?',
-        'El alfabeto y las cinco primeras unidades son y seguirán siendo gratis: suficiente para leer la escritura árabe, presentarte y contar hasta cien. El curso completo va con una suscripción: 4,99 € al mes con la suscripción anual (59,88 € de una vez) o 6,99 € al mes, con IVA incluido y los primeros días gratis. Se contrata dentro de la aplicación a través de la App Store o Google Play, y allí mismo se cancela cuando quieras. Sin publicidad y sin cuenta: tu progreso sigue siendo tuyo.',
+        'El alfabeto y las cinco primeras unidades son y seguirán siendo gratis: suficiente para leer la escritura árabe, presentarte y contar hasta cien. El curso completo va con una suscripción: 4,99 € al mes con la suscripción anual (59,88 € de una vez) o 6,99 € al mes, con IVA incluido y los primeros días gratis. Una suscripción vale para toda la familia: hasta seis personas, cada una con su propio progreso. Se contrata dentro de la aplicación a través de la App Store o Google Play, y allí mismo se cancela cuando quieras. Sin publicidad y sin cuenta: tu progreso sigue siendo tuyo.',
       ],
       [
         '¿Funciona sin conexión?',
@@ -617,7 +617,7 @@ export const es: Strings = {
       ['🛑', 'Cancelable siempre', `Un toque en tu cuenta. Si cancelas antes de ${dagen} días, no pagas nada.`],
     ],
     titel: 'Acceso completo',
-    sub: (dagen, prijs) => `${dagen} días gratis y después ${prijs} al mes`,
+    sub: (dagen, prijs) => `${dagen} días gratis y después ${prijs} al mes para toda la familia`,
     intro: (vrij) =>
       `Las ${vrij} primeras unidades son y seguirán siendo gratis: suficiente para presentarte y contar hasta cien. El resto del curso va con la suscripción.`,
     krijgt: [
@@ -625,7 +625,8 @@ export const es: Strings = {
       'Todas las palabras y frases del curso, con pronunciación',
       'Todas las historias y sus preguntas',
       'Cada lección nueva que añadamos',
-      'Sin conexión, en todos tus dispositivos con la misma cuenta de la tienda',
+      'Para toda la familia: hasta seis personas comparten una suscripción',
+      'Sin conexión, en todos tus dispositivos',
     ],
     plan: { jaar: 'Un año', maand: 'Al mes' },
     voordeligst: (pct: number): string => `${pct} % más barato`,
