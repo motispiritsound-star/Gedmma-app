@@ -43,7 +43,7 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 ### De accounts
 
 - [x] Google Play Console aanmaken, $ 25 eenmalig (§1)
-- [ ] Apple Developer Program, € 99 per jaar (§1)
+- [x] Apple Developer Program, € 99 per jaar (§1)
 - [ ] Identiteit laten verifiëren bij allebei
 - [ ] Bankrekening en belastinggegevens invullen in beide consoles (§2)
 - [ ] Apple: de **Paid Applications**-overeenkomst tekenen — zonder handtekening verkoop je niets
