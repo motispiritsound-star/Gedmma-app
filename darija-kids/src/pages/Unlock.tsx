@@ -140,7 +140,7 @@ export function Unlock() {
                   {billing.busy ? t.unlock.bezig : t.unlock.koop(TRIAL_DAYS)}
                 </Button>
               ) : (
-                <p className="rounded-2xl bg-saffron-500/10 px-4 py-3 text-sm">{t.unlock.alleenInApp(price, jaar)}</p>
+                <p data-web-only className="rounded-2xl bg-saffron-500/10 px-4 py-3 text-sm">{t.unlock.alleenInApp(price, jaar)}</p>
               )}
               {/* Both stores require the terms to be visible before buying. */}
               <p className="mt-3 text-xs leading-relaxed text-[var(--ink-soft)]">
@@ -206,7 +206,7 @@ export function Unlock() {
             <p className="mt-3 text-xs text-[var(--ink-soft)]">{t.unlock.boek.bijJaar}</p>
           </>
         ) : (
-          <p className="mt-5 rounded-2xl bg-saffron-500/10 px-4 py-3 text-sm">
+          <p data-web-only className="mt-5 rounded-2xl bg-saffron-500/10 px-4 py-3 text-sm">
             {t.unlock.boek.alleenInApp(EBOOK.list)}
           </p>
         )}

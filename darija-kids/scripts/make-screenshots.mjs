@@ -154,7 +154,91 @@ const SHOTS = [
       en: 'A stack that knows\nwhat is starting to wobble',
     },
   },
+  {
+    id: '10-aanbod',
+    path: '/volledig',
+    /** Het abonnementsscherm hoort op slot te staan, anders valt er niets te kopen. */
+    locked: true,
+    /** De twee keuzeblokken met de prijs staan onder de vouw. */
+    scroll: 570,
+    hero: true,
+    /**
+     * Alleen voor de talen waarvan de vermelding in de eurozone staat.
+     *
+     * De Engelse vermelding is bij beide winkels de terugval voor de hele
+     * wereld. Een Amerikaan ziet daar dus euro's op het plaatje, terwijl hij
+     * in de app dollars betaalt: het bedrag klopt dan niet, en dat is bij
+     * Apple een reden tot afkeuring. Vandaar geen aanbodplaatje in het Engels.
+     */
+    langs: ['nl', 'fr', 'de', 'es', 'it'],
+  },
 ]
+
+/**
+ * De tiende opname is de enige die iets verkoopt in plaats van iets toont, en
+ * heeft daarom een eigen lijst: een kop, twee prijsblokken en een voetregel.
+ *
+ * In het Engels staan er geen bedragen. Die vermelding is bij beide winkels de
+ * terugval voor de hele wereld, dus een screenshot met euro's erop klopt dan
+ * niet in Amerika of Marokko — en een prijs die niet klopt is een reden tot
+ * afkeuring. Daar staat wat overal waar is.
+ */
+const AANBOD = {
+  nl: {
+    kicker: 'De taal van thuis',
+    titel: 'Eindelijk Darija leren',
+    pil1: { groot: '\u20ac 4,99 p/m', klein: 'bij een jaarabonnement' },
+    pil2: { groot: '\u20ac 6,99 p/m', klein: 'per maand opzegbaar' },
+    voet: '3 dagen gratis \u00b7 \u00e9\u00e9n abonnement voor het hele gezin',
+  },
+  fr: {
+    kicker: 'La langue de la maison',
+    titel: 'Enfin apprendre la darija',
+    pil1: { groot: '4,99 \u20ac/mois', klein: 'avec l\u2019abonnement annuel' },
+    pil2: { groot: '6,99 \u20ac/mois', klein: 'r\u00e9siliable chaque mois' },
+    voet: '3 jours gratuits \u00b7 un abonnement pour toute la famille',
+  },
+  de: {
+    kicker: 'Die Sprache von zu Hause',
+    titel: 'Endlich Darija lernen',
+    pil1: { groot: '4,99 \u20ac/Monat', klein: 'im Jahresabo' },
+    pil2: { groot: '6,99 \u20ac/Monat', klein: 'monatlich k\u00fcndbar' },
+    voet: '3 Tage gratis \u00b7 ein Abo f\u00fcr die ganze Familie',
+  },
+  es: {
+    kicker: 'La lengua de casa',
+    titel: 'Por fin aprender d\u00e1rija',
+    pil1: { groot: '4,99 \u20ac/mes', klein: 'con el plan anual' },
+    pil2: { groot: '6,99 \u20ac/mes', klein: 'cancelable cada mes' },
+    voet: '3 d\u00edas gratis \u00b7 una suscripci\u00f3n para toda la familia',
+  },
+  it: {
+    kicker: 'La lingua di casa',
+    titel: 'Finalmente imparare la darija',
+    pil1: { groot: '4,99 \u20ac/mese', klein: 'con l\u2019abbonamento annuale' },
+    pil2: { groot: '6,99 \u20ac/mese', klein: 'disdicibile ogni mese' },
+    voet: '3 giorni gratis \u00b7 un abbonamento per tutta la famiglia',
+  },
+}
+
+/**
+ * De Marokkaanse vlag, getekend in plaats van als emoji.
+ *
+ * Chromium heeft op deze machine geen lettertype met vlaggen, dus een emoji
+ * komt eruit als de letters "MA". Een pentagram van vijf lijnen is zo
+ * getekend en is op elk formaat scherp.
+ */
+const VLAG = (breedte) => {
+  const punt = (i) => {
+    const hoek = ((-90 + i * 72) * Math.PI) / 180
+    return [45 + 14 * Math.cos(hoek), 30 + 14 * Math.sin(hoek)]
+  }
+  const ster = [0, 2, 4, 1, 3].map(punt).map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(2)} ${y.toFixed(2)}`).join(' ')
+  return `<svg width="${breedte}" height="${Math.round((breedte * 2) / 3)}" viewBox="0 0 90 60">
+    <rect width="90" height="60" rx="4" fill="#C1272D"/>
+    <path d="${ster} Z" fill="none" stroke="#006233" stroke-width="2.4" stroke-linejoin="round"/>
+  </svg>`
+}
 
 /** The frame around the shot: a caption, then the screen itself. */
 const frame = (device, capture, caption) => {
@@ -188,6 +272,73 @@ const frame = (device, capture, caption) => {
 <div class="screen"><img src="data:image/png;base64,${capture}"></div>`
 }
 
+/**
+ * Het frame om de tiende opname: een kop met de vlag, twee prijsblokken en een
+ * voetregel, met daaronder een reep van het scherm zelf. Alles in maten die
+ * meeschalen, zodat dezelfde opmaak op een telefoon en op een iPad klopt.
+ */
+const heroFrame = (device, capture, a) => {
+  const pad = Math.round(device.w * 0.055)
+  const head = Math.round(device.h * 0.33)
+  return `<!doctype html><meta charset="utf-8">
+<style>
+  * { margin: 0; box-sizing: border-box }
+  body {
+    width: ${device.w}px; height: ${device.h}px; overflow: hidden;
+    background: linear-gradient(160deg, #ffd79a, #f0915c 55%, #e2603c);
+    font-family: Figtree, 'Segoe UI', system-ui, sans-serif; color: #2b1d16;
+  }
+  .kop {
+    height: ${head}px; padding: ${Math.round(device.h * 0.035)}px ${pad}px 0;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+  }
+  .kicker {
+    display: flex; align-items: center; gap: ${Math.round(device.w * 0.022)}px;
+    font-size: ${Math.round(device.w * 0.034)}px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .08em; color: #7a3a1e;
+  }
+  .kicker svg { display: block; box-shadow: 0 2px 6px rgba(43,29,22,.25); border-radius: 4px }
+  h1 {
+    margin-top: ${Math.round(device.h * 0.016)}px;
+    font-size: ${Math.round(device.w * 0.079)}px; font-weight: 900;
+    letter-spacing: -0.02em; line-height: 1.1;
+  }
+  .pillen {
+    display: flex; gap: ${Math.round(device.w * 0.028)}px; width: 100%;
+    margin-top: ${Math.round(device.h * 0.024)}px;
+  }
+  .pil {
+    flex: 1; background: rgba(255,251,243,.95);
+    border-radius: ${Math.round(device.w * 0.042)}px;
+    padding: ${Math.round(device.h * 0.014)}px ${Math.round(device.w * 0.02)}px;
+    box-shadow: 0 ${Math.round(device.w * 0.008)}px ${Math.round(device.w * 0.028)}px rgba(43,29,22,.22);
+  }
+  .pil .groot { font-size: ${Math.round(device.w * 0.052)}px; font-weight: 900; letter-spacing: -0.02em }
+  .pil .klein { margin-top: ${Math.round(device.h * 0.004)}px; font-size: ${Math.round(device.w * 0.026)}px; color: #6b4a37 }
+  .voet {
+    margin-top: ${Math.round(device.h * 0.018)}px;
+    font-size: ${Math.round(device.w * 0.031)}px; font-weight: 700; color: #7a3a1e;
+  }
+  .screen {
+    margin: 0 ${pad}px; height: ${device.h - head - pad}px;
+    border-radius: ${Math.round(device.w * 0.052)}px; overflow: hidden;
+    box-shadow: 0 ${Math.round(device.w * 0.02)}px ${Math.round(device.w * 0.06)}px rgba(43,29,22,.32);
+    background: #fffaf3;
+  }
+  .screen img { display: block; width: 100% }
+</style>
+<div class="kop">
+  <div class="kicker">${VLAG(Math.round(device.w * 0.062))}<span>${a.kicker}</span></div>
+  <h1>${a.titel}</h1>
+  <div class="pillen">
+    <div class="pil"><div class="groot">${a.pil1.groot}</div><div class="klein">${a.pil1.klein}</div></div>
+    <div class="pil"><div class="groot">${a.pil2.groot}</div><div class="klein">${a.pil2.klein}</div></div>
+  </div>
+  <div class="voet">${a.voet}</div>
+</div>
+<div class="screen"><img src="data:image/png;base64,${capture}"></div>`
+}
+
 const shoot = async (browser, composer, lang, deviceKey) => {
   const device = DEVICES[deviceKey]
   const dir = path.join(OUT, lang, deviceKey)
@@ -205,8 +356,26 @@ const shoot = async (browser, composer, lang, deviceKey) => {
   await page.evaluate((state) => localStorage.setItem('darijakids.v1', JSON.stringify(state)), seeded(lang))
 
   for (const shot of SHOTS) {
+    if (shot.langs && !shot.langs.includes(lang)) continue
+    // Het aanbod heeft een gebruiker nodig die nog niets heeft gekocht; alle
+    // andere opnames juist een die al een tijdje bezig is.
+    if (shot.locked) {
+      await page.evaluate((state) => localStorage.setItem('darijakids.v1', JSON.stringify(state)), { ...seeded(lang), unlocked: false, unlockedAt: null })
+    }
     await page.goto(`${BASE}${shot.path}`, { waitUntil: 'networkidle' })
     await page.waitForTimeout(700)
+    if (shot.hero) {
+      // In een browser is er geen winkel, dus waar op een toestel de koopknop
+      // staat, staat hier een regel die zegt dat kopen in de app gebeurt. Die
+      // regel bestaat op een telefoon niet en hoort dus niet op een
+      // winkelplaatje van de telefoon.
+      await page.addStyleTag({ content: '[data-web-only] { display: none !important }' })
+    }
+    if (shot.scroll) {
+      await page.mouse.move(device.viewport.width / 2, device.viewport.height / 2)
+      await page.mouse.wheel(0, shot.scroll)
+      await page.waitForTimeout(600)
+    }
     if (shot.lesson) {
       // A lesson opens on its tip; step past it to an actual question.
       const tip = page.getByRole('button', { name: GO_ON })
@@ -221,8 +390,13 @@ const shoot = async (browser, composer, lang, deviceKey) => {
       await page.waitForTimeout(400)
     }
     const capture = (await page.screenshot()).toString('base64')
+    if (shot.locked) {
+      await page.evaluate((state) => localStorage.setItem('darijakids.v1', JSON.stringify(state)), seeded(lang))
+    }
     await composer.setViewportSize({ width: device.w, height: device.h })
-    await composer.setContent(frame(device, capture, shot.caption[lang]))
+    await composer.setContent(
+      shot.hero ? heroFrame(device, capture, AANBOD[lang]) : frame(device, capture, shot.caption[lang]),
+    )
     await composer.waitForTimeout(150)
     const file = path.join(dir, `${shot.id}.png`)
     await composer.screenshot({ path: file })
