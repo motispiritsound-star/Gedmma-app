@@ -7,6 +7,8 @@ server/node_modules/
 server/.wrangler/
 server/.dev.vars
 /store/knipblad.html
+/store/play-pakket/
+/store/darijaforkids-play.zip
 scripts/.*.mjs
 # De website is bouwresultaat; site-assets/ is de bron en gaat wel mee.
 /site/
