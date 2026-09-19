@@ -14,7 +14,27 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = path.join(ROOT, 'dist-demo')
-const OUT = process.argv[2] ?? path.join(DIST, 'darijaforkids-demo.html')
+const OUT = process.argv.slice(2).find((a) => !a.startsWith('--')) ?? path.join(DIST, 'darijaforkids-demo.html')
+
+/**
+ * `--alles` zet het slot eraf voordat de app start.
+ *
+ * Alleen om zelf te testen: in dit bestand is geen winkel, dus wie hem op zijn
+ * eigen telefoon opent komt niet verder dan de zes gratis units en ziet de
+ * helft van wat hij gebouwd heeft niet. Een gewoon script, geen module, dus
+ * het draait vóór de app — die is uitgesteld.
+ *
+ * Deel een bestand dat zo gemaakt is met niemand: het geeft alles weg.
+ */
+const ALLES = process.argv.includes('--alles')
+const slotEraf = ALLES ? `<script>
+try {
+  const k = 'darijakids.v1'
+  const s = JSON.parse(localStorage.getItem(k) || '{}')
+  if (!s.unlocked) { s.unlocked = true; s.unlockedAt = Date.now(); localStorage.setItem(k, JSON.stringify(s)) }
+} catch {}
+</script>
+` : ''
 
 const assets = await readdir(path.join(DIST, 'assets'))
 const cssFile = assets.find((f) => f.endsWith('.css'))
@@ -44,7 +64,7 @@ const html = `<meta charset="utf-8" />
 <style>
 ${css}
 </style>
-<div id="root"></div>
+${slotEraf}<div id="root"></div>
 <script type="module">
 ${safe(js)}
 </script>
@@ -52,4 +72,4 @@ ${safe(js)}
 
 await writeFile(OUT, html)
 const kb = (Buffer.byteLength(html) / 1024).toFixed(0)
-console.log(`${path.relative(ROOT, OUT)} — ${kb} kB`)
+console.log(`${path.relative(ROOT, OUT)} — ${kb} kB${ALLES ? ' — alles open, niet delen' : ''}`)
