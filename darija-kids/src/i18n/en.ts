@@ -592,7 +592,7 @@ export const en: Strings = {
       ],
       [
         'Does it cost anything?',
-        'The alphabet and the first five units are free and stay free — enough to read the Arabic script, introduce yourself and count to a hundred. The whole course comes with a subscription: € 4.99 a month on the yearly plan (€ 59.88 charged once) or € 6.99 a month, VAT included and with the first days free. One subscription covers the whole family: up to six people, each with their own progress. You subscribe inside the app through the App Store or Google Play, and you cancel in the same place whenever you like. No adverts and no account: your progress stays yours.',
+        'The alphabet and the first five units are free and stay free — enough to read the Arabic script, introduce yourself and count to a hundred. The whole course comes with a subscription: € 5.00 a month on the yearly plan (€ 59.99 charged once) or € 6.99 a month, VAT included and with the first days free. On iPhone and iPad one subscription covers the whole family: up to six people, each with their own progress. On Android it covers the Google account that takes it out. You subscribe inside the app through the App Store or Google Play, and you cancel in the same place whenever you like. No adverts and no account: your progress stays yours.',
       ],
       [
         'Does it work offline?',
@@ -617,16 +617,17 @@ export const en: Strings = {
       ['🛑', 'Cancel any time', `One tap in your store account. Cancel within ${dagen} days and you pay nothing.`],
     ],
     titel: 'Full access',
-    sub: (dagen, prijs) => `${dagen} days free, then ${prijs} a month for the whole family`,
+    sub: (dagen, prijs, gezin) =>
+      `${dagen} days free, then ${prijs} a month${gezin ? ' for the whole family' : ''}`,
     intro: (vrij) =>
       `The first ${vrij} units are free and stay free — enough to introduce yourself and count to a hundred. The rest of the course comes with the subscription.`,
-    krijgt: [
+    krijgt: (gezin) => [
       'All 17 units, from the alphabet and food to haggling at the souq',
       'Every word and phrase in the course, with pronunciation',
       'Every story and its questions',
       'Every new lesson we add',
-      'For the whole family: up to six people share one subscription',
-      'Offline, on all your devices',
+      ...(gezin ? ['For the whole family: up to six people share one subscription'] : []),
+      'Offline, on all your devices with the same store account',
     ],
     plan: { jaar: 'A year', maand: 'Monthly' },
     voordeligst: (pct: number): string => `${pct}% cheaper`,

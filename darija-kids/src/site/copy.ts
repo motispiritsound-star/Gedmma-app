@@ -40,7 +40,7 @@ const nl = {
   heroTitel2: ' — spelenderwijs.',
   heroLead:
     'Darija leer je niet uit een schoolboek: je leert het van je oma, aan tafel, in de auto, aan de telefoon. Maar dat gesprek stokt. Het kind antwoordt in het Nederlands, jeddti in het Darija, en daartussen valt een taal weg. Darijaforkids geeft je kind de woorden terug — twee minuten per dag, als een spelletje, met een échte Marokkaanse stem in de oren.',
-  trustLine: 'Gratis beginnen · Voor het hele gezin · Geen advertenties · Werkt offline',
+  trustLine: 'Gratis beginnen · Geen account · Geen advertenties · Werkt offline',
   slogans: [
     'Twee minuten per dag. Een taal voor het leven.',
     'De taal van oma verdwijnt in één generatie. Tenzij je nu begint.',
@@ -134,7 +134,7 @@ const fr: SiteCopy = {
   heroTitel2: ' — en jouant.',
   heroLead:
     "La darija ne s'apprend pas dans un manuel — elle s'apprend de sa grand-mère, à table, en voiture, au téléphone. Mais la conversation s'enraye : l'enfant répond en français, la grand-mère en darija, et entre les deux une langue disparaît. Darijaforkids rend les mots à votre enfant. En jouant, deux minutes par jour, avec une vraie voix marocaine dans les oreilles.",
-  trustLine: 'Gratuit pour commencer · Pour toute la famille · Sans publicité · Fonctionne hors ligne',
+  trustLine: 'Gratuit pour commencer · Sans compte · Sans publicité · Fonctionne hors ligne',
   slogans: [
     'Deux minutes par jour. Une langue pour la vie.',
     'La langue de mamie disparaît en une génération. Sauf si vous commencez maintenant.',
@@ -225,7 +225,7 @@ const de: SiteCopy = {
   heroTitel2: ' — spielerisch.',
   heroLead:
     'Darija lernt man nicht aus dem Schulbuch — man lernt es von der Großmutter, am Tisch, im Auto, am Telefon. Aber das Gespräch stockt: Das Kind antwortet auf Deutsch, die Großmutter auf Darija, und dazwischen geht eine Sprache verloren. Darijaforkids gibt Ihrem Kind die Wörter zurück. Spielerisch, zwei Minuten am Tag, mit einer echten marokkanischen Stimme im Ohr.',
-  trustLine: 'Kostenlos starten · Für die ganze Familie · Keine Werbung · Funktioniert offline',
+  trustLine: 'Kostenlos starten · Kein Konto · Keine Werbung · Funktioniert offline',
   slogans: [
     'Zwei Minuten am Tag. Eine Sprache fürs Leben.',
     'Die Sprache der Großmutter verschwindet in einer Generation. Es sei denn, Sie fangen jetzt an.',
@@ -316,7 +316,7 @@ const es: SiteCopy = {
   heroTitel2: ' — jugando.',
   heroLead:
     'El dariya no se aprende en un libro de texto: se aprende de la abuela, en la mesa, en el coche, por teléfono. Pero la conversación se atasca: el niño responde en español, la abuela en dariya, y entremedias se pierde una lengua. Darijaforkids le devuelve las palabras a tu hijo. Jugando, dos minutos al día, con una voz marroquí de verdad al oído.',
-  trustLine: 'Empieza gratis · Para toda la familia · Sin anuncios · Funciona sin conexión',
+  trustLine: 'Empieza gratis · Sin cuenta · Sin anuncios · Funciona sin conexión',
   slogans: [
     'Dos minutos al día. Una lengua para toda la vida.',
     'La lengua de la abuela desaparece en una generación. A menos que empieces hoy.',
@@ -407,7 +407,7 @@ const it: SiteCopy = {
   heroTitel2: ' — giocando.',
   heroLead:
     'Il darija non si impara sui libri di scuola: si impara dalla nonna, a tavola, in macchina, al telefono. Ma la conversazione si inceppa: il bambino risponde in italiano, la nonna in darija, e in mezzo si perde una lingua. Darijaforkids restituisce le parole a tuo figlio. Giocando, due minuti al giorno, con una vera voce marocchina nelle orecchie.',
-  trustLine: 'Inizi gratis · Per tutta la famiglia · Senza pubblicità · Funziona offline',
+  trustLine: 'Inizi gratis · Senza account · Senza pubblicità · Funziona offline',
   slogans: [
     'Due minuti al giorno. Una lingua per tutta la vita.',
     'La lingua della nonna sparisce in una generazione. A meno che tu non cominci oggi.',
@@ -498,7 +498,7 @@ const en: SiteCopy = {
   heroTitel2: ' — through play.',
   heroLead:
     'Darija is not learned from a textbook — it is learned from your grandmother, at the table, in the car, on the phone. But the conversation stalls: the child answers in English, the grandmother in Darija, and somewhere in between a language slips away. Darijaforkids gives your child the words back. Through play, two minutes a day, with a real Moroccan voice in their ears.',
-  trustLine: 'Free to start · For the whole family · No ads · Works offline',
+  trustLine: 'Free to start · No account · No ads · Works offline',
   slogans: [
     'Two minutes a day. A language for life.',
     'Grandma’s language disappears in one generation. Unless you start now.',

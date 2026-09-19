@@ -8,6 +8,7 @@ import {
   type SoundProbe,
 } from '../engine/audio'
 import { LIST_PRICE, TRIAL_DAYS } from '../engine/billing'
+import { gezinsdeling } from '../engine/platform'
 import { LANGS, localeOf, useT, type Lang } from '../i18n'
 import { useVoices } from '../ui/useVoices'
 import { Button, Card, SectionTitle, Sheet } from '../ui/kit'
@@ -194,7 +195,7 @@ export function SettingsPage() {
       <Card className="mb-6">
         <Row
           title={t.unlock.titel}
-          hint={state.unlocked ? t.unlock.alOpen : t.unlock.sub(TRIAL_DAYS, LIST_PRICE)}
+          hint={state.unlocked ? t.unlock.alOpen : t.unlock.sub(TRIAL_DAYS, LIST_PRICE, gezinsdeling())}
         >
           <Link to="/volledig">
             <Button variant={state.unlocked ? 'secondary' : 'primary'}>

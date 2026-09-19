@@ -36,11 +36,11 @@ const OUT = positional[1] ?? path.join(ROOT, 'store', 'screenshots')
  * size the app is laid out at, and the shot is scaled up to `w × h` from there.
  */
 const DEVICES = {
-  iphone: { w: 1290, h: 2796, viewport: { width: 430, height: 932 }, store: 'App Store · iPhone 6.9"' },
-  ipad: { w: 2048, h: 2732, viewport: { width: 1024, height: 1366 }, store: 'App Store · iPad 13"' },
-  play: { w: 1080, h: 1920, viewport: { width: 432, height: 768 }, store: 'Google Play · telefoon' },
-  'play-7': { w: 1200, h: 1920, viewport: { width: 600, height: 960 }, store: 'Google Play · 7-inch tablet' },
-  'play-10': { w: 1600, h: 2560, viewport: { width: 800, height: 1280 }, store: 'Google Play · 10-inch tablet' },
+  iphone: { w: 1290, h: 2796, viewport: { width: 430, height: 932 }, winkel: 'apple', store: 'App Store · iPhone 6.9"' },
+  ipad: { w: 2048, h: 2732, viewport: { width: 1024, height: 1366 }, winkel: 'apple', store: 'App Store · iPad 13"' },
+  play: { w: 1080, h: 1920, viewport: { width: 432, height: 768 }, winkel: 'google', store: 'Google Play · telefoon' },
+  'play-7': { w: 1200, h: 1920, viewport: { width: 600, height: 960 }, winkel: 'google', store: 'Google Play · 7-inch tablet' },
+  'play-10': { w: 1600, h: 2560, viewport: { width: 800, height: 1280 }, winkel: 'google', store: 'Google Play · 10-inch tablet' },
 }
 
 /** The six screens, and what each one is there to say. */
@@ -187,37 +187,52 @@ const AANBOD = {
   nl: {
     kicker: 'De taal van thuis',
     titel: 'Eindelijk Darija leren',
-    pil1: { groot: '\u20ac 4,99 p/m', klein: 'bij een jaarabonnement' },
+    pil1: { groot: '\u20ac 5,00 p/m', klein: 'bij een jaarabonnement' },
     pil2: { groot: '\u20ac 6,99 p/m', klein: 'per maand opzegbaar' },
-    voet: '3 dagen gratis \u00b7 \u00e9\u00e9n abonnement voor het hele gezin',
+    voet: {
+      apple: '3 dagen gratis \u00b7 \u00e9\u00e9n abonnement voor het hele gezin',
+      google: '3 dagen gratis \u00b7 daarna opzegbaar wanneer je wilt',
+    },
   },
   fr: {
     kicker: 'La langue de la maison',
     titel: 'Enfin apprendre la darija',
-    pil1: { groot: '4,99 \u20ac/mois', klein: 'avec l\u2019abonnement annuel' },
+    pil1: { groot: '5,00 \u20ac/mois', klein: 'avec l\u2019abonnement annuel' },
     pil2: { groot: '6,99 \u20ac/mois', klein: 'r\u00e9siliable chaque mois' },
-    voet: '3 jours gratuits \u00b7 un abonnement pour toute la famille',
+    voet: {
+      apple: '3 jours gratuits \u00b7 un abonnement pour toute la famille',
+      google: '3 jours gratuits \u00b7 r\u00e9siliable quand tu veux',
+    },
   },
   de: {
     kicker: 'Die Sprache von zu Hause',
     titel: 'Endlich Darija lernen',
-    pil1: { groot: '4,99 \u20ac/Monat', klein: 'im Jahresabo' },
+    pil1: { groot: '5,00 \u20ac/Monat', klein: 'im Jahresabo' },
     pil2: { groot: '6,99 \u20ac/Monat', klein: 'monatlich k\u00fcndbar' },
-    voet: '3 Tage gratis \u00b7 ein Abo f\u00fcr die ganze Familie',
+    voet: {
+      apple: '3 Tage gratis \u00b7 ein Abo f\u00fcr die ganze Familie',
+      google: '3 Tage gratis \u00b7 jederzeit k\u00fcndbar',
+    },
   },
   es: {
     kicker: 'La lengua de casa',
     titel: 'Por fin aprender d\u00e1rija',
-    pil1: { groot: '4,99 \u20ac/mes', klein: 'con el plan anual' },
+    pil1: { groot: '5,00 \u20ac/mes', klein: 'con el plan anual' },
     pil2: { groot: '6,99 \u20ac/mes', klein: 'cancelable cada mes' },
-    voet: '3 d\u00edas gratis \u00b7 una suscripci\u00f3n para toda la familia',
+    voet: {
+      apple: '3 d\u00edas gratis \u00b7 una suscripci\u00f3n para toda la familia',
+      google: '3 d\u00edas gratis \u00b7 cancelable cuando quieras',
+    },
   },
   it: {
     kicker: 'La lingua di casa',
     titel: 'Finalmente imparare la darija',
-    pil1: { groot: '4,99 \u20ac/mese', klein: 'con l\u2019abbonamento annuale' },
+    pil1: { groot: '5,00 \u20ac/mese', klein: 'con l\u2019abbonamento annuale' },
     pil2: { groot: '6,99 \u20ac/mese', klein: 'disdicibile ogni mese' },
-    voet: '3 giorni gratis \u00b7 un abbonamento per tutta la famiglia',
+    voet: {
+      apple: '3 giorni gratis \u00b7 un abbonamento per tutta la famiglia',
+      google: '3 giorni gratis \u00b7 disdicibile quando vuoi',
+    },
   },
 }
 
@@ -277,7 +292,7 @@ const frame = (device, capture, caption) => {
  * voetregel, met daaronder een reep van het scherm zelf. Alles in maten die
  * meeschalen, zodat dezelfde opmaak op een telefoon en op een iPad klopt.
  */
-const heroFrame = (device, capture, a) => {
+const heroFrame = (device, capture, a, winkel) => {
   const pad = Math.round(device.w * 0.055)
   const head = Math.round(device.h * 0.33)
   return `<!doctype html><meta charset="utf-8">
@@ -334,7 +349,7 @@ const heroFrame = (device, capture, a) => {
     <div class="pil"><div class="groot">${a.pil1.groot}</div><div class="klein">${a.pil1.klein}</div></div>
     <div class="pil"><div class="groot">${a.pil2.groot}</div><div class="klein">${a.pil2.klein}</div></div>
   </div>
-  <div class="voet">${a.voet}</div>
+  <div class="voet">${a.voet[winkel]}</div>
 </div>
 <div class="screen"><img src="data:image/png;base64,${capture}"></div>`
 }
@@ -395,7 +410,7 @@ const shoot = async (browser, composer, lang, deviceKey) => {
     }
     await composer.setViewportSize({ width: device.w, height: device.h })
     await composer.setContent(
-      shot.hero ? heroFrame(device, capture, AANBOD[lang]) : frame(device, capture, shot.caption[lang]),
+      shot.hero ? heroFrame(device, capture, AANBOD[lang], device.winkel) : frame(device, capture, shot.caption[lang]),
     )
     await composer.waitForTimeout(150)
     const file = path.join(dir, `${shot.id}.png`)

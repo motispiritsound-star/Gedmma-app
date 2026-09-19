@@ -103,10 +103,9 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 
 ### Nog recht te zetten in de app
 
-- [ ] De gezinsregel per platform juist maken: Apple deelt abonnementen met het
-      gezin, Google **niet** — op Android klopt "voor het hele gezin" niet
-- [ ] De prijs overal gelijktrekken als je € 59,99 aanhoudt; teksten en website
-      noemen nu nog € 59,88
+- [x] De gezinsregel per platform juist maken: Apple deelt abonnementen met het
+      gezin, Google **niet** — op Android staat er nu iets anders
+- [x] De prijs overal op € 59,99 en € 5,00 per maand — Apple kent € 59,88 niet
 - [ ] `src/site/links.ts` vullen met de echte winkeladressen zodra je ze hebt —
       dan worden "Binnenkort" weer gewone downloadknoppen
 
@@ -324,7 +323,7 @@ Er zijn **twee abonnementen**, in dezelfde abonnementsgroep:
 
 | Product-id | Duur | Prijs | Naam voor de koper |
 |---|---|---|---|
-| `app.darijaforkids.yearly` | 1 jaar, verlengt automatisch | € 59,88 (Apple: € 59,99) | Een jaar volledige toegang |
+| `app.darijaforkids.yearly` | 1 jaar, verlengt automatisch | € 59,99 | Een jaar volledige toegang |
 | `app.darijaforkids.monthly` | 1 maand, verlengt automatisch | € 6,99 | Volledige toegang per maand |
 
 En **één eenmalig product**, geen abonnement:
@@ -434,7 +433,7 @@ Apple leest dit veld echt. Zet er dit in:
 > vermenigvuldiging die je moet beantwoorden voordat de aankoop opent. Elk
 > juist antwoord werkt.
 >
-> De abonnementen zijn app.darijaforkids.yearly (€ 59,88 per jaar) en
+> De abonnementen zijn app.darijaforkids.yearly (€ 59,99 per jaar) en
 > app.darijaforkids.monthly (€ 6,99 per maand), beide met 3 dagen gratis. Los
 > daarvan staat app.darijaforkids.ebook (€ 14,99 eenmalig): het e-boek met de hele
 > cursus, dat bij het jaarabonnement is inbegrepen.

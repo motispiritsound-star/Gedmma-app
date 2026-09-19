@@ -402,14 +402,14 @@
   <ul>
     <li data-blok="6">
       <label>
-        <input type="checkbox" data-id="6-0">
+        <input type="checkbox" data-id="6-0" data-vast="1">
         <span class="tekst">De gezinsregel per platform juist maken: Apple deelt abonnementen met het</span>
       </label>
     </li>
     <li data-blok="6">
       <label>
-        <input type="checkbox" data-id="6-1">
-        <span class="tekst">De prijs overal gelijktrekken als je € 59,99 aanhoudt; teksten en website</span>
+        <input type="checkbox" data-id="6-1" data-vast="1">
+        <span class="tekst">De prijs overal op € 59,99 en € 5,00 per maand — Apple kent € 59,88 niet</span>
       </label>
     </li>
     <li data-blok="6">
@@ -638,7 +638,7 @@
 </div>
 
 <script>
-const VAST = ["0-0","0-1","0-2","0-3","0-4","1-0","1-1","1-2","1-3","1-4","2-0","2-1","2-2","2-3","2-4","2-5","2-6","2-7","4-0","4-1","4-2","4-3","4-4","4-5","7-0","7-1","7-2","7-3","7-4","7-5","7-6","8-0","8-1","8-2","8-3","8-4"]
+const VAST = ["0-0","0-1","0-2","0-3","0-4","1-0","1-1","1-2","1-3","1-4","2-0","2-1","2-2","2-3","2-4","2-5","2-6","2-7","4-0","4-1","4-2","4-3","4-4","4-5","6-0","6-1","7-0","7-1","7-2","7-3","7-4","7-5","7-6","8-0","8-1","8-2","8-3","8-4"]
 const vakjes = [...document.querySelectorAll('input[type=checkbox]')]
 let staat = {}
 try { staat = JSON.parse(localStorage.getItem('darija.lanceer') || '{}') } catch (e) { staat = {} }

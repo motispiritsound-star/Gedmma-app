@@ -599,7 +599,7 @@ export const nl = {
       ],
       [
         'Kost het iets?',
-        'Het alfabet en de eerste vijf units zijn en blijven gratis — genoeg om het Arabische schrift te lezen, jezelf voor te stellen en tot honderd te tellen. Wil je de hele cursus, dan is dat een abonnement: € 4,99 per maand bij een jaarabonnement (€ 59,88 in één keer) of € 6,99 per maand, inclusief btw en met de eerste dagen gratis. Eén abonnement geldt voor het hele gezin: tot zes personen, ieder met zijn eigen voortgang. Je sluit het af in de app via de App Store of Google Play en je zegt daar ook op, wanneer je wilt. Geen advertenties en geen account: je voortgang blijft van jou.',
+        'Het alfabet en de eerste vijf units zijn en blijven gratis — genoeg om het Arabische schrift te lezen, jezelf voor te stellen en tot honderd te tellen. Wil je de hele cursus, dan is dat een abonnement: € 5,00 per maand bij een jaarabonnement (€ 59,99 in één keer) of € 6,99 per maand, inclusief btw en met de eerste dagen gratis. Op iPhone en iPad geldt één abonnement voor het hele gezin: tot zes personen, ieder met zijn eigen voortgang. Op Android geldt het voor het Google-account waarmee je het afsluit. Je sluit het af in de app via de App Store of Google Play en je zegt daar ook op, wanneer je wilt. Geen advertenties en geen account: je voortgang blijft van jou.',
       ],
       [
         'Werkt het offline?',
@@ -624,16 +624,17 @@ export const nl = {
       ['🛑', 'Altijd opzegbaar', `Eén tik in je winkelaccount. Zeg je op binnen ${dagen} dagen, dan betaal je niets.`],
     ],
     titel: 'Volledige toegang',
-    sub: (dagen: number, prijs: string): string => `${dagen} dagen gratis, daarna ${prijs} per maand voor het hele gezin`,
+    sub: (dagen: number, prijs: string, gezin: boolean): string =>
+      `${dagen} dagen gratis, daarna ${prijs} per maand${gezin ? ' voor het hele gezin' : ''}`,
     intro: (vrij: number): string =>
       `De eerste ${vrij} units zijn en blijven gratis — genoeg om jezelf voor te stellen en tot honderd te tellen. De rest van de cursus hoort bij het abonnement.`,
-    krijgt: [
+    krijgt: (gezin: boolean): string[] => [
       'Alle 17 units, van het alfabet en eten tot afdingen op de souq',
       'Alle woorden en zinnen van de cursus, met uitspraak',
       'Alle verhalen en hun vragen',
       'Elke nieuwe les die we toevoegen',
-      'Voor het hele gezin: tot zes personen delen één abonnement',
-      'Werkt offline, op al je apparaten',
+      ...(gezin ? ['Voor het hele gezin: tot zes personen delen één abonnement'] : []),
+      'Werkt offline, op al je apparaten met hetzelfde winkelaccount',
     ],
     plan: { jaar: 'Een jaar', maand: 'Per maand' },
     voordeligst: (pct: number): string => `${pct}% voordeliger`,

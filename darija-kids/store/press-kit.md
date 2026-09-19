@@ -39,7 +39,7 @@ Italiaans of Engels — en kiest die zelf op basis van het toestel.
 | Inhoud | 17 units (A0–A2), 304 woorden, 100 zinnen, 28 letters, 4 verhalen, 3 spellen |
 | Geschiedenis | 14 korte filmpjes over Marokko, één na elke toets, voorgelezen in de taal van het kind |
 | Daarna | 5 bonusrondes die uit je eigen voortgang worden gemaakt — schrijven, dictee, zinnen, marathon, spreken — dus de app is nooit uit |
-| Prijs | Gratis beginnen; volledige cursus € 59,88 per jaar (€ 4,99 per maand) of € 6,99 per maand, eerste 3 dagen gratis |
+| Prijs | Gratis beginnen; volledige cursus € 59,99 per jaar (€ 5,00 per maand) of € 6,99 per maand, eerste 3 dagen gratis |
 | Platforms | iPhone, iPad, Android, en elke browser |
 | Advertenties | Geen |
 | Account | Geen — er wordt niets verzameld en niets verstuurd |

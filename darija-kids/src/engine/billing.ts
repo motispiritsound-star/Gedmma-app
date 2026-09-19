@@ -40,7 +40,7 @@ export interface Plan {
 }
 
 export const PLANS: Plan[] = [
-  { id: 'jaar', product: 'app.darijaforkids.yearly', list: '€ 59,88', perMonth: '€ 4,99', best: true },
+  { id: 'jaar', product: 'app.darijaforkids.yearly', list: '€ 59,99', perMonth: '€ 5,00', best: true },
   { id: 'maand', product: 'app.darijaforkids.monthly', list: '€ 6,99', perMonth: '€ 6,99' },
 ]
 

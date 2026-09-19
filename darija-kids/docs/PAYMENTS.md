@@ -2,7 +2,7 @@
 
 Het alfabet en de eerste **vijf units** zijn gratis en blijven gratis. De rest van de cursus
 hoort bij **volledige toegang**: een paar dagen gratis proberen, daarna
-**€ 59,88 voor een jaar vooruit (€ 4,99 per maand) of € 6,99 per maand**,
+**€ 59,99 voor een jaar vooruit (€ 5,00 per maand) of € 6,99 per maand**,
 inclusief btw en altijd opzegbaar. Daarnaast staat er één ding los te koop:
 het **e-boek** voor **€ 14,99 eenmalig** — bij het jaarabonnement zit het erbij.
 De betaling loopt
@@ -28,11 +28,12 @@ kan ook: `TRIAL_DAYS` op 0, en de teksten passen zich aan.
 
 **2. Beide bedragen zijn Apple-prijspunten.** Apple werkt met vaste
 prijspunten; € 6,99 en € 59,99 zijn er twee van. Let op: Apple heeft géén
-59,88 — kies daar € 59,99, of het dichtstbijzijnde punt dat Apple je aanbiedt.
-Google Play laat je per land een vrij bedrag invullen, dus daar kan 59,88
-precies. Dat verschil van elf cent hoeft niemand op te lossen: de app toont
-altijd de prijs die de winkel zelf teruggeeft, in de munt van de koper. Alleen
-de website valt terug op wat er in `PLANS` in `src/engine/billing.ts` staat.
+59,88, en twaalf maal € 4,99 bestaat daar dus niet. Google Play laat per land
+wel een vrij bedrag toe, maar we houden er € 59,99 aan: één bedrag in beide
+winkels scheelt een uitzondering in elke tekst, en het komt neer op € 5,00 per
+maand. De app toont sowieso altijd de prijs die de winkel zelf teruggeeft, in
+de munt van de koper; alleen de website valt terug op wat er in `PLANS` in
+`src/engine/billing.ts` staat.
 
 **3. Zet beide producten in dezelfde abonnementsgroep.** Dan kan iemand die
 maandelijks betaalt overstappen op een jaar zonder dubbel te betalen, en regelt
@@ -75,7 +76,7 @@ Gebruik in beide winkels **hetzelfde id**, anders werkt de code niet:
 | Eerst | maak een **subscription group** (bijv. "Darijaforkids") | maak een abonnement met een **basisplan** |
 | Product-id | `app.darijaforkids.yearly` en `app.darijaforkids.monthly` | dezelfde twee |
 | Duur | 1 jaar en 1 maand, beide automatisch verlengend | idem |
-| Prijs | € 59,99 en € 6,99 | € 59,88 en € 6,99 |
+| Prijs | € 59,99 en € 6,99 | € 59,99 en € 6,99 |
 | Gratis periode | **Introductory Offer → Free Trial → 3 dagen** | **Aanbieding → Gratis proefperiode → 3 dagen** |
 | Naam voor de koper | Volledige toegang | Volledige toegang |
 
@@ -137,7 +138,7 @@ dus het kan niet uit de pas gaan lopen.
 
 In de EU zijn Apple en Google voor digitale producten zelf de verkoper richting
 de klant: zij rekenen de btw van het land van de koper en dragen die af. De
-€ 59,88 per jaar, € 6,99 per maand of € 14,99 voor het boek die de klant ziet is dus inclusief btw, en jij
+€ 59,99 per jaar, € 6,99 per maand of € 14,99 voor het boek die de klant ziet is dus inclusief btw, en jij
 ontvangt het bedrag ná commissie en ná btw. Jij stuurt geen facturen naar kopers.
 
 Wat je zelf moet regelen: die inkomsten zijn belastbaar, en omdat je met een

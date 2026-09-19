@@ -308,7 +308,6 @@ gaan meestal binnen een dag.
 
 ## Wat daarna nog moet
 
-- De prijs in de app gelijktrekken als je € 59,99 aanhoudt (de teksten noemen
-  nu nog € 59,88).
-- De gezinsregel per platform juist maken, zie §7.
+- Beide punten hieronder zijn inmiddels gedaan: de prijs staat overal op
+  € 59,99 (€ 5,00 per maand), en de gezinsregel verschijnt alleen op iOS.
 - Schriftelijke toestemming voor de stemopnames — zie `store/press-kit.md`.

@@ -4,6 +4,7 @@ import {
   buyEbook, EBOOK, ebookFile, FREE_UNITS, manageSubscription, PLANS, planOf, restorePurchases,
   subscribe, TRIAL_DAYS, useBilling, YEAR_SAVING, type PlanId,
 } from '../engine/billing'
+import { gezinsdeling } from '../engine/platform'
 import { useStore } from '../engine/store'
 import { useT } from '../i18n'
 import { sfx } from '../engine/audio'
@@ -37,6 +38,12 @@ export function Unlock() {
   const perMaandJaar = billing.yearPerMonth ?? planOf('jaar').perMonth
   const price = priceOf(plan)
   const jaar = plan === 'jaar'
+  /**
+   * Of we het gezin mogen beloven. Apple deelt een abonnement met de
+   * gezinsgroep, Google Play niet — en dit staat op het scherm waar iemand
+   * besluit te betalen, dus het moet kloppen op het toestel in zijn hand.
+   */
+  const gezin = gezinsdeling()
 
   useEffect(() => {
     if (subscribed) setGate(false)
@@ -44,7 +51,7 @@ export function Unlock() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <SectionTitle sub={t.unlock.sub(TRIAL_DAYS, jaar ? perMaandJaar : price)}>{t.unlock.titel}</SectionTitle>
+      <SectionTitle sub={t.unlock.sub(TRIAL_DAYS, jaar ? perMaandJaar : price, gezin)}>{t.unlock.titel}</SectionTitle>
 
       {subscribed ? (
         <>
@@ -80,7 +87,7 @@ export function Unlock() {
           <Card className="p-6">
             <p className="text-[var(--ink-soft)]">{t.unlock.intro(FREE_UNITS)}</p>
             <ul className="mt-4 space-y-2">
-              {t.unlock.krijgt.map((line) => (
+              {t.unlock.krijgt(gezin).map((line) => (
                 <li key={line} className="flex gap-2 text-sm">
                   <span aria-hidden="true">✅</span>
                   <span>{line}</span>
