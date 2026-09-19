@@ -78,10 +78,35 @@ leest `darija-kids/wrangler.toml`:
 
 | Veld | Waarde |
 |---|---|
-| Root directory | `darija-kids` |
-| Build command | `npm run build` |
-| Deploy command | `npx wrangler deploy` |
-| Omgevingsvariabele | `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD` = `1` |
+| Root directory | `/` |
+| Build command | `cd darija-kids && npm ci && npm run build` |
+| Deploy command | `cd darija-kids && npx wrangler deploy` |
+| Version command | `cd darija-kids && npx wrangler versions upload` |
+| Production branch | `claude/moroccan-language-learning-app-s2rixy` |
+| Builds for non-production branches | uit |
+| Omgevingsvariabelen | `NODE_VERSION` = `22`, `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD` = `1` |
+
+**Die `cd darija-kids &&` moet voor alle drie de commando's staan**, en dat is
+een keer misgegaan. De root directory is `/`, de wortel van een repo waarin
+nog een project woont — `apps/` is buurklus, met een eigen `wrangler.toml` in
+diezelfde wortel. Het Version command miste zijn `cd` en publiceerde dus
+vanuit `/`, waar wrangler de configuratie van buurklus vindt:
+
+```
+✗ [ERROR] The directory specified by the "assets.directory" field
+  in your configuration file does not exist:
+  /opt/buildhome/repo/apps/web/dist
+```
+
+Het strandde daar alleen omdat buurklus niet was gebouwd. Was die map er
+geweest, dan had die bouw een nieuwe versie van **buurklus** geüpload met de
+inhoud van deze site erin. Twee projecten in één repo, en een commando dat
+zich niet verplaatst: dat is genoeg.
+
+De productie-branch gebruikt het Deploy command en ging daarom altijd goed;
+elke andere branch gebruikt het Version command en ging daarom altijd fout.
+Dat is ook de reden dat de bouw voor niet-productiebranches nu uit staat: er
+werd bij elke push twee keer gebouwd, één keer voor niets.
 
 Welke map de lucht in gaat staat niet in dat scherm maar in `wrangler.toml`:
 `[assets] directory = "site"`. Daar staat ook `html_handling` (zodat
