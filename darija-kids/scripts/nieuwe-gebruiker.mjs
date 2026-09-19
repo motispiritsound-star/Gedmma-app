@@ -40,6 +40,10 @@ const server = await createServer({
   logLevel: 'error',
 })
 await server.listen()
+
+/** De prijzen uit de app zelf, zodat deze proef ze niet nog een keer opschrijft. */
+const { planOf } = await server.ssrLoadModule('/src/engine/billing.ts')
+
 const browser = await chromium.launch({ executablePath: CHROME })
 const ctx = await browser.newContext({ viewport: { width: 430, height: 932 }, reducedMotion: 'reduce' })
 const page = await ctx.newPage()
@@ -314,9 +318,11 @@ await page.goto(`${BASE}/volledig`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(600)
 await kiek('abonnement')
 // Op de prijzen zoeken in plaats van op de woorden: die zijn in elke taal
-// hetzelfde, de teksten eromheen niet.
+// hetzelfde, de teksten eromheen niet. De bedragen komen uit `PLANS`, zodat
+// deze proef niet omvalt zodra een winkel een ander prijspunt afdwingt.
 const abo = await page.locator('main').innerText()
-stap('het abonnementsscherm toont beide prijzen', /59[.,]88/.test(abo) && /6[.,]99/.test(abo))
+const bedrag = (p) => new RegExp(planOf(p).list.replace(/[^\d]/g, '').replace(/^(\d+)(\d\d)$/, '$1[.,]$2'))
+stap('het abonnementsscherm toont beide prijzen', bedrag('jaar').test(abo) && bedrag('maand').test(abo))
 stap('het e-boek staat erop met zijn prijs', /14[.,]99/.test(abo))
 
 // 5. De ouderpoort.
