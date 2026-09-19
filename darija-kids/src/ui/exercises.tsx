@@ -151,12 +151,12 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
               // Marks the buttons that are answers, so the camera that films
               // the app knows what to press. Nothing else hangs off it.
               data-answer=""
-              className={`btn3d rounded-2xl border-2 p-4 transition ${mode === 'script' ? 'text-center' : 'text-start'} ${optionButton(chosen, id, w.id, locked)}`}
+              className={`btn3d rounded-2xl border-2 p-4 transition md:p-6 ${mode === 'script' ? 'text-center' : 'text-start'} ${optionButton(chosen, id, w.id, locked)}`}
             >
-              {mode === 'betekenis' && <span className="font-display text-lg font-bold">{o.emoji} {meaning(o)}</span>}
+              {mode === 'betekenis' && <span className="font-display text-lg font-bold md:text-xl">{o.emoji} {meaning(o)}</span>}
               {mode === 'darija' && <WordText word={o} />}
-              {mode === 'luister' && <span className="ar text-2xl font-bold">{o.ar}</span>}
-              {mode === 'script' && <span className="ar text-3xl font-bold">{o.ar}</span>}
+              {mode === 'luister' && <span className="ar text-2xl font-bold md:text-3xl">{o.ar}</span>}
+              {mode === 'script' && <span className="ar text-3xl font-bold md:text-4xl">{o.ar}</span>}
             </button>
           )
         })}

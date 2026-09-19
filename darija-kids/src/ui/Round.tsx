@@ -240,8 +240,11 @@ export function RoundRunner({
     step()
   }
 
+  // Op een tablet mag de kolom breder en de ruimte ruimer: een les die in een
+  // telefoonbreedte blijft hangen op een scherm van duizend pixels leest als
+  // een uitvergrote telefoon.
   return (
-    <div className="mx-auto flex min-h-screen max-w-2xl flex-col px-4 py-4">
+    <div className="mx-auto flex min-h-screen max-w-2xl flex-col px-4 py-4 md:max-w-3xl md:px-6 md:py-6">
       <div className="flex items-center gap-3">
         <button onClick={() => { sfx.back(); setQuit(true) }} aria-label={t.common.sluiten} className="text-2xl text-[var(--ink-soft)] hover:text-[var(--ink)]">✕</button>
         <Progress value={index / Math.max(1, queue.length)} tone="mint" />

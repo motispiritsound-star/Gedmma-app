@@ -115,6 +115,11 @@ for (const taal of TALEN) {
   await loop({ taal, thema: 'dark', breedte: 390, hoogte: 844, staat: HALVERWEGE, naam: `${taal} donker` })
   if (BREED) {
     await loop({ taal, thema: 'light', breedte: 820, hoogte: 1180, staat: HALVERWEGE, naam: `${taal} tablet` })
+    // De grootste iPad, staand en liggend. Liggend is de maat waarop een
+    // telefoonlayout het meest opvalt: alles blijft dan in een smalle kolom
+    // midden op een scherm dat twee keer zo breed is.
+    await loop({ taal, thema: 'light', breedte: 1024, hoogte: 1366, staat: HALVERWEGE, naam: `${taal} ipad staand` })
+    await loop({ taal, thema: 'light', breedte: 1366, hoogte: 1024, staat: HALVERWEGE, naam: `${taal} ipad liggend` })
     // The narrowest phone still sold. If it fits here it fits anywhere.
     await loop({ taal, thema: 'light', breedte: 320, hoogte: 568, staat: HALVERWEGE, naam: `${taal} smal` })
   }
