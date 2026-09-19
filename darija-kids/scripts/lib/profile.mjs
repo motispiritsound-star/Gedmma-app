@@ -12,7 +12,11 @@ export const seeded = (lang, opts = {}) => {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
   }
   const lessons = {}
-  for (const id of ['hruf-1', 'hruf-2', 'hruf-3', 'hruf-4', 'groeten-1', 'groeten-2', 'groeten-3']) {
+  // De twee toetsen horen erbij: wie unit 1 en 2 heeft afgerond heeft ze
+  // gehaald, en elke gehaalde toets levert een geschiedeniskaart op. Zonder
+  // die twee staat de verzameling op nul en fotografeert hij als een slot.
+  for (const id of ['hruf-1', 'hruf-2', 'hruf-3', 'hruf-4', 'hruf-toets',
+    'groeten-1', 'groeten-2', 'groeten-3', 'groeten-toets']) {
     lessons[id] = { stars: 3, runs: 2, bestScore: 1, lastDone: Date.now() - 86400000 }
   }
   const cards = {}
@@ -46,6 +50,10 @@ export const seeded = (lang, opts = {}) => {
     version: 1, name: 'Nour', avatar: '🦊', createdAt: Date.now() - 14 * 86400000,
     xp: 640, gems: 34, hearts: 5, heartsAt: Date.now(), streak: 9, bestStreak: 12,
     lastDay: day(0), freezes: 1, daily, lessons, cards, extraCards, sentencesDone: 22,
+    // De twee kaarten die bij die twee toetsen horen. De pagina leest deze
+    // lijst, niet het aantal toetsen, en met een lege lijst fotografeert de
+    // verzameling als veertien sloten op een rij.
+    history: ['walili', 'tariq'],
     quests: { day: day(0), goed: 14, herhaald: 6, zinnen: 2, lessen: 1, claimed: [] },
     badges: ['eerste-stap', 'salam', 'vlam-3', 'vlam-7', 'letters', 'alfabet'],
     unlocked: true, unlockedAt: Date.now() - 7 * 86400000, langPicked: true, seenTips: ['stem'],

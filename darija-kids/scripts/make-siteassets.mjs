@@ -37,7 +37,35 @@ const kb = (bytes) => `${Math.round(bytes / 1024)} kB`
 const sizeOf = async (file) => (await stat(file)).size
 
 /** ffmpeg says a great deal; only the exit code interests us. */
-const ff = (args) => run(ffmpeg, ['-hide_banner', '-loglevel', 'error', '-y', ...args])
+const ff = (args) => run(ffmpeg, ['-hide_banner', '-loglevel', 'error', '-y', ...args], { maxBuffer: 1 << 24 })
+
+/**
+ * How long a file plays, out of what ffmpeg prints when asked to do nothing.
+ *
+ * `ffmpeg -i file` with no output exits non-zero on purpose, so the number has
+ * to be read from the rejection rather than from a happy result.
+ */
+const duurVan = async (file) => {
+  const out = await run(ffmpeg, ['-hide_banner', '-i', file]).then(
+    (r) => r.stderr, (e) => e.stderr ?? '')
+  const m = /Duration: (\d+):(\d+):([\d.]+)/.exec(out)
+  if (!m) throw new Error(`geen duur te vinden in ${file}`)
+  return Number(m[1]) * 3600 + Number(m[2]) * 60 + Number(m[3])
+}
+
+/**
+ * Twee Darija-woorden die tussen de muziek door te horen zijn.
+ *
+ * De film laat de app zien maar liet hem niet hóren, en juist het geluid is
+ * waar deze app op staat: geen spraakcomputer maar een mens. Dus komt de echte
+ * opname van salam aan het begin voorbij en die van shukran tegen het eind, met
+ * de muziek er even onder. Het zijn dezelfde bestanden die in de app zitten —
+ * een bezoeker hoort precies wat zijn kind straks hoort.
+ */
+const WOORDEN = [
+  { id: 'salam', op: 5 },
+  { id: 'shukran', op: 21 },
+]
 
 await rm(OUT, { recursive: true, force: true })
 
@@ -64,8 +92,36 @@ for (const lang of LANGS) {
   const filmOut = path.join(OUT, 'film', lang)
   await mkdir(filmOut, { recursive: true })
 
+  // De twee opnames erbij, elk op zijn eigen moment, met de muziek eronder.
+  const stemmen = []
+  for (const woord of WOORDEN) {
+    const bestand = path.join(ROOT, 'src', 'audio', 'woorden', `${woord.id}.wav`)
+    stemmen.push({ ...woord, bestand, duur: await duurVan(bestand) })
+  }
+
+  // De muziek zakt een kwart seconde voor het woord en komt er weer bovenop
+  // zodra het uit is; anders praat de darbuka eroverheen.
+  const zacht = stemmen
+    .map((w) => `between(t,${(w.op - 0.25).toFixed(2)},${(w.op + w.duur + 0.35).toFixed(2)})`)
+    .join('+')
+
+  const mix = [
+    `[0:a]volume=0.28:enable='${zacht}'[muziek]`,
+    ...stemmen.map((w, i) =>
+      `[${i + 1}:a]aresample=48000,aformat=channel_layouts=stereo,` +
+      `adelay=${Math.round(w.op * 1000)}|${Math.round(w.op * 1000)},volume=2.2[w${i}]`),
+    `[muziek]${stemmen.map((_, i) => `[w${i}]`).join('')}` +
+      // Een limiter achteraan: de opnames zijn niet allemaal even hard, en
+      // een enkele luide sisklank boven op de muziek tikt anders tegen het
+      // plafond — wat je in AAC terughoort als een kraakje.
+      `amix=inputs=${stemmen.length + 1}:duration=first:normalize=0,alimiter=limit=0.89:level=disabled[uit]`,
+  ].join(';')
+
   await ff([
     '-i', filmIn,
+    ...stemmen.flatMap((w) => ['-i', w.bestand]),
+    '-filter_complex', mix,
+    '-map', '0:v', '-map', '[uit]',
     '-vf', 'scale=1280:-2',
     '-c:v', 'libx264', '-preset', 'slow', '-crf', '30', '-profile:v', 'high', '-pix_fmt', 'yuv420p',
     // The whole point of a preview is that it starts playing before it has

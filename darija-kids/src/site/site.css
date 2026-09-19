@@ -231,12 +231,38 @@ section.tint { background: var(--sunken); border-block: 1px solid var(--line); }
 .unit .sub { display: block; font-size: .85rem; color: var(--ink-soft); font-weight: 600; }
 .level { margin: 1.6rem 0 .7rem; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
 
-/* schermen */
-.shots { display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 1rem; scroll-snap-type: x mandatory; }
-.shots img {
-  width: 14rem; flex: none; border-radius: 20px; scroll-snap-align: start;
+/* de collage: één rij schermen die je veegt of met de pijlen verschuift */
+.collage { position: relative; }
+.track {
+  display: flex; gap: 1rem; overflow-x: auto; padding: .25rem .25rem 1rem;
+  scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  scrollbar-width: none; -ms-overflow-style: none;
+  /* De rij loopt aan beide kanten zachtjes weg, zodat zichtbaar is dat er
+     meer staat dan er past. */
+  mask-image: linear-gradient(to right, transparent, #000 2.5rem, #000 calc(100% - 2.5rem), transparent);
+}
+.track::-webkit-scrollbar { display: none; }
+.track:focus-visible { outline: 3px solid var(--zellige); outline-offset: 4px; border-radius: 20px; }
+.track img {
+  width: 14rem; flex: none; border-radius: 20px; scroll-snap-align: center;
   border: 1px solid var(--line); box-shadow: var(--shadow);
 }
+@media (min-width: 48rem) { .track img { width: 16rem; } }
+
+.arrow {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 5;
+  width: 2.75rem; height: 2.75rem; border-radius: 999px; cursor: pointer;
+  display: grid; place-items: center; font-size: 1.6rem; line-height: 1;
+  color: var(--ink); background: var(--raised);
+  border: 1px solid var(--line); box-shadow: var(--shadow);
+}
+.arrow:hover:not(:disabled) { background: var(--sunken); }
+.arrow:disabled { opacity: .3; cursor: default; }
+.arrow.prev { left: -.5rem; }
+.arrow.next { right: -.5rem; }
+@media (min-width: 76rem) { .arrow.prev { left: -1.75rem; } .arrow.next { right: -1.75rem; } }
+
+@media (prefers-reduced-motion: reduce) { .track { scroll-behavior: auto; } }
 
 /* film */
 .film { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow); background: #000; }

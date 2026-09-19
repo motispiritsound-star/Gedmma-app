@@ -215,6 +215,34 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then(function (rs) { rs.forEach(function (r) { r.unregister() }) })
   if (window.caches) caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k) }) })
 }
+
+// De pijlen van de collage. Vegen werkt zonder dit; de knoppen zijn erbij voor
+// wie een muis heeft, en staan daarom verstopt tot ze echt iets kunnen doen.
+Array.prototype.forEach.call(document.querySelectorAll('.collage'), function (collage) {
+  var track = collage.querySelector('.track')
+  var prev = collage.querySelector('.prev')
+  var next = collage.querySelector('.next')
+  if (!track || !prev || !next) return
+  prev.hidden = false
+  next.hidden = false
+
+  function stap(richting) {
+    var eerste = track.querySelector('img')
+    var breedte = eerste ? eerste.getBoundingClientRect().width + 16 : track.clientWidth
+    track.scrollBy({ left: richting * breedte, behavior: 'smooth' })
+  }
+  prev.addEventListener('click', function () { stap(-1) })
+  next.addEventListener('click', function () { stap(1) })
+
+  function bij() {
+    var eind = track.scrollWidth - track.clientWidth
+    prev.disabled = track.scrollLeft < 8
+    next.disabled = track.scrollLeft > eind - 8
+  }
+  track.addEventListener('scroll', bij, { passive: true })
+  window.addEventListener('resize', bij)
+  bij()
+})
 </script>
 </body>
 </html>
@@ -256,11 +284,28 @@ const unitList = (lang) => {
     </div>`).join('\n')
 }
 
+/**
+ * De schermen als collage, met pijlen en met vegen.
+ *
+ * Eén rij die horizontaal schuift, met scroll-snap zodat een veeg op een
+ * telefoon netjes op het volgende scherm uitkomt. De pijlen zijn knoppen die
+ * pas verschijnen als er JavaScript is: zonder JavaScript kun je nog steeds
+ * vegen en met de pijltjestoetsen door de rij lopen, en dan staan er geen
+ * knoppen die niets doen.
+ */
 const shotGallery = (lang, shots) => {
   const c = SITE[lang]
-  return shots.map((file, i) =>
-    `<img src="/shots/${lang}/${file}" alt="${esc(c.beeldAlt[i] ?? c.beeldTitel)}" width="430" height="932" loading="lazy" decoding="async">`
+  const slides = shots.map((file, i) =>
+    `<img src="/shots/${lang}/${file}" alt="${esc(c.beeldAlt[i] ?? c.beeldTitel)}" width="430" height="932" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async">`
   ).join('\n')
+
+  return `<div class="collage">
+      <button class="arrow prev" type="button" aria-label="${esc(c.vorige)}" hidden>&#8249;</button>
+      <div class="track" tabindex="0" role="group" aria-label="${esc(c.beeldTitel)}">
+        ${slides}
+      </div>
+      <button class="arrow next" type="button" aria-label="${esc(c.volgende)}" hidden>&#8250;</button>
+    </div>`
 }
 
 const homePage = (lang, media) => {
@@ -335,7 +380,7 @@ const homePage = (lang, media) => {
     media.shots.length ? `<section class="tint">
   <div class="wrap">
     <h2>${esc(c.beeldTitel)}</h2>
-    <p class="subtitle">${esc(c.beeldBody)}</p>
+    <p class="subtitle">${esc(c.beeldBody(media.shots.length))}</p>
     <div class="shots">${shotGallery(lang, media.shots)}</div>
   </div>
 </section>` : '',

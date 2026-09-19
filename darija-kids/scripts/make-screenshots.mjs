@@ -118,6 +118,42 @@ const SHOTS = [
       en: 'Rewards, streaks\nand a daily goal',
     },
   },
+  {
+    id: '7-spelen',
+    path: '/spelen',
+    caption: {
+      nl: 'Drie spelletjes,\ndezelfde woorden',
+      fr: 'Trois jeux,\nles mêmes mots',
+      de: 'Drei Spiele,\ndieselben Wörter',
+      es: 'Tres juegos,\nlas mismas palabras',
+      it: 'Tre giochi,\nle stesse parole',
+      en: 'Three games,\nthe same words',
+    },
+  },
+  {
+    id: '8-geschiedenis',
+    path: '/geschiedenis',
+    caption: {
+      nl: 'Veertien filmpjes uit\nde geschiedenis van Marokko',
+      fr: 'Quatorze courts récits\nde l’histoire du Maroc',
+      de: 'Vierzehn kurze Filme\naus der Geschichte Marokkos',
+      es: 'Catorce vídeos cortos\nde la historia de Marruecos',
+      it: 'Quattordici filmati\ndalla storia del Marocco',
+      en: 'Fourteen short films\nfrom the history of Morocco',
+    },
+  },
+  {
+    id: '9-herhalen',
+    path: '/herhalen',
+    caption: {
+      nl: 'Een stapel die weet\nwat begint te wankelen',
+      fr: 'Une pile qui sait\nce qui commence à vaciller',
+      de: 'Ein Stapel, der weiß,\nwas ins Wanken gerät',
+      es: 'Un montón que sabe\nqué empieza a flaquear',
+      it: 'Un mazzo che sa\ncosa comincia a vacillare',
+      en: 'A stack that knows\nwhat is starting to wobble',
+    },
+  },
 ]
 
 /** The frame around the shot: a caption, then the screen itself. */

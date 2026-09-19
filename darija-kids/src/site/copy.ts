@@ -77,7 +77,9 @@ const nl = {
   ] as [string, string][],
 
   beeldTitel: 'Zo ziet het eruit',
-  beeldBody: 'Zes schermen uit de app.',
+  vorige: 'Vorige',
+  volgende: 'Volgende',
+  beeldBody: (n: number): string => `${n} schermen uit de app. Veeg, of gebruik de pijlen.`,
   beeldAlt: [
     'Het leerpad met alle units',
     'Het Arabische alfabet',
@@ -85,6 +87,9 @@ const nl = {
     'Het woordenboek',
     'Een verhaal om te lezen',
     'Het profielscherm met de voortgang',
+    'De drie spelletjes',
+    'De veertien geschiedeniskaarten',
+    'De herhaalstapel',
   ],
 
   padNiveau: { A0: 'Beginner', A1: 'Verder', A2: 'Zelfstandig' } as Record<string, string>,
@@ -166,7 +171,9 @@ const fr: SiteCopy = {
   ],
 
   beeldTitel: 'À quoi ça ressemble',
-  beeldBody: 'Six écrans de l’application.',
+  vorige: 'Précédent',
+  volgende: 'Suivant',
+  beeldBody: (n: number): string => `${n} écrans de l’application. Faites glisser, ou utilisez les flèches.`,
   beeldAlt: [
     'Le parcours avec toutes les unités',
     'L’alphabet arabe',
@@ -174,6 +181,9 @@ const fr: SiteCopy = {
     'Le dictionnaire',
     'Une histoire à lire',
     'L’écran de profil avec la progression',
+    'Les trois jeux',
+    'Les quatorze cartes d’histoire',
+    'La pile de révision',
   ],
 
   padNiveau: { A0: 'Débutant', A1: 'Plus loin', A2: 'Autonome' },
@@ -252,7 +262,9 @@ const de: SiteCopy = {
   ],
 
   beeldTitel: 'So sieht es aus',
-  beeldBody: 'Sechs Bildschirme aus der App.',
+  vorige: 'Zurück',
+  volgende: 'Weiter',
+  beeldBody: (n: number): string => `${n} Bildschirme aus der App. Wischen, oder die Pfeile benutzen.`,
   beeldAlt: [
     'Der Lernweg mit allen Einheiten',
     'Das arabische Alphabet',
@@ -260,6 +272,9 @@ const de: SiteCopy = {
     'Das Wörterbuch',
     'Eine Geschichte zum Lesen',
     'Der Profilbildschirm mit dem Fortschritt',
+    'Die drei Spiele',
+    'Die vierzehn Geschichtskarten',
+    'Der Wiederholungsstapel',
   ],
 
   padNiveau: { A0: 'Anfänger', A1: 'Weiter', A2: 'Selbstständig' },
@@ -338,7 +353,9 @@ const es: SiteCopy = {
   ],
 
   beeldTitel: 'Así se ve',
-  beeldBody: 'Seis pantallas de la app.',
+  vorige: 'Anterior',
+  volgende: 'Siguiente',
+  beeldBody: (n: number): string => `${n} pantallas de la app. Desliza, o usa las flechas.`,
   beeldAlt: [
     'El camino de aprendizaje con todas las unidades',
     'El alfabeto árabe',
@@ -346,6 +363,9 @@ const es: SiteCopy = {
     'El diccionario',
     'Una historia para leer',
     'La pantalla de perfil con el progreso',
+    'Los tres juegos',
+    'Las catorce tarjetas de historia',
+    'El montón de repaso',
   ],
 
   padNiveau: { A0: 'Principiante', A1: 'Más allá', A2: 'Autónomo' },
@@ -424,7 +444,9 @@ const it: SiteCopy = {
   ],
 
   beeldTitel: 'Ecco com’è',
-  beeldBody: 'Sei schermate dell’app.',
+  vorige: 'Precedente',
+  volgende: 'Successivo',
+  beeldBody: (n: number): string => `${n} schermate dell’app. Scorri, o usa le frecce.`,
   beeldAlt: [
     'Il percorso con tutte le unità',
     'L’alfabeto arabo',
@@ -432,6 +454,9 @@ const it: SiteCopy = {
     'Il dizionario',
     'Una storia da leggere',
     'La schermata del profilo con i progressi',
+    'I tre giochi',
+    'Le quattordici carte di storia',
+    'Il mazzo di ripasso',
   ],
 
   padNiveau: { A0: 'Principiante', A1: 'Avanti', A2: 'Autonomo' },
@@ -510,7 +535,9 @@ const en: SiteCopy = {
   ],
 
   beeldTitel: 'What it looks like',
-  beeldBody: 'Six screens from the app.',
+  vorige: 'Previous',
+  volgende: 'Next',
+  beeldBody: (n: number): string => `${n} screens from the app. Swipe, or use the arrows.`,
   beeldAlt: [
     'The learning path with every unit',
     'The Arabic alphabet',
@@ -518,6 +545,9 @@ const en: SiteCopy = {
     'The dictionary',
     'A story to read',
     'The profile screen with progress',
+    'The three games',
+    'The fourteen history cards',
+    'The review stack',
   ],
 
   padNiveau: { A0: 'Beginner', A1: 'Further', A2: 'On your own' },
