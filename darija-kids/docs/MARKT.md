@@ -112,7 +112,7 @@ stories, reels en TikTok:
 | 1 | Je kind verstaat oma wel — antwoorden lukt alleen niet | het probleem dat de lezer bij zichzelf herkent, vóór er iets verkocht wordt |
 | 2 | 432 opnames, geen computerstem | het enige dat een concurrent niet kan naschrijven zonder het opnieuw op te nemen |
 | 3 | Het Arabische schrift, letter voor letter | het stuk waarvan ouders niet wisten dat het erin zat |
-| 4 | Het alfabet is gratis | de drempel weg, pas nadat de waarde is getoond |
+| 4 | Beginnen kost niets | de drempel weg, pas nadat de waarde is getoond |
 | 5 | Veertien filmpjes uit de geschiedenis van Marokko | het stuk dat mensen doorsturen |
 
 Het beeld eronder is telkens het echte scherm waar dat ding gebeurt, geen

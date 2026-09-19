@@ -269,7 +269,7 @@ dat beginnen gratis is, en tot slot het stuk dat mensen doorsturen.
 | **it** | Tutte e 28 le lettere, con la loro forma all'inizio, in mezzo e alla fine di una parola. Tuo figlio impara a leggere la scrittura prima di accorgersi che dovrebbe essere difficile. |
 | **en** | All 28 letters, with their shape at the start, in the middle and at the end of a word. Your child learns to read the script before realising it is supposed to be hard. |
 
-### 4 — Het alfabet is gratis
+### 4 — Beginnen kost niets
 
 | | |
 |---|---|
