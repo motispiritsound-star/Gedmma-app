@@ -194,7 +194,7 @@ export function SettingsPage() {
       <Card className="mb-6">
         <Row
           title={t.unlock.titel}
-          hint={state.unlocked ? t.unlock.alOpen : t.unlock.sub(TRIAL_DAYS, LIST_PRICE, false)}
+          hint={state.unlocked ? t.unlock.alOpen : t.unlock.sub(TRIAL_DAYS, LIST_PRICE)}
         >
           <Link to="/volledig">
             <Button variant={state.unlocked ? 'secondary' : 'primary'}>

@@ -592,7 +592,7 @@ export const en: Strings = {
       ],
       [
         'Does it cost anything?',
-        'The alphabet and the first five units are free and stay free — enough to read the Arabic script, introduce yourself and count to a hundred. The whole course comes with a subscription: € 59.88 for a full year (that is € 4.99 a month) or € 6.99 a month, VAT included and with the first days free. You subscribe inside the app through the App Store or Google Play, and you cancel in the same place whenever you like. No adverts and no account: your progress stays yours.',
+        'The alphabet and the first five units are free and stay free — enough to read the Arabic script, introduce yourself and count to a hundred. The whole course comes with a subscription: € 4.99 a month on the yearly plan (€ 59.88 charged once) or € 6.99 a month, VAT included and with the first days free. You subscribe inside the app through the App Store or Google Play, and you cancel in the same place whenever you like. No adverts and no account: your progress stays yours.',
       ],
       [
         'Does it work offline?',
@@ -617,7 +617,7 @@ export const en: Strings = {
       ['🛑', 'Cancel any time', `One tap in your store account. Cancel within ${dagen} days and you pay nothing.`],
     ],
     titel: 'Full access',
-    sub: (dagen, prijs, jaar) => `${dagen} days free, then ${prijs} ${jaar ? 'a year' : 'a month'}`,
+    sub: (dagen, prijs) => `${dagen} days free, then ${prijs} a month`,
     intro: (vrij) =>
       `The first ${vrij} units are free and stay free — enough to introduce yourself and count to a hundred. The rest of the course comes with the subscription.`,
     krijgt: [
@@ -629,7 +629,7 @@ export const en: Strings = {
     ],
     plan: { jaar: 'A year', maand: 'Monthly' },
     voordeligst: (pct: number): string => `${pct}% cheaper`,
-    perMaand: (prijs: string): string => (prijs ? `${prijs} a month, paid up front` : 'a year, paid up front'),
+    jaarTotaal: (prijs: string): string => `${prijs} a year, paid up front`,
     perMaandLos: 'every month again',
     voorwaardenJaar: (dagen: number, prijs: string): string =>
       `After ${dagen} free days, ${prijs} is charged for a full year through your App Store or Google Play account, and every year after that until you cancel. Cancel before the trial ends and you pay nothing. VAT included.`,

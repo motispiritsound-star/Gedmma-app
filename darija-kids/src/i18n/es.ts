@@ -592,7 +592,7 @@ export const es: Strings = {
       ],
       [
         '¿Cuesta dinero?',
-        'El alfabeto y las cinco primeras unidades son y seguirán siendo gratis: suficiente para leer la escritura árabe, presentarte y contar hasta cien. El curso completo va con una suscripción: 59,88 € por un año entero (son 4,99 € al mes) o 6,99 € al mes, con IVA incluido y los primeros días gratis. Se contrata dentro de la aplicación a través de la App Store o Google Play, y allí mismo se cancela cuando quieras. Sin publicidad y sin cuenta: tu progreso sigue siendo tuyo.',
+        'El alfabeto y las cinco primeras unidades son y seguirán siendo gratis: suficiente para leer la escritura árabe, presentarte y contar hasta cien. El curso completo va con una suscripción: 4,99 € al mes con la suscripción anual (59,88 € de una vez) o 6,99 € al mes, con IVA incluido y los primeros días gratis. Se contrata dentro de la aplicación a través de la App Store o Google Play, y allí mismo se cancela cuando quieras. Sin publicidad y sin cuenta: tu progreso sigue siendo tuyo.',
       ],
       [
         '¿Funciona sin conexión?',
@@ -617,7 +617,7 @@ export const es: Strings = {
       ['🛑', 'Cancelable siempre', `Un toque en tu cuenta. Si cancelas antes de ${dagen} días, no pagas nada.`],
     ],
     titel: 'Acceso completo',
-    sub: (dagen, prijs, jaar) => `${dagen} días gratis y después ${prijs} ${jaar ? 'al año' : 'al mes'}`,
+    sub: (dagen, prijs) => `${dagen} días gratis y después ${prijs} al mes`,
     intro: (vrij) =>
       `Las ${vrij} primeras unidades son y seguirán siendo gratis: suficiente para presentarte y contar hasta cien. El resto del curso va con la suscripción.`,
     krijgt: [
@@ -629,7 +629,7 @@ export const es: Strings = {
     ],
     plan: { jaar: 'Un año', maand: 'Al mes' },
     voordeligst: (pct: number): string => `${pct} % más barato`,
-    perMaand: (prijs: string): string => (prijs ? `${prijs} al mes, pagado por adelantado` : 'al año, pagado por adelantado'),
+    jaarTotaal: (prijs: string): string => `${prijs} al año, pagado por adelantado`,
     perMaandLos: 'cada mes de nuevo',
     voorwaardenJaar: (dagen: number, prijs: string): string =>
       `Tras ${dagen} días gratis se cobran ${prijs} por un año entero a través de tu cuenta de la App Store o de Google Play, y después cada año hasta que canceles. Si cancelas antes de que termine la prueba, no pagas nada. IVA incluido.`,

@@ -30,6 +30,11 @@ export function Unlock() {
 
   /** The price the store quotes, in the buyer's currency; otherwise our own. */
   const priceOf = (id: PlanId) => billing.prices[id] ?? planOf(id).list
+  /**
+   * Wat het jaar per maand kost. De winkel rekent het uit zodra hij de prijs
+   * geeft; buiten de winkel — op het web — valt het terug op ons eigen getal.
+   */
+  const perMaandJaar = billing.yearPerMonth ?? planOf('jaar').perMonth
   const price = priceOf(plan)
   const jaar = plan === 'jaar'
 
@@ -39,7 +44,7 @@ export function Unlock() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <SectionTitle sub={t.unlock.sub(TRIAL_DAYS, price, jaar)}>{t.unlock.titel}</SectionTitle>
+      <SectionTitle sub={t.unlock.sub(TRIAL_DAYS, jaar ? perMaandJaar : price)}>{t.unlock.titel}</SectionTitle>
 
       {subscribed ? (
         <>
@@ -102,11 +107,21 @@ export function Unlock() {
                         {t.unlock.voordeligst(YEAR_SAVING)}
                       </span>
                     )}
+                    {/* Het jaarplan leidt met wat het per maand kost, want zo
+                        vergelijkt een koper het met het maandplan ernaast. Het
+                        jaarbedrag staat er meteen onder — kleiner, maar
+                        leesbaar, en hierboven in de tijdlijn nog een keer
+                        voluit. Alleen de maandprijs tonen en het jaarbedrag
+                        bewaren tot het afrekenscherm mag niet: beide winkels
+                        eisen dat op het scherm staat wat er werkelijk wordt
+                        afgeschreven. */}
                     <div className="font-display text-lg font-extrabold">{t.unlock.plan[option.id]}</div>
-                    <div className="mt-1 font-display text-2xl font-extrabold">{priceOf(option.id)}</div>
+                    <div className="mt-1 font-display text-2xl font-extrabold">
+                      {option.id === 'jaar' ? perMaandJaar : priceOf(option.id)}
+                    </div>
                     <div className="mt-0.5 text-xs text-[var(--ink-soft)]">
                       {option.id === 'jaar'
-                        ? t.unlock.perMaand(billing.prices.jaar ? '' : option.perMonth)
+                        ? t.unlock.jaarTotaal(priceOf('jaar'))
                         : t.unlock.perMaandLos}
                     </div>
                     {option.id === 'jaar' && (

@@ -96,7 +96,14 @@ export { FREE_UNITS }
 interface Offer { order: () => Promise<unknown> }
 interface Product {
   owned?: boolean
-  pricing?: { price: string } | null
+  /**
+   * `price` is al opgemaakt voor het land van de koper — "€ 59,99", "$64.99".
+   * `priceMicros` is datzelfde bedrag als getal, een miljoenste per eenheid,
+   * en daar valt mee te rekenen. Dat is nodig om van een jaarprijs een
+   * maandprijs te maken die klopt: het tekstje uit elkaar peuteren gaat mis
+   * zodra een land een punt gebruikt waar wij een komma zetten.
+   */
+  pricing?: { price: string; priceMicros?: number; currency?: string } | null
   getOffer: () => Offer | undefined
 }
 interface Transaction { finish: () => void }
@@ -157,6 +164,25 @@ function syncFromStore(owned: boolean): void {
   else if (getState().unlocked) setState({ unlocked: false, unlockedAt: null })
 }
 
+/**
+ * Een jaarprijs omgerekend naar wat hij per maand kost, in de munt van de
+ * koper zelf.
+ *
+ * `Intl.NumberFormat` doet het afronden en het plaatsen van het muntteken,
+ * zodat een Zweed "49,99 kr" ziet staan en geen euro's. Geeft de winkel geen
+ * bedrag om mee te rekenen, dan komt er niets uit en valt het scherm terug op
+ * het vaste getal uit PLANS.
+ */
+const perMaandVan = (pricing?: { priceMicros?: number; currency?: string } | null): string | null => {
+  if (!pricing?.priceMicros || !pricing.currency) return null
+  try {
+    return new Intl.NumberFormat(undefined, { style: 'currency', currency: pricing.currency })
+      .format(pricing.priceMicros / 1e6 / 12)
+  } catch {
+    return null
+  }
+}
+
 /* ---------------------------------------------------------- a tiny live state */
 
 export interface BillingState {
@@ -166,12 +192,21 @@ export interface BillingState {
   price: string | null
   /** Each product's price in the buyer's own currency, once the store has said. */
   prices: Partial<Record<PlanId | 'ebook', string>>
+  /**
+   * Wat het jaarplan per maand kost, uitgerekend uit de echte jaarprijs.
+   *
+   * Niet hetzelfde als `planOf('jaar').perMonth`: dat is een vast getal dat
+   * hoort bij onze eigen prijs. Apple en Google hebben niet dezelfde
+   * prijspunten — € 59,99 tegenover € 59,88 — en in Zweden staat er iets heel
+   * anders. Dit is wat de koper werkelijk gaat betalen, gedeeld door twaalf.
+   */
+  yearPerMonth: string | null
   busy: boolean
   /** Set when a purchase failed, in the store's own words. */
   error: string | null
 }
 
-let state: BillingState = { available: false, price: null, prices: {}, busy: false, error: null }
+let state: BillingState = { available: false, price: null, prices: {}, yearPerMonth: null, busy: false, error: null }
 const listeners = new Set<() => void>()
 
 const publish = (patch: Partial<BillingState>) => {
@@ -227,16 +262,18 @@ export async function initBilling(): Promise<void> {
   const refresh = () => {
     const prices: Partial<Record<PlanId | 'ebook', string>> = {}
     let owned: boolean | undefined
+    let yearPerMonth: string | null = null
     for (const plan of PLANS) {
       const product = store.get(plan.product)
       if (product?.pricing?.price) prices[plan.id] = product.pricing.price
+      if (plan.id === 'jaar') yearPerMonth = perMaandVan(product?.pricing)
       // Either plan being owned opens the whole course.
       if (product?.owned !== undefined) owned = (owned ?? false) || product.owned
     }
     const book = store.get(EBOOK.product)
     if (book?.pricing?.price) prices.ebook = book.pricing.price
     if (book?.owned || store.get(planOf('jaar').product)?.owned) grantEbook()
-    publish({ prices, price: prices.maand ?? null })
+    publish({ prices, yearPerMonth, price: prices.maand ?? null })
     if (owned !== undefined) syncFromStore(owned)
   }
 

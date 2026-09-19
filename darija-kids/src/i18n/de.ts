@@ -592,7 +592,7 @@ export const de: Strings = {
       ],
       [
         'Kostet es etwas?',
-        'Das Alphabet und die ersten fünf Einheiten sind und bleiben kostenlos — genug, um die arabische Schrift zu lesen, dich vorzustellen und bis hundert zu zählen. Der ganze Kurs läuft über ein Abo: 59,88 € für ein ganzes Jahr (das sind 4,99 € pro Monat) oder 6,99 € pro Monat, inklusive Mehrwertsteuer und mit den ersten Tagen gratis. Abgeschlossen wird es in der App über den App Store oder Google Play, und dort kündigst du es auch, wann du willst. Keine Werbung und kein Konto: dein Fortschritt bleibt deiner.',
+        'Das Alphabet und die ersten fünf Einheiten sind und bleiben kostenlos — genug, um die arabische Schrift zu lesen, dich vorzustellen und bis hundert zu zählen. Der ganze Kurs läuft über ein Abo: 4,99 € pro Monat im Jahresabo (59,88 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer und mit den ersten Tagen gratis. Abgeschlossen wird es in der App über den App Store oder Google Play, und dort kündigst du es auch, wann du willst. Keine Werbung und kein Konto: dein Fortschritt bleibt deiner.',
       ],
       [
         'Funktioniert es offline?',
@@ -617,7 +617,7 @@ export const de: Strings = {
       ['🛑', 'Jederzeit kündbar', `Ein Tippen im Store-Konto. Kündigst du binnen ${dagen} Tagen, zahlst du nichts.`],
     ],
     titel: 'Voller Zugang',
-    sub: (dagen, prijs, jaar) => `${dagen} Tage gratis, danach ${prijs} ${jaar ? 'pro Jahr' : 'pro Monat'}`,
+    sub: (dagen, prijs) => `${dagen} Tage gratis, danach ${prijs} pro Monat`,
     intro: (vrij) =>
       `Die ersten ${vrij} Einheiten sind und bleiben kostenlos — genug, um dich vorzustellen und bis hundert zu zählen. Der Rest des Kurses gehört zum Abo.`,
     krijgt: [
@@ -629,7 +629,7 @@ export const de: Strings = {
     ],
     plan: { jaar: 'Ein Jahr', maand: 'Pro Monat' },
     voordeligst: (pct: number): string => `${pct} % günstiger`,
-    perMaand: (prijs: string): string => (prijs ? `${prijs} pro Monat, im Voraus bezahlt` : 'pro Jahr, im Voraus bezahlt'),
+    jaarTotaal: (prijs: string): string => `${prijs} pro Jahr, im Voraus bezahlt`,
     perMaandLos: 'jeden Monat neu',
     voorwaardenJaar: (dagen: number, prijs: string): string =>
       `Nach ${dagen} Gratistagen werden ${prijs} für ein ganzes Jahr über dein App-Store- oder Google-Play-Konto abgebucht, danach jedes Jahr erneut, bis du kündigst. Kündigst du vor Ende der Testphase, zahlst du nichts. Preis inklusive Mehrwertsteuer.`,

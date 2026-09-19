@@ -599,7 +599,7 @@ export const nl = {
       ],
       [
         'Kost het iets?',
-        'Het alfabet en de eerste vijf units zijn en blijven gratis — genoeg om het Arabische schrift te lezen, jezelf voor te stellen en tot honderd te tellen. Wil je de hele cursus, dan is dat een abonnement: € 59,88 voor een heel jaar (dat is € 4,99 per maand) of € 6,99 per maand, inclusief btw en met de eerste dagen gratis. Je sluit het af in de app via de App Store of Google Play en je zegt daar ook op, wanneer je wilt. Geen advertenties en geen account: je voortgang blijft van jou.',
+        'Het alfabet en de eerste vijf units zijn en blijven gratis — genoeg om het Arabische schrift te lezen, jezelf voor te stellen en tot honderd te tellen. Wil je de hele cursus, dan is dat een abonnement: € 4,99 per maand bij een jaarabonnement (€ 59,88 in één keer) of € 6,99 per maand, inclusief btw en met de eerste dagen gratis. Je sluit het af in de app via de App Store of Google Play en je zegt daar ook op, wanneer je wilt. Geen advertenties en geen account: je voortgang blijft van jou.',
       ],
       [
         'Werkt het offline?',
@@ -624,8 +624,7 @@ export const nl = {
       ['🛑', 'Altijd opzegbaar', `Eén tik in je winkelaccount. Zeg je op binnen ${dagen} dagen, dan betaal je niets.`],
     ],
     titel: 'Volledige toegang',
-    sub: (dagen: number, prijs: string, jaar: boolean): string =>
-      `${dagen} dagen gratis, daarna ${prijs} ${jaar ? 'per jaar' : 'per maand'}`,
+    sub: (dagen: number, prijs: string): string => `${dagen} dagen gratis, daarna ${prijs} per maand`,
     intro: (vrij: number): string =>
       `De eerste ${vrij} units zijn en blijven gratis — genoeg om jezelf voor te stellen en tot honderd te tellen. De rest van de cursus hoort bij het abonnement.`,
     krijgt: [
@@ -637,7 +636,7 @@ export const nl = {
     ],
     plan: { jaar: 'Een jaar', maand: 'Per maand' },
     voordeligst: (pct: number): string => `${pct}% voordeliger`,
-    perMaand: (prijs: string): string => (prijs ? `${prijs} per maand, vooruit betaald` : 'per jaar, vooruit betaald'),
+    jaarTotaal: (prijs: string): string => `${prijs} per jaar, vooruit betaald`,
     perMaandLos: 'elke maand opnieuw',
     voorwaardenJaar: (dagen: number, prijs: string): string =>
       `Na ${dagen} gratis dagen wordt ${prijs} voor een heel jaar afgeschreven via je App Store- of Google Play-account, en daarna elk jaar opnieuw tot je opzegt. Zeg je op vóór het einde van de proefperiode, dan betaal je niets. De prijs is inclusief btw.`,

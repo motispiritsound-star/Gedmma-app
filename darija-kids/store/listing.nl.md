@@ -68,7 +68,7 @@ IN JOUW TAAL
 Nederlands, Frans, Duits, Spaans, Italiaans en Engels. Je kiest bij de start en kunt altijd wisselen: alle vertalingen, uitleg en verhalen wisselen mee.
 
 GRATIS BEGINNEN
-Het alfabet en de eerste vijf units zijn en blijven gratis: genoeg om het Arabische schrift te lezen, jezelf voor te stellen en tot honderd te tellen. De hele cursus hoort bij de volledige toegang: de eerste dagen gratis, daarna € 59,88 voor een heel jaar (€ 4,99 per maand) of € 6,99 per maand, inclusief btw. Opzegbaar in je eigen App Store- of Google Play-account; zeg je op vóór het einde van de proefperiode, dan betaal je niets.
+Het alfabet en de eerste vijf units zijn en blijven gratis: genoeg om het Arabische schrift te lezen, jezelf voor te stellen en tot honderd te tellen. De hele cursus hoort bij de volledige toegang: de eerste dagen gratis, daarna € 4,99 per maand bij een jaarabonnement (€ 59,88 in één keer) of € 6,99 per maand, inclusief btw. Opzegbaar in je eigen App Store- of Google Play-account; zeg je op vóór het einde van de proefperiode, dan betaal je niets.
 
 En er is één ding dat los te koop is: het e-boek, de hele cursus op papier — alle 28 letters met hun drie vormen, alle 17 units met de grammatica-uitleg, alle woorden en alle zinnen. € 14,99, één keer, en bij een jaarabonnement zit het erbij.
 
