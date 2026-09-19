@@ -65,6 +65,10 @@ const duurVan = async (file) => {
 const WOORDEN = [
   { id: 'salam', op: 5 },
   { id: 'shukran', op: 21 },
+  // Bslama sluit af, en dat kan niet op een vaste seconde: hij moet net voor
+  // de aftiteling vallen, en de film is niet in elke taal even lang. Dus wordt
+  // hij vanaf het eind geplaatst, met anderhalve seconde stilte erachter.
+  { id: 'bslama', voorEind: 1.5 },
 ]
 
 await rm(OUT, { recursive: true, force: true })
@@ -92,11 +96,15 @@ for (const lang of LANGS) {
   const filmOut = path.join(OUT, 'film', lang)
   await mkdir(filmOut, { recursive: true })
 
-  // De twee opnames erbij, elk op zijn eigen moment, met de muziek eronder.
+  // De opnames erbij, elk op zijn eigen moment, met de muziek eronder.
+  const filmDuur = await duurVan(filmIn)
   const stemmen = []
   for (const woord of WOORDEN) {
     const bestand = path.join(ROOT, 'src', 'audio', 'woorden', `${woord.id}.wav`)
-    stemmen.push({ ...woord, bestand, duur: await duurVan(bestand) })
+    const duur = await duurVan(bestand)
+    const op = woord.op ?? Number((filmDuur - woord.voorEind - duur).toFixed(2))
+    if (op < 0) throw new Error(`${woord.id} past niet in een film van ${filmDuur}s`)
+    stemmen.push({ ...woord, bestand, duur, op })
   }
 
   // De muziek zakt een kwart seconde voor het woord en komt er weer bovenop
