@@ -164,7 +164,6 @@ header.top nav + .langpick { margin-left: 0; }
 .accent { color: var(--terra); }
 .lead { font-size: clamp(1.05rem, 2vw, 1.2rem); color: var(--ink-soft); max-width: 40rem; }
 .proof { margin-top: 1.25rem; font-size: .9rem; color: var(--ink-soft); }
-.heroshot { justify-self: center; max-width: 20rem; filter: drop-shadow(0 30px 50px rgb(0 0 0 / 28%)); border-radius: 28px; }
 
 /* -------------------------------------------------------------- buttons */
 
@@ -231,38 +230,55 @@ section.tint { background: var(--sunken); border-block: 1px solid var(--line); }
 .unit .sub { display: block; font-size: .85rem; color: var(--ink-soft); font-weight: 600; }
 .level { margin: 1.6rem 0 .7rem; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
 
-/* de collage: één rij schermen die je veegt of met de pijlen verschuift */
-.collage { position: relative; }
+/* De collage: één scherm tegelijk, met een pijl aan weerszijden.
+ *
+ * Hij staat in de hero, op de plek waar eerst één schermafbeelding stond, en
+ * houdt precies dezelfde maat — vandaar dat elk beeld de volle breedte van de
+ * rij krijgt en de rij op één beeld klikt. Zo verspringt de bladspiegel niet
+ * terwijl je bladert, en op een telefoon veeg je er gewoon doorheen. */
+.collage {
+  position: relative;
+  width: 100%;
+  max-width: 19rem;
+  justify-self: center;
+}
 .track {
-  display: flex; gap: 1rem; overflow-x: auto; padding: .25rem .25rem 1rem;
+  display: flex; gap: 1.25rem; overflow-x: auto;
   scroll-snap-type: x mandatory; scroll-behavior: smooth;
   scrollbar-width: none; -ms-overflow-style: none;
-  /* De rij loopt aan beide kanten zachtjes weg, zodat zichtbaar is dat er
-     meer staat dan er past. */
-  mask-image: linear-gradient(to right, transparent, #000 2.5rem, #000 calc(100% - 2.5rem), transparent);
+  border-radius: 24px;
 }
 .track::-webkit-scrollbar { display: none; }
-.track:focus-visible { outline: 3px solid var(--zellige); outline-offset: 4px; border-radius: 20px; }
+.track:focus-visible { outline: 3px solid var(--zellige); outline-offset: 6px; }
 .track img {
-  width: 14rem; flex: none; border-radius: 20px; scroll-snap-align: center;
-  border: 1px solid var(--line); box-shadow: var(--shadow);
+  width: 100%; flex: none; scroll-snap-align: center;
+  border-radius: 24px;
+  filter: drop-shadow(0 26px 44px rgb(0 0 0 / 26%));
 }
-@media (min-width: 48rem) { .track img { width: 16rem; } }
 
 .arrow {
-  position: absolute; top: 50%; transform: translateY(-50%); z-index: 5;
-  width: 2.75rem; height: 2.75rem; border-radius: 999px; cursor: pointer;
-  display: grid; place-items: center; font-size: 1.6rem; line-height: 1;
-  color: var(--ink); background: var(--raised);
+  position: absolute; top: 42%; transform: translateY(-50%); z-index: 5;
+  width: 2.6rem; height: 2.6rem; border-radius: 999px; cursor: pointer;
+  display: grid; place-items: center; font-size: 1.5rem; line-height: 1;
+  color: var(--ink);
+  background: color-mix(in oklab, var(--raised) 92%, transparent);
+  backdrop-filter: blur(6px);
   border: 1px solid var(--line); box-shadow: var(--shadow);
 }
-.arrow:hover:not(:disabled) { background: var(--sunken); }
-.arrow:disabled { opacity: .3; cursor: default; }
-.arrow.prev { left: -.5rem; }
-.arrow.next { right: -.5rem; }
-@media (min-width: 76rem) { .arrow.prev { left: -1.75rem; } .arrow.next { right: -1.75rem; } }
+.arrow:hover:not(:disabled) { background: var(--raised); transform: translateY(-50%) scale(1.06); }
+.arrow:disabled { opacity: .25; cursor: default; }
+/* Half over de rand: dan blijft het beeld zo groot mogelijk en is toch
+   zichtbaar dat de pijl bij de afbeelding hoort. */
+.arrow.prev { left: -1.1rem; }
+.arrow.next { right: -1.1rem; }
+@media (max-width: 24rem) { .arrow.prev { left: -.6rem; } .arrow.next { right: -.6rem; } }
 
-@media (prefers-reduced-motion: reduce) { .track { scroll-behavior: auto; } }
+.tel { margin: .9rem 0 0; text-align: center; font-size: .85rem; color: var(--ink-soft); }
+
+@media (prefers-reduced-motion: reduce) {
+  .track { scroll-behavior: auto; }
+  .arrow:hover:not(:disabled) { transform: translateY(-50%); }
+}
 
 /* film */
 .film { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow); background: #000; }

@@ -296,7 +296,8 @@ const unitList = (lang) => {
 const shotGallery = (lang, shots) => {
   const c = SITE[lang]
   const slides = shots.map((file, i) =>
-    `<img src="/shots/${lang}/${file}" alt="${esc(c.beeldAlt[i] ?? c.beeldTitel)}" width="430" height="932" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async">`
+    `<img src="/shots/${lang}/${file}" alt="${esc(c.beeldAlt[i] ?? c.beeldTitel)}" width="430" height="932"` +
+    (i === 0 ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async">'
   ).join('\n')
 
   return `<div class="collage">
@@ -305,6 +306,7 @@ const shotGallery = (lang, shots) => {
         ${slides}
       </div>
       <button class="arrow next" type="button" aria-label="${esc(c.volgende)}" hidden>&#8250;</button>
+      <p class="tel">${esc(c.beeldBody(shots.length))}</p>
     </div>`
 }
 
@@ -323,7 +325,7 @@ const homePage = (lang, media) => {
       ${downloadBlock(lang)}
       <p class="proof">${esc(c.heroBewijs)}</p>
     </div>
-    ${media.shots.length ? `<img class="heroshot" src="/shots/${lang}/${media.shots[0]}" alt="${esc(c.beeldAlt[0])}" width="430" height="932" fetchpriority="high" decoding="async">` : ''}
+    ${media.shots.length ? shotGallery(lang, media.shots) : ''}
   </div>
 </section>`,
 
@@ -376,14 +378,6 @@ const homePage = (lang, media) => {
     ${unitList(lang)}
   </div>
 </section>`,
-
-    media.shots.length ? `<section class="tint">
-  <div class="wrap">
-    <h2>${esc(c.beeldTitel)}</h2>
-    <p class="subtitle">${esc(c.beeldBody(media.shots.length))}</p>
-    <div class="shots">${shotGallery(lang, media.shots)}</div>
-  </div>
-</section>` : '',
 
     `<section>
   <div class="wrap">
