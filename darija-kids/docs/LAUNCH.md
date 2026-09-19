@@ -38,7 +38,7 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 - [x] KvK-inschrijving — Venship, 77780868
 - [x] Domein kopen — `darijaforkids.eu`, met `darijaforkids.nl` als 301 erheen
 - [x] De website online zetten op dat domein (§0b)
-- [ ] D-U-N-S-nummer aanvragen als je de organisatieroute bij Google kiest — die klok loopt het langst (§1)
+- [x] D-U-N-S-nummer — aangevraagd en binnen
 
 ### De accounts
 
@@ -239,10 +239,19 @@ internet is een huisadres vooral een uitnodiging.
 | Apple Developer Program | [developer.apple.com/programs/enroll](https://developer.apple.com/programs/enroll/) | € 99 per jaar | 1–2 dagen, soms langer |
 | D-U-N-S-nummer (alleen voor de organisatieroute) | [developer.apple.com/enroll/duns-lookup](https://developer.apple.com/enroll/duns-lookup/) | gratis | tot 30 dagen |
 
-**Apple is simpel.** Een eenmanszaak is geen aparte rechtspersoon, dus schrijf
-je in als *individual / sole proprietor*. Dat scheelt een D-U-N-S-nummer: die
-eis geldt alleen voor organisaties met rechtspersoonlijkheid. Je eigen naam
-wordt dan de verkopersnaam in de App Store.
+**Apple is simpel, en dat is hier ook de route.** Venship is een eenmanszaak
+en dus geen aparte rechtspersoon, dus de inschrijving gaat als *individual /
+sole proprietor*. Dat scheelt het D-U-N-S-nummer bij Apple: die eis geldt
+alleen voor organisaties met rechtspersoonlijkheid.
+
+Eén gevolg om te weten: Apple zet bij een individuele inschrijving standaard
+**je eigen naam** als verkoper in de App Store, niet "Darijaforkids". Dat is
+achteraf te wijzigen naar de handelsnaam — dat loopt via Apple Support, met
+het KvK-uittreksel als bewijs, en het is een gewoon verzoek en geen uitzondering.
+Doe dat vóór de eerste publicatie: wat er bij de eerste release staat, is wat
+kopers onthouden. Zodra Apple de verkopersnaam heeft vastgesteld, zet je
+dezelfde naam in `src/content/operator.ts`, zodat de app, de website en de
+winkel alle drie hetzelfde zeggen.
 
 **Google is een keuze, en het is de belangrijkste van deze hele lijst.**
 

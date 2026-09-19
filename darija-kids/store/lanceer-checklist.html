@@ -108,8 +108,8 @@
     </li>
     <li data-blok="0">
       <label>
-        <input type="checkbox" data-id="0-4">
-        <span class="tekst">D-U-N-S-nummer aanvragen als je de organisatieroute bij Google kiest — die klok loopt het langst <span class="para">§1</span></span>
+        <input type="checkbox" data-id="0-4" data-vast="1">
+        <span class="tekst">D-U-N-S-nummer — aangevraagd en binnen</span>
       </label>
     </li>
   </ul>
@@ -480,7 +480,7 @@
 </div>
 
 <script>
-const VAST = ["0-0","0-1","0-2","0-3","1-0","3-0","3-1","3-2","3-3","3-4","5-0","5-1","5-2","5-3","5-4","5-5","5-6","6-0","6-1","6-2","6-3","6-4"]
+const VAST = ["0-0","0-1","0-2","0-3","0-4","1-0","3-0","3-1","3-2","3-3","3-4","5-0","5-1","5-2","5-3","5-4","5-5","5-6","6-0","6-1","6-2","6-3","6-4"]
 const vakjes = [...document.querySelectorAll('input[type=checkbox]')]
 let staat = {}
 try { staat = JSON.parse(localStorage.getItem('darija.lanceer') || '{}') } catch (e) { staat = {} }
