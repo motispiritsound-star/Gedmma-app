@@ -29,7 +29,8 @@ darija-kids/
   public/            fonts, iconen, manifest, service worker
   android/           het Android-project (Capacitor)
   store/             winkelteksten, persmap, socialposts, zoekwoorden
-  docs/LAUNCH.md     de lanceerlijst: van inschrijving tot eerste downloader
+  brand/             logo, omslagen, flyers en de posts om mee te lanceren
+  docs/              de route naar de winkel, in zeven documenten
 ```
 
 ## Aan de praat
@@ -46,12 +47,14 @@ npm run preview    # de gebouwde site op :4173
 Tests en controles:
 
 ```bash
-npm test           # 63 tests: leerstof, vertalingen, herhaalsysteem, oefeningen, betaalgrens
+npm test           # 144 tests: leerstof, vertalingen, herhaalsysteem, oefeningen, betaalgrens
 npm run typecheck
 npm run smoke      # klikt de gebouwde app door in een echte browser (na `npm run preview`)
 npm run soundcheck  # rendert elke klank en meet of hij écht geluid maakt (na `npm run dev`)
 npm run screenshots # fotografeert de app in alle winkelformaten (na `npm run preview`)
 npm run marketing   # tekent de feature graphic en de socialbeelden
+npm run social      # vijf posts per taal, vierkant en staand (na `npm run preview`)
+npm run brand       # logo, profielfoto's, omslagen en een flyer op A5
 npm run icons      # tekent de iconen en het deelplaatje opnieuw
 ```
 
@@ -336,12 +339,19 @@ al. Zie [docs/DEPLOY.md](docs/DEPLOY.md).
 **Als app in de winkels.** Dezelfde build zit via Capacitor in een echte iOS- en
 Android-app. Het Android-project staat compleet in `android/`, inclusief alle
 iconen; voor iOS is een Mac met Xcode nodig (een eis van Apple). De teksten voor
-beide winkels staan kant-en-klaar in `store/`, per taal. De hele route — accounts,
-kosten, kindercategorie, privacyantwoorden, screenshots — staat in
-[docs/STORES.md](docs/STORES.md), de volledige lanceerlijst — van KvK tot
-de eerste twintig recensies — in [docs/LAUNCH.md](docs/LAUNCH.md), en het plan
-per land — waar het publiek zit, in welke volgorde en wat je welke week doet —
-in [docs/MARKT.md](docs/MARKT.md).
+beide winkels staan kant-en-klaar in `store/`, per taal.
+
+De route erheen staat in zeven documenten, elk met een eigen vraag:
+
+| | Waarover |
+|---|---|
+| [docs/LAUNCH.md](docs/LAUNCH.md) | de lanceerlijst, van KvK tot de eerste twintig recensies — afvinkbaar met `npm run checklist` |
+| [docs/STORES.md](docs/STORES.md) | hoe de app in een winkel komt: accounts, kosten, kindercategorie, privacyantwoorden |
+| [docs/PLAY.md](docs/PLAY.md) | Google Play stap voor stap, in de volgorde die de console afdwingt |
+| [docs/PAYMENTS.md](docs/PAYMENTS.md) | het abonnement, de btw, de commissie en hoe het geld op je rekening komt |
+| [docs/MARKT.md](docs/MARKT.md) | waar het publiek zit, in welke volgorde je het opzoekt en wat je welke week doet |
+| [docs/DEPLOY.md](docs/DEPLOY.md) | de website online zetten |
+| [docs/INHOUD.md](docs/INHOUD.md) | leerstof toevoegen of corrigeren |
 
 ```bash
 npm run build          # web-build in dist/
@@ -351,7 +361,8 @@ npm run android        # en openen in Android Studio
 
 De beelden voor beide winkels maakt de repo zelf: `npm run screenshots` voor de
 schermafbeeldingen, `npm run marketing` voor de feature graphic en de
-socialbeelden, `npm run brand` voor het merkpakket — logo, profielfoto's,
+socialbeelden, `npm run social` voor de vijf posts per taal waarmee je de
+eerste weken vult, `npm run brand` voor het merkpakket — logo, profielfoto's,
 omslagen en een flyer op A5 — en `npm run intro` voor de introfilm — bijna een halve minuut
 echte app met geluid, in vier formaten en zes talen. Die film is geen montage
 van mock-ups: `scripts/make-intro.mjs` start een server, fotografeert de app en

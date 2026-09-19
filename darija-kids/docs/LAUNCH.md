@@ -4,7 +4,7 @@ Eén lijst, van "de app is af" tot "hij staat in de winkel". Alles wat de code
 kan doen is gedaan; wat hier overblijft is wat een mens met een bankrekening
 en een paspoort moet doen.
 
-De app zelf staat er klaar voor: 118 tests groen, elk scherm nagelopen in zes
+De app zelf staat er klaar voor: 144 tests groen, elk scherm nagelopen in zes
 talen op drie schermbreedtes, alle 34 klanken gemeten, en de winkelteksten,
 schermafbeeldingen, films en het e-boek klaar in zes talen.
 
