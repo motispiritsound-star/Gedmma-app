@@ -36,13 +36,13 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 
 - [x] `src/content/operator.ts` invullen: naam, e-mail, adres, land, telefoon, KvK, btw (§0)
 - [x] KvK-inschrijving — Venship, 77780868
-- [x] Domein kopen — `darijaforkids.eu`, met `darijaforkids.nl` als doorverwijzing
+- [x] Domein kopen — `darijaforkids.eu`, met `darijaforkids.nl` als 301 erheen
 - [x] De website online zetten op dat domein (§0b)
 - [ ] D-U-N-S-nummer aanvragen als je de organisatieroute bij Google kiest — die klok loopt het langst (§1)
 
 ### De accounts
 
-- [ ] Google Play Console aanmaken, $ 25 eenmalig (§1)
+- [x] Google Play Console aanmaken, $ 25 eenmalig (§1)
 - [ ] Apple Developer Program, € 99 per jaar (§1)
 - [ ] Identiteit laten verifiëren bij allebei
 - [ ] Bankrekening en belastinggegevens invullen in beide consoles (§2)
@@ -78,7 +78,7 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 
 ### Voor je op verzenden drukt
 
-- [x] `npm test` — 118 tests
+- [x] `npm test` — 144 tests
 - [x] `npm run typecheck`
 - [x] `npm run sweep -- --breed` — elk scherm, zes talen, licht en donker, 320/390/820 px
 - [x] `npm run soundcheck` — alle 34 klanken
