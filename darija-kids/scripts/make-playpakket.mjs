@@ -35,8 +35,20 @@ const PLAY_LOCALE = {
   nl: 'nl-NL', fr: 'fr-FR', de: 'de-DE', es: 'es-ES', it: 'it-IT', en: 'en-US',
 }
 
-/** Play neemt er acht; de negende is er één te veel. */
+/** Play neemt er acht; er staan er tien klaar. */
 const MAX_SCHERMEN = 8
+
+/**
+ * Welke acht, en in welke volgorde ze op de winkelpagina komen.
+ *
+ * Niet op bestandsnaam sorteren: dan valt "10-aanbod" tussen 1 en 2 en vallen
+ * de laatste twee buiten de acht. En de volgorde is een keuze, geen toeval.
+ * De eerste twee laten zien wat de app doet — pas daarna werkt een prijs
+ * overtuigend in plaats van afschrikkend, dus het aanbod staat derde. Wat
+ * niet bestaat in een taal (het aanbod staat alleen in de eurozone) wordt
+ * overgeslagen, en de volgende schuift op.
+ */
+const VOLGORDE = ['1-pad', '2-letters', '10-aanbod', '3-les', '4-woorden', '5-verhalen', '8-geschiedenis', '6-jij', '7-spelen', '9-herhalen']
 
 await rm(OUT, { recursive: true, force: true })
 await mkdir(OUT, { recursive: true })
@@ -62,7 +74,8 @@ for (const lang of LANGS) {
   // iPad-generatie".
   for (const [bron, naar] of [['play', 'schermen'], ['play-7', 'schermen-tablet-7inch'], ['play-10', 'schermen-tablet-10inch']]) {
     const uit = path.join(ROOT, 'store', 'screenshots', lang, bron)
-    const schermen = (await readdir(uit).catch(() => [])).filter((f) => f.endsWith('.png')).sort()
+    const aanwezig = new Set((await readdir(uit).catch(() => [])).filter((f) => f.endsWith('.png')))
+    const schermen = VOLGORDE.map((id) => `${id}.png`).filter((f) => aanwezig.has(f))
     if (!schermen.length) { gemist.push(uit); continue }
     await mkdir(path.join(map, naar), { recursive: true })
     for (const [i, file] of schermen.slice(0, MAX_SCHERMEN).entries()) {
