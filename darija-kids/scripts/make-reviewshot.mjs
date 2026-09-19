@@ -41,6 +41,15 @@ const ctx = await browser.newContext({
   reducedMotion: 'reduce',
 })
 const page = await ctx.newPage()
+/**
+ * Deze opname gaat naar Apple, dus doet de app alsof hij op iOS draait: daar
+ * deelt een abonnement met de gezinsgroep en dat zegt het scherm ook. In een
+ * browser zou de Android-tekst verschijnen, en dan ziet de recensent iets
+ * anders dan de koper.
+ */
+await page.addInitScript(() => {
+  Object.defineProperty(window, 'Capacitor', { value: { getPlatform: () => 'ios' } })
+})
 /** Een gebruiker die al even bezig is: de balk bovenin staat dan niet leeg. */
 await page.addInitScript((taal) => {
   localStorage.setItem('darijakids.v1', JSON.stringify({
@@ -50,6 +59,13 @@ await page.addInitScript((taal) => {
 
 await mkdir(UIT, { recursive: true })
 await page.goto(`${BASE}/volledig`, { waitUntil: 'networkidle' })
+/**
+ * In een browser is er geen winkel, dus waar op een toestel de koopknop staat,
+ * staat hier een regel dat kopen in de app gebeurt. Die regel bestaat op een
+ * telefoon niet, en een recensent die hem leest denkt dat hij naar een website
+ * kijkt.
+ */
+await page.addStyleTag({ content: '[data-web-only] { display: none !important }' })
 await page.waitForTimeout(800)
 /**
  * Apple wil op de review-opname zien waar het abonnement wordt aangeboden, dus

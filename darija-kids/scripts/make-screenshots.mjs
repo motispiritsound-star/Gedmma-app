@@ -367,6 +367,17 @@ const shoot = async (browser, composer, lang, deviceKey) => {
     deviceScaleFactor: Math.max(2, device.w / device.viewport.width),
   })
   const page = await context.newPage()
+  /**
+   * Op een iPhone deelt een abonnement met de gezinsgroep en op Android niet,
+   * en de app zegt dat ook verschillend. Een opname in een browser zou overal
+   * de Android-tekst geven, dus voor de App Store doen we ons voor als iOS —
+   * dan staat op het winkelplaatje wat de koper straks werkelijk ziet.
+   */
+  if (device.winkel === 'apple') {
+    await page.addInitScript(() => {
+      Object.defineProperty(window, 'Capacitor', { value: { getPlatform: () => 'ios' } })
+    })
+  }
   await page.goto(`${BASE}/`, { waitUntil: 'networkidle' })
   await page.evaluate((state) => localStorage.setItem('darijakids.v1', JSON.stringify(state)), seeded(lang))
 
