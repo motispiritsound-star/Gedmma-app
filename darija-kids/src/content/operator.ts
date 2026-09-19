@@ -29,8 +29,15 @@ export const OPERATOR = {
    * free provider looks like a shop that may not be there next year.
    */
   email: 'info@darijaforkids.eu',
-  /** Street, postcode and town. A PO box is not accepted as a trader address. */
-  address: 'Christoffel Boumeisterlaan 17, 3907 KN Veenendaal',
+  /**
+   * Street, postcode and town. A PO box is not accepted as a trader address.
+   *
+   * Dit is het bezoekadres zoals het bij de KvK staat, en dat is per
+   * 1 januari 2026 Bussum in plaats van Veenendaal. Het moet letterlijk
+   * kloppen met de inschrijving: Apple en Google controleren het tegen
+   * openbare registers en publiceren het op de winkelpagina.
+   */
+  address: 'Torenlaan 5 B, 1402 AT Bussum',
   country: 'Nederland',
   /**
    * A phone number that is answered. A mobile is fine.

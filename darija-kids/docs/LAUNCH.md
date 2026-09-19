@@ -115,8 +115,8 @@ in twee winkelconsoles, en ze horen daar letterlijk hetzelfde te luiden.
 | | |
 |---|---|
 | Handelaar | Darijaforkids |
-| Bedrijf | Venship |
-| Adres | Christoffel Boumeisterlaan 17, 3907 KN Veenendaal |
+| Bedrijf | Venship (eenmanszaak van Adil Bekkali) |
+| Adres | Torenlaan 5 B, 1402 AT Bussum |
 | Telefoon | +31 6 29479436 |
 | E-mail | info@darijaforkids.eu |
 | KvK | 77780868 |
