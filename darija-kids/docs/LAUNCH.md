@@ -121,8 +121,8 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 
 ### De formulieren
 
-- [ ] Apple **App Privacy** — **ja, er wordt verzameld**: e-mailadres en, na
-      toestemming, vijf voortgangsgetallen. Niet voor tracking (§4)
+- [x] Apple **App Privacy** — gepubliceerd: e-mailadres en product interaction,
+      allebei gekoppeld aan de persoon, geen van beide voor tracking (§4)
 - [x] Apple **Age Rating** — overal None ingevuld, staat op 4+ in 172 landen
 - [ ] Apple: categorie **Education**; de Kids Category pas bij een latere versie
 - [ ] Google **Gegevensbeveiliging** — deelt niets, maar verzamelt wél een
@@ -131,7 +131,7 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 - [ ] Google **Inhoudsclassificatie** en **Advertenties: nee**
 - [ ] Handelaarsgegevens in beide consoles — dezelfde als in `operator.ts`
 - [x] Support-URL (`/ouders`) en marketing-URL ingevuld bij Apple
-- [ ] Privacy-URL (`/privacy`) invullen — dat veld staat bij **App Privacy**, niet bij App Information
+- [x] Privacy-URL ingevuld bij App Privacy
 - [x] Voorwaarden: Apple's standaard-EULA blijft staan; de app linkt zelf naar
       `/voorwaarden` op het abonnementsscherm, en daarmee is aan de eis voldaan
 - [ ] De notitie aan de reviewer overnemen (§5)
