@@ -134,7 +134,7 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 - [x] Privacy-URL ingevuld bij App Privacy
 - [x] Voorwaarden: Apple's standaard-EULA blijft staan; de app linkt zelf naar
       `/voorwaarden` op het abonnementsscherm, en daarmee is aan de eis voldaan
-- [ ] De notitie aan de reviewer overnemen (§5)
+- [x] De notitie aan de reviewer staat erin, in het Engels (§5)
 
 ### Nog recht te zetten in de app
 
@@ -563,29 +563,50 @@ voldoet aan de regels van beide; het is een marketingkeuze, geen technische.
 
 ## 5. Aan de reviewer
 
+Het veld heet **App Review Information** en staat *onderaan de versiepagina*,
+voorbij Description, Keywords en de URL's — niet op de pagina "App Review" in
+de linkerkolom, want dat is de wachtrij van wat al is ingediend. Zie je het
+blok daar niet, dan verschijnt het als stap in de indienstroom nadat je op
+*Add for Review* hebt gedrukt; je dient daarmee nog niets in.
+
+Vink **Sign-In Required** uit — er is geen account — en vul je naam,
+telefoonnummer en `info@darijaforkids.eu` in.
+
+**In het Engels.** Het reviewteam werkt internationaal en Engels is wat daar
+iedereen leest; een notitie die de reviewer niet meteen begrijpt kost een dag.
+De Nederlandse knopnamen staan er met hun vertaling achter, want de reviewer
+kiest bij de eerste start zelf een taal en die is niet per se Engels.
+
 Apple leest dit veld echt. Zet er dit in:
 
-> Darijaforkids leert kinderen Marokkaans-Arabisch. Er is geen account en geen
-> login nodig — de app opent direct in de eerste les.
+> Darijaforkids teaches children Moroccan Arabic (Darija). No account and no
+> login is needed — the app opens straight into the first lesson.
 >
-> Om het abonnement te testen: tik onderin op "Leren" en kies in de eerste
-> unit (Lhruf) de vierde les. De eerste drie lessen van het alfabet en de
-> eerste les van unit 2 zijn gratis; alles daarna vraagt om het abonnement.
-> Een woord met een slotje in "Woorden" of "Alfabet" doet hetzelfde. Op het
-> abonnementsscherm staat een ouderpoort: een vermenigvuldiging die je moet
-> beantwoorden voordat de aankoop opent. Elk juist antwoord werkt.
+> To test the subscription: tap "Leren" (Learn) in the bottom bar and open the
+> fourth lesson of the first unit (Lhruf). The first three alphabet lessons and
+> the first lesson of unit 2 are free; everything after that asks for the
+> subscription. Any word with a padlock in "Woorden" (Words) or "Alfabet"
+> (Alphabet) does the same. The subscription screen has a parental gate: a
+> multiplication you must answer before the purchase opens. Any correct answer
+> works.
 >
-> De abonnementen zijn app.darijaforkids.yearly (€ 59,99 per jaar) en
-> app.darijaforkids.monthly (€ 6,99 per maand), beide met 3 dagen gratis. Los
-> daarvan staat app.darijaforkids.ebook (€ 14,99 eenmalig): het e-boek met de hele
-> cursus, dat bij het jaarabonnement is inbegrepen.
-> De voorwaarden en het privacybeleid staan in de app onder het
-> abonnementsscherm, en online op [je URL].
+> The subscriptions are app.darijaforkids.yearly (EUR 59.99 per year) and
+> app.darijaforkids.monthly (EUR 6.99 per month), both with a 3-day free trial.
+> Separately there is app.darijaforkids.ebook (EUR 14.99, one-off): the e-book
+> containing the whole course, which is included with the yearly plan.
 >
-> Onder "Jij → Voor ouders" kan een ouder een e-mailadres achterlaten voor
-> nieuws of een wekelijkse voortgangsmail. Dat staat achter dezelfde
-> ouderpoort, beide vinkjes beginnen leeg, en er wordt niets gestuurd voordat
-> het adres per mail is bevestigd. Een kind kan daar niets invullen.
+> Terms of use and the privacy policy are reachable from the subscription
+> screen inside the app, and online at https://darijaforkids.eu/voorwaarden and
+> https://darijaforkids.eu/privacy.
+>
+> Under "Jij → Voor ouders" (You → For parents) a parent can leave an email
+> address for news or a weekly progress note. This sits behind the same
+> parental gate, both checkboxes start empty, and nothing is sent until the
+> address is confirmed by email. A child cannot enter anything there. This is
+> the only data the app collects, and it is declared in App Privacy.
+>
+> The interface is available in English, Dutch, French, German, Spanish and
+> Italian, switchable at any time under Settings.
 
 ---
 
