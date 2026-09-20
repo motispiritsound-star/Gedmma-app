@@ -25,7 +25,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { geenJdk, jdkTool, vindJdk } from './lib/jdk.mjs'
+import { geenJdk, haalJdk, jdkTool, vindJdk } from './lib/jdk.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const EIGENSCHAPPEN = path.join(ROOT, 'android', 'keystore.properties')
@@ -47,7 +47,8 @@ function sleutelmap() {
   return path.join(basis, 'Darijaforkids-sleutel')
 }
 
-const jdk = vindJdk()
+let jdk = vindJdk()
+if (!jdk) jdk = haalJdk()
 if (!jdk) geenJdk()
 
 const map = sleutelmap()

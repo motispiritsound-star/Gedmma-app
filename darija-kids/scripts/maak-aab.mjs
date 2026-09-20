@@ -15,7 +15,7 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { geenJdk, vindJdk, vindSdk } from './lib/jdk.mjs'
+import { geenJdk, haalJdk, vindJdk, vindSdk } from './lib/jdk.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const ANDROID = path.join(ROOT, 'android')
@@ -49,7 +49,8 @@ if (versie) {
   console.log(`versionCode → ${versie}`)
 }
 
-const jdk = vindJdk()
+let jdk = vindJdk()
+if (!jdk) jdk = haalJdk()
 if (!jdk) geenJdk()
 
 // Gradle vindt de SDK via local.properties of ANDROID_HOME. Vanuit een verse
