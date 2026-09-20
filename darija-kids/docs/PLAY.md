@@ -48,8 +48,8 @@ gepubliceerd worden. Ze horen in deze volgorde:
 | Taak | Wat het is | Wanneer |
 |---|---|---|
 | **Identiteit** | KvK-uittreksel en identiteitsbewijs, al geüpload | loopt — enkele dagen |
-| **Website van de organisatie** | aantonen dat `darijaforkids.eu` van jou is | **nu te doen** |
-| **Telefoonnummers** | een code per sms of telefoon | pas ná de eerste twee |
+| **Website van de organisatie** | aantonen dat `darijaforkids.eu` van jou is | **gedaan** |
+| **Telefoonnummers** | een code per sms of telefoon | pas ná de identiteit |
 
 **De website.** *View details* stuurt je naar Google Search Console, en die
 vraagt eerst wat voor property je wilt: **Domain** of **URL prefix**. Kies
