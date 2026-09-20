@@ -55,7 +55,13 @@ const gemist = []
 for (const lang of LANGS) {
   const map = path.join(OUT, `${lang} (${APPLE_TAAL[lang]})`)
 
-  for (const [bron, naar] of [['iphone', 'schermen-iphone-6.9'], ['ipad', 'schermen-ipad-13']]) {
+  // De 6,5-inch map is er voor consoles die de 6,9-inch maat niet aanbieden;
+  // is hij niet gerenderd, dan wordt hij stil overgeslagen.
+  for (const [bron, naar] of [
+    ['iphone', 'schermen-iphone-6.9'],
+    ['iphone-65', 'schermen-iphone-6.5'],
+    ['ipad', 'schermen-ipad-13'],
+  ]) {
     const uit = path.join(ROOT, 'store', 'screenshots', lang, bron)
     const aanwezig = new Set((await readdir(uit).catch(() => [])).filter((f) => f.endsWith('.png')))
     const schermen = VOLGORDE.map((id) => `${id}.png`).filter((f) => aanwezig.has(f))
@@ -98,6 +104,8 @@ PER TAAL, onder Distribution > je versie:
   Promotietekst            -> uit teksten.md, "Promotietekst (max 170)"
   Beschrijving             -> uit teksten.md, "Beschrijving (max 4000)"
   iPhone 6.9" schermen     -> alles uit schermen-iphone-6.9/ (het zijn er tien)
+  iPhone 6.5" schermen     -> alles uit schermen-iphone-6.5/, als de console
+                              om 1284 x 2778 vraagt in plaats van 1290 x 2796
   iPad 13" schermen        -> alles uit schermen-ipad-13/
 
 EEN KEER, niet per taal:
