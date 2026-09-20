@@ -84,7 +84,11 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 - [x] Beide: naam en beschrijving in het Nederlands
 - [x] Beide: review-screenshot van 1290 × 2796
 - [x] **Levels**: Jaar op 1, Maand op 2 — zodat overstappen een upgrade is
-- [ ] `app.darijaforkids.ebook` — **niet-verbruikbaar**, € 14,99, Family Sharing aan
+- [x] `app.darijaforkids.ebook` aangemaakt — niet-verbruikbaar, Apple ID 6813986487,
+      alle 175 landen, naam en beschrijving in het Nederlands, afbeelding erbij
+- [ ] E-boek: **Family Sharing aanzetten** — staat nog op "Turn On"
+- [ ] E-boek: nakijken dat de prijs **€ 14,99** is (klik op *Current Price*)
+- [ ] E-boek: de review-screenshot vervangen — er staat nog een oude met € 4,99 en € 59,88 op
 
 ### De producten — Google Play
 

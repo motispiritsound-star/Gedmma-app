@@ -288,8 +288,26 @@
     </li>
     <li data-blok="3">
       <label>
-        <input type="checkbox" data-id="3-8">
-        <span class="tekst"><code>app.darijaforkids.ebook</code> — <strong>niet-verbruikbaar</strong>, € 14,99, Family Sharing aan</span>
+        <input type="checkbox" data-id="3-8" data-vast="1">
+        <span class="tekst"><code>app.darijaforkids.ebook</code> aangemaakt — niet-verbruikbaar, Apple ID 6813986487,</span>
+      </label>
+    </li>
+    <li data-blok="3">
+      <label>
+        <input type="checkbox" data-id="3-9">
+        <span class="tekst">E-boek: <strong>Family Sharing aanzetten</strong> — staat nog op &quot;Turn On&quot;</span>
+      </label>
+    </li>
+    <li data-blok="3">
+      <label>
+        <input type="checkbox" data-id="3-10">
+        <span class="tekst">E-boek: nakijken dat de prijs <strong>€ 14,99</strong> is (klik op *Current Price*)</span>
+      </label>
+    </li>
+    <li data-blok="3">
+      <label>
+        <input type="checkbox" data-id="3-11">
+        <span class="tekst">E-boek: de review-screenshot vervangen — er staat nog een oude met € 4,99 en € 59,88 op</span>
       </label>
     </li>
   </ul>
@@ -708,7 +726,7 @@
 </div>
 
 <script>
-const VAST = ["0-3","0-4","1-0","1-1","1-2","1-3","1-4","2-0","2-1","2-2","2-3","2-4","2-9","2-10","3-0","3-1","3-2","3-3","3-4","3-5","3-6","3-7","5-0","5-1","5-2","5-4","5-5","5-6","5-7","5-8","7-0","7-1","8-0","8-1","8-2","8-3","8-4","8-5","8-6","9-0","9-1","9-2","9-3","9-5","10-1"]
+const VAST = ["0-3","0-4","1-0","1-1","1-2","1-3","1-4","2-0","2-1","2-2","2-3","2-4","2-9","2-10","3-0","3-1","3-2","3-3","3-4","3-5","3-6","3-7","3-8","5-0","5-1","5-2","5-4","5-5","5-6","5-7","5-8","7-0","7-1","8-0","8-1","8-2","8-3","8-4","8-5","8-6","9-0","9-1","9-2","9-3","9-5","10-1"]
 const vakjes = [...document.querySelectorAll('input[type=checkbox]')]
 let staat = {}
 try { staat = JSON.parse(localStorage.getItem('darija.lanceer') || '{}') } catch (e) { staat = {} }
