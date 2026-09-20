@@ -122,14 +122,16 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 ### De formulieren
 
 - [ ] Apple **App Privacy** — *No, we do not collect data from this app* (§4)
-- [ ] Apple **Age Rating** — overal None, wordt 4+
+- [x] Apple **Age Rating** — overal None ingevuld, staat op 4+ in 172 landen
 - [ ] Apple: categorie **Education**; de Kids Category pas bij een latere versie
 - [ ] Google **Gegevensbeveiliging** — verzamelt en deelt niets (§4)
 - [ ] Google **Doelgroep en inhoud** — onder 13, dus Families-beleid
 - [ ] Google **Inhoudsclassificatie** en **Advertenties: nee**
 - [ ] Handelaarsgegevens in beide consoles — dezelfde als in `operator.ts`
 - [x] Support-URL (`/ouders`) en marketing-URL ingevuld bij Apple
-- [ ] Privacy-URL (`/privacy`) en de voorwaarden (`/voorwaarden`) — die laatste is verplicht bij abonnementen
+- [ ] Privacy-URL (`/privacy`) invullen — dat veld staat bij **App Privacy**, niet bij App Information
+- [x] Voorwaarden: Apple's standaard-EULA blijft staan; de app linkt zelf naar
+      `/voorwaarden` op het abonnementsscherm, en daarmee is aan de eis voldaan
 - [ ] De notitie aan de reviewer overnemen (§5)
 
 ### Nog recht te zetten in de app
