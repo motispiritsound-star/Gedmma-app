@@ -37,6 +37,16 @@ const OUT = positional[1] ?? path.join(ROOT, 'store', 'screenshots')
  */
 const DEVICES = {
   iphone: { w: 1290, h: 2796, viewport: { width: 430, height: 932 }, winkel: 'apple', store: 'App Store · iPhone 6.9"' },
+  /**
+   * De oude iPhone-maat, voor het geval de console er nog om vraagt.
+   *
+   * App Store Connect toont per app een vak met de maten die het aanneemt, en
+   * dat is niet overal hetzelfde: waar 6,9 inch ontbreekt, staat er een vak
+   * dat 1284 × 2778 wil en 1290 × 2796 weigert. Dezelfde opnames, een andere
+   * doos eromheen — een kwartier renderen is goedkoper dan een avond zoeken
+   * waarom het uploaden niet lukt.
+   */
+  'iphone-65': { w: 1284, h: 2778, viewport: { width: 428, height: 926 }, winkel: 'apple', store: 'App Store · iPhone 6.5"' },
   ipad: { w: 2048, h: 2732, viewport: { width: 1024, height: 1366 }, winkel: 'apple', store: 'App Store · iPad 13"' },
   play: { w: 1080, h: 1920, viewport: { width: 432, height: 768 }, winkel: 'google', store: 'Google Play · telefoon' },
   'play-7': { w: 1200, h: 1920, viewport: { width: 600, height: 960 }, winkel: 'google', store: 'Google Play · 7-inch tablet' },
