@@ -4,7 +4,7 @@ Eén lijst, van "de app is af" tot "hij staat in de winkel". Alles wat de code
 kan doen is gedaan; wat hier overblijft is wat een mens met een bankrekening
 en een paspoort moet doen.
 
-De app zelf staat er klaar voor: 144 tests groen, elk scherm nagelopen in zes
+De app zelf staat er klaar voor: 145 tests groen, elk scherm nagelopen in zes
 talen op drie schermbreedtes, alle 34 klanken gemeten, en de winkelteksten,
 schermafbeeldingen, films en het e-boek klaar in zes talen.
 
@@ -12,8 +12,16 @@ En de stem is af. Alle 28 letters, alle 304 woorden en alle 100 zinnen worden
 gezegd door iemand die Darija spreekt — 432 opnames, geen enkele meer door een
 computerstem. Dat was de grootste onbekende van dit project en die is weg.
 
-Wat nu nog ontbreekt staat in de eerste blokken van de checklist hieronder, en
-dat is geen code meer: accounts, formulieren en een Mac.
+**Op één ding na, en dat is geen kleinigheid.** Van de 126 woorden uit de
+laatste opnamesessie staat een stuk onder de verkeerde naam: de doorlopende
+spraakmemo is op de stiltes geknipt, er is één stuk misgegaan, en vanaf dat
+punt hoort elke opname bij het woord ervoor. Twee zijn er met zekerheid
+gemeld — bnin (#41) zegt msemmen, bab (#47) zegt hemmam — en de meting wijst
+naar een stuk tussen #38 en #58. Dat hoort recht voordat de app de winkel in
+gaat: §0c zegt wat er moet gebeuren en waarom het niet uit te rekenen valt.
+
+Wat verder nog ontbreekt staat in de eerste blokken van de checklist hieronder,
+en dat is geen code meer: accounts, formulieren en een Mac.
 
 Reken op **vier tot zes weken** tussen je eerste account en je eerste
 downloader. Niet omdat het werk zoveel is, maar omdat er één wachttijd van twee
@@ -31,6 +39,15 @@ keuze in §1. Begin dus met die keuze, en doe de rest van deze lijst ondertussen
 Alles op één plek, in de volgorde waarin het moet. Wat de code kon doen staat
 al aangevinkt; de rest heeft een mens met een bankrekening en een paspoort
 nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
+
+### De opnames — het enige dat nog in de app zelf misgaat
+
+- [ ] De grenzen van het verschoven stuk vaststellen — dertien keer luisteren (§0c)
+- [ ] De bestanden in dat stuk één plaats terugzetten
+- [ ] Het laatste woord van het stuk opnieuw inspreken — die opname bestaat niet meer
+- [x] Vier voorbeeldwoorden bij de letters weggehaald uit het verdachte stuk
+- [x] Bnin weg uit de proeverij op de voorpagina, kesksu ervoor in de plaats
+- [ ] Daarna `npm run screenshots` opnieuw: ب staat nu op een ander woord
 
 ### Vandaag — dit blokkeert alle andere stappen
 
@@ -77,7 +94,12 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 
 ### Wat je uploadt
 
-- [x] Schermafbeeldingen in zes talen, tien per taal — `npm run screenshots`
+- [ ] Schermafbeeldingen opnieuw maken — `npm run screenshots`. De huidige set is
+      van vóór de nieuwe prijsweergave (39% in plaats van 28%, € 98,87
+      doorgestreept, "maandelijks opzegbaar") en van vóór de nieuwe
+      voorbeeldwoorden bij de letters
+- [ ] Apple: de review-screenshot vervangen op Jaar, Maand én het e-boek — `npm run reviewshot`
+- [ ] De vijf campagneposts opnieuw — `npm run social`, zelfde prijsreden
 - [x] Een aanbodplaatje met vlag, prijs en gezinsregel — staat op plek drie
 - [x] App preview 886×1920, onder de 30 seconden — `npm run intro`
 - [x] Winkelteksten in zes talen — `store/play-pakket/<taal>/teksten.md`
@@ -111,7 +133,7 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 
 ### Voor je op verzenden drukt
 
-- [x] `npm test` — 144 tests
+- [x] `npm test` — 145 tests
 - [x] `npm run typecheck`
 - [x] `npm run sweep -- --breed` — elk scherm, zes talen, licht en donker, 320/390/820 px
 - [x] `npm run soundcheck` — alle 34 klanken
@@ -125,8 +147,11 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 - [x] 28 van de 28 letters ingesproken door een mens
 - [x] 304 van de 304 woorden ingesproken
 - [x] 100 van de 100 zinnen ingesproken
-- [x] Alle 432 opnames nagehoord en goedgekeurd — `npm run sheet`
-- [x] Alle 432 gemeten op stilte, lengte en oversturing
+- [x] Alle 432 gemeten op stilte, lengte en oversturing — geen enkele viel buiten de band
+- [ ] **Nagehoord op wát er gezegd wordt.** Dat is iets anders dan gemeten, en
+      het is precies waar het misging: een opname die luid en compleet is kan
+      nog altijd het verkeerde woord zeggen. De 178 opnames van vóór de laatste
+      sessie zijn nagehoord; de 126 daarna niet (§0c)
 - [ ] Wie insprak, en schriftelijk dat het commercieel gebruikt mag worden — de tabel staat klaar in `store/press-kit.md`
 
 ### Publiceren
@@ -262,6 +287,63 @@ daar wordt gekocht. Op darijaforkids.eu staan alleen de handelsnaam, het
 e-mailadres, het KvK-nummer en het btw-nummer. Het huisadres en het
 mobiele nummer staan er niet: de website verkoopt niets, en op het open
 internet is een huisadres vooral een uitnodiging.
+
+---
+
+## 0c. De verschoven knip in de opnames
+
+De 304 woordopnames komen uit twee golven. De eerste 178 zijn woord voor woord
+nagehoord en waar nodig opnieuw geknipt — daar zitten twee commits over in de
+geschiedenis, want ook daar was een memo een keer een regel opgeschoven. De
+laatste 126 zijn wél gemeten maar niet nagehoord, en precies daar zit het.
+
+**Wat er gebeurd is.** Die 126 woorden zijn in negen spraakmemo's achter
+elkaar ingesproken en daarna door `scripts/knip-opname.mjs` op de stiltes uit
+elkaar geknipt. Dat gaat goed zolang het aantal stukken klopt. Komt er ergens
+één stuk te veel — een kuch, een woord dat twee keer is gezegd, een memo die
+een regel eerder begon dan gedacht — dan schuift alles daarna één plaats op en
+staat elke opname onder de naam van zijn buurman. `src/audio/LEES-MIJ.md`
+waarschuwt daar zelf voor: *"vanaf dat punt staat alles onder de verkeerde
+naam."*
+
+**Wat vaststaat.** Twee plekken zijn gehoord en gemeld:
+
+| plek | staat onder | zegt in werkelijkheid |
+|---|---|---|
+| #41 | bnin — lekker | msemmen |
+| #47 | bab — de deur | hemmam |
+
+Beide één plaats opgeschoven, dus het is één doorlopend stuk en het loopt van
+minstens #41 tot minstens #47.
+
+**Waarom de computer de grenzen niet vindt.** Geprobeerd is het wel, op twee
+manieren. Een lengtemodel, geijkt op de 178 opnames die wél kloppen, wijst een
+streek aan tussen #38 en #58 maar geen grens: losse woorden duren allemaal
+ongeveer even lang, en de spreiding is groter dan het verschil tussen twee
+buurwoorden. Een tweede model kijkt naar de eerste zestig milliseconden — of
+een woord begint met een plof (b, t, k), een wrijving (s, sh, kh) of een klank
+(m, n, a) — en wijst dezelfde streek aan, maar raadt op de 178 bekende opnames
+maar de helft goed. Twee zwakke signalen die het eens zijn maken samen geen
+grens.
+
+Wat wel werkt is luisteren, en dan niet alles. Een grens vind je door steeds
+middendoor te snijden: klopt dit woord, dan ligt de grens erachter; hoor je het
+woord ervoor, dan ervoor. Zes keer per grens en je weet het op één plaats
+nauwkeurig. De controlepagina doet dat rekenwerk en stelt telkens de ene vraag
+die het meeste verraadt — dertien keer luisteren, en het staat vast.
+
+**De reparatie daarna is mechanisch.** Elk bestand in het stuk krijgt de naam
+van het woord ervoor. Eén ding is daarmee niet op te lossen: het laatste woord
+van het stuk heeft geen opname meer, want die is bij het knippen nooit
+weggeschreven. Dat ene woord moet opnieuw ingesproken worden — `/opname` in de
+app zet het bovenaan zodra zijn bestand weg is.
+
+**Wat er in de tussentijd is gedaan.** De plekken waar een verkeerde opname
+het meeste kost zijn leeggehaald: de acht woorden van de proeverij op de
+voorpagina en de voorbeelden bij de letters staan nu allemaal op een opname
+uit de nagehoorde golf. Bab, tebla, dou en ktab zijn daar weggehaald, bnin uit
+de proeverij. Die woorden staan gewoon nog in de app, in hun eigen les — waar
+een fout een woord kost en niet het vertrouwen in de hele app.
 
 ---
 

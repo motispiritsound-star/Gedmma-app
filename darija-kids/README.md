@@ -47,7 +47,7 @@ npm run preview    # de gebouwde site op :4173
 Tests en controles:
 
 ```bash
-npm test           # 144 tests: leerstof, vertalingen, herhaalsysteem, oefeningen, betaalgrens
+npm test           # 145 tests: leerstof, vertalingen, herhaalsysteem, oefeningen, betaalgrens
 npm run typecheck
 npm run smoke      # klikt de gebouwde app door in een echte browser (na `npm run preview`)
 npm run soundcheck  # rendert elke klank en meet of hij écht geluid maakt (na `npm run dev`)
