@@ -643,7 +643,8 @@ export const nl = {
     plan: { jaar: 'Een jaar', maand: 'Per maand' },
     voordeligst: (pct: number): string => `${pct}% voordeliger`,
     jaarTotaal: (prijs: string): string => `${prijs} per jaar, vooruit betaald`,
-    perMaandLos: 'elke maand opnieuw',
+    jaarInPlaatsVan: 'in plaats van',
+    perMaandLos: 'maandelijks opzegbaar',
     voorwaardenJaar: (dagen: number, prijs: string): string =>
       `Na ${dagen} gratis dagen wordt ${prijs} voor een heel jaar afgeschreven via je App Store- of Google Play-account, en daarna elk jaar opnieuw tot je opzegt. Zeg je op vóór het einde van de proefperiode, dan betaal je niets. De prijs is inclusief btw.`,
     koop: (dagen: number): string => `Start ${dagen} dagen gratis`,

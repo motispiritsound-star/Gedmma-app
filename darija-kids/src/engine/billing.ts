@@ -83,11 +83,24 @@ export const TRIAL_DAYS = 3
  */
 export const LIST_PRICE = planOf('maand').list
 
-/** How much a year up front saves, as a whole percent. */
-export const YEAR_SAVING = Math.round(
-  (1 - Number(planOf('jaar').list.replace(/[^\d,]/g, '').replace(',', '.')) /
-    (Number(planOf('maand').list.replace(/[^\d,]/g, '').replace(',', '.')) * 12)) * 100,
-)
+/** Het getal uit een opgemaakte prijs: "€ 59,99" wordt 59.99. */
+const cijfer = (prijs: string): number => Number(prijs.replace(/[^\d,.]/g, '').replace(',', '.'))
+
+/**
+ * Wat hetzelfde langs de maandelijkse weg zou kosten.
+ *
+ * Twaalf maanden plus het e-boek, want dat zit bij het jaar inbegrepen. Wie
+ * dat weglaat rekent zichzelf arm: dan lijkt het jaar 28% schelen terwijl het
+ * er 39% zijn. De koper legt die vergelijking toch, en dan liever met het
+ * volledige bedrag ernaast dan met een half bedrag.
+ */
+export const YEAR_FULL = Math.round((cijfer(planOf('maand').list) * 12 + cijfer(EBOOK.list)) * 100) / 100
+
+/** Datzelfde bedrag zoals het op het scherm hoort: "€ 98,87". */
+export const YEAR_FULL_PRICE = `€ ${YEAR_FULL.toFixed(2).replace('.', ',')}`
+
+/** Hoeveel een jaar vooruit scheelt, in hele procenten. */
+export const YEAR_SAVING = Math.round((1 - cijfer(planOf('jaar').list) / YEAR_FULL) * 100)
 
 export { FREE_LESSONS }
 

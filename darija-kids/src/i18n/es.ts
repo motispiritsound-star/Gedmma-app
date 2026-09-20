@@ -636,7 +636,8 @@ export const es: Strings = {
     plan: { jaar: 'Un año', maand: 'Al mes' },
     voordeligst: (pct: number): string => `${pct} % más barato`,
     jaarTotaal: (prijs: string): string => `${prijs} al año, pagado por adelantado`,
-    perMaandLos: 'cada mes de nuevo',
+    jaarInPlaatsVan: 'en lugar de',
+    perMaandLos: 'cancelable cada mes',
     voorwaardenJaar: (dagen: number, prijs: string): string =>
       `Tras ${dagen} días gratis se cobran ${prijs} por un año entero a través de tu cuenta de la App Store o de Google Play, y después cada año hasta que canceles. Si cancelas antes de que termine la prueba, no pagas nada. IVA incluido.`,
     koop: (dagen) => `Empezar ${dagen} días gratis`,

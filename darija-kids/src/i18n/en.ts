@@ -636,7 +636,8 @@ export const en: Strings = {
     plan: { jaar: 'A year', maand: 'Monthly' },
     voordeligst: (pct: number): string => `${pct}% cheaper`,
     jaarTotaal: (prijs: string): string => `${prijs} a year, paid up front`,
-    perMaandLos: 'every month again',
+    jaarInPlaatsVan: 'instead of',
+    perMaandLos: 'cancel any month',
     voorwaardenJaar: (dagen: number, prijs: string): string =>
       `After ${dagen} free days, ${prijs} is charged for a full year through your App Store or Google Play account, and every year after that until you cancel. Cancel before the trial ends and you pay nothing. VAT included.`,
     koop: (dagen) => `Start ${dagen} days free`,

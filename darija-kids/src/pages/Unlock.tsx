@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   buyEbook, EBOOK, ebookFile, FREE_LESSONS, manageSubscription, PLANS, planOf, restorePurchases,
-  subscribe, TRIAL_DAYS, useBilling, YEAR_SAVING, type PlanId,
+  subscribe, TRIAL_DAYS, useBilling, YEAR_FULL_PRICE, YEAR_SAVING, type PlanId,
 } from '../engine/billing'
 import { gezinsdeling } from '../engine/platform'
 import { useStore } from '../engine/store'
@@ -131,6 +131,14 @@ export function Unlock() {
                         ? t.unlock.jaarTotaal(priceOf('jaar'))
                         : t.unlock.perMaandLos}
                     </div>
+                    {/* Het bedrag waar de koper mee vergelijkt: twaalf maanden
+                        plus het e-boek, doorgestreept naast wat hij betaalt. */}
+                    {option.id === 'jaar' && (
+                      <div className="mt-0.5 text-xs text-[var(--ink-soft)]">
+                        {t.unlock.jaarInPlaatsVan}{' '}
+                        <s>{YEAR_FULL_PRICE}</s>
+                      </div>
+                    )}
                     {option.id === 'jaar' && (
                       <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-zellige-500/15 px-2 py-0.5 text-[11px] font-extrabold text-zellige-700 dark:text-zellige-200">
                         📖 {t.unlock.boek.inclusief}

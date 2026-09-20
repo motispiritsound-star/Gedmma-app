@@ -636,7 +636,8 @@ export const fr: Strings = {
     plan: { jaar: 'Un an', maand: 'Par mois' },
     voordeligst: (pct: number): string => `${pct} % moins cher`,
     jaarTotaal: (prijs: string): string => `${prijs} par an, payé d’avance`,
-    perMaandLos: 'chaque mois à nouveau',
+    jaarInPlaatsVan: 'au lieu de',
+    perMaandLos: 'résiliable chaque mois',
     voorwaardenJaar: (dagen: number, prijs: string): string =>
       `Après ${dagen} jours offerts, ${prijs} sont prélevés pour une année entière via ton compte App Store ou Google Play, puis chaque année jusqu’à résiliation. Si tu résilies avant la fin de l’essai, tu ne paies rien. Prix TTC.`,
     koop: (dagen) => `Commencer ${dagen} jours gratuits`,
