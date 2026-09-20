@@ -88,7 +88,7 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
       alle 175 landen, naam en beschrijving in het Nederlands, afbeelding erbij
 - [x] E-boek: Family Sharing aan — net als bij Jaar en Maand
 - [x] E-boek: prijs staat op **€ 14,99**
-- [ ] E-boek: de review-screenshot vervangen — `store/review-screenshot/ebook-nl-1290x2796.png`, met alleen het boek erop
+- [x] E-boek: review-screenshot vervangen — de versie met alleen het boek erop
 
 ### De producten — Google Play
 
@@ -106,8 +106,7 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
       nieuwe voorbeeldwoorden — 295 beelden in zes talen
 - [x] Beide winkelpakketten en de zip opnieuw — 126 en 158 bestanden
 - [x] De vijf campagneposts opnieuw — 60 beelden in zes talen
-- [ ] Apple: de nieuwe review-screenshots uploaden — `abonnement-nl-…` op Jaar
-      en Maand, `ebook-nl-…` op het e-boek (`npm run reviewshot` maakt beide)
+- [x] Apple: de review-screenshots staan op alle drie de producten
 - [x] Een aanbodplaatje met vlag, prijs en gezinsregel — staat op plek drie
 - [x] App preview 886×1920, onder de 30 seconden — `npm run intro`
 - [x] Winkelteksten in zes talen — `store/play-pakket/<taal>/teksten.md`
