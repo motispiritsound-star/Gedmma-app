@@ -85,20 +85,33 @@ for (const font of await readdir(path.join(DIST, 'fonts'))) {
 let js = await readFile(path.join(DIST, 'assets', jsFiles[0]), 'utf8')
 
 /**
- * De opnames van wav naar aac, anders is het bestand niet te gebruiken.
+ * De opnames, en waarom ze blijven zoals ze zijn.
  *
- * De 432 opnames staan als wav in de bundel — dat is de goede keuze voor de
- * app, want daar worden ze pas bij het bouwen omgezet. Hier zitten ze als
- * base64 ín het document, en dan wegen ze samen eenentwintig megabyte. Een
- * pagina van die omvang is niet te versturen en op een telefoon niet te
- * openen.
+ * Ze staan als wav in de bundel en dat is meteen het probleem: samen
+ * eenentwintig megabyte, veel te veel voor één document. Er is een ronde
+ * geweest waarin ze naar aac gingen — een kwart van het gewicht, en ffmpeg
+ * speelde ze moeiteloos af. Op een iPhone kwam er geen geluid uit. De
+ * knopgeluidjes wel, want die maakt de app zelf; de opnames niet, want Safari
+ * weigerde ze te ontcijferen.
  *
- * Aac op 48 kbit mono is ruim een vierde daarvan en klinkt bij spraak van een
- * seconde niet hoorbaar anders. Safari en Chrome nemen het allebei in
- * `decodeAudioData`, wat de app gebruikt om een opname af te spelen.
+ * Wat er precies aan schortte doet er niet toe, want de gok is het probleem.
+ * De browser in deze omgeving heeft geen aac aan boord, dus de enige manier om
+ * het te controleren was iemand met een telefoon — en dat is een keer te vaak
+ * gebeurd. Wav ontcijfert elke browser, zonder uitzondering en zonder codec.
+ *
+ * Dus blijven ze wav, en lossen we het gewicht anders op: bij `--map` gaan ze
+ * in eigen bestanden van hooguit acht megabyte, die de pagina ophaalt. Bij één
+ * los bestand kan dat niet en gaan ze alsnog naar aac — dat bestand is om te
+ * versturen, niet om op te vertrouwen.
  */
-const wavs = [...new Set(js.match(/data:audio\/wav;base64,[A-Za-z0-9+/=]+/g) ?? [])]
-if (wavs.length) {
+const WAV = /data:audio\/wav;base64,[A-Za-z0-9+/=]+/g
+const KLANKEN = [...new Set(js.match(WAV) ?? [])]
+
+/** Hoeveel base64 er hooguit in één bestand gaat. */
+const PER_BESTAND = 8 * 1024 * 1024
+
+const naarAac = async () => {
+  if (!KLANKEN.length) return
   const werk = await mkdtemp(path.join(tmpdir(), 'demo-'))
   let klaar = 0
   const omzetten = async (uri, i) => {
@@ -106,40 +119,69 @@ if (wavs.length) {
     const m4a = path.join(werk, `${i}.m4a`)
     await writeFile(wav, Buffer.from(uri.slice('data:audio/wav;base64,'.length), 'base64'))
     await run(ffmpeg, ['-hide_banner', '-loglevel', 'error', '-y', '-i', wav,
-      '-c:a', 'aac', '-b:a', '48k', '-ac', '1', '-ar', '24000', m4a])
+      '-c:a', 'aac', '-b:a', '48k', '-ac', '1', '-ar', '24000', '-movflags', '+faststart', m4a])
     const uit = `data:audio/mp4;base64,${(await readFile(m4a)).toString('base64')}`
-    if (++klaar % 100 === 0) process.stdout.write(`  ${klaar}/${wavs.length} opnames omgezet\n`)
+    if (++klaar % 100 === 0) process.stdout.write(`  ${klaar}/${KLANKEN.length} opnames omgezet\n`)
     return [uri, uit]
   }
-  // Vier tegelijk: meer levert niets op en vult de schijf met tijdelijke wavs.
   const paren = []
-  for (let i = 0; i < wavs.length; i += 4) {
-    paren.push(...await Promise.all(wavs.slice(i, i + 4).map((u, j) => omzetten(u, i + j))))
+  for (let i = 0; i < KLANKEN.length; i += 4) {
+    paren.push(...await Promise.all(KLANKEN.slice(i, i + 4).map((u, j) => omzetten(u, i + j))))
   }
   for (const [van, naar] of paren) js = js.replaceAll(van, naar)
   await rm(werk, { recursive: true, force: true })
 }
 
-// A literal </script> anywhere in the bundle would close the tag early.
-const safe = (code) => code.replaceAll('</script', '<\\/script').replaceAll('<!--', '<\\!--')
-
-// Without this a file:// page falls back to Latin-1 and every Arabic letter,
-// emoji and accent turns to mojibake.
 /**
- * `--map <dir>` schrijft drie bestanden in plaats van één.
+ * De opnames uit de code halen en in losse bestanden zetten.
  *
- * Eén bestand is het handigst om te versturen, maar een pagina van zes
- * megabyte wordt door sommige plekken geweigerd omdat het document zelf zo
- * groot is. Met de stijl en de code ernaast is de pagina een paar regels en
- * staat het gewicht in twee bestanden die gewoon worden opgehaald.
+ * Elke opname wordt `__K[n]`, en `__K` wordt gevuld door gewone scripts die
+ * vóór de app draaien — een module is uitgesteld, dus die volgorde klopt
+ * vanzelf.
+ */
+const losseKlanken = () => {
+  const stukken = []
+  let huidig = []
+  let groot = 0
+  KLANKEN.forEach((uri, n) => {
+    if (groot + uri.length > PER_BESTAND && huidig.length) {
+      stukken.push(huidig)
+      huidig = []
+      groot = 0
+    }
+    huidig.push([n, uri])
+    groot += uri.length
+  })
+  if (huidig.length) stukken.push(huidig)
+
+  const index = new Map(KLANKEN.map((uri, n) => [uri, n]))
+  js = js.replace(WAV, (uri) => `__K[${index.get(uri)}]`)
+
+  return stukken.map((stuk, i) => [
+    `klanken-${i + 1}.js`,
+    `window.__K=window.__K||[];${stuk.map(([n, uri]) => `__K[${n}]=${JSON.stringify(uri)}`).join(';')}\n`,
+  ])
+}
+
+/**
+ * `--map <dir>` schrijft een map in plaats van één bestand.
+ *
+ * Eén bestand is het handigst om te versturen, maar een document van zes
+ * megabyte wordt door sommige plekken geweigerd om zijn eigen omvang — en de
+ * opnames passen er alleen in als ze worden ingepakt, wat precies het geluid
+ * kapotmaakte. Met losse bestanden ernaast hoeft dat niet.
  */
 const MAP = (() => {
   const i = process.argv.indexOf('--map')
   return i > 0 ? process.argv[i + 1] : null
 })()
 
+const mb = (n) => (n / 1024 / 1024).toFixed(1)
+
 if (MAP) {
   await mkdir(MAP, { recursive: true })
+  const klanken = losseKlanken()
+  for (const [naam, inhoud] of klanken) await writeFile(path.join(MAP, naam), inhoud)
   await writeFile(path.join(MAP, 'app.css'), css)
   await writeFile(path.join(MAP, 'app.js'), js)
   await writeFile(path.join(MAP, 'index.html'), `<!doctype html>
@@ -148,13 +190,17 @@ if (MAP) {
 <title>Darijaforkids</title>
 <meta name="description" content="Marokkaans-Arabisch (Darija) leren voor kinderen en jongeren: korte lessen, echte uitspraak, spelletjes en een leerpad dat zich aanpast." />
 <link rel="stylesheet" href="app.css" />
+${klanken.map(([naam]) => `<script src="${naam}"></script>`).join('\n')}
 ${slotEraf}<div id="root"></div>
 <script type="module" src="app.js"></script>
 `)
-  const mb = (n) => (n / 1024 / 1024).toFixed(1)
-  console.log(`${MAP}/ — index.html, app.css (${mb(Buffer.byteLength(css))} MB), app.js (${mb(Buffer.byteLength(js))} MB)${ALLES ? ' — alles open, niet delen' : ''}`)
+  const totaal = klanken.reduce((n, [, i]) => n + Buffer.byteLength(i), 0)
+  console.log(`${MAP}/ — index.html, app.css (${mb(Buffer.byteLength(css))} MB), app.js (${mb(Buffer.byteLength(js))} MB), ${klanken.length}x klanken (${mb(totaal)} MB, wav)${ALLES ? ' — alles open, niet delen' : ''}`)
   process.exit(0)
 }
+
+// Eén bestand: dan moeten de opnames wel kleiner, en gaan ze naar aac.
+await naarAac()
 
 const html = `<meta charset="utf-8" />
 <title>Darijaforkids</title>
@@ -169,5 +215,4 @@ ${safe(js)}
 `
 
 await writeFile(OUT, html)
-const kb = (Buffer.byteLength(html) / 1024).toFixed(0)
-console.log(`${path.relative(ROOT, OUT)} — ${kb} kB${ALLES ? ' — alles open, niet delen' : ''}`)
+console.log(`${path.relative(ROOT, OUT)} — ${mb(Buffer.byteLength(html))} MB${ALLES ? ' — alles open, niet delen' : ''}`)
