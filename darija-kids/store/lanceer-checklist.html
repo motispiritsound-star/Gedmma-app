@@ -84,20 +84,20 @@
   <ul>
     <li data-blok="0">
       <label>
-        <input type="checkbox" data-id="0-0">
-        <span class="tekst">De grenzen van het verschoven stuk vaststellen — dertien keer luisteren <span class="para">§0c</span></span>
+        <input type="checkbox" data-id="0-0" data-vast="1">
+        <span class="tekst">De grenzen vastgesteld door ze na te luisteren: #4–#6 twee plaatsen, #42–#66 één <span class="para">§0c</span></span>
       </label>
     </li>
     <li data-blok="0">
       <label>
-        <input type="checkbox" data-id="0-1">
-        <span class="tekst">De bestanden in dat stuk één plaats terugzetten</span>
+        <input type="checkbox" data-id="0-1" data-vast="1">
+        <span class="tekst">De bestanden teruggezet — 25 opnames, met <code>npm run repareer-knip</code></span>
       </label>
     </li>
     <li data-blok="0">
       <label>
-        <input type="checkbox" data-id="0-2">
-        <span class="tekst">Het laatste woord van het stuk opnieuw inspreken — die opname bestaat niet meer</span>
+        <input type="checkbox" data-id="0-2" data-vast="1">
+        <span class="tekst">Khoya, jeddi en jmel opnieuw ingesproken; aila, baba en ldid ook</span>
       </label>
     </li>
     <li data-blok="0">
@@ -114,8 +114,8 @@
     </li>
     <li data-blok="0">
       <label>
-        <input type="checkbox" data-id="0-5">
-        <span class="tekst">Daarna <code>npm run screenshots</code> opnieuw: ب staat nu op een ander woord</span>
+        <input type="checkbox" data-id="0-5" data-vast="1">
+        <span class="tekst">Schermafbeeldingen opnieuw gemaakt na de letterwissel</span>
       </label>
     </li>
   </ul>
@@ -588,7 +588,7 @@
     </li>
     <li data-blok="9">
       <label>
-        <input type="checkbox" data-id="9-4">
+        <input type="checkbox" data-id="9-4" data-vast="1">
         <span class="tekst"><strong>Nagehoord op wát er gezegd wordt.</strong> Dat is iets anders dan gemeten, en</span>
       </label>
     </li>
@@ -726,7 +726,7 @@
 </div>
 
 <script>
-const VAST = ["0-3","0-4","1-0","1-1","1-2","1-3","1-4","2-0","2-1","2-2","2-3","2-4","2-9","2-10","3-0","3-1","3-2","3-3","3-4","3-5","3-6","3-7","3-8","3-9","3-10","5-0","5-1","5-2","5-4","5-5","5-6","5-7","5-8","7-0","7-1","8-0","8-1","8-2","8-3","8-4","8-5","8-6","9-0","9-1","9-2","9-3","9-5","10-1"]
+const VAST = ["0-0","0-1","0-2","0-3","0-4","0-5","1-0","1-1","1-2","1-3","1-4","2-0","2-1","2-2","2-3","2-4","2-9","2-10","3-0","3-1","3-2","3-3","3-4","3-5","3-6","3-7","3-8","3-9","3-10","5-0","5-1","5-2","5-4","5-5","5-6","5-7","5-8","7-0","7-1","8-0","8-1","8-2","8-3","8-4","8-5","8-6","9-0","9-1","9-2","9-3","9-4","9-5","10-1"]
 const vakjes = [...document.querySelectorAll('input[type=checkbox]')]
 let staat = {}
 try { staat = JSON.parse(localStorage.getItem('darija.lanceer') || '{}') } catch (e) { staat = {} }

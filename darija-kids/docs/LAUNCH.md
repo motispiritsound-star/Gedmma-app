@@ -42,12 +42,12 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 
 ### De opnames — het enige dat nog in de app zelf misgaat
 
-- [ ] De grenzen van het verschoven stuk vaststellen — dertien keer luisteren (§0c)
-- [ ] De bestanden in dat stuk één plaats terugzetten
-- [ ] Het laatste woord van het stuk opnieuw inspreken — die opname bestaat niet meer
+- [x] De grenzen vastgesteld door ze na te luisteren: #4–#6 twee plaatsen, #42–#66 één (§0c)
+- [x] De bestanden teruggezet — 25 opnames, met `npm run repareer-knip`
+- [x] Khoya, jeddi en jmel opnieuw ingesproken; aila, baba en ldid ook
 - [x] Vier voorbeeldwoorden bij de letters weggehaald uit het verdachte stuk
 - [x] Bnin weg uit de proeverij op de voorpagina, kesksu ervoor in de plaats
-- [ ] Daarna `npm run screenshots` opnieuw: ب staat nu op een ander woord
+- [x] Schermafbeeldingen opnieuw gemaakt na de letterwissel
 
 ### Vandaag — dit blokkeert alle andere stappen
 
@@ -156,10 +156,9 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 - [x] 304 van de 304 woorden ingesproken
 - [x] 100 van de 100 zinnen ingesproken
 - [x] Alle 432 gemeten op stilte, lengte en oversturing — geen enkele viel buiten de band
-- [ ] **Nagehoord op wát er gezegd wordt.** Dat is iets anders dan gemeten, en
-      het is precies waar het misging: een opname die luid en compleet is kan
-      nog altijd het verkeerde woord zeggen. De 178 opnames van vóór de laatste
-      sessie zijn nagehoord; de 126 daarna niet (§0c)
+- [x] **Nagehoord op wát er gezegd wordt.** Dat is iets anders dan gemeten, en
+      het is precies waar het misging. De verschoven knip is gevonden,
+      rechtgezet en nagelopen: alle 432 opnames zeggen wat eronder staat (§0c)
 - [x] Wie insprak — alle 432 door de uitgever zelf, dus geen toestemming te regelen (`store/press-kit.md`)
 
 ### Publiceren

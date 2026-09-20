@@ -44,7 +44,8 @@
     "playzip": "cd store && rm -f darijaforkids-play.zip && zip -rq darijaforkids-play.zip play-pakket && ls -lh darijaforkids-play.zip",
     "applepakket": "node scripts/make-applepakket.mjs",
     "reviewshot": "node scripts/make-reviewshot.mjs",
-    "social": "node scripts/make-social.mjs"
+    "social": "node scripts/make-social.mjs",
+    "repareer-knip": "node scripts/repareer-knip.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
