@@ -37,7 +37,14 @@ function kinderen(ouder) {
 /** Java uit PATH, terugvertaald naar de map erboven. */
 function uitPad() {
   try {
-    const regel = execFileSync(WINDOWS ? 'where' : 'which', ['java'], { encoding: 'utf8' }).split(/\r?\n/)[0]
+    // stderr dicht: `where` roept anders 'Could not find files for the given
+    // pattern(s)' over het scherm als java niet in PATH staat, en dat is hier
+    // geen fout maar de normale gang van zaken.
+    const uit = execFileSync(WINDOWS ? 'where' : 'which', ['java'], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+    const regel = uit.split(/\r?\n/)[0]
     if (!regel) return null
     // Op Windows staat er vaak een doorgeefluikje in WindowsApps; realpath
     // brengt ons bij de echte installatie.
