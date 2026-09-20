@@ -51,15 +51,36 @@ gepubliceerd worden. Ze horen in deze volgorde:
 | **Website van de organisatie** | aantonen dat `darijaforkids.eu` van jou is | **nu te doen** |
 | **Telefoonnummers** | een code per sms of telefoon | pas ná de eerste twee |
 
-**De website.** *View details* zegt welke methode Google wil; dat loopt
-doorgaans via Google Search Console, waar je het domein toevoegt en de
-eigendom bewijst met een **TXT-regel in de DNS**. Die DNS staat bij
-**Cloudflare** (`darijaforkids.eu` draait op de nameservers `lennox` en
-`lilith`, zie [DEPLOY.md](DEPLOY.md)): DNS → Records → Add record → type TXT,
-naam `@`, waarde de regel die Google geeft. Het doorwerken duurt bij
-Cloudflare meestal minuten, niet uren. Let erop dat het adres dat je in de
-console invult hetzelfde is als in `operator.ts` en op de winkelpagina — als
-ze niet overeenkomen loopt de verificatie vast.
+**De website.** *View details* stuurt je naar Google Search Console, en die
+vraagt eerst wat voor property je wilt: **Domain** of **URL prefix**. Kies
+**Domain** — links. Die dekt het hele domein, met en zonder `www`, over http
+en https, en dat is precies wat Play wil zien. URL prefix dekt alleen het ene
+adres dat je intikt, en dan struikelt de verificatie over `www` of over een
+protocol dat net anders is.
+
+In het vakje komt **`darijaforkids.eu`** — kaal. Geen `https://`, geen `www.`,
+geen schuine streep erachter. Search Console geeft daarna één regel terug die
+begint met `google-site-verification=`.
+
+Die regel gaat naar **Cloudflare**, want daar staat de DNS (`darijaforkids.eu`
+draait op de nameservers `lennox` en `lilith`, zie [DEPLOY.md](DEPLOY.md)):
+
+    DNS → Records → Add record
+    Type    TXT
+    Name    @
+    Content google-site-verification=…   (de hele regel van Google)
+    TTL     Auto
+
+Voeg hem **toe**; gooi bestaande TXT-regels niet weg, want daar zit je
+mailafhandeling in. Een TXT-regel kent geen oranje wolkje, dus over de
+proxy-instelling hoef je niet na te denken. Druk daarna in Search Console op
+**Verify**. Bij Cloudflare werkt dat meestal binnen een paar minuten door;
+mislukt het, wacht dan even en probeer opnieuw in plaats van de regel aan te
+passen.
+
+Let erop dat het adres dat je in de Play Console invult hetzelfde is als in
+`operator.ts` en op de winkelpagina — als ze niet overeenkomen loopt de
+verificatie vast.
 
 **De telefoonnummers** kunnen pas als de andere twee groen zijn; de console
 zegt dat er met zoveel woorden bij. Daar is dus niets te doen dan de eerste
