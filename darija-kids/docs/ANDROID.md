@@ -32,33 +32,53 @@ find android/app/src/main/assets/public -name '*.wav' | wc -l   # 432
 
 ## Dan de bundel
 
-Android Studio → *Open* → de map **`darija-kids/android`**. Niet de map
-erboven; dan ziet hij het Gradle-project niet.
+Twee commando's, allebei vanuit `darija-kids`:
 
-**Build → Generate Signed App Bundle / APK → Android App Bundle**
+```bash
+npm run sleutel    # eenmalig: maakt de upload-sleutel aan
+npm run aab        # bouwt, synct en ondertekent
+```
 
-Bij *Key store path* de eerste keer **Create new…**:
+`npm run sleutel` doet wat de wizard *Create new key store…* doet, maar dan
+zonder de acht velden waar het altijd misgaat. Hij zet de sleutel in
+`Documents/Darijaforkids-sleutel/`, dus **buiten** het project, verzint er een
+wachtwoord van dertig tekens bij dat ernaast in `wachtwoord.txt` komt te staan,
+en wijst `android/keystore.properties` naar allebei. Draai je hem nog een keer,
+dan gebeurt er niets: één app heeft één upload-sleutel.
 
-| Veld | Wat |
-|---|---|
-| Key store path | ergens **buiten** deze map — documenten, een kluis |
-| Wachtwoord | een echt wachtwoord, en bewaar het bij de sleutel |
-| Alias | `upload` |
-| Validity | 25 jaar of meer |
-
-Bouw de variant **release**. De bundel komt hier terecht:
+`npm run aab` is `npm run android` plus `gradlew bundleRelease`. Gradle leest de
+sleutel uit dat properties-bestand en ondertekent zelf. Resultaat:
 
 ```
 android/app/build/outputs/bundle/release/app-release.aab
 ```
 
+Java hoeft niet ingesteld te zijn: beide scripts zoeken de JDK op die Android
+Studio meelevert (`jbr`).
+
+Bij een volgende upload moet het versienummer omhoog — Play weigert twee
+bundels met hetzelfde `versionCode`, ook als je de eerste hebt ingetrokken:
+
+```bash
+node scripts/maak-aab.mjs --versie 2
+```
+
+### Of met de hand, in Android Studio
+
+Android Studio → *Open* → de map **`darija-kids/android`**. Niet de map
+erboven; dan ziet hij het Gradle-project niet. Dan **Build → Generate Signed
+App Bundle / APK → Android App Bundle**, variant **release**. Heb je
+`npm run sleutel` gedraaid, dan is ondertekenen al geregeld en kun je gewoon
+**Build → Build Bundle(s)** nemen.
+
 ## Over die sleutel
 
 Hij hoort niet in git — `*.jks`, `*.keystore` en `keystore.properties` staan in
-`.gitignore`. Wie de repo kan lezen zou anders een update kunnen uitbrengen
-onder jouw naam, en gepusht is gepusht.
+`.gitignore`, en het script zet hem daarom sowieso buiten de projectmap. Wie de
+repo kan lezen zou anders een update kunnen uitbrengen onder jouw naam, en
+gepusht is gepusht.
 
-Bewaar hem op twee plekken die niet dezelfde computer zijn. Raak je hem toch
+Bewaar die map op twee plekken die niet dezelfde computer zijn. Raak je hem toch
 kwijt, dan is dat sinds **Play App Signing** geen ramp meer: Google bewaart de
 échte handtekensleutel en die van jou is alleen de *upload*-sleutel, waarvoor
 je een nieuwe kunt aanvragen. Reken wel op een week wachten.

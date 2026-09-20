@@ -1,5 +1,14 @@
 apply plugin: 'com.android.application'
 
+// De ondertekensleutel staat in android/keystore.properties, buiten git.
+// `npm run sleutel` maakt hem aan; ontbreekt hij, dan bouwt release gewoon
+// onondertekend verder — handig om te kijken of het compileert.
+def sleutelBestand = rootProject.file("keystore.properties")
+def sleutel = new Properties()
+if (sleutelBestand.exists()) {
+    sleutelBestand.withInputStream { sleutel.load(it) }
+}
+
 android {
     namespace = "app.darijaforkids.learn"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -16,8 +25,21 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (sleutelBestand.exists()) {
+                storeFile file(sleutel['storeFile'])
+                storePassword sleutel['storePassword']
+                keyAlias sleutel['keyAlias']
+                keyPassword sleutel['keyPassword']
+            }
+        }
+    }
     buildTypes {
         release {
+            if (sleutelBestand.exists()) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

@@ -16,6 +16,8 @@
     "build:demo": "vite build --mode demo && node scripts/make-demo.mjs",
     "sync": "npm run build:app && cap sync",
     "android": "npm run build && npx cap sync android",
+    "sleutel": "node scripts/maak-sleutel.mjs",
+    "aab": "npm run android && node scripts/maak-aab.mjs",
     "assets": "node scripts/make-store-assets.mjs && @capacitor/assets generate --android",
     "soundcheck": "node scripts/soundcheck.mjs",
     "stand": "node scripts/make-stand.mjs",
