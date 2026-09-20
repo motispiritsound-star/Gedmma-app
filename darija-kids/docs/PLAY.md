@@ -119,33 +119,37 @@ geen vertaling hebt. Nederlands voeg je straks toe als vertaling.
 
 ## 3. De bundel bouwen
 
-Dit doe je op je eigen laptop, niet in de console.
+Dit doe je op je eigen laptop, niet in de console. Twee commando's, vanuit
+`darija-kids`:
 
 ```bash
-cd darija-kids
-npm run build          # bouwt de web-app naar dist/
-npx cap sync android   # kopieert dist/ in het Android-project
-npx cap open android   # opent Android Studio
+npm run sleutel    # eenmalig: maakt de upload-sleutel aan
+npm run aab        # bouwt, synct en ondertekent
 ```
 
-In Android Studio: **Build → Generate Signed App Bundle / APK → Android App
-Bundle**.
+`npm run sleutel` zet de sleutel in `Documents/Darijaforkids-sleutel/`, dus
+buiten de repository, verzint er een wachtwoord bij en zet dat ernaast in
+`wachtwoord.txt`. Hij zoekt zelf de Java op die Android Studio meelevert, en
+installeert er anders een.
 
-De eerste keer maak je daar een **keystore** aan. Kies een pad buiten de
-repository, bijvoorbeeld in je documentenmap, en gebruik een wachtwoord dat je
-opslaat in je wachtwoordbeheerder.
-
-> **Raak deze keystore nooit kwijt.** Zonder dat bestand kun je nooit meer een
-> update van deze app publiceren — niet met een nieuwe sleutel, niet met een
-> nieuw account. Zet er vandaag nog een kopie van op een tweede plek.
+> **Raak die map nooit kwijt.** Zonder dat bestand kun je geen update van deze
+> app publiceren. Zet er vandaag nog een kopie van op een tweede plek — een
+> USB-stick, een kluis, een andere computer. (Sinds Play App Signing kan Google
+> je een nieuwe upload-sleutel geven, maar reken op een week wachten.)
 
 Wat al goed staat en waar je niets aan hoeft te doen: applicatie-id
 `app.darijaforkids.learn`, minimaal Android 7 (API 24), doel-API 36, geen
-cleartext-verkeer, versie 1.0 met versionCode 1. Voor elke volgende release
-hoog je `versionCode` én `versionName` op in `android/app/build.gradle`.
+cleartext-verkeer, versie 1.0 met versionCode 1. Voor elke volgende release:
 
-Het resultaat is een `.aab`-bestand in
-`android/app/build/outputs/bundle/release/`.
+```bash
+node scripts/maak-aab.mjs --versie 2
+```
+
+Het resultaat is
+`android/app/build/outputs/bundle/release/app-release.aab`.
+
+Liever met de hand, of gaat er iets mis? Dan staat de weg via Android Studio in
+[ANDROID.md](ANDROID.md).
 
 ---
 
