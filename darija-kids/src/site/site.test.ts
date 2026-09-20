@@ -24,15 +24,15 @@ describe('de getallen op de website', () => {
   }
 
   /**
-   * De woorden die nog op een opname wachten.
+   * De woorden die nog op een opname wachten — nu geen.
    *
-   * Aan het eind van een verschoven stuk valt er een woord zonder klank: zijn
-   * opname is bij het knippen nooit weggeschreven. Die drie staan hier met
-   * naam en toenaam, zodat een verdwenen bestand opvalt in plaats van weg te
-   * zakken in een getal dat toch al niet klopte. Zodra ze zijn ingesproken
-   * gaat deze lijst leeg en staat de website weer op 432.
+   * Aan het eind van een verschoven stuk viel er een woord zonder klank: zijn
+   * opname was bij het knippen nooit weggeschreven. Dat waren er drie, en die
+   * zijn opnieuw ingesproken. De lijst blijft staan omdat hij de vraag stelt
+   * die ertoe doet: welk woord heeft geen stem? Een leeg antwoord is het enige
+   * goede.
    */
-  const WACHT_OP_OPNAME = ['jeddi', 'jmel', 'khoya']
+  const WACHT_OP_OPNAME: string[] = []
 
   it('kloppen met de cursus zelf', () => {
     expect(counts).toEqual({
