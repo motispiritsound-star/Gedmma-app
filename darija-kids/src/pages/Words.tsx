@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import type { Topic } from '../content/types'
@@ -23,6 +23,50 @@ export function Words() {
   const [topic, setTopic] = useState<Topic | 'alles'>('alles')
   const [open, setOpen] = useState<string | null>(null)
 
+  /**
+   * De onderwerpenbalk schuift opzij als hij niet past, en dat moet te zien
+   * zijn.
+   *
+   * Zonder iets staat er een knop half over de rand — "Huis" die rechtsboven
+   * afgesneden is — en dat leest als een fout in de opmaak in plaats van als
+   * "er komt nog meer". Twee dingen helpen daartegen, en allebei zijn ze
+   * nodig: een zachte waas aan de kant waar nog iets staat, zodat je ziet dat
+   * er verder te schuiven valt, en de balk die zelf meeschuift zodra je een
+   * onderwerp kiest, zodat wat je net hebt aangetikt ook helemaal in beeld
+   * staat.
+   *
+   * Geen pijltjes: die vragen om een trefzekere tik, ze dekken de knop eronder
+   * af, en op een telefoon — waar de balk het vaakst te smal is — schuif je
+   * toch met je duim.
+   */
+  const balk = useRef<HTMLUListElement>(null)
+  const [waas, setWaas] = useState({ links: false, rechts: false })
+
+  const meetRanden = () => {
+    const el = balk.current
+    if (!el) return
+    const speling = el.scrollWidth - el.clientWidth
+    setWaas({
+      links: el.scrollLeft > 4,
+      rechts: speling > 4 && el.scrollLeft < speling - 4,
+    })
+  }
+
+  useLayoutEffect(meetRanden, [])
+  useEffect(() => {
+    const el = balk.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const kijker = new ResizeObserver(meetRanden)
+    kijker.observe(el)
+    return () => kijker.disconnect()
+  }, [])
+
+  // Wat je aantikt hoort daarna helemaal in beeld te staan.
+  useEffect(() => {
+    const gekozen = balk.current?.querySelector('[aria-pressed="true"]')
+    gekozen?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' })
+  }, [topic])
+
   const results = useMemo(() => {
     const base = query ? searchWords(query, lang) : allWords
     return topic === 'alles' ? base : base.filter((w) => w.topic === topic)
@@ -41,26 +85,42 @@ export function Words() {
         className="w-full rounded-2xl border-2 border-[var(--line)] bg-[var(--surface-raised)] px-4 py-3 text-lg outline-none focus:border-zellige-500"
       />
 
-      <ul className="no-scrollbar -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1">
-        <li>
-          <button
-            onClick={() => { sfx.nav(); setTopic('alles') }}
-            className={`whitespace-nowrap rounded-full border-2 px-3 py-1.5 text-sm font-bold ${topic === 'alles' ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
-          >
-            {t.words.alles}
-          </button>
-        </li>
-        {TOPICS.map((topicKey) => (
-          <li key={topicKey}>
+      <div className="relative -mx-4 mt-3">
+        <ul
+          ref={balk}
+          onScroll={meetRanden}
+          /* scroll-px-8: even breed als de waas, zodat een knop die in beeld
+             wordt geschoven er niet half onder verdwijnt. */
+          className="no-scrollbar flex gap-2 overflow-x-auto scroll-px-8 px-4 pb-1"
+        >
+          <li>
             <button
-              onClick={() => { sfx.nav(); setTopic(topicKey) }}
-              className={`whitespace-nowrap rounded-full border-2 px-3 py-1.5 text-sm font-bold ${topic === topicKey ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
+              onClick={() => { sfx.nav(); setTopic('alles') }}
+              aria-pressed={topic === 'alles'}
+              className={`whitespace-nowrap rounded-full border-2 px-3 py-1.5 text-sm font-bold ${topic === 'alles' ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
             >
-              {TOPIC_EMOJI[topicKey]} {t.topics[topicKey]}
+              {t.words.alles}
             </button>
           </li>
-        ))}
-      </ul>
+          {TOPICS.map((topicKey) => (
+            <li key={topicKey}>
+              <button
+                onClick={() => { sfx.nav(); setTopic(topicKey) }}
+                aria-pressed={topic === topicKey}
+                className={`whitespace-nowrap rounded-full border-2 px-3 py-1.5 text-sm font-bold ${topic === topicKey ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
+              >
+                {TOPIC_EMOJI[topicKey]} {t.topics[topicKey]}
+              </button>
+            </li>
+          ))}
+        </ul>
+        {waas.links && (
+          <div className="pointer-events-none absolute inset-y-0 start-0 w-8 bg-gradient-to-r from-[var(--surface)] to-transparent" aria-hidden="true" />
+        )}
+        {waas.rechts && (
+          <div className="pointer-events-none absolute inset-y-0 end-0 w-8 bg-gradient-to-l from-[var(--surface)] to-transparent" aria-hidden="true" />
+        )}
+      </div>
 
       <p className="mt-4 text-sm text-[var(--ink-soft)]">{t.words.resultaten(results.length)}</p>
 
