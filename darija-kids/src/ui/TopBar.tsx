@@ -3,6 +3,7 @@ import { heartsNow, levelOf, MAX_HEARTS, msUntilNextHeart, useStore, xpToday } f
 import { sfx } from '../engine/audio'
 import { Progress } from './kit'
 import { useT } from '../i18n'
+import { Vlag } from './Khatim'
 
 const LINKS = [
   { to: '/leren', key: 'leren' },
@@ -30,6 +31,7 @@ export function TopBar() {
         <Link to="/" onClick={() => sfx.nav()} className="flex shrink-0 items-center gap-2 font-display text-xl font-extrabold">
           <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-saffron-400 to-terra-500 text-night-950">د</span>
           <span className="hidden sm:inline">Darijaforkids</span>
+          <Vlag size={26} className="rounded shadow-sm" />
         </Link>
 
         {/* The five labels are short in Dutch and long in Spanish, and at

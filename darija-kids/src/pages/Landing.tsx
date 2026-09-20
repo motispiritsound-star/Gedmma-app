@@ -44,6 +44,7 @@ export function Landing() {
             <span className="flex items-center gap-2 font-display text-2xl font-extrabold">
               <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-saffron-400 to-terra-500 text-night-950">د</span>
               {t.common.appName}
+              <Vlag size={28} className="rounded shadow-sm" />
             </span>
 
             {/* Picking a language is the first thing a visitor may need. */}

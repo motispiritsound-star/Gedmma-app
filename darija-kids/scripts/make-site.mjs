@@ -116,7 +116,7 @@ const header = (lang, page) => {
 
   return `<header class="top">
   <div class="wrap">
-    <a class="brand" href="${home}"><img src="/icons/icon.svg" alt="" width="32" height="32"><span>Darijaforkids</span></a>
+    <a class="brand" href="${home}"><img src="/icons/icon.svg" alt="" width="32" height="32"><span>Darijaforkids</span><img class="vlag" src="/icons/vlag-ma.svg" alt="${esc(c.marokko)}" width="27" height="18"></a>
     ${nav}
     <details class="langpick">
       <summary><span aria-hidden="true">${esc(here.badge)}</span> <span class="sr-name">${esc(here.name)}</span></summary>

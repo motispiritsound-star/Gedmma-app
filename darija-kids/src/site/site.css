@@ -110,6 +110,10 @@ header.top {
 header.top .wrap { display: flex; align-items: center; gap: 1rem; min-height: 4rem; }
 .brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; font-weight: 800; font-size: 1.1rem; }
 .brand img { width: 2rem; height: 2rem; }
+/* Het vlaggetje naast de naam. Als tekening en niet als emoji: Windows
+   tekent vlagemoji's niet, daar wordt de vlag de twee letters MA. */
+header.top .brand .vlag { border-radius: 3px; box-shadow: 0 0 0 1px rgb(0 0 0 / .1); }
+
 header.top nav { margin-left: auto; display: flex; gap: 1.25rem; align-items: center; }
 header.top nav a { text-decoration: none; color: var(--ink-soft); font-size: .95rem; white-space: nowrap; }
 header.top nav a:hover { color: var(--ink); }

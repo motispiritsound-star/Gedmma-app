@@ -107,6 +107,7 @@ const nl = {
   oudersLink: 'Voor ouders',
   taal: 'Taal',
   terugNaarHome: 'Terug naar de startpagina',
+  marokko: 'Marokko',
   voetnoot: 'Darija is de taal van thuis. Hier leert je kind hem, woord voor woord.',
 }
 
@@ -201,6 +202,7 @@ const fr: SiteCopy = {
   oudersLink: 'Pour les parents',
   taal: 'Langue',
   terugNaarHome: 'Retour à l’accueil',
+  marokko: 'Maroc',
   voetnoot: 'La darija est la langue de la maison. Ici, votre enfant l’apprend, mot après mot.',
 }
 
@@ -292,6 +294,7 @@ const de: SiteCopy = {
   oudersLink: 'Für Eltern',
   taal: 'Sprache',
   terugNaarHome: 'Zurück zur Startseite',
+  marokko: 'Marokko',
   voetnoot: 'Darija ist die Sprache von zu Hause. Hier lernt Ihr Kind sie, Wort für Wort.',
 }
 
@@ -383,6 +386,7 @@ const es: SiteCopy = {
   oudersLink: 'Para padres',
   taal: 'Idioma',
   terugNaarHome: 'Volver al inicio',
+  marokko: 'Marruecos',
   voetnoot: 'El dariya es la lengua de casa. Aquí tu hijo la aprende, palabra a palabra.',
 }
 
@@ -474,6 +478,7 @@ const it: SiteCopy = {
   oudersLink: 'Per i genitori',
   taal: 'Lingua',
   terugNaarHome: 'Torna alla home',
+  marokko: 'Marocco',
   voetnoot: 'Il darija è la lingua di casa. Qui tuo figlio la impara, parola per parola.',
 }
 
@@ -565,6 +570,7 @@ const en: SiteCopy = {
   oudersLink: 'For parents',
   taal: 'Language',
   terugNaarHome: 'Back to the home page',
+  marokko: 'Morocco',
   voetnoot: 'Darija is the language of home. Here your child learns it, word by word.',
 }
 
