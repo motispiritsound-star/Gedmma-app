@@ -69,14 +69,21 @@ if (!existsSync(LOKAAL) && !process.env.ANDROID_HOME && !process.env.ANDROID_SDK
   console.log(`Android-SDK gevonden: ${sdk}`)
 }
 
-const wrapper = process.platform === 'win32' ? 'gradlew.bat' : './gradlew'
 console.log('\nBundel bouwen. De eerste keer haalt Gradle veel op; reken op een paar minuten.\n')
 
+// Een .bat kan node sinds versie 20 niet rechtstreeks starten. Via cmd.exe
+// dus, maar met /c en vaste argumenten in plaats van shell:true -- dat laatste
+// plakt de argumenten aan elkaar tot één tekenreeks, en node waarschuwt daar
+// terecht voor.
+const [programma, argumenten] =
+  process.platform === 'win32'
+    ? ['cmd.exe', ['/c', 'gradlew.bat', 'bundleRelease']]
+    : ['./gradlew', ['bundleRelease']]
+
 try {
-  execFileSync(wrapper, ['bundleRelease'], {
+  execFileSync(programma, argumenten, {
     cwd: ANDROID,
     stdio: 'inherit',
-    shell: process.platform === 'win32',
     env: { ...process.env, JAVA_HOME: jdk },
   })
 } catch {

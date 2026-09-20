@@ -116,7 +116,7 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 - [x] Apple: naam, ondertitel, trefwoorden, promotietekst, beschrijving en de
       schermafbeeldingen voor iPhone en iPad, in alle zes de talen
 - [ ] Google: de winkelvermelding per taal, begin bij en-US (§PLAY 6) — pakket met `npm run playpakket`
-- [ ] Android: een **AAB** bouwen en ondertekenen — [docs/ANDROID.md](ANDROID.md), en let op dat `npm run android` er eerst overheen gaat
+- [x] Android: een **AAB** bouwen en ondertekenen — `npm run sleutel` en `npm run aab`, 22,8 MB
 - [ ] **Een Mac regelen** — zonder macOS geen iOS-build, en dus geen App Store (§3)
 - [ ] iOS: `npx cap add ios`, archiveren in Xcode, naar TestFlight
 
