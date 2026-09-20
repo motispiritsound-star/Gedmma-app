@@ -192,6 +192,40 @@ const MAP = (() => {
   return i > 0 ? process.argv[i + 1] : null
 })()
 
+/**
+ * `--meten` zet een regel onderaan de demo die zegt wat het geluid doet.
+ *
+ * Alleen voor het uitproberen op een echt toestel. Hier in de omgeving speelt
+ * alles, op een iPhone niet, en dan is de vraag welke van de drie stappen
+ * misgaat: de opnames binnenhalen, ze ontcijferen, of ze afspelen. Raden
+ * daarnaar heeft nu twee rondes gekost, dus laat het apparaat het zeggen.
+ */
+const METEN = process.argv.includes('--meten')
+const meter = METEN ? `<div id="meter" style="position:fixed;inset-inline:0;bottom:0;z-index:99999;background:#131b30;color:#ffd79a;font:12px/1.5 system-ui;padding:6px 10px;text-align:center"></div>
+<script>
+(function () {
+  var el = document.getElementById('meter')
+  var geladen = (window.__K || []).filter(Boolean).length
+  var regel = function (t) { el.textContent = t }
+  regel('opnames geladen: ' + geladen)
+  if (!geladen) return
+  var ac = null
+  try { ac = new (window.AudioContext || window.webkitAudioContext)() } catch (e) { regel('geladen ' + geladen + ' · geen AudioContext: ' + e.name); return }
+  var uri = (window.__K || []).filter(Boolean)[0]
+  fetch(uri).then(function (r) { return r.arrayBuffer() }).then(function (b) {
+    return new Promise(function (ok, nee) {
+      var p = ac.decodeAudioData(b, ok, nee)
+      if (p && p.then) p.then(ok, nee)
+    })
+  }).then(function (buf) {
+    regel('geladen ' + geladen + ' · ontcijferd ' + buf.duration.toFixed(2) + 's · mixer ' + ac.state)
+  }).catch(function (e) {
+    regel('geladen ' + geladen + ' · ONTCIJFEREN MISLUKT: ' + (e && (e.name + ' ' + e.message)))
+  })
+})()
+</script>
+` : ''
+
 const mb = (n) => (n / 1024 / 1024).toFixed(1)
 
 if (MAP) {
@@ -209,7 +243,7 @@ if (MAP) {
 ${klanken.map(([naam]) => `<script src="${naam}"></script>`).join('\n')}
 ${slotEraf}<div id="root"></div>
 <script type="module" src="app.js"></script>
-`)
+${meter}`)
   const totaal = klanken.reduce((n, [, i]) => n + Buffer.byteLength(i), 0)
   console.log(`${MAP}/ — index.html, app.css (${mb(Buffer.byteLength(css))} MB), app.js (${mb(Buffer.byteLength(js))} MB), ${klanken.length}x klanken (${mb(totaal)} MB, wav)${ALLES ? ' — alles open, niet delen' : ''}`)
   process.exit(0)
