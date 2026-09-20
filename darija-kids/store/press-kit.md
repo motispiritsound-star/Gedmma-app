@@ -136,20 +136,22 @@ de **khatim** terug — de vijfpuntige ster uit de Marokkaanse vlag, één
 doorlopende lijn die zichzelf vijf keer kruist: in de app is dat de ster
 waarmee een les wordt beoordeeld. De mascotte heet **Fnek** en is een fennek.
 
-## De stemmen — herkomst en toestemming
+## De stemmen — herkomst
 
-Dit hoort ingevuld te zijn vóór de app wordt ingediend, en het is geen
-formaliteit: elke opname in de app is iemands stem. Een winkel kan ernaar
-vragen, en de spreker kan er later op terugkomen als er niets op papier staat.
+Alle 432 opnames zijn ingesproken door de uitgever zelf. Er is dus niets vast
+te leggen en niemand om toestemming te vragen: eigen stem, eigen app.
 
-| Wat | Wie | Wanneer | Toestemming |
-|---|---|---|---|
-| De 28 letters | *invullen* | *invullen* | *nog vast te leggen* |
-| 41 woorden (groeten, familie, cijfers, kleuren, eten) | de uitgever zelf | 17 september 2026 | eigen stem, eigen app |
-| De overige woorden | *nog op te nemen* | | |
-| De zinnen | *nog op te nemen* | | |
+| Wat | Wie | Wanneer |
+|---|---|---|
+| De 28 letters | de uitgever zelf | september 2026 |
+| Alle 304 woorden | de uitgever zelf | september 2026 |
+| Alle 100 zinnen | de uitgever zelf | september 2026 |
 
-Per regel hoort vast te liggen:
+Dat is het antwoord als een winkel of een journalist ernaar vraagt, en het is
+ook het hele antwoord. Wat hieronder staat gaat over de volgende keer.
+
+**Komt er ooit een stem van een ander bij** — een tweede spreker, een kinderstem,
+een tweede dialect — dan hoort er per regel wél iets vast te liggen:
 
 - **Wie het insprak**, met naam en een manier om diegene te bereiken.
 - **Dat het commercieel gebruikt mag worden**, met zoveel woorden. "Ik vond het

@@ -152,7 +152,7 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
       het is precies waar het misging: een opname die luid en compleet is kan
       nog altijd het verkeerde woord zeggen. De 178 opnames van vóór de laatste
       sessie zijn nagehoord; de 126 daarna niet (§0c)
-- [ ] Wie insprak, en schriftelijk dat het commercieel gebruikt mag worden — de tabel staat klaar in `store/press-kit.md`
+- [x] Wie insprak — alle 432 door de uitgever zelf, dus geen toestemming te regelen (`store/press-kit.md`)
 
 ### Publiceren
 
