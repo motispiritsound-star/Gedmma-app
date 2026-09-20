@@ -15,7 +15,7 @@
     "smoke": "node scripts/smoke.mjs",
     "build:demo": "vite build --mode demo && node scripts/make-demo.mjs",
     "sync": "npm run build:app && cap sync",
-    "android": "npm run build:app && cap sync android && cap open android",
+    "android": "npm run build && npx cap sync android",
     "assets": "node scripts/make-store-assets.mjs && @capacitor/assets generate --android",
     "soundcheck": "node scripts/soundcheck.mjs",
     "stand": "node scripts/make-stand.mjs",
@@ -45,7 +45,8 @@
     "applepakket": "node scripts/make-applepakket.mjs",
     "reviewshot": "node scripts/make-reviewshot.mjs",
     "social": "node scripts/make-social.mjs",
-    "repareer-knip": "node scripts/repareer-knip.mjs"
+    "repareer-knip": "node scripts/repareer-knip.mjs",
+    "ios": "npm run build && npx cap sync ios"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",

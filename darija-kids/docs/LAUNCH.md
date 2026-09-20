@@ -116,7 +116,7 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 - [x] Apple: naam, ondertitel, trefwoorden, promotietekst, beschrijving en de
       schermafbeeldingen voor iPhone en iPad, in alle zes de talen
 - [ ] Google: de winkelvermelding per taal, begin bij en-US (§PLAY 6) — pakket met `npm run playpakket`
-- [ ] Android: een **AAB** bouwen en ondertekenen, keystore op twee plekken bewaren (§3)
+- [ ] Android: een **AAB** bouwen en ondertekenen — [docs/ANDROID.md](ANDROID.md), en let op dat `npm run android` er eerst overheen gaat
 - [ ] **Een Mac regelen** — zonder macOS geen iOS-build, en dus geen App Store (§3)
 - [ ] iOS: `npx cap add ios`, archiveren in Xcode, naar TestFlight
 
@@ -743,4 +743,5 @@ bereiken — ze staan er op naam en zijn stabiel, maar loop ze even na.
 | Online zetten | [DEPLOY.md](DEPLOY.md) |
 | Een woord of zin aanpassen | [INHOUD.md](INHOUD.md) |
 | Wie dit koopt en waarom | [MARKT.md](MARKT.md) |
+| De Android-build | [ANDROID.md](ANDROID.md) |
 | Opnames maken en toevoegen | [`src/audio/LEES-MIJ.md`](../src/audio/LEES-MIJ.md) |
