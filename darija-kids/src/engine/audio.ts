@@ -1,7 +1,7 @@
 import { getState } from './store'
 import { letterSpeech, spokenForm } from '../content/pronunciation'
 import { clipFor, CLIPS, playClip } from './clips'
-import { eigenVoorkeur, stemWint } from '../content/eigen'
+import { eigenVoorkeur } from '../content/eigen'
 import { ARGS, busFor, LENGTH, VOICES, type SoundName, type Stage } from './instruments'
 
 /**
@@ -732,11 +732,7 @@ export function say(arabic: string, opts: SayOptions = {}): void {
   // A recording always wins. No engine on any phone speaks Darija — they are
   // all trained on Standard Arabic — so a person saying the word is not a
   // nicety here, it is the only way to be right.
-  //
-  // Op één uitzondering na: de handvol woorden waarvan met beide stemmen is
-  // nagehoord dat de synthesizer ze goed zegt. Daar valt iets te kiezen, en
-  // daar staat afwisseling tegenover één stem voor alles.
-  const clip = stemWint(arabic) ? undefined : clipFor(arabic)
+  const clip = clipFor(arabic)
   if (clip) {
     unlockAudio()
     // Valt de opname om — een codec die deze browser niet kent, een bestand
