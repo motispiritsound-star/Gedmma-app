@@ -197,6 +197,9 @@ export const es: Strings = {
     zoek: 'Busca… p. ej. pan, khobz o خبز',
     zoekLabel: 'Buscar una palabra',
     alles: 'Todo',
+    /** De pijltjes aan de rand van de onderwerpenbalk, voor wie voorleest. */
+    meerOnderwerpen: 'Más temas',
+    vorigeOnderwerpen: 'Temas anteriores',
     resultaten: (n) => `${n} resultados`,
     slotUitleg: 'Escuchas las palabras que has aprendido. El resto ya está ahí: se abre con la suscripción.',
     nietsGevonden: 'No hay resultados. Prueba otra palabra, o busca en tu idioma.',

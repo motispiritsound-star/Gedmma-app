@@ -197,6 +197,9 @@ export const fr: Strings = {
     zoek: 'Cherche… par ex. pain, khobz ou خبز',
     zoekLabel: 'Chercher un mot',
     alles: 'Tout',
+    /** De pijltjes aan de rand van de onderwerpenbalk, voor wie voorleest. */
+    meerOnderwerpen: 'Plus de thèmes',
+    vorigeOnderwerpen: 'Thèmes précédents',
     resultaten: (n) => `${n} résultats`,
     slotUitleg: 'Tu entends les mots que tu as appris. Le reste est déjà là : il s’ouvre avec l’abonnement.',
     nietsGevonden: 'Rien trouvé. Essaie un autre mot — ou cherche dans ta langue.',

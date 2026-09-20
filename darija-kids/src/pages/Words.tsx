@@ -35,9 +35,11 @@ export function Words() {
    * onderwerp kiest, zodat wat je net hebt aangetikt ook helemaal in beeld
    * staat.
    *
-   * Geen pijltjes: die vragen om een trefzekere tik, ze dekken de knop eronder
-   * af, en op een telefoon — waar de balk het vaakst te smal is — schuif je
-   * toch met je duim.
+   * En een pijltje aan elke kant waar nog iets staat. Een waas alleen bleek te
+   * stil: wie met een muis kijkt ziet een afgesneden knop en geen uitnodiging.
+   * Het pijltje zegt het ronduit — hier gaat het verder — en schuift een
+   * schermbreedte op, zodat er met één tik iets nieuws staat in plaats van een
+   * halve knop.
    */
   const balk = useRef<HTMLUListElement>(null)
   const [waas, setWaas] = useState({ links: false, rechts: false })
@@ -60,6 +62,14 @@ export function Words() {
     kijker.observe(el)
     return () => kijker.disconnect()
   }, [])
+
+  /** Een scherm opzij, min een knop overlap zodat je ziet waar je vandaan komt. */
+  const schuif = (kant: 1 | -1) => {
+    const el = balk.current
+    if (!el) return
+    sfx.nav()
+    el.scrollBy({ left: kant * Math.round(el.clientWidth * 0.8), behavior: 'smooth' })
+  }
 
   // Wat je aantikt hoort daarna helemaal in beeld te staan.
   useEffect(() => {
@@ -91,7 +101,7 @@ export function Words() {
           onScroll={meetRanden}
           /* scroll-px-8: even breed als de waas, zodat een knop die in beeld
              wordt geschoven er niet half onder verdwijnt. */
-          className="no-scrollbar flex gap-2 overflow-x-auto scroll-px-8 px-4 pb-1"
+          className="no-scrollbar flex gap-2 overflow-x-auto scroll-px-12 px-4 pb-1"
         >
           <li>
             <button
@@ -115,10 +125,16 @@ export function Words() {
           ))}
         </ul>
         {waas.links && (
-          <div className="pointer-events-none absolute inset-y-0 start-0 w-8 bg-gradient-to-r from-[var(--surface)] to-transparent" aria-hidden="true" />
+          <>
+            <div className="pointer-events-none absolute inset-y-0 start-0 w-10 bg-gradient-to-r from-[var(--surface)] to-transparent" aria-hidden="true" />
+            <Pijl kant={-1} label={t.words.vorigeOnderwerpen} onClick={() => schuif(-1)} />
+          </>
         )}
         {waas.rechts && (
-          <div className="pointer-events-none absolute inset-y-0 end-0 w-8 bg-gradient-to-l from-[var(--surface)] to-transparent" aria-hidden="true" />
+          <>
+            <div className="pointer-events-none absolute inset-y-0 end-0 w-10 bg-gradient-to-l from-[var(--surface)] to-transparent" aria-hidden="true" />
+            <Pijl kant={1} label={t.words.meerOnderwerpen} onClick={() => schuif(1)} />
+          </>
         )}
       </div>
 
@@ -196,5 +212,27 @@ export function Words() {
         </Card>
       )}
     </div>
+  )
+}
+
+/**
+ * Het pijltje aan de rand van de onderwerpenbalk.
+ *
+ * Klein genoeg om de knop eronder niet te verbergen, groot genoeg om met een
+ * duim te raken: achtendertig bij achtendertig, op de rand en verticaal in het
+ * midden. Hij staat er alleen als er die kant op iets te halen valt.
+ */
+function Pijl({ kant, label, onClick }: { kant: 1 | -1; label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className={`absolute top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border-2 border-[var(--line)] bg-[var(--surface-raised)] text-[var(--ink-soft)] shadow-sm transition hover:border-zellige-500 hover:text-zellige-600 dark:hover:text-zellige-300 ${kant === 1 ? 'end-1' : 'start-1'}`}
+    >
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="rtl:-scale-x-100">
+        {kant === 1 ? <path d="m9 5 7 7-7 7" /> : <path d="m15 5-7 7 7 7" />}
+      </svg>
+    </button>
   )
 }

@@ -203,6 +203,9 @@ export const nl = {
     zoek: 'Zoek… bijv. brood, khobz of خبز',
     zoekLabel: 'Zoek een woord',
     alles: 'Alles',
+    /** De pijltjes aan de rand van de onderwerpenbalk, voor wie voorleest. */
+    meerOnderwerpen: 'Meer onderwerpen',
+    vorigeOnderwerpen: 'Vorige onderwerpen',
     resultaten: (n: number): string => `${n} resultaten`,
     slotUitleg: 'Je hoort de woorden die je geleerd hebt. De rest staat er alvast — die gaan open met het abonnement.',
     nietsGevonden: 'Niets gevonden. Probeer een ander woord — of zoek in je eigen taal.',
