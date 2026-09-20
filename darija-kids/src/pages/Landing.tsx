@@ -14,7 +14,16 @@ import { useMeaning } from '../ui/WordChip'
 import { FeedbackLink } from '../ui/Feedback'
 import { Vlag } from '../ui/Khatim'
 
-const TASTER = ['salam', 'shukran', 'atay', 'bnin', 'yallah', 'khobz', 'mzyan', 'bslama']
+/**
+ * De acht woorden van de proeverij op de voorpagina.
+ *
+ * Dit is het eerste wat iemand van de app hoort, dus hier telt één ding zwaarder
+ * dan elders: dat de opname zegt wat eronder staat. Een woord waarvan dat niet
+ * vaststaat hoort hier niet — het staat verderop in de app nog steeds, waar het
+ * in een les zit en niet in een etalage. Zo ging bnin (lekker) eruit: zijn
+ * opname bleek het woord ervoor te zeggen.
+ */
+const TASTER = ['salam', 'shukran', 'atay', 'kesksu', 'yallah', 'khobz', 'mzyan', 'bslama']
 
 export function Landing() {
   const t = useT()
