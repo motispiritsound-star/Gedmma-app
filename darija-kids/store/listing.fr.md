@@ -56,7 +56,7 @@ CE QU'IL Y A LE LONG DU PARCOURS
 • Une pile de révision qui repère toute seule ce qui commence à vaciller
 
 APRÈS CHAQUE TEST, UN MORCEAU DU MAROC
-Chaque étape donne droit à un court film : quatorze cartes dans l’ordre de l’histoire, de la ville romaine de Walili jusqu’à l’alphabet tifinagh devenu officiel en 2011. » et restent dans ta collection.
+Chaque étape donne droit à un court film : quatorze cartes dans l’ordre de l’histoire, de la ville romaine de Walili jusqu’à l’alphabet tifinagh devenu officiel en 2011. Ils sont lus à voix haute dans ta langue, finissent sur un « le savais-tu ? » et restent dans ta collection.
 
 TOUT SE PRONONCE
 Chaque mot et chaque phrase peut être écouté : une touche pour la vitesse normale, deux pour la version lente. Si ton appareil n'a pas de voix arabe, l'application le dit honnêtement et lit l'écriture latine du mieux qu'elle peut.
