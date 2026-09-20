@@ -9,7 +9,7 @@
  * nu `jbr`. Dus zoeken we op alle plekken, en anders in PATH.
  */
 import { execFileSync } from 'node:child_process'
-import { existsSync, readdirSync, realpathSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, realpathSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 
@@ -166,18 +166,42 @@ export function geenJdk() {
  * kijkt op de plek waar de installatiewizard hem standaard neerzet.
  */
 export function vindSdk() {
+  for (const map of sdkKandidaten()) if (map && existsSync(path.join(map, 'platform-tools'))) return map
+  return null
+}
+
+function sdkKandidaten() {
   const thuis = os.homedir()
   const uit = [process.env.ANDROID_HOME, process.env.ANDROID_SDK_ROOT]
   if (WINDOWS) {
     const lokaal = process.env.LOCALAPPDATA || path.join(thuis, 'AppData', 'Local')
-    uit.push(path.join(lokaal, 'Android', 'Sdk'), path.join(thuis, 'Android', 'Sdk'), 'C:\\Android\\Sdk')
+    uit.push(
+      path.join(lokaal, 'Android', 'Sdk'),
+      path.join(thuis, 'Android', 'Sdk'),
+      path.join(thuis, 'AppData', 'Roaming', 'Android', 'Sdk'),
+      'C:\\Android\\Sdk',
+      'C:\\Program Files\\Android\\Sdk',
+      'C:\\Program Files (x86)\\Android\\android-sdk',
+      'D:\\Android\\Sdk',
+    )
+    // Studio onthoudt in dit bestand waar de SDK staat, ook als hij ergens
+    // anders neergezet is. Dat is de enige plek waar dat betrouwbaar staat.
+    for (const ouder of kinderen(path.join(thuis, 'AppData', 'Roaming', 'Google'))) {
+      const bestand = path.join(ouder, 'options', 'other.xml')
+      try {
+        const tekst = readFileSync(bestand, 'utf8')
+        const treffer = tekst.match(/name="android\.sdk\.path" value="([^"]+)"/)
+        if (treffer) uit.push(treffer[1])
+      } catch {
+        // dit bestand hoeft er niet te zijn
+      }
+    }
   } else if (MAC) {
     uit.push(path.join(thuis, 'Library', 'Android', 'sdk'))
   } else {
     uit.push(path.join(thuis, 'Android', 'Sdk'), '/usr/lib/android-sdk')
   }
-  for (const map of uit) if (map && existsSync(path.join(map, 'platform-tools'))) return map
-  return null
+  return uit
 }
 
 /** Alles wat we konden vinden, voor als er iets niet klopt. */
@@ -186,8 +210,12 @@ export function toon() {
   console.log(`JAVA_HOME: ${process.env.JAVA_HOME || '(niet gezet)'}`)
   console.log(`java      : ${vindJdk() || '(niet gevonden)'}`)
   console.log(`sdk       : ${vindSdk() || '(niet gevonden)'}`)
-  console.log('\nGezocht in:')
+  console.log('\nJava gezocht in:')
   for (const map of kandidaten()) if (map) console.log(`  ${bruikbaar(map) ? '✓' : ' '} ${map}`)
+  console.log('\nSDK gezocht in:')
+  for (const map of sdkKandidaten()) {
+    if (map) console.log(`  ${existsSync(path.join(map, 'platform-tools')) ? '✓' : ' '} ${map}`)
+  }
 }
 
 if (process.argv[1] && process.argv[1].endsWith('jdk.mjs')) toon()
