@@ -96,6 +96,41 @@ winkels een ander soort product:
 | Prijs | € 14,99 | € 14,99 |
 | Naam voor de koper | Het e-boek | Het e-boek |
 
+#### Het e-boek aanmaken in App Store Connect, stap voor stap
+
+Let op waar je begint: een eenmalig product staat **niet** bij Subscriptions.
+Het staat in de linkerkolom van de app onder **Monetization → In-App
+Purchases**, een lijst hoger.
+
+1. **In-App Purchases → de plusknop.** Als type kies je **Non-Consumable**.
+2. **Reference Name** `Het e-boek`. Die naam ziet alleen jij, in de
+   verkooprapporten.
+3. **Product ID** `app.darijaforkids.ebook`. Tik hem over en kijk er twee keer
+   naar: een product-id is definitief, ook als je het product weggooit.
+4. **Create.** Daarna open je het product en vul je de rest in.
+5. **Availability** — alle landen aan, net als bij de abonnementen.
+6. **Price** — kies het prijspunt **€ 14,99**. Apple rekent de andere
+   valuta's zelf om.
+7. **App Store Localization → Dutch (Netherlands)**, met de tekenlimieten die
+   Apple hanteert:
+
+   | Veld | Wat erin komt | Tekens |
+   |---|---|---|
+   | Display Name | `Het e-boek` | 10 |
+   | Description | `Het hele pad op papier. Printen of lezen.` | 41 |
+
+8. **Family Sharing → Turn On.** Bij een niet-verbruikbaar product mag dat, en
+   het past bij de rest: de abonnementen staan ook aan.
+9. **Review Information** — het screenshot van 1290 × 2796 uit
+   `store/review-screenshot/`, hetzelfde als bij Jaar en Maand. Daar staat het
+   e-boekblok met de prijs op, dus het toont wat de reviewer moet zien.
+10. **Save.** De status wordt *Ready to Submit*.
+
+**Het gaat mee met de app, niet apart.** Een eerste in-app aankoop wordt
+beoordeeld samen met een app-versie: je koppelt hem in App Store Connect aan de
+versie die je indient. Los indienen kan pas als de app al een keer is
+goedgekeurd.
+
 Niet-verbruikbaar betekent: één keer betalen, voor altijd, en terug te zetten op
 een nieuw toestel met **Aankoop terugzetten**. Zo staat het ook in de app —
 `grantEbook()` in `src/engine/billing.ts` neemt het nooit meer terug, ook niet

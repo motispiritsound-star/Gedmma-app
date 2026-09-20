@@ -529,10 +529,12 @@ Apple leest dit veld echt. Zet er dit in:
 > Darijaforkids leert kinderen Marokkaans-Arabisch. Er is geen account en geen
 > login nodig — de app opent direct in de eerste les.
 >
-> Om het abonnement te testen: tik onderin op "Leren", scrol naar unit 7 en tik
-> op "Bekijken". Op het abonnementsscherm staat een ouderpoort: een
-> vermenigvuldiging die je moet beantwoorden voordat de aankoop opent. Elk
-> juist antwoord werkt.
+> Om het abonnement te testen: tik onderin op "Leren" en kies in de eerste
+> unit (Lhruf) de vierde les. De eerste drie lessen van het alfabet en de
+> eerste les van unit 2 zijn gratis; alles daarna vraagt om het abonnement.
+> Een woord met een slotje in "Woorden" of "Alfabet" doet hetzelfde. Op het
+> abonnementsscherm staat een ouderpoort: een vermenigvuldiging die je moet
+> beantwoorden voordat de aankoop opent. Elk juist antwoord werkt.
 >
 > De abonnementen zijn app.darijaforkids.yearly (€ 59,99 per jaar) en
 > app.darijaforkids.monthly (€ 6,99 per maand), beide met 3 dagen gratis. Los
