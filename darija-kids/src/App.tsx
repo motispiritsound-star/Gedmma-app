@@ -23,6 +23,7 @@ const FilmPreview = lazy(() => import('./ui/Film').then((m) => ({ default: m.Fil
 const HistoryPreview = lazy(() => import('./ui/HistoryCard').then((m) => ({ default: m.HistoryPreview })))
 const Speech = lazy(() => import('./pages/Speech').then((m) => ({ default: m.Speech })))
 const Record = lazy(() => import('./pages/Record').then((m) => ({ default: m.Record })))
+import { GeluidUit } from './ui/GeluidUit'
 import { TopBar } from './ui/TopBar'
 import { Welcome } from './ui/Welcome'
 import { useStore } from './engine/store'
@@ -84,6 +85,9 @@ function Chrome() {
     <div className="min-h-full pb-24 sm:pb-0">
       <Welcome />
       {!inLesson && !isLanding && <TopBar />}
+      {/* Overal, niet alleen op het pad: wie in het woordenboek op een woord
+          tikt en niets hoort, komt daar anders nooit achter waarom. */}
+      {!isLanding && <GeluidUit />}
       <AnimatePresence mode="wait">
         <motion.main
           key={location.pathname}

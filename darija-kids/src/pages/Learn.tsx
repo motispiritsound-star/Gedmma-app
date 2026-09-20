@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { UNITS } from '../content/curriculum'
@@ -10,7 +9,7 @@ import {
   dueWordIds, FREE_UNITS, isDone, lessonUnlocked, markTipSeen, nextLesson, progressOfUnit,
   unitBehindPaywall, unitUnlocked, useStore,
 } from '../engine/store'
-import { audioBlocked, keepAwake, missingArabicVoice, sfx, unlockAudio } from '../engine/audio'
+import { missingArabicVoice } from '../engine/audio'
 import { useVoices } from '../ui/useVoices'
 import { Khatims } from '../ui/Khatim'
 import type { Lesson } from '../content/types'
@@ -82,15 +81,6 @@ export function Learn() {
   const installed = useVoices()
   const noArabicVoice = installed.length > 0 && missingArabicVoice() && !state.seenTips.includes('stem')
 
-  // A browser that refuses to start the mixer is the one problem a learner
-  // cannot see: everything looks right and nothing makes a sound. Say so, and
-  // put the tap that usually fixes it right next to the message.
-  const [muted, setMuted] = useState(false)
-  useEffect(() => {
-    const id = setInterval(() => setMuted(audioBlocked()), 1000)
-    return () => clearInterval(id)
-  }, [])
-
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
       <Card className="mb-6 flex flex-col items-center gap-4 overflow-hidden p-5 sm:flex-row">
@@ -120,18 +110,6 @@ export function Learn() {
           this is where a child who has finished today's lesson ends up. */}
       <div className="mb-6"><BonusCard /></div>
 
-      {muted && state.settings.sound && (
-        <Card className="mb-6 flex flex-wrap items-center gap-3 p-5">
-          <span className="text-2xl" aria-hidden="true">🔇</span>
-          <div className="min-w-0 flex-1">
-            <p className="font-display font-extrabold">{t.learn.geluidUit}</p>
-            <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.learn.geluidUitUitleg}</p>
-          </div>
-          <Button onClick={() => { unlockAudio(); keepAwake(); sfx.confirm(); setMuted(audioBlocked()) }}>
-            {t.learn.geluidAan}
-          </Button>
-        </Card>
-      )}
 
       {noArabicVoice && (
         <Card className="mb-6 p-5">

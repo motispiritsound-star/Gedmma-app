@@ -70,7 +70,7 @@ export const it: Strings = {
     geenStemUitleg:
       'Darijaforkids legge le parole in caratteri latini con una voce francese: si riconoscono, ma non è marocchino vero. Di solito una voce araba si può installare nelle impostazioni del dispositivo, alla voce sintesi vocale.',
     geluidUit: 'Non esce nessun suono',
-    geluidUitUitleg: 'Il browser blocca gli effetti finché non tocchi qualcosa. Su iPhone anche il tasto laterale li zittisce, mentre la pronuncia si sente lo stesso.',
+    geluidUitUitleg: 'Il browser blocca l’audio finché non tocchi qualcosa. E su iPhone il tasto laterale zittisce tutto, pronuncia compresa: guarda prima lì.',
     geluidAan: 'Attiva l’audio',
     begrepen: 'Capito',
   },

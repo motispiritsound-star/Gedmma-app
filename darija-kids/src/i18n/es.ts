@@ -70,7 +70,7 @@ export const es: Strings = {
     geenStemUitleg:
       'Darijaforkids lee las palabras en escritura latina con una voz francesa: se reconocen, pero no es marroquí de verdad. Normalmente puedes instalar una voz árabe en los ajustes del dispositivo, en la sección de voz o texto a voz.',
     geluidUit: 'No sale ningún sonido',
-    geluidUitUitleg: 'El navegador bloquea los efectos hasta que tocas algo. En un iPhone, el interruptor lateral también los silencia, aunque la pronunciación sí se oye.',
+    geluidUitUitleg: 'El navegador bloquea el sonido hasta que tocas algo. Y en un iPhone el interruptor lateral lo silencia todo, también la pronunciación: mira ahí primero.',
     geluidAan: 'Activar sonido',
     begrepen: 'Entendido',
   },

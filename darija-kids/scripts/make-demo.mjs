@@ -9,7 +9,7 @@
  * Run with: VITE_DEMO=1 npx vite build && node scripts/make-demo.mjs [out.html]
  */
 import { execFile } from 'node:child_process'
-import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -41,6 +41,31 @@ try {
 } catch {}
 </script>
 ` : ''
+
+/**
+ * Weigeren te werken met een bundel van voor de laatste wijziging.
+ *
+ * Dit script leest `dist-demo/`, dat een ander commando vult. Wie het los
+ * draait krijgt stilzwijgend de vorige versie van de app in een bestand dat er
+ * nieuw uitziet — en dat is precies één keer gebeurd, met een demo die nog de
+ * oude gratis grens noemde.
+ */
+const nieuwste = async (dir) => {
+  let t = 0
+  for (const e of await readdir(dir, { withFileTypes: true })) {
+    const p = path.join(dir, e.name)
+    t = Math.max(t, e.isDirectory() ? await nieuwste(p) : (await stat(p)).mtimeMs)
+  }
+  return t
+}
+const bundel = await stat(path.join(DIST, 'index.html')).catch(() => null)
+if (!bundel) {
+  throw new Error('dist-demo/ bestaat niet. Draai `npm run build:demo`.')
+}
+const bron = Math.max(await nieuwste(path.join(ROOT, 'src')), (await stat(path.join(ROOT, 'index.html'))).mtimeMs)
+if (bron > bundel.mtimeMs) {
+  throw new Error('dist-demo/ is ouder dan src/. Draai `npm run build:demo` in plaats van dit script los.')
+}
 
 const assets = await readdir(path.join(DIST, 'assets'))
 const cssFile = assets.find((f) => f.endsWith('.css'))

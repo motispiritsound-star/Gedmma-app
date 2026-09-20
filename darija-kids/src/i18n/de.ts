@@ -70,7 +70,7 @@ export const de: Strings = {
     geenStemUitleg:
       'Darijaforkids liest die Wörter jetzt in lateinischer Schreibweise mit einer französischen Stimme vor — erkennbar, aber kein echtes Marokkanisch. Eine arabische Stimme lässt sich meist in den Geräteeinstellungen unter Sprachausgabe installieren.',
     geluidUit: 'Es kommt kein Ton',
-    geluidUitUitleg: 'Der Browser hält die Spielgeräusche zurück, bis du etwas antippst. Auf einem iPhone schaltet der Schalter an der Seite sie ebenfalls stumm — die Aussprache hörst du trotzdem.',
+    geluidUitUitleg: 'Der Browser hält den Ton zurück, bis du etwas antippst. Und auf einem iPhone schaltet der Schalter an der Seite alles stumm, auch die Aussprache — schau zuerst dort.',
     geluidAan: 'Ton an',
     begrepen: 'Verstanden',
   },

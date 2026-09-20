@@ -70,7 +70,7 @@ export const fr: Strings = {
     geenStemUitleg:
       'Darijaforkids lit les mots en écriture latine avec une voix française — reconnaissable, mais pas du vrai marocain. Tu peux souvent installer une voix arabe dans les réglages de ton appareil, à la rubrique synthèse vocale.',
     geluidUit: 'Aucun son ne sort',
-    geluidUitUitleg: 'Le navigateur bloque les bruitages tant que tu n’as rien touché. Sur un iPhone, le bouton sur le côté les coupe aussi — la prononciation, elle, passe quand même.',
+    geluidUitUitleg: 'Le navigateur bloque le son tant que tu n’as rien touché. Et sur un iPhone, le bouton sur le côté coupe tout, la prononciation comprise — regarde là en premier.',
     geluidAan: 'Activer le son',
     begrepen: 'Compris',
   },

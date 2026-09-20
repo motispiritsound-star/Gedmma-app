@@ -75,7 +75,7 @@ export const nl = {
     geenStemUitleg:
       'Darijaforkids leest de woorden nu voor in de Latijnse schrijfwijze met een Franse stem — herkenbaar, maar geen echt Marokkaans. Een Arabische stem installeren kan meestal via de instellingen van je apparaat, bij spraak of tekst-naar-spraak.',
     geluidUit: 'Er komt geen geluid uit',
-    geluidUitUitleg: 'De browser houdt de spelgeluidjes tegen tot je iets aantikt. Op een iPhone zet het schuifje aan de zijkant ze ook uit — de uitspraak hoor je dan wel.',
+    geluidUitUitleg: 'De browser houdt geluid tegen tot je iets aantikt. En op een iPhone zet het schuifje aan de zijkant alles uit, ook de uitspraak — dat is de eerste plek om te kijken.',
     geluidAan: 'Geluid aan',
     begrepen: 'Begrepen',
   },

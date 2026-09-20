@@ -70,7 +70,7 @@ export const en: Strings = {
     geenStemUitleg:
       'Darijaforkids now reads the words in Latin spelling with a French voice — recognisable, but not real Moroccan. You can usually install an Arabic voice in your device settings, under speech or text-to-speech.',
     geluidUit: 'No sound is coming out',
-    geluidUitUitleg: 'The browser holds the game sounds back until you tap something. On an iPhone the switch on the side mutes them too — the pronunciation still comes through.',
+    geluidUitUitleg: 'The browser holds sound back until you tap something. And on an iPhone the switch on the side mutes everything, pronunciation included — look there first.',
     geluidAan: 'Turn sound on',
     begrepen: 'Got it',
   },
