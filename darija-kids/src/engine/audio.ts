@@ -127,6 +127,24 @@ function claimPlaybackSession(): void {
   }
 }
 
+/**
+ * De mixer, en eerst even kijken of de vorige nog leeft.
+ *
+ * Op iOS deelt de spraakmotor niet: heeft hij één woord gezegd, dan blijft het
+ * audiocontext melden dat het draait terwijl er niets meer uit komt. Dat werd
+ * al opgevangen voor de knopgeluidjes, maar niet voor de opnames — en dat is
+ * precies de weg die ertoe doet. Wie op de letterpagina eerst de letter liet
+ * zeggen (die ging langs de stem) en daarna het voorbeeldwoord aantikte, kreeg
+ * stilte: de opname werd keurig gedecodeerd en afgespeeld, in een mixer waar
+ * niemand meer naar luistert. `playClip` meldde dan succes, dus de stem sprong
+ * ook niet bij.
+ */
+function mixer(): [AudioContext | null, AudioNode | null] {
+  if (sessionLost) rebuildContext()
+  const ac = audio()
+  return [ac, bus]
+}
+
 /** What the mixer is doing, for the sound check in the settings screen. */
 export function mixerState(): 'speelt' | 'geblokkeerd' | 'geen' {
   if (typeof window === 'undefined') return 'geen'
@@ -412,8 +430,7 @@ function samplesWanted(): boolean {
 function playLive(name: SoundName, arg: number): void {
   // Something spoke, and on this device that means the mixer is playing to
   // nobody. Start a new one before the next sound rather than after it.
-  if (sessionLost) rebuildContext()
-  const ac = audio()
+  const [ac] = mixer()
   if (!ac) return
   const now = () => {
     if (!bus || !ctx) return
@@ -740,7 +757,8 @@ export function say(arabic: string, opts: SayOptions = {}): void {
     // vangnet levert één onleesbaar bestand stilte op zonder dat iemand ziet
     // waarom, en dat is precies wat er gebeurde: de knopgeluidjes speelden,
     // het woord niet. `sayLetter` deed dit al goed.
-    void playClip(clip, audio(), bus, { rate: opts.slow ? 0.7 : 1 }).then((gelukt) => {
+    const [ac, out] = mixer()
+    void playClip(clip, ac, out, { rate: opts.slow ? 0.7 : 1 }).then((gelukt) => {
       if (!gelukt) zegMetStem(arabic, opts)
     })
     return
@@ -879,7 +897,8 @@ export function sayLetter(letter: { id: string; ar: string; name: string }, opts
   const clip = CLIPS[letter.id]
   if (clip) {
     unlockAudio()
-    void playClip(clip, audio(), bus, { rate: opts.slow ? 0.7 : 1 }).then((played) => {
+    const [ac, out] = mixer()
+    void playClip(clip, ac, out, { rate: opts.slow ? 0.7 : 1 }).then((played) => {
       if (!played) speakLetter(letter, opts)
     })
     return

@@ -72,7 +72,7 @@ export function Alphabet() {
             <p className="text-[var(--ink-soft)]">{t.alphabet.klinktAls(letter.sound)}</p>
             <p className="mt-1 text-sm">{t.alphabet.latijn}: <strong>{letter.tr}</strong></p>
           </div>
-          <SpeakButton {...letterVoice(letter)} />
+          <SpeakButton {...letterVoice(letter)} zeg={(traag) => sayLetter(letter, { slow: traag })} />
         </div>
 
         <div className="mt-5 grid grid-cols-3 gap-3 text-center">

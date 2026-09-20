@@ -523,7 +523,7 @@ function NewLetter({ exercise, onAnswer }: ExerciseProps) {
           <div className="ar text-7xl font-bold">{l.ar}</div>
           <p className="font-display text-2xl font-extrabold">{l.name}</p>
           <p className="text-center text-[var(--ink-soft)]">{t.alphabet.klinktAls(l.sound)}</p>
-          <SpeakButton {...letterVoice(l)} />
+          <SpeakButton {...letterVoice(l)} zeg={(traag) => sayLetter(l, { slow: traag })} />
 
           <ul className="mt-2 grid w-full grid-cols-3 gap-2 text-center">
             {(['initial', 'medial', 'final'] as LetterForm[]).map((form) => (
@@ -591,12 +591,12 @@ function LetterChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mo
           <Card className="p-6 text-center">
             <p className="font-display text-3xl font-extrabold">{l.name}</p>
             <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.alphabet.klinktAls(l.sound)}</p>
-            <div className="mt-3 flex justify-center"><SpeakButton {...letterVoice(l)} /></div>
+            <div className="mt-3 flex justify-center"><SpeakButton {...letterVoice(l)} zeg={(traag) => sayLetter(l, { slow: traag })} /></div>
           </Card>
         ) : (
           <Card className="flex items-center justify-center gap-4 p-6">
             <span className="ar text-6xl font-bold">{l.ar}</span>
-            <SpeakButton {...letterVoice(l)} />
+            <SpeakButton {...letterVoice(l)} zeg={(traag) => sayLetter(l, { slow: traag })} />
           </Card>
         )}
       </Prompt>

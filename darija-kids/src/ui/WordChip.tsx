@@ -32,20 +32,31 @@ export function WordText({ word, size = 'md', showNl = false }: { word: Word; si
   )
 }
 
-export function SpeakButton({ ar, tr, latin, className = '', label }: {
+export function SpeakButton({ ar, tr, latin, className = '', label, zeg }: {
   ar: string
   tr?: string
   /** An exact spelling per borrowed voice — the letters use this. */
   latin?: SayOptions['latin']
   className?: string
   label?: string
+  /**
+   * Een eigen manier van zeggen, voor wie de opname langs een andere weg
+   * vindt dan via het Arabisch op de knop.
+   *
+   * De letters hebben dat nodig. `say()` zoekt een opname op de Arabische
+   * tekst die hij krijgt, en bij een letter is dat de *naam* — سِينْ, niet س.
+   * Daar hangt geen bestand aan, dus zonder dit viel elke letterknop terug op
+   * de spraakmotor terwijl `letters/sin.wav` gewoon klaarstond. `sayLetter`
+   * zoekt op de id en pakt hem wel.
+   */
+  zeg?: (traag: boolean) => void
 }) {
   const t = useT()
   return (
     <motion.button
       whileTap={{ scale: 0.9 }}
-      onClick={() => say(ar, { tr, latin })}
-      onDoubleClick={() => say(ar, { tr, latin, slow: true })}
+      onClick={() => (zeg ? zeg(false) : say(ar, { tr, latin }))}
+      onDoubleClick={() => (zeg ? zeg(true) : say(ar, { tr, latin, slow: true }))}
       title={t.lesson.luisterTitel}
       aria-label={label ?? t.lesson.luister}
       className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 border-zellige-500 text-zellige-600 transition hover:bg-zellige-500 hover:text-white dark:text-zellige-300 ${className}`}
