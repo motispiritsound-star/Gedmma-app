@@ -15,7 +15,7 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { geenJdk, vindJdk } from './lib/jdk.mjs'
+import { geenJdk, vindJdk, vindSdk } from './lib/jdk.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const ANDROID = path.join(ROOT, 'android')
@@ -51,6 +51,22 @@ if (versie) {
 
 const jdk = vindJdk()
 if (!jdk) geenJdk()
+
+// Gradle vindt de SDK via local.properties of ANDROID_HOME. Vanuit een verse
+// PowerShell is geen van beide er -- Android Studio schrijft local.properties
+// pas als het het project een keer geopend heeft.
+const LOKAAL = path.join(ANDROID, 'local.properties')
+if (!existsSync(LOKAAL) && !process.env.ANDROID_HOME && !process.env.ANDROID_SDK_ROOT) {
+  const sdk = vindSdk()
+  if (!sdk) {
+    console.error('\nGeen Android-SDK gevonden.\n')
+    console.error('Open Android Studio, kies More Actions -> SDK Manager, en installeer')
+    console.error('de Android SDK. Daarna dit commando opnieuw.\n')
+    process.exit(1)
+  }
+  writeFileSync(LOKAAL, `sdk.dir=${sdk.replace(/\\/g, '\\\\')}\n`)
+  console.log(`Android-SDK gevonden: ${sdk}`)
+}
 
 const wrapper = process.platform === 'win32' ? 'gradlew.bat' : './gradlew'
 console.log('\nBundel bouwen. De eerste keer haalt Gradle veel op; reken op een paar minuten.\n')

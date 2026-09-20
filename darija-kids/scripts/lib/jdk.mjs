@@ -59,3 +59,25 @@ export function geenJdk() {
   console.error('start het één keer, of zet JAVA_HOME naar een JDK 17 of hoger.\n')
   process.exit(1)
 }
+
+/**
+ * Waar staat de Android-SDK?
+ *
+ * Gradle zoekt hem via android/local.properties of via ANDROID_HOME, en geen
+ * van beide is er als Android Studio het project nog nooit geopend heeft. Dit
+ * kijkt op de plek waar de installatiewizard hem standaard neerzet.
+ */
+export function vindSdk() {
+  const thuis = os.homedir()
+  const uit = [process.env.ANDROID_HOME, process.env.ANDROID_SDK_ROOT]
+  if (WINDOWS) {
+    const lokaal = process.env.LOCALAPPDATA || path.join(thuis, 'AppData', 'Local')
+    uit.push(path.join(lokaal, 'Android', 'Sdk'))
+  } else if (MAC) {
+    uit.push(path.join(thuis, 'Library', 'Android', 'sdk'))
+  } else {
+    uit.push(path.join(thuis, 'Android', 'Sdk'), '/usr/lib/android-sdk')
+  }
+  for (const map of uit) if (map && existsSync(path.join(map, 'platform-tools'))) return map
+  return null
+}
