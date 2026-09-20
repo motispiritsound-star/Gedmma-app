@@ -15,9 +15,19 @@ const L = (
  * has an alphabet to read it with; a child taught thirty-one has three extra
  * letters to unlearn.
  */
+/**
+ * Het voorbeeldwoord bij een letter komt uit een opname die is nagehoord.
+ *
+ * Dat is hier geen luxe. Een kind dat ب leert kijkt naar باب en drukt op
+ * luisteren; zegt de opname dan "hemmam", dan leert het de letter fout. Vier
+ * voorbeelden stonden op een woord uit de opnamereeks waarvan vaststaat dat
+ * er een stuk in verschoven is (bab, tebla, dou, ktab) en zijn vervangen door
+ * woorden met dezelfde letter uit een reeks die wel is nagekeken. De woorden
+ * zelf staan gewoon nog in de app, in hun eigen les.
+ */
 export const LETTERS: Letter[] = [
   L('alif', 'ا', 'alif', 'a', 'aa, zoals in “maan”', 'ا', 'ـا', 'ـا', 'ana'),
-  L('ba', 'ب', 'ba', 'b', 'b van bal', 'بـ', 'ـبـ', 'ـب', 'bab'),
+  L('ba', 'ب', 'ba', 'b', 'b van bal', 'بـ', 'ـبـ', 'ـب', 'bhar'),
   L('ta', 'ت', 'ta', 't', 't van tas', 'تـ', 'ـتـ', 'ـت', 'tfah'),
   L('tha', 'ث', 'tha', 'th', 'th van het Engelse “think” — zeldzaam in Darija', 'ثـ', 'ـثـ', 'ـث'),
   L('jim', 'ج', 'jim', 'j', 'zj van “journaal”', 'جـ', 'ـجـ', 'ـج', 'jben'),
@@ -30,14 +40,14 @@ export const LETTERS: Letter[] = [
   L('sin', 'س', 'sin', 's', 's van sok', 'سـ', 'ـسـ', 'ـس', 'sarut'),
   L('shin', 'ش', 'shin', 'sh', 'sj van “sjaal”', 'شـ', 'ـشـ', 'ـش', 'shems'),
   L('sad', 'ص', 'ṣad', 'ṣ', 'zware, donkere s', 'صـ', 'ـصـ', 'ـص', 'sghir'),
-  L('dad', 'ض', 'ḍad', 'ḍ', 'zware d — het Arabisch heet “de taal van de dad”', 'ضـ', 'ـضـ', 'ـض', 'dou'),
-  L('ta-emf', 'ط', 'ṭa', 'ṭ', 'zware t', 'طـ', 'ـطـ', 'ـط', 'tebla'),
+  L('dad', 'ض', 'ḍad', 'ḍ', 'zware d — het Arabisch heet “de taal van de dad”', 'ضـ', 'ـضـ', 'ـض', 'byed'),
+  L('ta-emf', 'ط', 'ṭa', 'ṭ', 'zware t', 'طـ', 'ـطـ', 'ـط', 'twiar'),
   L('za-emf', 'ظ', 'ẓa', 'ẓ', 'zware z', 'ظـ', 'ـظـ', 'ـظ'),
   L('ayn', 'ع', 'ayn', '3', 'een knijp in de keel — de beroemdste klank van het Arabisch', 'عـ', 'ـعـ', 'ـع', 'afak'),
   L('ghayn', 'غ', 'ghayn', 'gh', 'brouwende g, zoals de Franse r', 'غـ', 'ـغـ', 'ـغ', 'ghali'),
   L('fa', 'ف', 'fa', 'f', 'f van fiets', 'فـ', 'ـفـ', 'ـف', 'flus'),
   L('qaf', 'ق', 'qaf', 'q / 9', 'k diep achter in de mond', 'قـ', 'ـقـ', 'ـق', 'qehwa'),
-  L('kaf', 'ك', 'kaf', 'k', 'k van kat', 'كـ', 'ـكـ', 'ـك', 'ktab'),
+  L('kaf', 'ك', 'kaf', 'k', 'k van kat', 'كـ', 'ـكـ', 'ـك', 'kunash'),
   L('lam', 'ل', 'lam', 'l', 'l van lam', 'لـ', 'ـلـ', 'ـل', 'lma'),
   L('mim', 'م', 'mim', 'm', 'm van maan', 'مـ', 'ـمـ', 'ـم', 'mama'),
   L('nun', 'ن', 'nun', 'n', 'n van neus', 'نـ', 'ـنـ', 'ـن', 'nif'),
