@@ -86,6 +86,25 @@ const decoded = new Map<string, AudioBuffer>()
  * there is no audio context to play it through — and the caller falls back to
  * the voice, which is why this never throws.
  */
+/**
+ * De bytes achter een opname, zonder het netwerkpad waar dat kan.
+ *
+ * Safari weigert `fetch()` op een grote `data:`-URL met "TypeError: Load
+ * failed". In de app zelf komt dat niet voor — daar zijn opnames gewoon
+ * bestanden — maar in een build waarin ze in het document zitten wel, en dan
+ * valt elke opname stil terwijl er niets aan het bestand mankeert. Een
+ * data-URL is bovendien geen netwerkverkeer: hem zelf uitlezen is korter én
+ * het werkt overal.
+ */
+async function bytesVan(url: string): Promise<ArrayBuffer> {
+  if (!url.startsWith('data:')) return (await fetch(url)).arrayBuffer()
+  const base64 = url.slice(url.indexOf(',') + 1)
+  const binair = atob(base64)
+  const bytes = new Uint8Array(binair.length)
+  for (let i = 0; i < binair.length; i++) bytes[i] = binair.charCodeAt(i)
+  return bytes.buffer
+}
+
 export async function playClip(
   url: string,
   ac: AudioContext | null,
@@ -96,7 +115,7 @@ export async function playClip(
   try {
     let buffer = decoded.get(url)
     if (!buffer) {
-      const bytes = await (await fetch(url)).arrayBuffer()
+      const bytes = await bytesVan(url)
       buffer = await ac.decodeAudioData(bytes)
       decoded.set(url, buffer)
     }

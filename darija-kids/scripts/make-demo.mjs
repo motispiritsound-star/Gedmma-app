@@ -212,7 +212,14 @@ const meter = METEN ? `<div id="meter" style="position:fixed;inset-inline:0;bott
   var ac = null
   try { ac = new (window.AudioContext || window.webkitAudioContext)() } catch (e) { regel('geladen ' + geladen + ' · geen AudioContext: ' + e.name); return }
   var uri = (window.__K || []).filter(Boolean)[0]
-  fetch(uri).then(function (r) { return r.arrayBuffer() }).then(function (b) {
+  var bytes = function (u) {
+    if (u.indexOf('data:') !== 0) return fetch(u).then(function (r) { return r.arrayBuffer() })
+    var bin = atob(u.slice(u.indexOf(',') + 1))
+    var a = new Uint8Array(bin.length)
+    for (var i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i)
+    return Promise.resolve(a.buffer)
+  }
+  bytes(uri).then(function (b) {
     return new Promise(function (ok, nee) {
       var p = ac.decodeAudioData(b, ok, nee)
       if (p && p.then) p.then(ok, nee)
