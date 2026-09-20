@@ -68,7 +68,10 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 - [ ] Apple: naamcorrectie van "Adi" naar "Adil" — zaak **102968992781** loopt
 - [ ] Apple: bankgegevens — ingediend, wordt verwerkt
 - [ ] Google: identiteitsverificatie — documenten aangeleverd, **wachten**
-- [ ] Google: nakijken of het account als **organisatie** staat, niet als particulier — scheelt twee weken (§6)
+- [x] Google: het account staat als **organisatie** — de gesloten test met 12
+      testers × 14 dagen vervalt daarmee (§6)
+- [ ] Google: **website van de organisatie verifiëren** — TXT-regel bij Cloudflare (§PLAY 1)
+- [ ] Google: **telefoonnummers verifiëren** — kan pas als identiteit en website groen zijn
 - [ ] Google: bankrekening en belastinggegevens invullen (§2)
 
 ### De producten — Apple
@@ -158,7 +161,7 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 ### Publiceren
 
 - [ ] Google: interne test — jezelf toevoegen en de app op je eigen telefoon zetten
-- [ ] Google: gesloten test met 12 testers, 14 dagen — **alleen op de persoonlijke route** (§6)
+- [x] Google: gesloten test met 12 testers × 14 dagen — **vervalt**, het account is een organisatie (§6)
 - [ ] Apple: de app indienen, met de drie producten eraan gekoppeld
 - [ ] Apple: wachten op review (1–3 dagen)
 - [ ] Google: productie aanvragen

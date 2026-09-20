@@ -212,13 +212,25 @@
     </li>
     <li data-blok="2">
       <label>
-        <input type="checkbox" data-id="2-9">
-        <span class="tekst">Google: nakijken of het account als <strong>organisatie</strong> staat, niet als particulier — scheelt twee weken <span class="para">§6</span></span>
+        <input type="checkbox" data-id="2-9" data-vast="1">
+        <span class="tekst">Google: het account staat als <strong>organisatie</strong> — de gesloten test met 12</span>
       </label>
     </li>
     <li data-blok="2">
       <label>
         <input type="checkbox" data-id="2-10">
+        <span class="tekst">Google: <strong>website van de organisatie verifiëren</strong> — TXT-regel bij Cloudflare <span class="para">§PLAY 1</span></span>
+      </label>
+    </li>
+    <li data-blok="2">
+      <label>
+        <input type="checkbox" data-id="2-11">
+        <span class="tekst">Google: <strong>telefoonnummers verifiëren</strong> — kan pas als identiteit en website groen zijn</span>
+      </label>
+    </li>
+    <li data-blok="2">
+      <label>
+        <input type="checkbox" data-id="2-12">
         <span class="tekst">Google: bankrekening en belastinggegevens invullen <span class="para">§2</span></span>
       </label>
     </li>
@@ -580,8 +592,8 @@
     </li>
     <li data-blok="10">
       <label>
-        <input type="checkbox" data-id="10-1">
-        <span class="tekst">Google: gesloten test met 12 testers, 14 dagen — <strong>alleen op de persoonlijke route</strong> <span class="para">§6</span></span>
+        <input type="checkbox" data-id="10-1" data-vast="1">
+        <span class="tekst">Google: gesloten test met 12 testers × 14 dagen — <strong>vervalt</strong>, het account is een organisatie <span class="para">§6</span></span>
       </label>
     </li>
     <li data-blok="10">
@@ -696,7 +708,7 @@
 </div>
 
 <script>
-const VAST = ["0-3","0-4","1-0","1-1","1-2","1-3","1-4","2-0","2-1","2-2","2-3","2-4","3-0","3-1","3-2","3-3","3-4","3-5","3-6","3-7","5-0","5-1","5-2","5-4","5-5","5-6","5-7","5-8","7-0","7-1","8-0","8-1","8-2","8-3","8-4","8-5","8-6","9-0","9-1","9-2","9-3","9-5"]
+const VAST = ["0-3","0-4","1-0","1-1","1-2","1-3","1-4","2-0","2-1","2-2","2-3","2-4","2-9","3-0","3-1","3-2","3-3","3-4","3-5","3-6","3-7","5-0","5-1","5-2","5-4","5-5","5-6","5-7","5-8","7-0","7-1","8-0","8-1","8-2","8-3","8-4","8-5","8-6","9-0","9-1","9-2","9-3","9-5","10-1"]
 const vakjes = [...document.querySelectorAll('input[type=checkbox]')]
 let staat = {}
 try { staat = JSON.parse(localStorage.getItem('darija.lanceer') || '{}') } catch (e) { staat = {} }

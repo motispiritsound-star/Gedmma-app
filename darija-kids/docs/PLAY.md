@@ -32,21 +32,38 @@ Het pakket met teksten en schermafbeeldingen maak je opnieuw met
 ## 1. Verificatie afronden
 
 Zolang de verificatie loopt, blokkeert de console het aanmaken van een app
-volledig. Niet de helft, alles. Wachten is hier dus de enige stap.
+volledig. Niet de helft, alles.
 
-Kijk in **Instellingen → Ontwikkelaarsaccount → Accountgegevens** of er nog een
-verzoek om aanvullende documenten openstaat. Google vraagt doorgaans een
-KvK-uittreksel en een identiteitsbewijs, en beantwoordt dat binnen enkele
-werkdagen.
+**Het account staat goed.** Bovenaan de console staat *Organization account*,
+account-ID `4661006956999186517`. Dat is de belangrijkste van deze bladzijde en
+hij is af: een **particulier** account moet vóór publicatie een gesloten test
+draaien met twaalf testers die veertien aaneengesloten dagen meedoen, en voor
+een organisatie geldt die eis niet. Dat scheelt twee weken. Omzetten kan later
+niet zonder een nieuw account, dus dit was het moment om het goed te hebben.
 
-**Eén ding om te controleren, want het scheelt weken:** staat je account
-geregistreerd als **organisatie** en niet als particulier? Een particulier
-account moet vóór publicatie een gesloten test draaien met **twaalf testers die
-veertien dagen aaneengesloten meedoen**. Voor een organisatie geldt die eis
-niet. Venship is een eenmanszaak met een KvK-nummer en een D-U-N-S-nummer, dus
-je hoort in de organisatie-categorie. Staat er "particulier", regel dat dan nu
-via de support van de Play Console — later omzetten kan niet zonder een nieuw
-account.
+Wat er onder *Finish setting up your developer account* staat is **niet
+optioneel**. De console zegt het zelf: zonder deze drie mag er niets
+gepubliceerd worden. Ze horen in deze volgorde:
+
+| Taak | Wat het is | Wanneer |
+|---|---|---|
+| **Identiteit** | KvK-uittreksel en identiteitsbewijs, al geüpload | loopt — enkele dagen |
+| **Website van de organisatie** | aantonen dat `darijaforkids.eu` van jou is | **nu te doen** |
+| **Telefoonnummers** | een code per sms of telefoon | pas ná de eerste twee |
+
+**De website.** *View details* zegt welke methode Google wil; dat loopt
+doorgaans via Google Search Console, waar je het domein toevoegt en de
+eigendom bewijst met een **TXT-regel in de DNS**. Die DNS staat bij
+**Cloudflare** (`darijaforkids.eu` draait op de nameservers `lennox` en
+`lilith`, zie [DEPLOY.md](DEPLOY.md)): DNS → Records → Add record → type TXT,
+naam `@`, waarde de regel die Google geeft. Het doorwerken duurt bij
+Cloudflare meestal minuten, niet uren. Let erop dat het adres dat je in de
+console invult hetzelfde is als in `operator.ts` en op de winkelpagina — als
+ze niet overeenkomen loopt de verificatie vast.
+
+**De telefoonnummers** kunnen pas als de andere twee groen zijn; de console
+zegt dat er met zoveel woorden bij. Daar is dus niets te doen dan de eerste
+twee afmaken.
 
 ---
 
