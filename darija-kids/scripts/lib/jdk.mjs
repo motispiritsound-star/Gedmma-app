@@ -17,10 +17,46 @@ const WINDOWS = process.platform === 'win32'
 const MAC = process.platform === 'darwin'
 const EXT = WINDOWS ? '.exe' : ''
 
+/**
+ * Capacitor 8 compileert zijn Android-kant tegen Java 21. Een oudere javac
+ * weigert dat met "invalid source release: 21" -- een melding die niet zegt
+ * dat jouw Java te oud is, dus die zoeken we hier voor.
+ */
+const MINIMAAL = 21
+
 /** Heeft deze map een bin/ met java én keytool erin? */
-function bruikbaar(map) {
+function compleet(map) {
   if (!map) return false
   return existsSync(path.join(map, 'bin', `java${EXT}`)) && existsSync(path.join(map, 'bin', `keytool${EXT}`))
+}
+
+/**
+ * Welke versie is dit? Elke JDK heeft een `release`-bestand met een regel
+ * JAVA_VERSION="21.0.5". Dat lezen is duizend keer sneller dan java starten om
+ * het te vragen, en dat scheelt bij een lijst van dertig kandidaten.
+ */
+function versie(map) {
+  try {
+    const treffer = readFileSync(path.join(map, 'release'), 'utf8').match(/JAVA_VERSION="?(\d+)/)
+    if (treffer) return Number(treffer[1])
+  } catch {
+    // geen release-bestand; dan maar vragen
+  }
+  try {
+    const uit = execFileSync(path.join(map, 'bin', `java${EXT}`), ['-version'], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'ignore', 'pipe'],
+    })
+    const treffer = uit.match(/version "?(\d+)/)
+    if (treffer) return Number(treffer[1])
+  } catch {
+    // dan weten we het niet
+  }
+  return 0
+}
+
+function bruikbaar(map) {
+  return compleet(map) && versie(map) >= MINIMAAL
 }
 
 /** De mappen in `ouder`, of niets als die niet bestaat. */
@@ -104,10 +140,25 @@ function kandidaten() {
   return uit
 }
 
-/** Pad naar een bruikbare JDK, of null. */
+/**
+ * Pad naar een bruikbare JDK, of null.
+ *
+ * De nieuwste wint. Op een machine waar eerder een oudere JDK is neergezet --
+ * en dat is elke machine waar ooit iets met Android is gedaan -- pakt "de
+ * eerste die past" anders net de verkeerde.
+ */
 export function vindJdk() {
-  for (const map of kandidaten()) if (bruikbaar(map)) return map
-  return null
+  let beste = null
+  let hoogste = 0
+  for (const map of kandidaten()) {
+    if (!compleet(map)) continue
+    const v = versie(map)
+    if (v >= MINIMAAL && v > hoogste) {
+      beste = map
+      hoogste = v
+    }
+  }
+  return beste
 }
 
 /** Pad naar een programma in de JDK, bijvoorbeeld 'keytool'. */
@@ -123,12 +174,12 @@ export function jdkTool(jdk, naam) {
  */
 export function haalJdk() {
   if (!WINDOWS) return null
-  console.log('\nGeen Java gevonden. Ik installeer er een (Microsoft OpenJDK 17).')
+  console.log(`\nGeen Java ${MINIMAAL} of hoger gevonden. Ik installeer er een (Microsoft OpenJDK ${MINIMAAL}).`)
   console.log('Dit duurt een paar minuten; er kan een venster om toestemming vragen.\n')
   const argumenten = [
     'install',
     '--id',
-    'Microsoft.OpenJDK.17',
+    `Microsoft.OpenJDK.${MINIMAAL}`,
     '--silent',
     '--accept-package-agreements',
     '--accept-source-agreements',
@@ -150,9 +201,9 @@ export function haalJdk() {
 }
 
 export function geenJdk() {
-  console.error('\nGeen Java gevonden, en installeren lukte ook niet.\n')
+  console.error(`\nGeen Java ${MINIMAAL} of hoger gevonden, en installeren lukte ook niet.\n`)
   console.error('Doe dit dan met de hand:')
-  console.error('  winget install Microsoft.OpenJDK.17')
+  console.error(`  winget install Microsoft.OpenJDK.${MINIMAAL}`)
   console.error('Sluit daarna dit venster, open een nieuw PowerShell-venster en')
   console.error('probeer het commando opnieuw.\n')
   process.exit(1)
@@ -210,8 +261,12 @@ export function toon() {
   console.log(`JAVA_HOME: ${process.env.JAVA_HOME || '(niet gezet)'}`)
   console.log(`java      : ${vindJdk() || '(niet gevonden)'}`)
   console.log(`sdk       : ${vindSdk() || '(niet gevonden)'}`)
-  console.log('\nJava gezocht in:')
-  for (const map of kandidaten()) if (map) console.log(`  ${bruikbaar(map) ? '✓' : ' '} ${map}`)
+  console.log(`\nJava gezocht in (nodig: ${MINIMAAL} of hoger):`)
+  for (const map of kandidaten()) {
+    if (!map) continue
+    const v = compleet(map) ? versie(map) : 0
+    console.log(`  ${v >= MINIMAAL ? '✓' : ' '} ${map}${v ? `   (Java ${v})` : ''}`)
+  }
   console.log('\nSDK gezocht in:')
   for (const map of sdkKandidaten()) {
     if (map) console.log(`  ${existsSync(path.join(map, 'platform-tools')) ? '✓' : ' '} ${map}`)

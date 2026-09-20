@@ -53,8 +53,18 @@ sleutel uit dat properties-bestand en ondertekent zelf. Resultaat:
 android/app/build/outputs/bundle/release/app-release.aab
 ```
 
-Java hoeft niet ingesteld te zijn: beide scripts zoeken de JDK op die Android
-Studio meelevert (`jbr`).
+Java hoeft niet ingesteld te zijn: beide scripts zoeken zelf een JDK op, en
+installeren er anders een. Let op de versie — **Capacitor 8 compileert tegen
+Java 21**, en een oudere javac weigert dat met `invalid source release: 21`.
+Dat is een melding die niet zegt dat je Java te oud is, dus de scripts kijken
+er voor je naar: staan er meerdere JDK's, dan wint de nieuwste.
+
+Heb je Android Studio niet, of is het onder een ander account geïnstalleerd?
+Dan haal je de SDK los op, zonder editor:
+
+```bash
+npm run sdk
+```
 
 Bij een volgende upload moet het versienummer omhoog — Play weigert twee
 bundels met hetzelfde `versionCode`, ook als je de eerste hebt ingetrokken:
