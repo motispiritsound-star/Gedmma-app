@@ -17,6 +17,7 @@
     "sync": "npm run build:app && cap sync",
     "android": "npm run build && npx cap sync android",
     "sleutel": "node scripts/maak-sleutel.mjs",
+    "sdk": "node scripts/maak-sdk.mjs",
     "aab": "npm run android && node scripts/maak-aab.mjs",
     "java": "node scripts/lib/jdk.mjs",
     "assets": "node scripts/make-store-assets.mjs && @capacitor/assets generate --android",

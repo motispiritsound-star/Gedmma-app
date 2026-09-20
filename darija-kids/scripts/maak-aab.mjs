@@ -61,8 +61,8 @@ if (!existsSync(LOKAAL) && !process.env.ANDROID_HOME && !process.env.ANDROID_SDK
   const sdk = vindSdk()
   if (!sdk) {
     console.error('\nGeen Android-SDK gevonden.\n')
-    console.error('Open Android Studio, kies More Actions -> SDK Manager, en installeer')
-    console.error('de Android SDK. Daarna dit commando opnieuw.\n')
+    console.error('Draai eerst:  npm run sdk\n')
+    console.error('Dat haalt de SDK op zonder Android Studio. Duurt een minuut of tien.\n')
     process.exit(1)
   }
   writeFileSync(LOKAAL, `sdk.dir=${sdk.replace(/\\/g, '\\\\')}\n`)
