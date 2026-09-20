@@ -128,7 +128,8 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 - [ ] Google **Doelgroep en inhoud** — onder 13, dus Families-beleid
 - [ ] Google **Inhoudsclassificatie** en **Advertenties: nee**
 - [ ] Handelaarsgegevens in beide consoles — dezelfde als in `operator.ts`
-- [ ] Privacy-URL en support-URL invullen (`/privacy` en `/ouders` op je domein)
+- [x] Support-URL (`/ouders`) en marketing-URL ingevuld bij Apple
+- [ ] Privacy-URL (`/privacy`) en de voorwaarden (`/voorwaarden`) — die laatste is verplicht bij abonnementen
 - [ ] De notitie aan de reviewer overnemen (§5)
 
 ### Nog recht te zetten in de app
