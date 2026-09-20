@@ -53,6 +53,22 @@ export const UITSPRAAK: Record<string, Weg> = {
 /** Elk woord waarover een keuze is vastgelegd, welke dan ook. */
 export const GETEST_IDS: string[] = Object.keys(UITSPRAAK)
 
+/**
+ * De woorden waar de stem het van de opname wint.
+ *
+ * Normaal is het andersom: een opname is een mens, en een mens wint altijd.
+ * Maar deze woorden zijn nagehoord met beide, en bij deze zei de stem het
+ * goed. Dan is er iets te kiezen, en wat er dan gekozen wordt is afwisseling —
+ * een tweede stem naast de ingesproken, zodat niet elk woord uit dezelfde mond
+ * komt.
+ *
+ * Dit is dus dezelfde lijst als hierboven, met dezelfde herkomst: wat is
+ * nagehoord, niet wat aannemelijk klinkt. Een woord komt er pas bij nadat
+ * iemand die Darija spreekt beide kanten heeft gehoord — `npm run sheet` zet
+ * ze naast elkaar met een knop per stem.
+ */
+export const STEM_WINT: Set<string> = new Set(GETEST_IDS)
+
 /** De woorden die naar een geleende stem gaan. */
 export const EIGEN_IDS: string[] = GETEST_IDS.filter((id) => UITSPRAAK[id] === 'geleend')
 
@@ -203,6 +219,16 @@ const OP_SCRIPT: Map<string, Target[]> = (() => {
 })()
 
 export const eigenVoorkeur = (arabic: string): Target[] | undefined => OP_SCRIPT.get(arabic)
+
+/** Het Arabisch van elk woord waar de stem voorgaat op de opname. */
+const STEM_OP_SCRIPT: Set<string> = (() => {
+  const set = new Set<string>()
+  for (const w of allWords) if (STEM_WINT.has(w.id)) set.add(w.ar)
+  for (const z of ALL_SENTENCES) if (STEM_WINT.has(z.id)) set.add(z.ar)
+  return set
+})()
+
+export const stemWint = (arabic: string): boolean => STEM_OP_SCRIPT.has(arabic)
 
 /** Elk id in een van de lijsten dat geen woord meer is, zodat de test het opmerkt. */
 export const zwevendeIds = (): string[] => {

@@ -7,7 +7,7 @@ import { ALL_SENTENCES, maybeSentence } from './sentences'
 import { STORIES } from './stories'
 import { HISTORY, cardForCheckpoint, historyById } from './history'
 import { historyOf } from './localise'
-import { EIGEN_IDS, eigenVoorkeur, OPNAME_NODIG, OPNIEUW, UITSPRAAK, voorkeurVoor, zwevendeIds } from './eigen'
+import { EIGEN_IDS, eigenVoorkeur, OPNAME_NODIG, OPNIEUW, stemWint, STEM_WINT, UITSPRAAK, voorkeurVoor, zwevendeIds } from './eigen'
 import { hasClip } from '../engine/clips'
 import { LANGS } from '../i18n/languages'
 
@@ -396,5 +396,32 @@ describe('wat nog opgenomen moet worden', () => {
   // speelt de app de opname af die net is afgewezen en wijst niets daarop.
   it('heeft geen bestand meer voor een afgekeurde opname', () => {
     for (const id of OPNIEUW) expect(hasClip(id), id).toBe(false)
+  })
+})
+
+describe('de tweede stem', () => {
+  // De stem gaat alleen voor waar met beide is geluisterd. Een woord dat daar
+  // buiten valt hoort een mens, en dat is de afspraak van de hele app.
+  it('wint alleen bij een woord dat is nagehoord', () => {
+    for (const id of STEM_WINT) expect(id in UITSPRAAK, id).toBe(true)
+  })
+
+  it('kent het Arabisch van elk woord dat erop staat', () => {
+    const bekend = new Map([
+      ...allWords.map((w) => [w.id, w.ar] as const),
+      ...ALL_SENTENCES.map((z) => [z.id, z.ar] as const),
+    ])
+    for (const id of STEM_WINT) {
+      const ar = bekend.get(id)
+      expect(ar, id).toBeTruthy()
+      expect(stemWint(ar!), id).toBe(true)
+    }
+  })
+
+  // En verder niets: elk ander woord blijft de ingesproken stem.
+  it('laat de rest van de woordenschat met rust', () => {
+    const buiten = allWords.filter((w) => !STEM_WINT.has(w.id))
+    expect(buiten.length).toBeGreaterThan(250)
+    for (const w of buiten) expect(stemWint(w.ar), w.id).toBe(false)
   })
 })

@@ -1,7 +1,7 @@
 import { getState } from './store'
 import { letterSpeech, spokenForm } from '../content/pronunciation'
 import { clipFor, CLIPS, playClip } from './clips'
-import { eigenVoorkeur } from '../content/eigen'
+import { eigenVoorkeur, stemWint } from '../content/eigen'
 import { ARGS, busFor, LENGTH, VOICES, type SoundName, type Stage } from './instruments'
 
 /**
@@ -568,10 +568,33 @@ export function voices(): SpeechSynthesisVoice[] {
 
 const langOf = (voice: SpeechSynthesisVoice) => voice.lang.toLowerCase().replace('_', '-')
 
+/**
+ * Een vrouwenstem, voor zover het toestel er een heeft.
+ *
+ * De Web Speech API vertelt niet of een stem mannelijk of vrouwelijk is — er
+ * is geen veld voor. Wat er wel is, is de naam, en die ligt per platform vast:
+ * Safari en iOS noemen hun stemmen bij voornaam, Android en Windows zetten er
+ * "female" of "male" bij. Dus staat hier wat er te herkennen valt, en verder
+ * niets: geen gok op de klank, geen regel die uit een taalcode een geslacht
+ * afleidt.
+ *
+ * Herkent hij niets, dan verandert er ook niets — dan komt gewoon de eerste
+ * stem voor die taal, zoals het altijd ging.
+ */
+const VROUW = /\b(female|vrouw|femme|mujer|weiblich|femminile)\b|^(amelie|amélie|aurelie|aurélie|audrey|marie|virginie|chantal|celine|céline|charlotte|monica|mónica|paulina|marisol|esperanza|helena|laura|elvira|anna|petra|katja|hedda|ellen|claire|lotte|fenna|colette|alice|federica|elsa|emma|samantha|karen|moira|tessa|fiona|serena|susan|zira|ava|allison|joanna|nicky|kathy|laila|salma|hala|amira|zariyah|hoda|sara|mariam)\b/i
+const MAN = /\b(male|man|homme|hombre|männlich|maschile)\b|^(thomas|nicolas|daniel|paul|henri|jorge|diego|juan|pablo|carlos|markus|yannick|stefan|conrad|reed|xander|luca|cosimo|alex|fred|oliver|aaron|rishi|gordon|arthur|maged|tarik|naayf|hamed)\b/i
+
+/** Vrouw eerst, daarna wat niet als man te herkennen is, daarna de eerste. */
+const liefstVrouw = (kandidaten: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null =>
+  kandidaten.find((v) => VROUW.test(v.name))
+  ?? kandidaten.find((v) => !MAN.test(v.name))
+  ?? kandidaten[0]
+  ?? null
+
 const bestOf = (order: string[], all: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null => {
   for (const wanted of order) {
-    const hit = all.find((v) => langOf(v).startsWith(wanted))
-    if (hit) return hit
+    const passend = all.filter((v) => langOf(v).startsWith(wanted))
+    if (passend.length) return liefstVrouw(passend)
   }
   return null
 }
@@ -709,7 +732,11 @@ export function say(arabic: string, opts: SayOptions = {}): void {
   // A recording always wins. No engine on any phone speaks Darija — they are
   // all trained on Standard Arabic — so a person saying the word is not a
   // nicety here, it is the only way to be right.
-  const clip = clipFor(arabic)
+  //
+  // Op één uitzondering na: de handvol woorden waarvan met beide stemmen is
+  // nagehoord dat de synthesizer ze goed zegt. Daar valt iets te kiezen, en
+  // daar staat afwisseling tegenover één stem voor alles.
+  const clip = stemWint(arabic) ? undefined : clipFor(arabic)
   if (clip) {
     unlockAudio()
     // Valt de opname om — een codec die deze browser niet kent, een bestand
