@@ -94,12 +94,13 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 
 ### Wat je uploadt
 
-- [ ] Schermafbeeldingen opnieuw maken — `npm run screenshots`. De huidige set is
-      van vóór de nieuwe prijsweergave (39% in plaats van 28%, € 98,87
-      doorgestreept, "maandelijks opzegbaar") en van vóór de nieuwe
-      voorbeeldwoorden bij de letters
-- [ ] Apple: de review-screenshot vervangen op Jaar, Maand én het e-boek — `npm run reviewshot`
-- [ ] De vijf campagneposts opnieuw — `npm run social`, zelfde prijsreden
+- [x] Schermafbeeldingen opnieuw gemaakt met de nieuwe prijsweergave (39% in
+      plaats van 28%, € 98,87 doorgestreept, "maandelijks opzegbaar") en de
+      nieuwe voorbeeldwoorden — 295 beelden in zes talen
+- [x] Beide winkelpakketten en de zip opnieuw — 126 en 158 bestanden
+- [x] De vijf campagneposts opnieuw — 60 beelden in zes talen
+- [ ] Apple: de nieuwe review-screenshot uploaden op **Jaar, Maand én het
+      e-boek** — `store/review-screenshot/abonnement-nl-1290x2796.png`
 - [x] Een aanbodplaatje met vlag, prijs en gezinsregel — staat op plek drie
 - [x] App preview 886×1920, onder de 30 seconden — `npm run intro`
 - [x] Winkelteksten in zes talen — `store/play-pakket/<taal>/teksten.md`
@@ -432,10 +433,25 @@ app verandert:
 ```bash
 npm run build && npm run preview   # in een tweede venster laten draaien
 npm run screenshots                # store/screenshots/<taal>/<toestel>/
+npm run reviewshot                 # store/review-screenshot/ — voor de drie producten
+npm run applepakket                # store/appstore-pakket/ — per taal gesorteerd
+npm run playpakket                 # store/play-pakket/ — per taal gesorteerd
+npm run playzip                    # store/darijaforkids-play.zip — één upload
+npm run social                     # brand/social/posts/ — vijf posts in zes talen
 npm run marketing                  # store/marketing/<taal>/
 npm run brand                      # brand/ — logo, socials, flyer
 npm run intro                      # store/video/<taal>/ — duurt een kwartier
 ```
+
+**`npm run preview` moet echt eerst.** `make-screenshots.mjs` start geen eigen
+server — hij fotografeert wat er op poort 4173 staat, en zonder die server
+stopt hij met `ERR_CONNECTION_REFUSED` voordat er één plaatje is. `npm run
+intro` is de uitzondering: die regelt zijn eigen server.
+
+Niets uit `store/screenshots/`, `store/*-pakket/`, `brand/` of de zip staat in
+git. Dat is met opzet: het is allemaal bouwresultaat van de commando's
+hierboven, en samen is het honderden megabytes. Verander je iets aan de app of
+aan de prijzen, dan draai je ze opnieuw — dat is de bron, niet het bestand.
 
 `npm run intro` start zijn eigen server, fotografeert de app en neemt de
 introfilm op met geluid. Controleer een opname daarna met

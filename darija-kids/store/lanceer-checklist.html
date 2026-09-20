@@ -314,79 +314,85 @@
   <ul>
     <li data-blok="5">
       <label>
-        <input type="checkbox" data-id="5-0">
-        <span class="tekst">Schermafbeeldingen opnieuw maken — <code>npm run screenshots</code>. De huidige set is</span>
+        <input type="checkbox" data-id="5-0" data-vast="1">
+        <span class="tekst">Schermafbeeldingen opnieuw gemaakt met de nieuwe prijsweergave (39% in</span>
       </label>
     </li>
     <li data-blok="5">
       <label>
-        <input type="checkbox" data-id="5-1">
-        <span class="tekst">Apple: de review-screenshot vervangen op Jaar, Maand én het e-boek — <code>npm run reviewshot</code></span>
+        <input type="checkbox" data-id="5-1" data-vast="1">
+        <span class="tekst">Beide winkelpakketten en de zip opnieuw — 126 en 158 bestanden</span>
       </label>
     </li>
     <li data-blok="5">
       <label>
-        <input type="checkbox" data-id="5-2">
-        <span class="tekst">De vijf campagneposts opnieuw — <code>npm run social</code>, zelfde prijsreden</span>
+        <input type="checkbox" data-id="5-2" data-vast="1">
+        <span class="tekst">De vijf campagneposts opnieuw — 60 beelden in zes talen</span>
       </label>
     </li>
     <li data-blok="5">
       <label>
-        <input type="checkbox" data-id="5-3" data-vast="1">
-        <span class="tekst">Een aanbodplaatje met vlag, prijs en gezinsregel — staat op plek drie</span>
+        <input type="checkbox" data-id="5-3">
+        <span class="tekst">Apple: de nieuwe review-screenshot uploaden op **Jaar, Maand én het</span>
       </label>
     </li>
     <li data-blok="5">
       <label>
         <input type="checkbox" data-id="5-4" data-vast="1">
-        <span class="tekst">App preview 886×1920, onder de 30 seconden — <code>npm run intro</code></span>
+        <span class="tekst">Een aanbodplaatje met vlag, prijs en gezinsregel — staat op plek drie</span>
       </label>
     </li>
     <li data-blok="5">
       <label>
         <input type="checkbox" data-id="5-5" data-vast="1">
-        <span class="tekst">Winkelteksten in zes talen — <code>store/play-pakket/&lt;taal&gt;/teksten.md</code></span>
+        <span class="tekst">App preview 886×1920, onder de 30 seconden — <code>npm run intro</code></span>
       </label>
     </li>
     <li data-blok="5">
       <label>
         <input type="checkbox" data-id="5-6" data-vast="1">
-        <span class="tekst">Icoon en splashscherm — <code>npm run assets</code></span>
+        <span class="tekst">Winkelteksten in zes talen — <code>store/play-pakket/&lt;taal&gt;/teksten.md</code></span>
       </label>
     </li>
     <li data-blok="5">
       <label>
         <input type="checkbox" data-id="5-7" data-vast="1">
+        <span class="tekst">Icoon en splashscherm — <code>npm run assets</code></span>
+      </label>
+    </li>
+    <li data-blok="5">
+      <label>
+        <input type="checkbox" data-id="5-8" data-vast="1">
         <span class="tekst">Het e-boek in zes talen — <code>npm run ebook</code></span>
       </label>
     </li>
     <li data-blok="5">
       <label>
-        <input type="checkbox" data-id="5-8">
+        <input type="checkbox" data-id="5-9">
         <span class="tekst">Apple: naam, ondertitel, trefwoorden, beschrijving en screenshots per taal — pakket met <code>npm run applepakket</code></span>
       </label>
     </li>
     <li data-blok="5">
       <label>
-        <input type="checkbox" data-id="5-9">
+        <input type="checkbox" data-id="5-10">
         <span class="tekst">Google: de winkelvermelding per taal, begin bij en-US <span class="para">§PLAY 6</span> — pakket met <code>npm run playpakket</code></span>
       </label>
     </li>
     <li data-blok="5">
       <label>
-        <input type="checkbox" data-id="5-10">
+        <input type="checkbox" data-id="5-11">
         <span class="tekst">Android: een <strong>AAB</strong> bouwen en ondertekenen, keystore op twee plekken bewaren <span class="para">§3</span></span>
       </label>
     </li>
     <li data-blok="5">
       <label>
-        <input type="checkbox" data-id="5-11">
+        <input type="checkbox" data-id="5-12">
         <span class="tekst"><strong>Een Mac regelen</strong> — zonder macOS geen iOS-build, en dus geen App Store <span class="para">§3</span></span>
       </label>
     </li>
     <li data-blok="5">
       <label>
-        <input type="checkbox" data-id="5-12">
+        <input type="checkbox" data-id="5-13">
         <span class="tekst">iOS: <code>npx cap add ios</code>, archiveren in Xcode, naar TestFlight</span>
       </label>
     </li>
@@ -690,7 +696,7 @@
 </div>
 
 <script>
-const VAST = ["0-3","0-4","1-0","1-1","1-2","1-3","1-4","2-0","2-1","2-2","2-3","2-4","3-0","3-1","3-2","3-3","3-4","3-5","3-6","3-7","5-3","5-4","5-5","5-6","5-7","7-0","7-1","8-0","8-1","8-2","8-3","8-4","8-5","8-6","9-0","9-1","9-2","9-3","9-5"]
+const VAST = ["0-3","0-4","1-0","1-1","1-2","1-3","1-4","2-0","2-1","2-2","2-3","2-4","3-0","3-1","3-2","3-3","3-4","3-5","3-6","3-7","5-0","5-1","5-2","5-4","5-5","5-6","5-7","5-8","7-0","7-1","8-0","8-1","8-2","8-3","8-4","8-5","8-6","9-0","9-1","9-2","9-3","9-5"]
 const vakjes = [...document.querySelectorAll('input[type=checkbox]')]
 let staat = {}
 try { staat = JSON.parse(localStorage.getItem('darija.lanceer') || '{}') } catch (e) { staat = {} }
