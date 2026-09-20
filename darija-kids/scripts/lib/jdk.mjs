@@ -125,14 +125,26 @@ export function haalJdk() {
   if (!WINDOWS) return null
   console.log('\nGeen Java gevonden. Ik installeer er een (Microsoft OpenJDK 17).')
   console.log('Dit duurt een paar minuten; er kan een venster om toestemming vragen.\n')
+  const argumenten = [
+    'install',
+    '--id',
+    'Microsoft.OpenJDK.17',
+    '--silent',
+    '--accept-package-agreements',
+    '--accept-source-agreements',
+  ]
   try {
-    execFileSync(
-      'winget',
-      ['install', '--id', 'Microsoft.OpenJDK.17', '--silent', '--accept-package-agreements', '--accept-source-agreements'],
-      { stdio: 'inherit', shell: true },
-    )
+    // Zonder shell: winget.exe is een echt programma, en node waarschuwt
+    // terecht dat argumenten door een shell heen alleen aan elkaar geplakt
+    // worden in plaats van netjes doorgegeven.
+    execFileSync('winget', argumenten, { stdio: 'inherit' })
   } catch {
-    return null
+    // Behalve als winget alleen als alias in PATH staat; dan toch maar zo.
+    try {
+      execFileSync('winget.exe', argumenten, { stdio: 'inherit', shell: true })
+    } catch {
+      return null
+    }
   }
   return vindJdk()
 }
