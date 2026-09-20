@@ -85,8 +85,8 @@ Dezelfde grap in de andere vier talen:
 > afdingen op de souq, en alles kun je horen. In het Nederlands, Frans, Duits,
 > Spaans, Italiaans en Engels, dus ook voor neefjes en nichtjes over de grens.
 >
-> Het alfabet en hallo leren zeggen zijn gratis, er zitten geen advertenties in
-> en er wordt niets van je kind verzameld.
+> De eerste vier lessen zijn gratis, er zitten geen advertenties in en er wordt
+> niets van je kind verzameld.
 
 **LinkedIn**
 
@@ -240,12 +240,12 @@ dat beginnen gratis is, en tot slot het stuk dat mensen doorsturen.
 
 | | |
 |---|---|
-| **nl** | Hij verstaat alles wat jeddti zegt. Antwoorden lukt alleen niet — en dat is precies het moment waarop een taal uit een familie verdwijnt. Darijaforkids begint bij het alfabet en eindigt bij afdingen op de souq. Het alfabet is gratis. |
-| **fr** | Il comprend tout ce que dit jeddti. C'est répondre qui ne vient pas — et c'est exactement là qu'une langue quitte une famille. Darijaforkids commence à l'alphabet et finit au souk. L'alphabet est gratuit. |
-| **de** | Er versteht alles, was jeddti sagt. Nur antworten klappt nicht — und genau da verlässt eine Sprache eine Familie. Darijaforkids beginnt beim Alphabet und endet beim Handeln auf dem Souk. Das Alphabet ist gratis. |
-| **es** | Entiende todo lo que dice jeddti. Lo que no sale es responder, y ahí es justo donde un idioma se va de una familia. Darijaforkids empieza por el alfabeto y acaba regateando en el zoco. El alfabeto es gratis. |
-| **it** | Capisce tutto quello che dice jeddti. È rispondere che non gli viene — ed è esattamente lì che una lingua esce da una famiglia. Darijaforkids parte dall'alfabeto e arriva al souk. L'alfabeto è gratis. |
-| **en** | He understands everything jeddti says. It is answering that does not come — and that is exactly where a language leaves a family. Darijaforkids starts at the alphabet and ends at haggling in the souq. The alphabet is free. |
+| **nl** | Hij verstaat alles wat jeddti zegt. Antwoorden lukt alleen niet — en dat is precies het moment waarop een taal uit een familie verdwijnt. Darijaforkids begint bij het alfabet en eindigt bij afdingen op de souq. De eerste vier lessen zijn gratis. |
+| **fr** | Il comprend tout ce que dit jeddti. C'est répondre qui ne vient pas — et c'est exactement là qu'une langue quitte une famille. Darijaforkids commence à l'alphabet et finit au souk. Les quatre premières leçons sont gratuites. |
+| **de** | Er versteht alles, was jeddti sagt. Nur antworten klappt nicht — und genau da verlässt eine Sprache eine Familie. Darijaforkids beginnt beim Alphabet und endet beim Handeln auf dem Souk. Die ersten vier Lektionen sind gratis. |
+| **es** | Entiende todo lo que dice jeddti. Lo que no sale es responder, y ahí es justo donde un idioma se va de una familia. Darijaforkids empieza por el alfabeto y acaba regateando en el zoco. Las cuatro primeras lecciones son gratis. |
+| **it** | Capisce tutto quello che dice jeddti. È rispondere che non gli viene — ed è esattamente lì che una lingua esce da una famiglia. Darijaforkids parte dall'alfabeto e arriva al souk. Le prime quattro lezioni sono gratis. |
+| **en** | He understands everything jeddti says. It is answering that does not come — and that is exactly where a language leaves a family. Darijaforkids starts at the alphabet and ends at haggling in the souq. The first four lessons are free. |
 
 ### 2 — 432 opnames, geen computerstem
 
@@ -273,12 +273,12 @@ dat beginnen gratis is, en tot slot het stuk dat mensen doorsturen.
 
 | | |
 |---|---|
-| **nl** | Het Arabische alfabet is gratis, en blijft dat. De unit erna ook: hallo zeggen, bedanken, afscheid nemen. Genoeg om je kind iets te laten zeggen tegen jeddti nog voor je iets hebt uitgegeven. Geen account, geen advertenties, werkt offline. |
-| **fr** | L'alphabet arabe est gratuit, et le reste. L'unité suivante aussi : dire bonjour, merci, au revoir. De quoi faire dire quelque chose à ton enfant avant même d'avoir dépensé un euro. Sans compte, sans publicité, hors ligne. |
-| **de** | Das arabische Alphabet ist gratis und bleibt es. Die Einheit danach auch: Hallo, Danke, Tschüss. Genug, damit dein Kind etwas sagen kann, bevor du einen Cent ausgegeben hast. Kein Konto, keine Werbung, offline. |
-| **es** | El alfabeto árabe es gratis, y lo sigue siendo. La unidad siguiente también: saludar, dar las gracias, despedirse. Suficiente para que tu hijo diga algo antes de que hayas gastado un euro. Sin cuenta, sin anuncios, sin conexión. |
-| **it** | L'alfabeto arabo è gratis, e resta gratis. Anche l'unità dopo: salutare, ringraziare, congedarsi. Abbastanza perché tuo figlio dica qualcosa prima che tu abbia speso un euro. Senza account, senza pubblicità, offline. |
-| **en** | The Arabic script is free, and stays free. So is the unit after it: hello, thank you, goodbye. Enough for your child to say something before you have spent a penny. No account, no adverts, works offline. |
+| **nl** | De eerste vier lessen zijn gratis, en blijven dat: drie stukken van het Arabische alfabet en je eerste woorden Darija. Samen een minuut of twaalf — genoeg om je kind iets te laten zeggen tegen jeddti nog voor je iets hebt uitgegeven. Geen account, geen advertenties, werkt offline. |
+| **fr** | Les quatre premières leçons sont gratuites, et le restent : trois morceaux de l'alphabet arabe et tes premiers mots en darija. Douze minutes en tout — de quoi faire dire quelque chose à ton enfant avant même d'avoir dépensé un euro. Sans compte, sans publicité, hors ligne. |
+| **de** | Die ersten vier Lektionen sind gratis und bleiben es: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Zwölf Minuten — genug, damit dein Kind etwas sagen kann, bevor du einen Cent ausgegeben hast. Kein Konto, keine Werbung, offline. |
+| **es** | Las cuatro primeras lecciones son gratis, y lo siguen siendo: tres partes del alfabeto árabe y tus primeras palabras en dariya. Doce minutos, suficiente para que tu hijo diga algo antes de que hayas gastado un euro. Sin cuenta, sin anuncios, sin conexión. |
+| **it** | Le prime quattro lezioni sono gratis, e restano gratis: tre pezzi dell'alfabeto arabo e le tue prime parole in darija. Dodici minuti, abbastanza perché tuo figlio dica qualcosa prima che tu abbia speso un euro. Senza account, senza pubblicità, offline. |
+| **en** | The first four lessons are free, and stay free: three pieces of the Arabic script and your first words of Darija. Twelve minutes — enough for your child to say something before you have spent a penny. No account, no adverts, works offline. |
 
 ### 5 — Veertien filmpjes uit de geschiedenis van Marokko
 

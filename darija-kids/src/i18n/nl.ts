@@ -599,7 +599,7 @@ export const nl = {
       ],
       [
         'Kost het iets?',
-        'Het Arabische alfabet en de unit daarna — hallo zeggen, bedanken en afscheid nemen — zijn en blijven gratis. Wil je de hele cursus, dan is dat een abonnement: € 5,00 per maand bij een jaarabonnement (€ 59,99 in één keer) of € 6,99 per maand, inclusief btw en met de eerste dagen gratis. Op iPhone en iPad geldt één abonnement voor het hele gezin: tot zes personen, ieder met zijn eigen voortgang. Op Android geldt het voor het Google-account waarmee je het afsluit. Je sluit het af in de app via de App Store of Google Play en je zegt daar ook op, wanneer je wilt. Geen advertenties en geen account: je voortgang blijft van jou.',
+        'De eerste vier lessen zijn en blijven gratis: drie stukken van het Arabische alfabet en je eerste woorden Darija. Wil je de hele cursus, dan is dat een abonnement: € 5,00 per maand bij een jaarabonnement (€ 59,99 in één keer) of € 6,99 per maand, inclusief btw en met de eerste dagen gratis. Op iPhone en iPad geldt één abonnement voor het hele gezin: tot zes personen, ieder met zijn eigen voortgang. Op Android geldt het voor het Google-account waarmee je het afsluit. Je sluit het af in de app via de App Store of Google Play en je zegt daar ook op, wanneer je wilt. Geen advertenties en geen account: je voortgang blijft van jou.',
       ],
       [
         'Werkt het offline?',
@@ -627,7 +627,7 @@ export const nl = {
     sub: (dagen: number, prijs: string, gezin: boolean): string =>
       `${dagen} dagen gratis, daarna ${prijs} per maand${gezin ? ' voor het hele gezin' : ''}`,
     intro: (vrij: number): string =>
-      `De eerste ${vrij} units zijn en blijven gratis — het Arabische alfabet, en hallo zeggen, bedanken en afscheid nemen. De rest van de cursus hoort bij het abonnement.`,
+      `De eerste ${vrij} lessen zijn en blijven gratis — drie stukken van het Arabische alfabet en je eerste woorden Darija. De rest van de cursus hoort bij het abonnement.`,
     krijgt: (gezin: boolean): string[] => [
       'Alle 17 units, van het alfabet en eten tot afdingen op de souq',
       'Alle woorden en zinnen van de cursus, met uitspraak',
@@ -703,7 +703,7 @@ export const nl = {
   welcome: {
     plan: (dagen: number, prijs: string): string =>
       `Je begint gratis. Na ${dagen} dagen is de volledige cursus vanaf ${prijs} per maand — of je stopt gewoon.`,
-    gratisDeel: (vrij: number): string => `De eerste ${vrij} units blijven altijd gratis, ook zonder abonnement.`,
+    gratisDeel: (vrij: number): string => `De eerste ${vrij} lessen blijven altijd gratis, ook zonder abonnement.`,
     titel: 'Ahlan! Welkom bij Darijaforkids',
     body: 'In welke taal wil je leren? Je kunt dit later altijd wisselen.',
     knop: 'Yallah, beginnen',

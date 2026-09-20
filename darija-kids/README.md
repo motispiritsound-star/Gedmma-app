@@ -63,7 +63,7 @@ npm run icons      # tekent de iconen en het deelplaatje opnieuw
 | | |
 |---|---|
 | **6 interfacetalen** | Nederlands, Frans, Duits, Spaans, Italiaans en Engels — interface, betekenissen, uitleg, tips en verhalen |
-| **Gratis beginnen** | het alfabet en de unit daarna zijn open; de rest is één aankoop via de App Store of Google Play |
+| **Gratis beginnen** | de eerste vier lessen zijn open; de rest is één aankoop via de App Store of Google Play |
 | **17 units** | van het Arabische alfabet en *Salam!* tot afdingen op de souq, oplopend van A0 naar A2 |
 | **304 woorden** | elk met Arabisch schrift, Latijnse schrijfwijze en een betekenis in alle vijf de talen |
 | **100 zinnen** | twee aan het eind van elke les, gemaakt van de woorden die die les net leerde — horen, bouwen, herkennen |
@@ -266,8 +266,9 @@ staat ook zo op de ouderpagina.
 
 ## Wat het kost
 
-Het Arabische alfabet en de unit daarna zijn gratis en blijven gratis — genoeg om
-het schrift te lezen en hallo te zeggen, te bedanken en afscheid te nemen. De rest van de
+De eerste vier lessen zijn gratis en blijven gratis — drie stukken van het
+Arabische alfabet en je eerste woorden Darija. Samen een minuut of twaalf:
+genoeg om een handvol letters te lezen en hallo te zeggen. De rest van de
 cursus hoort bij **volledige toegang**: een paar dagen gratis, daarna
 **€ 59,99 voor een heel jaar** — € 5,00 per maand — of **€ 6,99 per maand**,
 beide inclusief btw en opzegbaar. De App Store en Google Play regelen de

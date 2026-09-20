@@ -592,7 +592,7 @@ export const es: Strings = {
       ],
       [
         '¿Cuesta dinero?',
-        'El alfabeto árabe y la unidad siguiente — saludar, dar las gracias y despedirte — son y seguirán siendo gratis. El curso completo va con una suscripción: 5,00 € al mes con la suscripción anual (59,99 € de una vez) o 6,99 € al mes, con IVA incluido y los primeros días gratis. En iPhone y iPad una suscripción vale para toda la familia: hasta seis personas, cada una con su propio progreso. En Android vale para la cuenta de Google que la contrata. Se contrata dentro de la aplicación a través de la App Store o Google Play, y allí mismo se cancela cuando quieras. Sin publicidad y sin cuenta: tu progreso sigue siendo tuyo.',
+        'Las cuatro primeras lecciones son y seguirán siendo gratis: tres partes del alfabeto árabe y tus primeras palabras en dariya. El curso completo va con una suscripción: 5,00 € al mes con la suscripción anual (59,99 € de una vez) o 6,99 € al mes, con IVA incluido y los primeros días gratis. En iPhone y iPad una suscripción vale para toda la familia: hasta seis personas, cada una con su propio progreso. En Android vale para la cuenta de Google que la contrata. Se contrata dentro de la aplicación a través de la App Store o Google Play, y allí mismo se cancela cuando quieras. Sin publicidad y sin cuenta: tu progreso sigue siendo tuyo.',
       ],
       [
         '¿Funciona sin conexión?',
@@ -620,7 +620,7 @@ export const es: Strings = {
     sub: (dagen, prijs, gezin) =>
       `${dagen} días gratis y después ${prijs} al mes${gezin ? ' para toda la familia' : ''}`,
     intro: (vrij) =>
-      `Las ${vrij} primeras unidades son y seguirán siendo gratis: el alfabeto árabe, y saludar, dar las gracias y despedirte. El resto del curso va con la suscripción.`,
+      `Las ${vrij} primeras lecciones son y seguirán siendo gratis: tres partes del alfabeto árabe y tus primeras palabras en dariya. El resto del curso va con la suscripción.`,
     krijgt: (gezin) => [
       'Las 17 unidades, del alfabeto y la comida hasta regatear en el zoco',
       'Todas las palabras y frases del curso, con pronunciación',
@@ -690,7 +690,7 @@ export const es: Strings = {
   welcome: {
     plan: (dagen: number, prijs: string): string =>
       `Empiezas gratis. Después de ${dagen} días, el curso completo cuesta desde ${prijs} al mes, o lo dejas y ya está.`,
-    gratisDeel: (vrij: number): string => `Las primeras ${vrij} unidades siguen siendo gratis, también sin suscripción.`,
+    gratisDeel: (vrij: number): string => `Las primeras ${vrij} lecciones siguen siendo gratis, también sin suscripción.`,
     titel: '¡Ahlan! Bienvenido a Darijaforkids',
     body: '¿En qué idioma quieres aprender? Siempre puedes cambiarlo más tarde.',
     knop: 'Yallah, empezamos',

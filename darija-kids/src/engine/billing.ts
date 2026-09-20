@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react'
-import { FREE_UNITS, getState, setState } from './store'
+import { FREE_LESSONS, getState, setState } from './store'
 
 /**
  * The subscription, through the App Store and Google Play.
@@ -89,7 +89,7 @@ export const YEAR_SAVING = Math.round(
     (Number(planOf('maand').list.replace(/[^\d,]/g, '').replace(',', '.')) * 12)) * 100,
 )
 
-export { FREE_UNITS }
+export { FREE_LESSONS }
 
 /* ------------------------------------------ the sliver of the plugin we use */
 

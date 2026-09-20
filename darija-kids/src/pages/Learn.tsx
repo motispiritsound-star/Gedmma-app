@@ -6,8 +6,8 @@ import { Mascot } from '../ui/Mascot'
 import { Quests } from '../ui/Quests'
 import { BonusCard } from './Bonus'
 import {
-  dueWordIds, FREE_UNITS, isDone, lessonUnlocked, markTipSeen, nextLesson, progressOfUnit,
-  unitBehindPaywall, unitUnlocked, useStore,
+  dueWordIds, isDone, lessonBehindPaywall, lessonUnlocked, markTipSeen, nextLesson,
+  progressOfUnit, unitBehindPaywall, unitUnlocked, useStore,
 } from '../engine/store'
 import { missingArabicVoice } from '../engine/audio'
 import { useVoices } from '../ui/useVoices'
@@ -77,6 +77,8 @@ export function Learn() {
   const next = nextLesson(state)
   /** Niemand heeft nog iets afgerond: dit is de allereerste keer openen. */
   const eersteKeer = Object.keys(state.lessons).length === 0
+  /** De eerste unit waarin een les dichtzit: daar hoort het aanbod te staan. */
+  const slotBij = UNITS.findIndex((u) => u.lessons.some((l) => lessonBehindPaywall(l.id, state)))
   // Only worth saying once, and only on a device that actually lacks the voice.
   const installed = useVoices()
   const noArabicVoice = installed.length > 0 && missingArabicVoice() && !state.seenTips.includes('stem')
@@ -124,6 +126,11 @@ export function Learn() {
         </Card>
       )}
 
+      {/*
+        Het aanbod hoort op de plek waar iemand tegen het slot loopt, en één
+        keer. Dat is nu de eerste unit waarin een les dichtzit — meestal het
+        alfabet zelf — en niet meer de eerste unit die helemaal dicht is.
+      */}
       <ol className="space-y-10">
         {UNITS.map((unit, ui) => {
           const open = unitUnlocked(unit.id, state)
@@ -157,18 +164,16 @@ export function Learn() {
                     <Node key={lesson.id} lesson={lesson} index={i} accent={ACCENTS[unit.accent]!} />
                   ))}
                 </ul>
-              ) : paid ? (
-                // The offer belongs at the paywall itself, once — not stamped
-                // on all eleven units behind it.
-                ui === FREE_UNITS && (
-                  <Card className="mt-4 flex flex-wrap items-center gap-3 p-5">
-                    <span className="text-2xl" aria-hidden="true">🔑</span>
-                    <p className="min-w-0 flex-1 font-display font-extrabold">{t.unlock.slotTitel}</p>
-                    <Link to="/volledig"><Button>{t.unlock.slotKnop}</Button></Link>
-                  </Card>
-                )
-              ) : (
+              ) : !paid ? (
                 <p className="mt-4 text-center text-sm text-[var(--ink-soft)]">{t.learn.unitSlot(ui)}</p>
+              ) : null}
+
+              {ui === slotBij && (
+                <Card className="mt-4 flex flex-wrap items-center gap-3 p-5">
+                  <span className="text-2xl" aria-hidden="true">🔑</span>
+                  <p className="min-w-0 flex-1 font-display font-extrabold">{t.unlock.slotTitel}</p>
+                  <Link to="/volledig"><Button>{t.unlock.slotKnop}</Button></Link>
+                </Card>
               )}
             </li>
           )

@@ -1,6 +1,6 @@
 import { LANGS, useT, type Lang } from '../i18n'
 import { sfx } from '../engine/audio'
-import { FREE_UNITS, planOf, TRIAL_DAYS } from '../engine/billing'
+import { FREE_LESSONS, planOf, TRIAL_DAYS } from '../engine/billing'
 import { setSetting, setState, useStore } from '../engine/store'
 import { Button, Sheet } from './kit'
 import { Mascot } from './Mascot'
@@ -48,7 +48,7 @@ export function Welcome() {
 
         <div className="mt-5 rounded-2xl bg-[var(--surface-sunken)] p-4 text-start">
           <p className="text-sm font-bold">🎁 {t.welcome.plan(TRIAL_DAYS, planOf('jaar').perMonth)}</p>
-          <p className="mt-1 text-xs text-[var(--ink-soft)]">{t.welcome.gratisDeel(FREE_UNITS)}</p>
+          <p className="mt-1 text-xs text-[var(--ink-soft)]">{t.welcome.gratisDeel(FREE_LESSONS)}</p>
         </div>
 
         <Button className="mt-4 w-full" onClick={() => setState({ langPicked: true })}>{t.welcome.knop}</Button>

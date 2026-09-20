@@ -68,7 +68,7 @@ IN JOUW TAAL
 Nederlands, Frans, Duits, Spaans, Italiaans en Engels. Je kiest bij de start en kunt altijd wisselen: alle vertalingen, uitleg en verhalen wisselen mee.
 
 GRATIS BEGINNEN
-Het Arabische alfabet en de unit daarna — hallo zeggen, bedanken en afscheid nemen — zijn en blijven gratis. De hele cursus hoort bij de volledige toegang: de eerste dagen gratis, daarna € 5,00 per maand bij een jaarabonnement (€ 59,99 in één keer) of € 6,99 per maand, inclusief btw. Opzegbaar in je eigen App Store- of Google Play-account; zeg je op vóór het einde van de proefperiode, dan betaal je niets.
+De eerste vier lessen zijn en blijven gratis: drie stukken van het Arabische alfabet en je eerste woorden Darija. De hele cursus hoort bij de volledige toegang: de eerste dagen gratis, daarna € 5,00 per maand bij een jaarabonnement (€ 59,99 in één keer) of € 6,99 per maand, inclusief btw. Opzegbaar in je eigen App Store- of Google Play-account; zeg je op vóór het einde van de proefperiode, dan betaal je niets.
 
 En er is één ding dat los te koop is: het e-boek, de hele cursus op papier — alle 28 letters met hun drie vormen, alle 17 units met de grammatica-uitleg, alle woorden en alle zinnen. € 14,99, één keer, en bij een jaarabonnement zit het erbij.
 

@@ -14,17 +14,25 @@ const KEY = 'darijakids.v1'
 export const MAX_HEARTS = 5
 
 /**
- * How much of the course is free: the alphabet, and the unit after it.
+ * What is free, per unit: the first so many lessons, not whole units.
  *
- * Two units is enough to read the Arabic script and to say hello, thank you
- * and goodbye — a whole thing, finished, that a child can show to someone. It
- * is deliberately not enough to introduce yourself or count to a hundred: the
- * question "and then?" is the point at which someone decides, and it should
- * come while they are still enjoying it rather than weeks later.
+ * Three pieces of the alphabet and the first lesson of greetings. That is
+ * about twelve minutes: long enough to read a handful of Arabic letters and
+ * to say hello, thank you and goodbye — something a child can show to someone
+ * the same evening — and short enough that the question "and then?" arrives
+ * while they are still enjoying it.
+ *
+ * A whole unit free was too much: finishing one is weeks of work, and by then
+ * nobody is trying the thing out any more. Counting in lessons instead of in
+ * units also lets the free part end inside the alphabet, so what comes next is
+ * visible on the path rather than hidden behind a unit that never opens.
  *
  * Everything past this is the subscription, with three free days first.
  */
-export const FREE_UNITS = 2
+export const GRATIS_LESSEN: Record<string, number> = { hruf: 3, groeten: 1 }
+
+/** How many lessons that is altogether — the number the app quotes. */
+export const FREE_LESSONS = Object.values(GRATIS_LESSEN).reduce((a, b) => a + b, 0)
 
 /** What one right answer is worth, paid out the moment it happens. */
 export const XP_PER_CORRECT = 2
@@ -635,26 +643,39 @@ export function completeLesson(lessonId: string, score: number, xp: number): voi
 
 export const isDone = (lessonId: string, s: State = state): boolean => !!s.lessons[lessonId]
 
-/** True when this unit is past the free part and has not been bought. */
+/** True when this lesson is past the free part and has not been bought. */
+export function lessonBehindPaywall(lessonId: string, s: State = state): boolean {
+  if (s.unlocked) return false
+  const unit = UNITS.find((u) => u.lessons.some((l) => l.id === lessonId))
+  if (!unit) return false
+  return unit.lessons.findIndex((l) => l.id === lessonId) >= (GRATIS_LESSEN[unit.id] ?? 0)
+}
+
+/** True when nothing in this unit is free and it has not been bought. */
 export function unitBehindPaywall(unitId: string, s: State = state): boolean {
-  const i = UNITS.findIndex((u) => u.id === unitId)
-  return i >= FREE_UNITS && !s.unlocked
+  return !s.unlocked && !(GRATIS_LESSEN[unitId] ?? 0)
 }
 
 /**
  * A unit opens once the one before it is finished — and, past the free part,
  * once the course has been bought. The first unit is always open.
+ *
+ * "Finished" means everything that was open to this learner. Without that, a
+ * free learner who has done the three free alphabet lessons would never reach
+ * the greetings lesson underneath: the rest of the alphabet is behind the
+ * paywall and can never be ticked off.
  */
 export function unitUnlocked(unitId: string, s: State = state): boolean {
   if (unitBehindPaywall(unitId, s)) return false
   const i = UNITS.findIndex((u) => u.id === unitId)
   if (i <= 0) return true
-  return UNITS[i - 1]!.lessons.every((l) => isDone(l.id, s))
+  return UNITS[i - 1]!.lessons.every((l) => lessonBehindPaywall(l.id, s) || isDone(l.id, s))
 }
 
 export function lessonUnlocked(lessonId: string, s: State = state): boolean {
   const unit = UNITS.find((u) => u.lessons.some((l) => l.id === lessonId))
   if (!unit || !unitUnlocked(unit.id, s)) return false
+  if (lessonBehindPaywall(lessonId, s)) return false
   const i = unit.lessons.findIndex((l) => l.id === lessonId)
   return i === 0 || isDone(unit.lessons[i - 1]!.id, s)
 }
@@ -670,6 +691,8 @@ export function nextLesson(s: State = state): string {
   for (const unit of UNITS) {
     if (!unitUnlocked(unit.id, s)) break
     for (const lesson of unit.lessons) {
+      // Voorbij het slot houdt deze unit op; de volgende kan nog open staan.
+      if (lessonBehindPaywall(lesson.id, s)) break
       if (!isDone(lesson.id, s)) return lesson.id
       last = lesson.id
     }

@@ -592,7 +592,7 @@ export const en: Strings = {
       ],
       [
         'Does it cost anything?',
-        'The Arabic script and the unit after it — saying hello, thank you and goodbye — are free and stay free. The whole course comes with a subscription: € 5.00 a month on the yearly plan (€ 59.99 charged once) or € 6.99 a month, VAT included and with the first days free. On iPhone and iPad one subscription covers the whole family: up to six people, each with their own progress. On Android it covers the Google account that takes it out. You subscribe inside the app through the App Store or Google Play, and you cancel in the same place whenever you like. No adverts and no account: your progress stays yours.',
+        'The first four lessons are free and stay free: three pieces of the Arabic script and your first words of Darija. The whole course comes with a subscription: € 5.00 a month on the yearly plan (€ 59.99 charged once) or € 6.99 a month, VAT included and with the first days free. On iPhone and iPad one subscription covers the whole family: up to six people, each with their own progress. On Android it covers the Google account that takes it out. You subscribe inside the app through the App Store or Google Play, and you cancel in the same place whenever you like. No adverts and no account: your progress stays yours.',
       ],
       [
         'Does it work offline?',
@@ -620,7 +620,7 @@ export const en: Strings = {
     sub: (dagen, prijs, gezin) =>
       `${dagen} days free, then ${prijs} a month${gezin ? ' for the whole family' : ''}`,
     intro: (vrij) =>
-      `The first ${vrij} units are free and stay free — the Arabic script, and saying hello, thank you and goodbye. The rest of the course comes with the subscription.`,
+      `The first ${vrij} lessons are free and stay free — three pieces of the Arabic script and your first words of Darija. The rest of the course comes with the subscription.`,
     krijgt: (gezin) => [
       'All 17 units, from the alphabet and food to haggling at the souq',
       'Every word and phrase in the course, with pronunciation',
@@ -690,7 +690,7 @@ export const en: Strings = {
   welcome: {
     plan: (dagen: number, prijs: string): string =>
       `You start free. After ${dagen} days the full course is from ${prijs} a month — or you simply stop.`,
-    gratisDeel: (vrij: number): string => `The first ${vrij} units stay free, subscription or not.`,
+    gratisDeel: (vrij: number): string => `The first ${vrij} lessons stay free, subscription or not.`,
     titel: 'Ahlan! Welcome to Darijaforkids',
     body: 'Which language do you want to learn in? You can always change it later.',
     knop: 'Yallah, let us start',

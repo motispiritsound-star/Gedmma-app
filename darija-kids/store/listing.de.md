@@ -68,7 +68,7 @@ IN DEINER SPRACHE
 Deutsch, Niederländisch, Französisch, Spanisch, Italienisch und Englisch. Du wählst beim Start und kannst jederzeit wechseln: Übersetzungen, Erklärungen und Geschichten wechseln mit.
 
 KOSTENLOS ANFANGEN
-Das arabische Alphabet und die Einheit danach — Hallo, Danke und Tschüss sagen — sind und bleiben kostenlos. Der ganze Kurs gehört zum vollen Zugang: die ersten Tage gratis, danach 5,00 € pro Monat im Jahresabo (59,99 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Kündbar im eigenen App-Store- oder Google-Play-Konto; wer vor Ende der Testphase kündigt, zahlt nichts.
+Die ersten vier Lektionen sind und bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs gehört zum vollen Zugang: die ersten Tage gratis, danach 5,00 € pro Monat im Jahresabo (59,99 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Kündbar im eigenen App-Store- oder Google-Play-Konto; wer vor Ende der Testphase kündigt, zahlt nichts.
 
 Und eines ist einzeln zu haben: das E-Book, der ganze Kurs auf Papier — alle 28 Buchstaben mit ihren drei Formen, alle 17 Einheiten mit den Grammatikerklärungen, alle Wörter und alle Sätze. 14,99 €, einmalig, und im Jahresabo enthalten.
 

@@ -592,7 +592,7 @@ export const de: Strings = {
       ],
       [
         'Kostet es etwas?',
-        'Das arabische Alphabet und die Einheit danach — Hallo, Danke und Tschüss sagen — sind und bleiben kostenlos. Der ganze Kurs läuft über ein Abo: 5,00 € pro Monat im Jahresabo (59,99 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer und mit den ersten Tagen gratis. Auf iPhone und iPad gilt ein Abo für die ganze Familie: bis zu sechs Personen, jede mit ihrem eigenen Fortschritt. Auf Android gilt es für das Google-Konto, das es abschließt. Abgeschlossen wird es in der App über den App Store oder Google Play, und dort kündigst du es auch, wann du willst. Keine Werbung und kein Konto: dein Fortschritt bleibt deiner.',
+        'Die ersten vier Lektionen sind und bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs läuft über ein Abo: 5,00 € pro Monat im Jahresabo (59,99 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer und mit den ersten Tagen gratis. Auf iPhone und iPad gilt ein Abo für die ganze Familie: bis zu sechs Personen, jede mit ihrem eigenen Fortschritt. Auf Android gilt es für das Google-Konto, das es abschließt. Abgeschlossen wird es in der App über den App Store oder Google Play, und dort kündigst du es auch, wann du willst. Keine Werbung und kein Konto: dein Fortschritt bleibt deiner.',
       ],
       [
         'Funktioniert es offline?',
@@ -620,7 +620,7 @@ export const de: Strings = {
     sub: (dagen, prijs, gezin) =>
       `${dagen} Tage gratis, danach ${prijs} pro Monat${gezin ? ' für die ganze Familie' : ''}`,
     intro: (vrij) =>
-      `Die ersten ${vrij} Einheiten sind und bleiben kostenlos — das arabische Alphabet, und Hallo, Danke und Tschüss sagen. Der Rest des Kurses gehört zum Abo.`,
+      `Die ersten ${vrij} Lektionen sind und bleiben kostenlos — drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der Rest des Kurses gehört zum Abo.`,
     krijgt: (gezin) => [
       'Alle 17 Einheiten, vom Alphabet und Essen bis zum Handeln auf dem Souk',
       'Alle Wörter und Sätze des Kurses, mit Aussprache',
@@ -690,7 +690,7 @@ export const de: Strings = {
   welcome: {
     plan: (dagen: number, prijs: string): string =>
       `Du fängst kostenlos an. Nach ${dagen} Tagen kostet der ganze Kurs ab ${prijs} pro Monat — oder du hörst einfach auf.`,
-    gratisDeel: (vrij: number): string => `Die ersten ${vrij} Einheiten bleiben immer kostenlos, auch ohne Abo.`,
+    gratisDeel: (vrij: number): string => `Die ersten ${vrij} Lektionen bleiben immer kostenlos, auch ohne Abo.`,
     titel: 'Ahlan! Willkommen bei Darijaforkids',
     body: 'In welcher Sprache möchtest du lernen? Du kannst das später jederzeit ändern.',
     knop: 'Yallah, los',

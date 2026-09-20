@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  buyEbook, EBOOK, ebookFile, FREE_UNITS, manageSubscription, PLANS, planOf, restorePurchases,
+  buyEbook, EBOOK, ebookFile, FREE_LESSONS, manageSubscription, PLANS, planOf, restorePurchases,
   subscribe, TRIAL_DAYS, useBilling, YEAR_SAVING, type PlanId,
 } from '../engine/billing'
 import { gezinsdeling } from '../engine/platform'
@@ -85,7 +85,7 @@ export function Unlock() {
           </Card>
 
           <Card className="p-6">
-            <p className="text-[var(--ink-soft)]">{t.unlock.intro(FREE_UNITS)}</p>
+            <p className="text-[var(--ink-soft)]">{t.unlock.intro(FREE_LESSONS)}</p>
             <ul className="mt-4 space-y-2">
               {t.unlock.krijgt(gezin).map((line) => (
                 <li key={line} className="flex gap-2 text-sm">

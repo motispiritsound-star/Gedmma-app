@@ -68,7 +68,7 @@ NELLA TUA LINGUA
 Italiano, olandese, francese, tedesco, spagnolo e inglese. L'app propone la lingua del tuo dispositivo e puoi cambiarla quando vuoi: traduzioni, spiegazioni e storie cambiano con essa.
 
 INIZIARE GRATIS
-L'alfabeto arabo e l'unità che segue — salutare, ringraziare e congedarsi — sono e restano gratis. Il corso intero va con l'accesso completo: i primi giorni gratis e poi 5,00 € al mese con l’abbonamento annuale (59,99 € in una volta) oppure 6,99 € al mese, IVA inclusa. Disdicibile dal tuo account App Store o Google Play; se disdici prima della fine della prova, non paghi niente.
+Le prime quattro lezioni sono e restano gratis: tre pezzi dell'alfabeto arabo e le tue prime parole in darija. Il corso intero va con l'accesso completo: i primi giorni gratis e poi 5,00 € al mese con l’abbonamento annuale (59,99 € in una volta) oppure 6,99 € al mese, IVA inclusa. Disdicibile dal tuo account App Store o Google Play; se disdici prima della fine della prova, non paghi niente.
 
 E una cosa si compra a parte: l'e-book, l'intero corso su carta — tutte e 28 le lettere con le loro tre forme, le 17 unità con le spiegazioni di grammatica, tutte le parole e tutte le frasi. 14,99 €, una volta sola, e compreso con l'abbonamento annuale.
 

@@ -36,7 +36,7 @@ const SECTIONS_NL: Section[] = [
     'Wat niet mag: de app doorverkopen of verhuren, de lessen kopiëren om ze elders aan te bieden, of proberen de code uit elkaar te halen om er iets anders van te maken.',
   ]],
   ['Het gratis deel', [
-    'Het Arabische alfabet en de unit daarna zijn gratis en blijven gratis. Daar hoef je niets voor af te sluiten en niets voor in te vullen.',
+    'De eerste vier lessen zijn gratis en blijven gratis. Daar hoef je niets voor af te sluiten en niets voor in te vullen.',
   ]],
   ['Het abonnement', [
     `De volledige cursus loopt via een abonnement. Je kiest zelf: ${yearPrice} voor een heel jaar vooruit — dat is ${yearPerMonth} per maand — of ${price} per maand. Beide zijn inclusief btw. Je begint met ${days} dagen gratis; daarna wordt het bedrag afgeschreven via je App Store- of Google Play-account en daarna telkens opnieuw, jaarlijks of maandelijks, net zolang tot je opzegt.`,
@@ -70,7 +70,7 @@ const SECTIONS_FR: Section[] = [
     'Ce qui n’est pas permis : revendre ou louer l’application, copier les leçons pour les proposer ailleurs, ou tenter de démonter le code pour en faire autre chose.',
   ]],
   ['La partie gratuite', [
-    'L’alphabet arabe et l’unité qui suit sont gratuits et le restent. Il n’y a rien à souscrire et rien à remplir pour cela.',
+    'Les quatre premières leçons sont gratuites et le restent. Il n’y a rien à souscrire et rien à remplir pour cela.',
   ]],
   ['L’abonnement', [
     `Le cours complet passe par un abonnement, au choix : ${yearPrice} pour une année entière payée d’avance — soit ${yearPerMonth} par mois — ou ${price} par mois. Les deux sont TTC. Tu commences par ${days} jours offerts ; ensuite le montant est prélevé via ton compte App Store ou Google Play, puis à chaque échéance, annuelle ou mensuelle, jusqu’à ce que tu résilies.`,
@@ -104,7 +104,7 @@ const SECTIONS_DE: Section[] = [
     'Was nicht erlaubt ist: die App weiterverkaufen oder vermieten, die Lektionen kopieren, um sie anderswo anzubieten, oder versuchen, den Code auseinanderzunehmen und daraus etwas anderes zu bauen.',
   ]],
   ['Der kostenlose Teil', [
-    'Das arabische Alphabet und die Einheit danach sind kostenlos und bleiben es. Dafür musst du nichts abschließen und nichts ausfüllen.',
+    'Die ersten vier Lektionen sind kostenlos und bleiben es. Dafür musst du nichts abschließen und nichts ausfüllen.',
   ]],
   ['Das Abo', [
     `Der ganze Kurs läuft über ein Abo, und du hast die Wahl: ${yearPrice} für ein ganzes Jahr im Voraus — das sind ${yearPerMonth} pro Monat — oder ${price} pro Monat. Beides inklusive Mehrwertsteuer. Du beginnst mit ${days} Tagen gratis; danach wird der Betrag über dein App-Store- oder Google-Play-Konto abgebucht und danach jeweils erneut, jährlich oder monatlich, bis du kündigst.`,
@@ -138,7 +138,7 @@ const SECTIONS_ES: Section[] = [
     'Lo que no se puede: revender o alquilar la aplicación, copiar las lecciones para ofrecerlas en otro sitio, o intentar desmontar el código para hacer otra cosa con él.',
   ]],
   ['La parte gratuita', [
-    'El alfabeto árabe y la unidad siguiente son gratis y lo seguirán siendo. No hay que contratar nada ni rellenar nada para eso.',
+    'Las cuatro primeras lecciones son gratis y lo seguirán siendo. No hay que contratar nada ni rellenar nada para eso.',
   ]],
   ['La suscripción', [
     `El curso completo va con una suscripción, y eliges tú: ${yearPrice} por un año entero pagado por adelantado —son ${yearPerMonth} al mes— o ${price} al mes. Ambas con IVA incluido. Empiezas con ${days} días gratis; después se cobra el importe a través de tu cuenta de la App Store o de Google Play, y así cada año o cada mes, hasta que canceles.`,
@@ -172,7 +172,7 @@ const SECTIONS_IT: Section[] = [
     'Quello che non si può fare: rivendere o noleggiare l’app, copiare le lezioni per offrirle altrove, o provare a smontare il codice per ricavarne qualcos’altro.',
   ]],
   ['La parte gratuita', [
-    'L’alfabeto arabo e l’unità che segue sono gratis e lo restano. Non c’è niente da sottoscrivere e niente da compilare.',
+    'Le prime quattro lezioni sono gratis e lo restano. Non c’è niente da sottoscrivere e niente da compilare.',
   ]],
   ['L’abbonamento', [
     `Il corso completo va con un abbonamento, e scegli tu: ${yearPrice} per un anno intero pagato in anticipo — sono ${yearPerMonth} al mese — oppure ${price} al mese. Entrambi IVA inclusa. Inizi con ${days} giorni gratis; poi l’importo viene addebitato tramite il tuo account App Store o Google Play, e così ogni anno o ogni mese, finché non disdici.`,
@@ -206,7 +206,7 @@ const SECTIONS_EN: Section[] = [
     'What is not allowed: reselling or renting out the app, copying the lessons to offer them elsewhere, or trying to take the code apart to make something else of it.',
   ]],
   ['The free part', [
-    'The Arabic script and the unit after it are free and stay free. There is nothing to sign up for and nothing to fill in.',
+    'The first four lessons are free and stay free. There is nothing to sign up for and nothing to fill in.',
   ]],
   ['The subscription', [
     `The full course runs on a subscription, and you choose: ${yearPrice} for a whole year up front — that is ${yearPerMonth} a month — or ${price} a month. Both include VAT. You start with ${days} days free; after that the amount is charged through your App Store or Google Play account, and again every year or every month, until you cancel.`,

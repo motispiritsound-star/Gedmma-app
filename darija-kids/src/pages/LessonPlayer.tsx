@@ -5,8 +5,8 @@ import { lessonById, unitOfLesson } from '../content/curriculum'
 import { cardForCheckpoint, type HistoryCard } from '../content/history'
 import { buildRound } from '../engine/exercises'
 import {
-  awardBadges, checkpointsDone, collectHistory, completeLesson, getState, knownIds, levelOf,
-  markTipSeen, useStore, type Badge,
+  awardBadges, checkpointsDone, collectHistory, completeLesson, getState, knownIds,
+  lessonBehindPaywall, levelOf, markTipSeen, useStore, type Badge,
 } from '../engine/store'
 import { sfx } from '../engine/audio'
 import { Button, Card, Sheet } from '../ui/kit'
@@ -27,6 +27,12 @@ export function LessonPlayer() {
   const unit = unitOfLesson(lessonId)
   const seenTip = useStore((s) => s.seenTips.includes(lessonId))
   const streak = useStore((s) => s.streak)
+  /**
+   * Een les achter het slot is op het pad niet aan te tikken, maar een adres
+   * wel in te typen — en in de webversie staat er een adresbalk boven. Het slot
+   * hoort dus ook hier te staan en niet alleen op de knop ernaartoe.
+   */
+  const opSlot = useStore((s) => lessonBehindPaywall(lessonId, s))
 
   const [showTip, setShowTip] = useState(false)
   const [result, setResult] = useState<RoundResult | null>(null)
@@ -57,6 +63,19 @@ export function LessonPlayer() {
         <Mascot mood="denk" />
         <p className="mt-4 font-display text-xl font-extrabold">{t.lesson.bestaatNiet}</p>
         <Link to="/leren" className="mt-4 inline-block"><Button>{t.lesson.terugNaarPad}</Button></Link>
+      </div>
+    )
+  }
+
+  if (opSlot) {
+    return (
+      <div className="mx-auto max-w-md px-4 py-16 text-center">
+        <Mascot mood="denk" />
+        <p className="mt-4 font-display text-xl font-extrabold">{t.unlock.slotTitel}</p>
+        <div className="mt-4 flex flex-wrap justify-center gap-2">
+          <Link to="/volledig"><Button>{t.unlock.slotKnop}</Button></Link>
+          <Link to="/leren"><Button variant="secondary">{t.lesson.terugNaarPad}</Button></Link>
+        </div>
       </div>
     )
   }
