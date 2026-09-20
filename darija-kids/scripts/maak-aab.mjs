@@ -72,12 +72,22 @@ if (!existsSync(LOKAAL) && !process.env.ANDROID_HOME && !process.env.ANDROID_SDK
 const wrapper = process.platform === 'win32' ? 'gradlew.bat' : './gradlew'
 console.log('\nBundel bouwen. De eerste keer haalt Gradle veel op; reken op een paar minuten.\n')
 
-execFileSync(wrapper, ['bundleRelease'], {
-  cwd: ANDROID,
-  stdio: 'inherit',
-  shell: process.platform === 'win32',
-  env: { ...process.env, JAVA_HOME: jdk },
-})
+try {
+  execFileSync(wrapper, ['bundleRelease'], {
+    cwd: ANDROID,
+    stdio: 'inherit',
+    shell: process.platform === 'win32',
+    env: { ...process.env, JAVA_HOME: jdk },
+  })
+} catch {
+  // Gradle heeft zijn eigen foutmelding al op het scherm gezet; een
+  // stacktrace van node eronder maakt alleen maar moeilijker te zien waar je
+  // moet kijken.
+  console.error('\nGradle is gestopt met een fout.\n')
+  console.error('Zoek hierboven het blok dat begint met "* What went wrong:".')
+  console.error('Daar staat wat er mis is; de regels eronder zeggen meestal waar.\n')
+  process.exit(1)
+}
 
 if (!existsSync(BUNDEL)) {
   console.error('\nGradle is klaar, maar er ligt geen bundel. Lees de uitvoer hierboven.\n')
