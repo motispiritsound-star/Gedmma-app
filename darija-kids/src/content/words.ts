@@ -145,7 +145,7 @@ export const WORDS: Word[] = [
   w('kesksu', 'كسكسو', 'kesksu', 'couscous', 'couscous', 'eten', '🥘', 'Op vrijdag, na het gebed.'),
   w('harira', 'حريرة', 'harira', 'harira (soep)', 'harira soup', 'eten', '🍜', 'De soep waarmee je in ramadan de dag afsluit.'),
   w('msemmen', 'مسمن', 'msemmen', 'msemmen (bladerkoek)', 'msemmen pancake', 'eten', '🥞'),
-  w('bnin', 'بنين', 'bnin', 'lekker', 'tasty', 'eten', '😋', 'Vrouwelijk: bnina.'),
+  w('ldid', 'لذيذ', 'ldid', 'lekker', 'tasty', 'eten', '😋', 'Vrouwelijk: ldida.'),
   w('ju3an', 'جوعان', 'ju3an', 'hongerig', 'hungry', 'eten', '🍽️', 'Vrouwelijk: ju3ana.'),
   w('3etshan', 'عطشان', '3etshan', 'dorstig', 'thirsty', 'eten', '🥤'),
   w('bghit-nakol', 'بغيت ناكل', 'bghit nakol', 'ik wil eten', 'I want to eat', 'eten', '🍴', '', true),

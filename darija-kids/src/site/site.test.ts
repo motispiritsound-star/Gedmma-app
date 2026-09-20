@@ -23,8 +23,27 @@ describe('de getallen op de website', () => {
     units: UNITS.length,
   }
 
+  /**
+   * De woorden die nog op een opname wachten.
+   *
+   * Aan het eind van een verschoven stuk valt er een woord zonder klank: zijn
+   * opname is bij het knippen nooit weggeschreven. Die drie staan hier met
+   * naam en toenaam, zodat een verdwenen bestand opvalt in plaats van weg te
+   * zakken in een getal dat toch al niet klopte. Zodra ze zijn ingesproken
+   * gaat deze lijst leeg en staat de website weer op 432.
+   */
+  const WACHT_OP_OPNAME = ['jeddi', 'jmel', 'khoya']
+
   it('kloppen met de cursus zelf', () => {
-    expect(counts).toEqual({ opnames: 432, woorden: 304, zinnen: 100, letters: 28, units: 17 })
+    expect(counts).toEqual({
+      opnames: 432 - WACHT_OP_OPNAME.length,
+      woorden: 304, zinnen: 100, letters: 28, units: 17,
+    })
+  })
+
+  it('noemt precies de woorden die nog op een stem wachten', () => {
+    const zonder = allWords.filter((w) => !(w.id in CLIPS)).map((w) => w.id).sort()
+    expect(zonder).toEqual(WACHT_OP_OPNAME)
   })
 
   for (const lang of LANG_CODES) {

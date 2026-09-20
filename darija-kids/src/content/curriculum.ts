@@ -233,7 +233,7 @@ export const UNITS: Unit[] = [
     { title: 'Uit de koelkast', words: ['lhem', 'djaj', 'hut', 'bid', 'jben', 'zebda', '3sel'] },
     {
       title: 'Marokkaanse gerechten',
-      words: ['tajine', 'kesksu', 'harira', 'msemmen', 'makla', 'bnin', 'bsseha'],
+      words: ['tajine', 'kesksu', 'harira', 'msemmen', 'makla', 'ldid', 'bsseha'],
       tip: {
         title: 'Vrijdag is couscousdag',
         body: 'Na het vrijdaggebed eet bijna heel Marokko kesksu, uit één grote schaal in het midden van de tafel.',

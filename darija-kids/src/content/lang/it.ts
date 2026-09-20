@@ -50,7 +50,7 @@ export const it: ContentPack = {
     banan: "la banana", limun: "l'arancia", hamd: "il limone", btata: "la patata",
     matisha: "il pomodoro", bsla: "la cipolla", sokkar: "lo zucchero", melha: "il sale",
     tajine: "la tajine (stufato)", kesksu: "il cuscus", harira: "la harira (zuppa)",
-    msemmen: "il msemmen (sfoglia)", bnin: "buono, gustoso", ju3an: "affamato",
+    msemmen: "il msemmen (sfoglia)", ldid: "buono, gustoso", ju3an: "affamato",
     "3etshan": "assetato", "bghit-nakol": "voglio mangiare", bsseha: "buon appetito / salute",
 
     // huis
@@ -157,7 +157,7 @@ export const it: ContentPack = {
     tajine: "È anche il nome della pentola di terracotta con il coperchio a cono.",
     kesksu: "Il venerdì, dopo la preghiera.",
     harira: "La zuppa con cui si chiude la giornata durante il ramadan.",
-    bnin: "Al femminile: bnina.",
+    ldid: "Al femminile: ldida.",
     ju3an: "Al femminile: ju3ana.",
     bsseha: "Si dice anche dopo una doccia o un taglio di capelli.",
     stah: "Dove si stende il bucato e chiacchierano i vicini.",

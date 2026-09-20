@@ -52,7 +52,7 @@ export const de: ContentPack = {
     banan: "die Banane", limun: "die Orange", hamd: "die Zitrone", btata: "die Kartoffel",
     matisha: "die Tomate", bsla: "die Zwiebel", sokkar: "der Zucker", melha: "das Salz",
     tajine: "die Tajine (Schmorgericht)", kesksu: "der Couscous", harira: "die Harira (Suppe)",
-    msemmen: "das Msemmen (Blätterfladen)", bnin: "lecker", ju3an: "hungrig",
+    msemmen: "das Msemmen (Blätterfladen)", ldid: "lecker", ju3an: "hungrig",
     "3etshan": "durstig", "bghit-nakol": "ich möchte essen", bsseha: "guten Appetit / zum Wohl",
 
     // huis
@@ -157,7 +157,7 @@ export const de: ContentPack = {
     tajine: "Auch der Name des Tontopfs mit dem spitzen Deckel.",
     kesksu: "Freitags, nach dem Gebet.",
     harira: "Die Suppe, mit der man im Ramadan den Tag beschließt.",
-    bnin: "Weiblich: bnina.",
+    ldid: "Weiblich: ldida.",
     ju3an: "Weiblich: ju3ana.",
     bsseha: "Sagt man auch nach dem Duschen oder einem neuen Haarschnitt.",
     stah: "Wo die Wäsche hängt und die Nachbarn reden.",

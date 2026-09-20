@@ -50,7 +50,7 @@ export const fr: ContentPack = {
     banan: "la banane", limun: "l'orange", hamd: "le citron", btata: "la pomme de terre",
     matisha: "la tomate", bsla: "l'oignon", sokkar: "le sucre", melha: "le sel",
     tajine: "le tajine (plat mijoté)", kesksu: "le couscous", harira: "la harira (soupe)",
-    msemmen: "le msemmen (crêpe feuilletée)", bnin: "délicieux", ju3an: "affamé, qui a faim",
+    msemmen: "le msemmen (crêpe feuilletée)", ldid: "délicieux", ju3an: "affamé, qui a faim",
     "3etshan": "assoiffé, qui a soif", "bghit-nakol": "je veux manger",
     bsseha: "bon appétit / à ta santé",
 
@@ -159,7 +159,7 @@ export const fr: ContentPack = {
     tajine: "C'est aussi le nom du plat en terre cuite au couvercle pointu.",
     kesksu: "Le vendredi, après la prière.",
     harira: "La soupe qui clôt la journée pendant le ramadan.",
-    bnin: "Au féminin : bnina.",
+    ldid: "Au féminin : ldida.",
     ju3an: "Au féminin : ju3ana.",
     bsseha: "On le dit aussi après une douche ou une nouvelle coupe de cheveux.",
     stah: "Là où sèche le linge et où les voisins discutent.",

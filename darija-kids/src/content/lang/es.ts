@@ -50,7 +50,7 @@ export const es: ContentPack = {
     banan: "el plátano", limun: "la naranja", hamd: "el limón", btata: "la patata",
     matisha: "el tomate", bsla: "la cebolla", sokkar: "el azúcar", melha: "la sal",
     tajine: "el tayín (guiso)", kesksu: "el cuscús", harira: "la harira (sopa)",
-    msemmen: "el msemmen (hojaldre)", bnin: "rico, delicioso", ju3an: "hambriento",
+    msemmen: "el msemmen (hojaldre)", ldid: "rico, delicioso", ju3an: "hambriento",
     "3etshan": "sediento", "bghit-nakol": "quiero comer", bsseha: "que aproveche / salud",
 
     // huis
@@ -157,7 +157,7 @@ export const es: ContentPack = {
     tajine: "También es el nombre de la cazuela de barro con tapa puntiaguda.",
     kesksu: "Los viernes, después del rezo.",
     harira: "La sopa con la que se cierra el día en ramadán.",
-    bnin: "En femenino: bnina.",
+    ldid: "En femenino: ldida.",
     ju3an: "En femenino: ju3ana.",
     bsseha: "También se dice después de una ducha o de un corte de pelo.",
     stah: "Donde se tiende la ropa y hablan los vecinos.",

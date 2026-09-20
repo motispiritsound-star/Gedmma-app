@@ -88,7 +88,7 @@ export const SPOKEN_WORD: Record<string, string> = {
 
   // eten
   'بغيت': 'بْغيت',           // bghit
-  'بنين': 'بْنين',           // bnin
+  'لذيذ': 'لَذيذ',           // ldid
   'حليب': 'حْليب',           // hlib
   'جبن': 'جْبن',             // jben
   'تفاح': 'تْفاح',           // tfah

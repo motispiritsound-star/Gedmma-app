@@ -34,7 +34,7 @@ export const en: ContentPack = {
     tajine: "Also the name of the clay pot with the pointed lid.",
     kesksu: "On Friday, after the prayer.",
     harira: "The soup that closes the day in Ramadan.",
-    bnin: "Feminine: bnina.",
+    ldid: "Feminine: ldida.",
     ju3an: "Feminine: ju3ana.",
     bsseha: "Also said after a shower or a fresh haircut.",
     stah: "Where the washing hangs and the neighbours talk.",

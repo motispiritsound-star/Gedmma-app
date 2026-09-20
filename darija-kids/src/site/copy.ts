@@ -22,7 +22,7 @@ const nl = {
   /** `<title>` and the line under the link when somebody shares the site. */
   metaTitle: 'Darijaforkids — leer je kind de taal van thuis',
   metaDescription:
-    'Marokkaans-Arabisch voor kinderen, spelenderwijs. 432 woorden en zinnen, ingesproken door een Marokkaanse stem. Geen account, geen advertenties. Binnenkort in de App Store en Google Play.',
+    'Marokkaans-Arabisch voor kinderen, spelenderwijs. 429 woorden en zinnen, ingesproken door een Marokkaanse stem. Geen account, geen advertenties. Binnenkort in de App Store en Google Play.',
 
   naarInhoud: 'Naar de inhoud',
   menu: {
@@ -46,7 +46,7 @@ const nl = {
     'De taal van oma verdwijnt in één generatie. Tenzij je nu begint.',
     'Van salam tot afdingen op de souq — in 17 units.',
   ],
-  heroBewijs: '432 opnames · 17 units · 304 woorden · 100 zinnen · 28 letters',
+  heroBewijs: '429 opnames · 17 units · 304 woorden · 100 zinnen · 28 letters',
 
   downloadTitel: 'Begin vanavond nog',
   downloadBody:
@@ -68,9 +68,9 @@ const nl = {
 
   stemTitel: 'Geen computerstem. Een mens.',
   stemBody:
-    'Elke taal-app laat een spraakcomputer het werk doen. Voor Darija kan dat niet: er bestáát geen Darija-stem. Elke synthesizer ter wereld is getraind op Standaardarabisch en maakt van نتا "natā" en van جدتي de grootmoeder uit een leerboek. Daarom is elk woord, elke zin en elke letter in deze app door een Marokkaanse stem ingesproken — 432 opnames, één voor één.',
+    'Elke taal-app laat een spraakcomputer het werk doen. Voor Darija kan dat niet: er bestáát geen Darija-stem. Elke synthesizer ter wereld is getraind op Standaardarabisch en maakt van نتا "natā" en van جدتي de grootmoeder uit een leerboek. Daarom is elk woord, elke zin en elke letter in deze app door een Marokkaanse stem ingesproken — 429 opnames, één voor één.',
   stemPunten: [
-    ['432', 'opnames, allemaal met een menselijke stem'],
+    ['429', 'opnames, allemaal met een menselijke stem'],
     ['304', 'woorden, elk in vijf soorten oefeningen'],
     ['100', 'zinnen, van begroeting tot afdingen'],
     ['28', 'letters, met hun vorm aan begin, midden en eind'],
@@ -116,7 +116,7 @@ export type SiteCopy = typeof nl
 const fr: SiteCopy = {
   metaTitle: 'Darijaforkids — offrez à votre enfant la langue de la maison',
   metaDescription:
-    "L'arabe marocain pour les enfants, en jouant. 432 mots et phrases enregistrés par une voix marocaine. Sans compte, sans publicité. Bientôt sur l'App Store et Google Play.",
+    "L'arabe marocain pour les enfants, en jouant. 429 mots et phrases enregistrés par une voix marocaine. Sans compte, sans publicité. Bientôt sur l'App Store et Google Play.",
 
   naarInhoud: 'Aller au contenu',
   menu: {
@@ -140,7 +140,7 @@ const fr: SiteCopy = {
     'La langue de mamie disparaît en une génération. Sauf si vous commencez maintenant.',
     'De « salam » au marchandage au souk — en 17 unités.',
   ],
-  heroBewijs: '432 enregistrements · 17 unités · 304 mots · 100 phrases · 28 lettres',
+  heroBewijs: '429 enregistrements · 17 unités · 304 mots · 100 phrases · 28 lettres',
 
   downloadTitel: 'Commencez ce soir',
   downloadBody:
@@ -162,9 +162,9 @@ const fr: SiteCopy = {
 
   stemTitel: 'Pas une voix de synthèse. Un être humain.',
   stemBody:
-    "Toutes les applis de langues confient le travail à une voix de synthèse. Pour la darija, c'est impossible : il n'existe aucune voix de synthèse en darija. Tous les moteurs du monde sont entraînés sur l'arabe standard et transforment نتا en « natā » et جدتي en la grand-mère des manuels. C'est pourquoi chaque mot, chaque phrase et chaque lettre de cette application a été enregistré par une voix marocaine — 432 enregistrements, un par un.",
+    "Toutes les applis de langues confient le travail à une voix de synthèse. Pour la darija, c'est impossible : il n'existe aucune voix de synthèse en darija. Tous les moteurs du monde sont entraînés sur l'arabe standard et transforment نتا en « natā » et جدتي en la grand-mère des manuels. C'est pourquoi chaque mot, chaque phrase et chaque lettre de cette application a été enregistré par une voix marocaine — 429 enregistrements, un par un.",
   stemPunten: [
-    ['432', 'enregistrements, tous par une voix humaine'],
+    ['429', 'enregistrements, tous par une voix humaine'],
     ['304', 'mots, chacun dans cinq types d’exercices'],
     ['100', 'phrases, de la salutation au marchandage'],
     ['28', 'lettres, avec leur forme au début, au milieu et à la fin'],
@@ -207,7 +207,7 @@ const fr: SiteCopy = {
 const de: SiteCopy = {
   metaTitle: 'Darijaforkids — schenken Sie Ihrem Kind die Sprache von zu Hause',
   metaDescription:
-    'Marokkanisches Arabisch für Kinder, spielerisch. 432 Wörter und Sätze, eingesprochen von einer marokkanischen Stimme. Ohne Konto, ohne Werbung. Bald im App Store und bei Google Play.',
+    'Marokkanisches Arabisch für Kinder, spielerisch. 429 Wörter und Sätze, eingesprochen von einer marokkanischen Stimme. Ohne Konto, ohne Werbung. Bald im App Store und bei Google Play.',
 
   naarInhoud: 'Zum Inhalt',
   menu: {
@@ -231,7 +231,7 @@ const de: SiteCopy = {
     'Die Sprache der Großmutter verschwindet in einer Generation. Es sei denn, Sie fangen jetzt an.',
     'Von „salam“ bis zum Handeln im Souk — in 17 Einheiten.',
   ],
-  heroBewijs: '432 Aufnahmen · 17 Einheiten · 304 Wörter · 100 Sätze · 28 Buchstaben',
+  heroBewijs: '429 Aufnahmen · 17 Einheiten · 304 Wörter · 100 Sätze · 28 Buchstaben',
 
   downloadTitel: 'Fangen Sie heute Abend an',
   downloadBody:
@@ -253,9 +253,9 @@ const de: SiteCopy = {
 
   stemTitel: 'Keine Computerstimme. Ein Mensch.',
   stemBody:
-    'Jede Sprach-App lässt einen Sprachcomputer die Arbeit machen. Für Darija geht das nicht: Es gibt keine Darija-Stimme. Jeder Synthesizer der Welt ist auf Hocharabisch trainiert und macht aus نتا „natā“ und aus جدتي die Großmutter aus dem Lehrbuch. Deshalb wurde jedes Wort, jeder Satz und jeder Buchstabe in dieser App von einer marokkanischen Stimme eingesprochen — 432 Aufnahmen, eine nach der anderen.',
+    'Jede Sprach-App lässt einen Sprachcomputer die Arbeit machen. Für Darija geht das nicht: Es gibt keine Darija-Stimme. Jeder Synthesizer der Welt ist auf Hocharabisch trainiert und macht aus نتا „natā“ und aus جدتي die Großmutter aus dem Lehrbuch. Deshalb wurde jedes Wort, jeder Satz und jeder Buchstabe in dieser App von einer marokkanischen Stimme eingesprochen — 429 Aufnahmen, eine nach der anderen.',
   stemPunten: [
-    ['432', 'Aufnahmen, alle mit menschlicher Stimme'],
+    ['429', 'Aufnahmen, alle mit menschlicher Stimme'],
     ['304', 'Wörter, jedes in fünf Übungsarten'],
     ['100', 'Sätze, vom Gruß bis zum Handeln'],
     ['28', 'Buchstaben, mit ihrer Form am Anfang, in der Mitte und am Ende'],
@@ -298,7 +298,7 @@ const de: SiteCopy = {
 const es: SiteCopy = {
   metaTitle: 'Darijaforkids — devuelve a tu hijo la lengua de casa',
   metaDescription:
-    'Árabe marroquí para niños, jugando. 432 palabras y frases grabadas por una voz marroquí. Sin cuenta, sin anuncios. Muy pronto en la App Store y en Google Play.',
+    'Árabe marroquí para niños, jugando. 429 palabras y frases grabadas por una voz marroquí. Sin cuenta, sin anuncios. Muy pronto en la App Store y en Google Play.',
 
   naarInhoud: 'Ir al contenido',
   menu: {
@@ -322,7 +322,7 @@ const es: SiteCopy = {
     'La lengua de la abuela desaparece en una generación. A menos que empieces hoy.',
     'De «salam» al regateo en el zoco — en 17 unidades.',
   ],
-  heroBewijs: '432 grabaciones · 17 unidades · 304 palabras · 100 frases · 28 letras',
+  heroBewijs: '429 grabaciones · 17 unidades · 304 palabras · 100 frases · 28 letras',
 
   downloadTitel: 'Empieza esta misma noche',
   downloadBody:
@@ -344,9 +344,9 @@ const es: SiteCopy = {
 
   stemTitel: 'No es una voz de ordenador. Es una persona.',
   stemBody:
-    'Todas las apps de idiomas dejan el trabajo a una voz sintética. Con el dariya no se puede: no existe ninguna voz sintética en dariya. Todos los motores del mundo están entrenados en árabe estándar y convierten نتا en «natā» y جدتي en la abuela de los libros de texto. Por eso cada palabra, cada frase y cada letra de esta app las ha grabado una voz marroquí: 432 grabaciones, una a una.',
+    'Todas las apps de idiomas dejan el trabajo a una voz sintética. Con el dariya no se puede: no existe ninguna voz sintética en dariya. Todos los motores del mundo están entrenados en árabe estándar y convierten نتا en «natā» y جدتي en la abuela de los libros de texto. Por eso cada palabra, cada frase y cada letra de esta app las ha grabado una voz marroquí: 429 grabaciones, una a una.',
   stemPunten: [
-    ['432', 'grabaciones, todas con voz humana'],
+    ['429', 'grabaciones, todas con voz humana'],
     ['304', 'palabras, cada una en cinco tipos de ejercicio'],
     ['100', 'frases, del saludo al regateo'],
     ['28', 'letras, con su forma al principio, en medio y al final'],
@@ -389,7 +389,7 @@ const es: SiteCopy = {
 const it: SiteCopy = {
   metaTitle: 'Darijaforkids — ridai a tuo figlio la lingua di casa',
   metaDescription:
-    'Arabo marocchino per bambini, giocando. 432 parole e frasi registrate da una voce marocchina. Senza account, senza pubblicità. Presto su App Store e Google Play.',
+    'Arabo marocchino per bambini, giocando. 429 parole e frasi registrate da una voce marocchina. Senza account, senza pubblicità. Presto su App Store e Google Play.',
 
   naarInhoud: 'Vai al contenuto',
   menu: {
@@ -413,7 +413,7 @@ const it: SiteCopy = {
     'La lingua della nonna sparisce in una generazione. A meno che tu non cominci oggi.',
     'Da «salam» alla trattativa al souk — in 17 unità.',
   ],
-  heroBewijs: '432 registrazioni · 17 unità · 304 parole · 100 frasi · 28 lettere',
+  heroBewijs: '429 registrazioni · 17 unità · 304 parole · 100 frasi · 28 lettere',
 
   downloadTitel: 'Comincia stasera',
   downloadBody:
@@ -435,9 +435,9 @@ const it: SiteCopy = {
 
   stemTitel: 'Non una voce sintetica. Una persona.',
   stemBody:
-    'Ogni app di lingue lascia il lavoro a una voce sintetica. Con il darija non si può: una voce sintetica in darija non esiste. Tutti i motori del mondo sono addestrati sull’arabo standard e trasformano نتا in «natā» e جدتي nella nonna dei manuali. Per questo ogni parola, ogni frase e ogni lettera di quest’app è stata registrata da una voce marocchina: 432 registrazioni, una per una.',
+    'Ogni app di lingue lascia il lavoro a una voce sintetica. Con il darija non si può: una voce sintetica in darija non esiste. Tutti i motori del mondo sono addestrati sull’arabo standard e trasformano نتا in «natā» e جدتي nella nonna dei manuali. Per questo ogni parola, ogni frase e ogni lettera di quest’app è stata registrata da una voce marocchina: 429 registrazioni, una per una.',
   stemPunten: [
-    ['432', 'registrazioni, tutte con voce umana'],
+    ['429', 'registrazioni, tutte con voce umana'],
     ['304', 'parole, ciascuna in cinque tipi di esercizio'],
     ['100', 'frasi, dal saluto alla trattativa'],
     ['28', 'lettere, con la forma all’inizio, in mezzo e alla fine'],
@@ -480,7 +480,7 @@ const it: SiteCopy = {
 const en: SiteCopy = {
   metaTitle: 'Darijaforkids — give your child the language of home',
   metaDescription:
-    'Moroccan Arabic for children, through play. 432 words and sentences recorded by a Moroccan voice. No account, no ads. Coming soon to the App Store and Google Play.',
+    'Moroccan Arabic for children, through play. 429 words and sentences recorded by a Moroccan voice. No account, no ads. Coming soon to the App Store and Google Play.',
 
   naarInhoud: 'Skip to content',
   menu: {
@@ -504,7 +504,7 @@ const en: SiteCopy = {
     'Grandma’s language disappears in one generation. Unless you start now.',
     'From “salam” to haggling in the souk — in 17 units.',
   ],
-  heroBewijs: '432 recordings · 17 units · 304 words · 100 sentences · 28 letters',
+  heroBewijs: '429 recordings · 17 units · 304 words · 100 sentences · 28 letters',
 
   downloadTitel: 'Start tonight',
   downloadBody:
@@ -526,9 +526,9 @@ const en: SiteCopy = {
 
   stemTitel: 'Not a computer voice. A person.',
   stemBody:
-    'Every language app hands the work to a speech engine. For Darija that is not possible: there is no Darija voice. Every synthesiser in the world is trained on Modern Standard Arabic and turns نتا into "natā" and جدتي into the grandmother of a textbook. So every word, every sentence and every letter in this app was recorded by a Moroccan voice — 432 recordings, one at a time.',
+    'Every language app hands the work to a speech engine. For Darija that is not possible: there is no Darija voice. Every synthesiser in the world is trained on Modern Standard Arabic and turns نتا into "natā" and جدتي into the grandmother of a textbook. So every word, every sentence and every letter in this app was recorded by a Moroccan voice — 429 recordings, one at a time.',
   stemPunten: [
-    ['432', 'recordings, every one of them a human voice'],
+    ['429', 'recordings, every one of them a human voice'],
     ['304', 'words, each in five kinds of exercise'],
     ['100', 'sentences, from a greeting to haggling'],
     ['28', 'letters, with their shape at the start, middle and end'],
