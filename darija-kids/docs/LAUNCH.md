@@ -70,7 +70,8 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 - [ ] Google: identiteitsverificatie — documenten aangeleverd, **wachten**
 - [x] Google: het account staat als **organisatie** — de gesloten test met 12
       testers × 14 dagen vervalt daarmee (§6)
-- [x] Google: website van de organisatie geverifieerd — TXT-regel bij Cloudflare, Search Console als Domain-property (§PLAY 1)
+- [x] Google: website van de organisatie geverifieerd — via een **URL-prefix**-property
+      in Search Console; een Domain-property alleen is niet genoeg (§PLAY 1)
 - [ ] Google: **telefoonnummers verifiëren** — kan pas als identiteit en website groen zijn
 - [ ] Google: bankrekening en belastinggegevens invullen (§2)
 

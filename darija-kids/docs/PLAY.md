@@ -48,15 +48,20 @@ gepubliceerd worden. Ze horen in deze volgorde:
 | Taak | Wat het is | Wanneer |
 |---|---|---|
 | **Identiteit** | KvK-uittreksel en identiteitsbewijs, al geüpload | loopt — enkele dagen |
-| **Website van de organisatie** | aantonen dat `darijaforkids.eu` van jou is | **gedaan** |
+| **Website van de organisatie** | aantonen dat `darijaforkids.eu` van jou is | **gedaan** — groen |
 | **Telefoonnummers** | een code per sms of telefoon | pas ná de identiteit |
 
 **De website.** *View details* stuurt je naar Google Search Console, en die
-vraagt eerst wat voor property je wilt: **Domain** of **URL prefix**. Kies
-**Domain** — links. Die dekt het hele domein, met en zonder `www`, over http
-en https, en dat is precies wat Play wil zien. URL prefix dekt alleen het ene
-adres dat je intikt, en dan struikelt de verificatie over `www` of over een
-protocol dat net anders is.
+vraagt eerst wat voor property je wilt: **Domain** of **URL prefix**. Neem
+**URL prefix** — rechts.
+
+Dat is tegen de intuïtie in. Een Domain-property is de nettere: die dekt het
+hele domein, met en zonder `www`, over http en https. Maar de Play Console
+koppelt niet aan een domein, hij koppelt aan een adres, en zijn
+verificatieverzoek komt bij een Domain-property simpelweg niet aan — de
+Associations-pagina daar blijft leeg, zonder foutmelding, zonder uitleg.
+Vandaar dat er hier twee properties naast elkaar staan: de Domain voor de
+nette DNS-verificatie, en de URL-prefix voor Google Play. Dat kost niets.
 
 In het vakje komt **`darijaforkids.eu`** — kaal. Geen `https://`, geen `www.`,
 geen schuine streep erachter. Search Console geeft daarna één regel terug die
