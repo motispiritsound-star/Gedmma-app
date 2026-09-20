@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import type { Word } from '../content/types'
-import { say, sfx, type SayOptions } from '../engine/audio'
+import { say, type SayOptions } from '../engine/audio'
 import { useStore } from '../engine/store'
 import { useLang, useT } from '../i18n'
 import { meaningOf, noteOf } from '../content/localise'
@@ -44,7 +44,7 @@ export function SpeakButton({ ar, tr, latin, className = '', label }: {
   return (
     <motion.button
       whileTap={{ scale: 0.9 }}
-      onClick={() => { sfx.tap(); say(ar, { tr, latin }) }}
+      onClick={() => say(ar, { tr, latin })}
       onDoubleClick={() => say(ar, { tr, latin, slow: true })}
       title={t.lesson.luisterTitel}
       aria-label={label ?? t.lesson.luister}

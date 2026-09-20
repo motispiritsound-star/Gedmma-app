@@ -172,7 +172,7 @@ function TimeRace({ onExit }: { onExit: () => void }) {
       <Card className="mt-6 p-6 text-center">
         <div className="text-4xl" aria-hidden="true">{target.emoji}</div>
         <div className="ar mt-2 text-4xl font-bold">{target.ar}</div>
-        <button className="mt-1 text-sm font-bold text-zellige-600 underline dark:text-zellige-300" onClick={() => { sfx.tap(); say(target.ar, { tr: target.tr }) }}>
+        <button className="mt-1 text-sm font-bold text-zellige-600 underline dark:text-zellige-300" onClick={() => say(target.ar, { tr: target.tr })}>
           {target.tr} · {t.games.luisterLink}
         </button>
       </Card>

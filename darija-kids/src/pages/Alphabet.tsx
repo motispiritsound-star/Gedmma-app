@@ -44,7 +44,7 @@ export function Alphabet() {
               key={l.id}
               onClick={() => {
                 if (opSlot) { sfx.back(); navigate('/volledig'); return }
-                setPicked(l.id); sfx.tap(); sayLetter(l)
+                setPicked(l.id); sayLetter(l)
               }}
               className={`ar relative aspect-square rounded-2xl border-2 text-2xl font-bold transition ${l.id === picked ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)] bg-[var(--surface-raised)] hover:border-zellige-400'} ${opSlot ? 'opacity-45' : ''}`}
               aria-label={opSlot ? `${l.name} — ${t.unlock.slotTitel}` : l.name}

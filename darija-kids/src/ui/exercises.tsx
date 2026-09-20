@@ -120,14 +120,14 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
           <div className="flex flex-col items-center gap-3">
             <motion.button
               whileTap={{ scale: 0.92 }}
-              onClick={() => { sfx.tap(); say(w.ar, { tr: w.tr }) }}
+              onClick={() => say(w.ar, { tr: w.tr })}
               onDoubleClick={() => say(w.ar, { tr: w.tr, slow: true })}
               className="grid h-28 w-28 place-items-center rounded-full bg-gradient-to-br from-zellige-300 to-zellige-700 text-5xl text-white shadow-lg"
               aria-label={t.lesson.speelAf}
             >
               🔊
             </motion.button>
-            <button className="text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => { sfx.tap(); say(w.ar, { tr: w.tr, slow: true }) }}>
+            <button className="text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => say(w.ar, { tr: w.tr, slow: true })}>
               {t.lesson.langzamer}
             </button>
           </div>
@@ -764,14 +764,14 @@ function SentenceChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { 
           <div className="flex flex-col items-center gap-3">
             <motion.button
               whileTap={{ scale: 0.92 }}
-              onClick={() => { sfx.tap(); say(z.ar, { tr: z.tr }) }}
+              onClick={() => say(z.ar, { tr: z.tr })}
               onDoubleClick={() => say(z.ar, { tr: z.tr, slow: true })}
               className="grid h-28 w-28 place-items-center rounded-full bg-gradient-to-br from-zellige-300 to-zellige-700 text-5xl text-white shadow-lg"
               aria-label={t.lesson.speelAf}
             >
               🔊
             </motion.button>
-            <button className="text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => { sfx.tap(); say(z.ar, { tr: z.tr, slow: true }) }}>
+            <button className="text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => say(z.ar, { tr: z.tr, slow: true })}>
               {t.lesson.langzamer}
             </button>
           </div>

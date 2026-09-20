@@ -107,7 +107,7 @@ export function Landing() {
                 <p className="mt-1 font-display text-lg font-extrabold text-zellige-600 dark:text-zellige-300">{w.tr}</p>
                 <p className="text-[var(--ink-soft)]">{w.emoji} {meaning(w)}</p>
                 <div className="mt-4 flex justify-center gap-2">
-                  <Button variant="secondary" mute onClick={() => { sfx.tap(); say(w.ar, { tr: w.tr }) }}>{t.landing.hoorHet}</Button>
+                  <Button variant="secondary" mute onClick={() => say(w.ar, { tr: w.tr })}>{t.landing.hoorHet}</Button>
                   <Button onClick={() => { sfx.tap(); setTaste((n) => n + 1) }}>{t.landing.volgende}</Button>
                 </div>
               </Card>
