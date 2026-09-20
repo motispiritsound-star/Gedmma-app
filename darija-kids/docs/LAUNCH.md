@@ -112,7 +112,8 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 - [x] Winkelteksten in zes talen — `store/play-pakket/<taal>/teksten.md`
 - [x] Icoon en splashscherm — `npm run assets`
 - [x] Het e-boek in zes talen — `npm run ebook`
-- [ ] Apple: naam, ondertitel, trefwoorden, beschrijving en screenshots per taal — pakket met `npm run applepakket`
+- [x] Apple: naam, ondertitel, trefwoorden, promotietekst, beschrijving en de
+      schermafbeeldingen voor iPhone en iPad, in alle zes de talen
 - [ ] Google: de winkelvermelding per taal, begin bij en-US (§PLAY 6) — pakket met `npm run playpakket`
 - [ ] Android: een **AAB** bouwen en ondertekenen, keystore op twee plekken bewaren (§3)
 - [ ] **Een Mac regelen** — zonder macOS geen iOS-build, en dus geen App Store (§3)
@@ -123,7 +124,7 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 - [x] Apple **App Privacy** — gepubliceerd: e-mailadres en product interaction,
       allebei gekoppeld aan de persoon, geen van beide voor tracking (§4)
 - [x] Apple **Age Rating** — overal None ingevuld, staat op 4+ in 172 landen
-- [ ] Apple: categorie **Education**; de Kids Category pas bij een latere versie
+- [x] Apple: categorie **Education**, geen Kids Category — die kan bij een latere versie
 - [ ] Google **Gegevensbeveiliging** — deelt niets, maar verzamelt wél een
       e-mailadres en voortgangsgetallen als een ouder daarom vraagt (§4)
 - [ ] Google **Doelgroep en inhoud** — onder 13, dus Families-beleid
