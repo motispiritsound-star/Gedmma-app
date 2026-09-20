@@ -55,22 +55,14 @@ WAS AM WEG STEHT
 • Vierzehn kurze Filme aus der Geschichte Marokkos, einer nach jedem Test
 • Ein Wiederholstapel, der selbst merkt, was zu wackeln beginnt
 
-UND WENN DER KURS ZU ENDE IST
-Dann fängt es an. Die Bonusrunden werden aus dem gebaut, was du schon kennst, also sind sie jedes Mal anders: Schreiben, Diktat, Sätze bauen, ein Marathon aus dreißig Fragen und sechs Wörter laut. Die Anzeige oben misst, was gerade fest sitzt — und sinkt von selbst, wenn du länger wegbleibst.
-
 NACH JEDEM TEST EIN STÜCK MAROKKO
-Jeder Checkpoint bringt einen kurzen Film: vierzehn Karten in der Reihenfolge der Geschichte, von der römischen Stadt Walili bis zum Tifinagh-Alphabet, das 2011 amtlich wurde. Fatima al-Fihri, die 859 die älteste Universität der Welt gründete und ihr ganzes Erbe dafür ausgab. Tariq, nach dem Gibraltar heißt. Die 120.000 Kilometer von Ibn Battuta. Der Löwe des Atlas. Sie werden in deiner Sprache vorgelesen, enden mit einem „Wusstest du schon?" und bleiben in deiner Sammlung.
+Jeder Checkpoint bringt einen kurzen Film: vierzehn Karten in der Reihenfolge der Geschichte, von der römischen Stadt Walili bis zum Tifinagh-Alphabet, das 2011 amtlich wurde. Sie werden in deiner Sprache vorgelesen, enden mit einem „Wusstest du schon?" und bleiben in deiner Sammlung.
 
 ALLES KLINGT
 Jedes Wort und jeder Satz lässt sich anhören: einmal tippen für normal, zweimal für langsam. Hat dein Gerät keine arabische Stimme, sagt die App das ehrlich und liest die lateinische Schreibweise so gut wie möglich vor.
 
-IN DEINER SPRACHE
-Deutsch, Niederländisch, Französisch, Spanisch, Italienisch und Englisch. Du wählst beim Start und kannst jederzeit wechseln: Übersetzungen, Erklärungen und Geschichten wechseln mit.
-
 KOSTENLOS ANFANGEN
 Die ersten vier Lektionen sind und bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs gehört zum vollen Zugang: die ersten Tage gratis, danach 5,00 € pro Monat im Jahresabo (59,99 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Kündbar im eigenen App-Store- oder Google-Play-Konto; wer vor Ende der Testphase kündigt, zahlt nichts.
-
-Und eines ist einzeln zu haben: das E-Book, der ganze Kurs auf Papier — alle 28 Buchstaben mit ihren drei Formen, alle 17 Einheiten mit den Grammatikerklärungen, alle Wörter und alle Sätze. 14,99 €, einmalig, und im Jahresabo enthalten.
 
 GEMACHT, UM ES EINEM KIND ZU GEBEN
 • Kein Konto, kein Login — ein Kind trägt hier nichts ein
@@ -80,9 +72,6 @@ GEMACHT, UM ES EINEM KIND ZU GEBEN
 • Der gesamte Fortschritt bleibt auf dem Gerät
 • Herzen lassen sich ganz abschalten — Fehler gehören dazu
 • Funktioniert ohne Internet, im Flugzeug wie in Marokko
-
-FÜR ELTERN UND LEHRKRÄFTE
-In der App gibt es eine Seite dazu, wie hier gelernt wird, was die App tut und was nicht, und wie man zu Hause mithilft. Im Unterricht läuft Darijaforkids auf jedem Gerät, ohne Installation und ohne Konto.
 
 EHRLICH ZUR SPRACHE
 Darija unterscheidet sich von Stadt zu Stadt und von Familie zu Familie und hat keine offizielle Rechtschreibung. Wir wählen die Form, die man in Casablanca und Rabat am häufigsten hört. Sagt deine Oma es anders, hat deine Oma recht — das sagt die App auch selbst.

@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { SITE } from './copy'
 import { PATHS, SITE_URL, STORE } from './links'
@@ -119,4 +120,42 @@ describe('de adressen van de website', () => {
       if (url) expect(url, winkel).toMatch(/^https:\/\//)
     }
   })
+})
+
+/**
+ * De winkelteksten, tegen de limieten van de winkels zelf.
+ *
+ * Apple kapt een beschrijving niet af maar weigert hem: het veld neemt er
+ * vierduizend en geen teken meer. Dat merk je pas als je staat te plakken in
+ * een console, met de app al aangemaakt — en dan in zes talen achter elkaar.
+ * Vandaar hier, waar het een seconde kost.
+ */
+describe('de winkelteksten', () => {
+  const LIMIET: Record<string, number> = {
+    Naam: 30, Name: 30, Titel: 30, Title: 30, Titre: 30, Título: 30, Titolo: 30,
+    Ondertitel: 30, Subtitle: 30, Untertitel: 30, Subtítulo: 30, Sottotitolo: 30,
+    Trefwoorden: 100, Keywords: 100, Schlüsselwörter: 100, 'Mots-clés': 100,
+    'Palabras clave': 100, 'Parole chiave': 100,
+  }
+
+  for (const lang of LANG_CODES) {
+    const tekst = readFileSync(new URL(`../../store/listing.${lang}.md`, import.meta.url), 'utf8')
+
+    it(`blijft in ${lang} onder de vierduizend tekens`, () => {
+      const blokken = [...tekst.matchAll(/```\n([\s\S]*?)\n```/g)].map((m) => m[1]!)
+      expect(blokken.length, 'geen beschrijving gevonden').toBeGreaterThan(0)
+      const langste = blokken.reduce((a, b) => (a.length > b.length ? a : b))
+      expect(langste.length, `beschrijving in ${lang}`).toBeLessThanOrEqual(4000)
+    })
+
+    it(`houdt zich in ${lang} aan de korte velden`, () => {
+      const velden = [...tekst.matchAll(/\*\*([^*(]+?)\s*\(m[aá]x\.?\s*(\d+)[^)]*\)\*\*\n`([^`]*)`/g)]
+      expect(velden.length, `geen velden gevonden in ${lang}`).toBeGreaterThan(0)
+      for (const m of velden) {
+        const naam = m[1]!.trim()
+        const max = LIMIET[naam] ?? Number(m[2])
+        expect(m[3]!.length, `${lang} · ${naam}`).toBeLessThanOrEqual(max)
+      }
+    })
+  }
 })

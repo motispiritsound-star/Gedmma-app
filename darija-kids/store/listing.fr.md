@@ -55,22 +55,14 @@ CE QU'IL Y A LE LONG DU PARCOURS
 • Quatorze courts films sur l'histoire du Maroc, un après chaque test
 • Une pile de révision qui repère toute seule ce qui commence à vaciller
 
-ET QUAND LE COURS EST FINI
-Ça commence. Les tours bonus sont faits de ce que tu connais déjà, donc ils sont différents à chaque fois : écrire, dictée, construire des phrases, un marathon de trente questions et six mots à voix haute. Le compteur en haut mesure ce qui tient debout maintenant — et il baisse tout seul si tu t’absentes.
-
 APRÈS CHAQUE TEST, UN MORCEAU DU MAROC
-Chaque étape donne droit à un court film : quatorze cartes dans l’ordre de l’histoire, de la ville romaine de Walili jusqu’à l’alphabet tifinagh devenu officiel en 2011. Fatima al-Fihri, qui fonda en 859 la plus ancienne université du monde en y consacrant tout son héritage. Tariq, dont Gibraltar porte le nom. Les 120 000 kilomètres d’Ibn Battuta. Le lion de l’Atlas. Ils sont lus à voix haute dans ta langue, finissent sur un « le savais-tu ? » et restent dans ta collection.
+Chaque étape donne droit à un court film : quatorze cartes dans l’ordre de l’histoire, de la ville romaine de Walili jusqu’à l’alphabet tifinagh devenu officiel en 2011. » et restent dans ta collection.
 
 TOUT SE PRONONCE
 Chaque mot et chaque phrase peut être écouté : une touche pour la vitesse normale, deux pour la version lente. Si ton appareil n'a pas de voix arabe, l'application le dit honnêtement et lit l'écriture latine du mieux qu'elle peut.
 
-DANS TA LANGUE
-Français, néerlandais, allemand, espagnol, italien et anglais. Tu choisis au démarrage et tu peux changer à tout moment : traductions, explications et histoires suivent.
-
 COMMENCER GRATUITEMENT
 Les quatre premières leçons sont et restent gratuites : trois morceaux de l'alphabet arabe et tes premiers mots en darija. Le cours complet va avec l'accès complet : les premiers jours offerts, puis 5,00 € par mois avec un abonnement annuel (59,99 € en une fois) ou 6,99 € par mois, TTC. Résiliable dans ton compte App Store ou Google Play ; en résiliant avant la fin de l'essai, tu ne paies rien.
-
-Et une chose s'achète à part : l'e-book, tout le cours sur papier — les 28 lettres avec leurs trois formes, les 17 unités avec les explications de grammaire, tous les mots et toutes les phrases. 14,99 €, une seule fois, et compris avec l'abonnement annuel.
 
 FAIT POUR ÊTRE CONFIÉ À UN ENFANT
 • Pas de compte, pas de connexion — un enfant ne remplit rien ici
@@ -80,9 +72,6 @@ FAIT POUR ÊTRE CONFIÉ À UN ENFANT
 • Toute la progression reste sur l'appareil
 • Les cœurs peuvent être désactivés — se tromper fait partie de l'apprentissage
 • Fonctionne sans internet, en avion comme au Maroc
-
-POUR LES PARENTS ET LES ENSEIGNANTS
-L'application contient une page qui explique comment on y apprend, ce qu'elle fait et ne fait pas, et comment aider à la maison. En classe, Darijaforkids tourne sur n'importe quel appareil, sans installation ni compte.
 
 HONNÊTE SUR LA LANGUE
 Le darija change d'une ville et d'une famille à l'autre, et n'a pas d'orthographe officielle. Nous choisissons la forme la plus courante à Casablanca et à Rabat. Si ta grand-mère le dit autrement, c'est elle qui a raison — l'application le dit elle-même.
@@ -97,7 +86,7 @@ Le darija change d'une ville et d'une famille à l'autre, et n'a pas d'orthograp
 `Darijaforkids`
 
 **Description courte (max 80)**
-`L'arabe marocain pour enfants : leçons courtes, vraie prononciation, début gratuit.`
+`L'arabe marocain pour enfants : leçons courtes, vraie prononciation, gratuit.`
 
 **Description complète (max 4000)**
 Le même texte que la description App Store ci-dessus.
