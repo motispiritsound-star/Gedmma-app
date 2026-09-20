@@ -121,10 +121,12 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 
 ### De formulieren
 
-- [ ] Apple **App Privacy** — *No, we do not collect data from this app* (§4)
+- [ ] Apple **App Privacy** — **ja, er wordt verzameld**: e-mailadres en, na
+      toestemming, vijf voortgangsgetallen. Niet voor tracking (§4)
 - [x] Apple **Age Rating** — overal None ingevuld, staat op 4+ in 172 landen
 - [ ] Apple: categorie **Education**; de Kids Category pas bij een latere versie
-- [ ] Google **Gegevensbeveiliging** — verzamelt en deelt niets (§4)
+- [ ] Google **Gegevensbeveiliging** — deelt niets, maar verzamelt wél een
+      e-mailadres en voortgangsgetallen als een ouder daarom vraagt (§4)
 - [ ] Google **Doelgroep en inhoud** — onder 13, dus Families-beleid
 - [ ] Google **Inhoudsclassificatie** en **Advertenties: nee**
 - [ ] Handelaarsgegevens in beide consoles — dezelfde als in `operator.ts`
@@ -498,10 +500,26 @@ bij een winkel, maar wel bij een lancering.
 
 ## 4. De formulieren die niemand leuk vindt
 
-**Google Play → Data safety.** Geen gegevens verzameld, geen gegevens gedeeld.
-Dat is letterlijk waar. De enige vraag waar je even bij nadenkt: spraakherkenning
-is in de Android-webweergave niet beschikbaar, dus de app vraagt geen
-microfoontoestemming.
+**Wat de app werkelijk verzamelt.** Bijna niets, maar niet niets — en dat
+verschil is precies waar een winkel op afkeurt.
+
+Er is één formulier dat de app uit gaat: de aanmelding op het ouderscherm,
+achter dezelfde rekensom als de aankoop. Dat stuurt een **e-mailadres**, de
+taal van de app en twee vinkjes. Heeft de ouder om de weekmail gevraagd én het
+adres in de inbox bevestigd, dan stuurt de app daarna hoogstens één keer per
+dag **vijf getallen**: units, lessen, woorden, langste reeks en XP. Geen naam,
+geen antwoorden, geen apparaat-id, niets dat zegt wélk kind. Het staat
+uitgeschreven in [`server/LEES-MIJ.md`](../server/LEES-MIJ.md).
+
+Verder gaat er niets weg. Geen SDK van een ander, geen advertentienetwerk,
+geen analytics.
+
+**Google Play → Data safety.** *Verzamelt: ja. Deelt: nee.* Twee typen:
+e-mailadres (onder "Persoonlijke informatie") en app-activiteit (de vijf
+getallen). Bij allebei: versleuteld onderweg, de gebruiker kan om verwijdering
+vragen, en het is **optioneel** — de app werkt zonder. De enige vraag waar je
+even bij nadenkt: spraakherkenning is in de Android-webweergave niet
+beschikbaar, dus de app vraagt geen microfoontoestemming.
 
 **Google Play → Doelgroep.** Vink de leeftijdsgroepen onder 13 aan. Daarmee val
 je onder het **Families-beleid**: geen advertenties en geen analytics van
@@ -516,8 +534,23 @@ abonnementsscherm gebouwd is.
 in; als particulier kies je "geen handelaar" — maar dan mag je geen abonnement
 verkopen.
 
-**App Store → App Privacy.** Kies "Data Not Collected". Er is geen SDK in deze
-app die iets verzamelt.
+**App Store → App Privacy.** Niet "Data Not Collected" — dat zou onwaar zijn.
+Apple kent een uitzondering voor gegevens die iemand zelf, af en toe en
+vrijwillig invult, maar die geldt níét zodra het voor marketing wordt
+gebruikt, en de nieuwsbrief is dat. Dus: **ja**, en dan twee typen.
+
+| Type | Waarvoor | Aan de persoon gekoppeld | Tracking |
+|---|---|---|---|
+| Contact Info → **Email Address** | Developer's Advertising or Marketing, plus App Functionality | Ja | Nee |
+| Usage Data → **Product Interaction** | App Functionality | Ja | Nee |
+
+"Aan de persoon gekoppeld" is ja omdat het adres zelf de persoon is, en de
+vijf getallen onder het id van dat adres binnenkomen. "Tracking" is nee: er
+gaat niets naar een ander, en er wordt niets gecombineerd met gegevens van
+elders. Dat onderscheid is wat Apple echt controleert.
+
+Op diezelfde pagina staat het veld voor het **privacybeleid**:
+`https://darijaforkids.eu/privacy`.
 
 **App Store → Age Rating.** De vragenlijst levert 4+ op.
 
