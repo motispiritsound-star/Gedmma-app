@@ -19,6 +19,9 @@ export function Games() {
   const t = useT()
   const [game, setGame] = useState<Game>('menu')
   const seen = useStore((s) => Object.keys(s.cards).length)
+  // De spelletjes putten uit de hele woordenschat. Zonder slot zou iemand
+  // daarmee alle 304 woorden kunnen oefenen zonder één betaalde les te doen.
+  const gekocht = useStore((s) => s.unlocked)
 
   if (game === 'race') return <TimeRace onExit={() => setGame('menu')} />
   if (game === 'memory') return <Memory onExit={() => setGame('menu')} />
@@ -30,19 +33,31 @@ export function Games() {
       {/* Not a game, but the same promise: something to do that is not a lesson. */}
       <div className="mb-4"><BonusCard /></div>
 
+      {!gekocht && (
+        <Card className="mb-4 flex flex-wrap items-center gap-3 p-4">
+          <span className="text-xl" aria-hidden="true">🔒</span>
+          <p className="min-w-0 flex-1 text-sm">{t.games.slotUitleg}</p>
+          <Link to="/volledig"><Button variant="secondary">{t.unlock.slotKnop}</Button></Link>
+        </Card>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2">
         <Card className="flex flex-col p-5">
           <span className="text-4xl" aria-hidden="true">⏱️</span>
           <h2 className="mt-2 font-display text-xl font-extrabold">{t.games.race}</h2>
           <p className="flex-1 text-sm text-[var(--ink-soft)]">{t.games.raceUitleg}</p>
-          <Button className="mt-4" onClick={() => setGame('race')}>{t.common.start}</Button>
+          {gekocht
+            ? <Button className="mt-4" onClick={() => setGame('race')}>{t.common.start}</Button>
+            : <Link to="/volledig" className="mt-4"><Button variant="secondary" className="w-full">🔒 {t.unlock.slotKnop}</Button></Link>}
         </Card>
 
         <Card className="flex flex-col p-5">
           <span className="text-4xl" aria-hidden="true">🃏</span>
           <h2 className="mt-2 font-display text-xl font-extrabold">{t.games.memory}</h2>
           <p className="flex-1 text-sm text-[var(--ink-soft)]">{t.games.memoryUitleg}</p>
-          <Button className="mt-4" onClick={() => setGame('memory')}>{t.common.start}</Button>
+          {gekocht
+            ? <Button className="mt-4" onClick={() => setGame('memory')}>{t.common.start}</Button>
+            : <Link to="/volledig" className="mt-4"><Button variant="secondary" className="w-full">🔒 {t.unlock.slotKnop}</Button></Link>}
         </Card>
 
         <Card className="flex flex-col p-5">

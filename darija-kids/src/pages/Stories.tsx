@@ -13,17 +13,29 @@ export function Stories() {
   const t = useT()
   const lang = useLang()
   const lessons = useStore((s) => s.lessons)
+  // De verhalen horen bij de cursus, niet bij het gratis begin. Ze staan er
+  // wel allemaal op: zien wat er komt is de beste reden om verder te willen.
+  const gekocht = useStore((s) => s.unlocked)
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
       <SectionTitle sub={t.stories.uitleg}>{t.stories.titel}</SectionTitle>
+
+      {!gekocht && (
+        <Card className="mb-4 flex flex-wrap items-center gap-3 p-4">
+          <span className="text-xl" aria-hidden="true">🔒</span>
+          <p className="min-w-0 flex-1 text-sm">{t.stories.slotUitleg}</p>
+          <Link to="/volledig"><Button variant="secondary">{t.unlock.slotKnop}</Button></Link>
+        </Card>
+      )}
+
       <ul className="grid gap-4 sm:grid-cols-2">
         {STORIES.map((s) => {
           const local = storyOf(s, lang)
           return (
           <li key={s.id}>
-            <Link to={`/verhalen/${s.id}`}>
+            <Link to={gekocht ? `/verhalen/${s.id}` : '/volledig'} className={gekocht ? '' : 'opacity-70'}>
               <Card className="flex h-full items-center gap-4 p-5 transition hover:border-zellige-500">
-                <span className="text-4xl" aria-hidden="true">{s.emoji}</span>
+                <span className="text-4xl" aria-hidden="true">{gekocht ? s.emoji : '🔒'}</span>
                 <div className="min-w-0">
                   <h2 className="font-display text-lg font-extrabold">{local.title}</h2>
                   <p className="text-sm text-[var(--ink-soft)]">{local.intro}</p>

@@ -198,6 +198,7 @@ export const fr: Strings = {
     zoekLabel: 'Chercher un mot',
     alles: 'Tout',
     resultaten: (n) => `${n} résultats`,
+    slotUitleg: 'Tu entends les mots que tu as appris. Le reste est déjà là : il s’ouvre avec l’abonnement.',
     nietsGevonden: 'Rien trouvé. Essaie un autre mot — ou cherche dans ta langue.',
   },
 
@@ -225,6 +226,7 @@ export const fr: Strings = {
     uitleg:
       '28 lettres plus trois lettres marocaines en plus. Elles changent de forme au début, au milieu et à la fin d’un mot.',
     klinktAls: (klank) => `Se prononce : ${klank}`,
+    slotUitleg: 'Les lettres de tes premières leçons, tu peux les entendre. Le reste est déjà là : il s’ouvre avec l’abonnement.',
     latijn: 'Écriture en lettres latines',
     begin: 'début',
     midden: 'milieu',
@@ -241,6 +243,7 @@ export const fr: Strings = {
   },
 
   stories: {
+    slotUitleg: 'Les histoires font partie du cours complet. Tu vois déjà lesquelles il y a.',
     titel: 'Histoires',
     uitleg: 'De courtes conversations, comme dans la vraie vie. Touche une phrase pour la traduction, ou fais-la lire.',
     zinnen: (n) => `${n} phrases`,
@@ -311,6 +314,7 @@ export const fr: Strings = {
   },
 
   games: {
+    slotUitleg: 'Les jeux font travailler tout le vocabulaire et font partie de l’abonnement.',
     titel: 'Jouer',
     uitleg: 'Pas de leçon ici — juste des jeux. Tout ce que tu croises compte pour tes mots.',
     race: 'Course contre la montre',
@@ -546,7 +550,7 @@ export const fr: Strings = {
     probeer: 'Essaie tout de suite',
     hoorHet: '🔊 Écoute',
     volgende: 'Suivant',
-    waaromTitel: 'Pourquoi ça reste',
+    waaromTitel: 'Pourquoi ton enfant s’en souvient',
     waarom: [
       ['🎧', 'Tout se prononce', 'Chaque mot et chaque phrase peut être écouté — une touche pour la vitesse normale, deux pour la version lente.'],
       ['🔁', 'Révisions intelligentes', 'Les mots reviennent juste avant l’oubli, et les plus difficiles plus souvent.'],

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import type { Topic } from '../content/types'
 import { allWords, searchWords, TOPIC_EMOJI, TOPICS } from '../content/lexicon'
@@ -6,8 +7,8 @@ import { meaningOf, noteOf } from '../content/localise'
 import { useLang, useT } from '../i18n'
 import { strengthLabel } from '../engine/srs'
 import { sfx } from '../engine/audio'
-import { useStore } from '../engine/store'
-import { Card, Pill, SectionTitle } from '../ui/kit'
+import { useStore, woordOpSlot } from '../engine/store'
+import { Button, Card, Pill, SectionTitle } from '../ui/kit'
 import { SpeakButton, WordText } from '../ui/WordChip'
 import { WordFeedback } from '../ui/Feedback'
 
@@ -15,7 +16,9 @@ import { WordFeedback } from '../ui/Feedback'
 export function Words() {
   const t = useT()
   const lang = useLang()
-  const cards = useStore((s) => s.cards)
+  const navigate = useNavigate()
+  const state = useStore((s) => s)
+  const cards = state.cards
   const [query, setQuery] = useState('')
   const [topic, setTopic] = useState<Topic | 'alles'>('alles')
   const [open, setOpen] = useState<string | null>(null)
@@ -61,17 +64,33 @@ export function Words() {
 
       <p className="mt-4 text-sm text-[var(--ink-soft)]">{t.words.resultaten(results.length)}</p>
 
+      {!state.unlocked && (
+        <Card className="mt-3 flex flex-wrap items-center gap-3 p-4">
+          <span className="text-xl" aria-hidden="true">🔒</span>
+          <p className="min-w-0 flex-1 text-sm">{t.words.slotUitleg}</p>
+          <Link to="/volledig"><Button variant="secondary">{t.unlock.slotKnop}</Button></Link>
+        </Card>
+      )}
+
       <ul className="mt-2 space-y-2">
         {results.map((w) => {
           const card = cards[w.id]
           const isOpen = open === w.id
+          // Het woordenboek toont alles, ook wat nog niet van jou is: zien wat
+          // er komt is de beste reden om verder te willen. Horen en openklappen
+          // kan alleen bij wat in een gratis les zat.
+          const opSlot = woordOpSlot(w.id, state)
           return (
             <li key={w.id}>
-              <Card className="overflow-hidden">
+              <Card className={`overflow-hidden ${opSlot ? 'opacity-70' : ''}`}>
                 <button
                   className="flex w-full items-center gap-3 p-3 text-start"
-                  onClick={() => { if (isOpen) sfx.back(); else sfx.tap(); setOpen(isOpen ? null : w.id) }}
-                  aria-expanded={isOpen}
+                  onClick={() => {
+                    if (opSlot) { sfx.back(); navigate('/volledig'); return }
+                    if (isOpen) sfx.back(); else sfx.tap()
+                    setOpen(isOpen ? null : w.id)
+                  }}
+                  aria-expanded={opSlot ? undefined : isOpen}
                 >
                   <span className="text-2xl" aria-hidden="true">{w.emoji ?? '•'}</span>
                   <span className="min-w-0 flex-1">
@@ -81,11 +100,15 @@ export function Words() {
                       <span className="text-[var(--ink-soft)]"> — {meaningOf(w, lang)}</span>
                     </span>
                   </span>
-                  <span className={`shrink-0 rounded-full px-2 py-1 text-[11px] font-bold ${card ? 'bg-mint-500/15 text-mint-600' : 'bg-[var(--surface-sunken)] text-[var(--ink-soft)]'}`}>
-                    {t.strength[strengthLabel(card?.strength ?? 0)]}
-                  </span>
+                  {opSlot ? (
+                    <span className="shrink-0 text-lg" aria-label={t.unlock.slotTitel}>🔒</span>
+                  ) : (
+                    <span className={`shrink-0 rounded-full px-2 py-1 text-[11px] font-bold ${card ? 'bg-mint-500/15 text-mint-600' : 'bg-[var(--surface-sunken)] text-[var(--ink-soft)]'}`}>
+                      {t.strength[strengthLabel(card?.strength ?? 0)]}
+                    </span>
+                  )}
                 </button>
-                {isOpen && (
+                {isOpen && !opSlot && (
                   <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="border-t border-[var(--line)] p-4">
                     <div className="flex items-center gap-4">
                       <WordText word={w} size="md" />

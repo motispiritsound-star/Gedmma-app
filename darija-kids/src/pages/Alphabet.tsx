@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { LETTERS } from '../content/alphabet'
 import { maybeWord } from '../content/lexicon'
 import { sayLetter, sfx } from '../engine/audio'
-import { completeLesson, useStore } from '../engine/store'
+import { completeLesson, letterOpSlot, useStore } from '../engine/store'
 import { shuffle, mulberry32 } from '../engine/random'
 import { Button, Card, SectionTitle } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
@@ -19,6 +20,8 @@ import { letterVoice } from '../content/pronunciation'
 export function Alphabet() {
   const t = useT()
   const lang = useLang()
+  const navigate = useNavigate()
+  const gekocht = useStore((s) => s.unlocked)
   const [picked, setPicked] = useState(LETTERS[0]!.id)
   const [game, setGame] = useState(false)
   const letter = LETTERS.find((l) => l.id === picked)!
@@ -32,17 +35,34 @@ export function Alphabet() {
       <SectionTitle sub={t.alphabet.uitleg}>{t.alphabet.titel}</SectionTitle>
 
       <div className="mb-6 grid grid-cols-6 gap-2 sm:grid-cols-8">
-        {LETTERS.map((l) => (
-          <button
-            key={l.id}
-            onClick={() => { setPicked(l.id); sfx.tap(); sayLetter(l) }}
-            className={`ar aspect-square rounded-2xl border-2 text-2xl font-bold transition ${l.id === picked ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)] bg-[var(--surface-raised)] hover:border-zellige-400'}`}
-            aria-label={l.name}
-          >
-            {l.ar}
-          </button>
-        ))}
+        {LETTERS.map((l) => {
+          // Alle achtentwintig staan er; horen en bekijken kan bij de letters
+          // uit de gratis lessen. Wat nog komt is zichtbaar, met een slotje.
+          const opSlot = letterOpSlot(l.id)
+          return (
+            <button
+              key={l.id}
+              onClick={() => {
+                if (opSlot) { sfx.back(); navigate('/volledig'); return }
+                setPicked(l.id); sfx.tap(); sayLetter(l)
+              }}
+              className={`ar relative aspect-square rounded-2xl border-2 text-2xl font-bold transition ${l.id === picked ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)] bg-[var(--surface-raised)] hover:border-zellige-400'} ${opSlot ? 'opacity-45' : ''}`}
+              aria-label={opSlot ? `${l.name} — ${t.unlock.slotTitel}` : l.name}
+            >
+              {l.ar}
+              {opSlot && <span className="absolute end-0.5 top-0.5 text-[10px]" aria-hidden="true">🔒</span>}
+            </button>
+          )
+        })}
       </div>
+
+      {!gekocht && (
+        <Card className="mb-6 flex flex-wrap items-center gap-3 p-4">
+          <span className="text-xl" aria-hidden="true">🔒</span>
+          <p className="min-w-0 flex-1 text-sm">{t.alphabet.slotUitleg}</p>
+          <Link to="/volledig"><Button variant="secondary">{t.unlock.slotKnop}</Button></Link>
+        </Card>
+      )}
 
       <Card className="p-6">
         <div className="flex flex-wrap items-center gap-5">

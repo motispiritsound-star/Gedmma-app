@@ -204,6 +204,7 @@ export const nl = {
     zoekLabel: 'Zoek een woord',
     alles: 'Alles',
     resultaten: (n: number): string => `${n} resultaten`,
+    slotUitleg: 'Je hoort de woorden die je geleerd hebt. De rest staat er alvast — die gaan open met het abonnement.',
     nietsGevonden: 'Niets gevonden. Probeer een ander woord — of zoek in je eigen taal.',
   },
 
@@ -231,6 +232,7 @@ export const nl = {
     uitleg:
       "28 letters plus drie Marokkaanse extra's. Ze veranderen van vorm aan het begin, in het midden en aan het eind van een woord.",
     klinktAls: (klank: string): string => `Klinkt als: ${klank}`,
+    slotUitleg: 'De letters uit je eerste lessen kun je horen. De rest staat er alvast — die gaan open met het abonnement.',
     latijn: 'Schrijfwijze in het Latijn',
     begin: 'begin',
     midden: 'midden',
@@ -247,6 +249,7 @@ export const nl = {
   },
 
   stories: {
+    slotUitleg: 'De verhalen horen bij de volledige cursus. Je ziet alvast welke er zijn.',
     titel: 'Verhalen',
     uitleg: 'Korte gesprekken zoals ze echt klinken. Tik op een zin voor de vertaling, of laat hem voorlezen.',
     zinnen: (n: number): string => `${n} zinnen`,
@@ -318,6 +321,7 @@ export const nl = {
   },
 
   games: {
+    slotUitleg: 'De spelletjes oefenen de hele woordenschat en horen bij het abonnement.',
     titel: 'Spelen',
     uitleg: 'Even geen les — gewoon spelen. Alles wat je hier tegenkomt telt mee voor je woorden.',
     race: 'Tijdrace',
@@ -553,7 +557,7 @@ export const nl = {
     probeer: 'Probeer meteen',
     hoorHet: '🔊 Hoor het',
     volgende: 'Volgende',
-    waaromTitel: 'Waarom het blijft hangen',
+    waaromTitel: 'Waarom je kind het onthoudt',
     waarom: [
       ['🎧', 'Alles klinkt', 'Elk woord en elke zin kun je horen — één tik voor normaal, twee voor langzaam.'],
       ['🔁', 'Slim herhalen', 'Woorden komen terug precies voordat je ze vergeet, en lastige woorden vaker.'],

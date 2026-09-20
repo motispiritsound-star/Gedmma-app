@@ -198,6 +198,7 @@ export const en: Strings = {
     zoekLabel: 'Search for a word',
     alles: 'All',
     resultaten: (n) => `${n} results`,
+    slotUitleg: 'You hear the words you have learned. The rest is already there — it opens with the subscription.',
     nietsGevonden: 'Nothing found. Try another word — or search in your own language.',
   },
 
@@ -225,6 +226,7 @@ export const en: Strings = {
     uitleg:
       '28 letters plus three Moroccan extras. They change shape at the beginning, in the middle and at the end of a word.',
     klinktAls: (klank) => `Sounds like: ${klank}`,
+    slotUitleg: 'You can hear the letters from your first lessons. The rest is already there — it opens with the subscription.',
     latijn: 'Written in Latin letters',
     begin: 'start',
     midden: 'middle',
@@ -241,6 +243,7 @@ export const en: Strings = {
   },
 
   stories: {
+    slotUitleg: 'The stories are part of the full course. You can already see which ones there are.',
     titel: 'Stories',
     uitleg: 'Short conversations the way they really sound. Tap a line for the translation, or have it read aloud.',
     zinnen: (n) => `${n} lines`,
@@ -311,6 +314,7 @@ export const en: Strings = {
   },
 
   games: {
+    slotUitleg: 'The games practise the whole vocabulary and come with the subscription.',
     titel: 'Play',
     uitleg: 'No lesson here — just play. Everything you meet counts towards your words.',
     race: 'Time race',
@@ -546,7 +550,7 @@ export const en: Strings = {
     probeer: 'Try it right now',
     hoorHet: '🔊 Hear it',
     volgende: 'Next',
-    waaromTitel: 'Why it sticks',
+    waaromTitel: 'Why your child remembers it',
     waarom: [
       ['🎧', 'Everything sounds', 'Every word and every sentence can be heard — one tap for normal, two for slow.'],
       ['🔁', 'Smart reviewing', 'Words come back exactly before you forget them, and hard ones more often.'],

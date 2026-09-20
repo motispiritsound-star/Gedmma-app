@@ -198,6 +198,7 @@ export const de: Strings = {
     zoekLabel: 'Ein Wort suchen',
     alles: 'Alle',
     resultaten: (n) => `${n} Treffer`,
+    slotUitleg: 'Du hörst die Wörter, die du gelernt hast. Der Rest steht schon da — er geht mit dem Abo auf.',
     nietsGevonden: 'Nichts gefunden. Probier ein anderes Wort — oder such in deiner Sprache.',
   },
 
@@ -225,6 +226,7 @@ export const de: Strings = {
     uitleg:
       '28 Buchstaben plus drei marokkanische Extras. Sie ändern ihre Form am Anfang, in der Mitte und am Ende eines Wortes.',
     klinktAls: (klank) => `Klingt wie: ${klank}`,
+    slotUitleg: 'Die Buchstaben aus deinen ersten Lektionen kannst du hören. Der Rest steht schon da — er geht mit dem Abo auf.',
     latijn: 'Schreibweise in lateinischen Buchstaben',
     begin: 'Anfang',
     midden: 'Mitte',
@@ -241,6 +243,7 @@ export const de: Strings = {
   },
 
   stories: {
+    slotUitleg: 'Die Geschichten gehören zum ganzen Kurs. Du siehst schon, welche es gibt.',
     titel: 'Geschichten',
     uitleg: 'Kurze Gespräche, wie sie wirklich klingen. Tippe einen Satz an für die Übersetzung, oder lass ihn vorlesen.',
     zinnen: (n) => `${n} Sätze`,
@@ -311,6 +314,7 @@ export const de: Strings = {
   },
 
   games: {
+    slotUitleg: 'Die Spiele üben den ganzen Wortschatz und gehören zum Abo.',
     titel: 'Spielen',
     uitleg: 'Mal keine Lektion — einfach spielen. Alles, was dir hier begegnet, zählt für deine Wörter.',
     race: 'Zeitrennen',
@@ -546,7 +550,7 @@ export const de: Strings = {
     probeer: 'Gleich ausprobieren',
     hoorHet: '🔊 Anhören',
     volgende: 'Weiter',
-    waaromTitel: 'Warum es hängen bleibt',
+    waaromTitel: 'Warum dein Kind es behält',
     waarom: [
       ['🎧', 'Alles klingt', 'Jedes Wort und jeden Satz kannst du hören — einmal tippen für normal, zweimal für langsam.'],
       ['🔁', 'Klug wiederholen', 'Wörter kommen genau dann zurück, bevor du sie vergisst, schwierige öfter.'],

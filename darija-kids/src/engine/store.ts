@@ -34,6 +34,33 @@ export const GRATIS_LESSEN: Record<string, number> = { hruf: 3, groeten: 1 }
 /** How many lessons that is altogether — the number the app quotes. */
 export const FREE_LESSONS = Object.values(GRATIS_LESSEN).reduce((a, b) => a + b, 0)
 
+/** The lessons themselves, in the order of the path. */
+const gratisLes = UNITS.flatMap((u) => u.lessons.slice(0, GRATIS_LESSEN[u.id] ?? 0))
+
+/**
+ * Wat er buiten de lessen om open staat: precies wat in een gratis les zit.
+ *
+ * Het woordenboek, het alfabet, de verhalen en de spelletjes hangen niet aan
+ * het pad — wie daarheen loopt komt bij alle 304 woorden en alle 28 letters,
+ * ook zonder ooit een les te doen. Dan is het pad een formaliteit en de hele
+ * cursus gratis, en dat is precies waarom iemand zou blijven hangen zonder
+ * ooit te betalen.
+ *
+ * De regel is nu simpel en uit te leggen: je kunt horen wat je geleerd hebt.
+ * De rest staat er wel, zichtbaar en met slotje, want zien wat er nog komt is
+ * de beste reden om verder te willen.
+ */
+export const GRATIS_WOORDEN = new Set(gratisLes.flatMap((l) => l.words))
+export const GRATIS_LETTERS = new Set(gratisLes.flatMap((l) => l.letters ?? []))
+
+/** True als dit woord buiten de gratis lessen valt en er niet is betaald. */
+export const woordOpSlot = (id: string, s: State = state): boolean =>
+  !s.unlocked && !GRATIS_WOORDEN.has(id)
+
+/** Idem voor een letter van het alfabet. */
+export const letterOpSlot = (id: string, s: State = state): boolean =>
+  !s.unlocked && !GRATIS_LETTERS.has(id)
+
 /** What one right answer is worth, paid out the moment it happens. */
 export const XP_PER_CORRECT = 2
 

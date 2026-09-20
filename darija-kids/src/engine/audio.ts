@@ -712,10 +712,23 @@ export function say(arabic: string, opts: SayOptions = {}): void {
   const clip = clipFor(arabic)
   if (clip) {
     unlockAudio()
-    void playClip(clip, audio(), bus, { rate: opts.slow ? 0.7 : 1 })
+    // Valt de opname om — een codec die deze browser niet kent, een bestand
+    // dat niet aankwam — dan komt de stem er alsnog achteraan. Zonder dat
+    // vangnet levert één onleesbaar bestand stilte op zonder dat iemand ziet
+    // waarom, en dat is precies wat er gebeurde: de knopgeluidjes speelden,
+    // het woord niet. `sayLetter` deed dit al goed.
+    void playClip(clip, audio(), bus, { rate: opts.slow ? 0.7 : 1 }).then((gelukt) => {
+      if (!gelukt) zegMetStem(arabic, opts)
+    })
     return
   }
 
+  zegMetStem(arabic, opts)
+}
+
+/** De gesproken benadering, voor als er geen opname is of hij niet afspeelt. */
+function zegMetStem(arabic: string, opts: SayOptions): void {
+  const s = getState()
   if (!canSpeak()) return
   unlockAudio()
   // A word on the list is one an Arabic voice reads wrongly, so it is sent to

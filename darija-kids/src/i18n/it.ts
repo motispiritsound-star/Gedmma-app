@@ -198,6 +198,7 @@ export const it: Strings = {
     zoekLabel: 'Cerca una parola',
     alles: 'Tutto',
     resultaten: (n) => `${n} risultati`,
+    slotUitleg: 'Senti le parole che hai imparato. Il resto è già lì: si apre con l’abbonamento.',
     nietsGevonden: 'Nessun risultato. Prova un’altra parola, o cerca nella tua lingua.',
   },
 
@@ -225,6 +226,7 @@ export const it: Strings = {
     uitleg:
       '28 lettere più tre aggiunte marocchine. Cambiano forma all’inizio, in mezzo e alla fine di una parola.',
     klinktAls: (klank) => `Suona così: ${klank}`,
+    slotUitleg: 'Le lettere delle tue prime lezioni puoi sentirle. Il resto è già lì: si apre con l’abbonamento.',
     latijn: 'Scrittura in lettere latine',
     begin: 'inizio',
     midden: 'mezzo',
@@ -241,6 +243,7 @@ export const it: Strings = {
   },
 
   stories: {
+    slotUitleg: 'Le storie fanno parte del corso completo. Vedi già quali ci sono.',
     titel: 'Storie',
     uitleg: 'Conversazioni brevi, come suonano davvero. Tocca una frase per vedere la traduzione o ascoltarla.',
     zinnen: (n) => `${n} frasi`,
@@ -311,6 +314,7 @@ export const it: Strings = {
   },
 
   games: {
+    slotUitleg: 'I giochi allenano tutto il vocabolario e vanno con l’abbonamento.',
     titel: 'Gioca',
     uitleg: 'Qui niente lezione, solo giochi. Tutto quello che incontri conta per le tue parole.',
     race: 'Corsa contro il tempo',
@@ -546,7 +550,7 @@ export const it: Strings = {
     probeer: 'Provalo subito',
     hoorHet: '🔊 Ascolta',
     volgende: 'Avanti',
-    waaromTitel: 'Perché resta in testa',
+    waaromTitel: 'Perché tuo figlio se lo ricorda',
     waarom: [
       ['🎧', 'Tutto si sente', 'Ogni parola e ogni frase si possono ascoltare: un tocco per la velocità normale, due per quella lenta.'],
       ['🔁', 'Ripassi intelligenti', 'Le parole tornano poco prima che tu le dimentichi, e quelle difficili più spesso.'],
