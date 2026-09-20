@@ -15,3 +15,11 @@ scripts/.*.mjs
 /site/
 # En de demo ook: één bestand van 22 MB dat `npm run build:demo` zo weer maakt.
 /dist-demo/
+# De ondertekensleutel hoort nooit in git: wie de repo kan lezen kan dan een
+# update uitbrengen onder jouw naam. Hij staat op twee plekken buiten deze map.
+*.jks
+*.keystore
+keystore.properties
+android/local.properties
+android/app/build/
+android/.gradle/
