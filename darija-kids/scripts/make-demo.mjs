@@ -104,8 +104,17 @@ let js = await readFile(path.join(DIST, 'assets', jsFiles[0]), 'utf8')
  * los bestand kan dat niet en gaan ze alsnog naar aac — dat bestand is om te
  * versturen, niet om op te vertrouwen.
  */
-const WAV = /data:audio\/wav;base64,[A-Za-z0-9+/=]+/g
-const KLANKEN = [...new Set(js.match(WAV) ?? [])]
+/**
+ * Mét de aanhalingstekens eromheen, want die moeten mee.
+ *
+ * De opnames staan in de bundel als `"data:audio/wav;base64,..."` of met
+ * backticks. Wie alleen de tekst ertussen vervangt door `__K[0]` houdt
+ * `"__K[0]"` over: een stukje tekst in plaats van een verwijzing. De app haalt
+ * dan een bestand op dat "__K[0]" heet, krijgt de pagina terug en ontcijfert
+ * niets. Precies dat is één ronde lang gebeurd.
+ */
+const WAV = /(["'`])(data:audio\/wav;base64,[A-Za-z0-9+/=]+)\1/g
+const KLANKEN = [...new Set([...js.matchAll(WAV)].map((m) => m[2]))]
 
 /** Hoeveel base64 er hooguit in één bestand gaat. */
 const PER_BESTAND = 8 * 1024 * 1024
@@ -128,7 +137,8 @@ const naarAac = async () => {
   for (let i = 0; i < KLANKEN.length; i += 4) {
     paren.push(...await Promise.all(KLANKEN.slice(i, i + 4).map((u, j) => omzetten(u, i + j))))
   }
-  for (const [van, naar] of paren) js = js.replaceAll(van, naar)
+  const nieuw = new Map(paren)
+  js = js.replace(WAV, (heel, quote, uri) => `${quote}${nieuw.get(uri) ?? uri}${quote}`)
   await rm(werk, { recursive: true, force: true })
 }
 
@@ -155,7 +165,13 @@ const losseKlanken = () => {
   if (huidig.length) stukken.push(huidig)
 
   const index = new Map(KLANKEN.map((uri, n) => [uri, n]))
-  js = js.replace(WAV, (uri) => `__K[${index.get(uri)}]`)
+  let vervangen = 0
+  js = js.replace(WAV, (heel, _quote, uri) => { vervangen++; return `__K[${index.get(uri)}]` })
+
+  // Een verwijzing die tussen aanhalingstekens blijft staan is geen verwijzing
+  // meer, en dat valt pas op als er geen geluid uit komt. Dus meteen kijken.
+  if (!vervangen) throw new Error('geen enkele opname vervangen — staat er wel wav in de bundel?')
+  if (/["'`]__K\[/.test(js)) throw new Error('een opname staat nog tussen aanhalingstekens')
 
   return stukken.map((stuk, i) => [
     `klanken-${i + 1}.js`,
