@@ -181,8 +181,11 @@ export function Unlock() {
       )}
 
       {/* The book stands on its own: a subscriber can still want it, and
-          somebody who has it should always be able to open it again. */}
-      <Card className="mt-4 p-6">
+          somebody who has it should always be able to open it again.
+          `data-boekkaart` is waar `npm run reviewshot` naartoe scrolt: een
+          opname van het boek moet het boek in beeld hebben, en een vast
+          aantal pixels verschuift zodra de tekst erboven verandert. */}
+      <Card className="mt-4 p-6" data-boekkaart>
         <div className="flex flex-wrap items-baseline gap-3">
           <h2 className="font-display text-xl font-extrabold">📖 {t.unlock.boek.titel}</h2>
           {!boek && (
