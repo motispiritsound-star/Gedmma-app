@@ -101,7 +101,7 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 - [x] Eenmalig product `app.darijaforkids.ebook`, € 14,99, **Gezinsbibliotheek aan**
 - [x] Google: merchant-account en de 15%-tarief-inschrijving (scheelt 15% van elke
       euro omzet onder het miljoen)
-- [ ] **De eurolanden met de hand op hetzelfde bedrag.** Google stelt per land
+- [x] **De eurolanden met de hand op hetzelfde bedrag.** Google stelt per land
       zijn eigen prijspunt voor -- € 69,99 in Duitsland, € 74,99 in Griekenland --
       terwijl alle zes de winkelteksten € 59,99 noemen. Binnen de eurozone valt
       er niets om te rekenen, dus dat moet overal gelijk. Gedaan voor beide
@@ -186,11 +186,15 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 
 ### Publiceren
 
-- [ ] Google: interne test — jezelf toevoegen en de app op je eigen telefoon zetten
+- [ ] Google: de app op de Galaxy Tab spelen zodra hij in de Play Store staat.
+      De interne test liep vast op "app not available"; er is voor gekozen
+      rechtstreeks naar productie te gaan, omdat de app nog geen gebruikers
+      heeft en een fout in versie 1 dus niemand raakt behalve jezelf.
 - [x] Google: gesloten test met 12 testers × 14 dagen — **vervalt**, het account is een organisatie (§6)
 - [ ] Apple: de app indienen, met de drie producten eraan gekoppeld
 - [ ] Apple: wachten op review (1–3 dagen)
-- [ ] Google: productie aanvragen
+- [x] Google: productie aangevraagd op 21 september — 176 landen plus de rest
+      van de wereld, volledige uitrol, **in review**
 - [ ] Beide op **handmatig vrijgeven** zetten, zodat je zelf de dag kiest
 - [ ] De eerste week uitvoeren (§7)
 
