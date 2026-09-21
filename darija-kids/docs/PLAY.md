@@ -323,8 +323,9 @@ alle toestellen waarop dat account is ingelogd. Een kind met een eigen
 Google-account (via Family Link) valt daarbuiten.
 
 Dat betekent dat de regel "één abonnement voor het hele gezin" op Android niet
-waar is. Zie de opmerking in `src/i18n/` — dit moet per platform verschillend
-komen te staan vóór de Android-release.
+waar is, en de app zegt het daar dus ook niet: `gezinsdeling()` in
+`src/engine/platform.ts` staat alleen op iOS aan, en het abonnementsscherm en
+de instellingen lezen die ene functie. De winkelteksten beloven het nergens.
 
 ---
 
