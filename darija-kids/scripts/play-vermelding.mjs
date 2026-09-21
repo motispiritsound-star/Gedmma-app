@@ -64,11 +64,22 @@ const BEELDEN = [
  * ingekaderde blok, en geldt voor allebei. Op positie lezen in plaats van op
  * kopjes, want die kopjes staan er in zes talen anders.
  */
-function teksten(md) {
+function teksten(ruw, waar) {
+  // Windows schrijft \r\n. Een patroon dat een accentteken aan het regeleinde
+  // vastknoopt vindt dan niets, want dat \r zit ertussen -- en de foutmelding
+  // zegt dan dat het bestand er anders uitziet terwijl er niets mis mee is.
+  const md = ruw.replace(/\r\n/g, '\n')
   const play = md.slice(md.lastIndexOf('\n## '))
   const losse = [...play.matchAll(/^`([^`]+)`$/gm)].map((m) => m[1])
   const kader = md.match(/^```\n([\s\S]*?)\n```$/m)
-  if (losse.length < 2 || !kader) throw new Error('teksten.md ziet er anders uit dan verwacht')
+  if (losse.length < 2 || !kader) {
+    throw new Error(
+      `${waar} ziet er anders uit dan verwacht:\n` +
+        `  losse regels tussen accenttekens: ${losse.length} (verwacht 2 of meer)\n` +
+        `  ingekaderd blok: ${kader ? 'gevonden' : 'niet gevonden'}\n` +
+        'Draai `npm run playpakket` om het pakket opnieuw te maken.',
+    )
+  }
   return { titel: losse[0], kort: losse[1], vol: kader[1] }
 }
 
@@ -140,7 +151,7 @@ console.log(`bewerking ${edit.id}\n`)
 for (const map of mappen) {
   const taal = taalVan(map.name)
   const dir = path.join(PAKKET, map.name)
-  const t = teksten(await readFile(path.join(dir, 'teksten.md'), 'utf8'))
+  const t = teksten(await readFile(path.join(dir, 'teksten.md'), 'utf8'), path.join(map.name, 'teksten.md'))
   console.log(`${taal}`)
   console.log(`  titel   ${t.titel}`)
   console.log(`  kort    ${t.kort.slice(0, 60)}${t.kort.length > 60 ? '…' : ''}`)
