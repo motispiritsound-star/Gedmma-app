@@ -11,6 +11,7 @@
  * screen is a mock-up.
  */
 import { busFor, VOICES, type SoundName, type Stage } from '../src/engine/instruments'
+import { CLIPS } from '../src/engine/clips'
 
 /* ------------------------------------------------------------------ the copy */
 
@@ -576,12 +577,53 @@ function gestureCues(cast: Cast): [SoundName, number, number][] {
   return out
 }
 
+/**
+ * Eén woord dat je echt hoort: الدارجة.
+ *
+ * De film laat schermen zien waarop woorden worden uitgesproken — een letter
+ * met een luidsprekertje, een luisteroefening — maar er kwam nooit een stem
+ * uit. Dat is vreemd voor een app die over uitspraak gaat: je ziet de belofte
+ * en hoort hem niet.
+ *
+ * Dus klinkt er nu precies één woord, en dat is het woord waar alles om
+ * draait. Het is de opname uit de app zelf, dezelfde die een kind hoort — geen
+ * spraakengine, want die spreekt geen Darija.
+ *
+ * Onder het titelkaartje, waar alleen nog een aanloopje speelt: daar is ruimte
+ * voor, en daar betekent het iets.
+ */
+const WOORD = 'darija'
+const WOORD_AT = 1.05
+
+async function hetWoord(off: OfflineAudioContext, bus: AudioNode): Promise<void> {
+  const url = CLIPS[WOORD]
+  if (!url) throw new Error(`geen opname voor "${WOORD}"`)
+  const buffer = await off.decodeAudioData(await (await fetch(url)).arrayBuffer())
+
+  // De opnames zijn met de hand ingesproken en verschillen dus in luidheid.
+  // Op de piek zetten in plaats van op een vast getal: anders valt dit ene
+  // woord weg onder de muziek of springt het er juist uit.
+  let piek = 0
+  for (let c = 0; c < buffer.numberOfChannels; c++) {
+    const data = buffer.getChannelData(c)
+    for (let i = 0; i < data.length; i++) piek = Math.max(piek, Math.abs(data[i]!))
+  }
+
+  const bron = off.createBufferSource()
+  bron.buffer = buffer
+  const gain = off.createGain()
+  gain.gain.value = piek > 0 ? 0.8 / piek : 1
+  bron.connect(gain).connect(bus)
+  bron.start(WOORD_AT)
+}
+
 /** Renders the whole soundtrack up front, so nothing can glitch while taping. */
 async function soundtrack(cast: Cast): Promise<AudioBuffer> {
   const rate = 48000
   const off = new OfflineAudioContext(2, Math.ceil((DURATION + 1) * rate), rate)
   const { bus } = busFor(off)
   for (const [name, arg, at] of [...CUES, ...gestureCues(cast)]) VOICES[name](stageAt(off, bus, at), arg)
+  await hetWoord(off, bus)
   const rendered = await off.startRendering()
 
   // Four tunes, applause and a taps track can sum past the limiter's ceiling,
