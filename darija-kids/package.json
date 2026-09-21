@@ -19,6 +19,7 @@
     "sleutel": "node scripts/maak-sleutel.mjs",
     "sdk": "node scripts/maak-sdk.mjs",
     "aab": "npm run android && node scripts/maak-aab.mjs",
+    "apk": "npm run android && node scripts/maak-aab.mjs --apk",
     "java": "node scripts/lib/jdk.mjs",
     "assets": "node scripts/make-store-assets.mjs && @capacitor/assets generate --android",
     "soundcheck": "node scripts/soundcheck.mjs",

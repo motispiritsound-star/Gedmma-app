@@ -6,10 +6,17 @@
  * `npm run sleutel`) en Gradle pakt hem daar zelf op.
  *
  *   npm run aab            bouwt de app, synct hem, en maakt de bundel
+ *   npm run apk            hetzelfde, maar als .apk voor op je eigen telefoon
  *   node scripts/maak-aab.mjs --versie 2    hoogt versionCode op naar 2
  *
  * Play weigert twee bundels met hetzelfde versionCode, ook als je de eerste
  * hebt ingetrokken. Bij elke volgende upload dus --versie met één erbij.
+ *
+ * Het verschil tussen de twee vormen: een .aab is wat Play wil, en daar maakt
+ * Google per telefoon een installatiebestand van. Zelf installeren kun je hem
+ * niet. Een .apk is dat installatiebestand, en die zet je op je eigen toestel
+ * om de app te spelen zoals een kind hem straks krijgt -- met geluid, met de
+ * echte snelheid, met je duim in plaats van een muis.
  */
 import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs'
@@ -20,10 +27,15 @@ import { geenJdk, haalJdk, vindJdk, vindSdk } from './lib/jdk.mjs'
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const ANDROID = path.join(ROOT, 'android')
 const GRADLE = path.join(ANDROID, 'app', 'build.gradle')
-const BUNDEL = path.join(ANDROID, 'app', 'build', 'outputs', 'bundle', 'release', 'app-release.aab')
 
 const args = process.argv.slice(2)
 const versie = args.includes('--versie') ? Number(args[args.indexOf('--versie') + 1]) : null
+const alsApk = args.includes('--apk')
+
+const TAAK = alsApk ? 'assembleRelease' : 'bundleRelease'
+const RESULTAAT = alsApk
+  ? path.join(ANDROID, 'app', 'build', 'outputs', 'apk', 'release', 'app-release.apk')
+  : path.join(ANDROID, 'app', 'build', 'outputs', 'bundle', 'release', 'app-release.aab')
 
 if (!existsSync(path.join(ANDROID, 'keystore.properties'))) {
   console.error('\nEr is nog geen ondertekensleutel.\n')
@@ -69,7 +81,7 @@ if (!existsSync(LOKAAL) && !process.env.ANDROID_HOME && !process.env.ANDROID_SDK
   console.log(`Android-SDK gevonden: ${sdk}`)
 }
 
-console.log('\nBundel bouwen. De eerste keer haalt Gradle veel op; reken op een paar minuten.\n')
+console.log(`\n${alsApk ? 'Installatiebestand' : 'Bundel'} bouwen. De eerste keer haalt Gradle veel op; reken op een paar minuten.\n`)
 
 // Een .bat kan node sinds versie 20 niet rechtstreeks starten. Via cmd.exe
 // dus, maar met /c en vaste argumenten in plaats van shell:true -- dat laatste
@@ -77,8 +89,8 @@ console.log('\nBundel bouwen. De eerste keer haalt Gradle veel op; reken op een 
 // terecht voor.
 const [programma, argumenten] =
   process.platform === 'win32'
-    ? ['cmd.exe', ['/c', 'gradlew.bat', 'bundleRelease']]
-    : ['./gradlew', ['bundleRelease']]
+    ? ['cmd.exe', ['/c', 'gradlew.bat', TAAK]]
+    : ['./gradlew', [TAAK]]
 
 try {
   execFileSync(programma, argumenten, {
@@ -96,13 +108,17 @@ try {
   process.exit(1)
 }
 
-if (!existsSync(BUNDEL)) {
-  console.error('\nGradle is klaar, maar er ligt geen bundel. Lees de uitvoer hierboven.\n')
+if (!existsSync(RESULTAAT)) {
+  console.error('\nGradle is klaar, maar er ligt niets. Lees de uitvoer hierboven.\n')
   process.exit(1)
 }
 
-const mb = (statSync(BUNDEL).size / 1024 / 1024).toFixed(1)
+const mb = (statSync(RESULTAAT).size / 1024 / 1024).toFixed(1)
 console.log('\nKlaar.\n')
-console.log(`  ${BUNDEL}`)
+console.log(`  ${RESULTAAT}`)
 console.log(`  ${mb} MB\n`)
-console.log('Die ene .aab is wat je in Play Console uploadt bij een release.\n')
+console.log(
+  alsApk
+    ? 'Zet dit bestand op je telefoon en open het daar om de app te installeren.\n'
+    : 'Die ene .aab is wat je in Play Console uploadt bij een release.\n',
+)

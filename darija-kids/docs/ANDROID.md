@@ -73,6 +73,28 @@ bundels met hetzelfde `versionCode`, ook als je de eerste hebt ingetrokken:
 node scripts/maak-aab.mjs --versie 2
 ```
 
+### Op je eigen telefoon zetten
+
+```bash
+npm run apk
+```
+
+Een `.aab` kun je niet installeren — dat is wat Play wil, en Google maakt daar
+per toestel een installatiebestand van. `npm run apk` maakt dat
+installatiebestand meteen zelf:
+
+```
+android/app/build/outputs/apk/release/app-release.apk
+```
+
+Zet dat bestand op je telefoon (USB, of naar jezelf mailen) en open het daar.
+Android vraagt één keer om toestemming om een app buiten de winkel om te
+installeren; dat mag, hij is met jouw eigen sleutel ondertekend.
+
+Doe dit voor de eerste release. Het is het enige moment waarop je hoort of het
+geluid speelt, of de aankopen werken en of de app soepel loopt op iets anders
+dan een laptop.
+
 ### Of met de hand, in Android Studio
 
 Android Studio → *Open* → de map **`darija-kids/android`**. Niet de map
