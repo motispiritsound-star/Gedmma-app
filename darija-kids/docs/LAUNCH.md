@@ -157,10 +157,12 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 - [ ] **iPhone**: gespeeld met geluid aan, via TestFlight zodra de Mac er is.
       Dat is de makkelijkste weg; `npm run telefoon` zet de app ook op je wifi,
       maar dan moet je netwerk meewerken en dat deed het niet.
-- [ ] **Android**: gespeeld op een geleend toestel vóór de Play-release —
-      `npm run apk` maakt het installatiebestand. Dit is het enige stuk dat
-      anders helemaal ongetest de winkel in gaat: het geluid, de aankopen en de
-      snelheid zijn daar niet dezelfde code als op iOS.
+- [ ] **Android**: gespeeld op de Galaxy Tab vóór de Play-release —
+      `npm run apk` maakt het installatiebestand, dat via USB of de mail op het
+      toestel komt. Het geluid en de aankopen zijn daar niet dezelfde code als
+      op iOS, dus dit is de enige keer dat die kant echt gespeeld wordt.
+      Een tablet is bovendien het formaat waar Play aparte schermen voor vraagt:
+      let dus ook op de indeling op een breed scherm.
 
 ### De uitspraak
 
