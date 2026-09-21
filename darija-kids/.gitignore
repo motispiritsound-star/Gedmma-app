@@ -9,7 +9,9 @@ server/.dev.vars
 /store/knipblad.html
 /store/play-pakket/
 /store/appstore-pakket/
-/store/darijaforkids-play.zip
+# Ingepakte winkelpakketten: bouwresultaat van tientallen megabytes, en
+# `npm run playpakket` maakt ze zo weer.
+/store/*.zip
 scripts/.*.mjs
 # De website is bouwresultaat; site-assets/ is de bron en gaat wel mee.
 /site/
