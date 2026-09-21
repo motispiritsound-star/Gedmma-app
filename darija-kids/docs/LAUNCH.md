@@ -95,10 +95,17 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 
 Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 
-- [ ] Abonnement `app.darijaforkids.yearly`, basisabonnement 1 jaar, **€ 59,99**
-- [ ] Abonnement `app.darijaforkids.monthly`, basisabonnement 1 maand, € 6,99
-- [ ] Beide een aanbieding **gratis proefperiode, 3 dagen**
-- [ ] Eenmalig product `app.darijaforkids.ebook`, € 14,99, **Gezinsbibliotheek aan**
+- [x] Abonnement `app.darijaforkids.yearly`, basisabonnement `jaar`, **€ 59,99**
+- [x] Abonnement `app.darijaforkids.monthly`, basisabonnement `maand`, € 6,99
+- [x] Beide een aanbieding **gratis proefperiode, 3 dagen**
+- [x] Eenmalig product `app.darijaforkids.ebook`, € 14,99, **Gezinsbibliotheek aan**
+- [x] Google: merchant-account en de 15%-tarief-inschrijving (scheelt 15% van elke
+      euro omzet onder het miljoen)
+- [ ] **De eurolanden met de hand op hetzelfde bedrag.** Google stelt per land
+      zijn eigen prijspunt voor -- € 69,99 in Duitsland, € 74,99 in Griekenland --
+      terwijl alle zes de winkelteksten € 59,99 noemen. Binnen de eurozone valt
+      er niets om te rekenen, dus dat moet overal gelijk. Gedaan voor beide
+      abonnementen en het e-boek; nakijken bij elke prijswijziging.
 
 ### Wat je uploadt
 
