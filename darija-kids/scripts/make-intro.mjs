@@ -344,18 +344,44 @@ const SCENES = [
     },
   },
   {
-    id: 'profiel',
-    /** Picking another animal: the smallest possible thing a child changes. */
+    id: 'woord',
+    /**
+     * Eén woord, en je hoort het.
+     *
+     * De andere zes schermen laten zien wat de app doet; dit laat horen waar
+     * hij voor is. Het woord is الدارجة — de taal zelf — en de vinger drukt op
+     * het luidsprekertje, zodat beeld en geluid hetzelfde zeggen. De opname
+     * gaat in de geluidsband, op het moment van de tik: zie `WOORD_AT` in
+     * dev/intro.ts.
+     */
     take: async (page) => {
-      await page.goto(`${BASE}/profiel`, { waitUntil: 'networkidle' })
+      await page.goto(`${BASE}/woorden`, { waitUntil: 'networkidle' })
       await wait(page, 800)
-      // The row of animals under the profile card.
-      const avatar = page.locator('main button.h-11').nth(2)
-      const target = await spot(page, avatar)
+      // Zoeken in plaats van scrollen: dan staat er één kaartje op het scherm
+      // en is er geen twijfel over welk woord je hoort.
+      // In het zoekvak komt te staan wat iemand zelf zou intikken. Dat vindt
+      // ook de zin "kanhder shwiya darija", dus we kiezen daarna de regel van
+      // het woord zelf — die is als enige الدارجة met lidwoord.
+      const zoek = page.locator('input[type="search"]').first()
+      await zoek.fill('Darija')
+      await wait(page, 600)
+      const rij = page.locator('main ul.space-y-2 > li').filter({ hasText: 'الدارجة' }).first()
+      if (!(await rij.count())) throw new Error('geen zoekresultaat voor الدارجة')
+      // De lijst toont regels; het luidsprekertje zit in het kaartje dat
+      // opengaat als je erop tikt. Dat openen gebeurt vóór de eerste opname,
+      // zodat de film één gebaar laat zien en niet twee.
+      await rij.locator('button').first().click({ force: true })
+      await wait(page, 500)
+      if (!(await rij.innerText()).includes('الدارجة')) {
+        throw new Error('het open kaartje is niet dat van الدارجة')
+      }
+      const knop = rij.locator('button.h-11.w-11').first()
+      if (!(await knop.count())) throw new Error('geen luidsprekerknop op de woordenpagina')
+      const target = await spot(page, knop)
       const scroll = await scrollNow(page)
       const frames = [await shot(page)]
-      await avatar.click({ force: true })
-      await wait(page, 420)
+      await knop.click({ force: true })
+      await wait(page, 300)
       frames.push(await shot(page, scroll))
       return {
         frames,

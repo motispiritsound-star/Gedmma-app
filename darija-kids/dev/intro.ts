@@ -15,7 +15,7 @@ import { CLIPS } from '../src/engine/clips'
 
 /* ------------------------------------------------------------------ the copy */
 
-type ShotId = 'pad' | 'leren' | 'letters' | 'les' | 'geschiedenis' | 'schrijven' | 'profiel'
+type ShotId = 'pad' | 'leren' | 'letters' | 'les' | 'geschiedenis' | 'schrijven' | 'woord'
 
 interface Copy {
   /** Under the title, in the opening card. */
@@ -127,7 +127,7 @@ const COPY: Record<string, Copy> = {
   },
 }
 
-const SHOTS: ShotId[] = ['pad', 'leren', 'letters', 'les', 'geschiedenis', 'schrijven', 'profiel']
+const SHOTS: ShotId[] = ['pad', 'leren', 'letters', 'les', 'geschiedenis', 'schrijven', 'woord']
 
 /* ------------------------------------------------------------- the timetable */
 
@@ -589,11 +589,21 @@ function gestureCues(cast: Cast): [SoundName, number, number][] {
  * draait. Het is de opname uit de app zelf, dezelfde die een kind hoort — geen
  * spraakengine, want die spreekt geen Darija.
  *
- * Onder het titelkaartje, waar alleen nog een aanloopje speelt: daar is ruimte
- * voor, en daar betekent het iets.
+ * Het klinkt op het moment dat de vinger het luidsprekertje raakt, op het
+ * laatste scherm. Beeld en geluid zeggen dan hetzelfde: dit is wat er gebeurt
+ * als je erop drukt.
  */
 const WOORD = 'darija'
-const WOORD_AT = 1.05
+
+/**
+ * Precies wanneer de vinger het luidsprekertje raakt, plus een haar.
+ *
+ * Het scherm waarop dat gebeurt is het laatste van de zeven; de tik zit op 1,2
+ * seconde in die scène. Een kwart seconde later begint de opname — zo lang
+ * duurt het in de app ook voordat er geluid komt, en zonder dat gaatje valt
+ * het woord samen met het tikje.
+ */
+const WOORD_AT = TITLE + SHOTS.indexOf('woord') * HOLD + 1.45
 
 async function hetWoord(off: OfflineAudioContext, bus: AudioNode): Promise<void> {
   const url = CLIPS[WOORD]
