@@ -154,9 +154,13 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 - [x] `npm run lettercheck` — alle 432 opnames, geen enkele viel terug op de stem
 - [x] `npm run bonuscheck`, `npm run historycheck`
 - [x] `npm run feedbackcheck` — vierentwintig onderwerpregels, elke taal zijn eigen
-- [ ] Op een écht toestel gespeeld, met geluid aan — `npm run telefoon` zet de
-      app op je wifi en zegt welk adres je op je telefoon intikt; met een
-      Android-toestel kan het ook via `npm run apk`
+- [ ] **iPhone**: gespeeld met geluid aan, via TestFlight zodra de Mac er is.
+      Dat is de makkelijkste weg; `npm run telefoon` zet de app ook op je wifi,
+      maar dan moet je netwerk meewerken en dat deed het niet.
+- [ ] **Android**: gespeeld op een geleend toestel vóór de Play-release —
+      `npm run apk` maakt het installatiebestand. Dit is het enige stuk dat
+      anders helemaal ongetest de winkel in gaat: het geluid, de aankopen en de
+      snelheid zijn daar niet dezelfde code als op iOS.
 
 ### De uitspraak
 
