@@ -154,7 +154,9 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 - [x] `npm run lettercheck` — alle 432 opnames, geen enkele viel terug op de stem
 - [x] `npm run bonuscheck`, `npm run historycheck`
 - [x] `npm run feedbackcheck` — vierentwintig onderwerpregels, elke taal zijn eigen
-- [ ] Op een écht toestel gespeeld, met geluid aan
+- [ ] Op een écht toestel gespeeld, met geluid aan — `npm run telefoon` zet de
+      app op je wifi en zegt welk adres je op je telefoon intikt; met een
+      Android-toestel kan het ook via `npm run apk`
 
 ### De uitspraak
 
