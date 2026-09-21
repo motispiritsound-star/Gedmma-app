@@ -271,6 +271,38 @@ leest een ouder als "niet voor mijn toestel".
 
 ---
 
+### Of in één commando
+
+Zes talen met de hand is ruim honderdvijftig handelingen, en één tabletmap in
+een telefoonvak is zo gebeurd. Het kan ook zo:
+
+```bash
+npm run play -- --proef    # laat zien wat er zou gaan, praat met niemand
+npm run play               # stuurt alle zes de talen naar Play
+```
+
+Daarvoor is eenmalig een serviceaccount nodig:
+
+1. Google Cloud → nieuw project → *Google Play Android Developer API* aanzetten
+2. IAM & Admin → Service Accounts → er een maken, zonder rollen
+3. Keys → Add key → JSON, en dat bestand **buiten de repo** bewaren
+4. Play Console → Users and permissions → dat account uitnodigen met
+   *Edit and delete draft apps* en *Manage store presence* op deze app
+
+Het script zoekt de sleutel standaard naast de ondertekensleutel
+(`Documents/Darijaforkids-sleutel/play-api.json`); met `--sleutel <pad>` mag het
+ergens anders. Hij hoort niet in git: het is een wachtwoord in bestandsvorm.
+
+Wat het wél doet: titel, korte en volledige beschrijving, de telefoonschermen,
+beide tabletmaten, de uitgelichte afbeelding en het icoon. Wat het niet doet:
+de producten hieronder — een abonnement is bij Google drie lagen diep en het
+zijn er maar drie.
+
+Na afloop staan de wijzigingen klaar in de console. Versturen naar Google doe je
+zelf, bij *Publishing overview*.
+
+---
+
 ## 7. De producten
 
 **Monetisatie → Producten.** Google's model verschilt van dat van Apple: een
