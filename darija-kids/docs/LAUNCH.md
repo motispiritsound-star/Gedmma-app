@@ -67,12 +67,12 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 - [ ] Apple: handelaarsverificatie (DSA) — **in review**, niets te doen dan wachten
 - [ ] Apple: naamcorrectie van "Adi" naar "Adil" — zaak **102968992781** loopt
 - [ ] Apple: bankgegevens — ingediend, wordt verwerkt
-- [ ] Google: identiteitsverificatie — documenten aangeleverd, **wachten**
+- [x] Google: identiteitsverificatie — goedgekeurd op 21 september
 - [x] Google: het account staat als **organisatie** — de gesloten test met 12
       testers × 14 dagen vervalt daarmee (§6)
 - [x] Google: website van de organisatie geverifieerd — via een **URL-prefix**-property
       in Search Console; een Domain-property alleen is niet genoeg (§PLAY 1)
-- [ ] Google: **telefoonnummers verifiëren** — kan pas als identiteit en website groen zijn
+- [x] Google: telefoonnummers geverifieerd
 - [ ] Google: bankrekening en belastinggegevens invullen (§2)
 
 ### De producten — Apple
@@ -115,7 +115,7 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 - [x] Het e-boek in zes talen — `npm run ebook`
 - [x] Apple: naam, ondertitel, trefwoorden, promotietekst, beschrijving en de
       schermafbeeldingen voor iPhone en iPad, in alle zes de talen
-- [ ] Google: de winkelvermelding per taal, begin bij en-US (§PLAY 6) — pakket met `npm run playpakket`
+- [x] Google: de winkelvermelding in zes talen — met `npm run play` in één keer verstuurd
 - [x] Android: een **AAB** bouwen en ondertekenen — `npm run sleutel` en `npm run aab`, 22,8 MB
 - [ ] **Een Mac regelen** — zonder macOS geen iOS-build, en dus geen App Store (§3)
 - [ ] iOS: `npx cap add ios`, archiveren in Xcode, naar TestFlight
@@ -126,10 +126,12 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
       allebei gekoppeld aan de persoon, geen van beide voor tracking (§4)
 - [x] Apple **Age Rating** — overal None ingevuld, staat op 4+ in 172 landen
 - [x] Apple: categorie **Education**, geen Kids Category — die kan bij een latere versie
-- [ ] Google **Gegevensbeveiliging** — deelt niets, maar verzamelt wél een
-      e-mailadres en voortgangsgetallen als een ouder daarom vraagt (§4)
-- [ ] Google **Doelgroep en inhoud** — onder 13, dus Families-beleid
-- [ ] Google **Inhoudsclassificatie** en **Advertenties: nee**
+- [x] Google **Gegevensbeveiliging**: *geen gegevens verzameld*. Nagekeken in de
+      gebouwde app — het nieuwsbriefformulier is bij het bouwen platgeslagen tot
+      `false` en wordt nooit getoond. **Zet je VITE_POST ooit aan, dan moet deze
+      verklaring mee veranderen naar E-mailadres.**
+- [x] Google **Doelgroep en inhoud** — 6 t/m 18+, dus Families-beleid; Teacher Approved aangevraagd
+- [x] Google **Inhoudsclassificatie**, **Advertenties: nee**, en de negen andere verklaringen
 - [ ] Handelaarsgegevens in beide consoles — dezelfde als in `operator.ts`
 - [x] Support-URL (`/ouders`) en marketing-URL ingevuld bij Apple
 - [x] Privacy-URL ingevuld bij App Privacy
