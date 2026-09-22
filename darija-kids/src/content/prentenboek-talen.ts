@@ -17,8 +17,11 @@
 import { DELEN, type Deel, type Vertaling } from './prentenboek'
 import { FR } from './prentenboek-fr'
 import { DE } from './prentenboek-de'
+import { ES } from './prentenboek-es'
+import { IT } from './prentenboek-it'
+import { EN } from './prentenboek-en'
 
-export const VERTALINGEN: Record<string, Vertaling> = { fr: FR, de: DE }
+export const VERTALINGEN: Record<string, Vertaling> = { fr: FR, de: DE, es: ES, it: IT, en: EN }
 
 /**
  * Welke talen compleet zijn.
@@ -131,6 +134,42 @@ export const SCHIL: Record<string, Schil> = {
     uitleg: 'Unter jedem Wort steht, wie man es sagt, in ganz normalen Buchstaben. Lies es genau so vor, wie es dasteht — dann stimmt es. Und wer es hören möchte: alle zwölf gibt es auch in der App.',
     hierna: 'Weiter geht es',
     deel: (n) => `darijaforkids.eu · Sba Band ${n}`,
+  },
+  es: {
+    woord: (n) => `Palabra ${n}`,
+    hardop: '¡Dilo en voz alta!',
+    voet: 'Darija for Kids · aprender juntos con Sba',
+    waarSpeelt: 'Dónde pasa este libro',
+    wieMee: 'Quiénes van',
+    jaar: 'años',
+    deWoorden: 'Las doce palabras de este libro',
+    uitleg: 'Debajo de cada palabra está cómo se dice, en letras normales. Léela tal como está escrita — así sale bien. Y si la quieres oír, las doce están también en la aplicación.',
+    hierna: 'Y después',
+    deel: (n) => `darijaforkids.eu · Sba tomo ${n}`,
+  },
+  it: {
+    woord: (n) => `Parola ${n}`,
+    hardop: 'Dillo ad alta voce!',
+    voet: 'Darija for Kids · imparare insieme a Sba',
+    waarSpeelt: 'Dove si svolge questo libro',
+    wieMee: 'Chi viene',
+    jaar: 'anni',
+    deWoorden: 'Le dodici parole di questo libro',
+    uitleg: 'Sotto ogni parola c’è scritto come si dice, in lettere normali. Leggila proprio come sta scritta — così viene giusta. E se la vuoi sentire, tutte e dodici sono anche nell’applicazione.',
+    hierna: 'E poi',
+    deel: (n) => `darijaforkids.eu · Sba volume ${n}`,
+  },
+  en: {
+    woord: (n) => `Word ${n}`,
+    hardop: 'Say it out loud!',
+    voet: 'Darija for Kids · learning together with Sba',
+    waarSpeelt: 'Where this book takes place',
+    wieMee: 'Who comes along',
+    jaar: 'years',
+    deWoorden: 'The twelve words of this book',
+    uitleg: 'Under every word you can see how to say it, in ordinary letters. Read it just as it is written — that works. And if you want to hear it, all twelve are in the app as well.',
+    hierna: 'Next',
+    deel: (n) => `darijaforkids.eu · Sba book ${n}`,
   },
 }
 
