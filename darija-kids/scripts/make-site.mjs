@@ -61,7 +61,7 @@ const SLEUTELPLEK = [
 const [
   { LANGS, localeOf },
   { SITE },
-  { STORE, SITE_URL, PATHS, SOCIAL },
+  { STORE, SITE_URL, PATHS, SOCIAL, FILM_YOUTUBE, POST_URL },
   { SHOP, WINKEL_OPEN },
   { DELEN },
   { REEKS: SLEUTELREEKS },
@@ -200,7 +200,7 @@ const footer = (lang) => {
  * service worker, which would happily keep handing the old app to anybody who
  * had visited before. It unregisters itself and empties the caches.
  */
-const layout = ({ lang, page, title, description, body, ogImage = '/og.png' }) => {
+const layout = ({ lang, page, title, description, body, ogImage = '/og.png', geenIndex = false }) => {
   const canonical = SITE_URL + PATHS[lang][page === 'home' ? 'home' : page]
   const alternates = LANGS.map((l) =>
     `<link rel="alternate" hreflang="${l.code}" href="${SITE_URL}${PATHS[l.code][page === 'home' ? 'home' : page]}">`).join('\n  ')
@@ -214,6 +214,7 @@ const layout = ({ lang, page, title, description, body, ogImage = '/og.png' }) =
   <meta name="description" content="${esc(description)}">
   <meta name="theme-color" content="#0d1220">
   <link rel="canonical" href="${canonical}">
+  ${geenIndex ? '<meta name="robots" content="noindex, nofollow">' : ''}
   ${alternates}
   <link rel="alternate" hreflang="x-default" href="${SITE_URL}${PATHS.en[page === 'home' ? 'home' : page]}">
   <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
@@ -403,6 +404,11 @@ const homePage = (lang, media) => {
       <source src="/film/${lang}/intro.mp4" type="video/mp4">
       ${esc(c.videoGeen)}
     </video>
+    ${FILM_YOUTUBE ? `<p class="opyoutube">
+      <a href="${FILM_YOUTUBE}" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true">${MERKJE.youtube}</svg>${esc(c.videoYoutube)}
+      </a>
+    </p>` : ''}
   </div>
 </section>` : '',
 
@@ -865,6 +871,187 @@ const checkoutPage = (lang) => {
   })
 }
 
+
+/**
+ * De lezer.
+ *
+ * De enige pagina van deze site met JavaScript, en dat kan niet anders: de
+ * sleutel staat achter het hekje in het adres, en wat achter een hekje staat
+ * komt nooit bij een server. Alleen de browser ziet hem, en die moet hem dus
+ * zelf doorgeven.
+ *
+ * Dat is precies de bedoeling. Zet je de sleutel in het pad, dan staat hij
+ * binnen een dag in drie logbestanden: dat van ons, dat van Cloudflare, en de
+ * verwijzende koptekst van elke link waar iemand op klikt.
+ *
+ * Er wordt niets in de browser opgeslagen behalve de sleutel zelf, en die
+ * stond al in het adres. Geen cookie, geen account, niets om te lekken.
+ */
+const readPage = (lang) => {
+  const c = SITE[lang]
+  const p = PATHS[lang]
+
+  const body = `<div class="wrap doc lezer">
+  <h1>${esc(c.leesTitel)}</h1>
+  <p class="intro">${esc(c.leesLead)}</p>
+  <div id="lezer" class="laden">${esc(c.leesLaden)}</div>
+  <noscript><p class="soon">${esc(c.leesGeenSleutel)}</p></noscript>
+</div>
+
+<script>
+(() => {
+  const post = ${JSON.stringify(POST_URL)}
+  const taal = ${JSON.stringify(lang)}
+  const T = ${JSON.stringify({
+    geenSleutel: c.leesGeenSleutel, onbekend: c.leesOnbekend, voor: c.leesVoor,
+    kies: c.leesKies, vorige: c.leesVorige, volgende: c.leesVolgende,
+    terug: c.leesTerug, bewaar: c.leesBewaar, sba: c.boekKleinTitel, sleutels: c.boekGrootTitel,
+  })}
+  const doel = document.getElementById('lezer')
+  let sleutel = ''
+
+  const zeg = (tekst, klasse) => { doel.className = klasse || ''; doel.textContent = tekst }
+
+  const vraag = (pad, body) =>
+    fetch(post + pad, { method: 'POST', headers: { 'content-type': 'application/json' },
+                        body: JSON.stringify({ sleutel, ...body }) })
+
+  /**
+   * Opnieuw beginnen als het hekje verandert.
+   *
+   * Wie al op deze bladzijde staat en dan de link uit de mail opent, laadt de
+   * bladzijde niet opnieuw — alleen het stuk achter het hekje verandert, en
+   * dat is voor een browser geen nieuwe bladzijde. Zonder deze regel blijft
+   * hij dan zeggen dat er geen sleutel is terwijl hij er wel staat.
+   */
+  const begin = () => {
+    sleutel = location.hash.replace(/^#/, '').trim()
+    if (!/^[0-9a-f]{32}$/.test(sleutel)) return zeg(T.geenSleutel, 'soon')
+    zeg('…', 'laden')
+    vraag('/lezen', {}).then((r) => r.ok ? r.json() : Promise.reject())
+      .then((mijn) => bouw(mijn))
+      .catch(() => zeg(T.onbekend, 'soon'))
+  }
+  addEventListener('hashchange', begin)
+  begin()
+
+  function bouw(mijn) {
+    doel.className = ''
+    doel.innerHTML = ''
+    const merk = document.createElement('p')
+    merk.className = 'vanwie'
+    merk.textContent = T.voor + ' ' + mijn.merk
+    doel.append(merk)
+
+    const kop = document.createElement('h2')
+    kop.textContent = T.kies
+    doel.append(kop)
+
+    for (const reeks of mijn.reeksen) {
+      const aantal = reeks === 'sba' ? 12 : 15
+      const rij = document.createElement('div')
+      rij.className = 'boekjes'
+      const naam = document.createElement('h3')
+      naam.textContent = reeks === 'sba' ? T.sba : T.sleutels
+      doel.append(naam, rij)
+      for (let n = 1; n <= aantal; n++) {
+        const knop = document.createElement('button')
+        knop.type = 'button'
+        knop.textContent = n
+        knop.onclick = () => open(reeks, n, mijn.taal || taal)
+        rij.append(knop)
+      }
+    }
+
+    const tip = document.createElement('p')
+    tip.className = 'tip'
+    tip.textContent = T.bewaar
+    doel.append(tip)
+  }
+
+  async function open(reeks, deel, taalVan) {
+    doel.className = 'laden'
+    doel.textContent = '…'
+    if (reeks === 'sba') return await prentenboek(deel, taalVan)
+    return await leesboek(deel, taalVan)
+  }
+
+  /** Een prentenboek: bladzijde voor bladzijde, elk apart opgehaald. */
+  async function prentenboek(deel, taalVan) {
+    let nr = 1
+    const doos = document.createElement('div')
+    doos.className = 'boek'
+    const beeld = document.createElement('img')
+    beeld.alt = ''
+    const balk = document.createElement('div')
+    balk.className = 'balk'
+    const terug = knopje(T.vorige, () => ga(-1))
+    const verder = knopje(T.volgende, () => ga(1))
+    const teller = document.createElement('span')
+    balk.append(terug, teller, verder)
+    doos.append(beeld, balk, knopje(T.terug, begin, 'terug'))
+    doel.className = ''
+    doel.innerHTML = ''
+    doel.append(doos)
+
+    async function toon() {
+      const r = await vraag('/blad', { reeks: 'sba', deel, nr, taal: taalVan })
+      if (!r.ok) { verder.disabled = true; return }
+      const blob = await r.blob()
+      if (beeld.src.startsWith('blob:')) URL.revokeObjectURL(beeld.src)
+      beeld.src = URL.createObjectURL(blob)
+      teller.textContent = nr
+      terug.disabled = nr === 1
+      verder.disabled = false
+    }
+    function ga(stap) { nr = Math.max(1, nr + stap); toon() }
+    await toon()
+  }
+
+  /** Een leesboek: tekst, want een roman als plaatje schaalt niet. */
+  async function leesboek(deel, taalVan) {
+    const r = await vraag('/blad', { reeks: 'sleutels', deel, nr: 0, taal: taalVan })
+    if (!r.ok) return zeg(T.onbekend, 'soon')
+    const boek = await r.json()
+    doel.className = ''
+    doel.innerHTML = ''
+    const h = document.createElement('h2')
+    h.textContent = boek.titel
+    const j = document.createElement('p')
+    j.className = 'jaar'
+    j.textContent = boek.jaar + ' · ' + boek.waar
+    doel.append(h, j)
+    for (const hoofdstuk of boek.hoofdstukken) {
+      const kop = document.createElement('h3')
+      kop.textContent = hoofdstuk.nummer + '. ' + hoofdstuk.titel
+      doel.append(kop)
+      for (const regel of hoofdstuk.tekst) {
+        const alinea = document.createElement('p')
+        alinea.textContent = regel
+        doel.append(alinea)
+      }
+    }
+    doel.append(knopje(T.terug, begin, 'terug'))
+  }
+
+  function knopje(tekst, bij, klasse) {
+    const k = document.createElement('button')
+    k.type = 'button'
+    k.textContent = tekst
+    k.onclick = bij
+    if (klasse) k.className = klasse
+    return k
+  }
+})()
+</script>`
+
+  return layout({
+    lang, page: 'read', body, geenIndex: true,
+    title: `${c.leesTitel} — Darijaforkids`,
+    description: c.leesLead,
+  })
+}
+
 const parentsPage = (lang) => {
   const c = SITE[lang]
   const t = STRINGS[lang]
@@ -981,7 +1168,8 @@ for (const { code: lang } of LANGS) {
   await write(PATHS[lang].history, historyPage(lang))
   await write(PATHS[lang].books, booksPage(lang))
   await write(PATHS[lang].checkout, checkoutPage(lang))
-  pages += 8
+  await write(PATHS[lang].read, readPage(lang))
+  pages += 9
   if (!shots.length) missing.push(`de schermen voor ${lang}`)
   if (!film) missing.push(`de film voor ${lang}`)
 }

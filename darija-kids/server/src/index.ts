@@ -428,15 +428,20 @@ async function blad(verzoek: Request, env: Env): Promise<Response> {
   const bestelling = await bestellingVan(env.DB, sleutel ?? '')
   if (!bestelling) return json({ fout: 'onbekend' }, 404)
   if (!bestelling.reeksen.split(',').includes(reeks ?? '')) return json({ fout: 'niet-gekocht' }, 403)
-  if (!Number.isInteger(deel) || !Number.isInteger(nr)) return json({ fout: 'onvolledig' }, 400)
+  if (!Number.isInteger(deel)) return json({ fout: 'onvolledig' }, 400)
+  if (reeks !== 'sleutels' && !Number.isInteger(nr)) return json({ fout: 'onvolledig' }, 400)
 
-  const naam = `${reeks}/${deel}/${(taal ?? bestelling.taal).replace(/[^a-z]/g, '')}/${nr}.webp`
-  const object = await env.BOEKEN.get(naam)
+  // Een prentenboek is een bladzijde als plaatje; een leesboek is tekst.
+  // Een roman als plaatje schaalt niet op een telefoon: je kunt niet groter
+  // zetten en de regels lopen niet door.
+  const map = `${reeks}/${deel}/${(taal ?? bestelling.taal).replace(/[^a-z]/g, '')}`
+  const isBoek = reeks === 'sleutels'
+  const object = await env.BOEKEN.get(isBoek ? `${map}/boek.json` : `${map}/${nr}.webp`)
   if (!object) return json({ fout: 'geen-bladzijde' }, 404)
 
   return new Response(object.body, {
     headers: {
-      'content-type': 'image/webp',
+      'content-type': isBoek ? 'application/json' : 'image/webp',
       // Wel in de browser bewaren, nooit op een tussenliggende server.
       'cache-control': 'private, max-age=86400',
       ...CORS,

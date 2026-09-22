@@ -329,6 +329,18 @@ header nav a.uit:hover { background: color-mix(in oklab, var(--saffron) 34%, tra
   .delenlijst .wat { grid-column: 1; }
 }
 
+/* De film staat ook op YouTube; wie daar wil kijken, liken of delen mag dat
+   weten zonder dat we hem wegsturen van de pagina die hem moet overtuigen. */
+.opyoutube { margin: 1rem 0 0; text-align: center; }
+.opyoutube a {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-size: .92rem; font-weight: 700; color: var(--ink);
+  background: var(--raised); border: 1px solid var(--line); border-radius: 999px;
+  padding: .5rem 1.1rem; text-decoration: none;
+}
+.opyoutube a:hover { border-color: var(--terra); color: var(--terra); }
+.opyoutube svg { width: 1.15rem; height: 1.15rem; fill: currentColor; }
+
 /* ── De vier kanalen ──────────────────────────────────────────────────── */
 .socials {
   list-style: none; display: flex; justify-content: center; gap: .7rem;
@@ -609,3 +621,36 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
     border-radius: 999px; padding: .55rem 1.1rem; font-weight: 800;
   }
 }
+
+
+/* ── De lezer ────────────────────────────────────────────────────────────
+   De enige pagina met JavaScript. De sleutel staat achter het hekje in het
+   adres en komt daarom nooit bij een server; de browser moet hem dus zelf
+   doorgeven, en dat kan niet zonder script. */
+.lezer .laden { color: var(--ink-soft); padding: 2rem 0; text-align: center; }
+.lezer .vanwie {
+  font-size: .85rem; color: var(--ink-soft);
+  border-left: 3px solid var(--saffron); padding: .2rem 0 .2rem .8rem; margin: 0 0 1.5rem;
+}
+.lezer h3 { margin: 1.4rem 0 .6rem; font-size: 1rem; }
+.lezer .boekjes { display: flex; flex-wrap: wrap; gap: .5rem; }
+.lezer .boekjes button {
+  width: 3rem; height: 3rem; border-radius: 12px; cursor: pointer;
+  font: inherit; font-weight: 700; font-size: 1rem;
+  background: var(--raised); border: 1px solid var(--line); color: var(--ink);
+}
+.lezer .boekjes button:hover { border-color: var(--zellige); color: var(--zellige); }
+.lezer .tip { margin-top: 2rem; font-size: .88rem; color: var(--ink-soft); }
+
+.lezer .boek img { width: 100%; height: auto; display: block; border-radius: var(--radius); }
+.lezer .balk {
+  display: flex; align-items: center; justify-content: center; gap: 1.2rem;
+  margin-top: 1rem; font-variant-numeric: tabular-nums;
+}
+.lezer button {
+  font: inherit; cursor: pointer; padding: .5rem 1.1rem; border-radius: 999px;
+  background: var(--raised); border: 1px solid var(--line); color: var(--ink);
+}
+.lezer button:disabled { opacity: .4; cursor: default; }
+.lezer button.terug { display: block; margin: 1.6rem auto 0; }
+.lezer .jaar { color: var(--ink-soft); margin-top: -.5rem; }
