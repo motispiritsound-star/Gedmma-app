@@ -120,6 +120,101 @@ Tweeduizend verkochte delen is € 26.000. Prettig, maar niet je hoofdinkomen �
 het abonnement blijft de motor. Wat dit wél doet: het maakt de band sterker,
 en een ouder die een boek koopt zegt zijn abonnement niet op.
 
+## 2b. Voor de kleintjes — de Atlasleeuw
+
+Dit is sterker dan §2, en het is een ander boek voor een andere leeftijd.
+
+**Prentenboeken voor 2 tot 8 jaar, in het Nederlands, met per bladzijde één
+woord Darija.** Het kind hoeft niets te kunnen lezen en de ouder hoeft geen
+Darija te kennen: hij leest het verhaal voor en struikelt één keer per
+bladzijde over een woord dat hij zelf ook weer leert. De ontdekking van dat
+woord ís het verhaal.
+
+Waarom dit beter werkt dan het luister-mee-boek van §2:
+
+- **De app begint rond zeven jaar.** Hier begint het bij twee. Dat is een
+  nieuwe markt, en het is de markt die je al in huis hebt: het broertje van je
+  gebruiker. Een ouder die het abonnement betaalt voor de oudste, koopt het
+  boek voor de jongste.
+- **De ouder kan het voorlezen.** Dat was de valkuil van een boek in het
+  Darija; die is hier weg.
+- **Twaalf woorden per boek** zijn twaalf woorden die al in `words.ts` staan
+  en al zijn ingesproken. De QR-code achterin kost je dus niets.
+- **Eén terugkerend figuur** maakt er een reeks van in plaats van een boek.
+
+### Het figuur
+
+Een **Atlasleeuw**, en die keuze is beter dan hij lijkt. Hij is het symbool
+van Marokko — de nationale ploeg heet ernaar — hij is groot en zacht
+tegelijk, en hij is in het wild uitgestorven. Dat laatste zeg je niet tegen
+een kind van vier, maar het is wel precies hetzelfde verhaal als dat van de
+taal: iets van thuis dat verdwijnt als niemand het doorgeeft.
+
+Een naam met een echte Marokkaanse wortel is meer waard dan een verzonnen
+klank. **Yuba** is mijn voorstel: naar Juba II, de Amazigh-koning die
+regeerde vanuit Walili — dezelfde stad waarmee de geschiedeniskaarten in de
+app beginnen. Twee lettergrepen, uit te spreken in alle zes de talen, en
+geen enkele andere kinderreeks heet zo. Het alternatief is **Sbaa**, het
+Darija-woord voor leeuw: elke Marokkaanse ouder glimlacht meteen, en het is
+zelf al het eerste woordje.
+
+En laat **Fnek**, de fennek uit de app, meereizen als zijn maatje. Dan
+herkent een kind dat het boek kent de app, en andersom. Eén wereld, twee
+producten.
+
+### De reeks
+
+Zes delen, elk twaalf woorden, elk een stuk van het land:
+
+| Deel | Waar | Wat je leert |
+|---|---|---|
+| 1 | de medina van Fes | begroeten, brood, de ezel, de poort |
+| 2 | het Atlasgebergte | sneeuw, geit, thee, koud |
+| 3 | de zee bij Essaouira | vis, boot, meeuw, wind |
+| 4 | de souq van Marrakech | hoeveel, duur, munt, afdingen |
+| 5 | bij jeddti | couscous, vrijdag, oma, lekker |
+| 6 | het feest | nieuw, cadeau, henna, feliciteren |
+
+Tweeëzeventig woorden over de hele reeks — allemaal woorden die het kind
+straks in de app terugziet.
+
+### Wat het kost, eerlijk
+
+De opmaak kost je niets; de tekeningen wel. **Een prentenboek heeft twaalf
+tot zestien platen nodig**, en een illustrator rekent € 150 tot € 400 per
+plaat. Dat is € 2.000 tot € 6.000 per deel, en dat is de enige echte drempel
+in dit hele document.
+
+Drie manieren eromheen, in volgorde van wat ik zou doen:
+
+1. **Eén deel maken, niet zes.** Kijk of het verkoopt voordat je aan deel twee
+   begint.
+2. **Een Marokkaanse illustrator.** Goedkoper, en het klopt ook beter — dit is
+   hun leeuw.
+3. **Een student van een kunstacademie** die een portfolio wil. Vraag om drie
+   proefplaten voordat je de hele reeks gunt.
+
+Wat ik **niet** zou doen: platen laten genereren. De hele belofte van dit merk
+is dat het echt is — een echte stem, een echte taal, een echte oma. Getekend
+door een mens hoort in datzelfde rijtje, en ouders zien het verschil.
+
+| | |
+|---|---|
+| Softcover, print-on-demand | kostprijs € 6–9, verkoop € 14,95 |
+| Hardcover vanaf 1.000 stuks | kostprijs € 2,50–4, verkoop € 17,95 |
+| Als e-boek erbij | € 7,95, geen risico |
+
+Begin bij print-on-demand: geen voorraad, geen investering. Verkoopt een deel
+er driehonderd, dan laat je hem in één keer drukken en verdubbelt je marge.
+
+### Op de website
+
+Een eigen ingang, precies zoals je zei: **"Voor de kleintjes — 2 tot 8 jaar"**.
+
+Dat is niet alleen een winkelrubriek, het is een tweede voordeur. Een ouder
+met een kind van drie kan nu niets met de app en gaat weg. Straks koopt hij
+een boek, komt hij op je lijst, en over vier jaar heeft hij een abonnement.
+
 ## 3. De naam van je kind in Arabisch schrift
 
 Dit is het idee met de hoogste verhouding tussen gevoel en moeite, en het kan
