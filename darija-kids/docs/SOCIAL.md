@@ -1,11 +1,14 @@
 # De kanalen aanmaken
 
-Eén reden om dit vóór de lancering te doen en niet erna: **namen zijn op
-volgorde van binnenkomst**. Raakt `darijaforkids` ergens bezet terwijl je wacht
-op een review, dan klopt je merk nergens meer met je domein, en dat is niet
-terug te draaien.
+Vier kanalen: YouTube, Instagram, TikTok en een Facebook-pagina. Ze staan
+alle vier; wat hier staat is hoe ze zijn ingericht en waar de volgende keer
+op te letten valt.
 
-Alles hieronder kost samen ongeveer een uur. Posten hoeft nog niet.
+Dat het vóór de lancering moest en niet erna, bleek te kloppen: **namen zijn
+op volgorde van binnenkomst**, en `darijaforkids` was overal al weg. Vandaar
+`darijaforkidsapp`.
+
+Posten hoeft nog niet — dat begint de dag dat de app in de winkel staat.
 
 ## De naam
 
@@ -15,9 +18,7 @@ Alles hieronder kost samen ongeveer een uur. Posten hoeft nog niet.
 darijaforkidsapp
 ```
 
-Overal hetzelfde, in kleine letters. Eén uitzondering: **X** neemt maximaal
-vijftien tekens en `darijaforkidsapp` er zestien. Daar wordt het
-`darijakidsapp` — dertien tekens, dezelfde volgorde van woorden.
+Overal hetzelfde, in kleine letters, op alle vier de kanalen.
 
 Geen cijfers achter de naam. `darijaforkids1` leest als een namaakaccount, en
 dat is het laatste wat je wilt bij een app waar een ouder zijn creditcard voor
@@ -28,7 +29,7 @@ pakt.
 | | |
 |---|---|
 | Profielfoto | `brand/social/profielfoto.png` — de khatam met de Marokkaanse vlag erbij |
-| Handle | darijaforkidsapp (op X: darijakidsapp) |
+| Handle | darijaforkidsapp |
 | Naamveld | Darija voor kinderen |
 | Link | https://darijaforkids.eu |
 | Mail | info@darijaforkids.eu |
@@ -47,7 +48,7 @@ De bio, in de taal van het kanaal:
 
 **Staat er.** https://www.youtube.com/channel/UCIbq0-YRHDrpD9Avs0EnKvA
 
-Wat er nog moet: de handle `@darijaforkids` zetten (Instellingen → Kanaal →
+Wat er nog moet: de handle `@darijaforkidsapp` zetten (Instellingen → Kanaal →
 Geavanceerd), de profielfoto en de banner uit `brand/social/`, en de film
 uploaden. Play wacht op die laatste: het veld *Video* wil de link naar een
 **video**, niet naar een kanaal.
@@ -90,35 +91,75 @@ darijaforkids.eu
 info@darijaforkids.eu
 ```
 
-## 2. Instagram
+## 2. Instagram — staat
 
 https://www.instagram.com/accounts/emailsignup/
 
-Gebruikersnaam `darijaforkids`, zakelijk account (dan zie je statistieken en
-kun je later een link in je bio zetten). Profielfoto, bio, link. Niets posten.
+Zakelijk account: *Instellingen en activiteit → Voor professionals →
+Accounttype en tools → Overschakelen naar professioneel account*, categorie
+**Onderwijs**, dan **Bedrijf** (niet *Maker*). Op de desktop kan het ook via
+https://www.instagram.com/accounts/convert_to_professional_account/
 
-## 3. TikTok
+Drie dingen die hier misgaan:
+
+- **De link hoort in het veld *Links*, niet in de biotekst.** In de bio is hij
+  niet klikbaar en kost hij vierentwintig van je honderdvijftig tekens.
+- **Het naamveld is niet de handle.** Instagram zoekt erop, dus daar staat
+  `Darija voor kinderen` — de merknaam staat al in de handle. Dertig tekens
+  is het maximum.
+- **Contactknop alleen e-mail.** Een zakelijk account mag een adres tonen, en
+  dat is bij een eenmanszaak je huisadres.
+
+## 3. TikTok — staat
 
 https://www.tiktok.com/signup
 
-Zelfde naam en foto. Zet het account meteen op **zakelijk** — anders mag je
-later geen link in je bio.
+Zelfde naam en foto. Zet het account meteen op **zakelijk** (*Instellingen en
+privacy → Account → Overschakelen naar zakelijk account*, categorie
+**Onderwijs**) — anders mag je later geen link in je bio.
 
-## 4. Facebook-pagina
+De bio neemt hier maar **tachtig tekens**, veel minder dan Instagram:
+
+```
+Laat je kind zijn moedertaal leren — spelenderwijs. Marokkaans-Arabisch 🇲🇦
+```
+
+Een zakelijk account mag alleen muziek uit de commerciële bibliotheek van
+TikTok gebruiken, geen trending nummers. Dat is geen verlies: als bedrijf mag
+je die nummers sowieso niet gebruiken, en de film heeft zijn eigen muziek.
+
+Voor de zakelijke verificatie vraagt TikTok om het **KvK-certificaat** en het
+**KvK-nummer** — acht cijfers, zonder spaties en zonder "NL", niet het RSIN en
+niet het btw-nummer. De bedrijfsnaam moet letterlijk overeenkomen met het
+certificaat.
+
+## 4. Facebook-pagina — staat
 
 https://www.facebook.com/pages/create
 
-Een *pagina*, geen profiel. Categorie **Onderwijs → App**. Dit kanaal is
-belangrijker dan het lijkt: de Marokkaanse gemeenschap in Nederland, België en
-Frankrijk zit in Facebook-groepen, en daar mag je posten zodra je een pagina
-hebt.
+Een *pagina*, geen profiel. Categorie **Onderwijs**, met **App-pagina** als
+tweede. Dit kanaal is belangrijker dan het lijkt: de Marokkaanse gemeenschap in
+Nederland, België en Frankrijk zit in Facebook-groepen, en daar mag je posten
+zodra je een pagina hebt.
 
-## 5. X
+Vergeet de **gebruikersnaam** niet aan te maken, anders houd je een adres met
+een nummer erin dat je nergens kunt afdrukken.
 
-https://x.com/i/flow/signup
+**Koppelen aan Instagram** gaat het betrouwbaarst via het Accountcentrum —
+https://accountscenter.facebook.com → *Accounts* → *Accounts toevoegen* —
+en niet via de pagina-instellingen, die Meta elk half jaar verhangt. Let erop
+dat je in het centrum van de **pagina** zit en niet in dat van je persoonlijke
+profiel, anders staan je Instagram-berichten onder je eigen naam in Business
+Suite. Gelukt zie je aan business.facebook.com: daar staan beide kanalen
+links onder elkaar.
 
-Alleen om de naam vast te leggen. Laag rendement voor deze doelgroep, maar het
-kost vijf minuten en voorkomt dat iemand anders hem pakt.
+## Geen X
+
+Overwogen en laten vallen. Voor Marokkaanse ouders in Nederland, België en
+Frankrijk levert X vrijwel niets op, en een leeg account dat niemand beheert
+is slechter dan geen account. Wil je de naam later alsnog vastleggen: daar
+past `darijaforkidsapp` niet, want X neemt maximaal vijftien tekens —
+`darijakidsapp` dan.
 
 ## Volgorde van posten
 
