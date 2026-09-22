@@ -277,6 +277,55 @@ verkeerde plek zoeken. Het ligt aan deze instelling.
 Controleer op **Signing & Capabilities → Release** dat er nu
 `Apple Distribution` staat. Dan pas archiveren.
 
+### C4c. Als automatisch ondertekenen blijft hangen
+
+Symptoom: bij *Signing & Capabilities* blijft staan
+
+```
+Communication with Apple failed
+Your team has no devices from which to generate a provisioning profile.
+No profiles for 'app.darijaforkids.learn' were found
+```
+
+en Archive faalt, ongeacht wat je bij *Code Signing Identity* invult.
+
+Wat er gebeurt: automatisch ondertekenen wil eerst een **ontwikkel**profiel
+maken. Dat kan alleen als je team minstens één apparaat kent. Kent het er
+geen — en een telefoon aan de kabel registreert niet altijd — dan loopt het
+vast vóórdat Xcode aan distributie toekomt.
+
+Een App Store-profiel kent geen apparaten. Maak dat dus met de hand, en zet
+automatisch ondertekenen uit voor Release. Dan is het probleem weg.
+
+**Bij Apple, in de browser:**
+
+1. Ga naar **developer.apple.com/account** → **Certificates, Identifiers &
+   Profiles**.
+2. Klik links op **Identifiers**. Staat `app.darijaforkids.learn` er niet bij,
+   maak hem aan met **+** → *App IDs* → *App* → beschrijving `Darijaforkids`,
+   Bundle ID **explicit** `app.darijaforkids.learn`.
+3. Klik links op **Profiles** → **+**.
+4. Kies onder *Distribution* de optie **App Store Connect** → **Continue**.
+5. Kies bij *App ID* `app.darijaforkids.learn` → **Continue**.
+6. Kies het certificaat **Apple Distribution** → **Continue**.
+7. Geef het profiel een naam, bijvoorbeeld `Darijaforkids App Store`, en klik
+   **Generate** → **Download**. Het bestand komt in je map *Downloads* te
+   staan en eindigt op `.mobileprovision`.
+8. Dubbelklik het gedownloade bestand. Xcode neemt het op.
+
+**In Xcode:**
+
+9. Tabblad **Signing & Capabilities** → klik op **Release**.
+10. Haal het vinkje weg bij **Automatically manage signing**.
+11. Kies bij **Provisioning Profile** het zojuist gemaakte
+    `Darijaforkids App Store`.
+12. **Code Signing Identity** mag nu wél op **Apple Distribution** — bij
+    handmatig ondertekenen is dat geen conflict meer.
+
+Laat *Debug* met rust: die mag automatisch blijven. Je archiveert met Release.
+
+Daarna: **Product → Archive**.
+
 ### C5. Het doel instellen
 
 Bovenin het venster, naast de naam *App*, staat een keuzemenu — daar staat nu
