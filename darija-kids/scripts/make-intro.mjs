@@ -12,9 +12,12 @@
  *   node scripts/make-intro.mjs --lang nl --shape verhaal
  *   node scripts/make-intro.mjs --still 4.2,8.7,13    (frames, to check a layout)
  */
-import { mkdir, writeFile } from 'node:fs/promises'
+import { execFile } from 'node:child_process'
+import { mkdir, rm, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { promisify } from 'node:util'
+import ffmpeg from 'ffmpeg-static'
 import { chromium } from 'playwright'
 import { createServer } from 'vite'
 import { CHECK, GO_ON, GOT_IT, ONWARD, seeded } from './lib/profile.mjs'
@@ -24,6 +27,26 @@ const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 const PORT = 4312
 const BASE = `http://127.0.0.1:${PORT}`
 const OUT = path.join(ROOT, 'store', 'video')
+const run = promisify(execFile)
+
+/**
+ * Wat de browser opneemt hercoderen naar H.264 met AAC.
+ *
+ * De recorder van Chromium levert VP9 met Opus, ook als hij er "video/mp4"
+ * boven zet. Dat speelt hier prima af en struikelt overal daarbuiten:
+ * Instagram en TikTok weigeren zo'n bestand, en de App Store wil voor een
+ * app preview H.264. Eén keer hercoderen is goedkoper dan zes keer uitzoeken
+ * waarom een upload het niet doet. `faststart` zet de index vooraan, zodat
+ * een site hem kan afspelen voordat hij binnen is.
+ */
+async function hercodeer(ruw, naar) {
+  await run(ffmpeg, ['-hide_banner', '-loglevel', 'error', '-y', '-i', ruw,
+    '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2', '-pix_fmt', 'yuv420p',
+    '-crf', '20', '-preset', 'medium', '-r', '30',
+    '-c:a', 'aac', '-b:a', '160k', '-ar', '48000',
+    '-movflags', '+faststart', naar])
+  await rm(ruw, { force: true })
+}
 
 const arg = (name, fallback) => {
   const i = process.argv.indexOf(`--${name}`)
@@ -482,10 +505,13 @@ for (const lang of langs) {
     const kind = url.slice(5, url.indexOf(';'))
     const ext = kind.includes('mp4') ? 'mp4' : 'webm'
     const data = Buffer.from(url.slice(url.indexOf(',') + 1), 'base64')
-    const file = path.join(OUT, lang, `intro-${shape}.${ext}`)
-    await writeFile(file, data)
+    const ruw = path.join(OUT, lang, `intro-${shape}.ruw.${ext}`)
+    const file = path.join(OUT, lang, `intro-${shape}.mp4`)
+    await writeFile(ruw, data)
+    await hercodeer(ruw, file)
+    const { size } = await stat(file)
     console.log(
-      `  ${path.relative(ROOT, file)} — ${(data.length / 1e6).toFixed(1)} MB, ` +
+      `  ${path.relative(ROOT, file)} — ${(size / 1e6).toFixed(1)} MB, ` +
         `${((Date.now() - started) / 1000).toFixed(0)}s`,
     )
   }
@@ -502,6 +528,9 @@ if (still === null) {
       `- \`intro-verhaal\` — 1080×1920, voor stories, reels en TikTok\n` +
       `- \`intro-vierkant\` — 1080×1080, voor Instagram en Facebook\n` +
       `- \`intro-breed\` — 1920×1080, voor YouTube en de website\n\n` +
+      `Alle vier in H.264 met AAC-geluid: dat is wat Instagram, TikTok en de \n` +
+      `App Store aannemen. De opname van de browser zelf is VP9 en wordt \n` +
+      `hercodeerd voordat hij hier terechtkomt.\n\n` +
       `Ruim 27 seconden, met geluid. De schermen zijn de echte app en de muziek ` +
       `komt uit \`src/engine/instruments.ts\` — dezelfde marimba, darbuka en ` +
       `hijaz-melodieën als in de app zelf.\n\n` +
