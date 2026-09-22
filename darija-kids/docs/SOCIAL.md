@@ -9,23 +9,34 @@ Alles hieronder kost samen ongeveer een uur. Posten hoeft nog niet.
 
 ## De naam
 
-Overal hetzelfde, in kleine letters:
+`darijaforkids` bleek overal bezet. Het is geworden:
 
 ```
-darijaforkids
+darijaforkidsapp
 ```
 
-Is hij ergens bezet, neem dan `darijaforkids.eu` of `darijaforkidsapp` — maar
-**dezelfde terugval overal**, niet per kanaal iets anders.
+Overal hetzelfde, in kleine letters. Eén uitzondering: **X** neemt maximaal
+vijftien tekens en `darijaforkidsapp` er zestien. Daar wordt het
+`darijakidsapp` — dertien tekens, dezelfde volgorde van woorden.
+
+Geen cijfers achter de naam. `darijaforkids1` leest als een namaakaccount, en
+dat is het laatste wat je wilt bij een app waar een ouder zijn creditcard voor
+pakt.
 
 ## Wat overal hetzelfde is
 
 | | |
 |---|---|
 | Profielfoto | `brand/social/profielfoto.png` — de khatam met de Marokkaanse vlag erbij |
-| Naam | Darijaforkids |
+| Handle | darijaforkidsapp (op X: darijakidsapp) |
+| Naamveld | Darija voor kinderen |
 | Link | https://darijaforkids.eu |
 | Mail | info@darijaforkids.eu |
+
+Het naamveld is niet de handle. Instagram en YouTube **zoeken erop**, dus daar
+hoort niet nog een keer de merknaam in — die staat al in de handle — maar het
+woord waarop een ouder zoekt. Instagram neemt er dertig tekens; *Darija voor
+kinderen* is er twintig.
 
 De bio, in de taal van het kanaal:
 
@@ -52,6 +63,32 @@ uploaden. Play wacht op die laatste: het veld *Video* wil de link naar een
 
 Herhaal stap 4 en 5 per taal met `store/video/<taal>/intro-breed.mp4` als je
 aparte markten wilt bedienen. Eén kanaal, meerdere video's — geen zes kanalen.
+
+### De kanaalbeschrijving
+
+Bij *Kanaal aanpassen → Basisinfo → Beschrijving*. YouTube neemt er duizend
+tekens; dit is er ruim zevenhonderd. De eerste twee regels zijn wat iemand in
+de zoekresultaten ziet, dus daar staat het kind en niet de app.
+
+```
+Laat je kind zijn moedertaal leren — spelenderwijs.
+
+Darijaforkids leert kinderen en jongeren Darija: het Marokkaans-Arabisch dat mensen in Marokko thuis en op straat spreken. Niet het Standaardarabisch uit een schoolboek, maar de taal waarin je met jeddi en jeddti belt. In lesjes van een paar minuten, zodat je kind straks meepraat aan tafel bij opa en oma en in het land van zijn ouders zijn eigen weg vindt.
+
+Op dit kanaal: korte filmpjes over de app, de uitspraak van woorden en zinnen, en stukjes uit de geschiedenis van Marokko.
+
+In de app:
+• Het hele Arabische alfabet, letter voor letter
+• 304 woorden en 100 zinnen, allemaal uitgesproken
+• 17 units, van de eerste letter tot afdingen op de souq
+• Veertien filmpjes uit de geschiedenis van Marokko
+• Geen account, geen advertenties, werkt offline
+
+In het Nederlands, Frans, Duits, Spaans, Italiaans en Engels.
+
+darijaforkids.eu
+info@darijaforkids.eu
+```
 
 ## 2. Instagram
 
