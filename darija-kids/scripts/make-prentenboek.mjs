@@ -455,17 +455,17 @@ const plaat = (naam, nr) => {
 const bladzijde = (blad, nr) => `<section class="blad">
   ${plaat(blad.scene, nr)}
   <div class="merkpil">Darija for Kids</div>
-  <div class="woordpil">Woord ${nr}</div>
+  <div class="woordpil">${esc(S.woord(nr))}</div>
   <div class="woordkaart">
     <div class="tr">${esc(blad.woord.tr)}</div>
     <div class="ar">${esc(blad.woord.ar)}</div>
     <div class="nl">${esc(blad.woord.nl)}</div>
-    <div class="hardop">Zeg het hardop!</div>
+    <div class="hardop">${esc(S.hardop)}</div>
   </div>
-  <div class="voetregel">Darija for Kids · samen leren met Sba</div>
+  <div class="voetregel">${esc(S.voet)}</div>
 </section>
 <section class="tekstblad verhaalblad">
-  <div class="woordpil donker">Woord ${nr}</div>
+  <div class="woordpil donker">${esc(S.woord(nr))}</div>
   <div class="verhaal">
     ${blad.tekst.map((regel) => `<p>${esc(regel)}</p>`).join('')}
     <p class="echo">${esc(blad.echo)}</p>
@@ -475,7 +475,7 @@ const bladzijde = (blad, nr) => `<section class="blad">
     <div class="tr">${esc(blad.woord.tr)}</div>
     <div class="nl">${esc(blad.woord.nl)}</div>
   </div>
-  <div class="voetregel donker">Darija for Kids · samen leren met Sba</div>
+  <div class="voetregel donker">${esc(S.voet)}</div>
 </section>`
 
 /* ------------------------------------------------------------------ zetten */
@@ -484,10 +484,29 @@ const server = await createServer({
   configFile: path.join(ROOT, 'vite.config.ts'),
   root: ROOT, server: { middlewareMode: true, hmr: false }, appType: 'custom', logLevel: 'error',
 })
-const [{ DELEN, CAST }] = await Promise.all([server.ssrLoadModule('/src/content/prentenboek.ts')])
+const [{ DELEN, CAST }, { deelIn, TALEN_KLAAR, VORDERING, schilVan }] = await Promise.all([
+  server.ssrLoadModule('/src/content/prentenboek.ts'),
+  server.ssrLoadModule('/src/content/prentenboek-talen.ts'),
+])
 const NUMMER = Number(arg('deel', '1'))
-const DEEL1 = DELEN.find((d) => d.nummer === NUMMER)
-if (!DEEL1) throw new Error(`geen deel ${NUMMER}; er zijn er ${DELEN.length}`)
+if (!DELEN.some((d) => d.nummer === NUMMER)) throw new Error(`geen deel ${NUMMER}; er zijn er ${DELEN.length}`)
+
+/**
+ * Een taal die nog niet af is, zetten mag — zwijgen erover niet.
+ *
+ * `deelIn` valt voor een ontbrekend deel terug op het Nederlands. Dat is
+ * bruikbaar voor een proefdruk en onbruikbaar voor de winkel, dus komt het
+ * hier op het scherm en niet pas op bladzijde zeven.
+ */
+if (TAAL !== 'nl' && !TALEN_KLAAR.includes(TAAL)) {
+  const v = VORDERING[TAAL]
+  console.warn(v
+    ? `\nLet op: ${TAAL} is ${v.klaar} van de ${v.totaal} delen vertaald. De rest staat in het Nederlands.\n`
+    : `\nLet op: er is geen vertaling voor "${TAAL}". Dit boek komt in het Nederlands.\n`)
+}
+
+const DEEL1 = deelIn(TAAL, NUMMER)
+const S = schilVan(TAAL)
 
 const [balo800, balo600, naskh] = await Promise.all([
   readFile(path.join(ROOT, 'public', 'fonts', 'baloo2-800.woff2')),
@@ -581,19 +600,19 @@ const html = `<!doctype html><html lang="${TAAL}"><meta charset="utf-8">
   <h2 style="font-size:24pt">${esc(DEEL1.titel)}</h2>
   <p style="font-size:13pt;opacity:.75">${esc(DEEL1.ondertitel)}</p>
   <p style="font-size:12pt;opacity:.7;font-style:italic;max-width:120mm;margin:6mm auto 0">${esc(DEEL1.opdracht)}</p>
-  <p style="margin-top:12mm;font-size:11pt;font-weight:800;opacity:.6">Darijaforkids · deel ${DEEL1.nummer}</p>
+  <p style="margin-top:12mm;font-size:11pt;font-weight:800;opacity:.6">${esc(S.deel(DEEL1.nummer))}</p>
 </section>
 
 <section class="tekstblad" style="justify-content:center;text-align:center">
   <svg viewBox="0 0 300 190" style="width:80mm;align-self:center">${sba(150, 70, 1.15)}</svg>
-  <h2 style="font-size:17pt">Waar dit boek speelt</h2>
+  <h2 style="font-size:17pt">${esc(S.waarSpeelt)}</h2>
   <p style="font-size:13pt">${esc(DEEL1.waar ?? '')}</p>
 </section>
 
 <section class="tekstblad">
-  <h2>Wie er meegaan</h2>
+  <h2>${esc(S.wieMee)}</h2>
   <div class="wie">
-    ${CAST.map((f) => `<div><b>${esc(f.naam)}</b>${f.leeftijd ? ` · ${f.leeftijd} jaar` : ''}<br>${esc(f.wie)}</div>`).join('')}
+    ${CAST.map((f) => `<div><b>${esc(f.naam)}</b>${f.leeftijd ? ` · ${f.leeftijd} ${esc(S.jaar)}` : ''}<br>${esc(f.wie)}</div>`).join('')}
   </div>
   <p style="opacity:.75">${esc(DEEL1.opdracht)}</p>
 </section>
@@ -601,19 +620,19 @@ const html = `<!doctype html><html lang="${TAAL}"><meta charset="utf-8">
 ${DEEL1.bladen.map((blad, i) => bladzijde(blad, i + 1)).join('\n')}
 
 <section class="tekstblad">
-  <h2>De twaalf woorden van dit boek</h2>
+  <h2>${esc(S.deWoorden)}</h2>
   <div class="lijst">
     ${DEEL1.bladen.slice(0, 6).map((b) => `<div><div class="ar">${esc(b.woord.ar)}</div><div class="tr">${esc(b.woord.tr)}</div><div class="nl">${esc(b.woord.nl)}</div></div>`).join('')}
   </div>
   <div class="lijst">
     ${DEEL1.bladen.slice(6).map((b) => `<div><div class="ar">${esc(b.woord.ar)}</div><div class="tr">${esc(b.woord.tr)}</div><div class="nl">${esc(b.woord.nl)}</div></div>`).join('')}
   </div>
-  <p>Onder elk woord staat hoe je het zegt, in gewone letters. Lees het voor zoals het er staat — dan klopt het. Wil je het horen, dan staan alle twaalf ook in de app.</p>
-  <p style="opacity:.7">darijaforkids.eu · Sba deel ${DEEL1.nummer}</p>
+  <p>${esc(S.uitleg)}</p>
+  <p style="opacity:.7">${esc(S.deel(DEEL1.nummer))}</p>
 </section>
 
 <section class="tekstblad" style="justify-content:center;text-align:center">
-  <h2 style="font-size:19pt">Hierna</h2>
+  <h2 style="font-size:19pt">${esc(S.hierna)}</h2>
   <p style="font-size:14pt;max-width:120mm;margin:0 auto">${esc(DEEL1.hierna ?? '')}</p>
   <svg viewBox="0 0 300 190" style="width:70mm;align-self:center;margin-top:8mm">${sba(150, 70, 1.1, { kijk: 1 })}</svg>
 </section>

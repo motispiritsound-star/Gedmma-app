@@ -61,6 +61,31 @@ export interface Deel {
   bladen: Blad[]
 }
 
+/**
+ * Een deel in een andere taal.
+ *
+ * De verhalen zijn in het Nederlands geschreven en de rest is vertaling. Wat
+ * hier staat is dus alleen wat er per taal verschilt: de voorleestekst, de
+ * titel, en wat het Darija-woord betekent. De tekening, het woord zelf en de
+ * uitspraak zijn overal hetzelfde — dat is de hele bedoeling van de reeks.
+ *
+ * De echo blijft ook hetzelfde. "Salam! Salam!" is in het Frans ook "Salam!
+ * Salam!", want dat is het Darija-woord dat het kind naroept, en dat vertaal
+ * je niet.
+ */
+export interface VertaaldDeel {
+  waar: string
+  hierna: string
+  titel: string
+  ondertitel: string
+  leeftijd: string
+  opdracht: string
+  bladen: { tekst: string[]; woord: string }[]
+}
+
+/** Twaalf delen, op nummer. Een taal die er één mist, valt door de test. */
+export type Vertaling = Record<number, VertaaldDeel>
+
 export interface Blad {
   /** Welke tekening; `scripts/make-prentenboek.mjs` kent ze bij naam. */
   scene: string
