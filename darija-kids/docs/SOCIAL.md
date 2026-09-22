@@ -46,12 +46,18 @@ De bio, in de taal van het kanaal:
 
 ## 1. YouTube — eerst, want Play wacht erop
 
-**Staat er.** https://www.youtube.com/channel/UCIbq0-YRHDrpD9Avs0EnKvA
+**Staat er.** Kanaal: https://www.youtube.com/channel/UCIbq0-YRHDrpD9Avs0EnKvA
+De film: https://www.youtube.com/watch?v=3iHXGpubnaI
 
 Wat er nog moet: de handle `@darijaforkidsapp` zetten (Instellingen → Kanaal →
-Geavanceerd), de profielfoto en de banner uit `brand/social/`, en de film
-uploaden. Play wacht op die laatste: het veld *Video* wil de link naar een
-**video**, niet naar een kanaal.
+Geavanceerd), en de profielfoto en de banner uit `brand/social/`.
+
+Die filmlink gaat naar Play Console → *Main store listing → Video*, en dat
+veld wil een **video**, geen kanaal. Met de hand hoeft niet:
+
+```bash
+npm run play -- --tekst --video https://www.youtube.com/watch?v=3iHXGpubnaI
+```
 
 1. Inloggen met het Google-account van de app (`venship@outlook.com` gaat niet;
    gebruik het account waarmee je in Play Console zit)
