@@ -249,11 +249,16 @@ export const REEKS: Omit<Sleuteldeel, 'hoofdstukken'>[] = [
       'Drie koningen kwamen om: de Portugese koning Sebastiaan, de afgezette sultan Abu Abdallah Mohammed en de zittende sultan Abd al-Malik.',
       'Portugal verloor er zijn koning en raakte kort daarna zijn zelfstandigheid kwijt aan Spanje.',
       'De nieuwe sultan werd Ahmad al-Mansur, de broer van Abd al-Malik.',
+      'Sebastiaan was vierentwintig en had geen kind. Zijn raadgevers hadden hem het veldtocht afgeraden; zijn oom de kardinaal volgde hem op en stierf twee jaar later, waarna Filips II van Spanje de Portugese troon opeiste.',
+      'Abd al-Malik was al weken ziek en voerde het bevel vanuit een draagstoel. Zijn dood halverwege de slag werd voor het leger geheimgehouden.',
+      'In Portugal is daarna eeuwenlang geloofd dat Sebastiaan nog leefde en terug zou komen. Dat geloof heeft een naam: het sebastianisme.',
+      'Duizenden Portugese edelen werden gevangengenomen en tegen losgeld vrijgekocht. Dat geld vloeide naar Marokko en hielp de regering van Ahmad al-Mansur en de bouw van het Badi-paleis betalen.',
     ],
     verzonnen: [
-      'Driss heeft niet bestaan.',
+      'Driss, Aziz en de Portugese jongen bij de beek hebben niet bestaan.',
+      'De zevenentwintig tromsignalen zijn verzonnen. Dat legers met trommen werden aangestuurd omdat een stem niet ver genoeg draagt, is dat niet.',
       'Het verloop van de slag is vereenvoudigd; ooggetuigen spreken elkaar op veel punten tegen.',
-      'Dit deel gaat over een veldslag en er vallen doden. Het is geschreven voor lezers vanaf elf jaar.',
+      'Dit deel gaat over een veldslag en er vallen doden. Het is geschreven voor lezers vanaf elf jaar, en wat er op het veld zelf gebeurde staat er met opzet niet in.',
     ],
   },
   {
