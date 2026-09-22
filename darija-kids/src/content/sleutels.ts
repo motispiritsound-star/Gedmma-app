@@ -364,10 +364,15 @@ export const REEKS: Omit<Sleuteldeel, 'hoofdstukken'>[] = [
       'Zijn verbanning leidde tot grote onrust en verzet in het hele land.',
       'In november 1955 keerde hij terug; op 2 maart 1956 werd Marokko onafhankelijk van Frankrijk, kort daarna gevolgd door het Spaanse deel.',
       'Het verzet werd door heel verschillende groepen gedragen: stedelijke partijen, vakbonden, en gewapende groepen op het platteland.',
+      'In januari 1944 werd het Onafhankelijkheidsmanifest ondertekend. Van de zesenzestig ondertekenaars was Malika El Fassi de enige vrouw; zij zette zich haar leven lang in voor onderwijs voor meisjes.',
+      'Het boycotten van Franse producten, vooral de tabak van het staatsmonopolie, was een van de doeltreffendste middelen van het verzet.',
+      'Uit Caïro zond De Stem van de Arabieren uit, in die jaren in heel Noord-Afrika te ontvangen.',
+      'In de jaren dat de sultan verbannen was, zeiden veel mensen zijn gezicht in de volle maan te zien. Dat gebeurde in het hele land.',
     ],
     verzonnen: [
       'Nadia en haar vader hebben niet bestaan.',
       'De pamfletten in het verhaal zijn verzonnen, al bestond ondergrondse drukkerij in deze jaren wel degelijk.',
+      'De elf dagen dat haar vader vastzat zijn verzonnen. Dat mensen werden opgepakt zonder dat hun familie wist waar ze waren, is dat niet.',
     ],
   },
   {
