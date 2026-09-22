@@ -251,6 +251,32 @@ Tabblad **General**, kopje *Identity*:
 Bij elke volgende upload moet **Build** omhoog: 2, 3, 4. Apple weigert een
 nummer dat al bestaat, en dat merk je pas na tien minuten uploaden.
 
+### C4b. Code Signing Identity — de val van Capacitor
+
+Dit kost je anders een avond, dus doe het meteen.
+
+Het iOS-project dat `npx cap add ios` genereert zet **Code Signing Identity**
+op *Apple Development*, en dat geldt ook voor de Release-stand. Archiveren
+gaat dan een ontwikkelprofiel zoeken in plaats van een distributieprofiel,
+vindt er geen, en faalt met:
+
+```
+No profiles for 'app.darijaforkids.learn' were found
+Communication with Apple failed: Your team has no devices…
+```
+
+Die melding wijst naar apparaten en naar Apple, en daardoor ga je op de
+verkeerde plek zoeken. Het ligt aan deze instelling.
+
+1. Tabblad **Build Settings**.
+2. Klik op **All**; typ in het zoekvakje rechts: `code signing identity`.
+3. Klap de regel **Code Signing Identity** open met het driehoekje ervoor.
+4. Zet **Release** op **Apple Distribution**. *Debug* laat je op *Apple
+   Development* staan.
+
+Controleer op **Signing & Capabilities → Release** dat er nu
+`Apple Distribution` staat. Dan pas archiveren.
+
 ### C5. Het doel instellen
 
 Bovenin het venster, naast de naam *App*, staat een keuzemenu — daar staat nu
