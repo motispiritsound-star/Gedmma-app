@@ -1,5 +1,7 @@
 # Lanceren
 
+> **Kort antwoord op "wat moet er nog": [docs/STAND.md](STAND.md).**
+
 Eén lijst, van "de app is af" tot "hij staat in de winkel". Alles wat de code
 kan doen is gedaan; wat hier overblijft is wat een mens met een bankrekening
 en een paspoort moet doen.
