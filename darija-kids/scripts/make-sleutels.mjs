@@ -40,13 +40,14 @@ const server = await createServer({
   configFile: path.join(ROOT, 'vite.config.ts'),
   root: ROOT, server: { middlewareMode: true, hmr: false }, appType: 'custom', logLevel: 'error',
 })
-const [{ REEKS, DISCLAIMER }, { DEEL1_HOOFDSTUKKEN }] = await Promise.all([
+const [{ REEKS, DISCLAIMER }, { DEEL1_HOOFDSTUKKEN }, { DEEL2_HOOFDSTUKKEN }] = await Promise.all([
   server.ssrLoadModule('/src/content/sleutels.ts'),
   server.ssrLoadModule('/src/content/sleutels-deel1.ts'),
+  server.ssrLoadModule('/src/content/sleutels-deel2.ts'),
 ])
 await server.close()
 
-const HOOFDSTUKKEN = { 1: DEEL1_HOOFDSTUKKEN }
+const HOOFDSTUKKEN = { 1: DEEL1_HOOFDSTUKKEN, 2: DEEL2_HOOFDSTUKKEN }
 
 const [balo800, balo600] = await Promise.all([
   readFile(path.join(ROOT, 'public', 'fonts', 'baloo2-800.woff2')),
