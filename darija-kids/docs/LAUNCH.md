@@ -136,8 +136,8 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
       schermafbeeldingen voor iPhone en iPad, in alle zes de talen
 - [x] Google: de winkelvermelding in zes talen — met `npm run play` in één keer verstuurd
 - [x] Android: een **AAB** bouwen en ondertekenen — `npm run sleutel` en `npm run aab`, 22,8 MB
-- [ ] **Een Mac regelen** — zonder macOS geen iOS-build, en dus geen App Store (§3)
-- [ ] iOS: `npx cap add ios`, archiveren in Xcode, naar TestFlight
+- [x] **Een Mac regelen** — zonder macOS geen iOS-build, en dus geen App Store (§3)
+- [ ] iOS: `npx cap add ios`, archiveren in Xcode, naar TestFlight — stap voor stap in [docs/MAC.md](MAC.md)
 
 ### De formulieren
 
