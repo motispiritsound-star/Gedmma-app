@@ -65,7 +65,12 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 - [x] Apple: aanmelden voor het **Small Business Program**, 15% in plaats van 30%
 - [x] Apple: W-8BEN belastingformulier ingevuld
 - [ ] Apple: handelaarsverificatie (DSA) — **in review**, niets te doen dan wachten
-- [ ] Apple: naamcorrectie van "Adi" naar "Adil" — zaak **102968992781** loopt
+- [x] Apple: naamcorrectie van "Adi" naar "Adil" — doorgevoerd op 22 september
+      (zaak **102968992781**). De contracten in App Store Connect kunnen er nog
+      twee weken over doen; de al ingediende belastingformulieren blijven op de
+      oude naam staan en dat hoort zo. Kijk vóór het indienen van de bankgegevens
+      of **Business → Agreements** de nieuwe naam toont: die moet gelijk zijn aan
+      de naam op de bankrekening, anders strandt de verificatie.
 - [ ] Apple: bankgegevens — ingediend, wordt verwerkt
 - [x] Google: identiteitsverificatie — goedgekeurd op 21 september
 - [x] Google: het account staat als **organisatie** — de gesloten test met 12
