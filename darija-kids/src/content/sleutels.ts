@@ -342,10 +342,15 @@ export const REEKS: Omit<Sleuteldeel, 'hoofdstukken'>[] = [
       'In 1921 leed het Spaanse leger bij Annual een zware nederlaag.',
       'Er zijn in deze oorlog chemische wapens ingezet tegen de bevolking van het Rif. Spanje heeft dat lang ontkend.',
       'Marokko stond op dat moment onder Frans en Spaans protectoraat, sinds 1912.',
+      'Abd el-Krim studeerde aan de al-Qarawiyyin in Fes, was rechter in Spaanse dienst in Melilla en schreef voor een Spaanse krant. In 1915 werd hij door Spanje opgesloten; bij een ontsnappingspoging uit een raam brak hij zijn been en hij is altijd mank blijven lopen.',
+      'De Rif-republiek had een raad, rechters die niet aan één stam gebonden waren, belastingheffing en scholen. Er is bijna geen archief van bewaard gebleven.',
+      'Na zijn overgave werd Abd el-Krim verbannen naar het eiland Réunion, waar hij eenentwintig jaar woonde. In 1947 ging hij bij Port Said van boord en bleef in Egypte; hij stierf in 1963 in Caïro.',
+      'De taal van het Rif is Tarifit, een Amazigh-taal. Tamazight is pas in deze eeuw een officiële taal van Marokko geworden.',
     ],
     verzonnen: [
       'Itto en haar familie hebben niet bestaan.',
       'Dit deel gaat over een oorlog. Het is geschreven voor lezers vanaf twaalf jaar en houdt het geweld buiten beeld, maar het is er wel.',
+      'Wat Itto van de gasaanvallen heeft gezien staat er niet in. Dat is een keuze: zij heeft er zelf nooit uitvoerig over verteld, en dan is het niet aan een schrijver om het voor haar in te vullen.',
     ],
   },
   {
