@@ -258,11 +258,27 @@ header nav a.uit:hover { background: color-mix(in oklab, var(--saffron) 34%, tra
    deze rij moet juist op een telefoon leesbaar blijven — daar wordt hij
    gelezen. Vandaar grid met een prijs die rechts blijft staan en een titel
    die mag aflopen. */
-.delenlijst { margin: 1.6rem 0 2.4rem; }
-.delenlijst h3 {
-  font-size: .82rem; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--ink-soft); margin: 0 0 .7rem;
+/* Een <details> en geen knop met JavaScript: uitklappen is iets wat de
+   browser zelf kan, en zonder script werkt het ook op een telefoon met een
+   trage verbinding waar de pagina er al staat voordat er iets geladen is. */
+.delenlijst { margin: 1.4rem 0 2.4rem; }
+.delenlijst > summary {
+  list-style: none; cursor: pointer; user-select: none;
+  display: flex; align-items: center; gap: .6rem;
+  font-weight: 700; font-size: .95rem; color: var(--ink);
+  background: var(--raised); border: 1px solid var(--line); border-radius: 999px;
+  padding: .7rem 1.2rem;
 }
+.delenlijst > summary::-webkit-details-marker { display: none; }
+/* Het pijltje draait als het menu open staat. */
+.delenlijst > summary::after {
+  content: ""; margin-left: auto; width: .5rem; height: .5rem;
+  border-right: 2px solid var(--ink-soft); border-bottom: 2px solid var(--ink-soft);
+  transform: rotate(45deg) translate(-2px, -2px); transition: transform .15s;
+}
+.delenlijst[open] > summary::after { transform: rotate(-135deg) translate(-4px, -4px); }
+.delenlijst > summary:hover { border-color: var(--zellige); }
+.delenlijst[open] > summary { margin-bottom: .6rem; }
 .delenlijst ol { list-style: none; margin: 0; padding: 0; }
 .delenlijst li {
   display: grid; grid-template-columns: 4.6rem 1fr auto auto; gap: .5rem .9rem;

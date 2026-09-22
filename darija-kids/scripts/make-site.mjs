@@ -759,8 +759,8 @@ const booksPage = (lang) => {
    * "binnenkort" — geen dode knop, want een bezoeker die op een knop drukt en
    * niets ziet gebeuren komt niet terug om het nog eens te proberen.
    */
-  const lijst = (sleutel, titels, bij, reeksId) => `<section class="delenlijst">
-    <h3>${esc(c.boekOverzicht)}</h3>
+  const lijst = (sleutel, titels, bij, reeksId) => `<details class="delenlijst">
+    <summary>${esc(c.boekDelenKnop(titels.length))}</summary>
     <ol>
       ${titels.map((titel, i) => {
         const id = `${sleutel}${i + 1}`
@@ -785,7 +785,7 @@ const booksPage = (lang) => {
         ? `<a class="koop" href="${SHOP[reeksId].link}" rel="noopener">${esc(c.boekKoop)}</a>`
         : `<span class="koop uit">${esc(c.boekBinnenkort)}</span>`}
     </div>
-  </section>`
+  </details>`
 
   /**
    * De plaat bij een reeks.
