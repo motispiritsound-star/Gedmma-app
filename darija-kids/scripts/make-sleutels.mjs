@@ -42,7 +42,7 @@ const server = await createServer({
 })
 const [{ REEKS, DISCLAIMER }, ...delen] = await Promise.all([
   server.ssrLoadModule('/src/content/sleutels.ts'),
-  ...[1, 2, 3, 4].map((n) => server.ssrLoadModule(`/src/content/sleutels-deel${n}.ts`)),
+  ...[1, 2, 3, 4, 5, 6, 7].map((n) => server.ssrLoadModule(`/src/content/sleutels-deel${n}.ts`)),
 ])
 await server.close()
 
