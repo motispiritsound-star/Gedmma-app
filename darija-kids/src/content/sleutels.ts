@@ -297,10 +297,15 @@ export const REEKS: Omit<Sleuteldeel, 'hoofdstukken'>[] = [
       'Het ontwerp met de rechte straten en de vestingwerken werd gemaakt met hulp van Europese ingenieurs, onder wie de Fransman Théodore Cornut.',
       'De stad werd opengesteld voor handel met Europa en kende een grote joodse gemeenschap die een sleutelrol speelde in die handel.',
       'De naam Essaouira wordt meestal uitgelegd als "de kleine muur" of "de goed getekende".',
+      'Op het eiland voor de kust werd al in de oudheid purperverf gemaakt uit zeeslakken. De resten van die werkplaatsen zijn opgegraven.',
+      'De stad heeft een rechthoekig stratenplan, anders dan de gegroeide medina’s van Fes en Marrakech. Dat maakte hem overzichtelijk en verdedigbaar.',
+      'De sultan haalde joodse handelsfamilies naar de stad en gaf een aantal van hen het recht namens hem handel te drijven: de tujjar as-sultan, de kooplieden van de sultan. Op het hoogtepunt was een groot deel van de bevolking joods.',
+      'Van die gemeenschap is in de twintigste eeuw vrijwel iedereen vertrokken. De synagogen en de begraafplaats zijn er nog.',
     ],
     verzonnen: [
-      'Yto en haar familie hebben niet bestaan.',
-      'De ontmoeting met de architect is verzonnen.',
+      'Yto, haar vader, Esther en de klerk Abdeslam hebben niet bestaan.',
+      'De ontmoeting met de architect is verzonnen, en zijn antwoord "kanonnen" ook — al is dat wel wat een rechthoekig plan in die tijd waard maakte.',
+      'De storm van het zevende jaar is verzonnen.',
     ],
   },
   {
