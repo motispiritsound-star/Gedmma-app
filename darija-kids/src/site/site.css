@@ -173,6 +173,28 @@ header.top nav + .langpick { margin-left: 0; }
   width: .55rem; height: .55rem; border-radius: 50%;
   background: #1a1625; opacity: .55;
 }
+/* De leesboeken: per reeks een plaat en een kolom tekst. */
+.reeks {
+  display: grid; grid-template-columns: 13rem 1fr; gap: 1.4rem; align-items: start;
+  background: var(--raised); border-radius: var(--radius); padding: 1.4rem; margin-top: 1.6rem;
+}
+.reeks .kunst { background: color-mix(in oklab, var(--saffron) 16%, transparent); border-radius: var(--radius); }
+.reeks .kunst svg { width: 100%; height: auto; display: block; }
+.reeks .leeftijd {
+  display: inline-block; font-weight: 800; font-size: .85rem; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--zellige);
+  background: color-mix(in oklab, var(--zellige-500) 14%, transparent);
+  border-radius: 999px; padding: .3rem .8rem;
+}
+.reeks h2 { font-size: 1.35rem; margin: .5rem 0 .4rem; }
+.reeks ul { margin: .8rem 0 0; padding-left: 1.1rem; }
+.reeks li { margin: .2rem 0; }
+.reeks .status {
+  display: inline-block; margin-top: .9rem; font-weight: 800; font-size: .85rem;
+  background: var(--saffron); color: #1a1625; border-radius: 999px; padding: .3rem .9rem;
+}
+@media (max-width: 40rem) { .reeks { grid-template-columns: 1fr; } .reeks .kunst { max-width: 12rem; } }
+
 /* De tijdlijn: het jaartal links, het verhaal ernaast. */
 .tijdlijn { list-style: none; padding: 0; margin: 2rem 0 0; display: grid; gap: 1.2rem; }
 .tijdlijn li { display: grid; grid-template-columns: 7rem 1fr; gap: 1rem; align-items: start; }

@@ -20,6 +20,7 @@
  * Run with: node scripts/make-site.mjs [--out site]
  */
 import { cp, mkdir, readdir, rm, writeFile } from 'node:fs/promises'
+import { sbaa } from './lib/tekenen.mjs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createServer } from 'vite'
@@ -676,6 +677,56 @@ const historyPage = (lang) => {
   })
 }
 
+/**
+ * De leesboeken: twee reeksen, twee leeftijden.
+ *
+ * Ze zijn er nog niet, en dat staat er ook. Een pagina over boeken die nog
+ * gemaakt worden is geen loze belofte maar een peiling: wie hier op de
+ * mailknop drukt, vertelt je welke van de twee reeksen je eerst moet maken.
+ */
+const booksPage = (lang) => {
+  const c = SITE[lang]
+
+  const reeks = (badge, titel, body, punten, kunst) => `<article class="reeks">
+    <div class="kunst">${kunst}</div>
+    <div class="inhoud">
+      <span class="leeftijd">${esc(badge)}</span>
+      <h2>${esc(titel)}</h2>
+      <p>${esc(body)}</p>
+      <ul>${punten.map((punt) => `<li>${esc(punt)}</li>`).join('')}</ul>
+      <span class="status">${esc(c.boekStatus)}</span>
+    </div>
+  </article>`
+
+  const leeuw = `<svg viewBox="0 0 300 230" aria-hidden="true">${sbaa(150, 80, 1.5, { tas: false })}</svg>`
+  const sleutel = `<svg viewBox="0 0 300 230" aria-hidden="true">
+    <circle cx="150" cy="115" r="96" fill="#1b2340"/>
+    <g transform="translate(150 115) rotate(-30)" fill="#e8b93f">
+      <circle cx="0" cy="-44" r="26"/><circle cx="0" cy="-44" r="11" fill="#1b2340"/>
+      <rect x="-6" y="-24" width="12" height="76" rx="3"/>
+      <rect x="-6" y="30" width="26" height="11" rx="3"/>
+      <rect x="-6" y="48" width="18" height="11" rx="3"/>
+    </g>
+  </svg>`
+
+  const body = `<div class="wrap doc boeken">
+  <h1>${esc(c.boekTitel)}</h1>
+  <p class="intro">${esc(c.boekLead)}</p>
+
+  ${reeks(c.boekKlein, c.boekKleinTitel, c.boekKleinBody, c.boekKleinPunten, leeuw)}
+  ${reeks(c.boekGroot, c.boekGrootTitel, c.boekGrootBody, c.boekGrootPunten, sleutel)}
+
+  <p class="soon">${esc(c.boekSlot)}</p>
+  <a class="mailbtn" href="${mailto}?subject=${encodeURIComponent(c.boekTitel)}&body=${encodeURIComponent(c.houMeOpDeHoogteMail)}">${esc(c.houMeOpDeHoogte)}</a>
+</div>`
+
+  return layout({
+    lang, page: 'books', body,
+    title: `${c.boekTitel} — Darijaforkids`,
+    description: c.boekLead,
+  })
+}
+
 const parentsPage = (lang) => {
   const c = SITE[lang]
   const t = STRINGS[lang]
@@ -780,7 +831,8 @@ for (const { code: lang } of LANGS) {
   await write(PATHS[lang].parents, parentsPage(lang))
   await write(PATHS[lang].name, naamPage(lang))
   await write(PATHS[lang].history, historyPage(lang))
-  pages += 6
+  await write(PATHS[lang].books, booksPage(lang))
+  pages += 7
   if (!shots.length) missing.push(`de schermen voor ${lang}`)
   if (!film) missing.push(`de film voor ${lang}`)
 }
@@ -806,7 +858,7 @@ self.addEventListener('activate', (event) => {
 `)
 
 const urls = LANGS.flatMap(({ code }) =>
-  ['home', 'privacy', 'terms', 'parents', 'name', 'history'].map((page) => SITE_URL + PATHS[code][page]))
+  ['home', 'privacy', 'terms', 'parents', 'name', 'history', 'books'].map((page) => SITE_URL + PATHS[code][page]))
 
 await writeFile(path.join(OUT, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

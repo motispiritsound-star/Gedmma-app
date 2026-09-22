@@ -54,29 +54,19 @@ kreeg voorgelezen, leest tien jaar later het deel waarin diezelfde jongen de
 sleutel vindt. Eén wereld, twee leeftijden, en een reden om de hele plank te
 kopen.
 
-## 4. Over AVI — en waarom dat niet zomaar op de kaft mag
+## 4. Leesbaarheid
 
-Dit moet kloppen, want scholen en bibliotheken controleren het.
+Geen AVI-stempel. Het verhaal moet goed zijn; de rest volgt daaruit.
 
-**AVI is een Nederlandse indeling die eindigt bij Plus**, ongeveer het niveau
-van groep 8. Voor twaalf- tot vijftienjarigen zégt AVI niets meer; die krijgen
-geen leesniveau meer mee. "AVI voor 8 tot 15" bestaat dus niet.
+Op de kaft staat **"vanaf 9 jaar"** — dat zegt een ouder in de winkel meer dan
+een code, en het klopt altijd. Een vijftienjarige leest geen langere zinnen,
+die leest een beter verhaal; daar zit de bovenkant van de reeks, niet in het
+woordniveau.
 
-**En een AVI-niveau is geen mening.** Het wordt vastgesteld met een
-gecertificeerd instrument. Je mag schrijven *op* dat niveau, maar je mag het
-er pas op zetten als het is bepaald. Zet je er ongetoetst "AVI E6" op, dan
-haalt een schoolbibliothecaris het van de plank.
-
-**Wat we dus doen:**
-
-- de tekst wordt geschreven op **AVI E6 / M7** — te lezen vanaf een jaar of
-  negen, tien
-- de **spanning** doet het werk voor de bovenkant. Een vijftienjarige leest
-  geen langere zinnen, die leest een beter verhaal
-- op de kaft staat **"vanaf 9 jaar"**, niet AVI
-- vóór het naar scholen gaat, laat je deel 1 formeel bepalen. Kost een paar
-  honderd euro en dan mag het wél op de kaft — en dan gaat de hele
-  schoolmarkt open
+De regels hieronder blijven wel staan, niet om een niveau te halen maar omdat
+ze het voorlezen en het zelf lezen makkelijker maken. Wordt de schoolmarkt
+ooit een serieus kanaal, dan kun je deel 1 alsnog laten toetsen — dat kan op
+elk moment, ook achteraf.
 
 ### De schrijfregels
 
@@ -171,11 +161,10 @@ worden.
 | E-boek | € 6,95 |
 
 **En hier zit de schoolmarkt.** Een prentenboek verkoop je aan ouders; een
-leesboek op AVI-niveau over geschiedenis verkoop je aan **bibliotheken,
-basisscholen en weekendscholen** — en die kopen per klas. Dat is precies
-hetzelfde kanaal als §8 van `LANCERING.md`, maar dan met een product waar ze
-al budget voor hebben.
+leesboek over geschiedenis verkoop je aan **bibliotheken, basisscholen en
+weekendscholen** — en die kopen per klas. Dat is precies hetzelfde kanaal als
+§8 van `LANCERING.md`, maar dan met een product waar ze al budget voor hebben.
 
-Laat daarom deel 1 formeel op AVI toetsen zodra het af is. Dat ene papiertje
-is het verschil tussen een boek dat ouders kopen en een boek dat scholen
-inkopen.
+Vraagt een school ooit om een leesniveau, dan laat je deel 1 op dat moment
+toetsen. Niet eerder: dat is werk vooraf voor een vraag die misschien nooit
+komt.
