@@ -108,7 +108,17 @@ header.top {
   border-bottom: 1px solid var(--line);
 }
 header.top .wrap { display: flex; align-items: center; gap: 1rem; min-height: 4rem; }
-.brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; font-weight: 800; font-size: 1.1rem; }
+/* min-width:0 laat de naam krimpen. Zonder dat weigert een flex-item smaller
+   te worden dan zijn inhoud, en dan schuift het menu eroverheen in plaats van
+   ernaast — precies wat er op een telefoon van 390 punten gebeurde. */
+.brand { display: flex; align-items: center; gap: .6rem; min-width: 0; text-decoration: none; font-weight: 800; font-size: 1.1rem; }
+.brand img { flex: none; }
+.brand .vlag { flex: none; }
+/* De naam is het enige dat mag krimpen. Zonder deze regel loopt hij uit zijn
+   eigen vak en schuift het vlaggetje over het menu heen; met deze regel
+   krijgt hij op de allersmalste telefoons drie puntjes en blijft de kop
+   heel. */
+.brand span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .brand img { width: 2rem; height: 2rem; }
 /* Het vlaggetje naast de naam. Als tekening en niet als emoji: Windows
    tekent vlagemoji's niet, daar wordt de vlag de twee letters MA. */
@@ -123,7 +133,40 @@ header.top nav a:hover { color: var(--ink); }
 @media (max-width: 62rem) {
   header.top nav { display: contents; }
   header.top nav a { display: none; }
-  header.top nav a.uit { display: inline-block; margin-left: auto; font-size: .9rem; }
+  header.top nav a.uit { display: inline-block; flex: none; margin-left: auto; padding-left: .5rem; font-size: .9rem; }
+}
+/* Onder de 30rem past de kop niet meer op ware grootte: de naam, het
+   vlaggetje, "Leesboeken" en de taalkiezer samen zijn breder dan een
+   telefoon. Alles een maatje kleiner is beter dan iets weglaten. */
+@media (max-width: 30rem) {
+  header.top .wrap { gap: .55rem; }
+  .brand { font-size: .95rem; gap: .45rem; }
+  .brand img { width: 1.75rem; height: 1.75rem; }
+  header.top nav a.uit { font-size: .85rem; padding-left: .25rem; }
+  .langpick > summary { font-size: .85rem; padding: .3rem .7rem; }
+}
+/* Rond de 360 punten — de maat van de meeste Android-telefoons — wordt het
+   krap. Een paar tienden kleiner maakt het verschil tussen "krap" en
+   "tegen elkaar aan". */
+@media (max-width: 26rem) {
+  .brand { font-size: .9rem; gap: .4rem; }
+  .brand .vlag { width: 23px; height: 15px; }
+  header.top nav a.uit { font-size: .82rem; padding-left: .5rem; }
+}
+/* Op de smalste telefoons valt de naam van de taal weg en blijft het
+   vlaggetje met het pijltje over. Dat is nog steeds een knop die iedereen
+   herkent, en het scheelt de breedte van een woord — genoeg om de kop heel
+   te houden op een scherm van 320 punten. */
+@media (max-width: 21.5rem) {
+  header.top .wrap { gap: .4rem; }
+  .brand { font-size: .88rem; }
+  .brand img { width: 1.6rem; height: 1.6rem; }
+  header.top nav a.uit { font-size: .8rem; }
+  .langpick > summary { padding: .3rem .55rem; }
+  .langpick > summary .sr-name { display: none; }
+  /* En hier valt ook het vlaggetje weg. De naam heel houden gaat voor: het
+     icoon ernaast is al een Marokkaanse ster, en "Darijaf..." is geen merk. */
+  .brand .vlag { display: none; }
 }
 
 .langpick { margin-left: auto; position: relative; }
