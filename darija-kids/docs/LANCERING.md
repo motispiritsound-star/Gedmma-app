@@ -467,3 +467,118 @@ ertussen. Het is het enige bezit in dit hele plan dat niemand kan afnemen.
 
 En het kost je niets aan productie: de app die je al gebouwd hebt, is de
 inhoud.
+
+## 16. De aftelling op het kanaal
+
+Het kanaal staat. Dit is wat je erop zet tot de dag dat de app er is.
+
+### Eerst iets rechtzetten: een kanaal kent geen aanmelden
+
+Op een WhatsApp-kanaal kun je je niet opgeven en jij kunt niemand
+persoonlijk bereiken. **Volgen ís het aanmelden** — en dat is genoeg, want
+wie volgt krijgt je lanceringsbericht vanzelf.
+
+Vraag dus niet "meld je aan als je interesse hebt". Vraag: **"Volg dit kanaal,
+dan hoor je het als eerste."** Eén tik in plaats van een formulier.
+
+Wie méér wil dan volgen, stuur je naar de mailknop op darijaforkids.eu
+(*Hou me op de hoogte*). Dat is je tweede net, en die lijst is wél van jou.
+
+### En één knop in Play Console die dit mogelijk maakt
+
+Aftellen naar een datum die je niet kent, werkt niet. Nu staat je release op
+automatisch vrijgeven: zodra Google klaar is met de beoordeling, staat de app
+in de winkel — misschien morgen, misschien over twee weken, en altijd op een
+moment dat jij niet hebt gekozen.
+
+Zet daarom **Managed publishing** aan: *Publishing overview → Manage
+publishing*. Goedgekeurde wijzigingen blijven dan wachten tot jij op de knop
+drukt. Dan kies je de dag zelf, kun je fatsoenlijk aftellen, en zet je de app
+live op het moment dat je bericht klaarstaat in plaats van op een dinsdagnacht.
+
+Doe dit **nu**, voordat de beoordeling klaar is.
+
+### Fase 1 — tot de goedkeuring: geven, niet aftellen
+
+Niet aftellen naar iets waarvan je de datum niet weet. Je bouwt volgers, meer
+niet.
+
+- **vijf woordjes per week**, maandag tot vrijdag (`npm run woordjes`)
+- **zaterdag een weetje**
+- en **één keer per week**, niet vaker, één regel eronder:
+  *De app komt eraan. Volg dit kanaal, dan hoor je het als eerste.*
+
+Het openingsbericht, als eerste post op het kanaal:
+
+```
+Ahlan 👋
+
+Hier deel ik elke werkdag één woord Darija — geschreven, uitgesproken, en
+klein genoeg om vanavond aan tafel te gebruiken.
+
+Waarom: mijn kinderen verstonden hun oma wel, maar antwoordden in het
+Nederlands. Daar heb ik twee jaar aan gewerkt, en daar komt binnenkort een
+app uit.
+
+Volg dit kanaal, dan hoor je het als eerste. En stuur een woordje gerust
+door naar je familiegroep 🇲🇦
+```
+
+### Fase 2 — de zeven dagen voor de lancering
+
+Pas beginnen als Google heeft goedgekeurd en je de dag zelf in de hand hebt.
+Elke dag één post, en elke post geeft iets — een aftelbericht zonder inhoud
+kost je volgers.
+
+| Dag | De post |
+|---|---|
+| **T-7** | *Over een week staat hij er.* Het filmpje van dertig seconden. |
+| **T-6** | Het woordje van de dag, gewoon. Niets over de lancering. |
+| **T-5** | Waarom Darija en geen Standaardarabisch — vier regels, het verschil dat iedereen voelt maar niemand uitlegt. |
+| **T-4** | Een schermafbeelding van het leerpad: *zeventien units, van het alfabet tot afdingen op de souq.* |
+| **T-3** | Jouw verhaal. Vier zinnen, geen verkooppraat: het telefoongesprek met je moeder en wat je kind antwoordde. |
+| **T-2** | *Wat kost het?* Eerlijk en compleet: de eerste vier lessen gratis, daarna de prijs. Nooit verstoppen — wie het op de dag zelf ontdekt, voelt zich beetgenomen. |
+| **T-1** | *Morgen.* Eén zin, één plaatje. |
+| **T-0** | De link. |
+
+Het lanceringsbericht:
+
+```
+Hij staat er 🎉
+
+Darijaforkids is vanaf vandaag te downloaden.
+
+De eerste vier lessen zijn gratis — geen account, geen advertenties, niets
+in te vullen. Het hele Arabische alfabet, 304 woorden en 100 zinnen,
+ingesproken door een Marokkaanse stem.
+
+👉 [link]
+
+Als het je iets lijkt: stuur het door naar één familiegroep. Daar help je me
+het meest mee.
+```
+
+Die laatste regel is geen beleefdheid maar de hele lancering. Vraag het
+expliciet, één keer, en verder nooit meer.
+
+### Fase 3 — de week erna
+
+- **dag 1**: het woordje van de dag gaat gewoon door. Een kanaal dat na de
+  lancering stilvalt, verliest in een week wat je in drie maanden bouwde.
+- **dag 3**: vraag om een beoordeling in de winkel. Eén zin, geen smeekbede:
+  *Als de app je bevalt, helpt een beoordeling meer dan je denkt.*
+- **dag 7**: het eerste filmpje van een kind dat iets in het Darija tegen zijn
+  oma zegt. Vraag ouders erom; er is er altijd één die het stuurt.
+
+### Hoe je aan je eerste honderd volgers komt
+
+Een kanaal is niet te vinden zonder link, dus die link moet overal staan:
+
+- in de bio van Instagram en TikTok
+- onder elke YouTube-video
+- op darijaforkids.eu
+- en vooral: **in dat persoonlijke bericht aan je zestig mensen** (§4). Niet
+  "volg mijn kanaal" maar "ik stuur elke dag een woordje, dit is de link".
+
+Honderd volgers voor de lancering is genoeg om te beginnen. Duizend is een
+lancering.
