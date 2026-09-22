@@ -30,7 +30,7 @@ const STIJL = 'Warm painterly children\'s picture book illustration, storybook o
   + 'soft golden Moroccan light, rich saturated colours, detailed but friendly, '
   + 'gentle depth of field, no text anywhere in the image, landscape format 3:2'
 
-const SBAA = 'Sbaa is a young Atlas lion cub with honey-coloured fur and a soft lighter mane, '
+const SBA_PERSONAGE = 'Sba is a young Atlas lion cub with honey-coloured fur and a soft lighter mane, '
   + 'large friendly dark eyes and rosy cheeks. He always wears: a red fez with a gold band and a tassel, '
   + 'a cobalt-blue open djellaba with colourful Amazigh diamond patterns over a white under-robe, '
   + 'a red sash at the waist, a brown leather satchel with a gold buckle on a strap across his chest, '
@@ -115,11 +115,11 @@ const regels = [
   '```', STIJL, '```', '',
   '## Het personage — staat in elke opdracht',
   '',
-  '```', SBAA, '```', '',
+  '```', SBA_PERSONAGE, '```', '',
   '## Hoe je ze maakt zonder dat de reeks verloopt',
   '',
-  '1. **Begin elk deel in een nieuw gesprek** en zet de tekening van Sbaa er',
-  '   als eerste bij (`docs/personage/sbaa-referentie.webp`). Een model houdt',
+  '1. **Begin elk deel in een nieuw gesprek** en zet de tekening van Sba er',
+  '   als eerste bij (`docs/personage/sba-referentie.webp`). Een model houdt',
   '   een personage vast binnen één gesprek en verliest het tussen gesprekken.',
   '2. **Werk een deel in één keer af**, twaalf platen achter elkaar. Kom je',
   '   morgen terug, dan ziet deel 1 er anders uit dan deel 2 — en dat ziet een',
@@ -162,7 +162,7 @@ for (const deel of welke) {
       '> ' + blad.tekst.join(' '), '',
       '```',
       `${STIJL}.`,
-      `${SBAA}.`,
+      `${SBA_PERSONAGE}.`,
       `With him: ${wie}.`,
       `Scene: ${waar}.`,
       `The moment: the children discover the word "${blad.woord.tr}" (${blad.woord.nl}). Show that thing clearly in the picture.`,

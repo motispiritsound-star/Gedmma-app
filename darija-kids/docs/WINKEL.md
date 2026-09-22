@@ -154,7 +154,7 @@ Een naam met een echte Marokkaanse wortel is meer waard dan een verzonnen
 klank. **Yuba** is mijn voorstel: naar Juba II, de Amazigh-koning die
 regeerde vanuit Walili — dezelfde stad waarmee de geschiedeniskaarten in de
 app beginnen. Twee lettergrepen, uit te spreken in alle zes de talen, en
-geen enkele andere kinderreeks heet zo. Het alternatief is **Sbaa**, het
+geen enkele andere kinderreeks heet zo. Het alternatief is **Sba**, het
 Darija-woord voor leeuw: elke Marokkaanse ouder glimlacht meteen, en het is
 zelf al het eerste woordje.
 

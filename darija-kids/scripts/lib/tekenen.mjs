@@ -1,7 +1,7 @@
 /**
  * Wat het prentenboek en de website allebei tekenen.
  *
- * Sbaa staat op de kaft van het boek en op de boekenpagina van de site. Eén
+ * Sba staat op de kaft van het boek en op de boekenpagina van de site. Eén
  * leeuw, één bestand -- want twee leeuwen die bijna hetzelfde zijn, zijn op
  * den duur twee verschillende leeuwen.
  */
@@ -15,9 +15,9 @@ export const K = {
 }
 
 /**
- * Sbaa, zoals hij eruitziet.
+ * Sba, zoals hij eruitziet.
  *
- * Het ontwerp ligt vast in `docs/SBAA.md`, met de tekening ernaast waar alles
+ * Het ontwerp ligt vast in `docs/SBA.md`, met de tekening ernaast waar alles
  * op teruggaat: een jonge leeuw in een blauwe djellaba met Amazigh-ruiten,
  * een rode fez met kwast, een leren schoudertas en rode babouches. Dit is de
  * vectorversie daarvan — eenvoudiger, maar dezelfde leeuw. Wie hem ziet op
@@ -26,7 +26,7 @@ export const K = {
  * De vier dingen waaraan hij te herkennen is, ook op twee centimeter hoog:
  * de rode fez, het blauw van de djellaba, de tas, en de rode schoenen.
  */
-export const sbaa = (x, y, s = 1, { kijk = 0, tas = true } = {}) => `<g transform="translate(${x} ${y}) scale(${s})">
+export const sba = (x, y, s = 1, { kijk = 0, tas = true } = {}) => `<g transform="translate(${x} ${y}) scale(${s})">
   <!-- staart -->
   <path d="M-38 118 Q-62 128 -56 150" fill="none" stroke="${K.vacht}" stroke-width="9" stroke-linecap="round"/>
   <path d="M-58 148 q-9 6 -4 16 q7 4 10 -4 q3 -9 -6 -12 Z" fill="${K.vachtLicht}"/>

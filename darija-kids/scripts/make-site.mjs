@@ -20,7 +20,7 @@
  * Run with: node scripts/make-site.mjs [--out site]
  */
 import { cp, mkdir, readdir, rm, writeFile } from 'node:fs/promises'
-import { sbaa } from './lib/tekenen.mjs'
+import { sba } from './lib/tekenen.mjs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createServer } from 'vite'
@@ -45,11 +45,26 @@ const server = await createServer({
 
 const load = (id) => server.ssrLoadModule(id)
 
+/**
+ * De plaatsnamen bij De sleutels van Marokko.
+ *
+ * In `sleutels.ts` staat een Nederlandse zin ("Tanger, en de zeestraat naar
+ * het noorden"); op de Spaanse pagina hoort daar geen Nederlands te staan.
+ * Een plaatsnaam is in alle zes de talen hetzelfde, dus staat hier alleen de
+ * naam. Het jaartal komt wel uit `sleutels.ts`: cijfers vertalen niet.
+ */
+const SLEUTELPLEK = [
+  'Walili', 'Tanger', 'Fes', 'Marrakech', 'Ceuta', 'Tanger', 'Fes', 'Ksar el-Kebir',
+  'Marrakech', 'Essaouira', 'Salé', 'Rif', 'Rabat', 'Rabat', 'Atlas',
+]
+
 const [
   { LANGS, localeOf },
   { SITE },
-  { STORE, SITE_URL, PATHS },
-  { SHOP },
+  { STORE, SITE_URL, PATHS, SOCIAL },
+  { SHOP, WINKEL_OPEN },
+  { DELEN },
+  { REEKS: SLEUTELREEKS },
   { NAMEN },
   { PRIVACY },
   { TERMS },
@@ -63,6 +78,8 @@ const [
   load('/src/site/copy.ts'),
   load('/src/site/links.ts'),
   load('/src/site/shop.ts'),
+  load('/src/site/delen.ts'),
+  load('/src/content/sleutels.ts'),
   load('/src/site/namen.ts'),
   load('/src/i18n/privacy.ts'),
   load('/src/i18n/terms.ts'),
@@ -307,6 +324,33 @@ const unitList = (lang) => {
  * vegen en met de pijltjestoetsen door de rij lopen, en dan staan er geen
  * knoppen die niets doen.
  */
+/**
+ * De vier kanalen, met hun eigen merkje.
+ *
+ * Getekend en niet geladen: vier logo's van een externe server zijn vier
+ * verzoeken naar een partij die daarmee ziet wie deze pagina opvraagt, en dat
+ * is precies wat de privacyverklaring hier belooft niet te doen. Eén pad per
+ * merk weegt minder dan een kilobyte.
+ *
+ * De vormen zijn de merken van die bedrijven; ze staan hier als verwijzing
+ * naar de eigen kanalen, in één kleur, en verder onaangeroerd.
+ */
+const MERKJE = {
+  youtube: '<path d="M23.5 6.5a3 3 0 0 0-2.1-2.1C19.5 3.9 12 3.9 12 3.9s-7.5 0-9.4.5A3 3 0 0 0 .5 6.5C0 8.4 0 12 0 12s0 3.6.5 5.5a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.5.5-5.5s0-3.6-.5-5.5ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z"/>',
+  instagram: '<path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.3 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.3 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.3-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.3-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2ZM12 0C8.7 0 8.3 0 7 .1 5.7.1 4.8.3 4.1.6c-.8.3-1.4.7-2 1.4-.7.6-1.1 1.2-1.4 2C.3 4.8.1 5.7.1 7 0 8.3 0 8.7 0 12s0 3.7.1 5c0 1.3.2 2.2.5 2.9.3.8.7 1.4 1.4 2 .6.7 1.2 1.1 2 1.4.7.3 1.6.5 2.9.5 1.3.1 1.7.1 5 .1s3.7 0 5-.1c1.3 0 2.2-.2 2.9-.5.8-.3 1.4-.7 2-1.4.7-.6 1.1-1.2 1.4-2 .3-.7.5-1.6.5-2.9.1-1.3.1-1.7.1-5s0-3.7-.1-5c0-1.3-.2-2.2-.5-2.9-.3-.8-.7-1.4-1.4-2-.6-.7-1.2-1.1-2-1.4C19.1.3 18.2.1 16.9.1 15.7 0 15.3 0 12 0Zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4Zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm7.9-10.4a1.4 1.4 0 1 1-2.9 0 1.4 1.4 0 0 1 2.9 0Z"/>',
+  facebook: '<path d="M24 12a12 12 0 1 0-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.7 4.5-4.7 1.3 0 2.7.2 2.7.2v2.9h-1.5c-1.5 0-2 .9-2 1.9V12h3.3l-.5 3.5h-2.8v8.4A12 12 0 0 0 24 12Z"/>',
+  tiktok: '<path d="M16.6 0h-3.3v13.4a2.7 2.7 0 1 1-2.7-2.7c.3 0 .5 0 .8.1V7.4a6.2 6.2 0 0 0-.8-.1 6.1 6.1 0 1 0 6.1 6.1V6.7a7.6 7.6 0 0 0 4.4 1.4V4.8a4.4 4.4 0 0 1-4.5-4.8Z"/>',
+}
+
+const socialRij = (lang) => {
+  const c = SITE[lang]
+  return SOCIAL.length ? `<ul class="socials" aria-label="${esc(c.socialTitel)}">
+      ${SOCIAL.map((k) => `<li><a href="${k.url}" target="_blank" rel="noopener me" aria-label="${esc(k.label)}" title="${esc(k.label)}">
+        <svg viewBox="0 0 24 24" aria-hidden="true">${MERKJE[k.naam]}</svg>
+      </a></li>`).join('')}
+    </ul>` : ''
+}
+
 const shotGallery = (lang, shots) => {
   const c = SITE[lang]
   const slides = shots.map((file, i) =>
@@ -320,6 +364,7 @@ const shotGallery = (lang, shots) => {
         ${slides}
       </div>
       <button class="arrow next" type="button" aria-label="${esc(c.volgende)}" hidden>&#8250;</button>
+      ${socialRij(lang)}
       <p class="tel">${esc(c.beeldBody(shots.length))}</p>
     </div>`
 }
@@ -692,6 +737,8 @@ const historyPage = (lang) => {
  */
 const booksPage = (lang) => {
   const c = SITE[lang]
+  const p = PATHS[lang]
+  const d = DELEN[lang]
 
   const reeks = (badge, titel, body, punten, kunst, koop = []) => `<article class="reeks">
     <div class="kunst">${kunst}</div>
@@ -700,13 +747,62 @@ const booksPage = (lang) => {
       <h2>${esc(titel)}</h2>
       <p>${esc(body)}</p>
       <ul>${punten.map((punt) => `<li>${esc(punt)}</li>`).join('')}</ul>
-      ${koop.filter((p) => SHOP[p.id]?.link).map((p) => `<a class="mailbtn" href="${SHOP[p.id].link}" rel="noopener">${esc(p.wat)} — ${esc(SHOP[p.id].prijs)}</a>`).join(' ')
+      ${koop.filter((k) => SHOP[k.id]?.link).map((k) => `<a class="mailbtn" href="${SHOP[k.id].link}" rel="noopener">${esc(k.wat)} — ${esc(SHOP[k.id].prijs)}</a>`).join(' ')
         || `<span class="status">${esc(c.boekStatus)}</span>`}
     </div>
   </article>`
 
-  const leeuw = `<svg viewBox="0 0 300 230" aria-hidden="true">${sbaa(150, 80, 1.5, { tas: false })}</svg>`
-  const sleutel = `<svg viewBox="0 0 300 230" aria-hidden="true">
+  /**
+   * Eén regel per deel: nummer, titel, waar het over gaat, prijs, knop.
+   *
+   * De knop verschijnt pas als er een betaallink is. Tot die tijd staat er
+   * "binnenkort" — geen dode knop, want een bezoeker die op een knop drukt en
+   * niets ziet gebeuren komt niet terug om het nog eens te proberen.
+   */
+  const lijst = (sleutel, titels, bij, reeksId) => `<section class="delenlijst">
+    <h3>${esc(c.boekOverzicht)}</h3>
+    <ol>
+      ${titels.map((titel, i) => {
+        const id = `${sleutel}${i + 1}`
+        const artikel = SHOP[id]
+        return `<li>
+          <span class="nr">${esc(c.boekDeelWoord)} ${i + 1}</span>
+          <span class="wat"><b>${esc(titel)}</b><i>${esc(bij(i))}</i></span>
+          <span class="prijs">${esc(artikel.prijs)}</span>
+          ${artikel.link
+            ? `<a class="koop" href="${artikel.link}" rel="noopener">${esc(c.boekKoop)}</a>`
+            : `<span class="koop uit">${esc(c.boekBinnenkort)}</span>`}
+        </li>`
+      }).join('')}
+    </ol>
+    <div class="bundel">
+      <div>
+        <b>${esc(c.boekHeleReeks)}</b>
+        <span>${esc(c.boekHeleReeksBody)}</span>
+      </div>
+      <span class="prijs">${esc(SHOP[reeksId].prijs)}</span>
+      ${SHOP[reeksId].link
+        ? `<a class="koop" href="${SHOP[reeksId].link}" rel="noopener">${esc(c.boekKoop)}</a>`
+        : `<span class="koop uit">${esc(c.boekBinnenkort)}</span>`}
+    </div>
+  </section>`
+
+  /**
+   * De plaat bij een reeks.
+   *
+   * Staat er een geschilderde plaat in `site-assets/boeken/`, dan gaat die
+   * voor: die spreekt tot de verbeelding en een vectortekening doet dat niet.
+   * Zolang hij er niet is blijft de tekening staan, zodat de pagina nooit een
+   * gat heeft.
+   */
+  const kunstwerk = (bestand, terugval, alt) => KUNST.has(bestand)
+    ? `<img src="/boeken/${bestand}" alt="${esc(alt)}" loading="lazy" decoding="async">`
+    : terugval
+
+  const leeuw = kunstwerk('sba.webp',
+    `<svg viewBox="0 0 300 230" aria-hidden="true">${sba(150, 80, 1.5, { tas: false })}</svg>`,
+    c.boekKleinTitel)
+  const sleutel = kunstwerk('sleutel.webp', `<svg viewBox="0 0 300 230" aria-hidden="true">
     <circle cx="150" cy="115" r="96" fill="#1b2340"/>
     <g transform="translate(150 115) rotate(-30)" fill="#e8b93f">
       <circle cx="0" cy="-44" r="26"/><circle cx="0" cy="-44" r="11" fill="#1b2340"/>
@@ -714,25 +810,76 @@ const booksPage = (lang) => {
       <rect x="-6" y="30" width="26" height="11" rx="3"/>
       <rect x="-6" y="48" width="18" height="11" rx="3"/>
     </g>
-  </svg>`
+  </svg>`, c.boekGrootTitel)
 
   const body = `<div class="wrap doc boeken">
   <h1>${esc(c.boekTitel)}</h1>
   <p class="intro">${esc(c.boekLead)}</p>
 
   ${reeks(c.boekKlein, c.boekKleinTitel, c.boekKleinBody, c.boekKleinPunten, leeuw, [
-    { id: 'sbaa1', wat: c.boekDeel1 }, { id: 'sbaaReeks', wat: c.boekAlleVijf },
+    { id: 'sba1', wat: c.boekDeel1 }, { id: 'sbaReeks', wat: c.boekAlleVijf },
   ])}
+  ${lijst('sba', d.sba, () => d.woorden(12), 'sbaReeks')}
+
   ${reeks(c.boekGroot, c.boekGrootTitel, c.boekGrootBody, c.boekGrootPunten, sleutel)}
+  ${lijst('sleutels', d.sleutels, (i) => `${SLEUTELREEKS[i].jaar === 'Nu' ? d.nu : SLEUTELREEKS[i].jaar} · ${SLEUTELPLEK[i]}`, 'sleutelsReeks')}
 
   <p class="soon">${esc(c.boekSlot)}</p>
-  <a class="mailbtn" href="${mailto}?subject=${encodeURIComponent(c.boekTitel)}&body=${encodeURIComponent(c.houMeOpDeHoogteMail)}">${esc(c.houMeOpDeHoogte)}</a>
+  <p><a class="mailbtn" href="${mailto}?subject=${encodeURIComponent(c.boekTitel)}&body=${encodeURIComponent(c.houMeOpDeHoogteMail)}">${esc(c.houMeOpDeHoogte)}</a>
+     <a class="mailbtn zacht" href="${p.checkout}">${esc(c.afrekenLink)}</a></p>
 </div>`
 
   return layout({
     lang, page: 'books', body,
     title: `${c.boekTitel} — Darijaforkids`,
     description: c.boekLead,
+  })
+}
+
+/**
+ * De afrekenpagina.
+ *
+ * Deze pagina bestaat voordat de winkel open is, en dat is met opzet. Wie
+ * twijfelt of hij een bestand van een onbekende site durft te kopen, zoekt
+ * precies dit: wat krijg ik, hoe betaal ik, wie staat er op mijn afschrift,
+ * en wat als het niet bevalt. Dat antwoord hoort er te staan vóór de knop, en
+ * niet in de algemene voorwaarden waar niemand komt.
+ */
+const checkoutPage = (lang) => {
+  const c = SITE[lang]
+  const p = PATHS[lang]
+
+  const body = `<div class="wrap doc afrekenen">
+  <h1>${esc(c.afrekenTitel)}</h1>
+  <p class="intro">${esc(c.afrekenLead)}</p>
+
+  <ol class="stappen">
+    ${c.afrekenStappen.map(([kop, uitleg], i) => `<li>
+      <span class="stapnr">${i + 1}</span>
+      <div><b>${esc(kop)}</b><p>${esc(uitleg)}</p></div>
+    </li>`).join('')}
+  </ol>
+
+  <h2>${esc(c.afrekenWatTitel)}</h2>
+  <ul>${c.afrekenWat.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>
+
+  <h2>${esc(c.afrekenBetalenTitel)}</h2>
+  ${c.afrekenBetalen.map((r) => `<p>${esc(r)}</p>`).join('')}
+
+  <h2>${esc(c.afrekenRechtTitel)}</h2>
+  <p>${esc(c.afrekenRecht)}</p>
+
+  ${WINKEL_OPEN ? '' : `<p class="soon">${esc(c.afrekenDicht)}</p>`}
+
+  <h2>${esc(c.afrekenVraagTitel)}</h2>
+  <p><a class="mailbtn" href="${mailto}?subject=${encodeURIComponent(c.afrekenTitel)}">${esc(c.menu.contact)}</a>
+     <a class="mailbtn zacht" href="${p.books}">${esc(c.boekTitel)}</a></p>
+</div>`
+
+  return layout({
+    lang, page: 'checkout', body,
+    title: `${c.afrekenTitel} — Darijaforkids`,
+    description: c.afrekenLead,
   })
 }
 
@@ -821,6 +968,16 @@ for (const entry of ['shots', 'film']) {
   })
 }
 
+/**
+ * De geschilderde platen bij de twee reeksen.
+ *
+ * Ze mogen ontbreken: dan valt de pagina terug op de tekening. Daarom staat
+ * deze map niet in `missing` — een site zonder deze twee bestanden is niet
+ * kapot, alleen minder mooi.
+ */
+await cp(path.join(assets, 'boeken'), path.join(OUT, 'boeken'), { recursive: true }).catch(() => {})
+const KUNST = new Set(await readdir(path.join(assets, 'boeken')).catch(() => []))
+
 const write = async (urlPath, html) => {
   const file = urlPath === '/'
     ? path.join(OUT, 'index.html')
@@ -841,7 +998,8 @@ for (const { code: lang } of LANGS) {
   await write(PATHS[lang].name, naamPage(lang))
   await write(PATHS[lang].history, historyPage(lang))
   await write(PATHS[lang].books, booksPage(lang))
-  pages += 7
+  await write(PATHS[lang].checkout, checkoutPage(lang))
+  pages += 8
   if (!shots.length) missing.push(`de schermen voor ${lang}`)
   if (!film) missing.push(`de film voor ${lang}`)
 }
@@ -867,7 +1025,7 @@ self.addEventListener('activate', (event) => {
 `)
 
 const urls = LANGS.flatMap(({ code }) =>
-  ['home', 'privacy', 'terms', 'parents', 'name', 'history', 'books'].map((page) => SITE_URL + PATHS[code][page]))
+  ['home', 'privacy', 'terms', 'parents', 'name', 'history', 'books', 'checkout'].map((page) => SITE_URL + PATHS[code][page]))
 
 await writeFile(path.join(OUT, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

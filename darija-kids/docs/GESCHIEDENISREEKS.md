@@ -49,7 +49,7 @@ wil weten wat écht zo was.
 | **7. De doos van jeddti** | 1956 & nu | Adil is dertien. In de kast van zijn oma ligt een sleutel die hij niet kent. | Onafhankelijk, Tamazight |
 
 Deel zeven maakt de reeks af. Adil is de oudste uit de prentenboeken van
-Sbaa — hij is intussen dertien. Wie als kleuter *Sbaa en de poorten van Fes*
+Sba — hij is intussen dertien. Wie als kleuter *Sba en de poorten van Fes*
 kreeg voorgelezen, leest tien jaar later het deel waarin diezelfde jongen de
 sleutel vindt. Eén wereld, twee leeftijden, en een reden om de hele plank te
 kopen.

@@ -1,5 +1,5 @@
 /**
- * Tekent en zet het prentenboek: Sbaa de Atlasleeuw, deel 1.
+ * Tekent en zet het prentenboek: Sba de Atlasleeuw, deel 1.
  *
  * De platen zijn met de hand getekend in vectoren, net als het logo en de
  * fennek — geen gegenereerde plaatjes. Dat is een keuze: de hele belofte van
@@ -21,7 +21,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
 import { createServer } from 'vite'
-import { K, sbaa } from './lib/tekenen.mjs'
+import { K, sba } from './lib/tekenen.mjs'
 
 /** De achtpuntige khatam, klein, als behang op een bladzijde die nog wacht. */
 const ster = (cx, cy, r, vul) => {
@@ -40,7 +40,7 @@ const arg = (naam, terugval = null) => {
   return i > 0 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : terugval
 }
 const TAAL = arg('taal', 'nl')
-const UIT = arg('uit', path.join(ROOT, 'store', 'prentenboek', `sbaa-${arg('deel', '1')}-${TAAL}.pdf`))
+const UIT = arg('uit', path.join(ROOT, 'store', 'prentenboek', `sba-${arg('deel', '1')}-${TAAL}.pdf`))
 
 /* ---------------------------------------------------------- de bouwstenen */
 
@@ -109,75 +109,38 @@ const KINDEREN = {
 const kind = (wie, x, y, s = 1, { arm = 0 } = {}) => {
   const k = KINDEREN[wie]
   if (!k) throw new Error(`onbekend kind: ${wie}`)
+  const mouw = `${k.jas}`
   return `<g transform="translate(${x} ${y}) scale(${s})">
-  <path d="M-11 56 L-11 74" stroke="${k.huid}" stroke-width="8" stroke-linecap="round"/>
-  <path d="M11 56 L11 74" stroke="${k.huid}" stroke-width="8" stroke-linecap="round"/>
-  <path d="M-15 74 L-6 74" stroke="${K.inkt}" stroke-width="7" stroke-linecap="round"/>
-  <path d="M6 74 L15 74" stroke="${K.inkt}" stroke-width="7" stroke-linecap="round"/>
-  <path d="M-16 20 L16 20 L19 58 L-19 58 Z" fill="${k.jas}"/>
-  <path d="M-16 24 L-26 ${44 - arm * 16}" stroke="${k.jas}" stroke-width="9" stroke-linecap="round"/>
-  <path d="M16 24 L26 ${44 - arm * 16}" stroke="${k.jas}" stroke-width="9" stroke-linecap="round"/>
-  <circle cx="-27" cy="${45 - arm * 16}" r="4.5" fill="${k.huid}"/>
-  <circle cx="27" cy="${45 - arm * 16}" r="4.5" fill="${k.huid}"/>
-  <circle cx="0" cy="2" r="16" fill="${k.huid}"/>
-  <path d="M-16 -2 Q0 -22 16 -2 Q10 -12 0 -12 Q-10 -12 -16 -2 Z" fill="${k.haar}"/>
-  ${k.ding === 'pet' ? `<path d="M-17 -3 Q0 -24 17 -3 Z" fill="#2f6fb3"/><path d="M-17 -3 L-26 0" stroke="#2f6fb3" stroke-width="5" stroke-linecap="round"/>` : ''}
-  <circle cx="-5.5" cy="3" r="2.2" fill="${K.inkt}"/>
-  <circle cx="5.5" cy="3" r="2.2" fill="${K.inkt}"/>
-  <path d="M-4 9 Q0 13 4 9" stroke="${K.inkt}" stroke-width="2" fill="none" stroke-linecap="round"/>
-  ${k.ding === 'kaart' ? `<rect x="20" y="${38 - arm * 16}" width="18" height="13" rx="2" fill="${K.creme}" stroke="${K.inkt}" stroke-width="1.5"/>` : ''}
-  ${k.ding === 'schets' ? `<rect x="18" y="${36 - arm * 16}" width="16" height="18" rx="2" fill="${K.creme}" stroke="${K.inkt}" stroke-width="1.5"/>` : ''}
+  <!-- benen en schoenen -->
+  <path d="M-12 60 L-12 80" stroke="${k.huid}" stroke-width="10" stroke-linecap="round"/>
+  <path d="M12 60 L12 80" stroke="${k.huid}" stroke-width="10" stroke-linecap="round"/>
+  <path d="M-19 84 q0 -6 7 -6 l6 0 q4 0 4 6 z" fill="${K.inkt}"/>
+  <path d="M19 84 q0 -6 -7 -6 l-6 0 q-4 0 -4 6 z" fill="${K.inkt}"/>
+
+  <!-- tuniek met band, zoals ze in Marokko dragen -->
+  <path d="M-19 22 Q0 30 19 22 L24 64 L-24 64 Z" fill="${k.jas}"/>
+  <path d="M-22 46 L22 46 L22 52 L-22 52 Z" fill="rgba(255,250,243,.55)"/>
+  ${[0, 1, 2, 3].map((i) => `<path d="M${-15 + i * 9} 49 l3 -4 l3 4 l-3 4 Z" fill="${K.saffraan}"/>`).join('')}
+  <path d="M-19 24 L-29 ${48 - arm * 18}" stroke="${mouw}" stroke-width="10" stroke-linecap="round"/>
+  <path d="M19 24 L29 ${48 - arm * 18}" stroke="${mouw}" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="-30" cy="${49 - arm * 18}" r="5.5" fill="${k.huid}"/>
+  <circle cx="30" cy="${49 - arm * 18}" r="5.5" fill="${k.huid}"/>
+
+  <!-- hoofd -->
+  <circle cx="0" cy="2" r="17" fill="${k.huid}"/>
+  <path d="M-17 -1 Q0 -24 17 -1 Q17 -13 0 -14 Q-17 -13 -17 -1 Z" fill="${k.haar}"/>
+  ${k.ding === 'pet' ? `<path d="M-18 -2 Q0 -25 18 -2 Z" fill="#2f6fb3"/><path d="M-18 -2 L-28 2" stroke="#2f6fb3" stroke-width="5" stroke-linecap="round"/>` : ''}
+  <circle cx="-6" cy="3" r="2.6" fill="${K.inkt}"/>
+  <circle cx="6" cy="3" r="2.6" fill="${K.inkt}"/>
+  <circle cx="-5" cy="2.2" r="0.9" fill="#fff"/>
+  <circle cx="7" cy="2.2" r="0.9" fill="#fff"/>
+  <circle cx="-11" cy="8" r="3.4" fill="#e39a8a" opacity=".45"/>
+  <circle cx="11" cy="8" r="3.4" fill="#e39a8a" opacity=".45"/>
+  <path d="M-4.5 10 Q0 14.5 4.5 10" stroke="${K.inkt}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  ${k.ding === 'kaart' ? `<rect x="22" y="${42 - arm * 18}" width="20" height="15" rx="2" fill="${K.creme}" stroke="${K.inkt}" stroke-width="1.6"/><path d="M26 ${47 - arm * 18} l12 0 M26 ${51 - arm * 18} l8 0" stroke="${K.inkt}" stroke-width="1.2"/>` : ''}
+  ${k.ding === 'schets' ? `<rect x="20" y="${40 - arm * 18}" width="18" height="21" rx="2" fill="${K.creme}" stroke="${K.inkt}" stroke-width="1.6"/>` : ''}
 </g>`
 }
-
-/** Een volwassene: dezelfde bouw als een kind, maar langer en rustiger. */
-const volwassene = (x, y, s = 1, { jas = '#4a6fa5', huid = '#d9a06a', doek = null, grijs = false } = {}) => `<g transform="translate(${x} ${y}) scale(${s})">
-  <path d="M-22 26 L22 26 L28 92 L-28 92 Z" fill="${jas}"/>
-  <path d="M-22 32 L-36 62" stroke="${jas}" stroke-width="11" stroke-linecap="round"/>
-  <path d="M22 32 L36 62" stroke="${jas}" stroke-width="11" stroke-linecap="round"/>
-  <circle cx="-37" cy="64" r="5.5" fill="${huid}"/>
-  <circle cx="37" cy="64" r="5.5" fill="${huid}"/>
-  <circle cx="0" cy="2" r="19" fill="${huid}"/>
-  ${doek
-    ? `<path d="M-21 4 Q0 -24 21 4 Q21 22 0 24 Q-21 22 -21 4 Z" fill="${doek}"/><circle cx="0" cy="4" r="14" fill="${huid}"/>`
-    : `<path d="M-19 -2 Q0 -24 19 -2 Q12 -13 0 -13 Q-12 -13 -19 -2 Z" fill="${grijs ? '#cfc6bb' : '#2b1d16'}"/>`}
-  <circle cx="-6.5" cy="3" r="2.4" fill="${K.inkt}"/>
-  <circle cx="6.5" cy="3" r="2.4" fill="${K.inkt}"/>
-  <path d="M-5 10 Q0 14 5 10" stroke="${K.inkt}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-</g>`
-
-const theepot = (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})">
-  <path d="M-16 0 Q-20 22 0 24 Q20 22 16 0 Z" fill="#b9c4cc"/>
-  <path d="M-16 0 L16 0" stroke="#8d99a3" stroke-width="4"/>
-  <path d="M16 -2 Q30 -6 30 -22" stroke="#b9c4cc" stroke-width="5" fill="none" stroke-linecap="round"/>
-  <path d="M-16 -2 Q-28 -8 -22 -18" stroke="#b9c4cc" stroke-width="5" fill="none"/>
-  <path d="M-7 -2 Q0 -16 7 -2 Z" fill="#b9c4cc"/>
-  <circle cx="0" cy="-16" r="3.4" fill="#b9c4cc"/>
-</g>`
-
-const ezel = (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})">
-  <ellipse cx="0" cy="0" rx="46" ry="28" fill="#9b9187"/>
-  <path d="M-40 22 L-40 52 M-16 24 L-16 52 M16 24 L16 52 M40 22 L40 52" stroke="#9b9187" stroke-width="9" stroke-linecap="round"/>
-  <path d="M-46 -10 Q-64 -18 -66 -40" stroke="#9b9187" stroke-width="16" fill="none" stroke-linecap="round"/>
-  <ellipse cx="-68" cy="-46" rx="15" ry="12" fill="#9b9187"/>
-  <ellipse cx="-76" cy="-48" rx="7" ry="5" fill="#6f6862"/>
-  <path d="M-74 -58 Q-78 -78 -70 -76 Q-66 -70 -66 -58 Z" fill="#9b9187"/>
-  <path d="M-62 -58 Q-58 -78 -54 -76 Q-54 -68 -56 -58 Z" fill="#9b9187"/>
-  <circle cx="-70" cy="-50" r="2.6" fill="${K.inkt}"/>
-  <path d="M44 -6 Q60 0 56 18" stroke="#9b9187" stroke-width="5" fill="none" stroke-linecap="round"/>
-  <rect x="-34" y="-46" width="30" height="26" rx="5" fill="#c9a26a"/>
-  <rect x="2" y="-46" width="30" height="26" rx="5" fill="#c9a26a"/>
-  <circle cx="-19" cy="-50" r="6" fill="${K.terra}"/><circle cx="-8" cy="-50" r="6" fill="${K.blad}"/>
-  <circle cx="17" cy="-50" r="6" fill="${K.saffraan}"/>
-</g>`
-
-const kat = (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})">
-  <ellipse cx="0" cy="0" rx="20" ry="12" fill="#c9bfae"/>
-  <circle cx="-18" cy="-10" r="10" fill="#c9bfae"/>
-  <path d="M-25 -16 L-22 -26 L-15 -19 Z M-11 -19 L-9 -27 L-5 -18 Z" fill="#c9bfae"/>
-  <circle cx="-21" cy="-10" r="1.8" fill="${K.inkt}"/><circle cx="-14" cy="-10" r="1.8" fill="${K.inkt}"/>
-  <path d="M18 -4 Q30 -10 26 -22" stroke="#c9bfae" stroke-width="5" fill="none" stroke-linecap="round"/>
-</g>`
 
 /* --------------------------------------------------------------- de platen */
 
@@ -200,10 +163,10 @@ const SCENES = {
     ${berg(560, 560, 560, 380, '#8aa2b0')}
     ${berg(220, 600, 600, 300, '#b0868a', false)}
     <rect y="600" width="1000" height="100" fill="#c9a887"/>
-    ${sbaa(470, 270, 1.62, { kijk: -1 })}
-    ${kind('adil', 690, 360, 0.85, { arm: 1 })}
-    ${kind('rayan', 780, 376, 0.7, { arm: 1 })}
-    ${kind('yousra', 862, 360, 0.85)}
+    ${sba(470, 270, 1.62, { kijk: -1 })}
+    ${kind('adil', 690, 326.4, 1.27, { arm: 1 })}
+    ${kind('rayan', 780, 348, 1.05, { arm: 1 })}
+    ${kind('yousra', 862, 326.4, 1.27)}
     ${palm(120, 700, 0.8)}`,
 
   poort: () => `
@@ -218,10 +181,10 @@ const SCENES = {
     <circle cx="470" cy="560" r="10" fill="${K.saffraan}"/>
     <circle cx="530" cy="560" r="10" fill="${K.saffraan}"/>
     ${lantaarn(250, 240, 1.4)}${lantaarn(750, 240, 1.4)}
-    ${sbaa(180, 370, 1.37)}
-    ${kind('adil', 700, 410, 0.8, { arm: 1 })}
-    ${kind('rayan', 775, 424, 0.66)}
-    ${kind('adam', 845, 410, 0.78)}`,
+    ${sba(180, 370, 1.37)}
+    ${kind('adil', 700, 378, 1.2, { arm: 1 })}
+    ${kind('rayan', 775, 397.6, 0.99)}
+    ${kind('adam', 845, 378.8, 1.17)}`,
 
   welkom: () => `
     <defs>${lucht('l3', '#f3e0bd', '#e7c79a')}</defs>
@@ -232,9 +195,9 @@ const SCENES = {
     ${tegelband(560, 140, 300, 40, K.terra)}
     ${volwassene(700, 270, 1.35, { jas: K.terra, doek: '#f0c14b' })}
     ${theepot(790, 400, 1.3)}
-    ${sbaa(180, 320, 1.43, { kijk: 1 })}
-    ${kind('yousra', 360, 360, 0.82, { arm: 1 })}
-    ${kind('rayan', 440, 374, 0.68, { arm: 1 })}
+    ${sba(180, 320, 1.43, { kijk: 1 })}
+    ${kind('yousra', 360, 327.2, 1.23, { arm: 1 })}
+    ${kind('rayan', 440, 346.8, 1.02, { arm: 1 })}
     ${lantaarn(120, 150, 1.6)}`,
 
   medina: () => `
@@ -248,9 +211,9 @@ const SCENES = {
     ${boog(790, 350, 120, 350, '#6c4630')}
     ${tegelband(60, 250, 200, 34, K.zellige)}
     ${lantaarn(300, 120, 1.8)}${lantaarn(700, 150, 1.8)}
-    ${sbaa(500, 240, 1.82)}
-    ${kind('adil', 350, 410, 0.72)}
-    ${kind('yassine', 640, 418, 0.7, { arm: 1 })}
+    ${sba(500, 240, 1.82)}
+    ${kind('adil', 350, 381.2, 1.08)}
+    ${kind('yassine', 640, 390, 1.05, { arm: 1 })}
     ${kat(830, 660, 1.1)}`,
 
   ezel: () => `
@@ -261,9 +224,9 @@ const SCENES = {
     <rect y="640" width="1000" height="60" fill="#cbb08a"/>
     ${ezel(600, 520, 1.25)}
     ${volwassene(760, 370, 1.2, { jas: '#6b7f4a' })}
-    ${sbaa(180, 370, 1.30, { kijk: 1 })}
-    ${kind('amir', 330, 410, 0.8, { arm: 1 })}
-    ${kind('rayan', 405, 424, 0.66, { arm: 1 })}`,
+    ${sba(180, 370, 1.30, { kijk: 1 })}
+    ${kind('amir', 330, 378, 1.2, { arm: 1 })}
+    ${kind('rayan', 405, 397.6, 0.99, { arm: 1 })}`,
 
   brood: () => `
     <defs>${lucht('l6', '#f0dcb6', '#e6c795')}</defs>
@@ -274,9 +237,9 @@ const SCENES = {
     ${[0, 1, 2, 3, 4].map((i) => `<circle cx="${190 + i * 58}" cy="${486}" r="26" fill="#e7b96b" stroke="#c98f4a" stroke-width="4"/>`).join('')}
     <circle cx="300" cy="350" r="60" fill="${K.saffraan}" opacity=".35"/>
     ${volwassene(300, 190, 1.15, { jas: '#cbbba4' })}
-    ${sbaa(760, 340, 1.37, { kijk: -1 })}
-    ${kind('adam', 560, 390, 0.9, { arm: 1 })}
-    ${kind('rayan', 640, 406, 0.68)}
+    ${sba(760, 340, 1.37, { kijk: -1 })}
+    ${kind('adam', 560, 354, 1.35, { arm: 1 })}
+    ${kind('rayan', 640, 378.8, 1.02)}
     <circle cx="560" cy="452" r="20" fill="#e7b96b" stroke="#c98f4a" stroke-width="4"/>`,
 
   babouches: () => `
@@ -291,9 +254,9 @@ const SCENES = {
       return `<path d="M${x} ${y + 40} Q${x} ${y} ${x + 34} ${y + 6} Q${x + 68} ${y + 12} ${x + 66} ${y + 40} Z" fill="${vul}" stroke="#7a5333" stroke-width="3"/>`
     }).join('')).join('')}
     ${volwassene(790, 270, 1.2, { jas: '#7a5333', grijs: true })}
-    ${sbaa(880, 370, 1.10)}
-    ${kind('yassine', 700, 410, 0.8, { arm: 1 })}
-    ${kind('rayan', 620, 424, 0.66)}`,
+    ${sba(880, 370, 1.10)}
+    ${kind('yassine', 700, 378, 1.2, { arm: 1 })}
+    ${kind('rayan', 620, 397.6, 0.99)}`,
 
   souq: () => `
     <defs>${lucht('l8', '#cfe6f0', '#f5e2c0')}</defs>
@@ -310,9 +273,9 @@ const SCENES = {
     ${[0, 1, 2, 3].map((i) => `<rect x="${740 + i * 52}" y="336" width="44" height="46" rx="4" fill="${['#c1272d', '#f4e3c8', '#0d9488', '#f59e0b'][i]}"/>`).join('')}
     ${volwassene(180, 410, 0.95, { jas: '#8d5a3b' })}
     ${volwassene(880, 410, 0.95, { jas: '#4a6fa5', doek: '#c1272d' })}
-    ${sbaa(500, 370, 1.30)}
-    ${kind('amir', 620, 430, 0.72, { arm: 1 })}
-    ${kind('rayan', 690, 442, 0.62)}`,
+    ${sba(500, 370, 1.30)}
+    ${kind('amir', 620, 401.2, 1.08, { arm: 1 })}
+    ${kind('rayan', 690, 417.2, 0.93)}`,
 
   thee: () => `
     <defs>${lucht('l9', '#f3dfb8', '#e9c79a')}</defs>
@@ -326,9 +289,9 @@ const SCENES = {
     <rect x="500" y="486" width="40" height="46" rx="5" fill="#dfe9ef" opacity=".92"/>
     <rect x="500" y="500" width="40" height="32" rx="4" fill="#c98f4a"/>
     ${volwassene(330, 320, 1.15, { jas: '#6b7f4a' })}
-    ${sbaa(760, 340, 1.37, { kijk: -1, tas: false })}
-    ${kind('yousra', 620, 360, 0.78)}
-    ${kind('rayan', 690, 376, 0.64)}`,
+    ${sba(760, 340, 1.37, { kijk: -1, tas: false })}
+    ${kind('yousra', 620, 328.8, 1.17)}
+    ${kind('rayan', 690, 350.4, 0.96)}`,
 
   zon: () => `
     <defs>${lucht('l10', '#f6b26b', '#e3708a')}</defs>
@@ -340,9 +303,9 @@ const SCENES = {
         ${dakrand(x, 700 - h, 170, 24, '#9d5a48')}`
     }).join('')}
     <rect y="620" width="1000" height="80" fill="#8d4c3d"/>
-    ${sbaa(180, 360, 1.30, { kijk: 1 })}
-    ${kind('yousra', 700, 390, 0.85, { arm: 1 })}
-    ${kind('rayan', 790, 404, 0.68)}`,
+    ${sba(180, 360, 1.30, { kijk: 1 })}
+    ${kind('yousra', 700, 356.4, 1.27, { arm: 1 })}
+    ${kind('rayan', 790, 376.8, 1.02)}`,
 
   jedda: () => `
     <defs>${lucht('l11', '#3c4a6b', '#7a6a7d')}</defs>
@@ -353,9 +316,9 @@ const SCENES = {
     <polygon points="625,700 875,700 1000,690 500,690" fill="#ffd79a" opacity=".28"/>
     ${volwassene(750, 290, 1.3, { jas: '#8a6ea0', doek: '#f0e2c0', grijs: true })}
     ${lantaarn(420, 170, 1.7)}
-    ${sbaa(180, 340, 1.30)}
-    ${kind('rayan', 460, 396, 0.72, { arm: 1 })}
-    ${kind('adil', 370, 380, 0.8)}`,
+    ${sba(180, 340, 1.30)}
+    ${kind('rayan', 460, 367.2, 1.08, { arm: 1 })}
+    ${kind('adil', 370, 348, 1.2)}`,
 
   afscheid: () => `
     <defs>${lucht('l12', '#0b1020', '#2c3a63')}</defs>
@@ -372,10 +335,10 @@ const SCENES = {
     }).join('')}
     ${boog(120, 520, 90, 180, '#f3c66a')}
     <rect y="650" width="1000" height="50" fill="#0d1425"/>
-    ${sbaa(760, 340, 1.43, { kijk: -1 })}
-    ${kind('rayan', 330, 410, 0.7, { arm: 1 })}
-    ${kind('adil', 250, 394, 0.78, { arm: 1 })}
-    ${kind('yousra', 410, 394, 0.78)}`,
+    ${sba(760, 340, 1.43, { kijk: -1 })}
+    ${kind('rayan', 330, 382, 1.05, { arm: 1 })}
+    ${kind('adil', 250, 362.8, 1.17, { arm: 1 })}
+    ${kind('yousra', 410, 362.8, 1.17)}`,
 }
 
 /* ------------------------------------------------------------- de bladzijde */
@@ -398,7 +361,7 @@ const nogTeTekenen = () => `
     const x = (i % 6) * 180 + 60, y = Math.floor(i / 6) * 180 + 70
     return `<g opacity=".13">${ster(x, y, 40, K.inkt)}</g>`
   }).join('')}
-  <g opacity=".22">${sbaa(500, 300, 1.6, { tas: false })}</g>`
+  <g opacity=".22">${sba(500, 300, 1.6, { tas: false })}</g>`
 
 /**
  * De echte plaat, als hij er is.
@@ -521,7 +484,7 @@ const html = `<!doctype html><html lang="${TAAL}"><meta charset="utf-8">
 <body>
 
 <section class="omslag">
-  <svg class="leeuw" viewBox="0 0 300 260">${sbaa(150, 90, 1.5, { tas: false })}</svg>
+  <svg class="leeuw" viewBox="0 0 300 260">${sba(150, 90, 1.5, { tas: false })}</svg>
   <h1>${esc(DEEL1.titel)}</h1>
   <div class="sub">${esc(DEEL1.ondertitel)}</div>
   <div class="leeftijd">${esc(DEEL1.leeftijd)}</div>
@@ -535,7 +498,7 @@ const html = `<!doctype html><html lang="${TAAL}"><meta charset="utf-8">
 </section>
 
 <section class="tekstblad" style="justify-content:center;text-align:center">
-  <svg viewBox="0 0 300 190" style="width:80mm;align-self:center">${sbaa(150, 70, 1.15)}</svg>
+  <svg viewBox="0 0 300 190" style="width:80mm;align-self:center">${sba(150, 70, 1.15)}</svg>
   <h2 style="font-size:17pt">Waar dit boek speelt</h2>
   <p style="font-size:13pt">${esc(DEEL1.waar ?? '')}</p>
 </section>
@@ -559,13 +522,13 @@ ${DEEL1.bladen.map((blad, i) => bladzijde(blad, i + 1)).join('\n')}
     ${DEEL1.bladen.slice(6).map((b) => `<div><div class="ar">${esc(b.woord.ar)}</div><div class="tr">${esc(b.woord.tr)}</div><div class="nl">${esc(b.woord.nl)}</div></div>`).join('')}
   </div>
   <p>Onder elk woord staat hoe je het zegt, in gewone letters. Lees het voor zoals het er staat — dan klopt het. Wil je het horen, dan staan alle twaalf ook in de app.</p>
-  <p style="opacity:.7">darijaforkids.eu · Sbaa deel ${DEEL1.nummer}</p>
+  <p style="opacity:.7">darijaforkids.eu · Sba deel ${DEEL1.nummer}</p>
 </section>
 
 <section class="tekstblad" style="justify-content:center;text-align:center">
   <h2 style="font-size:19pt">Hierna</h2>
   <p style="font-size:14pt;max-width:120mm;margin:0 auto">${esc(DEEL1.hierna ?? '')}</p>
-  <svg viewBox="0 0 300 190" style="width:70mm;align-self:center;margin-top:8mm">${sbaa(150, 70, 1.1, { kijk: 1 })}</svg>
+  <svg viewBox="0 0 300 190" style="width:70mm;align-self:center;margin-top:8mm">${sba(150, 70, 1.1, { kijk: 1 })}</svg>
 </section>
 
 </body></html>`

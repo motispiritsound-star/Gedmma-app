@@ -207,7 +207,80 @@ header nav a.uit:hover { background: color-mix(in oklab, var(--saffron) 34%, tra
   display: inline-block; margin-top: .9rem; font-weight: 800; font-size: .85rem;
   background: var(--saffron); color: #1a1625; border-radius: 999px; padding: .3rem .9rem;
 }
+.reeks .kunst img { width: 100%; height: auto; display: block; border-radius: var(--radius); }
 @media (max-width: 40rem) { .reeks { grid-template-columns: 1fr; } .reeks .kunst { max-width: 12rem; } }
+
+/* ── De delen op een rij ─────────────────────────────────────────────────
+   Een lijst en geen tabel: op een telefoon valt een tabel uit elkaar, en
+   deze rij moet juist op een telefoon leesbaar blijven — daar wordt hij
+   gelezen. Vandaar grid met een prijs die rechts blijft staan en een titel
+   die mag aflopen. */
+.delenlijst { margin: 1.6rem 0 2.4rem; }
+.delenlijst h3 {
+  font-size: .82rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-soft); margin: 0 0 .7rem;
+}
+.delenlijst ol { list-style: none; margin: 0; padding: 0; }
+.delenlijst li {
+  display: grid; grid-template-columns: 4.6rem 1fr auto auto; gap: .5rem .9rem;
+  align-items: center; padding: .7rem .2rem; border-top: 1px solid var(--line);
+}
+.delenlijst li:last-child { border-bottom: 1px solid var(--line); }
+.delenlijst .nr {
+  font-size: .74rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-soft); white-space: nowrap;
+}
+.delenlijst .wat { display: flex; flex-direction: column; min-width: 0; }
+.delenlijst .wat b { font-weight: 700; }
+.delenlijst .wat i { font-style: normal; font-size: .84rem; color: var(--ink-soft); }
+.delenlijst .prijs { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.delenlijst .koop, .bundel .koop {
+  font-size: .82rem; font-weight: 700; padding: .32rem .8rem; border-radius: 99px;
+  white-space: nowrap; text-decoration: none; background: var(--zellige); color: #fff;
+}
+.delenlijst .koop.uit, .bundel .koop.uit {
+  background: transparent; color: var(--ink-soft); border: 1px solid var(--line); font-weight: 500;
+}
+.bundel {
+  display: grid; grid-template-columns: 1fr auto auto; gap: .5rem 1rem; align-items: center;
+  margin-top: 1rem; padding: 1rem 1.1rem; border-radius: var(--radius);
+  background: color-mix(in oklab, var(--saffron) 14%, transparent);
+}
+.bundel b { display: block; }
+.bundel span { font-size: .86rem; color: var(--ink-soft); }
+.bundel .prijs { font-size: 1.05rem; font-weight: 700; color: var(--ink); }
+@media (max-width: 34rem) {
+  .delenlijst li { grid-template-columns: 1fr auto; }
+  .delenlijst .nr { grid-column: 1 / -1; }
+  .delenlijst .wat { grid-column: 1; }
+  .delenlijst .koop { grid-column: 1 / -1; justify-self: start; }
+  .bundel { grid-template-columns: 1fr auto; }
+  .bundel > div { grid-column: 1 / -1; }
+}
+
+/* ── De vier kanalen ──────────────────────────────────────────────────── */
+.socials {
+  list-style: none; display: flex; justify-content: center; gap: .7rem;
+  margin: 1.4rem 0 0; padding: 0;
+}
+.socials a {
+  display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 50%;
+  background: color-mix(in oklab, var(--ink) 7%, transparent); color: var(--ink);
+  transition: background .15s, color .15s, transform .15s;
+}
+.socials a:hover { background: var(--zellige); color: #fff; transform: translateY(-2px); }
+.socials svg { width: 1.3rem; height: 1.3rem; fill: currentColor; display: block; }
+
+/* ── Het afrekenen, stap voor stap ────────────────────────────────────── */
+.stappen { list-style: none; margin: 1.6rem 0 2rem; padding: 0; display: grid; gap: 1rem; }
+.stappen li { display: grid; grid-template-columns: 2.2rem 1fr; gap: .9rem; align-items: start; }
+.stappen .stapnr {
+  display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 50%;
+  background: var(--zellige); color: #fff; font-weight: 700; font-size: .95rem;
+}
+.stappen b { display: block; margin-bottom: .15rem; }
+.stappen p { margin: 0; color: var(--ink-soft); }
+.mailbtn.zacht { background: transparent; color: var(--ink); border: 1px solid var(--line); }
 
 /* De tijdlijn: het jaartal links, het verhaal ernaast. */
 .tijdlijn { list-style: none; padding: 0; margin: 2rem 0 0; display: grid; gap: 1.2rem; }

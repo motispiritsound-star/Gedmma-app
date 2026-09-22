@@ -1,8 +1,8 @@
-# Sbaa — het personage
+# Sba — het personage
 
-![Sbaa](personage/sbaa-referentie.webp)
+![Sba](personage/sba-referentie.webp)
 
-Dit is de tekening waar alles op teruggaat. Wie Sbaa tekent — voor een boek,
+Dit is de tekening waar alles op teruggaat. Wie Sba tekent — voor een boek,
 een poster of een filmpje — tekent hém, en niet een leeuw die erop lijkt.
 
 ## Wie hij is
