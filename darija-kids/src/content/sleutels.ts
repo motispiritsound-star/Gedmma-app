@@ -172,10 +172,17 @@ export const REEKS: Omit<Sleuteldeel, 'hoofdstukken'>[] = [
       'In 1154 voltooide hij de Tabula Rogeriana: een wereldkaart met een uitgebreid geografisch boek erbij.',
       'Zijn kaart was eeuwenlang de nauwkeurigste van de bekende wereld, en werd in Europa tot ver in de zestiende eeuw gebruikt.',
       'Op de kaart staat het zuiden boven — zo werden kaarten in de islamitische wereld toen getekend.',
+      'De kaart bestaat uit zeventig bladen: zeven klimaatzones van zuid naar noord, elk in tien stukken van west naar oost.',
+      'Al-Idrisi werkte door reizigers te ondervragen en hun antwoorden met elkaar te vergelijken. Wat maar door één man werd gezegd, nam hij niet over.',
+      'Er is ook een zilveren versie gemaakt, van honderden ponden. Die is na de dood van Roger II verdwenen en vrijwel zeker omgesmolten.',
+      'Op Sicilië werd onder Roger II in drie talen bestuurd: Arabisch, Grieks en Latijn. Zijn munten dragen Arabisch en Latijn.',
+      'Het boek bij de kaart heet Nuzhat al-mushtaq: het genoegen van wie ernaar verlangt de horizon over te steken.',
     ],
     verzonnen: [
       'Sanaa en haar vader hebben niet bestaan.',
       'De intriges aan het hof in het verhaal zijn verzonnen, al was het hof van Roger II werkelijk een plek waar moslims, christenen en joden samenwerkten.',
+      'De kapitein die de bocht in de kust tegenspreekt is verzonnen. Dat al-Idrisi oudere kaarten verbeterde met wat varenslui hem vertelden, is dat niet.',
+      'Dat al-Idrisi door geloofsgenoten verweten werd dat hij voor een christelijke koning werkte, is overgeleverd; de gesprekken erover in dit boek zijn verzonnen.',
     ],
   },
   {
