@@ -42,6 +42,55 @@ const arg = (naam, terugval = null) => {
 const TAAL = arg('taal', 'nl')
 const UIT = arg('uit', path.join(ROOT, 'store', 'prentenboek', `sba-${arg('deel', '1')}-${TAAL}.pdf`))
 
+/** Een volwassene: dezelfde bouw als een kind, maar langer en rustiger. */
+const volwassene = (x, y, s = 1, { jas = '#4a6fa5', huid = '#d9a06a', doek = null, grijs = false } = {}) => `<g transform="translate(${x} ${y}) scale(${s})">
+  <path d="M-22 26 L22 26 L28 92 L-28 92 Z" fill="${jas}"/>
+  <path d="M-22 32 L-36 62" stroke="${jas}" stroke-width="11" stroke-linecap="round"/>
+  <path d="M22 32 L36 62" stroke="${jas}" stroke-width="11" stroke-linecap="round"/>
+  <circle cx="-37" cy="64" r="5.5" fill="${huid}"/>
+  <circle cx="37" cy="64" r="5.5" fill="${huid}"/>
+  <circle cx="0" cy="2" r="19" fill="${huid}"/>
+  ${doek
+    ? `<path d="M-21 4 Q0 -24 21 4 Q21 22 0 24 Q-21 22 -21 4 Z" fill="${doek}"/><circle cx="0" cy="4" r="14" fill="${huid}"/>`
+    : `<path d="M-19 -2 Q0 -24 19 -2 Q12 -13 0 -13 Q-12 -13 -19 -2 Z" fill="${grijs ? '#cfc6bb' : '#2b1d16'}"/>`}
+  <circle cx="-6.5" cy="3" r="2.4" fill="${K.inkt}"/>
+  <circle cx="6.5" cy="3" r="2.4" fill="${K.inkt}"/>
+  <path d="M-5 10 Q0 14 5 10" stroke="${K.inkt}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+</g>`
+
+const theepot = (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})">
+  <path d="M-16 0 Q-20 22 0 24 Q20 22 16 0 Z" fill="#b9c4cc"/>
+  <path d="M-16 0 L16 0" stroke="#8d99a3" stroke-width="4"/>
+  <path d="M16 -2 Q30 -6 30 -22" stroke="#b9c4cc" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M-16 -2 Q-28 -8 -22 -18" stroke="#b9c4cc" stroke-width="5" fill="none"/>
+  <path d="M-7 -2 Q0 -16 7 -2 Z" fill="#b9c4cc"/>
+  <circle cx="0" cy="-16" r="3.4" fill="#b9c4cc"/>
+</g>`
+
+const ezel = (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})">
+  <ellipse cx="0" cy="0" rx="46" ry="28" fill="#9b9187"/>
+  <path d="M-40 22 L-40 52 M-16 24 L-16 52 M16 24 L16 52 M40 22 L40 52" stroke="#9b9187" stroke-width="9" stroke-linecap="round"/>
+  <path d="M-46 -10 Q-64 -18 -66 -40" stroke="#9b9187" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <ellipse cx="-68" cy="-46" rx="15" ry="12" fill="#9b9187"/>
+  <ellipse cx="-76" cy="-48" rx="7" ry="5" fill="#6f6862"/>
+  <path d="M-74 -58 Q-78 -78 -70 -76 Q-66 -70 -66 -58 Z" fill="#9b9187"/>
+  <path d="M-62 -58 Q-58 -78 -54 -76 Q-54 -68 -56 -58 Z" fill="#9b9187"/>
+  <circle cx="-70" cy="-50" r="2.6" fill="${K.inkt}"/>
+  <path d="M44 -6 Q60 0 56 18" stroke="#9b9187" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <rect x="-34" y="-46" width="30" height="26" rx="5" fill="#c9a26a"/>
+  <rect x="2" y="-46" width="30" height="26" rx="5" fill="#c9a26a"/>
+  <circle cx="-19" cy="-50" r="6" fill="${K.terra}"/><circle cx="-8" cy="-50" r="6" fill="${K.blad}"/>
+  <circle cx="17" cy="-50" r="6" fill="${K.saffraan}"/>
+</g>`
+
+const kat = (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})">
+  <ellipse cx="0" cy="0" rx="20" ry="12" fill="#c9bfae"/>
+  <circle cx="-18" cy="-10" r="10" fill="#c9bfae"/>
+  <path d="M-25 -16 L-22 -26 L-15 -19 Z M-11 -19 L-9 -27 L-5 -18 Z" fill="#c9bfae"/>
+  <circle cx="-21" cy="-10" r="1.8" fill="${K.inkt}"/><circle cx="-14" cy="-10" r="1.8" fill="${K.inkt}"/>
+  <path d="M18 -4 Q30 -10 26 -22" stroke="#c9bfae" stroke-width="5" fill="none" stroke-linecap="round"/>
+</g>`
+
 /* ---------------------------------------------------------- de bouwstenen */
 
 /** Een hoefijzerboog: de vorm die in Marokko op elke deur en elke poort staat. */
@@ -394,14 +443,29 @@ const plaat = (naam, nr) => {
  * vierentwintig bladzijden, en met het voorwerk en de woordenlijst erbij komt
  * een deel op dertig uit -- het formaat dat een drukker verwacht.
  */
+/**
+ * Twee bladzijden per woord: de plaat met het woord erop, en het verhaal.
+ *
+ * De plaat draagt de woordkaart, want dat is het moment waar het kind naar
+ * kijkt terwijl de ouder voorleest — het woord hoort bij het beeld en niet op
+ * de bladzijde erna. De vorm komt uit de proef van v2: een crème kaart op de
+ * plaat, het woord in kapitalen, het Arabisch eronder, en een knop die zegt
+ * wat je moet doen. "Zeg het hardop" is geen versiering maar de hele oefening.
+ */
 const bladzijde = (blad, nr) => `<section class="blad">
   ${plaat(blad.scene, nr)}
-  <div class="hoek">
-    <span class="ar">${esc(blad.woord.ar)}</span>
-    <span class="nr">${nr}</span>
+  <div class="merkpil">Darija for Kids</div>
+  <div class="woordpil">Woord ${nr}</div>
+  <div class="woordkaart">
+    <div class="tr">${esc(blad.woord.tr)}</div>
+    <div class="ar">${esc(blad.woord.ar)}</div>
+    <div class="nl">${esc(blad.woord.nl)}</div>
+    <div class="hardop">Zeg het hardop!</div>
   </div>
+  <div class="voetregel">Darija for Kids · samen leren met Sba</div>
 </section>
 <section class="tekstblad verhaalblad">
+  <div class="woordpil donker">Woord ${nr}</div>
   <div class="verhaal">
     ${blad.tekst.map((regel) => `<p>${esc(regel)}</p>`).join('')}
     <p class="echo">${esc(blad.echo)}</p>
@@ -410,8 +474,8 @@ const bladzijde = (blad, nr) => `<section class="blad">
     <div class="ar">${esc(blad.woord.ar)}</div>
     <div class="tr">${esc(blad.woord.tr)}</div>
     <div class="nl">${esc(blad.woord.nl)}</div>
-    <div class="spoor">${nr}</div>
   </div>
+  <div class="voetregel donker">Darija for Kids · samen leren met Sba</div>
 </section>`
 
 /* ------------------------------------------------------------------ zetten */
@@ -442,24 +506,47 @@ const html = `<!doctype html><html lang="${TAAL}"><meta charset="utf-8">
   section{width:210mm;height:148mm;position:relative;overflow:hidden;page-break-after:always}
   .plaat{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 
-  .hoek{position:absolute;right:8mm;bottom:8mm;display:flex;align-items:center;gap:3mm;
-        background:rgba(255,250,243,.9);border-radius:99mm;padding:2mm 5mm}
-  .hoek .ar{font-family:'Naskh',serif;font-weight:700;direction:rtl;font-size:15pt}
-  .hoek .nr{font-size:9pt;font-weight:800;opacity:.5}
+  /* De twee pillen en de voetregel: op de plaat en op het verhaal dezelfde,
+     zodat een kind ziet dat de twee bladzijden bij elkaar horen. */
+  .merkpil{position:absolute;top:7mm;left:8mm;background:${K.nacht};color:${K.creme};
+           font-size:8pt;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+           padding:2mm 5mm;border-radius:99mm}
+  .woordpil{position:absolute;top:7mm;right:8mm;background:${K.zellige};color:#fff;
+            font-size:8pt;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+            padding:2mm 5mm;border-radius:99mm}
+  .woordpil.donker{background:${K.nacht}}
+  .voetregel{position:absolute;left:0;right:0;bottom:5mm;text-align:center;font-size:7.5pt;
+             font-weight:600;color:${K.creme};opacity:.85;letter-spacing:.06em;
+             text-shadow:0 0 3mm rgba(0,0,0,.45)}
+  .voetregel.donker{color:${K.inkt};opacity:.45;text-shadow:none}
+
+  /* De woordkaart op de plaat: het moment waar het kind naar kijkt. */
+  /* De kaart staat linksonder en niet in het midden: dan blijft de rechter
+     helft van de plaat vrij voor wie er op staat. Dat is ook de regel die in
+     de platenlijst aan de illustrator wordt meegegeven. */
+  .woordkaart{position:absolute;left:10mm;bottom:11mm;width:84mm;background:${K.creme};
+              border-radius:6mm;padding:5mm 7mm 5.5mm;text-align:center;
+              box-shadow:0 3mm 10mm rgba(43,29,22,.28)}
+  .woordkaart .tr{font-size:23pt;font-weight:800;letter-spacing:.03em;text-transform:uppercase;
+                  line-height:1.05;color:${K.inkt}}
+  .woordkaart .ar{font-family:'Naskh',serif;font-weight:700;direction:rtl;font-size:18pt;
+                  line-height:1.6;color:${K.zellige}}
+  .woordkaart .nl{font-size:12pt;font-weight:800;color:${K.inkt};margin-top:.5mm}
+  .woordkaart .hardop{display:inline-block;margin-top:3mm;background:${K.saffraan};color:#3a2409;
+                      font-size:9pt;font-weight:800;padding:1.8mm 5.5mm;border-radius:99mm}
 
   .verhaalblad{display:flex;flex-direction:column;justify-content:center;gap:8mm;
-               background:${K.creme};padding:22mm 24mm}
+               background:${K.creme};padding:24mm 24mm 20mm}
   .verhaal{flex:0 0 auto}
   .verhaal p{font-size:17pt;line-height:1.45}
   .verhaal .echo{margin-top:5mm;font-size:19pt;font-weight:800;color:${K.terra}}
-  .kaartje{align-self:flex-start;min-width:60mm;background:${K.saffraan};border-radius:6mm;
-           padding:5mm 7mm;text-align:center;box-shadow:0 2mm 6mm rgba(43,29,22,.18);position:relative}
-  .kaartje .ar{font-family:'Naskh',serif;font-weight:700;direction:rtl;font-size:26pt;line-height:1.5}
-  .kaartje .tr{font-size:13pt;font-weight:800;color:#6b3f10}
-  .kaartje .nl{font-size:10.5pt;opacity:.8}
-  .kaartje .spoor{position:absolute;top:-4mm;right:-4mm;width:10mm;height:10mm;border-radius:50%;
-                  background:${K.inkt};color:${K.creme};font-size:11pt;font-weight:800;
-                  display:flex;align-items:center;justify-content:center}
+  .kaartje{align-self:flex-start;display:flex;align-items:baseline;gap:5mm;
+           background:${K.creme};border-radius:5mm;padding:3.5mm 7mm;
+           box-shadow:0 1mm 4mm rgba(43,29,22,.12)}
+  .kaartje .ar{font-family:'Naskh',serif;font-weight:700;direction:rtl;font-size:20pt;
+               line-height:1.5;color:${K.zellige}}
+  .kaartje .tr{font-size:13pt;font-weight:800;color:${K.inkt}}
+  .kaartje .nl{font-size:10.5pt;opacity:.7}
 
   .omslag{background:linear-gradient(160deg,#1b2340,#131b30 55%,#0b1020);color:${K.creme};
           display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4mm}

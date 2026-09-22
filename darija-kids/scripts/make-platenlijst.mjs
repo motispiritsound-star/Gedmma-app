@@ -28,7 +28,10 @@ const arg = (naam, terugval = null) => {
 /** Eén keer opschrijven, honderdvierenveertig keer herhalen. */
 const STIJL = 'Warm painterly children\'s picture book illustration, storybook oil-and-gouache look, '
   + 'soft golden Moroccan light, rich saturated colours, detailed but friendly, '
-  + 'gentle depth of field, no text anywhere in the image, landscape format 3:2'
+  + 'gentle depth of field, no text anywhere in the image, landscape format 3:2. '
+  + 'Keep the lower-left third of the frame calm and uncluttered — sky, wall, ground or '
+  + 'out-of-focus background — because a word card is printed there. Place the main '
+  + 'characters in the centre or the right half of the frame'
 
 const SBA_PERSONAGE = 'Sba is a young Atlas lion cub with honey-coloured fur and a soft lighter mane, '
   + 'large friendly dark eyes and rosy cheeks. He always wears: a red fez with a gold band and a tassel, '
@@ -109,6 +112,11 @@ const regels = [
   '',
   '**Geen tekst in het beeld.** De woorden komen in het boek eroverheen; een plaat',
   'met letters erin is in zes talen niet te gebruiken.',
+  '',
+  '**Houd linksonder rustig.** Daar komt de woordkaart te staan: crème, ongeveer',
+  'een derde van de breedte en een kwart van de hoogte. Lucht, een muur, de grond',
+  'of onscherpe achtergrond is prima; een gezicht of de hoofdpersoon niet. Zet',
+  'wie er op staat in het midden of in de rechterhelft.',
   '',
   '## De vaste regel — staat in elke opdracht',
   '',
