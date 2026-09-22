@@ -386,10 +386,14 @@ export const REEKS: Omit<Sleuteldeel, 'hoofdstukken'>[] = [
       'Tamazight wordt geschreven in het Tifinagh-alfabet, dat teruggaat op een schrift dat al meer dan tweeduizend jaar in Noord-Afrika gebruikt wordt.',
       'Het Koninklijk Instituut voor de Amazigh-cultuur (IRCAM) werd in 2001 opgericht en stelde de huidige schrijfwijze vast.',
       'In de praktijk duurde het jaren voordat de wet werd uitgevoerd; in 2019 werd dat verder geregeld.',
+      'Lange tijd bestond er een lijst met toegestane voornamen waarop Amazigh-namen ontbraken. Ouders werden daardoor bij de burgerlijke stand weggestuurd. Die beperking is pas in deze eeuw losgelaten.',
+      'De grondwet van 2011 kwam tot stand in het jaar waarin er in de hele regio werd gedemonstreerd. In Marokko begonnen die protesten in februari; in juli werd over de nieuwe grondwet gestemd.',
+      'Bij de Toeareg in de Sahara is het Tifinagh nooit buiten gebruik geraakt. De versie die nu op scholen wordt gebruikt is opnieuw vastgesteld, met tekens voor klanken die de oude versie niet had.',
     ],
     verzonnen: [
       'Anir en zijn oma hebben niet bestaan.',
       'Het dorp in het verhaal is verzonnen, maar lijkt op dorpen die er werkelijk zijn.',
+      'De rotsinscriptie twee dalen verderop is verzonnen. Zulke inscripties bestaan op veel plaatsen in Noord-Afrika wel degelijk.',
     ],
   },
   {
