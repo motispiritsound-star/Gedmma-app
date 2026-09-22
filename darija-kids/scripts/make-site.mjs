@@ -53,7 +53,8 @@ const [
   { TERMS },
   { OPERATOR, traderKnown },
   { UNITS },
-  { unitSubtitle, lessonTitle },
+  { HISTORY },
+  { unitSubtitle, lessonTitle, historyOf },
   ...packs
 ] = await Promise.all([
   load('/src/i18n/languages.ts'),
@@ -64,6 +65,7 @@ const [
   load('/src/i18n/terms.ts'),
   load('/src/content/operator.ts'),
   load('/src/content/curriculum.ts'),
+  load('/src/content/history.ts'),
   load('/src/content/localise.ts'),
   load('/src/i18n/nl.ts'),
   load('/src/i18n/fr.ts'),
@@ -635,6 +637,45 @@ document.getElementById('naamform').addEventListener('submit', function (e) {
   })
 }
 
+/**
+ * De geschiedenis van Marokko, veertien keer kort.
+ *
+ * Dezelfde veertien kaarten die de app na elke toets uitdeelt, op één
+ * bladzijde en voor iedereen te lezen. Dat is met opzet weggegeven: wie
+ * zoekt op "geschiedenis van Marokko voor kinderen" vindt vrijwel niets
+ * fatsoenlijks, en dit is precies de ouder die de app zoekt zonder het te
+ * weten.
+ */
+const historyPage = (lang) => {
+  const c = SITE[lang]
+  const kaarten = HISTORY.map((kaart) => historyOf(kaart, lang))
+
+  const body = `<div class="wrap doc">
+  <h1>${esc(c.gesTitel)}</h1>
+  <p class="intro">${esc(c.gesLead)}</p>
+
+  <ol class="tijdlijn">
+    ${kaarten.map((k) => `<li>
+      <div class="jaar">${esc(k.jaar)}</div>
+      <div class="kaart">
+        <h2>${esc(k.titel)}</h2>
+        <p>${esc(k.body)}</p>
+        <p class="wist"><b>${esc(c.gesWist)}</b> ${esc(k.wist)}</p>
+      </div>
+    </li>`).join('\n')}
+  </ol>
+
+  <p class="soon">${esc(c.gesSlot)}</p>
+  ${downloadBlock(lang)}
+</div>`
+
+  return layout({
+    lang, page: 'history', body,
+    title: `${c.gesTitel} — Darijaforkids`,
+    description: c.gesLead,
+  })
+}
+
 const parentsPage = (lang) => {
   const c = SITE[lang]
   const t = STRINGS[lang]
@@ -738,7 +779,8 @@ for (const { code: lang } of LANGS) {
   await write(PATHS[lang].terms, docPage(lang, 'terms', TERMS[lang]))
   await write(PATHS[lang].parents, parentsPage(lang))
   await write(PATHS[lang].name, naamPage(lang))
-  pages += 5
+  await write(PATHS[lang].history, historyPage(lang))
+  pages += 6
   if (!shots.length) missing.push(`de schermen voor ${lang}`)
   if (!film) missing.push(`de film voor ${lang}`)
 }
@@ -764,7 +806,7 @@ self.addEventListener('activate', (event) => {
 `)
 
 const urls = LANGS.flatMap(({ code }) =>
-  ['home', 'privacy', 'terms', 'parents', 'name'].map((page) => SITE_URL + PATHS[code][page]))
+  ['home', 'privacy', 'terms', 'parents', 'name', 'history'].map((page) => SITE_URL + PATHS[code][page]))
 
 await writeFile(path.join(OUT, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

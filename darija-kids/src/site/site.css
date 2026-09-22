@@ -173,6 +173,23 @@ header.top nav + .langpick { margin-left: 0; }
   width: .55rem; height: .55rem; border-radius: 50%;
   background: #1a1625; opacity: .55;
 }
+/* De tijdlijn: het jaartal links, het verhaal ernaast. */
+.tijdlijn { list-style: none; padding: 0; margin: 2rem 0 0; display: grid; gap: 1.2rem; }
+.tijdlijn li { display: grid; grid-template-columns: 7rem 1fr; gap: 1rem; align-items: start; }
+.tijdlijn .jaar {
+  font-weight: 800; font-size: 1.05rem; color: var(--zellige);
+  background: color-mix(in oklab, var(--zellige-500) 12%, transparent);
+  border-radius: 999px; padding: .35rem .7rem; text-align: center;
+}
+.tijdlijn .kaart { background: var(--raised); border-radius: var(--radius); padding: 1.1rem 1.2rem; }
+.tijdlijn h2 { font-size: 1.15rem; margin: 0 0 .4rem; }
+.tijdlijn p { margin: 0; }
+.tijdlijn .wist { margin-top: .6rem; font-size: .95rem; color: var(--ink-soft); }
+@media (max-width: 34rem) {
+  .tijdlijn li { grid-template-columns: 1fr; gap: .4rem; }
+  .tijdlijn .jaar { justify-self: start; }
+}
+
 /* De naampagina: één invoerveld, één afbeelding. */
 .naam form { margin-top: 1.5rem; }
 .naam label { display: block; font-weight: 800; margin-bottom: .5rem; }
