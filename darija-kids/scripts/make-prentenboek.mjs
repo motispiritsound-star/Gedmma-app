@@ -40,6 +40,19 @@ const arg = (naam, terugval = null) => {
   return i > 0 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : terugval
 }
 const TAAL = arg('taal', 'nl')
+
+/**
+ * Voor wie dit exemplaar is.
+ *
+ * `--voor "Naam <mail>"` zet die regel op elke bladzijde. Dat heet sociale
+ * drm en het is het enige wat bij een e-boek werkelijk helpt: je kunt een
+ * bestand dat iemand heeft gekocht niet tegenhouden, maar bijna niemand zet
+ * een boek online waar zijn eigen naam en mailadres op elke bladzijde staan.
+ *
+ * Slot erop werkt niet. Dat is geprobeerd, door uitgevers met meer geld dan
+ * wij, en het levert alleen klanten op die hun eigen boek niet open krijgen.
+ */
+const VOOR = arg('voor', '')
 const UIT = arg('uit', path.join(ROOT, 'store', 'prentenboek', `sba-${arg('deel', '1')}-${TAAL}.pdf`))
 
 /** Een volwassene: dezelfde bouw als een kind, maar langer en rustiger. */
@@ -479,7 +492,7 @@ const bladzijde = (blad, nr) => `<section class="blad">
     <div class="nl">${esc(blad.woord.nl)}</div>
     <div class="hardop">${esc(S.hardop)}</div>
   </div>
-  <div class="voetregel">${esc(S.voet)}</div>
+  <div class="voetregel">${esc(VOOR ? `${S.voet} · ${VOOR}` : S.voet)}</div>
 </section>
 <section class="tekstblad verhaalblad">
   <div class="woordpil donker">${esc(S.woord(nr))}</div>
@@ -492,7 +505,7 @@ const bladzijde = (blad, nr) => `<section class="blad">
     <div class="tr">${esc(blad.woord.tr)}</div>
     <div class="nl">${esc(blad.woord.nl)}</div>
   </div>
-  <div class="voetregel donker">${esc(S.voet)}</div>
+  <div class="voetregel donker">${esc(VOOR ? `${S.voet} · ${VOOR}` : S.voet)}</div>
 </section>`
 
 /* ------------------------------------------------------------------ zetten */

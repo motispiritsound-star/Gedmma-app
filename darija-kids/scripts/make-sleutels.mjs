@@ -38,6 +38,14 @@ const arg = (naam, terugval = null) => {
 const OPZET = process.argv.includes('--opzet')
 const LIJST = process.argv.includes('--beeldenlijst')
 const NUMMER = Number(arg('deel', '1'))
+
+/**
+ * Voor wie dit exemplaar is; zie de uitleg in `make-prentenboek.mjs`.
+ *
+ * Bij een leesboek staat het in de voetregel naast het bladzijdenummer, waar
+ * het niemand stoort en waar het op elke bladzijde staat.
+ */
+const VOOR = arg('voor', '')
 const UIT = path.join(ROOT, 'store', 'sleutels', OPZET ? 'de-reeks.pdf' : `sleutels-${NUMMER}.pdf`)
 
 const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -481,7 +489,9 @@ await bladzijde.emulateMedia({ media: 'print' })
 await bladzijde.pdf({
   path: UIT, format: 'A5', printBackground: true, preferCSSPageSize: true,
   displayHeaderFooter: true, headerTemplate: '<div></div>',
-  footerTemplate: '<div style="width:100%;font-size:7.5px;color:#9b8d80;text-align:center;font-family:Georgia,serif"><span class="pageNumber"></span></div>',
+  footerTemplate: `<div style="width:100%;font-size:7.5px;color:#9b8d80;font-family:Georgia,serif;padding:0 18mm;
+      display:flex;justify-content:${VOOR ? 'space-between' : 'center'}">
+      ${VOOR ? `<span>${esc(VOOR)}</span>` : ''}<span class="pageNumber"></span></div>`,
 })
 await browser.close()
 
