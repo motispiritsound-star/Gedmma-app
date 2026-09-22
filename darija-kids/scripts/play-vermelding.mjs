@@ -11,6 +11,7 @@
  *   npm run play -- --taal nl-NL    één taal
  *   npm run play -- --proef         niets versturen, alleen tonen wat er zou gaan
  *   npm run play -- --tekst         alleen de teksten, rechtstreeks uit store/listing.*.md
+ *   npm run play -- --video <url>   de YouTube-link in het videoveld, in alle talen
  *
  * Die laatste is voor een tekstwijziging na de lancering: de beelden staan er
  * dan al en zijn niet veranderd, en het pakket met die beelden staat niet in
@@ -45,6 +46,20 @@ const arg = (naam, terugval = null) => {
 }
 const PROEF = process.argv.includes('--proef')
 const TEKST = process.argv.includes('--tekst')
+
+/**
+ * De film bij de vermelding.
+ *
+ * Play wil een YouTube-adres, geen bestand, en het veld staat per taal apart
+ * terwijl er maar één film is -- dus zet hij hem overal neer. Zonder --video
+ * blijft staan wat er staat: een PUT vervangt de hele vermelding, dus wat we
+ * niet meesturen zou anders gewist worden.
+ */
+const VIDEO = arg('video')
+if (VIDEO && !/^https:\/\/(www\.youtube\.com|youtu\.be)\//.test(VIDEO)) {
+  console.error(`\n--video wil een YouTube-adres, dit is er geen:\n  ${VIDEO}\n`)
+  process.exit(1)
+}
 
 /** Hoe Play elke taal noemt; store/listing.<taal>.md draagt de korte code. */
 const PLAY_TAAL = { nl: 'nl-NL', fr: 'fr-FR', de: 'de-DE', es: 'es-ES', it: 'it-IT', en: 'en-US' }
@@ -186,11 +201,27 @@ for (const bron of bronnen) {
   console.log(`  kort    ${t.kort.slice(0, 60)}${t.kort.length > 60 ? '…' : ''}`)
   console.log(`  vol     ${t.vol.length} tekens`)
 
+  if (VIDEO) console.log(`  video   ${VIDEO}`)
+
   if (!PROEF) {
+    // Wat er nu staat ophalen, zodat een veld dat we niet meesturen blijft
+    // staan. De vermelding bestaat nog niet bij een eerste keer; dan is er
+    // ook niets te behouden.
+    let staand = {}
+    try {
+      staand = await api(bewijs, `/androidpublisher/v3/applications/${APP}/edits/${edit.id}/listings/${taal}`)
+    } catch { /* nog geen vermelding in deze taal */ }
+
     await api(bewijs, `/androidpublisher/v3/applications/${APP}/edits/${edit.id}/listings/${taal}`, {
       method: 'PUT',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ language: taal, title: t.titel, shortDescription: t.kort, fullDescription: t.vol }),
+      body: JSON.stringify({
+        language: taal,
+        title: t.titel,
+        shortDescription: t.kort,
+        fullDescription: t.vol,
+        video: VIDEO ?? staand.video ?? '',
+      }),
     })
   }
 

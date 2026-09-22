@@ -281,6 +281,26 @@ npm run play -- --proef    # laat zien wat er zou gaan, praat met niemand
 npm run play               # stuurt alle zes de talen naar Play
 ```
 
+Na de lancering hoeft dat niet allemaal opnieuw. Een gewijzigde zin gaat zo
+naar binnen, rechtstreeks uit `store/listing.*.md`, zonder het beeldpakket —
+dat staat immers niet in git:
+
+```bash
+npm run play -- --proef --tekst
+npm run play -- --tekst
+```
+
+En de film erbij, in alle zes de talen tegelijk (Play wil een YouTube-adres,
+geen bestand):
+
+```bash
+npm run play -- --tekst --video https://www.youtube.com/watch?v=XXXXXXXXXXX
+```
+
+Laat je `--video` weg, dan blijft staan wat er staat: het script haalt de
+bestaande vermelding op voordat het de nieuwe wegschrijft, want een PUT
+vervangt het geheel en zou een veld dat niet meegaat wissen.
+
 Daarvoor is eenmalig een serviceaccount nodig:
 
 1. Google Cloud → nieuw project → *Google Play Android Developer API* aanzetten
