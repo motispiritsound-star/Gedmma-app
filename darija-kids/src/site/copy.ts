@@ -53,6 +53,7 @@ const nl = {
   naamAanvragen: 'Vraag deze naam aan',
   naamUitleg: 'Honderdtachtig Marokkaanse namen, stuk voor stuk nagekeken. Er wordt niets opgeslagen en niets verstuurd: de naam blijft in je eigen browser.',
   menu: {
+    boeken: 'Leesboeken',
     waarom: 'Waarom',
     stem: 'De stem',
     pad: 'Het pad',
@@ -177,6 +178,7 @@ const fr: SiteCopy = {
   naamAanvragen: 'Demander ce prénom',
   naamUitleg: 'Cent quatre-vingts prénoms marocains, vérifiés un par un. Rien n’est enregistré ni envoyé : le prénom reste dans votre navigateur.',
   menu: {
+    boeken: 'Livres',
     waarom: 'Pourquoi',
     stem: 'La voix',
     pad: 'Le parcours',
@@ -298,6 +300,7 @@ const de: SiteCopy = {
   naamAanvragen: 'Diesen Namen anfragen',
   naamUitleg: 'Hundertachtzig marokkanische Namen, einzeln geprüft. Es wird nichts gespeichert und nichts gesendet: der Name bleibt in deinem Browser.',
   menu: {
+    boeken: 'Bücher',
     waarom: 'Warum',
     stem: 'Die Stimme',
     pad: 'Der Weg',
@@ -419,6 +422,7 @@ const es: SiteCopy = {
   naamAanvragen: 'Pedir este nombre',
   naamUitleg: 'Ciento ochenta nombres marroquíes, revisados uno a uno. No se guarda ni se envía nada: el nombre se queda en tu navegador.',
   menu: {
+    boeken: 'Libros',
     waarom: 'Por qué',
     stem: 'La voz',
     pad: 'El camino',
@@ -540,6 +544,7 @@ const it: SiteCopy = {
   naamAanvragen: 'Richiedi questo nome',
   naamUitleg: 'Centottanta nomi marocchini, controllati uno per uno. Non viene salvato né inviato nulla: il nome resta nel tuo browser.',
   menu: {
+    boeken: 'Libri',
     waarom: 'Perché',
     stem: 'La voce',
     pad: 'Il percorso',
@@ -661,6 +666,7 @@ const en: SiteCopy = {
   naamAanvragen: 'Ask for this name',
   naamUitleg: 'A hundred and eighty Moroccan names, each one checked by hand. Nothing is stored and nothing is sent: the name stays in your own browser.',
   menu: {
+    boeken: 'Books',
     waarom: 'Why',
     stem: 'The voice',
     pad: 'The path',

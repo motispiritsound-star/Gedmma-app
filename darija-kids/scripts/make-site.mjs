@@ -112,6 +112,7 @@ const header = (lang, page) => {
   const home = PATHS[lang].home
   const nav = page === 'home'
     ? `<nav aria-label="${esc(c.menu.waarom)}">
+        <a class="uit" href="${PATHS[lang].books}">${esc(c.menu.boeken)}</a>
         <a href="#waarom">${esc(c.menu.waarom)}</a>
         <a href="#stem">${esc(c.menu.stem)}</a>
         <a href="#pad">${esc(c.menu.pad)}</a>
@@ -119,7 +120,10 @@ const header = (lang, page) => {
         <a href="${PATHS[lang].parents}">${esc(c.menu.ouders)}</a>
         <a href="#contact">${esc(c.menu.contact)}</a>
       </nav>`
-    : `<nav aria-label="${esc(c.menu.contact)}"><a href="${home}">${esc(c.terugNaarHome)}</a></nav>`
+    : `<nav aria-label="${esc(c.menu.contact)}">
+        ${page === 'books' ? '' : `<a class="uit" href="${PATHS[lang].books}">${esc(c.menu.boeken)}</a>`}
+        <a href="${home}">${esc(c.terugNaarHome)}</a>
+      </nav>`
 
   return `<header class="top">
   <div class="wrap">

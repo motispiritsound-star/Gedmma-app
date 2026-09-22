@@ -117,7 +117,14 @@ header.top .brand .vlag { border-radius: 3px; box-shadow: 0 0 0 1px rgb(0 0 0 / 
 header.top nav { margin-left: auto; display: flex; gap: 1.25rem; align-items: center; }
 header.top nav a { text-decoration: none; color: var(--ink-soft); font-size: .95rem; white-space: nowrap; }
 header.top nav a:hover { color: var(--ink); }
-@media (max-width: 62rem) { header.top nav { display: none; } }
+/* Op een smal scherm verdwijnt het menu, maar dit ene item niet: het meeste
+   bezoek komt van een telefoon, en dit is de enige andere pagina die iemand
+   uit zichzelf zoekt. */
+@media (max-width: 62rem) {
+  header.top nav { display: contents; }
+  header.top nav a { display: none; }
+  header.top nav a.uit { display: inline-block; margin-left: auto; font-size: .9rem; }
+}
 
 .langpick { margin-left: auto; position: relative; }
 header.top nav + .langpick { margin-left: 0; }
@@ -173,6 +180,13 @@ header.top nav + .langpick { margin-left: 0; }
   width: .55rem; height: .55rem; border-radius: 50%;
   background: #1a1625; opacity: .55;
 }
+/* Het ene menu-item dat geen anker is maar een eigen pagina. */
+header nav a.uit {
+  background: color-mix(in oklab, var(--saffron) 20%, transparent);
+  border-radius: 999px; padding: .35rem .8rem; font-weight: 800;
+}
+header nav a.uit:hover { background: color-mix(in oklab, var(--saffron) 34%, transparent); }
+
 /* De leesboeken: per reeks een plaat en een kolom tekst. */
 .reeks {
   display: grid; grid-template-columns: 13rem 1fr; gap: 1.4rem; align-items: start;

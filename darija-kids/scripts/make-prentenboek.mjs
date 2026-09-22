@@ -22,6 +22,16 @@ import { chromium } from 'playwright'
 import { createServer } from 'vite'
 import { K, sbaa } from './lib/tekenen.mjs'
 
+/** De achtpuntige khatam, klein, als behang op een bladzijde die nog wacht. */
+const ster = (cx, cy, r, vul) => {
+  const punten = Array.from({ length: 16 }, (_, i) => {
+    const a = (Math.PI / 8) * i - Math.PI / 8
+    const straal = i % 2 === 0 ? r : r * 0.42
+    return `${(cx + Math.cos(a) * straal).toFixed(1)},${(cy + Math.sin(a) * straal).toFixed(1)}`
+  })
+  return `<polygon points="${punten.join(' ')}" fill="${vul}"/>`
+}
+
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 const arg = (naam, terugval = null) => {
@@ -29,7 +39,7 @@ const arg = (naam, terugval = null) => {
   return i > 0 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : terugval
 }
 const TAAL = arg('taal', 'nl')
-const UIT = arg('uit', path.join(ROOT, 'store', 'prentenboek', `sbaa-1-${TAAL}.pdf`))
+const UIT = arg('uit', path.join(ROOT, 'store', 'prentenboek', `sbaa-${arg('deel', '1')}-${TAAL}.pdf`))
 
 /* ---------------------------------------------------------- de bouwstenen */
 
@@ -371,25 +381,53 @@ const SCENES = {
 
 const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
+/**
+ * De plaat bij een bladzijde.
+ *
+ * Staat de tekening er nog niet, dan komt er een rustige achtergrond met het
+ * zegel erop, zodat het manuscript te lezen en te beoordelen is voordat er een
+ * illustrator aan begint. Zo hoort de volgorde ook: eerst het verhaal, dan de
+ * platen -- dat scheelt duizenden euro's aan tekenwerk dat je weggooit.
+ */
+const nogTeTekenen = () => `
+  <defs><linearGradient id="wacht" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#f6e7c8"/><stop offset="100%" stop-color="#e9cfa6"/></linearGradient></defs>
+  <rect width="1000" height="700" fill="url(#wacht)"/>
+  ${Array.from({ length: 24 }, (_, i) => {
+    const x = (i % 6) * 180 + 60, y = Math.floor(i / 6) * 180 + 70
+    return `<g opacity=".13">${ster(x, y, 40, K.inkt)}</g>`
+  }).join('')}
+  <g opacity=".22">${sbaa(500, 300, 1.6, { tas: false })}</g>`
+
 const plaat = (naam) => {
-  const teken = SCENES[naam]
-  if (!teken) throw new Error(`geen plaat met de naam ${naam}`)
+  const teken = SCENES[naam] ?? nogTeTekenen
   return `<svg class="plaat" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice">${teken()}</svg>`
 }
 
+/**
+ * Twee bladzijden per moment: eerst kijken, dan lezen.
+ *
+ * Een prentenboek telt bladzijden, geen taferelen. Twaalf momenten worden zo
+ * vierentwintig bladzijden, en met het voorwerk en de woordenlijst erbij komt
+ * een deel op dertig uit -- het formaat dat een drukker verwacht.
+ */
 const bladzijde = (blad, nr) => `<section class="blad">
   ${plaat(blad.scene)}
-  <div class="onder">
-    <div class="verhaal">
-      ${blad.tekst.map((regel) => `<p>${esc(regel)}</p>`).join('')}
-      <p class="echo">${esc(blad.echo)}</p>
-    </div>
-    <div class="kaartje">
-      <div class="ar">${esc(blad.woord.ar)}</div>
-      <div class="tr">${esc(blad.woord.tr)}</div>
-      <div class="nl">${esc(blad.woord.nl)}</div>
-      <div class="spoor">${nr}</div>
-    </div>
+  <div class="hoek">
+    <span class="ar">${esc(blad.woord.ar)}</span>
+    <span class="nr">${nr}</span>
+  </div>
+</section>
+<section class="tekstblad verhaalblad">
+  <div class="verhaal">
+    ${blad.tekst.map((regel) => `<p>${esc(regel)}</p>`).join('')}
+    <p class="echo">${esc(blad.echo)}</p>
+  </div>
+  <div class="kaartje">
+    <div class="ar">${esc(blad.woord.ar)}</div>
+    <div class="tr">${esc(blad.woord.tr)}</div>
+    <div class="nl">${esc(blad.woord.nl)}</div>
+    <div class="spoor">${nr}</div>
   </div>
 </section>`
 
@@ -399,7 +437,10 @@ const server = await createServer({
   configFile: path.join(ROOT, 'vite.config.ts'),
   root: ROOT, server: { middlewareMode: true, hmr: false }, appType: 'custom', logLevel: 'error',
 })
-const [{ DEEL1, CAST }] = await Promise.all([server.ssrLoadModule('/src/content/prentenboek.ts')])
+const [{ DELEN, CAST }] = await Promise.all([server.ssrLoadModule('/src/content/prentenboek.ts')])
+const NUMMER = Number(arg('deel', '1'))
+const DEEL1 = DELEN.find((d) => d.nummer === NUMMER)
+if (!DEEL1) throw new Error(`geen deel ${NUMMER}; er zijn er ${DELEN.length}`)
 
 const [balo800, balo600, naskh] = await Promise.all([
   readFile(path.join(ROOT, 'public', 'fonts', 'baloo2-800.woff2')),
@@ -418,14 +459,18 @@ const html = `<!doctype html><html lang="${TAAL}"><meta charset="utf-8">
   section{width:210mm;height:148mm;position:relative;overflow:hidden;page-break-after:always}
   .plaat{position:absolute;inset:0;width:100%;height:100%}
 
-  .onder{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:flex-end;
-         gap:6mm;padding:7mm 8mm;}
-  .verhaal{flex:1 1 auto;background:rgba(255,250,243,.93);border-radius:6mm;padding:6mm 7mm;
-           box-shadow:0 2mm 6mm rgba(43,29,22,.18)}
-  .verhaal p{font-size:13pt;line-height:1.35}
-  .verhaal .echo{margin-top:2.5mm;font-size:14pt;font-weight:800;color:${K.terra}}
-  .kaartje{flex:0 0 46mm;background:${K.saffraan};border-radius:6mm;padding:4mm 3mm;text-align:center;
-           box-shadow:0 2mm 6mm rgba(43,29,22,.22);position:relative}
+  .hoek{position:absolute;right:8mm;bottom:8mm;display:flex;align-items:center;gap:3mm;
+        background:rgba(255,250,243,.9);border-radius:99mm;padding:2mm 5mm}
+  .hoek .ar{font-family:'Naskh',serif;font-weight:700;direction:rtl;font-size:15pt}
+  .hoek .nr{font-size:9pt;font-weight:800;opacity:.5}
+
+  .verhaalblad{display:flex;flex-direction:column;justify-content:center;gap:8mm;
+               background:${K.creme};padding:22mm 24mm}
+  .verhaal{flex:0 0 auto}
+  .verhaal p{font-size:17pt;line-height:1.45}
+  .verhaal .echo{margin-top:5mm;font-size:19pt;font-weight:800;color:${K.terra}}
+  .kaartje{align-self:flex-start;min-width:60mm;background:${K.saffraan};border-radius:6mm;
+           padding:5mm 7mm;text-align:center;box-shadow:0 2mm 6mm rgba(43,29,22,.18);position:relative}
   .kaartje .ar{font-family:'Naskh',serif;font-weight:700;direction:rtl;font-size:26pt;line-height:1.5}
   .kaartje .tr{font-size:13pt;font-weight:800;color:#6b3f10}
   .kaartje .nl{font-size:10.5pt;opacity:.8}
@@ -447,7 +492,7 @@ const html = `<!doctype html><html lang="${TAAL}"><meta charset="utf-8">
   .wie{display:grid;grid-template-columns:1fr 1fr;gap:4mm 8mm}
   .wie div{font-size:10pt;line-height:1.35}
   .wie b{font-size:11.5pt}
-  .lijst{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm}
+  .lijst{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm}
   .lijst div{background:${K.creme};border-radius:4mm;padding:3mm;text-align:center}
   .lijst .ar{font-family:'Naskh',serif;font-weight:700;direction:rtl;font-size:19pt;line-height:1.5}
   .lijst .tr{font-size:10pt;font-weight:800;color:#8a5a12}
@@ -460,6 +505,19 @@ const html = `<!doctype html><html lang="${TAAL}"><meta charset="utf-8">
   <h1>${esc(DEEL1.titel)}</h1>
   <div class="sub">${esc(DEEL1.ondertitel)}</div>
   <div class="leeftijd">${esc(DEEL1.leeftijd)}</div>
+</section>
+
+<section class="tekstblad" style="justify-content:center;text-align:center">
+  <h2 style="font-size:24pt">${esc(DEEL1.titel)}</h2>
+  <p style="font-size:13pt;opacity:.75">${esc(DEEL1.ondertitel)}</p>
+  <p style="font-size:12pt;opacity:.7;font-style:italic;max-width:120mm;margin:6mm auto 0">${esc(DEEL1.opdracht)}</p>
+  <p style="margin-top:12mm;font-size:11pt;font-weight:800;opacity:.6">Darijaforkids · deel ${DEEL1.nummer}</p>
+</section>
+
+<section class="tekstblad" style="justify-content:center;text-align:center">
+  <svg viewBox="0 0 300 190" style="width:80mm;align-self:center">${sbaa(150, 70, 1.15)}</svg>
+  <h2 style="font-size:17pt">Waar dit boek speelt</h2>
+  <p style="font-size:13pt">${esc(DEEL1.waar ?? '')}</p>
 </section>
 
 <section class="tekstblad">
@@ -475,10 +533,19 @@ ${DEEL1.bladen.map((blad, i) => bladzijde(blad, i + 1)).join('\n')}
 <section class="tekstblad">
   <h2>De twaalf woorden van dit boek</h2>
   <div class="lijst">
-    ${DEEL1.bladen.map((b) => `<div><div class="ar">${esc(b.woord.ar)}</div><div class="tr">${esc(b.woord.tr)}</div><div class="nl">${esc(b.woord.nl)}</div></div>`).join('')}
+    ${DEEL1.bladen.slice(0, 6).map((b) => `<div><div class="ar">${esc(b.woord.ar)}</div><div class="tr">${esc(b.woord.tr)}</div><div class="nl">${esc(b.woord.nl)}</div></div>`).join('')}
+  </div>
+  <div class="lijst">
+    ${DEEL1.bladen.slice(6).map((b) => `<div><div class="ar">${esc(b.woord.ar)}</div><div class="tr">${esc(b.woord.tr)}</div><div class="nl">${esc(b.woord.nl)}</div></div>`).join('')}
   </div>
   <p>Onder elk woord staat hoe je het zegt, in gewone letters. Lees het voor zoals het er staat — dan klopt het. Wil je het horen, dan staan alle twaalf ook in de app.</p>
   <p style="opacity:.7">darijaforkids.eu · Sbaa deel ${DEEL1.nummer}</p>
+</section>
+
+<section class="tekstblad" style="justify-content:center;text-align:center">
+  <h2 style="font-size:19pt">Hierna</h2>
+  <p style="font-size:14pt;max-width:120mm;margin:0 auto">${esc(DEEL1.hierna ?? '')}</p>
+  <svg viewBox="0 0 300 190" style="width:70mm;align-self:center;margin-top:8mm">${sbaa(150, 70, 1.1, { kijk: 1 })}</svg>
 </section>
 
 </body></html>`

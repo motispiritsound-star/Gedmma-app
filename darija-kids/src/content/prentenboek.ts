@@ -48,6 +48,19 @@ export const CAST: Figuur[] = [
     kenmerk: 'Kleine paarse jas, en hij houdt altijd iemands hand vast.', kleur: '#7c5cbf' },
 ]
 
+export interface Deel {
+  nummer: number
+  /** Waar dit deel speelt; staat vooraan, zodat een kind weet waar het is. */
+  waar: string
+  /** Wat er in het volgende deel gebeurt. De laatste bladzijde van het boek. */
+  hierna: string
+  titel: string
+  ondertitel: string
+  leeftijd: string
+  opdracht: string
+  bladen: Blad[]
+}
+
 export interface Blad {
   /** Welke tekening; `scripts/make-prentenboek.mjs` kent ze bij naam. */
   scene: string
@@ -61,6 +74,8 @@ export interface Blad {
 
 const DEEL1 = {
   nummer: 1,
+  waar: 'In de medina van Fes',
+  hierna: 'In deel 2 klimt Sbaa de bergen in. Neem een jas mee.',
   titel: 'Sbaa en de poorten van Fes',
   ondertitel: 'Twaalf woorden Darija, voor wie nog niet kan lezen',
   leeftijd: '2 – 8 jaar',
@@ -205,6 +220,8 @@ const DEEL1 = {
 
 const DEEL2 = {
   nummer: 2,
+  waar: 'In het Atlasgebergte',
+  hierna: 'In deel 3 ruikt het naar zout. Ze gaan naar de zee.',
   titel: 'Sbaa en de berg die wit werd',
   ondertitel: 'Twaalf woorden Darija, voor wie nog niet kan lezen',
   leeftijd: '2 – 8 jaar',
@@ -239,6 +256,8 @@ const DEEL2 = {
 
 const DEEL3 = {
   nummer: 3,
+  waar: 'Aan zee, bij Essaouira',
+  hierna: 'In deel 4 wordt er afgedongen. Neem je dirhams mee.',
   titel: 'Sbaa en de wind van de zee',
   ondertitel: 'Twaalf woorden Darija, voor wie nog niet kan lezen',
   leeftijd: '2 – 8 jaar',
@@ -273,6 +292,8 @@ const DEEL3 = {
 
 const DEEL4 = {
   nummer: 4,
+  waar: 'Op de markt van Marrakech',
+  hierna: 'In deel 5 staat de hele familie in de keuken. Het wordt feest.',
   titel: 'Sbaa en de markt van duizend dingen',
   ondertitel: 'Twaalf woorden Darija, voor wie nog niet kan lezen',
   leeftijd: '2 – 8 jaar',
@@ -307,6 +328,8 @@ const DEEL4 = {
 
 const DEEL5 = {
   nummer: 5,
+  waar: 'Thuis bij jeddti',
+  hierna: 'In deel 6 gaat de bel. Sbaa gaat naar school.',
   titel: 'Sbaa en het grote feest',
   ondertitel: 'Twaalf woorden Darija, voor wie nog niet kan lezen',
   leeftijd: '2 – 8 jaar',
@@ -339,6 +362,238 @@ const DEEL5 = {
   ] as Blad[],
 }
 
-/** De eerste verhaallijn: vijf delen, zestig woorden, één leeuw. */
-export const DELEN = [DEEL1, DEEL2, DEEL3, DEEL4, DEEL5]
+
+const DEEL6 = {
+  nummer: 6, waar: 'Op school',
+  hierna: 'In deel 7 slapen ze op het dak, onder de sterren.',
+  titel: 'Sbaa gaat naar school', ondertitel: 'Twaalf woorden Darija, voor wie nog niet kan lezen',
+  leeftijd: '2 – 8 jaar', opdracht: 'Voor ieder kind dat op de eerste dag niemand kende.',
+  bladen: [
+    { scene: 'schoolplein', woord: { id: 'medrasa', ar: 'المدرسة', tr: 'lmedrasa', nl: 'de school' }, echo: 'Medrasa! Medrasa!',
+      tekst: ['Er is een deur met een bel ernaast.', 'Achter de deur hoor je honderd kinderen.', '“Wat is dit?” vraagt Rayan.', '“Lmedrasa,” zegt Sbaa. “De school.”'] },
+    { scene: 'klas', woord: { id: 'qism', ar: 'القسم', tr: 'lqism', nl: 'de klas' }, echo: 'Qism! Qism!',
+      tekst: ['Binnen zijn er deuren en nog eens deuren.', 'Achter elke deur zitten kinderen op rijen.', 'Sbaa past er maar net doorheen.', '“Lqism,” zegt hij zachtjes. “Niet te hard praten.”'] },
+    { scene: 'klas', woord: { id: 'ostada', ar: 'الأستاذة', tr: 'lostada', nl: 'de juf' }, echo: 'Ostada! Ostada!',
+      tekst: ['Vooraan staat een vrouw met krijt.', 'Ze kijkt op en ze schrikt niet eens van een leeuw.', '“Kom binnen,” zegt ze. “Er is plek.”', '“Lostada,” fluistert Sbaa. “De juf.”'] },
+    { scene: 'klas', woord: { id: 'telmid', ar: 'تلميذ', tr: 'telmid', nl: 'leerling' }, echo: 'Telmid! Telmid!',
+      tekst: ['Achteraan zit een jongen alleen.', 'Hij is vandaag voor het eerst hier.', 'Yassine gaat naast hem zitten. Zomaar.', '“Telmid,” zegt de juf. “Net als jullie.”'] },
+    { scene: 'klas', woord: { id: 'sebbura', ar: 'السبورة', tr: 'ssebbura', nl: 'het bord' }, echo: 'Sebbura! Sebbura!',
+      tekst: ['De juf schrijft één letter.', 'Hij krult als een golf.', 'Hij gaat van rechts naar links, andersom dus.', '“Ssebbura,” zegt ze. “Kijk allemaal.”'] },
+    { scene: 'klas', woord: { id: 'qlem', ar: 'قلم', tr: 'qlem', nl: 'potlood' }, echo: 'Qlem! Qlem!',
+      tekst: ['Yousra heeft er altijd een achter haar oor.', 'Nu heeft ze er twee nodig.', 'Ze geeft er een aan de nieuwe jongen.', '“Qlem,” zegt ze erbij. Hij knikt.'] },
+    { scene: 'klas', woord: { id: 'kunash', ar: 'كناش', tr: 'kunash', nl: 'schrift' }, echo: 'Kunash! Kunash!',
+      tekst: ['Elk kind krijgt er een.', 'De eerste bladzijde is het moeilijkst.', 'Die is helemaal leeg en helemaal wit.', '“Kunash,” zegt de juf. “Begin maar.”'] },
+    { scene: 'klas', woord: { id: 'ktab', ar: 'كتاب', tr: 'ktab', nl: 'boek' }, echo: 'Ktab! Ktab!',
+      tekst: ['Sbaa haalt iets uit zijn tas.', 'Het is oud en de hoeken zijn zacht van het lezen.', 'Hij legt het open op de tafel.', '“Ktab,” zegt hij. “Deze las ik ook.”'] },
+    { scene: 'klas', woord: { id: 'bshwiya', ar: 'بشوية', tr: 'bshwiya', nl: 'langzaam' }, echo: 'Bshwiya! Bshwiya!',
+      tekst: ['Amir wil als eerste klaar zijn.', 'Zijn letters vallen om als dominostenen.', 'De juf legt haar hand op zijn schrift.', '“Bshwiya,” zegt ze. “Rustig aan.”'] },
+    { scene: 'klas', woord: { id: 'wajib', ar: 'واجب', tr: 'wajib', nl: 'huiswerk' }, echo: 'Wajib! Wajib!',
+      tekst: ['Aan het eind schrijft de juf iets op.', 'Iedereen kreunt tegelijk, ook Sbaa.', 'Dat is overal hetzelfde ter wereld.', '“Wajib,” zegt ze. “Drie letters. Meer niet.”'] },
+    { scene: 'schoolplein', woord: { id: 'imtihan', ar: 'امتحان', tr: 'imtihan', nl: 'toets' }, echo: 'Imtihan! Imtihan!',
+      tekst: ['De nieuwe jongen is bang voor morgen.', 'Sbaa gaat naast hem op het muurtje zitten.', '“Ik kon het ook niet,” zegt hij. “Eerst.”', '“Een imtihan is maar een dag.”'] },
+    { scene: 'schoolplein', woord: { id: '3otla', ar: 'عطلة', tr: '3otla', nl: 'vakantie' }, echo: '3otla! 3otla!',
+      tekst: ['Dan gaat de bel.', 'Honderd kinderen tegelijk de poort uit.', 'De juf roept iets na, maar niemand hoort het.', '“3OTLA!” roept iedereen. Vakantie.'] },
+  ] as Blad[],
+}
+
+const DEEL7 = {
+  nummer: 7, waar: 'In het huis met de binnenplaats',
+  hierna: 'In deel 8 tellen ze alles wat vier poten heeft. En twee. En geen.',
+  titel: 'Sbaa en het huis met het dakterras', ondertitel: 'Twaalf woorden Darija, voor wie nog niet kan lezen',
+  leeftijd: '2 – 8 jaar', opdracht: 'Voor ieder kind dat bij oma op de grond mocht slapen.',
+  bladen: [
+    { scene: 'huis', woord: { id: 'dar', ar: 'الدار', tr: 'ddar', nl: 'het huis' }, echo: 'Dar! Dar!',
+      tekst: ['Van buiten lijkt het niets.', 'Een muur, een deur, en verder niets.', 'Maar binnen is er een binnenplaats met een boom.', '“Ddar,” zegt Sbaa. “Zo zijn de huizen hier.”'] },
+    { scene: 'huis', woord: { id: 'bit', ar: 'بيت', tr: 'bit', nl: 'kamer' }, echo: 'Bit! Bit!',
+      tekst: ['De kamers liggen allemaal om de binnenplaats.', 'Geen gang, geen trap: je stapt zo naar buiten.', 'Adil telt er zes, en dan nog een.', '“Bit,” zegt Sbaa. “Elke deur is er een.”'] },
+    { scene: 'binnenhof', woord: { id: 'sherjem', ar: 'شرجم', tr: 'sherjem', nl: 'raam' }, echo: 'Sherjem! Sherjem!',
+      tekst: ['De ramen kijken niet naar de straat.', 'Ze kijken allemaal naar binnen, naar de boom.', 'Yousra vindt dat vreemd. Dan vindt ze het fijn.', '“Sherjem,” zegt ze, en ze tekent er een.'] },
+    { scene: 'keuken', woord: { id: 'kuzina', ar: 'كوزينة', tr: 'kuzina', nl: 'keuken' }, echo: 'Kuzina! Kuzina!',
+      tekst: ['Het ruikt naar ui en komijn.', 'Er staan pannen die groter zijn dan Rayan.', 'Iedereen loopt er in en uit.', '“Kuzina,” zegt Sbaa. “Het hart van het huis.”'] },
+    { scene: 'keuken', woord: { id: 'tebla', ar: 'طبلة', tr: 'tebla', nl: 'tafel' }, echo: 'Tebla! Tebla!',
+      tekst: ['De tafel is rond en laag.', 'Je zit er niet op een stoel maar op een kussen.', 'Iedereen kan bij de schaal in het midden.', '“Tebla,” zegt Sbaa. “Zo hoort het.”'] },
+    { scene: 'keuken', woord: { id: 'kursi', ar: 'كرسي', tr: 'kursi', nl: 'stoel' }, echo: 'Kursi! Kursi!',
+      tekst: ['Er is er één, in de hoek.', 'Daar zit jeddi. Alleen jeddi.', 'Niemand heeft dat ooit afgesproken.', '“Kursi,” zegt Sbaa zachtjes. “Die van hem.”'] },
+    { scene: 'huis', woord: { id: 'mraya', ar: 'مراية', tr: 'mraya', nl: 'spiegel' }, echo: 'Mraya! Mraya!',
+      tekst: ['In de gang hangt iets met een koperen rand.', 'Adam ziet een leeuw met een fez.', 'Hij draait zich om. Daar staat hij.', '“Mraya,” lacht Sbaa. “Dat ben ik.”'] },
+    { scene: 'huis', woord: { id: 'sarut', ar: 'ساروت', tr: 'sarut', nl: 'sleutel' }, echo: 'Sarut! Sarut!',
+      tekst: ['Aan een spijker hangt er één.', 'Zwaar, van brons, en veel te groot.', 'Hij past op geen enkele deur meer.', '“Sarut,” zegt jeddti. “Van het huis van mijn moeder.”'] },
+    { scene: 'huis', woord: { id: 'lfrash', ar: 'الفراش', tr: 'lfrash', nl: 'bed' }, echo: 'Lfrash! Lfrash!',
+      tekst: ['’s Nachts worden de banken bedden.', 'Er komen dekens uit een kast die niemand kent.', 'Alle kinderen slapen in één kamer.', '“Lfrash,” zegt jeddti. “Genoeg voor iedereen.”'] },
+    { scene: 'huis', woord: { id: 'dou', ar: 'الضو', tr: 'ddou', nl: 'het licht' }, echo: 'Dou! Dou!',
+      tekst: ['Dan gaat alles uit.', 'Niet expres — dat gebeurt hier soms.', 'Even is het stil en heel donker.', '“Ddou,” zegt jeddti. “Komt zo terug.”'] },
+    { scene: 'stah', woord: { id: 'stah', ar: 'السطح', tr: 'sstah', nl: 'dakterras' }, echo: 'Stah! Stah!',
+      tekst: ['Ze klimmen de trap op in het donker.', 'Boven is er geen dak.', 'Er is alleen lucht, en de was aan een lijn.', '“Sstah,” zegt Sbaa. “Het mooiste van het huis.”'] },
+    { scene: 'nacht', woord: { id: 'lil', ar: 'الليل', tr: 'llil', nl: 'de nacht' }, echo: 'Lil! Lil!',
+      tekst: ['Ze liggen op hun rug op het dak.', 'De stad zoemt zachtjes onder hen.', 'Rayan telt sterren tot zeven en valt dan in slaap.', '“Llil,” zegt Sbaa. “Welterusten.”'] },
+  ] as Blad[],
+}
+
+const DEEL8 = {
+  nummer: 8, waar: 'Overal waar dieren zijn',
+  hierna: 'In deel 9 eet Adam te veel. Dat loopt niet goed af.',
+  titel: 'Sbaa en het dier dat zijn naam heeft', ondertitel: 'Twaalf woorden Darija, voor wie nog niet kan lezen',
+  leeftijd: '2 – 8 jaar', opdracht: 'Voor ieder kind dat wil weten hoe zijn naam in het Darija klinkt.',
+  bladen: [
+    { scene: 'weide', woord: { id: 'hayawanat', ar: 'الحيوانات', tr: 'lhayawanat', nl: 'de dieren' }, echo: 'Hayawanat! Hayawanat!',
+      tekst: ['Vandaag gaan ze tellen.', 'Niet de huizen, niet de deuren.', 'Alles wat vier poten heeft, of twee, of geen.', '“Lhayawanat,” zegt Sbaa. “Begin maar.”'] },
+    { scene: 'weide', woord: { id: 'kelb', ar: 'كلب', tr: 'kelb', nl: 'hond' }, echo: 'Kelb! Kelb!',
+      tekst: ['Bij het hek staat er een.', 'Hij blaft één keer en kwispelt daarna.', 'Rayan verstopt zich achter Sbaa’s djellaba.', '“Kelb,” zegt Sbaa. “Hij doet niets.”'] },
+    { scene: 'weide', woord: { id: 'bgra', ar: 'بݣرة', tr: 'bgra', nl: 'koe' }, echo: 'Bgra! Bgra!',
+      tekst: ['In de wei staat er één.', 'Ze kauwt en ze kijkt en ze kauwt weer.', 'Ze heeft alle tijd van de wereld.', '“Bgra,” zegt Sbaa. “Zij haast zich nooit.”'] },
+    { scene: 'weide', woord: { id: 'dzaza', ar: 'دجاجة', tr: 'dzaza', nl: 'kip' }, echo: 'Dzaza! Dzaza!',
+      tekst: ['Op het erf lopen er acht.', 'Of negen. Ze blijven niet stilstaan.', 'Adam telt er telkens één dubbel.', '“Dzaza,” lacht Sbaa. “Tel ze maar niet.”'] },
+    { scene: 'woestijn', woord: { id: 'jmel', ar: 'جمل', tr: 'jmel', nl: 'kameel' }, echo: 'Jmel! Jmel!',
+      tekst: ['Hij is groter dan iedereen dacht.', 'Hij kijkt neer op Sbaa, en Sbaa is niet klein.', 'Zijn knieën klappen dubbel als hij gaat zitten.', '“Jmel,” zegt zijn baas. “Klim er maar op.”'] },
+    { scene: 'huis', woord: { id: 'far', ar: 'فار', tr: 'far', nl: 'muis' }, echo: 'Far! Far!',
+      tekst: ['In de voorraadkast beweegt iets.', 'Het is grijs en heel snel.', 'De kat van het huis slaapt er dwars doorheen.', '“Far,” fluistert Yousra. “Niet zeggen.”'] },
+    { scene: 'binnenhof', woord: { id: 'nemla', ar: 'نملة', tr: 'nemla', nl: 'mier' }, echo: 'Nemla! Nemla!',
+      tekst: ['Yassine ligt op zijn buik op de tegels.', 'Er loopt een rij, van de boom naar de muur.', 'Elke mier draagt iets dat te zwaar is.', '“Nemla,” zegt Sbaa. “Sterker dan wij allebei.”'] },
+    { scene: 'binnenhof', woord: { id: 'fertetto', ar: 'فرططو', tr: 'fertetto', nl: 'vlinder' }, echo: 'Fertetto! Fertetto!',
+      tekst: ['Er komt iets binnen door het raam.', 'Geel, met zwarte randen, en het gaat nergens rechtdoor.', 'Het landt op Rayans hand en blijft even.', '“Fertetto,” fluistert Sbaa. “Stil blijven.”'] },
+    { scene: 'weide', woord: { id: 'hensh', ar: 'حنش', tr: 'hensh', nl: 'slang' }, echo: 'Hensh! Hensh!',
+      tekst: ['Tussen de stenen ligt iets langs.', 'Iedereen doet twee stappen naar achteren.', 'Het glijdt weg voordat iemand iets zegt.', '“Hensh,” zegt Sbaa. “Hij schrok meer dan jij.”'] },
+    { scene: 'plein', woord: { id: 'qerd', ar: 'قرد', tr: 'qerd', nl: 'aap' }, echo: 'Qerd! Qerd!',
+      tekst: ['In het bos bij de bergen zitten ze in de bomen.', 'Ze kijken naar je alsof jij het dier bent.', 'Eentje heeft Adams pet te pakken. Alweer.', '“Qerd,” zucht Sbaa. “Die pet zien we nooit meer.”'] },
+    { scene: 'weide', woord: { id: 'fil', ar: 'فيل', tr: 'fil', nl: 'olifant' }, echo: 'Fil! Fil!',
+      tekst: ['“Zijn hier olifanten?” vraagt Adam.', 'Sbaa denkt lang na.', '“Vroeger wel. Nu niet meer.”', '“Fil,” zegt hij. “Alleen nog in boeken.”'] },
+    { scene: 'atlas', woord: { id: 'sba3', ar: 'سبع', tr: 'sba3', nl: 'leeuw' }, echo: 'Sba3! Sba3!',
+      tekst: ['“En jij dan?” vraagt Rayan.', 'Sbaa gaat zitten. Hij kijkt naar de bergen.', '“Ik ben de laatste die je hier ziet.”', '“Sba3,” zegt hij. “Zo heet ik. En zo heten wij.”'] },
+  ] as Blad[],
+}
+
+const DEEL9 = {
+  nummer: 9, waar: 'Bij de dokter',
+  hierna: 'In deel 10 regent het. In Marokko regent het ook.',
+  titel: 'Sbaa en de dokter van de medina', ondertitel: 'Twaalf woorden Darija, voor wie nog niet kan lezen',
+  leeftijd: '2 – 8 jaar', opdracht: 'Voor ieder kind dat een keer bang was en toen toch ging.',
+  bladen: [
+    { scene: 'medina', woord: { id: 'kersh', ar: 'كرش', tr: 'kersh', nl: 'buik' }, echo: 'Kersh! Kersh!',
+      tekst: ['Adam eet vier msemmen.', 'Dan nog een halve.', 'Daarna wordt hij heel stil, en dat is niets voor hem.', '“Mijn kersh,” zegt hij. Zijn buik.'] },
+    { scene: 'huis', woord: { id: 'mrid', ar: 'مريض', tr: 'mrid', nl: 'ziek' }, echo: 'Mrid! Mrid!',
+      tekst: ['Jeddti legt haar hand op zijn voorhoofd.', 'Ze zegt niets, maar ze kijkt anders.', 'De anderen moeten buiten spelen.', '“Mrid,” zegt ze. “Hij is ziek.”'] },
+    { scene: 'huis', woord: { id: 'ras', ar: 'راس', tr: 'ras', nl: 'hoofd' }, echo: 'Ras! Ras!',
+      tekst: ['Adam wijst naar boven.', 'Niet naar het plafond — naar zijn hoofd.', 'Jeddti legt een natte doek op zijn voorhoofd.', '“Ras,” zegt ze. “Dat gaat over.”'] },
+    { scene: 'medina', woord: { id: 'mustashfa', ar: 'المستشفى', tr: 'lmustashfa', nl: 'ziekenhuis' }, echo: 'Mustashfa! Mustashfa!',
+      tekst: ['Toch gaan ze. Voor de zekerheid.', 'Het gebouw is wit en het ruikt vreemd.', 'Adam houdt Sbaa’s poot heel stevig vast.', '“Lmustashfa,” zegt Sbaa. “Ik blijf hier.”'] },
+    { scene: 'klas', woord: { id: 'fomm', ar: 'فم', tr: 'fomm', nl: 'mond' }, echo: 'Fomm! Fomm!',
+      tekst: ['De dokter heeft een lampje.', 'Ze vraagt of hij “aaaa” wil zeggen.', 'Adam zegt “aaaa” zo hard dat de gang het hoort.', '“Fomm,” lacht de dokter. “Genoeg zo.”'] },
+    { scene: 'klas', woord: { id: 'snan', ar: 'سنان', tr: 'snan', nl: 'tanden' }, echo: 'Snan! Snan!',
+      tekst: ['“En die?” vraagt ze.', 'Er zit een gaatje waar Adam niets over had gezegd.', 'Nu weet iedereen het.', '“Snan,” zegt de dokter. “Twee keer per dag.”'] },
+    { scene: 'klas', woord: { id: '3in', ar: 'عين', tr: '3in', nl: 'oog' }, echo: '3in! 3in!',
+      tekst: ['Ze schijnt in zijn ogen.', 'Links, rechts, en weer links.', 'Adam knippert en lacht erbij.', '“3in,” zegt ze. “Allebei goed.”'] },
+    { scene: 'klas', woord: { id: 'yedd', ar: 'يد', tr: 'yedd', nl: 'hand' }, echo: 'Yedd! Yedd!',
+      tekst: ['Er komt een prikje. Eén, heel klein.', 'Adam kijkt de andere kant op.', 'Rayan houdt zijn hand vast, met twee handen.', '“Yedd,” zegt Rayan. “Ik laat niet los.”'] },
+    { scene: 'medina', woord: { id: 'qelb', ar: 'قلب', tr: 'qelb', nl: 'hart' }, echo: 'Qelb! Qelb!',
+      tekst: ['De dokter legt iets kouds op zijn borst.', 'Ze luistert lang, met haar ogen dicht.', 'Adam durft niet te ademen.', '“Qelb,” zegt ze. “Die van jou doet het prima.”'] },
+    { scene: 'medina', woord: { id: '3eyyan', ar: 'عيان', tr: '3eyyan', nl: 'moe' }, echo: '3eyyan! 3eyyan!',
+      tekst: ['Buiten is het licht ineens te fel.', 'Adam loopt langzamer dan anders.', 'Sbaa tilt hem op zonder dat hij het vraagt.', '“3eyyan,” zegt Adam. Moe.'] },
+    { scene: 'huis', woord: { id: 'rjel', ar: 'رجل', tr: 'rjel', nl: 'been' }, echo: 'Rjel! Rjel!',
+      tekst: ['Thuis mag hij op de bank.', 'De anderen mogen er niet op zitten, vandaag.', 'Amir wrijft over zijn eigen been en zucht heel hard.', '“Rjel,” zegt hij. “Míjn been doet ook pijn.”'] },
+    { scene: 'huis', woord: { id: 'bikhir', ar: 'بخير', tr: 'bikhir', nl: 'goed, prima' }, echo: 'Bikhir! Bikhir!',
+      tekst: ['De volgende ochtend is hij als eerste wakker.', 'Hij staat al bij de kuzina als jeddti binnenkomt.', 'Ze vraagt hoe het gaat.', '“Bikhir,” zegt Adam. “Mag ik msemmen?”'] },
+  ] as Blad[],
+}
+
+const DEEL10 = {
+  nummer: 10, waar: 'Een dag van begin tot eind',
+  hierna: 'In deel 11 raken ze de weg kwijt. Expres, bijna.',
+  titel: 'Sbaa en de dag die niet wilde eindigen', ondertitel: 'Twaalf woorden Darija, voor wie nog niet kan lezen',
+  leeftijd: '2 – 8 jaar', opdracht: 'Voor ieder kind dat “morgen” nog niet kan uitrekenen.',
+  bladen: [
+    { scene: 'huis', woord: { id: 'sbah', ar: 'الصباح', tr: 'sbah', nl: 'ochtend' }, echo: 'Sbah! Sbah!',
+      tekst: ['Het begint met brood en met de radio.', 'De zon staat nog laag tussen de huizen.', 'Jeddti is al drie uur wakker.', '“Sbah,” zegt ze. “De beste tijd van de dag.”'] },
+    { scene: 'huis', woord: { id: 'lyum', ar: 'اليوم', tr: 'lyum', nl: 'vandaag' }, echo: 'Lyum! Lyum!',
+      tekst: ['“Wat gaan we doen?” vraagt Rayan.', 'Hij vraagt het elke ochtend, altijd als eerste.', 'Sbaa kijkt uit het raam en denkt na.', '“Lyum,” zegt hij. “Vandaag gaan we ver.”'] },
+    { scene: 'medina', woord: { id: 'daba', ar: 'دابا', tr: 'daba', nl: 'nu' }, echo: 'Daba! Daba!',
+      tekst: ['“Wanneer dan?” vraagt Amir.', 'Hij staat al bij de deur met zijn schoenen aan.', 'Zijn schoenen staan trouwens verkeerd om.', '“Daba,” lacht Sbaa. “Nu meteen.”'] },
+    { scene: 'plein', woord: { id: 'sa3a', ar: 'الساعة', tr: 'ssa3a', nl: 'het uur' }, echo: 'Sa3a! Sa3a!',
+      tekst: ['Op de toren staat een klok.', 'Hij loopt tien minuten achter, al jaren.', 'Niemand die hem maakt, en niemand die klaagt.', '“Ssa3a,” zegt Sbaa. “Hier heeft niemand haast.”'] },
+    { scene: 'zon', woord: { id: 'jjaw', ar: 'الجو', tr: 'jjaw', nl: 'het weer' }, echo: 'Jjaw! Jjaw!',
+      tekst: ['De lucht wordt geel aan de rand.', 'De vogels gaan allemaal tegelijk zitten.', 'Jeddti haalt de was van het dak.', '“Jjaw,” zegt ze. “Er komt iets aan.”'] },
+    { scene: 'binnenhof', woord: { id: 'shta', ar: 'الشتا', tr: 'shta', nl: 'regen' }, echo: 'Shta! Shta!',
+      tekst: ['Eerst één druppel op de tegels.', 'Dan heel veel tegelijk, met lawaai.', 'De kinderen rennen naar binnen. Rayan niet.', '“Shta!” roept hij, midden op de binnenplaats.'] },
+    { scene: 'binnenhof', woord: { id: 'skhun', ar: 'سخون', tr: 'skhun', nl: 'warm' }, echo: 'Skhun! Skhun!',
+      tekst: ['Hij is drijfnat tot op zijn sokken.', 'Jeddti zegt niets. Ze pakt een handdoek.', 'Dan zet ze een glas in zijn handen, met munt erin.', '“Skhun,” zegt ze. “Voorzichtig, heet.”'] },
+    { scene: 'keuken', woord: { id: 'simana', ar: 'سيمانة', tr: 'simana', nl: 'week' }, echo: 'Simana! Simana!',
+      tekst: ['“Hoe lang blijven we nog?” vraagt Yousra.', 'Niemand heeft dat durven vragen.', 'Sbaa telt op zijn poot.', '“Simana,” zegt hij. “Nog één week.”'] },
+    { scene: 'keuken', woord: { id: 'ghedda', ar: 'غدا', tr: 'ghedda', nl: 'morgen' }, echo: 'Ghedda! Ghedda!',
+      tekst: ['“En wanneer gaan we naar de zee?”', '“Ghedda,” zegt Sbaa.', '“En wanneer is ghedda?”', '“Als je een keer geslapen hebt.”'] },
+    { scene: 'huis', woord: { id: 'lbareh', ar: 'البارح', tr: 'lbareh', nl: 'gisteren' }, echo: 'Lbareh! Lbareh!',
+      tekst: ['Rayan snapt het nog niet helemaal.', 'Voor hem is alles wat voorbij is even ver weg.', 'De zee van vorig jaar en het brood van vanochtend.', '“Lbareh,” zegt hij overal bij. Gisteren.'] },
+    { scene: 'stah', woord: { id: 'shher', ar: 'شهر', tr: 'shher', nl: 'maand' }, echo: 'Shher! Shher!',
+      tekst: ['Op het dak wijst jeddti naar de maan.', 'Hij is een dun streepje, als een nagel.', '“Als hij rond is en weer dun,” zegt ze.', '“Dan is er een shher voorbij.”'] },
+    { scene: 'nacht', woord: { id: '3am', ar: 'عام', tr: '3am', nl: 'jaar' }, echo: '3am! 3am!',
+      tekst: ['“En wanneer komen we terug?”', 'Daar wordt het stil van, heel even.', '“Volgend 3am,” zegt Sbaa. “Volgend jaar.”', 'Rayan knikt. Hij weet niet hoe lang dat is, en dat is maar goed ook.'] },
+  ] as Blad[],
+}
+
+const DEEL11 = {
+  nummer: 11, waar: 'Onderweg door de stad',
+  hierna: 'In deel 12 ligt er een kaart op het dak. De laatste reis.',
+  titel: 'Sbaa en de weg die niemand wist', ondertitel: 'Twaalf woorden Darija, voor wie nog niet kan lezen',
+  leeftijd: '2 – 8 jaar', opdracht: 'Voor ieder kind dat een keer de weg kwijt was en toch aankwam.',
+  bladen: [
+    { scene: 'plein', woord: { id: 'zenqa', ar: 'زنقة', tr: 'zenqa', nl: 'straat' }, echo: 'Zenqa! Zenqa!',
+      tekst: ['De medina heeft duizenden straatjes.', 'Ze zijn smal en ze lijken allemaal op elkaar.', 'Adil vouwt de kaart open. Dan weer dicht.', '“Zenqa,” zegt Sbaa. “Hier helpt geen kaart.”'] },
+    { scene: 'medina', woord: { id: 'fin', ar: 'فين', tr: 'fin', nl: 'waar' }, echo: 'Fin! Fin!',
+      tekst: ['Ze staan stil op een kruispunt van vijf.', 'Vijf straatjes, en alle vijf zien er hetzelfde uit.', 'Adil haalt diep adem en vraagt het aan een vrouw.', '“Fin…?” begint hij. En zij wijst.'] },
+    { scene: 'medina', woord: { id: 'nishan', ar: 'نيشان', tr: 'nishan', nl: 'rechtdoor' }, echo: 'Nishan! Nishan!',
+      tekst: ['De vrouw praat snel en met haar handen.', 'Eén woord verstaat hij goed.', 'Ze wijst met haar hele arm vooruit.', '“Nishan,” zegt ze. Rechtdoor.'] },
+    { scene: 'medina', woord: { id: 'limen', ar: 'ليمن', tr: 'limen', nl: 'rechts' }, echo: 'Limen! Limen!',
+      tekst: ['Bij de bakker moeten ze afslaan.', 'Yassine gaat de verkeerde kant op.', 'Sbaa tikt hem op zijn andere schouder.', '“Limen,” zegt hij. “Die kant.”'] },
+    { scene: 'medina', woord: { id: 'lisar', ar: 'ليسر', tr: 'lisar', nl: 'links' }, echo: 'Lisar! Lisar!',
+      tekst: ['Daarna nog een keer, maar dan andersom.', 'Rayan houdt zijn handen omhoog en kijkt ernaar.', 'De ene hand weet het, de andere niet.', '“Lisar,” zegt Sbaa. “Die met de henna.”'] },
+    { scene: 'medina', woord: { id: 'qeddam', ar: 'قدام', tr: 'qeddam', nl: 'vooruit' }, echo: 'Qeddam! Qeddam!',
+      tekst: ['Amir wil weer vooroplopen.', 'Dat mag, maar niet verder dan Sbaa kan zien.', '“Blijf waar ik je zie.”', '“Qeddam,” roept Amir al. Vooruit.'] },
+    { scene: 'medina', woord: { id: 'teht', ar: 'تحت', tr: 'teht', nl: 'onder' }, echo: 'Teht! Teht!',
+      tekst: ['Het straatje wordt donker.', 'Boven hun hoofd lopen de huizen door.', 'Je loopt gewoon onder iemands slaapkamer.', '“Teht,” zegt Sbaa, en hij bukt.'] },
+    { scene: 'plein', woord: { id: 'jame3', ar: 'جامع', tr: 'jame3', nl: 'moskee' }, echo: 'Jame3! Jame3!',
+      tekst: ['Dan zien ze de toren weer.', 'Die is hoger dan alles en hij staat er altijd.', 'Wie hem ziet, weet waar hij is.', '“Ljame3,” zegt Sbaa. “Dat is ons punt.”'] },
+    { scene: 'plein', woord: { id: 'tobis', ar: 'طوبيس', tr: 'tobis', nl: 'bus' }, echo: 'Tobis! Tobis!',
+      tekst: ['Buiten de poort staat hij te wachten.', 'Blauw en wit en veel te vol.', 'Iedereen past erin. Altijd.', '“Tobis,” zegt Sbaa. “Hou je goed vast.”'] },
+    { scene: 'duin', woord: { id: 'tomobil', ar: 'طوموبيل', tr: 'tomobil', nl: 'auto' }, echo: 'Tomobil! Tomobil!',
+      tekst: ['Op de weg naar buiten passeren ze een oude auto.', 'Er staan drie tassen en een matras op het dak.', 'De hele familie zit erin, en nog iemand erbij.', '“Tomobil,” lacht Sbaa. “Daar past alles in.”'] },
+    { scene: 'weide', woord: { id: 'bshklit', ar: 'بشكليط', tr: 'bshklit', nl: 'fiets' }, echo: 'Bshklit! Bshklit!',
+      tekst: ['Een jongen komt langs met brood achterop.', 'Twintig broden, in een houten bak.', 'Hij rijdt met één hand en zwaait met de andere.', '“Bshklit,” zegt Sbaa. “En niet één valt eraf.”'] },
+    { scene: 'zonsondergang', woord: { id: 'hnaya', ar: 'هنا', tr: 'hnaya', nl: 'hier' }, echo: 'Hnaya! Hnaya!',
+      tekst: ['Aan het eind van de dag staan ze weer bij de poort.', 'Niemand weet precies hoe ze er gekomen zijn.', 'Jeddti staat er al, met haar handen in haar zij.', '“Hnaya,” zegt ze. “Hier. Eindelijk.”'] },
+  ] as Blad[],
+}
+
+const DEEL12 = {
+  nummer: 12, waar: 'Overal, van de bergen tot de zee',
+  hierna: 'Dit was deel 12. Begin gerust weer bij deel 1 — je hoort nu meer.',
+  titel: 'Sbaa en mijn land', ondertitel: 'Twaalf woorden Darija, voor wie nog niet kan lezen',
+  leeftijd: '2 – 8 jaar', opdracht: 'Voor ieder kind dat twee landen heeft en niet hoeft te kiezen.',
+  bladen: [
+    { scene: 'atlas', woord: { id: 'mghrib', ar: 'المغرب', tr: 'lmghrib', nl: 'Marokko' }, echo: 'Mghrib! Mghrib!',
+      tekst: ['Op het dak ligt een grote kaart.', 'Er staan bergen op, een woestijn en twee zeeën.', 'Hij lijkt op een hoofd dat naar links kijkt.', '“Lmghrib,” zegt Sbaa. “Dit is het allemaal.”'] },
+    { scene: 'stadje', woord: { id: 'casablanca', ar: 'الدار البيضاء', tr: 'Casablanca', nl: 'Casablanca' }, echo: 'Casablanca!',
+      tekst: ['Hier is het het drukst.', 'Auto’s, kantoren, en een moskee die in zee staat.', 'Het heet het witte huis, in het Arabisch.', '“Casablanca,” zegt Sbaa, en hij wijst.'] },
+    { scene: 'plein', woord: { id: 'marrakech', ar: 'مراكش', tr: 'Marrakech', nl: 'Marrakech' }, echo: 'Marrakech!',
+      tekst: ['Hier is het rood. Alle muren.', 'Hier was jullie markt met de gnawa.', 'En het land is naar deze stad genoemd.', '“Marrakech,” zegt Sbaa. “Onthoud die.”'] },
+    { scene: 'medina', woord: { id: 'fas', ar: 'فاس', tr: 'Fas', nl: 'Fez' }, echo: 'Fas! Fas!',
+      tekst: ['Yousra wijst als eerste.', 'Daar begonnen ze, bij de blauwe poort.', 'Daar zijn de straatjes waar je in verdwaalt.', '“Fas,” zegt ze. “Daar ken ik de weg.”'] },
+    { scene: 'haven', woord: { id: 'tanja', ar: 'طنجة', tr: 'Tanja', nl: 'Tanger' }, echo: 'Tanja! Tanja!',
+      tekst: ['Helemaal bovenaan, waar het land ophoudt.', 'Op een heldere dag zie je de overkant liggen.', 'Dat is Europa, veertien kilometer verderop.', '“Tanja,” zegt Sbaa. “Zo dichtbij.”'] },
+    { scene: 'strand', woord: { id: 'agadir', ar: 'أݣادير', tr: 'Agadir', nl: 'Agadir' }, echo: 'Agadir!',
+      tekst: ['Hier is het strand lang en recht.', 'Hier schijnt de zon bijna elke dag.', 'Adam wil er meteen heen.', '“Agadir,” zegt Sbaa. “Volgend jaar.”'] },
+    { scene: 'plein', woord: { id: 'rabat', ar: 'الرباط', tr: 'Rabat', nl: 'Rabat' }, echo: 'Rabat! Rabat!',
+      tekst: ['Hier staat een toren die nooit af is gekomen.', 'Hij wacht al achthonderd jaar op zijn dak.', 'Naast de rivier, met de zee erachter.', '“Rabat,” zegt Sbaa. “De hoofdstad.”'] },
+    { scene: 'woestijn', woord: { id: 'sahra', ar: 'الصحراء', tr: 'ssahra', nl: 'de woestijn' }, echo: 'Sahra! Sahra!',
+      tekst: ['Onderaan de kaart is alles geel.', 'Daar zijn geen straten meer, alleen zand.', '’s Nachts is het er kouder dan in de bergen.', '“Ssahra,” zegt Sbaa. “Daar kun je alle sterren zien.”'] },
+    { scene: 'keuken', woord: { id: 'ramadan', ar: 'رمضان', tr: 'ramadan', nl: 'ramadan' }, echo: 'Ramadan! Ramadan!',
+      tekst: ['“En wanneer is het hier het mooist?”', 'Jeddti denkt na. “Als het donker wordt,” zegt ze.', '“En de hele straat tegelijk gaat eten.”', '“Ramadan,” zegt ze. “Dan is niemand alleen.”'] },
+    { scene: 'tafel', woord: { id: 'darija', ar: 'الدارجة', tr: 'ddarija', nl: 'Darija' }, echo: 'Darija! Darija!',
+      tekst: ['“Wat we nu praten,” vraagt Rayan, “hoe heet dat?”', 'Sbaa moet lachen. Dat had hij nooit verteld.', 'Al twaalf boeken lang niet.', '“Ddarija,” zegt hij. “Zo heet het.”'] },
+    { scene: 'stah', woord: { id: 'bladi', ar: 'بلادي', tr: 'bladi', nl: 'mijn land' }, echo: 'Bladi! Bladi!',
+      tekst: ['“Is dit mijn land?” vraagt Yousra.', '“Of is het dat andere, waar mijn school staat?”', 'Sbaa kijkt naar de kaart en dan naar haar.', '“Bladi,” zegt hij. “Je mag er twee hebben.”'] },
+    { scene: 'nacht', woord: { id: 'inshallah', ar: 'إن شاء الله', tr: 'inshallah', nl: 'als het lukt' }, echo: 'Inshallah! Inshallah!',
+      tekst: ['De koffers staan in de gang.', 'Morgen gaat het vliegtuig.', '“Komen we terug?” vraagt Rayan, voor de laatste keer.', '“Inshallah,” zegt jeddti. En Sbaa knikt.'] },
+  ] as Blad[],
+}
+
+/** De eerste verhaallijn: twaalf delen, honderdvierenveertig woorden, één leeuw. */
+export const DELEN: Deel[] = [DEEL1, DEEL2, DEEL3, DEEL4, DEEL5, DEEL6, DEEL7, DEEL8, DEEL9, DEEL10, DEEL11, DEEL12]
 export { DEEL1 }
