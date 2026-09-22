@@ -141,8 +141,11 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 
 ### De formulieren
 
-- [x] Apple **App Privacy** — gepubliceerd: e-mailadres en product interaction,
-      allebei gekoppeld aan de persoon, geen van beide voor tracking (§4)
+- [x] Apple **App Privacy** — gepubliceerd als **Data Not Collected**, net als de
+      Google-verklaring. Er stond eerst e-mailadres en product interaction in; dat
+      was onjuist. Nagekeken in de gebouwde app: het nieuwsbriefformulier is bij
+      het bouwen platgeslagen tot `false` en wordt nooit getoond. **Zet je
+      VITE_POST ooit aan, dan moeten beide verklaringen mee veranderen.** (§4)
 - [x] Apple **Age Rating** — overal None ingevuld, staat op 4+ in 172 landen
 - [x] Apple: categorie **Education**, geen Kids Category — die kan bij een latere versie
 - [x] Google **Gegevensbeveiliging**: *geen gegevens verzameld*. Nagekeken in de
