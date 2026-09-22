@@ -48,6 +48,7 @@ const [
   { LANGS, localeOf },
   { SITE },
   { STORE, SITE_URL, PATHS },
+  { NAMEN },
   { PRIVACY },
   { TERMS },
   { OPERATOR, traderKnown },
@@ -58,6 +59,7 @@ const [
   load('/src/i18n/languages.ts'),
   load('/src/site/copy.ts'),
   load('/src/site/links.ts'),
+  load('/src/site/namen.ts'),
   load('/src/i18n/privacy.ts'),
   load('/src/i18n/terms.ts'),
   load('/src/content/operator.ts'),
@@ -501,6 +503,138 @@ const docPage = (lang, page, text, extra = '') => {
   })
 }
 
+/**
+ * De naam van je kind in Arabisch schrift.
+ *
+ * De enige pagina met JavaScript, en met opzet: de naam moet in de browser
+ * blijven. Er gaat niets naar een server, er wordt niets opgeslagen en er is
+ * niets in te loggen -- dezelfde afspraak als in de app, ook hier.
+ *
+ * De lijst is met de hand nagekeken (`src/site/namen.ts`). Automatisch
+ * omzetten van Latijn naar Arabisch gaat juist mis bij Mohamed, Aicha en
+ * Chaimae, en de naam van iemands kind verkeerd spellen is erger dan hem
+ * niet hebben.
+ */
+const naamPage = (lang) => {
+  const c = SITE[lang]
+  const body = `<div class="wrap doc naam">
+  <h1>${esc(c.naamTitel)}</h1>
+  <p class="intro">${esc(c.naamLead)}</p>
+
+  <form id="naamform" autocomplete="off">
+    <label for="naamveld">${esc(c.naamLabel)}</label>
+    <div class="naamrij">
+      <input id="naamveld" name="naam" type="text" maxlength="24" placeholder="${esc(c.naamPlaceholder)}" spellcheck="false">
+      <button type="submit">${esc(c.naamKnop)}</button>
+    </div>
+  </form>
+
+  <p id="naamfout" class="soon" hidden>${esc(c.naamOnbekend)}
+    <a id="naamvraag" href="${mailto}?subject=${encodeURIComponent('Naam: ')}">${esc(c.naamAanvragen)}</a>
+  </p>
+
+  <div id="naamuit" hidden>
+    <canvas id="naamdoek" width="1080" height="1350" role="img"></canvas>
+    <a id="naamdownload" class="mailbtn" download="darijaforkids.png">${esc(c.naamOpslaan)}</a>
+  </div>
+
+  <p class="klein">${esc(c.naamUitleg)}</p>
+</div>
+
+<script>
+var NAMEN = ${JSON.stringify(NAMEN)};
+var WOORD = ${JSON.stringify({ merk: 'darijaforkids.eu' })};
+function schoon(s) {
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z]/g, '')
+}
+function hoofd(s) { return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() }
+function teken(doek, latijn, arabisch) {
+  var x = doek.getContext('2d')
+  var B = doek.width, H = doek.height
+  var lucht = x.createLinearGradient(0, 0, B, H)
+  lucht.addColorStop(0, '#1b2340'); lucht.addColorStop(0.55, '#131b30'); lucht.addColorStop(1, '#0b1020')
+  x.fillStyle = lucht; x.fillRect(0, 0, B, H)
+
+  // De achtpuntige khatam, flauw, als behang.
+  x.fillStyle = 'rgba(255,255,255,.05)'
+  for (var gy = 0; gy < H + 200; gy += 200) {
+    for (var gx = 0; gx < B + 200; gx += 200) {
+      x.beginPath()
+      for (var i = 0; i < 16; i++) {
+        var a = (Math.PI / 8) * i - Math.PI / 8
+        var r = (i % 2 === 0) ? 52 : 22
+        var px = gx + Math.cos(a) * r, py = gy + Math.sin(a) * r
+        if (i === 0) x.moveTo(px, py); else x.lineTo(px, py)
+      }
+      x.closePath(); x.fill()
+    }
+  }
+
+  x.textAlign = 'center'
+  x.fillStyle = '#fffaf3'
+  var groot = arabisch.length > 10 ? 150 : arabisch.length > 6 ? 200 : 260
+  x.font = '700 ' + groot + 'px "Noto Naskh Arabic", serif'
+  // Niet op rtl zetten: met textAlign center schuift de tekst dan uit het
+  // midden. De letters worden hoe dan ook goed aan elkaar geschreven -- dat
+  // doet het lettertype, niet de richting.
+  x.fillText(arabisch, B / 2, H / 2 + 40)
+
+  x.fillStyle = '#f59e0b'
+  x.font = '800 92px "Baloo 2", system-ui, sans-serif'
+  x.fillText(latijn, B / 2, H / 2 + 190)
+
+  x.fillStyle = 'rgba(255,250,243,.6)'
+  x.font = '800 40px "Baloo 2", system-ui, sans-serif'
+  x.fillText(WOORD.merk, B / 2, H - 110)
+
+  // De vlag, klein, boven de naam.
+  var fx = B / 2 - 45, fy = 150
+  x.fillStyle = '#c1272d'; x.fillRect(fx, fy, 90, 60)
+  x.strokeStyle = '#006233'; x.lineWidth = 5.5; x.lineJoin = 'round'; x.lineCap = 'round'
+  var cx = fx + 45, cy = fy + 30, R = 22
+  x.beginPath()
+  for (var k = 0; k <= 5; k++) {
+    var ang = -Math.PI / 2 + (k * 4 * Math.PI) / 5
+    var qx = cx + Math.cos(ang) * R, qy = cy + Math.sin(ang) * R
+    if (k === 0) x.moveTo(qx, qy); else x.lineTo(qx, qy)
+  }
+  x.closePath(); x.stroke()
+}
+document.getElementById('naamform').addEventListener('submit', function (e) {
+  e.preventDefault()
+  var ruw = document.getElementById('naamveld').value.trim()
+  var ar = NAMEN[schoon(ruw)]
+  var fout = document.getElementById('naamfout')
+  var uit = document.getElementById('naamuit')
+  if (!ar) {
+    uit.hidden = true
+    fout.hidden = false
+    document.getElementById('naamvraag').href = ${JSON.stringify(mailto)} + '?subject=' + encodeURIComponent('Naam: ' + ruw)
+    return
+  }
+  fout.hidden = true
+  var doek = document.getElementById('naamdoek')
+  var klaar = document.fonts ? document.fonts.load('700 200px "Noto Naskh Arabic"').then(function () {
+    return document.fonts.load('800 92px "Baloo 2"')
+  }) : Promise.resolve()
+  klaar.then(function () {
+    teken(doek, hoofd(ruw), ar)
+    uit.hidden = false
+    doek.setAttribute('aria-label', hoofd(ruw) + ' — ' + ar)
+    document.getElementById('naamdownload').href = doek.toDataURL('image/png')
+    document.getElementById('naamdownload').download = schoon(ruw) + '-darijaforkids.png'
+  })
+})
+</script>`
+
+  return layout({
+    lang, page: 'name',
+    body,
+    title: `${c.naamTitel} — Darijaforkids`,
+    description: c.naamLead,
+  })
+}
+
 const parentsPage = (lang) => {
   const c = SITE[lang]
   const t = STRINGS[lang]
@@ -603,7 +737,8 @@ for (const { code: lang } of LANGS) {
   await write(PATHS[lang].privacy, docPage(lang, 'privacy', PRIVACY[lang]))
   await write(PATHS[lang].terms, docPage(lang, 'terms', TERMS[lang]))
   await write(PATHS[lang].parents, parentsPage(lang))
-  pages += 4
+  await write(PATHS[lang].name, naamPage(lang))
+  pages += 5
   if (!shots.length) missing.push(`de schermen voor ${lang}`)
   if (!film) missing.push(`de film voor ${lang}`)
 }
@@ -629,7 +764,7 @@ self.addEventListener('activate', (event) => {
 `)
 
 const urls = LANGS.flatMap(({ code }) =>
-  ['home', 'privacy', 'terms', 'parents'].map((page) => SITE_URL + PATHS[code][page]))
+  ['home', 'privacy', 'terms', 'parents', 'name'].map((page) => SITE_URL + PATHS[code][page]))
 
 await writeFile(path.join(OUT, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

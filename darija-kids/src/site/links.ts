@@ -29,11 +29,11 @@ export const SITE_URL = 'https://darijaforkids.eu'
  * redirect. Every other language gets a prefix and its own words, because a
  * German parent should not have to read "voorwaarden" to find the terms.
  */
-export const PATHS: Record<Lang, { home: string; privacy: string; terms: string; parents: string }> = {
-  nl: { home: '/', privacy: '/privacy', terms: '/voorwaarden', parents: '/ouders' },
-  fr: { home: '/fr/', privacy: '/fr/confidentialite', terms: '/fr/conditions', parents: '/fr/parents' },
-  de: { home: '/de/', privacy: '/de/datenschutz', terms: '/de/bedingungen', parents: '/de/eltern' },
-  es: { home: '/es/', privacy: '/es/privacidad', terms: '/es/condiciones', parents: '/es/padres' },
-  it: { home: '/it/', privacy: '/it/privacy', terms: '/it/condizioni', parents: '/it/genitori' },
-  en: { home: '/en/', privacy: '/en/privacy', terms: '/en/terms', parents: '/en/parents' },
+export const PATHS: Record<Lang, { home: string; privacy: string; terms: string; parents: string; name: string }> = {
+  nl: { home: '/', privacy: '/privacy', terms: '/voorwaarden', parents: '/ouders', name: '/naam' },
+  fr: { home: '/fr/', privacy: '/fr/confidentialite', terms: '/fr/conditions', parents: '/fr/parents', name: '/fr/prenom' },
+  de: { home: '/de/', privacy: '/de/datenschutz', terms: '/de/bedingungen', parents: '/de/eltern', name: '/de/name' },
+  es: { home: '/es/', privacy: '/es/privacidad', terms: '/es/condiciones', parents: '/es/padres', name: '/es/nombre' },
+  it: { home: '/it/', privacy: '/it/privacy', terms: '/it/condizioni', parents: '/it/genitori', name: '/it/nome' },
+  en: { home: '/en/', privacy: '/en/privacy', terms: '/en/terms', parents: '/en/parents', name: '/en/name' },
 }
