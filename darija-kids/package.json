@@ -58,7 +58,8 @@
     "reviewshot": "node scripts/make-reviewshot.mjs",
     "social": "node scripts/make-social.mjs",
     "repareer-knip": "node scripts/repareer-knip.mjs",
-    "ios": "npm run build && npx cap sync ios"
+    "ios": "npm run build && npx cap sync ios",
+    "winkel": "node scripts/make-winkel.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
