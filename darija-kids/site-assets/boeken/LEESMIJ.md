@@ -7,7 +7,9 @@ Hier horen twee bestanden:
 | `sba.webp` | Bij *Sba de Atlasleeuw* op `/leesboeken` |
 | `sleutel.webp` | Bij *De sleutels van Marokko* op `/leesboeken` |
 
-Zolang ze er niet zijn valt de pagina terug op de vectortekening. De site is
+**Ze staan er.** De twee platen hieronder zijn de geschilderde versies; valt er
+ooit een weg, dan valt de pagina terug op de vectortekening en is de site niet
+kapot, alleen minder mooi.
 dan niet kapot, alleen minder mooi — dat is met opzet, zodat een ontbrekend
 bestand nooit een gat in de etalage slaat.
 
