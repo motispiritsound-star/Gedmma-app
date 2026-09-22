@@ -421,10 +421,27 @@ const nogTeTekenen = () => `
  * plaat vervangen zonder dat er iets stukgaat, en blijft de rest van het boek
  * ondertussen gewoon te lezen.
  */
+/**
+ * De geschilderde plaat bij een bladzijde.
+ *
+ * Drie lagen, van goed naar minder goed:
+ *
+ * 1. `platen/<deel>/<nummer>.jpg` — een eigen plaat voor déze bladzijde. Zo
+ *    hoort het, en daar gaan de honderdvierenveertig opdrachten in
+ *    `platenlijst.md` over.
+ * 2. `platen/<deel>/achtergrond.jpg` — één geschilderd tafereel voor het hele
+ *    deel. Dat is hoe de aangeleverde v2-boeken in elkaar zitten, en het is
+ *    beter dan een vectortekening: het is de goede sfeer, de goede Sba, en
+ *    het kind kijkt naar hetzelfde beeld terwijl het verhaal verdergaat.
+ * 3. De tekening uit `SCENES`. Een noodverband.
+ */
 const echtePlaat = (nr) => {
-  for (const soort of ['jpg', 'jpeg', 'png', 'webp']) {
-    const bestand = path.join(ROOT, 'store', 'prentenboek', 'platen', String(NUMMER), `${nr}.${soort}`)
-    if (existsSync(bestand)) return bestand
+  const map = path.join(ROOT, 'store', 'prentenboek', 'platen', String(NUMMER))
+  for (const naam of [String(nr), 'achtergrond']) {
+    for (const soort of ['jpg', 'jpeg', 'png', 'webp']) {
+      const bestand = path.join(map, `${naam}.${soort}`)
+      if (existsSync(bestand)) return bestand
+    }
   }
   return null
 }
@@ -534,10 +551,13 @@ const html = `<!doctype html><html lang="${TAAL}"><meta charset="utf-8">
             font-size:8pt;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
             padding:2mm 5mm;border-radius:99mm}
   .woordpil.donker{background:${K.nacht}}
-  .voetregel{position:absolute;left:0;right:0;bottom:5mm;text-align:center;font-size:7.5pt;
-             font-weight:600;color:${K.creme};opacity:.85;letter-spacing:.06em;
-             text-shadow:0 0 3mm rgba(0,0,0,.45)}
-  .voetregel.donker{color:${K.inkt};opacity:.45;text-shadow:none}
+  /* De voetregel staat op een geschilderde plaat en die kan overal licht of
+     donker zijn. Een klein donker balkje eronder werkt op allebei; een
+     schaduw alleen werkt op licht zand niet. */
+  .voetregel{position:absolute;left:50%;transform:translateX(-50%);bottom:4mm;text-align:center;
+             font-size:7.5pt;font-weight:600;letter-spacing:.06em;color:${K.creme};
+             background:rgba(19,27,48,.55);padding:1.2mm 5mm;border-radius:99mm}
+  .voetregel.donker{color:${K.inkt};opacity:.45;background:none;padding:0}
 
   /* De woordkaart op de plaat: het moment waar het kind naar kijkt. */
   /* De kaart staat linksonder en niet in het midden: dan blijft de rechter
