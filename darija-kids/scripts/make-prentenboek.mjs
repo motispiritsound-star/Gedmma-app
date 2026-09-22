@@ -477,7 +477,7 @@ ${DEEL1.bladen.map((blad, i) => bladzijde(blad, i + 1)).join('\n')}
   <div class="lijst">
     ${DEEL1.bladen.map((b) => `<div><div class="ar">${esc(b.woord.ar)}</div><div class="tr">${esc(b.woord.tr)}</div><div class="nl">${esc(b.woord.nl)}</div></div>`).join('')}
   </div>
-  <p>Elk woord is ingesproken door een Marokkaanse stem. Scan de code en je hoort ze alle twaalf — één keer gewoon, één keer langzaam.</p>
+  <p>Onder elk woord staat hoe je het zegt, in gewone letters. Lees het voor zoals het er staat — dan klopt het. Wil je het horen, dan staan alle twaalf ook in de app.</p>
   <p style="opacity:.7">darijaforkids.eu · Sbaa deel ${DEEL1.nummer}</p>
 </section>
 

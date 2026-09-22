@@ -49,6 +49,7 @@ const [
   { LANGS, localeOf },
   { SITE },
   { STORE, SITE_URL, PATHS },
+  { SHOP },
   { NAMEN },
   { PRIVACY },
   { TERMS },
@@ -61,6 +62,7 @@ const [
   load('/src/i18n/languages.ts'),
   load('/src/site/copy.ts'),
   load('/src/site/links.ts'),
+  load('/src/site/shop.ts'),
   load('/src/site/namen.ts'),
   load('/src/i18n/privacy.ts'),
   load('/src/i18n/terms.ts'),
@@ -687,14 +689,15 @@ const historyPage = (lang) => {
 const booksPage = (lang) => {
   const c = SITE[lang]
 
-  const reeks = (badge, titel, body, punten, kunst) => `<article class="reeks">
+  const reeks = (badge, titel, body, punten, kunst, koop = []) => `<article class="reeks">
     <div class="kunst">${kunst}</div>
     <div class="inhoud">
       <span class="leeftijd">${esc(badge)}</span>
       <h2>${esc(titel)}</h2>
       <p>${esc(body)}</p>
       <ul>${punten.map((punt) => `<li>${esc(punt)}</li>`).join('')}</ul>
-      <span class="status">${esc(c.boekStatus)}</span>
+      ${koop.filter((p) => SHOP[p.id]?.link).map((p) => `<a class="mailbtn" href="${SHOP[p.id].link}" rel="noopener">${esc(p.wat)} — ${esc(SHOP[p.id].prijs)}</a>`).join(' ')
+        || `<span class="status">${esc(c.boekStatus)}</span>`}
     </div>
   </article>`
 
@@ -713,7 +716,9 @@ const booksPage = (lang) => {
   <h1>${esc(c.boekTitel)}</h1>
   <p class="intro">${esc(c.boekLead)}</p>
 
-  ${reeks(c.boekKlein, c.boekKleinTitel, c.boekKleinBody, c.boekKleinPunten, leeuw)}
+  ${reeks(c.boekKlein, c.boekKleinTitel, c.boekKleinBody, c.boekKleinPunten, leeuw, [
+    { id: 'sbaa1', wat: c.boekDeel1 }, { id: 'sbaaReeks', wat: c.boekAlleVijf },
+  ])}
   ${reeks(c.boekGroot, c.boekGrootTitel, c.boekGrootBody, c.boekGrootPunten, sleutel)}
 
   <p class="soon">${esc(c.boekSlot)}</p>
