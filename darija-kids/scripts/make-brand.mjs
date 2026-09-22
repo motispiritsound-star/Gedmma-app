@@ -32,30 +32,37 @@ const INK = '#2b1d16'
 const CREAM = '#fffaf3'
 const NIGHT = 'linear-gradient(150deg,#1b2340,#131b30 60%,#0b1020)'
 const WARM = 'linear-gradient(140deg,#ffd79a,#f0915c 55%,#e2603c)'
+const GEEL = 'linear-gradient(150deg,#ffe9a3,#f7c33b 52%,#f59e0b)'
 
 /** The copy, per language. */
 const COPY = {
   nl: { pay: 'Marokkaans-Arabisch voor kinderen', cta: 'Gratis beginnen',
+    binnenkort: 'Binnenkort online', opdehoogte: 'Hou mij op de hoogte',
     flyer: 'Leer je kind\nDarija', body: 'De taal van thuis — niet het Arabisch uit het schoolboek. Het Arabische alfabet, 304 woorden en 100 zinnen, alles uitgesproken. Vanaf ongeveer 7 jaar.',
     vormen: ['Begin', 'Midden', 'Eind'],
     punten: ['Geen account, geen advertenties', 'Werkt offline', 'In het Nederlands, Frans, Duits, Spaans, Italiaans en Engels'] },
   fr: { pay: 'L’arabe marocain pour les enfants', cta: 'Commencer gratuitement',
+    binnenkort: 'Bientôt en ligne', opdehoogte: 'Tenez-moi au courant',
     flyer: 'Apprends le\ndarija à ton enfant', body: 'La langue de la maison — pas l’arabe du manuel. L’alphabet arabe, 304 mots et 100 phrases, tout se prononce. Dès 7 ans environ.',
     vormen: ['Début', 'Milieu', 'Fin'],
     punten: ['Sans compte, sans publicité', 'Fonctionne hors ligne', 'En français, néerlandais, allemand, espagnol, italien et anglais'] },
   de: { pay: 'Marokkanisches Arabisch für Kinder', cta: 'Kostenlos starten',
+    binnenkort: 'Demnächst online', opdehoogte: 'Haltet mich auf dem Laufenden',
     flyer: 'Bring deinem Kind\nDarija bei', body: 'Die Sprache von zu Hause — nicht das Schulbucharabisch. Das arabische Alphabet, 304 Wörter und 100 Sätze, alles zum Anhören. Ab etwa 7 Jahren.',
     vormen: ['Anfang', 'Mitte', 'Ende'],
     punten: ['Kein Konto, keine Werbung', 'Funktioniert offline', 'Auf Deutsch, Niederländisch, Französisch, Spanisch, Italienisch und Englisch'] },
   es: { pay: 'Árabe marroquí para niños', cta: 'Empezar gratis',
+    binnenkort: 'Muy pronto', opdehoogte: 'Avísame',
     flyer: 'Enseña dariya\na tus hijos', body: 'El idioma de casa, no el árabe del libro de texto. El alfabeto árabe, 304 palabras y 100 frases, todo pronunciado. A partir de los 7 años.',
     vormen: ['Inicio', 'Medio', 'Final'],
     punten: ['Sin cuenta, sin publicidad', 'Funciona sin conexión', 'En español, neerlandés, francés, alemán, italiano e inglés'] },
   it: { pay: 'Arabo marocchino per bambini', cta: 'Inizia gratis',
+    binnenkort: 'Presto online', opdehoogte: 'Avvisami',
     flyer: 'Insegna il darija\na tuo figlio', body: 'La lingua di casa — non l\u2019arabo del manuale. L\u2019alfabeto arabo, 304 parole e 100 frasi, tutto pronunciato. Da circa 7 anni.',
     vormen: ['Inizio', 'Mezzo', 'Fine'],
     punten: ['Nessun account, nessuna pubblicità', 'Funziona senza connessione', 'In italiano, olandese, francese, tedesco, spagnolo e inglese'] },
   en: { pay: 'Moroccan Arabic for children', cta: 'Start free',
+    binnenkort: 'Coming soon', opdehoogte: 'Keep me posted',
     flyer: 'Teach your child\nDarija', body: 'The language of home — not textbook Arabic. The Arabic alphabet, 304 words and 100 sentences, all spoken aloud. From about age 7.',
     vormen: ['Start', 'Middle', 'End'],
     punten: ['No account, no adverts', 'Works offline', 'In English, Dutch, French, German, Spanish and Italian'] },
@@ -196,6 +203,45 @@ const shell = async (w, h, body, background, { pattern = true } = {}) => {
 </style>${pattern ? tiles(w, h, Math.round(w / 8)) : ''}<div class="stack">${body}</div>`
 }
 
+/**
+ * De aankondiging: geel, groot, en zonder uitleg.
+ *
+ * Eén boodschap per beeld. Wie hem op een telefoon voorbij ziet komen heeft
+ * anderhalve seconde, en in die tijd moet er "binnenkort" en een naam staan --
+ * verder niets. Het adres staat eronder omdat een plaatje geen link is: de
+ * echte link hoort in de tekst van het bericht.
+ */
+const aankondiging = async (copy, b, h) => {
+  const staand = h > b
+  return shell(b, h, `
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+                gap:${staand ? 46 : 30}px;padding:${staand ? '120px 90px' : '70px 80px'};text-align:center;color:${INK}">
+      <div style="display:flex;align-items:center;gap:22px">
+        <svg viewBox="0 0 60 40" width="${staand ? 92 : 76}" style="border-radius:6px">
+          <rect width="60" height="40" rx="4" fill="#c1272d"/>
+          <g transform="translate(30 20) scale(0.3) translate(-50 -50)">
+            <path d="M50 2 L78.5 89.7 L3.8 35.5 L96.2 35.5 L21.5 89.7 Z" fill="none" stroke="#006233" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+          </g>
+        </svg>
+        ${markSvg(staand ? 92 : 76, INK)}
+      </div>
+      <div style="font-size:${staand ? 118 : 92}px;font-weight:800;line-height:1.02;letter-spacing:-.02em">
+        ${copy.binnenkort}
+      </div>
+      <div style="font-size:${staand ? 76 : 60}px;font-weight:800;color:${CREAM};
+                  background:${INK};border-radius:999px;padding:${staand ? '22px 52px' : '18px 44px'}">
+        Darijaforkidsapp
+      </div>
+      <div style="font-size:${staand ? 44 : 36}px;font-weight:600;opacity:.8;max-width:${staand ? 760 : 720}px;line-height:1.3">
+        ${copy.pay}
+      </div>
+      <div style="margin-top:${staand ? 26 : 12}px;font-size:${staand ? 48 : 38}px;font-weight:800">
+        ${copy.opdehoogte} →
+      </div>
+      <div style="font-size:${staand ? 40 : 32}px;font-weight:800;opacity:.65">${SITE}</div>
+    </div>`, GEEL)
+}
+
 /** What gets drawn, at what size. */
 const SHEETS = [
   {
@@ -255,6 +301,16 @@ const SHEETS = [
           <div style="margin-top:6px;font-size:28px;opacity:.85">${copy.pay} · ${SITE}</div>
         </div>
       </div>`, NIGHT),
+  },
+  {
+    file: 'social/binnenkort-staand.png', w: 1080, h: 1920,
+    what: 'Aankondiging om te delen — WhatsApp-status, Reels, Stories, TikTok',
+    draw: (copy) => aankondiging(copy, 1080, 1920),
+  },
+  {
+    file: 'social/binnenkort-vierkant.png', w: 1080, h: 1080,
+    what: 'Dezelfde aankondiging, vierkant — de tijdlijn van Instagram en Facebook',
+    draw: (copy) => aankondiging(copy, 1080, 1080),
   },
   {
     file: 'print/flyer-a5.png', w: 1748, h: 2480,
