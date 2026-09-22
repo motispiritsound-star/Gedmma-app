@@ -19,9 +19,9 @@ Per App Store Connect (Italia) e Google Play Console (it-IT).
 **Descrizione (max 4000)**
 
 ```
-Per i giovani — e di nascosto per i grandi che vogliono rispolverare il loro darija.
+Fai imparare a tuo figlio la sua lingua madre — giocando.
 
-Darijaforkids insegna il darija a bambini e ragazzi: l'arabo marocchino che in Marocco si parla in casa e per strada. Non l'arabo standard dei manuali, ma la lingua con cui si telefona a jeddti.
+Darijaforkids insegna il darija a bambini e ragazzi: l'arabo marocchino che in Marocco si parla in casa e per strada. Non l'arabo standard dei manuali, ma la lingua di casa: quella con cui si telefona a jeddi e a jeddti. Con lezioni di pochi minuti, perché tuo figlio segua la conversazione a tavola dai nonni e si muova con sicurezza nel paese dei suoi genitori. E di nascosto per i grandi: la stessa strada, solo più in fretta.
 
 LEZIONI BREVI CHE RESTANO
 Una lezione dura dai due ai quattro minuti. Impari a sentire una parola, riconoscerla, leggerla in scrittura araba, scriverla e dirla ad alta voce. Ogni parola torna poco prima che tu la dimentichi.
@@ -56,13 +56,13 @@ CHE COSA C'È LUNGO IL PERCORSO
 • Un mazzo di ripasso che si accorge da solo di quello che inizia a vacillare
 
 DOPO OGNI TEST UN PEZZO DI MAROCCO
-Ogni checkpoint regala un cortometraggio: quattordici carte in ordine storico, dalla città romana di Walili fino all'alfabeto tifinagh diventato ufficiale nel 2011. Vengono letti ad alta voce nella tua lingua, finiscono con un «lo sapevi?» e restano nella tua collezione.
+Ogni checkpoint regala un cortometraggio: quattordici carte in ordine storico, dalla città romana di Walili fino all'alfabeto tifinagh diventato ufficiale nel 2011. Vengono letti ad alta voce nella tua lingua e finiscono con un «lo sapevi?».
 
 TUTTO SI SENTE
-Ogni parola e ogni frase si possono ascoltare: un tocco per la velocità normale, due per quella lenta. Se il tuo dispositivo non ha una voce araba, l'app lo dice onestamente e legge la scrittura latina come meglio può.
+Ogni parola e ogni frase si possono ascoltare: un tocco per la velocità normale, due per quella lenta. Senza una voce araba sul dispositivo, l'app lo dice e legge la scrittura latina come meglio può.
 
 INIZIARE GRATIS
-Le prime quattro lezioni sono e restano gratis: tre pezzi dell'alfabeto arabo e le tue prime parole in darija. Il corso intero va con l'accesso completo: i primi giorni gratis e poi 5,00 € al mese con l’abbonamento annuale (59,99 € in una volta) oppure 6,99 € al mese, IVA inclusa. Disdicibile dal tuo account App Store o Google Play; se disdici prima della fine della prova, non paghi niente.
+Le prime quattro lezioni restano gratis: tre pezzi dell'alfabeto arabo e le tue prime parole in darija. Il corso intero va con l'accesso completo: i primi giorni gratis e poi 5,00 € al mese con l’abbonamento annuale (59,99 € in una volta) oppure 6,99 € al mese, IVA inclusa. Disdicibile dal tuo account App Store o Google Play; se disdici prima della fine della prova, non paghi niente.
 
 FATTA PER DARLA IN MANO A UN BAMBINO
 • Nessun account, nessun accesso: un bambino qui non scrive niente
@@ -86,7 +86,7 @@ Il darija cambia da città a città e da famiglia a famiglia, e non ha un'ortogr
 `Darijaforkids`
 
 **Descrizione breve (max 80)**
-`Arabo marocchino per bambini: lezioni brevi, pronuncia vera, inizi gratis.`
+`Arabo marocchino giocando: per parlare con i nonni in Marocco.`
 
 **Descrizione completa (max 4000)**
 Lo stesso testo della descrizione dell'App Store.

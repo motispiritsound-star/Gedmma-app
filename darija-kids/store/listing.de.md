@@ -19,15 +19,15 @@ Für App Store Connect (Deutschland, Österreich, Schweiz) und Google Play Conso
 **Beschreibung (max. 4000)**
 
 ```
-Für die Jungen — und heimlich für die Älteren, die ihr Darija aufpolieren wollen.
+Lass dein Kind seine Muttersprache lernen — spielerisch.
 
-Darijaforkids bringt Kindern und Jugendlichen Darija bei: das marokkanische Arabisch, das die Menschen in Marokko zu Hause und auf der Straße sprechen. Nicht das Hocharabisch aus dem Lehrbuch — die Sprache, in der man mit jeddti telefoniert.
+Darijaforkids bringt Kindern und Jugendlichen Darija bei: das marokkanische Arabisch, das man in Marokko zu Hause und auf der Straße spricht. Nicht das Hocharabisch aus dem Lehrbuch, sondern die Sprache von zu Hause — die, in der man mit jeddi und jeddti telefoniert. In Lektionen von wenigen Minuten, damit dein Kind bei den Großeltern mitreden kann und sich im Land seiner Eltern zurechtfindet. Und heimlich für die Älteren: dieselbe Strecke, nur schneller.
 
 KURZE LEKTIONEN, DIE HÄNGEN BLEIBEN
-Eine Lektion dauert zwei bis vier Minuten. Du lernst ein Wort zu hören, zu erkennen, in arabischer Schrift zu lesen, selbst zu schreiben und laut zu sagen. Jedes Wort kommt genau dann zurück, bevor du es vergisst.
+Eine Lektion dauert zwei bis vier Minuten: ein Wort hören, erkennen, in arabischer Schrift lesen, selbst schreiben und laut sagen. Jedes Wort kommt genau dann zurück, bevor du es vergisst.
 
 DER WEG: SIEBZEHN EINHEITEN, VOM BUCHSTABEN BIS ZUM GESPRÄCH
-Keine losen Listen, sondern eine Route, auf der jede Einheit auf der vorigen aufbaut. Am Ende jeder ein Test, und erst danach öffnet sich die nächste.
+Keine losen Listen, sondern eine Route, auf der jede Einheit auf der vorigen aufbaut. Am Ende jeder ein Test, erst danach öffnet sich die nächste.
 
 ANFANG (A0) — die ersten sechs
 1. Lhruf — das arabische Alphabet, Buchstabe für Buchstabe
@@ -36,7 +36,7 @@ ANFANG (A0) — die ersten sechs
 4. L3a'ila — die Familie vorstellen
 5. L3dad — bis hundert zählen
 6. Lalwan — die Farben um dich herum
-Danach kann dein Kind sich vorstellen, grüßen, zählen und die arabische Schrift lesen.
+Danach kann dein Kind sich vorstellen, grüßen, zählen und arabische Schrift lesen.
 
 WEITER (A1) — acht Einheiten
 7. Lmakla — essen, trinken, Tee · 8. Ddar — im Haus · 9. Lmedrasa — in der Klasse · 10. Lhayawanat — Tiere · 11. Lweqt — Tage, Zeit und Wetter · 12. Ljism — Körper und Gefühle · 13. Kanhder — sagen, was du tust · 14. Su'al — Fragen stellen
@@ -56,13 +56,13 @@ WAS AM WEG STEHT
 • Ein Wiederholstapel, der selbst merkt, was zu wackeln beginnt
 
 NACH JEDEM TEST EIN STÜCK MAROKKO
-Jeder Checkpoint bringt einen kurzen Film: vierzehn Karten in der Reihenfolge der Geschichte, von der römischen Stadt Walili bis zum Tifinagh-Alphabet, das 2011 amtlich wurde. Sie werden in deiner Sprache vorgelesen, enden mit einem „Wusstest du schon?“ und bleiben in deiner Sammlung.
+Jeder Checkpoint bringt einen kurzen Film: vierzehn Karten in historischer Reihenfolge, von der römischen Stadt Walili bis zum Tifinagh-Alphabet, das 2011 amtlich wurde. Sie werden in deiner Sprache vorgelesen und enden mit einem „Wusstest du schon?“.
 
 ALLES KLINGT
-Jedes Wort und jeder Satz lässt sich anhören: einmal tippen für normal, zweimal für langsam. Hat dein Gerät keine arabische Stimme, sagt die App das ehrlich und liest die lateinische Schreibweise so gut wie möglich vor.
+Jedes Wort und jeder Satz lässt sich anhören: einmal tippen für normal, zweimal langsam. Ohne arabische Stimme sagt die App das ehrlich und liest die lateinische Schreibweise vor.
 
 KOSTENLOS ANFANGEN
-Die ersten vier Lektionen sind und bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs gehört zum vollen Zugang: die ersten Tage gratis, danach 5,00 € pro Monat im Jahresabo (59,99 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Kündbar im eigenen App-Store- oder Google-Play-Konto; wer vor Ende der Testphase kündigt, zahlt nichts.
+Die ersten vier Lektionen bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs gehört zum vollen Zugang: die ersten Tage gratis, danach 5,00 € pro Monat im Jahresabo (59,99 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Kündbar im eigenen App-Store- oder Google-Play-Konto; wer vor Ende der Testphase kündigt, zahlt nichts.
 
 GEMACHT, UM ES EINEM KIND ZU GEBEN
 • Kein Konto, kein Login — ein Kind trägt hier nichts ein
@@ -74,7 +74,7 @@ GEMACHT, UM ES EINEM KIND ZU GEBEN
 • Funktioniert ohne Internet, im Flugzeug wie in Marokko
 
 EHRLICH ZUR SPRACHE
-Darija unterscheidet sich von Stadt zu Stadt und von Familie zu Familie und hat keine offizielle Rechtschreibung. Wir wählen die Form, die man in Casablanca und Rabat am häufigsten hört. Sagt deine Oma es anders, hat deine Oma recht — das sagt die App auch selbst.
+Darija unterscheidet sich von Stadt zu Stadt und von Familie zu Familie und hat keine offizielle Rechtschreibung. Wir nehmen die Form, die man in Casablanca und Rabat am häufigsten hört. Sagt deine Oma es anders, hat deine Oma recht — das sagt die App auch selbst.
 ```
 
 **Neuheiten (Version 1.0)**
@@ -86,7 +86,7 @@ Darija unterscheidet sich von Stadt zu Stadt und von Familie zu Familie und hat 
 `Darijaforkids`
 
 **Kurzbeschreibung (max. 80)**
-`Marokkanisch für Kinder: kurze Lektionen, echte Aussprache, gratis starten.`
+`Marokkanisch spielerisch — damit dein Kind mit Oma und Opa reden kann.`
 
 **Vollständige Beschreibung (max. 4000)**
 Derselbe Text wie die App-Store-Beschreibung oben.

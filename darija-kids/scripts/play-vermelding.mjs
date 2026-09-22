@@ -10,6 +10,12 @@
  *   npm run play                    alle talen
  *   npm run play -- --taal nl-NL    één taal
  *   npm run play -- --proef         niets versturen, alleen tonen wat er zou gaan
+ *   npm run play -- --tekst         alleen de teksten, rechtstreeks uit store/listing.*.md
+ *
+ * Die laatste is voor een tekstwijziging na de lancering: de beelden staan er
+ * dan al en zijn niet veranderd, en het pakket met die beelden staat niet in
+ * git -- dus wie alleen een zin bijschaaft heeft aan de zes listing-bestanden
+ * genoeg en hoeft niets opnieuw te maken.
  *
  * De sleutel is een serviceaccount uit Google Cloud, met in Play Console de
  * rechten "Edit and delete draft apps" en "Manage store presence" op deze app.
@@ -38,6 +44,13 @@ const arg = (naam, terugval = null) => {
   return i > 0 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : terugval
 }
 const PROEF = process.argv.includes('--proef')
+const TEKST = process.argv.includes('--tekst')
+
+/** Hoe Play elke taal noemt; store/listing.<taal>.md draagt de korte code. */
+const PLAY_TAAL = { nl: 'nl-NL', fr: 'fr-FR', de: 'de-DE', es: 'es-ES', it: 'it-IT', en: 'en-US' }
+
+/** Wat Play weigert. Liever hier stuklopen dan halverwege het uploaden. */
+const MAX = { titel: 30, kort: 80, vol: 4000 }
 
 /** De mapnaam in het pakket draagt de taalcode in haakjes: "nl (nl-NL)". */
 const taalVan = (map) => map.match(/\(([^)]+)\)/)?.[1] ?? null
@@ -80,7 +93,13 @@ function teksten(ruw, waar) {
         'Draai `npm run playpakket` om het pakket opnieuw te maken.',
     )
   }
-  return { titel: losse[0], kort: losse[1], vol: kader[1] }
+  const uit = { titel: losse[0], kort: losse[1], vol: kader[1] }
+  for (const [veld, grens] of Object.entries(MAX)) {
+    if (uit[veld].length > grens) {
+      throw new Error(`${waar}: ${veld} is ${uit[veld].length} tekens, Play neemt er ${grens}.`)
+    }
+  }
+  return uit
 }
 
 /** Een toegangsbewijs halen met de sleutel: JWT tekenen, inruilen bij Google. */
@@ -134,11 +153,22 @@ if (!PROEF && !existsSync(SLEUTELPAD)) {
 const sleutel = PROEF ? { client_email: '(proef)' } : JSON.parse(readFileSync(SLEUTELPAD, 'utf8'))
 
 const alleen = arg('taal')
-const mappen = (await readdir(PAKKET, { withFileTypes: true }))
-  .filter((d) => d.isDirectory() && taalVan(d.name))
-  .filter((d) => !alleen || taalVan(d.name) === alleen)
-if (!mappen.length) {
-  console.error(`\nNiets te doen. Draai eerst: npm run playpakket\n`)
+const bronnen = (TEKST
+  ? Object.entries(PLAY_TAAL).map(([kort, code]) => ({
+      taal: code,
+      tekst: path.join(ROOT, 'store', `listing.${kort}.md`),
+      dir: null,
+    }))
+  : (await readdir(PAKKET, { withFileTypes: true }))
+      .filter((d) => d.isDirectory() && taalVan(d.name))
+      .map((d) => ({
+        taal: taalVan(d.name),
+        tekst: path.join(PAKKET, d.name, 'teksten.md'),
+        dir: path.join(PAKKET, d.name),
+      }))
+).filter((b) => existsSync(b.tekst)).filter((b) => !alleen || b.taal === alleen)
+if (!bronnen.length) {
+  console.error(`\nNiets te doen. Draai eerst: npm run ${TEKST ? 'build' : 'playpakket'}\n`)
   process.exit(1)
 }
 
@@ -148,10 +178,9 @@ const bewijs = PROEF ? null : await token(sleutel)
 const edit = PROEF ? { id: '(proef)' } : await api(bewijs, `/androidpublisher/v3/applications/${APP}/edits`, { method: 'POST' })
 console.log(`bewerking ${edit.id}\n`)
 
-for (const map of mappen) {
-  const taal = taalVan(map.name)
-  const dir = path.join(PAKKET, map.name)
-  const t = teksten(await readFile(path.join(dir, 'teksten.md'), 'utf8'), path.join(map.name, 'teksten.md'))
+for (const bron of bronnen) {
+  const { taal, dir } = bron
+  const t = teksten(await readFile(bron.tekst, 'utf8'), path.relative(ROOT, bron.tekst))
   console.log(`${taal}`)
   console.log(`  titel   ${t.titel}`)
   console.log(`  kort    ${t.kort.slice(0, 60)}${t.kort.length > 60 ? '…' : ''}`)
@@ -165,13 +194,19 @@ for (const map of mappen) {
     })
   }
 
-  for (const [bron, soort] of BEELDEN) {
-    const vol = path.join(dir, bron)
+  // --tekst laat de beelden staan zoals ze staan.
+  if (!dir) {
+    console.log()
+    continue
+  }
+
+  for (const [beeld, soort] of BEELDEN) {
+    const vol = path.join(dir, beeld)
     if (!existsSync(vol)) {
       console.log(`  ${soort.padEnd(20)} ontbreekt — overgeslagen`)
       continue
     }
-    const bestanden = bron.endsWith('.png')
+    const bestanden = beeld.endsWith('.png')
       ? [vol]
       : (await readdir(vol)).sort().map((n) => path.join(vol, n))
     console.log(`  ${soort.padEnd(20)} ${bestanden.length}`)
@@ -197,7 +232,7 @@ for (const map of mappen) {
 
 // Het icoon is één keer voor alle talen, maar de API hangt het aan een taal.
 const icoon = path.join(PAKKET, 'icoon-512.png')
-if (existsSync(icoon) && !alleen) {
+if (!TEKST && existsSync(icoon) && !alleen) {
   console.log('icon                 1  (op en-US)')
   if (!PROEF) {
     await api(bewijs, `/androidpublisher/v3/applications/${APP}/edits/${edit.id}/listings/en-US/icon`, { method: 'DELETE' })

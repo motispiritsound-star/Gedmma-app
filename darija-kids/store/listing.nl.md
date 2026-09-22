@@ -19,9 +19,9 @@ Voor App Store Connect (Nederland, België) en Google Play Console (nl-NL).
 **Beschrijving (max 4000)**
 
 ```
-Voor jong — en stiekem ook voor oud die zijn Darija wil bijspijkeren.
+Laat je kind zijn moedertaal leren — spelenderwijs.
 
-Darijaforkids leert kinderen en jongeren Darija: het Marokkaans-Arabisch dat mensen in Marokko thuis en op straat spreken. Niet het Standaardarabisch uit een schoolboek — de taal waarin je met jeddti belt. En omdat het pad bij de letters begint en eindigt bij afdingen op de souq, loopt een ouder die zijn eigen Darija wil opfrissen dezelfde route — alleen sneller.
+Darijaforkids leert kinderen en jongeren Darija: het Marokkaans-Arabisch dat mensen in Marokko thuis en op straat spreken. Niet het Standaardarabisch uit een schoolboek, maar de moedertaal van het gezin — de taal waarin je met jeddi en jeddti belt. In lesjes van een paar minuten, zodat je kind straks meepraat aan tafel bij opa en oma en in het land van zijn ouders zijn eigen weg vindt. En stiekem ook voor oud: wie zijn eigen Darija wil opfrissen loopt dezelfde route, alleen sneller.
 
 KORTE LESSEN DIE BLIJVEN HANGEN
 Een les duurt twee tot vier minuten. Je leert een woord horen, herkennen, lezen in Arabisch schrift, zelf typen en hardop zeggen. Elk woord komt precies terug voordat je het vergeet.
@@ -56,7 +56,7 @@ DE ONDERDELEN LANGS DAT PAD
 • Een herhaalstapel die zelf bijhoudt wat begint te wankelen
 
 NA ELKE TOETS EEN STUKJE MAROKKO
-Elk checkpoint levert een kort filmpje op: veertien kaarten op volgorde van de geschiedenis, van de Romeinse stad Walili tot het Tifinagh-alfabet dat in 2011 officieel werd. Ze worden voorgelezen in jouw taal, ze eindigen op een "wist je dat?" en ze blijven in je verzameling staan.
+Elk checkpoint levert een kort filmpje op: veertien kaarten op volgorde van de geschiedenis, van de Romeinse stad Walili tot het Tifinagh-alfabet dat in 2011 officieel werd. Ze worden voorgelezen in jouw taal en eindigen op een "wist je dat?".
 
 ALLES KLINKT
 Elk woord en elke zin kun je horen, één tik voor normaal en twee voor langzaam. Heeft je toestel geen Arabische stem, dan zegt de app dat eerlijk en leest hij de Latijnse schrijfwijze zo goed mogelijk voor.
@@ -86,7 +86,7 @@ Darija verschilt per stad en per familie, en heeft geen officiële spelling. Wij
 `Darijaforkids`
 
 **Korte beschrijving (max 80)**
-`Marokkaans-Arabisch voor kinderen: korte lessen, echte uitspraak, gratis start.`
+`Marokkaans-Arabisch, spelenderwijs — zodat je kind met opa en oma kan praten.`
 
 **Volledige beschrijving (max 4000)**
 Dezelfde tekst als de App Store-beschrijving hierboven.

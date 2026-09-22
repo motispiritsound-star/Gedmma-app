@@ -19,15 +19,15 @@ Para App Store Connect (España) y Google Play Console (es-ES).
 **Descripción (máx. 4000)**
 
 ```
-Para los jóvenes — y en secreto para los mayores que quieren pulir su dariya.
+Deja que tu hijo aprenda su lengua materna — jugando.
 
-Darijaforkids enseña dariya a niños y adolescentes: el árabe marroquí que la gente habla en casa y en la calle en Marruecos. No el árabe estándar de los manuales, sino la lengua en la que se llama a jeddti.
+Darijaforkids enseña dariya a niños y adolescentes: el árabe marroquí que la gente habla en casa y en la calle en Marruecos. No el árabe estándar de los manuales, sino la lengua de casa: aquella en la que se llama a jeddi y a jeddti. En lecciones de unos pocos minutos, para que tu hijo siga la conversación en la mesa de sus abuelos y se desenvuelva en el país de sus padres. Y en secreto para los mayores: la misma ruta, solo que más rápido.
 
 LECCIONES CORTAS QUE SE QUEDAN
-Una lección dura de dos a cuatro minutos. Aprendes a oír una palabra, reconocerla, leerla en escritura árabe, escribirla y decirla en voz alta. Cada palabra vuelve justo antes de que la olvides.
+Una lección dura de dos a cuatro minutos: oír una palabra, reconocerla, leerla en escritura árabe, escribirla y decirla en voz alta. Cada palabra vuelve justo antes de que la olvides.
 
 EL CAMINO: DIECISIETE UNIDADES, DE LA LETRA A LA CONVERSACIÓN
-No listas sueltas sino una ruta, en la que cada unidad se apoya en la anterior. Al final de cada una un test, y solo entonces se abre la siguiente.
+No listas sueltas sino una ruta: cada unidad se apoya en la anterior. Al final de cada una un test, y solo entonces se abre la siguiente.
 
 PRINCIPIANTE (A0) — las seis primeras
 1. Lhruf — el alfabeto árabe, letra a letra
@@ -56,13 +56,13 @@ LO QUE HAY A LO LARGO DEL CAMINO
 • Un montón de repaso que detecta solo lo que empieza a flojear
 
 DESPUÉS DE CADA TEST, UN TROZO DE MARRUECOS
-Cada control te da un corto: catorce cartas en orden histórico, desde la ciudad romana de Walili hasta el alfabeto tifinagh que se hizo oficial en 2011. Se leen en voz alta en tu idioma, terminan con un «¿sabías que...?» y se quedan en tu colección.
+Cada control te da un corto: catorce cartas en orden histórico, desde la ciudad romana de Walili hasta el alfabeto tifinagh que se hizo oficial en 2011. Se leen en voz alta en tu idioma y terminan con un «¿sabías que...?».
 
 TODO SUENA
-Cada palabra y cada frase se puede escuchar: un toque para la velocidad normal, dos para la lenta. Si tu dispositivo no tiene voz árabe, la aplicación lo dice con honestidad y lee la escritura latina lo mejor que puede.
+Cada palabra y cada frase se puede escuchar: un toque para la velocidad normal, dos para la lenta. Sin voz árabe en el dispositivo, la aplicación lo dice y lee la escritura latina lo mejor que puede.
 
 EMPEZAR GRATIS
-Las cuatro primeras lecciones son y seguirán siendo gratis: tres partes del alfabeto árabe y tus primeras palabras en dariya. El curso completo va con el acceso completo: los primeros días gratis y después 5,00 € al mes con la suscripción anual (59,99 € de una vez) o 6,99 € al mes, con IVA incluido. Cancelable en tu cuenta de la App Store o de Google Play; si cancelas antes de que termine la prueba, no pagas nada.
+Las cuatro primeras lecciones siguen siendo gratis: tres partes del alfabeto árabe y tus primeras palabras en dariya. El curso completo va con el acceso completo: los primeros días gratis y después 5,00 € al mes con la suscripción anual (59,99 € de una vez) o 6,99 € al mes, con IVA incluido. Cancelable en tu cuenta de la App Store o de Google Play; si cancelas antes de que termine la prueba, no pagas nada.
 
 HECHA PARA DÁRSELA A UN NIÑO
 • Sin cuenta y sin inicio de sesión: un niño no escribe nada aquí
@@ -86,7 +86,7 @@ El dariya cambia de ciudad a ciudad y de familia a familia, y no tiene ortograf�
 `Darijaforkids`
 
 **Descripción breve (máx. 80)**
-`Árabe marroquí para niños: lecciones cortas, pronunciación real, empieza gratis.`
+`Árabe marroquí jugando: para que tu hijo hable con sus abuelos.`
 
 **Descripción completa (máx. 4000)**
 El mismo texto que la descripción de la App Store.

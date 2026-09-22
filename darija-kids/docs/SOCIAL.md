@@ -22,23 +22,28 @@ Is hij ergens bezet, neem dan `darijaforkids.eu` of `darijaforkidsapp` — maar
 
 | | |
 |---|---|
-| Profielfoto | `store/play-pakket/icoon-512.png` |
+| Profielfoto | `brand/social/profielfoto.png` — de khatam met de Marokkaanse vlag erbij |
 | Naam | Darijaforkids |
 | Link | https://darijaforkids.eu |
 | Mail | info@darijaforkids.eu |
 
 De bio, in de taal van het kanaal:
 
-> Marokkaans-Arabisch voor kinderen. Voor jong — en stiekem ook voor oud.
-> 17 units, van het alfabet tot de souq. 🇲🇦
+> Laat je kind zijn moedertaal leren — spelenderwijs.
+> Marokkaans-Arabisch, 17 units, van het alfabet tot de souq. 🇲🇦
 
 ## 1. YouTube — eerst, want Play wacht erop
 
-https://www.youtube.com/create_channel
+**Staat er.** https://www.youtube.com/channel/UCIbq0-YRHDrpD9Avs0EnKvA
+
+Wat er nog moet: de handle `@darijaforkids` zetten (Instellingen → Kanaal →
+Geavanceerd), de profielfoto en de banner uit `brand/social/`, en de film
+uploaden. Play wacht op die laatste: het veld *Video* wil de link naar een
+**video**, niet naar een kanaal.
 
 1. Inloggen met het Google-account van de app (`venship@outlook.com` gaat niet;
    gebruik het account waarmee je in Play Console zit)
-2. **Kanaal maken** → naam `Darijaforkids`, handle `@darijaforkids`
+2. Handle `@darijaforkids`, naam `Darijaforkids`
 3. Profielfoto en banner: `brand/social/`
 4. **Uploaden**: `store/video/nl/intro-breed.mp4`
 5. Zichtbaarheid: **Niet vermeld** (unlisted) tot de app live is

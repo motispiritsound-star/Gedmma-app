@@ -19,15 +19,15 @@ Pour App Store Connect (France, Belgique, Suisse) et Google Play Console (fr-FR)
 **Description (max 4000)**
 
 ```
-Pour les jeunes — et discrètement pour les grands qui veulent réviser leur darija.
+Faites apprendre à votre enfant sa langue maternelle — en jouant.
 
-Darijaforkids apprend le darija aux enfants et aux ados : l'arabe marocain que les gens parlent à la maison et dans la rue au Maroc. Pas l'arabe standard des manuels — la langue dans laquelle on appelle jeddti.
+Darijaforkids apprend le darija aux enfants : l'arabe marocain qu'on parle à la maison et dans la rue au Maroc. Pas l'arabe des manuels, mais la langue de la maison — celle dans laquelle on appelle jeddi et jeddti. Par leçons de quelques minutes, pour qu'il parle un jour avec ses grands-parents et trouve sa place au pays. Et pour les grands : la même route, en plus rapide.
 
 DES LEÇONS COURTES QUI RESTENT
-Une leçon dure deux à quatre minutes. Tu apprends à entendre un mot, à le reconnaître, à le lire en écriture arabe, à l'écrire et à le dire à voix haute. Chaque mot revient juste avant que tu l'oublies.
+Une leçon dure deux à quatre minutes : entendre un mot, le reconnaître, le lire en écriture arabe, l'écrire et le dire à voix haute. Chaque mot revient juste avant que tu l'oublies.
 
 LE PARCOURS : DIX-SEPT UNITÉS, DE LA LETTRE À LA CONVERSATION
-Pas des listes éparpillées mais une seule route, où chaque unité s'appuie sur la précédente. Un test à la fin de chacune, et l'unité suivante ne s'ouvre qu'après.
+Pas des listes éparpillées mais une route, où chaque unité s'appuie sur la précédente. Un test à la fin de chacune, et l'unité suivante ne s'ouvre qu'après.
 
 DÉBUTANT (A0) — les six premières
 1. Lhruf — l'alphabet arabe, lettre par lettre
@@ -40,11 +40,11 @@ Après cela, votre enfant sait se présenter, saluer, compter et lire l'écritur
 
 PLUS LOIN (A1) — huit unités
 7. Lmakla — manger, boire, le thé · 8. Ddar — dans la maison · 9. Lmedrasa — en classe · 10. Lhayawanat — les animaux · 11. Lweqt — les jours, l'heure, le temps · 12. Ljism — le corps et les émotions · 13. Kanhder — dire ce que tu fais · 14. Su'al — poser des questions
-Après cela, votre enfant tient une conversation sur la maison, l'école et comment ça va.
+Après cela, il tient une conversation sur la maison, l'école et comment ça va.
 
 AUTONOME (A2) — les trois dernières
 15. Fssouq — au marché · 16. Fin ghadi ? — demander son chemin · 17. Lmghrib dyalna — pays, villes et fêtes
-Après cela, votre enfant se débrouille au Maroc même : négocier, demander sa route, participer.
+Après cela, il se débrouille au Maroc même : négocier, demander sa route, participer.
 
 CE QU'IL Y A LE LONG DU PARCOURS
 • 304 mots et phrases, chacun dans cinq types d'exercices
@@ -56,13 +56,13 @@ CE QU'IL Y A LE LONG DU PARCOURS
 • Une pile de révision qui repère toute seule ce qui commence à vaciller
 
 APRÈS CHAQUE TEST, UN MORCEAU DU MAROC
-Chaque étape donne droit à un court film : quatorze cartes dans l’ordre de l’histoire, de la ville romaine de Walili jusqu’à l’alphabet tifinagh devenu officiel en 2011. Ils sont lus à voix haute dans ta langue, finissent sur un « le savais-tu ? » et restent dans ta collection.
+Chaque étape donne un court film : quatorze cartes dans l’ordre de l’histoire, de la ville romaine de Walili jusqu’à l’alphabet tifinagh devenu officiel en 2011. Lus à voix haute dans ta langue, ils finissent sur un « le savais-tu ? ».
 
 TOUT SE PRONONCE
-Chaque mot et chaque phrase peut être écouté : une touche pour la vitesse normale, deux pour la version lente. Si ton appareil n'a pas de voix arabe, l'application le dit honnêtement et lit l'écriture latine du mieux qu'elle peut.
+Chaque mot et chaque phrase s'écoute : une touche pour la vitesse normale, deux pour la lente. Sans voix arabe sur l'appareil, l'application le dit et lit l'écriture latine du mieux qu'elle peut.
 
 COMMENCER GRATUITEMENT
-Les quatre premières leçons sont et restent gratuites : trois morceaux de l'alphabet arabe et tes premiers mots en darija. Le cours complet va avec l'accès complet : les premiers jours offerts, puis 5,00 € par mois avec un abonnement annuel (59,99 € en une fois) ou 6,99 € par mois, TTC. Résiliable dans ton compte App Store ou Google Play ; en résiliant avant la fin de l'essai, tu ne paies rien.
+Les quatre premières leçons restent gratuites : trois morceaux de l'alphabet arabe et tes premiers mots en darija. Le cours complet va avec l'accès complet : les premiers jours offerts, puis 5,00 € par mois avec un abonnement annuel (59,99 € en une fois) ou 6,99 € par mois, TTC. Résiliable dans ton compte App Store ou Google Play ; en résiliant avant la fin de l'essai, tu ne paies rien.
 
 FAIT POUR ÊTRE CONFIÉ À UN ENFANT
 • Pas de compte, pas de connexion — un enfant ne remplit rien ici
@@ -74,7 +74,7 @@ FAIT POUR ÊTRE CONFIÉ À UN ENFANT
 • Fonctionne sans internet, en avion comme au Maroc
 
 HONNÊTE SUR LA LANGUE
-Le darija change d'une ville et d'une famille à l'autre, et n'a pas d'orthographe officielle. Nous choisissons la forme la plus courante à Casablanca et à Rabat. Si ta grand-mère le dit autrement, c'est elle qui a raison — l'application le dit elle-même.
+Le darija change d'une ville et d'une famille à l'autre, sans orthographe officielle. Nous prenons la forme la plus courante à Casablanca et à Rabat. Si ta grand-mère le dit autrement, c'est elle qui a raison — l'application le dit elle-même.
 ```
 
 **Nouveautés (version 1.0)**
@@ -86,7 +86,7 @@ Le darija change d'une ville et d'une famille à l'autre, et n'a pas d'orthograp
 `Darijaforkids`
 
 **Description courte (max 80)**
-`L'arabe marocain pour enfants : leçons courtes, vraie prononciation, gratuit.`
+`L'arabe marocain en jouant — pour parler avec jeddi et jeddti.`
 
 **Description complète (max 4000)**
 Le même texte que la description App Store ci-dessus.

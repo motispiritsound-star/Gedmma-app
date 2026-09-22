@@ -19,9 +19,9 @@ For App Store Connect (UK, Ireland, rest of world) and Google Play Console (en-G
 **Description (max 4000)**
 
 ```
-For the young — and quietly for the grown-ups brushing up their Darija.
+Let your child learn their mother tongue — by playing.
 
-Darijaforkids teaches children and teenagers Darija: the Moroccan Arabic people speak at home and in the street in Morocco. Not the Modern Standard Arabic of textbooks — the language you call jeddti in.
+Darijaforkids teaches children and teenagers Darija: the Moroccan Arabic people speak at home and in the street in Morocco. Not the Modern Standard Arabic of textbooks, but the language of home — the one you call jeddi and jeddti in. In lessons of a few minutes, so your child can follow the conversation at their grandparents' table and find their feet in the country their parents come from. And quietly for the grown-ups: the same route, only faster.
 
 SHORT LESSONS THAT STICK
 A lesson takes two to four minutes. You learn to hear a word, recognise it, read it in Arabic script, type it and say it out loud. Every word comes back exactly before you forget it.
@@ -86,7 +86,7 @@ Darija differs from city to city and family to family, and has no official spell
 `Darijaforkids`
 
 **Short description (max 80)**
-`Moroccan Arabic for children: short lessons, real pronunciation, free to start.`
+`Moroccan Arabic, playfully — so your child can talk with their grandparents.`
 
 **Full description (max 4000)**
 The same text as the App Store description above.

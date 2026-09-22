@@ -111,6 +111,35 @@ const fnekSvg = (size = 240) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox
   <path d="M50 69c4 7 16 7 20 0" stroke="#2b1d16" stroke-width="3.2" fill="none" stroke-linecap="round"/>
 </svg>`
 
+/** The Moroccan flag: the red field and the green pentagram, one unbroken line. */
+const PENTAGRAM = '<path d="M50 2 L78.5 89.7 L3.8 35.5 L96.2 35.5 L21.5 89.7 Z" fill="none" stroke="#006233" stroke-linejoin="round" stroke-linecap="round"/>'
+
+/**
+ * The flag as a round badge.
+ *
+ * Round, because every social crops an avatar to a circle: a flag in the
+ * corner of the square is the first thing they cut off.
+ */
+const vlagBadge = (cx, cy, r, ring = '#f59e0b') => `
+  <circle cx="${cx}" cy="${cy}" r="${(r * 1.07).toFixed(1)}" fill="${ring}"/>
+  <circle cx="${cx}" cy="${cy}" r="${r}" fill="#c1272d"/>
+  <g transform="translate(${cx} ${cy}) scale(${(r / 75).toFixed(4)}) translate(-50 -45.9)" stroke-width="9">${PENTAGRAM}</g>`
+
+/**
+ * The profile picture: the app's tile, with the flag badged on it.
+ *
+ * Its own drawing rather than `tileSvg` with a flag on top, because that one
+ * is the app icon in the stores and has to stay exactly as it was submitted.
+ */
+const profielSvg = (size = 1024) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="${size}" height="${size}">
+  <defs>${GOLD}</defs>
+  <rect width="1024" height="1024" rx="226" fill="#131b30"/>
+  ${star(512, 512, 330, 'url(#gold)')}
+  ${star(512, 512, 156, '#0d9488')}
+  <circle cx="512" cy="512" r="50" fill="${CREAM}"/>
+  ${vlagBadge(760, 760, 100)}
+</svg>`
+
 /** Zellige-ish stars, faint, so they never fight a word. */
 const tiles = (w, h, step, alpha = 0.1) => {
   const parts = []
@@ -171,8 +200,8 @@ const shell = async (w, h, body, background, { pattern = true } = {}) => {
 const SHEETS = [
   {
     file: 'social/profielfoto.png', w: 1024, h: 1024,
-    what: 'Profielfoto voor Instagram, TikTok, YouTube en Facebook',
-    draw: () => shell(1024, 1024, `<div style="flex:1;display:grid;place-items:center">${tileSvg(1024)}</div>`, '#131b30', { pattern: false }),
+    what: 'Profielfoto voor Instagram, TikTok, YouTube en Facebook — met de Marokkaanse vlag, binnen de ronde uitsnede',
+    draw: () => shell(1024, 1024, `<div style="flex:1;display:grid;place-items:center">${profielSvg(1024)}</div>`, '#131b30', { pattern: false }),
   },
   {
     file: 'social/omslag-facebook.png', w: 1640, h: 856,
