@@ -14,6 +14,7 @@
  *
  * Run with: node scripts/make-prentenboek.mjs [--taal nl]
  */
+import { existsSync } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
@@ -399,7 +400,26 @@ const nogTeTekenen = () => `
   }).join('')}
   <g opacity=".22">${sbaa(500, 300, 1.6, { tas: false })}</g>`
 
-const plaat = (naam) => {
+/**
+ * De echte plaat, als hij er is.
+ *
+ * `store/prentenboek/platen/<deel>/<nummer>.jpg` -- of .png of .webp. Staat
+ * hij er, dan komt hij paginavullend in het boek; staat hij er niet, dan valt
+ * het terug op de tekening hieronder. Zo kun je deel voor deel en plaat voor
+ * plaat vervangen zonder dat er iets stukgaat, en blijft de rest van het boek
+ * ondertussen gewoon te lezen.
+ */
+const echtePlaat = (nr) => {
+  for (const soort of ['jpg', 'jpeg', 'png', 'webp']) {
+    const bestand = path.join(ROOT, 'store', 'prentenboek', 'platen', String(NUMMER), `${nr}.${soort}`)
+    if (existsSync(bestand)) return bestand
+  }
+  return null
+}
+
+const plaat = (naam, nr) => {
+  const bestand = echtePlaat(nr)
+  if (bestand) return `<img class="plaat" src="file://${bestand}" alt="">`
   const teken = SCENES[naam] ?? nogTeTekenen
   return `<svg class="plaat" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice">${teken()}</svg>`
 }
@@ -412,7 +432,7 @@ const plaat = (naam) => {
  * een deel op dertig uit -- het formaat dat een drukker verwacht.
  */
 const bladzijde = (blad, nr) => `<section class="blad">
-  ${plaat(blad.scene)}
+  ${plaat(blad.scene, nr)}
   <div class="hoek">
     <span class="ar">${esc(blad.woord.ar)}</span>
     <span class="nr">${nr}</span>
@@ -457,7 +477,7 @@ const html = `<!doctype html><html lang="${TAAL}"><meta charset="utf-8">
   *{margin:0;box-sizing:border-box}
   body{font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;color:${K.inkt}}
   section{width:210mm;height:148mm;position:relative;overflow:hidden;page-break-after:always}
-  .plaat{position:absolute;inset:0;width:100%;height:100%}
+  .plaat{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 
   .hoek{position:absolute;right:8mm;bottom:8mm;display:flex;align-items:center;gap:3mm;
         background:rgba(255,250,243,.9);border-radius:99mm;padding:2mm 5mm}
