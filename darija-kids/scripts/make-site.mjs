@@ -117,10 +117,24 @@ const mailto = `mailto:${OPERATOR.email}`
 
 /* ----------------------------------------------------------------- casco */
 
+/**
+ * Het vlaggetje voor een taal.
+ *
+ * Niet de emoji uit `LANGS.badge`: Windows heeft geen vlagemoji, en toont in
+ * plaats daarvan de twee letters waar zo'n vlag uit bestaat — "NL", "FR".
+ * Daar staat dan een keurige taalkiezer zonder één vlag in. Een SVG tekent op
+ * elk apparaat hetzelfde. Engels houdt zijn letters: die rij is net zo goed
+ * voor Detroit en Melbourne, en de Union Jack stuurt vier vijfde van hen weg.
+ */
+const vlagje = (l) =>
+  l.code === 'en'
+    ? `<span class="vlagje letters" aria-hidden="true">${esc(l.badge)}</span>`
+    : `<img class="vlagje" src="/icons/vlag-${l.code}.svg" alt="" width="21" height="14">`
+
 const langRow = (lang, page) => LANGS.map((other) => {
   const href = PATHS[other.code][page]
   const here = other.code === lang
-  return `<li><a href="${href}"${here ? ' aria-current="page"' : ''} hreflang="${other.code}">${esc(other.badge)} ${esc(other.name)}</a></li>`
+  return `<li><a href="${href}"${here ? ' aria-current="page"' : ''} hreflang="${other.code}">${vlagje(other)}<span>${esc(other.name)}</span></a></li>`
 }).join('')
 
 const header = (lang, page) => {
@@ -147,7 +161,7 @@ const header = (lang, page) => {
     <a class="brand" href="${home}"><img src="/icons/icon.svg" alt="" width="32" height="32"><span>Darijaforkids</span><img class="vlag" src="/icons/vlag-ma.svg" alt="${esc(c.marokko)}" width="27" height="18"></a>
     ${nav}
     <details class="langpick">
-      <summary><span aria-hidden="true">${esc(here.badge)}</span> <span class="sr-name">${esc(here.name)}</span></summary>
+      <summary>${vlagje(here)}<span class="sr-name">${esc(here.name)}</span></summary>
       <ul>${langRow(lang, page)}</ul>
     </details>
   </div>

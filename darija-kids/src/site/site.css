@@ -187,9 +187,21 @@ header.top nav + .langpick { margin-left: 0; }
   border-radius: 14px; box-shadow: var(--shadow);
 }
 .langpick li a {
-  display: block; padding: .45rem .7rem; border-radius: 9px;
+  display: flex; align-items: center; gap: .5rem;
+  padding: .45rem .7rem; border-radius: 9px;
   text-decoration: none; font-size: .95rem; white-space: nowrap;
 }
+/* Het vlaggetje is een getekende SVG, geen emoji — zie `vlagje()` in
+   make-site.mjs. De maat is vast: een vlag die met de letters meegroeit
+   springt in de voettekst een halve regel uit. */
+.vlagje { width: 21px; height: 14px; flex: none; border-radius: 2px; display: block; }
+.vlagje.letters {
+  width: auto; min-width: 21px; text-align: center;
+  font-size: .7em; font-weight: 700; letter-spacing: .04em;
+  color: var(--ink-soft);
+}
+.langpick > summary .vlagje { margin-right: -.05rem; }
+footer .cols li a { display: inline-flex; align-items: center; gap: .5rem; }
 .langpick li a:hover { background: var(--sunken); }
 .langpick li a[aria-current="page"] { color: var(--zellige); }
 @media (max-width: 30rem) { .langpick .sr-name { display: none; } }
