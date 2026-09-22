@@ -12,7 +12,18 @@ export const DEEL15_HOOFDSTUKKEN: Hoofdstuk[] = [
     'Ze zaten twee dagen later in het vliegtuig.',
     'In de auto van het vliegveld naar het dorp — vier uur, waarvan het laatste uur over een weg die eigenlijk geen weg is — zei hij niets en keek hij uit het raam naar bergen die precies op elkaar leken.',
   ] },
-  { nummer: 2, titel: 'De vrouw die praat', tekst: [
+  { nummer: 2, titel: 'Het dorp', tekst: [
+    'Het dorp ligt op negentienhonderd meter en bestaat uit tweeëntwintig huizen, een moskee, een winkel die eigenlijk iemands voorkamer is, en een walnotenboom waar iedereen onder zit.',
+    'Er is stroom. Die is er sinds Adils moeder een jaar of achttien was; daarvoor deed het hele dorp het met petroleum en met vroeg naar bed gaan.',
+    'Er is geen bereik. Op één plek wel, op de rots achter het huis van zijn oudoom, en daar staan elke avond tussen zeven en acht vier jongens naast elkaar met hun telefoon omhoog, als een soort gebed.',
+    'Adil stond daar de eerste week ook.',
+    'De tweede week nog twee keer.',
+    'De derde week is hij er niet meer geweest, en dat kwam niet doordat hij het had opgegeven. Het kwam doordat er iets anders was gaan gebeuren.',
+    'Maar dat wist hij in die eerste week nog niet, en in die eerste week was het vooral stil. Zo stil dat hij er niet van kon slapen. In Utrecht slaapt hij met zijn raam open boven een straat waar de hele nacht iets rijdt. Hier hoorde hij zijn eigen oren.',
+    'En een ezel, om vier uur, elke ochtend, precies.',
+    'Zijn neef Ilyas was veertien en sprak drie talen, waarvan er geen één Nederlands was. Die heeft de eerste dagen opgelost door Adil overal mee naartoe te nemen en nooit iets te vragen.',
+  ] },
+  { nummer: 3, titel: 'De vrouw die praat', tekst: [
     'Het probleem met zijn oma was niet dat hij haar niet mocht.',
     'Het probleem was dat hij haar niet verstond.',
     'Ze sprak Tamazight en een beetje Darija, en hij sprak Nederlands en een beetje Darija, en dat beetje van hem was niet hetzelfde beetje als dat van haar.',
@@ -22,7 +33,26 @@ export const DEEL15_HOOFDSTUKKEN: Hoofdstuk[] = [
     'Die zomer viel hem voor het eerst op dat zijn oma tijdens het vertalen altijd naar hem bleef kijken, en niet naar zijn moeder.',
     'Alsof ze wachtte.',
   ] },
-  { nummer: 3, titel: 'De kast', tekst: [
+  { nummer: 4, titel: 'Hoe het weggaat', tekst: [
+    'Op een avond vroeg hij het aan zijn moeder, op het dak, toen het al donker was.',
+    'Waarom hij het nooit had geleerd.',
+    'Zijn moeder was elf toen ze naar Nederland kwam. Ze sprak Tamazight met haar moeder, Darija op straat, en ze leerde Nederlands op een school in Utrecht waar ze het eerste jaar in een apart lokaal zat.',
+    '“Ze hebben tegen oma gezegd dat ze thuis Nederlands moest praten,” zei ze. “Voor mij. Anders zou het in de war lopen in mijn hoofd.”',
+    '“En deed ze dat?”',
+    '“Ze kón dat niet. Ze sprak geen Nederlands. Dus deed ik het.”',
+    'Dat advies was niet kwaadaardig en het werd overal gegeven: door de juf, door het consultatiebureau, door buren die het goed bedoelden.',
+    'Het is alleen niet waar. Kinderen raken niet in de war van twee talen. Wie zijn eerste taal goed kent, leert de tweede juist makkelijker — dat weten we inmiddels zeker. Toen wist men het niet, of men wilde het niet weten.',
+    'Er was in die jaren zelfs les in. Onderwijs in Eigen Taal, op de gewone basisschool, begonnen in de jaren zeventig, bedoeld voor kinderen van gastarbeiders die ooit weer terug zouden gaan.',
+    'Alleen was die les voor Marokkaanse kinderen bijna altijd in het Standaardarabisch.',
+    'Dus zat Adils moeder op woensdagmiddag een taal te leren die haar eigen moeder niet sprak.',
+    'In 2004 zijn die lessen afgeschaft.',
+    'Zo gaat een taal dus weg. Niet met een knal. Met goedbedoeld advies, een verkeerde les op woensdagmiddag, en een generatie die het druk heeft.',
+    'De eerste generatie spreekt de taal. De tweede verstaat hem. De derde kent er nog een woord of vier van, en die gaan over eten.',
+    '“En ik ben de derde,” zei Adil.',
+    '“Ja,” zei zijn moeder. “Jij bent de derde.”',
+    'Ze zaten daarna nog een hele tijd op dat dak zonder iets te zeggen, wat voor allebei makkelijker was.',
+  ] },
+  { nummer: 5, titel: 'De kast', tekst: [
     'Op de vierde dag regende het, wat daar bijna nooit gebeurt, en er was niets te doen.',
     'Zijn oma gaf hem een doek en wees naar de kast in de goede kamer, en het was duidelijk wat de bedoeling was: afstoffen.',
     'Op de bovenste plank stond een koperen doos.',
@@ -36,7 +66,7 @@ export const DEEL15_HOOFDSTUKKEN: Hoofdstuk[] = [
     'Adil verstond één woord: sarut.',
     'Sleutel.',
   ] },
-  { nummer: 4, titel: 'Hij past nergens op', tekst: [
+  { nummer: 6, titel: 'Hij past nergens op', tekst: [
     'Hij heeft het die middag geprobeerd. Elke deur in het huis, ook de kelder en de schuur.',
     'Hij past nergens op.',
     'Toen zijn moeder thuiskwam van de markt, vroeg hij het haar.',
@@ -53,7 +83,7 @@ export const DEEL15_HOOFDSTUKKEN: Hoofdstuk[] = [
     '“Wat zegt ze?”',
     '“Ze zegt: vraag het zelf, dan vertel ik het je zelf.”',
   ] },
-  { nummer: 5, titel: 'Vierentwintig woorden', tekst: [
+  { nummer: 7, titel: 'Vierentwintig woorden', tekst: [
     'Het begon als koppigheid en het werd iets anders.',
     'Adil vroeg zijn moeder die avond om tien woorden. Gewoon tien. Woorden die je nodig hebt als je iets wilt vragen.',
     'Wat. Wie. Waar. Wanneer. Waarom. Ja. Nee. Alsjeblieft. Dankjewel. Nog een keer.',
@@ -61,13 +91,29 @@ export const DEEL15_HOOFDSTUKKEN: Hoofdstuk[] = [
     'De volgende ochtend ging hij bij zijn oma in de keuken staan en zei: “Shnu?” terwijl hij naar de pot wees.',
     'Zijn oma keek op.',
     'Wat er toen gebeurde was dit: ze zette de pot neer, ze veegde haar handen af, en ze ging zitten.',
-    'En toen begon ze te praten op een andere manier dan alle dagen ervoor. Langzamer. Met haar handen. Ze wees dingen aan en zei hoe ze heetten, en als hij het naza, knikte ze en zei ze het nog een keer.',
+    'En toen begon ze te praten op een andere manier dan alle dagen ervoor. Langzamer. Met haar handen. Ze wees dingen aan en zei hoe ze heetten, en als hij het nazei, knikte ze en zei ze het nog een keer.',
     'Ze hebben die ochtend twee uur in de keuken gezeten.',
     'Aan het eind van de week kende hij vierentwintig woorden.',
     'Het is niets. Vierentwintig woorden is niets.',
     'Het was het meeste wat hij ooit in zijn leven met haar had gedeeld.',
   ] },
-  { nummer: 6, titel: 'Wat ze vertelde', tekst: [
+  { nummer: 8, titel: 'De taal die niemand opschrijft', tekst: [
+    'Er is iets grappigs met het woord dat hij als eerste had verstaan.',
+    'Sarut. Sleutel.',
+    'In het Standaardarabisch heet een sleutel miftah. Dat is niet hetzelfde woord en het lijkt er ook niet op.',
+    'Sarut komt uit het Tamazight: tasarut.',
+    'Het woord dat een Marokkaanse jongen in Utrecht om zijn nek draagt is dus geen Arabisch woord. Het is ouder dan het Arabisch in dit land.',
+    'Zo zit Darija in elkaar.',
+    'De ruggengraat is Arabisch, dat klopt. Maar er zit Amazigh in — in de woorden, in de klanken, in de manier waarop een zin loopt. Er zitten Spaanse woorden in, van de eeuwen aan de overkant en de eeuwen daarna: simana is een week, kuzina is de keuken. Er zitten Franse woorden in, van het protectoraat: tomobil, tobis, bshklit.',
+    'En het is geen mengelmoes, en het is al helemaal geen gebroken Arabisch, want het heeft eigen regels en iedereen houdt zich eraan.',
+    'Je zegt niet zomaar ergens ma en sh omheen: zo zeg je hier nee, en dat ligt vast. Je zet ghadi voor een werkwoord en je hebt het over morgen. Dat is grammatica. Die heeft niemand bedacht, niemand opgeschreven, en toch maakt niemand die de taal spreekt er fouten in.',
+    'Wat Darija bijna niet heeft, is papier.',
+    'Het is de taal van de keuken, de straat, de grap, de ruzie en het slaapliedje. Op school staat Standaardarabisch op het bord, en Frans op de andere helft. In de krant staat Standaardarabisch. Op het formulier bij de gemeente ook.',
+    'Een taal die iedereen spreekt en niemand schrijft, is precies de taal die het snelst verdwijnt als een familie verhuist. Er is niets om op terug te vallen. Geen boek, geen les, geen woordenboek dat je uit de kast trekt als je het even kwijt bent.',
+    'Er is alleen iemand die hem tegen je praat.',
+    'Daarom is vierentwintig woorden niet niets.',
+  ] },
+  { nummer: 9, titel: 'Wat ze vertelde', tekst: [
     'Met vierentwintig woorden en twee handen en zijn moeder erbij voor de moeilijke stukken, heeft hij in die drie weken meer over zijn familie gehoord dan in dertien jaar.',
     'Dat haar vader onderwijzer was geweest.',
     'Dat hij boeken in een kist had begraven toen ze het dorp moesten verlaten, en dat er iemand vijftig jaar later op was gestuit met een schop.',
@@ -79,7 +125,20 @@ export const DEEL15_HOOFDSTUKKEN: Hoofdstuk[] = [
     '“Wat is dan belangrijk?”',
     '“Ze zegt: dat er iemand is die vraagt.”',
   ] },
-  { nummer: 7, titel: 'De laatste dag', tekst: [
+  { nummer: 10, titel: 'De ster die overal is', tekst: [
+    'Toen hij de sleutel eenmaal had, ging hij hem overal zien.',
+    'Acht punten. Twee vierkanten over elkaar, een kwartslag gedraaid.',
+    'In de tegels bij de moskee van het dorp. In het hek van de school in het dal. In het houtsnijwerk boven de deur van de winkel die eigenlijk een voorkamer is. Op de theeglazen. Op het deksel van de koperen doos zelf, als je hem kantelde tegen het licht.',
+    'Hij vroeg Ilyas hoe dat heette.',
+    '“Khatam,” zei Ilyas.',
+    'Dat betekent zegel. Een stempel die je ergens op zet, zodat iedereen kan zien: dit hoort bij ons, en het is af.',
+    'Je vindt hem in de Koran, als teken tussen de stukken. Je vindt hem in het zellige van Fes en Marrakech, waar hele wanden vanaf één zo’n ster zijn uitgerekend, met een passer, door mannen die niet konden lezen maar de meetkunde in hun handen hadden zitten.',
+    'En je vindt hem in de kop van een sleutel die achttienhonderd jaar oud is.',
+    'De ster op de Marokkaanse vlag is deze trouwens niet. Die heeft vijf punten, en hij hangt er pas sinds 1915.',
+    'De ster met acht punten is veel ouder en heeft nooit een land gehad.',
+    'Hij is alleen maar overal.',
+  ] },
+  { nummer: 11, titel: 'De laatste dag', tekst: [
     'Op de laatste ochtend stonden de koffers in de gang.',
     'Adil ging naar de keuken en zijn oma stond bij het aanrecht met haar rug naar hem toe, en hij wist dat als hij niets zei, dit weer een jaar zou zijn zoals alle andere.',
     'Hij had het de avond ervoor geoefend. Zesentwintig keer, op het dak, hardop.',
@@ -93,7 +152,7 @@ export const DEEL15_HOOFDSTUKKEN: Hoofdstuk[] = [
     'In de auto naar het vliegveld huilde hij, en hij deed alsof het door de airco kwam, en zijn moeder heeft er niets van gezegd.',
     'Dat vond hij het aardigste wat ze ooit voor hem gedaan had.',
   ] },
-  { nummer: 8, titel: 'Wat hij meekreeg', tekst: [
+  { nummer: 12, titel: 'Wat hij meekreeg', tekst: [
     'In zijn rugzak, tussen zijn shirts, vond hij hem toen hij thuis uitpakte.',
     'De sleutel.',
     'Er zat een briefje bij, in het handschrift van zijn moeder, want zijn oma kon niet schrijven.',
