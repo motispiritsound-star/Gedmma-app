@@ -176,8 +176,10 @@ npm run build
 npm test
 ```
 
-Er hoort te eindigen met `Tests 158 passed`. **Komt hier een fout, ga dan niet
-verder** — dan ligt het niet aan de Mac, en dan wil ik de foutmelding zien.
+Onderaan hoort `Tests <getal> passed` te staan, en nergens het woord
+`failed`. Het getal groeit met elk deel dat erbij komt, dus schrik niet als
+het hoger is dan de vorige keer. **Staat er wél `failed`, ga dan niet verder**
+— dan ligt het niet aan de Mac, en dan wil ik de foutmelding zien.
 
 ### B3. Het iOS-project aanmaken
 
