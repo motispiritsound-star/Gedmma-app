@@ -16,8 +16,9 @@
  */
 import { DELEN, type Deel, type Vertaling } from './prentenboek'
 import { FR } from './prentenboek-fr'
+import { DE } from './prentenboek-de'
 
-export const VERTALINGEN: Record<string, Vertaling> = { fr: FR }
+export const VERTALINGEN: Record<string, Vertaling> = { fr: FR, de: DE }
 
 /**
  * Welke talen compleet zijn.
@@ -118,6 +119,18 @@ export const SCHIL: Record<string, Schil> = {
     uitleg: 'Sous chaque mot, la prononciation est écrite en lettres normales. Lis-la comme elle est écrite — ça marche. Et si tu veux l’entendre, les douze sont aussi dans l’application.',
     hierna: 'La suite',
     deel: (n) => `darijaforkids.eu · Sba tome ${n}`,
+  },
+  de: {
+    woord: (n) => `Wort ${n}`,
+    hardop: 'Sag es laut!',
+    voet: 'Darija for Kids · zusammen lernen mit Sba',
+    waarSpeelt: 'Wo dieses Buch spielt',
+    wieMee: 'Wer mitkommt',
+    jaar: 'Jahre',
+    deWoorden: 'Die zwölf Wörter dieses Buches',
+    uitleg: 'Unter jedem Wort steht, wie man es sagt, in ganz normalen Buchstaben. Lies es genau so vor, wie es dasteht — dann stimmt es. Und wer es hören möchte: alle zwölf gibt es auch in der App.',
+    hierna: 'Weiter geht es',
+    deel: (n) => `darijaforkids.eu · Sba Band ${n}`,
   },
 }
 

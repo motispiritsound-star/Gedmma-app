@@ -35,7 +35,10 @@ const ster = (cx, cy, r, vul) => {
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
+/** Zowel `--taal de` als `--taal=de`; het tweede kost anders stilletjes een Nederlands boek. */
 const arg = (naam, terugval = null) => {
+  const gelijk = process.argv.find((a) => a.startsWith(`--${naam}=`))
+  if (gelijk) return gelijk.slice(naam.length + 3)
   const i = process.argv.indexOf(`--${naam}`)
   return i > 0 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : terugval
 }
