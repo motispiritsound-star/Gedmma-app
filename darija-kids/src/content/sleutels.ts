@@ -47,6 +47,37 @@ export const DISCLAIMER = [
   'Waar het verhaal een gat in de geschiedenis opvult met fantasie, staat dat achterin bij "Wat hiervan is echt gebeurd". Lees dat stuk. Het is het spannendste van het boek, want daar zie je hoe vreemd het echte verhaal vaak nog is.',
 ]
 
+/**
+ * De toon van de reeks.
+ *
+ * Deze boeken spelen in een land waar het geloof het dagelijks leven ordent,
+ * en dat hoort erin — niet als les, maar zoals het is: de oproep die de dag
+ * indeelt, de moskee als het hart van de stad, de vrijdag, de maand van het
+ * vasten, de reis naar Mekka waarmee deel 6 begint. Wie de geschiedenis van
+ * Marokko vertelt zonder dat, vertelt een ander land.
+ *
+ * De regels waar de schrijver zich aan houdt:
+ *
+ * - **Geen verzonnen heilige tekst.** Er wordt geen vers en geen overlevering
+ *   geciteerd die niet bestaat, en liever helemaal niet geciteerd. Wat mensen
+ *   geloven laat je zien aan wat ze doen, niet aan wat je ze laat opzeggen.
+ * - **Het geloof is achtergrond, geen preek.** Een kind dat bidt voordat het
+ *   iets moeilijks doet, een moeder die "inshallah" zegt en het meent, een
+ *   smid die met bismillah begint aan zijn werk. Dat is genoeg.
+ * - **Kennis is de rode draad.** Van de al-Qarawiyyin in deel 3 tot de kaart
+ *   van al-Idrisi, de reis van Ibn Battuta en de bibliotheken van Fes: het
+ *   zoeken naar kennis is in deze geschiedenis een opdracht, en zo staat het
+ *   er ook in.
+ * - **Gastvrijheid, geduld, dankbaarheid.** Drie dingen die in elk deel
+ *   terugkomen omdat ze in elk deel werkelijk gebeurden: de vreemdeling die
+ *   eten krijgt, het wachten dat beloond wordt, het danken na afloop.
+ * - **Deel 1 speelt vóór de islam.** Walili is Romeins en Amazigh, rond het
+ *   jaar 200. Dat is met opzet het begin: de reeks laat zien hoe het land
+ *   werd wat het is, en in deel 2 komt het nieuwe geloof over zee mee.
+ * - **Niemand wordt weggeschreven.** Joden, christenen en Amazigh die hun
+ *   eigen gebruiken houden, horen in dit land en horen dus in deze boeken.
+ */
+
 /** De reis van de sleutel, in één oogopslag. */
 export const REEKS: Omit<Sleuteldeel, 'hoofdstukken'>[] = [
   {

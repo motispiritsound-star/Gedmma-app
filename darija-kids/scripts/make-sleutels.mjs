@@ -13,7 +13,7 @@
  *
  * Run with:
  *   node scripts/make-sleutels.mjs --deel 1
- *   node scripts/make-sleutels.mjs --bijbel
+ *   node scripts/make-sleutels.mjs --opzet
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -28,9 +28,9 @@ const arg = (naam, terugval = null) => {
   const i = process.argv.indexOf(`--${naam}`)
   return i > 0 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : terugval
 }
-const BIJBEL = process.argv.includes('--bijbel')
+const OPZET = process.argv.includes('--opzet')
 const NUMMER = Number(arg('deel', '1'))
-const UIT = path.join(ROOT, 'store', 'sleutels', BIJBEL ? 'de-reeks.pdf' : `sleutels-${NUMMER}.pdf`)
+const UIT = path.join(ROOT, 'store', 'sleutels', OPZET ? 'de-reeks.pdf' : `sleutels-${NUMMER}.pdf`)
 
 const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 /** *schuin* wordt schuin. Meer opmaak heeft een roman niet nodig. */
@@ -125,7 +125,7 @@ ${achterin(deel)}
 </body></html>`
 }
 
-const bijbel = () => `<!doctype html><html lang="nl"><meta charset="utf-8"><style>${STIJL}</style><body>
+const opzet = () => `<!doctype html><html lang="nl"><meta charset="utf-8"><style>${STIJL}</style><body>
 <section class="titelblad">
   <div class="reeks">De sleutels van Marokko</div>
   <h1>Vijftien delen</h1>
@@ -153,9 +153,9 @@ ${REEKS.map((deel) => `<section class="hfd">
 </section>`).join('')}
 </body></html>`
 
-const html = BIJBEL ? bijbel() : deelBoek(REEKS.find((d) => d.nummer === NUMMER))
+const html = OPZET ? opzet() : deelBoek(REEKS.find((d) => d.nummer === NUMMER))
 await mkdir(path.dirname(UIT), { recursive: true })
-const tijdelijk = path.join(tmpdir(), `.sleutels-${BIJBEL ? 'bijbel' : NUMMER}.html`)
+const tijdelijk = path.join(tmpdir(), `.sleutels-${OPZET ? 'opzet' : NUMMER}.html`)
 await writeFile(tijdelijk, html)
 
 const browser = await chromium.launch({ executablePath: CHROME })
