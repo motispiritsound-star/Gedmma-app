@@ -46,6 +46,7 @@
     "build:app": "tsc -b && vite build",
     "site": "node scripts/make-site.mjs",
     "siteassets": "node scripts/make-siteassets.mjs",
+    "verhaalboek": "node scripts/make-verhaalboek.mjs",
     "woordjes": "node scripts/make-woordjes.mjs",
     "playpakket": "node scripts/make-playpakket.mjs",
     "play": "node scripts/play-vermelding.mjs",

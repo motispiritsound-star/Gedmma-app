@@ -83,10 +83,27 @@ Niet zelf verzinnen. **De verhalen die iedereen van zijn oma kent:**
 Dit zijn overgeleverde volksverhalen; je hervertelt ze zelf, met je eigen
 woorden en je eigen stem. Zet er wel bij dat het een hervertelling is.
 
+### De vorm staat er al
+
+`npm run verhaalboek` maakt hem, op A5, uit de vier verhalen die al in de app
+staan. Niet het product — de **vorm**: per regel een spoornummer, het schrift,
+de klank en de betekenis onder elkaar, zodat je kunt zien of dit boek is wat
+je voor je zag voordat er een euro naar een studio gaat.
+
+```bash
+npm run verhaalboek                       # de vier verhalen uit de app
+npm run verhaalboek -- --verhaal jedda    # er een
+npm run verhaalboek -- --taal fr
+```
+
 ### Wat het kost en oplevert
 
-Het maken van de PDF kost je niets: de pijplijn van `npm run ebook` maakt hem
-al uit de inhoud, en die is uit te breiden naar verhalen.
+Het maken van de PDF kost je niets: de pijplijn maakt hem uit de inhoud.
+
+**En één cijfer dat de begroting bepaalt:** van de 38 verhaalregels die nu in
+de app staan heeft er **één** een opname. De woorden en de losse zinnen zijn
+ingesproken, de verhaalregels niet. Elk verhaal dat je verkoopt moet dus in
+zijn geheel opgenomen worden.
 
 **De kosten zitten in de opnames.** Tien verhalen van vierhonderd woorden is
 een dag studio met dezelfde stem als in de app — en het moet dezelfde stem
