@@ -157,6 +157,14 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 - [x] Voorwaarden: Apple's standaard-EULA blijft staan; de app linkt zelf naar
       `/voorwaarden` op het abonnementsscherm, en daarmee is aan de eis voldaan
 - [x] De notitie aan de reviewer staat erin, in het Engels (§5)
+- [x] Google: winkelvermelding in zes talen — met de warmere beschrijving die
+      bij het kind begint, verstuurd met `npm run play -- --tekst`
+- [x] Google: het veld **Video** gevuld met de film op YouTube
+      (`youtube.com/watch?v=3iHXGpubnaI`), in alle zes de talen
+- [x] De vier kanalen staan: YouTube, Instagram, TikTok en de Facebook-pagina,
+      alle vier als `darijaforkidsapp` (docs/SOCIAL.md). Geen X.
+- [x] Op de website staat **Binnenkort beschikbaar** boven de kop, in zes talen —
+      er komt bezoek van de socials voordat de winkels open zijn
 
 ### Nog recht te zetten in de app
 
