@@ -22,79 +22,51 @@ export interface Product {
 }
 
 /**
- * De prijzen op één plek.
+ * De betaallinks. Dit is het enige blok dat verandert als de winkel opengaat.
  *
- * Een los prentenboek is een avond voorlezen en kost daarom minder dan een
- * leesboek waar een kind van twaalf een week mee zoet is. De bundel is
- * ongeveer een derde goedkoper dan de losse delen bij elkaar: genoeg om te
- * kiezen voor de reeks, niet zoveel dat een los deel kopen dom voelt.
+ * Twee regels, meer niet: één voor elke reeks. `docs/WINKEL-INRICHTEN.md`
+ * zegt hoe je aan die adressen komt.
+ *
+ * Wat er niet in staat, blijft leeg, en een leeg adres toont "Binnenkort" in
+ * plaats van een knop die nergens heen gaat. De twee reeksen kunnen dus los
+ * van elkaar opengaan.
+ */
+const LINKS: Record<string, string> = {
+  // sbaReeks: 'https://…',
+  // sleutelsReeks: 'https://…',
+  // ebook: 'https://…',
+}
+
+/**
+ * De prijzen.
+ *
+ * Eén prijs per reeks, en geen losse delen. Dat is een bewuste keuze en het
+ * is de goede: tien euro voor één prentenboek van dertig bladzijden vraagt
+ * van een ouder een afweging bij elk deel, twaalf keer achter elkaar. Voor
+ * vijfendertig euro krijgt hij de hele reeks en is de afweging één keer.
+ *
+ * Per deel komt dat op ongeveer drie euro. Dat is minder dan een boek in de
+ * winkel en het is meer dan wat er in totaal binnenkomt bij twaalf losse
+ * beslissingen waarvan er negen niet genomen worden.
  */
 export const PRIJS = {
-  sbaDeel: '€ 9,99',
-  sbaReeks: '€ 79,95',
-  sleutelsDeel: '€ 12,95',
-  sleutelsReeks: '€ 129,95',
+  sbaReeks: '€ 34,99',
+  sleutelsReeks: '€ 34,99',
   ebook: '€ 14,99',
 } as const
 
-/**
- * De betaallinks. Dit is het enige blok dat verandert als de winkel opengaat.
- *
- * Eén regel per product: de sleutel links, het adres van de afrekenpagina
- * rechts. `npm run winkel` schrijft de lijst met welke sleutel bij welk boek
- * hoort; `docs/WINKEL-INRICHTEN.md` zegt hoe je aan die adressen komt.
- *
- * Wat er niet in staat, blijft leeg, en een leeg adres toont "Binnenkort" in
- * plaats van een knop die nergens heen gaat. Je kunt dus per deel opengaan.
- */
-const LINKS: Record<string, string> = {
-  // ebook: 'https://…',
-  // sba1: 'https://…',
-  // sba2: 'https://…',
-  // sbaReeks: 'https://…',
-  // sleutels1: 'https://…',
-  // sleutelsReeks: 'https://…',
-}
-
-const los = (aantal: number, sleutel: string, prijs: string): Record<string, Product> =>
-  Object.fromEntries(Array.from({ length: aantal }, (_, i) => {
-    const id = `${sleutel}${i + 1}`
-    return [id, { prijs, link: LINKS[id] ?? '' }]
-  }))
-
-const een = (id: string, prijs: string): Product => ({ prijs, link: LINKS[id] ?? '' })
-
 export const SHOP: Record<string, Product> = {
   /** Het e-boek dat `npm run ebook` maakt: alle woorden, letters en grammatica. */
-  ebook: een('ebook', PRIJS.ebook),
-  /** De twaalf prentenboeken van Sba, los. */
-  ...los(12, 'sba', PRIJS.sbaDeel),
-  /** Alle twaalf samen. */
-  sbaReeks: een('sbaReeks', PRIJS.sbaReeks),
-  /** De vijftien delen van De sleutels van Marokko, los. */
-  ...los(15, 'sleutels', PRIJS.sleutelsDeel),
-  /** Alle vijftien samen. */
-  sleutelsReeks: een('sleutelsReeks', PRIJS.sleutelsReeks),
-}
-
-/**
- * Een adres moet een echte afrekenpagina zijn.
- *
- * Een typefout in dit blok levert anders een knop op die naar niets gaat, en
- * dat merk je pas als een klant het meldt. Liever hier stuk dan in de winkel.
- */
-for (const [id, link] of Object.entries(LINKS)) {
-  if (link && !/^https:\/\/[^\s]+$/.test(link)) {
-    throw new Error(`shop.ts: het adres bij "${id}" is geen https-adres: ${link}`)
-  }
-  if (link && !(id in SHOP)) {
-    throw new Error(`shop.ts: "${id}" staat in LINKS maar is geen product. Draai \`npm run winkel\` voor de lijst met sleutels.`)
-  }
+  ebook: { prijs: PRIJS.ebook, link: LINKS.ebook ?? '' },
+  /** De twaalf prentenboeken van Sba, samen. */
+  sbaReeks: { prijs: PRIJS.sbaReeks, link: LINKS.sbaReeks ?? '' },
+  /** De vijftien delen van De sleutels van Marokko, samen. */
+  sleutelsReeks: { prijs: PRIJS.sleutelsReeks, link: LINKS.sleutelsReeks ?? '' },
 }
 
 /** Of er iets te koop is; zolang niets een link heeft, is de winkel dicht. */
 export const WINKEL_OPEN = Object.values(SHOP).some((p) => p.link !== '')
 
-/** Of een losse reeks al te koop is — de twee blokken staan los van elkaar. */
+/** Of een van de twee reeksen al te koop is; ze gaan los van elkaar open. */
 export const REEKS_OPEN = (sleutel: 'sba' | 'sleutels'): boolean =>
-  Object.entries(SHOP).some(([id, p]) => id.startsWith(sleutel) && p.link !== '')
+  SHOP[`${sleutel}Reeks`]?.link !== ''

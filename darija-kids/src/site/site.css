@@ -289,7 +289,7 @@ header nav a.uit:hover { background: color-mix(in oklab, var(--saffron) 34%, tra
 .delenlijst[open] > summary { margin-bottom: .6rem; }
 .delenlijst ol { list-style: none; margin: 0; padding: 0; }
 .delenlijst li {
-  display: grid; grid-template-columns: 4.6rem 1fr auto auto; gap: .5rem .9rem;
+  display: grid; grid-template-columns: 4.6rem 1fr; gap: .5rem .9rem;
   align-items: center; padding: .7rem .2rem; border-top: 1px solid var(--line);
 }
 .delenlijst li:last-child { border-bottom: 1px solid var(--line); }
@@ -316,13 +316,17 @@ header nav a.uit:hover { background: color-mix(in oklab, var(--saffron) 34%, tra
 .bundel b { display: block; }
 .bundel span { font-size: .86rem; color: var(--ink-soft); }
 .bundel .prijs { font-size: 1.05rem; font-weight: 700; color: var(--ink); }
+/* De regel onder de lijst: wat het geheel kost. Hij staat in de uitklap en
+   niet erbuiten, want hij hoort bij wat je net hebt zitten lezen. */
+.delenlijst .alles {
+  margin: .9rem 0 .2rem; padding: .8rem 1rem; border-radius: var(--radius);
+  background: color-mix(in oklab, var(--saffron) 14%, transparent);
+  font-weight: 700; text-align: center;
+}
 @media (max-width: 34rem) {
-  .delenlijst li { grid-template-columns: 1fr auto; }
-  .delenlijst .nr { grid-column: 1 / -1; }
+  .delenlijst li { grid-template-columns: 1fr; }
+  .delenlijst .nr { grid-column: 1; }
   .delenlijst .wat { grid-column: 1; }
-  .delenlijst .koop { grid-column: 1 / -1; justify-self: start; }
-  .bundel { grid-template-columns: 1fr auto; }
-  .bundel > div { grid-column: 1 / -1; }
 }
 
 /* ── De vier kanalen ──────────────────────────────────────────────────── */

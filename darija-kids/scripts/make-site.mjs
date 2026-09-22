@@ -740,15 +740,16 @@ const booksPage = (lang) => {
   const p = PATHS[lang]
   const d = DELEN[lang]
 
-  const reeks = (badge, titel, body, punten, kunst, koop = []) => `<article class="reeks">
+  const reeks = (badge, titel, body, punten, kunst, koop) => `<article class="reeks">
     <div class="kunst">${kunst}</div>
     <div class="inhoud">
       <span class="leeftijd">${esc(badge)}</span>
       <h2>${esc(titel)}</h2>
       <p>${esc(body)}</p>
       <ul>${punten.map((punt) => `<li>${esc(punt)}</li>`).join('')}</ul>
-      ${koop.filter((k) => SHOP[k.id]?.link).map((k) => `<a class="mailbtn" href="${SHOP[k.id].link}" rel="noopener">${esc(k.wat)} — ${esc(SHOP[k.id].prijs)}</a>`).join(' ')
-        || `<span class="status">${esc(c.boekStatus)}</span>`}
+      ${SHOP[koop]?.link
+        ? `<a class="mailbtn" href="${SHOP[koop].link}" rel="noopener">${esc(c.boekKoop)} — ${esc(SHOP[koop].prijs)}</a>`
+        : `<span class="status">${esc(c.boekStatus)} · ${esc(SHOP[koop].prijs)}</span>`}
     </div>
   </article>`
 
@@ -759,32 +760,15 @@ const booksPage = (lang) => {
    * "binnenkort" — geen dode knop, want een bezoeker die op een knop drukt en
    * niets ziet gebeuren komt niet terug om het nog eens te proberen.
    */
-  const lijst = (sleutel, titels, bij, reeksId) => `<details class="delenlijst">
+  const lijst = (titels, bij, reeksId) => `<details class="delenlijst">
     <summary>${esc(c.boekDelenKnop(titels.length))}</summary>
     <ol>
-      ${titels.map((titel, i) => {
-        const id = `${sleutel}${i + 1}`
-        const artikel = SHOP[id]
-        return `<li>
-          <span class="nr">${esc(c.boekDeelWoord)} ${i + 1}</span>
-          <span class="wat"><b>${esc(titel)}</b><i>${esc(bij(i))}</i></span>
-          <span class="prijs">${esc(artikel.prijs)}</span>
-          ${artikel.link
-            ? `<a class="koop" href="${artikel.link}" rel="noopener">${esc(c.boekKoop)}</a>`
-            : `<span class="koop uit">${esc(c.boekBinnenkort)}</span>`}
-        </li>`
-      }).join('')}
+      ${titels.map((titel, i) => `<li>
+        <span class="nr">${esc(c.boekDeelWoord)} ${i + 1}</span>
+        <span class="wat"><b>${esc(titel)}</b><i>${esc(bij(i))}</i></span>
+      </li>`).join('')}
     </ol>
-    <div class="bundel">
-      <div>
-        <b>${esc(c.boekHeleReeks)}</b>
-        <span>${esc(c.boekHeleReeksBody)}</span>
-      </div>
-      <span class="prijs">${esc(SHOP[reeksId].prijs)}</span>
-      ${SHOP[reeksId].link
-        ? `<a class="koop" href="${SHOP[reeksId].link}" rel="noopener">${esc(c.boekKoop)}</a>`
-        : `<span class="koop uit">${esc(c.boekBinnenkort)}</span>`}
-    </div>
+    <p class="alles">${esc(c.boekAllesSamen(titels.length, SHOP[reeksId].prijs))}</p>
   </details>`
 
   /**
@@ -816,13 +800,11 @@ const booksPage = (lang) => {
   <h1>${esc(c.boekTitel)}</h1>
   <p class="intro">${esc(c.boekLead)}</p>
 
-  ${reeks(c.boekKlein, c.boekKleinTitel, c.boekKleinBody, c.boekKleinPunten, leeuw, [
-    { id: 'sba1', wat: c.boekDeel1 }, { id: 'sbaReeks', wat: c.boekAlleVijf },
-  ])}
-  ${lijst('sba', d.sba, () => d.woorden(12), 'sbaReeks')}
+  ${reeks(c.boekKlein, c.boekKleinTitel, c.boekKleinBody, c.boekKleinPunten, leeuw, 'sbaReeks')}
+  ${lijst(d.sba, () => d.woorden(12), 'sbaReeks')}
 
-  ${reeks(c.boekGroot, c.boekGrootTitel, c.boekGrootBody, c.boekGrootPunten, sleutel)}
-  ${lijst('sleutels', d.sleutels, (i) => `${SLEUTELREEKS[i].jaar === 'Nu' ? d.nu : SLEUTELREEKS[i].jaar} · ${SLEUTELPLEK[i]}`, 'sleutelsReeks')}
+  ${reeks(c.boekGroot, c.boekGrootTitel, c.boekGrootBody, c.boekGrootPunten, sleutel, 'sleutelsReeks')}
+  ${lijst(d.sleutels, (i) => `${SLEUTELREEKS[i].jaar === 'Nu' ? d.nu : SLEUTELREEKS[i].jaar} · ${SLEUTELPLEK[i]}`, 'sleutelsReeks')}
 
   <p class="soon">${esc(c.boekSlot)}</p>
   <p><a class="mailbtn" href="${mailto}?subject=${encodeURIComponent(c.boekTitel)}&body=${encodeURIComponent(c.houMeOpDeHoogteMail)}">${esc(c.houMeOpDeHoogte)}</a>
