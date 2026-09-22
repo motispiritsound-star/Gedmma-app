@@ -269,7 +269,7 @@ const downloadBlock = (lang) => {
     </div>
     <p class="trust">${esc(c.trustLine)}</p>
     ${live ? '' : `<p class="soon">${esc(c.binnenkortBody)}</p>
-    <a class="mailbtn" href="${mailto}?subject=${encodeURIComponent('Darijaforkids')}">${esc(c.houMeOpDeHoogte)}</a>`}`
+    <a class="mailbtn" href="${mailto}?subject=${encodeURIComponent(c.houMeOpDeHoogte)}&body=${encodeURIComponent(c.houMeOpDeHoogteMail)}">${esc(c.houMeOpDeHoogte)}</a>`}`
 }
 
 const unitList = (lang) => {

@@ -70,6 +70,7 @@ const nl = {
   binnenkortBody:
     'De app ligt bij Apple en Google ter beoordeling. Wil je weten wanneer hij er staat? Stuur een mailtje en je hoort het als eerste.',
   houMeOpDeHoogte: 'Hou me op de hoogte',
+  houMeOpDeHoogteMail: 'Ja, hou mij op de hoogte. Laat het me weten zodra de app in de winkel staat.',
 
   videoTitel: 'Een halve minuut, en je weet het',
   videoBody:
@@ -175,6 +176,7 @@ const fr: SiteCopy = {
   binnenkortBody:
     "L'application est en cours d'examen chez Apple et Google. Vous voulez savoir quand elle sort ? Écrivez-nous et vous serez prévenu en premier.",
   houMeOpDeHoogte: 'Prévenez-moi',
+  houMeOpDeHoogteMail: 'Oui, tenez-moi au courant. Prévenez-moi dès que l’application est disponible.',
 
   videoTitel: 'Trente secondes, et vous saurez',
   videoBody:
@@ -277,6 +279,7 @@ const de: SiteCopy = {
   binnenkortBody:
     'Die App liegt bei Apple und Google zur Prüfung. Sie möchten wissen, wann sie da ist? Schreiben Sie uns kurz — Sie hören es als Erste.',
   houMeOpDeHoogte: 'Benachrichtigt mich',
+  houMeOpDeHoogteMail: 'Ja, haltet mich auf dem Laufenden. Sagt mir Bescheid, sobald die App im Store steht.',
 
   videoTitel: 'Eine halbe Minute, und Sie wissen Bescheid',
   videoBody:
@@ -379,6 +382,7 @@ const es: SiteCopy = {
   binnenkortBody:
     'La app está en revisión en Apple y Google. ¿Quieres saber cuándo estará? Escríbenos y serás el primero en enterarte.',
   houMeOpDeHoogte: 'Avísame',
+  houMeOpDeHoogteMail: 'Sí, mantenme informado. Avísame en cuanto la aplicación esté en la tienda.',
 
   videoTitel: 'Medio minuto y lo sabrás',
   videoBody:
@@ -481,6 +485,7 @@ const it: SiteCopy = {
   binnenkortBody:
     'L’app è in revisione da Apple e Google. Vuoi sapere quando sarà disponibile? Scrivici e sarai il primo a saperlo.',
   houMeOpDeHoogte: 'Avvisami',
+  houMeOpDeHoogteMail: 'Sì, tenetemi aggiornato. Fatemi sapere appena l’app è nel negozio.',
 
   videoTitel: 'Mezzo minuto e capirai',
   videoBody:
@@ -584,6 +589,7 @@ const en: SiteCopy = {
   binnenkortBody:
     'The app is with Apple and Google for review. Want to know the moment it lands? Send us a line and you will hear it first.',
   houMeOpDeHoogte: 'Let me know',
+  houMeOpDeHoogteMail: 'Yes, keep me posted. Let me know as soon as the app is in the store.',
 
   videoTitel: 'Half a minute, and you will know',
   videoBody:
