@@ -251,13 +251,16 @@ Array.prototype.forEach.call(document.querySelectorAll('.collage'), function (co
 
 /* ------------------------------------------------------------- startpagina */
 
+/** Zolang geen van beide winkels een adres heeft, is de app nog niet te krijgen. */
+const LIVE = Boolean(STORE.apple || STORE.google)
+
 const storeButton = (label, sub, href) => href
   ? `<a class="store" href="${href}" rel="noopener"><span><span class="small">${esc(sub)}</span><span class="big">${esc(label)}</span></span></a>`
   : `<span class="store" aria-disabled="true"><span><span class="small">${esc(sub)}</span><span class="big">${esc(label)}</span></span></span>`
 
 const downloadBlock = (lang) => {
   const c = SITE[lang]
-  const live = STORE.apple || STORE.google
+  const live = LIVE
   return `<div class="buttons">
       ${storeButton(c.appStore, STORE.apple ? c.downloadOp : c.binnenkort, STORE.apple)}
       ${storeButton(c.playStore, STORE.google ? c.verkrijgbaarOp : c.binnenkort, STORE.google)}
@@ -319,6 +322,7 @@ const homePage = (lang, media) => {
     `<section class="hero">
   <div class="wrap">
     <div>
+      ${LIVE ? '' : `<p class="badge"><span class="stip" aria-hidden="true"></span>${esc(c.binnenkortBadge)}</p>`}
       <span class="kicker">${esc(c.heroKicker)}</span>
       <h1>${esc(c.heroTitel1)}<span class="accent">${esc(c.heroAccent)}</span>${esc(c.heroTitel2)}</h1>
       <p class="lead">${esc(c.heroLead)}</p>
@@ -437,7 +441,7 @@ const homePage = (lang, media) => {
     body: `${body}
 <div class="sticky">
   <span>${esc(c.heroKicker)}</span>
-  <a href="#download">${esc(c.stickyKnop)}</a>
+  <a href="#download">${esc(LIVE ? c.stickyKnop : c.houMeOpDeHoogte)}</a>
 </div>`,
     title: c.metaTitle,
     description: c.metaDescription,

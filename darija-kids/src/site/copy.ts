@@ -57,6 +57,7 @@ const nl = {
   downloadOp: 'Download in de',
   verkrijgbaarOp: 'Ontdek het op',
   binnenkort: 'Binnenkort',
+  binnenkortBadge: 'Binnenkort beschikbaar',
   binnenkortBody:
     'De app ligt bij Apple en Google ter beoordeling. Wil je weten wanneer hij er staat? Stuur een mailtje en je hoort het als eerste.',
   houMeOpDeHoogte: 'Hou me op de hoogte',
@@ -152,6 +153,7 @@ const fr: SiteCopy = {
   downloadOp: 'Télécharger dans l’',
   verkrijgbaarOp: 'Disponible sur',
   binnenkort: 'Bientôt',
+  binnenkortBadge: 'Bientôt disponible',
   binnenkortBody:
     "L'application est en cours d'examen chez Apple et Google. Vous voulez savoir quand elle sort ? Écrivez-nous et vous serez prévenu en premier.",
   houMeOpDeHoogte: 'Prévenez-moi',
@@ -244,6 +246,7 @@ const de: SiteCopy = {
   downloadOp: 'Laden im',
   verkrijgbaarOp: 'Jetzt bei',
   binnenkort: 'Demnächst',
+  binnenkortBadge: 'Demnächst verfügbar',
   binnenkortBody:
     'Die App liegt bei Apple und Google zur Prüfung. Sie möchten wissen, wann sie da ist? Schreiben Sie uns kurz — Sie hören es als Erste.',
   houMeOpDeHoogte: 'Benachrichtigt mich',
@@ -336,6 +339,7 @@ const es: SiteCopy = {
   downloadOp: 'Consíguelo en la',
   verkrijgbaarOp: 'Disponible en',
   binnenkort: 'Muy pronto',
+  binnenkortBadge: 'Muy pronto disponible',
   binnenkortBody:
     'La app está en revisión en Apple y Google. ¿Quieres saber cuándo estará? Escríbenos y serás el primero en enterarte.',
   houMeOpDeHoogte: 'Avísame',
@@ -428,6 +432,7 @@ const it: SiteCopy = {
   downloadOp: 'Scarica su',
   verkrijgbaarOp: 'Disponibile su',
   binnenkort: 'Presto',
+  binnenkortBadge: 'Presto disponibile',
   binnenkortBody:
     'L’app è in revisione da Apple e Google. Vuoi sapere quando sarà disponibile? Scrivici e sarai il primo a saperlo.',
   houMeOpDeHoogte: 'Avvisami',
@@ -520,6 +525,8 @@ const en: SiteCopy = {
   downloadOp: 'Download on the',
   verkrijgbaarOp: 'Get it on',
   binnenkort: 'Coming soon',
+  binnenkortBadge: 'Coming soon',
+
   binnenkortBody:
     'The app is with Apple and Google for review. Want to know the moment it lands? Send us a line and you will hear it first.',
   houMeOpDeHoogte: 'Let me know',
