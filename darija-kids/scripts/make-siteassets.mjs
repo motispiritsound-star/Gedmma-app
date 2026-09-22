@@ -54,21 +54,22 @@ const duurVan = async (file) => {
 }
 
 /**
- * Twee Darija-woorden die tussen de muziek door te horen zijn.
+ * Eén Darija-woord, aan het eind, tussen de muziek door.
  *
  * De film laat de app zien maar liet hem niet hóren, en juist het geluid is
- * waar deze app op staat: geen spraakcomputer maar een mens. Dus komt de echte
- * opname van salam aan het begin voorbij en die van shukran tegen het eind, met
- * de muziek er even onder. Het zijn dezelfde bestanden die in de app zitten —
- * een bezoeker hoort precies wat zijn kind straks hoort.
+ * waar deze app op staat: geen spraakcomputer maar een mens.
+ *
+ * Eerst stonden er drie opnames in, verdeeld over de film. Dat was er twee te
+ * veel. Een stem die drie keer door de muziek heen komt wordt een element van
+ * de muziek; één stem, op het eind, is iets wat je hoort. En het woord is
+ * *darija* — de naam van waar het hele ding over gaat, uitgesproken door de
+ * stem die het kind straks in de app hoort.
+ *
+ * Hij wordt vanaf het eind geplaatst en niet op een vaste seconde, want de
+ * film is niet in elke taal even lang.
  */
 const WOORDEN = [
-  { id: 'salam', op: 5 },
-  { id: 'shukran', op: 21 },
-  // Bslama sluit af, en dat kan niet op een vaste seconde: hij moet net voor
-  // de aftiteling vallen, en de film is niet in elke taal even lang. Dus wordt
-  // hij vanaf het eind geplaatst, met anderhalve seconde stilte erachter.
-  { id: 'bslama', voorEind: 1.5 },
+  { id: 'darija', voorEind: 1.2 },
 ]
 
 await rm(OUT, { recursive: true, force: true })

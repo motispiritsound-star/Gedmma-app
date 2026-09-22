@@ -30,3 +30,4 @@ android/local.properties
 android/app/build/
 android/.gradle/
 /store/winkel/
+/store/bladen/

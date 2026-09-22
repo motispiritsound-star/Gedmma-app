@@ -46,3 +46,51 @@ CREATE TABLE IF NOT EXISTS voortgang (
   -- instead of repeating itself.
   vorige_xp   INTEGER NOT NULL DEFAULT 0
 );
+
+-- ---------------------------------------------------------------- de lezer
+--
+-- Wie een reeks koopt, krijgt een persoonlijke sleutel en leest de boeken op
+-- de website. Geen account en geen wachtwoord: de sleutel ís de toegang.
+--
+-- Dat is met opzet. Een wachtwoord is iets wat je kwijtraakt, iets wat je
+-- opnieuw moet kunnen instellen, en iets wat wij dan moeten bewaren en
+-- beschermen. Een link in je mail is er altijd nog, en als hij toch
+-- rondzwerft kun je hem intrekken en een nieuwe geven — dat kan met een
+-- wachtwoord niet zonder de klant lastig te vallen.
+--
+-- De sleutel zelf staat hier niet in. Alleen zijn hash, net als bij een
+-- wachtwoord: als deze tabel ooit uitlekt, lekken de boeken niet mee.
+
+CREATE TABLE IF NOT EXISTS bestelling (
+  id            TEXT PRIMARY KEY,
+  -- SHA-256 van de sleutel uit de link. Hier staat nooit de sleutel zelf.
+  sleutel_hash  TEXT NOT NULL UNIQUE,
+  email         TEXT NOT NULL,
+  -- 'sba', 'sleutels', of allebei met een komma ertussen.
+  reeksen       TEXT NOT NULL,
+  taal          TEXT NOT NULL DEFAULT 'nl',
+  -- Wat de koper op elke bladzijde ziet staan: zijn eigen naam en bestelnummer.
+  merk          TEXT NOT NULL DEFAULT '',
+  -- Het ordernummer bij de betaalpartner, om een klacht te kunnen terugvinden.
+  bestelnummer  TEXT,
+
+  gekocht_op    INTEGER NOT NULL,
+  -- Gezet als de sleutel is ingetrokken; dan werkt hij niet meer.
+  ingetrokken   INTEGER,
+  reden         TEXT
+);
+
+CREATE INDEX IF NOT EXISTS bestelling_email ON bestelling (email);
+
+-- Hoe vaak en vanaf hoeveel verschillende plekken een sleutel wordt gebruikt.
+--
+-- Niet om te controleren wie wat leest: er staat geen ip in, alleen een hash
+-- ervan, en geen bladzijde. Het is er voor één vraag: gaat deze sleutel rond?
+-- Eén gezin leest vanaf twee of drie plekken. Veertig is iets anders.
+CREATE TABLE IF NOT EXISTS opening (
+  bestelling_id TEXT NOT NULL REFERENCES bestelling(id) ON DELETE CASCADE,
+  dag           TEXT NOT NULL,
+  ip_hash       TEXT NOT NULL,
+  aantal        INTEGER NOT NULL DEFAULT 1,
+  PRIMARY KEY (bestelling_id, dag, ip_hash)
+);

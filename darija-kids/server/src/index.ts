@@ -17,6 +17,7 @@
  *    without logging in — because an account would be a second thing to
  *    protect.
  */
+import { bestellingVan, hashVan, maakSleutel, plekken, tekAan } from './lezer'
 import { verstuur, type Afzender } from './mail'
 import { MAILS, TEKST_VERSIE, isTaal, type Taal, type Week } from './mails'
 import { briefHtml, briefTekst, pagina } from './sjabloon'
@@ -33,6 +34,12 @@ export interface Env {
   ZOUT: string
   /** Only set while developing, to send the mail somewhere harmless. */
   MAIL_URL?: string
+  /** The book pages. One object per page: `<reeks>/<deel>/<taal>/<nr>.webp`. */
+  BOEKEN?: R2Bucket
+  /** Shared with the payment partner, so only they can report a sale. */
+  KOOP_GEHEIM?: string
+  /** Where the reader lives, e.g. https://darijaforkids.eu/lezen */
+  LEZER?: string
 }
 
 /* ------------------------------------------------------------------ helpers */
@@ -321,6 +328,122 @@ async function weekloop(env: Env): Promise<void> {
   }
 }
 
+
+/* ---------------------------------------------------------------- the reader */
+
+/**
+ * Wat er in de mail komt te staan als iemand een reeks heeft gekocht.
+ *
+ * Eén link, geen wachtwoord, en de zin die het meeste doet: dat zijn naam op
+ * elke bladzijde staat. Wie dat weet, stuurt het niet door — en dat werkt
+ * beter dan welk slot ook.
+ */
+const koopMail = (env: Env, sleutel: string, reeksen: string[]) => {
+  const lezer = `${env.LEZER ?? 'https://darijaforkids.eu/lezen'}#${sleutel}`
+  const wat = reeksen.includes('sba') && reeksen.includes('sleutels')
+    ? 'Sba de Atlasleeuw en De sleutels van Marokko'
+    : reeksen.includes('sba') ? 'Sba de Atlasleeuw' : 'De sleutels van Marokko'
+  return {
+    onderwerp: `Je boeken staan klaar — ${wat}`,
+    kop: 'Je boeken staan klaar',
+    body: `Bedankt. ${wat} staat voor je klaar.\n\n`
+      + 'Je leest ze op de website, met de knop hieronder. Er is geen account en geen wachtwoord: deze link is je sleutel. Bewaar deze mail, of zet de bladzijde bij je favorieten.\n\n'
+      + 'De link werkt op elk apparaat in je gezin. Op elke bladzijde staat jouw naam — dat is er met opzet: deze boeken zijn van jou en niet van het internet.',
+    knop: { tekst: 'Open je boeken', url: lezer },
+    staart: 'Lukt er iets niet, antwoord dan gewoon op deze mail.',
+  }
+}
+
+/**
+ * De betaalpartner meldt een verkoop.
+ *
+ * Er komt een gedeeld geheim mee. Zonder dat kan iedereen die het adres kent
+ * zichzelf een sleutel toesturen, en dan hebben we een winkel waar je niet
+ * hoeft te betalen.
+ */
+async function koop(verzoek: Request, env: Env): Promise<Response> {
+  if (!env.KOOP_GEHEIM) return json({ fout: 'niet-ingericht' }, 503)
+  if (verzoek.headers.get('x-darija-geheim') !== env.KOOP_GEHEIM) return json({ fout: 'nee' }, 403)
+
+  type Koopbericht = { email?: string; reeksen?: string[]; taal?: string; naam?: string; bestelnummer?: string }
+  const body: Koopbericht = await verzoek.json<Koopbericht>().catch(() => ({}))
+
+  const email = netjes(body.email ?? '')
+  const reeksen = (body.reeksen ?? []).filter((r: string) => r === 'sba' || r === 'sleutels')
+  if (!lijktEmail(email) || !reeksen.length) return json({ fout: 'onvolledig' }, 400)
+
+  const sleutel = maakSleutel()
+  const merk = [body.naam?.trim(), body.bestelnummer && `bestelling ${body.bestelnummer}`]
+    .filter(Boolean).join(' · ') || email
+
+  await env.DB
+    .prepare(`INSERT INTO bestelling (id, sleutel_hash, email, reeksen, taal, merk, bestelnummer, gekocht_op)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
+    .bind(sleutelBytes(16), await hashVan(sleutel), email, reeksen.join(','),
+          body.taal ?? 'nl', merk, body.bestelnummer ?? null, nu())
+    .run()
+
+  const m = koopMail(env, sleutel, reeksen)
+  const brief = { ...m, afmeldTekst: '', wisTekst: '', voet: 'Darijaforkids', afmeldUrl: '', wisUrl: '' }
+  await verstuur(
+    { aan: email, onderwerp: m.onderwerp, html: briefHtml(brief), tekst: briefTekst(brief), afmeldUrl: '' },
+    afzenderVan(env), env.MAIL_SLEUTEL, env.MAIL_URL,
+  )
+  return json({ goed: true })
+}
+
+/**
+ * Wat deze sleutel mag lezen.
+ *
+ * De sleutel komt in de body en niet in het pad, want een pad komt in
+ * logboeken terecht en een body niet.
+ */
+async function lezen(verzoek: Request, env: Env): Promise<Response> {
+  const { sleutel } = await verzoek.json<{ sleutel?: string }>().catch(() => ({ sleutel: '' as string | undefined }))
+  const bestelling = await bestellingVan(env.DB, sleutel ?? '')
+  if (!bestelling) return json({ fout: 'onbekend' }, 404)
+
+  await tekAan(env.DB, bestelling.id, await ipHash(verzoek, env.ZOUT))
+
+  return json({
+    reeksen: bestelling.reeksen.split(','),
+    taal: bestelling.taal,
+    merk: bestelling.merk,
+  })
+}
+
+/**
+ * Eén bladzijde.
+ *
+ * Elke bladzijde gaat apart door deze controle heen. Dat is duurder dan één
+ * keer controleren en daarna alles vrijgeven, en het is het enige dat werkt:
+ * een adres dat één keer openstaat, staat voor iedereen open.
+ */
+async function blad(verzoek: Request, env: Env): Promise<Response> {
+  if (!env.BOEKEN) return json({ fout: 'niet-ingericht' }, 503)
+  type Bladverzoek = { sleutel?: string; reeks?: string; deel?: number; nr?: number; taal?: string }
+  const { sleutel, reeks, deel, nr, taal }: Bladverzoek =
+    await verzoek.json<Bladverzoek>().catch(() => ({}))
+
+  const bestelling = await bestellingVan(env.DB, sleutel ?? '')
+  if (!bestelling) return json({ fout: 'onbekend' }, 404)
+  if (!bestelling.reeksen.split(',').includes(reeks ?? '')) return json({ fout: 'niet-gekocht' }, 403)
+  if (!Number.isInteger(deel) || !Number.isInteger(nr)) return json({ fout: 'onvolledig' }, 400)
+
+  const naam = `${reeks}/${deel}/${(taal ?? bestelling.taal).replace(/[^a-z]/g, '')}/${nr}.webp`
+  const object = await env.BOEKEN.get(naam)
+  if (!object) return json({ fout: 'geen-bladzijde' }, 404)
+
+  return new Response(object.body, {
+    headers: {
+      'content-type': 'image/webp',
+      // Wel in de browser bewaren, nooit op een tussenliggende server.
+      'cache-control': 'private, max-age=86400',
+      ...CORS,
+    },
+  })
+}
+
 /* --------------------------------------------------------------------- entry */
 
 export default {
@@ -335,6 +458,9 @@ export default {
       // Mail clients unsubscribe with a POST, people with a click.
       if (url.pathname === '/uitschrijven') return await uitschrijven(url, env)
       if (url.pathname === '/wissen') return await wissen(url, env)
+      if (url.pathname === '/koop' && verzoek.method === 'POST') return await koop(verzoek, env)
+      if (url.pathname === '/lezen' && verzoek.method === 'POST') return await lezen(verzoek, env)
+      if (url.pathname === '/blad' && verzoek.method === 'POST') return await blad(verzoek, env)
     } catch (e) {
       console.error(url.pathname, e instanceof Error ? e.message : e)
       return json({ fout: 'ging-mis' }, 500)

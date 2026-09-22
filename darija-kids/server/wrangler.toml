@@ -8,6 +8,8 @@ compatibility_date = "2026-09-01"
 BASIS = "https://post.darijaforkids.eu"
 AFZENDER_NAAM = "Darijaforkids"
 AFZENDER_EMAIL = "post@darijaforkids.eu"
+# Waar de lezer staat; de sleutel komt achter het hekje en gaat nooit naar een server.
+LEZER = "https://darijaforkids.eu/lezen"
 
 # The list itself. Create it once with:
 #   npx wrangler d1 create darijaforkids
@@ -26,3 +28,19 @@ crons = ["0 7 * * 1"]
 # Two secrets, never in this file:
 #   npx wrangler secret put MAIL_SLEUTEL
 #   npx wrangler secret put ZOUT
+
+# De bladzijden van de boeken, één object per bladzijde:
+#   <reeks>/<deel>/<taal>/<nummer>.webp
+# Maak de bak één keer aan met:
+#   npx wrangler r2 bucket create darijaforkids-boeken
+# en vul hem met `npm run bladen -- --uploaden`.
+[[r2_buckets]]
+binding = "BOEKEN"
+bucket_name = "darijaforkids-boeken"
+
+# Waar de lezer staat. De sleutel komt achter het hekje en gaat dus nooit
+# naar een server.
+
+
+# Nog twee geheimen:
+#   npx wrangler secret put KOOP_GEHEIM   — deelt de betaalpartner met ons
