@@ -354,3 +354,116 @@ er allemaal in, dan is tienduizend niet gek — en dan is het tweede kwartaal
 groter dan het eerste, want dit soort apps groeit door mond-tot-mondreclame,
 en die begint pas te werken als er genoeg kinderen zijn die iets tegen hun oma
 durven te zeggen.
+
+## 15. Het WhatsApp-kanaal — en de woordjesmachine eronder
+
+Dit is de beste toevoeging aan het plan, en hij kan **vandaag** al beginnen —
+nog voordat de app in de winkel staat. Dat lost meteen de grootste zwakte van
+de hele lancering op: dat je op dag één nul volgers hebt om iets tegen te
+zeggen.
+
+### Een Kanaal, geen Community
+
+WhatsApp heeft twee dingen die op elkaar lijken en het verschil bepaalt of dit
+werkt.
+
+| | Community | **Kanaal** |
+|---|---|---|
+| Wat het is | groepen onder één paraplu, mensen praten mee | eenrichtingsverkeer: jij zendt, zij volgen |
+| Aantal | max. ~5.000 per groep | onbeperkt |
+| Privacy | **leden zien elkaars telefoonnummer** | volgers zijn anoniem, ook voor jou |
+| Beheer | modereren, ruziemaken, spam eruit | niets |
+| Doorsturen | binnen de groep | **elke post is door te sturen naar elke familiegroep** |
+
+Voor een kinderapp is die derde regel doorslaggevend. In een Community kunnen
+honderden ouders elkaars nummer zien — dat wil je niet beheren en het past
+niet bij een app die verder niets verzamelt. Een **Kanaal** is wat je zoekt:
+onbeperkt, anoniem, geen moderatie, en elke post is met twee tikken door te
+sturen naar een familiegroep. Dat laatste is precies de motor uit §4.
+
+Een Community kan later alsnog, maar dan klein en voor iets anders: een groep
+van twintig tot vijftig **leraren van weekendscholen** (§8), waar wél gesprek
+nodig is.
+
+### Aanmaken
+
+WhatsApp → tabblad **Updates** → **+** → **Kanaal maken**.
+
+| Veld | Wat erin |
+|---|---|
+| Naam | `Darijaforkids — woord van de dag` |
+| Foto | `brand/social/profielfoto.png` |
+| Beschrijving | Elke dag één woord Darija, uitgesproken door een Marokkaanse stem. Voor ouders die willen dat hun kind met oma kan praten. 🇲🇦 |
+
+De naam is belangrijker dan hij lijkt: kanalen zijn doorzoekbaar, en mensen
+zoeken op *darija*, niet op een merknaam.
+
+Zet de link (`whatsapp.com/channel/...`) daarna **overal** neer: in de bio van
+Instagram en TikTok, onder elke YouTube-video, op de website, en later op het
+ouderscherm in de app. Een kanaal zonder link is onvindbaar.
+
+### Wat je post, en hoe vaak
+
+**Vijf per week, maandag tot vrijdag.** Dagelijks is beter dan wekelijks —
+gewoonte is het hele punt — maar wie zeven dagen belooft, stopt in week drie.
+Vijf is vol te houden en dat is wat telt.
+
+De vaste vorm:
+
+- **maandag t/m vrijdag** — het woord van de dag (het filmpje hieronder)
+- **zaterdag** — een weetje: waar een woord vandaan komt, hoe Casa het anders
+  zegt dan Fes, waarom Darija geen officiële spelling heeft
+- **hooguit één op de vijf posts een link.** Een kanaal dat verkoopt wordt
+  gedempt; een kanaal dat iets geeft, wordt doorgestuurd.
+
+### `npm run woordjes` — negentig dagen inhoud in één commando
+
+De ingrediënten lagen er al: 432 opnames van een Marokkaanse stem in
+`src/audio/`, de woorden met hun schrift, klank en betekenis in
+`src/content/`, en de letters van het merk. Dit script zet ze bij elkaar tot
+filmpjes van acht seconden, 1080×1920, klaar om te posten:
+
+```bash
+npm run woordjes                      # twintig woorden, Nederlands
+npm run woordjes -- --aantal 90       # een kwartaal vooruit
+npm run woordjes -- --onderwerp familie
+npm run woordjes -- --taal fr         # voor de Franse markt
+```
+
+De vorm van elk filmpje is met opzet zo:
+
+1. Het woord verschijnt in het Arabisch, met de klank eronder
+2. Je **hoort** de stem het zeggen
+3. Drie seconden niets — tijd om te raden
+4. De betekenis schuift eronder, en de stem zegt het nog één keer
+
+Wie de betekenis meteen ziet, luistert niet meer. Die drie seconden zijn het
+verschil tussen een woordje leren en een plaatje zien.
+
+Eén productie, vier kanalen: het **WhatsApp-kanaal**, Reels, Shorts en TikTok.
+De bestanden komen in `store/woordjes/<taal>/` en staan niet in git — ze zijn
+met één commando opnieuw te maken.
+
+### Het bijschrift
+
+Kort, en het woord staat erin zodat er op gezocht kan worden:
+
+```
+جدتي — jeddti — mijn oma 👵
+
+Zeg het vanavond tegen haar. Ze zal het horen.
+
+#darija #marokko #darijaforkids
+```
+
+Op het WhatsApp-kanaal hoeven de hashtags niet; daar volstaat de eerste regel.
+
+### Waarom dit meer is dan marketing
+
+Een kanaal met vijfduizend volgers is geen publiek dat je huurt van TikTok —
+het is een lijst die van jou is, die je op de dag van lancering in één keer
+kunt bereiken, en die je daarna kunt blijven bereiken zonder algoritme
+ertussen. Het is het enige bezit in dit hele plan dat niemand kan afnemen.
+
+En het kost je niets aan productie: de app die je al gebouwd hebt, is de
+inhoud.
