@@ -64,14 +64,21 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 - [x] Apple: de **Paid Applications**-overeenkomst tekenen
 - [x] Apple: aanmelden voor het **Small Business Program**, 15% in plaats van 30%
 - [x] Apple: W-8BEN belastingformulier ingevuld
-- [ ] Apple: handelaarsverificatie (DSA) — **in review**, niets te doen dan wachten
+- [ ] Apple: handelaarsverificatie (DSA) — **in review** sinds 19 september, voor
+      27 landen; niets te doen dan wachten
 - [x] Apple: naamcorrectie van "Adi" naar "Adil" — doorgevoerd op 22 september
-      (zaak **102968992781**). De contracten in App Store Connect kunnen er nog
-      twee weken over doen; de al ingediende belastingformulieren blijven op de
-      oude naam staan en dat hoort zo. Kijk vóór het indienen van de bankgegevens
-      of **Business → Agreements** de nieuwe naam toont: die moet gelijk zijn aan
-      de naam op de bankrekening, anders strandt de verificatie.
-- [ ] Apple: bankgegevens — ingediend, wordt verwerkt
+      (zaak **102968992781**), en meteen zichtbaar op de overeenkomsten. De al
+      ingediende belastingformulieren blijven op de oude naam staan; dat hoort zo.
+- [x] Apple: bankgegevens — **Active**, op naam van Adil Bekkali. De bank heet in
+      Apples lijst *BAWAG PSK*: dat is de moeder van Knab, dus dat klopt.
+- [ ] Apple: bij de bankrekening staat **USD** als royalty-valuta. Kijk of **EUR**
+      er ook aan hangt — anders is er voor het grootste deel van de omzet geen
+      rekening aangewezen (Business → Bank Accounts → See More)
+- [ ] Apple: **DAC7** (Directive on Administrative Cooperation, 7e wijziging) staat
+      op *Missing Info*. Dit is de EU-meldplicht voor verkopers op een platform;
+      zonder die gegevens mag Apple de uitbetaling inhouden. Invullen via
+      Business → Compliance → **Add Info**: naam, adres, geboortedatum, het
+      fiscaal nummer (BSN bij een eenmanszaak) en het KvK-nummer van Venship
 - [x] Google: identiteitsverificatie — goedgekeurd op 21 september
 - [x] Google: het account staat als **organisatie** — de gesloten test met 12
       testers × 14 dagen vervalt daarmee (§6)
