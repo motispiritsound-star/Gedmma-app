@@ -149,11 +149,16 @@ export const REEKS: Omit<Sleuteldeel, 'hoofdstukken'>[] = [
       'Marrakech werd rond 1070 gesticht door de Almoraviden, onder Yusuf ibn Tashfin.',
       'Het land is naar deze stad genoemd: Marrakech werd in Europese talen Marokko.',
       'Zaynab an-Nafzawiyya was de vrouw van Yusuf ibn Tashfin en had grote invloed op het bestuur; middeleeuwse kroniekschrijvers noemen haar uitdrukkelijk.',
-      'De Almoraviden legden het ondergrondse irrigatiestelsel aan — de khettara — dat de stad van water voorzag.',
+      'De Almoraviden legden het ondergrondse irrigatiestelsel aan — de khettara — dat de stad van water voorzag. Delen ervan liggen er nog.',
+      'Vlak bij Marrakech lag al een stad: Aghmat, tegen de bergen aan. Die werd verlaten voor de nieuwe stad op de vlakte. Aghmat wordt nu opgegraven.',
+      'De stadsmuur is van gestampte aarde (tabia) en is ruim negentien kilometer lang. De grond daar is rood, en daarom is de stad rood.',
+      'Marrakech lag op het kruispunt van de karavaanwegen. Uit het zuiden kwam goud uit het rijk van Ghana en het gebied van het huidige Mali; daarheen ging zout.',
     ],
     verzonnen: [
-      'Isli heeft niet bestaan.',
+      'Isli, zijn oom, de kameel Tamghart en de graver Brahim hebben niet bestaan.',
       'De gesprekken met Zaynab zijn verzonnen; wat zij werkelijk zei is niet overgeleverd.',
+      'Het instorten van de zevende put is verzonnen. Dat het gevaarlijk werk was, is dat niet: bij het graven van khettara’s zijn door de eeuwen heen veel mensen omgekomen.',
+      'Hoe de eerste markt is ontstaan weten we niet. Dat steden zo beginnen, weten we wel.',
     ],
   },
   {
