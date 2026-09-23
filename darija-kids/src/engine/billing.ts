@@ -106,7 +106,15 @@ export { FREE_LESSONS }
 
 /* ------------------------------------------ the sliver of the plugin we use */
 
-interface Offer { order: () => Promise<unknown> }
+/**
+ * Eén prijsfase van een aanbod.
+ *
+ * Een abonnement met een gratis proefperiode heeft er meer dan één: de eerste
+ * is de proef en kost niets, de laatste is wat er elke maand of elk jaar
+ * werkelijk afgaat.
+ */
+interface Fase { price?: string; priceMicros?: number; currency?: string }
+interface Offer { pricingPhases?: Fase[]; order: () => Promise<unknown> }
 interface Product {
   owned?: boolean
   /**
@@ -117,6 +125,8 @@ interface Product {
    * zodra een land een punt gebruikt waar wij een komma zetten.
    */
   pricing?: { price: string; priceMicros?: number; currency?: string } | null
+  /** De aanbiedingen van dit product, elk met hun eigen prijsfasen. */
+  offers?: Offer[]
   getOffer: () => Offer | undefined
 }
 interface Transaction { finish: () => void }
@@ -278,6 +288,30 @@ export function useBilling(): BillingState {
 /* ------------------------------------------------------------------- the flow */
 
 /**
+ * De prijs die de koper straks werkelijk betaalt.
+ *
+ * Dit was de fout achter "$0.00 per jaar". Een abonnement met een gratis
+ * proefperiode heeft meer dan één prijs: fase één is de proef en kost niets,
+ * de laatste fase is wat er elke maand of elk jaar afgaat. `product.pricing`
+ * van de plugin geeft de éérste fase terug — en dat is dus precies die nul.
+ *
+ * Het venster van Apple zelf toonde ondertussen keurig € 6,99, want dat leest
+ * de betaalfase. Dat verschil is hoe je erachter komt: als de winkel het goed
+ * weet en jouw scherm niet, ligt het nooit aan de winkel.
+ *
+ * Dus: de laatste fase met een echt bedrag erin. Voor een boek — dat geen
+ * fasen heeft — blijft `pricing` gewoon de prijs.
+ */
+export const betaalFase = (
+  product?: { pricing?: Fase | null; offers?: { pricingPhases?: Fase[] }[] } | null,
+): Fase | null => {
+  const fasen = (product?.offers ?? []).flatMap((aanbod) => aanbod.pricingPhases ?? [])
+  const betaald = fasen.filter((fase) => bedragVan(fase) !== null)
+  if (betaald.length) return betaald[betaald.length - 1]!
+  return bedragVan(product?.pricing) !== null ? product?.pricing ?? null : null
+}
+
+/**
  * Twaalf maanden plus het boek, uit de winkel, met de korting erbij.
  *
  * Alles of niets: ontbreekt één van de drie bedragen, dan komt er niets uit.
@@ -285,9 +319,9 @@ export function useBilling(): BillingState {
  * nergens op slaat, en dat is erger dan geen vergelijking.
  */
 const vergelijkingVan = (store: CdvStore): { totaal: string; korting: number } | null => {
-  const jaar = store.get(planOf('jaar').product)?.pricing
-  const maand = bedragVan(store.get(planOf('maand').product)?.pricing)
-  const boek = bedragVan(store.get(EBOOK.product)?.pricing)
+  const jaar = betaalFase(store.get(planOf('jaar').product))
+  const maand = bedragVan(betaalFase(store.get(planOf('maand').product)))
+  const boek = bedragVan(betaalFase(store.get(EBOOK.product)))
   const jaarBedrag = bedragVan(jaar)
   const valuta = jaar?.currency
   if (!jaarBedrag || !maand || !boek || !valuta) return null
@@ -334,14 +368,15 @@ export async function initBilling(): Promise<void> {
     let yearPerMonth: string | null = null
     for (const plan of PLANS) {
       const product = store.get(plan.product)
-      const prijs = prijsVan(product?.pricing)
+      const fase = betaalFase(product)
+      const prijs = prijsVan(fase)
       if (prijs) prices[plan.id] = prijs
-      if (plan.id === 'jaar') yearPerMonth = perMaandVan(product?.pricing)
+      if (plan.id === 'jaar') yearPerMonth = perMaandVan(fase)
       // Either plan being owned opens the whole course.
       if (product?.owned !== undefined) owned = (owned ?? false) || product.owned
     }
     const book = store.get(EBOOK.product)
-    const boekPrijs = prijsVan(book?.pricing)
+    const boekPrijs = prijsVan(betaalFase(book))
     if (boekPrijs) prices.ebook = boekPrijs
     if (book?.owned || store.get(planOf('jaar').product)?.owned) grantEbook()
     publish({ prices, yearPerMonth, vergelijking: vergelijkingVan(store), price: prices.maand ?? null })

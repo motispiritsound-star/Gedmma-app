@@ -3,7 +3,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { UNITS } from '../content/curriculum'
 import { LANG_CODES } from '../i18n/languages'
-import { bedragVan, EBOOK, ebookFile, prijsVan, PRODUCTS } from './billing'
+import { bedragVan, betaalFase, EBOOK, ebookFile, prijsVan, PRODUCTS } from './billing'
 import {
   FREE_LESSONS, getState, GRATIS_LESSEN, isDone, lessonBehindPaywall, lessonUnlocked,
   nextLesson, resetProgress, setState, unitBehindPaywall, unitUnlocked, type State,
@@ -152,5 +152,47 @@ describe('een prijs van nul is geen prijs', () => {
      zodra een land een punt zet waar wij een komma zetten. */
   it('gelooft de micros boven de tekst', () => {
     expect(bedragVan({ price: '1.234,56 kr', priceMicros: 1_234_560_000 })).toBeCloseTo(1234.56)
+  })
+})
+
+/**
+ * Het abonnementsscherm beloofde "$0.00 per jaar, vooruit betaald", terwijl
+ * het venster van Apple zelf € 6,99 toonde. Als de winkel het goed weet en
+ * jouw scherm niet, ligt het nooit aan de winkel.
+ *
+ * De oorzaak: een abonnement met een gratis proefperiode heeft meer dan één
+ * prijs. Fase één is de proef en kost niets; de laatste fase is wat er elke
+ * maand of elk jaar afgaat. De plugin geeft onder `pricing` de eerste fase —
+ * precies die nul.
+ */
+describe('de prijs die de koper werkelijk betaalt', () => {
+  const jaarMetProef = {
+    pricing: { price: '€ 0,00', priceMicros: 0, currency: 'EUR' },
+    offers: [{
+      pricingPhases: [
+        { price: '€ 0,00', priceMicros: 0, currency: 'EUR' },
+        { price: '€ 59,99', priceMicros: 59_990_000, currency: 'EUR' },
+      ],
+    }],
+  }
+
+  it('slaat de proefperiode over en neemt de betaalfase', () => {
+    expect(betaalFase(jaarMetProef)?.price).toBe('€ 59,99')
+  })
+
+  it('valt terug op pricing voor iets zonder fasen, zoals het boek', () => {
+    expect(betaalFase({ pricing: { price: '€ 14,99', priceMicros: 14_990_000 } })?.price).toBe('€ 14,99')
+  })
+
+  it('geeft niets als er nergens een bedrag staat', () => {
+    expect(betaalFase({ pricing: { price: '$0.00', priceMicros: 0 } })).toBeNull()
+    expect(betaalFase({ offers: [{ pricingPhases: [{ price: '$0.00', priceMicros: 0 }] }] })).toBeNull()
+    expect(betaalFase(null)).toBeNull()
+  })
+
+  /* Een abonnement zonder proef heeft één fase, en die is de betaalfase. */
+  it('neemt de enige fase als er geen proef is', () => {
+    const maand = { offers: [{ pricingPhases: [{ price: '€ 6,99', priceMicros: 6_990_000, currency: 'EUR' }] }] }
+    expect(betaalFase(maand)?.price).toBe('€ 6,99')
   })
 })
