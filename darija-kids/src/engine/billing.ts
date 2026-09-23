@@ -140,6 +140,8 @@ interface CdvStore {
     receiptsReady?: (cb: () => void) => unknown
   }
   get: (id: string) => Product | undefined
+  /** Opnieuw bij de winkel langs voor de productgegevens. */
+  update?: () => Promise<unknown>
   restorePurchases: () => Promise<unknown>
   manageSubscriptions: () => Promise<unknown> | void
   error: (cb: (e: { message?: string }) => void) => void
@@ -419,6 +421,28 @@ export async function initBilling(): Promise<void> {
 
   await store.initialize([Platform.GOOGLE_PLAY, Platform.APPLE_APPSTORE])
   refresh()
+
+  /**
+   * Opnieuw vragen zodra de app weer voor staat.
+   *
+   * De plugin vraagt de winkel één keer bij het starten en bewaart dat
+   * antwoord. Staat er dan nog geen winkelland vast, of wisselt iemand er
+   * later van, dan blijft een bedrag in de verkeerde munt op het scherm staan
+   * tot de app helemaal opnieuw wordt gestart.
+   *
+   * In TestFlight komt dat er nog eens bovenop: de productgegevens komen daar
+   * uit het gewone winkelaccount van het toestel en het betaalvenster uit het
+   * proefaccount. Dat kunnen twee verschillende landen zijn, en dan staat er
+   * op ons scherm een prijs die het venster van Apple daarna tegenspreekt.
+   *
+   * Hier is niets aan te repareren aan onze kant — de winkel zegt het zo —
+   * behalve het opnieuw vragen. Eén keer per keer dat het scherm terugkomt is
+   * genoeg, en het kost niets als er niets veranderd is.
+   */
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible') return
+    void Promise.resolve(store.update?.()).then(refresh, refresh)
+  })
 }
 
 /** Opens the store's own payment sheet for one of the two plans, trial and all. */

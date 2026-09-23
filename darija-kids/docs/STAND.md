@@ -9,9 +9,14 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 512, groen |
+| Tests | 520, groen |
 | Google Play | versie 1.1 ingediend (submission 3), wacht op beoordeling |
 | App Store | 1.0 (build 4) opnieuw ingediend met de EULA-link, wacht op beoordeling |
+
+Twee reparaties staan klaar voor de volgende build en zitten niet in build 4:
+de schrijfwijze van een zelf uitgerekend bedrag (`$4.17` in plaats van
+`US$ 4,17`), en het opnieuw ophalen van de prijzen zodra de app weer voor
+staat. Geen van beide is dringend genoeg voor een build vannacht.
 
 ### Wat alleen jij kunt doen
 
