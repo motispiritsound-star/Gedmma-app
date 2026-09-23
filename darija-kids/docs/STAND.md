@@ -1,6 +1,6 @@
 # Waar staan we
 
-Bijgewerkt op 23 september 2026. Dit bestand is het antwoord op "wat moet er
+Bijgewerkt op 23 september 2026 (einde middag). Dit bestand is het antwoord op "wat moet er
 nog" zonder dat je drie andere bestanden hoeft te lezen.
 
 ## De app
@@ -41,12 +41,15 @@ opdrachten daarvoor staan in `store/prentenboek/platenlijst.md`.
 
 | Deel | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Blz | 33 | 42 | 35 | 29 | 31 | 46 | 31 | 29 | 15 | 16 | 15 | 15 | 15 | 16 | 19 |
+| Blz | 33 | 42 | 35 | 29 | 31 | 46 | 31 | 29 | 28 | 27 | 27 | 27 | 26 | 28 | 25 |
 
-De delen 1 tot en met 8 zijn uitgeschreven. **De delen 9 tot en met 15 niet** —
-die staan nog op de opzet van zes hoofdstukken. Verkoop die pas als ze er
-staan, of zet erbij dat er gratis bijgewerkte versies komen; dat laatste staat
-al op de afrekenpagina.
+Alle vijftien delen zijn uitgeschreven, en alle vijftien staan ook in het
+**Frans**. Duits, Spaans, Italiaans en Engels moeten nog.
+
+De vertaling ligt alinea voor alinea naast het Nederlands, en daar staat een
+test op: een hoofdstuk dat wegvalt of een alinea die wordt samengevoegd laat
+de build vallen. Dat is met opzet — een boek van dit soort leeft van de
+stiltes tussen de alinea's, en wie die samenvoegt haalt het tempo eruit.
 
 Historische foto's kunnen erin zodra ze in `store/sleutels/platen/<deel>/`
 staan, met `bronnen.txt` ernaast. Welke opname waar hoort staat in
