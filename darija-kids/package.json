@@ -60,7 +60,8 @@
     "repareer-knip": "node scripts/repareer-knip.mjs",
     "ios": "npm run build && npx cap sync ios",
     "winkel": "node scripts/make-winkel.mjs",
-    "bladen": "node scripts/make-bladen.mjs"
+    "bladen": "node scripts/make-bladen.mjs",
+    "boekplaten": "node scripts/make-prentenboek.mjs --deel 1 --omslag site-assets/boeken/sba.webp && node scripts/make-sleutels.mjs --deel 1 --omslag site-assets/boeken/sleutel.webp"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",

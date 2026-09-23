@@ -20,6 +20,7 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
+import { schrijfOmslag } from './lib/omslag.mjs'
 import { createServer } from 'vite'
 import { K, sba } from './lib/tekenen.mjs'
 
@@ -684,6 +685,12 @@ const blad = await browser.newPage()
 await blad.goto(`file://${tijdelijk}`, { waitUntil: 'networkidle' })
 await blad.emulateMedia({ media: 'print' })
 await blad.pdf({ path: UIT, width: '210mm', height: '148mm', printBackground: true, margin: { top: 0, bottom: 0, left: 0, right: 0 } })
+/** De omslag als plaatje voor de website; zie lib/omslag.mjs. */
+const OMSLAG = arg('omslag')
+if (OMSLAG) {
+  await schrijfOmslag(blad, path.resolve(OMSLAG))
+  console.log(`omslag → ${OMSLAG}`)
+}
 await browser.close()
 await server.close()
 

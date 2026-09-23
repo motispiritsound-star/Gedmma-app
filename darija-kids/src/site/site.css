@@ -249,6 +249,9 @@ header nav a.uit:hover { background: color-mix(in oklab, var(--saffron) 34%, tra
 }
 .reeks .kunst { background: color-mix(in oklab, var(--saffron) 16%, transparent); border-radius: var(--radius); }
 .reeks .kunst svg { width: 100%; height: auto; display: block; }
+/* De echte omslag van het boek, uit de zetter. Hij vult het vak helemaal,
+   dus de saffraantint eronder is er alleen nog voor de tekening. */
+.reeks .kunst img { width: 100%; height: auto; display: block; border-radius: var(--radius); }
 .reeks .leeftijd {
   display: inline-block; font-weight: 800; font-size: .85rem; letter-spacing: .06em;
   text-transform: uppercase; color: var(--zellige);

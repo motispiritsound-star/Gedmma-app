@@ -28,6 +28,7 @@ import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
 import { createServer } from 'vite'
 import { H, hoekje, kaart, khatam, plaatVan, sleutel, tijdbalk, zellige } from './lib/historie.mjs'
+import { schrijfOmslag } from './lib/omslag.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
@@ -519,6 +520,12 @@ await bladzijde.pdf({
       display:flex;justify-content:${VOOR ? 'space-between' : 'center'}">
       ${VOOR ? `<span>${esc(VOOR)}</span>` : ''}<span class="pageNumber"></span></div>`,
 })
+/** De omslag als plaatje voor de website; zie lib/omslag.mjs. */
+const OMSLAG = arg('omslag')
+if (OMSLAG) {
+  await schrijfOmslag(bladzijde, path.resolve(OMSLAG))
+  console.log(`omslag → ${OMSLAG}`)
+}
 await browser.close()
 
 const rauw = await readFile(UIT)
