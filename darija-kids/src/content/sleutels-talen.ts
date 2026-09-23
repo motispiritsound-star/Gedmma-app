@@ -115,14 +115,42 @@ export const SLEUTEL_SCHIL: Record<string, SleutelSchil> = {
       'Chaque fois que l’histoire comble un trou avec de l’imagination, c’est écrit à la fin, dans « Ce qui s’est vraiment passé ». Lis cette partie. C’est ce qu’il y a de plus passionnant dans le livre, parce qu’on y voit à quel point l’histoire vraie est souvent plus étrange encore.',
     ],
   },
+  de: {
+    reeksnaam: 'Die Schlüssel Marokkos',
+    deelVan: (n) => `Band ${n} von fünfzehn`,
+    merk: 'Darija for Kids · ab 9 Jahren',
+    waarSpeelt: 'Wo dieser Band spielt',
+    kaartNoot: 'Die Karte ist vereinfacht gezeichnet.',
+    inDeTijd: 'Wo dieser Band in der Zeit steht',
+    balkNoot: 'Fünfzehn Bände, von der Römerzeit bis heute. Die Jahre stehen in gleichem Abstand, nicht maßstabsgetreu.',
+    wistJeDit: 'Wusstest du das?',
+    achterinKop: 'Was hiervon wirklich geschehen ist',
+    echtKop: 'Das ist wirklich geschehen',
+    verzonnenKop: 'Das ist erfunden',
+    sleutelKop: 'Der Schlüssel',
+    hoofdstuk: (n) => `Kapitel ${n}`,
+    leesVerder: (n) => `Weiterlesen in Band ${n}`,
+    laatsteDeel: 'Der letzte Band',
+    prent: 'Zeichnung',
+    prentNoot: 'Zeichnung. Sobald es eine Aufnahme dieses Ortes gibt, steht sie hier.',
+    beeldenKop: 'Die Bilder',
+    beeldenNoot: 'Die Fotos und Abbildungen in diesem Buch stammen von den Orten, an denen diese Geschichte spielt. Unten steht, woher sie kommen.',
+    disclaimer: [
+      'Dieses Buch ist erfunden, aber nicht irgendwie.',
+      'Was darin geschieht, ist wirklich geschehen: die Städte, die Schlachten, die Reisen, die Bücher und die Menschen, die Geschichte gemacht haben. Was davon bekannt ist, wurde nachgeprüft und nicht schöner gemacht, als es war.',
+      'Die Jungen und Mädchen, die erzählen, sind erfunden. Es hat sie nicht gegeben, und den Schlüssel, der von Hand zu Hand geht, hat es auch nie gegeben. Das musste so sein: von gewöhnlichen Kindern jener Zeiten weiß man fast nichts — und genau neben ihnen möchte man sitzen, wenn etwas Großes passiert.',
+      'Wo die Geschichte ein Loch mit Fantasie füllt, steht das hinten im Buch, unter „Was hiervon wirklich geschehen ist“. Lies diesen Teil. Er ist das Spannendste am Buch, weil man dort sieht, wie viel seltsamer die wirkliche Geschichte oft ist.',
+    ],
+  },
 }
 
 export const schilVanSleutel = (taal: string): SleutelSchil =>
   SLEUTEL_SCHIL[taal] ?? SLEUTEL_SCHIL.nl
 
+import { DE_SLEUTELS } from './sleutels-de'
 import { FR_SLEUTELS } from './sleutels-fr'
 
-export const SLEUTEL_VERTALINGEN: Record<string, SleutelVertaling> = { fr: FR_SLEUTELS }
+export const SLEUTEL_VERTALINGEN: Record<string, SleutelVertaling> = { de: DE_SLEUTELS, fr: FR_SLEUTELS }
 
 /**
  * Een deel in een taal, over het Nederlandse deel heen gelegd.
