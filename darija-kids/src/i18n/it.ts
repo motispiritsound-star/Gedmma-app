@@ -476,7 +476,7 @@ export const it: Strings = {
     checkRegel: (niveau: string, media: string): string => `Misurato: livello ${niveau} · ${media}`,
     mixerStil: 'Senti la pronuncia ma non gli effetti? Su iPhone il tasto laterale zittisce solo gli effetti, non la voce: mettilo su suoneria. In una finestra incorporata, apri l’app in una scheda tutta sua.',
     mediakanaal: 'Audio dal canale multimediale',
-    mediakanaalHint: 'Senti la pronuncia ma non gli effetti? Attiva questo. Gli effetti escono come piccoli file audio, come la musica, e così si sentono anche con l’iPhone in silenzioso. Reagiscono un pochino più lentamente.',
+    mediakanaalHint: 'Non senti niente o quasi — per esempio con l’iPhone in silenzioso? Attiva questo. Gli effetti e le parole registrate escono come piccoli file audio, come la musica, e il silenzioso non li tocca più. Reagiscono un pochino più lentamente.',
     schrijven: 'Esercizio di scrittura',
     schrijvenHint: 'Il giro bonus in cui ricalchi lettere e parole sullo schermo. Spegnilo se disegnare con il dito non funziona.',
     film: 'Filmato dopo la lezione',

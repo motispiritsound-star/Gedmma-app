@@ -407,6 +407,58 @@ function playSample(name: SoundName, arg: number): void {
 }
 
 /**
+ * Een opname via een <audio>-element in plaats van via de mixer.
+ *
+ * Dit was het gat. De knopgeluidjes hadden allang een uitweg voor een iPhone
+ * met het schuifje op stil — ze worden dan als klein bestand door een
+ * media-element gestuurd, en media trekt zich van dat schuifje niets aan. De
+ * opnames gingen uitsluitend door Web Audio, en dat is juist de weg die het
+ * schuifje dichtknijpt. Alle 433 woorden zwegen dus op een telefoon op stil,
+ * terwijl `playClip` keurig succes meldde: de buffer speelde, er kwam alleen
+ * niets uit.
+ */
+function playClipElement(url: string, rate: number): Promise<boolean> {
+  const el = element()
+  if (!el || !url) return Promise.resolve(false)
+  try {
+    if (el.src !== url) el.src = url
+    el.currentTime = 0
+    el.playbackRate = rate
+  } catch {
+    return Promise.resolve(false)
+  }
+  return el
+    .play()
+    .then(() => {
+      mediaMisses = 0
+      return true
+    })
+    .catch(() => {
+      mediaMisses += 1
+      if (mediaMisses >= GIVE_UP) mediaBroken = true
+      return false
+    })
+}
+
+/**
+ * De opname, langs de weg die op dit toestel hoorbaar is — en als die
+ * tegenvalt, langs de andere.
+ *
+ * Welke weg de eerste is, beslist `samplesWanted()`: dezelfde afweging die de
+ * knopgeluidjes al maakten. Allebei proberen kost niets als de eerste lukt, en
+ * het scheelt een kind een stil woord als hij dat niet doet.
+ */
+function speelOpname(url: string, rate: number): Promise<boolean> {
+  const viaMixer = () => {
+    const [ac, out] = mixer()
+    return playClip(url, ac, out, { rate })
+  }
+  const eerst = samplesWanted() ? () => playClipElement(url, rate) : viaMixer
+  const dan = samplesWanted() ? viaMixer : () => playClipElement(url, rate)
+  return eerst().then((gelukt) => (gelukt ? true : dan()))
+}
+
+/**
  * Whether to go through files rather than the live mixer: because the learner
  * asked for it — the switch that makes an iPhone on silent audible — or
  * because the mixer has been asked to start and refuses.
@@ -795,8 +847,7 @@ export function say(arabic: string, opts: SayOptions = {}): void {
     // vangnet levert één onleesbaar bestand stilte op zonder dat iemand ziet
     // waarom, en dat is precies wat er gebeurde: de knopgeluidjes speelden,
     // het woord niet. `sayLetter` deed dit al goed.
-    const [ac, out] = mixer()
-    void playClip(clip, ac, out, { rate: opts.slow ? 0.7 : 1 }).then((gelukt) => {
+    void speelOpname(clip, opts.slow ? 0.7 : 1).then((gelukt) => {
       if (!gelukt) zegMetStem(arabic, opts)
     })
     return
@@ -935,8 +986,7 @@ export function sayLetter(letter: { id: string; ar: string; name: string }, opts
   const clip = CLIPS[letter.id]
   if (clip) {
     unlockAudio()
-    const [ac, out] = mixer()
-    void playClip(clip, ac, out, { rate: opts.slow ? 0.7 : 1 }).then((played) => {
+    void speelOpname(clip, opts.slow ? 0.7 : 1).then((played) => {
       if (!played) speakLetter(letter, opts)
     })
     return

@@ -476,7 +476,7 @@ export const en: Strings = {
     checkRegel: (niveau: string, media: string): string => `Measured: level ${niveau} · ${media}`,
     mixerStil: 'Hearing the pronunciation but none of the game sounds? On an iPhone the little switch on the side mutes the effects but not the voice — flip it back to ring. Inside an embedded frame, open the app in its own tab instead.',
     mediakanaal: 'Sound through the media channel',
-    mediakanaalHint: 'Hearing the pronunciation but none of the game sounds? Turn this on. The effects then go out as little audio files, like music does — which works even with an iPhone on silent. They react a touch slower.',
+    mediakanaalHint: 'Hearing little or nothing — with an iPhone on silent, say? Turn this on. The game sounds and the recorded words then go out as little audio files, like music does, and the silent switch no longer touches them. They react a touch slower.',
     schrijven: 'Writing exercise',
     schrijvenHint: 'The bonus round where you trace letters and words on the screen. Off if drawing with a finger does not work.',
     film: 'Little film after a lesson',

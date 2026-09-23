@@ -476,7 +476,7 @@ export const de: Strings = {
     checkRegel: (niveau: string, media: string): string => `Gemessen: Pegel ${niveau} · ${media}`,
     mixerStil: 'Du hörst die Aussprache, aber keine Spielgeräusche? Auf einem iPhone schaltet der kleine Schalter an der Seite nur die Effekte stumm, nicht die Stimme — stell ihn auf Klingeln. In einem eingebetteten Fenster hilft es, die App in einem eigenen Tab zu öffnen.',
     mediakanaal: 'Ton über den Medienkanal',
-    mediakanaalHint: 'Du hörst die Aussprache, aber keine Spielgeräusche? Schalte das ein. Die Effekte gehen dann als kleine Audiodateien hinaus, wie Musik — das funktioniert auch, wenn dein iPhone lautlos ist. Sie reagieren eine Spur langsamer.',
+    mediakanaalHint: 'Du hörst wenig oder nichts — zum Beispiel mit dem iPhone auf lautlos? Schalte das ein. Die Spielgeräusche und die aufgenommenen Wörter gehen dann als kleine Audiodateien hinaus, wie Musik, und der Lautlos-Schalter ändert daran nichts. Sie reagieren eine Spur langsamer.',
     schrijven: 'Schreibübung',
     schrijvenHint: 'Die Bonusrunde, in der du Buchstaben und Wörter auf dem Bildschirm nachzeichnest. Aus, wenn Malen mit dem Finger nicht klappt.',
     film: 'Filmchen nach der Lektion',

@@ -483,7 +483,7 @@ export const nl = {
     checkRegel: (niveau: string, media: string): string => `Gemeten: niveau ${niveau} · ${media}`,
     mixerStil: 'Hoor je de uitspraak wél maar de spelgeluidjes niet? Op een iPhone zet het schuifje aan de zijkant alleen de effecten uit, niet de stem — zet het op bellen. In een ingesloten venster helpt het om de app in een eigen tabblad te openen.',
     mediakanaal: 'Geluid via het mediakanaal',
-    mediakanaalHint: 'Hoor je de uitspraak wel en de spelgeluidjes niet? Zet dit aan. De effecten gaan dan als kleine geluidsbestandjes naar buiten, net als muziek — dat werkt ook als je iPhone op stil staat. Ze reageren een tikje trager.',
+    mediakanaalHint: 'Hoor je weinig of niets — bijvoorbeeld met je iPhone op stil? Zet dit aan. De spelgeluidjes én de opgenomen woorden gaan dan als kleine bestandjes naar buiten, net als muziek, en dat trekt zich van het stilteschuifje niets aan. Ze reageren een tikje trager.',
     schrijven: 'Schrijfoefening',
     schrijvenHint: 'De bonusronde waarin je letters en woorden natekent op het scherm. Uit als tekenen met je vinger niet lukt.',
     film: 'Filmpje na de les',

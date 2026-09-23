@@ -476,7 +476,7 @@ export const fr: Strings = {
     checkRegel: (niveau: string, media: string): string => `Mesuré : niveau ${niveau} · ${media}`,
     mixerStil: 'Tu entends la prononciation mais pas les bruitages ? Sur un iPhone, le petit bouton sur le côté coupe les effets mais pas la voix — remets-le sur sonnerie. Dans une fenêtre intégrée, ouvre plutôt l’application dans son propre onglet.',
     mediakanaal: 'Son par le canal média',
-    mediakanaalHint: 'Tu entends la prononciation mais pas les bruitages ? Active ceci. Les effets sortent alors comme de petits fichiers audio, comme de la musique — ça marche même quand ton iPhone est en silencieux. La réaction est un poil plus lente.',
+    mediakanaalHint: 'Tu n’entends rien ou presque — par exemple avec ton iPhone en silencieux ? Active ceci. Les bruitages ét les mots enregistrés sortent alors comme de petits fichiers audio, comme de la musique, et le mode silencieux n’y change rien. La réaction est un poil plus lente.',
     schrijven: 'Exercice d’écriture',
     schrijvenHint: 'Le tour bonus où tu traces les lettres et les mots à l’écran. À désactiver si dessiner au doigt ne marche pas.',
     film: 'Petit film après la leçon',

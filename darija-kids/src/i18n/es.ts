@@ -476,7 +476,7 @@ export const es: Strings = {
     checkRegel: (niveau: string, media: string): string => `Medido: nivel ${niveau} · ${media}`,
     mixerStil: '¿Oyes la pronunciación pero no los efectos? En un iPhone, el interruptor lateral silencia solo los efectos, no la voz: ponlo en timbre. En una ventana incrustada, abre la aplicación en su propia pestaña.',
     mediakanaal: 'Sonido por el canal multimedia',
-    mediakanaalHint: '¿Oyes la pronunciación pero no los efectos? Activa esto. Los efectos salen como pequeños archivos de audio, igual que la música, y así suenan aunque el iPhone esté en silencio. Reaccionan un poquito más lentos.',
+    mediakanaalHint: '¿No oyes nada o casi nada — por ejemplo con el iPhone en silencio? Activa esto. Los efectos y las palabras grabadas salen como pequeños archivos de audio, igual que la música, y el modo silencio ya no les afecta. Reaccionan un poquito más lentos.',
     schrijven: 'Ejercicio de escritura',
     schrijvenHint: 'La ronda bonus en la que calcas letras y palabras en la pantalla. Desactívalo si dibujar con el dedo no funciona.',
     film: 'Peli corta tras la lección',
