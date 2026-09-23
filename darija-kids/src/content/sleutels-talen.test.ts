@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { REEKS, type Sleuteldeel } from './sleutels'
 import { DEEL1_HOOFDSTUKKEN } from './sleutels-deel1'
+import { DEEL2_HOOFDSTUKKEN } from './sleutels-deel2'
 import { SLEUTEL_VERTALINGEN, SLEUTEL_SCHIL, sleuteldeelIn } from './sleutels-talen'
 
 /** De Nederlandse delen die al geschreven zijn, op nummer. */
 const NL: Record<number, Sleuteldeel> = {
   1: { ...REEKS[0], hoofdstukken: DEEL1_HOOFDSTUKKEN } as Sleuteldeel,
+  2: { ...REEKS[1], hoofdstukken: DEEL2_HOOFDSTUKKEN } as Sleuteldeel,
 }
 
 describe('De sleutels in andere talen', () => {
@@ -49,6 +51,17 @@ describe('De sleutels in andere talen', () => {
       })
     })
   }
+
+  /* Zonder deze test glipt een vertaald deel waarvoor hier geen Nederlands
+     staat er ongemerkt langs, en dan controleert de rest van dit bestand het
+     nooit. */
+  it('heeft voor elk vertaald deel een Nederlands deel om tegen te leggen', () => {
+    for (const vertaling of Object.values(SLEUTEL_VERTALINGEN)) {
+      for (const nummer of Object.keys(vertaling).map(Number)) {
+        expect(NL[nummer], `deel ${nummer} ontbreekt in deze test`).toBeDefined()
+      }
+    }
+  })
 
   it('valt terug op het Nederlands voor een taal die er niet is', () => {
     expect(sleuteldeelIn('is', NL[1])).toBe(NL[1])
