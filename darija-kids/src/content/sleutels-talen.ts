@@ -51,6 +51,10 @@ export interface SleutelSchil {
   hoofdstuk: (n: number) => string
   leesVerder: (n: number) => string
   laatsteDeel: string
+  prent: string
+  prentNoot: string
+  beeldenKop: string
+  beeldenNoot: string
   disclaimer: string[]
 }
 
@@ -78,6 +82,10 @@ export const SLEUTEL_SCHIL: Record<string, SleutelSchil> = {
     hoofdstuk: (n) => `Hoofdstuk ${n}`,
     leesVerder: (n) => `Lees verder in deel ${n}`,
     laatsteDeel: 'Het laatste deel',
+    prent: 'Prent',
+    prentNoot: 'Prent. Zodra er een opname van deze plek is, staat die hier.',
+    beeldenKop: 'De beelden',
+    beeldenNoot: 'De foto’s en afbeeldingen in dit boek komen van de plekken waar dit verhaal speelt. Hieronder staat waar ze vandaan komen.',
     disclaimer: DISCLAIMER_NL,
   },
   fr: {
@@ -96,6 +104,10 @@ export const SLEUTEL_SCHIL: Record<string, SleutelSchil> = {
     hoofdstuk: (n) => `Chapitre ${n}`,
     leesVerder: (n) => `À lire ensuite : tome ${n}`,
     laatsteDeel: 'Le dernier tome',
+    prent: 'Dessin',
+    prentNoot: 'Dessin. Dès qu’il y aura une photo de ce lieu, elle sera ici.',
+    beeldenKop: 'Les images',
+    beeldenNoot: 'Les photos et les images de ce livre viennent des lieux où se passe cette histoire. Ci-dessous, d’où elles proviennent.',
     disclaimer: [
       'Ce livre est inventé, mais pas n’importe comment.',
       'Les événements qu’il raconte ont vraiment eu lieu : les villes, les batailles, les voyages, les livres et les gens qui ont fait l’histoire. Ce que l’on en sait a été vérifié, et n’a pas été rendu plus beau qu’il ne l’était.',

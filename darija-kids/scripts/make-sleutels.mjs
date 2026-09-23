@@ -41,6 +41,7 @@ const arg = (naam, terugval = null) => {
 const OPZET = process.argv.includes('--opzet')
 const LIJST = process.argv.includes('--beeldenlijst')
 const NUMMER = Number(arg('deel', '1'))
+const TAAL = arg('taal', 'nl')
 
 /**
  * Voor wie dit exemplaar is; zie de uitleg in `make-prentenboek.mjs`.
@@ -49,7 +50,9 @@ const NUMMER = Number(arg('deel', '1'))
  * het niemand stoort en waar het op elke bladzijde staat.
  */
 const VOOR = arg('voor', '')
-const UIT = path.join(ROOT, 'store', 'sleutels', OPZET ? 'de-reeks.pdf' : `sleutels-${NUMMER}.pdf`)
+const achtervoegsel = TAAL === 'nl' ? '' : `-${TAAL}`
+const UIT = path.join(ROOT, 'store', 'sleutels',
+  OPZET ? `de-reeks${achtervoegsel}.pdf` : `sleutels-${NUMMER}${achtervoegsel}.pdf`)
 
 const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 /** *schuin* wordt schuin. Meer opmaak heeft een roman niet nodig. */
@@ -59,11 +62,28 @@ const server = await createServer({
   configFile: path.join(ROOT, 'vite.config.ts'),
   root: ROOT, server: { middlewareMode: true, hmr: false }, appType: 'custom', logLevel: 'error',
 })
-const [{ REEKS, DISCLAIMER }, ...delen] = await Promise.all([
+const [{ REEKS }, talen, ...delen] = await Promise.all([
   server.ssrLoadModule('/src/content/sleutels.ts'),
+  server.ssrLoadModule('/src/content/sleutels-talen.ts'),
   ...Array.from({ length: 15 }, (_, i) => i + 1).map((n) => server.ssrLoadModule(`/src/content/sleutels-deel${n}.ts`)),
 ])
+const { sleuteldeelIn, schilVanSleutel, SLEUTEL_VERTALINGEN } = talen
+const S = schilVanSleutel(TAAL)
+const DISCLAIMER = S.disclaimer
 await server.close()
+
+/**
+ * De reeks in de gevraagde taal.
+ *
+ * De tijdbalk en het blad "lees verder in deel zoveel" putten hieruit. Laat
+ * je dat Nederlands staan, dan krijgt een Frans boek een Nederlandse tijdbalk
+ * en een Nederlandse vooruitblik, wat opvalt op precies de verkeerde manier.
+ */
+const vertaling = SLEUTEL_VERTALINGEN[TAAL] ?? {}
+const REEKS_T = REEKS.map((d) => {
+  const v = vertaling[d.nummer]
+  return v ? { ...d, titel: v.titel, jaar: v.jaar, waar: v.waar, flap: v.flap } : d
+})
 
 /** Welk deel is al geschreven. Een deel dat er niet is, krijgt alleen zijn opzet. */
 const HOOFDSTUKKEN = Object.fromEntries(
@@ -253,21 +273,20 @@ const omslag = (deel) => `<section class="vol omslag">
     ${hoekje(40, 96, 0.9, 0)}${hoekje(520, 96, 0.9, 90)}
     ${hoekje(520, 698, 0.9, 180)}${hoekje(40, 698, 0.9, 270)}
   </svg>
-  <div class="deelnr"><span>Deel ${deel.nummer} van vijftien</span></div>
+  <div class="deelnr"><span>${esc(S.deelVan(deel.nummer))}</span></div>
   <svg class="sleutel" viewBox="-90 -170 180 280">${sleutel(0, 0, 1, H.lichtGoud)}</svg>
-  <div class="reeksnaam">De sleutels van Marokko</div>
+  <div class="reeksnaam">${esc(S.reeksnaam)}</div>
   <h1>${esc(deel.titel)}</h1>
   <div class="streep"></div>
   <div class="jaar">${esc(deel.jaar)}</div>
   <div class="waar">${esc(deel.waar)}</div>
-  <div class="merk">Darija for Kids · vanaf 9 jaar</div>
+  <div class="merk">${esc(S.merk)}</div>
 </section>`
 
 const kaartBlad = (deel) =>
-  kaal('Waar dit deel speelt', kaart(deel.nummer), `${deel.waar}. De kaart is vereenvoudigd getekend.`)
+  kaal(S.waarSpeelt, kaart(deel.nummer), `${deel.waar}. ${S.kaartNoot}`)
 
-const balkBlad = (deel) => kaal('Waar dit deel staat in de tijd', tijdbalk(REEKS, deel.nummer),
-  'Vijftien delen, van de Romeinse tijd tot nu. De jaren staan op gelijke afstand, niet op schaal.')
+const balkBlad = (deel) => kaal(S.inDeTijd, tijdbalk(REEKS_T, deel.nummer), S.balkNoot)
 
 /**
  * De kaders met feiten, verdeeld over het boek.
@@ -279,7 +298,7 @@ const balkBlad = (deel) => kaal('Waar dit deel staat in de tijd', tijdbalk(REEKS
  * verspilling maar het idee.
  */
 const wistjedat = (regels) => `<aside class="wist">
-  <div class="kop"><svg viewBox="-20 -20 40 40">${khatam(0, 0, 18, H.lichtGoud)}</svg>Wist je dit?</div>
+  <div class="kop"><svg viewBox="-20 -20 40 40">${khatam(0, 0, 18, H.lichtGoud)}</svg>${esc(S.wistJeDit)}</div>
   ${regels.map((r) => `<p>${esc(r)}</p>`).join('')}
 </aside>`
 
@@ -296,13 +315,13 @@ const verdeel = (feiten, aantal) => {
 }
 
 const achterin = (deel) => `<section class="achterin">
-  <h2>Wat hiervan is echt gebeurd</h2>
+  <h2>${esc(S.achterinKop)}</h2>
   <div class="let">${DISCLAIMER.map((r) => `<p>${esc(r)}</p>`).join('')}</div>
-  <h3>Dit is echt gebeurd</h3>
+  <h3>${esc(S.echtKop)}</h3>
   <ul>${deel.echt.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>
-  <h3>Dit is verzonnen</h3>
+  <h3>${esc(S.verzonnenKop)}</h3>
   <ul>${deel.verzonnen.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>
-  <h3>De sleutel</h3>
+  <h3>${esc(S.sleutelKop)}</h3>
   <div class="sleutelkader">
     <svg viewBox="-90 -170 180 280">${sleutel(0, 0, 1, H.goud)}</svg>
     <p>${esc(deel.sleutel)}</p>
@@ -310,35 +329,35 @@ const achterin = (deel) => `<section class="achterin">
 </section>`
 
 const verder = (deel) => {
-  const na = REEKS.find((d) => d.nummer === deel.nummer + 1)
+  const na = REEKS_T.find((d) => d.nummer === deel.nummer + 1)
   return na ? `<section class="verder">
-    <div class="etiket">Lees verder in deel ${na.nummer}</div>
+    <div class="etiket">${esc(S.leesVerder(na.nummer))}</div>
     <h2>${esc(na.titel)}</h2>
     <div class="jaar">${esc(na.jaar)} · ${esc(na.waar)}</div>
     <p>${esc(na.flap)}</p>
   </section>` : `<section class="verder">
-    <div class="etiket">Het laatste deel</div>
+    <div class="etiket">${esc(S.laatsteDeel)}</div>
     <h2>En nu is de sleutel van jou</h2>
     <p>Vijftien delen, tweeduizend jaar, en steeds hetzelfde stukje ijzer met een achtpuntige ster erop. Vraag thuis eens wat er in jullie doos zit.</p>
   </section>`
 }
 
 const verantwoording = (lijst) => lijst.length ? `<section class="achterin">
-  <h2>De beelden</h2>
-  <p class="eerste">De foto's en afbeeldingen in dit boek komen van de plekken waar dit verhaal speelt. Hieronder staat waar ze vandaan komen.</p>
+  <h2>${esc(S.beeldenKop)}</h2>
+  <p class="eerste">${esc(S.beeldenNoot)}</p>
   <ul>${lijst.map((b) => `<li>${esc(b.onderschrift || path.basename(b.pad))}${b.bron ? ` — ${esc(b.bron)}` : ''}</li>`).join('')}</ul>
 </section>` : ''
 
 const deelBoek = (deel) => {
-  const hfd = HOOFDSTUKKEN[deel.nummer] ?? []
+  const hfd = deel.hoofdstukken ?? []
   const plaatjes = beelden(deel.nummer)
   const feiten = verdeel(deel.echt, hfd.length)
   /* De getekende plaat staat er alleen zolang er geen opname van deze plek is. */
   const opening = plaatjes.length
     ? fotoBlad(plaatjes[0], deel.waar)
-    : blad(deel.waar, plaatVan(deel.nummer), 'Prent. Zodra er een opname van deze plek is, staat die hier.', 'Prent')
+    : blad(deel.waar, plaatVan(deel.nummer), S.prentNoot, S.prent)
 
-  return `<!doctype html><html lang="nl"><meta charset="utf-8"><style>${STIJL}</style><body>
+  return `<!doctype html><html lang="${TAAL}"><meta charset="utf-8"><style>${STIJL}</style><body>
 ${omslag(deel)}
 ${kaartBlad(deel)}
 ${balkBlad(deel)}
@@ -358,7 +377,7 @@ ${opening}
 ${hfd.map((h, i) => `<section class="hfd">
   <div class="opener">
     <div class="cijfer">${String(h.nummer).padStart(2, '0')}</div>
-    <div class="etiket">Hoofdstuk ${h.nummer}</div>
+    <div class="etiket">${esc(S.hoofdstuk(h.nummer))}</div>
     <h2>${esc(h.titel)}</h2>
     <div class="streep"><i></i><svg viewBox="-20 -20 40 40">${khatam(0, 0, 18, H.goud)}</svg><i></i></div>
   </div>
@@ -374,7 +393,7 @@ ${verder(deel)}
 </body></html>`
 }
 
-const opzet = () => `<!doctype html><html lang="nl"><meta charset="utf-8"><style>${STIJL}</style><body>
+const opzet = () => `<!doctype html><html lang="${TAAL}"><meta charset="utf-8"><style>${STIJL}</style><body>
 <section class="vol omslag">
   <svg class="band boven" viewBox="0 0 560 34" preserveAspectRatio="none">${zellige(0, 1, 560, 32, H.goud)}</svg>
   <svg class="band onder" viewBox="0 0 560 34" preserveAspectRatio="none">${zellige(0, 1, 560, 32, H.goud)}</svg>
@@ -383,7 +402,7 @@ const opzet = () => `<!doctype html><html lang="nl"><meta charset="utf-8"><style
     ${hoekje(520, 698, 0.9, 180)}${hoekje(40, 698, 0.9, 270)}
   </svg>
   <svg class="sleutel" viewBox="-90 -170 180 280">${sleutel(0, 0, 1, H.lichtGoud)}</svg>
-  <div class="reeksnaam">De sleutels van Marokko</div>
+  <div class="reeksnaam">${esc(S.reeksnaam)}</div>
   <h1>Vijftien delen</h1>
   <div class="streep"></div>
   <div class="jaar">Tweeduizend jaar, één sleutel</div>
@@ -480,7 +499,11 @@ if (LIJST) {
   process.exit(0)
 }
 
-const html = OPZET ? opzet() : deelBoek(REEKS.find((d) => d.nummer === NUMMER))
+const basis = { ...REEKS.find((d) => d.nummer === NUMMER), hoofdstukken: HOOFDSTUKKEN[NUMMER] ?? [] }
+if (TAAL !== 'nl' && !vertaling[NUMMER]) {
+  console.log(`\nLet op: deel ${NUMMER} is nog niet in het ${TAAL} vertaald. Dit boek komt in het Nederlands.\n`)
+}
+const html = OPZET ? opzet() : deelBoek(sleuteldeelIn(TAAL, basis))
 await mkdir(path.dirname(UIT), { recursive: true })
 const tijdelijk = path.join(tmpdir(), `.sleutels-${OPZET ? 'opzet' : NUMMER}.html`)
 await writeFile(tijdelijk, html)
