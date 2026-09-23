@@ -55,7 +55,7 @@ WAS AM WEG STEHT
 • Ein Wiederholstapel, der selbst merkt, was zu wackeln beginnt
 
 NACH JEDEM TEST EIN STÜCK MAROKKO
-Jeder Checkpoint bringt einen kurzen Film: vierzehn Karten in historischer Reihenfolge, von der römischen Stadt Walili bis zum Tifinagh-Alphabet, das 2011 amtlich wurde. Sie enden mit einem „Wusstest du schon?“.
+Jeder Checkpoint bringt einen kurzen Film: vierzehn Karten in historischer Reihenfolge, von der römischen Stadt Walili bis zum Tifinagh-Alphabet, das 2011 amtlich wurde. Sie werden in deiner Sprache vorgelesen und enden mit einem „Wusstest du schon?“.
 
 ALLES KLINGT
 Jedes Wort und jeder Satz lässt sich anhören: einmal tippen für normal, zweimal langsam. Ohne arabische Stimme sagt die App das ehrlich und liest die lateinische Schreibweise vor.
@@ -75,7 +75,7 @@ GEMACHT, UM ES EINEM KIND ZU GEBEN
 EHRLICH ZUR SPRACHE
 Darija unterscheidet sich von Stadt zu Stadt und von Familie zu Familie und hat keine offizielle Rechtschreibung. Wir nehmen die Form, die man in Casablanca und Rabat am häufigsten hört. Sagt deine Oma es anders, hat deine Oma recht — das sagt die App auch selbst.
 
-Nutzungsbedingungen (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
 **Neuheiten (Version 1.1)**

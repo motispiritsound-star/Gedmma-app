@@ -75,7 +75,7 @@ HECHA PARA DÁRSELA A UN NIÑO
 CON HONESTIDAD SOBRE LA LENGUA
 El dariya cambia de ciudad a ciudad y de familia a familia, y no tiene ortografía oficial. Usamos la forma que más se oye en Casablanca y Rabat. ¿Tu abuela lo dice de otra manera? Entonces ella tiene razón, y la propia aplicación lo dice.
 
-Términos de uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
 **Novedades (versión 1.1)**

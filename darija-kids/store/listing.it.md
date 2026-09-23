@@ -75,7 +75,7 @@ FATTA PER DARLA IN MANO A UN BAMBINO
 ONESTAMENTE, SULLA LINGUA
 Il darija cambia da città a città e da famiglia a famiglia, e non ha un'ortografia ufficiale. Usiamo la forma che si sente di più a Casablanca e Rabat. Tua nonna lo dice diversamente? Allora ha ragione lei, e l'app stessa lo dice.
 
-Termini d'uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
 **Novità (versione 1.1)**

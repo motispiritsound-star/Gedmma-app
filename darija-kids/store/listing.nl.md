@@ -75,7 +75,7 @@ GEMAAKT OM AAN EEN KIND TE GEVEN
 EERLIJK OVER DE TAAL
 Darija verschilt per stad en per familie, en heeft geen officiële spelling. Wij kiezen de vorm die je in Casablanca en Rabat het meest hoort. Zegt jouw oma het anders, dan heeft jouw oma gelijk — dat zegt de app zelf ook.
 
-Gebruiksvoorwaarden (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
 **Wat is er nieuw (versie 1.1)**

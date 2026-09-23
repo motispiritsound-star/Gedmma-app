@@ -10,148 +10,77 @@ Subscriptions**. Eén reden, en de kleinst mogelijke:
 De app zelf is niet afgekeurd. De abonnementen en de groep "Volledige toegang"
 staan nog op *Ready for Review*. Er hoeft **geen nieuwe build** te komen.
 
-## Waar je moet zijn
+## Waar het in moet
 
 App Store Connect → **My Apps → Darijaforkids → Distribution → iOS App 1.0**
-(die met de rode *Rejected* erboven). Scroll naar beneden, voorbij **Previews
-and Screenshots** en **Promotional Text**. Daaronder staat het vak
-**Description**. Daar gaat het in.
+(die met de rode *Rejected* erboven). Scroll voorbij **Previews and
+Screenshots** en **Promotional Text**; daaronder staat het vak **Description**.
 
-Boven dat blok staat een taalkiezer — bij jou staat hij nu op **Dutch**. Daarin
-staan alleen de talen die jij hebt aangezet; alleen die hoeven langs.
+De taalkiezer staat vlak boven dat blok, bij jou op **Dutch**. Daarin staan
+alleen de talen die aanstaan; alleen die hoeven langs. Aan het eind **Save**
+per taal, en daarna eenmalig **Update Review**.
 
-Als je klaar bent: bovenaan **Save**, daarna **Update Review**.
+## Wat erin moet
 
-## De kortste weg: twee bewerkingen per taal
+Onderaan de beschrijving, met een lege regel ertussen, in elke taal dezelfde
+regel:
 
-De hele tekst opnieuw plakken hoeft niet. Per taal:
+```
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+```
 
-1. Zoek in de opsomming de regel over de veertien geschiedenisfilmpjes en
-   **haal die hele regel weg**. Die staat vier regels boven de alinea die er
-   precies hetzelfde over vertelt, dus er gaat niets verloren — en er komt
-   ruimte vrij, want het vak zit al bijna aan de vierduizend tekens.
-2. Zet de cursor **helemaal onderaan**, achter de laatste zin, en zet daar een
-   lege regel plus de EULA-regel.
+Meer niet. Het is Apple's eigen adres, dus er valt niets aan af te keuren, en
+er hoeft geen woord voor — een beoordelaar herkent de link.
 
-Bij **Frans** en **Duits** moet er nog één zin korter, anders pas je er net
-niet in. Die staat hieronder apart.
+## Waarom er eerst iets weg moet
 
-Liever niet in stukjes knippen? Onderaan dit bestand staat elke taal helemaal
-uitgeschreven zoals hij moet worden. Dat mag ook.
+De beschrijvingen zaten op 3952–3985 van de 4000 tekens, dus die regel past er
+niet zomaar bij. Er moet per taal iets weg dat lang genoeg is: bij **French**
+en **German** minstens 45 tekens, bij de rest wat minder.
 
-## Per taal
+Het minst pijnlijke is de opsommingsregel over de veertien geschiedenisfilmpjes.
+Die staat vier regels boven de alinea die er precies hetzelfde over vertelt, dus
+er gaat niets verloren. Dat is ook wat er in dit bestand is weggehaald:
 
-### Nederlands (Dutch)
-
-**Weghalen — deze hele regel:**
+**Dutch** — 58 tekens over als je deze regel weghaalt:
 
 ```
 • Veertien korte filmpjes uit de geschiedenis van Marokko, één na elke toets
 ```
 
-**Onderaan erbij — een lege regel, en dan deze regel:**
-
-```
-Gebruiksvoorwaarden (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-```
-
-### Frans (French)
-
-**Weghalen — deze hele regel:**
+**French** — 20 tekens over als je deze regel weghaalt:
 
 ```
 • Quatorze courts films sur l'histoire du Maroc, un après chaque test
 ```
 
-**Vervangen — deze zin:**
-
-```
-Lus à voix haute dans ta langue, ils finissent sur un « le savais-tu ? ».
-```
-
-**wordt:**
-
-```
-Ils finissent sur un « le savais-tu ? ».
-```
-
-**Onderaan erbij — een lege regel, en dan deze regel:**
-
-```
-Conditions d'utilisation (EULA) : https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-```
-
-### Duits (German)
-
-**Weghalen — deze hele regel:**
+**German** — 22 tekens over als je deze regel weghaalt:
 
 ```
 • Vierzehn kurze Filme aus der Geschichte Marokkos, einer nach jedem Test
 ```
 
-**Vervangen — deze zin:**
-
-```
-Sie werden in deiner Sprache vorgelesen und enden mit einem „Wusstest du schon?“.
-```
-
-**wordt:**
-
-```
-Sie enden mit einem „Wusstest du schon?“.
-```
-
-**Onderaan erbij — een lege regel, en dan deze regel:**
-
-```
-Nutzungsbedingungen (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-```
-
-### Spaans (Spanish)
-
-**Weghalen — deze hele regel:**
+**Spanish** — 28 tekens over als je deze regel weghaalt:
 
 ```
 • Catorce cortos sobre la historia de Marruecos, uno después de cada test
 ```
 
-**Onderaan erbij — een lege regel, en dan deze regel:**
-
-```
-Términos de uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-```
-
-### Italiaans (Italian)
-
-**Weghalen — deze hele regel:**
+**Italian** — 33 tekens over als je deze regel weghaalt:
 
 ```
 • Quattordici cortometraggi sulla storia del Marocco, uno dopo ogni test
 ```
 
-**Onderaan erbij — een lege regel, en dan deze regel:**
-
-```
-Termini d'uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-```
-
-### Engels (English)
-
-**Weghalen — deze hele regel:**
+**English** — 131 tekens over als je deze regel weghaalt:
 
 ```
 • Fourteen short films from the history of Morocco, one after every test
 ```
 
-**Onderaan erbij — een lege regel, en dan deze regel:**
-
-```
-Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-```
-
 ## De hele tekst, als je liever in één keer plakt
 
-### Nederlands (Dutch) — 3970 van de 4000 tekens
+### Dutch — 3942 van de 4000 tekens
 
 ```
 Laat je kind zijn moedertaal leren — spelenderwijs.
@@ -210,10 +139,10 @@ GEMAAKT OM AAN EEN KIND TE GEVEN
 EERLIJK OVER DE TAAL
 Darija verschilt per stad en per familie, en heeft geen officiële spelling. Wij kiezen de vorm die je in Casablanca en Rabat het meest hoort. Zegt jouw oma het anders, dan heeft jouw oma gelijk — dat zegt de app zelf ook.
 
-Gebruiksvoorwaarden (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
-### Frans (French) — 3981 van de 4000 tekens
+### French — 3980 van de 4000 tekens
 
 ```
 Faites apprendre à votre enfant sa langue maternelle — en jouant.
@@ -252,7 +181,7 @@ CE QU'IL Y A LE LONG DU PARCOURS
 • Une pile de révision qui repère toute seule ce qui commence à vaciller
 
 APRÈS CHAQUE TEST, UN MORCEAU DU MAROC
-Chaque étape donne un court film : quatorze cartes dans l’ordre de l’histoire, de la ville romaine de Walili jusqu’à l’alphabet tifinagh devenu officiel en 2011. Ils finissent sur un « le savais-tu ? ».
+Chaque étape donne un court film : quatorze cartes dans l’ordre de l’histoire, de la ville romaine de Walili jusqu’à l’alphabet tifinagh devenu officiel en 2011. Lus à voix haute dans ta langue, ils finissent sur un « le savais-tu ? ».
 
 TOUT SE PRONONCE
 Chaque mot et chaque phrase s'écoute : une touche pour la vitesse normale, deux pour la lente. Sans voix arabe sur l'appareil, l'application le dit et lit l'écriture latine du mieux qu'elle peut.
@@ -272,10 +201,10 @@ FAIT POUR ÊTRE CONFIÉ À UN ENFANT
 HONNÊTE SUR LA LANGUE
 Le darija change d'une ville et d'une famille à l'autre, sans orthographe officielle. Nous prenons la forme la plus courante à Casablanca et à Rabat. Si ta grand-mère le dit autrement, c'est elle qui a raison — l'application le dit elle-même.
 
-Conditions d'utilisation (EULA) : https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
-### Duits (German) — 3966 van de 4000 tekens
+### German — 3978 van de 4000 tekens
 
 ```
 Lass dein Kind seine Muttersprache lernen — spielerisch.
@@ -314,7 +243,7 @@ WAS AM WEG STEHT
 • Ein Wiederholstapel, der selbst merkt, was zu wackeln beginnt
 
 NACH JEDEM TEST EIN STÜCK MAROKKO
-Jeder Checkpoint bringt einen kurzen Film: vierzehn Karten in historischer Reihenfolge, von der römischen Stadt Walili bis zum Tifinagh-Alphabet, das 2011 amtlich wurde. Sie enden mit einem „Wusstest du schon?“.
+Jeder Checkpoint bringt einen kurzen Film: vierzehn Karten in historischer Reihenfolge, von der römischen Stadt Walili bis zum Tifinagh-Alphabet, das 2011 amtlich wurde. Sie werden in deiner Sprache vorgelesen und enden mit einem „Wusstest du schon?“.
 
 ALLES KLINGT
 Jedes Wort und jeder Satz lässt sich anhören: einmal tippen für normal, zweimal langsam. Ohne arabische Stimme sagt die App das ehrlich und liest die lateinische Schreibweise vor.
@@ -334,10 +263,10 @@ GEMACHT, UM ES EINEM KIND ZU GEBEN
 EHRLICH ZUR SPRACHE
 Darija unterscheidet sich von Stadt zu Stadt und von Familie zu Familie und hat keine offizielle Rechtschreibung. Wir nehmen die Form, die man in Casablanca und Rabat am häufigsten hört. Sagt deine Oma es anders, hat deine Oma recht — das sagt die App auch selbst.
 
-Nutzungsbedingungen (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
-### Spaans (Spanish) — 3996 van de 4000 tekens
+### Spanish — 3972 van de 4000 tekens
 
 ```
 Deja que tu hijo aprenda su lengua materna — jugando.
@@ -396,10 +325,10 @@ HECHA PARA DÁRSELA A UN NIÑO
 CON HONESTIDAD SOBRE LA LENGUA
 El dariya cambia de ciudad a ciudad y de familia a familia, y no tiene ortografía oficial. Usamos la forma que más se oye en Casablanca y Rabat. ¿Tu abuela lo dice de otra manera? Entonces ella tiene razón, y la propia aplicación lo dice.
 
-Términos de uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
-### Italiaans (Italian) — 3989 van de 4000 tekens
+### Italian — 3967 van de 4000 tekens
 
 ```
 Fai imparare a tuo figlio la sua lingua madre — giocando.
@@ -458,10 +387,10 @@ FATTA PER DARLA IN MANO A UN BAMBINO
 ONESTAMENTE, SULLA LINGUA
 Il darija cambia da città a città e da famiglia a famiglia, e non ha un'ortografia ufficiale. Usiamo la forma che si sente di più a Casablanca e Rabat. Tua nonna lo dice diversamente? Allora ha ragione lei, e l'app stessa lo dice.
 
-Termini d'uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
-### Engels (English) — 3890 van de 4000 tekens
+### English — 3869 van de 4000 tekens
 
 ```
 Let your child learn their mother tongue — by playing.
@@ -520,5 +449,5 @@ MADE TO HAND TO A CHILD
 HONEST ABOUT THE LANGUAGE
 Darija differs from city to city and family to family, and has no official spelling. We use the form heard most in Casablanca and Rabat. If your grandmother says it differently, she is right — the app says so itself.
 
-Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```

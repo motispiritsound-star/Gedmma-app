@@ -75,7 +75,7 @@ MADE TO HAND TO A CHILD
 HONEST ABOUT THE LANGUAGE
 Darija differs from city to city and family to family, and has no official spelling. We use the form heard most in Casablanca and Rabat. If your grandmother says it differently, she is right — the app says so itself.
 
-Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
 **What's new (version 1.1)**
