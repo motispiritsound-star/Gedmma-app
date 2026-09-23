@@ -15,15 +15,22 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 
 ### Wat alleen jij kunt doen
 
-1. **Apple: abonnementsprijzen per land.** Nakijken voor NL, BE, FR, DE, ES,
+1. **Apple: handelaarsverificatie — document opsturen.** Developer Support
+   vraagt om een stuk waarop je naam staat zoals die in App Store Connect is
+   ingevuld, plus het adres. Een KvK-uittreksel dekt allebei. Let op dat het
+   adres op het uittreksel letterlijk gelijk is aan wat er in App Store
+   Connect staat: per 1 januari 2026 is dat Bussum en niet meer Veenendaal.
+   Uploaden gaat via de link in de aparte mail van AppleSupport, daarna
+   antwoorden op de mail van Developer Support.
+2. **Apple: abonnementsprijzen per land.** Nakijken voor NL, BE, FR, DE, ES,
    IT en MA. Apple vult de rest af uit de prijs die je voor één land zet, en
    dat valt niet altijd goed uit.
-2. **Apple: royaltyvaluta.** Bij de bankrekening staat USD. Zet dat op EUR,
+3. **Apple: royaltyvaluta.** Bij de bankrekening staat USD. Zet dat op EUR,
    anders wordt er twee keer gewisseld op elke uitbetaling.
-3. **Apple: DAC7.** Moet ingevuld voordat er uitbetaald kan worden. Het
+4. **Apple: DAC7.** Moet ingevuld voordat er uitbetaald kan worden. Het
    antwoord op "persoonlijke diensten" is **nee** — dat gaat over werk van
    mensen per uur of per klus, en dit is een app.
-4. **Google: bankrekening en belastinggegevens.** Zonder dat geen uitbetaling,
+5. **Google: bankrekening en belastinggegevens.** Zonder dat geen uitbetaling,
    ook niet als de app al verkoopt.
 
 ## De boeken
