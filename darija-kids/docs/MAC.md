@@ -348,6 +348,48 @@ Gefeliciteerd. De app is bij Apple.
 
 ---
 
+### C7. De vraag over versleuteling voorgoed uitzetten
+
+Apple stelt bij **elke** upload dezelfde vraag — gebruikt de app versleuteling?
+— en zolang je die niet beantwoordt blijft de build op *Missing Compliance*
+staan en gaat hij niet naar je testers. Elke keer opnieuw.
+
+Eén regel in `Info.plist` maakt er een eind aan:
+
+1. Linkerkolom in Xcode: **App** → **App** → **Info.plist**.
+2. Klik een regel aan en dan op **+** (of rechtsklik → *Add Row*).
+3. Naam: `App Uses Non-Exempt Encryption`
+4. Waarde: **NO**.
+
+Dat is ook het juiste antwoord: de app heeft geen eigen cryptografie, en de
+gewone HTTPS van het besturingssysteem telt voor deze vraag niet mee.
+
+Let op: `Info.plist` hoort bij het iOS-project op je eigen Mac, en die map
+staat niet in het repository. Draai je ooit opnieuw `npx cap add ios`, dan is
+deze regel weg en moet hij er opnieuw in.
+
+### C8. Elke volgende build — de vaste volgorde
+
+De code staat op GitHub, niet op je Mac. Sla je de eerste twee regels over,
+dan bouw je de oude app in een nieuw jasje — en dat zie je pas als de build
+al bij Apple staat.
+
+```bash
+cd ~/Gedmma-app
+git pull origin main
+cd ~/Gedmma-app/darija-kids
+npm install
+npm run build
+npx cap sync ios
+```
+
+`npx cap sync ios` is degene die het vaakst wordt vergeten: die kopieert de
+nieuwe app-bestanden naar het iOS-project. Zonder die stap verandert er niets
+aan wat je archiveert.
+
+Daarna in Xcode: **General → Build** ophogen (Apple weigert een nummer dat al
+bestaat), dan **Product → Archive** en **Distribute App**.
+
 ## Deel D — TestFlight
 
 1. Ga in Safari naar **appstoreconnect.apple.com** en log in.
