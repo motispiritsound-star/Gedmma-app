@@ -55,7 +55,7 @@ const nl = {
   afrekenStappen: [
     ['Kies je reeks', 'Sba of De sleutels van Marokko. Je koopt de hele reeks in één keer; op de boekenpagina staat welke delen erin zitten.'],
     ['Betaal', 'Je gaat naar een beveiligde afrekenpagina. iDEAL, Apple Pay, Google Pay, creditcard, PayPal en Bancontact — wat in jouw land werkt, staat erbij.'],
-    ['De taal', 'Sba staat in alle zes de talen klaar: Nederlands, Frans, Duits, Spaans, Italiaans en Engels. De sleutels van Marokko staat in het Nederlands en het Frans klaar; Duits, Spaans, Italiaans en Engels komen er dit jaar bij, en wie de reeks al heeft gekocht krijgt ze gratis via dezelfde link.'],
+    ['De taal', 'Sba staat in alle zes de talen klaar: Nederlands, Frans, Duits, Spaans, Italiaans en Engels. De sleutels van Marokko staat in het Nederlands, het Frans en het Duits klaar; Spaans, Italiaans en Engels komen er dit jaar bij, en wie de reeks al heeft gekocht krijgt ze gratis via dezelfde link.'],
     ['Lees', 'Je krijgt direct een mail met de downloadlink. PDF om op papier te zetten, EPUB voor een e-reader of tablet. De link blijft een jaar geldig.'],
   ],
   afrekenWatTitel: 'Wat je krijgt',
@@ -229,7 +229,7 @@ const fr: SiteCopy = {
   afrekenStappen: [
     ['Choisissez votre série', 'Sba ou Les clés du Maroc. Vous achetez la série entière d’un coup ; la page des livres dit quels tomes en font partie.'],
     ['Payez', 'Vous arrivez sur une page de paiement sécurisée. Carte bancaire, Apple Pay, Google Pay, PayPal, Bancontact, iDEAL — ce qui fonctionne chez vous est proposé.'],
-    ['La langue', 'Sba existe dans les six langues : néerlandais, français, allemand, espagnol, italien et anglais. Les clés du Maroc existe en néerlandais et en français ; l’allemand, l’espagnol, l’italien et l’anglais arrivent cette année, et ceux qui ont déjà acheté la série les recevront gratuitement via le même lien.'],
+    ['La langue', 'Sba existe dans les six langues : néerlandais, français, allemand, espagnol, italien et anglais. Les clés du Maroc existe en néerlandais, en français et en allemand ; l’espagnol, l’italien et l’anglais arrivent cette année, et ceux qui ont déjà acheté la série les recevront gratuitement via le même lien.'],
     ['Lisez', 'Vous recevez aussitôt un mail avec le lien de téléchargement. PDF pour imprimer, EPUB pour liseuse ou tablette. Le lien reste valable un an.'],
   ],
   afrekenWatTitel: 'Ce que vous recevez',
@@ -400,7 +400,7 @@ const de: SiteCopy = {
   afrekenStappen: [
     ['Reihe wählen', 'Sba oder Die Schlüssel Marokkos. Du kaufst die ganze Reihe auf einmal; auf der Bücherseite steht, welche Bände dazugehören.'],
     ['Bezahlen', 'Sie kommen auf eine gesicherte Bezahlseite. Kreditkarte, Apple Pay, Google Pay, PayPal, SEPA, iDEAL — was in Ihrem Land funktioniert, steht dort.'],
-    ['Die Sprache', 'Sba gibt es in allen sechs Sprachen: Niederländisch, Französisch, Deutsch, Spanisch, Italienisch und Englisch. Die Schlüssel Marokkos gibt es auf Niederländisch und Französisch; Deutsch, Spanisch, Italienisch und Englisch kommen dieses Jahr dazu, und wer die Reihe schon gekauft hat, bekommt sie kostenlos über denselben Link.'],
+    ['Die Sprache', 'Sba gibt es in allen sechs Sprachen: Niederländisch, Französisch, Deutsch, Spanisch, Italienisch und Englisch. Die Schlüssel Marokkos gibt es auf Niederländisch, Französisch und Deutsch; Spanisch, Italienisch und Englisch kommen dieses Jahr dazu, und wer die Reihe schon gekauft hat, bekommt sie kostenlos über denselben Link.'],
     ['Lesen', 'Sie bekommen sofort eine Mail mit dem Downloadlink. PDF zum Ausdrucken, EPUB für E-Reader oder Tablet. Der Link gilt ein Jahr.'],
   ],
   afrekenWatTitel: 'Was Sie bekommen',
@@ -571,7 +571,7 @@ const es: SiteCopy = {
   afrekenStappen: [
     ['Elige tu serie', 'Sba o Las llaves de Marruecos. Compras la serie entera de una vez; en la página de libros ves qué tomos incluye.'],
     ['Paga', 'Vas a una página de pago segura. Tarjeta, Apple Pay, Google Pay, PayPal, Bizum, iDEAL — aparece lo que funciona en tu país.'],
-    ['El idioma', 'Sba está en los seis idiomas: neerlandés, francés, alemán, español, italiano e inglés. Las llaves de Marruecos está en neerlandés y en francés; el alemán, el español, el italiano y el inglés llegan este año, y quien ya haya comprado la serie las recibirá gratis por el mismo enlace.'],
+    ['El idioma', 'Sba está en los seis idiomas: neerlandés, francés, alemán, español, italiano e inglés. Las llaves de Marruecos está en neerlandés, en francés y en alemán; el español, el italiano y el inglés llegan este año, y quien ya haya comprado la serie las recibirá gratis por el mismo enlace.'],
     ['Lee', 'Recibes al momento un correo con el enlace de descarga. PDF para imprimir, EPUB para lector o tableta. El enlace vale un año.'],
   ],
   afrekenWatTitel: 'Qué recibes',
@@ -742,7 +742,7 @@ const it: SiteCopy = {
   afrekenStappen: [
     ['Scegli la collana', 'Sba o Le chiavi del Marocco. Compri la collana intera in una volta; sulla pagina dei libri c’è quali volumi contiene.'],
     ['Paga', 'Arrivi su una pagina di pagamento sicura. Carta, Apple Pay, Google Pay, PayPal, iDEAL — compare quello che funziona nel tuo paese.'],
-    ['La lingua', 'Sba c’è in tutte e sei le lingue: olandese, francese, tedesco, spagnolo, italiano e inglese. Le chiavi del Marocco c’è in olandese e in francese; tedesco, spagnolo, italiano e inglese arrivano quest’anno, e chi ha già comprato la serie le riceverà gratis dallo stesso link.'],
+    ['La lingua', 'Sba c’è in tutte e sei le lingue: olandese, francese, tedesco, spagnolo, italiano e inglese. Le chiavi del Marocco c’è in olandese, in francese e in tedesco; spagnolo, italiano e inglese arrivano quest’anno, e chi ha già comprato la serie le riceverà gratis dallo stesso link.'],
     ['Leggi', 'Ricevi subito una mail con il link. PDF da stampare, EPUB per e-reader o tablet. Il link vale un anno.'],
   ],
   afrekenWatTitel: 'Cosa ricevi',
@@ -913,7 +913,7 @@ const en: SiteCopy = {
   afrekenStappen: [
     ['Pick your series', 'Sba or The keys of Morocco. You buy the whole series at once; the books page lists what is in it.'],
     ['Pay', 'You go to a secure checkout page. Card, Apple Pay, Google Pay, PayPal, iDEAL, Bancontact — whatever works where you are.'],
-    ['The language', 'Sba is ready in all six languages: Dutch, French, German, Spanish, Italian and English. The Keys of Morocco is ready in Dutch and French; German, Spanish, Italian and English arrive this year, and anyone who already bought the series gets them free through the same link.'],
+    ['The language', 'Sba is ready in all six languages: Dutch, French, German, Spanish, Italian and English. The Keys of Morocco is ready in Dutch, French and German; Spanish, Italian and English arrive this year, and anyone who already bought the series gets them free through the same link.'],
     ['Read', 'You get an email with the download link straight away. PDF to print, EPUB for an e-reader or tablet. The link stays good for a year.'],
   ],
   afrekenWatTitel: 'What you get',

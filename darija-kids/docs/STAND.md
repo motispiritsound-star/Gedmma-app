@@ -1,6 +1,6 @@
 # Waar staan we
 
-Bijgewerkt op 23 september 2026 (einde middag). Dit bestand is het antwoord op "wat moet er
+Bijgewerkt op 23 september 2026 (avond). Dit bestand is het antwoord op "wat moet er
 nog" zonder dat je drie andere bestanden hoeft te lezen.
 
 ## De app
@@ -9,22 +9,21 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 389, groen |
+| Tests | 493, groen |
 | Google Play | versie 1.1 ingediend (submission 3), wacht op beoordeling |
-| App Store | build 3 in TestFlight; build 4 nodig vóór inzending |
+| App Store | 1.0 (build 4) ingediend met beide abonnementen, wacht op beoordeling |
 
 ### Wat alleen jij kunt doen
 
-1. **De Mac.** macOS bijwerken naar 26.6 of nieuwer, dan Xcode, dan de stappen
-   in `docs/MAC.md`. Dit is de enige weg naar de App Store.
-2. **Apple: handelaarsverificatie (DSA).** In behandeling sinds 19 september.
-   Niets aan te doen behalve wachten.
-3. **Apple: royaltyvaluta.** Bij de bankrekening staat USD. Zet dat op EUR,
+1. **Apple: abonnementsprijzen per land.** Nakijken voor NL, BE, FR, DE, ES,
+   IT en MA. Apple vult de rest af uit de prijs die je voor één land zet, en
+   dat valt niet altijd goed uit.
+2. **Apple: royaltyvaluta.** Bij de bankrekening staat USD. Zet dat op EUR,
    anders wordt er twee keer gewisseld op elke uitbetaling.
-4. **Apple: DAC7.** Moet ingevuld voordat er uitbetaald kan worden. Het
+3. **Apple: DAC7.** Moet ingevuld voordat er uitbetaald kan worden. Het
    antwoord op "persoonlijke diensten" is **nee** — dat gaat over werk van
    mensen per uur of per klus, en dit is een app.
-5. **Google: bankrekening en belastinggegevens.** Zonder dat geen uitbetaling,
+4. **Google: bankrekening en belastinggegevens.** Zonder dat geen uitbetaling,
    ook niet als de app al verkoopt.
 
 ## De boeken
@@ -44,7 +43,7 @@ opdrachten daarvoor staan in `store/prentenboek/platenlijst.md`.
 | Blz | 33 | 42 | 35 | 29 | 31 | 46 | 31 | 29 | 28 | 27 | 27 | 27 | 26 | 28 | 25 |
 
 Alle vijftien delen zijn uitgeschreven, en alle vijftien staan ook in het
-**Frans**. Duits, Spaans, Italiaans en Engels moeten nog.
+**Frans** en in het **Duits**. Spaans, Italiaans en Engels moeten nog.
 
 De vertaling ligt alinea voor alinea naast het Nederlands, en daar staat een
 test op: een hoofdstuk dat wegvalt of een alinea die wordt samengevoegd laat
