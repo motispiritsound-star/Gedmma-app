@@ -115,6 +115,33 @@ export const SLEUTEL_SCHIL: Record<string, SleutelSchil> = {
       'Chaque fois que l’histoire comble un trou avec de l’imagination, c’est écrit à la fin, dans « Ce qui s’est vraiment passé ». Lis cette partie. C’est ce qu’il y a de plus passionnant dans le livre, parce qu’on y voit à quel point l’histoire vraie est souvent plus étrange encore.',
     ],
   },
+  es: {
+    reeksnaam: 'Las llaves de Marruecos',
+    deelVan: (n) => `Libro ${n} de quince`,
+    merk: 'Darija for Kids · a partir de 9 años',
+    waarSpeelt: 'Dónde transcurre este libro',
+    kaartNoot: 'El mapa está dibujado de forma simplificada.',
+    inDeTijd: 'Dónde se sitúa este libro en el tiempo',
+    balkNoot: 'Quince libros, desde la época romana hasta hoy. Los años están a la misma distancia, no a escala.',
+    wistJeDit: '¿Sabías esto?',
+    achterinKop: 'Qué hay de verdad en todo esto',
+    echtKop: 'Esto ocurrió de verdad',
+    verzonnenKop: 'Esto es inventado',
+    sleutelKop: 'La llave',
+    hoofdstuk: (n) => `Capítulo ${n}`,
+    leesVerder: (n) => `Sigue leyendo en el libro ${n}`,
+    laatsteDeel: 'El último libro',
+    prent: 'Dibujo',
+    prentNoot: 'Dibujo. En cuanto haya una fotografía de este lugar, estará aquí.',
+    beeldenKop: 'Las imágenes',
+    beeldenNoot: 'Las fotografías e ilustraciones de este libro vienen de los lugares donde transcurre esta historia. Abajo está de dónde proceden.',
+    disclaimer: [
+      'Este libro es inventado, pero no de cualquier manera.',
+      'Lo que ocurre en él ocurrió de verdad: las ciudades, las batallas, los viajes, los libros y las personas que hicieron historia. Lo que se sabe de todo eso se ha comprobado y no se ha adornado más de lo que fue.',
+      'Los niños y las niñas que cuentan la historia son inventados. No existieron, y la llave que va de mano en mano tampoco existió nunca. Tenía que ser así: de los niños corrientes de aquellos tiempos no se sabe casi nada — y es justo al lado de ellos donde uno quiere sentarse cuando pasa algo grande.',
+      'Donde la historia llena un hueco con imaginación, se dice al final del libro, en «Qué hay de verdad en todo esto». Lee esa parte. Es lo más apasionante del libro, porque allí se ve cuánto más extraña suele ser la historia de verdad.',
+    ],
+  },
   de: {
     reeksnaam: 'Die Schlüssel Marokkos',
     deelVan: (n) => `Band ${n} von fünfzehn`,
@@ -148,9 +175,10 @@ export const schilVanSleutel = (taal: string): SleutelSchil =>
   SLEUTEL_SCHIL[taal] ?? SLEUTEL_SCHIL.nl
 
 import { DE_SLEUTELS } from './sleutels-de'
+import { ES_SLEUTELS } from './sleutels-es'
 import { FR_SLEUTELS } from './sleutels-fr'
 
-export const SLEUTEL_VERTALINGEN: Record<string, SleutelVertaling> = { de: DE_SLEUTELS, fr: FR_SLEUTELS }
+export const SLEUTEL_VERTALINGEN: Record<string, SleutelVertaling> = { de: DE_SLEUTELS, es: ES_SLEUTELS, fr: FR_SLEUTELS }
 
 /**
  * Een deel in een taal, over het Nederlandse deel heen gelegd.
