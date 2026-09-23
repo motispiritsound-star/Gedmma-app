@@ -495,6 +495,8 @@ export const nl = {
     uitspraak: 'Uitspraak',
     stem: 'Stem',
     stemAuto: 'Automatisch kiezen',
+    stemGroepArabisch: 'Leest het Arabische schrift',
+    stemGroepBenadering: 'Leest de Latijnse schrijfwijze',
     stemAantal: (arabisch: number, totaal: number): string =>
       `${arabisch} Arabische ${arabisch === 1 ? 'stem' : 'stemmen'} van de ${totaal} op dit apparaat.`,
     geenSpraak: 'Deze browser heeft geen spraak.',

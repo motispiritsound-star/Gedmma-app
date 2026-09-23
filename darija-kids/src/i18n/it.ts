@@ -488,6 +488,8 @@ export const it: Strings = {
     uitspraak: 'Pronuncia',
     stem: 'Voce',
     stemAuto: 'Scegli automaticamente',
+    stemGroepArabisch: 'Legge la scrittura araba',
+    stemGroepBenadering: 'Legge la trascrizione latina',
     stemAantal: (arabisch, totaal) =>
       `${arabisch} ${arabisch === 1 ? 'voce araba' : 'voci arabe'} sulle ${totaal} di questo dispositivo.`,
     geenSpraak: 'Questo browser non ha voci.',

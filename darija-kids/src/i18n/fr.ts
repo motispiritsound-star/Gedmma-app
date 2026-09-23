@@ -488,6 +488,8 @@ export const fr: Strings = {
     uitspraak: 'Prononciation',
     stem: 'Voix',
     stemAuto: 'Choisir automatiquement',
+    stemGroepArabisch: 'Lit l’écriture arabe',
+    stemGroepBenadering: 'Lit la transcription latine',
     stemAantal: (arabisch, totaal) =>
       `${arabisch} voix ${arabisch === 1 ? 'arabe' : 'arabes'} sur les ${totaal} de cet appareil.`,
     geenSpraak: 'Ce navigateur n’a pas de synthèse vocale.',

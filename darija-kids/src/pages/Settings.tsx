@@ -4,7 +4,7 @@ import {
   exportProgress, importProgress, resetProgress, setSetting, setState, useStore, type Settings,
 } from '../engine/store'
 import {
-  arabicVoices, canListen, canNarrate, canSpeak, prepareSamples, probeSound, say, sfx, voicePlan,
+  arabicVoices, bruikbareStemmen, canListen, canNarrate, canSpeak, prepareSamples, probeSound, say, sfx, voicePlan,
   type SoundProbe,
 } from '../engine/audio'
 import { LIST_PRICE, TRIAL_DAYS } from '../engine/billing'
@@ -138,6 +138,7 @@ export function SettingsPage() {
 
   const all = useVoices()
   const arabic = arabicVoices()
+  const bruikbaar = bruikbareStemmen()
   const plan = voicePlan()
   const voiceStatus =
     plan.mode === 'arabisch' ? t.settings.stemInGebruik(plan.voice.name, plan.voice.lang)
@@ -263,6 +264,10 @@ export function SettingsPage() {
           title={t.settings.stem}
           hint={canSpeak() ? t.settings.stemAantal(arabic.length, all.length) : t.settings.geenSpraak}
         >
+          {/* Alleen stemmen die iets kunnen met dit schrift of met de
+              Latijnse schrijfwijze. Een telefoon heeft er zestig, in talen van
+              Thais tot Bulgaars; die aanbieden is geen keuze maar een valkuil.
+              Ze staan in twee groepen, zodat je ziet wat een stem doet. */}
           <select
             id="voice"
             value={s.voiceURI}
@@ -270,9 +275,20 @@ export function SettingsPage() {
             className="max-w-56 rounded-xl border-2 border-[var(--line)] bg-[var(--surface)] px-3 py-2 outline-none focus:border-zellige-500"
           >
             <option value="">{t.settings.stemAuto}</option>
-            {all.map((v) => (
-              <option key={v.voiceURI} value={v.voiceURI}>{v.name} — {v.lang}</option>
-            ))}
+            {bruikbaar.arabisch.length > 0 && (
+              <optgroup label={t.settings.stemGroepArabisch}>
+                {bruikbaar.arabisch.map((v) => (
+                  <option key={v.voiceURI} value={v.voiceURI}>{v.name} — {v.lang}</option>
+                ))}
+              </optgroup>
+            )}
+            {bruikbaar.benadering.length > 0 && (
+              <optgroup label={t.settings.stemGroepBenadering}>
+                {bruikbaar.benadering.map((v) => (
+                  <option key={v.voiceURI} value={v.voiceURI}>{v.name} — {v.lang}</option>
+                ))}
+              </optgroup>
+            )}
           </select>
         </Row>
         <Row title={t.settings.snelheid} hint={t.settings.snelheidHint}>

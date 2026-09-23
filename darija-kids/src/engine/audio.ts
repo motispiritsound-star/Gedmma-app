@@ -618,13 +618,51 @@ const bestOf = (order: string[], all: SpeechSynthesisVoice[]): SpeechSynthesisVo
 
 export const arabicVoices = (): SpeechSynthesisVoice[] => voices().filter((v) => langOf(v).startsWith('ar'))
 
-/** The chosen voice, or the best Arabic one the device has. */
+/**
+ * De stemmen waar een keuze tussen zinnig is.
+ *
+ * Een telefoon heeft er zestig, in talen van Thais tot Bulgaars. Die kunnen
+ * allemaal niets met Arabisch schrift, en niets met een Darija-woord in
+ * Latijnse letters. Ze aanbieden is geen keuzevrijheid maar een uitnodiging
+ * om iets te kiezen wat niet werkt — en dat is precies wat er gebeurde: een
+ * Hebreeuwse stem stond aangevinkt om Arabisch voor te lezen.
+ *
+ * Twee groepen blijven over. De Arabische stemmen lezen het schrift zelf. De
+ * Europese uit `FALLBACK_ORDER` worden gebruikt voor de benaderende uitspraak,
+ * waarbij de Latijnse schrijfwijze wordt voorgelezen. De rest hoort niet in
+ * dit lijstje thuis.
+ */
+export const bruikbareStemmen = (): {
+  arabisch: SpeechSynthesisVoice[]
+  benadering: SpeechSynthesisVoice[]
+} => {
+  const alles = voices()
+  const arabisch = alles.filter((v) => langOf(v).startsWith('ar'))
+  const benadering = alles.filter(
+    (v) => !langOf(v).startsWith('ar') && FALLBACK_ORDER.some((t) => langOf(v).startsWith(t)),
+  )
+  return { arabisch, benadering }
+}
+
+/** Kan deze stem het Arabische schrift lezen? */
+const leestArabisch = (v: SpeechSynthesisVoice): boolean => langOf(v).startsWith('ar')
+
+/**
+ * The chosen voice, or the best Arabic one the device has.
+ *
+ * Een gekozen stem telt hier alleen mee als hij het schrift ook werkelijk
+ * leest. Wie een Hebreeuwse of Thaise stem heeft aangewezen, krijgt Arabisch
+ * niet in die stem te horen maar in de beste Arabische die er is — of, als
+ * die er niet is, via de benaderende uitspraak. Een stem die het schrift niet
+ * kent, zegt namelijk niets of iets willekeurigs, en allebei klinkt als een
+ * kapotte app.
+ */
 export function arabicVoice(): SpeechSynthesisVoice | null {
   const all = voices()
   const chosen = getState().settings.voiceURI
   if (chosen) {
     const picked = all.find((v) => v.voiceURI === chosen)
-    if (picked) return picked
+    if (picked && leestArabisch(picked)) return picked
   }
   return bestOf(ARABIC_ORDER, all)
 }
