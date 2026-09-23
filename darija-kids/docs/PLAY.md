@@ -142,7 +142,7 @@ Wat al goed staat en waar je niets aan hoeft te doen: applicatie-id
 cleartext-verkeer. Voor elke volgende release:
 
 ```bash
-node scripts/maak-aab.mjs --versie 2 --naam 1.1
+npm run aab -- --versie 2 --naam 1.1
 ```
 
 Het resultaat is

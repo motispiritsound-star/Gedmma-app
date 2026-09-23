@@ -7,7 +7,7 @@
  *
  *   npm run aab            bouwt de app, synct hem, en maakt de bundel
  *   npm run apk            hetzelfde, maar als .apk voor op je eigen telefoon
- *   node scripts/maak-aab.mjs --versie 2    hoogt versionCode op naar 2
+ *   npm run aab -- --versie 2 --naam 1.1   hoogt het versienummer op
  *
  * Play weigert twee bundels met hetzelfde versionCode, ook als je de eerste
  * hebt ingetrokken. Bij elke volgende upload dus --versie met één erbij.
@@ -19,7 +19,7 @@
  * echte snelheid, met je duim in plaats van een muis.
  */
 import { execFileSync } from 'node:child_process'
-import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { geenJdk, haalJdk, vindJdk, vindSdk } from './lib/jdk.mjs'
@@ -49,6 +49,33 @@ const publiek = path.join(ANDROID, 'app', 'src', 'main', 'assets', 'public', 'in
 if (!existsSync(publiek)) {
   console.error('\nDe app staat nog niet in het Android-project.\n')
   console.error('Draai eerst:  npm run android\n')
+  process.exit(1)
+}
+
+/**
+ * De nieuwste bronregel die iemand heeft aangeraakt.
+ *
+ * Gradle bouwt het Android-project, niet de app: die staat als kant-en-klare
+ * html in `assets/public/` en komt daar alleen terecht door `npm run android`.
+ * Wie dit script los aanroept na een `git pull` krijgt dus een bundel met de
+ * code van gisteren erin, zonder dat er iets misgaat wat je kunt zien. Dat is
+ * een dag werk die stil verdwijnt, en het is hier al een keer gebeurd.
+ */
+const nieuwsteBron = (map) => {
+  let laatste = 0
+  for (const item of readdirSync(map, { withFileTypes: true })) {
+    if (item.name === 'node_modules' || item.name.startsWith('.')) continue
+    const pad = path.join(map, item.name)
+    laatste = Math.max(laatste, item.isDirectory() ? nieuwsteBron(pad) : statSync(pad).mtimeMs)
+  }
+  return laatste
+}
+
+if (nieuwsteBron(path.join(ROOT, 'src')) > statSync(publiek).mtimeMs) {
+  console.error('\nEr is code gewijzigd sinds de app het Android-project in ging.\n')
+  console.error('Deze bundel zou de oude app bevatten. Draai eerst:\n')
+  console.error('  npm run android\n')
+  console.error('Of, in één keer:  npm run aab -- --versie 2 --naam 1.1\n')
   process.exit(1)
 }
 

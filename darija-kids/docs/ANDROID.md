@@ -70,7 +70,7 @@ Bij een volgende upload moet het versienummer omhoog — Play weigert twee
 bundels met hetzelfde `versionCode`, ook als je de eerste hebt ingetrokken:
 
 ```bash
-node scripts/maak-aab.mjs --versie 2 --naam 1.1
+npm run aab -- --versie 2 --naam 1.1
 ```
 
 `--versie` is het nummer dat Play telt, `--naam` het nummer dat een gebruiker
