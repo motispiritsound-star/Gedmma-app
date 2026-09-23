@@ -76,7 +76,7 @@ export function Unlock() {
           </Card>
           {billing.available && (
             <Card className="mt-4 flex flex-wrap items-center gap-3 p-5">
-              <p className="min-w-0 flex-1 text-sm text-[var(--ink-soft)]">{t.unlock.beheerHint}</p>
+              <p className="min-w-0 grow basis-64 text-sm text-[var(--ink-soft)]">{t.unlock.beheerHint}</p>
               <Button variant="secondary" onClick={manageSubscription}>{t.unlock.beheer}</Button>
             </Card>
           )}
@@ -185,7 +185,11 @@ export function Unlock() {
 
           {billing.available && (
             <Card className="mt-4 flex flex-wrap items-center gap-3 p-5">
-              <p className="min-w-0 flex-1 text-sm text-[var(--ink-soft)]">{t.unlock.herstelHint}</p>
+              {/* Een basisbreedte, geen `flex-1`. Met `flex-1` is de basis nul:
+                  dan breekt de rij nooit af, want voor iets van nul is altijd
+                  plek. De tekst werd zo tot een kolom van twee woorden geperst
+                  naast een knop die niet krimpt. */}
+              <p className="min-w-0 grow basis-64 text-sm text-[var(--ink-soft)]">{t.unlock.herstelHint}</p>
               <Button variant="secondary" disabled={billing.busy} onClick={() => void restorePurchases()}>
                 {t.unlock.herstel}
               </Button>

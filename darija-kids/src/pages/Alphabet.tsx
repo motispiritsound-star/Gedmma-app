@@ -59,7 +59,7 @@ export function Alphabet() {
       {!gekocht && (
         <Card className="mb-6 flex flex-wrap items-center gap-3 p-4">
           <span className="text-xl" aria-hidden="true">🔒</span>
-          <p className="min-w-0 flex-1 text-sm">{t.alphabet.slotUitleg}</p>
+          <p className="min-w-0 grow basis-64 text-sm">{t.alphabet.slotUitleg}</p>
           <Link to="/volledig"><Button variant="secondary">{t.unlock.slotKnop}</Button></Link>
         </Card>
       )}
@@ -67,7 +67,7 @@ export function Alphabet() {
       <Card className="p-6">
         <div className="flex flex-wrap items-center gap-5">
           <div className="ar text-7xl font-bold">{letter.ar}</div>
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 grow basis-48">
             <h2 className="font-display text-2xl font-extrabold">{letter.name}</h2>
             <p className="text-[var(--ink-soft)]">{t.alphabet.klinktAls(letter.sound)}</p>
             <p className="mt-1 text-sm">{t.alphabet.latijn}: <strong>{letter.tr}</strong></p>
@@ -100,7 +100,7 @@ export function Alphabet() {
 
       <Card className="mt-6 flex flex-wrap items-center gap-4 p-5">
         <Mascot mood="denk" size={64} />
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 grow basis-64">
           <p className="font-display text-lg font-extrabold">{t.alphabet.spel}</p>
           <p className="text-sm text-[var(--ink-soft)]">{t.alphabet.spelUitleg} {done ? `· ${t.alphabet.alGehaald}` : ''}</p>
         </div>

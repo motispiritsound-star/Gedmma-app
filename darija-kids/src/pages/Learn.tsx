@@ -117,7 +117,7 @@ export function Learn() {
         <Card className="mb-6 p-5">
           <div className="flex flex-wrap items-start gap-3">
             <span className="text-2xl" aria-hidden="true">🔈</span>
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 grow basis-64">
               <p className="font-display font-extrabold">{t.learn.geenStem}</p>
               <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.learn.geenStemUitleg}</p>
             </div>
@@ -171,7 +171,7 @@ export function Learn() {
               {ui === slotBij && (
                 <Card className="mt-4 flex flex-wrap items-center gap-3 p-5">
                   <span className="text-2xl" aria-hidden="true">🔑</span>
-                  <p className="min-w-0 flex-1 font-display font-extrabold">{t.unlock.slotTitel}</p>
+                  <p className="min-w-0 grow basis-48 font-display font-extrabold">{t.unlock.slotTitel}</p>
                   <Link to="/volledig"><Button>{t.unlock.slotKnop}</Button></Link>
                 </Card>
               )}

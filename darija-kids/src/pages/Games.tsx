@@ -36,7 +36,7 @@ export function Games() {
       {!gekocht && (
         <Card className="mb-4 flex flex-wrap items-center gap-3 p-4">
           <span className="text-xl" aria-hidden="true">🔒</span>
-          <p className="min-w-0 flex-1 text-sm">{t.games.slotUitleg}</p>
+          <p className="min-w-0 grow basis-64 text-sm">{t.games.slotUitleg}</p>
           <Link to="/volledig"><Button variant="secondary">{t.unlock.slotKnop}</Button></Link>
         </Card>
       )}
