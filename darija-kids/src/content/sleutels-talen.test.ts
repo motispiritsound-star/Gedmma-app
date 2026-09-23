@@ -14,6 +14,7 @@ import { DEEL11_HOOFDSTUKKEN } from './sleutels-deel11'
 import { DEEL12_HOOFDSTUKKEN } from './sleutels-deel12'
 import { DEEL13_HOOFDSTUKKEN } from './sleutels-deel13'
 import { DEEL14_HOOFDSTUKKEN } from './sleutels-deel14'
+import { DEEL15_HOOFDSTUKKEN } from './sleutels-deel15'
 import { SLEUTEL_VERTALINGEN, SLEUTEL_SCHIL, sleuteldeelIn } from './sleutels-talen'
 
 /** De Nederlandse delen die al geschreven zijn, op nummer. */
@@ -32,6 +33,7 @@ const NL: Record<number, Sleuteldeel> = {
   12: { ...REEKS[11], hoofdstukken: DEEL12_HOOFDSTUKKEN } as Sleuteldeel,
   13: { ...REEKS[12], hoofdstukken: DEEL13_HOOFDSTUKKEN } as Sleuteldeel,
   14: { ...REEKS[13], hoofdstukken: DEEL14_HOOFDSTUKKEN } as Sleuteldeel,
+  15: { ...REEKS[14], hoofdstukken: DEEL15_HOOFDSTUKKEN } as Sleuteldeel,
 }
 
 describe('De sleutels in andere talen', () => {
