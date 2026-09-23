@@ -87,8 +87,8 @@ export const it: Strings = {
     bouwZin: 'Costruisci la frase',
     bouwUitleg: 'Tocca le parole qui sotto…',
     schrijfDarija: 'Scrivilo in darija',
-    schrijfHint: 'Lettere latine o scrittura araba, vanno bene entrambe. 3 = ع, 7 = ح, 9 = ق.',
-    schrijfPlaceholder: 'per es. khobz oppure خبز',
+    schrijfHint: 'Lettere latine o scrittura araba, vanno bene entrambe. 3 = ⁨ع⁩, 7 = ⁨ح⁩, 9 = ⁨ق⁩.',
+    schrijfPlaceholder: 'per es. khobz oppure ⁨خبز⁩',
     controleer: 'Controlla',
     jouwAntwoord: 'La tua risposta',
     zegHardop: 'Dillo ad alta voce',
@@ -194,7 +194,7 @@ export const it: Strings = {
   words: {
     titel: 'Dizionario',
     uitleg: (n) => `${n} parole e frasi, con la pronuncia. Cerca nella tua lingua, in darija o in scrittura araba.`,
-    zoek: 'Cerca… per es. pane, khobz o خبز',
+    zoek: 'Cerca… per es. pane, khobz o ⁨خبز⁩',
     zoekLabel: 'Cerca una parola',
     alles: 'Tutto',
     /** De pijltjes aan de rand van de onderwerpenbalk, voor wie voorleest. */
@@ -450,7 +450,7 @@ export const it: Strings = {
     dagdoelOpties: ['Tranquillo 15', 'Normale 30', 'Deciso 50', 'Intenso 80'],
     lezenTitel: 'Lettura e scrittura',
     schrift: 'Mostra la scrittura araba',
-    schriftHint: 'خبز accanto a khobz, oppure al suo posto.',
+    schriftHint: '⁨خبز⁩ accanto a khobz, oppure al suo posto.',
     latijn: 'Mostra le lettere latine',
     latijnHint: 'La scrittura con 3, 7 e 9.',
     lettertype: 'Carattere',
@@ -595,7 +595,7 @@ export const it: Strings = {
       ],
       [
         'Bisogna saper leggere l’arabo?',
-        'No. Ogni parola è anche in lettere latine, con i numeri che i marocchini stessi usano nei messaggi (3 = ع, 7 = ح, 9 = ق). E se vuoi imparare la scrittura, c’è un’unità intera con tutte le lettere e le loro forme.',
+        'No. Ogni parola è anche in lettere latine, con i numeri che i marocchini stessi usano nei messaggi (3 = ⁨ع⁩, 7 = ⁨ح⁩, 9 = ⁨ق⁩). E se vuoi imparare la scrittura, c’è un’unità intera con tutte le lettere e le loro forme.',
       ],
       [
         'Costa qualcosa?',

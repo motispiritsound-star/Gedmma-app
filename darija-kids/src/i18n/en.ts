@@ -87,8 +87,8 @@ export const en: Strings = {
     bouwZin: 'Build the sentence',
     bouwUitleg: 'Tap the words below…',
     schrijfDarija: 'Write it in Darija',
-    schrijfHint: 'Latin letters or Arabic script, either works. 3 = ع, 7 = ح, 9 = ق.',
-    schrijfPlaceholder: 'e.g. khobz or خبز',
+    schrijfHint: 'Latin letters or Arabic script, either works. 3 = ⁨ع⁩, 7 = ⁨ح⁩, 9 = ⁨ق⁩.',
+    schrijfPlaceholder: 'e.g. khobz or ⁨خبز⁩',
     controleer: 'Check',
     jouwAntwoord: 'Your answer',
     zegHardop: 'Say it out loud',
@@ -194,7 +194,7 @@ export const en: Strings = {
   words: {
     titel: 'Dictionary',
     uitleg: (n) => `${n} words and phrases, with pronunciation. Search in your own language, in Darija or in Arabic script.`,
-    zoek: 'Search… e.g. bread, khobz or خبز',
+    zoek: 'Search… e.g. bread, khobz or ⁨خبز⁩',
     zoekLabel: 'Search for a word',
     alles: 'All',
     /** De pijltjes aan de rand van de onderwerpenbalk, voor wie voorleest. */
@@ -450,7 +450,7 @@ export const en: Strings = {
     dagdoelOpties: ['Easy 15', 'Normal 30', 'Solid 50', 'Serious 80'],
     lezenTitel: 'Reading and script',
     schrift: 'Show Arabic script',
-    schriftHint: 'خبز beside khobz, or instead of it.',
+    schriftHint: '⁨خبز⁩ beside khobz, or instead of it.',
     latijn: 'Show Latin letters',
     latijnHint: 'The spelling with 3, 7 and 9.',
     lettertype: 'Typeface',
@@ -595,7 +595,7 @@ export const en: Strings = {
       ],
       [
         'Do I need to read Arabic?',
-        'No. Every word is there in Latin letters too, with the numbers Moroccans themselves use in messages (3 = ع, 7 = ح, 9 = ق). And if you do want the script, there is a module for it with every letter and its shapes.',
+        'No. Every word is there in Latin letters too, with the numbers Moroccans themselves use in messages (3 = ⁨ع⁩, 7 = ⁨ح⁩, 9 = ⁨ق⁩). And if you do want the script, there is a module for it with every letter and its shapes.',
       ],
       [
         'Does it cost anything?',

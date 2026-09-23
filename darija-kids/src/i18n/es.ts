@@ -87,8 +87,8 @@ export const es: Strings = {
     bouwZin: 'Construye la frase',
     bouwUitleg: 'Toca las palabras de abajo…',
     schrijfDarija: 'Escríbelo en dariya',
-    schrijfHint: 'Letras latinas o escritura árabe, las dos valen. 3 = ع, 7 = ح, 9 = ق.',
-    schrijfPlaceholder: 'p. ej. khobz o خبز',
+    schrijfHint: 'Letras latinas o escritura árabe, las dos valen. 3 = ⁨ع⁩, 7 = ⁨ح⁩, 9 = ⁨ق⁩.',
+    schrijfPlaceholder: 'p. ej. khobz o ⁨خبز⁩',
     controleer: 'Comprobar',
     jouwAntwoord: 'Tu respuesta',
     zegHardop: 'Dilo en voz alta',
@@ -194,7 +194,7 @@ export const es: Strings = {
   words: {
     titel: 'Diccionario',
     uitleg: (n) => `${n} palabras y frases, con pronunciación. Busca en tu idioma, en dariya o en escritura árabe.`,
-    zoek: 'Busca… p. ej. pan, khobz o خبز',
+    zoek: 'Busca… p. ej. pan, khobz o ⁨خبز⁩',
     zoekLabel: 'Buscar una palabra',
     alles: 'Todo',
     /** De pijltjes aan de rand van de onderwerpenbalk, voor wie voorleest. */
@@ -450,7 +450,7 @@ export const es: Strings = {
     dagdoelOpties: ['Tranquilo 15', 'Normal 30', 'Firme 50', 'Intenso 80'],
     lezenTitel: 'Lectura y escritura',
     schrift: 'Mostrar la escritura árabe',
-    schriftHint: 'خبز junto a khobz, o en su lugar.',
+    schriftHint: '⁨خبز⁩ junto a khobz, o en su lugar.',
     latijn: 'Mostrar las letras latinas',
     latijnHint: 'La escritura con 3, 7 y 9.',
     lettertype: 'Tipo de letra',
@@ -595,7 +595,7 @@ export const es: Strings = {
       ],
       [
         '¿Hace falta saber leer árabe?',
-        'No. Cada palabra está también en letras latinas, con los números que los propios marroquíes usan en sus mensajes (3 = ع, 7 = ح, 9 = ق). Y si quieres aprender la escritura, hay un módulo entero con todas las letras y sus formas.',
+        'No. Cada palabra está también en letras latinas, con los números que los propios marroquíes usan en sus mensajes (3 = ⁨ع⁩, 7 = ⁨ح⁩, 9 = ⁨ق⁩). Y si quieres aprender la escritura, hay un módulo entero con todas las letras y sus formas.',
       ],
       [
         '¿Cuesta dinero?',

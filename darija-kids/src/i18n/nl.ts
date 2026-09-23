@@ -92,8 +92,8 @@ export const nl = {
     bouwZin: 'Bouw de zin',
     bouwUitleg: 'Tik de woorden hieronder aan…',
     schrijfDarija: 'Schrijf het in Darija',
-    schrijfHint: 'Latijnse letters of Arabisch schrift mag allebei. 3 = ع, 7 = ح, 9 = ق.',
-    schrijfPlaceholder: 'bijv. khobz of خبز',
+    schrijfHint: 'Latijnse letters of Arabisch schrift mag allebei. 3 = ⁨ع⁩, 7 = ⁨ح⁩, 9 = ⁨ق⁩.',
+    schrijfPlaceholder: 'bijv. khobz of ⁨خبز⁩',
     controleer: 'Controleer',
     jouwAntwoord: 'Jouw antwoord',
     zegHardop: 'Zeg het hardop',
@@ -200,7 +200,7 @@ export const nl = {
     titel: 'Woordenboek',
     uitleg: (n: number): string =>
       `${n} woorden en zinnen, met uitspraak. Zoek in je eigen taal, in het Darija of in het Arabisch schrift.`,
-    zoek: 'Zoek… bijv. brood, khobz of خبز',
+    zoek: 'Zoek… bijv. brood, khobz of ⁨خبز⁩',
     zoekLabel: 'Zoek een woord',
     alles: 'Alles',
     /** De pijltjes aan de rand van de onderwerpenbalk, voor wie voorleest. */
@@ -457,7 +457,7 @@ export const nl = {
     dagdoelOpties: ['Rustig 15', 'Normaal 30', 'Stevig 50', 'Streber 80'],
     lezenTitel: 'Lezen en schrift',
     schrift: 'Arabisch schrift tonen',
-    schriftHint: 'خبز naast of in plaats van khobz.',
+    schriftHint: '⁨خبز⁩ naast of in plaats van khobz.',
     latijn: 'Latijnse letters tonen',
     latijnHint: 'De schrijfwijze met 3, 7 en 9.',
     lettertype: 'Lettertype',
@@ -602,7 +602,7 @@ export const nl = {
       ],
       [
         'Moet ik Arabisch kunnen lezen?',
-        'Nee. Elk woord staat er ook in Latijnse letters, met de cijfers die Marokkanen zelf in appjes gebruiken (3 = ع, 7 = ح, 9 = ق). Wil je het schrift wél leren, dan staat er een eigen module klaar met alle letters en hun vormen.',
+        'Nee. Elk woord staat er ook in Latijnse letters, met de cijfers die Marokkanen zelf in appjes gebruiken (3 = ⁨ع⁩, 7 = ⁨ح⁩, 9 = ⁨ق⁩). Wil je het schrift wél leren, dan staat er een eigen module klaar met alle letters en hun vormen.',
       ],
       [
         'Kost het iets?',

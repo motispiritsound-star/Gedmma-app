@@ -87,8 +87,8 @@ export const fr: Strings = {
     bouwZin: 'Construis la phrase',
     bouwUitleg: 'Touche les mots ci-dessous…',
     schrijfDarija: 'Écris-le en darija',
-    schrijfHint: 'Lettres latines ou écriture arabe, les deux marchent. 3 = ع, 7 = ح, 9 = ق.',
-    schrijfPlaceholder: 'par ex. khobz ou خبز',
+    schrijfHint: 'Lettres latines ou écriture arabe, les deux marchent. 3 = ⁨ع⁩, 7 = ⁨ح⁩, 9 = ⁨ق⁩.',
+    schrijfPlaceholder: 'par ex. khobz ou ⁨خبز⁩',
     controleer: 'Vérifier',
     jouwAntwoord: 'Ta réponse',
     zegHardop: 'Dis-le à voix haute',
@@ -194,7 +194,7 @@ export const fr: Strings = {
   words: {
     titel: 'Dictionnaire',
     uitleg: (n) => `${n} mots et phrases, avec la prononciation. Cherche dans ta langue, en darija ou en écriture arabe.`,
-    zoek: 'Cherche… par ex. pain, khobz ou خبز',
+    zoek: 'Cherche… par ex. pain, khobz ou ⁨خبز⁩',
     zoekLabel: 'Chercher un mot',
     alles: 'Tout',
     /** De pijltjes aan de rand van de onderwerpenbalk, voor wie voorleest. */
@@ -450,7 +450,7 @@ export const fr: Strings = {
     dagdoelOpties: ['Tranquille 15', 'Normal 30', 'Soutenu 50', 'Intense 80'],
     lezenTitel: 'Lecture et écriture',
     schrift: 'Afficher l’écriture arabe',
-    schriftHint: 'خبز à côté de khobz, ou à la place.',
+    schriftHint: '⁨خبز⁩ à côté de khobz, ou à la place.',
     latijn: 'Afficher les lettres latines',
     latijnHint: 'L’écriture avec 3, 7 et 9.',
     lettertype: 'Police',
@@ -595,7 +595,7 @@ export const fr: Strings = {
       ],
       [
         'Faut-il savoir lire l’arabe ?',
-        'Non. Chaque mot est aussi écrit en lettres latines, avec les chiffres que les Marocains utilisent eux-mêmes dans leurs messages (3 = ع, 7 = ح, 9 = ق). Et si tu veux apprendre l’écriture, un module entier lui est consacré, avec toutes les lettres et leurs formes.',
+        'Non. Chaque mot est aussi écrit en lettres latines, avec les chiffres que les Marocains utilisent eux-mêmes dans leurs messages (3 = ⁨ع⁩, 7 = ⁨ح⁩, 9 = ⁨ق⁩). Et si tu veux apprendre l’écriture, un module entier lui est consacré, avec toutes les lettres et leurs formes.',
       ],
       [
         'Est-ce que c’est payant ?',

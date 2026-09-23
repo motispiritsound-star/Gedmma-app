@@ -87,8 +87,8 @@ export const de: Strings = {
     bouwZin: 'Bau den Satz',
     bouwUitleg: 'Tippe die Wörter unten an…',
     schrijfDarija: 'Schreib es auf Darija',
-    schrijfHint: 'Lateinische Buchstaben oder arabische Schrift, beides geht. 3 = ع, 7 = ح, 9 = ق.',
-    schrijfPlaceholder: 'z. B. khobz oder خبز',
+    schrijfHint: 'Lateinische Buchstaben oder arabische Schrift, beides geht. 3 = ⁨ع⁩, 7 = ⁨ح⁩, 9 = ⁨ق⁩.',
+    schrijfPlaceholder: 'z. B. khobz oder ⁨خبز⁩',
     controleer: 'Prüfen',
     jouwAntwoord: 'Deine Antwort',
     zegHardop: 'Sag es laut',
@@ -194,7 +194,7 @@ export const de: Strings = {
   words: {
     titel: 'Wörterbuch',
     uitleg: (n) => `${n} Wörter und Sätze, mit Aussprache. Such in deiner Sprache, auf Darija oder in arabischer Schrift.`,
-    zoek: 'Suche… z. B. Brot, khobz oder خبز',
+    zoek: 'Suche… z. B. Brot, khobz oder ⁨خبز⁩',
     zoekLabel: 'Ein Wort suchen',
     alles: 'Alle',
     /** De pijltjes aan de rand van de onderwerpenbalk, voor wie voorleest. */
@@ -450,7 +450,7 @@ export const de: Strings = {
     dagdoelOpties: ['Ruhig 15', 'Normal 30', 'Kräftig 50', 'Streber 80'],
     lezenTitel: 'Lesen und Schrift',
     schrift: 'Arabische Schrift zeigen',
-    schriftHint: 'خبز neben oder statt khobz.',
+    schriftHint: '⁨خبز⁩ neben oder statt khobz.',
     latijn: 'Lateinische Buchstaben zeigen',
     latijnHint: 'Die Schreibweise mit 3, 7 und 9.',
     lettertype: 'Schriftart',
@@ -595,7 +595,7 @@ export const de: Strings = {
       ],
       [
         'Muss ich Arabisch lesen können?',
-        'Nein. Jedes Wort steht auch in lateinischen Buchstaben da, mit den Zahlen, die Marokkaner selbst in Nachrichten benutzen (3 = ع, 7 = ح, 9 = ق). Und wer die Schrift lernen will, findet ein eigenes Modul mit allen Buchstaben und ihren Formen.',
+        'Nein. Jedes Wort steht auch in lateinischen Buchstaben da, mit den Zahlen, die Marokkaner selbst in Nachrichten benutzen (3 = ⁨ع⁩, 7 = ⁨ح⁩, 9 = ⁨ق⁩). Und wer die Schrift lernen will, findet ein eigenes Modul mit allen Buchstaben und ihren Formen.',
       ],
       [
         'Kostet es etwas?',
