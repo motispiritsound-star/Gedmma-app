@@ -131,6 +131,8 @@ describe('de adressen van de website', () => {
  * Vandaar hier, waar het een seconde kost.
  */
 describe('de winkelteksten', () => {
+  const EULA = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/'
+
   const LIMIET: Record<string, number> = {
     Naam: 30, Name: 30, Titel: 30, Title: 30, Titre: 30, Título: 30, Titolo: 30,
     Ondertitel: 30, Subtitle: 30, Untertitel: 30, Subtítulo: 30, Sottotitolo: 30,
@@ -146,6 +148,18 @@ describe('de winkelteksten', () => {
       expect(blokken.length, 'geen beschrijving gevonden').toBeGreaterThan(0)
       const langste = blokken.reduce((a, b) => (a.length > b.length ? a : b))
       expect(langste.length, `beschrijving in ${lang}`).toBeLessThanOrEqual(4000)
+    })
+
+    /**
+     * Apple wees versie 1.0 af op richtlijn 3.1.2 omdat deze regel er niet
+     * stond: een app met een doorlopend abonnement moet in de winkeltekst
+     * zelf naar de gebruiksvoorwaarden wijzen, en niet alleen in de app.
+     * Het is Apple's eigen standaardtekst, dus die kunnen ze niet afkeuren.
+     */
+    it(`wijst in ${lang} naar de gebruiksvoorwaarden`, () => {
+      const blokken = [...tekst.matchAll(/```\n([\s\S]*?)\n```/g)].map((m) => m[1]!)
+      const langste = blokken.reduce((a, b) => (a.length > b.length ? a : b))
+      expect(langste, `EULA-link ontbreekt in ${lang}`).toContain(EULA)
     })
 
     it(`houdt zich in ${lang} aan de korte velden`, () => {

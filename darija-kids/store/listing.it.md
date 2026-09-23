@@ -52,11 +52,10 @@ CHE COSA C'È LUNGO IL PERCORSO
 • Quattro conversazioni da leggere, con domande alla fine
 • Tre giochi: corsa contro il tempo, memory e gioco delle lettere
 • Cinque giri bonus che non si esauriscono, fra cui ricalcare le lettere con il dito
-• Quattordici cortometraggi sulla storia del Marocco, uno dopo ogni test
 • Un mazzo di ripasso che si accorge da solo di quello che inizia a vacillare
 
 DOPO OGNI TEST UN PEZZO DI MAROCCO
-Ogni checkpoint regala un cortometraggio: quattordici carte in ordine storico, dalla città romana di Walili fino all'alfabeto tifinagh diventato ufficiale nel 2011. Vengono letti ad alta voce nella tua lingua e finiscono con un «lo sapevi?».
+Ogni checkpoint regala un cortometraggio: quattordici carte in ordine storico, dalla città romana di Walili fino all'alfabeto tifinagh, ufficiale dal 2011. Vengono letti ad alta voce nella tua lingua e finiscono con un «lo sapevi?».
 
 TUTTO SI SENTE
 Ogni parola e ogni frase si possono ascoltare: un tocco per la velocità normale, due per quella lenta. Senza una voce araba sul dispositivo, l'app lo dice e legge la scrittura latina come meglio può.
@@ -75,6 +74,8 @@ FATTA PER DARLA IN MANO A UN BAMBINO
 
 ONESTAMENTE, SULLA LINGUA
 Il darija cambia da città a città e da famiglia a famiglia, e non ha un'ortografia ufficiale. Usiamo la forma che si sente di più a Casablanca e Rabat. Tua nonna lo dice diversamente? Allora ha ragione lei, e l'app stessa lo dice.
+
+Termini d'uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
 **Novità (versione 1.1)**
@@ -89,4 +90,5 @@ Il darija cambia da città a città e da famiglia a famiglia, e non ha un'ortogr
 `Arabo marocchino giocando: per parlare con i nonni in Marocco.`
 
 **Descrizione completa (max 4000)**
-Lo stesso testo della descrizione dell'App Store.
+Lo stesso testo della descrizione dell'App Store, senza l’ultima riga:
+il link ai termini di Apple non c’entra con Google Play.

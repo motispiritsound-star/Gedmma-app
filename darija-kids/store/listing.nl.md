@@ -52,7 +52,6 @@ DE ONDERDELEN LANGS DAT PAD
 • Vier gesprekken om te lezen, met vragen erna
 • Drie spelletjes: tijdrace, geheugenspel en letterspel
 • Vijf bonusrondes die niet opraken, waaronder letters natekenen met je vinger
-• Veertien korte filmpjes uit de geschiedenis van Marokko, één na elke toets
 • Een herhaalstapel die zelf bijhoudt wat begint te wankelen
 
 NA ELKE TOETS EEN STUKJE MAROKKO
@@ -75,6 +74,8 @@ GEMAAKT OM AAN EEN KIND TE GEVEN
 
 EERLIJK OVER DE TAAL
 Darija verschilt per stad en per familie, en heeft geen officiële spelling. Wij kiezen de vorm die je in Casablanca en Rabat het meest hoort. Zegt jouw oma het anders, dan heeft jouw oma gelijk — dat zegt de app zelf ook.
+
+Gebruiksvoorwaarden (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
 **Wat is er nieuw (versie 1.1)**
@@ -89,4 +90,5 @@ Darija verschilt per stad en per familie, en heeft geen officiële spelling. Wij
 `Marokkaans-Arabisch, spelenderwijs — zodat je kind met opa en oma kan praten.`
 
 **Volledige beschrijving (max 4000)**
-Dezelfde tekst als de App Store-beschrijving hierboven.
+Dezelfde tekst als de App Store-beschrijving hierboven, zonder de laatste
+regel: de link naar Apple’s gebruiksvoorwaarden hoort niet in Google Play.

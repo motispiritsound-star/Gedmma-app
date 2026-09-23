@@ -9,21 +9,25 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 493, groen |
+| Tests | 512, groen |
 | Google Play | versie 1.1 ingediend (submission 3), wacht op beoordeling |
-| App Store | 1.0 (build 4) ingediend met beide abonnementen, wacht op beoordeling |
+| App Store | 1.0 (build 4) afgewezen op 3.1.2 — winkeltekst hersteld, opnieuw indienen |
 
 ### Wat alleen jij kunt doen
 
-1. **Apple: abonnementsprijzen per land.** Nakijken voor NL, BE, FR, DE, ES,
+1. **Apple: de winkeltekst opnieuw indienen.** Apple miste de link naar de
+   gebruiksvoorwaarden in de beschrijving. De zes teksten staan klaar in
+   `store/appstore-eula.md`; plakken, opslaan, *Update Review*. Geen nieuwe
+   build nodig.
+2. **Apple: abonnementsprijzen per land.** Nakijken voor NL, BE, FR, DE, ES,
    IT en MA. Apple vult de rest af uit de prijs die je voor één land zet, en
    dat valt niet altijd goed uit.
-2. **Apple: royaltyvaluta.** Bij de bankrekening staat USD. Zet dat op EUR,
+3. **Apple: royaltyvaluta.** Bij de bankrekening staat USD. Zet dat op EUR,
    anders wordt er twee keer gewisseld op elke uitbetaling.
-3. **Apple: DAC7.** Moet ingevuld voordat er uitbetaald kan worden. Het
+4. **Apple: DAC7.** Moet ingevuld voordat er uitbetaald kan worden. Het
    antwoord op "persoonlijke diensten" is **nee** — dat gaat over werk van
    mensen per uur of per klus, en dit is een app.
-4. **Google: bankrekening en belastinggegevens.** Zonder dat geen uitbetaling,
+5. **Google: bankrekening en belastinggegevens.** Zonder dat geen uitbetaling,
    ook niet als de app al verkoopt.
 
 ## De boeken

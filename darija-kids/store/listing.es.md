@@ -52,11 +52,10 @@ LO QUE HAY A LO LARGO DEL CAMINO
 • Cuatro conversaciones para leer, con preguntas después
 • Tres juegos: carrera contrarreloj, memoria y juego de letras
 • Cinco rondas bonus que no se agotan, entre ellas calcar letras con el dedo
-• Catorce cortos sobre la historia de Marruecos, uno después de cada test
 • Un montón de repaso que detecta solo lo que empieza a flojear
 
 DESPUÉS DE CADA TEST, UN TROZO DE MARRUECOS
-Cada control te da un corto: catorce cartas en orden histórico, desde la ciudad romana de Walili hasta el alfabeto tifinagh que se hizo oficial en 2011. Se leen en voz alta en tu idioma y terminan con un «¿sabías que...?».
+Cada control te da un corto: catorce cartas en orden histórico, desde la ciudad romana de Walili hasta el alfabeto tifinagh, oficial desde 2011. Se leen en voz alta en tu idioma y terminan con un «¿sabías que...?».
 
 TODO SUENA
 Cada palabra y cada frase se puede escuchar: un toque para la velocidad normal, dos para la lenta. Sin voz árabe en el dispositivo, la aplicación lo dice y lee la escritura latina lo mejor que puede.
@@ -75,6 +74,8 @@ HECHA PARA DÁRSELA A UN NIÑO
 
 CON HONESTIDAD SOBRE LA LENGUA
 El dariya cambia de ciudad a ciudad y de familia a familia, y no tiene ortografía oficial. Usamos la forma que más se oye en Casablanca y Rabat. ¿Tu abuela lo dice de otra manera? Entonces ella tiene razón, y la propia aplicación lo dice.
+
+Términos de uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
 **Novedades (versión 1.1)**
@@ -89,4 +90,5 @@ El dariya cambia de ciudad a ciudad y de familia a familia, y no tiene ortograf�
 `Árabe marroquí jugando: para que tu hijo hable con sus abuelos.`
 
 **Descripción completa (máx. 4000)**
-El mismo texto que la descripción de la App Store.
+El mismo texto que la descripción de la App Store, sin la última línea:
+el enlace a los términos de Apple no pinta nada en Google Play.

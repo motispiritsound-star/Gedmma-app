@@ -52,7 +52,6 @@ WHAT STANDS ALONG THE PATH
 • Four conversations to read, with questions afterwards
 • Three games: time race, memory and the letter game
 • Five bonus rounds that never run out, including tracing letters with your finger
-• Fourteen short films from the history of Morocco, one after every test
 • A review pile that notices by itself what is starting to wobble
 
 A PIECE OF MOROCCO AFTER EVERY TEST
@@ -75,6 +74,8 @@ MADE TO HAND TO A CHILD
 
 HONEST ABOUT THE LANGUAGE
 Darija differs from city to city and family to family, and has no official spelling. We use the form heard most in Casablanca and Rabat. If your grandmother says it differently, she is right — the app says so itself.
+
+Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
 **What's new (version 1.1)**
@@ -89,4 +90,5 @@ Darija differs from city to city and family to family, and has no official spell
 `Moroccan Arabic, playfully — so your child can talk with their grandparents.`
 
 **Full description (max 4000)**
-The same text as the App Store description above.
+The same text as the App Store description above, without the last line:
+the link to Apple’s terms does not belong on Google Play.

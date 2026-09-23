@@ -52,11 +52,10 @@ WAS AM WEG STEHT
 • Vier Gespräche zum Lesen, mit Fragen danach
 • Drei Spiele: Zeitrennen, Memory und Buchstabenspiel
 • Fünf Bonusrunden, die nicht ausgehen — darunter Buchstaben mit dem Finger nachzeichnen
-• Vierzehn kurze Filme aus der Geschichte Marokkos, einer nach jedem Test
 • Ein Wiederholstapel, der selbst merkt, was zu wackeln beginnt
 
 NACH JEDEM TEST EIN STÜCK MAROKKO
-Jeder Checkpoint bringt einen kurzen Film: vierzehn Karten in historischer Reihenfolge, von der römischen Stadt Walili bis zum Tifinagh-Alphabet, das 2011 amtlich wurde. Sie werden in deiner Sprache vorgelesen und enden mit einem „Wusstest du schon?“.
+Jeder Checkpoint bringt einen kurzen Film: vierzehn Karten in historischer Reihenfolge, von der römischen Stadt Walili bis zum Tifinagh-Alphabet, amtlich seit 2011. Sie enden mit einem „Wusstest du schon?“.
 
 ALLES KLINGT
 Jedes Wort und jeder Satz lässt sich anhören: einmal tippen für normal, zweimal langsam. Ohne arabische Stimme sagt die App das ehrlich und liest die lateinische Schreibweise vor.
@@ -75,6 +74,8 @@ GEMACHT, UM ES EINEM KIND ZU GEBEN
 
 EHRLICH ZUR SPRACHE
 Darija unterscheidet sich von Stadt zu Stadt und von Familie zu Familie und hat keine offizielle Rechtschreibung. Wir nehmen die Form, die man in Casablanca und Rabat am häufigsten hört. Sagt deine Oma es anders, hat deine Oma recht — das sagt die App auch selbst.
+
+Nutzungsbedingungen (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
 **Neuheiten (Version 1.1)**
@@ -89,4 +90,5 @@ Darija unterscheidet sich von Stadt zu Stadt und von Familie zu Familie und hat 
 `Marokkanisch spielerisch — damit dein Kind mit Oma und Opa reden kann.`
 
 **Vollständige Beschreibung (max. 4000)**
-Derselbe Text wie die App-Store-Beschreibung oben.
+Derselbe Text wie die App-Store-Beschreibung oben, ohne die letzte Zeile:
+der Link zu Apples Nutzungsbedingungen gehört nicht zu Google Play.

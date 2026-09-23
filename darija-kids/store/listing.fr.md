@@ -52,11 +52,10 @@ CE QU'IL Y A LE LONG DU PARCOURS
 • Quatre conversations à lire, avec des questions à la fin
 • Trois jeux : course contre la montre, memory et jeu des lettres
 • Cinq tours bonus qui ne s'épuisent pas, dont tracer les lettres au doigt
-• Quatorze courts films sur l'histoire du Maroc, un après chaque test
 • Une pile de révision qui repère toute seule ce qui commence à vaciller
 
 APRÈS CHAQUE TEST, UN MORCEAU DU MAROC
-Chaque étape donne un court film : quatorze cartes dans l’ordre de l’histoire, de la ville romaine de Walili jusqu’à l’alphabet tifinagh devenu officiel en 2011. Lus à voix haute dans ta langue, ils finissent sur un « le savais-tu ? ».
+Chaque étape donne un court film : quatorze cartes dans l’ordre de l’histoire, de la ville romaine de Walili à l’alphabet tifinagh, officiel depuis 2011. Ils finissent sur un « le savais-tu ? ».
 
 TOUT SE PRONONCE
 Chaque mot et chaque phrase s'écoute : une touche pour la vitesse normale, deux pour la lente. Sans voix arabe sur l'appareil, l'application le dit et lit l'écriture latine du mieux qu'elle peut.
@@ -75,6 +74,8 @@ FAIT POUR ÊTRE CONFIÉ À UN ENFANT
 
 HONNÊTE SUR LA LANGUE
 Le darija change d'une ville et d'une famille à l'autre, sans orthographe officielle. Nous prenons la forme la plus courante à Casablanca et à Rabat. Si ta grand-mère le dit autrement, c'est elle qui a raison — l'application le dit elle-même.
+
+Conditions d'utilisation (EULA) : https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
 **Nouveautés (version 1.1)**
@@ -89,4 +90,5 @@ Le darija change d'une ville et d'une famille à l'autre, sans orthographe offic
 `L'arabe marocain en jouant — pour parler avec jeddi et jeddti.`
 
 **Description complète (max 4000)**
-Le même texte que la description App Store ci-dessus.
+Le même texte que la description App Store ci-dessus, sans la dernière ligne :
+le lien vers les conditions d’Apple n’a rien à faire sur Google Play.
