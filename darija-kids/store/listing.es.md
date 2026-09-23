@@ -55,7 +55,7 @@ LO QUE HAY A LO LARGO DEL CAMINO
 • Un montón de repaso que detecta solo lo que empieza a flojear
 
 DESPUÉS DE CADA TEST, UN TROZO DE MARRUECOS
-Cada control te da un corto: catorce cartas en orden histórico, desde la ciudad romana de Walili hasta el alfabeto tifinagh, oficial desde 2011. Se leen en voz alta en tu idioma y terminan con un «¿sabías que...?».
+Cada control te da un corto: catorce cartas en orden histórico, desde la ciudad romana de Walili hasta el alfabeto tifinagh que se hizo oficial en 2011. Se leen en voz alta en tu idioma y terminan con un «¿sabías que...?».
 
 TODO SUENA
 Cada palabra y cada frase se puede escuchar: un toque para la velocidad normal, dos para la lenta. Sin voz árabe en el dispositivo, la aplicación lo dice y lee la escritura latina lo mejor que puede.

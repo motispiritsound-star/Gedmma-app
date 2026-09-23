@@ -55,7 +55,7 @@ WAS AM WEG STEHT
 • Ein Wiederholstapel, der selbst merkt, was zu wackeln beginnt
 
 NACH JEDEM TEST EIN STÜCK MAROKKO
-Jeder Checkpoint bringt einen kurzen Film: vierzehn Karten in historischer Reihenfolge, von der römischen Stadt Walili bis zum Tifinagh-Alphabet, amtlich seit 2011. Sie enden mit einem „Wusstest du schon?“.
+Jeder Checkpoint bringt einen kurzen Film: vierzehn Karten in historischer Reihenfolge, von der römischen Stadt Walili bis zum Tifinagh-Alphabet, das 2011 amtlich wurde. Sie enden mit einem „Wusstest du schon?“.
 
 ALLES KLINGT
 Jedes Wort und jeder Satz lässt sich anhören: einmal tippen für normal, zweimal langsam. Ohne arabische Stimme sagt die App das ehrlich und liest die lateinische Schreibweise vor.

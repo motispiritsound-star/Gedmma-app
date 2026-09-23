@@ -55,7 +55,7 @@ CHE COSA C'È LUNGO IL PERCORSO
 • Un mazzo di ripasso che si accorge da solo di quello che inizia a vacillare
 
 DOPO OGNI TEST UN PEZZO DI MAROCCO
-Ogni checkpoint regala un cortometraggio: quattordici carte in ordine storico, dalla città romana di Walili fino all'alfabeto tifinagh, ufficiale dal 2011. Vengono letti ad alta voce nella tua lingua e finiscono con un «lo sapevi?».
+Ogni checkpoint regala un cortometraggio: quattordici carte in ordine storico, dalla città romana di Walili fino all'alfabeto tifinagh diventato ufficiale nel 2011. Vengono letti ad alta voce nella tua lingua e finiscono con un «lo sapevi?».
 
 TUTTO SI SENTE
 Ogni parola e ogni frase si possono ascoltare: un tocco per la velocità normale, due per quella lenta. Senza una voce araba sul dispositivo, l'app lo dice e legge la scrittura latina come meglio può.
