@@ -223,14 +223,45 @@ const munt = (waarde: number, valuta: string): string | null => {
   }
 }
 
-const perMaandVan = (pricing?: { priceMicros?: number; currency?: string } | null): string | null => {
-  if (!pricing?.priceMicros || !pricing.currency) return null
-  try {
-    return new Intl.NumberFormat(undefined, { style: 'currency', currency: pricing.currency })
-      .format(pricing.priceMicros / 1e6 / 12)
-  } catch {
-    return null
-  }
+/**
+ * Een bedrag dat wij zelf uitrekenen, opgemaakt zoals de winkel zijn eigen
+ * prijzen opmaakt.
+ *
+ * `Intl.NumberFormat` kijkt naar de taal van de telefoon en niet naar de
+ * winkel. Staat de telefoon op Nederlands terwijl de winkel in dollars
+ * rekent, dan komt er "US$ 4,17" uit: het muntteken uit de ene wereld en de
+ * komma uit de andere. Dat stond op hetzelfde kaartje naast Apple's eigen
+ * "$49.99", en dan lijkt het scherm kapot terwijl het bedrag klopt.
+ *
+ * Dus nemen we de opmaak over van een prijs die de winkel wél heeft gegeven:
+ * wat ervoor staat, wat erachter staat, welk teken de decimalen scheidt, en
+ * of er duizendtallen worden gegroepeerd. Een yenprijs zonder decimalen
+ * houdt er zo ook geen twee.
+ */
+export const alsPrijs = (voorbeeld: string, waarde: number): string | null => {
+  const m = /\d[\d.,\u00a0\u202f\u2009 ']*\d|\d/.exec(voorbeeld)
+  if (!m) return null
+  const getal = m[0]
+  const staart = /[.,](\d{1,2})$/.exec(getal)
+  const decimaalTeken = staart ? staart[0][0]! : '.'
+  const heel = staart ? getal.slice(0, -staart[0].length) : getal
+  const groepTeken = /[.,\u00a0\u202f\u2009 ']/.exec(heel)?.[0] ?? ''
+  const [heelDeel, deel] = waarde.toFixed(staart ? staart[1]!.length : 0).split('.')
+  const gegroepeerd = groepTeken
+    ? heelDeel!.replace(/\B(?=(\d{3})+(?!\d))/g, groepTeken)
+    : heelDeel!
+  const uit = deel ? gegroepeerd + decimaalTeken + deel : gegroepeerd
+  return voorbeeld.slice(0, m.index) + uit + voorbeeld.slice(m.index + getal.length)
+}
+
+/** Zoals de winkel het zou schrijven, en anders zoals de telefoon het zou doen. */
+const bedragAls = (voorbeeld: string | undefined, valuta: string | undefined, waarde: number): string | null =>
+  (voorbeeld ? alsPrijs(voorbeeld, waarde) : null) ?? (valuta ? munt(waarde, valuta) : null)
+
+const perMaandVan = (pricing?: { price?: string; priceMicros?: number; currency?: string } | null): string | null => {
+  const bedrag = bedragVan(pricing)
+  if (bedrag === null) return null
+  return bedragAls(pricing?.price, pricing?.currency, bedrag / 12)
 }
 
 /* ---------------------------------------------------------- a tiny live state */
@@ -323,10 +354,9 @@ const vergelijkingVan = (store: CdvStore): { totaal: string; korting: number } |
   const maand = bedragVan(betaalFase(store.get(planOf('maand').product)))
   const boek = bedragVan(betaalFase(store.get(EBOOK.product)))
   const jaarBedrag = bedragVan(jaar)
-  const valuta = jaar?.currency
-  if (!jaarBedrag || !maand || !boek || !valuta) return null
+  if (!jaarBedrag || !maand || !boek) return null
   const vol = maand * 12 + boek
-  const totaal = munt(vol, valuta)
+  const totaal = bedragAls(jaar?.price, jaar?.currency, vol)
   return totaal ? { totaal, korting: Math.round((1 - jaarBedrag / vol) * 100) } : null
 }
 

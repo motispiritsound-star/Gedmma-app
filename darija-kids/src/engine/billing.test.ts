@@ -3,7 +3,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { UNITS } from '../content/curriculum'
 import { LANG_CODES } from '../i18n/languages'
-import { bedragVan, betaalFase, EBOOK, ebookFile, prijsVan, PRODUCTS } from './billing'
+import { alsPrijs, bedragVan, betaalFase, EBOOK, ebookFile, prijsVan, PRODUCTS } from './billing'
 import {
   FREE_LESSONS, getState, GRATIS_LESSEN, isDone, lessonBehindPaywall, lessonUnlocked,
   nextLesson, resetProgress, setState, unitBehindPaywall, unitUnlocked, type State,
@@ -194,5 +194,36 @@ describe('de prijs die de koper werkelijk betaalt', () => {
   it('neemt de enige fase als er geen proef is', () => {
     const maand = { offers: [{ pricingPhases: [{ price: '€ 6,99', priceMicros: 6_990_000, currency: 'EUR' }] }] }
     expect(betaalFase(maand)?.price).toBe('€ 6,99')
+  })
+})
+
+describe('een zelf uitgerekend bedrag schrijft zoals de winkel schrijft', () => {
+  it('houdt het muntteken vóór het getal en de punt als decimaalteken', () => {
+    expect(alsPrijs('$49.99', 4.1658)).toBe('$4.17')
+  })
+
+  it('houdt de euro erachter met een komma, zoals Frankrijk het doet', () => {
+    expect(alsPrijs('59,99 €', 5)).toBe('5,00 €')
+  })
+
+  it('houdt de Nederlandse vorm met het teken ervoor', () => {
+    expect(alsPrijs('€ 59,99', 84.87)).toBe('€ 84,87')
+  })
+
+  it('houdt de Zweedse kroon achteraan', () => {
+    expect(alsPrijs('599,00 kr', 49.9)).toBe('49,90 kr')
+  })
+
+  it('groepeert duizendtallen alleen als de winkel dat ook deed', () => {
+    expect(alsPrijs('¥1,200', 8400)).toBe('¥8,400')
+    expect(alsPrijs('$84.87', 1234.5)).toBe('$1234.50')
+  })
+
+  it('laat een prijs zonder decimalen er ook zonder', () => {
+    expect(alsPrijs('¥1200', 100)).toBe('¥100')
+  })
+
+  it('geeft niets terug als er geen getal in staat', () => {
+    expect(alsPrijs('gratis', 5)).toBeNull()
   })
 })
