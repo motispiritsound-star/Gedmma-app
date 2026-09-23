@@ -26,14 +26,6 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 4. **Google: bankrekening en belastinggegevens.** Zonder dat geen uitbetaling,
    ook niet als de app al verkoopt.
 
-### Nog uit te zoeken
-
-De winkelteksten in App Store Connect lopen niet gelijk met
-`store/listing.*.md`. Bij **French (Canada)** staat de Engelse tekst, en het
-tekenaantal klopt niet met wat hier in de map zit — daar stond 528 over waar
-het bestand er 131 voorspelde. Een van beide is verouderd. Uitzoeken welke,
-en dan de winkel of de map bijtrekken.
-
 ## De boeken
 
 **Sba de Atlasleeuw** — twaalf delen, dertig bladzijden per deel, af. De
