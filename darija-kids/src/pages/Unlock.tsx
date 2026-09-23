@@ -36,6 +36,20 @@ export function Unlock() {
    * geeft; buiten de winkel — op het web — valt het terug op ons eigen getal.
    */
   const perMaandJaar = billing.yearPerMonth ?? planOf('jaar').perMonth
+
+  /**
+   * De vergelijking naast het jaarplan: het volle bedrag en de korting.
+   *
+   * Komt de jaarprijs uit de winkel, dan moet de vergelijking daar ook
+   * vandaan komen — anders staat er straks "$64.99" naast "in plaats van
+   * € 98,87". Kan de winkel die som niet leveren, dan laten we hem weg.
+   * Onze eigen europrijzen gebruiken we alleen als het hele scherm daarop
+   * terugvalt.
+   */
+  const uitWinkel = billing.prices.jaar != null
+  const vergelijking = uitWinkel
+    ? billing.vergelijking
+    : { totaal: YEAR_FULL_PRICE, korting: YEAR_SAVING }
   const price = priceOf(plan)
   const jaar = plan === 'jaar'
   /**
@@ -109,9 +123,9 @@ export function Unlock() {
                       picked ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)] bg-[var(--surface-raised)]'
                     }`}
                   >
-                    {option.best && (
+                    {option.best && vergelijking && (
                       <span className="absolute -top-3 end-3 rounded-full bg-saffron-500 px-2.5 py-1 text-[11px] font-extrabold text-night-950">
-                        {t.unlock.voordeligst(YEAR_SAVING)}
+                        {t.unlock.voordeligst(vergelijking.korting)}
                       </span>
                     )}
                     {/* Het jaarplan leidt met wat het per maand kost, want zo
@@ -133,10 +147,10 @@ export function Unlock() {
                     </div>
                     {/* Het bedrag waar de koper mee vergelijkt: twaalf maanden
                         plus het e-boek, doorgestreept naast wat hij betaalt. */}
-                    {option.id === 'jaar' && (
+                    {option.id === 'jaar' && vergelijking && (
                       <div className="mt-0.5 text-xs text-[var(--ink-soft)]">
                         {t.unlock.jaarInPlaatsVan}{' '}
-                        <s>{YEAR_FULL_PRICE}</s>
+                        <s>{vergelijking.totaal}</s>
                       </div>
                     )}
                     {option.id === 'jaar' && (

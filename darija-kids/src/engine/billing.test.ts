@@ -3,7 +3,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { UNITS } from '../content/curriculum'
 import { LANG_CODES } from '../i18n/languages'
-import { EBOOK, ebookFile, PRODUCTS } from './billing'
+import { bedragVan, EBOOK, ebookFile, prijsVan, PRODUCTS } from './billing'
 import {
   FREE_LESSONS, getState, GRATIS_LESSEN, isDone, lessonBehindPaywall, lessonUnlocked,
   nextLesson, resetProgress, setState, unitBehindPaywall, unitUnlocked, type State,
@@ -114,5 +114,43 @@ describe('the e-book', () => {
     resetProgress()
     expect(getState().ebook).toBe(true)
     setState({ ebook: false })
+  })
+})
+
+/**
+ * Een winkel die een product nog niet kent, geeft geen leeg antwoord: hij
+ * geeft een prijs van nul terug, keurig opgemaakt. "$0.00" is een ware waarde
+ * in JavaScript, dus die glipt zo door een `if (prijs)` heen — en dan staat er
+ * op het scherm dat een jaar niets kost en dat er na drie proefdagen $0.00
+ * wordt afgeschreven. Dat is precies wat er in TestFlight gebeurde.
+ */
+describe('een prijs van nul is geen prijs', () => {
+  it('weigert nul in micros', () => {
+    expect(bedragVan({ price: '$0.00', priceMicros: 0 })).toBeNull()
+    expect(prijsVan({ price: '$0.00', priceMicros: 0 })).toBeNull()
+  })
+
+  it('weigert een opgemaakte nul zonder micros', () => {
+    expect(bedragVan({ price: '$0.00' })).toBeNull()
+    expect(bedragVan({ price: '€ 0,00' })).toBeNull()
+    expect(prijsVan({ price: '€ 0,00' })).toBeNull()
+  })
+
+  it('weigert niets', () => {
+    expect(bedragVan(null)).toBeNull()
+    expect(bedragVan(undefined)).toBeNull()
+    expect(bedragVan({})).toBeNull()
+  })
+
+  it('laat een echte prijs door, precies zoals de winkel hem schrijft', () => {
+    expect(bedragVan({ price: '$64.99', priceMicros: 64_990_000 })).toBeCloseTo(64.99)
+    expect(prijsVan({ price: '$64.99', priceMicros: 64_990_000 })).toBe('$64.99')
+    expect(prijsVan({ price: '€ 59,99' })).toBe('€ 59,99')
+  })
+
+  /* Micros zijn de waarheid: de opgemaakte tekst uit elkaar peuteren gaat mis
+     zodra een land een punt zet waar wij een komma zetten. */
+  it('gelooft de micros boven de tekst', () => {
+    expect(bedragVan({ price: '1.234,56 kr', priceMicros: 1_234_560_000 })).toBeCloseTo(1234.56)
   })
 })

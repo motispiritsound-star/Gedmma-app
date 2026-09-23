@@ -186,6 +186,33 @@ function syncFromStore(owned: boolean): void {
  * bedrag om mee te rekenen, dan komt er niets uit en valt het scherm terug op
  * het vaste getal uit PLANS.
  */
+/**
+ * Het bedrag uit een prijs van de winkel, of niets.
+ *
+ * Nul is hier geen bedrag maar een ontbrekend bedrag. Een winkel die een
+ * product nog niet kent — of nog niet heeft goedgekeurd — geeft een
+ * opgemaakte prijs terug van "$0.00", en die is als tekst nietszeggend en als
+ * belofte gevaarlijk: dan staat er op het scherm dat een jaar niets kost.
+ */
+export const bedragVan = (pricing?: { price?: string; priceMicros?: number } | null): number | null => {
+  if (!pricing) return null
+  if (pricing.priceMicros !== undefined) return pricing.priceMicros > 0 ? pricing.priceMicros / 1e6 : null
+  const uit = pricing.price ? cijfer(pricing.price) : 0
+  return uit > 0 ? uit : null
+}
+
+/** De prijs zoals de winkel hem opmaakt, maar alleen als er een bedrag in zit. */
+export const prijsVan = (pricing?: { price?: string; priceMicros?: number } | null): string | null =>
+  bedragVan(pricing) !== null && pricing?.price ? pricing.price : null
+
+const munt = (waarde: number, valuta: string): string | null => {
+  try {
+    return new Intl.NumberFormat(undefined, { style: 'currency', currency: valuta }).format(waarde)
+  } catch {
+    return null
+  }
+}
+
 const perMaandVan = (pricing?: { priceMicros?: number; currency?: string } | null): string | null => {
   if (!pricing?.priceMicros || !pricing.currency) return null
   try {
@@ -214,12 +241,22 @@ export interface BillingState {
    * anders. Dit is wat de koper werkelijk gaat betalen, gedeeld door twaalf.
    */
   yearPerMonth: string | null
+  /**
+   * Waar het jaarplan mee vergeleken wordt, in de munt van de koper.
+   *
+   * `YEAR_FULL_PRICE` en `YEAR_SAVING` zijn uitgerekend uit ónze europrijzen.
+   * Zet je die naast een bedrag dat de winkel teruggaf, dan staat er "$12,99"
+   * naast "in plaats van € 98,87" op hetzelfde scherm. Dit is diezelfde som,
+   * maar gemaakt van de bedragen die de koper werkelijk te zien krijgt — en
+   * niet ingevuld zolang die er niet allemaal zijn.
+   */
+  vergelijking: { totaal: string; korting: number } | null
   busy: boolean
   /** Set when a purchase failed, in the store's own words. */
   error: string | null
 }
 
-let state: BillingState = { available: false, price: null, prices: {}, yearPerMonth: null, busy: false, error: null }
+let state: BillingState = { available: false, price: null, prices: {}, yearPerMonth: null, vergelijking: null, busy: false, error: null }
 const listeners = new Set<() => void>()
 
 const publish = (patch: Partial<BillingState>) => {
@@ -239,6 +276,25 @@ export function useBilling(): BillingState {
 }
 
 /* ------------------------------------------------------------------- the flow */
+
+/**
+ * Twaalf maanden plus het boek, uit de winkel, met de korting erbij.
+ *
+ * Alles of niets: ontbreekt één van de drie bedragen, dan komt er niets uit.
+ * Half rekenen met een eigen europrijs ernaast levert een vergelijking op die
+ * nergens op slaat, en dat is erger dan geen vergelijking.
+ */
+const vergelijkingVan = (store: CdvStore): { totaal: string; korting: number } | null => {
+  const jaar = store.get(planOf('jaar').product)?.pricing
+  const maand = bedragVan(store.get(planOf('maand').product)?.pricing)
+  const boek = bedragVan(store.get(EBOOK.product)?.pricing)
+  const jaarBedrag = bedragVan(jaar)
+  const valuta = jaar?.currency
+  if (!jaarBedrag || !maand || !boek || !valuta) return null
+  const vol = maand * 12 + boek
+  const totaal = munt(vol, valuta)
+  return totaal ? { totaal, korting: Math.round((1 - jaarBedrag / vol) * 100) } : null
+}
 
 let started = false
 
@@ -278,15 +334,17 @@ export async function initBilling(): Promise<void> {
     let yearPerMonth: string | null = null
     for (const plan of PLANS) {
       const product = store.get(plan.product)
-      if (product?.pricing?.price) prices[plan.id] = product.pricing.price
+      const prijs = prijsVan(product?.pricing)
+      if (prijs) prices[plan.id] = prijs
       if (plan.id === 'jaar') yearPerMonth = perMaandVan(product?.pricing)
       // Either plan being owned opens the whole course.
       if (product?.owned !== undefined) owned = (owned ?? false) || product.owned
     }
     const book = store.get(EBOOK.product)
-    if (book?.pricing?.price) prices.ebook = book.pricing.price
+    const boekPrijs = prijsVan(book?.pricing)
+    if (boekPrijs) prices.ebook = boekPrijs
     if (book?.owned || store.get(planOf('jaar').product)?.owned) grantEbook()
-    publish({ prices, yearPerMonth, price: prices.maand ?? null })
+    publish({ prices, yearPerMonth, vergelijking: vergelijkingVan(store), price: prices.maand ?? null })
     if (owned !== undefined) syncFromStore(owned)
   }
 
