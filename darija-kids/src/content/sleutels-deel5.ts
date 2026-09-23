@@ -185,7 +185,7 @@ export const DEEL5_HOOFDSTUKKEN: Hoofdstuk[] = [
   ] },
   { nummer: 11, titel: 'Veertien jaar', tekst: [
     'Het duurde veertien jaar en dat is iets waar in verhalen altijd overheen gestapt wordt.',
-    'Veertien jaar is Sanaa van zeven tot eenentwintig. Het is haar vader van sterk naar oud. Het is drie kamers, want ze zijn twee keer verhuisd, en twee keer de pest in de stad, en één keer een jaar waarin er bijna niet gewerkt werd omdat de koning oorlog voerde en niemand aan kaarten dacht.',
+    'Veertien jaar werk, en Sanaa was er zeven van mee: van veertien tot eenentwintig. Het is haar vader van sterk naar oud. Het is drie kamers, want ze zijn twee keer verhuisd, en twee keer de pest in de stad, en één keer een jaar waarin er bijna niet gewerkt werd omdat de koning oorlog voerde en niemand aan kaarten dacht.',
     'Mensen vragen later altijd naar de dag dat het af was.',
     'Sanaa vond de dag dat het af was niet bijzonder. Ze vond dat de veertien jaar het bijzondere waren.',
     'Elke ochtend hetzelfde. De inkt. De kamer. De mannen die binnenkwamen. De vragen die nooit gingen over hoe het was, maar over hoeveel dagen.',
