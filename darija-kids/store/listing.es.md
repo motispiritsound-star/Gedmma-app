@@ -77,7 +77,7 @@ CON HONESTIDAD SOBRE LA LENGUA
 El dariya cambia de ciudad a ciudad y de familia a familia, y no tiene ortografía oficial. Usamos la forma que más se oye en Casablanca y Rabat. ¿Tu abuela lo dice de otra manera? Entonces ella tiene razón, y la propia aplicación lo dice.
 ```
 
-**Novedades (versión 1.0)**
+**Novedades (versión 1.1)**
 `La primera versión: 17 unidades, 304 palabras, 100 frases, el alfabeto árabe, historias, juegos y catorce cortos de historia. En español, neerlandés, francés, alemán, italiano e inglés.`
 
 ## Google Play

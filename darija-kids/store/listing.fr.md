@@ -77,7 +77,7 @@ HONNÊTE SUR LA LANGUE
 Le darija change d'une ville et d'une famille à l'autre, sans orthographe officielle. Nous prenons la forme la plus courante à Casablanca et à Rabat. Si ta grand-mère le dit autrement, c'est elle qui a raison — l'application le dit elle-même.
 ```
 
-**Nouveautés (version 1.0)**
+**Nouveautés (version 1.1)**
 `Première version : 17 unités, 304 mots, 100 phrases, l'alphabet arabe, des histoires, des jeux et quatorze courts films d'histoire. En français, néerlandais, allemand, espagnol, italien et anglais.`
 
 ## Google Play

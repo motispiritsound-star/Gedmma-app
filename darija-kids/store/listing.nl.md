@@ -77,7 +77,7 @@ EERLIJK OVER DE TAAL
 Darija verschilt per stad en per familie, en heeft geen officiële spelling. Wij kiezen de vorm die je in Casablanca en Rabat het meest hoort. Zegt jouw oma het anders, dan heeft jouw oma gelijk — dat zegt de app zelf ook.
 ```
 
-**Wat is er nieuw (versie 1.0)**
+**Wat is er nieuw (versie 1.1)**
 `De eerste versie: 17 units, 304 woorden, 100 zinnen, het Arabische alfabet, verhalen, spelletjes en veertien geschiedenisfilmpjes. In het Nederlands, Frans, Duits, Spaans, Italiaans en Engels.`
 
 ## Google Play

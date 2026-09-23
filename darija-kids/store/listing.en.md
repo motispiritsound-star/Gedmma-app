@@ -77,7 +77,7 @@ HONEST ABOUT THE LANGUAGE
 Darija differs from city to city and family to family, and has no official spelling. We use the form heard most in Casablanca and Rabat. If your grandmother says it differently, she is right — the app says so itself.
 ```
 
-**What's new (version 1.0)**
+**What's new (version 1.1)**
 `The first release: 17 units, 304 words, 100 sentences, the Arabic alphabet, stories, games and fourteen short history films. In English, Dutch, French, German, Spanish and Italian.`
 
 ## Google Play

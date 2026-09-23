@@ -77,7 +77,7 @@ ONESTAMENTE, SULLA LINGUA
 Il darija cambia da città a città e da famiglia a famiglia, e non ha un'ortografia ufficiale. Usiamo la forma che si sente di più a Casablanca e Rabat. Tua nonna lo dice diversamente? Allora ha ragione lei, e l'app stessa lo dice.
 ```
 
-**Novità (versione 1.0)**
+**Novità (versione 1.1)**
 `La prima versione: 17 unità, 304 parole, 100 frasi, l'alfabeto arabo, storie, giochi e quattordici cortometraggi di storia. In italiano, olandese, francese, tedesco, spagnolo e inglese.`
 
 ## Google Play

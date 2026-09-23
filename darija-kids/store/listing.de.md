@@ -77,7 +77,7 @@ EHRLICH ZUR SPRACHE
 Darija unterscheidet sich von Stadt zu Stadt und von Familie zu Familie und hat keine offizielle Rechtschreibung. Wir nehmen die Form, die man in Casablanca und Rabat am häufigsten hört. Sagt deine Oma es anders, hat deine Oma recht — das sagt die App auch selbst.
 ```
 
-**Neuheiten (Version 1.0)**
+**Neuheiten (Version 1.1)**
 `Die erste Version: 17 Einheiten, 304 Wörter, 100 Sätze, das arabische Alphabet, Geschichten, Spiele und vierzehn kurze Geschichtsfilme. Auf Deutsch, Niederländisch, Französisch, Spanisch, Italienisch und Englisch.`
 
 ## Google Play
