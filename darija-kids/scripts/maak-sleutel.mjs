@@ -21,7 +21,7 @@
  */
 import { randomInt } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -47,6 +47,26 @@ function sleutelmap() {
   return path.join(basis, 'Darijaforkids-sleutel')
 }
 
+/**
+ * Het bestand waarmee Gradle de sleutel vindt.
+ *
+ * Gradle leest .properties als Java-tekst: een backslash is daar een
+ * ontsnappingsteken, dus Windows-paden moeten verdubbeld.
+ */
+function schrijfEigenschappen(jks, geheim) {
+  writeFileSync(
+    EIGENSCHAPPEN,
+    [
+      '# Aangemaakt door `npm run sleutel`. Staat in .gitignore en hoort daar te blijven.',
+      `storeFile=${jks.replace(/\\/g, '\\\\')}`,
+      `storePassword=${geheim}`,
+      `keyAlias=${ALIAS}`,
+      `keyPassword=${geheim}`,
+      '',
+    ].join('\n'),
+  )
+}
+
 let jdk = vindJdk()
 if (!jdk) jdk = haalJdk()
 if (!jdk) geenJdk()
@@ -58,12 +78,29 @@ if (existsSync(jks)) {
   console.log(`\nEr is al een sleutel: ${jks}`)
   console.log('Die blijft staan. Google Play accepteert maar één upload-sleutel per app,')
   console.log('dus een nieuwe zou de verkeerde zijn.\n')
+  /*
+   * Een verse kloon heeft de sleutel wel en `keystore.properties` niet: dat
+   * bestand staat in .gitignore, want er staat een wachtwoord in. Dan hoeft
+   * er niets opnieuw gemaakt te worden — alleen dat ene bestand terug, met
+   * het wachtwoord dat naast de sleutel ligt. Dat overtypen is dertig tekens
+   * kans op een typefout, dus dat doen we hier.
+   */
   if (!existsSync(EIGENSCHAPPEN)) {
-    console.log('Alleen android/keystore.properties ontbreekt nog. Maak hem zelf aan met:')
-    console.log(`  storeFile=${jks.replace(/\\/g, '\\\\')}`)
-    console.log('  storePassword=<het wachtwoord uit wachtwoord.txt naast de sleutel>')
-    console.log(`  keyAlias=${ALIAS}`)
-    console.log('  keyPassword=<hetzelfde wachtwoord>\n')
+    const briefje = path.join(map, 'wachtwoord.txt')
+    const gevonden = existsSync(briefje)
+      ? /^Wachtwoord:\s+(.+)$/m.exec(readFileSync(briefje, 'utf8'))
+      : null
+    if (gevonden) {
+      schrijfEigenschappen(jks, gevonden[1].trim())
+      console.log('android/keystore.properties stond er niet meer en is teruggezet.')
+      console.log('Je kunt nu verder met:  npm run aab\n')
+    } else {
+      console.log('Alleen android/keystore.properties ontbreekt nog. Maak hem zelf aan met:')
+      console.log(`  storeFile=${jks.replace(/\\/g, '\\\\')}`)
+      console.log('  storePassword=<het wachtwoord uit wachtwoord.txt naast de sleutel>')
+      console.log(`  keyAlias=${ALIAS}`)
+      console.log('  keyPassword=<hetzelfde wachtwoord>\n')
+    }
   }
   process.exit(0)
 }
@@ -87,20 +124,7 @@ execFileSync(
   { stdio: ['ignore', 'ignore', 'inherit'] },
 )
 
-// Gradle leest .properties als Java-tekst: een backslash is daar een
-// ontsnappingsteken, dus Windows-paden moeten verdubbeld.
-const pad = jks.replace(/\\/g, '\\\\')
-writeFileSync(
-  EIGENSCHAPPEN,
-  [
-    '# Aangemaakt door `npm run sleutel`. Staat in .gitignore en hoort daar te blijven.',
-    `storeFile=${pad}`,
-    `storePassword=${geheim}`,
-    `keyAlias=${ALIAS}`,
-    `keyPassword=${geheim}`,
-    '',
-  ].join('\n'),
-)
+schrijfEigenschappen(jks, geheim)
 
 writeFileSync(
   path.join(map, 'wachtwoord.txt'),

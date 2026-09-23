@@ -30,6 +30,8 @@ const GRADLE = path.join(ANDROID, 'app', 'build.gradle')
 
 const args = process.argv.slice(2)
 const versie = args.includes('--versie') ? Number(args[args.indexOf('--versie') + 1]) : null
+/** Het nummer dat de gebruiker ziet. Play eist het niet, een mens wel. */
+const naam = args.includes('--naam') ? args[args.indexOf('--naam') + 1] : null
 const alsApk = args.includes('--apk')
 
 const TAAK = alsApk ? 'assembleRelease' : 'bundleRelease'
@@ -50,11 +52,13 @@ if (!existsSync(publiek)) {
   process.exit(1)
 }
 
-if (versie) {
+if (versie || naam) {
   const was = readFileSync(GRADLE, 'utf8')
-  const wordt = was.replace(/versionCode \d+/, `versionCode ${versie}`)
+  let wordt = was
+  if (versie) wordt = wordt.replace(/versionCode \d+/, `versionCode ${versie}`)
+  if (naam) wordt = wordt.replace(/versionName "[^"]*"/, `versionName "${naam}"`)
   if (was === wordt) {
-    console.error('Kon versionCode niet vinden in android/app/build.gradle.')
+    console.error('Kon versionCode of versionName niet vinden in android/app/build.gradle.')
     process.exit(1)
   }
   writeFileSync(GRADLE, wordt)

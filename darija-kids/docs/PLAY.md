@@ -139,10 +139,10 @@ installeert er anders een.
 
 Wat al goed staat en waar je niets aan hoeft te doen: applicatie-id
 `app.darijaforkids.learn`, minimaal Android 7 (API 24), doel-API 36, geen
-cleartext-verkeer, versie 1.0 met versionCode 1. Voor elke volgende release:
+cleartext-verkeer. Voor elke volgende release:
 
 ```bash
-node scripts/maak-aab.mjs --versie 2
+node scripts/maak-aab.mjs --versie 2 --naam 1.1
 ```
 
 Het resultaat is

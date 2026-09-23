@@ -70,8 +70,12 @@ Bij een volgende upload moet het versienummer omhoog — Play weigert twee
 bundels met hetzelfde `versionCode`, ook als je de eerste hebt ingetrokken:
 
 ```bash
-node scripts/maak-aab.mjs --versie 2
+node scripts/maak-aab.mjs --versie 2 --naam 1.1
 ```
+
+`--versie` is het nummer dat Play telt, `--naam` het nummer dat een gebruiker
+in de Play Store ziet staan. Het eerste móét omhoog, het tweede hoort dat te
+doen zodra er iets verandert dat iemand merkt.
 
 ### Op je eigen telefoon zetten
 
@@ -120,8 +124,8 @@ je een nieuwe kunt aanvragen. Reken wel op een week wachten.
 | | |
 |---|---|
 | Pakketnaam | `app.darijaforkids.learn` |
-| versionCode | 1 |
-| versionName | 1.0 |
+| versionCode | 2 |
+| versionName | 1.1 |
 | minSdk | 24 (Android 7) |
 | targetSdk | 36 |
 | Gradle | 8.14.3, Android Gradle Plugin 8.13.0 |
