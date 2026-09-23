@@ -1,6 +1,6 @@
 # Waar staan we
 
-Bijgewerkt op 22 september 2026. Dit bestand is het antwoord op "wat moet er
+Bijgewerkt op 23 september 2026. Dit bestand is het antwoord op "wat moet er
 nog" zonder dat je drie andere bestanden hoeft te lezen.
 
 ## De app
@@ -9,9 +9,9 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 158, groen |
-| Google Play | ingediend, wacht op beoordeling |
-| App Store | **wacht op de iOS-build** — zie `docs/MAC.md` |
+| Tests | 389, groen |
+| Google Play | versie 1.1 ingediend (submission 3), wacht op beoordeling |
+| App Store | build 3 in TestFlight; build 4 nodig vóór inzending |
 
 ### Wat alleen jij kunt doen
 
@@ -82,17 +82,33 @@ Alle vier staan er en staan met hun logo op de startpagina.
 Zodra de Facebook-pagina genoeg volgers heeft mag er een gebruikersnaam op.
 Dat is één regel in `src/site/links.ts`.
 
-## Wat er als laatste moet
+## Naar go-live
 
-1. De winkeladressen in `src/site/links.ts` (`STORE.apple`, `STORE.google`)
-   zodra de app in beide winkels staat. Nu leeg, en dan tonen de knoppen niets
-   in plaats van een link naar niets.
-2. Beide winkels op **handmatig vrijgeven**, zodat jij de dag kiest.
-3. De app zelf spelen: op een iPhone via TestFlight, op de Galaxy Tab via Play.
+De volgorde die een aankondiging mogelijk maakt: eerst laten goedkeuren, dan
+vasthouden, dan pas vrijgeven. Een winkel die bij goedkeuring meteen
+publiceert, bepaalt zelf je lanceerdag — en dan staat de app al in de winkel
+terwijl de eerste teaser nog moet komen.
+
+1. **Play op handmatig.** Publishing overview → Manage → *Managed publishing*
+   aan. Dan blijft een goedgekeurde release staan tot jij op publiceren drukt.
+   Doe dit zolang submission 3 nog in review is; erna is het te laat.
+2. **Apple op handmatig.** Bij het inzenden van de versie: *Manually release
+   this version*. Niet "automatically".
+3. De winkeladressen in `src/site/links.ts` (`STORE.apple`, `STORE.google`)
+   zodra beide winkels een adres hebben. Nu leeg, en dan tonen de knoppen
+   niets in plaats van een link naar niets.
+4. De app zelf spelen: op een iPhone via TestFlight, op de Galaxy Tab via Play.
    De punten om op te letten staan in `docs/MAC.md` §D.
+5. Vrijgeven: eerst Apple (de goedkeuring is er dan al, publiceren duurt een
+   paar uur), Play erachteraan. Play is binnen het uur zichtbaar.
 
 ## Waar het van afhangt
 
 Er is één ding dat alles vertraagt en dat is de iOS-build. Play kan live
 zonder Apple; Apple kan niet live zonder de Mac. Alles wat hierboven nog
 openstaat kan naast elkaar, behalve dat.
+
+En één ding dat een lancering in Europa tegenhoudt zonder dat het op een
+bouwfout lijkt: **de handelaarsverificatie bij Apple**. Zolang die loopt, mag
+een betaalde app in de EU niet verkocht worden. Controleer die status vóór je
+een datum vastlegt.
