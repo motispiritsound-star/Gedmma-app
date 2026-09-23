@@ -11,24 +11,28 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 512, groen |
 | Google Play | versie 1.1 ingediend (submission 3), wacht op beoordeling |
-| App Store | 1.0 (build 4) afgewezen op 3.1.2 — winkeltekst hersteld, opnieuw indienen |
+| App Store | 1.0 (build 4) opnieuw ingediend met de EULA-link, wacht op beoordeling |
 
 ### Wat alleen jij kunt doen
 
-1. **Apple: de winkeltekst opnieuw indienen.** Apple miste de link naar de
-   gebruiksvoorwaarden in de beschrijving. De zes teksten staan klaar in
-   `store/appstore-eula.md`; plakken, opslaan, *Update Review*. Geen nieuwe
-   build nodig.
-2. **Apple: abonnementsprijzen per land.** Nakijken voor NL, BE, FR, DE, ES,
+1. **Apple: abonnementsprijzen per land.** Nakijken voor NL, BE, FR, DE, ES,
    IT en MA. Apple vult de rest af uit de prijs die je voor één land zet, en
    dat valt niet altijd goed uit.
-3. **Apple: royaltyvaluta.** Bij de bankrekening staat USD. Zet dat op EUR,
+2. **Apple: royaltyvaluta.** Bij de bankrekening staat USD. Zet dat op EUR,
    anders wordt er twee keer gewisseld op elke uitbetaling.
-4. **Apple: DAC7.** Moet ingevuld voordat er uitbetaald kan worden. Het
+3. **Apple: DAC7.** Moet ingevuld voordat er uitbetaald kan worden. Het
    antwoord op "persoonlijke diensten" is **nee** — dat gaat over werk van
    mensen per uur of per klus, en dit is een app.
-5. **Google: bankrekening en belastinggegevens.** Zonder dat geen uitbetaling,
+4. **Google: bankrekening en belastinggegevens.** Zonder dat geen uitbetaling,
    ook niet als de app al verkoopt.
+
+### Nog uit te zoeken
+
+De winkelteksten in App Store Connect lopen niet gelijk met
+`store/listing.*.md`. Bij **French (Canada)** staat de Engelse tekst, en het
+tekenaantal klopt niet met wat hier in de map zit — daar stond 528 over waar
+het bestand er 131 voorspelde. Een van beide is verouderd. Uitzoeken welke,
+en dan de winkel of de map bijtrekken.
 
 ## De boeken
 
