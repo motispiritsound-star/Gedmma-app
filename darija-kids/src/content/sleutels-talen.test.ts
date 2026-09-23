@@ -1,0 +1,61 @@
+import { describe, expect, it } from 'vitest'
+import { REEKS, type Sleuteldeel } from './sleutels'
+import { DEEL1_HOOFDSTUKKEN } from './sleutels-deel1'
+import { SLEUTEL_VERTALINGEN, SLEUTEL_SCHIL, sleuteldeelIn } from './sleutels-talen'
+
+/** De Nederlandse delen die al geschreven zijn, op nummer. */
+const NL: Record<number, Sleuteldeel> = {
+  1: { ...REEKS[0], hoofdstukken: DEEL1_HOOFDSTUKKEN } as Sleuteldeel,
+}
+
+describe('De sleutels in andere talen', () => {
+  for (const [taal, vertaling] of Object.entries(SLEUTEL_VERTALINGEN)) {
+    describe(taal, () => {
+      for (const nummer of Object.keys(vertaling).map(Number)) {
+        const basis = NL[nummer]
+        if (!basis) continue
+
+        it(`deel ${nummer} heeft evenveel hoofdstukken als het Nederlands`, () => {
+          expect(vertaling[nummer].hoofdstukken).toHaveLength(basis.hoofdstukken.length)
+        })
+
+        /* Eén alinea in het Nederlands is één alinea hier. Een samengevoegde
+           alinea haalt de stiltes uit een hoofdstuk, en daar leeft dit boek
+           van — dus dat mag de test niet laten passeren. */
+        it(`deel ${nummer} heeft per hoofdstuk evenveel alinea's`, () => {
+          vertaling[nummer].hoofdstukken.forEach((h, i) => {
+            expect(h.tekst.length, `hoofdstuk ${i + 1}`).toBe(basis.hoofdstukken[i].tekst.length)
+          })
+        })
+
+        it(`deel ${nummer} heeft nergens een lege regel`, () => {
+          for (const h of vertaling[nummer].hoofdstukken) {
+            expect(h.titel.trim()).not.toBe('')
+            for (const regel of h.tekst) expect(regel.trim()).not.toBe('')
+          }
+        })
+
+        it(`deel ${nummer} legt zich netjes over het Nederlands heen`, () => {
+          const uit = sleuteldeelIn(taal, basis)
+          expect(uit.nummer).toBe(basis.nummer)
+          expect(uit.titel).toBe(vertaling[nummer].titel)
+          expect(uit.hoofdstukken.map((h) => h.nummer)).toEqual(basis.hoofdstukken.map((h) => h.nummer))
+        })
+      }
+
+      it('heeft een eigen schil', () => {
+        expect(SLEUTEL_SCHIL[taal]).toBeDefined()
+        expect(SLEUTEL_SCHIL[taal].disclaimer.length).toBe(SLEUTEL_SCHIL.nl.disclaimer.length)
+      })
+    })
+  }
+
+  it('valt terug op het Nederlands voor een taal die er niet is', () => {
+    expect(sleuteldeelIn('is', NL[1])).toBe(NL[1])
+  })
+
+  it('weigert een vertaling met een ander aantal hoofdstukken', () => {
+    const kort = { ...NL[1], hoofdstukken: NL[1].hoofdstukken.slice(0, 3) }
+    expect(() => sleuteldeelIn('fr', kort)).toThrow(/hoofdstukken/)
+  })
+})
