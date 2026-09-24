@@ -16,6 +16,7 @@
  *   node scripts/make-winkelplaat.mjs --product ebook
  *   node scripts/make-winkelplaat.mjs            # alle drie
  */
+import { existsSync } from 'node:fs'
 import { mkdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -51,6 +52,19 @@ const [balo800, balo600] = await Promise.all([
 
 const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
+/**
+ * Een geschilderde plaat als achtergrond, als die er is.
+ *
+ * Sba heeft er twaalf: de poort van Fes, de souq, de bergen. Daar valt met een
+ * getekende sleutel niet tegenop, en een ouder die de leeuw ziet staan weet
+ * meteen voor welke leeftijd dit is. De sleutels van Marokko heeft ze niet —
+ * dat is een leesboek en de omslag doet daar het werk.
+ */
+const plaat = async (bestand) => {
+  if (!bestand || !existsSync(bestand)) return null
+  return `data:image/jpeg;base64,${(await readFile(bestand)).toString('base64')}`
+}
+
 /** Drie delen uit een reeks: het begin, het midden en het eind. */
 const drie = (delen) => [delen[0], delen[Math.floor(delen.length / 2)], delen[delen.length - 1]]
 
@@ -67,7 +81,8 @@ const PRODUCTEN = {
     onder: 'Alle twaalf delen, in zes talen',
     regel: 'Twaalf voorleesboeken · 144 woorden Darija · vanaf 2 jaar',
     prijs: PRIJS.sbaReeks,
-    omslagen: drie(PRENTEN).map((d, i) => ({ nummer: d.nummer ?? i + 1, titel: d.titel, jaar: d.ondertitel })),
+    omslagen: [],
+    achtergrond: path.join(ROOT, 'store', 'prentenboek', 'platen', '1', 'achtergrond.jpg'),
   },
   ebook: {
     reeks: 'Darijaforkids',
@@ -89,7 +104,7 @@ const mini = (o, i) => `
     <div class="mj">${esc(o.jaar)}</div>
   </div>`
 
-const blad = (p, vierkant) => `<!doctype html><meta charset="utf-8"><style>
+const blad = (p, vierkant, achtergrond) => `<!doctype html><meta charset="utf-8"><style>
   @font-face{font-family:'Baloo 2';src:url(data:font/woff2;base64,${balo800}) format('woff2');font-weight:800}
   @font-face{font-family:'Baloo 2';src:url(data:font/woff2;base64,${balo600}) format('woff2');font-weight:600}
   *{margin:0;box-sizing:border-box}
@@ -97,9 +112,16 @@ const blad = (p, vierkant) => `<!doctype html><meta charset="utf-8"><style>
        color:${H.perkament};font-family:'Baloo 2',system-ui,sans-serif;overflow:hidden;position:relative;
        display:flex;align-items:center;gap:${vierkant ? 0 : 70}px;
        padding:${vierkant ? '60px' : '0 80px'};flex-direction:${vierkant ? 'column' : 'row'};
-       justify-content:center;text-align:${vierkant ? 'center' : 'left'}}
+       justify-content:${achtergrond && !vierkant ? 'flex-start' : 'center'};
+       text-align:${vierkant ? 'center' : 'left'}}
   body::before{content:'';position:absolute;inset:0;
-    background:radial-gradient(120% 90% at 30% 20%, #2b3a63 0%, ${H.nacht} 62%)}
+    ${achtergrond
+      ? `background-image:url(${achtergrond});background-size:cover;
+         background-position:${vierkant ? '74% center' : 'right center'}`
+      : `background:radial-gradient(120% 90% at 30% 20%, #2b3a63 0%, ${H.nacht} 62%)`}}
+  ${achtergrond ? `body::after{content:'';position:absolute;inset:0;background:linear-gradient(
+      ${vierkant ? '180deg, #0d142466 0%, #0d1424cc 34%, #0d1424f2 62%, #0d1424 100%' : '90deg, #0d1424f2 0%, #0d1424e0 34%, #0d142455 58%, #0d142400 76%'})}
+    .links,.band.rand{z-index:2}` : ''}
   .band.rand{position:absolute;left:0;width:100%;height:${vierkant ? 14 : 18}px;opacity:.9}
   .band.rand.b{top:${vierkant ? 22 : 30}px}.band.rand.o{bottom:${vierkant ? 22 : 30}px}
   .links{position:relative;flex:none;display:flex;flex-direction:column;
@@ -131,7 +153,7 @@ const blad = (p, vierkant) => `<!doctype html><meta charset="utf-8"><style>
 <svg class="band rand b" viewBox="0 0 400 18" preserveAspectRatio="none">${zellige(0, 0, 400, 18, H.goud)}</svg>
 <svg class="band rand o" viewBox="0 0 400 18" preserveAspectRatio="none">${zellige(0, 0, 400, 18, H.goud)}</svg>
 <div class="links">
-  <svg class="sl" viewBox="-62 -158 124 256">${sleutel(0, 0, 1, H.goud)}</svg>
+  ${achtergrond ? '' : `<svg class="sl" viewBox="-62 -158 124 256">${sleutel(0, 0, 1, H.goud)}</svg>`}
   <div class="merk">Darijaforkids</div>
   <h1>${esc(p.reeks)}</h1>
   <div class="onder">${esc(p.onder)}</div>
@@ -149,7 +171,7 @@ for (const naam of welke) {
   if (!p) throw new Error(`Onbekend product "${naam}". Kies uit: ${Object.keys(PRODUCTEN).join(', ')}`)
   for (const [soort, vierkant, breed, hoog] of [['omslag', false, 1600, 900], ['duim', true, 600, 600]]) {
     const pagina = await browser.newPage({ viewport: { width: breed, height: hoog }, deviceScaleFactor: 1 })
-    await pagina.setContent(blad(p, vierkant), { waitUntil: 'load' })
+    await pagina.setContent(blad(p, vierkant, await plaat(p.achtergrond)), { waitUntil: 'load' })
     await pagina.evaluate(() => document.fonts.ready)
     const bestand = path.join(UIT, `${naam}-${soort}.png`)
     await pagina.screenshot({ path: bestand })
