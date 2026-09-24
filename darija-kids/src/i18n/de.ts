@@ -636,7 +636,7 @@ export const de: Strings = {
   unlock: {
     tijdlijn: (dagen, prijs, jaar) => [
       ['🎁', `Heute: ${dagen} Tage gratis`, 'Alles ist offen und du zahlst noch nichts.'],
-      ['📅', `Nach ${dagen} Tagen: ${prijs} ${jaar ? 'pro Jahr' : 'pro Monat'}`, jaar ? 'Der Store bucht einmal im Jahr ab, inklusive Mehrwertsteuer.' : 'Der Store bucht monatlich ab, inklusive Mehrwertsteuer.'],
+      ['📅', `Nach ${dagen} Tagen: ${prijs} ${jaar ? 'pro Jahr' : 'pro Monat'}`, jaar ? 'Der Store bucht einmal im Jahr ab.' : 'Der Store bucht monatlich ab.'],
       ['🛑', 'Jederzeit kündbar', `Ein Tippen im Store-Konto. Kündigst du binnen ${dagen} Tagen, zahlst du nichts.`],
     ],
     titel: 'Voller Zugang',
@@ -658,10 +658,12 @@ export const de: Strings = {
     jaarInPlaatsVan: 'statt',
     perMaandLos: 'monatlich kündbar',
     voorwaardenJaar: (dagen: number, prijs: string): string =>
-      `Nach ${dagen} Gratistagen werden ${prijs} für ein ganzes Jahr über dein App-Store- oder Google-Play-Konto abgebucht, danach jedes Jahr erneut, bis du kündigst. Kündigst du vor Ende der Testphase, zahlst du nichts. Preis inklusive Mehrwertsteuer.`,
+      `Nach ${dagen} Gratistagen werden ${prijs} für ein ganzes Jahr über dein App-Store- oder Google-Play-Konto abgebucht, danach jedes Jahr erneut, bis du kündigst. Kündigst du vor Ende der Testphase, zahlst du nichts.`,
     koop: (dagen) => `${dagen} Tage gratis starten`,
     voorwaarden: (dagen, prijs) =>
-      `Nach ${dagen} kostenlosen Tagen werden ${prijs} pro Monat über dein App-Store- oder Google-Play-Konto abgebucht, bis du kündigst. Kündigst du vor Ende der Testphase, zahlst du nichts. Preis inklusive Mehrwertsteuer.`,
+      `Nach ${dagen} kostenlosen Tagen werden ${prijs} pro Monat über dein App-Store- oder Google-Play-Konto abgebucht, bis du kündigst. Kündigst du vor Ende der Testphase, zahlst du nichts.`,
+    btwRegel: (inbegrepen: boolean): string =>
+      inbegrepen ? 'Preis inklusive Mehrwertsteuer.' : 'Der Store berechnet die in deinem Land geltende Steuer.',
     herstel: 'Kauf wiederherstellen',
     herstelHint: 'Neues Gerät oder App neu installiert? Hol dein Abo hier zurück — das kostet nichts.',
     beheer: 'Abo verwalten',

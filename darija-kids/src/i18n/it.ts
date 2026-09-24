@@ -636,7 +636,7 @@ export const it: Strings = {
   unlock: {
     tijdlijn: (dagen, prijs, jaar) => [
       ['🎁', `Oggi: ${dagen} giorni gratis`, 'Tutto aperto e ancora non paghi niente.'],
-      ['📅', `Dopo ${dagen} giorni: ${prijs} ${jaar ? 'all’anno' : 'al mese'}`, jaar ? 'Il negozio lo addebita una volta all’anno, IVA inclusa.' : 'Il negozio lo addebita ogni mese, IVA inclusa.'],
+      ['📅', `Dopo ${dagen} giorni: ${prijs} ${jaar ? 'all’anno' : 'al mese'}`, jaar ? 'Il negozio lo addebita una volta all’anno.' : 'Il negozio lo addebita ogni mese.'],
       ['🛑', 'Disdicibile sempre', `Un tocco nel tuo account. Se disdici entro ${dagen} giorni, non paghi niente.`],
     ],
     titel: 'Accesso completo',
@@ -658,10 +658,12 @@ export const it: Strings = {
     jaarInPlaatsVan: 'invece di',
     perMaandLos: 'disdicibile ogni mese',
     voorwaardenJaar: (dagen: number, prijs: string): string =>
-      `Dopo ${dagen} giorni gratis vengono addebitati ${prijs} per un anno intero tramite il tuo account App Store o Google Play, e poi ogni anno finché non disdici. Se disdici prima della fine della prova, non paghi niente. IVA inclusa.`,
+      `Dopo ${dagen} giorni gratis vengono addebitati ${prijs} per un anno intero tramite il tuo account App Store o Google Play, e poi ogni anno finché non disdici. Se disdici prima della fine della prova, non paghi niente.`,
     koop: (dagen) => `Inizia ${dagen} giorni gratis`,
     voorwaarden: (dagen, prijs) =>
-      `Dopo ${dagen} giorni gratis vengono addebitati ${prijs} al mese tramite il tuo account App Store o Google Play, finché non disdici. Se disdici prima della fine della prova, non paghi niente. Prezzo IVA inclusa.`,
+      `Dopo ${dagen} giorni gratis vengono addebitati ${prijs} al mese tramite il tuo account App Store o Google Play, finché non disdici. Se disdici prima della fine della prova, non paghi niente.`,
+    btwRegel: (inbegrepen: boolean): string =>
+      inbegrepen ? 'IVA inclusa.' : 'Lo store applica l’imposta prevista nel tuo paese.',
     herstel: 'Ripristina l’acquisto',
     herstelHint: 'Dispositivo nuovo o app reinstallata? Recupera qui il tuo abbonamento: non costa niente.',
     beheer: 'Gestisci l’abbonamento',

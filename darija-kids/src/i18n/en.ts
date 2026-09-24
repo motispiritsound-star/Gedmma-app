@@ -636,7 +636,7 @@ export const en: Strings = {
   unlock: {
     tijdlijn: (dagen, prijs, jaar) => [
       ['🎁', `Today: ${dagen} days free`, 'Everything is open and you pay nothing yet.'],
-      ['📅', `After ${dagen} days: ${prijs} ${jaar ? 'a year' : 'a month'}`, jaar ? 'The store charges it once a year, VAT included.' : 'The store charges it monthly, VAT included.'],
+      ['📅', `After ${dagen} days: ${prijs} ${jaar ? 'a year' : 'a month'}`, jaar ? 'The store charges it once a year.' : 'The store charges it monthly.'],
       ['🛑', 'Cancel any time', `One tap in your store account. Cancel within ${dagen} days and you pay nothing.`],
     ],
     titel: 'Full access',
@@ -658,10 +658,12 @@ export const en: Strings = {
     jaarInPlaatsVan: 'instead of',
     perMaandLos: 'cancel any month',
     voorwaardenJaar: (dagen: number, prijs: string): string =>
-      `After ${dagen} free days, ${prijs} is charged for a full year through your App Store or Google Play account, and every year after that until you cancel. Cancel before the trial ends and you pay nothing. VAT included.`,
+      `After ${dagen} free days, ${prijs} is charged for a full year through your App Store or Google Play account, and every year after that until you cancel. Cancel before the trial ends and you pay nothing.`,
     koop: (dagen) => `Start ${dagen} days free`,
     voorwaarden: (dagen, prijs) =>
-      `After ${dagen} free days, ${prijs} a month is charged through your App Store or Google Play account until you cancel. Cancel before the trial ends and you pay nothing. Price includes VAT.`,
+      `After ${dagen} free days, ${prijs} a month is charged through your App Store or Google Play account until you cancel. Cancel before the trial ends and you pay nothing.`,
+    btwRegel: (inbegrepen: boolean): string =>
+      inbegrepen ? 'VAT included.' : 'The store adds whatever tax applies in your country.',
     herstel: 'Restore purchase',
     herstelHint: 'New device, or reinstalled the app? Bring your subscription back here — it costs nothing.',
     beheer: 'Manage subscription',

@@ -636,7 +636,7 @@ export const fr: Strings = {
   unlock: {
     tijdlijn: (dagen, prijs, jaar) => [
       ['🎁', `Aujourd’hui : ${dagen} jours offerts`, 'Tout est ouvert et tu ne paies rien.'],
-      ['📅', `Après ${dagen} jours : ${prijs} ${jaar ? 'par an' : 'par mois'}`, jaar ? 'La boutique prélève une fois par an, TVA comprise.' : 'La boutique prélève chaque mois, TVA comprise.'],
+      ['📅', `Après ${dagen} jours : ${prijs} ${jaar ? 'par an' : 'par mois'}`, jaar ? 'La boutique prélève une fois par an.' : 'La boutique prélève chaque mois.'],
       ['🛑', 'Résiliable à tout moment', `Un geste dans ton compte. Résilie sous ${dagen} jours et tu ne paies rien.`],
     ],
     titel: 'Accès complet',
@@ -658,10 +658,12 @@ export const fr: Strings = {
     jaarInPlaatsVan: 'au lieu de',
     perMaandLos: 'résiliable chaque mois',
     voorwaardenJaar: (dagen: number, prijs: string): string =>
-      `Après ${dagen} jours offerts, ${prijs} sont prélevés pour une année entière via ton compte App Store ou Google Play, puis chaque année jusqu’à résiliation. Si tu résilies avant la fin de l’essai, tu ne paies rien. Prix TTC.`,
+      `Après ${dagen} jours offerts, ${prijs} sont prélevés pour une année entière via ton compte App Store ou Google Play, puis chaque année jusqu’à résiliation. Si tu résilies avant la fin de l’essai, tu ne paies rien.`,
     koop: (dagen) => `Commencer ${dagen} jours gratuits`,
     voorwaarden: (dagen, prijs) =>
-      `Après ${dagen} jours gratuits, ${prijs} par mois sont prélevés via ton compte App Store ou Google Play, jusqu'à résiliation. Si tu résilies avant la fin de la période d'essai, tu ne paies rien. Prix TTC.`,
+      `Après ${dagen} jours gratuits, ${prijs} par mois sont prélevés via ton compte App Store ou Google Play, jusqu'à résiliation. Si tu résilies avant la fin de la période d'essai, tu ne paies rien.`,
+    btwRegel: (inbegrepen: boolean): string =>
+      inbegrepen ? 'Prix TTC.' : 'La boutique applique la taxe en vigueur dans ton pays.',
     herstel: "Restaurer l'achat",
     herstelHint: 'Nouvel appareil, ou application réinstallée ? Restaure ton abonnement ici — c\'est gratuit.',
     beheer: "Gérer l'abonnement",

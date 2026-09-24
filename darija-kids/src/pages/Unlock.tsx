@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  buyEbook, EBOOK, ebookFile, FREE_LESSONS, manageSubscription, PLANS, planOf, restorePurchases,
-  subscribe, TRIAL_DAYS, useBilling, YEAR_FULL_PRICE, YEAR_SAVING, type PlanId,
+  btwInbegrepen, buyEbook, EBOOK, ebookFile, FREE_LESSONS, manageSubscription, PLANS, planOf,
+  restorePurchases, subscribe, TRIAL_DAYS, useBilling, YEAR_FULL_PRICE, YEAR_SAVING, type PlanId,
 } from '../engine/billing'
 import { gezinsdeling } from '../engine/platform'
 import { useStore } from '../engine/store'
@@ -172,10 +172,17 @@ export function Unlock() {
                 <p data-web-only className="rounded-2xl bg-saffron-500/10 px-4 py-3 text-sm">{t.unlock.alleenInApp(price, jaar)}</p>
               )}
               {/* Both stores require the terms to be visible before buying. */}
+              {/* De belastingzin hoort bij de prijs die de winkel gaf, niet bij
+                  het land waar de app in staat. In de Europese Unie zit de btw
+                  in het bedrag; in de Verenigde Staten komt hij er bij het
+                  afrekenen bij. Beweren dat het inclusief is naast een prijs
+                  uit een winkel die het exclusief rekent, is een onjuiste
+                  mededeling op het scherm waar iemand besluit te betalen. */}
               <p className="mt-3 text-xs leading-relaxed text-[var(--ink-soft)]">
                 {jaar
                   ? t.unlock.voorwaardenJaar(TRIAL_DAYS, price)
-                  : t.unlock.voorwaarden(TRIAL_DAYS, price)}
+                  : t.unlock.voorwaarden(TRIAL_DAYS, price)}{' '}
+                {t.unlock.btwRegel(btwInbegrepen(billing.currency))}
               </p>
               {billing.error && (
                 <p className="mt-3 text-center text-sm text-terra-500">{t.unlock.mislukt(billing.error)}</p>

@@ -643,7 +643,7 @@ export const nl = {
   unlock: {
     tijdlijn: (dagen: number, prijs: string, jaar: boolean): [string, string, string][] => [
       ['🎁', `Vandaag: ${dagen} dagen gratis`, 'Alles staat open en je betaalt nog niets.'],
-      ['📅', `Na ${dagen} dagen: ${prijs} ${jaar ? 'per jaar' : 'per maand'}`, jaar ? 'De winkel schrijft het één keer per jaar af, inclusief btw.' : 'De winkel schrijft het maandelijks af, inclusief btw.'],
+      ['📅', `Na ${dagen} dagen: ${prijs} ${jaar ? 'per jaar' : 'per maand'}`, jaar ? 'De winkel schrijft het één keer per jaar af.' : 'De winkel schrijft het maandelijks af.'],
       ['🛑', 'Altijd opzegbaar', `Eén tik in je winkelaccount. Zeg je op binnen ${dagen} dagen, dan betaal je niets.`],
     ],
     titel: 'Volledige toegang',
@@ -665,10 +665,12 @@ export const nl = {
     jaarInPlaatsVan: 'in plaats van',
     perMaandLos: 'maandelijks opzegbaar',
     voorwaardenJaar: (dagen: number, prijs: string): string =>
-      `Na ${dagen} gratis dagen wordt ${prijs} voor een heel jaar afgeschreven via je App Store- of Google Play-account, en daarna elk jaar opnieuw tot je opzegt. Zeg je op vóór het einde van de proefperiode, dan betaal je niets. De prijs is inclusief btw.`,
+      `Na ${dagen} gratis dagen wordt ${prijs} voor een heel jaar afgeschreven via je App Store- of Google Play-account, en daarna elk jaar opnieuw tot je opzegt. Zeg je op vóór het einde van de proefperiode, dan betaal je niets.`,
     koop: (dagen: number): string => `Start ${dagen} dagen gratis`,
     voorwaarden: (dagen: number, prijs: string): string =>
-      `Na ${dagen} gratis dagen wordt ${prijs} per maand afgeschreven via je App Store- of Google Play-account, tot je opzegt. Zeg je op vóór het einde van de proefperiode, dan betaal je niets. De prijs is inclusief btw.`,
+      `Na ${dagen} gratis dagen wordt ${prijs} per maand afgeschreven via je App Store- of Google Play-account, tot je opzegt. Zeg je op vóór het einde van de proefperiode, dan betaal je niets.`,
+    btwRegel: (inbegrepen: boolean): string =>
+      inbegrepen ? 'De prijs is inclusief btw.' : 'De winkel rekent de belasting die in jouw land geldt.',
     herstel: 'Aankoop terugzetten',
     herstelHint: 'Nieuw toestel, of de app opnieuw geïnstalleerd? Zet je abonnement hier terug — dat kost niets.',
     beheer: 'Abonnement beheren',

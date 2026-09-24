@@ -217,6 +217,27 @@ export const bedragVan = (pricing?: { price?: string; priceMicros?: number } | n
 export const prijsVan = (pricing?: { price?: string; priceMicros?: number } | null): string | null =>
   bedragVan(pricing) !== null && pricing?.price ? pricing.price : null
 
+/**
+ * Winkels waar de prijs op het scherm de belasting al bevat.
+ *
+ * In de Europese Unie is dat verplicht: een consument ziet wat hij betaalt,
+ * btw en al. In de Verenigde Staten is het omgekeerd — daar staat de prijs
+ * zonder belasting en komt die er bij het afrekenen bij.
+ *
+ * Dat verschil is geen detail voor dit scherm. Wij zetten er in het
+ * Nederlands "De prijs is inclusief btw" onder, en dat is een belofte. Naast
+ * een prijs uit de Amerikaanse winkel is die belofte niet waar, en dan staat
+ * er een onjuiste mededeling op het scherm waar iemand besluit te betalen.
+ *
+ * Dus: alleen claimen wat we kunnen waarmaken. Weten we het niet zeker, dan
+ * zegt het scherm dat de winkel de belasting van jouw land rekent — en dat
+ * klopt overal.
+ */
+const BTW_MUNTEN = new Set(['EUR', 'GBP', 'CHF', 'DKK', 'SEK', 'NOK', 'PLN', 'CZK', 'HUF', 'RON', 'BGN', 'ISK'])
+
+/** Of de prijs die we tonen de belasting al bevat. Geen winkel: onze eigen europrijs, dus ja. */
+export const btwInbegrepen = (valuta: string | null): boolean => valuta === null || BTW_MUNTEN.has(valuta)
+
 const munt = (waarde: number, valuta: string): string | null => {
   try {
     return new Intl.NumberFormat(undefined, { style: 'currency', currency: valuta }).format(waarde)
@@ -273,6 +294,13 @@ export interface BillingState {
   available: boolean
   /** The monthly price as the store formats it, or null until known. */
   price: string | null
+  /**
+   * De munt waarin de winkel rekent, zodra hij iets heeft gezegd.
+   *
+   * Niet om te tonen — de prijs komt al opgemaakt binnen — maar om te weten
+   * of de btw erin zit. Zie `btwInbegrepen`.
+   */
+  currency: string | null
   /** Each product's price in the buyer's own currency, once the store has said. */
   prices: Partial<Record<PlanId | 'ebook', string>>
   /**
@@ -299,7 +327,7 @@ export interface BillingState {
   error: string | null
 }
 
-let state: BillingState = { available: false, price: null, prices: {}, yearPerMonth: null, vergelijking: null, busy: false, error: null }
+let state: BillingState = { available: false, price: null, currency: null, prices: {}, yearPerMonth: null, vergelijking: null, busy: false, error: null }
 const listeners = new Set<() => void>()
 
 const publish = (patch: Partial<BillingState>) => {
@@ -398,11 +426,13 @@ export async function initBilling(): Promise<void> {
     const prices: Partial<Record<PlanId | 'ebook', string>> = {}
     let owned: boolean | undefined
     let yearPerMonth: string | null = null
+    let valuta: string | null = null
     for (const plan of PLANS) {
       const product = store.get(plan.product)
       const fase = betaalFase(product)
       const prijs = prijsVan(fase)
       if (prijs) prices[plan.id] = prijs
+      if (!valuta && fase?.currency) valuta = fase.currency
       if (plan.id === 'jaar') yearPerMonth = perMaandVan(fase)
       // Either plan being owned opens the whole course.
       if (product?.owned !== undefined) owned = (owned ?? false) || product.owned
@@ -411,7 +441,7 @@ export async function initBilling(): Promise<void> {
     const boekPrijs = prijsVan(betaalFase(book))
     if (boekPrijs) prices.ebook = boekPrijs
     if (book?.owned || store.get(planOf('jaar').product)?.owned) grantEbook()
-    publish({ prices, yearPerMonth, vergelijking: vergelijkingVan(store), price: prices.maand ?? null })
+    publish({ prices, yearPerMonth, vergelijking: vergelijkingVan(store), price: prices.maand ?? null, currency: valuta })
     if (owned !== undefined) syncFromStore(owned)
   }
 
