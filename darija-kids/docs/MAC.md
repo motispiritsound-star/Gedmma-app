@@ -368,6 +368,29 @@ Let op: `Info.plist` hoort bij het iOS-project op je eigen Mac, en die map
 staat niet in het repository. Draai je ooit opnieuw `npx cap add ios`, dan is
 deze regel weg en moet hij er opnieuw in.
 
+### C7b. De microfoon — anders klapt de app eruit
+
+Vanaf build 5 neemt de spreekronde je op. iOS eist dat je van tevoren opschrijft
+wát je met de microfoon doet, en doe je dat niet, dan **sluit de app zichzelf af**
+op het moment dat een kind op de opnameknop drukt. Geen foutmelding, geen
+waarschuwing: weg.
+
+Dezelfde plek als hierboven:
+
+1. **App** → **App** → **Info.plist**.
+2. **+**, en dan de naam `Privacy - Microphone Usage Description`.
+3. Waarde, letterlijk deze zin:
+
+```
+Om je uitspraak op te nemen en meteen terug te luisteren. De opname blijft op dit toestel en wordt nergens heen gestuurd.
+```
+
+Die zin komt in het venster te staan dat iOS aan de ouder laat zien. Hij moet
+waar zijn, en hij ís waar: er gaat niets naar buiten, er is geen server.
+
+Let op, net als bij C7: `Info.plist` staat niet in het repository. Draai je
+ooit opnieuw `npx cap add ios`, dan zijn allebei de regels weg.
+
 ### C8. Elke volgende build — de vaste volgorde
 
 De code staat op GitHub, niet op je Mac. Sla je de eerste twee regels over,

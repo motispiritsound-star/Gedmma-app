@@ -16,7 +16,7 @@ const pool: BonusPool = {
   letters: LETTERS.slice(0, 12).map((l) => l.id),
   words: allWords.slice(0, 40).map((w) => w.id),
   sentences: ALL_SENTENCES.slice(0, 10).map((z) => z.id),
-  canListen: true,
+  canSpeak: true,
   canWrite: true,
 }
 
@@ -128,7 +128,7 @@ describe('bonus rounds', () => {
   })
 
   it('closes the tasks a fresh learner cannot do yet', () => {
-    const empty: BonusPool = { letters: [], words: [], sentences: [], canListen: false, canWrite: true }
+    const empty: BonusPool = { letters: [], words: [], sentences: [], canSpeak: false, canWrite: true }
     expect(BONUS.filter((b) => b.ready(empty))).toHaveLength(0)
   })
 

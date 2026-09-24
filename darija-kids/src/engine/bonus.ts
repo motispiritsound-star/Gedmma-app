@@ -34,7 +34,16 @@ export interface BonusPool {
   /** Sentence ids met, weakest first. */
   sentences: string[]
   /** The device has speech recognition. */
-  canListen: boolean
+  /**
+   * Of de spreekronde kan.
+   *
+   * Dit heette `canListen` en ging alleen over spraakherkenning. Die bestaat
+   * in een WKWebView niet, dus viel de ronde op elke iPhone en iPad weg —
+   * terwijl de winkeltekst er vijf belooft. Opnemen en jezelf terughoren telt
+   * net zo goed, en daar is geen herkenning voor nodig die Darija toch niet
+   * kent.
+   */
+  canSpeak: boolean
   /** Tracing is switched on. */
   canWrite: boolean
 }
@@ -91,7 +100,7 @@ export const BONUS: BonusTask[] = [
     emoji: '🎤',
     gems: 5,
     size: 6,
-    ready: (p) => p.canListen && p.words.length >= 6,
+    ready: (p) => p.canSpeak && p.words.length >= 6,
     build: (p, seed) => buildSpeakRound(p.words, seed, 6),
   },
 ]
@@ -105,7 +114,7 @@ export const bonusTask = (id: BonusId): BonusTask =>
  * Weakest first and then shuffled inside the builder, so a round is both a
  * surprise and the repetition the scheduler was asking for anyway.
  */
-export function poolFrom(s: State = getState(), opts: { canListen: boolean } = { canListen: false }): BonusPool {
+export function poolFrom(s: State = getState(), opts: { canSpeak: boolean } = { canSpeak: false }): BonusPool {
   const weakestFirst = (ids: string[], key: (id: string) => string): string[] =>
     [...ids].sort((a, b) => (s.extraCards[key(a)]?.strength ?? 0) - (s.extraCards[key(b)]?.strength ?? 0))
 
@@ -119,7 +128,7 @@ export function poolFrom(s: State = getState(), opts: { canListen: boolean } = {
     // right place to start writing, so let it.
     words: metWords.length ? metWords : allWords.filter((w) => !w.phrase).slice(0, 20).map((w) => w.id),
     sentences: weakestFirst(metSentences, sentenceKey),
-    canListen: opts.canListen,
+    canSpeak: opts.canSpeak,
     canWrite: s.settings.schrijven,
   }
 }

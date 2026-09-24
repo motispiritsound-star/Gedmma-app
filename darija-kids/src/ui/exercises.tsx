@@ -8,6 +8,7 @@ import { sentence } from '../content/sentences'
 import { sentenceMeaning } from '../content/localise'
 import { maybeWord } from '../content/lexicon'
 import { canListen, listenOnce, say, sayLetter, sfx } from '../engine/audio'
+import { kanOpnemen, neemOp, type Opname } from '../engine/microfoon'
 import { useStore } from '../engine/store'
 import { Button, Card } from './kit'
 import { Scribe } from './Scribe'
@@ -443,7 +444,110 @@ function Speak({ exercise, onAnswer, locked }: ExerciseProps) {
     }
   }
 
-  if (!canListen()) {
+  // Geen herkenning? Dan opnemen. Zie NaZeggen hieronder.
+  if (!canListen()) return <NaZeggen exercise={exercise} onAnswer={onAnswer} locked={locked} />
+
+  return (
+    <div>
+      <Prompt hint={t.lesson.zegHardop}>
+        <Card className="flex flex-col items-center gap-3 p-6">
+          <WordText word={w} size="lg" showNl />
+          <SpeakButton ar={w.ar} tr={w.tr} />
+        </Card>
+      </Prompt>
+
+      <div className="flex flex-col items-center gap-3">
+        <motion.button
+          onClick={start}
+          disabled={locked || status !== 'klaar'}
+          animate={status === 'luistert' ? { scale: [1, 1.08, 1] } : { scale: 1 }}
+          transition={{ repeat: status === 'luistert' ? Infinity : 0, duration: 1 }}
+          className={`grid h-28 w-28 place-items-center rounded-full text-5xl text-white shadow-lg ${status === 'luistert' ? 'bg-terra-500' : 'bg-gradient-to-br from-zellige-300 to-zellige-700'}`}
+          aria-label={t.lesson.spreekIn}
+        >
+          🎤
+        </motion.button>
+        <p className="text-sm text-[var(--ink-soft)]">
+          {status === 'luistert' ? t.lesson.ikLuister : status === 'denkt' ? t.lesson.ikHoorde(heard) : t.lesson.tikEnZeg}
+        </p>
+        <button
+          className="text-sm font-bold text-[var(--ink-soft)] underline"
+          onClick={() => { sfx.back(); onAnswer('bijna', 'overgeslagen') }}
+          disabled={locked}
+        >
+          {t.lesson.slaOver}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+
+/**
+ * Zeg het na: horen, jezelf opnemen, en de twee naast elkaar horen.
+ *
+ * Dit is wat er staat waar geen spraakherkenning is — en dat is overal waar
+ * deze app als app draait, want een WKWebView heeft geen `SpeechRecognition`
+ * en gaat die ook niet krijgen.
+ *
+ * Er wordt niets herkend en niets goedgekeurd. Dat zou niet kunnen ook: geen
+ * enkele motor kent Darija, ze zijn allemaal getraind op Standaardarabisch.
+ * Wat er wel gebeurt is het enige dat werkt: je hoort hoe het hoort, je zegt
+ * het zelf, en je hoort jezelf er meteen achteraan. Het oordeel is van jou,
+ * en dat is bij uitspraak toch al zo.
+ */
+function NaZeggen({ exercise, onAnswer, locked }: ExerciseProps) {
+  const t = useT()
+  const w = word(exercise.wordId)
+  const [opname, setOpname] = useState<Opname | null>(null)
+  const [mijn, setMijn] = useState('')
+  const [fout, setFout] = useState(false)
+  const speler = useRef<HTMLAudioElement | null>(null)
+
+  // De microfoon mag nooit open blijven staan als het scherm weggaat, en het
+  // adres van een opname is geheugen tot je het teruggeeft.
+  useEffect(() => () => {
+    opname?.weg()
+    if (mijn) URL.revokeObjectURL(mijn)
+  }, [opname, mijn])
+
+  const begin = async () => {
+    if (locked || opname) return
+    sfx.tap()
+    setFout(false)
+    if (mijn) { URL.revokeObjectURL(mijn); setMijn('') }
+    try {
+      setOpname(await neemOp())
+    } catch {
+      setFout(true)
+    }
+  }
+
+  const stop = async () => {
+    if (!opname) return
+    sfx.tap()
+    const adres = await opname.stop()
+    setOpname(null)
+    setMijn(adres)
+  }
+
+  /**
+   * Jezelf terughoren.
+   *
+   * Twee knoppen en niet één: de stem staat al boven in de kaart. Ze
+   * achter elkaar afspelen zou mooier klinken, maar `say` zegt niet wanneer
+   * hij klaar is, en een kind dat zichzelf wil horen wil dat meteen en niet
+   * na een gok van anderhalve seconde.
+   */
+  const mijnOpname = () => {
+    sfx.tap()
+    const el = speler.current
+    if (!el) return
+    el.currentTime = 0
+    void el.play().catch(() => {})
+  }
+
+  if (!kanOpnemen()) {
     return (
       <div>
         <Prompt hint={t.lesson.zegHardop}>
@@ -469,18 +573,31 @@ function Speak({ exercise, onAnswer, locked }: ExerciseProps) {
 
       <div className="flex flex-col items-center gap-3">
         <motion.button
-          onClick={start}
-          disabled={locked || status !== 'klaar'}
-          animate={status === 'luistert' ? { scale: [1, 1.08, 1] } : { scale: 1 }}
-          transition={{ repeat: status === 'luistert' ? Infinity : 0, duration: 1 }}
-          className={`grid h-28 w-28 place-items-center rounded-full text-5xl text-white shadow-lg ${status === 'luistert' ? 'bg-terra-500' : 'bg-gradient-to-br from-zellige-300 to-zellige-700'}`}
-          aria-label={t.lesson.spreekIn}
+          onClick={() => void (opname ? stop() : begin())}
+          disabled={locked}
+          animate={opname ? { scale: [1, 1.08, 1] } : { scale: 1 }}
+          transition={{ repeat: opname ? Infinity : 0, duration: 1 }}
+          className={`grid h-28 w-28 place-items-center rounded-full text-5xl text-white shadow-lg ${opname ? 'bg-terra-500' : 'bg-gradient-to-br from-zellige-300 to-zellige-700'}`}
+          aria-label={opname ? t.lesson.stopOpname : t.lesson.neemOp}
         >
-          🎤
+          {opname ? '⏹' : '🎤'}
         </motion.button>
         <p className="text-sm text-[var(--ink-soft)]">
-          {status === 'luistert' ? t.lesson.ikLuister : status === 'denkt' ? t.lesson.ikHoorde(heard) : t.lesson.tikEnZeg}
+          {fout ? t.lesson.geenToestemming : opname ? t.lesson.neemtOp : mijn ? t.lesson.hoorJezelf : t.lesson.tikEnNeemOp}
         </p>
+
+        {mijn && (
+          <>
+            <audio ref={speler} src={mijn} preload="auto" />
+            <Button variant="secondary" className="w-full" onClick={mijnOpname}>
+              {t.lesson.mijnOpname}
+            </Button>
+            <Button className="w-full" onClick={() => { sfx.confirm(); onAnswer('goed') }} disabled={locked}>
+              {t.lesson.gezegd}
+            </Button>
+          </>
+        )}
+
         <button
           className="text-sm font-bold text-[var(--ink-soft)] underline"
           onClick={() => { sfx.back(); onAnswer('bijna', 'overgeslagen') }}
