@@ -18,9 +18,9 @@ Wat er in build 5 zit en niet in build 4: het antwoord op richtlijn 4.2
 en de twee prijsreparaties (`$4.17` in plaats van `US$ 4,17`, en de prijzen
 opnieuw ophalen zodra de app weer voor staat).
 
-**Vóór het archiveren**: `Info.plist` heeft er een regel bij nodig voor de
-microfoon. Zonder die regel sluit iOS de app af zodra een kind op de
-opnameknop drukt. Zie `docs/MAC.md`, stap C7b.
+**Bouwen doe je met `npm run ios`**, niet met `npx cap sync ios`. Dat zet ook
+de twee regels in `Info.plist` — waaronder die voor de microfoon, en zonder
+die regel sluit iOS de app af zodra een kind op de opnameknop drukt.
 
 Het antwoord aan App Review staat klaar in `store/appstore-4.2-antwoord.md`.
 

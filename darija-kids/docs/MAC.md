@@ -348,48 +348,43 @@ Gefeliciteerd. De app is bij Apple.
 
 ---
 
-### C7. De vraag over versleuteling voorgoed uitzetten
+### C7. De twee regels in Info.plist — met één commando
 
-Apple stelt bij **elke** upload dezelfde vraag — gebruikt de app versleuteling?
-— en zolang je die niet beantwoordt blijft de build op *Missing Compliance*
-staan en gaat hij niet naar je testers. Elke keer opnieuw.
+Er horen twee regels in `Info.plist` te staan, en allebei zijn ze het soort
+regel dat je vergeet:
 
-Eén regel in `Info.plist` maakt er een eind aan:
+| Regel | Waarom |
+|---|---|
+| `ITSAppUsesNonExemptEncryption` = NO | Zonder deze blijft elke upload op *Missing Compliance* staan en gaat hij niet naar je testers. Elke keer opnieuw. |
+| `NSMicrophoneUsageDescription` | Zonder deze **sluit iOS de app af** zodra een kind in de spreekronde op de opnameknop drukt. Geen foutmelding, weg. |
 
-1. Linkerkolom in Xcode: **App** → **App** → **Info.plist**.
-2. Klik een regel aan en dan op **+** (of rechtsklik → *Add Row*).
-3. Naam: `App Uses Non-Exempt Encryption`
-4. Waarde: **NO**.
+Je hoeft ze niet aan te klikken. Dit zet ze allebei:
 
-Dat is ook het juiste antwoord: de app heeft geen eigen cryptografie, en de
-gewone HTTPS van het besturingssysteem telt voor deze vraag niet mee.
-
-Let op: `Info.plist` hoort bij het iOS-project op je eigen Mac, en die map
-staat niet in het repository. Draai je ooit opnieuw `npx cap add ios`, dan is
-deze regel weg en moet hij er opnieuw in.
-
-### C7b. De microfoon — anders klapt de app eruit
-
-Vanaf build 5 neemt de spreekronde je op. iOS eist dat je van tevoren opschrijft
-wát je met de microfoon doet, en doe je dat niet, dan **sluit de app zichzelf af**
-op het moment dat een kind op de opnameknop drukt. Geen foutmelding, geen
-waarschuwing: weg.
-
-Dezelfde plek als hierboven:
-
-1. **App** → **App** → **Info.plist**.
-2. **+**, en dan de naam `Privacy - Microphone Usage Description`.
-3. Waarde, letterlijk deze zin:
-
-```
-Om je uitspraak op te nemen en meteen terug te luisteren. De opname blijft op dit toestel en wordt nergens heen gestuurd.
+```bash
+npm run ios
 ```
 
-Die zin komt in het venster te staan dat iOS aan de ouder laat zien. Hij moet
-waar zijn, en hij ís waar: er gaat niets naar buiten, er is geen server.
+Dat bouwt de app, kopieert hem in het iOS-project, en zet daarna die twee
+regels. Draai je het twee keer, dan staan ze er niet twee keer in.
 
-Let op, net als bij C7: `Info.plist` staat niet in het repository. Draai je
-ooit opnieuw `npx cap add ios`, dan zijn allebei de regels weg.
+Wil je het los draaien — bijvoorbeeld omdat je net `npx cap add ios` hebt
+gedaan:
+
+```bash
+node scripts/ios-plist.mjs
+```
+
+Controleren of het gelukt is, zonder Xcode:
+
+```bash
+/usr/libexec/PlistBuddy -c "Print :NSMicrophoneUsageDescription" ios/App/App/Info.plist
+```
+
+Komt daar de zin over opnemen uit, dan staat het goed.
+
+Let op: `ios/` staat niet in het repository, hij leeft alleen op je Mac.
+`npx cap sync ios` laat die regels met rust. Draai je ooit opnieuw
+`npx cap add ios`, dan zijn ze weg — en zet `npm run ios` ze er weer in.
 
 ### C8. Elke volgende build — de vaste volgorde
 

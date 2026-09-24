@@ -66,11 +66,14 @@ bekend is van de grote taal-apps voor kinderen, en niet meer dan dat:
    per dag, op een tijd die de ouder kiest, uit tot iemand er zelf om vraagt.
    Geen server, geen token, geen pushbericht — het toestel zet een wekker.
 
-## Wat er handmatig bij moet in Xcode
+## Wat er in Info.plist bij moet
 
 De microfoon vraagt om een regel in `Info.plist`. Staat die er niet, dan sluit
 iOS de app af op het moment dat een kind op de opnameknop drukt: geen
-foutmelding, weg. Zie `docs/MAC.md`, stap C7b.
+foutmelding, weg.
+
+Aanklikken hoeft niet. `npm run ios` zet hem, samen met de regel over
+versleuteling — zie `scripts/ios-plist.mjs` en `docs/MAC.md` C7.
 
 ## Wat er níét gebeurt
 
