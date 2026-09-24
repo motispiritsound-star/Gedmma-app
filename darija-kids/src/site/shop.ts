@@ -33,7 +33,7 @@ export interface Product {
  */
 const LINKS: Record<string, string> = {
   // sbaReeks: 'https://…',
-  // sleutelsReeks: 'https://…',
+  sleutelsReeks: 'https://venshipper.gumroad.com/l/sleutels',
   // ebook: 'https://…',
 }
 

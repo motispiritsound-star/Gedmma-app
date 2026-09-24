@@ -24,6 +24,26 @@ die regel sluit iOS de app af zodra een kind op de opnameknop drukt.
 
 Het antwoord aan App Review staat klaar in `store/appstore-4.2-antwoord.md`.
 
+### De winkel staat open — voor één reeks
+
+**De sleutels van Marokko** is te koop via Gumroad, voor € 34,99:
+`https://venshipper.gumroad.com/l/sleutels`. Die link staat in
+`src/site/shop.ts`, dus op darijaforkids.eu/leesboeken staat bij die reeks nu
+**Kopen** in plaats van *Binnenkort*.
+
+Gumroad is de *merchant of record*: zij zijn de verkoper, innen de btw in elk
+EU-land en doen de terugbetalingen. Op het afschrift van een koper staat hun
+naam; daarom staat dat ook op de afrekenpagina.
+
+Nog niet te koop: de reeks van Sba (de vertaalde delen zijn nog niet allemaal
+gezet — `npm run winkel -- --sba`) en het e-boek. Die twee regels in
+`LINKS` staan nog uitgecommentarieerd, en een product zonder link toont
+"Binnenkort" in plaats van een dode knop.
+
+**Het eerste wat je nu doet is je eigen boek kopen**, met je eigen kaart en
+voor de volle prijs. Zie de zes controlepunten in `docs/WINKEL-INRICHTEN.md`
+onder *Zelf bestellen*. Daarna pas de andere twee producten aanmaken.
+
 ### Handelsverificatie — gedaan
 
 Apple heeft de handelaarsverificatie voor de Digital Services Act op
