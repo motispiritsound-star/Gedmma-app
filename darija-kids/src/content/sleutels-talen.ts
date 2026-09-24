@@ -169,6 +169,33 @@ export const SLEUTEL_SCHIL: Record<string, SleutelSchil> = {
       'Wo die Geschichte ein Loch mit Fantasie füllt, steht das hinten im Buch, unter „Was hiervon wirklich geschehen ist“. Lies diesen Teil. Er ist das Spannendste am Buch, weil man dort sieht, wie viel seltsamer die wirkliche Geschichte oft ist.',
     ],
   },
+  it: {
+    reeksnaam: 'Le chiavi del Marocco',
+    deelVan: (n) => `Libro ${n} di quindici`,
+    merk: 'Darija for Kids · dai 9 anni',
+    waarSpeelt: 'Dove si svolge questo libro',
+    kaartNoot: 'La mappa è disegnata in modo semplificato.',
+    inDeTijd: 'Dove si colloca questo libro nel tempo',
+    balkNoot: 'Quindici libri, dall’epoca romana a oggi. Gli anni sono a distanze uguali, non in scala.',
+    wistJeDit: 'Lo sapevi?',
+    achterinKop: 'Che cosa è successo davvero',
+    echtKop: 'Questo è successo davvero',
+    verzonnenKop: 'Questo è inventato',
+    sleutelKop: 'La chiave',
+    hoofdstuk: (n) => `Capitolo ${n}`,
+    leesVerder: (n) => `Continua nel libro ${n}`,
+    laatsteDeel: 'L’ultimo libro',
+    prent: 'Disegno',
+    prentNoot: 'Disegno. Appena ci sarà una fotografia di questo luogo, sarà qui.',
+    beeldenKop: 'Le immagini',
+    beeldenNoot: 'Le fotografie e le illustrazioni di questo libro vengono dai luoghi in cui si svolge questa storia. Qui sotto c’è da dove provengono.',
+    disclaimer: [
+      'Questo libro è inventato, ma non a caso.',
+      'Quello che ci succede dentro è successo davvero: le città, le battaglie, i viaggi, i libri e le persone che hanno fatto la storia. Quel che se ne sa è stato verificato e non è stato reso più bello di com’era.',
+      'I ragazzi e le ragazze che raccontano la storia sono inventati. Non sono esistiti, e nemmeno la chiave che passa di mano in mano è mai esistita. Doveva essere così: dei bambini comuni di quei tempi non sappiamo quasi nulla — e sono proprio loro quelli accanto a cui si vuole stare quando succede qualcosa di grande.',
+      'Dove la storia riempie un vuoto con la fantasia, lo si dice in fondo al libro, in «Che cosa è successo davvero». Leggi quella parte. È la cosa più appassionante del libro, perché lì si vede quanto più strana sia spesso la storia vera.',
+    ],
+  },
 }
 
 export const schilVanSleutel = (taal: string): SleutelSchil =>
@@ -177,8 +204,10 @@ export const schilVanSleutel = (taal: string): SleutelSchil =>
 import { DE_SLEUTELS } from './sleutels-de'
 import { ES_SLEUTELS } from './sleutels-es'
 import { FR_SLEUTELS } from './sleutels-fr'
+import { IT_SLEUTELS } from './sleutels-it'
 
-export const SLEUTEL_VERTALINGEN: Record<string, SleutelVertaling> = { de: DE_SLEUTELS, es: ES_SLEUTELS, fr: FR_SLEUTELS }
+export const SLEUTEL_VERTALINGEN: Record<string, SleutelVertaling> =
+  { de: DE_SLEUTELS, es: ES_SLEUTELS, fr: FR_SLEUTELS, it: IT_SLEUTELS }
 
 /**
  * Een deel in een taal, over het Nederlandse deel heen gelegd.
