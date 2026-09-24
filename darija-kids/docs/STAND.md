@@ -11,7 +11,7 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 520, groen |
 | Google Play | versie 1.1 ingediend (submission 3), wacht op beoordeling |
-| App Store | 1.0 (build 4) afgewezen op 4.2 — de app is aangepast, build 5 nodig |
+| App Store | 1.0 (build 5) geüpload op 24 september, klaar om in te dienen |
 
 Wat er in build 5 zit en niet in build 4: het antwoord op richtlijn 4.2
 (microfoon, trillen, herinnering, breder op een iPad — zie `docs/APPLE-4.2.md`)
