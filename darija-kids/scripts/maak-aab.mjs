@@ -81,15 +81,23 @@ if (nieuwsteBron(path.join(ROOT, 'src')) > statSync(publiek).mtimeMs) {
 
 if (versie || naam) {
   const was = readFileSync(GRADLE, 'utf8')
+  // Alleen klagen als de regel er niet staat. Stond het nummer er al goed in
+  // -- bijvoorbeeld omdat een eerdere poging tot hier kwam en daarna op de JDK
+  // strandde -- dan is dat geen fout, en een tweede poging hoorde niet af te
+  // ketsen op het feit dat het werk al gedaan was.
+  const mist = (wat, patroon) => {
+    if (patroon.test(was)) return false
+    console.error(`Kon ${wat} niet vinden in android/app/build.gradle.`)
+    return true
+  }
+  if (versie && mist('versionCode', /versionCode \d+/)) process.exit(1)
+  if (naam && mist('versionName', /versionName "[^"]*"/)) process.exit(1)
   let wordt = was
   if (versie) wordt = wordt.replace(/versionCode \d+/, `versionCode ${versie}`)
   if (naam) wordt = wordt.replace(/versionName "[^"]*"/, `versionName "${naam}"`)
-  if (was === wordt) {
-    console.error('Kon versionCode of versionName niet vinden in android/app/build.gradle.')
-    process.exit(1)
-  }
-  writeFileSync(GRADLE, wordt)
-  console.log(`versionCode → ${versie}`)
+  if (wordt !== was) writeFileSync(GRADLE, wordt)
+  if (versie) console.log(`versionCode → ${versie}`)
+  if (naam) console.log(`versionName → ${naam}`)
 }
 
 let jdk = vindJdk()
