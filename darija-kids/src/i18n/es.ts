@@ -441,6 +441,13 @@ export const es: Strings = {
     eerlijkTitel: 'Con honestidad sobre la lengua:',
     eerlijk:
       'El dariya cambia de región a región y de familia a familia, y no tiene ortografía oficial. Elegimos la forma que más se oye en Casablanca y Rabat, con la escritura árabe tal como la gente la teclea en sus mensajes. La voz de su dispositivo habla árabe estándar moderno: se reconoce, pero sin acento marroquí. Escuchar a la familia sigue siendo el trabajo de verdad.',
+    winkel: {
+      titel: 'Datos de la tienda',
+      uitleg:
+        'Aquí aparece exactamente lo que la App Store o Google Play ha dicho sobre los precios. Si la moneda de abajo no es la correcta, viene de la tienda y no de la aplicación.',
+      knop: 'Mostrar la respuesta de la tienda',
+      leeg: 'La tienda todavía no ha respondido nada.',
+    },
     naarPad: 'Al camino de aprendizaje',
   },
 

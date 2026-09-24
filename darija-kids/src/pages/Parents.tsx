@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { UNITS } from '../content/curriculum'
 import { allWords } from '../content/lexicon'
+import { billingAvailable, winkelGegevens, type WinkelRegel } from '../engine/billing'
 import { levelOf, today, useStore } from '../engine/store'
 import { useT } from '../i18n'
 import { Button, Card, SectionTitle, Stat } from '../ui/kit'
@@ -12,6 +14,7 @@ import { PostAanmelding } from '../ui/PostAanmelding'
 /** For the adult in the room: what the app does, and how the child is doing. */
 export function Parents() {
   const t = useT()
+  const [winkel, setWinkel] = useState<WinkelRegel[] | null>(null)
   const state = useStore((s) => s)
   const seen = Object.keys(state.cards).length
   const solid = Object.values(state.cards).filter((c) => c.strength >= 0.85).length
@@ -97,6 +100,33 @@ export function Parents() {
         <p className="text-sm text-[var(--ink-soft)]">{t.feedback.uitleg}</p>
         <FeedbackButton className="js-feedback mt-4" />
       </Card>
+
+      {/* Wat de winkel over de prijzen zei, onbewerkt. Staat hier een andere
+          munt dan op het keuzescherm, dan zit de fout bij ons; staat hier
+          dezelfde, dan zegt de winkel het zo en valt er in de app niets aan
+          te repareren. Zonder dit blijft dat giswerk. */}
+      {billingAvailable() && (
+        <>
+          <h2 className="mb-3 mt-8 font-display text-xl font-extrabold">{t.parents.winkel.titel}</h2>
+          <Card className="mb-8 p-5">
+            <p className="text-sm text-[var(--ink-soft)]">{t.parents.winkel.uitleg}</p>
+            <Button variant="secondary" className="mt-4" onClick={() => setWinkel(winkelGegevens())}>
+              {t.parents.winkel.knop}
+            </Button>
+            {winkel && (winkel.some((r) => r.prijs !== null) ? (
+              <ul className="mt-4 space-y-1 font-mono text-xs break-all text-[var(--ink-soft)]">
+                {winkel.map((r) => (
+                  <li key={r.product}>
+                    {r.product.replace('app.darijaforkids.', '')} — {r.prijs ?? '—'} · {r.valuta ?? '—'} · {r.micros ?? '—'}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-4 text-sm text-[var(--ink-soft)]">{t.parents.winkel.leeg}</p>
+            ))}
+          </Card>
+        </>
+      )}
 
       <OperatorBlock />
 

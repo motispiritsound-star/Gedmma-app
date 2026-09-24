@@ -441,6 +441,13 @@ export const fr: Strings = {
     eerlijkTitel: 'Honnêtement, sur la langue :',
     eerlijk:
       'Le darija varie d’une région et d’une famille à l’autre, et il n’a pas d’orthographe officielle. Nous choisissons la forme qu’on entend le plus à Casablanca et à Rabat, avec l’écriture arabe telle que les gens la tapent dans leurs messages. La voix de votre appareil parle l’arabe standard moderne — reconnaissable, mais sans l’accent marocain. Écouter sa famille reste le vrai travail.',
+    winkel: {
+      titel: 'Données de la boutique',
+      uitleg:
+        'Voici exactement ce que l’App Store ou Google Play a répondu au sujet des prix. Si la devise ci-dessous est fausse, cela vient de la boutique et non de l’application.',
+      knop: 'Afficher la réponse de la boutique',
+      leeg: 'La boutique n’a encore rien répondu.',
+    },
     naarPad: 'Vers le parcours',
   },
 

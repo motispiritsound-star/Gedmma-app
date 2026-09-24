@@ -441,6 +441,13 @@ export const de: Strings = {
     eerlijkTitel: 'Ehrlich zur Sprache:',
     eerlijk:
       'Darija unterscheidet sich von Region zu Region und von Familie zu Familie, und es gibt keine offizielle Rechtschreibung. Wir wählen die Form, die man in Casablanca und Rabat am häufigsten hört, in der arabischen Schrift, wie die Leute sie in Nachrichten tippen. Die Stimme Ihres Geräts spricht modernes Hocharabisch — erkennbar, aber ohne marokkanischen Klang. Der Familie zuhören bleibt die eigentliche Arbeit.',
+    winkel: {
+      titel: 'Store-Daten',
+      uitleg:
+        'Hier steht genau, was der App Store oder Google Play zu den Preisen gesagt hat. Stimmt die Währung unten nicht, kommt das vom Store und nicht von der App.',
+      knop: 'Antwort des Stores anzeigen',
+      leeg: 'Der Store hat noch nichts zurückgegeben.',
+    },
     naarPad: 'Zum Lernpfad',
   },
 

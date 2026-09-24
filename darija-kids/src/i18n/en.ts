@@ -441,6 +441,13 @@ export const en: Strings = {
     eerlijkTitel: 'Honest about the language:',
     eerlijk:
       'Darija differs by region and by family, and it has no official spelling. We pick the form you hear most in Casablanca and Rabat, in the Arabic script as people type it in messages. Your device’s voice speaks Modern Standard Arabic — recognisable, but without a Moroccan accent. Listening to family remains the real work.',
+    winkel: {
+      titel: 'Store data',
+      uitleg:
+        'This is exactly what the App Store or Google Play said about the prices. If the currency below is wrong, it comes from the store and not from the app.',
+      knop: 'Show what the store returned',
+      leeg: 'The store has not returned anything yet.',
+    },
     naarPad: 'To the learning path',
   },
 

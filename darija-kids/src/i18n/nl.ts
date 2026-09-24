@@ -448,6 +448,13 @@ export const nl = {
     eerlijkTitel: 'Eerlijk over de taal:',
     eerlijk:
       'Darija verschilt per streek en per familie, en er is geen officiële spelling. Wij kiezen de vorm die je in Casablanca en Rabat het meest hoort, met het Arabische schrift zoals mensen het in berichten typen. De stem van je apparaat spreekt Modern Standaard Arabisch — herkenbaar, maar geen echte Marokkaanse tongval. Luisteren naar familie blijft dus het echte werk.',
+    winkel: {
+      titel: 'Winkelgegevens',
+      uitleg:
+        'Hier staat precies wat de App Store of Google Play over de prijzen heeft gezegd. Klopt de munt hieronder niet, dan komt dat van de winkel en niet van de app.',
+      knop: 'Toon wat de winkel teruggaf',
+      leeg: 'De winkel heeft nog niets teruggegeven.',
+    },
     naarPad: 'Naar het leerpad',
   },
 

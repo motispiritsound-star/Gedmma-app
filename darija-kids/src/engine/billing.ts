@@ -372,6 +372,41 @@ export const betaalFase = (
   return bedragVan(product?.pricing) !== null ? product?.pricing ?? null : null
 }
 
+/** Eén regel van wat de winkel over een product zei. */
+export interface WinkelRegel {
+  product: string
+  prijs: string | null
+  valuta: string | null
+  micros: number | null
+}
+
+/**
+ * Wat de winkel werkelijk heeft teruggegeven, product voor product.
+ *
+ * Staat er op het keuzescherm een bedrag in de verkeerde munt, dan is er maar
+ * één vraag die telt: heeft de winkel dat zo gezegd, of hebben wij het zelf
+ * bedacht? Zolang je dat niet kunt zien, blijft het gissen — en dan wordt er
+ * gesleuteld aan een scherm terwijl het antwoord bij Apple vandaan komt.
+ *
+ * Deze lijst is dat antwoord, onbewerkt: de prijs zoals de winkel hem
+ * opmaakte, de munt die hij erbij noemde, en het bedrag als getal. Staat hier
+ * USD terwijl de telefoon in Nederland staat, dan ligt het bij de winkel.
+ * Staat hier EUR en op het scherm een dollar, dan ligt het bij ons.
+ */
+export const winkelGegevens = (): WinkelRegel[] => {
+  const api = plugin()
+  if (!api) return []
+  return [...PRODUCTS, EBOOK.product].map((product) => {
+    const fase = betaalFase(api.store.get(product))
+    return {
+      product,
+      prijs: fase?.price ?? null,
+      valuta: fase?.currency ?? null,
+      micros: fase?.priceMicros ?? null,
+    }
+  })
+}
+
 /**
  * Twaalf maanden plus het boek, uit de winkel, met de korting erbij.
  *
