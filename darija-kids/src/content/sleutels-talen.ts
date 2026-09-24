@@ -196,6 +196,33 @@ export const SLEUTEL_SCHIL: Record<string, SleutelSchil> = {
       'Dove la storia riempie un vuoto con la fantasia, lo si dice in fondo al libro, in «Che cosa è successo davvero». Leggi quella parte. È la cosa più appassionante del libro, perché lì si vede quanto più strana sia spesso la storia vera.',
     ],
   },
+  en: {
+    reeksnaam: 'The Keys of Morocco',
+    deelVan: (n) => `Book ${n} of fifteen`,
+    merk: 'Darija for Kids · ages 9 and up',
+    waarSpeelt: 'Where this book takes place',
+    kaartNoot: 'The map is drawn in simplified form.',
+    inDeTijd: 'Where this book sits in time',
+    balkNoot: 'Fifteen books, from Roman times to today. The years are spaced evenly, not to scale.',
+    wistJeDit: 'Did you know?',
+    achterinKop: 'What really happened',
+    echtKop: 'This really happened',
+    verzonnenKop: 'This is made up',
+    sleutelKop: 'The key',
+    hoofdstuk: (n) => `Chapter ${n}`,
+    leesVerder: (n) => `Read on in book ${n}`,
+    laatsteDeel: 'The last book',
+    prent: 'Drawing',
+    prentNoot: 'Drawing. As soon as there is a photograph of this place, it will be here.',
+    beeldenKop: 'The images',
+    beeldenNoot: 'The photographs and illustrations in this book come from the places where this story happens. Below is where they come from.',
+    disclaimer: [
+      'This book is made up, but not carelessly.',
+      'The things that happen in it really happened: the cities, the battles, the journeys, the books and the people who made history. What is known about all that has been checked, and has not been made prettier than it was.',
+      'The boys and girls who tell the story are made up. They did not exist, and the key that passes from hand to hand never existed either. It had to be that way: about ordinary children from those times we know almost nothing — and they are exactly the people you want to be sitting next to when something big happens.',
+      'Wherever the story fills a gap with imagination, it says so at the back of the book, under «What really happened». Read that part. It is the most gripping thing in the book, because that is where you see how much stranger the real story often is.',
+    ],
+  },
 }
 
 export const schilVanSleutel = (taal: string): SleutelSchil =>
@@ -204,10 +231,11 @@ export const schilVanSleutel = (taal: string): SleutelSchil =>
 import { DE_SLEUTELS } from './sleutels-de'
 import { ES_SLEUTELS } from './sleutels-es'
 import { FR_SLEUTELS } from './sleutels-fr'
+import { EN_SLEUTELS } from './sleutels-en'
 import { IT_SLEUTELS } from './sleutels-it'
 
 export const SLEUTEL_VERTALINGEN: Record<string, SleutelVertaling> =
-  { de: DE_SLEUTELS, es: ES_SLEUTELS, fr: FR_SLEUTELS, it: IT_SLEUTELS }
+  { de: DE_SLEUTELS, en: EN_SLEUTELS, es: ES_SLEUTELS, fr: FR_SLEUTELS, it: IT_SLEUTELS }
 
 /**
  * Een deel in een taal, over het Nederlandse deel heen gelegd.
