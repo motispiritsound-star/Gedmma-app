@@ -66,8 +66,10 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 - [x] Apple: de **Paid Applications**-overeenkomst tekenen
 - [x] Apple: aanmelden voor het **Small Business Program**, 15% in plaats van 30%
 - [x] Apple: W-8BEN belastingformulier ingevuld
-- [ ] Apple: handelaarsverificatie (DSA) — **in review** sinds 19 september, voor
-      27 landen; niets te doen dan wachten
+- [x] Apple: handelaarsverificatie (DSA) — **goedgekeurd op 24 september**. Het
+      KvK-uittreksel was genoeg; de handelaarsgegevens staan nu live in de
+      App Store in de hele Europese Unie. Hiermee is de laatste horde weg die
+      niet over de app zelf ging
 - [x] Apple: naamcorrectie van "Adi" naar "Adil" — doorgevoerd op 22 september
       (zaak **102968992781**), en meteen zichtbaar op de overeenkomsten. De al
       ingediende belastingformulieren blijven op de oude naam staan; dat hoort zo.

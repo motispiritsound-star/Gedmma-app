@@ -24,6 +24,16 @@ die regel sluit iOS de app af zodra een kind op de opnameknop drukt.
 
 Het antwoord aan App Review staat klaar in `store/appstore-4.2-antwoord.md`.
 
+### Handelsverificatie — gedaan
+
+Apple heeft de handelaarsverificatie voor de Digital Services Act op
+**24 september goedgekeurd**; het KvK-uittreksel was genoeg. De
+handelaarsgegevens staan nu live in de App Store in de hele Europese Unie.
+
+Daarmee is het laatste papierwerk weg dat niet over de app zelf ging. Wat er
+nog tussen jou en de winkel staat is de beoordeling van build 5, en verder
+niets.
+
 ### De dollarprijs op het keuzescherm — afgehandeld
 
 In TestFlight staat er `$49.99` en `$5.99` op het keuzescherm terwijl het
@@ -53,16 +63,16 @@ voor beide winkels staat in zes talen in `store/wat-is-nieuw-1.2.md`.
 
 ### Wat alleen jij kunt doen
 
-1. **Apple: handelaarsverificatie — document opsturen.** Developer Support
-   vraagt om een stuk waarop je naam staat zoals die in App Store Connect is
-   ingevuld, plus het adres. Een KvK-uittreksel dekt allebei. Let op dat het
-   adres op het uittreksel letterlijk gelijk is aan wat er in App Store
-   Connect staat: per 1 januari 2026 is dat Bussum en niet meer Veenendaal.
-   Uploaden gaat via de link in de aparte mail van AppleSupport, daarna
-   antwoorden op de mail van Developer Support.
-2. **Apple: abonnementsprijzen per land.** Nakijken voor NL, BE, FR, DE, ES,
-   IT en MA. Apple vult de rest af uit de prijs die je voor één land zet, en
-   dat valt niet altijd goed uit.
+1. **Apple: prijsbasis op Nederland.** De prijzen staan goed — Nederland op
+   € 59,99 en € 6,99 — maar ze zijn aangemaakt met de Verenigde Staten als
+   uitgangspunt en de eurolanden zijn daarna met de hand bijgewerkt. Daardoor
+   staat Montenegro nog op € 49,99 en Marokko op $ 59,99, meer dan een
+   Amerikaan betaalt. Opnieuw instellen met *Recalculate prices* vanuit
+   Nederland, en daarna alleen Marokko met de hand verlagen.
+2. **Apple: Engelse naam en beschrijving van de abonnementen.** Daar staat nu
+   de appnaam met een Nederlandse zin eronder, en dat is de vermelding voor de
+   hele wereld buiten Nederland. Moet worden: `One year` met
+   `All 17 units, 304 words and 100 sentences.`, en `Monthly` bij de andere.
 3. **Apple: royaltyvaluta.** Bij de bankrekening staat USD. Zet dat op EUR,
    anders wordt er twee keer gewisseld op elke uitbetaling.
 4. **Apple: DAC7.** Moet ingevuld voordat er uitbetaald kan worden. Het
