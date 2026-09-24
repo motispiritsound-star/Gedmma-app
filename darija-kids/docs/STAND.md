@@ -9,7 +9,7 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 520, groen |
+| Tests | 682, groen |
 | Google Play | 2 (1.1) in review; 3 (1.2) is gebouwd en wacht op upload |
 | App Store | 1.0 (build 5) ingediend, Waiting for Review |
 
@@ -23,6 +23,27 @@ de twee regels in `Info.plist` — waaronder die voor de microfoon, en zonder
 die regel sluit iOS de app af zodra een kind op de opnameknop drukt.
 
 Het antwoord aan App Review staat klaar in `store/appstore-4.2-antwoord.md`.
+
+### De dollarprijs op het keuzescherm — afgehandeld
+
+In TestFlight staat er `$49.99` en `$5.99` op het keuzescherm terwijl het
+betaalvenster van Apple keurig euro's toont. Daar is niets aan kapot.
+
+In App Store Connect staat **Netherlands (EUR) € 59,99**; dat is nagekeken in
+de prijzenlijst zelf. Een koper in Nederland krijgt in de uitgebrachte app
+dus € 59,99 te zien, precies wat de website en de vijf winkelschermafdrukken
+beloven. TestFlight vraagt de productgegevens alleen bij een dollarwinkel op,
+en dat verandert niet door in App Store Connect aan de prijzen te draaien —
+een prijswijziging verandert hoogstens wélk dollarbedrag er staat.
+
+Dus: niet meer aan sleutelen. De proef die telt is de app uit de App Store op
+een Nederlands account. Wie het eerder zeker wil weten, zet onderaan de
+ouderpagina het blok **Winkelgegevens** open: daar staat `EUR` of `USD`
+letterlijk, en dat blok zit vanaf de volgende build in de app.
+
+Wat in App Store Connect wél nog open staat, gaat niet over jouw scherm maar
+over de andere 174 landen — zie de drie open punten bij *De producten — Apple*
+in `docs/LAUNCH.md`.
 
 Dezelfde verbeteringen gaan als 1.2 naar Play. De bundel is gebouwd met
 `npm run aab -- --versie 3 --naam 1.2`. **Upload hem pas als 1.1 is
