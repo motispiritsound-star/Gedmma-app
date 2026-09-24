@@ -225,6 +225,26 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
 
 ---
 
+## 0-vooraf. Voelt dit als een app?
+
+Dit stond hier niet, en dat heeft een afwijzing gekost. De lijst hieronder gaat
+over papierwerk — handelaarsgegevens, privacy, voorwaarden — en dat was allemaal
+in orde toen Apple versie 1.0 afwees op **richtlijn 4.2**: de app zou te weinig
+verschillen van een website.
+
+Loop dit langs vóór je indient:
+
+- [ ] Gebruikt de app iets van het toestel dat een browser niet kan? Bij ons:
+      trillen, de microfoon, een herinnering die afgaat als de app dicht is.
+- [ ] Werkt élke functie die de winkeltekst belooft, ook op een iPhone en een
+      iPad? Wij beloofden vijf bonusrondes en leverden er vier: de spreekronde
+      leunde op een browserfunctie die in een WKWebView niet bestaat.
+- [ ] Ziet het er op een iPad uit als een app of als een website in een kolom?
+- [ ] Zou een beoordelaar die drie minuten heeft het bijzondere vinden? Zo nee,
+      zet het in **App Review → Notes**.
+
+Zie `docs/APPLE-4.2.md` voor wat er toen precies aan de hand was.
+
 ## 0. De handelaarsgegevens — gedaan
 
 Dit stond hier als eerste blokkade en is inmiddels ingevuld. Wat erin staat en

@@ -33,4 +33,19 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!--
+      De spreekronde neemt je uitspraak op en speelt hem meteen terug. Zonder
+      dit recht weigert de WebView getUserMedia en gebeurt er bij het indrukken
+      van de opnameknop niets — geen foutmelding, alleen een knop die het niet
+      doet. De opname verlaat het toestel niet; er is geen server.
+
+      Trillen en de dagelijkse herinnering brengen hun eigen rechten mee vanuit
+      de plugins, dus die staan hier niet.
+    -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- Een tablet zonder microfoon mag de app gewoon installeren; dan valt
+         alleen die ene bonusronde weg. -->
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
 </manifest>
