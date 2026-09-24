@@ -78,6 +78,9 @@ const PRODUCTEN = {
     regel: 'Vijftien boeken · 202 hoofdstukken · van het jaar 200 tot nu',
     prijs: PRIJS.sleutelsReeks,
     omslagen: [],
+    kop: 'De vijftien delen',
+    motief: 'sleutel',
+    titels: REEKS.map((d) => ({ nummer: d.nummer, titel: d.titel, bij: d.jaar })),
     achtergrond: path.join(ROOT, 'site-assets', 'boeken', 'sleutel-plaat.webp'),
     /** De sleutel ligt dwars door het midden; daar past geen tekst naast. */
     tekstplek: 'onder',
@@ -90,6 +93,9 @@ const PRODUCTEN = {
     regel: 'Twaalf voorleesboeken · 144 woorden Darija · vanaf 2 jaar',
     prijs: PRIJS.sbaReeks,
     omslagen: [],
+    kop: 'De twaalf delen',
+    /** De ondertitel is bij elk deel dezelfde regel; `waar` zegt wél iets. */
+    titels: PRENTEN.map((d, i) => ({ nummer: d.nummer ?? i + 1, titel: d.titel, bij: d.waar })),
     achtergrond: path.join(ROOT, 'store', 'prentenboek', 'platen', '1', 'achtergrond.jpg'),
   },
   ebook: {
@@ -178,6 +184,49 @@ const blad = (p, vierkant, achtergrond) => {
 ${vierkant || !p.omslagen.length ? '' : `<div class="rechts">${p.omslagen.map(mini).join('')}</div>`}`
 }
 
+/**
+ * Alle delen op één plaat.
+ *
+ * Een omslag verkoopt het gevoel; deze plaat beantwoordt de vraag die daarna
+ * komt — wat zit erin? Vijftien regels met een nummer, een titel en het jaar,
+ * zoals de inhoudsopgave van een boek. Dat is te lezen op een telefoon en het
+ * scheelt een ouder het uitklappen van een beschrijving.
+ */
+const inhoudsblad = (p) => `<!doctype html><meta charset="utf-8"><style>
+  @font-face{font-family:'Baloo 2';src:url(data:font/woff2;base64,${balo800}) format('woff2');font-weight:800}
+  @font-face{font-family:'Baloo 2';src:url(data:font/woff2;base64,${balo600}) format('woff2');font-weight:600}
+  *{margin:0;box-sizing:border-box}
+  body{width:1600px;height:900px;background:${H.nacht};color:${H.perkament};overflow:hidden;
+       font-family:'Baloo 2',system-ui,sans-serif;padding:74px 90px;position:relative}
+  body::before{content:'';position:absolute;inset:0;
+    background:radial-gradient(130% 100% at 18% 0%, #2b3a63 0%, ${H.nacht} 66%)}
+  .band{position:absolute;left:0;width:100%;height:16px;opacity:.9}
+  .band.b{top:26px}.band.o{bottom:26px}
+  .kopregel{position:relative;display:flex;align-items:flex-end;gap:22px;margin-bottom:34px}
+  .kopregel svg.sl{width:54px;flex:none}
+  .merk{font-weight:800;font-size:15px;letter-spacing:.32em;text-transform:uppercase;color:${H.lichtGoud}}
+  h1{font-weight:800;font-size:44px;line-height:1}
+  .telling{margin-left:auto;font-weight:600;font-size:18px;color:#b5a68c;padding-bottom:6px}
+  ul{position:relative;list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;
+     gap:6px 56px;grid-auto-flow:column;grid-template-rows:repeat(8,1fr);height:620px}
+  li{display:flex;align-items:baseline;gap:16px;border-bottom:1px solid #ffffff14;padding-bottom:7px}
+  .n{font-weight:800;font-size:19px;color:${H.goud};width:32px;flex:none;
+     font-variant-numeric:tabular-nums}
+  .t{font-weight:800;font-size:23px;line-height:1.15;min-width:0}
+  .j{margin-left:auto;font-weight:600;font-size:15px;color:#9d8f78;white-space:nowrap;padding-left:14px}
+</style>
+<svg class="band b" viewBox="0 0 400 16" preserveAspectRatio="none">${zellige(0, 0, 400, 16, H.goud)}</svg>
+<svg class="band o" viewBox="0 0 400 16" preserveAspectRatio="none">${zellige(0, 0, 400, 16, H.goud)}</svg>
+<div class="kopregel">
+  ${p.motief === 'sleutel' ? `<svg class="sl" viewBox="-62 -158 124 256">${sleutel(0, 0, 1, H.goud)}</svg>` : ''}
+  <div><div class="merk">${esc(p.reeks)}</div><h1>${esc(p.kop)}</h1></div>
+  <div class="telling">${esc(p.onder)}</div>
+</div>
+<ul>${p.titels.map((t) => `<li>
+  <span class="n">${String(t.nummer).padStart(2, '0')}</span>
+  <span class="t">${esc(t.titel)}</span>
+  <span class="j">${esc(t.bij)}</span></li>`).join('')}</ul>`
+
 await mkdir(UIT, { recursive: true })
 const browser = await chromium.launch({ executablePath: CHROME })
 const welke = arg('product') ? [arg('product')] : Object.keys(PRODUCTEN)
@@ -185,6 +234,15 @@ const welke = arg('product') ? [arg('product')] : Object.keys(PRODUCTEN)
 for (const naam of welke) {
   const p = PRODUCTEN[naam]
   if (!p) throw new Error(`Onbekend product "${naam}". Kies uit: ${Object.keys(PRODUCTEN).join(', ')}`)
+  if (p.titels?.length) {
+    const pagina = await browser.newPage({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 })
+    await pagina.setContent(inhoudsblad(p), { waitUntil: 'load' })
+    await pagina.evaluate(() => document.fonts.ready)
+    const bestand = path.join(UIT, `${naam}-titels.png`)
+    await pagina.screenshot({ path: bestand })
+    await pagina.close()
+    console.log(`  ${path.relative(ROOT, bestand)}  1600 × 900`)
+  }
   for (const [soort, vierkant, breed, hoog] of [['omslag', false, 1600, 900], ['duim', true, 600, 600]]) {
     const pagina = await browser.newPage({ viewport: { width: breed, height: hoog }, deviceScaleFactor: 1 })
     await pagina.setContent(blad(p, vierkant, await plaat(p.achtergrond)), { waitUntil: 'load' })
