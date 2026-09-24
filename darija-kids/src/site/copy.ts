@@ -45,6 +45,9 @@ const nl = {
   boekAllesSamen: (n: number, prijs: string): string => `Alle ${n} delen samen voor ${prijs} — je koopt de reeks, niet een deel.`,
   boekDeelWoord: 'Deel',
   boekKoop: 'Kopen',
+  boekProef: 'Lees deel 1 gratis',
+  boekProefNoot: (titel: string): string =>
+    `${titel} — het hele eerste boek als pdf, zonder account en zonder e-mailadres.`,
   boekBinnenkort: 'Binnenkort',
   boekHeleReeks: 'De hele reeks',
   boekHeleReeksBody: 'Alle delen in één keer, met korting. Je krijgt ze in elke taal die er is.',
@@ -219,6 +222,9 @@ const fr: SiteCopy = {
   boekAllesSamen: (n: number, prijs: string): string => `Les ${n} tomes ensemble pour ${prijs} — vous achetez la série, pas un tome.`,
   boekDeelWoord: 'Tome',
   boekKoop: 'Acheter',
+  boekProef: 'Lisez le tome 1 gratuitement',
+  boekProefNoot: (titel: string): string =>
+    `${titel} — le premier tome en entier, en pdf, sans compte ni adresse e-mail.`,
   boekBinnenkort: 'Bientôt',
   boekHeleReeks: 'La série complète',
   boekHeleReeksBody: 'Tous les tomes d’un coup, à prix réduit. Dans toutes les langues disponibles.',
@@ -390,6 +396,9 @@ const de: SiteCopy = {
   boekAllesSamen: (n: number, prijs: string): string => `Alle ${n} Bände zusammen für ${prijs} — du kaufst die Reihe, nicht einen Band.`,
   boekDeelWoord: 'Band',
   boekKoop: 'Kaufen',
+  boekProef: 'Band 1 gratis lesen',
+  boekProefNoot: (titel: string): string =>
+    `${titel} — der ganze erste Band als PDF, ohne Konto und ohne E-Mail-Adresse.`,
   boekBinnenkort: 'Demnächst',
   boekHeleReeks: 'Die ganze Reihe',
   boekHeleReeksBody: 'Alle Bände auf einmal, mit Rabatt. In allen verfügbaren Sprachen.',
@@ -561,6 +570,9 @@ const es: SiteCopy = {
   boekAllesSamen: (n: number, prijs: string): string => `Los ${n} tomos juntos por ${prijs}: compras la serie, no un tomo.`,
   boekDeelWoord: 'Tomo',
   boekKoop: 'Comprar',
+  boekProef: 'Lee el libro 1 gratis',
+  boekProefNoot: (titel: string): string =>
+    `${titel} — el primer libro entero en pdf, sin cuenta y sin correo electrónico.`,
   boekBinnenkort: 'Próximamente',
   boekHeleReeks: 'La serie completa',
   boekHeleReeksBody: 'Todos los tomos de una vez, con descuento. En todos los idiomas disponibles.',
@@ -732,6 +744,9 @@ const it: SiteCopy = {
   boekAllesSamen: (n: number, prijs: string): string => `Tutti i ${n} volumi insieme per ${prijs}: compri la collana, non un volume.`,
   boekDeelWoord: 'Volume',
   boekKoop: 'Acquista',
+  boekProef: 'Leggi il libro 1 gratis',
+  boekProefNoot: (titel: string): string =>
+    `${titel} — tutto il primo libro in pdf, senza account e senza indirizzo e-mail.`,
   boekBinnenkort: 'Presto',
   boekHeleReeks: 'La serie completa',
   boekHeleReeksBody: 'Tutti i volumi in una volta, con sconto. In tutte le lingue disponibili.',
@@ -903,6 +918,9 @@ const en: SiteCopy = {
   boekAllesSamen: (n: number, prijs: string): string => `All ${n} books together for ${prijs} — you buy the series, not a single book.`,
   boekDeelWoord: 'Book',
   boekKoop: 'Buy',
+  boekProef: 'Read book 1 for free',
+  boekProefNoot: (titel: string): string =>
+    `${titel} — the whole first book as a PDF, no account and no email address.`,
   boekBinnenkort: 'Soon',
   boekHeleReeks: 'The whole series',
   boekHeleReeksBody: 'Every book at once, at a discount. In all the languages there are.',

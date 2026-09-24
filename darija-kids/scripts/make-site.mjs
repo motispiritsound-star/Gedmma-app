@@ -826,7 +826,12 @@ const booksPage = (lang) => {
   ${reeks(c.boekGroot, c.boekGrootTitel, c.boekGrootBody, c.boekGrootPunten, sleutel, 'sleutelsReeks')}
   ${lijst(d.sleutels, (i) => `${SLEUTELREEKS[i].jaar === 'Nu' ? d.nu : SLEUTELREEKS[i].jaar} · ${SLEUTELPLEK[i]}`, 'sleutelsReeks')}
 
-  <p class="soon">${esc(c.boekSlot)}</p>
+  ${PROEF.has(`sleutels-deel-1-${lang}.pdf`) ? `<p class="proef">
+    <a class="mailbtn" href="/proefdeel/sleutels-deel-1-${lang}.pdf" download>${esc(c.boekProef)}</a>
+    <i>${esc(c.boekProefNoot(d.sleutels[0]))}</i>
+  </p>` : ''}
+
+  ${WINKEL_OPEN ? '' : `<p class="soon">${esc(c.boekSlot)}</p>`}
   <p><a class="mailbtn" href="${mailto}?subject=${encodeURIComponent(c.boekTitel)}&body=${encodeURIComponent(c.houMeOpDeHoogteMail)}">${esc(c.houMeOpDeHoogte)}</a>
      <a class="mailbtn zacht" href="${p.checkout}">${esc(c.afrekenLink)}</a></p>
 </div>`
@@ -1160,6 +1165,17 @@ for (const entry of ['shots', 'film']) {
  */
 await cp(path.join(assets, 'boeken'), path.join(OUT, 'boeken'), { recursive: true }).catch(() => {})
 const KUNST = new Set(await readdir(path.join(assets, 'boeken')).catch(() => []))
+
+/**
+ * Het gratis eerste deel, in zes talen.
+ *
+ * Dit is bouwresultaat dat wél in de repo staat, en dat is met opzet: de
+ * bouwmachine kan geen pdf zetten — daar is een browser voor nodig — en dit
+ * zijn de enige bestanden die de website zelf uitdeelt. Staan ze er niet, dan
+ * verdwijnt alleen de knop; de pagina blijft heel.
+ */
+await cp(path.join(assets, 'proefdeel'), path.join(OUT, 'proefdeel'), { recursive: true }).catch(() => {})
+const PROEF = new Set(await readdir(path.join(assets, 'proefdeel')).catch(() => []))
 
 const write = async (urlPath, html) => {
   const file = urlPath === '/'

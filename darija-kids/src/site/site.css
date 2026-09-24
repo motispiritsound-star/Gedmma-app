@@ -669,3 +669,11 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
 .lezer button:disabled { opacity: .4; cursor: default; }
 .lezer button.terug { display: block; margin: 1.6rem auto 0; }
 .lezer .jaar { color: var(--ink-soft); margin-top: -.5rem; }
+
+/* Het gratis eerste deel: een knop met de titel van dat deel ernaast, zodat
+   een bezoeker ziet wát hij gratis krijgt en niet alleen dát het gratis is. */
+.boeken .proef {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .7rem 1.1rem;
+  margin: 0 0 2.4rem;
+}
+.boeken .proef i { font-style: normal; font-size: .93rem; color: var(--ink-soft); }
