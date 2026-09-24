@@ -67,8 +67,8 @@ opdrachten daarvoor staan in `store/prentenboek/platenlijst.md`.
 | Blz | 33 | 42 | 35 | 29 | 31 | 46 | 31 | 29 | 28 | 27 | 27 | 27 | 26 | 28 | 25 |
 
 Alle vijftien delen zijn uitgeschreven, en alle vijftien staan ook in het
-**Frans**, in het **Duits** en in het **Spaans**. Italiaans en Engels moeten
-nog.
+**Frans**, in het **Duits**, in het **Spaans** en in het **Italiaans**. Engels
+moet nog.
 
 De vertaling ligt alinea voor alinea naast het Nederlands, en daar staat een
 test op: een hoofdstuk dat wegvalt of een alinea die wordt samengevoegd laat
