@@ -1,0 +1,383 @@
+<title>De sleutels van Marokko</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap">
+<style>
+  :root{
+    --nacht:#1b2540; --inkt:#151d2e; --goud:#c8952f; --licht-goud:#e6bb62;
+    --rood:#a8352c; --groen:#2f6b4f; --perkament:#f4ead7; --zand:#e2d2b2; --steen:#8d7b62;
+
+    --grond:#efe6d3; --blad:#f7efdf; --tekst:#241a13; --zacht:#6f6152;
+    --lijn:#ddcfb4; --kop:#1b2540; --accent:#a4781f; --plank:#1b2540;
+    --display:'Baloo 2', system-ui, sans-serif;
+    --lees:Georgia,'Iowan Old Style','Times New Roman',serif;
+    --hulp:ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      color-scheme:dark;
+      --grond:#12192a; --blad:#1a2338; --tekst:#e8dcc4; --zacht:#9d8f78;
+      --lijn:#2c3852; --kop:#e6bb62; --accent:#e6bb62; --plank:#0e1421;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --grond:#12192a; --blad:#1a2338; --tekst:#e8dcc4; --zacht:#9d8f78;
+    --lijn:#2c3852; --kop:#e6bb62; --accent:#e6bb62; --plank:#0e1421;
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--grond);color:var(--tekst);font-family:var(--lees);margin:0}
+  h1,h2,h3,.d{font-family:var(--display);font-weight:800;line-height:1.06;text-wrap:balance}
+  a{color:inherit}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+  /* ── Bovenbalk ──────────────────────────────────────────────────────── */
+  header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--plank);
+         color:var(--zand);border-bottom:1px solid #0006}
+  .balk{max-width:78rem;margin:0 auto;padding:.6rem 16px;display:flex;align-items:center;
+        gap:.9rem;flex-wrap:wrap}
+  .merk{display:flex;align-items:center;gap:.55rem;margin-right:auto}
+  .merk svg{width:15px;flex:none}
+  .merk b{font-family:var(--display);font-weight:800;font-size:.98rem;color:var(--perkament);
+          letter-spacing:.01em}
+  .terug{font-family:var(--hulp);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;
+         color:var(--licht-goud);padding:.35rem .6rem;border:1px solid #c8952f55;border-radius:999px}
+  .terug:hover{background:#c8952f22}
+  .talen{display:flex;gap:.25rem;flex-wrap:wrap}
+  .talen button{font-family:var(--hulp);font-size:.76rem;letter-spacing:.05em;padding:.32rem .55rem;
+                border-radius:999px;color:#c9bda5}
+  .talen button:hover{color:var(--perkament)}
+  .talen button[aria-pressed="true"]{background:var(--goud);color:#1b2540;font-weight:600}
+  .vordering{height:2px;background:var(--goud);width:0;transition:width .12s linear}
+
+  main{max-width:78rem;margin:0 auto;padding:16px 16px 5rem}
+
+  /* ── De plank ───────────────────────────────────────────────────────── */
+  .intro{max-width:34rem;padding-block:1.6rem .4rem}
+  .intro h1{font-size:clamp(1.9rem,6vw,2.7rem);color:var(--kop);margin:0 0 .5rem}
+  .intro p{margin:0;color:var(--zacht);line-height:1.55;font-size:.98rem}
+  .cijfers{display:flex;gap:1.6rem;flex-wrap:wrap;font-family:var(--hulp);font-size:.74rem;
+           letter-spacing:.09em;text-transform:uppercase;color:var(--zacht);
+           margin:1.3rem 0 2rem;padding-top:1rem;border-top:1px solid var(--lijn)}
+  .cijfers b{display:block;font-family:var(--display);font-weight:800;font-size:1.45rem;
+             letter-spacing:0;text-transform:none;color:var(--accent);font-variant-numeric:tabular-nums}
+
+  .plank{display:grid;grid-template-columns:repeat(auto-fill,minmax(172px,1fr));gap:1.7rem 1.2rem;
+         list-style:none;padding:0;margin:0}
+  .boek{display:flex;flex-direction:column;gap:.55rem;text-align:left;width:100%}
+  .boek:hover .omslag{transform:translateY(-3px);box-shadow:0 14px 28px #0000003d}
+  .omslag{aspect-ratio:148/210;background:var(--nacht);border-radius:3px;position:relative;
+          overflow:hidden;box-shadow:0 6px 16px #0000002e;transition:transform .16s,box-shadow .16s;
+          display:flex;flex-direction:column;align-items:center;justify-content:center;
+          padding:12% 9%;text-align:center;color:var(--perkament)}
+  .omslag .band{position:absolute;left:0;right:0;height:11px}
+  .omslag .band.b{top:5%}.omslag .band.o{bottom:5%}
+  .omslag .reeks{font-family:var(--display);font-weight:800;font-size:.46rem;letter-spacing:.19em;
+                 text-transform:uppercase;color:var(--licht-goud);line-height:1.3}
+  .omslag .t{font-family:var(--display);font-weight:800;font-size:clamp(.92rem,2.4vw,1.1rem);
+             margin:.5rem 0 .35rem}
+  .omslag .sl{width:26%;margin:.15rem 0 .35rem}
+  .omslag .jr{font-family:var(--display);font-weight:600;font-size:.72rem;color:var(--licht-goud);
+              letter-spacing:.06em}
+  .omslag .nr{position:absolute;top:calc(5% + 18px);right:8%;font-family:var(--display);
+              font-weight:800;font-size:.7rem;color:#e6bb6299}
+  .boek .waar{font-family:var(--hulp);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+              color:var(--zacht)}
+  .boek .flap{font-size:.84rem;line-height:1.45;color:var(--tekst);margin:0}
+  .boek .maat{font-family:var(--hulp);font-size:.7rem;color:var(--zacht);font-variant-numeric:tabular-nums}
+
+  /* ── Het boek ───────────────────────────────────────────────────────── */
+  .lezen{max-width:34rem;margin:0 auto;padding-block:1.8rem}
+  .dubbel .lezen{max-width:64rem}
+  .titelblad{text-align:center;padding-bottom:1.8rem;margin-bottom:2rem;border-bottom:1px solid var(--lijn)}
+  .titelblad .deelvan{font-family:var(--hulp);font-size:.72rem;letter-spacing:.16em;
+                      text-transform:uppercase;color:var(--zacht)}
+  .titelblad h1{font-size:clamp(1.9rem,7vw,2.9rem);color:var(--kop);margin:.7rem 0 .4rem}
+  .titelblad .jaar{font-family:var(--display);font-weight:600;font-size:1.1rem;color:var(--accent)}
+  .titelblad svg{width:34px;margin:1.1rem 0 .9rem}
+  .titelblad .wie{font-size:.92rem;color:var(--zacht);line-height:1.5;margin:0 auto;max-width:26rem}
+  .titelblad .flap{margin:1rem auto 0;max-width:28rem;line-height:1.6}
+
+  .hfd{margin:3.2rem 0 1.4rem;text-align:center}
+  .hfd .n{font-family:var(--display);font-weight:800;font-size:2.6rem;color:var(--accent);
+          line-height:1;opacity:.85}
+  .hfd .k{font-family:var(--hulp);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
+          color:var(--zacht);margin-top:.35rem}
+  .hfd h2{font-size:1.35rem;color:var(--kop);margin:.55rem 0 0}
+  .lezen p{font-size:1.06rem;line-height:1.66;margin:0 0 .85rem;hyphens:auto}
+  .lezen p+p{text-indent:1.3em;margin-top:-.35rem}
+  .lezen .titelblad p+p,.lezen .vak p+p{text-indent:0;margin-top:0}
+  .lezen em{font-style:italic}
+
+  /* naast elkaar */
+  .paren{display:grid;gap:0 2.4rem;grid-template-columns:1fr 1fr}
+  .paren .kolom{min-width:0}
+  .paren .kolom p{font-size:.98rem}
+  .paren .taallabel{font-family:var(--hulp);font-size:.66rem;letter-spacing:.14em;
+                    text-transform:uppercase;color:var(--zacht);margin-bottom:.5rem}
+  @media (max-width:640px){
+    .paren{grid-template-columns:1fr;gap:0}
+    .paren .kolom+.kolom{border-top:1px dashed var(--lijn);margin-top:.6rem;padding-top:.9rem}
+  }
+
+  .achterin{margin-top:3.6rem;padding-top:1.8rem;border-top:2px solid var(--accent)}
+  .achterin h2{font-size:1.5rem;color:var(--kop);margin:0 0 1.4rem}
+  .vak{background:var(--blad);border:1px solid var(--lijn);border-radius:5px;padding:1.1rem 1.2rem;
+       margin-bottom:1.1rem}
+  .vak h3{font-family:var(--hulp);font-weight:700;font-size:.72rem;letter-spacing:.14em;
+          text-transform:uppercase;margin:0 0 .7rem;display:flex;align-items:center;gap:.5rem}
+  .vak.echt h3{color:var(--groen)}
+  .vak.verzonnen h3{color:var(--rood)}
+  .vak.sleutel h3{color:var(--accent)}
+  .vak ul{margin:0;padding-left:1.1rem}
+  .vak li{margin-bottom:.5rem;line-height:1.55;font-size:.95rem}
+  .vak li:last-child{margin-bottom:0}
+  .vak p{margin:0;line-height:1.55;font-size:.95rem}
+  .kleine{margin-top:1.6rem;font-size:.85rem;line-height:1.55;color:var(--zacht)}
+  .kleine p{margin:0 0 .6rem;text-indent:0}
+
+  .voet{display:flex;justify-content:space-between;gap:1rem;align-items:center;flex-wrap:wrap;
+        margin-top:2.6rem;padding-top:1.2rem;border-top:1px solid var(--lijn)}
+  .knop{font-family:var(--hulp);font-size:.82rem;font-weight:600;padding:.55rem .95rem;
+        border:1px solid var(--accent);border-radius:999px;color:var(--accent)}
+  .knop:hover{background:var(--accent);color:var(--grond)}
+  .knop[disabled]{opacity:.4;cursor:default}
+  .knop.aan{background:var(--accent);color:var(--grond)}
+
+  .springer{position:sticky;top:calc(env(safe-area-inset-top,0px) + 3.4rem);z-index:10;
+            display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;
+            background:var(--grond);padding:.6rem 0;border-bottom:1px solid var(--lijn)}
+  .springer select{font-family:var(--hulp);font-size:.8rem;padding:.35rem .5rem;max-width:min(100%,22rem);
+                   background:var(--blad);color:var(--tekst);border:1px solid var(--lijn);border-radius:4px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<header>
+  <div class="balk">
+    <button class="merk" id="naarplank"><span id="sleutelmerk"></span><b id="reeksnaam">De sleutels van Marokko</b></button>
+    <button class="terug" id="terug" hidden>Terug naar de plank</button>
+    <nav class="talen" id="talen" aria-label="Taal"></nav>
+  </div>
+  <div class="vordering" id="vordering"></div>
+</header>
+<main id="scherm"></main>
+
+<script>
+(() => {
+  const H = { nacht:'#1b2540', goud:'#c8952f', lichtGoud:'#e6bb62' }
+
+  /* De achtpuntige khatam en de sleutel van de omslag, met dezelfde meetkunde
+     als in de gedrukte boeken — zie scripts/lib/historie.mjs. */
+  const khatam = (cx, cy, r, vul) => {
+    const p = []
+    for (let i = 0; i < 16; i++) {
+      const straal = i % 2 === 0 ? r : r * 0.54
+      const hoek = (Math.PI / 8) * i - Math.PI / 2
+      p.push(`${(cx + Math.cos(hoek) * straal).toFixed(1)},${(cy + Math.sin(hoek) * straal).toFixed(1)}`)
+    }
+    return `<polygon points="${p.join(' ')}" fill="${vul}"/>`
+  }
+  const sleutelSvg = (kleur = H.goud) => `<svg viewBox="-62 -158 124 256" aria-hidden="true">
+    ${khatam(0, -92, 58, kleur)}${khatam(0, -92, 26, '#00000033')}
+    <circle cx="0" cy="-92" r="17" fill="#0000004d"/>
+    <rect x="-9" y="-40" width="18" height="128" rx="5" fill="${kleur}"/>
+    <rect x="-30" y="46" width="30" height="15" rx="4" fill="${kleur}"/>
+    <rect x="-30" y="72" width="22" height="15" rx="4" fill="${kleur}"/>
+    <path d="M-9 -40 L9 -40 L14 -30 L-14 -30 Z" fill="${kleur}"/></svg>`
+  const zellige = (klasse, kleur = H.goud) =>
+    `<svg class="band ${klasse}" viewBox="0 0 132 11" preserveAspectRatio="none" aria-hidden="true">
+       <path d="${Array.from({length:12},(_,i)=>`M${i*11} 5.5 L${i*11+5.5} 0 L${i*11+11} 5.5 L${i*11+5.5} 11 Z`).join(' ')}"
+             fill="none" stroke="${kleur}" stroke-width="1" opacity=".8"/></svg>`
+
+  const esc = (t) => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  const rijk = (t) => esc(t).replace(/\*([^*]+)\*/g, '<em>$1</em>')
+  const getal = (n) => n.toLocaleString('nl-NL')
+
+  const onthoud = (k, v) => { try { localStorage.setItem(k, v) } catch {} }
+  const herinner = (k) => { try { return localStorage.getItem(k) } catch { return null } }
+
+  const scherm = document.getElementById('scherm')
+  const cache = new Map()
+  let plank = null
+  let taal = herinner('taal') || 'nl'
+  let dubbel = false
+
+  const boek = async (t, n) => {
+    const sleutel = `${t}-${n}`
+    if (!cache.has(sleutel)) cache.set(sleutel, fetch(`data/${sleutel}.json`).then((r) => r.json()))
+    return cache.get(sleutel)
+  }
+
+  /* ── De plank ─────────────────────────────────────────────────────── */
+  const toonPlank = () => {
+    const t = plank[taal]
+    const woorden = t.delen.reduce((n, d) => n + d.woorden, 0)
+    const hoofdstukken = t.delen.reduce((n, d) => n + d.hoofdstukken, 0)
+    document.title = t.reeksnaam
+    scherm.className = ''
+    scherm.innerHTML = `
+      <div class="intro">
+        <h1>${esc(t.reeksnaam)}</h1>
+        <p>Vijftien delen, tweeduizend jaar, één sleutel die van hand tot hand gaat — van het
+           Romeinse Walili tot een flat in Utrecht. Kies een deel en lees het hier.</p>
+      </div>
+      <div class="cijfers">
+        <div><b>15</b>delen</div>
+        <div><b>${hoofdstukken}</b>hoofdstukken</div>
+        <div><b>${getal(woorden)}</b>woorden</div>
+        <div><b>6</b>talen</div>
+      </div>
+      <ul class="plank">${t.delen.map((d) => `
+        <li><button class="boek" data-deel="${d.nummer}">
+          <div class="omslag">
+            ${zellige('b')}
+            ${zellige('o')}
+            <span class="nr">${d.nummer}</span>
+            <span class="reeks">${esc(t.reeksnaam)}</span>
+            <span class="t">${esc(d.titel)}</span>
+            <span class="sl">${sleutelSvg()}</span>
+            <span class="jr">${esc(d.jaar)}</span>
+          </div>
+          <span class="waar">${esc(d.waar)}</span>
+          <p class="flap">${esc(d.flap)}</p>
+          <span class="maat">${d.hoofdstukken} hoofdstukken · ${getal(d.woorden)} woorden</span>
+        </button></li>`).join('')}</ul>`
+    document.getElementById('terug').hidden = true
+    scherm.querySelectorAll('[data-deel]').forEach((b) =>
+      b.addEventListener('click', () => open(Number(b.dataset.deel))))
+    window.scrollTo(0, 0)
+  }
+
+  /* ── Eén deel ─────────────────────────────────────────────────────── */
+  const alineas = (r) => r.map((p, i) => `<p${i === 0 ? ' class="eerste"' : ''}>${rijk(p)}</p>`).join('')
+
+  const naastElkaar = (nl, vert) => {
+    if (!nl || nl.length !== vert.length) return alineas(vert)
+    return `<div class="paren">
+      <div class="kolom"><div class="taallabel">Nederlands</div>${alineas(nl)}</div>
+      <div class="kolom"><div class="taallabel">${esc(plank[taal].naam)}</div>${alineas(vert)}</div>
+    </div>`
+  }
+
+  const toonBoek = (b, nlBoek) => {
+    const t = plank[taal]
+    const paren = dubbel && nlBoek && taal !== 'nl'
+    document.title = `${b.titel} — ${t.reeksnaam}`
+    scherm.className = paren ? 'dubbel' : ''
+    scherm.innerHTML = `
+      <div class="lezen">
+        <div class="springer">
+          <select id="sprong" aria-label="Ga naar hoofdstuk">
+            <option value="top">${esc(b.deelVan)}</option>
+            ${b.hoofdstukken.map((h, i) => `<option value="h${i}">${esc(h.kop)} — ${esc(h.titel)}</option>`).join('')}
+            <option value="achterin">${esc(t.achterinKop)}</option>
+          </select>
+          ${taal === 'nl' ? '' : `<button class="knop ${dubbel ? 'aan' : ''}" id="dubbelknop">Naast het Nederlands</button>`}
+        </div>
+
+        <div class="titelblad" id="top">
+          <div class="deelvan">${esc(b.deelVan)}</div>
+          <h1>${esc(b.titel)}</h1>
+          <div class="jaar">${esc(b.jaar)} · ${esc(b.waar)}</div>
+          ${sleutelSvg('var(--accent)')}
+          <p class="wie">${esc(b.verteller)}</p>
+          <p class="flap">${esc(b.flap)}</p>
+        </div>
+
+        ${b.hoofdstukken.map((h, i) => `
+          <section id="h${i}">
+            <div class="hfd">
+              <div class="n">${h.kop.replace(/\D+/g, '') || i + 1}</div>
+              <div class="k">${esc(h.kop)}</div>
+              <h2>${esc(h.titel)}</h2>
+            </div>
+            ${paren ? naastElkaar(nlBoek.hoofdstukken[i]?.tekst, h.tekst) : alineas(h.tekst)}
+          </section>`).join('')}
+
+        <div class="achterin" id="achterin">
+          <h2>${esc(t.achterinKop)}</h2>
+          <div class="vak sleutel"><h3>${esc(t.sleutelKop)}</h3><p>${rijk(b.sleutel)}</p></div>
+          <div class="vak echt"><h3>${esc(t.echtKop)}</h3>
+            <ul>${b.echt.map((r) => `<li>${rijk(r)}</li>`).join('')}</ul></div>
+          <div class="vak verzonnen"><h3>${esc(t.verzonnenKop)}</h3>
+            <ul>${b.verzonnen.map((r) => `<li>${rijk(r)}</li>`).join('')}</ul></div>
+          <div class="kleine">${t.disclaimer.map((r) => `<p>${esc(r)}</p>`).join('')}</div>
+        </div>
+
+        <div class="voet">
+          <button class="knop" id="vorige" ${b.nummer === 1 ? 'disabled' : ''}>← ${b.nummer - 1}</button>
+          <span class="maat" style="font-family:var(--hulp);font-size:.78rem;color:var(--zacht)">${esc(t.merk)}</span>
+          <button class="knop" id="volgende" ${b.nummer === 15 ? 'disabled' : ''}>${esc(b.leesVerder)} →</button>
+        </div>
+      </div>`
+
+    document.getElementById('terug').hidden = false
+    document.getElementById('sprong').addEventListener('change', (e) => {
+      const el = document.getElementById(e.target.value)
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+    document.getElementById('dubbelknop')?.addEventListener('click', () => {
+      dubbel = !dubbel
+      open(b.nummer, true)
+    })
+    document.getElementById('vorige')?.addEventListener('click', () => open(b.nummer - 1))
+    document.getElementById('volgende')?.addEventListener('click', () => open(b.nummer + 1))
+  }
+
+  let huidig = null
+  const open = async (n, blijf = false) => {
+    if (n < 1 || n > 15) return
+    huidig = n
+    location.hash = `${taal}-${n}`
+    onthoud('laatste', `${taal}-${n}`)
+    const [b, nlBoek] = await Promise.all([boek(taal, n), taal === 'nl' ? null : boek('nl', n)])
+    if (huidig !== n) return
+    toonBoek(b, nlBoek)
+    if (!blijf) window.scrollTo(0, 0)
+  }
+
+  /* ── Taalkiezer ───────────────────────────────────────────────────── */
+  const bouwTalen = () => {
+    const nav = document.getElementById('talen')
+    nav.innerHTML = Object.entries(plank).map(([code, t]) =>
+      `<button data-taal="${code}" aria-pressed="${code === taal}">${esc(t.naam)}</button>`).join('')
+    nav.querySelectorAll('[data-taal]').forEach((b) => b.addEventListener('click', () => {
+      taal = b.dataset.taal
+      onthoud('taal', taal)
+      if (taal === 'nl') dubbel = false
+      nav.querySelectorAll('[data-taal]').forEach((x) =>
+        x.setAttribute('aria-pressed', String(x.dataset.taal === taal)))
+      document.getElementById('reeksnaam').textContent = plank[taal].reeksnaam
+      if (huidig) open(huidig, true); else toonPlank()
+    }))
+  }
+
+  const naarPlank = () => { huidig = null; location.hash = 'plank'; toonPlank() }
+  document.getElementById('terug').addEventListener('click', naarPlank)
+  document.getElementById('naarplank').addEventListener('click', naarPlank)
+  document.getElementById('sleutelmerk').innerHTML = sleutelSvg(H.lichtGoud)
+
+  const balk = document.getElementById('vordering')
+  addEventListener('scroll', () => {
+    const hoog = document.documentElement.scrollHeight - innerHeight
+    balk.style.width = hoog > 40 ? `${Math.min(100, (scrollY / hoog) * 100)}%` : '0'
+  }, { passive: true })
+
+  fetch('plank.json').then((r) => r.json()).then((p) => {
+    plank = p
+    if (!plank[taal]) taal = 'nl'
+    const uitLink = (location.hash || '').replace('#', '')
+    const start = /^[a-z]{2}-\d{1,2}$/.test(uitLink) ? uitLink : herinner('laatste')
+    bouwTalen()
+    document.getElementById('reeksnaam').textContent = plank[taal].reeksnaam
+    const m = start && /^([a-z]{2})-(\d{1,2})$/.exec(start)
+    if (m && plank[m[1]]) {
+      taal = m[1]
+      document.querySelectorAll('[data-taal]').forEach((x) =>
+        x.setAttribute('aria-pressed', String(x.dataset.taal === taal)))
+      document.getElementById('reeksnaam').textContent = plank[taal].reeksnaam
+      open(Number(m[2]))
+    } else toonPlank()
+  })
+})()
+</script>

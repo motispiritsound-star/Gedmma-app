@@ -5,6 +5,9 @@
 /store/verhaalboek/
 /store/prentenboek/
 /store/sleutels/
+# De leeskopie haalt haar bladzijden uit deze JSON; `npm run lezen` maakt ze.
+/store/lezen/data/
+/store/lezen/plank.json
 /shots/
 /brand/
 server/node_modules/
