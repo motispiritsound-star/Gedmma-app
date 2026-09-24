@@ -106,6 +106,15 @@ export interface Settings {
    */
   schrijven: boolean
   speech: boolean
+  /**
+   * Trillen bij een goed of fout antwoord, en onder je vinger bij het
+   * natekenen.
+   *
+   * Aan, want het is een van de weinige dingen die een app kan en een
+   * browser niet. Uit voor wie er niet tegen kan, en vanzelf stil op een
+   * toestel zonder trilmotor.
+   */
+  trillen: boolean
   hearts: boolean
   /** The voice the learner picked, by voiceURI. Empty means: pick the best. */
   voiceURI: string
@@ -330,6 +339,7 @@ const initial = (): State => ({
     voorlezen: true,
     schrijven: true,
     speech: true,
+    trillen: true,
     hearts: true,
     voiceURI: '',
     fallbackVoice: true,

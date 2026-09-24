@@ -1,4 +1,5 @@
 import { getState } from './store'
+import { tril } from './trilling'
 import { letterSpeech, spokenForm } from '../content/pronunciation'
 import { clipFor, CLIPS, playClip } from './clips'
 import { eigenVoorkeur } from '../content/eigen'
@@ -576,6 +577,14 @@ export async function prepareSamples(): Promise<void> {
   }
 }
 
+/**
+ * De geluidjes, en sinds de app ook in een winkel ligt: het trillen erbij.
+ *
+ * Trillen hangt hier omdat elke plek die een geluidje maakt hier al langs
+ * komt — één plek in plaats van vijftig. Het luistert wel naar zijn eigen
+ * schakelaar: wie het geluid uitzet wil daarmee niet gezegd hebben dat de
+ * telefoon ook stil moet liggen, en omgekeerd.
+ */
 export const sfx = {
   /** Any button at all: short, wooden, unmistakably a press. */
   tap: () => play('tap'),
@@ -588,20 +597,20 @@ export const sfx = {
   /** A switch in the settings, and anything else with two states. */
   toggle: (state: boolean) => play('toggle', state ? 1 : 0),
   /** The moment an answer is chosen, before it is judged. */
-  pick: () => play('pick'),
-  correct: (combo = 0) => play('correct', Math.min(Math.max(0, combo), 9)),
-  wrong: () => play('wrong'),
-  finish: () => play('finish'),
-  badge: () => play('badge'),
-  levelUp: () => play('levelUp'),
+  pick: () => { play('pick'); tril.tik() },
+  correct: (combo = 0) => { play('correct', Math.min(Math.max(0, combo), 9)); tril.goed() },
+  wrong: () => { play('wrong'); tril.fout() },
+  finish: () => { play('finish'); tril.feest() },
+  badge: () => { play('badge'); tril.feest() },
+  levelUp: () => { play('levelUp'); tril.feest() },
   streak: () => play('streak'),
-  match: () => play('match'),
+  match: () => { play('match'); tril.tik() },
   /** A checkpoint is about to start: drums, a run-up, and three notes. */
   quizStart: () => play('quizStart'),
   /** The pulse under a checkpoint question, tightening as it runs out. */
   quizTick: (step: number, total: number) => play('quizTick', total > 0 ? Math.min(1, step / total) : 0),
   /** A checkpoint passed: a room that claps, and a whistle from the back. */
-  cheer: () => play('cheer'),
+  cheer: () => { play('cheer'); tril.feest() },
   /** The tune under the film after a lesson; one per scene. */
   film: (scene: number) => play('film', scene),
 

@@ -479,6 +479,8 @@ export const en: Strings = {
     mediakanaalHint: 'Hearing little or nothing — with an iPhone on silent, say? Turn this on. The game sounds and the recorded words then go out as little audio files, like music does, and the silent switch no longer touches them. They react a touch slower.',
     schrijven: 'Writing exercise',
     schrijvenHint: 'The bonus round where you trace letters and words on the screen. Off if drawing with a finger does not work.',
+    trillen: 'Vibration',
+    trillenHint: 'A short tap in your hand on a right or wrong answer, and under your finger when you trace a letter. Off if you would rather not.',
     film: 'Little film after a lesson',
     filmHint: 'A short cartoon with Fnek when you finish a lesson.',
     voorlezen: 'Reading aloud',

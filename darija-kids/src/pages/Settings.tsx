@@ -12,6 +12,7 @@ import { gezinsdeling } from '../engine/platform'
 import { LANGS, localeOf, useT, type Lang } from '../i18n'
 import { useVoices } from '../ui/useVoices'
 import { Button, Card, SectionTitle, Sheet } from '../ui/kit'
+import { kanTrillen } from '../engine/trilling'
 import { FeedbackButton } from '../ui/Feedback'
 
 /** The embedded demo runs in a sandbox where a page cannot hand over a file. */
@@ -322,6 +323,13 @@ export function SettingsPage() {
         <Row title={t.settings.schrijven} hint={t.settings.schrijvenHint}>
           <Toggle on={s.schrijven} onChange={set('schrijven')} label={t.settings.schrijven} />
         </Row>
+        {/* Alleen in de app: een browser op een iPhone kan niet trillen, dus
+            een schakelaar ervoor op het web is een schakelaar voor niets. */}
+        {kanTrillen() && (
+          <Row title={t.settings.trillen} hint={t.settings.trillenHint}>
+            <Toggle on={s.trillen} onChange={set('trillen')} label={t.settings.trillen} />
+          </Row>
+        )}
         <Row title={t.settings.beweging} hint={t.settings.bewegingHint}>
           <Choice
             value={s.motion}

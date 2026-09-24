@@ -479,6 +479,8 @@ export const fr: Strings = {
     mediakanaalHint: 'Tu n’entends rien ou presque — par exemple avec ton iPhone en silencieux ? Active ceci. Les bruitages ét les mots enregistrés sortent alors comme de petits fichiers audio, comme de la musique, et le mode silencieux n’y change rien. La réaction est un poil plus lente.',
     schrijven: 'Exercice d’écriture',
     schrijvenHint: 'Le tour bonus où tu traces les lettres et les mots à l’écran. À désactiver si dessiner au doigt ne marche pas.',
+    trillen: 'Vibrations',
+    trillenHint: 'Une petite tape dans la main à chaque réponse juste ou fausse, et sous ton doigt quand tu traces une lettre. À couper si tu n’aimes pas.',
     film: 'Petit film après la leçon',
     filmHint: 'Un court dessin animé de Fnek quand tu termines une leçon.',
     voorlezen: 'Lecture à voix haute',

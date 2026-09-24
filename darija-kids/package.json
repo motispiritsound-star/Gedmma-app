@@ -66,6 +66,7 @@
   "dependencies": {
     "@capacitor/app": "^8.1.1",
     "@capacitor/core": "^8.5.2",
+    "@capacitor/haptics": "^8.0.2",
     "canvas-confetti": "^1.9.4",
     "cordova-plugin-purchase": "^13.18.0",
     "framer-motion": "^13.2.0",

@@ -479,6 +479,8 @@ export const es: Strings = {
     mediakanaalHint: '¿No oyes nada o casi nada — por ejemplo con el iPhone en silencio? Activa esto. Los efectos y las palabras grabadas salen como pequeños archivos de audio, igual que la música, y el modo silencio ya no les afecta. Reaccionan un poquito más lentos.',
     schrijven: 'Ejercicio de escritura',
     schrijvenHint: 'La ronda bonus en la que calcas letras y palabras en la pantalla. Desactívalo si dibujar con el dedo no funciona.',
+    trillen: 'Vibración',
+    trillenHint: 'Un golpecito en la mano con cada respuesta acertada o fallada, y bajo el dedo cuando calcas una letra. Se apaga si no te gusta.',
     film: 'Peli corta tras la lección',
     filmHint: 'Un pequeño dibujo animado de Fnek cuando terminas una lección.',
     voorlezen: 'Lectura en voz alta',

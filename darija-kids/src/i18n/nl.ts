@@ -486,6 +486,8 @@ export const nl = {
     mediakanaalHint: 'Hoor je weinig of niets — bijvoorbeeld met je iPhone op stil? Zet dit aan. De spelgeluidjes én de opgenomen woorden gaan dan als kleine bestandjes naar buiten, net als muziek, en dat trekt zich van het stilteschuifje niets aan. Ze reageren een tikje trager.',
     schrijven: 'Schrijfoefening',
     schrijvenHint: 'De bonusronde waarin je letters en woorden natekent op het scherm. Uit als tekenen met je vinger niet lukt.',
+    trillen: 'Trillen',
+    trillenHint: 'Een kort tikje in je hand bij een goed of fout antwoord, en onder je vinger als je een letter natekent. Uit als je er niet van houdt.',
     film: 'Filmpje na de les',
     filmHint: 'Een kort tekenfilmpje van Fnek als je een les afrondt.',
     voorlezen: 'Voorlezen',

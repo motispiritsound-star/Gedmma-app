@@ -479,6 +479,8 @@ export const it: Strings = {
     mediakanaalHint: 'Non senti niente o quasi — per esempio con l’iPhone in silenzioso? Attiva questo. Gli effetti e le parole registrate escono come piccoli file audio, come la musica, e il silenzioso non li tocca più. Reagiscono un pochino più lentamente.',
     schrijven: 'Esercizio di scrittura',
     schrijvenHint: 'Il giro bonus in cui ricalchi lettere e parole sullo schermo. Spegnilo se disegnare con il dito non funziona.',
+    trillen: 'Vibrazione',
+    trillenHint: 'Un colpetto nella mano a ogni risposta giusta o sbagliata, e sotto il dito quando ricalchi una lettera. Si spegne se non ti piace.',
     film: 'Filmato dopo la lezione',
     filmHint: 'Un cartone breve con Fnek quando finisci una lezione.',
     voorlezen: 'Lettura ad alta voce',

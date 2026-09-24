@@ -479,6 +479,8 @@ export const de: Strings = {
     mediakanaalHint: 'Du hörst wenig oder nichts — zum Beispiel mit dem iPhone auf lautlos? Schalte das ein. Die Spielgeräusche und die aufgenommenen Wörter gehen dann als kleine Audiodateien hinaus, wie Musik, und der Lautlos-Schalter ändert daran nichts. Sie reagieren eine Spur langsamer.',
     schrijven: 'Schreibübung',
     schrijvenHint: 'Die Bonusrunde, in der du Buchstaben und Wörter auf dem Bildschirm nachzeichnest. Aus, wenn Malen mit dem Finger nicht klappt.',
+    trillen: 'Vibration',
+    trillenHint: 'Ein kurzer Stups in der Hand bei einer richtigen oder falschen Antwort, und unter dem Finger beim Nachzeichnen eines Buchstabens. Aus, wenn du es nicht magst.',
     film: 'Filmchen nach der Lektion',
     filmHint: 'Ein kurzer Zeichentrick mit Fnek, wenn du eine Lektion abschließt.',
     voorlezen: 'Vorlesen',
