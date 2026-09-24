@@ -34,7 +34,7 @@ export function Profile() {
   const peak = Math.max(state.settings.dailyGoal, ...week.map((w) => w.xp))
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6">
+    <div className="mx-auto max-w-3xl lg:max-w-5xl px-4 py-6">
       <Card className="mb-6 flex flex-wrap items-center gap-5 p-5">
         <div className="relative">
           <div className="grid h-20 w-20 place-items-center rounded-3xl bg-gradient-to-br from-saffron-400 to-terra-500 text-4xl">

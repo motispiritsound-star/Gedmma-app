@@ -55,7 +55,7 @@ export function Review() {
     .slice(0, 8)
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6">
+    <div className="mx-auto max-w-3xl lg:max-w-5xl px-4 py-6">
       <SectionTitle sub={t.review.uitleg}>{t.review.titel}</SectionTitle>
 
       {result && (
@@ -104,7 +104,7 @@ export function Review() {
       {weakest.length > 0 && (
         <>
           <h3 className="mt-8 mb-3 font-display text-lg font-extrabold">{t.review.zwakste}</h3>
-          <ul className="grid gap-2 sm:grid-cols-2">
+          <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {weakest.map((card) => {
               const w = word(card.id)
               return (

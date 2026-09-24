@@ -29,6 +29,7 @@ import { Welcome } from './ui/Welcome'
 import { useStore } from './engine/store'
 import { listenForFirstGesture, sfx } from './engine/audio'
 import { initBilling } from './engine/billing'
+import { herstelHerinnering } from './engine/herinnering'
 import { meldVoortgang } from './engine/post'
 import { localeOf, useLang, useT } from './i18n'
 
@@ -73,6 +74,13 @@ function Chrome() {
 
   // Connects to the App Store or Play Store; does nothing on the web.
   useEffect(() => { void initBilling() }, [])
+  // De wekker opnieuw zetten bij elke start. iOS bewaart hem over een
+  // herstart heen maar niet over een herinstallatie, en Android is er per
+  // fabrikant wisselend in; opnieuw zetten kost niets. De tekst moet mee,
+  // want de melding staat in de taal die nu gekozen is.
+  useEffect(() => {
+    void herstelHerinnering({ titel: t.settings.herinneringTitel, body: t.settings.herinneringBody })
+  }, [t])
   // Once a day at most, and only for a parent who asked for the weekly note.
   useEffect(() => { void meldVoortgang() }, [])
 

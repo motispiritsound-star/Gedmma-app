@@ -83,7 +83,7 @@ export function Words() {
   }, [query, topic, lang])
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6">
+    <div className="mx-auto max-w-3xl lg:max-w-4xl px-4 py-6">
       <SectionTitle sub={t.words.uitleg(allWords.length)}>{t.words.titel}</SectionTitle>
 
       <input

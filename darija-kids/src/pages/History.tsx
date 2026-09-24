@@ -26,7 +26,7 @@ export function History() {
   const have = HISTORY.filter((c) => earned.includes(c.id)).length
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-6">
+    <div className="mx-auto max-w-2xl lg:max-w-4xl px-4 py-6">
       <SectionTitle sub={t.history.paginaBody}>{t.history.paginaTitel}</SectionTitle>
 
       <Card className="mb-6 p-5">

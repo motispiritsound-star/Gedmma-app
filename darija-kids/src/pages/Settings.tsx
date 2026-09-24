@@ -13,6 +13,7 @@ import { LANGS, localeOf, useT, type Lang } from '../i18n'
 import { useVoices } from '../ui/useVoices'
 import { Button, Card, SectionTitle, Sheet } from '../ui/kit'
 import { kanTrillen } from '../engine/trilling'
+import { kanHerinneren, zetHerinnering } from '../engine/herinnering'
 import { FeedbackButton } from '../ui/Feedback'
 
 /** The embedded demo runs in a sandbox where a page cannot hand over a file. */
@@ -328,6 +329,41 @@ export function SettingsPage() {
         {kanTrillen() && (
           <Row title={t.settings.trillen} hint={t.settings.trillenHint}>
             <Toggle on={s.trillen} onChange={set('trillen')} label={t.settings.trillen} />
+          </Row>
+        )}
+        {/* Ook alleen in de app. Een browser kan geen wekker zetten die
+            afgaat als hij dicht is, en dat is precies wat een reeks nodig
+            heeft. */}
+        {kanHerinneren() && (
+          <Row title={t.settings.herinnering} hint={t.settings.herinneringHint}>
+            <div className="flex flex-wrap items-center justify-end gap-3">
+              <input
+                type="time"
+                value={s.herinneringTijd}
+                aria-label={t.settings.herinneringTijd}
+                onChange={(e) => {
+                  set('herinneringTijd')(e.target.value)
+                  if (s.herinnering) {
+                    void zetHerinnering(true, e.target.value, {
+                      titel: t.settings.herinneringTitel, body: t.settings.herinneringBody,
+                    })
+                  }
+                }}
+                className="rounded-xl border-2 border-[var(--line)] bg-[var(--surface-raised)] px-3 py-1.5 font-display font-extrabold"
+              />
+              <Toggle
+                on={s.herinnering}
+                label={t.settings.herinnering}
+                onChange={(aan) => {
+                  // Pas aanzetten als het toestel ja zegt: een schakelaar die
+                  // aan staat terwijl er niets gebeurt is erger dan geen
+                  // schakelaar.
+                  void zetHerinnering(aan, s.herinneringTijd, {
+                    titel: t.settings.herinneringTitel, body: t.settings.herinneringBody,
+                  }).then((gelukt) => set('herinnering')(aan && gelukt))
+                }}
+              />
+            </div>
           </Row>
         )}
         <Row title={t.settings.beweging} hint={t.settings.bewegingHint}>

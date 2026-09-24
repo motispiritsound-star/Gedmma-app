@@ -52,9 +52,25 @@ bekend is van de grote taal-apps voor kinderen, en niet meer dan dat:
    die de hele les trilt is een telefoon die je uitzet. Eigen schakelaar in de
    instellingen, want wie het geluid uitzet bedoelt daarmee niet dat het
    toestel stil moet liggen.
-2. *(volgt)* **Spreekuur werkt op iPhone en iPad.**
-3. *(volgt)* **Een indeling voor de iPad.**
-4. *(volgt)* **Een herinnering op het toestel**, achter de ouderpoort.
+2. **Spreekuur werkt op iPhone en iPad.** `src/engine/microfoon.ts`. Je hoort
+   hoe het hoort, je neemt jezelf op, je hoort jezelf terug. Er wordt niets
+   herkend en niets goedgekeurd — dat zou niet kunnen, geen enkele motor kent
+   Darija. De vlag in de bonuspool heet daarom niet meer `canListen` maar
+   `canSpeak`. Vijf bonusrondes zijn er weer vijf.
+3. **Meer ruimte op een breed scherm.** De rasters op Spelen, Bonus en
+   Herhalen krijgen een derde kolom, en de schermen mogen tot twaalfhonderd
+   punten breed worden in plaats van zevenhonderdzestig. Uitklaplijsten
+   blijven twee kolommen smal: een rij die openklapt duwt anders zijn buren
+   opzij.
+4. **Een herinnering op het toestel.** `src/engine/herinnering.ts`. Eén melding
+   per dag, op een tijd die de ouder kiest, uit tot iemand er zelf om vraagt.
+   Geen server, geen token, geen pushbericht — het toestel zet een wekker.
+
+## Wat er handmatig bij moet in Xcode
+
+De microfoon vraagt om een regel in `Info.plist`. Staat die er niet, dan sluit
+iOS de app af op het moment dat een kind op de opnameknop drukt: geen
+foutmelding, weg. Zie `docs/MAC.md`, stap C7b.
 
 ## Wat er níét gebeurt
 

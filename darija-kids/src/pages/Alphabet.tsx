@@ -31,7 +31,7 @@ export function Alphabet() {
   if (game) return <LetterGame onDone={() => setGame(false)} />
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6">
+    <div className="mx-auto max-w-3xl lg:max-w-5xl px-4 py-6">
       <SectionTitle sub={t.alphabet.uitleg}>{t.alphabet.titel}</SectionTitle>
 
       <div className="mb-6 grid grid-cols-6 gap-2 sm:grid-cols-8">

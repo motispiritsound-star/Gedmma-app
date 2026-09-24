@@ -27,7 +27,7 @@ export function Games() {
   if (game === 'memory') return <Memory onExit={() => setGame('menu')} />
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6">
+    <div className="mx-auto max-w-3xl lg:max-w-5xl px-4 py-6">
       <SectionTitle sub={t.games.uitleg}>{t.games.titel}</SectionTitle>
 
       {/* Not a game, but the same promise: something to do that is not a lesson. */}
@@ -41,7 +41,7 @@ export function Games() {
         </Card>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Card className="flex flex-col p-5">
           <span className="text-4xl" aria-hidden="true">⏱️</span>
           <h2 className="mt-2 font-display text-xl font-extrabold">{t.games.race}</h2>

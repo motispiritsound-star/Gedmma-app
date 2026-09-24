@@ -115,6 +115,16 @@ export interface Settings {
    * toestel zonder trilmotor.
    */
   trillen: boolean
+  /**
+   * Eén melding per dag, op een tijd die de ouder kiest.
+   *
+   * Uit tot iemand er zelf om vraagt. Een app die ongevraagd om toestemming
+   * voor meldingen vraagt bij de eerste start, krijgt van de helft van de
+   * ouders nee — en die nee is daarna moeilijk terug te draaien.
+   */
+  herinnering: boolean
+  /** Hoe laat, als "18:30". */
+  herinneringTijd: string
   hearts: boolean
   /** The voice the learner picked, by voiceURI. Empty means: pick the best. */
   voiceURI: string
@@ -340,6 +350,8 @@ const initial = (): State => ({
     schrijven: true,
     speech: true,
     trillen: true,
+    herinnering: false,
+    herinneringTijd: '18:30',
     hearts: true,
     voiceURI: '',
     fallbackVoice: true,

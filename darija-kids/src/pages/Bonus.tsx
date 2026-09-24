@@ -99,7 +99,7 @@ export function Bonus() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6">
+    <div className="mx-auto max-w-3xl lg:max-w-5xl px-4 py-6">
       <SectionTitle sub={t.bonus.uitleg}>{t.bonus.titel}</SectionTitle>
 
       {result && (
@@ -134,7 +134,7 @@ export function Bonus() {
         <Stat emoji="✍️" value={counts.getekend} label={t.bonus.getekend} />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {BONUS.map((task) => {
           const ready = task.ready(pool)
           return (
