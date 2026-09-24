@@ -1,6 +1,6 @@
 # Waar staan we
 
-Bijgewerkt op 23 september 2026 (avond). Dit bestand is het antwoord op "wat moet er
+Bijgewerkt op 24 september 2026. Dit bestand is het antwoord op "wat moet er
 nog" zonder dat je drie andere bestanden hoeft te lezen.
 
 ## De app
@@ -10,8 +10,8 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 520, groen |
-| Google Play | versie 1.1 ingediend (submission 3), wacht op beoordeling |
-| App Store | 1.0 (build 5) geüpload op 24 september, klaar om in te dienen |
+| Google Play | 2 (1.1) in review; 3 (1.2) is gebouwd en wacht op upload |
+| App Store | 1.0 (build 5) ingediend, Waiting for Review |
 
 Wat er in build 5 zit en niet in build 4: het antwoord op richtlijn 4.2
 (microfoon, trillen, herinnering, breder op een iPad — zie `docs/APPLE-4.2.md`)
@@ -23,6 +23,12 @@ de twee regels in `Info.plist` — waaronder die voor de microfoon, en zonder
 die regel sluit iOS de app af zodra een kind op de opnameknop drukt.
 
 Het antwoord aan App Review staat klaar in `store/appstore-4.2-antwoord.md`.
+
+Dezelfde verbeteringen gaan als 1.2 naar Play. De bundel is gebouwd met
+`npm run aab -- --versie 3 --naam 1.2`. **Upload hem pas als 1.1 is
+goedgekeurd**: een nieuwe release vervangt de release die in review staat, en
+dan begint de eerste beoordeling van voren af aan. De "wat is er nieuw"-tekst
+voor beide winkels staat in zes talen in `store/wat-is-nieuw-1.2.md`.
 
 ### Wat alleen jij kunt doen
 
@@ -61,7 +67,8 @@ opdrachten daarvoor staan in `store/prentenboek/platenlijst.md`.
 | Blz | 33 | 42 | 35 | 29 | 31 | 46 | 31 | 29 | 28 | 27 | 27 | 27 | 26 | 28 | 25 |
 
 Alle vijftien delen zijn uitgeschreven, en alle vijftien staan ook in het
-**Frans** en in het **Duits**. Spaans, Italiaans en Engels moeten nog.
+**Frans** en in het **Duits**. Van het **Spaans** staan de delen 1 tot en met
+11 erin. Italiaans en Engels moeten nog.
 
 De vertaling ligt alinea voor alinea naast het Nederlands, en daar staat een
 test op: een hoofdstuk dat wegvalt of een alinea die wordt samengevoegd laat
