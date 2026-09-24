@@ -61,14 +61,16 @@ const server = await createServer({
   configFile: path.join(ROOT, 'vite.config.ts'),
   root: ROOT, server: { middlewareMode: true, hmr: false }, appType: 'custom', logLevel: 'error',
 })
-const [{ REEKS }, talen, ...delen] = await Promise.all([
+const [{ REEKS }, talen, { rechtenVan }, ...delen] = await Promise.all([
   server.ssrLoadModule('/src/content/sleutels.ts'),
   server.ssrLoadModule('/src/content/sleutels-talen.ts'),
+  server.ssrLoadModule('/src/content/rechten.ts'),
   ...Array.from({ length: 15 }, (_, i) => i + 1).map((n) => server.ssrLoadModule(`/src/content/sleutels-deel${n}.ts`)),
 ])
 const { sleuteldeelIn, schilVanSleutel, SLEUTEL_VERTALINGEN } = talen
 const S = schilVanSleutel(TAAL)
 const DISCLAIMER = S.disclaimer
+const RECHTEN = rechtenVan(TAAL)
 await server.close()
 
 /**
@@ -192,6 +194,10 @@ const STIJL = `
   .achterin .sleutelkader{display:flex;gap:5mm;align-items:flex-start;background:#f6ecdc;padding:5mm 6mm;border-radius:3mm}
   .achterin .sleutelkader svg{width:9mm;flex:none}
   .achterin .sleutelkader p{text-indent:0;margin:0;text-align:left}
+  /* Van wie het is, en het verzoek het niet door te geven. Klein, achterin,
+     en zonder dreigement — zie src/content/rechten.ts. */
+  .achterin .rechten{text-indent:0;margin:7mm 0 0;font-size:8.2pt;line-height:1.5;
+                     color:#6b5b48;text-align:left;border-top:.4mm solid #e4d8c2;padding-top:3mm}
   .wacht{page-break-before:always;color:#7a6a5d;font-style:italic}
   .verder{page-break-before:always;text-align:center;padding-top:30mm}
   .verder .etiket{font-family:'Baloo 2';font-weight:800;font-size:9pt;letter-spacing:.24em;
@@ -325,6 +331,7 @@ const achterin = (deel) => `<section class="achterin">
     <svg viewBox="-90 -170 180 280">${sleutel(0, 0, 1, H.goud)}</svg>
     <p>${esc(deel.sleutel)}</p>
   </div>
+  <p class="rechten">${esc(RECHTEN.kop)}<br>${esc(RECHTEN.zin)}</p>
 </section>`
 
 const verder = (deel) => {

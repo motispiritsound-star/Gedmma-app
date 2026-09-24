@@ -43,6 +43,10 @@ const server = await createServer({
 })
 await server.listen()
 
+/** Van wie het boek is, en het verzoek het niet door te geven; zie src/content/rechten.ts. */
+const { rechtenVan } = await server.ssrLoadModule('/src/content/rechten.ts')
+const RECHTEN = rechtenVan(LANG)
+
 const browser = await startChroom()
 const page = await browser.newPage()
 await page.goto(`${BASE}/`, { waitUntil: 'networkidle' })
@@ -345,6 +349,9 @@ ${book.topics.map((g) => `
   <h2>${esc(T.colofonKop)}</h2>
   <p>${esc(T.colofonTekst)}</p>
   <p>${esc(T.colofonHoren)}</p>
+  <p style="margin-top:8mm;font-size:8.5pt;opacity:.7;line-height:1.55">
+    ${esc(RECHTEN.kop)}<br>${esc(RECHTEN.zin)}
+  </p>
 </div>
 
 </body></html>`

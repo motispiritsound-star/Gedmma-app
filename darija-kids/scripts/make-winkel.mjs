@@ -120,7 +120,16 @@ await mkdir(UIT, { recursive: true })
 const zetten = (script, nummer, taal, waar) => {
   if (existsSync(waar) && !OPNIEUW) return false
   process.stdout.write(`  ${script.replace('make-', '').replace('.mjs', '')} ${nummer} ${taal} … `)
-  execFileSync('node', [path.join(ROOT, 'scripts', script), '--deel', String(nummer), '--taal', taal], { stdio: 'pipe' })
+  try {
+    execFileSync('node', [path.join(ROOT, 'scripts', script), '--deel', String(nummer), '--taal', taal], { stdio: 'pipe' })
+  } catch (fout) {
+    // Wat de zetter zelf zei, en niet het hele foutobject van execFileSync
+    // eromheen. Daar staat een buffer van tweehonderd bytes in als reeks
+    // getallen, en de ene regel die je verder helpt verdwijnt erin.
+    process.stdout.write('ging mis\n\n')
+    process.stderr.write(String(fout.stderr ?? fout.message ?? fout))
+    process.exit(1)
+  }
   process.stdout.write('gezet\n')
   return true
 }

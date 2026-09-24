@@ -516,9 +516,10 @@ const server = await createServer({
   configFile: path.join(ROOT, 'vite.config.ts'),
   root: ROOT, server: { middlewareMode: true, hmr: false }, appType: 'custom', logLevel: 'error',
 })
-const [{ DELEN, CAST }, { deelIn, TALEN_KLAAR, VORDERING, schilVan }] = await Promise.all([
+const [{ DELEN, CAST }, { deelIn, TALEN_KLAAR, VORDERING, schilVan }, { rechtenVan }] = await Promise.all([
   server.ssrLoadModule('/src/content/prentenboek.ts'),
   server.ssrLoadModule('/src/content/prentenboek-talen.ts'),
+  server.ssrLoadModule('/src/content/rechten.ts'),
 ])
 const NUMMER = Number(arg('deel', '1'))
 if (!DELEN.some((d) => d.nummer === NUMMER)) throw new Error(`geen deel ${NUMMER}; er zijn er ${DELEN.length}`)
@@ -539,6 +540,7 @@ if (TAAL !== 'nl' && !TALEN_KLAAR.includes(TAAL)) {
 
 const DEEL1 = deelIn(TAAL, NUMMER)
 const S = schilVan(TAAL)
+const RECHTEN = rechtenVan(TAAL)
 
 const [balo800, balo600, naskh] = await Promise.all([
   readFile(path.join(ROOT, 'public', 'fonts', 'baloo2-800.woff2')),
@@ -670,6 +672,12 @@ ${DEEL1.bladen.map((blad, i) => bladzijde(blad, i + 1)).join('\n')}
   <h2 style="font-size:19pt">${esc(S.hierna)}</h2>
   <p style="font-size:14pt;max-width:120mm;margin:0 auto">${esc(DEEL1.hierna ?? '')}</p>
   <svg viewBox="0 0 300 190" style="width:70mm;align-self:center;margin-top:8mm">${sba(150, 70, 1.1, { kijk: 1 })}</svg>
+</section>
+
+<section class="tekstblad" style="justify-content:flex-end;text-align:center">
+  <p style="font-size:9pt;opacity:.65;line-height:1.55;max-width:120mm;margin:0 auto">
+    ${esc(RECHTEN.kop)}<br>${esc(RECHTEN.zin)}
+  </p>
 </section>
 
 </body></html>`
