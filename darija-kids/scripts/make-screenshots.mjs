@@ -13,11 +13,10 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 import { GO_ON, GOT_IT, seeded } from './lib/profile.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 
 const arg = (name, fallback) => {
   const i = process.argv.indexOf(`--${name}`)
@@ -446,7 +445,7 @@ const langs = (arg('lang', 'nl,fr,de,es,it,en')).split(',')
 const devices = (arg('device', Object.keys(DEVICES).join(','))).split(',')
 
 await mkdir(OUT, { recursive: true })
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 const frameContext = await browser.newContext({ deviceScaleFactor: 1 })
 const composer = await frameContext.newPage()
 for (const lang of langs) {

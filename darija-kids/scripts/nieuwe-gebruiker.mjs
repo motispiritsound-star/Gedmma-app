@@ -15,12 +15,11 @@
  */
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
 
 const PORT = 4397
 const BASE = `http://127.0.0.1:${PORT}`
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 
 const arg = (naam, terug) => {
   const i = process.argv.indexOf(`--${naam}`)
@@ -44,7 +43,7 @@ await server.listen()
 /** De prijzen uit de app zelf, zodat deze proef ze niet nog een keer opschrijft. */
 const { planOf } = await server.ssrLoadModule('/src/engine/billing.ts')
 
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 const ctx = await browser.newContext({ viewport: { width: 430, height: 932 }, reducedMotion: 'reduce' })
 const page = await ctx.newPage()
 

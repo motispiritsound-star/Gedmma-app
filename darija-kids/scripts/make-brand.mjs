@@ -13,10 +13,9 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 const OUT = path.join(ROOT, 'brand')
 
 const arg = (name, fallback) => {
@@ -355,7 +354,7 @@ await mkdir(path.join(OUT, 'logo'), { recursive: true })
 await mkdir(path.join(OUT, 'social'), { recursive: true })
 await mkdir(path.join(OUT, 'print'), { recursive: true })
 
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 const page = await (await browser.newContext({ deviceScaleFactor: 1 })).newPage()
 
 const save = async (file, html, w, h) => {

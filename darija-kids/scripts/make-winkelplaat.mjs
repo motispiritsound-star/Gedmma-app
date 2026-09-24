@@ -20,13 +20,12 @@ import { existsSync } from 'node:fs'
 import { mkdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
 import { H, khatam, sleutel, zellige } from './lib/historie.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const UIT = path.join(ROOT, 'store', 'winkel')
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 const arg = (naam, terugval = null) => {
   const gelijk = process.argv.find((a) => a.startsWith(`--${naam}=`))
   if (gelijk) return gelijk.slice(naam.length + 3)
@@ -228,7 +227,7 @@ const inhoudsblad = (p) => `<!doctype html><meta charset="utf-8"><style>
   <span class="j">${esc(t.bij)}</span></li>`).join('')}</ul>`
 
 await mkdir(UIT, { recursive: true })
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 const welke = arg('product') ? [arg('product')] : Object.keys(PRODUCTEN)
 
 for (const naam of welke) {

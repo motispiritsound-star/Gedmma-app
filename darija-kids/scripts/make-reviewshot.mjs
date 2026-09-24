@@ -29,13 +29,11 @@
  */
 import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
 
 const PORT = 4399
 const BASE = `http://127.0.0.1:${PORT}`
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
-/** De maat van een iPhone 16 Pro Max, en dus van wat hier uit komt. */
 const BREED = 1290
 const HOOG = 2796
 
@@ -178,7 +176,7 @@ const BOEK = {
   voet: kern(t.unlock.boek.bijJaar),
 }
 
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 const ctx = await browser.newContext({
   viewport: { width: 430, height: 932 },
   deviceScaleFactor: 3,

@@ -11,12 +11,11 @@
  *
  * Run with: node scripts/sweep.mjs [--taal nl] [--breed]
  */
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
 
 const PORT = 4392
 const BASE = `http://127.0.0.1:${PORT}`
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 
 const arg = (naam, terug) => {
   const i = process.argv.indexOf(`--${naam}`)
@@ -49,7 +48,7 @@ const server = await createServer({
   logLevel: 'error',
 })
 await server.listen()
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 
 const klachten = []
 let gelopen = 0

@@ -9,14 +9,12 @@
  */
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 const files = process.argv.slice(2)
 if (!files.length) throw new Error('geef minstens één bestand mee')
 
-const browser = await chromium.launch({
-  executablePath: CHROME,
+const browser = await startChroom({
   args: ['--autoplay-policy=no-user-gesture-required'],
 })
 const page = await browser.newPage()

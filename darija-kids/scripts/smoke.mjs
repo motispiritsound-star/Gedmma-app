@@ -6,14 +6,13 @@
  * Run with: node scripts/smoke.mjs [baseUrl] [outDir]
  */
 import { mkdir } from 'node:fs/promises'
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 
 const BASE = process.argv[2] ?? 'http://127.0.0.1:4173'
 const OUT = process.argv[3] ?? 'shots'
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 
 await mkdir(OUT, { recursive: true })
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 const page = await browser.newPage({ viewport: { width: 420, height: 900 }, deviceScaleFactor: 2 })
 
 const problems = []

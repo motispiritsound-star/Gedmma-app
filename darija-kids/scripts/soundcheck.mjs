@@ -11,13 +11,12 @@
  * second terminal with `npm run preview` in it meant the check that answers
  * "is there any sound at all" was the one people skipped.
  */
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
 
 const PORT = 4391
 const EIGEN = process.argv[2] === undefined
 const BASE = process.argv[2] ?? `http://127.0.0.1:${PORT}`
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 
 const server = EIGEN
   ? await createServer({
@@ -28,7 +27,7 @@ const server = EIGEN
   : null
 await server?.listen()
 
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 const page = await browser.newPage()
 const problems = []
 page.on('pageerror', (e) => problems.push(String(e)))

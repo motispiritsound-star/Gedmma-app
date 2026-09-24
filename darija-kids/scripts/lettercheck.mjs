@@ -11,11 +11,10 @@
  *
  * Run with: node scripts/lettercheck.mjs
  */
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
 import { seeded } from './lib/profile.mjs'
 
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 const PORT = 4330
 const BASE = `http://127.0.0.1:${PORT}`
 
@@ -26,7 +25,7 @@ const server = await createServer({
 })
 await server.listen()
 
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 const fails = []
 
 /**

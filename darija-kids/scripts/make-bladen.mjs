@@ -17,12 +17,11 @@ import { execFileSync } from 'node:child_process'
 import { mkdir, readdir, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
 import ffmpeg from 'ffmpeg-static'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 const UIT = path.join(ROOT, 'store', 'bladen')
 const arg = (naam, terugval = null) => {
   const i = process.argv.indexOf(`--${naam}`)
@@ -45,7 +44,7 @@ const tekstVan = async (n) => {
   return mod[`DEEL${n}_HOOFDSTUKKEN`]
 }
 
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 
 /**
  * Eén boek uit elkaar halen.

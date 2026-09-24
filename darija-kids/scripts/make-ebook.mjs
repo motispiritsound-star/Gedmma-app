@@ -18,11 +18,10 @@ import { readFile, mkdir, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 const PORT = 4360
 const BASE = `http://127.0.0.1:${PORT}`
 
@@ -44,7 +43,7 @@ const server = await createServer({
 })
 await server.listen()
 
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 const page = await browser.newPage()
 await page.goto(`${BASE}/`, { waitUntil: 'networkidle' })
 
@@ -354,7 +353,7 @@ await mkdir(path.dirname(OUT), { recursive: true })
 const tmp = path.join(tmpdir(), `.${path.basename(OUT)}.html`)
 await writeFile(tmp, html)
 
-const printer = await chromium.launch({ executablePath: CHROME })
+const printer = await startChroom()
 const sheet = await printer.newPage()
 await sheet.goto(`file://${tmp}`, { waitUntil: 'networkidle' })
 await sheet.emulateMedia({ media: 'print' })

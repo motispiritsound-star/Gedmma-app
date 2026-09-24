@@ -17,11 +17,10 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 import { seeded } from './lib/profile.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 
 const arg = (naam, terug) => {
   const i = process.argv.indexOf(`--${naam}`)
@@ -206,7 +205,7 @@ const FORMATEN = [
   { naam: 'verhaal', w: 1080, h: 1920, kop: 0.34 },
 ]
 
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 const app = await browser.newContext({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 3, reducedMotion: 'reduce' })
 const appPagina = await app.newPage()
 const opmaak = await (await browser.newContext({ deviceScaleFactor: 1 })).newPage()

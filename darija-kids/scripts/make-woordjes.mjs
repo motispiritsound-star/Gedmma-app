@@ -25,12 +25,11 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import ffmpeg from 'ffmpeg-static'
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
 
 const run = promisify(execFile)
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 const OUT = path.join(ROOT, 'store', 'woordjes')
 
 const arg = (naam, terugval = null) => {
@@ -169,7 +168,7 @@ await mkdir(uit, { recursive: true })
 const tijdelijk = path.join(OUT, '.werk')
 await mkdir(tijdelijk, { recursive: true })
 
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 const blad = await (await browser.newContext({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 })).newPage()
 
 console.log(`\n${lijst.length} woordjes in het ${TAAL}\n`)

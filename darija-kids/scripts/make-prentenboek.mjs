@@ -19,7 +19,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 import { schrijfOmslag } from './lib/omslag.mjs'
 import { createServer } from 'vite'
 import { K, sba } from './lib/tekenen.mjs'
@@ -35,8 +35,6 @@ const ster = (cx, cy, r, vul) => {
 }
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
-/** Zowel `--taal de` als `--taal=de`; het tweede kost anders stilletjes een Nederlands boek. */
 const arg = (naam, terugval = null) => {
   const gelijk = process.argv.find((a) => a.startsWith(`--${naam}=`))
   if (gelijk) return gelijk.slice(naam.length + 3)
@@ -680,7 +678,7 @@ await mkdir(path.dirname(UIT), { recursive: true })
 const tijdelijk = path.join(tmpdir(), `.prentenboek-${TAAL}.html`)
 await writeFile(tijdelijk, html)
 
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 const blad = await browser.newPage()
 await blad.goto(`file://${tijdelijk}`, { waitUntil: 'networkidle' })
 await blad.emulateMedia({ media: 'print' })

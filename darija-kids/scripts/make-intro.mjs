@@ -18,12 +18,11 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import ffmpeg from 'ffmpeg-static'
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
 import { CHECK, GO_ON, GOT_IT, ONWARD, seeded } from './lib/profile.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 const PORT = 4312
 const BASE = `http://127.0.0.1:${PORT}`
 const OUT = path.join(ROOT, 'store', 'video')
@@ -453,8 +452,7 @@ const server = await createServer({
 })
 await server.listen()
 
-const browser = await chromium.launch({
-  executablePath: CHROME,
+const browser = await startChroom({
   args: [
     // The film starts its own AudioContext and there is nobody to tap the
     // screen, so the browser has to be told that is expected.

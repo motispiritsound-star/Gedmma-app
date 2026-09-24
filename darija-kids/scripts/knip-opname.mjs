@@ -30,12 +30,11 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
 import { bewerk, naarWav, readWav, writeWav } from './lib/wav.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 const PORT = 4364
 
 const arg = (naam, terug) => {
@@ -65,7 +64,7 @@ const server = await createServer({
   logLevel: 'error',
 })
 await server.listen()
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 const page = await browser.newPage()
 await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'networkidle' })
 

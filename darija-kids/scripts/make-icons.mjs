@@ -11,11 +11,10 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const OUT = path.join(ROOT, 'public')
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 
 const dataUri = async (file, type = 'font/woff2') =>
   `data:${type};base64,${(await readFile(path.join(OUT, file))).toString('base64')}`
@@ -81,7 +80,7 @@ const card = async () => {
   </div>`
 }
 
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 
 // The icon, at every size a browser or a home screen asks for.
 await writeFile(path.join(OUT, 'icons/icon.svg'), mark(512, 34).trim())

@@ -29,10 +29,9 @@
  */
 import { readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
 
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 const PORT = 4340
 const BASE = `http://127.0.0.1:${PORT}`
 const arg = (name, fallback) => {
@@ -55,7 +54,7 @@ const server = await createServer({
 })
 await server.listen()
 
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 const page = await browser.newPage()
 await page.goto(`${BASE}/`, { waitUntil: 'networkidle' })
 

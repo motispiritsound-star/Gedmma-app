@@ -10,11 +10,10 @@
  *
  * Run with: node scripts/bonuscheck.mjs
  */
-import { chromium } from 'playwright'
+import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
 import { CHECK, ONWARD, seeded } from './lib/profile.mjs'
 
-const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 const PORT = 4313
 const BASE = `http://127.0.0.1:${PORT}`
 
@@ -25,7 +24,7 @@ const server = await createServer({
 })
 await server.listen()
 
-const browser = await chromium.launch({ executablePath: CHROME })
+const browser = await startChroom()
 const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 })
 const problems = []
 page.on('console', (m) => m.type() === 'error' && problems.push(m.text()))
