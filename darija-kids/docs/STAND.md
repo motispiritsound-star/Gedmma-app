@@ -24,26 +24,6 @@ die regel sluit iOS de app af zodra een kind op de opnameknop drukt.
 
 Het antwoord aan App Review staat klaar in `store/appstore-4.2-antwoord.md`.
 
-### De winkel staat open — voor één reeks
-
-**De sleutels van Marokko** is te koop via Gumroad, voor € 34,99:
-`https://venshipper.gumroad.com/l/sleutels`. Die link staat in
-`src/site/shop.ts`, dus op darijaforkids.eu/leesboeken staat bij die reeks nu
-**Kopen** in plaats van *Binnenkort*.
-
-Gumroad is de *merchant of record*: zij zijn de verkoper, innen de btw in elk
-EU-land en doen de terugbetalingen. Op het afschrift van een koper staat hun
-naam; daarom staat dat ook op de afrekenpagina.
-
-Nog niet te koop: de reeks van Sba (de vertaalde delen zijn nog niet allemaal
-gezet — `npm run winkel -- --sba`) en het e-boek. Die twee regels in
-`LINKS` staan nog uitgecommentarieerd, en een product zonder link toont
-"Binnenkort" in plaats van een dode knop.
-
-**Het eerste wat je nu doet is je eigen boek kopen**, met je eigen kaart en
-voor de volle prijs. Zie de zes controlepunten in `docs/WINKEL-INRICHTEN.md`
-onder *Zelf bestellen*. Daarna pas de andere twee producten aanmaken.
-
 ### Handelsverificatie — gedaan
 
 Apple heeft de handelaarsverificatie voor de Digital Services Act op
@@ -107,9 +87,14 @@ voor beide winkels staat in zes talen in `store/wat-is-nieuw-1.2.md`.
 vormgeving volgt de v2-proef: woordkaart op de plaat, het woord in kapitalen,
 het Arabisch eronder, "Zeg het hardop!".
 
-De tekeningen erin zijn vectortekeningen. Zodra er geschilderde platen in
-`store/prentenboek/platen/<deel>/` staan, gebruikt de zetter die. De 144
-opdrachten daarvoor staan in `store/prentenboek/platenlijst.md`.
+Elk deel heeft één geschilderd tafereel dat het hele boek draagt — de poort
+van Fes, de souq van Marrakech, de bergen in de sneeuw — en dat staat al in
+`store/prentenboek/platen/<deel>/achtergrond.jpg`. De tekeningen op de
+bladzijden zelf zijn nog vectoren. Wil je er per bladzijde een geschilderde
+plaat bij, zet die dan neer als `platen/<deel>/<nummer>.jpg`; de zetter pakt
+hem dan boven de achtergrond. De 144 opdrachten daarvoor staan in
+`store/prentenboek/platenlijst.md`, en dat is de enige post in dit project die
+nog echt geld kost.
 
 **De sleutels van Marokko** — vijftien delen. Bladzijden per deel:
 
@@ -132,19 +117,44 @@ staan, met `bronnen.txt` ernaast. Welke opname waar hoort staat in
 
 ## De winkel
 
-Klaar om gevuld te worden. Zie `docs/WINKEL-INRICHTEN.md`.
+Open, voor één van de drie. Zie `docs/WINKEL-INRICHTEN.md`.
 
-| Stap | Status |
-| --- | --- |
-| Alle 27 boeken als PDF | `npm run winkel`, staat in `store/winkel/` |
-| Uploadlijst met prijs, bestand en producttekst | `store/winkel/producten.md` |
-| Plek in de code voor de betaallinks | `src/site/shop.ts`, blok `LINKS` |
-| Afrekenpagina op de site | staat er, in zes talen |
-| Account bij een merchant of record | **jij** |
-| Eerste product aanmaken en zelf kopen | **jij** |
+| Product | Prijs | Status |
+| --- | --- | --- |
+| De sleutels van Marokko | € 34,99 | **te koop** — `venshipper.gumroad.com/l/sleutels` |
+| Sba de Atlasleeuw | € 34,99 | bestanden klaar, product nog aanmaken |
+| Het e-boek | € 14,99 | bestanden klaar, product nog aanmaken |
 
-Zolang een link leeg is, staat er "Binnenkort" en geen dode knop. Je kunt dus
-per deel opengaan.
+Gumroad is de *merchant of record*: zij zijn juridisch de verkoper, innen de
+btw in elk EU-land, leveren het bestand en doen de terugbetalingen. Op het
+afschrift van een koper staat hun naam, en daarom staat dat ook op de
+afrekenpagina. Het kost 10% + $0,50, plus 2,9% + $0,30 aan kaartkosten — bij
+€ 34,99 houd je ongeveer € 29,70 over. Komt de koper binnen via hun eigen
+etalage (*Discover*), dan is het 30% vlak.
+
+`npm run winkel` zet alle tweeënnegentig boeken, maakt er drie zips van en
+schrijft `store/winkel/producten.md`: per product de titel, de prijs, het
+bestand en de tekst voor de productpagina. `node scripts/make-winkelplaat.mjs`
+maakt de beelden erbij — per product een omslag, een duimnagel en een plaat
+met alle titels erop.
+
+Zolang een link in `src/site/shop.ts` leeg is, staat er op de website
+"Binnenkort" en geen dode knop. De drie producten gaan dus los van elkaar
+open.
+
+**Deel 1 van De sleutels staat gratis op darijaforkids.eu/leesboeken**, in zes
+talen, zonder account en zonder e-mailadres. Sba heeft met opzet geen gratis
+deel: dat is een twaalfde van de reeks en in vijf minuten uit.
+
+### Wat hier nog moet
+
+1. **Je eigen boek kopen.** Met je eigen kaart, voor de volle prijs. De zes
+   dingen om op te letten staan in `docs/WINKEL-INRICHTEN.md` onder *Zelf
+   bestellen*. Het telt bovendien mee: voor Gumroad Discover heb je minstens
+   één verkoop nodig.
+2. **Sba en het e-boek aanmaken**, en hun adres in `LINKS` zetten.
+3. **Een sectie op je Gumroad-profiel**, anders is `venshipper.gumroad.com`
+   een lege pagina.
 
 ## De socials
 
@@ -182,11 +192,18 @@ terwijl de eerste teaser nog moet komen.
 
 ## Waar het van afhangt
 
-Er is één ding dat alles vertraagt en dat is de iOS-build. Play kan live
-zonder Apple; Apple kan niet live zonder de Mac. Alles wat hierboven nog
-openstaat kan naast elkaar, behalve dat.
+Niets meer aan papierwerk. De handelaarsverificatie voor de Digital Services
+Act is op 24 september goedgekeurd en je handelaarsgegevens staan live in de
+App Store in de hele Europese Unie. Dat was het enige dat een betaalde app in
+de EU kon tegenhouden zonder dat het op een bouwfout leek.
 
-En één ding dat een lancering in Europa tegenhoudt zonder dat het op een
-bouwfout lijkt: **de handelaarsverificatie bij Apple**. Zolang die loopt, mag
-een betaalde app in de EU niet verkocht worden. Controleer die status vóór je
-een datum vastlegt.
+Wat overblijft zijn twee beoordelingen die allebei al lopen: build 5 bij Apple
+en 1.1 bij Play. Apple doet er doorgaans één tot drie dagen over, Play iets
+langer bij een eerste release. Alles wat hierboven nog openstaat kan daarnaast
+en houdt die datum niet tegen.
+
+Realistisch voor allebei: **maandag 29 september tot vrijdag 3 oktober**.
+
+Eén ding om te onthouden voor later: de iOS-build loopt via de Mac en Xcode.
+Play kan zonder, Apple niet. Wie een spoedreparatie moet uitbrengen heeft die
+machine nodig — reken op een uur, niet op tien minuten.
