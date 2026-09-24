@@ -59,73 +59,87 @@ In de projectmap:
 npm run winkel
 ```
 
-Dit zet alle zevenentwintig boeken in `store/winkel/` en schrijft ernaast
-`producten.md`: per boek de titel, de prijs, het bestand en de tekst voor de
-productpagina.
+Dit zet elk boek dat er nog niet staat — twaalf delen van Sba en vijftien van
+De sleutels, elk in zes talen — en maakt er drie zips van in `store/winkel/`.
+Ernaast komt `producten.md`: per product de titel, de prijs, het bestand en de
+tekst voor de productpagina, klaar om te plakken.
 
-Duurt een paar minuten. Laat het draaien.
+De eerste keer duurt dat een kwartier: er moeten tweeënnegentig boeken door de
+zetter. Daarna gaat het in seconden, want wat er al staat wordt overgeslagen.
+Eén reeks kan ook: `npm run winkel -- --sba` of `npm run winkel -- --sleutels`.
+
+De platen erbij:
+
+```bash
+node scripts/make-winkelplaat.mjs
+```
+
+Per product een omslag van 1600 × 900, een vierkante duimnagel van 600 × 600,
+en een plaat met alle titels erop voor in de carrousel.
 
 ## Stap 2 — Een account maken
 
 Bij Gumroad: ga naar gumroad.com, maak een account, en vul je gegevens in.
 Je hebt nodig:
 
-- Je naam en adres
-- Je KvK-nummer (je hebt een eenmanszaak, dus vul die in als bedrijf)
-- Je bankrekening of PayPal voor de uitbetaling
-- Een identiteitsbewijs — ze vragen er bij de eerste uitbetaling om
+- Je naam en adres, letterlijk zoals ze bij de KvK staan
+- Je KvK-nummer (eenmanszaak: vul die in als bedrijf)
+- Je bankrekening voor de uitbetaling — de tenaamstelling moet exact kloppen
+- Een identiteitsbewijs; daar vragen ze bij de eerste uitbetaling om
 
 Zet je profiel op **Darijaforkids** met dezelfde omschrijving en hetzelfde
 logo als op de socials. Een klant die van de website komt moet zien dat hij op
 de goede plek is.
 
-## Stap 3 — Het eerste product
+Zet de prijs in **€**, niet in $. Het muntmenu staat standaard op dollars.
 
-Begin met één. Test hem helemaal af voordat je de andere zesentwintig maakt.
+## Stap 3 — De drie producten
 
-Neem **Sba deel 1**. Open `store/winkel/producten.md` en zoek het blok
-*Sba de Atlasleeuw — deel 1*. Daar staat alles wat je moet invullen:
+Er zijn er drie, en niet zevenentwintig. Dat is een keuze: tien euro voor één
+prentenboek vraagt van een ouder twaalf keer achter elkaar een afweging, en
+voor vijfendertig euro is die afweging één keer.
 
-- **Naam**: zoals het er staat
-- **Prijs**: € 9,99
-- **Bestand**: `store/winkel/sba-deel-01.pdf`
-- **Omschrijving**: het blok tekst tussen de streepjes
-- **Omslag**: de eerste bladzijde van de pdf, of `site-assets/boeken/sba.webp`
+| Product | Prijs | Sleutel in `shop.ts` | Bestand |
+|---|---|---|---|
+| De sleutels van Marokko | € 34,99 | `sleutelsReeks` | `sleutels-alle-delen.zip` |
+| Sba de Atlasleeuw | € 34,99 | `sbaReeks` | `sba-alle-delen.zip` |
+| Het e-boek | € 14,99 | `ebook` | `ebook-alle-talen.zip` |
 
-Zet het product op **gepubliceerd**. Je krijgt een adres terug dat er
-ongeveer zo uitziet:
+Maak er één aan, test hem helemaal af, en pas dan de andere twee. Alles wat je
+moet invullen staat in `store/winkel/producten.md`: naam, prijs, bestand, en
+het tekstblok voor de beschrijving.
 
-```
-https://darijaforkids.gumroad.com/l/sba1
-```
+Kies bij *Products* **Digital product** en niet *E-book* — dat laatste is voor
+één los bestand, en deze bundels zijn mappen met tientallen pdf's.
+
+Zet de URL op iets dat je kunt uitspreken (`sleutels`, `sba`, `ebook`) vóórdat
+je publiceert. Daarna verandert een link die al rondgaat kapot.
 
 ## Stap 4 — De link in de website
 
-Open `src/site/shop.ts`. Bovenaan staat een blok `LINKS` met alles
-uitgecommentarieerd. Haal de schuine strepen weg bij de regel die je nodig
-hebt en plak je adres erin:
+Open `src/site/shop.ts`. Bovenaan staat één blok `LINKS`:
 
 ```ts
 const LINKS: Record<string, string> = {
-  sba1: 'https://darijaforkids.gumroad.com/l/sba1',
+  // sbaReeks: 'https://…',
+  sleutelsReeks: 'https://venshipper.gumroad.com/l/sleutels',
+  // ebook: 'https://…',
 }
 ```
 
-De sleutel (`sba1`) staat in `producten.md` bij elk boek onder *Sleutel in
-shop.ts*. Haal je hem door elkaar, dan verkoopt de knop van deel 3 het boek
-van deel 1 — daarom staat hij erbij.
-
-Dan:
+Haal de schuine strepen weg bij de regel die je nodig hebt en plak je adres
+erin. Dan:
 
 ```bash
 npm run site
 git add -A
-git commit -m "Deel 1 van Sba is te koop"
+git commit -m "Sba is te koop"
 git push
 ```
 
-Na een paar minuten staat het op darijaforkids.eu/leesboeken. Bij deel 1 staat
-nu **Kopen**; bij de rest nog **Binnenkort**.
+Na een paar minuten staat er op darijaforkids.eu/leesboeken **Kopen** bij die
+reeks. Een product zonder link toont "Binnenkort" en geen dode knop, dus je
+kunt dit per stuk doen en tussendoor uitrollen.
 
 ## Stap 5 — Zelf bestellen
 
@@ -136,43 +150,39 @@ Koop je eigen boek. Met je eigen kaart, voor de volle prijs.
 Let op:
 
 1. Komt er **meteen** een mail, of pas na tien minuten?
-2. Staat je eigen naam of merknaam in die mail, of alleen die van de
-   betaalpartner?
+2. Staat je eigen merknaam in die mail, of alleen die van de betaalpartner?
 3. Werkt de downloadlink ook op een telefoon?
-4. Is de pdf te openen in de standaard-app van een iPhone en een Android?
-5. Klopt de btw op de factuur voor jouw land?
+4. Opent de zip op een iPhone en op Android, en zitten de zes taalmappen erin?
+5. Klopt de btw op de factuur voor jouw land — 21% voor Nederland?
 6. Staat er een naam op je bankafschrift die een klant kan thuisbrengen?
 
-Bij de meeste partijen kun je jezelf daarna terugbetalen, dus het kost je
-alleen de transactiekosten.
-
-Werkt dit allemaal, dan pas maak je de andere zesentwintig producten aan.
+Bij Gumroad kun je jezelf daarna terugbetalen, dus het kost je alleen de
+transactiekosten. En het telt mee: voor **Gumroad Discover** heb je minstens
+één verkoop nodig, en je eigen aankoop is er één.
 
 ## Stap 6 — De rest
 
-Werk `producten.md` van boven naar beneden af. Reken op een minuut of drie per
-product.
+Werk `producten.md` van boven naar beneden af. Reken op een minuut of vijf per
+product, want de tekst staat er al.
 
-Zet daarna de twee bundels erbij. Kan je partij meerdere bestanden aan één
-product hangen, dan doe je dat; kan het niet, maak dan een zip:
+Gumroad laat meerdere bestanden aan één product hangen, maar één zip is voor
+een koper prettiger: die krijgt een map per taal in plaats van negentig losse
+downloads. `npm run winkel` maakt die zip al, met een **LEES MIJ** erin waarin
+staat dat het pdf's zijn zonder beveiliging en dat verbeterde versies gratis
+zijn.
 
-```bash
-cd store/winkel
-zip sba-alle-delen.zip sba-deel-*.pdf
-zip sleutels-alle-delen.zip sleutels-deel-*.pdf
-```
+## Wat er op te letten valt
 
-## Wat er nog niet klopt en wat je eraan doet
-
-- **De prijzen staan op twee plekken.** In `src/site/shop.ts` staat wat de
+- **De prijs staat op twee plekken.** In `src/site/shop.ts` staat wat de
   bezoeker leest, in de winkel staat wat hij betaalt. Wijzig je er één, wijzig
-  dan de ander. Een bezoeker die op een knop van € 9,99 drukt en € 12,95 ziet,
-  komt niet terug.
-- **De boeken zijn nog niet af.** De delen 7 tot en met 15 van De sleutels
-  halen de beloofde honderd bladzijden nog niet. Verkoop die pas als ze er
-  staan, of zet ze erbij met de vermelding dat er gratis bijgewerkte versies
-  komen — dat mag, en het staat al zo op de afrekenpagina.
-- **De vertalingen ontbreken.** Op de afrekenpagina staat dat je alle zes de
-  talen krijgt. Dat is nu nog niet waar: de boeken zijn in het Nederlands.
-  Verkoop tot die tijd alleen de Nederlandse versie en haal die belofte van de
-  afrekenpagina, of maak eerst de vertalingen.
+  dan de ander. Wie op een knop van € 34,99 drukt en € 39,95 ziet, komt niet
+  terug.
+- **Kijk of iDEAL aanstaat.** Voor Nederlandse ouders is dat het verschil
+  tussen kopen en afhaken. Staat het er niet bij, vraag het aan hun
+  ondersteuning voordat je verdergaat.
+- **De belofte over gratis verbeteringen moet waar blijven.** Die staat in de
+  verkooptekst én in de LEES MIJ in elke zip. Wie een nieuwe versie maakt,
+  stuurt hem ook naar wie al gekocht heeft; bij Gumroad gaat dat met één knop.
+- **Deel 1 van De sleutels staat gratis op darijaforkids.eu.** Dat is met
+  opzet: wie het uitleest wil weten hoe het verdergaat. Verandert dat boek,
+  dan moet `site-assets/proefdeel/` mee — zie `scripts/make-site.mjs`.
