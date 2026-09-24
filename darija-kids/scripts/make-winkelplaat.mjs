@@ -60,9 +60,12 @@ const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
  * meteen voor welke leeftijd dit is. De sleutels van Marokko heeft ze niet —
  * dat is een leesboek en de omslag doet daar het werk.
  */
+const SOORT = { '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg' }
 const plaat = async (bestand) => {
   if (!bestand || !existsSync(bestand)) return null
-  return `data:image/jpeg;base64,${(await readFile(bestand)).toString('base64')}`
+  const soort = SOORT[path.extname(bestand).toLowerCase()]
+  if (!soort) throw new Error(`Onbekend beeldformaat: ${bestand}`)
+  return `data:${soort};base64,${(await readFile(bestand)).toString('base64')}`
 }
 
 /** Drie delen uit een reeks: het begin, het midden en het eind. */
@@ -74,7 +77,12 @@ const PRODUCTEN = {
     onder: `Alle vijftien delen, in zes talen`,
     regel: 'Vijftien boeken · 202 hoofdstukken · van het jaar 200 tot nu',
     prijs: PRIJS.sleutelsReeks,
-    omslagen: drie(REEKS).map((d) => ({ nummer: d.nummer, titel: d.titel, jaar: d.jaar })),
+    omslagen: [],
+    achtergrond: path.join(ROOT, 'site-assets', 'boeken', 'sleutel-plaat.webp'),
+    /** De sleutel ligt dwars door het midden; daar past geen tekst naast. */
+    tekstplek: 'onder',
+    /** Vierkant valt het midden weg, en daar ligt juist de sleutel. */
+    duimplek: '31% center',
   },
   sba: {
     reeks: 'Sba de Atlasleeuw',
@@ -104,29 +112,36 @@ const mini = (o, i) => `
     <div class="mj">${esc(o.jaar)}</div>
   </div>`
 
-const blad = (p, vierkant, achtergrond) => `<!doctype html><meta charset="utf-8"><style>
+const blad = (p, vierkant, achtergrond) => {
+  const onder = !vierkant && p.tekstplek === 'onder'
+  return `<!doctype html><meta charset="utf-8"><style>
   @font-face{font-family:'Baloo 2';src:url(data:font/woff2;base64,${balo800}) format('woff2');font-weight:800}
   @font-face{font-family:'Baloo 2';src:url(data:font/woff2;base64,${balo600}) format('woff2');font-weight:600}
   *{margin:0;box-sizing:border-box}
   body{width:${vierkant ? 600 : 1600}px;height:${vierkant ? 600 : 900}px;background:${H.nacht};
        color:${H.perkament};font-family:'Baloo 2',system-ui,sans-serif;overflow:hidden;position:relative;
-       display:flex;align-items:center;gap:${vierkant ? 0 : 70}px;
-       padding:${vierkant ? '60px' : '0 80px'};flex-direction:${vierkant ? 'column' : 'row'};
-       justify-content:${achtergrond && !vierkant ? 'flex-start' : 'center'};
+       display:flex;align-items:${onder ? 'flex-start' : 'center'};gap:${vierkant ? 0 : 70}px;
+       padding:${vierkant ? '60px' : onder ? '0 80px 86px' : '0 80px'};
+       flex-direction:${vierkant || onder ? 'column' : 'row'};
+       justify-content:${onder ? 'flex-end' : achtergrond && !vierkant ? 'flex-start' : 'center'};
        text-align:${vierkant ? 'center' : 'left'}}
   body::before{content:'';position:absolute;inset:0;
     ${achtergrond
       ? `background-image:url(${achtergrond});background-size:cover;
-         background-position:${vierkant ? '74% center' : 'right center'}`
+         background-position:${vierkant ? p.duimplek ?? '74% center' : 'right center'}`
       : `background:radial-gradient(120% 90% at 30% 20%, #2b3a63 0%, ${H.nacht} 62%)`}}
   ${achtergrond ? `body::after{content:'';position:absolute;inset:0;background:linear-gradient(
-      ${vierkant ? '180deg, #0d142466 0%, #0d1424cc 34%, #0d1424f2 62%, #0d1424 100%' : '90deg, #0d1424f2 0%, #0d1424e0 34%, #0d142455 58%, #0d142400 76%'})}
+      ${vierkant
+        ? '180deg, #0d142466 0%, #0d1424cc 34%, #0d1424f2 62%, #0d1424 100%'
+        : onder
+          ? '0deg, #0d1424fa 0%, #0d1424e8 22%, #0d142488 44%, #0d142400 66%'
+          : '90deg, #0d1424f2 0%, #0d1424e0 34%, #0d142455 58%, #0d142400 76%'})}
     .links,.band.rand{z-index:2}` : ''}
   .band.rand{position:absolute;left:0;width:100%;height:${vierkant ? 14 : 18}px;opacity:.9}
   .band.rand.b{top:${vierkant ? 22 : 30}px}.band.rand.o{bottom:${vierkant ? 22 : 30}px}
   .links{position:relative;flex:none;display:flex;flex-direction:column;
          align-items:${vierkant ? 'center' : 'flex-start'};gap:${vierkant ? 18 : 10}px;
-         max-width:${vierkant ? 480 : 660}px}
+         max-width:${vierkant ? 480 : onder ? 1000 : 660}px}
   .sl{width:${vierkant ? 96 : 120}px;flex:none;margin-bottom:${vierkant ? 4 : 10}px}
   .merk{font-weight:800;font-size:${vierkant ? 15 : 18}px;letter-spacing:.34em;text-transform:uppercase;
         color:${H.lichtGoud}}
@@ -161,6 +176,7 @@ const blad = (p, vierkant, achtergrond) => `<!doctype html><meta charset="utf-8"
   <div class="prijs">${esc(p.prijs)}</div>
 </div>
 ${vierkant || !p.omslagen.length ? '' : `<div class="rechts">${p.omslagen.map(mini).join('')}</div>`}`
+}
 
 await mkdir(UIT, { recursive: true })
 const browser = await chromium.launch({ executablePath: CHROME })
