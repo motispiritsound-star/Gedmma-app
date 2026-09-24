@@ -21,8 +21,15 @@ import { fileURLToPath } from 'node:url'
  */
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const PLIST = path.join(ROOT, 'ios', 'App', 'App', 'Info.plist')
+const PROJECT = path.join(ROOT, 'ios', 'App')
+const PLIST = path.join(PROJECT, 'App', 'Info.plist')
 const BUDDY = '/usr/libexec/PlistBuddy'
+
+/** `npm run ios -- --build 5 --versie 1.0` */
+const arg = (naam) => {
+  const i = process.argv.indexOf(`--${naam}`)
+  return i > -1 ? process.argv[i + 1] : undefined
+}
 
 /**
  * Wat de ouder te zien krijgt als iOS om de microfoon vraagt.
@@ -52,6 +59,42 @@ if (!existsSync(BUDDY)) {
 
 const buddy = (opdracht) =>
   execFileSync(BUDDY, ['-c', opdracht, PLIST], { encoding: 'utf8' })
+
+/**
+ * Het buildnummer en het versienummer.
+ *
+ * Twee getallen die in Xcode achter een tabblad zitten, en allebei zijn ze
+ * eerder misgegaan. Het buildnummer moet bij élke upload omhoog, anders
+ * weigert Apple hem. En het versienummer moet letterlijk gelijk zijn aan wat
+ * er in App Store Connect staat: "1.0.0" is daar niet hetzelfde als "1.0", en
+ * een build met het verkeerde nummer verschijnt nergens in de lijst — hij is
+ * geüpload, hij is verwerkt, en je kunt hem niet kiezen.
+ *
+ * `agvtool` zet ze allebei in het Xcode-project zelf, dus je hoeft het niet te
+ * openen om ze te wijzigen.
+ */
+const nummers = () => {
+  const build = arg('build')
+  const versie = arg('versie')
+  if (!build && !versie) return
+  const draai = (args) =>
+    execFileSync('xcrun', ['agvtool', ...args], { cwd: PROJECT, encoding: 'utf8', stdio: 'pipe' })
+  try {
+    if (versie) {
+      draai(['new-marketing-version', versie])
+      console.log(`versie → ${versie}`)
+    }
+    if (build) {
+      draai(['new-version', '-all', build])
+      console.log(`build → ${build}`)
+    }
+  } catch (e) {
+    console.error('agvtool kwam er niet uit:', e.message)
+    process.exit(1)
+  }
+}
+
+nummers()
 
 for (const { sleutel, soort, waarde } of REGELS) {
   try {

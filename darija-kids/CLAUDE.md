@@ -23,7 +23,7 @@ misschien anders uitziet.
 
 | | |
 |---|---|
-| iOS | `npm run ios`, dan in Xcode archiveren — zie `docs/MAC.md` |
+| iOS | `npm run ios -- --build <n> --versie <x.y>`, dan in Xcode archiveren — zie `docs/MAC.md` |
 | Android | `npm run aab -- --versie <n> --naam <x.y>` — zie `docs/ANDROID.md` |
 
 `npm run ios` bouwt de app, kopieert hem in het iOS-project én zet de twee

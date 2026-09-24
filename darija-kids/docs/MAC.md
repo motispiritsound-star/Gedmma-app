@@ -367,11 +367,27 @@ npm run ios
 Dat bouwt de app, kopieert hem in het iOS-project, en zet daarna die twee
 regels. Draai je het twee keer, dan staan ze er niet twee keer in.
 
+### Het buildnummer meteen goed zetten
+
+Bij elke upload moet het buildnummer omhoog, anders weigert Apple hem. En het
+versienummer moet letterlijk gelijk zijn aan wat er in App Store Connect
+staat: `1.0.0` is daar niet hetzelfde als `1.0`, en een build met het
+verkeerde nummer verschijnt nergens in de lijst — hij is geüpload, hij is
+verwerkt, en je kunt hem niet kiezen.
+
+Beide in één keer:
+
+```bash
+npm run ios -- --build 5 --versie 1.0
+```
+
+Daarna hoef je in Xcode niets meer in te vullen; alleen archiveren.
+
 Wil je het los draaien — bijvoorbeeld omdat je net `npx cap add ios` hebt
 gedaan:
 
 ```bash
-node scripts/ios-plist.mjs
+node scripts/ios-plist.mjs --build 5 --versie 1.0
 ```
 
 Controleren of het gelukt is, zonder Xcode:
