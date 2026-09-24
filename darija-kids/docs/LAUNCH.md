@@ -97,8 +97,23 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
 - [x] Beide: 3 dagen gratis als **Introductory Offer**, alle 175 landen
 - [x] Beide: **Family Sharing** aan
 - [x] Beide: naam en beschrijving in het Nederlands
+- [ ] Beide: naam en beschrijving in het **Engels** — daar staat nu de appnaam
+      met een Nederlandse zin eronder, en dat is de vermelding voor de hele
+      wereld buiten Nederland. Moet worden: `One year` met
+      `All 17 units, 304 words and 100 sentences.`, en `Monthly` bij de andere
+      (naam maximaal 30 tekens, beschrijving maximaal 45)
 - [x] Beide: review-screenshot van 1290 × 2796
-- [x] **Levels**: Jaar op 1, Maand op 2 — zodat overstappen een upgrade is
+- [ ] **Basisland op Nederland**. De prijs is aangemaakt met de Verenigde
+      Staten als uitgangspunt ($ 49,99), en de zes eurolanden zijn daarna met
+      de hand bijgewerkt. Dat houdt geen stand: elke prijswijziging later
+      begint weer bij de dollar. Opnieuw instellen vanuit Nederland
+      (€ 59,99 en € 6,99), Apple de overige 169 landen laten afleiden, en
+      daarna alleen **Marokko** met de hand verlagen — een prijs die uit een
+      europrijs rolt is daar het dubbele van wat een gezin uitgeeft
+- [ ] **Levels**: staan nu allebei op 1, niet op 1 en 2 zoals hieronder stond.
+      Daarmee gaat een overstap van maand naar jaar pas bij de volgende
+      verlenging in. Er wordt niets dubbel betaald, dus dit mag wachten tot na
+      de review — *Edit Level* raakt de indiening
 - [x] `app.darijaforkids.ebook` aangemaakt — niet-verbruikbaar, Apple ID 6813986487,
       alle 175 landen, naam en beschrijving in het Nederlands, afbeelding erbij
 - [x] E-boek: Family Sharing aan — net als bij Jaar en Maand
