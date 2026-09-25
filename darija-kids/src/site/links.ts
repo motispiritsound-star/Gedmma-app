@@ -17,6 +17,30 @@ export const STORE = {
   google: '',
 }
 
+/** The application id, the same one android/app/build.gradle carries. */
+export const APP_ID = 'app.darijaforkids.learn'
+
+/**
+ * The App Store address, from whatever App Store Connect hands you.
+ *
+ * That can be the bare Apple ID, `id6751234567`, or the long share link with
+ * a country and a slug in it. All three mean the same app, so all three are
+ * accepted and the short form comes back: apps.apple.com redirects a visitor
+ * to their own storefront, and this app sells in six languages.
+ */
+export const appleStoreUrl = (input: string): string => {
+  const id = input.match(/\d{8,}/)?.[0]
+  if (!id) throw new Error(`Geen Apple ID gevonden in "${input}"`)
+  return `https://apps.apple.com/app/id${id}`
+}
+
+/**
+ * The Play address. Known long before the app is approved, because it is
+ * nothing but the application id in a URL.
+ */
+export const playStoreUrl = (id: string = APP_ID): string =>
+  `https://play.google.com/store/apps/details?id=${id}`
+
 /** The website's own address, for canonical links and the sitemap. */
 export const SITE_URL = 'https://darijaforkids.eu'
 

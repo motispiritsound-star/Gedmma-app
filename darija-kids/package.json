@@ -45,6 +45,7 @@
     "knipblad": "node scripts/make-knipblad.mjs",
     "build:app": "tsc -b && vite build",
     "site": "node scripts/make-site.mjs",
+    "live": "node scripts/live.mjs",
     "siteassets": "node scripts/make-siteassets.mjs",
     "sleutels": "node scripts/make-sleutels.mjs",
     "platenlijst": "node scripts/make-platenlijst.mjs",

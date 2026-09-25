@@ -157,17 +157,21 @@ database erachter en alle zes de tafels erin. Op darijaforkids.eu/portaal meld
 je je aan met je e-mailadres, krijg je een link, en zie je daarna je gekochte
 reeksen. Geen wachtwoord — zie `server/src/portaal.ts` voor waarom niet.
 
-Drie dingen die nog moeten voordat het werkt voor een echte koper:
+Hij hangt aan zijn eigen adres: **post.darijaforkids.eu**, aangelegd door
+`npm run deploy` zelf. Dat staat als route in `server/wrangler.toml`, en omdat
+het domein op de nameservers van Cloudflare draait zet wrangler de DNS-regel
+er zelf bij. Het adres op `workers.dev` staat voorlopig nog aan om op te
+testen; zodra het eigen adres antwoordt mag `workers_dev = false`.
 
-1. **De worker koppelen aan post.darijaforkids.eu.** In het Cloudflare-
-   dashboard bij Workers & Pages → `darijaforkids-post` → Settings → Domains &
-   Routes. Zolang dat niet gebeurd is, wijzen de links in de mails naar een
-   adres dat niemand kent. Zet daarna `workers_dev = false` in `wrangler.toml`,
-   anders is dezelfde worker op twee adressen bereikbaar.
-2. **Gumroad laten melden dat er verkocht is**, naar `/koop`. Zonder die
+Twee dingen die nog moeten voordat het werkt voor een echte koper:
+
+1. **Gumroad laten melden dat er verkocht is**, naar `/koop`. Zonder die
    melding blijft de bibliotheek van een koper leeg terwijl hij wél betaald
-   heeft — en dat is de ergste soort bug: hij lijkt op diefstal.
-3. **Zelf een keer het hele rondje lopen**: kopen, mail, aanmelden, inloggen,
+   heeft — en dat is de ergste soort bug: hij lijkt op diefstal. Let op: de
+   kale ping van Gumroad stuurt geen eigen koppen mee, en `/koop` verwacht nu
+   `x-darija-geheim`. Wat daar moet veranderen hangt af van wat het account
+   aanbiedt onder Settings → Advanced.
+2. **Zelf een keer het hele rondje lopen**: kopen, mail, aanmelden, inloggen,
    en kijken of het boek er staat.
 
 De R2-bak staat uit. Die is voor de lezer die een boek bladzijde voor
@@ -200,6 +204,10 @@ Dat is één regel in `src/site/links.ts`.
 
 ## Naar go-live
 
+De hele dag staat uitgeschreven in **`docs/GO-LIVE.md`**: de volgorde, de
+commando's, en alle berichten klaar om te plakken. Wat je daarvóór nog moet
+doen, staat hier.
+
 De volgorde die een aankondiging mogelijk maakt: eerst laten goedkeuren, dan
 vasthouden, dan pas vrijgeven. Een winkel die bij goedkeuring meteen
 publiceert, bepaalt zelf je lanceerdag — en dan staat de app al in de winkel
@@ -210,13 +218,22 @@ terwijl de eerste teaser nog moet komen.
    Doe dit zolang submission 3 nog in review is; erna is het te laat.
 2. **Apple op handmatig.** Bij het inzenden van de versie: *Manually release
    this version*. Niet "automatically".
-3. De winkeladressen in `src/site/links.ts` (`STORE.apple`, `STORE.google`)
-   zodra beide winkels een adres hebben. Nu leeg, en dan tonen de knoppen
-   niets in plaats van een link naar niets.
-4. De app zelf spelen: op een iPhone via TestFlight, op de Galaxy Tab via Play.
+3. De app zelf spelen: op een iPhone via TestFlight, op de Galaxy Tab via Play.
    De punten om op te letten staan in `docs/MAC.md` §D.
-5. Vrijgeven: eerst Apple (de goedkeuring is er dan al, publiceren duurt een
+4. Vrijgeven: eerst Apple (de goedkeuring is er dan al, publiceren duurt een
    paar uur), Play erachteraan. Play is binnen het uur zichtbaar.
+5. De website omzetten met één commando, als allebei de winkeladressen echt
+   opengaan:
+
+   ```bash
+   npm run live -- --apple 6751234567 --google
+   ```
+
+   Dat vult `STORE` in `src/site/links.ts` en zet de site opnieuw: het blok
+   "binnenkort" verdwijnt, de balk onderaan wordt een downloadknop, en de twee
+   winkelknoppen worden echt. Het Apple ID staat in App Store Connect bij
+   *App Information*; het Play-adres weet het script zelf. Klopt er iets niet,
+   dan brengt `npm run live -- --uit` je terug.
 
 ## Waar het van afhangt
 

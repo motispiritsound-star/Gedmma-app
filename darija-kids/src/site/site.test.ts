@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { SITE } from './copy'
-import { PATHS, SITE_URL, STORE } from './links'
+import { APP_ID, PATHS, SITE_URL, STORE, appleStoreUrl, playStoreUrl } from './links'
 import { LANG_CODES } from '../i18n/languages'
 import { CLIPS } from '../engine/clips'
 import { allWords } from '../content/lexicon'
@@ -119,6 +119,41 @@ describe('de adressen van de website', () => {
     for (const [winkel, url] of Object.entries(STORE)) {
       if (url) expect(url, winkel).toMatch(/^https:\/\//)
     }
+  })
+})
+
+/**
+ * De twee adressen die op de dag van de lancering in `STORE` komen.
+ *
+ * `npm run live` zet ze erin, en die dag is de drukste van het project: er
+ * staat een goedkeuring binnen, er moet gepost worden, en er kijkt iemand mee.
+ * Dat is precies wanneer je een adres verkeerd overtypt, dus wordt het niet
+ * overgetypt maar afgeleid.
+ */
+describe('de winkeladressen', () => {
+  it('halen het Apple ID uit alles wat App Store Connect geeft', () => {
+    const goed = 'https://apps.apple.com/app/id6751234567'
+    expect(appleStoreUrl('6751234567')).toBe(goed)
+    expect(appleStoreUrl('id6751234567')).toBe(goed)
+    expect(appleStoreUrl('https://apps.apple.com/nl/app/darijaforkids/id6751234567')).toBe(goed)
+    expect(appleStoreUrl('https://apps.apple.com/nl/app/darijaforkids/id6751234567?l=nl')).toBe(goed)
+  })
+
+  it('weigeren iets wat geen Apple ID is', () => {
+    // Een Play-adres in het Apple-veld is de fout die je op de dag zelf maakt.
+    expect(() => appleStoreUrl(playStoreUrl())).toThrow()
+    expect(() => appleStoreUrl('')).toThrow()
+  })
+
+  it('bouwen het Play-adres uit het application id', () => {
+    expect(playStoreUrl()).toBe(`https://play.google.com/store/apps/details?id=${APP_ID}`)
+  })
+
+  it('gebruiken hetzelfde application id als Android', () => {
+    // Loopt dit uiteen, dan wijst de knop op de website naar een app die niet
+    // bestaat — en dat merk je pas als de eerste bezoeker klaagt.
+    const gradle = readFileSync('android/app/build.gradle', 'utf8')
+    expect(gradle).toContain(`applicationId "${APP_ID}"`)
   })
 })
 
