@@ -29,6 +29,14 @@ const nl = {
   boekAlleVijf: 'Alle twaalf',
   boekTitel: 'Leesboeken voor onderweg naar huis',
   boekLead: 'Twee reeksen, twee leeftijden, en één bedoeling: dat een kind weet waar het vandaan komt.',
+  boekLuisterKop: 'Luister- en leesboeken',
+  boekLuisterLead:
+    'Je kind leest mee terwijl het boek wordt voorgelezen: de zin die klinkt, licht op. Dat werkt op een telefoon, een tablet en een computer — er hoeft niets geïnstalleerd te worden.',
+  boekStappen: [
+      ['Koop het boek', 'Je rekent af bij onze winkel en krijgt je bestanden meteen per mail.'],
+      ['Meld je aan met je e-mailadres', 'Geen wachtwoord. Je krijgt een link in je mail, en die laat je binnen.'],
+      ['Lees en luister', 'Je boeken staan klaar in je eigen bibliotheek, op elk apparaat waarop je inlogt.'],
+    ] as [string, string][],
   boekKlein: '2 – 8 jaar',
   boekKleinTitel: 'Sba de Atlasleeuw',
   boekKleinBody: 'Gewone voorleesboeken. Elke bladzijde is Nederlands, met één woord Darija erin — en de ontdekking van dat woord is het verhaal. Sba is een leeuw uit de Atlas; hij neemt zes kinderen mee door Marokko. Je hoeft zelf geen Darija te kennen: hoe je het woord zegt, staat er gewoon bij.',
@@ -206,6 +214,14 @@ const fr: SiteCopy = {
   boekAlleVijf: 'Les douze',
   boekTitel: 'Des livres pour le chemin du retour',
   boekLead: 'Deux séries, deux âges, une seule idée : qu’un enfant sache d’où il vient.',
+  boekLuisterKop: 'Livres à lire et à écouter',
+  boekLuisterLead:
+    'Votre enfant suit le texte pendant la lecture à voix haute : la phrase qui résonne s’éclaire. Cela fonctionne sur téléphone, tablette et ordinateur — rien à installer.',
+  boekStappen: [
+      ['Achetez le livre', 'Vous payez dans notre boutique et recevez vos fichiers par e-mail aussitôt.'],
+      ['Inscrivez-vous avec votre e-mail', 'Pas de mot de passe. Vous recevez un lien, et il vous fait entrer.'],
+      ['Lisez et écoutez', 'Vos livres vous attendent dans votre bibliothèque, sur chaque appareil où vous vous connectez.'],
+    ] as [string, string][],
   boekKlein: '2 – 8 ans',
   boekKleinTitel: 'Sba, le lion de l’Atlas',
   boekKleinBody: 'De simples livres à lire à voix haute. Chaque page est en français, avec un mot de darija dedans — et la découverte de ce mot, c’est l’histoire. Sba est un lion de l’Atlas ; il emmène six enfants à travers le Maroc. Pas besoin de parler darija : la prononciation est écrite à côté.',
@@ -380,6 +396,14 @@ const de: SiteCopy = {
   boekAlleVijf: 'Alle zwölf',
   boekTitel: 'Lesebücher für den Weg nach Hause',
   boekLead: 'Zwei Reihen, zwei Altersgruppen, eine Absicht: dass ein Kind weiß, wo es herkommt.',
+  boekLuisterKop: 'Hör- und Lesebücher',
+  boekLuisterLead:
+    'Dein Kind liest mit, während vorgelesen wird: der Satz, der klingt, leuchtet auf. Das geht auf dem Handy, dem Tablet und dem Computer — installieren musst du nichts.',
+  boekStappen: [
+      ['Kauf das Buch', 'Du bezahlst in unserem Shop und bekommst deine Dateien sofort per E-Mail.'],
+      ['Melde dich mit deiner E-Mail an', 'Kein Passwort. Du bekommst einen Link, und der lässt dich hinein.'],
+      ['Lies und hör zu', 'Deine Bücher stehen in deiner eigenen Bibliothek, auf jedem Gerät, auf dem du dich anmeldest.'],
+    ] as [string, string][],
   boekKlein: '2 – 8 Jahre',
   boekKleinTitel: 'Sba, der Atlaslöwe',
   boekKleinBody: 'Einfach Bücher zum Vorlesen. Jede Seite ist auf Deutsch, mit einem Wort Darija darin — und die Entdeckung dieses Wortes ist die Geschichte. Sba ist ein Löwe aus dem Atlas; er nimmt sechs Kinder mit durch Marokko. Du musst kein Darija können: wie man es sagt, steht daneben.',
@@ -554,6 +578,14 @@ const es: SiteCopy = {
   boekAlleVijf: 'Los doce',
   boekTitel: 'Libros para el camino a casa',
   boekLead: 'Dos series, dos edades y una sola intención: que un niño sepa de dónde viene.',
+  boekLuisterKop: 'Libros para leer y escuchar',
+  boekLuisterLead:
+    'Tu hijo sigue el texto mientras se lee en voz alta: la frase que suena se ilumina. Funciona en el móvil, en la tableta y en el ordenador — no hay que instalar nada.',
+  boekStappen: [
+      ['Compra el libro', 'Pagas en nuestra tienda y recibes tus archivos por correo al momento.'],
+      ['Date de alta con tu correo', 'Sin contraseña. Recibes un enlace y ese enlace te deja entrar.'],
+      ['Lee y escucha', 'Tus libros te esperan en tu biblioteca, en cualquier aparato donde entres.'],
+    ] as [string, string][],
   boekKlein: '2 – 8 años',
   boekKleinTitel: 'Sba, el león del Atlas',
   boekKleinBody: 'Libros normales para leer en voz alta. Cada página está en español, con una palabra en dariya dentro — y descubrir esa palabra es la historia. Sba es un león del Atlas; lleva a seis niños por Marruecos. No hace falta saber dariya: cómo se dice está escrito al lado.',
@@ -728,6 +760,14 @@ const it: SiteCopy = {
   boekAlleVijf: 'Tutti e dodici',
   boekTitel: 'Libri per la strada di casa',
   boekLead: 'Due collane, due età e una sola intenzione: che un bambino sappia da dove viene.',
+  boekLuisterKop: 'Libri da leggere e ascoltare',
+  boekLuisterLead:
+    'Tuo figlio segue il testo mentre viene letto ad alta voce: la frase che suona si illumina. Funziona su telefono, tablet e computer — non c’è niente da installare.',
+  boekStappen: [
+      ['Compra il libro', 'Paghi nel nostro negozio e ricevi subito i file per e-mail.'],
+      ['Iscriviti con la tua e-mail', 'Nessuna password. Ricevi un link, e quel link ti fa entrare.'],
+      ['Leggi e ascolta', 'I tuoi libri ti aspettano nella tua biblioteca, su ogni dispositivo su cui entri.'],
+    ] as [string, string][],
   boekKlein: '2 – 8 anni',
   boekKleinTitel: 'Sba, il leone dell’Atlante',
   boekKleinBody: 'Semplici libri da leggere ad alta voce. Ogni pagina è in italiano, con dentro una parola in darija — e scoprire quella parola è la storia. Sba è un leone dell’Atlante; porta sei bambini in giro per il Marocco. Non serve sapere il darija: come si dice è scritto accanto.',
@@ -902,6 +942,14 @@ const en: SiteCopy = {
   boekAlleVijf: 'All twelve',
   boekTitel: 'Books for the way home',
   boekLead: 'Two series, two ages, one intention: that a child knows where they come from.',
+  boekLuisterKop: 'Listen-and-read books',
+  boekLuisterLead:
+    'Your child follows the text while the book is read aloud: the sentence being spoken lights up. It works on a phone, a tablet and a computer — nothing to install.',
+  boekStappen: [
+      ['Buy the book', 'You pay in our shop and your files arrive by email straight away.'],
+      ['Sign up with your email', 'No password. You get a link, and that link lets you in.'],
+      ['Read and listen', 'Your books are waiting in your own library, on every device you sign in on.'],
+    ] as [string, string][],
   boekKlein: '2 – 8 years',
   boekKleinTitel: 'Sba the Atlas Lion',
   boekKleinBody: 'Plain books to read aloud. Every page is in English, with one Darija word in it — and discovering that word is the story. Sba is a lion from the Atlas; he takes six children through Morocco. You do not need to speak Darija: how to say the word is written next to it.',

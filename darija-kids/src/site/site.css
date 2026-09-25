@@ -677,3 +677,26 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
   margin: 0 0 2.4rem;
 }
 .boeken .proef i { font-style: normal; font-size: .93rem; color: var(--ink-soft); }
+
+/* Luister- en leesboeken: het eerste blok op de boekenpagina. Wat voor boeken
+   dit zijn, en in drie stappen hoe je er na het afrekenen bij komt. */
+.boeken .luisteren {
+  background: var(--sunken); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 1.4rem 1.5rem; margin: 1.6rem 0 2.6rem;
+}
+.boeken .luisteren h2 { margin: 0 0 .5rem; font-size: 1.45rem; }
+.boeken .luisteren > p { margin: 0 0 1.2rem; color: var(--ink-soft); max-width: 46rem; }
+.boeken .luisteren ol {
+  counter-reset: stap; list-style: none; margin: 0; padding: 0;
+  /* Drie stappen horen naast elkaar te staan: twee erboven en één eronder
+     leest als een lijst die halverwege is afgebroken. */
+  display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fit, minmax(11.5rem, 1fr));
+}
+.boeken .luisteren li { counter-increment: stap; display: grid; gap: .2rem; }
+.boeken .luisteren li b::before {
+  content: counter(stap); display: inline-grid; place-items: center;
+  width: 1.5rem; height: 1.5rem; margin-right: .5rem; border-radius: 50%;
+  background: var(--saffron); color: #1a1625; font-size: .82rem;
+}
+.boeken .luisteren li b { display: flex; align-items: center; font-size: 1rem; }
+.boeken .luisteren li span { color: var(--ink-soft); font-size: .94rem; line-height: 1.5; }

@@ -816,9 +816,28 @@ const booksPage = (lang) => {
     </g>
   </svg>`, c.boekGrootTitel)
 
+  /**
+   * Bovenaan, vóór de reeksen: wat voor boeken dit zijn en hoe je erbij komt.
+   *
+   * Een ouder die hier voor het eerst komt weet twee dingen niet: dat er wordt
+   * voorgelezen terwijl zijn kind meeleest, en waar het boek na het afrekenen
+   * blijft. Het eerste is het verschil met elk ander pdf-boek; het tweede is
+   * de vraag die anders per mail binnenkomt.
+   */
+  const luisteren = `<section class="luisteren">
+    <h2>${esc(c.boekLuisterKop)}</h2>
+    <p>${esc(c.boekLuisterLead)}</p>
+    <ol>${c.boekStappen.map(([kop, uitleg]) => `<li>
+      <b>${esc(kop)}</b>
+      <span>${esc(uitleg)}</span>
+    </li>`).join('')}</ol>
+  </section>`
+
   const body = `<div class="wrap doc boeken">
   <h1>${esc(c.boekTitel)}</h1>
   <p class="intro">${esc(c.boekLead)}</p>
+
+  ${luisteren}
 
   ${reeks(c.boekKlein, c.boekKleinTitel, c.boekKleinBody, c.boekKleinPunten, leeuw, 'sbaReeks')}
   ${lijst(d.sba, () => d.woorden(12), 'sbaReeks')}
