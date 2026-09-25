@@ -549,12 +549,28 @@ const homePage = (lang, media) => {
  * scraper, so it carries the name, the e-mail and the register numbers and
  * leaves the rest to the stores and to src/ui/Operator.tsx.
  */
+/**
+ * Wie er achter deze website zit.
+ *
+ * Hier stonden vier regels: naam, e-mail, KvK en btw. Het adres en de
+ * bedrijfsnaam stonden alleen in de app, waar Apple en Google ze afdwingen —
+ * terwijl de wet ze juist van een website vraagt. Artikel 3:15d BW, en de
+ * Europese regels erachter, willen dat een bezoeker kan zien wie hij voor zich
+ * heeft en waar die zit. "KvK 77780868" is een nummer, geen antwoord.
+ *
+ * `bedrijf` staat erbij omdat de naam op de gevel en de naam in het register
+ * verschillen: wie wil klagen over Darijaforkids moet niet hoeven raden dat
+ * hij Venship zoekt.
+ */
 function traderTable(lang) {
   if (!traderKnown()) return ''
   const t = STRINGS[lang]
   const rows = [
     [t.operator.naam, esc(OPERATOR.name)],
+    ...(OPERATOR.bedrijf ? [[t.operator.bedrijf, esc(OPERATOR.bedrijf)]] : []),
+    [t.operator.adres, `${esc(OPERATOR.address)}, ${esc(OPERATOR.country)}`],
     [t.operator.email, `<a href="${mailto}">${esc(OPERATOR.email)}</a>`],
+    ...(OPERATOR.phone ? [[t.operator.telefoon, `<a href="tel:${esc(OPERATOR.phone.replace(/\s/g, ''))}">${esc(OPERATOR.phone)}</a>`]] : []),
     [t.operator.kvk, esc(OPERATOR.registration)],
     ...(OPERATOR.vat ? [[t.operator.btw, esc(OPERATOR.vat)]] : []),
   ]

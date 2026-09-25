@@ -4,6 +4,7 @@ import { SITE } from './copy'
 import { APP_ID, PATHS, SITE_URL, STORE, appleStoreUrl, playStoreUrl } from './links'
 import { LANG_CODES } from '../i18n/languages'
 import { ZINSGRENS } from '../content/zinnen'
+import { traderKnown } from '../content/operator'
 import { CLIPS } from '../engine/clips'
 import { allWords } from '../content/lexicon'
 import { ALL_SENTENCES } from '../content/sentences'
@@ -137,6 +138,28 @@ describe('de adressen van de website', () => {
  * dezelfde zinsgrens er twee keer. Twee kopieën is er één te veel — vandaar
  * deze test, die ze naast elkaar legt.
  */
+/**
+ * Wie er achter de website zit, moet op de website staan.
+ *
+ * Dat is geen nettigheid: artikel 3:15d BW wil naam, adres en een manier om
+ * contact op te nemen. Ze stonden alleen in de app, waar Apple en Google ze
+ * afdwingen, en op de website stond alleen een KvK-nummer — een nummer is
+ * geen antwoord op de vraag wie je voor je hebt.
+ */
+describe('de handelsgegevens', () => {
+  const zetter = readFileSync('scripts/make-site.mjs', 'utf8')
+
+  it('staan compleet in de tabel op de website', () => {
+    for (const veld of ['OPERATOR.address', 'OPERATOR.bedrijf', 'OPERATOR.phone', 'OPERATOR.registration']) {
+      expect(zetter, veld).toContain(veld)
+    }
+  })
+
+  it('zijn ook echt ingevuld', () => {
+    expect(traderKnown()).toBe(true)
+  })
+})
+
 describe('de lezer op de website', () => {
   const lezer = readFileSync('src/site/lezer.js', 'utf8')
 
