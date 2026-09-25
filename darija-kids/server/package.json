@@ -9,7 +9,7 @@
     "schema": "npx wrangler d1 execute darijaforkids --remote --file schema.sql",
     "geheimen": "npx wrangler secret list",
     "typecheck": "tsc --noEmit",
-    "maak-bak": "npx wrangler r2 bucket create darijaforkids-boeken && node ../scripts/r2-aan.mjs && npx wrangler deploy"
+    "maak-bak": "node ../scripts/maak-bak.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260915.1",

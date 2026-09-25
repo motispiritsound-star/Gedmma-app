@@ -88,7 +88,17 @@ Het portaal, het inloggen en de ledenlijst werken zonder. De lezer niet: die
 haalt elk boek apart op uit een R2-bak, en zolang die er niet is zegt hij
 "niet ingericht" — bij een koper die wél betaald heeft.
 
-Twee opdrachten, één keer:
+**Eerst R2 aanzetten.** Dat is het enige in dit hele project dat echt met de
+muis moet: Cloudflare wil akkoord op de voorwaarden, en dat kan geen opdracht
+namens jou geven.
+
+    dash.cloudflare.com → R2 → aanzetten
+
+Er wordt om een betaalmethode gevraagd. Dat hoort erbij en kost niets: onder
+de tien gigabyte is R2 gratis, en alle boeken bij elkaar zijn een kwart
+gigabyte. Wat de grenzen vandaag precies zijn, staat op dat scherm zelf.
+
+Daarna twee opdrachten, één keer:
 
 ```bash
 cd server

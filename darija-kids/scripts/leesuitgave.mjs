@@ -108,10 +108,31 @@ if (process.argv.includes('--r2')) {
   for (const { code } of TALEN) {
     for (let n = 1; n <= 15; n++) {
       const bron = path.join(UIT, 'data', `${code}-${n}.json`)
-      execFileSync('npx', ['wrangler', 'r2', 'object', 'put',
-        `darijaforkids-boeken/sleutels/${n}/${code}/boek.json`,
-        '--file', bron, '--remote', '--content-type', 'application/json'],
-        { cwd: path.join(ROOT, 'server'), stdio: ['ignore', 'ignore', 'inherit'] })
+      try {
+        execFileSync('npx', ['wrangler', 'r2', 'object', 'put',
+          `darijaforkids-boeken/sleutels/${n}/${code}/boek.json`,
+          '--file', bron, '--remote', '--content-type', 'application/json'],
+          { cwd: path.join(ROOT, 'server'), stdio: 'pipe', encoding: 'utf8' })
+      } catch (fout) {
+        /**
+         * Negentig keer dezelfde fout afdrukken helpt niemand.
+         *
+         * De eerste die omvalt zegt al wat er mis is, en dat is bijna altijd
+         * hetzelfde: de bak bestaat nog niet. Dus: één keer zeggen, zeggen wat
+         * je eraan doet, en stoppen.
+         */
+        const melding = `${fout.stdout ?? ''}${fout.stderr ?? ''}`
+        console.error('\n\nDe boeken gaan er niet in.\n')
+        if (/10042|enable R2|10006|does not exist|not found/i.test(melding)) {
+          console.error('De bak bestaat nog niet. Maak hem eerst:\n')
+          console.error('  cd server')
+          console.error('  npm run maak-bak\n')
+          console.error('Daarna deze opdracht opnieuw; wat er al in staat mag blijven staan.\n')
+        } else {
+          console.error(melding || String(fout))
+        }
+        process.exit(1)
+      }
       gedaan += 1
       process.stdout.write(`\r${gedaan} van de 90`)
     }
