@@ -72,6 +72,33 @@ describe('de commando\'s in de documentatie', () => {
     }
   })
 
+  /**
+   * En ook wat een script zelf afdrukt.
+   *
+   * `npm run live` sloot af met "wat er nog moet", en daar stond
+   * `git add -A && git commit ... && git push` op één regel. Dat is precies
+   * de regel die op de dag van de lancering geplakt wordt, als de app al in
+   * de winkel staat en de website nog niet om is. De markdown was toen al
+   * gerepareerd; de uitvoer van het script niet, want daar keek niets naar.
+   */
+  it('en ook de opdrachten die de scripts afdrukken', () => {
+    const map = path.join(WORTEL, 'scripts')
+    const namen = readdirSync(map).filter((n) => n.endsWith('.mjs'))
+    expect(namen.length).toBeGreaterThan(5)
+    const fout: string[] = []
+    for (const naam of namen) {
+      readFileSync(path.join(map, naam), 'utf8').split('\n').forEach((regel, i) => {
+        if (!regel.includes('console.log') && !regel.includes('console.error')) return
+        // Alleen wat tússen de aanhalingstekens staat: `a && b` als gewone
+        // javascript-operator in een regel eromheen is geen geplakte opdracht.
+        for (const stuk of regel.match(/(['"`])(?:\\.|(?!\1)[^\\])*\1/g) ?? []) {
+          if (stuk.includes('&&')) fout.push(`${naam} regel ${i + 1}: ${stuk.trim()}`)
+        }
+      })
+    }
+    expect(fout, 'geef elke opdracht een eigen console.log').toEqual([])
+  })
+
   it('verwijzen niet naar /tmp', () => {
     // Die map bestaat niet op Windows.
     for (const pad of lijst) {

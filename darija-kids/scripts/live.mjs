@@ -122,10 +122,28 @@ try {
 }
 
 const live = Boolean(doel.apple || doel.google)
+
+/**
+ * Elke opdracht op zijn eigen regel.
+ *
+ * Deze regels worden op de dag zelf geplakt, in Windows PowerShell 5.1, en die
+ * leest `&&` niet als scheiding: hij zegt dat het geen geldige scheiding is en
+ * doet niets. Dat is op elke andere dag een ongemak; op deze dag staat de app
+ * al in de winkel en is de website nog niet om.
+ */
 console.log(`\nDe website staat nu op ${live ? 'live' : 'binnenkort'}. Wat er nog moet:\n`)
-console.log('  git add -A && git commit -m "De app staat in de winkel" && git push')
+console.log('  git add -A')
+console.log(`  git commit -m "${live ? 'De app staat in de winkel' : 'De website weer op binnenkort'}"`)
+console.log('  git push')
 console.log('\nDe productiebranch bouwt en publiceert zichzelf, dus met die push staat')
 console.log('darijaforkids.eu binnen een paar minuten goed. Kijk daarna zelf even:\n')
-console.log('  https://darijaforkids.eu — de twee knoppen moeten klikbaar zijn')
-if (live) console.log('\nEn dan pas posten. Niet andersom: een bericht met een dode link\nkomt maar één keer voorbij.\n')
-else console.log('')
+if (live) {
+  console.log('  https://darijaforkids.eu — de twee knoppen moeten klikbaar zijn')
+  console.log('\nEn dan pas posten. Niet andersom: een bericht met een dode link')
+  console.log('komt maar één keer voorbij.\n')
+} else {
+  console.log('  https://darijaforkids.eu — er hoort weer "binnenkort" te staan')
+  console.log('\nStond er een bericht met een winkellink al buiten, haal dat dan ook weg:')
+  console.log('een knop die "binnenkort" zegt onder een bericht dat zegt dat hij er is,')
+  console.log('is erger dan geen bericht.\n')
+}
