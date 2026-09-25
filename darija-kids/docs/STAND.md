@@ -1,6 +1,6 @@
 # Waar staan we
 
-Bijgewerkt op 24 september 2026. Dit bestand is het antwoord op "wat moet er
+Bijgewerkt op 25 september 2026. Dit bestand is het antwoord op "wat moet er
 nog" zonder dat je drie andere bestanden hoeft te lezen.
 
 ## De app
@@ -9,9 +9,9 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 682, groen |
+| Tests | 727, groen |
 | Google Play | 2 (1.1) in review; 3 (1.2) is gebouwd en wacht op upload |
-| App Store | 1.0 (build 5) **afgewezen op 2.3.8** — ondertitel aangepast, opnieuw indienen |
+| App Store | 1.0 (build 5) **opnieuw ingediend** op 25 september, wacht op beoordeling |
 
 Wat er in build 5 zit en niet in build 4: het antwoord op richtlijn 4.2
 (microfoon, trillen, herinnering, breder op een iPad — zie `docs/APPLE-4.2.md`)
@@ -24,20 +24,26 @@ die regel sluit iOS de app af zodra een kind op de opnameknop drukt.
 
 Het antwoord aan App Review staat klaar in `store/appstore-4.2-antwoord.md`.
 
-### De afwijzing van 25 september — alleen tekst
+### De afwijzing van 25 september — afgehandeld
 
 Apple wees build 5 af op richtlijn 2.3.8: de ondertitel *For the kids, quietly
 for you* zei dat de app voor kinderen is, terwijl hij niet in de
-Kinderen-categorie is ingediend. Dat gaat niet over de app zelf — er hoeft
-geen nieuwe build, geen Xcode, geen Mac aan te pas te komen.
+Kinderen-categorie is ingediend. Dat ging niet over de app zelf — geen nieuwe
+build, geen Xcode, geen Mac.
 
-De ondertitel staat in zes talen klaar in `store/listing.<taal>.md`; in het
-Nederlands is het **Marokkaans-Arabisch leren**. Plak ze in App Store Connect,
-stuur het antwoord mee dat in `docs/APPLE-2.3.8.md` staat, en dien opnieuw in.
+De ondertitel is in alle zes de talen aangepast (`store/listing.<taal>.md`; in
+het Nederlands **Marokkaans-Arabisch leren**), het antwoord uit
+`docs/APPLE-2.3.8.md` is via Reply to App Review verstuurd, en dezelfde build
+is opnieuw ingediend. Er staat dus geen nieuw bestand bij Apple — alleen andere
+tekst — en dat gaat doorgaans sneller dan een eerste beoordeling.
 
-Wat daar verder in staat en wat je moet weten voordat je ooit "Made for Kids"
-aanzet — er zitten dan mailto-links in de app die een kind kan aantikken, en
-die moeten eerst achter de ouderpoort — leest in vijf minuten.
+Twee dingen om te weten die in dat bestand staan. De **naam** draagt hetzelfde
+woord, en Apple noemt de naam in dezelfde zin als de ondertitel; deze ronde
+hebben ze hem niet aangestipt, maar een volgende reviewer kan dat wel doen.
+Gebeurt dat, dan is hernoemen geen optie en is de Kinderen-categorie het
+antwoord — en daarvóór moeten de mailto-links uit de app achter de ouderpoort,
+want die mag een kind daar niet kunnen aantikken. Wat er dan precies moet
+verhuizen staat in `docs/APPLE-2.3.8.md`, per bestand.
 
 ### Handelsverificatie — gedaan
 
@@ -173,6 +179,14 @@ Zolang een link in `src/site/shop.ts` leeg is, staat er op de website
 "Binnenkort" en geen dode knop. De drie producten gaan dus los van elkaar
 open.
 
+**De handelaarsgegevens staan op de website**, en niet alleen een
+KvK-nummer: Venship, het adres en het telefoonnummer staan op de
+afrekenpagina, in de voorwaarden, in de privacyverklaring en op de
+ouderpagina. Dat is wat de Digital Services Act van een verkoper aan
+consumenten vraagt, en het is dezelfde informatie die Apple heeft
+goedgekeurd — dus als er één ding verandert, verandert het op vier plekken
+tegelijk (`traderTable` in `scripts/make-site.mjs`).
+
 **Het begin van De sleutels staat gratis op darijaforkids.eu/leesboeken**, in
 zes talen, zonder account en zonder e-mailadres: de eerste drie hoofdstukken
 van *De olijvenbrand*, ruim elfhonderd woorden, en het houdt op vlak vóór er
@@ -224,12 +238,16 @@ Twee dingen die nog moeten voordat het werkt voor een echte koper:
 
 Op de boekenpagina staat in de uitklaplijst per deel een geschilderd tafereel
 met de titel erop: 1200 × 675, linksboven een kaartje met de reeksnaam, de
-titel en het deelnummer met de plaats erachter.
+titel en het deelnummer met de plaats erachter. Daarmee is die lijst een
+etalage geworden in plaats van twaalf regels tekst.
 
 | | |
 | --- | --- |
-| Sba de Atlasleeuw | twaalf delen, zes talen — `npm run deelplaten -- --taal alles` |
+| Sba de Atlasleeuw | twaalf delen × zes talen — staan erop, `npm run deelplaten -- --taal alles` |
 | De sleutels van Marokko | vijf delen, alleen Nederlands — met de hand gemaakt |
+
+De tweeënzeventig platen voor Sba staan in `site-assets/sba/<taal>/` en gaan
+mee met de site.
 
 Voor Sba komt het tafereel uit `store/prentenboek/platen/<deel>/` en alleen de
 tekst uit de inhoud; verandert er een titel, dan zet je ze opnieuw in plaats
@@ -265,38 +283,66 @@ van hetzelfde deel). Zonder die tekst zou een prentenboek zwijgen, en dat is
 juist het boek waar een ouder hardop voorleest aan een kind dat nog niet zelf
 leest.
 
+De bladzijde ziet eruit als een bladzijde uit een boek en niet als een
+webpagina: crèmekleurig papier, een schreefletter, alinea's met een inspringing
+in plaats van witregels, en niet breder dan achtendertig regels tekst. Het
+tafereel van het deel staat erboven. De voorleesbalk blijft onder de sitekop
+hangen, ook op een telefoon.
+
+**De stem komt van het toestel, en dat is te horen.** Wij leveren geen opnames
+mee — de browser spreekt met de spraakstem die er staat. Op Windows en Android
+is dat meestal een nieuwe, natuurlijk klinkende stem; in Safari op een iPhone
+of iPad mag een bladzijde alleen bij de oude compacte stem, en die klinkt
+blikkerig. De stem van Siri is niet aan webpagina's beschikbaar, dus daar is
+met code niet omheen te komen. Wat er wél gedaan is:
+
+- de nieuwere stemmen komen vooraan in het keuzelijstje (`klank()` in
+  `src/site/lezer.js` zet ze op volgorde);
+- staat er alleen een oude bij, dan zegt de lezer zelf dat er in de
+  instellingen van het toestel een betere te downloaden is (`leesStemTip`);
+- en op de boekenpagina staat het er vóór het afrekenen bij, in zes talen
+  (`boekLuisterStem`) — niet als waarschuwing bovenaan, maar onder de drie
+  stappen.
+
+De vertellers heten Amir, Adam en Yassine bij de mannenstemmen en Sarah en
+Yousra bij de vrouwenstemmen. Dat zijn onze namen op de stemmen van het
+toestel; welke echte stem eronder zit verschilt per apparaat.
+
 `npm run portaalcheck` loopt dat hele rondje na in een echte browser, met de
 antwoorden van de worker erbij verzonnen. Geen database, geen mail, geen
-internet nodig.
+internet nodig. `npm run sitecheck` doet hetzelfde voor de website: dode links,
+ontbrekende ankers, en elk stukje javascript in de bladzijden wordt ontleed.
+Die twee hangen aan `npm run site` en `npm run build`, dus een dode link laat
+de bouw vallen in plaats van dat iemand hem later tegenkomt.
 
-**Wat er nog moet: de boeken in de bak.** De lezer haalt elk boek apart op uit
-R2, en die bak staat nog uit. Zolang dat zo is, krijgt een koper die inlogt
-"niet ingericht" te zien.
+**De boeken in de bak — de helft staat erin.** De lezer haalt elk boek apart
+op uit R2. Die bak bestaat, en de negentig leesboeken van De sleutels staan
+erin: vijftien delen in zes talen, samen twee megabyte. Dat rondje is nagelopen
+op het echte adres — inloggen, *De olijvenbrand* openen, en de stem leest voor.
 
-Eerst R2 aanzetten in het Cloudflare-dashboard, onder *Storage & databases* —
-het enige in dit project dat echt met de muis moet. Onder de tien gigabyte is
-het gratis en alle boeken samen zijn een kwart gigabyte. Daar zelf geen bak
-aanmaken; dat doet de opdracht hieronder. Daarna twee opdrachten, één keer:
-
-```bash
-cd server && npm run maak-bak && cd ..
-npm run lezen -- --r2
-```
-
-De eerste maakt de bak, zet de binding aan en rolt uit; de tweede zet er de
-negentig leesboeken in — vijftien delen in zes talen, samen twee megabyte.
-
-De prentenboeken van Sba zijn bladzijden als plaatje en moeten eerst geschoten
-worden:
+Wat er nog in moet zijn de prentenboeken van Sba. Die zijn bladzijden als
+plaatje en moeten eerst geschoten worden:
 
 ```bash
-npm run bladen -- --taal alles --uploaden
+npm run boeken -- --platen
 ```
 
 Twaalf delen × zes talen × eenendertig bladzijden, ruim tweehonderd megabyte,
 een half uur schieten plus versturen. De voorleestekst gaat vanzelf mee. Tot
 die tijd opent Sba niet in de lezer; de pdf uit de winkel werkt gewoon, en de
 lezer zegt dat er ook bij.
+
+`npm run boeken` is de opdracht die dit allemaal doet en zelf kijkt wat er
+nodig is: zonder vlaggen doet hij de leesboeken én de platen, met `--lezen` of
+`--platen` alleen dat ene. Hij zoekt eerst een browser (de al geïnstalleerde
+Edge is ook Chromium en wordt gepakt), zodat het niet halverwege afbreekt op
+een download van honderdvijftig megabyte.
+
+Moet de bak ooit opnieuw worden aangemaakt — een nieuw Cloudflare-account, een
+andere naam — dan doet `cd server` plus `npm run maak-bak` dat: bak aanmaken,
+binding aanzetten, uitrollen. Staat R2 in dat account nog uit, dan zegt de
+opdracht zelf waar je dat aanzet. Dat aanzetten is het enige in dit project dat
+echt met de muis moet; het vraagt niet om een betaalmethode.
 
 ### Het ledenbestand
 

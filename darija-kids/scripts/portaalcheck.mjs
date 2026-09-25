@@ -67,6 +67,18 @@ const BOEK = {
 }
 
 const fouten = []
+/**
+ * Elke fout die een bladzijde gooit, waar dan ook in het rondje.
+ *
+ * Dit stond er eerst niet, en toen ging het mis: in de voorleesbalk werd een
+ * `const` gebruikt vijfentwintig regels boven zijn eigen declaratie. Dat is
+ * geen lege waarde maar een ReferenceError, en die viel middenin het opbouwen
+ * van de balk — de knop stond er wel, leeg, en de stemmenlijst bleef leeg.
+ * Alle controles bleven groen, want die telden of de knop er was.
+ *
+ * Een bladzijde die een fout gooit is stuk, ook als hij er goed uitziet.
+ */
+const paginafouten = []
 const meld = (goed, wat) => {
   console.log(`${goed ? '  ok  ' : ' MIS  '}${wat}`)
   if (!goed) fouten.push(wat)
@@ -83,6 +95,7 @@ const browser = await startChroom()
 const bezoek = async (adres, antwoorden) => {
   const context = await browser.newContext()
   const bladzijde = await context.newPage()
+  bladzijde.on('pageerror', (fout) => paginafouten.push(`${adres} — ${fout.message}`))
   const gezien = []
   await bladzijde.route('**/post.darijaforkids.eu/**', async (route) => {
     const pad = new URL(route.request().url()).pathname
@@ -149,6 +162,11 @@ console.log('\nDe teaser')
   meld(zinnen > 40, `het begin gaat open en is in zinnen geknipt (${zinnen})`)
   meld(await bladzijde.locator('#proef .leesbalk .speel').count() === 1,
        'met dezelfde voorleesknop als na het afrekenen')
+  /* En er moet iets óp die knop staan. Dat de knop bestaat zegt niets: hij
+     wordt leeg aangemaakt en pas later van tekst voorzien, dus een fout
+     daartussen laat precies dit over — een knop die er is en niets zegt. */
+  const opDeKnop = (await bladzijde.locator('#proef .leesbalk .speel').textContent()) ?? ''
+  meld(opDeKnop.trim().length > 0, `en er staat tekst op die knop (${opDeKnop.trim() || 'leeg'})`)
   /**
    * De klasse `lezer` moet blijven staan. Hier stond ooit `className = 'boek'`,
    * en dat gooide hem weg — waarmee ook de opmaak verdween die eraan hangt,
@@ -282,6 +300,11 @@ console.log('\nDe lezer')
 
 await browser.close()
 site.close()
+
+console.log('\nGeen javascriptfouten')
+for (const f of paginafouten) console.log(`      ${f}`)
+meld(paginafouten.length === 0,
+     `geen enkele bladzijde gooide een fout (${paginafouten.length})`)
 
 if (fouten.length) {
   console.error(`\n${fouten.length} van de controles ging mis.\n`)

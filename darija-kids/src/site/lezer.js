@@ -179,7 +179,6 @@
     stemkiezer.setAttribute('aria-label', woorden.stem || 'Stem')
     balk.append(speelknop, stemkiezer)
     vak.prepend(balk)
-    balk.after(tip)
 
     const vulStemmen = () => {
       const lijst = stemmenVoor(code)
@@ -214,6 +213,11 @@
         || lijst.some(({ stem }) => NIEUWERE.test(stem.name) || stem.localService === false)
     }
 
+    /* Pas hier in het document, en niet bij `balk`: `tip` is hierboven met
+       `const` gemaakt en bestaat vóór die regel nog niet. Eerder neerzetten
+       geeft geen lege alinea maar een ReferenceError, en dan staat de halve
+       balk er — zonder knoptekst en zonder stemmen. */
+    balk.after(tip)
     vulStemmen()
     magTip()
     const opnieuwVullen = () => { laadStemmen(); vulStemmen(); magTip() }
