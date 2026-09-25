@@ -22,7 +22,7 @@ const nl = {
   /** `<title>` and the line under the link when somebody shares the site. */
   metaTitle: 'Darijaforkids — leer je kind de taal van thuis',
   metaDescription:
-    'Marokkaans-Arabisch voor kinderen, spelenderwijs. 432 woorden en zinnen, ingesproken door een Marokkaanse stem. Geen account, geen advertenties. Binnenkort in de App Store en Google Play.',
+    'Marokkaans-Arabisch voor kinderen, spelenderwijs. 432 opnames, allemaal ingesproken door een Marokkaanse stem. Geen account, geen advertenties. Binnenkort in de App Store en Google Play.',
 
   naarInhoud: 'Naar de inhoud',
   boekDeel1: 'Deel 1',
@@ -254,7 +254,7 @@ export type SiteCopy = typeof nl
 const fr: SiteCopy = {
   metaTitle: 'Darijaforkids — offrez à votre enfant la langue de la maison',
   metaDescription:
-    "L'arabe marocain pour les enfants, en jouant. 432 mots et phrases enregistrés par une voix marocaine. Sans compte, sans publicité. Bientôt sur l'App Store et Google Play.",
+    "L'arabe marocain pour les enfants, en jouant. 432 enregistrements, tous par une voix marocaine. Sans compte, sans publicité. Bientôt sur l'App Store et Google Play.",
 
   naarInhoud: 'Aller au contenu',
   boekDeel1: 'Tome 1',
@@ -466,7 +466,7 @@ const fr: SiteCopy = {
 const de: SiteCopy = {
   metaTitle: 'Darijaforkids — schenken Sie Ihrem Kind die Sprache von zu Hause',
   metaDescription:
-    'Marokkanisches Arabisch für Kinder, spielerisch. 432 Wörter und Sätze, eingesprochen von einer marokkanischen Stimme. Ohne Konto, ohne Werbung. Bald im App Store und bei Google Play.',
+    'Marokkanisches Arabisch für Kinder, spielerisch. 432 Aufnahmen, alle von einer marokkanischen Stimme. Ohne Konto, ohne Werbung. Bald im App Store und bei Google Play.',
 
   naarInhoud: 'Zum Inhalt',
   boekDeel1: 'Band 1',
@@ -678,7 +678,7 @@ const de: SiteCopy = {
 const es: SiteCopy = {
   metaTitle: 'Darijaforkids — devuelve a tu hijo la lengua de casa',
   metaDescription:
-    'Árabe marroquí para niños, jugando. 432 palabras y frases grabadas por una voz marroquí. Sin cuenta, sin anuncios. Muy pronto en la App Store y en Google Play.',
+    'Árabe marroquí para niños, jugando. 432 grabaciones, todas con voz marroquí. Sin cuenta, sin anuncios. Muy pronto en la App Store y en Google Play.',
 
   naarInhoud: 'Ir al contenido',
   boekDeel1: 'Tomo 1',
@@ -890,7 +890,7 @@ const es: SiteCopy = {
 const it: SiteCopy = {
   metaTitle: 'Darijaforkids — ridai a tuo figlio la lingua di casa',
   metaDescription:
-    'Arabo marocchino per bambini, giocando. 432 parole e frasi registrate da una voce marocchina. Senza account, senza pubblicità. Presto su App Store e Google Play.',
+    'Arabo marocchino per bambini, giocando. 432 registrazioni, tutte con voce marocchina. Senza account, senza pubblicità. Presto su App Store e Google Play.',
 
   naarInhoud: 'Vai al contenuto',
   boekDeel1: 'Volume 1',
@@ -1102,7 +1102,7 @@ const it: SiteCopy = {
 const en: SiteCopy = {
   metaTitle: 'Darijaforkids — give your child the language of home',
   metaDescription:
-    'Moroccan Arabic for children, through play. 432 words and sentences recorded by a Moroccan voice. No account, no ads. Coming soon to the App Store and Google Play.',
+    'Moroccan Arabic for children, through play. 432 recordings, every one of them a Moroccan voice. No account, no ads. Coming soon to the App Store and Google Play.',
 
   naarInhoud: 'Skip to content',
   boekDeel1: 'Book 1',

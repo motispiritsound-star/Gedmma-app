@@ -176,6 +176,54 @@ describe('de handelsgegevens', () => {
  * valt de titel terug op het Nederlands en staat er ineens één Nederlandse
  * regel in een Franse lijst. Dat is wat hier wordt bewaakt.
  */
+/**
+ * De getallen waarmee de website een belofte doet.
+ *
+ * "432 opnames · 17 units · 304 woorden · 100 zinnen · 28 letters" staat op de
+ * startpagina in zes talen, en dezelfde getallen staan in de winkelteksten en
+ * in de beschrijving van het abonnement. Ze zijn met de hand overgeschreven
+ * uit de inhoud, en dat houdt op te kloppen zodra er één woord bij komt.
+ *
+ * Er zat al een kleine scheur in: de omschrijving die Google onder een
+ * zoekresultaat zet, zei "432 woorden en zinnen". Dat zijn er 404 — de
+ * overige achtentwintig zijn de letters van het alfabet. 432 is het aantal
+ * opnames, en zo staat het er nu.
+ */
+describe('de getallen op de website', () => {
+  const ECHT = {
+    units: UNITS.length,
+    woorden: allWords.length,
+    zinnen: ALL_SENTENCES.length,
+    letters: LETTERS.length,
+  }
+  /** Elk woord, elke zin en elke letter is één opname. */
+  const OPNAMES = ECHT.woorden + ECHT.zinnen + ECHT.letters
+
+  it('kloppen met wat er in de app zit', () => {
+    expect(ECHT).toEqual({ units: 17, woorden: 304, zinnen: 100, letters: 28 })
+    expect(OPNAMES).toBe(432)
+  })
+
+  const TALEN = ['nl', 'fr', 'de', 'es', 'it', 'en'] as const
+
+  it.each(TALEN)('staan in het %s goed op de startpagina', (taal) => {
+    const regel = SITE[taal].heroBewijs
+    const getallen = (regel.match(/\d+/g) ?? []).map(Number)
+    expect(getallen, regel).toEqual([OPNAMES, ECHT.units, ECHT.woorden, ECHT.zinnen, ECHT.letters])
+  })
+
+  it.each(TALEN)('en de omschrijving in het %s telt opnames, geen woorden', (taal) => {
+    // 432 is het aantal opnames. Wie dat "woorden en zinnen" noemt, telt de
+    // letters mee als woorden.
+    const tekst = SITE[taal].metaDescription
+    expect(tekst).toContain(String(OPNAMES))
+    for (const fout of ['woorden en zinnen', 'mots et phrases', 'Wörter und Sätze',
+      'palabras y frases', 'parole e frasi', 'words and sentences']) {
+      expect(tekst, taal).not.toContain(`${OPNAMES} ${fout}`)
+    }
+  })
+})
+
 describe('de titels van de delen', () => {
   const TALEN = ['nl', 'fr', 'de', 'es', 'it', 'en']
 
