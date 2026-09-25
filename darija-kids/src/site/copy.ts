@@ -74,6 +74,15 @@ const nl = {
   boekKleinPunten: ['Twaalf delen in één keer, twaalf woorden per boek', 'Hoe je het zegt staat erbij, in gewone letters', 'Voorlezen kan zonder dat je zelf Darija kent'],
   boekGroot: '9 – 15 jaar',
   boekGrootTitel: 'De sleutels van Marokko',
+  /**
+   * De regel klein boven de titel op de plaat bij een deel.
+   *
+   * Enkelvoud — "de sleutel", niet "de sleutels" — terwijl de reeks De
+   * sleutels van Marokko heet. Dat is met opzet en het staat zo op de vijf
+   * platen die met de hand zijn gemaakt: het is een ondertitel en geen
+   * reekstitel, en zo gelezen klopt hij. Niet "verbeteren".
+   */
+  plaatOndertitel: 'De sleutel tot de geschiedenis van Marokko',
   boekGrootBody: 'Vijftien verhalen over tweeduizend jaar Marokkaanse geschiedenis, elk verteld door iemand van je eigen leeftijd die erbij was. Eén bronzen sleutel gaat van hand tot hand — van een olijvenpers in Walili tot een doos bij een oma in Nederland. Verzonnen mensen, echte gebeurtenissen; achterin elk deel staat precies wat waar is.',
   boekGrootPunten: ['Walili, Tariq ibn Ziyad, Fatima al-Fihri, Marrakech', 'Ibn Battuta, het Badi-paleis, de onafhankelijkheid', 'Achterin: wat hiervan is echt gebeurd'],
   boekStatus: 'In de maak',
@@ -288,6 +297,7 @@ const fr: SiteCopy = {
   boekKleinPunten: ['Les douze tomes d’un coup, douze mots par livre', 'La prononciation est écrite en lettres normales', 'Se lit sans connaître le darija'],
   boekGroot: '9 – 15 ans',
   boekGrootTitel: 'Les clés du Maroc',
+  plaatOndertitel: 'La clé de l’histoire du Maroc',
   boekGrootBody: 'Quinze récits sur deux mille ans d’histoire marocaine, racontés chaque fois par quelqu’un de ton âge qui y était. Une clé en bronze passe de main en main — d’un pressoir à olives de Walili jusqu’à une boîte chez une grand-mère en Europe. Personnages inventés, événements réels ; à la fin de chaque tome, ce qui est vrai.',
   boekGrootPunten: ['Walili, Tariq ibn Ziyad, Fatima al-Fihri, Marrakech', 'Ibn Battuta, le palais Badi, l’indépendance', 'À la fin : ce qui s’est vraiment passé'],
   boekStatus: 'En préparation',
@@ -499,6 +509,7 @@ const de: SiteCopy = {
   boekKleinPunten: ['Zwölf Bände auf einmal, zwölf Wörter pro Buch', 'Die Aussprache steht in normalen Buchstaben daneben', 'Vorlesen geht ohne eigenes Darija'],
   boekGroot: '9 – 15 Jahre',
   boekGrootTitel: 'Die Schlüssel Marokkos',
+  plaatOndertitel: 'Der Schlüssel zur Geschichte Marokkos',
   boekGrootBody: 'Fünfzehn Geschichten über zweitausend Jahre marokkanische Geschichte, jedes Mal erzählt von jemandem in deinem Alter, der dabei war. Ein bronzener Schlüssel geht von Hand zu Hand — von einer Olivenpresse in Walili bis zu einer Schachtel bei einer Großmutter in Europa. Erfundene Menschen, echte Ereignisse; hinten steht, was stimmt.',
   boekGrootPunten: ['Walili, Tariq ibn Ziyad, Fatima al-Fihri, Marrakesch', 'Ibn Battuta, der Badi-Palast, die Unabhängigkeit', 'Am Ende: was wirklich geschehen ist'],
   boekStatus: 'In Arbeit',
@@ -710,6 +721,7 @@ const es: SiteCopy = {
   boekKleinPunten: ['Los doce tomos de una vez, doce palabras por libro', 'La pronunciación está en letras normales', 'Se lee sin saber dariya'],
   boekGroot: '9 – 15 años',
   boekGrootTitel: 'Las llaves de Marruecos',
+  plaatOndertitel: 'La llave de la historia de Marruecos',
   boekGrootBody: 'Quince relatos sobre dos mil años de historia marroquí, contados cada vez por alguien de tu edad que estuvo allí. Una llave de bronce pasa de mano en mano — desde un molino de aceite en Walili hasta una caja en casa de una abuela en Europa. Personajes inventados, hechos reales; al final de cada tomo, lo que es verdad.',
   boekGrootPunten: ['Walili, Tariq ibn Ziyad, Fátima al-Fihri, Marrakech', 'Ibn Battuta, el palacio Badi, la independencia', 'Al final: lo que ocurrió de verdad'],
   boekStatus: 'En preparación',
@@ -921,6 +933,7 @@ const it: SiteCopy = {
   boekKleinPunten: ['Tutti e dodici i volumi, dodici parole per libro', 'La pronuncia è scritta in lettere normali', 'Si legge senza sapere il darija'],
   boekGroot: '9 – 15 anni',
   boekGrootTitel: 'Le chiavi del Marocco',
+  plaatOndertitel: 'La chiave della storia del Marocco',
   boekGrootBody: 'Quindici racconti su duemila anni di storia marocchina, narrati ogni volta da qualcuno della tua età che c’era. Una chiave di bronzo passa di mano in mano — da un frantoio di Walili fino a una scatola da una nonna in Europa. Persone inventate, fatti veri; in fondo a ogni volume c’è quello che è successo davvero.',
   boekGrootPunten: ['Walili, Tariq ibn Ziyad, Fatima al-Fihri, Marrakech', 'Ibn Battuta, il palazzo Badi, l’indipendenza', 'In fondo: cosa è successo davvero'],
   boekStatus: 'In preparazione',
@@ -1132,6 +1145,7 @@ const en: SiteCopy = {
   boekKleinPunten: ['All twelve books at once, twelve words each', 'The pronunciation is written in normal letters', 'Reads aloud without knowing Darija'],
   boekGroot: '9 – 15 years',
   boekGrootTitel: 'The Keys of Morocco',
+  plaatOndertitel: 'The key to the history of Morocco',
   boekGrootBody: 'Fifteen stories across two thousand years of Moroccan history, each told by someone your own age who was there. One bronze key passes from hand to hand — from an olive press in Walili to a box at a grandmother’s house in Europe. Invented people, real events; the back of every book says exactly what is true.',
   boekGrootPunten: ['Walili, Tariq ibn Ziyad, Fatima al-Fihri, Marrakesh', 'Ibn Battuta, the Badi palace, independence', 'At the back: what really happened'],
   boekStatus: 'In the making',

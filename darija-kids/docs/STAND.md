@@ -250,7 +250,7 @@ etalage geworden in plaats van twaalf regels tekst.
 | | |
 | --- | --- |
 | Sba de Atlasleeuw | twaalf delen × zes talen — staan erop, `npm run deelplaten -- --taal alles` |
-| De sleutels van Marokko | vijf delen, alleen Nederlands — met de hand gemaakt |
+| De sleutels van Marokko | vijf delen × zes talen — `npm run sleutelplaten` |
 
 De tweeënzeventig platen voor Sba staan in `site-assets/sba/<taal>/` en gaan
 mee met de site.
@@ -259,14 +259,30 @@ Voor Sba komt het tafereel uit `store/prentenboek/platen/<deel>/` en alleen de
 tekst uit de inhoud; verandert er een titel, dan zet je ze opnieuw in plaats
 van ze opnieuw te tekenen. `--groot` geeft 1600 × 900, om ergens te delen.
 
-Op de vijf handgemaakte platen staat *De sleutel tot de geschiedenis van
-Marokko* — enkelvoud, terwijl de reeks De sleutels van Marokko heet. Dat is
-bekeken en zo gelaten: het is een ondertitel en geen reekstitel, en zo gelezen
-klopt hij. Niet "verbeteren".
+Bij De sleutels ligt dat anders dan bij Sba. Daar bestaan vijf platen, met de
+hand gemaakt, en het tafereel *zonder* tekst is er niet meer — alleen het
+eindresultaat met het kaartje er al op. Vertalen kon dus niet door opnieuw te
+zetten.
+
+`npm run sleutelplaten` legt daarom een nieuw kaartje over het oude: dezelfde
+plek, één vaste maat die ruimer is dan de grootste van de vijf zodat er niets
+van het Nederlands onderuit steekt, en de titel in de taal die je leest. De
+accentkleur per deel — turkoois voor Fes, roest voor Marrakech, brons voor
+Ceuta — wordt uit de plaat zelf gelezen, één pixel uit de balk links, want hij
+staat nergens opgeschreven. Het Nederlands blijft het origineel en wordt niet
+overgezet.
+
+Op die platen staat *De sleutel tot de geschiedenis van Marokko* — enkelvoud,
+terwijl de reeks De sleutels van Marokko heet. Dat is bekeken en zo gelaten:
+het is een ondertitel en geen reekstitel, en zo gelezen klopt hij. Niet
+"verbeteren". In de andere vijf talen staat de vertaling daarvan
+(`plaatOndertitel` in `src/site/copy.ts`).
 
 Ontbreekt een plaat, dan blijft er gewoon een regel tekst staan — dat is wat
-er bij deel 6 tot en met 15 van De sleutels gebeurt, en op de vijf
-niet-Nederlandse bladzijden van die reeks.
+er bij **deel 6 tot en met 15** van De sleutels gebeurt, in alle zes de talen.
+Daar is geen tekening voor en die moet getekend worden; dat is de enige post
+in dit project die nog echt geld kost. De opdrachten staan in
+`store/sleutels/beeldenlijst.md`.
 
 ### De lezer op de website
 
