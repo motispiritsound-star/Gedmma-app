@@ -2,6 +2,11 @@ name = "darijaforkids-post"
 main = "src/index.ts"
 compatibility_date = "2026-09-01"
 
+# Het adres op `workers.dev` blijft voorlopig aan, zodat je daar kunt testen
+# terwijl het eigen adres hieronder wordt aangelegd. Zet hem op `false` zodra
+# `post.darijaforkids.eu` antwoordt — één deur is genoeg.
+workers_dev = true
+
 # Where the app posts to and where the links in the mails point. Set this to
 # the worker's own address once it is deployed.
 [vars]
@@ -13,6 +18,18 @@ LEZER = "https://darijaforkids.eu/lezen"
 # De website zelf. Het portaal woont daar, en het koekje wordt op dit domein
 # gezet — niet op dat van deze worker, want de bladzijde vraagt hem op.
 SITE = "https://darijaforkids.eu"
+
+# Het eigen adres. `darijaforkids.eu` draait op de nameservers van Cloudflare,
+# dus mag wrangler de DNS-regel voor `post.` er zelf bij zetten: deze drie
+# regels doen wat anders een rondje door het dashboard is.
+#
+# Dit staat er niet voor de sier. In elke inlogmail staat een link die met
+# BASIS hierboven begint, en die wijst naar `post.darijaforkids.eu`. Zolang dat
+# adres niet bestaat, komt niemand binnen.
+#
+[[routes]]
+pattern = "post.darijaforkids.eu"
+custom_domain = true
 
 # De database. Eén keer gemaakt met `npm run maak-db`, en het id dat die
 # opdracht afdrukt staat hieronder.

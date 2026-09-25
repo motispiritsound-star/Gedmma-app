@@ -46,15 +46,19 @@ overslaan levert een foutmelding op die iets anders lijkt te zeggen.
 ```bash
 npm install                 # anders bestaat wrangler hier niet
 npm run maak-db             # maakt de database en drukt een database_id af
-```
-
-Zet dat `database_id` in `wrangler.toml`, op de plek waar nu
-`vul-hier-het-id-in` staat. Daarna:
-
-```bash
 npm run schema              # zet alle tafels neer; veilig om te herhalen
 npm run deploy
 ```
+
+Het `database_id` staat al in `wrangler.toml`. Drukt `npm run maak-db` een
+ander id af, zet dat er dan in: je hebt een tweede database gemaakt, en de
+worker praat met degene die in het bestand staat.
+
+`npm run deploy` legt meteen ook `post.darijaforkids.eu` aan — dat staat als
+route in `wrangler.toml`, en omdat het domein op de nameservers van Cloudflare
+draait zet wrangler de DNS-regel er zelf bij. Klaagt hij dat hij de zone niet
+vindt, dan kijkt hij in het verkeerde account: `npx wrangler whoami` zegt in
+welk.
 
 ### De drie geheimen
 
