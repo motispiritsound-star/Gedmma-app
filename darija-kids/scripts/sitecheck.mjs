@@ -121,13 +121,26 @@ for (const pad of pagina) {
 /* ----------------------------------------------------------------- extern */
 
 if (EXTERN) {
+  let mis = 0
   for (const adres of extern.keys()) {
     try {
       const antwoord = await fetch(adres, { method: 'GET', redirect: 'follow' })
-      if (!antwoord.ok) fouten.push(`extern: ${antwoord.status} op ${adres}`)
+      if (!antwoord.ok) { mis++; fouten.push(`extern: ${antwoord.status} op ${adres}`) }
     } catch (fout) {
+      mis++
       fouten.push(`extern: onbereikbaar — ${adres} (${fout.message})`)
     }
+  }
+  /**
+   * Valt bijna alles om, dan is niet het hele internet stuk maar deze machine
+   * afgesloten. Dat is geen theorie: achter een proxy geeft elk adres 403, en
+   * dan staan er zeventig "problemen" die geen van alle bestaan.
+   */
+  if (mis > extern.size * 0.8 && extern.size > 3) {
+    fouten.length = 0
+    console.error(`\n${mis} van de ${extern.size} adressen gaven een fout — dat is geen website`)
+    console.error('maar een netwerk dat niets doorlaat. Draai dit op een gewone verbinding.')
+    process.exit(2)
   }
 }
 
