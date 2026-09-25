@@ -17,7 +17,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
 
@@ -140,7 +140,7 @@ await writeFile(tijdelijk, html)
 
 const browser = await startChroom()
 const blad = await browser.newPage()
-await blad.goto(`file://${tijdelijk}`, { waitUntil: 'networkidle' })
+await blad.goto(pathToFileURL(tijdelijk).href, { waitUntil: 'networkidle' })
 await blad.emulateMedia({ media: 'print' })
 await blad.pdf({
   path: UIT, format: 'A5', printBackground: true,

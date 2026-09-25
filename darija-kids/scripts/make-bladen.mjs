@@ -23,8 +23,9 @@
  */
 import { execFileSync } from 'node:child_process'
 import { mkdir, readdir, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { startChroom } from './lib/chroom.mjs'
 import { wrangler } from './lib/wrangler.mjs'
 import { createServer } from 'vite'
@@ -67,7 +68,7 @@ const bladenVan = async (reeks, nummer, taal, htmlPad, kiezer) => {
   await mkdir(map, { recursive: true })
 
   const blad = await browser.newPage({ viewport: kiezer.venster, deviceScaleFactor: 2 })
-  await blad.goto(`file://${htmlPad}`, { waitUntil: 'networkidle' })
+  await blad.goto(pathToFileURL(htmlPad).href, { waitUntil: 'networkidle' })
   const secties = await blad.$$(kiezer.sectie)
   const soorten = await blad.$$eval(kiezer.sectie, (els) => els.map((e) => e.className))
 
@@ -91,7 +92,7 @@ for (const taal of TALEN) {
     if (ALLEEN && deel.nummer !== ALLEEN) continue
     execFileSync('node', [path.join(ROOT, 'scripts', 'make-prentenboek.mjs'),
       '--deel', String(deel.nummer), '--taal', taal], { stdio: 'pipe' })
-    const soorten = await bladenVan('sba', deel.nummer, taal, `/tmp/.prentenboek-${taal}.html`,
+    const soorten = await bladenVan('sba', deel.nummer, taal, path.join(tmpdir(), `.prentenboek-${taal}.html`),
       { venster: { width: 794, height: 560 }, sectie: 'section' })
 
     /**

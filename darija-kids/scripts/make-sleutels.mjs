@@ -24,7 +24,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
 import { H, hoekje, kaart, khatam, plaatVan, sleutel, tijdbalk, zellige } from './lib/historie.mjs'
@@ -280,7 +280,7 @@ const kaal = (kop, beeld, voet) => `<section class="vol plaatblad balkblad">
   <div class="voet">${voet ? esc(voet) : ''}</div>
 </section>`
 
-const fotoBlad = (b, kop) => blad(kop, `<img src="file://${b.pad}" alt="">`, b.onderschrift, 'Foto')
+const fotoBlad = (b, kop) => blad(kop, `<img src="${pathToFileURL(b.pad).href}" alt="">`, b.onderschrift, 'Foto')
 
 /* ── De bladzijden ────────────────────────────────────────────────────── */
 
@@ -535,7 +535,7 @@ await writeFile(tijdelijk, html)
 
 const browser = await startChroom()
 const bladzijde = await browser.newPage()
-await bladzijde.goto(`file://${tijdelijk}`, { waitUntil: 'networkidle' })
+await bladzijde.goto(pathToFileURL(tijdelijk).href, { waitUntil: 'networkidle' })
 await bladzijde.emulateMedia({ media: 'print' })
 await bladzijde.pdf({
   path: UIT, format: 'A5', printBackground: true, preferCSSPageSize: true,

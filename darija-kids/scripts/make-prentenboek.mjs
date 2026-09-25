@@ -18,7 +18,7 @@ import { existsSync } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { startChroom } from './lib/chroom.mjs'
 import { schrijfOmslag } from './lib/omslag.mjs'
 import { createServer } from 'vite'
@@ -463,7 +463,7 @@ const echtePlaat = (nr) => {
 
 const plaat = (naam, nr) => {
   const bestand = echtePlaat(nr)
-  if (bestand) return `<img class="plaat" src="file://${bestand}" alt="">`
+  if (bestand) return `<img class="plaat" src="${pathToFileURL(bestand).href}" alt="">`
   const teken = SCENES[naam] ?? nogTeTekenen
   return `<svg class="plaat" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice">${teken()}</svg>`
 }
@@ -688,7 +688,7 @@ await writeFile(tijdelijk, html)
 
 const browser = await startChroom()
 const blad = await browser.newPage()
-await blad.goto(`file://${tijdelijk}`, { waitUntil: 'networkidle' })
+await blad.goto(pathToFileURL(tijdelijk).href, { waitUntil: 'networkidle' })
 await blad.emulateMedia({ media: 'print' })
 await blad.pdf({ path: UIT, width: '210mm', height: '148mm', printBackground: true, margin: { top: 0, bottom: 0, left: 0, right: 0 } })
 /** De omslag als plaatje voor de website; zie lib/omslag.mjs. */

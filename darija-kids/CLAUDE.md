@@ -38,6 +38,14 @@ niets — en meldt dan iets heel anders dan wat er aan de hand is. Zoek per
 regel, met `\r?\n` ertussen, en schrijf terug met het regeleinde dat het
 bestand al had.
 
+En **geen `/tmp`**: die map bestaat daar niet. Gebruik `tmpdir()` uit
+`node:os`. Een script dat ergens een bestand neerzet en een ander script dat
+het ophaalt, moeten allebei dezelfde map gebruiken — anders staat het er wel en
+vindt niemand het.
+
+En **geen `` `file://${pad}` ``**: op Windows begint een pad met `C:\`, en dan
+leest een browser die `C:` als servernaam. Gebruik `pathToFileURL(pad).href`.
+
 En in de scripts: **geen `npx` of `npm` starten met `execFileSync`.** Op Windows
 heten die `npx.cmd` en `npm.cmd`, en Node vindt ze dan niet — `Error: spawnSync
 npx ENOENT`, een melding waar Windows niet in voorkomt. Roep het javascript
