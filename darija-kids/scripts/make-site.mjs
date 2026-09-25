@@ -871,6 +871,10 @@ const booksPage = (lang) => {
    * voorgelezen terwijl zijn kind meeleest, en waar het boek na het afrekenen
    * blijft. Het eerste is het verschil met elk ander pdf-boek; het tweede is
    * de vraag die anders per mail binnenkomt.
+   *
+   * Onderaan staat waar de stem vandaan komt. Dat is minder leuk nieuws, en
+   * daarom juist hier: wie op een iPhone koopt hoort de compacte stem, en dat
+   * hoort hij te lezen voordat hij afrekent en niet erna.
    */
   const luisteren = `<section class="luisteren">
     <h2>${esc(c.boekLuisterKop)}</h2>
@@ -879,6 +883,7 @@ const booksPage = (lang) => {
       <b>${esc(kop)}</b>
       <span>${esc(uitleg)}</span>
     </li>`).join('')}</ol>
+    <p class="stemnoot">${esc(c.boekLuisterStem)}</p>
   </section>`
 
   const body = `<div class="wrap doc boeken">

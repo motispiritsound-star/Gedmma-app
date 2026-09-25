@@ -52,6 +52,17 @@ const nl = {
   boekLuisterKop: 'Luister- en leesboeken',
   boekLuisterLead:
     'Je kind leest mee terwijl het boek wordt voorgelezen: de zin die klinkt, licht op. Dat werkt op een telefoon, een tablet en een computer — er hoeft niets geïnstalleerd te worden.',
+  /**
+   * Eerlijk over de stem, hier en niet pas na het afrekenen.
+   *
+   * Het voorlezen gebruikt de spraakstem van het toestel zelf — wij leveren geen
+   * geluidsbestanden mee. Op Windows en Android is dat meestal een nieuwe,
+   * natuurlijk klinkende stem; op een iPhone of iPad mag een bladzijde in de
+   * browser alleen bij de oude, compacte stem, en die klinkt blikkerig. Dat is
+   * niet met code te verhelpen, dus staat het erbij voordat iemand koopt.
+   */
+  boekLuisterStem:
+    'De stem komt van het toestel zelf, dus hij klinkt niet overal hetzelfde. Op een computer of laptop is hij meestal het mooist; op een telefoon of tablet kun je in de instellingen eenmalig een betere stem downloaden.',
   boekStappen: [
       ['Koop het boek', 'Je rekent af bij onze winkel en krijgt je bestanden meteen per mail.'],
       ['Meld je aan met je e-mailadres', 'Geen wachtwoord. Je krijgt een link in je mail, en die laat je binnen.'],
@@ -264,6 +275,8 @@ const fr: SiteCopy = {
   boekLuisterKop: 'Livres à lire et à écouter',
   boekLuisterLead:
     'Votre enfant suit le texte pendant la lecture à voix haute : la phrase qui résonne s’éclaire. Cela fonctionne sur téléphone, tablette et ordinateur — rien à installer.',
+  boekLuisterStem:
+    'La voix vient de l’appareil lui-même, elle ne sonne donc pas pareil partout. Sur un ordinateur ou un portable, c’est en général la plus belle ; sur un téléphone ou une tablette, vous pouvez télécharger une meilleure voix une fois pour toutes dans les réglages.',
   boekStappen: [
       ['Achetez le livre', 'Vous payez dans notre boutique et recevez vos fichiers par e-mail aussitôt.'],
       ['Inscrivez-vous avec votre e-mail', 'Pas de mot de passe. Vous recevez un lien, et il vous fait entrer.'],
@@ -473,6 +486,8 @@ const de: SiteCopy = {
   boekLuisterKop: 'Hör- und Lesebücher',
   boekLuisterLead:
     'Dein Kind liest mit, während vorgelesen wird: der Satz, der klingt, leuchtet auf. Das geht auf dem Handy, dem Tablet und dem Computer — installieren musst du nichts.',
+  boekLuisterStem:
+    'Die Stimme kommt vom Gerät selbst und klingt darum nicht überall gleich. Auf einem Computer oder Laptop ist sie meist am schönsten; auf Handy oder Tablet kannst du in den Einstellungen einmalig eine bessere Stimme laden.',
   boekStappen: [
       ['Kauf das Buch', 'Du bezahlst in unserem Shop und bekommst deine Dateien sofort per E-Mail.'],
       ['Melde dich mit deiner E-Mail an', 'Kein Passwort. Du bekommst einen Link, und der lässt dich hinein.'],
@@ -682,6 +697,8 @@ const es: SiteCopy = {
   boekLuisterKop: 'Libros para leer y escuchar',
   boekLuisterLead:
     'Tu hijo sigue el texto mientras se lee en voz alta: la frase que suena se ilumina. Funciona en el móvil, en la tableta y en el ordenador — no hay que instalar nada.',
+  boekLuisterStem:
+    'La voz viene del propio dispositivo, así que no suena igual en todos. En un ordenador o un portátil suele sonar mejor; en un teléfono o una tableta puedes descargar una voz mejor una sola vez desde los ajustes.',
   boekStappen: [
       ['Compra el libro', 'Pagas en nuestra tienda y recibes tus archivos por correo al momento.'],
       ['Date de alta con tu correo', 'Sin contraseña. Recibes un enlace y ese enlace te deja entrar.'],
@@ -891,6 +908,8 @@ const it: SiteCopy = {
   boekLuisterKop: 'Libri da leggere e ascoltare',
   boekLuisterLead:
     'Tuo figlio segue il testo mentre viene letto ad alta voce: la frase che suona si illumina. Funziona su telefono, tablet e computer — non c’è niente da installare.',
+  boekLuisterStem:
+    'La voce viene dal dispositivo stesso, quindi non suona uguale su tutti. Su un computer o un portatile è di solito la più bella; su telefono o tablet puoi scaricare una volta per tutte una voce migliore dalle impostazioni.',
   boekStappen: [
       ['Compra il libro', 'Paghi nel nostro negozio e ricevi subito i file per e-mail.'],
       ['Iscriviti con la tua e-mail', 'Nessuna password. Ricevi un link, e quel link ti fa entrare.'],
@@ -1100,6 +1119,8 @@ const en: SiteCopy = {
   boekLuisterKop: 'Listen-and-read books',
   boekLuisterLead:
     'Your child follows the text while the book is read aloud: the sentence being spoken lights up. It works on a phone, a tablet and a computer — nothing to install.',
+  boekLuisterStem:
+    'The voice comes from the device itself, so it does not sound the same everywhere. On a computer or laptop it is usually the nicest; on a phone or tablet you can download a better voice once, in your settings.',
   boekStappen: [
       ['Buy the book', 'You pay in our shop and your files arrive by email straight away.'],
       ['Sign up with your email', 'No password. You get a link, and that link lets you in.'],

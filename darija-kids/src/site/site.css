@@ -838,6 +838,14 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
 }
 .boeken .luisteren li b { display: flex; align-items: center; font-size: 1rem; }
 .boeken .luisteren li span { color: var(--ink-soft); font-size: .94rem; line-height: 1.5; }
+/* Het voorlezen gebruikt de spraakstem van het toestel zelf, en die is op een
+   iPhone de oude compacte stem. Dat hoort een koper te weten vóór het
+   afrekenen, maar het is niet het eerste wat hij moet lezen — dus onder de drie
+   stappen, met een streep ertussen. */
+.boeken .luisteren > p.stemnoot {
+  margin: 1.3rem 0 0; padding-top: 1.1rem; border-top: 1px solid var(--line);
+  font-size: .88rem; line-height: 1.55; max-width: 46rem;
+}
 
 /* Het portaal: aanmelden, en daarna je eigen boeken. De enige bladzijde met
    javascript, dus ook de enige met blokken die verschijnen en verdwijnen. */
