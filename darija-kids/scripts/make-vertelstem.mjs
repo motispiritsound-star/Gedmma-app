@@ -26,7 +26,7 @@
  *   node scripts/make-vertelstem.mjs --stemmen        # wat het account heeft
  */
 import { existsSync } from 'node:fs'
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createServer } from 'vite'
@@ -46,6 +46,8 @@ const FORMAAT = 'mp3_44100_128'
 const TAAL = arg('taal', 'nl')
 const NUMMER = Number(arg('deel', '1'))
 const ALLEEN = arg('hoofdstuk', null)
+/** Alleen de eerste zoveel hoofdstukken — hetzelfde getal als bij de zetter. */
+const TOT = Number(arg('tot', 0)) || 0
 const PROEF = vlag('proef')
 const OPNIEUW = vlag('opnieuw')
 
@@ -109,12 +111,21 @@ const nederlands = {
 const deel = talen.sleuteldeelIn(TAAL, nederlands)
 const S = talen.schilVanSleutel(TAAL)
 
-const UIT = path.join(ROOT, 'store', 'luister', TAAL, String(NUMMER), STEM.naam.toLowerCase())
+/**
+ * Waar de opnames komen te staan.
+ *
+ * Naast de leeskopie en niet in een eigen hoek: die bladzijde is de enige die
+ * ze afspeelt, en een map die je moet kopiëren voordat het werkt is een map
+ * die iemand vergeet te kopiëren.
+ */
+const UIT = path.join(ROOT, 'store', 'lezen', 'luister', `${TAAL}-${NUMMER}-${STEM.naam.toLowerCase()}`)
 await mkdir(UIT, { recursive: true })
 
 const hoofdstukken = ALLEEN
   ? deel.hoofdstukken.filter((h) => h.nummer === Number(ALLEEN))
-  : PROEF ? deel.hoofdstukken.slice(0, 1) : deel.hoofdstukken
+  : PROEF ? deel.hoofdstukken.slice(0, 1)
+  : TOT ? deel.hoofdstukken.slice(0, TOT)
+  : deel.hoofdstukken
 
 console.log(`\n${deel.titel} — ${TAAL}, stem ${STEM.naam} (${STEM.toon})`)
 console.log(`${hoofdstukken.length} van de ${deel.hoofdstukken.length} hoofdstukken\n`)
@@ -184,5 +195,29 @@ for (const hoofdstuk of hoofdstukken) {
   console.log(`${Math.round(duur / 60)} min`)
 }
 
-console.log(`\n${path.relative(ROOT, UIT)}/`)
+/**
+ * Eén lijst met wat er klaarstaat.
+ *
+ * De leesbladzijde haalt dit ene bestand op en weet dan meteen welke
+ * hoofdstukken er zijn en waar elke zin begint. Zonder deze lijst zou hij per
+ * hoofdstuk moeten gokken of er een opname is, en dat is twaalf mislukte
+ * verzoeken per boek.
+ */
+const gezet = []
+for (const h of deel.hoofdstukken) {
+  const kaart = path.join(UIT, `${String(h.nummer).padStart(2, '0')}.json`)
+  if (!existsSync(kaart)) continue
+  const { zinnen } = JSON.parse(await readFile(kaart, 'utf8'))
+  gezet.push({
+    nummer: h.nummer,
+    geluid: `${String(h.nummer).padStart(2, '0')}.mp3`,
+    zinnen: zinnen.map(({ van, tot }) => ({ van, tot })),
+  })
+}
+await writeFile(path.join(UIT, 'boek.json'), JSON.stringify({
+  deel: NUMMER, taal: TAAL, stem: STEM.naam, toon: STEM.toon,
+  titel: deel.titel, hoofdstukken: gezet,
+}))
+
+console.log(`\n${path.relative(ROOT, UIT)}/  —  ${gezet.length} hoofdstukken met geluid`)
 console.log(`${tekens.toLocaleString('nl-NL')} tekens gezet — ruwweg $${(tekens / 1000 * 0.15).toFixed(2)}\n`)

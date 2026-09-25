@@ -37,3 +37,4 @@ android/.gradle/
 
 # Luisterboeken: opnames, bouwresultaat
 /store/luister/
+/store/lezen/luister/

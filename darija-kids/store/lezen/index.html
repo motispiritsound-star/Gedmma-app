@@ -259,6 +259,51 @@
     return lijst.find((v) => v.name === bewaard) ?? lijst[0] ?? null
   }
 
+  /* ── Opgenomen stemmen ─────────────────────────────────────────────── */
+
+  /**
+   * Twee vertellers, en de opname wint van de spraakmotor.
+   *
+   * Een telefoonstem leest óp; een verteller vertelt. Staat er een opname
+   * klaar voor dit boek, dan speelt die, met de tijdstippen uit de opname
+   * zelf — dan licht precies de zin op die klinkt, zonder dat er iets
+   * geraden wordt. Staat er niets, dan blijft de stem van het toestel over,
+   * en dat is nog altijd beter dan stilte.
+   */
+  const VERTELLERS = [
+    { naam: 'George', toon: 'De grootvader' },
+    { naam: 'Daniel', toon: 'De geschiedschrijver' },
+  ]
+  const geluid = new Audio()
+  geluid.preload = 'none'
+  let opnames = []
+  let opname = null
+  /** Per hoofdstuk de plek van zijn eerste zin in de doorlopende lijst. */
+  let hoofdstukZinnen = []
+
+  const zoekOpnames = async (nummer) => {
+    const gevonden = []
+    for (const v of VERTELLERS) {
+      const map = `luister/${taal}-${nummer}-${v.naam.toLowerCase()}`
+      try {
+        const antwoord = await fetch(`${map}/boek.json`)
+        if (!antwoord.ok) continue
+        const boek = await antwoord.json()
+        if (boek.hoofdstukken?.length) gevonden.push({ ...v, map, boek })
+      } catch { /* geen opname is geen fout */ }
+    }
+    return gevonden
+  }
+
+  /** Bij welk hoofdstuk en welke zin daarbinnen een plek in de lijst hoort. */
+  const plekVan = (i) => {
+    for (let h = hoofdstukZinnen.length - 1; h >= 0; h--) {
+      if (i >= hoofdstukZinnen[h].van) return { hfd: h, binnen: i - hoofdstukZinnen[h].van }
+    }
+    return null
+  }
+
+  let boekNu = null
   let zinnen = []
   let wijzer = 0
   let speelt = false
@@ -283,14 +328,65 @@
   const stop = () => {
     speelt = false
     try { spraak?.cancel() } catch {}
+    try { geluid.pause() } catch {}
     zinnen.forEach((z) => z.classList.remove('aan'))
     toon()
   }
+
+  /** De opname van het hoofdstuk waar deze zin in staat, of niets. */
+  const kaartVan = (i) => {
+    const plek = plekVan(i)
+    if (!opname || !plek) return null
+    // De hoofdstukken staan op volgorde, dus de plek is het nummer als het
+    // veld ontbreekt. Zonder deze terugval zoekt hij op `undefined`.
+    const nummer = boekNu?.hoofdstukken[plek.hfd]?.nummer ?? plek.hfd + 1
+    const kaart = opname.boek.hoofdstukken.find((h) => h.nummer === nummer)
+    return kaart?.zinnen[plek.binnen] ? { kaart, plek } : null
+  }
+
+  geluid.addEventListener('timeupdate', () => {
+    if (!speelt || !opname) return
+    const hier = kaartVan(wijzer)
+    if (!hier) return
+    const { kaart, plek } = hier
+    const nu = geluid.currentTime
+    // Voorbij het eind van deze zin: opschuiven zolang de tijd verder is.
+    let binnen = plek.binnen
+    while (binnen + 1 < kaart.zinnen.length && nu >= kaart.zinnen[binnen + 1].van) binnen += 1
+    const nieuw = hoofdstukZinnen[plek.hfd].van + binnen
+    if (nieuw !== wijzer) { wijzer = nieuw; markeer(wijzer) }
+  })
+
+  geluid.addEventListener('ended', () => {
+    if (!speelt) return
+    const plek = plekVan(wijzer)
+    const volgende = plek ? hoofdstukZinnen[plek.hfd + 1] : null
+    if (!volgende || !kaartVan(volgende.van)) return stop()
+    wijzer = volgende.van
+    spreek()
+  })
 
   const spreek = () => {
     if (!speelt) return
     if (wijzer >= zinnen.length) return stop()
     markeer(wijzer)
+
+    const hier = kaartVan(wijzer)
+    if (hier) {
+      const bestand = `${opname.map}/${hier.kaart.geluid}`
+      if (!geluid.src.endsWith(bestand)) geluid.src = bestand
+      const start = hier.kaart.zinnen[hier.plek.binnen].van
+      const gaan = () => { try { geluid.currentTime = start } catch {}; geluid.play().catch(() => stop()) }
+      if (geluid.readyState >= 1) gaan()
+      else {
+        // preload staat op 'none', dus zonder load() komt loadedmetadata nooit
+        // en blijft het stil zonder dat er iets misgaat.
+        geluid.addEventListener('loadedmetadata', gaan, { once: true })
+        geluid.load()
+      }
+      return
+    }
+    if (!spraak) return stop()
     const zin = new SpeechSynthesisUtterance(zinnen[wijzer].textContent)
     zin.lang = TAALCODE[taal] ?? 'nl-NL'
     const stem = kiesStem(zin.lang)
@@ -399,6 +495,7 @@
   }
 
   const toonBoek = (b, nlBoek) => {
+    boekNu = b
     const t = plank[taal]
     const paren = dubbel && nlBoek && taal !== 'nl'
     document.title = `${b.titel} — ${t.reeksnaam}`
@@ -411,13 +508,19 @@
             ${b.hoofdstukken.map((h, i) => `<option value="h${i}">${esc(h.kop)} — ${esc(h.titel)}</option>`).join('')}
             <option value="achterin">${esc(t.achterinKop)}</option>
           </select>
-          ${spraak ? `<span class="speler">
+          ${spraak || opnames.length ? `<span class="speler">
             <button class="knop" id="speelknop">${ICOON.speel} Voorlezen</button>
             <select id="tempo" aria-label="Leessnelheid">
               ${[['0.75', 'Rustig'], ['0.95', 'Gewoon'], ['1.15', 'Vlot']]
                 .map(([v, n]) => `<option value="${v}"${Number(v) === tempo ? ' selected' : ''}>${n}</option>`).join('')}
             </select>
             ${(() => {
+              // Staan er opnames klaar, dan kies je een verteller. Zo niet, dan
+              // wat het toestel zelf heeft — een keuze uit niets toont niemand.
+              if (opnames.length) return `<select id="verteller" aria-label="Verteller">
+                ${opnames.map((o) => `<option value="${esc(o.naam)}"${o.naam === opname?.naam ? ' selected' : ''}>${esc(o.toon)}</option>`).join('')}
+                <option value="">Stem van het toestel</option>
+              </select>`
               const lijst = stemmenVoor(TAALCODE[taal] ?? 'nl-NL')
               const nu = kiesStem(TAALCODE[taal] ?? 'nl-NL')
               return lijst.length > 1 ? `<select id="stemkeuze" aria-label="Stem">
@@ -443,7 +546,7 @@
               <div class="n">${h.kop.replace(/\D+/g, '') || i + 1}</div>
               <div class="k">${esc(h.kop)}</div>
               <h2>${esc(h.titel)}</h2>
-              ${spraak ? `<button class="luister" data-hfd="${i}">Luister vanaf hier</button>` : ''}
+              ${spraak || opnames.length ? `<button class="luister" data-hfd="${i}">Luister vanaf hier</button>` : ''}
             </div>
             ${paren ? naastElkaar(nlBoek.hoofdstukken[i]?.tekst, h.tekst) : alineas(h.tekst)}
           </section>`).join('')}
@@ -469,6 +572,10 @@
 
     /* De zinnen van dít boek; de vorige lijst wijst naar weggegooide knopen. */
     zinnen = [...scherm.querySelectorAll('.zin')]
+    hoofdstukZinnen = b.hoofdstukken.map((_, i) => {
+      const eerste = document.getElementById(`h${i}`)?.querySelector('.zin')
+      return { van: Math.max(0, zinnen.indexOf(eerste)) }
+    })
     wijzer = 0
     stop()
     document.getElementById('speelknop')?.addEventListener('click', () => speel())
@@ -479,6 +586,12 @@
     })
     document.getElementById('stemkeuze')?.addEventListener('change', (e) => {
       onthoud(`stem-${taal}`, e.target.value)
+      if (speelt) speel(wijzer)
+    })
+    document.getElementById('verteller')?.addEventListener('change', (e) => {
+      opname = opnames.find((o) => o.naam === e.target.value) ?? null
+      onthoud('verteller', e.target.value)
+      geluid.removeAttribute('src')
       if (speelt) speel(wijzer)
     })
     scherm.querySelectorAll('[data-hfd]').forEach((knop) => knop.addEventListener('click', () => {
@@ -505,8 +618,15 @@
     huidig = n
     location.hash = `${taal}-${n}`
     onthoud('laatste', `${taal}-${n}`)
-    const [b, nlBoek] = await Promise.all([boek(taal, n), taal === 'nl' ? null : boek('nl', n)])
+    const [b, nlBoek, gevonden] = await Promise.all([
+      boek(taal, n),
+      taal === 'nl' ? null : boek('nl', n),
+      zoekOpnames(n),
+    ])
     if (huidig !== n) return
+    opnames = gevonden
+    const gekozen = herinner('verteller')
+    opname = gekozen === '' ? null : (opnames.find((o) => o.naam === gekozen) ?? opnames[0] ?? null)
     toonBoek(b, nlBoek)
     if (!blijf) window.scrollTo(0, 0)
   }

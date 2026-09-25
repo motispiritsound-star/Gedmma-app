@@ -75,7 +75,7 @@ for (const { code, naam } of TALEN) {
       echt: deel.echt,
       verzonnen: deel.verzonnen,
       leesVerder: deel.nummer < 15 ? S.leesVerder(deel.nummer + 1) : S.laatsteDeel,
-      hoofdstukken: deel.hoofdstukken.map((h) => ({ kop: S.hoofdstuk(h.nummer), titel: h.titel, tekst: h.tekst })),
+      hoofdstukken: deel.hoofdstukken.map((h) => ({ nummer: h.nummer, kop: S.hoofdstuk(h.nummer), titel: h.titel, tekst: h.tekst })),
     }
     await writeFile(path.join(UIT, 'data', `${code}-${deel.nummer}.json`), JSON.stringify(boek))
     plank[code].delen.push({
