@@ -432,23 +432,49 @@ async function koop(verzoek: Request, env: Env): Promise<Response> {
 }
 
 /**
- * Wat deze sleutel mag lezen.
+ * Wie er leest, en wat hij mag lezen.
  *
- * De sleutel komt in de body en niet in het pad, want een pad komt in
- * logboeken terecht en een body niet.
+ * Twee wegen naar hetzelfde boek. De eerste is de sleutel uit de mail die na
+ * het afrekenen komt: die staat in de body en niet in het pad, want een pad
+ * komt in logboeken terecht en een body niet. De tweede is het portaal —
+ * iemand die is ingelogd hoeft geen oude mail op te diepen om bij zijn eigen
+ * boeken te komen.
+ *
+ * De sleutel gaat voor. Wie er een meestuurt, bedoelt die: anders krijgt
+ * iemand die toevallig is ingelogd de boeken van het verkeerde account te
+ * zien zodra hij een link van een ander opent.
  */
+async function toegang(
+  verzoek: Request, env: Env, sleutel: string | undefined,
+): Promise<{ reeksen: string[]; taal: string; merk: string; bestelling?: string } | null> {
+  const bestelling = await bestellingVan(env.DB, sleutel ?? '')
+  if (bestelling) {
+    return {
+      reeksen: bestelling.reeksen.split(','),
+      taal: bestelling.taal,
+      merk: bestelling.merk,
+      bestelling: bestelling.id,
+    }
+  }
+
+  const lid = await wieIsDit(env.DB, sessieUit(verzoek.headers.get('cookie')))
+  if (!lid) return null
+  const gekocht = await bezit(env.DB, lid.email)
+  if (!gekocht.reeksen.length) return null
+  return { reeksen: gekocht.reeksen, taal: lid.taal, merk: lid.email }
+}
+
+/** Wat deze lezer mag lezen. */
 async function lezen(verzoek: Request, env: Env): Promise<Response> {
   const { sleutel } = await verzoek.json<{ sleutel?: string }>().catch(() => ({ sleutel: '' as string | undefined }))
-  const bestelling = await bestellingVan(env.DB, sleutel ?? '')
-  if (!bestelling) return json({ fout: 'onbekend' }, 404)
+  const mag = await toegang(verzoek, env, sleutel)
+  if (!mag) return portaalJson(env, { fout: 'onbekend' }, 404)
 
-  await tekAan(env.DB, bestelling.id, await ipHash(verzoek, env.ZOUT))
+  // Alleen een bestelling houdt bij hoe vaak hij is geopend; een lid van het
+  // portaal is geen bestelling, en zijn bezoeken horen nergens geteld te worden.
+  if (mag.bestelling) await tekAan(env.DB, mag.bestelling, await ipHash(verzoek, env.ZOUT))
 
-  return json({
-    reeksen: bestelling.reeksen.split(','),
-    taal: bestelling.taal,
-    merk: bestelling.merk,
-  })
+  return portaalJson(env, { reeksen: mag.reeksen, taal: mag.taal, merk: mag.merk })
 }
 
 /**
@@ -459,31 +485,31 @@ async function lezen(verzoek: Request, env: Env): Promise<Response> {
  * een adres dat één keer openstaat, staat voor iedereen open.
  */
 async function blad(verzoek: Request, env: Env): Promise<Response> {
-  if (!env.BOEKEN) return json({ fout: 'niet-ingericht' }, 503)
+  if (!env.BOEKEN) return portaalJson(env, { fout: 'niet-ingericht' }, 503)
   type Bladverzoek = { sleutel?: string; reeks?: string; deel?: number; nr?: number; taal?: string }
   const { sleutel, reeks, deel, nr, taal }: Bladverzoek =
     await verzoek.json<Bladverzoek>().catch(() => ({}))
 
-  const bestelling = await bestellingVan(env.DB, sleutel ?? '')
-  if (!bestelling) return json({ fout: 'onbekend' }, 404)
-  if (!bestelling.reeksen.split(',').includes(reeks ?? '')) return json({ fout: 'niet-gekocht' }, 403)
-  if (!Number.isInteger(deel)) return json({ fout: 'onvolledig' }, 400)
-  if (reeks !== 'sleutels' && !Number.isInteger(nr)) return json({ fout: 'onvolledig' }, 400)
+  const mag = await toegang(verzoek, env, sleutel)
+  if (!mag) return portaalJson(env, { fout: 'onbekend' }, 404)
+  if (!mag.reeksen.includes(reeks ?? '')) return portaalJson(env, { fout: 'niet-gekocht' }, 403)
+  if (!Number.isInteger(deel)) return portaalJson(env, { fout: 'onvolledig' }, 400)
+  if (reeks !== 'sleutels' && !Number.isInteger(nr)) return portaalJson(env, { fout: 'onvolledig' }, 400)
 
   // Een prentenboek is een bladzijde als plaatje; een leesboek is tekst.
   // Een roman als plaatje schaalt niet op een telefoon: je kunt niet groter
   // zetten en de regels lopen niet door.
-  const map = `${reeks}/${deel}/${(taal ?? bestelling.taal).replace(/[^a-z]/g, '')}`
+  const map = `${reeks}/${deel}/${(taal ?? mag.taal).replace(/[^a-z]/g, '')}`
   const isBoek = reeks === 'sleutels'
   const object = await env.BOEKEN.get(isBoek ? `${map}/boek.json` : `${map}/${nr}.webp`)
-  if (!object) return json({ fout: 'geen-bladzijde' }, 404)
+  if (!object) return portaalJson(env, { fout: 'geen-bladzijde' }, 404)
 
   return new Response(object.body, {
     headers: {
       'content-type': isBoek ? 'application/json' : 'image/webp',
       // Wel in de browser bewaren, nooit op een tussenliggende server.
       'cache-control': 'private, max-age=86400',
-      ...CORS,
+      ...portaalCors(env),
     },
   })
 }
@@ -625,7 +651,10 @@ async function portaalNieuws(verzoek: Request, env: Env): Promise<Response> {
 export default {
   async fetch(verzoek: Request, env: Env): Promise<Response> {
     const url = new URL(verzoek.url)
+    // `/lezen` en `/blad` dragen het koekje van het portaal, en een browser
+    // weigert een koekje bij `access-control-allow-origin: *`.
     const portaal = url.pathname.startsWith('/portaal/')
+      || url.pathname === '/lezen' || url.pathname === '/blad'
     if (verzoek.method === 'OPTIONS') {
       return new Response(null, { headers: portaal ? portaalCors(env) : CORS })
     }

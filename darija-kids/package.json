@@ -46,6 +46,7 @@
     "build:app": "tsc -b && vite build",
     "site": "node scripts/make-site.mjs && node scripts/sitecheck.mjs",
     "sitecheck": "node scripts/sitecheck.mjs",
+    "portaalcheck": "node scripts/portaalcheck.mjs",
     "live": "node scripts/live.mjs",
     "siteassets": "node scripts/make-siteassets.mjs",
     "sleutels": "node scripts/make-sleutels.mjs",

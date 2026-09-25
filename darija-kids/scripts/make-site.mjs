@@ -1117,14 +1117,40 @@ const readPage = (lang) => {
     geenSleutel: c.leesGeenSleutel, onbekend: c.leesOnbekend, voor: c.leesVoor,
     kies: c.leesKies, vorige: c.leesVorige, volgende: c.leesVolgende,
     terug: c.leesTerug, bewaar: c.leesBewaar, sba: c.boekKleinTitel, sleutels: c.boekGrootTitel,
+    portaal: c.portaal.titel,
   })}
+  const PORTAAL = ${JSON.stringify(p.portal)}
   const doel = document.getElementById('lezer')
   let sleutel = ''
 
   const zeg = (tekst, klasse) => { doel.className = klasse || ''; doel.textContent = tekst }
 
+  /**
+   * Hetzelfde bericht, met een uitweg eronder.
+   *
+   * "Je bent niet ingelogd" zonder knop is een doodlopende straat: iemand die
+   * hier per ongeluk belandt, weet niet waar het portaal staat.
+   */
+  const zegMetPortaal = (tekst) => {
+    zeg(tekst, 'soon')
+    const knop = document.createElement('a')
+    knop.className = 'mailbtn'
+    knop.href = PORTAAL
+    knop.textContent = T.portaal
+    doel.append(document.createElement('br'), knop)
+  }
+
+  /**
+   * Het koekje gaat mee.
+   *
+   * Wie is ingelogd op het portaal, hoeft geen sleutel uit een oude mail op te
+   * diepen: de worker herkent hem aan zijn koekje. Zonder credentials stuurt
+   * de browser dat koekje niet mee naar een ander domein, ook niet naar het
+   * eigen postadres.
+   */
   const vraag = (pad, body) =>
-    fetch(post + pad, { method: 'POST', headers: { 'content-type': 'application/json' },
+    fetch(post + pad, { method: 'POST', credentials: 'include',
+                        headers: { 'content-type': 'application/json' },
                         body: JSON.stringify({ sleutel, ...body }) })
 
   /**
@@ -1136,12 +1162,17 @@ const readPage = (lang) => {
    * hij dan zeggen dat er geen sleutel is terwijl hij er wel staat.
    */
   const begin = () => {
-    sleutel = location.hash.replace(/^#/, '').trim()
-    if (!/^[0-9a-f]{32}$/.test(sleutel)) return zeg(T.geenSleutel, 'soon')
+    const hekje = location.hash.replace(/^#/, '').trim()
+    sleutel = /^[0-9a-f]{32}$/.test(hekje) ? hekje : ''
     zeg('…', 'laden')
-    vraag('/lezen', {}).then((r) => r.ok ? r.json() : Promise.reject())
+    vraag('/lezen', {}).then((r) => r.ok ? r.json() : Promise.reject(r.status))
       .then((mijn) => bouw(mijn))
-      .catch(() => zeg(T.onbekend, 'soon'))
+      .catch((status) => {
+        // Zonder sleutel én zonder koekje: niet "deze sleutel werkt niet",
+        // want er wás er geen. Dan hoort er een weg naar het portaal te staan.
+        if (sleutel && status === 404) return zeg(T.onbekend, 'soon')
+        zegMetPortaal(sleutel ? T.onbekend : T.geenSleutel)
+      })
   }
   addEventListener('hashchange', begin)
   begin()
@@ -1163,6 +1194,7 @@ const readPage = (lang) => {
       const rij = document.createElement('div')
       rij.className = 'boekjes'
       const naam = document.createElement('h3')
+      naam.id = reeks
       naam.textContent = reeks === 'sba' ? T.sba : T.sleutels
       doel.append(naam, rij)
       for (let n = 1; n <= aantal; n++) {
@@ -1178,6 +1210,13 @@ const readPage = (lang) => {
     tip.className = 'tip'
     tip.textContent = T.bewaar
     doel.append(tip)
+
+    // Het portaal wijst per reeks hierheen, met de naam achter het hekje. Wie
+    // twee reeksen heeft, komt dan bij de goede uit in plaats van bovenaan.
+    const gevraagd = location.hash.replace(/^#/, '').trim()
+    if (gevraagd && document.getElementById(gevraagd)) {
+      document.getElementById(gevraagd).scrollIntoView({ block: 'start' })
+    }
   }
 
   async function open(reeks, deel, taalVan) {
