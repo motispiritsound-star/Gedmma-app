@@ -159,7 +159,7 @@ describe('de lezer op de website', () => {
     // Een toestel noemt zijn stem "Microsoft Maarten Online (Natural) - Dutch
     // (Netherlands)". Dat is een productnummer, en het staat in een keuzelijst
     // onder een verhaal dat een kind meeleest.
-    for (const naam of ['Amir', 'Adam', 'Sarah', 'Yousra', 'Lina']) {
+    for (const naam of ['Amir', 'Adam', 'Yassine', 'Sarah', 'Yousra']) {
       expect(lezer, naam).toContain(`'${naam}'`)
     }
   })

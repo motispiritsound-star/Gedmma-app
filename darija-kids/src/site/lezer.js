@@ -65,7 +65,7 @@
    * van het toestel eronder zit, verschilt per apparaat en doet er voor de
    * lezer niet toe — die kiest een verteller, geen spraakmotor.
    */
-  const VERTELLERS = { man: ['Amir', 'Adam'], vrouw: ['Sarah', 'Yousra', 'Lina'] }
+  const VERTELLERS = { man: ['Amir', 'Adam', 'Yassine'], vrouw: ['Sarah', 'Yousra'] }
 
   /**
    * De vijf, met hun naam erbij.
