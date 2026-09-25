@@ -1,4 +1,4 @@
-import { existsSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { UNITS } from '../content/curriculum'
@@ -226,4 +226,33 @@ describe('een zelf uitgerekend bedrag schrijft zoals de winkel schrijft', () => 
   it('geeft niets terug als er geen getal in staat', () => {
     expect(alsPrijs('gratis', 5)).toBeNull()
   })
+})
+
+/**
+ * De teksten die in App Store Connect geplakt worden, passen in hun veld.
+ *
+ * Apple kapt niet af maar weigert: een beschrijving van zesenveertig tekens
+ * levert een foutmelding op in een scherm dat op dat moment misschien net
+ * ontgrendeld is. Dat is niet het moment om te gaan herschrijven, dus wordt
+ * het hier geteld — bij elke testronde, en niet pas daar.
+ *
+ * De grenzen zijn die van een in-app-aankoop: 30 tekens voor de naam die de
+ * koper ziet, 45 voor de regel eronder.
+ */
+describe('store/abonnement-teksten.md', () => {
+  const REGEL = /^\| (Nederlands|English|Français|Deutsch|Español|Italiano) \| (.+?) \| (.+?) \|$/
+  const rijen = readFileSync(path.join(process.cwd(), 'store', 'abonnement-teksten.md'), 'utf8')
+    .split('\n').map((r) => r.match(REGEL)).filter((m): m is RegExpMatchArray => m !== null)
+
+  it('heeft beide abonnementen in zes talen', () => {
+    expect(rijen).toHaveLength(12)
+  })
+
+  for (const [, taal, naam, uitleg] of rijen) {
+    it(`${taal}: "${naam}" past in de twee velden`, () => {
+      // [...] telt tekens, niet UTF-16-eenheden: 'ü' is één teken.
+      expect([...naam].length).toBeLessThanOrEqual(30)
+      expect([...uitleg].length).toBeLessThanOrEqual(45)
+    })
+  }
 })
