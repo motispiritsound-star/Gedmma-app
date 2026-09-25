@@ -18,6 +18,10 @@
  *    protect.
  */
 import { bestellingVan, hashVan, maakSleutel, plekken, tekAan } from './lezer'
+import {
+  bezit, koekje, logUit, lidVanEmail, magOpnieuw, maakLink, netjes as netjesEmail,
+  schrijfIn, sessieUit, wieIsDit, wisselIn, zetNieuws,
+} from './portaal'
 import { verstuur, type Afzender } from './mail'
 import { MAILS, TEKST_VERSIE, isTaal, type Taal, type Week } from './mails'
 import { briefHtml, briefTekst, pagina } from './sjabloon'
@@ -40,6 +44,8 @@ export interface Env {
   KOOP_GEHEIM?: string
   /** Where the reader lives, e.g. https://darijaforkids.eu/lezen */
   LEZER?: string
+  /** De website zelf, e.g. https://darijaforkids.eu. Het portaal woont daar. */
+  SITE?: string
 }
 
 /* ------------------------------------------------------------------ helpers */
@@ -383,6 +389,20 @@ async function koop(verzoek: Request, env: Env): Promise<Response> {
           body.taal ?? 'nl', merk, body.bestelnummer ?? null, nu())
     .run()
 
+  /**
+   * Een koper is meteen lid.
+   *
+   * Niet om hem een nieuwsbrief te sturen — die staat hier uit en blijft uit
+   * tot hij er zelf om vraagt — maar zodat hij zich met ditzelfde adres kan
+   * aanmelden op het portaal en zijn boeken terugvindt zonder de oude mail op
+   * te moeten diepen. De voorwaarden heeft hij bij het afrekenen aangevinkt;
+   * dat is waar dit moment vandaan komt.
+   */
+  await schrijfIn(env.DB, {
+    email, taal: body.taal ?? 'nl', nieuws: false, tekstVersie: TEKST_VERSIE,
+    ipHash: await hashVan((verzoek.headers.get('cf-connecting-ip') ?? '') + env.ZOUT),
+  })
+
   const m = koopMail(env, sleutel, reeksen)
   const brief = { ...m, afmeldTekst: '', wisTekst: '', voet: 'Darijaforkids', afmeldUrl: '', wisUrl: '' }
   await verstuur(
@@ -449,12 +469,147 @@ async function blad(verzoek: Request, env: Env): Promise<Response> {
   })
 }
 
+/* ------------------------------------------------------------- het portaal */
+
+/**
+ * Het portaal praat mét een koekje, en dat verandert de regels.
+ *
+ * `access-control-allow-origin: *` en meegestuurde koekjes gaan niet samen —
+ * een browser weigert dat, en terecht. Hier staat daarom de site zelf, en
+ * niets anders. De app komt hier nooit: die verkoopt niets.
+ */
+const portaalCors = (env: Env): Record<string, string> => ({
+  'access-control-allow-origin': env.SITE ?? 'https://darijaforkids.eu',
+  'access-control-allow-headers': 'content-type',
+  'access-control-allow-methods': 'POST, GET, OPTIONS',
+  'access-control-allow-credentials': 'true',
+  vary: 'origin',
+})
+
+const portaalJson = (env: Env, body: unknown, status = 200, extra: Record<string, string> = {}): Response =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { 'content-type': 'application/json', ...portaalCors(env), ...extra },
+  })
+
+/** Wat er in de inlogmail staat. Kort: er is maar één ding te doen. */
+const INLOGMAIL: Record<string, { kop: string; regel: string; knop: string; staart: string }> = {
+  nl: { kop: 'Je link om binnen te komen', regel: 'Klik hieronder en je bent binnen. De link werkt een half uur en daarna niet meer.', knop: 'Naar mijn boeken', staart: 'Heb je hier niet om gevraagd? Dan hoef je niets te doen — zonder klik gebeurt er niets.' },
+  fr: { kop: 'Votre lien de connexion', regel: 'Cliquez ci-dessous pour entrer. Le lien est valable une demi-heure.', knop: 'Vers mes livres', staart: 'Vous n’avez rien demandé ? Alors ne faites rien — sans clic, rien ne se passe.' },
+  de: { kop: 'Dein Link zum Anmelden', regel: 'Klick unten und du bist drin. Der Link gilt eine halbe Stunde.', knop: 'Zu meinen Büchern', staart: 'Nicht angefragt? Dann tu nichts — ohne Klick passiert nichts.' },
+  es: { kop: 'Tu enlace para entrar', regel: 'Pulsa abajo y entras. El enlace vale media hora.', knop: 'A mis libros', staart: '¿No lo has pedido? No hagas nada: sin clic no pasa nada.' },
+  it: { kop: 'Il tuo link per entrare', regel: 'Clicca qui sotto ed entri. Il link vale mezz’ora.', knop: 'Ai miei libri', staart: 'Non l’hai chiesto tu? Allora non fare nulla: senza clic non succede niente.' },
+  en: { kop: 'Your link to get in', regel: 'Tap below and you are in. The link works for half an hour.', knop: 'To my books', staart: 'Did not ask for this? Then do nothing — without a click nothing happens.' },
+}
+
+/**
+ * Aanmelden of opnieuw inloggen: hetzelfde verzoek.
+ *
+ * Er is geen apart "registreren" en "inloggen", want het verschil zou alleen
+ * bestaan uit een foutmelding die verklapt of een adres bij ons bekend is. Dat
+ * is precies wat je niet wilt vertellen aan iemand die adressen afloopt.
+ */
+async function portaalAanmelden(verzoek: Request, env: Env): Promise<Response> {
+  type Aanvraag = { email?: string; taal?: string; nieuws?: boolean; voorwaarden?: boolean; leeftijd?: boolean }
+  const body: Aanvraag = await verzoek.json<Aanvraag>().catch(() => ({}))
+  const email = netjesEmail(String(body.email ?? ''))
+  if (!lijktEmail(email)) return portaalJson(env, { fout: 'adres' }, 400)
+
+  const bestaat = await lidVanEmail(env.DB, email)
+  // De twee verplichte vinkjes gelden bij het aanmaken. Wie al lid is, logt in.
+  if (!bestaat && !(body.voorwaarden && body.leeftijd)) return portaalJson(env, { fout: 'vinkjes' }, 400)
+
+  const taal = isTaal(body.taal ?? '') ? (body.taal as Taal) : 'nl'
+  const lid = await schrijfIn(env.DB, {
+    email, taal, nieuws: Boolean(body.nieuws), tekstVersie: TEKST_VERSIE,
+    ipHash: await hashVan((verzoek.headers.get('cf-connecting-ip') ?? '') + env.ZOUT),
+  })
+
+  // Altijd hetzelfde antwoord, ook als er niets verstuurd is. Anders is dit
+  // een manier om te vragen welke adressen bestaan.
+  if (await magOpnieuw(env.DB, lid.id)) {
+    const token = await maakLink(env.DB, lid.id)
+    const tekst = INLOGMAIL[taal] ?? INLOGMAIL.nl!
+    const link = `${env.BASIS}/portaal/binnen?t=${token}`
+    const m = MAILS[taal]
+    const portaalUrl = `${env.SITE ?? 'https://darijaforkids.eu'}/portaal`
+    const brief = {
+      kop: tekst.kop,
+      body: tekst.regel,
+      knop: { tekst: tekst.knop, url: link },
+      staart: tekst.staart,
+      // Een inlogmail is geen nieuwsbrief. De uitwegen wijzen daarom naar het
+      // portaal zelf: daar staan de knoppen die er werkelijk toe doen.
+      afmeldTekst: m.afmelden,
+      wisTekst: m.wissen,
+      voet: m.voet,
+      afmeldUrl: portaalUrl,
+      wisUrl: portaalUrl,
+    }
+    await verstuur({
+      aan: email,
+      onderwerp: tekst.kop,
+      html: briefHtml(brief),
+      tekst: briefTekst(brief),
+      afmeldUrl: brief.afmeldUrl,
+    }, { naam: env.AFZENDER_NAAM, email: env.AFZENDER_EMAIL }, env.MAIL_SLEUTEL, env.MAIL_URL)
+  }
+  return portaalJson(env, { goed: true })
+}
+
+/** De link inwisselen en doorsturen naar het portaal, met het koekje erbij. */
+async function portaalBinnen(url: URL, env: Env): Promise<Response> {
+  const site = env.SITE ?? 'https://darijaforkids.eu'
+  const uit = await wisselIn(env.DB, url.searchParams.get('t') ?? '')
+  if (!uit) return Response.redirect(`${site}/portaal?fout=link`, 302)
+  return new Response(null, {
+    status: 302,
+    headers: {
+      location: `${site}/portaal`,
+      'set-cookie': koekje(uit.sessie, site, 90 * 24 * 60 * 60),
+    },
+  })
+}
+
+/** Wie ben ik, en wat heb ik. Eén verzoek, want het scherm heeft beide nodig. */
+async function portaalMij(verzoek: Request, env: Env): Promise<Response> {
+  const lid = await wieIsDit(env.DB, sessieUit(verzoek.headers.get('cookie')))
+  if (!lid) return portaalJson(env, { binnen: false }, 200)
+  const gekocht = await bezit(env.DB, lid.email)
+  return portaalJson(env, {
+    binnen: true,
+    email: lid.email,
+    taal: lid.taal,
+    nieuws: Boolean(lid.nieuws),
+    reeksen: gekocht.reeksen,
+    sinds: gekocht.sinds,
+  })
+}
+
+async function portaalUit(verzoek: Request, env: Env): Promise<Response> {
+  await logUit(env.DB, sessieUit(verzoek.headers.get('cookie')))
+  return portaalJson(env, { goed: true }, 200, {
+    'set-cookie': koekje('', env.SITE ?? 'https://darijaforkids.eu', 0),
+  })
+}
+
+async function portaalNieuws(verzoek: Request, env: Env): Promise<Response> {
+  const lid = await wieIsDit(env.DB, sessieUit(verzoek.headers.get('cookie')))
+  if (!lid) return portaalJson(env, { fout: 'niet-binnen' }, 401)
+  const body: { aan?: boolean } = await verzoek.json<{ aan?: boolean }>().catch(() => ({}))
+  await zetNieuws(env.DB, lid.id, Boolean(body.aan))
+  return portaalJson(env, { goed: true, nieuws: Boolean(body.aan) })
+}
+
 /* --------------------------------------------------------------------- entry */
 
 export default {
   async fetch(verzoek: Request, env: Env): Promise<Response> {
     const url = new URL(verzoek.url)
-    if (verzoek.method === 'OPTIONS') return new Response(null, { headers: CORS })
+    const portaal = url.pathname.startsWith('/portaal/')
+    if (verzoek.method === 'OPTIONS') {
+      return new Response(null, { headers: portaal ? portaalCors(env) : CORS })
+    }
 
     try {
       if (url.pathname === '/aanmelden' && verzoek.method === 'POST') return await aanmelden(verzoek, env)
@@ -466,6 +621,12 @@ export default {
       if (url.pathname === '/koop' && verzoek.method === 'POST') return await koop(verzoek, env)
       if (url.pathname === '/lezen' && verzoek.method === 'POST') return await lezen(verzoek, env)
       if (url.pathname === '/blad' && verzoek.method === 'POST') return await blad(verzoek, env)
+
+      if (url.pathname === '/portaal/aanmelden' && verzoek.method === 'POST') return await portaalAanmelden(verzoek, env)
+      if (url.pathname === '/portaal/binnen') return await portaalBinnen(url, env)
+      if (url.pathname === '/portaal/mij') return await portaalMij(verzoek, env)
+      if (url.pathname === '/portaal/uit' && verzoek.method === 'POST') return await portaalUit(verzoek, env)
+      if (url.pathname === '/portaal/nieuws' && verzoek.method === 'POST') return await portaalNieuws(verzoek, env)
     } catch (e) {
       console.error(url.pathname, e instanceof Error ? e.message : e)
       return json({ fout: 'ging-mis' }, 500)

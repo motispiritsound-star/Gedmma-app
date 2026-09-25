@@ -94,3 +94,51 @@ CREATE TABLE IF NOT EXISTS opening (
   aantal        INTEGER NOT NULL DEFAULT 1,
   PRIMARY KEY (bestelling_id, dag, ip_hash)
 );
+
+-- ------------------------------------------------------------- het portaal
+--
+-- Eén adres, en alles wat daarbij hoort. De nieuwsbrieflijst en de
+-- bestellingen stonden los van elkaar: twee tabellen die toevallig hetzelfde
+-- e-mailadres bevatten. Dit is de derde tafel waar ze beide aan zitten.
+--
+-- Bij elk vinkje staat wanneer het is gezet en onder welke versie van de
+-- tekst. "Ze hebben ja gezegd" is onder de AVG iets wat je moet kunnen laten
+-- zien en niet alleen beweren.
+
+CREATE TABLE IF NOT EXISTS lid (
+  id              TEXT PRIMARY KEY,
+  email           TEXT NOT NULL UNIQUE,
+  taal            TEXT NOT NULL DEFAULT 'nl',
+
+  -- De twee verplichte vinkjes bij het aanmaken, met het moment erbij.
+  voorwaarden_op  INTEGER NOT NULL,
+  leeftijd_op     INTEGER NOT NULL,
+
+  -- En de vrijwillige. Los van de rest, anders is het geen toestemming.
+  nieuws          INTEGER NOT NULL DEFAULT 0,
+  nieuws_op       INTEGER,
+
+  tekst_versie    TEXT NOT NULL,
+  ip_hash         TEXT,
+  aangemaakt_op   INTEGER NOT NULL,
+  laatste_bezoek  INTEGER,
+  -- Gezet als iemand vergeten wil worden; dan komt hij nergens meer binnen.
+  gewist_op       INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS lid_nieuws ON lid (nieuws, gewist_op);
+
+-- Inloglinks en sessies in één tabel: allebei een sleutel met een houdbaarheid.
+-- De sleutel zelf staat er nooit in, alleen zijn hash — lekt deze tabel, dan
+-- lekt er geen toegang mee.
+CREATE TABLE IF NOT EXISTS sessie (
+  token_hash   TEXT PRIMARY KEY,
+  lid_id       TEXT NOT NULL REFERENCES lid(id) ON DELETE CASCADE,
+  -- 'link' is eenmalig en een half uur geldig; 'sessie' is negentig dagen.
+  soort        TEXT NOT NULL,
+  gemaakt_op   INTEGER NOT NULL,
+  verloopt_op  INTEGER NOT NULL,
+  gebruikt_op  INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS sessie_lid ON sessie (lid_id, soort, gemaakt_op);

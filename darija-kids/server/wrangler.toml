@@ -10,6 +10,9 @@ AFZENDER_NAAM = "Darijaforkids"
 AFZENDER_EMAIL = "post@darijaforkids.eu"
 # Waar de lezer staat; de sleutel komt achter het hekje en gaat nooit naar een server.
 LEZER = "https://darijaforkids.eu/lezen"
+# De website zelf. Het portaal woont daar, en het koekje wordt op dit domein
+# gezet — niet op dat van deze worker, want de bladzijde vraagt hem op.
+SITE = "https://darijaforkids.eu"
 
 # The list itself. Create it once with:
 #   npx wrangler d1 create darijaforkids
