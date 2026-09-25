@@ -19,6 +19,19 @@ Kan het echt niet anders dan met de muis, zeg dat dan kort en wijs precies één
 ding aan. Niet zeven genummerde stappen door een menu dat er op zijn versie
 misschien anders uitziet.
 
+## En die terminal is PowerShell 5.1
+
+Windows PowerShell, geen bash en geen PowerShell 7. Dat betekent:
+
+- **Geen `&&`.** Die leest hij niet als scheiding — hij zegt *"The token '&&'
+  is not a valid statement separator in this version"* en doet niets. Geef
+  elke opdracht op een eigen regel.
+- **Geen `curl`**, dat is daar een alias voor `Invoke-WebRequest` met andere
+  vlaggen. Gebruik `curl.exe`.
+- **Zet de map erbij** als het ertoe doet. Hij start in zijn thuismap, en een
+  `npm run` daar levert een foutmelding op over een ontbrekende
+  `package.json` die niets zegt over wat er echt mis is.
+
 ## De vaste weg naar de winkels
 
 | | |
