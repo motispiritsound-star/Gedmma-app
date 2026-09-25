@@ -179,6 +179,7 @@
     stemkiezer.setAttribute('aria-label', woorden.stem || 'Stem')
     balk.append(speelknop, stemkiezer)
     vak.prepend(balk)
+    balk.after(tip)
 
     const vulStemmen = () => {
       const lijst = stemmenVoor(code)
@@ -196,8 +197,26 @@
       }
       stemkiezer.value = lijst.some((v) => v.stem.name === gekozen) ? gekozen : lijst[0].stem.name
     }
+    /**
+     * Zeggen dat het beter kan, als het beter kan.
+     *
+     * Een toestel met alleen de oude compacte stem klinkt blikkerig, en de
+     * lezer denkt dan dat dit is wat wij hem bieden. Het staat één tik verderop
+     * in zijn eigen instellingen. Alleen tonen als het speelt — wie al een
+     * goede stem heeft, hoeft geen raad.
+     */
+    const tip = document.createElement('p')
+    tip.className = 'stemtip'
+    tip.textContent = woorden.stemTip || ''
+    const magTip = () => {
+      const lijst = stemmenVoor(code)
+      tip.hidden = !woorden.stemTip || !lijst.length
+        || lijst.some(({ stem }) => NIEUWERE.test(stem.name) || stem.localService === false)
+    }
+
     vulStemmen()
-    const opnieuwVullen = () => { laadStemmen(); vulStemmen() }
+    magTip()
+    const opnieuwVullen = () => { laadStemmen(); vulStemmen(); magTip() }
     if (spraak && spraak.addEventListener) spraak.addEventListener('voiceschanged', opnieuwVullen)
 
     let speelt = false

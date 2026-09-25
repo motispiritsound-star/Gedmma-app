@@ -923,6 +923,7 @@ const booksPage = (lang) => {
   if (!knop || !vak) return
   const T = ${JSON.stringify({
     speel: c.leesSpeel, pauze: c.leesPauze, stem: c.leesStem, terug: c.boekProefSluit,
+    stemTip: c.leesStemTip,
   })}
   let open = false
   let boek = null
@@ -1212,6 +1213,7 @@ const readPage = (lang) => {
     kies: c.leesKies, vorige: c.leesVorige, volgende: c.leesVolgende,
     terug: c.leesTerug, bewaar: c.leesBewaar, sba: c.boekKleinTitel, sleutels: c.boekGrootTitel,
     portaal: c.portaal.titel, speel: c.leesSpeel, pauze: c.leesPauze, stem: c.leesStem,
+    stemTip: c.leesStemTip,
     nogNiet: c.leesNogNiet,
   })}
   const PORTAAL = ${JSON.stringify(p.portal)}
