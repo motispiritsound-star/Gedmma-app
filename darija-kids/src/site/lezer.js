@@ -272,7 +272,7 @@
    * `doel` wordt leeggemaakt. `boek` is wat de worker teruggeeft: een titel,
    * een jaar, een plaats en hoofdstukken met alinea's.
    */
-  const toon = (doel, boek, taal, woorden, sleutel) => {
+  const toon = (doel, boek, taal, woorden, sleutel, plaat) => {
     /**
      * Erbij, niet in plaats van.
      *
@@ -299,6 +299,25 @@
       h.textContent = (hoofdstuk.nummer ? hoofdstuk.nummer + '. ' : '') + hoofdstuk.titel
       tekst.append(h)
       for (const alinea of hoofdstuk.tekst || []) tekst.append(alineaVan(alinea))
+    }
+
+    /**
+     * Het geschilderde tafereel bij dit deel, als er een is.
+     *
+     * Hij draagt de titel al, en die staat er daarom onder nog eens: een
+     * voorlezer hoort geen plaat. Valt hij om — een taal zonder plaat, een
+     * bestand dat er niet is — dan haalt hij zichzelf weg en begint het boek
+     * gewoon bij de titel.
+     */
+    if (plaat) {
+      const beeld = document.createElement('img')
+      beeld.className = 'boekplaat'
+      beeld.src = plaat
+      beeld.alt = ''
+      beeld.loading = 'lazy'
+      beeld.decoding = 'async'
+      beeld.onerror = () => beeld.remove()
+      doel.append(beeld)
     }
 
     doel.append(kop, onder, tekst)

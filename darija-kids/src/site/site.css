@@ -709,6 +709,16 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
      de volgende regel kwijt; dat is waarom een boek smal is en geen A4. */
   max-width: 38rem;
 }
+/* Het tafereel boven het boek.
+   Binnen de marge van het papier, niet eroverheen: de voorleesbalk plakt
+   bovenaan en een plaat die daar met negatieve marges langs wil, schuift er
+   precies achter. */
+.boek .boekplaat {
+  width: 100%; height: auto; display: block;
+  margin: 0 0 2rem; border-radius: 8px;
+  box-shadow: 0 1px 2px rgb(26 22 37 / 6%), 0 16px 34px -22px rgb(26 22 37 / 45%);
+}
+
 .boek h2 {
   font-family: var(--serif); font-weight: 600; font-size: clamp(1.5rem, 4vw, 1.9rem);
   margin: 0 0 .2rem; letter-spacing: -.01em;

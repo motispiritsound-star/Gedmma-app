@@ -943,7 +943,8 @@ const booksPage = (lang) => {
     open = true
     knop.textContent = T.terug
     vak.hidden = false
-    window.Lezer.toon(vak, boek, ${JSON.stringify(lang)}, T, 'proef-${lang}')
+    window.Lezer.toon(vak, boek, ${JSON.stringify(lang)}, T, 'proef-${lang}',
+      ${JSON.stringify(DEELPLATEN.sleutels[lang]?.has('deel-01.webp') ? `/reeks/sleutels/${lang}/deel-01.webp` : null)})
     vak.scrollIntoView({ block: 'start', behavior: 'smooth' })
   }
 })()
@@ -1214,6 +1215,18 @@ const readPage = (lang) => {
     nogNiet: c.leesNogNiet,
   })}
   const PORTAAL = ${JSON.stringify(p.portal)}
+  /**
+   * Welke delen een geschilderd tafereel hebben, per taal.
+   *
+   * Dat weten we bij het zetten van deze bladzijde, en de lezer niet: die zou
+   * anders voor elk boek een plaat moeten opvragen om te ontdekken dat hij er
+   * niet is. Een lijstje van vijf getallen is goedkoper dan vijftien verzoeken
+   * die op een 404 uitlopen.
+   */
+  const PLATEN = ${JSON.stringify(Object.fromEntries(
+    LANGS.map((l) => [l.code, [...(DEELPLATEN.sleutels[l.code] ?? [])]
+      .map((n) => Number(n.slice(5, 7))).filter(Boolean).sort((a, b) => a - b)]),
+  ))}
   const doel = document.getElementById('lezer')
   let sleutel = ''
 
@@ -1398,7 +1411,11 @@ const readPage = (lang) => {
     const r = await vraag('/blad', { reeks: 'sleutels', deel, nr: 0, taal: taalVan })
     if (!r.ok) return zeg(T.onbekend, 'soon')
     const boek = await r.json()
-    if (window.Lezer) window.Lezer.toon(doel, boek, taalVan || taal, T)
+    const tv = taalVan || taal
+    const plaat = (PLATEN[tv] ?? []).includes(deel)
+      ? '/reeks/sleutels/' + tv + '/deel-' + String(deel).padStart(2, '0') + '.webp'
+      : null
+    if (window.Lezer) window.Lezer.toon(doel, boek, tv, T, null, plaat)
     else { doel.className = ''; doel.textContent = boek.titel }
     doel.append(knopje(T.terug, begin, 'terug'))
   }

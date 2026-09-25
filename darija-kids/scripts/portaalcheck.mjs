@@ -159,6 +159,8 @@ console.log('\nDe teaser')
        'het vak houdt zijn opmaak (lezer én boek)')
   meld(await bladzijde.locator('#proef .leestekst em').count() > 0,
        'sterretjes uit de brontekst zijn cursief, geen sterretjes')
+  meld(await bladzijde.locator('#proef .boekplaat').count() === 1,
+       'het geschilderde tafereel staat boven het verhaal')
   const koppen = await bladzijde.locator('#proef h3').count()
   meld(koppen === 3, `drie hoofdstukken, en niet het hele boek (${koppen})`)
   await knop.click()
