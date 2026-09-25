@@ -20,7 +20,7 @@
 import { bestellingVan, hashVan, maakSleutel, plekken, tekAan } from './lezer'
 import {
   bezit, koekje, logUit, lidVanEmail, magOpnieuw, maakLink, netjes as netjesEmail,
-  schrijfIn, sessieUit, wieIsDit, wisselIn, zetNieuws,
+  ruimOp, schrijfIn, sessieUit, wieIsDit, wisselIn, zetNieuws,
 } from './portaal'
 import { geheimKlopt, koopbericht, veldenVan } from './koopbericht'
 import { verstuur, type Afzender } from './mail'
@@ -307,6 +307,15 @@ async function voortgang(verzoek: Request, env: Env): Promise<Response> {
  * and a mail full of zeroes would be a strange way to say hello.
  */
 async function weekloop(env: Env): Promise<void> {
+  // Meteen even opruimen: verlopen sessies en gebruikte inloglinks doen niets
+  // meer dan ruimte innemen, en er is toch al een keer per week iets te doen.
+  try {
+    const weg = await ruimOp(env.DB)
+    if (weg) console.log(`opgeruimd: ${weg} verlopen sessies`)
+  } catch (e) {
+    console.error('opruimen', e instanceof Error ? e.message : e)
+  }
+
   const grens = nu() - 6 * 24 * 3600
   const { results } = await env.DB.prepare(
     `SELECT a.id, a.email, a.taal, a.nieuws, a.voortgang, a.status, a.token,

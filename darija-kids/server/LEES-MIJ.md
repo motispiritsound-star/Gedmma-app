@@ -176,6 +176,21 @@ daar geeft het portaal niets voor. De melding komt wel aan en antwoordt
 `{"goed":true,"genegeerd":["eboek"]}` — geen foutcode, want op een foutcode
 probeert een betaalpartner het morgen gewoon opnieuw.
 
+## De ledenlijst, als je er ooit een nieuwsbrief mee stuurt
+
+Niet `SELECT email FROM lid WHERE nieuws = 1`. Dat is de lijst van adressen die
+iemand heeft ingetypt, en dat hoeft niet je eigen adres te zijn: elk formulier
+op internet krijgt vroeg of laat het adres van de buurman te verwerken.
+
+Gebruik `nieuwsbrieflijst()` uit `src/portaal.ts`. Die zet er één voorwaarde
+bij: `laatste_bezoek IS NOT NULL`. Dat veld wordt op precies één plek gezet —
+als iemand op de link in zijn eigen mail heeft geklikt — en dat kan alleen wie
+bij die mailbox kan. Het is dus geen bezoekteller maar het bewijs dat het adres
+van deze persoon is, en dat is wat de AVG een geldige toestemming noemt.
+
+De wekelijkse mail aan cursisten loopt via een andere tafel (`aanmelding`, met
+een eigen bevestigingsstap) en heeft hier niets mee te maken.
+
 ## De wegen
 
 | | |

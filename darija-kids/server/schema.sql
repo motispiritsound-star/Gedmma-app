@@ -115,12 +115,20 @@ CREATE TABLE IF NOT EXISTS lid (
   leeftijd_op     INTEGER NOT NULL,
 
   -- En de vrijwillige. Los van de rest, anders is het geen toestemming.
+  --
+  -- Let op: dit vinkje alleen is géén grond om te mailen. Iedereen kan hier
+  -- het adres van een ander invullen. De bevestiging staat in `laatste_bezoek`
+  -- hieronder; `nieuwsbrieflijst()` in portaal.ts zet die twee bij elkaar en
+  -- is de enige juiste manier om aan deze lijst te komen.
   nieuws          INTEGER NOT NULL DEFAULT 0,
   nieuws_op       INTEGER,
 
   tekst_versie    TEXT NOT NULL,
   ip_hash         TEXT,
   aangemaakt_op   INTEGER NOT NULL,
+  -- Gezet zodra iemand op de link in zijn mail heeft geklikt, en nergens
+  -- anders. Dat kan alleen wie bij die mailbox kan, dus dit is het bewijs dat
+  -- het adres van deze persoon is. Geen bezoekteller: een bewijs.
   laatste_bezoek  INTEGER,
   -- Gezet als iemand vergeten wil worden; dan komt hij nergens meer binnen.
   gewist_op       INTEGER

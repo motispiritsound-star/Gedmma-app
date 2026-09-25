@@ -243,6 +243,19 @@ een half uur schieten plus versturen. De voorleestekst gaat vanzelf mee. Tot
 die tijd opent Sba niet in de lezer; de pdf uit de winkel werkt gewoon, en de
 lezer zegt dat er ook bij.
 
+### Het ledenbestand
+
+Wie zich aanmeldt komt in de tafel `lid`. Het vinkje voor de nieuwsbrief staat
+daar los van de twee verplichte, want gebundelde toestemming is geen
+toestemming.
+
+Eén ding om te onthouden voor de dag dat je die eerste nieuwsbrief stuurt:
+**het vinkje alleen is geen grond om te mailen.** Iedereen kan bij het
+aanmelden het adres van een ander invullen. De bevestiging is de klik op de
+link in de mail — die kan alleen wie bij die mailbox kan. In de code zit daar
+één functie voor, `nieuwsbrieflijst()` in `server/src/portaal.ts`, en die zet
+die twee voorwaarden bij elkaar. Gebruik die, en geen zelfgeschreven query.
+
 ### Wat hier nog moet
 
 1. **Je eigen boek kopen.** Met je eigen kaart, voor de volle prijs. De zes

@@ -215,6 +215,53 @@ export async function bezit(db: D1Database, email: string): Promise<{ reeksen: s
   return { reeksen: [...alles].sort(), sinds: rijen.results?.[0]?.gekocht_op ?? null }
 }
 
+/**
+ * Wie er een nieuwsbrief mag krijgen.
+ *
+ * Hier staat één regel meer in dan je zou verwachten: `laatste_bezoek IS NOT
+ * NULL`. Dat is de bevestiging, en zonder die regel is deze lijst onbruikbaar.
+ *
+ * Aanmelden kan namelijk met elk adres. Iemand typt het adres van zijn buurman
+ * in, zet het vinkje voor de nieuwsbrief aan, en er staat een rij in de tafel
+ * waar die buurman nooit om heeft gevraagd. Dat is geen bedacht gevaar maar de
+ * gewone gang van zaken bij elk formulier op internet, en het is precies wat de
+ * AVG bedoelt met toestemming die van de betrokkene zelf moet komen.
+ *
+ * `laatste_bezoek` wordt op één plek gezet: in `wisselIn`, als iemand op de
+ * link in zijn mail heeft geklikt. Dat kan alleen wie bij die mailbox kan. Het
+ * is dus geen bezoekteller maar een bewijs, en daarom staat deze functie hier
+ * en niet als losse query in een script — een query wordt overgetypt zonder de
+ * regel die ertoe doet.
+ *
+ * Wie hier ooit een nieuwsbrief mee gaat versturen: dit is de lijst. Niet
+ * `SELECT email FROM lid WHERE nieuws = 1`.
+ */
+export async function nieuwsbrieflijst(
+  db: D1Database,
+): Promise<{ email: string; taal: string }[]> {
+  const rijen = await db
+    .prepare(`SELECT email, taal FROM lid
+              WHERE nieuws = 1 AND gewist_op IS NULL AND laatste_bezoek IS NOT NULL
+              ORDER BY aangemaakt_op`)
+    .all<{ email: string; taal: string }>()
+  return rijen.results ?? []
+}
+
+/**
+ * Verlopen sessies en gebruikte links opruimen.
+ *
+ * Elke inlogpoging laat een rij achter, en die rijen doen na hun vervaldatum
+ * niets meer dan ruimte innemen. Eén keer per week is ruim voldoende: het gaat
+ * om tientallen rijen, niet om duizenden.
+ */
+export async function ruimOp(db: D1Database): Promise<number> {
+  const uit = await db
+    .prepare('DELETE FROM sessie WHERE verloopt_op < ?')
+    .bind(nu())
+    .run()
+  return uit.meta?.changes ?? 0
+}
+
 export async function zetNieuws(db: D1Database, lidId: string, aan: boolean): Promise<void> {
   await db
     .prepare(`UPDATE lid SET nieuws = ?, nieuws_op = CASE WHEN ? = 1 THEN ? ELSE nieuws_op END WHERE id = ?`)
