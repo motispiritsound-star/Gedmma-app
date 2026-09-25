@@ -44,14 +44,19 @@ const SLEUTEL = process.env.ELEVEN_SLEUTEL
 const MODEL = process.env.ELEVEN_MODEL ?? 'eleven_multilingual_v2'
 const FORMAAT = 'mp3_44100_128'
 const TAAL = arg('taal', 'nl')
+const REEKS = arg('reeks', 'sleutels')
 const NUMMER = Number(arg('deel', '1'))
+/** Alles: elke reeks, elk deel, elke taal. Kijk eerst met --raming wat dat kost. */
+const ALLES = vlag('alles')
+/** Tellen zonder te betalen: hoeveel tekens, en wat dat ongeveer kost. */
+const RAMING = vlag('raming')
 const ALLEEN = arg('hoofdstuk', null)
 /** Alleen de eerste zoveel hoofdstukken — hetzelfde getal als bij de zetter. */
 const TOT = Number(arg('tot', 0)) || 0
 const PROEF = vlag('proef')
 const OPNIEUW = vlag('opnieuw')
 
-if (!SLEUTEL) {
+if (!SLEUTEL && !RAMING) {
   console.error(`
 Zet eerst je sleutel:
 
@@ -94,41 +99,91 @@ const server = await createServer({
   configFile: path.join(ROOT, 'vite.config.ts'),
   root: ROOT, server: { middlewareMode: true, hmr: false }, appType: 'custom', logLevel: 'error',
 })
-const [{ REEKS }, talen, { VERTELSTEMMEN, vertelstemVan }, { zinnenVan, uitspreekbaar }, deelmodule] = await Promise.all([
+const [sleutels, sleutelTalen, { VERTELSTEMMEN, vertelstemVan }, { zinnenVan, uitspreekbaar },
+       prenten, prentTalen] = await Promise.all([
   server.ssrLoadModule('/src/content/sleutels.ts'),
   server.ssrLoadModule('/src/content/sleutels-talen.ts'),
   server.ssrLoadModule('/src/content/vertelstemmen.ts'),
   server.ssrLoadModule('/src/content/zinnen.ts'),
-  server.ssrLoadModule(`/src/content/sleutels-deel${NUMMER}.ts`),
+  server.ssrLoadModule('/src/content/prentenboek.ts'),
+  server.ssrLoadModule('/src/content/prentenboek-talen.ts'),
 ])
-await server.close()
-
-const STEM = vertelstemVan(arg('stem', VERTELSTEMMEN[0].naam))
-const nederlands = {
-  ...REEKS[NUMMER - 1],
-  hoofdstukken: deelmodule[`DEEL${NUMMER}_HOOFDSTUKKEN`] ?? [],
-}
-const deel = talen.sleuteldeelIn(TAAL, nederlands)
-const S = talen.schilVanSleutel(TAAL)
 
 /**
- * Waar de opnames komen te staan.
+ * Een deel uit een van de twee reeksen, in dezelfde vorm.
  *
- * Naast de leeskopie en niet in een eigen hoek: die bladzijde is de enige die
- * ze afspeelt, en een map die je moet kopiëren voordat het werkt is een map
- * die iemand vergeet te kopiëren.
+ * De sleutels heeft hoofdstukken, Sba heeft bladzijden. Voor een opname is
+ * dat hetzelfde ding: een stuk tekst met een nummer erbij. Door ze hier
+ * gelijk te maken hoeft de rest van dit bestand het verschil niet te kennen.
  */
-const UIT = path.join(ROOT, 'store', 'lezen', 'luister', `${TAAL}-${NUMMER}-${STEM.naam.toLowerCase()}`)
-await mkdir(UIT, { recursive: true })
+const boekVan = async (reeks, nummer, taal) => {
+  if (reeks === 'sba') {
+    const deel = prentTalen.deelIn(taal, nummer)
+    return {
+      titel: deel.titel,
+      stukken: deel.bladen.map((blad, i) => ({ nummer: i + 1, titel: blad.woord?.nl ?? '', tekst: blad.tekst })),
+      kop: (n) => `Bladzijde ${n}`,
+    }
+  }
+  const module = await server.ssrLoadModule(`/src/content/sleutels-deel${nummer}.ts`)
+  const basis = { ...sleutels.REEKS[nummer - 1], hoofdstukken: module[`DEEL${nummer}_HOOFDSTUKKEN`] ?? [] }
+  const deel = sleutelTalen.sleuteldeelIn(taal, basis)
+  const S = sleutelTalen.schilVanSleutel(taal)
+  return {
+    titel: deel.titel,
+    stukken: deel.hoofdstukken.map((h) => ({ nummer: h.nummer, titel: h.titel, tekst: h.tekst })),
+    kop: S.hoofdstuk,
+  }
+}
 
-const hoofdstukken = ALLEEN
-  ? deel.hoofdstukken.filter((h) => h.nummer === Number(ALLEEN))
-  : PROEF ? deel.hoofdstukken.slice(0, 1)
-  : TOT ? deel.hoofdstukken.slice(0, TOT)
-  : deel.hoofdstukken
+const TALEN = ['nl', 'fr', 'de', 'es', 'it', 'en']
+const DELEN = { sleutels: sleutels.REEKS.length, sba: prenten.DELEN.length }
 
-console.log(`\n${deel.titel} — ${TAAL}, stem ${STEM.naam} (${STEM.toon})`)
-console.log(`${hoofdstukken.length} van de ${deel.hoofdstukken.length} hoofdstukken\n`)
+const STEM = vertelstemVan(arg('stem', VERTELSTEMMEN[0].naam))
+
+/** Elk klusje: één reeks, één deel, één taal. `--alles` maakt er negentig. */
+const klussen = ALLES
+  ? TALEN.flatMap((taal) => ['sleutels', 'sba'].flatMap((reeks) =>
+      Array.from({ length: DELEN[reeks] }, (_, i) => ({ reeks, nummer: i + 1, taal }))))
+  : [{ reeks: REEKS, nummer: NUMMER, taal: TAAL }]
+
+/** Welke stukken van een boek: alles, één, de eerste zoveel, of alleen het eerste. */
+const kiesStukken = (stukken) =>
+  ALLEEN ? stukken.filter((h) => h.nummer === Number(ALLEEN))
+  : PROEF ? stukken.slice(0, 1)
+  : TOT ? stukken.slice(0, TOT)
+  : stukken
+
+/* -------------------------------------------------------------- de raming */
+
+if (RAMING) {
+  let tekens = 0
+  let stukken = 0
+  const perReeks = {}
+  for (const klus of klussen) {
+    const boek = await boekVan(klus.reeks, klus.nummer, klus.taal)
+    for (const stuk of kiesStukken(boek.stukken)) {
+      const lengte = zinnenVan(stuk.tekst).map(uitspreekbaar).join(' ').length
+      tekens += lengte
+      stukken += 1
+      perReeks[klus.reeks] = (perReeks[klus.reeks] ?? 0) + lengte
+    }
+  }
+  await server.close()
+  const geld = (n) => `$${(n / 1000 * 0.15).toFixed(0)}`
+  console.log(`\n${klussen.length} boeken, ${stukken} stukken, ${tekens.toLocaleString('nl-NL')} tekens\n`)
+  for (const [reeks, n] of Object.entries(perReeks)) {
+    console.log(`  ${reeks.padEnd(10)} ${n.toLocaleString('nl-NL').padStart(9)} tekens   ${geld(n).padStart(6)} per stem`)
+  }
+  console.log(`\n  samen      ${tekens.toLocaleString('nl-NL').padStart(9)} tekens   ${geld(tekens).padStart(6)} per stem`)
+  console.log(`                                       ${geld(tekens * 2).padStart(6)} voor twee stemmen\n`)
+  console.log('Dit is een schatting bij ongeveer $0,15 per duizend tekens; op een')
+  console.log('groter abonnement ligt de prijs per teken lager. Kijk in je eigen')
+  console.log('afrekening voordat je dit voor alle talen tegelijk draait.\n')
+  process.exit(0)
+}
+
+/* ------------------------------------------------------------- de opnames */
 
 const stemId = await (async () => {
   const lijst = await bibliotheek()
@@ -139,85 +194,98 @@ const stemId = await (async () => {
   process.exit(1)
 })()
 
+console.log(`\nStem ${STEM.naam} (${STEM.toon}) — ${klussen.length} ${klussen.length === 1 ? 'boek' : 'boeken'}\n`)
+
 let tekens = 0
 
-for (const hoofdstuk of hoofdstukken) {
-  const mp3 = path.join(UIT, `${String(hoofdstuk.nummer).padStart(2, '0')}.mp3`)
-  const kaart = mp3.replace(/\.mp3$/, '.json')
-  if (existsSync(mp3) && !OPNIEUW) {
-    console.log(`  ${S.hoofdstuk(hoofdstuk.nummer)} staat er al`)
-    continue
+for (const klus of klussen) {
+  const boek = await boekVan(klus.reeks, klus.nummer, klus.taal)
+  const stukken = kiesStukken(boek.stukken)
+  if (!stukken.length) continue
+
+  const UIT = path.join(ROOT, 'store', 'lezen', 'luister',
+    `${klus.reeks === 'sba' ? 'sba-' : ''}${klus.taal}-${klus.nummer}-${STEM.naam.toLowerCase()}`)
+  await mkdir(UIT, { recursive: true })
+  console.log(`${boek.titel} — ${klus.taal}`)
+
+  for (const stuk of stukken) {
+    const mp3 = path.join(UIT, `${String(stuk.nummer).padStart(2, '0')}.mp3`)
+    const kaart = mp3.replace(/\.mp3$/, '.json')
+    if (existsSync(mp3) && !OPNIEUW) {
+      console.log(`  ${boek.kop(stuk.nummer)} staat er al`)
+      continue
+    }
+
+    const zinnen = zinnenVan(stuk.tekst).map(uitspreekbaar)
+    const tekst = zinnen.join(' ')
+    if (!tekst.trim()) continue
+    process.stdout.write(`  ${boek.kop(stuk.nummer)} — ${zinnen.length} zinnen, ${tekst.length} tekens … `)
+
+    const antwoord = await bij(`text-to-speech/${stemId}/with-timestamps?output_format=${FORMAAT}`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        text: tekst,
+        model_id: MODEL,
+        voice_settings: { stability: STEM.vast, similarity_boost: STEM.gelijkend, speed: STEM.tempo },
+      }),
+    })
+    const { audio_base64: geluid, alignment } = await antwoord.json()
+    await writeFile(mp3, Buffer.from(geluid, 'base64'))
+
+    /**
+     * Van tekens naar zinnen.
+     *
+     * ElevenLabs geeft per teken een begin en een eind. De zinnen staan achter
+     * elkaar in dezelfde tekst, dus een lopende teller over de lengtes wijst
+     * precies aan waar elke zin begint en ophoudt.
+     */
+    const begin = alignment?.character_start_times_seconds ?? []
+    const eind = alignment?.character_end_times_seconds ?? []
+    let plek = 0
+    const kaartje = zinnen.map((zin) => {
+      const van = plek
+      const tot = plek + zin.length
+      plek = tot + 1 // de spatie tussen twee zinnen
+      return {
+        tekst: zin,
+        van: Number((begin[van] ?? 0).toFixed(3)),
+        tot: Number((eind[Math.min(tot - 1, eind.length - 1)] ?? 0).toFixed(3)),
+      }
+    })
+    await writeFile(kaart, JSON.stringify({
+      reeks: klus.reeks, deel: klus.nummer, taal: klus.taal, stuk: stuk.nummer, titel: stuk.titel,
+      stem: STEM.naam, model: MODEL, zinnen: kaartje,
+    }, null, 1))
+
+    tekens += tekst.length
+    console.log(`${Math.round((kaartje.at(-1)?.tot ?? 0) / 60)} min`)
   }
 
-  const zinnen = zinnenVan(hoofdstuk.tekst).map(uitspreekbaar)
-  const tekst = zinnen.join(' ')
-  process.stdout.write(`  ${S.hoofdstuk(hoofdstuk.nummer)} — ${zinnen.length} zinnen, ${tekst.length} tekens … `)
-
-  const antwoord = await bij(`text-to-speech/${stemId}/with-timestamps?output_format=${FORMAAT}`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({
-      text: tekst,
-      model_id: MODEL,
-      voice_settings: { stability: STEM.vast, similarity_boost: STEM.gelijkend, speed: STEM.tempo },
-    }),
-  })
-  const { audio_base64: geluid, alignment } = await antwoord.json()
-  await writeFile(mp3, Buffer.from(geluid, 'base64'))
-
   /**
-   * Van tekens naar zinnen.
+   * Eén lijst met wat er klaarstaat.
    *
-   * ElevenLabs geeft per teken een begin en een eind. De zinnen staan achter
-   * elkaar in dezelfde tekst, dus een lopende teller over de lengtes wijst
-   * precies aan waar elke zin begint en ophoudt.
+   * De leesbladzijde haalt dit ene bestand op en weet dan meteen welke stukken
+   * er zijn en waar elke zin begint. Zonder deze lijst zou hij per hoofdstuk
+   * moeten gokken of er een opname is, en dat is twaalf mislukte verzoeken
+   * per boek.
    */
-  const begin = alignment?.character_start_times_seconds ?? []
-  const eind = alignment?.character_end_times_seconds ?? []
-  let plek = 0
-  const kaartje = zinnen.map((zin) => {
-    const van = plek
-    const tot = plek + zin.length
-    plek = tot + 1 // de spatie tussen twee zinnen
-    return {
-      tekst: zin,
-      van: Number((begin[van] ?? 0).toFixed(3)),
-      tot: Number((eind[Math.min(tot - 1, eind.length - 1)] ?? 0).toFixed(3)),
-    }
-  })
-  await writeFile(kaart, JSON.stringify({
-    deel: NUMMER, taal: TAAL, hoofdstuk: hoofdstuk.nummer, titel: hoofdstuk.titel,
-    stem: STEM.naam, model: MODEL, zinnen: kaartje,
-  }, null, 1))
-
-  tekens += tekst.length
-  const duur = kaartje.at(-1)?.tot ?? 0
-  console.log(`${Math.round(duur / 60)} min`)
+  const gezet = []
+  for (const stuk of boek.stukken) {
+    const kaart = path.join(UIT, `${String(stuk.nummer).padStart(2, '0')}.json`)
+    if (!existsSync(kaart)) continue
+    const { zinnen } = JSON.parse(await readFile(kaart, 'utf8'))
+    gezet.push({
+      nummer: stuk.nummer,
+      geluid: `${String(stuk.nummer).padStart(2, '0')}.mp3`,
+      zinnen: zinnen.map(({ van, tot }) => ({ van, tot })),
+    })
+  }
+  await writeFile(path.join(UIT, 'boek.json'), JSON.stringify({
+    reeks: klus.reeks, deel: klus.nummer, taal: klus.taal, stem: STEM.naam, toon: STEM.toon,
+    titel: boek.titel, hoofdstukken: gezet,
+  }))
 }
 
-/**
- * Eén lijst met wat er klaarstaat.
- *
- * De leesbladzijde haalt dit ene bestand op en weet dan meteen welke
- * hoofdstukken er zijn en waar elke zin begint. Zonder deze lijst zou hij per
- * hoofdstuk moeten gokken of er een opname is, en dat is twaalf mislukte
- * verzoeken per boek.
- */
-const gezet = []
-for (const h of deel.hoofdstukken) {
-  const kaart = path.join(UIT, `${String(h.nummer).padStart(2, '0')}.json`)
-  if (!existsSync(kaart)) continue
-  const { zinnen } = JSON.parse(await readFile(kaart, 'utf8'))
-  gezet.push({
-    nummer: h.nummer,
-    geluid: `${String(h.nummer).padStart(2, '0')}.mp3`,
-    zinnen: zinnen.map(({ van, tot }) => ({ van, tot })),
-  })
-}
-await writeFile(path.join(UIT, 'boek.json'), JSON.stringify({
-  deel: NUMMER, taal: TAAL, stem: STEM.naam, toon: STEM.toon,
-  titel: deel.titel, hoofdstukken: gezet,
-}))
-
-console.log(`\n${path.relative(ROOT, UIT)}/  —  ${gezet.length} hoofdstukken met geluid`)
-console.log(`${tekens.toLocaleString('nl-NL')} tekens gezet — ruwweg $${(tekens / 1000 * 0.15).toFixed(2)}\n`)
+await server.close()
+console.log(`\n${tekens.toLocaleString('nl-NL')} tekens gezet — ruwweg $${(tekens / 1000 * 0.15).toFixed(2)}\n`)
