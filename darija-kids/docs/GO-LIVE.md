@@ -39,6 +39,27 @@ een paar uur nodig, Play is binnen het uur zichtbaar. Dus: **Apple eerst,
 Play erachteraan**, en pas posten als allebei de adressen echt opengaan in
 een browser waar je niet bent ingelogd.
 
+## Als je meteen live wilt
+
+De aftelling van zeven dagen (LANCERING §16, fase 2) is de betere lancering:
+je verzamelt er publiek mee voordat er iets te downloaden is. Maar ze kost
+zeven dagen waarin de app klaar in de winkel staat te wachten, en dat is een
+afweging die jij maakt, niet ik.
+
+Wil je op de dag van goedkeuring naar buiten, dan is dit het hele werk:
+
+```bash
+npm run live -- --apple <het Apple ID> --google
+git add -A && git commit -m "De app staat in de winkel" && git push
+```
+
+En dan de berichten hieronder, in de volgorde van §3. Reken op een uur voor
+alles bij elkaar, waarvan vijftig minuten persoonlijke WhatsApp-berichten.
+
+De zeven aftelposten zijn dan niet verloren: post ze in de week **ná** de
+lancering, in dezelfde volgorde. Ze zijn geschreven om iets te geven, niet om
+af te tellen — daarom werken ze allebei de kanten op.
+
 ---
 
 ## De volgorde
@@ -221,6 +242,75 @@ Two minutes a day. The first four lessons are free.
 ```
 
 ---
+
+## De zeven posten eromheen
+
+Vóór de lancering zijn dit de aftelposten (LANCERING §16, fase 2). Ga je
+meteen live, dan zijn het de eerste zeven dagen daarna. Eén per dag, en elke
+post geeft iets — een aftelbericht zonder inhoud kost je volgers.
+
+**1 — het filmpje.** Dertig seconden, geen bijschrift dat het uitlegt.
+
+```
+Dit duurde twee jaar.
+```
+
+**2 — het woordje van de dag.** Gewoon, zoals altijd, zonder iets over de
+lancering. Wie elke dag hetzelfde geeft, wordt geloofd op de dag dat hij iets
+vraagt.
+
+**3 — waarom Darija.**
+
+```
+"Waarom leer je ze geen Arabisch?"
+
+Dat doe ik. Alleen niet het Arabisch van het journaal en het schoolboek —
+dat spreekt thuis niemand.
+
+Darija is wat je oma zegt als ze de telefoon opneemt. Het is wat er op de
+markt in Marrakech wordt geroepen. Het is de taal waarin er om je gelachen
+wordt en waarin je getroost wordt.
+
+Een kind dat Standaardarabisch leert, kan de krant lezen. Een kind dat
+Darija leert, kan met zijn familie praten.
+```
+
+**4 — het leerpad.** Een schermafbeelding, en daaronder:
+
+```
+Zeventien units. Van het alfabet tot afdingen op de souq.
+
+Elke les duurt twee minuten. Dat is met opzet: een kind dat elke dag twee
+minuten doet, komt verder dan een kind dat één keer per maand een uur moet.
+```
+
+**5 — jouw verhaal.** Vier zinnen, geen verkooppraat. Dit is de post die het
+verst komt, en de enige die niemand anders kan schrijven.
+
+```
+Mijn moeder belde. Ze sprak Darija, zoals altijd.
+Mijn zoon verstond haar prima en antwoordde in het Nederlands.
+Ze hebben allebei niets gemerkt.
+Ik wel.
+```
+
+**6 — wat het kost.** Eerlijk en compleet, één keer, en daarna nooit meer.
+
+```
+Voor wie het zich afvraagt: de eerste vier lessen zijn gratis. Geen account,
+geen advertenties, niets in te vullen — ook niet door een kind.
+
+Wil je verder, dan kost het € 6,99 per maand of € 59,99 per jaar, voor het
+hele gezin.
+
+Ik zeg het liever nu dan dat je er straks achter komt.
+```
+
+**7 — morgen.** Eén zin, één plaatje. Ga je meteen live, sla deze dan over.
+
+```
+Morgen.
+```
 
 ## De boeken zijn een aparte lancering
 
