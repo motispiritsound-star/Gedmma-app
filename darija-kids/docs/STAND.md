@@ -150,6 +150,29 @@ vóór er iets misgaat. Gemaakt met `npm run sleutels -- --deel 1 --tot 3`.
 Sba heeft met opzet geen gratis deel: dat is een twaalfde van de reeks en in
 vijf minuten uit.
 
+### Het portaal
+
+De worker draait: `darijaforkids-post.motispiritsound.workers.dev`, met de
+database erachter en alle zes de tafels erin. Op darijaforkids.eu/portaal meld
+je je aan met je e-mailadres, krijg je een link, en zie je daarna je gekochte
+reeksen. Geen wachtwoord — zie `server/src/portaal.ts` voor waarom niet.
+
+Drie dingen die nog moeten voordat het werkt voor een echte koper:
+
+1. **De worker koppelen aan post.darijaforkids.eu.** In het Cloudflare-
+   dashboard bij Workers & Pages → `darijaforkids-post` → Settings → Domains &
+   Routes. Zolang dat niet gebeurd is, wijzen de links in de mails naar een
+   adres dat niemand kent. Zet daarna `workers_dev = false` in `wrangler.toml`,
+   anders is dezelfde worker op twee adressen bereikbaar.
+2. **Gumroad laten melden dat er verkocht is**, naar `/koop`. Zonder die
+   melding blijft de bibliotheek van een koper leeg terwijl hij wél betaald
+   heeft — en dat is de ergste soort bug: hij lijkt op diefstal.
+3. **Zelf een keer het hele rondje lopen**: kopen, mail, aanmelden, inloggen,
+   en kijken of het boek er staat.
+
+De R2-bak staat uit. Die is voor de lezer die een boek bladzijde voor
+bladzijde uitserveert, en de boeken gaan voorlopig als pdf de deur uit.
+
 ### Wat hier nog moet
 
 1. **Je eigen boek kopen.** Met je eigen kaart, voor de volle prijs. De zes
