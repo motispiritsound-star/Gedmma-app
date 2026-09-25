@@ -220,13 +220,22 @@ console.log('\nDe lezer')
     '/lezen': { reeksen: ['sba'], taal: 'nl', merk: 'koper@example.com' },
     '/blad': {
       nummer: 1, titel: 'Sba in Tanger', ondertitel: '', waar: 'Tanger',
+      // Vier bladzijden voorwerk, dan de plaat en het verhaal van blad 0.
+      bladzijden: [null, null, null, null, 0, 0],
       bladen: [{ tekst: ['De boten zijn blauw. Allemaal.', 'Er springt nog iets in.'], woord: {}, echo: '' }],
     },
   })
   await bladzijde.locator('#lezer .boekjes button').first().click()
+  await bladzijde.waitForSelector('#lezer .boek img', { timeout: 5000 }).catch(() => {})
+  meld(await bladzijde.locator('#lezer .bladtekst .zin').count() === 0,
+       'de omslag zwijgt, want daar hoort geen verhaal bij')
+
+  // Vier bladzijden voorwerk, dan begint het verhaal.
+  const verder = bladzijde.locator('#lezer .boek .balk button').nth(1)
+  for (let i = 0; i < 4; i++) await verder.click()
   await bladzijde.waitForSelector('#lezer .bladtekst .zin', { timeout: 5000 }).catch(() => {})
   const zinnen = await bladzijde.locator('#lezer .bladtekst .zin').count()
-  meld(zinnen === 3, `de voorleestekst staat onder de plaat, in zinnen (${zinnen})`)
+  meld(zinnen === 3, `op bladzijde vijf staat de voorleestekst, in zinnen (${zinnen})`)
   meld(await bladzijde.locator('#lezer .bladtekst .leesbalk .speel').count() === 1,
        'met een voorleesknop, net als bij de leesboeken')
   await context.close()

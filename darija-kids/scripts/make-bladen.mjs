@@ -9,10 +9,15 @@
  *   <reeks>/<deel>/<taal>/<nummer>.webp
  *
  * Run with:
- *   npm run bladen                       # alle delen, naar store/bladen/
+ *   npm run bladen                       # alle delen in het Nederlands
  *   npm run bladen -- --deel 1           # één deel
  *   npm run bladen -- --taal fr          # één taal (standaard nl)
- *   npm run bladen -- --uploaden         # en daarna naar R2
+ *   npm run bladen -- --taal alles       # alle zes de talen
+ *   npm run bladen -- --uploaden         # en meteen naar R2
+ *
+ * Alles bij elkaar is dat twaalf delen × zes talen × eenendertig bladzijden,
+ * en dat duurt ruim een half uur. Het gaat deel voor deel de deur uit, dus
+ * valt hij halverwege om, dan staat wat er al gedaan is er gewoon.
  *
  * De leesboeken zitten hier niet bij; die gaan met `npm run lezen -- --r2`.
  */
@@ -31,7 +36,9 @@ const arg = (naam, terugval = null) => {
   return i > 0 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : terugval
 }
 const ALLEEN = arg('deel') ? Number(arg('deel')) : null
-const TAAL = arg('taal', 'nl')
+const ALLE_TALEN = ['nl', 'fr', 'de', 'es', 'it', 'en']
+const GEVRAAGD = arg('taal', 'nl')
+const TALEN = GEVRAAGD === 'alles' ? ALLE_TALEN : [GEVRAAGD]
 const UPLOADEN = process.argv.includes('--uploaden')
 
 const server = await createServer({
@@ -53,14 +60,15 @@ const browser = await startChroom()
  * nauwkeuriger dan een pdf terugrekenen naar plaatjes, en het scheelt een
  * pdf-bibliotheek.
  */
-const bladenVan = async (reeks, nummer, htmlPad, kiezer) => {
-  const map = path.join(UIT, reeks, String(nummer), TAAL)
+const bladenVan = async (reeks, nummer, taal, htmlPad, kiezer) => {
+  const map = path.join(UIT, reeks, String(nummer), taal)
   await rm(map, { recursive: true, force: true })
   await mkdir(map, { recursive: true })
 
   const blad = await browser.newPage({ viewport: kiezer.venster, deviceScaleFactor: 2 })
   await blad.goto(`file://${htmlPad}`, { waitUntil: 'networkidle' })
   const secties = await blad.$$(kiezer.sectie)
+  const soorten = await blad.$$eval(kiezer.sectie, (els) => els.map((e) => e.className))
 
   for (const [i, sectie] of secties.entries()) {
     const png = path.join(map, `${i + 1}.png`)
@@ -71,37 +79,58 @@ const bladenVan = async (reeks, nummer, htmlPad, kiezer) => {
     await rm(png)
   }
   await blad.close()
-  return secties.length
+  return soorten
 }
 
 let totaal = 0
+const begonnen = Date.now()
 
-for (const deel of DELEN) {
-  if (ALLEEN && deel.nummer !== ALLEEN) continue
-  execFileSync('node', [path.join(ROOT, 'scripts', 'make-prentenboek.mjs'),
-    '--deel', String(deel.nummer), '--taal', TAAL], { stdio: 'pipe' })
-  const n = await bladenVan('sba', deel.nummer, `/tmp/.prentenboek-${TAAL}.html`,
-    { venster: { width: 794, height: 560 }, sectie: 'section' })
+for (const taal of TALEN) {
+  for (const deel of DELEN) {
+    if (ALLEEN && deel.nummer !== ALLEEN) continue
+    execFileSync('node', [path.join(ROOT, 'scripts', 'make-prentenboek.mjs'),
+      '--deel', String(deel.nummer), '--taal', taal], { stdio: 'pipe' })
+    const soorten = await bladenVan('sba', deel.nummer, taal, `/tmp/.prentenboek-${taal}.html`,
+      { venster: { width: 794, height: 560 }, sectie: 'section' })
 
-  /**
-   * De voorleestekst gaat mee, naast de plaatjes.
-   *
-   * Een bladzijde van een prentenboek is een plaatje, en een plaatje zwijgt.
-   * De tekst die eronder hoort staat hier in de inhoud, met zoveel woorden:
-   * "dit wordt hardop gelezen". Dus gaat hij mee als `0` — dezelfde plek waar
-   * een leesboek zijn hele tekst heeft — en dan kan de lezer op de website er
-   * een stem onder zetten.
-   */
-  const vertaald = TAAL === 'nl' ? deel : deelIn(TAAL, deel.nummer)
-  await writeFile(path.join(UIT, 'sba', String(deel.nummer), TAAL, 'boek.json'), JSON.stringify({
-    nummer: deel.nummer, titel: vertaald.titel, ondertitel: vertaald.ondertitel, waar: vertaald.waar,
-    bladen: vertaald.bladen.map((b) => ({ tekst: b.tekst, woord: b.woord, echo: b.echo })),
-  }))
+    /**
+     * De voorleestekst gaat mee, naast de plaatjes.
+     *
+     * Een bladzijde van een prentenboek is een plaatje, en een plaatje zwijgt.
+     * De tekst die eronder hoort staat in de inhoud, met zoveel woorden: "dit
+     * wordt hardop gelezen". Dus gaat hij mee als bladzijde nul — dezelfde
+     * plek waar een leesboek zijn hele tekst heeft — en dan kan de lezer op de
+     * website er een stem onder zetten.
+     *
+     * `bladzijden` zegt welke tekst bij welke bladzijde hoort, en wordt hier
+     * uit het boek zelf afgelezen in plaats van uitgerekend. Een prentenboek
+     * begint namelijk met vier bladzijden voorwerk — omslag, titel, waar het
+     * speelt, wie er meedoen — en eindigt met drie bladzijden nawerk. Reken je
+     * dat uit met een formule, dan verschuift de stem onder elke plaat zodra
+     * er ooit een bladzijde bij komt, en dan leest hij het verkeerde verhaal
+     * voor bij de goede tekening. Dat merkt niemand aan de bouw.
+     */
+    let verteld = 0
+    const bladzijden = soorten.map((klasse) => {
+      const namen = String(klasse).split(/\s+/)
+      if (!namen.includes('blad') && !namen.includes('verhaalblad')) return null
+      // Een blad is twee bladzijden: de plaat, en het verhaal ernaast.
+      return Math.floor(verteld++ / 2)
+    })
 
-  console.log(`sba ${String(deel.nummer).padStart(2)} — ${n} bladzijden`)
-  totaal += n
+    const vertaald = taal === 'nl' ? deel : deelIn(taal, deel.nummer)
+    await writeFile(path.join(UIT, 'sba', String(deel.nummer), taal, 'boek.json'), JSON.stringify({
+      nummer: deel.nummer, titel: vertaald.titel, ondertitel: vertaald.ondertitel, waar: vertaald.waar,
+      bladzijden,
+      bladen: vertaald.bladen.map((b) => ({ tekst: b.tekst, woord: b.woord, echo: b.echo })),
+    }))
+
+    totaal += soorten.length
+    const minuten = Math.round((Date.now() - begonnen) / 60000)
+    console.log(`${taal}  deel ${String(deel.nummer).padStart(2)} — ${soorten.length} bladzijden, ` +
+                `${verteld / 2} met verhaal  (${totaal} in ${minuten} min)`)
+  }
 }
-
 
 /**
  * De leesboeken staan hier niet meer.

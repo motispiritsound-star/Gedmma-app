@@ -227,9 +227,16 @@ De eerste maakt de bak, zet de binding aan en rolt uit; de tweede zet er de
 negentig leesboeken in — vijftien delen in zes talen, samen twee megabyte.
 
 De prentenboeken van Sba zijn bladzijden als plaatje en moeten eerst geschoten
-worden (`npm run bladen -- --taal nl --uploaden`). Dat duurt lang en heeft een
-browser nodig. Tot die tijd opent Sba niet in de lezer; de pdf uit de winkel
-werkt gewoon.
+worden:
+
+```bash
+npm run bladen -- --taal alles --uploaden
+```
+
+Twaalf delen × zes talen × eenendertig bladzijden, ruim tweehonderd megabyte,
+een half uur schieten plus versturen. De voorleestekst gaat vanzelf mee. Tot
+die tijd opent Sba niet in de lezer; de pdf uit de winkel werkt gewoon, en de
+lezer zegt dat er ook bij.
 
 ### Wat hier nog moet
 

@@ -1324,11 +1324,18 @@ const readPage = (lang) => {
       zetTekst()
     }
 
-    /** De voorleestekst van deze bladzijde, met de stem eronder. */
+    /**
+     * De voorleestekst van deze bladzijde, met de stem eronder.
+     *
+     * Welke tekst bij welke bladzijde hoort, staat in het boek zelf: een
+     * prentenboek begint met vier bladzijden voorwerk en eindigt met drie
+     * bladzijden nawerk, en daar hoort niets voorgelezen te worden.
+     */
     function zetTekst() {
       if (stem) { stem.stop(); stem = null }
       woorden.innerHTML = ''
-      const blad = tekstVan && tekstVan.bladen ? tekstVan.bladen[nr - 1] : null
+      const plek = tekstVan && tekstVan.bladzijden ? tekstVan.bladzijden[nr - 1] : null
+      const blad = plek === null || plek === undefined ? null : (tekstVan.bladen || [])[plek]
       if (!blad || !window.Lezer) return
       for (const regel of blad.tekst || []) woorden.append(window.Lezer.alineaVan(regel))
       stem = window.Lezer.voorlees(woorden, taalVan || taal, T)

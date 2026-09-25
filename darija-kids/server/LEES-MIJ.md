@@ -103,14 +103,24 @@ die niet bestaat, en "vergeet niet de hekjes weg te halen" is precies de stap
 die je vergeet.
 
 De prentenboeken van Sba staan er dan nog niet in. Die zijn bladzijden als
-plaatje en moeten eerst geschoten worden, taal voor taal:
+plaatje en moeten eerst geschoten worden:
 
 ```bash
-npm run bladen -- --taal nl --uploaden
+npm run bladen -- --taal alles --uploaden
 ```
 
-Dat duurt lang en heeft een browser nodig. Zolang het niet gebeurd is, opent
-Sba niet in de lezer — de pdf uit de winkel werkt wel gewoon.
+Twaalf delen × zes talen × eenendertig bladzijden, samen ruim tweehonderd
+megabyte. Reken op een half uur schieten plus de tijd om het te versturen; er
+is een browser voor nodig, en hij drukt na elk deel af hoe ver hij is. Valt hij
+halverwege om, dan staat wat er al gedaan is er gewoon — je draait hem opnieuw.
+
+De voorleestekst gaat vanzelf mee: die komt als `boek.json` naast de plaatjes
+te staan, met erin welke tekst bij welke bladzijde hoort. Zonder dat bestand
+zwijgt een prentenboek, en dan is het geen luisterboek maar een stapel
+plaatjes.
+
+Zolang dit niet gebeurd is, opent Sba niet in de lezer — de pdf uit de winkel
+werkt wel gewoon, en de lezer zegt dat er ook bij.
 
 ### En bij de betaalpartner
 
