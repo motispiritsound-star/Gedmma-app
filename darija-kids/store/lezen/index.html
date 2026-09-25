@@ -230,14 +230,34 @@
   const laadStemmen = () => { try { stemmen = spraak?.getVoices() ?? [] } catch { stemmen = [] } }
   if (spraak) { laadStemmen(); spraak.addEventListener?.('voiceschanged', laadStemmen) }
 
-  /** De beste stem voor deze taal: eerst het hele land, anders de taal alleen. */
-  const kiesStem = (code) => {
+  /**
+   * Welke stemmen dit toestel voor deze taal heeft.
+   *
+   * De Web Speech API zegt niet of een stem mannelijk of vrouwelijk is — dat
+   * veld bestaat niet. Wat wel bestaat is de naam, en die is per platform
+   * bekend: Xander op een iPhone, Maarten bij Microsoft, Thomas in het Frans.
+   * Daarom een lijst met namen in plaats van een eigenschap.
+   *
+   * En omdat zo'n lijst nooit compleet is, staat de keuze ook op het scherm:
+   * wat dit toestel heeft, met de mannelijke stem vooraan. Dan hoeft niemand
+   * het met onze gok te doen.
+   */
+  const MANNEN = /xander|maarten|thomas|paul|henri|nicolas|markus|yannick|stefan|conrad|jorge|diego|carlos|pablo|alvaro|enrique|luca|cosimo|giuseppe|daniel|arthur|george|ryan|guy|male|man\b/i
+
+  const stemmenVoor = (code) => {
     const kort = code.slice(0, 2)
-    return stemmen.find((v) => v.lang?.replace('_', '-') === code)
-      ?? stemmen.find((v) => v.lang?.slice(0, 2) === kort)
-      ?? null
+    const passend = stemmen.filter((v) => v.lang?.replace('_', '-').slice(0, 2) === kort)
+    const land = (v) => (v.lang?.replace('_', '-') === code ? 0 : 1)
+    return passend.sort((a, b) =>
+      (MANNEN.test(a.name) ? 0 : 1) - (MANNEN.test(b.name) ? 0 : 1) || land(a) - land(b))
   }
-  const kanVoorlezen = () => Boolean(spraak) && (stemmen.length > 0 || !spraak.getVoices)
+
+  /** De gekozen stem, of anders de eerste mannelijke die dit toestel heeft. */
+  const kiesStem = (code) => {
+    const lijst = stemmenVoor(code)
+    const bewaard = herinner(`stem-${taal}`)
+    return lijst.find((v) => v.name === bewaard) ?? lijst[0] ?? null
+  }
 
   let zinnen = []
   let wijzer = 0
@@ -397,6 +417,13 @@
               ${[['0.75', 'Rustig'], ['0.95', 'Gewoon'], ['1.15', 'Vlot']]
                 .map(([v, n]) => `<option value="${v}"${Number(v) === tempo ? ' selected' : ''}>${n}</option>`).join('')}
             </select>
+            ${(() => {
+              const lijst = stemmenVoor(TAALCODE[taal] ?? 'nl-NL')
+              const nu = kiesStem(TAALCODE[taal] ?? 'nl-NL')
+              return lijst.length > 1 ? `<select id="stemkeuze" aria-label="Stem">
+                ${lijst.map((v) => `<option value="${esc(v.name)}"${v.name === nu?.name ? ' selected' : ''}>${esc(v.name)}</option>`).join('')}
+              </select>` : ''
+            })()}
           </span>` : '<span class="geenstem">Deze browser kan niet voorlezen.</span>'}
           ${taal === 'nl' ? '' : `<button class="knop ${dubbel ? 'aan' : ''}" id="dubbelknop">Naast het Nederlands</button>`}
         </div>
@@ -448,6 +475,10 @@
     document.getElementById('tempo')?.addEventListener('change', (e) => {
       tempo = Number(e.target.value)
       onthoud('tempo', e.target.value)
+      if (speelt) speel(wijzer)
+    })
+    document.getElementById('stemkeuze')?.addEventListener('change', (e) => {
+      onthoud(`stem-${taal}`, e.target.value)
       if (speelt) speel(wijzer)
     })
     scherm.querySelectorAll('[data-hfd]').forEach((knop) => knop.addEventListener('click', () => {
