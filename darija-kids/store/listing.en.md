@@ -8,7 +8,7 @@ For App Store Connect (UK, Ireland, rest of world) and Google Play Console (en-G
 `Darijaforkids`
 
 **Subtitle (max 30)**
-`For the kids, quietly for you`
+`Learn Moroccan Arabic`
 
 **Keywords (max 100)**
 `darija,moroccan,arabic,morocco,language,kids,learn,vocabulary,arabic script,free`

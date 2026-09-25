@@ -8,7 +8,7 @@ Für App Store Connect (Deutschland, Österreich, Schweiz) und Google Play Conso
 `Darijaforkids`
 
 **Untertitel (max. 30)**
-`Marokkanisch für Kinder`
+`Marokkanisch-Arabisch lernen`
 
 **Schlüsselwörter (max. 100)**
 `darija,marokkanisch,arabisch,marokko,sprache,kinder,lernen,wortschatz,arabische schrift,gratis`

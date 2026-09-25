@@ -8,7 +8,7 @@ Per App Store Connect (Italia) e Google Play Console (it-IT).
 `Darijaforkids`
 
 **Sottotitolo (max 30)**
-`Per i piccoli, e anche per te`
+`Impara l’arabo marocchino`
 
 **Parole chiave (max 100)**
 `darija,marocchino,arabo,marocco,lingua,bambini,imparare,vocaboli,alfabeto,famiglia`

@@ -8,7 +8,7 @@ Voor App Store Connect (Nederland, België) en Google Play Console (nl-NL).
 `Darijaforkids`
 
 **Ondertitel (max 30)**
-`Voor jong, en stiekem voor oud`
+`Marokkaans-Arabisch leren`
 
 **Trefwoorden (max 100, komma's zonder spaties)**
 `darija,marokkaans,arabisch,marokko,taal,kinderen,leren,woordenschat,arabisch schrift,gratis`

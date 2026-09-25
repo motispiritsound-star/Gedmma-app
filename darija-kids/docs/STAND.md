@@ -11,7 +11,7 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 682, groen |
 | Google Play | 2 (1.1) in review; 3 (1.2) is gebouwd en wacht op upload |
-| App Store | 1.0 (build 5) ingediend, Waiting for Review |
+| App Store | 1.0 (build 5) **afgewezen op 2.3.8** — ondertitel aangepast, opnieuw indienen |
 
 Wat er in build 5 zit en niet in build 4: het antwoord op richtlijn 4.2
 (microfoon, trillen, herinnering, breder op een iPad — zie `docs/APPLE-4.2.md`)
@@ -23,6 +23,21 @@ de twee regels in `Info.plist` — waaronder die voor de microfoon, en zonder
 die regel sluit iOS de app af zodra een kind op de opnameknop drukt.
 
 Het antwoord aan App Review staat klaar in `store/appstore-4.2-antwoord.md`.
+
+### De afwijzing van 25 september — alleen tekst
+
+Apple wees build 5 af op richtlijn 2.3.8: de ondertitel *For the kids, quietly
+for you* zei dat de app voor kinderen is, terwijl hij niet in de
+Kinderen-categorie is ingediend. Dat gaat niet over de app zelf — er hoeft
+geen nieuwe build, geen Xcode, geen Mac aan te pas te komen.
+
+De ondertitel staat in zes talen klaar in `store/listing.<taal>.md`; in het
+Nederlands is het **Marokkaans-Arabisch leren**. Plak ze in App Store Connect,
+stuur het antwoord mee dat in `docs/APPLE-2.3.8.md` staat, en dien opnieuw in.
+
+Wat daar verder in staat en wat je moet weten voordat je ooit "Made for Kids"
+aanzet — er zitten dan mailto-links in de app die een kind kan aantikken, en
+die moeten eerst achter de ouderpoort — leest in vijf minuten.
 
 ### Handelsverificatie — gedaan
 

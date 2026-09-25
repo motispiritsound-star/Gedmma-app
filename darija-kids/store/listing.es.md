@@ -8,7 +8,7 @@ Para App Store Connect (España) y Google Play Console (es-ES).
 `Darijaforkids`
 
 **Subtítulo (máx. 30)**
-`Para peques, y para ti también`
+`Aprende árabe marroquí`
 
 **Palabras clave (máx. 100)**
 `dariya,darija,marroquí,árabe,marruecos,idioma,niños,aprender,vocabulario,gratis`

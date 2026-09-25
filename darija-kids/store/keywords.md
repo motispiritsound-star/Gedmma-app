@@ -13,12 +13,23 @@ dat is verspilde ruimte. Geen spaties na de komma's, ook dat is ruimte.
 
 | Taal | Naam | Ondertitel |
 |---|---|---|
-| Nederlands | Darijaforkids | Marokkaans-Arabisch voor kids |
-| Français | Darijaforkids | L'arabe marocain pour enfants |
-| Deutsch | Darijaforkids | Marokkanisch-Arabisch für Kids |
-| Español | Darijaforkids | Árabe marroquí para niños |
-| Italiano | Darijaforkids | Arabo marocchino per bambini |
-| English | Darijaforkids | Moroccan Arabic for children |
+| Nederlands | Darijaforkids | Marokkaans-Arabisch leren |
+| Français | Darijaforkids | Apprendre l'arabe marocain |
+| Deutsch | Darijaforkids | Marokkanisch-Arabisch lernen |
+| Español | Darijaforkids | Aprende árabe marroquí |
+| Italiano | Darijaforkids | Impara l'arabo marocchino |
+| English | Darijaforkids | Learn Moroccan Arabic |
+
+**In geen van deze zes staat nog een woord voor kind.** Dat is geen smaak maar
+een eis: Apple wees versie 1.0 af op richtlijn 2.3.8 omdat de Engelse
+ondertitel *For the kids, quietly for you* zei dat de app voor kinderen is,
+terwijl hij niet in de Kinderen-categorie is ingediend. Wie hier ooit weer
+"voor kids" neerzet, krijgt dezelfde afwijzing — zie `docs/APPLE-2.3.8.md`.
+
+De zoekwoorden mogen die woorden wél houden. Apple noemt in zijn herstelstap
+precies vier plekken: de naam, de ondertitel, het pictogram en de
+schermafdrukken. Zoekwoorden ziet niemand, en "arabisch voor kinderen" is
+precies waar een ouder op zoekt.
 
 **Zoekwoorden** (elk precies binnen de 100 tekens):
 

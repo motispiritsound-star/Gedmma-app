@@ -8,7 +8,7 @@ Pour App Store Connect (France, Belgique, Suisse) et Google Play Console (fr-FR)
 `Darijaforkids`
 
 **Sous-titre (max 30)**
-`Pour les petits, et pour vous`
+`Apprendre l’arabe marocain`
 
 **Mots-clés (max 100)**
 `darija,marocain,arabe,maroc,langue,enfants,apprendre,vocabulaire,écriture arabe,gratuit`
