@@ -122,7 +122,7 @@ Open, voor één van de drie. Zie `docs/WINKEL-INRICHTEN.md`.
 | Product | Prijs | Status |
 | --- | --- | --- |
 | De sleutels van Marokko | € 34,99 | **te koop** — `venshipper.gumroad.com/l/sleutels` |
-| Sba de Atlasleeuw | € 34,99 | bestanden klaar, product nog aanmaken |
+| Sba de Atlasleeuw | € 34,99 | **te koop** — `venshipper.gumroad.com/l/sbadeleeuw` |
 | Het e-boek | € 14,99 | bestanden klaar, product nog aanmaken |
 
 Gumroad is de *merchant of record*: zij zijn juridisch de verkoper, innen de
@@ -156,7 +156,8 @@ vijf minuten uit.
    dingen om op te letten staan in `docs/WINKEL-INRICHTEN.md` onder *Zelf
    bestellen*. Het telt bovendien mee: voor Gumroad Discover heb je minstens
    één verkoop nodig.
-2. **Sba en het e-boek aanmaken**, en hun adres in `LINKS` zetten.
+2. **Het e-boek aanmaken**, en zijn adres in `LINKS` zetten. De twee reeksen
+   staan er al.
 3. **Een sectie op je Gumroad-profiel**, anders is `venshipper.gumroad.com`
    een lege pagina.
 

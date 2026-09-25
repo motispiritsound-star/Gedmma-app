@@ -32,7 +32,7 @@ export interface Product {
  * van elkaar opengaan.
  */
 const LINKS: Record<string, string> = {
-  // sbaReeks: 'https://…',
+  sbaReeks: 'https://venshipper.gumroad.com/l/sbadeleeuw',
   sleutelsReeks: 'https://venshipper.gumroad.com/l/sleutels',
   // ebook: 'https://…',
 }
