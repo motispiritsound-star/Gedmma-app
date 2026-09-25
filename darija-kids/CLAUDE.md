@@ -31,6 +31,20 @@ Windows PowerShell, geen bash en geen PowerShell 7. Dat betekent:
 - **Zet de map erbij** als het ertoe doet. Hij start in zijn thuismap, en een
   `npm run` daar levert een foutmelding op over een ontbrekende
   `package.json` die niets zegt over wat er echt mis is.
+- **En nooit met puntjes erin.** `cd C:\...\darija-kids\server` is letterlijk
+  geplakt, mét de puntjes, en dat is geen slordigheid: het staat in een blok
+  dat eruitziet als iets dat werkt. Ken je het pad niet, geef dan de regel die
+  het opzoekt:
+
+  ```powershell
+  $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName; if ($p) { cd $p; pwd } else { "niet gevonden onder $HOME" }
+  ```
+
+  Hetzelfde geldt voor een waarde tussen punthaken. `<de waarde van
+  KOOP_GEHEIM>` is in het veld bij Gumroad beland, punthaken en al. Hoort er
+  iets in te staan dat de lezer moet weten, dan is er een opdracht te kort —
+  laat het script het afdrukken of erom vragen, zoals `koopgeheim.mjs` en
+  `live.mjs` doen. `documentatie.test.ts` bewaakt dat.
 
 En zijn bestanden hebben **`\r\n` aan het eind van elke regel**. Een script dat
 in een bestand zoekt naar twee regels aan elkaar geplakt met `\n`, vindt daar
