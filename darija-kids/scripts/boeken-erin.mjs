@@ -25,8 +25,8 @@ const ALLEEN_PLATEN = process.argv.includes('--platen')
 const LEZEN = !ALLEEN_PLATEN
 const PLATEN = !ALLEEN_LEZEN
 
-const draai = (argumenten) =>
-  execFileSync(process.execPath, argumenten, { cwd: ROOT, stdio: 'inherit' })
+const draai = (argumenten, opties = {}) =>
+  execFileSync(process.execPath, argumenten, { cwd: ROOT, stdio: 'inherit', ...opties })
 
 /* ----------------------------------------------------------- de browser */
 
@@ -39,14 +39,31 @@ const draai = (argumenten) =>
  * "haal eerst dit op" is een script dat je twee keer moet draaien.
  */
 if (PLATEN && !chroomPad()) {
-  console.log('\nChromium staat er nog niet. Die haal ik eerst op — een paar honderd')
+  console.log('\nEr staat nog geen browser klaar. Die haal ik eerst op — honderdvijftig')
   console.log('megabyte, één keer, en daarna nooit meer.\n')
   try {
-    draai([path.join(ROOT, 'node_modules', 'playwright-core', 'cli.js'), 'install', 'chromium'])
+    /**
+     * Playwright kapt een download af na dertig seconden.
+     *
+     * Dat is genoeg voor een goede verbinding en te kort voor de meeste. Een
+     * halfuur is hier de juiste grens: dit gebeurt één keer, en het alternatief
+     * is drie keer dezelfde stapel foutmeldingen.
+     */
+    draai([path.join(ROOT, 'node_modules', 'playwright-core', 'cli.js'), 'install', 'chromium'],
+      { env: { ...process.env, PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT: '1800000' } })
   } catch {
-    console.error('\nDat lukte niet. Haal hem met de hand op:\n')
-    console.error('  npx playwright install chromium\n')
-    console.error('En draai deze opdracht daarna opnieuw.\n')
+    console.error('\nDat lukte niet — meestal is dat de verbinding, niet jouw machine.\n')
+    console.error('Je hebt waarschijnlijk al een bruikbare browser staan. Edge is ook')
+    console.error('Chromium en doet dit werk net zo goed. Wijs hem aan en draai deze')
+    console.error('opdracht opnieuw:\n')
+    if (process.platform === 'win32') {
+      console.error('  $env:CHROME_PAD = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"')
+      console.error('  npm run boeken\n')
+      console.error('Staat Edge ergens anders, zoek hem dan met:\n')
+      console.error('  Get-ChildItem "C:\\Program Files*" -Recurse -Filter msedge.exe -ErrorAction SilentlyContinue\n')
+    } else {
+      console.error('  CHROME_PAD=/pad/naar/chrome npm run boeken\n')
+    }
     process.exit(1)
   }
 }

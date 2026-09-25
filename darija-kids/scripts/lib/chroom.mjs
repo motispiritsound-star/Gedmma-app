@@ -49,8 +49,37 @@ export function chroomPad() {
     if (eigen && existsSync(eigen)) return eigen
   } catch { /* Playwright heeft er nog nooit een opgehaald. */ }
 
+  for (const pad of ALSTAANDE) if (pad && existsSync(pad)) return pad
+
   return null
 }
+
+/**
+ * De browser die er op deze machine toch al staat.
+ *
+ * Edge en Chrome zijn allebei Chromium, en voor wat hier gebeurt — een
+ * bladzijde zetten en er een plaat van maken — doen ze precies hetzelfde als
+ * de Chromium die Playwright zou ophalen.
+ *
+ * Dat scheelt honderdvijftig megabyte over een verbinding die daar niet altijd
+ * doorheen komt: die download liep drie keer in een tijdslimiet van dertig
+ * seconden, terwijl er al een bruikbare browser op de schijf stond. Op elke
+ * Windows staat Edge. Vandaar deze lijst, als laatste kans vóór het ophalen.
+ */
+const ALSTAANDE = process.platform === 'win32'
+  ? [
+      `${process.env['ProgramFiles(x86)'] ?? 'C:/Program Files (x86)'}/Microsoft/Edge/Application/msedge.exe`,
+      `${process.env.ProgramFiles ?? 'C:/Program Files'}/Microsoft/Edge/Application/msedge.exe`,
+      `${process.env['ProgramFiles(x86)'] ?? 'C:/Program Files (x86)'}/Google/Chrome/Application/chrome.exe`,
+      `${process.env.ProgramFiles ?? 'C:/Program Files'}/Google/Chrome/Application/chrome.exe`,
+      `${process.env.LOCALAPPDATA ?? ''}/Google/Chrome/Application/chrome.exe`,
+    ]
+  : process.platform === 'darwin'
+    ? [
+        '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+        '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge',
+      ]
+    : ['/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
 
 /**
  * Start Chromium. Alle opties van `chromium.launch` mogen mee.
@@ -71,7 +100,10 @@ Deze scripts maken hun pdf's en platen met Chromium. Haal hem één keer op:
 
   npx playwright install chromium
 
-Staat hij ergens anders op je schijf, zet dan CHROME_PAD naar dat bestand.
+Lukt dat niet — die download is honderdvijftig megabyte en loopt nog weleens
+vast — wijs dan de browser aan die je al hebt. Edge is ook Chromium:
+
+  $env:CHROME_PAD = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
 `)
     process.exit(1)
   }
