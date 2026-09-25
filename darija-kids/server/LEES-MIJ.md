@@ -162,9 +162,12 @@ krijgt het woord *proefmelding* in zijn merkregel — zo zie je achteraf welke
 rij echt was. Zonder die knop kan het ook met de hand:
 
 ```bash
-curl -sS -X POST "https://post.darijaforkids.eu/koop?s=<geheim>" \
-  -d "email=jij@example.com&permalink=sleutels&ip_country=Netherlands&test=true"
+curl.exe -sS -X POST "https://post.darijaforkids.eu/koop?s=<geheim>" -d "email=jij@example.com&permalink=sleutels&ip_country=Netherlands&test=true"
 ```
+
+`curl.exe` en niet `curl`: op Windows is `curl` een alias voor
+`Invoke-WebRequest`, en die kent `-X` en `-d` niet. Alles op één regel, want
+de `\` van bash is daar geen regelvervolg.
 
 Er hoort `{"goed":true}` terug te komen, en een mail met een sleutel erin.
 Komt er `{"fout":"nee"}`, dan klopt het geheim niet. Komt er

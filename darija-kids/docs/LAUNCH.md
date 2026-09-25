@@ -526,7 +526,8 @@ Alles staat klaar in `store/`. Genereer de beelden opnieuw als je iets aan de
 app verandert:
 
 ```bash
-npm run build && npm run preview   # in een tweede venster laten draaien
+npm run build
+npm run preview   # blijft draaien; laat dit venster openstaan
 npm run screenshots                # store/screenshots/<taal>/<toestel>/
 npm run reviewshot                 # store/review-screenshot/ — voor de drie producten
 npm run applepakket                # store/appstore-pakket/ — per taal gesorteerd

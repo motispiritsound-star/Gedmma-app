@@ -190,7 +190,9 @@ van beide winkels. Plakken en klaar.
 Elke volgende release is:
 
 ```bash
-npm test && npm run build && npx cap sync
+npm test
+npm run build
+npx cap sync
 ```
 
 daarna in Android Studio een nieuw bundle en in Xcode een nieuw archief, met

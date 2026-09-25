@@ -9,7 +9,7 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 875, groen |
+| Tests | 902, groen |
 | Google Play | 2 (1.1) in review; 3 (1.2) is gebouwd en wacht op upload |
 | App Store | 1.0 (build 5) **opnieuw ingediend** op 25 september, wacht op beoordeling |
 

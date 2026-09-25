@@ -50,7 +50,9 @@ Wil je op de dag van goedkeuring naar buiten, dan is dit het hele werk:
 
 ```bash
 npm run live -- --apple <het Apple ID> --google
-git add -A && git commit -m "De app staat in de winkel" && git push
+git add -A
+git commit -m "De app staat in de winkel"
+git push
 ```
 
 En dan de berichten hieronder, in de volgorde van §3. Reken op een uur voor
@@ -99,7 +101,9 @@ eruit.
 Dan de push, want de productiebranch publiceert zichzelf:
 
 ```bash
-git add -A && git commit -m "De app staat in de winkel" && git push
+git add -A
+git commit -m "De app staat in de winkel"
+git push
 ```
 
 Binnen een paar minuten staat darijaforkids.eu goed. Open hem zelf en druk op
