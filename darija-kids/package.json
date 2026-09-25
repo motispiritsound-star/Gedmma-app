@@ -62,7 +62,8 @@
     "winkel": "node scripts/make-winkel.mjs",
     "bladen": "node scripts/make-bladen.mjs",
     "boekplaten": "node scripts/make-prentenboek.mjs --deel 1 --omslag site-assets/boeken/sba.webp && node scripts/make-sleutels.mjs --deel 1 --omslag site-assets/boeken/sleutel.webp",
-    "lezen": "node scripts/leesuitgave.mjs"
+    "lezen": "node scripts/leesuitgave.mjs",
+    "vertelstem": "node scripts/make-vertelstem.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",

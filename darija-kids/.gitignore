@@ -34,3 +34,6 @@ android/app/build/
 android/.gradle/
 /store/winkel/
 /store/bladen/
+
+# Luisterboeken: opnames, bouwresultaat
+/store/luister/
