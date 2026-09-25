@@ -139,11 +139,11 @@ const langRow = (lang, page) => LANGS.map((other) => {
   return `<li><a href="${href}"${here ? ' aria-current="page"' : ''} hreflang="${other.code}">${vlagje(other)}<span>${esc(other.name)}</span></a></li>`
 }).join('')
 
-const header = (lang, page) => {
+const header = (lang, page, kaalNav = false) => {
   const c = SITE[lang]
   const here = LANGS.find((l) => l.code === lang)
   const home = PATHS[lang].home
-  const nav = page === 'home'
+  const nav = page === 'home' && !kaalNav
     ? `<nav aria-label="${esc(c.menu.waarom)}">
         <a class="uit" href="${PATHS[lang].books}">${esc(c.menu.boeken)}</a>
         <a href="#waarom">${esc(c.menu.waarom)}</a>
@@ -222,7 +222,7 @@ const footer = (lang) => {
  * service worker, which would happily keep handing the old app to anybody who
  * had visited before. It unregisters itself and empties the caches.
  */
-const layout = ({ lang, page, title, description, body, ogImage = '/og.png', geenIndex = false }) => {
+const layout = ({ lang, page, title, description, body, ogImage = '/og.png', geenIndex = false, kaalNav = false }) => {
   const canonical = SITE_URL + PATHS[lang][page === 'home' ? 'home' : page]
   const alternates = LANGS.map((l) =>
     `<link rel="alternate" hreflang="${l.code}" href="${SITE_URL}${PATHS[l.code][page === 'home' ? 'home' : page]}">`).join('\n  ')
@@ -253,7 +253,7 @@ const layout = ({ lang, page, title, description, body, ogImage = '/og.png', gee
 </head>
 <body>
 <a class="skip" href="#main">${esc(SITE[lang].naarInhoud)}</a>
-${header(lang, page)}
+${header(lang, page, kaalNav)}
 <main id="main">
 ${body}
 </main>
@@ -1309,8 +1309,17 @@ const parentsPage = (lang) => {
   })
 }
 
+/**
+ * De 404.
+ *
+ * `page: 'home'` staat er voor de taalkiezer: wie op een verdwenen bladzijde
+ * van taal wisselt, hoort op de startpagina in die taal uit te komen. Maar het
+ * menu van de startpagina hoort hier niet — dat zit vol verwijzingen naar
+ * `#waarom` en `#pad`, en die staan op deze bladzijde nergens. Vandaar
+ * `kaalNav`, en `geenIndex` omdat een foutbladzijde niet in Google hoort.
+ */
 const notFoundPage = () => layout({
-  lang: 'nl', page: 'home',
+  lang: 'nl', page: 'home', kaalNav: true, geenIndex: true,
   title: '404 — Darijaforkids',
   description: SITE.nl.metaDescription,
   body: `<div class="wrap doc">

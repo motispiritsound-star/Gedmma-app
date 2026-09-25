@@ -139,6 +139,25 @@ nieuwe `sw.js` nog niet heeft opgehaald. Dat is het enige JavaScript op de
 hele site, en het mag pas weg als niemand meer een oude registratie heeft —
 zeg over een jaar.
 
+## De controle die aan de bouw hangt
+
+`npm run site` zet de bladzijden neer en loopt ze daarna na met
+`scripts/sitecheck.mjs`. Die controleert wat niemand met de hand nakijkt:
+eenenzestig bladzijden in zes talen, elke `href`, elk plaatje, en elk anker
+dat ergens op moet staan. Vindt hij iets, dan stopt de bouw — ook de bouw bij
+Cloudflare, want `npm run build` eindigt met dezelfde regel.
+
+Dat is met opzet streng. Een dode link kost niets zolang niemand hem vindt, en
+op de dag van de lancering komen er in één uur meer mensen langs dan in de
+maand ervoor.
+
+Externe adressen worden niet opgehaald; die staan alleen in een lijstje, met
+hoe vaak ze voorkomen. Wil je ze toch nalopen:
+
+```bash
+npm run sitecheck -- --extern
+```
+
 ## Het domein
 
 `darijaforkids.eu` staat bij MijnDomein geregistreerd en gebruikt de

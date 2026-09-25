@@ -6,7 +6,7 @@
   "description": "Darijaforkids - leer Marokkaans-Arabisch (Darija) voor kinderen en jongeren",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && node scripts/make-site.mjs",
+    "build": "tsc -b && vite build && node scripts/make-site.mjs && node scripts/sitecheck.mjs",
     "preview": "vite preview --port 4173",
     "telefoon": "node scripts/telefoon.mjs",
     "typecheck": "tsc -b --noEmit",
@@ -44,7 +44,8 @@
     "knip": "node scripts/knip-opname.mjs",
     "knipblad": "node scripts/make-knipblad.mjs",
     "build:app": "tsc -b && vite build",
-    "site": "node scripts/make-site.mjs",
+    "site": "node scripts/make-site.mjs && node scripts/sitecheck.mjs",
+    "sitecheck": "node scripts/sitecheck.mjs",
     "live": "node scripts/live.mjs",
     "siteassets": "node scripts/make-siteassets.mjs",
     "sleutels": "node scripts/make-sleutels.mjs",
