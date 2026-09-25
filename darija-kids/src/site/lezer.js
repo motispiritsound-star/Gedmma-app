@@ -54,12 +54,50 @@
     if (spraak.addEventListener) spraak.addEventListener('voiceschanged', laadStemmen)
   }
 
+  /**
+   * Onze eigen namen voor de stemmen.
+   *
+   * Een toestel noemt zijn stemmen "Microsoft Maarten Online (Natural) -
+   * Dutch (Netherlands)". Dat is een productnummer met een naam erin, en het
+   * staat in een keuzelijst onder een verhaal dat een kind meeleest.
+   *
+   * Vijf vertellers dus, met een naam die in dit boek thuishoort. Welke stem
+   * van het toestel eronder zit, verschilt per apparaat en doet er voor de
+   * lezer niet toe — die kiest een verteller, geen spraakmotor.
+   */
+  const VERTELLERS = { man: ['Amir', 'Adam'], vrouw: ['Sarah', 'Yousra', 'Lina'] }
+
+  /**
+   * De vijf, met hun naam erbij.
+   *
+   * De Web Speech API zegt niet of een stem mannelijk is; de namenlijst
+   * hierboven doet die gok. Heeft een toestel maar twee stemmen, dan krijg je
+   * er twee — de namen worden op volgorde uitgedeeld, dus dezelfde stem houdt
+   * op hetzelfde toestel altijd dezelfde naam.
+   */
   const stemmenVoor = (code) => {
     const kort = code.slice(0, 2)
     const land = (v) => ((v.lang || '').replace('_', '-') === code ? 0 : 1)
-    return stemmen
+    const passend = stemmen
       .filter((v) => (v.lang || '').replace('_', '-').slice(0, 2) === kort)
-      .sort((a, b) => (MANNEN.test(a.name) ? 0 : 1) - (MANNEN.test(b.name) ? 0 : 1) || land(a) - land(b))
+      .sort((a, b) => land(a) - land(b))
+
+    const mannen = passend.filter((v) => MANNEN.test(v.name))
+    const vrouwen = passend.filter((v) => !MANNEN.test(v.name))
+
+    const uit = []
+    mannen.slice(0, VERTELLERS.man.length).forEach((stem, i) => uit.push({ stem, naam: VERTELLERS.man[i] }))
+    vrouwen.slice(0, VERTELLERS.vrouw.length).forEach((stem, i) => uit.push({ stem, naam: VERTELLERS.vrouw[i] }))
+
+    /**
+     * Wat niet past, komt er niet bij.
+     *
+     * Heeft een toestel alleen mannenstemmen, dan blijven Sarah, Yousra en
+     * Lina ongebruikt en zie je er twee. Dat is beter dan de lijst vol maken:
+     * een mannenstem onder de naam Sarah valt meteen op, en in een boek dat
+     * een kind meeleest is de verteller geen willekeurig etiket.
+     */
+    return uit
   }
 
   /** Onthouden mag mislukken: in een privévenster gooit localStorage. */
@@ -130,15 +168,17 @@
       const lijst = stemmenVoor(code)
       if (!lijst.length) { stemkiezer.hidden = true; return }
       stemkiezer.hidden = false
-      const gekozen = stemkiezer.value || herinner('stem-' + taal) || lijst[0].name
+      // Bewaard wordt de naam van het toestel, getoond wordt de onze. Een
+      // toestel kan zijn stemmen hernoemen; onze namen mogen niet verspringen.
+      const gekozen = stemkiezer.value || herinner('stem-' + taal) || lijst[0].stem.name
       stemkiezer.innerHTML = ''
-      for (const stem of lijst) {
+      for (const { stem, naam } of lijst) {
         const optie = document.createElement('option')
         optie.value = stem.name
-        optie.textContent = stem.name
+        optie.textContent = naam
         stemkiezer.append(optie)
       }
-      stemkiezer.value = lijst.some((v) => v.name === gekozen) ? gekozen : lijst[0].name
+      stemkiezer.value = lijst.some((v) => v.stem.name === gekozen) ? gekozen : lijst[0].stem.name
     }
     vulStemmen()
     const opnieuwVullen = () => { laadStemmen(); vulStemmen() }
@@ -173,8 +213,8 @@
       merk(true)
       const zin = new SpeechSynthesisUtterance(uitspreekbaar(zinnen[wijzer].textContent))
       zin.lang = code
-      const stem = stemmenVoor(code).find((v) => v.name === stemkiezer.value)
-      if (stem) zin.voice = stem
+      const keuze = stemmenVoor(code).find((v) => v.stem.name === stemkiezer.value)
+      if (keuze) zin.voice = keuze.stem
       // Eén zin die struikelt mag het boek niet stilleggen.
       zin.onend = () => { if (speelt) { wijzer += 1; if (sleutel) bewaar(sleutel, String(wijzer)); spreek() } }
       zin.onerror = () => { if (speelt) { wijzer += 1; spreek() } }

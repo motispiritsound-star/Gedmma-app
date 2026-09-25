@@ -22,6 +22,15 @@
  * vijftien delen — zie `--proef`.
  */
 
+/**
+ * Eén naamgeving voor het hele product.
+ *
+ * De lezer op de website noemt de stemmen van het toestel Amir en Adam (man)
+ * en Sarah, Yousra en Lina (vrouw) — zie `src/site/lezer.js`. Komen er ooit
+ * opnames, dan hoort `toon` hieronder daarbij aan te sluiten in plaats van
+ * een tweede rij namen op te leveren. Deze vijf zijn allemaal mannenstemmen,
+ * dus dat worden er hooguit twee.
+ */
 export interface Vertelstem {
   /** De naam in de stembibliotheek; hiermee wordt de id opgezocht. */
   naam: string

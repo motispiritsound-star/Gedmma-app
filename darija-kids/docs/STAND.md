@@ -76,6 +76,22 @@ goedgekeurd**: een nieuwe release vervangt de release die in review staat, en
 dan begint de eerste beoordeling van voren af aan. De "wat is er nieuw"-tekst
 voor beide winkels staat in zes talen in `store/wat-is-nieuw-1.2.md`.
 
+### Nog na te kijken bij Google Play
+
+Drie dingen die losstaan van de beoordeling en die je in een paar minuten
+nakijkt. Ze staan hier omdat ze pas opvallen als het te laat is.
+
+1. **App access.** Play Console → App content → App access. De app heeft geen
+   inlog, maar dat moet je er wél neerzetten: *All functionality is available
+   without special access*. Staat dat veld leeg, dan wijst een reviewer af
+   omdat hij denkt dat hij ergens niet bij kan.
+2. **Managed publishing aan.** Anders publiceert Play zichzelf zodra hij groen
+   is, en bepaalt Google je lanceerdag in plaats van jij.
+3. **Target audience and content.** Dat is Google's versie van de vraag waarop
+   Apple afwees: voor welke leeftijden is de app. Geef je daar kinderen op, dan
+   geldt het Families-beleid — geen advertenties van derden, geen trackers. De
+   app voldoet daar al aan, maar het moet kloppen met wat er staat.
+
 ### Wat alleen jij kunt doen
 
 1. **Apple: prijsbasis op Nederland.** De prijzen staan goed — Nederland op

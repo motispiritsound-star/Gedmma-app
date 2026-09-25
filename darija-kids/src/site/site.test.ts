@@ -155,6 +155,23 @@ describe('de lezer op de website', () => {
     expect(lezer).toContain("addEventListener('pagehide', stop")
   })
 
+  it('geeft de stemmen onze eigen namen', () => {
+    // Een toestel noemt zijn stem "Microsoft Maarten Online (Natural) - Dutch
+    // (Netherlands)". Dat is een productnummer, en het staat in een keuzelijst
+    // onder een verhaal dat een kind meeleest.
+    for (const naam of ['Amir', 'Adam', 'Sarah', 'Yousra', 'Lina']) {
+      expect(lezer, naam).toContain(`'${naam}'`)
+    }
+  })
+
+  it('plakt geen vrouwennaam op een mannenstem', () => {
+    // De namen worden per groep uitgedeeld en de lijst wordt niet volgemaakt
+    // met wat er toevallig over is.
+    expect(lezer).toContain('VERTELLERS.man[i]')
+    expect(lezer).toContain('VERTELLERS.vrouw[i]')
+    expect(lezer).not.toContain('VERTELLERS.man.slice(mannen.length)')
+  })
+
   it('maakt zijn luisteraars ook weer los', () => {
     // Een prentenboek zet bij elke bladzijde een nieuwe balk neer. Blijven de
     // oude luisteraars hangen, dan bouwt na dertig keer bladeren elke
