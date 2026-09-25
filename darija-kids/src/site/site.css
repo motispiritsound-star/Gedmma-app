@@ -816,6 +816,19 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
 .boeken .proef a.zacht { font-size: .93rem; color: var(--ink-soft); }
 #proef { margin: 0 0 2.4rem; }
 
+/* De twee knoppen onderaan: de mail en de uitleg over het afrekenen.
+   Ze stonden als twee woorden in één alinea, met alleen een spatie ertussen.
+   Dat gaat op een breed scherm net goed en op een telefoon niet: dan vallen
+   ze onder elkaar met niets ertussen. En onderaan raakten ze de band die
+   erop volgt. Zelfde patroon als `.boeken .proef` hierboven. */
+.boeken .slotknoppen {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .8rem;
+  margin: 1.2rem 0 3rem;
+}
+/* De marge zat op de knop zelf, voor knoppen die los in een alinea staan.
+   Hier doet de `gap` dat werk, en tellen ze bij elkaar op. */
+.boeken .slotknoppen .mailbtn { margin-top: 0; }
+
 /* Luister- en leesboeken: het eerste blok op de boekenpagina. Wat voor boeken
    dit zijn, en in drie stappen hoe je er na het afrekenen bij komt. */
 .boeken .luisteren {

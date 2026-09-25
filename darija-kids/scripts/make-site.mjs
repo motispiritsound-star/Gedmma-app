@@ -908,7 +908,7 @@ const booksPage = (lang) => {
   <div id="proef" class="lezer" hidden></div>
 
   ${WINKEL_OPEN ? '' : `<p class="soon">${esc(c.boekSlot)}</p>`}
-  <p><a class="mailbtn" href="${mailto}?subject=${encodeURIComponent(c.boekTitel)}&body=${encodeURIComponent(c.houMeOpDeHoogteMail)}">${esc(c.houMeOpDeHoogte)}</a>
+  <p class="slotknoppen"><a class="mailbtn" href="${mailto}?subject=${encodeURIComponent(c.boekTitel)}&body=${encodeURIComponent(c.houMeOpDeHoogteMail)}">${esc(c.houMeOpDeHoogte)}</a>
      <a class="mailbtn zacht" href="${p.checkout}">${esc(c.afrekenLink)}</a></p>
 </div>
 
