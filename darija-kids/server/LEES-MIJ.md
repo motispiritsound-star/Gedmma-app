@@ -92,11 +92,14 @@ haalt elk boek apart op uit een R2-bak, en zolang die er niet is zegt hij
 muis moet: Cloudflare wil akkoord op de voorwaarden, en dat kan geen opdracht
 namens jou geven.
 
-    dash.cloudflare.com → R2 → aanzetten
+    dash.cloudflare.com → Storage & databases → R2 Object Storage
 
-Er wordt om een betaalmethode gevraagd. Dat hoort erbij en kost niets: onder
-de tien gigabyte is R2 gratis, en alle boeken bij elkaar zijn een kwart
-gigabyte. Wat de grenzen vandaag precies zijn, staat op dat scherm zelf.
+Op dat scherm staan de grenzen van wat gratis is: tien gigabyte opslag, een
+miljoen schrijfacties en tien miljoen leesacties per maand. Alle boeken bij
+elkaar zijn een kwart gigabyte, dus die haal je niet.
+
+Maak daar zelf geen bak aan. Dat doet `npm run maak-bak`, en die zet ook de
+binding aan en rolt uit — drie dingen die bij elkaar horen.
 
 Daarna twee opdrachten, één keer:
 

@@ -218,10 +218,10 @@ internet nodig.
 R2, en die bak staat nog uit. Zolang dat zo is, krijgt een koper die inlogt
 "niet ingericht" te zien.
 
-Eerst R2 aanzetten in het Cloudflare-dashboard — het enige in dit project dat
-echt met de muis moet, want er hoort akkoord op voorwaarden bij. Er wordt om
-een betaalmethode gevraagd; onder de tien gigabyte is het gratis en alle
-boeken samen zijn een kwart gigabyte. Daarna twee opdrachten, één keer:
+Eerst R2 aanzetten in het Cloudflare-dashboard, onder *Storage & databases* —
+het enige in dit project dat echt met de muis moet. Onder de tien gigabyte is
+het gratis en alle boeken samen zijn een kwart gigabyte. Daar zelf geen bak
+aanmaken; dat doet de opdracht hieronder. Daarna twee opdrachten, één keer:
 
 ```bash
 cd server && npm run maak-bak && cd ..
