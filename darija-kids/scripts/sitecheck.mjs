@@ -118,6 +118,31 @@ for (const pad of pagina) {
   }
 }
 
+/* -------------------------------------------------------------- het script */
+
+/**
+ * Elk stukje javascript op de bladzijde moet ook echt javascript zijn.
+ *
+ * De bladzijden worden gezet met sjabloonstrings, en die worden begrensd door
+ * accenten grave. Eén zo'n accent in een commentaar sluit de string, en dan
+ * staat er ineens code op de bladzijde die nergens op slaat. Dat is hier twee
+ * keer gebeurd, en allebei de keren viel de bouw pas om bij toeval.
+ *
+ * `new Function` voert niets uit; het ontleedt alleen. Meer is niet nodig: een
+ * afgekapte string valt al bij het ontleden om.
+ */
+const SCRIPTS = /<script(?![^>]*\ssrc=)[^>]*>([\s\S]*?)<\/script>/g
+
+for (const pad of pagina) {
+  const html = await readFile(pad, 'utf8')
+  for (const [, code] of html.matchAll(SCRIPTS)) {
+    if (!code.trim()) continue
+    try { new Function(code) } catch (fout) {
+      fouten.push(`${path.relative(MAP, pad)}: het script valt om — ${fout.message}`)
+    }
+  }
+}
+
 /* ----------------------------------------------------------------- extern */
 
 if (EXTERN) {

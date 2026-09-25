@@ -38,8 +38,9 @@ const server = await createServer({
   configFile: path.join(ROOT, 'vite.config.ts'),
   root: ROOT, server: { middlewareMode: true, hmr: false }, appType: 'custom', logLevel: 'error',
 })
-const [{ DELEN }] = await Promise.all([
+const [{ DELEN }, { deelIn }] = await Promise.all([
   server.ssrLoadModule('/src/content/prentenboek.ts'),
+  server.ssrLoadModule('/src/content/prentenboek-talen.ts'),
 ])
 
 const browser = await startChroom()
@@ -81,6 +82,22 @@ for (const deel of DELEN) {
     '--deel', String(deel.nummer), '--taal', TAAL], { stdio: 'pipe' })
   const n = await bladenVan('sba', deel.nummer, `/tmp/.prentenboek-${TAAL}.html`,
     { venster: { width: 794, height: 560 }, sectie: 'section' })
+
+  /**
+   * De voorleestekst gaat mee, naast de plaatjes.
+   *
+   * Een bladzijde van een prentenboek is een plaatje, en een plaatje zwijgt.
+   * De tekst die eronder hoort staat hier in de inhoud, met zoveel woorden:
+   * "dit wordt hardop gelezen". Dus gaat hij mee als `0` — dezelfde plek waar
+   * een leesboek zijn hele tekst heeft — en dan kan de lezer op de website er
+   * een stem onder zetten.
+   */
+  const vertaald = TAAL === 'nl' ? deel : deelIn(TAAL, deel.nummer)
+  await writeFile(path.join(UIT, 'sba', String(deel.nummer), TAAL, 'boek.json'), JSON.stringify({
+    nummer: deel.nummer, titel: vertaald.titel, ondertitel: vertaald.ondertitel, waar: vertaald.waar,
+    bladen: vertaald.bladen.map((b) => ({ tekst: b.tekst, woord: b.woord, echo: b.echo })),
+  }))
+
   console.log(`sba ${String(deel.nummer).padStart(2)} — ${n} bladzijden`)
   totaal += n
 }

@@ -197,6 +197,19 @@ erboven: de stem van het toestel zelf leest voor en de zin die klinkt licht
 op. Geen opnames — die kosten geld, en dit onderdeel mocht niets kosten tot
 er iets verdiend wordt.
 
+De stem staat op alle drie de plekken waar tekst staat:
+
+| | |
+| --- | --- |
+| Het gratis begin op `/leesboeken` | drie hoofdstukken, zonder account |
+| De sleutels van Marokko, na het inloggen | vijftien delen, zes talen |
+| Sba de Atlasleeuw, na het inloggen | de voorleestekst onder elke plaat |
+
+Bij Sba is de bladzijde een plaatje en de tekst komt er los bij (bladzijde nul
+van hetzelfde deel). Zonder die tekst zou een prentenboek zwijgen, en dat is
+juist het boek waar een ouder hardop voorleest aan een kind dat nog niet zelf
+leest.
+
 `npm run portaalcheck` loopt dat hele rondje na in een echte browser, met de
 antwoorden van de worker erbij verzonnen. Geen database, geen mail, geen
 internet nodig.

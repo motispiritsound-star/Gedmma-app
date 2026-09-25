@@ -1,5 +1,5 @@
 /**
- * De voorleesknop onder een boek.
+ * De voorleesknop.
  *
  * De website verkoopt luister/leesboeken, en dit is het luisteren: de stem van
  * het toestel zelf leest voor, zin voor zin, en de zin die klinkt licht op. Er
@@ -11,9 +11,14 @@
  * minder last van dan een volwassene die alleen luistert, en dat is precies wie
  * hier zit: een ouder die voorleest aan een kind dat meekijkt.
  *
+ * Drie plekken gebruiken dit: het gratis begin op de boekenpagina, een leesboek
+ * na het inloggen, en een bladzijde van een prentenboek. Vandaar dat de motor
+ * (`voorlees`) losstaat van het zetwerk: hij zoekt `.zin`-elementen in een vak
+ * en hangt er een balk boven, en wie dat vak vult mag zelf weten hoe.
+ *
  * Dit bestand staat los van `make-site.mjs` en wordt als gewoon JavaScript
- * meegestuurd. Het hoorde eerst in een sjabloonstring thuis, en daar is een
- * regel met een accolade te veel genoeg om de hele website niet te laten
+ * meegestuurd. Het hoorde eerst in een sjabloonstring thuis, en daar is één
+ * accent grave in een commentaar genoeg om de hele website niet te laten
  * bouwen.
  */
 (() => {
@@ -65,33 +70,43 @@
   const uitspreekbaar = (zin) => zin.replace(/\*/g, '')
 
   /**
-   * Zet een boek neer, met de knoppen erboven.
+   * Een alinea als losse zinnen.
    *
-   * `doel` wordt leeggemaakt. `boek` is wat de worker teruggeeft: een titel,
-   * een jaar, een plaats en hoofdstukken met alinea's. `woorden` zijn de
-   * opschriften, die uit de zes talen van de site komen.
+   * Eén span per zin: dat is wat oplicht, en waar het voorlezen op mikt.
    */
-  const toon = (doel, boek, taal, woorden) => {
-    doel.className = 'boek'
-    doel.innerHTML = ''
+  const alineaVan = (tekst) => {
+    const p = document.createElement('p')
+    for (const zin of String(tekst).split(ZINSGRENS)) {
+      if (!zin) continue
+      const span = document.createElement('span')
+      span.className = 'zin'
+      span.textContent = zin + ' '
+      p.append(span)
+    }
+    return p
+  }
 
+  /**
+   * Hang een voorleesbalk boven een vak dat al gevuld is.
+   *
+   * `vak` bevat `.zin`-elementen; in welke volgorde ze in het document staan,
+   * is de volgorde waarin ze voorgelezen worden. `sleutel` is waar de plek
+   * onder bewaard wordt — laat hem weg en er wordt niets onthouden.
+   */
+  const voorlees = (vak, taal, woorden, sleutel) => {
     const code = TAALCODE[taal] || 'nl-NL'
-    const onthoudplek = 'lees-' + taal + '-' + (boek.titel || '')
-
-    /* ── de balk ───────────────────────────────────────────────────── */
+    const zinnen = Array.prototype.slice.call(vak.querySelectorAll('.zin'))
 
     const balk = document.createElement('div')
     balk.className = 'leesbalk'
-
     const speelknop = document.createElement('button')
     speelknop.type = 'button'
-    speelknop.className = 'speel'
-    balk.append(speelknop)
-
+    speelknop.className = 'mailbtn speel'
     const stemkiezer = document.createElement('select')
     stemkiezer.className = 'stemkeuze'
     stemkiezer.setAttribute('aria-label', woorden.stem || 'Stem')
-    balk.append(stemkiezer)
+    balk.append(speelknop, stemkiezer)
+    vak.prepend(balk)
 
     const vulStemmen = () => {
       const lijst = stemmenVoor(code)
@@ -111,59 +126,21 @@
     if (spraak && spraak.addEventListener) {
       spraak.addEventListener('voiceschanged', () => { laadStemmen(); vulStemmen() })
     }
-    stemkiezer.onchange = () => {
-      bewaar('stem-' + taal, stemkiezer.value)
-      if (speelt) { stop(); speel(wijzer) }
-    }
-
-    /* ── de tekst ──────────────────────────────────────────────────── */
-
-    const kop = document.createElement('h2')
-    kop.textContent = boek.titel
-    const onder = document.createElement('p')
-    onder.className = 'jaar'
-    onder.textContent = [boek.jaar, boek.waar].filter(Boolean).join(' · ')
-
-    const tekst = document.createElement('div')
-    tekst.className = 'leestekst'
-    for (const hoofdstuk of boek.hoofdstukken || []) {
-      const h = document.createElement('h3')
-      h.textContent = (hoofdstuk.nummer ? hoofdstuk.nummer + '. ' : '') + hoofdstuk.titel
-      tekst.append(h)
-      for (const alinea of hoofdstuk.tekst || []) {
-        const p = document.createElement('p')
-        // Eén span per zin: dat is wat oplicht, en waar het voorlezen op mikt.
-        for (const zin of String(alinea).split(ZINSGRENS)) {
-          if (!zin) continue
-          const span = document.createElement('span')
-          span.className = 'zin'
-          span.textContent = zin + ' '
-          p.append(span)
-        }
-        tekst.append(p)
-      }
-    }
-
-    doel.append(balk, kop, onder, tekst)
-
-    const zinnen = Array.prototype.slice.call(tekst.querySelectorAll('.zin'))
-
-    /* ── het voorlezen ─────────────────────────────────────────────── */
 
     let speelt = false
-    let wijzer = Number(herinner(onthoudplek) || 0)
+    let wijzer = sleutel ? Number(herinner(sleutel) || 0) : 0
     if (!(wijzer >= 0 && wijzer < zinnen.length)) wijzer = 0
 
-    const merk = () => {
+    const merk = (schuif) => {
       for (const z of zinnen) z.classList.remove('aan')
       const hier = zinnen[wijzer]
       if (!hier) return
       hier.classList.add('aan')
-      hier.scrollIntoView({ block: 'center', behavior: 'smooth' })
+      if (schuif) hier.scrollIntoView({ block: 'center', behavior: 'smooth' })
     }
 
     const knopTekst = () => {
-      speelknop.textContent = speelt ? (woorden.pauze || '❚❚') : (woorden.speel || '▶')
+      speelknop.textContent = speelt ? (woorden.pauze || 'Pauze') : (woorden.speel || 'Voorlezen')
       speelknop.setAttribute('aria-pressed', speelt ? 'true' : 'false')
     }
 
@@ -171,18 +148,18 @@
       speelt = false
       try { if (spraak) spraak.cancel() } catch { /* niets */ }
       knopTekst()
-      bewaar(onthoudplek, String(wijzer))
+      if (sleutel) bewaar(sleutel, String(wijzer))
     }
 
     function spreek() {
       if (!speelt || wijzer >= zinnen.length) return stop()
-      merk()
+      merk(true)
       const zin = new SpeechSynthesisUtterance(uitspreekbaar(zinnen[wijzer].textContent))
       zin.lang = code
       const stem = stemmenVoor(code).find((v) => v.name === stemkiezer.value)
       if (stem) zin.voice = stem
       // Eén zin die struikelt mag het boek niet stilleggen.
-      zin.onend = () => { if (speelt) { wijzer += 1; bewaar(onthoudplek, String(wijzer)); spreek() } }
+      zin.onend = () => { if (speelt) { wijzer += 1; if (sleutel) bewaar(sleutel, String(wijzer)); spreek() } }
       zin.onerror = () => { if (speelt) { wijzer += 1; spreek() } }
       try { spraak.speak(zin) } catch { stop() }
     }
@@ -198,21 +175,54 @@
     }
 
     speelknop.onclick = () => { if (speelt) stop(); else speel() }
+    stemkiezer.onchange = () => {
+      bewaar('stem-' + taal, stemkiezer.value)
+      if (speelt) { stop(); speel(wijzer) }
+    }
     // Ergens in het midden verder: tik op de zin waar je wilt beginnen.
     for (let i = 0; i < zinnen.length; i++) {
-      zinnen[i].onclick = () => { wijzer = i; if (speelt) { stop(); speel(i) } else merk() }
+      zinnen[i].onclick = () => { wijzer = i; if (speelt) { stop(); speel(i) } else merk(false) }
     }
 
     if (!spraak) speelknop.hidden = true
     knopTekst()
-    if (wijzer > 0) merk()
+    if (wijzer > 0) merk(false)
 
     // Wie wegklikt terwijl het praat, hoort anders een boek in een gesloten
     // tabblad doorlezen: de spraakmotor van de browser stopt daar niet vanzelf.
-    addEventListener('pagehide', stop, { once: true })
+    addEventListener('pagehide', stop)
 
-    return { stop }
+    return { stop, speel }
   }
 
-  window.Lezer = { toon }
+  /**
+   * Zet een heel boek neer, met de balk erboven.
+   *
+   * `doel` wordt leeggemaakt. `boek` is wat de worker teruggeeft: een titel,
+   * een jaar, een plaats en hoofdstukken met alinea's.
+   */
+  const toon = (doel, boek, taal, woorden) => {
+    doel.className = 'boek'
+    doel.innerHTML = ''
+
+    const kop = document.createElement('h2')
+    kop.textContent = boek.titel
+    const onder = document.createElement('p')
+    onder.className = 'jaar'
+    onder.textContent = [boek.jaar, boek.waar].filter(Boolean).join(' · ')
+
+    const tekst = document.createElement('div')
+    tekst.className = 'leestekst'
+    for (const hoofdstuk of boek.hoofdstukken || []) {
+      const h = document.createElement('h3')
+      h.textContent = (hoofdstuk.nummer ? hoofdstuk.nummer + '. ' : '') + hoofdstuk.titel
+      tekst.append(h)
+      for (const alinea of hoofdstuk.tekst || []) tekst.append(alineaVan(alinea))
+    }
+
+    doel.append(kop, onder, tekst)
+    return voorlees(doel, taal, woorden, 'lees-' + taal + '-' + (boek.titel || ''))
+  }
+
+  window.Lezer = { toon, voorlees, alineaVan }
 })()

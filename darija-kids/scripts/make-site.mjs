@@ -1278,20 +1278,33 @@ const readPage = (lang) => {
     return await leesboek(deel, taalVan)
   }
 
-  /** Een prentenboek: bladzijde voor bladzijde, elk apart opgehaald. */
+  /**
+   * Een prentenboek: bladzijde voor bladzijde, elk apart opgehaald.
+   *
+   * De tekst komt in één keer mee (bladzijde nul) en de plaatjes stuk voor stuk.
+   * Zonder die tekst zwijgt een prentenboek, en dan is het geen luisterboek
+   * maar een stapel plaatjes — terwijl juist hier iemand voorleest aan een
+   * kind dat nog niet zelf leest.
+   */
   async function prentenboek(deel, taalVan) {
     let nr = 1
+    let stem = null
+    const tekstVan = await vraag('/blad', { reeks: 'sba', deel, nr: 0, taal: taalVan })
+      .then((r) => r.ok ? r.json() : null).catch(() => null)
+
     const doos = document.createElement('div')
     doos.className = 'boek'
     const beeld = document.createElement('img')
     beeld.alt = ''
+    const woorden = document.createElement('div')
+    woorden.className = 'bladtekst'
     const balk = document.createElement('div')
     balk.className = 'balk'
     const terug = knopje(T.vorige, () => ga(-1))
     const verder = knopje(T.volgende, () => ga(1))
     const teller = document.createElement('span')
     balk.append(terug, teller, verder)
-    doos.append(beeld, balk, knopje(T.terug, begin, 'terug'))
+    doos.append(beeld, woorden, balk, knopje(T.terug, begin, 'terug'))
     doel.className = ''
     doel.innerHTML = ''
     doel.append(doos)
@@ -1308,7 +1321,19 @@ const readPage = (lang) => {
       teller.textContent = nr
       terug.disabled = nr === 1
       verder.disabled = false
+      zetTekst()
     }
+
+    /** De voorleestekst van deze bladzijde, met de stem eronder. */
+    function zetTekst() {
+      if (stem) { stem.stop(); stem = null }
+      woorden.innerHTML = ''
+      const blad = tekstVan && tekstVan.bladen ? tekstVan.bladen[nr - 1] : null
+      if (!blad || !window.Lezer) return
+      for (const regel of blad.tekst || []) woorden.append(window.Lezer.alineaVan(regel))
+      stem = window.Lezer.voorlees(woorden, taalVan || taal, T)
+    }
+
     function ga(stap) { nr = Math.max(1, nr + stap); toon() }
     await toon()
   }

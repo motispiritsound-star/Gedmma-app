@@ -690,6 +690,11 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
 }
 .lezer .leestekst p { margin: 0 0 1rem; }
 
+/* De voorleestekst onder een bladzijde van een prentenboek. Groter dan de
+   rest: dit leest een ouder hardop voor terwijl een kind naar de plaat kijkt. */
+.lezer .bladtekst { margin: 1rem 0 0; font-size: 1.08rem; line-height: 1.7; }
+.lezer .bladtekst p { margin: 0 0 .6rem; }
+
 /* De zin die klinkt. Geen felle kleur: dit staat onder een verhaal dat een
    kind meeleest, en een knipperend vlak leest niemand meer. */
 .lezer .zin { border-radius: 3px; transition: background-color .18s; }

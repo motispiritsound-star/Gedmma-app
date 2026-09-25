@@ -211,6 +211,28 @@ console.log('\nDe lezer')
 }
 
 {
+  /**
+   * Een prentenboek: de plaat, en eronder de voorleestekst met een stem.
+   * Zonder die tekst is het geen luisterboek maar een stapel plaatjes.
+   */
+  const plaatje = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+  const { bladzijde, context } = await bezoek('/lezen#sba', {
+    '/lezen': { reeksen: ['sba'], taal: 'nl', merk: 'koper@example.com' },
+    '/blad': {
+      nummer: 1, titel: 'Sba in Tanger', ondertitel: '', waar: 'Tanger',
+      bladen: [{ tekst: ['De boten zijn blauw. Allemaal.', 'Er springt nog iets in.'], woord: {}, echo: '' }],
+    },
+  })
+  await bladzijde.locator('#lezer .boekjes button').first().click()
+  await bladzijde.waitForSelector('#lezer .bladtekst .zin', { timeout: 5000 }).catch(() => {})
+  const zinnen = await bladzijde.locator('#lezer .bladtekst .zin').count()
+  meld(zinnen === 3, `de voorleestekst staat onder de plaat, in zinnen (${zinnen})`)
+  meld(await bladzijde.locator('#lezer .bladtekst .leesbalk .speel').count() === 1,
+       'met een voorleesknop, net als bij de leesboeken')
+  await context.close()
+}
+
+{
   // Sba staat nog niet in de bak. Dan hoort er een zin te staan, geen leeg vak.
   const { bladzijde, context } = await bezoek('/lezen#sba', {
     '/lezen': { reeksen: ['sba'], taal: 'nl', merk: 'koper@example.com' },

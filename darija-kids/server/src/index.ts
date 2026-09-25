@@ -499,8 +499,12 @@ async function blad(verzoek: Request, env: Env): Promise<Response> {
   // Een prentenboek is een bladzijde als plaatje; een leesboek is tekst.
   // Een roman als plaatje schaalt niet op een telefoon: je kunt niet groter
   // zetten en de regels lopen niet door.
+  //
+  // `nr: 0` is bij allebei de tekst. Bij een prentenboek is dat de voorlees-
+  // tekst die onder de plaatjes hoort — zonder die tekst zwijgt een prenten-
+  // boek, en dan is het geen luisterboek maar een stapel plaatjes.
   const map = `${reeks}/${deel}/${(taal ?? mag.taal).replace(/[^a-z]/g, '')}`
-  const isBoek = reeks === 'sleutels'
+  const isBoek = reeks === 'sleutels' || nr === 0
   const object = await env.BOEKEN.get(isBoek ? `${map}/boek.json` : `${map}/${nr}.webp`)
   if (!object) return portaalJson(env, { fout: 'geen-bladzijde' }, 404)
 
