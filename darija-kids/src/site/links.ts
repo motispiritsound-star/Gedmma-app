@@ -58,11 +58,11 @@ export const SOCIAL: { naam: string; label: string; url: string }[] = [
   { naam: 'tiktok', label: 'TikTok', url: 'https://www.tiktok.com/@darijaforkidsapp' },
 ]
 
-export const PATHS: Record<Lang, { home: string; privacy: string; terms: string; parents: string; name: string; history: string; books: string; checkout: string; read: string }> = {
-  nl: { home: '/', privacy: '/privacy', terms: '/voorwaarden', parents: '/ouders', name: '/naam', history: '/geschiedenis', books: '/leesboeken', checkout: '/afrekenen', read: '/lezen' },
-  fr: { home: '/fr/', privacy: '/fr/confidentialite', terms: '/fr/conditions', parents: '/fr/parents', name: '/fr/prenom', history: '/fr/histoire', books: '/fr/livres', checkout: '/fr/paiement', read: '/fr/lire' },
-  de: { home: '/de/', privacy: '/de/datenschutz', terms: '/de/bedingungen', parents: '/de/eltern', name: '/de/name', history: '/de/geschichte', books: '/de/buecher', checkout: '/de/bezahlen', read: '/de/lesen' },
-  es: { home: '/es/', privacy: '/es/privacidad', terms: '/es/condiciones', parents: '/es/padres', name: '/es/nombre', history: '/es/historia', books: '/es/libros', checkout: '/es/pago', read: '/es/leer' },
-  it: { home: '/it/', privacy: '/it/privacy', terms: '/it/condizioni', parents: '/it/genitori', name: '/it/nome', history: '/it/storia', books: '/it/libri', checkout: '/it/pagamento', read: '/it/leggere' },
-  en: { home: '/en/', privacy: '/en/privacy', terms: '/en/terms', parents: '/en/parents', name: '/en/name', history: '/en/history', books: '/en/books', checkout: '/en/checkout', read: '/en/read' },
+export const PATHS: Record<Lang, { home: string; privacy: string; terms: string; parents: string; name: string; history: string; books: string; checkout: string; read: string; portal: string }> = {
+  nl: { home: '/', privacy: '/privacy', terms: '/voorwaarden', parents: '/ouders', name: '/naam', history: '/geschiedenis', books: '/leesboeken', checkout: '/afrekenen', read: '/lezen', portal: '/portaal' },
+  fr: { home: '/fr/', privacy: '/fr/confidentialite', terms: '/fr/conditions', parents: '/fr/parents', name: '/fr/prenom', history: '/fr/histoire', books: '/fr/livres', checkout: '/fr/paiement', read: '/fr/lire', portal: '/fr/portail' },
+  de: { home: '/de/', privacy: '/de/datenschutz', terms: '/de/bedingungen', parents: '/de/eltern', name: '/de/name', history: '/de/geschichte', books: '/de/buecher', checkout: '/de/bezahlen', read: '/de/lesen', portal: '/de/portal' },
+  es: { home: '/es/', privacy: '/es/privacidad', terms: '/es/condiciones', parents: '/es/padres', name: '/es/nombre', history: '/es/historia', books: '/es/libros', checkout: '/es/pago', read: '/es/leer', portal: '/es/portal' },
+  it: { home: '/it/', privacy: '/it/privacy', terms: '/it/condizioni', parents: '/it/genitori', name: '/it/nome', history: '/it/storia', books: '/it/libri', checkout: '/it/pagamento', read: '/it/leggere', portal: '/it/portale' },
+  en: { home: '/en/', privacy: '/en/privacy', terms: '/en/terms', parents: '/en/parents', name: '/en/name', history: '/en/history', books: '/en/books', checkout: '/en/checkout', read: '/en/read', portal: '/en/portal' },
 }

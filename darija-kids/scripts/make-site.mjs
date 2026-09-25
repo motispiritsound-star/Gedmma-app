@@ -72,6 +72,7 @@ const [
   { UNITS },
   { HISTORY },
   { unitSubtitle, lessonTitle, historyOf },
+  { toestemmingVan },
   ...packs
 ] = await Promise.all([
   load('/src/i18n/languages.ts'),
@@ -87,6 +88,7 @@ const [
   load('/src/content/curriculum.ts'),
   load('/src/content/history.ts'),
   load('/src/content/localise.ts'),
+  load('/src/content/toestemming.ts'),
   load('/src/i18n/nl.ts'),
   load('/src/i18n/fr.ts'),
   load('/src/i18n/de.ts'),
@@ -184,6 +186,12 @@ const footer = (lang) => {
           <li><a href="${p.privacy}">${esc(c.privacyLink)}</a></li>
           <li><a href="${p.terms}">${esc(c.voorwaardenLink)}</a></li>
           <li><a href="${p.parents}">${esc(c.oudersLink)}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>${esc(c.portaal.titel)}</h3>
+        <ul>
+          <li><a href="${p.portal}">${esc(c.portaal.mijnBoeken)}</a></li>
         </ul>
       </div>
       <div>
@@ -863,6 +871,171 @@ const booksPage = (lang) => {
 }
 
 /**
+ * Het portaal: waar je je boeken terugvindt.
+ *
+ * Dit is de enige bladzijde van deze site met javascript erin, en dat is met
+ * opzet één bladzijde en geen raamwerk. Er gebeurt hier precies drie dingen:
+ * een adres opsturen, vragen wie er binnen is, en een schakelaar omzetten.
+ *
+ * **Waarom er geen wachtwoord is.** Je vult je adres in, krijgt een link, en
+ * bent binnen; dat ding onthoudt je negentig dagen. Een wachtwoord is het
+ * enige onderdeel van dit systeem dat iemand écht kan schaden als het
+ * uitlekt, "ik ben het kwijt" is de meest voorkomende supportvraag van elk
+ * betaald product, en een bevestigd e-mailadres zegt precies evenveel over
+ * wie er binnenkomt.
+ *
+ * De drie vinkjes komen uit `src/content/toestemming.ts`, met de redenen
+ * erbij waarom ze staan zoals ze staan: niets vooraf aangevinkt, de
+ * nieuwsbrief los van de rest, en de voorwaarden wél aangevinkt maar de
+ * privacyverklaring niet.
+ */
+const portaalPage = (lang) => {
+  const c = SITE[lang]
+  const p = PATHS[lang]
+  const t = c.portaal
+  const v = toestemmingVan(lang)
+
+  const vinkje = (naam, tekst, verplicht) => `<label class="vink">
+    <input type="checkbox" name="${naam}"${verplicht ? ' data-verplicht="1"' : ''}>
+    <span>${esc(tekst)}</span>
+  </label>`
+
+  const body = `<div class="wrap doc portaal">
+  <h1>${esc(t.titel)}</h1>
+  <p class="intro" id="uitleg">${esc(t.lead)}</p>
+
+  <p class="melding" id="melding" hidden></p>
+
+  <form id="aanmelden" novalidate>
+    <label class="veld">
+      <span>${esc(t.email)}</span>
+      <input type="email" name="email" autocomplete="email" inputmode="email" required>
+    </label>
+    ${vinkje('voorwaarden', v.voorwaarden.tekst, true)}
+    ${vinkje('leeftijd', v.leeftijd.tekst, true)}
+    ${vinkje('nieuws', v.nieuwsbrief.tekst, false)}
+    <p class="klein">${esc(v.privacyNoot)} <a href="${p.privacy}">${esc(c.privacyLink)}</a> ·
+       <a href="${p.terms}">${esc(c.voorwaardenLink)}</a></p>
+    <p class="klein">${esc(v.waaromEmail)}</p>
+    <button class="mailbtn" type="submit">${esc(t.knop)}</button>
+  </form>
+
+  <section id="gestuurd" hidden>
+    <h2>${esc(t.gestuurdKop)}</h2>
+    <p>${esc(t.gestuurdBody)}</p>
+  </section>
+
+  <section id="binnen" hidden>
+    <p class="klein" id="wie"></p>
+    <h2>${esc(t.mijnBoeken)}</h2>
+    <ul class="boekenlijst" id="boekenlijst"></ul>
+    <p class="leeg" id="leeg" hidden>${esc(t.leeg)} <a href="${p.books}">${esc(t.naarWinkel)}</a></p>
+    <label class="vink"><input type="checkbox" id="nieuwsknop"><span>${esc(t.nieuws)}</span></label>
+    <p class="klein">${esc(t.blijft)}</p>
+    <p><button class="mailbtn zacht" id="uit">${esc(t.uitloggen)}</button></p>
+  </section>
+</div>
+
+<script>
+(() => {
+  const POST = ${JSON.stringify(POST_URL)}
+  const T = ${JSON.stringify({
+    foutAdres: t.foutAdres, foutVinkjes: t.foutVinkjes, foutLink: t.foutLink,
+    foutAlgemeen: t.foutAlgemeen, ingelogdAls: t.ingelogdAls, lezen: t.lezen,
+  })}
+  const NAMEN = ${JSON.stringify({ sba: c.boekKleinTitel, sleutels: c.boekGrootTitel })}
+  const LEES = ${JSON.stringify(p.read)}
+  const TAAL = ${JSON.stringify(lang)}
+
+  const el = (id) => document.getElementById(id)
+  const toon = (id, ja) => { el(id).hidden = !ja }
+  const zeg = (tekst) => {
+    const m = el('melding')
+    m.textContent = tekst
+    m.hidden = !tekst
+  }
+
+  /* Een mislukte link zet ?fout=link in het adres; dat hoort de bezoeker te
+     lezen voordat hij zich afvraagt waarom er niets gebeurde. */
+  if (new URLSearchParams(location.search).get('fout') === 'link') zeg(T.foutLink)
+
+  const haal = (pad, opties = {}) =>
+    fetch(POST + pad, { credentials: 'include', ...opties }).then((r) => r.json())
+
+  const tonenAlsBinnen = (mij) => {
+    toon('aanmelden', !mij.binnen)
+    toon('binnen', mij.binnen)
+    // De aanhef legt uit hoe je binnenkomt. Als je binnen bent, is dat gedaan.
+    toon('uitleg', !mij.binnen)
+    if (!mij.binnen) return
+    toon('gestuurd', false)
+    el('wie').textContent = T.ingelogdAls + ' ' + mij.email
+    el('nieuwsknop').checked = Boolean(mij.nieuws)
+    const lijst = el('boekenlijst')
+    lijst.innerHTML = ''
+    for (const reeks of mij.reeksen ?? []) {
+      const li = document.createElement('li')
+      const naam = document.createElement('b')
+      naam.textContent = NAMEN[reeks] ?? reeks
+      const knop = document.createElement('a')
+      knop.className = 'mailbtn'
+      knop.href = LEES + '#' + reeks
+      knop.textContent = T.lezen
+      li.append(naam, knop)
+      lijst.append(li)
+    }
+    toon('leeg', !(mij.reeksen ?? []).length)
+  }
+
+  el('aanmelden').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    zeg('')
+    const form = e.target
+    const email = form.email.value.trim()
+    if (!email.includes('@') || email.length < 5) return zeg(T.foutAdres)
+    if (!form.voorwaarden.checked || !form.leeftijd.checked) return zeg(T.foutVinkjes)
+    const knop = form.querySelector('button')
+    knop.disabled = true
+    try {
+      const uit = await haal('/portaal/aanmelden', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          email, taal: TAAL, nieuws: form.nieuws.checked,
+          voorwaarden: true, leeftijd: true,
+        }),
+      })
+      if (!uit.goed) return zeg(uit.fout === 'adres' ? T.foutAdres : uit.fout === 'vinkjes' ? T.foutVinkjes : T.foutAlgemeen)
+      toon('aanmelden', false)
+      toon('gestuurd', true)
+    } catch { zeg(T.foutAlgemeen) } finally { knop.disabled = false }
+  })
+
+  el('nieuwsknop').addEventListener('change', (e) => {
+    haal('/portaal/nieuws', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ aan: e.target.checked }),
+    }).catch(() => zeg(T.foutAlgemeen))
+  })
+
+  el('uit').addEventListener('click', async () => {
+    await haal('/portaal/uit', { method: 'POST' }).catch(() => {})
+    location.reload()
+  })
+
+  haal('/portaal/mij').then(tonenAlsBinnen).catch(() => {})
+})()
+</script>`
+
+  return layout({
+    lang, page: 'portal', body,
+    title: `${c.portaal.titel} — Darijaforkids`,
+    description: c.portaal.lead,
+  })
+}
+
+/**
  * De afrekenpagina.
  *
  * Deze pagina bestaat voordat de winkel open is, en dat is met opzet. Wie
@@ -1218,7 +1391,8 @@ for (const { code: lang } of LANGS) {
   await write(PATHS[lang].books, booksPage(lang))
   await write(PATHS[lang].checkout, checkoutPage(lang))
   await write(PATHS[lang].read, readPage(lang))
-  pages += 9
+  await write(PATHS[lang].portal, portaalPage(lang))
+  pages += 10
   if (!shots.length) missing.push(`de schermen voor ${lang}`)
   if (!film) missing.push(`de film voor ${lang}`)
 }
