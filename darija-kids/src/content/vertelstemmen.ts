@@ -29,6 +29,14 @@ export interface Vertelstem {
   toon: string
   /** Waarom deze erbij staat, en wanneer je hem wilt. */
   waarom: string
+  /**
+   * Of een lezer deze stem te zien krijgt.
+   *
+   * Twee is genoeg om te kiezen en weinig genoeg om te betalen: elke stem
+   * erbij is de hele reeks nog een keer opnemen. De andere drie blijven staan
+   * om mee te proeven — `npm run vertelstem -- --stem Callum` werkt gewoon.
+   */
+  voorLezers: boolean
   /** De drie schuiven van ElevenLabs, per stem afgestemd. */
   vast: number
   gelijkend: number
@@ -40,33 +48,41 @@ export const VERTELSTEMMEN: Vertelstem[] = [
     naam: 'George',
     toon: 'De grootvader',
     waarom: 'Warm en bedaard, met de rust van iemand die het verhaal al kent. De stem voor het laatste half uur van de dag.',
+    voorLezers: true,
     vast: 0.55, gelijkend: 0.8, tempo: 0.9,
   },
   {
     naam: 'Brian',
     toon: 'De verteller',
     waarom: 'Diep en dragend, zoals een luisterboek hoort te klinken. Als je er één kiest en verder niet wilt nadenken, is het deze.',
+    voorLezers: false,
     vast: 0.5, gelijkend: 0.75, tempo: 0.95,
   },
   {
     naam: 'Callum',
     toon: 'De spannende',
     waarom: 'Donker en geladen; hij laat een stilte vallen waar het eng wordt. Past bij de delen waarin het misgaat.',
+    voorLezers: false,
     vast: 0.4, gelijkend: 0.75, tempo: 0.95,
   },
   {
     naam: 'Daniel',
     toon: 'De geschiedschrijver',
     waarom: 'Helder en precies, zonder opsmuk. De stem die je wilt bij "Wat hiervan is echt gebeurd".',
+    voorLezers: true,
     vast: 0.6, gelijkend: 0.7, tempo: 1,
   },
   {
     naam: 'Charlie',
     toon: 'De grote broer',
     waarom: 'Jonger en losser, dichter bij de leeftijd van wie het leest. Voor een kind dat een plechtige stem wegklikt.',
+    voorLezers: false,
     vast: 0.45, gelijkend: 0.75, tempo: 1,
   },
 ]
+
+/** De stemmen waaruit een lezer kiest. */
+export const KEUZESTEMMEN = VERTELSTEMMEN.filter((s) => s.voorLezers)
 
 /** Een stem op naam, of de eerste — dat is de stem die overal standaard staat. */
 export const vertelstemVan = (naam: string | null | undefined): Vertelstem =>

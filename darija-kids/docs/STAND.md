@@ -142,9 +142,13 @@ Zolang een link in `src/site/shop.ts` leeg is, staat er op de website
 "Binnenkort" en geen dode knop. De drie producten gaan dus los van elkaar
 open.
 
-**Deel 1 van De sleutels staat gratis op darijaforkids.eu/leesboeken**, in zes
-talen, zonder account en zonder e-mailadres. Sba heeft met opzet geen gratis
-deel: dat is een twaalfde van de reeks en in vijf minuten uit.
+**Het begin van De sleutels staat gratis op darijaforkids.eu/leesboeken**, in
+zes talen, zonder account en zonder e-mailadres: de eerste drie hoofdstukken
+van *De olijvenbrand*, ruim vier bladzijden verhaal, en het houdt op vlak
+vóór er iets misgaat. Gemaakt met `npm run sleutels -- --deel 1 --tot 3`.
+
+Sba heeft met opzet geen gratis deel: dat is een twaalfde van de reeks en in
+vijf minuten uit.
 
 ### Wat hier nog moet
 

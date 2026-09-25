@@ -49,9 +49,21 @@ const TAAL = arg('taal', 'nl')
  * het niemand stoort en waar het op elke bladzijde staat.
  */
 const VOOR = arg('voor', '')
+
+/**
+ * Een proefversie: alleen de eerste zoveel hoofdstukken.
+ *
+ * Een heel boek weggeven is geen proef maar een cadeau. Drie hoofdstukken is
+ * ruim vier bladzijden, en het houdt op vlak vóór er iets misgaat — precies
+ * waar een lezer wil weten hoe het verdergaat.
+ *
+ * Wat er in een proef niet in hoort: "Wat hiervan is echt gebeurd". Dat is
+ * het beste deel van het boek en het verklapt het eind.
+ */
+const TOT = Number(arg('tot', 0)) || 0
 const achtervoegsel = TAAL === 'nl' ? '' : `-${TAAL}`
-const UIT = path.join(ROOT, 'store', 'sleutels',
-  OPZET ? `de-reeks${achtervoegsel}.pdf` : `sleutels-${NUMMER}${achtervoegsel}.pdf`)
+const UIT = arg('uit', path.join(ROOT, 'store', 'sleutels',
+  OPZET ? `de-reeks${achtervoegsel}.pdf` : `sleutels-${NUMMER}${TOT ? '-proef' : ''}${achtervoegsel}.pdf`))
 
 const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 /** *schuin* wordt schuin. Meer opmaak heeft een roman niet nodig. */
@@ -196,6 +208,7 @@ const STIJL = `
   .achterin .sleutelkader p{text-indent:0;margin:0;text-align:left}
   /* Van wie het is, en het verzoek het niet door te geven. Klein, achterin,
      en zonder dreigement — zie src/content/rechten.ts. */
+  .verder .rechten{text-indent:0;font-size:8.2pt;line-height:1.5;color:#6b5b48;text-align:left}
   .achterin .rechten{text-indent:0;margin:7mm 0 0;font-size:8.2pt;line-height:1.5;
                      color:#6b5b48;text-align:left;border-top:.4mm solid #e4d8c2;padding-top:3mm}
   .wacht{page-break-before:always;color:#7a6a5d;font-style:italic}
@@ -355,7 +368,7 @@ const verantwoording = (lijst) => lijst.length ? `<section class="achterin">
 </section>` : ''
 
 const deelBoek = (deel) => {
-  const hfd = deel.hoofdstukken ?? []
+  const hfd = TOT ? (deel.hoofdstukken ?? []).slice(0, TOT) : (deel.hoofdstukken ?? [])
   const plaatjes = beelden(deel.nummer)
   const feiten = verdeel(deel.echt, hfd.length)
   /* De getekende plaat staat er alleen zolang er geen opname van deze plek is. */
@@ -391,11 +404,17 @@ ${hfd.map((h, i) => `<section class="hfd">
   ${feiten[i] ? wistjedat(feiten[i]) : ''}
 </section>${plaatjes[i + 1] ? fotoBlad(plaatjes[i + 1], deel.waar) : ''}`).join('')}
 
-${hfd.length ? `<section class="wacht"><p class="eerste">Hier is deel ${deel.nummer} tot nu toe geschreven. De volgende hoofdstukken volgen.</p></section>` : ''}
+${TOT ? '' : hfd.length ? `<section class="wacht"><p class="eerste">Hier is deel ${deel.nummer} tot nu toe geschreven. De volgende hoofdstukken volgen.</p></section>` : ''}
 
-${achterin(deel)}
+${TOT ? `<section class="verder">
+  <div class="etiket">${esc(S.proefKop)}</div>
+  <svg viewBox="-90 -170 180 280" style="width:22mm;margin:6mm auto 4mm;display:block">${sleutel(0, 0, 1, H.goud)}</svg>
+  <p>${esc(S.proefTekst)}</p>
+  <p style="margin-top:6mm"><strong>${esc(S.proefWaar)}</strong></p>
+  <p class="rechten" style="margin-top:9mm">${esc(RECHTEN.kop)}<br>${esc(RECHTEN.zin)}</p>
+</section>` : `${achterin(deel)}
 ${verantwoording(plaatjes)}
-${verder(deel)}
+${verder(deel)}`}
 </body></html>`
 }
 

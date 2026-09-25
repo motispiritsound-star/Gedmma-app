@@ -55,6 +55,10 @@ export interface SleutelSchil {
   prentNoot: string
   beeldenKop: string
   beeldenNoot: string
+  /** Het slotblad van een proefversie: waar het ophoudt en waar de rest staat. */
+  proefKop: string
+  proefTekst: string
+  proefWaar: string
   disclaimer: string[]
 }
 
@@ -86,6 +90,10 @@ export const SLEUTEL_SCHIL: Record<string, SleutelSchil> = {
     prentNoot: 'Prent. Zodra er een opname van deze plek is, staat die hier.',
     beeldenKop: 'De beelden',
     beeldenNoot: 'De foto’s en afbeeldingen in dit boek komen van de plekken waar dit verhaal speelt. Hieronder staat waar ze vandaan komen.',
+    proefKop: 'Dit was het begin',
+    proefTekst:
+      'Je hebt het begin gelezen. Hoe het afloopt staat in het hele boek — en daarna nog veertien delen, tot de sleutel in Utrecht op tafel ligt.',
+    proefWaar: 'Het hele boek en de hele reeks: darijaforkids.eu',
     disclaimer: DISCLAIMER_NL,
   },
   fr: {
@@ -108,6 +116,10 @@ export const SLEUTEL_SCHIL: Record<string, SleutelSchil> = {
     prentNoot: 'Dessin. Dès qu’il y aura une photo de ce lieu, elle sera ici.',
     beeldenKop: 'Les images',
     beeldenNoot: 'Les photos et les images de ce livre viennent des lieux où se passe cette histoire. Ci-dessous, d’où elles proviennent.',
+    proefKop: 'Ce n’était que le début',
+    proefTekst:
+      'Vous avez lu le début. La suite est dans le livre entier — et après lui quatorze tomes encore, jusqu’à ce que la clé se retrouve sur une table à Utrecht.',
+    proefWaar: 'Le livre entier et toute la série : darijaforkids.eu',
     disclaimer: [
       'Ce livre est inventé, mais pas n’importe comment.',
       'Les événements qu’il raconte ont vraiment eu lieu : les villes, les batailles, les voyages, les livres et les gens qui ont fait l’histoire. Ce que l’on en sait a été vérifié, et n’a pas été rendu plus beau qu’il ne l’était.',
@@ -135,6 +147,10 @@ export const SLEUTEL_SCHIL: Record<string, SleutelSchil> = {
     prentNoot: 'Dibujo. En cuanto haya una fotografía de este lugar, estará aquí.',
     beeldenKop: 'Las imágenes',
     beeldenNoot: 'Las fotografías e ilustraciones de este libro vienen de los lugares donde transcurre esta historia. Abajo está de dónde proceden.',
+    proefKop: 'Das war der Anfang',
+    proefTekst:
+      'Du hast den Anfang gelesen. Wie es weitergeht, steht im ganzen Buch — und danach noch vierzehn Bände, bis der Schlüssel in Utrecht auf dem Tisch liegt.',
+    proefWaar: 'Das ganze Buch und die ganze Reihe: darijaforkids.eu',
     disclaimer: [
       'Este libro es inventado, pero no de cualquier manera.',
       'Lo que ocurre en él ocurrió de verdad: las ciudades, las batallas, los viajes, los libros y las personas que hicieron historia. Lo que se sabe de todo eso se ha comprobado y no se ha adornado más de lo que fue.',
@@ -162,6 +178,10 @@ export const SLEUTEL_SCHIL: Record<string, SleutelSchil> = {
     prentNoot: 'Zeichnung. Sobald es eine Aufnahme dieses Ortes gibt, steht sie hier.',
     beeldenKop: 'Die Bilder',
     beeldenNoot: 'Die Fotos und Abbildungen in diesem Buch stammen von den Orten, an denen diese Geschichte spielt. Unten steht, woher sie kommen.',
+    proefKop: 'Esto era solo el principio',
+    proefTekst:
+      'Has leído el principio. Cómo acaba está en el libro entero, y después catorce libros más, hasta que la llave acaba sobre una mesa en Utrecht.',
+    proefWaar: 'El libro entero y la serie completa: darijaforkids.eu',
     disclaimer: [
       'Dieses Buch ist erfunden, aber nicht irgendwie.',
       'Was darin geschieht, ist wirklich geschehen: die Städte, die Schlachten, die Reisen, die Bücher und die Menschen, die Geschichte gemacht haben. Was davon bekannt ist, wurde nachgeprüft und nicht schöner gemacht, als es war.',
@@ -189,6 +209,10 @@ export const SLEUTEL_SCHIL: Record<string, SleutelSchil> = {
     prentNoot: 'Disegno. Appena ci sarà una fotografia di questo luogo, sarà qui.',
     beeldenKop: 'Le immagini',
     beeldenNoot: 'Le fotografie e le illustrazioni di questo libro vengono dai luoghi in cui si svolge questa storia. Qui sotto c’è da dove provengono.',
+    proefKop: 'Questo era l’inizio',
+    proefTekst:
+      'Hai letto l’inizio. Come va a finire è nel libro intero — e poi altri quattordici libri, finché la chiave non finisce su un tavolo a Utrecht.',
+    proefWaar: 'Il libro intero e tutta la serie: darijaforkids.eu',
     disclaimer: [
       'Questo libro è inventato, ma non a caso.',
       'Quello che ci succede dentro è successo davvero: le città, le battaglie, i viaggi, i libri e le persone che hanno fatto la storia. Quel che se ne sa è stato verificato e non è stato reso più bello di com’era.',
@@ -216,6 +240,10 @@ export const SLEUTEL_SCHIL: Record<string, SleutelSchil> = {
     prentNoot: 'Drawing. As soon as there is a photograph of this place, it will be here.',
     beeldenKop: 'The images',
     beeldenNoot: 'The photographs and illustrations in this book come from the places where this story happens. Below is where they come from.',
+    proefKop: 'That was the beginning',
+    proefTekst:
+      'You have read the beginning. How it ends is in the whole book — and after that another fourteen books, until the key ends up on a table in Utrecht.',
+    proefWaar: 'The whole book and the whole series: darijaforkids.eu',
     disclaimer: [
       'This book is made up, but not carelessly.',
       'The things that happen in it really happened: the cities, the battles, the journeys, the books and the people who made history. What is known about all that has been checked, and has not been made prettier than it was.',
