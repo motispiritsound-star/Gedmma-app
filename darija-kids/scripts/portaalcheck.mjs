@@ -58,7 +58,12 @@ await new Promise((klaar) => site.listen(PORT, klaar))
 
 const BOEK = {
   titel: 'De olijvenbrand', jaar: '1912', waar: 'Fes',
-  hoofdstukken: [{ nummer: 1, titel: 'De rook boven de gaard', tekst: ['Het begon met rook.', 'Niemand keek op.'] }],
+  // Twee alinea's, drie zinnen: zo komt ook het knippen binnen een alinea
+  // onder de controle te staan, en niet alleen het knippen tussen alinea's.
+  hoofdstukken: [{
+    nummer: 1, titel: 'De rook boven de gaard',
+    tekst: ['Het begon met rook. Niemand keek op.', 'De gaard stond in brand.'],
+  }],
 }
 
 const fouten = []
@@ -157,6 +162,19 @@ console.log('\nDe lezer')
   meld(kop.includes('De olijvenbrand'), `het boek gaat open (${kop})`)
   const alinea = (await bladzijde.locator('#lezer p').allTextContents()).join(' ')
   meld(alinea.includes('Het begon met rook.'), 'en de tekst staat erin')
+
+  /**
+   * Het luisteren. De stem zelf kan hier niet klinken — een browser zonder
+   * geluidskaart heeft geen stemmen — maar wat wél te zien is, is of het boek
+   * in zinnen is geknipt en of de knop er staat. Dat is waar de belofte
+   * "luister/leesboeken" op rust.
+   */
+  const zinnen = bladzijde.locator('#lezer .zin')
+  meld(await zinnen.count() === 3, `het boek is in zinnen geknipt (${await zinnen.count()})`)
+  meld((await zinnen.first().textContent() ?? '').trim() === 'Het begon met rook.',
+       'elke zin staat apart, want die licht straks op')
+  const speel = bladzijde.locator('#lezer .leesbalk .speel')
+  meld(await speel.count() === 1, 'er staat een voorleesknop boven het boek')
   await context.close()
 }
 

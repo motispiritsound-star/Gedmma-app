@@ -670,6 +670,31 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
 .lezer button.terug { display: block; margin: 1.6rem auto 0; }
 .lezer .jaar { color: var(--ink-soft); margin-top: -.5rem; }
 
+/* De voorleesbalk. Hij blijft bovenaan staan terwijl je verder leest, want
+   een pauzeknop die uit beeld is scrollt, is geen pauzeknop. */
+.lezer .leesbalk {
+  position: sticky; top: 0; z-index: 2;
+  display: flex; align-items: center; gap: .8rem; flex-wrap: wrap;
+  padding: .7rem 0; margin-bottom: .4rem;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+}
+.lezer .leesbalk .speel { min-width: 8.5rem; }
+.lezer .stemkeuze {
+  font: inherit; padding: .45rem .7rem; border-radius: 999px;
+  background: var(--raised); border: 1px solid var(--line); color: var(--ink);
+  max-width: 14rem;
+}
+.lezer .leestekst p { margin: 0 0 1rem; }
+
+/* De zin die klinkt. Geen felle kleur: dit staat onder een verhaal dat een
+   kind meeleest, en een knipperend vlak leest niemand meer. */
+.lezer .zin { border-radius: 3px; transition: background-color .18s; }
+.lezer .zin.aan {
+  background: color-mix(in srgb, var(--zellige) 22%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--zellige) 22%, transparent);
+}
+@media (prefers-reduced-motion: reduce) { .lezer .zin { transition: none; } }
+
 /* Het gratis eerste deel: een knop met de titel van dat deel ernaast, zodat
    een bezoeker ziet wát hij gratis krijgt en niet alleen dát het gratis is. */
 .boeken .proef {

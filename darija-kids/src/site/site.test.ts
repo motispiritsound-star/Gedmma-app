@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { SITE } from './copy'
 import { APP_ID, PATHS, SITE_URL, STORE, appleStoreUrl, playStoreUrl } from './links'
 import { LANG_CODES } from '../i18n/languages'
+import { ZINSGRENS } from '../content/zinnen'
 import { CLIPS } from '../engine/clips'
 import { allWords } from '../content/lexicon'
 import { ALL_SENTENCES } from '../content/sentences'
@@ -130,6 +131,31 @@ describe('de adressen van de website', () => {
  * Dat is precies wanneer je een adres verkeerd overtypt, dus wordt het niet
  * overgetypt maar afgeleid.
  */
+/**
+ * De voorleesknop leeft in een gewoon .js-bestand, want de browser krijgt hem
+ * zo. Daardoor kan hij niet importeren uit `src/content/zinnen.ts`, en staat
+ * dezelfde zinsgrens er twee keer. Twee kopieën is er één te veel — vandaar
+ * deze test, die ze naast elkaar legt.
+ */
+describe('de lezer op de website', () => {
+  const lezer = readFileSync('src/site/lezer.js', 'utf8')
+
+  it('knipt zinnen op dezelfde plek als de rest van het project', () => {
+    expect(lezer).toContain(String(ZINSGRENS))
+  })
+
+  it('valt niet om zonder spraakmotor', () => {
+    // Een browser zonder speechSynthesis moet het boek nog gewoon tonen; alleen
+    // de knop hoort weg te zijn. Anders is een oude tablet een lege bladzijde.
+    expect(lezer).toContain('if (!spraak) speelknop.hidden = true')
+  })
+
+  it('stopt met praten als je de bladzijde verlaat', () => {
+    // De spraakmotor van de browser leest anders door in een gesloten tabblad.
+    expect(lezer).toContain("addEventListener('pagehide', stop")
+  })
+})
+
 describe('de winkeladressen', () => {
   it('halen het Apple ID uit alles wat App Store Connect geeft', () => {
     const goed = 'https://apps.apple.com/app/id6751234567'

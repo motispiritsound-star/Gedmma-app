@@ -1109,6 +1109,7 @@ const readPage = (lang) => {
   <noscript><p class="soon">${esc(c.leesGeenSleutel)}</p></noscript>
 </div>
 
+<script src="/lezer.js"></script>
 <script>
 (() => {
   const post = ${JSON.stringify(POST_URL)}
@@ -1117,7 +1118,7 @@ const readPage = (lang) => {
     geenSleutel: c.leesGeenSleutel, onbekend: c.leesOnbekend, voor: c.leesVoor,
     kies: c.leesKies, vorige: c.leesVorige, volgende: c.leesVolgende,
     terug: c.leesTerug, bewaar: c.leesBewaar, sba: c.boekKleinTitel, sleutels: c.boekGrootTitel,
-    portaal: c.portaal.titel,
+    portaal: c.portaal.titel, speel: c.leesSpeel, pauze: c.leesPauze, stem: c.leesStem,
   })}
   const PORTAAL = ${JSON.stringify(p.portal)}
   const doel = document.getElementById('lezer')
@@ -1258,29 +1259,19 @@ const readPage = (lang) => {
     await toon()
   }
 
-  /** Een leesboek: tekst, want een roman als plaatje schaalt niet. */
+  /**
+   * Een leesboek: tekst, want een roman als plaatje schaalt niet.
+   *
+   * Het zetten en het voorlezen zitten in /lezer.js. Dat scheelt hier een
+   * hoop, en het staat daar als gewoon JavaScript in plaats van in een
+   * sjabloonstring — waar één accolade te veel de hele site niet laat bouwen.
+   */
   async function leesboek(deel, taalVan) {
     const r = await vraag('/blad', { reeks: 'sleutels', deel, nr: 0, taal: taalVan })
     if (!r.ok) return zeg(T.onbekend, 'soon')
     const boek = await r.json()
-    doel.className = ''
-    doel.innerHTML = ''
-    const h = document.createElement('h2')
-    h.textContent = boek.titel
-    const j = document.createElement('p')
-    j.className = 'jaar'
-    j.textContent = boek.jaar + ' · ' + boek.waar
-    doel.append(h, j)
-    for (const hoofdstuk of boek.hoofdstukken) {
-      const kop = document.createElement('h3')
-      kop.textContent = hoofdstuk.nummer + '. ' + hoofdstuk.titel
-      doel.append(kop)
-      for (const regel of hoofdstuk.tekst) {
-        const alinea = document.createElement('p')
-        alinea.textContent = regel
-        doel.append(alinea)
-      }
-    }
+    if (window.Lezer) window.Lezer.toon(doel, boek, taalVan || taal, T)
+    else { doel.className = ''; doel.textContent = boek.titel }
     doel.append(knopje(T.terug, begin, 'terug'))
   }
 
@@ -1388,6 +1379,7 @@ for (const entry of ['icons', 'fonts', 'og.png']) {
   await cp(path.join(ROOT, 'public', entry), path.join(OUT, entry), { recursive: true })
 }
 await cp(path.join(ROOT, 'src', 'site', 'site.css'), path.join(OUT, 'site.css'))
+await cp(path.join(ROOT, 'src', 'site', 'lezer.js'), path.join(OUT, 'lezer.js'))
 
 const assets = path.join(ROOT, 'site-assets')
 for (const entry of ['shots', 'film']) {
