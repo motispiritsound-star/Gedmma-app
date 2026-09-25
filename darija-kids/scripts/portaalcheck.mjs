@@ -300,6 +300,39 @@ console.log('\nDe lezer')
 /* ---------------------------------------------------------------- klaar */
 
 /**
+ * Waar je met een vinger op kunt tikken.
+ *
+ * De vragenlijst op de startpagina had de ruimte op de kaart staan en niet op
+ * de `summary` erin. Dat ziet er op een breed scherm hetzelfde uit, maar het
+ * aanraakvlak was achtentwintig punten hoog — de regel tekst — met daaromheen
+ * een rand die er klikbaar uitziet en niets doet. Op een telefoon mis je die.
+ *
+ * Vinkjes blijven buiten schot: die zitten in een `<label>` met de tekst erin,
+ * dus je tikt op de hele regel.
+ */
+console.log('\nOp een telefoon')
+{
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 } })
+  const bladzijde = await context.newPage()
+  bladzijde.on('pageerror', (fout) => paginafouten.push(`/ (telefoon) — ${fout.message}`))
+  await bladzijde.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'networkidle' })
+  const klein = await bladzijde.evaluate(() => {
+    const uit = []
+    for (const el of document.querySelectorAll('summary, button')) {
+      const r = el.getBoundingClientRect()
+      if (r.width === 0 || r.height === 0 || r.height >= 32) continue
+      uit.push(`${el.tagName.toLowerCase()} ${Math.round(r.height)}px "${(el.textContent || '').trim().slice(0, 24)}"`)
+    }
+    return uit
+  })
+  for (const k of klein) console.log(`      ${k}`)
+  meld(klein.length === 0, `elke knop en elke vraag is hoog genoeg om te raken (${klein.length} te klein)`)
+  const vraag = await bladzijde.locator('details.q summary').first().boundingBox()
+  meld(Boolean(vraag) && vraag.height >= 44, `een vraag uit de lijst is ${Math.round(vraag?.height ?? 0)} punten hoog`)
+  await context.close()
+}
+
+/**
  * Wat er staat nadat je een link hebt aangevraagd.
  *
  * De aanhef zegt "meld je aan met je e-mailadres, je krijgt een link in je

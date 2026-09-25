@@ -587,13 +587,20 @@ section.tint { background: var(--sunken); border-block: 1px solid var(--line); }
 /* vragen */
 details.q {
   background: var(--raised); border: 1px solid var(--line);
-  border-radius: 14px; padding: 1rem 1.2rem; margin-bottom: .6rem;
+  border-radius: 14px; margin-bottom: .6rem;
 }
-details.q summary { font-weight: 800; cursor: pointer; list-style: none; }
+/* De ruimte zit op de `summary` en niet op de kaart eromheen.
+   Andersom is het een aanraakvlak van achtentwintig punten hoog — precies de
+   regel tekst — met daaromheen een rand die er klikbaar uitziet en niets doet.
+   Op een telefoon mis je die. Nu is de hele bovenkant van de kaart de knop. */
+details.q summary {
+  font-weight: 800; cursor: pointer; list-style: none;
+  padding: .95rem 1.2rem;
+}
 details.q summary::-webkit-details-marker { display: none; }
 details.q summary::after { content: "+"; float: right; color: var(--ink-soft); font-size: 1.3rem; line-height: 1; }
 details.q[open] summary::after { content: "–"; }
-details.q p { margin-top: .8rem; color: var(--ink-soft); }
+details.q p { margin: 0; padding: 0 1.2rem .95rem; color: var(--ink-soft); }
 
 /* citaat */
 .quote {
