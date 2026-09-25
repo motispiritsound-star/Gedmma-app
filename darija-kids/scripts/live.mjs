@@ -52,8 +52,35 @@ const nu = { apple: STORE.apple, google: STORE.google }
 /* ---------------------------------------------------------------- bepalen */
 
 const uit = vlag('uit')
-const appleIn = arg('apple')
+let appleIn = arg('apple')
 const googleIn = arg('google')
+
+/**
+ * Het Apple ID vragen in plaats van het in de handleiding open te laten.
+ *
+ * In `GO-LIVE.md` stond `npm run live -- --apple <het Apple ID> --google`, en
+ * dat soort regels wordt letterlijk geplakt — punthaken en al. Bij Gumroad is
+ * dat precies gebeurd met het ping-adres. Hier zou het erger uitpakken: op de
+ * dag van de lancering, met de app al in de winkel, en met een foutmelding van
+ * PowerShell over een `<` die hij als omleiding leest.
+ *
+ * Het nummer staat in App Store Connect en nergens anders, dus het kan niet
+ * uit een bestand komen. Wat wel kan, is dat de opdracht erom vraagt op het
+ * moment dat je hem geeft. Dan is er niets in te vullen vooraf.
+ *
+ * Alleen als er een scherm is om het op te vragen: draait dit in een script of
+ * in een bouwmachine, dan gebeurt er niets bijzonders.
+ */
+if (!uit && appleIn === undefined && googleIn !== undefined && !nu.apple && process.stdin.isTTY) {
+  const { createInterface } = await import('node:readline/promises')
+  const lezer = createInterface({ input: process.stdin, output: process.stdout })
+  console.log('\nHet Apple ID staat in App Store Connect, onder de app bij')
+  console.log('App Information → Apple ID. Een getal van negen of tien cijfers.')
+  console.log('De hele deellink plakken mag ook.\n')
+  const gegeven = (await lezer.question('Apple ID (enter = Apple overslaan): ')).trim()
+  lezer.close()
+  if (gegeven) appleIn = gegeven
+}
 
 if (!uit && appleIn === undefined && googleIn === undefined) {
   const toon = (naam, url) => console.log(`  ${naam.padEnd(7)} ${url || '— leeg, de website zegt "binnenkort"'}`)
@@ -62,7 +89,7 @@ if (!uit && appleIn === undefined && googleIn === undefined) {
   toon('Google', nu.google)
   console.log(`\nDe website is ${nu.apple || nu.google ? 'live' : 'nog niet live'}.`)
   console.log('\nZetten doe je zo:')
-  console.log('  npm run live -- --apple 6751234567 --google')
+  console.log('  npm run live -- --google        (hij vraagt het Apple ID)')
   console.log('  npm run live -- --uit\n')
   process.exit(0)
 }

@@ -71,13 +71,25 @@ vraagt om de waarde en stuurt hem rechtstreeks door.
 | `ZOUT` | willekeurige tekens, om een IP te hashen. Verzin er veertig |
 | `KOOP_GEHEIM` | gedeeld met de betaalpartner, zodat alleen die een verkoop kan melden |
 
-Voor de laatste twee wil je iets wat niemand raadt. Laat je machine het
-verzinnen in plaats van zelf te typen — in PowerShell:
+Voor `KOOP_GEHEIM` hoef je niets te bedenken en niets in te vullen:
+
+```bash
+npm run koopgeheim
+```
+
+Die verzint er een, stuurt hem naar Cloudflare, en drukt het **hele adres** af
+zoals het bij Gumroad in het veld hoort. Kopiëren en plakken.
+
+Dat laatste is niet overdreven zorgvuldig. Hier stond eerst een adres met
+`<de waarde van KOOP_GEHEIM>` erin, en dat is één op één in het veld bij
+Gumroad beland — punthaken en al. Gumroad antwoordde "That URL seems to be
+invalid", en dat was de enige aanwijzing.
+
+Voor `ZOUT` wil je ook iets wat niemand raadt. In PowerShell:
 
 ```powershell
-$geheim = -join (1..48 | ForEach-Object { '{0:x}' -f (Get-Random -Maximum 16) })
-$geheim | npx wrangler secret put KOOP_GEHEIM
-$geheim                      # dit is wat je bij de betaalpartner invult
+$zout = -join (1..48 | ForEach-Object { '{0:x}' -f (Get-Random -Maximum 16) })
+$zout | npx wrangler secret put ZOUT
 ```
 
 Controleer achteraf met `npm run geheimen` of alle drie er staan.
@@ -137,10 +149,13 @@ werkt wel gewoon, en de lezer zegt dat er ook bij.
 
 ### En bij de betaalpartner
 
-Eén veld invullen, bij Gumroad onder **Settings → Advanced → Ping**:
+Eén veld invullen, bij Gumroad onder **Settings → Advanced → Ping**. Het adres
+komt uit `npm run koopgeheim` en is compleet — er hoeft niets in te worden
+gevuld. Het heeft de vorm `https://post.darijaforkids.eu/koop?s=` met daarachter
+achtenveertig tekens.
 
 ```
-https://post.darijaforkids.eu/koop?s=<de waarde van KOOP_GEHEIM>
+(het adres dat npm run koopgeheim afdrukt)
 ```
 
 Zonder die melding weet het portaal niet wie wat gekocht heeft, en blijft
@@ -161,9 +176,10 @@ komt hier binnen met `test=true`, wordt gewoon verwerkt, en de bestelling
 krijgt het woord *proefmelding* in zijn merkregel — zo zie je achteraf welke
 rij echt was. Zonder die knop kan het ook met de hand:
 
-```bash
-curl.exe -sS -X POST "https://post.darijaforkids.eu/koop?s=<geheim>" -d "email=jij@example.com&permalink=sleutels&ip_country=Netherlands&test=true"
-```
+`npm run koopgeheim` drukt die regel compleet af, met het geheim er al in —
+dus er valt niets in te vullen. Hij begint met `curl.exe` en niet met `curl`,
+want dat laatste is op Windows een alias voor `Invoke-WebRequest` en die kent
+`-X` en `-d` niet.
 
 `curl.exe` en niet `curl`: op Windows is `curl` een alias voor
 `Invoke-WebRequest`, en die kent `-X` en `-d` niet. Alles op één regel, want

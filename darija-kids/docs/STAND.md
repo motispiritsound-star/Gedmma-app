@@ -9,7 +9,7 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 927, groen |
+| Tests | 928, groen |
 | Google Play | 2 (1.1) in review; 3 (1.2) is gebouwd en wacht op upload |
 | App Store | 1.0 (build 5) **opnieuw ingediend** op 25 september, wacht op beoordeling |
 
@@ -97,6 +97,24 @@ nakijkt. Ze staan hier omdat ze pas opvallen als het te laat is.
    Apple afwees: voor welke leeftijden is de app. Geef je daar kinderen op, dan
    geldt het Families-beleid — geen advertenties van derden, geen trackers. De
    app voldoet daar al aan, maar het moet kloppen met wat er staat.
+
+### Drie opdrachten die geen pad en geen waarde meer vragen
+
+| | |
+|---|---|
+| `npm run inloggen` | één keer, wrangler bij Cloudflare |
+| `npm run deploy` | de worker uitrollen |
+| `npm run koopgeheim` | nieuw geheim, en het hele Gumroad-adres erbij |
+
+Ze draaien alle drie vanuit `darija-kids` — geen `cd server` meer. Dat was
+niet luxe: `cd C:\...\darija-kids\server` is een keer letterlijk geplakt,
+met de puntjes erin, en `npm run deploy` in de thuismap klaagt dan over een
+ontbrekende `package.json`.
+
+Om dezelfde reden vraagt `npm run live -- --google` zelf om het Apple ID in
+plaats van het in de opdracht open te laten. Er staat nergens in dit project
+nog een blok om te plakken met iets tussen punthaken; `documentatie.test.ts`
+valt als er weer een verschijnt.
 
 ### Wat alleen jij kunt doen
 
@@ -223,11 +241,15 @@ testen; zodra het eigen adres antwoordt mag `workers_dev = false`.
 Twee dingen die nog moeten voordat het werkt voor een echte koper:
 
 1. **Gumroad laten melden dat er verkocht is.** Eén veld invullen, onder
-   Settings → Advanced → Ping:
+   Settings → Advanced → Ping. Het adres dat daarin hoort drukt deze opdracht
+   compleet af — er valt niets in te vullen:
 
+   ```bash
+   npm run koopgeheim
    ```
-   https://post.darijaforkids.eu/koop?s=<de waarde van KOOP_GEHEIM>
-   ```
+
+   Hij verzint een nieuw geheim, stuurt het naar Cloudflare en geeft het hele
+   adres. Draai je hem nog eens, dan werkt het oude adres niet meer.
 
    Zonder die melding blijft de bibliotheek van een koper leeg terwijl hij wél
    betaald heeft, en dat is de ergste soort bug: hij lijkt op diefstal.

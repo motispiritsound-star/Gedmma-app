@@ -49,7 +49,7 @@ afweging die jij maakt, niet ik.
 Wil je op de dag van goedkeuring naar buiten, dan is dit het hele werk:
 
 ```bash
-npm run live -- --apple <het Apple ID> --google
+npm run live -- --google
 git add -A
 git commit -m "De app staat in de winkel"
 git push
@@ -89,14 +89,18 @@ scherm al "Ready for Sale" zegt.
 Eén commando, in `darija-kids`:
 
 ```bash
-npm run live -- --apple 6751234567 --google
+npm run live -- --google
 ```
+
+Hij vraagt zelf om het Apple ID — dat staat in App Store Connect, onder de app
+bij *App Information → Apple ID*. Plak het nummer, of de hele deellink; het
+script haalt het ID eruit. Er valt in die opdracht dus niets in te vullen, en
+dat is met opzet: een regel met `<het Apple ID>` erin wordt op zo'n dag
+letterlijk geplakt, en PowerShell leest die `<` als een omleiding.
 
 Dat zet de twee adressen in `src/site/links.ts` en bouwt de site opnieuw.
 Daarmee verdwijnt het blok "binnenkort", wordt de balk onderaan een
-downloadknop, en worden de twee winkelknoppen echt. Het nummer bij `--apple`
-mag ook de hele deellink uit App Store Connect zijn; het script haalt het ID
-eruit.
+downloadknop, en worden de twee winkelknoppen echt.
 
 Dan de push, want de productiebranch publiceert zichzelf:
 

@@ -68,6 +68,9 @@
     "deelplaten": "node scripts/make-deelplaat.mjs",
     "sleutelplaten": "node scripts/make-sleutelplaat.mjs",
     "omslagen": "node scripts/make-omslagen.mjs",
+    "deploy": "node scripts/deploy.mjs",
+    "inloggen": "node scripts/inloggen.mjs",
+    "koopgeheim": "node scripts/koopgeheim.mjs",
     "lezen": "node scripts/leesuitgave.mjs",
     "boeken": "node scripts/boeken-erin.mjs",
     "vertelstem": "node scripts/make-vertelstem.mjs"

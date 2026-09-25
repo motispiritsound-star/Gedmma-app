@@ -99,6 +99,33 @@ describe('de commando\'s in de documentatie', () => {
     expect(fout, 'geef elke opdracht een eigen console.log').toEqual([])
   })
 
+  /**
+   * En er staat niets tussen punthaken in wat je plakt.
+   *
+   * Dit ging echt mis. `docs/STAND.md` gaf het adres voor Gumroad als
+   * `https://post.darijaforkids.eu/koop?s=<de waarde van KOOP_GEHEIM>`, en dat
+   * is één op één in het veld beland — punthaken en al. Gumroad antwoordde
+   * "That URL seems to be invalid", en dat was de enige aanwijzing.
+   *
+   * Zoiets is geen slordigheid van wie het plakt. Een blok met een ```bash
+   * eromheen ziet eruit als iets dat werkt, en dan werkt het ook. Hoort er een
+   * waarde in die je zelf moet weten, dan is er een opdracht te kort — zie
+   * `scripts/koopgeheim.mjs`, dat het hele adres afdrukt.
+   *
+   * Wat er ná een `#` staat telt niet mee. Dat is commentaar dat uitlegt wat
+   * er uit een opdracht komt — `npm run screenshots  # store/screenshots/
+   * <taal>/<toestel>/` — en dat is een beschrijving van een map, geen veld.
+   */
+  it('laten je niets invullen tussen punthaken', () => {
+    const zonderUitleg = (regel: string): string => regel.split(/\s#/)[0] ?? regel
+    for (const pad of lijst) {
+      const fout = plakregels(readFileSync(pad, 'utf8'))
+        .filter(([, regel]) => /<[^>]{2,}>/.test(zonderUitleg(regel)))
+        .map(([nr, regel]) => `regel ${nr}: ${regel.trim()}`)
+      expect(fout, `${path.relative(WORTEL, pad)} — geef een opdracht die het invult`).toEqual([])
+    }
+  })
+
   it('verwijzen niet naar /tmp', () => {
     // Die map bestaat niet op Windows.
     for (const pad of lijst) {
