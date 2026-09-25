@@ -1149,8 +1149,21 @@ const portaalPage = (lang) => {
 })()
 </script>`
 
+  /**
+   * Niet in Google.
+   *
+   * Het portaal staat al niet in de sitemap — dat is een keuze, want dit is
+   * een persoonlijke hoek achter een inlog en geen bladzijde om op te landen.
+   * Maar buiten de sitemap blijven is geen verbod: Google vindt hem via de
+   * voettekst en zet hem er gewoon in. Dan staat er een leeg inlogformulier in
+   * de zoekresultaten, mogelijk bóven de startpagina, bij iemand die zoekt op
+   * onze naam.
+   *
+   * De lezer had dit wel (`geenIndex` bij `page: 'read'`); het portaal was
+   * vergeten.
+   */
   return layout({
-    lang, page: 'portal', body,
+    lang, page: 'portal', body, geenIndex: true,
     title: `${c.portaal.titel} — Darijaforkids`,
     description: c.portaal.lead,
   })

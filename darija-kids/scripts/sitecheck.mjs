@@ -168,6 +168,40 @@ for (const pad of pagina) {
   if (n > MAXOM) fouten.push(`${kortpad}: de omschrijving is ${n} tekens, meer dan ${MAXOM}`)
 }
 
+/* ------------------------------------------------------- sitemap en noindex */
+
+/**
+ * Elke bladzijde staat óf in de sitemap, óf op noindex.
+ *
+ * Er is geen derde geval. Een bladzijde die in geen van beide staat is
+ * vergeten: hij wordt wel gevonden — via het menu of de voettekst — maar
+ * niemand heeft besloten of dat de bedoeling was.
+ *
+ * Zo stond het portaal erbij. Dat is een persoonlijke hoek achter een inlog en
+ * het was met opzet uit de sitemap gelaten, maar het stond niet op noindex.
+ * Dan zet Google een leeg inlogformulier in de zoekresultaten, mogelijk boven
+ * de startpagina, bij iemand die op onze naam zoekt.
+ */
+{
+  const kaart = await readFile(path.join(MAP, 'sitemap.xml'), 'utf8').catch(() => '')
+  if (!kaart) fouten.push('er is geen sitemap.xml')
+  const erin = new Set([...kaart.matchAll(/<loc>([^<]*)<\/loc>/g)]
+    .map((m) => m[1].replace(/^https?:\/\/[^/]+/, '') || '/'))
+
+  for (const pad of pagina) {
+    const kortpad = path.relative(MAP, pad)
+    if (kortpad === '404.html') continue          // die hoort nergens in
+    const adres = `/${kortpad.replace(/index\.html$/, '').replace(/\/$/, '')}` || '/'
+    const html = await readFile(pad, 'utf8')
+    const noindex = /name="robots"[^>]*noindex|noindex[^>]*name="robots"/.test(html)
+    if (erin.has(adres) || erin.has(`${adres}/`) || (adres === '/' && erin.has('/'))) {
+      if (noindex) fouten.push(`${kortpad}: staat in de sitemap én op noindex`)
+    } else if (!noindex) {
+      fouten.push(`${kortpad}: staat niet in de sitemap en niet op noindex — vergeten?`)
+    }
+  }
+}
+
 /* ----------------------------------------------------------------- extern */
 
 if (EXTERN) {
