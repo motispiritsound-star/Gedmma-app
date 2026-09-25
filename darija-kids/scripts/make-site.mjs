@@ -1103,6 +1103,10 @@ const portaalPage = (lang) => {
       })
       if (!uit.goed) return zeg(uit.fout === 'adres' ? T.foutAdres : uit.fout === 'vinkjes' ? T.foutVinkjes : T.foutAlgemeen)
       toon('aanmelden', false)
+      /* En de uitleg erboven weg. Die zegt "meld je aan met je e-mailadres",
+         en dat heb je net gedaan — hij bleef staan boven "kijk in je mail",
+         met het gat ertussen waar het formulier stond. */
+      toon('uitleg', false)
       toon('gestuurd', true)
     } catch { zeg(T.foutAlgemeen) } finally { knop.disabled = false }
   })

@@ -299,6 +299,31 @@ console.log('\nDe lezer')
 
 /* ---------------------------------------------------------------- klaar */
 
+/**
+ * Wat er staat nadat je een link hebt aangevraagd.
+ *
+ * De aanhef zegt "meld je aan met je e-mailadres, je krijgt een link in je
+ * mail". Dat is precies wat je net hebt gedaan, en hij bleef staan boven het
+ * blok "kijk in je mail" — met een gat ertussen waar het formulier stond.
+ */
+console.log('\nNa het aanvragen')
+{
+  const { bladzijde, context } = await bezoek('/portaal', {
+    '/portaal/mij': { binnen: false },
+    '/portaal/aanmelden': { goed: true },
+  })
+  await bladzijde.fill('#aanmelden input[type=email]', 'koper@example.com')
+  for (const vinkje of await bladzijde.locator('#aanmelden input[type=checkbox]').all()) {
+    await vinkje.check().catch(() => {})
+  }
+  await bladzijde.click('#aanmelden button[type=submit]')
+  await bladzijde.waitForTimeout(500)
+  meld(await bladzijde.locator('#gestuurd').isVisible(), 'er staat dat de mail onderweg is')
+  meld(!(await bladzijde.locator('#aanmelden').isVisible()), 'het formulier is weg')
+  meld(!(await bladzijde.locator('#uitleg').isVisible()), 'en de uitleg erboven ook')
+  await context.close()
+}
+
 /* ------------------------------------------------------------ de stemmen */
 
 /**
