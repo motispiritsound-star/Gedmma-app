@@ -144,8 +144,14 @@ open.
 
 **Het begin van De sleutels staat gratis op darijaforkids.eu/leesboeken**, in
 zes talen, zonder account en zonder e-mailadres: de eerste drie hoofdstukken
-van *De olijvenbrand*, ruim vier bladzijden verhaal, en het houdt op vlak
-vóór er iets misgaat. Gemaakt met `npm run sleutels -- --deel 1 --tot 3`.
+van *De olijvenbrand*, ruim elfhonderd woorden, en het houdt op vlak vóór er
+iets misgaat.
+
+Het staat er nu ook **met stem**. Eén knop op de boekenpagina vouwt het begin
+open, met dezelfde voorleesbalk als na het afrekenen. Dat is met opzet: een
+pdf laat niet horen wat je koopt — die download je, opent in een ander
+programma, en zwijgt. De pdf staat er nog wel naast voor wie liever
+downloadt (`npm run sleutels -- --deel 1 --tot 3`).
 
 Sba heeft met opzet geen gratis deel: dat is een twaalfde van de reeks en in
 vijf minuten uit.

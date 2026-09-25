@@ -73,6 +73,8 @@ const [
   { HISTORY },
   { unitSubtitle, lessonTitle, historyOf },
   { toestemmingVan },
+  { sleuteldeelIn, schilVanSleutel },
+  { DEEL1_HOOFDSTUKKEN },
   ...packs
 ] = await Promise.all([
   load('/src/i18n/languages.ts'),
@@ -89,6 +91,8 @@ const [
   load('/src/content/history.ts'),
   load('/src/content/localise.ts'),
   load('/src/content/toestemming.ts'),
+  load('/src/content/sleutels-talen.ts'),
+  load('/src/content/sleutels-deel1.ts'),
   load('/src/i18n/nl.ts'),
   load('/src/i18n/fr.ts'),
   load('/src/i18n/de.ts'),
@@ -853,15 +857,61 @@ const booksPage = (lang) => {
   ${reeks(c.boekGroot, c.boekGrootTitel, c.boekGrootBody, c.boekGrootPunten, sleutel, 'sleutelsReeks')}
   ${lijst(d.sleutels, (i) => `${SLEUTELREEKS[i].jaar === 'Nu' ? d.nu : SLEUTELREEKS[i].jaar} · ${SLEUTELPLEK[i]}`, 'sleutelsReeks')}
 
-  ${PROEF.has(`sleutels-deel-1-${lang}.pdf`) ? `<p class="proef">
-    <a class="mailbtn" href="/proefdeel/sleutels-deel-1-${lang}.pdf" download>${esc(c.boekProef)}</a>
+  <p class="proef">
+    <button type="button" class="mailbtn" id="proefknop">${esc(c.boekProef)}</button>
     <i>${esc(c.boekProefNoot(d.sleutels[0]))}</i>
-  </p>` : ''}
+    ${PROEF.has(`sleutels-deel-1-${lang}.pdf`)
+      ? `<a class="zacht" href="/proefdeel/sleutels-deel-1-${lang}.pdf" download>${esc(c.boekProefPdf)}</a>`
+      : ''}
+  </p>
+  <div id="proef" class="lezer" hidden></div>
 
   ${WINKEL_OPEN ? '' : `<p class="soon">${esc(c.boekSlot)}</p>`}
   <p><a class="mailbtn" href="${mailto}?subject=${encodeURIComponent(c.boekTitel)}&body=${encodeURIComponent(c.houMeOpDeHoogteMail)}">${esc(c.houMeOpDeHoogte)}</a>
      <a class="mailbtn zacht" href="${p.checkout}">${esc(c.afrekenLink)}</a></p>
-</div>`
+</div>
+
+<script src="/lezer.js"></script>
+<script>
+(() => {
+  /**
+   * Het begin van De olijvenbrand, met stem, zonder account.
+   *
+   * De etalage laat horen wat er te koop is. Een pdf laat dat niet horen: die
+   * download je, opent in een ander programma, en zwijgt. Dit is drie
+   * hoofdstukken uit hetzelfde boek, met dezelfde knop erboven als na het
+   * afrekenen — wie dit hoort, weet wat hij koopt.
+   */
+  const knop = document.getElementById('proefknop')
+  const vak = document.getElementById('proef')
+  if (!knop || !vak) return
+  const T = ${JSON.stringify({
+    speel: c.leesSpeel, pauze: c.leesPauze, stem: c.leesStem, terug: c.boekProefSluit,
+  })}
+  let open = false
+  let boek = null
+
+  knop.onclick = async () => {
+    if (open) {
+      vak.hidden = true
+      vak.innerHTML = ''
+      open = false
+      knop.textContent = ${JSON.stringify(c.boekProef)}
+      return
+    }
+    knop.disabled = true
+    try {
+      if (!boek) boek = await (await fetch('/proefdeel/${lang}.json')).json()
+    } catch { knop.disabled = false; return }
+    knop.disabled = false
+    open = true
+    knop.textContent = T.terug
+    vak.hidden = false
+    window.Lezer.toon(vak, boek, ${JSON.stringify(lang)}, T)
+    vak.scrollIntoView({ block: 'start', behavior: 'smooth' })
+  }
+})()
+</script>`
 
   return layout({
     lang, page: 'books', body,
@@ -1412,6 +1462,31 @@ const KUNST = new Set(await readdir(path.join(assets, 'boeken')).catch(() => [])
  */
 await cp(path.join(assets, 'proefdeel'), path.join(OUT, 'proefdeel'), { recursive: true }).catch(() => {})
 const PROEF = new Set(await readdir(path.join(assets, 'proefdeel')).catch(() => []))
+
+/**
+ * Het begin van De olijvenbrand, om te lezen én te horen.
+ *
+ * Drie hoofdstukken, in zes talen, zonder account en zonder e-mailadres. Het
+ * houdt op vlak vóór er iets misgaat — dat is de hele bedoeling.
+ *
+ * Dit staat open op de website en dat mag: het is dezelfde teaser die ook als
+ * pdf klaarstaat. De veertien andere delen staan achter de bak waar alleen de
+ * worker bij kan.
+ */
+const PROEFDEEL = 3
+for (const l of LANGS) {
+  const basis = { ...SLEUTELREEKS[0], hoofdstukken: DEEL1_HOOFDSTUKKEN }
+  const deel = sleuteldeelIn(l.code, basis)
+  const S = schilVanSleutel(l.code)
+  await writeFile(path.join(OUT, 'proefdeel', `${l.code}.json`), JSON.stringify({
+    titel: deel.titel,
+    jaar: deel.jaar,
+    waar: deel.waar,
+    hoofdstukken: deel.hoofdstukken.slice(0, PROEFDEEL).map((h) => ({
+      nummer: h.nummer, kop: S.hoofdstuk(h.nummer), titel: h.titel, tekst: h.tekst,
+    })),
+  }))
+}
 
 const write = async (urlPath, html) => {
   const file = urlPath === '/'

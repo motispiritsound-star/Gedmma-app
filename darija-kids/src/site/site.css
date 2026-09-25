@@ -450,11 +450,15 @@ header nav a.uit:hover { background: color-mix(in oklab, var(--saffron) 34%, tra
   margin-top: 1rem; font-size: .95rem; color: var(--ink-soft);
   border-left: 3px solid var(--saffron); padding-left: .9rem; max-width: 34rem;
 }
+/* Dezelfde knop, of hij nu een <a> is of een <button>. Een button erft geen
+   lettertype van de bladzijde en brengt zijn eigen rand mee. */
 .mailbtn {
   display: inline-flex; align-items: center; gap: .5rem; margin-top: .75rem;
   background: var(--saffron); color: #1a1625; border-radius: 999px;
   padding: .55rem 1.2rem; text-decoration: none; font-weight: 800;
+  font: inherit; font-weight: 800; border: 0; cursor: pointer;
 }
+.mailbtn[disabled] { opacity: .5; cursor: default; }
 .mailbtn:hover { filter: brightness(1.06); }
 
 /* -------------------------------------------------------------- sections */
@@ -702,6 +706,10 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
   margin: 0 0 2.4rem;
 }
 .boeken .proef i { font-style: normal; font-size: .93rem; color: var(--ink-soft); }
+/* De pdf staat ernaast als gewone link: wie liever downloadt, kan dat, maar
+   de knop die het hardop voorleest hoort de opvallende te zijn. */
+.boeken .proef a.zacht { font-size: .93rem; color: var(--ink-soft); }
+#proef { margin: 0 0 2.4rem; }
 
 /* Luister- en leesboeken: het eerste blok op de boekenpagina. Wat voor boeken
    dit zijn, en in drie stappen hoe je er na het afrekenen bij komt. */

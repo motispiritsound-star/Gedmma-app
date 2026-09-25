@@ -135,6 +135,38 @@ console.log('\nHet portaal')
   await context.close()
 }
 
+/* ------------------------------------------------- het gratis begin */
+
+console.log('\nDe teaser')
+{
+  const { bladzijde, context } = await bezoek('/leesboeken', {})
+  const knop = bladzijde.locator('#proefknop')
+  meld(await knop.count() === 1, 'op de boekenpagina staat een knop om het begin te lezen')
+  meld(!(await bladzijde.locator('#proef').isVisible()), 'en het boek staat nog dicht')
+  await knop.click()
+  await bladzijde.waitForSelector('#proef .zin', { timeout: 5000 }).catch(() => {})
+  const zinnen = await bladzijde.locator('#proef .zin').count()
+  meld(zinnen > 40, `het begin gaat open en is in zinnen geknipt (${zinnen})`)
+  meld(await bladzijde.locator('#proef .leesbalk .speel').count() === 1,
+       'met dezelfde voorleesknop als na het afrekenen')
+  const koppen = await bladzijde.locator('#proef h3').count()
+  meld(koppen === 3, `drie hoofdstukken, en niet het hele boek (${koppen})`)
+  await knop.click()
+  meld(!(await bladzijde.locator('#proef').isVisible()), 'en hij gaat ook weer dicht')
+  await context.close()
+}
+
+{
+  // Dezelfde teaser in het Frans hoort Frans te zijn. Dat klinkt vanzelf-
+  // sprekend; het ging in dit project al een keer mis in de andere richting.
+  const { bladzijde, context } = await bezoek('/fr/livres', {})
+  await bladzijde.locator('#proefknop').click()
+  await bladzijde.waitForSelector('#proef .zin', { timeout: 5000 }).catch(() => {})
+  const eerste = (await bladzijde.locator('#proef .zin').first().textContent()) ?? ''
+  meld(eerste.includes('réveillée'), `de Franse teaser is Frans (${eerste.trim().slice(0, 40)})`)
+  await context.close()
+}
+
 /* -------------------------------------------------------------- de lezer */
 
 console.log('\nDe lezer')
