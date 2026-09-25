@@ -84,10 +84,44 @@ Controleer achteraf met `npm run geheimen` of alle drie er staan.
 
 ### En bij de betaalpartner
 
-Zet een ping of webhook naar `https://post.darijaforkids.eu/koop`, met de kop
-`x-darija-geheim` op de waarde van `KOOP_GEHEIM`. Zonder die melding weet het
-portaal niet wie wat gekocht heeft, en blijft iemands bibliotheek leeg terwijl
-hij wél betaald heeft.
+Eén veld invullen, bij Gumroad onder **Settings → Advanced → Ping**:
+
+```
+https://post.darijaforkids.eu/koop?s=<de waarde van KOOP_GEHEIM>
+```
+
+Zonder die melding weet het portaal niet wie wat gekocht heeft, en blijft
+iemands bibliotheek leeg terwijl hij wél betaald heeft. Dat is de ergste soort
+fout in een winkel: hij lijkt op diefstal.
+
+Het geheim staat hier in het adres en niet in een kop, omdat Gumroad geen
+koppen kan meesturen — één invulveld, en verder niets. Dat heeft een prijs:
+een adres komt in logboeken terecht en een kop niet. Daarom beschermt dit
+geheim ook niets anders. Wie het in handen krijgt kan zichzelf een boek
+sturen, en verder niets: er zit geen geld achter en geen gegevens van anderen.
+
+Kan de betaalpartner wél eigen koppen sturen, gebruik dan `x-darija-geheim`
+met dezelfde waarde en laat het `?s=` weg. `/koop` neemt allebei aan.
+
+**Controleren.** Gumroad heeft een knop om een proefmelding te sturen. Die
+komt hier binnen met `test=true`, wordt gewoon verwerkt, en de bestelling
+krijgt het woord *proefmelding* in zijn merkregel — zo zie je achteraf welke
+rij echt was. Zonder die knop kan het ook met de hand:
+
+```bash
+curl -sS -X POST "https://post.darijaforkids.eu/koop?s=<geheim>" \
+  -d "email=jij@example.com&permalink=sleutels&ip_country=Netherlands&test=true"
+```
+
+Er hoort `{"goed":true}` terug te komen, en een mail met een sleutel erin.
+Komt er `{"fout":"nee"}`, dan klopt het geheim niet. Komt er
+`{"fout":"onvolledig"}`, dan herkende hij het product niet — kijk dan of het
+laatste stuk van het productadres `sleutels`, `sbadeleeuw` of `eboek` is.
+
+Het e-boek is met opzet een geval apart: die pdf levert Gumroad zelf af, dus
+daar geeft het portaal niets voor. De melding komt wel aan en antwoordt
+`{"goed":true,"genegeerd":["eboek"]}` — geen foutcode, want op een foutcode
+probeert een betaalpartner het morgen gewoon opnieuw.
 
 ## De wegen
 

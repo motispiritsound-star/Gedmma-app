@@ -22,6 +22,7 @@ import {
   bezit, koekje, logUit, lidVanEmail, magOpnieuw, maakLink, netjes as netjesEmail,
   schrijfIn, sessieUit, wieIsDit, wisselIn, zetNieuws,
 } from './portaal'
+import { geheimKlopt, koopbericht, veldenVan } from './koopbericht'
 import { verstuur, type Afzender } from './mail'
 import { MAILS, TEKST_VERSIE, isTaal, type Taal, type Week } from './mails'
 import { briefHtml, briefTekst, pagina } from './sjabloon'
@@ -366,27 +367,45 @@ const koopMail = (env: Env, sleutel: string, reeksen: string[]) => {
  * Er komt een gedeeld geheim mee. Zonder dat kan iedereen die het adres kent
  * zichzelf een sleutel toesturen, en dan hebben we een winkel waar je niet
  * hoeft te betalen.
+ *
+ * Het geheim mag in een kop staan, maar hoeft niet. Gumroad heeft namelijk
+ * één invulveld voor een adres en verder niets — geen koppen, geen
+ * handtekening. Dus wordt `?s=<geheim>` achter het adres ook aangenomen. Dat
+ * betekent wel dat het geheim in logboeken terechtkomt, en daarom hoort het
+ * nergens anders voor te dienen dan hiervoor: wie het heeft, kan zichzelf een
+ * boek sturen, en verder niets.
  */
 async function koop(verzoek: Request, env: Env): Promise<Response> {
   if (!env.KOOP_GEHEIM) return json({ fout: 'niet-ingericht' }, 503)
-  if (verzoek.headers.get('x-darija-geheim') !== env.KOOP_GEHEIM) return json({ fout: 'nee' }, 403)
+  const url = new URL(verzoek.url)
+  const meegegeven = verzoek.headers.get('x-darija-geheim') ?? url.searchParams.get('s')
+  if (!geheimKlopt(meegegeven, env.KOOP_GEHEIM)) return json({ fout: 'nee' }, 403)
 
-  type Koopbericht = { email?: string; reeksen?: string[]; taal?: string; naam?: string; bestelnummer?: string }
-  const body: Koopbericht = await verzoek.json<Koopbericht>().catch(() => ({}))
+  const body = koopbericht(veldenVan(verzoek.headers.get('content-type'), await verzoek.text().catch(() => '')))
 
-  const email = netjes(body.email ?? '')
-  const reeksen = (body.reeksen ?? []).filter((r: string) => r === 'sba' || r === 'sleutels')
-  if (!lijktEmail(email) || !reeksen.length) return json({ fout: 'onvolledig' }, 400)
+  const email = body.email
+  const reeksen = body.reeksen
+  if (!lijktEmail(email)) return json({ fout: 'onvolledig' }, 400)
+  /**
+   * Verkocht, maar niets wat het portaal uitdeelt — het e-boek is één pdf die
+   * de betaalpartner zelf aflevert. Dat is geen fout, dus geen 400: een
+   * foutcode zet de betaalpartner ertoe aan het nog eens te proberen, en dan
+   * staat er morgen een rij mislukte meldingen die allemaal in orde waren.
+   */
+  if (!reeksen.length) {
+    return body.genegeerd.length ? json({ goed: true, genegeerd: body.genegeerd }) : json({ fout: 'onvolledig' }, 400)
+  }
 
   const sleutel = maakSleutel()
-  const merk = [body.naam?.trim(), body.bestelnummer && `bestelling ${body.bestelnummer}`]
+  const merk = [body.naam?.trim(), body.bestelnummer && `bestelling ${body.bestelnummer}`,
+                body.proef && 'proefmelding']
     .filter(Boolean).join(' · ') || email
 
   await env.DB
     .prepare(`INSERT INTO bestelling (id, sleutel_hash, email, reeksen, taal, merk, bestelnummer, gekocht_op)
               VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
     .bind(sleutelBytes(16), await hashVan(sleutel), email, reeksen.join(','),
-          body.taal ?? 'nl', merk, body.bestelnummer ?? null, nu())
+          body.taal, merk, body.bestelnummer ?? null, nu())
     .run()
 
   /**
@@ -399,7 +418,7 @@ async function koop(verzoek: Request, env: Env): Promise<Response> {
    * dat is waar dit moment vandaan komt.
    */
   await schrijfIn(env.DB, {
-    email, taal: body.taal ?? 'nl', nieuws: false, tekstVersie: TEKST_VERSIE,
+    email, taal: body.taal, nieuws: false, tekstVersie: TEKST_VERSIE,
     ipHash: await hashVan((verzoek.headers.get('cf-connecting-ip') ?? '') + env.ZOUT),
   })
 

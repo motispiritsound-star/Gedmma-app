@@ -165,12 +165,21 @@ testen; zodra het eigen adres antwoordt mag `workers_dev = false`.
 
 Twee dingen die nog moeten voordat het werkt voor een echte koper:
 
-1. **Gumroad laten melden dat er verkocht is**, naar `/koop`. Zonder die
-   melding blijft de bibliotheek van een koper leeg terwijl hij wél betaald
-   heeft — en dat is de ergste soort bug: hij lijkt op diefstal. Let op: de
-   kale ping van Gumroad stuurt geen eigen koppen mee, en `/koop` verwacht nu
-   `x-darija-geheim`. Wat daar moet veranderen hangt af van wat het account
-   aanbiedt onder Settings → Advanced.
+1. **Gumroad laten melden dat er verkocht is.** Eén veld invullen, onder
+   Settings → Advanced → Ping:
+
+   ```
+   https://post.darijaforkids.eu/koop?s=<de waarde van KOOP_GEHEIM>
+   ```
+
+   Zonder die melding blijft de bibliotheek van een koper leeg terwijl hij wél
+   betaald heeft, en dat is de ergste soort bug: hij lijkt op diefstal.
+
+   `/koop` neemt sinds kort ook de kale ping van Gumroad aan — een gewone
+   formulierpost, met het geheim in het adres, want Gumroad kan geen eigen
+   koppen sturen. Het vertaalt zelf het productadres naar de reeks, raadt de
+   taal uit het land van de koper, en herkent de proefmelding uit het
+   instellingenscherm. Hoe je het controleert staat in `server/LEES-MIJ.md`.
 2. **Zelf een keer het hele rondje lopen**: kopen, mail, aanmelden, inloggen,
    en kijken of het boek er staat.
 

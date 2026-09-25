@@ -18,6 +18,9 @@ export default defineConfig(({ mode }) => {
       assetsInlineLimit: demo ? 100_000_000 : 4096,
       rollupOptions: demo ? { output: { inlineDynamicImports: true } } : undefined,
     },
-    test: { environment: 'node', include: ['src/**/*.test.ts'] },
+    // De worker hoort erbij. Hij staat in een eigen map met een eigen
+    // package.json, maar de winkelmelding die hij verwerkt is het stuk waar
+    // een vergissing op diefstal lijkt — dat hoort onder dezelfde tests.
+    test: { environment: 'node', include: ['src/**/*.test.ts', 'server/src/**/*.test.ts'] },
   }
 })
