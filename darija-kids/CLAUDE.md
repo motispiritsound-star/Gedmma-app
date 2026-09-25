@@ -32,6 +32,12 @@ Windows PowerShell, geen bash en geen PowerShell 7. Dat betekent:
   `npm run` daar levert een foutmelding op over een ontbrekende
   `package.json` die niets zegt over wat er echt mis is.
 
+En zijn bestanden hebben **`\r\n` aan het eind van elke regel**. Een script dat
+in een bestand zoekt naar twee regels aan elkaar geplakt met `\n`, vindt daar
+niets — en meldt dan iets heel anders dan wat er aan de hand is. Zoek per
+regel, met `\r?\n` ertussen, en schrijf terug met het regeleinde dat het
+bestand al had.
+
 En in de scripts: **geen `npx` of `npm` starten met `execFileSync`.** Op Windows
 heten die `npx.cmd` en `npm.cmd`, en Node vindt ze dan niet — `Error: spawnSync
 npx ENOENT`, een melding waar Windows niet in voorkomt. Roep het javascript

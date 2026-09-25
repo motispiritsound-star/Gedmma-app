@@ -21,24 +21,36 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const TOML = path.join(ROOT, 'server', 'wrangler.toml')
 const UIT = process.argv.includes('--uit')
 
-const AAN = `[[r2_buckets]]
-binding = "BOEKEN"
-bucket_name = "darijaforkids-boeken"`
-const UITGEZET = AAN.split('\n').map((r) => `# ${r}`).join('\n')
+const REGELS = ['[[r2_buckets]]', 'binding = "BOEKEN"', 'bucket_name = "darijaforkids-boeken"']
+
+/**
+ * Zoeken met regels in plaats van met één blok tekst.
+ *
+ * Een blok van drie regels aan elkaar geplakt met `\n` staat niet in dit
+ * bestand als het op Windows is uitgecheckt: git zet er dan `\r\n` van. Dan
+ * vindt hij niets, zegt hij dat de regels met de hand zijn aangepast, en klopt
+ * daar niets van — het bestand is ongemoeid en de melding wijst de verkeerde
+ * kant op. Vandaar per regel, met het regeleinde erbuiten.
+ */
+const zoek = (uitgezet) => new RegExp(
+  REGELS.map((r) => `${uitgezet ? '# ?' : ''}${r.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`).join('\r?\n'),
+)
 
 const bron = await readFile(TOML, 'utf8')
-const doel = UIT ? UITGEZET : AAN
-const van = UIT ? AAN : UITGEZET
+const eindeRegel = bron.includes('\r\n') ? '\r\n' : '\n'
+const staatAan = zoek(false).test(bron)
+const staatUit = zoek(true).test(bron)
 
-if (bron.includes(doel) && !bron.includes(van)) {
+if (UIT ? staatUit && !staatAan : staatAan && !staatUit) {
   console.log(`De boekenbak stond al ${UIT ? 'uit' : 'aan'}.`)
   process.exit(0)
 }
-if (!bron.includes(van)) {
+if (!(UIT ? staatAan : staatUit)) {
   console.error(`\nKan de drie regels van de boekenbak niet vinden in ${path.relative(ROOT, TOML)}.`)
   console.error('Zijn ze met de hand aangepast? Zet ze terug in hun oude vorm.\n')
   process.exit(1)
 }
 
-await writeFile(TOML, bron.replace(van, doel), 'utf8')
+const doel = REGELS.map((r) => (UIT ? `# ${r}` : r)).join(eindeRegel)
+await writeFile(TOML, bron.replace(zoek(!UIT), doel), 'utf8')
 console.log(`De boekenbak staat ${UIT ? 'uit' : 'aan'} in server/wrangler.toml.`)
