@@ -235,6 +235,11 @@ Voor Sba komt het tafereel uit `store/prentenboek/platen/<deel>/` en alleen de
 tekst uit de inhoud; verandert er een titel, dan zet je ze opnieuw in plaats
 van ze opnieuw te tekenen. `--groot` geeft 1600 × 900, om ergens te delen.
 
+Op de vijf handgemaakte platen staat *De sleutel tot de geschiedenis van
+Marokko* — enkelvoud, terwijl de reeks De sleutels van Marokko heet. Dat is
+bekeken en zo gelaten: het is een ondertitel en geen reekstitel, en zo gelezen
+klopt hij. Niet "verbeteren".
+
 Ontbreekt een plaat, dan blijft er gewoon een regel tekst staan — dat is wat
 er bij deel 6 tot en met 15 van De sleutels gebeurt, en op de vijf
 niet-Nederlandse bladzijden van die reeks.
