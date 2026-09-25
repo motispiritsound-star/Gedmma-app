@@ -183,8 +183,34 @@ Twee dingen die nog moeten voordat het werkt voor een echte koper:
 2. **Zelf een keer het hele rondje lopen**: kopen, mail, aanmelden, inloggen,
    en kijken of het boek er staat.
 
-De R2-bak staat uit. Die is voor de lezer die een boek bladzijde voor
-bladzijde uitserveert, en de boeken gaan voorlopig als pdf de deur uit.
+### De lezer op de website
+
+Na het inloggen staat er per gekochte reeks een knop *Lezen en luisteren*.
+Daarachter zit het boek als tekst, in zinnen geknipt, met een voorleesbalk
+erboven: de stem van het toestel zelf leest voor en de zin die klinkt licht
+op. Geen opnames — die kosten geld, en dit onderdeel mocht niets kosten tot
+er iets verdiend wordt.
+
+`npm run portaalcheck` loopt dat hele rondje na in een echte browser, met de
+antwoorden van de worker erbij verzonnen. Geen database, geen mail, geen
+internet nodig.
+
+**Wat er nog moet: de boeken in de bak.** De lezer haalt elk boek apart op uit
+R2, en die bak staat nog uit. Zolang dat zo is, krijgt een koper die inlogt
+"niet ingericht" te zien. Twee opdrachten, één keer:
+
+```bash
+cd server && npm run maak-bak && cd ..
+npm run lezen -- --r2
+```
+
+De eerste maakt de bak, zet de binding aan en rolt uit; de tweede zet er de
+negentig leesboeken in — vijftien delen in zes talen, samen twee megabyte.
+
+De prentenboeken van Sba zijn bladzijden als plaatje en moeten eerst geschoten
+worden (`npm run bladen -- --taal nl --uploaden`). Dat duurt lang en heeft een
+browser nodig. Tot die tijd opent Sba niet in de lezer; de pdf uit de winkel
+werkt gewoon.
 
 ### Wat hier nog moet
 

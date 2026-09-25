@@ -9,9 +9,12 @@
  *   <reeks>/<deel>/<taal>/<nummer>.webp
  *
  * Run with:
- *   npm run bladen                       # alles, naar store/bladen/
+ *   npm run bladen                       # alle delen, naar store/bladen/
  *   npm run bladen -- --deel 1           # één deel
+ *   npm run bladen -- --taal fr          # één taal (standaard nl)
  *   npm run bladen -- --uploaden         # en daarna naar R2
+ *
+ * De leesboeken zitten hier niet bij; die gaan met `npm run lezen -- --r2`.
  */
 import { execFileSync } from 'node:child_process'
 import { mkdir, readdir, rm, writeFile } from 'node:fs/promises'
@@ -35,14 +38,9 @@ const server = await createServer({
   configFile: path.join(ROOT, 'vite.config.ts'),
   root: ROOT, server: { middlewareMode: true, hmr: false }, appType: 'custom', logLevel: 'error',
 })
-const [{ DELEN }, { REEKS }] = await Promise.all([
+const [{ DELEN }] = await Promise.all([
   server.ssrLoadModule('/src/content/prentenboek.ts'),
-  server.ssrLoadModule('/src/content/sleutels.ts'),
 ])
-const tekstVan = async (n) => {
-  const mod = await server.ssrLoadModule(`/src/content/sleutels-deel${n}.ts`)
-  return mod[`DEEL${n}_HOOFDSTUKKEN`]
-}
 
 const browser = await startChroom()
 
@@ -89,33 +87,26 @@ for (const deel of DELEN) {
 
 
 /**
- * De leesboeken gaan als tekst en niet als plaatje.
+ * De leesboeken staan hier niet meer.
  *
- * Een roman van dertig bladzijden in beeld is drie megabyte die op een
- * telefoon niet meeschaalt: je kunt niet groter zetten, de regels lopen niet
- * door, en wie slecht ziet kan er niets mee. Tekst is hier gewoon het goede
- * medium.
+ * Ze gaan als tekst en niet als plaatje — een roman van dertig bladzijden in
+ * beeld is drie megabyte die op een telefoon niet meeschaalt: je kunt niet
+ * groter zetten, de regels lopen niet door, en wie slecht ziet kan er niets
+ * mee. Tekst is hier gewoon het goede medium.
  *
- * Dat je tekst kunt kopiëren is waar en het verandert niets: dat kan in elke
- * lezer ter wereld. De sleutel en de naam op de bladzijde doen het werk.
+ * Maar ze stonden hier verkeerd. Dit script kent één taal per keer en las de
+ * Nederlandse bron, dus `--taal fr` schreef Nederlandse tekst in de Franse
+ * map. Dat merk je niet aan de bouw en niet aan de bestandsnamen; dat merkt
+ * een Franse koper.
+ *
+ * `scripts/leesuitgave.mjs` doet het wél goed: dat legt de vertaling alinea
+ * voor alinea naast het Nederlands, en er staat een test op. Vandaar:
+ *
+ *   npm run lezen -- --r2
+ *
+ * Dit script gaat alleen nog over de prentenboeken, want daar zijn de
+ * bladzijden echt plaatjes.
  */
-for (const deel of REEKS) {
-  if (ALLEEN && deel.nummer !== ALLEEN) continue
-  const mod = await tekstVan(deel.nummer)
-  const map = path.join(UIT, 'sleutels', String(deel.nummer), TAAL)
-  await rm(map, { recursive: true, force: true })
-  await mkdir(map, { recursive: true })
-  const boek = {
-    nummer: deel.nummer, titel: deel.titel, jaar: deel.jaar, waar: deel.waar,
-    verteller: deel.verteller, flap: deel.flap,
-    hoofdstukken: mod.map((h) => ({ nummer: h.nummer, titel: h.titel, tekst: h.tekst })),
-    echt: deel.echt, verzonnen: deel.verzonnen, sleutel: deel.sleutel,
-  }
-  await writeFile(path.join(map, 'boek.json'), JSON.stringify(boek))
-  const woorden = mod.reduce((n, h) => n + h.tekst.join(' ').split(/\s+/).length, 0)
-  console.log(`sleutels ${String(deel.nummer).padStart(2)} — ${mod.length} hoofdstukken, ${woorden} woorden`)
-  totaal += mod.length
-}
 
 await browser.close()
 await server.close()

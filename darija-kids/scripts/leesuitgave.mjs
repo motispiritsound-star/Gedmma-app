@@ -7,9 +7,16 @@
  * web haalt hier haar bladzijden vandaan, en de schrijver kan zo ook zelf
  * nakijken wat er in het Italiaans is komen te staan.
  *
+ * Met `--r2` gaan dezelfde boeken ook naar de bak waar de worker ze vandaan
+ * haalt, in de vorm die hij verwacht: `sleutels/<deel>/<taal>/boek.json`.
+ * Zonder die stap zegt de lezer op de website "niet ingericht" en blijft de
+ * bibliotheek van een koper leeg.
+ *
  * Run with:
  *   node scripts/leesuitgave.mjs
+ *   node scripts/leesuitgave.mjs --r2        # en daarna naar de bak
  */
+import { execFileSync } from 'node:child_process'
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -86,5 +93,30 @@ for (const { code, naam } of TALEN) {
 }
 
 await writeFile(path.join(UIT, 'plank.json'), JSON.stringify(plank))
+
+/**
+ * En dan naar de bak, als daarom gevraagd is.
+ *
+ * Eén boek per aanroep van wrangler: negentig kleine bestanden gaan sneller op
+ * deze manier de deur uit dan dat iemand een tweede manier gaat onderhouden.
+ * Ze staan er al, dus dit is een kopieerslag en geen bouw — valt hij halverwege
+ * om, dan draai je hem gewoon opnieuw.
+ */
+if (process.argv.includes('--r2')) {
+  console.log('\nNaar R2…\n')
+  let gedaan = 0
+  for (const { code } of TALEN) {
+    for (let n = 1; n <= 15; n++) {
+      const bron = path.join(UIT, 'data', `${code}-${n}.json`)
+      execFileSync('npx', ['wrangler', 'r2', 'object', 'put',
+        `darijaforkids-boeken/sleutels/${n}/${code}/boek.json`,
+        '--file', bron, '--remote', '--content-type', 'application/json'],
+        { cwd: path.join(ROOT, 'server'), stdio: ['ignore', 'ignore', 'inherit'] })
+      gedaan += 1
+      process.stdout.write(`\r${gedaan} van de 90`)
+    }
+  }
+  console.log('\n\nDe boeken staan in de bak. De lezer op de website kan ze nu ophalen.\n')
+}
 const totaal = Object.values(plank).reduce((n, t) => n + t.delen.reduce((m, d) => m + d.woorden, 0), 0)
 console.log(`${Object.keys(plank).length} talen × 15 delen → store/lezen/  (${totaal.toLocaleString('nl-NL')} woorden)`)

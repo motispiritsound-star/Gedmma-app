@@ -68,8 +68,12 @@ crons = ["0 7 * * 1"]
 # Een binding naar een bak die niet bestaat laat `wrangler deploy` omvallen,
 # en dan gaat er ook niets live dat wél werkt.
 #
-# Aanzetten doe je zo, en dan deze drie regels terugzetten:
+# Aanzetten doe je met één opdracht — die maakt de bak, haalt de hekjes
+# hieronder weg en rolt meteen uit:
 #   npm run maak-bak
+#
+# En daarna, vanuit darija-kids, de boeken erin:
+#   npm run lezen -- --r2
 #
 # [[r2_buckets]]
 # binding = "BOEKEN"

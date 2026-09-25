@@ -82,6 +82,36 @@ $geheim                      # dit is wat je bij de betaalpartner invult
 
 Controleer achteraf met `npm run geheimen` of alle drie er staan.
 
+### De boeken in de bak
+
+Het portaal, het inloggen en de ledenlijst werken zonder. De lezer niet: die
+haalt elk boek apart op uit een R2-bak, en zolang die er niet is zegt hij
+"niet ingericht" — bij een koper die wél betaald heeft.
+
+Twee opdrachten, één keer:
+
+```bash
+cd server
+npm run maak-bak          # maakt de bak, zet de binding aan, rolt uit
+cd ..
+npm run lezen -- --r2     # 90 boeken erin: 15 delen × 6 talen
+```
+
+De eerste regel doet drie dingen achter elkaar, en dat is met opzet: de
+binding naar de bak stond uitgezet omdat `wrangler deploy` omvalt op een bak
+die niet bestaat, en "vergeet niet de hekjes weg te halen" is precies de stap
+die je vergeet.
+
+De prentenboeken van Sba staan er dan nog niet in. Die zijn bladzijden als
+plaatje en moeten eerst geschoten worden, taal voor taal:
+
+```bash
+npm run bladen -- --taal nl --uploaden
+```
+
+Dat duurt lang en heeft een browser nodig. Zolang het niet gebeurd is, opent
+Sba niet in de lezer — de pdf uit de winkel werkt wel gewoon.
+
 ### En bij de betaalpartner
 
 Eén veld invullen, bij Gumroad onder **Settings → Advanced → Ping**:
