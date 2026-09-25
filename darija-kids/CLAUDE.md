@@ -32,6 +32,11 @@ Windows PowerShell, geen bash en geen PowerShell 7. Dat betekent:
   `npm run` daar levert een foutmelding op over een ontbrekende
   `package.json` die niets zegt over wat er echt mis is.
 
+En in de scripts: **geen `npx` of `npm` starten met `execFileSync`.** Op Windows
+heten die `npx.cmd` en `npm.cmd`, en Node vindt ze dan niet — `Error: spawnSync
+npx ENOENT`, een melding waar Windows niet in voorkomt. Roep het javascript
+zelf aan met `process.execPath`, zoals `scripts/lib/wrangler.mjs` doet.
+
 ## De vaste weg naar de winkels
 
 | | |

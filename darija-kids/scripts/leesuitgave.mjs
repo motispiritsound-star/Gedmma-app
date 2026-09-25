@@ -16,7 +16,7 @@
  *   node scripts/leesuitgave.mjs
  *   node scripts/leesuitgave.mjs --r2        # en daarna naar de bak
  */
-import { execFileSync } from 'node:child_process'
+import { wrangler } from './lib/wrangler.mjs'
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -109,10 +109,9 @@ if (process.argv.includes('--r2')) {
     for (let n = 1; n <= 15; n++) {
       const bron = path.join(UIT, 'data', `${code}-${n}.json`)
       try {
-        execFileSync('npx', ['wrangler', 'r2', 'object', 'put',
+        wrangler(['r2', 'object', 'put',
           `darijaforkids-boeken/sleutels/${n}/${code}/boek.json`,
-          '--file', bron, '--remote', '--content-type', 'application/json'],
-          { cwd: path.join(ROOT, 'server'), stdio: 'pipe', encoding: 'utf8' })
+          '--file', bron, '--remote', '--content-type', 'application/json'])
       } catch (fout) {
         /**
          * Negentig keer dezelfde fout afdrukken helpt niemand.

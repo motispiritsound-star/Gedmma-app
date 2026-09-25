@@ -26,6 +26,7 @@ import { mkdir, readdir, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { startChroom } from './lib/chroom.mjs'
+import { wrangler } from './lib/wrangler.mjs'
 import { createServer } from 'vite'
 import ffmpeg from 'ffmpeg-static'
 
@@ -165,10 +166,9 @@ if (UPLOADEN) {
       const vol = path.join(map, naam.name)
       if (naam.isDirectory()) { await loop(vol); continue }
       const sleutel = path.relative(UIT, vol).replace(/\\/g, '/')
-      execFileSync('npx', ['wrangler', 'r2', 'object', 'put',
+      wrangler(['r2', 'object', 'put',
         `darijaforkids-boeken/${sleutel}`, '--file', vol, '--remote',
-        '--content-type', vol.endsWith('.json') ? 'application/json' : 'image/webp'],
-        { cwd: path.join(ROOT, 'server'), stdio: 'inherit' })
+        '--content-type', vol.endsWith('.json') ? 'application/json' : 'image/webp'])
     }
   }
   await loop(UIT)

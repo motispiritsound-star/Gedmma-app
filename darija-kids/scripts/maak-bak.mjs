@@ -16,19 +16,16 @@
 import { execFileSync } from 'node:child_process'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { wrangler } from './lib/wrangler.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const SERVER = path.join(ROOT, 'server')
 const BAK = 'darijaforkids-boeken'
-
-const draai = (opdracht, argumenten, opties = {}) =>
-  execFileSync(opdracht, argumenten, { cwd: SERVER, stdio: 'pipe', encoding: 'utf8', ...opties })
 
 /* ------------------------------------------------------------------ de bak */
 
 console.log(`\nDe bak ${BAK} aanmaken…\n`)
 try {
-  console.log(draai('npx', ['wrangler', 'r2', 'bucket', 'create', BAK]))
+  console.log(wrangler(['r2', 'bucket', 'create', BAK]))
 } catch (fout) {
   const melding = `${fout.stdout ?? ''}${fout.stderr ?? ''}`
 
@@ -64,13 +61,14 @@ try {
 
 /* -------------------------------------------------------------- de binding */
 
-console.log(draai(process.execPath, [path.join(ROOT, 'scripts', 'r2-aan.mjs')], { cwd: ROOT }))
+console.log(execFileSync(process.execPath, [path.join(ROOT, 'scripts', 'r2-aan.mjs')],
+  { cwd: ROOT, encoding: 'utf8' }))
 
 /* ---------------------------------------------------------------- uitrollen */
 
 console.log('Uitrollen…\n')
 try {
-  draai('npx', ['wrangler', 'deploy'], { stdio: 'inherit' })
+  wrangler(['deploy'], { stdio: 'inherit' })
 } catch {
   console.error('\nDe uitrol ging mis. De bak en de binding staan er wel; draai `npm run deploy`.\n')
   process.exit(1)
