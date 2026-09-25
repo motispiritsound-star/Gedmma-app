@@ -179,6 +179,20 @@ console.log('\nDe lezer')
 }
 
 {
+  // Sba staat nog niet in de bak. Dan hoort er een zin te staan, geen leeg vak.
+  const { bladzijde, context } = await bezoek('/lezen#sba', {
+    '/lezen': { reeksen: ['sba'], taal: 'nl', merk: 'koper@example.com' },
+    '/blad': 503,
+  })
+  await bladzijde.locator('#lezer .boekjes button').first().click()
+  await bladzijde.waitForTimeout(500)
+  const tekst = (await bladzijde.locator('#lezer').textContent()) ?? ''
+  meld(tekst.includes('staat nog niet online'), 'een boek dat er nog niet is, zegt dat')
+  meld(tekst.includes('bestelmail'), 'en wijst naar de pdf die wel werkt')
+  await context.close()
+}
+
+{
   // Een sleutel uit de bestelmail: dezelfde bladzijde, andere deur.
   const sleutel = 'a'.repeat(32)
   const { bladzijde, context } = await bezoek(`/lezen#${sleutel}`, {

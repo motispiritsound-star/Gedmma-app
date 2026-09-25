@@ -1119,6 +1119,7 @@ const readPage = (lang) => {
     kies: c.leesKies, vorige: c.leesVorige, volgende: c.leesVolgende,
     terug: c.leesTerug, bewaar: c.leesBewaar, sba: c.boekKleinTitel, sleutels: c.boekGrootTitel,
     portaal: c.portaal.titel, speel: c.leesSpeel, pauze: c.leesPauze, stem: c.leesStem,
+    nogNiet: c.leesNogNiet,
   })}
   const PORTAAL = ${JSON.stringify(p.portal)}
   const doel = document.getElementById('lezer')
@@ -1247,6 +1248,9 @@ const readPage = (lang) => {
 
     async function toon() {
       const r = await vraag('/blad', { reeks: 'sba', deel, nr, taal: taalVan })
+      /* Valt de eerste bladzijde om, dan staat dit boek er nog niet — zeg dat,
+         in plaats van een leeg vak met een uitgeschakelde knop eronder. */
+      if (!r.ok && nr === 1) return zeg(T.nogNiet, 'soon')
       if (!r.ok) { verder.disabled = true; return }
       const blob = await r.blob()
       if (beeld.src.startsWith('blob:')) URL.revokeObjectURL(beeld.src)
