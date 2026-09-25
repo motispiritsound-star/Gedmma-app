@@ -43,6 +43,9 @@
   --ink-soft: #5b5468;
   --line: #e7dccd;
 
+  /* De hoogte van de balk bovenaan; zie header.top .wrap { min-height }. */
+  --kop: 4rem;
+
   --radius: 18px;
   --shadow: 0 1px 2px rgb(26 22 37 / 6%), 0 12px 32px -18px rgb(26 22 37 / 40%);
   --wrap: 68rem;
@@ -109,11 +112,19 @@ p:last-child { margin-bottom: 0; }
 
 header.top {
   position: sticky; top: 0; z-index: 50;
+  /* De hoogte staat hier als getal omdat de voorleesbalk eronder moet blijven
+     plakken. Verandert `min-height` hieronder, verander dan ook --kop. */
   background: color-mix(in oklab, var(--surface) 88%, transparent);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
 }
 header.top .wrap { display: flex; align-items: center; gap: 1rem; min-height: 4rem; }
+
+/* Springen naar een anker houdt rekening met de kop die erboven plakt.
+   Zonder deze regel komt het doel precies achter die kop terecht: je klikt op
+   "Waarom Darija" en leest de tweede alinea, of je opent het gratis begin en
+   de titel van het boek staat er half achter. */
+[id] { scroll-margin-top: calc(var(--kop) + 1rem); }
 /* min-width:0 laat de naam krimpen. Zonder dat weigert een flex-item smaller
    te worden dan zijn inhoud, en dan schuift het menu eroverheen in plaats van
    ernaast — precies wat er op een telefoon van 390 punten gebeurde. */
@@ -702,7 +713,13 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
   margin: 2.6rem 0 1.2rem; color: var(--ink-soft);
 }
 .boek .leestekst h3:first-child { margin-top: 0; }
-.boek .leestekst p { margin: 0; text-align: justify; }
+.boek .leestekst p { margin: 0; }
+/* Uitvullen pas als er genoeg tekens op een regel passen. Op een telefoon
+   staan er een stuk of dertig, en dan trekt het uitvullen gaten tussen de
+   woorden waar je oog in blijft haken — rivieren, noemen zetters dat. */
+@media (min-width: 34rem) {
+  .boek .leestekst p { text-align: justify; }
+}
 /* Een nieuwe alinea begint met een inspringing, behalve de eerste na een
    hoofdstukkop — precies zoals het gedrukt zou staan. Witregels tússen de
    alinea's hoeven dan niet meer. */
@@ -725,8 +742,11 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
 
 /* De voorleesbalk. Hij blijft bovenaan staan terwijl je verder leest, want
    een pauzeknop die uit beeld is scrollt, is geen pauzeknop. */
+/* `top: var(--kop)` en niet `top: 0`: de sitekop plakt zelf al bovenaan, en op
+   een telefoon schoof de voorleesknop daar precies achter. Een pauzeknop die
+   je niet ziet is geen pauzeknop — dat was de hele reden dat deze balk plakt. */
 .lezer .leesbalk {
-  position: sticky; top: 0; z-index: 2;
+  position: sticky; top: var(--kop); z-index: 2;
   display: flex; align-items: center; gap: .8rem; flex-wrap: wrap;
   padding: .7rem 0 .9rem; margin: 0 0 1.6rem;
   background: var(--papier); border-bottom: 1px solid var(--papier-rand);
