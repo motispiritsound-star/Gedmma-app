@@ -55,7 +55,7 @@ export const DEEL10_HOOFDSTUKKEN: Hoofdstuk[] = [
     'Meng het met zand en je hebt de specie waar een stad van aan elkaar zit.',
     'Er stonden er zeven op dat strand.',
     'Ze brandden drie jaar lang bijna onafgebroken, en ’s nachts zag je ze van kilometers ver, zeven oranje vlekken op een donkere kust.',
-    'Yto’s vader is opgehouden met vissen. Dat is wat dit hoofdstuk eigenlijk vertelt.',
+    'Yto’s vader is opgehouden met vissen.',
     'Hij was zesendertig, hij had zijn hele leven gevist zoals zijn vader, en toen kwam er werk waar drie keer zoveel voor betaald werd en dat het hele jaar door duurde.',
     'Hij heeft de boot verkocht in het tweede jaar.',
     'Yto heeft dat erger gevonden dan ze toen liet merken. Ze heeft er op haar veertigste nog over gepraat.',
@@ -135,7 +135,7 @@ export const DEEL10_HOOFDSTUKKEN: Hoofdstuk[] = [
     'Binnen vijf wist ze dingen die niemand anders wist, omdat niemand anders alle regels naast elkaar had gezien.',
     'Ze wist welke koopman elk jaar iets meer aangaf dan hij vervoerde en welke iets minder. Ze wist in welke maand de prijs van amandelen omhoogging en waarom. Ze wist welk schip in geen twee jaar was teruggekomen en dat er dus ergens een familie zat te wachten.',
     'Ze heeft daar nooit iets mee gedaan behalve haar werk.',
-    'Dat is misschien wel het meest opvallende aan Yto, en het is de reden dat ze in dit boek staat: ze had jarenlang de sleutel tot alles wat er in die haven gebeurde, in een la, in haar eigen handschrift.',
+    'Ze had jarenlang de sleutel tot alles wat er in die haven gebeurde. In een la, in haar eigen handschrift.',
     'En ze deed haar werk.',
   ] },
   { nummer: 10, titel: 'De storm van het zevende jaar', tekst: [

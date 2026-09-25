@@ -53,7 +53,7 @@ export const DEEL9_HOOFDSTUKKEN: Hoofdstuk[] = [
     'Dit is waarom het hier staat.',
     'In de boeken op school staat de zestiende eeuw als de eeuw waarin Europa de wereld ontdekte.',
     'In diezelfde eeuw stuurde een sultan uit Marrakech een gezant naar een koningin in Londen om zaken te doen, en kwam die gezant terug met een verslag over hoe het daar was.',
-    'Het ging twee kanten op. Dat is het enige wat dit hoofdstuk wil zeggen.',
+    'Het ging twee kanten op.',
   ] },
   { nummer: 5, titel: 'Vierduizend man de woestijn in', tekst: [
     'In het najaar van 1590 vertrok er een leger naar het zuiden en de halve stad geloofde niet dat het zou aankomen.',
@@ -63,7 +63,7 @@ export const DEEL9_HOOFDSTUKKEN: Hoofdstuk[] = [
     'Ze hadden vuurwapens. Musketten en kanonnen, gekocht van Europese handelaren en betaald met suiker, en er waren mannen bij die uit Spanje en Portugal kwamen en die wisten hoe je ermee omging.',
     'Aan de overkant van de woestijn lag het Songhai-rijk, dat groter was dan Marokko en dat al eeuwen stond, en dat vocht met paarden en met speren.',
     'Bij Tondibi, bij de rivier, duurde het één ochtend.',
-    'Dat is wat een vuurwapen doet met een leger dat er geen heeft, en het is een van de hardste lessen die in dit boek staat: het gaat er niet om wie dapperder is.',
+    'Dat is wat een vuurwapen doet met een leger dat er geen heeft. Het gaat er niet om wie dapperder is.',
     'De helft van de mannen die vertrokken zijn nooit teruggekomen — niet door het vechten, maar door de woestijn, heen en terug.',
     'Wat er wel terugkwam, kwam in karavanen aan die maanden achter elkaar bleven komen.',
     'Goud. Zout. En mensen, geketend, die in Marrakech aan het werk werden gezet.',

@@ -157,6 +157,49 @@ hem dan boven de achtergrond. De 144 opdrachten daarvoor staan in
 `store/prentenboek/platenlijst.md`, en dat is de enige post in dit project die
 nog echt geld kost.
 
+### De redactie van de verhalen
+
+Op 25 september is er een eerste redactieslag gedaan op de tekst zelf, en die
+begon met kijken in plaats van schrijven. De diagnose, met cijfers:
+
+| | |
+|---|---|
+| Hoofdstukken | 202 |
+| Woorden per hoofdstuk, deel 1 t/m 6 | 260 – 390 |
+| Woorden per hoofdstuk, deel 7 t/m 15 | ~200 |
+| Slotzinnen langer dan 28 woorden | 24 |
+| Alinea's waarin het boek over zichzelf praat | 34 |
+
+De latere delen zijn dunner en hun hoofdstukken eindigen anders. Deel 1 sluit
+af op een klap — *"Nee," zei ze.* · *De mantel was rood.* · *Alleen de sleutel
+niet.* Deel 13 sluit af op een samenvatting in de voltooide tijd: *"Nadia heeft
+daar haar hele leven les over gegeven…"* De verteller staat dan niet meer in de
+scène maar kijkt er dertig jaar later op terug, en dat is waarom het vlakker
+leest.
+
+**Wat níét is aangeraakt: de verteller die zegt wat hij niet weet.** Van die
+vierendertig alinea's zijn de meeste geen fout maar het handelsmerk van deze
+reeks — *"Aziz is die dag doodgegaan en dit hoofdstuk is kort, want Driss heeft
+er kort over gedaan."* · *"Dat respecteert dit boek."* · *"Dit hoofdstuk is er
+voor hen en het is het kortste van dit deel, omdat er over hen het minste
+bekend is, en dat is zelf het punt."* Die weghalen zou het boek zijn stem
+kosten.
+
+Wat wél weg moest is de verteller die zegt wat je moet vóélen. Vijf alinea's,
+steeds dezelfde vorm: een rake zin, en daarachter een zin die je vertelt dát
+hij raak is. *"Het ging twee kanten op. Dat is het enige wat dit hoofdstuk wil
+zeggen."* Die tweede zin is eraf; de eerste stond er al.
+
+Wat er nog ligt: de 24 slotzinnen die langer zijn dan 28 woorden, en de
+compressie in deel 7 t/m 15 waar scènes tot samenvatting zijn ingedikt. Dat
+laatste is echt schrijfwerk en geen redactie.
+
+**Let op bij elke tekstwijziging:** elke Nederlandse alinea is vastgeklonken
+aan vijf vertalingen, met een test op het aantal alinea's per hoofdstuk. Eén
+zin aanscherpen is dus zes keer werk. En de boeken zijn al te koop, dus na een
+wijziging moeten de zips en pdf's opnieuw (`npm run winkel`) en de leesuitgaven
+opnieuw de bak in (`npm run lezen -- --r2`).
+
 **De sleutels van Marokko** — vijftien delen. Bladzijden per deel:
 
 | Deel | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |

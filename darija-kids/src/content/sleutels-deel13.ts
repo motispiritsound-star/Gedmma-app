@@ -46,7 +46,7 @@ export const DEEL13_HOOFDSTUKKEN: Hoofdstuk[] = [
     'Ze luisterden met zijn drieën, met het volume zo laag dat je je hoofd ernaartoe moest buigen.',
     'Nadia heeft daar twee dingen geleerd.',
     'Het eerste was hoop, en die was echt en die hadden ze nodig.',
-    'Het tweede was iets wat ze pas veel later onder woorden kon brengen, en het is de reden dat dit hoofdstuk hier staat.',
+    'Het tweede duurde jaren voordat ze het hardop durfde te zeggen.',
     'De stem uit Caïro had het vaak over dingen die ze zelf kon controleren, omdat ze erbij was geweest. Een staking in Casablanca. Een demonstratie in haar eigen wijk.',
     'En soms klopte het niet.',
     'Dan werden er tienduizend mensen genoemd waar er drieduizend waren geweest. Dan werd er iets fel gemaakt wat ze zelf hadden zien gebeuren en wat anders was gegaan.',
@@ -55,7 +55,7 @@ export const DEEL13_HOOFDSTUKKEN: Hoofdstuk[] = [
     '“Dat vroeg ik niet.”',
     'Hij knikte.',
     '“Nee,” zei hij. “Dat vroeg je niet.”',
-    'Meer is er niet over gezegd, en Nadia heeft er haar leven lang aan teruggedacht als aan het moment waarop ze leerde dat iemand aan jouw kant kan staan en tegelijk niet helemaal waar kan spreken.',
+    'Meer is er niet over gezegd. De radio bleef aan, elke avond, zachter dan een fluistering. Maar Nadia luisterde er vanaf die avond anders naar.',
   ] },
   { nummer: 5, titel: 'De achterkamer', tekst: [
     'Ze wist het al voordat hij het haar vertelde. Je weet zoiets.',
