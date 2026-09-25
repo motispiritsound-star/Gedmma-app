@@ -1171,7 +1171,7 @@ export const DE_SLEUTELS: SleutelVertaling = {
         'Sie haben Tamghart auf einem Schlitten aus Stöcken die letzten zwölf Kilometer gezogen, mit zwei Kamelen davor, und es ging so langsam, dass ein Mann zu Fuß an ihnen vorbeiging.',
         'Sie hat noch vier Jahre auf der Ebene bei Marrakesch gelebt, wo sie nichts mehr tat als fressen und im Weg stehen.',
         'Sein Onkel hat nie etwas dazu gesagt. Das war seine Art.',
-        'Isli hat sein Leben lang daran zurückgedacht als an den Moment, in dem er begriff, was für ein Mann sein Onkel war, und dass man das von Menschen manchmal erst weiß, wenn es sie etwas kostet.',
+        'Was für ein Mann sein Onkel war, wusste Isli erst, als es ihn etwas kostete.',
       ] },
       { titel: 'Aghmat', tekst: [
         'Es gab schon eine Stadt. Das ist das Seltsame an dieser Geschichte.',
@@ -1510,7 +1510,7 @@ export const DE_SLEUTELS: SleutelVertaling = {
         'An diesem Nachmittag hat Sanaa gesehen, wie er die Ausbuchtung entfernte.',
         'Es war keine dramatische Arbeit. Er zog eine neue Linie, gerade, mit den Entfernungen des Kapitäns dazu, und er schrieb an den Rand, woher es kam.',
         'Achthundert Jahre stand diese Ausbuchtung auf Karten. Sie ist an diesem Nachmittag verschwunden, weil ein Mann, der dort gewesen war, sagte, dass es sie nicht gibt.',
-        'Sanaa hat den Rest ihres Lebens daran zurückgedacht als an die wichtigste Lehre, die sie je bekommen hat, und sie hat sie so weitergegeben: glaube dem Mann, der dort gewesen ist, auch wenn es in allen Büchern anders steht.',
+        'So hat Sanaa es den Rest ihres Lebens weitergegeben: glaube dem Mann, der dort gewesen ist, auch wenn es in allen Büchern anders steht.',
       ] },
       { titel: 'Vierzehn Jahre', tekst: [
         'Es dauerte vierzehn Jahre, und das ist etwas, worüber in Geschichten immer hinweggegangen wird.',
@@ -1698,7 +1698,7 @@ export const DE_SLEUTELS: SleutelVertaling = {
         'Musa hat dazu einen Satz: *Ich habe damals gelernt, was der Hunger mit deinem Kopf macht und nicht mit deinem Magen.*',
         'Später, in Dihli, gab ihm der Sultan Dörfer.',
         'Zwischen diesen beiden Sätzen liegen acht Jahre.',
-        'Das ist das ehrlichste Bild von dreißig Jahren Reisen, das Musa hinterlassen hat: es ging nicht allmählich hinauf. Es ging von nichts zu allem und von allem zu nichts, manchmal in einem halben Jahr, und man wusste nie, in welche Richtung man gerade ging.',
+        'Es ging nicht allmählich hinauf. Es ging von nichts zu allem und von allem zu nichts, manchmal in einem halben Jahr, und man wusste nie, in welche Richtung man gerade ging.',
       ] },
       { titel: 'Dihli', tekst: [
         'Indien ist der Ort, wo die Geschichte gefährlich wird, und das dauerte acht Jahre.',
@@ -3292,7 +3292,7 @@ export const DE_SLEUTELS: SleutelVertaling = {
         'Das fand er die beste Arbeit seines Lebens, und er hat es auch gesagt.',
         'Es ging auch allerlei schief, und dafür ist dieses Buch nicht der Ort, außer für diesen Satz: ein Land, das frei wird, wird nicht sofort auch gerecht, und die Menschen, die in den Jahren danach darüber den Mund aufmachten, haben es schwer gehabt.',
         'Nadia ist Lehrerin geworden. Sie hat achtunddreißig Jahre in Casablanca vor der Klasse gestanden.',
-        'Ihre Tochter ist 1979 in die Niederlande gegangen, mit einem Koffer und der Adresse eines Vetters in Utrecht, und das ist der nächste und letzte Band dieses Buches.',
+        'Ihre Tochter ist 1979 in die Niederlande gegangen, mit einem Koffer und der Adresse eines Vetters in Utrecht. Dort beginnt der letzte Band dieses Buches.',
       ] },
       { titel: 'Das falsche Buch', tekst: [
         'Im Hinterzimmer stand ein Buch, das kein Buch war.',

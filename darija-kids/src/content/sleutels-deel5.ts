@@ -181,7 +181,7 @@ export const DEEL5_HOOFDSTUKKEN: Hoofdstuk[] = [
     'Die middag heeft Sanaa hem de bocht zien weghalen.',
     'Het was geen dramatisch werk. Hij tekende een nieuwe lijn, recht, met de afstanden van de kapitein erbij, en hij schreef in de marge waar het vandaan kwam.',
     'Achthonderd jaar stond die bocht op kaarten. Hij is er die middag af gegaan omdat een man die er wél was geweest zei dat hij er niet was.',
-    'Sanaa heeft daar de rest van haar leven aan teruggedacht als aan de belangrijkste les die ze ooit heeft gekregen, en ze heeft hem zo doorverteld: geloof de man die er is geweest, ook als het in alle boeken anders staat.',
+    'Zo heeft Sanaa het de rest van haar leven doorverteld: geloof de man die er is geweest, ook als het in alle boeken anders staat.',
   ] },
   { nummer: 11, titel: 'Veertien jaar', tekst: [
     'Het duurde veertien jaar en dat is iets waar in verhalen altijd overheen gestapt wordt.',

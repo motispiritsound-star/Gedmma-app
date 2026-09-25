@@ -147,7 +147,7 @@ export const DEEL13_HOOFDSTUKKEN: Hoofdstuk[] = [
     'Dat vond hij het beste werk van zijn leven en hij heeft het gezegd ook.',
     'Er ging ook van alles mis, en daar is dit boek niet de plek voor, behalve deze zin: een land dat vrij wordt, wordt niet meteen ook rechtvaardig, en de mensen die daarover in de jaren daarna hun mond opendeden hebben het zwaar gehad.',
     'Nadia is onderwijzeres geworden. Ze heeft achtendertig jaar voor de klas gestaan in Casablanca.',
-    'Haar dochter is in 1979 naar Nederland vertrokken, met een koffer en een adres van een neef in Utrecht, en dat is het volgende en laatste deel van dit boek.',
+    'Haar dochter is in 1979 naar Nederland vertrokken, met een koffer en een adres van een neef in Utrecht. Daar begint het laatste deel van dit boek.',
   ] },
   { nummer: 12, titel: 'Het valse boek', tekst: [
     'In de achterkamer stond een boek dat geen boek was.',

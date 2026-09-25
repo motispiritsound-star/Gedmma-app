@@ -126,7 +126,7 @@ export const DEEL6_HOOFDSTUKKEN: Hoofdstuk[] = [
     'Musa heeft er één zin over: *Ik heb toen geleerd wat honger met je hoofd doet, en niet met je maag.*',
     'Later, in Dihli, gaf de sultan hem dorpen.',
     'Tussen die twee zinnen zit acht jaar.',
-    'Dat is het eerlijkste beeld van dertig jaar reizen dat Musa heeft achtergelaten: het ging niet geleidelijk omhoog. Het ging van niets naar alles naar niets, soms binnen een half jaar, en je wist nooit welke kant je op ging.',
+    'Het ging niet geleidelijk omhoog. Het ging van niets naar alles naar niets, soms binnen een half jaar, en je wist nooit welke kant je op ging.',
   ] },
   { nummer: 10, titel: 'Dihli', tekst: [
     'India is waar het verhaal gevaarlijk wordt, en dat duurde acht jaar.',

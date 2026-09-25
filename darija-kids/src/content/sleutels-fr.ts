@@ -1124,7 +1124,7 @@ export const FR_SLEUTELS: SleutelVertaling = {
         'Ils ont tiré Tamghart sur un traîneau de bâtons les douze derniers kilomètres, avec deux chameaux devant, et cela allait si lentement qu’un homme à pied les dépassait.',
         'Elle a encore vécu quatre ans sur la plaine près de Marrakech, où elle ne faisait plus rien d’autre que manger et gêner le passage.',
         'Son oncle n’en a jamais rien dit. C’était sa manière.',
-        'Isli y a repensé toute sa vie comme au moment où il a compris quel homme était son oncle, et qu’on ne sait parfois cela des gens que lorsque cela leur coûte quelque chose.'] },
+        'Quel homme était son oncle, Isli ne l’a su que le jour où cela lui a coûté quelque chose.'] },
       { titel: 'Aghmat', tekst: [
         'Il y avait déjà une ville. C’est ce qu’il y a d’étrange dans cette histoire.',
         'À une journée de marche vers le sud, adossée aux montagnes, il y avait Aghmat. C’est là qu’était le marché, là qu’était le gouvernement, là qu’habitaient les gens dont venaient les caravanes. Aghmat était riche et ancienne et elle fonctionnait.',
@@ -1454,7 +1454,7 @@ export const FR_SLEUTELS: SleutelVertaling = {
         'Cet après-midi-là, Sanaa l’a vu enlever la courbe.',
         'Ce n’était pas un travail dramatique. Il a tracé une ligne nouvelle, droite, avec les distances du capitaine, et il a écrit en marge d’où cela venait.',
         'Pendant huit cents ans cette courbe a figuré sur les cartes. Elle en est partie cet après-midi-là parce qu’un homme qui y était allé, lui, a dit qu’elle n’existait pas.',
-        'Sanaa y a repensé tout le reste de sa vie comme à la plus importante leçon qu’elle ait jamais reçue, et elle l’a transmise ainsi : crois l’homme qui y est allé, même si tous les livres disent autre chose.',
+        'Sanaa l’a transmis ainsi tout le reste de sa vie : crois l’homme qui y est allé, même si tous les livres disent autre chose.',
       ] },
       { titel: 'Quatorze ans', tekst: [
         'Cela a duré quatorze ans et c’est une chose que les récits enjambent toujours.',
@@ -1642,7 +1642,7 @@ export const FR_SLEUTELS: SleutelVertaling = {
         'Musa n’en dit qu’une phrase : *J’ai appris alors ce que la faim fait à ta tête, et pas à ton ventre.*',
         'Plus tard, à Dihli, le sultan lui a donné des villages.',
         'Entre ces deux phrases il y a huit ans.',
-        'C’est l’image la plus honnête de trente ans de voyage que Musa ait laissée : cela n’est pas monté peu à peu. Cela allait de rien à tout et de tout à rien, parfois en six mois, et on ne savait jamais dans quel sens on allait.',
+        'Cela n’est pas monté peu à peu. Cela allait de rien à tout et de tout à rien, parfois en six mois, et on ne savait jamais dans quel sens on allait.',
       ] },
       { titel: 'Dihli', tekst: [
         'L’Inde est l’endroit où l’histoire devient dangereuse, et cela a duré huit ans.',
@@ -3236,7 +3236,7 @@ export const FR_SLEUTELS: SleutelVertaling = {
         'Il a trouvé que c’était le meilleur travail de sa vie et il l’a dit.',
         'Bien des choses ont aussi mal tourné, et ce livre n’est pas l’endroit pour cela, sinon cette phrase : un pays qui devient libre ne devient pas aussitôt juste, et les gens qui ont ouvert la bouche là-dessus dans les années suivantes en ont vu de dures.',
         'Nadia est devenue institutrice. Elle a été trente-huit ans devant une classe à Casablanca.',
-        'Sa fille est partie pour les Pays-Bas en 1979, avec une valise et l’adresse d’un cousin à Utrecht, et c’est la partie suivante et dernière de ce livre.',
+        'Sa fille est partie pour les Pays-Bas en 1979, avec une valise et l’adresse d’un cousin à Utrecht. C’est là que commence la dernière partie de ce livre.',
       ] },
       { titel: 'Le faux livre', tekst: [
         'Dans l’arrière-salle il y avait un livre qui n’était pas un livre.',

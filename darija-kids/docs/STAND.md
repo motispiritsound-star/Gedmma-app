@@ -190,9 +190,29 @@ steeds dezelfde vorm: een rake zin, en daarachter een zin die je vertelt dát
 hij raak is. *"Het ging twee kanten op. Dat is het enige wat dit hoofdstuk wil
 zeggen."* Die tweede zin is eraf; de eerste stond er al.
 
-Wat er nog ligt: de 24 slotzinnen die langer zijn dan 28 woorden, en de
-compressie in deel 7 t/m 15 waar scènes tot samenvatting zijn ingedikt. Dat
-laatste is echt schrijfwerk en geen redactie.
+**De 24 lange slotzinnen zijn nagelezen; er zijn er vier veranderd.** Lengte
+bleek niet het probleem. *"Tala stond op het plein met haar handen langs haar
+lichaam en haar oren gloeiend, en om haar heen begon iedereen weer te praten
+over een muur en een buurman"* is dertig woorden en precies goed: de wereld
+gaat door terwijl zij staat te branden. Twintig van de vierentwintig zijn zo,
+en die zijn met rust gelaten.
+
+De vier die wel moesten, hadden dezelfde kwaal als hierboven: een etiket voor
+de zin. *"Sanaa heeft daar de rest van haar leven aan teruggedacht als aan de
+belangrijkste les die ze ooit heeft gekregen, en ze heeft hem zo doorverteld:
+geloof de man die er is geweest…"* De spreuk is prachtig; het etiket
+"belangrijkste les" ervoor vertelt de lezer wat hij moet vinden. Dat is eraf.
+
+**En er zat een echte fout tussen.** Deel 13 eindigde met *"…een adres van een
+neef in Utrecht, en dat is het volgende en laatste deel van dit boek"*. Maar
+deel 14 is *Zwart op wit*, 2011, Anir en zijn oma; Utrecht is deel 15. Die zin
+sloeg deel 14 over én noemde het verkeerde deel het laatste, in alle zes de
+talen. Nu: *"Daar begint het laatste deel van dit boek."*
+
+Wat er nog ligt: de compressie in deel 7 t/m 15, waar scènes tot samenvatting
+zijn ingedikt — deel 1 heeft 390 woorden per hoofdstuk, deel 13 nog 197. Dat is
+echt schrijfwerk en geen redactie, en het is de enige post in de tekst die
+uren per deel kost.
 
 **Let op bij elke tekstwijziging:** elke Nederlandse alinea is vastgeklonken
 aan vijf vertalingen, met een test op het aantal alinea's per hoofdstuk. Eén

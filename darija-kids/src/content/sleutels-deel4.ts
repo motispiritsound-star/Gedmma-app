@@ -72,7 +72,7 @@ export const DEEL4_HOOFDSTUKKEN: Hoofdstuk[] = [
     'Ze hebben Tamghart op een slee van stokken de laatste twaalf kilometer getrokken, met twee kamelen ervoor, en het ging zo langzaam dat een man te voet ze voorbijliep.',
     'Ze is nog vier jaar blijven leven op de vlakte bij Marrakech, waar ze niets meer deed dan eten en in de weg staan.',
     'Zijn oom heeft er nooit iets over gezegd. Dat was zijn manier.',
-    'Isli heeft er zijn hele leven aan teruggedacht als aan het moment waarop hij begreep wat voor man zijn oom was, en dat je dat van mensen soms pas weet als het ze iets kost.',
+    'Wat voor man zijn oom was, wist Isli pas toen het hem iets kostte.',
   ] },
   { nummer: 6, titel: 'Aghmat', tekst: [
     'Er was al een stad. Dat is het rare aan dit verhaal.',

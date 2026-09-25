@@ -1163,7 +1163,7 @@ export const EN_SLEUTELS: SleutelVertaling = {
         'They dragged Tamghart the last twelve kilometres on a sledge of sticks, with two camels in front, and it went so slowly that a man on foot overtook them.',
         'She lived another four years on the plain near Marrakesh, where she did nothing but eat and stand in the way.',
         'His uncle never said anything about it. That was his way.',
-        'Isli thought about it his whole life as the moment he understood what kind of man his uncle was, and that with people you sometimes only know that when it costs them something.',
+        'What kind of man his uncle was, Isli only knew once it cost him something.',
       ] },
       { titel: 'Aghmat', tekst: [
         'There was a city already. That is the strange part of this story.',
@@ -1502,7 +1502,7 @@ export const EN_SLEUTELS: SleutelVertaling = {
         'That afternoon Sanaa watched him take the bend away.',
         'It was not dramatic work. He drew a new line, straight, with the captain’s distances beside it, and he wrote in the margin where it came from.',
         'That bend had been on maps for eight hundred years. It came off that afternoon because a man who *had* been there said it was not there.',
-        'Sanaa thought about that for the rest of her life as the most important lesson she was ever given, and she passed it on like this: believe the man who has been there, even if all the books say otherwise.',
+        'Sanaa passed it on like this for the rest of her life: believe the man who has been there, even if all the books say otherwise.',
       ] },
       { titel: 'Fourteen years', tekst: [
         'It took fourteen years and that is something stories always step over.',
@@ -1690,7 +1690,7 @@ export const EN_SLEUTELS: SleutelVertaling = {
         'Musa has one sentence about it: *I learned then what hunger does to your head, and not to your stomach.*',
         'Later, in Dihli, the sultan gave him villages.',
         'Between those two sentences lie eight years.',
-        'That is the most honest picture of thirty years of travelling that Musa left behind: it did not go steadily upwards. It went from nothing to everything to nothing, sometimes within half a year, and you never knew which way you were going.',
+        'It did not go steadily upwards. It went from nothing to everything to nothing, sometimes within half a year, and you never knew which way you were going.',
       ] },
       { titel: 'Dihli', tekst: [
         'India is where the story turns dangerous, and that lasted eight years.',
@@ -3284,7 +3284,7 @@ export const EN_SLEUTELS: SleutelVertaling = {
         'He thought it the best work of his life and he said so too.',
         'Plenty went wrong as well, and this is not the book for that, except for this sentence: a country that becomes free does not become just at the same time, and the people who opened their mouths about that in the years afterwards had a hard time of it.',
         'Nadia became a teacher. She stood in front of a class in Casablanca for thirty-eight years.',
-        'Her daughter left for the Netherlands in 1979, with a suitcase and the address of a cousin in Utrecht, and that is the next and last book in this series.',
+        'Her daughter left for the Netherlands in 1979, with a suitcase and the address of a cousin in Utrecht. That is where the last book in this series begins.',
       ] },
       { titel: 'The false book', tekst: [
         'In the back room there was a book that was not a book.',

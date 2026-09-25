@@ -1167,7 +1167,7 @@ export const ES_SLEUTELS: SleutelVertaling = {
         'Arrastraron a Tamghart los últimos doce kilómetros en un trineo de palos, con dos camellos delante, y fue tan despacio que un hombre a pie los adelantaba.',
         'Vivió cuatro años más en la llanura de Marrakech, donde ya no hacía nada más que comer y estorbar.',
         'Su tío nunca dijo nada al respecto. Esa era su manera.',
-        'Isli ha vuelto a ello toda su vida como al momento en que entendió qué clase de hombre era su tío, y que de la gente eso a veces solo se sabe cuando le cuesta algo.',
+        'Qué clase de hombre era su tío, Isli no lo supo hasta que a su tío le costó algo.',
       ] },
       { titel: 'Agmat', tekst: [
         'Ya había una ciudad. Eso es lo raro de esta historia.',
@@ -1506,7 +1506,7 @@ export const ES_SLEUTELS: SleutelVertaling = {
         'Aquella mañana Sanaa lo vio quitar la curva.',
         'No fue un trabajo dramático. Dibujó una línea nueva, recta, con las distancias del capitán al lado, y escribió en el margen de dónde venía.',
         'Ochocientos años estuvo esa curva en los mapas. Se fue aquella mañana porque un hombre que sí había estado allí dijo que no estaba.',
-        'Sanaa volvió a eso el resto de su vida como a la lección más importante que le han dado nunca, y la contaba así: cree al hombre que ha estado allí, aunque en todos los libros ponga otra cosa.',
+        'Así lo contó Sanaa el resto de su vida: cree al hombre que ha estado allí, aunque en todos los libros ponga otra cosa.',
       ] },
       { titel: 'Catorce años', tekst: [
         'Duró catorce años y eso es algo que en las historias siempre se salta.',
@@ -1694,7 +1694,7 @@ export const ES_SLEUTELS: SleutelVertaling = {
         'Musa tiene una sola frase sobre ello: *Aprendí entonces lo que el hambre le hace a tu cabeza, y no a tu estómago.*',
         'Más tarde, en Dihli, el sultán le dio pueblos.',
         'Entre esas dos frases hay ocho años.',
-        'Esa es la imagen más honrada de treinta años de viaje que Musa ha dejado: no fue subiendo poco a poco. Fue de nada a todo y de todo a nada, a veces en medio año, y nunca sabías en qué dirección ibas.',
+        'No fue subiendo poco a poco. Fue de nada a todo y de todo a nada, a veces en medio año, y nunca sabías en qué dirección ibas.',
       ] },
       { titel: 'Dihli', tekst: [
         'La India es donde la historia se vuelve peligrosa, y eso duró ocho años.',
@@ -3288,7 +3288,7 @@ export const ES_SLEUTELS: SleutelVertaling = {
         'Le pareció el mejor trabajo de su vida y además lo dijo.',
         'También salió mal de todo, y este no es el libro para eso, salvo esta frase: un país que se hace libre no se hace justo a la vez, y la gente que abrió la boca sobre eso en los años siguientes lo pasó mal.',
         'Nadia se hizo maestra. Estuvo treinta y ocho años delante de una clase en Casablanca.',
-        'Su hija se fue a los Países Bajos en 1979, con una maleta y la dirección de un primo en Utrecht, y ese es el libro siguiente y último de esta serie.',
+        'Su hija se fue a los Países Bajos en 1979, con una maleta y la dirección de un primo en Utrecht. Ahí empieza el último libro de esta serie.',
       ] },
       { titel: 'El libro falso', tekst: [
         'En el cuarto trasero había un libro que no era un libro.',

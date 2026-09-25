@@ -1164,7 +1164,7 @@ export const IT_SLEUTELS: SleutelVertaling = {
         'Trascinarono Tamghart per gli ultimi dodici chilometri su una slitta di bastoni, con due cammelli davanti, e andava così piano che un uomo a piedi li superava.',
         'Visse ancora quattro anni nella pianura vicino a Marrakech, dove non faceva altro che mangiare e stare in mezzo.',
         'Suo zio non ne ha mai detto niente. Era il suo modo.',
-        'Isli ci ha ripensato per tutta la vita come al momento in cui capì che uomo fosse suo zio, e che delle persone certe cose a volte le sai solo quando gli costano qualcosa.',
+        'Che uomo fosse suo zio, Isli lo seppe solo quando a suo zio costò qualcosa.',
       ] },
       { titel: 'Aghmat', tekst: [
         'Una città c’era già. È questa la cosa strana di questa storia.',
@@ -1503,7 +1503,7 @@ export const IT_SLEUTELS: SleutelVertaling = {
         'Quel pomeriggio Sanaa lo vide togliere l’ansa.',
         'Non fu un lavoro drammatico. Tracciò una linea nuova, dritta, con le distanze del capitano accanto, e scrisse a margine da dove veniva.',
         'Quell’ansa era stata sulle carte per ottocento anni. Ne è uscita quel pomeriggio perché un uomo che invece c’era stato disse che non c’era.',
-        'Sanaa ci ha ripensato per il resto della vita come alla lezione più importante che avesse mai ricevuto, e l’ha raccontata così: credi all’uomo che c’è stato, anche se in tutti i libri c’è scritto il contrario.',
+        'Così Sanaa l’ha raccontata per il resto della vita: credi all’uomo che c’è stato, anche se in tutti i libri c’è scritto il contrario.',
       ] },
       { titel: 'Quattordici anni', tekst: [
         'Ci vollero quattordici anni ed è una cosa su cui nelle storie si passa sempre sopra.',
@@ -1691,7 +1691,7 @@ export const IT_SLEUTELS: SleutelVertaling = {
         'Musa ha una sola frase al riguardo: *Ho imparato allora cosa fa la fame alla tua testa, e non allo stomaco.*',
         'Più tardi, a Dihli, il sultano gli diede dei villaggi.',
         'Fra quelle due frasi ci sono otto anni.',
-        'È l’immagine più onesta di trent’anni di viaggio che Musa abbia lasciato: non si saliva a poco a poco. Si andava dal niente al tutto e dal tutto al niente, a volte in mezzo anno, e non sapevi mai in che direzione stavi andando.',
+        'Non si saliva a poco a poco. Si andava dal niente al tutto e dal tutto al niente, a volte in mezzo anno, e non sapevi mai in che direzione stavi andando.',
       ] },
       { titel: 'Dihli', tekst: [
         'L’India è dove la storia diventa pericolosa, e durò otto anni.',
@@ -3285,7 +3285,7 @@ export const IT_SLEUTELS: SleutelVertaling = {
         'Gli è sembrato il lavoro più bello della sua vita e l’ha anche detto.',
         'È andato storto anche di tutto, e questo non è il libro per quello, se non con questa frase: un paese che diventa libero non diventa insieme giusto, e la gente che negli anni successivi ha aperto bocca su questo se l’è passata male.',
         'Nadia è diventata maestra. È stata trentotto anni davanti a una classe a Casablanca.',
-        'Sua figlia è partita per i Paesi Bassi nel 1979, con una valigia e l’indirizzo di un cugino a Utrecht, ed è il libro seguente e ultimo di questa serie.',
+        'Sua figlia è partita per i Paesi Bassi nel 1979, con una valigia e l’indirizzo di un cugino a Utrecht. Lì comincia l’ultimo libro di questa serie.',
       ] },
       { titel: 'Il libro finto', tekst: [
         'Nella stanza sul retro c’era un libro che non era un libro.',
