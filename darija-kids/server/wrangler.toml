@@ -14,14 +14,21 @@ LEZER = "https://darijaforkids.eu/lezen"
 # gezet — niet op dat van deze worker, want de bladzijde vraagt hem op.
 SITE = "https://darijaforkids.eu"
 
-# The list itself. Create it once with:
-#   npx wrangler d1 create darijaforkids
-#   npx wrangler d1 execute darijaforkids --remote --file schema.sql
-# and paste the id it prints here.
+# De database. Eén keer gemaakt met `npm run maak-db`, en het id dat die
+# opdracht afdrukt staat hieronder.
+#
+# Het mag in de repo staan: een database-id is een naam en geen sleutel. Wie
+# hem heeft kan er niets mee zonder de toegang tot het account, en de enige
+# manier om hem geheim te houden zou zijn dat iedereen die dit uitrolt hem met
+# de hand overtypt — precies de stap die mensen vergeten.
+#
+# Let op: `wrangler d1 create` stelt ook een `binding` voor met de naam van de
+# database. Die niet overnemen. De code zoekt `env.DB`, en met een andere
+# binding start de worker wel maar valt hij om bij het eerste verzoek.
 [[d1_databases]]
 binding = "DB"
 database_name = "darijaforkids"
-database_id = "vul-hier-het-id-in"
+database_id = "efdc2224-da27-45cf-974c-36ba1fd95fc0"
 
 # One run a week. Monday morning, because a week that is reported on Monday is
 # a week somebody can still do something about.
