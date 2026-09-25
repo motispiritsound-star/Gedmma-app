@@ -49,6 +49,24 @@ interface Pakket {
   afmelden: string
   wissen: string
   voet: string
+  /**
+   * De mail na het afrekenen.
+   *
+   * Deze stond als losse tekst in `index.ts`, in het Nederlands, terwijl de
+   * worker de taal van de koper wél raadt en opslaat. Elke andere mail hier
+   * was vertaald; juist de eerste die een betalende klant ziet niet — en de
+   * boeken worden in zes talen verkocht.
+   *
+   * `meer` is waar als iemand allebei de reeksen koopt. Zonder dat staat er
+   * in elke taal een werkwoord in het enkelvoud onder twee titels.
+   */
+  reeks: { sba: string; sleutels: string }
+  koopEn: string
+  koopOnderwerp: (wat: string) => string
+  koopKop: string
+  koopBody: (wat: string, meer: boolean) => string
+  koopKnop: string
+  koopStaart: string
 }
 
 /** The line that decides the tone: busy week, quiet week, or nothing at all. */
@@ -79,6 +97,15 @@ export const MAILS: Record<Taal, Pakket> = {
       'Kleine stappen tellen het zwaarst — tien minuten op een dag doet meer dan een uur op zondag.',
       'Geen enkele week hoeft goed te gaan. Vijf minuten vanavond zet de reeks weer in gang.',
     ),
+    reeks: { sba: 'Sba de Atlasleeuw', sleutels: 'De sleutels van Marokko' },
+    koopEn: 'en',
+    koopOnderwerp: (wat) => `Je boeken staan klaar — ${wat}`,
+    koopKop: 'Je boeken staan klaar',
+    koopBody: (wat, meer) => `Bedankt. ${wat} ${meer ? 'staan' : 'staat'} voor je klaar.\n\n`
+      + 'Je leest ze op de website, met de knop hieronder. Er is geen account en geen wachtwoord: deze link is je sleutel. Bewaar deze mail, of zet de bladzijde bij je favorieten.\n\n'
+      + 'De link werkt op elk apparaat in je gezin. Op elke bladzijde staat jouw naam — dat is er met opzet: deze boeken zijn van jou en niet van het internet.',
+    koopKnop: 'Open je boeken',
+    koopStaart: 'Lukt er iets niet, antwoord dan gewoon op deze mail.',
     afmelden: 'Uitschrijven',
     wissen: 'Mijn gegevens wissen',
     voet: 'Je krijgt deze mail omdat je je in Darijaforkids hebt aangemeld.',
@@ -106,6 +133,15 @@ export const MAILS: Record<Taal, Pakket> = {
       'Les petits pas pèsent le plus lourd : dix minutes par jour font plus qu’une heure le dimanche.',
       "Aucune semaine n'est obligée de bien se passer. Cinq minutes ce soir et la série repart.",
     ),
+    reeks: { sba: 'Sba, le lion de l’Atlas', sleutels: 'Les clés du Maroc' },
+    koopEn: 'et',
+    koopOnderwerp: (wat) => `Vos livres vous attendent — ${wat}`,
+    koopKop: 'Vos livres vous attendent',
+    koopBody: (wat, meer) => `Merci. ${wat} vous ${meer ? 'attendent' : 'attend'}.\n\n`
+      + 'Vous les lisez sur le site, avec le bouton ci-dessous. Pas de compte, pas de mot de passe : ce lien est votre clé. Gardez ce message, ou mettez la page dans vos favoris.\n\n'
+      + 'Le lien fonctionne sur tous les appareils de la famille. Votre nom figure sur chaque page — c’est voulu : ces livres sont à vous, pas à l’internet.',
+    koopKnop: 'Ouvrir vos livres',
+    koopStaart: 'Quelque chose ne marche pas ? Répondez simplement à ce message.',
     afmelden: 'Se désinscrire',
     wissen: 'Effacer mes données',
     voet: 'Vous recevez ce message parce que vous vous êtes inscrit dans Darijaforkids.',
@@ -133,6 +169,15 @@ export const MAILS: Record<Taal, Pakket> = {
       'Kleine Schritte wiegen am schwersten — zehn Minuten am Tag bringen mehr als eine Stunde am Sonntag.',
       'Keine Woche muss gut laufen. Fünf Minuten heute Abend, und die Serie läuft wieder.',
     ),
+    reeks: { sba: 'Sba, der Atlaslöwe', sleutels: 'Die Schlüssel Marokkos' },
+    koopEn: 'und',
+    koopOnderwerp: (wat) => `Deine Bücher stehen bereit — ${wat}`,
+    koopKop: 'Deine Bücher stehen bereit',
+    koopBody: (wat, meer) => `Danke. ${wat} ${meer ? 'stehen' : 'steht'} für dich bereit.\n\n`
+      + 'Du liest sie auf der Website, mit dem Knopf hier unten. Kein Konto und kein Passwort: dieser Link ist dein Schlüssel. Bewahre diese Mail auf, oder setze ein Lesezeichen.\n\n'
+      + 'Der Link funktioniert auf jedem Gerät in deiner Familie. Auf jeder Seite steht dein Name — das ist Absicht: diese Bücher gehören dir und nicht dem Internet.',
+    koopKnop: 'Deine Bücher öffnen',
+    koopStaart: 'Klappt etwas nicht? Antworte einfach auf diese Mail.',
     afmelden: 'Abmelden',
     wissen: 'Meine Daten löschen',
     voet: 'Du bekommst diese Mail, weil du dich in Darijaforkids angemeldet hast.',
@@ -160,6 +205,15 @@ export const MAILS: Record<Taal, Pakket> = {
       'Los pasos pequeños son los que más pesan: diez minutos al día valen más que una hora el domingo.',
       'Ninguna semana tiene que salir bien. Cinco minutos esta noche y la racha vuelve a empezar.',
     ),
+    reeks: { sba: 'Sba, el león del Atlas', sleutels: 'Las llaves de Marruecos' },
+    koopEn: 'y',
+    koopOnderwerp: (wat) => `Tus libros están listos — ${wat}`,
+    koopKop: 'Tus libros están listos',
+    koopBody: (wat, meer) => `Gracias. ${wat} te ${meer ? 'están esperando' : 'está esperando'}.\n\n`
+      + 'Los lees en la web, con el botón de abajo. Sin cuenta y sin contraseña: este enlace es tu llave. Guarda este correo, o añade la página a favoritos.\n\n'
+      + 'El enlace funciona en cualquier dispositivo de tu casa. En cada página aparece tu nombre — es a propósito: estos libros son tuyos y no de internet.',
+    koopKnop: 'Abrir tus libros',
+    koopStaart: '¿Algo no funciona? Responde a este correo sin más.',
     afmelden: 'Darse de baja',
     wissen: 'Borrar mis datos',
     voet: 'Recibes este correo porque te apuntaste en Darijaforkids.',
@@ -187,6 +241,15 @@ export const MAILS: Record<Taal, Pakket> = {
       'I passi piccoli pesano di più: dieci minuti al giorno valgono più di un’ora la domenica.',
       'Nessuna settimana deve per forza andare bene. Cinque minuti stasera e la serie riparte.',
     ),
+    reeks: { sba: 'Sba, il leone dell’Atlante', sleutels: 'Le chiavi del Marocco' },
+    koopEn: 'e',
+    koopOnderwerp: (wat) => `I tuoi libri sono pronti — ${wat}`,
+    koopKop: 'I tuoi libri sono pronti',
+    koopBody: (wat, meer) => `Grazie. ${wat} ti ${meer ? 'aspettano' : 'aspetta'}.\n\n`
+      + 'Li leggi sul sito, con il pulsante qui sotto. Nessun account e nessuna password: questo link è la tua chiave. Conserva questa mail, o metti la pagina tra i preferiti.\n\n'
+      + 'Il link funziona su ogni dispositivo di casa. Su ogni pagina c’è il tuo nome — è voluto: questi libri sono tuoi e non di internet.',
+    koopKnop: 'Apri i tuoi libri',
+    koopStaart: 'Qualcosa non funziona? Rispondi pure a questa mail.',
     afmelden: 'Cancellati',
     wissen: 'Cancella i miei dati',
     voet: 'Ricevi questa mail perché ti sei iscritto in Darijaforkids.',
@@ -214,6 +277,15 @@ export const MAILS: Record<Taal, Pakket> = {
       'Small steps weigh the most — ten minutes a day beats an hour on Sunday.',
       'No week has to go well. Five minutes tonight and the streak starts again.',
     ),
+    reeks: { sba: 'Sba the Atlas Lion', sleutels: 'The Keys of Morocco' },
+    koopEn: 'and',
+    koopOnderwerp: (wat) => `Your books are ready — ${wat}`,
+    koopKop: 'Your books are ready',
+    koopBody: (wat, meer) => `Thank you. ${wat} ${meer ? 'are' : 'is'} ready for you.\n\n`
+      + 'You read them on the website, with the button below. No account and no password: this link is your key. Keep this email, or bookmark the page.\n\n'
+      + 'The link works on every device in your household. Your name is on every page — that is on purpose: these books are yours and not the internet’s.',
+    koopKnop: 'Open your books',
+    koopStaart: 'Something not working? Just reply to this email.',
     afmelden: 'Unsubscribe',
     wissen: 'Erase my data',
     voet: 'You are getting this because you signed up in Darijaforkids.',

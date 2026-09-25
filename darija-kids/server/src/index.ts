@@ -354,19 +354,36 @@ async function weekloop(env: Env): Promise<void> {
  * elke bladzijde staat. Wie dat weet, stuurt het niet door — en dat werkt
  * beter dan welk slot ook.
  */
-const koopMail = (env: Env, sleutel: string, reeksen: string[]) => {
+/**
+ * De mail die een koper krijgt, in zijn eigen taal.
+ *
+ * De taal komt uit `koopbericht`, dat hem uit het land van de koper raadt.
+ * Dat gebeurde al en werd al opgeslagen — alleen deze mail deed er niets mee
+ * en was altijd Nederlands. Een Franse koper betaalde € 34,99 en kreeg een
+ * Nederlandse mail met een Nederlandse boektitel, terwijl hij Franse boeken
+ * had gekocht.
+ *
+ * De reekstitels staan daarom ook in `MAILS`: "The Keys of Morocco" is de
+ * titel op het boek dat hij net heeft gekregen, en "De sleutels van Marokko"
+ * staat nergens in zijn zip.
+ */
+export const koopMail = (
+  env: Pick<Env, 'LEZER'>, sleutel: string, reeksen: string[], taal: Taal,
+): { onderwerp: string; kop: string; body: string; knop: { tekst: string; url: string }; staart: string } => {
   const lezer = `${env.LEZER ?? 'https://darijaforkids.eu/lezen'}#${sleutel}`
-  const wat = reeksen.includes('sba') && reeksen.includes('sleutels')
-    ? 'Sba de Atlasleeuw en De sleutels van Marokko'
-    : reeksen.includes('sba') ? 'Sba de Atlasleeuw' : 'De sleutels van Marokko'
+  const m = MAILS[taal]
+  const titels = [
+    reeksen.includes('sba') ? m.reeks.sba : null,
+    reeksen.includes('sleutels') ? m.reeks.sleutels : null,
+  ].filter((t): t is string => t !== null)
+  const meer = titels.length > 1
+  const wat = titels.join(` ${m.koopEn} `)
   return {
-    onderwerp: `Je boeken staan klaar — ${wat}`,
-    kop: 'Je boeken staan klaar',
-    body: `Bedankt. ${wat} staat voor je klaar.\n\n`
-      + 'Je leest ze op de website, met de knop hieronder. Er is geen account en geen wachtwoord: deze link is je sleutel. Bewaar deze mail, of zet de bladzijde bij je favorieten.\n\n'
-      + 'De link werkt op elk apparaat in je gezin. Op elke bladzijde staat jouw naam — dat is er met opzet: deze boeken zijn van jou en niet van het internet.',
-    knop: { tekst: 'Open je boeken', url: lezer },
-    staart: 'Lukt er iets niet, antwoord dan gewoon op deze mail.',
+    onderwerp: m.koopOnderwerp(wat),
+    kop: m.koopKop,
+    body: m.koopBody(wat, meer),
+    knop: { tekst: m.koopKnop, url: lezer },
+    staart: m.koopStaart,
   }
 }
 
@@ -431,7 +448,7 @@ async function koop(verzoek: Request, env: Env): Promise<Response> {
     ipHash: await hashVan((verzoek.headers.get('cf-connecting-ip') ?? '') + env.ZOUT),
   })
 
-  const m = koopMail(env, sleutel, reeksen)
+  const m = koopMail(env, sleutel, reeksen, taalVan({ taal: body.taal }))
   const brief = { ...m, afmeldTekst: '', wisTekst: '', voet: 'Darijaforkids', afmeldUrl: '', wisUrl: '' }
   await verstuur(
     { aan: email, onderwerp: m.onderwerp, html: briefHtml(brief), tekst: briefTekst(brief), afmeldUrl: '' },

@@ -9,7 +9,7 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 903, groen |
+| Tests | 924, groen |
 | Google Play | 2 (1.1) in review; 3 (1.2) is gebouwd en wacht op upload |
 | App Store | 1.0 (build 5) **opnieuw ingediend** op 25 september, wacht op beoordeling |
 
@@ -239,6 +239,13 @@ Twee dingen die nog moeten voordat het werkt voor een echte koper:
    instellingenscherm. Hoe je het controleert staat in `server/LEES-MIJ.md`.
 2. **Zelf een keer het hele rondje lopen**: kopen, mail, aanmelden, inloggen,
    en kijken of het boek er staat.
+
+De mail die de koper dan krijgt is in zijn eigen taal. Die taal wordt geraden
+uit het land dat Gumroad meestuurt, en de reekstitel in die mail is de titel
+die ook op zijn boek staat — "The Keys of Morocco" en niet "De sleutels van
+Marokko", want dat laatste staat nergens in zijn zip. Dat was tot 25 september
+niet zo: elke koper kreeg een Nederlandse mail. Het zit nu in `MAILS` bij de
+andere mails, met een test per taal.
 
 ### De platen bij de delen
 
