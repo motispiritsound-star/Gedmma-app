@@ -14,20 +14,32 @@
  *   npm run bladen -- --taal fr          # één taal (standaard nl)
  *   npm run bladen -- --taal alles       # alle zes de talen
  *   npm run bladen -- --uploaden         # en meteen naar R2
+ *   npm run bladen -- --opnieuw          # ook wat er al in de bak staat
  *
  * Alles bij elkaar is dat twaalf delen × zes talen × eenendertig bladzijden,
- * en dat duurt ruim een half uur. Het gaat deel voor deel de deur uit, dus
- * valt hij halverwege om, dan staat wat er al gedaan is er gewoon.
+ * en dat duurt ruim een uur: ongeveer de helft schieten, de helft versturen.
+ *
+ * Elk deel gaat de deur uit zodra het geschoten is, en komt dan in
+ * `store/bladen/gedaan.json` te staan. Valt hij om — en over een netwerk van
+ * dit formaat valt er een keer iets om — draai dan dezelfde opdracht opnieuw:
+ * wat er al in staat wordt overgeslagen.
+ *
+ * Dat was niet altijd zo, en het stond er wel. Het uploaden gebeurde pas
+ * nadat alle tweeënzeventig combinaties geschoten waren, dus een fout in
+ * minuut vijfentwintig liet nul bladzijden in de bak achter. En het ging met
+ * één wrangler per bestand, achter elkaar: wrangler heeft ruim vier seconden
+ * nodig om op te starten, en tweeduizenddriehonderd keer vier seconden is
+ * bijna drie uur waarvan het meeste opstarten is. Nu zes tegelijk.
  *
  * De leesboeken zitten hier niet bij; die gaan met `npm run lezen -- --r2`.
  */
 import { execFileSync } from 'node:child_process'
-import { mkdir, readdir, rm, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { startChroom } from './lib/chroom.mjs'
-import { wrangler } from './lib/wrangler.mjs'
+import { pool, wranglerLos } from './lib/wrangler.mjs'
 import { createServer } from 'vite'
 import ffmpeg from 'ffmpeg-static'
 
@@ -42,6 +54,74 @@ const ALLE_TALEN = ['nl', 'fr', 'de', 'es', 'it', 'en']
 const GEVRAAGD = arg('taal', 'nl')
 const TALEN = GEVRAAGD === 'alles' ? ALLE_TALEN : [GEVRAAGD]
 const UPLOADEN = process.argv.includes('--uploaden')
+const OPNIEUW = process.argv.includes('--opnieuw')
+
+/**
+ * Wat er al in de bak staat, zodat een tweede poging verder gaat.
+ *
+ * Dit duurt uren en het loopt over het netwerk, dus het valt een keer om. Tot
+ * nu toe begon je dan van voren af aan: alles opnieuw schieten, alles opnieuw
+ * versturen. Nu staat er per deel en taal een regeltje in dit bestand zodra
+ * die combinatie helemaal in de bak zit, en die wordt de volgende keer
+ * overgeslagen. `--opnieuw` negeert het.
+ */
+const BOEKHOUDING = path.join(UIT, 'gedaan.json')
+const gedaan = new Set(
+  OPNIEUW ? [] : await readFile(BOEKHOUDING, 'utf8').then((t) => JSON.parse(t)).catch(() => []),
+)
+const bewaarGedaan = async () =>
+  writeFile(BOEKHOUDING, `${JSON.stringify([...gedaan].sort(), null, 2)}\n`)
+
+/**
+ * Eén map naar R2, met zes tegelijk.
+ *
+ * Meteen na het schieten van dat deel, en niet aan het eind van alles. Dat
+ * scheelt niets aan tijd en alles aan wat er overblijft als hij omvalt: het
+ * uploaden stond achteraan, dus een fout in minuut vijfentwintig van het
+ * schieten liet nul bladzijden achter terwijl het scherm zei van niet.
+ */
+const naarR2 = async (map) => {
+  const bestanden = []
+  const loop = async (waar) => {
+    for (const naam of await readdir(waar, { withFileTypes: true })) {
+      const vol = path.join(waar, naam.name)
+      if (naam.isDirectory()) await loop(vol)
+      else bestanden.push(vol)
+    }
+  }
+  await loop(map)
+  try {
+    await pool(bestanden, (vol) => {
+      const sleutel = path.relative(UIT, vol).replace(/\\/g, '/')
+      return wranglerLos(['r2', 'object', 'put', `darijaforkids-boeken/${sleutel}`,
+        '--file', vol, '--remote',
+        '--content-type', vol.endsWith('.json') ? 'application/json' : 'image/webp'])
+    })
+  } catch (fout) {
+    /**
+     * Eén leesbare regel, niet de stapel van Node.
+     *
+     * Wat hier misgaat is bijna altijd hetzelfde: niet ingelogd, of het
+     * netwerk viel even weg. Allebei is te verhelpen, maar niet als je een
+     * stacktrace van acht regels voor je hebt waarin geen van beide staat.
+     */
+    const tekst = String(fout.message || fout).replace(/\u001b\[[0-9;]*m/g, '')
+    console.error(`\nHet uploaden viel om bij ${path.relative(ROOT, map)}.\n`)
+    if (/CLOUDFLARE_API_TOKEN|not logged in|authenticat/i.test(tekst)) {
+      console.error('Wrangler weet niet wie je bent. Log één keer in:\n')
+      console.error('  cd server')
+      console.error('  npx wrangler login')
+      console.error('  cd ..\n')
+    } else if (/fetch failed|ENOTFOUND|ETIMEDOUT|ECONNRESET|network/i.test(tekst)) {
+      console.error('Dat was het netwerk, niet jouw boeken.\n')
+    }
+    console.error(`Wat wrangler zei:\n\n${tekst.split('\n').filter(Boolean).slice(-3).map((r) => `  ${r}`).join('\n')}\n`)
+    console.error('Draai dezelfde opdracht gewoon opnieuw. Wat al in de bak staat')
+    console.error('wordt overgeslagen, dus je begint niet van voren af aan.\n')
+    process.exit(1)
+  }
+  return bestanden.length
+}
 
 const server = await createServer({
   configFile: path.join(ROOT, 'vite.config.ts'),
@@ -90,7 +170,13 @@ const begonnen = Date.now()
 for (const taal of TALEN) {
   for (const deel of DELEN) {
     if (ALLEEN && deel.nummer !== ALLEEN) continue
-    execFileSync('node', [path.join(ROOT, 'scripts', 'make-prentenboek.mjs'),
+    if (gedaan.has(`${deel.nummer}/${taal}`)) {
+      console.log(`${taal}  deel ${String(deel.nummer).padStart(2)} — staat er al, overgeslagen`)
+      continue
+    }
+    // `process.execPath` en niet 'node': op Windows vindt een programma dat
+    // Node rechtstreeks start niet altijd wat er in PATH staat.
+    execFileSync(process.execPath, [path.join(ROOT, 'scripts', 'make-prentenboek.mjs'),
       '--deel', String(deel.nummer), '--taal', taal], { stdio: 'pipe' })
     const soorten = await bladenVan('sba', deel.nummer, taal, path.join(tmpdir(), `.prentenboek-${taal}.html`),
       { venster: { width: 794, height: 560 }, sectie: 'section' })
@@ -128,9 +214,16 @@ for (const taal of TALEN) {
     }))
 
     totaal += soorten.length
+    let erheen = ''
+    if (UPLOADEN) {
+      const n = await naarR2(path.join(UIT, 'sba', String(deel.nummer), taal))
+      gedaan.add(`${deel.nummer}/${taal}`)
+      await bewaarGedaan()
+      erheen = `, ${n} in de bak`
+    }
     const minuten = Math.round((Date.now() - begonnen) / 60000)
     console.log(`${taal}  deel ${String(deel.nummer).padStart(2)} — ${soorten.length} bladzijden, ` +
-                `${verteld / 2} met verhaal  (${totaal} in ${minuten} min)`)
+                `${verteld / 2} met verhaal${erheen}  (${totaal} in ${minuten} min)`)
   }
 }
 
@@ -160,17 +253,5 @@ await browser.close()
 await server.close()
 console.log(`\n${totaal} bladzijden in ${path.relative(ROOT, UIT)}/\n`)
 
-if (UPLOADEN) {
-  console.log('Uploaden naar R2…\n')
-  const loop = async (map) => {
-    for (const naam of await readdir(map, { withFileTypes: true })) {
-      const vol = path.join(map, naam.name)
-      if (naam.isDirectory()) { await loop(vol); continue }
-      const sleutel = path.relative(UIT, vol).replace(/\\/g, '/')
-      wrangler(['r2', 'object', 'put',
-        `darijaforkids-boeken/${sleutel}`, '--file', vol, '--remote',
-        '--content-type', vol.endsWith('.json') ? 'application/json' : 'image/webp'])
-    }
-  }
-  await loop(UIT)
-}
+if (UPLOADEN) console.log('Alles staat in de bak.\n')
+else console.log('Nog niet in de bak: draai opnieuw met --uploaden.\n')

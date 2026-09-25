@@ -10,7 +10,7 @@
  * javascript van wrangler zelf, met de Node die dit script draait. Geen shell,
  * geen PATH, geen aanhalingstekens om paden met spaties.
  */
-import { execFileSync } from 'node:child_process'
+import { execFile, execFileSync } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -36,4 +36,41 @@ export const wrangler = (argumenten, opties = {}) => {
   return execFileSync(process.execPath, [BIN, ...argumenten], {
     cwd: SERVER, stdio: 'pipe', encoding: 'utf8', ...opties,
   })
+}
+
+/**
+ * Dezelfde aanroep, maar zonder te wachten — en met een pool erbij.
+ *
+ * Wrangler heeft ruim vier seconden nodig om op te starten, vóór hij ook maar
+ * iets doet. Dat is onbelangrijk bij één aanroep en beslissend bij
+ * tweeduizend: de prentenboeken zijn tweeduizenddriehonderd bestanden, en één
+ * wrangler per bestand achter elkaar is bijna drie uur waarvan het meeste
+ * opstarten is.
+ *
+ * Ze staan het grootste deel van die tijd te wachten op het netwerk, dus ze
+ * kunnen prima naast elkaar. Zes is een rustig getal: het scheelt een factor
+ * zes, en het blijft ruim onder wat Cloudflare per token toestaat.
+ */
+export const wranglerLos = (argumenten, opties = {}) => new Promise((klaar, mis) => {
+  execFile(process.execPath, [BIN, ...argumenten],
+    { cwd: SERVER, encoding: 'utf8', ...opties },
+    (fout, uit, fouttekst) => (fout ? mis(new Error(fouttekst || fout.message)) : klaar(uit)))
+})
+
+/**
+ * Draai een rij taken, hoogstens `tegelijk` tegelijk.
+ *
+ * `maak` krijgt één ding uit de rij en geeft een belofte terug. Gaat er één
+ * mis, dan valt het geheel — dat is hier de bedoeling: een boek waarvan de
+ * helft van de bladzijden in de bak staat is erger dan een boek dat er niet
+ * is, want de lezer opent hem dan wel.
+ */
+export const pool = async (rij, maak, tegelijk = 6, na = null) => {
+  const wacht = new Set()
+  for (const ding of rij) {
+    const taak = maak(ding).then(() => { wacht.delete(taak); if (na) na() })
+    wacht.add(taak)
+    if (wacht.size >= tegelijk) await Promise.race(wacht)
+  }
+  await Promise.all(wacht)
 }

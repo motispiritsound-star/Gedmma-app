@@ -344,9 +344,14 @@ npm run boeken -- --platen
 ```
 
 Twaalf delen × zes talen × eenendertig bladzijden, ruim tweehonderd megabyte,
-een half uur schieten plus versturen. De voorleestekst gaat vanzelf mee. Tot
-die tijd opent Sba niet in de lezer; de pdf uit de winkel werkt gewoon, en de
-lezer zegt dat er ook bij.
+**ruim een uur** — ongeveer de helft schieten, de helft versturen. De
+voorleestekst gaat vanzelf mee. Tot die tijd opent Sba niet in de lezer; de
+pdf uit de winkel werkt gewoon, en de lezer zegt dat er ook bij.
+
+Elk deel gaat de deur uit zodra het geschoten is en komt dan in
+`store/bladen/gedaan.json`. Valt hij om — en over ruim tweeduizend bestanden
+valt er een keer iets om — draai dan gewoon dezelfde opdracht opnieuw: wat er
+al in staat wordt overgeslagen. Met `--opnieuw` doet hij alles nog een keer.
 
 `npm run boeken` is de opdracht die dit allemaal doet en zelf kijkt wat er
 nodig is: zonder vlaggen doet hij de leesboeken én de platen, met `--lezen` of

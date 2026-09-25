@@ -12,7 +12,8 @@
  * Draaien met:
  *   npm run boeken                 # alles
  *   npm run boeken -- --lezen      # alleen de leesboeken (een halve minuut)
- *   npm run boeken -- --platen     # alleen de prentenboeken (een half uur)
+ *   npm run boeken -- --platen     # alleen de prentenboeken (ruim een uur)
+ *   npm run boeken -- --opnieuw    # ook wat al in de bak staat
  */
 import { execFileSync } from 'node:child_process'
 import path from 'node:path'
@@ -77,9 +78,12 @@ if (LEZEN) {
 
 if (PLATEN) {
   console.log('\n─── Sba de Atlasleeuw: 12 delen × 6 talen ───')
-  console.log('\nDit duurt een half uur. Hij zegt na elk deel hoe ver hij is, en valt hij')
-  console.log('halverwege om, dan staat wat er al in de bak zit er gewoon nog.\n')
-  draai([path.join(ROOT, 'scripts', 'make-bladen.mjs'), '--taal', 'alles', '--uploaden'])
+  console.log('\nDit duurt ruim een uur: ongeveer de helft schieten, de helft versturen.')
+  console.log('Hij zegt na elk deel hoe ver hij is, en elk deel gaat de deur uit zodra')
+  console.log('het klaar is. Valt hij om, draai dan dezelfde opdracht opnieuw — wat er')
+  console.log('al in de bak staat wordt overgeslagen.\n')
+  draai([path.join(ROOT, 'scripts', 'make-bladen.mjs'), '--taal', 'alles', '--uploaden',
+    ...(process.argv.includes('--opnieuw') ? ['--opnieuw'] : [])])
 }
 
 console.log('\nKlaar. Log in op darijaforkids.eu/portaal en kijk of er een boek opengaat.\n')
