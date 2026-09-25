@@ -34,17 +34,128 @@
   const TAALCODE = { nl: 'nl-NL', fr: 'fr-FR', de: 'de-DE', es: 'es-ES', it: 'it-IT', en: 'en-GB' }
 
   /**
-   * Welke stemmen mannelijk zijn.
+   * Alleen het deel van de naam dat een naam is.
+   *
+   * Een toestel noemt zijn stem voluit: "Microsoft Katja Online (Natural) -
+   * German (Germany)". Achter het streepje staat de taal, tussen haakjes staat
+   * de soort, en in allebei staan woorden die op namen lijken. Hier bleef dat
+   * niet zonder gevolgen: "German (Germany)" eindigt op `man`, en daarmee was
+   * in het Duits élke stem een mannenstem — Katja kreeg de naam Amir, en
+   * Sarah en Yousra kwamen er niet aan te pas.
+   *
+   * Dus eerst knippen, dan pas kijken.
+   */
+  const kalenaam = (naam) => String(naam).split(' - ')[0].replace(/\([^)]*\)/g, ' ')
+
+  /**
+   * Welke stemmen mannelijk zijn, en welke vrouwelijk.
    *
    * De Web Speech API zegt het niet: dat veld bestaat niet. Wat wel bestaat is
-   * de naam, en die is per platform bekend — Xander op een iPhone, Maarten bij
-   * Microsoft, Thomas in het Frans. Vandaar een lijst met namen.
+   * de naam, en die is per platform bekend — Xander op een iPhone, Katja bij
+   * Microsoft, Thomas in het Frans. Vandaar twee lijsten met namen.
+   *
+   * Twee en niet één, want "niet op de mannenlijst" is geen vrouw. Dat was het
+   * wel, en dan hangt de belofte van de verteller aan de volledigheid van één
+   * lijst: staat er een naam niet op, dan leest Sarah met een mannenstem voor.
+   * Nu is er een derde geval — onbekend — en dat vult pas aan nadat de
+   * herkende stemmen hun naam hebben.
+   *
+   * `(?<![a-z])male(?![a-z])` en niet `male`: anders is "female" ook een man,
+   * en dat is precies de stem die zelf zegt wat ze is. Android noemt ze zo:
+   * `de-de-x-deb#female_1-local`.
    *
    * Omdat zo'n lijst nooit compleet is, staat de keuze ook op het scherm: wat
    * dit toestel heeft, met de mannelijke stem vooraan. Dan hoeft niemand het
    * met onze gok te doen.
    */
-  const MANNEN = /xander|maarten|thomas|paul|henri|nicolas|markus|yannick|stefan|conrad|jorge|diego|carlos|pablo|alvaro|enrique|luca|cosimo|giuseppe|daniel|arthur|george|ryan|guy|male|man\b/i
+  /**
+   * Namen die een heel woord moeten zijn.
+   *
+   * `paul` als los stukje tekst zit óók in Paulina, en dan leest een
+   * Spaanse vrouwenstem voor onder een mannennaam. Dezelfde fout als `man` in
+   * "German", alleen kleiner en daarom lastiger te zien.
+   *
+   * Niet `\b`, want dat kent alleen a–z: een naam die met á of é begint zou
+   * dan nooit matchen. Vandaar de twee wachters eromheen, met accenten erin.
+   */
+  const heleNamen = (namen) => new RegExp(`(?<![a-zà-ÿ])(${namen.join('|')})(?![a-zà-ÿ])`, 'i')
+
+  /**
+   * Welke stemmen mannelijk zijn, en welke vrouwelijk.
+   *
+   * De Web Speech API zegt het niet: dat veld bestaat niet. Wat wel bestaat is
+   * de naam, en die is per platform bekend — Xander op een iPhone, Katja bij
+   * Microsoft, Thomas in het Frans. Vandaar twee lijsten met namen.
+   *
+   * Twee en niet één, want "niet op de mannenlijst" is geen vrouw. Dat was het
+   * wel, en dan hangt de belofte van de verteller aan de volledigheid van één
+   * lijst: staat er een naam niet op, dan leest Sarah met een mannenstem voor.
+   * Nu is er een derde geval — onbekend — en dat vult pas aan nadat de
+   * herkende stemmen hun naam hebben.
+   *
+   * `male` staat er als heel woord, anders is "female" ook een man — en dat is
+   * precies de stem die zelf zegt wat ze is. Android noemt ze zo:
+   * `de-de-x-deb#female_1-local`.
+   *
+   * Omdat zo'n lijst nooit compleet is, staat de keuze ook op het scherm: wat
+   * dit toestel heeft, met de mannelijke stem vooraan. Dan hoeft niemand het
+   * met onze gok te doen.
+   */
+  const MANNEN = heleNamen([
+    // Nederlands
+    'xander', 'ruben', 'maarten', 'frank', 'bram', 'arnaud',
+    // Frans
+    'thomas', 'henri', 'nicolas', 'paul', 'remy', 'rémy', 'alain', 'antoine',
+    'mathieu', 'jerome', 'jérôme', 'yves', 'maurice', 'jean',
+    // Duits
+    'stefan', 'conrad', 'klaus', 'markus', 'bernd', 'christoph', 'killian',
+    'ralf', 'hans', 'florian', 'viktor', 'martin', 'jan',
+    // Spaans
+    'jorge', 'diego', 'carlos', 'pablo', 'alvaro', 'álvaro', 'enrique',
+    'miguel', 'sergio', 'dario', 'darío', 'elias', 'elías', 'juan', 'nil',
+    'saul', 'saúl', 'teo', 'arnau',
+    // Italiaans
+    'luca', 'cosimo', 'giuseppe', 'benigno', 'calimero', 'cataldo', 'gianni',
+    'rinaldo', 'lisandro',
+    // Engels
+    'daniel', 'arthur', 'george', 'ryan', 'guy', 'davis', 'david', 'tony',
+    'jason', 'eric', 'roger', 'brian', 'matthew', 'joey', 'justin', 'kevin',
+    'alex', 'fred', 'aaron', 'gordon', 'christopher', 'mark', 'andrew',
+    'steffan', 'oliver', 'jacob', 'nathan', 'evan', 'tom', 'rishi', 'alfie',
+    'elliot', 'ethan', 'noah',
+    // wat de naam zelf zegt
+    'male', 'man',
+  ])
+
+  const VROUWEN = heleNamen([
+    // Nederlands
+    'fenna', 'lotte', 'colette', 'laura', 'claire', 'hanna', 'dena', 'ellen',
+    // Frans
+    'denise', 'lea', 'léa', 'celine', 'céline', 'amelie', 'amélie', 'chloe',
+    'chloé', 'eloise', 'brigitte', 'charline', 'jacqueline', 'yvette',
+    'josephine', 'joséphine', 'hortense', 'julie', 'vivienne', 'aurelie',
+    'aurélie', 'marie', 'chantal', 'coralie', 'celeste', 'céleste',
+    // Duits
+    'katja', 'amala', 'hedda', 'katrin', 'marlene', 'vicki', 'louisa', 'elke',
+    'petra', 'seraphina', 'gisela', 'anna', 'helena',
+    // Spaans
+    'elvira', 'conchita', 'lucia', 'lucía', 'monica', 'mónica', 'penelope',
+    'penélope', 'irene', 'paloma', 'estrella', 'triana', 'dalia', 'ximena',
+    'vera', 'paulina', 'abril', 'laia', 'lia', 'marisol',
+    // Italiaans
+    'elsa', 'isabella', 'bianca', 'carla', 'federica', 'fiamma', 'imelda',
+    'irma', 'palmira', 'fabiola', 'pierina', 'alice', 'paola',
+    // Engels
+    'zira', 'hazel', 'susan', 'linda', 'heather', 'catherine', 'samantha',
+    'karen', 'moira', 'tessa', 'fiona', 'aria', 'jenny', 'michelle', 'clara',
+    'libby', 'sonia', 'emily', 'amber', 'ashley', 'cora', 'elizabeth', 'jane',
+    'nancy', 'natasha', 'sara', 'serena', 'victoria', 'allison', 'joanna',
+    'kendra', 'kimberly', 'salli', 'ivy', 'nicole', 'olivia', 'amy', 'emma',
+    'ava', 'martha', 'nicky', 'abbi', 'bella', 'hollie', 'maisie', 'zoe',
+    'zoë', 'kate',
+    // wat de naam zelf zegt
+    'female', 'vrouw',
+  ])
 
   const spraak = window.speechSynthesis
   let stemmen = []
@@ -61,14 +172,19 @@
    * Dutch (Netherlands)". Dat is een productnummer met een naam erin, en het
    * staat in een keuzelijst onder een verhaal dat een kind meeleest.
    *
-   * Vijf vertellers dus, met een naam die in dit boek thuishoort. Welke stem
-   * van het toestel eronder zit, verschilt per apparaat en doet er voor de
-   * lezer niet toe — die kiest een verteller, geen spraakmotor.
+   * Vier vertellers dus, twee mannen en twee vrouwen, met een naam die in dit
+   * boek thuishoort. Welke stem van het toestel eronder zit, verschilt per
+   * apparaat en doet er voor de lezer niet toe — die kiest een verteller,
+   * geen spraakmotor.
+   *
+   * Twee om twee en niet drie om twee: een toestel heeft zelden meer dan vier
+   * bruikbare stemmen in één taal, en een lijst die langer is dan wat het
+   * toestel kan waarmaken vult zichzelf met de mindere stemmen.
    */
-  const VERTELLERS = { man: ['Amir', 'Adam', 'Yassine'], vrouw: ['Sarah', 'Yousra'] }
+  const VERTELLERS = { man: ['Amir', 'Yassine'], vrouw: ['Yousra', 'Sarah'] }
 
   /**
-   * De vijf, met hun naam erbij.
+   * De vier, met hun naam erbij.
    *
    * De Web Speech API zegt niet of een stem mannelijk is; de namenlijst
    * hierboven doet die gok. Heeft een toestel maar twee stemmen, dan krijg je
@@ -98,8 +214,29 @@
       .filter((v) => (v.lang || '').replace('_', '-').slice(0, 2) === kort)
       .sort((a, b) => klank(a) - klank(b) || land(a) - land(b))
 
-    const mannen = passend.filter((v) => MANNEN.test(v.name))
-    const vrouwen = passend.filter((v) => !MANNEN.test(v.name))
+    /**
+     * Drie bakken, en de onbekende gaat achteraan.
+     *
+     * Een stem die op geen van beide lijsten staat is geen vrouw — hij is
+     * onbekend. Herkende stemmen krijgen daarom eerst hun naam, en pas als er
+     * dan nog een naam over is, vult een onbekende die aan. Zo hangt de
+     * belofte "Amir klinkt als een man" niet aan de volledigheid van één
+     * lijst, maar alleen aan de stemmen die we echt niet thuis konden brengen.
+     */
+    const mannen = []
+    const vrouwen = []
+    const onbekend = []
+    for (const v of passend) {
+      const naam = kalenaam(v.name)
+      if (VROUWEN.test(naam)) vrouwen.push(v)
+      else if (MANNEN.test(naam)) mannen.push(v)
+      else onbekend.push(v)
+    }
+    while (onbekend.length && (mannen.length < VERTELLERS.man.length || vrouwen.length < VERTELLERS.vrouw.length)) {
+      const stem = onbekend.shift()
+      if (mannen.length < VERTELLERS.man.length) mannen.push(stem)
+      else vrouwen.push(stem)
+    }
 
     const uit = []
     mannen.slice(0, VERTELLERS.man.length).forEach((stem, i) => uit.push({ stem, naam: VERTELLERS.man[i] }))
@@ -108,10 +245,9 @@
     /**
      * Wat niet past, komt er niet bij.
      *
-     * Heeft een toestel alleen mannenstemmen, dan blijven Sarah, Yousra en
-     * Lina ongebruikt en zie je er twee. Dat is beter dan de lijst vol maken:
-     * een mannenstem onder de naam Sarah valt meteen op, en in een boek dat
-     * een kind meeleest is de verteller geen willekeurig etiket.
+     * Heeft een toestel alleen mannenstemmen, dan blijven Yousra en Sarah
+     * ongebruikt en zie je er twee. Dat is beter dan de lijst vol maken met
+     * dezelfde stem onder twee namen.
      */
     return uit
   }

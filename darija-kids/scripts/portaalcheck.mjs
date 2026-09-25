@@ -92,8 +92,9 @@ const browser = await startChroom()
  * `antwoorden` is een tabel van pad naar wat eruit komt: een object wordt JSON
  * met status 200, een getal wordt een lege fout met die status.
  */
-const bezoek = async (adres, antwoorden) => {
+const bezoek = async (adres, antwoorden, beginscript) => {
   const context = await browser.newContext()
+  if (beginscript) await context.addInitScript(beginscript)
   const bladzijde = await context.newPage()
   bladzijde.on('pageerror', (fout) => paginafouten.push(`${adres} — ${fout.message}`))
   const gezien = []
@@ -297,6 +298,75 @@ console.log('\nDe lezer')
 }
 
 /* ---------------------------------------------------------------- klaar */
+
+/* ------------------------------------------------------------ de stemmen */
+
+/**
+ * Welke verteller welke stem van het toestel krijgt.
+ *
+ * Het geslacht van een stem staat nergens in de Web Speech API; het wordt uit
+ * de naam geraden. Dat ging mis op een manier die je niet ziet als je het niet
+ * in de goede taal opent: "German (Germany)" eindigt op `man`, dus in het
+ * Duits was élke stem een mannenstem en kreeg Katja de naam Amir.
+ *
+ * Daarom hier nagemaakte stemmen in een echte browser, met de namen zoals
+ * Windows ze schrijft. Een lijst met namen blijft een gok, maar deze gok hoort
+ * op de bekende toestellen te kloppen.
+ */
+console.log('\nDe stemmen')
+{
+  const DUITS = [
+    { name: 'Microsoft Katja Online (Natural) - German (Germany)', lang: 'de-DE', localService: false },
+    { name: 'Microsoft Conrad Online (Natural) - German (Germany)', lang: 'de-DE', localService: false },
+    { name: 'Microsoft Hedda - German (Germany)', lang: 'de-DE', localService: true },
+    { name: 'Microsoft Stefan - German (Germany)', lang: 'de-DE', localService: true },
+  ]
+  const nep = (stemmen) => `
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, get: () => ({
+      getVoices: () => ${JSON.stringify(stemmen)},
+      speak() {}, cancel() {}, addEventListener() {}, removeEventListener() {},
+    }) })`
+
+  const { bladzijde, context } = await bezoek('/de/buecher', {}, nep(DUITS))
+  await bladzijde.locator('#proefknop').click()
+  await bladzijde.waitForSelector('#proef .zin', { timeout: 5000 }).catch(() => {})
+  const keuze = bladzijde.locator('#proef .stemkeuze option')
+  const rijen = await keuze.evaluateAll((els) => els.map((e) => [e.textContent, e.value]))
+  const bij = (naam) => (rijen.find(([t]) => t === naam) || [])[1] || ''
+
+  meld(rijen.length > 0, `de Duitse teaser krijgt stemmen (${rijen.length})`)
+  meld(rijen.length === 4, `vier vertellers, niet meer (${rijen.length})`)
+  meld(/Conrad|Stefan/.test(bij('Amir')), `Amir is een mannenstem (${bij('Amir') || 'geen'})`)
+  meld(/Conrad|Stefan/.test(bij('Yassine')), `Yassine ook (${bij('Yassine') || 'geen'})`)
+  meld(/Katja|Hedda/.test(bij('Yousra')), `Yousra is een vrouwenstem (${bij('Yousra') || 'geen'})`)
+  meld(/Katja|Hedda/.test(bij('Sarah')), `Sarah ook (${bij('Sarah') || 'geen'})`)
+  meld(new Set(rijen.map(([, v]) => v)).size === rijen.length, 'elke verteller heeft zijn eigen stem')
+  await context.close()
+}
+
+{
+  // Android noemt zijn stemmen niet met een naam maar met een code, en zegt
+  // het geslacht er letterlijk bij. `female` bevat `male`, en dat telde mee.
+  const ANDROID = [
+    { name: 'nl-nl-x-dma#female_1-local', lang: 'nl-NL', localService: true },
+    { name: 'nl-nl-x-dma#male_1-local', lang: 'nl-NL', localService: true },
+  ]
+  const nep = (stemmen) => `
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, get: () => ({
+      getVoices: () => ${JSON.stringify(stemmen)},
+      speak() {}, cancel() {}, addEventListener() {}, removeEventListener() {},
+    }) })`
+  const { bladzijde, context } = await bezoek('/leesboeken', {}, nep(ANDROID))
+  await bladzijde.locator('#proefknop').click()
+  await bladzijde.waitForSelector('#proef .zin', { timeout: 5000 }).catch(() => {})
+  const rijen = await bladzijde.locator('#proef .stemkeuze option')
+    .evaluateAll((els) => els.map((e) => [e.textContent, e.value]))
+  const bij = (naam) => (rijen.find(([t]) => t === naam) || [])[1] || ''
+  meld(bij('Amir').includes('#male_'), `een stem die zegt dat hij man is, wordt Amir (${bij('Amir') || 'geen'})`)
+  meld(bij('Yousra').includes('#female_'), `en female is geen male (${bij('Yousra') || 'geen'})`)
+  meld(rijen.length === 2, `twee stemmen geven twee vertellers, geen vier (${rijen.length})`)
+  await context.close()
+}
 
 await browser.close()
 site.close()

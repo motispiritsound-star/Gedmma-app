@@ -310,9 +310,19 @@ met code niet omheen te komen. Wat er wél gedaan is:
   (`boekLuisterStem`) — niet als waarschuwing bovenaan, maar onder de drie
   stappen.
 
-De vertellers heten Amir, Adam en Yassine bij de mannenstemmen en Sarah en
-Yousra bij de vrouwenstemmen. Dat zijn onze namen op de stemmen van het
-toestel; welke echte stem eronder zit verschilt per apparaat.
+De vertellers heten Amir en Yassine bij de mannenstemmen en Yousra en Sarah
+bij de vrouwenstemmen — vier, twee om twee. Dat zijn onze namen op de stemmen
+van het toestel; welke echte stem eronder zit verschilt per apparaat.
+
+Welk geslacht een stem heeft staat nergens in de Web Speech API, dus het wordt
+uit de naam geraden — twee lijsten met namen in `src/site/lezer.js`. Die gok
+ging twee keer mis op dezelfde manier: een stukje tekst dat toevallig in een
+langer woord zit. `man` zit in "German (Germany)", waardoor in het Duits élke
+stem een man was en Katja de naam Amir kreeg; `male` zit in "female"; en
+`paul` zit in "Paulina". Nu wordt eerst de taalnaam weggeknipt en moet elke
+naam een heel woord zijn. Honderdachtendertig echte stemnamen uit Windows,
+macOS, iOS en Android zijn erlangs gelegd: geen enkele meer verkeerd, en geen
+enkele meer onbekend.
 
 `npm run portaalcheck` loopt dat hele rondje na in een echte browser, met de
 antwoorden van de worker erbij verzonnen. Geen database, geen mail, geen

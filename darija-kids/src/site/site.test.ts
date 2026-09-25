@@ -182,9 +182,12 @@ describe('de lezer op de website', () => {
     // Een toestel noemt zijn stem "Microsoft Maarten Online (Natural) - Dutch
     // (Netherlands)". Dat is een productnummer, en het staat in een keuzelijst
     // onder een verhaal dat een kind meeleest.
-    for (const naam of ['Amir', 'Adam', 'Yassine', 'Sarah', 'Yousra']) {
+    for (const naam of ['Amir', 'Yassine', 'Yousra', 'Sarah']) {
       expect(lezer, naam).toContain(`'${naam}'`)
     }
+    // Twee om twee. Een toestel heeft zelden meer dan vier bruikbare stemmen
+    // in één taal, en een langere lijst vult zichzelf met de mindere.
+    expect(lezer).toContain("man: ['Amir', 'Yassine'], vrouw: ['Yousra', 'Sarah']")
   })
 
   it('zet de nieuwere stemmen vooraan', () => {
@@ -201,6 +204,168 @@ describe('de lezer op de website', () => {
     expect(lezer).toContain('VERTELLERS.man[i]')
     expect(lezer).toContain('VERTELLERS.vrouw[i]')
     expect(lezer).not.toContain('VERTELLERS.man.slice(mannen.length)')
+  })
+
+  /**
+   * Elke stemnaam die op een echt toestel voorkomt, door de gok heen.
+   *
+   * Het geslacht van een stem staat nergens in de Web Speech API, dus het
+   * wordt uit de naam geraden. Die gok ging twee keer mis op dezelfde manier —
+   * een stukje tekst dat toevallig in een langer woord zit. `man` zit in
+   * "German (Germany)", waardoor in het Duits élke stem een man was; `male`
+   * zit in "female"; `paul` zit in "Paulina".
+   *
+   * Zulke fouten zie je niet door de site in één taal te openen. Daarom deze
+   * lijst: de namen zoals Windows, macOS, iOS en Android ze schrijven, met
+   * erachter wat het hoort te zijn.
+   *
+   * De code wordt uit `lezer.js` geknipt en hier uitgevoerd. Dat bestand is
+   * een IIFE voor de browser en heeft geen exports; verschuift er een naam,
+   * dan valt deze test op het knippen en niet op een verkeerde uitkomst.
+   */
+  describe('raadt het geslacht van een stem', () => {
+    const pak = (naam: string, eind: string): string => {
+      const i = lezer.indexOf(`const ${naam} =`)
+      expect(i, `${naam} staat niet meer in lezer.js`).toBeGreaterThan(-1)
+      const j = lezer.indexOf(eind, i)
+      expect(j, `het einde van ${naam} is niet gevonden`).toBeGreaterThan(-1)
+      return lezer.slice(i, j + eind.length)
+    }
+    const code = [
+      pak('kalenaam', "' ')"), pak('heleNamen', "'i')"),
+      pak('MANNEN', '  ])'), pak('VROUWEN', '  ])'),
+    ].join('\n')
+    const { kalenaam, MANNEN, VROUWEN } = new Function(
+      `${code}; return { kalenaam, MANNEN, VROUWEN }`,
+    )() as { kalenaam: (n: string) => string, MANNEN: RegExp, VROUWEN: RegExp }
+    const raad = (n: string): string => {
+      const k = kalenaam(n)
+      return VROUWEN.test(k) ? 'v' : MANNEN.test(k) ? 'm' : '?'
+    }
+
+    const MAN = [
+      // Windows
+      'Microsoft Frank - Dutch (Netherlands)',
+      'Microsoft Maarten Online (Natural) - Dutch (Netherlands)',
+      'Microsoft Arnaud Online (Natural) - Dutch (Belgium)',
+      'Microsoft Conrad Online (Natural) - German (Germany)',
+      'Microsoft Stefan - German (Germany)',
+      'Microsoft Killian Online (Natural) - German (Germany)',
+      'Microsoft Florian Online (Natural) - German (Germany)',
+      'Microsoft Paul - French (France)',
+      'Microsoft Henri Online (Natural) - French (France)',
+      'Microsoft Remy Online (Natural) - French (France)',
+      'Microsoft Alain Online (Natural) - French (France)',
+      'Microsoft Jerome Online (Natural) - French (France)',
+      'Microsoft Yves Online (Natural) - French (France)',
+      'Microsoft Pablo - Spanish (Spain)',
+      'Microsoft Alvaro Online (Natural) - Spanish (Spain)',
+      'Microsoft Dario Online (Natural) - Spanish (Spain)',
+      'Microsoft Elias Online (Natural) - Spanish (Spain)',
+      'Microsoft Cosimo - Italian (Italy)',
+      'Microsoft Diego Online (Natural) - Italian (Italy)',
+      'Microsoft Benigno Online (Natural) - Italian (Italy)',
+      'Microsoft Gianni Online (Natural) - Italian (Italy)',
+      'Microsoft Giuseppe Online (Natural) - Italian (Italy)',
+      'Microsoft Rinaldo Online (Natural) - Italian (Italy)',
+      'Microsoft David - English (United States)',
+      'Microsoft Mark - English (United States)',
+      'Microsoft Guy Online (Natural) - English (United States)',
+      'Microsoft Andrew Online (Natural) - English (United States)',
+      'Microsoft Brian Online (Natural) - English (United States)',
+      'Microsoft Christopher Online (Natural) - English (United States)',
+      'Microsoft Eric Online (Natural) - English (United States)',
+      'Microsoft Roger Online (Natural) - English (United States)',
+      'Microsoft Steffan Online (Natural) - English (United States)',
+      'Microsoft George - English (United Kingdom)',
+      'Microsoft Ryan Online (Natural) - English (United Kingdom)',
+      'Microsoft Thomas Online (Natural) - English (United Kingdom)',
+      'Microsoft Oliver Online (Natural) - English (United Kingdom)',
+      // macOS en iOS
+      'Xander', 'Markus', 'Viktor', 'Martin', 'Thomas', 'Jorge', 'Juan',
+      'Diego', 'Luca', 'Alex', 'Daniel', 'Fred', 'Arthur', 'Gordon', 'Aaron',
+      // Android en Chrome
+      'nl-nl-x-dma#male_1-local', 'de-de-x-deb#male_1-local',
+      'fr-fr-x-frc#male_1-local', 'es-es-x-eef#male_1-local',
+      'it-it-x-itc#male_1-local', 'en-us-x-tpc#male_1-local',
+      'Google UK English Male',
+    ]
+
+    const VROUW = [
+      // Windows
+      'Microsoft Fenna Online (Natural) - Dutch (Netherlands)',
+      'Microsoft Colette Online (Natural) - Dutch (Netherlands)',
+      'Microsoft Dena Online (Natural) - Dutch (Belgium)',
+      'Microsoft Hedda - German (Germany)',
+      'Microsoft Katja Online (Natural) - German (Germany)',
+      'Microsoft Amala Online (Natural) - German (Germany)',
+      'Microsoft Seraphina Online (Natural) - German (Germany)',
+      'Microsoft Louisa Online (Natural) - German (Austria)',
+      'Microsoft Hortense - French (France)',
+      'Microsoft Julie - French (France)',
+      'Microsoft Denise Online (Natural) - French (France)',
+      'Microsoft Eloise Online (Natural) - French (France)',
+      'Microsoft Vivienne Online (Natural) - French (France)',
+      'Microsoft Brigitte Online (Natural) - French (France)',
+      'Microsoft Yvette Online (Natural) - French (France)',
+      'Microsoft Helena - Spanish (Spain)',
+      'Microsoft Laura - Spanish (Spain)',
+      'Microsoft Elvira Online (Natural) - Spanish (Spain)',
+      'Microsoft Estrella Online (Natural) - Spanish (Spain)',
+      'Microsoft Irene Online (Natural) - Spanish (Spain)',
+      'Microsoft Triana Online (Natural) - Spanish (Spain)',
+      'Microsoft Vera Online (Natural) - Spanish (Spain)',
+      'Microsoft Ximena Online (Natural) - Spanish (Mexico)',
+      'Microsoft Elsa - Italian (Italy)',
+      'Microsoft Isabella Online (Natural) - Italian (Italy)',
+      'Microsoft Fabiola Online (Natural) - Italian (Italy)',
+      'Microsoft Fiamma Online (Natural) - Italian (Italy)',
+      'Microsoft Imelda Online (Natural) - Italian (Italy)',
+      'Microsoft Irma Online (Natural) - Italian (Italy)',
+      'Microsoft Palmira Online (Natural) - Italian (Italy)',
+      'Microsoft Pierina Online (Natural) - Italian (Italy)',
+      'Microsoft Zira - English (United States)',
+      'Microsoft Aria Online (Natural) - English (United States)',
+      'Microsoft Jenny Online (Natural) - English (United States)',
+      'Microsoft Emma Online (Natural) - English (United States)',
+      'Microsoft Ava Online (Natural) - English (United States)',
+      'Microsoft Michelle Online (Natural) - English (United States)',
+      'Microsoft Hazel - English (United Kingdom)',
+      'Microsoft Susan - English (United Kingdom)',
+      'Microsoft Sonia Online (Natural) - English (United Kingdom)',
+      'Microsoft Libby Online (Natural) - English (United Kingdom)',
+      'Microsoft Olivia Online (Natural) - English (Australia)',
+      // macOS en iOS
+      'Ellen', 'Claire', 'Anna', 'Petra', 'Helena', 'Amelie', 'Amélie',
+      'Aurelie', 'Marie', 'Chantal', 'Monica', 'Mónica', 'Paulina', 'Marisol',
+      'Alice', 'Federica', 'Paola', 'Samantha', 'Karen', 'Moira', 'Tessa',
+      'Fiona', 'Victoria', 'Serena', 'Martha', 'Nicky',
+      // Android en Chrome
+      'nl-nl-x-dma#female_1-local', 'de-de-x-deb#female_1-local',
+      'fr-fr-x-frc#female_1-local', 'es-es-x-eef#female_1-local',
+      'it-it-x-itc#female_1-local', 'en-gb-x-gba#female_1-local',
+      'Google UK English Female',
+    ]
+
+    it.each(MAN)('%s is een man', (naam) => { expect(raad(naam)).toBe('m') })
+    it.each(VROUW)('%s is een vrouw', (naam) => { expect(raad(naam)).toBe('v') })
+
+    it('zegt eerlijk onbekend als er geen naam in staat', () => {
+      // "Google Deutsch" is een stem zonder naam en zonder geslacht. Die hoort
+      // niet zomaar een verteller te worden; hij vult pas aan als er na de
+      // herkende stemmen nog een naam over is.
+      for (const naam of ['Google Nederlands', 'Google Deutsch', 'Google français',
+        'Google español', 'Google italiano', 'Google US English']) {
+        expect(raad(naam), naam).toBe('?')
+      }
+    })
+
+    it('trapt niet in een naam die in een langer woord zit', () => {
+      // Dit zijn de drie die het écht mis lieten gaan.
+      expect(raad('Microsoft Katja Online (Natural) - German (Germany)')).toBe('v')
+      expect(raad('de-de-x-deb#female_1-local')).toBe('v')
+      expect(raad('Paulina')).toBe('v')
+    })
   })
 
   it('maakt zijn luisteraars ook weer los', () => {
