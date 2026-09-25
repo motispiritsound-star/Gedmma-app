@@ -907,7 +907,7 @@ const booksPage = (lang) => {
     open = true
     knop.textContent = T.terug
     vak.hidden = false
-    window.Lezer.toon(vak, boek, ${JSON.stringify(lang)}, T)
+    window.Lezer.toon(vak, boek, ${JSON.stringify(lang)}, T, 'proef-${lang}')
     vak.scrollIntoView({ block: 'start', behavior: 'smooth' })
   }
 })()
@@ -1332,7 +1332,7 @@ const readPage = (lang) => {
      * bladzijden nawerk, en daar hoort niets voorgelezen te worden.
      */
     function zetTekst() {
-      if (stem) { stem.stop(); stem = null }
+      if (stem) { stem.los(); stem = null }
       woorden.innerHTML = ''
       const plek = tekstVan && tekstVan.bladzijden ? tekstVan.bladzijden[nr - 1] : null
       const blad = plek === null || plek === undefined ? null : (tekstVan.bladen || [])[plek]

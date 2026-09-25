@@ -123,9 +123,8 @@
       stemkiezer.value = lijst.some((v) => v.name === gekozen) ? gekozen : lijst[0].name
     }
     vulStemmen()
-    if (spraak && spraak.addEventListener) {
-      spraak.addEventListener('voiceschanged', () => { laadStemmen(); vulStemmen() })
-    }
+    const opnieuwVullen = () => { laadStemmen(); vulStemmen() }
+    if (spraak && spraak.addEventListener) spraak.addEventListener('voiceschanged', opnieuwVullen)
 
     let speelt = false
     let wijzer = sleutel ? Number(herinner(sleutel) || 0) : 0
@@ -192,7 +191,21 @@
     // tabblad doorlezen: de spraakmotor van de browser stopt daar niet vanzelf.
     addEventListener('pagehide', stop)
 
-    return { stop, speel }
+    /**
+     * Alles weer losmaken.
+     *
+     * Een prentenboek zet bij elke bladzijde een nieuwe balk neer. Zonder dit
+     * blijven de luisteraars van de vorige bladzijde hangen, en na dertig keer
+     * bladeren bouwt elke verandering van stemmen dertig keuzelijsten opnieuw
+     * op — in een boek dat juist op een tablet gelezen wordt.
+     */
+    const los = () => {
+      stop()
+      if (spraak && spraak.removeEventListener) spraak.removeEventListener('voiceschanged', opnieuwVullen)
+      removeEventListener('pagehide', stop)
+    }
+
+    return { stop, speel, los }
   }
 
   /**
@@ -201,7 +214,7 @@
    * `doel` wordt leeggemaakt. `boek` is wat de worker teruggeeft: een titel,
    * een jaar, een plaats en hoofdstukken met alinea's.
    */
-  const toon = (doel, boek, taal, woorden) => {
+  const toon = (doel, boek, taal, woorden, sleutel) => {
     doel.className = 'boek'
     doel.innerHTML = ''
 
@@ -221,7 +234,15 @@
     }
 
     doel.append(kop, onder, tekst)
-    return voorlees(doel, taal, woorden, 'lees-' + taal + '-' + (boek.titel || ''))
+    /**
+     * Waaronder de plek bewaard wordt.
+     *
+     * De aanroeper mag hem meegeven, en dat moet ook: het gratis begin en het
+     * gekochte boek heten allebei De olijvenbrand. Op één sleutel zouden ze
+     * elkaars bladwijzer overschrijven, en dan begint het boek dat je net
+     * gekocht hebt halverwege de teaser.
+     */
+    return voorlees(doel, taal, woorden, sleutel || 'lees-' + taal + '-' + (boek.titel || ''))
   }
 
   window.Lezer = { toon, voorlees, alineaVan }

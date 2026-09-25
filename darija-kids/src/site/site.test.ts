@@ -154,6 +154,14 @@ describe('de lezer op de website', () => {
     // De spraakmotor van de browser leest anders door in een gesloten tabblad.
     expect(lezer).toContain("addEventListener('pagehide', stop")
   })
+
+  it('maakt zijn luisteraars ook weer los', () => {
+    // Een prentenboek zet bij elke bladzijde een nieuwe balk neer. Blijven de
+    // oude luisteraars hangen, dan bouwt na dertig keer bladeren elke
+    // verandering van stemmen dertig keuzelijsten opnieuw op.
+    expect(lezer).toContain("removeEventListener('voiceschanged', opnieuwVullen)")
+    expect(lezer).toContain("removeEventListener('pagehide', stop)")
+  })
 })
 
 describe('de winkeladressen', () => {
