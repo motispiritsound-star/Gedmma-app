@@ -25,7 +25,42 @@ interface Brief {
   voet: string
 }
 
+/**
+ * Een lege regel in de tekst is een lege regel in de mail.
+ *
+ * `body` wordt geschreven als gewone tekst, met `\n\n` tussen de alinea's —
+ * zo staat hij ook in `briefTekst`, en daar klopt dat. In HTML niet: daar
+ * vallen regeleindes weg. De mail na het afrekenen heeft drie alinea's en die
+ * liepen in een mailprogramma aan elkaar tot één blok van zes regels.
+ *
+ * Dat is de eerste mail die iemand krijgt die net heeft betaald, en de zin die
+ * ertoe doet — "deze link is je sleutel, bewaar deze mail" — stond midden in
+ * dat blok.
+ *
+ * Eerst ontsnappen, dan pas opdelen: anders zou tekst uit de mail zelf een
+ * alinea kunnen beginnen.
+ */
+const alineas = (tekst: string, stijl: string): string => esc(tekst)
+  .split(/\n\s*\n/)
+  .map((deel) => `<p style="${stijl}">${deel.replace(/\n/g, '<br>')}</p>`)
+  .join('')
+
 export function briefHtml(b: Brief): string {
+  /**
+   * Geen uitschrijfregel onder een mail waar je je niet voor hebt aangemeld.
+   *
+   * De mail na het afrekenen is geen nieuwsbrief: die krijg je omdat je iets
+   * hebt gekocht, en er valt niets uit te schrijven. Hij gaf die velden dus
+   * leeg mee, en dan stond er onderaan een kale `·` met aan weerszijden een
+   * link zonder tekst en zonder adres — zichtbaar, aanklikbaar, en nergens
+   * heen.
+   */
+  const uitschrijven = b.afmeldTekst && b.wisTekst
+    ? `<br>
+    <a href="${esc(b.afmeldUrl)}" style="color:${KLEUR.zellige}">${esc(b.afmeldTekst)}</a> &middot;
+    <a href="${esc(b.wisUrl)}" style="color:${KLEUR.zellige}">${esc(b.wisTekst)}</a>`
+    : ''
+
   const regels = (b.regels ?? []).map(([label, waarde]) => `
     <tr>
       <td style="padding:8px 0;border-bottom:1px solid ${KLEUR.lijn};color:${KLEUR.zacht};font-size:15px">${esc(label)}</td>
@@ -41,16 +76,14 @@ export function briefHtml(b: Brief): string {
     <div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${KLEUR.saffraan}">Darijaforkids</div>
     <h1 style="margin:10px 0 0;font-size:24px;line-height:1.2">${esc(b.kop)}</h1>
   </td></tr>
-  <tr><td style="padding:12px 28px 0;font-size:16px;line-height:1.55;color:${KLEUR.zacht}">${esc(b.body)}</td></tr>
+  <tr><td style="padding:12px 28px 0;font-size:16px;line-height:1.55;color:${KLEUR.zacht}">${alineas(b.body, 'margin:0 0 14px')}</td></tr>
   ${regels ? `<tr><td style="padding:16px 28px 0"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${regels}</table></td></tr>` : ''}
   ${b.knop ? `<tr><td style="padding:22px 28px 0">
     <a href="${esc(b.knop.url)}" style="display:inline-block;background:${KLEUR.saffraan};color:#221a16;font-weight:800;font-size:16px;text-decoration:none;padding:13px 22px;border-radius:12px">${esc(b.knop.tekst)}</a>
   </td></tr>` : ''}
   ${b.staart ? `<tr><td style="padding:18px 28px 0;font-size:14px;line-height:1.5;color:${KLEUR.vaag}">${esc(b.staart)}</td></tr>` : ''}
   <tr><td style="padding:24px 28px 28px;font-size:12px;line-height:1.6;color:${KLEUR.vaag};border-top:1px solid ${KLEUR.lijn};margin-top:16px">
-    ${esc(b.voet)}<br>
-    <a href="${esc(b.afmeldUrl)}" style="color:${KLEUR.zellige}">${esc(b.afmeldTekst)}</a> &middot;
-    <a href="${esc(b.wisUrl)}" style="color:${KLEUR.zellige}">${esc(b.wisTekst)}</a>
+    ${esc(b.voet)}${uitschrijven}
   </td></tr>
 </table>
 </td></tr></table>
