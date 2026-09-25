@@ -187,6 +187,14 @@ describe('de lezer op de website', () => {
     }
   })
 
+  it('zet de nieuwere stemmen vooraan', () => {
+    // Een toestel draagt oude compacte stemmen en nieuwe mee, door elkaar in
+    // dezelfde lijst. Welke je krijgt bepaalt of een hoofdstuk om aan te horen
+    // is, en de gebruiker kan dat verschil niet aan de naam zien.
+    expect(lezer).toContain('natural|neural|enhanced|premium|online|siri')
+    expect(lezer).toContain('v.localService === false')
+  })
+
   it('plakt geen vrouwennaam op een mannenstem', () => {
     // De namen worden per groep uitgedeeld en de lijst wordt niet volgemaakt
     // met wat er toevallig over is.

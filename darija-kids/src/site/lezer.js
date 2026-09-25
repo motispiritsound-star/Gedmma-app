@@ -75,12 +75,28 @@
    * er twee — de namen worden op volgorde uitgedeeld, dus dezelfde stem houdt
    * op hetzelfde toestel altijd dezelfde naam.
    */
+  /**
+   * De nieuwe stemmen eerst.
+   *
+   * Toestellen dragen twee soorten met zich mee. De oude, compacte stemmen
+   * zitten in het apparaat en klinken naar 2010; de nieuwe halen hun klank van
+   * een server en klinken bijna als iemand. Ze staan door elkaar in dezelfde
+   * lijst, en welke je krijgt bepaalt of een hoofdstuk om aan te horen is.
+   *
+   * Ze zijn te herkennen aan twee dingen: het woord dat de maker erin zet —
+   * Natural, Neural, Enhanced, Premium, Online — en `localService`, dat vals
+   * is zodra de klank ergens anders vandaan komt. Geen van beide is een
+   * belofte, en samen zijn ze een goede gok.
+   */
+  const NIEUWERE = /natural|neural|enhanced|premium|online|siri/i
+
   const stemmenVoor = (code) => {
     const kort = code.slice(0, 2)
     const land = (v) => ((v.lang || '').replace('_', '-') === code ? 0 : 1)
+    const klank = (v) => (NIEUWERE.test(v.name) ? 0 : v.localService === false ? 1 : 2)
     const passend = stemmen
       .filter((v) => (v.lang || '').replace('_', '-').slice(0, 2) === kort)
-      .sort((a, b) => land(a) - land(b))
+      .sort((a, b) => klank(a) - klank(b) || land(a) - land(b))
 
     const mannen = passend.filter((v) => MANNEN.test(v.name))
     const vrouwen = passend.filter((v) => !MANNEN.test(v.name))
