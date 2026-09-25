@@ -20,7 +20,7 @@
 import { bestellingVan, hashVan, maakSleutel, plekken, tekAan } from './lezer'
 import {
   bezit, koekje, logUit, lidVanEmail, magOpnieuw, maakLink, netjes as netjesEmail,
-  ruimOp, schrijfIn, sessieUit, wieIsDit, wisselIn, zetNieuws,
+  ruimOp, schrijfIn, sessieUit, welkAdres, wieIsDit, wisselIn, zetNieuws,
 } from './portaal'
 import { geheimKlopt, koopbericht, veldenVan } from './koopbericht'
 import { verstuur, type Afzender } from './mail'
@@ -669,25 +669,40 @@ export default {
     const portaal = url.pathname.startsWith('/portaal/')
       || url.pathname === '/lezen' || url.pathname === '/blad'
     if (verzoek.method === 'OPTIONS') {
-      return new Response(null, { headers: portaal ? portaalCors(env) : CORS })
+      return new Response(null, {
+        headers: portaal ? { ...portaalCors(env), 'access-control-allow-origin': welkAdres(env.SITE, verzoek.headers.get('origin')) } : CORS,
+      })
+    }
+
+    /**
+     * Het antwoord krijgt het adres van de bezoeker mee.
+     *
+     * Eén plek, aan de uitgang, in plaats van zestien keer een verzoek
+     * doorgeven aan een functie die er verder niets mee doet.
+     */
+    const metAdres = (antwoord: Response): Response => {
+      if (!portaal) return antwoord
+      const kop = new Headers(antwoord.headers)
+      kop.set('access-control-allow-origin', welkAdres(env.SITE, verzoek.headers.get('origin')))
+      return new Response(antwoord.body, { status: antwoord.status, headers: kop })
     }
 
     try {
-      if (url.pathname === '/aanmelden' && verzoek.method === 'POST') return await aanmelden(verzoek, env)
-      if (url.pathname === '/voortgang' && verzoek.method === 'POST') return await voortgang(verzoek, env)
-      if (url.pathname === '/bevestig') return await bevestig(url, env)
+      if (url.pathname === '/aanmelden' && verzoek.method === 'POST') return metAdres(await aanmelden(verzoek, env))
+      if (url.pathname === '/voortgang' && verzoek.method === 'POST') return metAdres(await voortgang(verzoek, env))
+      if (url.pathname === '/bevestig') return metAdres(await bevestig(url, env))
       // Mail clients unsubscribe with a POST, people with a click.
-      if (url.pathname === '/uitschrijven') return await uitschrijven(url, env)
-      if (url.pathname === '/wissen') return await wissen(url, env)
-      if (url.pathname === '/koop' && verzoek.method === 'POST') return await koop(verzoek, env)
-      if (url.pathname === '/lezen' && verzoek.method === 'POST') return await lezen(verzoek, env)
-      if (url.pathname === '/blad' && verzoek.method === 'POST') return await blad(verzoek, env)
+      if (url.pathname === '/uitschrijven') return metAdres(await uitschrijven(url, env))
+      if (url.pathname === '/wissen') return metAdres(await wissen(url, env))
+      if (url.pathname === '/koop' && verzoek.method === 'POST') return metAdres(await koop(verzoek, env))
+      if (url.pathname === '/lezen' && verzoek.method === 'POST') return metAdres(await lezen(verzoek, env))
+      if (url.pathname === '/blad' && verzoek.method === 'POST') return metAdres(await blad(verzoek, env))
 
-      if (url.pathname === '/portaal/aanmelden' && verzoek.method === 'POST') return await portaalAanmelden(verzoek, env)
-      if (url.pathname === '/portaal/binnen') return await portaalBinnen(url, env)
-      if (url.pathname === '/portaal/mij') return await portaalMij(verzoek, env)
-      if (url.pathname === '/portaal/uit' && verzoek.method === 'POST') return await portaalUit(verzoek, env)
-      if (url.pathname === '/portaal/nieuws' && verzoek.method === 'POST') return await portaalNieuws(verzoek, env)
+      if (url.pathname === '/portaal/aanmelden' && verzoek.method === 'POST') return metAdres(await portaalAanmelden(verzoek, env))
+      if (url.pathname === '/portaal/binnen') return metAdres(await portaalBinnen(url, env))
+      if (url.pathname === '/portaal/mij') return metAdres(await portaalMij(verzoek, env))
+      if (url.pathname === '/portaal/uit' && verzoek.method === 'POST') return metAdres(await portaalUit(verzoek, env))
+      if (url.pathname === '/portaal/nieuws' && verzoek.method === 'POST') return metAdres(await portaalNieuws(verzoek, env))
     } catch (e) {
       console.error(url.pathname, e instanceof Error ? e.message : e)
       return json({ fout: 'ging-mis' }, 500)

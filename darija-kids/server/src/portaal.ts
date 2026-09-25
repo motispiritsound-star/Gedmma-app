@@ -76,6 +76,31 @@ export const koekje = (token: string, site: string | undefined, maxAge: number):
   ].filter(Boolean).join('; ')
 }
 
+/**
+ * Welk adres van de website dit verzoek stuurde.
+ *
+ * De site staat op twee adressen: `darijaforkids.eu` en `www.darijaforkids.eu`.
+ * Cloudflare serveert allebei dezelfde bladzijden, dus een bezoeker die `www`
+ * intypt krijgt een portaal dat er precies zo uitziet — en dat bij elk verzoek
+ * stukloopt, want een browser laat alleen het ene adres door dat hier in de
+ * kop staat. Geen foutmelding op het scherm, alleen een knop die niets doet.
+ *
+ * Vandaar: het adres van de bezoeker terug, als het er een van ons is. Anders
+ * het gewone adres, en dan houdt de browser het verzoek zelf tegen.
+ */
+export const welkAdres = (site: string | undefined, origin: string | null): string => {
+  const thuis = site ?? 'https://darijaforkids.eu'
+  const van = origin
+  if (!van) return thuis
+  try {
+    const hier = new URL(thuis).hostname.replace(/^www\./, '')
+    const daar = new URL(van).hostname
+    if (daar === hier || daar === `www.${hier}`) return van
+  } catch { /* geen geldig adres; dan het gewone. */ }
+  return thuis
+}
+
+
 export const sessieUit = (koek: string | null): string | null => {
   const m = /(?:^|;\s*)dfk_sessie=([0-9a-f]{32})(?:;|$)/.exec(koek ?? '')
   return m ? m[1]! : null
