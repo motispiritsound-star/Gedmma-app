@@ -57,6 +57,12 @@
   --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
   --papier: #fdf8ef;
   --papier-rand: #e9dfcd;
+  /* De inkt op dat papier. Een eigen kleur en niet `--ink`, want in donkere
+     modus wordt die bijna wit — en dan staat er witte inkt op een crème vel.
+     Zie het blok hieronder. */
+  --inkt-papier: #1f1a2e;
+  --inkt-papier-zacht: #6b6375;
+  --papier-knop: #f4ece0;
   --arabic: "Noto Naskh Arabic", serif;
 }
 
@@ -70,6 +76,25 @@
     --line: #26314e;
     --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 16px 40px -20px rgb(0 0 0 / 80%);
     color-scheme: dark;
+
+    /**
+     * Het papier gaat mee de nacht in.
+     *
+     * Dit stond er niet, en daar was niets vaags aan: het vel bleef crème
+     * (#fdf8ef) terwijl de tekst erop bijna wit werd (#f3f0ea). Dat is een
+     * contrast van ongeveer 1,04 op 1 — je ziet letterlijk niets. Elke koper
+     * met donkere modus aan opende zijn betaalde boek en kreeg een leeg vel.
+     *
+     * Niet oplossen door het papier licht te houden: een wit vlak op een
+     * donkere telefoon 's avonds is precies waarom iemand donkere modus aan
+     * heeft staan. Dus warm donker papier met warme lichte inkt — het blijft
+     * een bladzijde, maar dan een die je 's avonds kunt lezen.
+     */
+    --papier: #17130d;
+    --papier-rand: #2e2619;
+    --inkt-papier: #efe6d4;
+    --inkt-papier-zacht: #a89c86;
+    --papier-knop: #251e14;
   }
 }
 
@@ -707,6 +732,7 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
    Alles wat daarna nog opvalt, leidt af. */
 .boek {
   background: var(--papier);
+  color: var(--inkt-papier);
   border: 1px solid var(--papier-rand);
   border-radius: 4px;
   box-shadow: 0 1px 2px rgb(26 22 37 / 5%), 0 18px 40px -26px rgb(26 22 37 / 45%);
@@ -731,7 +757,7 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
   margin: 0 0 .2rem; letter-spacing: -.01em;
 }
 .boek .jaar {
-  font-family: var(--serif); font-style: italic; color: var(--ink-soft);
+  font-family: var(--serif); font-style: italic; color: var(--inkt-papier-zacht);
   margin: 0 0 2rem; font-size: .95rem;
 }
 .boek .leestekst, .boek .bladtekst {
@@ -742,7 +768,7 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
 .boek .leestekst h3 {
   font-family: var(--serif); font-weight: 600; font-size: 1.05rem;
   text-align: center; letter-spacing: .06em; text-transform: uppercase;
-  margin: 2.6rem 0 1.2rem; color: var(--ink-soft);
+  margin: 2.6rem 0 1.2rem; color: var(--inkt-papier-zacht);
 }
 .boek .leestekst h3:first-child { margin-top: 0; }
 .boek .leestekst p { margin: 0; }
@@ -770,7 +796,10 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
 }
 .lezer button:disabled { opacity: .4; cursor: default; }
 .lezer button.terug { display: block; margin: 1.6rem auto 0; }
-.lezer .jaar { color: var(--ink-soft); margin-top: -.5rem; }
+/* `--inkt-papier-zacht` en niet `--ink-soft`: deze regel staat op het papier
+   en niet op de bladzijde eromheen. Met `--ink-soft` werd hij in donkere modus
+   blauwgrijs op warm bruin, het enige stukje dat niet meeging. */
+.lezer .jaar { color: var(--inkt-papier-zacht); margin-top: -.5rem; }
 
 /* De voorleesbalk. Hij blijft bovenaan staan terwijl je verder leest, want
    een pauzeknop die uit beeld is scrollt, is geen pauzeknop. */
@@ -784,9 +813,19 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
   background: var(--papier); border-bottom: 1px solid var(--papier-rand);
 }
 .lezer .leesbalk .speel { min-width: 8.5rem; }
+/* De knoppen op het papier horen bij het papier.
+   `.lezer button` geeft ze `--raised` en `--ink`, en dat is de kleur van de
+   website eromheen: in donkere modus een koel marineblauw chipje op warm
+   bruin, alsof er een stukje menu op de bladzijde is gevallen. */
+.boek .leesbalk button,
+.boek .leesbalk .stemkeuze {
+  background: var(--papier-knop);
+  border-color: var(--papier-rand);
+  color: var(--inkt-papier);
+}
 .boek .stemtip {
   font-family: var(--sans); font-size: .84rem; line-height: 1.55;
-  color: var(--ink-soft); margin: -.8rem 0 1.6rem; max-width: 34rem;
+  color: var(--inkt-papier-zacht); margin: -.8rem 0 1.6rem; max-width: 34rem;
 }
 .boek .stemtip[hidden] { display: none; }
 

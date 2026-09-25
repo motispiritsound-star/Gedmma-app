@@ -300,6 +300,55 @@ console.log('\nDe lezer')
 /* ---------------------------------------------------------------- klaar */
 
 /**
+ * Of je het kunt lezen, ook 's avonds.
+ *
+ * De bladzijde van een boek heeft een eigen kleur papier. Die stond alleen in
+ * de lichte modus, terwijl de tekst erop wél meeging met de donkere: crème
+ * papier (#fdf8ef) met bijna witte inkt (#f3f0ea). Dat is een contrast van
+ * ongeveer 1,04 op 1 — je ziet letterlijk niets. Wie donkere modus aan had
+ * staan, en dat zijn er op een telefoon veel, opende zijn betaalde boek en
+ * kreeg een leeg vel.
+ *
+ * Niemand ziet dat bij toeval: de bouw loopt door, de tekst staat er, en elke
+ * andere controle is groen. Dus wordt het hier gemeten, in allebei de standen.
+ */
+const contrast = (a, b) => {
+  const licht = (kleur) => {
+    const [r, g, b2] = kleur.match(/\d+/g).slice(0, 3).map((v) => {
+      const x = Number(v) / 255
+      return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4
+    })
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b2
+  }
+  const [hoog, laag] = [licht(a), licht(b)].sort((x, y) => y - x)
+  return (hoog + 0.05) / (laag + 0.05)
+}
+
+console.log('\nLicht en donker')
+for (const stand of ['light', 'dark']) {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, colorScheme: stand })
+  const bladzijde = await context.newPage()
+  bladzijde.on('pageerror', (fout) => paginafouten.push(`/leesboeken (${stand}) — ${fout.message}`))
+  await bladzijde.goto(`http://127.0.0.1:${PORT}/leesboeken`, { waitUntil: 'networkidle' })
+  await bladzijde.click('#proefknop')
+  await bladzijde.waitForSelector('#proef .zin', { timeout: 8000 }).catch(() => {})
+  const kleuren = await bladzijde.evaluate(() => {
+    const zin = document.querySelector('#proef .zin')
+    const knop = document.querySelector('#proef .leesbalk .speel')
+    const papier = getComputedStyle(document.querySelector('#proef')).backgroundColor
+    return {
+      papier, tekst: getComputedStyle(zin).color,
+      knopVlak: getComputedStyle(knop).backgroundColor, knopTekst: getComputedStyle(knop).color,
+    }
+  })
+  const tekst = contrast(kleuren.papier, kleuren.tekst)
+  const knop = contrast(kleuren.knopVlak, kleuren.knopTekst)
+  meld(tekst >= 4.5, `${stand}: de tekst op het papier haalt ${tekst.toFixed(1)} : 1`)
+  meld(knop >= 4.5, `${stand}: de voorleesknop haalt ${knop.toFixed(1)} : 1`)
+  await context.close()
+}
+
+/**
  * Waar je met een vinger op kunt tikken.
  *
  * De vragenlijst op de startpagina had de ruimte op de kaart staan en niet op
