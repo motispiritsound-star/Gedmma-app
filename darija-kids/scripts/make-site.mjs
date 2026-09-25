@@ -808,16 +808,36 @@ const booksPage = (lang) => {
    * "binnenkort" — geen dode knop, want een bezoeker die op een knop drukt en
    * niets ziet gebeuren komt niet terug om het nog eens te proberen.
    */
-  const lijst = (titels, bij, reeksId) => `<details class="delenlijst">
+  /**
+   * De delenlijst, met de plaat erbij waar er een is.
+   *
+   * De titel staat ook ín de plaat, en toch staat hij er nog eens onder. Dat
+   * is geen dubbelop: een voorlezer hoort geen plaatje, een zoekmachine leest
+   * er geen titel in, en tien van de vijftien delen van De sleutels hebben
+   * nog helemaal geen plaat. De lijst moet zonder beeld net zo goed werken.
+   */
+  const deelmap = { sbaReeks: 'sba', sleutelsReeks: 'sleutels' }
+  const lijst = (titels, bij, reeksId) => {
+    const map = deelmap[reeksId]
+    const heeft = DEELPLATEN[map]?.[lang] ?? new Set()
+    const plaat = (i) => {
+      const naam = `deel-${String(i + 1).padStart(2, '0')}.webp`
+      return heeft.has(naam)
+        ? `<img src="/reeks/${map}/${lang}/${naam}" alt="" width="1200" height="675" loading="lazy" decoding="async">`
+        : ''
+    }
+    return `<details class="delenlijst">
     <summary>${esc(c.boekDelenKnop(titels.length))}</summary>
     <ol>
-      ${titels.map((titel, i) => `<li>
+      ${titels.map((titel, i) => `<li${plaat(i) ? ' class="metplaat"' : ''}>
+        ${plaat(i)}
         <span class="nr">${esc(c.boekDeelWoord)} ${i + 1}</span>
         <span class="wat"><b>${esc(titel)}</b><i>${esc(bij(i))}</i></span>
       </li>`).join('')}
     </ol>
     <p class="alles">${esc(c.boekAllesSamen(titels.length, SHOP[reeksId].prijs))}</p>
   </details>`
+  }
 
   /**
    * De plaat bij een reeks.
@@ -1516,6 +1536,26 @@ const KUNST = new Set(await readdir(path.join(assets, 'boeken')).catch(() => [])
  */
 await cp(path.join(assets, 'proefdeel'), path.join(OUT, 'proefdeel'), { recursive: true }).catch(() => {})
 const PROEF = new Set(await readdir(path.join(assets, 'proefdeel')).catch(() => []))
+
+/**
+ * De platen bij de delen: één geschilderd tafereel per deel, per taal.
+ *
+ * `site-assets/<reeks>/<taal>/deel-NN.webp`. Ze mogen ontbreken — dan blijft
+ * er in de lijst een regel tekst staan, zoals eerst. De sleutels van Marokko
+ * heeft er vijf en alleen in het Nederlands; Sba heeft er twaalf in zes talen,
+ * gezet met `npm run deelplaten`.
+ */
+await cp(path.join(assets, 'sba'), path.join(OUT, 'reeks', 'sba'), { recursive: true }).catch(() => {})
+await cp(path.join(assets, 'sleutels'), path.join(OUT, 'reeks', 'sleutels'), { recursive: true }).catch(() => {})
+
+const DEELPLATEN = {}
+for (const reeks of ['sba', 'sleutels']) {
+  DEELPLATEN[reeks] = {}
+  for (const taal of LANGS.map((l) => l.code)) {
+    const namen = await readdir(path.join(assets, reeks, taal)).catch(() => [])
+    DEELPLATEN[reeks][taal] = new Set(namen.filter((n) => n.endsWith('.webp')))
+  }
+}
 
 /**
  * Het begin van De olijvenbrand, om te lezen én te horen.

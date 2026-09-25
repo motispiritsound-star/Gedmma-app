@@ -220,6 +220,25 @@ Twee dingen die nog moeten voordat het werkt voor een echte koper:
 2. **Zelf een keer het hele rondje lopen**: kopen, mail, aanmelden, inloggen,
    en kijken of het boek er staat.
 
+### De platen bij de delen
+
+Op de boekenpagina staat in de uitklaplijst per deel een geschilderd tafereel
+met de titel erop: 1200 × 675, linksboven een kaartje met de reeksnaam, de
+titel en het deelnummer met de plaats erachter.
+
+| | |
+| --- | --- |
+| Sba de Atlasleeuw | twaalf delen, zes talen — `npm run deelplaten -- --taal alles` |
+| De sleutels van Marokko | vijf delen, alleen Nederlands — met de hand gemaakt |
+
+Voor Sba komt het tafereel uit `store/prentenboek/platen/<deel>/` en alleen de
+tekst uit de inhoud; verandert er een titel, dan zet je ze opnieuw in plaats
+van ze opnieuw te tekenen. `--groot` geeft 1600 × 900, om ergens te delen.
+
+Ontbreekt een plaat, dan blijft er gewoon een regel tekst staan — dat is wat
+er bij deel 6 tot en met 15 van De sleutels gebeurt, en op de vijf
+niet-Nederlandse bladzijden van die reeks.
+
 ### De lezer op de website
 
 Na het inloggen staat er per gekochte reeks een knop *Lezen en luisteren*.

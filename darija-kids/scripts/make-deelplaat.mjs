@@ -16,6 +16,13 @@
  *   node scripts/make-deelplaat.mjs --deel 3
  *   node scripts/make-deelplaat.mjs --taal fr
  *   node scripts/make-deelplaat.mjs --taal alles
+ *   node scripts/make-deelplaat.mjs --groot            # 1600 × 900, om te delen
+ *
+ * Standaard komt er webformaat uit: 1200 × 675, ruim genoeg voor een scherm
+ * van 390 punten op dubbele dichtheid. Zes talen × twaalf delen op volle
+ * grootte is veertien megabyte in de repo, en die platen worden nergens groter
+ * getoond dan zevenhonderd punten breed. `--groot` geeft de volle maat, voor
+ * als je er eentje ergens wilt neerzetten.
  */
 import { execFileSync } from 'node:child_process'
 import { existsSync } from 'node:fs'
@@ -37,6 +44,10 @@ const arg = (naam, terugval = null) => {
 const ALLEEN = arg('deel') ? Number(arg('deel')) : null
 const GEVRAAGD = arg('taal', 'nl')
 const TALEN = GEVRAAGD === 'alles' ? ['nl', 'fr', 'de', 'es', 'it', 'en'] : [GEVRAAGD]
+const GROOT = process.argv.includes('--groot')
+const BREED = GROOT ? 1600 : 1200
+const HOOG = GROOT ? 900 : 675
+const KWALITEIT = GROOT ? '86' : '78'
 
 /* ------------------------------------------------------------------ laden */
 
@@ -63,13 +74,16 @@ const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 /** Het woord "deel" in de zes talen; kort genoeg om in een pil te passen. */
 const DEELWOORD = { nl: 'DEEL', fr: 'PARTIE', de: 'TEIL', es: 'PARTE', it: 'PARTE', en: 'PART' }
 
+/* De opmaak is op 1600 gezet en wordt daarna geschaald: dan houdt het
+   kaartje op elk formaat dezelfde verhoudingen. */
 const blad = (deel, taal, achtergrond) => {
   const reeks = SITE[taal]?.boekKleinTitel ?? 'Sba de Atlasleeuw'
   return `<!doctype html><html lang="${taal}"><meta charset="utf-8"><style>
   @font-face{font-family:'Baloo 2';src:url(data:font/woff2;base64,${balo800}) format('woff2');font-weight:800}
   @font-face{font-family:'Baloo 2';src:url(data:font/woff2;base64,${balo600}) format('woff2');font-weight:600}
   *{margin:0;padding:0;box-sizing:border-box}
-  body{width:1600px;height:900px;overflow:hidden;position:relative;font-family:'Baloo 2',system-ui,sans-serif}
+  body{width:1600px;height:900px;overflow:hidden;position:relative;font-family:'Baloo 2',system-ui,sans-serif;
+       transform-origin:0 0;transform:scale(${BREED / 1600})}
   .tafereel{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   /* Een kaartje op de plaat in plaats van tekst erop: een geschilderd tafereel
      heeft overal detail, en tekst die daar los overheen ligt wordt op de helft
@@ -82,7 +96,7 @@ const blad = (deel, taal, achtergrond) => {
   .titel{font-weight:800;font-size:76px;line-height:1.02;color:${H.inkt};margin:14px 0 22px;letter-spacing:-.015em}
   .voet{display:flex;align-items:center;gap:26px}
   .pil{background:${H.groen};color:#fff;font-weight:800;font-size:25px;letter-spacing:.09em;
-    padding:9px 30px;border-radius:999px}
+    padding:9px 30px;border-radius:999px;white-space:nowrap}
   .waar{font-weight:600;font-size:31px;color:${H.inkt};opacity:.82;text-transform:uppercase;letter-spacing:.02em}
   </style>
   <img class="tafereel" src="${achtergrond}" alt="">
@@ -103,7 +117,7 @@ const browser = await startChroom()
 let gemaakt = 0
 
 for (const taal of TALEN) {
-  const uit = path.join(ROOT, 'site-assets', 'sba', taal === 'nl' ? '' : taal)
+  const uit = path.join(ROOT, 'site-assets', 'sba', taal)
   await mkdir(uit, { recursive: true })
 
   for (const nl of DELEN) {
@@ -126,7 +140,7 @@ for (const taal of TALEN) {
     const htmlPad = path.join(tmpdir(), `.deelplaat-${taal}-${nl.nummer}.html`)
     await writeFile(htmlPad, blad(deel, taal, pathToFileURL(tafereel).href), 'utf8')
 
-    const bladzijde = await browser.newPage({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 })
+    const bladzijde = await browser.newPage({ viewport: { width: BREED, height: HOOG }, deviceScaleFactor: 1 })
     await bladzijde.goto(pathToFileURL(htmlPad).href, { waitUntil: 'networkidle' })
     const png = path.join(uit, `deel-${String(nl.nummer).padStart(2, '0')}.png`)
     await bladzijde.screenshot({ path: png })
@@ -134,7 +148,7 @@ for (const taal of TALEN) {
     await rm(htmlPad, { force: true })
 
     execFileSync(ffmpeg, ['-y', '-hide_banner', '-loglevel', 'error', '-i', png,
-      '-c:v', 'libwebp', '-quality', '86', '-compression_level', '6', '-preset', 'picture',
+      '-c:v', 'libwebp', '-quality', KWALITEIT, '-compression_level', '6', '-preset', 'picture',
       png.replace(/\.png$/, '.webp')])
     await rm(png)
     gemaakt += 1
@@ -143,4 +157,4 @@ for (const taal of TALEN) {
 }
 
 await browser.close()
-console.log(`\n${gemaakt} platen in site-assets/sba/\n`)
+console.log(`\n${gemaakt} platen van ${BREED} × ${HOOG} in site-assets/sba/\n`)

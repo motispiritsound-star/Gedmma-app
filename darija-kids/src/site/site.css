@@ -332,6 +332,21 @@ header nav a.uit:hover { background: color-mix(in oklab, var(--saffron) 34%, tra
 .delenlijst .wat { display: flex; flex-direction: column; min-width: 0; }
 .delenlijst .wat b { font-weight: 700; }
 .delenlijst .wat i { font-style: normal; font-size: .84rem; color: var(--ink-soft); }
+
+/* Een deel met een geschilderd tafereel erbij. De plaat gaat over de volle
+   breedte en het nummer en de titel eronder — niet ernaast, want dan wordt de
+   plaat een duimnagel en is er niets meer aan te zien. */
+.delenlijst li.metplaat {
+  grid-template-columns: 4.6rem 1fr;
+  gap: .1rem .9rem;
+  padding: 1.1rem .2rem 1.3rem;
+}
+.delenlijst li.metplaat img {
+  grid-column: 1 / -1;
+  width: 100%; height: auto; display: block;
+  border-radius: 10px; margin-bottom: .8rem;
+  box-shadow: 0 1px 2px rgb(26 22 37 / 6%), 0 14px 30px -20px rgb(26 22 37 / 45%);
+}
 .delenlijst .prijs { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .delenlijst .koop, .bundel .koop {
   font-size: .82rem; font-weight: 700; padding: .32rem .8rem; border-radius: 99px;
