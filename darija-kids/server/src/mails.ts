@@ -50,6 +50,25 @@ interface Pakket {
   wissen: string
   voet: string
   /**
+   * De bladzijden die de worker zelf toont, na een tik in een mail.
+   *
+   * Die kregen als kop het woord van de link — "Uitschrijven", een werkwoord
+   * dat zegt wat je gaat doen — en als tekst de voetregel van een mail: "je
+   * krijgt deze mail omdat je je hebt aangemeld". Op een bladzijde die net
+   * heeft gemeld dat je bent uitgeschreven. Dat leest als het tegendeel van
+   * wat er is gebeurd.
+   *
+   * En er staat bij dat gekochte boeken hier losstaan. Anders denkt iemand die
+   * zijn gegevens laat wissen dat hij ook zijn aankoop kwijt is — dat gebeurt
+   * niet, want die staat in een andere tafel.
+   */
+  afgemeldKop: string
+  afgemeldBody: string
+  gewistKop: string
+  gewistBody: string
+  /** De enige link op zo'n bladzijde: terug naar de website. */
+  terug: string
+  /**
    * De mail na het afrekenen.
    *
    * Deze stond als losse tekst in `index.ts`, in het Nederlands, terwijl de
@@ -109,6 +128,11 @@ export const MAILS: Record<Taal, Pakket> = {
     afmelden: 'Uitschrijven',
     wissen: 'Mijn gegevens wissen',
     voet: 'Je krijgt deze mail omdat je je in Darijaforkids hebt aangemeld.',
+    afgemeldKop: 'Je bent uitgeschreven',
+    afgemeldBody: 'Dit adres krijgt geen mail meer van ons. Heb je boeken gekocht, dan blijven die gewoon van jou — die staan hier los van.',
+    gewistKop: 'Je gegevens zijn gewist',
+    gewistBody: 'Dit adres staat niet meer in onze lijst. Heb je boeken gekocht, dan blijven die gewoon van jou — je bestelling staat daar los van.',
+    terug: 'Naar darijaforkids.eu',
   },
   fr: {
     bevestigOnderwerp: 'Cette adresse est bien la vôtre ?',
@@ -145,6 +169,11 @@ export const MAILS: Record<Taal, Pakket> = {
     afmelden: 'Se désinscrire',
     wissen: 'Effacer mes données',
     voet: 'Vous recevez ce message parce que vous vous êtes inscrit dans Darijaforkids.',
+    afgemeldKop: 'Vous êtes désinscrit',
+    afgemeldBody: 'Cette adresse ne recevra plus rien de notre part. Si vous avez acheté des livres, ils restent à vous : c’est indépendant.',
+    gewistKop: 'Vos données sont effacées',
+    gewistBody: 'Cette adresse ne figure plus dans notre liste. Si vous avez acheté des livres, ils restent à vous : votre commande est indépendante.',
+    terug: 'Vers darijaforkids.eu',
   },
   de: {
     bevestigOnderwerp: 'Stimmt diese Adresse?',
@@ -181,6 +210,11 @@ export const MAILS: Record<Taal, Pakket> = {
     afmelden: 'Abmelden',
     wissen: 'Meine Daten löschen',
     voet: 'Du bekommst diese Mail, weil du dich in Darijaforkids angemeldet hast.',
+    afgemeldKop: 'Du bist abgemeldet',
+    afgemeldBody: 'An diese Adresse schreiben wir nicht mehr. Hast du Bücher gekauft, bleiben die deine — das hat hiermit nichts zu tun.',
+    gewistKop: 'Deine Daten sind gelöscht',
+    gewistBody: 'Diese Adresse steht nicht mehr in unserer Liste. Hast du Bücher gekauft, bleiben die deine: deine Bestellung ist davon getrennt.',
+    terug: 'Zu darijaforkids.eu',
   },
   es: {
     bevestigOnderwerp: '¿Es esta tu dirección?',
@@ -217,6 +251,11 @@ export const MAILS: Record<Taal, Pakket> = {
     afmelden: 'Darse de baja',
     wissen: 'Borrar mis datos',
     voet: 'Recibes este correo porque te apuntaste en Darijaforkids.',
+    afgemeldKop: 'Te has dado de baja',
+    afgemeldBody: 'No volveremos a escribir a esta dirección. Si has comprado libros, siguen siendo tuyos: son cosas separadas.',
+    gewistKop: 'Tus datos están borrados',
+    gewistBody: 'Esta dirección ya no está en nuestra lista. Si has comprado libros, siguen siendo tuyos: tu pedido va aparte.',
+    terug: 'Ir a darijaforkids.eu',
   },
   it: {
     bevestigOnderwerp: 'È questo il tuo indirizzo?',
@@ -253,6 +292,11 @@ export const MAILS: Record<Taal, Pakket> = {
     afmelden: 'Cancellati',
     wissen: 'Cancella i miei dati',
     voet: 'Ricevi questa mail perché ti sei iscritto in Darijaforkids.',
+    afgemeldKop: 'Sei cancellato dalla lista',
+    afgemeldBody: 'A questo indirizzo non scriveremo più. Se hai comprato dei libri, restano tuoi: sono cose separate.',
+    gewistKop: 'I tuoi dati sono cancellati',
+    gewistBody: 'Questo indirizzo non è più nella nostra lista. Se hai comprato dei libri, restano tuoi: il tuo ordine è a parte.',
+    terug: 'Vai a darijaforkids.eu',
   },
   en: {
     bevestigOnderwerp: 'Is this address yours?',
@@ -289,5 +333,10 @@ export const MAILS: Record<Taal, Pakket> = {
     afmelden: 'Unsubscribe',
     wissen: 'Erase my data',
     voet: 'You are getting this because you signed up in Darijaforkids.',
+    afgemeldKop: 'You are unsubscribed',
+    afgemeldBody: 'We will not write to this address again. If you bought books, they stay yours — that is separate from this.',
+    gewistKop: 'Your details are erased',
+    gewistBody: 'This address is no longer in our list. If you bought books, they stay yours: your order is separate.',
+    terug: 'Go to darijaforkids.eu',
   },
 }

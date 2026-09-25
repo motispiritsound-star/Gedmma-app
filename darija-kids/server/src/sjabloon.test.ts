@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { briefHtml, briefTekst } from './sjabloon'
+import { briefHtml, briefTekst, pagina } from './sjabloon'
 import { MAILS } from './mails'
 
 /**
@@ -17,6 +17,10 @@ const basis = {
   staart: 'Lukt er iets niet, antwoord dan op deze mail.',
   voet: 'Darijaforkids',
 }
+/** De html van zo'n bladzijde; `pagina` geeft een Response terug. */
+const paginaHtml = (taal: string, site?: string): Promise<string> =>
+  pagina(taal, 'Kop', 'Body', site, site ? 'Terug' : undefined).text()
+
 const koop = { ...basis, afmeldTekst: '', afmeldUrl: '', wisTekst: '', wisUrl: '' }
 const nieuws = {
   ...basis,
@@ -64,5 +68,44 @@ describe('de opmaak van een mail', () => {
   it('laat de platte tekst met rust', () => {
     // Die wordt getoond door wie geen HTML aanneemt, en daar is \n\n juist goed.
     expect(briefTekst(koop)).toContain('Eerste alinea.\n\nTweede alinea.')
+  })
+})
+
+/**
+ * De bladzijden die na een tik in een mail verschijnen.
+ *
+ * Er stond geen enkele link op. Wie net zijn adres had bevestigd stond op een
+ * leeg vlak op post.darijaforkids.eu, met geen menu en geen weg terug — en het
+ * enige wat hij op dat moment wil is naar de site.
+ *
+ * En de tekst zei het tegendeel van wat er gebeurd was: als kop het woord van
+ * de link ("Uitschrijven", een werkwoord) en als body de voetregel van een
+ * mail ("je krijgt deze mail omdat je je hebt aangemeld").
+ */
+describe('een bladzijde van de worker', () => {
+  const TALEN = ['nl', 'fr', 'de', 'es', 'it', 'en'] as const
+
+  it('wijst terug naar de website, in de goede taal', async () => {
+    const site = 'https://darijaforkids.eu'
+    expect(pagina('nl', 'k', 'b', site, 'terug').headers.get('content-type')).toContain('text/html')
+    for (const taal of TALEN) {
+      const html = await paginaHtml(taal, site)
+      const verwacht = taal === 'nl' ? site : `${site}/${taal}`
+      expect(html, taal).toContain(`href="${verwacht}"`)
+    }
+  })
+
+  it('doet het ook zonder, en zet dan geen lege knop neer', async () => {
+    expect(await paginaHtml('nl')).not.toContain('<a href')
+  })
+
+  it.each(TALEN)('zegt in het %s wat er gebeurd is, niet wat de link heette', (taal) => {
+    const m = MAILS[taal]
+    // De kop is een mededeling, geen werkwoord uit een linktekst.
+    expect(m.afgemeldKop).not.toBe(m.afmelden)
+    expect(m.gewistKop).not.toBe(m.wissen)
+    // En de body is niet de voetregel van een mail.
+    expect(m.afgemeldBody).not.toBe(m.voet)
+    expect(m.gewistBody).not.toBe(m.voet)
   })
 })

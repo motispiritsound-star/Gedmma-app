@@ -224,10 +224,10 @@ async function bevestig(url: URL, env: Env): Promise<Response> {
   const rij = await env.DB
     .prepare('SELECT id, email, taal, nieuws, voortgang, status, token FROM aanmelding WHERE token = ?')
     .bind(token).first<Rij>()
-  if (!rij) return pagina('en', 'Deze link werkt niet meer', 'Meld je opnieuw aan in de app onder "Voor ouders".')
+  if (!rij) return pagina('en', 'Deze link werkt niet meer', 'Meld je opnieuw aan in de app onder "Voor ouders".', env.SITE, MAILS.en.terug)
 
   const m = MAILS[taalVan(rij)]
-  if (rij.status === 'bevestigd') return pagina(rij.taal, m.welkomKop, m.welkomBody)
+  if (rij.status === 'bevestigd') return pagina(rij.taal, m.welkomKop, m.welkomBody, env.SITE, m.terug)
 
   await env.DB.prepare("UPDATE aanmelding SET status = 'bevestigd', bevestigd_op = ? WHERE id = ?")
     .bind(nu(), rij.id).run()
@@ -238,7 +238,7 @@ async function bevestig(url: URL, env: Env): Promise<Response> {
   } catch (e) {
     console.error('welkom', rij.id, e instanceof Error ? e.message : e)
   }
-  return pagina(rij.taal, m.welkomKop, m.welkomBody)
+  return pagina(rij.taal, m.welkomKop, m.welkomBody, env.SITE, m.terug)
 }
 
 async function uitschrijven(url: URL, env: Env): Promise<Response> {
@@ -247,13 +247,14 @@ async function uitschrijven(url: URL, env: Env): Promise<Response> {
     .prepare('SELECT id, email, taal, nieuws, voortgang, status, token FROM aanmelding WHERE token = ?')
     .bind(token).first<Rij>()
   // A link that no longer matches anything has already done its job.
-  if (!rij) return pagina('en', 'Uitgeschreven', 'Dit adres staat niet (meer) op de lijst.')
+  if (!rij) return pagina('en', MAILS.en.afgemeldKop, MAILS.en.afgemeldBody, env.SITE, MAILS.en.terug)
 
   await env.DB.prepare(
     "UPDATE aanmelding SET status = 'uitgeschreven', nieuws = 0, voortgang = 0, uitgeschreven_op = ? WHERE id = ?",
   ).bind(nu(), rij.id).run()
   await env.DB.prepare('DELETE FROM voortgang WHERE id = ?').bind(rij.id).run()
-  return pagina(rij.taal, MAILS[taalVan(rij)].afmelden, MAILS[taalVan(rij)].voet)
+  const m = MAILS[taalVan(rij)]
+  return pagina(rij.taal, m.afgemeldKop, m.afgemeldBody, env.SITE, m.terug)
 }
 
 /**
@@ -266,10 +267,11 @@ async function uitschrijven(url: URL, env: Env): Promise<Response> {
 async function wissen(url: URL, env: Env): Promise<Response> {
   const token = url.searchParams.get('t') ?? ''
   const rij = await env.DB.prepare('SELECT id, taal FROM aanmelding WHERE token = ?').bind(token).first<{ id: string; taal: string }>()
-  if (!rij) return pagina('en', 'Gewist', 'Er staat niets meer onder deze link.')
+  if (!rij) return pagina('en', MAILS.en.gewistKop, MAILS.en.gewistBody, env.SITE, MAILS.en.terug)
   await env.DB.prepare('DELETE FROM voortgang WHERE id = ?').bind(rij.id).run()
   await env.DB.prepare('DELETE FROM aanmelding WHERE id = ?').bind(rij.id).run()
-  return pagina(rij.taal, MAILS[isTaal(rij.taal) ? rij.taal : 'en'].wissen, MAILS[isTaal(rij.taal) ? rij.taal : 'en'].voet)
+  const m = MAILS[taalVan(rij)]
+  return pagina(rij.taal, m.gewistKop, m.gewistBody, env.SITE, m.terug)
 }
 
 /**

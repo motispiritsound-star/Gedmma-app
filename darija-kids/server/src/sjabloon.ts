@@ -108,7 +108,24 @@ export function briefTekst(b: Brief): string {
 }
 
 /** The page somebody lands on after clicking a link in a mail. */
-export function pagina(taal: string, kop: string, body: string): Response {
+/**
+ * Waar de website staat voor deze taal.
+ *
+ * Het Nederlands woont op de wortel, de rest achter zijn eigen code. Dat is
+ * dezelfde indeling als `make-site.mjs` schrijft.
+ */
+const naarSite = (site: string, taal: string): string =>
+  taal === 'nl' ? site : `${site}/${taal}`
+
+/**
+ * Een bladzijde die de worker zelf toont, na een tik in een mail.
+ *
+ * Met een weg terug. Zonder stond iemand die net zijn adres had bevestigd op
+ * een leeg vlak op post.darijaforkids.eu — geen menu, geen link, niets. Het
+ * enige wat hij op dat moment wil is naar de site, en dat was precies wat er
+ * niet stond.
+ */
+export function pagina(taal: string, kop: string, body: string, site?: string, terug?: string): Response {
   const html = `<!doctype html>
 <html lang="${esc(taal)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(kop)}</title></head>
@@ -117,6 +134,9 @@ export function pagina(taal: string, kop: string, body: string): Response {
   <div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${KLEUR.saffraan}">Darijaforkids</div>
   <h1 style="margin:12px 0 0;font-size:26px;line-height:1.2">${esc(kop)}</h1>
   <p style="margin:12px 0 0;font-size:16px;line-height:1.55;color:${KLEUR.zacht}">${esc(body)}</p>
+  ${site && terug ? `<p style="margin:24px 0 0">
+    <a href="${esc(naarSite(site, taal))}" style="display:inline-block;background:${KLEUR.saffraan};color:#221a16;font-weight:800;font-size:15px;text-decoration:none;padding:11px 20px;border-radius:12px">${esc(terug)}</a>
+  </p>` : ''}
 </div>
 </body></html>`
   return new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8' } })
