@@ -109,6 +109,23 @@
   .lezen .titelblad p+p,.lezen .vak p+p{text-indent:0;margin-top:0}
   .lezen em{font-style:italic}
 
+  /* Voorlezen: de zin die klinkt krijgt een zachte baan mee. Geen felle kleur —
+     een kind volgt met zijn ogen mee en dat moet rustig blijven. */
+  .zin{border-radius:3px;transition:background-color .18s}
+  .zin.aan{background:color-mix(in srgb, var(--accent) 22%, transparent);
+           box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent)}
+  @media (prefers-reduced-motion:reduce){.zin{transition:none}}
+
+  .speler{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+  .speler .knop{display:inline-flex;align-items:center;gap:.45rem}
+  .speler svg{width:.85em;height:.85em;fill:currentColor}
+  .speler select{min-width:0}
+  .hfd .luister{margin-top:.7rem;font-family:var(--hulp);font-size:.72rem;
+                letter-spacing:.1em;text-transform:uppercase;color:var(--zacht);
+                border:1px solid var(--lijn);border-radius:999px;padding:.3rem .7rem}
+  .hfd .luister:hover{border-color:var(--accent);color:var(--accent)}
+  .geenstem{font-family:var(--hulp);font-size:.78rem;color:var(--zacht)}
+
   /* naast elkaar */
   .paren{display:grid;gap:0 2.4rem;grid-template-columns:1fr 1fr}
   .paren .kolom{min-width:0}
@@ -196,6 +213,92 @@
   const onthoud = (k, v) => { try { localStorage.setItem(k, v) } catch {} }
   const herinner = (k) => { try { return localStorage.getItem(k) } catch { return null } }
 
+  /* ── De voorlezer ──────────────────────────────────────────────────── */
+
+  /**
+   * Voorlezen met de stem die in het toestel zit.
+   *
+   * Geen opgenomen bestanden: die zouden voor negentig boeken in zes talen
+   * uren audio zijn, en dan weet je nog niet of dit de manier van luisteren is
+   * die een kind wil. Dit werkt vandaag, op elke telefoon, en het vertelt je
+   * dat. Bevalt het, dan komen er opnames voor in de plaats en blijft de rest
+   * van deze bladzijde hetzelfde.
+   */
+  const TAALCODE = { nl: 'nl-NL', fr: 'fr-FR', de: 'de-DE', es: 'es-ES', it: 'it-IT', en: 'en-GB' }
+  const spraak = window.speechSynthesis
+  let stemmen = []
+  const laadStemmen = () => { try { stemmen = spraak?.getVoices() ?? [] } catch { stemmen = [] } }
+  if (spraak) { laadStemmen(); spraak.addEventListener?.('voiceschanged', laadStemmen) }
+
+  /** De beste stem voor deze taal: eerst het hele land, anders de taal alleen. */
+  const kiesStem = (code) => {
+    const kort = code.slice(0, 2)
+    return stemmen.find((v) => v.lang?.replace('_', '-') === code)
+      ?? stemmen.find((v) => v.lang?.slice(0, 2) === kort)
+      ?? null
+  }
+  const kanVoorlezen = () => Boolean(spraak) && (stemmen.length > 0 || !spraak.getVoices)
+
+  let zinnen = []
+  let wijzer = 0
+  let speelt = false
+  let tempo = Number(herinner('tempo')) || 0.95
+
+  const toon = () => {
+    const knop = document.getElementById('speelknop')
+    if (knop) knop.innerHTML = speelt ? `${ICOON.pauze} Pauze` : `${ICOON.speel} Voorlezen`
+  }
+
+  const markeer = (i) => {
+    zinnen.forEach((z) => z.classList.remove('aan'))
+    const z = zinnen[i]
+    if (!z) return
+    z.classList.add('aan')
+    const doos = z.getBoundingClientRect()
+    if (doos.top < 90 || doos.bottom > innerHeight - 60) {
+      z.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }
+
+  const stop = () => {
+    speelt = false
+    try { spraak?.cancel() } catch {}
+    zinnen.forEach((z) => z.classList.remove('aan'))
+    toon()
+  }
+
+  const spreek = () => {
+    if (!speelt) return
+    if (wijzer >= zinnen.length) return stop()
+    markeer(wijzer)
+    const zin = new SpeechSynthesisUtterance(zinnen[wijzer].textContent)
+    zin.lang = TAALCODE[taal] ?? 'nl-NL'
+    const stem = kiesStem(zin.lang)
+    if (stem) zin.voice = stem
+    zin.rate = tempo
+    // Een fout op één zin mag het boek niet stilleggen; ga door naar de volgende.
+    zin.onend = () => { if (speelt) { wijzer += 1; spreek() } }
+    zin.onerror = () => { if (speelt) { wijzer += 1; spreek() } }
+    try { spraak.speak(zin) } catch { stop() }
+  }
+
+  /** Vanaf welke zin: waar je gebleven was, of de eerste van een hoofdstuk. */
+  const speel = (vanaf = null) => {
+    if (!spraak) return
+    if (speelt && vanaf === null) return stop()
+    try { spraak.cancel() } catch {}
+    if (vanaf !== null) wijzer = vanaf
+    if (wijzer >= zinnen.length) wijzer = 0
+    speelt = true
+    toon()
+    spreek()
+  }
+
+  const ICOON = {
+    speel: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5v13l11-6.5z"/></svg>',
+    pauze: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2h4v12H3zM9 2h4v12H9z"/></svg>',
+  }
+
   const scherm = document.getElementById('scherm')
   const cache = new Map()
   let plank = null
@@ -249,12 +352,28 @@
   }
 
   /* ── Eén deel ─────────────────────────────────────────────────────── */
-  const alineas = (r) => r.map((p, i) => `<p${i === 0 ? ' class="eerste"' : ''}>${rijk(p)}</p>`).join('')
+  /**
+   * Een alinea, opgedeeld in zinnen.
+   *
+   * De voorlezer spreekt zin voor zin en niet alinea voor alinea. Dat is geen
+   * smaak: een spraakmotor die een alinea van tachtig woorden krijgt, kapt
+   * hem in de meeste browsers na een seconde of vijftien af, en meelezen kan
+   * dan niet meer — je weet niet waar je bent. Eén zin per keer klinkt
+   * natuurlijker, laat zich pauzeren, en geeft precies het stukje tekst dat
+   * kan oplichten.
+   */
+  const alineas = (r, spreekbaar = true) => r.map((p, i) => {
+    const stukken = p.split(/(?<=[.!?…]["'»«”’”]?)\s+/).filter(Boolean)
+    const inhoud = spreekbaar
+      ? stukken.map((z) => `<span class="zin">${rijk(z)}</span>`).join(' ')
+      : rijk(p)
+    return `<p${i === 0 ? ' class="eerste"' : ''}>${inhoud}</p>`
+  }).join('')
 
   const naastElkaar = (nl, vert) => {
     if (!nl || nl.length !== vert.length) return alineas(vert)
     return `<div class="paren">
-      <div class="kolom"><div class="taallabel">Nederlands</div>${alineas(nl)}</div>
+      <div class="kolom"><div class="taallabel">Nederlands</div>${alineas(nl, false)}</div>
       <div class="kolom"><div class="taallabel">${esc(plank[taal].naam)}</div>${alineas(vert)}</div>
     </div>`
   }
@@ -272,6 +391,13 @@
             ${b.hoofdstukken.map((h, i) => `<option value="h${i}">${esc(h.kop)} — ${esc(h.titel)}</option>`).join('')}
             <option value="achterin">${esc(t.achterinKop)}</option>
           </select>
+          ${spraak ? `<span class="speler">
+            <button class="knop" id="speelknop">${ICOON.speel} Voorlezen</button>
+            <select id="tempo" aria-label="Leessnelheid">
+              ${[['0.75', 'Rustig'], ['0.95', 'Gewoon'], ['1.15', 'Vlot']]
+                .map(([v, n]) => `<option value="${v}"${Number(v) === tempo ? ' selected' : ''}>${n}</option>`).join('')}
+            </select>
+          </span>` : '<span class="geenstem">Deze browser kan niet voorlezen.</span>'}
           ${taal === 'nl' ? '' : `<button class="knop ${dubbel ? 'aan' : ''}" id="dubbelknop">Naast het Nederlands</button>`}
         </div>
 
@@ -290,6 +416,7 @@
               <div class="n">${h.kop.replace(/\D+/g, '') || i + 1}</div>
               <div class="k">${esc(h.kop)}</div>
               <h2>${esc(h.titel)}</h2>
+              ${spraak ? `<button class="luister" data-hfd="${i}">Luister vanaf hier</button>` : ''}
             </div>
             ${paren ? naastElkaar(nlBoek.hoofdstukken[i]?.tekst, h.tekst) : alineas(h.tekst)}
           </section>`).join('')}
@@ -312,6 +439,23 @@
       </div>`
 
     document.getElementById('terug').hidden = false
+
+    /* De zinnen van dít boek; de vorige lijst wijst naar weggegooide knopen. */
+    zinnen = [...scherm.querySelectorAll('.zin')]
+    wijzer = 0
+    stop()
+    document.getElementById('speelknop')?.addEventListener('click', () => speel())
+    document.getElementById('tempo')?.addEventListener('change', (e) => {
+      tempo = Number(e.target.value)
+      onthoud('tempo', e.target.value)
+      if (speelt) speel(wijzer)
+    })
+    scherm.querySelectorAll('[data-hfd]').forEach((knop) => knop.addEventListener('click', () => {
+      const eerste = document.getElementById(`h${knop.dataset.hfd}`)?.querySelector('.zin')
+      const plek = zinnen.indexOf(eerste)
+      if (plek >= 0) speel(plek)
+    }))
+
     document.getElementById('sprong').addEventListener('change', (e) => {
       const el = document.getElementById(e.target.value)
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -342,6 +486,7 @@
     nav.innerHTML = Object.entries(plank).map(([code, t]) =>
       `<button data-taal="${code}" aria-pressed="${code === taal}">${esc(t.naam)}</button>`).join('')
     nav.querySelectorAll('[data-taal]').forEach((b) => b.addEventListener('click', () => {
+      stop()
       taal = b.dataset.taal
       onthoud('taal', taal)
       if (taal === 'nl') dubbel = false
@@ -352,10 +497,13 @@
     }))
   }
 
-  const naarPlank = () => { huidig = null; location.hash = 'plank'; toonPlank() }
+  const naarPlank = () => { stop(); huidig = null; location.hash = 'plank'; toonPlank() }
   document.getElementById('terug').addEventListener('click', naarPlank)
   document.getElementById('naarplank').addEventListener('click', naarPlank)
   document.getElementById('sleutelmerk').innerHTML = sleutelSvg(H.lichtGoud)
+
+  addEventListener('pagehide', stop)
+  addEventListener('beforeunload', stop)
 
   const balk = document.getElementById('vordering')
   addEventListener('scroll', () => {
