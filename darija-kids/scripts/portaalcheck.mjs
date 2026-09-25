@@ -149,6 +149,16 @@ console.log('\nDe teaser')
   meld(zinnen > 40, `het begin gaat open en is in zinnen geknipt (${zinnen})`)
   meld(await bladzijde.locator('#proef .leesbalk .speel').count() === 1,
        'met dezelfde voorleesknop als na het afrekenen')
+  /**
+   * De klasse `lezer` moet blijven staan. Hier stond ooit `className = 'boek'`,
+   * en dat gooide hem weg — waarmee ook de opmaak verdween die eraan hangt,
+   * zoals de zin die oplicht. Alles werkte, het zag er alleen anders uit dan op
+   * de andere bladzijde, en niemand kon zeggen waarom.
+   */
+  meld(await bladzijde.locator('#proef.lezer.boek').count() === 1,
+       'het vak houdt zijn opmaak (lezer én boek)')
+  meld(await bladzijde.locator('#proef .leestekst em').count() > 0,
+       'sterretjes uit de brontekst zijn cursief, geen sterretjes')
   const koppen = await bladzijde.locator('#proef h3').count()
   meld(koppen === 3, `drie hoofdstukken, en niet het hele boek (${koppen})`)
   await knop.click()

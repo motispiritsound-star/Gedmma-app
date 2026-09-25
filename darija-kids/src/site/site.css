@@ -48,6 +48,12 @@
   --wrap: 68rem;
 
   --sans: "Baloo 2", ui-rounded, "Segoe UI", system-ui, sans-serif;
+  /* Voor de bladzijden van een boek. Met opzet geen webfont: dit staat op elk
+     toestel al klaar, en een verhaal dat pas leesbaar wordt als er een half
+     megabyte binnen is, is geen boek maar een bladzijde die laadt. */
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+  --papier: #fdf8ef;
+  --papier-rand: #e9dfcd;
   --arabic: "Noto Naskh Arabic", serif;
 }
 
@@ -661,7 +667,50 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
 .lezer .boekjes button:hover { border-color: var(--zellige); color: var(--zellige); }
 .lezer .tip { margin-top: 2rem; font-size: .88rem; color: var(--ink-soft); }
 
-.lezer .boek img { width: 100%; height: auto; display: block; border-radius: var(--radius); }
+/* ── De bladzijde ──────────────────────────────────────────────────────────
+   Een verhaal leest niet als een webpagina, en daar is het ook geen. Vier
+   dingen doen het werk: papier in plaats van scherm, een regellengte waar je
+   oog het eind van de regel terugvindt, een serif, en lucht tussen de regels.
+   Alles wat daarna nog opvalt, leidt af. */
+.boek {
+  background: var(--papier);
+  border: 1px solid var(--papier-rand);
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgb(26 22 37 / 5%), 0 18px 40px -26px rgb(26 22 37 / 45%);
+  padding: clamp(1.6rem, 5vw, 3.5rem) clamp(1.2rem, 5vw, 3.2rem);
+  margin: 1.5rem auto 0;
+  /* Zesenzestig tekens per regel. Langer en je oog raakt bij het terugspringen
+     de volgende regel kwijt; dat is waarom een boek smal is en geen A4. */
+  max-width: 38rem;
+}
+.boek h2 {
+  font-family: var(--serif); font-weight: 600; font-size: clamp(1.5rem, 4vw, 1.9rem);
+  margin: 0 0 .2rem; letter-spacing: -.01em;
+}
+.boek .jaar {
+  font-family: var(--serif); font-style: italic; color: var(--ink-soft);
+  margin: 0 0 2rem; font-size: .95rem;
+}
+.boek .leestekst, .boek .bladtekst {
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(1.02rem, .4vw + 1rem, 1.12rem); line-height: 1.75;
+  hyphens: auto;
+}
+.boek .leestekst h3 {
+  font-family: var(--serif); font-weight: 600; font-size: 1.05rem;
+  text-align: center; letter-spacing: .06em; text-transform: uppercase;
+  margin: 2.6rem 0 1.2rem; color: var(--ink-soft);
+}
+.boek .leestekst h3:first-child { margin-top: 0; }
+.boek .leestekst p { margin: 0; text-align: justify; }
+/* Een nieuwe alinea begint met een inspringing, behalve de eerste na een
+   hoofdstukkop — precies zoals het gedrukt zou staan. Witregels tússen de
+   alinea's hoeven dan niet meer. */
+.boek .leestekst p + p { text-indent: 1.4em; }
+.boek .leestekst h3 + p { text-indent: 0; }
+.boek em { font-style: italic; }
+
+.lezer .boek img { width: 100%; height: auto; display: block; border-radius: 3px; }
 .lezer .balk {
   display: flex; align-items: center; justify-content: center; gap: 1.2rem;
   margin-top: 1rem; font-variant-numeric: tabular-nums;
@@ -679,8 +728,8 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
 .lezer .leesbalk {
   position: sticky; top: 0; z-index: 2;
   display: flex; align-items: center; gap: .8rem; flex-wrap: wrap;
-  padding: .7rem 0; margin-bottom: .4rem;
-  background: var(--surface); border-bottom: 1px solid var(--line);
+  padding: .7rem 0 .9rem; margin: 0 0 1.6rem;
+  background: var(--papier); border-bottom: 1px solid var(--papier-rand);
 }
 .lezer .leesbalk .speel { min-width: 8.5rem; }
 .lezer .stemkeuze {
@@ -688,12 +737,12 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
   background: var(--raised); border: 1px solid var(--line); color: var(--ink);
   max-width: 14rem;
 }
-.lezer .leestekst p { margin: 0 0 1rem; }
 
-/* De voorleestekst onder een bladzijde van een prentenboek. Groter dan de
-   rest: dit leest een ouder hardop voor terwijl een kind naar de plaat kijkt. */
-.lezer .bladtekst { margin: 1rem 0 0; font-size: 1.08rem; line-height: 1.7; }
-.lezer .bladtekst p { margin: 0 0 .6rem; }
+/* De voorleestekst onder een bladzijde van een prentenboek. Hier geen
+   inspringing en geen uitvulling: het zijn losse regels die hardop gaan, geen
+   lopend verhaal. */
+.boek .bladtekst { margin: 1.4rem 0 0; }
+.boek .bladtekst p { margin: 0 0 .7rem; text-indent: 0; }
 
 /* De zin die klinkt. Geen felle kleur: dit staat onder een verhaal dat een
    kind meeleest, en een knipperend vlak leest niemand meer. */

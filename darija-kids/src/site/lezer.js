@@ -73,6 +73,10 @@
    * Een alinea als losse zinnen.
    *
    * Eén span per zin: dat is wat oplicht, en waar het voorlezen op mikt.
+   *
+   * Sterretjes zijn cursief, net als in de gedrukte boeken — `make-sleutels`
+   * doet daar hetzelfde mee. Zonder deze stap staan ze er gewoon: *zo*, en
+   * dan leest een koper asterisken in een verhaal waar hij voor betaald heeft.
    */
   const alineaVan = (tekst) => {
     const p = document.createElement('p')
@@ -80,7 +84,21 @@
       if (!zin) continue
       const span = document.createElement('span')
       span.className = 'zin'
-      span.textContent = zin + ' '
+      const stukken = zin.split('*')
+      // Een oneven aantal sterretjes is een cursief die over de zinsgrens
+      // heen loopt. Dan maar geen cursief; de tekst blijft in elk geval heel.
+      if (stukken.length % 2 === 0) {
+        span.textContent = zin.replace(/\*/g, '') + ' '
+      } else {
+        stukken.forEach((stuk, i) => {
+          if (!stuk) return
+          if (i % 2 === 0) return span.append(document.createTextNode(stuk))
+          const em = document.createElement('em')
+          em.textContent = stuk
+          span.append(em)
+        })
+        span.append(document.createTextNode(' '))
+      }
       p.append(span)
     }
     return p
@@ -215,7 +233,17 @@
    * een jaar, een plaats en hoofdstukken met alinea's.
    */
   const toon = (doel, boek, taal, woorden, sleutel) => {
-    doel.className = 'boek'
+    /**
+     * Erbij, niet in plaats van.
+     *
+     * Hier stond `doel.className = 'boek'`, en dat gooide de klasse `lezer`
+     * weg die het vak op de boekenpagina al had. Daarmee verdween ook de
+     * opmaak die aan `.lezer` hangt — de zin die oplicht bijvoorbeeld. Dat is
+     * de vervelende soort fout: alles werkt, het ziet er alleen anders uit dan
+     * op de andere bladzijde, en niemand kan zeggen waarom.
+     */
+    doel.classList.add('lezer', 'boek')
+    doel.classList.remove('laden', 'soon')
     doel.innerHTML = ''
 
     const kop = document.createElement('h2')

@@ -74,6 +74,9 @@ try {
   process.exit(1)
 }
 
-console.log('\nKlaar. Nu de boeken erin, vanuit darija-kids:\n')
-console.log('  npm run lezen -- --r2                      (de 90 leesboeken)')
-console.log('  npm run bladen -- --taal alles --uploaden  (de prentenboeken)\n')
+console.log('\nKlaar. Nu de boeken erin. Eén opdracht, vanuit darija-kids:\n')
+console.log('  cd ..')
+console.log('  npm run boeken\n')
+console.log('Die zet eerst de leesboeken erin — een halve minuut — en daarna de')
+console.log('prentenboeken, en dat duurt een half uur. Ontbreekt de browser waarmee')
+console.log('die bladzijden geschoten worden, dan haalt hij die er zelf bij.\n')

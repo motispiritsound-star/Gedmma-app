@@ -13,11 +13,44 @@
  * de browser die hij ooit heeft opgehaald. Is er dan nog steeds niets, dan
  * staat er wat je moet doen in plaats van wat er misging.
  */
-import { existsSync } from 'node:fs'
+import { existsSync, readdirSync } from 'node:fs'
+import path from 'node:path'
 import { chromium } from 'playwright'
 
 /** Waar de bouwomgeving hem neerzet; zie PLAYWRIGHT_BROWSERS_PATH. */
-const KLAARGEZET = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
+const KLAARGEZET = '/opt/pw-browsers'
+
+/**
+ * Het pad naar een browser die er echt staat, of niets.
+ *
+ * Drie plekken, in deze volgorde: wat je zelf hebt opgegeven, wat de
+ * bouwomgeving heeft klaargezet, en wat Playwright ooit heeft opgehaald.
+ *
+ * Die tweede wordt uitgezocht in plaats van opgeschreven. Er stond eerst een
+ * vast versienummer in — `chromium-1194` — en dat klopte een halfjaar later
+ * niet meer: dezelfde omgeving had toen `chromium-1243`, en dan zoekt hij
+ * naar een browser die er niet is terwijl er twee mappen verder wel een staat.
+ */
+export function chroomPad() {
+  if (process.env.CHROME_PAD) return process.env.CHROME_PAD
+
+  if (existsSync(KLAARGEZET)) {
+    for (const naam of readdirSync(KLAARGEZET)) {
+      if (!naam.startsWith('chromium-') && naam !== 'chromium') continue
+      for (const romp of ['chrome-linux64/chrome', 'chrome-linux/chrome']) {
+        const kandidaat = path.join(KLAARGEZET, naam, romp)
+        if (existsSync(kandidaat)) return kandidaat
+      }
+    }
+  }
+
+  try {
+    const eigen = chromium.executablePath()
+    if (eigen && existsSync(eigen)) return eigen
+  } catch { /* Playwright heeft er nog nooit een opgehaald. */ }
+
+  return null
+}
 
 /**
  * Start Chromium. Alle opties van `chromium.launch` mogen mee.
@@ -25,7 +58,7 @@ const KLAARGEZET = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
  * Staat je browser ergens anders, zet dan `CHROME_PAD` naar dat bestand.
  */
 export async function startChroom(opties = {}) {
-  const pad = process.env.CHROME_PAD || (existsSync(KLAARGEZET) ? KLAARGEZET : null)
+  const pad = chroomPad()
   try {
     return await chromium.launch(pad ? { executablePath: pad, ...opties } : opties)
   } catch (fout) {
