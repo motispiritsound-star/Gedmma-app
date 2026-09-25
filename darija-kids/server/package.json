@@ -3,9 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "schema": "wrangler d1 execute darijaforkids --remote --file schema.sql",
+    "dev": "npx wrangler dev",
+    "deploy": "npx wrangler deploy",
+    "maak-db": "npx wrangler d1 create darijaforkids",
+    "schema": "npx wrangler d1 execute darijaforkids --remote --file schema.sql",
+    "geheimen": "npx wrangler secret list",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

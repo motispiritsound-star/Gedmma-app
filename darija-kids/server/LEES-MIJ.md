@@ -38,6 +38,53 @@ adres in een formulier typen, en pas die klik maakt er toestemming van.
 - **voortgang** — vijf getallen per aanmelding, elke keer overschreven. Units,
   lessen, woorden, reeks, xp. Meer niet.
 
+## De eerste keer inrichten
+
+In deze map, in deze volgorde. Elke stap hangt van de vorige af, en een stap
+overslaan levert een foutmelding op die iets anders lijkt te zeggen.
+
+```bash
+npm install                 # anders bestaat wrangler hier niet
+npm run maak-db             # maakt de database en drukt een database_id af
+```
+
+Zet dat `database_id` in `wrangler.toml`, op de plek waar nu
+`vul-hier-het-id-in` staat. Daarna:
+
+```bash
+npm run schema              # zet alle tafels neer; veilig om te herhalen
+npm run deploy
+```
+
+### De drie geheimen
+
+Ze staan nooit in een bestand en nooit in git. `npx wrangler secret put <naam>`
+vraagt om de waarde en stuurt hem rechtstreeks door.
+
+| | |
+|---|---|
+| `MAIL_SLEUTEL` | de API-sleutel van Brevo; zonder deze verstuurt niets |
+| `ZOUT` | willekeurige tekens, om een IP te hashen. Verzin er veertig |
+| `KOOP_GEHEIM` | gedeeld met de betaalpartner, zodat alleen die een verkoop kan melden |
+
+Voor de laatste twee wil je iets wat niemand raadt. Laat je machine het
+verzinnen in plaats van zelf te typen — in PowerShell:
+
+```powershell
+$geheim = -join (1..48 | ForEach-Object { '{0:x}' -f (Get-Random -Maximum 16) })
+$geheim | npx wrangler secret put KOOP_GEHEIM
+$geheim                      # dit is wat je bij de betaalpartner invult
+```
+
+Controleer achteraf met `npm run geheimen` of alle drie er staan.
+
+### En bij de betaalpartner
+
+Zet een ping of webhook naar `https://post.darijaforkids.eu/koop`, met de kop
+`x-darija-geheim` op de waarde van `KOOP_GEHEIM`. Zonder die melding weet het
+portaal niet wie wat gekocht heeft, en blijft iemands bibliotheek leeg terwijl
+hij wél betaald heeft.
+
 ## De wegen
 
 | | |
