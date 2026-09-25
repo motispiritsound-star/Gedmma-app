@@ -1139,6 +1139,12 @@ const checkoutPage = (lang) => {
   <h2>${esc(c.afrekenVraagTitel)}</h2>
   <p><a class="mailbtn" href="${mailto}?subject=${encodeURIComponent(c.afrekenTitel)}">${esc(c.menu.contact)}</a>
      <a class="mailbtn zacht" href="${p.books}">${esc(c.boekTitel)}</a></p>
+
+  <!-- Wie er achter deze winkel zit, op de bladzijde waar iemand besluit te
+       kopen. Hij staat ook op de voorwaarden en de privacyverklaring, maar
+       niemand klikt daarheen vóór hij betaalt — en dit is precies het moment
+       waarop je wilt kunnen zien met wie je zaken doet. -->
+  <div class="two" style="margin-top:2.5rem">${traderTable(lang)}</div>
 </div>`
 
   return layout({
