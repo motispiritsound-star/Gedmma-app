@@ -226,6 +226,27 @@ const footer = (lang) => {
  * service worker, which would happily keep handing the old app to anybody who
  * had visited before. It unregisters itself and empties the caches.
  */
+/**
+ * De omschrijving inkorten tot wat een zoekmachine laat zien.
+ *
+ * Google kapt rond de honderdzestig tekens af, midden in een woord, met een
+ * beletselteken erachter. Zestien bladzijden zaten daarboven — de
+ * geschiedenispagina's op ruim tweehonderdveertig — omdat de omschrijving
+ * gewoon de inleiding van de bladzijde was.
+ *
+ * Afkappen op een zinseinde als dat kan, anders op een woordgrens. Dat is
+ * beter dan de teksten herschrijven: een inleiding hoort te lezen als een
+ * inleiding, en dit is een ander veld met een andere maat.
+ */
+const kort = (tekst, max = 155) => {
+  const heel = String(tekst).replace(/\s+/g, ' ').trim()
+  if ([...heel].length <= max) return heel
+  const stuk = [...heel].slice(0, max + 1).join('')
+  const zin = stuk.search(/[.!?](?=[^.!?]*$)/)
+  if (zin >= max * 0.6) return stuk.slice(0, zin + 1)
+  return `${stuk.slice(0, stuk.lastIndexOf(' ')).replace(/[,;:–—-]$/, '')}…`
+}
+
 const layout = ({ lang, page, title, description, body, ogImage = '/og.png', geenIndex = false, kaalNav = false }) => {
   const canonical = SITE_URL + PATHS[lang][page === 'home' ? 'home' : page]
   const alternates = LANGS.map((l) =>
@@ -237,7 +258,7 @@ const layout = ({ lang, page, title, description, body, ogImage = '/og.png', gee
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>${esc(title)}</title>
-  <meta name="description" content="${esc(description)}">
+  <meta name="description" content="${esc(kort(description))}">
   <meta name="theme-color" content="#0d1220">
   <link rel="canonical" href="${canonical}">
   ${geenIndex ? '<meta name="robots" content="noindex, nofollow">' : ''}
@@ -250,7 +271,7 @@ const layout = ({ lang, page, title, description, body, ogImage = '/og.png', gee
   <meta property="og:site_name" content="Darijaforkids">
   <meta property="og:locale" content="${localeOf(lang).replace('-', '_')}">
   <meta property="og:title" content="${esc(title)}">
-  <meta property="og:description" content="${esc(description)}">
+  <meta property="og:description" content="${esc(kort(description))}">
   <meta property="og:url" content="${canonical}">
   <meta property="og:image" content="${SITE_URL}${ogImage}">
   <meta name="twitter:card" content="summary_large_image">
@@ -601,7 +622,7 @@ const docPage = (lang, page, text, extra = '') => {
     lang, page,
     body,
     title: `${text.title} — Darijaforkids`,
-    description: text.intro.slice(0, 180),
+    description: text.intro,
   })
 }
 

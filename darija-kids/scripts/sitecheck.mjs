@@ -143,6 +143,31 @@ for (const pad of pagina) {
   }
 }
 
+/* ---------------------------------------------------------- de omschrijving */
+
+/**
+ * Wat een zoekmachine onder een zoekresultaat zet.
+ *
+ * Google kapt af rond de honderdzestig tekens, midden in een woord. Zestien
+ * bladzijden zaten daarboven — de geschiedenispagina's op ruim
+ * tweehonderdveertig — omdat de omschrijving simpelweg de inleiding van de
+ * bladzijde was. `kort()` in `make-site.mjs` knipt nu op een zinseinde; dit
+ * bewaakt dat er geen bladzijde langs komt die daar omheen gaat.
+ *
+ * En dat er één ís: een bladzijde zonder omschrijving laat Google zelf een
+ * zin uitkiezen, en die keus valt zelden goed uit.
+ */
+const MAXOM = 160
+
+for (const pad of pagina) {
+  const html = await readFile(pad, 'utf8')
+  const kortpad = path.relative(MAP, pad)
+  const om = html.match(/<meta name="description" content="([^"]*)"/)?.[1]
+  if (!om) { fouten.push(`${kortpad}: geen omschrijving`); continue }
+  const n = [...om].length
+  if (n > MAXOM) fouten.push(`${kortpad}: de omschrijving is ${n} tekens, meer dan ${MAXOM}`)
+}
+
 /* ----------------------------------------------------------------- extern */
 
 if (EXTERN) {
