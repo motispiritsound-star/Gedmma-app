@@ -847,9 +847,12 @@ const booksPage = (lang) => {
    * Zolang hij er niet is blijft de tekening staan, zodat de pagina nooit een
    * gat heeft.
    */
-  const kunstwerk = (bestand, terugval, alt) => KUNST.has(bestand)
-    ? `<img src="/boeken/${bestand}" alt="${esc(alt)}" loading="lazy" decoding="async">`
-    : terugval
+  const kunstwerk = (bestand, terugval, alt) => {
+    const eigen = KUNSTTAAL[lang]?.has(bestand)
+    if (!eigen && !KUNST.has(bestand)) return terugval
+    const bron = eigen ? `/boeken/${lang}/${bestand}` : `/boeken/${bestand}`
+    return `<img src="${bron}" alt="${esc(alt)}" loading="lazy" decoding="async">`
+  }
 
   const leeuw = kunstwerk('sba.webp',
     `<svg viewBox="0 0 300 230" aria-hidden="true">${sba(150, 80, 1.5, { tas: false })}</svg>`,
@@ -1548,7 +1551,23 @@ for (const entry of ['shots', 'film']) {
  * kapot, alleen minder mooi.
  */
 await cp(path.join(assets, 'boeken'), path.join(OUT, 'boeken'), { recursive: true }).catch(() => {})
+/**
+ * Welke omslag er per taal ligt.
+ *
+ * De omslag van deel 1 staat op de boekenpagina naast de reeks, en hij is in
+ * elke taal anders: het boek dat een Franse bezoeker koopt heet "L'incendie
+ * des olives" en niet "De olijvenbrand". Er lag er lang maar één — de
+ * Nederlandse — naast alle zes de taalversies.
+ *
+ * `boeken/<taal>/` gaat nu voor, `boeken/` is de terugval. Zo blijft een taal
+ * waarvoor nog niets gemaakt is een omslag houden in plaats van een gat, en
+ * hoeft het Nederlands niet te verhuizen.
+ */
 const KUNST = new Set(await readdir(path.join(assets, 'boeken')).catch(() => []))
+const KUNSTTAAL = {}
+for (const taal of LANGS.map((l) => l.code)) {
+  KUNSTTAAL[taal] = new Set(await readdir(path.join(assets, 'boeken', taal)).catch(() => []))
+}
 
 /**
  * Het gratis eerste deel, in zes talen.

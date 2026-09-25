@@ -9,7 +9,7 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 924, groen |
+| Tests | 927, groen |
 | Google Play | 2 (1.1) in review; 3 (1.2) is gebouwd en wacht op upload |
 | App Store | 1.0 (build 5) **opnieuw ingediend** op 25 september, wacht op beoordeling |
 
@@ -246,6 +246,29 @@ die ook op zijn boek staat — "The Keys of Morocco" en niet "De sleutels van
 Marokko", want dat laatste staat nergens in zijn zip. Dat was tot 25 september
 niet zo: elke koper kreeg een Nederlandse mail. Het zit nu in `MAILS` bij de
 andere mails, met een test per taal.
+
+### De omslagen en de titels
+
+Naast elke reeks op de boekenpagina staat de omslag van deel 1. Die tekent de
+zetter al mee in de pdf, en `--omslag` schrijft hem weg als plaatje — maar dat
+was één keer gedaan, in het Nederlands, en die ene omslag stond naast alle zes
+de taalversies. Een Franse bezoeker las "Les clés du Maroc" met daarnaast een
+omslag waarop "DE SLEUTELS VAN MAROKKO · De olijvenbrand · DEEL 1 VAN
+VIJFTIEN" stond.
+
+`npm run omslagen` maakt ze alle twaalf: twee reeksen × zes talen. Er hoefde
+niets getekend te worden. `make-site.mjs` pakt `site-assets/boeken/<taal>/` en
+valt terug op `site-assets/boeken/` — daar blijft het Nederlands staan, zodat
+een taal zonder eigen omslag er wel een houdt.
+
+**De titels komen nu uit de boeken zelf.** Ze stonden dubbel: de verhalen
+hadden hun vertaling en `src/site/delen.ts` had er nog een, met de hand
+overgeschreven. Achtenvijftig van de honderdvijfendertig liepen uit elkaar —
+en niet alleen in een woordje. Op de Spaanse pagina stond *Sba y el médico de
+la medina* terwijl het boek *la doctora* heet: een ander personage. De winkel
+beloofde boeken die onder die naam niet bestaan. `delen.ts` leest nu uit
+`src/content/`, met het Nederlands als terugval, en er staat een test op die
+valt zodra een deel in een taal onvertaald blijft.
 
 ### De platen bij de delen
 

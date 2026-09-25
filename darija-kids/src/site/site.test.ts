@@ -10,6 +10,9 @@ import { allWords } from '../content/lexicon'
 import { ALL_SENTENCES } from '../content/sentences'
 import { LETTERS } from '../content/alphabet'
 import { UNITS } from '../content/curriculum'
+import { VERTALINGEN } from '../content/prentenboek-talen'
+import { SLEUTEL_VERTALINGEN } from '../content/sleutels-talen'
+import { DELEN } from './delen'
 
 /**
  * The website makes claims with numbers in them. A claim is a promise, and a
@@ -157,6 +160,48 @@ describe('de handelsgegevens', () => {
 
   it('zijn ook echt ingevuld', () => {
     expect(traderKnown()).toBe(true)
+  })
+})
+
+/**
+ * De titels in de winkel zijn de titels op de boeken.
+ *
+ * Ze stonden los van elkaar: de verhalen hadden hun eigen vertaling en de
+ * boekenpagina had er nog een. Achtenvijftig van de honderdvijfendertig
+ * liepen uit elkaar, en niet alleen in een woordje — op de Spaanse pagina
+ * stond "Sba y el médico de la medina" terwijl het boek "la doctora" heet.
+ *
+ * `delen.ts` leest nu uit de inhoud, dus dat kan niet meer verschillen. Wat
+ * wél nog kan, is dat een deel in een taal helemaal geen vertaling heeft: dan
+ * valt de titel terug op het Nederlands en staat er ineens één Nederlandse
+ * regel in een Franse lijst. Dat is wat hier wordt bewaakt.
+ */
+describe('de titels van de delen', () => {
+  const TALEN = ['nl', 'fr', 'de', 'es', 'it', 'en']
+
+  it('zijn er voor elk deel van beide reeksen', () => {
+    for (const taal of TALEN) {
+      expect(DELEN[taal]?.sba, taal).toHaveLength(12)
+      expect(DELEN[taal]?.sleutels, taal).toHaveLength(15)
+    }
+  })
+
+  it('zijn in elke taal ook echt vertaald', () => {
+    const nl = DELEN.nl
+    for (const taal of TALEN.filter((t) => t !== 'nl')) {
+      for (const reeks of ['sba', 'sleutels'] as const) {
+        DELEN[taal]?.[reeks].forEach((titel, i) => {
+          expect(titel, `${taal} ${reeks} deel ${i + 1} is niet vertaald`).not.toBe(nl?.[reeks][i])
+        })
+      }
+    }
+  })
+
+  it('komen uit het boek en niet uit een tweede lijst', () => {
+    // Steekproef op de drie die het ergst uit elkaar liepen.
+    expect(DELEN.fr?.sleutels[0]).toBe(SLEUTEL_VERTALINGEN.fr?.[1]?.titel)
+    expect(DELEN.es?.sba[8]).toBe(VERTALINGEN.es?.[9]?.titel)
+    expect(DELEN.en?.sleutels[6]).toBe(SLEUTEL_VERTALINGEN.en?.[7]?.titel)
   })
 })
 

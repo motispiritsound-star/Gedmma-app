@@ -67,6 +67,7 @@
     "boekplaten": "node scripts/make-prentenboek.mjs --deel 1 --omslag site-assets/boeken/sba.webp && node scripts/make-sleutels.mjs --deel 1 --omslag site-assets/boeken/sleutel.webp",
     "deelplaten": "node scripts/make-deelplaat.mjs",
     "sleutelplaten": "node scripts/make-sleutelplaat.mjs",
+    "omslagen": "node scripts/make-omslagen.mjs",
     "lezen": "node scripts/leesuitgave.mjs",
     "boeken": "node scripts/boeken-erin.mjs",
     "vertelstem": "node scripts/make-vertelstem.mjs"
