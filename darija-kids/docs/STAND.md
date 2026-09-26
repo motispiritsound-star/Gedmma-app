@@ -107,6 +107,10 @@ nakijkt. Ze staan hier omdat ze pas opvallen als het te laat is.
 | `npm run schema` | het schema op de database (mag altijd opnieuw) |
 | `npm run koopgeheim` | nieuw geheim, en het hele Gumroad-adres erbij |
 
+Ze draaien alle vier vanuit de projectmap. Wil je er niet eerst heen, gebruik
+dan `npm --prefix <de projectmap> run <naam>` — dat werkt vanuit elke map en
+kan dus niet op de verkeerde plek terechtkomen.
+
 `npm run schema` mag zo vaak als je wilt: `server/schema.sql` bestaat uit
 niets dan `CREATE TABLE IF NOT EXISTS` en `CREATE INDEX IF NOT EXISTS`, dus
 bestaande tafels blijven zoals ze zijn met alles wat erin staat. Dat is met

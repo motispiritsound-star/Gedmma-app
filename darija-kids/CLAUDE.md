@@ -31,6 +31,20 @@ Windows PowerShell, geen bash en geen PowerShell 7. Dat betekent:
 - **Zet de map erbij** als het ertoe doet. Hij start in zijn thuismap, en een
   `npm run` daar levert een foutmelding op over een ontbrekende
   `package.json` die niets zegt over wat er echt mis is.
+- **Beter nog: geen `cd`, maar `npm --prefix`.**
+
+  ```powershell
+  npm --prefix <de projectmap> run deploy
+  ```
+
+  Dat werkt vanuit elke map, dus het kán niet op de verkeerde plek gedraaid
+  worden. Een `cd` is een tweede regel die apart mis kan gaan, en een `cd` die
+  je vergeet valt pas op bij de foutmelding erna — die dan over iets anders
+  gaat. Nagelopen vanuit `/tmp` en vanuit `/`: beide scripts draaien gewoon.
+
+  Twee opdrachten achter elkaar blijven twee regels. PowerShell kent `;` als
+  scheiding, maar die voert de tweede ook uit als de eerste omviel, en bij een
+  uitrol is dat precies verkeerd.
 - **En nooit met puntjes erin.** `cd C:\...\darija-kids\server` is letterlijk
   geplakt, mét de puntjes, en dat is geen slordigheid: het staat in een blok
   dat eruitziet als iets dat werkt. Ken je het pad niet, geef dan de regel die
