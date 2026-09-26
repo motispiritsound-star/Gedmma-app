@@ -56,7 +56,11 @@ if (gevonden.length === 0) {
   if (gevonden.length > 1) console.log('\nWerkt de eerste niet, probeer dan de volgende.')
 }
 console.log('\nTelefoon en computer moeten op hetzelfde wifi zitten.')
-console.log('Stoppen: Ctrl+C\n')
+console.log('\nWat je hier niet ziet, en wat dus geen fout is: de naspreekoefening')
+console.log('zegt "geen microfoon". Een browser geeft de microfoon alleen vrij op')
+console.log('https, en dit adres is http. Ook het startscherm en de abonnementen')
+console.log('horen bij de winkelversie; die test je via TestFlight, zie docs/MAC.md.')
+console.log('\nStoppen: Ctrl+C\n')
 console.log('─'.repeat(52) + '\n')
 
 spawn(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['vite', 'preview', '--port', String(POORT), '--host'], {
