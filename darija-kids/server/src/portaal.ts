@@ -55,6 +55,25 @@ export const SESSIE_GELDIG = 90 * 24 * 60 * 60
 export const WACHTTIJD = 60
 
 /**
+ * Hoeveel inlogmails er per uur vanaf één plek de deur uit mogen.
+ *
+ * `WACHTTIJD` hierboven remt per lid, en dat is geen rem: wie elke keer een
+ * ander adres invult maakt elke keer een nieuw lid, en dan mag hij meteen
+ * weer. Zo kan een vreemde onbeperkt post versturen onder onze naam, naar
+ * adressen die daar niet om gevraagd hebben.
+ *
+ * Wat dat kost is niet de mail zelf maar de afzender: de ontvangers melden
+ * hem aan als spam, post@darijaforkids.eu raakt geblokkeerd, en daarna komt
+ * de inloglink van een koper die wél betaald heeft ook niet meer aan. En de
+ * dagelijkse ruimte bij de mailpartner is in minuten op.
+ *
+ * Twaalf is ruim voor een huishouden achter één adres en ook voor een
+ * mobiele aanbieder die honderd klanten achter hetzelfde ip zet; voor iemand
+ * die duizenden mails wil sturen is het het einde.
+ */
+export const MAILS_PER_UUR = 12
+
+/**
  * De koekjesregel.
  *
  * Op het hoofddomein en niet op de subdomein waar deze worker draait, want de
@@ -156,6 +175,33 @@ export async function magOpnieuw(db: D1Database, lidId: string): Promise<boolean
     .bind(lidId)
     .first<{ gemaakt_op: number }>()
   return !rij || nu() - rij.gemaakt_op >= WACHTTIJD
+}
+
+/** Het uur waarin we nu zitten, als sleutel: `2026-09-26T14`. */
+const ditUur = (): string => new Date().toISOString().slice(0, 13)
+
+/**
+ * Mag er vanaf deze plek nog een mail uit?
+ *
+ * Het antwoord verandert niets aan wat de bezoeker te zien krijgt — dat is
+ * altijd hetzelfde, anders is dit een manier om te vragen welke adressen
+ * bestaan. Het bepaalt alleen of er werkelijk iets verstuurd wordt.
+ */
+export async function magMailen(db: D1Database, ipHash: string): Promise<boolean> {
+  const rij = await db
+    .prepare('SELECT aantal FROM mailteller WHERE ip_hash = ? AND uur = ?')
+    .bind(ipHash, ditUur())
+    .first<{ aantal: number }>()
+  return (rij?.aantal ?? 0) < MAILS_PER_UUR
+}
+
+/** Eén mail erbij op de teller van deze plek. */
+export async function telMail(db: D1Database, ipHash: string): Promise<void> {
+  await db
+    .prepare(`INSERT INTO mailteller (ip_hash, uur, aantal) VALUES (?, ?, 1)
+              ON CONFLICT (ip_hash, uur) DO UPDATE SET aantal = aantal + 1`)
+    .bind(ipHash, ditUur())
+    .run()
 }
 
 /** Een inloglink: eenmalig, een half uur geldig, en alleen als hash bewaard. */
@@ -283,6 +329,12 @@ export async function ruimOp(db: D1Database): Promise<number> {
   const uit = await db
     .prepare('DELETE FROM sessie WHERE verloopt_op < ?')
     .bind(nu())
+    .run()
+  /* De maltellers van gisteren en ouder. Ze remmen per uur, dus alles wat
+     verder terug ligt doet niets meer dan ruimte innemen. */
+  await db
+    .prepare('DELETE FROM mailteller WHERE uur < ?')
+    .bind(new Date(Date.now() - 864e5).toISOString().slice(0, 13))
     .run()
   return uit.meta?.changes ?? 0
 }

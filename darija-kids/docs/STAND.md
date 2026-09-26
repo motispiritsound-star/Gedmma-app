@@ -9,7 +9,7 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 958, groen |
+| Tests | 965 + 62 in de worker, groen |
 | Google Play | 2 (1.1) in review; 3 (1.2) is gebouwd en wacht op upload |
 | App Store | 1.0 (build 5) **opnieuw ingediend** op 25 september, wacht op beoordeling |
 
@@ -98,13 +98,21 @@ nakijkt. Ze staan hier omdat ze pas opvallen als het te laat is.
    geldt het Families-beleid — geen advertenties van derden, geen trackers. De
    app voldoet daar al aan, maar het moet kloppen met wat er staat.
 
-### Drie opdrachten die geen pad en geen waarde meer vragen
+### Vier opdrachten die geen pad en geen waarde meer vragen
 
 | | |
 |---|---|
 | `npm run inloggen` | één keer, wrangler bij Cloudflare |
 | `npm run deploy` | de worker uitrollen |
+| `npm run schema` | het schema op de database (mag altijd opnieuw) |
 | `npm run koopgeheim` | nieuw geheim, en het hele Gumroad-adres erbij |
+
+`npm run schema` mag zo vaak als je wilt: `server/schema.sql` bestaat uit
+niets dan `CREATE TABLE IF NOT EXISTS` en `CREATE INDEX IF NOT EXISTS`, dus
+bestaande tafels blijven zoals ze zijn met alles wat erin staat. Dat is met
+opzet zo gehouden — een schema dat je alleen in het begin mag draaien, moet bij
+de eerstvolgende uitbreiding met de hand, en dat is precies de stap die je
+vergeet. Met `--hier` gaat het naar de lokale kopie, om te proberen.
 
 Ze draaien alle drie vanuit `darija-kids` — geen `cd server` meer. Dat was
 niet luxe: `cd C:\...\darija-kids\server` is een keer letterlijk geplakt,
@@ -310,6 +318,24 @@ Hij hangt aan zijn eigen adres: **post.darijaforkids.eu**, aangelegd door
 het domein op de nameservers van Cloudflare draait zet wrangler de DNS-regel
 er zelf bij. Het adres op `workers.dev` staat voorlopig nog aan om op te
 testen; zodra het eigen adres antwoordt mag `workers_dev = false`.
+
+**De rem op het versturen van mail.** Het portaal stuurt een inloglink naar
+elk adres dat iemand invult. De rem daarop stond per lid — zestig seconden
+tussen twee links — en die stapt een vreemde zo voorbij: vul elke keer een
+ánder adres in, dan is het elke keer een nieuw lid en mag het meteen weer. Zo
+kon de worker gebruikt worden om onbeperkt post te versturen onder onze naam.
+
+Wat dat kost is niet de mail zelf maar de afzender: de ontvangers melden hem
+aan als spam, `post@darijaforkids.eu` raakt geblokkeerd, en daarna komt de
+inloglink van iemand die wél betaald heeft ook niet meer aan. En de dagelijkse
+ruimte bij Brevo is in minuten op.
+
+Er is nu een teller per plek en per uur (tafel `mailteller`, twaalf mails),
+vóór álle paden die mail versturen. Het antwoord aan de bezoeker verandert er
+niet door — anders is dit een manier om te vragen welke adressen bestaan.
+
+**Draai daarom `npm run schema` vóór de volgende `npm run deploy`**, anders
+zoekt de worker een tafel die er niet is.
 
 Twee dingen die nog moeten voordat het werkt voor een echte koper:
 

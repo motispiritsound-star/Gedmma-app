@@ -95,6 +95,25 @@ CREATE TABLE IF NOT EXISTS opening (
   PRIMARY KEY (bestelling_id, dag, ip_hash)
 );
 
+-- Hoeveel mail er het afgelopen uur vanaf één plek is aangevraagd.
+--
+-- Het portaal stuurt een inloglink naar elk adres dat je invult. De rem daarop
+-- stond per lid — zestig seconden tussen twee links — en die rem stapt een
+-- vreemde zo voorbij door elke keer een ander adres in te typen. Dan is dit
+-- geen portaal meer maar een spuit waarmee iedereen post kan versturen onder
+-- onze naam: de ontvanger meldt hem aan als spam, het afzenderadres raakt
+-- geblokkeerd, en daarna komt de inloglink van een échte koper ook niet meer
+-- aan. Die is de dupe, niet de spammer.
+--
+-- Vandaar een teller per plek en per uur. Geen ip erin, alleen een hash
+-- ervan, net als bij `opening`.
+CREATE TABLE IF NOT EXISTS mailteller (
+  ip_hash TEXT NOT NULL,
+  uur     TEXT NOT NULL,
+  aantal  INTEGER NOT NULL DEFAULT 1,
+  PRIMARY KEY (ip_hash, uur)
+);
+
 -- ------------------------------------------------------------- het portaal
 --
 -- Eén adres, en alles wat daarbij hoort. De nieuwsbrieflijst en de

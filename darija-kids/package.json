@@ -69,6 +69,7 @@
     "sleutelplaten": "node scripts/make-sleutelplaat.mjs",
     "omslagen": "node scripts/make-omslagen.mjs",
     "deploy": "node scripts/deploy.mjs",
+    "schema": "node scripts/schema.mjs",
     "inloggen": "node scripts/inloggen.mjs",
     "koopgeheim": "node scripts/koopgeheim.mjs",
     "lezen": "node scripts/leesuitgave.mjs",

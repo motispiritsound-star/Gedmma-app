@@ -19,8 +19,8 @@
  */
 import { bestellingVan, hashVan, maakSleutel, plekken, tekAan } from './lezer'
 import {
-  bezit, koekje, logUit, lidVanEmail, magOpnieuw, maakLink, netjes as netjesEmail,
-  ruimOp, schrijfIn, sessieUit, welkAdres, wieIsDit, wisselIn, zetNieuws,
+  bezit, koekje, logUit, lidVanEmail, magMailen, magOpnieuw, maakLink, netjes as netjesEmail,
+  ruimOp, schrijfIn, sessieUit, telMail, welkAdres, wieIsDit, wisselIn, zetNieuws,
 } from './portaal'
 import { geheimKlopt, koopbericht, veldenVan } from './koopbericht'
 import { verstuur, type Afzender } from './mail'
@@ -83,6 +83,25 @@ const sleutelBytes = (n: number): string => {
 const netjes = (email: string): string => email.trim().toLowerCase()
 
 /** Good enough to catch a typo; the confirmation mail is the real check. */
+/**
+ * Wanneer er werkelijk een mail de deur uit gaat.
+ *
+ * Twee regels, apart gezet omdat ze het verschil maken tussen een portaal en
+ * een spuit waarmee een vreemde post kan versturen onder onze naam. Wie ze
+ * leest ziet de hele afweging; wie ze in een `if` verstopt, ziet hem niet.
+ *
+ * `magPost` telt per plek en per uur. De andere twee tellen per adres, en die
+ * zijn alleen geen rem: elke keer een ander adres invullen is elke keer een
+ * nieuw lid, en dan mag het meteen weer.
+ */
+export const mailBijAanmelding = (
+  o: { magPost: boolean; bevestigd: boolean; teSnel: boolean },
+): boolean => o.magPost && !o.bevestigd && !o.teSnel
+
+export const mailBijInloggen = (
+  o: { magPost: boolean; magOpnieuw: boolean },
+): boolean => o.magPost && o.magOpnieuw
+
 const lijktEmail = (email: string): boolean =>
   /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(email) && email.length <= 254
 
@@ -183,6 +202,20 @@ async function aanmelden(verzoek: Request, env: Env): Promise<Response> {
   // Neither box ticked is not a subscription, it is a form somebody scrolled past.
   if (!nieuws && !voortgang) return json({ fout: 'geen-keuze' }, 400)
 
+  /**
+   * De rem, vóór beide paden.
+   *
+   * Dit verstuurt een mail naar elk adres dat iemand invult, en dat is precies
+   * wat een vreemde nodig heeft om post te versturen onder onze naam. De rem
+   * per rij hieronder (`teSnel`, zestig seconden) is daar geen rem tegen: maak
+   * honderd rijen aan en loop ze om beurten langs.
+   *
+   * Dus telt deze plek, niet dit adres. Hij wordt hier één keer berekend en
+   * beide paden gebruiken hem.
+   */
+  const plek = await ipHash(verzoek, env.ZOUT)
+  const magPost = await magMailen(env.DB, plek)
+
   const bestaand = await env.DB
     .prepare('SELECT id, email, taal, nieuws, voortgang, status, token, aangemeld_op FROM aanmelding WHERE email = ?')
     .bind(email).first<Rij & { aangemeld_op: number }>()
@@ -195,8 +228,9 @@ async function aanmelden(verzoek: Request, env: Env): Promise<Response> {
     await env.DB
       .prepare('UPDATE aanmelding SET taal = ?, nieuws = ?, voortgang = ?, tekst_versie = ?, aangemeld_op = ? WHERE id = ?')
       .bind(taal, nieuws, voortgang, TEKST_VERSIE, nu(), bestaand.id).run()
-    if (bestaand.status !== 'bevestigd' && !teSnel) {
+    if (mailBijAanmelding({ magPost, bevestigd: bestaand.status === 'bevestigd', teSnel })) {
       await stuurBevestiging(env, { ...bestaand, taal })
+      await telMail(env.DB, plek)
     }
     return json({ ok: true, status: bestaand.status === 'bevestigd' ? 'bevestigd' : 'wacht', id: bestaand.id })
   }
@@ -205,10 +239,15 @@ async function aanmelden(verzoek: Request, env: Env): Promise<Response> {
   await env.DB.prepare(
     `INSERT INTO aanmelding (id, email, taal, nieuws, voortgang, status, token, aangemeld_op, ip_hash, tekst_versie)
      VALUES (?, ?, ?, ?, ?, 'wacht', ?, ?, ?, ?)`,
-  ).bind(rij.id, email, taal, nieuws, voortgang, rij.token, nu(), await ipHash(verzoek, env.ZOUT), TEKST_VERSIE).run()
+  ).bind(rij.id, email, taal, nieuws, voortgang, rij.token, nu(), plek, TEKST_VERSIE).run()
+
+  // Hetzelfde antwoord als bij een geslaagde aanmelding: wie hier tegenaan
+  // loopt hoeft niet te weten waarom, en een echte bezoeker merkt het niet.
+  if (!magPost) return json({ ok: true, status: 'wacht', id: rij.id })
 
   try {
     await stuurBevestiging(env, rij)
+    await telMail(env.DB, plek)
   } catch (e) {
     // The row without its mail is the worst of both: the caller is told it
     // failed, and a second try would find the address already taken and stay
@@ -602,9 +641,21 @@ async function portaalAanmelden(verzoek: Request, env: Env): Promise<Response> {
     ipHash: await hashVan((verzoek.headers.get('cf-connecting-ip') ?? '') + env.ZOUT),
   })
 
-  // Altijd hetzelfde antwoord, ook als er niets verstuurd is. Anders is dit
-  // een manier om te vragen welke adressen bestaan.
-  if (await magOpnieuw(env.DB, lid.id)) {
+  /**
+   * Altijd hetzelfde antwoord, ook als er niets verstuurd is. Anders is dit
+   * een manier om te vragen welke adressen bestaan.
+   *
+   * Twee remmen, en ze doen verschillend werk. `magOpnieuw` is per lid en
+   * houdt tegen dat je jezelf vijf keer een link stuurt. `magMailen` is per
+   * plek: wie elke keer een ánder adres invult, maakt elke keer een nieuw lid
+   * en komt langs de eerste rem — en dan is dit een spuit waarmee een vreemde
+   * post kan versturen onder onze naam.
+   */
+  const plek = await hashVan((verzoek.headers.get('cf-connecting-ip') ?? '') + env.ZOUT)
+  if (mailBijInloggen({
+    magPost: await magMailen(env.DB, plek),
+    magOpnieuw: await magOpnieuw(env.DB, lid.id),
+  })) {
     const token = await maakLink(env.DB, lid.id)
     const tekst = INLOGMAIL[taal] ?? INLOGMAIL.nl!
     const link = `${env.BASIS}/portaal/binnen?t=${token}`
@@ -630,6 +681,7 @@ async function portaalAanmelden(verzoek: Request, env: Env): Promise<Response> {
       tekst: briefTekst(brief),
       afmeldUrl: brief.afmeldUrl,
     }, { naam: env.AFZENDER_NAAM, email: env.AFZENDER_EMAIL }, env.MAIL_SLEUTEL, env.MAIL_URL)
+    await telMail(env.DB, plek)
   }
   return portaalJson(env, { goed: true })
 }
