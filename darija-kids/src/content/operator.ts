@@ -40,22 +40,22 @@ export const OPERATOR = {
   address: 'Torenlaan 5 B, 1402 AT Bussum',
   country: 'Nederland',
   /**
-   * Leeg, met opzet.
+   * A phone number that is answered. A mobile is fine.
    *
-   * Er stond een 06-nummer op de website, en een mobiel nummer naast een
-   * bedrijfsnaam leest als een eenmanszaak die je op zijn fiets kunt bellen.
-   * De mailbox op het eigen domein doet hetzelfde werk en ziet er uit als een
-   * winkel die er volgend jaar ook nog is.
+   * In its international form, because the listing is read in six countries
+   * and a leading zero only works from inside the Netherlands.
    *
-   * Het veld blijft staan omdat de winkels het wél willen: Apple en Google
-   * hebben het nummer in hun console voor de handelaarsverificatie van de
-   * Digital Services Act, en dat is goedgekeurd op 24 september. Dat staat
-   * los van wat de website toont.
+   * **Staat wel in de app en bij de winkels, niet op de website.** Een
+   * 06-nummer naast een bedrijfsnaam op een openbare bladzijde leest als een
+   * eenmanszaak die je op zijn fiets kunt bellen; de mailbox op het eigen
+   * domein doet daar hetzelfde werk. In de app en in de consoles van Apple en
+   * Google hoort hij er wél te staan: daar hangt de handelaarsverificatie van
+   * de Digital Services Act aan, en die is op 24 september goedgekeurd.
    *
-   * Vul je het ooit weer in, dan verschijnt het vanzelf overal waar het hoort
-   * — op de website, in de app, in de handelaarstabel.
+   * Waar dat verschil wordt gemaakt staat in `scripts/make-site.mjs`, bij de
+   * handelaarstabel — één regel, met de reden erbij.
    */
-  phone: '',
+  phone: '+31 6 29479436',
   /** KvK number in the Netherlands, or the equivalent trade-register number. */
   registration: '77780868',
   /** Only when you are registered for VAT — under the Dutch KOR, leave empty. */
@@ -71,11 +71,7 @@ export const operatorKnown = (): boolean => Boolean(OPERATOR.name && OPERATOR.em
  * Both stores refuse a subscription from a trader whose details are missing,
  * and both make the seller fill exactly these in before the listing goes live.
  */
-/* Geen `phone` in deze lijst. Een telefoonnummer is bij verkoop op afstand
-   verplicht *indien beschikbaar*; wie geen telefonische klantenservice voert,
-   voldoet met een adres waarop snel en rechtstreeks gereageerd wordt. De
-   winkels vragen het apart in hun eigen console, en daar staat het. */
 export const traderKnown = (): boolean => Boolean(
   OPERATOR.name && OPERATOR.email && OPERATOR.address
-  && OPERATOR.country && OPERATOR.registration,
+  && OPERATOR.country && OPERATOR.phone && OPERATOR.registration,
 )

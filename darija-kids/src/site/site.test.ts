@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { SITE } from './copy'
 import { APP_ID, PATHS, SITE_URL, STORE, appleStoreUrl, playStoreUrl } from './links'
@@ -159,17 +159,36 @@ describe('de handelsgegevens', () => {
   })
 
   /**
-   * Het telefoonnummer staat er niet meer, en dat hoort zo.
+   * Het telefoonnummer staat in de app, niet op de website.
    *
-   * Een 06-nummer naast een bedrijfsnaam leest als een eenmanszaak die je op
-   * zijn fiets kunt bellen. De mailbox op het eigen domein doet hetzelfde
-   * werk. Het veld bestaat nog — Apple en Google willen het in hun console
-   * voor de handelaarsverificatie — maar het is leeg, en de zetter laat een
-   * lege rij weg in plaats van er een streepje neer te zetten.
+   * Dat verschil is een keuze en geen omissie, en daarom staat het hier: een
+   * lezer die `OPERATOR.phone` ziet staan en het nergens op de site terugvindt
+   * moet niet gaan "repareren".
+   *
+   * In de app en in de consoles van Apple en Google hoort het er wél te staan
+   * — daar hangt de handelaarsverificatie van de Digital Services Act aan. Op
+   * een openbare bladzijde leest een 06-nummer naast een bedrijfsnaam als een
+   * eenmanszaak die je op zijn fiets kunt bellen.
    */
-  it('tonen geen telefoonnummer, maar wel de weg om er een te tonen', () => {
-    expect(OPERATOR.phone).toBe('')
-    expect(zetter, 'de zetter moet een nummer nog steeds kunnen tonen').toContain('OPERATOR.phone ?')
+  it('kennen een telefoonnummer', () => {
+    expect(OPERATOR.phone).not.toBe('')
+  })
+
+  it('tonen het in de app', () => {
+    expect(readFileSync('src/ui/Operator.tsx', 'utf8')).toContain('OPERATOR.phone')
+  })
+
+  /* Op de gebouwde bladzijden gekeken en niet in de broncode: de zetter noemt
+     `OPERATOR.phone` in het commentaar dat uitlegt waaróm het nummer er niet
+     staat, en daar moet een test niet over vallen. Wat telt is wat een
+     bezoeker ziet. */
+  it('en niet op de website', () => {
+    const bladen = ['site/index.html', 'site/afrekenen/index.html',
+      'site/voorwaarden/index.html', 'site/privacy/index.html', 'site/ouders/index.html']
+    for (const blad of bladen) {
+      if (!existsSync(blad)) continue          // nog niet gebouwd; `npm run site` doet dat
+      expect(readFileSync(blad, 'utf8'), blad).not.toContain(OPERATOR.phone)
+    }
   })
 
   it('zijn ook echt ingevuld', () => {

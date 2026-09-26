@@ -20,10 +20,7 @@ export function OperatorBlock() {
       ? ([[t.operator.bedrijf, OPERATOR.bedrijf]] as [string, string][])
       : []),
     [t.operator.adres, [OPERATOR.address, OPERATOR.country].filter(Boolean).join(', ')],
-    /* Alleen als er een nummer staat. Het staat er niet meer — zie
-       `operator.ts` — en een rij met een leeg vak erachter is erger dan geen
-       rij. */
-    ...(OPERATOR.phone ? ([[t.operator.telefoon, OPERATOR.phone]] as [string, string][]) : []),
+    [t.operator.telefoon, OPERATOR.phone],
     [t.operator.email, OPERATOR.email],
     [t.operator.kvk, OPERATOR.registration],
     ...(OPERATOR.vat ? ([[t.operator.btw, OPERATOR.vat]] as [string, string][]) : []),

@@ -267,9 +267,19 @@ Zolang een link in `src/site/shop.ts` leeg is, staat er op de website
 open.
 
 **De handelaarsgegevens staan op de website**, en niet alleen een
-KvK-nummer: Venship, het adres en het telefoonnummer staan op de
-afrekenpagina, in de voorwaarden, in de privacyverklaring en op de
-ouderpagina. Dat is wat de Digital Services Act van een verkoper aan
+KvK-nummer: Venship, het adres en het e-mailadres staan op de afrekenpagina,
+in de voorwaarden, in de privacyverklaring en op de ouderpagina.
+
+**Het telefoonnummer staat er met opzet niet bij** — wel in de app en in de
+consoles van Apple en Google, waar de handelaarsverificatie van de Digital
+Services Act aan hangt. Op een openbare bladzijde leest een 06-nummer naast
+een bedrijfsnaam als een eenmanszaak die je op zijn fiets kunt bellen, en de
+mailbox op het eigen domein doet daar hetzelfde werk. Het mag ook: de
+e-commercebepaling vraagt gegevens voor snel, rechtstreeks en effectief
+contact "met inbegrip van het e-mailadres", en een telefoonnummer staat daar
+niet bij. Bij verkoop op afstand geldt "indien beschikbaar", en de verkoper is
+daar Gumroad respectievelijk de winkel — niet Venship. Er staat een test op,
+zodat niemand het als omissie "repareert". Dat is wat de Digital Services Act van een verkoper aan
 consumenten vraagt, en het is dezelfde informatie die Apple heeft
 goedgekeurd — dus als er één ding verandert, verandert het op vier plekken
 tegelijk (`traderTable` in `scripts/make-site.mjs`).

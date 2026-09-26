@@ -591,7 +591,17 @@ function traderTable(lang) {
     ...(OPERATOR.bedrijf ? [[t.operator.bedrijf, esc(OPERATOR.bedrijf)]] : []),
     [t.operator.adres, `${esc(OPERATOR.address)}, ${esc(OPERATOR.country)}`],
     [t.operator.email, `<a href="${mailto}">${esc(OPERATOR.email)}</a>`],
-    ...(OPERATOR.phone ? [[t.operator.telefoon, `<a href="tel:${esc(OPERATOR.phone.replace(/\s/g, ''))}">${esc(OPERATOR.phone)}</a>`]] : []),
+    /* Geen telefoonnummer, en dat is een keuze en geen omissie.
+       Het nummer bestaat (`OPERATOR.phone`) en staat in de app en in de
+       consoles van Apple en Google, waar de handelaarsverificatie aan hangt.
+       Op een openbare bladzijde leest een 06-nummer naast een bedrijfsnaam
+       als een eenmanszaak die je op zijn fiets kunt bellen, en de mailbox op
+       het eigen domein doet daar hetzelfde werk.
+       Het mag ook: de e-commercebepaling vraagt gegevens voor snel,
+       rechtstreeks en effectief contact "met inbegrip van het e-mailadres" —
+       een telefoonnummer staat daar niet bij. Bij verkoop op afstand geldt
+       "indien beschikbaar", en de verkoper daar is Gumroad respectievelijk
+       de winkel, niet wij. */
     [t.operator.kvk, esc(OPERATOR.registration)],
     ...(OPERATOR.vat ? [[t.operator.btw, esc(OPERATOR.vat)]] : []),
   ]
