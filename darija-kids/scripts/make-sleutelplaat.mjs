@@ -26,9 +26,16 @@
  *   node scripts/make-sleutelplaat.mjs --deel 3
  *   node scripts/make-sleutelplaat.mjs --groot      # 1600 × 900
  *
- * Delen zonder Nederlandse plaat — deel 6 tot en met 15 — worden overgeslagen.
- * Daar is geen tekening voor, in geen enkele taal, en die moet getekend
- * worden. Dat is de enige post in dit project die nog echt geld kost.
+ * Voor deel 6 tot en met 15 bestaat geen geschilderd tafereel. Die krijgen
+ * geen leeg vak maar een getekende banner in de stijl van de reeks: het
+ * nachtblauw van de omslagen, de zellige-band, de hoekornamenten, en rechts de
+ * kaart van Marokko met de plek van dít deel erop.
+ *
+ * Dat laatste is met opzet en het is geen vulling. Elke banner wijst een
+ * andere plek aan — Essaouira, het Rif, de Hoge Atlas — en dat is precies wat
+ * een lezer van de lijst wil weten voordat hij doorklikt. Het is geen
+ * illustratie van het verhaal; dat blijft de opdracht in
+ * `store/sleutels/beeldenlijst.md`.
  */
 import { execFileSync } from 'node:child_process'
 import { existsSync } from 'node:fs'
@@ -39,7 +46,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
 import ffmpeg from 'ffmpeg-static'
-import { H } from './lib/historie.mjs'
+import { H, kaart, zellige } from './lib/historie.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const BRON = path.join(ROOT, 'site-assets', 'sleutels', 'nl')
@@ -47,9 +54,21 @@ const arg = (naam, terugval = null) => {
   const i = process.argv.indexOf(`--${naam}`)
   return i > 0 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : terugval
 }
+/**
+ * Welke delen een met de hand gemaakt tafereel hebben.
+ *
+ * Niet afleiden uit "ligt er een bestand": de Nederlandse map is tegelijk
+ * bron en bestemming, en dan leest de volgende ronde zijn eigen banner als
+ * een tafereel en zet er nóg een kaartje op. Dat is een lus die er goed
+ * uitziet tot je hem van dichtbij bekijkt.
+ *
+ * Deze vijf zijn van Adil. Komt er een zesde, dan hoort hij hier erbij.
+ */
+const GESCHILDERD = new Set([1, 2, 3, 4, 5])
+
 const ALLEEN = arg('deel') ? Number(arg('deel')) : null
 const GEVRAAGD = arg('taal', 'alles')
-const TALEN = GEVRAAGD === 'alles' ? ['fr', 'de', 'es', 'it', 'en'] : [GEVRAAGD]
+const TALEN = GEVRAAGD === 'alles' ? ['nl', 'fr', 'de', 'es', 'it', 'en'] : [GEVRAAGD]
 const GROOT = process.argv.includes('--groot')
 const BREED = GROOT ? 1600 : 1200
 const HOOG = GROOT ? 900 : 675
@@ -91,6 +110,37 @@ const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
  * betrouwbaarder dan hem overtypen, en het blijft kloppen als er ooit een
  * plaat opnieuw gemaakt wordt.
  */
+/**
+ * De banner voor een deel zonder geschilderd tafereel.
+ *
+ * Alles komt uit `lib/historie.mjs`, dezelfde bibliotheek die de omslagen en
+ * de kaarten in de boeken tekent. Zo is het geen los ontwerp maar hetzelfde
+ * boek, uitgeklapt naar zestien bij negen.
+ *
+ * De kaart tekent zijn eigen perkamenten vlak; dat wordt hier weggehaald,
+ * want hij ligt op nachtblauw.
+ */
+const getekend = (nummer) => {
+  const plattegrond = kaart(nummer)
+    .replace(/<rect width="1000" height="1180"[^>]*\/>/, '')
+    .replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')
+  /* De kaart is staand (1000 × 1180) en de banner ligt. Hij vult de rechter
+     helft op volle hoogte tussen de twee banden, en het kaartje met de titel
+     staat links — dezelfde verdeling als op een geschilderd tafereel. */
+  const hoog = 770
+  const schaal = hoog / 1180
+  const breed = 1000 * schaal
+  return `<svg class="tafereel" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"
+      xmlns="http://www.w3.org/2000/svg">
+    <rect width="1600" height="900" fill="${H.nacht}"/>
+    <g transform="translate(${(1600 - breed - 80).toFixed(0)} ${((900 - hoog) / 2).toFixed(0)}) scale(${schaal.toFixed(4)})" opacity=".62">${plattegrond}</g>
+    <g opacity=".9">
+      <svg x="0" y="24" width="1600" height="30" viewBox="0 0 560 34" preserveAspectRatio="none">${zellige(0, 1, 560, 32, H.goud)}</svg>
+      <svg x="0" y="846" width="1600" height="30" viewBox="0 0 560 34" preserveAspectRatio="none">${zellige(0, 1, 560, 32, H.goud)}</svg>
+    </g>
+  </svg>`
+}
+
 const accentVan = (bestand) => {
   const rauw = execFileSync(ffmpeg, ['-hide_banner', '-loglevel', 'error', '-i', bestand,
     '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'], { maxBuffer: 1e9 })
@@ -137,7 +187,7 @@ body{width:1600px;height:900px;overflow:hidden;position:relative;font-family:'Ba
   padding:9px 30px;border-radius:999px;white-space:nowrap}
 .waar{font-weight:600;font-size:31px;color:${H.inkt};opacity:.82;text-transform:uppercase;letter-spacing:.02em}
 </style>
-<img class="tafereel" src="${achtergrond}" alt="">
+${achtergrond ? `<img class="tafereel" src="${achtergrond}" alt="">` : getekend(nummer)}
 <div class="kaart">
   <div class="reeks">${esc(SITE[taal].plaatOndertitel)}</div>
   <div class="titel">${esc(deel.titel)}</div>
@@ -161,16 +211,24 @@ for (const taal of TALEN) {
   for (const basis of REEKS) {
     if (ALLEEN && basis.nummer !== ALLEEN) continue
     const naam = `deel-${String(basis.nummer).padStart(2, '0')}.webp`
+    const geschilderd = GESCHILDERD.has(basis.nummer)
     const tafereel = path.join(BRON, naam)
-    if (!existsSync(tafereel)) { overgeslagen += 1; continue }
+    /* Het Nederlands van een geschilderd deel is het origineel. Daar ligt de
+       plaat al, met het kaartje er met de hand op; die zetten we niet over. */
+    if (geschilderd && taal === 'nl') { overgeslagen += 1; continue }
+    if (geschilderd && !existsSync(tafereel)) { overgeslagen += 1; continue }
 
     const titel = DELEN[taal].sleutels[basis.nummer - 1]
     const jaar = basis.jaar === 'Nu' ? SITE[taal].nu ?? basis.jaar : basis.jaar
     const deel = { titel, jaar, waar: PLEK[basis.nummer - 1] }
-    const accent = accentVan(tafereel)
+    /* Zonder tafereel geen kleur om uit te lezen. Dan het rood van de
+       omslagen: daar staat het deelnummer ook in een rode pil, en wit op goud
+       leest slechter dan wit op rood. */
+    const accent = geschilderd ? accentVan(tafereel) : H.rood
 
     const htmlPad = path.join(tmpdir(), `.sleutelplaat-${taal}-${basis.nummer}.html`)
-    await writeFile(htmlPad, blad(deel, taal, basis.nummer, pathToFileURL(tafereel).href, accent), 'utf8')
+    await writeFile(htmlPad, blad(deel, taal, basis.nummer,
+      geschilderd ? pathToFileURL(tafereel).href : null, accent), 'utf8')
 
     const bladzijde = await browser.newPage({ viewport: { width: BREED, height: HOOG }, deviceScaleFactor: 1 })
     await bladzijde.goto(pathToFileURL(htmlPad).href, { waitUntil: 'networkidle' })
@@ -184,13 +242,10 @@ for (const taal of TALEN) {
       png.replace(/\.png$/, '.webp')])
     await rm(png)
     gemaakt += 1
-    console.log(`${taal}  deel ${String(basis.nummer).padStart(2, ' ')} — ${titel}  (${accent})`)
+    console.log(`${taal}  deel ${String(basis.nummer).padStart(2, ' ')} — ${titel}  (${geschilderd ? accent : 'getekend'})`)
   }
 }
 
 await browser.close()
 console.log(`\n${gemaakt} platen van ${BREED} × ${HOOG} in site-assets/sleutels/`)
-if (overgeslagen) {
-  console.log(`\n${overgeslagen / TALEN.length} delen hebben geen Nederlandse plaat om op te bouwen.`)
-  console.log('Daar is geen tekening voor, in geen enkele taal. Zie docs/STAND.md.\n')
-}
+if (overgeslagen) console.log(`${overgeslagen} keer overgeslagen — het Nederlands van een geschilderd deel is het origineel.\n`)

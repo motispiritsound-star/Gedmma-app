@@ -40,12 +40,22 @@ export const OPERATOR = {
   address: 'Torenlaan 5 B, 1402 AT Bussum',
   country: 'Nederland',
   /**
-   * A phone number that is answered. A mobile is fine.
+   * Leeg, met opzet.
    *
-   * In its international form, because the listing is read in six countries
-   * and a leading zero only works from inside the Netherlands.
+   * Er stond een 06-nummer op de website, en een mobiel nummer naast een
+   * bedrijfsnaam leest als een eenmanszaak die je op zijn fiets kunt bellen.
+   * De mailbox op het eigen domein doet hetzelfde werk en ziet er uit als een
+   * winkel die er volgend jaar ook nog is.
+   *
+   * Het veld blijft staan omdat de winkels het wél willen: Apple en Google
+   * hebben het nummer in hun console voor de handelaarsverificatie van de
+   * Digital Services Act, en dat is goedgekeurd op 24 september. Dat staat
+   * los van wat de website toont.
+   *
+   * Vul je het ooit weer in, dan verschijnt het vanzelf overal waar het hoort
+   * — op de website, in de app, in de handelaarstabel.
    */
-  phone: '+31 6 29479436',
+  phone: '',
   /** KvK number in the Netherlands, or the equivalent trade-register number. */
   registration: '77780868',
   /** Only when you are registered for VAT — under the Dutch KOR, leave empty. */
@@ -61,7 +71,11 @@ export const operatorKnown = (): boolean => Boolean(OPERATOR.name && OPERATOR.em
  * Both stores refuse a subscription from a trader whose details are missing,
  * and both make the seller fill exactly these in before the listing goes live.
  */
+/* Geen `phone` in deze lijst. Een telefoonnummer is bij verkoop op afstand
+   verplicht *indien beschikbaar*; wie geen telefonische klantenservice voert,
+   voldoet met een adres waarop snel en rechtstreeks gereageerd wordt. De
+   winkels vragen het apart in hun eigen console, en daar staat het. */
 export const traderKnown = (): boolean => Boolean(
   OPERATOR.name && OPERATOR.email && OPERATOR.address
-  && OPERATOR.country && OPERATOR.phone && OPERATOR.registration,
+  && OPERATOR.country && OPERATOR.registration,
 )

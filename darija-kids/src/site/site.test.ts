@@ -4,7 +4,7 @@ import { SITE } from './copy'
 import { APP_ID, PATHS, SITE_URL, STORE, appleStoreUrl, playStoreUrl } from './links'
 import { LANG_CODES } from '../i18n/languages'
 import { ZINSGRENS } from '../content/zinnen'
-import { traderKnown } from '../content/operator'
+import { OPERATOR, traderKnown } from '../content/operator'
 import { CLIPS } from '../engine/clips'
 import { allWords } from '../content/lexicon'
 import { ALL_SENTENCES } from '../content/sentences'
@@ -153,9 +153,23 @@ describe('de handelsgegevens', () => {
   const zetter = readFileSync('scripts/make-site.mjs', 'utf8')
 
   it('staan compleet in de tabel op de website', () => {
-    for (const veld of ['OPERATOR.address', 'OPERATOR.bedrijf', 'OPERATOR.phone', 'OPERATOR.registration']) {
+    for (const veld of ['OPERATOR.address', 'OPERATOR.bedrijf', 'OPERATOR.registration']) {
       expect(zetter, veld).toContain(veld)
     }
+  })
+
+  /**
+   * Het telefoonnummer staat er niet meer, en dat hoort zo.
+   *
+   * Een 06-nummer naast een bedrijfsnaam leest als een eenmanszaak die je op
+   * zijn fiets kunt bellen. De mailbox op het eigen domein doet hetzelfde
+   * werk. Het veld bestaat nog — Apple en Google willen het in hun console
+   * voor de handelaarsverificatie — maar het is leeg, en de zetter laat een
+   * lege rij weg in plaats van er een streepje neer te zetten.
+   */
+  it('tonen geen telefoonnummer, maar wel de weg om er een te tonen', () => {
+    expect(OPERATOR.phone).toBe('')
+    expect(zetter, 'de zetter moet een nummer nog steeds kunnen tonen').toContain('OPERATOR.phone ?')
   })
 
   it('zijn ook echt ingevuld', () => {

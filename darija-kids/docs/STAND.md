@@ -365,7 +365,7 @@ etalage geworden in plaats van twaalf regels tekst.
 | | |
 | --- | --- |
 | Sba de Atlasleeuw | twaalf delen × zes talen — staan erop, `npm run deelplaten -- --taal alles` |
-| De sleutels van Marokko | vijf delen × zes talen — `npm run sleutelplaten` |
+| De sleutels van Marokko | vijftien delen × zes talen — `npm run sleutelplaten` |
 
 De tweeënzeventig platen voor Sba staan in `site-assets/sba/<taal>/` en gaan
 mee met de site.
@@ -393,11 +393,24 @@ het is een ondertitel en geen reekstitel, en zo gelezen klopt hij. Niet
 "verbeteren". In de andere vijf talen staat de vertaling daarvan
 (`plaatOndertitel` in `src/site/copy.ts`).
 
-Ontbreekt een plaat, dan blijft er gewoon een regel tekst staan — dat is wat
-er bij **deel 6 tot en met 15** van De sleutels gebeurt, in alle zes de talen.
-Daar is geen tekening voor en die moet getekend worden; dat is de enige post
-in dit project die nog echt geld kost. De opdrachten staan in
-`store/sleutels/beeldenlijst.md`.
+**Deel 6 tot en met 15 hebben geen geschilderd tafereel, en toch een plaat.**
+Daar staat nu een getekende banner in de stijl van de reeks: het nachtblauw van
+de omslagen, de zellige-band boven en onder, en rechts de kaart van Marokko met
+de plek van dít deel erop — Essaouira, het Rif, de Hoge Atlas. Alles uit
+`scripts/lib/historie.mjs`, dezelfde bibliotheek die de omslagen en de kaarten
+in de boeken tekent, dus het is geen los ontwerp maar hetzelfde boek uitgeklapt
+naar zestien bij negen. De accentkleur is het rood van de omslagpil.
+
+Dat is géén illustratie van het verhaal. Wil je die, dan is dat de opdracht in
+`store/sleutels/beeldenlijst.md`, en dat is de enige post in dit project die
+nog echt geld kost. Komt er een geschilderd tafereel bij, zet het dan als
+`site-assets/sleutels/nl/deel-NN.webp` neer en voeg het nummer toe aan
+`GESCHILDERD` in `scripts/make-sleutelplaat.mjs`.
+
+Dat lijstje is er met reden en niet uit gemak: de Nederlandse map is tegelijk
+bron en bestemming. Zou het script afleiden "ligt er een bestand", dan leest de
+volgende ronde zijn eigen banner als een tafereel en zet er nóg een kaartje op.
+Dat is precies één keer gebeurd.
 
 ### De lezer op de website
 
