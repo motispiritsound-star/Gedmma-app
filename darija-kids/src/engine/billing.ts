@@ -183,10 +183,29 @@ function grantEbook(): void {
  * on a guess. Access is only withdrawn once the store has actually told us the
  * receipt says otherwise; a flight with no signal must not lock out a family
  * that pays.
+ *
+ * Dat stond hier al als bedoeling, en de code hield zich er niet aan. De
+ * bewaking was `owned !== undefined` — "heeft de winkel iets gezegd?" — maar
+ * `owned` is in de plug-in een getter die `false` teruggeeft zolang er nog
+ * geen bon is nagekeken, nooit `undefined`. Die vraag werd dus altijd met ja
+ * beantwoord.
+ *
+ * Gevolg: bij elke koude start draaide `refresh()` meteen na `initialize()`,
+ * vóór de bonnen binnen waren, zag `false`, en zette de toegang van een
+ * betalend gezin dicht. Online ging hij een tel later weer open. Offline,
+ * of als `receiptsReady` niet komt, niet.
+ *
+ * Daarom `bonnenBinnen`: een ja van de winkel opent altijd — daar valt niets
+ * verkeerd aan — maar dichtzetten mag alleen als de bonnen er ook echt zijn
+ * geweest.
  */
-function syncFromStore(owned: boolean): void {
-  if (owned) grant()
-  else if (getState().unlocked) setState({ unlocked: false, unlockedAt: null })
+export const toegangNa = (o: { owned: boolean; bonnenBinnen: boolean }): 'open' | 'dicht' | 'laat-staan' =>
+  o.owned ? 'open' : o.bonnenBinnen ? 'dicht' : 'laat-staan'
+
+function syncFromStore(owned: boolean, bonnenBinnen: boolean): void {
+  const wat = toegangNa({ owned, bonnenBinnen })
+  if (wat === 'open') grant()
+  else if (wat === 'dicht' && getState().unlocked) setState({ unlocked: false, unlockedAt: null })
 }
 
 /**
@@ -457,6 +476,14 @@ export async function initBilling(): Promise<void> {
     publish({ busy: false, error: null })
   })
 
+  /**
+   * Of de winkel de bonnen al een keer heeft nagekeken.
+   *
+   * Vóór dat moment zegt `owned` van alles `false`, en dat is geen antwoord
+   * maar een beginstand.
+   */
+  let bonnenBinnen = false
+
   const refresh = () => {
     const prices: Partial<Record<PlanId | 'ebook', string>> = {}
     let owned: boolean | undefined
@@ -477,11 +504,11 @@ export async function initBilling(): Promise<void> {
     if (boekPrijs) prices.ebook = boekPrijs
     if (book?.owned || store.get(planOf('jaar').product)?.owned) grantEbook()
     publish({ prices, yearPerMonth, vergelijking: vergelijkingVan(store), price: prices.maand ?? null, currency: valuta })
-    if (owned !== undefined) syncFromStore(owned)
+    if (owned !== undefined) syncFromStore(owned, bonnenBinnen)
   }
 
   store.when().productUpdated?.(refresh)
-  store.when().receiptsReady?.(refresh)
+  store.when().receiptsReady?.(() => { bonnenBinnen = true; refresh() })
   store.error((e) => publish({ busy: false, error: e.message ?? null }))
 
   await store.initialize([Platform.GOOGLE_PLAY, Platform.APPLE_APPSTORE])
@@ -553,7 +580,8 @@ export async function restorePurchases(): Promise<void> {
       const product = api.store.get(plan.product)
       if (product?.owned !== undefined) owned = (owned ?? false) || product.owned
     }
-    if (owned !== undefined) syncFromStore(owned)
+    // Terugzetten is zelf de vraag aan de winkel, dus het antwoord telt.
+    if (owned !== undefined) syncFromStore(owned, true)
     if (api.store.get(EBOOK.product)?.owned || api.store.get(planOf('jaar').product)?.owned) grantEbook()
   } catch (e) {
     publish({ error: e instanceof Error ? e.message : String(e) })

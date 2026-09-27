@@ -3,7 +3,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { UNITS } from '../content/curriculum'
 import { LANG_CODES } from '../i18n/languages'
-import { alsPrijs, bedragVan, betaalFase, EBOOK, ebookFile, prijsVan, PRODUCTS } from './billing'
+import { alsPrijs, bedragVan, betaalFase, EBOOK, ebookFile, prijsVan, PRODUCTS, toegangNa } from './billing'
 import {
   FREE_LESSONS, getState, GRATIS_LESSEN, isDone, lessonBehindPaywall, lessonUnlocked,
   nextLesson, resetProgress, setState, unitBehindPaywall, unitUnlocked, type State,
@@ -255,4 +255,41 @@ describe('store/abonnement-teksten.md', () => {
       expect([...uitleg].length).toBeLessThanOrEqual(45)
     })
   }
+})
+
+/**
+ * Wanneer de toegang dichtmag.
+ *
+ * De bedoeling stond al in `billing.ts`: nooit op een gok, want een vlucht
+ * zonder bereik mag een betalend gezin niet buitensluiten. De code hield zich
+ * er niet aan. De bewaking vroeg `owned !== undefined` — "heeft de winkel
+ * iets gezegd?" — maar `owned` is in de plug-in een getter die `false`
+ * teruggeeft zolang er geen bon is nagekeken, nooit `undefined`. Nagekeken in
+ * `node_modules/cordova-plugin-purchase/www/store.d.ts`: `get owned(): boolean`.
+ *
+ * Bij elke koude start ging de toegang daardoor eerst dicht.
+ */
+describe('toegang na een bericht van de winkel', () => {
+  it('opent zodra de winkel ja zegt, bonnen of niet', () => {
+    expect(toegangNa({ owned: true, bonnenBinnen: true })).toBe('open')
+    // Een ja is een ja: daar valt niets verkeerd aan.
+    expect(toegangNa({ owned: true, bonnenBinnen: false })).toBe('open')
+  })
+
+  it('zet dicht als de bonnen er zijn en er niets op staat', () => {
+    expect(toegangNa({ owned: false, bonnenBinnen: true })).toBe('dicht')
+  })
+
+  it('laat staan zolang de bonnen er nog niet zijn', () => {
+    // Dit is het geval dat vóór vandaag het slot dichtgooide.
+    expect(toegangNa({ owned: false, bonnenBinnen: false })).toBe('laat-staan')
+  })
+
+  it('kent geen vierde uitkomst', () => {
+    const uit = new Set<string>()
+    for (const owned of [true, false]) {
+      for (const bonnenBinnen of [true, false]) uit.add(toegangNa({ owned, bonnenBinnen }))
+    }
+    expect([...uit].sort()).toEqual(['dicht', 'laat-staan', 'open'])
+  })
 })
