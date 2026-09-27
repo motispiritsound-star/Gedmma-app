@@ -824,11 +824,26 @@ export function exportProgress(): string {
   return JSON.stringify(state, null, 2)
 }
 
+/**
+ * Een bewaard spel terugzetten, van een ander toestel of van na een herinstallatie.
+ *
+ * Wat er terugkomt is de voortgang, en niet de aankoop — dezelfde grens die
+ * `resetProgress` hierboven al trekt. Dat is hier geen nettigheid maar het
+ * verschil tussen een back-up en een sleutel: het bestand is gewone tekst die
+ * een kind van twaalf in Kladblok openmaakt, en `"unlocked": true` intikken
+ * duurt één regel. Of het abonnement loopt, weet de winkel; dat komt uit
+ * `billing.ts` en niet uit een bestand.
+ *
+ * Voor wie het eerlijk doet verandert er niets: op het nieuwe toestel hangt
+ * dezelfde winkelrekening, dus zodra de bonnen binnen zijn staat de cursus
+ * gewoon open.
+ */
 export function importProgress(json: string): boolean {
   try {
     const parsed = JSON.parse(json) as State
     if (parsed.version !== 1) return false
-    state = hydrate(parsed)
+    const { unlocked, unlockedAt, ebook } = state
+    state = { ...hydrate(parsed), unlocked, unlockedAt, ebook }
     emit()
     return true
   } catch {

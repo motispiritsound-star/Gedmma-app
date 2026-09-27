@@ -5,7 +5,7 @@ import { UNITS } from '../content/curriculum'
 import { LANG_CODES } from '../i18n/languages'
 import { alsPrijs, bedragVan, betaalFase, EBOOK, ebookFile, prijsVan, PRODUCTS, toegangNa } from './billing'
 import {
-  FREE_LESSONS, getState, GRATIS_LESSEN, isDone, lessonBehindPaywall, lessonUnlocked,
+  FREE_LESSONS, getState, GRATIS_LESSEN, importProgress, isDone, lessonBehindPaywall, lessonUnlocked,
   nextLesson, resetProgress, setState, unitBehindPaywall, unitUnlocked, type State,
 } from './store'
 
@@ -291,5 +291,42 @@ describe('toegang na een bericht van de winkel', () => {
       for (const bonnenBinnen of [true, false]) uit.add(toegangNa({ owned, bonnenBinnen }))
     }
     expect([...uit].sort()).toEqual(['dicht', 'laat-staan', 'open'])
+  })
+})
+
+/**
+ * Een back-up is geen sleutel.
+ *
+ * `exportProgress` schrijft de hele staat weg, `unlocked` incluis, en dat
+ * bestand is gewone tekst in de map Downloads. `importProgress` nam die vlag
+ * over, dus wie `"unlocked": true` intikte en het bestand terugzette had de
+ * hele cursus. Of het abonnement loopt, hoort de winkel te zeggen.
+ */
+describe('voortgang terugzetten', () => {
+  it('neemt de aankoop niet over uit het bestand', () => {
+    resetProgress()
+    setState({ unlocked: false, unlockedAt: null, ebook: false })
+
+    const geknoeid = JSON.stringify({ ...getState(), xp: 4321, unlocked: true, ebook: true })
+    expect(importProgress(geknoeid)).toBe(true)
+
+    // De voortgang komt wél mee.
+    expect(getState().xp).toBe(4321)
+    // Het slot niet.
+    expect(getState().unlocked).toBe(false)
+    expect(getState().ebook).toBe(false)
+  })
+
+  it('laat een lopend abonnement staan als het bestand het niet noemt', () => {
+    resetProgress()
+    setState({ unlocked: true, unlockedAt: 1_700_000_000, ebook: true })
+
+    const oud = JSON.stringify({ ...getState(), xp: 12, unlocked: false, ebook: false })
+    expect(importProgress(oud)).toBe(true)
+
+    expect(getState().xp).toBe(12)
+    // Wie betaalt, raakt zijn toegang niet kwijt door een oude back-up.
+    expect(getState().unlocked).toBe(true)
+    expect(getState().ebook).toBe(true)
   })
 })
