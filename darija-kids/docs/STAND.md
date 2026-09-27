@@ -11,7 +11,7 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 970 + 62 in de worker, groen |
 | Google Play | 2 (1.1) in review; 3 (1.2) is gebouwd en wacht op upload |
-| App Store | 1.0 (build 5) **afgewezen** op 27 september — build 6 nodig, als kinderapp |
+| App Store | 1.0 (build 5) **opnieuw ingediend** op 27 september als kinderapp — app, e-boek en abonnementsgroep staan alle drie op *Waiting for Review* |
 
 Wat er in build 5 zit en niet in build 4: het antwoord op richtlijn 4.2
 (microfoon, trillen, herinnering, breder op een iPad — zie `docs/APPLE-4.2.md`)
@@ -46,10 +46,14 @@ geen categoriekwestie maar een echt gat: **het e-boek kopen stond achter niets**
 aan App Review en wat jij in App Store Connect aanzet, staat in
 `docs/APPLE-2.3.8.md`.
 
-**Wat Apple vraagt is één vinkje**: *Made for Kids* in de Rating-sectie,
-leeftijdsband 6–8. Daarmee kan build 5 opnieuw worden ingediend, zonder Mac.
-Het antwoord aan App Review dat daarbij hoort staat in `docs/APPLE-2.3.8.md`
-— gebruik de korte versie, want in build 5 is aan de app niets veranderd.
+**Gedaan op 27 september.** *Made for Kids* staat aan met leeftijdsband 6–8,
+het korte antwoord uit `docs/APPLE-2.3.8.md` is via Reply to App Review
+verstuurd, en build 5 is ongewijzigd opnieuw ingediend. Er ligt dus geen nieuw
+bestand bij Apple — alleen een andere classificatie.
+
+Apple zegt er zelf bij: *once your Made for Kids app is approved by App Review,
+all subsequent updates will need to follow the Kids category guidelines*. Vanaf
+de goedkeuring is build 6 dus geen keuze meer maar een voorwaarde voor 1.1.
 
 **Build 6 is van ons, niet van Apple.** De reparaties hierboven staan klaar op
 de branch. Komt build 5 erdoor, dan worden ze versie 1.1; wijst een reviewer
