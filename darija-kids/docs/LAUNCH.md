@@ -166,7 +166,8 @@ Kan pas na de verificatie. Volledige uitleg in [docs/PLAY.md](PLAY.md).
       het bouwen platgeslagen tot `false` en wordt nooit getoond. **Zet je
       VITE_POST ooit aan, dan moeten beide verklaringen mee veranderen.** (§4)
 - [x] Apple **Age Rating** — overal None ingevuld, staat op 4+ in 172 landen
-- [x] Apple: categorie **Education**, geen Kids Category — die kan bij een latere versie
+- [ ] Apple: **Made for Kids** aanzetten in de Age Rating-vragenlijst, band 6–8.
+      Stond op **Education** zonder Kids Category; daar is 1.0 op afgewezen (§2.3.8)
 - [x] Google **Gegevensbeveiliging**: *geen gegevens verzameld*. Nagekeken in de
       gebouwde app — het nieuwsbriefformulier is bij het bouwen platgeslagen tot
       `false` en wordt nooit getoond. **Zet je VITE_POST ooit aan, dan moet deze
@@ -639,10 +640,15 @@ Op diezelfde pagina staat het veld voor het **privacybeleid**:
 
 **App Store → Age Rating.** De vragenlijst levert 4+ op.
 
-**App Store → Kids Category.** Overweeg hem *niet* in de Kids-categorie te
-zetten. Die categorie is strenger (onder andere over externe links) en je app
-bereikt ouders die zoeken op "arabisch leren" beter in **Onderwijs**. De app
-voldoet aan de regels van beide; het is een marketingkeuze, geen technische.
+**App Store → Kids Category.** Dit stond hier eerst als een marketingkeuze,
+met het advies hem *niet* aan te zetten. Dat advies is achterhaald: Apple wees
+1.0 op 27 september 2026 af op richtlijn 2.3.8 omdat de naam `Darijaforkids`
+zegt dat het een kinderapp is terwijl hij niet zo was ingediend. Het is dus
+geen keuze meer — zie `docs/APPLE-2.3.8.md`.
+
+Het vinkje zit in de **Age Rating**-vragenlijst, en die hoort bij de app en
+niet bij een versie: linkerkolom onder *General*, of op de pagina *App
+Information*.
 
 ---
 
