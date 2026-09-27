@@ -16,7 +16,13 @@ export interface Bericht {
   onderwerp: string
   html: string
   tekst: string
-  /** Where "unsubscribe" in the mail client itself should point. */
+  /**
+   * Where "unsubscribe" in the mail client itself should point.
+   *
+   * Empty for a mail that is not a mailing: a purchase confirmation, a login
+   * link. Those get no unsubscribe header at all — see below for why an empty
+   * one is worse than none.
+   */
   afmeldUrl: string
 }
 
@@ -47,10 +53,25 @@ export async function verstuur(
       // Both of these are what makes Gmail and Apple Mail show their own
       // one-tap unsubscribe, and what keeps a complaint from becoming a spam
       // report.
-      headers: {
-        'List-Unsubscribe': `<${bericht.afmeldUrl}>`,
-        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-      },
+      //
+      // Maar alleen als er iets is om naartoe te wijzen. Zonder adres stond
+      // er letterlijk `List-Unsubscribe: <>` in de kop, en dat is geen lege
+      // regel maar een kapotte: precies het soort dat een filter meeweegt.
+      // Het overkwam uitgerekend de koopmail — de enige mail die écht moet
+      // aankomen, want daar zit de sleutel in.
+      //
+      // En eronder: `One-Click` is een belofte dat een POST naar dat adres de
+      // afmelding regelt. Wijst het naar een gewone pagina, dan meldt de
+      // mailclient "uitgeschreven" en gebeurt er niets. Dan liever niets
+      // beloven; in de mail zelf staan de links gewoon.
+      ...(bericht.afmeldUrl
+        ? {
+          headers: {
+            'List-Unsubscribe': `<${bericht.afmeldUrl}>`,
+            'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+          },
+        }
+        : {}),
     }),
   })
   if (!antwoord.ok) {

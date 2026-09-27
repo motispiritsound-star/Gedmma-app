@@ -24,7 +24,7 @@ const grens = () => new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10)
 
 const VRAAG = `
 SELECT b.bestelnummer, b.email, b.reeksen,
-       date(b.gekocht_op / 1000, 'unixepoch') AS gekocht,
+       date(b.gekocht_op, 'unixepoch') AS gekocht,
        b.ingetrokken, b.reden,
        (SELECT COUNT(DISTINCT o.ip_hash) FROM opening o
          WHERE o.bestelling_id = b.id AND o.dag >= '${grens()}') AS plekken

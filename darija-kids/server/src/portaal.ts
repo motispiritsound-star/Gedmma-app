@@ -330,7 +330,7 @@ export async function ruimOp(db: D1Database): Promise<number> {
     .prepare('DELETE FROM sessie WHERE verloopt_op < ?')
     .bind(nu())
     .run()
-  /* De maltellers van gisteren en ouder. Ze remmen per uur, dus alles wat
+  /* De mailtellers van gisteren en ouder. Ze remmen per uur, dus alles wat
      verder terug ligt doet niets meer dan ruimte innemen. */
   await db
     .prepare('DELETE FROM mailteller WHERE uur < ?')

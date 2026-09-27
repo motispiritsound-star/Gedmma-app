@@ -106,7 +106,8 @@ if (TERUG) {
   d1(`UPDATE bestelling SET ingetrokken = NULL, reden = NULL
       WHERE bestelnummer = '${veilig(nummer)}'`)
 } else {
-  d1(`UPDATE bestelling SET ingetrokken = ${Date.now()}, reden = '${veilig(reden)}'
+  // Seconden, net als `nu()` in de worker. De kolom wordt door beide gevuld.
+  d1(`UPDATE bestelling SET ingetrokken = ${Math.floor(Date.now() / 1000)}, reden = '${veilig(reden)}'
       WHERE bestelnummer = '${veilig(nummer)}' AND ingetrokken IS NULL`)
 }
 

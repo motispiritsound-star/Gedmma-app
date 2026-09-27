@@ -745,7 +745,10 @@ async function portaalAanmelden(verzoek: Request, env: Env): Promise<Response> {
       onderwerp: tekst.kop,
       html: briefHtml(brief),
       tekst: briefTekst(brief),
-      afmeldUrl: brief.afmeldUrl,
+      // Leeg, en niet `portaalUrl`: de links staan in de mail zelf, maar een
+      // inlogmail hoort de mailclient geen één-tik-afmelding te beloven die
+      // op een gewone pagina uitkomt.
+      afmeldUrl: '',
     }, { naam: env.AFZENDER_NAAM, email: env.AFZENDER_EMAIL }, env.MAIL_SLEUTEL, env.MAIL_URL)
     await telMail(env.DB, plek)
   }
