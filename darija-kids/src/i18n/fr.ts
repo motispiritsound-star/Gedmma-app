@@ -682,6 +682,8 @@ export const fr: Strings = {
     mislukt: (fout) => `Quelque chose s'est mal passé : ${fout}`,
     poortTitel: 'Une question pour un adulte',
     poortBody: (som) => `On ne s'abonne qu'avec un parent à côté. Combien font ${som} ?`,
+    poortBodyPost: (som) => `On ne laisse son adresse e-mail qu'avec un parent à côté. Combien font ${som} ?`,
+    poortBodyUit: (som) => `Ceci fait sortir de l'application, et cela ne se fait qu'avec un parent à côté. Combien font ${som} ?`,
     poortFout: "Ce n'est pas tout à fait ça. Réessaie.",
     poortKnop: 'Continuer',
     slotTitel: "Cette unité fait partie de l'accès complet",

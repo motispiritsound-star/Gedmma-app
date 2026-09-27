@@ -1,6 +1,6 @@
 # Waar staan we
 
-Bijgewerkt op 25 september 2026. Dit bestand is het antwoord op "wat moet er
+Bijgewerkt op 27 september 2026. Dit bestand is het antwoord op "wat moet er
 nog" zonder dat je drie andere bestanden hoeft te lezen.
 
 ## De app
@@ -9,9 +9,9 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 965 + 62 in de worker, groen |
+| Tests | 970 + 62 in de worker, groen |
 | Google Play | 2 (1.1) in review; 3 (1.2) is gebouwd en wacht op upload |
-| App Store | 1.0 (build 5) **opnieuw ingediend** op 25 september, wacht op beoordeling |
+| App Store | 1.0 (build 5) **afgewezen** op 27 september — build 6 nodig, als kinderapp |
 
 Wat er in build 5 zit en niet in build 4: het antwoord op richtlijn 4.2
 (microfoon, trillen, herinnering, breder op een iPad — zie `docs/APPLE-4.2.md`)
@@ -24,26 +24,30 @@ die regel sluit iOS de app af zodra een kind op de opnameknop drukt.
 
 Het antwoord aan App Review staat klaar in `store/appstore-4.2-antwoord.md`.
 
-### De afwijzing van 25 september — afgehandeld
+### Richtlijn 2.3.8, twee rondes — de app wordt een kinderapp
 
-Apple wees build 5 af op richtlijn 2.3.8: de ondertitel *For the kids, quietly
-for you* zei dat de app voor kinderen is, terwijl hij niet in de
-Kinderen-categorie is ingediend. Dat ging niet over de app zelf — geen nieuwe
-build, geen Xcode, geen Mac.
+Op 25 september viel Apple over de **ondertitel**. Die is in alle zes de talen
+vervangen en dezelfde build is opnieuw ingediend. Op 27 september viel hij over
+de **naam** zelf: `Darijaforkids` bevat *for kids*, terwijl de app niet in de
+Kinderen-categorie was ingediend. Dat risico stond al als open punt genoteerd.
 
-De ondertitel is in alle zes de talen aangepast (`store/listing.<taal>.md`; in
-het Nederlands **Marokkaans-Arabisch leren**), het antwoord uit
-`docs/APPLE-2.3.8.md` is via Reply to App Review verstuurd, en dezelfde build
-is opnieuw ingediend. Er staat dus geen nieuw bestand bij Apple — alleen andere
-tekst — en dat gaat doorgaans sneller dan een eerste beoordeling.
+Hernoemen is geen optie — dat is het merk, het domein, de socials en de
+titelpagina van tweeënnegentig boeken. Dus gaat de app de Kinderen-categorie
+in, en dat is ook eerlijker: bij Google Play staat hij al aangemeld als
+hoofdzakelijk voor kinderen.
 
-Twee dingen om te weten die in dat bestand staan. De **naam** draagt hetzelfde
-woord, en Apple noemt de naam in dezelfde zin als de ondertitel; deze ronde
-hebben ze hem niet aangestipt, maar een volgende reviewer kan dat wel doen.
-Gebeurt dat, dan is hernoemen geen optie en is de Kinderen-categorie het
-antwoord — en daarvóór moeten de mailto-links uit de app achter de ouderpoort,
-want die mag een kind daar niet kunnen aantikken. Wat er dan precies moet
-verhuizen staat in `docs/APPLE-2.3.8.md`, per bestand.
+Het dure deel was al af (geen advertenties, geen analytics, geen externe SDK's,
+en de ouderpoort bestond al). Wat ontbrak zat in de app en is nu gemaakt: acht
+plekken waar een kind zich met één tik de app uit kon werken staan achter de
+poort, en het handelsblok is afgedrukt in plaats van gelinkt. Eén daarvan was
+geen categoriekwestie maar een echt gat: **het e-boek kopen stond achter niets**.
+
+`src/ui/kinderslot.test.ts` bewaakt het. Het volledige verhaal, het antwoord
+aan App Review en wat jij in App Store Connect aanzet, staat in
+`docs/APPLE-2.3.8.md`.
+
+**Dit vraagt build 6** — de app zelf is veranderd, dus build 5 opnieuw
+indienen kan niet. Op de Mac: `npm run ios -- --build 6`, dan archiveren.
 
 ### Handelsverificatie — gedaan
 

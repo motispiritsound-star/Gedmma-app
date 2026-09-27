@@ -10,7 +10,7 @@ import { useT } from '../i18n'
 import { sfx } from '../engine/audio'
 import { Button, Card, SectionTitle } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
-import { OuderPoort } from '../ui/OuderPoort'
+import { OuderPoort, type PoortReden } from '../ui/OuderPoort'
 
 /**
  * The one thing in this app that costs money.
@@ -25,7 +25,15 @@ export function Unlock() {
   const subscribed = useStore((s) => s.unlocked)
   const boek = useStore((s) => s.ebook)
   const lang = useStore((s) => s.settings.lang)
-  const [gate, setGate] = useState(false)
+  /**
+   * De ouderpoort, en wat erachter wacht.
+   *
+   * Het was een ja/nee-vlag voor alleen het abonnement, en daardoor stonden de
+   * twee andere deuren van dit scherm open: het e-boek kopen, en het e-boek
+   * openen — dat laatste verlaat de app. Nu draagt de poort de handeling zelf,
+   * zodat er geen deur meer bij kan komen die hem vergeet.
+   */
+  const [poort, setPoort] = useState<{ reden: PoortReden; doe: () => void } | null>(null)
   // A year up front is the offer, so it is what the screen opens on.
   const [plan, setPlan] = useState<PlanId>('jaar')
 
@@ -60,7 +68,7 @@ export function Unlock() {
   const gezin = gezinsdeling()
 
   useEffect(() => {
-    if (subscribed) setGate(false)
+    if (subscribed) setPoort(null)
   }, [subscribed])
 
   return (
@@ -77,7 +85,13 @@ export function Unlock() {
           {billing.available && (
             <Card className="mt-4 flex flex-wrap items-center gap-3 p-5">
               <p className="min-w-0 grow basis-64 text-sm text-[var(--ink-soft)]">{t.unlock.beheerHint}</p>
-              <Button variant="secondary" onClick={manageSubscription}>{t.unlock.beheer}</Button>
+              {/* Opzeggen gebeurt in de winkel-app, dus dit is de app uit. */}
+              <Button
+                variant="secondary"
+                onClick={() => setPoort({ reden: 'uit', doe: manageSubscription })}
+              >
+                {t.unlock.beheer}
+              </Button>
             </Card>
           )}
         </>
@@ -165,7 +179,7 @@ export function Unlock() {
 
             <div className="mt-6">
               {billing.available ? (
-                <Button className="w-full py-4 text-lg" disabled={billing.busy} onClick={() => setGate(true)}>
+                <Button className="w-full py-4 text-lg" disabled={billing.busy} onClick={() => setPoort({ reden: 'abonnement', doe: () => void subscribe(plan) })}>
                   {billing.busy ? t.unlock.bezig : t.unlock.koop(TRIAL_DAYS)}
                 </Button>
               ) : (
@@ -231,9 +245,15 @@ export function Unlock() {
 
         {boek ? (
           <>
-            <a href={ebookFile(lang)} target="_blank" rel="noreferrer" className="mt-5 inline-block">
-              <Button onClick={() => sfx.tap()}>{t.unlock.boek.open}</Button>
-            </a>
+            <Button
+              className="mt-5"
+              onClick={() => {
+                sfx.tap()
+                setPoort({ reden: 'uit', doe: () => window.open(ebookFile(lang), '_blank', 'noreferrer') })
+              }}
+            >
+              {t.unlock.boek.open}
+            </Button>
             <p className="mt-3 text-xs text-[var(--ink-soft)]">{t.unlock.boek.vanJou}</p>
           </>
         ) : billing.available ? (
@@ -242,7 +262,7 @@ export function Unlock() {
               variant="secondary"
               className="mt-5 w-full py-3"
               disabled={billing.busy}
-              onClick={() => { sfx.tap(); void buyEbook() }}
+              onClick={() => { sfx.tap(); setPoort({ reden: 'abonnement', doe: () => void buyEbook() }) }}
             >
               {billing.busy ? t.unlock.bezig : t.unlock.boek.koop(billing.prices.ebook ?? EBOOK.list)}
             </Button>
@@ -263,9 +283,10 @@ export function Unlock() {
       </div>
 
       <OuderPoort
-        open={gate}
-        onClose={() => setGate(false)}
-        onGoed={() => { setGate(false); void subscribe(plan) }}
+        open={poort !== null}
+        reden={poort?.reden ?? 'abonnement'}
+        onClose={() => setPoort(null)}
+        onGoed={() => { const doe = poort?.doe; setPoort(null); doe?.() }}
       />
     </div>
   )

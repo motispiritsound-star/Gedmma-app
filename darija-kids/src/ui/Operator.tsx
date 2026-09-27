@@ -9,6 +9,11 @@ import { useT } from '../i18n'
  * app store has to be findable — by name, by address, by phone and by trade
  * register. Both stores publish these on the listing, and a buyer who wants to
  * complain should not have to go to a store to find out who they bought from.
+ *
+ * The address and the number are printed, not linked. The law asks that they
+ * be readable; the Kids Category asks that a child cannot tap their way out of
+ * the app into a mail draft or a phone call. Printing them satisfies both, and
+ * an adult who wants to write still can — the text selects and copies.
  */
 export function OperatorBlock() {
   const t = useT()
@@ -33,12 +38,8 @@ export function OperatorBlock() {
         {rows.map(([label, value]) => (
           <div key={label} className="contents">
             <dt className="font-bold text-[var(--ink-soft)]">{label}</dt>
-            <dd>
-              {label === t.operator.email
-                ? <a className="font-bold underline" href={`mailto:${value}`}>{value}</a>
-                : label === t.operator.telefoon
-                  ? <a className="font-bold underline" href={`tel:${value.replace(/[^\d+]/g, '')}`}>{value}</a>
-                  : value}
+            <dd className={label === t.operator.email || label === t.operator.telefoon ? 'font-bold' : undefined}>
+              {value}
             </dd>
           </div>
         ))}

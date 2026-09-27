@@ -682,6 +682,8 @@ export const it: Strings = {
     mislukt: (fout) => `Qualcosa è andato storto: ${fout}`,
     poortTitel: 'Una domanda per una persona adulta',
     poortBody: (som) => `Ci si abbona solo con un adulto accanto. Quanto fa ${som}?`,
+    poortBodyPost: (som) => `Si lascia un indirizzo e-mail solo con un adulto accanto. Quanto fa ${som}?`,
+    poortBodyUit: (som) => `Questo porta fuori dall'app, e si fa solo con un adulto accanto. Quanto fa ${som}?`,
     poortFout: 'Non è proprio giusto. Riprova.',
     poortKnop: 'Avanti',
     slotTitel: 'Questa unità fa parte dell’accesso completo',

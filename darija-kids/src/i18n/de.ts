@@ -682,6 +682,8 @@ export const de: Strings = {
     mislukt: (fout) => `Da ist etwas schiefgegangen: ${fout}`,
     poortTitel: 'Kurz etwas für einen Erwachsenen',
     poortBody: (som) => `Ein Abo schließt man nur mit einem Elternteil daneben ab. Wie viel ist ${som}?`,
+    poortBodyPost: (som) => `Eine E-Mail-Adresse hinterlässt man nur mit einem Elternteil daneben. Wie viel ist ${som}?`,
+    poortBodyUit: (som) => `Hier geht es aus der App hinaus, und das nur mit einem Elternteil daneben. Wie viel ist ${som}?`,
     poortFout: 'Das stimmt noch nicht ganz. Versuch es noch einmal.',
     poortKnop: 'Weiter',
     slotTitel: 'Diese Einheit gehört zum vollen Zugang',

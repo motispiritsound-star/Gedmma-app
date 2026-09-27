@@ -11,13 +11,21 @@ import { Button, Sheet } from './kit'
  * are sixteen. A multiplication is the usual shape: quick for an adult,
  * out of reach for the six-year-old this app is built for.
  *
+ * `reden` only changes the sentence above the sum. It matters more than it
+ * looks: a gate that says "subscribing" in front of a mail field teaches a
+ * parent to click past the words, and then the gate guards nothing.
+ *
  * The sum changes every time it opens, so it cannot be learned by heart, and
  * nothing happens until it is right.
  */
-export function OuderPoort({ open, onClose, onGoed }: {
+export type PoortReden = 'abonnement' | 'post' | 'uit'
+
+export function OuderPoort({ open, onClose, onGoed, reden = 'abonnement' }: {
   open: boolean
   onClose: () => void
   onGoed: () => void
+  /** Waarvoor er gevraagd wordt: betalen, een e-mailadres, of de app uit. */
+  reden?: PoortReden
 }) {
   const t = useT()
   const [antwoord, setAntwoord] = useState('')
@@ -39,11 +47,17 @@ export function OuderPoort({ open, onClose, onGoed }: {
     onGoed()
   }
 
+  const vraag = reden === 'post'
+    ? t.unlock.poortBodyPost(som.tekst)
+    : reden === 'uit'
+      ? t.unlock.poortBodyUit(som.tekst)
+      : t.unlock.poortBody(som.tekst)
+
   return (
     <Sheet open={open} onClose={onClose} labelledBy="poort-titel">
       <h2 id="poort-titel" className="font-display text-xl font-extrabold">{t.unlock.poortTitel}</h2>
-      <p className="mt-2 text-[var(--ink-soft)]">{t.unlock.poortBody(som.tekst)}</p>
-      <label className="sr-only" htmlFor="poort-antwoord">{t.unlock.poortBody(som.tekst)}</label>
+      <p className="mt-2 text-[var(--ink-soft)]">{vraag}</p>
+      <label className="sr-only" htmlFor="poort-antwoord">{vraag}</label>
       <input
         id="poort-antwoord"
         inputMode="numeric"

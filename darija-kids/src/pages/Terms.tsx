@@ -38,7 +38,9 @@ export function Terms() {
 
       {operatorKnown() && (
         <p className="mt-8 text-[var(--ink-soft)]">
-          {text.contact} <a className="font-bold underline" href={`mailto:${OPERATOR.email}`}>{OPERATOR.email}</a>
+          {/* Printed, not linked: in the Kids Category nothing may lead out of
+              the app without a parent. See src/ui/Operator.tsx. */}
+          {text.contact} <span className="font-bold">{OPERATOR.email}</span>
           {OPERATOR.name ? ` — ${OPERATOR.name}${OPERATOR.country ? `, ${OPERATOR.country}` : ''}` : ''}
         </p>
       )}

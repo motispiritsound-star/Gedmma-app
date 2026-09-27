@@ -111,6 +111,7 @@ export function PostAanmelding() {
 
       <OuderPoort
         open={poort}
+        reden="post"
         onClose={() => setPoort(false)}
         onGoed={() => { setPoort(false); void versturen() }}
       />

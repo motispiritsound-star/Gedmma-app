@@ -4,6 +4,7 @@ import { OPERATOR, operatorKnown } from '../content/operator'
 import { useStore } from '../engine/store'
 import { sfx } from '../engine/audio'
 import { Button, Sheet } from './kit'
+import { OuderPoort } from './OuderPoort'
 import { useT } from '../i18n'
 
 /**
@@ -101,6 +102,40 @@ export function FeedbackSheet({ open, onClose, word }: { open: boolean; onClose:
   )
 }
 
+/**
+ * De som vóór het venster.
+ *
+ * Elk van de drie ingangen hieronder eindigt in de mail-app van het toestel,
+ * en dat is de app uit. De Kinderen-categorie staat dat alleen toe met een
+ * ouder erbij, dus staat de poort voor alle drie — een kind dat de ene ingang
+ * niet vindt, vindt de andere wel.
+ *
+ * Hij onthoudt niets. Een poort die je één keer per sessie opent, staat de
+ * rest van die sessie open, en dat is precies de middag waarop de telefoon
+ * op de bank ligt.
+ */
+function useMailPoort() {
+  const [poort, setPoort] = useState(false)
+  const [open, setOpen] = useState(false)
+  return {
+    poort,
+    open,
+    vraag: () => setPoort(true),
+    sluitPoort: () => setPoort(false),
+    door: () => { setPoort(false); setOpen(true) },
+    sluit: () => setOpen(false),
+  }
+}
+
+function MailPoort({ p, word }: { p: ReturnType<typeof useMailPoort>; word?: string }) {
+  return (
+    <>
+      <OuderPoort open={p.poort} reden="uit" onClose={p.sluitPoort} onGoed={p.door} />
+      <FeedbackSheet open={p.open} onClose={p.sluit} word={word} />
+    </>
+  )
+}
+
 /** The button, wherever a parent might be standing when they want one. */
 export function FeedbackButton({
   variant = 'secondary', className = '', label,
@@ -110,14 +145,14 @@ export function FeedbackButton({
   label?: string
 }) {
   const t = useT()
-  const [open, setOpen] = useState(false)
+  const p = useMailPoort()
   if (!operatorKnown()) return null
   return (
     <>
-      <Button variant={variant} className={className} onClick={() => setOpen(true)}>
+      <Button variant={variant} className={className} onClick={() => { sfx.tap(); p.vraag() }}>
         {label ?? t.feedback.knop}
       </Button>
-      <FeedbackSheet open={open} onClose={() => setOpen(false)} />
+      <MailPoort p={p} />
     </>
   )
 }
@@ -125,14 +160,14 @@ export function FeedbackButton({
 /** Footer-sized: a link among links, not a button among buttons. */
 export function FeedbackLink({ className = '' }: { className?: string }) {
   const t = useT()
-  const [open, setOpen] = useState(false)
+  const p = useMailPoort()
   if (!operatorKnown()) return null
   return (
     <>
-      <button onClick={() => { sfx.tap(); setOpen(true) }} className={`hover:underline ${className}`}>
+      <button onClick={() => { sfx.tap(); p.vraag() }} className={`hover:underline ${className}`}>
         {t.feedback.voet}
       </button>
-      <FeedbackSheet open={open} onClose={() => setOpen(false)} />
+      <MailPoort p={p} />
     </>
   )
 }
@@ -140,17 +175,17 @@ export function FeedbackLink({ className = '' }: { className?: string }) {
 /** The quiet one, under a word in the dictionary. */
 export function WordFeedback({ word }: { word: string }) {
   const t = useT()
-  const [open, setOpen] = useState(false)
+  const p = useMailPoort()
   if (!operatorKnown()) return null
   return (
     <>
       <button
-        onClick={() => { sfx.tap(); setOpen(true) }}
+        onClick={() => { sfx.tap(); p.vraag() }}
         className="mt-3 text-sm font-bold text-zellige-600 underline hover:text-zellige-500 dark:text-zellige-300"
       >
         {t.feedback.anders}
       </button>
-      <FeedbackSheet open={open} onClose={() => setOpen(false)} word={word} />
+      <MailPoort p={p} word={word} />
     </>
   )
 }

@@ -689,6 +689,8 @@ export const nl = {
     mislukt: (fout: string): string => `Er ging iets mis: ${fout}`,
     poortTitel: 'Even iets vragen aan een volwassene',
     poortBody: (som: string): string => `Een abonnement afsluiten mag alleen met een ouder erbij. Hoeveel is ${som}?`,
+    poortBodyPost: (som: string): string => `Een e-mailadres achterlaten mag alleen met een ouder erbij. Hoeveel is ${som}?`,
+    poortBodyUit: (som: string): string => `Hierna ga je de app uit. Dat mag alleen met een ouder erbij. Hoeveel is ${som}?`,
     poortFout: 'Dat klopt niet helemaal. Probeer het nog eens.',
     poortKnop: 'Verder',
     slotTitel: 'Deze unit hoort bij de volledige toegang',
