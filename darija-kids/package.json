@@ -70,6 +70,8 @@
     "omslagen": "node scripts/make-omslagen.mjs",
     "deploy": "node scripts/deploy.mjs",
     "schema": "node scripts/schema.mjs",
+    "bestellingen": "node scripts/bestellingen.mjs",
+    "intrekken": "node scripts/intrekken.mjs",
     "inloggen": "node scripts/inloggen.mjs",
     "koopgeheim": "node scripts/koopgeheim.mjs",
     "lezen": "node scripts/leesuitgave.mjs",

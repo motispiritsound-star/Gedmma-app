@@ -9,7 +9,7 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 970 + 62 in de worker, groen |
+| Tests | 978, groen — daar zitten de 70 van de worker al in |
 | Google Play | 2 (1.1) in review; 3 (1.2) is gebouwd en wacht op upload |
 | App Store | 1.0 (build 5) **opnieuw ingediend** op 27 september als kinderapp — app, e-boek en abonnementsgroep staan alle drie op *Waiting for Review* |
 
@@ -113,7 +113,7 @@ nakijkt. Ze staan hier omdat ze pas opvallen als het te laat is.
    geldt het Families-beleid — geen advertenties van derden, geen trackers. De
    app voldoet daar al aan, maar het moet kloppen met wat er staat.
 
-### Vier opdrachten die geen pad en geen waarde meer vragen
+### Zes opdrachten die geen pad en geen waarde meer vragen
 
 | | |
 |---|---|
@@ -121,8 +121,10 @@ nakijkt. Ze staan hier omdat ze pas opvallen als het te laat is.
 | `npm run deploy` | de worker uitrollen |
 | `npm run schema` | het schema op de database (mag altijd opnieuw) |
 | `npm run koopgeheim` | nieuw geheim, en het hele Gumroad-adres erbij |
+| `npm run bestellingen` | wie wat kocht, en of een sleutel rondgaat |
+| `npm run intrekken` | een sleutel intrekken, en met `-- --terug` weer teruggeven |
 
-Ze draaien alle vier vanuit de projectmap. Wil je er niet eerst heen, gebruik
+Ze draaien alle zes vanuit de projectmap. Wil je er niet eerst heen, gebruik
 dan `npm --prefix <de projectmap> run <naam>` — dat werkt vanuit elke map en
 kan dus niet op de verkeerde plek terechtkomen.
 
@@ -133,7 +135,7 @@ opzet zo gehouden — een schema dat je alleen in het begin mag draaien, moet bi
 de eerstvolgende uitbreiding met de hand, en dat is precies de stap die je
 vergeet. Met `--hier` gaat het naar de lokale kopie, om te proberen.
 
-Ze draaien alle drie vanuit `darija-kids` — geen `cd server` meer. Dat was
+Ze draaien allemaal vanuit `darija-kids` — geen `cd server` meer. Dat was
 niet luxe: `cd C:\...\darija-kids\server` is een keer letterlijk geplakt,
 met de puntjes erin, en `npm run deploy` in de thuismap klaagt dan over een
 ontbrekende `package.json`.

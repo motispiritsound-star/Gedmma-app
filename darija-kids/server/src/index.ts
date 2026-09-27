@@ -442,6 +442,30 @@ export const koopMail = (
  * nergens anders voor te dienen dan hiervoor: wie het heeft, kan zichzelf een
  * boek sturen, en verder niets.
  */
+/**
+ * Wat er met een melding van de betaalpartner moet gebeuren.
+ *
+ * Drie van deze vier gevallen deden vóór vandaag hetzelfde: een nieuwe
+ * bestelling met een nieuwe sleutel, en een mail eromheen.
+ *
+ * - Een **terugbetaling** werd gelezen als een verkoop. De koper kreeg zijn
+ *   geld terug én een tweede sleutel erbij.
+ * - **Dezelfde melding twee keer** — en dat gebeurt, want de betaalpartner
+ *   probeert het opnieuw zodra wij geen 200 teruggeven — maakte elke keer een
+ *   bestelling. Eén verkoop hoort één bestelling te zijn.
+ * - Een terugbetaling **zonder bestelnummer** valt niet thuis te brengen.
+ *   Gokken is hier het verkeerde antwoord: dan haal je de boeken weg bij
+ *   iemand die netjes betaald heeft. Liever niets doen en het melden.
+ *
+ * Het staat los van de database zodat de vier gevallen een tafel kunnen zijn
+ * in plaats van een verhaal.
+ */
+export const koopStap = (o: { terugbetaald: boolean; bestelnummer?: string; alBekend: boolean }):
+  'intrekken' | 'zonder-nummer' | 'al-bekend' | 'nieuw' => {
+  if (o.terugbetaald) return o.bestelnummer ? 'intrekken' : 'zonder-nummer'
+  return o.alBekend ? 'al-bekend' : 'nieuw'
+}
+
 async function koop(verzoek: Request, env: Env): Promise<Response> {
   if (!env.KOOP_GEHEIM) return json({ fout: 'niet-ingericht' }, 503)
   const url = new URL(verzoek.url)
@@ -453,6 +477,30 @@ async function koop(verzoek: Request, env: Env): Promise<Response> {
   const email = body.email
   const reeksen = body.reeksen
   if (!lijktEmail(email)) return json({ fout: 'onvolledig' }, 400)
+
+  const stap = koopStap({
+    terugbetaald: body.terugbetaald,
+    bestelnummer: body.bestelnummer,
+    alBekend: body.bestelnummer && !body.terugbetaald
+      ? Boolean(await env.DB.prepare('SELECT id FROM bestelling WHERE bestelnummer = ?')
+          .bind(body.bestelnummer).first<{ id: string }>())
+      : false,
+  })
+
+  if (stap === 'zonder-nummer') {
+    console.error('terugbetaling zonder bestelnummer', email)
+    return json({ goed: true, genegeerd: ['terugbetaling-zonder-bestelnummer'] })
+  }
+
+  if (stap === 'intrekken') {
+    const uit = await env.DB
+      .prepare('UPDATE bestelling SET ingetrokken = ?, reden = ? WHERE bestelnummer = ? AND ingetrokken IS NULL')
+      .bind(nu(), 'terugbetaald', body.bestelnummer ?? '')
+      .run()
+    return json({ goed: true, ingetrokken: uit.meta?.changes ?? 0 })
+  }
+
+  if (stap === 'al-bekend') return json({ goed: true, alBekend: true })
   /**
    * Verkocht, maar niets wat het portaal uitdeelt — het e-boek is één pdf die
    * de betaalpartner zelf aflevert. Dat is geen fout, dus geen 400: een
@@ -491,10 +539,28 @@ async function koop(verzoek: Request, env: Env): Promise<Response> {
 
   const m = koopMail(env, sleutel, reeksen, taalVan({ taal: body.taal }))
   const brief = { ...m, afmeldTekst: '', wisTekst: '', voet: 'Darijaforkids', afmeldUrl: '', wisUrl: '' }
-  await verstuur(
-    { aan: email, onderwerp: m.onderwerp, html: briefHtml(brief), tekst: briefTekst(brief), afmeldUrl: '' },
-    afzenderVan(env), env.MAIL_SLEUTEL, env.MAIL_URL,
-  )
+
+  /**
+   * Gaat de mail niet, dan is dat erg — maar een 500 maakt het erger.
+   *
+   * De betaalpartner probeert het dan opnieuw, en met de rem hierboven levert
+   * dat geen tweede sleutel meer op maar wél een rij mislukte meldingen. En
+   * de koper is niet verloren: hij is hierboven lid geworden, dus hij vindt
+   * zijn boeken terug door zich met hetzelfde adres op het portaal aan te
+   * melden. Dat is precies waarvoor dat portaal er is.
+   *
+   * Dus: de bestelling staat, wij melden het onszelf, en de betaalpartner
+   * krijgt zijn 200. `npm run bestellingen` laat zien dat hij er is.
+   */
+  try {
+    await verstuur(
+      { aan: email, onderwerp: m.onderwerp, html: briefHtml(brief), tekst: briefTekst(brief), afmeldUrl: '' },
+      afzenderVan(env), env.MAIL_SLEUTEL, env.MAIL_URL,
+    )
+  } catch (fout) {
+    console.error('koopmail mislukt', email, fout instanceof Error ? fout.message : fout)
+    return json({ goed: true, mailMislukt: true })
+  }
   return json({ goed: true })
 }
 

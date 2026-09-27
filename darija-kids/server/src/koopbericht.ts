@@ -23,6 +23,14 @@ export type Koopbericht = {
   bestelnummer?: string
   /** Een proefmelding uit het instellingenscherm van de betaalpartner. */
   proef: boolean
+  /**
+   * Het geld is terug: terugbetaald door ons, of teruggevorderd bij de bank.
+   *
+   * Gumroad stuurt die velden mee op dezelfde melding als een verkoop. Zonder
+   * deze regel leest de rest van de keten zo'n melding als een nieuwe aankoop
+   * en stuurt er een vérse sleutel op terug — het tegenovergestelde.
+   */
+  terugbetaald: boolean
   /** Verkocht, maar niets wat het portaal uitdeelt — het e-boek bijvoorbeeld. */
   genegeerd: string[]
 }
@@ -148,6 +156,7 @@ export const koopbericht = (velden: Record<string, string>): Koopbericht => {
     naam: naam || undefined,
     bestelnummer: bestelnummer || undefined,
     proef: ja(velden.test),
+    terugbetaald: ja(velden.refunded) || ja(velden.disputed) || ja(velden.terugbetaald),
     genegeerd,
   }
 }
