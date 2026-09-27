@@ -46,8 +46,15 @@ geen categoriekwestie maar een echt gat: **het e-boek kopen stond achter niets**
 aan App Review en wat jij in App Store Connect aanzet, staat in
 `docs/APPLE-2.3.8.md`.
 
-**Dit vraagt build 6** — de app zelf is veranderd, dus build 5 opnieuw
-indienen kan niet. Op de Mac: `npm run ios -- --build 6`, dan archiveren.
+**Wat Apple vraagt is één vinkje**: *Made for Kids* in de Rating-sectie,
+leeftijdsband 6–8. Daarmee kan build 5 opnieuw worden ingediend, zonder Mac.
+Het antwoord aan App Review dat daarbij hoort staat in `docs/APPLE-2.3.8.md`
+— gebruik de korte versie, want in build 5 is aan de app niets veranderd.
+
+**Build 6 is van ons, niet van Apple.** De reparaties hierboven staan klaar op
+de branch. Komt build 5 erdoor, dan worden ze versie 1.1; wijst een reviewer
+alsnog af op richtlijn 1.3, dan ligt het antwoord er al. Op de Mac:
+`npm run ios -- --build 6`, dan archiveren.
 
 ### Handelsverificatie — gedaan
 

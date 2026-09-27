@@ -98,7 +98,28 @@ npx cap open ios
 Dan in Xcode **Product → Archive** en **Distribute App**. De rest staat in
 `docs/MAC.md`.
 
-### Het antwoord aan App Review
+### Het antwoord aan App Review — als je alleen het vinkje zet
+
+Apple vraagt één ding: de categorie. Dien je build 5 opnieuw in met alleen
+*Made for Kids* aan, gebruik dan deze tekst. Hij belooft niets over de app,
+want daar is in die build niets aan veranderd.
+
+```
+Hello,
+
+Thank you for the review.
+
+Darijaforkids is made for children. The name is our registered brand: it is
+also our website darijaforkids.eu and the title of our printed book series.
+Rather than remove the term from the name, we have selected "Made for Kids"
+in the Rating section, with an age band of 6-8, so that the metadata and the
+app agree.
+
+Kind regards,
+Adil Bekkali
+```
+
+### Het antwoord aan App Review — als je build 6 meestuurt
 
 ```
 Hello,
