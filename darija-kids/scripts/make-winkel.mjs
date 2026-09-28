@@ -369,8 +369,13 @@ for (const p of gemaakt) {
 regels.push('## Daarna', '',
   'Zet de links in `src/site/shop.ts` — bovenin staat één blok `LINKS` waar je',
   'ze in plakt. Daarna:', '',
-  '```bash', 'npm run site',
-  'git add -A && git commit -m "De winkel gaat open" && git push', '```', '',
+  // Elk op een eigen regel: PowerShell kent `&&` niet als scheiding, en zegt
+  // dan "is not a valid statement separator in this version" zonder iets te
+  // doen. Deze regels worden geplakt, dus ze moeten werken zoals ze staan.
+  '```', 'npm run site', '```', '',
+  '```', 'git add -A', '```', '',
+  '```', 'git commit -m "De winkel gaat open"', '```', '',
+  '```', 'git push', '```', '',
   'Een product zonder link toont "Binnenkort" en geen dode knop, dus je kunt',
   'dit per stuk doen en tussendoor uitrollen.', '',
   '## Let op', '',
