@@ -19,8 +19,7 @@
  */
 import { bestellingVan, hashVan, maakSleutel, plekken, tekAan } from './lezer'
 import {
-  bezit, koekje, logUit, lidVanEmail, magMailen, magOpnieuw, maakLink, netjes as netjesEmail,
-  ruimOp, schrijfIn, sessieUit, telMail, welkAdres, wieIsDit, wisselIn, zetNieuws,
+  bezit, koekje, lidVanEmail, logUit, maakLink, magMailen, magOpnieuw, netjes as netjesEmail, ruimOp, schrijfIn, sessieUit, telMail, vergeetLink, welkAdres, wieIsDit, wisLid, wisselIn, zetNieuws,
 } from './portaal'
 import { geheimKlopt, koopbericht, veldenVan } from './koopbericht'
 import { verstuur, type Afzender } from './mail'
@@ -830,16 +829,28 @@ async function portaalAanmelden(verzoek: Request, env: Env): Promise<Response> {
       afmeldUrl: portaalUrl,
       wisUrl: portaalUrl,
     }
-    await verstuur({
-      aan: email,
-      onderwerp: tekst.kop,
-      html: briefHtml(brief),
-      tekst: briefTekst(brief),
-      // Leeg, en niet `portaalUrl`: de links staan in de mail zelf, maar een
-      // inlogmail hoort de mailclient geen één-tik-afmelding te beloven die
-      // op een gewone pagina uitkomt.
-      afmeldUrl: '',
-    }, { naam: env.AFZENDER_NAAM, email: env.AFZENDER_EMAIL }, env.MAIL_SLEUTEL, env.MAIL_URL)
+    try {
+      await verstuur({
+        aan: email,
+        onderwerp: tekst.kop,
+        html: briefHtml(brief),
+        tekst: briefTekst(brief),
+        // Leeg, en niet `portaalUrl`: de links staan in de mail zelf, maar een
+        // inlogmail hoort de mailclient geen één-tik-afmelding te beloven die
+        // op een gewone pagina uitkomt.
+        afmeldUrl: '',
+      }, { naam: env.AFZENDER_NAAM, email: env.AFZENDER_EMAIL }, env.MAIL_SLEUTEL, env.MAIL_URL)
+    } catch (fout) {
+      // De link staat al in de tafel, want hij moest in de mail. Ging die mail
+      // niet weg, dan is het token niets waard — en erger: `magOpnieuw` ziet
+      // hem staan en houdt de tweede poging tegen. Die krijgt dan een 200 en
+      // het portaal zegt "kijk in je mail", terwijl er niets onderweg is.
+      //
+      // Dus opruimen en de fout doorgeven. De volgende poging maakt een nieuwe
+      // link en probeert het opnieuw.
+      await vergeetLink(env.DB, token)
+      throw fout
+    }
     await telMail(env.DB, plek)
   }
   return portaalJson(env, { goed: true })
@@ -871,6 +882,25 @@ async function portaalMij(verzoek: Request, env: Env): Promise<Response> {
     nieuws: Boolean(lid.nieuws),
     reeksen: gekocht.reeksen,
     sinds: gekocht.sinds,
+  })
+}
+
+/**
+ * Vergeet mij.
+ *
+ * Achter het koekje, dus alleen wie is ingelogd kan zichzelf wissen — en
+ * omdat het een POST is, kan geen vreemde bladzijde het namens je doen.
+ *
+ * Het koekje gaat in hetzelfde antwoord weg. Anders blijft de browser er een
+ * houden die nergens meer op slaat, en dat leest als "er is niets gebeurd".
+ */
+async function portaalWissen(verzoek: Request, env: Env): Promise<Response> {
+  const lid = await wieIsDit(env.DB, sessieUit(verzoek.headers.get('cookie')))
+  // Geen sessie? Dan valt er hier niets te wissen. Hetzelfde antwoord als bij
+  // een geslaagde wis: wie niet binnen is, hoort hier niets uit te leren.
+  if (lid) await wisLid(env.DB, lid.id)
+  return portaalJson(env, { goed: true }, 200, {
+    'set-cookie': koekje('', env.SITE ?? 'https://darijaforkids.eu', 0),
   })
 }
 
@@ -932,6 +962,7 @@ export default {
       if (url.pathname === '/portaal/binnen') return metAdres(await portaalBinnen(url, env))
       if (url.pathname === '/portaal/mij') return metAdres(await portaalMij(verzoek, env))
       if (url.pathname === '/portaal/uit' && verzoek.method === 'POST') return metAdres(await portaalUit(verzoek, env))
+      if (url.pathname === '/portaal/wissen' && verzoek.method === 'POST') return metAdres(await portaalWissen(verzoek, env))
       if (url.pathname === '/portaal/nieuws' && verzoek.method === 'POST') return metAdres(await portaalNieuws(verzoek, env))
     } catch (e) {
       console.error(url.pathname, e instanceof Error ? e.message : e)

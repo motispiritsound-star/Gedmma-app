@@ -1093,6 +1093,23 @@ const portaalPage = (lang) => {
     <label class="vink"><input type="checkbox" id="nieuwsknop"><span>${esc(t.nieuws)}</span></label>
     <p class="klein">${esc(t.blijft)}</p>
     <p><button class="mailbtn zacht" id="uit">${esc(t.uitloggen)}</button></p>
+
+    <!--
+      Mijn gegevens wissen.
+
+      Dit stond er niet, terwijl de inlogmail onderaan letterlijk "Mijn
+      gegevens wissen" zegt met een link naar deze bladzijde. De kolom
+      gewist_op stond ook al in het schema en werd overal gelezen, maar
+      nergens gezet: wel een deur, geen kruk.
+
+      Achter een vraag, want het is niet terug te draaien. En met erbij wat er
+      niet weggaat: wie boeken heeft gekocht, houdt die.
+    -->
+    <details class="wisblok">
+      <summary>${esc(t.wisTitel)}</summary>
+      <p class="klein">${esc(t.wisUitleg)}</p>
+      <p><button class="mailbtn gevaar" id="wis">${esc(t.wisKnop)}</button></p>
+    </details>
   </section>
 </div>
 
@@ -1102,6 +1119,7 @@ const portaalPage = (lang) => {
   const T = ${JSON.stringify({
     foutAdres: t.foutAdres, foutVinkjes: t.foutVinkjes, foutLink: t.foutLink,
     foutAlgemeen: t.foutAlgemeen, ingelogdAls: t.ingelogdAls, lezen: t.lezen,
+    wisZeker: t.wisZeker, wisKlaar: t.wisKlaar,
   })}
   const NAMEN = ${JSON.stringify({ sba: c.boekKleinTitel, sleutels: c.boekGrootTitel })}
   const LEES = ${JSON.stringify(p.read)}
@@ -1185,6 +1203,17 @@ const portaalPage = (lang) => {
 
   el('uit').addEventListener('click', async () => {
     await haal('/portaal/uit', { method: 'POST' }).catch(() => {})
+    location.reload()
+  })
+
+  el('wis').addEventListener('click', async () => {
+    // Eén vraag, want hierna is het weg. Een confirm is hier genoeg: dit is een
+    // bladzijde voor volwassenen, en een eigen dialoogvenster bouwen zou een
+    // zeldzame handeling ingewikkelder maken dan hij is.
+    if (!confirm(T.wisZeker)) return
+    const antwoord = await haal('/portaal/wissen', { method: 'POST' }).catch(() => null)
+    if (!antwoord) { zeg(T.foutAlgemeen); return }
+    alert(T.wisKlaar)
     location.reload()
   })
 

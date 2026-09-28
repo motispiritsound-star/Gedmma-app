@@ -215,6 +215,26 @@ export async function maakLink(db: D1Database, lidId: string): Promise<string> {
 }
 
 /**
+ * Een link weer weghalen, als de mail waarin hij stond nooit is verstuurd.
+ *
+ * `maakLink` schrijft de rij vóórdat de post eruit gaat — dat moet ook, want
+ * het token hoort in die mail te staan. Maar valt het versturen om, dan blijft
+ * de rij staan, en `magOpnieuw` ziet dan een link van nog geen minuut oud.
+ * De tweede poging van dezelfde persoon slaat het versturen dus over en
+ * antwoordt `{ goed: true }` — waarna het portaal "kijk in je mail" toont
+ * terwijl er niets onderweg is.
+ *
+ * Een link zonder mail is niets waard. Weg ermee, dan kan de volgende poging
+ * een nieuwe maken.
+ */
+export async function vergeetLink(db: D1Database, token: string): Promise<void> {
+  await db
+    .prepare(`DELETE FROM sessie WHERE token_hash = ? AND soort = 'link'`)
+    .bind(await hashVan(token))
+    .run()
+}
+
+/**
  * De link inwisselen voor een sessie.
  *
  * Eenmalig: de link wordt afgestempeld voordat de sessie wordt gemaakt. Wie
@@ -247,6 +267,33 @@ export async function wisselIn(db: D1Database, token: string): Promise<{ lid: Li
 }
 
 /** Wie er binnen is, of niemand. Een verlopen sessie is niemand. */
+/**
+ * Iemand vergeten, op zijn eigen verzoek.
+ *
+ * De kolom `gewist_op` stond in het schema en werd overal gelezen — `wieIsDit`
+ * en `lidVanEmail` weigeren een lid dat gezet is — maar nergens gezet. Er was
+ * dus wel een deur en geen kruk.
+ *
+ * En dat was niet alleen een gemis: de inlogmail zet er onderaan letterlijk
+ * "Mijn gegevens wissen" bij, met een link naar het portaal. Daar stond die
+ * knop niet.
+ *
+ * Wat hier wél blijft staan is de bestelling. Die hoort bij een koop, niet bij
+ * een account: de boeken blijven van wie ze betaald heeft, bereikbaar met de
+ * sleutel uit de koopmail, en de administratie eromheen moet een paar jaar
+ * bewaard blijven. Dat staat ook zo in de tekst die de lezer te zien krijgt.
+ *
+ * De sessies gaan wel weg, allemaal: wie vergeten wil worden hoort ook op zijn
+ * andere apparaten uitgelogd te zijn.
+ */
+export async function wisLid(db: D1Database, lidId: string): Promise<void> {
+  await db.prepare('DELETE FROM sessie WHERE lid_id = ?').bind(lidId).run()
+  await db
+    .prepare(`UPDATE lid SET gewist_op = ?, nieuws = 0, nieuws_op = NULL, ip_hash = NULL WHERE id = ?`)
+    .bind(nu(), lidId)
+    .run()
+}
+
 export async function wieIsDit(db: D1Database, token: string | null): Promise<Lid | null> {
   if (!token || !/^[0-9a-f]{32}$/.test(token)) return null
   const rij = await db

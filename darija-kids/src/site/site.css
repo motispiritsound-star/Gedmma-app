@@ -991,3 +991,29 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
 }
 .portaal .boekenlijst b { font-size: 1.05rem; }
 .portaal .leeg { color: var(--ink-soft); }
+
+/* ---------------------------------------------------------- mijn gegevens
+ *
+ * De wisknop staat ingeklapt. Niet om hem te verstoppen — de mail verwijst
+ * er letterlijk naar — maar omdat hij niet terug te draaien is en niemand
+ * hem per ongeluk hoort te raken naast "uitloggen".
+ */
+.wisblok {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--lijn);
+  padding-top: 1rem;
+}
+.wisblok > summary {
+  cursor: pointer;
+  font-size: .9375rem;
+  font-weight: 700;
+  color: var(--zacht);
+}
+.wisblok > summary:hover { color: var(--inkt); }
+.wisblok .klein { margin-top: .5rem; }
+.mailbtn.gevaar {
+  background: transparent;
+  border: 2px solid var(--terra, #c34a2c);
+  color: var(--terra, #c34a2c);
+}
+.mailbtn.gevaar:hover { background: var(--terra, #c34a2c); color: #fff; }

@@ -112,3 +112,49 @@ describe('het logboek van de worker', () => {
     expect(index).toContain('hashVan(email + env.ZOUT)')
   })
 })
+
+/**
+ * En de inloglink die nooit verstuurd werd.
+ *
+ * `maakLink` schrijft de rij vóórdat de mail weggaat — dat moet, want het
+ * token hoort in die mail. Viel het versturen om, dan bleef de rij staan, en
+ * `magOpnieuw` zag een link van nog geen minuut oud. De tweede poging sloeg
+ * het versturen dus over en antwoordde `{ goed: true }`, waarna het portaal
+ * "kijk in je mail" toonde terwijl er niets onderweg was.
+ *
+ * Nagelopen tegen een echte worker met een post die het niet deed:
+ *
+ *   zonder de opruiming  poging 1 → 500, poging 2 → 200 {"goed":true}
+ *   met de opruiming     poging 1 → 500, poging 2 → 500
+ *
+ * `vergeetLink` is apart getest in `server/src/inloglink.test.ts`. Wat hier
+ * wordt bewaakt is dat hij ook wordt aangeroepen, en op de juiste plek.
+ */
+describe('de inloglink van het portaal', () => {
+  const index = readFileSync(new URL('../../server/src/index.ts', import.meta.url), 'utf8')
+
+  it('wordt opgeruimd als het versturen omvalt', () => {
+    const start = index.indexOf('async function portaalAanmelden(')
+    expect(start, 'portaalAanmelden() niet gevonden').toBeGreaterThan(-1)
+    const eind = index.indexOf('\nasync function ', start + 10)
+    const lichaam = index.slice(start, eind === -1 ? undefined : eind)
+
+    // Het versturen staat in een try, en de catch ruimt de link op.
+    expect(lichaam, 'het versturen staat niet in een try').toMatch(/try \{[\s\S]*await verstuur\(/)
+    expect(lichaam, 'de catch ruimt de link niet op').toMatch(/catch[\s\S]*vergeetLink\(env\.DB, token\)/)
+    // En hij geeft de fout door: stil opruimen zou een 200 opleveren, en dan
+    // is de melding "kijk in je mail" nog steeds niet waar.
+    expect(lichaam, 'de fout wordt niet doorgegeven').toMatch(/vergeetLink\(env\.DB, token\)\s*\n\s*throw /)
+  })
+
+  it('telt de mail pas als hij ook echt weg is', () => {
+    const start = index.indexOf('async function portaalAanmelden(')
+    const eind = index.indexOf('\nasync function ', start + 10)
+    const lichaam = index.slice(start, eind === -1 ? undefined : eind)
+    // `telMail` hoort ná de try te staan. Binnen de try zou een omgevallen
+    // mail meetellen voor de rem per plek, en dan remt een storing bij de
+    // postdienst ook de mensen die niets fout deden.
+    const catchEind = lichaam.indexOf('}', lichaam.indexOf('throw fout'))
+    expect(lichaam.indexOf('telMail(env.DB, plek)')).toBeGreaterThan(catchEind)
+  })
+})
