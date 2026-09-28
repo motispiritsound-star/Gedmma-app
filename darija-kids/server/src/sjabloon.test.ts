@@ -72,6 +72,33 @@ describe('de opmaak van een mail', () => {
     // Die wordt getoond door wie geen HTML aanneemt, en daar is \n\n juist goed.
     expect(briefTekst(koop)).toContain('Eerste alinea.\n\nTweede alinea.')
   })
+
+  it('zet er ook in platte tekst een witregel tussen', () => {
+    // `briefTekst` bouwt een lijst regels, met lege tekenreeksen op de plekken
+    // waar een witregel hoort: onder de kop, en boven de streep van de voet.
+    // Daar stond `.filter((l) => l !== '')` achter, bedoeld om de onderdelen te
+    // laten vallen die er niet zijn — maar die kan het verschil niet zien
+    // tussen "leeg omdat hij er niet is" en "leeg omdat hier een witregel
+    // hoort". In elke mail plakte de kop dus aan de tekst en de streep aan de
+    // laatste regel. Gezien in een echte weekmail.
+    const t = briefTekst(nieuws)
+    const regels = t.split('\n')
+    expect(regels[0], 'de kop staat niet bovenaan').toBe(nieuws.kop)
+    expect(regels[1], 'de kop plakt aan de tekst eronder').toBe('')
+    const streep = regels.indexOf('—')
+    expect(streep, 'de streep van de voet is weg').toBeGreaterThan(0)
+    expect(regels[streep - 1], 'de streep plakt aan de regel erboven').toBe('')
+  })
+
+  it('zet geen lege verwijzing onder een mail zonder afmeldlink', () => {
+    // De tegenhanger van de HTML-toets hierboven. Een koopmail geeft die vier
+    // velden leeg mee, en onvoorwaardelijk gebouwd stond er `": "` onder.
+    const t = briefTekst(koop)
+    for (const r of t.split('\n')) {
+      expect(r.trim(), `losse regel in de platte tekst: ${JSON.stringify(r)}`).not.toBe(':')
+    }
+    expect(t.trimEnd(), 'de mail eindigt op een lege verwijzing').not.toMatch(/:\s*$/)
+  })
 })
 
 /**

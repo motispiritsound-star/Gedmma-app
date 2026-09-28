@@ -91,38 +91,53 @@ export function briefHtml(b: Brief): string {
 }
 
 /** The same letter as plain text, for clients that show that instead. */
+/**
+ * Dezelfde brief, maar dan voor wie geen HTML aanneemt.
+ *
+ * De vorm hier is een lijst van regels die aan elkaar worden geplakt, en de
+ * lege tekenreeksen erin zijn met opzet: dat zijn de witregels tussen de kop en
+ * de tekst, en boven de streep van de voet.
+ *
+ * Alleen stond er `.filter((l) => l !== '')` achter, en die gooide precies die
+ * witregels weg — hij was bedoeld om de onderdelen te laten vallen die er niet
+ * zijn (een mail zonder knop, een mail zonder staart), maar hij kan het verschil
+ * niet zien tussen "leeg omdat hij er niet is" en "leeg omdat hier een witregel
+ * hoort". Het gevolg stond in elke mail:
+ *
+ *   Wat een week
+ *   Dit is het tempo waarop een taal blijft hangen.
+ *   - Units af: 3
+ *   —
+ *   Je krijgt deze mail omdat ...
+ *
+ * De kop plakt aan de tekst en de streep aan de laatste regel. Dat de knop en
+ * de staart wél luchtig stonden kwam van een `\n` vooraan die iemand er later
+ * bij heeft gezet — een omweg om het gat te vullen, zonder dat duidelijk was
+ * waar het vandaan kwam.
+ *
+ * Nu beslist de spread of een onderdeel meedoet, dus er valt niets meer weg te
+ * filteren en hoeft er nergens een `\n` vooraan. Gezien in een echte mail,
+ * opgevangen door de hele weg van aanmelden tot de maandagochtendmail door te
+ * lopen.
+ */
 export function briefTekst(b: Brief): string {
   return [
     b.kop,
     '',
     b.body,
     ...(b.regels ?? []).map(([l, w]) => `- ${l}: ${w}`),
-    b.knop ? `\n${b.knop.tekst}: ${b.knop.url}` : '',
-    b.staart ? `\n${b.staart}` : '',
+    ...(b.knop ? ['', `${b.knop.tekst}: ${b.knop.url}`] : []),
+    ...(b.staart ? ['', b.staart] : []),
     '',
     '—',
     b.voet,
-    // Alleen als er iets te wijzen valt.
-    //
-    // Deze twee werden onvoorwaardelijk gebouwd, en `filter(l => l !== '')`
-    // laat `": "` staan, want dat is niet leeg. Een koopmail is geen mailing:
-    // `koop()` geeft alle vier de velden als lege tekenreeks mee, met opzet, en
-    // `briefHtml` vangt dat netjes af. De platte tekst niet — die eindigde bij
-    // elke koper op:
-    //
-    //   —
-    //   Darijaforkids
-    //   :
-    //   :
-    //
-    // Gezien in een echte mail, opgevangen door de keten van begin tot eind
-    // door te lopen. Het is de enige mail die écht moet aankomen, want daar
-    // zit de sleutel in, en de platte tekst is wat een deel van de
-    // mailprogramma's en de spamfilters laten zien.
-    b.afmeldTekst && b.afmeldUrl ? `${b.afmeldTekst}: ${b.afmeldUrl}` : '',
-    b.wisTekst && b.wisUrl ? `${b.wisTekst}: ${b.wisUrl}` : '',
-  ].filter((l) => l !== '').join('\n')
+    // Een koopmail is geen mailing: `koop()` geeft deze vier leeg mee, met
+    // opzet. Onvoorwaardelijk gebouwd stond er `": "` onder elke koopmail.
+    ...(b.afmeldTekst && b.afmeldUrl ? [`${b.afmeldTekst}: ${b.afmeldUrl}`] : []),
+    ...(b.wisTekst && b.wisUrl ? [`${b.wisTekst}: ${b.wisUrl}`] : []),
+  ].join('\n')
 }
+
 
 /** The page somebody lands on after clicking a link in a mail. */
 /**
