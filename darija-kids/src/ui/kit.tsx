@@ -114,12 +114,29 @@ export function Stat({ value, label, emoji }: { value: ReactNode; label: string;
     // `min-w-0` because a grid cell refuses to shrink below its content, and
     // one long German word — "nachgezeichnet" — was enough to push the whole
     // page sideways on a narrow phone. `hyphens` lets it break instead.
-    <Card className="min-w-0 p-4 text-center">
+    <Card className="min-w-0 px-2 py-4 text-center">
       {emoji && <div className="text-2xl">{emoji}</div>}
       <div className="font-display text-3xl font-extrabold">{value}</div>
+      {/*
+        Geen letterspatiëring, en een maat kleiner.
+
+        Er stond `tracking-wide` op, en bij hoofdletters telt dat op: elke
+        letter een stukje breder, in een tegel die op een telefoon nog geen
+        tachtig pixels binnenwerk heeft. Dan past het woord niet, en dan grijpt
+        `break-words` in — die is er als vangnet tegen een bladzijde die
+        zijwaarts wegschuift, maar hij knipt waar hij uitkomt. Op het scherm
+        stond letterlijk "VASTGEZE" met op de regel eronder "T".
+
+        Gemeten op 320 en 390 pixels in alle zes de talen: zo brak het in vijf
+        van de zes. Zonder de spatiëring en op elf pixels past alles.
+
+        `break-words` blijft staan als laatste redmiddel. Komt er ooit een taal
+        met een woord dat alsnog niet past, dan is een lelijke afbreking beter
+        dan een bladzijde die je opzij kunt schuiven.
+      */}
       <div
         lang={lang}
-        className="hyphens-auto break-words text-xs font-semibold uppercase tracking-wide text-[var(--ink-soft)]"
+        className="hyphens-auto break-words text-[11px] font-semibold uppercase text-[var(--ink-soft)]"
       >
         {label}
       </div>

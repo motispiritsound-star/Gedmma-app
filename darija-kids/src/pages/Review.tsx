@@ -72,7 +72,7 @@ export function Review() {
         </Card>
       )}
 
-      <div className="mb-6 grid grid-cols-3 gap-3">
+      <div className="mb-6 grid grid-cols-2 min-[360px]:grid-cols-3 gap-3">
         <Stat value={due.length} label={t.review.nuTeHerhalen} emoji="⏰" />
         <Stat value={Object.keys(state.cards).length} label={t.review.woordenGezien} emoji="📚" />
         <Stat value={Object.values(state.cards).filter((c) => c.strength >= 0.85).length} label={t.review.vastgezet} emoji="🔒" />

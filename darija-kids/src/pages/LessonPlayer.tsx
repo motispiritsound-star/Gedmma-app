@@ -159,7 +159,7 @@ export function LessonPlayer() {
           {lessonTitle(lesson, lang)} · {unit ? unitSubtitle(unit, lang) : ''}
         </p>
         <Khatims stars={stars} size={40} className="my-4 justify-center" label={t.learn.sterren(stars)} />
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 min-[360px]:grid-cols-3 gap-3">
           <Card className="p-3"><div className="font-display text-2xl font-extrabold">{Math.round(result.score * 100)}%</div><div className="text-xs text-[var(--ink-soft)]">{t.common.goed}</div></Card>
           <Card className="p-3"><div className="font-display text-2xl font-extrabold">🔥 {result.bestCombo}</div><div className="text-xs text-[var(--ink-soft)]">{t.lesson.besteReeks}</div></Card>
           <Card className="p-3"><div className="font-display text-2xl font-extrabold">🔥 {streak}</div><div className="text-xs text-[var(--ink-soft)]">{t.common.dagen}</div></Card>

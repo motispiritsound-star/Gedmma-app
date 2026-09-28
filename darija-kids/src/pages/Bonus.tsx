@@ -128,7 +128,7 @@ export function Bonus() {
         </p>
       </Card>
 
-      <div className="mb-6 grid grid-cols-3 gap-3">
+      <div className="mb-6 grid grid-cols-2 min-[360px]:grid-cols-3 gap-3">
         <Stat emoji="⭐" value={counts.today} label={t.bonus.vandaag} />
         <Stat emoji="⚡" value={counts.reeks} label={t.bonus.reeks} />
         <Stat emoji="✍️" value={counts.getekend} label={t.bonus.getekend} />

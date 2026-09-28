@@ -269,7 +269,7 @@ function Memory({ onExit }: { onExit: () => void }) {
         <span>{tries} {t.common.beurten}</span>
       </div>
 
-      <div className="mt-6 grid grid-cols-3 gap-2.5">
+      <div className="mt-6 grid grid-cols-2 min-[360px]:grid-cols-3 gap-2.5">
         {tiles.map((tile) => {
           const w = word(tile.wordId)
           const shown = open.includes(tile.key) || found.includes(tile.wordId)
