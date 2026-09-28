@@ -169,6 +169,16 @@ header.top .brand .vlag { border-radius: 3px; box-shadow: 0 0 0 1px rgb(0 0 0 / 
 header.top nav { margin-left: auto; display: flex; gap: 1.25rem; align-items: center; }
 header.top nav a { text-decoration: none; color: var(--ink-soft); font-size: .95rem; white-space: nowrap; }
 header.top nav a:hover { color: var(--ink); }
+/* De weg naar je eigen boeken.
+   Hij hoort niet bij de rest van het menu: dat gaat over kennismaken, dit
+   over binnenkomen. Vandaar een randje eromheen — en daardoor valt hij op
+   voor wie hem zoekt, zonder de aandacht te trekken van wie hier voor het
+   eerst is. */
+header.top nav a.poort {
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: .3rem .8rem; color: var(--ink);
+}
+header.top nav a.poort:hover { border-color: var(--zellige); color: var(--zellige); }
 /* Op een smal scherm verdwijnt het menu, maar dit ene item niet: het meeste
    bezoek komt van een telefoon, en dit is de enige andere pagina die iemand
    uit zichzelf zoekt. */
@@ -176,6 +186,11 @@ header.top nav a:hover { color: var(--ink); }
   header.top nav { display: contents; }
   header.top nav a { display: none; }
   header.top nav a.uit { display: inline-block; flex: none; margin-left: auto; padding-left: .5rem; font-size: .9rem; }
+  /* De poort valt hier onder de regel hierboven en verdwijnt dus mee. Dat is
+     gemeten en niet geraden: met die knop erbij wordt de merknaam afgekapt op
+     élke telefoonbreedte — op 360 punten bleef er zes pixel van de
+     zevenentachtig over, "Dar…". De kop is vol. Op een telefoon blijft de weg
+     naar je eigen boeken dus de voettekst. */
 }
 /* Onder de 30rem past de kop niet meer op ware grootte: de naam, het
    vlaggetje, "Leesboeken" en de taalkiezer samen zijn breder dan een

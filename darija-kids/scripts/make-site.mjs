@@ -147,6 +147,18 @@ const header = (lang, page, kaalNav = false) => {
   const c = SITE[lang]
   const here = LANGS.find((l) => l.code === lang)
   const home = PATHS[lang].home
+  /**
+   * De weg naar je eigen boeken, bovenin.
+   *
+   * Hij stond alleen in de voettekst. Wie al gekocht had en terugkwam, moest
+   * de hele bladzijde door om bij zijn eigen boeken te komen — en dat is
+   * precies de bezoeker die weet wat hij zoekt.
+   *
+   * Op het portaal zelf laten we hem weg; daar ben je al.
+   */
+  const poort = page === 'portal' ? ''
+    : `<a class="poort" href="${PATHS[lang].portal}">${esc(c.portaal.titel)}</a>`
+
   const nav = page === 'home' && !kaalNav
     ? `<nav aria-label="${esc(c.menu.waarom)}">
         <a class="uit" href="${PATHS[lang].books}">${esc(c.menu.boeken)}</a>
@@ -156,10 +168,12 @@ const header = (lang, page, kaalNav = false) => {
         <a href="#vragen">${esc(c.menu.vragen)}</a>
         <a href="${PATHS[lang].parents}">${esc(c.menu.ouders)}</a>
         <a href="#contact">${esc(c.menu.contact)}</a>
+        ${poort}
       </nav>`
     : `<nav aria-label="${esc(c.menu.contact)}">
         ${page === 'books' ? '' : `<a class="uit" href="${PATHS[lang].books}">${esc(c.menu.boeken)}</a>`}
         <a href="${home}">${esc(c.terugNaarHome)}</a>
+        ${poort}
       </nav>`
 
   return `<header class="top">
