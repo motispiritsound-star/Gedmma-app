@@ -228,6 +228,42 @@ if (EXTERN) {
   }
 }
 
+/* ------------------------------------------------- en het cachebeleid */
+
+/**
+ * Elke map met vaste bestanden hoort in `_headers` te staan.
+ *
+ * `/shots` stond er niet in: zes talen aan schermafdrukken, 1,8 MB, tien keer
+ * genoemd op de thuisbladzijde, en bij elk bezoek opnieuw nagevraagd — precies
+ * de heenreis die `_headers` wil wegnemen, op de ene bladzijde waarvoor het
+ * geschreven is.
+ *
+ * Dat is geen vergeten regel maar een vorm die vanzelf scheeftrekt: er komt een
+ * map bij en `_headers` weet daar niets van. Dus telt de machine ze.
+ *
+ * Deze controle staat hier en niet in een test, omdat hij de gebouwde site
+ * nodig heeft. `site/` staat in .gitignore, dus bij een verse kloon bestaat hij
+ * pas na `npm run build` — en `npm test` draait in CI daarvóór. Een test die
+ * eruit leest faalt daar met ENOENT, en dat is precies wat er gebeurde.
+ */
+const VAST = /\.(webp|png|jpe?g|svg|avif|woff2?|mp4|webm|ico|json)$/i
+try {
+  const headers = await readFile(path.join(MAP, '_headers'), 'utf8')
+  const geregeld = new Set([...headers.matchAll(/^\/([a-z0-9-]+)\/\*/gm)].map((m) => m[1]))
+  for (const ding of await readdir(MAP, { withFileTypes: true })) {
+    if (!ding.isDirectory() || ding.name.startsWith('.')) continue
+    const erin = await readdir(path.join(MAP, ding.name), { recursive: true })
+    const hoeveel = erin.filter((f) => VAST.test(String(f))).length
+    // Een map met een handvol bestanden is de moeite niet; het gaat om de
+    // mappen waar een bezoeker echt op wacht.
+    if (hoeveel >= 5 && !geregeld.has(ding.name)) {
+      fouten.push(`/${ding.name}: ${hoeveel} vaste bestanden en geen cacheregel — zet hem in _headers in scripts/make-site.mjs`)
+    }
+  }
+} catch (fout) {
+  fouten.push(`_headers: ${fout instanceof Error ? fout.message : fout}`)
+}
+
 /* ---------------------------------------------------------------- melden */
 
 console.log(`${pagina.length} bladzijden, ${extern.size} verschillende adressen naar buiten`)
