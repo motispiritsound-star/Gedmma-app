@@ -76,6 +76,7 @@
     "logboek": "node scripts/logboek.mjs",
     "inloggen": "node scripts/inloggen.mjs",
     "koopgeheim": "node scripts/koopgeheim.mjs",
+    "mailsleutel": "node scripts/mailsleutel.mjs",
     "lezen": "node scripts/leesuitgave.mjs",
     "boeken": "node scripts/boeken-erin.mjs",
     "vertelstem": "node scripts/make-vertelstem.mjs"

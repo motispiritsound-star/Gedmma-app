@@ -113,20 +113,21 @@ nakijkt. Ze staan hier omdat ze pas opvallen als het te laat is.
    geldt het Families-beleid — geen advertenties van derden, geen trackers. De
    app voldoet daar al aan, maar het moet kloppen met wat er staat.
 
-### Acht opdrachten die geen pad en geen waarde meer vragen
+### Negen opdrachten die geen pad en geen waarde meer vragen
 
 | | |
 |---|---|
 | `npm run inloggen` | één keer, wrangler bij Cloudflare |
 | `npm run deploy` | de worker uitrollen |
 | `npm run schema` | het schema op de database (mag altijd opnieuw) |
-| `npm run koopgeheim` | nieuw geheim, en het hele Gumroad-adres erbij |
+| `npm run koopgeheim` | nieuw geheim, en het hele Gumroad-adres op je klembord |
+| `npm run mailsleutel` | de sleutel van de mailpartner, nagekeken vóór hij wordt opgeslagen |
 | `npm run bestellingen` | wie wat kocht, en of een sleutel rondgaat |
 | `npm run intrekken` | een sleutel intrekken, en met `-- --terug` weer teruggeven |
 | `npm run proefkoop` | een aankoop naspelen, om het portaal na te lopen |
 | `npm run logboek` | welke geheimen er staan, en meekijken met de worker |
 
-Ze draaien alle acht vanuit de projectmap. Wil je er niet eerst heen, gebruik
+Ze draaien alle negen vanuit de projectmap. Wil je er niet eerst heen, gebruik
 dan `npm --prefix <de projectmap> run <naam>` — dat werkt vanuit elke map en
 kan dus niet op de verkeerde plek terechtkomen.
 
