@@ -25,7 +25,7 @@ import {
 import { geheimKlopt, koopbericht, veldenVan } from './koopbericht'
 import { verstuur, type Afzender } from './mail'
 import { MAILS, TEKST_VERSIE, isTaal, type Taal, type Week } from './mails'
-import { briefHtml, briefTekst, pagina } from './sjabloon'
+import { briefHtml, briefTekst, pagina, vraagPagina } from './sjabloon'
 
 export interface Env {
   DB: D1Database
@@ -258,7 +258,7 @@ async function aanmelden(verzoek: Request, env: Env): Promise<Response> {
   return json({ ok: true, status: 'wacht', id: rij.id })
 }
 
-async function bevestig(url: URL, env: Env): Promise<Response> {
+async function bevestig(url: URL, env: Env, doen: boolean): Promise<Response> {
   const token = url.searchParams.get('t') ?? ''
   const rij = await env.DB
     .prepare('SELECT id, email, taal, nieuws, voortgang, status, token FROM aanmelding WHERE token = ?')
@@ -267,6 +267,13 @@ async function bevestig(url: URL, env: Env): Promise<Response> {
 
   const m = MAILS[taalVan(rij)]
   if (rij.status === 'bevestigd') return pagina(rij.taal, m.welkomKop, m.welkomBody, env.SITE, m.terug)
+
+  // Een tik in de mail komt hier binnen als GET, en die laat alleen de vraag
+  // zien. Toestemming die een linkscanner kan geven, is geen toestemming.
+  if (!doen) {
+    return vraagPagina(rij.taal, m.vraagBevestigKop, m.vraagBevestigBody, m.bevestigKnop,
+      `/bevestig?t=${encodeURIComponent(token)}`)
+  }
 
   await env.DB.prepare("UPDATE aanmelding SET status = 'bevestigd', bevestigd_op = ? WHERE id = ?")
     .bind(nu(), rij.id).run()
@@ -280,13 +287,22 @@ async function bevestig(url: URL, env: Env): Promise<Response> {
   return pagina(rij.taal, m.welkomKop, m.welkomBody, env.SITE, m.terug)
 }
 
-async function uitschrijven(url: URL, env: Env): Promise<Response> {
+async function uitschrijven(url: URL, env: Env, doen: boolean): Promise<Response> {
   const token = url.searchParams.get('t') ?? ''
   const rij = await env.DB
     .prepare('SELECT id, email, taal, nieuws, voortgang, status, token FROM aanmelding WHERE token = ?')
     .bind(token).first<Rij>()
   // A link that no longer matches anything has already done its job.
   if (!rij) return pagina('en', MAILS.en.afgemeldKop, MAILS.en.afgemeldBody, env.SITE, MAILS.en.terug)
+
+  // De POST is hier ook de weg van de afmeldknop in de mailclient zelf: die
+  // belooft `List-Unsubscribe-Post` en doet een POST. Die schrijft dus meteen
+  // uit, zoals beloofd. Een mens die op de link tikt, krijgt eerst de vraag.
+  const m2 = MAILS[taalVan(rij)]
+  if (!doen) {
+    return vraagPagina(rij.taal, m2.vraagAfmeldKop, m2.vraagAfmeldBody, m2.afmelden,
+      `/uitschrijven?t=${encodeURIComponent(token)}`)
+  }
 
   await env.DB.prepare(
     "UPDATE aanmelding SET status = 'uitgeschreven', nieuws = 0, voortgang = 0, uitgeschreven_op = ? WHERE id = ?",
@@ -303,10 +319,19 @@ async function uitschrijven(url: URL, env: Env): Promise<Response> {
  * the address itself. Both exist because they are different asks, and the
  * GDPR gives a right to the second one.
  */
-async function wissen(url: URL, env: Env): Promise<Response> {
+async function wissen(url: URL, env: Env, doen: boolean): Promise<Response> {
   const token = url.searchParams.get('t') ?? ''
   const rij = await env.DB.prepare('SELECT id, taal FROM aanmelding WHERE token = ?').bind(token).first<{ id: string; taal: string }>()
   if (!rij) return pagina('en', MAILS.en.gewistKop, MAILS.en.gewistBody, env.SITE, MAILS.en.terug)
+
+  // Van de drie is dit de enige die niet terug te draaien is, en dus de enige
+  // waar een vooruit opgehaalde link echt iets kost.
+  if (!doen) {
+    const mw = MAILS[taalVan(rij)]
+    return vraagPagina(rij.taal, mw.vraagWisKop, mw.vraagWisBody, mw.wissen,
+      `/wissen?t=${encodeURIComponent(token)}`)
+  }
+
   await env.DB.prepare('DELETE FROM voortgang WHERE id = ?').bind(rij.id).run()
   await env.DB.prepare('DELETE FROM aanmelding WHERE id = ?').bind(rij.id).run()
   const m = MAILS[taalVan(rij)]
@@ -879,10 +904,10 @@ export default {
     try {
       if (url.pathname === '/aanmelden' && verzoek.method === 'POST') return metAdres(await aanmelden(verzoek, env))
       if (url.pathname === '/voortgang' && verzoek.method === 'POST') return metAdres(await voortgang(verzoek, env))
-      if (url.pathname === '/bevestig') return metAdres(await bevestig(url, env))
+      if (url.pathname === '/bevestig') return metAdres(await bevestig(url, env, verzoek.method === 'POST'))
       // Mail clients unsubscribe with a POST, people with a click.
-      if (url.pathname === '/uitschrijven') return metAdres(await uitschrijven(url, env))
-      if (url.pathname === '/wissen') return metAdres(await wissen(url, env))
+      if (url.pathname === '/uitschrijven') return metAdres(await uitschrijven(url, env, verzoek.method === 'POST'))
+      if (url.pathname === '/wissen') return metAdres(await wissen(url, env, verzoek.method === 'POST'))
       if (url.pathname === '/koop' && verzoek.method === 'POST') return metAdres(await koop(verzoek, env))
       if (url.pathname === '/lezen' && verzoek.method === 'POST') return metAdres(await lezen(verzoek, env))
       if (url.pathname === '/blad' && verzoek.method === 'POST') return metAdres(await blad(verzoek, env))

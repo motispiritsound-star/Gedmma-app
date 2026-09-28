@@ -125,6 +125,52 @@ const naarSite = (site: string, taal: string): string =>
  * enige wat hij op dat moment wil is naar de site, en dat was precies wat er
  * niet stond.
  */
+/**
+ * Dezelfde bladzijde, maar met een knop die iets dóet in plaats van een link.
+ *
+ * Hier zat een gat dat geen aanvaller nodig had. `/wissen`, `/uitschrijven` en
+ * `/bevestig` deden hun werk op een GET, met een token uit een mail — en een
+ * mail is precies de plek waar links vooruit worden opgehaald. Outlook Safe
+ * Links doet het, de virusscanner van een bedrijf doet het, en het
+ * linkvoorbeeld van Slack en WhatsApp doet het. Zo'n prefetch is een gewone
+ * GET, en een GET was hier een verwijdering.
+ *
+ * Iemand kreeg dus de mail, klikte nergens op, en zijn aanmelding was weg. Of
+ * andersom: de scanner tikte op "bevestigen", en dan stond er in de database
+ * dat deze persoon toestemming had gegeven terwijl er geen mens aan te pas
+ * kwam — precies wat `schema.sql` in zijn kop als doel stelt.
+ *
+ * Een formulier lost dat op: een prefetch haalt de bladzijde op en ziet een
+ * knop. Meer niet. Pas de POST erachter verandert iets, en die stuurt geen
+ * scanner uit zichzelf.
+ *
+ * Het adres blijft hetzelfde, dus elke link in elke mail die al verstuurd is
+ * blijft werken — hij vraagt nu alleen eerst.
+ */
+export function vraagPagina(
+  taal: string, kop: string, body: string, knop: string, actie: string,
+): Response {
+  return bladzijde(taal, kop, `<h1 style="margin:12px 0 0;font-size:26px;line-height:1.2">${esc(kop)}</h1>
+  <p style="margin:12px 0 0;font-size:16px;line-height:1.55;color:${KLEUR.zacht}">${esc(body)}</p>
+  <form method="post" action="${esc(actie)}" style="margin:24px 0 0">
+    <button type="submit" style="display:inline-block;border:0;cursor:pointer;background:${KLEUR.saffraan};color:#221a16;font-weight:800;font-size:15px;padding:14px 22px;border-radius:12px;min-height:44px">${esc(knop)}</button>
+  </form>`)
+}
+
+/** Het omhulsel dat beide bladzijden delen. */
+function bladzijde(taal: string, kop: string, binnen: string): Response {
+  const html = `<!doctype html>
+<html lang="${esc(taal)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${esc(kop)}</title></head>
+<body style="margin:0;display:grid;place-items:center;min-height:100vh;background:#faf6ef;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:${KLEUR.inkt};padding:24px">
+<div style="max-width:420px;text-align:center">
+  <div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${KLEUR.saffraan}">Darijaforkids</div>
+  ${binnen}
+</div>
+</body></html>`
+  return new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8' } })
+}
+
 export function pagina(taal: string, kop: string, body: string, site?: string, terug?: string): Response {
   const html = `<!doctype html>
 <html lang="${esc(taal)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">

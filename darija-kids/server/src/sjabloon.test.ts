@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { briefHtml, briefTekst, pagina } from './sjabloon'
+import { briefHtml, briefTekst, pagina, vraagPagina } from './sjabloon'
 import { MAILS } from './mails'
 
 /**
@@ -17,6 +17,9 @@ const basis = {
   staart: 'Lukt er iets niet, antwoord dan op deze mail.',
   voet: 'Darijaforkids',
 }
+/** De html uit een Response; beide bladzijden geven er een terug. */
+const tekst = (r: Response): Promise<string> => r.text()
+
 /** De html van zo'n bladzijde; `pagina` geeft een Response terug. */
 const paginaHtml = (taal: string, site?: string): Promise<string> =>
   pagina(taal, 'Kop', 'Body', site, site ? 'Terug' : undefined).text()
@@ -107,5 +110,62 @@ describe('een bladzijde van de worker', () => {
     // En de body is niet de voetregel van een mail.
     expect(m.afgemeldBody).not.toBe(m.voet)
     expect(m.gewistBody).not.toBe(m.voet)
+  })
+})
+
+/**
+ * En de bladzijde die eerst vraagt.
+ *
+ * `/wissen`, `/uitschrijven` en `/bevestig` deden hun werk op een GET, met een
+ * token uit een mail. Daar was geen aanvaller voor nodig: mailclients en
+ * virusscanners halen links in een bericht vooruit op om ze te controleren —
+ * Outlook Safe Links, de scanner van een bedrijf, het linkvoorbeeld van Slack.
+ * Zo'n prefetch is een gewone GET, en een GET was hier een verwijdering.
+ *
+ * Wat hieronder vastligt is niet hoe de bladzijde eruitziet, maar het ene ding
+ * dat hem veilig maakt: er staat een formulier op dat POST.
+ */
+
+describe('de vraagbladzijde', () => {
+  it('zet een formulier neer dat POST, niet een link die je kunt volgen', async () => {
+    const html = await tekst(vraagPagina('nl', 'Je gegevens wissen?', 'Dit kunnen we niet terugdraaien.',
+      'Mijn gegevens wissen', '/wissen?t=abc123'))
+
+    expect(html).toContain('method="post"')
+    expect(html).toContain('action="/wissen?t=abc123"')
+    expect(html).toContain('<button type="submit"')
+    // Geen anker naar de handeling: dat is precies wat een scanner zou volgen.
+    expect(html).not.toMatch(/<a [^>]*href="\/wissen/)
+  })
+
+  it('zet de woorden erop die de lezer verwacht', async () => {
+    const html = await tekst(vraagPagina('nl', 'Uitschrijven?', 'Dan halen we dit adres van de lijst.',
+      'Uitschrijven', '/uitschrijven?t=x'))
+    expect(html).toContain('Uitschrijven?')
+    expect(html).toContain('Dan halen we dit adres van de lijst.')
+    expect(html).toContain('>Uitschrijven</button>')
+    expect(html).toContain('<html lang="nl"')
+  })
+
+  it('laat geen opmaak door, ook niet uit de taal of het adres', async () => {
+    const html = await tekst(vraagPagina(
+      '"><script>x()</script>',
+      'Kop <b>vet</b>',
+      'Body & "aanhalingstekens"',
+      'Knop <i>schuin</i>',
+      '/wissen?t="><script>y()</script>',
+    ))
+    expect(html).not.toContain('<script>')
+    expect(html).not.toContain('<b>vet</b>')
+    expect(html).toContain('&lt;b&gt;vet&lt;/b&gt;')
+    expect(html).toContain('&amp;')
+    // Het attribuut mag niet vroegtijdig gesloten kunnen worden.
+    expect(html).toContain('&quot;')
+  })
+
+  it('antwoordt als html, zodat de knop ook echt een knop is', async () => {
+    const r = vraagPagina('en', 'k', 'b', 'doe', '/x')
+    expect(r.headers.get('content-type')).toBe('text/html; charset=utf-8')
+    expect(r.status).toBe(200)
   })
 })

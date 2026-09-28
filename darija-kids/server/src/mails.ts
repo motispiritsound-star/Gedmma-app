@@ -66,6 +66,25 @@ interface Pakket {
   afgemeldBody: string
   gewistKop: string
   gewistBody: string
+  /**
+   * Wat er staat vóórdat er iets gebeurt.
+   *
+   * Deze drie bladzijden bestonden niet: een tik in de mail vóérde de
+   * handeling meteen uit. Dat ging mis zonder dat er iemand kwaad wilde —
+   * mailclients en virusscanners halen links in een bericht vooruit op om ze
+   * te controleren, en zo'n prefetch is een gewone GET. Een GET wiste hier
+   * dus gegevens van iemand die nergens op had geklikt.
+   *
+   * Nu vraagt de bladzijde eerst, en de knop erop doet een POST. De knoptekst
+   * komt uit `afmelden`, `wissen` en `bevestigKnop` hierboven: dezelfde
+   * woorden als in de mail, zodat je op de knop drukt die je verwachtte.
+   */
+  vraagBevestigKop: string
+  vraagBevestigBody: string
+  vraagAfmeldKop: string
+  vraagAfmeldBody: string
+  vraagWisKop: string
+  vraagWisBody: string
   /** De enige link op zo'n bladzijde: terug naar de website. */
   terug: string
   /**
@@ -148,6 +167,12 @@ export const MAILS: Record<Taal, Pakket> = {
     afgemeldBody: 'Dit adres krijgt geen mail meer van ons. Heb je boeken gekocht, dan blijven die gewoon van jou — die staan hier los van.',
     gewistKop: 'Je gegevens zijn gewist',
     gewistBody: 'Dit adres staat niet meer in onze lijst. Heb je boeken gekocht, dan blijven die gewoon van jou — je bestelling staat daar los van.',
+    vraagBevestigKop: 'Nog even bevestigen',
+    vraagBevestigBody: 'Druk op de knop, dan weten we zeker dat dit adres van jou is. Daarna krijg je de mail waarvoor je je hebt aangemeld.',
+    vraagAfmeldKop: 'Uitschrijven?',
+    vraagAfmeldBody: 'Druk op de knop, dan halen we dit adres van de lijst. Je hoeft verder niets te doen, en je kunt je later altijd opnieuw aanmelden.',
+    vraagWisKop: 'Je gegevens wissen?',
+    vraagWisBody: 'Dit haalt je adres en je voortgang weg, en dat kunnen we niet terugdraaien. Heb je boeken gekocht, dan blijven die gewoon van jou — die staan hier los van.',
     terug: 'Naar darijaforkids.eu',
   },
   fr: {
@@ -192,6 +217,12 @@ export const MAILS: Record<Taal, Pakket> = {
     afgemeldBody: 'Cette adresse ne recevra plus rien de notre part. Si vous avez acheté des livres, ils restent à vous : c’est indépendant.',
     gewistKop: 'Vos données sont effacées',
     gewistBody: 'Cette adresse ne figure plus dans notre liste. Si vous avez acheté des livres, ils restent à vous : votre commande est indépendante.',
+    vraagBevestigKop: 'Encore une confirmation',
+    vraagBevestigBody: 'Appuyez sur le bouton pour nous confirmer que cette adresse est bien la vôtre. Ensuite vous recevrez les messages auxquels vous vous êtes inscrit.',
+    vraagAfmeldKop: 'Se désinscrire ?',
+    vraagAfmeldBody: 'Appuyez sur le bouton et nous retirons cette adresse de la liste. Vous n’avez rien d’autre à faire, et vous pourrez toujours vous réinscrire plus tard.',
+    vraagWisKop: 'Effacer vos données ?',
+    vraagWisBody: 'Cela supprime votre adresse et votre progression, et nous ne pouvons pas revenir en arrière. Si vous avez acheté des livres, ils restent à vous : ils sont enregistrés ailleurs.',
     terug: 'Vers darijaforkids.eu',
   },
   de: {
@@ -236,6 +267,12 @@ export const MAILS: Record<Taal, Pakket> = {
     afgemeldBody: 'An diese Adresse schreiben wir nicht mehr. Hast du Bücher gekauft, bleiben die deine — das hat hiermit nichts zu tun.',
     gewistKop: 'Deine Daten sind gelöscht',
     gewistBody: 'Diese Adresse steht nicht mehr in unserer Liste. Hast du Bücher gekauft, bleiben die deine: deine Bestellung ist davon getrennt.',
+    vraagBevestigKop: 'Nur noch bestätigen',
+    vraagBevestigBody: 'Drück auf den Knopf, dann wissen wir sicher, dass diese Adresse dir gehört. Danach bekommst du die Post, für die du dich angemeldet hast.',
+    vraagAfmeldKop: 'Abmelden?',
+    vraagAfmeldBody: 'Drück auf den Knopf, dann nehmen wir diese Adresse von der Liste. Mehr musst du nicht tun, und du kannst dich später jederzeit wieder anmelden.',
+    vraagWisKop: 'Deine Daten löschen?',
+    vraagWisBody: 'Das entfernt deine Adresse und deinen Fortschritt, und wir können es nicht rückgängig machen. Gekaufte Bücher bleiben deine — die liegen woanders.',
     terug: 'Zu darijaforkids.eu',
   },
   es: {
@@ -280,6 +317,12 @@ export const MAILS: Record<Taal, Pakket> = {
     afgemeldBody: 'No volveremos a escribir a esta dirección. Si has comprado libros, siguen siendo tuyos: son cosas separadas.',
     gewistKop: 'Tus datos están borrados',
     gewistBody: 'Esta dirección ya no está en nuestra lista. Si has comprado libros, siguen siendo tuyos: tu pedido va aparte.',
+    vraagBevestigKop: 'Solo falta confirmar',
+    vraagBevestigBody: 'Pulsa el botón para confirmarnos que esta dirección es tuya. Después recibirás el correo al que te has apuntado.',
+    vraagAfmeldKop: '¿Darte de baja?',
+    vraagAfmeldBody: 'Pulsa el botón y quitamos esta dirección de la lista. No tienes que hacer nada más, y siempre puedes volver a apuntarte más adelante.',
+    vraagWisKop: '¿Borrar tus datos?',
+    vraagWisBody: 'Esto elimina tu dirección y tu progreso, y no podemos deshacerlo. Si has comprado libros, siguen siendo tuyos: están guardados en otro sitio.',
     terug: 'Ir a darijaforkids.eu',
   },
   it: {
@@ -324,6 +367,12 @@ export const MAILS: Record<Taal, Pakket> = {
     afgemeldBody: 'A questo indirizzo non scriveremo più. Se hai comprato dei libri, restano tuoi: sono cose separate.',
     gewistKop: 'I tuoi dati sono cancellati',
     gewistBody: 'Questo indirizzo non è più nella nostra lista. Se hai comprato dei libri, restano tuoi: il tuo ordine è a parte.',
+    vraagBevestigKop: 'Manca solo la conferma',
+    vraagBevestigBody: 'Premi il pulsante per confermarci che questo indirizzo è tuo. Dopo riceverai la posta per cui ti sei iscritto.',
+    vraagAfmeldKop: 'Disiscriverti?',
+    vraagAfmeldBody: 'Premi il pulsante e togliamo questo indirizzo dalla lista. Non devi fare altro, e puoi sempre iscriverti di nuovo più avanti.',
+    vraagWisKop: 'Cancellare i tuoi dati?',
+    vraagWisBody: 'Questo rimuove il tuo indirizzo e i tuoi progressi, e non possiamo annullarlo. I libri acquistati restano tuoi: sono salvati altrove.',
     terug: 'Vai a darijaforkids.eu',
   },
   en: {
@@ -368,6 +417,12 @@ export const MAILS: Record<Taal, Pakket> = {
     afgemeldBody: 'We will not write to this address again. If you bought books, they stay yours — that is separate from this.',
     gewistKop: 'Your details are erased',
     gewistBody: 'This address is no longer in our list. If you bought books, they stay yours: your order is separate.',
+    vraagBevestigKop: 'Just one confirmation',
+    vraagBevestigBody: 'Press the button to confirm that this address is yours. After that you will get the mail you signed up for.',
+    vraagAfmeldKop: 'Unsubscribe?',
+    vraagAfmeldBody: 'Press the button and we will take this address off the list. There is nothing else to do, and you can always sign up again later.',
+    vraagWisKop: 'Erase your data?',
+    vraagWisBody: 'This removes your address and your progress, and we cannot undo it. If you bought books they stay yours — those are kept somewhere else.',
     terug: 'Go to darijaforkids.eu',
   },
 }

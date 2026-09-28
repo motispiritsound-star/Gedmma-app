@@ -2,10 +2,19 @@ name = "darijaforkids-post"
 main = "src/index.ts"
 compatibility_date = "2026-09-01"
 
-# Het adres op `workers.dev` blijft voorlopig aan, zodat je daar kunt testen
-# terwijl het eigen adres hieronder wordt aangelegd. Zet hem op `false` zodra
-# `post.darijaforkids.eu` antwoordt — één deur is genoeg.
-workers_dev = true
+# Geen tweede adres op `workers.dev`.
+#
+# Dit stond aan om te kunnen testen terwijl het eigen adres hieronder werd
+# aangelegd. Dat adres werkt nu — de koopmail loopt erlangs — en dan is dit
+# een openstaande achterdeur: dezelfde worker, openbaar bereikbaar op
+# `darijaforkids-post.<subdomein>.workers.dev`, met `/koop`, het portaal en
+# `/lezen` erachter.
+#
+# Op zichzelf geen lek: de CORS-controle kijkt naar `SITE` en `/koop` vraagt nog
+# steeds het geheim. Maar elke regel die je later aan het eigen domein hangt —
+# een WAF-regel, een snelheidslimiet, een blik op het verkeer — geldt daar niet.
+# Dan bewaak je één deur en vergeet je dat de tweede bestaat.
+workers_dev = false
 
 # Where the app posts to and where the links in the mails point. Set this to
 # the worker's own address once it is deployed.
