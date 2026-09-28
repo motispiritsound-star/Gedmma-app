@@ -10,9 +10,10 @@
  * seems to be invalid", en terecht: punthaken mogen niet in een adres. Dat is
  * geen vergissing van wie het plakte maar van wie het opschreef.
  *
- * Dus doet deze opdracht alle drie de dingen: een geheim verzinnen, het naar
- * Cloudflare sturen, en het hele adres afdrukken zoals het in het veld hoort.
- * Kopiëren en plakken, niets invullen.
+ * Dus doet deze opdracht alles: een geheim verzinnen, het naar Cloudflare
+ * sturen, het op deze computer bewaren zodat `npm run proefkoop` het vindt,
+ * en het hele adres op je klembord zetten. Plakken, niets invullen — en het
+ * komt niet op je scherm, dus er kan ook geen schermafdruk van rondgaan.
  *
  *   npm run koopgeheim
  *
@@ -21,6 +22,7 @@
  */
 import { randomBytes } from 'node:crypto'
 import { schrijfGeheim } from './lib/geheim.mjs'
+import { naarKlembord } from './lib/klembord.mjs'
 import { wrangler } from './lib/wrangler.mjs'
 
 /**
@@ -46,14 +48,6 @@ try {
 }
 
 /**
- * De proefmelding staat er meteen bij, compleet.
- *
- * Anders staat die in de handleiding met `<geheim>` erin, en dan is hij net zo
- * onbruikbaar als het adres hierboven was. `curl.exe` en niet `curl`: op
- * Windows is dat laatste een alias voor Invoke-WebRequest, die `-X` en `-d`
- * niet kent.
- */
-/**
  * En hier blijft hij ook staan, zodat je hem niet elke keer hoeft op te zoeken.
  *
  * `server/.dev.vars` is de plek waar dit project zijn lokale geheimen al
@@ -63,21 +57,52 @@ try {
  */
 const bewaard = schrijfGeheim(geheim)
 
+const adres = `https://post.darijaforkids.eu/koop?s=${geheim}`
+
+/**
+ * Het adres gaat naar het klembord en niet naar het scherm.
+ *
+ * Het stond hier eerst gewoon afgedrukt, met "zet hem niet in een chat"
+ * eronder. Daarna belandde hij twee keer in een chat, allebei de keren via
+ * een schermafdruk van dit scherm. Dat is niet de schuld van wie hem stuurt
+ * maar van wie hem afdrukt: als de enige manier om een waarde over te nemen
+ * is hem te lezen, dan wordt hij gelezen — en wat gelezen kan worden, kan
+ * gefotografeerd worden.
+ *
+ * Lukt het klembord niet, dan komt hij alsnog op het scherm. Zichtbaar is
+ * vervelend; onbruikbaar is erger.
+ */
+const opKlembord = naarKlembord(adres)
+
 console.log(`
-Klaar. Plak dit hele adres bij Gumroad, onder Settings → Advanced → Ping:
+Klaar. Er is een nieuw geheim, en het oude werkt niet meer.
+`)
 
-  https://post.darijaforkids.eu/koop?s=${geheim}
+if (opKlembord) {
+  console.log(`Het hele adres staat op je klembord. Plak het bij Gumroad, onder
+Settings → Advanced → Ping, en druk rechtsboven op "Update settings".
 
-Druk daarna op "Send test ping to URL". Er hoort {"goed":true} terug te komen.
+Het staat met opzet niet op dit scherm: dan kan er ook geen schermafdruk van
+gemaakt worden. Wil je het toch zien, dan staat het in:
 
-Wil je het zelf sturen in plaats van met die knop, dan is dit de hele regel:
+  ${bewaard}
+`)
+} else {
+  console.log(`Het klembord deed het niet, dus hier is het adres. Plak het bij Gumroad,
+onder Settings → Advanced → Ping, en druk rechtsboven op "Update settings":
 
-  curl.exe -sS -X POST "https://post.darijaforkids.eu/koop?s=${geheim}" -d "email=jij@example.com&permalink=sleutels&ip_country=Netherlands&test=true"
+  ${adres}
 
-Hij staat ook in ${bewaard}, zodat npm run proefkoop hem zelf vindt. Dat
-bestand staat in .gitignore en gaat dus niet mee in git.
+Maak hier geen schermafdruk van — dit is de sleutel van je winkel.
+`)
+}
 
-Dit adres is een sleutel. Zet hem niet in een chat en niet in een mail aan
-jezelf — hij staat bij Cloudflare, bij Gumroad, in dat ene bestand op deze
-computer, en verder nergens.
+console.log(`Druk daarna op "Send test ping to URL". Er hoort {"goed":true} terug te komen.
+
+Het geheim staat ook in ${bewaard}, zodat npm run proefkoop het zelf vindt.
+Dat bestand staat in .gitignore en gaat dus niet mee in git.
+
+Wil je een proefkoop doen, dan hoef je niets over te typen:
+
+  npm run proefkoop
 `)
