@@ -160,6 +160,12 @@ npm --prefix $p run intrekken
 
 Deze week is er veel aan de worker en de site veranderd. Dit zet het live.
 
+**Stap 3c is niet meer optioneel.** Mijn raakvlakregel van deze week sloopte de
+kopbalk van de etalage op elke telefoon en tablet: acht menulinks in plaats van
+één, merknaam nul pixels breed, taalkiezer buiten beeld, bladzijde zijwaarts te
+schuiven. Dat is gerepareerd en gemeten, maar het staat pas live ná `build`.
+Zolang je dat niet draait, staat de kapotte kop er nog.
+
 ### 3a · De database bijwerken
 
 Dit is nieuw: het schema wordt niet meer in één klap opnieuw uitgevoerd, maar
@@ -421,6 +427,8 @@ Geen haast, maar wel opschrijven.
 | G2 | `noUncheckedIndexedAccess` aanzetten in de app | Geeft vermoedelijk tientallen meldingen — geen werk voor een lanceerweek |
 | G3 | De expo-keten bijwerken | 3e npm-waarschuwingen, alle in bouwgereedschap; `--omit=dev` zegt nul. `npm audit fix --force` wil expo@57 installeren, een brekende wijziging |
 | G4 | Elk van de drie maillinks een eigen token, met houdbaarheid | De prefetch-schade is weg; dit is verdediging in de diepte en kost een schemawijziging |
+| G5 | `vergeetLink` haalt bij een geweigerde mail de rem per lid weg | Er gaat dan geen post uit, dus dit is belasting en geen spuit |
+| G6 | Een migratie die halverwege omvalt, blijft halverwege staan | Zit in wrangler zelf; opgevangen door het sjabloon van `--nieuw`, dat vraagt om migraties die twee keer mogen draaien |
 
 ---
 
