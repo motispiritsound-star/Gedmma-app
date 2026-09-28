@@ -409,10 +409,24 @@ async function weekloop(env: Env): Promise<void> {
  * staat nergens in zijn zip.
  */
 export const koopMail = (
-  env: Pick<Env, 'LEZER'>, sleutel: string, reeksen: string[], taal: Taal,
+  env: Pick<Env, 'SITE' | 'LEZER'>, sleutel: string, reeksen: string[], taal: Taal,
 ): { onderwerp: string; kop: string; body: string; knop: { tekst: string; url: string }; staart: string } => {
-  const lezer = `${env.LEZER ?? 'https://darijaforkids.eu/lezen'}#${sleutel}`
   const m = MAILS[taal]
+  /**
+   * De knop wijst naar de leeskamer in de taal van de koper.
+   *
+   * Hij wees naar `env.LEZER`, en dat is één vast adres: `/lezen`, het
+   * Nederlandse. De mail was wél vertaald, dus een Franse koper betaalde,
+   * kreeg een Franse mail, en kwam uit op een Nederlandse bladzijde.
+   *
+   * `LEZER` blijft bestaan voor wie hem gezet heeft, maar alleen als er geen
+   * SITE is — de paden per taal staan bij de vertaling, in `mails.ts`.
+   */
+  const basis = (env.SITE ?? '').replace(/\/+$/, '')
+  const lezer = basis
+    ? `${basis}${m.leesPad}#${sleutel}`
+    : `${env.LEZER ?? 'https://darijaforkids.eu/lezen'}#${sleutel}`
+  const portaal = `${basis || 'https://darijaforkids.eu'}${m.portaalPad}`
   const titels = [
     reeksen.includes('sba') ? m.reeks.sba : null,
     reeksen.includes('sleutels') ? m.reeks.sleutels : null,
@@ -422,7 +436,7 @@ export const koopMail = (
   return {
     onderwerp: m.koopOnderwerp(wat),
     kop: m.koopKop,
-    body: m.koopBody(wat, meer),
+    body: m.koopBody(wat, meer, portaal),
     knop: { tekst: m.koopKnop, url: lezer },
     staart: m.koopStaart,
   }

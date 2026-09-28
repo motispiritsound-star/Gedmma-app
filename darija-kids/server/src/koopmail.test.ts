@@ -73,3 +73,47 @@ describe('de mail na het afrekenen', () => {
     }
   })
 })
+
+/**
+ * De knop onder de koopmail wijst naar de leeskamer in de taal van de koper.
+ *
+ * Hij wees naar één vast adres: `/lezen`, het Nederlandse. De mail was wél
+ * vertaald, dus een Franse koper betaalde € 34,99, kreeg een Franse mail, en
+ * kwam uit op een Nederlandse bladzijde.
+ */
+describe('de knop en het portaal', () => {
+  const site = { SITE: 'https://darijaforkids.eu' }
+
+  it('wijst per taal naar de eigen leeskamer', () => {
+    const paden: Record<string, string> = {
+      nl: '/lezen', fr: '/fr/lire', de: '/de/lesen',
+      es: '/es/leer', it: '/it/leggere', en: '/en/read',
+    }
+    for (const [taal, pad] of Object.entries(paden)) {
+      const m = koopMail(site, SLEUTEL, ['sleutels'], taal as Parameters<typeof koopMail>[3])
+      expect(m.knop.url, taal).toBe(`https://darijaforkids.eu${pad}#${SLEUTEL}`)
+    }
+  })
+
+  it('noemt het portaal, in de taal van de koper', () => {
+    const paden: Record<string, string> = {
+      nl: '/portaal', fr: '/fr/portail', de: '/de/portal',
+      es: '/es/portal', it: '/it/portale', en: '/en/portal',
+    }
+    for (const [taal, pad] of Object.entries(paden)) {
+      const m = koopMail(site, SLEUTEL, ['sba'], taal as Parameters<typeof koopMail>[3])
+      // Wie de mail kwijtraakt moet weten dat zijn boeken er nog zijn.
+      expect(m.body, taal).toContain(`https://darijaforkids.eu${pad}`)
+    }
+  })
+
+  it('valt terug op LEZER als er geen SITE is', () => {
+    const m = koopMail({ LEZER: 'https://test.example/lezen' }, SLEUTEL, ['sba'], 'nl')
+    expect(m.knop.url).toBe(`https://test.example/lezen#${SLEUTEL}`)
+  })
+
+  it('zet de sleutel nooit in de tekst, alleen in de knop', () => {
+    const m = koopMail(site, SLEUTEL, ['sba', 'sleutels'], 'nl')
+    expect(m.body).not.toContain(SLEUTEL)
+  })
+})

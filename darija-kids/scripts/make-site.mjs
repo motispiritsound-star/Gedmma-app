@@ -1274,6 +1274,22 @@ const readPage = (lang) => {
   })}
   const PORTAAL = ${JSON.stringify(p.portal)}
   /**
+   * De titels van alle delen, per taal.
+   *
+   * De boekenlijst was een rij genummerde knopjes: vijftien vakjes met een
+   * cijfer erin. Dat is geen overzicht van wat je gekocht hebt maar een
+   * cijferslot — deel zeven zegt je niets tot je hem opent, en een koper die
+   * terugkomt weet niet meer waar hij gebleven was.
+   *
+   * Alle zes de talen gaan mee, niet alleen die van deze bladzijde: de taal
+   * van de bestelling telt, en iemand kan de Nederlandse leeskamer openen met
+   * een Franse bestelling. Dat is een paar kilobyte, en het scheelt een
+   * lijst met titels die niet horen bij de boeken die je krijgt.
+   */
+  const TITELS = ${JSON.stringify(Object.fromEntries(
+    LANGS.map((l) => [l.code, { sba: DELEN[l.code].sba, sleutels: DELEN[l.code].sleutels }]),
+  ))}
+  /**
    * Welke delen een geschilderd tafereel hebben, per taal.
    *
    * Dat weten we bij het zetten van deze bladzijde, en de lezer niet: die zou
@@ -1355,17 +1371,24 @@ const readPage = (lang) => {
     doel.append(kop)
 
     for (const reeks of mijn.reeksen) {
-      const aantal = reeks === 'sba' ? 12 : 15
+      const titels = (TITELS[mijn.taal] || TITELS[taal] || {})[reeks] || []
+      const aantal = titels.length || (reeks === 'sba' ? 12 : 15)
       const rij = document.createElement('div')
       rij.className = 'boekjes'
       const naam = document.createElement('h3')
       naam.id = reeks
-      naam.textContent = reeks === 'sba' ? T.sba : T.sleutels
+      naam.textContent = (reeks === 'sba' ? T.sba : T.sleutels) + ' · ' + aantal
       doel.append(naam, rij)
       for (let n = 1; n <= aantal; n++) {
         const knop = document.createElement('button')
         knop.type = 'button'
-        knop.textContent = n
+        const nr = document.createElement('span')
+        nr.className = 'nr'
+        nr.textContent = n
+        const titel = document.createElement('span')
+        titel.className = 'titel'
+        titel.textContent = titels[n - 1] || ''
+        knop.append(nr, titel)
         knop.onclick = () => open(reeks, n, mijn.taal || taal)
         rij.append(knop)
       }
@@ -1406,7 +1429,11 @@ const readPage = (lang) => {
       .then((r) => r.ok ? r.json() : null).catch(() => null)
 
     const doos = document.createElement('div')
-    doos.className = 'boek'
+    /* De klasse prent maakt het papier breder en laat de plaat tot de rand
+       lopen. Een prentenboek is vooral plaat, en die stond in een kolom die
+       voor een roman is gemaakt: op een telefoon bleef er een postzegel
+       over. */
+    doos.className = 'boek prent'
     const beeld = document.createElement('img')
     beeld.alt = ''
     const woorden = document.createElement('div')

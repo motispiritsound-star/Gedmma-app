@@ -83,7 +83,20 @@ interface Pakket {
   koopEn: string
   koopOnderwerp: (wat: string) => string
   koopKop: string
-  koopBody: (wat: string, meer: boolean) => string
+  koopBody: (wat: string, meer: boolean, portaal: string) => string
+  /**
+   * Waar de leeskamer en het portaal in deze taal staan.
+   *
+   * De mail was vertaald maar de knop eronder niet: die wees altijd naar
+   * `/lezen`, de Nederlandse leeskamer. Een Franse koper betaalde, kreeg een
+   * Franse mail, en kwam uit op een Nederlandse bladzijde.
+   *
+   * Ze staan hier en niet los in de worker omdat ze bij de rest van de
+   * vertaling horen. `src/site/links.ts` is de bron; een test vergelijkt de
+   * twee, zodat ze niet uit elkaar kunnen lopen.
+   */
+  leesPad: string
+  portaalPad: string
   koopKnop: string
   koopStaart: string
 }
@@ -117,12 +130,15 @@ export const MAILS: Record<Taal, Pakket> = {
       'Geen enkele week hoeft goed te gaan. Vijf minuten vanavond zet de reeks weer in gang.',
     ),
     reeks: { sba: 'Sba de Atlasleeuw', sleutels: 'De sleutels van Marokko' },
+    leesPad: '/lezen',
+    portaalPad: '/portaal',
     koopEn: 'en',
     koopOnderwerp: (wat) => `Je boeken staan klaar — ${wat}`,
     koopKop: 'Je boeken staan klaar',
-    koopBody: (wat, meer) => `Bedankt. ${wat} ${meer ? 'staan' : 'staat'} voor je klaar.\n\n`
+    koopBody: (wat, meer, portaal) => `Bedankt. ${wat} ${meer ? 'staan' : 'staat'} voor je klaar.\n\n`
       + 'Je leest ze op de website, met de knop hieronder. Er is geen account en geen wachtwoord: deze link is je sleutel. Bewaar deze mail, of zet de bladzijde bij je favorieten.\n\n'
-      + 'De link werkt op elk apparaat in je gezin. Op elke bladzijde staat jouw naam — dat is er met opzet: deze boeken zijn van jou en niet van het internet.',
+      + 'De link werkt op elk apparaat in je gezin. Op elke bladzijde staat jouw naam — dat is er met opzet: deze boeken zijn van jou en niet van het internet.'
+      + `\n\nDeze mail kwijt? Ga dan naar ${portaal} en vul dit adres in. Je boeken staan daar ook — daar heb je die link niet voor nodig.`,
     koopKnop: 'Open je boeken',
     koopStaart: 'Lukt er iets niet, antwoord dan gewoon op deze mail.',
     afmelden: 'Uitschrijven',
@@ -158,12 +174,15 @@ export const MAILS: Record<Taal, Pakket> = {
       "Aucune semaine n'est obligée de bien se passer. Cinq minutes ce soir et la série repart.",
     ),
     reeks: { sba: 'Sba, le lion de l’Atlas', sleutels: 'Les clés du Maroc' },
+    leesPad: '/fr/lire',
+    portaalPad: '/fr/portail',
     koopEn: 'et',
     koopOnderwerp: (wat) => `Vos livres vous attendent — ${wat}`,
     koopKop: 'Vos livres vous attendent',
-    koopBody: (wat, meer) => `Merci. ${wat} vous ${meer ? 'attendent' : 'attend'}.\n\n`
+    koopBody: (wat, meer, portaal) => `Merci. ${wat} vous ${meer ? 'attendent' : 'attend'}.\n\n`
       + 'Vous les lisez sur le site, avec le bouton ci-dessous. Pas de compte, pas de mot de passe : ce lien est votre clé. Gardez ce message, ou mettez la page dans vos favoris.\n\n'
-      + 'Le lien fonctionne sur tous les appareils de la famille. Votre nom figure sur chaque page — c’est voulu : ces livres sont à vous, pas à l’internet.',
+      + 'Le lien fonctionne sur tous les appareils de la famille. Votre nom figure sur chaque page — c’est voulu : ces livres sont à vous, pas à l’internet.'
+      + `\n\nMessage perdu ? Rendez-vous sur ${portaal} et saisissez cette adresse. Vos livres y sont aussi : ce lien n’est pas nécessaire.`,
     koopKnop: 'Ouvrir vos livres',
     koopStaart: 'Quelque chose ne marche pas ? Répondez simplement à ce message.',
     afmelden: 'Se désinscrire',
@@ -199,12 +218,15 @@ export const MAILS: Record<Taal, Pakket> = {
       'Keine Woche muss gut laufen. Fünf Minuten heute Abend, und die Serie läuft wieder.',
     ),
     reeks: { sba: 'Sba, der Atlaslöwe', sleutels: 'Die Schlüssel Marokkos' },
+    leesPad: '/de/lesen',
+    portaalPad: '/de/portal',
     koopEn: 'und',
     koopOnderwerp: (wat) => `Deine Bücher stehen bereit — ${wat}`,
     koopKop: 'Deine Bücher stehen bereit',
-    koopBody: (wat, meer) => `Danke. ${wat} ${meer ? 'stehen' : 'steht'} für dich bereit.\n\n`
+    koopBody: (wat, meer, portaal) => `Danke. ${wat} ${meer ? 'stehen' : 'steht'} für dich bereit.\n\n`
       + 'Du liest sie auf der Website, mit dem Knopf hier unten. Kein Konto und kein Passwort: dieser Link ist dein Schlüssel. Bewahre diese Mail auf, oder setze ein Lesezeichen.\n\n'
-      + 'Der Link funktioniert auf jedem Gerät in deiner Familie. Auf jeder Seite steht dein Name — das ist Absicht: diese Bücher gehören dir und nicht dem Internet.',
+      + 'Der Link funktioniert auf jedem Gerät in deiner Familie. Auf jeder Seite steht dein Name — das ist Absicht: diese Bücher gehören dir und nicht dem Internet.'
+      + `\n\nMail weg? Dann geh auf ${portaal} und gib diese Adresse ein. Deine Bücher stehen auch dort — dafür brauchst du diesen Link nicht.`,
     koopKnop: 'Deine Bücher öffnen',
     koopStaart: 'Klappt etwas nicht? Antworte einfach auf diese Mail.',
     afmelden: 'Abmelden',
@@ -240,12 +262,15 @@ export const MAILS: Record<Taal, Pakket> = {
       'Ninguna semana tiene que salir bien. Cinco minutos esta noche y la racha vuelve a empezar.',
     ),
     reeks: { sba: 'Sba, el león del Atlas', sleutels: 'Las llaves de Marruecos' },
+    leesPad: '/es/leer',
+    portaalPad: '/es/portal',
     koopEn: 'y',
     koopOnderwerp: (wat) => `Tus libros están listos — ${wat}`,
     koopKop: 'Tus libros están listos',
-    koopBody: (wat, meer) => `Gracias. ${wat} te ${meer ? 'están esperando' : 'está esperando'}.\n\n`
+    koopBody: (wat, meer, portaal) => `Gracias. ${wat} te ${meer ? 'están esperando' : 'está esperando'}.\n\n`
       + 'Los lees en la web, con el botón de abajo. Sin cuenta y sin contraseña: este enlace es tu llave. Guarda este correo, o añade la página a favoritos.\n\n'
-      + 'El enlace funciona en cualquier dispositivo de tu casa. En cada página aparece tu nombre — es a propósito: estos libros son tuyos y no de internet.',
+      + 'El enlace funciona en cualquier dispositivo de tu casa. En cada página aparece tu nombre — es a propósito: estos libros son tuyos y no de internet.'
+      + `\n\n¿Has perdido el correo? Entra en ${portaal} y escribe esta dirección. Tus libros también están ahí: no hace falta este enlace.`,
     koopKnop: 'Abrir tus libros',
     koopStaart: '¿Algo no funciona? Responde a este correo sin más.',
     afmelden: 'Darse de baja',
@@ -281,12 +306,15 @@ export const MAILS: Record<Taal, Pakket> = {
       'Nessuna settimana deve per forza andare bene. Cinque minuti stasera e la serie riparte.',
     ),
     reeks: { sba: 'Sba, il leone dell’Atlante', sleutels: 'Le chiavi del Marocco' },
+    leesPad: '/it/leggere',
+    portaalPad: '/it/portale',
     koopEn: 'e',
     koopOnderwerp: (wat) => `I tuoi libri sono pronti — ${wat}`,
     koopKop: 'I tuoi libri sono pronti',
-    koopBody: (wat, meer) => `Grazie. ${wat} ti ${meer ? 'aspettano' : 'aspetta'}.\n\n`
+    koopBody: (wat, meer, portaal) => `Grazie. ${wat} ti ${meer ? 'aspettano' : 'aspetta'}.\n\n`
       + 'Li leggi sul sito, con il pulsante qui sotto. Nessun account e nessuna password: questo link è la tua chiave. Conserva questa mail, o metti la pagina tra i preferiti.\n\n'
-      + 'Il link funziona su ogni dispositivo di casa. Su ogni pagina c’è il tuo nome — è voluto: questi libri sono tuoi e non di internet.',
+      + 'Il link funziona su ogni dispositivo di casa. Su ogni pagina c’è il tuo nome — è voluto: questi libri sono tuoi e non di internet.'
+      + `\n\nHai perso il messaggio? Vai su ${portaal} e inserisci questo indirizzo. I tuoi libri sono anche lì: questo link non serve.`,
     koopKnop: 'Apri i tuoi libri',
     koopStaart: 'Qualcosa non funziona? Rispondi pure a questa mail.',
     afmelden: 'Cancellati',
@@ -322,12 +350,15 @@ export const MAILS: Record<Taal, Pakket> = {
       'No week has to go well. Five minutes tonight and the streak starts again.',
     ),
     reeks: { sba: 'Sba the Atlas Lion', sleutels: 'The Keys of Morocco' },
+    leesPad: '/en/read',
+    portaalPad: '/en/portal',
     koopEn: 'and',
     koopOnderwerp: (wat) => `Your books are ready — ${wat}`,
     koopKop: 'Your books are ready',
-    koopBody: (wat, meer) => `Thank you. ${wat} ${meer ? 'are' : 'is'} ready for you.\n\n`
+    koopBody: (wat, meer, portaal) => `Thank you. ${wat} ${meer ? 'are' : 'is'} ready for you.\n\n`
       + 'You read them on the website, with the button below. No account and no password: this link is your key. Keep this email, or bookmark the page.\n\n'
-      + 'The link works on every device in your household. Your name is on every page — that is on purpose: these books are yours and not the internet’s.',
+      + 'The link works on every device in your household. Your name is on every page — that is on purpose: these books are yours and not the internet’s.'
+      + `\n\nLost this email? Go to ${portaal} and enter this address. Your books are there too — you do not need this link.`,
     koopKnop: 'Open your books',
     koopStaart: 'Something not working? Just reply to this email.',
     afmelden: 'Unsubscribe',

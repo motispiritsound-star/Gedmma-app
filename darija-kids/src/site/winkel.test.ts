@@ -120,3 +120,35 @@ describe('de boekenbak', () => {
     expect(toml).toMatch(/^bucket_name = "darijaforkids-boeken"/m)
   })
 })
+
+/**
+ * De paden in de mail zijn dezelfde als die op de website.
+ *
+ * `src/site/links.ts` bepaalt waar de leeskamer en het portaal in elke taal
+ * staan. De worker mailt die adressen, maar kan dat bestand niet importeren —
+ * het is een ander project met een andere bouw. Dus staan ze twee keer.
+ *
+ * Twee keer hetzelfde opschrijven gaat een keer mis, en dan wijst de knop in
+ * de mail van een Italiaanse koper naar een bladzijde die niet bestaat. Deze
+ * test leest ze allebei en legt ze naast elkaar.
+ */
+describe('de adressen in de koopmail', () => {
+  it('komen overeen met die van de website', () => {
+    const links = readFileSync('src/site/links.ts', 'utf8')
+    const mails = readFileSync('server/src/mails.ts', 'utf8')
+
+    const uitLinks = new Map<string, { read: string; portal: string }>()
+    for (const m of links.matchAll(/^\s{2}(\w{2}): \{ home:.*?read: '([^']+)', portal: '([^']+)' \}/gm)) {
+      uitLinks.set(m[1]!, { read: m[2]!, portal: m[3]! })
+    }
+    expect(uitLinks.size, 'talen in links.ts').toBe(6)
+
+    for (const [taal, { read, portal }] of uitLinks) {
+      const blok = mails.slice(mails.indexOf(`\n  ${taal}: {`))
+      const lees = blok.match(/leesPad: '([^']+)'/)?.[1]
+      const port = blok.match(/portaalPad: '([^']+)'/)?.[1]
+      expect(lees, `leesPad voor ${taal}`).toBe(read)
+      expect(port, `portaalPad voor ${taal}`).toBe(portal)
+    }
+  })
+})
