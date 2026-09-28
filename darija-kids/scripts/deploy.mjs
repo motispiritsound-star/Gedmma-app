@@ -11,7 +11,17 @@
  *
  *   npm run deploy
  */
+import { kijkOfJeBijBent } from './lib/bij.mjs'
 import { wrangler } from './lib/wrangler.mjs'
+
+/**
+ * Eerst kijken of deze map wel bij is.
+ *
+ * Een oude worker uitrollen is niet vervelend maar verkeerd: dan staat de
+ * reparatie waarvoor je dit draait juist níét live, en gaat iedereen daarna
+ * zoeken naar een fout die allang weg is. Dat is hier vier keer gebeurd.
+ */
+await kijkOfJeBijBent({ streng: true })
 
 /**
  * Wrangler heeft zijn fout al op het scherm gezet.

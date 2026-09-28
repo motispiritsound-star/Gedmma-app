@@ -15,6 +15,7 @@
  *
  *   npm run proefkoop
  */
+import { kijkOfJeBijBent } from './lib/bij.mjs'
 import { pingAdres } from './lib/geheim.mjs'
 
 /**
@@ -46,6 +47,10 @@ const stop = (code, ...regels) => {
 }
 
 async function main() {
+  /* Draai je een oudere proefkoop, dan zoek je straks naar een fout die hier
+     al gerepareerd is. */
+  await kijkOfJeBijBent()
+
   if (!process.stdin.isTTY) {
     return stop(1, '\nDeze opdracht vraagt een paar dingen en heeft dus een scherm nodig.\n')
   }
