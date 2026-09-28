@@ -60,15 +60,27 @@ const ingelogd = () => {
 }
 
 /**
- * Eén sleutel opvragen.
+ * Eén sleutel opvragen — bij de échte bak.
  *
- * `get` schrijft naar een bestand, dus het gaat naar de prullenmap van het
+ * `--remote` staat er niet voor de sier. Zonder die vlag kiest wrangler de
+ * lokale nabootsing: hij meldt dan `Resource location: local` en antwoordt
+ * "The specified key does not exist" over een bak die op je eigen schijf staat
+ * en die bij de meeste mensen leeg is.
+ *
+ * Dat ging hier mis, twee keer achter elkaar. Erger nog: de inlogcontrole
+ * hierboven gebruikte wél `--remote` en slaagde, dus alles leek te kloppen —
+ * en daarna werd de vraag aan de verkeerde opslag gesteld. Een controle die
+ * langs de goede poort loopt en dan de verkeerde kamer binnenstapt, is
+ * overtuigender dan een controle die gewoon faalt.
+ *
+ * `get` schrijft naar een bestand, dus dat gaat naar de prullenmap van het
  * stelsel — we willen alleen weten of hij er is.
  */
 const bestaat = (sleutel) => {
   const heen = path.join(tmpdir(), '.platencheck')
   try {
-    execFileSync(process.execPath, [BIN, 'r2', 'object', 'get', `${BAK}/${sleutel}`, '--file', heen],
+    execFileSync(process.execPath,
+      [BIN, 'r2', 'object', 'get', `${BAK}/${sleutel}`, '--file', heen, '--remote'],
       { cwd: SERVER, stdio: 'pipe' })
     return true
   } catch {
@@ -92,7 +104,8 @@ if (!ingelogd()) {
   process.exit(1)
 }
 
-console.log(`\nIk vraag het aan de bak zelf, niet aan store/bladen/gedaan.json.`)
+console.log(`\nIk vraag het aan de bak bij Cloudflare (--remote), niet aan de lokale`)
+console.log(`nabootsing en niet aan store/bladen/gedaan.json.`)
 console.log(`${paren.length} ${paren.length === 1 ? 'deel' : 'delen'} nakijken${ALLES ? '' : ' (steekproef)'} ...\n`)
 
 /* De andere reeks hoort er ook bij. Zonder die controle weet je wel dat de
