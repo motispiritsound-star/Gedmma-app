@@ -16,6 +16,8 @@
  *
  *   npm run proefkoop
  */
+import { pingAdres } from './lib/geheim.mjs'
+
 const REEKSEN = {
   1: { naam: 'De sleutels van Marokko', permalink: 'sleutels' },
   2: { naam: 'Sba de Atlasleeuw', permalink: 'sbadeleeuw' },
@@ -48,15 +50,27 @@ Hierna krijgt het adres dat je opgeeft een echte mail met een echte sleutel.
 Er wordt niets afgerekend.
 `)
 
-console.log('Het adres met het geheim erin staat bij Gumroad onder')
-console.log('Settings → Advanced → Ping. Het begint met https://post.darijaforkids.eu/koop?s=')
-console.log('Ben je het kwijt: stop hier en draai eerst npm run koopgeheim.\n')
+/* Staat het geheim op deze computer, dan hoeft er niets gevraagd te worden.
+   Het adres zelf drukken we niet af: het is een sleutel. */
+const bekend = pingAdres()
 
-const adres = await vraag('Ping-adres: ')
-if (!adres.startsWith('https://') || !adres.includes('/koop')) {
-  lezer.close()
-  console.log('\nDat lijkt niet op het ping-adres. Er is niets verstuurd.\n')
-  process.exit(1)
+let adres
+if (bekend) {
+  console.log('Het ping-adres staat op deze computer; die gebruik ik.\n')
+  adres = bekend
+} else {
+  console.log('Het adres met het geheim erin staat bij Gumroad onder')
+  console.log('Settings → Advanced → Ping. Het begint met https://post.darijaforkids.eu/koop?s=')
+  console.log('Ben je het kwijt: stop hier en draai eerst npm run koopgeheim.\n')
+  adres = await vraag('Ping-adres: ')
+  // Alleen nakijken wat je zelf intikt. Wat uit ons eigen bestand komt is
+  // daar door `koopgeheim` neergezet en heeft die vraag niet nodig — en een
+  // afkeuring zou dan een melding geven die nergens op slaat.
+  if (!adres.startsWith('https://') || !adres.includes('/koop')) {
+    lezer.close()
+    console.log('\nDat lijkt niet op het ping-adres. Er is niets verstuurd.\n')
+    process.exit(1)
+  }
 }
 
 const email = await vraag('\nNaar welk e-mailadres mag de sleutel? ')

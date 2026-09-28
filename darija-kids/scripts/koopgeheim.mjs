@@ -20,6 +20,7 @@
  * adres niet meer. Dat is precies wat je wilt als het ergens rondslingert.
  */
 import { randomBytes } from 'node:crypto'
+import { schrijfGeheim } from './lib/geheim.mjs'
 import { wrangler } from './lib/wrangler.mjs'
 
 /**
@@ -52,6 +53,16 @@ try {
  * Windows is dat laatste een alias voor Invoke-WebRequest, die `-X` en `-d`
  * niet kent.
  */
+/**
+ * En hier blijft hij ook staan, zodat je hem niet elke keer hoeft op te zoeken.
+ *
+ * `server/.dev.vars` is de plek waar dit project zijn lokale geheimen al
+ * bewaarde en staat in `.gitignore`. Zonder dit moet je hem voor elke proef
+ * uit Gumroad halen, en een opdracht die dat vraagt wordt niet gedraaid —
+ * dan gaat hij ergens staan waar hij makkelijker terug te vinden is.
+ */
+const bewaard = schrijfGeheim(geheim)
+
 console.log(`
 Klaar. Plak dit hele adres bij Gumroad, onder Settings → Advanced → Ping:
 
@@ -63,6 +74,10 @@ Wil je het zelf sturen in plaats van met die knop, dan is dit de hele regel:
 
   curl.exe -sS -X POST "https://post.darijaforkids.eu/koop?s=${geheim}" -d "email=jij@example.com&permalink=sleutels&ip_country=Netherlands&test=true"
 
-Dit adres is een sleutel. Zet hem niet in een chat, niet in de repo en niet in
-een mail aan jezelf — hij staat hier, en bij Gumroad, en verder nergens.
+Hij staat ook in ${bewaard}, zodat npm run proefkoop hem zelf vindt. Dat
+bestand staat in .gitignore en gaat dus niet mee in git.
+
+Dit adres is een sleutel. Zet hem niet in een chat en niet in een mail aan
+jezelf — hij staat bij Cloudflare, bij Gumroad, in dat ene bestand op deze
+computer, en verder nergens.
 `)
