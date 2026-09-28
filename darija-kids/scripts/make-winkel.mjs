@@ -32,7 +32,7 @@
  *   npm run winkel -- --opnieuw   # ook boeken die er al staan opnieuw zetten
  */
 import { execFileSync } from 'node:child_process'
-import { existsSync } from 'node:fs'
+import { existsSync, readdirSync, statSync } from 'node:fs'
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -116,9 +116,39 @@ const BUNDELS = [
 
 await mkdir(UIT, { recursive: true })
 
-/** Een boek dat er al staat, zetten we niet opnieuw — dat scheelt een kwartier. */
+/**
+ * Het laatste moment waarop er iets aan de inhoud veranderde.
+ *
+ * Nodig omdat "staat er al" niet hetzelfde is als "klopt nog". De
+ * oorspronkelijke regel keek alleen of het bestand bestond, en dat is precies
+ * verkeerd na een redactieronde: de tekst van zes delen ging op de schop, de
+ * pdf's stonden er nog, en `npm run winkel` sloeg ze alle zes over. Dan
+ * verkoop je de oude tekst en is er niets dat je dat vertelt.
+ *
+ * Grof met opzet: één tijdstempel voor de hele inhoudsmap. Verandert er één
+ * zin, dan gaan alle boeken opnieuw door de zetter. Dat kost een kwartier op
+ * de dagen dat er iets veranderd is, en niets op alle andere — en die ruil is
+ * de goede kant op.
+ */
+const nieuwsteIn = (map) => {
+  let nieuwste = 0
+  for (const naam of readdirSync(map)) {
+    const pad = path.join(map, naam)
+    const st = statSync(pad)
+    nieuwste = Math.max(nieuwste, st.isDirectory() ? nieuwsteIn(pad) : st.mtimeMs)
+  }
+  return nieuwste
+}
+
+const INHOUD_VAN = nieuwsteIn(path.join(ROOT, 'src', 'content'))
+
+/** Een boek dat er al staat én nog klopt, zetten we niet opnieuw. */
 const zetten = (script, nummer, taal, waar) => {
-  if (existsSync(waar) && !OPNIEUW) return false
+  if (existsSync(waar) && !OPNIEUW) {
+    // De zetter zelf telt mee: verandert de opmaak, dan moet de pdf ook mee.
+    const bron = Math.max(INHOUD_VAN, statSync(path.join(ROOT, 'scripts', script)).mtimeMs)
+    if (statSync(waar).mtimeMs > bron) return false
+  }
   process.stdout.write(`  ${script.replace('make-', '').replace('.mjs', '')} ${nummer} ${taal} … `)
   try {
     execFileSync('node', [path.join(ROOT, 'scripts', script), '--deel', String(nummer), '--taal', taal], { stdio: 'pipe' })

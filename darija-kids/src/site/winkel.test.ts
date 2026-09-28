@@ -54,3 +54,23 @@ describe('de namen van de producten', () => {
     for (const naam of voorgesteld) expect([...bekend], `de handleiding noemt ${naam}`).toContain(naam)
   })
 })
+
+/**
+ * "Staat er al" is niet hetzelfde als "klopt nog".
+ *
+ * `npm run winkel` sloeg elk boek over dat al in `store/winkel` stond, puur
+ * op bestaan. Na een redactieronde — de tekst van zes delen ging op de schop
+ * — stonden de oude pdf's er nog, dus sloeg hij ze over en bleef de winkel de
+ * oude tekst verkopen. Niets dat dat vertelde.
+ */
+describe('de winkelbestanden', () => {
+  it('kijkt naar de ouderdom en niet alleen naar het bestaan', () => {
+    const bron = readFileSync('scripts/make-winkel.mjs', 'utf8')
+    // De inhoudsmap telt mee ...
+    expect(bron).toContain("nieuwsteIn(path.join(ROOT, 'src', 'content'))")
+    // ... en de zetter zelf, want opmaak verandert ook.
+    expect(bron).toMatch(/Math\.max\(INHOUD_VAN, statSync\(path\.join\(ROOT, 'scripts', script\)\)\.mtimeMs\)/)
+    // En overslaan mag alleen als de pdf jonger is dan allebei.
+    expect(bron).toMatch(/if \(statSync\(waar\)\.mtimeMs > bron\) return false/)
+  })
+})

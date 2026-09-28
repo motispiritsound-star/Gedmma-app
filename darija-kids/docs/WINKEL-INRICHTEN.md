@@ -105,7 +105,18 @@ voor vijfendertig euro is die afweging één keer.
 | Sba de Atlasleeuw | € 34,99 | `sbaReeks` | `sba-alle-delen.zip` |
 | Het e-boek | € 14,99 | `ebook` | `ebook-alle-talen.zip` |
 
-Maak er één aan, test hem helemaal af, en pas dan de andere twee. Alles wat je
+Maak er één aan, test hem helemaal af, en pas dan de andere twee.
+
+**Over opnieuw maken.** `npm run winkel` slaat een boek over dat er al staat,
+maar kijkt daarbij naar de ouderdom: is er iets in `src/content` veranderd
+sinds die pdf werd gezet, dan gaat hij opnieuw door de zetter. Na een
+redactieronde hoef je dus niets te onthouden. `-- --opnieuw` forceert alles.
+
+`npm run boeken -- --platen` werkt anders: die houdt in `store/bladen/gedaan.json`
+bij wat er al geüpload is, zodat een uur werk niet opnieuw begint als het
+netwerk halverwege omvalt. Die boekhouding kijkt níét naar ouderdom. Verander
+je later een prentenboek, gooi dan dat bestand weg voordat je hem opnieuw
+draait. Alles wat je
 moet invullen staat in `store/winkel/producten.md`: naam, prijs, bestand, en
 het tekstblok voor de beschrijving.
 
