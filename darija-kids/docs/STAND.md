@@ -113,7 +113,7 @@ nakijkt. Ze staan hier omdat ze pas opvallen als het te laat is.
    geldt het Families-beleid — geen advertenties van derden, geen trackers. De
    app voldoet daar al aan, maar het moet kloppen met wat er staat.
 
-### Zes opdrachten die geen pad en geen waarde meer vragen
+### Zeven opdrachten die geen pad en geen waarde meer vragen
 
 | | |
 |---|---|
@@ -123,8 +123,9 @@ nakijkt. Ze staan hier omdat ze pas opvallen als het te laat is.
 | `npm run koopgeheim` | nieuw geheim, en het hele Gumroad-adres erbij |
 | `npm run bestellingen` | wie wat kocht, en of een sleutel rondgaat |
 | `npm run intrekken` | een sleutel intrekken, en met `-- --terug` weer teruggeven |
+| `npm run proefkoop` | een aankoop naspelen, om het portaal na te lopen |
 
-Ze draaien alle zes vanuit de projectmap. Wil je er niet eerst heen, gebruik
+Ze draaien alle zeven vanuit de projectmap. Wil je er niet eerst heen, gebruik
 dan `npm --prefix <de projectmap> run <naam>` — dat werkt vanuit elke map en
 kan dus niet op de verkeerde plek terechtkomen.
 
