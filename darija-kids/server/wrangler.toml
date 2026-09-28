@@ -1,5 +1,10 @@
 name = "darijaforkids-post"
 main = "src/index.ts"
+
+# De migraties. Ze staan in server/migrations en wrangler houdt in de tafel
+# `d1_migrations` bij welke er al gedraaid hebben, zodat een tweede keer
+# toepassen niets doet.
+migrations_dir = "migrations"
 compatibility_date = "2026-09-01"
 
 # Geen tweede adres op `workers.dev`.

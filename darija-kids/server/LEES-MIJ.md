@@ -28,7 +28,7 @@ adres in een formulier typen, en pas die klik maakt er toestemming van.
 
 ## Wat erin staat
 
-`schema.sql` is de hele database. Twee tabellen:
+`migrations/0001_begin.sql` is de hele database. Twee tabellen:
 
 - **aanmelding** — het adres, de taal, de twee vinkjes, de status, en het bewijs:
   wanneer, vanaf welk gehasht IP, en onder welke versie van de tekst

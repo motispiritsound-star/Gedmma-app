@@ -119,7 +119,7 @@ nakijkt. Ze staan hier omdat ze pas opvallen als het te laat is.
 |---|---|
 | `npm run inloggen` | één keer, wrangler bij Cloudflare |
 | `npm run deploy` | de worker uitrollen |
-| `npm run schema` | het schema op de database (mag altijd opnieuw) |
+| `npm run schema` | de migraties toepassen (mag altijd opnieuw) |
 | `npm run koopgeheim` | nieuw geheim, en het hele Gumroad-adres op je klembord |
 | `npm run mailsleutel` | de sleutel van de mailpartner, nagekeken vóór hij wordt opgeslagen |
 
@@ -135,12 +135,11 @@ Ze draaien alle negen vanuit de projectmap. Wil je er niet eerst heen, gebruik
 dan `npm --prefix <de projectmap> run <naam>` — dat werkt vanuit elke map en
 kan dus niet op de verkeerde plek terechtkomen.
 
-`npm run schema` mag zo vaak als je wilt: `server/schema.sql` bestaat uit
-niets dan `CREATE TABLE IF NOT EXISTS` en `CREATE INDEX IF NOT EXISTS`, dus
-bestaande tafels blijven zoals ze zijn met alles wat erin staat. Dat is met
-opzet zo gehouden — een schema dat je alleen in het begin mag draaien, moet bij
-de eerstvolgende uitbreiding met de hand, en dat is precies de stap die je
-vergeet. Met `--hier` gaat het naar de lokale kopie, om te proberen.
+`npm run schema` past de migraties toe die nog niet gedraaid hebben. Wrangler
+houdt in de tafel `d1_migrations` bij welke dat zijn, dus een tweede keer doet
+niets. Een wijziging aan de database is voortaan een nieuw genummerd bestand:
+`npm run schema -- --nieuw <naam>` maakt hem, en `--hier` probeert hem eerst op
+de lokale kopie.
 
 Ze draaien allemaal vanuit `darija-kids` — geen `cd server` meer. Dat was
 niet luxe: `cd C:\...\darija-kids\server` is een keer letterlijk geplakt,

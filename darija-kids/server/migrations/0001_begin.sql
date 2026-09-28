@@ -1,3 +1,28 @@
+-- 0001 — de database zoals hij begon.
+--
+-- Dit bestand heette `server/schema.sql` en werd in zijn geheel opnieuw
+-- uitgevoerd bij elke wijziging. Dat kon, want er staat niets anders in dan
+-- `CREATE TABLE IF NOT EXISTS` en `CREATE INDEX IF NOT EXISTS`: geen DROP,
+-- geen ALTER, geen DELETE. Toepassen op een database die de tafels al heeft,
+-- verandert niets.
+--
+-- Precies daarom kon er ook niets bij. Een kolom toevoegen aan een tafel die
+-- al bestaat doet met `IF NOT EXISTS` helemaal niets — het mislukt niet, het
+-- gebeurt gewoon niet. Zolang de database leeg was, gooide je hem weg en
+-- begon je opnieuw. Vanaf de eerste echte bestelling kan dat niet meer.
+--
+-- Dus: dit bestand is vanaf nu bevroren. Elke volgende wijziging is een nieuw
+-- genummerd bestand in deze map, en wrangler houdt in de tafel `d1_migrations`
+-- bij welke er al gedraaid hebben.
+--
+--   npm run schema                  -- alles wat nog niet gedraaid heeft
+--   npm run schema -- --hier        -- op de lokale kopie, om te proberen
+--   npm run schema -- --nieuw naam  -- een volgende migratie beginnen
+--
+-- Dat deze eerste migratie idempotent is, is wat de overstap veilig maakt: op
+-- de bestaande database is hij een lege handeling, en wrangler tekent hem aan
+-- als gedaan.
+
 -- The list, and nothing more than the list.
 --
 -- One row per e-mail address. No child's name, no answers, no device id: the

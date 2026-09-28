@@ -8,13 +8,19 @@
 #
 #   npm run build --workspace @buurklus/shared
 #   npm run build --workspace @buurklus/web
-#   npx wrangler deploy
+#   npm --prefix apps/web exec wrangler deploy
+#
+# Dit bestand stond in de root van de repository, en daar hoort het niet: in
+# diezelfde root woont ook darija-kids, met zijn eigen worker. `wrangler` leest
+# de wrangler.toml van de map waarin je staat, dus één deploy vanaf de
+# verkeerde plek publiceerde het verkeerde project. Nu staat het bij de site
+# die het uitrolt, en is er in de root geen deploybaar doelwit meer.
 
 name = "buurklus"
 compatibility_date = "2026-09-08"
 
 [assets]
-directory = "apps/web/dist"
+directory = "dist"
 
 # An unknown path gets the site's own 404 page rather than a bare Cloudflare
 # error. The default handling of /nl/ -> /nl/index.html stays as it is.

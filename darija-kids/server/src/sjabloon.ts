@@ -138,7 +138,7 @@ const naarSite = (site: string, taal: string): string =>
  * Iemand kreeg dus de mail, klikte nergens op, en zijn aanmelding was weg. Of
  * andersom: de scanner tikte op "bevestigen", en dan stond er in de database
  * dat deze persoon toestemming had gegeven terwijl er geen mens aan te pas
- * kwam — precies wat `schema.sql` in zijn kop als doel stelt.
+ * kwam — precies wat `migrations/0001_begin.sql` in zijn kop als doel stelt.
  *
  * Een formulier lost dat op: een prefetch haalt de bladzijde op en ziet een
  * knop. Meer niet. Pas de POST erachter verandert iets, en die stuurt geen

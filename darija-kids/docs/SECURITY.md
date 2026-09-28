@@ -36,7 +36,7 @@ GET hier is een verwijdering.
 Gevolg: iemand krijgt de mail, klikt nergens op, en zijn aanmelding is weg. Of
 andersom — de scanner klikt op "bevestigen", en dan staat er in de database dat
 deze persoon toestemming heeft gegeven terwijl er geen mens aan te pas kwam.
-Dat laatste raakt precies wat `schema.sql` in zijn eigen kop als doel stelt: dat
+Dat laatste raakt precies wat `migrations/0001_begin.sql` in zijn kop als doel stelt: dat
 "ze hebben ja gezegd" iets is dat je moet kunnen laten zien.
 
 **Erbij, en het maakt het zwaarder.** `aanmelding.token` is één token, dat
