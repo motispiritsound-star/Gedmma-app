@@ -115,6 +115,16 @@ Kies bij *Products* **Digital product** en niet *E-book* — dat laatste is voor
 Zet de URL op iets dat je kunt uitspreken (`sleutels`, `sba`, `ebook`) vóórdat
 je publiceert. Daarna verandert een link die al rondgaat kapot.
 
+**Die naam moet in `REEKS_VAN` staan**, boven in `server/src/koopbericht.ts`.
+Dat is de tabel waarmee de worker een melding van de betaalpartner omzet in
+een reeks. Staat hij er niet in, dan geeft de worker een 400 en krijgt de
+koper geen sleutel; je ziet het dan terug in het pinglogboek bij Gumroad.
+
+Deze drie kende de tabel niet toen deze regel hier werd geschreven — de
+handleiding zei `ebook`, de tabel kende alleen `eboek`. `winkel.test.ts`
+vergelijkt ze nu bij elke testronde, dus kies je een vierde naam, dan valt die
+test om en weet je het vóór de eerste verkoop.
+
 ## Stap 4 — De link in de website
 
 Open `src/site/shop.ts`. Bovenaan staat één blok `LINKS`:

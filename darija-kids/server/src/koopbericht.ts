@@ -46,7 +46,16 @@ export type Koopbericht = {
 export const REEKS_VAN: Record<string, string | null> = {
   sleutels: 'sleutels',
   sbadeleeuw: 'sba',
+  sba: 'sba',
+  // Het e-boek levert de betaalpartner zelf af, dus het portaal doet er
+  // niets mee. Alle drie de schrijfwijzen staan erin omdat het adres bij de
+  // betaalpartner één keer wordt gekozen en daarna niet meer verandert:
+  // `docs/WINKEL-INRICHTEN.md` noemde `ebook`, deze tabel kende alleen
+  // `eboek`, en dan komt er bij elke verkoop een melding binnen die wij niet
+  // begrijpen. Drie regels zijn goedkoper dan die ene letter.
   eboek: null,
+  ebook: null,
+  'e-boek': null,
 }
 
 /**
@@ -137,6 +146,10 @@ export const koopbericht = (velden: Record<string, string>): Koopbericht => {
       if (!reeksen.includes(naam)) reeksen.push(naam)
       continue
     }
+    // Een naam die hier niet in staat valt eruit, en dan geeft `koop()` een
+    // 400. Dat is met opzet: die staat in het pinglogboek van de
+    // betaalpartner, en dat is een plek waar je kunt kijken. Stil doorlaten
+    // zou betekenen dat een verkeerd gespeld product nergens opvalt.
     if (!(naam in REEKS_VAN)) continue
     const reeks = REEKS_VAN[naam] ?? null
     if (reeks === null) genegeerd.push(naam)
