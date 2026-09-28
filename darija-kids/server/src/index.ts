@@ -569,7 +569,23 @@ async function koop(verzoek: Request, env: Env): Promise<Response> {
   })
 
   if (stap === 'zonder-nummer') {
-    console.error('terugbetaling zonder bestelnummer', email)
+    // Het adres niet. Hier stond het wel, en dat is een uitzondering die de
+    // rest van deze database nergens maakt: `opening` en `mailteller` bewaren
+    // een hash van het ip en niet het ip, en `bestelling` bewaart een hash van
+    // de sleutel en niet de sleutel. Een adres in de logs van Cloudflare heeft
+    // een andere bewaartermijn, een andere toegangslijst en geen verwijderknop
+    // per regel — en voor de AVG maakt het niet uit dat het in een log staat en
+    // niet in een tabel.
+    //
+    // Gezouten, want een kale hash van een e-mailadres is af te raden: de
+    // verzameling adressen is klein genoeg om door te rekenen.
+    //
+    // Wat overblijft is genoeg voor waar deze regel voor is: zien dat het
+    // twee keer dezelfde persoon is. Het adres zelf staat bij de betaalpartner,
+    // en daar hoort het ook: dit bericht kwam binnen zónder bestelnummer, dus
+    // het terugzoeken gebeurt daar.
+    console.error('terugbetaling zonder bestelnummer; adres staat bij de betaalpartner, hier het merk:',
+      (await hashVan(email + env.ZOUT)).slice(0, 12))
     return json({ goed: true, genegeerd: ['terugbetaling-zonder-bestelnummer'] })
   }
 

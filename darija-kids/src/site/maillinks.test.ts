@@ -78,3 +78,37 @@ describe('de links uit de mail', () => {
     expect(mails).not.toMatch(/vraag[A-Za-z]+:\s*''/)
   })
 })
+
+/**
+ * En wat er níet in het logboek hoort.
+ *
+ * `console.error('terugbetaling zonder bestelnummer', email)` zette een adres
+ * in de logs van Cloudflare. Dat is een uitzondering die de rest van deze
+ * database nergens maakt: `opening` en `mailteller` bewaren een hash van het ip
+ * en niet het ip, `bestelling` een hash van de sleutel en niet de sleutel.
+ *
+ * Een log heeft een eigen bewaartermijn, een eigen toegangslijst en geen
+ * verwijderknop per regel — en voor de AVG maakt het niet uit dat het in een
+ * log staat en niet in een tabel.
+ */
+describe('het logboek van de worker', () => {
+  const index = readFileSync(new URL('../../server/src/index.ts', import.meta.url), 'utf8')
+
+  it('schrijft nergens een e-mailadres weg', () => {
+    const regels = index.split('\n')
+    regels.forEach((regel, i) => {
+      if (!/console\.(error|log|warn)\(/.test(regel)) return
+      // Geen kale `email` of `.email` als argument. Een hash ervan mag wel:
+      // die is nodig om te zien dat het twee keer dezelfde persoon is.
+      const argumenten = regel.slice(regel.indexOf('(') + 1)
+      expect(argumenten, `regel ${i + 1} logt een adres: ${regel.trim()}`)
+        .not.toMatch(/(^|[\s,(])(email|rij\.email|body\.email|lid\.email)([\s,)]|$)/)
+    })
+  })
+
+  it('zout de hash, want een kale hash van een adres is door te rekenen', () => {
+    // De verzameling e-mailadressen is klein genoeg om af te lopen. Zonder
+    // zout is zo'n hash het adres zelf, alleen minder leesbaar.
+    expect(index).toContain('hashVan(email + env.ZOUT)')
+  })
+})
