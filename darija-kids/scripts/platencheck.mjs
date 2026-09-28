@@ -95,6 +95,18 @@ if (!ingelogd()) {
 console.log(`\nIk vraag het aan de bak zelf, niet aan store/bladen/gedaan.json.`)
 console.log(`${paren.length} ${paren.length === 1 ? 'deel' : 'delen'} nakijken${ALLES ? '' : ' (steekproef)'} ...\n`)
 
+/* De andere reeks hoort er ook bij. Zonder die controle weet je wel dat de
+ * prenten ontbreken, maar niet of de leesboeken er zijn — en dan draai je een
+ * uur aan platen terwijl er nog iets anders stuk is. */
+console.log('  De sleutels van Marokko (tekstboeken)')
+let tekstMist = 0
+for (const [deel, taal] of [[1, 'nl'], [8, 'fr'], [15, 'nl']]) {
+  const er = bestaat(`sleutels/${deel}/${taal}/boek.json`)
+  if (!er) tekstMist += 1
+  console.log(`    ${taal}  deel ${String(deel).padStart(2)}  ${er ? 'staat er' : 'ONTBREEKT'}`)
+}
+
+console.log('\n  Sba de Atlasleeuw (prentenboeken)')
 let mist = 0
 for (const [deel, taal] of paren) {
   const boek = bestaat(`sba/${deel}/${taal}/boek.json`)
@@ -107,10 +119,16 @@ for (const [deel, taal] of paren) {
     : boek ? 'TEKST WEL, PLATEN NIET'
     : 'ONTBREEKT'
   if (!(boek && plaat)) mist += 1
-  console.log(`  ${taal}  deel ${String(deel).padStart(2)}  ${staat}`)
+  console.log(`    ${taal}  deel ${String(deel).padStart(2)}  ${staat}`)
 }
 
 console.log('')
+if (tekstMist) {
+  console.log(`De leesboeken ontbreken ook (${tekstMist} van de 3 nagekeken).`)
+  console.log('Die komen er niet met --platen bij. Draai daarvoor:\n')
+  console.log('  npm --prefix (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName run lezen -- --r2\n')
+}
+
 if (!mist) {
   console.log(ALLES
     ? 'Alles staat er. Een Sba-koper krijgt zijn prentenboek.\n'
@@ -119,7 +137,8 @@ if (!mist) {
   console.log(`${mist} van de ${paren.length} ${mist === 1 ? 'staat' : 'staan'} er niet goed in.`)
   console.log('\nDat betekent dat een koper "nog niet" te zien krijgt. De aantekeningen')
   console.log('kloppen dan niet meer met de bak; gooi ze weg en maak ze opnieuw:\n')
-  console.log('  Remove-Item (Join-Path $p "store\\bladen\\gedaan.json")')
-  console.log('  npm --prefix $p run boeken -- --platen\n')
+  const zoek = '(Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName'
+  console.log(`  Remove-Item (Join-Path ${zoek} "store\\bladen\\gedaan.json")`)
+  console.log(`  npm --prefix ${zoek} run boeken -- --platen\n`)
   process.exit(1)
 }
