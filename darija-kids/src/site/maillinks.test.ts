@@ -147,15 +147,37 @@ describe('de inloglink van het portaal', () => {
     expect(lichaam, 'de fout wordt niet doorgegeven').toMatch(/vergeetLink\(env\.DB, token\)\s*\n\s*throw /)
   })
 
-  it('telt de mail pas als hij ook echt weg is', () => {
+  it('maakt onderscheid tussen een weigering en een tijdslimiet', () => {
+    // Hier stond eerst: opruimen bij elke fout, en tellen alleen na de try.
+    // Allebei te grof.
+    //
+    // Een tijdslimiet zegt niet dat er niets gebeurd is, alleen dat we het
+    // antwoord niet kregen. Brevo kan de mail hebben aangenomen. De link dan
+    // weggooien maakt een bezorgde mail onbruikbaar — de ouder tikt op de knop
+    // en krijgt "werkt niet meer" terwijl hij precies deed wat er stond. En
+    // niet meetellen voor de rem betekent dat een trage postdienst niemand
+    // meer remt, terwijl er wél post uitgaat.
+    //
+    // Bij een weigering van Brevo staat wél vast dat er niets uitging, en dan
+    // hoort de rij weg.
     const start = index.indexOf('async function portaalAanmelden(')
-    const eind = index.indexOf('\nasync function ', start + 10)
-    const lichaam = index.slice(start, eind === -1 ? undefined : eind)
-    // `telMail` hoort ná de try te staan. Binnen de try zou een omgevallen
-    // mail meetellen voor de rem per plek, en dan remt een storing bij de
-    // postdienst ook de mensen die niets fout deden.
+    const lichaam = index.slice(start, index.indexOf('\nasync function ', start + 10))
+
+    expect(lichaam, 'het onderscheid tussen zeker en onzeker is weg')
+      .toMatch(/if \(fout instanceof PostOnzeker\) await telMail\(env\.DB, plek\)\s*\n\s*else await vergeetLink\(env\.DB, token\)/)
+
+    // En het geslaagde pad telt nog steeds, ná de try.
     const catchEind = lichaam.indexOf('}', lichaam.indexOf('throw fout'))
-    expect(lichaam.indexOf('telMail(env.DB, plek)')).toBeGreaterThan(catchEind)
+    expect(lichaam.indexOf('telMail(env.DB, plek)', catchEind),
+      'na een geslaagde verzending wordt niet meer geteld').toBeGreaterThan(catchEind)
+  })
+
+  it('kent PostOnzeker alleen toe aan een tijdslimiet, niet aan een weigering', () => {
+    const mail = readFileSync(new URL('../../server/src/mail.ts', import.meta.url), 'utf8')
+    // De afgebroken verbinding wordt een PostOnzeker ...
+    expect(mail).toMatch(/TimeoutError' \|\| naam === 'AbortError'\) \{\s*\n\s*throw new PostOnzeker\(/)
+    // ... en een foutcode van Brevo een gewone fout, want die is wel zeker.
+    expect(mail).toMatch(/if \(!antwoord\.ok\) \{\s*\n\s*throw new Error\(/)
   })
 })
 

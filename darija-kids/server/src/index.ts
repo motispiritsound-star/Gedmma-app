@@ -22,7 +22,7 @@ import {
   bezit, koekje, logUit, maakLink, magMailen, magOpnieuw, netjes as netjesEmail, ruimOp, schrijfIn, sessieUit, telMail, vergeetLink, welkAdres, wieIsDit, wisLid, wisselIn, zetNieuws,
 } from './portaal'
 import { geheimKlopt, koopbericht, veldenVan } from './koopbericht'
-import { verstuur, type Afzender } from './mail'
+import { PostOnzeker, verstuur, type Afzender } from './mail'
 import { MAILS, TEKST_VERSIE, isTaal, type Taal, type Week } from './mails'
 import { briefHtml, briefTekst, pagina, vraagPagina } from './sjabloon'
 
@@ -884,14 +884,27 @@ async function portaalAanmelden(verzoek: Request, env: Env): Promise<Response> {
         afmeldUrl: '',
       }, { naam: env.AFZENDER_NAAM, email: env.AFZENDER_EMAIL }, env.MAIL_SLEUTEL, env.MAIL_URL)
     } catch (fout) {
-      // De link staat al in de tafel, want hij moest in de mail. Ging die mail
-      // niet weg, dan is het token niets waard — en erger: `magOpnieuw` ziet
-      // hem staan en houdt de tweede poging tegen. Die krijgt dan een 200 en
-      // het portaal zegt "kijk in je mail", terwijl er niets onderweg is.
+      // De link staat al in de tafel, want hij moest in de mail. Wat er nu moet
+      // gebeuren hangt af van wát er misging, en dat scheelt.
       //
-      // Dus opruimen en de fout doorgeven. De volgende poging maakt een nieuwe
-      // link en probeert het opnieuw.
-      await vergeetLink(env.DB, token)
+      // Bij een weigering van de postdienst staat vast dat er niets uitging.
+      // Dan is het token niets waard — en erger: `magOpnieuw` ziet hem staan en
+      // houdt de tweede poging tegen. Die krijgt dan een 200 en het portaal
+      // zegt "kijk in je mail", terwijl er niets onderweg is. Dus opruimen; de
+      // volgende poging maakt een nieuwe link.
+      //
+      // Bij een tijdslimiet weten we dat niet. Brevo kan de mail hebben
+      // aangenomen en alleen te laat hebben geantwoord, en dan ligt er een
+      // bezorgde mail in een postvak met een link die wij net weggooiden. De
+      // ouder tikt erop en krijgt "werkt niet meer", terwijl hij precies deed
+      // wat er stond. Die link blijft dus staan.
+      //
+      // En dan telt hij ook mee voor de rem per plek: er is post de deur uit
+      // gegaan, of in elk geval waarschijnlijk. Zou dat niet meetellen, dan
+      // remt een trage postdienst niemand meer, en is dit een spuit waarmee
+      // iemand post kan laten versturen onder onze naam zolang Brevo traag is.
+      if (fout instanceof PostOnzeker) await telMail(env.DB, plek)
+      else await vergeetLink(env.DB, token)
       throw fout
     }
     await telMail(env.DB, plek)

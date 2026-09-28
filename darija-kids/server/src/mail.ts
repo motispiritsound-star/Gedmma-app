@@ -53,6 +53,32 @@ export const BREVO = 'https://api.brevo.com/v3/smtp/email'
  */
 export const TIJDSLIMIET = 10_000
 
+/**
+ * Een mail waarvan we niet weten of hij is bezorgd.
+ *
+ * Dit onderscheid is er omdat twee reparaties van dezelfde week elkaar beten.
+ * De tijdslimiet hierboven geeft het na tien seconden op; de aanroeper gooit
+ * daarna de inloglink weg, omdat een link die nooit verstuurd is niet in de
+ * tafel hoort te blijven staan.
+ *
+ * Maar een tijdslimiet zegt niet dat er niets gebeurd is. Hij zegt dat we het
+ * antwoord niet hebben gekregen. Brevo kan de mail hebben aangenomen en er
+ * alleen te laat iets over hebben gezegd — en dan ligt er een bezorgde mail in
+ * een postvak met een link die wij net hebben weggegooid. De ouder tikt erop
+ * en krijgt "deze link werkt niet meer", terwijl hij precies deed wat er stond.
+ *
+ * Een weigering is iets anders: als Brevo antwoordt met een foutcode, staat
+ * vast dat er niets uitging, en dan hoort die rij weg.
+ *
+ * Vandaar twee soorten. Wie deze vangt, weet: er kan post onderweg zijn.
+ */
+export class PostOnzeker extends Error {
+  constructor(bericht: string) {
+    super(bericht)
+    this.name = 'PostOnzeker'
+  }
+}
+
 export async function verstuur(
   bericht: Bericht,
   afzender: Afzender,
@@ -100,7 +126,7 @@ export async function verstuur(
     // wil weten waarom een koper zijn sleutel niet kreeg.
     const naam = fout instanceof Error ? fout.name : ''
     if (naam === 'TimeoutError' || naam === 'AbortError') {
-      throw new Error(`mail: geen antwoord van de postdienst binnen ${TIJDSLIMIET / 1000} seconden`)
+      throw new PostOnzeker(`mail: geen antwoord van de postdienst binnen ${TIJDSLIMIET / 1000} seconden`)
     }
     throw fout
   })
