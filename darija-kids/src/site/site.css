@@ -998,18 +998,25 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
  * er letterlijk naar — maar omdat hij niet terug te draaien is en niemand
  * hem per ongeluk hoort te raken naast "uitloggen".
  */
+/* De namen van de kleuren in dit blad zijn Engels: --line, --ink-soft, --ink.
+   Hier stond --lijn, --zacht en --inkt, en die bestaan nergens. Een var()
+   zonder terugval naar een onbekende variabele maakt de hele verklaring
+   ongeldig: border-top viel weg (geen streep meer) en color viel terug op
+   erven (volle inkt in plaats van gedempt). Precies andersom dus dan de
+   bedoeling — de onomkeerbare wisknop stond zonder scheiding en in de
+   opvallendste kleur van de bladzijde onder Uitloggen. */
 .wisblok {
   margin-top: 1.5rem;
-  border-top: 1px solid var(--lijn);
+  border-top: 1px solid var(--line);
   padding-top: 1rem;
 }
 .wisblok > summary {
   cursor: pointer;
   font-size: .9375rem;
   font-weight: 700;
-  color: var(--zacht);
+  color: var(--ink-soft);
 }
-.wisblok > summary:hover { color: var(--inkt); }
+.wisblok > summary:hover { color: var(--ink); }
 .wisblok .klein { margin-top: .5rem; }
 .mailbtn.gevaar {
   background: transparent;
@@ -1032,11 +1039,35 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
  * de balk blijft even hoog, en je ziet niets veranderen.
  */
 header.top .brand,
-header.top nav a,
 header.top .langpick > summary,
 header.top .langpick a {
   min-height: 2.75rem;
   display: flex;
   align-items: center;
 }
-header.top nav a.poort { padding-top: .3rem; padding-bottom: .3rem; }
+/* De menulinks krijgen opvulling en geen `display`, en dat is geen smaak.
+ *
+ * Hier stond `header.top nav a { min-height: 2.75rem; display: flex }` in
+ * dezelfde groep hierboven. Die regel heeft exact dezelfde specificiteit als
+ * `header.top nav a { display: none }` in het blok `@media (max-width: 62rem)`
+ * hierboven — allebei (0,1,3) — en een mediaquery telt daar niet in mee. Wie
+ * later in het bestand staat wint, en dat was ik.
+ *
+ * Gevolg, gemeten op de gebouwde site: op 360 punten stonden alle acht de
+ * menulinks weer in de kop in plaats van één, was de merknaam nul pixels
+ * breed, stond de taalkiezer op x=642 buiten beeld, en was de bladzijde 707
+ * punten breed in een venster van 360. De hele etalage, op elke telefoon en
+ * elke tablet, in alle zes de talen.
+ *
+ * Opvulling doet wat er nodig was zonder `display` aan te raken: bij een
+ * inline element rekt verticale opvulling het raakvlak wel op maar de regel
+ * niet, en de balk is met 4rem al hoog genoeg om dat op te vangen. Geen
+ * botsing meer mogelijk, want er valt niets meer te overstemmen. */
+header.top nav a {
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+}
+/* De poort heeft een eigen achtergrond, dus zijn opvulling is ook zijn vorm.
+   Op .3rem bleef hij op 37 punten steken, onder de 44 die de rest nu haalt;
+   op .55rem is hij 44 en blijft de balk 64. Gemeten, niet gerekend. */
+header.top nav a.poort { padding-top: .55rem; padding-bottom: .55rem; }
