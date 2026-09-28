@@ -1,11 +1,18 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
+import { Grens } from './ui/Grens'
 import './index.css'
 
+// `Grens` staat binnen StrictMode maar buiten `App`, want een fout in App zelf
+// moet hij ook opvangen — en dat kan alleen van buitenaf. Zonder deze regel
+// ontkoppelt React bij een onafgevangen fout de hele boom en houdt een kind een
+// wit scherm over: geen tekst, geen knop, en niets om aan een ouder te vertellen.
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <Grens>
+      <App />
+    </Grens>
   </StrictMode>,
 )
 

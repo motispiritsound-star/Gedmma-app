@@ -1,9 +1,28 @@
 name: CI
 
+# Dit is de controle voor buurklus, dat in apps/ en packages/ woont. De paden
+# hieronder staan er omdat deze workflow eerst op élke push afging, ook op een
+# commit die alleen darija-kids/ raakte — en dan start hij een Postgres voor
+# code die niet is aangeraakt. Darijaforkids heeft zijn eigen workflow in
+# darija-kids.yml.
 on:
   push:
     branches: ['**']
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig*.json'
+      - '.github/workflows/ci.yml'
   pull_request:
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig*.json'
+      - '.github/workflows/ci.yml'
 
 jobs:
   verify:

@@ -1,0 +1,67 @@
+# De controle voor Darijaforkids, dat in darija-kids/ woont.
+#
+# Dit bestand bestond niet, en dat was niet te zien: er stond een CI die op
+# elke push afging, maar die bouwt en test het andere project in deze
+# repository. Zijn `npm test` draait `--workspaces`, en die globs zijn
+# `packages/*` en `apps/*` — darija-kids valt in geen van de twee en heeft
+# zijn eigen package-lock.json. De duizend tests draaiden dus nergens
+# automatisch, en een test die niets afdwingt is een test die je alleen
+# achteraf gelooft.
+#
+# Wat hier gecontroleerd wordt en waarom juist dat:
+#
+#   typecheck         de app. `Strings = typeof nl` maakt een vergeten
+#                     vertaling een compileerfout, maar alleen als iemand
+#                     compileert.
+#   typecheck:server  de worker apart, want tsconfig.json heeft geen
+#                     references — `tsc -b` komt daar niet langs.
+#   test              1006 tests: het vertaalslot over vijf talen, de prijzen
+#                     over app, site, zes listings, EULA en docs, en de
+#                     tijdstempels in seconden.
+#   build             en deze doet meer dan bouwen: sitecheck.mjs loopt de
+#                     hele website na op dode links.
+
+name: darija-kids
+
+on:
+  push:
+    paths:
+      - 'darija-kids/**'
+      - '.github/workflows/darija-kids.yml'
+  pull_request:
+    paths:
+      - 'darija-kids/**'
+      - '.github/workflows/darija-kids.yml'
+
+jobs:
+  controle:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        # Zo kan geen enkele stap hieronder in de verkeerde map belanden.
+        working-directory: darija-kids
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Dezelfde versie waarmee Netlify de site bouwt, zie netlify.toml.
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: darija-kids/package-lock.json
+
+      - run: npm ci
+
+      - name: Typecheck van de app
+        run: npm run typecheck
+
+      - name: Typecheck van de worker
+        run: npm run typecheck:server
+
+      - name: De tests
+        run: npm test
+
+      - name: De website bouwen, en nalopen op dode links
+        run: npm run build

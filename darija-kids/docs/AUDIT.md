@@ -11,6 +11,11 @@ De enige treffer op `xkeysib-` is het voorbeeldvoorvoegsel in
 
 Wat volgt zijn tien bevindingen, op risico gesorteerd.
 
+**Stand op 28 september 2026.** Bevinding 1, 3 en 4 zijn opgelost en staan in
+de repository; bij elk staat hieronder wat er precies is gedaan. De rest is
+blijven staan, met per bevinding de reden. Na het oplossen: 1019 tests groen
+(was 1005), beide typechecks schoon, de site bouwt zonder dode links.
+
 ---
 
 ## 1 · De CI draait een ander project dan dit
@@ -72,6 +77,18 @@ zodat die niet meer op elke Darijaforkids-commit afgaat.
 tijdstempels en de worker wordt gevonden voordat hij live staat, in plaats van
 erna. Dit is de bevinding met de grootste verhouding tussen opbrengst en werk:
 één bestand.
+
+**Opgelost.** `.github/workflows/darija-kids.yml` draait nu de typecheck van de
+app, de typecheck van de worker, de 1019 tests en de build — en die laatste
+loopt met `sitecheck.mjs` ook de hele website na op dode links. Er is een script
+`typecheck:server` bijgekomen, zodat CI en jij dezelfde opdracht gebruiken; de
+worker werd namelijk door geen enkel npm-script getypecheckt, want
+`tsconfig.json` heeft geen references en `tsc -b` komt daar niet langs.
+`ci.yml` heeft een `paths`-filter gekregen op `apps/**` en `packages/**`, dus
+die start geen Postgres meer voor een commit die alleen darija-kids raakt.
+Nagelopen dat de build het met alleen getrackte bestanden redt: de zes films en
+252 assets staan in `site-assets/`, en `make-site.mjs` leest niets uit de
+genegeerde `store/`-mappen.
 
 ---
 
@@ -157,6 +174,13 @@ staan.
 een koop die blijft staan, in plaats van een ping die Gumroad blijft
 herhalen. De koper is daarna met `npm run logboek` te vinden.
 
+**Opgelost.** `signal: AbortSignal.timeout(TIJDSLIMIET)` met `TIJDSLIMIET` op
+tien seconden. Een afbreking heet bij de een `TimeoutError` en bij de ander
+`AbortError`, en de melding erbij zegt niets over post; die wordt nu hertaald
+naar één regel die in het logboek te begrijpen is. Een echte fout van de
+postdienst houdt zijn eigen tekst — de 401 zei "Key not found", en dat was
+precies de aanwijzing. Drie tests erbij in `server/src/mail.test.ts`.
+
 ---
 
 ## 4 · Eén render-fout geeft een kind een wit scherm
@@ -178,13 +202,49 @@ Een `undefined` uit een oude opgeslagen staat is genoeg.
 
 **Concrete oplossing.** Een `Grens`-component rond `<App/>` die bij een fout
 een vriendelijk scherm in de gekozen taal toont met één knop ("opnieuw
-beginnen") die de pagina herlaadt, en die de fout in `localStorage` zet zodat
-`npm run telefoon` hem kan laten zien. Zes regels tekst per taal, waarmee
-`Strings = typeof nl` zoals altijd afdwingt dat er geen taal wordt vergeten.
+beginnen") die de pagina herlaadt.
+
+*Correctie op een eerdere versie van dit rapport:* daar stond dat de fout in
+`localStorage` gezet zou worden zodat `npm run telefoon` hem kan laten zien.
+Dat kan niet: `telefoon.mjs` is een dev-server die een adres afdrukt, en het
+heeft geen enkele greep op de browser. De fout hoort dan ook niet in de opslag
+maar op het scherm zelf, in kleine letters achter "voor de grote mensen" — daar
+kan een ouder hem lezen en doorgeven.
 
 **Verwachte impact.** Het verschil tussen "de app is stuk" en "de app zei sorry
 en ging verder". Voor een app die op beoordeling in twee winkels staat, is dat
 het verschil tussen één sterretje en geen bericht.
+
+**Opgelost.** `src/ui/Grens.tsx`, om `<App/>` heen in `src/main.tsx`.
+
+Het bestand importeert met opzet niets: geen store, geen `useT()`, geen `kit`.
+Dat is geen netheid maar de hele werking — valt de store om, dan valt `useT()`
+er achteraan en staat het kind alsnog voor een wit scherm, nu met twee fouten in
+plaats van één. Om dezelfde reden staan de stijlen erin en niet in de
+stylesheet: laadde die niet, dan is dit scherm ongestyled in plaats van
+onleesbaar. De taal komt rechtstreeks uit `localStorage`, en bij alles wat niet
+klopt wordt het Nederlands.
+
+Er zit één ding bij dat niet in de oorspronkelijke bevinding stond. Herladen
+helpt niet als de opgeslagen staat zélf de fout is: dan valt hij meteen weer om
+en blijft het kind op dezelfde knop drukken. Vandaar een teller per tabblad, en
+bij de tweede keer op rij krijgt de ouder achter "voor de grote mensen" de
+mogelijkheid de opgeslagen gegevens te wissen — achter een som, zoals
+`OuderPoort` dat doet, want het wist de voortgang op dat toestel. Gekochte
+boeken en het abonnement staan niet daar en blijven.
+
+Tien tests in `src/ui/grens.test.ts`. Drie ervan bewaken aannames die niet uit
+het bestand zelf af te lezen zijn: dat de grens nog om `App` hangt, dat hij
+niets uit de store of de i18n importeert, en dat zijn opslagsleutels nog gelijk
+zijn aan die van de store — die staan met opzet twee keer opgeschreven, en die
+test is wat de dubbeling veilig maakt. Alle drie zijn nagelopen door het
+bewaakte stuk te breken en te zien dat ze omvallen.
+
+Er draait geen jsdom in dit project, dus de tests dekken de losse functies en
+niet het scherm. Dat is apart in een echte browser nagelopen, op telefoonformaat
+en in drie talen: geen wit scherm, `role="alert"` aanwezig, de juiste taal uit
+de opslag, de technische regel dicht tot de ouder erop tikt, de uitweg pas bij
+de tweede keer, een fout antwoord wist niets en een goed antwoord wist wel.
 
 ---
 

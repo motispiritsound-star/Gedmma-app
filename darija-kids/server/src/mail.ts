@@ -34,6 +34,25 @@ export interface Afzender {
 /** Brevo's own endpoint, unless something is put in front of it. */
 export const BREVO = 'https://api.brevo.com/v3/smtp/email'
 
+/**
+ * Hoe lang we op Brevo wachten voordat we het opgeven.
+ *
+ * Hier stond niets, en dat is een ander soort gat dan een fout. `naDeVerkoop()`
+ * vangt een omgevallen mail op en laat de koop staan — met opzet, want de koper
+ * heeft betaald en dat mag niet verdampen omdat de post het even niet doet.
+ * Maar een verbinding die blijft hangen gooit niets. Hij wacht. Dus vangt
+ * `naDeVerkoop()` hem niet, staat er niets in het logboek, en wacht de
+ * Gumroad-ping mee tot Gumroad het opgeeft en het nog eens probeert.
+ *
+ * En bij deze producten ís die mail de levering: er gaat geen PDF de deur uit,
+ * de koper krijgt een sleutel. Een levering die mislukt zonder iets te melden
+ * is de ergste soort — dan weet je pas dat het mis is als de koper mailt.
+ *
+ * Tien seconden is ruim voor een API die normaal in een halve seconde
+ * antwoordt, en kort genoeg om binnen de ping te blijven.
+ */
+export const TIJDSLIMIET = 10_000
+
 export async function verstuur(
   bericht: Bericht,
   afzender: Afzender,
@@ -43,6 +62,7 @@ export async function verstuur(
 ): Promise<void> {
   const antwoord = await fetch(endpoint ?? BREVO, {
     method: 'POST',
+    signal: AbortSignal.timeout(TIJDSLIMIET),
     headers: { 'api-key': sleutel, 'content-type': 'application/json' },
     body: JSON.stringify({
       sender: { name: afzender.naam, email: afzender.email },
@@ -73,6 +93,16 @@ export async function verstuur(
         }
         : {}),
     }),
+  }).catch((fout: unknown) => {
+    // Een afgebroken verbinding heet bij de een `TimeoutError` en bij de ander
+    // `AbortError`, en de melding erbij zegt niets over post. Maak er één regel
+    // van die in het logboek te begrijpen is: daar leest straks iemand mee die
+    // wil weten waarom een koper zijn sleutel niet kreeg.
+    const naam = fout instanceof Error ? fout.name : ''
+    if (naam === 'TimeoutError' || naam === 'AbortError') {
+      throw new Error(`mail: geen antwoord van de postdienst binnen ${TIJDSLIMIET / 1000} seconden`)
+    }
+    throw fout
   })
   if (!antwoord.ok) {
     throw new Error(`mail ${antwoord.status}: ${(await antwoord.text()).slice(0, 200)}`)
