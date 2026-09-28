@@ -9,15 +9,34 @@ De volgorde is de volgorde. Hij loopt van "hier gaat een klant op stuk" naar
 
 Alle opdrachten zijn voor PowerShell en werken vanuit elke map.
 
-**Begin met deze regel, één keer per venster.** Hij zoekt de projectmap op en
-onthoudt hem als `$p`; alle opdrachten hieronder gebruiken dat. Je hoeft dus
-zelf nergens een pad in te typen.
+**Zet dit één keer goed, dan hoef je nooit meer een pad in te typen.** Deze
+drie regels onthouden de projectmap als `$p`, ook nadat je PowerShell hebt
+afgesloten. Elke regel apart uitvoeren:
 
 ```powershell
-$p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName; if ($p) { "gevonden: $p" } else { "niet gevonden onder $HOME" }
+$d = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName
 ```
 
-Sluit je het venster, dan is `$p` weg en begin je opnieuw met deze regel.
+```powershell
+if (-not (Test-Path $PROFILE)) { New-Item -ItemType File -Path $PROFILE -Force | Out-Null }
+```
+
+```powershell
+Add-Content $PROFILE "`$p = '$d'"
+```
+
+Sluit PowerShell daarna en open hem opnieuw. Vanaf dan werkt `npm --prefix $p`
+in elk venster.
+
+**Zie je "The variable '$p' cannot be retrieved because it has not been set"?**
+Dan is dat bovenstaande nog niet gedaan, of het venster stond al open. Deze ene
+regel werkt altijd, zonder variabele — hij zoekt de map zelf op:
+
+```powershell
+npm --prefix (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName run platencheck
+```
+
+Vervang `platencheck` door de opdracht die je wilt.
 
 ---
 
