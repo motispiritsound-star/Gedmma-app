@@ -10,39 +10,61 @@
  * De melding wordt gemarkeerd als proef, dus in `npm run bestellingen` is hij
  * te herkennen aan "proefmelding" en kun je hem daarna intrekken.
  *
- * Hij vraagt om het adres met het geheim erin. Dat staat bij Gumroad onder
- * Settings → Advanced → Ping; heb je het niet meer, dan maakt
- * `npm run koopgeheim` een nieuw geheim aan en drukt het hele adres af.
+ * Het ping-adres komt uit `server/.dev.vars`, waar `npm run koopgeheim` het
+ * neerzet. Staat het daar niet, dan vraagt hij erom.
  *
  *   npm run proefkoop
  */
 import { pingAdres } from './lib/geheim.mjs'
 
+/**
+ * Eén melding per product, want zo doet de betaalpartner het ook.
+ *
+ * Hier stond eerst één melding met `sleutels,sbadeleeuw` erin, en dat gaf een
+ * 400. Terecht: de worker leest dat als één productnaam met een komma erin,
+ * want Gumroad stuurt per verkocht product een aparte melding en nooit twee
+ * namen in één. Twee reeksen naspelen is dus twee meldingen sturen, en dat is
+ * meteen een eerlijker proef.
+ */
 const REEKSEN = {
-  1: { naam: 'De sleutels van Marokko', permalink: 'sleutels' },
-  2: { naam: 'Sba de Atlasleeuw', permalink: 'sbadeleeuw' },
-  3: { naam: 'allebei', permalink: 'sleutels,sbadeleeuw' },
+  1: { naam: 'De sleutels van Marokko', permalinks: ['sleutels'] },
+  2: { naam: 'Sba de Atlasleeuw', permalinks: ['sbadeleeuw'] },
+  3: { naam: 'allebei — twee meldingen, zoals bij twee aankopen', permalinks: ['sleutels', 'sbadeleeuw'] },
 }
 
-if (!process.stdin.isTTY) {
-  console.error('\nDeze opdracht vraagt een paar dingen en heeft dus een scherm nodig.\n')
-  process.exit(1)
+/**
+ * Netjes ophouden in plaats van `process.exit`.
+ *
+ * Een `process.exit` vlak na het sluiten van de vraagregel liet Node op
+ * Windows omvallen met "Assertion failed: !(handle->flags & UV_HANDLE_CLOSING)".
+ * Dat is geen fout in de proefkoop maar wel het laatste wat je op je scherm
+ * ziet, en dan lijkt er iets stuk dat het niet is.
+ */
+const stop = (code, ...regels) => {
+  for (const r of regels) console.log(r)
+  process.exitCode = code
 }
 
-const { createInterface } = await import('node:readline/promises')
-const lezer = createInterface({ input: process.stdin, output: process.stdout })
-
-const vraag = async (tekst) => {
-  try {
-    return (await lezer.question(tekst)).trim()
-  } catch {
-    lezer.close()
-    console.log('\n\nAfgebroken. Er is niets verstuurd.\n')
-    process.exit(0)
+async function main() {
+  if (!process.stdin.isTTY) {
+    return stop(1, '\nDeze opdracht vraagt een paar dingen en heeft dus een scherm nodig.\n')
   }
-}
 
-console.log(`
+  const { createInterface } = await import('node:readline/promises')
+  const lezer = createInterface({ input: process.stdin, output: process.stdout })
+  let open = true
+  const sluit = () => { if (open) { lezer.close(); open = false } }
+
+  const vraag = async (tekst) => {
+    try {
+      return (await lezer.question(tekst)).trim()
+    } catch {
+      sluit()
+      return null
+    }
+  }
+
+  console.log(`
 Een aankoop naspelen
 ────────────────────
 
@@ -50,109 +72,106 @@ Hierna krijgt het adres dat je opgeeft een echte mail met een echte sleutel.
 Er wordt niets afgerekend.
 `)
 
-/* Staat het geheim op deze computer, dan hoeft er niets gevraagd te worden.
-   Het adres zelf drukken we niet af: het is een sleutel. */
-const bekend = pingAdres()
-
-let adres
-if (bekend) {
-  console.log('Het ping-adres staat op deze computer; die gebruik ik.\n')
-  adres = bekend
-} else {
-  console.log('Het adres met het geheim erin staat bij Gumroad onder')
-  console.log('Settings → Advanced → Ping. Het begint met https://post.darijaforkids.eu/koop?s=')
-  console.log('Ben je het kwijt: stop hier en draai eerst npm run koopgeheim.\n')
-  adres = await vraag('Ping-adres: ')
-  // Alleen nakijken wat je zelf intikt. Wat uit ons eigen bestand komt is
-  // daar door `koopgeheim` neergezet en heeft die vraag niet nodig — en een
-  // afkeuring zou dan een melding geven die nergens op slaat.
-  if (!adres.startsWith('https://') || !adres.includes('/koop')) {
-    lezer.close()
-    console.log('\nDat lijkt niet op het ping-adres. Er is niets verstuurd.\n')
-    process.exit(1)
+  const bekend = pingAdres()
+  let adres = bekend
+  if (bekend) {
+    console.log('Het ping-adres staat op deze computer; die gebruik ik.\n')
+  } else {
+    console.log('Het adres met het geheim erin staat bij Gumroad onder')
+    console.log('Settings → Advanced → Ping. Het begint met https://post.darijaforkids.eu/koop?s=')
+    console.log('Ben je het kwijt: stop hier en draai eerst npm run koopgeheim.\n')
+    adres = await vraag('Ping-adres: ')
+    if (adres === null) return stop(0, '\n\nAfgebroken. Er is niets verstuurd.\n')
+    if (!adres.startsWith('https://') || !adres.includes('/koop')) {
+      sluit()
+      return stop(1, '\nDat lijkt niet op het ping-adres. Er is niets verstuurd.\n')
+    }
   }
+
+  const email = await vraag('Naar welk e-mailadres mag de sleutel? ')
+  if (email === null) return stop(0, '\n\nAfgebroken. Er is niets verstuurd.\n')
+  if (!email.includes('@')) {
+    sluit()
+    return stop(1, '\nDat is geen e-mailadres. Er is niets verstuurd.\n')
+  }
+
+  console.log('\nWelke reeks koopt deze proefkoper?\n')
+  for (const [n, r] of Object.entries(REEKSEN)) console.log(`  ${n}. ${r.naam}`)
+  const gekozen = await vraag('\nKeuze (1, 2 of 3): ')
+  if (gekozen === null) return stop(0, '\n\nAfgebroken. Er is niets verstuurd.\n')
+  const keuze = REEKSEN[Number(gekozen)]
+  if (!keuze) {
+    sluit()
+    return stop(1, '\nGeen geldige keuze. Er is niets verstuurd.\n')
+  }
+
+  const taalIn = await vraag('\nTaal van de mail (enter = nl): ')
+  if (taalIn === null) return stop(0, '\n\nAfgebroken. Er is niets verstuurd.\n')
+  const taal = taalIn || 'nl'
+  sluit()
+
+  console.log('\nVersturen …\n')
+
+  const nummers = []
+  for (const permalink of keuze.permalinks) {
+    /* Elke melding een eigen bestelnummer, anders ziet de worker de tweede
+       als een herhaling van de eerste en stuurt hij geen tweede sleutel. */
+    const bestelnummer = `PROEF-${Date.now()}-${permalink}`
+    const velden = new URLSearchParams({
+      email,
+      permalink,
+      full_name: 'Proefkoper',
+      sale_id: bestelnummer,
+      ip_country: 'Netherlands',
+      taal,
+      test: 'true',
+    })
+
+    let antwoord
+    try {
+      antwoord = await fetch(adres, {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        body: velden.toString(),
+      })
+    } catch (fout) {
+      return stop(1,
+        'De worker is niet bereikbaar.\n',
+        `  ${fout.message}\n`,
+        'Staat hij al uitgerold? npm run deploy\n')
+    }
+
+    const tekst = await antwoord.text()
+    let uit = {}
+    try { uit = JSON.parse(tekst) } catch { /* geen json: dan tonen we de tekst */ }
+
+    if (antwoord.status === 403) {
+      return stop(1,
+        'De worker zegt nee: het geheim klopt niet.\n',
+        'Het adres op deze computer en dat bij Gumroad moeten hetzelfde zijn.',
+        'Draai npm run koopgeheim en plak het nieuwe adres ook bij Gumroad.\n')
+    }
+
+    if (!antwoord.ok || !uit.goed) {
+      return stop(1,
+        `Dat ging mis (${antwoord.status}) bij ${permalink}.\n`,
+        `  ${tekst.slice(0, 300)}\n`)
+    }
+
+    console.log(`  ${permalink} — gelukt${uit.mislukt?.length ? ` (viel om: ${uit.mislukt.join(', ')})` : ''}`)
+    nummers.push(bestelnummer)
+  }
+
+  console.log(`\nDe mail met de sleutel is onderweg naar ${email}.\n`)
+  console.log('Wat een koper nu doet, en jij dus ook:\n')
+  console.log('  1. De mail openen en op de knop drukken. Dat is de leeskamer.')
+  console.log('  2. Diezelfde link openen op je telefoon en op een tablet.')
+  console.log('  3. Een boek openen en op voorlezen drukken.')
+  console.log('  4. Naar darijaforkids.eu/portaal gaan, hetzelfde adres invullen,')
+  console.log('     en kijken of de boeken ook zónder die link in de lijst staan.\n')
+  console.log(`${nummers.length === 1 ? 'Deze proefbestelling heet' : 'Deze proefbestellingen heten'}:\n`)
+  for (const n of nummers) console.log(`  ${n}`)
+  console.log('\nZe staan in npm run bestellingen, en npm run intrekken haalt ze weg.\n')
 }
 
-const email = await vraag('\nNaar welk e-mailadres mag de sleutel? ')
-if (!email.includes('@')) {
-  lezer.close()
-  console.log('\nDat is geen e-mailadres. Er is niets verstuurd.\n')
-  process.exit(1)
-}
-
-console.log('\nWelke reeks koopt deze proefkoper?\n')
-for (const [n, r] of Object.entries(REEKSEN)) console.log(`  ${n}. ${r.naam}`)
-const keuze = REEKSEN[Number(await vraag('\nKeuze (1, 2 of 3): '))]
-if (!keuze) {
-  lezer.close()
-  console.log('\nGeen geldige keuze. Er is niets verstuurd.\n')
-  process.exit(1)
-}
-
-const taal = (await vraag('\nTaal van de mail (enter = nl): ')) || 'nl'
-lezer.close()
-
-/* Elke proef krijgt een eigen bestelnummer, anders ziet de worker de tweede
-   als een herhaling van de eerste en stuurt hij geen tweede sleutel. */
-const bestelnummer = `PROEF-${Date.now()}`
-
-const velden = new URLSearchParams({
-  email,
-  permalink: keuze.permalink,
-  full_name: 'Proefkoper',
-  sale_id: bestelnummer,
-  ip_country: 'Netherlands',
-  taal,
-  test: 'true',
-})
-
-console.log('\nVersturen …\n')
-
-let antwoord
-try {
-  antwoord = await fetch(adres, {
-    method: 'POST',
-    headers: { 'content-type': 'application/x-www-form-urlencoded' },
-    body: velden.toString(),
-  })
-} catch (fout) {
-  console.error('De worker is niet bereikbaar.\n')
-  console.error(`  ${fout.message}\n`)
-  console.error('Staat hij al uitgerold? npm run deploy\n')
-  process.exit(1)
-}
-
-const tekst = await antwoord.text()
-let uit = {}
-try { uit = JSON.parse(tekst) } catch { /* geen json: dan tonen we de tekst */ }
-
-if (antwoord.status === 403) {
-  console.error('De worker zegt nee: het geheim in dat adres klopt niet.\n')
-  console.error('Draai npm run koopgeheim en plak het nieuwe adres ook bij Gumroad.\n')
-  process.exit(1)
-}
-
-if (!antwoord.ok || !uit.goed) {
-  console.error(`Dat ging mis (${antwoord.status}).\n`)
-  console.error(`  ${tekst.slice(0, 300)}\n`)
-  process.exit(1)
-}
-
-console.log('Gelukt.\n')
-if (uit.mislukt?.length) {
-  console.log(`Let op: deze stappen vielen om — ${uit.mislukt.join(', ')}.`)
-  console.log('De bestelling staat er wel. Ging de mail niet, dan kun je nog')
-  console.log('steeds inloggen op het portaal met hetzelfde adres.\n')
-} else {
-  console.log(`De mail met de sleutel is onderweg naar ${email}.\n`)
-}
-
-console.log('Wat een koper nu doet, en jij dus ook:\n')
-console.log('  1. De mail openen en op de knop drukken. Dat is de leeskamer.')
-console.log('  2. Diezelfde link openen op je telefoon en op een tablet.')
-console.log('  3. Een boek openen en op voorlezen drukken.')
-console.log('  4. Naar darijaforkids.eu/portaal gaan, hetzelfde adres invullen,')
-console.log('     en kijken of de boeken ook zónder die link in de lijst staan.\n')
-console.log(`Deze proefbestelling heet ${bestelnummer} en staat in:\n`)
-console.log('  npm run bestellingen\n')
-console.log('Klaar met testen? Dan haal je hem weg met npm run intrekken.\n')
+await main()
