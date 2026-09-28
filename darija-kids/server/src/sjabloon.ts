@@ -102,8 +102,25 @@ export function briefTekst(b: Brief): string {
     '',
     '—',
     b.voet,
-    `${b.afmeldTekst}: ${b.afmeldUrl}`,
-    `${b.wisTekst}: ${b.wisUrl}`,
+    // Alleen als er iets te wijzen valt.
+    //
+    // Deze twee werden onvoorwaardelijk gebouwd, en `filter(l => l !== '')`
+    // laat `": "` staan, want dat is niet leeg. Een koopmail is geen mailing:
+    // `koop()` geeft alle vier de velden als lege tekenreeks mee, met opzet, en
+    // `briefHtml` vangt dat netjes af. De platte tekst niet — die eindigde bij
+    // elke koper op:
+    //
+    //   —
+    //   Darijaforkids
+    //   :
+    //   :
+    //
+    // Gezien in een echte mail, opgevangen door de keten van begin tot eind
+    // door te lopen. Het is de enige mail die écht moet aankomen, want daar
+    // zit de sleutel in, en de platte tekst is wat een deel van de
+    // mailprogramma's en de spamfilters laten zien.
+    b.afmeldTekst && b.afmeldUrl ? `${b.afmeldTekst}: ${b.afmeldUrl}` : '',
+    b.wisTekst && b.wisUrl ? `${b.wisTekst}: ${b.wisUrl}` : '',
   ].filter((l) => l !== '').join('\n')
 }
 
