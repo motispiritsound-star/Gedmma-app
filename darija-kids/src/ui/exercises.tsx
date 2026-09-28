@@ -104,9 +104,25 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
   return (
     <div>
       <Prompt hint={hint}>
+        {/*
+          Geen emoji op de vraag.
+
+          Hier stond er wel een, en daarmee was de oefening op te lossen zonder
+          een woord Darija te kennen: de kaart toonde 👍 boven `bikhir`, en het
+          juiste antwoord eronder was "👍 prima, goed". Je zocht de bijpassende
+          emoji en had het goed — elke keer, want elk woord heeft er één.
+
+          Op de leskaart hierboven staat hij juist wél, want dat is het
+          uitleggen: daar horen plaatje, woord en betekenis bij elkaar. Hier
+          wordt gevraagd wat het woord betekent, en dan ís de emoji het
+          antwoord.
+
+          Bij de antwoorden blijft hij staan. Daar helpt hij een kind dat nog
+          niet vlot leest om vier regels uit elkaar te houden, en verraadt hij
+          niets: je moet nog steeds weten welk woord erboven staat.
+        */}
         {mode === 'betekenis' && (
           <Card className="flex items-center justify-center gap-4 p-6">
-            <span className="text-4xl" aria-hidden="true">{w.emoji}</span>
             <WordText word={w} size="lg" />
             <SpeakButton ar={w.ar} tr={w.tr} />
           </Card>
