@@ -35,12 +35,25 @@ const bestanden = (): string[] => {
   return uit
 }
 
-/** De regels binnen ```bash- en ```sh-blokken, met hun regelnummer. */
+/**
+ * De regels binnen een blok dat je kunt plakken, met hun regelnummer.
+ *
+ * `powershell` stond hier niet bij, en dat is precies de verkeerde om te
+ * missen: Adil werkt in PowerShell, dus dát zijn de blokken waar hij uit
+ * plakt. Alle controles hieronder — geen `&&`, geen `/tmp`, niets tussen
+ * punthaken — keken dus langs de enige blokken die er echt toe doen.
+ *
+ * Gevonden doordat `docs/ACTIES.md` in een powershell-blok drie keer
+ * `<projectmap>` had staan en deze test er vrolijk groen bij bleef.
+ */
 const plakregels = (bron: string): [number, string][] => {
   const uit: [number, string][] = []
   let erin = false
   bron.split('\n').forEach((regel, i) => {
-    if (regel.startsWith('```')) { erin = /^```(bash|sh|shell|console)\s*$/.test(regel); return }
+    if (regel.startsWith('```')) {
+      erin = /^```(bash|sh|shell|console|powershell|pwsh|ps1)\s*$/.test(regel)
+      return
+    }
     if (erin && regel.trim() && !regel.trim().startsWith('#')) uit.push([i + 1, regel])
   })
   return uit
