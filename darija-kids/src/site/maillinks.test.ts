@@ -402,3 +402,65 @@ describe('het wissen van een portaalaccount', () => {
     expect(lichaam).toContain('!antwoord || !antwoord.goed')
   })
 })
+
+/**
+ * Belooft de wisknop wat hij werkelijk doet?
+ *
+ * Hier stond in alle zes de talen: "Dit haalt je e-mailadres en je aanmelding
+ * weg." De aanmelding klopt — `wisLid` verwijdert die rij en de voortgang. Het
+ * adres niet: dat blijft in `lid` staan.
+ *
+ * En het moet blijven staan. Haal je het weg, dan vindt `lidVanEmail` de rij
+ * niet meer, valt de controle op `gewist_op` in `portaalAanmelden` weg, en
+ * laat de poort de gewiste koper door — want zijn bestelling staat er nog.
+ * Dan gaat er weer post naar iemand die gevraagd heeft vergeten te worden, en
+ * is de wis opnieuw door een vreemde ongedaan te maken. Het adres ís de
+ * bescherming; weghalen maakt het erger, niet beter.
+ *
+ * De tekst was dus fout, niet de code. Deze toets houdt die twee bij elkaar:
+ * zolang `wisLid` het adres laat staan, mag geen enkele taal beweren dat het
+ * weggaat.
+ */
+describe('wat de wisknop belooft', () => {
+  const portaal = readFileSync(new URL('../../server/src/portaal.ts', import.meta.url), 'utf8')
+  const copy = readFileSync(new URL('./copy.ts', import.meta.url), 'utf8')
+
+  const wisLichaam = () => {
+    const start = portaal.indexOf('export async function wisLid(')
+    return portaal.slice(start, portaal.indexOf('\nexport ', start + 10))
+  }
+
+  it('laat het adres staan, want dat is wat de gewiste persoon beschermt', () => {
+    const lichaam = wisLichaam()
+    // Geen UPDATE die email leegmaakt, en geen DELETE van de lid-rij.
+    expect(lichaam, 'wisLid haalt het adres weg; lees de toelichting hierboven')
+      .not.toMatch(/UPDATE lid SET[^`]*\bemail\s*=/)
+    expect(lichaam, 'wisLid verwijdert de lid-rij; dan is de blokkade weg')
+      .not.toMatch(/DELETE FROM lid\b/)
+  })
+
+  it('zegt in geen enkele taal dat het adres weggaat', () => {
+    const teksten = [...copy.matchAll(/wisUitleg: '([^']*)'/g)].map((m) => m[1]!)
+    expect(teksten.length, 'de uitleg bij de wisknop is niet in zes talen gevonden').toBe(6)
+
+    // Per taal het woord voor e-mail, en de werkwoorden waarmee je belooft dat
+    // iets weggaat. Staan die twee in één zin, dan belooft de tekst te veel.
+    const adres = /e-?mail|correo|indirizzo|adres|adresse/i
+    const weg = /haalt[^.]*weg|verwijder|supprime|entfernt|elimina|rimuove|removes/i
+    for (const t of teksten) {
+      for (const zin of t.split(/(?<=\.)\s+/)) {
+        const belooft = adres.test(zin) && weg.test(zin)
+        expect(belooft, `deze zin belooft dat het adres weggaat: ${zin}`).toBe(false)
+      }
+    }
+  })
+
+  it('zegt wél waarom het adres blijft', () => {
+    // Anders is het stilte over precies het punt dat iemand wil weten.
+    const teksten = [...copy.matchAll(/wisUitleg: '([^']*)'/g)].map((m) => m[1]!)
+    const noemt = /aantekening|trace|Vermerk|constancia|nota|note/i
+    for (const t of teksten) {
+      expect(noemt.test(t), `deze uitleg legt niet uit waarom het adres blijft: ${t.slice(0, 70)}`).toBe(true)
+    }
+  })
+})
