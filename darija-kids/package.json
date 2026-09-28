@@ -73,6 +73,7 @@
     "bestellingen": "node scripts/bestellingen.mjs",
     "intrekken": "node scripts/intrekken.mjs",
     "proefkoop": "node scripts/proefkoop.mjs",
+    "logboek": "node scripts/logboek.mjs",
     "inloggen": "node scripts/inloggen.mjs",
     "koopgeheim": "node scripts/koopgeheim.mjs",
     "lezen": "node scripts/leesuitgave.mjs",

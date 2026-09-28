@@ -11,7 +11,7 @@ import { MAILS_PER_UUR, magMailen, ruimOp, telMail } from './portaal'
  * een nieuw lid en mag het meteen weer.
  *
  * Wat dat kost is niet de mail zelf maar de afzender. De ontvangers melden
- * hem aan als spam, post@darijaforkids.eu raakt geblokkeerd, en daarna komt
+ * hem aan als spam, info@darijaforkids.eu raakt geblokkeerd, en daarna komt
  * de inloglink van iemand die wél betaald heeft ook niet meer aan. De koper
  * is de dupe, niet de spammer.
  */

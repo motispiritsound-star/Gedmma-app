@@ -12,7 +12,13 @@ workers_dev = true
 [vars]
 BASIS = "https://post.darijaforkids.eu"
 AFZENDER_NAAM = "Darijaforkids"
-AFZENDER_EMAIL = "post@darijaforkids.eu"
+# Hetzelfde adres als in `src/content/operator.ts`, en dat is geen toeval:
+# dit is het adres waarop een koper antwoordt als hij iets kwijt wil. Stond
+# hier eerst `post@`, een adres dat alleen deze worker kende. Twee dingen
+# gingen daardoor mis: de mailpartner weigert een afzender die niet is
+# geverifieerd — elke sleutelmail viel om — en een antwoord van een koper
+# kwam in een postbus die niemand leest. `winkel.test.ts` houdt ze gelijk.
+AFZENDER_EMAIL = "info@darijaforkids.eu"
 # Waar de lezer staat; de sleutel komt achter het hekje en gaat nooit naar een server.
 LEZER = "https://darijaforkids.eu/lezen"
 # De website zelf. Het portaal woont daar, en het koekje wordt op dit domein

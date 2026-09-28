@@ -9,7 +9,7 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 997, groen — daar zitten de 77 van de worker al in |
+| Tests | 998, groen — daar zitten de 77 van de worker al in |
 | Google Play | 2 (1.1) in review; 3 (1.2) is gebouwd en wacht op upload |
 | App Store | 1.0 (build 5) **opnieuw ingediend** op 27 september als kinderapp — app, e-boek en abonnementsgroep staan alle drie op *Waiting for Review* |
 
@@ -113,7 +113,7 @@ nakijkt. Ze staan hier omdat ze pas opvallen als het te laat is.
    geldt het Families-beleid — geen advertenties van derden, geen trackers. De
    app voldoet daar al aan, maar het moet kloppen met wat er staat.
 
-### Zeven opdrachten die geen pad en geen waarde meer vragen
+### Acht opdrachten die geen pad en geen waarde meer vragen
 
 | | |
 |---|---|
@@ -124,8 +124,9 @@ nakijkt. Ze staan hier omdat ze pas opvallen als het te laat is.
 | `npm run bestellingen` | wie wat kocht, en of een sleutel rondgaat |
 | `npm run intrekken` | een sleutel intrekken, en met `-- --terug` weer teruggeven |
 | `npm run proefkoop` | een aankoop naspelen, om het portaal na te lopen |
+| `npm run logboek` | welke geheimen er staan, en meekijken met de worker |
 
-Ze draaien alle zeven vanuit de projectmap. Wil je er niet eerst heen, gebruik
+Ze draaien alle acht vanuit de projectmap. Wil je er niet eerst heen, gebruik
 dan `npm --prefix <de projectmap> run <naam>` — dat werkt vanuit elke map en
 kan dus niet op de verkeerde plek terechtkomen.
 
@@ -348,7 +349,7 @@ tussen twee links — en die stapt een vreemde zo voorbij: vul elke keer een
 kon de worker gebruikt worden om onbeperkt post te versturen onder onze naam.
 
 Wat dat kost is niet de mail zelf maar de afzender: de ontvangers melden hem
-aan als spam, `post@darijaforkids.eu` raakt geblokkeerd, en daarna komt de
+aan als spam, `info@darijaforkids.eu` raakt geblokkeerd, en daarna komt de
 inloglink van iemand die wél betaald heeft ook niet meer aan. En de dagelijkse
 ruimte bij Brevo is in minuten op.
 

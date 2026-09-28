@@ -63,7 +63,7 @@ export const WACHTTIJD = 60
  * adressen die daar niet om gevraagd hebben.
  *
  * Wat dat kost is niet de mail zelf maar de afzender: de ontvangers melden
- * hem aan als spam, post@darijaforkids.eu raakt geblokkeerd, en daarna komt
+ * hem aan als spam, info@darijaforkids.eu raakt geblokkeerd, en daarna komt
  * de inloglink van een koper die wél betaald heeft ook niet meer aan. En de
  * dagelijkse ruimte bij de mailpartner is in minuten op.
  *

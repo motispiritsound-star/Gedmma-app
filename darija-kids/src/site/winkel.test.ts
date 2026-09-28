@@ -74,3 +74,27 @@ describe('de winkelbestanden', () => {
     expect(bron).toMatch(/if \(statSync\(waar\)\.mtimeMs > bron\) return false/)
   })
 })
+
+/**
+ * De afzender van onze mail is het adres dat we publiceren.
+ *
+ * De worker verstuurde vanaf `post@darijaforkids.eu`; in de app, op de
+ * website, in de winkelteksten en op de socials staat `info@darijaforkids.eu`.
+ * Twee gevolgen, allebei stil. De mailpartner weigert een afzender die niet
+ * is geverifieerd, dus viel elke sleutelmail om — de bestelling stond er wel,
+ * de koper kreeg niets. En wie op zo'n mail antwoordde, schreef naar een
+ * postbus die niemand leest.
+ */
+describe('de afzender van de mail', () => {
+  it('is hetzelfde adres als dat in operator.ts', () => {
+    const toml = readFileSync('server/wrangler.toml', 'utf8')
+    const operator = readFileSync('src/content/operator.ts', 'utf8')
+
+    const afzender = toml.match(/AFZENDER_EMAIL\s*=\s*"([^"]+)"/)?.[1]
+    const contact = operator.match(/email:\s*'([^']+)'/)?.[1]
+
+    expect(afzender, 'AFZENDER_EMAIL in wrangler.toml').toBeTruthy()
+    expect(contact, 'email in operator.ts').toBeTruthy()
+    expect(afzender).toBe(contact)
+  })
+})

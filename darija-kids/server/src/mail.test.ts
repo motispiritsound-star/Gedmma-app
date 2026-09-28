@@ -19,7 +19,7 @@ const brief = {
   html: '<p>hallo</p>',
   tekst: 'hallo',
 }
-const afzender = { naam: 'Darijaforkids', email: 'post@darijaforkids.eu' }
+const afzender = { naam: 'Darijaforkids', email: 'info@darijaforkids.eu' }
 
 /** Vangt wat er naar de mailpartner zou gaan. */
 function vang() {
