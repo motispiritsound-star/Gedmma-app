@@ -50,9 +50,17 @@ jobs:
           # Dezelfde versie waarmee Netlify de site bouwt, zie netlify.toml.
           node-version: '22'
           cache: npm
-          cache-dependency-path: darija-kids/package-lock.json
+          cache-dependency-path: |
+            darija-kids/package-lock.json
+            darija-kids/server/package-lock.json
 
       - run: npm ci
+
+      # De worker is een eigen npm-project met eigen node_modules; zonder deze
+      # regel vindt `tsc -p server` zijn `@cloudflare/workers-types` niet. Dat
+      # was hier niet te zien zolang niemand vanaf een lege map bouwde — de
+      # eerste rode run van deze workflow was precies deze.
+      - run: npm ci --prefix server
 
       - name: Typecheck van de app
         run: npm run typecheck

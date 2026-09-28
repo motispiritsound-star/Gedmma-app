@@ -90,6 +90,20 @@ Nagelopen dat de build het met alleen getrackte bestanden redt: de zes films en
 252 assets staan in `site-assets/`, en `make-site.mjs` leest niets uit de
 genegeerde `store/`-mappen.
 
+**En de eerste run was meteen rood**, op iets dat hier niet te zien was:
+`error TS2688: Cannot find type definition file for '@cloudflare/workers-types'`.
+
+`server/` is een eigen npm-project met een eigen `package.json` en eigen
+`node_modules`, en de workflow deed daar geen `npm ci`. Op deze machine stond
+die map er al, dus viel het niet op; een verse checkout heeft hem niet. Eén
+regel erbij, `npm ci --prefix server`, en beide lockfiles in de cache.
+
+Nagelopen met een verse install vanaf een gewiste `server/node_modules`:
+typecheck schoon.
+
+Dit is precies waar bevinding 1 over ging: niet dat de tests fout stonden, maar
+dat niemand ze ergens anders dan op deze ene machine draaide.
+
 ---
 
 ## 2 · Twee projecten in één repository, met een deploybaar root-doelwit
