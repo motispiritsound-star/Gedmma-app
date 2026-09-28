@@ -158,3 +158,85 @@ describe('de inloglink van het portaal', () => {
     expect(lichaam.indexOf('telMail(env.DB, plek)')).toBeGreaterThan(catchEind)
   })
 })
+
+/**
+ * En de vierde link, die we bij de vorige ronde hebben overgeslagen.
+ *
+ * `/bevestig`, `/uitschrijven` en `/wissen` gingen achter een POST omdat een
+ * prefetch een schrijfopdracht was. `/portaal/binnen` bleef staan, en dat is de
+ * duurste van de vier: `wisselIn` zet `gebruikt_op`, dus de ophaling ván de
+ * scanner is de inlog. De koper klikt daarna zelf en krijgt `?fout=link` — en
+ * een nieuwe link vragen helpt niet, want die brandt net zo op.
+ *
+ * Deze bladzijde gaat één stap verder dan de andere drie: de GET doet ook geen
+ * leesvraag. Geen query betekent geen spoor en geen orakel — de knop staat er
+ * ook bij een token dat niet bestaat, dus je kunt hier niet navragen welke
+ * tokens geldig zijn.
+ */
+describe('de inloglink naar het portaal', () => {
+  const index = readFileSync(new URL('../../server/src/index.ts', import.meta.url), 'utf8')
+
+  const lichaamVan = (naam: string) => {
+    const start = index.indexOf(`async function ${naam}(`)
+    expect(start, `${naam}() niet gevonden`).toBeGreaterThan(-1)
+    const eind = index.indexOf('\nasync function ', start + 10)
+    return index.slice(start, eind === -1 ? undefined : eind)
+  }
+
+  it('geeft de methode door aan de afhandeling', () => {
+    expect(index, '/portaal/binnen kijkt niet naar de methode').toContain(
+      "if (url.pathname === '/portaal/binnen') return metAdres(await portaalBinnen(url, env, verzoek.method === 'POST'))",
+    )
+  })
+
+  it('wisselt het token pas in bij een POST', () => {
+    const lichaam = lichaamVan('portaalBinnen')
+    const vraag = lichaam.indexOf('if (!doen)')
+    const wissel = lichaam.indexOf('wisselIn(')
+    expect(vraag, 'portaalBinnen() vraagt niet eerst').toBeGreaterThan(-1)
+    expect(wissel, 'portaalBinnen() wisselt niets meer in?').toBeGreaterThan(-1)
+    expect(vraag, 'portaalBinnen() wisselt in vóórdat hij vraagt').toBeLessThan(wissel)
+  })
+
+  it('raakt de database niet aan bij een GET', () => {
+    // Het stuk tussen `if (!doen)` en de `return` erna. Staat daar een `env.DB`,
+    // dan is de bladzijde weer een orakel: dan verschilt het antwoord tussen
+    // een geldig en een onbekend token, en dan laat een scanner weer een spoor
+    // achter in de logs van de database.
+    const lichaam = lichaamVan('portaalBinnen')
+    const start = lichaam.indexOf('if (!doen)')
+    const eind = lichaam.indexOf('\n  }', start)
+    expect(eind, 'de tak voor een GET is niet te vinden').toBeGreaterThan(start)
+    const tak = lichaam.slice(start, eind)
+    expect(tak, 'de GET stelt een databasevraag').not.toContain('env.DB')
+    expect(tak, 'de GET wacht op iets').not.toContain('await')
+    expect(tak).toContain('vraagPagina(')
+  })
+
+  it('post terug naar hetzelfde pad, zodat oude mails blijven werken', () => {
+    const lichaam = lichaamVan('portaalBinnen')
+    expect(lichaam).toContain('`/portaal/binnen?t=${encodeURIComponent(token)}')
+    // En de mail wijst naar datzelfde pad.
+    expect(index).toContain('`${env.BASIS}/portaal/binnen?t=${token}')
+  })
+
+  it('werkt ook zonder de taalparameter, want die zit niet in oude mails', () => {
+    const lichaam = lichaamVan('portaalBinnen')
+    // Geen taal in de URL mag geen lege bladzijde geven: er hoort een terugval
+    // te staan, en de waarde moet langs isTaal() zodat er geen onzin in het
+    // lang-attribuut belandt.
+    expect(lichaam).toMatch(/isTaal\(l\) \? l : 'nl'/)
+    expect(lichaam).toMatch(/INLOGMAIL\[taal\] \?\? INLOGMAIL\.nl!/)
+  })
+
+  it('heeft in elke taal een tekst voor die tussenbladzijde', () => {
+    for (const veld of ['vraagKop', 'vraagBody', 'vraagKnop']) {
+      // Eén keer in het type en één keer per taal.
+      const keer = index.split(`${veld}:`).length - 1
+      expect(keer, `${veld} staat ${keer}× in index.ts`).toBe(7)
+    }
+    // En geen lege: een knop zonder opschrift is een knop die niemand vindt.
+    const blok = index.slice(index.indexOf('const INLOGMAIL'), index.indexOf('\n}\n', index.indexOf('const INLOGMAIL')))
+    expect(blok).not.toMatch(/vraag[A-Za-z]+: ''/)
+  })
+})

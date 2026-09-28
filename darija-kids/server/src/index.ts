@@ -764,13 +764,20 @@ const portaalJson = (env: Env, body: unknown, status = 200, extra: Record<string
   })
 
 /** Wat er in de inlogmail staat. Kort: er is maar één ding te doen. */
-const INLOGMAIL: Record<string, { kop: string; regel: string; knop: string; staart: string }> = {
-  nl: { kop: 'Je link om binnen te komen', regel: 'Klik hieronder en je bent binnen. De link werkt een half uur en daarna niet meer.', knop: 'Naar mijn boeken', staart: 'Heb je hier niet om gevraagd? Dan hoef je niets te doen — zonder klik gebeurt er niets.' },
-  fr: { kop: 'Votre lien de connexion', regel: 'Cliquez ci-dessous pour entrer. Le lien est valable une demi-heure.', knop: 'Vers mes livres', staart: 'Vous n’avez rien demandé ? Alors ne faites rien — sans clic, rien ne se passe.' },
-  de: { kop: 'Dein Link zum Anmelden', regel: 'Klick unten und du bist drin. Der Link gilt eine halbe Stunde.', knop: 'Zu meinen Büchern', staart: 'Nicht angefragt? Dann tu nichts — ohne Klick passiert nichts.' },
-  es: { kop: 'Tu enlace para entrar', regel: 'Pulsa abajo y entras. El enlace vale media hora.', knop: 'A mis libros', staart: '¿No lo has pedido? No hagas nada: sin clic no pasa nada.' },
-  it: { kop: 'Il tuo link per entrare', regel: 'Clicca qui sotto ed entri. Il link vale mezz’ora.', knop: 'Ai miei libri', staart: 'Non l’hai chiesto tu? Allora non fare nulla: senza clic non succede niente.' },
-  en: { kop: 'Your link to get in', regel: 'Tap below and you are in. The link works for half an hour.', knop: 'To my books', staart: 'Did not ask for this? Then do nothing — without a click nothing happens.' },
+const INLOGMAIL: Record<string, { kop: string; regel: string; knop: string; staart: string
+  vraagKop: string; vraagBody: string; vraagKnop: string }> = {
+  nl: { kop: 'Je link om binnen te komen', regel: 'Klik hieronder en je bent binnen. De link werkt een half uur en daarna niet meer.', knop: 'Naar mijn boeken', staart: 'Heb je hier niet om gevraagd? Dan hoef je niets te doen — zonder klik gebeurt er niets.',
+       vraagKop: 'Nog één tik', vraagBody: 'Druk op de knop en je bent binnen. Die tik vragen we omdat je link maar één keer werkt — zo kan geen programma dat je post nakijkt hem opgebruiken.', vraagKnop: 'Inloggen' },
+  fr: { kop: 'Votre lien de connexion', regel: 'Cliquez ci-dessous pour entrer. Le lien est valable une demi-heure.', knop: 'Vers mes livres', staart: 'Vous n’avez rien demandé ? Alors ne faites rien — sans clic, rien ne se passe.',
+       vraagKop: 'Encore un clic', vraagBody: 'Appuyez sur le bouton et vous êtes entré. Nous demandons ce clic parce que votre lien ne fonctionne qu’une fois : ainsi aucun programme qui vérifie votre courrier ne peut l’utiliser.', vraagKnop: 'Se connecter' },
+  de: { kop: 'Dein Link zum Anmelden', regel: 'Klick unten und du bist drin. Der Link gilt eine halbe Stunde.', knop: 'Zu meinen Büchern', staart: 'Nicht angefragt? Dann tu nichts — ohne Klick passiert nichts.',
+       vraagKop: 'Nur noch ein Klick', vraagBody: 'Drück auf den Knopf und du bist drin. Wir fragen diesen Klick, weil dein Link nur einmal funktioniert — so kann kein Programm, das deine Post prüft, ihn verbrauchen.', vraagKnop: 'Anmelden' },
+  es: { kop: 'Tu enlace para entrar', regel: 'Pulsa abajo y entras. El enlace vale media hora.', knop: 'A mis libros', staart: '¿No lo has pedido? No hagas nada: sin clic no pasa nada.',
+       vraagKop: 'Solo falta un clic', vraagBody: 'Pulsa el botón y ya estás dentro. Te pedimos este clic porque tu enlace solo funciona una vez: así ningún programa que revise tu correo puede gastarlo.', vraagKnop: 'Entrar' },
+  it: { kop: 'Il tuo link per entrare', regel: 'Clicca qui sotto ed entri. Il link vale mezz’ora.', knop: 'Ai miei libri', staart: 'Non l’hai chiesto tu? Allora non fare nulla: senza clic non succede niente.',
+       vraagKop: 'Manca solo un clic', vraagBody: 'Premi il pulsante ed entri. Ti chiediamo questo clic perché il tuo link funziona una volta sola: così nessun programma che controlla la tua posta può consumarlo.', vraagKnop: 'Accedi' },
+  en: { kop: 'Your link to get in', regel: 'Tap below and you are in. The link works for half an hour.', knop: 'To my books', staart: 'Did not ask for this? Then do nothing — without a click nothing happens.',
+       vraagKop: 'Just one more tap', vraagBody: 'Press the button and you are in. We ask for this tap because your link works only once — that way no program that checks your mail can use it up.', vraagKnop: 'Log in' },
 }
 
 /**
@@ -813,7 +820,9 @@ async function portaalAanmelden(verzoek: Request, env: Env): Promise<Response> {
   })) {
     const token = await maakLink(env.DB, lid.id)
     const tekst = INLOGMAIL[taal] ?? INLOGMAIL.nl!
-    const link = `${env.BASIS}/portaal/binnen?t=${token}`
+    // `l` is alleen voor de taal van de tussenbladzijde hieronder. Een oude
+    // mail zonder die parameter werkt gewoon; die valt terug op Nederlands.
+    const link = `${env.BASIS}/portaal/binnen?t=${token}&l=${taal}`
     const m = MAILS[taal]
     const portaalUrl = `${env.SITE ?? 'https://darijaforkids.eu'}/portaal`
     const brief = {
@@ -856,10 +865,44 @@ async function portaalAanmelden(verzoek: Request, env: Env): Promise<Response> {
   return portaalJson(env, { goed: true })
 }
 
-/** De link inwisselen en doorsturen naar het portaal, met het koekje erbij. */
-async function portaalBinnen(url: URL, env: Env): Promise<Response> {
+/**
+ * De link inwisselen en doorsturen naar het portaal, met het koekje erbij.
+ *
+ * Dit was de vierde link uit een mail die op een GET schreef, en de enige die
+ * we bij de vorige ronde hebben overgeslagen. Hij is ook de duurste van de
+ * vier: `wisselIn` zet `gebruikt_op`, dus wie hem ophaalt verbruikt hem. Haalt
+ * de scanner van een mailbox de link vooraf op — Outlook Safe Links, de
+ * virusscanner van een bedrijf, het linkvoorbeeld van een chatprogramma — dan
+ * is die ophaling de inlog, en krijgt de koper zelf `?fout=link`.
+ *
+ * En het loopt niet af. `WACHTTIJD` is een minuut, dus hij mag een nieuwe link
+ * vragen, maar die gaat langs dezelfde scanner en brandt net zo op. Iemand die
+ * net betaald heeft komt dan niet bij zijn boek, en er is aan zijn kant niets
+ * wat hij eraan kan doen.
+ *
+ * Een GET doet daarom nu precies niets: geen schrijfopdracht, en ook geen
+ * vraag of het token bestaat. Dat laatste is met opzet. Het scheelt niet alleen
+ * een query per ophaling, het betekent ook dat deze bladzijde nooit verklapt of
+ * een token geldig is — de knop staat er altijd, en pas de POST erachter zoekt
+ * hem op. Een scanner laat hier dus geen enkel spoor achter.
+ *
+ * De taal komt uit de URL en niet uit de database, want dat zou weer een vraag
+ * zijn. `portaalAanmelden` zet hem erbij; een oude mail zonder die parameter
+ * valt terug op Nederlands en werkt verder gewoon.
+ */
+async function portaalBinnen(url: URL, env: Env, doen: boolean): Promise<Response> {
   const site = env.SITE ?? 'https://darijaforkids.eu'
-  const uit = await wisselIn(env.DB, url.searchParams.get('t') ?? '')
+  const token = url.searchParams.get('t') ?? ''
+
+  if (!doen) {
+    const l = url.searchParams.get('l') ?? ''
+    const taal = isTaal(l) ? l : 'nl'
+    const t = INLOGMAIL[taal] ?? INLOGMAIL.nl!
+    return vraagPagina(taal, t.vraagKop, t.vraagBody, t.vraagKnop,
+      `/portaal/binnen?t=${encodeURIComponent(token)}&l=${encodeURIComponent(taal)}`)
+  }
+
+  const uit = await wisselIn(env.DB, token)
   if (!uit) return Response.redirect(`${site}/portaal?fout=link`, 302)
   return new Response(null, {
     status: 302,
@@ -959,7 +1002,7 @@ export default {
       if (url.pathname === '/blad' && verzoek.method === 'POST') return metAdres(await blad(verzoek, env))
 
       if (url.pathname === '/portaal/aanmelden' && verzoek.method === 'POST') return metAdres(await portaalAanmelden(verzoek, env))
-      if (url.pathname === '/portaal/binnen') return metAdres(await portaalBinnen(url, env))
+      if (url.pathname === '/portaal/binnen') return metAdres(await portaalBinnen(url, env, verzoek.method === 'POST'))
       if (url.pathname === '/portaal/mij') return metAdres(await portaalMij(verzoek, env))
       if (url.pathname === '/portaal/uit' && verzoek.method === 'POST') return metAdres(await portaalUit(verzoek, env))
       if (url.pathname === '/portaal/wissen' && verzoek.method === 'POST') return metAdres(await portaalWissen(verzoek, env))

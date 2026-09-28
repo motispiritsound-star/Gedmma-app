@@ -1,10 +1,6 @@
 name = "darijaforkids-post"
 main = "src/index.ts"
 
-# De migraties. Ze staan in server/migrations en wrangler houdt in de tafel
-# `d1_migrations` bij welke er al gedraaid hebben, zodat een tweede keer
-# toepassen niets doet.
-migrations_dir = "migrations"
 compatibility_date = "2026-09-01"
 
 # Geen tweede adres op `workers.dev`.
@@ -66,6 +62,18 @@ custom_domain = true
 binding = "DB"
 database_name = "darijaforkids"
 database_id = "efdc2224-da27-45cf-974c-36ba1fd95fc0"
+# De migraties. Ze staan in server/migrations en wrangler houdt in de tafel
+# `d1_migrations` bij welke er al gedraaid hebben, zodat een tweede keer
+# toepassen niets doet.
+#
+# Deze regel hoort hier, bij de binding, en niet bovenaan het bestand. Daar
+# stond hij eerst, en wrangler 4.132 antwoordde op elke opdracht met
+# "Unexpected fields found in top-level field: migrations_dir" en negeerde hem.
+# Het viel niet op omdat de standaardwaarde ook `migrations` is: het werkte,
+# maar niet hierdoor. Was deze waarde ooit iets anders geworden, dan had
+# wrangler stil in de oude map blijven kijken en was een nieuwe migratie nooit
+# toegepast — terwijl de uitrol wél doorging.
+migrations_dir = "migrations"
 
 # One run a week. Monday morning, because a week that is reported on Monday is
 # a week somebody can still do something about.
