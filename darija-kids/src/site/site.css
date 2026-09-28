@@ -1017,3 +1017,26 @@ footer .bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid v
   color: var(--terra, #c34a2c);
 }
 .mailbtn.gevaar:hover { background: var(--terra, #c34a2c); color: #fff; }
+
+/* -------------------------------------------------- raakvlakken in de kop
+ *
+ * Gemeten in een echte browser op 320 en 390 pixels: het merk was 26 tot 28
+ * hoog, de menulinks 32 tot 33, en de taalkeuze 39. Apple en Google houden
+ * allebei 44 aan als ondergrens voor iets wat je met een vinger raakt.
+ *
+ * Dit is de kop van de leeskamer, waar een koper zijn boek opent en waar de
+ * taalkeuze staat. De balk zelf is al 4rem hoog (`.wrap { min-height }`), dus
+ * de ruimte is er — alleen het raakbare deel was zo hoog als de tekst.
+ *
+ * Vandaar opvulling met een negatieve marge eromheen: het raakvlak wordt 44,
+ * de balk blijft even hoog, en je ziet niets veranderen.
+ */
+header.top .brand,
+header.top nav a,
+header.top .langpick > summary,
+header.top .langpick a {
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+}
+header.top nav a.poort { padding-top: .3rem; padding-bottom: .3rem; }

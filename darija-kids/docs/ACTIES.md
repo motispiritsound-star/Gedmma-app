@@ -21,20 +21,34 @@ Sluit je het venster, dan is `$p` weg en begin je opnieuw met deze regel.
 
 ---
 
-## 0 · Apple wacht op antwoord — doe dit eerst
+## 0 · Apple: opnieuw indienen
 
-App Review heeft de inzending stilgelegd met vier vragen over richtlijn 1.3
-(Kinderen-categorie). Zolang die openstaan gebeurt er niets met versie 1.0.
+De vier vragen over richtlijn 1.3 zijn beantwoord en Apple heeft ze
+geaccepteerd: *"We appreciate your efforts to comply with the App Review
+Guidelines. Please resubmit the app for review."* In App Store Connect staat
+1.0 weer op **Ready for Review**.
 
-De antwoorden staan klaar in **`docs/APPLE-1.3.md`**, uit de code gecontroleerd
-en niet uit het hoofd geschreven. Lees ze één keer door — jij bent de uitgever
-— en plak ze als antwoord op het bericht zelf in App Store Connect, niet via een
-nieuw formulier.
+Er is dus nog één handeling: **opnieuw indienen**. De build die er al ligt mag
+je gebruiken — wat je hebt geantwoord klopt met dat binaire bestand.
 
-Kort samengevat is het antwoord vier keer hetzelfde: geen analytics, geen
-advertenties, geen verkoop of deling van gegevens, en van een kind wordt niets
-verzameld. Wat er wél de deur uit gaat, gaat pas nadat een ouder door de
-rekenpoort is gegaan en het zelf aanvinkt.
+De verstuurde tekst staat in `docs/APPLE-1.3.md`.
+
+**Eén ding voor de volgende keer, niet om nu te heropenen.** In het verstuurde
+antwoord staat dat de ouderpoort *op de website* zit. Dat klopt niet helemaal:
+de app heeft zijn eigen poort en zijn eigen aanmelding — `src/engine/post.ts`
+stuurt het adres vanuit de app. Apple is er niet over gevallen en de draad is
+gesloten; laat het zo, maar weet het als het later terugkomt.
+
+**Wil je de verbeteringen van deze week meenemen?** Dan is er een nieuwe build
+nodig. Verplicht is het niet, maar er zit in: de foutopvang die voorkomt dat
+een kind op een wit scherm belandt, de emoji die het antwoord van de
+betekenis-oefening weggaf, en de raakvlakken die onder de 44 pixels zaten.
+
+```powershell
+npm --prefix $p run ios -- --build 2 --versie 1.0
+```
+
+Daarna archiveren op de Mac; zie `docs/MAC.md`.
 
 ---
 
