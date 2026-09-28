@@ -62,8 +62,38 @@ Zonder deze drie krijgt iemand die vandaag koopt niet wat hij betaalt.
 npm --prefix $p run boeken -- --platen
 ```
 
-Zonder dit ziet een Sba-koper "nog niet" in plaats van een prentenboek. Dit is
-het enige punt in deze hele lijst dat een betalende klant meteen raakt.
+Zonder dit ziet een Sba-koper "nog niet" in plaats van een prentenboek.
+
+**Meldt hij per deel "staat er al, overgeslagen"? Geloof dat niet meteen.**
+Dat komt uit `store/bladen/gedaan.json`, een notitiebestand op je eigen schijf.
+Het zegt *mijn aantekeningen zeggen dat ik dit al deed* — niet dat de
+bladzijden in R2 staan. Viel een upload ooit halverwege om, dan kloppen de
+aantekeningen niet meer met de bak, en dan koopt iemand Sba en krijgt "nog
+niet".
+
+Vraag het daarom aan de bak zelf:
+
+```powershell
+npm --prefix $p run platencheck
+```
+
+Dat doet een steekproef op het eerste deel, het laatste, en een paar talen. Wil
+je alles nalopen:
+
+```powershell
+npm --prefix $p run platencheck -- --alles
+```
+
+Ontbreekt er iets, dan gooi je de aantekeningen weg en draai je de prenten
+opnieuw:
+
+```powershell
+Remove-Item (Join-Path $p "store\bladen\gedaan.json")
+```
+
+```powershell
+npm --prefix $p run boeken -- --platen
+```
 
 Laat het draaien en doe ondertussen A2 niet — die schrijft in dezelfde mappen.
 

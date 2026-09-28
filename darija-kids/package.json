@@ -80,6 +80,7 @@
     "mailsleutel": "node scripts/mailsleutel.mjs",
     "lezen": "node scripts/leesuitgave.mjs",
     "boeken": "node scripts/boeken-erin.mjs",
+    "platencheck": "node scripts/platencheck.mjs",
     "vertelstem": "node scripts/make-vertelstem.mjs"
   },
   "dependencies": {
