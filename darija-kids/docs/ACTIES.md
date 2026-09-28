@@ -118,15 +118,11 @@ je alles nalopen:
 npm --prefix $p run platencheck -- --alles
 ```
 
-Ontbreekt er iets, dan gooi je de aantekeningen weg en draai je de prenten
-opnieuw:
+Ontbreekt er iets, dan draai je de prenten opnieuw met `--opnieuw`. Die vlag
+laat de aantekeningen leeg beginnen, dus je hoeft geen bestand weg te gooien:
 
 ```powershell
-Remove-Item (Join-Path $p "store\bladen\gedaan.json")
-```
-
-```powershell
-npm --prefix $p run boeken -- --platen
+npm --prefix $p run boeken -- --platen --opnieuw
 ```
 
 Laat het draaien en doe ondertussen 2b niet — die schrijft in dezelfde mappen.

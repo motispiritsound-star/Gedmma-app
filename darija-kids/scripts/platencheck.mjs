@@ -149,9 +149,13 @@ if (!mist) {
 } else {
   console.log(`${mist} van de ${paren.length} ${mist === 1 ? 'staat' : 'staan'} er niet goed in.`)
   console.log('\nDat betekent dat een koper "nog niet" te zien krijgt. De aantekeningen')
-  console.log('kloppen dan niet meer met de bak; gooi ze weg en maak ze opnieuw:\n')
+  console.log('in store/bladen/gedaan.json kloppen dan niet meer met de bak.\n')
+  // `--opnieuw` laat die boekhouding leeg beginnen; boeken-erin.mjs geeft de
+  // vlag door aan make-bladen.mjs. Dat is netter dan het bestand weggooien:
+  // blijft de tweede regel ongedraaid, dan sta je met een half opgeruimde map.
+  console.log('Draai dit — de vlag negeert de aantekeningen en doet alles opnieuw:\n')
   const zoek = '(Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName'
-  console.log(`  Remove-Item (Join-Path ${zoek} "store\\bladen\\gedaan.json")`)
-  console.log(`  npm --prefix ${zoek} run boeken -- --platen\n`)
+  console.log(`  npm --prefix ${zoek} run boeken -- --platen --opnieuw\n`)
+  console.log('Dat duurt ruim een uur.\n')
   process.exit(1)
 }
