@@ -466,6 +466,38 @@ export const koopStap = (o: { terugbetaald: boolean; bestelnummer?: string; alBe
   return o.alBekend ? 'al-bekend' : 'nieuw'
 }
 
+/**
+ * Alles wat ná de verkoop nog moet, en waarvan niets de verkoop mag omgooien.
+ *
+ * Zodra de bestelling in de database staat, is de koop rond. Wat daarna komt
+ * — de koper lid maken, de mail met de sleutel — zijn losse stappen, en een
+ * stap die omvalt hoort de andere niet mee te nemen.
+ *
+ * Dat ging hier mis op een manier die niemand zou zien. `schrijfIn` stond
+ * zonder vangnet tussen de bestelling en de mail. Viel die om, dan gaf het
+ * verzoek een 500, probeerde de betaalpartner het opnieuw, zag de rem dat
+ * deze bestelling al bestond, en antwoordde netjes met "al bekend" — waarna
+ * de mail met de sleutel nooit meer werd verstuurd. Betaald, besteld,
+ * geregistreerd, en geen sleutel; en in het logboek niets bijzonders.
+ *
+ * De volgorde is daarom ook de volgorde van belang: het lidmaatschap is een
+ * gemak, de sleutel is het product.
+ */
+export async function naDeVerkoop(
+  stappen: { naam: string; doe: () => Promise<unknown> }[],
+): Promise<string[]> {
+  const mislukt: string[] = []
+  for (const stap of stappen) {
+    try {
+      await stap.doe()
+    } catch (fout) {
+      mislukt.push(stap.naam)
+      console.error('na de verkoop', stap.naam, fout instanceof Error ? fout.message : fout)
+    }
+  }
+  return mislukt
+}
+
 async function koop(verzoek: Request, env: Env): Promise<Response> {
   if (!env.KOOP_GEHEIM) return json({ fout: 'niet-ingericht' }, 503)
   const url = new URL(verzoek.url)
@@ -532,36 +564,29 @@ async function koop(verzoek: Request, env: Env): Promise<Response> {
    * te moeten diepen. De voorwaarden heeft hij bij het afrekenen aangevinkt;
    * dat is waar dit moment vandaan komt.
    */
-  await schrijfIn(env.DB, {
-    email, taal: body.taal, nieuws: false, tekstVersie: TEKST_VERSIE,
-    ipHash: await hashVan((verzoek.headers.get('cf-connecting-ip') ?? '') + env.ZOUT),
-  })
-
   const m = koopMail(env, sleutel, reeksen, taalVan({ taal: body.taal }))
   const brief = { ...m, afmeldTekst: '', wisTekst: '', voet: 'Darijaforkids', afmeldUrl: '', wisUrl: '' }
+  const ipHash = await hashVan((verzoek.headers.get('cf-connecting-ip') ?? '') + env.ZOUT)
 
-  /**
-   * Gaat de mail niet, dan is dat erg — maar een 500 maakt het erger.
-   *
-   * De betaalpartner probeert het dan opnieuw, en met de rem hierboven levert
-   * dat geen tweede sleutel meer op maar wél een rij mislukte meldingen. En
-   * de koper is niet verloren: hij is hierboven lid geworden, dus hij vindt
-   * zijn boeken terug door zich met hetzelfde adres op het portaal aan te
-   * melden. Dat is precies waarvoor dat portaal er is.
-   *
-   * Dus: de bestelling staat, wij melden het onszelf, en de betaalpartner
-   * krijgt zijn 200. `npm run bestellingen` laat zien dat hij er is.
-   */
-  try {
-    await verstuur(
-      { aan: email, onderwerp: m.onderwerp, html: briefHtml(brief), tekst: briefTekst(brief), afmeldUrl: '' },
-      afzenderVan(env), env.MAIL_SLEUTEL, env.MAIL_URL,
-    )
-  } catch (fout) {
-    console.error('koopmail mislukt', email, fout instanceof Error ? fout.message : fout)
-    return json({ goed: true, mailMislukt: true })
-  }
-  return json({ goed: true })
+  const mislukt = await naDeVerkoop([
+    {
+      naam: 'lid',
+      doe: () => schrijfIn(env.DB, {
+        email, taal: body.taal, nieuws: false, tekstVersie: TEKST_VERSIE, ipHash,
+      }),
+    },
+    {
+      naam: 'mail',
+      doe: () => verstuur(
+        { aan: email, onderwerp: m.onderwerp, html: briefHtml(brief), tekst: briefTekst(brief), afmeldUrl: '' },
+        afzenderVan(env), env.MAIL_SLEUTEL, env.MAIL_URL,
+      ),
+    },
+  ])
+
+  // Altijd een 200: de bestelling staat, en een foutcode laat de
+  // betaalpartner alleen maar opnieuw proberen op iets wat al gelukt is.
+    return mislukt.length ? json({ goed: true, mislukt }) : json({ goed: true })
 }
 
 /**
