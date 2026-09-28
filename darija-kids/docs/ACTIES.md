@@ -178,12 +178,24 @@ En dan op de echte:
 npm --prefix $p run schema
 ```
 
-**Wat je hoort te zien:** een tabelletje met `0001_begin.sql ✅` en verder
-niets. Staat er dat er rijen zijn gewijzigd of verwijderd, stop dan en laat het
-me zien — dat hoort niet.
+**Wat je hoort te zien:** eerst een regel met wat er te wachten staat, dan een
+tabelletje met `0001_begin.sql ✅` en verder niets. Staat er dat er rijen zijn
+gewijzigd of verwijderd, stop dan en laat het me zien — dat hoort niet.
+
+Er komt vandaag géén vraag tussen, en dat is met opzet: 0001 bestaat volledig
+uit `CREATE TABLE IF NOT EXISTS` en `CREATE INDEX IF NOT EXISTS`, twaalf
+opdrachten die op een database met de tafels erin niets doen. Nageteld, en dat
+is precies waarom deze stap veilig is.
+
+Bij een volgende migratie die wél iets aan bestaande gegevens verandert, stopt
+het script en vraagt het eerst. Zit je in een venster waar dat niet kan, dan
+zegt hij welke opdracht je moet draaien.
 
 Voortaan is een wijziging aan de database een nieuw bestand:
-`npm run schema -- --nieuw <naam>`.
+`npm run schema -- --nieuw <naam>`. Schrijf er eerst iets in — een migratie die
+alleen uit commentaar bestaat wordt door wrangler afgetekend als gedraaid, en
+dan is dat nummer op terwijl er niets gebeurd is. Het script weigert hem nu,
+maar weet waarom die regel er staat.
 
 ### 3b · De worker uitrollen
 
