@@ -31,6 +31,15 @@ const nl = {
   boekLead: 'Twee reeksen, twee leeftijden, en één bedoeling: dat een kind weet waar het vandaan komt.',
   portaal: {
     titel: 'Mijn boeken',
+    /**
+     * De weg naar je boeken, hoog op de thuisbladzijde en alleen op een telefoon.
+     *
+     * Daar past hij niet in de kop — met die knop erbij wordt de merknaam
+     * afgekapt. En hij zegt met opzet "boekenreeks" en niet "al gekocht":
+     * dat laatste slaat net zo goed op het abonnement in de app, en daar gaat
+     * het portaal niet over.
+     */
+    alGekocht: 'Een boekenreeks gekocht? Hier lees je ze.',
     lead: 'Meld je aan met je e-mailadres. Je krijgt een link in je mail, en die laat je binnen — een wachtwoord heb je niet nodig en kun je dus ook niet kwijtraken.',
     email: 'Je e-mailadres',
     knop: 'Stuur me een link',
@@ -265,6 +274,7 @@ const fr: SiteCopy = {
   boekLead: 'Deux séries, deux âges, une seule idée : qu’un enfant sache d’où il vient.',
   portaal: {
     titel: 'Mes livres',
+    alGekocht: 'Vous avez acheté une série de livres ? Lisez-la ici.',
     lead: 'Inscrivez-vous avec votre adresse e-mail. Vous recevez un lien qui vous fait entrer — pas de mot de passe, donc rien à perdre.',
     email: 'Votre adresse e-mail',
     knop: 'Envoyez-moi un lien',
@@ -478,6 +488,7 @@ const de: SiteCopy = {
   boekLead: 'Zwei Reihen, zwei Altersgruppen, eine Absicht: dass ein Kind weiß, wo es herkommt.',
   portaal: {
     titel: 'Meine Bücher',
+    alGekocht: 'Eine Buchreihe gekauft? Hier liest du sie.',
     lead: 'Melde dich mit deiner E-Mail-Adresse an. Du bekommst einen Link, und der lässt dich hinein — kein Passwort, also auch keins zum Verlieren.',
     email: 'Deine E-Mail-Adresse',
     knop: 'Schick mir einen Link',
@@ -691,6 +702,7 @@ const es: SiteCopy = {
   boekLead: 'Dos series, dos edades y una sola intención: que un niño sepa de dónde viene.',
   portaal: {
     titel: 'Mis libros',
+    alGekocht: '¿Has comprado una serie de libros? Léela aquí.',
     lead: 'Date de alta con tu correo electrónico. Recibes un enlace y ese enlace te deja entrar — sin contraseña, así que no hay nada que perder.',
     email: 'Tu correo electrónico',
     knop: 'Envíame un enlace',
@@ -904,6 +916,7 @@ const it: SiteCopy = {
   boekLead: 'Due collane, due età e una sola intenzione: che un bambino sappia da dove viene.',
   portaal: {
     titel: 'I miei libri',
+    alGekocht: 'Hai comprato una serie di libri? Leggila qui.',
     lead: 'Iscriviti con il tuo indirizzo e-mail. Ricevi un link, e quel link ti fa entrare — niente password, quindi niente da perdere.',
     email: 'Il tuo indirizzo e-mail',
     knop: 'Mandami un link',
@@ -1117,6 +1130,7 @@ const en: SiteCopy = {
   boekLead: 'Two series, two ages, one intention: that a child knows where they come from.',
   portaal: {
     titel: 'My books',
+    alGekocht: 'Bought a book series? Read it here.',
     lead: 'Sign up with your email address. You get a link, and that link lets you in — no password, so nothing to lose.',
     email: 'Your email address',
     knop: 'Send me a link',

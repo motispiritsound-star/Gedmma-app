@@ -446,6 +446,7 @@ const homePage = (lang, media) => {
       <p class="lead">${esc(c.heroLead)}</p>
       ${downloadBlock(lang)}
       <p class="proof">${esc(c.heroBewijs)}</p>
+      <p class="alkocht"><a href="${PATHS[lang].portal}">${esc(c.portaal.alGekocht)}</a></p>
     </div>
     ${media.shots.length ? shotGallery(lang, media.shots) : ''}
   </div>

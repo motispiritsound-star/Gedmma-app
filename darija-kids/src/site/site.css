@@ -179,6 +179,16 @@ header.top nav a.poort {
   padding: .3rem .8rem; color: var(--ink);
 }
 header.top nav a.poort:hover { border-color: var(--zellige); color: var(--zellige); }
+
+/* Dezelfde weg, voor het scherm waar hij niet in de kop past.
+   Alleen zichtbaar waar de knop hierboven verdwijnt — anders staat hij er
+   twee keer. */
+.hero .alkocht { display: none; }
+@media (max-width: 62rem) {
+  .hero .alkocht { display: block; margin: 1.1rem 0 0; font-size: .92rem; }
+  .hero .alkocht a { color: var(--ink-soft); text-underline-offset: 3px; }
+  .hero .alkocht a:hover { color: var(--zellige); }
+}
 /* Op een smal scherm verdwijnt het menu, maar dit ene item niet: het meeste
    bezoek komt van een telefoon, en dit is de enige andere pagina die iemand
    uit zichzelf zoekt. */
