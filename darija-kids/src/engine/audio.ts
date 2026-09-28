@@ -1027,58 +1027,20 @@ export function onVoicesReady(cb: () => void): () => void {
 
 /* ------------------------------------------------------ speech recognition */
 
-type Recogniser = {
-  lang: string
-  continuous: boolean
-  interimResults: boolean
-  maxAlternatives: number
-  start: () => void
-  stop: () => void
-  onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null
-  onerror: ((e: unknown) => void) | null
-  onend: (() => void) | null
-}
+/*
+  Hier stond de spraakherkenning van de browser: `Recogniser`, `RecognitionCtor`,
+  `canListen` en `listenOnce`.
 
-const RecognitionCtor = (): (new () => Recogniser) | null => {
-  if (typeof window === 'undefined') return null
-  const w = window as unknown as { SpeechRecognition?: new () => Recogniser; webkitSpeechRecognition?: new () => Recogniser }
-  return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null
-}
+  Weg. `webkitSpeechRecognition` doet de herkenning niet op het toestel — Chrome
+  stuurt het geluidsfragment naar Google. In de app gebeurde dat nooit, want een
+  WKWebView kent die API niet, maar op de website wel: dan ging de stem van een
+  kind naar een derde partij.
 
-export const canListen = (): boolean => RecognitionCtor() !== null
+  En het oordeel dat daarvoor terugkwam kon niet kloppen. Er bestaat geen motor
+  die Darija kent; ze zijn allemaal getraind op Standaardarabisch, een andere
+  taal met dezelfde letters. Een kind dat het goed zei kreeg "fout" te horen.
 
-/** Listens once and resolves with everything it thought it heard. */
-export function listenOnce(timeoutMs = 6000): Promise<string> {
-  const Ctor = RecognitionCtor()
-  if (!Ctor) return Promise.reject(new Error('geen-spraakherkenning'))
-
-  return new Promise((resolve, reject) => {
-    const rec = new Ctor()
-    rec.lang = 'ar-MA'
-    rec.continuous = false
-    rec.interimResults = false
-    rec.maxAlternatives = 3
-    let settled = false
-    const done = (value: string | null, err?: unknown) => {
-      if (settled) return
-      settled = true
-      clearTimeout(timer)
-      try { rec.stop() } catch { /* already stopped */ }
-      if (value === null) reject(err instanceof Error ? err : new Error('spraak-mislukt'))
-      else resolve(value)
-    }
-    const timer = setTimeout(() => done(''), timeoutMs)
-
-    rec.onresult = (e) => {
-      const alternatives: string[] = []
-      for (let i = 0; i < e.results.length; i++) {
-        const result = e.results[i]!
-        for (let j = 0; j < result.length; j++) alternatives.push(result[j]!.transcript)
-      }
-      done(alternatives.join(' '))
-    }
-    rec.onerror = (e) => done(null, e)
-    rec.onend = () => done('')
-    try { rec.start() } catch (e) { done(null, e) }
-  })
-}
+  Wat ervoor in de plaats staat is `NaZeggen` in `ui/exercises.tsx`: opnemen en
+  jezelf terughoren vlak na de stem die het goed zegt. Dat blijft op het
+  toestel, en het oordeel is van de spreker.
+*/

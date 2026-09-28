@@ -5,7 +5,7 @@ import { isScribeExercise } from '../engine/exercises'
 import {
   addGems, addXp, awardBadges, bonusToday, finishBonus, mastery, today, useStore,
 } from '../engine/store'
-import { canListen, sfx } from '../engine/audio'
+import { sfx } from '../engine/audio'
 import { kanOpnemen } from '../engine/microfoon'
 import { Button, Card, Progress, SectionTitle, Stat } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
@@ -49,7 +49,7 @@ export function Bonus() {
   const leave = (klaar?: Finished) => navigate('/bonus', { replace: true, state: klaar ? { klaar } : null })
 
   const pool = useMemo(
-    () => poolFrom(state, { canSpeak: canListen() || kanOpnemen() }),
+    () => poolFrom(state, { canSpeak: kanOpnemen() }),
     // A new round when one is started, and whenever progress moves the pool.
     [state, seed],
   )
@@ -186,7 +186,7 @@ export function BonusCard() {
   const t = useT()
   const state = useStore((s) => s)
   const counts = bonusToday(state)
-  const pool = poolFrom(state, { canSpeak: canListen() || kanOpnemen() })
+  const pool = poolFrom(state, { canSpeak: kanOpnemen() })
   const open = BONUS.filter((b) => b.ready(pool))
   const highlight = bonusOfTheDay(today(), open.map((b) => b.id))
   if (!highlight) return null

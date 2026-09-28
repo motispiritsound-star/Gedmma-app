@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { DAY, dueCards, newCard, review, strengthLabel } from './srs'
 import {
-  buildRound, buildReviewRound, checkSpoken, checkTyped, isLetterExercise, isSentenceExercise,
+  buildRound, buildReviewRound, checkTyped, isLetterExercise, isSentenceExercise,
   normalise, tokenize,
 } from './exercises'
 import { latinise, phoneticOf } from './audio'
@@ -201,12 +201,6 @@ describe('checking what the learner typed', () => {
     expect(checkTyped('khubz', khobz)).toBe('bijna')
     expect(checkTyped('atay', khobz)).toBe('fout')
     expect(checkTyped('', khobz)).toBe('fout')
-  })
-
-  it('grades speech the same way, inside a longer sentence', () => {
-    expect(checkSpoken('خبز', khobz)).toBe('goed')
-    expect(checkSpoken('ana bghit khobz', khobz)).toBe('goed')
-    expect(checkSpoken('mesh kelb', khobz)).toBe('fout')
   })
 
   it('normalises predictably', () => {

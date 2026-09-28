@@ -26,7 +26,7 @@ Elk antwoord hieronder is uit de code gehaald, niet uit het hoofd.
 ## De tekst voor App Store Connect
 
 > Thank you for reviewing Darijaforkids. Below are complete answers to the four
-> questions, with the relevant detail for each.
+> questions. They describe version 1.0 of the iOS app as submitted.
 >
 > **1. Does the app include third-party analytics?**
 >
@@ -51,11 +51,11 @@ Elk antwoord hieronder is uit de code gehaald, niet uit het hoofd.
 > Three service providers process data strictly on our instructions, under a
 > data processing agreement, and only to deliver the functions below:
 >
-> - **Cloudflare** — hosts our API and stores the parent's e-mail address and
->   consent record in a Cloudflare D1 database, and our books in R2 storage.
-> - **Brevo** (Sendinblue SAS, France) — delivers the confirmation e-mail, the
->   optional weekly note and the purchase e-mail. Brevo is an EU company and
->   the data stays within the EU.
+> - **Cloudflare** — hosts the API the app talks to, and stores the parent's
+>   e-mail address and consent record in a Cloudflare D1 database.
+> - **Brevo** (Sendinblue SAS, France) — delivers the confirmation e-mail and,
+>   if the parent asked for it, the weekly note. Brevo is an EU company and the
+>   data stays within the EU.
 > - **Apple** — processes in-app purchases. The app receives only the
 >   transaction receipt from StoreKit; we never see payment details.
 >
@@ -69,9 +69,8 @@ Elk antwoord hieronder is uit de code gehaald, niet uit het hoofd.
 > the words practised, app settings, and the display name and avatar if the
 > child enters one. Microphone recordings from the "say it after me" exercise
 > are held in memory so the child can hear themselves back, and are never
-> uploaded, stored on our servers or analysed. No speech recognition is applied;
-> `SpeechRecognition` does not exist in a WKWebView, and in any case no engine
-> supports Moroccan Darija.
+> uploaded, stored on our servers or analysed. The app performs no speech
+> recognition of any kind and contains no speech-recognition code.
 >
 > *Transmitted, only after a parent passes a parental gate and opts in:*
 >

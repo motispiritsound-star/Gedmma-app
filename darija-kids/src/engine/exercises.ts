@@ -478,14 +478,3 @@ export function checkTyped(input: string, target: Word): Verdict {
   return levenshtein(got, want) <= slack ? 'bijna' : 'fout'
 }
 
-/** Speech recognition returns whatever it heard; grade it the same way. */
-export function checkSpoken(heard: string, target: Word): Verdict {
-  const cleaned = heard.replace(/[^\p{L}\p{N}\s]/gu, ' ')
-  if (cleaned.includes(target.ar)) return 'goed'
-  const best = cleaned
-    .split(/\s+/)
-    .concat(cleaned)
-    .map((part) => checkTyped(part, target))
-  if (best.includes('goed')) return 'goed'
-  return best.includes('bijna') ? 'bijna' : 'fout'
-}

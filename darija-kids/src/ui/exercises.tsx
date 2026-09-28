@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import type { Exercise, LetterForm } from '../engine/exercises'
-import { checkSpoken, checkTyped, normalise, tokenize, type Verdict } from '../engine/exercises'
+import { checkTyped, normalise, tokenize, type Verdict } from '../engine/exercises'
 import { word } from '../content/lexicon'
 import { connects, letter } from '../content/alphabet'
 import { sentence } from '../content/sentences'
 import { sentenceMeaning } from '../content/localise'
 import { maybeWord } from '../content/lexicon'
-import { canListen, listenOnce, say, sayLetter, sfx } from '../engine/audio'
+import { say, sayLetter, sfx } from '../engine/audio'
 import { kanOpnemen, neemOp, type Opname } from '../engine/microfoon'
 import { useStore } from '../engine/store'
 import { Button, Card } from './kit'
@@ -438,65 +438,27 @@ function Trace({ exercise, onAnswer, locked }: ExerciseProps) {
 
 /* -------------------------------------------------------------------- speak */
 
-function Speak({ exercise, onAnswer, locked }: ExerciseProps) {
-  const t = useT()
-  const w = word(exercise.wordId)
-  const [status, setStatus] = useState<'klaar' | 'luistert' | 'denkt'>('klaar')
-  const [heard, setHeard] = useState('')
+/*
+  Hier stond `Speak`: een oefening die de spraakherkenning van de browser
+  gebruikte en het antwoord liet nakijken.
 
-  const start = async () => {
-    if (locked || status !== 'klaar') return
-    sfx.tap()
-    setStatus('luistert')
-    setHeard('')
-    try {
-      const text = await listenOnce()
-      setStatus('denkt')
-      setHeard(text)
-      onAnswer(text ? checkSpoken(text, w) : 'fout', text)
-    } catch {
-      setStatus('klaar')
-      onAnswer('bijna', t.lesson.spreekIn)
-    }
-  }
+  Weg, en niet omdat hij kapot was. Twee redenen.
 
-  // Geen herkenning? Dan opnemen. Zie NaZeggen hieronder.
-  if (!canListen()) return <NaZeggen exercise={exercise} onAnswer={onAnswer} locked={locked} />
+  De eerste staat al in `NaZeggen` hieronder: er bestaat geen spraakherkenning
+  die Darija kent. Elke motor is getraind op Standaardarabisch, en dat is een
+  andere taal met dezelfde letters. Een kind dat het goed zei kreeg dus "fout"
+  te horen van een computer die de taal niet spreekt — en bij uitspraak is dat
+  het ergste wat je kunt doen.
 
-  return (
-    <div>
-      <Prompt hint={t.lesson.zegHardop}>
-        <Card className="flex flex-col items-center gap-3 p-6">
-          <WordText word={w} size="lg" showNl />
-          <SpeakButton ar={w.ar} tr={w.tr} />
-        </Card>
-      </Prompt>
+  De tweede is waar het geluid heen ging. `webkitSpeechRecognition` doet de
+  herkenning niet op het toestel: Chrome stuurt het fragment naar Google. In de
+  app gebeurde dat nooit, want een WKWebView kent die API niet en kreeg dus
+  altijd `NaZeggen`. Maar op de website wél, en dan ging de stem van een kind
+  naar een derde partij voor een oordeel dat toch niet kon kloppen.
 
-      <div className="flex flex-col items-center gap-3">
-        <motion.button
-          onClick={start}
-          disabled={locked || status !== 'klaar'}
-          animate={status === 'luistert' ? { scale: [1, 1.08, 1] } : { scale: 1 }}
-          transition={{ repeat: status === 'luistert' ? Infinity : 0, duration: 1 }}
-          className={`grid h-28 w-28 place-items-center rounded-full text-5xl text-white shadow-lg ${status === 'luistert' ? 'bg-terra-500' : 'bg-gradient-to-br from-zellige-300 to-zellige-700'}`}
-          aria-label={t.lesson.spreekIn}
-        >
-          🎤
-        </motion.button>
-        <p className="text-sm text-[var(--ink-soft)]">
-          {status === 'luistert' ? t.lesson.ikLuister : status === 'denkt' ? t.lesson.ikHoorde(heard) : t.lesson.tikEnZeg}
-        </p>
-        <button
-          className="text-sm font-bold text-[var(--ink-soft)] underline"
-          onClick={() => { sfx.back(); onAnswer('bijna', 'overgeslagen') }}
-          disabled={locked}
-        >
-          {t.lesson.slaOver}
-        </button>
-      </div>
-    </div>
-  )
-}
+  Nu krijgt iedereen `NaZeggen`: je hoort hoe het hoort, je zegt het zelf, en
+  je hoort jezelf er meteen achteraan. Het oordeel is van jou.
+*/
 
 
 /**
@@ -945,7 +907,7 @@ export function ExerciseView(props: ExerciseProps) {
     case 'tik': return <Type {...props} />
     case 'dictee': return <Type {...props} mode="dictee" />
     case 'schrijf': return <Trace {...props} />
-    case 'spreek': return speechOn ? <Speak {...props} /> : <Type {...props} />
+    case 'spreek': return speechOn ? <NaZeggen {...props} /> : <Type {...props} />
     case 'letter-nieuw': return <NewLetter {...props} />
     case 'letter-klank': return <LetterChoice {...props} mode="klank" />
     case 'letter-naam': return <LetterChoice {...props} mode="naam" />

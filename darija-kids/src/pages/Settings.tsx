@@ -4,9 +4,10 @@ import {
   exportProgress, importProgress, resetProgress, setSetting, setState, useStore, type Settings,
 } from '../engine/store'
 import {
-  arabicVoices, bruikbareStemmen, canListen, canNarrate, canSpeak, prepareSamples, probeSound, say, sfx, voicePlan,
+  arabicVoices, bruikbareStemmen, canNarrate, canSpeak, prepareSamples, probeSound, say, sfx, voicePlan,
   type SoundProbe,
 } from '../engine/audio'
+import { kanOpnemen } from '../engine/microfoon'
 import { LIST_PRICE, TRIAL_DAYS } from '../engine/billing'
 import { gezinsdeling } from '../engine/platform'
 import { LANGS, localeOf, useT, type Lang } from '../i18n'
@@ -307,7 +308,7 @@ export function SettingsPage() {
         <Row title={t.settings.benadering} hint={t.settings.benaderingHint}>
           <Toggle on={s.fallbackVoice} onChange={set('fallbackVoice')} label={t.settings.benadering} />
         </Row>
-        <Row title={t.settings.spreekoefeningen} hint={canListen() ? t.settings.spreekJa : t.settings.spreekNee}>
+        <Row title={t.settings.spreekoefeningen} hint={kanOpnemen() ? t.settings.spreekJa : t.settings.spreekNee}>
           <Toggle on={s.speech} onChange={set('speech')} label={t.settings.spreekoefeningen} />
         </Row>
       </Card>
