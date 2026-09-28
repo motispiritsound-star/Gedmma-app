@@ -40,7 +40,22 @@ Vervang `platencheck` door de opdracht die je wilt.
 
 ---
 
-## 0 · Apple: opnieuw indienen
+## 0 · Haal eerst op wat er klaarstaat
+
+Alles van deze week staat op GitHub en niet op jouw schijf: de wisknop in het
+portaal, de tijdslimiet op de post, de migraties, de lettertypen, het
+cachebeleid, de foutopvang in de app. **Zonder ophalen rollen `deploy` en
+`build` de oude code uit.**
+
+```powershell
+git -C $p pull
+```
+
+Zie je "Missing script" bij een opdracht uit deze lijst, dan is dit de reden.
+
+---
+
+## 1 · Apple: opnieuw indienen
 
 De vier vragen over richtlijn 1.3 zijn beantwoord en Apple heeft ze
 geaccepteerd: *"We appreciate your efforts to comply with the App Review
@@ -61,7 +76,7 @@ gesloten; laat het zo, maar weet het als het later terugkomt.
 **Wil je de verbeteringen van deze week meenemen?** Dan is er een nieuwe build
 nodig. Verplicht is het niet, maar er zit in: de foutopvang die voorkomt dat
 een kind op een wit scherm belandt, de emoji die het antwoord van de
-betekenis-oefening weggaf, en de raakvlakken die onder de 44 pixels zaten.
+betekenis-oefening weggaf, en de raakvlakken die onder de 4d pixels zaten.
 
 ```powershell
 npm --prefix $p run ios -- --build 2 --versie 1.0
@@ -71,11 +86,11 @@ Daarna archiveren op de Mac; zie `docs/MAC.md`.
 
 ---
 
-## A · Vóór de eerste betalende klant
+## 2 · Vóór de eerste betalende klant
 
 Zonder deze drie krijgt iemand die vandaag koopt niet wat hij betaalt.
 
-### A1 · De prenten maken — ongeveer een uur
+### 2a · De prenten maken — ongeveer een uur
 
 ```powershell
 npm --prefix $p run boeken -- --platen
@@ -114,9 +129,9 @@ Remove-Item (Join-Path $p "store\bladen\gedaan.json")
 npm --prefix $p run boeken -- --platen
 ```
 
-Laat het draaien en doe ondertussen A2 niet — die schrijft in dezelfde mappen.
+Laat het draaien en doe ondertussen 2b niet — die schrijft in dezelfde mappen.
 
-### A2 · De winkelbestanden verversen
+### 2b · De winkelbestanden verversen
 
 ```powershell
 npm --prefix $p run winkel
@@ -129,7 +144,7 @@ npm --prefix $p run lezen -- --r2
 De delen 4, 5, 6, 9, 10 en 13 zijn redactioneel gewijzigd; de bestanden in de
 winkel zijn nog de oude. Gemeten: alle 27 PDF's waren ouder dan de tekst.
 
-### A3 · De proefbestellingen opruimen
+### 2c · De proefbestellingen opruimen
 
 Er staan ongeveer tien PROEF-bestellingen in de database van eerdere tests.
 
@@ -145,11 +160,11 @@ npm --prefix $p run intrekken
 
 ---
 
-## B · Uitrollen wat ik heb gewijzigd
+## 3 · Uitrollen wat ik heb gewijzigd
 
 Deze week is er veel aan de worker en de site veranderd. Dit zet het live.
 
-### B1 · De database bijwerken
+### 3a · De database bijwerken
 
 Dit is nieuw: het schema wordt niet meer in één klap opnieuw uitgevoerd, maar
 in genummerde migraties. De eerste is met opzet een lege handeling op een
@@ -174,7 +189,7 @@ me zien — dat hoort niet.
 Voortaan is een wijziging aan de database een nieuw bestand:
 `npm run schema -- --nieuw <naam>`.
 
-### B2 · De worker uitrollen
+### 3b · De worker uitrollen
 
 ```powershell
 npm --prefix $p run deploy
@@ -194,7 +209,7 @@ Dat hoort een getal te geven (401 of 200, niet 000 en geen foutmelding). Krijg
 je niets, dan is het eigen adres niet meer bereikbaar en moet `workers_dev`
 terug aan — zeg het dan, dan draai ik het terug.
 
-### B3 · De site opnieuw bouwen en uitrollen
+### 3c · De site opnieuw bouwen en uitrollen
 
 ```powershell
 npm --prefix $p run build
@@ -206,11 +221,11 @@ meer), het cachebeleid voor 90% van de site, en de nieuwe tekst bij Sba
 
 ---
 
-## C · Zelf natesten — ik kon dit niet
+## 4 · Zelf natesten — ik kon dit niet
 
 Vijf dingen die alleen op een echt toestel of in een echte mailbox te zien zijn.
 
-### C1 · Een echte mail, met de nieuwe knoppen
+### 4a · Een echte mail, met de nieuwe knoppen
 
 De drie links in een mail doen nu niets meer bij het aanklikken door een
 scanner: ze tonen een bladzijde met één knop, en pas die knop voert het uit.
@@ -223,13 +238,13 @@ Open de mail die binnenkomt, en klik onderaan op **Uitschrijven**. Je hoort een
 bladzijde te zien met de vraag en één knop — niet een melding dat je al
 uitgeschreven bent. Druk op de knop; dán pas ben je uitgeschreven.
 
-### C2 · De afmeldknop van de mailclient zelf
+### 4b · De afmeldknop van de mailclient zelf
 
 In Gmail en Apple Mail staat bovenin bij een nieuwsbrief een eigen
 afmeldknopje. Dat doet een POST, en die hoort meteen uit te schrijven zonder
 tussenbladzijde. Probeer het één keer.
 
-### C3 · Een echte les op een echt toestel
+### 4c · Een echte les op een echt toestel
 
 In de oefening "Wat betekent dit?" stond dezelfde emoji op de vraag als op het
 juiste antwoord — je kon hem oplossen zonder een letter Arabisch te lezen. Die
@@ -238,29 +253,29 @@ emoji is weg bij de vraag en staat nog wel bij de antwoorden.
 Speel één les uit en kijk of dat klopt en of het niet te moeilijk is geworden
 voor de jongste groep.
 
-### C4 · Het herhaalscherm op een smalle telefoon
+### 4d · Het herhaalscherm op een smalle telefoon
 
 Als je nog een oud toestel hebt (iPhone SE of iets van 320 pixels breed):
 daar stonden drie tegels naast elkaar en brak "VASTGEZET" midden in het woord.
 Nu vallen ze onder de 360 pixels terug op twee kolommen.
 
-### C5 · Het portaal op de apparaten die je klanten gebruiken
+### 4e · Het portaal op de apparaten die je klanten gebruiken
 
 Computer, laptop, telefoon, tablet. Het voorlezen werkt per toestel anders,
 want de stem komt van het toestel zelf.
 
 ---
 
-## D · De winkels
+## 5 · De winkels
 
-### D1 · Play Console
+### 5a · Play Console
 
 - App access
 - Managed publishing
 - Target audience
 - Bank- en belastinggegevens
 
-### D2 · App Store Connect
+### 5b · App Store Connect
 
 - Prijsbasis op Nederland
 - Royaltyvaluta van USD naar EUR
@@ -268,16 +283,16 @@ want de stem komt van het toestel zelf.
 - De abonnementsteksten uit `store/abonnement-teksten.md`, zodra het slot van
   de beoordeling eraf is
 
-### D3 · Het e-boek als Gumroad-product
+### 5c · Het e-boek als Gumroad-product
 
 De worker herkent `ebook`, `eboek` en `e-boek` alle drie, dus de slug mag je
 zelf kiezen.
 
 ---
 
-## E · Beveiliging
+## 6 · Beveiliging
 
-### E1 · De Brevo-sleutel nog één keer vervangen
+### 6a · De Brevo-sleutel nog één keer vervangen
 
 Hij heeft in ons gesprek gestaan en op twee schermafdrukken. Maak een nieuwe
 bij Brevo, verwijder de oude, en dan:
@@ -289,7 +304,7 @@ npm --prefix $p run mailsleutel
 Dat script controleert de sleutel én het afzenderadres vóór het hem opslaat,
 dus je merkt het meteen als je de verkeerde plakt.
 
-### E2 · Het koopgeheim behandelen als iets dat in logs staat
+### 6b · Het koopgeheim behandelen als iets dat in logs staat
 
 Gumroad kan geen koppen zetten, dus het geheim reist door de URL en komt
 daarmee in de logs van Cloudflare terecht. Dat is niet weg te nemen. Wat wel
@@ -304,9 +319,9 @@ Dat zet het hele Gumroad-adres op je klembord in plaats van op het scherm.
 
 ---
 
-## F · Open besluiten — hier heb ik jouw antwoord voor nodig
+## 7 · Open besluiten — hier heb ik jouw antwoord voor nodig
 
-### F1 · Spraakherkenning op de website
+### 7a · Spraakherkenning op de website
 
 In de app gebeurt het nooit: een WKWebView kent `SpeechRecognition` niet, dus
 daar draait altijd de opnemen-en-terugluisteren-oefening. Maar op de website in
@@ -323,7 +338,7 @@ ze belooft én een gegevensstroom die je niet nodig hebt.
 
 Zeg of ik hem weghaal.
 
-### F2 · De zips met PDF's naast het portaal
+### 7b · De zips met PDF's naast het portaal
 
 Je zei dat kopers géén PDF krijgen, juist omdat verspreiding dan eenvoudig is.
 Maar de Gumroad-producten leveren op dit moment `sleutels-alle-delen.zip` en
@@ -348,14 +363,14 @@ Zeg welke, dan voer ik hem uit.
 
 ---
 
-## H · Edge-to-edge op Android — zodra de beoordelingen klaar zijn
+## 8 · Edge-to-edge op Android — zodra de beoordelingen klaar zijn
 
 Google meldt bij release 2 (1.1) twee **aanbevelingen**, geen blokkades. De
 tweede (R8-optimalisatie) kan wachten. De eerste is echt:
 
 > Edge-to-edge may not display for all users
 
-`android/variables.gradle` zet `targetSdkVersion = 36`, en vanaf API 35 dwingt
+`android/variables.gradle` zet `targetSdkVersion = 36`, en vanaf API 3e dwingt
 Android edge-to-edge af: het stelsel tekent achter de statusbalk en de app moet
 zelf ruimte vrijhouden. De app doet dat alleen onderaan —
 `src/App.tsx:148` heeft `paddingBottom: env(safe-area-inset-bottom)` — en
@@ -386,7 +401,9 @@ van er kaal in.
 
 ---
 
-## G · Na de lancering
+---
+
+## 9 · Na de lancering
 
 Geen haast, maar wel opschrijven.
 
@@ -394,7 +411,7 @@ Geen haast, maar wel opschrijven.
 |---|---|---|
 | G1 | Buurklus naar een eigen repository | Het deploybare doelwit in de root is al weg; de rest is opruimen |
 | G2 | `noUncheckedIndexedAccess` aanzetten in de app | Geeft vermoedelijk tientallen meldingen — geen werk voor een lanceerweek |
-| G3 | De expo-keten bijwerken | 35 npm-waarschuwingen, alle in bouwgereedschap; `--omit=dev` zegt nul. `npm audit fix --force` wil expo@57 installeren, een brekende wijziging |
+| G3 | De expo-keten bijwerken | 3e npm-waarschuwingen, alle in bouwgereedschap; `--omit=dev` zegt nul. `npm audit fix --force` wil expo@57 installeren, een brekende wijziging |
 | G4 | Elk van de drie maillinks een eigen token, met houdbaarheid | De prefetch-schade is weg; dit is verdediging in de diepte en kost een schemawijziging |
 
 ---
@@ -404,3 +421,5 @@ Geen haast, maar wel opschrijven.
 - `docs/AUDIT.md` — de pre-launch audit, tien bevindingen met de stand erbij
 - `docs/SECURITY.md` — de security-audit als buitenstaander
 - `docs/STAND.md` — wat er nog moet, zonder drie andere bestanden te lezen
+
+---
