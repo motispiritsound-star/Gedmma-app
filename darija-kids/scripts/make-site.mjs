@@ -1268,6 +1268,7 @@ const readPage = (lang) => {
     geenSleutel: c.leesGeenSleutel, onbekend: c.leesOnbekend, voor: c.leesVoor,
     kies: c.leesKies, vorige: c.leesVorige, volgende: c.leesVolgende,
     terug: c.leesTerug, bewaar: c.leesBewaar, sba: c.boekKleinTitel, sleutels: c.boekGrootTitel,
+    naarPortaal: c.leesNaarPortaal,
     portaal: c.portaal.titel, speel: c.leesSpeel, pauze: c.leesPauze, stem: c.leesStem,
     stemTip: c.leesStemTip,
     nogNiet: c.leesNogNiet,
@@ -1398,6 +1399,27 @@ const readPage = (lang) => {
     tip.className = 'tip'
     tip.textContent = T.bewaar
     doel.append(tip)
+
+    /**
+     * En een weg naar het portaal, ook als alles goed gaat.
+     *
+     * Boven deze lijst staat "log in op het portaal, of open de link uit je
+     * bestelmail" — en dan stond er nergens hoe je daar komt. De link zat
+     * alleen in de voettekst, onder "Jouw boeken", en niemand die een
+     * inlogpagina zoekt kijkt daar.
+     *
+     * Bij een fout verscheen die knop al; juist op het scherm waar het goed
+     * gaat ontbrak hij. Dat is precies het scherm waar iemand hem nodig heeft
+     * die deze bladzijde later terug wil vinden zonder de mail.
+     */
+    const naarPortaal = document.createElement('a')
+    naarPortaal.className = 'mailbtn'
+    naarPortaal.href = PORTAAL
+    naarPortaal.textContent = T.naarPortaal
+    const omheen = document.createElement('p')
+    omheen.className = 'tip'
+    omheen.append(naarPortaal)
+    doel.append(omheen)
 
     // Het portaal wijst per reeks hierheen, met de naam achter het hekje. Wie
     // twee reeksen heeft, komt dan bij de goede uit in plaats van bovenaan.
