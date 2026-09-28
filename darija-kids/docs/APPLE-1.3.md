@@ -62,41 +62,21 @@ Elk antwoord hieronder is uit de code gehaald, niet uit het hoofd.
 > **4. Is the app collecting any user or device data for purposes beyond
 > third-party analytics or third-party advertising?**
 >
-> The app collects no data at all from a child, and nothing whatsoever is
-> collected unless a parent actively chooses it.
+> Nothing is collected from the child, and nothing is collected at all unless a
+> parent chooses it behind a parental gate.
 >
-> *Stays on the device and is never transmitted:* learning progress, XP, streak,
-> the words practised, app settings, and the display name and avatar if the
-> child enters one. Microphone recordings from the "say it after me" exercise
-> are held in memory so the child can hear themselves back, and are never
-> uploaded, stored on our servers or analysed. The app performs no speech
-> recognition of any kind and contains no speech-recognition code.
+> If a parent opts in, we collect their e-mail address and which of the two
+> optional mailings they chose, used solely to send those mailings and to record
+> consent under the GDPR. If they chose the weekly progress note, the app also
+> sends five aggregate integers once a day under a random identifier: units
+> completed, lessons completed, words seen, best streak and total XP. There are
+> no other planned uses.
 >
-> *Transmitted, only after a parent passes a parental gate and opts in:*
+> The microphone is used only for a "say it after me" exercise; the recording
+> stays on the device and is never uploaded or analysed.
 >
-> - The parent's e-mail address, their interface language, and which of the two
->   optional mailings they chose. This is used only to send those mailings and
->   to record consent under the GDPR. The address is confirmed by e-mail before
->   anything is sent.
-> - If — and only if — the parent asked for the weekly progress note: five
->   integers, sent at most once per day under a random identifier. They are the
->   number of units completed, lessons completed, words seen, the best streak,
->   and total XP. No words, no answers, no timestamps of individual sessions,
->   and nothing that describes how a particular child performed on a particular
->   day.
->
-> *Never collected, anywhere in the app:* no advertising identifier, no IDFA, no
-> device identifier, no IP address stored in readable form (our server keeps
-> only a salted hash, to rate-limit e-mail sending), no location, no contacts,
-> no photos, no health data, and no biometric data.
->
-> A child using the app without a parent ever signing up transmits nothing at
-> all.
->
-> Spending money and entering an e-mail address are both placed behind a
-> parental gate (an arithmetic question), as are the three links that leave the
-> app. The privacy policy inside the app, under "For parents", states the same
-> in all six interface languages.
+> The app collects no advertising identifier, no device identifier and no
+> location data.
 >
 > We are happy to provide any further detail you need.
 
