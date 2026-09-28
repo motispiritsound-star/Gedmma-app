@@ -299,6 +299,44 @@ Zeg welke, dan voer ik hem uit.
 
 ---
 
+## H · Edge-to-edge op Android — zodra de beoordelingen klaar zijn
+
+Google meldt bij release 2 (1.1) twee **aanbevelingen**, geen blokkades. De
+tweede (R8-optimalisatie) kan wachten. De eerste is echt:
+
+> Edge-to-edge may not display for all users
+
+`android/variables.gradle` zet `targetSdkVersion = 36`, en vanaf API 35 dwingt
+Android edge-to-edge af: het stelsel tekent achter de statusbalk en de app moet
+zelf ruimte vrijhouden. De app doet dat alleen onderaan —
+`src/App.tsx:148` heeft `paddingBottom: env(safe-area-inset-bottom)` — en
+nergens bovenaan. De kopbalk staat op `sticky top-0` (`src/ui/TopBar.tsx:29`),
+dus op een toestel met Android 15 of 16 schuift hij onder de klok en het
+batterijpictogram.
+
+`viewport-fit=cover` staat al in `index.html`, dus `env()` geeft daar de echte
+waarde terug. De wijziging is één regel op die kopbalk:
+
+    style={{ paddingTop: 'env(safe-area-inset-top)' }}
+
+**Waarom dit niet alvast gedaan is.** Op iOS staat `contentInset: 'always'` in
+`capacitor.config.ts`. Of `env(safe-area-inset-top)` daar nul teruggeeft, of
+de inkeping er een tweede keer bovenop zet, is niet vast te stellen zonder een
+echt toestel — en een dubbele marge bovenaan is precies zo zichtbaar als het
+probleem dat je oplost. Bovendien ligt deze build nu bij allebei de winkels.
+
+**Hoe je het natest, als de beoordelingen klaar zijn.** Zet de regel erin,
+bouw, en kijk op twee toestellen naar de bovenkant van het leerpad:
+
+- Een Android met 15 of 16: staat de rij met hartjes en XP nu onder de klok,
+  of eronder?
+- Een iPhone met inkeping: is de ruimte boven de kopbalk gelijk gebleven?
+
+Is het op iOS dubbel, dan hoort de regel achter een platformcontrole in plaats
+van er kaal in.
+
+---
+
 ## G · Na de lancering
 
 Geen haast, maar wel opschrijven.
