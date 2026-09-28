@@ -373,9 +373,16 @@ hier toe doet.
 `/blad` in een lus zet met een geldige sleutel, haalt R2-verkeer op jouw
 rekening.
 
-**Concrete oplossing.** Niet vóór de lancering. Wel: `npm run logboek`
-uitbreiden met de tien hoogste rijen uit `opening`, zodat een sleutel die
-rondgaat opvalt voordat de rekening het vertelt.
+**Concrete oplossing.** Geen — dit staat er al, en ik had beter moeten kijken
+voordat ik het opschreef. `npm run bestellingen` toont per bestelling vanaf
+hoeveel verschillende plekken er in dertig dagen is gelezen, en zet een
+markering bij zeven of meer: *"← kijk hier"*. `npm run intrekken` is de andere
+helft.
+
+Nagelopen tegen een echte lokale database, en niet alleen gelezen: een
+bestelling met drie plekken blijft onopgemerkt, een met negen krijgt de
+markering, het intrekken vraagt eerst wie je raakt en om een reden, en daarna
+klopt de telling weer.
 
 **Verwachte impact.** Vooral rust: dit is nagelopen en het is in orde, en dat
 staat nu opgeschreven.

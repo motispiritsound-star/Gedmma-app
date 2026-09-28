@@ -39,9 +39,19 @@ function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) =
       aria-checked={on}
       aria-label={label}
       onClick={() => { sfx.toggle(!on); onChange(!on) }}
-      className={`h-8 w-14 rounded-full border-2 p-0.5 transition ${on ? 'border-mint-600 bg-mint-500' : 'border-[var(--line)] bg-[var(--surface-sunken)]'}`}
+      // De knop is 44 hoog, het baantje erin blijft 32.
+      //
+      // Zo hoort een schakelaar eruit te zien én aan te voelen: iOS doet het
+      // net zo, want een baantje van 44 pixels is log en een raakvlak van 32 is
+      // te klein. Er staan er acht onder elkaar in deze lijst; mis je er een,
+      // dan zet je de verkeerde instelling om en merk je dat pas later.
+      className="flex h-11 w-14 shrink-0 items-center"
     >
-      <span className={`block h-6 w-6 rounded-full bg-white shadow transition ${on ? 'translate-x-6' : ''}`} />
+      <span
+        className={`block h-8 w-14 rounded-full border-2 p-0.5 transition ${on ? 'border-mint-600 bg-mint-500' : 'border-[var(--line)] bg-[var(--surface-sunken)]'}`}
+      >
+        <span className={`block h-6 w-6 rounded-full bg-white shadow transition ${on ? 'translate-x-6' : ''}`} />
+      </span>
     </button>
   )
 }
@@ -121,7 +131,11 @@ function Choice<T extends string | number>({ value, options, onChange }: {
         <button
           key={String(o.value)}
           onClick={() => { sfx.nav(); onChange(o.value) }}
-          className={`rounded-xl px-3 py-1.5 text-sm font-bold ${value === o.value ? 'bg-[var(--surface-raised)] shadow' : 'text-[var(--ink-soft)]'}`}
+          // `min-h-11` is 44 pixels: de ondergrens die Apple en Google allebei
+          // aanhouden voor iets wat je met een vinger raakt. Deze knoppen waren
+          // 32 hoog — het zijn er vier naast elkaar in een smalle rij, en dan
+          // tik je de buurman aan in plaats van degene die je bedoelde.
+          className={`min-h-11 rounded-xl px-3 py-1.5 text-sm font-bold ${value === o.value ? 'bg-[var(--surface-raised)] shadow' : 'text-[var(--ink-soft)]'}`}
         >
           {o.label}
         </button>
@@ -170,7 +184,9 @@ export function SettingsPage() {
               <button
                 key={l.code}
                 onClick={() => { sfx.nav(); setSetting('lang', l.code as Lang) }}
-                className={`rounded-xl border-2 px-3 py-2 text-sm font-bold ${s.lang === l.code ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
+                // Drie pixels tekort: deze rij was 41 hoog, en 44 is waar een
+                // vinger op mag rekenen.
+                className={`min-h-11 rounded-xl border-2 px-3 py-2 text-sm font-bold ${s.lang === l.code ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
               >
                 <span className="font-display font-extrabold" aria-hidden="true">{l.badge}</span> {l.name}
               </button>

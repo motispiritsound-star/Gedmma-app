@@ -28,7 +28,20 @@ export function TopBar() {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--surface)]/90 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-2.5">
-        <Link to="/" onClick={() => sfx.nav()} className="flex shrink-0 items-center gap-2 font-display text-xl font-extrabold">
+        {/*
+          De `py-1.5 -my-1.5` is geen opmaak maar een raakvlak.
+
+          Dit is de weg terug naar het begin, en het was 32 pixels hoog: de
+          tegel met de د, en verder niets om aan te tikken. Apple en Google
+          houden allebei 44 aan als ondergrens voor een vinger, en dit is een
+          app voor kinderen van vier — die mikken slechter dan de volwassene
+          die het ontwerpt en op een muis test.
+
+          De opvulling maakt het raakvlak 44 hoog; de negatieve marge trekt die
+          er weer af, zodat de balk zelf even hoog blijft. Je ziet dus niets
+          veranderen en je raakt hem wel.
+        */}
+        <Link to="/" onClick={() => sfx.nav()} className="flex shrink-0 items-center gap-2 py-1.5 -my-1.5 font-display text-xl font-extrabold">
           <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-saffron-400 to-terra-500 text-night-950">د</span>
           <span className="hidden sm:inline">Darijaforkids</span>
           <Vlag size={26} className="rounded shadow-sm" />

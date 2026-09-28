@@ -295,7 +295,6 @@ Geen haast, maar wel opschrijven.
 | G2 | `noUncheckedIndexedAccess` aanzetten in de app | Geeft vermoedelijk tientallen meldingen — geen werk voor een lanceerweek |
 | G3 | De expo-keten bijwerken | 35 npm-waarschuwingen, alle in bouwgereedschap; `--omit=dev` zegt nul. `npm audit fix --force` wil expo@57 installeren, een brekende wijziging |
 | G4 | Elk van de drie maillinks een eigen token, met houdbaarheid | De prefetch-schade is weg; dit is verdediging in de diepte en kost een schemawijziging |
-| G5 | `npm run logboek` uitbreiden met de tien hoogste rijen uit `opening` | Dan zie je een sleutel die rondgaat vóórdat de R2-rekening het vertelt |
 
 ---
 
