@@ -122,6 +122,10 @@ nakijkt. Ze staan hier omdat ze pas opvallen als het te laat is.
 | `npm run schema` | het schema op de database (mag altijd opnieuw) |
 | `npm run koopgeheim` | nieuw geheim, en het hele Gumroad-adres op je klembord |
 | `npm run mailsleutel` | de sleutel van de mailpartner, nagekeken vóór hij wordt opgeslagen |
+
+Brevo nog niet ingericht? `docs/BREVO.md` loopt het in vijf stappen door —
+inclusief waarom dit niet vanuit Cloudflare kan, en welke drie DNS-regels er
+wél in het Cloudflare-dashboard horen.
 | `npm run bestellingen` | wie wat kocht, en of een sleutel rondgaat |
 | `npm run intrekken` | een sleutel intrekken, en met `-- --terug` weer teruggeven |
 | `npm run proefkoop` | een aankoop naspelen, om het portaal na te lopen |
