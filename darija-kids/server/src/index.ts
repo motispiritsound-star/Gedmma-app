@@ -267,6 +267,23 @@ async function bevestig(url: URL, env: Env, doen: boolean): Promise<Response> {
   const m = MAILS[taalVan(rij)]
   if (rij.status === 'bevestigd') return pagina(rij.taal, m.welkomKop, m.welkomBody, env.SITE, m.terug)
 
+  /*
+   * En wie zich heeft uitgeschreven, blijft uitgeschreven.
+   *
+   * Hier werd alleen op 'bevestigd' gekeken. Bij 'uitgeschreven' viel het
+   * erdoor: de status ging terug naar 'bevestigd' en er vertrok een
+   * welkomstmail. Dat is geen randgeval — de bevestiglink en de afmeldlink
+   * staan in dezelfde mail en dragen hetzelfde token. Wie zich afmeldt en
+   * later in die oude mail op de verkeerde knop tikt, stond er weer op, met
+   * "welkom" erbij.
+   *
+   * Opnieuw beginnen kan gewoon, via het formulier. Dat is één handeling meer
+   * en het verschil is dat de toestemming dan van hemzelf komt.
+   */
+  if (rij.status === 'uitgeschreven') {
+    return pagina(rij.taal, m.afgemeldKop, m.afgemeldBody, env.SITE, m.terug)
+  }
+
   // Een tik in de mail komt hier binnen als GET, en die laat alleen de vraag
   // zien. Toestemming die een linkscanner kan geven, is geen toestemming.
   if (!doen) {

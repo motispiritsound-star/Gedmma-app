@@ -269,7 +269,18 @@ function Memory({ onExit }: { onExit: () => void }) {
         <span>{tries} {t.common.beurten}</span>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 min-[360px]:grid-cols-3 gap-2.5">
+      {/* Drie kolommen, ook onder de 360 punten.
+          Hier stond `grid-cols-2 min-[360px]:grid-cols-3`, hetzelfde patroon
+          als bij de drie tegels op Review, Bonus en LessonPlayer. Daar is het
+          goed: twee brede tegels voorkomen dat een woord als VASTGEZET
+          middenin breekt. Hier liggen er twaalf, en dan werkt het averechts.
+          Gemeten met de echte app-CSS op een venster van 320 bij 568:
+            twee kolommen   tegel 139px, bord 884px, onderkant 484px onder de vouw
+            drie kolommen   tegel  89px, bord 387px, past met 13px over
+          Een memoryspel waarbij je moet scrollen om de kaarten te zien is geen
+          memoryspel: je kunt de posities niet onthouden als je ze niet samen
+          ziet. En 89 punten is nog altijd ruim boven een raakvlak van 44. */}
+      <div className="mt-6 grid grid-cols-3 gap-2.5">
         {tiles.map((tile) => {
           const w = word(tile.wordId)
           const shown = open.includes(tile.key) || found.includes(tile.wordId)
@@ -291,14 +302,25 @@ function Memory({ onExit }: { onExit: () => void }) {
                     {/* Without this the Arabic side is unreadable to a child
                         who is still learning the script, and the pair becomes
                         a coin toss instead of a word. */}
-                    <span className="text-[11px] font-extrabold text-zellige-600 dark:text-zellige-300">
+                    <span className="w-full min-w-0 break-words text-[11px] font-extrabold text-zellige-600 dark:text-zellige-300">
                       {w.tr}
                     </span>
                   </span>
                 ) : (
                   <span className="flex h-full flex-col items-center justify-center gap-0.5">
                     <span className="text-xl" aria-hidden="true">{w.emoji}</span>
-                    <span className="text-[11px] leading-tight font-bold">{meaningOf(w, lang)}</span>
+                    {/* Breken mag hier, want het vak is smal. Gemeten op 320
+                        punten met de echte app-CSS: zonder dit stak
+                        "Geschwisterkind" vijftien pixels buiten zijn tegel en
+                        "Kopfschmerzen" elf.
+                        `w-full min-w-0` is het stuk dat het werkelijk doet: in
+                        een `flex-col items-center` krijgt een kind de breedte
+                        van zijn inhoud, en dan is er geen regel om op te
+                        breken — `break-words` alleen veranderde niets, gemeten.
+                        Daarna `hyphens-auto` met de taal erbij waar de browser
+                        een woordenboek heeft, en `break-words` als vangnet waar
+                        niet. Dezelfde behandeling als het label van `Stat`. */}
+                    <span lang={lang} className="w-full min-w-0 hyphens-auto break-words text-[11px] leading-tight font-bold">{meaningOf(w, lang)}</span>
                   </span>
                 )
               ) : (

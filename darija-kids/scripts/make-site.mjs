@@ -1895,6 +1895,9 @@ await writeFile(path.join(OUT, '_headers'), `/fonts/*
 /icons/*
   Cache-Control: public, max-age=86400
 
+/shots/*
+  Cache-Control: public, max-age=86400
+
 /film/*
   Cache-Control: public, max-age=604800
 

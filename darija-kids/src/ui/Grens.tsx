@@ -174,8 +174,40 @@ type Staat = { fout: Error | null; antwoord: string; som: { tekst: string; waard
 export class Grens extends Component<{ children: ReactNode }, Staat> {
   override state: Staat = { fout: null, antwoord: '', som: maakSom() }
 
+  private rustig: ReturnType<typeof setTimeout> | null = null
+
   static getDerivedStateFromError(fout: Error): Partial<Staat> {
     return { fout }
+  }
+
+  /**
+   * De teller weer op nul als het een tijdje goed gaat.
+   *
+   * Zonder dit werd hij nooit teruggezet: alleen `wis` doet dat. Eén keer
+   * omvallen betekende dan dat élke fout in de rest van die sessie "het ging
+   * twee keer achter elkaar mis" te zien gaf, ook als het kind er een kwartier
+   * probleemloos mee had gespeeld. Dan staat er iets op het scherm dat niet
+   * waar is, met een uitweg eronder die de opgeslagen voortgang weggooit —
+   * precies de handeling die je niet op een verkeerde grond wilt aanbieden.
+   *
+   * "Achter elkaar" betekent: de herlading viel meteen weer om. Twintig
+   * seconden is ruim genoeg om dat te onderscheiden van het laden zelf, en
+   * kort genoeg om binnen het geduld van een ouder te vallen die net op
+   * "opnieuw proberen" heeft gedrukt.
+   */
+  override componentDidMount(): void {
+    if (this.state.fout) return
+    this.rustig = setTimeout(() => {
+      try {
+        sessionStorage.removeItem(TELLER)
+      } catch {
+        // Geen sessieopslag: dan is er ook niets om terug te zetten.
+      }
+    }, 20_000)
+  }
+
+  override componentWillUnmount(): void {
+    if (this.rustig) clearTimeout(this.rustig)
   }
 
   override componentDidCatch(fout: Error, info: ErrorInfo): void {
@@ -183,6 +215,10 @@ export class Grens extends Component<{ children: ReactNode }, Staat> {
     // ook op het scherm, onder "voor de grote mensen", zodat een ouder kan
     // doorgeven wat er stond.
     console.error('de app viel om', fout, info.componentStack)
+    // Eerst de klok stoppen. Valt de app om binnen die twintig seconden, dan
+    // zou hij de teller wissen die we hier net ophogen — en dan telt "twee keer
+    // achter elkaar" juist nooit.
+    if (this.rustig) { clearTimeout(this.rustig); this.rustig = null }
     try {
       sessionStorage.setItem(TELLER, String(Number(lees(TELLER, 'session') ?? '0') + 1))
     } catch {

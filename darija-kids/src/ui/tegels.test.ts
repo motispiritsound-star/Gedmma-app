@@ -24,17 +24,37 @@ import { describe, expect, it } from 'vitest'
 
 const bron = (pad: string) => readFileSync(new URL(pad, import.meta.url), 'utf8')
 
-/** Elke bladzijde die een rij tegels naast elkaar zet. */
-const RIJEN = [
+/**
+ * Waar het om gaat is het label, niet het aantal kolommen.
+ *
+ * Deze test eiste eerst van élke `grid-cols-3` dat hij onder de 360 punten
+ * terugviel op twee. Dat klopt voor de drie stattegels op Review, Bonus en
+ * LessonPlayer: daar staat één woord per tegel, en op 320 punten paste geen
+ * enkele maat meer.
+ *
+ * Voor het memoryspel is het precies verkeerd. Daar liggen twaalf vierkante
+ * tegels, en twee kolommen maken er zes rijen van. Gemeten met de echte
+ * app-CSS op een venster van 320 bij 568:
+ *
+ *   twee kolommen   tegel 139px, bord 884px, onderkant 484px onder de vouw
+ *   drie kolommen   tegel  89px, bord 387px, past met ruimte over
+ *
+ * Een memoryspel waarbij je moet scrollen om de kaarten te zien is geen
+ * memoryspel: je kunt de posities niet onthouden als je ze niet samen ziet.
+ *
+ * De eis eronder blijft wel staan, want die was terecht: een lang woord mag
+ * niet buiten zijn tegel steken. Alleen is twee kolommen daar niet het middel
+ * voor — breken wel.
+ */
+const STATRIJEN = [
   '../pages/Review.tsx',
   '../pages/Bonus.tsx',
-  '../pages/Games.tsx',
   '../pages/LessonPlayer.tsx',
 ]
 
 describe('de tegels', () => {
   it('vallen op een smalle telefoon terug op twee kolommen', () => {
-    for (const pad of RIJEN) {
+    for (const pad of STATRIJEN) {
       const tekst = bron(pad)
       const drie = [...tekst.matchAll(/grid-cols-3/g)]
       expect(drie.length, `${pad} heeft geen rij van drie meer?`).toBeGreaterThan(0)
@@ -48,6 +68,28 @@ describe('de tegels', () => {
         const smal = /min-\[360px\]:grid-cols-3/.test(regel)
         expect(responsief || smal, `${pad}: ${regel} past niet op een smal scherm`).toBe(true)
       }
+    }
+  })
+
+  it('laten het memoryspel op één scherm staan, en laten het woord breken', () => {
+    const spel = bron('../pages/Games.tsx')
+    // Twaalf tegels in twee kolommen worden zes rijen: 884 punten hoog, en dan
+    // staat meer dan de helft onder de vouw.
+    expect(spel, 'het memorybord valt terug op twee kolommen')
+      .not.toMatch(/grid-cols-2 min-\[360px\]:grid-cols-3 gap-2\.5/)
+
+    // En dan moet het label wel binnen de tegel blijven. `w-full min-w-0` is
+    // het stuk dat het werkelijk doet: in een `flex-col items-center` krijgt
+    // een kind de breedte van zijn inhoud, en dan is er geen regel om op te
+    // breken. Gemeten: met alleen `break-words` stak Geschwisterkind nog
+    // steeds vijftien punten buiten zijn tegel, met `w-full min-w-0` erbij
+    // niets meer, in geen enkele richting.
+    const labels = spel.match(/className="[^"]*text-\[11px\][^"]*"/g) ?? []
+    expect(labels.length, 'de labels in de tegels zijn niet gevonden').toBeGreaterThan(1)
+    for (const l of labels) {
+      expect(l, `dit label kan buiten zijn tegel steken: ${l}`).toContain('w-full')
+      expect(l).toContain('min-w-0')
+      expect(l).toContain('break-words')
     }
   })
 
