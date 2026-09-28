@@ -151,7 +151,7 @@ describe('vergeten worden', () => {
 
   it('zet het moment, en haalt het vinkje en de ip-hash weg', async () => {
     const { db, lid } = nepLid()
-    await wisLid(db, 'lid-1')
+    await wisLid(db, { id: 'lid-1', email: 'ouder@example.com' })
     expect(lid.gewist_op, 'gewist_op is niet gezet').toEqual(expect.any(Number))
     expect(lid.nieuws, 'het nieuwsvinkje hoort uit').toBe(0)
     expect(lid.ip_hash, 'de ip-hash hoort weg').toBeNull()
@@ -159,7 +159,7 @@ describe('vergeten worden', () => {
 
   it('logt uit op álle apparaten, en alleen bij deze persoon', async () => {
     const { db, sessies } = nepLid()
-    await wisLid(db, 'lid-1')
+    await wisLid(db, { id: 'lid-1', email: 'ouder@example.com' })
     // Wie vergeten wil worden, hoort ook op zijn tweede toestel uit te zijn.
     expect(sessies.filter((s) => s.lid_id === 'lid-1')).toHaveLength(0)
     expect(sessies.filter((s) => s.lid_id === 'lid-2'), 'de ander blijft ingelogd').toHaveLength(1)
@@ -176,7 +176,7 @@ describe('vergeten worden', () => {
         return api
       },
     } as unknown as D1Database
-    await wisLid(db, 'lid-1')
+    await wisLid(db, { id: 'lid-1', email: 'ouder@example.com' })
     expect(gezien.join(' '), 'wisLid komt aan de bestellingen').not.toMatch(/bestelling/i)
   })
 })

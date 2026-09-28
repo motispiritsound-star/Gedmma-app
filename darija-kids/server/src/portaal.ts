@@ -151,12 +151,23 @@ export async function schrijfIn(
   if (bestaand) {
     // Een bestaand lid dat opnieuw inschrijft mag de nieuwsbrief aanzetten,
     // maar een eerder gegeven ja mag er niet stilletjes vanaf vallen.
+    //
+    // En `gewist_op` blijft staan. Hier stond `gewist_op = NULL`, en dat maakte
+    // het recht op vergetelheid ongedaan te maken door een willekeurige
+    // vreemde: typ het adres van een gewist persoon in dit formulier en zijn
+    // rij leefde weer op. Met het nieuwsvinkje erbij stond hij zelfs weer op de
+    // lijst van `nieuwsbrieflijst()`, want `wisLid` raakt `laatste_bezoek` niet
+    // aan en die geldt daar als bewijs.
+    //
+    // Een formulier invullen is geen bewijs dat je die persoon bent. Wie
+    // gewist is blijft gewist; zijn boeken blijven bereikbaar met de sleutel
+    // uit de koopmail, en dat staat ook zo in de tekst die hij te zien kreeg.
     await db
-      .prepare(`UPDATE lid SET taal = ?, nieuws = MAX(nieuws, ?), nieuws_op = CASE WHEN ? = 1 AND nieuws_op IS NULL THEN ? ELSE nieuws_op END,
-                gewist_op = NULL WHERE id = ?`)
+      .prepare(`UPDATE lid SET taal = ?, nieuws = MAX(nieuws, ?), nieuws_op = CASE WHEN ? = 1 AND nieuws_op IS NULL THEN ? ELSE nieuws_op END
+                WHERE id = ?`)
       .bind(gegevens.taal, gegevens.nieuws ? 1 : 0, gegevens.nieuws ? 1 : 0, t, bestaand.id)
       .run()
-    return { ...bestaand, taal: gegevens.taal, nieuws: bestaand.nieuws || (gegevens.nieuws ? 1 : 0), gewist_op: null }
+    return { ...bestaand, taal: gegevens.taal, nieuws: bestaand.nieuws || (gegevens.nieuws ? 1 : 0) }
   }
   const id = bytes(8)
   await db
@@ -286,12 +297,34 @@ export async function wisselIn(db: D1Database, token: string): Promise<{ lid: Li
  * De sessies gaan wel weg, allemaal: wie vergeten wil worden hoort ook op zijn
  * andere apparaten uitgelogd te zijn.
  */
-export async function wisLid(db: D1Database, lidId: string): Promise<void> {
-  await db.prepare('DELETE FROM sessie WHERE lid_id = ?').bind(lidId).run()
+export async function wisLid(db: D1Database, lid: { id: string; email: string }): Promise<void> {
+  await db.prepare('DELETE FROM sessie WHERE lid_id = ?').bind(lid.id).run()
   await db
     .prepare(`UPDATE lid SET gewist_op = ?, nieuws = 0, nieuws_op = NULL, ip_hash = NULL WHERE id = ?`)
-    .bind(nu(), lidId)
+    .bind(nu(), lid.id)
     .run()
+
+  /*
+   * En de aanmelding voor de nieuwsbrief van de site, als die er is.
+   *
+   * Dat zijn twee tafels: `lid` is het portaal, `aanmelding` is het formulier
+   * op de website en in de app. Wie met hetzelfde adres in allebei staat, kreeg
+   * na "je gegevens zijn gewist" gewoon de weekmail — die leest uit
+   * `aanmelding JOIN voortgang`, niet uit `lid`. Het scherm zei dus iets dat
+   * niet waar was, en dat is precies het soort belofte waar de AVG over gaat.
+   *
+   * Dit is hetzelfde wat de wislink in de mail doet: eerst de voortgang, dan de
+   * aanmelding, allebei weg. Geen `gewist_op` hier maar een echte verwijdering,
+   * omdat die tafel geen bestelling draagt en er dus niets bewaard hoeft te
+   * blijven.
+   */
+  const rij = await db
+    .prepare('SELECT id FROM aanmelding WHERE email = ?')
+    .bind(netjes(lid.email))
+    .first<{ id: string }>()
+  if (!rij) return
+  await db.prepare('DELETE FROM voortgang WHERE id = ?').bind(rij.id).run()
+  await db.prepare('DELETE FROM aanmelding WHERE id = ?').bind(rij.id).run()
 }
 
 export async function wieIsDit(db: D1Database, token: string | null): Promise<Lid | null> {

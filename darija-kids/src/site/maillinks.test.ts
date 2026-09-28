@@ -315,3 +315,90 @@ describe('de poort van het portaal', () => {
     expect(lichaam).toMatch(/if \(!\(body\.voorwaarden && body\.leeftijd\)\) return portaalJson\(env, \{ fout: 'vinkjes' \}, 400\)/)
   })
 })
+
+/**
+ * Het recht om vergeten te worden, en de vier gaten die erin zaten.
+ *
+ * De wisknop is deze week gebouwd en gaat nu pas live, dus dit is het moment.
+ * Nagelopen tegen een draaiende worker met een koper die in álle drie de
+ * tafels stond — een bestelling, een portaalaccount en een nieuwsbrief:
+ *
+ *   wissen zonder sessie   401, er verandert niets
+ *   wissen met sessie      gewist_op gezet, nieuws 0, ip_hash leeg,
+ *                          aanmelding en voortgang weg, alle sessies weg,
+ *                          de bestelling onaangeroerd
+ *   daarna een vreemde     200 {goed:true}, gewist_op blijft, nul inloglinks,
+ *   met datzelfde adres    nul pogingen naar de postdienst
+ *   nieuwsbrieflijst       nul rijen
+ */
+describe('het wissen van een portaalaccount', () => {
+  const index = readFileSync(new URL('../../server/src/index.ts', import.meta.url), 'utf8')
+  const portaal = readFileSync(new URL('../../server/src/portaal.ts', import.meta.url), 'utf8')
+
+  /**
+   * Zonder het commentaar.
+   *
+   * Deze twee toetsen kijken of iets er níet staat, en dan is een toelichting
+   * die de oude fout beschrijft genoeg om ze te laten omvallen. Dat gebeurde
+   * hier ook meteen: de uitleg bij `schrijfIn` noemt `gewist_op = NULL` en die
+   * bij `wisLid` het woord bestelling, allebei juist om te zeggen dat het daar
+   * niet meer hoort.
+   */
+  const zonderUitleg = (tekst: string) =>
+    tekst.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/^\s*\/\/.*$/gm, '')
+
+  it('is niet terug te draaien door een vreemde die het adres intypt', () => {
+    // `schrijfIn` zette `gewist_op = NULL` bij elk bestaand lid. Typ het adres
+    // van een gewist persoon in het formulier en zijn rij leefde weer op — met
+    // het nieuwsvinkje erbij zelfs terug op de lijst, want `wisLid` raakt
+    // `laatste_bezoek` niet aan en die geldt daar als bewijs.
+    const start = portaal.indexOf('export async function schrijfIn(')
+    const lichaam = portaal.slice(start, portaal.indexOf('\nexport ', start + 10))
+    expect(zonderUitleg(lichaam), 'schrijfIn zet gewist_op weer op NULL').not.toMatch(/gewist_op\s*=\s*NULL/i)
+  })
+
+  it('stuurt geen post meer naar wie gewist wil worden', () => {
+    const start = index.indexOf('async function portaalAanmelden(')
+    const lichaam = index.slice(start, index.indexOf('\nasync function ', start + 10))
+    const toets = lichaam.search(/bestaand\?\.gewist_op/)
+    expect(toets, 'er wordt niet op gewist_op gekeken').toBeGreaterThan(-1)
+    // En vóór de mailstap, anders is het geen controle maar een opmerking.
+    expect(toets, 'de controle staat ná het versturen').toBeLessThan(lichaam.indexOf('verstuur('))
+    // Met hetzelfde antwoord als anders.
+    expect(lichaam).toMatch(/if \(bestaand\?\.gewist_op\) return portaalJson\(env, \{ goed: true \}\)/)
+  })
+
+  it('neemt ook de aanmelding voor de nieuwsbrief mee', () => {
+    // Twee tafels: `lid` is het portaal, `aanmelding` de nieuwsbrief van de
+    // site. De weekmail leest uit de tweede, dus wie in allebei stond kreeg na
+    // "je gegevens zijn gewist" gewoon post.
+    const start = portaal.indexOf('export async function wisLid(')
+    const lichaam = portaal.slice(start, portaal.indexOf('\nexport ', start + 10))
+    expect(lichaam).toContain('DELETE FROM voortgang WHERE id = ?')
+    expect(lichaam).toContain('DELETE FROM aanmelding WHERE id = ?')
+    expect(lichaam).toContain('SELECT id FROM aanmelding WHERE email = ?')
+    // En nog steeds niet aan de bestellingen. Die horen bij een koop, niet bij
+    // een account, en de koper houdt zijn boeken.
+    expect(zonderUitleg(lichaam), 'wisLid komt aan de bestellingen').not.toMatch(/bestelling/i)
+  })
+
+  it('zegt niet "gewist" tegen iemand die niet binnen is', () => {
+    // Hier stond `{ goed: true }` ook zonder sessie, met de reden die bij de
+    // maillinks hoort: een afwijkend antwoord verklapt welke adressen bestaan.
+    // Maar dit gaat op een koekje, dus een 401 verklapt niets — en zonder die
+    // 401 las je "je gegevens zijn gewist" terwijl je sessie net verlopen was.
+    const start = index.indexOf('async function portaalWissen(')
+    const lichaam = index.slice(start, index.indexOf('\nasync function ', start + 10))
+    expect(lichaam).toMatch(/if \(!lid\) return portaalJson\(env, \{ fout: 'niet-binnen' \}, 401\)/)
+  })
+
+  it('laat de knop op de site pas juichen als het antwoord goed is', () => {
+    const site = readFileSync(new URL('../../scripts/make-site.mjs', import.meta.url), 'utf8')
+    const start = site.indexOf("el('wis').addEventListener")
+    expect(start, 'de wisknop is weg').toBeGreaterThan(-1)
+    const lichaam = site.slice(start, site.indexOf('})', site.indexOf('location.reload()', start)))
+    // `if (!antwoord)` alleen is waar zodra er geldige JSON terugkomt — ook bij
+    // een 401. Dan las je "gewist" terwijl er niets gebeurd was.
+    expect(lichaam).toContain('!antwoord || !antwoord.goed')
+  })
+})

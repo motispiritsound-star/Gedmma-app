@@ -19,7 +19,7 @@
  */
 import { bestellingVan, hashVan, maakSleutel, plekken, tekAan } from './lezer'
 import {
-  bezit, koekje, logUit, maakLink, magMailen, magOpnieuw, netjes as netjesEmail, ruimOp, schrijfIn, sessieUit, telMail, vergeetLink, welkAdres, wieIsDit, wisLid, wisselIn, zetNieuws,
+  bezit, koekje, lidVanEmail, logUit, maakLink, magMailen, magOpnieuw, netjes as netjesEmail, ruimOp, schrijfIn, sessieUit, telMail, vergeetLink, welkAdres, wieIsDit, wisLid, wisselIn, zetNieuws,
 } from './portaal'
 import { geheimKlopt, koopbericht, veldenVan } from './koopbericht'
 import { PostOnzeker, verstuur, type Afzender } from './mail'
@@ -831,6 +831,20 @@ async function portaalAanmelden(verzoek: Request, env: Env): Promise<Response> {
   const gekocht = await bezit(env.DB, email)
   if (!gekocht.reeksen.length) return portaalJson(env, { goed: true })
 
+  /*
+   * En niets naar wie gewist wil worden.
+   *
+   * `wisselIn` weigert een lid met `gewist_op` al, dus zo iemand kwam toch niet
+   * binnen — maar hij kreeg wel de mail. En die mail kon door een ander worden
+   * uitgelokt: typ het adres van een gewist persoon in dit formulier en er gaat
+   * post naar iemand die gevraagd heeft vergeten te worden.
+   *
+   * Zijn boeken blijven van hem: de sleutel uit de koopmail werkt los van het
+   * portaal, en dat staat ook zo in de tekst die hij bij het wissen las.
+   */
+  const bestaand = await lidVanEmail(env.DB, email)
+  if (bestaand?.gewist_op) return portaalJson(env, { goed: true })
+
   const taal = isTaal(body.taal ?? '') ? (body.taal as Taal) : 'nl'
   const lid = await schrijfIn(env.DB, {
     email, taal, nieuws: Boolean(body.nieuws), tekstVersie: TEKST_VERSIE,
@@ -986,9 +1000,22 @@ async function portaalMij(verzoek: Request, env: Env): Promise<Response> {
  */
 async function portaalWissen(verzoek: Request, env: Env): Promise<Response> {
   const lid = await wieIsDit(env.DB, sessieUit(verzoek.headers.get('cookie')))
-  // Geen sessie? Dan valt er hier niets te wissen. Hetzelfde antwoord als bij
-  // een geslaagde wis: wie niet binnen is, hoort hier niets uit te leren.
-  if (lid) await wisLid(env.DB, lid.id)
+  /*
+   * Geen sessie is hier een fout, geen stilte.
+   *
+   * Hier stond `{ goed: true }` ook zonder sessie, met als reden dat een
+   * afwijkend antwoord niet mag verklappen welke adressen bestaan. Die reden
+   * klopt bij de drie links uit de mail — daar voer je een adres in — maar niet
+   * hier: dit gaat op een koekje. Wie er geen heeft leert uit een 401 niets
+   * over wie er wél een account heeft.
+   *
+   * En wat het kostte was echt. Verloopt je sessie terwijl het scherm open
+   * staat, dan drukte je op "wissen", kreeg je "je gegevens zijn gewist", en
+   * stond alles er nog. Bij deze knop is dat het ergst denkbare antwoord: je
+   * denkt dat je weg bent en je bent het niet.
+   */
+  if (!lid) return portaalJson(env, { fout: 'niet-binnen' }, 401)
+  await wisLid(env.DB, lid)
   return portaalJson(env, { goed: true }, 200, {
     'set-cookie': koekje('', env.SITE ?? 'https://darijaforkids.eu', 0),
   })

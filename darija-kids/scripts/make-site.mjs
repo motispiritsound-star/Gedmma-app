@@ -1212,7 +1212,13 @@ const portaalPage = (lang) => {
     // zeldzame handeling ingewikkelder maken dan hij is.
     if (!confirm(T.wisZeker)) return
     const antwoord = await haal('/portaal/wissen', { method: 'POST' }).catch(() => null)
-    if (!antwoord) { zeg(T.foutAlgemeen); return }
+    // Op \`goed\` kijken en niet alleen of er iets terugkwam. Hier stond
+    // \`if (!antwoord)\`, en dat is waar zodra de worker geldige JSON stuurt —
+    // ook een 401 \`niet-binnen\` of een andere fout. Dan las je "je gegevens
+    // zijn gewist" terwijl er niets gebeurd was. Bij deze knop is dat het
+    // ergst denkbare antwoord. De aanmeldknop dertig regels hoger deed het
+    // altijd al goed met \`if (!uit.goed)\`.
+    if (!antwoord || !antwoord.goed) { zeg(T.foutAlgemeen); return }
     alert(T.wisKlaar)
     location.reload()
   })
