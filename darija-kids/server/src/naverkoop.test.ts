@@ -22,14 +22,19 @@ describe('na de verkoop', () => {
     ])
     // Dit is de hele reden dat dit bestaat.
     expect(mail).toHaveBeenCalledOnce()
-    expect(mislukt).toEqual(['lid'])
+    expect(mislukt.map((m) => m.naam)).toEqual(['lid'])
+    // De reden gaat mee, anders zegt "viel om" niets.
+    expect(mislukt[0]!.waarom).toContain('database weg')
   })
 
   it('gooit nooit, wat er ook misgaat', async () => {
     await expect(naDeVerkoop([
       { naam: 'lid', doe: async () => { throw new Error('een') } },
       { naam: 'mail', doe: async () => { throw new Error('twee') } },
-    ])).resolves.toEqual(['lid', 'mail'])
+    ])).resolves.toEqual([
+      { naam: 'lid', waarom: 'een' },
+      { naam: 'mail', waarom: 'twee' },
+    ])
   })
 
   it('zwijgt als alles lukt', async () => {

@@ -485,14 +485,24 @@ export const koopStap = (o: { terugbetaald: boolean; bestelnummer?: string; alBe
  */
 export async function naDeVerkoop(
   stappen: { naam: string; doe: () => Promise<unknown> }[],
-): Promise<string[]> {
-  const mislukt: string[] = []
+): Promise<{ naam: string; waarom: string }[]> {
+  const mislukt: { naam: string; waarom: string }[] = []
   for (const stap of stappen) {
     try {
       await stap.doe()
     } catch (fout) {
-      mislukt.push(stap.naam)
-      console.error('na de verkoop', stap.naam, fout instanceof Error ? fout.message : fout)
+      /**
+       * De reden gaat mee terug, niet alleen de naam.
+       *
+       * "viel om: mail" zegt dát er iets misging en niet wát. Dat kostte een
+       * avond met een tweede venster open om in het logboek van Cloudflare
+       * mee te kijken, terwijl de melding er al was — hij werd alleen
+       * weggegooid. Wie deze kant op mag praten heeft het gedeelde geheim,
+       * dus er staat niets in wat hij niet al mocht weten.
+       */
+      const waarom = fout instanceof Error ? fout.message : String(fout)
+      mislukt.push({ naam: stap.naam, waarom: waarom.slice(0, 300) })
+      console.error('na de verkoop', stap.naam, waarom)
     }
   }
   return mislukt

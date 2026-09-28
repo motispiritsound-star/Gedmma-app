@@ -113,6 +113,7 @@ Er wordt niets afgerekend.
   console.log('\nVersturen …\n')
 
   const nummers = []
+  const mislukteStappen = []
   for (const permalink of keuze.permalinks) {
     /* Elke melding een eigen bestelnummer, anders ziet de worker de tweede
        als een herhaling van de eerste en stuurt hij geen tweede sleutel. */
@@ -158,11 +159,27 @@ Er wordt niets afgerekend.
         `  ${tekst.slice(0, 300)}\n`)
     }
 
-    console.log(`  ${permalink} — gelukt${uit.mislukt?.length ? ` (viel om: ${uit.mislukt.join(', ')})` : ''}`)
+    console.log(`  ${permalink} — de bestelling staat`)
+    for (const m of uit.mislukt ?? []) {
+      /* De reden komt nu mee uit de worker. Zonder die regel is "viel om:
+         mail" een mededeling waar je niets mee kunt. */
+      console.log(`      ${m.naam} viel om: ${typeof m === 'string' ? m : m.waarom}`)
+    }
     nummers.push(bestelnummer)
+    mislukteStappen.push(...(uit.mislukt ?? []))
   }
 
-  console.log(`\nDe mail met de sleutel is onderweg naar ${email}.\n`)
+  const mailGingMis = mislukteStappen.some((m) => (typeof m === 'string' ? m : m.naam) === 'mail')
+  if (mailGingMis) {
+    console.log(`\nEr is géén mail verstuurd naar ${email}.`)
+    console.log('De regel hierboven zegt waarom. Twee veelvoorkomende:\n')
+    console.log('  401 of unauthorized  — MAIL_SLEUTEL ontbreekt of klopt niet')
+    console.log('  sender / not valid   — info@darijaforkids.eu is bij de mailpartner')
+    console.log('                         nog niet als afzender geverifieerd\n')
+    console.log('Welke geheimen er staan, zie je met:  npm run logboek\n')
+  } else {
+    console.log(`\nDe mail met de sleutel is onderweg naar ${email}.\n`)
+  }
   console.log('Wat een koper nu doet, en jij dus ook:\n')
   console.log('  1. De mail openen en op de knop drukken. Dat is de leeskamer.')
   console.log('  2. Diezelfde link openen op je telefoon en op een tablet.')
