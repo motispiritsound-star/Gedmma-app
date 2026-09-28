@@ -74,16 +74,27 @@ crons = ["0 7 * * 1"]
 # Een binding naar een bak die niet bestaat laat `wrangler deploy` omvallen,
 # en dan gaat er ook niets live dat wél werkt.
 #
-# Aanzetten doe je met één opdracht — die maakt de bak, haalt de hekjes
-# hieronder weg en rolt meteen uit:
+# De bak bestaat, dus de binding staat aan.
+#
+# Hij stond hier uitgezet met hekjes ervoor, en `npm run maak-bak` haalde die
+# weg — in dit bestand, dat in git zit. Daarmee had iedereen die die opdracht
+# ooit had gedraaid een openstaande wijziging die elke `git pull` tegenhield:
+#
+#   error: Your local changes to the following files would be overwritten
+#
+# Dat kostte vier ophaalrondes zonder dat iemand doorhad waarom er niets
+# veranderde. Een script dat een bestand uit git aanpast, maakt van elke
+# volgende samenvoeging een conflict. Dus staat de uitkomst nu gewoon hier.
+#
+# Bestaat de bak nog niet, dan valt `wrangler deploy` om. Maak hem dan eerst:
 #   npm run maak-bak
 #
 # En daarna, vanuit darija-kids, de boeken erin:
 #   npm run lezen -- --r2
-#
-# [[r2_buckets]]
-# binding = "BOEKEN"
-# bucket_name = "darijaforkids-boeken"
+
+[[r2_buckets]]
+binding = "BOEKEN"
+bucket_name = "darijaforkids-boeken"
 
 # Waar de lezer staat. De sleutel komt achter het hekje en gaat dus nooit
 # naar een server.

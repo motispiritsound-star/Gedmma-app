@@ -98,3 +98,25 @@ describe('de afzender van de mail', () => {
     expect(afzender).toBe(contact)
   })
 })
+
+/**
+ * De binding naar de boekenbak staat in het bestand, niet in een opdracht.
+ *
+ * `npm run maak-bak` haalde de hekjes voor deze drie regels weg — in
+ * `wrangler.toml`, een bestand dat in git zit. Daarmee had iedereen die die
+ * opdracht ooit had gedraaid een openstaande wijziging die elke `git pull`
+ * tegenhield. Vier ophaalrondes lang veranderde er niets op de machine waar
+ * het om ging, en de fout die we zochten was al gerepareerd.
+ *
+ * Staat de binding uit, dan zegt de lezer op de website "niet ingericht" en
+ * blijft de bibliotheek van een koper leeg — zonder dat ergens iets rood
+ * wordt. Vandaar deze test.
+ */
+describe('de boekenbak', () => {
+  it('staat aan in wrangler.toml, zonder hekjes ervoor', () => {
+    const toml = readFileSync('server/wrangler.toml', 'utf8')
+    expect(toml).toMatch(/^\[\[r2_buckets\]\]/m)
+    expect(toml).toMatch(/^binding = "BOEKEN"/m)
+    expect(toml).toMatch(/^bucket_name = "darijaforkids-boeken"/m)
+  })
+})

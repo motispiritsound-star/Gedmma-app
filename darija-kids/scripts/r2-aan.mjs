@@ -7,8 +7,17 @@
  * en als je hem vergeet zegt de lezer op de website "niet ingericht" zonder
  * dat ergens iets rood wordt.
  *
- * Dus hangt hij aan `npm run maak-bak`, meteen achter het aanmaken van de bak.
+ * Dus hing hij aan `npm run maak-bak`, meteen achter het aanmaken van de bak.
  * Twee keer draaien mag: dan verandert er niets.
+ *
+ * Sinds de bak bestaat staat de binding gewoon in `wrangler.toml`, en doet
+ * deze opdracht dus niets meer. Dat is met opzet: hij paste een bestand aan
+ * dat in git zit, en daarmee hield hij bij iedereen die hem ooit had gedraaid
+ * elke `git pull` tegen — "your local changes would be overwritten". Dat
+ * kostte vier ophaalrondes zonder dat iemand doorhad waarom er niets
+ * veranderde.
+ *
+ * Hij blijft staan voor `--uit`, en voor wie opnieuw begint met een lege bak.
  *
  * Draaien met:
  *   node scripts/r2-aan.mjs [--uit]
