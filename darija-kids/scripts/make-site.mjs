@@ -280,6 +280,24 @@ const layout = ({ lang, page, title, description, body, ogImage = '/og.png', gee
   <link rel="alternate" hreflang="x-default" href="${SITE_URL}${PATHS.en[page === 'home' ? 'home' : page]}">
   <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <!--
+    De twee letters die boven de vouw staan, meteen ophalen.
+
+    Ze stonden alleen in een @font-face in de stylesheet, dus de browser
+    ontdekte ze pas nadat hij die had gelezen: eerst de pagina opgehaald, dan
+    de css, dán pas de letter. Met font-display: swap betekent dat renderen
+    in een systeemletter en daarna omwisselen — en Baloo 2 is breder en hoger
+    dan wat er standaard staat, dus bij die wissel springt de kop van formaat
+    en schuift alles eronder mee. Gemeten: 0,073 tot 0,113 CLS, en boven de
+    0,1 rekent Google het een pagina aan.
+
+    Samen 37 kB, en ze zijn er nu vóór de eerste tekening in plaats van erna.
+    De Arabische letters staan hier met opzet niet bij: die hebben een
+    unicode-range en worden alleen gehaald als er Arabisch op de bladzijde
+    staat. Voorladen zou 103 kB kosten aan iedereen die dat niet ziet.
+  -->
+  <link rel="preload" href="/fonts/baloo2-800.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/baloo2-600.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/site.css">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Darijaforkids">
@@ -1798,6 +1816,55 @@ await writeFile(path.join(OUT, 'robots.txt'), `User-agent: *
 Allow: /
 
 Sitemap: ${SITE_URL}/sitemap.xml
+`)
+
+/**
+ * Hoe lang de bezoeker dingen mag houden.
+ *
+ * Er stond geen enkele regel over, en dan valt Netlify terug op
+ * `max-age=0, must-revalidate` voor alles. Dat betekent: elke bladzijde die
+ * iemand opnieuw opent, vraagt voor élke plaat opnieuw aan de server of hij
+ * nog klopt. Het antwoord is meestal 304 en de plaat komt niet nog eens over
+ * de lijn, maar de heenreis is er wel — en op een telefoon buiten met een
+ * slecht netwerk is juist die heenreis het dure deel. De platen van de
+ * sleutelreeks zijn 300 tot 400 kB per stuk.
+ *
+ * De termijnen hieronder zijn met opzet niet allemaal een jaar:
+ *
+ * - De letters veranderen nooit meer. Die mogen een jaar en `immutable`.
+ *   Wordt er ooit een andere letter gebruikt, dan hoort die een andere
+ *   bestandsnaam te krijgen — anders blijft een jaar lang de oude staan.
+ * - De platen van de boeken veranderen wél: `npm run winkel` maakt ze opnieuw
+ *   zodra er redactioneel iets wijzigt. Vandaar een dag. Dat is nog steeds
+ *   honderden keren beter dan elke keer opnieuw vragen, en een correctie is
+ *   binnen een dag overal binnen.
+ * - De films staan een week. Groot, en ze wijzigen bijna nooit.
+ * - De stylesheet heet `/site.css` zonder vingerafdruk in de naam, dus die
+ *   mag niet lang blijven hangen: een wijziging moet dezelfde dag aankomen.
+ *   Een uur, en daarna opnieuw vragen.
+ * - De bladzijden zelf staan er niet bij en houden dus het standaardgedrag:
+ *   elke keer navragen. Dat hoort ook, want daar staan de prijzen in.
+ */
+await writeFile(path.join(OUT, '_headers'), `/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/reeks/*
+  Cache-Control: public, max-age=86400
+
+/boeken/*
+  Cache-Control: public, max-age=86400
+
+/proefdeel/*
+  Cache-Control: public, max-age=86400
+
+/icons/*
+  Cache-Control: public, max-age=86400
+
+/film/*
+  Cache-Control: public, max-age=604800
+
+/site.css
+  Cache-Control: public, max-age=3600, must-revalidate
 `)
 
 if (missing.length) {
