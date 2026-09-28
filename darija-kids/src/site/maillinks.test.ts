@@ -240,3 +240,56 @@ describe('de inloglink naar het portaal', () => {
     expect(blok).not.toMatch(/vraag[A-Za-z]+: ''/)
   })
 })
+
+/**
+ * En wie er post krijgt van het portaal.
+ *
+ * Het lézen was al dicht: `blad()` toetst `mag.reeksen.includes(reeks)` op élke
+ * bladzijde, dus zonder bestelling is het overal een 403. Maar de inlogmail ging
+ * naar elk adres dat iemand in het formulier typte, met een knop "Naar mijn
+ * boeken" erin. Voor de ontvanger onbegrijpelijk, en voor een vreemde een
+ * manier om post te versturen onder onze naam.
+ *
+ * Nagelopen tegen een draaiende worker met één koper en één terugbetaalde koper
+ * in de database, met de post geblokkeerd door het netwerkbeleid hier:
+ *
+ *   koper@example.com     500 "ging-mis"  → kwam tot de postdienst
+ *   vreemde@example.com   200 {goed:true} → geen lid-rij, geen link, geen post
+ *   terug@example.com     200 {goed:true} → een terugbetaling sluit de deur
+ *   Koper@Example.COM     500 "ging-mis"  → netjes() vangt hoofdletters op
+ *
+ * Twee dingen moeten samen blijven kloppen, anders is het geen poort maar een
+ * vertraging: er mag geen post uit vóór de toets, en het antwoord mag niet
+ * verschillen — anders is dit formulier een manier om na te vragen wie hier
+ * gekocht heeft.
+ */
+describe('de poort van het portaal', () => {
+  const index = readFileSync(new URL('../../server/src/index.ts', import.meta.url), 'utf8')
+  const start = index.indexOf('async function portaalAanmelden(')
+  const lichaam = index.slice(start, index.indexOf('\nasync function ', start + 10))
+
+  it('kijkt naar de bestelling vóórdat er een link of een mail komt', () => {
+    const toets = lichaam.indexOf('bezit(env.DB, email)')
+    expect(toets, 'portaalAanmelden() kijkt niet meer naar een bestelling').toBeGreaterThan(-1)
+    for (const daad of ['schrijfIn(', 'maakLink(', 'verstuur(']) {
+      const waar = lichaam.indexOf(daad)
+      expect(waar, `${daad} staat er niet meer`).toBeGreaterThan(-1)
+      expect(toets, `${daad} staat vóór de toets op een bestelling`).toBeLessThan(waar)
+    }
+  })
+
+  it('stopt bij geen bestelling, met hetzelfde antwoord als anders', () => {
+    // `{ goed: true }` en geen foutcode: een afwijkend antwoord maakt dit
+    // formulier een manier om adressen af te lopen.
+    expect(lichaam).toMatch(/if \(!gekocht\.reeksen\.length\) return portaalJson\(env, \{ goed: true \}\)/)
+  })
+
+  it('vraagt de vinkjes aan iedereen, niet alleen aan een onbekend adres', () => {
+    // Hier stond `!bestaat && !(...)`. Dan verschilde het antwoord op een
+    // inzending zonder vinkjes tussen een bekend en een onbekend adres, en dat
+    // is met de poort erbij precies de vraag die niemand mag kunnen stellen.
+    expect(lichaam, 'de vinkjescontrole hangt weer aan een bestaand lid')
+      .not.toMatch(/if \(!\w+ && !\(body\.voorwaarden/)
+    expect(lichaam).toMatch(/if \(!\(body\.voorwaarden && body\.leeftijd\)\) return portaalJson\(env, \{ fout: 'vinkjes' \}, 400\)/)
+  })
+})

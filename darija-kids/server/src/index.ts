@@ -19,7 +19,7 @@
  */
 import { bestellingVan, hashVan, maakSleutel, plekken, tekAan } from './lezer'
 import {
-  bezit, koekje, lidVanEmail, logUit, maakLink, magMailen, magOpnieuw, netjes as netjesEmail, ruimOp, schrijfIn, sessieUit, telMail, vergeetLink, welkAdres, wieIsDit, wisLid, wisselIn, zetNieuws,
+  bezit, koekje, logUit, maakLink, magMailen, magOpnieuw, netjes as netjesEmail, ruimOp, schrijfIn, sessieUit, telMail, vergeetLink, welkAdres, wieIsDit, wisLid, wisselIn, zetNieuws,
 } from './portaal'
 import { geheimKlopt, koopbericht, veldenVan } from './koopbericht'
 import { verstuur, type Afzender } from './mail'
@@ -793,9 +793,43 @@ async function portaalAanmelden(verzoek: Request, env: Env): Promise<Response> {
   const email = netjesEmail(String(body.email ?? ''))
   if (!lijktEmail(email)) return portaalJson(env, { fout: 'adres' }, 400)
 
-  const bestaat = await lidVanEmail(env.DB, email)
-  // De twee verplichte vinkjes gelden bij het aanmaken. Wie al lid is, logt in.
-  if (!bestaat && !(body.voorwaarden && body.leeftijd)) return portaalJson(env, { fout: 'vinkjes' }, 400)
+  // De twee verplichte vinkjes, altijd en voor iedereen.
+  //
+  // Hier stond `!bestaat && !(...)`: wie al een rij had mocht zonder vinkjes
+  // door. Dat was een orakel. Stuur een adres zonder vinkjes en het antwoord
+  // verschilde — `vinkjes` bij een onbekend adres, `goed` bij een bekend — en
+  // daarmee kon je het formulier aflopen om te vragen wie hier een account
+  // heeft. Met de poort hieronder erbij zou dat zelfs zijn: wie hier gekocht
+  // heeft.
+  //
+  // De site vraagt ze al op elke inzending (`make-site.mjs`, de controle vóór
+  // de fetch), dus dit wijkt nergens af van wat een bezoeker ziet.
+  if (!(body.voorwaarden && body.leeftijd)) return portaalJson(env, { fout: 'vinkjes' }, 400)
+
+  /**
+   * De poort: post gaat alleen naar wie hier iets gekocht heeft.
+   *
+   * Het lézen was al dicht — `blad()` toetst `mag.reeksen.includes(reeks)` op
+   * élke bladzijde, dus zonder bestelling krijg je overal een 403. Maar de mail
+   * ging naar elk adres dat iemand hier intypte, met een knop "Naar mijn
+   * boeken" erin. Voor de ontvanger onbegrijpelijk, en voor een vreemde een
+   * manier om post te versturen onder onze naam.
+   *
+   * Geen bestelling is dus geen mail, geen `lid`-rij, en hetzelfde antwoord als
+   * anders. Dat laatste moet: een afwijkend antwoord maakt dit formulier een
+   * manier om na te vragen wie er gekocht heeft.
+   *
+   * `bezit()` telt een ingetrokken bestelling niet mee, dus een terugbetaling
+   * sluit de deur hier vanzelf mee.
+   *
+   * Let op bij een klacht: het adres moet hetzelfde zijn als dat bij de
+   * betaalpartner. Allebei de kanten gaan door `netjes()` — kleine letters,
+   * geen spaties — maar `jan@gmail.com` en `j.jansen@werk.nl` zijn twee
+   * adressen, en dan krijgt de koper niets terwijl het scherm zegt dat er post
+   * onderweg is. De tekst op dat scherm wijst daarom naar deze mogelijkheid.
+   */
+  const gekocht = await bezit(env.DB, email)
+  if (!gekocht.reeksen.length) return portaalJson(env, { goed: true })
 
   const taal = isTaal(body.taal ?? '') ? (body.taal as Taal) : 'nl'
   const lid = await schrijfIn(env.DB, {
