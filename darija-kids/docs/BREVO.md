@@ -36,6 +36,19 @@ Het gratis plan mag **300 mails per dag**. Dat is ruim voor een koopmail per
 verkoop en een inloglink af en toe. Waar het knelt is de weekmail zodra de
 lijst groeit — dan zit je er op maandagochtend in één keer overheen.
 
+Je hebt niets te kiezen en niets te betalen: je zít op het gratis plan. Kijk
+op het beginscherm rechts onder *Your plan usage*; daar staat "300 left out of
+300". De knop *Upgrade now* rechtsboven is een verkoopknop, geen stap.
+
+**Eerst je telefoonnummer bevestigen.** Bovenin staat een balk: *You'll need
+to verify your phone before sending your first campaign or messages*. Klik op
+*Verify now*. Zonder die stap verstuurt Brevo niets, hoe goed de rest ook
+staat — en dat is geen melding die je in de foutcode terugziet.
+
+De rest van het linkermenu — CRM, Marketing, Automations, Conversations,
+Commerce — kun je negeren. Dat is voor nieuwsbrieven en verkooppraatjes. Jij
+hebt alleen **Transactional** nodig.
+
 ## Stap 2 — Het afzenderadres bevestigen
 
 Zoek in het menu naar **Senders** (meestal onder *Senders, Domains &
