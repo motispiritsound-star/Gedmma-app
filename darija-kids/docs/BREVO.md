@@ -102,8 +102,25 @@ voordat je strenger wordt.
 
 ## Stap 4 — De sleutel
 
-Bij Brevo onder **SMTP & API → API Keys**: maak er een aan. Hij begint met
-`xkeysib-` en je ziet hem **één keer**.
+Bij Brevo onder **SMTP & API → API keys**: maak er een aan. Niet het SMTP-
+tabblad ernaast — een Worker kan geen SMTP praten en gebruikt de web-API.
+
+Noem hem `darijaforkids-worker`, zodat je over een half jaar nog weet waar hij
+hoort. Hij begint met `xkeysib-` en je ziet hem **één keer**.
+
+Twee dingen over de houdbaarheid, en allebei eindigen ze op dezelfde manier —
+een winkel die op een dinsdag stopt met werken zonder dat er iets verandert:
+
+- **De vervaldatum.** Staat er *No expiry* in het menu, kies die. Kun je alleen
+  een jaar kiezen, zet dan nu een herinnering voor een week vóór die datum.
+- **Negentig dagen stilte.** Er staat klein bij: *API keys also expire after 90
+  days of inactivity, regardless of the set expiry date.* Verkoop je een
+  kwartaal lang niets en staat de weekmail stil, dan sterft de sleutel vanzelf.
+  De eerste koper daarna krijgt geen sleutel, en jij krijgt een 401 waarvan je
+  denkt dat je hem al had opgelost.
+
+Merk je dat: `npm run mailsleutel` opnieuw, met een verse sleutel. Verder
+verandert er niets.
 
 Dan, vanuit je eigen computer:
 
