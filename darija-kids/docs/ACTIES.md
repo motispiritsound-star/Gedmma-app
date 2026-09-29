@@ -166,6 +166,22 @@ zitten in de code en zijn klaar; de derde kan alleen jij doen.
 | **3.1.2(c)** | de maandprijs stond duidelijker dan het afgeschreven bedrag | de app — nieuwe build nodig |
 | **2.3.2** | de promotieafbeelding is het app-icoon, en overal dezelfde | alleen in App Store Connect |
 
+Twee dingen uit de kop van die mail die het onthouden waard zijn.
+
+**Ze keken op een iPad Pro 11-inch (M4).** Niet op een telefoon. Dat betekent
+dat alles wat je hier natest ook daar moet kloppen: op die breedte staan de
+twee plankaarten naast elkaar in plaats van onder elkaar. De prijsreparatie is
+op 834 staand en 1210 liggend nagemeten en houdt stand.
+
+**"Upon further review, we identified additional issues."** Richtlijn 1.3 is
+dus afgehandeld en komt niet terug; dit zijn nieuwe punten. Maar het zegt ook
+iets over hoe dit loopt: elke ronde kan nieuwe dingen opleveren die de vorige
+niet noemde. Alles in één keer goed doen is daarom niet alleen netter, het is
+de enige manier om het aantal rondes te beperken.
+
+Submission ID: `6e289f99-b4f6-49a7-90ac-ce548faccc90`, beoordeeld op
+29 september, versie 1.0 (5).
+
 ### 1a · De beschrijving overnemen — geen build nodig
 
 De zin *"Opzegbaar in je eigen App Store- of Google Play-account"* stond in alle

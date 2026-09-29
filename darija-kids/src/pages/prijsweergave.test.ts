@@ -13,11 +13,18 @@
  * duidelijkste prijselement is — in positie én grootte — en dat elke andere
  * prijs daaraan ondergeschikt is, ook een gratis proef of een omrekening.
  *
- * Nagemeten in Chromium op 390 breed, na de wijziging:
+ * Nagemeten in Chromium, na de wijziging:
  *
  *   € 59,99                    24px, gewicht 800
  *   dat is € 5,00 per maand    12px, gewicht 400, eronder
  *   € 98,87 (doorgestreept)    12px, gewicht 400, eronder
+ *
+ * Niet alleen op een telefoon. De afwijzingsmail noemt het toestel waarop
+ * gekeken is: **iPad Pro 11-inch (M4)**. Daar staan de twee plankaarten naast
+ * elkaar in plaats van onder elkaar, en dan herschikt het raster — een meting
+ * op 390 breed zegt dus niets over het scherm waar de beoordelaar naar kijkt.
+ * Op 834 staand en 1210 liggend gemeten: dezelfde verhouding, 24px/800 boven
+ * 12px/400.
  *
  * Deze toets kijkt naar de bron en niet naar de bundel, met opzet: `dist/`
  * staat in .gitignore, dus een test die daaruit leest faalt in CI met ENOENT.
