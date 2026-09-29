@@ -200,8 +200,18 @@ try {
   const tekst = String(fout.message)
   if (/SERVICE_DISABLED|has not been used|is disabled/i.test(tekst)) {
     console.error('De Reporting API staat nog uit voor het project van deze sleutel.')
-    console.error('In de foutmelding hieronder staat een adres dat hem aanzet; open dat')
-    console.error('één keer, wacht een minuut, en draai dit opnieuw.\n')
+    console.error('Inschakelen kost niets: het is dezelfde API die het scherm Android')
+    console.error('vitals zelf gebruikt.\n')
+    // Het adres staat midden in een zin in Google's JSON en breekt daar
+    // onleesbaar af. Op een eigen regel is het aan te klikken.
+    const adres = /https:\/\/console\.(?:developers|cloud)\.google\.com\/[^\s"']+/.exec(tekst)?.[0]
+    if (adres) {
+      console.error('Open dit één keer en druk op Enable:\n')
+      console.error(`  ${adres}\n`)
+      console.error('Wacht daarna een minuut en draai deze opdracht opnieuw.\n')
+    } else {
+      console.error('Het adres om hem aan te zetten staat in de melding hieronder.\n')
+    }
   } else if (fout.status === 403) {
     console.error('Dit serviceaccount mag de gegevens niet zien. In Play Console staat')
     console.error('het onder Gebruikers en rechten: geef het account het recht om')
