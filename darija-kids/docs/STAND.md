@@ -91,14 +91,16 @@ Wat in App Store Connect wél nog open staat, gaat niet over jouw scherm maar
 over de andere 174 landen — zie de drie open punten bij *De producten — Apple*
 in `docs/LAUNCH.md`.
 
-Dezelfde verbeteringen gaan als 1.2 naar Play. Dat is een ander verhaal
-geworden: 1.1 is op 29 september afgewezen en uit de winkel gehaald, dus er is
-geen beoordeling meer om te beschermen. Versiecode 3 staat op de interne test —
-maar **of daar de goede code in zit is nog niet vastgesteld.** `npm run build`
-was op Windows stuk vanaf 25 september, en omdat `aab` via `android` aan
-`build` hangt kan `track` de bundel van een eerdere dag hebben opgestuurd. Eén
-regel beantwoordt dat: `npm run watzitin` kijkt in het AAB-bestand zelf. Dat en
-wat er daarna moet gebeuren staat in `docs/ACTIES.md`.
+Dezelfde verbeteringen gaan als 1.2 naar Play, en daar is de oorzaak van de
+afwijzing inmiddels gevonden. De bundel van versie 2 bevatte `?.` en `??` --
+223 en 167 keer -- en dat is syntaxis van Chrome 80. Met minSdkVersion 24
+beloof je Android 7, waar een WebView van Chrome 51 kan staan, en die leest
+zo'n bestand niet eens in: wit scherm, geen melding. Het bouwdoel staat nu op
+es2015, gelijk aan die belofte.
+
+Versiecode 4 staat op de interne test. Wat daar nog op wacht is het rapport
+voor lancering; pas als dat schoon is heeft indienen bij productie zin. De
+volgorde en de valkuilen staan in `docs/ACTIES.md`.
 
 De "wat is er nieuw"-tekst voor beide winkels staat in zes talen in
 `store/wat-is-nieuw-1.2.md`.

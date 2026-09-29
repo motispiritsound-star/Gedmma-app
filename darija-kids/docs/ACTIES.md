@@ -37,125 +37,103 @@ venster en slaat elke volgende regel het zoeken over.
 
 ---
 
-## Nu eerst · Google Play heeft de app eruit gehaald
+## Nu eerst · Google Play
 
 Op 29 september is versie 2 (1.1) afgewezen op de Broken Functionality-regel,
-met één zin: *"Crashes: Your app crashes after opening."* De app staat niet meer
-in de winkel. Dat gaat vóór alles hieronder.
+met één zin: *"Crashes: Your app crashes after opening."* In Play Console staat
+erbij dat de wijziging niet is doorgevoerd en dat een oudere versie beschikbaar
+blijft — versie 1 (1.0) van 21 september. Het is dus de update die is
+geblokkeerd.
 
-Die ene zin is te weinig om iets te repareren; wat nodig is, is de
-uitzondering en de regels eronder. Die zijn op te vragen met de sleutel die je
-al hebt:
+### De oorzaak is gevonden
 
-```powershell
-if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run crashes -- --versie 2 } else { "darija-kids niet gevonden onder $HOME" }
-```
+De bundel bevatte `?.` en `??`: 223 en 167 keer. Dat is syntaxis van Chrome 80,
+februari 2020. Met `minSdkVersion 24` beloof je dat de app op Android 7 mag
+draaien, en daar kan een WebView staan van Chrome 51. Zo'n WebView leest dat
+bestand niet in — geen foutmelding, geen halve app, een wit scherm. Precies wat
+Google *"apps that install, but don't load"* noemt.
 
-Komt daar "Google kent hier geen crashes" uit, dan zegt dat niets: die cijfers
-komen van toestellen van gebruikers die gegevens delen, en een app die vóór de
-uitrol is afgewezen heeft die niet. Kijk dan in Play Console bij **Testen en
-publiceren → Testen → Rapport vóór lancering**. Daar staat wat de beoordelaar
-zelf zag, meestal met een filmpje en de uitzondering erbij. Dat is de ene plek
-waar een muis niet te vermijden is.
+Dat het eerder niet gevonden werd, komt doordat de bouw hier koud is gestart in
+een móderne browser, en die leest `?.` moeiteloos. Die proef kon het nooit
+vinden.
 
-### Er is nooit een rapport vóór lancering geweest
+Drie dingen zitten nu in versiecode 4 die er in versie 2 niet in zaten, en alle
+drie in het opstartpad:
 
-Dat scherm zegt: *"Upload artifacts to generate pre-launch reports."* Versie 2
-is rechtstreeks naar productie gegaan, en daardoor was de eerste keer dat
-iemand die app op een echt toestel draaide, de beoordelaar die hem afwees.
+| | |
+|---|---|
+| bouwdoel es2015 | de bundel wordt ingelezen vanaf Chrome 51 |
+| foutopvang (28 sept) | een fout bij opstarten geeft tekst, geen wit scherm |
+| winkelkoppeling afgevangen | `store.initialize()` gooide eerder ongehinderd door |
 
-Google maakt zo'n rapport automatisch zodra je een bundel naar wélke track dan
-ook uploadt. Hij draait de app dan op een rij echte toestellen, met een filmpje
-en een stacktrace als er iets omvalt — zonder beoordeling, zonder risico voor
-de winkelvermelding. Vandaar `npm run track`:
-
-```powershell
-if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run aab -- --versie 3 --naam 1.2 } else { "darija-kids niet gevonden onder $HOME" }
-```
-
-```powershell
-if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run track } else { "darija-kids niet gevonden onder $HOME" }
-```
-
-### Strandt `track` op een 403?
-
-Dan is de bundel wél geüpload en wél op de track gezet, maar niet vastgelegd.
-Google toetst releaserechten pas bij die laatste stap. Er is dan niets half
-gebeurd: een edit die niet is vastgelegd bestaat niet, en de versiecode blijft
-vrij.
-
-Welk recht het is hoef je niet te raden — de Play API vertelt het:
-
-```powershell
-if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run rechten } else { "darija-kids niet gevonden onder $HOME" }
-```
-
-Hij drukt af wat het serviceaccount wél en niet mag, en zegt welk vinkje
-ontbreekt. Met `-- --zetaan` probeert hij het zelf aan te zetten; dat lukt
-alleen als datzelfde account rechten mag beheren, en dat heeft een
-uitgiftesleutel meestal niet. Zo niet, dan wijst hij één plek aan in Play
-Console.
-
-Dit is het enige punt in het hele traject waar een muis niet te vermijden is.
-Wil je er niet op wachten: het AAB-bestand kun je ook met de hand uploaden bij
-**Testen en publiceren → Testen → Interne test**. Het pad staat in de
-foutmelding van `track`.
-
-Die tweede zet hem op de interne test. Een half uur tot een uur later staat het
-rapport in Play Console. Pas als dat schoon is, heeft indienen bij productie
-zin.
-
-**Dien nog geen beroep in en stuur versie 3 nog niet naar productie.** Eén
-verkeerde inzending kost weer een ronde van zeven dagen.
-
-Wat we al weten: versie 1.1 is gebouwd op 23 september, vóór de foutopvang.
-In die versie geeft elke fout bij het opstarten een wit scherm — geen tekst,
-geen knop. Een beoordelaar die dat ziet schrijft "crashes after opening" op.
-De bouw is hier koud gestart in een browser, ook met een nagebootste
-Capacitor-laag in vier varianten, en hij rendert zonder fouten; R8 staat uit
-en de splash-bron bestaat. Wat overblijft is native, en daarvoor is die
-stacktrace nodig.
-
-### Eerst dit: weten wat er in versie 3 zit
-
-Er is iets aan het licht gekomen dat hier vóór gaat. **`npm run build` was op
-jouw machine stuk, en al sinds 25 september.** `sitecheck.mjs` maakte van een
-bestandspad een webadres zonder de padscheiding om te zetten; op Windows geeft
-dat backslashes, dus werd `/es` een `/es\`, en dat staat nooit in de sitemap.
-Dat zijn de dertig regels die je in je venster zag. Op Linux gaat het goed,
-dus de controle in GitHub heeft er nooit iets van gezegd. Het is gerepareerd.
-
-Waarom dat meer is dan een vervelende foutmelding: `aab` roept `android`,
-`android` roept `build`. Valt `build` om, dan draait `cap sync` niet en
-`maak-aab` niet — maar het AAB-bestand van de laatste keer dat het *wél* lukte
-blijft gewoon liggen. En `npm run track` pakte dat bestand. Daarmee kan er in
-de winkel iets anders staan dan wat je denkt te hebben opgestuurd, en dan zoek
-je een afwijzing in code die er niet in zit.
-
-Vanaf nu weigert `track` een bundel die ouder is dan de code, met het verschil
-in dagen erbij. Maar voor de bundel die er al ligt is deze vraag nog open, en
-die is met één regel te beantwoorden:
+Wat er in een bundel zit is na te kijken zonder te raden:
 
 ```powershell
 if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run watzitin } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
-Die kijkt in het AAB-bestand zelf en telt de syntaxis. Staan er `?.` en `??`
-in, dan is het de code van vóór 29 september — en dan is die bundel ook precies
-de bundel die op een oudere WebView omvalt bij het inlezen, zonder foutmelding.
-Wat Google *"installs, but doesn't load"* noemt. Hij zegt er zelf bij welk
-bouwdoel gebruikt is en wat je moet doen.
+Die opent het AAB-bestand en telt de syntaxis. Er moet "gebouwd op es2015"
+uitkomen.
 
-Zegt hij iets anders dan "gebouwd op es2015", bouw hem dan opnieuw met een
-versiecode die nog vrij is — 3 is verbruikt, ook al is er niets mee gebeurd:
+### Waar het nu op wacht
+
+Versiecode 4 staat op de interne test. Google maakt daar automatisch een
+**rapport vóór lancering** van: hij draait de app op een rij echte toestellen,
+met een filmpje en een stacktrace als er iets omvalt. Dat duurt een half uur
+tot een uur.
+
+Dat rapport is het bewijs dat er tot nu toe niet was. Versie 2 is rechtstreeks
+naar productie gegaan, en daardoor was de eerste die de app op een echt toestel
+draaide de beoordelaar die hem afwees.
+
+**Lees dat rapport voordat je iets indient.**
+
+### Daarna: indienen
+
+Bij **Publishing overview** staan 17 wijzigingen klaar. Eén ervan is
+gevaarlijk:
+
+> Production · `2 (1.1)` · Start full rollout
+
+Dat is de afgewezen bundel. Maak bij **Production** een release met versiecode
+4; die vervangt hem. Controleer vóór het indienen dat er `4 (1.2)` staat en
+niet `2 (1.1)`.
+
+De overige zestien zijn nagelopen en kloppen: de landenuitbreiding, de zes
+winkelvermeldingen, Content Rating, doelgroep 6+, de privacyverklaring, de
+advertentie- en gegevensveiligheidsverklaring, en Education als categorie.
+
+**Dien geen beroep in.** Die knop is voor "jullie hebben het mis", en dat was
+niet zo. Google schrijft zelf wat de weg is: *"Make use of test tracks to
+thoroughly test your app's quality and functionality before attempting another
+review."*
+
+### Managed publishing staat aan
+
+Daardoor gaat er niets live zonder dat jij erop drukt. Laat dat zo.
+
+Het verklaart ook de foutmelding die `npm run track` gaf — *"Changes cannot be
+sent for review automatically"*. Geen handhavingstoestand, gewoon deze
+instelling.
+
+### `npm run track` werkt nog niet
+
+De upload en de trackwijziging lukken, maar het vastleggen geeft 403. Google
+toetst releaserechten pas bij die laatste stap. Er gaat niets half: een edit
+die niet is vastgelegd bestaat niet, en de versiecode blijft vrij.
 
 ```powershell
-if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run aab -- --versie 4 --naam 1.2 } else { "darija-kids niet gevonden onder $HOME" }
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run rechten } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
-```powershell
-if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run track } else { "darija-kids niet gevonden onder $HOME" }
-```
+Dat serviceaccount mag de gebruikerslijst niet lezen — aangetoond — en kan dus
+ook zijn eigen rechten niet zetten. In Play Console bij **Gebruikers en
+rechten** `play-publisher@darijaforkids.iam.gserviceaccount.com` opzoeken,
+App-rechten openen, en het recht voor testtracks aanzetten. Daarna werkt
+`track` vanzelf.
+
+Tot die tijd kan het ook met de hand: **Testen en publiceren → Testen →
+Interne test**, en dan het AAB-bestand slepen dat in de foutmelding staat.
 
 ---
 
