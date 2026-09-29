@@ -77,10 +77,17 @@ uitkomen.
 
 ### Waar het nu op wacht
 
-Versiecode 4 staat op de interne test. Google maakt daar automatisch een
-**rapport vóór lancering** van: hij draait de app op een rij echte toestellen,
-met een filmpje en een stacktrace als er iets omvalt. Dat duurt een half uur
-tot een uur.
+Versiecode 4 staat op de interne test. Daar komt alleen geen **rapport vóór
+lancering** van: dat scherm bleef zeggen *"Upload artifacts to generate
+pre-launch reports"*, met Google's eigen suggestie erbij om de bundel naar de
+**gesloten test** te sturen.
+
+Doorschuiven kan zonder opnieuw te bouwen: **Internal testing** → bij `4 (1.2)`
+op **Promote release** → **Closed testing – Alpha**. Die is net zo onzichtbaar
+en net zo vrij van beoordeling.
+
+Daarna draait Google de app op een rij echte toestellen, met een filmpje en een
+stacktrace als er iets omvalt. Dat duurt een half uur tot een uur.
 
 Dat rapport is het bewijs dat er tot nu toe niet was. Versie 2 is rechtstreeks
 naar productie gegaan, en daardoor was de eerste die de app op een echt toestel

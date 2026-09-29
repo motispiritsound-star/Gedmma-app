@@ -10,14 +10,22 @@
  *
  * Dat betekent dat de eerste keer dat iemand die app op een echt toestel
  * draaide, de beoordelaar was die hem afwees. Er is een goedkopere manier:
- * Google maakt zo'n rapport automatisch zodra je een bundel naar wélke track
- * dan ook uploadt, en draait hem dan op een rij echte toestellen — met een
- * filmpje en een stacktrace als er iets omvalt. Zonder beoordeling, zonder
- * risico voor de winkelvermelding.
+ * Google maakt zo'n rapport van een geüploade bundel en draait hem op een rij
+ * echte toestellen — met een filmpje en een stacktrace als er iets omvalt.
+ * Zonder beoordeling, zonder risico voor de winkelvermelding.
  *
- *   npm run track                 naar interne test (de snelste, geen beoordeling)
+ * Hier stond eerst dat dat gebeurt "zodra je een bundel naar wélke track dan
+ * ook uploadt", en dat de interne test de snelste weg was. Dat had ik niet
+ * nagekeken. Na een upload naar de interne test bleef het scherm zeggen
+ * "Upload artifacts to generate pre-launch reports", met daarbij Google's
+ * eigen suggestie: *we suggest uploading a bundle to your closed testing
+ * track*. De gesloten test is daarom het standaarddoel geworden. Hij is
+ * net zo onzichtbaar en net zo vrij van beoordeling als de interne, en hij
+ * doet wel waar dit script voor bestaat.
+ *
+ *   npm run track                 naar gesloten test (geen beoordeling)
+ *   npm run track -- --track internal     interne test, geeft mogelijk geen rapport
  *   npm run track -- --proef      laat zien wat er zou gebeuren, raakt niets aan
- *   npm run track -- --track alpha        gesloten test
  *   npm run track -- --track beta         open test
  *   npm run track -- --aab <pad>          een andere bundel dan de laatste
  *   npm run track -- --oud       een bundel opsturen die ouder is dan de code
@@ -51,7 +59,7 @@ const TRACKS = {
   alpha: 'gesloten test',
   beta: 'open test',
 }
-const TRACK = arg('track', 'internal')
+const TRACK = arg('track', 'alpha')
 if (!(TRACK in TRACKS)) {
   console.error(`\n"${TRACK}" is hier geen track. Kies uit:\n`)
   for (const [naam, wat] of Object.entries(TRACKS)) console.error(`  --track ${naam.padEnd(10)} ${wat}`)
