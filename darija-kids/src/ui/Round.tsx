@@ -330,8 +330,20 @@ export function RoundRunner({
             // On its way out it is still on the screen, and a second tap on a
             // button that is leaving used to land on the card behind it and
             // skip a question. Nothing leaving is pressable.
-            style={{ pointerEvents: verdict ? 'auto' : 'none' }}
-            className={`sticky bottom-0 -mx-4 border-t-2 px-4 py-4 ${
+            /*
+             * `sticky bottom-0`, dus deze balk plakt tegen de onderkant van
+             * het venster -- en die ligt met edge-to-edge onder de
+             * gebarenbalk. Hierin staat de knop die je naar de volgende vraag
+             * brengt; ligt die eronder, dan loopt de les vast.
+             *
+             * De 1rem is de py-4 die hier stond. Die is hierheen verhuisd
+             * omdat een inline stijl de padding-bottom toch overschrijft.
+             */
+            style={{
+              pointerEvents: verdict ? 'auto' : 'none',
+              paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))',
+            }}
+            className={`sticky bottom-0 -mx-4 border-t-2 px-4 pt-4 ${
               verdict === 'goed' ? 'border-mint-500 bg-mint-500/15'
               : verdict === 'bijna' ? 'border-saffron-500 bg-saffron-500/15'
               : 'border-terra-500 bg-terra-500/15'

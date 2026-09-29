@@ -22,8 +22,14 @@
  *   navigatie openingsscherm    24 -> 72
  *   kruisje in een les         326 -> 374
  *
- * Telkens precies 48 erbij, terwijl de achtergrond van de balk op 0 bleef staan
- * en het strookje onder de klok dus gevuld blijft.
+ * En met `env(safe-area-inset-bottom)` op 48px, voor de gebarenbalk:
+ *
+ *   paneel van onderen        24px -> 72px opvulling, knop 819 -> 771
+ *   lesbalk met doorgaan      16px -> 64px opvulling
+ *
+ * Telkens precies 48 erbij, terwijl de achtergrond op 0 respectievelijk 844
+ * bleef staan — de strookjes onder de klok en boven de gebarenbalk blijven dus
+ * gevuld, en er valt geen gat.
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
@@ -65,9 +71,22 @@ describe('de app houdt afstand van de systeembalken', () => {
       .toContain('env(safe-area-inset-top)')
   })
 
-  it('houdt de onderkant vrij bij de tabbalk', () => {
-    // Deze was er al vóór de rest; hij staat hier zodat hij niet sneuvelt bij
-    // een opruimactie in App.tsx.
-    expect(bron('../App.tsx')).toContain('env(safe-area-inset-bottom)')
+  /**
+   * En de onderkant, want edge-to-edge tekent ook onder de gebarenbalk door.
+   *
+   * De tabbalk had dit al. De twee andere niet, en die zijn erger: het paneel
+   * dat van onderen opkomt draagt de knop van de taalkeuze bij de eerste start
+   * en van de tip vóór een les, en de balk in een les draagt de knop naar de
+   * volgende vraag. Ligt zo'n knop onder de gebarenbalk, dan loopt het vast.
+   */
+  const ONDER: Array<[string, string]> = [
+    ['../App.tsx', 'de tabbalk'],
+    ['./kit.tsx', 'het paneel dat op een telefoon van onderen opkomt'],
+    ['./Round.tsx', 'de balk in een les met de knop naar de volgende vraag'],
+  ]
+
+  it.each(ONDER)('%s houdt de onderkant vrij (%s)', (pad, wat) => {
+    expect(bron(pad), `${wat}: geen env(safe-area-inset-bottom) meer`)
+      .toContain('env(safe-area-inset-bottom)')
   })
 })

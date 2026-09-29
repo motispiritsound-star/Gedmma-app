@@ -89,7 +89,22 @@ export function Sheet({ open, onClose, children, labelledBy }: { open: boolean; 
         animate={{ y: 0, opacity: 1, scale: 1 }}
         transition={{ type: 'spring', stiffness: 240, damping: 26 }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg rounded-t-3xl border border-[var(--line)] bg-[var(--surface-raised)] p-6 shadow-2xl sm:rounded-3xl"
+        className="w-full max-w-lg rounded-t-3xl border border-[var(--line)] bg-[var(--surface-raised)] px-6 pt-6 shadow-2xl sm:rounded-3xl"
+        /*
+         * Op een telefoon plakt dit paneel tegen de onderrand -- zie
+         * `items-end` hierboven. Met targetSdkVersion 36 tekent Android 15 tot
+         * in de hoeken, en dan ligt de gebarenbalk over de onderste knop.
+         *
+         * Juist hier is dat vervelend: dit is het paneel van de taalkeuze bij
+         * de eerste start en van de tip vóór een les. De knop eronder is het
+         * enige wat je verder brengt.
+         *
+         * De 1.5rem is de `p-6` die hier stond; die is naar `px-6 pt-6`
+         * gegaan omdat een inline stijl de padding-bottom toch overschrijft.
+         * Op een breed scherm staat het paneel gecentreerd en is de inset nul,
+         * dus daar verandert er niets.
+         */
+        style={{ paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}
       >
         {children}
       </motion.div>
