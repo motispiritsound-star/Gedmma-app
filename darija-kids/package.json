@@ -81,7 +81,8 @@
     "lezen": "node scripts/leesuitgave.mjs",
     "boeken": "node scripts/boeken-erin.mjs",
     "platencheck": "node scripts/platencheck.mjs",
-    "vertelstem": "node scripts/make-vertelstem.mjs"
+    "vertelstem": "node scripts/make-vertelstem.mjs",
+    "crashes": "node scripts/crashcheck.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
