@@ -25,8 +25,27 @@ export function TopBar() {
   const goal = state.settings.dailyGoal
   const done = xpToday(state)
 
+  /*
+   * De statusbalk hoort hier bovenop te mogen liggen, niet erdoorheen.
+   *
+   * Met targetSdkVersion 36 tekent Android 15 standaard tot in de hoeken,
+   * dus het toestel geeft de app de volle hoogte en verwacht dat de app
+   * zelf om de klok en het batterijpictogram heen werkt. Doe je dat niet,
+   * dan loopt de د van het logo tegen de tijd aan. Play Console meldt het
+   * als "Edge-to-edge may not display for all users".
+   *
+   * De opvulling zit op de balk zelf en niet op de body, want hij is
+   * `sticky top-0`: bij het scrollen plakt hij tegen de bovenkant van het
+   * venster, en die bovenkant ligt onder de statusbalk. Zo houdt de
+   * achtergrond van de balk dat strookje gevuld en blijft de inhoud eronder.
+   *
+   * De onderkant werd al zo opgelost, in App.tsx bij de tabbalk.
+   */
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--surface)]/90 backdrop-blur">
+    <header
+      className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--surface)]/90 backdrop-blur"
+      style={{ paddingTop: 'env(safe-area-inset-top)' }}
+    >
       <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-2.5">
         {/*
           De `py-1.5 -my-1.5` is geen opmaak maar een raakvlak.

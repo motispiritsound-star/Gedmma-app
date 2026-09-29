@@ -243,8 +243,21 @@ export function RoundRunner({
   // Op een tablet mag de kolom breder en de ruimte ruimer: een les die in een
   // telefoonbreedte blijft hangen op een scherm van duizend pixels leest als
   // een uitvergrote telefoon.
+  /*
+   * Tijdens een les is er geen kopbalk, en het kruisje om te stoppen zit tegen
+   * de bovenrand. Met targetSdkVersion 36 tekent Android 15 tot in de hoeken,
+   * dus zonder deze opvulling ligt dat kruisje onder de statusbalk en kan een
+   * kind de les niet verlaten. Dat is geen schoonheidsfoutje meer.
+   *
+   * De 1rem is de py-4 die hier stond. Die is hierheen verhuisd omdat een
+   * inline stijl de padding-top uit de klasse toch overschrijft; pb-4 houdt de
+   * onderkant zoals hij was.
+   */
   return (
-    <div className="mx-auto flex min-h-screen max-w-2xl flex-col px-4 py-4 md:max-w-3xl md:px-6 md:py-6">
+    <div
+      className="mx-auto flex min-h-screen max-w-2xl flex-col px-4 pb-4 md:max-w-3xl md:px-6 md:pb-6"
+      style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}
+    >
       <div className="flex items-center gap-3">
         <button onClick={() => { sfx.back(); setQuit(true) }} aria-label={t.common.sluiten} className="text-2xl text-[var(--ink-soft)] hover:text-[var(--ink)]">✕</button>
         <Progress value={index / Math.max(1, queue.length)} tone="mint" />
