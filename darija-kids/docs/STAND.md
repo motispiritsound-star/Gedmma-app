@@ -9,9 +9,27 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 998, groen — daar zitten de 77 van de worker al in |
-| Google Play | 2 (1.1) in review; 3 (1.2) is gebouwd en wacht op upload |
-| App Store | 1.0 (build 5) **opnieuw ingediend** op 27 september als kinderapp — app, e-boek en abonnementsgroep staan alle drie op *Waiting for Review* |
+| Tests | 1160, groen — daar zitten de 77 van de worker al in |
+| Google Play | 4 (1.2) ingediend op 29 september, samen met 19 wijzigingen aan de vermelding |
+| App Store | 1.0 (build 5) **afgewezen** op 29 september, op drie richtlijnen — twee zijn in de repo gerepareerd, zie hieronder |
+
+### De afwijzing van 29 september, en wat eraan gedaan is
+
+| Richtlijn | Wat Apple zag | Stand |
+|---|---|---|
+| **2.3.10** Accurate Metadata | de App Store-beschrijving noemde Google Play | **gerepareerd in de repo**, zes talen |
+| **3.1.2(c)** Subscriptions | de omrekening naar een maand stond duidelijker dan het afgeschreven bedrag | **gerepareerd in de app**, zes talen |
+| **2.3.2** Accurate Metadata | de promotieafbeelding is het app-icoon, en bij elk product dezelfde | **alleen jij kunt dit** — in App Store Connect |
+
+De eerste twee zitten in de code. 3.1.2(c) is een wijziging in het scherm, dus
+er moet een nieuwe build: **build 6**. De nieuwe beschrijving moet je overnemen
+uit `store/listing.<taal>.md`; dat is metadata en kan zonder build.
+
+De derde kan alleen in de console. Apple biedt er zelf de kortste oplossing
+bij: heb je geen plannen om een aankoop in de App Store te promoten, verwijder
+dan de promotieafbeelding. Dat lost de afwijzing op zonder nieuw materiaal en
+zonder een vierde ronde te riskeren. Eigen afbeeldingen maken kan later, als
+een losse wijziging.
 
 Wat er in build 5 zit en niet in build 4: het antwoord op richtlijn 4.2
 (microfoon, trillen, herinnering, breder op een iPad — zie `docs/APPLE-4.2.md`)

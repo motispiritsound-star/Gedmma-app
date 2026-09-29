@@ -155,34 +155,72 @@ Zie je "Missing script" bij een opdracht uit deze lijst, dan is dit de reden.
 
 ---
 
-## 1 · Apple: opnieuw indienen
+## 1 · Apple: drie punten, twee al gerepareerd
 
-De vier vragen over richtlijn 1.3 zijn beantwoord en Apple heeft ze
-geaccepteerd: *"We appreciate your efforts to comply with the App Review
-Guidelines. Please resubmit the app for review."* In App Store Connect staat
-1.0 weer op **Ready for Review**.
+Apple wees 1.0 (build 5) af op 29 september, op drie richtlijnen. Twee daarvan
+zitten in de code en zijn klaar; de derde kan alleen jij doen.
 
-Er is dus nog één handeling: **opnieuw indienen**. De build die er al ligt mag
-je gebruiken — wat je hebt geantwoord klopt met dat binaire bestand.
+| Richtlijn | Wat Apple zag | Waar het zit |
+|---|---|---|
+| **2.3.10** | de beschrijving noemde Google Play | metadata — overtypen, geen build |
+| **3.1.2(c)** | de maandprijs stond duidelijker dan het afgeschreven bedrag | de app — nieuwe build nodig |
+| **2.3.2** | de promotieafbeelding is het app-icoon, en overal dezelfde | alleen in App Store Connect |
 
-De verstuurde tekst staat in `docs/APPLE-1.3.md`.
+### 1a · De beschrijving overnemen — geen build nodig
 
-**Eén ding voor de volgende keer, niet om nu te heropenen.** In het verstuurde
-antwoord staat dat de ouderpoort *op de website* zit. Dat klopt niet helemaal:
-de app heeft zijn eigen poort en zijn eigen aanmelding — `src/engine/post.ts`
-stuurt het adres vanuit de app. Apple is er niet over gevallen en de draad is
-gesloten; laat het zo, maar weet het als het later terugkomt.
+De zin *"Opzegbaar in je eigen App Store- of Google Play-account"* stond in alle
+zes de talen midden in de beschrijving. Die is eruit. Neem de tekst over uit
+`store/listing.nl.md` en de vijf andere talen, onder de kop **App Store** bij
+*Beschrijving*.
 
-**Wil je de verbeteringen van deze week meenemen?** Dan is er een nieuwe build
-nodig. Verplicht is het niet, maar er zit in: de foutopvang die voorkomt dat
-een kind op een wit scherm belandt, de emoji die het antwoord van de
-betekenis-oefening weggaf, en de raakvlakken die onder de 4d pixels zaten.
+Let op: de **Google Play**-helft van datzelfde bestand heeft nu een eigen
+opzegzin. Die twee zijn niet meer uitwisselbaar, en dat staat er ook bij.
+
+### 1b · De promotieafbeeldingen — dit kan alleen in de console
+
+Dit is het enige punt van de drie waar een muis niet te vermijden is.
+
+Apple biedt er zelf de kortste oplossing bij: *"If you have no future plans on
+promoting this In-App Purchase product, you can delete the associated
+promotional image in App Store Connect."*
+
+Dat is het advies. Ga in **App Store Connect → Monetization → In-App
+Purchases**, open elk van de drie producten (jaarabonnement, maandabonnement,
+e-boek) plus eventuele win-back-aanbiedingen, en **verwijder de
+promotieafbeelding**. Doe hetzelfde onder *Subscriptions* als die daar ook
+staan.
+
+Eigen afbeeldingen maken kan ook, maar dan moet elke afbeelding uniek zijn,
+1024×1024, en duidelijk over dát product gaan — en of Apple ze voldoende vindt
+weet je pas na een ronde. Verwijderen lost het nu op, zonder dat risico. Een
+aankoop promoten in de App Store kan later alsnog, als losse wijziging.
+
+### 1c · Build 6 maken en indienen
+
+3.1.2(c) is een wijziging op het scherm, dus die heeft een nieuwe build nodig.
+Het jaarplan leidde met `€ 5,00 per maand`; nu staat `€ 59,99` er groot en de
+omrekening eronder, met "dat is" ervoor.
 
 ```powershell
-if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run ios -- --build 2 --versie 1.0 } else { "darija-kids niet gevonden onder $HOME" }
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run ios -- --build 6 --versie 1.0 } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Daarna archiveren op de Mac; zie `docs/MAC.md`.
+
+Doe **1a en 1b eerst**. Dien pas in als alle drie de punten weg zijn — een
+inzending die er twee oplost kost een hele ronde voor de derde.
+
+### Wat er verder in build 6 zit
+
+Alles van deze week: de foutopvang die een wit scherm onmogelijk maakt, de
+afvang rond de winkelkoppeling, en de ruimte voor de systeembalken. Dat laatste
+verandert op iOS met opzet niets — zie §8.
+
+**Eén ding voor later, niet om nu te heropenen.** In het antwoord op richtlijn
+1.3 staat dat de ouderpoort *op de website* zit. Dat klopt niet helemaal: de
+app heeft zijn eigen poort en zijn eigen aanmelding — `src/engine/post.ts`
+stuurt het adres vanuit de app. Apple is er niet over gevallen en die draad is
+gesloten; laat het zo, maar weet het als het terugkomt.
 
 ---
 
