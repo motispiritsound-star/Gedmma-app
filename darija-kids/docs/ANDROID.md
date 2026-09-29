@@ -12,6 +12,17 @@ Gevolg: wie het project uit git haalt en meteen in Android Studio op *Build*
 drukt, krijgt een app die keurig bouwt, keurig installeert en een **leeg
 scherm** laat zien. Geen foutmelding, geen waarschuwing. Dat is de val.
 
+Twee andere bestanden staan er om dezelfde reden buiten:
+`android/capacitor.settings.gradle` en `android/app/capacitor.build.gradle`.
+Capacitor schrijft ze bij elke sync en zet er zelf bovenaan "DO NOT EDIT THIS
+FILE". Ze stónden wel in git, en dat leverde precies één ding op: een `git pull`
+die weigert omdat dezelfde sync ze plaatselijk ook had aangeraakt. De inhoud
+deed er nooit toe, want hij wordt vóór elke bouw overschreven.
+
+Bij een verse kloon werkt Gradle dus pas ná één `npm run android`. Sla je die
+over, dan klaagt Gradle over een ontbrekend `capacitor.build.gradle` — een
+duidelijkere melding dan een leeg scherm, maar dezelfde oorzaak.
+
 ## Dus eerst dit
 
 ```bash

@@ -32,6 +32,17 @@ keystore.properties
 android/local.properties
 android/app/build/
 android/.gradle/
+
+# Capacitor schrijft deze twee bij elke `cap sync`, en `npm run aab` doet dat
+# altijd voordat hij bouwt. Ze stonden hier eerst wel in git, en dat leverde
+# precies één ding op: een `git pull` die weigert omdat dezelfde sync ze
+# plaatselijk ook heeft aangeraakt. De inhoud deed er nooit toe, want hij wordt
+# vóór elke bouw overschreven.
+#
+# Gevolg voor een verse kloon: Gradle werkt pas na één `npx cap sync android`,
+# en dat is precies wat `npm run aab` als eerste doet. Zie docs/ANDROID.md.
+android/capacitor.settings.gradle
+android/app/capacitor.build.gradle
 /store/winkel/
 /store/bladen/
 
