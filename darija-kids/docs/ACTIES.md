@@ -77,6 +77,30 @@ if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -
 if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run track } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
+### Strandt `track` op een 403?
+
+Dan is de bundel wél geüpload en wél op de track gezet, maar niet vastgelegd.
+Google toetst releaserechten pas bij die laatste stap. Er is dan niets half
+gebeurd: een edit die niet is vastgelegd bestaat niet, en de versiecode blijft
+vrij.
+
+Welk recht het is hoef je niet te raden — de Play API vertelt het:
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run rechten } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+Hij drukt af wat het serviceaccount wél en niet mag, en zegt welk vinkje
+ontbreekt. Met `-- --zetaan` probeert hij het zelf aan te zetten; dat lukt
+alleen als datzelfde account rechten mag beheren, en dat heeft een
+uitgiftesleutel meestal niet. Zo niet, dan wijst hij één plek aan in Play
+Console.
+
+Dit is het enige punt in het hele traject waar een muis niet te vermijden is.
+Wil je er niet op wachten: het AAB-bestand kun je ook met de hand uploaden bij
+**Testen en publiceren → Testen → Interne test**. Het pad staat in de
+foutmelding van `track`.
+
 Die tweede zet hem op de interne test. Een half uur tot een uur later staat het
 rapport in Play Console. Pas als dat schoon is, heeft indienen bij productie
 zin.
