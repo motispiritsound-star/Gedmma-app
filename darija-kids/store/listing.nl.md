@@ -61,7 +61,7 @@ ALLES KLINKT
 Elk woord en elke zin kun je horen, één tik voor normaal en twee voor langzaam. Heeft je toestel geen Arabische stem, dan zegt de app dat eerlijk en leest hij de Latijnse schrijfwijze zo goed mogelijk voor.
 
 GRATIS BEGINNEN
-De eerste vier lessen zijn en blijven gratis: drie stukken van het Arabische alfabet en je eerste woorden Darija. De hele cursus hoort bij de volledige toegang: de eerste dagen gratis, daarna € 5,00 per maand bij een jaarabonnement (€ 59,99 in één keer) of € 6,99 per maand, inclusief btw. Opzegbaar in je eigen App Store- of Google Play-account; zeg je op vóór het einde van de proefperiode, dan betaal je niets.
+De eerste vier lessen zijn en blijven gratis: drie stukken van het Arabische alfabet en je eerste woorden Darija. De hele cursus hoort bij de volledige toegang: de eerste dagen gratis, daarna € 5,00 per maand bij een jaarabonnement (€ 59,99 in één keer) of € 6,99 per maand, inclusief btw. Opzegbaar in je eigen App Store-account; zeg je op vóór het einde van de proefperiode, dan betaal je niets.
 
 GEMAAKT OM AAN EEN KIND TE GEVEN
 • Geen account en geen inloggen — een kind vult hier niets in
@@ -90,5 +90,17 @@ https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 `Marokkaans-Arabisch, spelenderwijs — zodat je kind met opa en oma kan praten.`
 
 **Volledige beschrijving (max 4000)**
-Dezelfde tekst als de App Store-beschrijving hierboven, zonder de laatste
-regel: de link naar Apple’s gebruiksvoorwaarden hoort niet in Google Play.
+Dezelfde tekst als de App Store-beschrijving hierboven, met twee
+verschillen:
+
+1. **zonder de laatste regel** — de link naar Apple's gebruiksvoorwaarden
+   hoort niet in Google Play;
+2. **de opzegzin gaat over de andere winkel.** Waar bij Apple staat
+   `Opzegbaar in je eigen App Store-account`, staat hier
+   `Opzegbaar in je eigen Google Play-account`.
+
+Dat tweede is geen schoonheidsfout. Apple wees versie 1.0 (build 5) af op
+richtlijn 2.3.10 omdat de App Store-beschrijving Google Play noemde: *"Revise
+the app's description to remove Google Play references."* Andersom geldt
+hetzelfde — een Play-beschrijving die de App Store noemt, verwijst naar een
+winkel waar de lezer niet is. `winkelteksten.test.ts` bewaakt beide kanten.

@@ -61,7 +61,7 @@ TODO SUENA
 Cada palabra y cada frase se puede escuchar: un toque para la velocidad normal, dos para la lenta. Sin voz árabe en el dispositivo, la aplicación lo dice y lee la escritura latina lo mejor que puede.
 
 EMPEZAR GRATIS
-Las cuatro primeras lecciones siguen siendo gratis: tres partes del alfabeto árabe y tus primeras palabras en dariya. El curso completo va con el acceso completo: los primeros días gratis y después 5,00 € al mes con la suscripción anual (59,99 € de una vez) o 6,99 € al mes, con IVA incluido. Cancelable en tu cuenta de la App Store o de Google Play; si cancelas antes de que termine la prueba, no pagas nada.
+Las cuatro primeras lecciones siguen siendo gratis: tres partes del alfabeto árabe y tus primeras palabras en dariya. El curso completo va con el acceso completo: los primeros días gratis y después 5,00 € al mes con la suscripción anual (59,99 € de una vez) o 6,99 € al mes, con IVA incluido. Cancelable en tu cuenta de la App Store; si cancelas antes de que termine la prueba, no pagas nada.
 
 HECHA PARA DÁRSELA A UN NIÑO
 • Sin cuenta y sin inicio de sesión: un niño no escribe nada aquí
@@ -90,5 +90,15 @@ https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 `Árabe marroquí jugando: para que tu hijo hable con sus abuelos.`
 
 **Descripción completa (máx. 4000)**
-El mismo texto que la descripción de la App Store, sin la última línea:
-el enlace a los términos de Apple no pinta nada en Google Play.
+El mismo texto que la descripción de la App Store, con dos
+diferencias:
+
+1. **sin la última línea** — el enlace a los términos de Apple no pinta nada
+   en Google Play;
+2. **la frase de cancelación habla de la otra tienda.** Donde en Apple pone
+   `Cancelable en tu cuenta de la App Store`, aquí pone
+   `Cancelable en tu cuenta de Google Play`.
+
+El motivo está en `store/listing.nl.md`: Apple rechazó la versión 1.0 (build 5)
+por la directriz 2.3.10 porque la descripción de la App Store mencionaba Google
+Play.

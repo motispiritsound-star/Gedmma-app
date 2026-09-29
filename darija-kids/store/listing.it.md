@@ -61,7 +61,7 @@ TUTTO SI SENTE
 Ogni parola e ogni frase si possono ascoltare: un tocco per la velocità normale, due per quella lenta. Senza una voce araba sul dispositivo, l'app lo dice e legge la scrittura latina come meglio può.
 
 INIZIARE GRATIS
-Le prime quattro lezioni restano gratis: tre pezzi dell'alfabeto arabo e le tue prime parole in darija. Il corso intero va con l'accesso completo: i primi giorni gratis e poi 5,00 € al mese con l’abbonamento annuale (59,99 € in una volta) oppure 6,99 € al mese, IVA inclusa. Disdicibile dal tuo account App Store o Google Play; se disdici prima della fine della prova, non paghi niente.
+Le prime quattro lezioni restano gratis: tre pezzi dell'alfabeto arabo e le tue prime parole in darija. Il corso intero va con l'accesso completo: i primi giorni gratis e poi 5,00 € al mese con l’abbonamento annuale (59,99 € in una volta) oppure 6,99 € al mese, IVA inclusa. Disdicibile dal tuo account App Store; se disdici prima della fine della prova, non paghi niente.
 
 FATTA PER DARLA IN MANO A UN BAMBINO
 • Nessun account, nessun accesso: un bambino qui non scrive niente
@@ -90,5 +90,15 @@ https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 `Arabo marocchino giocando: per parlare con i nonni in Marocco.`
 
 **Descrizione completa (max 4000)**
-Lo stesso testo della descrizione dell'App Store, senza l’ultima riga:
-il link ai termini di Apple non c’entra con Google Play.
+Lo stesso testo della descrizione dell'App Store, con due
+differenze:
+
+1. **senza l'ultima riga** — il link ai termini di Apple non c'entra con
+   Google Play;
+2. **la frase sulla disdetta parla dell'altro negozio.** Dove su Apple c'è
+   `Disdicibile dal tuo account App Store`, qui c'è
+   `Disdicibile dal tuo account Google Play`.
+
+Il motivo è in `store/listing.nl.md`: Apple ha rifiutato la versione 1.0
+(build 5) per la linea guida 2.3.10 perché la descrizione dell'App Store citava
+Google Play.

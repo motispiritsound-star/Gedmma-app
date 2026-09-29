@@ -61,7 +61,7 @@ EVERYTHING SOUNDS
 Every word and sentence can be heard: one tap for normal, two for slow. If your device has no Arabic voice, the app says so honestly and reads the Latin spelling as closely as it can.
 
 FREE TO START
-The first four lessons are free and stay free: three pieces of the Arabic script and your first words of Darija. The whole course comes with full access: the first days free, then € 5.00 a month on the yearly plan (€ 59.99 charged once) or € 6.99 a month, including VAT. Cancel in your own App Store or Google Play account; cancel before the trial ends and you pay nothing.
+The first four lessons are free and stay free: three pieces of the Arabic script and your first words of Darija. The whole course comes with full access: the first days free, then € 5.00 a month on the yearly plan (€ 59.99 charged once) or € 6.99 a month, including VAT. Cancel in your own App Store account; cancel before the trial ends and you pay nothing.
 
 MADE TO HAND TO A CHILD
 • No account, no login — a child fills in nothing here
@@ -90,5 +90,15 @@ https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 `Moroccan Arabic, playfully — so your child can talk with their grandparents.`
 
 **Full description (max 4000)**
-The same text as the App Store description above, without the last line:
-the link to Apple’s terms does not belong on Google Play.
+The same text as the App Store description above, with two
+differences:
+
+1. **without the last line** — the link to Apple's terms does not belong on
+   Google Play;
+2. **the cancellation sentence names the other store.** Where Apple reads
+   `Cancel in your own App Store account`, here it reads
+   `Cancel in your own Google Play account`.
+
+The reason is in `store/listing.nl.md`: Apple rejected version 1.0 (build 5)
+under guideline 2.3.10 because the App Store description mentioned Google
+Play.

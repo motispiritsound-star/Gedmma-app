@@ -61,7 +61,7 @@ TOUT SE PRONONCE
 Chaque mot et chaque phrase s'écoute : une touche pour la vitesse normale, deux pour la lente. Sans voix arabe sur l'appareil, l'application le dit et lit l'écriture latine du mieux qu'elle peut.
 
 COMMENCER GRATUITEMENT
-Les quatre premières leçons restent gratuites : trois morceaux de l'alphabet arabe et tes premiers mots en darija. Le cours complet va avec l'accès complet : les premiers jours offerts, puis 5,00 € par mois avec un abonnement annuel (59,99 € en une fois) ou 6,99 € par mois, TTC. Résiliable dans ton compte App Store ou Google Play ; en résiliant avant la fin de l'essai, tu ne paies rien.
+Les quatre premières leçons restent gratuites : trois morceaux de l'alphabet arabe et tes premiers mots en darija. Le cours complet va avec l'accès complet : les premiers jours offerts, puis 5,00 € par mois avec un abonnement annuel (59,99 € en une fois) ou 6,99 € par mois, TTC. Résiliable dans ton compte App Store ; en résiliant avant la fin de l'essai, tu ne paies rien.
 
 FAIT POUR ÊTRE CONFIÉ À UN ENFANT
 • Pas de compte, pas de connexion — un enfant ne remplit rien ici
@@ -90,5 +90,15 @@ https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 `L'arabe marocain en jouant — pour parler avec jeddi et jeddti.`
 
 **Description complète (max 4000)**
-Le même texte que la description App Store ci-dessus, sans la dernière ligne :
-le lien vers les conditions d’Apple n’a rien à faire sur Google Play.
+Le même texte que la description App Store ci-dessus, avec deux
+différences :
+
+1. **sans la dernière ligne** — le lien vers les conditions d'Apple n'a rien à
+   faire sur Google Play ;
+2. **la phrase de résiliation parle de l'autre boutique.** Là où Apple lit
+   `Résiliable dans ton compte App Store`, on met ici
+   `Résiliable dans ton compte Google Play`.
+
+Voir `store/listing.nl.md` pour la raison : Apple a refusé la version 1.0
+(build 5) sur la règle 2.3.10 parce que la description App Store citait Google
+Play.

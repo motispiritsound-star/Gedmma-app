@@ -61,7 +61,7 @@ ALLES KLINGT
 Jedes Wort und jeder Satz lässt sich anhören: einmal tippen für normal, zweimal langsam. Ohne arabische Stimme sagt die App das ehrlich und liest die lateinische Schreibweise vor.
 
 KOSTENLOS ANFANGEN
-Die ersten vier Lektionen bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs gehört zum vollen Zugang: die ersten Tage gratis, danach 5,00 € pro Monat im Jahresabo (59,99 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Kündbar im eigenen App-Store- oder Google-Play-Konto; wer vor Ende der Testphase kündigt, zahlt nichts.
+Die ersten vier Lektionen bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs gehört zum vollen Zugang: die ersten Tage gratis, danach 5,00 € pro Monat im Jahresabo (59,99 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Kündbar im eigenen App-Store-Konto; wer vor Ende der Testphase kündigt, zahlt nichts.
 
 GEMACHT, UM ES EINEM KIND ZU GEBEN
 • Kein Konto, kein Login — ein Kind trägt hier nichts ein
@@ -90,5 +90,15 @@ https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 `Marokkanisch spielerisch — damit dein Kind mit Oma und Opa reden kann.`
 
 **Vollständige Beschreibung (max. 4000)**
-Derselbe Text wie die App-Store-Beschreibung oben, ohne die letzte Zeile:
-der Link zu Apples Nutzungsbedingungen gehört nicht zu Google Play.
+Derselbe Text wie die App-Store-Beschreibung oben, mit zwei
+Unterschieden:
+
+1. **ohne die letzte Zeile** — der Link zu Apples Nutzungsbedingungen gehört
+   nicht zu Google Play;
+2. **der Kündigungssatz nennt den anderen Store.** Wo bei Apple
+   `Kündbar im eigenen App-Store-Konto` steht, steht hier
+   `Kündbar im eigenen Google-Play-Konto`.
+
+Der Grund steht in `store/listing.nl.md`: Apple hat Version 1.0 (Build 5) nach
+Richtlinie 2.3.10 abgelehnt, weil die App-Store-Beschreibung Google Play
+nannte.
