@@ -54,8 +54,31 @@ const mailtos = () => page.$$eval('a[href^="mailto:"]', (as) => as.map((a) => {
   }
 }))
 
+/**
+ * Open the feedback sheet, past the parent gate.
+ *
+ * Every mail entry point sits behind `useMailPoort()`, so a tap first opens a
+ * small sum — `a × b` — that a four-year-old is not meant to solve. That is
+ * the child lock, and `src/ui/kinderslot.test.ts` guards it; this check used
+ * to click the button and wait for a `mailto:` that would never come, and it
+ * failed with a timeout that said nothing about a gate.
+ */
 const openSheet = async (trigger) => {
   await trigger.click()
+  await page.waitForTimeout(250)
+
+  const som = await page.evaluate(() => {
+    const blad = document.querySelector('[role="dialog"]')
+    return /(\d+)\s*[×x*]\s*(\d+)/.exec(blad?.textContent ?? '')?.slice(1, 3) ?? null
+  })
+  if (som) {
+    const veld = page.locator('[role="dialog"] input').first()
+    await veld.fill(String(Number(som[0]) * Number(som[1])))
+    // De laatste knop in het blad is bevestigen; de eerste is annuleren.
+    await page.locator('[role="dialog"] button').last().click()
+    await page.waitForTimeout(250)
+  }
+
   await page.waitForSelector('a[href^="mailto:"]', { timeout: 4000 })
 }
 
