@@ -34,7 +34,14 @@ const arg = (naam, terugval = null) => {
 }
 const ANR = process.argv.includes('--anr')
 const VERSIE = arg('versie')
-const HOEVEEL = Number(arg('aantal', '3'))
+/**
+ * Hoeveel soorten crashes je wilt zien. Niet hoeveel voorbeelden per soort:
+ * `sampleErrorReportLimit` neemt volgens de API alleen 0 of 1, en op 3 komt er
+ * een 400 terug met "'sample_error_reports' field only supports the values 0
+ * and 1". Eén voorbeeld per soort is ook genoeg — wat je zoekt is de
+ * stacktrace, en die is binnen een soort steeds dezelfde.
+ */
+const HOEVEEL = Math.max(1, Math.min(50, Number(arg('aantal', '10')) || 10))
 
 /* ------------------------------------------------------------- de sleutel */
 
@@ -160,7 +167,11 @@ async function metVenster(bewijs, maakPad) {
   try {
     return { uit: await api(bewijs, maakPad(`${venster()}&`)), periode: 'de laatste 28 dagen' }
   } catch (fout) {
-    if (fout.status !== 400) throw fout
+    // Alleen opnieuw proberen als de klacht over het venster gaat. Een 400 kan
+    // over van alles gaan — de eerste echte aanroep gaf er een over
+    // `sample_error_reports` — en dan is het venster weglaten geen reparatie
+    // maar een tweede verzoek dat net zo hard omvalt.
+    if (fout.status !== 400 || !/interval|start_?time|end_?time/i.test(String(fout.message))) throw fout
     const uit = await api(bewijs, maakPad(''))
     return { uit, periode: 'de standaardperiode van Google (het opgegeven venster werd geweigerd)' }
   }
@@ -192,7 +203,7 @@ try {
   const antwoord = await metVenster(bewijs, (v) =>
     `/apps/${APP}/errorIssues:search?${v}`
     + `filter=${encodeURIComponent(filters.join(' AND '))}`
-    + `&sampleErrorReportLimit=${HOEVEEL}&pageSize=10&orderBy=${encodeURIComponent('errorReportCount desc')}`)
+    + `&sampleErrorReportLimit=1&pageSize=${HOEVEEL}&orderBy=${encodeURIComponent('errorReportCount desc')}`)
   uit = antwoord.uit
   periode = antwoord.periode
 } catch (fout) {
@@ -258,7 +269,7 @@ for (const [i, zaak] of zaken.entries()) {
   }
   console.log('')
 
-  const namen = (zaak.sampleErrorReports ?? []).slice(0, HOEVEEL)
+  const namen = (zaak.sampleErrorReports ?? []).slice(0, 1)
   if (!namen.length) {
     console.log('   (geen voorbeeldmelding meegeleverd)\n')
     continue
