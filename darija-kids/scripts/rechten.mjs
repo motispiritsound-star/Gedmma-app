@@ -108,22 +108,66 @@ async function api(bewijs, pad, opties = {}) {
 console.log(`\nServiceaccount: ${sleutel.client_email}`)
 console.log(`App:            ${APP}\n`)
 
-const bewijs = await token()
+let bewijs
+try {
+  bewijs = await token()
+} catch (fout) {
+  console.error(`${fout.message}\n`)
+  console.error('De sleutel werd niet aangenomen. Kijk of het het juiste')
+  console.error('serviceaccount is, en of de systeemklok klopt.\n')
+  process.exit(1)
+}
+
+/*
+ * De gebruikerslijst ophalen, en die bron heeft een eigenaardigheid.
+ *
+ * Zonder parameters antwoordt hij met 400: "Pagination is not currently
+ * available. The page_size parameter must be set to -1." Je moet paginering dus
+ * uitdrukkelijk uitzetten, met een waarde die nergens anders voorkomt. Google
+ * noemt het veld `page_size` in die melding, terwijl de JSON-vorm van deze API
+ * overal elders `pageSize` gebruikt — daarom worden beide geprobeerd, in die
+ * volgorde, net als bij de vensters in crashcheck.mjs. Raden welke van de twee
+ * het is kost een ronde; ze allebei proberen kost niets.
+ */
+async function gebruikers() {
+  let laatste
+  for (const vorm of ['?pageSize=-1', '?page_size=-1', '']) {
+    try {
+      return await api(bewijs, `/androidpublisher/v3/developers/${DEV}/users${vorm}`)
+    } catch (fout) {
+      laatste = fout
+      if (fout.status !== 400) throw fout
+    }
+  }
+  throw laatste
+}
 
 let ik
 try {
-  const lijst = await api(bewijs, `/androidpublisher/v3/developers/${DEV}/users`)
+  const lijst = await gebruikers()
   ik = (lijst.users ?? []).find((u) => (u.email ?? '').toLowerCase() === sleutel.client_email.toLowerCase())
 } catch (fout) {
-  if (fout.status !== 403) throw fout
+  if (fout.status === 403) {
+    /*
+     * Dit mag het account niet. Dat is op zichzelf een antwoord: wie de
+     * gebruikerslijst niet mag lezen, mag zeker geen rechten wijzigen, en dan
+     * is er geen opdracht die dit oplost.
+     */
+    console.log('Dit account mag de gebruikerslijst niet eens lezen, dus het kan zijn eigen')
+    console.log('rechten ook niet opvragen of wijzigen. Daarmee is dit het enige punt in')
+    console.log('dit hele traject waar een muis niet te vermijden is.\n')
+    toonHandmatig()
+    process.exit(1)
+  }
   /*
-   * Ook dit mag het account niet. Dat is op zichzelf een antwoord: wie de
-   * gebruikerslijst niet mag lezen, mag zeker geen rechten wijzigen, en dan is
-   * er geen opdracht die dit oplost.
+   * En alles wat ik niet voorzien heb: leesbaar, niet als stacktrace. Een
+   * stacktrace wijst naar de regel waar de fout is gemaakt en niet naar wat
+   * eraan te doen is, en dat is hier precies de verkeerde kant op.
    */
-  console.log('Dit account mag de gebruikerslijst niet eens lezen, dus het kan zijn eigen')
-  console.log('rechten ook niet opvragen of wijzigen. Daarmee is dit het enige punt in')
-  console.log('dit hele traject waar een muis niet te vermijden is.\n')
+  console.error(`De rechten opvragen lukte niet (${fout.status ?? '?'}).\n`)
+  console.error(String(fout.message).split('\n').slice(0, 12).join('\n'))
+  console.error('\nDit is een antwoord dat ik niet had voorzien. Wat je hoe dan ook zelf')
+  console.error('kunt doen:\n')
   toonHandmatig()
   process.exit(1)
 }
