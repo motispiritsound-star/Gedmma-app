@@ -33,9 +33,66 @@ export const wrangler = (argumenten, opties = {}) => {
     console.error('  npm install\n')
     process.exit(1)
   }
-  return execFileSync(process.execPath, [BIN, ...argumenten], {
-    cwd: SERVER, stdio: 'pipe', encoding: 'utf8', ...opties,
-  })
+  try {
+    return execFileSync(process.execPath, [BIN, ...argumenten], {
+      cwd: SERVER, stdio: 'pipe', encoding: 'utf8', ...opties,
+    })
+  } catch (fout) {
+    /*
+     * `execFileSync` zet de hele aanroep in `.message`: het pad naar node, het
+     * pad naar wrangler, en bij een d1-opdracht het complete SQL-statement.
+     * Dat is een blok van tien regels waarin de eigenlijke reden ergens
+     * onderaan staat, als hij er al in staat.
+     *
+     * De reden staat in `stderr`. Die wordt de melding, en `status`, `stderr`
+     * en `stdout` blijven staan omdat deploy.mjs de exitcode doorgeeft en de
+     * andere scripts de tekst zelf opmaken.
+     */
+    const stderr = String(fout.stderr ?? '')
+    const stdout = String(fout.stdout ?? '')
+    const netjes = new Error((stderr || stdout || String(fout.message ?? '')).trim())
+    netjes.status = fout.status
+    netjes.stderr = stderr
+    netjes.stdout = stdout
+    throw netjes
+  }
+}
+
+/**
+ * Gaat deze fout over inloggen, of over iets anders?
+ *
+ * Het verschil is belangrijk. Een controle die "weg" zegt terwijl hij "ik kon
+ * het niet vragen" bedoelt, zet je aan het werk aan iets dat niet stuk is.
+ */
+export const isInlogfout = (fout) => {
+  const tekst = `${fout?.stderr ?? ''}${fout?.stdout ?? ''}${fout?.message ?? ''}`
+  return /CLOUDFLARE_API_TOKEN|not logged in|authenticat|Unauthorized/i.test(tekst)
+}
+
+/**
+ * Wrangler aanroepen en er bij een fout mee ophouden, leesbaar.
+ *
+ * Voor scripts die niets beters kunnen doen dan stoppen. Zonder dit geeft een
+ * mislukte aanroep een stacktrace van Node waarin het woord "wrangler" één
+ * keer voorkomt en het woord "inloggen" nul keer -- `npm run bestellingen`
+ * deed dat, en dan zoek je in de verkeerde hoek.
+ */
+export const wranglerOfStop = (argumenten, wat = 'dit op te vragen') => {
+  try {
+    return wrangler(argumenten)
+  } catch (fout) {
+    if (isInlogfout(fout)) {
+      console.error(`\nWrangler weet niet wie je bent, dus het lukt niet om ${wat}.\n`)
+      console.error('Log één keer in:\n')
+      console.error('  npm run inloggen\n')
+      process.exit(1)
+    }
+    console.error(`\nHet is niet gelukt om ${wat}.\n`)
+    const tekst = String(fout.message || fout).replace(/\u001b\[[0-9;]*m/g, '')
+    console.error(tekst.split('\n').filter(Boolean).slice(-4).map((r) => `  ${r}`).join('\n'))
+    console.error('')
+    process.exit(typeof fout.status === 'number' ? fout.status : 1)
+  }
 }
 
 /**

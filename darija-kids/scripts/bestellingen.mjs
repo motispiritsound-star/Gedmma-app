@@ -14,7 +14,7 @@
  *   npm run bestellingen -- --alles — allemaal
  *   npm run bestellingen -- --hier  — op de lokale kopie
  */
-import { wrangler } from './lib/wrangler.mjs'
+import { wranglerOfStop } from './lib/wrangler.mjs'
 
 const HIER = process.argv.includes('--hier')
 const ALLES = process.argv.includes('--alles')
@@ -32,8 +32,10 @@ SELECT b.bestelnummer, b.email, b.reeksen,
  ORDER BY b.gekocht_op DESC
  ${ALLES ? '' : 'LIMIT 25'}`
 
-const uit = wrangler(['d1', 'execute', 'darijaforkids',
-  HIER ? '--local' : '--remote', '--yes', '--json', '--command', VRAAG])
+const uit = wranglerOfStop(
+  ['d1', 'execute', 'darijaforkids', HIER ? '--local' : '--remote', '--yes', '--json', '--command', VRAAG],
+  'de bestellingen op te vragen',
+)
 
 /** Wrangler zet er soms een regel tekst boven; het json begint bij de haak. */
 const rijen = JSON.parse(uit.slice(uit.indexOf('[')))[0]?.results ?? []
