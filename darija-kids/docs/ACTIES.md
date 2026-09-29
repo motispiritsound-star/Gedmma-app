@@ -9,9 +9,29 @@ De volgorde is de volgorde. Hij loopt van "hier gaat een klant op stuk" naar
 
 Alle opdrachten zijn voor PowerShell en werken vanuit elke map.
 
-**Zet dit één keer goed, dan hoef je nooit meer een pad in te typen.** Deze
-drie regels onthouden de projectmap als `$p`, ook nadat je PowerShell hebt
-afgesloten. Elke regel apart uitvoeren:
+## Begin hier, in elk nieuw venster
+
+Alles hieronder gebruikt `$p` voor de projectmap. Een variabele leeft maar in
+het venster waarin je hem zet, dus **plak deze regel als eerste in elk nieuw
+PowerShell-venster.** Hij zoekt de map zelf op:
+
+```powershell
+$p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName; $p
+```
+
+Hij drukt het gevonden pad af. Zie je niets, dan staat de map niet onder je
+thuismap en klopt er iets anders niet.
+
+**Zie je ergens "The variable '$p' cannot be retrieved because it has not been
+set"?** Dan is dit venster nieuw en is bovenstaande regel nog niet gedraaid.
+Dat is de enige oorzaak. Het is mij twee keer overkomen dat ik je opdrachten
+met `$p` gaf zonder die regel erbij; vandaar dat hij nu bovenaan staat.
+
+<details>
+<summary>Liever één keer instellen en er nooit meer aan denken</summary>
+
+Deze drie regels onthouden de map ook nadat je PowerShell afsluit. Elke regel
+apart uitvoeren:
 
 ```powershell
 $d = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName
@@ -25,18 +45,44 @@ if (-not (Test-Path $PROFILE)) { New-Item -ItemType File -Path $PROFILE -Force |
 Add-Content $PROFILE "`$p = '$d'"
 ```
 
-Sluit PowerShell daarna en open hem opnieuw. Vanaf dan werkt `npm --prefix $p`
-in elk venster.
+Sluit PowerShell daarna en open hem opnieuw. Vanaf dan is `$p` er altijd, ook
+in een vers venster, en kun je de regel hierboven overslaan.
 
-**Zie je "The variable '$p' cannot be retrieved because it has not been set"?**
-Dan is dat bovenstaande nog niet gedaan, of het venster stond al open. Deze ene
-regel werkt altijd, zonder variabele — hij zoekt de map zelf op:
+</details>
+
+---
+
+## Nu eerst · Google Play heeft de app eruit gehaald
+
+Op 29 september is versie 2 (1.1) afgewezen op de Broken Functionality-regel,
+met één zin: *"Crashes: Your app crashes after opening."* De app staat niet meer
+in de winkel. Dat gaat vóór alles hieronder.
+
+Die ene zin is te weinig om iets te repareren; wat nodig is, is de
+uitzondering en de regels eronder. Die zijn op te vragen met de sleutel die je
+al hebt:
 
 ```powershell
-npm --prefix (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName run platencheck
+npm --prefix $p run crashes -- --versie 2
 ```
 
-Vervang `platencheck` door de opdracht die je wilt.
+Komt daar "Google kent hier geen crashes" uit, dan zegt dat niets: die cijfers
+komen van toestellen van gebruikers die gegevens delen, en een app die vóór de
+uitrol is afgewezen heeft die niet. Kijk dan in Play Console bij **Testen en
+publiceren → Testen → Rapport vóór lancering**. Daar staat wat de beoordelaar
+zelf zag, meestal met een filmpje en de uitzondering erbij. Dat is de ene plek
+waar een muis niet te vermijden is.
+
+**Dien nog geen beroep in en bouw nog geen versie 3.** Eén verkeerde inzending
+kost weer een ronde van zeven dagen.
+
+Wat we al weten: versie 1.1 is gebouwd op 23 september, vóór de foutopvang.
+In die versie geeft elke fout bij het opstarten een wit scherm — geen tekst,
+geen knop. Een beoordelaar die dat ziet schrijft "crashes after opening" op.
+De bouw is hier koud gestart in een browser, ook met een nagebootste
+Capacitor-laag in vier varianten, en hij rendert zonder fouten; R8 staat uit
+en de splash-bron bestaat. Wat overblijft is native, en daarvoor is die
+stacktrace nodig.
 
 ---
 
