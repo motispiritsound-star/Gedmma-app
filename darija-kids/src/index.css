@@ -92,6 +92,22 @@
 }
 
 :root {
+  /*
+   * De ruimte voor de systeembalken, achter een variabele.
+   *
+   * Op Android tekent alles vanaf 15 standaard tot in de hoeken, dus daar is
+   * `env()` precies wat je nodig hebt. Op iOS staat `contentInset: 'always'`
+   * in capacitor.config.ts, en die schuift de inhoud van de WebView al onder
+   * de inkeping vandaan. Geeft `env()` daar óók een waarde terug, dan staat de
+   * marge er twee keer — en dat is even zichtbaar als het probleem dat je
+   * oplost.
+   *
+   * Wat `env()` op iOS doet is niet vast te stellen zonder een echt toestel.
+   * Dus verandert er op iOS niets: daar staat hij op nul en blijft het zoals
+   * het al die tijd is geweest. `data-stelsel` wordt in main.tsx gezet.
+   */
+  --rand-boven: env(safe-area-inset-top);
+  --rand-onder: env(safe-area-inset-bottom);
   --surface: #fffaf3;
   --surface-raised: #ffffff;
   --surface-sunken: #f4ece1;
@@ -100,6 +116,11 @@
   --line: #e7dccd;
   --shadow-press: 0 4px 0 0 rgb(0 0 0 / 0.16);
   color-scheme: light;
+}
+
+:root[data-stelsel="ios"] {
+  --rand-boven: 0px;
+  --rand-onder: 0px;
 }
 
 :root[data-theme="dark"] {

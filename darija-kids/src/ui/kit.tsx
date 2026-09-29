@@ -104,7 +104,7 @@ export function Sheet({ open, onClose, children, labelledBy }: { open: boolean; 
          * Op een breed scherm staat het paneel gecentreerd en is de inset nul,
          * dus daar verandert er niets.
          */
-        style={{ paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}
+        style={{ paddingBottom: 'calc(1.5rem + var(--rand-onder))' }}
       >
         {children}
       </motion.div>

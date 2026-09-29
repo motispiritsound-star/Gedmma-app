@@ -41,7 +41,7 @@ export function Landing() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--surface)]/70 to-[var(--surface)]" aria-hidden="true" />
         {/* De zellige-achtergrond mag tot in de hoek doorlopen -- dat is juist
             mooi. De navigatie erbovenop niet: die moet onder de klok blijven. */}
-        <div className="relative mx-auto max-w-5xl px-4 pb-6" style={{ paddingTop: 'calc(1.5rem + env(safe-area-inset-top))' }}>
+        <div className="relative mx-auto max-w-5xl px-4 pb-6" style={{ paddingTop: 'calc(1.5rem + var(--rand-boven))' }}>
           <nav className="flex flex-wrap items-center gap-3">
             <span className="flex items-center gap-2 font-display text-2xl font-extrabold">
               <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-saffron-400 to-terra-500 text-night-950">د</span>

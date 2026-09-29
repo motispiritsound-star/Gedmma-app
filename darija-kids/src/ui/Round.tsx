@@ -256,7 +256,7 @@ export function RoundRunner({
   return (
     <div
       className="mx-auto flex min-h-screen max-w-2xl flex-col px-4 pb-4 md:max-w-3xl md:px-6 md:pb-6"
-      style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}
+      style={{ paddingTop: 'calc(1rem + var(--rand-boven))' }}
     >
       <div className="flex items-center gap-3">
         <button onClick={() => { sfx.back(); setQuit(true) }} aria-label={t.common.sluiten} className="text-2xl text-[var(--ink-soft)] hover:text-[var(--ink)]">✕</button>
@@ -341,7 +341,7 @@ export function RoundRunner({
              */
             style={{
               pointerEvents: verdict ? 'auto' : 'none',
-              paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))',
+              paddingBottom: 'calc(1rem + var(--rand-onder))',
             }}
             className={`sticky bottom-0 -mx-4 border-t-2 px-4 pt-4 ${
               verdict === 'goed' ? 'border-mint-500 bg-mint-500/15'

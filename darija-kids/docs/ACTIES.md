@@ -477,43 +477,42 @@ Zeg welke, dan voer ik hem uit.
 
 ---
 
-## 8 · Edge-to-edge op Android — zodra de beoordelingen klaar zijn
+## 8 · Edge-to-edge — gedaan voor Android, nog na te kijken op iOS
 
-Google meldt bij release 2 (1.1) twee **aanbevelingen**, geen blokkades. De
-tweede (R8-optimalisatie) kan wachten. De eerste is echt:
+Google meldde het bij versiecode 4: *"Edge-to-edge may not display for all
+users"*. Dat klopte. `viewport-fit=cover` stond er en de tabbalk was afgedekt,
+maar `safe-area-inset-top` stond nergens, terwijl `targetSdkVersion 36`
+betekent dat Android 15 tot in de hoeken tekent.
 
-> Edge-to-edge may not display for all users
+Vijf plekken hadden het nodig. Twee daarvan zijn meer dan opmaak: de knop in
+het paneel dat van onderen opkomt — dat is de taalkeuze bij de allereerste
+start — en de knop naar de volgende vraag in een les. Ligt zo'n knop onder de
+gebarenbalk, dan komt een kind niet verder.
 
-`android/variables.gradle` zet `targetSdkVersion = 36`, en vanaf API 3e dwingt
-Android edge-to-edge af: het stelsel tekent achter de statusbalk en de app moet
-zelf ruimte vrijhouden. De app doet dat alleen onderaan —
-`src/App.tsx:148` heeft `paddingBottom: env(safe-area-inset-bottom)` — en
-nergens bovenaan. De kopbalk staat op `sticky top-0` (`src/ui/TopBar.tsx:29`),
-dus op een toestel met Android 15 of 16 schuift hij onder de klok en het
-batterijpictogram.
+**Op iOS verandert er niets, met opzet.** Daar staat `contentInset: 'always'`
+in `capacitor.config.ts`, en die schuift de inhoud van de WebView al onder de
+inkeping vandaan. Geeft `env()` daar óók een waarde terug, dan staat de marge er
+twee keer — even zichtbaar als het probleem dat je oplost. Wat `env()` daar
+werkelijk doet is niet vast te stellen zonder een echt toestel, dus staan de
+twee variabelen op iOS op nul.
 
-`viewport-fit=cover` staat al in `index.html`, dus `env()` geeft daar de echte
-waarde terug. De wijziging is één regel op die kopbalk:
+Nagemeten in Chromium op 390x844, met Capacitor nagebootst en `env()` op 48px:
 
-    style={{ paddingTop: 'env(safe-area-inset-top)' }}
+| `env()` | stelsel | kopbalk | logo |
+|---|---|---|---|
+| 48px | android | 48px | 52 |
+| 48px | ios | 0px | 4 |
 
-**Waarom dit niet alvast gedaan is.** Op iOS staat `contentInset: 'always'` in
-`capacitor.config.ts`. Of `env(safe-area-inset-top)` daar nul teruggeeft, of
-de inkeping er een tweede keer bovenop zet, is niet vast te stellen zonder een
-echt toestel — en een dubbele marge bovenaan is precies zo zichtbaar als het
-probleem dat je oplost. Bovendien ligt deze build nu bij allebei de winkels.
+Op Android schuift alles precies 48 mee; op iOS staat het er nog exact zoals
+het altijd stond. `randen.test.ts` bewaakt de vijf plekken, de twee variabelen
+en de uitzondering.
 
-**Hoe je het natest, als de beoordelingen klaar zijn.** Zet de regel erin,
-bouw, en kijk op twee toestellen naar de bovenkant van het leerpad:
+**Wat je nog kunt natesten, als je een toestel bij de hand hebt.** Op een
+Android 15 of 16: staat de rij met hartjes en XP nu onder de klok, of eronder?
+Blijkt `env()` op iOS nul te geven, dan kan de uitzondering in `index.css`
+weg — maar dat hoeft niet, want nul is nul.
 
-- Een Android met 15 of 16: staat de rij met hartjes en XP nu onder de klok,
-  of eronder?
-- Een iPhone met inkeping: is de ruimte boven de kopbalk gelijk gebleven?
-
-Is het op iOS dubbel, dan hoort de regel achter een platformcontrole in plaats
-van er kaal in.
-
----
+Dit zit **niet** in versiecode 4; die lag al bij Google. Het gaat mee in 1.3.
 
 ---
 

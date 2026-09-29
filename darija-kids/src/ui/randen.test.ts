@@ -67,8 +67,7 @@ describe('de app houdt afstand van de systeembalken', () => {
   ]
 
   it.each(BOVEN)('%s houdt de bovenkant vrij (%s)', (pad, wat) => {
-    expect(bron(pad), `${wat}: geen env(safe-area-inset-top) meer`)
-      .toContain('env(safe-area-inset-top)')
+    expect(bron(pad), `${wat}: de ruimte bovenaan is weg`).toContain('var(--rand-boven)')
   })
 
   /**
@@ -86,7 +85,37 @@ describe('de app houdt afstand van de systeembalken', () => {
   ]
 
   it.each(ONDER)('%s houdt de onderkant vrij (%s)', (pad, wat) => {
-    expect(bron(pad), `${wat}: geen env(safe-area-inset-bottom) meer`)
-      .toContain('env(safe-area-inset-bottom)')
+    expect(bron(pad), `${wat}: de ruimte onderaan is weg`).toContain('var(--rand-onder)')
+  })
+
+  /**
+   * De twee variabelen, en de uitzondering die erachter zit.
+   *
+   * Op iOS staat `contentInset: 'always'` in capacitor.config.ts, en die
+   * schuift de inhoud van de WebView al onder de inkeping vandaan. Geeft
+   * `env()` daar óók een waarde, dan staat de marge er twee keer. Wat het daar
+   * werkelijk doet is niet vast te stellen zonder een echt toestel, dus op iOS
+   * staan ze op nul en blijft alles zoals het was. Alleen Android verandert —
+   * en dat is precies het platform waar Google erover klaagde.
+   */
+  it('leest de ruimte van het toestel, behalve op iOS', () => {
+    const css = bron('../index.css')
+    expect(css, '--rand-boven komt niet meer van env()').toMatch(
+      /--rand-boven:\s*env\(safe-area-inset-top\)/,
+    )
+    expect(css, '--rand-onder komt niet meer van env()').toMatch(
+      /--rand-onder:\s*env\(safe-area-inset-bottom\)/,
+    )
+    const opIos = /:root\[data-stelsel="ios"\]\s*\{[^}]*\}/.exec(css)?.[0] ?? ''
+    expect(opIos, 'de uitzondering voor iOS is weg; dan kan de marge daar dubbel staan')
+      .toMatch(/--rand-boven:\s*0px/)
+    expect(opIos).toMatch(/--rand-onder:\s*0px/)
+  })
+
+  it('weet op welk stelsel het draait voordat er iets getekend wordt', () => {
+    // Zonder deze regel is data-stelsel leeg, geldt de iOS-uitzondering nooit,
+    // en is de hele voorzorg hierboven een dode letter.
+    expect(bron('../main.tsx'), 'data-stelsel wordt niet meer gezet')
+      .toContain('document.documentElement.dataset.stelsel')
   })
 })

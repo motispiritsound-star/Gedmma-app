@@ -44,7 +44,7 @@ export function TopBar() {
   return (
     <header
       className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--surface)]/90 backdrop-blur"
-      style={{ paddingTop: 'env(safe-area-inset-top)' }}
+      style={{ paddingTop: 'var(--rand-boven)' }}
     >
       <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-2.5">
         {/*

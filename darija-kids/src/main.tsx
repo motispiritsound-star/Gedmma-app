@@ -2,7 +2,13 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
 import { Grens } from './ui/Grens'
+import { platform } from './engine/platform'
 import './index.css'
+
+// Waar de app op draait, op <html>, zodat de opmaak erop kan reageren. Dit
+// staat vóór het renderen: `--rand-boven` en `--rand-onder` in index.css
+// hangen ervan af, en die worden bij het eerste scherm al gebruikt.
+document.documentElement.dataset.stelsel = platform()
 
 // `Grens` staat binnen StrictMode maar buiten `App`, want een fout in App zelf
 // moet hij ook opvangen — en dat kan alleen van buitenaf. Zonder deze regel
