@@ -140,7 +140,26 @@ async function api(bewijs, pad) {
  * dan weet je bij een leeg antwoord niet of er niets is of dat je buiten het
  * venster hebt gekeken.
  */
-const venster = () => {
+/**
+ * De laatste achtentwintig dagen, in hele uren — en wel op de vorm die de API wil.
+ *
+ * Dat is de enige plek waar ik moest gokken, en dat kostte twee rondes. De API
+ * wil een `google.type.DateTime` als losse queryvelden, en welke tijdzone-vorm
+ * daarbij hoort staat niet in de foutmelding. Eerst probeerde ik het met
+ * `utcOffset=0s`; antwoord: "'utc_offset' must be unset."
+ *
+ * Dus gokt hij niet meer, hij probeert. Drie vormen, in deze volgorde, en bij
+ * een 400 over de tijd gaat hij door naar de volgende:
+ *
+ *   1. met `timeZone.id=UTC`   — de andere manier om er een zone bij te zetten
+ *   2. kaal, zonder zone       — wat "utc_offset must be unset" letterlijk vraagt
+ *   3. zonder venster          — dan kiest Google zelf een periode
+ *
+ * Drie verzoeken in het slechtste geval, en die kosten niets. Welke vorm het
+ * werd staat in de uitvoer, want anders weet je bij een leeg antwoord niet over
+ * welke periode je hebt gekeken.
+ */
+const KLOK = () => {
   const eind = new Date()
   const begin = new Date(eind.getTime() - 28 * 24 * 3600 * 1000)
   const deel = (d, v) => [
@@ -149,33 +168,51 @@ const venster = () => {
     `${v}.day=${d.getUTCDate()}`,
     `${v}.hours=${d.getUTCHours()}`,
   ].join('&')
-  return `${deel(begin, 'interval.startTime')}&${deel(eind, 'interval.endTime')}`
-    + '&interval.startTime.utcOffset=0s&interval.endTime.utcOffset=0s'
+  return { begin, eind, deel }
 }
 
-/**
- * Hetzelfde verzoek, eerst mét venster en anders zonder.
- *
- * De API wil een `google.type.DateTime` als losse queryvelden, en of daar een
- * tijdzone bij moet is niet uit de foutmelding te raden. Wordt het venster
- * geweigerd, dan vraagt hij het zonder — dan antwoordt Google met zijn eigen
- * standaardperiode, en dat is nog altijd beter dan afbreken op een detail van
- * de opmaak. Welke van de twee het werd staat erbij, want anders weet je bij
- * een leeg antwoord niet waar je gekeken hebt.
- */
+const VORMEN = [
+  {
+    naam: 'de laatste 28 dagen',
+    maak: () => {
+      const { begin, eind, deel } = KLOK()
+      return `${deel(begin, 'interval.startTime')}&interval.startTime.timeZone.id=UTC`
+        + `&${deel(eind, 'interval.endTime')}&interval.endTime.timeZone.id=UTC&`
+    },
+  },
+  {
+    naam: 'de laatste 28 dagen',
+    maak: () => {
+      const { begin, eind, deel } = KLOK()
+      return `${deel(begin, 'interval.startTime')}&${deel(eind, 'interval.endTime')}&`
+    },
+  },
+  {
+    naam: 'de standaardperiode van Google (het opgegeven venster werd geweigerd)',
+    maak: () => '',
+  },
+]
+
+/** Gaat deze 400 over de tijd, of over iets anders? */
+const overDeTijd = (fout) => fout.status === 400
+  && /interval|start_?time|end_?time|utc_?offset|time_?zone|datetime/i.test(String(fout.message))
+
 async function metVenster(bewijs, maakPad) {
-  try {
-    return { uit: await api(bewijs, maakPad(`${venster()}&`)), periode: 'de laatste 28 dagen' }
-  } catch (fout) {
-    // Alleen opnieuw proberen als de klacht over het venster gaat. Een 400 kan
-    // over van alles gaan — de eerste echte aanroep gaf er een over
-    // `sample_error_reports` — en dan is het venster weglaten geen reparatie
-    // maar een tweede verzoek dat net zo hard omvalt.
-    if (fout.status !== 400 || !/interval|start_?time|end_?time/i.test(String(fout.message))) throw fout
-    const uit = await api(bewijs, maakPad(''))
-    return { uit, periode: 'de standaardperiode van Google (het opgegeven venster werd geweigerd)' }
+  let laatste
+  for (const vorm of VORMEN) {
+    try {
+      return { uit: await api(bewijs, maakPad(vorm.maak())), periode: vorm.naam }
+    } catch (fout) {
+      // Een 400 over iets anders — zoals die over `sample_error_reports` — is
+      // geen reden om het nog eens te proberen; dan valt het tweede verzoek
+      // net zo hard om en staat dezelfde fout twee keer op het scherm.
+      if (!overDeTijd(fout)) throw fout
+      laatste = fout
+    }
   }
+  throw laatste
 }
+
 
 /* ---------------------------------------------------------------- opvragen */
 
