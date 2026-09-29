@@ -73,8 +73,31 @@ publiceren → Testen → Rapport vóór lancering**. Daar staat wat de beoordel
 zelf zag, meestal met een filmpje en de uitzondering erbij. Dat is de ene plek
 waar een muis niet te vermijden is.
 
-**Dien nog geen beroep in en bouw nog geen versie 3.** Eén verkeerde inzending
-kost weer een ronde van zeven dagen.
+### Er is nooit een rapport vóór lancering geweest
+
+Dat scherm zegt: *"Upload artifacts to generate pre-launch reports."* Versie 2
+is rechtstreeks naar productie gegaan, en daardoor was de eerste keer dat
+iemand die app op een echt toestel draaide, de beoordelaar die hem afwees.
+
+Google maakt zo'n rapport automatisch zodra je een bundel naar wélke track dan
+ook uploadt. Hij draait de app dan op een rij echte toestellen, met een filmpje
+en een stacktrace als er iets omvalt — zonder beoordeling, zonder risico voor
+de winkelvermelding. Vandaar `npm run track`:
+
+```powershell
+npm --prefix $p run aab -- --versie 3 --naam 1.2
+```
+
+```powershell
+npm --prefix $p run track
+```
+
+Die tweede zet hem op de interne test. Een half uur tot een uur later staat het
+rapport in Play Console. Pas als dat schoon is, heeft indienen bij productie
+zin.
+
+**Dien nog geen beroep in en stuur versie 3 nog niet naar productie.** Eén
+verkeerde inzending kost weer een ronde van zeven dagen.
 
 Wat we al weten: versie 1.1 is gebouwd op 23 september, vóór de foutopvang.
 In die versie geeft elke fout bij het opstarten een wit scherm — geen tekst,

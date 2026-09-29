@@ -83,7 +83,8 @@
     "platencheck": "node scripts/platencheck.mjs",
     "vertelstem": "node scripts/make-vertelstem.mjs",
     "crashes": "node scripts/crashcheck.mjs",
-    "bundelcheck": "node scripts/bundelcheck.mjs"
+    "bundelcheck": "node scripts/bundelcheck.mjs",
+    "track": "node scripts/naartrack.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
