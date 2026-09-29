@@ -107,6 +107,48 @@ Capacitor-laag in vier varianten, en hij rendert zonder fouten; R8 staat uit
 en de splash-bron bestaat. Wat overblijft is native, en daarvoor is die
 stacktrace nodig.
 
+### Eerst dit: weten wat er in versie 3 zit
+
+Er is iets aan het licht gekomen dat hier vóór gaat. **`npm run build` was op
+jouw machine stuk, en al sinds 25 september.** `sitecheck.mjs` maakte van een
+bestandspad een webadres zonder de padscheiding om te zetten; op Windows geeft
+dat backslashes, dus werd `/es` een `/es\`, en dat staat nooit in de sitemap.
+Dat zijn de dertig regels die je in je venster zag. Op Linux gaat het goed,
+dus de controle in GitHub heeft er nooit iets van gezegd. Het is gerepareerd.
+
+Waarom dat meer is dan een vervelende foutmelding: `aab` roept `android`,
+`android` roept `build`. Valt `build` om, dan draait `cap sync` niet en
+`maak-aab` niet — maar het AAB-bestand van de laatste keer dat het *wél* lukte
+blijft gewoon liggen. En `npm run track` pakte dat bestand. Daarmee kan er in
+de winkel iets anders staan dan wat je denkt te hebben opgestuurd, en dan zoek
+je een afwijzing in code die er niet in zit.
+
+Vanaf nu weigert `track` een bundel die ouder is dan de code, met het verschil
+in dagen erbij. Maar voor de bundel die er al ligt is deze vraag nog open, en
+die is met één regel te beantwoorden:
+
+```powershell
+npm --prefix $p run watzitin
+```
+
+Die kijkt in het AAB-bestand zelf. Sinds 29 september staat `target: es2019`
+in `vite.config.ts` en schrijft de bouw geen `?.` en geen `??` meer weg; een
+bundel van daarvoor staat er vol met. Nul betekent dus: de goede code. Een paar
+duizend betekent: dit is de app van vóór die dag, en dan is die bundel ook
+precies de bundel die op een oudere WebView omvalt bij het inlezen — zonder
+foutmelding, wat Google *"installs, but doesn't load"* noemt.
+
+Komt daar "NIET gebouwd met target: es2019" uit, bouw hem dan opnieuw met een
+versiecode die nog vrij is — 3 is verbruikt, ook al is er niets mee gebeurd:
+
+```powershell
+npm --prefix $p run aab -- --versie 4 --naam 1.2
+```
+
+```powershell
+npm --prefix $p run track
+```
+
 ---
 
 ## 0 · Haal eerst op wat er klaarstaat

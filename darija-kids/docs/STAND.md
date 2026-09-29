@@ -91,11 +91,17 @@ Wat in App Store Connect wél nog open staat, gaat niet over jouw scherm maar
 over de andere 174 landen — zie de drie open punten bij *De producten — Apple*
 in `docs/LAUNCH.md`.
 
-Dezelfde verbeteringen gaan als 1.2 naar Play. De bundel is gebouwd met
-`npm run aab -- --versie 3 --naam 1.2`. **Upload hem pas als 1.1 is
-goedgekeurd**: een nieuwe release vervangt de release die in review staat, en
-dan begint de eerste beoordeling van voren af aan. De "wat is er nieuw"-tekst
-voor beide winkels staat in zes talen in `store/wat-is-nieuw-1.2.md`.
+Dezelfde verbeteringen gaan als 1.2 naar Play. Dat is een ander verhaal
+geworden: 1.1 is op 29 september afgewezen en uit de winkel gehaald, dus er is
+geen beoordeling meer om te beschermen. Versiecode 3 staat op de interne test —
+maar **of daar de goede code in zit is nog niet vastgesteld.** `npm run build`
+was op Windows stuk vanaf 25 september, en omdat `aab` via `android` aan
+`build` hangt kan `track` de bundel van een eerdere dag hebben opgestuurd. Eén
+regel beantwoordt dat: `npm run watzitin` kijkt in het AAB-bestand zelf. Dat en
+wat er daarna moet gebeuren staat in `docs/ACTIES.md`.
+
+De "wat is er nieuw"-tekst voor beide winkels staat in zes talen in
+`store/wat-is-nieuw-1.2.md`.
 
 ### Nog na te kijken bij Google Play
 
