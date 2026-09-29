@@ -153,10 +153,18 @@ try {
      * gebruikerslijst niet mag lezen, mag zeker geen rechten wijzigen, en dan
      * is er geen opdracht die dit oplost.
      */
-    console.log('Dit account mag de gebruikerslijst niet eens lezen, dus het kan zijn eigen')
-    console.log('rechten ook niet opvragen of wijzigen. Daarmee is dit het enige punt in')
-    console.log('dit hele traject waar een muis niet te vermijden is.\n')
+    console.log('Dit account mag de gebruikerslijst niet lezen. Daarmee staat vast dat het')
+    console.log('geen rechten kan beheren, en dus ook niet die van zichzelf. Hier houdt')
+    console.log('wat een script kan doen op.\n')
+    console.log('Let op wat hier wel en niet bewezen is. Dat het geen rechten mag beheren,')
+    console.log('is zojuist aangetoond. Dát het uitgerekend "' + RECHTEN[NODIG] + '"')
+    console.log('mist, is afgeleid uit de 403 die npm run track kreeg bij het vastleggen —')
+    console.log('dat is de stap waar Google releaserechten toetst. Aannemelijk, niet')
+    console.log('bewezen.\n')
     toonHandmatig()
+    console.log('Staat dat vinkje al aan? Dan klopt deze verklaring niet en moeten we')
+    console.log('ergens anders kijken. Zeg dat dan, in plaats van eraan te gaan zitten')
+    console.log('sleutelen.\n')
     process.exit(1)
   }
   /*
