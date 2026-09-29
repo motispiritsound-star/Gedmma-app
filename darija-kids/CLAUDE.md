@@ -71,11 +71,21 @@ Windows PowerShell, geen bash en geen PowerShell 7. Dat betekent:
   bewaakt het nu, en dat geldt ook voor wat je in een gesprek typt — daar kijkt
   geen test mee.
 
-En zijn bestanden hebben **`\r\n` aan het eind van elke regel**. Een script dat
-in een bestand zoekt naar twee regels aan elkaar geplakt met `\n`, vindt daar
-niets — en meldt dan iets heel anders dan wat er aan de hand is. Zoek per
-regel, met `\r?\n` ertussen, en schrijf terug met het regeleinde dat het
-bestand al had.
+En zijn bestanden kunnen **`\r\n` aan het eind van elke regel** hebben. Git
+installeert op Windows standaard met "Checkout Windows-style", en dan zet
+`core.autocrlf` dat er bij het uitchecken in. Een script dat in zo'n bestand
+zoekt naar twee regels aan elkaar geplakt met `\n`, vindt daar niets — en meldt
+dan iets heel anders dan wat er aan de hand is.
+
+Voor wat **in de repository** staat is dat opgelost: `.gitattributes` zet
+`* text=auto eol=lf`, dus daar staat LF in de werkmap ongeacht de lokale
+instelling. Nagemeten in een kloon met `core.autocrlf=true`; het toevoegen gaf
+nul gewijzigde bestanden. `documentatie.test.ts` bewaakt het.
+
+Voor alles **daarbuiten** geldt de regel onverkort: `keystore.properties`,
+`.dev.vars`, `Info.plist`, alles wat een script op zijn schijf aanmaakt of
+bewerkt. Zoek daar per regel, met `\r?\n` ertussen, en schrijf terug met het
+regeleinde dat het bestand al had.
 
 En **geen `/tmp`**: die map bestaat daar niet. Gebruik `tmpdir()` uit
 `node:os`. Een script dat ergens een bestand neerzet en een ander script dat

@@ -197,6 +197,44 @@ describe('de commando\'s in de documentatie', () => {
  * wie een pad van `path.relative` in een URL stopt, moet de scheidingstekens
  * omzetten.
  */
+/**
+ * Regeleinden, aan de bron in plaats van in elk script apart.
+ *
+ * Git installeert op Windows standaard met "Checkout Windows-style", en dan
+ * krijgt elk tekstbestand bij het uitchecken `\r\n`. Een script dat in een
+ * bronbestand zoekt naar twee regels met `\n` ertussen vindt daar niets, en
+ * meldt dan iets heel anders dan wat er aan de hand is. De controle in GitHub
+ * ziet dat nooit: die draait op Linux.
+ *
+ * `.gitattributes` zet er LF in de werkmap neer, op elk besturingssysteem,
+ * ongeacht wat er lokaal is ingesteld. Nagemeten in een kloon met
+ * core.autocrlf=true: zonder het bestand komt package.json er met CRLF uit, en
+ * het toevoegen gaf nul gewijzigde bestanden omdat git bij het vergelijken
+ * normaliseert.
+ */
+describe('regeleinden', () => {
+  const attrs = readFileSync(path.join(WORTEL, '..', '.gitattributes'), 'utf8')
+
+  it('staan in de werkmap op LF, wat de machine ook wil', () => {
+    expect(attrs, 'de regel die LF afdwingt is weg').toMatch(/^\*\s+text=auto\s+eol=lf$/m)
+  })
+
+  it('laten een Windows-batchbestand met rust', () => {
+    // gradlew.bat start Gradle op Windows. Met LF leest cmd.exe hem niet.
+    expect(attrs, 'gradlew.bat zou LF krijgen en dan start Gradle daar niet')
+      .toMatch(/^\*\.bat\s+text\s+eol=crlf$/m)
+  })
+
+  it('raken geluid en platen niet aan', () => {
+    // 433 wav-bestanden en 241 webp's; die door een tekstfilter halen is fataal.
+    for (const soort of ['wav', 'webp', 'png', 'aab', 'keystore']) {
+      expect(attrs, `*.${soort} staat niet als binair gemarkeerd`).toMatch(
+        new RegExp(`^\\*\\.${soort}\\s+binary$`, 'm'),
+      )
+    }
+  })
+})
+
 describe('paden die een adres worden', () => {
   const scripts = ['sitecheck.mjs', 'make-site.mjs', 'bundelcheck.mjs']
 

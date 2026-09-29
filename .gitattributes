@@ -1,0 +1,48 @@
+# Regeleinden, één keer geregeld in plaats van in elk script apart.
+#
+# Op Windows installeert Git standaard met "Checkout Windows-style", en dan
+# staat core.autocrlf op true: elk tekstbestand krijgt bij het uitchecken \r\n.
+# Nagemeten in een kloon met die instelling — package.json komt er met CRLF uit.
+#
+# Dat is een hele klasse fouten die alleen op die ene machine bestaat. Een
+# script dat in een bronbestand zoekt naar twee regels met \n ertussen vindt
+# daar niets, en meldt dan iets heel anders dan wat er aan de hand is. Zoiets
+# ziet de controle in GitHub nooit, want die draait op Linux. Precies zo is
+# sitecheck.mjs vijf dagen stuk geweest zonder dat iemand het wist.
+#
+# Met `eol=lf` staat er in de werkmap LF, op elk besturingssysteem, ongeacht
+# wat er lokaal is ingesteld. Toevoegen kostte niets: in diezelfde proefkloon
+# meldde git nul gewijzigde bestanden, want hij normaliseert bij het
+# vergelijken. Geen berg, geen geblokkeerde pull.
+#
+# Let op: dit geldt voor wat ín de repository staat. Bestanden die er buiten
+# vallen — keystore.properties, .dev.vars, Info.plist op zijn schijf — kunnen
+# nog steeds CRLF hebben. Voor die bestanden blijft de regel uit CLAUDE.md
+# staan: zoek per regel, met \r?\n ertussen.
+* text=auto eol=lf
+
+# Behalve dit: een Windows-batchbestand moet CRLF houden, anders leest cmd.exe
+# hem niet. Dit is de wrapper waarmee Gradle op Windows start.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binair, nooit aanraken. `text=auto` herkent het meestal zelf, maar bij 433
+# wav-bestanden en 241 webp's is raden geen goed idee.
+*.wav  binary
+*.mp3  binary
+*.mp4  binary
+*.webm binary
+*.webp binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.ico  binary
+*.pdf  binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+*.otf  binary
+*.jar  binary
+*.aab  binary
+*.apk  binary
+*.keystore binary
