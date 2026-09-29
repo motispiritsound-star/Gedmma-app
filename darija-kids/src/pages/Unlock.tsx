@@ -73,7 +73,7 @@ export function Unlock() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <SectionTitle sub={t.unlock.sub(TRIAL_DAYS, jaar ? perMaandJaar : price, gezin)}>{t.unlock.titel}</SectionTitle>
+      <SectionTitle sub={t.unlock.sub(TRIAL_DAYS, price, gezin, jaar)}>{t.unlock.titel}</SectionTitle>
 
       {subscribed ? (
         <>
@@ -142,23 +142,36 @@ export function Unlock() {
                         {t.unlock.voordeligst(vergelijking.korting)}
                       </span>
                     )}
-                    {/* Het jaarplan leidt met wat het per maand kost, want zo
-                        vergelijkt een koper het met het maandplan ernaast. Het
-                        jaarbedrag staat er meteen onder — kleiner, maar
-                        leesbaar, en hierboven in de tijdlijn nog een keer
-                        voluit. Alleen de maandprijs tonen en het jaarbedrag
-                        bewaren tot het afrekenscherm mag niet: beide winkels
-                        eisen dat op het scherm staat wat er werkelijk wordt
-                        afgeschreven. */}
+                    {/* Het bedrag dat wordt afgeschreven is het grootste op de
+                        kaart, en de omrekening naar een maand staat eronder —
+                        kleiner, en met "dat is" ervoor zodat je ziet dat het een
+                        rekensom is en geen tweede prijs.
+
+                        Andersom stond het hier eerst: het jaarplan leidde met
+                        € 5,00 per maand, want zo vergelijkt een koper het met
+                        het maandplan ernaast. Apple wees versie 1.0 (build 5)
+                        daarop af, richtlijn 3.1.2(c):
+
+                          "The auto-renewable subscription displays the monthly
+                           calculated pricing for the subscription more clearly
+                           and conspicuously than the billed amount."
+
+                        Wat zij eisen is niet dat het jaarbedrag er staat — dat
+                        stond er — maar dat het het duidelijkste element is, in
+                        positie én grootte. Elke andere prijs, ook een gratis
+                        proef of een omrekening, hoort daaronder. */}
                     <div className="font-display text-lg font-extrabold">{t.unlock.plan[option.id]}</div>
                     <div className="mt-1 font-display text-2xl font-extrabold">
-                      {option.id === 'jaar' ? perMaandJaar : priceOf(option.id)}
+                      {priceOf(option.id)}
                     </div>
                     <div className="mt-0.5 text-xs text-[var(--ink-soft)]">
-                      {option.id === 'jaar'
-                        ? t.unlock.jaarTotaal(priceOf('jaar'))
-                        : t.unlock.perMaandLos}
+                      {option.id === 'jaar' ? t.unlock.jaarVooruit : t.unlock.perMaandLos}
                     </div>
+                    {option.id === 'jaar' && (
+                      <div className="mt-0.5 text-xs text-[var(--ink-soft)]">
+                        {t.unlock.perMaandBerekend(perMaandJaar)}
+                      </div>
+                    )}
                     {/* Het bedrag waar de koper mee vergelijkt: twaalf maanden
                         plus het e-boek, doorgestreept naast wat hij betaalt. */}
                     {option.id === 'jaar' && vergelijking && (

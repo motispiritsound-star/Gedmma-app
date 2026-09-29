@@ -647,8 +647,8 @@ export const en: Strings = {
       ['🛑', 'Cancel any time', `One tap in your store account. Cancel within ${dagen} days and you pay nothing.`],
     ],
     titel: 'Full access',
-    sub: (dagen, prijs, gezin) =>
-      `${dagen} days free, then ${prijs} a month${gezin ? ' for the whole family' : ''}`,
+    sub: (dagen, prijs, gezin, jaar) =>
+      `${dagen} days free, then ${prijs} a ${jaar ? 'year' : 'month'}${gezin ? ' for the whole family' : ''}`,
     intro: (vrij) =>
       `The first ${vrij} lessons are free and stay free — three pieces of the Arabic script and your first words of Darija. The rest of the course comes with the subscription.`,
     krijgt: (gezin) => [
@@ -661,7 +661,8 @@ export const en: Strings = {
     ],
     plan: { jaar: 'A year', maand: 'Monthly' },
     voordeligst: (pct: number): string => `${pct}% cheaper`,
-    jaarTotaal: (prijs: string): string => `${prijs} a year, paid up front`,
+    jaarVooruit: 'a year, paid up front',
+    perMaandBerekend: (prijs: string): string => `that is ${prijs} a month`,
     jaarInPlaatsVan: 'instead of',
     perMaandLos: 'cancel any month',
     voorwaardenJaar: (dagen: number, prijs: string): string =>

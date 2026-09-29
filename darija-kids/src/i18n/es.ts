@@ -647,8 +647,8 @@ export const es: Strings = {
       ['🛑', 'Cancelable siempre', `Un toque en tu cuenta. Si cancelas antes de ${dagen} días, no pagas nada.`],
     ],
     titel: 'Acceso completo',
-    sub: (dagen, prijs, gezin) =>
-      `${dagen} días gratis y después ${prijs} al mes${gezin ? ' para toda la familia' : ''}`,
+    sub: (dagen, prijs, gezin, jaar) =>
+      `${dagen} días gratis y después ${prijs} al ${jaar ? 'año' : 'mes'}${gezin ? ' para toda la familia' : ''}`,
     intro: (vrij) =>
       `Las ${vrij} primeras lecciones son y seguirán siendo gratis: tres partes del alfabeto árabe y tus primeras palabras en dariya. El resto del curso va con la suscripción.`,
     krijgt: (gezin) => [
@@ -661,7 +661,8 @@ export const es: Strings = {
     ],
     plan: { jaar: 'Un año', maand: 'Al mes' },
     voordeligst: (pct: number): string => `${pct} % más barato`,
-    jaarTotaal: (prijs: string): string => `${prijs} al año, pagado por adelantado`,
+    jaarVooruit: 'al año, pagado por adelantado',
+    perMaandBerekend: (prijs: string): string => `son ${prijs} al mes`,
     jaarInPlaatsVan: 'en lugar de',
     perMaandLos: 'cancelable cada mes',
     voorwaardenJaar: (dagen: number, prijs: string): string =>

@@ -654,8 +654,8 @@ export const nl = {
       ['🛑', 'Altijd opzegbaar', `Eén tik in je winkelaccount. Zeg je op binnen ${dagen} dagen, dan betaal je niets.`],
     ],
     titel: 'Volledige toegang',
-    sub: (dagen: number, prijs: string, gezin: boolean): string =>
-      `${dagen} dagen gratis, daarna ${prijs} per maand${gezin ? ' voor het hele gezin' : ''}`,
+    sub: (dagen: number, prijs: string, gezin: boolean, jaar: boolean): string =>
+      `${dagen} dagen gratis, daarna ${prijs} per ${jaar ? 'jaar' : 'maand'}${gezin ? ' voor het hele gezin' : ''}`,
     intro: (vrij: number): string =>
       `De eerste ${vrij} lessen zijn en blijven gratis — drie stukken van het Arabische alfabet en je eerste woorden Darija. De rest van de cursus hoort bij het abonnement.`,
     krijgt: (gezin: boolean): string[] => [
@@ -668,7 +668,8 @@ export const nl = {
     ],
     plan: { jaar: 'Een jaar', maand: 'Per maand' },
     voordeligst: (pct: number): string => `${pct}% voordeliger`,
-    jaarTotaal: (prijs: string): string => `${prijs} per jaar, vooruit betaald`,
+    jaarVooruit: 'per jaar, vooruit betaald',
+    perMaandBerekend: (prijs: string): string => `dat is ${prijs} per maand`,
     jaarInPlaatsVan: 'in plaats van',
     perMaandLos: 'maandelijks opzegbaar',
     voorwaardenJaar: (dagen: number, prijs: string): string =>

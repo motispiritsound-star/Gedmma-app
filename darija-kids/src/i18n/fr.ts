@@ -647,8 +647,8 @@ export const fr: Strings = {
       ['🛑', 'Résiliable à tout moment', `Un geste dans ton compte. Résilie sous ${dagen} jours et tu ne paies rien.`],
     ],
     titel: 'Accès complet',
-    sub: (dagen, prijs, gezin) =>
-      `${dagen} jours gratuits, puis ${prijs} par mois${gezin ? ' pour toute la famille' : ''}`,
+    sub: (dagen, prijs, gezin, jaar) =>
+      `${dagen} jours gratuits, puis ${prijs} par ${jaar ? 'an' : 'mois'}${gezin ? ' pour toute la famille' : ''}`,
     intro: (vrij) =>
       `Les ${vrij} premières leçons sont et restent gratuites — trois morceaux de l'alphabet arabe et tes premiers mots en darija. Le reste du cours fait partie de l'abonnement.`,
     krijgt: (gezin) => [
@@ -661,7 +661,8 @@ export const fr: Strings = {
     ],
     plan: { jaar: 'Un an', maand: 'Par mois' },
     voordeligst: (pct: number): string => `${pct} % moins cher`,
-    jaarTotaal: (prijs: string): string => `${prijs} par an, payé d’avance`,
+    jaarVooruit: 'par an, payé d’avance',
+    perMaandBerekend: (prijs: string): string => `soit ${prijs} par mois`,
     jaarInPlaatsVan: 'au lieu de',
     perMaandLos: 'résiliable chaque mois',
     voorwaardenJaar: (dagen: number, prijs: string): string =>
