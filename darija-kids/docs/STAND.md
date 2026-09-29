@@ -107,6 +107,27 @@ misgaan, staat in `docs/ACTIES.md`.
 De "wat is er nieuw"-tekst voor beide winkels staat in zes talen in
 `store/wat-is-nieuw-1.2.md`.
 
+### Klaar voor 1.3, nog niet ingediend
+
+Deze zitten in de code maar **niet in versiecode 4**, want die lag al bij Google
+toen ze werden gemaakt. Ze gaan mee in de volgende bundel.
+
+**Edge-to-edge.** Play Console meldde het bij versiecode 4: vanaf Android 15
+tekent een app die SDK 35 of hoger target standaard tot in de hoeken, en dan
+ligt er inhoud onder de statusbalk en de gebarenbalk. Vijf plekken hadden dat
+nodig, en twee ervan waren meer dan een schoonheidsfoutje: de knop in het paneel
+dat van onderen opkomt (de taalkeuze bij de eerste start) en de knop naar de
+volgende vraag in een les. Ligt zo'n knop onder de gebarenbalk, dan komt een
+kind niet verder.
+
+Alle vijf nagemeten in Chromium met de inset op 48px tegen dezelfde bouw met
+0px; `randen.test.ts` bewaakt ze.
+
+**R8 blijft uit.** Play Console raadt het aan, maar `minifyEnabled false` was
+een bewuste keuze om R8 als oorzaak van de afwijzing uit te sluiten. Aanzetten
+terwijl er een reparatie in beoordeling ligt voegt een onbekende toe. Pas als
+versie 4 door is, en dan als een eigen wijziging.
+
 ### Nog na te kijken bij Google Play
 
 Drie dingen die losstaan van de beoordeling en die je in een paar minuten
