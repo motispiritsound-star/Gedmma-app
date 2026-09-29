@@ -65,8 +65,36 @@ export const wrangler = (argumenten, opties = {}) => {
  * het niet vragen" bedoelt, zet je aan het werk aan iets dat niet stuk is.
  */
 export const isInlogfout = (fout) => {
-  const tekst = `${fout?.stderr ?? ''}${fout?.stdout ?? ''}${fout?.message ?? ''}`
+  const tekst = typeof fout === 'string'
+    ? fout
+    : `${fout?.stderr ?? ''}${fout?.stdout ?? ''}${fout?.message ?? ''}`
   return /CLOUDFLARE_API_TOKEN|not logged in|authenticat|Unauthorized/i.test(tekst)
+}
+
+/**
+ * Ophouden vóór de opdracht, als er niemand is ingelogd.
+ *
+ * Nodig omdat `wrangler whoami` slaagt met exitcode 0 en in de tekst "You are
+ * not authenticated" zet. Achteraf kijken helpt ook niet altijd: wie
+ * `stdio: 'inherit'` gebruikt -- en dat doet de uitrol, zodat je de voortgang
+ * ziet -- krijgt niets in `stderr` terug om op te toetsen.
+ *
+ * De prijs is de vier seconden die wrangler nodig heeft om op te starten. Dat
+ * is te doen vóór een uitrol, en het scheelt een Engelse melding over een
+ * CLOUDFLARE_API_TOKEN waarin het woord `npm run inloggen` niet voorkomt.
+ */
+export const eisInlog = (wat = 'dit doen') => {
+  let uit = ''
+  try {
+    uit = String(wrangler(['whoami']) ?? '')
+  } catch (fout) {
+    uit = `${fout?.stderr ?? ''}${fout?.stdout ?? ''}${fout?.message ?? ''}`
+  }
+  if (!isInlogfout(uit)) return
+  console.error(`\nWrangler weet niet wie je bent, dus het lukt niet om ${wat}.\n`)
+  console.error('Log één keer in:\n')
+  console.error('  npm run inloggen\n')
+  process.exit(1)
 }
 
 /**

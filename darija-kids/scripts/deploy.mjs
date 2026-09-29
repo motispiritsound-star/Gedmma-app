@@ -12,7 +12,7 @@
  *   npm run deploy
  */
 import { kijkOfJeBijBent } from './lib/bij.mjs'
-import { wrangler } from './lib/wrangler.mjs'
+import { eisInlog, wrangler } from './lib/wrangler.mjs'
 
 /**
  * Eerst kijken of deze map wel bij is.
@@ -31,6 +31,8 @@ await kijkOfJeBijBent({ streng: true })
  * javascript-object met een pid en een stack onder die melding te staan, en
  * dan lees je de verkeerde helft.
  */
+eisInlog('de worker uit te rollen')
+
 try {
   wrangler(['deploy'], { stdio: 'inherit' })
 } catch (fout) {
