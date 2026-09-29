@@ -10,11 +10,10 @@
  * terwijl de vorige nog netjes op de uitvoerplek lag.
  *
  * Er is één kenmerk dat hard onderscheidt, en dat is geen datum of een
- * versienummer maar de inhoud zelf. Sinds `target: 'es2019'` in vite.config.ts
- * schrijft esbuild geen `?.` en geen `??` meer weg; daarvoor stond de bundel er
- * vol mee. Nul betekent dus: gebouwd mét die instelling. Een paar duizend
- * betekent: gebouwd zonder, en dan is dit niet de app waarvan je denkt dat je
- * hem hebt opgestuurd.
+ * versienummer maar de inhoud zelf. Het bouwdoel in vite.config.ts bepaalt wat
+ * esbuild wegschrijft, en elke stap omlaag laat een spoor na dat je kunt
+ * tellen. Staan er `?.` en `??` in, dan is het de code van voor 29 september —
+ * en dan is dit niet de app waarvan je denkt dat je hem hebt opgestuurd.
  *
  *   npm run watzitin                    de laatst gebouwde bundel
  *   npm run watzitin -- --aab <pad>     een andere
@@ -118,9 +117,30 @@ for (const n of jsNamen) bron += `${zip.pak(n).toString('utf8')}\n`
 const chain = (bron.match(/\?\.[a-zA-Z_$[(]/g) ?? []).length
 const nullish = (bron.match(/\?\?/g) ?? []).length
 
+/*
+ * Drie toestanden, en ze zijn aan de inhoud te zien.
+ *
+ * Het bouwdoel in vite.config.ts bepaalt wat esbuild wegschrijft, en elke stap
+ * omlaag laat een spoor na dat je kunt tellen:
+ *
+ *   te oud   `?.` en `??` staan erin. Dat is Chrome 80, februari 2020.
+ *   es2019   geen `?.`, maar `async` staat er nog. Chrome 69.
+ *   es2015   geen `async` meer, wel `function*`: esbuild heeft async naar
+ *            generators omgezet. Chrome 51 — en dat is de WebView waarmee
+ *            Android 7 is uitgekomen, de versie die minSdkVersion 24 belooft.
+ *
+ * Gemeten op deze code: es2019 gaf 21 keer `async` en nul `function*`, es2015
+ * precies omgekeerd, nul en dertig.
+ */
+const asyncKw = (bron.match(/\basync\s/g) ?? []).length
+const generator = (bron.match(/function\s*\*/g) ?? []).length
+
 console.log(`Javascript: ${jsNamen.length} bestanden, ${Math.round(bron.length / 1024)} kB`)
-console.log(`  ?.  optional chaining   ${String(chain).padStart(5)}×`)
-console.log(`  ??  nullish             ${String(nullish).padStart(5)}×\n`)
+console.log(`  ?.  optional chaining   ${String(chain).padStart(5)}x   Chrome 80`)
+console.log(`  ??  nullish             ${String(nullish).padStart(5)}x   Chrome 80`)
+console.log(`  async                   ${String(asyncKw).padStart(5)}x`)
+console.log(`  function*               ${String(generator).padStart(5)}x`)
+console.log('')
 
 /* Hetzelfde geteld in wat er nu in dist/ staat, als dat er is. */
 const DIST = path.join(ROOT, 'dist', 'assets')
@@ -145,17 +165,31 @@ if (existsSync(DIST)) {
   console.log('')
 }
 
-if (chain === 0 && nullish === 0) {
-  console.log('Deze bundel is gebouwd met target: es2019 uit vite.config.ts. Dat is de')
-  console.log('instelling van 29 september, dus de code hierin is van die dag of later.\n')
-  process.exit(0)
+if (chain > 0 || nullish > 0) {
+  console.log('Deze bundel is gebouwd zonder bouwdoel, of met een doel vanaf es2020.\n')
+  console.log('Er staat syntaxis in die pas vanaf Chrome 80 bestaat — februari 2020.')
+  console.log('Op een oudere WebView wordt dit bestand niet ingelezen: geen foutmelding,')
+  console.log('geen halve app, een wit scherm. Google noemt dat "installs, but doesn\'t')
+  console.log('load", en daar is deze app op afgewezen.\n')
+  console.log('Dit is dus niet de app waarvan je denkt dat je hem hebt opgestuurd.')
+  console.log('Bouw hem opnieuw, met een versiecode die nog niet gebruikt is:\n')
+  console.log('  npm run aab -- --versie 4 --naam 1.2\n')
+  process.exit(1)
 }
 
-console.log('Deze bundel is NIET gebouwd met target: es2019.\n')
-console.log('Dat betekent dat de code erin ouder is dan 29 september — en dus dat dit')
-console.log('niet de app is waarvan je denkt dat je hem hebt opgestuurd. Op een WebView')
-console.log('van voor augustus 2020 valt hij bovendien om bij het inlezen, zonder')
-console.log('foutmelding: precies wat Google "installs, but doesn\'t load" noemt.\n')
-console.log('Bouw hem opnieuw, met een versiecode die nog niet gebruikt is:\n')
-console.log('  npm run aab -- --versie 4 --naam 1.2\n')
-process.exit(1)
+if (asyncKw > 0 && generator === 0) {
+  console.log('Deze bundel is gebouwd op es2019. Geen `?.` en geen `??`, dus hij wordt')
+  console.log('ingelezen vanaf Chrome 69 — september 2018.\n')
+  console.log('Dat is beter dan wat er is afgewezen, maar het is niet de drempel die we')
+  console.log('beloven. minSdkVersion 24 is Android 7, en die is uitgekomen met WebView')
+  console.log('Chrome 51. Het bouwdoel staat inmiddels op es2015 en dat kost zeven')
+  console.log('kilobyte. Bouw hem opnieuw zodat je die drempel ook echt haalt:\n')
+  console.log('  npm run aab -- --versie 4 --naam 1.2\n')
+  process.exit(1)
+}
+
+console.log('Deze bundel is gebouwd op es2015: geen `?.`, geen `??`, en async is omgezet')
+console.log(`naar generators (${generator}× \`function*\`). Daarmee wordt hij ingelezen vanaf`)
+console.log('Chrome 51 — de WebView waarmee Android 7 is uitgekomen, en dat is precies')
+console.log('wat minSdkVersion 24 belooft.\n')
+process.exit(0)

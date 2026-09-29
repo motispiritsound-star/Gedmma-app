@@ -116,14 +116,13 @@ die is met één regel te beantwoorden:
 if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run watzitin } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
-Die kijkt in het AAB-bestand zelf. Sinds 29 september staat `target: es2019`
-in `vite.config.ts` en schrijft de bouw geen `?.` en geen `??` meer weg; een
-bundel van daarvoor staat er vol met. Nul betekent dus: de goede code. Een paar
-duizend betekent: dit is de app van vóór die dag, en dan is die bundel ook
-precies de bundel die op een oudere WebView omvalt bij het inlezen — zonder
-foutmelding, wat Google *"installs, but doesn't load"* noemt.
+Die kijkt in het AAB-bestand zelf en telt de syntaxis. Staan er `?.` en `??`
+in, dan is het de code van vóór 29 september — en dan is die bundel ook precies
+de bundel die op een oudere WebView omvalt bij het inlezen, zonder foutmelding.
+Wat Google *"installs, but doesn't load"* noemt. Hij zegt er zelf bij welk
+bouwdoel gebruikt is en wat je moet doen.
 
-Komt daar "NIET gebouwd met target: es2019" uit, bouw hem dan opnieuw met een
+Zegt hij iets anders dan "gebouwd op es2015", bouw hem dan opnieuw met een
 versiecode die nog vrij is — 3 is verbruikt, ook al is er niets mee gebeurd:
 
 ```powershell

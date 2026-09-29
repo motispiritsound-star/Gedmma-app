@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
     server: { port: 4310, host: true },
     build: {
       /*
-       * Waarom es2019 en niet es2022.
+       * Waarom een bouwdoel, en niet es2022.
        *
        * `minSdkVersion` staat op 24: de app mág op Android 7 geïnstalleerd
        * worden. Maar op es2022 zat er `?.`, `??` en `??=` in de bundel, en dat
@@ -22,11 +22,10 @@ export default defineConfig(({ mode }) => {
        * gewoon niets. Precies wat Google's beleid "apps that install, but
        * don't load" noemt.
        *
-       * Op es2019 garandeert esbuild dat er niets nieuwers dan ES2019 in staat,
-       * en dat is Chrome 73 (maart 2019). Nagemeten wat dat kost aan javascript:
-       * 1123 kB op es2022, 1131 kB op es2019. Acht kilobyte. En het kan een
-       * modern toestel niet schaden — oude syntaxis draait overal waar nieuwe
-       * draait.
+       * Met een bouwdoel garandeert esbuild dat er niets nieuwers in staat, en
+       * dat kost bijna niets: 1123 kB op es2022, 1138 kB op het doel dat hier
+       * nu staat. Vijftien kilobyte op elfhonderd. En het kan een modern
+       * toestel niet schaden — oude syntaxis draait overal waar nieuwe draait.
        *
        * Wat esbuild niet doet is functies bijmaken die er nog niet waren.
        * Dat is een tweede soort gat, en het valt later om — niet bij het
@@ -39,7 +38,27 @@ export default defineConfig(({ mode }) => {
        * `Object.hasOwnProperty`, en mijn patroon matchte het begin daarvan.
        * De polyfill is weer weg; de controle kijkt nu op een woordgrens.
        */
-      target: 'es2019',
+      /*
+       * En dan de vraag: hoe laag is laag genoeg?
+       *
+       * Eerst stond dit op es2019, omdat dat `?.` en `??` weghaalde en dat de
+       * syntaxis was die de bundel van Chrome 85 liet afhangen. Dat loste het
+       * gevonden geval op en niet de vraag. es2019 is Chrome 69, september
+       * 2018 -- een datum die nergens uit volgt.
+       *
+       * De drempel die wél ergens uit volgt staat in variables.gradle:
+       * minSdkVersion 24, Android 7. Die is uitgekomen met WebView Chrome 51,
+       * en op een toestel waar de WebView nooit is bijgewerkt is dat nog
+       * steeds wat er draait. Chrome 51 is es2015. Daar hoort dit dus te
+       * staan, en niet op een versie die toevallig het laatste probleem
+       * afdekte.
+       *
+       * Het verschil is gemeten en niet geschat: es2019 gaf 1130 kB, es2015
+       * geeft 1137. Zeven kilobyte op elfhonderd, oftewel een half procent,
+       * voor het wegnemen van drie jaar aan gokwerk over welke WebView er op
+       * het toestel van een ouder staat.
+       */
+      target: 'es2015',
       outDir: demo ? 'dist-demo' : 'dist',
       cssCodeSplit: !demo,
       assetsInlineLimit: demo ? 100_000_000 : 4096,

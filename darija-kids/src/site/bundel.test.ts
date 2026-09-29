@@ -12,8 +12,12 @@
  * letterlijk wat Google's Broken Functionality-beleid beschrijft als "apps
  * that install, but don't load".
  *
- * Op `es2019` garandeert esbuild dat er niets nieuwers in staat, en dat kost
- * acht kilobyte op elfhonderd. Gemeten, niet geschat.
+ * Het doel stond eerst op `es2019`, wat die syntaxis weghaalde. Dat loste het
+ * gevonden geval op maar niet de vraag: es2019 is Chrome 69, en dat volgt
+ * nergens uit. De drempel die wél ergens uit volgt is minSdkVersion 24 zelf —
+ * Android 7 is uitgekomen met WebView Chrome 51, en dat is `es2015`. Daar
+ * staat het nu, en het kost zeven kilobyte op elfhonderd. Gemeten, niet
+ * geschat.
  *
  * Deze toets kijkt naar de bron en niet naar de bundel, met opzet: `dist/`
  * staat in .gitignore, dus een test die daaruit leest faalt in CI met ENOENT.
@@ -30,10 +34,12 @@ describe('waar de app op moet kunnen draaien', () => {
     const vite = bron('../../vite.config.ts')
     const doel = /target: '(es\d{4})'/.exec(vite)?.[1]
     expect(doel, 'er staat geen build target meer in vite.config.ts').toBeTruthy()
-    // es2020 bracht `?.` en `??`, es2021 de logische toewijzingen. Alles vanaf
-    // es2020 zet die syntaxis terug in de bundel.
-    expect(Number(doel!.slice(2)), `target staat op ${doel}; dat zet ?. en ?? terug in de bundel`)
-      .toBeLessThanOrEqual(2019)
+    // De drempel komt uit variables.gradle en niet uit een voorkeur:
+    // minSdkVersion 24 is Android 7, uitgekomen met WebView Chrome 51, en dat
+    // is es2015. Stond dit op es2019, dan gokte je erop dat de WebView op dat
+    // toestel ooit is bijgewerkt -- en precies die gok is hier misgegaan.
+    expect(Number(doel!.slice(2)), `target staat op ${doel}; minSdkVersion 24 is Chrome 51, oftewel es2015`)
+      .toBeLessThanOrEqual(2015)
   })
 
   it('laat de bouw omvallen op een functie die een oudere WebView mist', () => {

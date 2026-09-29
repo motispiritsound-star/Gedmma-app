@@ -86,10 +86,51 @@ const gevonden = TE_NIEUW
   .map(([naam, re, chrome]) => [naam, (bron.match(re) ?? []).length, chrome])
   .filter(([naam, n]) => n > 0 && !heeftPolyfill(naam))
 
+/*
+ * En de syntaxis toch, voor één geval.
+ *
+ * Hierboven staat dat dit script geen syntaxis telt, omdat een regex die naar
+ * `?.` zoekt ook `cond ? .89 : 1` vindt. Dat klopt nog steeds voor een losse
+ * `\?\.`, maar niet voor deze: na de punt moet een letter, `_`, `$`, `[` of
+ * `(` komen, en in `? .89` staat daar een cijfer met een spatie ervoor.
+ *
+ * Waarom dit er alsnog bij staat terwijl `target` in vite.config.ts de
+ * garantie al geeft: die garantie geldt voor code die de bundelaar ontleedt.
+ * Een afhankelijkheid die voorgebouwd javascript meelevert dat ongemoeid
+ * doorgelaten wordt, valt erbuiten. Dat is precies het gat waar je niet in
+ * kijkt, want de instelling stáát goed.
+ *
+ * En dit is niet theoretisch. De bundel die als versiecode 3 werd geüpload had
+ * 223 keer `?.` en 167 keer `??` — syntaxis van Chrome 80 — terwijl er op
+ * Android 7 een WebView kan staan van Chrome 51. Zo'n bestand wordt niet
+ * ingelezen: geen foutmelding, geen halve app, een wit scherm. Google noemt
+ * dat "installs, but doesn't load", en de app is erop afgewezen.
+ */
+const SYNTAXIS = [
+  ['?.  optional chaining', /\?\.[a-zA-Z_$[(]/g, 80],
+  ['??  nullish', /\?\?/g, 80],
+  ['??= ||= &&=', /(?:\?\?|\|\||&&)=/g, 85],
+]
+const syntaxis = SYNTAXIS
+  .map(([naam, re, chrome]) => [naam, (bron.match(re) ?? []).length, chrome])
+  .filter(([, n]) => n > 0)
+
 const kb = Math.round(bestanden.reduce((s, f) => s + readFileSync(path.join(ASSETS, f)).length, 0) / 1024)
 
+if (syntaxis.length) {
+  console.error(`\nDe bundel bevat syntaxis die een oudere WebView niet kan inlezen:\n`)
+  for (const [naam, n, chrome] of syntaxis) {
+    console.error(`  ${naam.padEnd(28)} ${String(n).padStart(4)}x   bestaat pas vanaf Chrome ${chrome}`)
+  }
+  console.error('\nDit is geen fout die bij het uitvoeren opvalt: het hele bestand wordt')
+  console.error('niet ingelezen. Wit scherm, geen melding. Kijk of `target` in')
+  console.error('vite.config.ts nog op es2015 staat, en of er een afhankelijkheid bij is')
+  console.error('gekomen die voorgebouwd javascript meelevert.\n')
+  process.exit(1)
+}
+
 if (!gevonden.length) {
-  console.log(`\nDe bundel (${kb} kB javascript) gebruikt geen functies die een oudere WebView mist.\n`)
+  console.log(`\nDe bundel (${kb} kB javascript) gebruikt geen syntaxis en geen functies die een oudere WebView mist.\n`)
   process.exit(0)
 }
 
