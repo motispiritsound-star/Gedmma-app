@@ -1,3 +1,8 @@
+# Een momentopname, met opzet niet vastgelegd. make-stand.mjs leest de stand uit
+# de app zelf -- hoeveel letters, woorden en zinnen een stem hebben -- en die
+# waarde ligt in de commit binnen een week achter op de werkelijkheid. Draai
+# `npm run stand` als je hem wilt zien.
+/store/stand.html
 /store/screenshots/
 /store/marketing/
 /store/video/
