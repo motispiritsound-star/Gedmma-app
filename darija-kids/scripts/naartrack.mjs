@@ -232,37 +232,42 @@ try {
   console.log(`op de track ${TRACK} gezet`)
 
   /*
-   * Vastleggen, en zo nodig zonder hem ter beoordeling te sturen.
+   * Vastleggen, en nadrukkelijk zonder hem ter beoordeling te sturen.
    *
-   * Eerst gewoon. Antwoordt Google met "Changes cannot be sent for review
-   * automatically", dan staat er in deze app iets klaar dat een beoordeling
-   * nodig heeft — bij ons: de app ligt onder handhaving. Met
-   * `changesNotSentForReview=true` legt hij de edit wél vast maar stuurt hem
-   * niet in; dat doe je dan zelf vanuit de console, op het moment dat jij dat
-   * wilt.
+   * Eerst probeerde dit script een gewone commit en zette het pas
+   * `changesNotSentForReview=true` als Google antwoordde met "Changes cannot
+   * be sent for review automatically". Dat was te slim. Insturen is niet wat
+   * dit script wil: het rapport vóór lancering wordt gemaakt van de geüploade
+   * bundel en heeft geen beoordeling nodig. Niet insturen is hier juist het
+   * doel — je wilt dat rapport eerst lezen.
    *
-   * Voor waar dit script voor is maakt dat niets uit. Het rapport vóór
-   * lancering wordt gemaakt van de geüploade bundel en heeft geen beoordeling
-   * nodig. Sterker: niet insturen is hier juist goed — je wilt eerst dat
-   * rapport lezen.
+   * En het kostte een ronde. Met de gewone commit kwam er een 403 terug op de
+   * stap ná een geslaagde upload en een geslaagde track-wijziging, wat de
+   * indruk wekt dat het serviceaccount de bundel er wel op mag zetten maar hem
+   * niet mag vastleggen. Insturen ter beoordeling is een eigen bevoegdheid, en
+   * die vragen we nu niet meer aan.
+   *
+   * De vlag staat dus vooraan. Weigert Google hém, dan pas de gewone vorm.
    */
   const leggenVast = (extra) =>
     api(bewijs, `/androidpublisher/v3/applications/${APP}/edits/${edit.id}:commit${extra}`, { method: 'POST' })
 
-  let ingestuurd = true
+  let ingestuurd = false
   try {
-    await leggenVast('')
-  } catch (fout) {
-    if (!(fout.status === 400 && /changesNotSentForReview/i.test(String(fout.message)))) throw fout
     await leggenVast('?changesNotSentForReview=true')
-    ingestuurd = false
+  } catch (fout) {
+    // Kent deze app de vlag niet, dan is er niets dat op beoordeling wacht en
+    // is de gewone vorm juist. Alleen dán, en niet bij een 403.
+    if (fout.status !== 400) throw fout
+    await leggenVast('')
+    ingestuurd = true
   }
   console.log('vastgelegd\n')
   if (!ingestuurd) {
-    console.log('Let op: Google wilde dit niet vanzelf ter beoordeling sturen, dus dat is')
-    console.log('niet gebeurd. De bundel stáát er wel, en daar gaat het hier om — het')
-    console.log('rapport hieronder komt van de bundel, niet van een beoordeling.\n')
-    console.log('Insturen doe je later zelf in de console, als het rapport schoon is.\n')
+    console.log('Hij is niet ter beoordeling gestuurd, en dat is met opzet. De bundel')
+    console.log('stáát er, en daar gaat het hier om — het rapport hieronder komt van de')
+    console.log('bundel, niet van een beoordeling.\n')
+    console.log('Insturen doe je later zelf in de console, als dat rapport schoon is.\n')
   }
 
   console.log('Google begint nu vanzelf aan het rapport vóór lancering. Dat duurt')
@@ -273,9 +278,33 @@ try {
   console.log('stacktrace als er iets omviel.\n')
 } catch (fout) {
   console.error(`\nDat is niet gelukt (${fout.status ?? '?'}).\n`)
-  if (fout.status === 403) {
-    console.error('Dit serviceaccount mag geen releases beheren. In Play Console staat')
-    console.error('dat onder Gebruikers en rechten, bij "Releases naar testtracks".\n')
+  if (fout.status === 403 && /:commit/.test(String(fout.message))) {
+    /*
+     * Een 403 op precies deze stap is welbepaald, en dat is te zien aan wat
+     * eraan voorafging: de edit openen is gelukt, de bundel uploaden is
+     * gelukt, en hem op de track zetten ook. Het serviceaccount mag dus alles
+     * klaarzetten. Alleen het vastleggen — de stap die het echt laat gelden —
+     * wordt geweigerd. Google toetst releaserechten daar, en niet eerder.
+     *
+     * Dat betekent ook: er is niets kapot en er is niets half gebeurd. Een
+     * edit die niet is vastgelegd bestaat niet; de versiecode blijft vrij.
+     */
+    console.error('De bundel is geüpload en op de track gezet, maar niet vastgelegd.')
+    console.error('Alleen die laatste stap wordt geweigerd, en daar toetst Google de')
+    console.error('releaserechten — niet eerder. Er is dus niets half gebeurd: een edit')
+    console.error('die niet is vastgelegd bestaat niet, en de versiecode blijft vrij.\n')
+    console.error('Dit serviceaccount mag klaarzetten maar niet uitbrengen:\n')
+    console.error(`  ${sleutel.client_email}\n`)
+    console.error('In Play Console staat dat bij Gebruikers en rechten. Zoek dat adres')
+    console.error('op, open App-rechten, en zet in de groep Releases het recht aan dat')
+    console.error('over testtracks gaat. Daarna deze opdracht gewoon opnieuw draaien —')
+    console.error('het kan een paar minuten duren voor Google het doorheeft.\n')
+    console.error('Wil je niet wachten: de bundel hieronder kun je ook met de hand')
+    console.error('uploaden bij Testen en publiceren -> Testen -> Interne test.\n')
+    console.error(`  ${AAB}\n`)
+  } else if (fout.status === 403) {
+    console.error('Dit serviceaccount mag hier niet bij. In Play Console staat dat onder')
+    console.error('Gebruikers en rechten.\n')
   } else if (fout.status === 400 && /versionCode/i.test(String(fout.message))) {
     console.error('Die versiecode is al in gebruik. Elke upload heeft een nieuwe nodig:\n')
     console.error('  npm run aab -- --versie 4 --naam 1.2\n')
