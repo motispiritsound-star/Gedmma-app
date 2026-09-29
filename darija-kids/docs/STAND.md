@@ -98,9 +98,11 @@ beloof je Android 7, waar een WebView van Chrome 51 kan staan, en die leest
 zo'n bestand niet eens in: wit scherm, geen melding. Het bouwdoel staat nu op
 es2015, gelijk aan die belofte.
 
-Versiecode 4 staat op de interne test. Wat daar nog op wacht is het rapport
-voor lancering; pas als dat schoon is heeft indienen bij productie zin. De
-volgorde en de valkuilen staan in `docs/ACTIES.md`.
+Versiecode 4 is op 29 september ingediend bij Google, samen met negentien
+wijzigingen aan de vermelding en de verklaringen. Zeven dagen, mogelijk langer.
+Managed publishing staat aan, dus na goedkeuring gaat de app pas live als Adil
+erop drukt. Wat er dan moet gebeuren, en wat al is uitgesloten mocht het weer
+misgaan, staat in `docs/ACTIES.md`.
 
 De "wat is er nieuw"-tekst voor beide winkels staat in zes talen in
 `store/wat-is-nieuw-1.2.md`.

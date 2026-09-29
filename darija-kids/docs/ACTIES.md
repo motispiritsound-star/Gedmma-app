@@ -75,45 +75,41 @@ if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -
 Die opent het AAB-bestand en telt de syntaxis. Er moet "gebouwd op es2015"
 uitkomen.
 
-### Waar het nu op wacht
+### Ingediend op 29 september
 
-Versiecode 4 staat op de interne test. Daar komt alleen geen **rapport vóór
-lancering** van: dat scherm bleef zeggen *"Upload artifacts to generate
-pre-launch reports"*, met Google's eigen suggestie erbij om de bundel naar de
-**gesloten test** te sturen.
+Versiecode 4 ligt bij Google ter beoordeling, samen met negentien wijzigingen:
+de zes winkelvermeldingen, de landenuitbreiding, Content Rating, doelgroep 6+,
+de privacyverklaring, de advertentie- en gegevensveiligheidsverklaring, en
+Education als categorie. Google's eigen snelle controle vooraf vond niets.
 
-Doorschuiven kan zonder opnieuw te bouwen: **Internal testing** → bij `4 (1.2)`
-op **Promote release** → **Closed testing – Alpha**. Die is net zo onzichtbaar
-en net zo vrij van beoordeling.
+Zeven dagen, mogelijk langer. Bericht komt per mail.
 
-Daarna draait Google de app op een rij echte toestellen, met een filmpje en een
-stacktrace als er iets omvalt. Dat duurt een half uur tot een uur.
+**Er is geen rapport vóór lancering gelezen, en dat was niet uit
+onzorgvuldigheid.** Een interne test levert er geen; een gesloten test wel,
+maar die moet eerst langs een beoordeling. En zolang de afwijzing openstond wou
+Play Console geen deel van de wijzigingen apart insturen — *"Save for later is
+unavailable... there are issues that affect all of your changes."* De volgorde
+"eerst het rapport, dan indienen" bestaat in die console dus niet. Wordt versie
+4 goedgekeurd, dan komt dat rapport alsnog van de gesloten test.
 
-Dat rapport is het bewijs dat er tot nu toe niet was. Versie 2 is rechtstreeks
-naar productie gegaan, en daardoor was de eerste die de app op een echt toestel
-draaide de beoordelaar die hem afwees.
+### Als het goedgekeurd wordt
 
-**Lees dat rapport voordat je iets indient.**
+Managed publishing staat aan, dus de app gaat niet vanzelf live. Jij drukt op
+de knop in **Publishing overview**. Lees eerst het rapport vóór lancering dat
+er dan staat bij **Testing → Pre-launch report**.
 
-### Daarna: indienen
+### Als het weer wordt afgewezen
 
-Bij **Publishing overview** staan 17 wijzigingen klaar. Eén ervan is
-gevaarlijk:
+Dan staat er in Play Console bij **Policy status** op welke regel, en met welke
+versiecode erbij. Dat is meer dan we de vorige keer hadden: nu is bekend wat er
+in de bundel zit.
 
-> Production · `2 (1.1)` · Start full rollout
-
-Dat is de afgewezen bundel. Maak bij **Production** een release met versiecode
-4; die vervangt hem. Controleer vóór het indienen dat er `4 (1.2)` staat en
-niet `2 (1.1)`.
-
-De overige zestien zijn nagelopen en kloppen: de landenuitbreiding, de zes
-winkelvermeldingen, Content Rating, doelgroep 6+, de privacyverklaring, de
-advertentie- en gegevensveiligheidsverklaring, en Education als categorie.
-
-**Dien geen beroep in.** Die knop is voor "jullie hebben het mis", en dat was
-niet zo. Google schrijft zelf wat de weg is: *"Make use of test tracks to
-thoroughly test your app's quality and functionality before attempting another
-review."*
+Wat al is uitgesloten, zodat je niet opnieuw begint: R8 staat uit
+(`minifyEnabled false`), de splash-bron bestaat, de bundel is es2015 en wordt
+ingelezen vanaf Chrome 51, er is een foutopvang die een wit scherm onmogelijk
+maakt, `store.initialize()` is afgevangen, en de app houdt afstand van de
+statusbalk. De bouw is koud gestart in Chromium met vier nagebootste
+Capacitor-lagen zonder fouten.
 
 ### Managed publishing staat aan
 
