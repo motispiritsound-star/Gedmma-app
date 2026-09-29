@@ -73,6 +73,37 @@ describe('de commando\'s in de documentatie', () => {
     expect(fout, `PowerShell 5.1 leest && niet als scheiding — geef elke opdracht een eigen regel`).toEqual([])
   })
 
+  /**
+   * Een plakbare regel draagt zijn eigen voorbereiding mee.
+   *
+   * `$p` is de projectmap, en een PowerShell-variabele leeft alleen in het
+   * venster waarin hij gezet is. Stond die toewijzing bovenaan de lijst en de
+   * opdracht driehonderd regels lager, dan werkte die opdracht alleen voor wie
+   * de lijst van boven naar beneden las in hetzelfde venster. Wie hem uit een
+   * gesprek plakte kreeg:
+   *
+   *   The variable '$p' cannot be retrieved because it has not been set.
+   *
+   * Drie keer gebeurd. Het is geen leesfout maar een ontwerpfout: een opdracht
+   * die een andere opdracht nodig heeft is een opdracht die stukgaat. Elk blok
+   * dat `$p` gebruikt zet hem nu zelf, in dezelfde regel.
+   */
+  it('zetten $p zelf als ze hem gebruiken', () => {
+    for (const pad of lijst) {
+      const fout = plakregels(readFileSync(pad, 'utf8'))
+        .filter(([, regel]) => regel.includes('$p'))
+        // De regel die hem zet is goed, en die hem naar het profiel schrijft ook.
+        .filter(([, regel]) => !/\$p\s*=/.test(regel) && !regel.includes('Add-Content'))
+        .filter(([, regel]) => !regel.includes('if (-not $p)'))
+        .map(([nr, regel]) => `regel ${nr}: ${regel.trim().slice(0, 70)}`)
+      expect(
+        fout,
+        `${path.relative(WORTEL, pad)}: deze regels gebruiken $p zonder hem te zetten. ` +
+          'Zet er  if (-not $p) { $p = (Get-ChildItem ...).FullName };  voor.',
+      ).toEqual([])
+    }
+  })
+
   it('gebruiken curl.exe en niet curl', () => {
     // `curl` is op Windows een alias voor Invoke-WebRequest, met andere
     // vlaggen. `curl -X POST ...` levert daar een foutmelding op over een

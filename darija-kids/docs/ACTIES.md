@@ -9,46 +9,31 @@ De volgorde is de volgorde. Hij loopt van "hier gaat een klant op stuk" naar
 
 Alle opdrachten zijn voor PowerShell en werken vanuit elke map.
 
-## Begin hier, in elk nieuw venster
+## Over de opdrachten hieronder
 
-Alles hieronder gebruikt `$p` voor de projectmap. Een variabele leeft maar in
-het venster waarin je hem zet, dus **plak deze regel als eerste in elk nieuw
-PowerShell-venster.** Hij zoekt de map zelf op:
+Elke opdracht is één regel die je kunt plakken, uit welke map dan ook, in een
+vers venster. Ze zoeken de projectmap zelf op en zeggen het als ze hem niet
+vinden. Je hoeft vooraf niets in te stellen.
 
-```powershell
-$p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName; $p
+Dat is niet altijd zo geweest. Ze gebruikten `$p` voor de projectmap, met
+bovenaan deze lijst één regel die je in elk nieuw venster moest plakken om hem
+te zetten. Dat is drie keer misgegaan met
+
+```
+The variable '$p' cannot be retrieved because it has not been set.
 ```
 
-Hij drukt het gevonden pad af. Zie je niets, dan staat de map niet onder je
-thuismap en klopt er iets anders niet.
+en het was elke keer dezelfde oorzaak: een vers venster, en een opdracht die
+uit een gesprek werd geplakt in plaats van uit deze lijst. Een opdracht die
+alleen werkt na een andere opdracht is een opdracht die stukgaat, en dat is
+niet jouw fout maar een fout in hoe ze hier stonden. Nu draagt elke regel zijn
+eigen voorbereiding mee.
 
-**Zie je ergens "The variable '$p' cannot be retrieved because it has not been
-set"?** Dan is dit venster nieuw en is bovenstaande regel nog niet gedraaid.
-Dat is de enige oorzaak. Het is mij twee keer overkomen dat ik je opdrachten
-met `$p` gaf zonder die regel erbij; vandaar dat hij nu bovenaan staat.
+De regel is daardoor lang. Dat hoef je niet te lezen: het stuk vooraan zoekt de
+map, het stuk achteraan is wat er gebeurt.
 
-<details>
-<summary>Liever één keer instellen en er nooit meer aan denken</summary>
-
-Deze drie regels onthouden de map ook nadat je PowerShell afsluit. Elke regel
-apart uitvoeren:
-
-```powershell
-$d = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName
-```
-
-```powershell
-if (-not (Test-Path $PROFILE)) { New-Item -ItemType File -Path $PROFILE -Force | Out-Null }
-```
-
-```powershell
-Add-Content $PROFILE "`$p = '$d'"
-```
-
-Sluit PowerShell daarna en open hem opnieuw. Vanaf dan is `$p` er altijd, ook
-in een vers venster, en kun je de regel hierboven overslaan.
-
-</details>
+Het zoeken duurt de eerste keer een paar seconden. Daarna staat `$p` in dat
+venster en slaat elke volgende regel het zoeken over.
 
 ---
 
@@ -63,7 +48,7 @@ uitzondering en de regels eronder. Die zijn op te vragen met de sleutel die je
 al hebt:
 
 ```powershell
-npm --prefix $p run crashes -- --versie 2
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run crashes -- --versie 2 } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Komt daar "Google kent hier geen crashes" uit, dan zegt dat niets: die cijfers
@@ -85,11 +70,11 @@ en een stacktrace als er iets omvalt — zonder beoordeling, zonder risico voor
 de winkelvermelding. Vandaar `npm run track`:
 
 ```powershell
-npm --prefix $p run aab -- --versie 3 --naam 1.2
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run aab -- --versie 3 --naam 1.2 } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 ```powershell
-npm --prefix $p run track
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run track } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Die tweede zet hem op de interne test. Een half uur tot een uur later staat het
@@ -128,7 +113,7 @@ in dagen erbij. Maar voor de bundel die er al ligt is deze vraag nog open, en
 die is met één regel te beantwoorden:
 
 ```powershell
-npm --prefix $p run watzitin
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run watzitin } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Die kijkt in het AAB-bestand zelf. Sinds 29 september staat `target: es2019`
@@ -142,11 +127,11 @@ Komt daar "NIET gebouwd met target: es2019" uit, bouw hem dan opnieuw met een
 versiecode die nog vrij is — 3 is verbruikt, ook al is er niets mee gebeurd:
 
 ```powershell
-npm --prefix $p run aab -- --versie 4 --naam 1.2
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run aab -- --versie 4 --naam 1.2 } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 ```powershell
-npm --prefix $p run track
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run track } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 ---
@@ -159,7 +144,7 @@ cachebeleid, de foutopvang in de app. **Zonder ophalen rollen `deploy` en
 `build` de oude code uit.**
 
 ```powershell
-git -C $p pull
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { git -C $p pull } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Zie je "Missing script" bij een opdracht uit deze lijst, dan is dit de reden.
@@ -190,7 +175,7 @@ een kind op een wit scherm belandt, de emoji die het antwoord van de
 betekenis-oefening weggaf, en de raakvlakken die onder de 4d pixels zaten.
 
 ```powershell
-npm --prefix $p run ios -- --build 2 --versie 1.0
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run ios -- --build 2 --versie 1.0 } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Daarna archiveren op de Mac; zie `docs/MAC.md`.
@@ -204,7 +189,7 @@ Zonder deze drie krijgt iemand die vandaag koopt niet wat hij betaalt.
 ### 2a · De prenten maken — ongeveer een uur
 
 ```powershell
-npm --prefix $p run boeken -- --platen
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run boeken -- --platen } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Zonder dit ziet een Sba-koper "nog niet" in plaats van een prentenboek.
@@ -219,21 +204,21 @@ niet".
 Vraag het daarom aan de bak zelf:
 
 ```powershell
-npm --prefix $p run platencheck
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run platencheck } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Dat doet een steekproef op het eerste deel, het laatste, en een paar talen. Wil
 je alles nalopen:
 
 ```powershell
-npm --prefix $p run platencheck -- --alles
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run platencheck -- --alles } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Ontbreekt er iets, dan draai je de prenten opnieuw met `--opnieuw`. Die vlag
 laat de aantekeningen leeg beginnen, dus je hoeft geen bestand weg te gooien:
 
 ```powershell
-npm --prefix $p run boeken -- --platen --opnieuw
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run boeken -- --platen --opnieuw } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Laat het draaien en doe ondertussen 2b niet — die schrijft in dezelfde mappen.
@@ -241,11 +226,11 @@ Laat het draaien en doe ondertussen 2b niet — die schrijft in dezelfde mappen.
 ### 2b · De winkelbestanden verversen
 
 ```powershell
-npm --prefix $p run winkel
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run winkel } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 ```powershell
-npm --prefix $p run lezen -- --r2
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run lezen -- --r2 } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 De delen 4, 5, 6, 9, 10 en 13 zijn redactioneel gewijzigd; de bestanden in de
@@ -256,13 +241,13 @@ winkel zijn nog de oude. Gemeten: alle 27 PDF's waren ouder dan de tekst.
 Er staan ongeveer tien PROEF-bestellingen in de database van eerdere tests.
 
 ```powershell
-npm --prefix $p run bestellingen
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run bestellingen } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Dat laat zien wat er staat. Trek daarna elke PROEF-regel in:
 
 ```powershell
-npm --prefix $p run intrekken
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run intrekken } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 ---
@@ -286,13 +271,13 @@ database die de tafels al heeft.
 Probeer hem eerst op de lokale kopie:
 
 ```powershell
-npm --prefix $p run schema -- --hier
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run schema -- --hier } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 En dan op de echte:
 
 ```powershell
-npm --prefix $p run schema
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run schema } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 **Wat je hoort te zien:** eerst een regel met wat er te wachten staat, dan een
@@ -317,7 +302,7 @@ maar weet waarom die regel er staat.
 ### 3b · De worker uitrollen
 
 ```powershell
-npm --prefix $p run deploy
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run deploy } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Hierin zit: de tijdslimiet op de post, de drie bladzijden die eerst vragen, het
@@ -337,7 +322,7 @@ terug aan — zeg het dan, dan draai ik het terug.
 ### 3c · De site opnieuw bouwen en uitrollen
 
 ```powershell
-npm --prefix $p run build
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run build } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Hierin zit: de twee letters die nu vooraf worden opgehaald (de kop springt niet
@@ -356,7 +341,7 @@ De drie links in een mail doen nu niets meer bij het aanklikken door een
 scanner: ze tonen een bladzijde met één knop, en pas die knop voert het uit.
 
 ```powershell
-npm --prefix $p run proefkoop
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run proefkoop } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Open de mail die binnenkomt, en klik onderaan op **Uitschrijven**. Je hoort een
@@ -423,7 +408,7 @@ Hij heeft in ons gesprek gestaan en op twee schermafdrukken. Maak een nieuwe
 bij Brevo, verwijder de oude, en dan:
 
 ```powershell
-npm --prefix $p run mailsleutel
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run mailsleutel } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Dat script controleert de sleutel én het afzenderadres vóór het hem opslaat,
@@ -437,7 +422,7 @@ kan: vervang het zodra iemand anders bij die logs kan, en gebruik het nergens
 anders voor.
 
 ```powershell
-npm --prefix $p run koopgeheim
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run koopgeheim } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Dat zet het hele Gumroad-adres op je klembord in plaats van op het scherm.

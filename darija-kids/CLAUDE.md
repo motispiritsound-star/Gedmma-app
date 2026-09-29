@@ -47,18 +47,29 @@ Windows PowerShell, geen bash en geen PowerShell 7. Dat betekent:
   uitrol is dat precies verkeerd.
 - **En nooit met puntjes erin.** `cd C:\...\darija-kids\server` is letterlijk
   geplakt, mét de puntjes, en dat is geen slordigheid: het staat in een blok
-  dat eruitziet als iets dat werkt. Ken je het pad niet, geef dan de regel die
-  het opzoekt:
-
-  ```powershell
-  $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName; if ($p) { cd $p; pwd } else { "niet gevonden onder $HOME" }
-  ```
+  dat eruitziet als iets dat werkt.
 
   Hetzelfde geldt voor een waarde tussen punthaken. `<de waarde van
   KOOP_GEHEIM>` is in het veld bij Gumroad beland, punthaken en al. Hoort er
   iets in te staan dat de lezer moet weten, dan is er een opdracht te kort —
   laat het script het afdrukken of erom vragen, zoals `koopgeheim.mjs` en
   `live.mjs` doen. `documentatie.test.ts` bewaakt dat.
+- **Elke plakbare regel draagt zijn eigen voorbereiding mee.** Ken je het pad
+  niet, zoek het dan op in diezelfde regel:
+
+  ```powershell
+  if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run deploy } else { "darija-kids niet gevonden onder $HOME" }
+  ```
+
+  Niet: bovenaan één regel die `$p` zet en daaronder opdrachten die hem
+  gebruiken. Dat werkt alleen voor wie de lijst van boven naar beneden leest in
+  hetzelfde venster — een PowerShell-variabele leeft nergens anders. Wie zo'n
+  opdracht uit een gesprek plakt krijgt *"The variable '$p' cannot be retrieved
+  because it has not been set"*, en dat is hier drie keer gebeurd. Het is geen
+  leesfout van de ander maar een ontwerpfout: een opdracht die een andere
+  opdracht nodig heeft is een opdracht die stukgaat. `documentatie.test.ts`
+  bewaakt het nu, en dat geldt ook voor wat je in een gesprek typt — daar kijkt
+  geen test mee.
 
 En zijn bestanden hebben **`\r\n` aan het eind van elke regel**. Een script dat
 in een bestand zoekt naar twee regels aan elkaar geplakt met `\n`, vindt daar
