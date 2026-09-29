@@ -249,14 +249,16 @@ export function RoundRunner({
    * dus zonder deze opvulling ligt dat kruisje onder de statusbalk en kan een
    * kind de les niet verlaten. Dat is geen schoonheidsfoutje meer.
    *
-   * De 1rem is de py-4 die hier stond. Die is hierheen verhuisd omdat een
-   * inline stijl de padding-top uit de klasse toch overschrijft; pb-4 houdt de
-   * onderkant zoals hij was.
+   * De 1rem en de 1.5rem zijn de `py-4 md:py-6` die hier stonden. Eerst stond
+   * dit in een inline stijl, en daarmee viel de md-variant weg: op een tablet
+   * werd de bovenmarge 16 in plaats van 24. Een inline stijl kent geen
+   * breekpunt. Vandaar de haakjesnotatie van Tailwind, die er wél een tweede
+   * regel van maakt; de underscores worden daar spaties, want `calc(1rem+x)`
+   * zonder spaties rond de plus is ongeldige CSS.
    */
   return (
     <div
-      className="mx-auto flex min-h-screen max-w-2xl flex-col px-4 pb-4 md:max-w-3xl md:px-6 md:pb-6"
-      style={{ paddingTop: 'calc(1rem + var(--rand-boven))' }}
+      className="mx-auto flex min-h-screen max-w-2xl flex-col px-4 pb-4 pt-[calc(1rem_+_var(--rand-boven))] md:max-w-3xl md:px-6 md:pb-6 md:pt-[calc(1.5rem_+_var(--rand-boven))]"
     >
       <div className="flex items-center gap-3">
         <button onClick={() => { sfx.back(); setQuit(true) }} aria-label={t.common.sluiten} className="text-2xl text-[var(--ink-soft)] hover:text-[var(--ink)]">✕</button>
