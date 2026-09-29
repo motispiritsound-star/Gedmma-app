@@ -20,13 +20,14 @@
  *   npm run track -- --track alpha        gesloten test
  *   npm run track -- --track beta         open test
  *   npm run track -- --aab <pad>          een andere bundel dan de laatste
+ *   npm run track -- --oud       een bundel opsturen die ouder is dan de code
  *
  * Productie kan hier met opzet niet. Dat is een beoordeling en een publiek
  * moment; dat hoort een bewuste handeling in de console te zijn, niet iets wat
  * per ongeluk uit een script rolt.
  */
 import { createSign } from 'node:crypto'
-import { existsSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -41,6 +42,8 @@ const arg = (naam, terugval = null) => {
   return i > 0 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : terugval
 }
 const PROEF = process.argv.includes('--proef')
+/** Met opzet een bundel opsturen die ouder is dan de code. Zie de controle onder. */
+const OUD = process.argv.includes('--oud')
 
 /** De tracks waar dit script heen mag. `production` staat er bewust niet bij. */
 const TRACKS = {
@@ -64,6 +67,54 @@ if (!existsSync(AAB)) {
   console.error(`\nGeen bundel op:\n  ${AAB}\n`)
   console.error('Bouw hem eerst:\n')
   console.error('  npm run aab -- --versie 3 --naam 1.2\n')
+  process.exit(1)
+}
+
+/**
+ * Hoort deze bundel nog bij de code die er nu staat?
+ *
+ * Dit is de vraag die hier ontbrak. `maak-aab.mjs` stelt hem wel — die
+ * vergelijkt de nieuwste bronregel met wat het Android-project in ging — maar
+ * dit script pakt gewoon het bestand dat op die plek ligt. Dat is een bestand
+ * dat blijft liggen: bouwen kan mislukken terwijl de vorige bundel er nog
+ * staat, en dan uploadt `npm run track` daarna de app van vorige week zonder
+ * dat er iets misgaat wat je kunt zien.
+ *
+ * Dat is hier geen verzonnen scenario. `npm run build` is op Windows stuk
+ * geweest, en de keten is hard: faalt `build`, dan draait `cap sync` niet en
+ * `maak-aab` ook niet — maar `track` wel. Dan zit er in de winkel iets anders
+ * dan wat je denkt te hebben opgestuurd, en ga je een afwijzing zoeken in code
+ * die er nooit in zat.
+ */
+const nieuwsteBron = (map) => {
+  let nieuwste = 0
+  const langs = (m) => {
+    for (const naam of readdirSync(m, { withFileTypes: true })) {
+      const pad = path.join(m, naam.name)
+      if (naam.isDirectory()) langs(pad)
+      else nieuwste = Math.max(nieuwste, statSync(pad).mtimeMs)
+    }
+  }
+  if (existsSync(map)) langs(map)
+  return nieuwste
+}
+
+const bron = OUD ? 0 : Math.max(nieuwsteBron(path.join(ROOT, 'src')), nieuwsteBron(path.join(ROOT, 'public')))
+const gebouwd = statSync(AAB).mtimeMs
+if (bron > gebouwd) {
+  const dagen = Math.round((bron - gebouwd) / 86400000)
+  const ouder = dagen >= 1 ? `${dagen} dag${dagen === 1 ? '' : 'en'}` : 'korter dan een dag'
+  console.error('\nDeze bundel is ouder dan de code.\n')
+  console.error(`  bundel gebouwd op   ${new Date(gebouwd).toLocaleString('nl-NL')}`)
+  console.error(`  code aangeraakt op  ${new Date(bron).toLocaleString('nl-NL')}`)
+  console.error(`  verschil            ${ouder}\n`)
+  console.error('Zou ik hem nu opsturen, dan staat er in de winkel iets anders dan wat')
+  console.error('er nu in src/ staat — en dat merk je pas als je een afwijzing gaat')
+  console.error('zoeken in code die er niet in zit.\n')
+  console.error('Bouw hem opnieuw, met een versiecode die nog niet gebruikt is:\n')
+  console.error('  npm run aab -- --versie 4 --naam 1.2\n')
+  console.error('Wil je deze bundel tóch opsturen, dan moet dat met opzet:\n')
+  console.error('  npm run track -- --oud\n')
   process.exit(1)
 }
 
@@ -180,8 +231,39 @@ try {
   })
   console.log(`op de track ${TRACK} gezet`)
 
-  await api(bewijs, `/androidpublisher/v3/applications/${APP}/edits/${edit.id}:commit`, { method: 'POST' })
+  /*
+   * Vastleggen, en zo nodig zonder hem ter beoordeling te sturen.
+   *
+   * Eerst gewoon. Antwoordt Google met "Changes cannot be sent for review
+   * automatically", dan staat er in deze app iets klaar dat een beoordeling
+   * nodig heeft — bij ons: de app ligt onder handhaving. Met
+   * `changesNotSentForReview=true` legt hij de edit wél vast maar stuurt hem
+   * niet in; dat doe je dan zelf vanuit de console, op het moment dat jij dat
+   * wilt.
+   *
+   * Voor waar dit script voor is maakt dat niets uit. Het rapport vóór
+   * lancering wordt gemaakt van de geüploade bundel en heeft geen beoordeling
+   * nodig. Sterker: niet insturen is hier juist goed — je wilt eerst dat
+   * rapport lezen.
+   */
+  const leggenVast = (extra) =>
+    api(bewijs, `/androidpublisher/v3/applications/${APP}/edits/${edit.id}:commit${extra}`, { method: 'POST' })
+
+  let ingestuurd = true
+  try {
+    await leggenVast('')
+  } catch (fout) {
+    if (!(fout.status === 400 && /changesNotSentForReview/i.test(String(fout.message)))) throw fout
+    await leggenVast('?changesNotSentForReview=true')
+    ingestuurd = false
+  }
   console.log('vastgelegd\n')
+  if (!ingestuurd) {
+    console.log('Let op: Google wilde dit niet vanzelf ter beoordeling sturen, dus dat is')
+    console.log('niet gebeurd. De bundel stáát er wel, en daar gaat het hier om — het')
+    console.log('rapport hieronder komt van de bundel, niet van een beoordeling.\n')
+    console.log('Insturen doe je later zelf in de console, als het rapport schoon is.\n')
+  }
 
   console.log('Google begint nu vanzelf aan het rapport vóór lancering. Dat duurt')
   console.log('meestal een half uur tot een uur: hij installeert de app op een rij')

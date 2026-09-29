@@ -189,7 +189,21 @@ for (const pad of pagina) {
     .map((m) => m[1].replace(/^https?:\/\/[^/]+/, '') || '/'))
 
   for (const pad of pagina) {
-    const kortpad = path.relative(MAP, pad)
+    /*
+     * Let op de scheidingstekens.
+     *
+     * `path.relative` geeft op Windows `es\index.html`, en een URL kent geen
+     * backslash. Zonder deze omzetting werd het adres `/es\`, stond dat
+     * nergens in de sitemap, en meldde dit blok bijna elke bladzijde als
+     * vergeten — dertig regels rood bij elke bouw, en omdat `fouten.push`
+     * hier staat, stopte de bouw daarop. Op Linux viel dat nooit op.
+     *
+     * Gevolg: sinds deze controle er staat (25 september) faalde `npm run
+     * build` op Adils machine, en dus ook `npm run aab`, want die begint
+     * ermee. De bundels van 23 en 24 september zijn nog gebouwd voordat dit
+     * blok bestond.
+     */
+    const kortpad = path.relative(MAP, pad).split(path.sep).join('/')
     if (kortpad === '404.html') continue          // die hoort nergens in
     const adres = `/${kortpad.replace(/index\.html$/, '').replace(/\/$/, '')}` || '/'
     const html = await readFile(pad, 'utf8')

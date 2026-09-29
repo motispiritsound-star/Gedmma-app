@@ -149,3 +149,43 @@ describe('de commando\'s in de documentatie', () => {
     }
   })
 })
+
+/**
+ * En de scheidingstekens in de scripts.
+ *
+ * `sitecheck.mjs` maakte van een bestandspad een adres met
+ * `path.relative(MAP, pad)`. Op Linux levert dat `es/index.html` en klopt
+ * alles; op Windows `es\index.html`, en dan wordt het adres `/es\`. Dat staat
+ * nergens in de sitemap, dus meldde de controle bijna elke bladzijde als
+ * vergeten — en omdat het een fout is en geen waarschuwing, stopte `npm run
+ * build` daarop. Sinds 25 september, elke keer, alleen bij Adil.
+ *
+ * CLAUDE.md waarschuwt voor de regeleinden op die machine. Dit is dezelfde
+ * soort val: iets wat hier klopt en daar niet, en wat hier nooit omvalt.
+ * Vandaar een bewaker die niet naar deze ene regel kijkt maar naar de vorm:
+ * wie een pad van `path.relative` in een URL stopt, moet de scheidingstekens
+ * omzetten.
+ */
+describe('paden die een adres worden', () => {
+  const scripts = ['sitecheck.mjs', 'make-site.mjs', 'bundelcheck.mjs']
+
+  it('zetten de scheidingstekens om voordat er een URL van wordt gemaakt', () => {
+    for (const naam of scripts) {
+      const tekst = readFileSync(new URL(`../../scripts/${naam}`, import.meta.url), 'utf8')
+      const regels = tekst.split('\n')
+      regels.forEach((regel, i) => {
+        if (!/path\.relative\(/.test(regel)) return
+        // Wordt het resultaat een adres? Dat is te zien aan wat er direct mee
+        // gebeurt: een backtick met een schuine streep ervoor, of een replace
+        // op `index.html`.
+        const vervolg = regels.slice(i, i + 3).join('\n')
+        const wordtAdres = /`\/\$\{/.test(vervolg) || /index\\?\.html\$/.test(vervolg)
+        if (!wordtAdres) return
+        expect(/split\(path\.sep\)\.join\('\/'\)/.test(vervolg),
+          `${naam} regel ${i + 1}: hier wordt een pad een adres zonder de `
+          + 'scheidingstekens om te zetten. Op Windows geeft path.relative '
+          + 'backslashes, en dan klopt het adres niet.').toBe(true)
+      })
+    }
+  })
+})
