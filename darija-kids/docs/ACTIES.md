@@ -323,15 +323,33 @@ Dat hoort een getal te geven (401 of 200, niet 000 en geen foutmelding). Krijg
 je niets, dan is het eigen adres niet meer bereikbaar en moet `workers_dev`
 terug aan — zeg het dan, dan draai ik het terug.
 
-### 3c · De site opnieuw bouwen en uitrollen
+### 3c · De site — die rolt vanzelf uit
+
+Hier hoef je niets te doen, en dat is het nakijken waard geweest: deze sectie
+zei eerder dat je `npm run build` moest draaien, en dat bouwt alleen op jouw
+schijf. Het rolt niets uit.
+
+De site is een eigen Worker die `site/` serveert, en Cloudflare bouwt hem uit de
+repository zelf — productietak `claude/moroccan-language-learning-app-s2rixy`,
+met `npm run build` als bouwopdracht en `npx wrangler deploy` als uitrol. Zie
+`docs/DEPLOY.md`. Elke push naar die tak gaat dus vanzelf live.
+
+Dat betekent ook: alles wat deze week is gewijzigd aan de site staat er al. De
+twee letters die vooraf worden opgehaald, het cachebeleid, de nieuwe tekst bij
+Sba.
+
+Wil je zeker weten dat de laatste bouw is geslaagd, kijk dan in het
+Cloudflare-dashboard bij Workers & Pages → darijaforkids → Deployments. Is er
+iets misgegaan, dan staat daar de bouwuitvoer.
+
+Wat je lokaal wél kunt doen is controleren dat het bouwt vóór je pusht:
 
 ```powershell
 if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run build } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
-Hierin zit: de twee letters die nu vooraf worden opgehaald (de kop springt niet
-meer), het cachebeleid voor 90% van de site, en de nieuwe tekst bij Sba
-("prentenboeken voor de kleintjes").
+Die draait ook `sitecheck`, en dat is de controle die op 25 september stuk ging
+en vijf dagen lang jouw bouw liet omvallen zonder dat GitHub er iets van zei.
 
 ---
 
