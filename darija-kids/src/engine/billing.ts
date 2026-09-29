@@ -511,7 +511,28 @@ export async function initBilling(): Promise<void> {
   store.when().receiptsReady?.(() => { bonnenBinnen = true; refresh() })
   store.error((e) => publish({ busy: false, error: e.message ?? null }))
 
-  await store.initialize([Platform.GOOGLE_PLAY, Platform.APPLE_APPSTORE])
+  /*
+   * Valt de winkel om, dan hoort dat op het scherm te komen.
+   *
+   * `App.tsx` roept dit aan met `void initBilling()`, dus een afwijzing hier
+   * was een onafgevangen fout: niets op het scherm, en `started` bleef op true
+   * staan zodat een tweede poging nooit kwam. Wat een ouder dan ziet is een
+   * abonnementsscherm zonder prijzen en zonder uitleg — en dat is precies het
+   * scherm waarop hij zou betalen.
+   *
+   * `started` gaat daarom terug naar false: de volgende keer dat de app op de
+   * voorgrond komt mag het opnieuw. En de fout gaat via dezelfde weg als de
+   * fouten die de winkel zelf meldt, zodat er één plek is die hem toont.
+   */
+  try {
+    await store.initialize([Platform.GOOGLE_PLAY, Platform.APPLE_APPSTORE])
+  } catch (fout) {
+    started = false
+    const melding = fout instanceof Error ? fout.message : String(fout)
+    console.error('de winkel startte niet', melding)
+    publish({ busy: false, available: true, error: melding })
+    return
+  }
   refresh()
 
   /**
