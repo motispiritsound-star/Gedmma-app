@@ -34,11 +34,10 @@
  * moment; dat hoort een bewuste handeling in de console te zijn, niet iets wat
  * per ongeluk uit een script rolt.
  */
-import { createSign } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
-import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { leesSleutel, tokenOfStop } from './lib/play.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const APP = 'app.darijaforkids.learn'
@@ -128,51 +127,15 @@ if (bron > gebouwd) {
 
 /* ----------------------------------------------------------------- sleutel */
 
-/**
- * Dezelfde sleutel als `npm run play` en `npm run crashes`, en op dezelfde
- * manier gezocht: eerst de gewone plek, anders onder de thuismap. Een pad
- * tussen punthaken in een foutmelding is ooit letterlijk, mét punthaken, in
- * een veld bij Gumroad beland.
+/*
+ * De sleutel. Het zoeken en het inlezen staan in lib/play.mjs, omdat de vier
+ * Play-scripts hem alle vier nodig hebben en ze het niet allemaal op dezelfde
+ * manier deden -- crashcheck doorzocht de thuismap, dit script keek maar op
+ * één plek.
+ *
+ * In de proefstand wordt er niets verstuurd, dus is er ook geen sleutel nodig.
  */
-function zoekSleutel() {
-  const gegeven = arg('sleutel')
-  if (gegeven) return existsSync(gegeven) ? gegeven : null
-  const gewoon = path.join(os.homedir(), 'Documents', 'Darijaforkids-sleutel', 'play-api.json')
-  if (existsSync(gewoon)) return gewoon
-  return null
-}
-
-const SLEUTELPAD = zoekSleutel()
-if (!PROEF && !SLEUTELPAD) {
-  console.error('\nIk kan play-api.json niet vinden. Hij hoort hier te staan:\n')
-  console.error(`  ${path.join(os.homedir(), 'Documents', 'Darijaforkids-sleutel', 'play-api.json')}\n`)
-  process.exit(1)
-}
-const sleutel = PROEF ? { client_email: '(proef)' } : JSON.parse(readFileSync(SLEUTELPAD, 'utf8'))
-
-async function token() {
-  const nu = Math.floor(Date.now() / 1000)
-  const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64url')
-  const basis = `${b64({ alg: 'RS256', typ: 'JWT' })}.${b64({
-    iss: sleutel.client_email,
-    scope: 'https://www.googleapis.com/auth/androidpublisher',
-    aud: 'https://oauth2.googleapis.com/token',
-    iat: nu,
-    exp: nu + 3600,
-  })}`
-  const handtekening = createSign('RSA-SHA256').update(basis).end().sign(sleutel.private_key, 'base64url')
-  const antwoord = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    headers: { 'content-type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-      assertion: `${basis}.${handtekening}`,
-    }),
-  })
-  const body = await antwoord.json()
-  if (!antwoord.ok) throw new Error(`inloggen mislukt: ${JSON.stringify(body)}`)
-  return body.access_token
-}
+const sleutel = PROEF ? { client_email: '(proef)' } : leesSleutel(arg('sleutel'))
 
 async function api(bewijs, pad, opties = {}) {
   const antwoord = await fetch(`${API}${pad}`, {
@@ -206,15 +169,7 @@ if (PROEF) {
   process.exit(0)
 }
 
-let bewijs
-try {
-  bewijs = await token()
-} catch (fout) {
-  console.error(`${fout.message}\n`)
-  console.error('De sleutel werd niet aangenomen. Kijk of het het juiste')
-  console.error('serviceaccount is, en of de systeemklok klopt.\n')
-  process.exit(1)
-}
+const bewijs = await tokenOfStop(sleutel)
 
 try {
   const edit = await api(bewijs, `/androidpublisher/v3/applications/${APP}/edits`, { method: 'POST' })

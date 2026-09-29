@@ -170,6 +170,47 @@ describe('de commando\'s in de documentatie', () => {
     }
   })
 
+  /**
+   * En punthaken in wat een script afdrukt.
+   *
+   * De toets hierboven keek alleen naar markdown, en dat was een gat met een
+   * echte bewoner. `maak-sleutel.mjs` drukte af:
+   *
+   *   storePassword=<het wachtwoord uit wachtwoord.txt naast de sleutel>
+   *
+   * Dat is een regel om in android/keystore.properties te zetten. Wordt hij
+   * letterlijk overgetikt, dan valt de bouw om op een melding over een
+   * wachtwoord dat niet klopt — en dan ga je je sleutel verdenken in plaats
+   * van die regel. Het script vraagt er nu om en schrijft het bestand zelf.
+   *
+   * Een `gebruik:`-regel telt niet mee. Dat is een synopsis van de argumenten
+   * van een ontwikkelaarsscript, geen opdracht die je plakt; `<bestand>` is
+   * daar de gebruikelijke notatie en niet iets om in te vullen.
+   */
+  it('en ook geen punthaken in wat de scripts afdrukken', () => {
+    const map = path.join(WORTEL, 'scripts')
+    const fout: string[] = []
+    const loop = (m: string): void => {
+      for (const ding of readdirSync(m, { withFileTypes: true })) {
+        const pad = path.join(m, ding.name)
+        if (ding.isDirectory()) { loop(pad); continue }
+        if (!ding.name.endsWith('.mjs')) continue
+        readFileSync(pad, 'utf8').split('\n').forEach((regel, i) => {
+          if (!regel.includes('console.log') && !regel.includes('console.error')) return
+          for (const stuk of regel.match(/(['"`])(?:\\.|(?!\1)[^\\])*\1/g) ?? []) {
+            if (stuk.includes('gebruik:')) continue
+            // `${...}` is een sjabloonwaarde en geen punthaak-plaatshouder.
+            if (/<[^>$][^>]{1,}>/.test(stuk.split(/\s#/)[0] ?? stuk)) {
+              fout.push(`${path.relative(WORTEL, pad)} regel ${i + 1}: ${stuk.trim()}`)
+            }
+          }
+        })
+      }
+    }
+    loop(map)
+    expect(fout, 'laat het script de waarde afdrukken of erom vragen').toEqual([])
+  })
+
   it('verwijzen niet naar /tmp', () => {
     // Die map bestaat niet op Windows.
     for (const pad of lijst) {

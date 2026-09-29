@@ -95,11 +95,34 @@ if (existsSync(jks)) {
       console.log('android/keystore.properties stond er niet meer en is teruggezet.')
       console.log('Je kunt nu verder met:  npm run aab\n')
     } else {
-      console.log('Alleen android/keystore.properties ontbreekt nog. Maak hem zelf aan met:')
-      console.log(`  storeFile=${jks.replace(/\\/g, '\\\\')}`)
-      console.log('  storePassword=<het wachtwoord uit wachtwoord.txt naast de sleutel>')
-      console.log(`  keyAlias=${ALIAS}`)
-      console.log('  keyPassword=<hetzelfde wachtwoord>\n')
+      /*
+       * Hier stond een sjabloon om met de hand over te tikken, met
+       * `<het wachtwoord uit wachtwoord.txt>` erin. Dat is precies de vorm die
+       * al een keer letterlijk is geplakt, punthaken en al: bij Gumroad, waar
+       * `<de waarde van KOOP_GEHEIM>` in het veld belandde en de enige
+       * aanwijzing "That URL seems to be invalid" was.
+       *
+       * Hier zou het erger uitpakken. Een keystore.properties met punthaken
+       * erin laat de bouw omvallen op een melding over een wachtwoord dat niet
+       * klopt, en dan ga je je sleutel verdenken.
+       *
+       * Het script kan dat bestand zelf schrijven -- schrijfEigenschappen staat
+       * hierboven. Dus vraagt hij het, zoals live.mjs om het Apple ID vraagt.
+       */
+      console.log('Alleen android/keystore.properties ontbreekt nog, en het briefje met')
+      console.log(`het wachtwoord staat niet naast de sleutel:\n\n  ${briefje}\n`)
+      const { createInterface } = await import('node:readline/promises')
+      const lezer = createInterface({ input: process.stdin, output: process.stdout })
+      const gegeven = (await lezer.question('Wachtwoord van de sleutel (enter = overslaan): ')).trim()
+      lezer.close()
+      if (gegeven) {
+        schrijfEigenschappen(jks, gegeven)
+        console.log('\nandroid/keystore.properties is aangemaakt.')
+        console.log('Je kunt nu verder met:  npm run aab\n')
+      } else {
+        console.log('\nNiets aangemaakt. Zonder dat bestand kan npm run aab niet ondertekenen.')
+        console.log('Draai deze opdracht opnieuw zodra je het wachtwoord bij de hand hebt.\n')
+      }
     }
   }
   process.exit(0)

@@ -35,7 +35,7 @@ const AAB = i > 0 && process.argv[i + 1] ? process.argv[i + 1] : STANDAARD
 
 if (!existsSync(AAB)) {
   console.error(`\nGeen bundel op:\n  ${AAB}\n`)
-  console.error('Geef er een aan met  --aab <pad>  of bouw hem:\n')
+  console.error('Zet --aab en een pad erachter om een andere te bekijken, of bouw hem:\n')
   console.error('  npm run aab -- --versie 4 --naam 1.2\n')
   process.exit(1)
 }

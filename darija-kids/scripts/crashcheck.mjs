@@ -19,14 +19,10 @@
  * Twee dingen kunnen hier misgaan, en allebei zeggen ze iets anders dan
  * "geen crashes". Ze staan onderaan uitgeschreven, met wat eraan te doen is.
  */
-import { createSign } from 'node:crypto'
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
-import os from 'node:os'
-import path from 'node:path'
+import { leesSleutel, SCOPES, tokenOfStop } from './lib/play.mjs'
 
 const APP = 'app.darijaforkids.learn'
 const API = 'https://playdeveloperreporting.googleapis.com/v1beta1'
-const SCOPE = 'https://www.googleapis.com/auth/playdeveloperreporting'
 
 const arg = (naam, terugval = null) => {
   const i = process.argv.indexOf(`--${naam}`)
@@ -56,67 +52,14 @@ const HOEVEEL = Math.max(1, Math.min(50, Number(arg('aantal', '10')) || 10))
  * Dus kijkt hij eerst op de gewone plek, en anders zoekt hij hem. Vijf mappen
  * diep onder je thuismap is ruim genoeg en duurt een halve seconde.
  */
-function zoekSleutel() {
-  const gegeven = arg('sleutel')
-  if (gegeven) return existsSync(gegeven) ? gegeven : null
-
-  const gewoon = path.join(os.homedir(), 'Documents', 'Darijaforkids-sleutel', 'play-api.json')
-  if (existsSync(gewoon)) return gewoon
-
-  const gezien = new Set()
-  const zoek = (map, diepte) => {
-    if (diepte > 5 || gezien.has(map)) return null
-    gezien.add(map)
-    let inhoud
-    try {
-      inhoud = readdirSync(map, { withFileTypes: true })
-    } catch {
-      return null // geen toegang; dan is hij hier toch niet
-    }
-    for (const ding of inhoud) {
-      if (ding.isFile() && ding.name === 'play-api.json') return path.join(map, ding.name)
-    }
-    for (const ding of inhoud) {
-      if (!ding.isDirectory() || ding.name.startsWith('.') || ding.name === 'node_modules') continue
-      const gevonden = zoek(path.join(map, ding.name), diepte + 1)
-      if (gevonden) return gevonden
-    }
-    return null
-  }
-  return zoek(os.homedir(), 0)
-}
-
-const SLEUTELPAD = zoekSleutel()
-if (!SLEUTELPAD) {
-  console.error('\nIk kan play-api.json niet vinden, ook niet door onder je thuismap te zoeken.\n')
-  console.error('Dat is het sleutelbestand van het serviceaccount waarmee `npm run play`')
-  console.error('de winkelvermelding bijwerkt. Staat het ergens anders, zet het dan hier:\n')
-  console.error(`  ${path.join(os.homedir(), 'Documents', 'Darijaforkids-sleutel', 'play-api.json')}\n`)
-  process.exit(1)
-}
-console.log(`\nSleutel: ${SLEUTELPAD}`)
-const sleutel = JSON.parse(readFileSync(SLEUTELPAD, 'utf8'))
-
-/** Een toegangsbewijs halen: JWT tekenen, inruilen bij Google. */
-async function token() {
-  const nu = Math.floor(Date.now() / 1000)
-  const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64url')
-  const basis = `${b64({ alg: 'RS256', typ: 'JWT' })}.${b64({
-    iss: sleutel.client_email, scope: SCOPE, aud: 'https://oauth2.googleapis.com/token', iat: nu, exp: nu + 3600,
-  })}`
-  const handtekening = createSign('RSA-SHA256').update(basis).end().sign(sleutel.private_key, 'base64url')
-  const antwoord = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    headers: { 'content-type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-      assertion: `${basis}.${handtekening}`,
-    }),
-  })
-  const body = await antwoord.json()
-  if (!antwoord.ok) throw new Error(`inloggen mislukt: ${JSON.stringify(body)}`)
-  return body.access_token
-}
+/*
+ * De sleutel. Het zoeken staat in lib/play.mjs, want alle vier de
+ * Play-scripts hebben hem nodig -- en ze deden het niet hetzelfde. Dit script
+ * doorzocht de thuismap, naartrack en rechten keken maar op één plek. Staat de
+ * sleutel ergens anders, dan werkte de ene opdracht wel en de andere niet.
+ */
+const sleutel = leesSleutel(arg('sleutel'))
+console.log(`\nSleutel: ${sleutel.pad}`)
 
 async function api(bewijs, pad) {
   const antwoord = await fetch(`${API}${pad}`, { headers: { authorization: `Bearer ${bewijs}` } })
@@ -223,16 +166,7 @@ if (VERSIE) filters.push(`versionCode = ${VERSIE}`)
 console.log(`Ik vraag het aan Google, met ${sleutel.client_email}.`)
 console.log(`${ANR ? 'Vastlopers' : 'Crashes'} van de laatste 28 dagen${VERSIE ? `, versiecode ${VERSIE}` : ''}.\n`)
 
-let bewijs
-try {
-  bewijs = await token()
-} catch (fout) {
-  console.error(`${fout.message}\n`)
-  console.error('De sleutel werd niet aangenomen. Kijk of het bestand het juiste')
-  console.error('serviceaccount is, en of de systeemklok klopt — een JWT met een')
-  console.error('scheve tijd wordt geweigerd.\n')
-  process.exit(1)
-}
+const bewijs = await tokenOfStop(sleutel, SCOPES.cijfers)
 
 let uit
 let periode

@@ -15,10 +15,7 @@
  * precies het recht dat een uitgiftesleutel meestal niet heeft. Lukt het niet,
  * dan zegt hij welk vinkje het is en waar het staat — één ding, niet zeven.
  */
-import { createSign } from 'node:crypto'
-import { existsSync, readFileSync } from 'node:fs'
-import os from 'node:os'
-import path from 'node:path'
+import { leesSleutel, tokenOfStop } from './lib/play.mjs'
 
 const APP = 'app.darijaforkids.learn'
 // Het nummer uit het adres van Play Console. Geen geheim: het staat in elke
@@ -50,44 +47,7 @@ const RECHTEN = {
 /** Dit is het recht waar `npm run track` op strandde. */
 const NODIG = 'CAN_MANAGE_TRACK_APKS'
 
-function zoekSleutel() {
-  const gegeven = arg('sleutel')
-  if (gegeven) return existsSync(gegeven) ? gegeven : null
-  const gewoon = path.join(os.homedir(), 'Documents', 'Darijaforkids-sleutel', 'play-api.json')
-  return existsSync(gewoon) ? gewoon : null
-}
-
-const SLEUTELPAD = zoekSleutel()
-if (!SLEUTELPAD) {
-  console.error('\nIk kan play-api.json niet vinden. Hij hoort hier te staan:\n')
-  console.error(`  ${path.join(os.homedir(), 'Documents', 'Darijaforkids-sleutel', 'play-api.json')}\n`)
-  process.exit(1)
-}
-const sleutel = JSON.parse(readFileSync(SLEUTELPAD, 'utf8'))
-
-async function token() {
-  const nu = Math.floor(Date.now() / 1000)
-  const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64url')
-  const basis = `${b64({ alg: 'RS256', typ: 'JWT' })}.${b64({
-    iss: sleutel.client_email,
-    scope: 'https://www.googleapis.com/auth/androidpublisher',
-    aud: 'https://oauth2.googleapis.com/token',
-    iat: nu,
-    exp: nu + 3600,
-  })}`
-  const handtekening = createSign('RSA-SHA256').update(basis).end().sign(sleutel.private_key, 'base64url')
-  const antwoord = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    headers: { 'content-type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-      assertion: `${basis}.${handtekening}`,
-    }),
-  })
-  const body = await antwoord.json()
-  if (!antwoord.ok) throw new Error(`inloggen mislukt: ${JSON.stringify(body)}`)
-  return body.access_token
-}
+const sleutel = leesSleutel(arg('sleutel'))
 
 async function api(bewijs, pad, opties = {}) {
   const antwoord = await fetch(`${API}${pad}`, {
@@ -108,15 +68,7 @@ async function api(bewijs, pad, opties = {}) {
 console.log(`\nServiceaccount: ${sleutel.client_email}`)
 console.log(`App:            ${APP}\n`)
 
-let bewijs
-try {
-  bewijs = await token()
-} catch (fout) {
-  console.error(`${fout.message}\n`)
-  console.error('De sleutel werd niet aangenomen. Kijk of het het juiste')
-  console.error('serviceaccount is, en of de systeemklok klopt.\n')
-  process.exit(1)
-}
+const bewijs = await tokenOfStop(sleutel)
 
 /*
  * De gebruikerslijst ophalen, en die bron heeft een eigenaardigheid.

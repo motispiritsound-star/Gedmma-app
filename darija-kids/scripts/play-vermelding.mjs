@@ -162,7 +162,7 @@ async function api(bewijs, pad, opties = {}) {
 const SLEUTELPAD = arg('sleutel', path.join(os.homedir(), 'Documents', 'Darijaforkids-sleutel', 'play-api.json'))
 if (!PROEF && !existsSync(SLEUTELPAD)) {
   console.error(`\nGeen sleutel gevonden op:\n  ${SLEUTELPAD}\n`)
-  console.error('Geef het pad mee met --sleutel <pad naar play-api.json>\n')
+  console.error('Staat hij ergens anders, zet dan --sleutel en het pad erachter.\n')
   process.exit(1)
 }
 const sleutel = PROEF ? { client_email: '(proef)' } : JSON.parse(readFileSync(SLEUTELPAD, 'utf8'))
