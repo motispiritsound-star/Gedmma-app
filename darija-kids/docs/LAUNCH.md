@@ -75,14 +75,17 @@ nodig. De paragraafnummers verwijzen naar de uitleg hieronder.
       ingediende belastingformulieren blijven op de oude naam staan; dat hoort zo.
 - [x] Apple: bankgegevens — **Active**, op naam van Adil Bekkali. De bank heet in
       Apples lijst *BAWAG PSK*: dat is de moeder van Knab, dus dat klopt.
-- [ ] Apple: bij de bankrekening staat **USD** als royalty-valuta. Kijk of **EUR**
-      er ook aan hangt — anders is er voor het grootste deel van de omzet geen
-      rekening aangewezen (Business → Bank Accounts → See More)
-- [ ] Apple: **DAC7** (Directive on Administrative Cooperation, 7e wijziging) staat
-      op *Missing Info*. Dit is de EU-meldplicht voor verkopers op een platform;
-      zonder die gegevens mag Apple de uitbetaling inhouden. Invullen via
-      Business → Compliance → **Add Info**: naam, adres, geboortedatum, het
-      fiscaal nummer (BSN bij een eenmanszaak) en het KvK-nummer van Venship
+- [ ] Apple: bij de bankrekening staat **USD** als royalty-valuta terwijl de
+      rekening zelf in EUR staat. Op 30 september geprobeerd: onder de drie
+      puntjes bij de rekening staat alleen *Replace with New Account*, en die
+      stappen gaan van de bankgegevens rechtstreeks naar de machtiging zonder
+      ergens naar de royaltyvaluta te vragen. Afgebroken, de oude rekening staat
+      er nog. Vraag uitstaan bij Apple via *Contact Us*
+- [x] Apple: **DAC7** — ingediend op 22 september, status *Active*. Te vinden
+      onder Business → **Compliance**, en niet onder die naam: de regel heet daar
+      *Directive on Administrative Cooperation – 7th Amendment*. Bij *Tax Forms*
+      zoeken levert niets op; daar staan alleen de Amerikaanse, Braziliaanse en
+      Mexicaanse formulieren
 - [x] Google: identiteitsverificatie — goedgekeurd op 21 september
 - [x] Google: het account staat als **organisatie** — de gesloten test met 12
       testers × 14 dagen vervalt daarmee (§6)
