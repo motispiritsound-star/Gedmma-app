@@ -12,7 +12,7 @@
  * vraag niet "hoe krijg ik de test groen" maar "hoort daar een poort voor".
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, sep } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { STRINGS } from '../i18n'
 import { LANG_CODES } from '../i18n/languages'
@@ -31,7 +31,18 @@ const TOEGESTAAN: Record<string, string> = {
   'src/pages/Unlock.tsx': 'het e-boek openen en het abonnement beheren — allebei achter setPoort({ reden: "uit" })',
 }
 
-/** Alle app-bestanden. De site is een aparte bouw en valt niet onder de app. */
+/**
+ * Alle app-bestanden. De site is een aparte bouw en valt niet onder de app.
+ *
+ * De paden komen eruit met schuine strepen, ook op Windows. `join` geeft daar
+ * `src\\pages\\Unlock.tsx`, en dat is een ander woord dan de sleutel
+ * `src/pages/Unlock.tsx` in `TOEGESTAAN` hieronder. De test viel daardoor om
+ * op Adils laptop terwijl er niets mis was: hij las een nieuwe uitgang waar
+ * alleen een andere scheidingsstreep stond.
+ *
+ * Een lijst die met een vaste lijst vergeleken wordt, moet in één schrijfwijze
+ * staan. Die van de sleutels is de leesbare, dus zetten we de paden om.
+ */
 function appBestanden(map = 'src'): string[] {
   const uit: string[] = []
   for (const naam of readdirSync(map)) {
@@ -41,7 +52,7 @@ function appBestanden(map = 'src'): string[] {
       if (pad === join('src', 'site') || pad === join('src', 'content')) continue
       uit.push(...appBestanden(pad))
     } else if (/\.tsx?$/.test(naam) && !naam.includes('.test.')) {
-      uit.push(pad)
+      uit.push(pad.split(sep).join('/'))
     }
   }
   return uit

@@ -18,7 +18,7 @@
  * soort gemak dat er in een volgende ronde weer in glijdt.
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, sep } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 /** Alle bronbestanden van de app. De site is een aparte bouw. */
@@ -30,7 +30,9 @@ function appBestanden(map = 'src'): string[] {
       if (naam === 'site' || naam === 'content') continue
       uit.push(...appBestanden(pad))
     } else if (/\.tsx?$/.test(naam) && !naam.includes('.test.')) {
-      uit.push(pad)
+      // Met schuine strepen, ook op Windows: dit pad komt in een foutmelding
+      // terecht, en die hoort op elke machine hetzelfde te lezen.
+      uit.push(pad.split(sep).join('/'))
     }
   }
   return uit
