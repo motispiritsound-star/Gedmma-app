@@ -32,8 +32,22 @@ export interface Product {
  * van elkaar opengaan.
  */
 const LINKS: Record<string, string> = {
-  sbaReeks: 'https://venshipper.gumroad.com/l/sbadeleeuw',
-  sleutelsReeks: 'https://venshipper.gumroad.com/l/sleutels',
+  // Uitgezet op 30 september: het afrekenen bij Gumroad is stuk.
+  //
+  // In een privévenster — dus zoals een gewone bezoeker het ziet — eindigt het
+  // afrekenen van Sba met "Invalid parameter owner[name]. Owner name must be
+  // at least 3 characters long." Niemand kan dus iets kopen, en een knop die
+  // naar een kapotte kassa wijst is erger dan geen knop: die bezoeker komt
+  // niet terug.
+  //
+  // Let op wat géén storing is: wie met het eigen adres van de maker afrekent,
+  // krijgt van Gumroad "this will be a test purchase ... your payment method
+  // will not be charged". Dat is normaal en geldt alleen voor de maker.
+  //
+  // Zet ze terug zodra het afrekenen het weer doet, in een privévenster
+  // nagekeken en met een echte afrekening tot het eind.
+  // sbaReeks: 'https://venshipper.gumroad.com/l/sbadeleeuw',
+  // sleutelsReeks: 'https://venshipper.gumroad.com/l/sleutels',
   // ebook: 'https://…',
 }
 

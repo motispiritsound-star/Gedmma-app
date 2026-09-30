@@ -88,7 +88,8 @@
     "watzitin": "node scripts/watzitin.mjs",
     "rechten": "node scripts/rechten.mjs",
     "iapbeeld": "node scripts/make-iap.mjs",
-    "winkeltekst": "node scripts/winkeltekst.mjs"
+    "winkeltekst": "node scripts/winkeltekst.mjs",
+    "citaten": "node scripts/make-citaten.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
