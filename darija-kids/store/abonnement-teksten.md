@@ -84,6 +84,6 @@ De **product-ids** (`app.darijaforkids.yearly`, `app.darijaforkids.monthly`,
 namen op; een id dat verschuift is een app die zijn eigen abonnement niet meer
 herkent. Zie `src/engine/billing.ts`.
 
-De **prijzen** ook niet — Nederland staat goed op € 59,99 en € 6,99. Wat daar
-nog wél moet gebeuren staat in `docs/STAND.md` onder *Wat alleen jij kunt
-doen*, punt 1: de prijsbasis van de Verenigde Staten naar Nederland.
+De **prijzen** ook niet — Nederland staat goed op € 59,99 en € 6,99. Dat de
+prijsbasis op de Verenigde Staten staat en Marokko daardoor op $ 59,99 uitkomt,
+is op 30 september bewust zo gelaten; zie `docs/STAND.md`, punt 1.
