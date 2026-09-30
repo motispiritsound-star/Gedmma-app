@@ -54,3 +54,6 @@ android/app/capacitor.build.gradle
 # Luisterboeken: opnames, bouwresultaat
 /store/luister/
 /store/lezen/luister/
+
+# kladbestanden van metingen
+zz*.mjs

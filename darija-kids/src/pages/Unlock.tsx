@@ -4,7 +4,7 @@ import {
   btwInbegrepen, buyEbook, EBOOK, ebookFile, FREE_LESSONS, manageSubscription, PLANS, planOf,
   restorePurchases, subscribe, TRIAL_DAYS, useBilling, YEAR_FULL_PRICE, YEAR_SAVING, type PlanId,
 } from '../engine/billing'
-import { gezinsdeling } from '../engine/platform'
+import { gezinsdeling, winkelVan } from '../engine/platform'
 import { useStore } from '../engine/store'
 import { useT } from '../i18n'
 import { sfx } from '../engine/audio'
@@ -66,6 +66,16 @@ export function Unlock() {
    * besluit te betalen, dus het moet kloppen op het toestel in zijn hand.
    */
   const gezin = gezinsdeling()
+  /**
+   * Hoe de winkel heet waar deze app vandaan komt.
+   *
+   * Apple wees de App Store-beschrijving af op 2.3.10 omdat er Google Play in
+   * stond. Dezelfde zin stond hieronder, in de voorwaarden die vóór de aankoop
+   * zichtbaar moeten zijn — en dat is het scherm dat een beoordelaar het beste
+   * bekijkt. Op het web staan ze allebei; daar verkoopt de app niets en weet je
+   * niet waar de lezer straks koopt.
+   */
+  const winkel = t.unlock.winkelnaam[winkelVan()]
 
   useEffect(() => {
     if (subscribed) setPoort(null)
@@ -84,7 +94,7 @@ export function Unlock() {
           </Card>
           {billing.available && (
             <Card className="mt-4 flex flex-wrap items-center gap-3 p-5">
-              <p className="min-w-0 grow basis-64 text-sm text-[var(--ink-soft)]">{t.unlock.beheerHint}</p>
+              <p className="min-w-0 grow basis-64 text-sm text-[var(--ink-soft)]">{t.unlock.beheerHint(winkel)}</p>
               {/* Opzeggen gebeurt in de winkel-app, dus dit is de app uit. */}
               <Button
                 variant="secondary"
@@ -207,8 +217,8 @@ export function Unlock() {
                   mededeling op het scherm waar iemand besluit te betalen. */}
               <p className="mt-3 text-xs leading-relaxed text-[var(--ink-soft)]">
                 {jaar
-                  ? t.unlock.voorwaardenJaar(TRIAL_DAYS, price)
-                  : t.unlock.voorwaarden(TRIAL_DAYS, price)}{' '}
+                  ? t.unlock.voorwaardenJaar(TRIAL_DAYS, price, winkel)
+                  : t.unlock.voorwaarden(TRIAL_DAYS, price, winkel)}{' '}
                 {t.unlock.btwRegel(btwInbegrepen(billing.currency))}
               </p>
               {billing.error && (

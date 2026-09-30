@@ -34,3 +34,24 @@ export const platform = (): Platform => {
  * waar iemand besluit te betalen.
  */
 export const gezinsdeling = (): boolean => platform() === 'ios'
+
+/**
+ * Hoe de winkel heet waar deze app vandaan komt.
+ *
+ * Apple wees de App Store-beschrijving af op richtlijn 2.3.10 omdat er Google
+ * Play in stond: *"information about third-party platforms that may not be
+ * relevant for App Store users."* Dezelfde zin stond in de app, op het scherm
+ * waar iemand besluit te betalen — *afgeschreven via je App Store- of Google
+ * Play-account*. Dat is dezelfde regel, op de plek die een beoordelaar het
+ * beste bekijkt.
+ *
+ * Op het web verkoopt de app niets, en daar weet je niet waar de lezer straks
+ * koopt. Daar staan ze dus allebei, en de vertaling bepaalt hoe je die twee
+ * aan elkaar plakt — "of", "or", "o", "oder".
+ */
+export type Winkel = 'ios' | 'android' | 'beide'
+
+export const winkelVan = (): Winkel => {
+  const p = platform()
+  return p === 'ios' ? 'ios' : p === 'android' ? 'android' : 'beide'
+}

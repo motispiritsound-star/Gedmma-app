@@ -70,7 +70,7 @@ describe('de commando\'s in de documentatie', () => {
     const fout = plakregels(readFileSync(pad, 'utf8'))
       .filter(([, regel]) => regel.includes('&&'))
       .map(([nr, regel]) => `regel ${nr}: ${regel.trim()}`)
-    expect(fout, `PowerShell 5.1 leest && niet als scheiding — geef elke opdracht een eigen regel`).toEqual([])
+    expect(fout.join('\n'), `PowerShell 5.1 leest && niet als scheiding — geef elke opdracht een eigen regel`).toBe('')
   })
 
   /**
@@ -97,10 +97,10 @@ describe('de commando\'s in de documentatie', () => {
         .filter(([, regel]) => !regel.includes('if (-not $p)'))
         .map(([nr, regel]) => `regel ${nr}: ${regel.trim().slice(0, 70)}`)
       expect(
-        fout,
+        fout.join('\n'),
         `${path.relative(WORTEL, pad)}: deze regels gebruiken $p zonder hem te zetten. ` +
           'Zet er  if (-not $p) { $p = (Get-ChildItem ...).FullName };  voor.',
-      ).toEqual([])
+      ).toBe('')
     }
   })
 
@@ -112,7 +112,7 @@ describe('de commando\'s in de documentatie', () => {
       const fout = plakregels(readFileSync(pad, 'utf8'))
         .filter(([, regel]) => /(^|[\s|(])curl\s/.test(regel))
         .map(([nr, regel]) => `regel ${nr}: ${regel.trim()}`)
-      expect(fout, path.relative(WORTEL, pad)).toEqual([])
+      expect(fout.join('\n'), path.relative(WORTEL, pad)).toBe('')
     }
   })
 
@@ -140,7 +140,7 @@ describe('de commando\'s in de documentatie', () => {
         }
       })
     }
-    expect(fout, 'geef elke opdracht een eigen console.log').toEqual([])
+    expect(fout.join('\n'), 'geef elke opdracht een eigen console.log').toBe('')
   })
 
   /**
@@ -166,7 +166,7 @@ describe('de commando\'s in de documentatie', () => {
       const fout = plakregels(readFileSync(pad, 'utf8'))
         .filter(([, regel]) => /<[^>]{2,}>/.test(zonderUitleg(regel)))
         .map(([nr, regel]) => `regel ${nr}: ${regel.trim()}`)
-      expect(fout, `${path.relative(WORTEL, pad)} — geef een opdracht die het invult`).toEqual([])
+      expect(fout.join('\n'), `${path.relative(WORTEL, pad)} — geef een opdracht die het invult`).toBe('')
     }
   })
 
@@ -208,7 +208,7 @@ describe('de commando\'s in de documentatie', () => {
       }
     }
     loop(map)
-    expect(fout, 'laat het script de waarde afdrukken of erom vragen').toEqual([])
+    expect(fout.join('\n'), 'laat het script de waarde afdrukken of erom vragen').toBe('')
   })
 
   it('verwijzen niet naar /tmp', () => {
@@ -217,7 +217,7 @@ describe('de commando\'s in de documentatie', () => {
       const fout = plakregels(readFileSync(pad, 'utf8'))
         .filter(([, regel]) => /(^|\s)\/tmp\//.test(regel))
         .map(([nr, regel]) => `regel ${nr}: ${regel.trim()}`)
-      expect(fout, path.relative(WORTEL, pad)).toEqual([])
+      expect(fout.join('\n'), path.relative(WORTEL, pad)).toBe('')
     }
   })
 })

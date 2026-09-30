@@ -622,7 +622,7 @@ export const fr: Strings = {
       ],
       [
         'Est-ce que c’est payant ?',
-        'Les quatre premières leçons sont et restent gratuites : trois morceaux de l’alphabet arabe et tes premiers mots en darija. Pour le cours complet, c’est un abonnement : 5,00 € par mois avec un abonnement annuel (59,99 € en une fois) ou 6,99 € par mois, TTC et avec les premiers jours offerts. Sur iPhone et iPad, un seul abonnement vaut pour toute la famille : jusqu’à six personnes, chacune avec sa propre progression. Sur Android, il vaut pour le compte Google qui le souscrit. Tu le souscris dans l’application via l’App Store ou Google Play, et tu le résilies au même endroit quand tu veux. Pas de publicité et pas de compte : ta progression reste à toi.',
+        'Les quatre premières leçons sont et restent gratuites : trois morceaux de l’alphabet arabe et tes premiers mots en darija. Pour le cours complet, c’est un abonnement : 59,99 € par an (soit 5,00 € par mois) ou 6,99 € par mois, TTC et avec les premiers jours offerts. Sur iPhone et iPad, un seul abonnement vaut pour toute la famille : jusqu’à six personnes, chacune avec sa propre progression. Sur Android, il vaut pour le compte Google qui le souscrit. Tu le souscris dans l’application via l’App Store ou Google Play, et tu le résilies au même endroit quand tu veux. Pas de publicité et pas de compte : ta progression reste à toi.',
       ],
       [
         'Ça marche hors ligne ?',
@@ -665,17 +665,19 @@ export const fr: Strings = {
     perMaandBerekend: (prijs: string): string => `soit ${prijs} par mois`,
     jaarInPlaatsVan: 'au lieu de',
     perMaandLos: 'résiliable chaque mois',
-    voorwaardenJaar: (dagen: number, prijs: string): string =>
-      `Après ${dagen} jours offerts, ${prijs} sont prélevés pour une année entière via ton compte App Store ou Google Play, puis chaque année jusqu’à résiliation. Si tu résilies avant la fin de l’essai, tu ne paies rien.`,
+    /** Hoe de winkel heet waar deze app vandaan komt; zie engine/platform.ts. */
+    winkelnaam: { ios: 'App Store', android: 'Google Play', beide: 'App Store ou Google Play' },
+    voorwaardenJaar: (dagen, prijs, winkel) =>
+      `Après ${dagen} jours offerts, ${prijs} sont prélevés pour une année entière via ton compte ${winkel}, puis chaque année jusqu’à résiliation. Si tu résilies avant la fin de l’essai, tu ne paies rien.`,
     koop: (dagen) => `Commencer ${dagen} jours gratuits`,
-    voorwaarden: (dagen, prijs) =>
-      `Après ${dagen} jours gratuits, ${prijs} par mois sont prélevés via ton compte App Store ou Google Play, jusqu'à résiliation. Si tu résilies avant la fin de la période d'essai, tu ne paies rien.`,
+    voorwaarden: (dagen, prijs, winkel) =>
+      `Après ${dagen} jours gratuits, ${prijs} par mois sont prélevés via ton compte ${winkel}, jusqu’à résiliation. Si tu résilies avant la fin de la période d’essai, tu ne paies rien.`,
     btwRegel: (inbegrepen: boolean): string =>
       inbegrepen ? 'Prix TTC.' : 'La boutique applique la taxe en vigueur dans ton pays.',
     herstel: "Restaurer l'achat",
     herstelHint: 'Nouvel appareil, ou application réinstallée ? Restaure ton abonnement ici — c\'est gratuit.',
     beheer: "Gérer l'abonnement",
-    beheerHint: "La résiliation se fait dans ton compte App Store ou Google Play. Ce bouton t'y emmène directement.",
+    beheerHint: (winkel) => `La résiliation se fait dans ton compte ${winkel}. Ce bouton t’y emmène directement.`,
     alleenInApp: (prijs, jaar) =>
       `L'abonnement se souscrit dans l'application de l'App Store ou de Google Play (${prijs} ${jaar ? 'par an' : 'par mois'}). Sur ce site, les premières unités restent gratuites.`,
     bezig: 'En cours…',

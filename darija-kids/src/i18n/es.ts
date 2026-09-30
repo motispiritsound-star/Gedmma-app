@@ -622,7 +622,7 @@ export const es: Strings = {
       ],
       [
         '¿Cuesta dinero?',
-        'Las cuatro primeras lecciones son y seguirán siendo gratis: tres partes del alfabeto árabe y tus primeras palabras en dariya. El curso completo va con una suscripción: 5,00 € al mes con la suscripción anual (59,99 € de una vez) o 6,99 € al mes, con IVA incluido y los primeros días gratis. En iPhone y iPad una suscripción vale para toda la familia: hasta seis personas, cada una con su propio progreso. En Android vale para la cuenta de Google que la contrata. Se contrata dentro de la aplicación a través de la App Store o Google Play, y allí mismo se cancela cuando quieras. Sin publicidad y sin cuenta: tu progreso sigue siendo tuyo.',
+        'Las cuatro primeras lecciones son y seguirán siendo gratis: tres partes del alfabeto árabe y tus primeras palabras en dariya. El curso completo va con una suscripción: 59,99 € al año (son 5,00 € al mes) o 6,99 € al mes, con IVA incluido y los primeros días gratis. En iPhone y iPad una suscripción vale para toda la familia: hasta seis personas, cada una con su propio progreso. En Android vale para la cuenta de Google que la contrata. Se contrata dentro de la aplicación a través de la App Store o Google Play, y allí mismo se cancela cuando quieras. Sin publicidad y sin cuenta: tu progreso sigue siendo tuyo.',
       ],
       [
         '¿Funciona sin conexión?',
@@ -665,17 +665,19 @@ export const es: Strings = {
     perMaandBerekend: (prijs: string): string => `son ${prijs} al mes`,
     jaarInPlaatsVan: 'en lugar de',
     perMaandLos: 'cancelable cada mes',
-    voorwaardenJaar: (dagen: number, prijs: string): string =>
-      `Tras ${dagen} días gratis se cobran ${prijs} por un año entero a través de tu cuenta de la App Store o de Google Play, y después cada año hasta que canceles. Si cancelas antes de que termine la prueba, no pagas nada.`,
+    /** Hoe de winkel heet waar deze app vandaan komt; zie engine/platform.ts. */
+    winkelnaam: { ios: 'App Store', android: 'Google Play', beide: 'App Store o Google Play' },
+    voorwaardenJaar: (dagen, prijs, winkel) =>
+      `Tras ${dagen} días gratis se cobran ${prijs} por un año entero en tu cuenta de ${winkel}, y después cada año hasta que canceles. Si cancelas antes de que termine la prueba, no pagas nada.`,
     koop: (dagen) => `Empezar ${dagen} días gratis`,
-    voorwaarden: (dagen, prijs) =>
-      `Después de ${dagen} días gratis se cobran ${prijs} al mes a través de tu cuenta de la App Store o de Google Play, hasta que canceles. Si cancelas antes de que termine la prueba, no pagas nada.`,
+    voorwaarden: (dagen, prijs, winkel) =>
+      `Tras ${dagen} días gratis se cobran ${prijs} al mes en tu cuenta de ${winkel}, hasta que canceles. Si cancelas antes de que termine la prueba, no pagas nada.`,
     btwRegel: (inbegrepen: boolean): string =>
       inbegrepen ? 'IVA incluido.' : 'La tienda aplica el impuesto que corresponde a tu país.',
     herstel: 'Restaurar la compra',
     herstelHint: '¿Dispositivo nuevo o aplicación reinstalada? Recupera aquí tu suscripción: no cuesta nada.',
     beheer: 'Gestionar la suscripción',
-    beheerHint: 'La cancelación se hace en tu cuenta de la App Store o de Google Play. Este botón te lleva directo.',
+    beheerHint: (winkel) => `La cancelación se hace en tu cuenta de ${winkel}. Este botón te lleva allí directamente.`,
     alleenInApp: (prijs, jaar) =>
       `La suscripción se contrata en la aplicación de la App Store o de Google Play (${prijs} ${jaar ? 'al año' : 'al mes'}). En esta web las primeras unidades siguen siendo gratis.`,
     bezig: 'Un momento…',

@@ -622,7 +622,7 @@ export const de: Strings = {
       ],
       [
         'Kostet es etwas?',
-        'Die ersten vier Lektionen sind und bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs läuft über ein Abo: 5,00 € pro Monat im Jahresabo (59,99 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer und mit den ersten Tagen gratis. Auf iPhone und iPad gilt ein Abo für die ganze Familie: bis zu sechs Personen, jede mit ihrem eigenen Fortschritt. Auf Android gilt es für das Google-Konto, das es abschließt. Abgeschlossen wird es in der App über den App Store oder Google Play, und dort kündigst du es auch, wann du willst. Keine Werbung und kein Konto: dein Fortschritt bleibt deiner.',
+        'Die ersten vier Lektionen sind und bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs läuft über ein Abo: 59,99 € pro Jahr (das sind 5,00 € pro Monat) oder 6,99 € pro Monat, inklusive Mehrwertsteuer und mit den ersten Tagen gratis. Auf iPhone und iPad gilt ein Abo für die ganze Familie: bis zu sechs Personen, jede mit ihrem eigenen Fortschritt. Auf Android gilt es für das Google-Konto, das es abschließt. Abgeschlossen wird es in der App über den App Store oder Google Play, und dort kündigst du es auch, wann du willst. Keine Werbung und kein Konto: dein Fortschritt bleibt deiner.',
       ],
       [
         'Funktioniert es offline?',
@@ -665,17 +665,19 @@ export const de: Strings = {
     perMaandBerekend: (prijs: string): string => `das sind ${prijs} pro Monat`,
     jaarInPlaatsVan: 'statt',
     perMaandLos: 'monatlich kündbar',
-    voorwaardenJaar: (dagen: number, prijs: string): string =>
-      `Nach ${dagen} Gratistagen werden ${prijs} für ein ganzes Jahr über dein App-Store- oder Google-Play-Konto abgebucht, danach jedes Jahr erneut, bis du kündigst. Kündigst du vor Ende der Testphase, zahlst du nichts.`,
+    /** Hoe de winkel heet waar deze app vandaan komt; zie engine/platform.ts. */
+    winkelnaam: { ios: 'beim App Store', android: 'bei Google Play', beide: 'beim App Store oder bei Google Play' },
+    voorwaardenJaar: (dagen, prijs, winkel) =>
+      `Nach ${dagen} Gratistagen werden ${prijs} für ein ganzes Jahr über dein Konto ${winkel} abgebucht, danach jedes Jahr erneut, bis du kündigst. Wer vor Ende der Testphase kündigt, zahlt nichts.`,
     koop: (dagen) => `${dagen} Tage gratis starten`,
-    voorwaarden: (dagen, prijs) =>
-      `Nach ${dagen} kostenlosen Tagen werden ${prijs} pro Monat über dein App-Store- oder Google-Play-Konto abgebucht, bis du kündigst. Kündigst du vor Ende der Testphase, zahlst du nichts.`,
+    voorwaarden: (dagen, prijs, winkel) =>
+      `Nach ${dagen} Gratistagen werden ${prijs} pro Monat über dein Konto ${winkel} abgebucht, bis du kündigst. Wer vor Ende der Testphase kündigt, zahlt nichts.`,
     btwRegel: (inbegrepen: boolean): string =>
       inbegrepen ? 'Preis inklusive Mehrwertsteuer.' : 'Der Store berechnet die in deinem Land geltende Steuer.',
     herstel: 'Kauf wiederherstellen',
     herstelHint: 'Neues Gerät oder App neu installiert? Hol dein Abo hier zurück — das kostet nichts.',
     beheer: 'Abo verwalten',
-    beheerHint: 'Gekündigt wird im App-Store- oder Google-Play-Konto. Diese Schaltfläche bringt dich direkt dorthin.',
+    beheerHint: (winkel) => `Gekündigt wird über dein Konto ${winkel}. Dieser Knopf bringt dich direkt dorthin.`,
     alleenInApp: (prijs, jaar) =>
       `Abgeschlossen wird das Abo in der App aus dem App Store oder von Google Play (${prijs} ${jaar ? 'pro Jahr' : 'pro Monat'}). Auf dieser Website bleiben die ersten Einheiten kostenlos.`,
     bezig: 'Einen Moment…',

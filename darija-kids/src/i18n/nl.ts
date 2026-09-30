@@ -629,7 +629,7 @@ export const nl = {
       ],
       [
         'Kost het iets?',
-        'De eerste vier lessen zijn en blijven gratis: drie stukken van het Arabische alfabet en je eerste woorden Darija. Wil je de hele cursus, dan is dat een abonnement: € 5,00 per maand bij een jaarabonnement (€ 59,99 in één keer) of € 6,99 per maand, inclusief btw en met de eerste dagen gratis. Op iPhone en iPad geldt één abonnement voor het hele gezin: tot zes personen, ieder met zijn eigen voortgang. Op Android geldt het voor het Google-account waarmee je het afsluit. Je sluit het af in de app via de App Store of Google Play en je zegt daar ook op, wanneer je wilt. Geen advertenties en geen account: je voortgang blijft van jou.',
+        'De eerste vier lessen zijn en blijven gratis: drie stukken van het Arabische alfabet en je eerste woorden Darija. Wil je de hele cursus, dan is dat een abonnement: € 59,99 per jaar (dat is € 5,00 per maand) of € 6,99 per maand, inclusief btw en met de eerste dagen gratis. Op iPhone en iPad geldt één abonnement voor het hele gezin: tot zes personen, ieder met zijn eigen voortgang. Op Android geldt het voor het Google-account waarmee je het afsluit. Je sluit het af in de app via de App Store of Google Play en je zegt daar ook op, wanneer je wilt. Geen advertenties en geen account: je voortgang blijft van jou.',
       ],
       [
         'Werkt het offline?',
@@ -672,17 +672,19 @@ export const nl = {
     perMaandBerekend: (prijs: string): string => `dat is ${prijs} per maand`,
     jaarInPlaatsVan: 'in plaats van',
     perMaandLos: 'maandelijks opzegbaar',
-    voorwaardenJaar: (dagen: number, prijs: string): string =>
-      `Na ${dagen} gratis dagen wordt ${prijs} voor een heel jaar afgeschreven via je App Store- of Google Play-account, en daarna elk jaar opnieuw tot je opzegt. Zeg je op vóór het einde van de proefperiode, dan betaal je niets.`,
+    /** Hoe de winkel heet waar deze app vandaan komt; zie engine/platform.ts. */
+    winkelnaam: { ios: 'bij de App Store', android: 'bij Google Play', beide: 'bij de App Store of bij Google Play' },
+    voorwaardenJaar: (dagen: number, prijs: string, winkel: string): string =>
+      `Na ${dagen} gratis dagen wordt ${prijs} voor een heel jaar afgeschreven via je account ${winkel}, en daarna elk jaar opnieuw tot je opzegt. Zeg je op vóór het einde van de proefperiode, dan betaal je niets.`,
     koop: (dagen: number): string => `Start ${dagen} dagen gratis`,
-    voorwaarden: (dagen: number, prijs: string): string =>
-      `Na ${dagen} gratis dagen wordt ${prijs} per maand afgeschreven via je App Store- of Google Play-account, tot je opzegt. Zeg je op vóór het einde van de proefperiode, dan betaal je niets.`,
+    voorwaarden: (dagen: number, prijs: string, winkel: string): string =>
+      `Na ${dagen} gratis dagen wordt ${prijs} per maand afgeschreven via je account ${winkel}, tot je opzegt. Zeg je op vóór het einde van de proefperiode, dan betaal je niets.`,
     btwRegel: (inbegrepen: boolean): string =>
       inbegrepen ? 'De prijs is inclusief btw.' : 'De winkel rekent de belasting die in jouw land geldt.',
     herstel: 'Aankoop terugzetten',
     herstelHint: 'Nieuw toestel, of de app opnieuw geïnstalleerd? Zet je abonnement hier terug — dat kost niets.',
     beheer: 'Abonnement beheren',
-    beheerHint: 'Opzeggen doe je bij je App Store- of Google Play-account. Deze knop brengt je er meteen heen.',
+    beheerHint: (winkel: string): string => `Opzeggen doe je ${winkel}. Deze knop brengt je er meteen heen.`,
     alleenInApp: (prijs: string, jaar: boolean): string =>
       `Een abonnement afsluiten kan in de app uit de App Store of Google Play (${prijs} ${jaar ? 'per jaar' : 'per maand'}). Op deze website blijven de eerste units gewoon gratis.`,
     bezig: 'Bezig…',
