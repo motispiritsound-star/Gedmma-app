@@ -44,6 +44,19 @@ e-boek; dat is een los product van € 14,99.
 | Español | Al mes | 17 unidades, 304 palabras, 100 frases. |
 | Italiano | Al mese | 17 unità, 304 parole, 100 frasi. |
 
+`app.darijaforkids.ebook` — € 14,99, eenmalig. Geen abonnement: wie het koopt
+houdt het, ook als hij ooit met het abonnement stopt. Bij het jaarabonnement
+zit het er al bij, dus wie dat neemt hoeft dit niet apart te kopen.
+
+| Taal | Naam (≤30) | Beschrijving (≤45) |
+|---|---|---|
+| Nederlands | Het e-boek | Alle woorden, letters en grammatica. |
+| English | The e-book | Every word, letter and grammar point. |
+| Français | Le livre numérique | Tous les mots, lettres et la grammaire. |
+| Deutsch | Das E-Book | Alle Wörter, Buchstaben und Grammatik. |
+| Español | El libro digital | Todas las palabras, letras y gramática. |
+| Italiano | L’ebook | Tutte le parole, lettere e grammatica. |
+
 ## Als je maar één taal doet
 
 Doe dan **English**. Dat is de vermelding voor iedereen buiten Nederland, in

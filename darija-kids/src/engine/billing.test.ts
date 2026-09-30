@@ -244,8 +244,13 @@ describe('store/abonnement-teksten.md', () => {
   const rijen = readFileSync(path.join(process.cwd(), 'store', 'abonnement-teksten.md'), 'utf8')
     .split('\n').map((r) => r.match(REGEL)).filter((m): m is RegExpMatchArray => m !== null)
 
-  it('heeft beide abonnementen in zes talen', () => {
-    expect(rijen).toHaveLength(12)
+  it('heeft alle drie de aankopen in zes talen', () => {
+    // Drie, niet twee: het e-boek is ook een aankoop met een naam en een
+    // regel eronder in App Store Connect, en die stonden hier eerst niet in.
+    // Het aantal komt uit billing.ts, zodat een vierde aankoop deze test laat
+    // vallen in plaats van stil buiten de tekst te blijven.
+    const aankopen = [...PRODUCTS, EBOOK.product].length
+    expect(rijen, `${aankopen} aankopen x 6 talen`).toHaveLength(aankopen * 6)
   })
 
   for (const [, taal, naam, uitleg] of rijen) {
