@@ -43,6 +43,7 @@ const server = await createServer({
 })
 const { REEKS } = await server.ssrLoadModule('/src/content/sleutels.ts')
 const { DELEN } = await server.ssrLoadModule('/src/content/prentenboek.ts')
+const { SITE } = await server.ssrLoadModule('/src/site/copy.ts')
 await server.close()
 
 /* --------------------------------------------------------------- tekenen */
@@ -293,6 +294,121 @@ const sbaPlaat = (w, h, omslag) => {
 </div>`
 }
 
+/**
+ * De app, met het argument dat geen andere taal-app kan maken.
+ *
+ * Alle tekst komt uit `src/site/copy.ts`, dezelfde bron als de website. Dat is
+ * geen netheid maar noodzaak: een cijfer dat hier wordt overgetypt loopt uit de
+ * pas zodra er een opname bij komt, en dan staat er op een beeld dat maanden
+ * rondgaat iets anders dan op de site waar het naartoe wijst.
+ *
+ * De kop is de derde uit `heroKop` — de taal van oma die in één generatie
+ * verdwijnt. Dat is de sterkste zin in dit hele project en hij stond alleen op
+ * de startpagina.
+ *
+ * **Geen winkelnamen en geen downloadknop.** De app ligt nog bij Apple en
+ * Google in beoordeling. Tot hij er is staat er "binnenkort" en wijst de plaat
+ * naar de website, want een beeld dat rondgestuurd wordt overleeft de dag
+ * waarop je het maakt.
+ */
+const appPlaat = (w, h) => {
+  const c = SITE.nl
+  const rand = Math.round(w * 0.075)
+  const staand = h > w
+  const band = Math.round(h * 0.022)
+
+  return `<!doctype html><meta charset="utf-8"><style>
+  ${LETTERS}
+  * { margin: 0; box-sizing: border-box }
+  body {
+    width: ${w}px; height: ${h}px; overflow: hidden; position: relative;
+    background: ${H.nacht}; color: ${H.perkament};
+    font-family: 'Baloo 2', 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
+    display: flex; flex-direction: column;
+    padding: ${band + Math.round(h * 0.030)}px ${rand}px ${band + Math.round(h * 0.030)}px;
+  }
+  .band { position: absolute; left: 0; right: 0; height: ${band}px; opacity: .85 }
+  .band.boven { top: 0 } .band.onder { bottom: 0 }
+  .band svg { width: 100%; height: 100% }
+  .afzender {
+    flex: 0 0 auto; display: flex; align-items: center; gap: ${Math.round(w * 0.018)}px;
+    font-size: ${Math.round(w * 0.028)}px; font-weight: 800;
+    letter-spacing: .05em; text-transform: uppercase; color: ${H.lichtGoud};
+    margin-bottom: ${Math.round(h * 0.022)}px;
+  }
+  .afzender .punt { opacity: .5 }
+  h1 {
+    flex: 0 0 auto;
+    font-size: ${Math.round(w * (staand ? 0.078 : 0.068))}px; font-weight: 800;
+    line-height: 1.06; letter-spacing: -0.02em;
+  }
+  h1 em { font-style: normal; color: ${H.lichtGoud} }
+  .stem {
+    flex: 0 0 auto; margin-top: ${Math.round(h * 0.024)}px;
+    font-size: ${Math.round(w * (staand ? 0.031 : 0.028))}px; font-weight: 600;
+    line-height: 1.34; opacity: .9;
+  }
+  .stem b { font-weight: 800; color: ${H.lichtGoud} }
+  .cijfers {
+    flex: 1 1 auto; min-height: 0; overflow: hidden;
+    margin: ${Math.round(h * 0.026)}px 0;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: ${Math.round(h * 0.018)}px ${Math.round(w * 0.04)}px; align-content: center;
+  }
+  .cijfer { display: flex; flex-direction: column; gap: ${Math.round(h * 0.003)}px }
+  .cijfer .n {
+    font-size: ${Math.round(w * 0.072)}px; font-weight: 800;
+    line-height: 1; color: ${H.goud}; font-variant-numeric: tabular-nums;
+  }
+  .cijfer .w {
+    font-size: ${Math.round(w * 0.024)}px; font-weight: 600;
+    line-height: 1.3; opacity: .82;
+  }
+  .voet {
+    flex: 0 0 auto; display: flex; flex-direction: column;
+    align-items: flex-start; gap: ${Math.round(h * 0.014)}px;
+  }
+  .binnenkort {
+    display: inline-flex; align-items: center; gap: ${Math.round(w * 0.012)}px;
+    font-size: ${Math.round(w * 0.027)}px; font-weight: 800;
+    color: ${H.lichtGoud};
+  }
+  .binnenkort .stip {
+    width: ${Math.round(w * 0.013)}px; height: ${Math.round(w * 0.013)}px;
+    border-radius: 999px; background: ${H.rood};
+  }
+  .adres {
+    font-size: ${Math.round(w * 0.028)}px; font-weight: 800;
+    background: ${H.goud}; color: ${H.inkt}; border-radius: 999px;
+    padding: ${Math.round(w * 0.015)}px ${Math.round(w * 0.036)}px;
+  }
+</style>
+<div class="band boven"><svg viewBox="0 0 560 32" preserveAspectRatio="none">${zellige(0, 0, 560, 32, H.goud)}</svg></div>
+<div class="band onder"><svg viewBox="0 0 560 32" preserveAspectRatio="none">${zellige(0, 0, 560, 32, H.goud)}</svg></div>
+
+<div class="afzender">
+  ${ster(Math.round(w * 0.055))}
+  <span>Darijaforkids</span><span class="punt">&middot;</span><span>De app</span>
+</div>
+
+<h1>De taal van oma verdwijnt in&nbsp;één generatie.<br><em>Tenzij je nu begint.</em></h1>
+
+<div class="stem">
+  Er <b>bestáát geen Darija-stem</b>. Elke synthesizer ter wereld is getraind op
+  Standaardarabisch. Daarom is elk woord, elke zin en elke letter in deze app
+  ingesproken door een Marokkaanse stem — één voor één.
+</div>
+
+<div class="cijfers">
+  ${c.stemPunten.map(([n, wat]) => `<div class="cijfer"><span class="n">${esc(n)}</span><span class="w">${esc(wat)}</span></div>`).join('')}
+</div>
+
+<div class="voet">
+  <div class="binnenkort"><span class="stip"></span><span>Binnenkort &middot; twee minuten per dag &middot; vanaf 6 jaar</span></div>
+  <div class="adres">darijaforkids.eu</div>
+</div>`
+}
+
 /* ---------------------------------------------------------------- zetten */
 
 const FORMATEN = [
@@ -305,6 +421,7 @@ const omslagSba = (await readFile(path.join(ROOT, 'site-assets', 'boeken', 'sba.
 const PLATEN = {
   sleutels: (w, h) => sleutelsPlaat(w, h),
   sba: (w, h) => sbaPlaat(w, h, omslagSba),
+  app: (w, h) => appPlaat(w, h),
 }
 
 const gekozen = arg('wie', null)
