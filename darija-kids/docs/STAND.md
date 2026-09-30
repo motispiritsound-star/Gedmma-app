@@ -44,6 +44,36 @@ Drie dingen die daarbij boven water kwamen en geen winkelnaam waren:
   verschijnt op een toestel zodra de winkel niet opstart.
 - *"Apple en Google zijn de verkoper"* wordt met één winkel enkelvoud.
 
+#### 2.3.2 zit vast in de indiening — 30 september
+
+De drie beelden staan klaar, maar ze kunnen er niet in. De indiening van
+29 september staat nog open met vijf items: `Jaar`, `Maand`, `E-boek` en de
+groep `Volledige toegang` staan alle vier op **Ready for Review**, en alleen
+`iOS App 1.0` staat op **Rejected**. Apple zegt erbij:
+
+> Your app version was rejected and no other items submitted can be accepted
+> or approved. You can make edits to your app version below.
+
+Wat daardoor niet kan, nagelopen op 30 september:
+
+| Geprobeerd | Wat er gebeurt |
+|---|---|
+| Localisatie openen op de abonnementspagina | een kijkvenster zonder invulvelden, alleen een knop *Done* |
+| `Add for Review` | grijs, op alle drie de pagina's |
+| `Edit` bij de abonnementenlijst van de groep | de selectievakjes zijn uitgeschakeld |
+| De beeldtegel bij *Image (Optional)* | krijgt een blauwe rand, maar er opent geen bestandskiezer |
+| Een item uit de indiening halen | alleen `iOS App 1.0` heeft een actie; de vier andere rijen hebben er geen |
+
+Wat wél kan: de **Reference Name** van een abonnement (interne naam, ziet
+niemand) en de hele **app-versie**, inclusief de beschrijving.
+
+Daarom is er op 30 september een bericht via *Reply to App Review* gegaan met
+het verzoek de vier items vrij te geven. De drie beelden staan intussen in
+`store/iap-beelden/`, de teksten in `store/abonnement-teksten.md`.
+
+**Wat dit niet tegenhoudt:** 2.3.10 (de beschrijving, op de app-versie) en
+3.1.2(c) (het koopscherm, dus build 6). Die twee kunnen vooruit.
+
 #### 3.1.2(c): nagemeten, niet aangenomen
 
 Apple eist niet dat het jaarbedrag er staat — dat stond er — maar dat het
