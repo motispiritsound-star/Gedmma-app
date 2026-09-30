@@ -18,6 +18,19 @@ import { describe, expect, it } from 'vitest'
  * Alleen blokken die je plakt tellen. Losse tekst mag `&&` bevatten — daar
  * wordt beschreven wat een script dóét, en npm draait dat zelf met sh.
  */
+/**
+ * Het aantal tests hier verschilt per machine, en dat hoort zo.
+ *
+ * Er wordt één test gemaakt per document dat gevonden wordt, en `store/winkel`
+ * bevat ook bestanden die een script neerzet en die git negeert —
+ * `producten.md` bijvoorbeeld. Wie dat script heeft gedraaid telt er één meer.
+ *
+ * Dat is geen afwijking om weg te poetsen: een gegenereerd document wordt net
+ * zo goed geplakt als een geschreven document, dus hoort het net zo goed
+ * nagekeken te worden. Maar het verklaart wel waarom twee machines op dezelfde
+ * commit een ander totaal onderaan zien staan, en die vraag is het zoeken niet
+ * waard.
+ */
 const WORTEL = path.join(process.cwd())
 const MAPPEN = ['docs', 'store/winkel', 'server']
 
