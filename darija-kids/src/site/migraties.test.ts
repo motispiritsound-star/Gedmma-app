@@ -21,7 +21,21 @@
 import { readFileSync, readdirSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
-const bron = (pad: string) => readFileSync(new URL(pad, import.meta.url), 'utf8')
+/**
+ * Een bronbestand, altijd met `\n` als regeleinde.
+ *
+ * `.gitattributes` zet `* text=auto eol=lf`, maar dat geldt bij het uitchecken:
+ * bestanden die al in een werkmap stonden voordat die regel er was, houden hun
+ * CRLF tot ze veranderen. Op Adils laptop is dat zo, en daar viel deze test om
+ * op twee plekken tegelijk — `indexOf('controleerLeeg()\n')` vond niets, en
+ * het wegstrijken van commentaar in 0001 deed niets omdat `--.*$` niet over een
+ * `\r` heen komt.
+ *
+ * Wat de test wil weten gaat over de inhoud, niet over welke twee tekens er
+ * aan het eind van een regel staan. Dus zetten we ze om bij het lezen.
+ */
+const bron = (pad: string) =>
+  readFileSync(new URL(pad, import.meta.url), 'utf8').replace(/\r\n/g, '\n')
 const MAP = new URL('../../server/migrations/', import.meta.url)
 
 describe('de migraties', () => {
@@ -39,7 +53,7 @@ describe('de migraties', () => {
   it('maken de eerste zo dat hij op een bestaande database niets doet', () => {
     // Dit is de hele reden dat de overstap kan zonder de database aan te raken:
     // 0001 draait over de tafels die er al zijn en verandert er niets aan.
-    const begin = readFileSync(new URL('0001_begin.sql', MAP), 'utf8')
+    const begin = readFileSync(new URL('0001_begin.sql', MAP), 'utf8').replace(/\r\n/g, '\n')
 
     // Per opdracht kijken, niet per regel: `ON DELETE CASCADE` hoort bij een
     // foreign key binnen een CREATE TABLE en is geen verwijdering. Waar het om
