@@ -288,16 +288,26 @@ consistent met de website, want `npm run live` meldt voor allebei de winkels
 "leeg, de website zegt binnenkort". Er is dus geen bezoeker die naar een dode
 knop loopt.
 
-Waar het precies hangt staat op **Publishing overview**, en alleen daar:
+**Nagekeken op Publishing overview: *In review*.** *Changes ready to publish*
+is leeg, er ligt dus niets op ons te wachten. Google is bezig.
 
-| Wat er staat | Wat het betekent |
-|---|---|
-| *Changes ready to publish* met een knop | goedgekeurd, hij wacht op jou |
-| *In review* | Google is nog bezig |
-| *Changes ready to send for review* | nooit ingediend — dan hangt het aan ons |
+Het Dashboard verklaart de rest: de tijdelijke naam is
+`app.darijaforkids.learn (unreviewed)`. Dit is de **eerste** beoordeling van
+deze app — zolang die loopt draagt hij bij Google zijn eigen naam nog niet,
+staat de winkelpagina op 404 en telt hij nul actieve apparaten. Drie dingen
+die los alarmerend lijken en samen precies kloppen.
 
-Die laatste is de stille: een wijziging die je opslaat maar niet verstuurt
-blijft eindeloos staan zonder dat er ergens iets rood kleurt.
+Ingediend op 29 september. Google rekent voor een eerste beoordeling tot zeven
+dagen, bij een nieuw ontwikkelaarsaccount soms langer; reken op 5 of 6 oktober
+en schrik niet van later.
+
+Zodra het groen is verschuift het blok naar *Changes ready to publish* en
+verschijnt er een knop **Publish**. Managed publishing staat aan, dus ook dan
+kiezen wij de dag.
+
+Voor de volgende keer, want dit is de stille van de drie: staat er ooit
+*Changes ready to send for review*, dan is er nooit iets verstuurd. Dat blijft
+eindeloos staan zonder dat er ergens iets rood kleurt.
 
 ### Klaar voor de volgende ronde — 1.1 bij Apple, 1.3 bij Play
 
