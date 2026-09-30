@@ -292,14 +292,25 @@ knop loopt.
 is leeg, er ligt dus niets op ons te wachten. Google is bezig.
 
 Het Dashboard verklaart de rest: de tijdelijke naam is
-`app.darijaforkids.learn (unreviewed)`. Dit is de **eerste** beoordeling van
-deze app — zolang die loopt draagt hij bij Google zijn eigen naam nog niet,
-staat de winkelpagina op 404 en telt hij nul actieve apparaten. Drie dingen
-die los alarmerend lijken en samen precies kloppen.
+`app.darijaforkids.learn (unreviewed)`. Dat betekent niet "nog nooit bekeken"
+maar **nog nooit goedgekeurd** — inzending 3 is op 23 september wel degelijk
+beoordeeld en afgewezen. Zolang er geen goedkeuring ligt draagt de app bij
+Google zijn eigen naam niet, staat de winkelpagina op 404 en telt hij nul
+actieve apparaten. Drie dingen die los alarmerend lijken en samen precies
+kloppen.
 
-Ingediend op 29 september. Google rekent voor een eerste beoordeling tot zeven
-dagen, bij een nieuw ontwikkelaarsaccount soms langer; reken op 5 of 6 oktober
-en schrik niet van later.
+Submission activity, voor wie de reeks wil narekenen:
+
+| # | Ingediend | Uitkomst |
+|---|---|---|
+| 4 | 29 sep | **In review** — met Closed testing erbij, dat had 3 niet |
+| 3 | 23 sep | afgewezen — het witte scherm, `?.` en `??` in de bundel |
+| 2 | 22 sep | zelf ingetrokken |
+| 1 | 21 sep | zelf ingetrokken |
+
+Google rekent voor een app zonder goedkeuring tot zeven dagen, bij een nieuw
+ontwikkelaarsaccount soms langer; reken op 5 of 6 oktober en schrik niet van
+later.
 
 Zodra het groen is verschuift het blok naar *Changes ready to publish* en
 verschijnt er een knop **Publish**. Managed publishing staat aan, dus ook dan
