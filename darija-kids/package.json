@@ -90,7 +90,8 @@
     "iapbeeld": "node scripts/make-iap.mjs",
     "winkeltekst": "node scripts/winkeltekst.mjs",
     "citaten": "node scripts/make-citaten.mjs",
-    "helden": "node scripts/make-helden.mjs"
+    "helden": "node scripts/make-helden.mjs",
+    "reeksplaten": "node scripts/make-reeksplaten.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
