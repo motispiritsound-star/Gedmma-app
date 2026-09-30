@@ -1,4 +1,5 @@
 import type { Lang } from './languages'
+import { winkelnamen, type Winkelnamen } from './winkels'
 
 /**
  * The privacy statement, in every interface language.
@@ -19,7 +20,7 @@ export interface PrivacyText {
 /** A section as it is written below: a heading and its paragraphs. */
 type Section = [title: string, body: string[]]
 
-const SECTIONS_NL: Section[] = [
+const SECTIONS_NL = (n: Winkelnamen): Section[] => [
   ['Wat we verzamelen', [
     'Van het kind: niets. Darijaforkids heeft geen account, vraagt een kind nooit om een e-mailadres en stuurt niets van het oefenen naar een server.',
     'Er is één uitzondering, en die is van de ouder: laat een ouder op het ouderscherm zelf een e-mailadres achter, dan bewaren wij dat adres. Zie “Mail aan ouders” hieronder.',
@@ -30,17 +31,17 @@ const SECTIONS_NL: Section[] = [
   ]],
   ['Geluid', [
     'De uitspraak komt uit opnames die in de app zelf zitten: een Marokkaanse stem die alles heeft ingesproken. Ze worden op je eigen apparaat afgespeeld. Is er voor iets geen opname, dan valt de app terug op de stem die al op je apparaat staat. In beide gevallen wordt er niets opgenomen en niets verstuurd.',
-    'De spreekoefeningen zijn de enige uitzondering: die gebruiken de spraakherkenning van je browser. In Chrome en in sommige andere browsers betekent dat dat de opname naar de maker van die browser gaat (bij Chrome: Google) om te worden omgezet in tekst. Darijaforkids krijgt alleen de tekst te zien en bewaart die niet. Wil je dat niet, zet spreekoefeningen dan uit bij Instellingen; de rest van de app werkt gewoon door.',
+    'Bij de spreekoefeningen neem je jezelf op en hoor je je eigen stem meteen terug, vlak na de stem die het goed zegt. Die opname blijft op je eigen apparaat: ze wordt nergens naartoe gestuurd, ook niet naar ons, en na de oefening wordt ze weggegooid. Er komt geen spraakherkenning aan te pas — die zat er eerder in en is eruit gehaald, omdat geen enkele herkenner Darija kent. Wil je de microfoon helemaal niet gebruiken, zet spreekoefeningen dan uit bij Instellingen; de rest van de app werkt gewoon door.',
   ]],
   ['Kinderen', [
     'Deze app is gemaakt voor kinderen. Daarom is er bewust geen account, geen chat, geen mogelijkheid om iets te delen of te uploaden, en geen advertentie. Er is niets dat een kind kan invullen dat bij ons terechtkomt.',
-    'Er is één aankoop: het abonnement voor de volledige cursus. Die zit achter een rekensom die een kind niet zomaar oplost, en de betaling loopt volledig via de App Store of Google Play — wij zien geen kaartgegevens en geen naam.',
+    `Er is één aankoop: het abonnement voor de volledige cursus. Die zit achter een rekensom die een kind niet zomaar oplost, en de betaling loopt volledig via ${n.via} — wij zien geen kaartgegevens en geen naam.`,
   ]],
-  ['De app-winkels', [
-    'Download je de app uit de App Store of Google Play, dan weten Apple of Google dát je hem hebt gedownload, en kunnen zij technische crashgegevens verzamelen volgens hun eigen voorwaarden. Dat staat los van ons: wij krijgen daar geen persoonsgegevens uit.',
+  [n.kop, [
+    `Download je de app uit ${n.download}, dan weet ${n.bedrijfOf} dát je hem hebt gedownload, en kunnen zij technische crashgegevens verzamelen volgens hun eigen voorwaarden. Dat staat los van ons: wij krijgen daar geen persoonsgegevens uit.`,
   ]],
   ['Betalen', [
-    'De eerste units zijn gratis. Neem je de volledige toegang, dan loopt die betaling helemaal via de App Store of Google Play: zij innen het bedrag, zij rekenen de btw af, zij houden de proefperiode bij en zij weten wie je bent. Darijaforkids krijgt van hen alleen te horen dát het abonnement loopt — geen kaartgegevens, geen adres, geen naam.',
+    `De eerste units zijn gratis. Neem je de volledige toegang, dan loopt die betaling helemaal via ${n.via}: zij innen het bedrag, zij rekenen de btw af, zij houden de proefperiode bij en zij weten wie je bent. Darijaforkids krijgt van hen alleen te horen dát het abonnement loopt — geen kaartgegevens, geen adres, geen naam.`,
     'Het is een maandabonnement dat doorloopt tot je opzegt, en opzeggen doe je in je eigen winkelaccount; wij kunnen dat niet voor je doen en zien ook niet wanneer je het doet. Voordat er iets afgesloten kan worden, staat er een rekensom die een volwassene moet beantwoorden.',
   ]],
   ['Mail aan ouders', [
@@ -57,7 +58,7 @@ const SECTIONS_NL: Section[] = [
   ]],
 ]
 
-const SECTIONS_FR: Section[] = [
+const SECTIONS_FR = (n: Winkelnamen): Section[] => [
   ['Ce que nous collectons', [
     'De l’enfant : rien. Darijaforkids n’a pas de compte, ne demande jamais son adresse e-mail à un enfant et n’envoie rien de ses exercices à un serveur.',
     'Il y a une exception, et elle vient du parent : si un parent laisse lui-même une adresse sur l’écran des parents, nous conservons cette adresse. Voir « Courrier aux parents » plus bas.',
@@ -68,17 +69,17 @@ const SECTIONS_FR: Section[] = [
   ]],
   ['Le son', [
     'La prononciation vient d’enregistrements contenus dans l’application elle-même : une voix marocaine qui a tout dit. Ils sont joués sur ton propre appareil. S’il n’existe pas d’enregistrement pour quelque chose, l’application se rabat sur la voix déjà installée sur ton appareil. Dans les deux cas, rien n’est enregistré ni envoyé.',
-    'Les exercices de prononciation sont la seule exception : ils utilisent la reconnaissance vocale de ton navigateur. Dans Chrome et quelques autres, cela signifie que l’enregistrement part chez l’éditeur du navigateur (pour Chrome : Google) pour être transformé en texte. Darijaforkids ne voit que le texte et ne le conserve pas. Si tu préfères l’éviter, désactive les exercices de prononciation dans les réglages ; le reste de l’application continue de fonctionner.',
+    'Dans les exercices de prononciation, tu t’enregistres et tu te réécoutes aussitôt, juste après la voix qui le dit correctement. Cet enregistrement reste sur ton appareil : il n’est envoyé nulle part, pas même chez nous, et il est supprimé après l’exercice. Aucune reconnaissance vocale n’intervient — il y en avait une, elle a été retirée, parce qu’aucun moteur ne connaît le darija. Si tu préfères ne pas utiliser le micro, désactive les exercices de prononciation dans les Réglages ; le reste de l’application continue de fonctionner.',
   ]],
   ['Les enfants', [
     'Cette application est faite pour des enfants. C’est pourquoi il n’y a volontairement ni compte, ni chat, ni partage, ni envoi de fichiers, ni publicité. Il n’y a rien qu’un enfant puisse remplir qui nous parvienne.',
-    'Il y a un achat : l’abonnement au cours complet. Il est protégé par un calcul qu’un enfant ne résout pas en passant, et le paiement passe entièrement par l’App Store ou Google Play — nous ne voyons ni données bancaires ni nom.',
+    `Il y a un achat : l’abonnement au cours complet. Il est protégé par un calcul qu’un enfant ne résout pas en passant, et le paiement passe entièrement par ${n.via} — nous ne voyons ni données bancaires ni nom.`,
   ]],
-  ['Les magasins d’applications', [
-    'Si tu télécharges l’application sur l’App Store ou Google Play, Apple ou Google savent que tu l’as téléchargée et peuvent collecter des données techniques de plantage selon leurs propres conditions. Cela ne dépend pas de nous et ne nous transmet aucune donnée personnelle.',
+  [n.kop, [
+    `Si tu télécharges l’application sur ${n.download}, ${n.bedrijfOf} sait que tu l’as téléchargée et peuvent collecter des données techniques de plantage selon leurs propres conditions. Cela ne dépend pas de nous et ne nous transmet aucune donnée personnelle.`,
   ]],
   ['Le paiement', [
-    'Les premières unités sont gratuites. Si tu prends l’accès complet, ce paiement passe entièrement par l’App Store ou Google Play : ce sont eux qui encaissent, qui reversent la TVA, qui gèrent la période d’essai et qui savent qui tu es. Darijaforkids apprend seulement que l’abonnement est actif — aucune donnée de carte, aucune adresse, aucun nom.',
+    `Les premières unités sont gratuites. Si tu prends l’accès complet, ce paiement passe entièrement par ${n.via} : ce sont eux qui encaissent, qui reversent la TVA, qui gèrent la période d’essai et qui savent qui tu es. Darijaforkids apprend seulement que l’abonnement est actif — aucune donnée de carte, aucune adresse, aucun nom.`,
     'C’est un abonnement mensuel qui court jusqu’à résiliation, et la résiliation se fait dans ton propre compte du magasin ; nous ne pouvons pas le faire à ta place et nous ne voyons pas non plus quand tu le fais. Avant toute souscription, une petite opération doit être résolue par un adulte.',
   ]],
   ['Courrier aux parents', [
@@ -95,7 +96,7 @@ const SECTIONS_FR: Section[] = [
   ]],
 ]
 
-const SECTIONS_DE: Section[] = [
+const SECTIONS_DE = (n: Winkelnamen): Section[] => [
   ['Was wir erheben', [
     'Vom Kind: nichts. Darijaforkids hat kein Konto, fragt ein Kind nie nach einer E-Mail-Adresse und schickt nichts vom Üben an einen Server.',
     'Eine Ausnahme gibt es, und sie kommt von den Eltern: hinterlässt ein Elternteil auf dem Elternbildschirm selbst eine Adresse, dann bewahren wir diese Adresse auf. Siehe „Post an Eltern“ weiter unten.',
@@ -106,17 +107,17 @@ const SECTIONS_DE: Section[] = [
   ]],
   ['Ton', [
     'Die Aussprache kommt aus Aufnahmen, die in der App selbst stecken: eine marokkanische Stimme, die alles eingesprochen hat. Sie werden auf deinem eigenen Gerät abgespielt. Gibt es für etwas keine Aufnahme, greift die App auf die Stimme zurück, die bereits auf deinem Gerät installiert ist. In beiden Fällen wird nichts aufgenommen und nichts verschickt.',
-    'Die Sprechübungen sind die einzige Ausnahme: sie nutzen die Spracherkennung deines Browsers. Bei Chrome und einigen anderen heißt das, dass die Aufnahme zum Hersteller des Browsers geht (bei Chrome: Google), um in Text umgewandelt zu werden. Darijaforkids sieht nur den Text und speichert ihn nicht. Wenn dir das nicht recht ist, schalte die Sprechübungen in den Einstellungen aus; der Rest der App funktioniert weiter.',
+    'Bei den Sprechübungen nimmst du dich selbst auf und hörst dich gleich danach — direkt nach der Stimme, die es richtig sagt. Diese Aufnahme bleibt auf deinem Gerät: sie wird nirgendwohin geschickt, auch nicht zu uns, und nach der Übung wird sie verworfen. Eine Spracherkennung kommt nicht vor — es gab eine, sie wurde ausgebaut, weil kein Erkenner Darija kennt. Willst du das Mikrofon gar nicht benutzen, schalte die Sprechübungen in den Einstellungen aus; der Rest der App läuft weiter.',
   ]],
   ['Kinder', [
     'Diese App ist für Kinder gemacht. Deshalb gibt es bewusst kein Konto, keinen Chat, kein Teilen, kein Hochladen und keine Werbung. Es gibt nichts, was ein Kind eingeben könnte und das bei uns ankäme.',
-    'Einen Kauf gibt es: das Abo für den ganzen Kurs. Es liegt hinter einer Rechenaufgabe, die ein Kind nicht nebenbei löst, und die Zahlung läuft vollständig über den App Store oder Google Play — wir sehen weder Kartendaten noch Namen.',
+    `Einen Kauf gibt es: das Abo für den ganzen Kurs. Es liegt hinter einer Rechenaufgabe, die ein Kind nicht nebenbei löst, und die Zahlung läuft vollständig über ${n.via} — wir sehen weder Kartendaten noch Namen.`,
   ]],
-  ['Die App-Stores', [
-    'Lädst du die App im App Store oder bei Google Play, wissen Apple oder Google, dass du sie geladen hast, und können nach ihren eigenen Bedingungen technische Absturzdaten erheben. Das liegt außerhalb unseres Einflusses; personenbezogene Daten erhalten wir daraus nicht.',
+  [n.kop, [
+    `Lädst du die App ${n.download}, weiß ${n.bedrijfOf}, dass du sie geladen hast, und können nach ihren eigenen Bedingungen technische Absturzdaten erheben. Das liegt außerhalb unseres Einflusses; personenbezogene Daten erhalten wir daraus nicht.`,
   ]],
   ['Bezahlen', [
-    'Die ersten Einheiten sind kostenlos. Nimmst du den vollen Zugang, läuft diese Zahlung vollständig über den App Store oder Google Play: sie ziehen den Betrag ein, sie führen die Mehrwertsteuer ab, sie verwalten die Testphase und sie wissen, wer du bist. Darijaforkids erfährt nur, dass das Abo läuft — keine Kartendaten, keine Adresse, kein Name.',
+    `Die ersten Einheiten sind kostenlos. Nimmst du den vollen Zugang, läuft diese Zahlung vollständig über ${n.via}: sie ziehen den Betrag ein, sie führen die Mehrwertsteuer ab, sie verwalten die Testphase und sie wissen, wer du bist. Darijaforkids erfährt nur, dass das Abo läuft — keine Kartendaten, keine Adresse, kein Name.`,
     'Es ist ein Monatsabo, das bis zur Kündigung weiterläuft, und gekündigt wird im eigenen Store-Konto; wir können das nicht für dich tun und sehen auch nicht, wann du es tust. Vor jedem Abschluss steht eine kleine Rechenaufgabe, die ein Erwachsener lösen muss.',
   ]],
   ['Post an Eltern', [
@@ -133,7 +134,7 @@ const SECTIONS_DE: Section[] = [
   ]],
 ]
 
-const SECTIONS_IT: Section[] = [
+const SECTIONS_IT = (n: Winkelnamen): Section[] => [
   ['Che cosa raccogliamo', [
     'Del bambino: niente. Darijaforkids non ha un account, non chiede mai a un bambino il suo indirizzo e-mail e non manda niente degli esercizi a un server.',
     'C’è un’eccezione, e viene dal genitore: se un genitore lascia lui stesso un indirizzo nella schermata dei genitori, noi conserviamo quell’indirizzo. Vedi «Posta ai genitori» più sotto.',
@@ -144,17 +145,17 @@ const SECTIONS_IT: Section[] = [
   ]],
   ['L’audio', [
     'La pronuncia viene da registrazioni contenute nell’app stessa: una voce marocchina che ha letto tutto. Vengono riprodotte sul tuo dispositivo. Se per qualcosa non esiste una registrazione, l’app ripiega sulla voce già installata sul dispositivo. In entrambi i casi non viene registrato né inviato niente.',
-    'Gli esercizi di pronuncia sono l’unica eccezione: usano il riconoscimento vocale del tuo browser. Su Chrome e su qualche altro questo significa che la registrazione va al produttore del browser (nel caso di Chrome, Google) per essere trasformata in testo. Darijaforkids vede solo il testo e non lo conserva. Se preferisci evitarlo, spegni gli esercizi di pronuncia nelle impostazioni; il resto dell’app continua a funzionare.',
+    'Negli esercizi di pronuncia ti registri e ti riascolti subito, appena dopo la voce che lo dice bene. Quella registrazione resta sul tuo dispositivo: non viene mandata da nessuna parte, nemmeno a noi, e dopo l’esercizio viene buttata. Non c’è di mezzo nessun riconoscimento vocale — c’era, è stato tolto, perché nessun motore conosce il darija. Se preferisci non usare il microfono, disattiva gli esercizi di pronuncia nelle Impostazioni; il resto dell’app continua a funzionare.',
   ]],
   ['I bambini', [
     'Questa app è fatta per i bambini. Per questo, apposta, non c’è né un account, né una chat, né un modo per condividere o caricare qualcosa, né pubblicità. Non c’è niente che un bambino possa compilare e che arrivi fino a noi.',
-    'C’è un solo acquisto: l’abbonamento al corso completo. Sta dietro un calcolo che un bambino non risolve di sfuggita, e il pagamento passa interamente dall’App Store o da Google Play: non vediamo né i dati della carta né il nome.',
+    `C’è un solo acquisto: l’abbonamento al corso completo. Sta dietro un calcolo che un bambino non risolve di sfuggita, e il pagamento passa interamente ${n.via}: non vediamo né i dati della carta né il nome.`,
   ]],
-  ['I negozi di app', [
-    'Se scarichi l’app dall’App Store o da Google Play, Apple o Google sanno che l’hai scaricata e possono raccogliere dati tecnici sui crash secondo le loro condizioni. Questo è fuori dalla nostra portata e non ci fornisce nessun dato personale.',
+  [n.kop, [
+    `Se scarichi l’app ${n.download}, ${n.bedrijfOf} sa che l’hai scaricata e possono raccogliere dati tecnici sui crash secondo le loro condizioni. Questo è fuori dalla nostra portata e non ci fornisce nessun dato personale.`,
   ]],
   ['Il pagamento', [
-    'Le prime unità sono gratis. Se prendi l’accesso completo, quel pagamento passa interamente dall’App Store o da Google Play: sono loro a incassare, loro a versare l’IVA, loro a gestire la prova gratuita e loro a sapere chi sei. Darijaforkids viene a sapere soltanto che l’abbonamento è attivo: niente dati della carta, niente indirizzo, niente nome.',
+    `Le prime unità sono gratis. Se prendi l’accesso completo, quel pagamento passa interamente ${n.via}: sono loro a incassare, loro a versare l’IVA, loro a gestire la prova gratuita e loro a sapere chi sei. Darijaforkids viene a sapere soltanto che l’abbonamento è attivo: niente dati della carta, niente indirizzo, niente nome.`,
     'È un abbonamento che continua finché non lo disdici, e la disdetta si fa nel tuo account del negozio; noi non possiamo farlo al posto tuo e non vediamo nemmeno quando lo fai. Prima di sottoscrivere qualsiasi cosa c’è un piccolo calcolo che deve risolvere una persona adulta.',
   ]],
   ['Posta ai genitori', [
@@ -171,7 +172,7 @@ const SECTIONS_IT: Section[] = [
   ]],
 ]
 
-const SECTIONS_EN: Section[] = [
+const SECTIONS_EN = (n: Winkelnamen): Section[] => [
   ['What we collect', [
     'From the child: nothing. Darijaforkids has no account, never asks a child for an email address, and sends nothing about the practising to a server.',
     'There is one exception, and it comes from the parent: if a parent leaves an address themselves on the parents\u2019 screen, we keep that address. See \u201cMail to parents\u201d below.',
@@ -182,17 +183,17 @@ const SECTIONS_EN: Section[] = [
   ]],
   ['Sound', [
     'Pronunciation comes from recordings held inside the app itself: a Moroccan voice that read everything out. They are played on your own device. Where there is no recording for something, the app falls back on the voice already installed on your device. In neither case is anything recorded or sent.',
-    'The speaking exercises are the one exception: they use your browser’s speech recognition. In Chrome and some others that means the recording goes to the browser’s maker (for Chrome: Google) to be turned into text. Darijaforkids only sees the text and does not keep it. If you would rather avoid that, switch speaking exercises off in the settings; the rest of the app carries on working.',
+    'In the speaking exercises you record yourself and hear your own voice straight back, right after the voice that says it properly. That recording stays on your own device: it is not sent anywhere, not even to us, and it is thrown away after the exercise. No speech recognition is involved — there was some, it was taken out, because no recogniser knows Darija. If you would rather not use the microphone at all, switch the speaking exercises off in Settings; the rest of the app carries on.',
   ]],
   ['Children', [
     'This app is made for children. That is why there is deliberately no account, no chat, no sharing, no uploading and no advertising. There is nothing a child can fill in that reaches us.',
-    'There is one purchase: the subscription to the full course. It sits behind a sum a child will not solve in passing, and the payment runs entirely through the App Store or Google Play — we see no card details and no name.',
+    `There is one purchase: the subscription to the full course. It sits behind a sum a child will not solve in passing, and the payment runs entirely through ${n.via} — we see no card details and no name.`,
   ]],
-  ['The app stores', [
-    'If you download the app from the App Store or Google Play, Apple or Google know that you downloaded it and may collect technical crash data under their own terms. That is outside our control and gives us no personal data.',
+  [n.kop, [
+    `If you download the app from ${n.download}, ${n.bedrijfOf} knows that you downloaded it and may collect technical crash data under their own terms. That is outside our control and gives us no personal data.`,
   ]],
   ['Paying', [
-    'The first units are free. If you take full access, that payment runs entirely through the App Store or Google Play: they take the money, they account for the VAT, they run the free trial and they know who you are. Darijaforkids is only told that the subscription is active — no card details, no address, no name.',
+    `The first units are free. If you take full access, that payment runs entirely through ${n.via}: they take the money, they account for the VAT, they run the free trial and they know who you are. Darijaforkids is only told that the subscription is active — no card details, no address, no name.`,
     'It is a monthly subscription that runs until you cancel, and cancelling happens in your own store account; we cannot do it for you and we cannot see when you do. Before anything can be taken out, a small sum has to be answered by an adult.',
   ]],
   ['Mail to parents', [
@@ -209,7 +210,7 @@ const SECTIONS_EN: Section[] = [
   ]],
 ]
 
-const SECTIONS_ES: Section[] = [
+const SECTIONS_ES = (n: Winkelnamen): Section[] => [
   ['Qué recogemos', [
     'Del niño: nada. Darijaforkids no tiene cuenta, nunca le pide a un niño su dirección de correo y no manda nada de los ejercicios a ningún servidor.',
     'Hay una excepción, y viene del adulto: si un padre o una madre deja una dirección en la pantalla para adultos, guardamos esa dirección. Véase «Correo a los padres» más abajo.',
@@ -220,17 +221,17 @@ const SECTIONS_ES: Section[] = [
   ]],
   ['El sonido', [
     'La pronunciación viene de grabaciones que están dentro de la propia app: una voz marroquí que lo ha leído todo. Se reproducen en tu propio dispositivo. Si de algo no hay grabación, la app recurre a la voz que ya está instalada en el dispositivo. En ninguno de los dos casos se graba ni se envía nada.',
-    'Los ejercicios de pronunciación son la única excepción: usan el reconocimiento de voz de tu navegador. En Chrome y en algún otro eso significa que la grabación va al fabricante del navegador (en el caso de Chrome, Google) para convertirla en texto. Darijaforkids solo ve el texto y no lo guarda. Si prefieres evitarlo, desactiva los ejercicios de pronunciación en los ajustes; el resto de la aplicación sigue funcionando.',
+    'En los ejercicios de pronunciación te grabas y te vuelves a oír al momento, justo después de la voz que lo dice bien. Esa grabación se queda en tu propio dispositivo: no se envía a ninguna parte, tampoco a nosotros, y se descarta después del ejercicio. No hay ningún reconocimiento de voz de por medio — lo hubo y se quitó, porque ningún motor conoce el darija. Si prefieres no usar el micrófono, desactiva los ejercicios de pronunciación en los Ajustes; el resto de la aplicación sigue funcionando.',
   ]],
   ['Los niños', [
     'Esta aplicación está hecha para niños. Por eso no hay, a propósito, ni cuenta, ni chat, ni manera de compartir o subir nada, ni publicidad. No hay nada que un niño pueda rellenar y que llegue hasta nosotros.',
-    'Hay una compra: la suscripción al curso completo. Está detrás de una cuenta que un niño no resuelve de pasada, y el pago va entero por la App Store o Google Play: no vemos ni datos de tarjeta ni nombre.',
+    `Hay una compra: la suscripción al curso completo. Está detrás de una cuenta que un niño no resuelve de pasada, y el pago va entero por ${n.via}: no vemos ni datos de tarjeta ni nombre.`,
   ]],
-  ['Las tiendas de aplicaciones', [
-    'Si descargas la aplicación en la App Store o en Google Play, Apple o Google saben que la has descargado y pueden recoger datos técnicos de fallos según sus propias condiciones. Eso queda fuera de nuestro alcance y no nos aporta ningún dato personal.',
+  [n.kop, [
+    `Si descargas la aplicación en ${n.download}, ${n.bedrijfOf} sabe que la has descargado y pueden recoger datos técnicos de fallos según sus propias condiciones. Eso queda fuera de nuestro alcance y no nos aporta ningún dato personal.`,
   ]],
   ['El pago', [
-    'Las primeras unidades son gratis. Si coges el acceso completo, ese pago pasa entero por la App Store o Google Play: ellos cobran el importe, ellos liquidan el IVA, ellos llevan la prueba gratuita y ellos saben quién eres. Darijaforkids solo se entera de que la suscripción está activa: ni datos de la tarjeta, ni dirección, ni nombre.',
+    `Las primeras unidades son gratis. Si coges el acceso completo, ese pago pasa entero por ${n.via}: ellos cobran el importe, ellos liquidan el IVA, ellos llevan la prueba gratuita y ellos saben quién eres. Darijaforkids solo se entera de que la suscripción está activa: ni datos de la tarjeta, ni dirección, ni nombre.`,
     'Es una suscripción mensual que sigue hasta que la canceles, y la cancelación se hace en tu propia cuenta de la tienda; nosotros no podemos hacerlo por ti y tampoco vemos cuándo lo haces. Antes de contratar nada hay una pequeña operación que debe resolver una persona adulta.',
   ]],
   ['Correo a los padres', [
@@ -259,53 +260,59 @@ const build = (
   sections: sections.map(([heading, body]) => ({ title: heading, body })),
 })
 
-export const PRIVACY: Record<Lang, PrivacyText> = {
-  nl: build(
+const OPBOUW: Record<Lang, (n: Winkelnamen) => PrivacyText> = {
+  nl: (n) => build(
     'Privacy',
     'Laatst bijgewerkt: september 2026',
     'Darijaforkids is gemaakt om aan een kind te kunnen geven. Dit is in het kort wat dat betekent.',
     'Voor publicatie in een appwinkel moeten hier nog de naam en het e-mailadres van de uitgever staan. Die staan nog niet ingevuld in src/content/operator.ts.',
     'Vragen over privacy? Mail',
-    SECTIONS_NL,
+    SECTIONS_NL(n),
   ),
-  fr: build(
+  fr: (n) => build(
     'Confidentialité',
     'Dernière mise à jour : septembre 2026',
     'Darijaforkids est faite pour pouvoir être confiée à un enfant. Voici ce que cela veut dire, en bref.',
     'Avant une publication sur un magasin d’applications, le nom et l’adresse e-mail de l’éditeur doivent figurer ici. Ils ne sont pas encore renseignés dans src/content/operator.ts.',
     'Une question sur la vie privée ? Écris à',
-    SECTIONS_FR,
+    SECTIONS_FR(n),
   ),
-  de: build(
+  de: (n) => build(
     'Datenschutz',
     'Zuletzt aktualisiert: September 2026',
     'Darijaforkids ist so gebaut, dass man sie einem Kind in die Hand geben kann. Das heißt kurz gesagt Folgendes.',
     'Vor einer Veröffentlichung in einem App-Store müssen hier Name und E-Mail-Adresse des Herausgebers stehen. Sie sind in src/content/operator.ts noch nicht eingetragen.',
     'Fragen zum Datenschutz? Schreib an',
-    SECTIONS_DE,
+    SECTIONS_DE(n),
   ),
-  es: build(
+  es: (n) => build(
     'Privacidad',
     'Última actualización: septiembre de 2026',
     'Darijaforkids está hecha para poder dársela a un niño. Esto es, en corto, lo que eso significa.',
     'Antes de publicar en una tienda de aplicaciones, aquí deben figurar el nombre y el correo del editor. Todavía no están rellenados en src/content/operator.ts.',
     '¿Alguna duda sobre privacidad? Escribe a',
-    SECTIONS_ES,
+    SECTIONS_ES(n),
   ),
-  it: build(
+  it: (n) => build(
     'Privacy',
     'Ultimo aggiornamento: settembre 2026',
     'Darijaforkids è fatta per poterla mettere in mano a un bambino. Ecco, in breve, che cosa vuol dire.',
     'Prima di pubblicare in un negozio di app, qui devono comparire il nome e l’indirizzo e-mail di chi pubblica. Non sono ancora stati inseriti in src/content/operator.ts.',
     'Domande sulla privacy? Scrivi a',
-    SECTIONS_IT,
+    SECTIONS_IT(n),
   ),
-  en: build(
+  en: (n) => build(
     'Privacy',
     'Last updated: September 2026',
     'Darijaforkids is built to be handed to a child. Here is what that means, briefly.',
     'Before publishing to an app store, the publisher’s name and email address have to appear here. They are not filled in yet in src/content/operator.ts.',
     'Questions about privacy? Email',
-    SECTIONS_EN,
+    SECTIONS_EN(n),
   ),
 }
+
+/**
+ * De privacyverklaring in deze taal, met de winkel van dit platform erin —
+ * zie `winkels.ts` voor waarom er niet gewoon twee winkels staan.
+ */
+export const privacyVan = (lang: Lang): PrivacyText => OPBOUW[lang](winkelnamen(lang))

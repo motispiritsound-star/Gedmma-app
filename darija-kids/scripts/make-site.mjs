@@ -66,8 +66,9 @@ const [
   { DELEN },
   { REEKS: SLEUTELREEKS },
   { NAMEN },
-  { PRIVACY },
-  { TERMS },
+  { privacyVan },
+  { termsVan },
+  { winkelnamen },
   { OPERATOR, traderKnown },
   { UNITS },
   { HISTORY },
@@ -86,6 +87,7 @@ const [
   load('/src/site/namen.ts'),
   load('/src/i18n/privacy.ts'),
   load('/src/i18n/terms.ts'),
+  load('/src/i18n/winkels.ts'),
   load('/src/content/operator.ts'),
   load('/src/content/curriculum.ts'),
   load('/src/content/history.ts'),
@@ -1632,7 +1634,7 @@ const parentsPage = (lang) => {
   </div>
 
   <h2>${esc(p.privacyTitel)}</h2>
-  <ul>${p.privacy.map((line) => `<li>${esc(line)}</li>`).join('')}</ul>
+  <ul>${p.privacy(winkelnamen(lang)).map((line) => `<li>${esc(line)}</li>`).join('')}</ul>
   <p>${esc(p.privacyInstellingen)}</p>
 
   <h2>${esc(p.thuisTitel)}</h2>
@@ -1804,8 +1806,8 @@ for (const { code: lang } of LANGS) {
   const film = (await readdir(path.join(assets, 'film', lang)).catch(() => [])).includes('intro.mp4')
 
   await write(PATHS[lang].home, homePage(lang, { shots, film }))
-  await write(PATHS[lang].privacy, docPage(lang, 'privacy', PRIVACY[lang]))
-  await write(PATHS[lang].terms, docPage(lang, 'terms', TERMS[lang]))
+  await write(PATHS[lang].privacy, docPage(lang, 'privacy', privacyVan(lang)))
+  await write(PATHS[lang].terms, docPage(lang, 'terms', termsVan(lang)))
   await write(PATHS[lang].parents, parentsPage(lang))
   await write(PATHS[lang].name, naamPage(lang))
   await write(PATHS[lang].history, historyPage(lang))

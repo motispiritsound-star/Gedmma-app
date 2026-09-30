@@ -1,4 +1,5 @@
 import type { Lang } from './languages'
+import { winkelnamen, type Winkelnamen } from './winkels'
 import { planOf, TRIAL_DAYS } from '../engine/billing'
 
 /**
@@ -30,7 +31,7 @@ const yearPrice = planOf('jaar').list
 const yearPerMonth = planOf('jaar').perMonth
 const days = String(TRIAL_DAYS)
 
-const SECTIONS_NL: Section[] = [
+const SECTIONS_NL = (n: Winkelnamen): Section[] => [
   ['Wat je krijgt', [
     'Je mag Darijaforkids gebruiken op de apparaten die bij jouw eigen winkelaccount horen, voor jezelf en je gezin. Dat is een gebruiksrecht, geen eigendom: de app, de lessen, de stemmen en de tekeningen blijven van de uitgever.',
     'Wat niet mag: de app doorverkopen of verhuren, de lessen kopiëren om ze elders aan te bieden, of proberen de code uit elkaar te halen om er iets anders van te maken.',
@@ -39,9 +40,9 @@ const SECTIONS_NL: Section[] = [
     'De eerste vier lessen zijn gratis en blijven gratis. Daar hoef je niets voor af te sluiten en niets voor in te vullen.',
   ]],
   ['Het abonnement', [
-    `De volledige cursus loopt via een abonnement. Je kiest zelf: ${yearPrice} voor een heel jaar vooruit — dat is ${yearPerMonth} per maand — of ${price} per maand. Beide zijn inclusief btw. Je begint met ${days} dagen gratis; daarna wordt het bedrag afgeschreven via je App Store- of Google Play-account en daarna telkens opnieuw, jaarlijks of maandelijks, net zolang tot je opzegt.`,
+    `De volledige cursus loopt via een abonnement. Je kiest zelf: ${yearPrice} voor een heel jaar vooruit — dat is ${yearPerMonth} per maand — of ${price} per maand. Beide zijn inclusief btw. Je begint met ${days} dagen gratis; daarna wordt het bedrag afgeschreven via ${n.account} en daarna telkens opnieuw, jaarlijks of maandelijks, net zolang tot je opzegt.`,
     'Opzeggen doe je in dat winkelaccount, niet bij ons — wij kunnen er niet bij. Zeg je op vóór het einde van de gratis dagen, dan betaal je niets. Zeg je later op, dan loopt je toegang door tot het einde van de periode die je al betaald hebt — het jaar of de maand.',
-    'Apple en Google zijn de verkoper: zij innen het geld, dragen de btw af en bepalen hun eigen regels voor terugbetaling. Een verzoek om je geld terug gaat dus naar hen.',
+    `De verkoper is ${n.bedrijfEn}: daar wordt het geld geïnd, daar wordt de btw afgedragen en daar gelden eigen regels voor terugbetaling. Een verzoek om je geld terug gaat dus daarheen.`,
     'Verandert de prijs ooit, dan laat de winkel dat weten vóór het ingaat, en kun je opzeggen in plaats van mee te gaan.',
   ]],
   ['Een volwassene sluit het af', [
@@ -58,13 +59,13 @@ const SECTIONS_NL: Section[] = [
   ['Als de voorwaarden wijzigen', [
     'Verandert er iets belangrijks, dan passen we deze pagina aan en zetten we de nieuwe datum erboven. Gebruik je de app daarna nog, dan geldt de nieuwe tekst. Wat je al betaald hebt, verandert er niet door.',
   ]],
-  ['Apple en Google', [
-    'Deze afspraken zijn tussen jou en de uitgever, niet tussen jou en Apple of Google. Zij zijn geen partij en niet verantwoordelijk voor de app of de inhoud ervan. Wel mag Apple deze voorwaarden tegenover jou inroepen — dat moet van Apple zelf hierin staan.',
+  [n.bedrijfEn, [
+    `Deze afspraken zijn tussen jou en de uitgever, niet tussen jou en ${n.bedrijfOf}. De winkel is geen partij en niet verantwoordelijk voor de app of de inhoud ervan.${n.metApple ? ' Wel mag Apple deze voorwaarden tegenover jou inroepen — dat moet van Apple zelf hierin staan.' : ''}`,
     'Op deze voorwaarden is Nederlands recht van toepassing. Woon je in een ander EU-land, dan houd je de bescherming die het recht van jouw land je hoe dan ook geeft.',
   ]],
 ]
 
-const SECTIONS_FR: Section[] = [
+const SECTIONS_FR = (n: Winkelnamen): Section[] => [
   ['Ce que tu obtiens', [
     'Tu peux utiliser Darijaforkids sur les appareils liés à ton propre compte de boutique, pour toi et ta famille. C’est un droit d’usage, pas une propriété : l’application, les leçons, les voix et les dessins restent à l’éditeur.',
     'Ce qui n’est pas permis : revendre ou louer l’application, copier les leçons pour les proposer ailleurs, ou tenter de démonter le code pour en faire autre chose.',
@@ -73,9 +74,9 @@ const SECTIONS_FR: Section[] = [
     'Les quatre premières leçons sont gratuites et le restent. Il n’y a rien à souscrire et rien à remplir pour cela.',
   ]],
   ['L’abonnement', [
-    `Le cours complet passe par un abonnement, au choix : ${yearPrice} pour une année entière payée d’avance — soit ${yearPerMonth} par mois — ou ${price} par mois. Les deux sont TTC. Tu commences par ${days} jours offerts ; ensuite le montant est prélevé via ton compte App Store ou Google Play, puis à chaque échéance, annuelle ou mensuelle, jusqu’à ce que tu résilies.`,
+    `Le cours complet passe par un abonnement, au choix : ${yearPrice} pour une année entière payée d’avance — soit ${yearPerMonth} par mois — ou ${price} par mois. Les deux sont TTC. Tu commences par ${days} jours offerts ; ensuite le montant est prélevé via ${n.account}, puis à chaque échéance, annuelle ou mensuelle, jusqu’à ce que tu résilies.`,
     'La résiliation se fait dans ce compte de boutique, pas chez nous — nous n’y avons pas accès. Si tu résilies avant la fin des jours offerts, tu ne paies rien. Plus tard, ton accès continue jusqu’à la fin de la période déjà payée — l’année ou le mois.',
-    'Apple et Google sont le vendeur : ils encaissent, reversent la TVA et fixent leurs propres règles de remboursement. Une demande de remboursement leur revient donc.',
+    `Le vendeur, c’est ${n.bedrijfEn} : c’est là que l’argent est encaissé, que la TVA est reversée et que les règles de remboursement sont fixées. Une demande de remboursement va donc là.`,
     'Si le prix change un jour, la boutique te prévient avant que cela s’applique, et tu peux résilier au lieu de suivre.',
   ]],
   ['C’est un adulte qui souscrit', [
@@ -92,13 +93,13 @@ const SECTIONS_FR: Section[] = [
   ['Si les conditions changent', [
     'Si quelque chose d’important change, nous modifions cette page et inscrivons la nouvelle date en haut. Continuer à utiliser l’application vaut acceptation du nouveau texte. Ce que tu as déjà payé n’en est pas affecté.',
   ]],
-  ['Apple et Google', [
-    'Cet accord est conclu entre toi et l’éditeur, pas entre toi et Apple ou Google. Ils n’y sont pas parties et ne répondent ni de l’application ni de son contenu. Apple peut toutefois se prévaloir de ces conditions à ton égard — Apple exige que cela y figure.',
+  [n.bedrijfEn, [
+    `Cet accord est conclu entre toi et l’éditeur, pas entre toi et ${n.bedrijfOf}. La boutique n’y est pas partie et ne répond ni de l’application ni de son contenu.${n.metApple ? ' Apple peut toutefois se prévaloir de ces conditions à ton égard — Apple exige que cela y figure.' : ''}`,
     'Ces conditions relèvent du droit néerlandais. Si tu vis dans un autre pays de l’UE, tu conserves la protection que le droit de ton pays te garantit de toute façon.',
   ]],
 ]
 
-const SECTIONS_DE: Section[] = [
+const SECTIONS_DE = (n: Winkelnamen): Section[] => [
   ['Was du bekommst', [
     'Du darfst Darijaforkids auf den Geräten deines eigenen Store-Kontos nutzen, für dich und deine Familie. Das ist ein Nutzungsrecht, kein Eigentum: Die App, die Lektionen, die Stimmen und die Zeichnungen bleiben beim Herausgeber.',
     'Was nicht erlaubt ist: die App weiterverkaufen oder vermieten, die Lektionen kopieren, um sie anderswo anzubieten, oder versuchen, den Code auseinanderzunehmen und daraus etwas anderes zu bauen.',
@@ -107,9 +108,9 @@ const SECTIONS_DE: Section[] = [
     'Die ersten vier Lektionen sind kostenlos und bleiben es. Dafür musst du nichts abschließen und nichts ausfüllen.',
   ]],
   ['Das Abo', [
-    `Der ganze Kurs läuft über ein Abo, und du hast die Wahl: ${yearPrice} für ein ganzes Jahr im Voraus — das sind ${yearPerMonth} pro Monat — oder ${price} pro Monat. Beides inklusive Mehrwertsteuer. Du beginnst mit ${days} Tagen gratis; danach wird der Betrag über dein App-Store- oder Google-Play-Konto abgebucht und danach jeweils erneut, jährlich oder monatlich, bis du kündigst.`,
+    `Der ganze Kurs läuft über ein Abo, und du hast die Wahl: ${yearPrice} für ein ganzes Jahr im Voraus — das sind ${yearPerMonth} pro Monat — oder ${price} pro Monat. Beides inklusive Mehrwertsteuer. Du beginnst mit ${days} Tagen gratis; danach wird der Betrag über ${n.account} abgebucht und danach jeweils erneut, jährlich oder monatlich, bis du kündigst.`,
     'Gekündigt wird in diesem Store-Konto, nicht bei uns — wir kommen da nicht heran. Kündigst du vor Ende der Gratistage, zahlst du nichts. Kündigst du später, läuft dein Zugang bis zum Ende des bereits bezahlten Zeitraums — des Jahres oder des Monats.',
-    'Apple und Google sind der Verkäufer: Sie kassieren, führen die Mehrwertsteuer ab und legen ihre eigenen Regeln für Erstattungen fest. Ein Erstattungswunsch geht also an sie.',
+    `Verkäufer ist ${n.bedrijfEn}: dort wird das Geld eingezogen, dort wird die Mehrwertsteuer abgeführt und dort gelten eigene Regeln für Erstattungen. Ein Erstattungswunsch geht also dorthin.`,
     'Ändert sich der Preis irgendwann, sagt der Store das vorher, und du kannst kündigen, statt mitzugehen.',
   ]],
   ['Ein Erwachsener schließt ab', [
@@ -126,13 +127,13 @@ const SECTIONS_DE: Section[] = [
   ['Wenn sich die Bedingungen ändern', [
     'Ändert sich etwas Wichtiges, passen wir diese Seite an und schreiben das neue Datum darüber. Nutzt du die App danach weiter, gilt der neue Text. An dem, was du schon bezahlt hast, ändert das nichts.',
   ]],
-  ['Apple und Google', [
-    'Diese Vereinbarung besteht zwischen dir und dem Herausgeber, nicht zwischen dir und Apple oder Google. Sie sind keine Partei und nicht verantwortlich für die App oder ihren Inhalt. Apple darf sich dir gegenüber allerdings auf diese Bedingungen berufen — Apple verlangt, dass das hier steht.',
+  [n.bedrijfEn, [
+    `Diese Vereinbarung besteht zwischen dir und dem Herausgeber, nicht zwischen dir und ${n.bedrijfOf}. Der Store ist keine Partei und nicht verantwortlich für die App oder ihren Inhalt.${n.metApple ? ' Apple darf sich dir gegenüber allerdings auf diese Bedingungen berufen — Apple verlangt, dass das hier steht.' : ''}`,
     'Auf diese Bedingungen ist niederländisches Recht anwendbar. Wohnst du in einem anderen EU-Land, behältst du den Schutz, den dir das Recht deines Landes ohnehin gibt.',
   ]],
 ]
 
-const SECTIONS_ES: Section[] = [
+const SECTIONS_ES = (n: Winkelnamen): Section[] => [
   ['Qué recibes', [
     'Puedes usar Darijaforkids en los dispositivos vinculados a tu propia cuenta de la tienda, para ti y tu familia. Es un derecho de uso, no una propiedad: la aplicación, las lecciones, las voces y los dibujos siguen siendo de quien la publica.',
     'Lo que no se puede: revender o alquilar la aplicación, copiar las lecciones para ofrecerlas en otro sitio, o intentar desmontar el código para hacer otra cosa con él.',
@@ -141,9 +142,9 @@ const SECTIONS_ES: Section[] = [
     'Las cuatro primeras lecciones son gratis y lo seguirán siendo. No hay que contratar nada ni rellenar nada para eso.',
   ]],
   ['La suscripción', [
-    `El curso completo va con una suscripción, y eliges tú: ${yearPrice} por un año entero pagado por adelantado —son ${yearPerMonth} al mes— o ${price} al mes. Ambas con IVA incluido. Empiezas con ${days} días gratis; después se cobra el importe a través de tu cuenta de la App Store o de Google Play, y así cada año o cada mes, hasta que canceles.`,
+    `El curso completo va con una suscripción, y eliges tú: ${yearPrice} por un año entero pagado por adelantado —son ${yearPerMonth} al mes— o ${price} al mes. Ambas con IVA incluido. Empiezas con ${days} días gratis; después se cobra el importe a través de ${n.account}, y así cada año o cada mes, hasta que canceles.`,
     'Se cancela en esa cuenta de la tienda, no con nosotros: no tenemos acceso. Si cancelas antes de que acaben los días gratis, no pagas nada. Si cancelas más tarde, mantienes el acceso hasta el final del periodo ya pagado: el año o el mes.',
-    'Apple y Google son el vendedor: cobran, liquidan el IVA y fijan sus propias normas de devolución. Una petición de devolución va, por tanto, a ellos.',
+    `El vendedor es ${n.bedrijfEn}: ahí se cobra el importe, ahí se liquida el IVA y ahí rigen sus propias normas de devolución. Una petición de devolución va, por tanto, ahí.`,
     'Si algún día cambia el precio, la tienda te avisa antes de que se aplique y puedes cancelar en lugar de seguir.',
   ]],
   ['Lo contrata una persona adulta', [
@@ -160,13 +161,13 @@ const SECTIONS_ES: Section[] = [
   ['Si cambian las condiciones', [
     'Si cambia algo importante, actualizamos esta página y ponemos arriba la fecha nueva. Si sigues usando la aplicación después, vale el texto nuevo. Lo que ya hayas pagado no cambia por ello.',
   ]],
-  ['Apple y Google', [
-    'Este acuerdo es entre tú y quien publica la aplicación, no entre tú y Apple o Google. Ellos no son parte ni responden de la aplicación ni de su contenido. Apple sí puede invocar estas condiciones frente a ti: es la propia Apple quien exige que eso conste aquí.',
+  [n.bedrijfEn, [
+    `Este acuerdo es entre tú y quien publica la aplicación, no entre tú y ${n.bedrijfOf}. La tienda no es parte ni responde de la aplicación ni de su contenido.${n.metApple ? ' Apple sí puede invocar estas condiciones frente a ti: es la propia Apple quien exige que eso conste aquí.' : ''}`,
     'A estas condiciones se les aplica el derecho neerlandés. Si vives en otro país de la UE, conservas la protección que el derecho de tu país te da de todos modos.',
   ]],
 ]
 
-const SECTIONS_IT: Section[] = [
+const SECTIONS_IT = (n: Winkelnamen): Section[] => [
   ['Che cosa ricevi', [
     'Puoi usare Darijaforkids sui dispositivi collegati al tuo account del negozio, per te e per la tua famiglia. È un diritto d’uso, non una proprietà: l’app, le lezioni, le voci e i disegni restano di chi la pubblica.',
     'Quello che non si può fare: rivendere o noleggiare l’app, copiare le lezioni per offrirle altrove, o provare a smontare il codice per ricavarne qualcos’altro.',
@@ -175,9 +176,9 @@ const SECTIONS_IT: Section[] = [
     'Le prime quattro lezioni sono gratis e lo restano. Non c’è niente da sottoscrivere e niente da compilare.',
   ]],
   ['L’abbonamento', [
-    `Il corso completo va con un abbonamento, e scegli tu: ${yearPrice} per un anno intero pagato in anticipo — sono ${yearPerMonth} al mese — oppure ${price} al mese. Entrambi IVA inclusa. Inizi con ${days} giorni gratis; poi l’importo viene addebitato tramite il tuo account App Store o Google Play, e così ogni anno o ogni mese, finché non disdici.`,
+    `Il corso completo va con un abbonamento, e scegli tu: ${yearPrice} per un anno intero pagato in anticipo — sono ${yearPerMonth} al mese — oppure ${price} al mese. Entrambi IVA inclusa. Inizi con ${days} giorni gratis; poi l’importo viene addebitato tramite ${n.account}, e così ogni anno o ogni mese, finché non disdici.`,
     'La disdetta si fa in quell’account del negozio, non da noi: non ci possiamo arrivare. Se disdici prima che finiscano i giorni gratis, non paghi niente. Se disdici più tardi, l’accesso resta fino alla fine del periodo già pagato: l’anno o il mese.',
-    'Apple e Google sono il venditore: incassano loro, versano loro l’IVA e fissano le proprie regole di rimborso. Una richiesta di rimborso va quindi a loro.',
+    `Il venditore è ${n.bedrijfEn}: è lì che si incassa, lì che si versa l’IVA e lì che valgono le proprie regole di rimborso. Una richiesta di rimborso va quindi lì.`,
     'Se un giorno il prezzo cambia, il negozio te lo comunica prima che entri in vigore e puoi disdire invece di proseguire.',
   ]],
   ['Lo sottoscrive una persona adulta', [
@@ -194,13 +195,13 @@ const SECTIONS_IT: Section[] = [
   ['Se le condizioni cambiano', [
     'Se cambia qualcosa di importante, aggiorniamo questa pagina e mettiamo in alto la data nuova. Se continui a usare l’app dopo, vale il testo nuovo. Quello che hai già pagato non cambia.',
   ]],
-  ['Apple e Google', [
-    'Questo accordo è fra te e chi pubblica l’app, non fra te e Apple o Google. Loro non sono parte in causa e non rispondono né dell’app né dei suoi contenuti. Apple può però far valere queste condizioni nei tuoi confronti: è Apple stessa a pretendere che ciò sia scritto qui.',
+  [n.bedrijfEn, [
+    `Questo accordo è fra te e chi pubblica l’app, non fra te e ${n.bedrijfOf}. Il negozio non è parte in causa e non risponde né dell’app né dei suoi contenuti.${n.metApple ? ' Apple può però far valere queste condizioni nei tuoi confronti: è Apple stessa a pretendere che ciò sia scritto qui.' : ''}`,
     'A queste condizioni si applica il diritto dei Paesi Bassi. Se vivi in un altro paese dell’UE, mantieni comunque la protezione che il diritto del tuo paese ti riconosce.',
   ]],
 ]
 
-const SECTIONS_EN: Section[] = [
+const SECTIONS_EN = (n: Winkelnamen): Section[] => [
   ['What you get', [
     'You may use Darijaforkids on the devices tied to your own store account, for yourself and your family. That is a right to use it, not ownership: the app, the lessons, the voices and the drawings stay with the publisher.',
     'What is not allowed: reselling or renting out the app, copying the lessons to offer them elsewhere, or trying to take the code apart to make something else of it.',
@@ -209,9 +210,9 @@ const SECTIONS_EN: Section[] = [
     'The first four lessons are free and stay free. There is nothing to sign up for and nothing to fill in.',
   ]],
   ['The subscription', [
-    `The full course runs on a subscription, and you choose: ${yearPrice} for a whole year up front — that is ${yearPerMonth} a month — or ${price} a month. Both include VAT. You start with ${days} days free; after that the amount is charged through your App Store or Google Play account, and again every year or every month, until you cancel.`,
+    `The full course runs on a subscription, and you choose: ${yearPrice} for a whole year up front — that is ${yearPerMonth} a month — or ${price} a month. Both include VAT. You start with ${days} days free; after that the amount is charged through ${n.account}, and again every year or every month, until you cancel.`,
     'Cancelling happens in that store account, not with us — we cannot reach it. Cancel before the free days end and you pay nothing. Cancel later and your access runs to the end of the period you already paid for — the year or the month.',
-    'Apple and Google are the seller: they take the payment, settle the VAT and set their own refund rules. A request for your money back therefore goes to them.',
+    `The seller is ${n.bedrijfEn}: that is where the payment is taken, where the VAT is settled and where the refund rules are set. A request for your money back therefore goes there.`,
     'If the price ever changes, the store tells you before it applies, and you can cancel rather than follow it.',
   ]],
   ['An adult signs up', [
@@ -228,8 +229,8 @@ const SECTIONS_EN: Section[] = [
   ['If the terms change', [
     'If something important changes, we update this page and put the new date at the top. Carrying on using the app means the new text applies. It changes nothing about what you have already paid.',
   ]],
-  ['Apple and Google', [
-    'This agreement is between you and the publisher, not between you and Apple or Google. They are not a party to it and are not responsible for the app or its content. Apple may, however, rely on these terms against you — Apple itself requires that to be stated here.',
+  [n.bedrijfEn, [
+    `This agreement is between you and the publisher, not between you and ${n.bedrijfOf}. The store is not a party to it and is not responsible for the app or its content.${n.metApple ? ' Apple may, however, rely on these terms against you — Apple itself requires that to be stated here.' : ''}`,
     'Dutch law applies to these terms. If you live in another EU country, you keep the protection your own country’s law gives you regardless.',
   ]],
 ]
@@ -248,47 +249,53 @@ const build = (
   sections: sections.map(([heading, body]) => ({ title: heading, body })),
 })
 
-export const TERMS: Record<Lang, TermsText> = {
-  nl: build(
+const OPBOUW: Record<Lang, (n: Winkelnamen) => TermsText> = {
+  nl: (n) => build(
     'Gebruiksvoorwaarden',
     'Laatst gewijzigd: september 2026',
     'Dit zijn de afspraken tussen jou en de uitgever van Darijaforkids. Ze zijn kort, want de app doet weinig dat afspraken nodig heeft: hij leert je een taal en bewaart niets over je.',
     'Vragen over deze voorwaarden?',
-    SECTIONS_NL,
+    SECTIONS_NL(n),
   ),
-  fr: build(
+  fr: (n) => build(
     'Conditions d’utilisation',
     'Dernière modification : septembre 2026',
     'Voici l’accord entre toi et l’éditeur de Darijaforkids. Il est court, parce que l’application fait peu de choses qui demandent un accord : elle t’apprend une langue et ne garde rien sur toi.',
     'Une question sur ces conditions ?',
-    SECTIONS_FR,
+    SECTIONS_FR(n),
   ),
-  de: build(
+  de: (n) => build(
     'Nutzungsbedingungen',
     'Zuletzt geändert: September 2026',
     'Das ist die Vereinbarung zwischen dir und dem Herausgeber von Darijaforkids. Sie ist kurz, denn die App tut wenig, wofür man eine Vereinbarung braucht: Sie bringt dir eine Sprache bei und speichert nichts über dich.',
     'Fragen zu diesen Bedingungen?',
-    SECTIONS_DE,
+    SECTIONS_DE(n),
   ),
-  es: build(
+  es: (n) => build(
     'Condiciones de uso',
     'Última modificación: septiembre de 2026',
     'Este es el acuerdo entre tú y quien publica Darijaforkids. Es corto, porque la aplicación hace pocas cosas que necesiten un acuerdo: te enseña un idioma y no guarda nada sobre ti.',
     '¿Dudas sobre estas condiciones?',
-    SECTIONS_ES,
+    SECTIONS_ES(n),
   ),
-  it: build(
+  it: (n) => build(
     'Condizioni d’uso',
     'Ultima modifica: settembre 2026',
     'Questo è l’accordo fra te e chi pubblica Darijaforkids. È corto, perché l’app fa poche cose che abbiano bisogno di un accordo: ti insegna una lingua e non conserva niente su di te.',
     'Domande su queste condizioni?',
-    SECTIONS_IT,
+    SECTIONS_IT(n),
   ),
-  en: build(
+  en: (n) => build(
     'Terms of use',
     'Last changed: September 2026',
     'This is the agreement between you and the publisher of Darijaforkids. It is short, because the app does little that needs an agreement: it teaches you a language and keeps nothing about you.',
     'Questions about these terms?',
-    SECTIONS_EN,
+    SECTIONS_EN(n),
   ),
 }
+
+/**
+ * De voorwaarden in deze taal, met de winkel van dit platform erin — zie
+ * `winkels.ts` voor waarom er niet gewoon twee winkels staan.
+ */
+export const termsVan = (lang: Lang): TermsText => OPBOUW[lang](winkelnamen(lang))

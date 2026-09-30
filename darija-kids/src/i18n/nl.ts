@@ -5,6 +5,7 @@
  * French, German or English is a compile error rather than a Dutch word on a
  * French child's screen.
  */
+import type { Winkelnamen } from './winkels'
 export const nl = {
   common: {
     appName: 'Darijaforkids',
@@ -426,13 +427,13 @@ export const nl = {
       },
     ],
     privacyTitel: 'Privacy, kort',
-    privacy: [
+    privacy: (n: Winkelnamen): string[] => [
       '✅ Geen account, geen e-mailadres, geen inloggen.',
       '✅ Alle voortgang staat in de browser van dit apparaat en gaat nergens heen.',
       '✅ Geen advertenties, geen trackers, geen cookies van derden.',
       '✅ De uitspraak komt van de stem die al op het apparaat staat; er wordt geen audio verstuurd.',
-      '⚠️ Spreekoefeningen gebruiken de spraakherkenning van de browser. Bij Chrome betekent dat dat de opname naar Google gaat — zet spreekoefeningen uit als je dat niet wilt.',
-      '✅ Koop je de volledige cursus, dan loopt de betaling volledig via Apple of Google. Wij zien geen kaartgegevens, geen adres en geen naam.',
+      '✅ Bij de spreekoefeningen neem je jezelf op en hoor je je eigen stem terug. Die opname blijft op dit apparaat, gaat nergens naartoe en wordt erna weggegooid.',
+      `✅ Koop je de volledige cursus, dan loopt de betaling volledig via ${n.bedrijfOf}. Wij zien geen kaartgegevens, geen adres en geen naam.`,
     ],
     privacyInstellingen: 'Voortgang wissen of meenemen naar een ander apparaat kan bij instellingen.',
     thuisTitel: 'Thuis meehelpen',
@@ -450,8 +451,8 @@ export const nl = {
       'Darija verschilt per streek en per familie, en er is geen officiële spelling. Wij kiezen de vorm die je in Casablanca en Rabat het meest hoort, met het Arabische schrift zoals mensen het in berichten typen. De stem van je apparaat spreekt Modern Standaard Arabisch — herkenbaar, maar geen echte Marokkaanse tongval. Luisteren naar familie blijft dus het echte werk.',
     winkel: {
       titel: 'Winkelgegevens',
-      uitleg:
-        'Hier staat precies wat de App Store of Google Play over de prijzen heeft gezegd. Klopt de munt hieronder niet, dan komt dat van de winkel en niet van de app.',
+      uitleg: (n: Winkelnamen): string =>
+        `Hier staat precies wat ${n.via} over de prijzen heeft gezegd. Klopt de munt hieronder niet, dan komt dat van de winkel en niet van de app.`,
       knop: 'Toon wat de winkel teruggaf',
       leeg: 'De winkel heeft nog niets teruggegeven.',
     },
@@ -685,8 +686,10 @@ export const nl = {
     herstelHint: 'Nieuw toestel, of de app opnieuw geïnstalleerd? Zet je abonnement hier terug — dat kost niets.',
     beheer: 'Abonnement beheren',
     beheerHint: (winkel: string): string => `Opzeggen doe je ${winkel}. Deze knop brengt je er meteen heen.`,
-    alleenInApp: (prijs: string, jaar: boolean): string =>
-      `Een abonnement afsluiten kan in de app uit de App Store of Google Play (${prijs} ${jaar ? 'per jaar' : 'per maand'}). Op deze website blijven de eerste units gewoon gratis.`,
+    alleenInApp: (prijs: string, jaar: boolean, winkel: string): string =>
+      `Een abonnement afsluiten kan in de app uit ${winkel} (${prijs} ${jaar ? 'per jaar' : 'per maand'}). Op deze website blijven de eerste units gewoon gratis.`,
+    /** Als de app wél in een winkel staat maar die niet opstart. */
+    winkelWeg: 'De winkel is nu niet te bereiken, dus afsluiten lukt even niet. Probeer het straks nog eens; de eerste units blijven gewoon open.',
     bezig: 'Bezig…',
     alOpen: 'Je abonnement loopt. Alles staat open — shukran!',
     mislukt: (fout: string): string => `Er ging iets mis: ${fout}`,
@@ -713,8 +716,8 @@ export const nl = {
       koop: (prijs: string): string => `Koop het e-boek — ${prijs} eenmalig`,
       open: 'Open het e-boek',
       vanJou: 'Het e-boek is van jou. Het blijft van jou, ook als je ooit stopt met het abonnement.',
-      alleenInApp: (prijs: string): string =>
-        `Het e-boek koop je in de app uit de App Store of Google Play (${prijs}, eenmalig). Bij een jaarabonnement zit het erbij.`,
+      alleenInApp: (prijs: string, winkel: string): string =>
+        `Het e-boek koop je in de app uit ${winkel} (${prijs}, eenmalig). Bij een jaarabonnement zit het erbij.`,
     },
   },
   /**

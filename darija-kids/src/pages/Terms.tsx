@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { OPERATOR, operatorKnown } from '../content/operator'
-import { TERMS } from '../i18n/terms'
+import { termsVan } from '../i18n/terms'
 import { useLang, useT } from '../i18n'
 import { Button, Card, SectionTitle } from '../ui/kit'
 import { OperatorBlock } from '../ui/Operator'
@@ -12,7 +12,7 @@ import { OperatorBlock } from '../ui/Operator'
 export function Terms() {
   const t = useT()
   const lang = useLang()
-  const text = TERMS[lang]
+  const text = termsVan(lang)
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">

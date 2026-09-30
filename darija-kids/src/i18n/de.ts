@@ -1,4 +1,5 @@
 import type { Strings } from './nl'
+import type { Winkelnamen } from './winkels'
 
 /** Die Oberfläche auf Deutsch. */
 export const de: Strings = {
@@ -419,13 +420,13 @@ export const de: Strings = {
       },
     ],
     privacyTitel: 'Datenschutz, kurz',
-    privacy: [
+    privacy: (n: Winkelnamen) => [
       '✅ Kein Konto, keine E-Mail-Adresse, kein Login.',
       '✅ Der gesamte Fortschritt bleibt im Browser dieses Geräts und geht nirgendwohin.',
       '✅ Keine Werbung, keine Tracker, keine Cookies von Dritten.',
       '✅ Die Aussprache kommt von der Stimme, die schon auf dem Gerät ist; es wird kein Ton verschickt.',
-      '⚠️ Sprechübungen nutzen die Spracherkennung des Browsers. Bei Chrome heißt das, dass die Aufnahme zu Google geht — schalte Sprechübungen aus, wenn das nicht erwünscht ist.',
-      '✅ Kaufst du den kompletten Kurs, läuft die Zahlung vollständig über Apple oder Google. Wir sehen weder Kartendaten noch Adresse noch Namen.',
+      '✅ Bei den Sprechübungen nimmst du dich selbst auf und hörst dich zurück. Die Aufnahme bleibt auf diesem Gerät, geht nirgendwohin und wird danach verworfen.',
+      `✅ Kaufst du den kompletten Kurs, läuft die Zahlung vollständig über ${n.bedrijfOf}. Wir sehen weder Kartendaten noch Adresse noch Namen.`,
     ],
     privacyInstellingen: 'Fortschritt löschen oder auf ein anderes Gerät mitnehmen geht in den Einstellungen.',
     thuisTitel: 'Zu Hause mithelfen',
@@ -443,8 +444,8 @@ export const de: Strings = {
       'Darija unterscheidet sich von Region zu Region und von Familie zu Familie, und es gibt keine offizielle Rechtschreibung. Wir wählen die Form, die man in Casablanca und Rabat am häufigsten hört, in der arabischen Schrift, wie die Leute sie in Nachrichten tippen. Die Stimme Ihres Geräts spricht modernes Hocharabisch — erkennbar, aber ohne marokkanischen Klang. Der Familie zuhören bleibt die eigentliche Arbeit.',
     winkel: {
       titel: 'Store-Daten',
-      uitleg:
-        'Hier steht genau, was der App Store oder Google Play zu den Preisen gesagt hat. Stimmt die Währung unten nicht, kommt das vom Store und nicht von der App.',
+      uitleg: (n: Winkelnamen) =>
+        `Hier steht genau, was ${n.via} zu den Preisen gesagt hat. Stimmt die Währung unten nicht, kommt das vom Store und nicht von der App.`,
       knop: 'Antwort des Stores anzeigen',
       leeg: 'Der Store hat noch nichts zurückgegeben.',
     },
@@ -678,8 +679,10 @@ export const de: Strings = {
     herstelHint: 'Neues Gerät oder App neu installiert? Hol dein Abo hier zurück — das kostet nichts.',
     beheer: 'Abo verwalten',
     beheerHint: (winkel) => `Gekündigt wird über dein Konto ${winkel}. Dieser Knopf bringt dich direkt dorthin.`,
-    alleenInApp: (prijs, jaar) =>
-      `Abgeschlossen wird das Abo in der App aus dem App Store oder von Google Play (${prijs} ${jaar ? 'pro Jahr' : 'pro Monat'}). Auf dieser Website bleiben die ersten Einheiten kostenlos.`,
+    alleenInApp: (prijs, jaar, winkel) =>
+      `Abgeschlossen wird das Abo in der App aus ${winkel} (${prijs} ${jaar ? 'pro Jahr' : 'pro Monat'}). Auf dieser Website bleiben die ersten Einheiten kostenlos.`,
+    /** Als de app wél in een winkel staat maar die niet opstart. */
+    winkelWeg: 'Der Store ist im Moment nicht erreichbar, also lässt sich das Abo gerade nicht abschließen. Versuch es später noch einmal; die ersten Einheiten bleiben offen.',
     bezig: 'Einen Moment…',
     alOpen: 'Dein Abo läuft. Alles ist offen — shukran!',
     mislukt: (fout) => `Da ist etwas schiefgegangen: ${fout}`,
@@ -706,8 +709,8 @@ export const de: Strings = {
       koop: (prijs: string): string => `E-Book kaufen — ${prijs} einmalig`,
       open: 'E-Book öffnen',
       vanJou: 'Das E-Book gehört dir. Es bleibt deins, auch wenn das Abo irgendwann endet.',
-      alleenInApp: (prijs: string): string =>
-        `Das E-Book kaufst du in der App aus dem App Store oder von Google Play (${prijs}, einmalig). Im Jahresabo ist es enthalten.`,
+      alleenInApp: (prijs: string, winkel: string): string =>
+        `Das E-Book kaufst du in der App aus ${winkel} (${prijs}, einmalig). Im Jahresabo ist es enthalten.`,
     },
   },
   post: {

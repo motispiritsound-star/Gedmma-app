@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { OPERATOR, operatorKnown } from '../content/operator'
-import { PRIVACY } from '../i18n/privacy'
+import { privacyVan } from '../i18n/privacy'
 import { useLang, useT } from '../i18n'
 import { Button, Card, SectionTitle } from '../ui/kit'
 import { OperatorBlock } from '../ui/Operator'
@@ -9,7 +9,7 @@ import { OperatorBlock } from '../ui/Operator'
 export function Privacy() {
   const t = useT()
   const lang = useLang()
-  const text = PRIVACY[lang]
+  const text = privacyVan(lang)
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">

@@ -4,7 +4,8 @@ import { UNITS } from '../content/curriculum'
 import { allWords } from '../content/lexicon'
 import { billingAvailable, winkelGegevens, type WinkelRegel } from '../engine/billing'
 import { levelOf, today, useStore } from '../engine/store'
-import { useT } from '../i18n'
+import { useLang, useT } from '../i18n'
+import { winkelnamen } from '../i18n/winkels'
 import { Button, Card, SectionTitle, Stat } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 import { OperatorBlock } from '../ui/Operator'
@@ -14,6 +15,8 @@ import { PostAanmelding } from '../ui/PostAanmelding'
 /** For the adult in the room: what the app does, and how the child is doing. */
 export function Parents() {
   const t = useT()
+  // Alleen de winkel van dit platform, nooit die van het andere — zie i18n/winkels.ts.
+  const namen = winkelnamen(useLang())
   const [winkel, setWinkel] = useState<WinkelRegel[] | null>(null)
   const state = useStore((s) => s)
   const seen = Object.keys(state.cards).length
@@ -59,7 +62,7 @@ export function Parents() {
       <h2 className="mb-3 font-display text-xl font-extrabold">{t.parents.privacyTitel}</h2>
       <Card className="mb-8 p-5">
         <ul className="space-y-2 text-sm">
-          {t.parents.privacy.map((line) => <li key={line}>{line}</li>)}
+          {t.parents.privacy(namen).map((line) => <li key={line}>{line}</li>)}
           <li>
             ✅ <Link to="/instellingen" className="font-bold underline">{t.parents.privacyInstellingen}</Link>
           </li>
@@ -109,7 +112,7 @@ export function Parents() {
         <>
           <h2 className="mb-3 mt-8 font-display text-xl font-extrabold">{t.parents.winkel.titel}</h2>
           <Card className="mb-8 p-5">
-            <p className="text-sm text-[var(--ink-soft)]">{t.parents.winkel.uitleg}</p>
+            <p className="text-sm text-[var(--ink-soft)]">{t.parents.winkel.uitleg(namen)}</p>
             <Button variant="secondary" className="mt-4" onClick={() => setWinkel(winkelGegevens())}>
               {t.parents.winkel.knop}
             </Button>

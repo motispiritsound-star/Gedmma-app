@@ -1,4 +1,5 @@
 import type { Strings } from './nl'
+import type { Winkelnamen } from './winkels'
 
 /** L'interfaccia in italiano. */
 export const it: Strings = {
@@ -419,13 +420,13 @@ export const it: Strings = {
       },
     ],
     privacyTitel: 'La privacy, in breve',
-    privacy: [
+    privacy: (n: Winkelnamen) => [
       '✅ Nessun account, nessuna e-mail, nessun accesso.',
       '✅ Tutti i progressi restano nel browser di questo dispositivo e non vanno da nessuna parte.',
       '✅ Nessuna pubblicità, nessun tracciatore, nessun cookie di terzi.',
       '✅ La pronuncia viene dalla voce già presente sul dispositivo; non viene inviato nessun audio.',
-      '⚠️ Gli esercizi di pronuncia usano il riconoscimento vocale del browser. Su Chrome questo significa che la registrazione va a Google: spegnili se non lo vuoi.',
-      '✅ Se acquisti il corso completo, il pagamento passa interamente da Apple o Google. Non vediamo né carta, né indirizzo, né nome.',
+      '✅ Negli esercizi di pronuncia ti registri e ti riascolti. La registrazione resta su questo dispositivo, non va da nessuna parte e viene buttata dopo.',
+      `✅ Se acquisti il corso completo, il pagamento passa interamente da ${n.bedrijfOf}. Non vediamo né carta, né indirizzo, né nome.`,
     ],
     privacyInstellingen: 'Cancellare i progressi o portarli su un altro dispositivo si fa nelle impostazioni.',
     thuisTitel: 'Aiutare a casa',
@@ -443,8 +444,8 @@ export const it: Strings = {
       'Il darija cambia da regione a regione e da famiglia a famiglia, e non ha un’ortografia ufficiale. Scegliamo la forma che si sente di più a Casablanca e Rabat, con la scrittura araba così come la gente la digita nei messaggi. La voce del vostro dispositivo parla arabo standard moderno: si riconosce, ma senza accento marocchino. Ascoltare la famiglia resta il lavoro vero.',
     winkel: {
       titel: 'Dati dello store',
-      uitleg:
-        'Qui c’è esattamente quello che App Store o Google Play ha detto sui prezzi. Se la valuta qui sotto è sbagliata, dipende dallo store e non dall’app.',
+      uitleg: (n: Winkelnamen) =>
+        `Qui c’è esattamente quello che ${n.via} ha detto sui prezzi. Se la valuta qui sotto è sbagliata, dipende dallo store e non dall’app.`,
       knop: 'Mostra la risposta dello store',
       leeg: 'Lo store non ha ancora restituito nulla.',
     },
@@ -678,8 +679,10 @@ export const it: Strings = {
     herstelHint: 'Dispositivo nuovo o app reinstallata? Recupera qui il tuo abbonamento: non costa niente.',
     beheer: 'Gestisci l’abbonamento',
     beheerHint: (winkel) => `La disdetta si fa dal tuo account ${winkel}. Questo pulsante ti ci porta subito.`,
-    alleenInApp: (prijs, jaar) =>
-      `L’abbonamento si sottoscrive nell’app presa dall’App Store o da Google Play (${prijs} ${jaar ? 'all’anno' : 'al mese'}). Su questo sito le prime unità restano gratis.`,
+    alleenInApp: (prijs, jaar, winkel) =>
+      `L’abbonamento si sottoscrive nell’app presa ${winkel} (${prijs} ${jaar ? 'all’anno' : 'al mese'}). Su questo sito le prime unità restano gratis.`,
+    /** Als de app wél in een winkel staat maar die niet opstart. */
+    winkelWeg: 'Lo store non è raggiungibile in questo momento, quindi l’abbonamento non si può sottoscrivere. Riprova più tardi; le prime unità restano aperte.',
     bezig: 'Un attimo…',
     alOpen: 'Il tuo abbonamento è attivo. È tutto aperto — shukran!',
     mislukt: (fout) => `Qualcosa è andato storto: ${fout}`,
@@ -706,8 +709,8 @@ export const it: Strings = {
       koop: (prijs: string): string => `Compra l'e-book — ${prijs} una volta sola`,
       open: "Apri l'e-book",
       vanJou: "L'e-book è tuo. Resta tuo anche se un giorno lasci l'abbonamento.",
-      alleenInApp: (prijs: string): string =>
-        `L'e-book si compra nell'app dell'App Store o di Google Play (${prijs}, una volta sola). Con l'abbonamento annuale è compreso.`,
+      alleenInApp: (prijs: string, winkel: string): string =>
+        `L'e-book si compra nell'app ${winkel} (${prijs}, una volta sola). Con l'abbonamento annuale è compreso.`,
     },
   },
   post: {

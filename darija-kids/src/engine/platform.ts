@@ -16,6 +16,12 @@ type CapacitorGlobal = { getPlatform?: () => string }
 export type Platform = 'ios' | 'android' | 'web'
 
 export const platform = (): Platform => {
+  // `make-site.mjs` bouwt de website met Node, en daar bestaat geen `window`.
+  // Dat is geen uitzondering die weggewerkt wordt: de generator maakt
+  // webpagina's, dus 'web' is precies het antwoord. Zonder deze regel valt de
+  // sitebuild om met "window is not defined" zodra een tekst de winkelnaam
+  // opvraagt — nagemeten toen privacy.ts die ging gebruiken.
+  if (typeof window === 'undefined') return 'web'
   const naam = (window as { Capacitor?: CapacitorGlobal }).Capacitor?.getPlatform?.()
   return naam === 'ios' || naam === 'android' ? naam : 'web'
 }

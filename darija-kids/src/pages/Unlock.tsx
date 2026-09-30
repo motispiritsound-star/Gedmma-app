@@ -4,7 +4,7 @@ import {
   btwInbegrepen, buyEbook, EBOOK, ebookFile, FREE_LESSONS, manageSubscription, PLANS, planOf,
   restorePurchases, subscribe, TRIAL_DAYS, useBilling, YEAR_FULL_PRICE, YEAR_SAVING, type PlanId,
 } from '../engine/billing'
-import { gezinsdeling, winkelVan } from '../engine/platform'
+import { gezinsdeling, platform, winkelVan } from '../engine/platform'
 import { useStore } from '../engine/store'
 import { useT } from '../i18n'
 import { sfx } from '../engine/audio'
@@ -206,7 +206,9 @@ export function Unlock() {
                   {billing.busy ? t.unlock.bezig : t.unlock.koop(TRIAL_DAYS)}
                 </Button>
               ) : (
-                <p data-web-only className="rounded-2xl bg-saffron-500/10 px-4 py-3 text-sm">{t.unlock.alleenInApp(price, jaar)}</p>
+                <p className="rounded-2xl bg-saffron-500/10 px-4 py-3 text-sm">
+                  {platform() === 'web' ? t.unlock.alleenInApp(price, jaar, winkel) : t.unlock.winkelWeg}
+                </p>
               )}
               {/* Both stores require the terms to be visible before buying. */}
               {/* De belastingzin hoort bij de prijs die de winkel gaf, niet bij
@@ -292,8 +294,8 @@ export function Unlock() {
             <p className="mt-3 text-xs text-[var(--ink-soft)]">{t.unlock.boek.bijJaar}</p>
           </>
         ) : (
-          <p data-web-only className="mt-5 rounded-2xl bg-saffron-500/10 px-4 py-3 text-sm">
-            {t.unlock.boek.alleenInApp(EBOOK.list)}
+          <p className="mt-5 rounded-2xl bg-saffron-500/10 px-4 py-3 text-sm">
+            {platform() === 'web' ? t.unlock.boek.alleenInApp(EBOOK.list, winkel) : t.unlock.winkelWeg}
           </p>
         )}
       </Card>

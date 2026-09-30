@@ -1,4 +1,5 @@
 import type { Strings } from './nl'
+import type { Winkelnamen } from './winkels'
 
 /** The English interface. */
 export const en: Strings = {
@@ -419,13 +420,13 @@ export const en: Strings = {
       },
     ],
     privacyTitel: 'Privacy, briefly',
-    privacy: [
+    privacy: (n: Winkelnamen) => [
       '✅ No account, no email address, no login.',
       '✅ All progress stays in this device’s browser and goes nowhere.',
       '✅ No adverts, no trackers, no third-party cookies.',
       '✅ Pronunciation comes from the voice already on the device; no audio is sent anywhere.',
-      '⚠️ Speaking exercises use the browser’s speech recognition. In Chrome that means the recording goes to Google — switch speaking exercises off if you would rather not.',
-      '✅ If you buy the full course, the payment runs entirely through Apple or Google. We never see a card, an address or a name.',
+      '✅ In the speaking exercises you record yourself and hear it back. The recording stays on this device, goes nowhere and is thrown away afterwards.',
+      `✅ If you buy the full course, the payment runs entirely through ${n.bedrijfOf}. We never see a card, an address or a name.`,
     ],
     privacyInstellingen: 'Clearing progress or taking it to another device is done in the settings.',
     thuisTitel: 'Helping at home',
@@ -443,8 +444,8 @@ export const en: Strings = {
       'Darija differs by region and by family, and it has no official spelling. We pick the form you hear most in Casablanca and Rabat, in the Arabic script as people type it in messages. Your device’s voice speaks Modern Standard Arabic — recognisable, but without a Moroccan accent. Listening to family remains the real work.',
     winkel: {
       titel: 'Store data',
-      uitleg:
-        'This is exactly what the App Store or Google Play said about the prices. If the currency below is wrong, it comes from the store and not from the app.',
+      uitleg: (n: Winkelnamen) =>
+        `This is exactly what ${n.via} said about the prices. If the currency below is wrong, it comes from the store and not from the app.`,
       knop: 'Show what the store returned',
       leeg: 'The store has not returned anything yet.',
     },
@@ -678,8 +679,10 @@ export const en: Strings = {
     herstelHint: 'New device, or reinstalled the app? Bring your subscription back here — it costs nothing.',
     beheer: 'Manage subscription',
     beheerHint: (winkel) => `You cancel from your ${winkel} account. This button takes you straight there.`,
-    alleenInApp: (prijs, jaar) =>
-      `Subscribing happens in the app from the App Store or Google Play (${prijs} ${jaar ? 'a year' : 'a month'}). On this website the first units stay free.`,
+    alleenInApp: (prijs, jaar, winkel) =>
+      `Subscribing happens in the app from ${winkel} (${prijs} ${jaar ? 'a year' : 'a month'}). On this website the first units stay free.`,
+    /** Als de app wél in een winkel staat maar die niet opstart. */
+    winkelWeg: 'The store cannot be reached right now, so the subscription cannot be taken out. Try again later; the first units stay open.',
     bezig: 'One moment…',
     alOpen: 'Your subscription is running. Everything is open — shukran!',
     mislukt: (fout) => `Something went wrong: ${fout}`,
@@ -706,8 +709,8 @@ export const en: Strings = {
       koop: (prijs: string): string => `Buy the e-book — ${prijs} once`,
       open: 'Open the e-book',
       vanJou: 'The e-book is yours. It stays yours, even if you stop the subscription one day.',
-      alleenInApp: (prijs: string): string =>
-        `The e-book is bought in the app from the App Store or Google Play (${prijs}, one time). With the yearly plan it is included.`,
+      alleenInApp: (prijs: string, winkel: string): string =>
+        `The e-book is bought in the app from ${winkel} (${prijs}, one time). With the yearly plan it is included.`,
     },
   },
   post: {

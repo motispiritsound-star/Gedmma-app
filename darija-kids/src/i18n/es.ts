@@ -1,4 +1,5 @@
 import type { Strings } from './nl'
+import type { Winkelnamen } from './winkels'
 
 /** La interfaz en español. */
 export const es: Strings = {
@@ -419,13 +420,13 @@ export const es: Strings = {
       },
     ],
     privacyTitel: 'Privacidad, en corto',
-    privacy: [
+    privacy: (n: Winkelnamen) => [
       '✅ Sin cuenta, sin correo electrónico, sin inicio de sesión.',
       '✅ Todo el progreso se queda en el navegador de este dispositivo y no va a ninguna parte.',
       '✅ Sin publicidad, sin rastreadores, sin cookies de terceros.',
       '✅ La pronunciación viene de la voz que ya está en el dispositivo; no se envía ningún audio.',
-      '⚠️ Los ejercicios de pronunciación usan el reconocimiento de voz del navegador. En Chrome eso significa que la grabación va a Google: desactívalos si no lo quieres.',
-      '✅ Si compras el curso completo, el pago pasa entero por Apple o Google. No vemos ni tarjeta, ni dirección, ni nombre.',
+      '✅ En los ejercicios de pronunciación te grabas y te vuelves a oír. La grabación se queda en este dispositivo, no va a ninguna parte y se descarta después.',
+      `✅ Si compras el curso completo, el pago pasa entero por ${n.bedrijfOf}. No vemos ni tarjeta, ni dirección, ni nombre.`,
     ],
     privacyInstellingen: 'Borrar el progreso o llevarlo a otro dispositivo se hace en los ajustes.',
     thuisTitel: 'Ayudar en casa',
@@ -443,8 +444,8 @@ export const es: Strings = {
       'El dariya cambia de región a región y de familia a familia, y no tiene ortografía oficial. Elegimos la forma que más se oye en Casablanca y Rabat, con la escritura árabe tal como la gente la teclea en sus mensajes. La voz de su dispositivo habla árabe estándar moderno: se reconoce, pero sin acento marroquí. Escuchar a la familia sigue siendo el trabajo de verdad.',
     winkel: {
       titel: 'Datos de la tienda',
-      uitleg:
-        'Aquí aparece exactamente lo que la App Store o Google Play ha dicho sobre los precios. Si la moneda de abajo no es la correcta, viene de la tienda y no de la aplicación.',
+      uitleg: (n: Winkelnamen) =>
+        `Aquí aparece exactamente lo que ${n.via} ha dicho sobre los precios. Si la moneda de abajo no es la correcta, viene de la tienda y no de la aplicación.`,
       knop: 'Mostrar la respuesta de la tienda',
       leeg: 'La tienda todavía no ha respondido nada.',
     },
@@ -678,8 +679,10 @@ export const es: Strings = {
     herstelHint: '¿Dispositivo nuevo o aplicación reinstalada? Recupera aquí tu suscripción: no cuesta nada.',
     beheer: 'Gestionar la suscripción',
     beheerHint: (winkel) => `La cancelación se hace en tu cuenta de ${winkel}. Este botón te lleva allí directamente.`,
-    alleenInApp: (prijs, jaar) =>
-      `La suscripción se contrata en la aplicación de la App Store o de Google Play (${prijs} ${jaar ? 'al año' : 'al mes'}). En esta web las primeras unidades siguen siendo gratis.`,
+    alleenInApp: (prijs, jaar, winkel) =>
+      `La suscripción se contrata en la aplicación de ${winkel} (${prijs} ${jaar ? 'al año' : 'al mes'}). En esta web las primeras unidades siguen siendo gratis.`,
+    /** Als de app wél in een winkel staat maar die niet opstart. */
+    winkelWeg: 'La tienda no está disponible ahora mismo, así que la suscripción no se puede contratar. Prueba más tarde; las primeras unidades siguen abiertas.',
     bezig: 'Un momento…',
     alOpen: 'Tu suscripción está activa. Todo está abierto: ¡shukran!',
     mislukt: (fout) => `Algo ha salido mal: ${fout}`,
@@ -706,8 +709,8 @@ export const es: Strings = {
       koop: (prijs: string): string => `Comprar el libro — ${prijs} una sola vez`,
       open: 'Abrir el libro',
       vanJou: 'El libro es tuyo. Sigue siéndolo aunque algún día dejes la suscripción.',
-      alleenInApp: (prijs: string): string =>
-        `El libro se compra en la app de la App Store o de Google Play (${prijs}, pago único). Con la suscripción anual va incluido.`,
+      alleenInApp: (prijs: string, winkel: string): string =>
+        `El libro se compra en la app de ${winkel} (${prijs}, pago único). Con la suscripción anual va incluido.`,
     },
   },
   post: {
