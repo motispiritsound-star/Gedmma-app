@@ -197,8 +197,19 @@ await writeFile(
     + `\nGeen tekst erin, in geen van de drie: Apple raadt het af, en een prijs of\n`
     + `een woord in het beeld klopt niet meer in een ander land of een andere taal.\n`
     + `Linksonder is leeg gehouden, want daar legt Apple de prijs over het beeld.\n\n`
-    + `## Uploaden\n\nApp Store Connect → Monetization → In-App Purchases → de aankoop\n`
-    + `→ Promotional Image. Eén beeld per aankoop, en de naam van het bestand is de\n`
-    + `product-id, zodat er geen twee verwisseld kunnen worden.\n`,
+    + `## Uploaden\n\n`
+    + `Het veld heet **Image (Optional)** en zit boven *App Store Promotion*. Eén\n`
+    + `beeld per aankoop; de bestandsnaam is de product-id, zodat er geen twee\n`
+    + `verwisseld kunnen worden.\n\n`
+    + `De drie staan niet bij elkaar in App Store Connect:\n\n`
+    + `| Aankoop | Waar |\n|---|---|\n`
+    + `| \`app.darijaforkids.yearly\` | Monetization → **Subscriptions** → de groep |\n`
+    + `| \`app.darijaforkids.monthly\` | Monetization → **Subscriptions** → de groep |\n`
+    + `| \`app.darijaforkids.ebook\` | Monetization → **In-App Purchases** |\n\n`
+    + `Onder *In-App Purchases* staat alleen het e-boek: dat is een Non-Consumable.\n`
+    + `Een automatisch verlengend abonnement staat onder *Subscriptions*, en wie\n`
+    + `alleen naar het eerste scherm kijkt denkt dat er twee aankopen zoek zijn.\n\n`
+    + `Kijk daar ook of er **Offers** of **Win-Back Offers** zijn. Apple noemt die\n`
+    + `in de afwijzing apart, en ze hebben een eigen beeldveld.\n`,
 )
 console.log(`\n${gemaakt.length} beelden in store/iap-beelden/`)

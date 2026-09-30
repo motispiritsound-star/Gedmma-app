@@ -22,6 +22,21 @@ Linksonder is leeg gehouden, want daar legt Apple de prijs over het beeld.
 
 ## Uploaden
 
-App Store Connect → Monetization → In-App Purchases → de aankoop
-→ Promotional Image. Eén beeld per aankoop, en de naam van het bestand is de
-product-id, zodat er geen twee verwisseld kunnen worden.
+Het veld heet **Image (Optional)** en zit boven *App Store Promotion*. Eén
+beeld per aankoop; de bestandsnaam is de product-id, zodat er geen twee
+verwisseld kunnen worden.
+
+De drie staan niet bij elkaar in App Store Connect:
+
+| Aankoop | Waar |
+|---|---|
+| `app.darijaforkids.yearly` | Monetization → **Subscriptions** → de groep |
+| `app.darijaforkids.monthly` | Monetization → **Subscriptions** → de groep |
+| `app.darijaforkids.ebook` | Monetization → **In-App Purchases** |
+
+Onder *In-App Purchases* staat alleen het e-boek: dat is een Non-Consumable.
+Een automatisch verlengend abonnement staat onder *Subscriptions*, en wie
+alleen naar het eerste scherm kijkt denkt dat er twee aankopen zoek zijn.
+
+Kijk daar ook of er **Offers** of **Win-Back Offers** zijn. Apple noemt die
+in de afwijzing apart, en ze hebben een eigen beeldveld.

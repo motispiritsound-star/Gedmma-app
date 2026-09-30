@@ -16,6 +16,21 @@ de abonnementen vergrendeld en is het scherm alleen-lezen. Dat is geen fout —
 Apple beoordeelt de abonnementen mee met de versie. Zodra 1.0 is goedgekeurd
 of afgewezen, gaat het slot eraf.
 
+## Waar je ze vindt — twee schermen, niet één
+
+App Store Connect zet ze niet bij elkaar:
+
+| Aankoop | Waar |
+|---|---|
+| `app.darijaforkids.yearly` | Monetization → **Subscriptions** → de abonnementsgroep |
+| `app.darijaforkids.monthly` | Monetization → **Subscriptions** → de abonnementsgroep |
+| `app.darijaforkids.ebook` | Monetization → **In-App Purchases** |
+
+Onder *In-App Purchases* staat alleen het e-boek, want dat is een
+Non-Consumable. Een automatisch verlengend abonnement hoort daar niet thuis
+en staat onder *Subscriptions*. Wie alleen naar het eerste scherm kijkt,
+denkt dat er twee aankopen zoek zijn.
+
 ## Wat waar
 
 `app.darijaforkids.yearly` — € 59,99 per jaar, drie dagen gratis.
