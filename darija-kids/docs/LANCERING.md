@@ -113,10 +113,58 @@ stem. Het hele Arabische alfabet, 304 woorden, 100 zinnen.
 De eerste vier lessen zijn gratis, zonder account:
 👉 darijaforkids.eu
 
-Filmpje van een halve minuut: [YouTube-link]
+Filmpje van een halve minuut: https://www.youtube.com/watch?v=3iHXGpubnaI
 
 Stuur gerust door naar wie het kan gebruiken 🇲🇦
 ```
+
+Dat bericht is voor de **dag van de lancering**. Zolang de app nog in
+beoordeling ligt heb je een ander bericht nodig, want dan nodig je uit naar het
+kanaal en niet naar een winkel.
+
+**Aan iemand die je goed kent** — één voor één versturen, met zijn naam erin:
+
+```
+He [naam], ik ben ergens mee bezig waar ik je graag bij wil hebben.
+
+Je weet dat mijn kinderen hun oma wel verstonden maar altijd in het
+Nederlands antwoordden. Daar heb ik twee jaar aan gewerkt - een app, twee
+boekenreeksen, alles in het Darija.
+
+Ik ben een WhatsApp-kanaal begonnen waar ik elke dag iets deel: een stuk
+geschiedenis van Marokko, een fragment uit een van de verhalen, iets uit de
+app. Niets te koop, gewoon dingen die ik mooi vind.
+
+Dit is de link. Als het niets voor je is, ook prima - dan weet je in elk
+geval waar ik mee bezig ben.
+```
+
+**Voor een familiegroep of een grotere groep:**
+
+```
+Ahlan allemaal 👋
+
+Voor wie het nog niet wist: ik heb de afgelopen twee jaar gewerkt aan
+Darijaforkids - een manier om kinderen hier Darija te leren, zodat ze hun
+familie in Marokko kunnen verstaan en antwoorden.
+
+Ik deel vanaf nu elke dag iets op een WhatsApp-kanaal. Geschiedenis van
+Marokko, stukjes uit de verhalen die ik geschreven heb, en af en toe iets
+uit de app zelf.
+
+Volgen kost een tik en je hoeft je nergens voor op te geven. Voel je vrij om
+het door te sturen naar wie het leuk zou vinden.
+```
+
+De kanaallink zet je onder allebei. Waarom ze zo geschreven zijn:
+
+- **Geen "volg mijn kanaal".** Dat is vragen. *"Ik deel elke dag iets, dit is
+  de link"* is geven, en het is hetzelfde verzoek zonder de ongemakkelijkheid.
+- **"Als het niets voor je is, ook prima."** Dat kost niets en haalt de druk
+  eraf. Wie zich niet verplicht voelt, blijft langer.
+- **De app staat er één keer in, halverwege, als uitleg en niet als aanbod.**
+  Bij Apple en Google valt nog niets te halen; de twee boekreeksen staan wél
+  al te koop, en die noem je later — niet in het eerste bericht.
 
 **Hoe je hem in beweging krijgt:**
 
@@ -404,17 +452,46 @@ ouderscherm in de app. Een kanaal zonder link is onvindbaar.
 
 ### Wat je post, en hoe vaak
 
-**Vijf per week, maandag tot vrijdag.** Dagelijks is beter dan wekelijks —
-gewoonte is het hele punt — maar wie zeven dagen belooft, stopt in week drie.
-Vijf is vol te houden en dat is wat telt.
+**Zeven per week, maandag tot en met zondag.** Hier stond eerst vijf, met het
+argument dat wie zeven dagen belooft in week drie stopt. Die waarschuwing
+blijft staan en is echt: het risico is niet dat je een dag mist, het is dat je
+na een gemiste dag helemaal ophoudt. Mis je er een, sla hem dan over en ga
+maandag verder alsof er niets gebeurd is.
+
+Zeven kan omdat de inhoud er al ligt en niet elke dag bedacht hoeft te worden:
+veertien geschiedeniskaarten, vijftien delen met verteller, twaalf
+prentenboeken, honderdzestig platen.
+
+**En je post voor ouders, niet voor kinderen.** Dat klinkt vanzelfsprekend en
+het was het niet: hier stond eerst vijf dagen per week het woord van de dag,
+met een bijschrift als *"zeg het vanavond tegen haar"*. Dat is tegen het kind
+gezegd, en het kind zit niet op een WhatsApp-kanaal. Een ouder die zelf geen
+Darija spreekt, kan met één los woord per dag weinig.
+
+Wat een ouder wél wil zien: wat er in de app zit, waar de taal vandaan komt,
+en hoe een verhaal klinkt dat hij vanavond kan voorlezen.
 
 De vaste vorm:
 
-- **maandag t/m vrijdag** — het woord van de dag (het filmpje hieronder)
-- **zaterdag** — een weetje: waar een woord vandaan komt, hoe Casa het anders
-  zegt dan Fes, waarom Darija geen officiële spelling heeft
+- **maandag** — een geschiedeniskaart (`src/content/history.ts`, veertien
+  stuks in zes talen)
+- **dinsdag** — een voorleesfragment uit Sba of De sleutels, audio met de
+  plaat erbij (`npm run vertelstem`)
+- **woensdag** — iets uit de app: wat een unit is, hoe de uitspraak werkt,
+  wat een kind na tien minuten kan
+- **donderdag** — een weetje: waar een woord vandaan komt, hoe Casa het
+  anders zegt dan Fes, waarom Darija geen officiële spelling heeft
+- **vrijdag** — iets dat bij vrijdag hoort: een woord uit de keuken, de
+  familie aan tafel
+- **zaterdag** — een plaat, zonder één woord verkoop
+- **zondag** — het langere voorleesfragment; dat is het uur waarop een ouder
+  tijd heeft
 - **hooguit één op de vijf posts een link.** Een kanaal dat verkoopt wordt
   gedempt; een kanaal dat iets geeft, wordt doorgestuurd.
+
+Het woord van de dag blijft bruikbaar, maar dan aan de ouder gericht — *"dit
+is het woord voor oma; probeer het vanavond samen aan tafel"* — en als
+zijgerecht, hooguit één keer per week. `npm run woordjes` maakt er negentig.
 
 ### `npm run woordjes` — negentig dagen inhoud in één commando
 
@@ -503,10 +580,16 @@ Doe dit **nu**, voordat de beoordeling klaar is.
 Niet aftellen naar iets waarvan je de datum niet weet. Je bouwt volgers, meer
 niet.
 
-- **vijf woordjes per week**, maandag tot vrijdag (`npm run woordjes`)
-- **zaterdag een weetje**
+- **zeven posts per week** in de vorm hierboven (§15): geschiedenis, een
+  voorleesfragment, iets uit de app, een weetje, de vrijdagtafel, een plaat,
+  en zondag het langere fragment
 - en **één keer per week**, niet vaker, één regel eronder:
   *De app komt eraan. Volg dit kanaal, dan hoor je het als eerste.*
+
+De twee boekreeksen zijn in deze fase het enige wat je écht kunt noemen, want
+die zijn al te koop bij Gumroad — die hangen niet aan een beoordeling bij
+Apple of Google. Een voorleesfragment op dinsdag is dus geen opwarmertje voor
+later maar een fragment uit iets dat vandaag te koop is.
 
 Het openingsbericht, als eerste post op het kanaal:
 
