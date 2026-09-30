@@ -419,25 +419,44 @@ Let op: `ios/` staat niet in het repository, hij leeft alleen op je Mac.
 
 ### C8. Elke volgende build — de vaste volgorde
 
-De code staat op GitHub, niet op je Mac. Sla je de eerste twee regels over,
-dan bouw je de oude app in een nieuw jasje — en dat zie je pas als de build
-al bij Apple staat.
+De code staat op GitHub, niet op je Mac. Sla het ophalen over en je bouwt de
+oude app in een nieuw jasje — en dat zie je pas als de build al bij Apple
+staat.
+
+Drie regels. Elke regel is op zichzelf compleet, dus het maakt niet uit in
+welke map je staat en je kunt ze los plakken.
 
 ```bash
-cd ~/Gedmma-app
-git pull origin main
-cd ~/Gedmma-app/darija-kids
-npm install
-npm run build
-npx cap sync ios
+git -C ~/Gedmma-app pull origin main
 ```
 
-`npx cap sync ios` is degene die het vaakst wordt vergeten: die kopieert de
-nieuwe app-bestanden naar het iOS-project. Zonder die stap verandert er niets
-aan wat je archiveert.
+```bash
+npm --prefix ~/Gedmma-app/darija-kids install
+```
 
-Daarna in Xcode: **General → Build** ophogen (Apple weigert een nummer dat al
-bestaat), dan **Product → Archive** en **Distribute App**.
+```bash
+npm --prefix ~/Gedmma-app/darija-kids run ios -- --build 6 --versie 1.0
+```
+
+Die laatste doet alles wat vroeger apart moest: bouwen, de app naar het
+iOS-project kopiëren (`npx cap sync ios`, de stap die het vaakst werd
+vergeten), de twee regels in `Info.plist` zetten, én het buildnummer en het
+versienummer in het Xcode-project schrijven.
+
+**Zet het buildnummer niet meer met de hand in Xcode.** Dat stond hier
+eerder en het is nu een stap te veel: je zou het twee keer zetten en de kans
+lopen dat de twee niet gelijk zijn. Het nummer in de opdracht is wat telt.
+
+**Tel het nummer door.** Apple weigert een nummer dat al bestaat, en het gaat
+nooit omlaag en nooit opnieuw. Build 5 is op 29 september afgewezen, dus de
+volgende is 6, daarna 7 — ook als er aan de app niets veranderd is.
+
+Daarna in Xcode alleen nog: **Product → Archive**, en in Organizer
+**Distribute App**. Zie C6.
+
+Draai je dit per ongeluk op de pc, dan stopt het met de melding dat die
+machine geen Mac is, met deze regels erbij. Het gaat niet stilletjes door
+met het oude nummer.
 
 ## Deel D — TestFlight
 
