@@ -32,24 +32,33 @@ export interface Product {
  * van elkaar opengaan.
  */
 const LINKS: Record<string, string> = {
-  // Uitgezet op 30 september: het afrekenen bij Gumroad is stuk.
-  //
-  // In een privévenster — dus zoals een gewone bezoeker het ziet — eindigt het
-  // afrekenen van Sba met "Invalid parameter owner[name]. Owner name must be
-  // at least 3 characters long." Niemand kan dus iets kopen, en een knop die
-  // naar een kapotte kassa wijst is erger dan geen knop: die bezoeker komt
-  // niet terug.
-  //
-  // Let op wat géén storing is: wie met het eigen adres van de maker afrekent,
-  // krijgt van Gumroad "this will be a test purchase ... your payment method
-  // will not be charged". Dat is normaal en geldt alleen voor de maker.
-  //
-  // Zet ze terug zodra het afrekenen het weer doet, in een privévenster
-  // nagekeken en met een echte afrekening tot het eind.
-  // sbaReeks: 'https://venshipper.gumroad.com/l/sbadeleeuw',
-  // sleutelsReeks: 'https://venshipper.gumroad.com/l/sleutels',
+  sbaReeks: 'https://venshipper.gumroad.com/l/sbadeleeuw',
+  sleutelsReeks: 'https://venshipper.gumroad.com/l/sleutels',
   // ebook: 'https://…',
 }
+
+/**
+ * Wat er op 30 september leek mis te gaan, en het niet was.
+ *
+ * Het afrekenen strandde met *"Invalid parameter owner[name]. Owner name must
+ * be at least 3 characters long."* De winkel is die dag dichtgezet, en dat was
+ * de goede volgorde: een knop naar een kapotte kassa kost een bezoeker die
+ * niet terugkomt.
+ *
+ * Twee dingen bleken geen storing.
+ *
+ * `owner[name]` komt niet van Gumroad maar van Stripe eronder, en het is de
+ * naam die de kóper in *Full name* typt — niet de naam van de verkoper. Er
+ * waren twee letters ingevuld en Stripe eist er drie. Met een gewone naam
+ * loopt het afrekenen door tot het iDEAL-scherm; nagekeken in een privévenster
+ * met een echte afrekening van € 42,33, inclusief btw.
+ *
+ * En wie met het eigen adres van de maker afrekent, krijgt van Gumroad *"this
+ * will be a test purchase ... your payment method will not be charged"*. Dat
+ * hangt aan het account waarmee je bent ingelogd en niet aan het mailadres dat
+ * je intypt. Een vreemde die dat adres kent, wordt gewoon belast; het is dus
+ * geen gat.
+ */
 
 /**
  * De prijzen.
