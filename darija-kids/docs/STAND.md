@@ -311,10 +311,22 @@ valt als er weer een verschijnt.
    rekening ligt vast. Dezelfde rekening opnieuw invoeren en dan EUR kiezen is
    de enige weg, en dat kost een nieuwe verificatie.
 
-   Het moment daarvoor is **nu of nooit**: zolang er niets verkocht is, is er
-   geen uitbetaling die stil kan komen te staan. Zie je tijdens die stappen
-   nergens een keuze voor de royaltyvaluta, breek dan af — dan levert het
-   niets op.
+   **Geprobeerd op 30 september, afgebroken.** De stappen zijn: bankland en
+   valuta (stonden al op Netherlands en EUR), dan IBAN en BIC, dan meteen het
+   scherm *Certification* met de machtiging. **Nergens een keuze voor de
+   royaltyvaluta.** Bij *Account Number* hoort trouwens niet de hele IBAN maar
+   alleen het binnenlandse deel, anders komt er "This value is too long".
+
+   Bij Cancel gebeurt er niets: de oude rekening blijft staan.
+
+   Wat het kost om het zo te laten: Apple rekent de opbrengst om naar dollars
+   en de bank rekent terug naar euro's. Twee keer een wisselmarge van grofweg
+   een tot twee procent. Op een omzet van tienduizend euro is dat honderd tot
+   tweehonderd euro per jaar — vervelend, geen ramp.
+
+   Wat er nog te proberen is: Apple vragen via *Contact Us* onderaan App Store
+   Connect. Mogelijk kunnen zij de royaltyvaluta aan de bestaande rekening
+   wijzigen zonder dat de rekening vervangen hoeft te worden.
 
 4. ~~**Apple: DAC7.**~~ **Al gedaan op 22 september.** Het staat niet bij
    *Tax Forms* maar onder **Compliance**, en niet onder die naam: de regel
