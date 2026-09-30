@@ -389,9 +389,37 @@ valt als er weer een verschijnt.
    verdiensten staan er al in euro's, dus de dollarwissel die bij Apple
    speelt is hier geen punt.
 
-   **Belastinggegevens staan nog open.** Voor het Amerikaanse formulier geldt:
-   kies **individual** (W-8BEN), niet entity (W-8BEN-E). Een eenmanszaak is
-   fiscaal geen aparte rechtspersoon, en bij Apple staat het ook zo.
+   **Belastinggegevens: gedaan op 30 september.** Het Amerikaanse formulier
+   staat op *Approved*, een W-8BEN op naam van de eigenaar, geldig tot
+   31 december 2029. Alle drie de regels onder *Tax forms and withholding
+   rates* staan op **0% · Claimed**: other copyright, services en motion
+   picture. Taiwan is leeg gelaten; dat geldt alleen voor verkopers met een
+   vestiging daar. *Tax reporting* staat op paperless.
+
+   Vier dingen die in dat formulier misgaan als je niet oplet:
+
+   - **Individual**, niet *non-individual / entity*. De vraag luidt "What type
+     of account is Venship?" en verleidt tot entity, maar hij gaat over
+     fiscale status. Een eenmanszaak is geen aparte rechtspersoon. Entity
+     leidt naar een W-8BEN-E die om een ondernemingsnummer vraagt dat er niet
+     is.
+   - Het veld *Name of individual who is the beneficial owner* wordt door
+     Google voorgevuld met `Venship`. Dat moet de **persoonsnaam** zijn;
+     `Venship` hoort in het veld eronder, *DBA (doing business as)*.
+   - **Verdrag geclaimd**: *Yes, I am eligible for a reduced withholding rate*,
+     land Nederland, en dan bij *Special rates and conditions* zowel **Other
+     copyright royalties** als **Services or other business income** aanvinken,
+     elk op **0%** met het bijbehorende verklaringsvinkje eronder. Royalty's
+     zitten in het Nederlands-Amerikaanse verdrag in **artikel 13**, niet in
+     artikel 12 (dat is het OESO-modelnummer). Zonder deze claim houdt de IRS
+     30% in op de Amerikaanse omzet.
+   - *Activities and services performed in US* → **No**, met het vinkje dat het
+     werk volledig buiten de VS gebeurt. Verkopen áán Amerikanen is geen
+     activiteit ín de VS; *Yes* haalt het verdragsvoordeel meteen weer weg.
+
+   De *unchanged status affidavit* is overgeslagen. Die laat het formulier
+   terugwerken op eerdere uitbetalingen, en die zijn er niet — het jaarveld
+   stond voorgevuld op 2020, toen het account nog niet bestond.
 
 ## De boeken
 
