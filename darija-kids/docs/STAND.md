@@ -10,7 +10,7 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 1226, groen — daar zitten de 77 van de worker al in |
-| Google Play | 4 (1.2) ingediend op 29 september, samen met 19 wijzigingen aan de vermelding |
+| Google Play | 4 (1.2) staat op **Productie, Active**, 177 landen — *In review* sinds 29 september |
 | App Store | **1.0 (build 6) ingediend** op 30 september om 11:58, vijf items — zie hieronder |
 
 ### De afwijzing van 29 september, en wat eraan gedaan is
@@ -124,6 +124,46 @@ de twee regels in `Info.plist` — waaronder die voor de microfoon, en zonder
 die regel sluit iOS de app af zodra een kind op de opnameknop drukt.
 
 Het antwoord aan App Review staat klaar in `store/appstore-4.2-antwoord.md`.
+
+### Google Play staat klaar, niet in concept — 30 september
+
+Op het overzicht van alle apps staat bij *App status* het woord **Draft** met
+*Internal testing* eronder. Dat leest als "er staat niets op productie", en
+dat is het niet. Het dashboard van de app zelf zegt:
+
+```
+Production      Active · 0 active devices · 177 countries / regions
+Update status   In review
+```
+
+Build 4 (1.2) staat dus op Productie in 177 landen en wacht op de review. Die
+"Draft" slaat erop dat de app nog nooit is goedgekeurd, en daarom staat er
+ook nog een tijdelijke naam: `app.darijaforkids.learn (unreviewed)`.
+
+#### De twee aanbevelingen op het release-dashboard
+
+Allebei *recommended*, geen van beide blokkeert iets.
+
+**Edge-to-edge may not display for all users.** Google's tekst: *"Apps
+targeting SDK 35 should handle insets to make sure that their app displays
+correctly on Android 15 and later. [...] Alternatively, call
+`enableEdgeToEdge()` [...] for backward compatibility."*
+
+Het eerste doen we: `viewport-fit=cover` staat in de meta-viewport, en
+`--rand-boven` en `--rand-onder` komen uit `env(safe-area-inset-*)` en gaan
+naar de bovenbalk, de landingspagina, het oefenscherm, het paneel en de
+tabbalk. `randen.test.ts` bewaakt de voorwaarde: zonder die viewport-meta
+blijven die waarden altijd nul.
+
+Het tweede — `enableEdgeToEdge()` — is hun alternatief en is cosmetisch: het
+zorgt dat het er op Android 14 en lager óók zo uitziet. **Niet gedaan, en
+bewust.** Op die toestellen tekenen de systeembalken nu hun eigen achtergrond
+en overlapt er niets. Zet je edge-to-edge daar wel aan, dan moeten de insets
+er ook kloppen, en doen ze dat niet dan schuift de bovenbalk van de app onder
+de statusbalk. Dat test je met een toestel in je hand, niet blind.
+
+**R8 optimization.** Een advies over geheugen en bestandsgrootte. Ook niet
+gedaan; het raakt niets dat kapot is.
 
 ### Richtlijn 2.3.8, twee rondes — de app wordt een kinderapp
 
