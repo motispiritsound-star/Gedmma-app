@@ -325,12 +325,15 @@ valt als er weer een verschijnt.
 
 ### Wat alleen jij kunt doen
 
-1. **Apple: prijsbasis op Nederland.** De prijzen staan goed — Nederland op
-   € 59,99 en € 6,99 — maar ze zijn aangemaakt met de Verenigde Staten als
-   uitgangspunt en de eurolanden zijn daarna met de hand bijgewerkt. Daardoor
-   staat Montenegro nog op € 49,99 en Marokko op $ 59,99, meer dan een
-   Amerikaan betaalt. Opnieuw instellen met *Recalculate prices* vanuit
-   Nederland, en daarna alleen Marokko met de hand verlagen.
+1. ~~**Apple: prijsbasis op Nederland.**~~ **Zo gelaten, met opzet.** De
+   prijzen zijn aangemaakt met de Verenigde Staten als uitgangspunt en de
+   eurolanden zijn daarna met de hand bijgewerkt. Nederland staat goed op
+   € 59,99 en € 6,99. Wat scheef bleef: Montenegro op € 49,99 en Marokko op
+   $ 59,99, meer dan een Amerikaan betaalt.
+
+   Marokko is op 30 september bewust zo gelaten. Wie er iets aan wil doen
+   gebruikt *Recalculate prices* vanuit Nederland en zet Marokko daarna met
+   de hand lager.
 2. ~~**Apple: naam en beschrijving van de abonnementen.**~~ **Gedaan op
    30 september**, in het Engels en het Nederlands, voor alle drie de
    aankopen. Frans, Duits, Spaans en Italiaans staan klaar in
