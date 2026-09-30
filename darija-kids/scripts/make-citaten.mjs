@@ -238,7 +238,7 @@ const WARM = 'linear-gradient(150deg,#ffd79a,#f0915c 58%,#e2603c)'
  */
 const kaart = (w, h, c, taal, beeld) => {
   const woord = BRONWOORD[taal]
-  const { zin, deelnr, hoofdstuknr, hoofdstuktitel } = c
+  const { zin, jaar, deelnr, hoofdstuknr, hoofdstuktitel } = c
   const adres = `${SITE_URL}${PATHS[taal].books}`.replace(/^https?:\/\//, '')
   const rand = Math.round(w * 0.075)
   const staand = h > w
@@ -301,6 +301,15 @@ const kaart = (w, h, c, taal, beeld) => {
   }
   .bron { font-size: ${Math.round(w * 0.029)}px; line-height: 1.42 }
   .reeks { font-weight: 800; color: #7a2d13; letter-spacing: .05em; text-transform: uppercase }
+  /* Het jaartal is waar het verhaal speelt, en dat is de helft van de haak:
+     "859" zegt een ouder meer dan "deel 3". Vandaar een eigen kleur en een
+     spatie ervoor in plaats van een plek achteraan de bronregel. */
+  .jaar {
+    display: inline-block; margin-left: ${Math.round(w * 0.012)}px;
+    background: #2b1d16; color: #ffd79a; border-radius: 999px;
+    padding: ${Math.round(w * 0.004)}px ${Math.round(w * 0.018)}px;
+    letter-spacing: .02em;
+  }
   .plek { font-weight: 600; opacity: .78 }
   .uitleg {
     margin-top: ${Math.round(h * 0.015)}px;
@@ -334,7 +343,7 @@ const kaart = (w, h, c, taal, beeld) => {
 <div class="voet">
   <div class="streep"></div>
   <div class="bron">
-    <div class="reeks">${esc(woord.reeks)}</div>
+    <div class="reeks">${esc(woord.reeks)} <span class="jaar">${esc(jaar)}</span></div>
     <div class="plek">${esc(woord.deel)} ${deelnr} &middot; ${esc(woord.hoofdstuk)} ${hoofdstuknr} &middot; ${esc(hoofdstuktitel)}</div>
   </div>
   <div class="uitleg">${esc(staand ? woord.toelichting : woord.kort)}</div>
@@ -431,6 +440,7 @@ for (const taal of arg('taal', 'nl').split(',')) {
        nakijken hierboven al aan het boek getoetst. */
     const c = {
       zin: hoofdstuk.tekst[0],
+      jaar: deel.jaar,
       deelnr: nr,
       hoofdstuknr: hoofdstuk.nummer,
       hoofdstuktitel: hoofdstuk.titel,
