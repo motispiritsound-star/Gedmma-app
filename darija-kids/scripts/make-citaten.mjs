@@ -149,6 +149,7 @@ const server = await createServer({
   logLevel: 'error',
 })
 const { REEKS } = await server.ssrLoadModule('/src/content/sleutels.ts')
+const { sleuteldeelIn, SLEUTEL_VERTALINGEN } = await server.ssrLoadModule('/src/content/sleutels-talen.ts')
 const { SITE_URL, PATHS } = await server.ssrLoadModule('/src/site/links.ts')
 
 /** De hoofdstukken van één deel; elk deel woont in zijn eigen bestand. */
@@ -184,7 +185,7 @@ for (const c of CITATEN) {
     process.exit(1)
   }
 
-  werk.push({ ...c, naam, deel, hoofdstuk })
+  werk.push({ ...c, naam, basis: { ...deel, hoofdstukken: await hoofdstukkenVan(c.deel) } })
 }
 
 if (!werk.length) {
@@ -235,6 +236,7 @@ const WARM = 'linear-gradient(150deg,#ffd79a,#f0915c 58%,#e2603c)'
  */
 const kaart = (w, h, c, taal, beeld) => {
   const woord = BRONWOORD[taal]
+  const { zin, deelnr, hoofdstuknr, hoofdstuktitel } = c
   const adres = `${SITE_URL}${PATHS[taal].books}`.replace(/^https?:\/\//, '')
   const rand = Math.round(w * 0.075)
   const staand = h > w
@@ -286,7 +288,7 @@ const kaart = (w, h, c, taal, beeld) => {
   /* Niet laten krimpen door flex: dan meet de krimplus hieronder niets. */
   blockquote {
     flex: 0 0 auto;
-    font-size: ${korps(c.zin, w, staand)}px; font-weight: 800;
+    font-size: ${korps(zin, w, staand)}px; font-weight: 800;
     line-height: 1.19; letter-spacing: -0.015em; color: #2b1d16;
   }
   .voet { flex: 0 0 auto }
@@ -325,13 +327,13 @@ const kaart = (w, h, c, taal, beeld) => {
 </div>
 <div class="citaat">
   <div class="aanhaling">&ldquo;</div>
-  <blockquote>${esc(c.zin)}</blockquote>
+  <blockquote>${esc(zin)}</blockquote>
 </div>
 <div class="voet">
   <div class="streep"></div>
   <div class="bron">
     <div class="reeks">${esc(woord.reeks)}</div>
-    <div class="plek">${esc(woord.deel)} ${c.deel.nummer} &middot; ${esc(woord.hoofdstuk)} ${c.hoofdstuk.nummer} &middot; ${esc(c.hoofdstuk.titel)}</div>
+    <div class="plek">${esc(woord.deel)} ${deelnr} &middot; ${esc(woord.hoofdstuk)} ${hoofdstuknr} &middot; ${esc(hoofdstuktitel)}</div>
   </div>
   <div class="uitleg">${esc(staand ? woord.toelichting : woord.kort)}</div>
   <div class="adres">${esc(adres)}</div>
@@ -400,13 +402,44 @@ for (const taal of arg('taal', 'nl').split(',')) {
   const map = path.join(UIT, taal)
   await mkdir(map, { recursive: true })
 
-  for (const c of werk) {
-    const plaat = path.join(ROOT, 'site-assets', 'sleutels', taal, `deel-${String(c.deel.nummer).padStart(2, '0')}.webp`)
+  for (const w of werk) {
+    const nr = w.basis.nummer
+
+    /**
+     * Het deel in de taal van deze ronde.
+     *
+     * `sleuteldeelIn` valt stil terug op het Nederlands als een deel nog niet
+     * vertaald is. Dat is voor de app het juiste gedrag en voor een
+     * verkoopbeeld het verkeerde: dan staat er een Nederlandse zin midden op
+     * een Duitse kaart, tussen een Duitse omslag en een Duitse bronvermelding.
+     * Precies dat is gebeurd, en het viel pas op toen de plaat er lag.
+     *
+     * Dus wordt er eerst gekeken óf er een vertaling is, en anders wordt dit
+     * citaat overgeslagen met een regel die zegt waarom.
+     */
+    if (taal !== 'nl' && !SLEUTEL_VERTALINGEN[taal]?.[nr]) {
+      console.log(`deel ${nr} is nog niet vertaald in het ${taal} — overgeslagen`)
+      continue
+    }
+    const deel = taal === 'nl' ? w.basis : sleuteldeelIn(taal, w.basis)
+    const hoofdstuk = deel.hoofdstukken.find((h) => h.nummer === w.hoofdstuk)
+
+    /* De eerste alinea van het hoofdstuk is het citaat; in elke taal die van
+       die taal. Wat er in CITATEN staat is de Nederlandse, en die is bij het
+       nakijken hierboven al aan het boek getoetst. */
+    const c = {
+      zin: hoofdstuk.tekst[0],
+      deelnr: nr,
+      hoofdstuknr: hoofdstuk.nummer,
+      hoofdstuktitel: hoofdstuk.titel,
+    }
+
+    const plaat = path.join(ROOT, 'site-assets', 'sleutels', taal, `deel-${String(nr).padStart(2, '0')}.webp`)
     let beeld
     try {
       beeld = (await readFile(plaat)).toString('base64')
     } catch {
-      console.error(`\nDe plaat van deel ${c.deel.nummer} ontbreekt in het ${taal}:`)
+      console.error(`\nDe plaat van deel ${nr} ontbreekt in het ${taal}:`)
       console.error(`  ${path.relative(ROOT, plaat)}`)
       console.error('\nMaak hem met: npm run sleutelplaten\n')
       process.exit(1)
@@ -418,7 +451,7 @@ for (const taal of arg('taal', 'nl').split(',')) {
       await pagina.evaluate(() => document.fonts.ready)
       await pagina.waitForTimeout(150)
       await passend(pagina)
-      const romp = `deel${String(c.deel.nummer).padStart(2, '0')}-h${c.hoofdstuk.nummer}-${f.naam}`
+      const romp = `deel${String(nr).padStart(2, '0')}-h${hoofdstuk.nummer}-${f.naam}`
       const bestand = path.join(map, `${romp}.png`)
       await pagina.screenshot({ path: bestand })
       console.log(path.relative(ROOT, bestand))
@@ -467,7 +500,7 @@ await writeFile(
     `Elke zin wordt vóór het tekenen opgezocht in het hoofdstuk waar hij vandaan\n` +
     `zegt te komen. Klopt dat niet meer, dan stopt het script in plaats van een\n` +
     `plaat te maken met een verkeerde bron.\n\n` +
-    werk.map((c) => `- \`${c.naam}\` — deel ${c.deel.nummer}, ${c.deel.titel}`).join('\n') +
+    werk.map((w) => `- \`${w.naam}\` — deel ${w.basis.nummer}, ${w.basis.titel}`).join('\n') +
     `\n\nDe bijschriften staan in [store/kanaal-sleutels.md](../../store/kanaal-sleutels.md).\n`,
 )
 console.log(`\n${werk.length} citaten, klaar`)
