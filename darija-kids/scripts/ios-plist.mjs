@@ -48,6 +48,41 @@ const REGELS = [
   { sleutel: 'NSMicrophoneUsageDescription', soort: 'string', waarde: MICROFOON },
 ]
 
+const BUILD = arg('build')
+const VERSIE = arg('versie')
+
+/*
+  Hieronder wordt twee keer stilletjes gestopt met afsluitcode 0. Dat klopt
+  voor de twee regels in `Info.plist`: die horen bij het iOS-project, en waar
+  dat er niet is valt er niets te zetten. `npm run build` op de pc hoeft daar
+  niet op te vallen.
+
+  Maar niet voor het buildnummer. Wie `--build 6` meegeeft vraagt om iets dat
+  moet gebeuren, en een opdracht die dat overslaat en tóch 0 teruggeeft, zegt
+  dat het gelukt is. Dan archiveer je met het oude nummer en weigert Apple de
+  upload — of erger, hij komt binnen en staat nergens in de lijst.
+
+  Dus: is er een nummer gevraagd en kan het hier niet, dan is dat een fout.
+*/
+if (BUILD || VERSIE) {
+  if (process.platform !== 'darwin') {
+    const mee = `${VERSIE ? `--versie ${VERSIE} ` : ''}${BUILD ? `--build ${BUILD}` : ''}`.trim()
+    console.error(`\nDit is een Mac-opdracht, en deze machine draait ${process.platform}.\n`)
+    console.error('Het buildnummer zit in het Xcode-project, en dat kan alleen met')
+    console.error('`xcrun agvtool` op macOS. Op de Mac, twee regels:\n')
+    console.error('  git -C ~/Gedmma-app pull')
+    console.error(`  npm --prefix ~/Gedmma-app/darija-kids run ios -- ${mee}\n`)
+    console.error('Zie docs/MAC.md. Op Windows bouw je Android: npm run aab\n')
+    process.exit(1)
+  }
+  if (!existsSync(PROJECT)) {
+    console.error(`\nHet iOS-project staat er nog niet: ${PROJECT}\n`)
+    console.error('Dat wordt op de Mac gemaakt en staat niet in het repository:\n')
+    console.error('  npx cap add ios\n')
+    process.exit(1)
+  }
+}
+
 if (!existsSync(PLIST)) {
   console.log('geen ios/App/App/Info.plist — overgeslagen')
   process.exit(0)
@@ -74,19 +109,18 @@ const buddy = (opdracht) =>
  * openen om ze te wijzigen.
  */
 const nummers = () => {
-  const build = arg('build')
-  const versie = arg('versie')
-  if (!build && !versie) return
+  if (!BUILD && !VERSIE) return
+
   const draai = (args) =>
     execFileSync('xcrun', ['agvtool', ...args], { cwd: PROJECT, encoding: 'utf8', stdio: 'pipe' })
   try {
-    if (versie) {
-      draai(['new-marketing-version', versie])
-      console.log(`versie → ${versie}`)
+    if (VERSIE) {
+      draai(['new-marketing-version', VERSIE])
+      console.log(`versie → ${VERSIE}`)
     }
-    if (build) {
-      draai(['new-version', '-all', build])
-      console.log(`build → ${build}`)
+    if (BUILD) {
+      draai(['new-version', '-all', BUILD])
+      console.log(`build → ${BUILD}`)
     }
   } catch (e) {
     console.error('agvtool kwam er niet uit:', e.message)

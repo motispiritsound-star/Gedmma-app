@@ -375,19 +375,34 @@ staat: `1.0.0` is daar niet hetzelfde als `1.0`, en een build met het
 verkeerde nummer verschijnt nergens in de lijst — hij is geüpload, hij is
 verwerkt, en je kunt hem niet kiezen.
 
-Beide in één keer:
+Twee regels, elk compleet op zichzelf — uit welke map je ook komt. Eerst de
+laatste reparaties ophalen:
 
 ```bash
-npm run ios -- --build 5 --versie 1.0
+git -C ~/Gedmma-app pull
 ```
 
+Dan bouwen, met beide nummers ineens:
+
+```bash
+npm --prefix ~/Gedmma-app/darija-kids run ios -- --build 6 --versie 1.0
+```
+
+**Build 6** is het volgende nummer: build 5 is op 29 september afgewezen en
+een nummer gaat nooit omlaag en nooit opnieuw. Dien je later weer in, tel dan
+door — 7, 8 — ook als er aan de app niets veranderd is.
+
 Daarna hoef je in Xcode niets meer in te vullen; alleen archiveren.
+
+Draai je dit per ongeluk op de pc, dan stopt het met de melding dat deze
+machine geen Mac is en de regel hierboven erbij. Het gaat dus niet stilletjes
+door met het oude nummer.
 
 Wil je het los draaien — bijvoorbeeld omdat je net `npx cap add ios` hebt
 gedaan:
 
 ```bash
-node scripts/ios-plist.mjs --build 5 --versie 1.0
+node scripts/ios-plist.mjs --build 6 --versie 1.0
 ```
 
 Controleren of het gelukt is, zonder Xcode:
