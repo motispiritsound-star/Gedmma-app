@@ -301,11 +301,28 @@ valt als er weer een verschijnt.
    versie maar aan de **indiening**. Staan de aankopen daarin op *Ready for
    Review*, dan zijn ze alleen-lezen, en dat gaat er alleen af door de
    indiening in te trekken. Zie hierboven.
-3. **Apple: royaltyvaluta.** Bij de bankrekening staat USD. Zet dat op EUR,
-   anders wordt er twee keer gewisseld op elke uitbetaling.
-4. **Apple: DAC7.** Moet ingevuld voordat er uitbetaald kan worden. Het
-   antwoord op "persoonlijke diensten" is **nee** — dat gaat over werk van
-   mensen per uur of per klus, en dit is een app.
+3. **Apple: royaltyvaluta.** De bankrekening staat goed — *Bank Currency*
+   is EUR — maar *Royalty Currencies* staat op **USD**. Apple rekent de
+   opbrengst dus eerst om naar dollars en stort die op een eurorekening: twee
+   keer wisselen, twee keer marge.
+
+   **Dat is niet te wijzigen.** Onder de drie puntjes bij de rekening staat
+   één optie: *Replace with New Account*. De royaltyvaluta van een bestaande
+   rekening ligt vast. Dezelfde rekening opnieuw invoeren en dan EUR kiezen is
+   de enige weg, en dat kost een nieuwe verificatie.
+
+   Het moment daarvoor is **nu of nooit**: zolang er niets verkocht is, is er
+   geen uitbetaling die stil kan komen te staan. Zie je tijdens die stappen
+   nergens een keuze voor de royaltyvaluta, breek dan af — dan levert het
+   niets op.
+
+4. ~~**Apple: DAC7.**~~ **Al gedaan op 22 september.** Het staat niet bij
+   *Tax Forms* maar onder **Compliance**, en niet onder die naam: de regel
+   heet *Directive on Administrative Cooperation – 7th Amendment*. Dat ís
+   DAC7 — status Active, 27 landen. Bij Tax Forms zoeken levert niets op,
+   want daar staan alleen de Amerikaanse, Braziliaanse en Mexicaanse
+   formulieren.
+
 5. **Google: bankrekening en belastinggegevens.** Zonder dat geen uitbetaling,
    ook niet als de app al verkoopt.
 
