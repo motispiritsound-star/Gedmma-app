@@ -1,6 +1,6 @@
 # Waar staan we
 
-Bijgewerkt op 30 september 2026. Dit bestand is het antwoord op "wat moet er
+Bijgewerkt op 30 september 2026, na het indienen van 1.0 (6). Dit bestand is het antwoord op "wat moet er
 nog" zonder dat je drie andere bestanden hoeft te lezen.
 
 ## De app
@@ -11,7 +11,7 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 1226, groen — daar zitten de 77 van de worker al in |
 | Google Play | 4 (1.2) ingediend op 29 september, samen met 19 wijzigingen aan de vermelding |
-| App Store | 1.0 (build 5) **afgewezen** op 29 september, op drie richtlijnen — alle drie gerepareerd, zie hieronder |
+| App Store | **1.0 (build 6) ingediend** op 30 september om 11:58, vijf items — zie hieronder |
 
 ### De afwijzing van 29 september, en wat eraan gedaan is
 
@@ -44,35 +44,56 @@ Drie dingen die daarbij boven water kwamen en geen winkelnaam waren:
   verschijnt op een toestel zodra de winkel niet opstart.
 - *"Apple en Google zijn de verkoper"* wordt met één winkel enkelvoud.
 
-#### 2.3.2 zit vast in de indiening — 30 september
+#### Wat er op 30 september is ingediend
 
-De drie beelden staan klaar, maar ze kunnen er niet in. De indiening van
-29 september staat nog open met vijf items: `Jaar`, `Maand`, `E-boek` en de
-groep `Volledige toegang` staan alle vier op **Ready for Review**, en alleen
-`iOS App 1.0` staat op **Rejected**. Apple zegt erbij:
+Vijf items in één indiening, om 11:58:
 
-> Your app version was rejected and no other items submitted can be accepted
-> or approved. You can make edits to your app version below.
+| Item | Wat eraan veranderd is |
+|---|---|
+| `iOS App 1.0 (6)` | zeven beschrijvingen vervangen, build 6 gekozen |
+| `Volledige toegang` | de groep, ongewijzigd maar verplicht mee |
+| `app.darijaforkids.yearly` | Engelse en Nederlandse tekst, eigen beeld, nieuwe review-screenshot |
+| `app.darijaforkids.monthly` | idem |
+| `app.darijaforkids.ebook` | idem |
 
-Wat daardoor niet kan, nagelopen op 30 september:
+De beschrijving stond in **zeven** talen, niet zes: `French (Canada)` staat er
+ook, en Nederlands is Primary. Een overgeslagen taal houdt zijn oude tekst,
+dus die zeven moesten allemaal. De teller onder het veld is de controle: 427
+is de oude tekst, 3850 tot 3970 de nieuwe.
+
+#### Het slot, en hoe we eruit kwamen
+
+De aankopen stonden op **Ready for Review** in de afgewezen indiening van
+28 september en waren daardoor alleen-lezen. Vijf manieren geprobeerd, alle
+vijf dicht:
 
 | Geprobeerd | Wat er gebeurt |
 |---|---|
-| Localisatie openen op de abonnementspagina | een kijkvenster zonder invulvelden, alleen een knop *Done* |
-| `Add for Review` | grijs, op alle drie de pagina's |
-| `Edit` bij de abonnementenlijst van de groep | de selectievakjes zijn uitgeschakeld |
-| De beeldtegel bij *Image (Optional)* | krijgt een blauwe rand, maar er opent geen bestandskiezer |
-| Een item uit de indiening halen | alleen `iOS App 1.0` heeft een actie; de vier andere rijen hebben er geen |
+| Localisatie openen | een kijkvenster zonder invulvelden, alleen een knop *Done* |
+| `Add for Review` | grijs |
+| `Edit` bij de abonnementenlijst | de selectievakjes zijn uitgeschakeld |
+| De beeldtegel | krijgt een blauwe rand, maar er opent geen bestandskiezer |
+| Een item uit de indiening halen | alleen de app-versie heeft een actie |
 
-Wat wél kan: de **Reference Name** van een abonnement (interne naam, ziet
-niemand) en de hele **app-versie**, inclusief de beschrijving.
+Wat het wél losmaakte: **Cancel Submission**, onderaan de indieningspagina.
+Het bevestigingsvenster waarschuwt alleen dat geaccepteerde items opnieuw
+moeten — en er was niets geaccepteerd. Daarna stonden alle vier de items op
+*Developer Rejected* en waren ze bewerkbaar.
 
-Daarom is er op 30 september een bericht via *Reply to App Review* gegaan met
-het verzoek de vier items vrij te geven. De drie beelden staan intussen in
-`store/iap-beelden/`, de teksten in `store/abonnement-teksten.md`.
+Twee dingen die daarbij misgingen en de volgende keer tijd schelen:
 
-**Wat dit niet tegenhoudt:** 2.3.10 (de beschrijving, op de app-versie) en
-3.1.2(c) (het koopscherm, dus build 6). Die twee kunnen vooruit.
+1. **De app-versie alleen indienen werkt niet.** Om 11:43 ging er een
+   indiening weg met één item. Apple weigert een abonnementsgroep zonder
+   abonnement, én de aankopen moeten mee met de versie — anders staat de app
+   straks in de winkel waar niemand iets kan kopen. Die indiening moest dus
+   weer ingetrokken worden.
+2. **`Add for Review` opent een keuzemenu.** Daar staat de bestaande *Draft
+   Submission* én *Create New Submission*. De tweede maakt een losse
+   indiening; alles hoort in dezelfde.
+
+De volgorde die werkt: eerst alles bewerken, dan per item `Add for Review` →
+de bestaande draft kiezen, dan de app-versie erbij, en pas verzenden als het
+paneel **5 items** toont en de gele waarschuwing weg is.
 
 #### 3.1.2(c): nagemeten, niet aangenomen
 
