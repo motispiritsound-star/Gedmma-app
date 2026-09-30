@@ -1,6 +1,6 @@
 # Waar staan we
 
-Bijgewerkt op 27 september 2026. Dit bestand is het antwoord op "wat moet er
+Bijgewerkt op 30 september 2026. Dit bestand is het antwoord op "wat moet er
 nog" zonder dat je drie andere bestanden hoeft te lezen.
 
 ## De app
@@ -9,27 +9,57 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 1160, groen — daar zitten de 77 van de worker al in |
+| Tests | 1226, groen — daar zitten de 77 van de worker al in |
 | Google Play | 4 (1.2) ingediend op 29 september, samen met 19 wijzigingen aan de vermelding |
-| App Store | 1.0 (build 5) **afgewezen** op 29 september, op drie richtlijnen — twee zijn in de repo gerepareerd, zie hieronder |
+| App Store | 1.0 (build 5) **afgewezen** op 29 september, op drie richtlijnen — alle drie gerepareerd, zie hieronder |
 
 ### De afwijzing van 29 september, en wat eraan gedaan is
 
 | Richtlijn | Wat Apple zag | Stand |
 |---|---|---|
-| **2.3.10** Accurate Metadata | de App Store-beschrijving noemde Google Play | **gerepareerd in de repo**, zes talen |
-| **3.1.2(c)** Subscriptions | de omrekening naar een maand stond duidelijker dan het afgeschreven bedrag | **gerepareerd in de app**, zes talen |
-| **2.3.2** Accurate Metadata | de promotieafbeelding is het app-icoon, en bij elk product dezelfde | **alleen jij kunt dit** — in App Store Connect |
+| **2.3.10** Accurate Metadata | de App Store-beschrijving noemde Google Play | **gerepareerd**, zes talen — plus vier schermen in de app zelf |
+| **3.1.2(c)** Subscriptions | de omrekening naar een maand stond duidelijker dan het afgeschreven bedrag | **gerepareerd**, zes talen, nagemeten op de iPad waar Apple keek |
+| **2.3.2** Accurate Metadata | de promotieafbeelding is een schermafdruk, en bij elk product dezelfde | **gerepareerd** — `npm run iapbeeld` maakt er drie |
 
-De eerste twee zitten in de code. 3.1.2(c) is een wijziging in het scherm, dus
-er moet een nieuwe build: **build 6**. De nieuwe beschrijving moet je overnemen
-uit `store/listing.<taal>.md`; dat is metadata en kan zonder build.
+#### 2.3.10 zat op meer plekken dan Apple noemde
 
-De derde kan alleen in de console. Apple biedt er zelf de kortste oplossing
-bij: heb je geen plannen om een aankoop in de App Store te promoten, verwijder
-dan de promotieafbeelding. Dat lost de afwijzing op zonder nieuw materiaal en
-zonder een vierde ronde te riskeren. Eigen afbeeldingen maken kan later, als
-een losse wijziging.
+De regel luidt voluit: *"don't include names, icons, or imagery of other mobile
+platforms or alternative app marketplaces **in your app or metadata**"*. Apple
+noemde de beschrijving, maar dezelfde namen stonden op vier schermen ín de app:
+het koopscherm, het ouderscherm, de privacyverklaring en de voorwaarden.
+
+Alle winkelnamen komen nu uit één bestand, `src/i18n/winkels.ts`, dat per taal
+en per platform de vorm geeft die de zin nodig heeft. Nagemeten in Chromium:
+dertien routes met het platform op iOS, in zes talen — nul platformnamen.
+
+Drie dingen die daarbij boven water kwamen en geen winkelnaam waren:
+
+- De privacyverklaring waarschuwde dat de opname bij een spreekoefening naar
+  de maker van de browser gaat, *"bij Chrome: Google"*. Die spraakherkenning
+  is uit de code gehaald; wat er nu gebeurt is opnemen en jezelf terughoren,
+  en de opname blijft op het toestel. Een onjuiste mededeling over de stem van
+  een kind is erger dan een merknaam.
+- De terugvaltekst *"een abonnement afsluiten kan in de app uit de App Store of
+  Google Play"* stond achter een markering die niets verbergt. Die tekst
+  verschijnt op een toestel zodra de winkel niet opstart.
+- *"Apple en Google zijn de verkoper"* wordt met één winkel enkelvoud.
+
+#### 3.1.2(c): nagemeten, niet aangenomen
+
+Apple eist niet dat het jaarbedrag er staat — dat stond er — maar dat het
+het duidelijkste element is. Op de iPad Pro 11-inch waarop zij keken, in alle
+zes de talen: **24px/800 voor € 59,99, 12px/400 voor de omrekening**, en het
+jaarbedrag staat erboven.
+
+#### 2.3.2: drie eigen promotieafbeeldingen
+
+Er stonden twee schermafdrukken van 1290×2796 voor drie aankopen. `npm run
+iapbeeld` maakt er drie van 1024×1024, getekend, elk anders, zonder tekst en
+met de hoek linksonder leeg — daar legt Apple zelf de prijs overheen. Ze staan
+in `store/iap-beelden/` en heten naar hun product-id.
+
+Apples kortste uitweg — de promotieafbeelding gewoon verwijderen — hoeft dus
+niet meer. Verwijderen mag nog steeds, als je de aankopen niet wilt promoten.
 
 Wat er in build 5 zit en niet in build 4: het antwoord op richtlijn 4.2
 (microfoon, trillen, herinnering, breder op een iPad — zie `docs/APPLE-4.2.md`)
