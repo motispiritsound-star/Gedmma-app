@@ -553,7 +553,7 @@ const homePage = (lang, media) => {
     `<section id="vragen">
   <div class="wrap" style="max-width:52rem">
     <h2>${esc(t.landing.vragenTitel)}</h2>
-    ${t.landing.faq.map(([vraag, antwoord]) => `<details class="q">
+    ${t.landing.faq(winkelnamen(lang)).map(([vraag, antwoord]) => `<details class="q">
       <summary>${esc(vraag)}</summary>
       <p>${esc(antwoord)}</p>
     </details>`).join('\n')}

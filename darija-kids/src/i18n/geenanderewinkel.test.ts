@@ -45,6 +45,12 @@ const alleTeksten = (lang: Lang): string[] => {
     // het ouderscherm
     ...t.parents.privacy(n),
     t.parents.winkel.uitleg(n),
+    // De FAQ op de startpagina. Die stond hier eerst niet in, en een meting
+    // met innerText zag hem ook niet: hij zit in een <details>, en de inhoud
+    // van een dichtgeklapt blok komt niet in innerText. Twee blinde vlekken
+    // over hetzelfde stuk tekst, waarin Google Play stond terwijl de app op
+    // iOS al in review lag. Bereikbaar via het logo in de balk.
+    ...t.landing.faq(n).flat(),
   ]
   for (const doc of [privacyVan(lang), termsVan(lang)]) {
     uit.push(doc.title, doc.intro, doc.contact)

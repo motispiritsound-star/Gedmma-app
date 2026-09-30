@@ -604,7 +604,7 @@ export const de: Strings = {
       'Die schönste Lektion kommt nicht aus einer App. Lass dein Kind dir jeden Tag ein Wort beibringen — erklären ist die beste Art, etwas zu festigen. Darijaforkids liefert die Wörter, ihr liefert das Gespräch.',
     mascotte: 'Fnek, der Wüstenfuchs, zeigt den Weg. Er hat Geduld.',
     vragenTitel: 'Fragen',
-    faq: [
+    faq: (n: Winkelnamen) => [
       [
         'Was genau ist Darija?',
         'Darija ist das marokkanische Arabisch, das die Leute zu Hause und auf der Straße sprechen. Es ist nicht das, was man aus einem Hocharabisch-Lehrbuch lernt: es hat eigene Wörter aus dem Amazigh, dem Französischen und dem Spanischen, kürzere Laute und einen eigenen Rhythmus. Wer Darija spricht, spricht mit der Familie in Marokko — wer nur Hocharabisch lernt, oft nicht.',
@@ -623,7 +623,7 @@ export const de: Strings = {
       ],
       [
         'Kostet es etwas?',
-        'Die ersten vier Lektionen sind und bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs läuft über ein Abo: 59,99 € pro Jahr (das sind 5,00 € pro Monat) oder 6,99 € pro Monat, inklusive Mehrwertsteuer und mit den ersten Tagen gratis. Auf iPhone und iPad gilt ein Abo für die ganze Familie: bis zu sechs Personen, jede mit ihrem eigenen Fortschritt. Auf Android gilt es für das Google-Konto, das es abschließt. Abgeschlossen wird es in der App über den App Store oder Google Play, und dort kündigst du es auch, wann du willst. Keine Werbung und kein Konto: dein Fortschritt bleibt deiner.',
+        `Die ersten vier Lektionen sind und bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs läuft über ein Abo: 59,99 € pro Jahr (das sind 5,00 € pro Monat) oder 6,99 € pro Monat, inklusive Mehrwertsteuer und mit den ersten Tagen gratis. ${n.welke === 'ios' ? 'Ein Abo gilt für die ganze Familie: bis zu sechs Personen, jede mit ihrem eigenen Fortschritt.' : n.welke === 'android' ? 'Das Abo gilt für das Google-Konto, das es abschließt.' : 'Auf iPhone und iPad gilt ein Abo für die ganze Familie: bis zu sechs Personen, jede mit ihrem eigenen Fortschritt. Auf Android gilt es für das Google-Konto, das es abschließt.'} Abgeschlossen wird es in der App über ${n.via}, und dort kündigst du es auch, wann du willst. Keine Werbung und kein Konto: dein Fortschritt bleibt deiner.`,
       ],
       [
         'Funktioniert es offline?',

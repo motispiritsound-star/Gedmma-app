@@ -611,7 +611,7 @@ export const nl = {
       'De mooiste les komt niet uit een app. Laat je kind je elke dag één woord leren — uitleggen is de beste manier om iets vast te zetten. Darijaforkids geeft de woorden, jullie geven het gesprek.',
     mascotte: 'Fnek, de fennek, wijst de weg. Hij heeft geduld.',
     vragenTitel: 'Vragen',
-    faq: [
+    faq: (n: Winkelnamen): [string, string][] => [
       [
         'Wat is Darija precies?',
         'Darija is het Marokkaans-Arabisch dat mensen thuis en op straat spreken. Het is geen dialect dat je uit een schoolboek Standaardarabisch leert: het heeft eigen woorden uit het Amazigh, Frans en Spaans, kortere klanken en een eigen ritme. Wie Darija spreekt, praat met familie in Marokko — wie alleen Standaardarabisch leert, vaak niet.',
@@ -630,7 +630,7 @@ export const nl = {
       ],
       [
         'Kost het iets?',
-        'De eerste vier lessen zijn en blijven gratis: drie stukken van het Arabische alfabet en je eerste woorden Darija. Wil je de hele cursus, dan is dat een abonnement: € 59,99 per jaar (dat is € 5,00 per maand) of € 6,99 per maand, inclusief btw en met de eerste dagen gratis. Op iPhone en iPad geldt één abonnement voor het hele gezin: tot zes personen, ieder met zijn eigen voortgang. Op Android geldt het voor het Google-account waarmee je het afsluit. Je sluit het af in de app via de App Store of Google Play en je zegt daar ook op, wanneer je wilt. Geen advertenties en geen account: je voortgang blijft van jou.',
+        `De eerste vier lessen zijn en blijven gratis: drie stukken van het Arabische alfabet en je eerste woorden Darija. Wil je de hele cursus, dan is dat een abonnement: € 59,99 per jaar (dat is € 5,00 per maand) of € 6,99 per maand, inclusief btw en met de eerste dagen gratis. ${n.welke === 'ios' ? 'Eén abonnement geldt voor het hele gezin: tot zes personen, ieder met zijn eigen voortgang.' : n.welke === 'android' ? 'Het abonnement geldt voor het Google-account waarmee je het afsluit.' : 'Op iPhone en iPad geldt één abonnement voor het hele gezin: tot zes personen, ieder met zijn eigen voortgang. Op Android geldt het voor het Google-account waarmee je het afsluit.'} Je sluit het af in de app via ${n.via} en je zegt daar ook op, wanneer je wilt. Geen advertenties en geen account: je voortgang blijft van jou.`,
       ],
       [
         'Werkt het offline?',

@@ -37,6 +37,12 @@ export interface Winkelnamen {
   account: string
   /** De winkel als kopje boven een stuk tekst, met een hoofdletter. */
   kop: string
+  /**
+   * Welk platform dit is. Voor zinnen die niet met een andere naam klaar
+   * zijn maar echt iets anders moeten zeggen — zoals de FAQ over het
+   * abonnement: Apple deelt met het gezin, Google Play niet.
+   */
+  welke: Winkel
   /** Het bedrijf, in een opsomming met "of": "niet tussen jou en …". */
   bedrijfOf: string
   /** Het bedrijf, in een opsomming met "en" — en als kopje boven een stuk. */
@@ -53,18 +59,21 @@ export interface Winkelnamen {
 const TABEL: Record<Lang, Record<Winkel, Winkelnamen>> = {
   nl: {
     ios: {
+      welke: 'ios',
       kop: 'De App Store',
       via: 'de App Store', download: 'de App Store', account: 'je App Store-account',
       metApple: true,
       bedrijfOf: 'Apple', bedrijfEn: 'Apple',
     },
     android: {
+      welke: 'android',
       kop: 'Google Play',
       via: 'Google Play', download: 'Google Play', account: 'je Google Play-account',
       metApple: false,
       bedrijfOf: 'Google', bedrijfEn: 'Google',
     },
     beide: {
+      welke: 'beide',
       kop: 'De app-winkels',
       via: 'de App Store of Google Play', download: 'de App Store of Google Play',
       metApple: true,
@@ -74,18 +83,21 @@ const TABEL: Record<Lang, Record<Winkel, Winkelnamen>> = {
   },
   fr: {
     ios: {
+      welke: 'ios',
       kop: 'L’App Store',
       via: 'l’App Store', download: 'l’App Store', account: 'ton compte App Store',
       metApple: true,
       bedrijfOf: 'Apple', bedrijfEn: 'Apple',
     },
     android: {
+      welke: 'android',
       kop: 'Google Play',
       via: 'Google Play', download: 'Google Play', account: 'ton compte Google Play',
       metApple: false,
       bedrijfOf: 'Google', bedrijfEn: 'Google',
     },
     beide: {
+      welke: 'beide',
       kop: 'Les magasins d’applications',
       via: 'l’App Store ou Google Play', download: 'l’App Store ou Google Play',
       metApple: true,
@@ -95,18 +107,21 @@ const TABEL: Record<Lang, Record<Winkel, Winkelnamen>> = {
   },
   de: {
     ios: {
+      welke: 'ios',
       kop: 'Der App Store',
       via: 'den App Store', download: 'im App Store', account: 'dein App-Store-Konto',
       metApple: true,
       bedrijfOf: 'Apple', bedrijfEn: 'Apple',
     },
     android: {
+      welke: 'android',
       kop: 'Google Play',
       via: 'Google Play', download: 'bei Google Play', account: 'dein Google-Play-Konto',
       metApple: false,
       bedrijfOf: 'Google', bedrijfEn: 'Google',
     },
     beide: {
+      welke: 'beide',
       kop: 'Die App-Stores',
       via: 'den App Store oder Google Play', download: 'im App Store oder bei Google Play',
       metApple: true,
@@ -116,18 +131,21 @@ const TABEL: Record<Lang, Record<Winkel, Winkelnamen>> = {
   },
   es: {
     ios: {
+      welke: 'ios',
       kop: 'La App Store',
       via: 'la App Store', download: 'la App Store', account: 'tu cuenta de la App Store',
       metApple: true,
       bedrijfOf: 'Apple', bedrijfEn: 'Apple',
     },
     android: {
+      welke: 'android',
       kop: 'Google Play',
       via: 'Google Play', download: 'Google Play', account: 'tu cuenta de Google Play',
       metApple: false,
       bedrijfOf: 'Google', bedrijfEn: 'Google',
     },
     beide: {
+      welke: 'beide',
       kop: 'Las tiendas de aplicaciones',
       via: 'la App Store o Google Play', download: 'la App Store o en Google Play',
       metApple: true,
@@ -137,18 +155,21 @@ const TABEL: Record<Lang, Record<Winkel, Winkelnamen>> = {
   },
   it: {
     ios: {
+      welke: 'ios',
       kop: 'L’App Store',
       via: 'dall’App Store', download: 'dall’App Store', account: 'il tuo account App Store',
       metApple: true,
       bedrijfOf: 'Apple', bedrijfEn: 'Apple',
     },
     android: {
+      welke: 'android',
       kop: 'Google Play',
       via: 'da Google Play', download: 'da Google Play', account: 'il tuo account Google Play',
       metApple: false,
       bedrijfOf: 'Google', bedrijfEn: 'Google',
     },
     beide: {
+      welke: 'beide',
       kop: 'Gli store di app',
       via: 'dall’App Store o da Google Play', download: 'dall’App Store o da Google Play',
       metApple: true,
@@ -158,18 +179,21 @@ const TABEL: Record<Lang, Record<Winkel, Winkelnamen>> = {
   },
   en: {
     ios: {
+      welke: 'ios',
       kop: 'The App Store',
       via: 'the App Store', download: 'the App Store', account: 'your App Store account',
       metApple: true,
       bedrijfOf: 'Apple', bedrijfEn: 'Apple',
     },
     android: {
+      welke: 'android',
       kop: 'Google Play',
       via: 'Google Play', download: 'Google Play', account: 'your Google Play account',
       metApple: false,
       bedrijfOf: 'Google', bedrijfEn: 'Google',
     },
     beide: {
+      welke: 'beide',
       kop: 'The app stores',
       via: 'the App Store or Google Play', download: 'the App Store or Google Play',
       metApple: true,

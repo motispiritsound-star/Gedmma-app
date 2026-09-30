@@ -604,7 +604,7 @@ export const en: Strings = {
       'The best lesson does not come from an app. Let your child teach you one word a day — explaining is the best way to make something stick. Darijaforkids provides the words, you provide the conversation.',
     mascotte: 'Fnek the fennec shows the way. He is patient.',
     vragenTitel: 'Questions',
-    faq: [
+    faq: (n: Winkelnamen) => [
       [
         'What exactly is Darija?',
         'Darija is the Moroccan Arabic people speak at home and in the street. It is not what a Modern Standard Arabic textbook teaches: it has its own words from Amazigh, French and Spanish, shorter sounds and its own rhythm. Someone who speaks Darija talks with family in Morocco — someone who only learns Standard Arabic often cannot.',
@@ -623,7 +623,7 @@ export const en: Strings = {
       ],
       [
         'Does it cost anything?',
-        'The first four lessons are free and stay free: three pieces of the Arabic script and your first words of Darija. The whole course comes with a subscription: € 59.99 a year (that is € 5.00 a month) or € 6.99 a month, VAT included and with the first days free. On iPhone and iPad one subscription covers the whole family: up to six people, each with their own progress. On Android it covers the Google account that takes it out. You subscribe inside the app through the App Store or Google Play, and you cancel in the same place whenever you like. No adverts and no account: your progress stays yours.',
+        `The first four lessons are free and stay free: three pieces of the Arabic script and your first words of Darija. The whole course comes with a subscription: € 59.99 a year (that is € 5.00 a month) or € 6.99 a month, VAT included and with the first days free. ${n.welke === 'ios' ? 'One subscription covers the whole family: up to six people, each with their own progress.' : n.welke === 'android' ? 'The subscription covers the Google account that takes it out.' : 'On iPhone and iPad one subscription covers the whole family: up to six people, each with their own progress. On Android it covers the Google account that takes it out.'} You subscribe inside the app through ${n.via}, and you cancel in the same place whenever you like. No adverts and no account: your progress stays yours.`,
       ],
       [
         'Does it work offline?',

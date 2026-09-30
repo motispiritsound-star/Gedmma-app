@@ -604,7 +604,7 @@ export const fr: Strings = {
       'La plus belle leçon ne vient pas d’une application. Laisse ton enfant t’apprendre un mot par jour — expliquer est la meilleure façon d’ancrer quelque chose. Darijaforkids donne les mots, vous donnez la conversation.',
     mascotte: 'Fnek, le fennec, montre le chemin. Il est patient.',
     vragenTitel: 'Questions',
-    faq: [
+    faq: (n: Winkelnamen) => [
       [
         'C’est quoi exactement le darija ?',
         'Le darija est l’arabe marocain que les gens parlent à la maison et dans la rue. Ce n’est pas ce qu’on apprend dans un manuel d’arabe standard : il a ses propres mots venus de l’amazigh, du français et de l’espagnol, des sons plus courts et son propre rythme. Qui parle darija parle avec sa famille au Maroc ; qui n’apprend que l’arabe standard, souvent non.',
@@ -623,7 +623,7 @@ export const fr: Strings = {
       ],
       [
         'Est-ce que c’est payant ?',
-        'Les quatre premières leçons sont et restent gratuites : trois morceaux de l’alphabet arabe et tes premiers mots en darija. Pour le cours complet, c’est un abonnement : 59,99 € par an (soit 5,00 € par mois) ou 6,99 € par mois, TTC et avec les premiers jours offerts. Sur iPhone et iPad, un seul abonnement vaut pour toute la famille : jusqu’à six personnes, chacune avec sa propre progression. Sur Android, il vaut pour le compte Google qui le souscrit. Tu le souscris dans l’application via l’App Store ou Google Play, et tu le résilies au même endroit quand tu veux. Pas de publicité et pas de compte : ta progression reste à toi.',
+        `Les quatre premières leçons sont et restent gratuites : trois morceaux de l’alphabet arabe et tes premiers mots en darija. Pour le cours complet, c’est un abonnement : 59,99 € par an (soit 5,00 € par mois) ou 6,99 € par mois, TTC et avec les premiers jours offerts. ${n.welke === 'ios' ? 'Un seul abonnement vaut pour toute la famille : jusqu’à six personnes, chacune avec sa propre progression.' : n.welke === 'android' ? 'L’abonnement vaut pour le compte Google qui le souscrit.' : 'Sur iPhone et iPad, un seul abonnement vaut pour toute la famille : jusqu’à six personnes, chacune avec sa propre progression. Sur Android, il vaut pour le compte Google qui le souscrit.'} Tu le souscris dans l’application via ${n.via}, et tu le résilies au même endroit quand tu veux. Pas de publicité et pas de compte : ta progression reste à toi.`,
       ],
       [
         'Ça marche hors ligne ?',

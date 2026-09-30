@@ -604,7 +604,7 @@ export const it: Strings = {
       'La lezione migliore non esce da un’app. Lascia che tuo figlio ti insegni una parola al giorno: spiegare è il modo migliore per fissare qualcosa. Darijaforkids mette le parole; la conversazione la mettete voi.',
     mascotte: 'Fnek, la volpe del deserto, mostra la strada. Ha pazienza.',
     vragenTitel: 'Domande',
-    faq: [
+    faq: (n: Winkelnamen) => [
       [
         'Che cos’è esattamente il darija?',
         'Il darija è l’arabo marocchino che in Marocco si parla in casa e per strada. Non è quello che insegna un manuale di arabo standard: ha parole proprie prese dall’amazigh, dal francese e dallo spagnolo, suoni più brevi e un ritmo tutto suo. Chi parla darija parla con la famiglia in Marocco; chi impara solo l’arabo standard, spesso no.',
@@ -623,7 +623,7 @@ export const it: Strings = {
       ],
       [
         'Costa qualcosa?',
-        'Le prime quattro lezioni sono e restano gratis: tre pezzi dell’alfabeto arabo e le tue prime parole in darija. Il corso completo va con un abbonamento: 59,99 € all’anno (sono 5,00 € al mese) oppure 6,99 € al mese, IVA inclusa e i primi giorni gratis. Su iPhone e iPad un abbonamento vale per tutta la famiglia: fino a sei persone, ognuna con i propri progressi. Su Android vale per l’account Google che lo sottoscrive. Si sottoscrive dentro l’app tramite App Store o Google Play, e lì stesso si disdice quando vuoi. Nessuna pubblicità e nessun account: i tuoi progressi restano tuoi.',
+        `Le prime quattro lezioni sono e restano gratis: tre pezzi dell’alfabeto arabo e le tue prime parole in darija. Il corso completo va con un abbonamento: 59,99 € all’anno (sono 5,00 € al mese) oppure 6,99 € al mese, IVA inclusa e i primi giorni gratis. ${n.welke === 'ios' ? 'Un abbonamento vale per tutta la famiglia: fino a sei persone, ognuna con i propri progressi.' : n.welke === 'android' ? 'L’abbonamento vale per l’account Google che lo sottoscrive.' : 'Su iPhone e iPad un abbonamento vale per tutta la famiglia: fino a sei persone, ognuna con i propri progressi. Su Android vale per l’account Google che lo sottoscrive.'} Si sottoscrive dentro l’app presa ${n.via}, e lì stesso si disdice quando vuoi. Nessuna pubblicità e nessun account: i tuoi progressi restano tuoi.`,
       ],
       [
         'Funziona senza connessione?',

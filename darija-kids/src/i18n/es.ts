@@ -604,7 +604,7 @@ export const es: Strings = {
       'La mejor lección no sale de una aplicación. Deja que tu hijo te enseñe una palabra al día: explicar es la mejor manera de fijar algo. Darijaforkids pone las palabras; la conversación la ponéis vosotros.',
     mascotte: 'Fnek, el zorro del desierto, enseña el camino. Tiene paciencia.',
     vragenTitel: 'Preguntas',
-    faq: [
+    faq: (n: Winkelnamen) => [
       [
         '¿Qué es exactamente el dariya?',
         'El dariya es el árabe marroquí que la gente habla en casa y en la calle en Marruecos. No es lo que enseña un manual de árabe estándar: tiene palabras propias del amazigh, del francés y del español, sonidos más cortos y su propio ritmo. Quien habla dariya habla con la familia en Marruecos; quien solo aprende árabe estándar, muchas veces no.',
@@ -623,7 +623,7 @@ export const es: Strings = {
       ],
       [
         '¿Cuesta dinero?',
-        'Las cuatro primeras lecciones son y seguirán siendo gratis: tres partes del alfabeto árabe y tus primeras palabras en dariya. El curso completo va con una suscripción: 59,99 € al año (son 5,00 € al mes) o 6,99 € al mes, con IVA incluido y los primeros días gratis. En iPhone y iPad una suscripción vale para toda la familia: hasta seis personas, cada una con su propio progreso. En Android vale para la cuenta de Google que la contrata. Se contrata dentro de la aplicación a través de la App Store o Google Play, y allí mismo se cancela cuando quieras. Sin publicidad y sin cuenta: tu progreso sigue siendo tuyo.',
+        `Las cuatro primeras lecciones son y seguirán siendo gratis: tres partes del alfabeto árabe y tus primeras palabras en dariya. El curso completo va con una suscripción: 59,99 € al año (son 5,00 € al mes) o 6,99 € al mes, con IVA incluido y los primeros días gratis. ${n.welke === 'ios' ? 'Una suscripción vale para toda la familia: hasta seis personas, cada una con su propio progreso.' : n.welke === 'android' ? 'La suscripción vale para la cuenta de Google que la contrata.' : 'En iPhone y iPad una suscripción vale para toda la familia: hasta seis personas, cada una con su propio progreso. En Android vale para la cuenta de Google que la contrata.'} Se contrata dentro de la aplicación a través de ${n.via}, y allí mismo se cancela cuando quieras. Sin publicidad y sin cuenta: tu progreso sigue siendo tuyo.`,
       ],
       [
         '¿Funciona sin conexión?',
