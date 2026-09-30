@@ -291,16 +291,16 @@ valt als er weer een verschijnt.
    staat Montenegro nog op € 49,99 en Marokko op $ 59,99, meer dan een
    Amerikaan betaalt. Opnieuw instellen met *Recalculate prices* vanuit
    Nederland, en daarna alleen Marokko met de hand verlagen.
-2. **Apple: naam en beschrijving van de abonnementen.** Daar staat nu de
-   appnaam met een Nederlandse zin eronder, en dat is de vermelding voor de
-   hele wereld buiten Nederland. De teksten staan klaar om te plakken in
-   `store/abonnement-teksten.md`, in zes talen, nageteld tegen de grenzen van
-   Apple (30 tekens voor de naam, 45 voor de beschrijving — hij kapt niet af,
-   hij weigert). Doe je er maar één, doe dan Engels.
+2. ~~**Apple: naam en beschrijving van de abonnementen.**~~ **Gedaan op
+   30 september**, in het Engels en het Nederlands, voor alle drie de
+   aankopen. Frans, Duits, Spaans en Italiaans staan klaar in
+   `store/abonnement-teksten.md` en zijn winst, geen voorwaarde — Engels is
+   wat de 174 landen buiten Nederland zien.
 
-   **Kan pas als het slot eraf is.** Zolang 1.0 *Waiting for Review* of
-   *In Review* staat, zijn de abonnementen alleen-lezen: Apple beoordeelt ze
-   mee met de versie. Dat is geen fout in het scherm.
+   Wat hier stond klopte trouwens niet helemaal: het slot zit niet aan de
+   versie maar aan de **indiening**. Staan de aankopen daarin op *Ready for
+   Review*, dan zijn ze alleen-lezen, en dat gaat er alleen af door de
+   indiening in te trekken. Zie hierboven.
 3. **Apple: royaltyvaluta.** Bij de bankrekening staat USD. Zet dat op EUR,
    anders wordt er twee keer gewisseld op elke uitbetaling.
 4. **Apple: DAC7.** Moet ingevuld voordat er uitbetaald kan worden. Het
