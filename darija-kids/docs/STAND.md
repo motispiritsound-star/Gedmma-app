@@ -11,7 +11,7 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 1289, groen — daar zitten de 77 van de worker al in |
-| Google Play | 4 (1.2) staat op **Productie, Active**, 177 landen |
+| Google Play | 4 (1.2) op **Productie**, 177 landen — de winkelpagina is nog **niet publiek** |
 | App Store | **1.0 (build 7) in beoordeling** — zie hieronder |
 | Uitbetalen | Apple rond; Google wacht nog op het testbedragje op de rekening |
 
@@ -265,6 +265,39 @@ misgaan, staat in `docs/ACTIES.md`.
 
 De "wat is er nieuw"-tekst voor beide winkels staat in zes talen in
 `store/wat-is-nieuw-1.2.md`.
+
+### De Play-winkelpagina is nog dicht
+
+Op 30 september nagekeken in een venster zonder inlog:
+`play.google.com/store/apps/details?id=app.darijaforkids.learn` geeft
+**404 — Not found on this server**. De vermelding staat in de console op
+Productie in 177 landen, maar buiten de console is er niets te zien.
+
+Het adres is nagelopen en klopt: `applicationId "app.darijaforkids.learn"` in
+`android/app/build.gradle`, gelijk aan `appId` in `capacitor.config.ts` en aan
+wat `playStoreUrl()` bouwt.
+
+Een 404 zegt bovendien méér dan een lege pagina. Was de app ooit gepubliceerd
+en daarna beperkt, dan geeft Play een pagina met "niet beschikbaar in jouw
+land". *Not found* betekent: deze vermelding is nooit naar buiten gegaan. Wat
+in de console op Productie staat is de inrichting van de track, niet een
+release die het publiek kan zien.
+
+Dat is geen storing — het is managed publishing die zijn werk doet. En het is
+consistent met de website, want `npm run live` meldt voor allebei de winkels
+"leeg, de website zegt binnenkort". Er is dus geen bezoeker die naar een dode
+knop loopt.
+
+Waar het precies hangt staat op **Publishing overview**, en alleen daar:
+
+| Wat er staat | Wat het betekent |
+|---|---|
+| *Changes ready to publish* met een knop | goedgekeurd, hij wacht op jou |
+| *In review* | Google is nog bezig |
+| *Changes ready to send for review* | nooit ingediend — dan hangt het aan ons |
+
+Die laatste is de stille: een wijziging die je opslaat maar niet verstuurt
+blijft eindeloos staan zonder dat er ergens iets rood kleurt.
 
 ### Klaar voor de volgende ronde — 1.1 bij Apple, 1.3 bij Play
 
