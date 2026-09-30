@@ -76,7 +76,10 @@ export const nl = {
     geenStemUitleg:
       'Darijaforkids leest de woorden nu voor in de Latijnse schrijfwijze met een Franse stem — herkenbaar, maar geen echt Marokkaans. Een Arabische stem installeren kan meestal via de instellingen van je apparaat, bij spraak of tekst-naar-spraak.',
     geluidUit: 'Er komt geen geluid uit',
-    geluidUitUitleg: 'De browser houdt geluid tegen tot je iets aantikt. En op een iPhone zet het schuifje aan de zijkant alles uit, ook de uitspraak — dat is de eerste plek om te kijken.',
+    geluidUitUitleg: (stilte: boolean): string =>
+      stilte
+        ? 'De browser houdt geluid tegen tot je iets aantikt. En op een iPhone zet het schuifje aan de zijkant alles uit, ook de uitspraak — dat is de eerste plek om te kijken.'
+        : 'De browser houdt geluid tegen tot je iets aantikt. Hoor je daarna nog niets, kijk dan naar het mediavolume — dat staat los van het volume van je beltoon.',
     geluidAan: 'Geluid aan',
     begrepen: 'Begrepen',
   },
@@ -490,13 +493,21 @@ export const nl = {
     checkKnop: 'Meet het geluid',
     checkBezig: 'Meten…',
     checkNiets: 'Nog niet gemeten. Tik op de knop — je hoort dan een tik.',
-    checkGoed: (niveau: string): string =>
-      `De app maakt geluid (niveau ${niveau}). Hoor je toch niets, dan zit het tussen de app en je oor: zet het volume omhoog, haal je iPhone van stil, en kijk of er geen bluetooth-speaker of koptelefoon aanstaat.`,
+    checkGoed: (niveau: string, stilte: boolean): string =>
+
+      stilte
+
+        ? `De app maakt geluid (niveau ${niveau}). Hoor je toch niets, dan zit het tussen de app en je oor: zet het volume omhoog, haal je iPhone van stil, en kijk of er geen bluetooth-speaker of koptelefoon aanstaat.`
+
+        : `De app maakt geluid (niveau ${niveau}). Hoor je toch niets, dan zit het tussen de app en je oor: druk op de volumeknop terwijl de app speelt, want dan pak je het mediavolume en niet het belvolume. Kijk ook of Niet storen uitstaat en of er geen bluetooth-speaker of koptelefoon aanstaat.`,
     checkStil: 'De app krijgt geen geluid naar buiten. Zet hieronder het mediakanaal aan, of open de app in een eigen tabblad in plaats van in een ingesloten venster.',
     checkMedia: 'mediakanaal speelt',
     checkGeenMedia: 'mediakanaal komt niet op gang',
     checkRegel: (niveau: string, media: string): string => `Gemeten: niveau ${niveau} · ${media}`,
-    mixerStil: 'Hoor je de uitspraak wél maar de spelgeluidjes niet? Op een iPhone zet het schuifje aan de zijkant alleen de effecten uit, niet de stem — zet het op bellen. In een ingesloten venster helpt het om de app in een eigen tabblad te openen.',
+    mixerStil: (stilte: boolean): string =>
+      stilte
+        ? 'Hoor je de uitspraak wél maar de spelgeluidjes niet? Op een iPhone zet het schuifje aan de zijkant alleen de effecten uit, niet de stem — zet het op bellen. In een ingesloten venster helpt het om de app in een eigen tabblad te openen.'
+        : 'Hoor je de uitspraak wél maar de spelgeluidjes niet? Zet het mediavolume omhoog terwijl de app speelt: de stem en de geluidjes kunnen op een ander kanaal staan. In een ingesloten venster helpt het om de app in een eigen tabblad te openen.',
     mediakanaal: 'Geluid via het mediakanaal',
     mediakanaalHint: 'Hoor je weinig of niets — bijvoorbeeld met je iPhone op stil? Zet dit aan. De spelgeluidjes én de opgenomen woorden gaan dan als kleine bestandjes naar buiten, net als muziek, en dat trekt zich van het stilteschuifje niets aan. Ze reageren een tikje trager.',
     schrijven: 'Schrijfoefening',

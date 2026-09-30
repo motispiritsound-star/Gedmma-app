@@ -71,7 +71,10 @@ export const fr: Strings = {
     geenStemUitleg:
       'Darijaforkids lit les mots en écriture latine avec une voix française — reconnaissable, mais pas du vrai marocain. Tu peux souvent installer une voix arabe dans les réglages de ton appareil, à la rubrique synthèse vocale.',
     geluidUit: 'Aucun son ne sort',
-    geluidUitUitleg: 'Le navigateur bloque le son tant que tu n’as rien touché. Et sur un iPhone, le bouton sur le côté coupe tout, la prononciation comprise — regarde là en premier.',
+    geluidUitUitleg: (stilte) =>
+      stilte
+        ? 'Le navigateur bloque le son tant que tu n’as rien touché. Et sur un iPhone, le bouton sur le côté coupe tout, la prononciation comprise — regarde là en premier.'
+        : 'Le navigateur bloque le son tant que tu n’as rien touché. Si tu n’entends toujours rien, regarde le volume multimédia — il est distinct de celui de la sonnerie.',
     geluidAan: 'Activer le son',
     begrepen: 'Compris',
   },
@@ -483,13 +486,21 @@ export const fr: Strings = {
     checkKnop: 'Mesurer le son',
     checkBezig: 'Mesure…',
     checkNiets: 'Pas encore mesuré. Touche le bouton — tu entendras un clic.',
-    checkGoed: (niveau: string): string =>
-      `L’application produit du son (niveau ${niveau}). Si tu n’entends rien, c’est entre l’application et ton oreille : monte le volume, sors ton iPhone du mode silencieux, et vérifie qu’aucune enceinte Bluetooth ou casque n’est connecté.`,
+    checkGoed: (niveau: string, stilte): string =>
+
+      stilte
+
+        ? `L’application produit du son (niveau ${niveau}). Si tu n’entends rien, c’est entre l’application et ton oreille : monte le volume, sors ton iPhone du mode silencieux, et vérifie qu’aucune enceinte Bluetooth ou casque n’est connecté.`
+
+        : `L’application produit du son (niveau ${niveau}). Si tu n’entends rien, c’est entre l’application et ton oreille : appuie sur le volume pendant que l’application joue, tu règles alors le volume multimédia et non la sonnerie. Vérifie aussi que le mode Ne pas déranger est désactivé et qu’aucune enceinte Bluetooth ou casque n’est connecté.`,
     checkStil: 'L’application n’arrive pas à faire sortir le son. Active le canal média ci-dessous, ou ouvre l’application dans son propre onglet plutôt que dans une fenêtre intégrée.',
     checkMedia: 'le canal média fonctionne',
     checkGeenMedia: 'le canal média ne démarre pas',
     checkRegel: (niveau: string, media: string): string => `Mesuré : niveau ${niveau} · ${media}`,
-    mixerStil: 'Tu entends la prononciation mais pas les bruitages ? Sur un iPhone, le petit bouton sur le côté coupe les effets mais pas la voix — remets-le sur sonnerie. Dans une fenêtre intégrée, ouvre plutôt l’application dans son propre onglet.',
+    mixerStil: (stilte) =>
+      stilte
+        ? 'Tu entends la prononciation mais pas les bruitages ? Sur un iPhone, le petit bouton sur le côté coupe les effets mais pas la voix — remets-le sur sonnerie. Dans une fenêtre intégrée, ouvre plutôt l’application dans son propre onglet.'
+        : 'Tu entends la prononciation mais pas les bruitages ? Monte le volume multimédia pendant que l’application joue : la voix et les effets peuvent passer par des canaux différents. Dans une fenêtre intégrée, ouvre plutôt l’application dans son propre onglet.',
     mediakanaal: 'Son par le canal média',
     mediakanaalHint: 'Tu n’entends rien ou presque — par exemple avec ton iPhone en silencieux ? Active ceci. Les bruitages ét les mots enregistrés sortent alors comme de petits fichiers audio, comme de la musique, et le mode silencieux n’y change rien. La réaction est un poil plus lente.',
     schrijven: 'Exercice d’écriture',

@@ -71,7 +71,10 @@ export const en: Strings = {
     geenStemUitleg:
       'Darijaforkids now reads the words in Latin spelling with a French voice — recognisable, but not real Moroccan. You can usually install an Arabic voice in your device settings, under speech or text-to-speech.',
     geluidUit: 'No sound is coming out',
-    geluidUitUitleg: 'The browser holds sound back until you tap something. And on an iPhone the switch on the side mutes everything, pronunciation included — look there first.',
+    geluidUitUitleg: (stilte) =>
+      stilte
+        ? 'The browser holds sound back until you tap something. And on an iPhone the switch on the side mutes everything, pronunciation included — look there first.'
+        : 'The browser holds sound back until you tap something. If you still hear nothing, check the media volume — that is a different volume from your ringer.',
     geluidAan: 'Turn sound on',
     begrepen: 'Got it',
   },
@@ -483,13 +486,21 @@ export const en: Strings = {
     checkKnop: 'Measure the sound',
     checkBezig: 'Measuring…',
     checkNiets: 'Not measured yet. Tap the button — you should hear a click.',
-    checkGoed: (niveau: string): string =>
-      `The app is making sound (level ${niveau}). If you still hear nothing, it is between the app and your ear: turn the volume up, take your iPhone off silent, and check that no Bluetooth speaker or headphones are connected.`,
+    checkGoed: (niveau: string, stilte): string =>
+
+      stilte
+
+        ? `The app is making sound (level ${niveau}). If you still hear nothing, it is between the app and your ear: turn the volume up, take your iPhone off silent, and check that no Bluetooth speaker or headphones are connected.`
+
+        : `The app is making sound (level ${niveau}). If you still hear nothing, it is between the app and your ear: press volume while the app is playing, so you reach the media volume and not the ringer. Also check that Do Not Disturb is off and that no bluetooth speaker or headset is on.`,
     checkStil: 'The app cannot get sound out. Turn on the media channel below, or open the app in its own tab rather than in an embedded frame.',
     checkMedia: 'media channel plays',
     checkGeenMedia: 'media channel will not start',
     checkRegel: (niveau: string, media: string): string => `Measured: level ${niveau} · ${media}`,
-    mixerStil: 'Hearing the pronunciation but none of the game sounds? On an iPhone the little switch on the side mutes the effects but not the voice — flip it back to ring. Inside an embedded frame, open the app in its own tab instead.',
+    mixerStil: (stilte) =>
+      stilte
+        ? 'Hearing the pronunciation but none of the game sounds? On an iPhone the little switch on the side mutes the effects but not the voice — flip it back to ring. Inside an embedded frame, open the app in its own tab instead.'
+        : 'Hearing the pronunciation but none of the game sounds? Turn the media volume up while the app is playing: the voice and the sounds can sit on different channels. In an embedded window it helps to open the app in its own tab.',
     mediakanaal: 'Sound through the media channel',
     mediakanaalHint: 'Hearing little or nothing — with an iPhone on silent, say? Turn this on. The game sounds and the recorded words then go out as little audio files, like music does, and the silent switch no longer touches them. They react a touch slower.',
     schrijven: 'Writing exercise',

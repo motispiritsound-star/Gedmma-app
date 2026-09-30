@@ -71,7 +71,10 @@ export const es: Strings = {
     geenStemUitleg:
       'Darijaforkids lee las palabras en escritura latina con una voz francesa: se reconocen, pero no es marroquí de verdad. Normalmente puedes instalar una voz árabe en los ajustes del dispositivo, en la sección de voz o texto a voz.',
     geluidUit: 'No sale ningún sonido',
-    geluidUitUitleg: 'El navegador bloquea el sonido hasta que tocas algo. Y en un iPhone el interruptor lateral lo silencia todo, también la pronunciación: mira ahí primero.',
+    geluidUitUitleg: (stilte) =>
+      stilte
+        ? 'El navegador bloquea el sonido hasta que tocas algo. Y en un iPhone el interruptor lateral lo silencia todo, también la pronunciación: mira ahí primero.'
+        : 'El navegador bloquea el sonido hasta que tocas algo. Si aun así no oyes nada, mira el volumen multimedia: va aparte del volumen del timbre.',
     geluidAan: 'Activar sonido',
     begrepen: 'Entendido',
   },
@@ -483,13 +486,21 @@ export const es: Strings = {
     checkKnop: 'Medir el sonido',
     checkBezig: 'Midiendo…',
     checkNiets: 'Todavía sin medir. Toca el botón y oirás un clic.',
-    checkGoed: (niveau: string): string =>
-      `La aplicación sí produce sonido (nivel ${niveau}). Si aun así no oyes nada, está entre la aplicación y tu oído: sube el volumen, saca el iPhone del modo silencio y comprueba que no haya un altavoz Bluetooth o unos auriculares conectados.`,
+    checkGoed: (niveau: string, stilte): string =>
+
+      stilte
+
+        ? `La aplicación sí produce sonido (nivel ${niveau}). Si aun así no oyes nada, está entre la aplicación y tu oído: sube el volumen, saca el iPhone del modo silencio y comprueba que no haya un altavoz Bluetooth o unos auriculares conectados.`
+
+        : `La aplicación sí produce sonido (nivel ${niveau}). Si aun así no oyes nada, está entre la aplicación y tu oído: pulsa el volumen mientras la aplicación suena, así ajustas el volumen multimedia y no el del timbre. Comprueba también que No molestar esté desactivado y que no haya un altavoz Bluetooth o unos auriculares conectados.`,
     checkStil: 'La aplicación no consigue sacar el sonido. Activa abajo el canal multimedia, o abre la aplicación en su propia pestaña en lugar de en una ventana incrustada.',
     checkMedia: 'el canal multimedia suena',
     checkGeenMedia: 'el canal multimedia no arranca',
     checkRegel: (niveau: string, media: string): string => `Medido: nivel ${niveau} · ${media}`,
-    mixerStil: '¿Oyes la pronunciación pero no los efectos? En un iPhone, el interruptor lateral silencia solo los efectos, no la voz: ponlo en timbre. En una ventana incrustada, abre la aplicación en su propia pestaña.',
+    mixerStil: (stilte) =>
+      stilte
+        ? '¿Oyes la pronunciación pero no los efectos? En un iPhone, el interruptor lateral silencia solo los efectos, no la voz: ponlo en timbre. En una ventana incrustada, abre la aplicación en su propia pestaña.'
+        : '¿Oyes la pronunciación pero no los efectos? Sube el volumen multimedia mientras la aplicación suena: la voz y los efectos pueden ir por canales distintos. En una ventana incrustada, abre la aplicación en su propia pestaña.',
     mediakanaal: 'Sonido por el canal multimedia',
     mediakanaalHint: '¿No oyes nada o casi nada — por ejemplo con el iPhone en silencio? Activa esto. Los efectos y las palabras grabadas salen como pequeños archivos de audio, igual que la música, y el modo silencio ya no les afecta. Reaccionan un poquito más lentos.',
     schrijven: 'Ejercicio de escritura',

@@ -71,7 +71,10 @@ export const de: Strings = {
     geenStemUitleg:
       'Darijaforkids liest die Wörter jetzt in lateinischer Schreibweise mit einer französischen Stimme vor — erkennbar, aber kein echtes Marokkanisch. Eine arabische Stimme lässt sich meist in den Geräteeinstellungen unter Sprachausgabe installieren.',
     geluidUit: 'Es kommt kein Ton',
-    geluidUitUitleg: 'Der Browser hält den Ton zurück, bis du etwas antippst. Und auf einem iPhone schaltet der Schalter an der Seite alles stumm, auch die Aussprache — schau zuerst dort.',
+    geluidUitUitleg: (stilte) =>
+      stilte
+        ? 'Der Browser hält den Ton zurück, bis du etwas antippst. Und auf einem iPhone schaltet der Schalter an der Seite alles stumm, auch die Aussprache — schau zuerst dort.'
+        : 'Der Browser hält den Ton zurück, bis du etwas antippst. Hörst du danach noch nichts, schau auf die Medienlautstärke — die ist getrennt von der Klingellautstärke.',
     geluidAan: 'Ton an',
     begrepen: 'Verstanden',
   },
@@ -483,13 +486,21 @@ export const de: Strings = {
     checkKnop: 'Ton messen',
     checkBezig: 'Messe…',
     checkNiets: 'Noch nicht gemessen. Tippe auf die Taste — du hörst dann ein Klicken.',
-    checkGoed: (niveau: string): string =>
-      `Die App macht Ton (Pegel ${niveau}). Hörst du trotzdem nichts, liegt es zwischen App und Ohr: Lautstärke hoch, iPhone aus dem Lautlos-Modus, und schau, ob kein Bluetooth-Lautsprecher oder Kopfhörer verbunden ist.`,
+    checkGoed: (niveau: string, stilte): string =>
+
+      stilte
+
+        ? `Die App macht Ton (Pegel ${niveau}). Hörst du trotzdem nichts, liegt es zwischen App und Ohr: Lautstärke hoch, iPhone aus dem Lautlos-Modus, und schau, ob kein Bluetooth-Lautsprecher oder Kopfhörer verbunden ist.`
+
+        : `Die App macht Ton (Pegel ${niveau}). Hörst du trotzdem nichts, liegt es zwischen App und Ohr: Drück die Lautstärketaste, während die App spielt — dann triffst du die Medienlautstärke und nicht die Klingellautstärke. Schau außerdem, ob „Nicht stören“ aus ist und kein Bluetooth-Lautsprecher oder Kopfhörer verbunden ist.`,
     checkStil: 'Die App bekommt keinen Ton nach draußen. Schalte unten den Medienkanal ein, oder öffne die App in einem eigenen Tab statt in einem eingebetteten Fenster.',
     checkMedia: 'Medienkanal spielt',
     checkGeenMedia: 'Medienkanal startet nicht',
     checkRegel: (niveau: string, media: string): string => `Gemessen: Pegel ${niveau} · ${media}`,
-    mixerStil: 'Du hörst die Aussprache, aber keine Spielgeräusche? Auf einem iPhone schaltet der kleine Schalter an der Seite nur die Effekte stumm, nicht die Stimme — stell ihn auf Klingeln. In einem eingebetteten Fenster hilft es, die App in einem eigenen Tab zu öffnen.',
+    mixerStil: (stilte) =>
+      stilte
+        ? 'Du hörst die Aussprache, aber keine Spielgeräusche? Auf einem iPhone schaltet der kleine Schalter an der Seite nur die Effekte stumm, nicht die Stimme — stell ihn auf Klingeln. In einem eingebetteten Fenster hilft es, die App in einem eigenen Tab zu öffnen.'
+        : 'Du hörst die Aussprache, aber keine Spielgeräusche? Dreh die Medienlautstärke hoch, während die App spielt: Stimme und Effekte können auf verschiedenen Kanälen liegen. In einem eingebetteten Fenster hilft es, die App in einem eigenen Tab zu öffnen.',
     mediakanaal: 'Ton über den Medienkanal',
     mediakanaalHint: 'Du hörst wenig oder nichts — zum Beispiel mit dem iPhone auf lautlos? Schalte das ein. Die Spielgeräusche und die aufgenommenen Wörter gehen dann als kleine Audiodateien hinaus, wie Musik, und der Lautlos-Schalter ändert daran nichts. Sie reagieren eine Spur langsamer.',
     schrijven: 'Schreibübung',

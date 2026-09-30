@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { audioBlocked, keepAwake, sfx, unlockAudio } from '../engine/audio'
-import { useStore } from '../engine/store'
+import { useStore, heeftStilteschakelaar } from '../engine/store'
 import { useT } from '../i18n'
 import { Button, Card } from './kit'
 
@@ -35,7 +35,7 @@ export function GeluidUit() {
         <span className="text-2xl" aria-hidden="true">🔇</span>
         <div className="min-w-0 flex-1">
           <p className="font-display font-extrabold">{t.learn.geluidUit}</p>
-          <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.learn.geluidUitUitleg}</p>
+          <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.learn.geluidUitUitleg(heeftStilteschakelaar())}</p>
         </div>
         <Button onClick={() => { unlockAudio(); keepAwake(); sfx.confirm(); setStil(audioBlocked()) }}>
           {t.learn.geluidAan}

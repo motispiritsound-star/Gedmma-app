@@ -302,6 +302,18 @@ const dayBefore = (iso: string): string => {
  * the media channel, and a few milliseconds of extra delay is a cheap price
  * for a button that can be heard.
  */
+/**
+ * Of dit toestel een stilteschakelaar heeft die de mixer dempt.
+ *
+ * Geëxporteerd omdat de uitleg over geluid dat niet klinkt er ook van
+ * afhangt: het schuifje aan de zijkant bestaat op een iPhone en op een iPad,
+ * en nergens anders. Op Android is het advies een ander — daar zit het in het
+ * mediavolume, dat losstaat van het belvolume.
+ */
+export function heeftStilteschakelaar(): boolean {
+  return prefersMediaChannel()
+}
+
 function prefersMediaChannel(): boolean {
   if (typeof navigator === 'undefined') return false
   return /iPad|iPhone|iPod/.test(navigator.userAgent)

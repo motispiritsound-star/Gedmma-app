@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  exportProgress, importProgress, resetProgress, setSetting, setState, useStore, type Settings,
+  exportProgress, heeftStilteschakelaar, importProgress, resetProgress, setSetting, setState,
+  useStore, type Settings,
 } from '../engine/store'
 import {
   arabicVoices, bruikbareStemmen, canNarrate, canSpeak, prepareSamples, probeSound, say, sfx, voicePlan,
@@ -85,7 +86,7 @@ function SoundCheck() {
     : probe.mixer === 'geen' && !probe.media
       ? t.settings.mixerGeen
       : heard
-        ? t.settings.checkGoed(probe.level.toFixed(2))
+        ? t.settings.checkGoed(probe.level.toFixed(2), heeftStilteschakelaar())
         : t.settings.checkStil
 
   return (
@@ -114,7 +115,7 @@ function SoundCheck() {
           )}
         </p>
       ) : (
-        <p className="mt-1 text-xs text-[var(--ink-soft)]">{t.settings.mixerStil}</p>
+        <p className="mt-1 text-xs text-[var(--ink-soft)]">{t.settings.mixerStil(heeftStilteschakelaar())}</p>
       )}
     </div>
   )
@@ -251,17 +252,32 @@ export function SettingsPage() {
           <Button variant="secondary" onClick={() => sfx.demo()}>{t.settings.speel}</Button>
         </Row>
         <SoundCheck />
-        <Row title={t.settings.mediakanaal} hint={t.settings.mediakanaalHint}>
-          <Toggle
-            on={s.mediaSound}
-            onChange={(v) => {
-              setSetting('mediaSound', v)
-              setSetting('mediaSoundPicked', true)
-              if (v) void prepareSamples()
-            }}
-            label={t.settings.mediakanaal}
-          />
-        </Row>
+        {/*
+          Alleen waar hij iets doet.
+
+          Deze schakelaar speelt het geluid via losse bestanden in plaats van
+          de mixer, en dat is een middel tegen één ding: het schuifje aan de
+          zijkant van een iPhone, dat de mixer dempt en losse media niet. Op
+          een toestel zonder dat schuifje levert hij niets op — alleen
+          geluidjes die een tikje later komen. Een knop die alleen kan
+          schaden hoort er niet te staan.
+
+          Staat hij al aan, dan blijft hij zichtbaar. Anders kan iemand die
+          hem ooit aanzette hem nergens meer uitzetten.
+        */}
+        {(heeftStilteschakelaar() || s.mediaSound) && (
+          <Row title={t.settings.mediakanaal} hint={t.settings.mediakanaalHint}>
+            <Toggle
+              on={s.mediaSound}
+              onChange={(v) => {
+                setSetting('mediaSound', v)
+                setSetting('mediaSoundPicked', true)
+                if (v) void prepareSamples()
+              }}
+              label={t.settings.mediakanaal}
+            />
+          </Row>
+        )}
         {/* The narrator on a history card is not the Darija voice: it reads
             the learner's own language, and a device may have one and not the
             other. So it says out loud which of the two it cannot do. */}
