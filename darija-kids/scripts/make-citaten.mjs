@@ -163,6 +163,8 @@ const hoofdstukkenVan = async (n) => {
 /* --------------------------------------------------------------- nakijken */
 
 const VIDEO = process.argv.includes('--video')
+/* Wordt onwaar zodra blijkt dat er geen ffmpeg is; zie de lus onderaan. */
+let filmKan = true
 const gekozen = arg('citaat', null)
 const werk = []
 
@@ -456,24 +458,50 @@ for (const taal of arg('taal', 'nl').split(',')) {
       await pagina.screenshot({ path: bestand })
       console.log(path.relative(ROOT, bestand))
 
-      if (!VIDEO) continue
+      if (!VIDEO || !filmKan) continue
 
-      // Een eigen context per opname: Chromium schrijft het bestand pas weg
-      // als de pagina dicht is, en de naam kiest hij zelf.
-      const opname = await browser.newContext({
-        viewport: { width: f.w, height: f.h },
-        recordVideo: { dir: map, size: { width: f.w, height: f.h } },
-      })
-      const film = await opname.newPage()
-      await film.setContent(kaart(f.w, f.h, c, taal, beeld) + BEWEGING)
-      await film.evaluate(() => document.fonts.ready)
-      await passend(film)
-      await film.waitForTimeout(7000)
-      const bron = await film.video().path()
-      await opname.close()
-      const doel = path.join(map, `${romp}.webm`)
-      await rename(bron, doel)
-      console.log(path.relative(ROOT, doel))
+      /**
+       * Opnemen vraagt een ffmpeg die Playwright apart ophaalt.
+       *
+       * In de bouwomgeving staat die klaar, op een Windows-laptop meestal
+       * niet, en dan is de melding *"Executable doesn't exist at
+       * ...\\ms-playwright\\ffmpeg-1011\\ffmpeg-win64.exe"*. Dat gebeurde
+       * ná het eerste beeld, dus het script viel om met zeventien beelden nog
+       * te gaan — terwijl de beelden het deel zijn dat altijd lukt.
+       *
+       * Dus: één keer melden wat je moet halen, en de rest van de ronde de
+       * beelden gewoon afmaken.
+       */
+      try {
+        // Een eigen context per opname: Chromium schrijft het bestand pas weg
+        // als de pagina dicht is, en de naam kiest hij zelf.
+        const opname = await browser.newContext({
+          viewport: { width: f.w, height: f.h },
+          recordVideo: { dir: map, size: { width: f.w, height: f.h } },
+        })
+        const film = await opname.newPage()
+        await film.setContent(kaart(f.w, f.h, c, taal, beeld) + BEWEGING)
+        await film.evaluate(() => document.fonts.ready)
+        await passend(film)
+        await film.waitForTimeout(7000)
+        const bron = await film.video().path()
+        await opname.close()
+        const doel = path.join(map, `${romp}.webm`)
+        await rename(bron, doel)
+        console.log(path.relative(ROOT, doel))
+      } catch (fout) {
+        if (!/ffmpeg|Executable doesn.?t exist/i.test(String(fout?.message ?? fout))) throw fout
+        filmKan = false
+        console.log(`
+De filmpjes worden overgeslagen: Playwright heeft er een eigen ffmpeg voor
+nodig en die staat nog niet op deze machine. De beelden worden gewoon
+afgemaakt.
+
+Haal hem één keer op, dan werkt --video voortaan:
+
+  npx playwright install ffmpeg
+`)
+      }
     }
   }
 }
