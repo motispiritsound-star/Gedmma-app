@@ -378,6 +378,21 @@ valt als er weer een verschijnt.
 5. **Google: bankrekening en belastinggegevens.** Zonder dat geen uitbetaling,
    ook niet als de app al verkoopt.
 
+   **Bankrekening toegevoegd op 30 september**, staat op *Verification
+   pending*. Google maakt binnen drie werkdagen een paar cent over; die moet
+   daarna in de console bevestigd worden. De tenaamstelling is `Venship` en
+   dat is ook wat de bank heeft — nagevraagd, want een storting op een naam
+   die niet matcht komt niet aan en dat hoor je pas na drie dagen.
+
+   Het betaalprofiel staat niet onder *Developer account* maar onder
+   **Settings → Payments profile**, binnen de Play Console zelf. De
+   verdiensten staan er al in euro's, dus de dollarwissel die bij Apple
+   speelt is hier geen punt.
+
+   **Belastinggegevens staan nog open.** Voor het Amerikaanse formulier geldt:
+   kies **individual** (W-8BEN), niet entity (W-8BEN-E). Een eenmanszaak is
+   fiscaal geen aparte rechtspersoon, en bij Apple staat het ook zo.
+
 ## De boeken
 
 **Sba de Atlasleeuw** — twaalf delen, dertig bladzijden per deel, af. De
