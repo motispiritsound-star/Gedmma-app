@@ -1,6 +1,7 @@
 # Waar staan we
 
-Bijgewerkt op 30 september 2026, na het indienen van 1.0 (6). Dit bestand is het antwoord op "wat moet er
+Bijgewerkt op 30 september 2026, na het indienen van 1.0 (7) en het afronden
+van het betaalprofiel bij Google. Dit bestand is het antwoord op "wat moet er
 nog" zonder dat je drie andere bestanden hoeft te lezen.
 
 ## De app
@@ -9,9 +10,10 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 1226, groen — daar zitten de 77 van de worker al in |
-| Google Play | 4 (1.2) staat op **Productie, Active**, 177 landen — *In review* sinds 29 september |
-| App Store | **1.0 (build 6) ingediend** op 30 september om 11:58, vijf items — zie hieronder |
+| Tests | 1287, groen — daar zitten de 77 van de worker al in |
+| Google Play | 4 (1.2) staat op **Productie, Active**, 177 landen |
+| App Store | **1.0 (build 7) in beoordeling** — zie hieronder |
+| Uitbetalen | Apple rond; Google wacht nog op het testbedragje op de rekening |
 
 ### De afwijzing van 29 september, en wat eraan gedaan is
 
@@ -60,6 +62,22 @@ De beschrijving stond in **zeven** talen, niet zes: `French (Canada)` staat er
 ook, en Nederlands is Primary. Een overgeslagen taal houdt zijn oude tekst,
 dus die zeven moesten allemaal. De teller onder het veld is de controle: 427
 is de oude tekst, 3850 tot 3970 de nieuwe.
+
+#### Het werd build 7
+
+Bij het kiezen van build 6 gaf App Store Connect een fout. In plaats van er
+aan te trekken is er een nieuwe archivering gemaakt en als **build 7**
+geüpload; dat is de bundel die nu in beoordeling ligt. Aan de app zelf is
+tussen 6 en 7 niets veranderd — dezelfde code, een ander nummer.
+
+Dat `npm run ios -- --build <n>` het nummer stil liet vallen als er geen
+`ios/`-map was, is dezelfde dag gerepareerd: het script stopt nu met een
+foutmelding in plaats van met exitcode 0. Een build archiveren met het oude
+nummer is precies hoe je twee keer hetzelfde bij Apple aanbiedt.
+
+**Wat niet in build 7 zit:** de platformnamen in de FAQ op de landingspagina.
+Die reparatie stond klaar maar kwam na het uploaden, en opnieuw archiveren
+om één tekst zou de beoordeling met dagen terugzetten. Gaat mee in 1.1.
 
 #### Het slot, en hoe we eruit kwamen
 
@@ -248,10 +266,38 @@ misgaan, staat in `docs/ACTIES.md`.
 De "wat is er nieuw"-tekst voor beide winkels staat in zes talen in
 `store/wat-is-nieuw-1.2.md`.
 
-### Klaar voor 1.3, nog niet ingediend
+### Klaar voor de volgende ronde — 1.1 bij Apple, 1.3 bij Play
 
-Deze zitten in de code maar **niet in versiecode 4**, want die lag al bij Google
-toen ze werden gemaakt. Ze gaan mee in de volgende bundel.
+De nummers lopen uiteen omdat de winkels niet gelijk op gaan: bij Apple is 1.0
+de eerste die de beoordeling haalt, bij Play staat 1.2 al live. Het is dezelfde
+bundel code, en de "wat is er nieuw"-tekst staat in zes talen in
+`store/wat-is-nieuw-1.1.md`. `winkelnieuws.test.ts` bewaakt dat elk bestand
+alle zes de talen heeft en dat geen taal over de 500 tekens van Play gaat —
+Play kapt niet af maar weigert de release, en dat merk je pas als de bundel er
+al ligt.
+
+Deze zitten in de code maar **niet in versiecode 4 en niet in build 7**, want
+die lagen al bij de winkel toen ze werden gemaakt. Ze gaan mee in de volgende
+bundel.
+
+**Het geluidsadvies per toestel.** De uitleg bij "er komt geen geluid uit"
+wees naar het stilteschuifje aan de zijkant van een iPhone. Op Android bestaat
+dat niet, en een kind dat die raad opvolgt zoekt naar een knop die er niet is.
+`geluidUitUitleg`, `mixerStil` en `checkGoed` nemen nu een `stilte`-vlag en
+geven per toestel het advies dat klopt: op Android het mediavolume, dat losstaat
+van het belvolume. `geluidsadvies.test.ts` bewaakt de 24 combinaties.
+
+**De schakelaar die niets deed.** *Geluid via het mediakanaal* stuurt het geluid
+langs `<audio>`-elementen in plaats van door de mixer, en dat heeft één nut: het
+stilteschuifje van een iPhone omzeilen. Op Android en op de website stond er dus
+een knop die alleen traagheid toevoegde. `heeftStilteschakelaar()` verbergt hem
+nu, tenzij hij al aan stond — anders kan niemand hem meer uitzetten.
+
+**De platformnamen in de veelgestelde vragen.** De FAQ op de landingspagina
+noemde nog beide winkels. Dat viel bij de eerste meting niet op omdat
+`innerText` de inhoud van een dichtgeklapte `<details>` overslaat; met alles
+opengeklapt stonden er drie platformnamen. De meting én de bewaking zijn
+gerepareerd.
 
 **Edge-to-edge.** Play Console meldde het bij versiecode 4: vanaf Android 15
 tekent een app die SDK 35 of hoger target standaard tot in de hoeken, en dan
@@ -367,9 +413,14 @@ valt als er weer een verschijnt.
    een tot twee procent. Op een omzet van tienduizend euro is dat honderd tot
    tweehonderd euro per jaar — vervelend, geen ramp.
 
-   Wat er nog te proberen is: Apple vragen via *Contact Us* onderaan App Store
-   Connect. Mogelijk kunnen zij de royaltyvaluta aan de bestaande rekening
-   wijzigen zonder dat de rekening vervangen hoeft te worden.
+   **Bericht verstuurd op 30 september** via *Contact Us* onderaan App Store
+   Connect, met de vraag of zij de royaltyvaluta aan de bestaande rekening
+   kunnen wijzigen zonder de rekening te vervangen. Antwoord afwachten.
+
+   Komt er nee, dan is het bij de eerstvolgende keer dat de rekening tóch
+   vervangen moet worden het moment om het opnieuw te proberen — niet eerder,
+   want een vervanging kost een nieuwe verificatie en die legt de uitbetaling
+   stil.
 
 4. ~~**Apple: DAC7.**~~ **Al gedaan op 22 september.** Het staat niet bij
    *Tax Forms* maar onder **Compliance**, en niet onder die naam: de regel
