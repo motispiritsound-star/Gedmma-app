@@ -276,6 +276,51 @@ describe('regeleinden', () => {
   })
 })
 
+/**
+ * Een `npm run …` in een plakbaar blok moet bestaan.
+ *
+ * De documentatie is het draaiboek voor de dag dat de app live gaat, en op die
+ * dag wordt er geplakt, niet gelezen. Een script dat hernoemd is laat de
+ * opdracht stilvallen met `Missing script`, en dan sta je te zoeken op het
+ * slechtst denkbare moment.
+ *
+ * De opdrachten komen uit twee package.json-bestanden: die van de app, en die
+ * van de worker onder `server/` — vandaar dat sommige blokken met `cd server`
+ * beginnen. Beide tellen mee.
+ *
+ * Alleen plakbare blokken. Lopende tekst mag een opdracht noemen die hier niet
+ * bestaat: `docs/AUDIT.md` beschrijft de bouwstraat van een ánder project in
+ * deze repository, en die opdrachten horen daar niet te werken.
+ */
+describe('de npm-opdrachten in de documentatie', () => {
+  const uitPakket = (pad: string): string[] => {
+    const rauw = readFileSync(new URL(pad, import.meta.url), 'utf8')
+    return Object.keys((JSON.parse(rauw) as { scripts?: Record<string, string> }).scripts ?? {})
+  }
+  const bekend = new Set([...uitPakket('../../package.json'), ...uitPakket('../../server/package.json')])
+
+  it('kent er genoeg om iets te bewijzen', () => {
+    expect(bekend.size).toBeGreaterThan(20)
+  })
+
+  it('bestaan allemaal', () => {
+    const fout: string[] = []
+    for (const pad of bestanden()) {
+      for (const [nr, regel] of plakregels(readFileSync(pad, 'utf8'))) {
+        for (const tref of regel.matchAll(/npm run ([a-z0-9:_-]+)/g)) {
+          if (!bekend.has(tref[1])) {
+            fout.push(`${path.relative(WORTEL, pad)} regel ${nr}: npm run ${tref[1]}`)
+          }
+        }
+      }
+    }
+    expect(
+      fout.join('\n'),
+      'deze opdrachten staan in een blok om te plakken maar niet in package.json',
+    ).toBe('')
+  })
+})
+
 describe('paden die een adres worden', () => {
   const scripts = ['sitecheck.mjs', 'make-site.mjs', 'bundelcheck.mjs']
 

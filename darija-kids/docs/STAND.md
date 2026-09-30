@@ -10,7 +10,7 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 1287, groen — daar zitten de 77 van de worker al in |
+| Tests | 1289, groen — daar zitten de 77 van de worker al in |
 | Google Play | 4 (1.2) staat op **Productie, Active**, 177 landen |
 | App Store | **1.0 (build 7) in beoordeling** — zie hieronder |
 | Uitbetalen | Apple rond; Google wacht nog op het testbedragje op de rekening |
