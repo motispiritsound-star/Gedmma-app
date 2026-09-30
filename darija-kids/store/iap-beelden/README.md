@@ -2,7 +2,9 @@
 
 Gemaakt met `npm run iapbeeld`. Niet met de hand bijwerken.
 
-Apple wees versie 1.0 (build 5) af omdat hier schermafdrukken stonden:
+Apple wees versie 1.0 (build 5) af omdat bij alle drie de aankopen het
+app-icoon in dit veld stond. Het heet in App Store Connect "Image
+(Optional)" en zit boven *App Store Promotion*.
 
 > Each promoted in-app purchase requires a unique promotional image.
 > Promotional images should not be screenshots, and should not be confused

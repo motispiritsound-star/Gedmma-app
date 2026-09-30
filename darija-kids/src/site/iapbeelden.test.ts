@@ -6,9 +6,9 @@ import { EBOOK, PRODUCTS } from '../engine/billing'
 /**
  * De promotieafbeeldingen van de aankopen, tegen Apples eigen eisen.
  *
- * Apple wees versie 1.0 (build 5) hierop af. Er stonden schermafdrukken van
- * 1290×2796 waar 1024×1024 hoorde te staan, en dezelfde twee voor drie
- * aankopen. Hun tekst:
+ * Apple wees versie 1.0 (build 5) hierop af. Bij alle drie de aankopen stond
+ * het app-icoon in het veld "Image (Optional)" — dus niet uniek, en precies
+ * het ene beeld dat er niet mag staan. Hun tekst:
  *
  *   "Each promoted in-app purchase requires a unique promotional image.
  *    Promotional images should not be screenshots, and should not be confused

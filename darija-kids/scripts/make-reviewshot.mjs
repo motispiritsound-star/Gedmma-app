@@ -191,6 +191,38 @@ const page = await ctx.newPage()
  */
 await page.addInitScript(() => {
   Object.defineProperty(window, 'Capacitor', { value: { getPlatform: () => 'ios' } })
+  /*
+   * En een winkel die er is.
+   *
+   * Zonder deze is `billingAvailable()` onwaar, en dan staat er geen koopknop
+   * maar de regel dat de winkel niet te bereiken is. Dat stond op de opname
+   * die naar Apple ging: een recensent ziet dan een koopscherm dat kapot is.
+   *
+   * Eerder werd die regel weggehaald met `[data-web-only] { display: none }`.
+   * Dat verborg het verschil in plaats van het weg te nemen, en het brak stil
+   * toen dat attribuut uit `Unlock.tsx` verdween. De knop tonen is bovendien
+   * wat de recensent moet zien: hij moet kunnen kijken waar hij zou betalen.
+   *
+   * `billing.ts` vraagt hier niets van behalve dat het bestaat en niet
+   * omvalt; de prijzen komen uit `PLANS` zodra de winkel niets teruggeeft.
+   */
+  const niks = () => {}
+  const haak = { approved: niks, productUpdated: niks, receiptsReady: niks }
+  Object.defineProperty(window, 'CdvPurchase', {
+    value: {
+      ProductType: { PAID_SUBSCRIPTION: 'paid subscription', NON_CONSUMABLE: 'non consumable' },
+      Platform: { GOOGLE_PLAY: 'android-playstore', APPLE_APPSTORE: 'ios-appstore' },
+      store: {
+        verbosity: 0,
+        register: niks,
+        when: () => haak,
+        error: niks,
+        get: () => undefined,
+        initialize: async () => {},
+        restorePurchases: async () => {},
+      },
+    },
+  })
 })
 /** Een gebruiker die al even bezig is: de balk bovenin staat dan niet leeg. */
 await page.addInitScript((taal) => {
@@ -201,14 +233,36 @@ await page.addInitScript((taal) => {
 
 await mkdir(UIT, { recursive: true })
 await page.goto(`${BASE}/volledig`, { waitUntil: 'networkidle' })
-/**
- * In een browser is er geen winkel, dus waar op een toestel de koopknop staat,
- * staat hier een regel dat kopen in de app gebeurt. Die regel bestaat op een
- * telefoon niet, en een recensent die hem leest denkt dat hij naar een website
- * kijkt.
- */
-await page.addStyleTag({ content: '[data-web-only] { display: none !important }' })
 await page.waitForTimeout(800)
+
+/*
+ * Nakijken dat de koopknop er echt staat.
+ *
+ * Deze opname gaat naar App Review. Staat er een foutregel waar de knop hoort,
+ * dan kijkt een recensent naar een koopscherm dat niet werkt — en dat is een
+ * afwijzing die niets met de app te maken heeft. Dat is één keer gebeurd,
+ * doordat het verschil met CSS werd weggepoetst in plaats van weggenomen.
+ */
+const knop = await page.evaluate(() => {
+  const woorden = [...document.querySelectorAll('button')].map((k) => k.textContent?.trim() ?? '')
+  const mis = [...document.querySelectorAll('p')]
+    .map((e) => e.textContent?.trim() ?? '')
+    .find((t) => /niet te bereiken|injoignable|nicht erreichbar|no está disponible|non è raggiungibile|cannot be reached/i.test(t))
+  return { woorden, mis: mis ?? null }
+})
+if (knop.mis) {
+  console.error(`\nOp het koopscherm staat een foutregel waar de koopknop hoort:\n`)
+  console.error(`  "${knop.mis}"\n`)
+  console.error('De nepwinkel bovenin dit bestand komt niet aan bij `billingAvailable()`.')
+  console.error('Zonder knop is deze opname onbruikbaar voor App Review.\n')
+  process.exit(1)
+}
+if (!knop.woorden.some((w) => /\d/.test(w))) {
+  console.error(`\nGeen koopknop met een prijs erin gevonden. Knoppen op het scherm:\n`)
+  for (const w of knop.woorden) console.error(`  ${w || '(leeg)'}`)
+  console.error('')
+  process.exit(1)
+}
 
 const geschreven = []
 

@@ -9,14 +9,18 @@
  *    [...] avoid putting important details in the lower left corner [...] we
  *    recommend that you don't overlay text."
  *
- * Wat er stond waren twee schermafdrukken van 1290×2796 in `store/iap-schermen`
- * — precies de twee dingen die er niet mogen zijn: een schermafdruk, en niet
- * vierkant. Dit script maakt er drie die aan alle vier de eisen voldoen:
+ * Wat er stond was bij alle drie de aankopen **het app-icoon**. Het veld heet
+ * in App Store Connect "Image (Optional)" en zit boven *App Store Promotion*;
+ * Apples zin "should not be confused with your app icon" was dus letterlijk
+ * bedoeld, en "unique" ook: drie keer hetzelfde beeld is geen drie.
+ *
+ * Dit script maakt er drie die aan alle vier de eisen voldoen:
  *
  * 1. 1024×1024, PNG                    → de maat hieronder, nagemeten met file
  * 2. geen schermafdruk                 → getekend, niets uit de app gekopieerd
  * 3. niet te verwarren met het icoon    → het icoon is de ster op een donker
- *    vierkant; deze drie zijn elk een andere compositie op een andere achtergrond
+ *    vierkant, en dat stond er. Deze drie hebben Fnek als onderwerp, elk in
+ *    een andere compositie op een andere achtergrond
  * 4. uniek per aankoop                  → jaar, maand en e-boek zijn elk anders
  *
  * Geen tekst erin. Dat is niet alleen Apples aanbeveling: een promotieafbeelding
@@ -181,7 +185,9 @@ await browser.close()
 await writeFile(
   path.join(OUT, 'README.md'),
   `# Promotieafbeeldingen voor de aankopen\n\nGemaakt met \`npm run iapbeeld\`. Niet met de hand bijwerken.\n\n`
-    + `Apple wees versie 1.0 (build 5) af omdat hier schermafdrukken stonden:\n\n`
+    + `Apple wees versie 1.0 (build 5) af omdat bij alle drie de aankopen het\n`
+    + `app-icoon in dit veld stond. Het heet in App Store Connect "Image\n`
+    + `(Optional)" en zit boven *App Store Promotion*.\n\n`
     + `> Each promoted in-app purchase requires a unique promotional image.\n`
     + `> Promotional images should not be screenshots, and should not be confused\n`
     + `> with your app icon. [...] PNG or high-quality JPEG at 1024 x 1024 pixels.\n`

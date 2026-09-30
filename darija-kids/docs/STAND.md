@@ -19,7 +19,7 @@ nog" zonder dat je drie andere bestanden hoeft te lezen.
 |---|---|---|
 | **2.3.10** Accurate Metadata | de App Store-beschrijving noemde Google Play | **gerepareerd**, zes talen — plus vier schermen in de app zelf |
 | **3.1.2(c)** Subscriptions | de omrekening naar een maand stond duidelijker dan het afgeschreven bedrag | **gerepareerd**, zes talen, nagemeten op de iPad waar Apple keek |
-| **2.3.2** Accurate Metadata | de promotieafbeelding is een schermafdruk, en bij elk product dezelfde | **gerepareerd** — `npm run iapbeeld` maakt er drie |
+| **2.3.2** Accurate Metadata | bij alle drie de aankopen stond het app-icoon in het beeldveld | **gerepareerd** — `npm run iapbeeld` maakt er drie |
 
 #### 2.3.10 zat op meer plekken dan Apple noemde
 
@@ -53,7 +53,9 @@ jaarbedrag staat erboven.
 
 #### 2.3.2: drie eigen promotieafbeeldingen
 
-Er stonden twee schermafdrukken van 1290×2796 voor drie aankopen. `npm run
+Het veld heet in App Store Connect **Image (Optional)**, 1024×1024, boven
+*App Store Promotion*. Daar stond bij alle drie de aankopen het app-icoon —
+dus niet uniek, en precies het ene beeld dat Apple uitsluit. `npm run
 iapbeeld` maakt er drie van 1024×1024, getekend, elk anders, zonder tekst en
 met de hoek linksonder leeg — daar legt Apple zelf de prijs overheen. Ze staan
 in `store/iap-beelden/` en heten naar hun product-id.
