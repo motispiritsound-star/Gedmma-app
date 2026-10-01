@@ -76,8 +76,32 @@ foutmelding in plaats van met exitcode 0. Een build archiveren met het oude
 nummer is precies hoe je twee keer hetzelfde bij Apple aanbiedt.
 
 **Wat niet in build 7 zit:** de platformnamen in de FAQ op de landingspagina.
-Die reparatie stond klaar maar kwam na het uploaden, en opnieuw archiveren
-om één tekst zou de beoordeling met dagen terugzetten. Gaat mee in 1.1.
+Die reparatie stond klaar maar kwam na het uploaden, en opnieuw archiveren om
+één tekst zou de beoordeling met dagen terugzetten.
+
+**De reparatie is op 1 oktober nagemeten en staat klaar voor de volgende
+bundel.** Niets meer te doen aan de code; alleen archiveren.
+
+De regel is preciezer dan "geen winkelnamen": 2.3.10 verbiedt de **andere**
+winkel. Je eigen winkel noemen mag, en dat moet ook — een koper die zijn
+abonnement wil opzeggen heeft die naam nodig. Nagemeten over zes talen en
+allebei de platforms, met de andere winkel als zoekpatroon: **nul treffers**.
+
+Wat er wél staat, en dat is precies goed:
+
+| Platform | De FAQ zegt |
+|---|---|
+| iOS | "…in de app via **de App Store** en je zegt daar ook op" |
+| Android | "…in de app via **Google Play** en je zegt daar ook op" |
+| website | "…via **de App Store of Google Play**" |
+
+Let op het lidwoord: *de* App Store, maar Google Play zonder. Dat zit in
+`winkels.ts` omdat het per taal verschilt — in het Duits is het "über den App
+Store" naast "bei Google Play".
+
+Een eerdere meting hiervan gaf veertien treffers en dat was vals alarm: hij
+zocht ook de eigen winkel, en `ios` zit als lettergreep in Spaanse woorden als
+*ejercicios*. Zoek dus op de andere winkel, met woordgrenzen.
 
 #### Het slot, en hoe we eruit kwamen
 
