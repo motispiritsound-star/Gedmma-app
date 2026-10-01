@@ -3,7 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#0d1220" />
+    <!--
+      Twee kleuren, niet één. `#0d1220` is `--surface` van de donkere stand, en
+      die stond er ook als het toestel in de lichte stand staat -- dan tekent
+      Android een donkere statusbalk boven een crèmekleurige app. De lichte
+      waarde is `--surface` uit `index.css`; blijven die twee uit elkaar lopen,
+      dan is de rand van het scherm een andere kleur dan de app eronder.
+
+      `color-scheme` erbij zodat de webweergave al de juiste achtergrond kiest
+      vóórdat de stylesheet binnen is -- anders is het eerste wat je ziet wit.
+    -->
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#fffaf3" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1220" media="(prefers-color-scheme: dark)" />
     <title>Darijaforkids — Marokkaans-Arabisch voor kinderen</title>
     <meta name="description" content="Darijaforkids leert kinderen en jongeren Marokkaans-Arabisch (Darija): korte lessen, echte uitspraak, spelletjes en een leerpad dat zich aan jou aanpast." />
     <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />

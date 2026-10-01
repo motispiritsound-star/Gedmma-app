@@ -22,14 +22,17 @@ const config: CapacitorConfig = {
     backgroundColor: '#0d1220',
     contentInset: 'always',
   },
-  plugins: {
-    SplashScreen: {
-      launchAutoHide: true,
-      launchShowDuration: 900,
-      backgroundColor: '#0d1220',
-      showSpinner: false,
-    },
-  },
+  /*
+   * Hier stond een blok instellingen voor `SplashScreen`, en dat deed niets:
+   * `@capacitor/splash-screen` staat niet in `package.json`. Alleen de plugin
+   * zelf leest die instellingen.
+   *
+   * Het startscherm komt van de kant van het toestel. Op Android uit
+   * `res/values/styles.xml` (`AppTheme.NoActionBarLaunch` → `@drawable/splash`),
+   * en die tekening bestaat in een dag- en een nachtversie: crème met het
+   * sterretje, of nachtblauw met hetzelfde sterretje. Android kiest zelf welke.
+   * Op iOS doet `LaunchScreen.storyboard` hetzelfde.
+   */
 }
 
 export default config
