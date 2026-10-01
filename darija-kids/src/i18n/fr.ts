@@ -45,6 +45,15 @@ export const fr: Strings = {
   },
 
   topbar: {
+    /**
+     * Het woord op de ontgrendelknop in de kopbalk.
+     *
+     * Kort, want naast drie tellers op een telefoon van 390 pixels is er geen
+     * ruimte voor "volledige toegang". Onder de 400 pixels valt het woord
+     * helemaal weg en blijft het open hangslot over; het `aria-label` draagt
+     * de hele naam, zodat een schermlezer wél hoort waar hij heen gaat.
+     */
+    ontgrendel: 'Complet',
     dagenOpRij: (n) => `${n} jours d'affilée`,
     edelstenen: 'Gemmes',
     hartjesVol: 'Tous les cœurs sont pleins',

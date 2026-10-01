@@ -15,6 +15,24 @@ const LINKS = [
   { to: '/profiel', key: 'jij' },
 ] as const
 
+/**
+ * Een open hangslot, getekend en niet als emoji.
+ *
+ * Hier stond de emoji van een open hangslot, en die werd op 390 pixels een
+ * gouden vlek: elk toestel tekent zijn eigen emoji, en op twaalf pixels is
+ * daar niets van te herkennen. Een lijntekening houdt zijn vorm op elke maat
+ * en ziet er op elk toestel hetzelfde uit.
+ *
+ * En hij staat open. Dit is wat je opent, niet wat je niet mag.
+ */
+const Hangslot = () => (
+  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
+       strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="3" y="11" width="14" height="10" rx="2.2" />
+    <path d="M7 11V7a5 5 0 0 1 10 0" />
+  </svg>
+)
+
 export function TopBar() {
   const t = useT()
   const state = useStore((s) => s)
@@ -89,6 +107,39 @@ export function TopBar() {
         </nav>
 
         <div className="ms-auto flex shrink-0 items-center gap-2.5 text-sm font-bold">
+          {/*
+            De weg naar het abonnement, op elk scherm waar de balk staat.
+
+            Hij stond er niet, en dat was de enige manier erheen: een slotje
+            tegenkomen. Wie na vier gratis lessen nog eens wil kijken wat het
+            kost, moest daarvoor eerst ergens tegen een gesloten deur lopen —
+            en dat is precies de persoon die wél wil betalen.
+
+            Geen teller maar een knop, dus saffraan in plaats van de grijstint
+            van de cijfers ernaast. Het hangslot staat er open: dit is wat je
+            opent, niet wat je niet mag.
+
+            Weg zodra er betaald is. Een knop die "koop" zegt tegen iemand die
+            gekocht heeft, is het eerste wat een beoordelaar aanwijst — en het
+            eerste waar een klant over mailt.
+
+            De opvulling zit op de link en de pil zelf blijft klein: zo is het
+            raakvlak 44 hoog zonder dat de balk meegroeit, net als bij de
+            merklink hierboven. `raakvlak.test.ts` bewaakt dat.
+          */}
+          {!state.unlocked && (
+            <Link
+              to="/volledig"
+              onClick={() => sfx.nav()}
+              aria-label={t.unlock.titel}
+              className="-my-2.5 flex shrink-0 items-center py-2.5"
+            >
+              <span className="flex items-center gap-1 rounded-full bg-saffron-500 px-2.5 py-1 font-display text-xs font-extrabold text-night-950">
+                <Hangslot />
+                {t.topbar.ontgrendel}
+              </span>
+            </Link>
+          )}
           <span title={`${t.common.niveau} ${level}`} className="hidden items-center gap-1 sm:flex">
             <span className="grid h-7 w-7 place-items-center rounded-lg bg-zellige-500/15 text-zellige-600 dark:text-zellige-300">{level}</span>
           </span>

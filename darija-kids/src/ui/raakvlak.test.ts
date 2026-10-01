@@ -37,6 +37,49 @@ describe('de weg terug in de kopbalk', () => {
   })
 })
 
+describe('de ontgrendelknop in de kopbalk', () => {
+  const top = bron('./TopBar.tsx')
+
+  /**
+   * Dezelfde truc als bij de merklink: de opvulling zit op de link en de pil
+   * blijft klein, zodat het raakvlak 44 is zonder dat de balk meegroeit.
+   * Nagemeten in Chromium op 360, 390 en 820 pixels: 44 pixels hoog, en de
+   * balk schuift op geen van de drie zijwaarts.
+   */
+  it('heeft een raakvlak van 44, zonder de balk hoger te maken', () => {
+    const link = /<Link\s+to="\/volledig"[\s\S]*?className="([^"]*)"/.exec(top)?.[1] ?? ''
+    expect(link, 'de ontgrendelknop is niet gevonden').not.toBe('')
+    expect(link, 'zonder py- is het raakvlak de hoogte van de pil').toContain('py-2.5')
+    expect(link, 'zonder -my- groeit de balk mee').toContain('-my-2.5')
+  })
+
+  /**
+   * Weg zodra er betaald is.
+   *
+   * Een knop die "koop" zegt tegen iemand die gekocht heeft, is het eerste
+   * wat een beoordelaar aanwijst en het eerste waar een klant over mailt.
+   * Nagemeten in Chromium: bij `unlocked` staat er geen enkele link naar
+   * `/volledig` in de balk.
+   */
+  it('staat er alleen voor wie nog niet betaald heeft', () => {
+    expect(top).toContain('{!state.unlocked && (')
+  })
+
+  /**
+   * Het woord valt nergens weg, en het slot is getekend en geen emoji.
+   *
+   * Eerst stond er 🔓 met het woord pas vanaf 400 pixels. Op een telefoon van
+   * 390 — de maat waar de meeste mensen op kijken — bleef er een gouden vlek
+   * over waar niets aan te zien was. Een lijntekening houdt zijn vorm op elke
+   * maat, en het woord hoort er altijd bij te staan.
+   */
+  it('toont het woord op elke breedte, met een getekend slot', () => {
+    expect(top).toContain('<Hangslot />')
+    expect(top).not.toContain('🔓')
+    expect(top).not.toMatch(/min-\[\d+px\]:inline/)
+  })
+})
+
 describe('de instellingen', () => {
   const set = bron('../pages/Settings.tsx')
 
