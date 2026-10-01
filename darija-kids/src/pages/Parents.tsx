@@ -110,8 +110,11 @@ export function Parents() {
         {t.landing.faq(namen).map(([q, a]) => (
           <details key={q} className="group rounded-2xl border border-[var(--line)] bg-[var(--surface-raised)] p-5">
             <summary className="cursor-pointer list-none font-display font-extrabold marker:hidden">
-              <span className="me-2 text-zellige-500 group-open:hidden">+</span>
-              <span className="me-2 hidden text-zellige-500 group-open:inline">−</span>
+              {/* `zellige-600` en niet 500: dit plusje is het enige wat zegt
+                  of een vraag open of dicht staat, en 500 haalde op wit 2,49
+                  op 1. Nu 5,27. */}
+              <span className="me-2 text-zellige-600 group-open:hidden dark:text-zellige-300">+</span>
+              <span className="me-2 hidden text-zellige-600 group-open:inline dark:text-zellige-300">−</span>
               {q}
             </summary>
             <p className="mt-3 text-sm text-[var(--ink-soft)]">{a}</p>

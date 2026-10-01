@@ -54,21 +54,51 @@
   --color-saffron-400: #fbbf24;
   --color-saffron-500: #f59e0b;
   --color-saffron-600: #d97706;
+  --color-saffron-700: #b45309;
 
   --color-terra-100: #ffe3d6;
   --color-terra-300: #ff9f7a;
   --color-terra-500: #e2603c;
   --color-terra-600: #c34a2c;
+  /* Alleen voor de rand onder de wisknop; `terra-500` eronder haalde met wit
+     erop 3,52 op 1. */
+  --color-terra-700: #9a3412;
 
+  /*
+   * Zes tinten stonden wél in de klassen maar niet hier, en een klasse zonder
+   * token maakt Tailwind niet aan. Die regels deden dus niets -- allemaal
+   * `dark:`-varianten, dus precies de regels die je in de lichte stand niet
+   * ziet missen. Het badje "incl. e-boek" op het abonnementsscherm viel
+   * daardoor in de donkere stand terug op zijn lichte kleur: 2,06 op 1.
+   *
+   * Zellige is de teal-reeks van Tailwind, mint de green-reeks en saffron de
+   * amber-reeks, dus de ontbrekende treden komen daarvandaan.
+   */
   --color-zellige-100: #d3f4ec;
+  --color-zellige-200: #99f6e4;
   --color-zellige-300: #6fded0;
+  --color-zellige-400: #2dd4bf;
   --color-zellige-500: #14b8a6;
-  --color-zellige-600: #0d9488;
-  --color-zellige-700: #0f766e;
+  /*
+   * 600 en 700 zijn allebei een trede donkerder geworden, en dat is geen
+   * smaakkwestie.
+   *
+   * `text-zellige-600` is de kleur van de transcriptie -- "salam" onder het
+   * Arabisch -- en staat op eenentwintig plekken in de app. Op wit haalde
+   * `#0d9488` 3,74 op 1, en de norm voor gewone tekst is 4,5. Gemeten over
+   * twaalf bladzijden was dit de grootste groep: driehonderdvier regels in
+   * het woordenboek alleen al. `#0f766e` haalt 5,47, en wit erop ook -- dat
+   * laatste telt voor het niveaubadje op de profielpagina.
+   */
+  --color-zellige-600: #0f766e;
+  --color-zellige-700: #115e59;
 
+  --color-mint-200: #bbf7d0;
+  --color-mint-300: #86efac;
   --color-mint-400: #4ade80;
   --color-mint-500: #22c55e;
   --color-mint-600: #16a34a;
+  --color-mint-700: #15803d;
 
   /* The two colours of the Moroccan flag, used where the app means Morocco
      rather than merely warmth: the khatim, the history cards, the flag. */
@@ -76,6 +106,9 @@
   --color-alam-500: #c1272d;
   --color-alam-600: #9e1f24;
   --color-khatim-100: #cfe8db;
+  /* Voor het watermerk op het spelscherm in de donkere stand. Stond daar als
+     `dark:text-khatim-300/40` en bestond niet, dus die regel deed niets. */
+  --color-khatim-300: #3da76a;
   --color-khatim-400: #0b8046;
   --color-khatim-500: #006233;
 

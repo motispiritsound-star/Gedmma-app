@@ -238,8 +238,11 @@ export function Profile() {
                   <div className="text-xs text-[var(--ink-soft)]">{unitSubtitle(u, lang)}</div>
                   <Progress value={pct} className="mt-1 h-2" />
                 </div>
-                <span className="flex shrink-0 items-center gap-1 text-sm font-bold text-saffron-500">
-                  <Khatim size={14} /> {stars}
+                {/* Het getal in inktkleur en de ster in goud, apart. Samen
+                    saffraan haalde het getal 2,15 op 1 op wit; de ster mag wel
+                    goud blijven, want het getal ernaast zegt hetzelfde. */}
+                <span className="flex shrink-0 items-center gap-1 text-sm font-bold text-[var(--ink)]">
+                  <Khatim size={14} className="text-saffron-500" /> {stars}
                 </span>
               </Card>
             </li>

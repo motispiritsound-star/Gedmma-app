@@ -14,7 +14,9 @@ const VARIANTS: Record<Variant, string> = {
   success: 'bg-mint-500 text-white border-mint-600 hover:bg-mint-400',
   secondary: 'bg-[var(--surface-raised)] text-[var(--ink)] border-[var(--line)] hover:border-zellige-500',
   ghost: 'bg-transparent text-[var(--ink-soft)] border-transparent hover:text-[var(--ink)]',
-  danger: 'bg-terra-500 text-white border-terra-600 hover:bg-terra-300',
+  /* Een trede donkerder: wit op `terra-500` haalde 3,52 op 1, op `terra-600`
+     4,84. De rand erbij zakt mee zodat de knop zijn reliëf houdt. */
+  danger: 'bg-terra-600 text-white border-terra-700 hover:bg-terra-500',
 }
 
 /**
