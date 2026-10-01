@@ -358,11 +358,16 @@ regel dat je vergeet:
 | `ITSAppUsesNonExemptEncryption` = NO | Zonder deze blijft elke upload op *Missing Compliance* staan en gaat hij niet naar je testers. Elke keer opnieuw. |
 | `NSMicrophoneUsageDescription` | Zonder deze **sluit iOS de app af** zodra een kind in de spreekronde op de opnameknop drukt. Geen foutmelding, weg. |
 
-Je hoeft ze niet aan te klikken. Dit zet ze allebei:
+Je hoeft ze niet aan te klikken. Dit zet ze allebei — en geef het buildnummer
+meteen mee, zie de volgende paragraaf:
 
 ```bash
-npm run ios
+npm run ios -- --build 8 --versie 1.1
 ```
+
+Let op dat dit een **zsh**-regel is en geen PowerShell. Op de Mac werkt de
+`$p`-truc uit `CLAUDE.md` niet: zsh antwoordt dan *"command not found: -not"*.
+Je staat hier toch al in de projectmap.
 
 Dat bouwt de app, kopieert hem in het iOS-project, en zet daarna die twee
 regels. Draai je het twee keer, dan staan ze er niet twee keer in.

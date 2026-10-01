@@ -100,12 +100,28 @@ heten die `npx.cmd` en `npm.cmd`, en Node vindt ze dan niet — `Error: spawnSyn
 npx ENOENT`, een melding waar Windows niet in voorkomt. Roep het javascript
 zelf aan met `process.execPath`, zoals `scripts/lib/wrangler.mjs` doet.
 
+## En op de Mac is het zsh, niet PowerShell
+
+Alles hierboven gaat over Windows, en daar doet Adil bijna alles. Op één ding
+na: **de iOS-bouw kán alleen op de Mac.** Daar staat zsh, en die kent geen
+`if (-not $p)`, geen `Get-ChildItem` en geen `--prefix`-truc met een
+PowerShell-variabele.
+
+Gebeurd op 1 oktober: de opdracht voor build 8 is hier als PowerShell-regel
+gegeven, hij heeft hem op de Mac geplakt, en zsh antwoordde *"command not
+found: -not"* en daarna *"Unknown command: ios"* — twee foutmeldingen die
+allebei over iets anders gaan dan wat er mis was.
+
+De regel is dus: **kijk eerst waar de opdracht moet draaien.** Hoort hij op de
+Mac (`npm run ios`, Xcode, alles uit `docs/MAC.md`), dan is het een
+bash-blok met gewone regels. Al het andere is PowerShell.
+
 ## De vaste weg naar de winkels
 
-| | |
-|---|---|
-| iOS | `npm run ios -- --build <n> --versie <x.y>`, dan in Xcode archiveren — zie `docs/MAC.md` |
-| Android | `npm run aab -- --versie <n> --naam <x.y>` — zie `docs/ANDROID.md` |
+| | Waar | |
+|---|---|---|
+| iOS | **Mac, zsh** | `npm run ios -- --build <n> --versie <x.y>`, dan in Xcode archiveren — zie `docs/MAC.md` |
+| Android | Windows | `npm run aab -- --versie <n> --naam <x.y>` — zie `docs/ANDROID.md` |
 
 `npm run ios` bouwt de app, kopieert hem in het iOS-project én zet de twee
 regels in `Info.plist`. Sla het niet over door alleen `npx cap sync ios` te
