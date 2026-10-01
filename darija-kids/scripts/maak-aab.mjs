@@ -100,6 +100,25 @@ if (versie || naam) {
   if (naam) console.log(`versionName → ${naam}`)
 }
 
+/*
+ * Zonder --versie bouwt dit het nummer dat toevallig in build.gradle staat.
+ *
+ * Dat gaat niet stil mis -- Play weigert de upload -- maar het gaat wel mis op
+ * het verkeerde moment: na het bouwen, het ondertekenen en het wachten, met de
+ * foutmelding "Version code N has already been used" op een dag waarop er nog
+ * meer moet. En wie net een verse kloon heeft staat het nummer weer op wat er
+ * in de repository staat, niet op wat Play al gezien heeft.
+ *
+ * Dus: hardop zeggen wat er straks in de bundel komt, vóór het bouwen.
+ */
+if (!versie) {
+  const huidig = readFileSync(GRADLE, 'utf8').match(/versionCode (\d+)/)?.[1]
+  console.warn(`\nGeen --versie opgegeven. Deze bundel wordt versionCode ${huidig ?? '?'}.`)
+  console.warn('Play weigert een nummer dat al eens geüpload is — ook een ingetrokken upload.')
+  console.warn('Bedoelde je het volgende nummer, breek dan af en draai:\n')
+  console.warn(`  npm run aab -- --versie ${huidig ? Number(huidig) + 1 : 2} --naam ${naam ?? '1.1'}\n`)
+}
+
 let jdk = vindJdk()
 if (!jdk) jdk = haalJdk()
 if (!jdk) geenJdk()
