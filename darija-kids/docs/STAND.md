@@ -484,6 +484,28 @@ maar of het het goede is.
    geldt het Families-beleid — geen advertenties van derden, geen trackers.
    De app voldoet daaraan; het moet alleen kloppen met wat er staat.
 
+#### Waar je het vindt
+
+Begin hier, en log in met het account waar de app onder staat:
+
+```
+https://play.google.com/console
+```
+
+Klik Darijaforkids aan. Dan **het zoekveld bovenin de console** — niet het
+linkermenu. Typ er het woord in en hij springt naar de bladzijde:
+
+| Typ dit | Waar je uitkomt |
+|---|---|
+| `App access` | het veld met *All functionality is available without special access* |
+| `Target audience` | de leeftijden, en of het Families-beleid geldt |
+| `Publishing overview` | daar staat *Managed publishing* onder **Manage** |
+
+Het zoekveld boven het menu, omdat Google dat linkermenu de afgelopen jaren
+een paar keer heeft omgegooid. Werkt het zoeken niet, dan staan de eerste twee
+in het linkermenu onder **Policy and programs → App content** — maar kijk dan
+eerst of de kop bij jou anders heet voordat je gaat zoeken.
+
 #### Waarom hier geen commando bij staat
 
 Nagemeten op 1 oktober, in het discovery-document van de Android Publisher
