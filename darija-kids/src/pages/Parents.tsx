@@ -121,6 +121,9 @@ export function Parents() {
                 {winkel.map((r) => (
                   <li key={r.product}>
                     {r.product.replace('app.darijaforkids.', '')} — {r.prijs ?? '—'} · {r.valuta ?? '—'} · {r.micros ?? '—'}
+                    {/* Eén fase is geen aanbieding; twee of meer betekent dat
+                        de eerste de proefperiode is. */}
+                    <br />fasen: {r.fasen.length ? r.fasen.join(' → ') : 'geen'}
                   </li>
                 ))}
               </ul>

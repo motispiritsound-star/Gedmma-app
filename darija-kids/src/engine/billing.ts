@@ -448,6 +448,19 @@ export interface WinkelRegel {
   prijs: string | null
   valuta: string | null
   micros: number | null
+  /**
+   * Elke prijsfase die de winkel meestuurde, in volgorde.
+   *
+   * Eén fase betekent: geen aanbieding, je betaalt meteen. Twee of meer
+   * betekent dat de eerste de proefperiode is — die staat er dan als een
+   * bedrag van nul of als een leeg bedrag.
+   *
+   * Dit stond er niet, en daardoor was de enige manier om te zien of de
+   * proefperiode aankwam: afrekenen en het venster van Apple lezen. Dat
+   * venster laat een aanbieding weg zodra het account hem al eens heeft
+   * gebruikt, en dan lijkt een werkende proefperiode kapot.
+   */
+  fasen: string[]
 }
 
 /**
@@ -467,12 +480,15 @@ export const winkelGegevens = (): WinkelRegel[] => {
   const api = plugin()
   if (!api) return []
   return [...PRODUCTS, EBOOK.product].map((product) => {
-    const fase = betaalFase(api.store.get(product))
+    const p = api.store.get(product)
+    const fase = betaalFase(p)
+    const alle = (p?.offers ?? []).flatMap((aanbod) => aanbod.pricingPhases ?? [])
     return {
       product,
       prijs: fase?.price ?? null,
       valuta: fase?.currency ?? null,
       micros: fase?.priceMicros ?? null,
+      fasen: alle.map((f) => f.price ?? (f.priceMicros === 0 ? 'gratis' : '—')),
     }
   })
 }
