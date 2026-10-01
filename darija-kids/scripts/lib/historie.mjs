@@ -209,7 +209,12 @@ export const kaart = (nummer) => {
  * de eerste vijf delen in één punt aan de linkerkant en verliest de lezer
  * juist wat hij hier moet zien — dat het verhaal doorloopt tot bij hem thuis.
  */
-export const tijdbalk = (reeks, nu) => {
+/**
+ * @param deelWoord Het woord "Deel", voor de andere vijf talen. Staat achteraan
+ *   met een standaardwaarde, zodat alles wat deze functie al aanriep hetzelfde
+ *   blijft doen.
+ */
+export const tijdbalk = (reeks, nu, deelWoord = 'Deel') => {
   const top = 54, stap = 92, spil = 300
   const h = top + stap * (reeks.length - 1) + 70
   return `<svg viewBox="0 0 1000 ${h}" xmlns="http://www.w3.org/2000/svg">
@@ -225,7 +230,7 @@ export const tijdbalk = (reeks, nu) => {
         : `<circle cx="${spil}" cy="${y}" r="10" fill="${H.steen}"/>`}
       <text x="${spil + 54}" y="${y - 2}" font-family="'Baloo 2',system-ui,sans-serif" font-weight="800" font-size="${dit ? 32 : 28}"
             fill="${dit ? H.rood : H.inkt}">${d.titel}</text>
-      <text x="${spil + 54}" y="${y + 28}" font-family="Georgia,serif" font-style="italic" font-size="21" fill="#8a7a63">Deel ${d.nummer} · ${d.waar}</text>`
+      <text x="${spil + 54}" y="${y + 28}" font-family="Georgia,serif" font-style="italic" font-size="21" fill="#8a7a63">${deelWoord} ${d.nummer} · ${d.waar}</text>`
   }).join('')}
 </svg>`
 }

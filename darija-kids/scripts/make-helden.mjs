@@ -26,6 +26,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { createServer } from 'vite'
 import { startChroom } from './lib/chroom.mjs'
 import { H, khatam, zellige } from './lib/historie.mjs'
 
@@ -39,6 +40,55 @@ const arg = (naam, terug) => {
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
+const TAAL = arg('taal', 'nl')
+
+/* ------------------------------------------------------------------ laden */
+
+const server = await createServer({
+  configFile: path.join(ROOT, 'vite.config.ts'),
+  root: ROOT, server: { middlewareMode: true, hmr: false }, appType: 'custom', logLevel: 'error',
+})
+const { REEKS } = await server.ssrLoadModule('/src/content/sleutels.ts')
+const { sleuteldeelIn, SLEUTEL_VERTALINGEN, SLEUTEL_SCHIL } = await server.ssrLoadModule('/src/content/sleutels-talen.ts')
+const { SITE_URL, PATHS } = await server.ssrLoadModule('/src/site/links.ts')
+await server.close()
+
+if (TAAL !== 'nl' && !SLEUTEL_VERTALINGEN[TAAL]) {
+  console.error(`\nOnbekende taal: ${TAAL}. Wat er is: nl, ${Object.keys(SLEUTEL_VERTALINGEN).join(', ')}\n`)
+  process.exit(1)
+}
+
+/**
+ * Het deel in de taal van deze ronde, met zijn hoofdstukken.
+ *
+ * Alles wat op de plaat staat komt hieruit: de titel, het jaar en de feiten
+ * uit het veld `echt`. Dat scheelt niet alleen vertaalwerk — het sluit uit dat
+ * er op een Franse plaat iets staat wat in het Franse boek niet zo staat.
+ */
+const deelIn = (nummer) => {
+  const basis = REEKS.find((d) => d.nummer === nummer)
+  if (!basis) throw new Error(`deel ${nummer} staat niet in REEKS`)
+  if (TAAL === 'nl') return basis
+  /* Niet via `sleuteldeelIn`: die eist dat het aantal hoofdstukken klopt, en
+     dat is terecht — hij is gemaakt om een heel boek samen te stellen. Een
+     plaat heeft alleen de omslaggegevens nodig, en die staan los van de
+     hoofdstukken. */
+  const v = SLEUTEL_VERTALINGEN[TAAL]?.[nummer]
+  if (!v) throw new Error(`deel ${nummer} is nog niet vertaald in het ${TAAL}`)
+  return { ...basis, titel: v.titel, jaar: v.jaar, waar: v.waar, flap: v.flap, echt: v.echt }
+}
+
+/** De paar woorden die op een tafereel staan en nergens in de inhoud. */
+const WOORDEN = {
+  nl: { haltes: ['Tanger', 'Caïro', 'Mekka', 'Delhi', 'Malediven', 'China', 'Mali', 'Tanger'], andalus: 'Al-Andalus', afrika: 'Noord-Afrika', boeken: 'Leesboeken', leeftijd: 'vijftien delen, 9 – 15 jaar' },
+  fr: { haltes: ['Tanger', 'Le Caire', 'La Mecque', 'Delhi', 'Maldives', 'Chine', 'Mali', 'Tanger'], andalus: 'Al-Andalus', afrika: 'Afrique du Nord', boeken: 'Livres', leeftijd: 'quinze tomes, 9 – 15 ans' },
+  de: { haltes: ['Tanger', 'Kairo', 'Mekka', 'Delhi', 'Malediven', 'China', 'Mali', 'Tanger'], andalus: 'Al-Andalus', afrika: 'Nordafrika', boeken: 'Bücher', leeftijd: 'fünfzehn Bände, 9 – 15 Jahre' },
+  es: { haltes: ['Tánger', 'El Cairo', 'La Meca', 'Delhi', 'Maldivas', 'China', 'Malí', 'Tánger'], andalus: 'Al-Ándalus', afrika: 'África del Norte', boeken: 'Libros', leeftijd: 'quince tomos, 9 – 15 años' },
+  it: { haltes: ['Tangeri', 'Il Cairo', 'La Mecca', 'Delhi', 'Maldive', 'Cina', 'Mali', 'Tangeri'], andalus: 'Al-Andalus', afrika: 'Africa del Nord', boeken: 'Libri', leeftijd: 'quindici volumi, 9 – 15 anni' },
+  en: { haltes: ['Tangier', 'Cairo', 'Mecca', 'Delhi', 'Maldives', 'China', 'Mali', 'Tangier'], andalus: 'Al-Andalus', afrika: 'North Africa', boeken: 'Books', leeftijd: 'fifteen parts, ages 9 – 15' },
+}
+const W = WOORDEN[TAAL] ?? WOORDEN.nl
+
 /* ─────────────────────────────────────────────────────── de twee taferelen */
 
 /**
@@ -47,7 +97,7 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
  * Niet op een wereldkaart: die wordt op een telefoon een vlek. Een boog met
  * acht halteplaatsen leest in twee seconden, en dat is alle tijd die je krijgt.
  */
-const HALTES = ['Tanger', 'Caïro', 'Mekka', 'Delhi', 'Malediven', 'China', 'Mali', 'Tanger']
+const HALTES = W.haltes
 
 const reis = () => {
   const b = 1200, h = 440
@@ -117,49 +167,43 @@ const zeestraat = () => {
     <path d="M150 330 C 420 300, 700 274, 930 130" fill="none" stroke="${H.goud}"
       stroke-width="3.5" stroke-dasharray="11 13" stroke-linecap="round" opacity=".8"/>
     <text x="90" y="404" font-family="Georgia,serif" font-style="italic" font-size="26"
-      fill="${H.perkament}" opacity=".75">Noord-Afrika</text>
+      fill="${H.perkament}" opacity=".75">${esc(W.afrika)}</text>
     <text x="90" y="46" font-family="Georgia,serif" font-style="italic" font-size="26"
-      fill="${H.perkament}" opacity=".75">Al-Andalus</text>
+      fill="${H.perkament}" opacity=".75">${esc(W.andalus)}</text>
   </svg>`
 }
 
 /* ──────────────────────────────────────────────────────────── wat er staat */
 
+/**
+ * De twee, met hun inhoud uit het boek.
+ *
+ * Alleen de eigennaam staat hier; die vertaalt niet. Titel, jaartal en de
+ * feiten komen uit het deel zelf, in de taal van deze ronde — zo kan er op een
+ * Franse plaat niets staan wat in het Franse boek niet zo staat, en hoef ik
+ * geen feiten te vertalen die al vertaald zijn.
+ *
+ * `regels` is het veld `echt` van dat deel, de eerste vier. Die staan daar op
+ * volgorde van belangrijkheid, dus afkappen mag.
+ */
+const heldVan = (naam, nummer, tafereel, korteRegels) => {
+  const deel = deelIn(nummer)
+  return {
+    naam,
+    kop: deel.titel,
+    jaar: deel.jaar,
+    deel: nummer,
+    tafereel,
+    regels: (deel.echt ?? []).slice(0, 4),
+    /* Het vierkant heeft maar plek voor twee. Welke twee is een oordeel, dus
+       staat het hier als indexen in plaats van als overgeschreven tekst. */
+    kort: korteRegels.map((i) => (deel.echt ?? [])[i]).filter(Boolean),
+  }
+}
+
 const HELDEN = {
-  battuta: {
-    naam: 'Ibn Battuta',
-    kop: 'Dertig jaar onderweg',
-    jaar: '1325 – 1354',
-    deel: 6,
-    tafereel: reis,
-    regels: [
-      'Vertrok in 1325 uit Tanger, eenentwintig jaar oud, voor de bedevaart naar Mekka.',
-      'Kwam bijna dertig jaar later terug. Meer dan honderdtwintigduizend kilometer — veel verder dan Marco Polo.',
-      'Rechter in Delhi, rechter op de Malediven, gezant naar China. Zijn vloot verging bij de kust van India.',
-      'Thuis dicteerde hij zijn verhaal aan Ibn Juzayy. Dat boek heet de Rihla.',
-    ],
-    kort: [
-      'Vertrok in 1325 uit Tanger, eenentwintig jaar oud. Kwam dertig jaar later terug.',
-      'Honderdtwintigduizend kilometer — veel verder dan Marco Polo.',
-    ],
-  },
-  tariq: {
-    naam: 'Tariq ibn Ziyad',
-    kop: 'De overkant',
-    jaar: '711',
-    deel: 2,
-    tafereel: zeestraat,
-    regels: [
-      'Een Amazigh-legerleider die in 711 met zijn leger de zeestraat overstak naar het zuiden van het huidige Spanje.',
-      'Het grootste deel van dat leger bestond uit Amazigh-soldaten uit Noord-Afrika.',
-      'De rots waar hij landde draagt nog zijn naam: Jabal Tariq, de berg van Tariq — verbasterd tot Gibraltar.',
-      'Dat hij zijn schepen liet verbranden, is pas eeuwen later opgeschreven. Historici houden het niet voor een feit — en in het boek staat dat er eerlijk bij.',
-    ],
-    kort: [
-      'Een Amazigh-legerleider die in 711 met zijn leger de zeestraat overstak.',
-      'De rots waar hij landde heet nog Jabal Tariq — verbasterd tot Gibraltar.',
-    ],
-  },
+  battuta: heldVan('Ibn Battuta', 6, reis, [0, 1]),
+  tariq: heldVan('Tariq ibn Ziyad', 2, zeestraat, [0, 1]),
 }
 
 /* ───────────────────────────────────────────────────────────────── tekenen */
@@ -274,7 +318,7 @@ const plaat = (w, h, held) => {
 
 <div class="afzender">
   ${ster(Math.round(w * 0.055))}
-  <span>Darijaforkids</span><span class="punt">&middot;</span><span>Leesboeken</span>
+  <span>Darijaforkids</span><span class="punt">&middot;</span><span>${esc(W.boeken)}</span>
 </div>
 
 <div class="kop">
@@ -290,10 +334,10 @@ const plaat = (w, h, held) => {
 
 <div class="voet">
   <div class="bron">
-    <div class="reeks">De sleutels van Marokko</div>
-    <div class="deel">Deel ${held.deel} &middot; vijftien delen, 9 – 15 jaar</div>
+    <div class="reeks">${esc(SLEUTEL_SCHIL[TAAL]?.reeksnaam ?? 'De sleutels van Marokko')}</div>
+    <div class="deel">${esc(SLEUTEL_SCHIL[TAAL]?.deelVan?.(held.deel) ?? `Deel ${held.deel}`)} &middot; ${esc(W.leeftijd)}</div>
   </div>
-  <div class="adres">darijaforkids.eu/leesboeken</div>
+  <div class="adres">${esc(`${SITE_URL}${PATHS[TAAL].books}`.replace(/^https?:\/\//, ''))}</div>
 </div>`
 }
 
@@ -304,6 +348,30 @@ const FORMATEN = [
   { naam: 'verhaal', w: 1080, h: 1920 },
 ]
 
+/**
+ * De regels kleiner maken tot ze passen, in de browser zelf.
+ *
+ * Nodig zodra de tekst niet meer van mij is. Mijn Nederlandse samenvattingen
+ * waren kort omdat ik ze kort schreef; de feiten uit het boek zijn dat niet,
+ * en in het Frans zijn ze bovendien langer dan in het Nederlands. Een vaste
+ * lettergrootte sneed ze af — bovenaan en onderaan, want het vak staat
+ * gecentreerd.
+ */
+const passend = async (pagina) => {
+  const gelukt = await pagina.evaluate(() => {
+    const vak = document.querySelector('.regels')
+    if (!vak) return true
+    let maat = parseFloat(getComputedStyle(vak).fontSize)
+    for (let i = 0; i < 24 && vak.scrollHeight > vak.clientHeight; i++) {
+      maat *= 0.96
+      vak.style.fontSize = `${maat}px`
+      vak.querySelectorAll('.regel').forEach((r) => { r.style.fontSize = `${maat}px` })
+    }
+    return vak.scrollHeight <= vak.clientHeight
+  })
+  if (!gelukt) throw new Error('de regels passen niet, ook niet verkleind')
+}
+
 const gekozen = arg('wie', null)
 const lijst = Object.entries(HELDEN).filter(([id]) => !gekozen || id === gekozen)
 if (!lijst.length) {
@@ -311,7 +379,7 @@ if (!lijst.length) {
   process.exit(1)
 }
 
-await mkdir(UIT, { recursive: true })
+await mkdir(path.join(UIT, TAAL), { recursive: true })
 const browser = await startChroom()
 const pagina = await (await browser.newContext({ deviceScaleFactor: 1 })).newPage()
 
@@ -321,7 +389,8 @@ for (const [id, held] of lijst) {
     await pagina.setContent(plaat(f.w, f.h, held))
     await pagina.evaluate(() => document.fonts.ready)
     await pagina.waitForTimeout(150)
-    const bestand = path.join(UIT, `${id}-${f.naam}.png`)
+    await passend(pagina)
+    const bestand = path.join(UIT, TAAL, `${id}-${f.naam}.png`)
     await pagina.screenshot({ path: bestand })
     console.log(path.relative(ROOT, bestand))
   }

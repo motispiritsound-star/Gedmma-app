@@ -43,7 +43,63 @@ const server = await createServer({
 })
 const { REEKS } = await server.ssrLoadModule('/src/content/sleutels.ts')
 const { DELEN } = await server.ssrLoadModule('/src/content/prentenboek.ts')
+const { deelIn: prentDeelIn, TALEN_KLAAR } = await server.ssrLoadModule('/src/content/prentenboek-talen.ts')
 const { SITE } = await server.ssrLoadModule('/src/site/copy.ts')
+const { SLEUTEL_VERTALINGEN, SLEUTEL_SCHIL } = await server.ssrLoadModule('/src/content/sleutels-talen.ts')
+const { SITE_URL, PATHS } = await server.ssrLoadModule('/src/site/links.ts')
+
+const TAAL = arg('taal', 'nl')
+if (TAAL !== 'nl' && !SLEUTEL_VERTALINGEN[TAAL]) {
+  console.error(`\nOnbekende taal: ${TAAL}. Wat er is: nl, ${Object.keys(SLEUTEL_VERTALINGEN).join(', ')}\n`)
+  process.exit(1)
+}
+
+/**
+ * De vijftien delen in de taal van deze ronde.
+ *
+ * `tijdbalk` leest `titel`, `jaar`, `waar` en `nummer`; die staan alle vier in
+ * de vertaling. Zo is de tijdlijn vertaald zonder dat er iets wordt
+ * overgeschreven — en dus zonder dat er iets uit de pas kan lopen met het boek.
+ */
+const REEKS_IN = TAAL === 'nl' ? REEKS : REEKS.map((d) => {
+  const v = SLEUTEL_VERTALINGEN[TAAL]?.[d.nummer]
+  return v ? { ...d, titel: v.titel, jaar: v.jaar, waar: v.waar } : d
+})
+
+/** Wat op de plaat staat en nergens in de inhoud. */
+const WOORDEN = {
+  nl: { appVoet: 'Binnenkort · twee minuten per dag · vanaf 6 jaar', deel: 'Deel', boeken: 'Leesboeken',
+    onder: 'Vijftien delen · tweeduizend jaar · 9 – 15 jaar',
+    rif: 'Het Rif',
+    slot: 'Eén bronzen sleutel gaat van hand tot hand, van kind tot kind. Van een Romeinse stad bij Meknès tot <b>een doos bij jeddti in Utrecht</b> — waar hij bij jou thuis aankomt.',
+    bron: 'De gebeurtenissen zijn echt. De kinderen die ze vertellen niet — en achterin elk deel staat precies wat wat is.' },
+  fr: { appVoet: 'Bientôt · deux minutes par jour · dès 6 ans', deel: 'Tome', boeken: 'Livres',
+    onder: 'Quinze tomes · deux mille ans · 9 – 15 ans',
+    rif: 'Le Rif',
+    slot: 'Une clé de bronze passe de main en main, d’enfant en enfant. D’une ville romaine près de Meknès jusqu’à <b>une boîte chez jeddti à Utrecht</b> — là où elle arrive chez toi.',
+    bron: 'Les événements sont réels. Les enfants qui les racontent ne le sont pas — et à la fin de chaque tome, il est dit précisément ce qui est quoi.' },
+  de: { appVoet: 'Demnächst · zwei Minuten am Tag · ab 6 Jahren', deel: 'Band', boeken: 'Bücher',
+    onder: 'Fünfzehn Bände · zweitausend Jahre · 9 – 15 Jahre',
+    rif: 'Das Rif',
+    slot: 'Ein bronzener Schlüssel wandert von Hand zu Hand, von Kind zu Kind. Von einer römischen Stadt bei Meknès bis zu <b>einer Schachtel bei jeddti in Utrecht</b> — dort kommt er bei dir an.',
+    bron: 'Die Ereignisse sind echt. Die Kinder, die sie erzählen, nicht — und hinten in jedem Band steht genau, was was ist.' },
+  es: { appVoet: 'Próximamente · dos minutos al día · a partir de 6 años', deel: 'Tomo', boeken: 'Libros',
+    onder: 'Quince tomos · dos mil años · 9 – 15 años',
+    rif: 'El Rif',
+    slot: 'Una llave de bronce pasa de mano en mano, de niño en niño. Desde una ciudad romana cerca de Mequinez hasta <b>una caja en casa de jeddti en Utrecht</b> — donde llega hasta ti.',
+    bron: 'Los hechos son reales. Los niños que los cuentan no lo son — y al final de cada tomo se dice exactamente qué es qué.' },
+  it: { appVoet: 'Presto · due minuti al giorno · dai 6 anni', deel: 'Volume', boeken: 'Libri',
+    onder: 'Quindici volumi · duemila anni · 9 – 15 anni',
+    rif: 'Il Rif',
+    slot: 'Una chiave di bronzo passa di mano in mano, di bambino in bambino. Da una città romana vicino a Meknès fino a <b>una scatola da jeddti a Utrecht</b> — dove arriva da te.',
+    bron: 'Gli avvenimenti sono veri. I bambini che li raccontano no — e in fondo a ogni volume c’è scritto esattamente cosa è cosa.' },
+  en: { appVoet: 'Coming soon · two minutes a day · from age 6', deel: 'Part', boeken: 'Books',
+    onder: 'Fifteen parts · two thousand years · ages 9 – 15',
+    rif: 'The Rif',
+    slot: 'One bronze key passes from hand to hand, from child to child. From a Roman town near Meknès to <b>a box at jeddti’s in Utrecht</b> — where it arrives at your house.',
+    bron: 'The events are real. The children who tell them are not — and the back of every part says exactly which is which.' },
+}
+const W = WOORDEN[TAAL] ?? WOORDEN.nl
 await server.close()
 
 /* --------------------------------------------------------------- tekenen */
@@ -74,7 +130,7 @@ const ster = (maat) => `
  */
 const MIJLPALEN = [
   ['± 200', 'Walili'], ['859', 'Fes'], ['1325', 'Tanger'],
-  ['1777', 'Salé'], ['1926', 'Het Rif'], ['Nu', 'Utrecht'],
+  ['1777', 'Salé'], ['1926', W.rif], [SLEUTEL_VERTALINGEN[TAAL]?.[15]?.jaar ?? 'Nu', 'Utrecht'],
 ]
 
 const boog = () => {
@@ -99,7 +155,7 @@ const boog = () => {
 }
 
 /** De volle tijdlijn, op perkament zoals achterin de boeken. */
-const balk = () => `<div class="perkament">${tijdbalk(REEKS, -1)}</div>`
+const balk = () => `<div class="perkament">${tijdbalk(REEKS_IN, -1, W.deel)}</div>`
 
 /* ------------------------------------------------------------- de platen */
 
@@ -172,26 +228,23 @@ const sleutelsPlaat = (w, h) => {
 
 <div class="afzender">
   ${ster(Math.round(w * 0.055))}
-  <span>Darijaforkids</span><span class="punt">&middot;</span><span>Leesboeken</span>
+  <span>Darijaforkids</span><span class="punt">&middot;</span><span>${esc(W.boeken)}</span>
 </div>
-<h1>De sleutels van Marokko</h1>
-<div class="onderkop">Vijftien delen &middot; tweeduizend jaar &middot; 9 – 15 jaar</div>
+<h1>${esc(SLEUTEL_SCHIL[TAAL]?.reeksnaam ?? 'De sleutels van Marokko')}</h1>
+<div class="onderkop">${esc(W.onder)}</div>
 
 <div class="beeld">${staand ? balk() : boog()}</div>
 
-<div class="slot">
-  Eén bronzen sleutel gaat van hand tot hand, van kind tot kind. Van een Romeinse
-  stad bij Meknès tot <b>een doos bij jeddti in Utrecht</b> — waar hij bij jou
-  thuis aankomt.
-</div>
+<div class="slot">${W.slot}</div>
 
 <div class="voet">
-  <div class="bron">De gebeurtenissen zijn echt. De kinderen die ze vertellen niet — en achterin elk deel staat precies wat wat is.</div>
-  <div class="adres">darijaforkids.eu/leesboeken</div>
+  <div class="bron">${esc(W.bron)}</div>
+  <div class="adres">${esc(`${SITE_URL}${PATHS[TAAL].books}`.replace(/^https?:\/\//, ''))}</div>
 </div>`
 }
 
 const sbaPlaat = (w, h, omslag) => {
+  const c = SITE[TAAL] ?? SITE.nl
   const rand = Math.round(w * 0.075)
   const staand = h > w
   const WARM = 'linear-gradient(150deg,#ffd79a,#f0915c 58%,#e2603c)'
@@ -199,7 +252,11 @@ const sbaPlaat = (w, h, omslag) => {
      en dan houd je "naar school" en "mijn land" over — dat leest als een
      boodschappenlijst. Twaalf keer zijn naam is voor een reeks geen herhaling
      maar het punt: de lezer moet die naam onthouden. */
-  const titels = DELEN.map((d) => d.titel)
+  /* De titels in de taal van deze ronde. Een deel dat nog niet vertaald is
+     valt in `deelIn` terug op het Nederlands, en dan staat er een Nederlandse
+     titel op een Franse plaat — dus wordt die taal hierboven geweigerd in
+     plaats van half gedaan. */
+  const titels = DELEN.map((d) => (TAAL === 'nl' ? d : prentDeelIn(TAAL, d.nummer)).titel)
 
   return `<!doctype html><meta charset="utf-8"><style>
   ${LETTERS}
@@ -267,30 +324,25 @@ const sbaPlaat = (w, h, omslag) => {
 </style>
 <div class="afzender">
   ${ster(Math.round(w * 0.055))}
-  <span>Darijaforkids</span><span class="punt">&middot;</span><span>Leesboeken</span>
+  <span>Darijaforkids</span><span class="punt">&middot;</span><span>${esc(W.boeken)}</span>
 </div>
 
 <div class="top">
   <div class="omslag"><img src="data:image/webp;base64,${omslag}"></div>
   <div>
-    <h1>Sba de Atlasleeuw</h1>
-    <div class="onderkop">Twaalf prentenboeken &middot; 2 – 8 jaar</div>
+    <h1>${esc(c.boekKleinTitel)}</h1>
+    <div class="onderkop">${esc(c.boekKleinPunten?.[0] ?? '')} &middot; ${esc(c.boekKlein)}</div>
   </div>
 </div>
 
-<div class="uitleg">
-  Elke bladzijde is Nederlands, met <b>één woord Darija erin</b> — en de ontdekking
-  van dat woord is het verhaal. Sba is een leeuw uit de Atlas; hij neemt zes
-  kinderen mee door Marokko. <b>Voorlezen kan zonder dat je zelf Darija kent:</b>
-  hoe je het woord zegt, staat er gewoon bij.
-</div>
+<div class="uitleg">${esc(c.boekKleinBody)}</div>
 
 <div class="delen">
   ${titels.map((t, i) => `<div class="deel"><span class="nr">${i + 1}</span><span>${esc(t)}</span></div>`).join('')}
 </div>
 
 <div class="voet">
-  <div class="adres">darijaforkids.eu/leesboeken</div>
+  <div class="adres">${esc(`${SITE_URL}${PATHS[TAAL].books}`.replace(/^https?:\/\//, ''))}</div>
 </div>`
 }
 
@@ -312,7 +364,7 @@ const sbaPlaat = (w, h, omslag) => {
  * waarop je het maakt.
  */
 const appPlaat = (w, h) => {
-  const c = SITE.nl
+  const c = SITE[TAAL] ?? SITE.nl
   const rand = Math.round(w * 0.075)
   const staand = h > w
   const band = Math.round(h * 0.022)
@@ -388,23 +440,27 @@ const appPlaat = (w, h) => {
 
 <div class="afzender">
   ${ster(Math.round(w * 0.055))}
-  <span>Darijaforkids</span><span class="punt">&middot;</span><span>De app</span>
+  <span>Darijaforkids</span><span class="punt">&middot;</span><span>${esc((c.stickyKnop ?? '').replace(/^(Download|Télécharger|Lade|Descarga|Scarica)\s+/i, ''))}</span>
 </div>
 
-<h1>De taal van oma verdwijnt in&nbsp;één generatie.<br><em>Tenzij je nu begint.</em></h1>
+<h1>${(() => {
+    /* De tweede slogan is de sterkste: de taal van oma die in een generatie
+       verdwijnt. Hij bestaat uit twee zinnen, en de tweede krijgt de accentkleur
+       — daar zit de wending. Splitsen op de eerste punt met een spatie erna,
+       want een punt in een afkorting hoort niet te breken. */
+    const zin = (c.slogans?.[1] ?? '').trim()
+    const i = zin.indexOf('. ')
+    return i < 0 ? esc(zin) : `${esc(zin.slice(0, i + 1))}<br><em>${esc(zin.slice(i + 2))}</em>`
+  })()}</h1>
 
-<div class="stem">
-  Er <b>bestáát geen Darija-stem</b>. Elke synthesizer ter wereld is getraind op
-  Standaardarabisch. Daarom is elk woord, elke zin en elke letter in deze app
-  ingesproken door een Marokkaanse stem — één voor één.
-</div>
+<div class="stem">${esc(c.stemBody)}</div>
 
 <div class="cijfers">
   ${c.stemPunten.map(([n, wat]) => `<div class="cijfer"><span class="n">${esc(n)}</span><span class="w">${esc(wat)}</span></div>`).join('')}
 </div>
 
 <div class="voet">
-  <div class="binnenkort"><span class="stip"></span><span>Binnenkort &middot; twee minuten per dag &middot; vanaf 6 jaar</span></div>
+  <div class="binnenkort"><span class="stip"></span><span>${esc(W.appVoet)}</span></div>
   <div class="adres">darijaforkids.eu</div>
 </div>`
 }
@@ -415,6 +471,36 @@ const FORMATEN = [
   { naam: 'vierkant', w: 1080, h: 1080 },
   { naam: 'verhaal', w: 1080, h: 1920 },
 ]
+
+/**
+ * De bovenhelft laten krimpen tot de cijfers er nog onder passen.
+ *
+ * Nodig zodra de tekst van de vertaling komt in plaats van van mij. "La langue
+ * de mamie disparaît en une génération" is bijna anderhalf keer zo lang als het
+ * Nederlandse origineel, en dan duwt de kop de vier cijfers van de plaat af —
+ * die zijn bij een appplaat juist het punt.
+ */
+const passend = async (pagina) => {
+  const gelukt = await pagina.evaluate(() => {
+    const kop = document.querySelector('h1')
+    const stem = document.querySelector('.stem')
+    const vak = document.querySelector('.cijfers')
+    if (!kop || !vak) return true
+    /* Alleen het cijfervak telt. De body heeft een vaste hoogte met
+       overflow:hidden, dus zijn scrollHeight is daar altijd groter dan zijn
+       clientHeight — die meting zei dus nooit "past", hoe klein de kop ook
+       werd. */
+    const past = () => vak.scrollHeight <= vak.clientHeight
+    let a = parseFloat(getComputedStyle(kop).fontSize)
+    let b = stem ? parseFloat(getComputedStyle(stem).fontSize) : 0
+    for (let i = 0; i < 24 && !past(); i++) {
+      a *= 0.95; kop.style.fontSize = `${a}px`
+      if (stem) { b *= 0.96; stem.style.fontSize = `${b}px` }
+    }
+    return past()
+  })
+  if (!gelukt) throw new Error('de bovenhelft past niet, ook niet verkleind')
+}
 
 const omslagSba = (await readFile(path.join(ROOT, 'site-assets', 'boeken', 'sba.webp'))).toString('base64')
 
@@ -431,7 +517,7 @@ if (!lijst.length) {
   process.exit(1)
 }
 
-await mkdir(UIT, { recursive: true })
+await mkdir(path.join(UIT, TAAL), { recursive: true })
 const browser = await startChroom()
 const pagina = await (await browser.newContext({ deviceScaleFactor: 1 })).newPage()
 
@@ -441,7 +527,8 @@ for (const [id, maak] of lijst) {
     await pagina.setContent(maak(f.w, f.h))
     await pagina.evaluate(() => document.fonts.ready)
     await pagina.waitForTimeout(150)
-    const bestand = path.join(UIT, `${id}-${f.naam}.png`)
+    if (id === 'app') await passend(pagina)
+    const bestand = path.join(UIT, TAAL, `${id}-${f.naam}.png`)
     await pagina.screenshot({ path: bestand })
     console.log(path.relative(ROOT, bestand))
   }
