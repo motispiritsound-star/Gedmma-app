@@ -88,7 +88,22 @@ const FOCUSBAAR =
 /** Hoeveel panelen er openstaan, zodat het laatste de pagina weer vrijgeeft. */
 let openPanelen = 0
 
-export function Sheet({ open, onClose, children, labelledBy }: { open: boolean; onClose?: () => void; children: ReactNode; labelledBy?: string }) {
+export function Sheet({ open, onClose, onTerug, children, labelledBy }: {
+  open: boolean
+  /** Sluit met een tik naast het paneel, met Escape en met de terugknop. */
+  onClose?: () => void
+  /**
+   * Sluit met Escape en met de terugknop, maar níét met een tik ernaast.
+   *
+   * Voor een paneel dat iets te zeggen heeft wat je niet per ongeluk mag
+   * kwijtraken: het keuzescherm na de taalkeuze komt één keer voorbij, en een
+   * kinderduim die naast het paneel landt zou het voorgoed wegnemen. Escape en
+   * de terugknop zijn wél bewuste handelingen.
+   */
+  onTerug?: () => void
+  children: ReactNode
+  labelledBy?: string
+}) {
   const paneel = useRef<HTMLDivElement>(null)
   /*
    * `onClose` is bij elke gebruiker een pijlfunctie in de JSX, dus hij is bij
@@ -96,8 +111,8 @@ export function Sheet({ open, onClose, children, labelledBy }: { open: boolean; 
    * de luisteraar continu opnieuw opgehangen en sprong de focus telkens terug
    * naar het begin van het paneel -- middenin het typen van een rekensom.
    */
-  const sluit = useRef(onClose)
-  sluit.current = onClose
+  const sluit = useRef(onTerug ?? onClose)
+  sluit.current = onTerug ?? onClose
   /** Waar de focus vandaan kwam, zodat hij daar weer terugkomt. */
   const kwamVan = useRef<HTMLElement | null>(null)
 

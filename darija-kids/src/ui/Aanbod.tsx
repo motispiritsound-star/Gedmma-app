@@ -40,10 +40,23 @@ export function Aanbod() {
    */
   if (!picked || gezien || unlocked || !billingAvailable()) return null
 
+  /*
+   * `onTerug` en niet `onClose` op het paneel hieronder: de terugknop van
+   * Android en Escape doen hetzelfde als de knop "later", maar een tik náást
+   * het paneel niet.
+   *
+   * Gemeten zonder dat: met dit scherm open stond er geen luisteraar op de
+   * terugknop, dus Android deed zijn standaardding -- en op een verse
+   * installatie is er geen bladzijde om naar terug te gaan, dus dat is de app
+   * verlaten. Bij het tweede scherm dat een nieuwe gebruiker ooit ziet.
+   *
+   * De tik ernaast blijft met opzet buiten schot: dit scherm komt één keer
+   * voorbij, en een kinderduim die ernaast landt zou het voorgoed wegnemen.
+   */
   const sluit = () => setState({ aanbodGezien: true })
 
   return (
-    <Sheet open labelledBy="aanbod-title">
+    <Sheet open onTerug={sluit} labelledBy="aanbod-title">
       <div className="text-center">
         <Mascot mood="juich" size={78} className="mx-auto" />
         <h2 id="aanbod-title" className="mt-2 font-display text-2xl font-extrabold">{t.aanbod.titel}</h2>

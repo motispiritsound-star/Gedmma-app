@@ -126,7 +126,38 @@ describe('wat het paneel zelf moet blijven doen', () => {
    * van het paneel — middenin het typen van de rekensom van de ouderpoort.
    */
   it('hangt niet aan `onClose`, want die verandert bij elke tekening', () => {
-    expect(bron).toContain('const sluit = useRef(onClose)')
+    expect(bron).toContain('const sluit = useRef(onTerug ?? onClose)')
     expect(bron).toMatch(/\}, \[open\]\)/)
+  })
+})
+
+describe('het verschil tussen ernaast tikken en terug drukken', () => {
+  /**
+   * Niet elk paneel mag op dezelfde manier dicht.
+   *
+   * Het keuzescherm na de taalkeuze komt één keer voorbij in het leven van een
+   * installatie. Een kinderduim die naast het paneel landt zou het voorgoed
+   * wegnemen, dus de tik ernaast doet daar niets. Escape en de terugknop van
+   * Android zijn wél bewuste handelingen, en die doen hetzelfde als de knop
+   * "later".
+   *
+   * Zonder dat onderscheid stond er op dat scherm geen luisteraar op de
+   * terugknop, en deed Android zijn standaardding: op een verse installatie is
+   * er geen bladzijde om naar terug te gaan, dus dat is de app verlaten — bij
+   * het tweede scherm dat een nieuwe gebruiker ooit ziet. Nagemeten in de
+   * browser met een nagebootste plugin: ernaast tikken laat het staan, Escape
+   * en de terugknop sluiten het.
+   */
+  it('kent een sluitweg die niet aan het donkere vlak hangt', () => {
+    expect(bron).toContain('onTerug?: () => void')
+    expect(bron).toContain('const sluit = useRef(onTerug ?? onClose)')
+    // Het donkere vlak luistert nog altijd alleen naar `onClose`.
+    expect(bron).toContain('sm:items-center sm:p-6" onClick={onClose}')
+  })
+
+  it('gebruikt die weg op het keuzescherm na de taalkeuze', () => {
+    const aanbod = readFileSync(new URL('./Aanbod.tsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n')
+    expect(aanbod).toContain('<Sheet open onTerug={sluit} labelledBy="aanbod-title">')
+    expect(aanbod).not.toContain('onClose={sluit}')
   })
 })
