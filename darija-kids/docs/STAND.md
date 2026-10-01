@@ -456,21 +456,48 @@ een bewuste keuze om R8 als oorzaak van de afwijzing uit te sluiten. Aanzetten
 terwijl er een reparatie in beoordeling ligt voegt een onbekende toe. Pas als
 versie 4 door is, en dan als een eigen wijziging.
 
-### Nog na te kijken bij Google Play
+### Nog na te kijken bij Google Play — kijken, niet wijzigen
 
-Drie dingen die losstaan van de beoordeling en die je in een paar minuten
-nakijkt. Ze staan hier omdat ze pas opvallen als het te laat is.
+Drie dingen die pas opvallen als het te laat is. **Zolang inzending 4 in
+beoordeling ligt zijn het alle drie leesopdrachten.** Dat is niet
+voorzichtigheid om de voorzichtigheid: een wijziging onder *App content* is
+zelf een wijziging die beoordeeld moet worden, en die kan de lopende
+inzending verlengen of opnieuw laten beginnen. Staat er iets echt verkeerd,
+dan is dat die dagen waard. Staat het goed, dan kost eraan zitten je precies
+die dagen voor niets.
+
+**Ze staan waarschijnlijk al ingevuld.** Play laat een release niet naar
+Productie zolang een verplicht onderdeel van *App content* onbeantwoord is, en
+inzending 4 staat op Productie. De vraag is dus niet óf er een antwoord staat
+maar of het het goede is.
 
 1. **App access.** Play Console → App content → App access. De app heeft geen
-   inlog, maar dat moet je er wél neerzetten: *All functionality is available
-   without special access*. Staat dat veld leeg, dan wijst een reviewer af
-   omdat hij denkt dat hij ergens niet bij kan.
-2. **Managed publishing aan.** Anders publiceert Play zichzelf zodra hij groen
-   is, en bepaalt Google je lanceerdag in plaats van jij.
-3. **Target audience and content.** Dat is Google's versie van de vraag waarop
-   Apple afwees: voor welke leeftijden is de app. Geef je daar kinderen op, dan
-   geldt het Families-beleid — geen advertenties van derden, geen trackers. De
-   app voldoet daar al aan, maar het moet kloppen met wat er staat.
+   inlog, en dan is het antwoord *All functionality is available without
+   special access*. Zou het leeg staan, dan wijst een reviewer af omdat hij
+   denkt dat hij ergens niet bij kan.
+2. **Managed publishing.** Publishing overview → Manage. **Staat aan**,
+   nagekeken op 30 september — dat is ook de verklaring voor de 404 op de
+   winkelpagina.
+3. **Target audience and content.** Play Console → App content → Target
+   audience and content. Dit is Google's versie van de vraag waarop Apple
+   afwees: voor welke leeftijden is de app. Staan er kinderleeftijden, dan
+   geldt het Families-beleid — geen advertenties van derden, geen trackers.
+   De app voldoet daaraan; het moet alleen kloppen met wat er staat.
+
+#### Waarom hier geen commando bij staat
+
+Nagemeten op 1 oktober, in het discovery-document van de Android Publisher
+API (`androidpublisher.googleapis.com/$discovery/rest?version=v3`):
+**honderdvijfenveertig methodes, en geen enkele raakt App access, Target
+audience, de leeftijdsclassificatie of managed publishing.** Gezocht op
+`access`, `audience`, `rating`, `content` en `declar`; het enige onderdeel van
+*App content* dat de API kent is Data safety, en dat alleen als POST — er is
+niet eens een GET om terug te lezen wat er staat.
+
+`play-vermelding.mjs` kan dus de hele winkelvermelding in zes talen
+versturen, en deze drie velden niet. Dat is geen gat in het script maar een
+gat in de API. Het staat hier opgeschreven zodat niemand het nog eens
+uitzoekt.
 
 ### Negen opdrachten die geen pad en geen waarde meer vragen
 
@@ -1141,8 +1168,9 @@ en twee:
   als de beoordeling zelf. Build 8 staat klaar — de FAQ-reparatie is gemeten
   en zit in de code, niet in build 7.
 - **De drie velden bij Play nakijken** (hierboven, *Nog na te kijken bij Google
-  Play*). Een leeg *App access* is een afwijzing om niets, en inzending 5 zou
-  weer een week kosten.
+  Play*). Een leeg *App access* is een afwijzing om niets. Let op dat het
+  nakijken is en niet wijzigen: zolang inzending 4 loopt kost een wijziging
+  onder *App content* je de doorlooptijd opnieuw.
 
 Alles daarbuiten — de royaltyvaluta bij Apple, de vier talen bij de aankopen —
 houdt de lancering niet tegen. Dat is werk dat naast de beoordeling door kan
