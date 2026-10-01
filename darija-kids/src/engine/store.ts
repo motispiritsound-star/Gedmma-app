@@ -200,6 +200,15 @@ export interface State {
    */
   post: Aanmelding | null
   langPicked: boolean
+  /**
+   * True zodra het keuzescherm na de taalkeuze één keer is getoond.
+   *
+   * Eén keer, en daarna nooit meer. Wie "eerst de gratis lessen" kiest heeft
+   * antwoord gegeven, en dezelfde vraag nog eens stellen is zeuren — de weg
+   * naar het abonnement staat de rest van de tijd gewoon op het pad, bij les
+   * vijf.
+   */
+  aanbodGezien: boolean
   seenTips: string[]
   /**
    * Which history cards have been earned, oldest first.
@@ -347,6 +356,7 @@ const initial = (): State => ({
   post: null,
   /** False until somebody has picked a language on the welcome screen. */
   langPicked: false,
+  aanbodGezien: false,
   seenTips: [],
   history: [],
   settings: {

@@ -26,6 +26,7 @@ const Record = lazy(() => import('./pages/Record').then((m) => ({ default: m.Rec
 import { GeluidUit } from './ui/GeluidUit'
 import { TopBar } from './ui/TopBar'
 import { Welcome } from './ui/Welcome'
+import { Aanbod } from './ui/Aanbod'
 import { useStore } from './engine/store'
 import { listenForFirstGesture, sfx } from './engine/audio'
 import { initBilling } from './engine/billing'
@@ -92,6 +93,7 @@ function Chrome() {
   return (
     <div className="min-h-full pb-24 sm:pb-0">
       <Welcome />
+      <Aanbod />
       {!inLesson && !isLanding && <TopBar />}
       {/* Overal, niet alleen op het pad: wie in het woordenboek op een woord
           tikt en niets hoort, komt daar anders nooit achter waarom. */}

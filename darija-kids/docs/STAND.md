@@ -440,6 +440,39 @@ noemde nog beide winkels. Dat viel bij de eerste meting niet op omdat
 opengeklapt stonden er drie platformnamen. De meting én de bewaking zijn
 gerepareerd.
 
+**Het keuzescherm na de taalkeuze.** Nieuw, en het hoort **in 1.1 en niet in
+een reparatiebuild**: een productwijziging meesturen met een afwijzingsherstel
+geeft de beoordelaar een nieuwe reden om te kijken.
+
+Het pad had één plek waar het abonnement ter sprake kwam — les vijf, waar de
+gratis lessen ophouden. Dat is de goede plek voor wie aan het uitproberen is
+en de verkeerde voor wie al overtuigd binnenkomt, en dat tweede is hier geen
+bedenksel: wie de app krijgt van iemand die hij kent, heeft het verhaal al
+gehoord voordat hij hem opende. Die moest eerst vier lessen doorlopen voordat
+hij kón betalen.
+
+Nu staat de vraag er één keer, direct na de taalkeuze, en hij blokkeert niets:
+de knop *eerst de gratis lessen* is even breed als de koopknop. Kopen gebeurt
+er niet — de knop gaat naar `/volledig`, waar de ouderpoort staat, de
+verplichte voorwaardentekst, de prijs uit de winkel zelf en de knoppen om
+terug te zetten en op te zeggen. `aanbod.test.ts` bewaakt dat het paneel zelf
+niets koopt, dat het achter alle vier de voorwaarden blijft en dat allebei de
+knoppen onthouden dat er geantwoord is.
+
+Nagemeten in Chromium op 390 bij 844, in zes talen en in licht en donker:
+afslaan bewaart `aanbodGezien`, het paneel blijft na herladen weg, de koopknop
+landt op `/volledig`, en zonder winkelbibliotheek — de website — verschijnt het
+helemaal niet.
+
+**De zin op het welkomscherm.** Daar stond *"Je begint gratis. Na 3 dagen is
+de volledige cursus vanaf € 5,00 per maand"*, in zes talen. Dat leest als een
+proefperiode die bij de installatie begint en waarna de app stopt. Dat is niet
+wat er gebeurt: de vier gratis lessen verlopen nooit, en de drie dagen horen
+bij het abonnement en beginnen pas als iemand dat afsluit. Die zin heeft die
+verwarring aantoonbaar veroorzaakt — hij kwam zo terug in een vraag — en zegt
+nu wat er werkelijk is: *"De hele cursus is een abonnement: de eerste 3 dagen
+gratis, daarna vanaf € 5,00 per maand. Opzeggen kan altijd."*
+
 **Edge-to-edge.** Play Console meldde het bij versiecode 4: vanaf Android 15
 tekent een app die SDK 35 of hoger target standaard tot in de hoeken, en dan
 ligt er inhoud onder de statusbalk en de gebarenbalk. Vijf plekken hadden dat

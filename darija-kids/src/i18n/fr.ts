@@ -741,11 +741,28 @@ export const fr: Strings = {
   },
   welcome: {
     plan: (dagen: number, prijs: string): string =>
-      `Tu commences gratuitement. Après ${dagen} jours, le cours complet coûte à partir de ${prijs} par mois — ou tu t’arrêtes.`,
+      `Le cours complet est un abonnement : les ${dagen} premiers jours sont gratuits, ensuite à partir de ${prijs} par mois. Résiliable à tout moment.`,
     gratisDeel: (vrij: number): string => `Les ${vrij} premières leçons restent gratuites, même sans abonnement.`,
     titel: 'Ahlan ! Bienvenue sur Darijaforkids',
     body: 'Dans quelle langue veux-tu apprendre ? Tu pourras toujours changer plus tard.',
     knop: 'Yallah, on commence',
+  },
+
+
+  /**
+   * Het keuzescherm dat één keer na de taalkeuze verschijnt.
+   *
+   * Het blokkeert niets: de tweede knop is even goed zichtbaar als de eerste.
+   * Het is er voor wie al overtuigd binnenkomt — iemand die de app via een
+   * bekende kreeg — en anders vijf lessen moet doorlopen voordat hij kán
+   * betalen.
+   */
+  aanbod: {
+    titel: 'Passe à la version complète',
+    body: (dagen: number, prijs: string): string =>
+      `Toutes les unités, tous les mots et toutes les histoires. Les ${dagen} premiers jours sont gratuits, ensuite à partir de ${prijs} par mois — résiliable à tout moment.`,
+    knop: 'Voir l’accès complet',
+    later: (vrij: number): string => `D’abord les ${vrij} leçons gratuites`,
   },
 
   feedback: {

@@ -754,7 +754,7 @@ export const nl = {
   },
   welcome: {
     plan: (dagen: number, prijs: string): string =>
-      `Je begint gratis. Na ${dagen} dagen is de volledige cursus vanaf ${prijs} per maand — of je stopt gewoon.`,
+      `De hele cursus is een abonnement: de eerste ${dagen} dagen gratis, daarna vanaf ${prijs} per maand. Opzeggen kan altijd.`,
     gratisDeel: (vrij: number): string => `De eerste ${vrij} lessen blijven altijd gratis, ook zonder abonnement.`,
     titel: 'Ahlan! Welkom bij Darijaforkids',
     body: 'In welke taal wil je leren? Je kunt dit later altijd wisselen.',
@@ -768,6 +768,23 @@ export const nl = {
    * already written, so they can see exactly what goes. The four reasons
    * become that subject line, which means the mailbox sorts itself.
    */
+
+  /**
+   * Het keuzescherm dat één keer na de taalkeuze verschijnt.
+   *
+   * Het blokkeert niets: de tweede knop is even goed zichtbaar als de eerste.
+   * Het is er voor wie al overtuigd binnenkomt — iemand die de app via een
+   * bekende kreeg — en anders vijf lessen moet doorlopen voordat hij kán
+   * betalen.
+   */
+  aanbod: {
+    titel: 'Ga voor de volledige versie',
+    body: (dagen: number, prijs: string): string =>
+      `Alle units, alle woorden en alle verhalen. De eerste ${dagen} dagen gratis, daarna vanaf ${prijs} per maand — opzeggen kan altijd.`,
+    knop: 'Bekijk volledige toegang',
+    later: (vrij: number): string => `Eerst de ${vrij} gratis lessen`,
+  },
+
   feedback: {
     voet: 'Contact',
     knop: 'Tips of vragen? Mail ons',
