@@ -9,7 +9,12 @@ Dat is de vraag die dit bericht moet beantwoorden, en "we zitten ook op
 Instagram" is er geen antwoord op. Wie het kanaal al volgt krijgt daar elke
 dag iets; nog een plek om hetzelfde te zien is werk, geen cadeau.
 
-Het eerlijke antwoord is **doorsturen**. Een bericht uit een kanaal gaat niet
+Er zijn er twee, en ze staan allebei in het bericht. Het eerste is dat elk
+kanaal **iets anders** laat zien: de platen op Instagram, de voorgelezen
+hoofdstukken op YouTube, de vijftien seconden op TikTok. Dat moet je dus ook
+opnoemen — een rij links zonder uitleg is een rij links.
+
+Het tweede is **doorsturen**. Een bericht uit een kanaal gaat niet
 verder dan het kanaal — er staat geen deelknop onder en wie het kopieert
 stuurt een lap tekst door zonder beeld. Een reel of een korte video stuurt
 iemand met één knop naar zijn zus. Dat is de hele reden dat die kanalen er
@@ -33,49 +38,82 @@ ervoor.
 ## Het bericht
 
 ```
-Het kanaal blijft waar het is 👋
+Volg ons ook op de socials 🇲🇦
 
-Hier post ik elke dag iets: een stuk geschiedenis van Marokko, een
-fragment uit een van de verhalen, iets uit de app.
+Het kanaal hier blijft precies zoals het is — elke dag iets uit de app,
+uit de geschiedenis van Marokko of uit een van de verhalen. Daar
+verandert niets aan.
 
-Eén ding kan hier alleen niet, en dat is doorsturen. Een bericht uit een
-kanaal blijft in het kanaal. Daarom staan we vanaf nu ook hier:
+Maar niet alles past in een WhatsApp-bericht. Een film van een halve
+minuut kijkt hier niemand, en een voorleesfragment hoort ergens waar je
+het terug kunt vinden. Daarom staan we vanaf nu ook op vier plekken, elk
+met iets anders:
 
-📺 YouTube — de film, en straks de voorleesfragmenten
+📺 YouTube
+De film over de app, en binnenkort de voorleesfragmenten uit De
+sleutels van Marokko — hele hoofdstukken, rustig voorgelezen.
 youtube.com/@darijaforkidsapp
 
-📸 Instagram — de platen uit de boeken
+📸 Instagram
+De platen uit de boeken. Walili, de poorten van Fes, Ibn Battuta die op
+zijn eenentwintigste vertrok en pas na dertig jaar terugkwam. Met er
+elke keer bij wat er echt gebeurd is.
 instagram.com/darijaforkidsapp
 
-🎬 TikTok — de korte stukjes
+🎬 TikTok
+De korte stukjes. Eén woord Darija, één weetje, één fragment — van
+vijftien seconden.
 tiktok.com/@darijaforkidsapp
 
 👥 Facebook
+Voor wie daar zit, en voor de ooms en tantes die WhatsApp wel gebruiken
+maar geen kanalen volgen. Daar kun je ook reageren.
 facebook.com/darijaforkidsapp
 
-Volg wat bij je past en laat de rest staan. En zie je daar iets dat je
-zus of je buurvrouw kan gebruiken — daar zit wél een deelknop onder.
+Volg wat bij je past en laat de rest staan — het kanaal blijft het
+belangrijkste. En zie je daar iets dat je zus of je buurvrouw kan
+gebruiken: daar zit wél een deelknop onder, en hier niet.
 
-Shukran voor het meelezen 🇲🇦
+Shukran voor het meelezen 🙏
 ```
 
-## Korter, als je het liever kaal houdt
+## Iets korter, zelfde strekking
 
 ```
-Kleine mededeling 👋
+Volg ons ook op de socials 👋
 
-Het kanaal blijft waar het is — elke dag iets uit de app, uit de
-geschiedenis of uit een van de verhalen.
+Het kanaal blijft zoals het is — elke dag iets uit de app, uit de
+geschiedenis of uit een van de verhalen. Maar niet alles past in een
+WhatsApp-bericht, dus staan we vanaf nu ook hier:
 
-Maar wat hier staat kun je niet doorsturen, en daar komen de meeste
-mensen vandaan. Dus staan we vanaf nu ook hier:
+📺 YouTube — de film, en straks hele hoofdstukken voorgelezen
+youtube.com/@darijaforkidsapp
+
+📸 Instagram — de platen uit de boeken, met wat er echt gebeurd is
+instagram.com/darijaforkidsapp
+
+🎬 TikTok — de korte stukjes, vijftien seconden
+tiktok.com/@darijaforkidsapp
+
+👥 Facebook — ook voor de ooms en tantes
+facebook.com/darijaforkidsapp
+
+Volg wat bij je past. En wat je daar ziet kun je wél doorsturen — hier
+niet 🇲🇦
+```
+
+## Kaal, als je het in drie regels wilt
+
+```
+We staan vanaf nu ook op de socials 👋
 
 📸 instagram.com/darijaforkidsapp
 🎬 tiktok.com/@darijaforkidsapp
 📺 youtube.com/@darijaforkidsapp
 👥 facebook.com/darijaforkidsapp
 
-Volg wat bij je past 🇲🇦
+Zelfde verhalen, andere vorm — en daar kun je het doorsturen. Het kanaal
+hier blijft gewoon 🇲🇦
 ```
 
 ## Drie dingen om na te kijken vóór je het stuurt
