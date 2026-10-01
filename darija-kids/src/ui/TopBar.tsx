@@ -170,9 +170,25 @@ export function TopBar() {
         </div>
       </div>
 
+      {/*
+        Het balkje wordt groen zodra het dagdoel gehaald is.
+
+        Het liep vol en bleef saffraan, en dan zegt een vol balkje net zoveel
+        als een halfvol balkje: je moet het getal ernaast lezen om te weten of
+        je er bent. Groen is in deze app al de kleur van "gehaald" -- de
+        weekstaafjes op de profielpagina kleuren mee op dezelfde grens.
+      */}
       <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 pb-2">
-        <Progress value={Math.min(1, done / goal)} tone="saffron" className="h-2" />
-        <span className="shrink-0 text-xs font-bold text-[var(--ink-soft)]">
+        <Progress value={Math.min(1, done / goal)} tone={done >= goal ? 'mint' : 'saffron'} className="h-2" />
+        {/*
+          Het vinkje en niet een groen lettertje. `text-mint-600` op de
+          crèmeachtergrond haalt 3,10:1, en dit is vet van twaalf pixels -- dat
+          telt niet als grote tekst, dus de grens is 4,5:1. Het balkje draagt
+          de kleur, het vinkje draagt het voor wie kleur niet ziet, en de tekst
+          wordt dónkerder in plaats van lichter: van 6,78:1 naar meer.
+        */}
+        <span className={`shrink-0 text-xs font-bold ${done >= goal ? 'text-[var(--ink)]' : 'text-[var(--ink-soft)]'}`}>
+          {done >= goal && <span aria-hidden="true">✓ </span>}
           {t.topbar.voortgang(done, goal, level, into, span)}
         </span>
       </div>
