@@ -548,6 +548,27 @@ Omgekeerd kan het ook: staat de proefperiode er wél en zou je hem niet willen,
 dan zet je `TRIAL_DAYS` op 0 en passen de teksten zich aan. Maar de twee
 moeten hetzelfde zeggen.
 
+**Op 1 oktober nagekeken bij `app.darijaforkids.yearly`: er is geen
+Introductory-Offers-blok te zien.** De bladzijde loopt van Subscription Prices
+door naar Purchase Options, Tax Category en Review Information. Het
+abonnement staat op *Waiting for Review* en is nog nooit goedgekeurd, en dat
+is de waarschijnlijkste verklaring: Apple laat een aanbieding pas aanmaken bij
+een abonnement dat de beoordeling heeft gehaald. Niet bewezen — wel het enige
+dat past bij een scherm waarop ook Save en Add for Review grijs zijn.
+
+**Daar hangt een volgorde aan voor de lanceerdag.** De review-schermafbeelding
+die bij dit abonnement staat toont de knop *START 3 DAGEN GRATIS*. Geef je de
+app vrij voordat die aanbieding bestaat, dan leest de eerste koper drie dagen
+gratis en schrijft Apple meteen € 59,99 af. Dus:
+
+1. Apple keurt 1.0 goed.
+2. **Dan pas** de Introductory Offer aanmaken — *Free Trial*, 3 dagen — op
+   allebei de abonnementen, en nakijken of hij er staat.
+3. Pas daarna vrijgeven.
+
+Stap 2 staat niet in `docs/GO-LIVE.md` en hoort daar wel; tot die tijd staat
+hij hier.
+
 #### En wat het trechtermodel nu is
 
 Het is geen betaalmuur vóór de download, en dat is met opzet:
