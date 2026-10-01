@@ -109,7 +109,11 @@ export function Parents() {
       <div className="mb-8 space-y-3">
         {t.landing.faq(namen).map(([q, a]) => (
           <details key={q} className="group rounded-2xl border border-[var(--line)] bg-[var(--surface-raised)] p-5">
-            <summary className="cursor-pointer list-none font-display font-extrabold marker:hidden">
+            {/* `py-2.5 -my-2.5`: de regel is 24 hoog en dit zijn zeven
+                knoppen onder elkaar. De opvulling maakt het raakvlak 44 en de
+                negatieve marge haalt hem er weer af, dus er verschuift niets.
+                Dezelfde truc als bij de kopbalk. */}
+            <summary className="-my-2.5 cursor-pointer list-none py-2.5 font-display font-extrabold marker:hidden">
               {/* `zellige-600` en niet 500: dit plusje is het enige wat zegt
                   of een vraag open of dicht staat, en 500 haalde op wit 2,49
                   op 1. Nu 5,27. */}

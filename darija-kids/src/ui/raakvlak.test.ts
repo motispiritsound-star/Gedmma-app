@@ -95,3 +95,54 @@ describe('de instellingen', () => {
     expect(knoppen.length, 'hier hoorden er twee te staan').toBeGreaterThanOrEqual(2)
   })
 })
+
+/**
+ * Een tweede ronde, over dertien schermen in plaats van twaalf.
+ *
+ * De veelgestelde vragen zijn sinds de eerste ronde van de landingsbladzijde
+ * naar de ouderpagina verhuisd, en daar stonden zeven uitklappers van 24 hoog
+ * onder elkaar. De stemkeuze in de instellingen kwam uit op 41 — drie te
+ * weinig, en net genoeg om het niet te zien.
+ *
+ * Wat na afloop nog onder de 44 staat, staat daar met reden:
+ *
+ * - het pijltje op `/woorden` (36): de strook eronder is zelf 36 hoog, dus een
+ *   grotere pijl verbergt precies de knop die je wilde zien. Hij is bovendien
+ *   een snelkoppeling — de strook schuift ook met een veeg.
+ * - twee links middenin een zin (16 en 36 hoog): dat is de uitzondering die
+ *   WCAG 2.2 zelf maakt in 2.5.8, voor een doel waarvan de hoogte bepaald
+ *   wordt door de regelafstand van de tekst eromheen.
+ */
+describe('de tweede ronde langs de raakvlakken', () => {
+  it('maakt van een uitklapper een knop van 44, zonder de kaart te verschuiven', () => {
+    const src = bron('../pages/Parents.tsx')
+    expect(src).toContain('-my-2.5 cursor-pointer list-none py-2.5')
+    // Gemeten: de knop is 44 hoog, de kaart 66, en de tekst staat waar hij stond.
+  })
+
+  it('houdt de stemkeuze op 44', () => {
+    const src = bron('../pages/Settings.tsx')
+    expect(src).toContain('max-w-[min(14rem,100%)] rounded-xl border-2 border-[var(--line)] bg-[var(--surface)] px-3 py-2.5')
+    expect(src).not.toContain('max-w-[min(14rem,100%)] rounded-xl border-2 border-[var(--line)] bg-[var(--surface)] px-3 py-2 ')
+  })
+
+  /**
+   * Het naamveld ernaast staat wél op `py-2` en dat is goed: een `input` met
+   * acht pixels opvulling, een regel van vierentwintig en twee keer twee
+   * randpixels komt precies op vierenveertig uit. Een `select` niet, want die
+   * heeft geen regelafstand van zichzelf.
+   */
+  it('laat het naamveld staan, want dat haalt de 44 al', () => {
+    expect(bron('../pages/Settings.tsx')).toContain('className="w-40 rounded-xl border-2 border-[var(--line)] bg-[var(--surface)] px-3 py-2 ')
+  })
+
+  /**
+   * Het pijltje blijft klein, en waaróm staat erbij. Zonder die reden wordt het
+   * bij de volgende ronde "even rechtgezet" en verbergt het de strook.
+   */
+  it('legt bij het pijltje uit waarom het kleiner mag', () => {
+    const src = bron('../pages/Words.tsx')
+    expect(src).toContain('zesendertig bij zesendertig')
+    expect(src).toContain('de strook eronder is zelf zesendertig hoog')
+  })
+})

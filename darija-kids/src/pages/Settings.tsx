@@ -316,7 +316,9 @@ export function SettingsPage() {
             id="voice"
             value={s.voiceURI}
             onChange={(e) => setSetting('voiceURI', e.target.value)}
-            className="max-w-[min(14rem,100%)] rounded-xl border-2 border-[var(--line)] bg-[var(--surface)] px-3 py-2 outline-none focus:border-zellige-500"
+            /* `py-2.5` en niet `py-2`: dit kwam uit op 41 hoog, en 44 is de
+               ondergrens die Apple en Google allebei aanhouden. */
+            className="max-w-[min(14rem,100%)] rounded-xl border-2 border-[var(--line)] bg-[var(--surface)] px-3 py-2.5 outline-none focus:border-zellige-500"
           >
             <option value="">{t.settings.stemAuto}</option>
             {bruikbaar.arabisch.length > 0 && (

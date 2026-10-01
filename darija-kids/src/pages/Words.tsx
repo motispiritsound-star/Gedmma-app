@@ -222,8 +222,13 @@ export function Words() {
  * Het pijltje aan de rand van de onderwerpenbalk.
  *
  * Klein genoeg om de knop eronder niet te verbergen, groot genoeg om met een
- * duim te raken: achtendertig bij achtendertig, op de rand en verticaal in het
+ * duim te raken: zesendertig bij zesendertig, op de rand en verticaal in het
  * midden. Hij staat er alleen als er die kant op iets te halen valt.
+ *
+ * Die zesendertig is met opzet minder dan de vierenveertig die Apple en Google
+ * aanhouden: de strook eronder is zelf zesendertig hoog, en een pijl die daar
+ * overheen steekt verbergt precies de knop die je wilde zien. Hij is bovendien
+ * een snelkoppeling en geen enige weg -- de strook schuift ook met een veeg.
  */
 function Pijl({ kant, label, onClick }: { kant: 1 | -1; label: string; onClick: () => void }) {
   return (
