@@ -57,7 +57,12 @@ export function Bonus() {
   // and a queue that rebuilt itself halfway through would be a different round
   // than the one that was started.
   const exercises = useMemo(
-    () => (task ? task.build(pool, seed) : []),
+    // `ready` erbij, en niet alleen in de bewaking hieronder: die staat ná
+    // deze regel, en een `useMemo` draait tijdens het tekenen. `build` werd dus
+    // altijd eerst aangeroepen -- ook voor een opdracht waar nog te weinig voor
+    // geleerd is. Vandaag valt dat niet om, maar de bewaking leest alsof ze
+    // beschermt en dat deed ze niet.
+    () => (task?.ready(pool) ? task.build(pool, seed) : []),
     [task, seed],
   )
 

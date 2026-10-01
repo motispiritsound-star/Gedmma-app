@@ -120,7 +120,21 @@ export function poolFrom(s: State = getState(), opts: { canSpeak: boolean } = { 
 
   const metLetters = LETTERS.map((l) => l.id).filter((id) => s.extraCards[letterKey(id)])
   const metSentences = ALL_SENTENCES.map((z) => z.id).filter((id) => s.extraCards[sentenceKey(id)])
-  const metWords = Object.values(s.cards).sort((a, b) => a.strength - b.strength).map((c) => c.id)
+  /*
+   * De sleutel van de verzameling is het woord-id, en die is er altijd.
+   *
+   * Hier stond `.map((c) => c.id)`. Dat klopt zolang elke kaart zijn eigen id
+   * meedraagt -- `newCard(id)` zet hem -- maar een kaart uit een oudere of
+   * beschadigde opslag heeft hem niet, en dan staat er een lijst vol
+   * `undefined` in de poel. Daarmee komt `word(undefined)` langs, en dat werpt:
+   * "Onbekend woord-id". Vier van de vijf spellen vallen er in één keer mee om.
+   *
+   * De sleutel kan dat niet overkomen, en `?? 0` vangt een kaart zonder
+   * sterkte -- die zou de sortering anders op NaN zetten.
+   */
+  const metWords = Object.entries(s.cards)
+    .sort(([, a], [, b]) => (a?.strength ?? 0) - (b?.strength ?? 0))
+    .map(([id]) => id)
 
   return {
     letters: weakestFirst(metLetters, letterKey),

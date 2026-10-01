@@ -3,9 +3,9 @@ import {
   buildDictationRound, buildMarathonRound, buildScribeRound, buildSentenceRound, buildSpeakRound,
   isLetterExercise, isScribeExercise, isSentenceExercise,
 } from './exercises'
-import { BONUS, bonusOfTheDay, bonusTask, type BonusId, type BonusPool } from './bonus'
+import { BONUS, bonusOfTheDay, bonusTask, poolFrom, type BonusId, type BonusPool } from './bonus'
 import { countTrace, MASK, scoreTrace } from './scribe'
-import { getState, importProgress, mastery, today, type State } from './store'
+import { getState, importProgress, mastery, setState, today, type State } from './store'
 import { newCard, type Card } from './srs'
 import { LETTERS } from '../content/alphabet'
 import { ALL_SENTENCES } from '../content/sentences'
@@ -204,5 +204,57 @@ describe('an older save', () => {
     // bonus is switched off for everybody who already had the app.
     expect(s.settings.schrijven).toBe(true)
     expect(s.settings.lang).toBe('nl')
+  })
+})
+
+describe('de poel overleeft een kaart die niet klopt', () => {
+  /**
+   * `poolFrom` las het woord-id uit de kaart zelf: `.map((c) => c.id)`. Dat
+   * klopt zolang elke kaart hem meedraagt — `newCard(id)` zet hem — maar een
+   * kaart uit een oudere of beschadigde opslag heeft hem niet. Dan staat er
+   * een lijst vol `undefined` in de poel, komt `word(undefined)` langs, en
+   * werpt die: *"Onbekend woord-id"*. Nagemeten in de browser viel daarmee
+   * vier van de vijf spellen in één keer om, en het kind kreeg het foutscherm.
+   *
+   * De sleutel van de verzameling ís het woord-id en kan dat niet overkomen.
+   */
+  it('leest het woord-id uit de sleutel en niet uit de kaart', () => {
+    const kapot = {
+      salam: { ease: 2.4, interval: 1, due: 0, reps: 1, lapses: 0, strength: 0.5 },
+      shukran: { ease: 2.4, interval: 1, due: 0, reps: 1, lapses: 0, strength: 0.2 },
+    } as unknown as State['cards']
+    setState({ cards: kapot, extraCards: {} })
+    const poel = poolFrom(getState(), { canSpeak: false })
+    expect(poel.words).not.toContain(undefined)
+    expect([...poel.words].sort()).toEqual(['salam', 'shukran'])
+  })
+
+  /** En een kaart zonder sterkte mag de sortering niet op NaN zetten. */
+  it('sorteert ook zonder sterkte', () => {
+    const kapot = {
+      salam: { ease: 2.4, interval: 1, due: 0, reps: 1, lapses: 0 },
+      shukran: { ease: 2.4, interval: 1, due: 0, reps: 1, lapses: 0, strength: 0.9 },
+    } as unknown as State['cards']
+    setState({ cards: kapot, extraCards: {} })
+    const poel = poolFrom(getState(), { canSpeak: false })
+    expect(poel.words).toHaveLength(2)
+    expect(poel.words.every((id) => typeof id === 'string')).toBe(true)
+  })
+})
+
+describe('een opdracht die nog niet aan de beurt is', () => {
+  /**
+   * `Bonus.tsx` bewaakt dit: een adres waar nog te weinig voor geleerd is
+   * stuurt terug naar het menu. Maar die bewaking stond ná de `useMemo` die
+   * `build` aanroept, en een `useMemo` draait tijdens het tekenen. `build`
+   * werd dus altijd eerst aangeroepen, ook voor een opdracht die niet klaar
+   * was. Vandaag valt dat niet om — nagemeten van nul tot acht woorden — maar
+   * de bewaking las alsof ze beschermde en dat deed ze niet.
+   */
+  it('wordt niet gebouwd voordat de bewaking heeft gekeken', () => {
+    const { readFileSync } = require('node:fs') as typeof import('node:fs')
+    const bron = readFileSync(new URL('../pages/Bonus.tsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n')
+    expect(bron).toContain('task?.ready(pool) ? task.build(pool, seed) : []')
+    expect(bron).not.toContain('(task ? task.build(pool, seed) : [])')
   })
 })
