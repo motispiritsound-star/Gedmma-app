@@ -888,6 +888,71 @@ handmatig vinkje.
 Stand: **1383 tests groen in 61 bestanden**, `tsc -b --force --noEmit` schoon,
 productiebouw schoon.
 
+#### De derde doorloop — 1 oktober, avond laat
+
+Vijf vondsten, waarvan twee die alleen op Android te zien zijn en één die een
+hele categorie fouten afdekt.
+
+**Zeven kleurklassen deden niets.** Tailwind 4 maakt `text-zellige-200` alleen
+aan als er een `--color-zellige-200` bestaat. Bestaat hij niet, dan is dat geen
+fout en geen waarschuwing: de regel verdwijnt en het element houdt de kleur die
+het al had. Zeven van zulke klassen stonden in de app — `zellige-200`,
+`zellige-400`, `mint-200`, `mint-300`, `mint-700`, `saffron-700`, `khatim-300`
+— en op één na allemaal `dark:`-varianten, dus precies de regels die je in de
+lichte stand niet ziet missen. Het badje "incl. e-boek" viel daardoor in de
+donkere stand terug op zijn lichte kleur: **2,06 op 1**.
+
+**En negen groepen tekst waren te licht.** Gemeten over twaalf bladzijden in
+allebei de standen. De grootste was `text-zellige-600`, de kleur van de
+transcriptie — "salam" onder het Arabisch — op 3,74, en alleen in het
+woordenboek al driehonderdvier keer. `zellige-600` en `-700` zijn daarom
+allebei een trede donkerder; verder kregen de plus-en-min bij de veelgestelde
+vragen, de wisknop, het sterrengetal op de profielpagina en het e-boekbadje een
+eigen reparatie. **Na afloop: twaalf bladzijden, allebei de standen, alles
+haalt de norm.**
+
+`kleuren.test.ts` leest voortaan alle kleurklassen uit de bron en legt ze naast
+de tokens, en controleert dat elke reeks van licht naar donker loopt. Dat is de
+test die de hele categorie afdekt.
+
+**Acht knoppen waren te klein om te raken.** De veelgestelde vragen staan sinds
+deze ochtend op de ouderpagina: zeven uitklappers van 24 pixels hoog onder
+elkaar. De stemkeuze in de instellingen kwam uit op 41. Van elf te kleine
+raakvlakken naar drie, en die drie staan er met reden — het pijltje op
+`/woorden` (36, want de strook eronder is zelf 36 en een grotere pijl verbergt
+precies de knop die je wilde zien) en twee links middenin een zin, waar WCAG
+2.2 zelf de uitzondering voor maakt.
+
+**De terugknop van Android sloot het keuzescherm de app af.** Dat paneel heeft
+geen `onClose` — het heeft zijn eigen twee knoppen — dus stond er geen
+luisteraar op de terugknop en deed Android zijn standaardding. Op een verse
+installatie is er geen bladzijde om naar terug te gaan, dus dat is de app
+verlaten, bij het tweede scherm dat een nieuwe gebruiker ooit ziet. Het paneel
+kent nu `onTerug` naast `onClose`: Escape en de terugknop sluiten het, een tik
+náást het paneel niet. Dat verschil is er niet voor de sier — dit scherm komt
+één keer voorbij, en een kinderduim die ernaast landt zou het voorgoed
+wegnemen.
+
+**En de terugknop liep zomaar een les uit.** Het kruisje vraagt "stoppen met
+deze les?", de terugknop deed dat niet. Nu wel.
+
+**Het foutscherm had een onleesbare knop.** Dat scherm is met de hand
+ingetypt — geen klassen, geen variabelen, niets wat zelf nog kan omvallen — en
+dat is precies waarom de kleuren er achterbleven toen de tokens donkerder
+werden. Wit op `#14b8a6`: 2,49, op de enige knop van het scherm.
+
+**Gemeten en in orde, dus niets aan gedaan.** Het wegschrijven van de
+voortgang: `emit()` zet bij elke wijziging de hele staat in de opslag. Met een
+jaar voortgang erin (66 kB, 504 kaarten) kost dat 3,05 ms per keer bij 6×
+afgeremde processor, en er gaan 1,3 schrijfacties per beantwoorde vraag
+overheen. Dat is vier milliseconde per antwoord — een kwart beeldje, niet te
+voelen. Geen reden om er iets aan te forceren. En afgezien van de zeven
+kleurklassen staat er geen enkele klasse in de app die de gebouwde css niet
+haalt.
+
+Stand: **1399 tests groen in 62 bestanden**, `tsc -b --force --noEmit` schoon,
+productiebouw schoon.
+
 ### Nog na te kijken bij Google Play — kijken, niet wijzigen
 
 Drie dingen die pas opvallen als het te laat is. **Zolang inzending 4 in
