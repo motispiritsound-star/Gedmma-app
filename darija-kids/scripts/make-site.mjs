@@ -402,15 +402,19 @@ const downloadBlock = (lang) => {
  * ergens anders op de site opnieuw gebruikt worden zonder dat er iets in het
  * paginascript hoeft te worden bijgezet.
  */
-const houForm = (lang) => {
+const houForm = (lang, noot) => {
   const c = SITE[lang]
+  /* Het onderschrift verschilt per bladzijde: op de startpagina gaat het over
+     de app, op de boekenbladzijde over een nieuw deel. De rest is hetzelfde,
+     en dat hoort ook zo — het is één lijst. */
+  const onder = noot ?? c.houNoot
   return `<form class="houform" data-hou novalidate>
       <input type="email" name="email" placeholder="${esc(c.houAdres)}" aria-label="${esc(c.houAdres)}"
              autocomplete="email" inputmode="email" required>
       <button class="mailbtn" type="submit">${esc(c.houMeOpDeHoogte)}</button>
     </form>
     <p class="houmelding" role="status" hidden></p>
-    <p class="klein houNoot">${esc(c.houNoot)}</p>
+    <p class="klein houNoot">${esc(onder)}</p>
     <style>
       .houform { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; margin: 1rem 0 .5rem }
       /* display:flex wint van de display:none die bij het hidden-kenmerk
@@ -1072,8 +1076,8 @@ const booksPage = (lang) => {
   <div id="proef" class="lezer" hidden></div>
 
   ${WINKEL_OPEN ? '' : `<p class="soon">${esc(c.boekSlot)}</p>`}
-  <p class="slotknoppen"><a class="mailbtn" href="${mailto}?subject=${encodeURIComponent(c.boekTitel)}&body=${encodeURIComponent(c.houMeOpDeHoogteMail)}">${esc(c.houMeOpDeHoogte)}</a>
-     <a class="mailbtn zacht" href="${p.checkout}">${esc(c.afrekenLink)}</a></p>
+  ${houForm(lang, c.houNootBoeken)}
+  <p class="slotknoppen"><a class="mailbtn zacht" href="${p.checkout}">${esc(c.afrekenLink)}</a></p>
 </div>
 
 <script src="/lezer.js"></script>

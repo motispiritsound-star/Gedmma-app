@@ -221,6 +221,7 @@ const nl = {
   houFoutAdres: 'Dat adres ziet er niet goed uit. Kijk even of er een typefout in zit.',
   houFout: 'Er ging iets mis. Probeer het zo nog eens.',
   houNoot: 'Eén bericht zodra de app er is. Geen advertenties, en uitschrijven kan met één klik.',
+  houNootBoeken: 'Eén bericht zodra er een nieuw deel is. Geen advertenties, en uitschrijven kan met één klik.',
 
   videoTitel: 'Een halve minuut, en je weet het',
   videoBody:
@@ -448,6 +449,7 @@ const fr: SiteCopy = {
   houFoutAdres: 'Cette adresse a l’air incorrecte. Vérifiez qu’il n’y a pas de faute de frappe.',
   houFout: 'Quelque chose s’est mal passé. Réessayez dans un instant.',
   houNoot: 'Un seul message dès que l’application est là. Sans publicité, et se désinscrire prend un clic.',
+  houNootBoeken: 'Un seul message dès qu’un nouveau tome paraît. Sans publicité, et se désinscrire prend un clic.',
 
   videoTitel: 'Trente secondes, et vous saurez',
   videoBody:
@@ -672,6 +674,7 @@ const de: SiteCopy = {
   houFoutAdres: 'Diese Adresse sieht nicht richtig aus. Schau kurz nach einem Tippfehler.',
   houFout: 'Da ist etwas schiefgegangen. Versuch es gleich noch einmal.',
   houNoot: 'Eine Nachricht, sobald die App da ist. Keine Werbung, und abmelden geht mit einem Klick.',
+  houNootBoeken: 'Eine Nachricht, sobald ein neuer Band da ist. Keine Werbung, und abmelden geht mit einem Klick.',
 
   videoTitel: 'Eine halbe Minute, und Sie wissen Bescheid',
   videoBody:
@@ -896,6 +899,7 @@ const es: SiteCopy = {
   houFoutAdres: 'Esa dirección no parece correcta. Comprueba si hay alguna errata.',
   houFout: 'Algo ha salido mal. Vuelve a intentarlo en un momento.',
   houNoot: 'Un solo mensaje en cuanto la aplicación esté lista. Sin publicidad, y darse de baja es un clic.',
+  houNootBoeken: 'Un solo mensaje en cuanto haya un tomo nuevo. Sin publicidad, y darse de baja es un clic.',
 
   videoTitel: 'Medio minuto y lo sabrás',
   videoBody:
@@ -1120,6 +1124,7 @@ const it: SiteCopy = {
   houFoutAdres: 'Questo indirizzo non sembra giusto. Controlla se c’è un errore di battitura.',
   houFout: 'Qualcosa è andato storto. Riprova tra poco.',
   houNoot: 'Un solo messaggio appena l’app c’è. Niente pubblicità, e cancellarsi è un clic.',
+  houNootBoeken: 'Un solo messaggio appena esce un nuovo volume. Niente pubblicità, e cancellarsi è un clic.',
 
   videoTitel: 'Mezzo minuto e capirai',
   videoBody:
@@ -1345,6 +1350,7 @@ const en: SiteCopy = {
   houFoutAdres: 'That address does not look right. Have a quick look for a typo.',
   houFout: 'Something went wrong. Try again in a moment.',
   houNoot: 'One message as soon as the app is there. No ads, and unsubscribing takes one click.',
+  houNootBoeken: 'One message as soon as a new part is out. No ads, and unsubscribing takes one click.',
 
   videoTitel: 'Half a minute, and you will know',
   videoBody:

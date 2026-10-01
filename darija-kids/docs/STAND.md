@@ -318,8 +318,14 @@ Twee dingen die onderweg stilletjes mis hadden kunnen gaan:
 - `display: flex` wint van de `display: none` van het hidden-kenmerk, dus het
   formulier bleef staan ná het versturen, onder "kijk in je mail".
 
-De mailto-knop op de boekenbladzijde staat er nog. Die gaat over nieuwe boeken
-en niet over de app; dezelfde behandeling is daar winst, maar geen haast.
+**De boekenbladzijde heeft hetzelfde gekregen**, met een eigen onderschrift:
+daar gaat het over een nieuw deel en niet over de app. De rest is gelijk, want
+het is één lijst. Nagemeten in het Nederlands en het Duits: één verzoek, met de
+taal van de bladzijde erin.
+
+Wat er aan `mailto:` overblijft op de site zijn zes contactknoppen ("hoe werkt
+het afrekenen") en zes kale mailadressen. Dat zijn vragen en geen aanmeldingen,
+en die horen een mailto te zijn.
 
 ### De Play-winkelpagina is nog dicht
 
