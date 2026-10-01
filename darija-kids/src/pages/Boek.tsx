@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ebookFile } from '../engine/billing'
+import { ebookFile, ebookWachtTot } from '../engine/billing'
 import { useStore } from '../engine/store'
-import { useT } from '../i18n'
+import { localeOf, useT } from '../i18n'
 import { Button, Card } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 
@@ -29,14 +29,40 @@ export function Boek() {
   const t = useT()
   const lang = useStore((s) => s.settings.lang)
   const mag = useStore((s) => s.ebook)
+  /** Recht op het boek, maar de gratis dagen lopen nog. */
+  const wachtTot = useStore((s) => ebookWachtTot(s))
   const [mislukt, setMislukt] = useState(false)
 
+  /*
+   * Twee verschillende manieren om het boek nog niet te hebben, en ze horen
+   * niet hetzelfde te zeggen.
+   *
+   * Hier stond één tak met `t.unlock.slotTitel` erin: "Deze unit hoort bij de
+   * volledige toegang". Dat is de tekst van een lés achter het slot, en voor
+   * wie het jaarabonnement net heeft afgesloten is hij ronduit verkeerd — die
+   * krijgt te lezen dat hij moet kopen wat hij een uur geleden gekocht heeft.
+   * Op een scherm waar geld achter zit is dat het soort bericht waar iemand
+   * over mailt.
+   *
+   * De tekst voor het wachten bestond al en stond op `/volledig`: hij zegt wát
+   * er wacht en vanaf wanneer. Hier is nu dezelfde, met dezelfde datumopmaak.
+   */
   if (!mag) {
+    const wacht = wachtTot !== null
     return (
       <div className="mx-auto max-w-md px-4 py-16 text-center">
         <Mascot mood="denk" />
-        <p className="mt-4 font-display text-xl font-extrabold">{t.unlock.slotTitel}</p>
-        <Link to="/volledig" className="mt-4 inline-block"><Button>{t.unlock.slotKnop}</Button></Link>
+        <h1 className="mt-4 font-display text-xl font-extrabold">📖 {t.unlock.boek.titel}</h1>
+        <p className="mt-2 text-[var(--ink-soft)]">
+          {wacht
+            ? t.unlock.boek.wacht(new Intl.DateTimeFormat(localeOf(lang), { day: 'numeric', month: 'long' }).format(wachtTot))
+            : t.unlock.boek.bijJaar}
+        </p>
+        <Link to="/volledig" className="mt-5 inline-block">
+          <Button variant={wacht ? 'secondary' : 'primary'}>
+            {wacht ? t.common.terug : t.unlock.slotKnop}
+          </Button>
+        </Link>
       </div>
     )
   }

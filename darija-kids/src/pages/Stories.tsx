@@ -66,7 +66,9 @@ export function StoryReader() {
     return (
       <div className="mx-auto max-w-md px-4 py-16 text-center">
         <Mascot mood="denk" />
-        <p className="mt-4 font-display text-xl font-extrabold">{t.stories.bestaatNiet}</p>
+        {/* Een `h1` en geen `p`: dit is het enige wat op de bladzijde staat, en
+            zonder kop landt een schermlezer hier op niets. */}
+        <h1 className="mt-4 font-display text-xl font-extrabold">{t.stories.bestaatNiet}</h1>
         <Link to="/verhalen" className="mt-4 inline-block"><Button>{t.stories.alleVerhalen}</Button></Link>
       </div>
     )
