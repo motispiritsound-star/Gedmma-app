@@ -469,6 +469,28 @@ noemde nog beide winkels. Dat viel bij de eerste meting niet op omdat
 opengeklapt stonden er drie platformnamen. De meting én de bewaking zijn
 gerepareerd.
 
+**De weg naar het abonnement, op elk scherm.** Er was er één: ergens tegen een
+slotje aanlopen. Wie na vier gratis lessen nog eens wilde kijken wat het kost,
+moest eerst een gesloten deur zoeken. Nu staat er een knop in de kopbalk —
+overal waar die balk staat, dus niet in een les en niet op de
+landingsbladzijde. Weg zodra er betaald is. `raakvlak.test.ts` bewaakt het
+raakvlak van 44, het verdwijnen bij betaald, en dat het woord op geen enkele
+breedte wegvalt.
+
+**Het kaartje als de gratis lessen op zijn.** Wie de vierde gratis les
+afmaakte kreeg zijn sterren, een knop "verder op pad", en liep daarna tegen een
+slotje aan waar niemand hem voor gewaarschuwd had. Nu staat de mededeling op
+het scorescherm, onder de beloningen, en wisselen de twee knoppen van plek —
+"verder op pad" is op dat moment immers een knop naar een slot.
+
+**Het e-boek pas na de proefperiode.** Het boek zit bij het jaarabonnement en
+het is een pdf: wie hem één keer opent, houdt hem. Iemand kon het jaar
+afsluiten, het boek opslaan en op dag twee opzeggen — nul betaald, een product
+van € 14,99 mee. Nu is er een toezegging (`ebookVanaf`) en een boek (`ebook`),
+en het tweede komt er alleen als de dag voorbij is én de winkel dan nog zegt
+dat het abonnement loopt. Zie `docs/PAYMENTS.md` voor de twee dingen die dit
+niet oplost.
+
 **Het keuzescherm na de taalkeuze.** Nieuw, en het hoort **in 1.1 en niet in
 een reparatiebuild**: een productwijziging meesturen met een afwijzingsherstel
 geeft de beoordelaar een nieuwe reden om te kijken.
