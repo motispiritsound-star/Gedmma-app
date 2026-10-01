@@ -51,22 +51,21 @@ dat het telt. Niet maandag: wat er maandagochtend binnenkomt, verdrinkt.
 
 **De dag dat Play groen wordt, is niet de dag van de lancering.** Dat is de
 dag dat je hem kunt kiezen. Pak de eerstvolgende dinsdag, woensdag of
-donderdag die minstens drie dagen verderop ligt, en draai in die drie dagen
-de aanloop uit `LANCERING.md` §16 fase 2.
+donderdag.
+
+Er hoort geen aftelling bij — zie `LANCERING.md` §16 fase 2. Het kanaal gaat
+gewoon door met wat het elke dag doet, en op de gekozen dag staat het bericht
+ertussen. Dat scheelt je ook een belofte die je niet in de hand hebt.
 
 Twee winkels hoeven niet op dezelfde minuut. Apple heeft na "vrijgeven" nog
 een paar uur nodig, Play is binnen het uur zichtbaar. Dus: **Apple eerst,
 Play erachteraan**, en pas posten als allebei de adressen echt opengaan in
 een browser waar je niet bent ingelogd.
 
-## Als je meteen live wilt
+## Het hele werk op de dag zelf
 
-De aftelling van zeven dagen (LANCERING §16, fase 2) is de betere lancering:
-je verzamelt er publiek mee voordat er iets te downloaden is. Maar ze kost
-zeven dagen waarin de app klaar in de winkel staat te wachten, en dat is een
-afweging die jij maakt, niet ik.
-
-Wil je op de dag van goedkeuring naar buiten, dan is dit het hele werk:
+Vier regels. Er gaat geen aftelling aan vooraf — het kanaal loopt gewoon door
+zoals het elke dag loopt.
 
 ```bash
 npm run live -- --google
@@ -95,10 +94,6 @@ hetzelfde uitzien.
 
 En dan de berichten hieronder, in de volgorde van §3. Reken op een uur voor
 alles bij elkaar, waarvan vijftig minuten persoonlijke WhatsApp-berichten.
-
-De zeven aftelposten zijn dan niet verloren: post ze in de week **ná** de
-lancering, in dezelfde volgorde. Ze zijn geschreven om iets te geven, niet om
-af te tellen — daarom werken ze allebei de kanten op.
 
 ---
 
@@ -374,9 +369,13 @@ Two minutes a day. The first four lessons are free.
 
 ## De zeven posten eromheen
 
-Vóór de lancering zijn dit de aftelposten (LANCERING §16, fase 2). Ga je
-meteen live, dan zijn het de eerste zeven dagen daarna. Eén per dag, en elke
-post geeft iets — een aftelbericht zonder inhoud kost je volgers.
+Geen aftelling, dus dit zijn de **eerste zeven dagen ná** de lancering — zie
+`LANCERING.md` §16 fase 2. Eén per dag, en elke post geeft iets. Dat is ook
+waarom ze allebei de kanten op werken: ze zijn geschreven om iets te geven en
+niet om af te tellen.
+
+Wil je er eentje vóór de lancering gebruiken, dan kan dat gewoon tussen je
+dagelijkse posten door. Het is geen reeks die in volgorde moet.
 
 **1 — het filmpje.** Dertig seconden, geen bijschrift dat het uitlegt.
 

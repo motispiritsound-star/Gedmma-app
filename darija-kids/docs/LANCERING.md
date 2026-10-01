@@ -545,9 +545,10 @@ ertussen. Het is het enige bezit in dit hele plan dat niemand kan afnemen.
 En het kost je niets aan productie: de app die je al gebouwd hebt, is de
 inhoud.
 
-## 16. De aftelling op het kanaal
+## 16. Het kanaal tot de lancering
 
-Het kanaal staat. Dit is wat je erop zet tot de dag dat de app er is.
+Het kanaal staat. Dit is wat je erop zet tot de dag dat de app er is — en er
+wordt niet afgeteld, in geen van de twee fases. Waarom staat in fase 2.
 
 ### Eerst iets rechtzetten: een kanaal kent geen aanmelden
 
@@ -558,22 +559,26 @@ wie volgt krijgt je lanceringsbericht vanzelf.
 Vraag dus niet "meld je aan als je interesse hebt". Vraag: **"Volg dit kanaal,
 dan hoor je het als eerste."** Eén tik in plaats van een formulier.
 
-Wie méér wil dan volgen, stuur je naar de mailknop op darijaforkids.eu
-(*Hou me op de hoogte*). Dat is je tweede net, en die lijst is wél van jou.
+Wie méér wil dan volgen, stuur je naar het veld op darijaforkids.eu onder
+*Hou me op de hoogte*. Dat was een mailknop en is sinds 30 september een echt
+formulier: het adres gaat de database in en de bezoeker krijgt een
+bevestigingsmail. Dat is je tweede net, en die lijst is wél van jou — tellen
+doe je met `npm run belangstelling`.
 
-### En één knop in Play Console die dit mogelijk maakt
+### De knop die de lanceerdag van jou maakt
 
-Aftellen naar een datum die je niet kent, werkt niet. Nu staat je release op
-automatisch vrijgeven: zodra Google klaar is met de beoordeling, staat de app
-in de winkel — misschien morgen, misschien over twee weken, en altijd op een
-moment dat jij niet hebt gekozen.
+Zonder deze knop bepaalt Google je lanceerdag. Zodra de beoordeling klaar is
+staat de app in de winkel — misschien morgen, misschien over twee weken, en
+altijd op een moment dat jij niet hebt gekozen. Op een dinsdagnacht, terwijl
+je bericht nog moet.
 
-Zet daarom **Managed publishing** aan: *Publishing overview → Manage
-publishing*. Goedgekeurde wijzigingen blijven dan wachten tot jij op de knop
-drukt. Dan kies je de dag zelf, kun je fatsoenlijk aftellen, en zet je de app
-live op het moment dat je bericht klaarstaat in plaats van op een dinsdagnacht.
+**Managed publishing** houdt een goedgekeurde release vast tot jij op de knop
+drukt: *Publishing overview → Manage*. Dan kies je de dag zelf.
 
-Doe dit **nu**, voordat de beoordeling klaar is.
+**Staat aan**, nagekeken op 30 september. Dat is ook meteen de verklaring voor
+de 404 op de winkelpagina terwijl de release op Productie staat: hij wacht op
+jou. Bij Apple doet *Manually release this version* hetzelfde, en dat is op
+1 oktober bewezen — de goedkeuring publiceerde niets.
 
 ### Fase 1 — tot de goedkeuring: geven, niet aftellen
 
@@ -607,59 +612,32 @@ Volg dit kanaal, dan hoor je het als eerste. En stuur een woordje gerust
 door naar je familiegroep 🇲🇦
 ```
 
-### Fase 2 — de aanloop
+### Fase 2 — geen aanloop, gewoon doorgaan
 
-Pas beginnen als Google heeft goedgekeurd en je de dag zelf in de hand hebt.
-Elke dag één post, en elke post geeft iets — een aftelbericht zonder inhoud
-kost je volgers.
-
-| Dag | De post |
-|---|---|
-| **T-7** | *Over een week staat hij er.* Het filmpje van dertig seconden. |
-| **T-6** | Het woordje van de dag, gewoon. Niets over de lancering. |
-| **T-5** | Waarom Darija en geen Standaardarabisch — vier regels, het verschil dat iedereen voelt maar niemand uitlegt. |
-| **T-4** | Een schermafbeelding van het leerpad: *zeventien units, van het alfabet tot afdingen op de souq.* |
-| **T-3** | Jouw verhaal. Vier zinnen, geen verkooppraat: het telefoongesprek met je moeder en wat je kind antwoordde. |
-| **T-2** | *Wat kost het?* Eerlijk en compleet: de eerste vier lessen gratis, daarna de prijs. Nooit verstoppen — wie het op de dag zelf ontdekt, voelt zich beetgenomen. |
-| **T-1** | *Morgen.* Eén zin, één plaatje. |
-| **T-0** | De link. |
-
-#### Drie dagen in plaats van zeven — wat er nu past
-
-Die zeven zijn geschreven voor een kanaal dat al staat. Op 1 oktober staat het
-anders: Apple heeft goedgekeurd en houdt de app vast, Play beoordeelt nog, en
-het kanaal heeft drieënveertig volgers.
-
-Daar volgen twee dingen uit.
+Hier stond een aftelling van zeven posten, en daarna een van drie. Allebei
+weg, met opzet.
 
 **Je kunt niet aftellen naar een dag die je niet weet.** Play zegt niet
-vooraf wanneer hij groen wordt. Een aftelling die begint voordat je de datum
-hebt, is een belofte die je misschien niet haalt — en dat is het ergste wat je
+vooraf wanneer hij goedkeurt. Een aftelling die begint voordat je de datum
+hebt, is een belofte die je misschien niet haalt, en dat is het ergste wat je
 een nieuw kanaal kunt aandoen.
 
-**En zeven posten aftelling is veel voor drieënveertig mensen.** In een kleine
-ruimte klinkt een week aankondigen als drukte.
+**En een aftelling vraagt, waar het kanaal tot nu toe gaf.** Elke dag een
+stuk geschiedenis, een fragment uit een verhaal, iets uit de app — dat is
+waarom er drieënveertig mensen zitten. Zeven dagen "nog even wachten" is een
+ander kanaal dan het kanaal waarop ze zich hebben geabonneerd.
 
-Dus: de dag dat Play groen wordt, kies je de eerstvolgende dinsdag, woensdag
-of donderdag die minstens drie dagen verderop ligt, en draai je deze vier:
+Dus: **ga door zoals je bezig bent.** Elke dag één ding dat op zichzelf de
+moeite waard is. Op de dag dat allebei de winkels open zijn, post je het
+bericht hieronder, en de dag erna ga je weer verder met het woordje van de
+dag. Geen opbouw, geen aankondiging van een aankondiging.
 
-| Dag | De post |
-|---|---|
-| **T-3** | Jouw verhaal. Vier zinnen, geen verkooppraat: het telefoongesprek met je moeder en wat je kind antwoordde. |
-| **T-2** | *Wat kost het?* Eerlijk en compleet: de eerste vier lessen gratis en voorgoed, daarna drie dagen proberen en de prijs. Nooit verstoppen — wie het op de dag zelf ontdekt, voelt zich beetgenomen. |
-| **T-1** | *Morgen.* Eén zin en het filmpje van dertig seconden. |
-| **T-0** | De link. |
-
-De drie die je overslaat — het woordje van de dag, waarom Darija en geen
-Standaardarabisch, en de plaat van het leerpad — zijn niet verloren. Ze geven
-iets in plaats van iets te vragen, dus ze werken net zo goed in de week erna.
-Zet ze daar neer, in fase 3.
-
-**En dan nog iets over "de link".** Het zijn twee winkels, en twee links onder
-één bericht laat de helft van je lezers kiezen tussen dingen waar ze niets van
-weten. Stuur ze naar **darijaforkids.eu**: daar staan na `npm run live` beide
-winkelknoppen, en de bezoeker pakt vanzelf de goede. Eén adres, dat je bovendien
-later nog kunt bijsturen zonder dat het bericht onjuist wordt.
+Eén ding is het waard om in die dagelijkse reeks een plek te geven, en niet
+omdat het de lancering helpt: **wat het kost.** De eerste vier lessen gratis
+en voorgoed, daarna drie dagen proberen en dan de prijs. Wie dat op de dag
+zelf voor het eerst leest, voelt zich beetgenomen — ook als het eerlijke
+voorwaarden zijn. Maak er gewoon een van je weetjes van, een week of twee
+voor het zover is, zonder er een mijlpaal van te maken.
 
 Het lanceringsbericht:
 
