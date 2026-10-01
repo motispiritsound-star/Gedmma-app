@@ -1,7 +1,9 @@
 import type { ReactNode, ButtonHTMLAttributes } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { sfx } from '../engine/audio'
 import { useStore } from '../engine/store'
+import { opTerug } from '../engine/terug'
 
 /** The building blocks the whole app is assembled from. */
 
@@ -77,11 +79,86 @@ export function Pill({ children, className = '' }: { children: ReactNode; classN
   )
 }
 
+/** Wat je met Tab kunt bereiken. */
+const FOCUSBAAR =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), summary, details'
+
+/** Hoeveel panelen er openstaan, zodat het laatste de pagina weer vrijgeeft. */
+let openPanelen = 0
+
 export function Sheet({ open, onClose, children, labelledBy }: { open: boolean; onClose?: () => void; children: ReactNode; labelledBy?: string }) {
+  const paneel = useRef<HTMLDivElement>(null)
+  /*
+   * `onClose` is bij elke gebruiker een pijlfunctie in de JSX, dus hij is bij
+   * elke tekening een ander ding. Stond hij in de afhankelijkheden, dan werd
+   * de luisteraar continu opnieuw opgehangen en sprong de focus telkens terug
+   * naar het begin van het paneel -- middenin het typen van een rekensom.
+   */
+  const sluit = useRef(onClose)
+  sluit.current = onClose
+  /** Waar de focus vandaan kwam, zodat hij daar weer terugkomt. */
+  const kwamVan = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    if (!open) return
+    kwamVan.current = document.activeElement as HTMLElement | null
+
+    /*
+     * De pagina eronder staat stil zolang dit openstaat. Zonder dat scrolt een
+     * veeg over het donkere vlak de bladzijde erachter weg, en als het paneel
+     * dichtgaat staat die ergens anders dan waar je was.
+     */
+    openPanelen += 1
+    const terugNaar = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    // De focus hoort binnen het paneel te beginnen: een schermlezer leest
+    // anders de bladzijde erachter voor, die niemand meer kan bedienen.
+    const eerste = paneel.current?.querySelector<HTMLElement>(FOCUSBAAR)
+    ;(eerste ?? paneel.current)?.focus()
+
+    const opToets = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        // Geen `onClose` betekent: dit paneel heeft zijn eigen knoppen en gaat
+        // niet zomaar dicht. De taalkeuze bij de eerste start is zo'n geval.
+        if (!sluit.current) return
+        e.preventDefault()
+        sluit.current()
+        return
+      }
+      if (e.key !== 'Tab' || !paneel.current) return
+      const items = [...paneel.current.querySelectorAll<HTMLElement>(FOCUSBAAR)]
+        .filter((el) => el.offsetParent !== null || el === document.activeElement)
+      if (items.length === 0) return
+      const eerst = items[0]!
+      const laatst = items[items.length - 1]!
+      const nu = document.activeElement
+      // Rondlopen in plaats van eruit lopen: Tab op het laatste ding gaat naar
+      // het eerste, Shift+Tab op het eerste naar het laatste.
+      if (e.shiftKey && (nu === eerst || nu === paneel.current)) { e.preventDefault(); laatst.focus() }
+      else if (!e.shiftKey && nu === laatst) { e.preventDefault(); eerst.focus() }
+    }
+
+    document.addEventListener('keydown', opToets)
+    // Op Android is terug een systeemknop, en die hoort dit paneel te sluiten
+    // in plaats van een bladzijde terug te gaan.
+    const stopTerug = sluit.current ? opTerug(() => sluit.current?.()) : () => {}
+
+    return () => {
+      document.removeEventListener('keydown', opToets)
+      stopTerug()
+      openPanelen = Math.max(0, openPanelen - 1)
+      if (openPanelen === 0) document.body.style.overflow = terugNaar
+      kwamVan.current?.focus?.()
+    }
+  }, [open])
+
   if (!open) return null
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/45 p-0 sm:items-center sm:p-6" onClick={onClose}>
       <motion.div
+        ref={paneel}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-labelledby={labelledBy}
