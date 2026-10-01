@@ -164,8 +164,11 @@ export function Profile() {
             style={{ bottom: `${(state.settings.dailyGoal / peak) * 100}%` }}
             aria-hidden="true"
           />
+          {/* `min-w-0` op de staafjes: het dagletterje eronder heeft een eigen
+              minimumbreedte, en bij grote letters duwde die de zeven staafjes
+              samen breder dan het scherm. */}
           {week.map((d) => (
-            <div key={d.key} className="flex flex-1 flex-col items-center gap-1">
+            <div key={d.key} className="flex min-w-0 flex-1 flex-col items-center gap-1">
               <div
                 className={`w-full rounded-t-lg ${d.xp >= state.settings.dailyGoal ? 'bg-mint-500' : 'bg-zellige-500/50'}`}
                 style={{ height: `${Math.max(4, (d.xp / peak) * 100)}%` }}

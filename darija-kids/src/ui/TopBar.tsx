@@ -119,7 +119,15 @@ export function TopBar() {
           ))}
         </nav>
 
-        <div className="ms-auto flex shrink-0 items-center gap-2.5 text-sm font-bold">
+        {/*
+          `flex-wrap` en geen `shrink-0`: de tellers mogen onder elkaar.
+
+          De rij eromheen wikkelde al, maar dit blok zelf niet, en dan schuift
+          het als geheel naar buiten. Gemeten op 320 bij een wortelgrootte van
+          24px -- een kleine telefoon met de grootste letters -- liep de balk
+          52px buiten beeld, op elk scherm van de app.
+        */}
+        <div className="ms-auto flex flex-wrap items-center gap-2.5 text-sm font-bold">
           {/*
             De weg naar het abonnement, op elk scherm waar de balk staat.
 

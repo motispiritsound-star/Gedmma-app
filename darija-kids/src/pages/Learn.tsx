@@ -142,7 +142,9 @@ export function Learn() {
                 <div className="flex items-center gap-3">
                   <span className="text-3xl" aria-hidden="true">{unit.emoji}</span>
                   <div className="min-w-0">
-                    <div className="flex items-center gap-2">
+                    {/* `flex-wrap`: bij grote letters past het pilletje niet
+                        meer naast de titel en schoof het buiten beeld. */}
+                    <div className="flex flex-wrap items-center gap-2">
                       <h2 className="font-display text-xl font-extrabold">
                         <span className="opacity-70">{ui + 1}.</span> {unit.title}
                       </h2>

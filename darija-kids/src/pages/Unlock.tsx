@@ -144,9 +144,12 @@ export function Unlock() {
             <p className="text-[var(--ink-soft)]">{t.unlock.intro(FREE_LESSONS)}</p>
             <ul className="mt-4 space-y-2">
               {t.unlock.krijgt(gezin).map((line) => (
+                /* `min-w-0`: een tekst naast een vinkje in een flex-rij
+                   krimpt anders niet onder zijn eigen minimumbreedte, en loopt
+                   bij grote letters het scherm uit. */
                 <li key={line} className="flex gap-2 text-sm">
                   <span aria-hidden="true">✅</span>
-                  <span>{line}</span>
+                  <span className="min-w-0">{line}</span>
                 </li>
               ))}
             </ul>
@@ -281,7 +284,7 @@ export function Unlock() {
           {t.unlock.boek.bevat.map((line) => (
             <li key={line} className="flex gap-2 text-sm">
               <span aria-hidden="true">•</span>
-              <span>{line}</span>
+              <span className="min-w-0">{line}</span>
             </li>
           ))}
         </ul>

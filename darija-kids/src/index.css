@@ -156,6 +156,21 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
+  /*
+   * Een te lang woord breekt af in plaats van het scherm uit te lopen.
+   *
+   * Dit is geen randgeval: de app spreekt Duits, en "Nutzungsbedingungen" is
+   * een woord van negentien letters. Op een kleine telefoon met de grootste
+   * letteristelling vroeg die kop 374px in een vak van 272 -- en dan schuift de
+   * hele bladzijde opzij, met de kopbalk en al. Hetzelfde gold voor de
+   * voorwaarden, het abonnementsscherm en de tellers op de ouderpagina.
+   *
+   * `break-word` en niet `anywhere`: hij breekt alleen als het woord er écht
+   * niet in past, dus aan gewone zinnen verandert er niets. Het staat op
+   * `body` omdat het overerft -- dan geldt het ook voor de volgende bladzijde
+   * die iemand erbij maakt.
+   */
+  overflow-wrap: break-word;
 }
 
 /* The zellige tile grid, drawn once as a background and reused. */

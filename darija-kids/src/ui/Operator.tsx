@@ -37,8 +37,11 @@ export function OperatorBlock() {
       <dl className="mt-3 grid gap-x-4 gap-y-1 text-sm sm:grid-cols-[auto_1fr]">
         {rows.map(([label, value]) => (
           <div key={label} className="contents">
-            <dt className="font-bold text-[var(--ink-soft)]">{label}</dt>
-            <dd className={label === t.operator.email || label === t.operator.telefoon ? 'font-bold' : undefined}>
+            {/* `break-words`: een adres of een nummer is één woord zonder
+                spaties, en dat duwt de kolom breder dan de kaart. Gemeten op
+                320px bij een wortelgrootte van 24px: 23px buiten beeld. */}
+            <dt className="min-w-0 break-words font-bold text-[var(--ink-soft)]">{label}</dt>
+            <dd className={`min-w-0 break-words ${label === t.operator.email || label === t.operator.telefoon ? 'font-bold' : ''}`}>
               {value}
             </dd>
           </div>

@@ -316,7 +316,7 @@ export function SettingsPage() {
             id="voice"
             value={s.voiceURI}
             onChange={(e) => setSetting('voiceURI', e.target.value)}
-            className="max-w-56 rounded-xl border-2 border-[var(--line)] bg-[var(--surface)] px-3 py-2 outline-none focus:border-zellige-500"
+            className="max-w-[min(14rem,100%)] rounded-xl border-2 border-[var(--line)] bg-[var(--surface)] px-3 py-2 outline-none focus:border-zellige-500"
           >
             <option value="">{t.settings.stemAuto}</option>
             {bruikbaar.arabisch.length > 0 && (
