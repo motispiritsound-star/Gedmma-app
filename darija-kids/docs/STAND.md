@@ -13,7 +13,7 @@ te lezen.
 | Tests | 1289, groen — daar zitten de 77 van de worker al in |
 | Google Play | 4 (1.2) op **Productie**, 177 landen — de winkelpagina is nog **niet publiek** |
 | App Store | **1.0 (build 7) in beoordeling** — zie hieronder |
-| Uitbetalen | Apple rond; Google wacht nog op het testbedragje op de rekening |
+| Uitbetalen | **rond bij allebei** — Google geverifieerd op 1 oktober |
 
 ### De afwijzing van 29 september, en wat eraan gedaan is
 
@@ -570,14 +570,19 @@ valt als er weer een verschijnt.
    want daar staan alleen de Amerikaanse, Braziliaanse en Mexicaanse
    formulieren.
 
-5. **Google: bankrekening en belastinggegevens.** Zonder dat geen uitbetaling,
-   ook niet als de app al verkoopt.
+5. ~~**Google: bankrekening en belastinggegevens.**~~ **Allebei klaar.** Dit
+   was het laatste wat tussen een verkoop en een uitbetaling in stond.
 
-   **Bankrekening toegevoegd op 30 september**, staat op *Verification
-   pending*. Google maakt binnen drie werkdagen een paar cent over; die moet
-   daarna in de console bevestigd worden. De tenaamstelling is `Venship` en
-   dat is ook wat de bank heeft — nagevraagd, want een storting op een naam
-   die niet matcht komt niet aan en dat hoor je pas na drie dagen.
+   **Bankrekening geverifieerd op 1 oktober**, één dag na het toevoegen.
+   Google bevestigde het per mail: *"Your bank account is verified — you can
+   now start making and receiving payments from your bank account."* De
+   rekening staat dus niet meer op *Verification pending*.
+
+   Het is sneller gegaan dan de drie werkdagen waar hierboven op werd
+   gerekend; er is geen testbedragje nodig geweest. Dat scheelde waarschijnlijk
+   dat de tenaamstelling klopte — `Venship` bij Google en `Venship` bij de
+   bank, vooraf nagevraagd. Bij een naam die niet matcht loopt het mis, en dat
+   hoor je pas dagen later.
 
    Het betaalprofiel staat niet onder *Developer account* maar onder
    **Settings → Payments profile**, binnen de Play Console zelf. De
@@ -1139,9 +1144,14 @@ en twee:
   Play*). Een leeg *App access* is een afwijzing om niets, en inzending 5 zou
   weer een week kosten.
 
-Alles daarbuiten — de royaltyvaluta, het testbedragje van Google, de vier
-talen bij de aankopen — houdt de lancering niet tegen. Dat is werk dat naast
-de beoordeling door kan en erna net zo goed af is.
+Alles daarbuiten — de royaltyvaluta bij Apple, de vier talen bij de aankopen —
+houdt de lancering niet tegen. Dat is werk dat naast de beoordeling door kan
+en erna net zo goed af is.
+
+Het testbedragje van Google stond hier ook, en is er op 1 oktober af: de
+rekening is geverifieerd. Daarmee is er aan beide kanten een werkende weg van
+een verkoop naar je bankrekening, en dat was het enige openstaande punt dat
+een verkochte app alsnog waardeloos had kunnen maken.
 
 Eén ding om te onthouden voor later: de iOS-build loopt via de Mac en Xcode.
 Play kan zonder, Apple niet. Wie een spoedreparatie moet uitbrengen heeft die
