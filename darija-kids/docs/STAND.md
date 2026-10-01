@@ -953,6 +953,72 @@ haalt.
 Stand: **1399 tests groen in 62 bestanden**, `tsc -b --force --noEmit` schoon,
 productiebouw schoon.
 
+#### De vierde doorloop — de dingen die niemand ziet tot het misgaat
+
+Deze ronde ging over veiligheid, kapotte gegevens en wat er gebeurt als iemand
+de app te hard aanpakt. Vier vondsten.
+
+**Twee gaten waar een sleutel door kon.** `play-api.json` — de dienstrekening
+van Google Play, waarmee je een update kunt uitbrengen onder iemands naam —
+stond niet in `.gitignore`. De scripts vragen er met `--sleutel <pad>` naar en
+dat pad wijst juist naar buiten de map, maar hem er "even bij zetten" is
+precies wat je op een drukke dag doet, en `git add -A` is één toetsaanslag.
+Hetzelfde voor `.env.production`: de hoofdmap negeert `.env`, `.env.local` en
+`.env.*.local`, maar niet die. Allebei dicht, plus de ondertekensleutels van
+Apple en de twee Google-bestanden die er zouden komen als er ooit Firebase bij
+komt.
+
+De rest van de controle was schoon: geen privésleutel en geen dienstrekening
+in enig gevolgd bestand, niets van dien aard in de productiebouw, en precies
+vier `import.meta.env`-waarden in de app — `DEV`, `PROD`, `VITE_DEMO` en
+`VITE_POST`. Die laatste is een adres dat toch in elk netwerkverzoek staat.
+`KOOP_GEHEIM` en `MAIL_SLEUTEL` blijven op de server. `sleutels.test.ts` vraagt
+het voortaan aan git zelf.
+
+**Vier van de veertien kapotte opslagen lieten de app omvallen.** `daily`,
+`cards`, `lessons` of `extraCards` op `null` is genoeg: `Object.keys(null)`
+werpt, en dat gebeurt in de eerste tekening van het leerpad. Het foutscherm
+ving het op, dus niemand zat voorgoed vast — maar de uitweg die het biedt is
+"wis alles", en dan is er een jaar voortgang weg om één kapot veld. `hydrate`
+neemt een bewaarde waarde nu alleen over als hij de vorm heeft die deze versie
+verwacht; alles wat nog wél klopt blijft staan. Na afloop starten alle veertien
+op.
+
+**Twee keer drukken betaalt nooit twee keer** — nagemeten in plaats van
+aangenomen. Een missieknop twintig keer achter elkaar ingedrukt levert
+eenentwintig edelstenen op, precies de som van alle vijf de missies. Het werkt
+om één reden die nergens stond: `setState` zet de nieuwe staat er synchroon in,
+dus de tweede druk leest al de uitkomst van de eerste. `dubbeltik.test.ts`
+houdt dat vast. De rest van de stoeitest gaf hetzelfde beeld: vierentwintig
+keer snel springen tussen bladzijden, twintig keer een paneel openen en
+sluiten, twintig keer terug — geen enkele uitzondering.
+
+**De inkt waarmee een kind een letter natekent haalde 2,99 op 1.** Die stond
+met de hand ingetypt op de oude waarde van `--color-zellige-600` en bleef
+achter toen die donkerder werd. De norm voor iets wat geen tekst is maar je
+wél moet kunnen zien is 3, en natekenen is een van de twee dingen die deze app
+met het Arabische schrift doet. Er is nu een `--inkt-tekenen` per thema;
+nagemeten door de lagen echt over elkaar te tekenen en de pixel terug te
+lezen: 4,11 licht en 8,00 donker. Die tweede is het bewijs dat één vaste kleur
+niet kon kloppen.
+
+**De afhankelijkheden: nul kwetsbaarheden in alles wat meegaat in de app.**
+Tien pakketten, allemaal met een reden. Geen analytics-SDK, geen
+crashrapportage, geen advertenties, geen volgsoftware — wat de
+privacyverklaringen bij allebei de winkels eenvoudig en eerlijk houdt.
+
+`npm audit` meldt wél drie keer "moderate", en die zijn met opzet blijven
+staan. Ze komen alle drie uit één plek: `uuid` onder `xcode` onder
+`@capacitor/cli`. Dat is een **ontwikkelgereedschap** dat niet in de app
+terechtkomt, de fout gaat over een controle op een buffer die alleen misgaat
+als je zelf een buffer meegeeft, en `npm audit fix --force` lost het op door
+`@capacitor/cli` te **verlagen** naar 8.4.3 — een brekende wijziging in het
+gereedschap dat allebei de winkelbouwen maakt, dagen voor de lancering. De
+reparatie is hier riskanter dan de fout.
+
+Stand: **1449 tests groen in 66 bestanden**, `tsc -b --force --noEmit` schoon,
+productiebouw schoon.
+
 ### Nog na te kijken bij Google Play — kijken, niet wijzigen
 
 Drie dingen die pas opvallen als het te laat is. **Zolang inzending 4 in
