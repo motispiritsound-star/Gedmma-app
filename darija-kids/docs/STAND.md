@@ -1,8 +1,8 @@
 # Waar staan we
 
-Bijgewerkt op 30 september 2026, na het indienen van 1.0 (7) en het afronden
-van het betaalprofiel bij Google. Dit bestand is het antwoord op "wat moet er
-nog" zonder dat je drie andere bestanden hoeft te lezen.
+Bijgewerkt op 1 oktober 2026, met de openingsactie op de boeken. Dit bestand
+is het antwoord op "wat moet er nog" zonder dat je drie andere bestanden hoeft
+te lezen.
 
 ## De app
 
@@ -1086,9 +1086,10 @@ vasthouden, dan pas vrijgeven. Een winkel die bij goedkeuring meteen
 publiceert, bepaalt zelf je lanceerdag — en dan staat de app al in de winkel
 terwijl de eerste teaser nog moet komen.
 
-1. **Play op handmatig.** Publishing overview → Manage → *Managed publishing*
-   aan. Dan blijft een goedgekeurde release staan tot jij op publiceren drukt.
-   Doe dit zolang submission 3 nog in review is; erna is het te laat.
+1. ~~**Play op handmatig.**~~ **Staat aan** — nagekeken op 30 september. Dat is
+   ook meteen de verklaring waarom de winkelpagina 404 geeft terwijl de
+   release op Productie staat: een goedgekeurde release blijft staan tot jij
+   op publiceren drukt.
 2. **Apple op handmatig.** Bij het inzenden van de versie: *Manually release
    this version*. Niet "automatically".
 3. De app zelf spelen: op een iPhone via TestFlight, op de Galaxy Tab via Play.
@@ -1115,12 +1116,32 @@ Act is op 24 september goedgekeurd en je handelaarsgegevens staan live in de
 App Store in de hele Europese Unie. Dat was het enige dat een betaalde app in
 de EU kon tegenhouden zonder dat het op een bouwfout leek.
 
-Wat overblijft zijn twee beoordelingen die allebei al lopen: build 5 bij Apple
-en 1.1 bij Play. Apple doet er doorgaans één tot drie dagen over, Play iets
-langer bij een eerste release. Alles wat hierboven nog openstaat kan daarnaast
-en houdt die datum niet tegen.
+Wat overblijft zijn twee beoordelingen die allebei al lopen: **1.0 (build 7)**
+bij Apple, ingediend 30 september, en **inzending 4** bij Play, ingediend
+29 september. Apple doet er doorgaans één tot drie dagen over, Play tot zeven
+bij een app zonder eerdere goedkeuring. Alles wat hierboven nog openstaat kan
+daarnaast en houdt die datum niet tegen.
 
-Realistisch voor allebei: **maandag 29 september tot vrijdag 3 oktober**.
+Realistisch voor allebei: **1 tot 7 oktober**, met Play als de late van de
+twee.
+
+**En daar valt niets aan te versnellen.** Geen van de twee winkels kent een
+spoedknop die je zelf kunt indrukken; Apple's *Expedited Review* is voor een
+kapotte app in de winkel, niet voor een eerste versie, en vragen zonder reden
+kost later goodwill. Wat je wél kunt sturen is het verschil tussen één ronde
+en twee:
+
+- **Een afwijzing dezelfde avond beantwoorden.** Een ronde bij Apple kost een
+  tot drie dagen; een avond wachten met de reparatie kost er dus net zoveel
+  als de beoordeling zelf. Build 8 staat klaar — de FAQ-reparatie is gemeten
+  en zit in de code, niet in build 7.
+- **De drie velden bij Play nakijken** (hierboven, *Nog na te kijken bij Google
+  Play*). Een leeg *App access* is een afwijzing om niets, en inzending 5 zou
+  weer een week kosten.
+
+Alles daarbuiten — de royaltyvaluta, het testbedragje van Google, de vier
+talen bij de aankopen — houdt de lancering niet tegen. Dat is werk dat naast
+de beoordeling door kan en erna net zo goed af is.
 
 Eén ding om te onthouden voor later: de iOS-build loopt via de Mac en Xcode.
 Play kan zonder, Apple niet. Wie een spoedreparatie moet uitbrengen heeft die
