@@ -728,6 +728,15 @@ export const es: Strings = {
     /** El libro electrónico: pago único, incluido en la suscripción anual. */
     boek: {
       /**
+       * Waarom het boek in de app opengaat en niet in de browser.
+       *
+       * Hier stond een knop die het bestand aan het toestel gaf, en op een
+       * iPhone opende dat Safari met het tabblad dat er al stond. Een bestand
+       * uit de bundel kan het toestel niet bereiken; het zit ín de app.
+       */
+      inApp: 'El libro se queda dentro de la aplicación, así sigue siendo tuyo y no acaba en una dirección pública. Aquí puedes desplazarte y hacer zoom.',
+      nietGelukt: '¿No se abre? Avísanos desde la página para padres y te enviamos el libro.',
+      /**
        * Er is recht op het boek, maar de proefperiode loopt nog.
        *
        * Een pdf houd je zodra je hem één keer opent, dus hij gaat pas open

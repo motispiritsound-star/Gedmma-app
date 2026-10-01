@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  btwInbegrepen, buyEbook, EBOOK, ebookFile, ebookKlaar, ebookWachtTot, FREE_LESSONS,
+  btwInbegrepen, buyEbook, EBOOK, ebookKlaar, ebookWachtTot, FREE_LESSONS,
   manageSubscription, PLANS, planOf,
   restorePurchases, subscribe, TRIAL_DAYS, useBilling, YEAR_FULL_PRICE, YEAR_SAVING, type PlanId,
 } from '../engine/billing'
@@ -287,15 +287,18 @@ export function Unlock() {
           </p>
         ) : boek ? (
           <>
-            <Button
-              className="mt-5"
-              onClick={() => {
-                sfx.tap()
-                setPoort({ reden: 'uit', doe: () => window.open(ebookFile(lang), '_blank', 'noreferrer') })
-              }}
-            >
-              {t.unlock.boek.open}
-            </Button>
+            {/*
+              Naar `/boek`, niet naar het toestel. `window.open(…, '_blank')`
+              gaf de link door aan de telefoon, en die kan een bestand uit de
+              app-bundel niet bereiken: op een iPhone opende Safari daarop het
+              tabblad dat er toevallig al stond. Zie `pages/Boek.tsx`.
+
+              En daarmee vervalt ook de ouderpoort hier: die zit op uitgaan uit
+              de app, en er gaat nu niets meer uit.
+            */}
+            <Link to="/boek" className="mt-5 inline-block" onClick={() => sfx.tap()}>
+              <Button>{t.unlock.boek.open}</Button>
+            </Link>
             <p className="mt-3 text-xs text-[var(--ink-soft)]">{t.unlock.boek.vanJou}</p>
           </>
         ) : billing.available ? (

@@ -15,6 +15,7 @@ const Profile = lazy(() => import('./pages/Profile').then((m) => ({ default: m.P
 const History = lazy(() => import('./pages/History').then((m) => ({ default: m.History })))
 const Parents = lazy(() => import('./pages/Parents').then((m) => ({ default: m.Parents })))
 const Unlock = lazy(() => import('./pages/Unlock').then((m) => ({ default: m.Unlock })))
+const Boek = lazy(() => import('./pages/Boek').then((m) => ({ default: m.Boek })))
 const Privacy = lazy(() => import('./pages/Privacy').then((m) => ({ default: m.Privacy })))
 const Terms = lazy(() => import('./pages/Terms').then((m) => ({ default: m.Terms })))
 const SettingsPage = lazy(() => import('./pages/Settings').then((m) => ({ default: m.SettingsPage })))
@@ -128,6 +129,7 @@ function Chrome() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/voorwaarden" element={<Terms />} />
             <Route path="/volledig" element={<Unlock />} />
+            <Route path="/boek" element={<Boek />} />
             {/* Working on a scene of the film is otherwise a matter of
                 finishing a lesson to see one frame of it. */}
             {/* Also in the demo build: the point of the demo is that somebody

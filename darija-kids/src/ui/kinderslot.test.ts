@@ -76,8 +76,19 @@ describe('de app uit', () => {
 
   it('laat op Unlock.tsx geen deur zonder poort staan', () => {
     const bron = readFileSync('src/pages/Unlock.tsx', 'utf8')
-    // De vier handelingen: abonneren, e-boek kopen, e-boek openen, beheren.
-    expect(bron.match(/setPoort\(\{ reden:/g) ?? []).toHaveLength(4)
+    /*
+     * Drie handelingen: abonneren, het e-boek kopen, het abonnement beheren.
+     *
+     * Het waren er vier. "Het e-boek openen" hoorde erbij toen die knop het
+     * bestand aan het toestel gaf — dat was een uitgang, en een uitgang hoort
+     * achter de poort. Sinds het boek op `/boek` binnen de app opengaat, gaat
+     * er niets meer uit, en dan is een rekensom vóór een boek dat je betaald
+     * hebt geen bescherming maar een drempel.
+     *
+     * De poort is er voor de app uit gaan en voor geld uitgeven. Lezen is
+     * geen van beide.
+     */
+    expect(bron.match(/setPoort\(\{ reden:/g) ?? []).toHaveLength(3)
     // En niets doet ze nog rechtstreeks.
     expect(bron).not.toMatch(/onClick=\{manageSubscription\}/)
     expect(bron).not.toMatch(/onClick=\{\(\) => \{ sfx\.tap\(\); void buyEbook\(\) \}\}/)

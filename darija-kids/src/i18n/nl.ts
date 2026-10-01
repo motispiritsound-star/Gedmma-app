@@ -735,6 +735,15 @@ export const nl = {
     /** Het e-boek: eenmalig te koop, en bij het jaarabonnement inbegrepen. */
     boek: {
       /**
+       * Waarom het boek in de app opengaat en niet in de browser.
+       *
+       * Hier stond een knop die het bestand aan het toestel gaf, en op een
+       * iPhone opende dat Safari met het tabblad dat er al stond. Een bestand
+       * uit de bundel kan het toestel niet bereiken; het zit ín de app.
+       */
+      inApp: 'Het boek staat in de app zelf, zodat het van jou blijft en niet op een openbaar adres terechtkomt. Scrollen en zoomen werkt hier gewoon.',
+      nietGelukt: 'Lukt het openen niet? Zeg het even via de ouderpagina, dan sturen we het boek naar je toe.',
+      /**
        * Er is recht op het boek, maar de proefperiode loopt nog.
        *
        * Een pdf houd je zodra je hem één keer opent, dus hij gaat pas open

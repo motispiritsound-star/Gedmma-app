@@ -507,6 +507,33 @@ noemde nog beide winkels. Dat viel bij de eerste meting niet op omdat
 opengeklapt stonden er drie platformnamen. De meting én de bewaking zijn
 gerepareerd.
 
+**"Open het e-boek" opende lichess.org.** Niet grappig bedoeld: op de iPhone
+in TestFlight ging die knop naar een schaaksite.
+
+Wat er gebeurde: de knop deed `window.open(…, '_blank')`, en dat geeft de link
+door aan het toestel in plaats van aan de app. Capacitor serveert de app vanaf
+`capacitor://localhost`, dus Safari kreeg
+`capacitor://localhost/ebook/darijaforkids-nl.pdf` voorgeschoteld, kon daar
+niets mee, en liet het tabblad zien dat er al open stond. Een bestand uit de
+app-bundel kan het toestel nooit bereiken — het zit ín de app.
+
+**Dit zit ook in build 7**, de build waarmee gelanceerd wordt. Het raakt alleen
+wie het jaarabonnement of het e-boek heeft gekocht, en dat zijn er op dag één
+nul, maar het is wel het eerste wat zo iemand aanklikt.
+
+Het boek opent nu op `/boek`, binnen de app, met een knop terug. Nagemeten in
+Chromium: geen enkel nieuw venster meer, en de pdf laadt vanaf `/boek` —
+583 kB, beginnend met `%PDF-`.
+
+**Nog niet nagemeten, en het moet:** of een WKWebView (iOS) en een
+Android-WebView die pdf ook werkelijk tónen in een `<iframe>`. iOS doet dat
+doorgaans wel, Android heeft geen ingebouwde pdf-weergave en laat dan een leeg
+vlak zien. Dat is minder erg dan een schaaksite maar nog steeds stuk, en op
+Android zit de grootste helft van het publiek. Lukt het daar niet, dan is de
+echte weg het boek van de worker laten komen in plaats van uit de bundel —
+zoals `server/src/lezer.ts` de leesboeken al doet, en dat lost ook de twee
+punten in `docs/PAYMENTS.md` op.
+
 **De weg naar het abonnement, op elk scherm.** Er was er één: ergens tegen een
 slotje aanlopen. Wie na vier gratis lessen nog eens wilde kijken wat het kost,
 moest eerst een gesloten deur zoeken. Nu staat er een knop in de kopbalk —
