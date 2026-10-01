@@ -71,8 +71,11 @@ maar geen kanalen volgen. Daar kun je ook reageren.
 facebook.com/darijaforkidsapp
 
 Volg wat bij je past en laat de rest staan — het kanaal blijft het
-belangrijkste. En zie je daar iets dat je zus of je buurvrouw kan
-gebruiken: daar zit wél een deelknop onder, en hier niet.
+belangrijkste.
+
+En alles wat daar langskomt mag je doorsturen. Daar is het voor. Ken je
+iemand met kinderen die hun oma wél verstaan maar in het Nederlands
+antwoorden — stuur het hem. Daar begon dit mee.
 
 Shukran voor het meelezen 🙏
 ```
@@ -98,8 +101,8 @@ tiktok.com/@darijaforkidsapp
 👥 Facebook — ook voor de ooms en tantes
 facebook.com/darijaforkidsapp
 
-Volg wat bij je past. En wat je daar ziet kun je wél doorsturen — hier
-niet 🇲🇦
+Volg wat bij je past. En alles wat daar langskomt mag je doorsturen —
+daar is het voor 🇲🇦
 ```
 
 ## Kaal, als je het in drie regels wilt
@@ -112,9 +115,47 @@ We staan vanaf nu ook op de socials 👋
 📺 youtube.com/@darijaforkidsapp
 👥 facebook.com/darijaforkidsapp
 
-Zelfde verhalen, andere vorm — en daar kun je het doorsturen. Het kanaal
-hier blijft gewoon 🇲🇦
+Zelfde verhalen, andere vorm. Het kanaal hier blijft gewoon — en wat je
+daar ziet mag je doorsturen naar wie het kan gebruiken 🇲🇦
 ```
+
+## De slotzin — hoe hard je het vraagt
+
+Hier staat of valt het bericht mee, en het verschil tussen de drie zinnen
+hieronder is groter dan het lijkt.
+
+**Toestemming geven werkt beter dan erom vragen.** "Deel het met iedereen"
+legt het werk bij de lezer en klinkt als een oproep van een merk. "Alles wat
+daar langskomt mag je doorsturen — daar is het voor" zegt hetzelfde, maar het
+is een gunst die jíj verleent. Niemand voelt zich aangesproken op iets wat hij
+niet doet, en wie het tóch doorstuurt doet dat omdat hij het zelf wilde.
+
+Drie varianten, van zacht naar duidelijk:
+
+```
+En alles wat daar langskomt mag je doorsturen. Daar is het voor. Ken je
+iemand met kinderen die hun oma wél verstaan maar in het Nederlands
+antwoorden — stuur het hem. Daar begon dit mee.
+```
+
+```
+Alles wat ik deel mag je doorsturen, in een klassenapp plakken of aan je
+schoonzus laten zien. Daar is het voor.
+```
+
+```
+Stuur het gerust door naar wie het kan gebruiken 🇲🇦
+```
+
+De eerste is de beste voor dit publiek: hij vraagt niets, maar hij beschrijft
+precies de persoon die de ontvanger in gedachten heeft. De derde is de gewone
+formulering uit `docs/LANCERING.md` §4 — prima voor een bericht aan een
+familiegroep, wat kaal voor een kanaal waar mensen uit zichzelf op volgen
+hebben gedrukt.
+
+Wat je in geen van de drie doet is vragen om te delen én om te volgen én om
+te kopen. Dit bericht vraagt om volgen; het doorsturen is er een toestemming
+bij, geen tweede opdracht.
 
 ## Drie dingen om na te kijken vóór je het stuurt
 
