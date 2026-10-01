@@ -452,8 +452,9 @@ bundel.
 
 #### De lancering gaat met build 7, niet met build 8 — besloten 1 oktober
 
-Build 8 is gebouwd en gearchiveerd (`1.1 (8)`, arm64) en gaat naar TestFlight.
-Hij wordt **niet ingediend voor de lancering.**
+Build 8 is gebouwd, gearchiveerd en **om 18:43 geüpload** — in Xcode Organizer
+staat `1.1 (8)` op *Uploaded to Apple*. Hij wordt **niet ingediend voor de
+lancering**; hij staat er om op een echt toestel te kunnen meten.
 
 Een goedgekeurde versie zit vast aan zijn build: build 8 onder 1.0 schuiven
 kan niet zonder een nieuwe beoordeling. De keuze was dus tussen lanceren met
