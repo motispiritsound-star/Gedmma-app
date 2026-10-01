@@ -74,3 +74,32 @@ describe('de staat waar het om draait', () => {
     expect(ebookWachtTot(getState())).toBeNull()
   })
 })
+
+describe('de hoogte van de lezer', () => {
+  /**
+   * Hier stond een vaste hoogte: `100vh - 10rem`. Op een staande telefoon
+   * klopt dat, maar leg hem plat en het venster is nog 390 pixels hoog.
+   * Nagemeten in de browser hield de pdf er dan **48 pixels** van over — en
+   * omdat de hoogte vastzat kon de bladzijde ook niet scrollen. Een boek van
+   * € 14,99 als strook van achtenveertig pixels, zonder weg eruit.
+   *
+   * Niets lockt de stand van het scherm: Android draait vrij mee, en een
+   * iPad staat standaard liggend.
+   *
+   * Na afloop gemeten: 390×844 onveranderd (462px pdf), 844×390 van 48 naar
+   * 410, 320×568 naar 350, 1024×768 naar 426.
+   */
+  it('zakt niet onder wat een lezer nodig heeft', () => {
+    expect(bron).toContain('h-[max(37rem,calc(100vh-10rem))]')
+    expect(bron).not.toContain('h-[calc(100vh-10rem)]')
+  })
+
+  /**
+   * En de pdf mag binnen die kolom wél krimpen: zonder `min-h-0` weigert een
+   * flex-kind kleiner te worden dan zijn inhoud, en dan groeit de kolom nog
+   * verder door dan de ondergrens al doet.
+   */
+  it('laat de pdf binnen de kolom meebewegen', () => {
+    expect(bron).toContain('className="min-h-0 flex-1 rounded-2xl')
+  })
+})

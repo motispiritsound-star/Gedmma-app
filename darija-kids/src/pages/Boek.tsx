@@ -68,7 +68,22 @@ export function Boek() {
   }
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-10rem)] max-w-3xl flex-col px-4 py-4">
+    /*
+     * De hoogte van het venster, maar nooit minder dan wat een lezer nodig
+     * heeft.
+     *
+     * Hier stond alleen `100vh - 10rem`. Op een staande telefoon klopt dat,
+     * maar leg hem plat en het venster is nog 390 pixels hoog: nagemeten hield
+     * de pdf er dan 48 van over, en omdat de hoogte vastzat kon de bladzijde
+     * ook niet scrollen. Een boek van € 14,99 als strook van achtenveertig
+     * pixels, zonder weg eruit.
+     *
+     * `max()` lost allebei de gevallen op. Op een hoog scherm wint de
+     * vensterhoogte en verandert er niets -- de bladzijde past nog precies.
+     * Op een laag scherm wint de 37rem, groeit de kolom door en scrollt de
+     * bladzijde gewoon.
+     */
+    <div className="mx-auto flex h-[max(37rem,calc(100vh-10rem))] max-w-3xl flex-col px-4 py-4">
       <div className="mb-3 flex items-center justify-between gap-3">
         <h1 className="font-display text-xl font-extrabold">📖 {t.unlock.boek.titel}</h1>
         <Link to="/volledig"><Button variant="secondary">{t.common.terug}</Button></Link>
