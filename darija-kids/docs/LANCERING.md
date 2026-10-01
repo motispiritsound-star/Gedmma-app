@@ -607,7 +607,7 @@ Volg dit kanaal, dan hoor je het als eerste. En stuur een woordje gerust
 door naar je familiegroep 🇲🇦
 ```
 
-### Fase 2 — de zeven dagen voor de lancering
+### Fase 2 — de aanloop
 
 Pas beginnen als Google heeft goedgekeurd en je de dag zelf in de hand hebt.
 Elke dag één post, en elke post geeft iets — een aftelbericht zonder inhoud
@@ -624,18 +624,55 @@ kost je volgers.
 | **T-1** | *Morgen.* Eén zin, één plaatje. |
 | **T-0** | De link. |
 
+#### Drie dagen in plaats van zeven — wat er nu past
+
+Die zeven zijn geschreven voor een kanaal dat al staat. Op 1 oktober staat het
+anders: Apple heeft goedgekeurd en houdt de app vast, Play beoordeelt nog, en
+het kanaal heeft drieënveertig volgers.
+
+Daar volgen twee dingen uit.
+
+**Je kunt niet aftellen naar een dag die je niet weet.** Play zegt niet
+vooraf wanneer hij groen wordt. Een aftelling die begint voordat je de datum
+hebt, is een belofte die je misschien niet haalt — en dat is het ergste wat je
+een nieuw kanaal kunt aandoen.
+
+**En zeven posten aftelling is veel voor drieënveertig mensen.** In een kleine
+ruimte klinkt een week aankondigen als drukte.
+
+Dus: de dag dat Play groen wordt, kies je de eerstvolgende dinsdag, woensdag
+of donderdag die minstens drie dagen verderop ligt, en draai je deze vier:
+
+| Dag | De post |
+|---|---|
+| **T-3** | Jouw verhaal. Vier zinnen, geen verkooppraat: het telefoongesprek met je moeder en wat je kind antwoordde. |
+| **T-2** | *Wat kost het?* Eerlijk en compleet: de eerste vier lessen gratis en voorgoed, daarna drie dagen proberen en de prijs. Nooit verstoppen — wie het op de dag zelf ontdekt, voelt zich beetgenomen. |
+| **T-1** | *Morgen.* Eén zin en het filmpje van dertig seconden. |
+| **T-0** | De link. |
+
+De drie die je overslaat — het woordje van de dag, waarom Darija en geen
+Standaardarabisch, en de plaat van het leerpad — zijn niet verloren. Ze geven
+iets in plaats van iets te vragen, dus ze werken net zo goed in de week erna.
+Zet ze daar neer, in fase 3.
+
+**En dan nog iets over "de link".** Het zijn twee winkels, en twee links onder
+één bericht laat de helft van je lezers kiezen tussen dingen waar ze niets van
+weten. Stuur ze naar **darijaforkids.eu**: daar staan na `npm run live` beide
+winkelknoppen, en de bezoeker pakt vanzelf de goede. Eén adres, dat je bovendien
+later nog kunt bijsturen zonder dat het bericht onjuist wordt.
+
 Het lanceringsbericht:
 
 ```
 Hij staat er 🎉
 
-Darijaforkids is vanaf vandaag te downloaden.
+Darijaforkids is vanaf vandaag te downloaden — op iPhone én op Android.
 
-De eerste vier lessen zijn gratis — geen account, geen advertenties, niets
-in te vullen. Het hele Arabische alfabet, 304 woorden en 100 zinnen,
-ingesproken door een Marokkaanse stem.
+De eerste vier lessen zijn gratis en blijven gratis. Geen account, geen
+advertenties, niets in te vullen. Het hele Arabische alfabet, 304 woorden
+en 100 zinnen, ingesproken door een Marokkaanse stem.
 
-👉 [link]
+👉 darijaforkids.eu
 
 Als het je iets lijkt: stuur het door naar één familiegroep. Daar help je me
 het meest mee.

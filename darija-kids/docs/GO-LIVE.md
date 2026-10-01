@@ -11,6 +11,22 @@ mooi te zijn maar om te versturen.
 
 ---
 
+## Waar het nu staat — 1 oktober
+
+| | |
+|---|---|
+| **Apple** | 1.0 **goedgekeurd** om 16:46, en vastgehouden. Eén knop van live |
+| **Play** | inzending 4 nog in beoordeling. Reken op 5 of 6 oktober |
+
+**Het besluit: allebei tegelijk, en Play bepaalt de dag.** De meeste mensen in
+het kanaal zitten op Android. Apple alleen vrijgeven maakt de aankondiging op
+voor de kleinste helft van je publiek, en dan moet je voor de rest een tweede
+keer komen met een bericht dat dan oud nieuws is.
+
+Dat kost je niets wat je terugkrijgt. Een goedgekeurde app die wacht, kost
+geen dag levensduur; een lancering die je twee keer moet doen, kost je het
+moment.
+
 ## Vóór de goedkeuring — twee schakelaars
 
 Deze twee zijn het verschil tussen een lancering en een verrassing. Een
@@ -18,21 +34,25 @@ winkel die bij goedkeuring meteen publiceert, bepaalt zelf je lanceerdag, en
 dan staat de app op zondagavond in de winkel terwijl je eerste bericht nog
 moet.
 
-1. **Play op handmatig.** Publishing overview → Manage → *Managed
-   publishing* aan. Dan blijft een goedgekeurde release staan tot jij op
-   publiceren drukt. Doe dit zolang de release nog in review is; erna is het
-   te laat.
-2. **Apple op handmatig.** Bij het inzenden van de versie: *Manually release
-   this version*, niet "automatically".
+**Allebei staan goed, en dat is bewezen en niet gehoopt.**
 
-Staat er één van de twee verkeerd, dan is dat geen ramp maar wel het einde
-van de aftelling: dan is de dag van goedkeuring de dag van de lancering.
+1. ~~**Play op handmatig.**~~ *Managed publishing on*, gezien op het
+   Publishing overview. Dat is ook de verklaring voor de 404 op de
+   winkelpagina terwijl de release op Productie staat.
+2. ~~**Apple op handmatig.**~~ Bewezen door de goedkeuring zelf: Apple keurde
+   1.0 goed om 16:46 en publiceerde hem niet. Bij *automatically* had de app
+   er binnen een dag gestaan.
 
 ## De dag kiezen
 
 **Dinsdag, woensdag of donderdag, 's ochtends.** Niet vrijdag — dan valt je
 eerste dag in het weekend en is er niemand die iets doorstuurt op het moment
 dat het telt. Niet maandag: wat er maandagochtend binnenkomt, verdrinkt.
+
+**De dag dat Play groen wordt, is niet de dag van de lancering.** Dat is de
+dag dat je hem kunt kiezen. Pak de eerstvolgende dinsdag, woensdag of
+donderdag die minstens drie dagen verderop ligt, en draai in die drie dagen
+de aanloop uit `LANCERING.md` §16 fase 2.
 
 Twee winkels hoeven niet op dezelfde minuut. Apple heeft na "vrijgeven" nog
 een paar uur nodig, Play is binnen het uur zichtbaar. Dus: **Apple eerst,
@@ -50,10 +70,28 @@ Wil je op de dag van goedkeuring naar buiten, dan is dit het hele werk:
 
 ```bash
 npm run live -- --google
+```
+
+```bash
 git add -A
+```
+
+```bash
 git commit -m "De app staat in de winkel"
+```
+
+```bash
 git push
 ```
+
+Die ene regel zet allebei de knoppen aan: hij **vraagt zelf om het Apple ID**
+zodra hij merkt dat het er nog niet is. Niets vooraf in te vullen, en niets
+tussen punthaken om te vergeten.
+
+Het nummer staat in App Store Connect onder **App Information → Apple ID**,
+negen of tien cijfers. Let op dat dat niet het nummer is dat bij een
+abonnement staat: twee verschillende getallen op twee schermen die er
+hetzelfde uitzien.
 
 En dan de berichten hieronder, in de volgorde van §3. Reken op een uur voor
 alles bij elkaar, waarvan vijftig minuten persoonlijke WhatsApp-berichten.
@@ -101,17 +139,27 @@ betalen — maar het kost je geen terugbetalingen en geen beoordeling.
 
 ### 1. Vrijgeven
 
-Apple: de versie → *Release this version*. Play: Publishing overview →
-*Publish*. Daarna wachten tot je allebei de adressen kunt openen:
+Apple: de app → de versie *1.0* → **Release this version**. De versie staat
+sinds 1 oktober op *Pending Developer Release*; die knop is het hele werk.
+Play: Publishing overview → **Publish**. Daarna wachten tot je allebei de adressen kunt openen:
+
+Het Play-adres kun je nu al plakken; dat is niets anders dan het application
+id in een URL:
 
 ```
-https://apps.apple.com/app/id<jouw Apple ID>
 https://play.google.com/store/apps/details?id=app.darijaforkids.learn
 ```
 
-Het Apple ID is een getal van negen of tien cijfers en staat in App Store
-Connect onder de app, bij *App Information → Apple ID*. Het Play-adres is nu
-al goed: dat is niets anders dan het application id in een URL.
+Het Apple-adres hangt aan het Apple ID van de app, en dat getal krijg je niet
+uit dit bestand. Je hoeft het ook nergens over te typen: zodra de versie op
+**Ready for Sale** staat, zet App Store Connect er zelf een link *View on App
+Store* bij. Die open je. En in stap 2 vraagt `npm run live` om het nummer en
+drukt het volledige adres daarna nog een keer af, zodat je het kunt
+vergelijken met wat je zojuist opende.
+
+Wat je in elk geval **niet** doet is een adres met punthaken plakken. In
+PowerShell leest `<` als een omleiding en krijg je een foutmelding die nergens
+over gaat — op de dag van de lancering, met de app al in de winkel.
 
 **Wacht echt tot ze opengaan.** Een winkelpagina bestaat pas als de winkel
 hem heeft rondgestuurd, en dat kan bij Apple een paar uur duren nadat het
@@ -159,7 +207,7 @@ In deze volgorde, en niet andersom. Een bericht met een dode link komt maar
 | **11:00** | Instagram en TikTok |
 | **13:00** | Facebook |
 | **15:00** | YouTube — community-bericht, en de link in elke beschrijving |
-| **de avond** | De mail aan wie geen WhatsApp gebruikt |
+| **de avond** | De mail aan wie geen WhatsApp gebruikt, en aan wie op *hou me op de hoogte* heeft gedrukt |
 
 De persoonlijke berichten zijn het werk van de dag. De rest is twintig
 minuten. Dat is geen vergissing in de planning: één zus die het doorstuurt
@@ -229,6 +277,46 @@ Android. De eerste vier lessen zijn gratis.
 En in de beschrijving van elke video dezelfde twee regels bovenaan. Een
 kijker die een woordje-van-de-dag vindt, moet in die beschrijving de app
 kunnen vinden zonder te zoeken.
+
+### De mail aan wie erom gevraagd heeft
+
+Dit is je beste lijst en hij is klein, dus hij verdient een eigen bericht.
+Deze mensen hebben hun adres gegeven en de link in hun bevestigingsmail
+aangeklikt; ze hebben letterlijk gevraagd om dit bericht. Hoeveel het er zijn:
+
+```
+npm run belangstelling
+```
+
+Dat telt **bevestigd** en **wacht** apart, en alleen de eerste groep mag je
+mailen. Zonder die tweede klik heb je geen aantoonbare toestemming, en een
+lijst van honderd waarvan er dertig bevestigd zijn is een lijst van dertig.
+De adressen zelf komen er niet uit — die staan in de database en horen daar;
+versturen doe je bij de mailpartner.
+
+Onderwerp: **Hij staat er**.
+
+```
+Hoi,
+
+Je hebt een tijdje geleden gevraagd om een bericht zodra Darijaforkids er
+zou zijn. Vanaf vandaag kun je hem downloaden, op iPhone en op Android.
+
+De eerste vier lessen zijn gratis en blijven gratis — geen account, niets
+in te vullen. Wil je verder, dan kun je het eerst drie dagen gratis
+proberen.
+
+darijaforkids.eu
+
+Dank dat je het wilde weten. Dat was in de maanden dat er nog niets was
+meer waard dan je denkt.
+
+Groet,
+Adil
+```
+
+Eén bericht, en daarna niets meer tenzij er echt iets is. Wie zich meldt voor
+een aankondiging heeft zich niet gemeld voor een nieuwsbrief.
 
 ### De mail
 
