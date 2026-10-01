@@ -161,3 +161,31 @@ describe('het verschil tussen ernaast tikken en terug drukken', () => {
     expect(aanbod).not.toContain('onClose={sluit}')
   })
 })
+
+describe('de terugknop middenin een les', () => {
+  /**
+   * Een veeg vanaf de rand liep de les gewoon uit: geen vraag, geen weg terug
+   * naar waar je was. Het kruisje rechtsboven vraagt het wél, en dat is niet
+   * voor niets — halverwege weglopen is het enige wat in deze app iets kost.
+   *
+   * Nagemeten met een nagebootste plugin: in de les één luisteraar; terug →
+   * "Stoppen met deze les?" en twee luisteraars; terug → de vraag weg en weer
+   * één; terug → de vraag weer terug. De les zelf blijft staan.
+   */
+  it('stelt dezelfde vraag als het kruisje', () => {
+    const ronde = readFileSync(new URL('./Round.tsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n')
+    expect(ronde).toContain("import { opTerug } from '../engine/terug'")
+    expect(ronde).toContain('useEffect(() => opTerug(() => { if (!vraagStaat.current) { sfx.back(); setQuit(true) } }), [])')
+  })
+
+  /**
+   * De ref is geen omweg maar de hele truc: zonder hem houdt de luisteraar de
+   * `quit` van de eerste tekening vast, en dan opent een tweede terugdruk de
+   * vraag opnieuw terwijl `Sheet` hem net sluit.
+   */
+  it('leest de stand van de vraag uit een ref, niet uit de sluiting', () => {
+    const ronde = readFileSync(new URL('./Round.tsx', import.meta.url), 'utf8')
+    expect(ronde).toContain('const vraagStaat = useRef(false)')
+    expect(ronde).toContain('vraagStaat.current = quit')
+  })
+})

@@ -12,6 +12,7 @@ import {
   letterKey, loseHeart, msUntilNextHeart, PRIJS_HARTEN, scoreCorrect, sentenceKey, useStore,
 } from '../engine/store'
 import { useNavigate } from 'react-router-dom'
+import { opTerug } from '../engine/terug'
 import { sfx } from '../engine/audio'
 import { Button, Progress, Sheet } from './kit'
 import { Mascot } from './Mascot'
@@ -85,6 +86,23 @@ export function RoundRunner({
   const [verdict, setVerdict] = useState<Verdict | null>(null)
   const [detail, setDetail] = useState('')
   const [quit, setQuit] = useState(false)
+
+  /*
+   * De terugknop van Android stelt dezelfde vraag als het kruisje.
+   *
+   * Zonder dit liep een veeg vanaf de rand gewoon de les uit -- geen vraag,
+   * geen weg terug naar waar je was. Het kruisje rechtsboven vraagt het wél,
+   * en dat is niet voor niets: halverwege weglopen is het enige wat in deze
+   * app iets kost.
+   *
+   * Staat de vraag al open, dan doet deze luisteraar niets en sluit het paneel
+   * zichzelf -- `Sheet` hangt dan zijn eigen luisteraar op, en die komt na
+   * deze. Vandaar de ref: een gewone `quit` zou hier de waarde van de eerste
+   * tekening vasthouden.
+   */
+  const vraagStaat = useRef(false)
+  vraagStaat.current = quit
+  useEffect(() => opTerug(() => { if (!vraagStaat.current) { sfx.back(); setQuit(true) } }), [])
   // How many right in a row: the sound climbs with it, the counter shows it,
   // and a mistake resets both.
   const [combo, setCombo] = useState(0)
