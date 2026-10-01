@@ -66,6 +66,35 @@ af te tellen — daarom werken ze allebei de kanten op.
 
 ## De volgorde
 
+### 0. Eerst de proefperiode, vóór je iets vrijgeeft
+
+**Dit is een blokkade, geen aanbeveling.** Op het koopscherm van de app staat
+*start 3 dagen gratis*, in zes talen. Dat getal komt uit `TRIAL_DAYS` in
+`src/engine/billing.ts` en staat er ongeacht wat de winkel weet. Bestaat de
+aanbieding bij Apple niet, dan leest de eerste koper drie dagen gratis en
+schrijft Apple meteen € 59,99 af — terugbetalingen, eensterbeoordelingen in de
+eerste week, en een afwijzing op richtlijn 3.1.2 bij de eerstvolgende versie.
+
+Op 1 oktober was bij `app.darijaforkids.yearly` geen Introductory Offer te
+vinden. Dus vóór het vrijgeven:
+
+1. App Store Connect → Subscriptions → **Volledige toegang** → **Jaar** →
+   bij *Subscription Prices* de ⊕ → een **Introductory Offer**, type *Free
+   Trial*, duur **3 dagen**, alle landen, voor wie nog niet geabonneerd is.
+2. Hetzelfde bij **Maand**. Twee abonnementen, dus twee aanbiedingen.
+3. Play Console → het abonnement → basisplan → **Aanbieding** → *Gratis
+   proefperiode*, **3 dagen**. Ook hier twee keer.
+4. **Nameten op een toestel**, want de console is niet het bewijs: koop in
+   TestFlight en kijk naar het aankoopvenster van Apple zelf, dat over het
+   scherm van de app heen komt. Staat er *3 dagen gratis, daarna € 59,99*,
+   dan klopt het. Staat er alleen € 59,99, dan niet.
+
+Lukt het aanmaken niet op tijd, dan is er één eerlijke uitweg en dat is níét
+toch vrijgeven: zet `TRIAL_DAYS` op 0 in `src/engine/billing.ts`. De teksten
+passen zich in alle zes talen aan en de app belooft dan niets meer wat de
+winkel niet doet. Dat kost conversie — wie geen proef krijgt moet meteen
+betalen — maar het kost je geen terugbetalingen en geen beoordeling.
+
 ### 1. Vrijgeven
 
 Apple: de versie → *Release this version*. Play: Publishing overview →
