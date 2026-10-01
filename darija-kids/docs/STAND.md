@@ -767,6 +767,58 @@ koopknoppen stonden al uit tijdens `busy`.
 Stand na de ronde: **1339 tests groen in 56 bestanden**, `tsc -b --force
 --noEmit` schoon, productiebouw schoon.
 
+#### Wat er van de grote taalapps geleend is — 1 oktober, avond
+
+De vraag was: neem inspiratie van Duolingo. Het antwoord bleek niet "er
+ontbreken mechanieken" maar "er staan er drie aan die nooit afgaan".
+
+De app had het hele arsenaal al: XP, niveaus, edelstenen, hartjes die
+teruggroeien, een reeks, een dagdoel, vijf dagmissies, insignes, een
+herhaalalgoritme en een dagelijkse herinnering. Drie daarvan waren dode code.
+
+**Edelstenen gingen nergens heen.** Vijf missies leveren er eenentwintig per
+dag op, plus één per reeks van vijf goede antwoorden. Ze stapelden zich op tot
+een getal in de kopbalk dat niets deed. En er lagen twee bestemmingen klaar die
+allebei nooit bereikt werden: `refillHearts(kosten)` werd door niemand
+aangeroepen, en `addXp` kende de vriesdag wel maar nergens ging dat aantal
+omhoog — die tak was onbereikbaar.
+
+Nu kosten een volle rij hartjes 15 edelstenen en een vriesdag er 25, met
+hoogstens twee op zak. **Nooit met geld**: edelstenen komen alleen binnen door
+te spelen. In de kinderafdeling van Apple ligt dat gevoelig, en terecht — een
+kind hoort niet tegen een muur te lopen die alleen met de portemonnee van zijn
+ouder weggaat. Om dezelfde reden krijgen abonnees géén onbeperkte hartjes,
+hoe goed dat ook voor de omzet zou zijn: dan is de gratis versie expres
+vervelend gemaakt, en dat is precies het patroon waar een beoordelaar naar
+kijkt.
+
+**Het scherm "je hartjes zijn op" was een doodlopende weg.** Een mascotte, een
+zin en één knop terug — precies het moment waarop een kind de app wegklikt.
+Er staan nu drie wegen: aanvullen, herhalen (dat met `useHearts={false}`
+draait en dus echt nooit een hartje kost — het stond al in de uitleg, er was
+alleen geen knop) en terug. Plus de tijd tot het volgende hartje, die alleen
+in een `title` op de kopbalk zat; een tooltip bestaat op een telefoon niet.
+
+**Het dagdoel werd nooit "gehaald" genoemd.** `goalMet` stond in de engine en
+werd door geen enkel scherm gelezen. Mijlpalen voor de reeks bestonden niet.
+Het scorescherm van een les toont nu een eigen kader met wat déze les afsloot:
+het dagdoel, de reeks op 3/7/14/30/50/100/200/365 dagen, en een vriesdag die
+de reeks heel hield. Een mijlpaal krijgt het gejuich, als laatste in de rij —
+hij gaat niet over deze les maar over alle dagen ervoor. En de balk in de
+kopbalk wordt groen met een vinkje zodra het doel binnen is.
+
+Twee fouten die bij het nameten bovenkwamen en meteen mee zijn: de lestip kwam
+over het hartjesscherm heen, en de eerste versie van het vieren vergeleek met
+de staat van vlak vóór het afronden. Dat is te laat — een goed antwoord betaalt
+meteen uit, dus `addXp` loopt tijdens de les al mee, en tegen de tijd dat
+`finish` draait is de reeks allang opgehoogd. Nagemeten op een echte les: reeks
+op 3, een mijlpaal, en er kwam niets in beeld. Nu wordt de staat van vóór de
+rónde vastgehouden, en `mijlpaal.test.ts` leest de bron.
+
+Alles nagelopen in de browser op 390px, met een uitgespeelde les.
+
+Stand: **1361 tests groen in 58 bestanden**, `tsc -b --force --noEmit` schoon.
+
 ### Nog na te kijken bij Google Play — kijken, niet wijzigen
 
 Drie dingen die pas opvallen als het te laat is. **Zolang inzending 4 in
