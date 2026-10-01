@@ -75,13 +75,17 @@ aanbieding bij Apple niet, dan leest de eerste koper drie dagen gratis en
 schrijft Apple meteen € 59,99 af — terugbetalingen, eensterbeoordelingen in de
 eerste week, en een afwijzing op richtlijn 3.1.2 bij de eerstvolgende versie.
 
-Op 1 oktober was bij `app.darijaforkids.yearly` geen Introductory Offer te
-vinden. Dus vóór het vrijgeven:
+Bij `app.darijaforkids.yearly` is het op 1 oktober aangetoond: in de tabel
+onder *Subscription Prices* staat de kolom **INTRODUCTORY OFFERS (175)** met
+*Free for the first 3 days*. De andere drie zijn nog niet nagekeken. Dus vóór
+het vrijgeven:
 
-1. App Store Connect → Subscriptions → **Volledige toegang** → **Jaar** →
-   bij *Subscription Prices* de ⊕ → een **Introductory Offer**, type *Free
-   Trial*, duur **3 dagen**, alle landen, voor wie nog niet geabonneerd is.
-2. Hetzelfde bij **Maand**. Twee abonnementen, dus twee aanbiedingen.
+1. ~~App Store Connect → **Jaar**~~ — **staat er**, 175 landen.
+2. Hetzelfde bij **Maand**: App Store Connect → Subscriptions → *Volledige
+   toegang* → **Maand**, en kijken of de kolom *Introductory Offers* in de
+   prijzentabel gevuld is. Is hij leeg: de blauwe ⊕ naast *Subscription
+   Prices* → **Create Introductory Offer**, type *Free Trial*, **3 dagen**,
+   alle landen, voor wie nog niet geabonneerd is.
 3. Play Console → het abonnement → basisplan → **Aanbieding** → *Gratis
    proefperiode*, **3 dagen**. Ook hier twee keer.
 4. **Nameten op een toestel**, want de console is niet het bewijs: koop in

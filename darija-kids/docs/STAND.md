@@ -548,15 +548,21 @@ Omgekeerd kan het ook: staat de proefperiode er wél en zou je hem niet willen,
 dan zet je `TRIAL_DAYS` op 0 en passen de teksten zich aan. Maar de twee
 moeten hetzelfde zeggen.
 
-**Op 1 oktober gekeken bij `app.darijaforkids.yearly`, en nog niet
-vastgesteld.** Op de bladzijde van het abonnement staan Introductory Offers,
-Promotional Offers, Offer Codes en de teksten per taal tússen *Subscription
-Prices* en *Purchase Options*. Dat stuk is nog niet bekeken, dus er is niets
-bewezen — niet dat de aanbieding er staat en niet dat hij ontbreekt.
+**Op 1 oktober vastgesteld bij `app.darijaforkids.yearly`: de proefperiode
+staat er, voor alle 175 landen.** In de tabel onder *Subscription Prices*
+staat een kolom **INTRODUCTORY OFFERS (175)** met op elke regel *Free for the
+first 3 days*. De app en de winkel zeggen dus hetzelfde, en wat hier eerder
+stond — dat het blok ontbrak — was een leesfout van twee schermafdrukken met
+een gat ertussen.
 
-De manier om het in de console zeker te weten is ⌘F op de bladzijde van het
-abonnement zelf — niet op het overzicht met de abonnementsgroepen, want daar
-staat het woord sowieso niet — en zoeken op `Introductory`.
+Waar je het vindt, want het staat niet waar de naam doet vermoeden: er is geen
+kop "Introductory Offers". Het is een **kolom in de prijzentabel**, en
+aanmaken gaat via de blauwe ⊕ naast *Subscription Prices* → *Create
+Introductory Offer*.
+
+**Nog niet nagekeken:** hetzelfde bij `app.darijaforkids.monthly`, en de
+gratis proefperiode bij de twee abonnementen in Play Console. Eén van de vier
+is dus aangetoond.
 
 **Het scherm van de app is geen bewijs.** `Unlock.tsx` en `Welcome.tsx` tonen
 `TRIAL_DAYS`, en dat is een vast getal in de code; de app leest de prijsfasen
@@ -570,18 +576,9 @@ Dat is meteen de test die `docs/PAYMENTS.md` al voorschreef — afsluiten met
 proefperiode, opzeggen tijdens de proefperiode — en hij kan via TestFlight op
 een echte iPhone, ook nu de versie in beoordeling ligt.
 
-**Daar hangt een volgorde aan voor de lanceerdag.** De review-schermafbeelding
-die bij dit abonnement staat toont de knop *START 3 DAGEN GRATIS*. Geef je de
-app vrij voordat die aanbieding bestaat, dan leest de eerste koper drie dagen
-gratis en schrijft Apple meteen € 59,99 af. Dus:
-
-1. Apple keurt 1.0 goed.
-2. **Dan pas** de Introductory Offer aanmaken — *Free Trial*, 3 dagen — op
-   allebei de abonnementen, en nakijken of hij er staat.
-3. Pas daarna vrijgeven.
-
-Stap 2 staat niet in `docs/GO-LIVE.md` en hoort daar wel; tot die tijd staat
-hij hier.
+**De volgorde voor de lanceerdag blijft staan**, want hij geldt voor de drie
+die nog niet zijn nagekeken: eerst aantonen dat de proef bestaat, dan pas
+vrijgeven. Hij staat nu als stap 0 in `docs/GO-LIVE.md`.
 
 #### En wat het trechtermodel nu is
 
