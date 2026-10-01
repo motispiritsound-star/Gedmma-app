@@ -270,6 +270,16 @@ export class Grens extends Component<{ children: ReactNode }, Staat> {
           padding: '1.5rem',
           background: '#fff8e6',
           color: '#1f2937',
+          /*
+           * Dit scherm is met opzet altijd licht, en `colorScheme` zegt dat
+           * ook tegen de browser -- anders tekent hij het invoerveld verderop
+           * donker op een crèmekleurige bladzijde.
+           *
+           * Geen donkere variant dus. Dit is de laatste vangst als al het
+           * andere stuk is, en elke extra voorwaarde hier is een voorwaarde
+           * die zélf om kan vallen.
+           */
+          colorScheme: 'light',
           fontFamily: 'system-ui, -apple-system, sans-serif',
           boxSizing: 'border-box',
         }}
@@ -287,8 +297,15 @@ export class Grens extends Component<{ children: ReactNode }, Staat> {
             type="button"
             onClick={this.opnieuw}
             style={{
-              border: '2px solid #0d9488',
-              background: '#14b8a6',
+              /*
+               * Wit op `#14b8a6` haalde 2,49 op 1, en dit is de enige knop op
+               * het scherm. `#0f766e` haalt 5,47. De getallen staan hier met
+               * de hand omdat dit scherm niets mag aannemen -- ook niet dat de
+               * stylesheet geladen is -- maar het zijn dezelfde tinten als
+               * `--color-zellige-600` en `-700` in `index.css`.
+               */
+              border: '2px solid #115e59',
+              background: '#0f766e',
               color: '#fff',
               borderRadius: '1rem',
               padding: '0.875rem 1.75rem',

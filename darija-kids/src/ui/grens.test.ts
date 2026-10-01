@@ -159,3 +159,56 @@ describe('de aannames onder de grens', () => {
     expect(uit(store, 'OLD_KEYS')).toHaveLength(2)
   })
 })
+
+describe('de enige knop op het foutscherm', () => {
+  /**
+   * Dit scherm staat er als al het andere stuk is, dus alles wat erop staat is
+   * met de hand ingetypt — geen klassen, geen css-variabelen, niets wat zelf
+   * nog kan omvallen. Dat is goed, en het is precies waarom de kleuren hier
+   * achterbleven: toen `--color-zellige-600` donkerder werd voor het contrast,
+   * veranderde er hier niets mee. Wit op `#14b8a6` haalde 2,49 op 1, op de
+   * enige knop van het scherm.
+   *
+   * Nagemeten in de browser, met een echte fout erin: de knop is
+   * `rgb(15,118,110)`, 239 bij 58, en het scherm zegt "Oeps, daar ging iets
+   * mis — het is niet jouw schuld."
+   */
+  const grens = bron('./Grens.tsx')
+
+  const verhouding = (a: string, b: string): number => {
+    const kleur = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+    const lum = (hex: string) => {
+      const [r, g, bl] = kleur(hex)
+      const f = (v: number) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)
+      return 0.2126 * f(r!) + 0.7152 * f(g!) + 0.0722 * f(bl!)
+    }
+    const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p)
+    return (x! + 0.05) / (y! + 0.05)
+  }
+
+  it('is leesbaar', () => {
+    const achter = /background: '(#[0-9a-f]{6})',\n\s+color: '#fff'/.exec(grens)?.[1]
+    expect(achter, 'de achtergrond van de knop staat niet meer waar hij stond').toBeTruthy()
+    expect(verhouding('#ffffff', achter!)).toBeGreaterThanOrEqual(4.5)
+  })
+
+  /**
+   * En die handmatige tinten horen wel dezelfde te zijn als die in `index.css`.
+   * Lopen ze uit elkaar, dan ziet een kind bij een fout een knop in een kleur
+   * die nergens anders in de app voorkomt.
+   */
+  it('gebruikt dezelfde tinten als de rest van de app', () => {
+    const css = readFileSync(new URL('../index.css', import.meta.url), 'utf8')
+    const tint = (naam: string) => css.match(new RegExp(`--color-${naam}:\\s*(#[0-9a-f]{6})`, 'i'))?.[1]
+    expect(grens).toContain(`background: '${tint('zellige-600')}'`)
+    expect(grens).toContain(`border: '2px solid ${tint('zellige-700')}'`)
+  })
+
+  /**
+   * Altijd licht, en dat staat er ook. Anders tekent de browser het
+   * invoerveld verderop donker op een crèmekleurige bladzijde.
+   */
+  it('zegt dat het scherm licht is', () => {
+    expect(grens).toContain("colorScheme: 'light'")
+  })
+})
