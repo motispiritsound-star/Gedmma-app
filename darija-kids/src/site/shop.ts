@@ -15,8 +15,16 @@
  */
 
 export interface Product {
-  /** Wat de bezoeker leest. */
+  /** Wat de bezoeker nu betaalt. */
   prijs: string
+  /**
+   * Wat het na de introductieperiode kost, of leeg als er geen actie loopt.
+   *
+   * Leeg laten is het uitzetten: de website laat de doorgehaalde prijs, het
+   * label en de datumregel dan alle drie weg. Eén leeg veld, geen half
+   * zichtbare actie.
+   */
+  na: string
   /** De afrekenpagina. Leeg zolang hij nog niet bestaat. */
   link: string
 }
@@ -78,14 +86,54 @@ export const PRIJS = {
   ebook: '€ 14,99',
 } as const
 
+/**
+ * De openingsactie, en waarom hij zo is opgeschreven.
+ *
+ * Een doorgehaald bedrag naast een lager bedrag leest als "dit was duurder".
+ * Dat mag je in de Europese Unie alleen zeggen als het ook zo was: bij een
+ * aangekondigde prijsverlaging moet de doorgehaalde prijs de *laagste prijs
+ * van de dertig dagen ervoor* zijn (artikel 6a van de prijsindicatierichtlijn,
+ * in Nederland het Besluit prijsaanduiding producten). Deze reeksen hebben
+ * nooit € 49,99 gekost — ze staan sinds dag één op € 34,99. Een doorgehaalde
+ * € 49,99 als *oude* prijs is daarmee een misleidende handelspraktijk, en de
+ * ACM beboet precies dat.
+ *
+ * Wat wél mag is dit: € 34,99 is de **introductieprijs** en € 49,99 is wat het
+ * daarna kost. Daarom staat er bij de doorgehaalde prijs "prijs na de actie"
+ * en niet "normale prijs", en daarom staat de einddatum eronder. Dat is geen
+ * juridische slagroom maar de voorwaarde: gaat de prijs op `ACTIE_TOT` niet
+ * echt omhoog, dan is de aankondiging alsnog onwaar.
+ *
+ * Twee regels om hem uit te zetten: zet `na` leeg bij beide reeksen.
+ */
+
+/** Tot en met welke dag de introductieprijs geldt. ISO, elke taal maakt hem zelf op. */
+export const ACTIE_TOT = '2026-11-30'
+
+/**
+ * Wat het ná de introductieperiode kost.
+ *
+ * Een leeg veld is geen actie. Het e-boek staat er bewust niet in: dat is
+ * € 14,99 en blijft dat, en een actie op alles tegelijk is geen actie meer
+ * maar een prijslijst.
+ */
+export const NA_ACTIE = {
+  sbaReeks: '€ 49,99',
+  sleutelsReeks: '€ 49,99',
+  ebook: '',
+} as const
+
 export const SHOP: Record<string, Product> = {
   /** Het e-boek dat `npm run ebook` maakt: alle woorden, letters en grammatica. */
-  ebook: { prijs: PRIJS.ebook, link: LINKS.ebook ?? '' },
+  ebook: { prijs: PRIJS.ebook, na: NA_ACTIE.ebook, link: LINKS.ebook ?? '' },
   /** De twaalf prentenboeken van Sba, samen. */
-  sbaReeks: { prijs: PRIJS.sbaReeks, link: LINKS.sbaReeks ?? '' },
+  sbaReeks: { prijs: PRIJS.sbaReeks, na: NA_ACTIE.sbaReeks, link: LINKS.sbaReeks ?? '' },
   /** De vijftien delen van De sleutels van Marokko, samen. */
-  sleutelsReeks: { prijs: PRIJS.sleutelsReeks, link: LINKS.sleutelsReeks ?? '' },
+  sleutelsReeks: { prijs: PRIJS.sleutelsReeks, na: NA_ACTIE.sleutelsReeks, link: LINKS.sleutelsReeks ?? '' },
 }
+
+/** Of er op dit moment een introductieprijs loopt. */
+export const ACTIE_LOOPT = Object.values(SHOP).some((p) => p.na !== '')
 
 /** Of er iets te koop is; zolang niets een link heeft, is de winkel dicht. */
 export const WINKEL_OPEN = Object.values(SHOP).some((p) => p.link !== '')

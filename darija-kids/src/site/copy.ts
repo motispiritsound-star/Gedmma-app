@@ -107,6 +107,17 @@ const nl = {
   boekAllesSamen: (n: number, prijs: string): string => `Alle ${n} delen samen voor ${prijs} — je koopt de reeks, niet een deel.`,
   boekDeelWoord: 'Deel',
   boekKoop: 'Kopen',
+  boekActie: 'Openingsactie',
+  /**
+   * Het label bij de doorgehaalde prijs, en waarom er niet "normale prijs" staat.
+   *
+   * € 49,99 is wat de reeks ná de introductieperiode kost, niet wat hij eerder
+   * kostte. Dat onderscheid is geen woordspel: een doorgehaalde oude prijs die
+   * nooit gegolden heeft, is een misleidende prijsverlaging. Zie `shop.ts`.
+   */
+  boekActieNa: 'Prijs na de actie',
+  boekActieNoot: (datum: string, prijs: string): string =>
+    `Introductieprijs tot en met ${datum}. Daarna ${prijs}.`,
   boekProef: 'Lees en luister het begin',
   boekProefPdf: 'Of als pdf',
   boekProefSluit: 'Sluiten',
@@ -340,6 +351,10 @@ const fr: SiteCopy = {
   boekAllesSamen: (n: number, prijs: string): string => `Les ${n} tomes ensemble pour ${prijs} — vous achetez la série, pas un tome.`,
   boekDeelWoord: 'Tome',
   boekKoop: 'Acheter',
+  boekActie: 'Offre de lancement',
+  boekActieNa: `Prix après l'offre`,
+  boekActieNoot: (datum: string, prijs: string): string =>
+    `Prix de lancement jusqu'au ${datum} inclus. Ensuite ${prijs}.`,
   boekProef: 'Lisez et écoutez le début',
   boekProefPdf: 'Ou en pdf',
   boekProefSluit: 'Fermer',
@@ -565,6 +580,10 @@ const de: SiteCopy = {
   boekAllesSamen: (n: number, prijs: string): string => `Alle ${n} Bände zusammen für ${prijs} — du kaufst die Reihe, nicht einen Band.`,
   boekDeelWoord: 'Band',
   boekKoop: 'Kaufen',
+  boekActie: 'Eröffnungsangebot',
+  boekActieNa: 'Preis nach der Aktion',
+  boekActieNoot: (datum: string, prijs: string): string =>
+    `Einführungspreis bis einschließlich ${datum}. Danach ${prijs}.`,
   boekProef: 'Den Anfang lesen und hören',
   boekProefPdf: 'Oder als PDF',
   boekProefSluit: 'Schließen',
@@ -790,6 +809,10 @@ const es: SiteCopy = {
   boekAllesSamen: (n: number, prijs: string): string => `Los ${n} tomos juntos por ${prijs}: compras la serie, no un tomo.`,
   boekDeelWoord: 'Tomo',
   boekKoop: 'Comprar',
+  boekActie: 'Oferta de lanzamiento',
+  boekActieNa: 'Precio después de la oferta',
+  boekActieNoot: (datum: string, prijs: string): string =>
+    `Precio de lanzamiento hasta el ${datum} incluido. Después ${prijs}.`,
   boekProef: 'Lee y escucha el principio',
   boekProefPdf: 'O en pdf',
   boekProefSluit: 'Cerrar',
@@ -1015,6 +1038,10 @@ const it: SiteCopy = {
   boekAllesSamen: (n: number, prijs: string): string => `Tutti i ${n} volumi insieme per ${prijs}: compri la collana, non un volume.`,
   boekDeelWoord: 'Volume',
   boekKoop: 'Acquista',
+  boekActie: 'Offerta di lancio',
+  boekActieNa: `Prezzo dopo l'offerta`,
+  boekActieNoot: (datum: string, prijs: string): string =>
+    `Prezzo di lancio fino al ${datum} compreso. Poi ${prijs}.`,
   boekProef: 'Leggi e ascolta l’inizio',
   boekProefPdf: 'Oppure in pdf',
   boekProefSluit: 'Chiudi',
@@ -1240,6 +1267,10 @@ const en: SiteCopy = {
   boekAllesSamen: (n: number, prijs: string): string => `All ${n} books together for ${prijs} — you buy the series, not a single book.`,
   boekDeelWoord: 'Book',
   boekKoop: 'Buy',
+  boekActie: 'Launch offer',
+  boekActieNa: 'Price after the offer',
+  boekActieNoot: (datum: string, prijs: string): string =>
+    `Launch price through ${datum}. After that ${prijs}.`,
   boekProef: 'Read and listen to the beginning',
   boekProefPdf: 'Or as a pdf',
   boekProefSluit: 'Close',

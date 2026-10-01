@@ -58,11 +58,23 @@ const SLEUTELPLEK = [
   'Marrakech', 'Essaouira', 'Salé', 'Rif', 'Rabat', 'Rabat', 'Atlas',
 ]
 
+/**
+ * De einddatum van de openingsactie, in de taal van de bladzijde.
+ *
+ * `ACTIE_TOT` staat in `shop.ts` als ISO-datum en niet als tekst, juist
+ * hiervoor: "30 november 2026" en "November 30, 2026" zijn dezelfde dag en
+ * een vertaler hoeft er niet aan te pas te komen. Twaalf uur UTC erbij, want
+ * middernacht in een tijdzone links van Greenwich is de dag ervoor.
+ */
+const actieDatum = (lang) =>
+  new Intl.DateTimeFormat(localeOf(lang), { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+    .format(new Date(`${ACTIE_TOT}T12:00:00Z`))
+
 const [
   { LANGS, localeOf },
   { SITE },
   { STORE, SITE_URL, PATHS, SOCIAL, FILM_YOUTUBE, POST_URL },
-  { SHOP, WINKEL_OPEN },
+  { SHOP, WINKEL_OPEN, ACTIE_TOT },
   { DELEN },
   { REEKS: SLEUTELREEKS },
   { NAMEN },
@@ -953,16 +965,39 @@ const booksPage = (lang) => {
   const p = PATHS[lang]
   const d = DELEN[lang]
 
+  /**
+   * De prijs, met de doorgehaalde prijs ervoor als er een actie loopt.
+   *
+   * Het label ervoor staat buiten beeld maar wel in de tekst, want een
+   * doorgehaald bedrag is voor een schermlezer gewoon een bedrag: zonder dat
+   * woordje hoort een blinde bezoeker twee prijzen en geen actie. En het zegt
+   * "prijs na de actie", niet "normale prijs" — zie de uitleg in `shop.ts`.
+   */
+  const prijsregel = (koop) => {
+    const p = SHOP[koop]
+    if (!p?.na) return esc(p.prijs)
+    return `<span class="was"><span class="buitenbeeld">${esc(c.boekActieNa)}: </span>`
+      + `<s>${esc(p.na)}</s></span> <span class="nu">${esc(p.prijs)}</span>`
+  }
+
+  /** Tot wanneer de introductieprijs geldt, en wat het daarna kost. */
+  const actienoot = (koop) =>
+    SHOP[koop]?.na
+      ? `<p class="actienoot">${esc(c.boekActieNoot(actieDatum(lang), SHOP[koop].na))}</p>`
+      : ''
+
   const reeks = (badge, titel, body, punten, kunst, koop) => `<article class="reeks">
     <div class="kunst">${kunst}</div>
     <div class="inhoud">
       <span class="leeftijd">${esc(badge)}</span>
+      ${SHOP[koop]?.na ? `<span class="actiebadge">${esc(c.boekActie)}</span>` : ''}
       <h2>${esc(titel)}</h2>
       <p>${esc(body)}</p>
       <ul>${punten.map((punt) => `<li>${esc(punt)}</li>`).join('')}</ul>
       ${SHOP[koop]?.link
-        ? `<a class="mailbtn" href="${SHOP[koop].link}" rel="noopener">${esc(c.boekKoop)} — ${esc(SHOP[koop].prijs)}</a>`
-        : `<span class="status">${esc(c.boekStatus)} · ${esc(SHOP[koop].prijs)}</span>`}
+        ? `<a class="mailbtn" href="${SHOP[koop].link}" rel="noopener">${esc(c.boekKoop)} — ${prijsregel(koop)}</a>`
+        : `<span class="status">${esc(c.boekStatus)} · ${prijsregel(koop)}</span>`}
+      ${actienoot(koop)}
     </div>
   </article>`
 
@@ -1000,7 +1035,8 @@ const booksPage = (lang) => {
         <span class="wat"><b>${esc(titel)}</b><i>${esc(bij(i))}</i></span>
       </li>`).join('')}
     </ol>
-    <p class="alles">${esc(c.boekAllesSamen(titels.length, SHOP[reeksId].prijs))}</p>
+    <p class="alles">${esc(c.boekAllesSamen(titels.length, SHOP[reeksId].prijs))}${
+      SHOP[reeksId].na ? ` ${esc(c.boekActieNoot(actieDatum(lang), SHOP[reeksId].na))}` : ''}</p>
   </details>`
   }
 

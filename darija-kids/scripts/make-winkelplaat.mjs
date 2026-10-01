@@ -37,7 +37,7 @@ const server = await createServer({
   configFile: path.join(ROOT, 'vite.config.ts'),
   root: ROOT, server: { middlewareMode: true, hmr: false }, appType: 'custom', logLevel: 'error',
 })
-const [{ REEKS }, { DELEN: PRENTEN }, { PRIJS }] = await Promise.all([
+const [{ REEKS }, { DELEN: PRENTEN }, { PRIJS, NA_ACTIE, ACTIE_TOT }] = await Promise.all([
   server.ssrLoadModule('/src/content/sleutels.ts'),
   server.ssrLoadModule('/src/content/prentenboek.ts'),
   server.ssrLoadModule('/src/site/shop.ts'),
@@ -67,6 +67,10 @@ const plaat = async (bestand) => {
   return `data:${soort};base64,${(await readFile(bestand)).toString('base64')}`
 }
 
+/** De einddatum van de openingsactie, in gewoon Nederlands. */
+const ACTIEDAG = new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+  .format(new Date(`${ACTIE_TOT}T12:00:00Z`))
+
 /** Drie delen uit een reeks: het begin, het midden en het eind. */
 const drie = (delen) => [delen[0], delen[Math.floor(delen.length / 2)], delen[delen.length - 1]]
 
@@ -76,6 +80,7 @@ const PRODUCTEN = {
     onder: `Alle vijftien delen, in zes talen`,
     regel: 'Vijftien boeken · 202 hoofdstukken · van het jaar 200 tot nu',
     prijs: PRIJS.sleutelsReeks,
+    na: NA_ACTIE.sleutelsReeks,
     omslagen: [],
     kop: 'De vijftien delen',
     motief: 'sleutel',
@@ -91,6 +96,7 @@ const PRODUCTEN = {
     onder: 'Alle twaalf delen, in zes talen',
     regel: 'Twaalf voorleesboeken · 144 woorden Darija · vanaf 2 jaar',
     prijs: PRIJS.sbaReeks,
+    na: NA_ACTIE.sbaReeks,
     omslagen: [],
     kop: 'De twaalf delen',
     /** De ondertitel is bij elk deel dezelfde regel; `waar` zegt wél iets. */
@@ -102,6 +108,7 @@ const PRODUCTEN = {
     onder: 'Het e-boek, in zes talen',
     regel: '17 units · 304 woorden · 100 zinnen · 28 letters',
     prijs: PRIJS.ebook,
+    na: NA_ACTIE.ebook,
     omslagen: [],
   },
 }
@@ -156,6 +163,8 @@ const blad = (p, vierkant, achtergrond) => {
   .prijs{margin-top:${vierkant ? 10 : 16}px;display:inline-block;background:${H.goud};color:${H.inkt};
          font-weight:800;font-size:${vierkant ? 22 : 28}px;padding:${vierkant ? '6px 16px' : '9px 22px'};
          border-radius:999px}
+  .prijs s{opacity:.55;font-weight:700;margin-right:${vierkant ? 4 : 6}px;text-decoration-thickness:.08em}
+  .actie{margin-top:${vierkant ? 7 : 10}px;font-weight:600;font-size:${vierkant ? 14 : 17}px;color:#b5a68c}
   .rechts{position:relative;flex:1;display:flex;justify-content:center;align-items:center;height:560px}
   .mini{position:absolute;width:250px;height:355px;background:${H.nacht};border:1px solid #c8952f44;
         border-radius:5px;box-shadow:0 22px 44px #00000066;overflow:hidden;
@@ -178,7 +187,8 @@ const blad = (p, vierkant, achtergrond) => {
   <h1>${esc(p.reeks)}</h1>
   <div class="onder">${esc(p.onder)}</div>
   <div class="regel">${esc(p.regel)}</div>
-  <div class="prijs">${esc(p.prijs)}</div>
+  <div class="prijs">${p.na ? `<s>${esc(p.na)}</s> ` : ''}${esc(p.prijs)}</div>
+  ${p.na ? `<div class="actie">Introductieprijs tot en met ${esc(ACTIEDAG)}. Daarna ${esc(p.na)}.</div>` : ''}
 </div>
 ${vierkant || !p.omslagen.length ? '' : `<div class="rechts">${p.omslagen.map(mini).join('')}</div>`}`
 }

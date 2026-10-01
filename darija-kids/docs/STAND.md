@@ -723,6 +723,32 @@ Open, voor één van de drie. Zie `docs/WINKEL-INRICHTEN.md`.
 | Sba de Atlasleeuw | € 34,99 | **te koop** — `venshipper.gumroad.com/l/sbadeleeuw` |
 | Het e-boek | € 14,99 | bestanden klaar, product nog aanmaken |
 
+### De openingsactie — en wat je op 30 november moet doen
+
+Op de website staat sinds 1 oktober een doorgehaalde **€ 49,99** naast de
+€ 34,99, met een insigne "Openingsactie" en de regel *"Introductieprijs tot en
+met 30 november 2026. Daarna € 49,99."* in alle zes talen.
+
+Die doorhaling mag, maar alleen in deze vorm. Een doorgehaald bedrag dat leest
+als "dit was duurder" moet volgens artikel 6a van de prijsindicatierichtlijn —
+in Nederland het Besluit prijsaanduiding producten — de laagste prijs van de
+dertig dagen ervoor zijn. De reeksen hebben nooit € 49,99 gekost. Daarom staat
+er bij de doorgehaalde prijs *prijs na de actie* en niet *normale prijs*, en
+daarom staat de einddatum eronder: het is een introductieprijs, geen
+afprijzing.
+
+**Daar hangt wel een afspraak aan.** Op 30 november moet de prijs bij Gumroad
+ook echt naar € 49,99, anders is de aankondiging alsnog onwaar en handhaaft de
+ACM daarop. Wil je dat niet, zet de actie dan vóór die dag van de website af:
+
+```
+npm run site
+```
+
+na één wijziging in `src/site/shop.ts` — `na` leeg bij beide reeksen in
+`NA_ACTIE`. Dat haalt het insigne, de doorhaling en de datumregel alle drie
+tegelijk weg; de prijs zelf blijft staan.
+
 Gumroad is de *merchant of record*: zij zijn juridisch de verkoper, innen de
 btw in elk EU-land, leveren het bestand en doen de terugbetalingen. Op het
 afschrift van een koper staat hun naam, en daarom staat dat ook op de

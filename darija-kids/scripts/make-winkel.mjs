@@ -59,7 +59,7 @@ const server = await createServer({
   configFile: path.join(ROOT, 'vite.config.ts'),
   root: ROOT, server: { middlewareMode: true, hmr: false }, appType: 'custom', logLevel: 'error',
 })
-const [sleutels, sleutelTalen, prenten, prentTalen, { PRIJS, SHOP }, ...delen] = await Promise.all([
+const [sleutels, sleutelTalen, prenten, prentTalen, { PRIJS, NA_ACTIE, ACTIE_TOT, SHOP }, ...delen] = await Promise.all([
   server.ssrLoadModule('/src/content/sleutels.ts'),
   server.ssrLoadModule('/src/content/sleutels-talen.ts'),
   server.ssrLoadModule('/src/content/prentenboek.ts'),
@@ -70,6 +70,10 @@ const [sleutels, sleutelTalen, prenten, prentTalen, { PRIJS, SHOP }, ...delen] =
 await server.close()
 
 const { REEKS } = sleutels
+
+/** De einddatum van de openingsactie, zoals je hem voorleest. */
+const ACTIEDAG = new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+  .format(new Date(`${ACTIE_TOT}T12:00:00Z`))
 const { SLEUTEL_VERTALINGEN } = sleutelTalen
 const { DELEN: PRENTEN } = prenten
 const { deelIn, TALEN_KLAAR } = prentTalen
@@ -359,6 +363,7 @@ for (const p of gemaakt) {
     '| | |', '| --- | --- |',
     `| **Titel in de winkel** | ${p.reeks} |`,
     `| **Prijs** | ${p.prijs} |`,
+    ...(NA_ACTIE[p.sleutel] ? [`| **Prijs vanaf ${ACTIEDAG}** | ${NA_ACTIE[p.sleutel]} — zie "Let op" |`] : []),
     `| **Bestand** | \`store/winkel/${path.basename(p.zip)}\` — ${p.aantal} pdf's, ${grootte} |`,
     `| **Sleutel in shop.ts** | \`${p.sleutel}\` |`,
     `| **Link** | ${SHOP[p.sleutel]?.link || '_nog leeg_'} |`, '',
@@ -383,6 +388,13 @@ regels.push('## Daarna', '',
   '  bezoeker leest, in de winkel staat wat hij betaalt. Wijzig je er één,',
   '  wijzig dan de ander. Wie op een knop van € 34,99 drukt en € 39,95 ziet,',
   '  komt niet terug.',
+  '- **De openingsactie loopt tot en met ' + ACTIEDAG + '.** Op de website staat',
+  `  ${NA_ACTIE.sleutelsReeks} doorgehaald naast ${PRIJS.sleutelsReeks}. Dat mag omdat het een`,
+  '  *introductieprijs* is en geen afgeprijsde oude prijs — de reeksen hebben',
+  '  nooit meer gekost. Die vlieger gaat alleen op als de prijs op die dag ook',
+  `  echt naar ${NA_ACTIE.sleutelsReeks} gaat. Doe je dat niet, zet de actie dan van de website:`,
+  '  `na` leeg bij beide reeksen in `src/site/shop.ts`. Een aangekondigde prijs',
+  '  die niet komt, is een misleidende prijs, en de ACM handhaaft daarop.',
   '- **Kijk of iDEAL aanstaat** bij je betaalpartner. Voor Nederlandse ouders',
   '  is dat het verschil tussen kopen en afhaken.',
   '- **Zeg erbij dat verbeterde versies gratis zijn.** Dat staat in de tekst',
