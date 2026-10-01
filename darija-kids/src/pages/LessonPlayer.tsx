@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import confetti from 'canvas-confetti'
 import { lessonById, unitOfLesson } from '../content/curriculum'
 import { cardForCheckpoint, type HistoryCard } from '../content/history'
 import { buildRound } from '../engine/exercises'
 import {
-  awardBadges, checkpointsDone, collectHistory, completeLesson, getState, heartsNow, knownIds,
-  gratisDeelOp, lessonBehindPaywall, levelOf, markTipSeen, useStore, type Badge,
+  awardBadges, checkpointsDone, collectHistory, completeLesson, getState, goalMet, heartsNow,
+  isMijlpaal, knownIds, gratisDeelOp, lessonBehindPaywall, levelOf, markTipSeen, useStore,
+  xpToday, type Badge,
 } from '../engine/store'
 import { TRIAL_DAYS } from '../engine/billing'
 import { sfx } from '../engine/audio'
@@ -41,6 +42,21 @@ export function LessonPlayer() {
   const [attempt, setAttempt] = useState(0)
   // What finishing itself paid, on top of the answers that already paid out.
   const [bonus, setBonus] = useState({ xp: 0, gems: 0, levelled: false })
+  /** Wat deze les afsloot: het dagdoel, een mijlpaal, en een gebruikte vriesdag. */
+  const [vieren, setVieren] = useState<{ doel: boolean; reeks: number | null; vries: boolean }>(
+    { doel: false, reeks: null, vries: false })
+
+  /**
+   * De staat van vóór de rónde, niet van vóór het afronden.
+   *
+   * Een goed antwoord betaalt meteen uit: `scoreCorrect` roept `addXp` aan
+   * middenin de les. Op het moment dat `finish` draait is de reeks dus allang
+   * opgehoogd en een vriesdag allang afgeschreven, en vergelijk je iets met
+   * zichzelf. Gemeten op een echte les: de reeks stond op 3, dat is een
+   * mijlpaal, en er kwam niets in beeld.
+   */
+  const voorRonde = useRef(getState())
+  useEffect(() => { voorRonde.current = getState() }, [lessonId, attempt])
   // The little film runs before the score, so the reward arrives before the
   // report card does. After a checkpoint it is a history card instead: a piece
   // of where the language comes from, in place of nine seconds of scenery.
@@ -106,10 +122,28 @@ export function LessonPlayer() {
     const bonusXp = Math.round(10 + r.score * 10 + extra)
     const before = getState()
     const levelBefore = levelOf(before.xp).level
+    const start = voorRonde.current
+    const doelVoor = goalMet(start)
     completeLesson(lesson.id, r.score, bonusXp)
     const now = getState()
     const levelled = levelOf(now.xp).level > levelBefore
     setBonus({ xp: bonusXp, gems: now.gems - before.gems, levelled })
+    /*
+     * Wat deze les niet alleen opleverde maar ook afsloot.
+     *
+     * Allebei vóór-en-ná, niet "is het nu zo": het dagdoel was misschien
+     * vanmorgen al gehaald, en dan is het geen nieuws meer. Een reeks telt
+     * alleen als mijlpaal op de dag dat hij erbij komt.
+     */
+    const mijlpaal = now.streak > start.streak && isMijlpaal(now.streak)
+    setVieren({
+      doel: !doelVoor && goalMet(now),
+      reeks: mijlpaal ? now.streak : null,
+      /* Een vriesdag die je niet ziet werken is een aankoop zonder zichtbaar
+         gevolg. `addXp` schrijft hem stil af; hier is de enige plek waar
+         iemand het te horen krijgt. */
+      vries: now.freezes < start.freezes,
+    })
     const badges = awardBadges()
     setWon(badges)
     setResult(r)
@@ -120,13 +154,13 @@ export function LessonPlayer() {
       const earned = cardForCheckpoint(checkpointsDone(now) - 1)
       collectHistory(earned.id)
       if (now.settings.film) setCard(earned)
-      else celebrate(r, levelled, badges.length)
+      else celebrate(r, levelled, badges.length, mijlpaal)
     } else if (now.settings.film && now.settings.motion === 'full') setFilm(true)
-    else celebrate(r, levelled, badges.length)
+    else celebrate(r, levelled, badges.length, mijlpaal)
   }
 
   /** The sound and the confetti for a finished lesson, wherever it lands. */
-  const celebrate = (r: RoundResult, levelled: boolean, badges: number) => {
+  const celebrate = (r: RoundResult, levelled: boolean, badges: number, mijlpaal = false) => {
     // A checkpoint that went well gets the room clapping; an ordinary lesson
     // gets the ordinary flourish.
     if (lesson.kind === 'toets' && r.score >= 0.8) sfx.cheer()
@@ -134,6 +168,9 @@ export function LessonPlayer() {
     // Stack the rewards in the order they happened, not on top of each other.
     if (levelled) setTimeout(() => sfx.levelUp(), 1400)
     if (badges) setTimeout(() => sfx.badge(), 2400)
+    // Een mijlpaal hoort het laatst te komen: hij gaat niet over deze les maar
+    // over alle dagen ervoor.
+    if (mijlpaal) setTimeout(() => sfx.cheer(), badges ? 3400 : 2400)
     if (getState().settings.motion === 'full') {
       void confetti({
         particleCount: r.perfect ? 160 : 90,
@@ -150,7 +187,7 @@ export function LessonPlayer() {
         card={card}
         onDone={() => {
           setCard(null)
-          celebrate(result, bonus.levelled, won.length)
+          celebrate(result, bonus.levelled, won.length, vieren.reeks !== null)
         }}
       />
     )
@@ -163,7 +200,7 @@ export function LessonPlayer() {
         onDone={() => {
           setFilm(false)
           // The level-up and the badges still get their turn, after the film.
-          celebrate(result, bonus.levelled, won.length)
+          celebrate(result, bonus.levelled, won.length, vieren.reeks !== null)
         }}
       />
     )
@@ -184,6 +221,35 @@ export function LessonPlayer() {
           <Card className="p-3"><div className="font-display text-2xl font-extrabold">🔥 {result.bestCombo}</div><div className="text-xs text-[var(--ink-soft)]">{t.lesson.besteReeks}</div></Card>
           <Card className="p-3"><div className="font-display text-2xl font-extrabold">🔥 {streak}</div><div className="text-xs text-[var(--ink-soft)]">{t.common.dagen}</div></Card>
         </div>
+
+        {/*
+          Het dagdoel en de mijlpaal, bovenaan de beloningen.
+
+          Een dagdoel dat niemand ooit "gehaald" noemt is geen doel maar een
+          balkje: `goalMet` stond in de engine en werd door geen enkel scherm
+          gelezen. En een reeks die stilletjes doortelt is een getal. Dit is
+          het enige moment waarop allebei waar worden, dus hier staat het --
+          boven het XP-overzicht, want dit is het grotere nieuws.
+        */}
+        {(vieren.doel || vieren.reeks !== null || vieren.vries) && (
+          <Card className="mt-3 border-2 border-saffron-500 p-4">
+            {vieren.vries && (
+              <p className="font-display font-extrabold text-sky-600 dark:text-sky-300">
+                🧊 {t.lesson.vriesGebruikt}
+              </p>
+            )}
+            {vieren.reeks !== null && (
+              <p className="font-display text-lg font-extrabold text-saffron-600 dark:text-saffron-300">
+                🔥 {t.lesson.reeksMijlpaal(vieren.reeks)}
+              </p>
+            )}
+            {vieren.doel && (
+              <p className="font-display font-extrabold text-mint-600 dark:text-mint-300">
+                🎯 {t.lesson.doelGehaald(xpToday())}
+              </p>
+            )}
+          </Card>
+        )}
 
         {/* What this round actually paid, split the way it was earned. */}
         <Card className="mt-3 flex items-center justify-around gap-2 p-4">
@@ -237,7 +303,7 @@ export function LessonPlayer() {
           <Button
             variant="secondary"
             className="w-full"
-            onClick={() => { setResult(null); setWon([]); setBonus({ xp: 0, gems: 0, levelled: false }); setAttempt((a) => a + 1) }}
+            onClick={() => { setResult(null); setWon([]); setBonus({ xp: 0, gems: 0, levelled: false }); setVieren({ doel: false, reeks: null, vries: false }); setAttempt((a) => a + 1) }}
           >
             {t.common.nogEenKeer}
           </Button>

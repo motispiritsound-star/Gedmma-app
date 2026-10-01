@@ -175,6 +175,12 @@ export const nl = {
     gemPlus: (n: number): string => `+${n}`,
     opRij: (n: number): string => `${n} goed op rij`,
     besteReeks: 'beste reeks',
+    /* Twee momenten die nergens werden genoemd: `goalMet` stond in de
+       engine en werd door geen scherm gelezen, en een mijlpaal bestond niet. */
+    doelGehaald: (xp: number): string => `Dagdoel gehaald — ${xp} XP vandaag`,
+    reeksMijlpaal: (dagen: number): string => `${dagen} dagen op rij!`,
+    /* Een vriesdag die je niet ziet werken is een aankoop zonder gevolg. */
+    vriesGebruikt: 'Een vriesdag hield je reeks heel',
     xpOpgehaald: (antwoorden: number, bonus: number): string => `${antwoorden} uit antwoorden + ${bonus} bonus`,
     edelstenen: 'edelstenen',
     lof: ['Mzyan!', 'Bravo!', 'Wallah mzyan!', 'Top!', 'Sahit!', 'Perfect!'],

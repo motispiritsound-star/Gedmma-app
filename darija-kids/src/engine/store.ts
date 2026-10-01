@@ -577,6 +577,20 @@ export const xpToday = (s: State = state): number => s.daily[today()] ?? 0
 
 export const goalMet = (s: State = state): boolean => xpToday(s) >= s.settings.dailyGoal
 
+/**
+ * De dagen waarop een reeks gevierd wordt.
+ *
+ * Een dagdoel dat niemand ooit "gehaald" noemt is geen doel maar een balkje,
+ * en een reeks die stilletjes doortelt is een getal. `goalMet` stond hier al
+ * en werd door geen enkel scherm gelezen; een mijlpaal bestond helemaal niet.
+ *
+ * Niet te dicht op elkaar: drie om op gang te komen, dan zeven, en daarna
+ * steeds verder uit elkaar. Elke dag feest is geen feest meer.
+ */
+export const REEKS_MIJLPALEN = [3, 7, 14, 30, 50, 100, 200, 365]
+
+export const isMijlpaal = (dagen: number): boolean => REEKS_MIJLPALEN.includes(dagen)
+
 /** Level curve: each level costs a little more than the one before. */
 export function levelOf(xp: number): { level: number; into: number; span: number } {
   let level = 1
