@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect } from 'react'
-import { BrowserRouter, HashRouter, NavLink, Route, Routes, useLocation } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Landing } from './pages/Landing'
 import { Learn } from './pages/Learn'
@@ -26,6 +26,7 @@ const Speech = lazy(() => import('./pages/Speech').then((m) => ({ default: m.Spe
 const Record = lazy(() => import('./pages/Record').then((m) => ({ default: m.Record })))
 import { GeluidUit } from './ui/GeluidUit'
 import { TopBar } from './ui/TopBar'
+import { platform } from './engine/platform'
 import { Welcome } from './ui/Welcome'
 import { Aanbod } from './ui/Aanbod'
 import { useStore } from './engine/store'
@@ -109,7 +110,21 @@ function Chrome() {
         >
           <Suspense fallback={<div className="px-4 py-20 text-center text-[var(--ink-soft)]">{t.common.laden}</div>}>
           <Routes location={location}>
-            <Route path="/" element={<Landing />} />
+            {/*
+              In de app begint het bij het leerpad, op de website bij de
+              landingsbladzijde.
+
+              Die bladzijde is een verkooppagina: zeventien units op een rij,
+              waarom je kind het onthoudt, wat het kost. Op darijaforkids.eu is
+              dat precies goed — daar staat een bezoeker die de app nog niet
+              heeft. In de app is het zes schermen scrollen voordat een kind bij
+              zijn les is, elke keer dat het de app opent, om iets te lezen
+              waarvan het antwoord al ja was: hij staat er immers al op.
+
+              `replace`, zodat de terugknop van Android niet terugvalt op een
+              bladzijde waar hij nooit is geweest.
+            */}
+            <Route path="/" element={platform() === 'web' ? <Landing /> : <Navigate to="/leren" replace />} />
             <Route path="/leren" element={<Learn />} />
             <Route path="/les/:lessonId" element={<LessonPlayer />} />
             <Route path="/herhalen/:running?" element={<Review />} />

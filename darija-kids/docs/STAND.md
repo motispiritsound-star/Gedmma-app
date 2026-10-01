@@ -559,9 +559,25 @@ Die derde blijft dus met opzet staan: de link *voor ouders* bovenin is
 `hidden sm:block` en op een telefoon dus onzichtbaar. Weghalen zou de
 ouderpagina alleen nog via de voetnoot bereikbaar maken.
 
-**De grotere vraag blijft open:** of een verkooppagina überhaupt het goede
-startscherm is voor een app die al geïnstalleerd staat. Dat is geen schrappen
-maar opnieuw indelen, en dat hoort niet in 1.1.
+**En toen is die grotere vraag alsnog beantwoord: de app begint nu bij het
+leerpad.** Op `/` staat de landingsbladzijde alleen nog op het web; in de app
+stuurt hij meteen door naar `/leren`.
+
+Dat is geen schrapwerk gebleken maar één voorwaarde, en het lost het hele
+bezwaar in één keer op. Een verkooppagina is er om iemand over te halen de app
+te nemen. Wie hem opent, hééft hem — en scrolde dan elke keer zes schermen
+door iets waarvan het antwoord al ja was.
+
+Nagemeten in Chromium met `Capacitor.getPlatform()` op ios en op android: `/`
+komt uit op `/leren`, met het leerpad als eerste scherm. Zonder Capacitor komt
+`/` uit op de landingsbladzijde, zoals darijaforkids.eu hem nodig heeft.
+`startscherm.test.ts` bewaakt het, inclusief de `replace` — zonder die zet de
+omleiding een stap in de geschiedenis en valt de terugknop van Android terug op
+een bladzijde die hem meteen weer vooruit stuurt.
+
+**Wat daarmee ook opgelost is:** het blok "Gemaakt om aan een kind te geven"
+hoefde niet meer te verhuizen. Het staat op een bladzijde die in de app niet
+meer vanzelf opengaat, en op de website hoort het er gewoon.
 
 **"Open het e-boek" opende lichess.org.** Niet grappig bedoeld: op de iPhone
 in TestFlight ging die knop naar een schaaksite.
