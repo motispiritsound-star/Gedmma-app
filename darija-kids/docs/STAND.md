@@ -507,6 +507,24 @@ noemde nog beide winkels. Dat viel bij de eerste meting niet op omdat
 opengeklapt stonden er drie platformnamen. De meting én de bewaking zijn
 gerepareerd.
 
+**De ouderpoort vraagt het nog één keer per keer dat de app open is.** Hij
+kwam bij élke tik terug — drie mailknoppen, het aanmeldformulier, het beheren
+van het abonnement, de twee aankopen — en wie de app aan het inrichten is doet
+die som tien keer op een avond.
+
+Weghalen was gevraagd en is niet gebeurd, want de app staat sinds 27 september
+in de **Kinderen-categorie** en dat was Apple's voorwaarde om de naam
+*Darijaforkids* te mogen houden. Richtlijn 1.3 vraagt daar een poort vóór een
+aankoop en vóór een link naar buiten. Hij vraagt níét dat die poort bij elke
+tik opnieuw komt — en een poort die zo vaak komt dat men blind doorklikt,
+bewaakt helemaal niets.
+
+Het vlaggetje staat in het geheugen van de module en nergens anders: geen
+`localStorage`, dus bij elke nieuwe start van de app staat het weer op nul.
+Nagemeten in Chromium: eerste keer de som, daarna gaat dezelfde knop meteen
+door, en na herladen is de som terug. `poortsessie.test.ts` bewaakt die grens,
+inclusief dat er niets op de schijf belandt.
+
 **"Open het e-boek" opende lichess.org.** Niet grappig bedoeld: op de iPhone
 in TestFlight ging die knop naar een schaaksite.
 

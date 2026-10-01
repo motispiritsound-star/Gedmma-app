@@ -4,7 +4,7 @@ import { OPERATOR, operatorKnown } from '../content/operator'
 import { useStore } from '../engine/store'
 import { sfx } from '../engine/audio'
 import { Button, Sheet } from './kit'
-import { OuderPoort } from './OuderPoort'
+import { OuderPoort, poortAl } from './OuderPoort'
 import { useT } from '../i18n'
 
 /**
@@ -120,7 +120,8 @@ function useMailPoort() {
   return {
     poort,
     open,
-    vraag: () => setPoort(true),
+    /* Overslaan als er deze keer al een volwassene langs is geweest. */
+    vraag: () => (poortAl() ? setOpen(true) : setPoort(true)),
     sluitPoort: () => setPoort(false),
     door: () => { setPoort(false); setOpen(true) },
     sluit: () => setOpen(false),

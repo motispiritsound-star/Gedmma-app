@@ -88,7 +88,10 @@ describe('de app uit', () => {
      * De poort is er voor de app uit gaan en voor geld uitgeven. Lezen is
      * geen van beide.
      */
-    expect(bron.match(/setPoort\(\{ reden:/g) ?? []).toHaveLength(3)
+    expect(bron.match(/vraagPoort\(\{ reden:/g) ?? []).toHaveLength(3)
+    // En niets zet de poort nog rechtstreeks: dat zou hem bij elke tik
+    // terugbrengen, ook als er net een volwassene langs is geweest.
+    expect(bron).not.toMatch(/\bsetPoort\(\{ reden:/)
     // En niets doet ze nog rechtstreeks.
     expect(bron).not.toMatch(/onClick=\{manageSubscription\}/)
     expect(bron).not.toMatch(/onClick=\{\(\) => \{ sfx\.tap\(\); void buyEbook\(\) \}\}/)

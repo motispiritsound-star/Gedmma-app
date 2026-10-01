@@ -20,6 +20,35 @@ import { Button, Sheet } from './kit'
  */
 export type PoortReden = 'abonnement' | 'post' | 'uit'
 
+/**
+ * Of er deze keer al een volwassene is langsgekomen.
+ *
+ * Stond er eerst niet, en dan kwam de som bij élke tik terug: bij de drie
+ * mailknoppen, bij het aanmeldformulier, bij het beheren van het abonnement.
+ * Wie de app aan het inrichten is doet die som tien keer op een avond, en een
+ * poort die zo vaak komt wordt een poort waar men blind langs klikt. Dan
+ * bewaakt hij niets meer.
+ *
+ * Eén keer per keer dat de app open is, dus. Bewust **niet** opgeslagen: dit
+ * staat in het geheugen en nergens anders, zodat het bij elke nieuwe start
+ * weer op nul staat. Een kind dat de app morgen opent, komt de som gewoon
+ * weer tegen.
+ *
+ * Dat is een afweging en geen vanzelfsprekendheid. Richtlijn 1.3 van de
+ * Kinderen-categorie vraagt een poort vóór een aankoop en vóór een link naar
+ * buiten; hij vraagt niet dat die poort bij elke tik opnieuw komt. Geeft een
+ * ouder zijn telefoon ná de som aan zijn kind, dan is de poort die sessie
+ * open — daar staat tegenover dat een poort die men wegklikt zonder te lezen
+ * altijd open is.
+ */
+let gehaald = false
+
+/** Waar: deze keer is de som al goed beantwoord. */
+export const poortAl = (): boolean => gehaald
+
+/** Alleen voor de tests: terug naar de stand bij het opstarten. */
+export const poortVergeet = (): void => { gehaald = false }
+
 export function OuderPoort({ open, onClose, onGoed, reden = 'abonnement' }: {
   open: boolean
   onClose: () => void
@@ -44,6 +73,7 @@ export function OuderPoort({ open, onClose, onGoed, reden = 'abonnement' }: {
     }
     setAntwoord('')
     setFout(false)
+    gehaald = true
     onGoed()
   }
 

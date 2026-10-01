@@ -11,7 +11,7 @@ import { localeOf, useT } from '../i18n'
 import { sfx } from '../engine/audio'
 import { Button, Card, SectionTitle } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
-import { OuderPoort, type PoortReden } from '../ui/OuderPoort'
+import { OuderPoort, poortAl, type PoortReden } from '../ui/OuderPoort'
 
 /**
  * The one thing in this app that costs money.
@@ -42,6 +42,16 @@ export function Unlock() {
    * zodat er geen deur meer bij kan komen die hem vergeet.
    */
   const [poort, setPoort] = useState<{ reden: PoortReden; doe: () => void } | null>(null)
+
+  /**
+   * De poort vragen, of hem overslaan als er deze keer al een volwassene
+   * langs is geweest. Zie `poortAl` in `ui/OuderPoort.tsx` voor waarom dat
+   * één keer per keer dat de app open is genoeg is.
+   */
+  const vraagPoort = (wat: { reden: PoortReden; doe: () => void }) => {
+    if (poortAl()) { wat.doe(); return }
+    setPoort(wat)
+  }
   // A year up front is the offer, so it is what the screen opens on.
   const [plan, setPlan] = useState<PlanId>('jaar')
 
@@ -106,7 +116,7 @@ export function Unlock() {
               {/* Opzeggen gebeurt in de winkel-app, dus dit is de app uit. */}
               <Button
                 variant="secondary"
-                onClick={() => setPoort({ reden: 'uit', doe: manageSubscription })}
+                onClick={() => vraagPoort({ reden: 'uit', doe: manageSubscription })}
               >
                 {t.unlock.beheer}
               </Button>
@@ -210,7 +220,7 @@ export function Unlock() {
 
             <div className="mt-6">
               {billing.available ? (
-                <Button className="w-full py-4 text-lg" disabled={billing.busy} onClick={() => setPoort({ reden: 'abonnement', doe: () => void subscribe(plan) })}>
+                <Button className="w-full py-4 text-lg" disabled={billing.busy} onClick={() => vraagPoort({ reden: 'abonnement', doe: () => void subscribe(plan) })}>
                   {billing.busy ? t.unlock.bezig : t.unlock.koop(TRIAL_DAYS)}
                 </Button>
               ) : (
@@ -307,7 +317,7 @@ export function Unlock() {
               variant="secondary"
               className="mt-5 w-full py-3"
               disabled={billing.busy}
-              onClick={() => { sfx.tap(); setPoort({ reden: 'abonnement', doe: () => void buyEbook() }) }}
+              onClick={() => { sfx.tap(); vraagPoort({ reden: 'abonnement', doe: () => void buyEbook() }) }}
             >
               {billing.busy ? t.unlock.bezig : t.unlock.boek.koop(billing.prices.ebook ?? EBOOK.list)}
             </Button>

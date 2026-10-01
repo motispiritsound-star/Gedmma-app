@@ -4,7 +4,7 @@ import { sfx } from '../engine/audio'
 import { useStore } from '../engine/store'
 import { useT } from '../i18n'
 import { Button, Card } from './kit'
-import { OuderPoort } from './OuderPoort'
+import { OuderPoort, poortAl } from './OuderPoort'
 
 /**
  * Where a parent leaves an address, if they want one thing or the other.
@@ -102,7 +102,8 @@ export function PostAanmelding() {
       <Button
         className="mt-5 w-full py-3"
         disabled={!klaar || bezig}
-        onClick={() => { sfx.tap(); setPoort(true) }}
+        /* Overslaan als er deze keer al een volwassene langs is geweest. */
+        onClick={() => { sfx.tap(); if (poortAl()) void versturen(); else setPoort(true) }}
       >
         {bezig ? t.post.bezig : t.post.knop}
       </Button>
