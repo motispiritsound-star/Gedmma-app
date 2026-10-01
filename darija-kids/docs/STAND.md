@@ -521,6 +521,52 @@ versturen, en deze drie velden niet. Dat is geen gat in het script maar een
 gat in de API. Het staat hier opgeschreven zodat niemand het nog eens
 uitzoekt.
 
+### De proefperiode: in de app beloofd, in de winkels nog niet aangetoond
+
+De app zegt in zes talen dat de eerste **drie dagen gratis** zijn, en dat
+opzeggen binnen die drie dagen niets kost. Dat getal staat op één plek in de
+code — `TRIAL_DAYS` in `src/engine/billing.ts` — maar de **echte**
+proefperiode zit niet in de code. Die zit in het winkelproduct:
+
+| | Waar het aan moet staan |
+|---|---|
+| App Store Connect | het abonnement → **Introductory Offer** → *Free Trial*, 3 dagen |
+| Play Console | het abonnement → basisplan → **Aanbieding** → *Gratis proefperiode*, 3 dagen |
+
+**Nergens in dit bestand staat dat die twee aanbiedingen daadwerkelijk zijn
+aangemaakt.** `docs/PAYMENTS.md` en `docs/PLAY.md` beschrijven hoe het moet;
+of het gebeurd is, is niet vastgelegd. Dat is de ene openstaande vraag die
+geld kost zodra de app live is.
+
+Wat er misgaat als het er niet staat: de koper leest "drie dagen gratis",
+drukt op kopen, en de winkel schrijft meteen € 59,99 af. Dat levert
+terugbetalingen op, eenster-beoordelingen in de eerste week, en bij Apple een
+afwijzing op **3.1.2** — dezelfde richtlijn waarop 1.0 al eens is afgewezen,
+toen om de omrekening naar een maand.
+
+Omgekeerd kan het ook: staat de proefperiode er wél en zou je hem niet willen,
+dan zet je `TRIAL_DAYS` op 0 en passen de teksten zich aan. Maar de twee
+moeten hetzelfde zeggen.
+
+#### En wat het trechtermodel nu is
+
+Het is geen betaalmuur vóór de download, en dat is met opzet:
+
+1. **Downloaden is gratis.** Beide winkels, geen bedrag vooraf.
+2. **Vier lessen zijn gratis en blijven gratis** — `GRATIS_LESSEN` in
+   `src/engine/store.ts`: drie stukken alfabet en de eerste les groeten,
+   samen een minuut of twaalf. Geen account, geen e-mailadres, geen kaart.
+3. **Daarna de abonnementskeuze**, met drie dagen gratis. Die drie dagen
+   starten is wél een betaalhandeling: de winkel vraagt om de pas en om Face
+   ID of een wachtwoord. Wie niet binnen drie dagen opzegt, betaalt € 59,99
+   per jaar of € 6,99 per maand.
+
+Een betalende gebruiker is dus: downloaden → vier lessen → proef starten →
+niet opzeggen. Wie een harde betaalmuur bij de download wil, moet van een
+gratis app met aankopen naar een **betaalde app** — een ander product in beide
+winkels, een nieuwe beoordeling, en het einde van "de eerste vier lessen zijn
+gratis" als uitnodiging. Dat is een productkeuze, geen instelling.
+
 ### Negen opdrachten die geen pad en geen waarde meer vragen
 
 | | |
