@@ -114,7 +114,21 @@ export { FREE_LESSONS }
  * werkelijk afgaat.
  */
 interface Fase { price?: string; priceMicros?: number; currency?: string }
-interface Offer { pricingPhases?: Fase[]; order: () => Promise<unknown> }
+/**
+ * Wat een bestelling teruggeeft als zij niet doorging.
+ *
+ * Let op het woord *teruggeeft*. `order()` wijst niet af als de koper afbreekt
+ * of als de betaling mislukt — de belofte lost gewoon op, met dit voorwerp
+ * erin in plaats van niets. Zo staat het ook in de plugin zelf:
+ * `order(additionalData?: AdditionalData): Promise<IError | undefined>`.
+ *
+ * Dat is precies andersom dan het eruitziet, en het is lang misgegaan: een
+ * `try/catch` om `await offer.order()` heen vangt hier niets. Elke afgebroken
+ * betaling gold daardoor als gelukt, en `busy` bleef aan staan — de knop
+ * waarmee je het opnieuw probeert bleef "Bezig…" tot de app opnieuw startte.
+ */
+export interface WinkelFout { isError?: boolean; code?: number; message?: string }
+interface Offer { pricingPhases?: Fase[]; order: () => Promise<WinkelFout | undefined> }
 interface Product {
   owned?: boolean
   /**
@@ -627,6 +641,39 @@ export async function initBilling(): Promise<void> {
   })
 }
 
+/**
+ * `ErrorCode.PAYMENT_CANCELLED` van de plugin: 6777000 + 6.
+ *
+ * Dit is geen storing maar een besluit. Wie de betaalkaart van de winkel
+ * wegveegt heeft niets fout gedaan, en hoort dus geen rode regel te zien die
+ * zegt dat er iets misging. De knop gaat alleen weer aan.
+ */
+const AFGEBROKEN = 6777006
+
+/**
+ * Verwerkt wat een bestelling teruggaf, en zet `busy` hoe dan ook uit.
+ *
+ * Altijd uit, ook als het lukte. Bij een gelukte aankoop verspringt het scherm
+ * meteen daarna toch naar de versie voor wie betaald heeft, dus dat kost niets
+ * — en het redt het geval dat anders doodloopt: *Vraag om te kopen*, waarbij
+ * een ouder op een ander toestel nog moet goedkeuren. Dan geeft `order()` een
+ * gelukte bestelling terug terwijl er uren later pas betaald wordt. Bleef
+ * `busy` aan, dan stond de knop al die tijd op "Bezig…". Juist in een app voor
+ * kinderen is dat niet denkbeeldig.
+ */
+function naBestelling(uit: WinkelFout | undefined): void {
+  publish({ busy: false, error: foutVan(uit) })
+}
+
+/**
+ * De regel erachter, los van het scherm: wat moet de koper hiervan zien?
+ *
+ * Niets bij een gelukte bestelling, niets bij een afgebroken bestelling, en
+ * bij al het andere wat de winkel zelf zei.
+ */
+export const foutVan = (uit: WinkelFout | undefined): string | null =>
+  uit?.isError === true && uit.code !== AFGEBROKEN ? (uit.message ?? 'onbekend') : null
+
 /** Opens the store's own payment sheet for one of the two plans, trial and all. */
 export async function subscribe(plan: PlanId = 'jaar'): Promise<void> {
   const api = plugin()
@@ -635,7 +682,7 @@ export async function subscribe(plan: PlanId = 'jaar'): Promise<void> {
   try {
     const offer = api.store.get(planOf(plan).product)?.getOffer()
     if (!offer) throw new Error('product-onbekend')
-    await offer.order()
+    naBestelling(await offer.order())
   } catch (e) {
     publish({ busy: false, error: e instanceof Error ? e.message : String(e) })
   }
@@ -649,7 +696,7 @@ export async function buyEbook(): Promise<void> {
   try {
     const offer = api.store.get(EBOOK.product)?.getOffer()
     if (!offer) throw new Error('product-onbekend')
-    await offer.order()
+    naBestelling(await offer.order())
   } catch (e) {
     publish({ busy: false, error: e instanceof Error ? e.message : String(e) })
   }

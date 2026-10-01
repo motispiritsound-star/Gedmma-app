@@ -140,7 +140,10 @@ export function Words() {
 
       <p className="mt-4 text-sm text-[var(--ink-soft)]">{t.words.resultaten(results.length)}</p>
 
-      {!state.unlocked && (
+      {/* Alleen bij een lijst om over te praten: bij nul treffers gaat deze
+          kaart over woorden die er niet staan, en staat hij tussen de vraag
+          en het antwoord in. */}
+      {!state.unlocked && results.length > 0 && (
         <Card className="mt-3 flex flex-wrap items-center gap-3 p-4">
           <span className="text-xl" aria-hidden="true">🔒</span>
           <p className="min-w-0 flex-1 text-sm">{t.words.slotUitleg}</p>

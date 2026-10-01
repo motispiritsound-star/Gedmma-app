@@ -197,9 +197,18 @@ export function SettingsPage() {
         <Row title={t.settings.naam} hint={t.settings.naamHint}>
           <input
             id="name"
+            /*
+             * De titel links is een `div` en geen `label`, dus er is niets dat
+             * dit veld een naam geeft. Een schermlezer las alleen de
+             * plaatshouder voor, en dat is geen label: hij verdwijnt zodra er
+             * iets staat, en precies dán wil iemand horen wat hij invult.
+             */
+            aria-label={t.settings.naam}
             value={state.name}
             onChange={(e) => setState({ name: e.target.value.slice(0, 24) })}
             placeholder={t.settings.naamPlaceholder}
+            autoComplete="given-name"
+            enterKeyHint="done"
             className="w-40 rounded-xl border-2 border-[var(--line)] bg-[var(--surface)] px-3 py-2 outline-none focus:border-zellige-500"
           />
         </Row>
