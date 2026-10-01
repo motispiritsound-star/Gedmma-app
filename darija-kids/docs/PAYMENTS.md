@@ -26,6 +26,33 @@ Wil je later langer geven — een week doet het in dit soort apps vaak beter —
 dan is dat één getal hier en één instelling daar. Helemaal geen proefperiode
 kan ook: `TRIAL_DAYS` op 0, en de teksten passen zich aan.
 
+**1b. De proef loopt via de winkel, niet via de app.** Er zijn twee manieren
+om drie dagen gratis te geven, en het verschil is groter dan het lijkt.
+
+De ene is dat de **app** zelf drie dagen meetelt en daarna dichtgaat. Die weg
+is hier afgevallen, om twee redenen. Hij is niet te handhaven: deze app heeft
+geen server die bonnen narekent, dus "drie dagen" woont in de telefoon van de
+gebruiker — wissen en opnieuw installeren geeft nieuwe drie dagen, en dat
+kost je elke gebruiker die het één keer doorheeft. En hij converteert slecht:
+na die drie dagen staat de koper voor een koude aankoopbeslissing, zonder dat
+er ooit een pas is gekoppeld.
+
+De andere is dat de **winkel** de proef bijhoudt: de koper sluit het
+abonnement af, bevestigt met Face ID, en de eerste drie dagen zijn gratis.
+Dat is wat hier gebouwd is. De winkel houdt de datum bij, stuurt zelf de
+herinnering vóór de eerste afschrijving, int, rekent de btw af en doet de
+terugbetalingen. De koper die niets doet, wordt op dag vier belast; wie
+opzegt binnen drie dagen betaalt niets.
+
+Het verschil in opbrengst zit in één woord: bij de app-weg moet de koper ná
+de proef nog *ja* zeggen, bij de winkel-weg moet hij *nee* zeggen. Dat is
+dezelfde proefperiode en een heel ander aantal betalende gebruikers.
+
+Let op dat dit niet de eerste drempel is. Die staat eerder en is lager: vier
+lessen gratis, voorgoed, zonder pas en zonder e-mailadres. Pas wie verder wil
+komt bij de proef. Drie stappen dus — gratis lessen, proef met pas, betalend —
+en alleen de middelste heeft een winkelproduct nodig.
+
 **2. Beide bedragen zijn Apple-prijspunten.** Apple werkt met vaste
 prijspunten; € 6,99 en € 59,99 zijn er twee van. Let op: Apple heeft géén
 59,88, en twaalf maal € 4,99 bestaat daar dus niet. Google Play laat per land
