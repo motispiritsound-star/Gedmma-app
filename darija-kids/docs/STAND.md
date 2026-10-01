@@ -290,6 +290,32 @@ misgaan, staat in `docs/ACTIES.md`.
 De "wat is er nieuw"-tekst voor beide winkels staat in zes talen in
 `store/wat-is-nieuw-1.2.md`.
 
+### De eerste belangstelling, geteld
+
+Op 1 oktober in het postvak nageteld, uit de berichten met onderwerp "Hou me
+op de hoogte":
+
+| | |
+|---|---|
+| Berichten | 12 |
+| Verschillende mensen | 11 — iemand stuurde twee keer, drie minuten na elkaar |
+| Wanneer | elf op woensdag 30 september, tussen 15:21 en 22:03; één de ochtend erna |
+| Kanaal | 43 volgers op dag één |
+
+Woensdag is de dag dat het WhatsApp-kanaal begon. De belangstelling kwam dus
+binnen uren, en dat is het eerste harde bewijs dat dat kanaal werkt.
+
+**Alle twaalf kwamen van een telefoon.** De handtekeningen zeggen "Outlook voor
+Android" of "Verstuurd vanaf mijn iPhone"; geen enkele van een computer. Dat is
+geen toeval maar het gebrek van de mailto-knop: die opent alleen iets als er een
+mailprogramma is ingesteld, en op een laptop is dat vaak niet zo. Hoeveel mensen
+daar klikten en niets zagen gebeuren weet niemand — daar bestaat geen spoor van.
+
+**De namen staan hier niet.** Die horen niet in een repository: die gaat naar
+GitHub, komt in elke checkout terecht en blijft in de geschiedenis staan ook als
+je het bestand later weghaalt. Ze zijn als csv aan Adil gegeven voor zijn eigen
+administratie.
+
 ### "Hou me op de hoogte" schrijft nu in de database
 
 Tot 1 oktober was die knop een `mailto:`-link. Dat kost op twee manieren.
