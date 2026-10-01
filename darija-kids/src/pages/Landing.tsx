@@ -128,19 +128,19 @@ export function Landing() {
         </div>
       </header>
 
-      {/* -------------------------------------------------------- features */}
-      <section className="mx-auto max-w-5xl px-4 py-16">
-        <h2 className="font-display text-3xl font-extrabold">{t.landing.waaromTitel}</h2>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {t.landing.waarom.map(([emoji, title, body]) => (
-            <Card key={title} className="p-5">
-              <span className="text-3xl" aria-hidden="true">{emoji}</span>
-              <h3 className="mt-2 font-display text-lg font-extrabold">{title}</h3>
-              <p className="text-sm text-[var(--ink-soft)]">{body}</p>
-            </Card>
-          ))}
-        </div>
-      </section>
+      {/*
+        "Waarom je kind het onthoudt" stond hier, en is weg — niet verhuisd.
+
+        Het is uitleg voor de volwassene die betaalt, op het scherm waar een
+        kind elke keer op uitkomt. En de ouderpagina zegt het al, uitgebreider
+        en beter: `t.parents.methode` behandelt dezelfde vier dingen — het
+        herhaalritme, eerst horen dan schrijven, korte lessen. Verplaatsen zou
+        dus dubbelop zijn geweest.
+
+        De teksten blijven in `i18n`, want darijaforkids.eu toont ze wél: daar
+        is de bezoeker de ouder en moet hij nog overtuigd worden. Zie
+        `make-site.mjs`.
+      */}
 
       {/* ------------------------------------------------------ curriculum */}
       <section className="border-y border-[var(--line)] bg-[var(--surface-sunken)] py-16">

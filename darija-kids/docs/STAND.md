@@ -537,11 +537,31 @@ ouder en is het de laatste twijfel die weggenomen wordt vóór het downloaden.
 Nagemeten: nul uitklappers op het app-scherm, zeven op `/ouders`, en zeven op
 `site/index.html`.
 
-**Wat daarbij opviel en blijft staan:** die landingsbladzijde is in de app
-6443 pixels hoog. Het is een verkooppagina, en in de app is het het scherm
-waar een kind elke keer op uitkomt. De knop bovenaan zegt wel "ga verder" zodra
-er XP is, dus het werkt — maar of dit het goede startscherm is voor een app die
-al geïnstalleerd is, is een aparte vraag. Niet voor 1.1.
+**En "Waarom je kind het onthoudt" is weg — niet verhuisd.** Ook uitleg voor
+de volwassene, op het scherm waar een kind elke keer op uitkomt. Verplaatsen
+naar de ouderpagina zou dubbelop zijn geweest: `t.parents.methode` behandelt
+daar dezelfde vier dingen, uitgebreider. De teksten blijven in `i18n` want
+darijaforkids.eu toont ze wél — nagemeten, de kop staat er nog.
+
+**Wat daarmee overblijft, opgemeten op 390 pixels breed:**
+
+| | |
+|---|---|
+| Leer Darija, de taal van thuis | 1386px — met de knop "ga verder" en het proefwoord |
+| Van salam tot de souq | 2136px — de zeventien units; dit is ook voor een kind leuk |
+| Gemaakt om aan een kind te geven | 970px — voor de ouder, maar dit is op een telefoon de enige zichtbare weg naar de ouderpagina |
+| Yallah — beginnen? | 394px |
+| voetnoot | 225px |
+
+Samen 5111 pixels, was 6347. Van 7,5 schermen naar 6,1.
+
+Die derde blijft dus met opzet staan: de link *voor ouders* bovenin is
+`hidden sm:block` en op een telefoon dus onzichtbaar. Weghalen zou de
+ouderpagina alleen nog via de voetnoot bereikbaar maken.
+
+**De grotere vraag blijft open:** of een verkooppagina überhaupt het goede
+startscherm is voor een app die al geïnstalleerd staat. Dat is geen schrappen
+maar opnieuw indelen, en dat hoort niet in 1.1.
 
 **"Open het e-boek" opende lichess.org.** Niet grappig bedoeld: op de iPhone
 in TestFlight ging die knop naar een schaaksite.
