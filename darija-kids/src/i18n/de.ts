@@ -784,7 +784,16 @@ export const de: Strings = {
     bezig: 'Einen Moment…',
     wacht: (email: string): string => `In ${email} wartet eine Mail. Tipp auf den Knopf darin — vorher schreiben wir nichts.`,
     bevestigd: (email: string): string => `Du bist mit ${email} angemeldet.`,
-    mis: 'Das hat gerade nicht geklappt. Versuch es gleich noch einmal.',
+    /*
+     * Twee meldingen in plaats van één.
+     *
+     * "Probeer het zo nog eens" is het goede advies bij een haperende
+     * verbinding en het verkeerde bij een fout aan onze kant — daar helpt
+     * opnieuw proberen niet. Allebei zeggen ze erbij dat het ingevulde
+     * blijft staan, want dat is de eerste vraag na een mislukking.
+     */
+    mis: 'Es hat gerade nicht geklappt, und das liegt an uns. Deine Angaben stehen noch da — versuch es gleich noch einmal.',
+    offline: 'Du scheinst keine Verbindung zu haben. Deine Angaben stehen noch da; sobald du wieder online bist, geht der Knopf.',
     wijzig: 'Etwas anderes wählen',
     klein: 'Abmelden geht mit einem Tipp unten in jeder Mail, Daten löschen ebenso. Vom Lernen schicken wir nur Zahlen mit — nie Antworten, nie den Namen deines Kindes.',
     geenServer: 'In dieser Version gibt es noch keinen Postdienst.',

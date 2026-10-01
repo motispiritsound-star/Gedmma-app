@@ -197,6 +197,40 @@ body {
   word-spacing: .08em;
 }
 
+/*
+ * Waar de toetsenbordbediening staat.
+ *
+ * De app liet dit aan de browser over, en die tekent een lijn van één pixel
+ * in zijn eigen kleur. Op een scherm met ronde knoppen in saffraan is dat
+ * niet te zien — en dan is de app onbedienbaar voor wie hem met een
+ * toetsenbord gebruikt, met Schakelbediening, of met Volledige
+ * toetsenbordtoegang op een iPad.
+ *
+ * `:focus-visible` en niet `:focus`: een vinger krijgt geen ring, een Tab wel.
+ * Dat onderscheid maakt de browser zelf, en zonder dat zou elke tik een rand
+ * achterlaten.
+ *
+ * Twee ringen over elkaar: een donkere binnenrand en een lichte buitenrand.
+ * Eén kleur is altijd ergens onzichtbaar — op de saffraangele knop, op de
+ * donkere achtergrond, of op de witte kaart.
+ */
+:where(a, button, [role="button"], input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--color-zellige-600);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+/* Dezelfde twee voorwaarden als `@custom-variant dark` bovenin: de gekozen
+   stand wint, en anders volgt hij het toestel. Zonder die tweede regel zou een
+   lichte ring ook in de lichte stand gaan gelden. */
+:root[data-theme="dark"] :where(a, button, [role="button"], input, select, textarea, summary, [tabindex]):focus-visible {
+  outline-color: var(--color-mint-400);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) :where(a, button, [role="button"], input, select, textarea, summary, [tabindex]):focus-visible {
+    outline-color: var(--color-mint-400);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important;

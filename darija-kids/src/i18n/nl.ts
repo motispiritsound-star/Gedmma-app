@@ -797,7 +797,17 @@ export const nl = {
     bezig: 'Bezig…',
     wacht: (email: string): string => `Er staat een mail klaar in ${email}. Tik op de knop erin, dan sturen we pas iets.`,
     bevestigd: (email: string): string => `Je staat aangemeld met ${email}.`,
-    mis: 'Het lukte even niet. Probeer het zo nog eens.',
+    /*
+     * Twee meldingen in plaats van één.
+     *
+     * "Probeer het zo nog eens" is het goede advies bij een haperende
+     * verbinding en het verkeerde bij een fout aan onze kant — daar helpt
+     * opnieuw proberen niet, en dan laat je iemand tegen een muur drukken.
+     * Allebei zeggen ze erbij dat het ingevulde blijft staan, want dat is
+     * de eerste vraag na een mislukking.
+     */
+    mis: 'Het lukte even niet, en dat ligt aan ons. Je gegevens staan er nog — probeer het zo nog eens.',
+    offline: 'Je lijkt geen verbinding te hebben. Je gegevens staan er nog; zodra je weer online bent, werkt de knop.',
     wijzig: 'Iets anders kiezen',
     klein: 'Uitschrijven kan met één tik onderaan elke mail, en je gegevens laten wissen ook. Wat we van het leren meesturen zijn alleen aantallen — nooit antwoorden, nooit de naam van je kind.',
     geenServer: 'In deze versie zit nog geen postdienst.',

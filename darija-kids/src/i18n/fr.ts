@@ -784,7 +784,16 @@ export const fr: Strings = {
     bezig: 'En cours…',
     wacht: (email: string): string => `Un message vous attend sur ${email}. Touchez le bouton qu'il contient : nous n'écrivons rien avant.`,
     bevestigd: (email: string): string => `Vous êtes inscrit avec ${email}.`,
-    mis: "Cela n'a pas marché. Réessayez dans un instant.",
+    /*
+     * Twee meldingen in plaats van één.
+     *
+     * "Probeer het zo nog eens" is het goede advies bij een haperende
+     * verbinding en het verkeerde bij een fout aan onze kant — daar helpt
+     * opnieuw proberen niet. Allebei zeggen ze erbij dat het ingevulde
+     * blijft staan, want dat is de eerste vraag na een mislukking.
+     */
+    mis: "Cela n'a pas marché, et cela vient de nous. Vos informations sont toujours là — réessayez dans un instant.",
+    offline: "Vous semblez ne pas avoir de connexion. Vos informations sont toujours là ; le bouton marchera dès que vous serez en ligne.",
     wijzig: 'Choisir autre chose',
     klein: "Se désinscrire se fait en un clic en bas de chaque message, et effacer ses données aussi. De l'apprentissage nous n'envoyons que des nombres — jamais de réponses, jamais le prénom de votre enfant.",
     geenServer: "Cette version n'a pas encore de service de courrier.",

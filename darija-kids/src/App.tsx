@@ -26,6 +26,7 @@ const Speech = lazy(() => import('./pages/Speech').then((m) => ({ default: m.Spe
 const Record = lazy(() => import('./pages/Record').then((m) => ({ default: m.Record })))
 import { GeluidUit } from './ui/GeluidUit'
 import { TopBar } from './ui/TopBar'
+import { MotionConfig } from 'framer-motion'
 import { platform } from './engine/platform'
 import { Welcome } from './ui/Welcome'
 import { Aanbod } from './ui/Aanbod'
@@ -198,8 +199,23 @@ const Router = DEMO ? HashRouter : BrowserRouter
 
 export default function App() {
   return (
-    <Router>
-      <Chrome />
-    </Router>
+    /*
+     * `reducedMotion="user"` laat framer-motion naar de voorkeur van het
+     * toestel luisteren.
+     *
+     * In `index.css` staat al een regel die bij "beperk beweging" elke
+     * css-animatie stilzet, en die dekt framer-motion niet: die rekent zijn
+     * beelden in javascript uit en trekt zich van een css-regel niets aan. De
+     * zwevende mascotte, de schuivende panelen en de voortgangsbalk bleven dus
+     * bewegen voor precies de persoon die had gevraagd of dat niet hoefde.
+     *
+     * Op "user" laat hij verplaatsingen weg en houdt hij vervagingen: dat is
+     * wat Apple en Google met de instelling bedoelen, niet alles doodslaan.
+     */
+    <MotionConfig reducedMotion="user">
+      <Router>
+        <Chrome />
+      </Router>
+    </MotionConfig>
   )
 }

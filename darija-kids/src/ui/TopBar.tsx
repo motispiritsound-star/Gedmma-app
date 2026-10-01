@@ -64,7 +64,20 @@ export function TopBar() {
       className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--surface)]/90 backdrop-blur"
       style={{ paddingTop: 'var(--rand-boven)' }}
     >
-      <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-2.5">
+      {/*
+        `flex-wrap`, en dat is geen opmaak maar toegankelijkheid.
+
+        Wie in zijn toestel een grote letter instelt, schaalt de wortelmaat mee
+        — en dan werd deze rij 62 pixels te breed op élk scherm. De hele app
+        schoof dan zijwaarts: WCAG 1.4.10, en in de praktijk een app waarin je
+        bij elke tik eerst terug moet vegen.
+
+        Afbreken in plaats van afkappen: bij een gewone lettergrootte verandert
+        er niets, bij een grote zakken de tellers naar een tweede regel en
+        blijven ze alle drie leesbaar. Nagemeten op 390 pixels bij een
+        wortelletter van 16 en van 24.
+      */}
+      <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-3 px-4 py-2.5">
         {/*
           De `py-1.5 -my-1.5` is geen opmaak maar een raakvlak.
 

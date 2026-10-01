@@ -24,6 +24,19 @@ export const postMogelijk = (): boolean => POST !== ''
 
 export type Aanmelding = 'geen' | 'wacht' | 'bevestigd' | 'mis'
 
+/**
+ * Wat er uit een aanmeldpoging komt — iets meer dan wat er bewaard wordt.
+ *
+ * `mis` en `offline` zijn allebei "het is niet gelukt", en toch moet het
+ * scherm iets anders zeggen. Bij geen verbinding helpt het om te wachten en
+ * nog eens te proberen; bij een fout aan onze kant helpt dat juist niet, en
+ * dan is het eerlijker om te zeggen dat het aan ons ligt.
+ *
+ * Eén melding voor allebei leidde tot het verkeerde advies in het ene geval en
+ * tot onnodige schuld bij de lezer in het andere.
+ */
+export type Uitkomst = Aanmelding | 'offline'
+
 export interface Keuze {
   /** News, new units, the occasional offer. */
   nieuws: boolean
@@ -37,9 +50,17 @@ export interface Keuze {
  * The address itself is kept on the device only so the screen can say which
  * one it was; the id is what the weekly numbers are sent under.
  */
-export async function aanmelden(email: string, keuze: Keuze): Promise<Aanmelding> {
+export async function aanmelden(email: string, keuze: Keuze): Promise<Uitkomst> {
   if (!postMogelijk()) return 'mis'
   const s = getState()
+  /*
+   * Eerst de goedkope vraag. `navigator.onLine` is onwaar alleen als het
+   * toestel wéét dat het nergens bij kan — vliegtuigstand, wifi uit. Waar is
+   * geen garantie dat er internet is, maar onwaar is wel een zekerheid dat er
+   * geen is, en dan hoeft de lezer geen vijf seconden op een time-out te
+   * wachten voor een antwoord dat we al hebben.
+   */
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) return 'offline'
   try {
     const antwoord = await fetch(`${POST}/aanmelden`, {
       method: 'POST',
@@ -52,7 +73,14 @@ export async function aanmelden(email: string, keuze: Keuze): Promise<Aanmelding
     setState({ post: { id: body.id, email: email.trim(), status, ...keuze } })
     return status
   } catch {
-    return 'mis'
+    /*
+     * `fetch` gooit alleen als het verzoek de deur niet uit kwam: geen
+     * verbinding, dns stuk, de server onbereikbaar. Een antwoord met een
+     * foutcode komt hierboven langs en is dus wél `mis`. Dat onderscheid is
+     * precies het verschil tussen "probeer het zo nog eens" en "het ligt aan
+     * ons".
+     */
+    return 'offline'
   }
 }
 

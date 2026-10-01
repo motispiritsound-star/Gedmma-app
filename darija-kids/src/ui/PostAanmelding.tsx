@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { aanmelden, postMogelijk, vergeetAanmelding, type Aanmelding } from '../engine/post'
+import { aanmelden, postMogelijk, vergeetAanmelding } from '../engine/post'
 import { sfx } from '../engine/audio'
 import { useStore } from '../engine/store'
 import { useT } from '../i18n'
@@ -28,16 +28,19 @@ export function PostAanmelding() {
   const [voortgang, setVoortgang] = useState(false)
   const [poort, setPoort] = useState(false)
   const [bezig, setBezig] = useState(false)
-  const [mis, setMis] = useState(false)
+  /** Niet gelukt, en waarom: aan ons of aan de verbinding. */
+  const [mis, setMis] = useState<'mis' | 'offline' | null>(null)
 
   if (!postMogelijk()) return null
 
   const versturen = async () => {
     setBezig(true)
-    setMis(false)
-    const uitkomst: Aanmelding = await aanmelden(email, { nieuws, voortgang })
+    setMis(null)
+    const uitkomst = await aanmelden(email, { nieuws, voortgang })
     setBezig(false)
-    if (uitkomst === 'mis') setMis(true)
+    // Het adres en de twee vinkjes blijven staan, wat er ook misging: opnieuw
+    // moeten typen na een storing is de storing twee keer.
+    if (uitkomst === 'mis' || uitkomst === 'offline') setMis(uitkomst)
     else sfx.confirm()
   }
 
@@ -78,7 +81,7 @@ export function PostAanmelding() {
         inputMode="email"
         autoComplete="email"
         value={email}
-        onChange={(e) => { setEmail(e.target.value); setMis(false) }}
+        onChange={(e) => { setEmail(e.target.value); setMis(null) }}
         className="mt-1 w-full rounded-2xl border-2 border-[var(--line)] bg-[var(--surface)] px-4 py-3 outline-none focus:border-zellige-500"
       />
 
@@ -107,7 +110,16 @@ export function PostAanmelding() {
       >
         {bezig ? t.post.bezig : t.post.knop}
       </Button>
-      {mis && <p className="mt-3 text-center text-sm text-terra-500">{t.post.mis}</p>}
+      {/*
+        `role="status"` en niet zomaar een regel tekst: zonder dat leest een
+        schermlezer de melding niet voor, en dan drukt iemand een tweede keer
+        op een knop die net heeft gefaald zonder te weten dat hij faalde.
+      */}
+      {mis && (
+        <p role="status" className="mt-3 text-center text-sm text-terra-500">
+          {mis === 'offline' ? t.post.offline : t.post.mis}
+        </p>
+      )}
       <p className="mt-3 text-xs leading-relaxed text-[var(--ink-soft)]">{t.post.klein}</p>
 
       <OuderPoort

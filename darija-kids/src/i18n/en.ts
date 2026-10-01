@@ -784,7 +784,16 @@ export const en: Strings = {
     bezig: 'One moment…',
     wacht: (email: string): string => `There is a mail waiting at ${email}. Tap the button in it — we write nothing before that.`,
     bevestigd: (email: string): string => `You are signed up with ${email}.`,
-    mis: 'That did not work. Try again in a moment.',
+    /*
+     * Twee meldingen in plaats van één.
+     *
+     * "Probeer het zo nog eens" is het goede advies bij een haperende
+     * verbinding en het verkeerde bij een fout aan onze kant — daar helpt
+     * opnieuw proberen niet. Allebei zeggen ze erbij dat het ingevulde
+     * blijft staan, want dat is de eerste vraag na een mislukking.
+     */
+    mis: 'That did not work, and it is on us. Your details are still here — try again in a moment.',
+    offline: 'You seem to be offline. Your details are still here; the button will work as soon as you are back online.',
     wijzig: 'Choose something else',
     klein: 'Unsubscribing is one tap at the bottom of every mail, and so is erasing your data. From the learning we send counts only — never answers, never your child’s name.',
     geenServer: 'This build has no mail service behind it yet.',
