@@ -16,7 +16,8 @@
  * of gewoon een fout van ons.
  */
 import { describe, expect, it } from 'vitest'
-import { hydrate, MAX_HEARTS, type State } from './store'
+import { getState, gradeExtra, gradeWord, hydrate, MAX_HEARTS, setState, type State } from './store'
+import { newCard, type Card } from './srs'
 
 /** Zoals `load()` het doet: alles erin, kijken wat eruit komt. */
 const laad = (ruw: unknown): State => hydrate(ruw as Partial<State>)
@@ -106,5 +107,45 @@ describe('wat er wél bewaard blijft', () => {
     expect(s.quests.claimed).toEqual([])
     expect(s.bonus.total).toBe(0)
     expect(s.freezes).toBe(0)
+  })
+})
+
+describe('een kaart waar niet meer mee te rekenen valt', () => {
+  /**
+   * `review` telt bij elk veld iets op. Mist er één getal — een kaart uit een
+   * beschadigde opslag, of uit een versie die een veld nog niet kende — dan is
+   * de uitkomst NaN, en NaN komt nooit meer terug naar een getal. Die ene
+   * kaart blijft dan voor altijd stuk: hij komt nooit meer terug om te
+   * herhalen en zijn sterkte blijft leeg.
+   *
+   * Dat is geen crash en daarom juist vervelend: het valt niemand op.
+   */
+  it('begint opnieuw in plaats van NaN te worden', () => {
+    setState({
+      cards: { salam: { id: 'salam', ease: 2.4, interval: 1, due: 0, reps: 1, lapses: 0 } as unknown as Card },
+      extraCards: {},
+    })
+    gradeWord('salam', 'goed')
+    const na = getState().cards['salam']!
+    for (const [veld, n] of Object.entries(na)) {
+      if (typeof n === 'number') expect(Number.isFinite(n), `${veld} werd ${n}`).toBe(true)
+    }
+    expect(na.reps).toBe(1)
+  })
+
+  it('laat een kaart die wél klopt met rust', () => {
+    const goed = newCard('shukran')
+    setState({ cards: { shukran: { ...goed, reps: 7, strength: 0.8 } }, extraCards: {} })
+    gradeWord('shukran', 'goed')
+    // Doorgeteld vanaf zeven, dus de geschiedenis is niet weggegooid.
+    expect(getState().cards['shukran']!.reps).toBe(8)
+  })
+
+  it('doet hetzelfde voor letters en zinnen', () => {
+    setState({ cards: {}, extraCards: { 'l:alif': { id: 'l:alif', ease: 2.4, due: 0, reps: 3, lapses: 0, strength: 0.4 } as unknown as Card } })
+    gradeExtra('l:alif', 'goed')
+    const na = getState().extraCards['l:alif']!
+    expect(Number.isFinite(na.interval)).toBe(true)
+    expect(Number.isFinite(na.strength)).toBe(true)
   })
 })

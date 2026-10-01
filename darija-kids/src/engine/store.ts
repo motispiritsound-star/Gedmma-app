@@ -777,9 +777,32 @@ export function countSentence(): void {
 
 /* -------------------------------------------------------------- vocabulary */
 
+/**
+ * Een bewaarde kaart, maar alleen als er nog mee te rekenen valt.
+ *
+ * `review` telt bij elk veld iets op. Mist er één getal -- een kaart uit een
+ * beschadigde opslag, of uit een versie die een veld nog niet kende -- dan is
+ * de uitkomst NaN, en NaN komt daarna nooit meer terug naar een getal. Die ene
+ * kaart blijft dan voor altijd stuk: hij komt nooit meer terug om te herhalen
+ * en zijn sterkte blijft leeg.
+ *
+ * Teruggeven we hier niets, dan begint `newCard` hem opnieuw. Dat kost de
+ * geschiedenis van één woord en redt al het andere, en het is wat er toch al
+ * gebeurt voor een woord dat nog nooit langskwam.
+ *
+ * Hier en niet in `review` zelf: dat is het rekenhart van het herhaalschema en
+ * daar hoort geen controlewerk in.
+ */
+const heelOfNiets = (kaart: Card | undefined): Card | undefined =>
+  kaart
+    && [kaart.ease, kaart.interval, kaart.due, kaart.reps, kaart.lapses, kaart.strength]
+      .every((n) => typeof n === 'number' && Number.isFinite(n))
+    ? kaart
+    : undefined
+
 export function gradeWord(wordId: string, grade: Grade): void {
   setState((s) => {
-    const card = s.cards[wordId] ?? newCard(wordId)
+    const card = heelOfNiets(s.cards[wordId]) ?? newCard(wordId)
     return { cards: { ...s.cards, [wordId]: review(card, grade) } }
   })
 }
@@ -790,7 +813,7 @@ export const sentenceKey = (id: string) => `z:${id}`
 
 export function gradeExtra(key: string, grade: Grade): void {
   setState((s) => {
-    const card = s.extraCards[key] ?? newCard(key)
+    const card = heelOfNiets(s.extraCards[key]) ?? newCard(key)
     return { extraCards: { ...s.extraCards, [key]: review(card, grade) } }
   })
 }
