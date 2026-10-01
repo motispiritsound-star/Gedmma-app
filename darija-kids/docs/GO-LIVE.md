@@ -160,18 +160,30 @@ over gaat — op de dag van de lancering, met de app al in de winkel.
 hem heeft rondgestuurd, en dat kan bij Apple een paar uur duren nadat het
 scherm al "Ready for Sale" zegt.
 
-### 1b. Niet 1.1 indienen — dat is voor de week erna
+### 1b. 1.1 indienen — dezelfde dag, maar pas ná het vrijgeven
 
-Build 8 staat in TestFlight en 1.1 is klaar, maar de lancering gaat met de
-versie die goedgekeurd is. Een goedgekeurde versie zit vast aan zijn build, en
-1.1 indienen betekent die goedkeuring terugleggen voor een nieuwe ronde.
+De volgorde is hier het hele punt, en hij is niet om te draaien.
 
-Dus vandaag: niets indienen. Zie `docs/STAND.md` voor wat build 7 nog draagt
-en waarom dat te overzien is.
+Zolang 1.0 op *Pending Developer Release* staat, kun je er bij Apple geen
+tweede versie naast zetten. Om 1.1 te kunnen indienen moet 1.0 eerst
+vrijgegeven zijn — of je moet de goedkeuring opgeven, en dan sta je bij een
+afwijzing met lege handen op de dag dat Google groen geeft.
 
-Volgende week, als de app in de winkel staat en een afwijzing niets meer kost:
-1.1 indienen bij Apple en versiecode 5 / 1.3 bij Play. De winkelteksten staan
+Dus: **eerst vrijgeven, dan indienen.** Beide op dezelfde dag.
+
+1. 1.0 vrijgeven bij Apple, Play publiceren (stap 1 hierboven)
+2. Wachten tot allebei de winkeladressen echt opengaan
+3. De website omzetten en posten (stap 2 en 3)
+4. **Dan pas** 1.1 indienen bij Apple en versiecode 5 / 1.3 bij Play
+
+Stap 4 kan ook de dag erna. Wat niet kan is hem vóór stap 1 doen.
+
+Vanaf dat moment kost een afwijzing je niets meer: de app staat in de winkel
+en blijft daar staan, ook als 1.1 wordt teruggestuurd. De winkelteksten staan
 klaar in `store/wat-is-nieuw-1.1.md`, in zes talen.
+
+Wat de lancering tot die tijd draagt, staat in `docs/STAND.md` — met de enige
+die geld kost: het e-boek komt in build 7 tijdens de proefperiode meteen vrij.
 
 ### 2. De website omzetten
 
