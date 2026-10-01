@@ -212,6 +212,15 @@ const nl = {
     'De app ligt bij Apple en Google ter beoordeling. Wil je weten wanneer hij er staat? Stuur een mailtje en je hoort het als eerste.',
   houMeOpDeHoogte: 'Hou me op de hoogte',
   houMeOpDeHoogteMail: 'Ja, hou mij op de hoogte. Laat het me weten zodra de app in de winkel staat.',
+  /* Het aanmeldveld onder "binnenkort". Ging eerst naar een mailto: die opent
+     het mailprogramma van de bezoeker, en als dat er niet is gebeurt er niets
+     en zie je dat niet. Nu gaat het naar /aanmelden op de worker, met
+     bevestigingsmail — dezelfde weg die de app gebruikt. */
+  houAdres: 'Je e-mailadres',
+  houGelukt: 'Kijk in je mail. We hebben je een link gestuurd; klik erop en je staat op de lijst.',
+  houFoutAdres: 'Dat adres ziet er niet goed uit. Kijk even of er een typefout in zit.',
+  houFout: 'Er ging iets mis. Probeer het zo nog eens.',
+  houNoot: 'Eén bericht zodra de app er is. Geen advertenties, en uitschrijven kan met één klik.',
 
   videoTitel: 'Een halve minuut, en je weet het',
   videoBody:
@@ -434,6 +443,11 @@ const fr: SiteCopy = {
     "L'application est en cours d'examen chez Apple et Google. Vous voulez savoir quand elle sort ? Écrivez-nous et vous serez prévenu en premier.",
   houMeOpDeHoogte: 'Prévenez-moi',
   houMeOpDeHoogteMail: 'Oui, tenez-moi au courant. Prévenez-moi dès que l’application est disponible.',
+  houAdres: 'Votre adresse e-mail',
+  houGelukt: 'Regardez dans votre boîte mail. Nous vous avons envoyé un lien ; cliquez dessus et vous êtes inscrit.',
+  houFoutAdres: 'Cette adresse a l’air incorrecte. Vérifiez qu’il n’y a pas de faute de frappe.',
+  houFout: 'Quelque chose s’est mal passé. Réessayez dans un instant.',
+  houNoot: 'Un seul message dès que l’application est là. Sans publicité, et se désinscrire prend un clic.',
 
   videoTitel: 'Trente secondes, et vous saurez',
   videoBody:
@@ -653,6 +667,11 @@ const de: SiteCopy = {
     'Die App liegt bei Apple und Google zur Prüfung. Sie möchten wissen, wann sie da ist? Schreiben Sie uns kurz — Sie hören es als Erste.',
   houMeOpDeHoogte: 'Benachrichtigt mich',
   houMeOpDeHoogteMail: 'Ja, haltet mich auf dem Laufenden. Sagt mir Bescheid, sobald die App im Store steht.',
+  houAdres: 'Deine E-Mail-Adresse',
+  houGelukt: 'Schau in deine Mail. Wir haben dir einen Link geschickt; klick darauf und du stehst auf der Liste.',
+  houFoutAdres: 'Diese Adresse sieht nicht richtig aus. Schau kurz nach einem Tippfehler.',
+  houFout: 'Da ist etwas schiefgegangen. Versuch es gleich noch einmal.',
+  houNoot: 'Eine Nachricht, sobald die App da ist. Keine Werbung, und abmelden geht mit einem Klick.',
 
   videoTitel: 'Eine halbe Minute, und Sie wissen Bescheid',
   videoBody:
@@ -872,6 +891,11 @@ const es: SiteCopy = {
     'La app está en revisión en Apple y Google. ¿Quieres saber cuándo estará? Escríbenos y serás el primero en enterarte.',
   houMeOpDeHoogte: 'Avísame',
   houMeOpDeHoogteMail: 'Sí, mantenme informado. Avísame en cuanto la aplicación esté en la tienda.',
+  houAdres: 'Tu correo electrónico',
+  houGelukt: 'Mira en tu correo. Te hemos enviado un enlace; haz clic y estarás en la lista.',
+  houFoutAdres: 'Esa dirección no parece correcta. Comprueba si hay alguna errata.',
+  houFout: 'Algo ha salido mal. Vuelve a intentarlo en un momento.',
+  houNoot: 'Un solo mensaje en cuanto la aplicación esté lista. Sin publicidad, y darse de baja es un clic.',
 
   videoTitel: 'Medio minuto y lo sabrás',
   videoBody:
@@ -1091,6 +1115,11 @@ const it: SiteCopy = {
     'L’app è in revisione da Apple e Google. Vuoi sapere quando sarà disponibile? Scrivici e sarai il primo a saperlo.',
   houMeOpDeHoogte: 'Avvisami',
   houMeOpDeHoogteMail: 'Sì, tenetemi aggiornato. Fatemi sapere appena l’app è nel negozio.',
+  houAdres: 'Il tuo indirizzo e-mail',
+  houGelukt: 'Guarda nella tua posta. Ti abbiamo mandato un link; cliccalo e sei in lista.',
+  houFoutAdres: 'Questo indirizzo non sembra giusto. Controlla se c’è un errore di battitura.',
+  houFout: 'Qualcosa è andato storto. Riprova tra poco.',
+  houNoot: 'Un solo messaggio appena l’app c’è. Niente pubblicità, e cancellarsi è un clic.',
 
   videoTitel: 'Mezzo minuto e capirai',
   videoBody:
@@ -1311,6 +1340,11 @@ const en: SiteCopy = {
     'The app is with Apple and Google for review. Want to know the moment it lands? Send us a line and you will hear it first.',
   houMeOpDeHoogte: 'Let me know',
   houMeOpDeHoogteMail: 'Yes, keep me posted. Let me know as soon as the app is in the store.',
+  houAdres: 'Your email address',
+  houGelukt: 'Check your mail. We have sent you a link; click it and you are on the list.',
+  houFoutAdres: 'That address does not look right. Have a quick look for a typo.',
+  houFout: 'Something went wrong. Try again in a moment.',
+  houNoot: 'One message as soon as the app is there. No ads, and unsubscribing takes one click.',
 
   videoTitel: 'Half a minute, and you will know',
   videoBody:

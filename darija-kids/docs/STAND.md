@@ -290,6 +290,37 @@ misgaan, staat in `docs/ACTIES.md`.
 De "wat is er nieuw"-tekst voor beide winkels staat in zes talen in
 `store/wat-is-nieuw-1.2.md`.
 
+### "Hou me op de hoogte" schrijft nu in de database
+
+Tot 1 oktober was die knop een `mailto:`-link. Dat kost op twee manieren.
+
+Een mailto doet niets als er geen mailprogramma is ingesteld — op een laptop
+eerder regel dan uitzondering. De bezoeker klikt, ziet niets gebeuren, en is
+weg; wij merkten er niets van. En als het wél werkte kwam er een mail in een
+postvak: dat is geen lijst. Op de lanceerdag moet iemand die adressen met de
+hand overtikken, zonder te weten welke taal ze spraken en zonder bewijs van
+toestemming.
+
+`POST /aanmelden` op de worker deed dit allemaal al — taal opslaan,
+bevestigingsmail sturen, de rij pas op `bevestigd` zetten als de link is
+aangeklikt. De app gebruikte die route al; de website niet. Nu wel.
+
+Nagemeten in een echte browser op de gezette site: een geldig adres levert één
+verzoek op met `{email, taal, nieuws: true, voortgang: false}`, het formulier
+verdwijnt en de bevestiging verschijnt. Een adres met een typefout levert nul
+verzoeken op en een foutmelding in de taal van de bladzijde.
+
+Twee dingen die onderweg stilletjes mis hadden kunnen gaan:
+
+- Het blok staat **twee keer** op een bladzijde en droeg zijn script twee keer
+  mee, dus bond het tweede script ook het eerste formulier: één klik, twee
+  verzoeken. Er zit nu een rem op.
+- `display: flex` wint van de `display: none` van het hidden-kenmerk, dus het
+  formulier bleef staan ná het versturen, onder "kijk in je mail".
+
+De mailto-knop op de boekenbladzijde staat er nog. Die gaat over nieuwe boeken
+en niet over de app; dezelfde behandeling is daar winst, maar geen haast.
+
 ### De Play-winkelpagina is nog dicht
 
 Op 30 september nagekeken in een venster zonder inlog:

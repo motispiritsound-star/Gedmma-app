@@ -377,7 +377,102 @@ const downloadBlock = (lang) => {
     </div>
     <p class="trust">${esc(c.trustLine)}</p>
     ${live ? '' : `<p class="soon">${esc(c.binnenkortBody)}</p>
-    <a class="mailbtn" href="${mailto}?subject=${encodeURIComponent(c.houMeOpDeHoogte)}&body=${encodeURIComponent(c.houMeOpDeHoogteMail)}">${esc(c.houMeOpDeHoogte)}</a>`}`
+    ${houForm(lang)}`}`
+}
+
+/**
+ * Het aanmeldveld onder "binnenkort".
+ *
+ * Hier stond een `mailto:`-knop. Die opent het mailprogramma van de bezoeker
+ * met een voorgeschreven bericht — en als er geen mailprogramma is ingesteld
+ * gebeurt er niets. De bezoeker klikt, ziet niets, en is weg; wij merken er
+ * niets van. Op een laptop is dat eerder regel dan uitzondering.
+ *
+ * Erger nog is wat er daarna gebeurde als het wél werkte: dan kwam er een mail
+ * in een postvak. Dat is geen lijst. Op de dag van de lancering moet iemand die
+ * adressen met de hand overtikken, zonder te weten welke taal ze spraken en
+ * zonder bewijs dat ze toestemming gaven.
+ *
+ * `POST /aanmelden` op de worker bestond al en doet dit allemaal wel: hij slaat
+ * de taal op, stuurt een bevestigingsmail, en zet de rij pas op `bevestigd` als
+ * de link erin is aangeklikt. De app gebruikt die route al; de website deed het
+ * niet. Nu wel.
+ *
+ * Het formulier draagt zijn eigen script. Dat is met opzet: zo kan het blok
+ * ergens anders op de site opnieuw gebruikt worden zonder dat er iets in het
+ * paginascript hoeft te worden bijgezet.
+ */
+const houForm = (lang) => {
+  const c = SITE[lang]
+  return `<form class="houform" data-hou novalidate>
+      <input type="email" name="email" placeholder="${esc(c.houAdres)}" aria-label="${esc(c.houAdres)}"
+             autocomplete="email" inputmode="email" required>
+      <button class="mailbtn" type="submit">${esc(c.houMeOpDeHoogte)}</button>
+    </form>
+    <p class="houmelding" role="status" hidden></p>
+    <p class="klein houNoot">${esc(c.houNoot)}</p>
+    <style>
+      .houform { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; margin: 1rem 0 .5rem }
+      /* display:flex wint van de display:none die bij het hidden-kenmerk
+         hoort. Zonder deze regel blijft het formulier staan nadat het verstuurd
+         is, onder "kijk in je mail", en vult iemand het een tweede keer in. */
+      .houform[hidden] { display: none }
+      .houform input {
+        flex: 1 1 15rem; max-width: 22rem; min-width: 0;
+        padding: .8rem 1rem; border-radius: 999px; border: 2px solid rgba(43,29,22,.22);
+        font: inherit; font-size: 1rem; background: #fffaf3; color: #2b1d16;
+      }
+      .houform input:focus { outline: none; border-color: #e2603c }
+      .houform button { flex: 0 0 auto }
+      .houmelding { margin: .4rem 0 0; font-weight: 600 }
+      .houmelding[data-fout] { color: #a8352c }
+      .houNoot { opacity: .78 }
+    </style>
+    <script>
+    (function () {
+      var POST = ${JSON.stringify(POST_URL)}, TAAL = ${JSON.stringify(lang)}
+      var T = ${JSON.stringify({ gelukt: c.houGelukt, foutAdres: c.houFoutAdres, fout: c.houFout })}
+      document.querySelectorAll('form[data-hou]').forEach(function (form) {
+        /* Dit blok staat twee keer op de bladzijde — boven bij de knoppen en
+           onderaan — en elk van die twee draagt dit script mee. Zonder deze
+           rem bindt het tweede script ook het eerste formulier, en dan stuurt
+           één klik twee verzoeken. */
+        if (form.getAttribute('data-hou') === 'aan') return
+        form.setAttribute('data-hou', 'aan')
+        /* De melding is de buur, niet "de eerste in dit blok": met twee
+           formulieren onder dezelfde ouder zou dat allebei de keren dezelfde
+           regel aanwijzen. */
+        var melding = form.nextElementSibling
+        function zeg(tekst, fout) {
+          melding.textContent = tekst
+          melding.hidden = !tekst
+          if (fout) melding.setAttribute('data-fout', '1'); else melding.removeAttribute('data-fout')
+        }
+        form.addEventListener('submit', function (e) {
+          e.preventDefault()
+          var adres = form.email.value.trim()
+          /* Geen strenge controle hier: de worker kijkt zelf, en een regexp die
+             te streng is weigert geldige adressen die niemand verzint. */
+          if (adres.indexOf('@') < 1 || adres.length < 5) return zeg(T.foutAdres, true)
+          var knop = form.querySelector('button')
+          knop.disabled = true
+          zeg('')
+          fetch(POST + '/aanmelden', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ email: adres, taal: TAAL, nieuws: true, voortgang: false }),
+          }).then(function (r) { return r.json() }).then(function (uit) {
+            if (!uit || !uit.ok) return zeg(uit && uit.fout === 'geen-adres' ? T.foutAdres : T.fout, true)
+            /* Het formulier weg, want er valt niets meer te doen: de volgende
+               stap staat in zijn mail en niet op deze bladzijde. */
+            form.hidden = true
+            zeg(T.gelukt, false)
+          }).catch(function () { zeg(T.fout, true) })
+            .then(function () { knop.disabled = false })
+        })
+      })
+    })()
+    </script>`
 }
 
 const unitList = (lang) => {
