@@ -166,40 +166,64 @@ function grant(): void {
   setState({ unlocked: true, unlockedAt: Date.now() })
 }
 
-/** Of er recht op het e-boek is. Dat recht vervalt nooit. */
+/**
+ * Of het e-boek vrijgegeven is. Vanaf dat moment is het van de koper en wordt
+ * het nooit meer afgenomen — ook niet als het abonnement later afloopt.
+ */
 export const hasEbook = (): boolean => getState().ebook
 
-/**
- * Of het e-boek nú open mag, en waarom dat niet hetzelfde is.
- *
- * Het boek is een pdf: wie hem één keer opent, houdt hem. Bij het
- * jaarabonnement zitten de eerste drie dagen gratis, en zonder deze grens kon
- * iemand het jaar afsluiten, het boek opslaan en op dag twee opzeggen. Hij
- * betaalde dan niets en liep weg met een product van € 14,99.
- *
- * Los gekocht is er geen proefperiode, dus daar mag het meteen.
- */
-export const ebookKlaar = (s = getState(), nu = Date.now()): boolean =>
-  s.ebook && s.ebookVanaf !== null && nu >= s.ebookVanaf
+/** Hetzelfde, met de staat erbij zodat een scherm erop kan luisteren. */
+export const ebookKlaar = (s = getState()): boolean => s.ebook
 
-/** Wanneer het boek opengaat, of null als dat nu al zo is of er geen recht is. */
+/** Wanneer het boek opengaat, of null als het al open is of de dag al voorbij is. */
 export const ebookWachtTot = (s = getState(), nu = Date.now()): number | null =>
-  s.ebook && s.ebookVanaf !== null && nu < s.ebookVanaf ? s.ebookVanaf : null
+  !s.ebook && s.ebookVanaf !== null && nu < s.ebookVanaf ? s.ebookVanaf : null
 
 /**
- * The book is never taken back. It was paid for once — with the year or on its
- * own — and a book that disappears when a subscription lapses is not a book
- * anyone bought.
+ * Het boek toezeggen, en pas vrijgeven als er ook betaald is.
  *
- * `wachten` zegt of de proefperiode er nog tussen zit. Een datum die er al
- * staat wordt nooit naar later geschoven: wie het boek los koopt tijdens een
- * lopende proef, heeft het meteen.
+ * Een datum alleen is niet genoeg, en dat was de fout in de eerste versie.
+ * Wie het jaar afsloot, op dag twee opzegde en op dag vier terugkwam, had een
+ * datum die voorbij was en kreeg het boek alsnog — nul betaald.
+ *
+ * `ebookVanaf` is daarom een afspraak en geen sleutel: de dag waarop het
+ * boek *mag* opengaan. Vrijgeven doet `keurEbook()`, en alleen als de winkel
+ * op dat moment nog zegt dat het abonnement loopt. Loopt het niet meer, dan
+ * is de proefperiode opgezegd en is er niets betaald.
+ *
+ * Los gekocht gaat er geen proefperiode overheen, dus dat geeft meteen vrij.
  */
-function grantEbook(wachten: boolean): void {
+export function grantEbook(wachten: boolean): void {
   const s = getState()
-  const vanaf = wachten ? Date.now() + TRIAL_DAYS * 864e5 : Date.now()
-  if (s.ebook && s.ebookVanaf !== null && s.ebookVanaf <= vanaf) return
-  setState({ ebook: true, ebookVanaf: vanaf })
+  if (s.ebook) return
+  if (!wachten) { setState({ ebook: true, ebookVanaf: Date.now() }); return }
+  /*
+   * Wie al langer dan de proefperiode betaalt en nú op het jaar overstapt,
+   * wacht nergens op: zijn proef is allang geweest, en de winkel geeft er
+   * geen tweede. Zonder deze regel zou een trouwe maandklant drie dagen op
+   * zijn boek wachten terwijl hij meteen betaalt.
+   */
+  const alBetaald = s.unlocked && s.unlockedAt !== null && Date.now() - s.unlockedAt >= TRIAL_DAYS * 864e5
+  if (alBetaald) { setState({ ebook: true, ebookVanaf: Date.now() }); return }
+  // Een toezegging die er al staat blijft staan; anders schuift de dag mee
+  // met elke keer dat de app opstart en komt hij nooit.
+  if (s.ebookVanaf === null) setState({ ebookVanaf: Date.now() + TRIAL_DAYS * 864e5 })
+  keurEbook()
+}
+
+/**
+ * De toezegging omzetten in het boek, als de dag er is en er betaald is.
+ *
+ * Draait bij elke keer dat de winkel iets zegt. Eenmaal vrijgegeven blijft
+ * het vrij: dit kan alleen van nee naar ja.
+ */
+export function keurEbook(nu = Date.now()): void {
+  const s = getState()
+  if (s.ebook || s.ebookVanaf === null || nu < s.ebookVanaf) return
+  // Geen verbinding is geen antwoord: `unlocked` blijft staan zolang de
+  // winkel niets gezegd heeft, dus hier staat alleen "op dit moment loopt het
+  // abonnement nog". Wie opzegde tijdens de proef, staat hier op onwaar.
+  if (s.unlocked) setState({ ebook: true })
 }
 
 /**
@@ -230,6 +254,9 @@ function syncFromStore(owned: boolean, bonnenBinnen: boolean): void {
   const wat = toegangNa({ owned, bonnenBinnen })
   if (wat === 'open') grant()
   else if (wat === 'dicht' && getState().unlocked) setState({ unlocked: false, unlockedAt: null })
+  // Pas hierna, want het kijkt naar `unlocked` zoals de winkel hem zojuist
+  // heeft gezet. Andersom keurt hij op het antwoord van gisteren.
+  keurEbook()
 }
 
 /**

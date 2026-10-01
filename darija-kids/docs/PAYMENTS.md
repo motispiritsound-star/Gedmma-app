@@ -58,11 +58,28 @@ jaarabonnement, en het is een pdf: wie hem één keer opent, houdt hem. Zonder
 grens kon iemand het jaar afsluiten, het boek opslaan en op dag twee opzeggen
 — nul betaald, een product van € 14,99 mee.
 
-Daarom staat het recht op het boek los van het openen ervan: `ebook` in de
-staat is het recht en vervalt nooit, `ebookVanaf` is de dag waarop het opengaat.
-Los gekocht is dat meteen, want daar zit geen proefperiode bij. Bij het jaar is
-het `TRIAL_DAYS` later, en op het abonnementsscherm staat de datum erbij —
-anders leest een ontbrekende knop als een storing.
+**Een datum alleen is niet genoeg**, en dat was de eerste reparatie wél. Wie
+op dag twee opzegde en op dag vier terugkwam, had een datum die voorbij was en
+kreeg het boek alsnog. Een datum zegt dat er tijd verstreken is, niet dat er
+betaald is.
+
+Daarom twee velden. `ebookVanaf` is de **toezegging**: de dag waarop het boek
+mág opengaan. `ebook` is het **boek**, en dat komt er alleen als die dag
+voorbij is én de winkel op dat moment nog zegt dat het abonnement loopt. Dat
+keuren gebeurt in `keurEbook()`, dat draait zodra de winkel iets zegt — na
+`syncFromStore`, zodat het kijkt naar het antwoord van nu en niet dat van
+gisteren.
+
+Eenmaal open blijft het open, ook als het abonnement later afloopt. Dat is wat
+`boek.vanJou` op het scherm belooft, en het is het enige deel van deze regeling
+dat nooit terug mag kunnen.
+
+Los gekocht gaat er geen proef overheen, dus dat geeft meteen vrij. En wie al
+langer dan de proefperiode betaalt en nú overstapt op het jaar, wacht ook
+nergens op — zijn proef is allang geweest en de winkel geeft er geen tweede.
+
+Op het abonnementsscherm staat in die drie dagen de datum, want een knop die
+er zonder uitleg niet is leest als een storing.
 
 Twee dingen die dit **niet** oplost, en die je moet weten voordat je het voor
 beveiliging aanziet:
