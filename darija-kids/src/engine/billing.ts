@@ -461,7 +461,6 @@ export interface WinkelRegel {
   product: string
   prijs: string | null
   valuta: string | null
-  micros: number | null
   /**
    * Elke prijsfase die de winkel meestuurde, in volgorde.
    *
@@ -501,7 +500,6 @@ export const winkelGegevens = (): WinkelRegel[] => {
       product,
       prijs: fase?.price ?? null,
       valuta: fase?.currency ?? null,
-      micros: fase?.priceMicros ?? null,
       fasen: alle.map((f) => f.price ?? (f.priceMicros === 0 ? 'gratis' : '—')),
     }
   })

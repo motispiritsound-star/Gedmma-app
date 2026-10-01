@@ -148,7 +148,13 @@ export function Parents() {
               <ul className="mt-4 space-y-1 font-mono text-xs break-all text-[var(--ink-soft)]">
                 {winkel.map((r) => (
                   <li key={r.product}>
-                    {r.product.replace('app.darijaforkids.', '')} — {r.prijs ?? '—'} · {r.valuta ?? '—'} · {r.micros ?? '—'}
+                    {/* Zonder het ruwe getal in miljoensten erbij. Dat stond hier
+                        wel, en het hielp niemand: wie hier kijkt wil weten wat
+                        de winkel als prijs teruggaf, en dat staat er al in de
+                        opmaak van de winkel zelf. Een kolom met 59990000 erin
+                        maakt van een hulpmiddel voor de ouder een stuk
+                        ontwikkelaarsuitvoer. */}
+                    {r.product.replace('app.darijaforkids.', '')} — {r.prijs ?? '—'} · {r.valuta ?? '—'}
                     {/* Eén fase is geen aanbieding; twee of meer betekent dat
                         de eerste de proefperiode is. */}
                     <br />fasen: {r.fasen.length ? r.fasen.join(' → ') : 'geen'}
