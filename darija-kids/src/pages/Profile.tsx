@@ -10,7 +10,7 @@ import { Mascot } from '../ui/Mascot'
 import { Khatim } from '../ui/Khatim'
 import { Medaillon } from '../ui/Motief'
 import { HISTORY } from '../content/history'
-import { useLang, useT } from '../i18n'
+import { localeOf, useLang, useT } from '../i18n'
 import { unitSubtitle } from '../content/localise'
 
 const AVATARS = ['🦊', '🦉', '🐪', '🦁', '🐈', '🦋', '⭐', '🌙', '🫖', '⚽']
@@ -25,6 +25,19 @@ export function Profile() {
   const solid = Object.values(state.cards).filter((c) => c.strength >= 0.85).length
   const doneLessons = Object.keys(state.lessons).length
 
+  /**
+   * Of er volledige toegang is, en sinds wanneer.
+   *
+   * `unlockedAt` staat er al sinds het begin maar werd nergens gelezen. Het is
+   * de dag waarop de winkel voor het eerst zei dat het abonnement loopt — niet
+   * de dag van betalen, want de eerste drie dagen zijn gratis. "Lid sinds" is
+   * dus eerlijk en "betaald op" zou dat niet zijn.
+   */
+  const lid = state.unlocked
+  const sinds = state.unlockedAt
+    ? new Intl.DateTimeFormat(localeOf(lang), { day: 'numeric', month: 'long' }).format(state.unlockedAt)
+    : null
+
   const week = Array.from({ length: 7 }, (_, i) => {
     const d = new Date()
     d.setDate(d.getDate() - (6 - i))
@@ -35,9 +48,21 @@ export function Profile() {
 
   return (
     <div className="mx-auto max-w-3xl lg:max-w-5xl px-4 py-6">
-      <Card className="mb-6 flex flex-wrap items-center gap-5 p-5">
+      {/*
+        Na het betalen veranderde er niets zichtbaars: sloten verdwenen, en
+        verder zag de app er hetzelfde uit. Voor iemand die net zestig euro
+        heeft uitgegeven is dat de verkeerde eerste indruk — de vraag die dan
+        opkomt is "is het wel gelukt?".
+        
+        Dus krijgt deze kaart een gouden rand, de avatar een ring en de naam
+        een regel eronder. Geen pop-up en geen felicitatie die je moet
+        wegklikken: iets dat er gewoon staat, elke keer dat je kijkt.
+      */}
+      <Card className={`mb-6 flex flex-wrap items-center gap-5 p-5 ${lid ? 'border-2 border-saffron-400' : ''}`}>
         <div className="relative">
-          <div className="grid h-20 w-20 place-items-center rounded-3xl bg-gradient-to-br from-saffron-400 to-terra-500 text-4xl">
+          <div className={`grid h-20 w-20 place-items-center rounded-3xl bg-gradient-to-br from-saffron-400 to-terra-500 text-4xl ${
+            lid ? 'ring-4 ring-saffron-400 ring-offset-2 ring-offset-[var(--surface-raised)]' : ''}`}
+          >
             {state.avatar}
           </div>
           <span className="absolute -bottom-2 -end-2 rounded-full bg-zellige-600 px-2 py-0.5 text-xs font-extrabold text-white">
@@ -46,7 +71,21 @@ export function Profile() {
         </div>
         <div className="min-w-0 flex-1 basis-40">
           <h1 className="font-display text-2xl font-extrabold">{state.name || t.profile.leerling}</h1>
-          <p className="text-sm text-[var(--ink-soft)]">{t.common.niveau} {level} · {t.profile.naarNiveau(into, span)}</p>
+          {/*
+            De pil draagt alleen het woord; de datum staat ernaast in gewoon
+            grijs. Samen in één pil brak hij op een telefoon van 390 pixels
+            over twee regels, en een insigne van twee regels is geen insigne.
+          */}
+          {lid && (
+            <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-saffron-500/15 px-2.5 py-1 font-display text-xs font-extrabold text-saffron-700 dark:text-saffron-300">
+                <Khatim size={13} />
+                {t.profile.lidTitel}
+              </span>
+              {sinds && <span className="text-xs text-[var(--ink-soft)]">{t.profile.lidSinds(sinds)}</span>}
+            </p>
+          )}
+          <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.common.niveau} {level} · {t.profile.naarNiveau(into, span)}</p>
           <Progress value={into / span} tone="saffron" className="mt-2" />
         </div>
         <Link to="/instellingen" className="w-full sm:w-auto"><Button variant="secondary" className="w-full">{t.profile.aanpassen}</Button></Link>

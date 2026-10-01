@@ -579,6 +579,26 @@ een bladzijde die hem meteen weer vooruit stuurt.
 hoefde niet meer te verhuizen. Het staat op een bladzijde die in de app niet
 meer vanzelf opengaat, en op de website hoort het er gewoon.
 
+**Na het betalen verandert er nu ook iets zichtbaars.** Dat deed het niet:
+sloten verdwenen, de knop in de kopbalk ging weg, en verder zag de app er
+hetzelfde uit. Voor iemand die net zestig euro heeft uitgegeven is dat de
+verkeerde eerste indruk — de vraag die dan opkomt is "is het wel gelukt?", en
+die hoort de app zelf te beantwoorden en niet de bon in een mailbox.
+
+De profielkaart krijgt bij een lopend abonnement een gouden rand, de avatar
+een ring, en onder de naam staat **Volledige toegang** met de dag erbij. Geen
+pop-up en geen felicitatie om weg te klikken: iets dat er gewoon staat, elke
+keer dat je kijkt.
+
+Er staat met opzet *lid sinds* en niet *betaald op*. De eerste dagen zijn
+gratis, dus de dag waarop de toegang begon is niet de dag waarop er geld af
+ging. `lidmaatschap.test.ts` bewaakt dat in alle zes de talen — dat verschil
+omdraaien is een kleine onwaarheid op precies de plek waar iemand zijn aankoop
+controleert.
+
+En daarmee wordt `unlockedAt` eindelijk gelezen. Dat veld lag er sinds het
+begin en werd nergens gebruikt.
+
 **"Open het e-boek" opende lichess.org.** Niet grappig bedoeld: op de iPhone
 in TestFlight ging die knop naar een schaaksite.
 

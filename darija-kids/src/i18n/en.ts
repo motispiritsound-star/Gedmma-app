@@ -370,6 +370,18 @@ export const en: Strings = {
   },
 
   profile: {
+    /**
+     * Het lidmaatschap op de profielkaart.
+     *
+     * Na het betalen veranderde er niets zichtbaars in de app — alleen sloten
+     * die verdwenen. Voor wie net zestig euro heeft uitgegeven is dat de
+     * verkeerde eerste indruk.
+     *
+     * "Lid sinds" en niet "betaald op": de eerste dagen zijn gratis, dus de
+     * datum waarop de toegang begon is niet de datum waarop er geld af ging.
+     */
+    lidTitel: 'Full access',
+    lidSinds: (datum: string): string => `member since ${datum}`,
     leerling: 'Learner',
     aanpassen: 'Edit',
     naarNiveau: (into, span) => `${into}/${span} XP to the next one`,
