@@ -548,13 +548,15 @@ Omgekeerd kan het ook: staat de proefperiode er wél en zou je hem niet willen,
 dan zet je `TRIAL_DAYS` op 0 en passen de teksten zich aan. Maar de twee
 moeten hetzelfde zeggen.
 
-**Op 1 oktober nagekeken bij `app.darijaforkids.yearly`: er is geen
-Introductory-Offers-blok te zien.** De bladzijde loopt van Subscription Prices
-door naar Purchase Options, Tax Category en Review Information. Het
-abonnement staat op *Waiting for Review* en is nog nooit goedgekeurd, en dat
-is de waarschijnlijkste verklaring: Apple laat een aanbieding pas aanmaken bij
-een abonnement dat de beoordeling heeft gehaald. Niet bewezen — wel het enige
-dat past bij een scherm waarop ook Save en Add for Review grijs zijn.
+**Op 1 oktober gekeken bij `app.darijaforkids.yearly`, en nog niet
+vastgesteld.** Op de bladzijde van het abonnement staan Introductory Offers,
+Promotional Offers, Offer Codes en de teksten per taal tússen *Subscription
+Prices* en *Purchase Options*. Dat stuk is nog niet bekeken, dus er is niets
+bewezen — niet dat de aanbieding er staat en niet dat hij ontbreekt.
+
+De manier om het zeker te weten is ⌘F op de bladzijde van het abonnement
+zelf — niet op het overzicht met de abonnementsgroepen, want daar staat het
+woord sowieso niet — en zoeken op `Introductory`.
 
 **Daar hangt een volgorde aan voor de lanceerdag.** De review-schermafbeelding
 die bij dit abonnement staat toont de knop *START 3 DAGEN GRATIS*. Geef je de
