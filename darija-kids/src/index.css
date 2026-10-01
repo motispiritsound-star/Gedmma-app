@@ -147,6 +147,20 @@
   --ink: #1a1625;
   --ink-soft: #5b5468;
   --line: #e7dccd;
+  /*
+   * De inkt waarmee een kind een letter natekent.
+   *
+   * Stond met de hand in `Scribe.tsx` -- `rgba(13,148,136,.85)` -- en dat was
+   * de oude waarde van `--color-zellige-600`. Toen die donkerder werd voor het
+   * contrast bleef de inkt achter, net als op het foutscherm.
+   *
+   * Gemeten op het witte tekenvak haalde die inkt 2,99 op 1. De norm voor iets
+   * wat geen tekst is maar je wél moet kunnen zien is 3. Een kind dat zijn
+   * eigen haal niet terugziet, kan de oefening niet doen. Nu 4,05 in de lichte
+   * stand en 8,01 in de donkere -- daar is een donkere inkt juist verkeerd, en
+   * dat zag je niet omdat de kleur vastzat aan één waarde.
+   */
+  --inkt-tekenen: #0f766e;
   --shadow-press: 0 4px 0 0 rgb(0 0 0 / 0.16);
   color-scheme: light;
 }
@@ -163,6 +177,7 @@
   --ink: #f3f0ea;
   --ink-soft: #9aa3bb;
   --line: #26314e;
+  --inkt-tekenen: #6fded0;
   --shadow-press: 0 4px 0 0 rgb(0 0 0 / 0.45);
   color-scheme: dark;
 }
@@ -175,6 +190,7 @@
     --ink: #f3f0ea;
     --ink-soft: #9aa3bb;
     --line: #26314e;
+    --inkt-tekenen: #6fded0;
     --shadow-press: 0 4px 0 0 rgb(0 0 0 / 0.45);
     color-scheme: dark;
   }

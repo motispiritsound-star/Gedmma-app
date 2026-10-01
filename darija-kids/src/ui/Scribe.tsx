@@ -83,6 +83,20 @@ export function Scribe({
   /** Where the child's ink lives, at mask resolution, for the counting. */
   const ink = useRef<CanvasRenderingContext2D | null>(null)
   const drawing = useRef(false)
+  /**
+   * De kleur van de haal, uit `--inkt-tekenen`.
+   *
+   * Hij stond hier met de hand ingetypt, op de oude waarde van
+   * `--color-zellige-600`, en bleef achter toen die donkerder werd voor het
+   * contrast. Op het witte vak haalde die inkt 2,99 op 1 -- net onder de drie
+   * die je nodig hebt om je eigen haal te zien. Nagemeten na de reparatie:
+   * 4,11 licht en 8,00 donker, want in de donkere stand is een donkere inkt
+   * juist verkeerd.
+   *
+   * Eén keer uitgelezen bij het schoonvegen en niet bij elke haal: `stroke`
+   * draait per muisbeweging, en `getComputedStyle` is daar te duur voor.
+   */
+  const inkt = useRef('#0f766e')
   /** Where the pen starts, and where it goes next. Redrawn over the ink. */
   const last = useRef<{ x: number; y: number } | null>(null)
   const [drawn, setDrawn] = useState(false)
@@ -99,6 +113,7 @@ export function Scribe({
     canvas.height = size * dpr
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     ctx.clearRect(0, 0, size, size)
+    inkt.current = getComputedStyle(canvas).getPropertyValue('--inkt-tekenen').trim() || inkt.current
     paintGlyph(ctx, size, glyph, 'rgba(120,113,108,.26)')
 
     ink.current?.clearRect(0, 0, MASK, MASK)
@@ -144,7 +159,13 @@ export function Scribe({
   const stroke = (from: { x: number; y: number }, to: { x: number; y: number }) => {
     const ctx = board.current?.getContext('2d')
     if (ctx) {
-      ctx.strokeStyle = 'rgba(13,148,136,.85)'
+      // `save`/`restore` eromheen, want `globalAlpha` blijft anders staan en
+      // de voorbeeldletter wordt bij de volgende schoonveeg op 0,85 van zijn
+      // eigen 0,26 getekend. De 85% zelf blijft: een haal die iets doorlaat
+      // laat de letter eronder zien, en dat is precies waar je op mikt.
+      ctx.save()
+      ctx.globalAlpha = 0.85
+      ctx.strokeStyle = inkt.current
       ctx.lineCap = 'round'
       ctx.lineJoin = 'round'
       ctx.lineWidth = penWidth(size)
@@ -152,6 +173,7 @@ export function Scribe({
       ctx.moveTo(from.x * size, from.y * size)
       ctx.lineTo(to.x * size, to.y * size)
       ctx.stroke()
+      ctx.restore()
     }
     const mask = ink.current
     if (mask) {
