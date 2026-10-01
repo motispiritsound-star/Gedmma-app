@@ -403,14 +403,70 @@ const initial = (): State => ({
  * something adds one to it, which is how a mission silently stops working for
  * everybody who already had the app.
  */
-function hydrate(parsed: Partial<State>): State {
+
+/* --------------------------------------- een opslag die niet meer klopt */
+
+/**
+ * Deze drie nemen een bewaarde waarde alleen over als hij de vorm heeft die
+ * deze versie verwacht, en vallen anders terug op de beginwaarde.
+ *
+ * Het lijkt overdreven totdat je het meet. Veertien kapotte staten door de app
+ * gehaald, en vier lieten hem omvallen bij het opstarten: `daily`, `cards`,
+ * `lessons` of `extraCards` op `null` zetten is genoeg. `Object.keys(null)`
+ * werpt, en dat gebeurt in de eerste tekening van het leerpad.
+ *
+ * Het foutscherm ving het op en biedt de ouder een uitweg, dus niemand zat
+ * voorgoed vast — maar die uitweg is "wis alles", en dan is er een jaar
+ * voortgang weg om één kapot veld. Nu blijft alles overeind wat nog wél
+ * klopt, en valt alleen het kapotte veld terug op nul.
+ *
+ * Hoe komt een opslag kapot? Een versie die later iets anders schrijft en dan
+ * wordt teruggedraaid, een browser die bij een volle schijf half wegschrijft,
+ * of gewoon een fout van ons. Het hoeft niet vaak te gebeuren om vervelend te
+ * zijn: dit is de enige plek waar de voortgang van een kind staat.
+ */
+const voorwerp = <T,>(waarde: unknown, terugval: T): T =>
+  waarde !== null && typeof waarde === 'object' && !Array.isArray(waarde) ? (waarde as T) : terugval
+
+const lijst = <T,>(waarde: unknown, terugval: T[]): T[] =>
+  Array.isArray(waarde) ? (waarde as T[]) : terugval
+
+const getal = (waarde: unknown, terugval: number): number =>
+  typeof waarde === 'number' && Number.isFinite(waarde) ? waarde : terugval
+
+/**
+ * Geëxporteerd om hem te kunnen nameten, niet om hem elders te gebruiken.
+ * `hydratatie.test.ts` voert hier de veertien kapotte staten doorheen die de
+ * app eerder lieten omvallen.
+ */
+export function hydrate(parsed: Partial<State>): State {
   const base = initial()
+  // Ook het geheel kan iets anders zijn dan een voorwerp -- een opslag met
+  // alleen een tekst erin bijvoorbeeld.
+  const p = voorwerp<Partial<State>>(parsed, {})
   return {
     ...base,
-    ...parsed,
-    settings: { ...base.settings, ...(parsed.settings ?? {}) },
-    quests: { ...base.quests, ...(parsed.quests ?? {}) },
-    bonus: { ...base.bonus, ...(parsed.bonus ?? {}) },
+    ...p,
+    cards: voorwerp(p.cards, base.cards),
+    extraCards: voorwerp(p.extraCards, base.extraCards),
+    lessons: voorwerp(p.lessons, base.lessons),
+    daily: voorwerp(p.daily, base.daily),
+    badges: lijst(p.badges, base.badges),
+    history: lijst(p.history, base.history),
+    seenTips: lijst(p.seenTips, base.seenTips),
+    // Een teller die geen getal is wordt NaN zodra er iets bij opgeteld wordt,
+    // en NaN komt daarna nooit meer terug naar een getal.
+    xp: getal(p.xp, base.xp),
+    gems: getal(p.gems, base.gems),
+    hearts: getal(p.hearts, base.hearts),
+    heartsAt: getal(p.heartsAt, base.heartsAt),
+    streak: getal(p.streak, base.streak),
+    bestStreak: getal(p.bestStreak, base.bestStreak),
+    freezes: getal(p.freezes, base.freezes),
+    sentencesDone: getal(p.sentencesDone, base.sentencesDone),
+    settings: { ...base.settings, ...voorwerp(p.settings, {}) },
+    quests: { ...base.quests, ...voorwerp(p.quests, {}) },
+    bonus: { ...base.bonus, ...voorwerp(p.bonus, {}) },
   }
 }
 
