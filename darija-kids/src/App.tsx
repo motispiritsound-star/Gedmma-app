@@ -4,13 +4,30 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Landing } from './pages/Landing'
 import { Learn } from './pages/Learn'
 import { LessonPlayer } from './pages/LessonPlayer'
+/*
+ * Deze drie stonden hier als `lazy()`, en dat deed niets.
+ *
+ * `Learn` en `LessonPlayer` hierboven worden gewoon geïmporteerd -- het
+ * leerpad is het eerste scherm, dus dat hoort in het eerste stuk -- en die
+ * twee halen `Bonus`, `Film` en `HistoryCard` zelf al binnen. Een module die
+ * ergens vast geïmporteerd wordt, komt in dat stuk terecht; een `lazy()`
+ * elders verplaatst hem niet alsnog. De bouw zei het ook, drie keer:
+ * "INEFFECTIVE_DYNAMIC_IMPORT ... dynamic import will not move module into
+ * another chunk."
+ *
+ * Ze staan er nu zoals ze werken. Dat scheelt geen byte -- ze zaten al in het
+ * eerste stuk -- maar het scheelt een regel code die iets belooft wat niet
+ * gebeurt, en drie waarschuwingen die bij de volgende bouw weer voorbijkomen.
+ */
+import { Bonus } from './pages/Bonus'
+import { FilmPreview } from './ui/Film'
+import { HistoryPreview } from './ui/HistoryCard'
 const Review = lazy(() => import('./pages/Review').then((m) => ({ default: m.Review })))
 const Words = lazy(() => import('./pages/Words').then((m) => ({ default: m.Words })))
 const Alphabet = lazy(() => import('./pages/Alphabet').then((m) => ({ default: m.Alphabet })))
 const Stories = lazy(() => import('./pages/Stories').then((m) => ({ default: m.Stories })))
 const StoryReader = lazy(() => import('./pages/Stories').then((m) => ({ default: m.StoryReader })))
 const Games = lazy(() => import('./pages/Games').then((m) => ({ default: m.Games })))
-const Bonus = lazy(() => import('./pages/Bonus').then((m) => ({ default: m.Bonus })))
 const Profile = lazy(() => import('./pages/Profile').then((m) => ({ default: m.Profile })))
 const History = lazy(() => import('./pages/History').then((m) => ({ default: m.History })))
 const Parents = lazy(() => import('./pages/Parents').then((m) => ({ default: m.Parents })))
@@ -20,8 +37,6 @@ const Privacy = lazy(() => import('./pages/Privacy').then((m) => ({ default: m.P
 const Terms = lazy(() => import('./pages/Terms').then((m) => ({ default: m.Terms })))
 const SettingsPage = lazy(() => import('./pages/Settings').then((m) => ({ default: m.SettingsPage })))
 import { NotFound } from './pages/NotFound'
-const FilmPreview = lazy(() => import('./ui/Film').then((m) => ({ default: m.FilmPreview })))
-const HistoryPreview = lazy(() => import('./ui/HistoryCard').then((m) => ({ default: m.HistoryPreview })))
 const Speech = lazy(() => import('./pages/Speech').then((m) => ({ default: m.Speech })))
 const Record = lazy(() => import('./pages/Record').then((m) => ({ default: m.Record })))
 import { GeluidUit } from './ui/GeluidUit'
