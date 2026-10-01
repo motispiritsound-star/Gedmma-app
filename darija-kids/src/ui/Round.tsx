@@ -8,9 +8,10 @@ import { letter } from '../content/alphabet'
 import { sentence } from '../content/sentences'
 import { sentenceMeaning } from '../content/localise'
 import {
-  bumpQuest, countSentence, gradeExtra, gradeWord, heartsNow, letterKey, loseHeart,
-  scoreCorrect, sentenceKey, useStore,
+  bumpQuest, countSentence, gradeExtra, gradeWord, heartsNow, kanHartenKopen, koopHarten,
+  letterKey, loseHeart, msUntilNextHeart, PRIJS_HARTEN, scoreCorrect, sentenceKey, useStore,
 } from '../engine/store'
+import { useNavigate } from 'react-router-dom'
 import { sfx } from '../engine/audio'
 import { Button, Progress, Sheet } from './kit'
 import { Mascot } from './Mascot'
@@ -122,16 +123,7 @@ export function RoundRunner({
     if (!current && queue.length > 0) finishRef.current()
   }, [current, queue.length])
 
-  if (heartsOn && hearts <= 0) {
-    return (
-      <div className="mx-auto max-w-md px-4 py-14 text-center">
-        <Mascot mood="oeps" size={120} className="mx-auto" />
-        <h1 className="mt-4 font-display text-2xl font-extrabold">{t.lesson.hartjesOp}</h1>
-        <p className="mt-2 text-[var(--ink-soft)]">{t.lesson.hartjesOpUitleg}</p>
-        <Button className="mt-6 w-full" onClick={onQuit}>{t.common.terug}</Button>
-      </div>
-    )
-  }
+  if (heartsOn && hearts <= 0) return <HartjesOp onQuit={onQuit} />
 
   if (!current) {
     return <div className="mx-auto max-w-md px-4 py-20 text-center text-[var(--ink-soft)]">{t.common.laden}</div>
@@ -393,6 +385,84 @@ export function RoundRunner({
           <Button variant="danger" className="flex-1" onClick={onQuit}>{t.common.stoppen}</Button>
         </div>
       </Sheet>
+    </div>
+  )
+}
+
+/**
+ * Het scherm als de hartjes op zijn.
+ *
+ * Dit was een doodlopende weg: een mascotte, een zin en één knop terug. Precies
+ * het moment waarop een kind de app wegklikt, en precies het moment waarop de
+ * grote taalapps iets te bieden hebben.
+ *
+ * Drie wegen nu, en alle drie bestonden ze al half in de code:
+ *
+ * - **Aanvullen met edelstenen.** `refillHearts(kosten)` stond er al en werd
+ *   nergens aangeroepen; edelstenen werden verdiend en nergens uitgegeven. Dit
+ *   is waar die twee elkaar vinden. Niet met geld — edelstenen komen er alleen
+ *   in door te spelen.
+ * - **Herhalen.** `Review` draait met `useHearts={false}`, dus herhalen kost
+ *   echt nooit een hartje. Dat stond al in de uitleg, maar er was geen knop
+ *   die je erheen bracht.
+ * - **Terug**, zoals eerst.
+ *
+ * En de tijd tot het volgende hartje staat er nu gewoon. Die stond alleen in
+ * een `title` op de kopbalk, en dat is een tooltip — op een telefoon bestaat
+ * hij dus niet.
+ *
+ * De tikker loopt alleen zolang dit scherm er staat, vandaar een eigen
+ * component en geen interval in de ronde zelf.
+ */
+function HartjesOp({ onQuit }: { onQuit: () => void }) {
+  const t = useT()
+  const nav = useNavigate()
+  const state = useStore((s) => s)
+  const [, tik] = useState(0)
+
+  useEffect(() => {
+    const id = setInterval(() => tik((n) => n + 1), 30_000)
+    return () => clearInterval(id)
+  }, [])
+
+  const kanKopen = kanHartenKopen(state)
+  const minuten = Math.ceil(msUntilNextHeart(state) / 60_000)
+
+  return (
+    <div className="mx-auto max-w-md px-4 py-14 text-center">
+      <Mascot mood="oeps" size={120} className="mx-auto" />
+      <h1 className="mt-4 font-display text-2xl font-extrabold">{t.lesson.hartjesOp}</h1>
+      <p className="mt-2 text-[var(--ink-soft)]">{t.lesson.hartjesOpUitleg}</p>
+
+      {minuten > 0 && (
+        <p className="mt-4 font-display font-extrabold text-saffron-600 dark:text-saffron-300">
+          ⏳ {t.topbar.volgendHartje(minuten)}
+        </p>
+      )}
+
+      {kanKopen ? (
+        <Button
+          className="mt-6 w-full py-3"
+          onClick={() => { if (koopHarten()) sfx.confirm() }}
+        >
+          {t.lesson.hartjesKoop(PRIJS_HARTEN)}
+        </Button>
+      ) : (
+        /* Geen knop die niets doet: wie te weinig heeft leest wat het kost, en
+           ziet in de kopbalk hoeveel hij er heeft. Een uitgeschakelde knop
+           nodigt uit tot drukken en legt niets uit. */
+        <p className="mt-6 text-sm text-[var(--ink-soft)]">{t.lesson.hartjesTeWeinig(PRIJS_HARTEN)}</p>
+      )}
+
+      <Button
+        variant="secondary"
+        className="mt-3 w-full py-3"
+        onClick={() => { sfx.nav(); nav('/herhalen') }}
+      >
+        🔁 {t.nav.herhalen}
+      </Button>
+
+      <Button variant="ghost" className="mt-3 w-full" onClick={onQuit}>{t.common.terug}</Button>
     </div>
   )
 }

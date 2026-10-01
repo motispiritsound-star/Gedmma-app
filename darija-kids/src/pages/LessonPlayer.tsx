@@ -5,7 +5,7 @@ import { lessonById, unitOfLesson } from '../content/curriculum'
 import { cardForCheckpoint, type HistoryCard } from '../content/history'
 import { buildRound } from '../engine/exercises'
 import {
-  awardBadges, checkpointsDone, collectHistory, completeLesson, getState, knownIds,
+  awardBadges, checkpointsDone, collectHistory, completeLesson, getState, heartsNow, knownIds,
   gratisDeelOp, lessonBehindPaywall, levelOf, markTipSeen, useStore, type Badge,
 } from '../engine/store'
 import { TRIAL_DAYS } from '../engine/billing'
@@ -62,9 +62,20 @@ export function LessonPlayer() {
     [lessonId, attempt],
   )
 
+  /**
+   * Zijn de hartjes op, dan begint de les niet en hoort de tip er niet over
+   * heen te komen.
+   *
+   * Dat deed hij wel: een kind zonder hartjes kreeg een uitklapper over het
+   * Arabische schrift precies over de knoppen heen die zeggen hoe het verder
+   * kan. Hij komt alsnog zodra er weer een hartje is -- ook meteen na het
+   * aanvullen -- want `seenTip` blijft tot hij echt gelezen is.
+   */
+  const hartjesOp = useStore((s) => s.settings.hearts && heartsNow(s) <= 0)
+
   useEffect(() => {
-    if (lesson?.tip && !seenTip) setShowTip(true)
-  }, [lessonId])
+    if (lesson?.tip && !seenTip && !hartjesOp) setShowTip(true)
+  }, [lessonId, hartjesOp])
 
   if (!lesson) {
     return (

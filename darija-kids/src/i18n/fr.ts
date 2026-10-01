@@ -142,6 +142,9 @@ export const fr: Strings = {
     hartjesOpUitleg:
       'Ils repoussent tout seuls. Réviser reste toujours possible, et dans les réglages tu peux désactiver complètement les cœurs — se tromper fait partie de l’apprentissage.',
     hartjesOver: (n) => `${n} cœurs restants`,
+    hartjesKoop: (prijs) => `Recharger pour 💎 ${prijs}`,
+    hartjesTeWeinig: (prijs) => `Recharger coûte 💎 ${prijs}`,
+    hartjesUitKnop: 'Désactiver les cœurs',
     stoppenLes: 'Arrêter cette leçon ?',
     stoppenHerhalen: 'Arrêter la révision ?',
     stoppenUitleg: 'Ce que tu viens de faire ne compte pas, mais les mots appris restent.',
@@ -387,6 +390,13 @@ export const fr: Strings = {
     naarNiveau: (into, span) => `${into}/${span} XP vers le suivant`,
     xpTotaal: 'XP au total',
     reeksRecord: 'série / record',
+    vriesTitel: 'Jours de gel',
+    vriesUitleg: (max) =>
+      `Un jour de gel garde ta série intacte si tu sautes un jour. Tu peux en garder ${max}.`,
+    vriesHeb: (n, max) => `Tu en as ${n} sur ${max}`,
+    vriesKoop: (prijs) => `En acheter un pour 💎 ${prijs}`,
+    vriesVol: (max) => `Tu en as ${max}. Il n’y a pas de place pour plus.`,
+    vriesTeWeinig: (prijs) => `Un jour de gel coûte 💎 ${prijs}`,
     woordenGezien: 'mots rencontrés',
     vastgezet: 'bien ancrés',
     dezeWeek: 'Cette semaine',

@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom'
 import { UNITS } from '../content/curriculum'
 import { allWords } from '../content/lexicon'
 import {
-  BADGES, levelOf, progressOfUnit, setState, today, useStore,
+  BADGES, kanVriesdagKopen, koopVriesdag, levelOf, MAX_VRIESDAGEN, PRIJS_VRIESDAG,
+  progressOfUnit, setState, today, useStore,
 } from '../engine/store'
 import { sfx } from '../engine/audio'
 import { Button, Card, Progress, SectionTitle, Stat } from '../ui/kit'
@@ -110,6 +111,48 @@ export function Profile() {
         <Stat value={`${seen}/${allWords.length}`} label={t.profile.woordenGezien} emoji="📚" />
         <Stat value={solid} label={t.profile.vastgezet} emoji="🔒" />
       </div>
+
+      {/*
+        De vriesdag, naast het getal dat hij beschermt.
+
+        `addXp` kende de regel al — een gemiste dag breekt de reeks niet als er
+        een vriesdag op zak zit — maar er was geen enkele plek waar dat aantal
+        omhoogging. Die tak kon dus nooit uitgevoerd worden, en edelstenen
+        werden wel verdiend en nergens uitgegeven. Dit is waar die twee elkaar
+        vinden.
+
+        Niet met geld. Edelstenen komen alleen binnen door te spelen, en dat
+        blijft zo: dit is een app voor kinderen.
+      */}
+      <Card className="mt-3 flex flex-wrap items-center gap-4 p-5">
+        <span className="text-3xl" aria-hidden="true">🧊</span>
+        <div className="min-w-0 flex-1">
+          <h2 className="font-display font-extrabold">{t.profile.vriesTitel}</h2>
+          <p className="text-sm text-[var(--ink-soft)]">{t.profile.vriesUitleg(MAX_VRIESDAGEN)}</p>
+          <p className="mt-1 text-sm font-bold">{t.profile.vriesHeb(state.freezes, MAX_VRIESDAGEN)}</p>
+        </div>
+        {/*
+          `w-full sm:w-auto`: op een telefoon hoort dit onder de uitleg, niet
+          ernaast. Zonder dat perste de prijsregel de uitleg in een kolom van
+          zes woorden breed -- `flex-wrap` alleen is niet genoeg, want een
+          tekst naast een `flex-1` krimpt gewoon mee tot hij past.
+        */}
+        {state.freezes >= MAX_VRIESDAGEN ? (
+          <p className="w-full text-sm text-[var(--ink-soft)] sm:w-auto">{t.profile.vriesVol(MAX_VRIESDAGEN)}</p>
+        ) : kanVriesdagKopen(state) ? (
+          <Button
+            variant="secondary"
+            className="w-full sm:w-auto"
+            onClick={() => { if (koopVriesdag()) sfx.confirm() }}
+          >
+            {t.profile.vriesKoop(PRIJS_VRIESDAG)}
+          </Button>
+        ) : (
+          /* Geen uitgeschakelde knop: die nodigt uit tot drukken en legt niets
+             uit. Wat het kost zegt meer dan een knop die niets doet. */
+          <p className="w-full text-sm text-[var(--ink-soft)] sm:w-auto">{t.profile.vriesTeWeinig(PRIJS_VRIESDAG)}</p>
+        )}
+      </Card>
 
       <SectionTitle sub={t.profile.dezeWeekUitleg}>
         <span className="mt-8 block">{t.profile.dezeWeek}</span>

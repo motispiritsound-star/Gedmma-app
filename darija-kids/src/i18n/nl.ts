@@ -147,6 +147,11 @@ export const nl = {
     hartjesOpUitleg:
       'Ze groeien vanzelf weer aan. Herhalen kan altijd, en in de instellingen kun je hartjes helemaal uitzetten — fouten maken hoort bij leren.',
     hartjesOver: (n: number): string => `${n} hartjes over`,
+    /* Wat er te doen valt als de hartjes op zijn. Zie `store.ts`: edelstenen
+       werden wel verdiend en nergens uitgegeven. */
+    hartjesKoop: (prijs: number): string => `Aanvullen voor 💎 ${prijs}`,
+    hartjesTeWeinig: (prijs: number): string => `Aanvullen kost 💎 ${prijs}`,
+    hartjesUitKnop: 'Hartjes uitzetten',
     stoppenLes: 'Stoppen met deze les?',
     stoppenHerhalen: 'Stoppen met herhalen?',
     stoppenUitleg: 'Wat je hier deed telt niet mee, geleerde woorden blijven bewaard.',
@@ -394,6 +399,15 @@ export const nl = {
     naarNiveau: (into: number, span: number): string => `${into}/${span} XP naar het volgende`,
     xpTotaal: 'XP totaal',
     reeksRecord: 'reeks / record',
+    /* De vriesdag. De regel ervoor stond al in `addXp`, maar er was geen plek
+       waar het getal omhoogging -- die tak kon nooit uitgevoerd worden. */
+    vriesTitel: 'Vriesdagen',
+    vriesUitleg: (max: number): string =>
+      `Een vriesdag houdt je reeks heel als je een dag overslaat. Je kunt er ${max} bewaren.`,
+    vriesHeb: (n: number, max: number): string => `Je hebt er ${n} van de ${max}`,
+    vriesKoop: (prijs: number): string => `Koop er een voor 💎 ${prijs}`,
+    vriesVol: (max: number): string => `Je hebt er ${max}. Meer passen er niet.`,
+    vriesTeWeinig: (prijs: number): string => `Een vriesdag kost 💎 ${prijs}`,
     woordenGezien: 'woorden gezien',
     vastgezet: 'vastgezet',
     dezeWeek: 'Deze week',

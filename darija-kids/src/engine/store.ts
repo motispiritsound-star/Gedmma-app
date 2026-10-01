@@ -499,6 +499,60 @@ export function refillHearts(cost = 0): void {
   setState((s) => ({ hearts: MAX_HEARTS, heartsAt: Date.now(), gems: Math.max(0, s.gems - cost) }))
 }
 
+/* ------------------------------------------------- waar de edelstenen heen gaan */
+
+/**
+ * Edelstenen werden verdiend en nergens uitgegeven.
+ *
+ * Vijf missies per dag leveren er eenentwintig op, en elke reeks van vijf
+ * goede antwoorden nog één. Ze stapelden zich op tot een getal in de kopbalk
+ * dat niets deed. Een beloning die nergens voor telt is na een week geen
+ * beloning meer, en dat is precies het stuk dat de grote taalapps wél hebben:
+ * verdienen en uitgeven horen bij elkaar.
+ *
+ * Dus twee dingen om te kopen, allebei op het moment dat ze helpen. Niet met
+ * geld — nóóit met geld. Dit is een kinderapp, en edelstenen komen er alleen
+ * in door te spelen. Het kostenplaatje is daarop gezet: een dag missies is
+ * eenentwintig stenen, dus een rij hartjes is ongeveer drie missies en een
+ * vriesdag ongeveer een hele dag.
+ */
+export const PRIJS_HARTEN = 15
+export const PRIJS_VRIESDAG = 25
+
+/**
+ * Hoeveel vriesdagen je hoogstens op zak hebt.
+ *
+ * Twee, en niet meer. Een voorraad van tien maakt de reeks betekenisloos — dan
+ * is er geen dag meer die telt. Twee is een weekend weg zijn.
+ */
+export const MAX_VRIESDAGEN = 2
+
+export const kanHartenKopen = (s: State = state, now = Date.now()): boolean =>
+  s.settings.hearts && heartsNow(s, now) < MAX_HEARTS && s.gems >= PRIJS_HARTEN
+
+/** Geeft terug of het gelukt is, zodat de knop weet of er iets te vieren valt. */
+export function koopHarten(now = Date.now()): boolean {
+  if (!kanHartenKopen(state, now)) return false
+  refillHearts(PRIJS_HARTEN)
+  return true
+}
+
+export const kanVriesdagKopen = (s: State = state): boolean =>
+  s.freezes < MAX_VRIESDAGEN && s.gems >= PRIJS_VRIESDAG
+
+/**
+ * Een vriesdag: één gemiste dag die de reeks niet breekt.
+ *
+ * De regel ervoor stond al in `addXp` -- `freezes > 0` en de dag ervóór de dag
+ * ervoor -- maar er was geen enkele plek waar het getal omhoog ging. Die tak
+ * kon dus nooit uitgevoerd worden. Nu wel.
+ */
+export function koopVriesdag(): boolean {
+  if (!kanVriesdagKopen()) return false
+  setState((s) => ({ freezes: s.freezes + 1, gems: s.gems - PRIJS_VRIESDAG }))
+  return true
+}
+
 /* -------------------------------------------------------------- streak, xp */
 
 export function addXp(amount: number): void {

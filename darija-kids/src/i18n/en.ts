@@ -142,6 +142,9 @@ export const en: Strings = {
     hartjesOpUitleg:
       'They grow back on their own. Reviewing is always possible, and in the settings you can switch hearts off entirely — making mistakes is part of learning.',
     hartjesOver: (n) => `${n} hearts left`,
+    hartjesKoop: (prijs) => `Refill for 💎 ${prijs}`,
+    hartjesTeWeinig: (prijs) => `Refilling costs 💎 ${prijs}`,
+    hartjesUitKnop: 'Turn hearts off',
     stoppenLes: 'Stop this lesson?',
     stoppenHerhalen: 'Stop reviewing?',
     stoppenUitleg: 'What you did here does not count, but the words you learned stay.',
@@ -387,6 +390,13 @@ export const en: Strings = {
     naarNiveau: (into, span) => `${into}/${span} XP to the next one`,
     xpTotaal: 'XP in total',
     reeksRecord: 'streak / record',
+    vriesTitel: 'Freeze days',
+    vriesUitleg: (max) =>
+      `A freeze day keeps your streak alive if you miss a day. You can hold ${max}.`,
+    vriesHeb: (n, max) => `You have ${n} of ${max}`,
+    vriesKoop: (prijs) => `Buy one for 💎 ${prijs}`,
+    vriesVol: (max) => `You have ${max}. There is no room for more.`,
+    vriesTeWeinig: (prijs) => `A freeze day costs 💎 ${prijs}`,
     woordenGezien: 'words met',
     vastgezet: 'locked in',
     dezeWeek: 'This week',

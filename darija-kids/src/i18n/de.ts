@@ -142,6 +142,9 @@ export const de: Strings = {
     hartjesOpUitleg:
       'Sie wachsen von selbst nach. Wiederholen geht immer, und in den Einstellungen kannst du Herzen ganz ausschalten — Fehler gehören zum Lernen.',
     hartjesOver: (n) => `${n} Herzen übrig`,
+    hartjesKoop: (prijs) => `Auffüllen für 💎 ${prijs}`,
+    hartjesTeWeinig: (prijs) => `Auffüllen kostet 💎 ${prijs}`,
+    hartjesUitKnop: 'Herzen ausschalten',
     stoppenLes: 'Diese Lektion beenden?',
     stoppenHerhalen: 'Wiederholen beenden?',
     stoppenUitleg: 'Was du hier gemacht hast, zählt nicht mit; gelernte Wörter bleiben erhalten.',
@@ -387,6 +390,13 @@ export const de: Strings = {
     naarNiveau: (into, span) => `${into}/${span} XP bis zum nächsten`,
     xpTotaal: 'XP gesamt',
     reeksRecord: 'Serie / Rekord',
+    vriesTitel: 'Frosttage',
+    vriesUitleg: (max) =>
+      `Ein Frosttag hält deine Serie am Leben, wenn du einen Tag auslässt. Du kannst ${max} aufheben.`,
+    vriesHeb: (n, max) => `Du hast ${n} von ${max}`,
+    vriesKoop: (prijs) => `Einen kaufen für 💎 ${prijs}`,
+    vriesVol: (max) => `Du hast ${max}. Mehr passen nicht.`,
+    vriesTeWeinig: (prijs) => `Ein Frosttag kostet 💎 ${prijs}`,
     woordenGezien: 'Wörter gesehen',
     vastgezet: 'sitzen fest',
     dezeWeek: 'Diese Woche',
