@@ -80,6 +80,17 @@ export const en: Strings = {
   },
 
   lesson: {
+
+    /**
+     * Wat er op het scorescherm staat als de gratis lessen op zijn.
+     *
+     * Geen "koop nu" maar een mededeling: er is geen volgende les meer. Dat
+     * is waar, en het is de enige plek waar de app uit zichzelf over geld
+     * begint nadat het keuzescherm bij de start is weggeklikt.
+     */
+    gratisOpTitel: 'That was your last free lesson',
+    gratisOpBody: (dagen: number): string =>
+      `The path goes on, but the rest is part of full access. The first ${dagen} days are free.`,
     nieuwWoord: 'New word',
     snapIk: 'Got it!',
     watBetekent: 'What does this mean?',

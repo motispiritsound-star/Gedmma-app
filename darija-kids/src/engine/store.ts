@@ -722,6 +722,21 @@ export function lessonBehindPaywall(lessonId: string, s: State = state): boolean
   return unit.lessons.findIndex((l) => l.id === lessonId) >= (GRATIS_LESSEN[unit.id] ?? 0)
 }
 
+/**
+ * Alle gratis lessen gedaan, en niet betaald: hier houdt het pad op.
+ *
+ * Dit is het enige moment waarop de app ongevraagd over geld begint, en het
+ * is ook het eerlijke moment: er is letterlijk geen volgende les. Zonder dit
+ * loopt iemand van zijn laatste gratis les rechtstreeks tegen een slotje aan
+ * waar niemand hem voor gewaarschuwd heeft.
+ *
+ * Het telt de lessen en niet de dagen. Wie er drie weken over doet krijgt
+ * hetzelfde scherm als wie het in één avond doet — de app rekent nergens met
+ * een klok, en de drie gratis dagen beginnen pas bij het abonnement zelf.
+ */
+export const gratisDeelOp = (s: State = state): boolean =>
+  !s.unlocked && gratisLes.every((l) => isDone(l.id, s))
+
 /** True when nothing in this unit is free and it has not been bought. */
 export function unitBehindPaywall(unitId: string, s: State = state): boolean {
   return !s.unlocked && !(GRATIS_LESSEN[unitId] ?? 0)

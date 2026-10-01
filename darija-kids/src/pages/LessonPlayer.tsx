@@ -6,8 +6,9 @@ import { cardForCheckpoint, type HistoryCard } from '../content/history'
 import { buildRound } from '../engine/exercises'
 import {
   awardBadges, checkpointsDone, collectHistory, completeLesson, getState, knownIds,
-  lessonBehindPaywall, levelOf, markTipSeen, useStore, type Badge,
+  gratisDeelOp, lessonBehindPaywall, levelOf, markTipSeen, useStore, type Badge,
 } from '../engine/store'
+import { TRIAL_DAYS } from '../engine/billing'
 import { sfx } from '../engine/audio'
 import { Button, Card, Sheet } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
@@ -46,6 +47,14 @@ export function LessonPlayer() {
   const [film, setFilm] = useState(false)
   const [card, setCard] = useState<HistoryCard | null>(null)
   const lessonsDone = useStore((s) => Object.keys(s.lessons).length)
+  /**
+   * Of dit de laatste gratis les was.
+   *
+   * Uitgelezen op het scorescherm en niet eerder: tijdens de les hoort er
+   * niets over geld te staan, en vóór `completeLesson` is deze les nog niet
+   * geteld — dan zou hij altijd onwaar zijn.
+   */
+  const gratisOp = useStore(gratisDeelOp)
 
   // The round is built once per attempt, from what the learner already knows.
   const exercises = useMemo(
@@ -192,8 +201,28 @@ export function LessonPlayer() {
           </Card>
         )}
 
+        {/*
+          De enige plek waar het scorescherm over het abonnement begint, en
+          alleen als er werkelijk geen volgende les meer is. Hij staat ónder
+          de beloningen: eerst krijg je waar je voor gewerkt hebt, dan pas de
+          mededeling.
+        */}
+        {gratisOp && (
+          <Card className="mt-4 p-4 text-start">
+            <p className="font-display font-extrabold">{t.lesson.gratisOpTitel}</p>
+            <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.lesson.gratisOpBody(TRIAL_DAYS)}</p>
+          </Card>
+        )}
+
         <div className="mt-6 space-y-3">
-          <Button className="w-full" onClick={() => navigate('/leren')}>{t.lesson.verderOpPad}</Button>
+          {/*
+            Als het pad op is, is "verder op pad" een knop naar een slotje.
+            Dan wisselen de twee van plek — niet om te duwen, maar omdat de
+            bovenste knop hoort te doen wat de lezer nu wil.
+          */}
+          {gratisOp
+            ? <Link to="/volledig" className="block"><Button className="w-full">{t.unlock.slotKnop}</Button></Link>
+            : <Button className="w-full" onClick={() => navigate('/leren')}>{t.lesson.verderOpPad}</Button>}
           <Button
             variant="secondary"
             className="w-full"
@@ -201,6 +230,11 @@ export function LessonPlayer() {
           >
             {t.common.nogEenKeer}
           </Button>
+          {gratisOp && (
+            <Button variant="secondary" className="w-full" onClick={() => navigate('/leren')}>
+              {t.lesson.verderOpPad}
+            </Button>
+          )}
         </div>
       </div>
     )
