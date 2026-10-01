@@ -554,9 +554,21 @@ Promotional Offers, Offer Codes en de teksten per taal tússen *Subscription
 Prices* en *Purchase Options*. Dat stuk is nog niet bekeken, dus er is niets
 bewezen — niet dat de aanbieding er staat en niet dat hij ontbreekt.
 
-De manier om het zeker te weten is ⌘F op de bladzijde van het abonnement
-zelf — niet op het overzicht met de abonnementsgroepen, want daar staat het
-woord sowieso niet — en zoeken op `Introductory`.
+De manier om het in de console zeker te weten is ⌘F op de bladzijde van het
+abonnement zelf — niet op het overzicht met de abonnementsgroepen, want daar
+staat het woord sowieso niet — en zoeken op `Introductory`.
+
+**Het scherm van de app is geen bewijs.** `Unlock.tsx` en `Welcome.tsx` tonen
+`TRIAL_DAYS`, en dat is een vast getal in de code; de app leest de prijsfasen
+van het aanbod niet uit. Er staat dus "3 dagen gratis" op het koopscherm of de
+winkel die proef nu kent of niet. Wat je wél kunt geloven is het
+**aankoopvenster van Apple zelf**, dat over het scherm van de app heen komt:
+dat venster maakt Apple uit het product. Staat er *3 dagen gratis, daarna
+€ 59,99* in, dan bestaat de aanbieding. Staat er alleen € 59,99, dan niet.
+
+Dat is meteen de test die `docs/PAYMENTS.md` al voorschreef — afsluiten met
+proefperiode, opzeggen tijdens de proefperiode — en hij kan via TestFlight op
+een echte iPhone, ook nu de versie in beoordeling ligt.
 
 **Daar hangt een volgorde aan voor de lanceerdag.** De review-schermafbeelding
 die bij dit abonnement staat toont de knop *START 3 DAGEN GRATIS*. Geef je de
