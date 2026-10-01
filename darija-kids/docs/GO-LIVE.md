@@ -504,6 +504,48 @@ hoofdstukken staan gratis online, voorgelezen inbegrepen:
 | **dag 7** | Het eerste filmpje van een kind dat iets in het Darija tegen zijn oma zegt. Vraag ouders erom; er is er altijd één die het stuurt. |
 | **dag 7–10** | De boeken. |
 
+## 1.1 uitbrengen — wat een update wél en niet is
+
+**Een update gaat niet zonder beoordeling.** Er bestaat bij geen van beide
+winkels een weg om een nieuwe versie naar buiten te brengen zonder dat er
+iemand naar kijkt. Elke versie bij Apple en elke release bij Play wordt
+beoordeeld, ook als er maar één regel is veranderd.
+
+Wat wél anders is na de lancering, en het is het hele verschil:
+
+| | Vóór de lancering | Erna |
+|---|---|---|
+| Doorlooptijd Apple | één tot drie dagen | meestal binnen een dag |
+| Doorlooptijd Play | tot zeven dagen zonder eerdere goedkeuring | uren tot een dag |
+| Wat een afwijzing kost | je lanceerdag | tijd, meer niet |
+
+Die laatste regel is de reden dat de lancering met build 7 gaat. **Een
+afgewezen update haalt de live app niet weg.** Wat er staat blijft staan, en
+jij repareert in je eigen tempo. Vóór de lancering kost dezelfde afwijzing je
+de dag waarop je bericht al verstuurd was.
+
+### Gefaseerd uitrollen, en niet in één keer
+
+Doe dit bij 1.1, en bij elke update daarna.
+
+- **Apple**: bij het indienen van de versie *Phased Release for Automatic
+  Updates* aanzetten. Apple deelt de update dan over zeven dagen uit in plaats
+  van ineens, en je kunt hem onderweg stoppen.
+- **Play**: *Staged rollout*, begin met een paar procent.
+
+Een fout in een update raakt dan de eerste procenten en niet iedereen
+tegelijk. Dat is het verschil tussen een vervelende dag en je hele
+gebruikersbestand.
+
+Bij 1.0 heeft het geen zin: er is nog niemand om gefaseerd aan uit te delen.
+
+### En controleer eerst in TestFlight
+
+Build 8 staat er al. Zet hem op een toestel en loop de nieuwe dingen na
+vóórdat je indient: het keuzescherm na de taalkeuze, het kaartje als de gratis
+lessen op zijn, de knop in de kopbalk, en of het e-boek op `/boek` ook
+werkelijk zichtbaar is. Dat laatste is op Android nog niet nagemeten.
+
 ## Als er iets misgaat
 
 **De app is goedgekeurd maar het adres doet het niet.** Wachten. Apple stuurt
