@@ -45,6 +45,36 @@ describe('het e-boek', () => {
   })
 })
 
+describe('de lettertypen', () => {
+  const css = readFileSync(path.join(WORTEL, 'src', 'index.css'), 'utf8')
+  const bestanden = [...new Set([...css.matchAll(/url\("\/(fonts\/[^"]+)"\)/g)].map((m) => m[1]!))]
+
+  /**
+   * Ze staan in de app en worden niet opgehaald, en dat is de bedoeling: de
+   * app werkt in het vliegtuig en in Marokko zonder bereik. Een lettertype dat
+   * van een server komt zou juist het Arabisch kapotmaken op precies het
+   * moment dat de app zegt dat hij offline werkt.
+   */
+  it('komen uit de app zelf en niet van een server', () => {
+    expect(bestanden.length).toBeGreaterThanOrEqual(4)
+    expect(css).not.toMatch(/@import\s+url\(["']?https?:/)
+    expect(css).not.toMatch(/src:\s*url\(["']?https?:/)
+  })
+
+  it.each(bestanden)('%s bestaat', (f) => {
+    expect(existsSync(path.join(PUBLIEK, f)), `${f} staat niet in public/`).toBe(true)
+  })
+
+  /**
+   * En het Arabisch heeft zijn eigen gezicht nodig. Valt `Noto Naskh Arabic`
+   * weg, dan tekent het toestel het schrift in een schreefletter die er voor
+   * een kind anders uitziet dan wat het moet leren.
+   */
+  it('bevatten het Arabische gezicht in twee diktes', () => {
+    expect(bestanden.filter((f) => /naskh|arabic/i.test(f))).toHaveLength(2)
+  })
+})
+
 describe('wat `index.html` en de manifest noemen', () => {
   const html = readFileSync(path.join(WORTEL, 'index.html'), 'utf8')
   const manifest = readFileSync(path.join(PUBLIEK, 'manifest.webmanifest'), 'utf8')
