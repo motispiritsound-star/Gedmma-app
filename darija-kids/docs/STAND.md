@@ -525,6 +525,24 @@ Nagemeten in Chromium: eerste keer de som, daarna gaat dezelfde knop meteen
 door, en na herladen is de som terug. `poortsessie.test.ts` bewaakt die grens,
 inclusief dat er niets op de schijf belandt.
 
+**De veelgestelde vragen staan nu op de ouderpagina.** Ze stonden onderaan de
+landingsbladzijde — het eerste scherm dat een kind ziet als het de app opent —
+en dat zijn zeven uitklappers over prijzen, talen en welk Darija wij leren.
+Die zijn geschreven voor de volwassene die betaalt, en die heeft al een eigen
+bladzijde; hij staat in de voetnoot.
+
+Op darijaforkids.eu blijven ze wél onderaan staan: daar is de bezoeker de
+ouder en is het de laatste twijfel die weggenomen wordt vóór het downloaden.
+`make-site.mjs` leest dezelfde `t.landing.faq`, dus de website verandert niet.
+Nagemeten: nul uitklappers op het app-scherm, zeven op `/ouders`, en zeven op
+`site/index.html`.
+
+**Wat daarbij opviel en blijft staan:** die landingsbladzijde is in de app
+6443 pixels hoog. Het is een verkooppagina, en in de app is het het scherm
+waar een kind elke keer op uitkomt. De knop bovenaan zegt wel "ga verder" zodra
+er XP is, dus het werkt — maar of dit het goede startscherm is voor een app die
+al geïnstalleerd is, is een aparte vraag. Niet voor 1.1.
+
 **"Open het e-boek" opende lichess.org.** Niet grappig bedoeld: op de iPhone
 in TestFlight ging die knop naar een schaaksite.
 

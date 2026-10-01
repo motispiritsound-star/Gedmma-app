@@ -8,7 +8,6 @@ import { unitSubtitle } from '../content/localise'
 import { say, sfx } from '../engine/audio'
 import { nextLesson, setSetting, useStore } from '../engine/store'
 import { LANGS, useLang, useT, type Lang } from '../i18n'
-import { winkelnamen } from '../i18n/winkels'
 import { Button, Card } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 import { useMeaning } from '../ui/WordChip'
@@ -29,8 +28,6 @@ const TASTER = ['salam', 'shukran', 'atay', 'kesksu', 'yallah', 'khobz', 'mzyan'
 export function Landing() {
   const t = useT()
   const lang = useLang()
-  // Alleen de winkel van dit platform — zie i18n/winkels.ts.
-  const namen = winkelnamen(lang)
   const meaning = useMeaning()
   const state = useStore((s) => s)
   const started = state.xp > 0
@@ -194,24 +191,19 @@ export function Landing() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------- faq */}
-      <section className="border-t border-[var(--line)] py-16">
-        <div className="mx-auto max-w-3xl px-4">
-          <h2 className="font-display text-3xl font-extrabold">{t.landing.vragenTitel}</h2>
-          <div className="mt-6 space-y-3">
-            {t.landing.faq(namen).map(([q, a]) => (
-              <details key={q} className="group rounded-2xl border border-[var(--line)] bg-[var(--surface-raised)] p-5">
-                <summary className="cursor-pointer list-none font-display text-lg font-extrabold marker:hidden">
-                  <span className="me-2 text-zellige-500 group-open:hidden">+</span>
-                  <span className="me-2 hidden text-zellige-500 group-open:inline">−</span>
-                  {q}
-                </summary>
-                <p className="mt-3 text-[var(--ink-soft)]">{a}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/*
+        De veelgestelde vragen stonden hier, en ze staan nu op de ouderpagina.
+
+        Dit scherm is wat een kind ziet als het de app opent. Zeven uitklappers
+        over prijzen, talen en welk Darija wij leren zijn daar niet voor
+        geschreven — ze zijn voor de volwassene die betaalt, en die heeft al een
+        eigen bladzijde. Hij staat in de voetnoot hieronder.
+
+        Op darijaforkids.eu blijven ze wél onderaan staan: daar is de bezoeker
+        de ouder, en daar is het de laatste twijfel die wordt weggenomen vóór
+        het downloaden. `make-site.mjs` leest dezelfde `t.landing.faq`, dus die
+        bladzijde verandert hier niet van.
+      */}
 
       {/* ------------------------------------------------------------- cta */}
       <section className="mx-auto max-w-5xl px-4 pb-20">

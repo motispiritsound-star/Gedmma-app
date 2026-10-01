@@ -98,6 +98,27 @@ export function Parents() {
       {/* This page doubles as the support URL both stores ask for, so the
           way to reach a human belongs on it — and belongs above the fine
           print, not buried under it. */}
+      {/*
+        De veelgestelde vragen, verhuisd van de landingsbladzijde.
+
+        Daar stonden ze onderaan het eerste scherm dat een kind ziet: zeven
+        uitklappers over prijzen, talen en welk Darija wij leren. Die zijn
+        geschreven voor de volwassene die betaalt, en dit is zijn bladzijde.
+      */}
+      <h2 className="mb-3 mt-8 font-display text-xl font-extrabold">{t.landing.vragenTitel}</h2>
+      <div className="mb-8 space-y-3">
+        {t.landing.faq(namen).map(([q, a]) => (
+          <details key={q} className="group rounded-2xl border border-[var(--line)] bg-[var(--surface-raised)] p-5">
+            <summary className="cursor-pointer list-none font-display font-extrabold marker:hidden">
+              <span className="me-2 text-zellige-500 group-open:hidden">+</span>
+              <span className="me-2 hidden text-zellige-500 group-open:inline">−</span>
+              {q}
+            </summary>
+            <p className="mt-3 text-sm text-[var(--ink-soft)]">{a}</p>
+          </details>
+        ))}
+      </div>
+
       <h2 className="mb-3 mt-8 font-display text-xl font-extrabold">{t.feedback.titel}</h2>
       <Card className="mb-8 p-5">
         <p className="text-sm text-[var(--ink-soft)]">{t.feedback.uitleg}</p>
