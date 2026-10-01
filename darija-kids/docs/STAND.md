@@ -12,8 +12,37 @@ te lezen.
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 1289, groen — daar zitten de 77 van de worker al in |
 | Google Play | 4 (1.2) op **Productie**, 177 landen — de winkelpagina is nog **niet publiek** |
-| App Store | **1.0 (build 7) in beoordeling** — zie hieronder |
+| App Store | **1.0 goedgekeurd op 1 oktober, 16:46** — nog niet vrijgegeven |
 | Uitbetalen | **rond bij allebei** — Google geverifieerd op 1 oktober |
+
+### Goedgekeurd — 1 oktober, 16:46
+
+*"We're pleased to let you know that your app, Darijaforkids, has been
+approved for distribution."* Vierde ronde bij Apple, en de eerste die het
+haalde. Build 7, versie 1.0.
+
+**Niet vrijgegeven.** Bij het inzenden is *Manually release this version*
+gekozen, dus de app staat klaar en wacht op jou. Dat is precies waarvoor die
+keuze er was.
+
+#### Waarom niet vandaag
+
+De meeste mensen in het kanaal zitten op **Android**, en Play beoordeelt
+inzending 4 nog — reken op 5 of 6 oktober. Vrijgeven bij Apple alleen betekent
+dat je je aankondiging opmaakt voor de kleinste helft van je publiek en voor
+de rest een tweede keer moet komen. Eén lancering is sterker dan twee halve.
+
+Dat is geen wachten maar werken: het slot op de abonnementen gaat er door de
+goedkeuring af, en dat was tot vandaag de reden dat een hoop niet kon.
+
+#### Wat nu wél kan, en tot vandaag niet
+
+| | |
+|---|---|
+| De proefperiode bij **Maand** nakijken | de kolom *Introductory Offers* in de prijzentabel; bij **Jaar** staat hij op 175 landen |
+| De vier talen bij de drie aankopen | Frans, Duits, Spaans, Italiaans — de teksten staan klaar in `store/abonnement-teksten.md` |
+| Nameten op een toestel | via TestFlight kopen en kijken wat het venster van Apple zélf zegt: staat er *3 dagen gratis, daarna € 59,99*? |
+| Build 8 / versie 1.1 bouwen | de FAQ-reparatie, het geluidsadvies per toestel, edge-to-edge en het nieuwe keuzescherm zitten in de code en niet in build 7 |
 
 ### De afwijzing van 29 september, en wat eraan gedaan is
 
