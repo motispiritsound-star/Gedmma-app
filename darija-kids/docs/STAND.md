@@ -819,6 +819,75 @@ Alles nagelopen in de browser op 390px, met een uitgespeelde les.
 
 Stand: **1361 tests groen in 58 bestanden**, `tsc -b --force --noEmit` schoon.
 
+#### De tweede doorloop — 1 oktober, laat
+
+Een ronde langs de dingen die de eerste doorloop niet had gemeten: de
+platformgewoontes, het krapste scherm, de formulieren en de schil om de app
+heen.
+
+**Het paneel had geen voor- en geen achterdeur.** Het was een `role="dialog"`
+met `aria-modal="true"` erop, en verder niets wat daarbij hoort. Het raakt
+zeven panelen tegelijk — de taalkeuze bij de eerste start, de ouderpoort, de
+lestip, het keuzescherm, stoppen-met-een-les, de terugkoppeling en het wissen
+van alle voortgang. De focus bleef erbuiten (een schermlezer las de bladzijde
+erachter voor, die niemand meer kon bedienen), Escape deed niets, de bladzijde
+eronder schoof mee met een veeg, en **de terugknop van Android ging een
+bladzijde terug in plaats van het paneel te sluiten** — op Android precies
+verkeerd om, want dat is de knop waarmee je álles wegklikt. Alle vier
+gerepareerd in `kit.tsx`, met `src/engine/terug.ts` voor de terugknop.
+
+Let op het detail dat er bijna in bleef zitten: `onClose` is bij elke
+gebruiker een pijlfunctie in de JSX, dus een ander ding bij elke tekening.
+Stond hij in de afhankelijkheden van het effect, dan werd alles continu
+opnieuw opgehangen en sprong de focus telkens terug naar het begin van het
+paneel — middenin het typen van de rekensom.
+
+**Op een kleine telefoon met grote letters liep de app buiten beeld.** 320px
+breed (een iPhone SE) met een wortellettergrootte van 24px (de grootste
+stand). Nagemeten over dertien bladzijden: op élke bladzijde liep er iets
+buiten beeld, tot 78px toe, en dan schuift de hele app opzij met de kopbalk en
+de knoppen erin. Vijf oorzaken, allemaal "iets wat niet mocht krimpen of niet
+mocht afbreken": een Duits woord van negentien letters dat niet afbrak
+(`overflow-wrap: break-word` staat nu op `body`), `shrink-0` op de tellers in
+de kopbalk, het niveaupilletje naast een unittitel, vier plekken zonder
+`min-w-0` in een flex-rij, en `max-w-56` — veertien rem, wat bij 24px
+wortelgrootte 336px is en dus op een scherm van 320 geen boven- maar een
+ondergrens. Na afloop: 13 bladzijden × 9 combinaties van breedte, lettergrootte
+en taal, alles binnen beeld.
+
+**Twee foutmeldingen waren alleen te zien, niet te horen.** De rekensom vóór
+een abonnement en de melding dat een betaling misging — achter allebei zit
+geld. Nu `role="alert"`, met `aria-invalid` en `aria-describedby` op het veld.
+
+**De rand van het scherm paste niet bij de app.** `theme-color` stond op één
+waarde, de donkere, dus op een toestel in de lichte stand tekende Android een
+nachtblauwe balk boven een crèmekleurige app. Nu twee waarden, vastgehouden aan
+`--surface` door een test. En de instellingen voor `SplashScreen` in
+`capacitor.config.ts` zijn weg: `@capacitor/splash-screen` staat niet in
+`package.json`, dus ze deden niets. Het startscherm komt van de kant van het
+toestel en bestaat daar al in een dag- en een nachtversie.
+
+**Gemeten en in orde, dus niets aan gedaan.** Het opstarten: met alleen de
+processor afgeremd — wat klopt voor een winkel-app, want daar staan alle
+bestanden in de app zelf — is het leerpad bij 4× trager klaar in 223ms (lcp
+660ms) en bij 6× trager in 424ms (lcp 1520ms). Geen knelpunt dat iemand voelt.
+De toestemming voor meldingen wordt pas gevraagd nadat iemand de herinnering
+zelf aanzet, niet bij het opstarten. De ontwikkelschermen `/uitspraak` en
+`/opname` staan niet in de productiebouw (`"/uitspraak"`: nul treffers). Het
+nep-Apple-ID `6751234567` staat alleen in een test en een commentaarregel,
+nergens in de app. Twee missies tegelijk aanklikken kan niet dubbel uitbetalen,
+want `setState` is synchroon. En in de productiebouw staat geen enkele
+`console.log`.
+
+**Niet te controleren vanuit hier.** De uitgaande verbindingen van deze
+omgeving zijn dicht (de poort geeft 403 op CONNECT), dus de negen externe
+links in de app — de vier socials, de twee Gumroad-bladzijden, de EULA van
+Apple, darijaforkids.eu en de YouTube-video — zijn niet nagelopen. Dat is een
+handmatig vinkje.
+
+Stand: **1383 tests groen in 61 bestanden**, `tsc -b --force --noEmit` schoon,
+productiebouw schoon.
+
 ### Nog na te kijken bij Google Play — kijken, niet wijzigen
 
 Drie dingen die pas opvallen als het te laat is. **Zolang inzending 4 in
