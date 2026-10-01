@@ -718,6 +718,15 @@ export const es: Strings = {
     slotKnop: 'Verlo',
     /** El libro electrónico: pago único, incluido en la suscripción anual. */
     boek: {
+      /**
+       * Er is recht op het boek, maar de proefperiode loopt nog.
+       *
+       * Een pdf houd je zodra je hem één keer opent, dus hij gaat pas open
+       * als er ook werkelijk betaald is. Dat staat er met de datum erbij, want
+       * een knop die er niet is zonder uitleg leest als een storing.
+       */
+      wacht: (datum: string): string =>
+        `El libro digital va incluido en tu suscripción anual. Estará disponible a partir del ${datum}: mientras corren los días gratis, aún no se ha pagado nada.`,
       titel: 'El libro electrónico',
       sub: 'Todas las palabras, todas las letras y la gramática: el camino entero en papel. Para imprimir, o para leer en una tableta junto a la app.',
       bevat: [

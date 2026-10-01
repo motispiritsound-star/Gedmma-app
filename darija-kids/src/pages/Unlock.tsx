@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  btwInbegrepen, buyEbook, EBOOK, ebookFile, FREE_LESSONS, manageSubscription, PLANS, planOf,
+  btwInbegrepen, buyEbook, EBOOK, ebookFile, ebookKlaar, ebookWachtTot, FREE_LESSONS,
+  manageSubscription, PLANS, planOf,
   restorePurchases, subscribe, TRIAL_DAYS, useBilling, YEAR_FULL_PRICE, YEAR_SAVING, type PlanId,
 } from '../engine/billing'
 import { gezinsdeling, platform, winkelVan } from '../engine/platform'
 import { useStore } from '../engine/store'
-import { useT } from '../i18n'
+import { localeOf, useT } from '../i18n'
 import { sfx } from '../engine/audio'
 import { Button, Card, SectionTitle } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
@@ -23,7 +24,14 @@ export function Unlock() {
   const t = useT()
   const billing = useBilling()
   const subscribed = useStore((s) => s.unlocked)
-  const boek = useStore((s) => s.ebook)
+  /**
+   * Recht op het boek en het boek kunnen openen zijn twee dingen.
+   *
+   * Bij het jaarabonnement zit er een proefperiode tussen, en in die dagen is
+   * er nog niets betaald. Zie `ebookKlaar` in `engine/billing.ts`.
+   */
+  const boek = useStore((s) => ebookKlaar(s))
+  const boekWacht = useStore((s) => ebookWachtTot(s))
   const lang = useStore((s) => s.settings.lang)
   /**
    * De ouderpoort, en wat erachter wacht.
@@ -252,7 +260,7 @@ export function Unlock() {
       <Card className="mt-4 p-6" data-boekkaart>
         <div className="flex flex-wrap items-baseline gap-3">
           <h2 className="font-display text-xl font-extrabold">📖 {t.unlock.boek.titel}</h2>
-          {!boek && (
+          {!boek && !boekWacht && (
             <span className="font-display text-lg font-extrabold text-zellige-600 dark:text-zellige-300">
               {billing.prices.ebook ?? EBOOK.list}
             </span>
@@ -268,7 +276,16 @@ export function Unlock() {
           ))}
         </ul>
 
-        {boek ? (
+        {/*
+          Drie standen in plaats van twee. De middelste is nieuw: er is recht
+          op het boek, maar de proefperiode loopt nog. Geen knop dus, en wel
+          de datum — anders lijkt het stuk.
+        */}
+        {boekWacht ? (
+          <p className="mt-5 rounded-2xl bg-saffron-500/10 px-4 py-3 text-sm">
+            {t.unlock.boek.wacht(new Intl.DateTimeFormat(localeOf(lang), { day: 'numeric', month: 'long' }).format(boekWacht))}
+          </p>
+        ) : boek ? (
           <>
             <Button
               className="mt-5"

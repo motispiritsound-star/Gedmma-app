@@ -193,6 +193,15 @@ export interface State {
    */
   ebook: boolean
   /**
+   * Vanaf wanneer het e-boek geopend mag worden, of null als er geen recht is.
+   *
+   * Los gekocht is dat meteen. Bij het jaarabonnement is het drie dagen later,
+   * want zolang de proefperiode loopt is er nog niets betaald — en een boek is
+   * een bestand dat je één keer opslaat en houdt. Zonder dit kon iemand het
+   * jaar afsluiten, het boek openen en binnen drie dagen opzeggen.
+   */
+  ebookVanaf: number | null
+  /**
    * The parent's sign-up for mail, or null when nobody asked for any.
    *
    * Only what the screen needs to say what was chosen, plus the id the weekly
@@ -353,6 +362,7 @@ const initial = (): State => ({
   unlocked: false,
   unlockedAt: null,
   ebook: false,
+  ebookVanaf: null,
   post: null,
   /** False until somebody has picked a language on the welcome screen. */
   langPicked: false,

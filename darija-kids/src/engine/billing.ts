@@ -166,16 +166,40 @@ function grant(): void {
   setState({ unlocked: true, unlockedAt: Date.now() })
 }
 
+/** Of er recht op het e-boek is. Dat recht vervalt nooit. */
 export const hasEbook = (): boolean => getState().ebook
+
+/**
+ * Of het e-boek nú open mag, en waarom dat niet hetzelfde is.
+ *
+ * Het boek is een pdf: wie hem één keer opent, houdt hem. Bij het
+ * jaarabonnement zitten de eerste drie dagen gratis, en zonder deze grens kon
+ * iemand het jaar afsluiten, het boek opslaan en op dag twee opzeggen. Hij
+ * betaalde dan niets en liep weg met een product van € 14,99.
+ *
+ * Los gekocht is er geen proefperiode, dus daar mag het meteen.
+ */
+export const ebookKlaar = (s = getState(), nu = Date.now()): boolean =>
+  s.ebook && s.ebookVanaf !== null && nu >= s.ebookVanaf
+
+/** Wanneer het boek opengaat, of null als dat nu al zo is of er geen recht is. */
+export const ebookWachtTot = (s = getState(), nu = Date.now()): number | null =>
+  s.ebook && s.ebookVanaf !== null && nu < s.ebookVanaf ? s.ebookVanaf : null
 
 /**
  * The book is never taken back. It was paid for once — with the year or on its
  * own — and a book that disappears when a subscription lapses is not a book
  * anyone bought.
+ *
+ * `wachten` zegt of de proefperiode er nog tussen zit. Een datum die er al
+ * staat wordt nooit naar later geschoven: wie het boek los koopt tijdens een
+ * lopende proef, heeft het meteen.
  */
-function grantEbook(): void {
-  if (getState().ebook) return
-  setState({ ebook: true })
+function grantEbook(wachten: boolean): void {
+  const s = getState()
+  const vanaf = wachten ? Date.now() + TRIAL_DAYS * 864e5 : Date.now()
+  if (s.ebook && s.ebookVanaf !== null && s.ebookVanaf <= vanaf) return
+  setState({ ebook: true, ebookVanaf: vanaf })
 }
 
 /**
@@ -471,7 +495,8 @@ export async function initBilling(): Promise<void> {
     const bought = transaction.products.map((p) => p.productId)
     if (bought.some((id) => PRODUCTS.includes(id))) grant()
     // The year has the book in it; by the month it is bought separately.
-    if (bought.includes(EBOOK.product) || bought.includes(planOf('jaar').product)) grantEbook()
+    if (bought.includes(EBOOK.product)) grantEbook(false)
+    else if (bought.includes(planOf('jaar').product)) grantEbook(true)
     transaction.finish()
     publish({ busy: false, error: null })
   })
@@ -502,7 +527,8 @@ export async function initBilling(): Promise<void> {
     const book = store.get(EBOOK.product)
     const boekPrijs = prijsVan(betaalFase(book))
     if (boekPrijs) prices.ebook = boekPrijs
-    if (book?.owned || store.get(planOf('jaar').product)?.owned) grantEbook()
+    if (book?.owned) grantEbook(false)
+    else if (store.get(planOf('jaar').product)?.owned) grantEbook(true)
     publish({ prices, yearPerMonth, vergelijking: vergelijkingVan(store), price: prices.maand ?? null, currency: valuta })
     if (owned !== undefined) syncFromStore(owned, bonnenBinnen)
   }
@@ -603,7 +629,8 @@ export async function restorePurchases(): Promise<void> {
     }
     // Terugzetten is zelf de vraag aan de winkel, dus het antwoord telt.
     if (owned !== undefined) syncFromStore(owned, true)
-    if (api.store.get(EBOOK.product)?.owned || api.store.get(planOf('jaar').product)?.owned) grantEbook()
+    if (api.store.get(EBOOK.product)?.owned) grantEbook(false)
+    else if (api.store.get(planOf('jaar').product)?.owned) grantEbook(true)
   } catch (e) {
     publish({ error: e instanceof Error ? e.message : String(e) })
   } finally {

@@ -53,6 +53,31 @@ lessen gratis, voorgoed, zonder pas en zonder e-mailadres. Pas wie verder wil
 komt bij de proef. Drie stappen dus — gratis lessen, proef met pas, betalend —
 en alleen de middelste heeft een winkelproduct nodig.
 
+**1c. Het e-boek komt pas na de proefperiode.** Het boek zit bij het
+jaarabonnement, en het is een pdf: wie hem één keer opent, houdt hem. Zonder
+grens kon iemand het jaar afsluiten, het boek opslaan en op dag twee opzeggen
+— nul betaald, een product van € 14,99 mee.
+
+Daarom staat het recht op het boek los van het openen ervan: `ebook` in de
+staat is het recht en vervalt nooit, `ebookVanaf` is de dag waarop het opengaat.
+Los gekocht is dat meteen, want daar zit geen proefperiode bij. Bij het jaar is
+het `TRIAL_DAYS` later, en op het abonnementsscherm staat de datum erbij —
+anders leest een ontbrekende knop als een storing.
+
+Twee dingen die dit **niet** oplost, en die je moet weten voordat je het voor
+beveiliging aanziet:
+
+- **De pdf's zitten in de app zelf**, in `public/ebook/`. Ze gaan dus mee in
+  elke installatie, en wie een app-bestand kan uitpakken heeft ze zonder ooit
+  iets te kopen. Dit slot is wrijving tegen de makkelijke weg, geen slot. Wil
+  je het echt dichthebben, dan moet het boek van de worker komen en niet uit
+  de bundel — net zoals `server/src/lezer.ts` de leesboeken al doet.
+- **Bij opnieuw installeren begint de teller opnieuw.** De staat staat in de
+  telefoon, dus een abonnee die zijn toestel wisselt wacht nog een keer drie
+  dagen op het boek. Dat is het eerlijke nadeel van een grens zonder server
+  die bonnen narekent; RevenueCat of eigen bonvalidatie lost allebei de punten
+  tegelijk op.
+
 **2. Beide bedragen zijn Apple-prijspunten.** Apple werkt met vaste
 prijspunten; € 6,99 en € 59,99 zijn er twee van. Let op: Apple heeft géén
 59,88, en twaalf maal € 4,99 bestaat daar dus niet. Google Play laat per land

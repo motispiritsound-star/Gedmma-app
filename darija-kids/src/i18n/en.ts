@@ -718,6 +718,15 @@ export const en: Strings = {
     slotKnop: 'See it',
     /** The e-book: bought once, and included with the yearly plan. */
     boek: {
+      /**
+       * Er is recht op het boek, maar de proefperiode loopt nog.
+       *
+       * Een pdf houd je zodra je hem één keer opent, dus hij gaat pas open
+       * als er ook werkelijk betaald is. Dat staat er met de datum erbij, want
+       * een knop die er niet is zonder uitleg leest als een storing.
+       */
+      wacht: (datum: string): string =>
+        `The e-book comes with your yearly plan. It will be ready from ${datum} — while the free days are running, nothing has been paid yet.`,
       titel: 'The e-book',
       sub: 'Every word, every letter and the grammar — the whole path on paper. To print, or to read on a tablet beside the app.',
       bevat: [
