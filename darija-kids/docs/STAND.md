@@ -1091,12 +1091,39 @@ raakt alleen darijaforkids.eu — in de winkel-app staat de service worker uit
 (`!native` in `main.tsx`) — en elke oplossing kost óf een bouwstap óf 3,4 MB
 heen en weer. Dat is geen afweging voor de week van de lancering.
 
-Stand: **1490 tests groen in 69 bestanden**, `tsc -b --force --noEmit` schoon,
+**En de spelletjes, met profielen van nul tot alles.** Daar kwamen vier van de
+vijf spellen op het foutscherm — maar de oorzaak lag niet waar ik hem zocht:
+mijn eigen proefopslag schreef kaarten zonder `id`, en dat is niet wat de app
+schrijft. Met goede kaarten werkt alles, van nul tot acht geleerde woorden.
+Het legde wel twee echte gaten bloot.
+
+`poolFrom` las het woord-id uit de kaart zelf. Mist dat veld — een oudere of
+beschadigde opslag — dan staat er een lijst vol `undefined` in de poel en werpt
+`word(undefined)`. De sleutel van de verzameling ís het woord-id en kan dat
+niet overkomen, dus die wordt nu gelezen.
+
+En de bewaking in `Bonus.tsx` stond ná de `useMemo` die `build` aanroept.
+Een `useMemo` draait tijdens het tekenen, dus `build` werd altijd eerst
+aangeroepen, ook voor een opdracht waar nog te weinig voor geleerd was. Vandaag
+valt dat niet om, maar de regel las alsof ze beschermde en dat deed ze niet.
+
+**Een kaart waar niet meer mee te rekenen valt, begint nu opnieuw.** `review`
+telt bij elk veld iets op; mist er één getal dan is alles erna NaN, en NaN komt
+nooit meer terug. Die ene kaart blijft dan voor altijd stuk: hij komt nooit
+meer terug om te herhalen. Dat is geen crash en daarom juist vervelend — het
+woord verdwijnt stilletjes uit het herhaalschema van een kind. `heelOfNiets`
+kijkt bij het ophalen of de zes getallen eindig zijn en laat `newCard` hem
+anders opnieuw beginnen: de geschiedenis van één woord kwijt, al het andere
+gered. Bij het ophalen en niet in `review` zelf, want dat is het rekenhart van
+het schema.
+
+Stand: **1496 tests groen in 69 bestanden**, `tsc -b --force --noEmit` schoon,
 productiebouw schoon. Alle meetharnassen opnieuw gedraaid: contrast schoon in
 beide standen, drie raakvlakken over met reden, veertien kapotte opslagen
 overleefd, negentien rommelroutes opgevangen, vierendertig bladzijdeladingen
-zonder fout, negen combinaties van breedte en lettergrootte binnen beeld, en
-de stoeitest zonder enige uitzondering.
+zonder fout, negen combinaties van breedte en lettergrootte binnen beeld, vier
+liggende formaten binnen beeld, offline alle routes door, en de stoeitest
+zonder enige uitzondering.
 
 ### Nog na te kijken bij Google Play — kijken, niet wijzigen
 
