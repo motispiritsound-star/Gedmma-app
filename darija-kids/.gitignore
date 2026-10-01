@@ -57,3 +57,38 @@ android/app/capacitor.build.gradle
 
 # kladbestanden van metingen
 zz*.mjs
+
+# ---------------------------------------------------------------- sleutels
+#
+# Wat hier nooit in mag, en waarom het hier staat en niet alleen in een
+# afspraak: `git add -A` is één toetsaanslag, en een sleutel die één keer in
+# de geschiedenis staat haal je er niet meer uit.
+#
+# `play-api.json` is de dienstrekening van Google Play. Wie die heeft kan een
+# update uitbrengen onder jouw naam en de winkelvermelding wijzigen. De
+# scripts vragen er met `--sleutel <pad>` naar, en dat pad wijst juist naar
+# buiten deze map -- maar hem er "even bij zetten" is precies wat je op een
+# drukke dag doet.
+play-api.json
+*-api.json
+*.serviceaccount.json
+
+# De ondertekening van Apple: certificaten, profielen en de sleutel voor
+# App Store Connect.
+*.p8
+*.p12
+*.cer
+*.mobileprovision
+AuthKey_*
+
+# De hoofdmap van de repository negeert `.env`, `.env.local` en
+# `.env.*.local`, maar niet `.env.production` of `.env.staging`. Die zouden
+# `VITE_POST` naar de echte server bevatten, en in de toekomst meer.
+# `.env.demo` blijft wél meegaan: daar staat alleen `VITE_DEMO=1` in.
+.env.*
+!.env.demo
+!.env.example
+
+# Komt er ooit Firebase of Google-aanmelden bij, dan horen deze er ook niet in.
+google-services.json
+GoogleService-Info.plist
