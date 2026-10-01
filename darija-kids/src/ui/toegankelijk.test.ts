@@ -68,3 +68,37 @@ describe('beperkte beweging', () => {
     expect(lees('../index.css')).toContain('@media (prefers-reduced-motion: reduce)')
   })
 })
+
+describe('een foutmelding die ook gehoord wordt', () => {
+  /**
+   * Een rood regeltje dat verschijnt is voor wie het scherm niet ziet geen
+   * melding maar stilte. Je typt een tweede keer hetzelfde en weet nog steeds
+   * niet waarom er niets gebeurt.
+   *
+   * Twee plekken waar dat echt niet kan, want achter allebei zit geld: de
+   * rekensom vóór een abonnement, en de melding dat een betaling misging.
+   * Nagemeten in de browser: vóór een fout antwoord `aria-invalid="false"` en
+   * geen melding, erna `aria-invalid="true"`, `aria-describedby="poort-fout"`
+   * en een `role="alert"` met de tekst erin.
+   */
+  it('leest de ouderpoort voor dat het antwoord niet klopte', () => {
+    const bron = lees('./OuderPoort.tsx')
+    expect(bron).toContain('id="poort-fout" role="alert"')
+    expect(bron).toContain('aria-invalid={fout}')
+    expect(bron).toContain("aria-describedby={fout ? 'poort-fout' : undefined}")
+  })
+
+  it('leest een mislukte betaling voor', () => {
+    expect(lees('../pages/Unlock.tsx')).toContain('<p role="alert" className="mt-3 text-center text-sm text-terra-500">')
+  })
+
+  /**
+   * En het veld zelf is een rekensom, geen inlogveld: geen
+   * wachtwoordbeheerder erop, en de returntoets zegt "ga".
+   */
+  it('vraagt geen wachtwoordbeheerder voor een rekensom', () => {
+    const bron = lees('./OuderPoort.tsx')
+    expect(bron).toContain('autoComplete="off"')
+    expect(bron).toContain('enterKeyHint="go"')
+  })
+})

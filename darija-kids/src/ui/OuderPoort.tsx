@@ -91,12 +91,28 @@ export function OuderPoort({ open, onClose, onGoed, reden = 'abonnement' }: {
       <input
         id="poort-antwoord"
         inputMode="numeric"
+        /* Geen wachtwoordbeheerder op een rekensom, en de returntoets van het
+           toetsenbord zegt "ga" in plaats van "enter". */
+        autoComplete="off"
+        enterKeyHint="go"
+        aria-invalid={fout}
+        aria-describedby={fout ? 'poort-fout' : undefined}
         value={antwoord}
         onChange={(e) => { setAntwoord(e.target.value); setFout(false) }}
         onKeyDown={(e) => e.key === 'Enter' && bevestig()}
         className="mt-4 w-full rounded-2xl border-2 border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-center font-display text-2xl font-bold outline-none focus:border-zellige-500"
       />
-      {fout && <p className="mt-2 text-center text-sm text-terra-500">{t.unlock.poortFout}</p>}
+      {/*
+        `role="alert"`: zonder dat is een fout antwoord alleen een rood regeltje.
+        Wie het scherm niet ziet hoort niets, typt een tweede keer hetzelfde en
+        weet nog steeds niet waarom er niets gebeurt. En dit is de poort vóór
+        een betaling, dus juist hier mag dat niet.
+      */}
+      {fout && (
+        <p id="poort-fout" role="alert" className="mt-2 text-center text-sm text-terra-500">
+          {t.unlock.poortFout}
+        </p>
+      )}
       <div className="mt-5 flex gap-3">
         <Button variant="secondary" className="flex-1" onClick={onClose}>{t.common.annuleren}</Button>
         <Button className="flex-1" onClick={bevestig}>{t.unlock.poortKnop}</Button>

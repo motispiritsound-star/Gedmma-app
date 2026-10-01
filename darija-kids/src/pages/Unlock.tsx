@@ -245,7 +245,9 @@ export function Unlock() {
                 {t.unlock.btwRegel(btwInbegrepen(billing.currency))}
               </p>
               {billing.error && (
-                <p className="mt-3 text-center text-sm text-terra-500">{t.unlock.mislukt(billing.error)}</p>
+                /* `role="alert"`: een mislukte betaling die niet wordt
+                   voorgelezen is een knop die stilletjes niets deed. */
+                <p role="alert" className="mt-3 text-center text-sm text-terra-500">{t.unlock.mislukt(billing.error)}</p>
               )}
             </div>
           </Card>

@@ -381,6 +381,13 @@ function Type({ exercise, onAnswer, locked, mode = 'betekenis' }: ExerciseProps 
         disabled={locked}
         autoComplete="off"
         autoCorrect="off"
+        /* iOS zet de eerste letter met een hoofdletter. Het antwoord wordt
+           toch kleingemaakt voor het nakijken -- `normalise` in
+           `engine/exercises.ts` -- dus goed blijft goed. Maar wat het kind
+           intikt hoort te lijken op wat het overal in de app ziet staan, en
+           dat is "salam" en niet "Salam". */
+        autoCapitalize="off"
+        enterKeyHint="go"
         spellCheck={false}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && submit()}
