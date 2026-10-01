@@ -1019,6 +1019,85 @@ reparatie is hier riskanter dan de fout.
 Stand: **1449 tests groen in 66 bestanden**, `tsc -b --force --noEmit` schoon,
 productiebouw schoon.
 
+#### De vijfde doorloop — zelfstandig, langs alles wat nog niet gemeten was
+
+**Een koper kreeg te lezen dat hij moest kopen wat hij al had.** Op `/boek`
+stond één tak voor "je hebt het boek nog niet", met de tekst van een lés achter
+het slot erin: *"Deze unit hoort bij de volledige toegang."* Het boek gaat pas
+open ná de gratis dagen — een pdf houd je zodra je hem één keer opent — dus die
+drie dagen lang las een betalende klant dat hij moest kopen wat hij een uur
+eerder gekocht had. De tekst voor het wachten bestond al en stond op
+`/volledig`; nu staat dezelfde hier, met dezelfde datumopmaak.
+
+**Het e-boek was liggend een strook van 48 pixels.** De leeskolom had een vaste
+hoogte van `100vh - 10rem`. Op een staande telefoon klopt dat; leg hem plat en
+het venster is nog 390 pixels hoog. Nagemeten hield de pdf er 48 van over, en
+omdat de hoogte vastzat kon de bladzijde ook niet scrollen: een product van
+€ 14,99 zonder weg eruit. Niets houdt de stand van het scherm tegen — Android
+draait vrij mee en een iPad staat standaard liggend. Met
+`max(37rem, calc(100vh - 10rem))` gaat 844×390 van 48 naar 410 pixels en
+blijft 390×844 ongewijzigd.
+
+**Drie bladzijden hadden geen enkele kop**: deze, "deze les bestaat niet" en
+"dit verhaal bestaat niet". Op zo'n bladzijde staat verder niets, dus een
+schermlezer landt op niets.
+
+**Het ruwe prijsgetal is van de ouderpagina af.** Daar stond achter een knop
+wat de winkel over de prijzen zei — met opzet, want staat daar een andere munt
+dan op het keuzescherm, dan zit de fout bij ons. Maar er stond ook een kolom
+met `59990000` in. Die hielp niemand en maakte van een hulpmiddel voor de ouder
+een stuk ontwikkelaarsuitvoer, op precies het scherm dat allebei de winkels als
+ondersteuningsadres opvragen.
+
+**Nieuwe bewakers.** De zes e-boeken (bestaat het, begint het met `%PDF-`, is
+het niet verdacht klein), de vier lettertypen, elk pad dat `index.html` en de
+manifest noemen, en of er ergens nog Nederlands in een andere taal staat.
+
+Die laatste was het nakijken waard: het typesysteem bewaakt dat elke sleutel
+*bestaat*, maar niet dat de waarde iets anders is dan het Nederlands —
+`titel: 'Woordenboek'` haalt de controle in alle zes de talen. Uitkomst: **684
+teksten per taal, en nul die nog gelijk zijn aan het Nederlands.**
+
+**Wat er nagemeten is en in orde bleek**, en waar dus niets aan gedaan is:
+
+- **Offline.** Er is een service worker. Met het netwerk uit laden alle routes
+  door, ook na een harde herlaad.
+- **Alle eenentwintig instellingen** worden ergens gelezen en doen iets.
+- **Het laadbericht** van een bladzijde is bij 1× én 6× afgeremde processor
+  nooit in beeld: de stukken komen van schijf en React tekent het nooit.
+- **Negentien rommelroutes** — lege parameters, vierhonderd tekens lang,
+  vreemde tekens — allemaal netjes opgevangen.
+- **Een naam van vierentwintig tekens** en tellers van zeven cijfers lopen
+  nergens buiten beeld.
+- **Liggend**: geen enkele bladzijde buiten beeld bij 844, 667 of 1024 breed,
+  ook niet met de grootste letters.
+- **Naar de achtergrond en terug**, vier keer middenin een les: voortgang
+  bewaard, nog op dezelfde bladzijde, geen uitzondering.
+- **Alle 304 woorden, 100 zinnen en 28 letters** hebben een menselijke opname.
+  De spraakmachine is een vangnet dat in de praktijk nooit nodig is.
+- **Wat er over de lijn gaat**: aanmelden stuurt adres, taal en twee vinkjes;
+  de weekmelding zes getallen en een id. Geen woorden, geen antwoorden, geen
+  naam, geen toestelgegevens — en alleen na een bevestigd adres met een
+  expliciet vinkje, hoogstens één keer per dag.
+- **Vensterhoogtes**: afgezien van `/boek` gebruikt niets een vaste hoogte op
+  vensterbasis.
+
+**Eén ding bewust blijven staan, voor ná de lancering.** De service worker
+gebruikt één vaste cachenaam (`darija-kids-v1`). Voor alles met een hash in de
+naam klopt dat — een nieuwe bouw heeft een ander adres en wordt gewoon
+opgehaald. Maar de bestanden uit `public/` houden hun adres: wordt er ooit een
+e-boek bijgewerkt, dan krijgt een terugkerende **webbezoeker** de oude. Dat
+raakt alleen darijaforkids.eu — in de winkel-app staat de service worker uit
+(`!native` in `main.tsx`) — en elke oplossing kost óf een bouwstap óf 3,4 MB
+heen en weer. Dat is geen afweging voor de week van de lancering.
+
+Stand: **1490 tests groen in 69 bestanden**, `tsc -b --force --noEmit` schoon,
+productiebouw schoon. Alle meetharnassen opnieuw gedraaid: contrast schoon in
+beide standen, drie raakvlakken over met reden, veertien kapotte opslagen
+overleefd, negentien rommelroutes opgevangen, vierendertig bladzijdeladingen
+zonder fout, negen combinaties van breedte en lettergrootte binnen beeld, en
+de stoeitest zonder enige uitzondering.
+
 ### Nog na te kijken bij Google Play — kijken, niet wijzigen
 
 Drie dingen die pas opvallen als het te laat is. **Zolang inzending 4 in
