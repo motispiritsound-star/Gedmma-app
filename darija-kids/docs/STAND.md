@@ -697,6 +697,76 @@ een bewuste keuze om R8 als oorzaak van de afwijzing uit te sluiten. Aanzetten
 terwijl er een reparatie in beoordeling ligt voegt een onbekende toe. Pas als
 versie 4 door is, en dan als een eigen wijziging.
 
+#### De ronde van 1 oktober, avond — gemeten, niet aangenomen
+
+Een laatste doorloop vóór de lancering, met de meetlat erbij in plaats van een
+lijstje aanbevelingen. Wat eruit kwam zit allemaal in 1.1 / 1.3.
+
+**Een afgebroken betaling gold als een gelukte.** De zwaarste van de avond, en
+niet te zien door naar de app te kijken — alleen door de plugin te lezen.
+`offer.order()` wijst niet af als een betaling misgaat: de belofte lost op,
+met een foutvoorwerp erin in plaats van niets. In `store.d.ts` van
+`cordova-plugin-purchase` staat het letterlijk: `Promise<IError | undefined>`.
+De `try/catch` eromheen ving dus niets behalve onze eigen `throw`.
+
+Gevolg: elke afgebroken of mislukte betaling gold als gelukt en `busy` bleef
+aan staan. De knop waarmee je het opnieuw probeert bleef "Bezig…" tot de app
+opnieuw startte — de enige knop in de app waar geld achter zit.
+
+Nu wordt teruggelezen wat de bestelling teruggaf. Afbreken (code 6777006,
+`PAYMENT_CANCELLED`) zet de knop stil weer aan zonder rode regel: wie zich
+bedenkt heeft niets fout gedaan en hoort geen storingsmelding te zien. Al het
+andere toont wat de winkel zelf zei. En `busy` gaat hoe dan ook uit, ook bij
+een gelukte bestelling — dat redt *Vraag om te kopen*, waarbij een ouder op
+een ander toestel goedkeurt en de betaling pas uren later volgt. Juist in een
+kinderapp niet denkbeeldig. `afgebroken.test.ts` bewaakt de regel én het
+nummer, tegen de plugin zelf.
+
+**Vier toegankelijkheidsfouten, alle vier nagemeten.** De kopbalk liep bij een
+wortellettergrootte van 24px op elk scherm 62px buiten beeld; met `flex-wrap`
+is dat op 16, 20 én 24px nul, en bij normale grootte blijft de balk 77px.
+Er was geen zichtbare focusring: nu 3px, gemeten `rgb(13,148,136)` licht en
+`rgb(74,222,128)` donker. De mascotte deed acht verschillende bewegingen in
+twee seconden, ook voor wie minder beweging heeft ingesteld; met
+`<MotionConfig reducedMotion="user">` is dat er één. En het naamveld in de
+instellingen had geen naam — de titel ernaast is een `div`, geen `label`, dus
+een schermlezer las alleen de plaatshouder voor, en die verdwijnt zodra je
+typt. Over tien schermen gemeten: bedienbare dingen zonder naam van 1 naar 0.
+
+**Een foutmelding die loog.** Zonder verbinding zei het aanmeldveld op de
+ouderpagina dat het aan ons lag. `aanmelden()` kent nu `'offline'` naast
+`'mis'`, in zes talen, met `role="status"` zodat een schermlezer het ook
+hoort.
+
+**Drie `lazy()`-regels die niets lazy maakten.** De bouw zei het zelf:
+*INEFFECTIVE_DYNAMIC_IMPORT*. `Learn` en `LessonPlayer` staan vast in het
+eerste stuk — het leerpad is het eerste scherm — en halen `Bonus`, `Film` en
+`HistoryCard` zelf al binnen. Nu staan ze zoals ze werken: eerste stuk van
+421,0 naar 417,2 kB, drie waarschuwingen weg.
+
+**In het woordenboek verdwijnt de slotkaart bij nul treffers.** Die gaat over
+woorden die je wél ziet staan, en stond tussen de vraag en het antwoord in.
+
+**Zonder `--versie` zegt de Android-bouw nu welk nummer erin komt.** Play
+weigert een versiecode die al eens geüpload is, ook een ingetrokken upload, en
+dat merkte je pas ná het bouwen en ondertekenen. De waarschuwing komt nu
+ervoor, met de opdracht voor het volgende nummer erbij.
+
+**Wat bewust níét is aangeraakt.** De 16 MB `.wav` in de bundel — 432 mono-
+opnamen, 16 bit, 16 kHz. Comprimeren scheelt ruwweg zes keer, maar 432
+menselijke opnamen hercoderen een paar dagen voor de lancering is precies het
+soort wijziging waarvoor we build 7 boven build 8 hebben gekozen. Na de
+lancering, als eigen ronde, met luistercontrole.
+
+**Wat schoon bleek.** Geen TODO, FIXME of plaatshouder in de app-code. Twee
+`console.error`, allebei terecht (de foutgrens en een winkel die niet start).
+De lege schermen van `/herhalen`, `/verhalen`, `/profiel` en het woordenboek
+zeggen alle vier wat er aan de hand is en wat je eraan kunt doen. De
+koopknoppen stonden al uit tijdens `busy`.
+
+Stand na de ronde: **1339 tests groen in 56 bestanden**, `tsc -b --force
+--noEmit` schoon, productiebouw schoon.
+
 ### Nog na te kijken bij Google Play — kijken, niet wijzigen
 
 Drie dingen die pas opvallen als het te laat is. **Zolang inzending 4 in
