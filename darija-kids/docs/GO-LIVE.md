@@ -160,6 +160,19 @@ over gaat — op de dag van de lancering, met de app al in de winkel.
 hem heeft rondgestuurd, en dat kan bij Apple een paar uur duren nadat het
 scherm al "Ready for Sale" zegt.
 
+### 1b. Niet 1.1 indienen — dat is voor de week erna
+
+Build 8 staat in TestFlight en 1.1 is klaar, maar de lancering gaat met de
+versie die goedgekeurd is. Een goedgekeurde versie zit vast aan zijn build, en
+1.1 indienen betekent die goedkeuring terugleggen voor een nieuwe ronde.
+
+Dus vandaag: niets indienen. Zie `docs/STAND.md` voor wat build 7 nog draagt
+en waarom dat te overzien is.
+
+Volgende week, als de app in de winkel staat en een afwijzing niets meer kost:
+1.1 indienen bij Apple en versiecode 5 / 1.3 bij Play. De winkelteksten staan
+klaar in `store/wat-is-nieuw-1.1.md`, in zes talen.
+
 ### 2. De website omzetten
 
 Eén commando, in `darija-kids`:

@@ -12,7 +12,7 @@ te lezen.
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 1289, groen — daar zitten de 77 van de worker al in |
 | Google Play | 4 (1.2) op **Productie**, 177 landen — de winkelpagina is nog **niet publiek** |
-| App Store | **1.0 goedgekeurd op 1 oktober, 16:46** — nog niet vrijgegeven |
+| App Store | **1.0 (build 7) goedgekeurd, wacht op vrijgeven** — 1.1 (build 8) staat klaar voor de week erna |
 | Uitbetalen | **rond bij allebei** — Google geverifieerd op 1 oktober |
 
 ### Goedgekeurd — 1 oktober, 16:46
@@ -449,6 +449,43 @@ al ligt.
 Deze zitten in de code maar **niet in versiecode 4 en niet in build 7**, want
 die lagen al bij de winkel toen ze werden gemaakt. Ze gaan mee in de volgende
 bundel.
+
+#### De lancering gaat met build 7, niet met build 8 — besloten 1 oktober
+
+Build 8 is gebouwd en gearchiveerd (`1.1 (8)`, arm64) en gaat naar TestFlight.
+Hij wordt **niet ingediend voor de lancering.**
+
+Een goedgekeurde versie zit vast aan zijn build: build 8 onder 1.0 schuiven
+kan niet zonder een nieuwe beoordeling. De keuze was dus tussen lanceren met
+wat goedgekeurd is, of een goedkeuring terugleggen op tafel voor een nieuwe
+ronde van één tot drie dagen — met een beoordelaar die dan voor het eerst het
+keuzescherm na de taalkeuze ziet, precies het soort scherm dat onder richtlijn
+3.1.2 valt. Dat is de richtlijn waarop 1.0 al eens omviel.
+
+Vier rondes gekost om hier te komen. Die winst geef je niet terug voor een
+FAQ-regel waar de beoordelaar zelf overheen las.
+
+Hetzelfde geldt bij Play, en om dezelfde reden: inzending 4 (versiecode 4,
+1.2) ligt in beoordeling, en een nieuwe bundel uploaden zet die beoordeling
+opnieuw. Allebei de winkels lanceren dus met wat er ligt.
+
+**Wat de lancering daarmee draagt** en wat er in 1.1 / 1.3 gerepareerd wordt:
+
+| In build 7 en versiecode 4 | |
+|---|---|
+| De FAQ op de landingsbladzijde noemt beide winkels | Apple is er deze ronde zelf overheen gegaan |
+| Het geluidsadvies wijst op Android naar een schuifje dat daar niet zit | |
+| Knoppen kunnen onder de balk van Android 15 liggen | de taalkeuze en de volgende-vraagknop |
+| Geen keuzescherm na de taalkeuze, geen kaartje na de laatste gratis les, geen knop in de kopbalk | de weg naar het abonnement loopt alleen via een slotje |
+| Het e-boek komt bij het jaarabonnement meteen vrij, ook tijdens de proef | |
+
+Die laatste is de enige die geld kost. Drie dagen lang kan een koper het jaar
+afsluiten, het boek opslaan en opzeggen. Bij een lancering met enkele tientallen
+kopers is dat te overzien, en 1.1 volgt binnen een week — maar het is de reden
+om 1.1 niet te laten liggen.
+
+**Indienen: de week ná de lancering.** Dan staat de app in de winkel en kost
+een afwijzing niets.
 
 **Het geluidsadvies per toestel.** De uitleg bij "er komt geen geluid uit"
 wees naar het stilteschuifje aan de zijkant van een iPhone. Op Android bestaat
