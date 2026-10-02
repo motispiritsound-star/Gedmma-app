@@ -106,9 +106,29 @@ describe('wat de kleur raakt', () => {
 })
 
 describe('het startscherm', () => {
-  it('heeft drie stappen', () => {
+  it('heeft vier stappen', () => {
     expect(welkom).toContain('const [stap, setStap] = useState(0)')
-    for (const n of [0, 1, 2]) expect(welkom).toContain(`{stap === ${n} && (`)
+    for (const n of [0, 1, 2, 3]) expect(welkom).toContain(`{stap === ${n} && (`)
+  })
+
+  /**
+   * De enige keuze in het begin die het leren zelf verandert: `showScript` en
+   * `showTranslit` bepalen wat er op elk woordkaartje en in elke oefening
+   * staat. Een ouder weet meteen wat zijn kind kan lezen.
+   */
+  it('en vraagt hoe je meeleest, met alle drie de combinaties', () => {
+    const stap = welkom.slice(welkom.indexOf('{stap === 2 && ('), welkom.indexOf('{stap === 3 && ('))
+    expect(stap).toContain("setSetting('showScript', script)")
+    expect(stap).toContain("setSetting('showTranslit', translit)")
+    for (const id of ['allebei', 'arabisch', 'klanken']) expect(stap, id).toContain(`'${id}'`)
+  })
+
+  /**
+   * En niet het dagdoel. Wat "30 XP per dag" betekent weet je pas na een week;
+   * dat vragen vóór de eerste les is een keuze zonder informatie.
+   */
+  it('maar niet het dagdoel', () => {
+    expect(welkom).not.toContain('dailyGoal')
   })
 
   /** De vlag die dit scherm sluit gaat pas om op de laatste stap. */
@@ -128,7 +148,7 @@ describe('het startscherm', () => {
 
   /** De prijs hoort vóór de eerste les, niet bij het eerste slot. */
   it('en noemt wat het kost voordat je begint', () => {
-    const laatste = welkom.slice(welkom.indexOf('{stap === 2 && ('))
+    const laatste = welkom.slice(welkom.indexOf('{stap === 3 && ('))
     expect(laatste).toContain('t.welcome.plan(TRIAL_DAYS')
   })
 })
@@ -155,6 +175,11 @@ describe('de teksten', () => {
       expect(w.wieBody, code).toBeTruthy()
       expect(w.kleurTitel, code).toBeTruthy()
       expect(w.kleurBody, code).toBeTruthy()
+      expect(w.schriftTitel, code).toBeTruthy()
+      expect(w.schriftBody, code).toBeTruthy()
+      for (const k of ['arabisch', 'klanken', 'allebei'] as const) {
+        expect(w.schriftKeuze[k], `${code} ${k}`).toBeTruthy()
+      }
       for (const a of ACCENTEN) expect(STRINGS[code].settings.accenten[a], `${code} ${a}`).toBeTruthy()
     }
   })

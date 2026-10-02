@@ -19,7 +19,8 @@ import { Mascot } from './Mascot'
  *
  *   1. Welke taal versta je?
  *   2. Wie ben jij -- een naam en een dier.
- *   3. Hoe ziet het eruit -- een kleur en licht of donker.
+ *   3. Hoe lees je mee -- Arabisch schrift, klanken, of allebei.
+ *   4. Hoe ziet het eruit -- een kleur en licht of donker.
  *
  * Wat hier gezet wordt zit meteen in de staat, dus wie halverwege afhaakt
  * houdt wat hij al koos. Alleen `langPicked` gaat aan het eind om: dat is de
@@ -38,6 +39,8 @@ export function Welcome() {
   const avatar = useStore((s) => s.avatar)
   const accent = useStore((s) => s.settings.accent)
   const theme = useStore((s) => s.settings.theme)
+  const schrift = useStore((s) => s.settings.showScript)
+  const schriftTranslit = useStore((s) => s.settings.showTranslit)
   const [stap, setStap] = useState(0)
   if (picked) return null
 
@@ -51,7 +54,7 @@ export function Welcome() {
 
         {/* Drie bolletjes, zodat je ziet dat het er drie zijn en niet tien. */}
         <div className="mt-2 flex justify-center gap-1.5" aria-hidden="true">
-          {[0, 1, 2].map((n) => (
+          {[0, 1, 2, 3].map((n) => (
             <span
               key={n}
               className={`h-1.5 rounded-full transition-all ${n === stap ? 'w-5 bg-[var(--accent-500)]' : 'w-1.5 bg-[var(--line)]'}`}
@@ -126,7 +129,54 @@ export function Welcome() {
           </>
         )}
 
+        {/*
+          De enige keuze hier die het leren zelf verandert.
+          
+          `showScript` en `showTranslit` bepalen wat er op elk woordkaartje en
+          in elke oefening staat -- Arabisch schrift, de klanken in ons
+          alfabet, of allebei. Een ouder weet meteen wat zijn kind kan lezen,
+          dus deze vraag is op minuut nul te beantwoorden.
+          
+          Het dagdoel staat hier met opzet niet bij. Wat "30 XP per dag"
+          betekent weet je pas na een week; dat vragen vóór de eerste les is
+          een keuze zonder informatie. Die blijft in Instellingen.
+        */}
         {stap === 2 && (
+          <>
+            <h2 id="welcome-title" className="mt-2 font-display text-2xl font-extrabold">{t.welcome.schriftTitel}</h2>
+            <p className="mt-2 text-[var(--ink-soft)]">{t.welcome.schriftBody}</p>
+
+            <div className="mt-5 grid gap-2">
+              {([
+                ['allebei', true, true, t.welcome.schriftKeuze.allebei, 'الدار · ddar'],
+                ['arabisch', true, false, t.welcome.schriftKeuze.arabisch, 'الدار'],
+                ['klanken', false, true, t.welcome.schriftKeuze.klanken, 'ddar'],
+              ] as const).map(([id, script, translit, label, voorbeeld]) => {
+                const aan = schrift === script && schriftTranslit === translit
+                return (
+                  <button
+                    key={id}
+                    onClick={() => { sfx.tap(); setSetting('showScript', script); setSetting('showTranslit', translit) }}
+                    aria-pressed={aan}
+                    className={`flex min-h-14 items-center justify-between gap-3 rounded-2xl border-2 px-4 py-3 text-start ${
+                      aan ? 'border-[var(--accent-500)] bg-[var(--accent-500)]/10' : 'border-[var(--line)]'
+                    }`}
+                  >
+                    <span className="font-display font-extrabold">{label}</span>
+                    <span className="ar text-lg text-[var(--ink-soft)]" aria-hidden="true">{voorbeeld}</span>
+                  </button>
+                )
+              })}
+            </div>
+
+            <div className="mt-5 flex gap-2">
+              <Button variant="secondary" className="w-28" onClick={terug}>{t.common.terug}</Button>
+              <Button className="flex-1" onClick={verder}>{t.common.verder}</Button>
+            </div>
+          </>
+        )}
+
+        {stap === 3 && (
           <>
             <h2 id="welcome-title" className="mt-2 font-display text-2xl font-extrabold">{t.welcome.kleurTitel}</h2>
             <p className="mt-2 text-[var(--ink-soft)]">{t.welcome.kleurBody}</p>
