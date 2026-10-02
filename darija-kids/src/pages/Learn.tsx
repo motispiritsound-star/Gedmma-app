@@ -115,6 +115,20 @@ export function Learn() {
   const volgendeUnit = UNITS.find((u) => u.lessons.some((l) => l.id === next))
   const volgendeLes = volgendeUnit?.lessons.find((l) => l.id === next)
 
+  /*
+   * Welke units openstaan.
+   *
+   * De regel staat helemaal in `toont`: een unit is open tenzij hij af is, en
+   * wat je zelf aantikt wint daarvan. Meer niet — en vooral: niets wordt
+   * bewaard. `geopend` begint leeg bij elke keer dat je het pad opent, dus een
+   * unit die je openklapte om nog eens naar je sterren te kijken staat de
+   * volgende keer weer dicht.
+   *
+   * Dat betekent ook dat de unit die je net hebt afgemaakt dicht staat als je
+   * daarna op het pad komt. Dat is de bedoeling: 100% en het aantal lessen
+   * blijven staan, de sterren per les heb je een scherm eerder gezien, en
+   * eronder staat meteen waar je verder gaat.
+   */
   const [geopend, setGeopend] = useState<Record<string, boolean>>({})
   const toont = (id: string, af: boolean): boolean => geopend[id] ?? !af
   const wissel = (id: string, af: boolean): void => {

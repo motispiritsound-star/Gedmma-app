@@ -32,9 +32,14 @@ describe('een afgeronde unit klapt dicht', () => {
   })
 
   /**
-   * `toont` is de hele regel: open tenzij de unit af is, en wat de gebruiker
-   * daarna zelf koos wint. Zonder de `?? !af` zou een unit die je nooit hebt
-   * aangeraakt dichtvallen zodra je hem afmaakt, midden in je sessie.
+   * `toont` is de hele regel: open tenzij de unit af is, en wat je zelf
+   * aantikt wint daarvan. Er wordt niets bewaard — `geopend` begint leeg bij
+   * elke keer dat je het pad opent.
+   *
+   * Dus ook: de unit die je net hebt afgemaakt staat dicht als je daarna op
+   * het pad komt. Dat is de bedoeling en niet een randgeval dat we over het
+   * hoofd zagen: 100% en het aantal lessen blijven staan, de sterren per les
+   * stonden een scherm eerder, en eronder staat meteen waar je verder gaat.
    */
   it('af = dicht, bezig = open, en de eigen keuze gaat voor', () => {
     expect(code).toMatch(/geopend\[id\]\s*\?\?\s*!af/)
