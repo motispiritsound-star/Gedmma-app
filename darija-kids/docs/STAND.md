@@ -70,14 +70,15 @@ jaarabonnement of het boek koopt.
 **Wat er klaarligt voor de volgende ronde** (build 10, versiecode 8), nog in
 geen enkele winkel:
 
-- **Een startscherm in drie stappen** (`b72d38f`): taal, dan wie je bent (naam
-  en een dier uit tien), dan hoe het eruitziet (een van vier kleuren, en licht
-  of donker). Daarvoor was het één talenlijst, en daarna stond een kind in een
+- **Een startscherm in vier stappen** (`b72d38f`, `cf8a9b2`): taal, dan wie je
+  bent (naam en een dier uit tien), dan hoe je meeleest (Arabisch schrift, de
+  klanken in ons alfabet, of allebei), dan hoe het eruitziet (een van vier
+  kleuren, en licht of donker). Daarvoor was het één talenlijst, en daarna stond een kind in een
   app die er voor iedereen hetzelfde uitzag — met een uil die het niet gekozen
   had en "Leerling" waar zijn naam hoort. Elke keuze gaat meteen de staat in;
   alleen `langPicked` gaat aan het eind om.
 - **Een kleur die van jou is.** Saffraan, zellige, terracotta of munt, op de
-  knop waarmee je verder gaat, je voortgangsbalk en de ring om je avatar. Níét
+  knop waarmee je verder gaat, je voortgangsbalk en je avatar zelf. Níét
   op groen-is-goed en rood-is-fout: die betekenen iets, en een kind dat zijn
   eigen "goed" op oranje zet kan daarna niet meer zien of hij het goed had.
   Nagerekend op 2 oktober: de zwakste is terracotta met 5,55 op 1 tegen de

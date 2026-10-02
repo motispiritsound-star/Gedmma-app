@@ -8,7 +8,7 @@
  *
  * Nu kiest iemand aan het begin een naam, een dier, een kleur en licht of
  * donker. Die kleur raakt wat van jou is: de knop waarmee je verder gaat, de
- * balk die je vooruitgang toont, de ring om je avatar.
+ * balk die je vooruitgang toont, je avatar zelf.
  *
  * Wat hij níét raakt is groen-is-goed en rood-is-fout. Die betekenen iets, en
  * een kind dat zijn eigen "goed" naar oranje zet kan daarna niet meer zien of
