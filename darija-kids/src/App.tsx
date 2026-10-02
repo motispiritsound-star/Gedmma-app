@@ -61,16 +61,20 @@ const TABS = [
 ] as const
 
 function useTheme() {
-  const { theme, motion: motionPref, reading } = useStore((s) => s.settings)
+  const { theme, accent, motion: motionPref, reading } = useStore((s) => s.settings)
   useEffect(() => {
     const root = document.documentElement
     // In the standalone demo the host stamps its own theme on the root; leave
     // that stamp alone until the learner picks a theme here.
     if (theme === 'system') { if (!DEMO) root.removeAttribute('data-theme') }
     else root.setAttribute('data-theme', theme)
+    // Saffraan is wat `:root` al zegt, dus daar hoort geen stempel bij: zonder
+    // attribuut ziet een oude opslag er precies zo uit als altijd.
+    if (accent === 'saffraan') root.removeAttribute('data-accent')
+    else root.setAttribute('data-accent', accent)
     root.setAttribute('data-motion', motionPref)
     root.setAttribute('data-reading', reading)
-  }, [theme, motionPref, reading])
+  }, [theme, accent, motionPref, reading])
 }
 
 function Chrome() {

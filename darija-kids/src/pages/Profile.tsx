@@ -4,7 +4,7 @@ import { UNITS } from '../content/curriculum'
 import { allWords } from '../content/lexicon'
 import {
   BADGES, kanVriesdagKopen, koopVriesdag, levelOf, MAX_VRIESDAGEN, PRIJS_VRIESDAG,
-  progressOfUnit, reeksNu, setState, today, useStore,
+  AVATARS, progressOfUnit, reeksNu, setState, today, useStore,
 } from '../engine/store'
 import { sfx } from '../engine/audio'
 import { Button, Card, Progress, SectionTitle, Stat } from '../ui/kit'
@@ -15,7 +15,6 @@ import { HISTORY } from '../content/history'
 import { localeOf, useLang, useT } from '../i18n'
 import { unitSubtitle } from '../content/localise'
 
-const AVATARS = ['🦊', '🦉', '🐪', '🦁', '🐈', '🦋', '⭐', '🌙', '🫖', '⚽']
 
 /** Everything the learner has built up, on one page. */
 export function Profile() {
@@ -79,7 +78,7 @@ export function Profile() {
       */}
       <Card className={`mb-6 flex flex-wrap items-center gap-5 p-5 ${lid ? 'border-2 border-saffron-400' : ''}`}>
         <div className="relative">
-          <div className={`grid h-20 w-20 place-items-center rounded-3xl bg-gradient-to-br from-saffron-400 to-terra-500 text-4xl ${
+          <div className={`grid h-20 w-20 place-items-center rounded-3xl bg-gradient-to-br from-[var(--accent-400)] to-[var(--accent-600)] text-4xl ${
             lid ? 'ring-4 ring-saffron-400 ring-offset-2 ring-offset-[var(--surface-raised)]' : ''}`}
           >
             {state.avatar}
@@ -105,7 +104,7 @@ export function Profile() {
             </p>
           )}
           <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.common.niveau} {level} · {t.profile.naarNiveau(into, span)}</p>
-          <Progress value={into / span} tone="saffron" className="mt-2" />
+          <Progress value={into / span} tone="accent" className="mt-2" />
         </div>
         <Link to="/instellingen" className="w-full sm:w-auto"><Button variant="secondary" className="w-full">{t.profile.aanpassen}</Button></Link>
       </Card>

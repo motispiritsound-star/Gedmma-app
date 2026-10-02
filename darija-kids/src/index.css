@@ -164,7 +164,44 @@
    */
   --inkt-tekenen: #0f766e;
   --shadow-press: 0 4px 0 0 rgb(0 0 0 / 0.16);
+  /*
+   * De kleur die een gebruiker zelf kiest.
+   *
+   * Alleen voor wat van jou is: de knop waarmee je verder gaat, de balk die je
+   * vooruitgang laat zien, de ring om je avatar. Niet voor groen-is-goed en
+   * rood-is-fout -- die betekenen iets, en een kind dat zijn eigen "goed" naar
+   * oranje zet kan daarna niet meer zien of hij het goed had.
+   *
+   * Alle vier de kleuren zijn de reeksen die er al waren, dus het contrast is
+   * al nagemeten. Op de donkere inkt haalt de zwakste (terra) 5,55 op 1 waar
+   * 4,5 de norm is; `kleurkeuze.test.ts` rekent het bij elke testronde na.
+   *
+   * Saffraan is de standaard: dat is hoe de app er altijd uitzag, dus wie
+   * niets kiest ziet geen verandering.
+   */
+  --accent-400: #fbbf24;
+  --accent-500: #f59e0b;
+  --accent-600: #d97706;
+  --accent-ink: #080c17;
   color-scheme: light;
+}
+
+:root[data-accent="zellige"] {
+  --accent-400: #2dd4bf;
+  --accent-500: #14b8a6;
+  --accent-600: #0f766e;
+}
+
+:root[data-accent="terra"] {
+  --accent-400: #ff9f7a;
+  --accent-500: #e2603c;
+  --accent-600: #c34a2c;
+}
+
+:root[data-accent="mint"] {
+  --accent-400: #4ade80;
+  --accent-500: #22c55e;
+  --accent-600: #16a34a;
 }
 
 :root[data-stelsel="ios"] {

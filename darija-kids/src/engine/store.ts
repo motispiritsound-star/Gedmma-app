@@ -71,8 +71,43 @@ export const XP_PER_CORRECT = 2
 export const COMBO_GEM_EVERY = 5
 export const HEART_REFILL_MS = 20 * 60_000
 
+/**
+ * De kleuren die een gebruiker voor zichzelf kan kiezen.
+ *
+ * Vier, en niet meer: elke kleur moet op de donkere inkt leesbaar zijn en in
+ * allebei de standen kloppen, en vier is genoeg om het van jezelf te laten
+ * voelen zonder dat er een die nergens op lijkt tussen zit.
+ */
+export const ACCENTEN = ['saffraan', 'zellige', 'terra', 'mint'] as const
+export type Accent = (typeof ACCENTEN)[number]
+
+/**
+ * De kleur zelf, voor het bolletje dat je aantikt.
+ *
+ * Een naam als "zellige" zegt een kind niets, dus staat de kleur in de knop en
+ * de naam eronder voor wie hem voorleest. Deze waarden horen gelijk te lopen
+ * met `--accent-500` in `index.css`; `kleurkeuze.test.ts` legt ze naast elkaar.
+ */
+export const ACCENTKLEUR: Record<Accent, string> = {
+  saffraan: '#f59e0b',
+  zellige: '#14b8a6',
+  terra: '#e2603c',
+  mint: '#22c55e',
+}
+
+/**
+ * De dieren waaruit je kiest.
+ *
+ * Stond twee keer: op het startscherm en op het profiel. Twee lijsten die
+ * hetzelfde horen te zijn lopen uit elkaar zodra er eentje bijkomt, en dan
+ * heeft een kind een dier dat hij later niet terugvindt.
+ */
+export const AVATARS = ['🦊', '🦉', '🐪', '🦁', '🐈', '🦋', '⭐', '🌙', '🫖', '⚽'] as const
+
 export interface Settings {
   theme: 'system' | 'light' | 'dark'
+  /** De kleur van de knoppen, de voortgang en je avatar. Zie `ACCENTEN`. */
+  accent: Accent
   /** Interface and meanings; the Darija itself never changes. */
   lang: Lang
   showScript: boolean
@@ -374,6 +409,7 @@ const initial = (): State => ({
   history: [],
   settings: {
     theme: 'system',
+    accent: 'saffraan',
     lang: detectLang(),
     showScript: true,
     showTranslit: true,

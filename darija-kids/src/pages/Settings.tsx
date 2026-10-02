@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  exportProgress, heeftStilteschakelaar, importProgress, resetProgress, setSetting, setState,
-  useStore, type Settings,
+  ACCENTEN, ACCENTKLEUR, exportProgress, heeftStilteschakelaar, importProgress, resetProgress, setSetting,
+  setState, useStore, type Settings,
 } from '../engine/store'
 import {
   arabicVoices, bruikbareStemmen, canNarrate, canSpeak, prepareSamples, probeSound, say, sfx, voicePlan,
@@ -427,6 +427,28 @@ export function SettingsPage() {
               { value: 'dark', label: t.settings.donker },
             ]}
           />
+        </Row>
+        {/*
+          De kleur, met de kleur erin.
+          
+          Vier namen naast elkaar zeggen een kind niets -- "zellige" al
+          helemaal niet. Dus staat de kleur zelf in de knop en de naam eronder
+          voor wie hem voorleest. Dezelfde vier als op het startscherm; de
+          kleuren staan in `index.css` onder `--accent-*`.
+        */}
+        <Row title={t.settings.accent} hint={t.settings.accentHint}>
+          <div className="flex gap-2">
+            {ACCENTEN.map((a) => (
+              <button
+                key={a}
+                onClick={() => { sfx.tap(); set('accent')(a) }}
+                aria-pressed={s.accent === a}
+                aria-label={t.settings.accenten[a]}
+                className={`h-11 w-11 rounded-full border-4 ${s.accent === a ? 'border-[var(--ink)]' : 'border-transparent'}`}
+                style={{ backgroundColor: ACCENTKLEUR[a] }}
+              />
+            ))}
+          </div>
         </Row>
       </Card>
 

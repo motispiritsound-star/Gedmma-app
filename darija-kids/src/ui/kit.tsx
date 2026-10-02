@@ -10,7 +10,9 @@ import { opTerug } from '../engine/terug'
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'success'
 
 const VARIANTS: Record<Variant, string> = {
-  primary: 'bg-saffron-500 text-night-950 border-saffron-600 hover:bg-saffron-400',
+  /* De kleur die de gebruiker koos; saffraan als hij niets koos. Zie
+     `--accent-*` in index.css en `ACCENTEN` in engine/store.ts. */
+  primary: 'bg-[var(--accent-500)] text-[var(--accent-ink)] border-[var(--accent-600)] hover:bg-[var(--accent-400)]',
   success: 'bg-mint-500 text-white border-mint-600 hover:bg-mint-400',
   secondary: 'bg-[var(--surface-raised)] text-[var(--ink)] border-[var(--line)] hover:border-zellige-500',
   ghost: 'bg-transparent text-[var(--ink-soft)] border-transparent hover:text-[var(--ink)]',
@@ -59,8 +61,14 @@ export function Card({ children, className = '', ...rest }: { children: ReactNod
   )
 }
 
-export function Progress({ value, className = '', tone = 'mint' }: { value: number; className?: string; tone?: 'mint' | 'saffron' | 'zellige' }) {
-  const bar = tone === 'mint' ? 'bg-mint-500' : tone === 'saffron' ? 'bg-saffron-500' : 'bg-zellige-500'
+export function Progress({ value, className = '', tone = 'mint' }: { value: number; className?: string; tone?: 'mint' | 'saffron' | 'zellige' | 'accent' }) {
+  /* `accent` is de kleur die de gebruiker koos. De andere drie staan vast,
+     want ze zeggen iets: mint is vooruitgang, zellige is een reeks. */
+  const bar =
+    tone === 'accent' ? 'bg-[var(--accent-500)]'
+    : tone === 'mint' ? 'bg-mint-500'
+    : tone === 'saffron' ? 'bg-saffron-500'
+    : 'bg-zellige-500'
   return (
     <div className={`h-3.5 w-full overflow-hidden rounded-full bg-[var(--surface-sunken)] ${className}`}>
       <motion.div
