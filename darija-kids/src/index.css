@@ -258,9 +258,23 @@ body {
 }
 
 /* Chunky, pressable button — the whole app leans on this one gesture. */
+/*
+ * Dezelfde valkuil als bij `.ar`: deze regel staat buiten elke laag en wint
+ * dus van de Tailwind-klasse ernaast. Vijf antwoordknoppen dragen `transition`
+ * om de randkleur te laten overvloeien als je kiest, en die klasse deed niets
+ * -- de kleur sprong. De kleuren staan daarom hier in de lijst, zodat die vijf
+ * doen wat er staat. Negentig milliseconde, dus het blijft onmiddellijk
+ * aanvoelen.
+ */
 .btn3d {
   box-shadow: var(--shadow-press);
-  transition: transform 90ms ease, box-shadow 90ms ease, filter 120ms ease;
+  transition:
+    transform 90ms ease,
+    box-shadow 90ms ease,
+    filter 120ms ease,
+    border-color 90ms ease,
+    background-color 90ms ease,
+    color 90ms ease;
 }
 .btn3d:active:not(:disabled) {
   transform: translateY(4px);

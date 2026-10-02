@@ -56,6 +56,28 @@ describe('geen Tailwind-klasse die niets doet op een .ar', () => {
   })
 })
 
+/**
+ * `.btn3d` staat net zo goed buiten elke laag, en liep tegen hetzelfde aan:
+ * vijf antwoordknoppen dragen `transition` om hun randkleur te laten
+ * overvloeien als je kiest, en die klasse deed niets — de eigen `transition`
+ * van `.btn3d` noemde alleen vorm, schaduw en filter. De kleuren staan nu in
+ * die lijst.
+ */
+describe('btn3d en de klasse transition ernaast', () => {
+  const css = lees('../index.css')
+
+  it('laat ook de kleuren overvloeien', () => {
+    for (const eigenschap of ['border-color', 'background-color', 'color']) {
+      expect(css).toContain(`${eigenschap} 90ms ease`)
+    }
+  })
+
+  it('en nog steeds de vorm en de schaduw', () => {
+    expect(css).toContain('transform 90ms ease')
+    expect(css).toContain('box-shadow 90ms ease')
+  })
+})
+
 describe('het pad zet de displayklasse op een omhulsel', () => {
   it('verbergt de Arabische unitnaam op een smal scherm', () => {
     expect(lees('../pages/Learn.tsx')).toContain('<span className="ms-auto hidden shrink-0 sm:block">')
