@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { UNITS } from '../content/curriculum'
@@ -9,7 +10,7 @@ import {
   dueWordIds, isDone, lessonBehindPaywall, lessonUnlocked, markTipSeen, nextLesson,
   progressOfUnit, unitBehindPaywall, unitUnlocked, useStore,
 } from '../engine/store'
-import { missingArabicVoice } from '../engine/audio'
+import { missingArabicVoice, sfx } from '../engine/audio'
 import { useVoices } from '../ui/useVoices'
 import { Khatims } from '../ui/Khatim'
 import type { Lesson } from '../content/types'
@@ -83,6 +84,44 @@ export function Learn() {
   const installed = useVoices()
   const noArabicVoice = installed.length > 0 && missingArabicVoice() && !state.seenTips.includes('stem')
 
+  /*
+   * Een unit die af is, staat dicht.
+   *
+   * Het pad liet elke vrijgespeelde unit al zijn lessen zien. Voor wie het
+   * abonnement heeft zijn dat vierenzeventig knopen onder elkaar, en gemeten
+   * bij een leerling die tweederde ver is werd de bladzijde 10 560 pixels
+   * lang: zijn volgende les stond op 8 285, dus tien schermen scrollen om te
+   * zien waar hij was. Elke sessie opnieuw.
+   *
+   * Er gaat niets weg -- één tik op de kop zet een unit weer open, en de
+   * voortgangsbalk en het percentage staan er nog gewoon. Wat weggaat is het
+   * scrollen langs wat je al kent.
+   *
+   * Een unit die nog loopt of nog moet beginnen blijft open: zien wat eraan
+   * komt is de reden om verder te willen, en dat geldt hier net zo goed als in
+   * het woordenboek.
+   *
+   * De keuze blijft binnen deze sessie en wordt niet bewaard. Dat is met opzet:
+   * wie morgen terugkomt hoort de app in zijn gewone stand te vinden, en niet
+   * in de stand waarin hij hem gisteren even had gezet.
+   */
+  /*
+   * Welke les dat eigenlijk is, waar "Ga verder" naartoe gaat.
+   *
+   * De knop zei alleen "Ga verder". Wat je verderging stond ergens beneden op
+   * het pad, en voor wie een eind op weg is kostte dat drie schermen scrollen
+   * om te zien waar hij was. Eén regel hier beantwoordt dat zonder scrollen.
+   */
+  const volgendeUnit = UNITS.find((u) => u.lessons.some((l) => l.id === next))
+  const volgendeLes = volgendeUnit?.lessons.find((l) => l.id === next)
+
+  const [geopend, setGeopend] = useState<Record<string, boolean>>({})
+  const toont = (id: string, af: boolean): boolean => geopend[id] ?? !af
+  const wissel = (id: string, af: boolean): void => {
+    sfx.nav()
+    setGeopend((g) => ({ ...g, [id]: !toont(id, af) }))
+  }
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
       <Card className="mb-6 flex flex-col items-center gap-4 overflow-hidden p-5 sm:flex-row">
@@ -97,6 +136,13 @@ export function Learn() {
                 een nieuwe gebruiker las, boven een knop die "Ga verder" zei. */}
             {eersteKeer ? t.learn.eersteKeer : due > 0 ? t.learn.wachten(due) : t.learn.allesHerhaald}
           </p>
+          {volgendeUnit && volgendeLes && (
+            <p className="mt-1.5 flex flex-wrap items-center justify-center gap-x-2 text-sm font-bold sm:justify-start">
+              <span aria-hidden="true">{KIND_ICON[volgendeLes.kind]}</span>
+              <span className="text-[var(--ink)]">{lessonTitle(volgendeLes, lang)}</span>
+              <span className="font-semibold text-[var(--ink-soft)]">· {volgendeUnit.title}</span>
+            </p>
+          )}
         </div>
         <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto">
           <Link to={`/les/${next}`}>
@@ -136,37 +182,58 @@ export function Learn() {
           const open = unitUnlocked(unit.id, state)
           const paid = unitBehindPaywall(unit.id, state)
           const pct = progressOfUnit(unit.id, state)
+          const af = pct >= 1
+          const uit = toont(unit.id, af)
+          const kop = (
+            <>
+              <div className="flex items-center gap-3">
+                <span className="text-3xl" aria-hidden="true">{unit.emoji}</span>
+                <div className="min-w-0 text-start">
+                  {/* `flex-wrap`: bij grote letters past het pilletje niet
+                      meer naast de titel en schoof het buiten beeld. */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h2 className="font-display text-xl font-extrabold">
+                      <span className="opacity-70">{ui + 1}.</span> {unit.title}
+                    </h2>
+                    <span className="rounded-full bg-night-950/15 px-2 py-0.5 text-[11px] font-bold">{unit.level}</span>
+                  </div>
+                  <p className="text-sm font-semibold opacity-80">{unitSubtitle(unit, lang)}</p>
+                </div>
+                {/* De Arabische naam blijft staan, ook bij een unit die je
+                    kunt in- en uitklappen — het pijltje komt erachter, niet
+                    in de plaats ervan. */}
+                <span className="ar ms-auto hidden text-2xl font-bold opacity-70 sm:block">{unit.ar}</span>
+                {open && (
+                  <span className="shrink-0 text-xl font-bold opacity-70 sm:ms-0 ms-auto" aria-hidden="true">{uit ? '⌃' : '⌄'}</span>
+                )}
+              </div>
+              <div className="mt-3 flex items-center gap-3">
+                <Progress value={pct} tone="zellige" className="h-2.5 bg-night-950/20" />
+                <span className="shrink-0 text-xs font-bold">{Math.round(pct * 100)}%</span>
+                {!uit && open && (
+                  <span className="shrink-0 text-xs font-bold opacity-80">· {t.landing.lessenAantal(unit.lessons.length)}</span>
+                )}
+              </div>
+            </>
+          )
+          const kopKlasse = `w-full rounded-3xl bg-gradient-to-r p-5 text-night-950 shadow-lg ${ACCENTS[unit.accent]} ${open ? '' : 'opacity-60 grayscale'}`
           return (
             <li key={unit.id}>
-              <div className={`rounded-3xl bg-gradient-to-r p-5 text-night-950 shadow-lg ${ACCENTS[unit.accent]} ${open ? '' : 'opacity-60 grayscale'}`}>
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl" aria-hidden="true">{unit.emoji}</span>
-                  <div className="min-w-0">
-                    {/* `flex-wrap`: bij grote letters past het pilletje niet
-                        meer naast de titel en schoof het buiten beeld. */}
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="font-display text-xl font-extrabold">
-                        <span className="opacity-70">{ui + 1}.</span> {unit.title}
-                      </h2>
-                      <span className="rounded-full bg-night-950/15 px-2 py-0.5 text-[11px] font-bold">{unit.level}</span>
-                    </div>
-                    <p className="text-sm font-semibold opacity-80">{unitSubtitle(unit, lang)}</p>
-                  </div>
-                  <span className="ar ms-auto hidden text-2xl font-bold opacity-70 sm:block">{unit.ar}</span>
-                </div>
-                <div className="mt-3 flex items-center gap-3">
-                  <Progress value={pct} tone="zellige" className="h-2.5 bg-night-950/20" />
-                  <span className="shrink-0 text-xs font-bold">{Math.round(pct * 100)}%</span>
-                </div>
-              </div>
-
               {open ? (
+                <button type="button" aria-expanded={uit} onClick={() => wissel(unit.id, af)} className={kopKlasse}>
+                  {kop}
+                </button>
+              ) : (
+                <div className={kopKlasse}>{kop}</div>
+              )}
+
+              {open && uit ? (
                 <ul className="mt-4 flex flex-col items-center">
                   {unit.lessons.map((lesson, i) => (
                     <Node key={lesson.id} lesson={lesson} index={i} accent={ACCENTS[unit.accent]!} />
                   ))}
                 </ul>
-              ) : !paid ? (
+              ) : !open && !paid ? (
                 <p className="mt-4 text-center text-sm text-[var(--ink-soft)]">{t.learn.unitSlot(ui)}</p>
               ) : null}
 
