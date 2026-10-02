@@ -22,6 +22,7 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { nieuwsteBron } from './lib/bron.mjs'
 import { geenJdk, haalJdk, vindJdk, vindSdk } from './lib/jdk.mjs'
 import { pluginklacht } from './lib/plugins.mjs'
 import { standKort, toonStand } from './lib/stand.mjs'
@@ -65,24 +66,17 @@ if (klacht) {
 }
 
 /**
- * De nieuwste bronregel die iemand heeft aangeraakt.
+ * Is er code gewijzigd sinds de app het Android-project in ging?
  *
  * Gradle bouwt het Android-project, niet de app: die staat als kant-en-klare
  * html in `assets/public/` en komt daar alleen terecht door `npm run android`.
  * Wie dit script los aanroept na een `git pull` krijgt dus een bundel met de
  * code van gisteren erin, zonder dat er iets misgaat wat je kunt zien. Dat is
  * een dag werk die stil verdwijnt, en het is hier al een keer gebeurd.
+ *
+ * De telling zelf staat in `lib/bron.mjs`, want `naartrack.mjs` stelt dezelfde
+ * vraag en de twee kopieën waren het niet eens.
  */
-const nieuwsteBron = (map) => {
-  let laatste = 0
-  for (const item of readdirSync(map, { withFileTypes: true })) {
-    if (item.name === 'node_modules' || item.name.startsWith('.')) continue
-    const pad = path.join(map, item.name)
-    laatste = Math.max(laatste, item.isDirectory() ? nieuwsteBron(pad) : statSync(pad).mtimeMs)
-  }
-  return laatste
-}
-
 if (nieuwsteBron(path.join(ROOT, 'src')) > statSync(publiek).mtimeMs) {
   console.error('\nEr is code gewijzigd sinds de app het Android-project in ging.\n')
   console.error('Deze bundel zou de oude app bevatten. Draai eerst:\n')

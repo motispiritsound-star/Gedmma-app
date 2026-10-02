@@ -53,6 +53,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { nieuwsteVan } from './lib/bron.mjs'
 import { leesSleutel, tokenOfStop } from './lib/play.mjs'
 import { hoogste, hoogsteNaam } from './lib/versies.mjs'
 
@@ -127,21 +128,12 @@ if (!existsSync(AAB)) {
  * `maak-aab` ook niet — maar `track` wel. Dan zit er in de winkel iets anders
  * dan wat je denkt te hebben opgestuurd, en ga je een afwijzing zoeken in code
  * die er nooit in zat.
+ *
+ * De telling staat in `lib/bron.mjs`, gedeeld met `maak-aab.mjs`, en slaat
+ * testbestanden over -- die komen niet in de bundel, dus ze zeggen niets over
+ * hoe oud hij is.
  */
-const nieuwsteBron = (map) => {
-  let nieuwste = 0
-  const langs = (m) => {
-    for (const naam of readdirSync(m, { withFileTypes: true })) {
-      const pad = path.join(m, naam.name)
-      if (naam.isDirectory()) langs(pad)
-      else nieuwste = Math.max(nieuwste, statSync(pad).mtimeMs)
-    }
-  }
-  if (existsSync(map)) langs(map)
-  return nieuwste
-}
-
-const bron = OUD ? 0 : Math.max(nieuwsteBron(path.join(ROOT, 'src')), nieuwsteBron(path.join(ROOT, 'public')))
+const bron = OUD ? 0 : nieuwsteVan(path.join(ROOT, 'src'), path.join(ROOT, 'public'))
 const gebouwd = statSync(AAB).mtimeMs
 if (bron > gebouwd) {
   const dagen = Math.round((bron - gebouwd) / 86400000)
