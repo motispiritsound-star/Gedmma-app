@@ -140,6 +140,8 @@
    * het al die tijd is geweest. `data-stelsel` wordt in main.tsx gezet.
    */
   --rand-boven: env(safe-area-inset-top);
+  /* Wordt door TopBar gemeten en overschreven; dit is de waarde tot dat gebeurt. */
+  --kop-hoogte: 56px;
   --rand-onder: env(safe-area-inset-bottom);
   --surface: #fffaf3;
   --surface-raised: #ffffff;

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { heartsNow, levelOf, MAX_HEARTS, msUntilNextHeart, useStore, xpToday } from '../engine/store'
 import { sfx } from '../engine/audio'
@@ -59,8 +60,30 @@ export function TopBar() {
    *
    * De onderkant werd al zo opgelost, in App.tsx bij de tabbalk.
    */
+  /*
+   * De hoogte van deze balk, als CSS-variabele, zodat een bladzijde eronder
+   * iets kan laten plakken.
+   *
+   * Hij is `sticky top-0` en zijn hoogte staat niet vast: bij een grote
+   * letterinstelling breekt de rij af naar twee regels, en op een toestel met
+   * een inkeping komt `--rand-boven` er nog bovenop. Een vast getal in een
+   * andere bladzijde klopt dus op precies één toestel. Meten en doorgeven is
+   * de enige manier die overal klopt.
+   */
+  const balk = useRef<HTMLElement>(null)
+  useEffect(() => {
+    const el = balk.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const zet = () => document.documentElement.style.setProperty('--kop-hoogte', `${Math.round(el.getBoundingClientRect().height)}px`)
+    zet()
+    const kijker = new ResizeObserver(zet)
+    kijker.observe(el)
+    return () => kijker.disconnect()
+  }, [])
+
   return (
     <header
+      ref={balk}
       className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--surface)]/90 backdrop-blur"
       style={{ paddingTop: 'var(--rand-boven)' }}
     >

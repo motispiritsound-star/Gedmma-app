@@ -82,18 +82,68 @@ export function Words() {
     return topic === 'alles' ? base : base.filter((w) => w.topic === topic)
   }, [query, topic, lang])
 
+  /*
+   * Het woordenboek bouwt zich op in stukken van veertig.
+   *
+   * Alle 304 woorden tegelijk neerzetten is 29 341px pagina en 3 161 knopen,
+   * en dat kost op een trage telefoon meer dan je denkt: nagemeten met de
+   * processor zes keer vertraagd stond het eerste woord er pas na 2,6
+   * seconde, en elke toetsaanslag in het zoekveld kostte 200 tot 560ms —
+   * want bij elke letter mogen 304 kaarten weer weg. Zo loopt het veld
+   * achter je vingers aan.
+   *
+   * Veertig is ruim vier schermen, en er komen er veertig bij zodra het
+   * baken 800px voor het eind in beeld komt. Je merkt er dus niets van bij
+   * het scrollen; alleen het typen is weer vlot.
+   */
+  const STAP = 40
+  const [toon, setToon] = useState(STAP)
+  const baken = useRef<HTMLDivElement>(null)
+
+  // Een nieuwe zoekvraag begint weer bovenaan, dus ook weer bij veertig.
+  useEffect(() => setToon(STAP), [query, topic])
+
+  useEffect(() => {
+    const el = baken.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const kijker = new IntersectionObserver(
+      (rijen) => { if (rijen.some((r) => r.isIntersecting)) setToon((n) => n + STAP) },
+      { rootMargin: '800px 0px' },
+    )
+    kijker.observe(el)
+    return () => kijker.disconnect()
+  }, [results.length, toon])
+
+  const zichtbaar = toon >= results.length ? results : results.slice(0, toon)
+
   return (
     <div className="mx-auto max-w-3xl lg:max-w-4xl px-4 py-6">
       <SectionTitle sub={t.words.uitleg(allWords.length)}>{t.words.titel}</SectionTitle>
 
-      <input
-        type="search"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder={t.words.zoek}
-        aria-label={t.words.zoekLabel}
-        className="w-full rounded-2xl border-2 border-[var(--line)] bg-[var(--surface-raised)] px-4 py-3 text-lg outline-none focus:border-zellige-500"
-      />
+      {/*
+        Het zoekveld blijft staan.
+
+        Het woordenboek is 304 woorden; wie doorscrollt is na een paar vegen
+        twintig schermen van het veld vandaan, en een tweede woord opzoeken
+        begon dan met helemaal terugscrollen. Nu plakt het onder de kopbalk,
+        waarvan TopBar de hoogte doorgeeft in `--kop-hoogte` — die hoogte
+        verschilt per toestel en per letterinstelling, dus een vast getal zou
+        het veld half onder de balk schuiven.
+
+        De negatieve marge en de opvulling eromheen zijn er zodat de
+        achtergrond tijdens het plakken doorloopt tot de rand van het scherm
+        en de kaarten er niet onderdoor schijnen.
+      */}
+      <div className="sticky z-30 -mx-4 bg-[var(--surface)] px-4 pb-2 pt-1" style={{ top: 'var(--kop-hoogte)' }}>
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={t.words.zoek}
+          aria-label={t.words.zoekLabel}
+          className="w-full rounded-2xl border-2 border-[var(--line)] bg-[var(--surface-raised)] px-4 py-3 text-lg outline-none focus:border-zellige-500"
+        />
+      </div>
 
       <div className="relative -mx-4 mt-3">
         <ul
@@ -152,7 +202,7 @@ export function Words() {
       )}
 
       <ul className="mt-2 space-y-2">
-        {results.map((w) => {
+        {zichtbaar.map((w) => {
           const card = cards[w.id]
           const isOpen = open === w.id
           // Het woordenboek toont alles, ook wat nog niet van jou is: zien wat
@@ -208,6 +258,10 @@ export function Words() {
           )
         })}
       </ul>
+
+      {/* Het baken. Geen tekst en geen knop: het hoort een lijst te zijn die
+          gewoon doorloopt, niet een lijst met een drempel erin. */}
+      {toon < results.length && <div ref={baken} aria-hidden="true" className="h-px" />}
 
       {results.length === 0 && (
         <Card className="mt-6 p-6 text-center text-[var(--ink-soft)]">
