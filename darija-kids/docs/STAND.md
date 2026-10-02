@@ -11,7 +11,7 @@ te lezen.
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 1289, groen — daar zitten de 77 van de worker al in |
-| Google Play | 4 (1.2) op **Productie**, 177 landen — de winkelpagina is nog **niet publiek**; **5 (1.3) ligt gebouwd klaar** |
+| Google Play | **inzending 4 AFGEWEZEN op 2 oktober** — *Broken Functionality: crashes after opening*. Niets live. 5 (1.3) ligt gebouwd klaar |
 | App Store | **1.0 (build 7) goedgekeurd, wacht op vrijgeven** — **1.1 (build 9) geüpload 2 oktober 08:34**, met alles erin |
 | Uitbetalen | **rond bij allebei** — Google geverifieerd op 1 oktober |
 
@@ -1127,6 +1127,54 @@ overleefd, negentien rommelroutes opgevangen, vierendertig bladzijdeladingen
 zonder fout, negen combinaties van breedte en lettergrootte binnen beeld, vier
 liggende formaten binnen beeld, offline alle routes door, en de stoeitest
 zonder enige uitzondering.
+
+#### Play heeft inzending 4 afgewezen — 2 oktober
+
+> **Crashes**: Your app crashes after opening.
+> Version code 4: In-app experience
+
+Eén echt punt. De tweede regel in Policy status ("Not adhering to Google Play
+Developer Program policies") heeft geen eigen inhoud; dat is de koepelregel die
+Google ernaast zet.
+
+**Wat dit niet is.** Niet de knoppen onder de balk van Android 15 — dat was de
+eerste gok en die klopte niet. Niet een afgewezen winkeltekst. Niet iets wat de
+doorloop van 2 oktober al gerepareerd heeft: die raakt de opstartcode nergens,
+dus **versiecode 5 heeft dit vrijwel zeker ook**.
+
+**Wat er in de code is nagekeken, zonder resultaat:**
+
+| | |
+|---|---|
+| `AndroidManifest.xml` | `android:exported` staat er, rechten zijn minimaal, niets bijzonders |
+| Native bibliotheken | geen enkele — de 16 KB-paginaregel van Play raakt deze app niet |
+| `minifyEnabled` | staat uit, dus ProGuard heeft niets weggesnoeid |
+| Versies | Capacitor 8.5.2, AGP 8.13.0, Gradle 8.14.3, target en compile 36 — dat hoort bij elkaar |
+| De opstartcode in JS | `platform()` kan niet werpen, `Grens` staat buiten `App`, de eerste start is uitgebreid nagemeten |
+
+Eén echte vondst, maar geen crash: `res/xml/locales_config.xml` noemt nl, fr,
+de, es en en — **Italiaans ontbreekt**, terwijl de app zes talen heeft. Daardoor
+kan een Italiaans gezin de app niet op Italiaans zetten in de taalinstelling
+van Android 13+. Dat staat los van de afwijzing en is met opzet nog niet
+aangeraakt, zodat de volgende bundel met de vorige te vergelijken blijft.
+
+**Waar het antwoord wél ligt: het Pre-launch report.** Play draait elke
+geüploade bundel automatisch op echte toestellen. Crasht hij bij het openen,
+dan staat de stacktrace daar, met video en toestelnaam. Play Console → *Test
+and release* → *Testing* → **Pre-launch report**, en dan versiecode 4 kiezen.
+
+**En reproduceren met een bundel, niet met een apk.** `npm run apk` maakt niet
+wat Play installeert: Play bouwt gesplitste APK's uit de `.aab`. Upload
+versiecode 5 naar **Internal testing** — die baan gaat niet langs de
+beoordeling en raakt de afwijzing niet — en installeer hem via de uitnodiging
+op de Galaxy Tab.
+
+**Niet opnieuw indienen voordat dit begrepen is.** Een herhaalde afwijzing op
+hetzelfde punt telt bij Google mee voor je accountstatus.
+
+Dit raakt Apple niet: daar is build 7 goedgekeurd, dus de app opende bij die
+beoordelaar gewoon. Dat maakt het waarschijnlijk iets aan de Android-kant of
+aan één toestel, en niet een JS-fout die overal zou optreden.
 
 #### Build 9 staat bij Apple — 2 oktober 08:34
 
