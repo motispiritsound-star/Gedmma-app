@@ -13,7 +13,7 @@ import type { Lang } from '../i18n/languages'
  * application id from capacitor.config.ts.
  */
 export const STORE = {
-  apple: '',
+  apple: 'https://apps.apple.com/app/id6813964474',
   google: '',
 }
 

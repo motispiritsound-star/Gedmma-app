@@ -76,6 +76,8 @@ bladi/dist-demo/
 # echt werk geeft, en een test die met een liggend streepje begint is er geen —
 # alle tests hier heten naar wat ze bewaken.
 darija-kids/dist-*/
-darija-kids/meet-*.mjs
+darija-kids/meet*.mjs
+darija-kids/_*.mjs
 darija-kids/*-tmp.mjs
 darija-kids/src/**/_*.test.ts
+darija-kids/src/**/meet*.test.ts
