@@ -11,7 +11,7 @@ te lezen.
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 1289, groen — daar zitten de 77 van de worker al in |
-| Google Play | **inzending 4 AFGEWEZEN op 2 oktober** — *Broken Functionality: crashes after opening*. Niets live. 5 (1.3) ligt gebouwd klaar |
+| Google Play | **inzending 4 AFGEWEZEN op 2 oktober** — *crashes after opening*. Niets live. **5 (1.3) staat op de gesloten test**, wachtend op het rapport vóór lancering |
 | App Store | **1.0 (build 7) goedgekeurd, wacht op vrijgeven** — **1.1 (build 9) geüpload 2 oktober 08:34**, met alles erin |
 | Uitbetalen | **rond bij allebei** — Google geverifieerd op 1 oktober |
 
@@ -1171,6 +1171,20 @@ op de Galaxy Tab.
 
 **Niet opnieuw indienen voordat dit begrepen is.** Een herhaalde afwijzing op
 hetzelfde punt telt bij Google mee voor je accountstatus.
+
+##### Versiecode 5 staat op de gesloten test — 2 oktober
+
+Precies wat er bij versie 2 ook al had gemoeten. `npm run track` zet de bundel
+op de alpha-baan: geen beoordeling, geen risico voor de winkelvermelding, en
+Google begint er vanzelf een rapport vóór lancering van te maken — hij
+installeert de app op een rij echte toestellen en klikt erdoorheen.
+
+Dat liep eerst op een 403 bij het vastleggen. Het serviceaccount
+`play-publisher@…` mocht klaarzetten maar niet uitbrengen. In Play Console bij
+*Gebruikers en rechten* → *App-rechten* → **Releases** staan nu twee rechten
+aan: *Release apps to testing tracks* en *Manage testing tracks and edit tester
+lists*. *Release to production* blijft met opzet uit — publiceren naar
+productie hoort een bewuste handeling in de console te zijn.
 
 ##### Wat er wél gerepareerd is, 2 oktober
 
