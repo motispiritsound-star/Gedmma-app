@@ -24,10 +24,29 @@ jaarabonnement of het boek koopt.
 **Wat er klaarligt voor de volgende ronde** (build 10, versiecode 8), nog in
 geen enkele winkel:
 
+- **Een startscherm in drie stappen** (`b72d38f`): taal, dan wie je bent (naam
+  en een dier uit tien), dan hoe het eruitziet (een van vier kleuren, en licht
+  of donker). Daarvoor was het één talenlijst, en daarna stond een kind in een
+  app die er voor iedereen hetzelfde uitzag — met een uil die het niet gekozen
+  had en "Leerling" waar zijn naam hoort. Elke keuze gaat meteen de staat in;
+  alleen `langPicked` gaat aan het eind om.
+- **Een kleur die van jou is.** Saffraan, zellige, terracotta of munt, op de
+  knop waarmee je verder gaat, je voortgangsbalk en de ring om je avatar. Níét
+  op groen-is-goed en rood-is-fout: die betekenen iets, en een kind dat zijn
+  eigen "goed" op oranje zet kan daarna niet meer zien of hij het goed had.
+  Nagerekend op 2 oktober: de zwakste is terracotta met 5,55 op 1 tegen de
+  knoptekst, waar 4,5 de norm is. `kleurkeuze.test.ts` rekent het na en legt de
+  bolletjes in de app naast de tokens in `index.css`. Saffraan krijgt geen
+  stempel op de wortel, dus een oude opslag ziet er precies zo uit als altijd.
+  Nagekeken op schermafdrukken van 390 pixels in allebei de standen en
+  goedgekeurd.
 - Na het betalen kom je op `/profiel?welkom=1` uit, waar naam en avatar bij
   elkaar staan (`621fb63`).
 - De plugincontrole vóór het bouwen en de klassencontrole erna.
 - `docs/versies.json`, en de releasenotities die vanzelf meegaan.
+- De Franse abonnementsteksten: die staan nog op *Prepare for Submission* en
+  gingen niet mee met 1.1. Een Franse koper ziet tot dan de Engelse, en die
+  klopt.
 
 **Nog open, geparkeerd:** een leeftijd op het profiel. De vraag is niet of het
 kan maar wat de app ermee doet; zonder antwoord daarop is het een veld waar een
