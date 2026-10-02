@@ -252,7 +252,10 @@ export function Profile() {
 
       <Card className="mt-8 flex flex-wrap items-center gap-4 p-5">
         <Mascot mood="blij" size={64} />
-        <p className="min-w-0 flex-1 text-sm text-[var(--ink-soft)]">
+        {/* `basis-48` en niet `flex-1`: naast de mascotte en de knop hield
+            `flex-1` hier 64 pixels over, en stond deze zin van veertien
+            woorden over elf regels. Zie `geknepen.test.ts`. */}
+        <p className="min-w-0 grow basis-48 text-sm text-[var(--ink-soft)]">
           {doneLessons === 0 ? t.profile.nogGeenLes : t.profile.lessenAf(doneLessons)}
         </p>
         <Link to="/leren"><Button>{t.profile.verderLeren}</Button></Link>

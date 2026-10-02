@@ -8,7 +8,8 @@
  *
  * Nagemeten op 390px: de kaart "De bonus van vandaag" gaf de tekst 91 pixels,
  * vier woorden over drie regels. De slotkaart op /woorden gaf er 158, twintig
- * woorden over vijf regels. Geen van beide loopt buiten beeld, dus het
+ * woorden over vijf regels. Het ergst was de afsluiter van /profiel, met een
+ * mascotte én een knop ernaast: 64 pixels, veertien woorden over elf regels. Geen van beide loopt buiten beeld, dus het
  * krapte-harnas zag er niets van: het is geen overloop maar een kolom die zo
  * smal wordt dat er één woord per regel in past.
  *
@@ -27,6 +28,7 @@ const RIJEN: Array<[string, string]> = [
   ['het slot op /verhalen', '../pages/Stories.tsx'],
   ['het slot op /woorden', '../pages/Words.tsx'],
   ['de kaart "geluid staat uit"', '../ui/GeluidUit.tsx'],
+  ['de afsluiter van /profiel', '../pages/Profile.tsx'],
 ]
 
 describe('tekst naast een knop', () => {
@@ -44,6 +46,7 @@ describe('tekst naast een knop', () => {
     ['../pages/Stories.tsx', '<p className="min-w-0 grow basis-48 text-sm">{t.stories.slotUitleg}</p>'],
     ['../pages/Words.tsx', '<p className="min-w-0 grow basis-48 text-sm">{t.words.slotUitleg}</p>'],
     ['../ui/GeluidUit.tsx', '<div className="min-w-0 grow basis-48">'],
+    ['../pages/Profile.tsx', '<p className="min-w-0 grow basis-48 text-sm text-[var(--ink-soft)]">'],
   ])('%s zet het op de rij met de knop', (pad, regel) => {
     expect(lees(pad)).toContain(regel)
   })
