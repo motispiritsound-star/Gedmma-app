@@ -23,7 +23,9 @@ import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from '
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { geenJdk, haalJdk, vindJdk, vindSdk } from './lib/jdk.mjs'
+import { pluginklacht } from './lib/plugins.mjs'
 import { standKort, toonStand } from './lib/stand.mjs'
+import { hoogste, hoogsteNaam, schrijfBij } from './lib/versies.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const ANDROID = path.join(ROOT, 'android')
@@ -52,6 +54,13 @@ const publiek = path.join(ANDROID, 'app', 'src', 'main', 'assets', 'public', 'in
 if (!existsSync(publiek)) {
   console.error('\nDe app staat nog niet in het Android-project.\n')
   console.error('Draai eerst:  npm run android\n')
+  process.exit(1)
+}
+
+// En staan de plugins er ook in? Die verdwijnen stil als node_modules achterloopt.
+const klacht = pluginklacht(ROOT, 'android')
+if (klacht) {
+  console.error(klacht)
   process.exit(1)
 }
 
@@ -115,11 +124,15 @@ if (versie || naam) {
  * Dus: hardop zeggen wat er straks in de bundel komt, vóór het bouwen.
  */
 if (!versie) {
-  const huidig = readFileSync(GRADLE, 'utf8').match(/versionCode (\d+)/)?.[1]
-  console.warn(`\nGeen --versie opgegeven. Deze bundel wordt versionCode ${huidig ?? '?'}.`)
+  const huidig = Number(readFileSync(GRADLE, 'utf8').match(/versionCode (\d+)/)?.[1]) || 0
+  // Het hoogste van de twee: build.gradle weet wat déze machine gebouwd heeft,
+  // docs/versies.json wat welke machine dan ook gebouwd heeft.
+  const top = Math.max(huidig, hoogste(ROOT))
+  console.warn(`\nGeen --versie opgegeven. Deze bundel wordt versionCode ${huidig || '?'}.`)
   console.warn('Play weigert een nummer dat al eens geüpload is — ook een ingetrokken upload.')
+  if (top > huidig) console.warn(`Er is al eens een bundel ${top} gebouwd; dit nummer is dus te laag.`)
   console.warn('Bedoelde je het volgende nummer, breek dan af en draai:\n')
-  console.warn(`  npm run aab -- --versie ${huidig ? Number(huidig) + 1 : 2} --naam ${naam ?? '1.1'}\n`)
+  console.warn(`  npm run aab -- --versie ${top + 1} --naam ${naam ?? hoogsteNaam(ROOT) ?? '1.3'}\n`)
 }
 
 let jdk = vindJdk()
@@ -176,6 +189,18 @@ if (!existsSync(RESULTAAT)) {
 
 const mb = (statSync(RESULTAAT).size / 1024 / 1024).toFixed(1)
 const uit = standKort(ROOT)
+
+// Bijschrijven, zodat de volgende bouw -- ook op de andere machine, ook uit een
+// verse kloon -- weet tot waar de nummers al staan. Alleen voor een echte
+// bundel: een .apk gaat nooit naar Play en verbruikt dus geen nummer.
+let bijgeschreven = null
+if (!alsApk) {
+  const bron = readFileSync(GRADLE, 'utf8')
+  const gebouwdeCode = versie ?? Number(bron.match(/versionCode (\d+)/)?.[1])
+  const gebouwdeNaam = naam ?? bron.match(/versionName "([^"]*)"/)?.[1]
+  schrijfBij(ROOT, gebouwdeCode, gebouwdeNaam)
+  bijgeschreven = gebouwdeCode
+}
 console.log('\nKlaar.\n')
 console.log(`  ${RESULTAAT}`)
 console.log(`  ${mb} MB`)
@@ -183,6 +208,15 @@ console.log(`  ${mb} MB`)
 if (uit) console.log(`  uit ${uit}`)
 if (versie || naam) console.log(`  versionCode ${versie ?? '?'} · versionName ${naam ?? '?'}`)
 console.log('')
+// Het boek reist alleen mee als het gecommit wordt. Zonder deze regel staat het
+// nummer op deze machine en nergens anders, en dat is precies het probleem dat
+// het bestand moest oplossen.
+if (bijgeschreven) {
+  console.log(`docs/versies.json staat nu op ${bijgeschreven}. Commit dat mee, anders`)
+  console.log('weet de andere machine straks weer van niets:\n')
+  console.log('  git add docs/versies.json')
+  console.log(`  git commit -m "versiecode ${bijgeschreven} gebouwd"\n`)
+}
 console.log(
   alsApk
     ? 'Zet dit bestand op je telefoon en open het daar om de app te installeren.\n'

@@ -26,9 +26,31 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { inflateRawSync } from 'node:zlib'
+import { kwijtInDex, pluginstand, verwachteKlassen } from './lib/plugins.mjs'
+import { hoogste, hoogsteNaam } from './lib/versies.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const STANDAARD = path.join(ROOT, 'android', 'app', 'build', 'outputs', 'bundle', 'release', 'app-release.aab')
+
+/**
+ * De opdracht die hierna gedraaid moet worden, met echte nummers erin.
+ *
+ * Niet `--versie <volgende>`: punthaken belanden letterlijk in de terminal, en
+ * dat is hier al een paar keer gebeurd. Play weigert bovendien een versionCode
+ * die al eens geüpload is, dus het nummer uit build.gradle plus één is het
+ * enige antwoord dat klopt.
+ */
+function volgendeBouw() {
+  const gradle = path.join(ROOT, 'android', 'app', 'build.gradle')
+  const bron = existsSync(gradle) ? readFileSync(gradle, 'utf8') : ''
+  // Het hoogste van de twee. In build.gradle staat wat deze machine het laatst
+  // gebouwd heeft; in docs/versies.json staat wat welke machine dan ook ooit
+  // gebouwd heeft. Een verse kloon kent alleen die tweede.
+  const code = Math.max(Number(bron.match(/versionCode (\d+)/)?.[1]) || 0, hoogste(ROOT))
+  const naam = hoogsteNaam(ROOT) ?? bron.match(/versionName "([^"]*)"/)?.[1]
+  if (!code || !naam) return 'npm run aab'
+  return `npm run aab -- --versie ${code + 1} --naam ${naam}`
+}
 
 const i = process.argv.indexOf('--aab')
 const AAB = i > 0 && process.argv[i + 1] ? process.argv[i + 1] : STANDAARD
@@ -36,7 +58,7 @@ const AAB = i > 0 && process.argv[i + 1] ? process.argv[i + 1] : STANDAARD
 if (!existsSync(AAB)) {
   console.error(`\nGeen bundel op:\n  ${AAB}\n`)
   console.error('Zet --aab en een pad erachter om een andere te bekijken, of bouw hem:\n')
-  console.error('  npm run aab -- --versie 4 --naam 1.2\n')
+  console.error(`  ${volgendeBouw()}\n`)
   process.exit(1)
 }
 
@@ -103,6 +125,67 @@ const mb = (statSync(AAB).size / 1048576).toFixed(1)
 console.log(`\nBundel: ${AAB}`)
 console.log(`        ${mb} MB, ${zip.namen.length} bestanden`)
 console.log(`        gebouwd op ${new Date(statSync(AAB).mtimeMs).toLocaleString('nl-NL')}\n`)
+
+/* ------------------------------------------------------------------ native */
+
+/*
+ * Zit de app zelf er wel in?
+ *
+ * Hierboven wordt het javascript gewogen, en dat is de helft. De andere helft
+ * is de java: `MainActivity` opent het venster waar dat javascript in draait.
+ * Zonder die klasse start Android de app, vindt hem niet, en sluit af voordat
+ * er een letter op het scherm staat -- `ClassNotFoundException`, logo even in
+ * beeld en weg.
+ *
+ * Dat is hier gebeurd, twee keer achter elkaar afgewezen door Google. De
+ * oorzaak was niet een fout in de code maar een regel in `.gitignore`: de map
+ * `android/` was uitgesloten met een uitzondering op de oude projectnaam, dus
+ * `MainActivity.java` is nooit in de repository beland. Op de machine waar het
+ * bestand ooit is gemaakt werkte alles; elke bundel uit een verse kloon was
+ * leeg. Gradle klaagt daar niet over -- een android-project zonder activity is
+ * een geldig android-project -- en Play keurt hem goed.
+ *
+ * Een klassenaam staat in een dex als `Lapp/darijaforkids/learn/MainActivity;`.
+ * Daar hoeft niets voor ontleed te worden; de tekst staat er letterlijk in.
+ */
+const dexNamen = zip.namen.filter((n) => /(^|\/)classes\d*\.dex$/.test(n))
+if (!dexNamen.length) {
+  console.error('Er zit geen enkele classes.dex in deze bundel.')
+  console.error('Dan is er geen java in gecompileerd en start de app niet.\n')
+  process.exit(1)
+}
+
+const dex = Buffer.concat(dexNamen.map((n) => zip.pak(n)))
+console.log(`Java: ${dexNamen.length} dex-bestand${dexNamen.length === 1 ? '' : 'en'}, ${Math.round(dex.length / 1024)} kB`)
+
+const verwacht = verwachteKlassen(ROOT)
+const kwijt = kwijtInDex(dex, verwacht)
+for (const v of verwacht) {
+  console.log(`  ${kwijt.includes(v) ? '✗' : '✓'} ${v.wat.padEnd(30)} ${v.klasse}`)
+}
+
+// En wat `cap sync` stil heeft overgeslagen staat hier niet eens in de lijst.
+const { ontbreekt, nietGeinstalleerd } = pluginstand(ROOT, 'android')
+for (const n of [...ontbreekt, ...nietGeinstalleerd]) {
+  kwijt.push({ wat: n, klasse: 'niet ingeschreven door cap sync' })
+  console.log(`  ✗ ${n.padEnd(30)} niet ingeschreven door cap sync`)
+}
+console.log('')
+
+if (kwijt.length) {
+  console.error('Deze bundel mist native code.\n')
+  for (const { wat, klasse } of kwijt) console.error(`  ${wat}: ${klasse}`)
+  console.error('')
+  console.error('Ontbreekt de app zelf, dan start hij niet: het logo komt even in beeld')
+  console.error('en Android sluit af met ClassNotFoundException. Ontbreekt een plugin,')
+  console.error('dan start hij wel maar doet dat stuk niets -- geen trilling, geen')
+  console.error('herinnering -- en dat merk je pas aan een recensie.\n')
+  console.error('Controleer eerst of alles in de repository staat en geïnstalleerd is:\n')
+  console.error('  git status')
+  console.error('  npm install')
+  console.error(`  ${volgendeBouw()}\n`)
+  process.exit(1)
+}
 
 const jsNamen = zip.namen.filter((n) => /^base\/assets\/public\/assets\/.*\.js$/.test(n))
 if (!jsNamen.length) {
@@ -173,7 +256,7 @@ if (chain > 0 || nullish > 0) {
   console.log('load", en daar is deze app op afgewezen.\n')
   console.log('Dit is dus niet de app waarvan je denkt dat je hem hebt opgestuurd.')
   console.log('Bouw hem opnieuw, met een versiecode die nog niet gebruikt is:\n')
-  console.log('  npm run aab -- --versie 4 --naam 1.2\n')
+  console.log(`  ${volgendeBouw()}\n`)
   process.exit(1)
 }
 
@@ -184,7 +267,7 @@ if (asyncKw > 0 && generator === 0) {
   console.log('beloven. minSdkVersion 24 is Android 7, en die is uitgekomen met WebView')
   console.log('Chrome 51. Het bouwdoel staat inmiddels op es2015 en dat kost zeven')
   console.log('kilobyte. Bouw hem opnieuw zodat je die drempel ook echt haalt:\n')
-  console.log('  npm run aab -- --versie 4 --naam 1.2\n')
+  console.log(`  ${volgendeBouw()}\n`)
   process.exit(1)
 }
 

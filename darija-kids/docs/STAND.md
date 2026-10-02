@@ -11,7 +11,7 @@ te lezen.
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 1289, groen — daar zitten de 77 van de worker al in |
-| Google Play | inzending 4 afgewezen 2 oktober — **oorzaak gevonden en gerepareerd**: `MainActivity.java` stond niet in de repository. Bundel 6 moet nog gebouwd |
+| Google Play | inzending 4 afgewezen 2 oktober — **oorzaak gevonden, gerepareerd en op het toestel bevestigd**: `MainActivity.java` stond niet in de repository. Versiecode 6 opent op de Galaxy Tab. Maar 6 is gebouwd met onvolledige `node_modules` (twee plugins ontbreken), dus naar Play gaat **versiecode 7** |
 | App Store | **1.0 (build 7) goedgekeurd, wacht op vrijgeven** — **1.1 (build 9) geüpload 2 oktober 08:34**, met alles erin |
 | Uitbetalen | **rond bij allebei** — Google geverifieerd op 1 oktober |
 
@@ -1216,6 +1216,85 @@ bestand uit de index te halen: dan valt de test om.
 **Wat er nu moet gebeuren.** Versiecode 5 is op, want die bundel staat al op de
 gesloten en de interne baan. De reparatie gaat dus in **versiecode 6**, naam
 1.3.
+
+**Bevestigd op het toestel — 2 oktober.** Versiecode 6 is lokaal als `.apk`
+gebouwd en op de Galaxy Tab A (SM-T510, Android 11) gezet. Hij opent. Daarmee
+is de diagnose niet langer een vermoeden: dezelfde code, hetzelfde toestel,
+alleen `MainActivity.java` erbij, en de crash is weg.
+
+Dat ging niet in één keer. `adb install` gaf eerst
+`INSTALL_FAILED_UPDATE_INCOMPATIBLE` — de app die er stond kwam van Play en is
+door Google ondertekend, de lokale `.apk` met onze eigen sleutel, en Android
+weigert dan de vervanging. Er is dus een `adb uninstall
+app.darijaforkids.learn` nodig vóór de installatie, en wat je daarna opent is
+echt de nieuwe bundel. Zonder die stap test je de oude app en lijkt de
+reparatie niet te werken.
+
+##### Het tweede gat van hetzelfde soort — 2 oktober
+
+Bij het opruimen van de eerste bleek er een tweede, met precies dezelfde vorm:
+iets ontbreekt, niets klaagt, de bundel slaagt.
+
+`npx cap sync android` vond op Windows **één** plugin waar dezelfde opdracht op
+de Mac er **drie** vond. `@capacitor/haptics` en
+`@capacitor/local-notifications` staan wel in `package.json`, maar stonden daar
+niet in `node_modules` — `npm install` was na een `git pull` niet gedraaid.
+`cap sync` slaat zo'n pakket stil over en schrijft hem niet in
+`android/app/src/main/assets/capacitor.plugins.json`. Gradle leest daarna
+alleen dat bestand.
+
+Het gevolg is geen crash maar iets wat je nog moeilijker vindt: de app start,
+doet alles behalve trillen, en zet nooit een herinnering klaar. Dat merk je
+niet bij het bouwen, meestal niet bij het testen, en wel aan een recensie.
+
+**Twee controles, op twee momenten.** `scripts/lib/plugins.mjs` draagt ze
+allebei.
+
+*Vóór het bouwen.* `npm run aab` vergelijkt wat er in `package.json` staat met
+wat er is ingeschreven, en breekt af als er iets mist — vóór Gradle begint, dus
+je wacht niet eerst een paar minuten voor niets. Het onderscheid tussen een
+plugin en een gewoon pakket komt niet uit de naam (`@capacitor/core` heet ook
+zo en is er geen) maar uit het veld `capacitor` in de `package.json` van het
+pakket zelf: hetzelfde veld waar `cap sync` op afgaat.
+
+*Ná het bouwen.* `npm run watzitin` kijkt nu ook in de `classes.dex` van de
+bundel. Een java-klasse staat daar letterlijk als
+`Lapp/darijaforkids/learn/MainActivity;`, dus er hoeft niets voor ontleed te
+worden. Het script zet elke verwachte klasse ernaast — de app zelf uit
+`namespace` plus `android:name`, en elke ingeschreven plugin — en weigert de
+bundel als er één ontbreekt.
+
+**Dit is de controle die de afwijzing had tegengehouden.** `watzitin` bestond
+al en woog alleen het javascript. Dat was niet genoeg: het javascript in
+versiecode 4 en 5 was in orde, de java was er niet. Nagemeten op twee
+nagemaakte bundels, één met alle vier de klassen en één met alleen
+`AppPlugin`: de eerste komt erdoor, de tweede valt af met de juiste namen
+erbij.
+
+##### En de versienummers staan nu ergens — 2 oktober
+
+`android/app/build.gradle` wordt bij elke bouw overschreven en gaat niet
+terug de repository in. Daar staat dus nog `versionCode 1`, terwijl Play er al
+vijf heeft gezien. Wie uit een verse kloon bouwt leest die 1 en krijgt na het
+bouwen, het ondertekenen en het wachten te horen dat het nummer al gebruikt is.
+
+Dat is hier misgegaan: op 1 oktober is `--naam 1.1` geadviseerd terwijl 1.2 al
+live stond.
+
+`docs/versies.json` gaat wel mee. `npm run aab` schrijft er na elke geslaagde
+bundel in bij, en zegt erbij dat het bestand gecommit moet worden. Beide
+scripts stellen voortaan het hoogste van de twee plus één voor — en met een
+echt nummer erin, niet met punthaken.
+
+| | |
+|---|---|
+| versiecode 4 · 1.2 | Play productie, live |
+| versiecode 5 · 1.3 | gesloten en interne test |
+| versiecode 6 · 1.3 | lokaal gebouwd, draait op de Tab, nog niet geüpload |
+
+**De volgende bundel is dus versiecode 7.** Versiecode 6 is al gebouwd uit
+`0f5b16b`, maar met de onvolledige `node_modules` — daar zitten de twee plugins
+niet in. Die bundel moet niet naar Play.
 
 ##### Versiecode 5 staat op de gesloten test — 2 oktober
 
