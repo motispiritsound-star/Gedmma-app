@@ -3,6 +3,8 @@ import type { Card } from './srs'
 import { newCard, review, type Grade } from './srs'
 import { LESSONS, UNITS } from '../content/curriculum'
 import { WORDS } from '../content/words'
+import { ALL_SENTENCES } from '../content/sentences'
+import { LETTERS } from '../content/alphabet'
 import { detectLang, isLang, type Lang } from '../i18n/languages'
 import type { Strings } from '../i18n/nl'
 
@@ -451,9 +453,23 @@ const getal = (waarde: unknown, terugval: number): number =>
  */
 const WOORD_IDS = new Set(WORDS.map((w) => w.id))
 
-const bekendeKaarten = (kaarten: Record<string, Card>): Record<string, Card> => {
+/**
+ * Hetzelfde geldt voor de letters en de zinnen, die met hun voorvoegsel in
+ * `extraCards` staan. `sentence(id)` werpt net zo goed, en die wordt
+ * aangeroepen in `buildReviewRound` — dus een zin-id dat we weghalen laat de
+ * herhaalronde omvallen op het moment dat je hem start.
+ *
+ * Een sleutel zonder `l:` of `z:` ervoor hoort er helemaal niet te zijn en
+ * valt hier ook af.
+ */
+const EXTRA_IDS = new Set([
+  ...LETTERS.map((l) => `l:${l.id}`),
+  ...ALL_SENTENCES.map((z) => `z:${z.id}`),
+])
+
+const alleenBekend = (kaarten: Record<string, Card>, bekend: Set<string>): Record<string, Card> => {
   const uit: Record<string, Card> = {}
-  for (const id of Object.keys(kaarten)) if (WOORD_IDS.has(id)) uit[id] = kaarten[id]!
+  for (const id of Object.keys(kaarten)) if (bekend.has(id)) uit[id] = kaarten[id]!
   return uit
 }
 
@@ -470,8 +486,8 @@ export function hydrate(parsed: Partial<State>): State {
   return {
     ...base,
     ...p,
-    cards: bekendeKaarten(voorwerp(p.cards, base.cards)),
-    extraCards: voorwerp(p.extraCards, base.extraCards),
+    cards: alleenBekend(voorwerp(p.cards, base.cards), WOORD_IDS),
+    extraCards: alleenBekend(voorwerp(p.extraCards, base.extraCards), EXTRA_IDS),
     lessons: voorwerp(p.lessons, base.lessons),
     daily: voorwerp(p.daily, base.daily),
     badges: lijst(p.badges, base.badges),

@@ -16,7 +16,7 @@
  * of gewoon een fout van ons.
  */
 import { describe, expect, it } from 'vitest'
-import { getState, gradeExtra, gradeWord, hydrate, MAX_HEARTS, setState, type State } from './store'
+import { dueSentenceIds, getState, gradeExtra, gradeWord, hydrate, MAX_HEARTS, setState, type State } from './store'
 import { newCard, type Card } from './srs'
 
 /** Zoals `load()` het doet: alles erin, kijken wat eruit komt. */
@@ -186,5 +186,34 @@ describe('een kaart voor een woord dat we niet meer kennen', () => {
     const ids = ['salam', 'shukran', 'afak']
     const cards = Object.fromEntries(ids.map((id) => [id, newCard(id)]))
     expect(Object.keys(laad({ version: 1, cards }).cards).sort()).toEqual([...ids].sort())
+  })
+})
+
+/**
+ * En hetzelfde voor de letters en de zinnen, die met een voorvoegsel in
+ * `extraCards` staan. `sentence(id)` werpt net zo goed als `word(id)`, en die
+ * wordt aangeroepen in `buildReviewRound` — dus een zin-id dat we weghalen
+ * laat de herhaalronde omvallen op het moment dat je hem start.
+ */
+describe('letters en zinnen die we niet meer kennen', () => {
+  it('houdt alleen sleutels die ergens bij horen', () => {
+    const s = laad({
+      version: 1,
+      extraCards: {
+        'l:alif': newCard('l:alif'),
+        'l:verzonnen': newCard('l:verzonnen'),
+        'z:verzonnen-zin': newCard('z:verzonnen-zin'),
+        'zonder-voorvoegsel': newCard('zonder-voorvoegsel'),
+      },
+    })
+    expect(Object.keys(s.extraCards)).toEqual(['l:alif'])
+  })
+
+  it('een zin-id dat niet meer bestaat komt niet in de wachtrij', () => {
+    const s = laad({
+      version: 1,
+      extraCards: { 'z:verzonnen-zin': { ...newCard('z:verzonnen-zin'), due: 0 } },
+    })
+    expect(dueSentenceIds(s, Date.now())).toEqual([])
   })
 })
