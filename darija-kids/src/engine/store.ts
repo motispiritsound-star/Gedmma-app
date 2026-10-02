@@ -500,7 +500,17 @@ export function hydrate(parsed: Partial<State>): State {
     hearts: getal(p.hearts, base.hearts),
     heartsAt: getal(p.heartsAt, base.heartsAt),
     streak: getal(p.streak, base.streak),
-    bestStreak: getal(p.bestStreak, base.bestStreak),
+    /*
+     * Een record kan nooit lager zijn dan wat er nu staat.
+     *
+     * `bestStreak` wordt alleen bijgewerkt in `addXp`, op de dag dat de reeks
+     * groeit. Raakt dat ene veld kwijt of beschadigd, dan staat er op /profiel
+     * "41 / 0" bij REEKS / RECORD -- en verliest iemand met een reeks van
+     * eenenveertig dagen ook zijn drie vlambeloningen, want die kijken naar
+     * het record. Hier staat het weer recht, en het kan nooit de verkeerde
+     * kant op: het neemt de hoogste van de twee.
+     */
+    bestStreak: Math.max(getal(p.bestStreak, base.bestStreak), getal(p.streak, base.streak)),
     freezes: getal(p.freezes, base.freezes),
     sentencesDone: getal(p.sentencesDone, base.sentencesDone),
     settings: { ...base.settings, ...voorwerp(p.settings, {}) },

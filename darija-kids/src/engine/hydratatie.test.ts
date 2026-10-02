@@ -217,3 +217,29 @@ describe('letters en zinnen die we niet meer kennen', () => {
     expect(dueSentenceIds(s, Date.now())).toEqual([])
   })
 })
+
+/**
+ * Het record kan nooit lager zijn dan de reeks van nu.
+ *
+ * `bestStreak` wordt alleen in `addXp` bijgewerkt, op de dag dat de reeks
+ * groeit. Raakt dat ene veld kwijt, dan staat er op /profiel "41 / 0" bij
+ * REEKS / RECORD, en verliest iemand met eenenveertig dagen ook zijn drie
+ * vlambeloningen — want die kijken naar het record, niet naar de reeks.
+ */
+describe('reeks en record', () => {
+  it('trekt het record op naar de reeks van nu', () => {
+    expect(laad({ version: 1, streak: 41, bestStreak: 0 }).bestStreak).toBe(41)
+  })
+
+  it('laat een hoger record met rust', () => {
+    const s = laad({ version: 1, streak: 4, bestStreak: 120 })
+    expect(s.bestStreak).toBe(120)
+    expect(s.streak).toBe(4)
+  })
+
+  it('overleeft allebei op onzin', () => {
+    const s = laad({ version: 1, streak: 'veel', bestStreak: null } as unknown as Partial<State>)
+    expect(s.streak).toBe(0)
+    expect(s.bestStreak).toBe(0)
+  })
+})
