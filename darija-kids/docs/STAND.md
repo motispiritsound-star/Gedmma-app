@@ -12,7 +12,7 @@ te lezen.
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 1289, groen — daar zitten de 77 van de worker al in |
 | Google Play | 4 (1.2) op **Productie**, 177 landen — de winkelpagina is nog **niet publiek** |
-| App Store | **1.0 (build 7) goedgekeurd, wacht op vrijgeven** — build 8 staat geüpload maar is ingehaald: zie *Build 8 is achterhaald* |
+| App Store | **1.0 (build 7) goedgekeurd, wacht op vrijgeven** — **1.1 (build 9) geüpload 2 oktober 08:34**, met alles erin |
 | Uitbetalen | **rond bij allebei** — Google geverifieerd op 1 oktober |
 
 ### Goedgekeurd — 1 oktober, 16:46
@@ -1124,6 +1124,23 @@ overleefd, negentien rommelroutes opgevangen, vierendertig bladzijdeladingen
 zonder fout, negen combinaties van breedte en lettergrootte binnen beeld, vier
 liggende formaten binnen beeld, offline alle routes door, en de stoeitest
 zonder enige uitzondering.
+
+#### Build 9 staat bij Apple — 2 oktober 08:34
+
+In Xcode Organizer staat `1.1 (9)` op *Uploaded to Apple*, gearchiveerd uit
+`842351d`. Daar zitten allebei de doorlopen van 1 en 2 oktober in. Build 8 is
+daarmee definitief van tafel.
+
+Hij is **niet ingediend**, en dat moet ook niet voordat 1.0 (build 7) is
+vrijgegeven: een nieuwe inzending nu zet die goedkeuring opnieuw op de rol.
+
+Van `842351d` naar de stand van dat moment scheelt één commit, en daar zit
+geen app-code in — alleen het bouwscript dat zijn eigen commit meldt, een test
+daarbij en dit document. Build 9 hoeft dus niet opnieuw.
+
+**Bij Play staat het er nog niet.** Daar zijn op 2 oktober drie bundels
+gebouwd van code van 1 oktober 08:16; pas na `f39adb0..842351d` is die machine
+bij. De bundel voor versiecode 5 / 1.3 moet daar nog één keer gemaakt worden.
 
 #### Build 8 is achterhaald — gebruik build 9 en versiecode 5
 
