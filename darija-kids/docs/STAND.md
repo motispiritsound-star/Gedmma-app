@@ -1308,6 +1308,25 @@ binnengehaald. `npm run watzitin` zet er vier vinkjes neer:
 De dex is 8311 kB. Dat getal is het hele verhaal: in de bundels die Play
 afwees zat die klasse er niet in, en niets in de bouw zei daar iets over.
 
+**Geüpload en bevestigd — 2 oktober.** `npm run track` heeft hem op de gesloten
+test gezet (edit 02257643510154281970, versiecode 7), nadrukkelijk zonder hem
+ter beoordeling te sturen: de bundel stáát er, en daar gaat het om, want
+daarmee begint Google vanzelf aan het rapport vóór lancering.
+
+Dezelfde bundel is als `.apk` op de Galaxy Tab gezet en opent. Twee
+bevestigingen dus, los van elkaar: de klassen zitten er aantoonbaar in, en het
+toestel start hem.
+
+**Wat er nog moet.** Wachten op het rapport vóór lancering — Google installeert
+de app op een rij echte toestellen en klikt erdoorheen. Dat is het enige punt
+in deze hele weg waar klikken onvermijdelijk is; er is geen API voor. In Play
+Console: *Test and release* → *Testing* → **Pre-launch report**. Eén vraag:
+opent de app daar. Is dat schoon, dan pas versiecode 7 ter beoordeling insturen.
+
+`npm run crashes -- --versie 7` kan ertussendoor, maar zegt voorlopig niets:
+die cijfers komen van toestellen van gebruikers, en die zijn er nog niet. Het
+script zegt dat zelf ook als het niets vindt.
+
 ##### Versiecode 5 staat op de gesloten test — 2 oktober
 
 Precies wat er bij versie 2 ook al had gemoeten. `npm run track` zet de bundel
