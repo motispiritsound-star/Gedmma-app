@@ -1,14 +1,15 @@
 # De mail aan de wachtlijst
 
 Eén mail, op de dag dat 1.4 in allebei de winkels staat — App Store build 10,
-Play versiecode 8. In zes talen, want de wachtlijst is in zes talen
-binnengekomen.
+Play versiecode 8. In zes talen, want het formulier staat in zes talen en de
+taal gaat met de aanmelding mee.
 
 Deze mensen hebben op *Hou me op de hoogte* gedrukt en daarna de link in de
-bevestigingsmail aangeklikt. Sommigen in september. Ze weten niet wat er sinds
-die dag gebouwd is en ze hebben er ook niet om gevraagd: ze hebben om één
-bericht gevraagd, namelijk dat hij er is. Dat is dus wat er in staat, en verder
-zo weinig mogelijk.
+bevestigingsmail aangeklikt. Wanneer dat was staat per rij in `aangemeld_op`;
+`npm run belangstelling` zet het per dag uit. Waar ze niet om hebben gevraagd
+is een verslag van wat er gebouwd is: ze hebben om één bericht gevraagd,
+namelijk dat hij er is. Dat is dus wat er in staat, en verder zo weinig
+mogelijk.
 
 Daarom is de mail kort gehouden: hoogstens 120 woorden per taal, en alle zes
 blijven daaronder — de telling staat onder elke taal. Wat er niet in past hoort
@@ -30,10 +31,21 @@ toestemming, en een lijst van honderd waarvan dertig bevestigd zijn is een
 lijst van dertig. Tellen doe je met `npm run belangstelling`, dat de twee
 aantallen apart afdrukt.
 
+En de lijst is jong. Tot 1 oktober was *Hou me op de hoogte* op de website een
+`mailto:`-link — `docs/STAND.md`, *"Hou me op de hoogte schrijft nu in de
+database"*. Wie vóór die dag reageerde staat dus in een postvak en niet in deze
+tafel: twaalf berichten van elf mensen, op 1 oktober nageteld en als csv
+afgegeven. Die krijgen deze mail niet, want ze staan er niet in. Wie ze toch
+wil bereiken antwoordt op hun eigen mail — dat is een antwoord en geen mailing.
+De app gebruikte `POST /aanmelden` al wel, dus wat er in de tafel staat komt
+van de app en van de site sinds 1 oktober.
+
 Let op dat dit een andere lijst is dan `nieuwsbrieflijst()` in
-`server/src/portaal.ts`. Die leest de tafel `lid` — mensen die een boek hebben
-gekocht en in het portaal zijn geweest. Overlap is mogelijk, maar het zijn twee
-lijsten met twee bewijzen. Deze mail gaat over de app en dus over `aanmelding`.
+`server/src/portaal.ts`. Die leest de tafel `lid`: wie zich in het ledenportaal
+heeft aangemeld, het nieuwsvinkje aan heeft staan en op de link in zijn mail
+heeft geklikt — `laatste_bezoek IS NOT NULL`. Een aankoop is daar geen
+voorwaarde. Overlap is mogelijk, maar het zijn twee lijsten met twee
+bewijzen. Deze mail gaat over de app en dus over `aanmelding`.
 
 ### Wat er beloofd is: één bericht
 
@@ -74,8 +86,9 @@ want het is één lijst."*
 
 Er valt dus niet te filteren. Dat is geen reden om te wachten, maar het is wel
 de maat voor wat deze mail mag zijn. Iemand die zich voor een boekendeel heeft
-aangemeld en een bericht van negentig woorden krijgt dat de app er is, met een
-uitschrijflink eronder, is niet verrast op een manier die hem iets kost.
+aangemeld en een bericht van een kleine honderd woorden krijgt dat de app er
+is, met een uitschrijflink eronder, is niet verrast op een manier die hem iets
+kost.
 Dezelfde persoon met een verkoopmail wel.
 
 Wie dit ooit wil kunnen scheiden: een kolom `herkomst` op `aanmelding`, gezet
@@ -106,10 +119,10 @@ die is niet terug te nemen.
 
 **Android eerst, iPhone eronder.** Dezelfde volgorde als in
 `store/lancering/kanaal.md`. De reden staat in `docs/STAND.md`: de meeste
-mensen in het kanaal zitten op Android, en deze lijst is in zijn eerste dagen
-uit dat kanaal voortgekomen. Hard is dat niet — in de tafel staat geen toestel
-— maar het is de enige aanwijzing die er is, en de eerste regel die iemand
-leest hoort over zijn eigen toestel te gaan.
+mensen in het kanaal zitten op Android. Over deze lijst zegt dat niets: in de
+tafel staat geen toestel, en waar iemand vandaan kwam staat er ook niet. Een
+andere aanwijzing is er niet, en de eerste regel die iemand leest hoort over
+zijn eigen toestel te gaan.
 
 De regels krijgen een label dat het toestel noemt en niet de winkel:
 
@@ -132,7 +145,8 @@ Wat er nu al is, en wat dat niet betekent:
   sinds 2 oktober live. Het wijst alleen nog niet naar 1.4.
 - `STORE.google` is leeg. `playStoreUrl()` bouwt het Play-adres uit het
   applicatie-id, dus de vórm is al bekend — maar de pagina gaf op 30 september
-  **404 — Not found**, en dat blijft zo tot de release is uitgerold.
+  **404 — Not found on this server**, en dat blijft zo tot de release is
+  uitgerold.
 
 Een adres kennen is dus niet hetzelfde als een pagina die opengaat. De
 controle is dat allebei de adressen opengaan op een toestel, niet op de Mac en
@@ -172,8 +186,7 @@ en Italiaans, en een punt als decimaalteken in het Engels.
 **Tekst**
 
 ```
-Je hebt een tijd terug je adres achtergelaten om te horen wanneer de app er
-is.
+Je hebt je adres achtergelaten om te horen wanneer de app er is.
 
 Hij is er. Darijaforkids staat vanaf vandaag in allebei de winkels.
 
@@ -191,7 +204,7 @@ om het te proberen, en opzeggen doe je in de winkel zelf.
 Shukran voor het wachten.
 ```
 
-98 woorden, de twee adresregels niet meegerekend.
+95 woorden, de twee adresregels niet meegerekend.
 
 ## fr-FR
 
@@ -207,8 +220,7 @@ Shukran voor het wachten.
 **Tekst**
 
 ```
-Vous avez laissé votre adresse il y a quelque temps pour savoir quand
-l’application serait prête.
+Vous avez laissé votre adresse pour savoir quand l’application serait prête.
 
 Elle est là. Darijaforkids est disponible dès aujourd’hui dans les deux
 boutiques.
@@ -227,7 +239,7 @@ jours pour essayer, et la résiliation se fait dans la boutique elle-même.
 Shukran pour votre patience.
 ```
 
-99 woorden, de twee adresregels niet meegerekend.
+94 woorden, de twee adresregels niet meegerekend.
 
 ## de-DE
 
@@ -243,8 +255,7 @@ Shukran pour votre patience.
 **Tekst**
 
 ```
-Du hast vor einiger Zeit deine Adresse hinterlassen, um zu hören, wann die App
-da ist.
+Du hast deine Adresse hinterlassen, um zu hören, wann die App da ist.
 
 Sie ist da. Darijaforkids steht ab heute in beiden Stores.
 
@@ -262,7 +273,7 @@ zum Ausprobieren, und gekündigt wird im Store selbst.
 Shukran fürs Warten.
 ```
 
-90 woorden, de twee adresregels niet meegerekend.
+87 woorden, de twee adresregels niet meegerekend.
 
 ## es-ES
 
@@ -278,7 +289,7 @@ Shukran fürs Warten.
 **Tekst**
 
 ```
-Hace un tiempo dejaste tu dirección para saber cuándo estaría la aplicación.
+Dejaste tu dirección para saber cuándo estaría la aplicación.
 
 Ya está. Darijaforkids se puede descargar desde hoy en las dos tiendas.
 
@@ -295,7 +306,7 @@ días para probarlo, y la baja se da en la propia tienda.
 Shukran por la espera.
 ```
 
-94 woorden, de twee adresregels niet meegerekend.
+91 woorden, de twee adresregels niet meegerekend.
 
 ## it-IT
 
@@ -311,8 +322,7 @@ Shukran por la espera.
 **Tekst**
 
 ```
-Tempo fa hai lasciato il tuo indirizzo per sapere quando sarebbe arrivata
-l’app.
+Hai lasciato il tuo indirizzo per sapere quando sarebbe arrivata l’app.
 
 È arrivata. Darijaforkids si scarica da oggi in entrambi gli store.
 
@@ -330,7 +340,7 @@ provare, e la disdetta si fa nello store stesso.
 Shukran per l’attesa.
 ```
 
-88 woorden, de twee adresregels niet meegerekend.
+86 woorden, de twee adresregels niet meegerekend.
 
 ## en-US
 
@@ -346,7 +356,7 @@ Shukran per l’attesa.
 **Tekst**
 
 ```
-A while back you left your address to hear when the app was ready.
+You left your address to hear when the app was ready.
 
 It is here. Darijaforkids is in both stores from today.
 
@@ -363,7 +373,7 @@ Three days to try it, and you cancel in the store itself.
 Shukran for waiting.
 ```
 
-96 woorden, de twee adresregels niet meegerekend.
+93 woorden, de twee adresregels niet meegerekend.
 
 ---
 
@@ -460,13 +470,15 @@ tientallen adressen en wel bij duizenden.
 
 # Wat er niet in staat, en waarom
 
-- **Niets over 1.4.** Geen van deze mensen heeft de app ooit geopend, dus het
-  startscherm in vier stappen is voor hen geen nieuws maar gewoon hoe de app
-  begint. Wie het wel wil lezen vindt het in de winkel onder *wat is er nieuw*.
+- **Niets over 1.4.** Wie zich via de site aanmeldde heeft de app nog nooit
+  geopend, dus het startscherm in vier stappen is voor hem geen nieuws maar
+  gewoon hoe de app begint. Wie via de ouderpagina binnenkwam heeft hem wél
+  geopend, maar in de tafel is dat niet te zien en één mail kan niet twee
+  kanten op. Wie het wil lezen vindt het in de winkel onder *wat is er nieuw*.
   Hetzelfde geldt voor "haal de update op" — die regel staat in
   `store/lancering/kanaal.md` omdat daar mensen zitten die hem al hebben.
-- **Geen aantal.** Geen volgers, geen downloads, geen recensies, geen sterren.
-  Die zijn er niet.
+- **Geen aantal.** Geen gebruikers, geen downloads, geen recensies, geen
+  sterren. Die zijn er niet.
 - **Geen citaat van een ouder.** Er is er geen, en op dag één kan er geen zijn.
 - **Geen gezinsdeling.** Bij Apple deelt het hele gezin één abonnement, tot zes
   personen; bij Google niet. Dat is waar en het is een goed argument, maar één
@@ -483,8 +495,8 @@ tientallen adressen en wel bij duizenden.
 - **Geen boeken en geen tweede vraag.** `store/kanaal-socials.md` zegt het: een
   bericht dat drie dingen vraagt krijgt er nul. Deze mail vraagt niets — hij
   wijst twee adressen aan.
-- **Geen "eindelijk" en geen terugblik.** Iemand die maanden geleden zijn adres
-  gaf, wil weten waar hij de app haalt. Hoe lang het geduurd heeft gaat over de
+- **Geen "eindelijk" en geen terugblik.** Iemand die zijn adres heeft gegeven,
+  wil weten waar hij de app haalt. Hoe lang het geduurd heeft gaat over de
   maker.
 - **Geen datum en geen "deze week nog".** Gaat deze mail de deur uit, dan staat
   hij er. Anders gaat hij niet de deur uit.

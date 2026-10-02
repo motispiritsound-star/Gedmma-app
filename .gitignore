@@ -75,12 +75,18 @@ bladi/dist-demo/
 # De patronen zijn met opzet smal. `meet-` en `-tmp` zijn namen die niemand aan
 # echt werk geeft, en een test die met een liggend streepje begint is er geen —
 # alle tests hier heten naar wat ze bewaken.
+# Elk los script in de projectwortel. Nagegaan: er staat geen enkele getrackte
+# .mjs buiten scripts/, dus alles wat hier opduikt is van een agent die iets
+# nameet. Eerder stonden hier patronen als `meet*` en `_*`, en die waren steeds
+# net te smal -- de volgende agent koos gewoon een andere naam.
+darija-kids/*.mjs
+darija-kids/*.cjs
 darija-kids/dist-*/
-darija-kids/meet*.mjs
-darija-kids/_*.mjs
-darija-kids/*-tmp.mjs
+# En hun sondetests. De 78 echte tests heten alle naar wat ze bewaken; deze
+# twee vormen zijn wat een agent verzint als hij even iets wil meten.
 darija-kids/src/**/_*.test.ts
-darija-kids/src/**/meet*.test.ts
+darija-kids/src/**/*meet*.test.ts
+darija-kids/src/**/zz*.test.ts
 
 # En de werkmappen van agenten die in afzondering bouwen.
 #

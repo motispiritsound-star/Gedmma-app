@@ -72,15 +72,25 @@ gaat.
 De film is de lanceringsvideo op YouTube. Daar is niets weg te knippen, dus
 daar moet `dev/intro.ts` eerst goed en moet `npm run intro` opnieuw. Let op
 het staartje: YouTube vervangt het bestand onder een bestaande link niet, dus
-een nieuwe opname is een nieuwe link, en die link staat ook in Play Console →
-*Main store listing → Video*. Bijwerken kan met
-`npm run play -- --tekst --video <de nieuwe YouTube-link>`.
+een nieuwe opname is een nieuwe link. Die link staat op twee plekken buiten
+YouTube:
+
+| Waar | Wat er blijft staan als je hem vergeet |
+|---|---|
+| `src/site/links.ts`, bij `FILM_YOUTUBE` | `scripts/make-site.mjs` zet hem op de site; die wijst dan nog naar de film met de oude prijskaart |
+| Play Console → *Main store listing → Video* | de winkelpagina speelt de oude film |
+
+Play bijwerken doet `npm run play -- --tekst --video` met het adres erachter:
+het volledige `https://www.youtube.com/watch?v=` plus de code die YouTube na
+de upload geeft. Plak je iets anders, dan weigert
+`scripts/play-vermelding.mjs` het met een melding en zet hij geen half adres
+in de vermelding.
 
 Voor Instagram en TikTok is het minder erg: de slotkaart begint op 25,2
 seconden (`TITLE + 7 × HOLD` in `dev/intro.ts`), dus een fragment van vijftien
 seconden komt er niet aan toe.
 
-### 2. Drie beelden zeggen "binnenkort"
+### 2. Vier beelden zeggen "binnenkort"
 
 `brand/social/binnenkort-vierkant-<taal>.png`,
 `brand/social/binnenkort-staand-<taal>.png` en
@@ -129,10 +139,12 @@ heen te gaan, niet drie.
 ## Welke plaat
 
 **`brand/social/posts/nl/1-oma-vierkant.png`** — "Je kind verstaat oma wel. /
-Antwoorden lukt alleen niet." Dat is de enige plaat die een scherm uit de
-echte app laat zien én de regel draagt waar dit hele project om staat. Voor
-een publiek dat de app vandaag voor het eerst ziet, doet de herkenbare vraag
-meer dan een merkkaart.
+Antwoorden lukt alleen niet." Alle vijf de campagneposts laten een scherm uit
+de echte app zien — `scripts/make-social.mjs` fotografeert per post een route:
+`/leren`, `/woorden`, `/letters`, `/verhalen`, `/geschiedenis`. Deze is de
+enige die opent met de regel waar dit hele project om staat; de andere vier
+openen met een getal, een prijs of een functie. Voor een publiek dat de app
+vandaag voor het eerst ziet, doet de herkenbare vraag meer dan een merkkaart.
 
 Wil je één plaat die de naam van de app noemt, dan is dat
 `store/marketing/nl/social-vierkant.png` — warm, de khatam, "Leer Darija, de
@@ -198,20 +210,20 @@ De plaat in het Frans is `brand/social/posts/fr/1-oma-vierkant.png`.
 
 # TikTok
 
-Vijftien seconden, en één ding: de eerste minuut in de app. Dat is wat
-`store/kanaal-socials.md` aan TikTok heeft toegewezen, en het is het enige
-beeld dat vandaag met een schermopname op een toestel te maken is — geen
-acteurs, geen oma aan de telefoon.
+Vijftien seconden, en één ding — dat is wat `store/kanaal-socials.md` aan
+TikTok heeft toegewezen. Hier is dat ene ding de eerste minuut in de app, en
+het is het enige beeld dat vandaag met een schermopname op een toestel te
+maken is: geen acteurs, geen oma aan de telefoon.
 
 **Het beeld dat je opneemt:** een verse installatie, de vier stappen
 doorlopen, en dan de eerste les. Staand, 9:16. Elke scène blijft drie seconden
 staan; dat is dezelfde regel als in `store/kanaal-sleutels.md` en
 `docs/VIDEO.md`.
 
-**De tekst in beeld moet het alleen af kunnen.** De helft kijkt zonder geluid
-(`docs/LANCERING.md` §5), dus de gesproken regels komen er bovenop en vervangen
-niets. En geen logo in de eerste drie seconden; die staan ten dienste van de
-eerste regel.
+**De tekst in beeld moet het alleen af kunnen.** De meeste mensen kijken zonder
+geluid (`store/kanaal-sleutels.md`), dus de gesproken regels komen er bovenop
+en vervangen niets. En geen logo in de eerste drie seconden; die staan ten
+dienste van de eerste regel.
 
 | Tijd | Beeld | In beeld | Gesproken |
 |---|---|---|---|
@@ -404,7 +416,7 @@ en Facebook staat de naam al in het account.
 
 - **Geen aantal.** Geen volgers, geen downloads, geen recensies, geen sterren.
   Die zijn er niet, en op de dag van de lancering is dat ook het eerlijke
-  beeld. De beoordeling vraag je op dag 3 (`docs/LANCERING.md` §16).
+  beeld. De beoordeling vraag je op dag 3 (`docs/GO-LIVE.md`, *De dagen erna*).
 - **Geen citaat van een ouder en geen kind dat iets tegen zijn oma zegt.** Dat
   is de sterkste post die dit project kan hebben, en hij is vandaag onmogelijk
   echt te hebben. Dag 7, met een ouder die het zelf opstuurt.
@@ -420,7 +432,7 @@ en Facebook staat de naam al in het account.
 - **Geen "nieuw".** Zie boven: er is bijna niemand voor wie dit een wijziging
   is.
 - **Geen datum, geen aftelling, geen "eindelijk", geen terugblik op twee jaar
-  werk.** Er is met opzet niet afgeteld (`docs/LANCERING.md` §16), en een
+  werk.** Er is met opzet niet afgeteld (`docs/GO-LIVE.md`), en een
   bericht dat begint met hoe lang het duurde gaat over de maker en niet over
   de app.
 - **Geen functie die niet nagekeken is.** Alles wat in de vier berichten
@@ -447,8 +459,9 @@ opnieuw.
 
 1. **De film is opnieuw gemaakt.** `dev/intro.ts` zonder de prijsregel,
    `npm run intro` gedraaid, de nieuwe opname geüpload, en de nieuwe link in
-   Play Console gezet. Zolang dat niet gebeurd is, gaat de YouTube-video niet
-   op openbaar en gaat er geen filmfragment naar Instagram of TikTok.
+   `src/site/links.ts` én in Play Console gezet. Zolang dat niet gebeurd is,
+   gaat de YouTube-video niet op openbaar en gaat er geen filmfragment naar
+   Instagram of TikTok.
 2. **De YouTube-video staat op openbaar.** Hij staat nu op *Niet vermeld*,
    met opzet, en die stand verandert niet van zichzelf.
 3. **De handle `@darijaforkidsapp` is gezet** (Instellingen → Kanaal →

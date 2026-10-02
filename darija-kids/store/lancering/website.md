@@ -31,8 +31,10 @@ en dat ene adres staat erin. De site staat daarmee nu al niet meer op
 - de App Store-knop is een echte link
 
 Wat er nog op "binnenkort" staat is één ding: de Google Play-knop. Dat is een
-`<span aria-disabled="true">` met het woord *Binnenkort* erin, op achttien
-bladzijden.
+`<span aria-disabled="true">` op achttien bladzijden, vierentwintig keer — de
+startpagina draagt hem twee keer. In het Nederlands staat er *Binnenkort* in,
+in de vijf andere talen *Bientôt*, *Demnächst*, *Muy pronto*, *Presto* en
+*Coming soon*.
 
 Nakijken zonder iets te wijzigen: `npm run live` zonder vlaggen drukt de twee
 adressen af en zegt *De website is live*. Hij schrijft dan niets.
@@ -55,7 +57,7 @@ geeft een `a` met `href` en `rel="noopener"`, en het bovenschrift wordt
 
 De badge hangt aan `LIVE` (regel 574). De regel *ter beoordeling* en het
 aanmeldformulier eronder hangen er samen aan (regel 391–392). Ze kijken niet
-naar welke winkel open is, alleen of er er één open is. Daarom zijn ze alle
+naar welke winkel open is, alleen of er één open is. Daarom zijn ze alle
 drie al verdwenen toen alleen Apple erin ging.
 
 ### De balk onderaan
@@ -164,8 +166,10 @@ de bron — `netlify.toml` in de bovenliggende map: `base = "darija-kids"`,
 `sitecheck.mjs`, dus een dode link laat de uitrol vallen in plaats van hem te
 publiceren.
 
-Daarom is stap 1 tot 3 hierboven een controle en geen publicatie, en daarom
-heeft het geen zin om iets in `site/` te repareren.
+Daarom publiceert stap 1 tot 3 hierboven niets. Wat die stappen in `site/`
+zetten staat er om zelf na te kijken en gaat niet mee met de push; het enige
+wat stap 2 vastlegt is `src/site/links.ts`. Iets in `site/` repareren heeft dus
+geen zin.
 
 ### Twee dingen die mis kunnen gaan
 
@@ -209,7 +213,8 @@ die met een kale `.sort()` — `scripts/make-site.mjs` regel 1940. Daardoor komt
 
 `10.webp` is het aanbodscherm: twee prijsblokken, *€ 5,00 p/m* en *€ 6,99 p/m*,
 met de voetregel *3 dagen gratis · één abonnement voor het hele gezin*. Dat
-staat nu op plek twee, met het bijschrift van een ander scherm eronder.
+staat nu op plek twee, met de alt-tekst van een ander scherm eraan. Een
+zichtbaar bijschrift heeft de strook niet.
 
 Drie dingen zitten hier aan vast:
 
@@ -218,8 +223,10 @@ Drie dingen zitten hier aan vast:
   Het aanbodscherm heet nu *Het Arabische alfabet*, en de laatste foto in de
   strook (`9.webp`) valt terug op *Zo ziet het eruit*. Negen van de tien
   omschrijvingen horen bij een andere foto. Een numerieke sortering op regel
-  1940 en een tiende regel in `beeldAlt` lossen allebei de helft op; je hebt ze
-  allebei nodig.
+  1940 zet er negen terug op hun eigen foto; het aanbodscherm staat dan
+  achteraan en valt op de terugval, en daarvoor is een tiende regel in
+  `beeldAlt` nodig. Die tiende regel alléén helpt niets: dan krijgt `9.webp` de
+  omschrijving van het aanbodscherm.
 - **De gezinsregel staat er zonder voorbehoud.** `scripts/make-siteassets.mjs`
   regel 80 haalt de foto's uit `store/screenshots/<taal>/iphone/`, dus uit de
   Apple-set, en `scripts/make-screenshots.mjs` regel 202 geeft die set de
@@ -246,19 +253,21 @@ staat niet in de repo.
 Het is te verdedigen om dit ná de lancering te doen. De lesschermen zijn niet
 veranderd; wat ontbreekt is het nieuwe begin.
 
-### 4. Het aanmeldveld verdwijnt van de startpagina
+### 4. Het aanmeldveld staat niet meer op de startpagina
 
-Dat gaat vanzelf goed, maar het heeft een gevolg dat niet vanzelf goed gaat.
+Dat ging vanzelf goed, maar het heeft een gevolg dat niet vanzelf goed gaat.
 
-Na de omslag staat er op de zes startpagina's geen e-mailveld meer. Op
-`/leesboeken` blijft er wel een staan — `scripts/make-site.mjs` regel 1115, met
+Het veld hing aan `LIVE`, dus het is al weg — sinds het Apple-adres erin ging,
+niet pas volgende week. Van de zestig bladzijden houden er nog zes een
+e-mailveld, en dat zijn de zes van `/leesboeken` — `scripts/make-site.mjs`
+regel 1115, met
 een eigen onderschrift *Eén bericht zodra er een nieuw deel is*
 (`src/site/copy.ts` regel 235). Dat veld staat er onvoorwaardelijk en kijkt niet
 naar de winkeladressen, dus daar verandert niets aan, en die tekst gaat over een
 volgend deel en klopt na de lancering nog steeds.
 
-De vraag die overblijft: de startpagina heeft na dinsdag geen enkele manier meer
-om een adres op te halen. Dat is een keuze, geen fout — maar maak hem bewust.
+De vraag die overblijft: de startpagina heeft geen enkele manier meer om een
+adres op te halen. Dat is een keuze, geen fout — maar maak hem bewust.
 
 Wie er nu op de lijst staat, staat in de tafel `lid` en wordt gemaild via
 `nieuwsbrieflijst()` in `server/src/portaal.ts`. Dat vinkje alleen is geen
@@ -267,9 +276,16 @@ grond; de bevestigde klik is dat wel. Zie `docs/STAND.md`, *Het ledenbestand*.
 ### 5. Klein: de FAQ noemt de drie dagen niet
 
 `src/i18n/nl.ts` regel 712 zegt *met de eerste dagen gratis*, en de vijf andere
-talen zeggen hetzelfde op regel 698. In de app, op de winkelpagina's en in de
-aankondiging staat er drie dagen. En het e-boek bij het jaarabonnement staat er
-in de FAQ helemaal niet, terwijl het aanbodscherm op diezelfde bladzijde
-*incl. e-boek* laat zien.
+talen zeggen hetzelfde op regel 698. Het aanbodscherm in de app zegt *Na 3
+gratis dagen* (`src/i18n/nl.ts` regel 758), de abonnementsteksten voor de twee
+winkels zeggen *drie dagen gratis* (`store/abonnement-teksten.md` regel 43 en
+57), en de aankondiging zegt drie dagen.
+
+De zes winkelvermeldingen zeggen het trouwens net zo vaag als de FAQ:
+*de eerste dagen gratis*, `store/listing.nl.md` regel 64 en zijn vijf buren.
+Die vallen buiten dit stuk, maar het is dezelfde zin en hetzelfde werk.
+
+En het e-boek bij het jaarabonnement staat er in de FAQ helemaal niet, terwijl
+het aanbodscherm op diezelfde bladzijde *incl. e-boek* laat zien.
 
 Twee woorden werk, zes talen. Het houdt de lancering niet tegen.

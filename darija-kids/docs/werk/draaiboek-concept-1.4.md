@@ -1,5 +1,13 @@
 # Het draaiboek voor de lancering
 
+Dit bestand staat in `docs/werk/` en is een concept. Het draaiboek dat in
+gebruik is, is `docs/GO-LIVE.md`; wat hier staat en daar nog niet, hoort daar
+te worden ingenomen. Het is één keer naar `docs/LANCERING.md` geschreven en
+daar weer weggehaald, want dat bestand is het plan voor de negentig dagen en
+vijf andere documenten verwijzen ernaar met paragraafnummers: `WINKEL.md`,
+`GO-LIVE.md`, `GESCHIEDENISREEKS.md`, `store/kanaal-socials.md` en
+`store/kanaal-sleutels.md`.
+
 Volgende week staat de app in beide winkels en gaat de aankondiging eruit. Dit
 bestand is de volgorde waarin dat gebeurt: intrekken, bouwen, nakijken,
 insturen, wachten, vrijgeven, communiceren. Zeven stappen, en ze zijn niet om
@@ -49,9 +57,15 @@ eerste wat hij van de app hoort.
 | de winkelteksten | `store/listing.nl.md` en de vijf andere talen |
 
 `docs/GO-LIVE.md` beschrijft de dag zoals die op 2 oktober gepland was, met de
-oudere berichten erin. Het verwijst naar paragraafnummers die in dit bestand
-niet meer staan. Wat daar nog los van dit draaiboek staat is de proefperiode
-(§0) en wat je op de dag zelf níét doet.
+oudere berichten erin en met 1.0 en 1.1 als nummers. Het verwijst naar
+`LANCERING.md` §4 en §16, en dat klopt: `docs/LANCERING.md` is het plan voor de
+negentig dagen eromheen en niet dit draaiboek. Wat in GO-LIVE.md nog los van
+dit bestand staat is de proefperiode (§0) en wat je op de dag zelf níét doet.
+
+Andersom klopt het niet. `store/lancering/kanaal.md` en `store/lancering/socials.md`
+wijzen voor het blok van 09:00 naar `docs/LANCERING.md` §7, en §7 daar gaat over
+Facebook. Dat blok is §7 van dít bestand. Wie die verwijzing volgt komt ergens
+anders uit.
 
 ## De volgorde
 
@@ -61,7 +75,7 @@ niet meer staan. Wat daar nog los van dit draaiboek staat is de proefperiode
 | 2 | Bouwen | Adil, op Windows en op de Mac | morgen |
 | 3 | Nakijken | Adil, op Windows | morgen, direct na de bouw |
 | 4 | Insturen | Adil, in de browser | morgen, allebei dezelfde dag |
-| 5 | Wachten | de winkels | een dag, reken op meer |
+| 5 | Wachten | de winkels | Apple een dag, Play tot zeven |
 | 6 | Vrijgeven | Adil, in de browser en op Windows | volgende week, 's ochtends |
 | 7 | Communiceren | Adil, op de telefoon | diezelfde dag, vanaf 09:00 |
 
@@ -91,9 +105,13 @@ release*.** Komt de goedkeuring eerder dan jij, dan staat 1.1 ongevraagd in de
 winkel, is je lanceerversie 1.1 in plaats van 1.4, en lopen de twee nummers
 weer uiteen.
 
-Het versienummer is in die stand weer een invulveld: 1.1 wordt 1.4. Staat het
-veld toch vast, maak dan 1.4 aan met het plusje naast *iOS App* en laat 1.1
-staan.
+Wat er daarna met het versienummer kan, is niet nagemeten. `docs/STAND.md`
+beschrijft van 28 september alleen dat de vier items op *Developer Rejected*
+kwamen en bewerkbaar werden, en dat ging over de aankopen. Of het veld
+*Version* zelf weer open staat, staat nergens. Kijk er dus naar in plaats van
+het aan te nemen: is 1.1 te overschrijven met 1.4, dan is dat het. Kan dat
+niet, dan maak je 1.4 als nieuwe versie aan en laat je 1.1 staan — één stap
+meer, en niet de dag.
 
 ### Play
 
@@ -116,11 +134,23 @@ Dit is dus het moment voor de vier talen uit `store/abonnement-teksten.md`
 slot gaat er bij het insturen van 1.4 weer op.
 
 Kijk in dat raam ook de proefperiode na. De app zegt in zes talen dat de eerste
-drie dagen gratis zijn; bij Apple staat die aanbieding bij Maand en bij Jaar,
-bij Play is dat nergens vastgelegd. Play Console → het abonnement → basisplan →
-Aanbieding → gratis proefperiode, 3 dagen, bij allebei de plannen. Staat het er
-niet, dan leest de koper drie dagen gratis en schrijft de winkel meteen af.
-`docs/GO-LIVE.md` §0 staat erbij stil, inclusief de eerlijke uitweg.
+drie dagen gratis zijn — `TRIAL_DAYS` in `src/engine/billing.ts` — en dat staat
+er ongeacht wat de winkel weet.
+
+Eén van de vier plannen is nagekeken. Bij Apple staat bij **Jaar** *Free for
+the first 3 days* in 175 landen, aangetoond op 1 oktober. Bij **Maand** is het
+niet nagekeken, en bij Play is het nergens vastgelegd. Dus drie dingen en niet
+één:
+
+- App Store Connect → Subscriptions → *Volledige toegang* → **Maand**, en
+  kijken of de kolom *Introductory Offers* in de prijzentabel gevuld is
+- Play Console → het abonnement → basisplan → Aanbieding → gratis proefperiode,
+  3 dagen, bij allebei de plannen
+- en daarna nameten op een toestel, want de console is niet het bewijs
+
+Staat het er niet, dan leest de koper drie dagen gratis en schrijft de winkel
+meteen af. `docs/GO-LIVE.md` §0 staat erbij stil, inclusief de eerlijke uitweg:
+`TRIAL_DAYS` op 0, waarna de app niets meer belooft wat de winkel niet doet.
 
 ## 2. Bouwen — morgen
 
@@ -183,7 +213,10 @@ Xcode-project. Zet die nummers daarna niet nog een keer met de hand in Xcode;
 dan zijn er twee plekken waar ze kunnen verschillen.
 
 Daarna in Xcode: **Product → Archive**, en in Organizer **Distribute App → App
-Store Connect → Upload**. Reken op tien minuten.
+Store Connect → Upload**. Archiveren duurt vijf tot tien minuten
+(`docs/MAC.md` §C6), en daarna staat de build er pas na tien tot twintig
+minuten — eerst op *Processing*, en zolang dat er staat is hij niet te kiezen.
+Reken op een half uur, niet op tien minuten.
 
 Eén ding om vooraf te controleren, want het kost anders een avond: **Build
 Settings → Code Signing Identity → Release** moet op *Apple Distribution*
@@ -210,11 +243,11 @@ te staan:
 ```
 
 Staat er een kruisje, dan stop je. Ontbreekt de app zelf, dan start hij niet:
-logo even in beeld en weg, `ClassNotFoundException`. Daarop is de app twee keer
-achter elkaar door Google afgewezen, en Gradle klaagde er niet over — een
-Android-project zonder activity is een geldig Android-project. Ontbreekt een
-plugin, dan start hij wel en doet dat stuk niets, en dat merk je aan een
-recensie.
+logo even in beeld en weg, `ClassNotFoundException`. Daarop is inzending 4
+afgewezen — *Your app crashes after opening*, 2 oktober — en Gradle klaagde er
+niet over: een Android-project zonder activity is een geldig Android-project.
+Ontbreekt een plugin, dan start hij wel en doet dat stuk niets, en dat merk je
+aan een recensie.
 
 Daaronder staan vier tellingen. `?.` en `??` horen op nul te staan, `async` op
 nul en `function*` op iets boven nul. Dan is de bundel op es2015 gebouwd en
@@ -222,7 +255,9 @@ wordt hij ingelezen vanaf Chrome 51 — de WebView waarmee Android 7 is
 uitgekomen, en dat is wat minSdkVersion 24 belooft. Staat er `?.` in, dan is
 dit niet de app waarvan je denkt dat je hem hebt opgestuurd: op een oudere
 WebView geeft dat een wit scherm zonder foutmelding. Google noemt dat *installs,
-but doesn't load*, en ook daarop is de app een keer afgewezen.
+but doesn't load*, en daarop is inzending 3 afgewezen, op 23 september. Dat zijn
+de twee afwijzingen bij Play, en dit zijn de twee controles die ze allebei
+hadden tegengehouden.
 
 En de laatste twee regels: `index.html` in de bundel en `index.html` in `dist/`
 horen dezelfde hash te hebben. Staat er VERSCHILLEND, dan is de bundel ouder
@@ -291,8 +326,21 @@ over de 500 tekens gaat, en dat merk je pas als de bundel er al ligt.
 
 | | |
 |---|---|
-| Apple | meestal binnen een dag, nu er een goedkeuring in de historie staat |
-| Play | uren tot een dag, want versiecode 4 is er eerder door gekomen — goedgekeurd, nooit gepubliceerd |
+| Apple | meestal binnen een dag, nu 1.0 goedgekeurd en live staat |
+| Play | tot zeven dagen, want Play heeft nog nooit iets van deze app goedgekeurd |
+
+Die zeven dagen zijn het enige in dit draaiboek dat niet vanzelf in een week
+past. Play heeft inzending 4 — versiecode 4 — op 2 oktober afgewezen op
+*Your app crashes after opening*, en in het dashboard heet de app nog
+`app.darijaforkids.learn (unreviewed)`: nooit goedgekeurd. De tabel in
+`docs/GO-LIVE.md` zet "uren tot een dag" dan ook in de kolom ná de lancering en
+"tot zeven dagen zonder eerdere goedkeuring" ervoor. `docs/STAND.md` zegt erbij:
+bij een nieuw ontwikkelaarsaccount soms langer.
+
+Daarmee hangt de lanceerdag aan Play en niet aan Apple. Twee gevolgen. Stuur in
+op de dag van de bouw en niet een dag later; zeven dagen vanaf morgen loopt tot
+het eind van volgende week. En kies de dag pas als Play groen is — niet eerder,
+want dan belooft het bericht een winkel die nog dicht is.
 
 Er valt niets te versnellen. Geen van de twee winkels heeft een spoedknop die
 je zelf indrukt.
@@ -395,10 +443,14 @@ Drie dingen die vóór 09:00 af moeten, en die in die bestanden ook met reden
 genoemd staan:
 
 - **De introfilm noemt een prijs die niet bestaat.** Op de slotkaart staat
-  € 4,99 per maand. Die prijs bestaat niet; het is € 6,99 per maand of € 59,99
-  per jaar. Dat moet uit `dev/intro.ts`, `npm run intro` opnieuw, nieuwe opname,
-  en de nieuwe link ook in Play Console. Zolang dat niet gebeurd is, gaat de
-  YouTube-video niet op openbaar.
+  € 4,99 per maand. Nagekeken op 2 oktober: die regel staat er nog, in
+  `dev/intro.ts` bij `price`, in alle zes de talen, en er is geen test die hem
+  nakijkt. Het abonnement is € 6,99 per maand of € 59,99 per jaar. Dus
+  `dev/intro.ts` aanpassen, `npm run intro` opnieuw, nieuwe opname, en de nieuwe
+  link op twee plekken buiten YouTube: `FILM_YOUTUBE` in `src/site/links.ts` en
+  Play Console → *Main store listing → Video*. Vergeet je de eerste, dan wijst
+  de site nog naar de film met de oude prijskaart. Zolang dit niet gebeurd is,
+  gaat de YouTube-video niet op openbaar.
 - **De YouTube-handle en de Facebook-gebruikersnaam.** Zonder die twee wijst het
   bericht aan het kanaal naar een foutpagina en naar een adres met een
   getalreeks erin.
@@ -444,7 +496,7 @@ het vorige af is.
 - [ ] Het is dinsdag, woensdag of donderdag, en het is ochtend
 - [ ] De proefperiode van drie dagen staat in beide winkels bij beide plannen
 - [ ] De introfilm zonder de prijs van € 4,99 staat op YouTube, op openbaar, en
-      de nieuwe link staat in Play Console
+      de nieuwe link staat in `src/site/links.ts` én in Play Console
 - [ ] De YouTube-handle is gezet en de Facebook-pagina heeft een
       gebruikersnaam
 - [ ] De profielen staan niet leeg
