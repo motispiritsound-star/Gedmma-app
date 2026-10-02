@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -48,4 +49,24 @@
     <!-- Een tablet zonder microfoon mag de app gewoon installeren; dan valt
          alleen die ene bonusronde weg. -->
     <uses-feature android:name="android.hardware.microphone" android:required="false" />
+
+    <!--
+      SCHEDULE_EXACT_ALARM eruit, en dat is met opzet.
+
+      `@capacitor/local-notifications` zet dit recht in zijn eigen manifest, en
+      bij het samenvoegen komt het dus in onze app terecht zonder dat wij erom
+      vragen. Google beperkt dat recht: het is er voor wekkers, timers en
+      agenda-afspraken, en wie het aanvraagt zonder zo'n reden moet het in Play
+      Console verantwoorden. Een app voor kinderen die één keer per dag een
+      herinnering stuurt heeft dat niet nodig en komt er niet voor in
+      aanmerking.
+
+      Weghalen kan zonder iets kapot te maken. De plugin vraagt op Android 12 en
+      later eerst `canScheduleExactAlarms()`; is dat nee, dan gebruikt hij
+      `setAndAllowWhileIdle` in plaats van `setExactAndAllowWhileIdle`. De
+      herinnering komt dan niet op de seconde maar rond de tijd die de ouder
+      koos, en dat is precies wat er bedoeld werd. Nagelezen in
+      `LocalNotificationManager.kt`, regel 357 tot 378.
+    -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" tools:node="remove" />
 </manifest>

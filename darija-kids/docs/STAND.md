@@ -1172,6 +1172,39 @@ op de Galaxy Tab.
 **Niet opnieuw indienen voordat dit begrepen is.** Een herhaalde afwijzing op
 hetzelfde punt telt bij Google mee voor je accountstatus.
 
+##### Wat er wél gerepareerd is, 2 oktober
+
+Twee echte defecten, allebei in het Android-manifest, allebei gevonden bij het
+uitpluizen van deze afwijzing. Geen van tweeën verklaart de crash — dat zeg ik
+er met opzet bij — maar allebei zijn ze een reden waarop Play afwijst.
+
+**`SCHEDULE_EXACT_ALARM` zat in de app zonder dat wij erom vroegen.**
+`@capacitor/local-notifications` zet dat recht in zijn eigen manifest, en bij
+het samenvoegen komt het in de onze terecht. Google beperkt het tot wekkers,
+timers en agenda-afspraken; wie het aanvraagt zonder zo'n reden moet het in
+Play Console verantwoorden of wordt afgewezen. Een app die één keer per dag
+een herinnering stuurt komt er niet voor in aanmerking. Dat is precies het
+soort punt dat onder de koepelregel *"Not adhering to Google Play Developer
+Program policies"* valt.
+
+Het staat er nu met `tools:node="remove"` uit. Dat kan zonder iets te breken:
+de plugin vraagt op Android 12 en later eerst `canScheduleExactAlarms()` en
+valt bij nee terug op `setAndAllowWhileIdle`. De herinnering komt dan rond de
+gekozen tijd in plaats van op de seconde, en dat is wat er bedoeld werd.
+Nagelezen in `LocalNotificationManager.kt` 357-378, en vastgelegd in
+`manifest.test.ts` — inclusief een test die omvalt zodra de plugin het recht
+niet meer aanvraagt, zodat de verwijdering er dan weer uit kan.
+
+**Italiaans ontbrak in `locales_config.xml`.** Vijf talen stonden er, de app
+heeft er zes. Daardoor kon een Italiaans gezin de app niet op Italiaans zetten
+in de taalinstelling van Android 13+.
+
+**Wat hier niet te verifiëren is.** Deze omgeving heeft geen Android-SDK
+(`ANDROID_HOME` is leeg), dus het samengevoegde manifest is hier niet te
+bouwen. Na de volgende `npm run aab` staat het resultaat op de Windows-machine
+in `android/app/build/intermediates/merged_manifests/release/AndroidManifest.xml`;
+daar hoort `SCHEDULE_EXACT_ALARM` niet meer in te staan.
+
 Dit raakt Apple niet: daar is build 7 goedgekeurd, dus de app opende bij die
 beoordelaar gewoon. Dat maakt het waarschijnlijk iets aan de Android-kant of
 aan één toestel, en niet een JS-fout die overal zou optreden.
