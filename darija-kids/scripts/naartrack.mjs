@@ -262,8 +262,17 @@ try {
     console.error('op, open App-rechten, en zet in de groep Releases het recht aan dat')
     console.error('over testtracks gaat. Daarna deze opdracht gewoon opnieuw draaien —')
     console.error('het kan een paar minuten duren voor Google het doorheeft.\n')
+    /*
+     * Gesloten test, niet intern. Hier stond "Interne test", en dat spreekt de
+     * kop van dit bestand tegen: een upload naar de interne test leverde geen
+     * rapport vóór lancering op, en dat rapport is de enige reden waarom dit
+     * script bestaat. Wie de handmatige weg neemt omdat de rechten nog niet
+     * kloppen, moet niet in dezelfde val lopen.
+     */
     console.error('Wil je niet wachten: de bundel hieronder kun je ook met de hand')
-    console.error('uploaden bij Testen en publiceren -> Testen -> Interne test.\n')
+    console.error('uploaden bij Testen en publiceren -> Testen -> Gesloten test.')
+    console.error('Gesloten en niet intern: de interne test geeft geen rapport vóór')
+    console.error('lancering, en daar is het hier om te doen.\n')
     console.error(`  ${AAB}\n`)
   } else if (fout.status === 403) {
     console.error('Dit serviceaccount mag hier niet bij. In Play Console staat dat onder')
