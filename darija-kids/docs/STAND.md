@@ -1805,8 +1805,22 @@ daar.
 regel als bij Jaar. Beide abonnementen beloven dus wat de app belooft, en
 `TRIAL_DAYS` in de code zegt hetzelfde.
 
+**En op 2 oktober gezien op het aankoopvenster zelf**, wat het enige echte
+bewijs is. Op een iPhone, in de app uit de App Store, op *Per maand*:
+
+| Op Apple's venster | |
+|---|---|
+| Gratis proefperiode van 3 dagen — vanaf vandaag | de aanbieding bestaat |
+| € 6,99 per maand — vanaf 05-10-2026 | 2 oktober plus drie dagen |
+| Gezinsabonnement | Family Sharing staat aan, zoals het koopscherm belooft |
+| Nederlands, 4+ | de juiste vertaling en leeftijd |
+
+Daarmee is het niet langer een aanname dat de app en de winkel hetzelfde
+zeggen. Het staat er, in Apple's eigen venster, dat Apple uit het product
+maakt.
+
 **Nog niet nagekeken:** de gratis proefperiode bij de twee abonnementen in Play
-Console. Twee van de vier zijn aangetoond.
+Console. Drie van de vier zijn aangetoond.
 
 **Het scherm van de app is geen bewijs.** `Unlock.tsx` en `Welcome.tsx` tonen
 `TRIAL_DAYS`, en dat is een vast getal in de code; de app leest de prijsfasen
