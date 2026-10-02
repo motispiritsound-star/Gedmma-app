@@ -4,6 +4,35 @@ Bijgewerkt op 1 oktober 2026, met de openingsactie op de boeken. Dit bestand
 is het antwoord op "wat moet er nog" zonder dat je drie andere bestanden hoeft
 te lezen.
 
+## Waar het vanavond op staat — 2 oktober
+
+Beide winkels hebben een inzending liggen, en voor het eerst is dat bij allebei
+dezelfde, gerepareerde code.
+
+| | |
+|---|---|
+| Google Play | versiecode 7 (1.3) — productie én gesloten test, in beoordeling |
+| App Store | 1.1 (build 9) — ingediend, op *Automatically release* |
+| App Store, live | 1.0 (build 7) sinds vanavond |
+
+**Wat er in de lucht hangt tot 1.1 erdoor is.** Build 7 staat live met de knop
+die het e-boek aan het toestel gaf in plaats van aan de app: op een iPhone
+opent die lichess.org. Gerepareerd op 1 oktober 17:19 (`3946200`), en build 9
+is daarná gebouwd, dus 1.1 lost het op. Tot die tijd raakt het alleen wie het
+jaarabonnement of het boek koopt.
+
+**Wat er klaarligt voor de volgende ronde** (build 10, versiecode 8), nog in
+geen enkele winkel:
+
+- Na het betalen kom je op `/profiel?welkom=1` uit, waar naam en avatar bij
+  elkaar staan (`621fb63`).
+- De plugincontrole vóór het bouwen en de klassencontrole erna.
+- `docs/versies.json`, en de releasenotities die vanzelf meegaan.
+
+**Nog open, geparkeerd:** een leeftijd op het profiel. De vraag is niet of het
+kan maar wat de app ermee doet; zonder antwoord daarop is het een veld waar een
+beoordelaar naar vraagt en waar niets mee gebeurt.
+
 ## De app
 
 | | |
@@ -12,7 +41,7 @@ te lezen.
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 1289, groen — daar zitten de 77 van de worker al in |
 | Google Play | **versiecode 7 ingestuurd op 2 oktober** — productie én gesloten test, in beoordeling. De crash is gevonden, gerepareerd en twee keer bevestigd: `watzitin` ziet de vier klassen in de dex, en de app opent op de Galaxy Tab |
-| App Store | **1.0 (build 7) staat live** — vrijgegeven op 2 oktober, stil, zonder aankondiging. **1.1 (build 9) geüpload 2 oktober 08:34**, wacht op de IAP-talen en de proefperiode vóór het insturen |
+| App Store | **1.0 (build 7) staat live** sinds 2 oktober, stil. **1.1 (build 9) ingediend op 2 oktober**, op *Automatically release* — met de Franse abonnementsteksten erbij |
 | Uitbetalen | **rond bij allebei** — Google geverifieerd op 1 oktober |
 
 ### Goedgekeurd — 1 oktober, 16:46
