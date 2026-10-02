@@ -57,9 +57,34 @@ describe('de melder zelf', () => {
   })
 })
 
+/**
+ * En dezelfde melding nog een keer onderaan, náást het bestand dat eruit kwam.
+ *
+ * De regel bovenaan scrollt weg achter een paar honderd regels Gradle. Dan sta
+ * je naar het eind van de uitvoer te kijken — "Klaar", het pad, het aantal MB
+ * — zonder te weten wat erin zit, en precies dat is vier keer misgegaan. Wat
+ * je het laatst leest hoort te zeggen wat je in handen hebt.
+ */
+describe('de korte vorm, voor onderaan', () => {
+  it('bestaat en haalt niets op', () => {
+    expect(stand).toMatch(/export function standKort\(wortel\)/)
+    const lijf = stand.slice(stand.indexOf('export function standKort'), stand.indexOf('export function toonStand'))
+    expect(lijf).not.toContain('fetch')
+  })
+
+  it('staat bij het bestand dat eruit kwam', () => {
+    expect(aab).toMatch(/console\.log\(`  uit \$\{uit\}`\)/)
+    expect(aab).toMatch(/versionCode \$\{versie \?\? '\?'\} · versionName/)
+  })
+
+  it('en na het aantal MB, want dat is waar je stopt met lezen', () => {
+    expect(aab.indexOf('${mb} MB')).toBeLessThan(aab.indexOf('`  uit ${uit}`'))
+  })
+})
+
 describe('de twee scripts die een bundel maken', () => {
   it('de Android-bundel meldt het', () => {
-    expect(aab).toContain("import { toonStand } from './lib/stand.mjs'")
+    expect(aab).toMatch(/import \{ standKort, toonStand \} from '\.\/lib\/stand\.mjs'/)
     expect(aab).toMatch(/^toonStand\(ROOT\)$/m)
   })
 

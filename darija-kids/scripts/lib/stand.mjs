@@ -24,6 +24,23 @@ import { execFileSync } from 'node:child_process'
 const git = (args, cwd, ms = 20_000) =>
   execFileSync('git', args, { cwd, encoding: 'utf8', timeout: ms, stdio: ['ignore', 'pipe', 'ignore'] }).trim()
 
+/**
+ * Dezelfde melding, maar in één regel en zonder ophalen.
+ *
+ * Bedoeld voor onderaan, náást het bestand dat er net uit kwam. De regel
+ * bovenaan scrollt weg achter een paar honderd regels Gradle, en dan sta je
+ * naar het eind te kijken zonder te weten wat erin zit — dat is precies waar
+ * het vier keer op misging. Wat je het laatst leest hoort te zeggen wat je in
+ * handen hebt.
+ */
+export function standKort(wortel) {
+  try {
+    return git(['log', '-1', '--format=%h  %cd  %s', '--date=format:%d-%m %H:%M'], wortel)
+  } catch {
+    return null
+  }
+}
+
 export function toonStand(wortel, tak = 'main') {
   let hier
   try {

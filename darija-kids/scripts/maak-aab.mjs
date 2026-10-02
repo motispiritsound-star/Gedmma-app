@@ -23,7 +23,7 @@ import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from '
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { geenJdk, haalJdk, vindJdk, vindSdk } from './lib/jdk.mjs'
-import { toonStand } from './lib/stand.mjs'
+import { standKort, toonStand } from './lib/stand.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const ANDROID = path.join(ROOT, 'android')
@@ -175,9 +175,14 @@ if (!existsSync(RESULTAAT)) {
 }
 
 const mb = (statSync(RESULTAAT).size / 1024 / 1024).toFixed(1)
+const uit = standKort(ROOT)
 console.log('\nKlaar.\n')
 console.log(`  ${RESULTAAT}`)
-console.log(`  ${mb} MB\n`)
+console.log(`  ${mb} MB`)
+// Hier en niet alleen bovenaan: daar is het weggescrold achter Gradle.
+if (uit) console.log(`  uit ${uit}`)
+if (versie || naam) console.log(`  versionCode ${versie ?? '?'} · versionName ${naam ?? '?'}`)
+console.log('')
 console.log(
   alsApk
     ? 'Zet dit bestand op je telefoon en open het daar om de app te installeren.\n'
