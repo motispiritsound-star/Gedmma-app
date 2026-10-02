@@ -1,8 +1,15 @@
 # De namen en beschrijvingen van de abonnementen
 
-Wat er nu in App Store Connect staat, is bij de meeste talen de appnaam met
-een Nederlandse zin eronder. Dat is de vermelding die een koper ziet op het
-betaalvenster van Apple — en buiten Nederland is dat dus de verkeerde taal.
+Dit is de vermelding die een koper ziet op het betaalvenster van Apple.
+
+**Er staat niets fout; er staat te weinig.** Op 2 oktober had `Jaar` twee
+localisaties, Nederlands en Engels (V.K.), en allebei kloppen ze. Frans, Duits,
+Spaans en Italiaans ontbraken. Voor een Franse koper valt Apple dan terug op
+een andere taal.
+
+Het gaat hier dus om **toevoegen**, niet om verbeteren: het blauwe ⊕ naast
+*Display Name and Description*, vier keer. En het is winst, geen voorwaarde —
+zie "Als je maar één taal doet" onderaan.
 
 Deze tekst is te plakken en blijft binnen de grenzen van Apple:
 **30 tekens** voor de naam, **45 tekens** voor de beschrijving. Die grenzen
