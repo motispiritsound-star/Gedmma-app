@@ -41,6 +41,16 @@ describe('het lezen', () => {
     expect(lees('## nl-NL\r\n\r\nhallo\r\n')).toEqual([{ language: 'nl-NL', text: 'hallo' }])
   })
 
+  /**
+   * Het bestand breekt af op tachtig tekens omdat dat prettig leest in een
+   * editor. In de winkel is dat geen opmaak maar inhoud: een afbreking midden
+   * in een zin staat er ook midden in een zin op het scherm van een ouder.
+   */
+  it('en plakt afgebroken regels binnen een alinea weer aan elkaar', () => {
+    const uit = lees('## nl-NL\n\neen zin die\nis afgebroken\n\neen tweede alinea\n')
+    expect(uit[0].text).toBe('een zin die is afgebroken\n\neen tweede alinea')
+  })
+
   it('en een versie zonder bestand is geen fout', () => {
     expect(nieuwsVoor(WORTEL, 'bestaat-niet')).toEqual([])
   })
@@ -57,6 +67,15 @@ describe('de teksten voor 1.3', () => {
   it('en passen allemaal in wat Play toestaat', () => {
     expect(teLang(notities)).toEqual([])
     for (const n of notities) expect(n.text.length, n.language).toBeLessThanOrEqual(MAX)
+  })
+
+  /** Geen losse regeleinden meer: alleen lege regels tussen alinea's. */
+  it('en staan er zonder afgebroken regels in', () => {
+    for (const n of notities) {
+      for (const stuk of n.text.split('\n\n')) {
+        expect(stuk, `${n.language}: ${stuk}`).not.toContain('\n')
+      }
+    }
   })
 
   it('en geen enkele is leeg', () => {

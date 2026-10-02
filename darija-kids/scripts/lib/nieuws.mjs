@@ -37,11 +37,29 @@ export function lees(tekst) {
   for (const blok of tekst.replace(/\r\n/g, '\n').split(/^## /m).slice(1)) {
     const eersteRegel = blok.slice(0, blok.indexOf('\n')).trim()
     if (!/^[a-z]{2}-[A-Z]{2}$/.test(eersteRegel)) continue
-    const lijf = blok.slice(blok.indexOf('\n') + 1).trim()
+    const lijf = ontvouw(blok.slice(blok.indexOf('\n') + 1).trim())
     if (lijf) uit.push({ language: eersteRegel, text: lijf })
   }
   return uit
 }
+
+/**
+ * De regelafbrekingen uit de opmaak halen.
+ *
+ * Het markdown-bestand breekt af op tachtig tekens, want zo leest het prettig
+ * in een editor. In de winkel is dat geen opmaak maar inhoud: Play en Apple
+ * tonen de tekst precies zoals hij binnenkomt, dus een afbreking midden in een
+ * zin staat er ook midden in een zin op het scherm van een ouder.
+ *
+ * Binnen een alinea worden de regels dus aan elkaar geplakt; een lege regel
+ * blijft een alineagrens. Dat is dezelfde regel die markdown zelf hanteert.
+ */
+const ontvouw = (tekst) =>
+  tekst
+    .split(/\n\s*\n/)
+    .map((alinea) => alinea.split('\n').map((r) => r.trim()).join(' ').trim())
+    .filter(Boolean)
+    .join('\n\n')
 
 /** Welke talen te lang zijn. Leeg is goed. */
 export const teLang = (notities) => notities.filter((n) => n.text.length > MAX)
