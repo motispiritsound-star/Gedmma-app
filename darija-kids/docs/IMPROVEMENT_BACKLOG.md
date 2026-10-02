@@ -20,9 +20,6 @@ Afgeronde dingen gaan eruit; `docs/STAND.md` houdt bij wat er gebeurd is.
 
 ## Daarna, op waarde gesorteerd
 
-- [ ] **De 42-pixel raakvlakken op de site** naar 44: de carrouselpijlen en de
-      vier sociale iconen. De app houdt 44 aan en de site hoort niet af te
-      wijken.
 - [ ] **Het e-boek in de Android-WebView** op een toestel bekijken. Op iOS is
       de PDF in een `iframe` nagekeken; op Android nooit.
 - [ ] **Een proeflesje op de website.** De site vertelt wat de app doet; hij

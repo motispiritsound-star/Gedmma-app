@@ -75,10 +75,20 @@ er geen derden zijn.
 
 ## Kleinere punten, niet gerepareerd
 
-**Raakvlakken van 42 pixels.** De pijlen van de carrousel en de vier
-sociale-media-iconen op de site zijn 42×42. De app houdt 44 aan, en dat is ook
-de norm. Twee pixels, op de website, buiten een leerscherm — genoteerd in de
-achterstand, niet vanavond gedaan.
+**Raakvlakken van 42 pixels — nagekeken en laten staan.** De carrouselpijlen en
+de vier sociale iconen op de site zijn 42x42 (`2.6rem` in `site/site.css`,
+regel 473 en 638). Eerst genoteerd als defect, want de app houdt 44 aan.
+
+Bij het nalezen van `raakvlak.test.ts` bleek er een redenering te staan die ik
+niet had: de website wordt met opzet niet aan de 44 van de app gehouden, en de
+voetlinks staan er zelfs op 20 — "onderaan een bladzijde voor volwassenen". De
+app is voor kinderen die slechter mikken; de site is voor de ouder die hem
+koopt. Met diezelfde redenering zijn 42 pixels daar in orde, en ze halen
+WCAG 2.2 AA (2.5.8, ondergrens 24) ruim.
+
+Dit stond hier als defect en is er een smaakvoorkeur. Twee pixels veranderen
+tegen een vastgelegd besluit in is precies de wijziging om de wijziging waar
+niemand iets aan heeft. Laten staan.
 
 **De landingsbladzijde is 10.904 pixels hoog op een telefoon.** Dat is lang.
 Of het te lang is weet ik niet zonder te kijken hoe ver bezoekers komen, en
