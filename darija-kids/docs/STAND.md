@@ -11,7 +11,7 @@ te lezen.
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 1289, groen — daar zitten de 77 van de worker al in |
-| Google Play | inzending 4 afgewezen 2 oktober — **oorzaak gevonden, gerepareerd en op het toestel bevestigd**: `MainActivity.java` stond niet in de repository. Versiecode 6 opent op de Galaxy Tab. Maar 6 is gebouwd met onvolledige `node_modules` (twee plugins ontbreken), dus naar Play gaat **versiecode 7** |
+| Google Play | **versiecode 7 ingestuurd op 2 oktober** — productie én gesloten test, in beoordeling. De crash is gevonden, gerepareerd en twee keer bevestigd: `watzitin` ziet de vier klassen in de dex, en de app opent op de Galaxy Tab |
 | App Store | **1.0 (build 7) goedgekeurd, wacht op vrijgeven** — **1.1 (build 9) geüpload 2 oktober 08:34**, met alles erin |
 | Uitbetalen | **rond bij allebei** — Google geverifieerd op 1 oktober |
 
@@ -1378,6 +1378,19 @@ live. Weggooien kost dus niemand iets.
    test, zes vermeldingen, leeftijdsclassificatie, Data safety, privacybeleid.
 
 Goedkeuring betekent dan meteen live.
+
+**Gedaan op 2 oktober, 17:1x.** Alle vier de stappen. De afgewezen release is
+weggegooid, versiecode 7 staat als productierelease klaar met de notities uit
+`store/wat-is-nieuw-1.3.md`, en de negentien wijzigingen zijn ingestuurd. De
+balk *"Some recent changes were rejected"* is weg; er staat nu *Changes in
+review*.
+
+Eén waarschuwing bij het aanmaken, en die is onschuldig: *"There is no
+deobfuscation file associated with this App Bundle."* In
+`android/app/build.gradle` staat `minifyEnabled false`, dus er wórdt niets
+verhuld en er valt niets te ontsleutelen. Google zegt alleen dat het aan kán.
+Dat is hier ook de verstandige keuze: R8 herschrijft klassenamen, en deze dag
+is verloren gegaan aan een klasse die niet gevonden werd.
 
 ##### De notities gaan voortaan vanzelf mee — 2 oktober
 
