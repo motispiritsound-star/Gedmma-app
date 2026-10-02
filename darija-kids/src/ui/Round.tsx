@@ -235,7 +235,24 @@ export function RoundRunner({
     }
 
     record(exercise, GRADE_OF[v])
-    if (v === 'fout') setQueue((q) => [...q, { ...exercise, id: `${exercise.id}-again` }])
+    /*
+     * Een gemiste vraag komt één keer terug, niet eindeloos.
+     *
+     * Hier stond hetzelfde zonder die voorwaarde, en dan hangt de ronde achter
+     * elke fout een nieuwe kopie aan de rij -- ook achter de fout op de kopie.
+     * Met hartjes loopt dat vanzelf dood, maar `hearts` is een schakelaar die
+     * een ouder voor een jonger kind juist uitzet, en dan is er geen bodem
+     * meer: wie één woord niet onder de knie krijgt, krijgt het de hele avond
+     * terug en kan de les alleen verlaten via het kruisje, dat de les
+     * weggooit. Precies het kind dat het 't hardst nodig heeft.
+     *
+     * Eén herkansing is genoeg. Het antwoord is hierboven al als fout
+     * genoteerd, dus de planning zet het woord vanzelf bovenaan de volgende
+     * herhaling -- daar hoort het thuis, niet in een ronde zonder eind.
+     */
+    if (v === 'fout' && !exercise.id.endsWith('-again')) {
+      setQueue((q) => [...q, { ...exercise, id: `${exercise.id}-again` }])
+    }
   }
 
   const next = () => {
