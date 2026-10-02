@@ -250,8 +250,9 @@ Opnieuw schieten is geen klein klusje: `npm run preview` moet draaien, dan
 de film. `store/screenshots/` staat in `.gitignore` (regel 6), dus de tussenstap
 staat niet in de repo.
 
-Het is te verdedigen om dit ná de lancering te doen. De lesschermen zijn niet
-veranderd; wat ontbreekt is het nieuwe begin.
+Het is te verdedigen om dit ná de lancering te doen. Wat ontbreekt is het
+nieuwe begin. De negen andere schermen zijn niet één voor één nagelopen;
+`6.webp` draagt in elk geval al een naam en een dier.
 
 ### 4. Het aanmeldveld staat niet meer op de startpagina
 
