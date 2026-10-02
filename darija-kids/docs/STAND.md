@@ -1203,8 +1203,35 @@ offline moeten alle zes gewoon in de servicewerker blijven zitten. Voor 100ms
 op de traagste telefoon is dat de verkeerde ruil. Opgeschreven zodat de
 volgende die ernaar kijkt niet opnieuw hoeft te meten.
 
-Stand na deze doorloop: **1580 tests groen in 77 bestanden**, `tsc -b --force
---noEmit` schoon, productiebouw schoon.
+**Vijf kaarten knepen hun tekst plat naast de knop.** `flex-1` in een rij met
+`flex-wrap` is `flex: 1 1 0%`: de tekstkolom vraagt nul breedte, dus alles
+"past" naast elkaar en de rij breekt nooit af. Nagemeten op 390px: 91 pixels
+voor de bonuskaart, 158 voor de slotkaarten, en 64 voor de afsluiter van
+/profiel — veertien woorden over elf regels. Geen van alle liep buiten beeld,
+dus het krapte-harnas zag er niets van. Met een basis: 275 tot 287 pixels.
+
+**En een val in `index.css` die daaronder lag.** `.ar` en `.btn3d` staan buiten
+elke laag, en Tailwind zet zijn klassen in `@layer utilities` — een regel
+zonder laag wint altijd van een regel in een laag. Daardoor deed de `hidden
+sm:block` op de Arabische unitnaam niets (die naam at op een Duits scherm van
+320px 70 van de 248 pixels op), deden drie `leading-*` niets, en vloeiden de
+randkleuren van vijf antwoordknoppen niet over hoewel ze `transition` dragen.
+De displayklasse staat nu op een omhulsel, de dode klassen zijn weg, en
+`.btn3d` noemt de kleuren. `.ar` is met opzet niet alsnog in een laag gezet:
+dan zou `leading-tight` ineens gaan werken, en dat snijdt Arabisch af.
+
+**De kopbalk loog tegen wie terugkwam.** `streak` wordt alleen in `addXp`
+bijgewerkt, dus na veertig dagen weg stond er nog steeds 🔥 12 — tot je het
+eerste antwoord gaf en hij zonder een woord naar 1 sprong. `reeksNu` toont hem
+zoals hij vandaag is: vandaag of gisteren geoefend telt, eergisteren met een
+vriesdag ook, en anders staat er 0. Nagemeten met vijf profielen, voor en na.
+
+Stand na deze doorloop: **1612 tests groen in 80 bestanden**, `tsc -b --force
+--noEmit` schoon, productiebouw schoon. Alle meetharnassen opnieuw gedraaid na
+afloop: contrast schoon in beide standen, negen combinaties van breedte en
+lettergrootte binnen beeld, veertien kapotte opslagen overleefd, de
+rommelroutes opgevangen, offline alle routes door, de stoeitest zonder
+uitzondering, en de tekstsweep over zes talen en drie schermmaten schoon.
 
 ### Nog na te kijken bij Google Play — kijken, niet wijzigen
 
