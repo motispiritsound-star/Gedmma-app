@@ -149,3 +149,42 @@ describe('een kaart waar niet meer mee te rekenen valt', () => {
     expect(Number.isFinite(na.strength)).toBe(true)
   })
 })
+
+/**
+ * Een kaart voor een woord dat niet meer bestaat.
+ *
+ * Dit is geen verzonnen geval en ook geen half weggeschreven opslag: zodra we
+ * een woord-id hernoemen of een woord weghalen, houdt iedereen die dat woord
+ * al geleerd had zo'n kaart over. Die opslag staat op het toestel en komt met
+ * de volgende versie gewoon weer binnen.
+ *
+ * `word(id)` werpt bij een onbekend id, en dat gebeurt op /herhalen in de
+ * lijst "deze zitten nog het minst vast" — dus één zo'n kaart haalde de hele
+ * bladzijde onderuit, foutscherm en al. Nagemeten in de browser: precies dat.
+ */
+describe('een kaart voor een woord dat we niet meer kennen', () => {
+  const echt = 'salam'
+
+  it('valt eruit, en de rest blijft staan', () => {
+    const s = laad({
+      version: 1,
+      cards: {
+        [echt]: newCard(echt),
+        'verzonnen-woord-dat-niet-bestaat': newCard('verzonnen-woord-dat-niet-bestaat'),
+      },
+    })
+    expect(Object.keys(s.cards)).toEqual([echt])
+  })
+
+  it('telt niet meer mee als "woorden gezien"', () => {
+    const s = laad({ version: 1, cards: { weg: newCard('weg'), weg2: newCard('weg2') } })
+    expect(Object.keys(s.cards)).toHaveLength(0)
+  })
+
+  /** Een echte opslag met alleen bestaande woorden mag niets kwijtraken. */
+  it('laat een gezonde opslag met rust', () => {
+    const ids = ['salam', 'shukran', 'afak']
+    const cards = Object.fromEntries(ids.map((id) => [id, newCard(id)]))
+    expect(Object.keys(laad({ version: 1, cards }).cards).sort()).toEqual([...ids].sort())
+  })
+})

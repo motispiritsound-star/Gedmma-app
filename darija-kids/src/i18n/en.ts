@@ -192,6 +192,8 @@ export const en: Strings = {
     startHerhaling: 'Start reviewing',
     zwakste: 'These are the least solid so far',
     metZinnen: (n: number): string => (n === 1 ? '1 sentence comes back too.' : `${n} sentences come back too.`),
+    tochOefenen: 'Practise anyway',
+    tochUitleg: (n: number): string => `Practise the ${n} words that are least solid.`,
   },
 
   film: {

@@ -2,6 +2,7 @@ import { useSyncExternalStore } from 'react'
 import type { Card } from './srs'
 import { newCard, review, type Grade } from './srs'
 import { LESSONS, UNITS } from '../content/curriculum'
+import { WORDS } from '../content/words'
 import { detectLang, isLang, type Lang } from '../i18n/languages'
 import type { Strings } from '../i18n/nl'
 
@@ -435,6 +436,28 @@ const getal = (waarde: unknown, terugval: number): number =>
   typeof waarde === 'number' && Number.isFinite(waarde) ? waarde : terugval
 
 /**
+ * Kaarten voor woorden die niet meer bestaan.
+ *
+ * `word(id)` werpt bij een onbekend id, en dat gebeurt op /herhalen in de
+ * lijst "deze zitten nog het minst vast" — dus bij een opslag met één zo'n
+ * kaart is de hele bladzijde weg, met foutscherm en al. Nagemeten met een
+ * verzonnen id: precies dat.
+ *
+ * Het is geen verzonnen geval. Een woord-id dat we hernoemen of weghalen
+ * laat bij iedereen die dat woord al geleerd had zo'n kaart achter, en die
+ * opslag staat op het toestel — hij komt met de volgende versie gewoon weer
+ * binnen. Een kaart zonder woord kan niets meer: niet getoond, niet
+ * overhoord, niet gepland. Hier valt hij af, en alles eromheen blijft staan.
+ */
+const WOORD_IDS = new Set(WORDS.map((w) => w.id))
+
+const bekendeKaarten = (kaarten: Record<string, Card>): Record<string, Card> => {
+  const uit: Record<string, Card> = {}
+  for (const id of Object.keys(kaarten)) if (WOORD_IDS.has(id)) uit[id] = kaarten[id]!
+  return uit
+}
+
+/**
  * Geëxporteerd om hem te kunnen nameten, niet om hem elders te gebruiken.
  * `hydratatie.test.ts` voert hier de veertien kapotte staten doorheen die de
  * app eerder lieten omvallen.
@@ -447,7 +470,7 @@ export function hydrate(parsed: Partial<State>): State {
   return {
     ...base,
     ...p,
-    cards: voorwerp(p.cards, base.cards),
+    cards: bekendeKaarten(voorwerp(p.cards, base.cards)),
     extraCards: voorwerp(p.extraCards, base.extraCards),
     lessons: voorwerp(p.lessons, base.lessons),
     daily: voorwerp(p.daily, base.daily),

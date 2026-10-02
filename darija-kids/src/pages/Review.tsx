@@ -28,7 +28,30 @@ export function Review() {
   const running = useParams().running === 'bezig'
   const result = (useLocation().state as { klaar?: RoundResult } | null)?.klaar ?? null
   const [seed, setSeed] = useState(() => Date.now())
-  const exercises = useMemo(() => buildReviewRound(due, seed, dueSentences), [seed, running])
+
+  /*
+   * Herhalen mag nooit "kom later maar terug" zeggen.
+   *
+   * De wachtrij is leeg zodra je bij bent, en dat is juist het moment waarop
+   * iemand die wil oefenen hier binnenloopt. Dan stond er een slapende mascot
+   * en één knop terug naar het pad: de tab die over oefenen gaat was de enige
+   * plek in de app waar je niets kon doen.
+   *
+   * Nu valt hij terug op de twaalf woorden die het minst vastzitten — dezelfde
+   * lijst die er toch al onder stond, maar dan om mee te oefenen in plaats van
+   * om naar te kijken. Het telt gewoon mee voor de planning: wie een woord
+   * eerder goed heeft, mag het ook later terugzien.
+   */
+  const zwakste = useMemo(
+    () => Object.values(state.cards).sort((a, b) => a.strength - b.strength),
+    [state.cards],
+  )
+  const oefenIds = useMemo(() => zwakste.slice(0, 12).map((c) => c.id), [zwakste])
+
+  const exercises = useMemo(
+    () => (due.length > 0 ? buildReviewRound(due, seed, dueSentences) : buildReviewRound(oefenIds, seed)),
+    [seed, running],
+  )
 
   if (running && exercises.length === 0) return <Navigate to="/herhalen" replace />
 
@@ -50,9 +73,7 @@ export function Review() {
     )
   }
 
-  const weakest = Object.values(state.cards)
-    .sort((a, b) => a.strength - b.strength)
-    .slice(0, 8)
+  const weakest = zwakste.slice(0, 8)
 
   return (
     <div className="mx-auto max-w-3xl lg:max-w-5xl px-4 py-6">
@@ -83,7 +104,22 @@ export function Review() {
           <Mascot mood="slaap" size={90} className="mx-auto" />
           <p className="mt-3 font-display text-xl font-extrabold">{t.review.nietsTeHerhalen}</p>
           <p className="mt-1 text-[var(--ink-soft)]">{t.review.nietsUitleg}</p>
-          <Link to="/leren" className="mt-4 inline-block"><Button>{t.review.naarPad}</Button></Link>
+          {oefenIds.length > 0 && (
+            <p className="mt-3 text-sm text-[var(--ink-soft)]">{t.review.tochUitleg(oefenIds.length)}</p>
+          )}
+          <div className="mt-4 flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
+            {oefenIds.length > 0 && (
+              <Button
+                className="w-full sm:w-auto"
+                onClick={() => { setSeed(Date.now()); navigate('/herhalen/bezig') }}
+              >
+                {t.review.tochOefenen}
+              </Button>
+            )}
+            <Link to="/leren" className="w-full sm:w-auto">
+              <Button variant={oefenIds.length > 0 ? 'secondary' : 'primary'} className="w-full">{t.review.naarPad}</Button>
+            </Link>
+          </div>
         </Card>
       ) : (
         <Card className="p-6 text-center">
@@ -126,9 +162,14 @@ export function Review() {
         </>
       )}
 
-      <div className="mt-8 text-center">
-        <Button variant="ghost" onClick={() => navigate('/leren')}>{t.lesson.terugNaarPad}</Button>
-      </div>
+      {/* Alleen als de kaart hierboven niet al naar het pad wijst: twee knoppen
+          naar dezelfde plek, onder elkaar op hetzelfde scherm, is geen keuze
+          maar twijfel. */}
+      {due.length > 0 && (
+        <div className="mt-8 text-center">
+          <Button variant="ghost" onClick={() => navigate('/leren')}>{t.lesson.terugNaarPad}</Button>
+        </div>
+      )}
     </div>
   )
 }

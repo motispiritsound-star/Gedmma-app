@@ -202,6 +202,8 @@ export const nl = {
     startHerhaling: 'Start herhaling',
     zwakste: 'Deze zitten nog het minst vast',
     metZinnen: (n: number): string => (n === 1 ? 'Er komt ook 1 zin terug.' : `Er komen ook ${n} zinnen terug.`),
+    tochOefenen: 'Toch oefenen',
+    tochUitleg: (n: number): string => `Oefen de ${n} woorden die nog het minst vastzitten.`,
   },
 
   film: {

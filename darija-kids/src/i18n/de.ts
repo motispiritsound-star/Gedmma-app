@@ -192,6 +192,8 @@ export const de: Strings = {
     startHerhaling: 'Wiederholung starten',
     zwakste: 'Diese sitzen noch am wenigsten fest',
     metZinnen: (n: number): string => (n === 1 ? 'Auch 1 Satz kommt zurück.' : `Auch ${n} Sätze kommen zurück.`),
+    tochOefenen: 'Trotzdem üben',
+    tochUitleg: (n: number): string => `Übe die ${n} Wörter, die am wenigsten sitzen.`,
   },
 
   film: {

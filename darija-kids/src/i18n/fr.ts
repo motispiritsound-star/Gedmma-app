@@ -192,6 +192,8 @@ export const fr: Strings = {
     startHerhaling: 'Commencer la révision',
     zwakste: 'Ceux-ci sont encore les moins ancrés',
     metZinnen: (n: number): string => (n === 1 ? '1 phrase revient aussi.' : `${n} phrases reviennent aussi.`),
+    tochOefenen: 'S\u2019entraîner quand même',
+    tochUitleg: (n: number): string => `Entraîne-toi sur les ${n} mots les moins solides.`,
   },
 
   film: {
