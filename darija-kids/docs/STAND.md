@@ -11,7 +11,7 @@ te lezen.
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 1289, groen — daar zitten de 77 van de worker al in |
-| Google Play | **inzending 4 AFGEWEZEN op 2 oktober** — *crashes after opening*. Niets live. **5 (1.3) staat op de gesloten test**, wachtend op het rapport vóór lancering |
+| Google Play | inzending 4 afgewezen 2 oktober — **oorzaak gevonden en gerepareerd**: `MainActivity.java` stond niet in de repository. Bundel 6 moet nog gebouwd |
 | App Store | **1.0 (build 7) goedgekeurd, wacht op vrijgeven** — **1.1 (build 9) geüpload 2 oktober 08:34**, met alles erin |
 | Uitbetalen | **rond bij allebei** — Google geverifieerd op 1 oktober |
 
@@ -1171,6 +1171,51 @@ op de Galaxy Tab.
 
 **Niet opnieuw indienen voordat dit begrepen is.** Een herhaalde afwijzing op
 hetzelfde punt telt bij Google mee voor je accountstatus.
+
+##### De oorzaak: `MainActivity.java` stond niet in de repository — 2 oktober
+
+Nagespeeld op de Galaxy Tab A (SM-T510, Android 11) via de interne testbaan,
+en de stacktrace laat niets te raden over:
+
+```
+java.lang.ClassNotFoundException: Didn't find class
+"app.darijaforkids.learn.MainActivity" on path: DexPathList[[zip file ".../base.apk", ...]]
+```
+
+De hoofd-`.gitignore` van de map erboven gooit `android/` weg, met een
+uitzondering voor `bladi/android/` — de naam die deze map vroeger had. Bij de
+hernoeming naar `darija-kids` is die uitzondering niet meegegaan. Een deel van
+de bestanden stond er toch in, ooit met `git add -f` erin gezet, maar de enige
+Java-klasse van de app niet.
+
+En die wordt door niets teruggemaakt. `npx cap sync` schrijft
+`capacitor.config.json`, `capacitor.plugins.json` en `res/xml/config.xml`
+opnieuw — dat waren de drie andere ongevolgde bestanden — maar
+`MainActivity.java` komt alleen uit `npx cap add android`, en dat doe je één
+keer.
+
+**Waarom niemand het zag.** Gradle heeft niets te compileren, dus de bouw
+slaagt zonder één waarschuwing. De bundel is te ondertekenen, te uploaden, en
+Play neemt hem aan. Pas bij het starten zoekt Android de klasse waar het
+manifest naar wijst, vindt hem niet, en sluit de app af. Het startscherm uit
+het thema komt nog wel in beeld — vandaar "de logo is eventjes zichtbaar en
+verdwijnt weer".
+
+Dat verklaart ook waarom het bij versie 2 al een keer gebeurde, met exact
+dezelfde zin van Google, en waarom het toen met een nieuwe bundel vanzelf weg
+leek: die werd gebouwd op een machine waar het bestand lokaal nog stond.
+
+**Wat er gerepareerd is.** De uitzondering staat nu op `darija-kids/android/`
+en `darija-kids/ios/`, en `MainActivity.java` zit in de repository.
+`androidbron.test.ts` bewaakt het: hij kijkt niet of het bestand bestáát — dat
+deed het, op de machine waar het ooit is aangemaakt — maar of `git ls-files`
+hem meeneemt, of geen negeerregel hem raakt, en of `namespace` plus
+`android:name` precies uitkomen op de klasse in het bestand. Nagemeten door het
+bestand uit de index te halen: dan valt de test om.
+
+**Wat er nu moet gebeuren.** Versiecode 5 is op, want die bundel staat al op de
+gesloten en de interne baan. De reparatie gaat dus in **versiecode 6**, naam
+1.3.
 
 ##### Versiecode 5 staat op de gesloten test — 2 oktober
 

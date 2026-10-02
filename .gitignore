@@ -38,3 +38,24 @@ bladi/dist-demo/
 # older Expo project in apps/mobile).
 !bladi/android/
 !bladi/ios/
+
+# En sinds de map `bladi` `darija-kids` is gaan heten, ook hier. Dat was
+# vergeten, en het heeft een afwijzing bij Google gekost.
+#
+# `android/` hierboven gooide de hele map weg. Een deel van de bestanden stond
+# er toch in -- ooit met `git add -f` erin gezet -- maar `MainActivity.java`
+# niet. Die wordt door `npx cap sync` niet teruggemaakt; alleen `npx cap add
+# android` schrijft hem, en dat gebeurt één keer. Een verse kloon kreeg dus het
+# manifest, de plaatjes en de gradle-bestanden, maar niet de enige Java-klasse
+# van de app.
+#
+# Gradle merkt dat niet: er is niets te compileren, dus de bouw slaagt zonder
+# één waarschuwing. De bundel installeert. En dan zoekt Android bij het starten
+# `app.darijaforkids.learn.MainActivity`, vindt hem niet, en sluit de app af.
+# Dat is wat Google zag: "Crashes: Your app crashes after opening."
+#
+# De map zelf moet hier uitgezonderd worden en niet alleen de bestanden erin:
+# git daalt niet af in een map die uitgesloten is, dus een `!`-regel op een
+# bestand dieper werkt niet. Het fijnere werk doet `darija-kids/android/.gitignore`.
+!darija-kids/android/
+!darija-kids/ios/
