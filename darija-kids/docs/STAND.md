@@ -53,7 +53,7 @@ goedkeuring af, en dat was tot vandaag de reden dat een hoop niet kon.
 
 | | |
 |---|---|
-| De proefperiode bij **Maand** nakijken | de kolom *Introductory Offers* in de prijzentabel; bij **Jaar** staat hij op 175 landen |
+| ~~De proefperiode bij **Maand** nakijken~~ | **gedaan 2 oktober** — staat er, 175 landen, 3 dagen, net als bij Jaar |
 | De vier talen bij de drie aankopen | Frans, Duits, Spaans, Italiaans — de teksten staan klaar in `store/abonnement-teksten.md` |
 | Nameten op een toestel | via TestFlight kopen en kijken wat het venster van Apple zélf zegt: staat er *3 dagen gratis, daarna € 59,99*? |
 | Build 8 / versie 1.1 bouwen | de FAQ-reparatie, het geluidsadvies per toestel, edge-to-edge en het nieuwe keuzescherm zitten in de code en niet in build 7 |
@@ -1793,14 +1793,20 @@ first 3 days*. De app en de winkel zeggen dus hetzelfde, en wat hier eerder
 stond — dat het blok ontbrak — was een leesfout van twee schermafdrukken met
 een gat ertussen.
 
-Waar je het vindt, want het staat niet waar de naam doet vermoeden: er is geen
-kop "Introductory Offers". Het is een **kolom in de prijzentabel**, en
-aanmaken gaat via de blauwe ⊕ naast *Subscription Prices* → *Create
-Introductory Offer*.
+Waar je het vindt: bij het abonnement → **View all Subscription Pricing** →
+tabblad **Introductory Offers**. Hier stond eerder dat die kop niet bestond en
+dat het een kolom in de prijzentabel was. Dat was op 1 oktober de enige plek
+waar het te zien was; op 2 oktober is het een eigen tabblad, naast *Win-Back
+Offers*, *Offer Codes* en *Promotional Offers*. Aanmaken gaat met de blauwe ⊕
+daar.
 
-**Nog niet nagekeken:** hetzelfde bij `app.darijaforkids.monthly`, en de
-gratis proefperiode bij de twee abonnementen in Play Console. Eén van de vier
-is dus aangetoond.
+**Op 2 oktober nagekeken bij `app.darijaforkids.monthly`: staat er ook.** Sep
+19, 2026 tot *No End Date*, 175 landen, *Free for the first 3 days* — dezelfde
+regel als bij Jaar. Beide abonnementen beloven dus wat de app belooft, en
+`TRIAL_DAYS` in de code zegt hetzelfde.
+
+**Nog niet nagekeken:** de gratis proefperiode bij de twee abonnementen in Play
+Console. Twee van de vier zijn aangetoond.
 
 **Het scherm van de app is geen bewijs.** `Unlock.tsx` en `Welcome.tsx` tonen
 `TRIAL_DAYS`, en dat is een vast getal in de code; de app leest de prijsfasen
