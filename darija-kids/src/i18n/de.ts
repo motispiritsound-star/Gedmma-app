@@ -152,6 +152,7 @@ export const de: Strings = {
     foutloos: 'Fehlerfrei!',
     lesKlaar: 'Lektion geschafft!',
     verderOpPad: 'Weiter auf dem Pfad',
+    volgendeLes: 'Nächste Lektion',
     nieuweBeloning: (n) => (n > 1 ? 'Neue Belohnungen!' : 'Neue Belohnung!'),
     bestaatNiet: 'Diese Lektion gibt es nicht.',
     terugNaarPad: 'Zurück zum Pfad',

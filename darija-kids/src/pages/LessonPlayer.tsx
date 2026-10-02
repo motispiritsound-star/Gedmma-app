@@ -6,7 +6,7 @@ import { cardForCheckpoint, type HistoryCard } from '../content/history'
 import { buildRound } from '../engine/exercises'
 import {
   awardBadges, checkpointsDone, collectHistory, completeLesson, getState, goalMet, heartsNow,
-  isMijlpaal, knownIds, gratisDeelOp, lessonBehindPaywall, levelOf, markTipSeen, useStore,
+  isMijlpaal, knownIds, gratisDeelOp, lessonBehindPaywall, levelOf, markTipSeen, nextLesson, useStore,
   xpToday, type Badge,
 } from '../engine/store'
 import { TRIAL_DAYS } from '../engine/billing'
@@ -20,10 +20,26 @@ import { Khatims } from '../ui/Khatim'
 import { useLang, useT } from '../i18n'
 import { lessonTitle, tipOf, unitSubtitle } from '../content/localise'
 
+/**
+ * De les zit in een eigen component met de les-id als `key`.
+ *
+ * Sinds het scorescherm de volgende les meteen kan beginnen, gaat de app van
+ * /les/a naar /les/b zonder er iets tussen — en dan blijft deze component
+ * gewoon staan. Alles wat erin hangt blijft dus ook staan: `result`, de
+ * gewonnen beloningen, de mijlpaal, het aantal pogingen. Zonder die `key`
+ * opent de volgende les met het scorescherm van de vorige erover.
+ *
+ * Een `key` is hier beter dan zes `setX(...)` in een effect: wie er later een
+ * zevende stukje staat bij zet, hoeft nergens aan te denken.
+ */
 export function LessonPlayer() {
+  const { lessonId = '' } = useParams()
+  return <LesScherm key={lessonId} lessonId={lessonId} />
+}
+
+function LesScherm({ lessonId }: { lessonId: string }) {
   const t = useT()
   const lang = useLang()
-  const { lessonId = '' } = useParams()
   const navigate = useNavigate()
   const lesson = lessonById(lessonId)
   const unit = unitOfLesson(lessonId)
@@ -71,6 +87,24 @@ export function LessonPlayer() {
    * geteld — dan zou hij altijd onwaar zijn.
    */
   const gratisOp = useStore(gratisDeelOp)
+
+  /*
+   * Welke les hierna komt, en de knop die hem meteen begint.
+   *
+   * Dit is het vaakst gelopen stukje van de hele app: elke les eindigt hier.
+   * De grote knop zei "Verder op pad" en bracht je naar /leren, waar je de
+   * volgende les nog moest zoeken en aantikken. Twee tikken en wat scrollen
+   * voor het enige wat iemand die net een les afmaakte bijna altijd wil.
+   *
+   * Nu begint de knop die les, en zegt hij welke. Het pad blijft eronder
+   * staan voor wie wél wil rondkijken.
+   *
+   * `nextLesson` geeft de laatst afgeronde les terug als er niets meer open
+   * staat, dus de vergelijking met `lessonId` is het signaal "dit was hem" —
+   * dan blijft het pad de bovenste knop.
+   */
+  const volgendeId = useStore(nextLesson)
+  const volgende = volgendeId === lessonId ? undefined : lessonById(volgendeId)
 
   // The round is built once per attempt, from what the learner already knows.
   const exercises = useMemo(
@@ -299,9 +333,23 @@ export function LessonPlayer() {
             Dan wisselen de twee van plek — niet om te duwen, maar omdat de
             bovenste knop hoort te doen wat de lezer nu wil.
           */}
-          {gratisOp
-            ? <Link to="/volledig" className="block"><Button className="w-full">{t.unlock.slotKnop}</Button></Link>
-            : <Button className="w-full" onClick={() => navigate('/leren')}>{t.lesson.verderOpPad}</Button>}
+          {gratisOp ? (
+            <Link to="/volledig" className="block"><Button className="w-full">{t.unlock.slotKnop}</Button></Link>
+          ) : volgende ? (
+            <Button className="w-full" onClick={() => navigate(`/les/${volgende.id}`)}>
+              <span className="block">{t.lesson.volgendeLes}</span>
+              <span className="mt-0.5 block text-xs font-bold normal-case tracking-normal opacity-90">
+                {lessonTitle(volgende, lang)}
+              </span>
+            </Button>
+          ) : (
+            <Button className="w-full" onClick={() => navigate('/leren')}>{t.lesson.verderOpPad}</Button>
+          )}
+          {!gratisOp && volgende && (
+            <Button variant="secondary" className="w-full" onClick={() => navigate('/leren')}>
+              {t.lesson.verderOpPad}
+            </Button>
+          )}
           <Button
             variant="secondary"
             className="w-full"

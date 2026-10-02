@@ -85,7 +85,18 @@ describe('het scorescherm', () => {
    * staan, want een scherm met één uitgang is geen scherm maar een fuik.
    */
   it('wisselt de knoppen om, maar houdt de weg terug', () => {
-    expect(bron).toContain("? <Link to=\"/volledig\"")
-    expect(bron.match(/t\.lesson\.verderOpPad/g)?.length).toBe(2)
+    expect(bron).toContain('{gratisOp ? (')
+    expect(bron).toContain('<Link to="/volledig" className="block">')
+    expect(bron).toContain("{gratisOp && (\n            <Button variant=\"secondary\" className=\"w-full\" onClick={() => navigate('/leren')}>")
+  })
+
+  /**
+   * Is het pad níet op, dan begint de bovenste knop meteen de volgende les.
+   * Ook dan blijft de weg naar het pad eronder staan: een scherm met één
+   * uitgang is geen scherm maar een fuik, en dat gold hier al.
+   */
+  it('houdt de weg naar het pad ook onder de volgende-lesknop', () => {
+    expect(bron).toContain('{!gratisOp && volgende && (')
+    expect(bron.match(/t\.lesson\.verderOpPad/g)?.length).toBe(3)
   })
 })

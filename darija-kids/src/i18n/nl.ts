@@ -159,6 +159,7 @@ export const nl = {
     foutloos: 'Foutloos!',
     lesKlaar: 'Les klaar!',
     verderOpPad: 'Verder op het pad',
+    volgendeLes: 'Volgende les',
     nieuweBeloning: (n: number): string => (n > 1 ? 'Nieuwe beloningen!' : 'Nieuwe beloning!'),
     bestaatNiet: 'Deze les bestaat niet.',
     terugNaarPad: 'Terug naar het pad',
