@@ -19,11 +19,27 @@
  * nagekeken. Na een upload naar de interne test bleef het scherm zeggen
  * "Upload artifacts to generate pre-launch reports", met daarbij Google's
  * eigen suggestie: *we suggest uploading a bundle to your closed testing
- * track*. De gesloten test is daarom het standaarddoel geworden. Hij is
- * net zo onzichtbaar en net zo vrij van beoordeling als de interne, en hij
- * doet wel waar dit script voor bestaat.
+ * track*. De gesloten test is daarom het standaarddoel geworden.
  *
- *   npm run track                 naar gesloten test (geen beoordeling)
+ * En dáárna stond hier dat uploaden alleen al genoeg was: "het rapport komt
+ * van de bundel, niet van een beoordeling." Ook dat klopte niet, en het heeft
+ * twee bundels gekost. Versiecode 5 en 7 zijn allebei netjes geüpload en op de
+ * baan gezet, en bij allebei bleef het rapport leeg. In de console staat waarom:
+ *
+ *     1.3 — Not yet sent for review. 1 version code
+ *
+ * Een release die niet is ingestuurd staat stil. Google doet er niets mee, de
+ * testers krijgen hem niet, en er valt niets te rapporteren. Insturen is dus
+ * geen extraatje achteraf maar de stap die het rapport uitlokt — en op een
+ * testbaan is dat een lichte beoordeling die de winkelvermelding niet raakt.
+ *
+ * Vandaar `--insturen`. Het blijft uit staan als standaard, want insturen is
+ * een handeling naar buiten en die hoort gevraagd te worden; maar wie hem
+ * weglaat krijgt nu te lezen dat de release stilstaat, in plaats van de belofte
+ * van een rapport dat nooit komt.
+ *
+ *   npm run track                 naar gesloten test, blijft staan tot je hem instuurt
+ *   npm run track -- --insturen   en meteen insturen, zodat het rapport begint
  *   npm run track -- --track internal     interne test, geeft mogelijk geen rapport
  *   npm run track -- --proef      laat zien wat er zou gebeuren, raakt niets aan
  *   npm run track -- --track beta         open test
@@ -38,6 +54,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { leesSleutel, tokenOfStop } from './lib/play.mjs'
+import { hoogste, hoogsteNaam } from './lib/versies.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const APP = 'app.darijaforkids.learn'
@@ -58,6 +75,24 @@ const TRACKS = {
   alpha: 'gesloten test',
   beta: 'open test',
 }
+const INSTUREN = process.argv.includes('--insturen')
+/**
+ * De bouwopdracht met echte nummers erin, net als in `watzitin.mjs`.
+ *
+ * Niet `--versie <n>`: punthaken belanden letterlijk in de terminal. En niet
+ * een nummer uit build.gradle alleen -- dat bestand gaat niet terug de
+ * repository in, dus in een verse kloon staat daar 1 terwijl Play er al zeven
+ * heeft gezien. `docs/versies.json` weet dat wel.
+ */
+function volgendeBouw() {
+  const gradle = path.join(ROOT, 'android', 'app', 'build.gradle')
+  const bron = existsSync(gradle) ? readFileSync(gradle, 'utf8') : ''
+  const code = Math.max(Number(bron.match(/versionCode (\d+)/)?.[1]) || 0, hoogste(ROOT))
+  const naam = hoogsteNaam(ROOT) ?? bron.match(/versionName "([^"]*)"/)?.[1]
+  if (!code || !naam) return 'npm run aab'
+  return `npm run aab -- --versie ${code + 1} --naam ${naam}`
+}
+
 const TRACK = arg('track', 'alpha')
 if (!(TRACK in TRACKS)) {
   console.error(`\n"${TRACK}" is hier geen track. Kies uit:\n`)
@@ -73,7 +108,7 @@ const AAB = arg('aab', STANDAARD_AAB)
 if (!existsSync(AAB)) {
   console.error(`\nGeen bundel op:\n  ${AAB}\n`)
   console.error('Bouw hem eerst:\n')
-  console.error('  npm run aab -- --versie 3 --naam 1.2\n')
+  console.error(`  ${volgendeBouw()}\n`)
   process.exit(1)
 }
 
@@ -119,7 +154,7 @@ if (bron > gebouwd) {
   console.error('er nu in src/ staat — en dat merk je pas als je een afwijzing gaat')
   console.error('zoeken in code die er niet in zit.\n')
   console.error('Bouw hem opnieuw, met een versiecode die nog niet gebruikt is:\n')
-  console.error('  npm run aab -- --versie 4 --naam 1.2\n')
+  console.error(`  ${volgendeBouw()}\n`)
   console.error('Wil je deze bundel tóch opsturen, dan moet dat met opzet:\n')
   console.error('  npm run track -- --oud\n')
   process.exit(1)
@@ -215,30 +250,50 @@ try {
   const leggenVast = (extra) =>
     api(bewijs, `/androidpublisher/v3/applications/${APP}/edits/${edit.id}:commit${extra}`, { method: 'POST' })
 
-  let ingestuurd = false
-  try {
-    await leggenVast('?changesNotSentForReview=true')
-  } catch (fout) {
-    // Kent deze app de vlag niet, dan is er niets dat op beoordeling wacht en
-    // is de gewone vorm juist. Alleen dán, en niet bij een 403.
-    if (fout.status !== 400) throw fout
+  let ingestuurd = INSTUREN
+  if (INSTUREN) {
     await leggenVast('')
-    ingestuurd = true
+  } else {
+    try {
+      await leggenVast('?changesNotSentForReview=true')
+    } catch (fout) {
+      // Kent deze app de vlag niet, dan is er niets dat op beoordeling wacht en
+      // is de gewone vorm juist. Alleen dán, en niet bij een 403.
+      if (fout.status !== 400) throw fout
+      await leggenVast('')
+      ingestuurd = true
+    }
   }
   console.log('vastgelegd\n')
-  if (!ingestuurd) {
-    console.log('Hij is niet ter beoordeling gestuurd, en dat is met opzet. De bundel')
-    console.log('stáát er, en daar gaat het hier om — het rapport hieronder komt van de')
-    console.log('bundel, niet van een beoordeling.\n')
-    console.log('Insturen doe je later zelf in de console, als dat rapport schoon is.\n')
-  }
 
-  console.log('Google begint nu vanzelf aan het rapport vóór lancering. Dat duurt')
-  console.log('meestal een half uur tot een uur: hij installeert de app op een rij')
-  console.log('echte toestellen en klikt er doorheen.\n')
-  console.log('Daarna staat er in Play Console bij Testen en publiceren -> Testen')
-  console.log('-> Rapport vóór lancering wat hij zag, met een filmpje en een')
-  console.log('stacktrace als er iets omviel.\n')
+  if (ingestuurd) {
+    console.log('Hij is ter beoordeling gestuurd op de testbaan. Dat is een lichte')
+    console.log('beoordeling: hij raakt de winkelvermelding niet, en productie blijft')
+    console.log('staan waar hij staat.\n')
+    console.log('Daarna begint Google aan het rapport vóór lancering: hij installeert de')
+    console.log('app op een rij echte toestellen en klikt er doorheen. Dat staat in Play')
+    console.log('Console bij Test and release -> Testing -> Pre-launch report, met een')
+    console.log('filmpje en een stacktrace als er iets omviel.\n')
+  } else {
+    /*
+     * Zonder insturen gebeurt er niets, en dat is hier twee keer misverstaan.
+     *
+     * Eerder stond op deze plek dat het rapport van de bundel komt en geen
+     * beoordeling nodig heeft. Versiecode 5 en 7 zijn allebei zo geüpload, en
+     * bij allebei bleef het rapport leeg -- in de console staat bij de release
+     * "Not yet sent for review". Een release die stilstaat levert niets op.
+     */
+    console.log('LET OP: hij staat stil.\n')
+    console.log('De bundel is geüpload en aan de baan toegewezen, maar de release is niet')
+    console.log('ter beoordeling gestuurd. In de console staat er bij: "Not yet sent for')
+    console.log('review". Google doet er dan niets mee: de testers krijgen hem niet, en')
+    console.log('er komt géén rapport vóór lancering.\n')
+    console.log('Insturen op een testbaan is licht -- het raakt de winkelvermelding niet')
+    console.log('en productie blijft staan waar hij staat. Doe dat dus gewoon:\n')
+    console.log('  npm run track -- --insturen\n')
+    console.log('Of in de console bij Publishing overview, waar de wachtende wijziging')
+    console.log('staat.\n')
+  }
 } catch (fout) {
   console.error(`\nDat is niet gelukt (${fout.status ?? '?'}).\n`)
   if (fout.status === 403 && /:commit/.test(String(fout.message))) {
@@ -279,7 +334,7 @@ try {
     console.error('Gebruikers en rechten.\n')
   } else if (fout.status === 400 && /versionCode/i.test(String(fout.message))) {
     console.error('Die versiecode is al in gebruik. Elke upload heeft een nieuwe nodig:\n')
-    console.error('  npm run aab -- --versie 4 --naam 1.2\n')
+    console.error(`  ${volgendeBouw()}\n`)
   }
   console.error(String(fout.message).split('\n').slice(0, 14).join('\n'))
   console.error('')

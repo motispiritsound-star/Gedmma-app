@@ -1317,11 +1317,40 @@ Dezelfde bundel is als `.apk` op de Galaxy Tab gezet en opent. Twee
 bevestigingen dus, los van elkaar: de klassen zitten er aantoonbaar in, en het
 toestel start hem.
 
-**Wat er nog moet.** Wachten op het rapport vóór lancering — Google installeert
-de app op een rij echte toestellen en klikt erdoorheen. Dat is het enige punt
-in deze hele weg waar klikken onvermijdelijk is; er is geen API voor. In Play
-Console: *Test and release* → *Testing* → **Pre-launch report**. Eén vraag:
-opent de app daar. Is dat schoon, dan pas versiecode 7 ter beoordeling insturen.
+##### Waarom er nooit een rapport vóór lancering kwam — 2 oktober
+
+Het rapport bleef leeg: *"Upload artifacts to generate pre-launch reports."*
+Net als bij versiecode 5. In de console staat waarom, bij de release zelf:
+
+> **1.3** — *Not yet sent for review.* 1 version code → 7
+
+`npm run track` legde de wijziging vast met `changesNotSentForReview=true`, en
+daar stond een redenering onder die geloofwaardig was en niet klopte: het
+rapport zou van de geüploade bundel komen en geen beoordeling nodig hebben, dus
+niet insturen was juist de bedoeling — eerst lezen, dan insturen.
+
+Een release die niet is ingestuurd staat stil. Google doet er niets mee, de
+testers krijgen hem niet, en er valt niets te rapporteren. Twee bundels lang is
+er gewacht op een rapport dat niet kon komen.
+
+**Wat er gerepareerd is.** `npm run track -- --insturen` stuurt hem meteen in.
+De vlag blijft met opzet uit als standaard — insturen is een handeling naar
+buiten en die hoort gevraagd te worden — maar wie hem weglaat leest nu dat de
+release stilstaat, met de opdracht erbij, in plaats van de belofte van een
+rapport. `track.test.ts` bewaakt dat: de stilstaande tak mag het woord "rapport"
+niet beloven.
+
+Insturen op een testbaan is licht. Het raakt de winkelvermelding niet en
+productie blijft staan waar hij staat.
+
+En nog een oude val uit de weg: `naartrack.mjs` stelde `--versie 3 --naam 1.2`
+voor, een nummer dat Play allang gezien heeft. Net als `watzitin.mjs` leest hij
+nu `docs/versies.json`.
+
+**Wat er nog moet.** `npm run track -- --insturen` draaien, en dan wachten op
+het rapport. Dat lezen is het enige punt in deze hele weg waar klikken
+onvermijdelijk is; er is geen API voor de inhoud ervan. In Play Console: *Test
+and release* → *Testing* → **Pre-launch report**. Eén vraag: opent de app daar.
 
 `npm run crashes -- --versie 7` kan ertussendoor, maar zegt voorlopig niets:
 die cijfers komen van toestellen van gebruikers, en die zijn er nog niet. Het
