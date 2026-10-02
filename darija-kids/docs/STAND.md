@@ -4,6 +4,50 @@ Bijgewerkt op 1 oktober 2026, met de openingsactie op de boeken. Dit bestand
 is het antwoord op "wat moet er nog" zonder dat je drie andere bestanden hoeft
 te lezen.
 
+## De lancering: volgende week, met aankondiging — besloten 2 oktober
+
+Tot vandaag was het plan stil lanceren en later communiceren. Dat is nu een
+datum geworden: **volgende week gaat het naar buiten, met aankondiging.** Dat
+verandert de volgorde van alles wat eraan vooraf gaat.
+
+**Eén beoordelingsronde, niet twee.** Bij Apple lag 1.1 (build 9) en bij Google
+versiecode 7. Allebei worden ingetrokken. In plaats daarvan gaat er één versie
+in: de versie die ook werkelijk gelanceerd wordt, met het nieuwe startscherm
+erin. Twee rondes achter elkaar passen niet betrouwbaar in een week; één wel.
+
+Wat je weggooit zijn een paar uur beoordeling, geen dagen — die inzendingen
+liepen pas sinds vanavond.
+
+**Intrekken gebeurt pas als de nieuwe bundels er zijn.** Niet eerder. Anders is
+er een venster waarin er niets in de lucht is en nog niets klaar, en als er dan
+iets tegenzit sta je met lege handen.
+
+**Allebei de winkels gaan naar 1.4.** Apple stond op 1.1, Play op 1.3. Dat
+verschil heeft op 1 oktober al tot een verkeerd advies geleid — er is toen
+`--naam 1.1` geadviseerd terwijl 1.2 live stond. Apple mag van 1.1 naar 1.4
+springen, dus vanaf nu is het één nummer voor één product.
+
+| | Nu | Wat eruit gaat |
+|---|---|---|
+| App Store | 1.1 · build 9, in beoordeling | **1.4 · build 10** |
+| Google Play | 1.3 · versiecode 7, in beoordeling | **1.4 · versiecode 8** |
+
+Het draaiboek staat in `docs/LANCERING.md`, de teksten in `store/lancering/`.
+
+##### De winkelknop op de site werkt — 2 oktober
+
+`npm run live -- --apple 6813964474`. De knoppen op darijaforkids.eu waren
+uitgeschakelde spans met "Coming soon" erop, terwijl 1.0 sinds die ochtend in
+de App Store stond: de voordeur van het product zei dat het product niet
+bestond. Dat was het enige punt in de UX-audit waar bezoek verloren ging.
+
+Nu is het een echte link naar `apps.apple.com/app/id6813964474`, en staan er 60
+pagina's in 6 talen opnieuw. Geen dode links.
+
+Google blijft op "binnenkort" tot versiecode 8 is goedgekeurd. De twee knoppen
+staan los van elkaar in `make-site.mjs`, dus Apple aanzetten laat Google met
+rust. Een knop naar een Play-pagina die nog niet bestaat is erger dan geen knop.
+
 ## Waar het vanavond op staat — 2 oktober
 
 Beide winkels hebben een inzending liggen, en voor het eerst is dat bij allebei
