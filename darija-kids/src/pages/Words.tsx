@@ -196,7 +196,9 @@ export function Words() {
       {!state.unlocked && results.length > 0 && (
         <Card className="mt-3 flex flex-wrap items-center gap-3 p-4">
           <span className="text-xl" aria-hidden="true">🔒</span>
-          <p className="min-w-0 flex-1 text-sm">{t.words.slotUitleg}</p>
+          {/* Een basis, anders krimpt deze zin tot 158px naast de knop:
+              twintig woorden over vijf regels. */}
+          <p className="min-w-0 grow basis-48 text-sm">{t.words.slotUitleg}</p>
           <Link to="/volledig"><Button variant="secondary">{t.unlock.slotKnop}</Button></Link>
         </Card>
       )}

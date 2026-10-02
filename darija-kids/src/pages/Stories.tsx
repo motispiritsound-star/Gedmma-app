@@ -23,7 +23,9 @@ export function Stories() {
       {!gekocht && (
         <Card className="mb-4 flex flex-wrap items-center gap-3 p-4">
           <span className="text-xl" aria-hidden="true">🔒</span>
-          <p className="min-w-0 flex-1 text-sm">{t.stories.slotUitleg}</p>
+          {/* Een basis, anders krimpt deze zin tot 158px naast de knop:
+              dertien woorden over vier regels. */}
+          <p className="min-w-0 grow basis-48 text-sm">{t.stories.slotUitleg}</p>
           <Link to="/volledig"><Button variant="secondary">{t.unlock.slotKnop}</Button></Link>
         </Card>
       )}

@@ -199,7 +199,12 @@ export function BonusCard() {
   return (
     <Card className="flex flex-wrap items-center gap-4 p-5">
       <span className="text-4xl" aria-hidden="true">{bonusTask(highlight).emoji}</span>
-      <div className="min-w-0 flex-1">
+      {/* `basis-48` en niet `flex-1`: met `flex-1` mag deze kolom tot nul
+          krimpen, dus "past" alles naast elkaar en breekt de rij nooit af.
+          Nagemeten op 390px: 91 pixels breed, vier woorden over drie regels.
+          Met een basis vraagt de tekst eerst zijn ruimte en gaat de knop naar
+          de volgende regel. */}
+      <div className="min-w-0 grow basis-48">
         <h2 className="font-display text-lg font-extrabold">{t.bonus.vandaagTitel}</h2>
         <p className="text-sm text-[var(--ink-soft)]">
           {counts.today > 0 ? t.bonus.alGedaan(counts.today) : t.bonus.taak[highlight].uitleg}

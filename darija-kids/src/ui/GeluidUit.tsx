@@ -33,7 +33,9 @@ export function GeluidUit() {
     <div className="mx-auto max-w-3xl px-4 pt-4">
       <Card className="flex flex-wrap items-center gap-3 p-5">
         <span className="text-2xl" aria-hidden="true">🔇</span>
-        <div className="min-w-0 flex-1">
+        {/* Zie Bonus.tsx: met `flex-1` krimpt deze kolom tot niets naast de
+            knop en breekt de rij nooit af. */}
+        <div className="min-w-0 grow basis-48">
           <p className="font-display font-extrabold">{t.learn.geluidUit}</p>
           <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.learn.geluidUitUitleg(heeftStilteschakelaar())}</p>
         </div>
