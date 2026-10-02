@@ -678,6 +678,34 @@ export function addXp(amount: number): void {
   })
 }
 
+/**
+ * De reeks zoals hij vandaag is, niet zoals hij was toen je wegging.
+ *
+ * `streak` wordt alleen bijgewerkt in `addXp`, en die draait pas als je een
+ * antwoord geeft. Tot dat moment staat het oude getal er gewoon: wie veertig
+ * dagen wegblijft en de app opent, ziet in de kopbalk nog steeds 🔥 12.
+ * Nagemeten met vijf profielen — gisteren, eergisteren met en zonder
+ * vriesdag, acht dagen en veertig dagen weg: alle vijf toonden 12.
+ *
+ * Dat is niet alleen onwaar, het maakt het moment van terugkomen naar. Je
+ * doet een les in het vertrouwen dat je reeks doorloopt, en bij het eerste
+ * goede antwoord springt hij naar 1 zonder dat er iets wordt gezegd.
+ *
+ * Dit is dezelfde regel als in `addXp`, maar dan om te laten zien: een reeks
+ * leeft als je vandaag of gisteren geoefend hebt, of eergisteren met een
+ * vriesdag achter de hand. Anders is hij voorbij en staat er 0 — en zet het
+ * eerste goede antwoord hem weer op 1.
+ *
+ * Alleen om te tonen. De opgeslagen waarde blijft staan tot `addXp` hem
+ * fatsoenlijk bijwerkt, zodat er niets te migreren valt.
+ */
+export function reeksNu(s: State = state, dag = today()): number {
+  if (s.streak <= 0 || !s.lastDay) return s.streak
+  if (s.lastDay === dag || s.lastDay === dayBefore(dag)) return s.streak
+  if (s.freezes > 0 && s.lastDay === dayBefore(dayBefore(dag))) return s.streak
+  return 0
+}
+
 export const xpToday = (s: State = state): number => s.daily[today()] ?? 0
 
 export const goalMet = (s: State = state): boolean => xpToday(s) >= s.settings.dailyGoal

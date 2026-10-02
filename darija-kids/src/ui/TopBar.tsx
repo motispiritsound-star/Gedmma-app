@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { heartsNow, levelOf, MAX_HEARTS, msUntilNextHeart, useStore, xpToday } from '../engine/store'
+import { heartsNow, levelOf, MAX_HEARTS, msUntilNextHeart, reeksNu, useStore, xpToday } from '../engine/store'
 import { sfx } from '../engine/audio'
 import { Progress } from './kit'
 import { useT } from '../i18n'
@@ -187,8 +187,10 @@ export function TopBar() {
           <span title={`${t.common.niveau} ${level}`} className="hidden items-center gap-1 sm:flex">
             <span className="grid h-7 w-7 place-items-center rounded-lg bg-zellige-500/15 text-zellige-600 dark:text-zellige-300">{level}</span>
           </span>
-          <span title={t.topbar.dagenOpRij(state.streak)} className="flex items-center gap-1">
-            <span aria-hidden="true">🔥</span>{state.streak}
+          {/* `reeksNu` en niet `state.streak`: die laatste staat er nog zoals
+              je hem achterliet, ook na veertig dagen weg. */}
+          <span title={t.topbar.dagenOpRij(reeksNu(state))} className="flex items-center gap-1">
+            <span aria-hidden="true">🔥</span>{reeksNu(state)}
           </span>
           <span title={t.topbar.edelstenen} className="flex items-center gap-1">
             <span aria-hidden="true">💎</span>{state.gems}

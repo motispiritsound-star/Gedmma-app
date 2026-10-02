@@ -3,7 +3,7 @@ import { UNITS } from '../content/curriculum'
 import { allWords } from '../content/lexicon'
 import {
   BADGES, kanVriesdagKopen, koopVriesdag, levelOf, MAX_VRIESDAGEN, PRIJS_VRIESDAG,
-  progressOfUnit, setState, today, useStore,
+  progressOfUnit, reeksNu, setState, today, useStore,
 } from '../engine/store'
 import { sfx } from '../engine/audio'
 import { Button, Card, Progress, SectionTitle, Stat } from '../ui/kit'
@@ -107,7 +107,7 @@ export function Profile() {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat value={state.xp} label={t.profile.xpTotaal} emoji="⚡" />
-        <Stat value={`${state.streak} / ${state.bestStreak}`} label={t.profile.reeksRecord} emoji="🔥" />
+        <Stat value={`${reeksNu(state)} / ${state.bestStreak}`} label={t.profile.reeksRecord} emoji="🔥" />
         <Stat value={`${seen}/${allWords.length}`} label={t.profile.woordenGezien} emoji="📚" />
         <Stat value={solid} label={t.profile.vastgezet} emoji="🔒" />
       </div>

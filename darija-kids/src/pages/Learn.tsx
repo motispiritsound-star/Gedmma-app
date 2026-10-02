@@ -7,7 +7,7 @@ import { Mascot } from '../ui/Mascot'
 import { Quests } from '../ui/Quests'
 import { BonusCard } from './Bonus'
 import {
-  dueWordIds, isDone, lessonBehindPaywall, lessonUnlocked, markTipSeen, nextLesson,
+  dueWordIds, isDone, lessonBehindPaywall, lessonUnlocked, markTipSeen, nextLesson, reeksNu,
   progressOfUnit, unitBehindPaywall, unitUnlocked, useStore,
 } from '../engine/store'
 import { missingArabicVoice, sfx } from '../engine/audio'
@@ -139,7 +139,7 @@ export function Learn() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
       <Card className="mb-6 flex flex-col items-center gap-4 overflow-hidden p-5 sm:flex-row">
-        <Mascot mood={state.streak > 0 ? 'juich' : 'blij'} size={72} />
+        <Mascot mood={reeksNu(state) > 0 ? 'juich' : 'blij'} size={72} />
         <div className="min-w-0 flex-1 text-center sm:text-start">
           <h1 className="font-display text-xl font-extrabold sm:text-2xl">
             {state.name ? t.learn.welkomNaam(state.name) : t.learn.welkom}
