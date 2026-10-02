@@ -32,7 +32,9 @@ springen, dus vanaf nu is het één nummer voor één product.
 | App Store | 1.1 · build 9, in beoordeling | **1.4 · build 10** |
 | Google Play | 1.3 · versiecode 7, in beoordeling | **1.4 · versiecode 8** |
 
-Het draaiboek staat in `docs/LANCERING.md`, de teksten in `store/lancering/`.
+Het draaiboek voor de dag zelf staat in `docs/GO-LIVE.md`, de teksten in
+`store/lancering/`. `docs/LANCERING.md` is iets anders: het plan voor de negentig
+dagen eromheen.
 
 ##### De winkelknop op de site werkt — 2 oktober
 

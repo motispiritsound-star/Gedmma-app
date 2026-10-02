@@ -30,7 +30,7 @@ De app begint nu met vier vragen. In welke taal je leert. Wie je bent: je naam
 en een dier. Hoe je meeleest: het Arabische schrift, de klanken in ons alfabet,
 of allebei. En hoe het eruitziet: een kleur, licht of donker.
 
-Die kleur komt terug op je knoppen, je voortgang en de ring om je avatar.
+Die kleur komt terug op je knoppen, je voortgang en je avatar.
 
 Elke stap is door te klikken, en alles is later te veranderen.
 
@@ -43,8 +43,7 @@ apprends. Qui tu es : ton prénom et un animal. Comment tu lis : l’écriture
 arabe, les sons dans notre alphabet, ou les deux. Et quelle allure : une
 couleur, clair ou sombre.
 
-Cette couleur revient sur tes boutons, ta progression et le cercle de ton
-avatar.
+Cette couleur revient sur tes boutons, ta progression et ton avatar.
 
 Chaque étape peut être passée, et tout se change plus tard.
 
@@ -55,11 +54,11 @@ animal.
 
 Die App beginnt jetzt mit vier Fragen. In welcher Sprache du lernst. Wer du
 bist: dein Name und ein Tier. Wie du mitliest: arabische Schrift, die Laute in
-unserem Alphabet, oder beides. Und wie es aussieht: eine Farbe, hell oder
+unserem Alphabet oder beides. Und wie es aussieht: eine Farbe, hell oder
 dunkel.
 
-Diese Farbe steht dann auf deinen Schaltflächen, deinem Fortschritt und dem
-Ring um deinen Avatar.
+Diese Farbe steht dann auf deinen Schaltflächen, deinem Fortschritt und deinem
+Avatar.
 
 Jeden Schritt kannst du überspringen, alles später ändern.
 
@@ -71,7 +70,7 @@ La aplicación empieza ahora con cuatro preguntas. En qué idioma aprendes. Qui�
 eres: tu nombre y un animal. Cómo lees: escritura árabe, los sonidos en nuestro
 alfabeto, o las dos. Y qué aspecto quieres: un color, claro u oscuro.
 
-Ese color sale luego en tus botones, en tu progreso y en el aro de tu avatar.
+Ese color sale luego en tus botones, en tu progreso y en tu avatar.
 
 Cada paso se puede saltar, y todo se cambia más tarde.
 
@@ -83,8 +82,7 @@ L’app comincia adesso con quattro domande. In quale lingua impari. Chi sei: il
 tuo nome e un animale. Come leggi: scrittura araba, i suoni nel nostro
 alfabeto, o entrambe. E che aspetto vuoi: un colore, chiaro o scuro.
 
-Quel colore torna poi sui tuoi pulsanti, sui progressi e sull’anello attorno
-al tuo avatar.
+Quel colore torna poi sui tuoi pulsanti, sui progressi e sul tuo avatar.
 
 Ogni passo si può saltare, e tutto si cambia più tardi.
 
@@ -97,8 +95,7 @@ The app now starts with four questions. Which language you learn in. Who you
 are: your name and an animal. How you read along: Arabic script, the sounds in
 our alphabet, or both. And how it looks: a colour, light or dark.
 
-That colour then sits on your buttons, your progress and the ring around your
-avatar.
+That colour then sits on your buttons, your progress and your avatar.
 
 Every step can be clicked past, and everything changed later.
 
