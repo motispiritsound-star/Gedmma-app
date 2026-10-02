@@ -105,7 +105,7 @@ export function Bonus() {
 
   return (
     <div className="mx-auto max-w-3xl lg:max-w-5xl px-4 py-6">
-      <SectionTitle sub={t.bonus.uitleg}>{t.bonus.titel}</SectionTitle>
+      <SectionTitle kop="h1" sub={t.bonus.uitleg}>{t.bonus.titel}</SectionTitle>
 
       {result && (
         <Card className="mb-6 flex items-center gap-4 p-5">

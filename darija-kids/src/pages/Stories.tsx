@@ -18,7 +18,7 @@ export function Stories() {
   const gekocht = useStore((s) => s.unlocked)
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
-      <SectionTitle sub={t.stories.uitleg}>{t.stories.titel}</SectionTitle>
+      <SectionTitle kop="h1" sub={t.stories.uitleg}>{t.stories.titel}</SectionTitle>
 
       {!gekocht && (
         <Card className="mb-4 flex flex-wrap items-center gap-3 p-4">

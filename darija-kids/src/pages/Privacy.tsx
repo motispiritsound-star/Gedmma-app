@@ -13,7 +13,7 @@ export function Privacy() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <SectionTitle sub={text.updated}>{text.title}</SectionTitle>
+      <SectionTitle kop="h1" sub={text.updated}>{text.title}</SectionTitle>
       <p className="text-[var(--ink-soft)]">{text.intro}</p>
 
       {!operatorKnown() && (

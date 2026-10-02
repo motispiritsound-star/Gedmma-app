@@ -137,12 +137,24 @@ describe('de tweede ronde langs de raakvlakken', () => {
   })
 
   /**
-   * Het pijltje blijft klein, en waaróm staat erbij. Zonder die reden wordt het
-   * bij de volgende ronde "even rechtgezet" en verbergt het de strook.
+   * Het pijltje blijft net onder de 44, en waaróm staat erbij. Zonder die
+   * reden wordt het bij de volgende ronde "even rechtgezet" en verbergt het
+   * de strook.
+   *
+   * De strook zelf stond eerst op zesendertig en haalde de 44 dus niet. Dat
+   * is nu rechtgezet -- achttien knoppen die een kind met zijn duim moet
+   * raken horen niet de enige plek in de app te zijn waar dat niet kan -- en
+   * het pijltje schoof mee naar veertig.
    */
+  it('de onderwerpknoppen halen de 44', () => {
+    const src = bron('../pages/Words.tsx')
+    expect(src.match(/inline-flex h-11 items-center whitespace-nowrap rounded-full/g)).toHaveLength(2)
+  })
+
   it('legt bij het pijltje uit waarom het kleiner mag', () => {
     const src = bron('../pages/Words.tsx')
-    expect(src).toContain('zesendertig bij zesendertig')
-    expect(src).toContain('de strook eronder is zelf zesendertig hoog')
+    expect(src).toContain('veertig bij veertig')
+    expect(src).toContain('de strook eronder is zelf vierenveertig hoog')
+    expect(src).toContain('grid h-10 w-10')
   })
 })

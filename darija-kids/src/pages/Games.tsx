@@ -28,7 +28,7 @@ export function Games() {
 
   return (
     <div className="mx-auto max-w-3xl lg:max-w-5xl px-4 py-6">
-      <SectionTitle sub={t.games.uitleg}>{t.games.titel}</SectionTitle>
+      <SectionTitle kop="h1" sub={t.games.uitleg}>{t.games.titel}</SectionTitle>
 
       {/* Not a game, but the same promise: something to do that is not a lesson. */}
       <div className="mb-4"><BonusCard /></div>

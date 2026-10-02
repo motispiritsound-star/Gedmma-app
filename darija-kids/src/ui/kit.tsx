@@ -206,10 +206,24 @@ export function Sheet({ open, onClose, onTerug, children, labelledBy }: {
   )
 }
 
-export function SectionTitle({ children, sub }: { children: ReactNode; sub?: ReactNode }) {
+export function SectionTitle({ children, sub, kop = 'h2' }: { children: ReactNode; sub?: ReactNode; kop?: 'h1' | 'h2' }) {
+  /*
+   * `kop="h1"` als dit de titel van de bladzijde is.
+   *
+   * Nagelopen over vijftien bladzijden: op elf stond helemaal geen `h1`. Een
+   * schermlezer springt met één toets naar de kop van een bladzijde, en op
+   * die elf landde je dan nergens — je moest je vanaf de kopbalk omlaag
+   * werken om te horen waar je was. VoiceOver en TalkBack beginnen allebei
+   * bij die kop.
+   *
+   * Hij blijft `h2` tenzij je het zegt, want op een paar bladzijden is dit
+   * een tussenkop onder een titel die er al staat: op /profiel is de `h1` de
+   * naam van het kind, en "Beloningen" eronder hoort daaraan vast.
+   */
+  const Kop = kop
   return (
     <div className="mb-4">
-      <h2 className="font-display text-2xl font-extrabold sm:text-3xl">{children}</h2>
+      <Kop className="font-display text-2xl font-extrabold sm:text-3xl">{children}</Kop>
       {sub && <p className="mt-1 text-[var(--ink-soft)]">{sub}</p>}
     </div>
   )

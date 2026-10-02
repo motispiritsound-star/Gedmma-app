@@ -118,7 +118,7 @@ export function Words() {
 
   return (
     <div className="mx-auto max-w-3xl lg:max-w-4xl px-4 py-6">
-      <SectionTitle sub={t.words.uitleg(allWords.length)}>{t.words.titel}</SectionTitle>
+      <SectionTitle kop="h1" sub={t.words.uitleg(allWords.length)}>{t.words.titel}</SectionTitle>
 
       {/*
         Het zoekveld blijft staan.
@@ -157,7 +157,7 @@ export function Words() {
             <button
               onClick={() => { sfx.nav(); setTopic('alles') }}
               aria-pressed={topic === 'alles'}
-              className={`whitespace-nowrap rounded-full border-2 px-3 py-1.5 text-sm font-bold ${topic === 'alles' ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
+              className={`inline-flex h-11 items-center whitespace-nowrap rounded-full border-2 px-4 text-sm font-bold ${topic === 'alles' ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
             >
               {t.words.alles}
             </button>
@@ -167,7 +167,7 @@ export function Words() {
               <button
                 onClick={() => { sfx.nav(); setTopic(topicKey) }}
                 aria-pressed={topic === topicKey}
-                className={`whitespace-nowrap rounded-full border-2 px-3 py-1.5 text-sm font-bold ${topic === topicKey ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
+                className={`inline-flex h-11 items-center whitespace-nowrap rounded-full border-2 px-4 text-sm font-bold ${topic === topicKey ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
               >
                 {TOPIC_EMOJI[topicKey]} {t.topics[topicKey]}
               </button>
@@ -276,13 +276,14 @@ export function Words() {
  * Het pijltje aan de rand van de onderwerpenbalk.
  *
  * Klein genoeg om de knop eronder niet te verbergen, groot genoeg om met een
- * duim te raken: zesendertig bij zesendertig, op de rand en verticaal in het
- * midden. Hij staat er alleen als er die kant op iets te halen valt.
+ * duim te raken: veertig bij veertig, op de rand en verticaal in het midden.
+ * Hij staat er alleen als er die kant op iets te halen valt.
  *
- * Die zesendertig is met opzet minder dan de vierenveertig die Apple en Google
- * aanhouden: de strook eronder is zelf zesendertig hoog, en een pijl die daar
- * overheen steekt verbergt precies de knop die je wilde zien. Hij is bovendien
- * een snelkoppeling en geen enige weg -- de strook schuift ook met een veeg.
+ * Die veertig is met opzet net onder de vierenveertig die Apple en Google
+ * aanhouden: de strook eronder is zelf vierenveertig hoog, en een pijl die
+ * daar overheen steekt verbergt precies de knop die je wilde zien. Hij is
+ * bovendien een snelkoppeling en geen enige weg -- de strook schuift ook met
+ * een veeg.
  */
 function Pijl({ kant, label, onClick }: { kant: 1 | -1; label: string; onClick: () => void }) {
   return (
@@ -290,7 +291,7 @@ function Pijl({ kant, label, onClick }: { kant: 1 | -1; label: string; onClick: 
       type="button"
       onClick={onClick}
       aria-label={label}
-      className={`absolute top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border-2 border-[var(--line)] bg-[var(--surface-raised)] text-[var(--ink-soft)] shadow-sm transition hover:border-zellige-500 hover:text-zellige-600 dark:hover:text-zellige-300 ${kant === 1 ? 'end-1' : 'start-1'}`}
+      className={`absolute top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border-2 border-[var(--line)] bg-[var(--surface-raised)] text-[var(--ink-soft)] shadow-sm transition hover:border-zellige-500 hover:text-zellige-600 dark:hover:text-zellige-300 ${kant === 1 ? 'end-1' : 'start-1'}`}
     >
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="rtl:-scale-x-100">
         {kant === 1 ? <path d="m9 5 7 7-7 7" /> : <path d="m15 5-7 7 7 7" />}

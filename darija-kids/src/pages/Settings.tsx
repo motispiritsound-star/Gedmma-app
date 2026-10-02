@@ -176,7 +176,7 @@ export function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <SectionTitle sub={t.settings.uitleg}>{t.settings.titel}</SectionTitle>
+      <SectionTitle kop="h1" sub={t.settings.uitleg}>{t.settings.titel}</SectionTitle>
 
       <Card className="mb-6">
         <Row title={t.settings.taal} hint={t.settings.taalHint}>

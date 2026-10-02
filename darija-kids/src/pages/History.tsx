@@ -27,7 +27,7 @@ export function History() {
 
   return (
     <div className="mx-auto max-w-2xl lg:max-w-4xl px-4 py-6">
-      <SectionTitle sub={t.history.paginaBody}>{t.history.paginaTitel}</SectionTitle>
+      <SectionTitle kop="h1" sub={t.history.paginaBody}>{t.history.paginaTitel}</SectionTitle>
 
       <Card className="mb-6 p-5">
         <p className="font-display font-extrabold">{t.history.verzameld(have, HISTORY.length)}</p>
