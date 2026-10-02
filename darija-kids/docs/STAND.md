@@ -11,7 +11,7 @@ te lezen.
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 1289, groen — daar zitten de 77 van de worker al in |
-| Google Play | 4 (1.2) op **Productie**, 177 landen — de winkelpagina is nog **niet publiek** |
+| Google Play | 4 (1.2) op **Productie**, 177 landen — de winkelpagina is nog **niet publiek**; **5 (1.3) ligt gebouwd klaar** |
 | App Store | **1.0 (build 7) goedgekeurd, wacht op vrijgeven** — **1.1 (build 9) geüpload 2 oktober 08:34**, met alles erin |
 | Uitbetalen | **rond bij allebei** — Google geverifieerd op 1 oktober |
 
@@ -1138,9 +1138,21 @@ Van `842351d` naar de stand van dat moment scheelt één commit, en daar zit
 geen app-code in — alleen het bouwscript dat zijn eigen commit meldt, een test
 daarbij en dit document. Build 9 hoeft dus niet opnieuw.
 
-**Bij Play staat het er nog niet.** Daar zijn op 2 oktober drie bundels
-gebouwd van code van 1 oktober 08:16; pas na `f39adb0..842351d` is die machine
-bij. De bundel voor versiecode 5 / 1.3 moet daar nog één keer gemaakt worden.
+**En bij Play ligt de bundel klaar.** Daar zijn op 2 oktober eerst drie
+bundels gebouwd van code van 1 oktober 08:16 — die machine liep 94 commits
+achter en dat is bij het bouwen nergens aan te zien. Na `f39adb0..842351d` en
+een laatste ronde staat er nu:
+
+```
+  app-release.aab
+  22.8 MB
+  uit 462d03d  02-10 08:46  De commit staat nu ook onderaan, naast de bundel die eruit kwam
+  versionCode 5 · versionName 1.3
+```
+
+Daarmee is allebei de kant klaar om in te dienen zodra dat mag. Dat laatste
+blok drukt `maak-aab.mjs` voortaan zelf af, juist omdat die regel bovenaan
+achter Gradle wegscrolt.
 
 #### Build 8 is achterhaald — gebruik build 9 en versiecode 5
 
