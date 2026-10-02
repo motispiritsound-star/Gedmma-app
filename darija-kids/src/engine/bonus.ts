@@ -44,6 +44,15 @@ export interface BonusPool {
    * kent.
    */
   canSpeak: boolean
+  /**
+   * Of het dictee kan.
+   *
+   * Het dictee is acht keer "schrijf op wat je hoort". Staat het geluid uit,
+   * dan hoor je niets en is er geen variant die hetzelfde vraagt — anders dan
+   * bij een luisteroefening in een les, waar lezen in de plaats komt. Dan
+   * hoort het spel er niet te staan in plaats van onspeelbaar te zijn.
+   */
+  canHear: boolean
   /** Tracing is switched on. */
   canWrite: boolean
 }
@@ -76,7 +85,7 @@ export const BONUS: BonusTask[] = [
     emoji: '👂',
     gems: 4,
     size: 8,
-    ready: (p) => p.words.length >= 8,
+    ready: (p) => p.canHear && p.words.length >= 8,
     build: (p, seed) => buildDictationRound(p.words, p.sentences, seed, 8),
   },
   {
@@ -143,6 +152,7 @@ export function poolFrom(s: State = getState(), opts: { canSpeak: boolean } = { 
     words: metWords.length ? metWords : allWords.filter((w) => !w.phrase).slice(0, 20).map((w) => w.id),
     sentences: weakestFirst(metSentences, sentenceKey),
     canSpeak: opts.canSpeak,
+    canHear: s.settings.sound,
     canWrite: s.settings.schrijven,
   }
 }

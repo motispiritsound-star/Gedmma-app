@@ -901,28 +901,48 @@ function SentenceChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { 
 
 /* ------------------------------------------------------------------ router */
 
+/**
+ * Een luisteroefening zonder geluid is geen oefening.
+ *
+ * `say()` doet niets als het geluid uitstaat, en dan staat er een vraag "wat
+ * hoor je?" met een knop van 112 bij 112 die zwijgt, een linkje "langzamer"
+ * dat ook zwijgt, en vier antwoorden. Je kunt alleen gokken, en gokken kost
+ * een hartje en zet het woord verkeerd in de planning. Nagelopen in de code:
+ * `luister`, `zin-luister`, `dictee` en `letter-klank` zitten alle vier zo in
+ * elkaar, en het leerpad deelt ze gewoon uit.
+ *
+ * En dat geluid staat niet per ongeluk uit. Het is een schakelaar in de
+ * instellingen, en wie hem omzet doet dat met een reden: een slapende broer,
+ * een trein, een klas. De app hoort dan door te kunnen.
+ *
+ * Dus wisselt hij ze om voor de variant die dezelfde antwoorden heeft maar
+ * leest in plaats van luistert. Dat kan omdat de opties van beide varianten
+ * dezelfde vorm hebben — er wordt niets opnieuw opgebouwd. Precies zoals
+ * `spreek` het al deed voor een toestel zonder spraakherkenning.
+ */
 export function ExerciseView(props: ExerciseProps) {
   const speechOn = useStore((s) => s.settings.speech)
+  const soundOn = useStore((s) => s.settings.sound)
   switch (props.exercise.kind) {
     case 'nieuw': return <NewWord {...props} />
     case 'kies-betekenis': return <Choice {...props} mode="betekenis" />
     case 'kies-darija': return <Choice {...props} mode="darija" />
-    case 'luister': return <Choice {...props} mode="luister" />
+    case 'luister': return <Choice {...props} mode={soundOn ? 'luister' : 'betekenis'} />
     case 'script': return <Choice {...props} mode="script" />
     case 'koppel': return <Match {...props} />
     case 'bouw': return <Build {...props} />
     case 'tik': return <Type {...props} />
-    case 'dictee': return <Type {...props} mode="dictee" />
+    case 'dictee': return soundOn ? <Type {...props} mode="dictee" /> : <Type {...props} />
     case 'schrijf': return <Trace {...props} />
     case 'spreek': return speechOn ? <NaZeggen {...props} /> : <Type {...props} />
     case 'letter-nieuw': return <NewLetter {...props} />
-    case 'letter-klank': return <LetterChoice {...props} mode="klank" />
+    case 'letter-klank': return <LetterChoice {...props} mode={soundOn ? 'klank' : 'naam'} />
     case 'letter-naam': return <LetterChoice {...props} mode="naam" />
     case 'letter-vorm': return <LetterChoice {...props} mode="vorm" />
     case 'letter-schrijf': return <Trace {...props} />
     case 'zin-nieuw': return <NewSentence {...props} />
     case 'zin-bouw': return <SentenceBuild {...props} />
     case 'zin-betekenis': return <SentenceChoice {...props} mode="betekenis" />
-    case 'zin-luister': return <SentenceChoice {...props} mode="luister" />
+    case 'zin-luister': return <SentenceChoice {...props} mode={soundOn ? 'luister' : 'betekenis'} />
   }
 }
