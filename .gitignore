@@ -59,3 +59,23 @@ bladi/dist-demo/
 # bestand dieper werkt niet. Het fijnere werk doet `darija-kids/android/.gitignore`.
 !darija-kids/android/
 !darija-kids/ios/
+
+# ------------------------------------------------------------------ meetrommel
+#
+# Wat een onderzoeker achterlaat terwijl hij meet.
+#
+# Een agent die nakijkt of een scherm klopt, bouwt daar een meetscript voor, zet
+# soms een aparte productiebouw neer en laat een sondetest achter. Dat hoort
+# allemaal weggegooid te worden als hij klaar is, en meestal gebeurt dat ook.
+#
+# Maar zolang hij draait staat het er, en dan is er geen goede keuze: committen
+# maakt er repository-inhoud van, weggooien breekt de meting die bezig is. Dus
+# ziet git het niet, en kan het opgeruimd worden wanneer het uitkomt.
+#
+# De patronen zijn met opzet smal. `meet-` en `-tmp` zijn namen die niemand aan
+# echt werk geeft, en een test die met een liggend streepje begint is er geen —
+# alle tests hier heten naar wat ze bewaken.
+darija-kids/dist-*/
+darija-kids/meet-*.mjs
+darija-kids/*-tmp.mjs
+darija-kids/src/**/_*.test.ts
