@@ -1347,6 +1347,51 @@ En nog een oude val uit de weg: `naartrack.mjs` stelde `--versie 3 --naam 1.2`
 voor, een nummer dat Play allang gezien heeft. Net als `watzitin.mjs` leest hij
 nu `docs/versies.json`.
 
+##### De weg vooruit bij Play, concreet — 2 oktober
+
+De Publishing overview liet zien waarom er niets bewoog, en het was erger dan
+een stilstaande release. **Managed publishing** staat aan, en er stonden
+**negentien** wijzigingen te wachten — waaronder:
+
+> **Production** → `4 (1.2)` → *Start full rollout*
+
+Dat is de afgewezen bundel. Insturen zou hem ongewijzigd opnieuw ter
+beoordeling sturen én uitrollen naar productie, en onder managed publishing
+sleept één afwijzing de andere achttien mee onderuit.
+
+Splitsen kan niet: *Save for later* is uitgeschakeld, omdat de
+winkelvermeldingen en App content de hele app raken.
+
+**Wat de releasepagina van `4 (1.2)` toevoegde.** Geen *Edit*, alleen *Discard
+release* — en: *Percentage of install base on this release: **0.00%***. Samen
+met zes winkelvermeldingen die nog als "Add language" in de wachtrij staan,
+betekent dat: **de app is op Google Play nooit uitgekomen.** Er staat niets
+live. Weggooien kost dus niemand iets.
+
+**De volgorde is daarmee:**
+
+1. `4 (1.2)` weggooien met *Discard release*.
+2. Production → *Create new release* → *Add from library* → **versiecode 7**,
+   naam 1.3, met de notities uit `store/wat-is-nieuw-1.3.md`.
+3. Publishing overview nakijken: onder Production hoort `7 (1.3)` te staan.
+4. *Submit changes for review* — alles in één keer: productie, de gesloten
+   test, zes vermeldingen, leeftijdsclassificatie, Data safety, privacybeleid.
+
+Goedkeuring betekent dan meteen live.
+
+##### De notities gaan voortaan vanzelf mee — 2 oktober
+
+`store/wat-is-nieuw-1.1.md` en `-1.2.md` stonden er al, netjes per taal. Ze
+werden nergens gelezen: zes talen met de hand overtikken in de console is zes
+kansen om er een te vergeten, en niemand die het nakijkt. Erger nog, Play kapt
+een te lange tekst niet af maar weigert hem — ná de upload.
+
+`npm run track` leest nu `store/wat-is-nieuw-<versienaam>.md`, pakt het bestand
+dat bij de bundel hoort, en stuurt de notities mee. Is er een taal langer dan
+500 tekens, dan breekt hij af vóór de upload en zegt welke. `nieuws.test.ts`
+bewaakt dat alle drie de bestanden dezelfde zes talen hebben en binnen de grens
+blijven.
+
 **Wat er nog moet.** `npm run track -- --insturen` draaien, en dan wachten op
 het rapport. Dat lezen is het enige punt in deze hele weg waar klikken
 onvermijdelijk is; er is geen API voor de inhoud ervan. In Play Console: *Test

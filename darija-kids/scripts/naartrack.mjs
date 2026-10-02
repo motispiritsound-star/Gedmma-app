@@ -54,6 +54,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { nieuwsteVan } from './lib/bron.mjs'
+import { nieuwsVoor, teLang, MAX } from './lib/nieuws.mjs'
 import { leesSleutel, tokenOfStop } from './lib/play.mjs'
 import { hoogste, hoogsteNaam } from './lib/versies.mjs'
 
@@ -211,12 +212,36 @@ try {
   )
   console.log(`bundel geüpload, versiecode ${bundel.versionCode}`)
 
+  /*
+   * "Wat is er nieuw", per taal, uit `store/wat-is-nieuw-<versienaam>.md`.
+   *
+   * Zes talen met de hand overtikken in de console is zes kansen om er een te
+   * vergeten, en niemand die het nakijkt. De versienaam komt uit de bundel
+   * zelf, dus het juiste bestand wordt vanzelf gepakt.
+   */
+  const notities = nieuwsVoor(ROOT, bundel.versionName ?? '')
+  const lang = teLang(notities)
+  if (lang.length) {
+    console.error(`\nDeze teksten zijn langer dan de ${MAX} tekens die Play toestaat:\n`)
+    for (const n of lang) console.error(`  ${n.language}  ${n.text.length}`)
+    console.error(`\nKort ze in in store/wat-is-nieuw-${bundel.versionName}.md en draai opnieuw.\n`)
+    process.exit(1)
+  }
+  if (notities.length) console.log(`notities gevonden voor ${bundel.versionName}: ${notities.map((n) => n.language).join(', ')}`)
+  else console.log(`geen store/wat-is-nieuw-${bundel.versionName}.md -- deze release krijgt geen notities`)
+
   await api(bewijs, `/androidpublisher/v3/applications/${APP}/edits/${edit.id}/tracks/${TRACK}`, {
     method: 'PUT',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       track: TRACK,
-      releases: [{ versionCodes: [String(bundel.versionCode)], status: 'completed' }],
+      releases: [
+        {
+          versionCodes: [String(bundel.versionCode)],
+          status: 'completed',
+          ...(notities.length ? { releaseNotes: notities } : {}),
+        },
+      ],
     }),
   })
   console.log(`op de track ${TRACK} gezet`)
