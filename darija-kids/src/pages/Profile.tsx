@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { UNITS } from '../content/curriculum'
 import { allWords } from '../content/lexicon'
 import {
@@ -25,6 +26,23 @@ export function Profile() {
   const seen = Object.keys(state.cards).length
   const solid = Object.values(state.cards).filter((c) => c.strength >= 0.85).length
   const doneLessons = Object.keys(state.lessons).length
+
+  /*
+   * Vers betaald? Dan komt deze bladzijde uit `/volledig` en hoort er iets te
+   * staan. Een zoekparameter en geen staat in de winkelcode: wie de bladzijde
+   * daarna opnieuw opent heeft hem niet meer, en dat is precies goed -- het
+   * welkom hoort één keer.
+   */
+  const [params] = useSearchParams()
+  const welkom = params.get('welkom') === '1'
+  const naamVeld = useRef<HTMLInputElement>(null)
+
+  // Het toetsenbord niet opengooien; alleen de cursor klaarzetten op het veld
+  // waar iemand voor gekomen is. `preventScroll` omdat de bladzijde anders
+  // meteen naar beneden springt, langs de kaart die net het nieuws bracht.
+  useEffect(() => {
+    if (welkom) naamVeld.current?.focus({ preventScroll: true })
+  }, [welkom])
 
   /**
    * Of er volledige toegang is, en sinds wanneer.
@@ -92,18 +110,48 @@ export function Profile() {
         <Link to="/instellingen" className="w-full sm:w-auto"><Button variant="secondary" className="w-full">{t.profile.aanpassen}</Button></Link>
       </Card>
 
-      <div className="mb-4 flex flex-wrap gap-2">
-        {AVATARS.map((a) => (
-          <button
-            key={a}
-            onClick={() => { sfx.tap(); setState({ avatar: a }) }}
-            className={`grid h-11 w-11 place-items-center rounded-2xl border-2 text-2xl ${state.avatar === a ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
-            aria-label={t.profile.kies(a)}
-          >
-            {a}
-          </button>
-        ))}
-      </div>
+      {/*
+        Wie je bent, op de bladzijde waar het staat.
+        
+        De naam stond alleen in Instellingen en de avatar alleen hier, dus wie
+        zichzelf wilde invullen moest twee schermen langs en op het ene vinden
+        wat op het andere te zien is. Nu staan ze bij elkaar, onder de kaart
+        waar ze op terechtkomen.
+        
+        Instellingen houdt zijn veld; het is hetzelfde stukje staat en ze
+        lopen niet uit elkaar.
+      */}
+      <Card className="mb-4 p-5">
+        {welkom && (
+          <>
+            <p className="font-display text-lg font-extrabold">{t.profile.welkomTitel}</p>
+            <p className="mt-1 mb-4 text-sm text-[var(--ink-soft)]">{t.profile.welkomUitleg}</p>
+          </>
+        )}
+        <label htmlFor="profielnaam" className="text-sm font-bold">{t.settings.naam}</label>
+        <input
+          id="profielnaam"
+          ref={naamVeld}
+          value={state.name}
+          onChange={(e) => setState({ name: e.target.value.slice(0, 24) })}
+          placeholder={t.settings.naamPlaceholder}
+          autoComplete="given-name"
+          enterKeyHint="done"
+          className="mt-1 block w-full max-w-xs rounded-xl border-2 border-[var(--line)] bg-[var(--surface)] px-3 py-2 outline-none focus:border-zellige-500"
+        />
+        <div className="mt-4 flex flex-wrap gap-2">
+          {AVATARS.map((a) => (
+            <button
+              key={a}
+              onClick={() => { sfx.tap(); setState({ avatar: a }) }}
+              className={`grid h-11 w-11 place-items-center rounded-2xl border-2 text-2xl ${state.avatar === a ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)]'}`}
+              aria-label={t.profile.kies(a)}
+            >
+              {a}
+            </button>
+          ))}
+        </div>
+      </Card>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat value={state.xp} label={t.profile.xpTotaal} emoji="⚡" />

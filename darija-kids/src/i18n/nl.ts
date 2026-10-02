@@ -403,6 +403,16 @@ export const nl = {
      */
     lidTitel: 'Volledige toegang',
     lidSinds: (datum: string): string => `lid sinds ${datum}`,
+    /*
+     * Het scherm waar een koper na het betalen op uitkomt.
+     *
+     * Er gebeurde na de aankoop niets zichtbaars: je bleef op het slotscherm
+     * staan met een kaartje "volledige toegang". Voor wie net zestig euro
+     * heeft uitgegeven is dat te weinig, en het eerste wat een mens dan wil is
+     * niet een les maar zichzelf: een naam op de kaart.
+     */
+    welkomTitel: 'Welkom bij de volledige cursus',
+    welkomUitleg: 'Vul hier je naam in en kies een dier. Dat staat voortaan op je kaart.',
     leerling: 'Leerling',
     aanpassen: 'Aanpassen',
     naarNiveau: (into: number, span: number): string => `${into}/${span} XP naar het volgende`,

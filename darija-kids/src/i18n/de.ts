@@ -391,6 +391,16 @@ export const de: Strings = {
      */
     lidTitel: 'Vollzugang',
     lidSinds: (datum: string): string => `dabei seit ${datum}`,
+    /*
+     * Het scherm waar een koper na het betalen op uitkomt.
+     *
+     * Er gebeurde na de aankoop niets zichtbaars: je bleef op het slotscherm
+     * staan met een kaartje "volledige toegang". Voor wie net zestig euro
+     * heeft uitgegeven is dat te weinig, en het eerste wat een mens dan wil is
+     * niet een les maar zichzelf: een naam op de kaart.
+     */
+    welkomTitel: 'Willkommen im ganzen Kurs',
+    welkomUitleg: 'Trag hier deinen Namen ein und wähl ein Tier. Beides steht ab jetzt auf deiner Karte.',
     leerling: 'Lernende(r)',
     aanpassen: 'Ändern',
     naarNiveau: (into, span) => `${into}/${span} XP bis zum nächsten`,

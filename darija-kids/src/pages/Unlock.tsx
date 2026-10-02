@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   btwInbegrepen, buyEbook, EBOOK, ebookKlaar, ebookWachtTot, FREE_LESSONS,
   manageSubscription, PLANS, planOf,
@@ -98,6 +98,30 @@ export function Unlock() {
   useEffect(() => {
     if (subscribed) setPoort(null)
   }, [subscribed])
+
+  /*
+   * Na het betalen door naar het profiel.
+   *
+   * Er gebeurde hier niets zichtbaars: het slot ging open en je bleef op
+   * ditzelfde scherm staan met een kaartje erop. Voor wie net zestig euro
+   * heeft uitgegeven is dat te weinig, en wat een mens op dat moment wil is
+   * niet meteen een les maar zichzelf -- een naam en een dier op de kaart.
+   *
+   * De overgang, niet de waarde. Wie al betaalt en dit scherm opent om zijn
+   * abonnement te beheren hoort hier gewoon te blijven; alleen de sprong van
+   * nee naar ja is een verse aankoop. Vandaar de vorige waarde in een ref.
+   *
+   * Op iOS komt het antwoord van de winkel na het venster van Apple, soms een
+   * paar tellen later. Een effect op `subscribed` vangt dat; iets dat direct
+   * na `subscribe()` zou navigeren, niet.
+   */
+  const navigate = useNavigate()
+  const wasAbonnee = useRef(subscribed)
+  useEffect(() => {
+    const vers = subscribed && !wasAbonnee.current
+    wasAbonnee.current = subscribed
+    if (vers) navigate('/profiel?welkom=1')
+  }, [subscribed, navigate])
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
