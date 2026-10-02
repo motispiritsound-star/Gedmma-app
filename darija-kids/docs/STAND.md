@@ -12,7 +12,7 @@ te lezen.
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 1289, groen — daar zitten de 77 van de worker al in |
 | Google Play | **versiecode 7 ingestuurd op 2 oktober** — productie én gesloten test, in beoordeling. De crash is gevonden, gerepareerd en twee keer bevestigd: `watzitin` ziet de vier klassen in de dex, en de app opent op de Galaxy Tab |
-| App Store | **1.0 (build 7) goedgekeurd, wacht op vrijgeven** — **1.1 (build 9) geüpload 2 oktober 08:34**, met alles erin |
+| App Store | **1.0 (build 7) staat live** — vrijgegeven op 2 oktober, stil, zonder aankondiging. **1.1 (build 9) geüpload 2 oktober 08:34**, wacht op de IAP-talen en de proefperiode vóór het insturen |
 | Uitbetalen | **rond bij allebei** — Google geverifieerd op 1 oktober |
 
 ### Goedgekeurd — 1 oktober, 16:46
@@ -24,6 +24,20 @@ haalde. Build 7, versie 1.0.
 **Niet vrijgegeven.** Bij het inzenden is *Manually release this version*
 gekozen, dus de app staat klaar en wacht op jou. Dat is precies waarvoor die
 keuze er was.
+
+##### Vrijgegeven — 2 oktober
+
+1.0 staat live. De status in App Store Connect is *Ready for Distribution*, en
+dat is niet hetzelfde als het wachten waar hieronder over geschreven werd:
+wachten heet bij Apple *Pending Developer Release*. Stil vrijgegeven, zonder
+aankondiging — die komt pas als Android er ook is.
+
+Daarmee gaat het slot van de abonnementen eraf, en dat is wat de volgende drie
+stappen mogelijk maakt: de vier talen bij de drie aankopen, de proefperiode bij
+Maand, en één echte aankoop. Die moeten alle drie in het gat vóór 1.1 wordt
+ingestuurd — zodra een versie in beoordeling is, zijn die velden alleen-lezen.
+
+De tekst hieronder is van 1 oktober en beschrijft waarom er toen gewacht werd.
 
 #### Waarom niet vandaag
 
