@@ -1125,6 +1125,87 @@ zonder fout, negen combinaties van breedte en lettergrootte binnen beeld, vier
 liggende formaten binnen beeld, offline alle routes door, en de stoeitest
 zonder enige uitzondering.
 
+#### De zesde doorloop — wat er in de weg zat, niet wat er lelijk uitzag — 2 oktober
+
+De opdracht was deze keer nadrukkelijk niet "maak het mooier" maar "maak het
+beter te gebruiken". Alles hieronder is gemeten voordat er iets veranderde, en
+opnieuw gemeten daarna.
+
+**Het leerpad was tien schermen lang geworden.** Nagemeten met een profiel van
+veertig afgeronde lessen — twee derde van de cursus, de stand waarin de meeste
+gebruikers het grootste deel van hun tijd doorbrengen: 10 560px hoog, de
+volgende les op y=8285, dus 7 885px scrollen om te zien waar je bent. Elke
+sessie opnieuw. Afgeronde units klappen nu dicht (kop, balk, percentage en het
+aantal lessen blijven staan; één tik opent weer), units die bezig of nog dicht
+zijn blijven open. Na afloop: 5 096px, volgende les op y=2821, 2 421px
+scrollen. Daarbovenop noemt de kaart "Ga verder" nu de les waar hij heen gaat,
+met de unit erachter — dat beantwoordt "waar ben ik" zonder te scrollen.
+
+**Het woordenboek liep achter je vingers aan.** Met de processor zes keer
+vertraagd — ongeveer een goedkope Android: 29 341px pagina, 3 161 knopen, het
+eerste woord na 2 572ms, en elke aanslag in het zoekveld 200 tot 564ms, want
+bij elke letter mochten 304 kaarten weer weg. Nu bouwt de lijst zich op in
+stukken van veertig: 4 490px, 522 knopen, eerste woord na 1 388ms, eerste
+aanslag 279ms. Alle 304 woorden blijven bereikbaar door te scrollen. Het
+zoekveld plakt bovendien onder de kopbalk, want wie doorscrolde was twintig
+schermen van het veld vandaan. Daarvoor meet `TopBar` zichzelf: 77px op een
+gewone telefoon, 163px op een kleine met de grootste letterinstelling.
+
+**Herhalen zei "kom later terug".** Een lege wachtrij is precies het moment
+waarop iemand die wil oefenen die tab opent. Nu valt hij terug op de twaalf
+woorden die het minst vastzitten. En de dubbele knop onderaan is weg: twee
+knoppen naar dezelfde plek op één scherm is geen keuze maar twijfel.
+
+**Met het geluid uit kreeg je onbeantwoordbare vragen.** `say()` doet niets als
+de schakelaar uitstaat, en dan staat er "wat hoor je?" met een zwijgende knop
+en vier antwoorden: alleen gokken, en gokken kost een hartje en zet het woord
+verkeerd in de planning. Vier oefensoorten zaten zo in elkaar. Ze wisselen nu
+om naar de leesvariant met dezelfde antwoorden; het dictee als los spel valt
+weg, zoals de spreekronde dat al deed. Nagemeten over 64 schermen: met geluid
+aan vier luisterschermen, met geluid uit nul.
+
+**Een les kon eindeloos doorgaan.** Elke fout hing een kopie van die vraag
+achteraan de rij — ook de fout op de kopie. Met hartjes loopt dat dood, maar
+`hearts` is juist de schakelaar die een ouder voor een jonger kind uitzet, en
+dan is de enige uitgang het kruisje dat de les weggooit. Eén herkansing per
+vraag: een ronde van twaalf wordt er hoogstens vierentwintig.
+
+**Het scorescherm bracht je naar het pad in plaats van naar de volgende les.**
+Dat is het vaakst gelopen stukje van de app. De bovenste knop begint nu die
+les en zegt welke; "verder op pad" staat eronder.
+
+**Drie dingen in de opslag die stilletjes schade doen.** Een kaart voor een
+woord-id dat wij hernoemen of weghalen laat `word(id)` werpen, en dat gebeurt
+in de lijst op /herhalen — één zo'n kaart haalde de hele bladzijde onderuit.
+Hetzelfde geldt voor een zin-id, maar dan pas ná de tik op "Start herhaling".
+Allebei vallen ze er nu bij het inlezen uit. En `bestStreak` kan lager staan
+dan `streak` als dat ene veld kwijtraakt; dan staat er "41 / 0" op /profiel en
+is iemand met eenenveertig dagen ook zijn drie vlambeloningen kwijt.
+
+**Elke bladzijde begint nu met één `h1`.** Nagelopen over vijftien bladzijden:
+op elf stond er geen. VoiceOver en TalkBack beginnen allebei bij die kop. En
+de achttien onderwerpknoppen in het woordenboek stonden op zesendertig pixels;
+die halen nu de vierenveertig van Apple en Google.
+
+**Arabische lestitels werden afgesneden.** Zeven lessen van de alfabet-unit
+heten naar hun letters ("ا ب ت ث"). Die stonden in het lettertype van de
+koppen, dat geen Arabische vormen heeft, met een regelafstand die niet klopte.
+
+**Eén ding gemeten en niet gedaan.** Alle zes de talen zitten in één brok van
+229 kB (86 kB ingepakt), terwijl iemand er één gebruikt. Ze los inladen scheelt
+ongeveer 72 kB ingepakt. Nagemeten wat dat in tijd doet: met de processor zes
+keer vertraagd start de app met één taal in 1 435ms en met zes in 1 532ms,
+mediaan over zes metingen — ongeveer 100ms, en op een gewoon toestel een
+zesde daarvan. In de app staan die bestanden bovendien op het toestel zelf,
+dus de 72 kB kost daar niets. Daar staat tegenover dat `useT()` overal
+synchroon is: los inladen vraagt een wachtscherm vóór de eerste tekening, en
+offline moeten alle zes gewoon in de servicewerker blijven zitten. Voor 100ms
+op de traagste telefoon is dat de verkeerde ruil. Opgeschreven zodat de
+volgende die ernaar kijkt niet opnieuw hoeft te meten.
+
+Stand na deze doorloop: **1580 tests groen in 77 bestanden**, `tsc -b --force
+--noEmit` schoon, productiebouw schoon.
+
 ### Nog na te kijken bij Google Play — kijken, niet wijzigen
 
 Drie dingen die pas opvallen als het te laat is. **Zolang inzending 4 in
