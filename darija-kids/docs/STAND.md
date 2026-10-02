@@ -1178,9 +1178,25 @@ in uit `--versie` en `--naam`.
 if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { git -C $p checkout -- android/app/build.gradle; git -C $p pull origin main } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
-Daarna pas bouwen, en achteraf nakijken waar je staat met `git -C $p log
---oneline -1`. Op de Mac speelt dit niet: `ios/` staat niet in de repository,
-dus `ios-plist.mjs` raakt geen gevolgd bestand.
+Op de Mac speelt dat terugzetten niet: `ios/` staat niet in de repository, dus
+`ios-plist.mjs` raakt geen gevolgd bestand.
+
+**En je hoeft het niet meer te onthouden.** `npm run aab` en `npm run ios`
+beginnen nu allebei met de commit waaruit ze bouwen, en kijken na bij `origin`:
+
+```
+Gebouwd uit: 842351d  02-10 05:58  STAND: trek eerst binnen, en zet build.gradle daarbij terug
+Bij met origin/main.
+```
+
+Sta je achter, dan staat er in plaats daarvan hoeveel commits, wat dat betekent
+en wat je eraan doet. Het breekt het bouwen niet af — soms bouw je met
+voordacht een oudere stand — maar dan heb je het zelf gekozen.
+
+Dat nakijken gaat met een echte `git fetch`, en dat is het hele punt: de
+lokale `origin/main` is net zo oud als de laatste keer dat er getrokken is.
+Op de machine waar dit misging stond die op dezelfde commit als `HEAD`, dus
+een vergelijking zonder ophalen had gezegd dat alles bij was.
 
 De "wat is er nieuw"-tekst in `store/wat-is-nieuw-1.1.md` is op 2 oktober
 bijgeschreven en dekt nu allebei de rondes: de reparaties van vóór 1 oktober

@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { toonStand } from './lib/stand.mjs'
 
 /**
  * De twee regels die met de hand in Xcode moesten.
@@ -24,6 +25,8 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const PROJECT = path.join(ROOT, 'ios', 'App')
 const PLIST = path.join(PROJECT, 'App', 'Info.plist')
 const BUDDY = '/usr/libexec/PlistBuddy'
+
+toonStand(ROOT)
 
 /** `npm run ios -- --build 5 --versie 1.0` */
 const arg = (naam) => {

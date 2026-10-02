@@ -23,10 +23,13 @@ import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from '
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { geenJdk, haalJdk, vindJdk, vindSdk } from './lib/jdk.mjs'
+import { toonStand } from './lib/stand.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const ANDROID = path.join(ROOT, 'android')
 const GRADLE = path.join(ANDROID, 'app', 'build.gradle')
+
+toonStand(ROOT)
 
 const args = process.argv.slice(2)
 const versie = args.includes('--versie') ? Number(args[args.indexOf('--versie') + 1]) : null
