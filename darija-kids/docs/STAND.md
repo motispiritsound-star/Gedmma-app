@@ -1162,6 +1162,26 @@ op versiecode maar verkeerd op naam, en moet opnieuw. Opnieuw bouwen kost
 negenentwintig seconden; het versienummer in de winkel terugdraaien kost een
 release.
 
+**Trek eerst binnen, en zet `build.gradle` daarbij terug.** Op 2 oktober zijn er
+drie bundels gebouwd van code van de dag ervoor: Windows stond 94 commits
+achter en de Mac 65. Een bundel met het goede versienummer en de oude code ziet
+er bij het bouwen precies hetzelfde uit — zelfde aantal MB, zelfde "BUILD
+SUCCESSFUL" — dus dat merk je nergens aan.
+
+En een `git pull` valt daar om, want `maak-aab.mjs` schrijft `versionCode` en
+`versionName` in `android/app/build.gradle`, en dat bestand wordt gevolgd. Git
+weigert dan binnen te halen omdat je wijzigingen zouden verdwijnen. Zet dat ene
+bestand dus terug voordat je trekt; het bouwscript schrijft het er meteen weer
+in uit `--versie` en `--naam`.
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { git -C $p checkout -- android/app/build.gradle; git -C $p pull origin main } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+Daarna pas bouwen, en achteraf nakijken waar je staat met `git -C $p log
+--oneline -1`. Op de Mac speelt dit niet: `ios/` staat niet in de repository,
+dus `ios-plist.mjs` raakt geen gevolgd bestand.
+
 De "wat is er nieuw"-tekst in `store/wat-is-nieuw-1.1.md` is op 2 oktober
 bijgeschreven en dekt nu allebei de rondes: de reparaties van vóór 1 oktober
 én wat een gebruiker merkt van de doorloop daarna. Zes talen, alle zes onder de
