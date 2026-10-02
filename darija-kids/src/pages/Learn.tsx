@@ -15,7 +15,7 @@ import { useVoices } from '../ui/useVoices'
 import { Khatims } from '../ui/Khatim'
 import type { Lesson } from '../content/types'
 import { useLang, useT } from '../i18n'
-import { lessonTitle, unitSubtitle } from '../content/localise'
+import { heeftArabisch, lessonTitle, unitSubtitle } from '../content/localise'
 
 const KIND_ICON: Record<Lesson['kind'], string> = {
   woorden: '📗', zinnen: '💬', letters: '🔤', verhaal: '📖', toets: '🏅',
@@ -48,7 +48,7 @@ function Node({ lesson, index, accent }: { lesson: Lesson; index: number; accent
         <span aria-hidden="true">{open ? KIND_ICON[lesson.kind] : '🔒'}</span>
       </motion.div>
       <div className="text-center">
-        <div className="text-xs font-bold">{title}</div>
+        <div className={`text-xs font-bold ${heeftArabisch(title) ? 'ar' : ''}`}>{title}</div>
         {record && (
           <Khatims stars={record.stars} size={12} label={t.learn.sterren(record.stars)} />
         )}
@@ -139,7 +139,7 @@ export function Learn() {
           {volgendeUnit && volgendeLes && (
             <p className="mt-1.5 flex flex-wrap items-center justify-center gap-x-2 text-sm font-bold sm:justify-start">
               <span aria-hidden="true">{KIND_ICON[volgendeLes.kind]}</span>
-              <span className="text-[var(--ink)]">{lessonTitle(volgendeLes, lang)}</span>
+              <span className={`text-[var(--ink)] ${heeftArabisch(lessonTitle(volgendeLes, lang)) ? 'ar' : ''}`}>{lessonTitle(volgendeLes, lang)}</span>
               <span className="font-semibold text-[var(--ink-soft)]">· {volgendeUnit.title}</span>
             </p>
           )}

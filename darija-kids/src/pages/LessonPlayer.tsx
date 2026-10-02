@@ -18,7 +18,7 @@ import { Film } from '../ui/Film'
 import { HistoryFilm } from '../ui/HistoryCard'
 import { Khatims } from '../ui/Khatim'
 import { useLang, useT } from '../i18n'
-import { lessonTitle, tipOf, unitSubtitle } from '../content/localise'
+import { heeftArabisch, lessonTitle, tipOf, unitSubtitle } from '../content/localise'
 
 /**
  * De les zit in een eigen component met de les-id als `key`.
@@ -249,7 +249,8 @@ function LesScherm({ lessonId }: { lessonId: string }) {
         <Mascot mood="juich" size={130} className="mx-auto" />
         <h1 className="mt-4 font-display text-3xl font-extrabold">{result.perfect ? t.lesson.foutloos : t.lesson.lesKlaar}</h1>
         <p className="mt-1 text-[var(--ink-soft)]">
-          {lessonTitle(lesson, lang)} · {unit ? unitSubtitle(unit, lang) : ''}
+          <span className={heeftArabisch(lessonTitle(lesson, lang)) ? 'ar' : ''}>{lessonTitle(lesson, lang)}</span>
+          {' · '}{unit ? unitSubtitle(unit, lang) : ''}
         </p>
         <Khatims stars={stars} size={40} className="my-4 justify-center" label={t.learn.sterren(stars)} />
         <div className="grid grid-cols-2 min-[360px]:grid-cols-3 gap-3">
@@ -338,7 +339,13 @@ function LesScherm({ lessonId }: { lessonId: string }) {
           ) : volgende ? (
             <Button className="w-full" onClick={() => navigate(`/les/${volgende.id}`)}>
               <span className="block">{t.lesson.volgendeLes}</span>
-              <span className="mt-0.5 block text-xs font-bold normal-case tracking-normal opacity-90">
+              {/* `leading-6`: een lestitel kan Arabisch schrift zijn, en dat
+                  heeft meer hoogte nodig dan de regelafstand van een knop.
+                  Zonder dit werd "ا ب ت ث" aan de boven- en onderkant
+                  afgesneden. */}
+              <span className={`mt-0.5 block text-sm leading-6 font-bold normal-case tracking-normal opacity-90 ${
+                heeftArabisch(lessonTitle(volgende, lang)) ? 'ar' : ''
+              }`}>
                 {lessonTitle(volgende, lang)}
               </span>
             </Button>

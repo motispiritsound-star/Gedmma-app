@@ -39,6 +39,22 @@ export function noteOf(word: Word, lang: Lang): string | undefined {
 export const unitSubtitle = (unit: Unit, lang: Lang): string =>
   lang === 'nl' ? unit.subtitle : PACKS[lang].units[unit.id] ?? unit.subtitle
 
+/**
+ * Of er Arabisch schrift in staat.
+ *
+ * Zeven lessen van de alfabet-unit heten naar de letters die ze leren: "ا ب
+ * ت ث". Die titel komt op het pad te staan, op het scorescherm en in de knop
+ * naar de volgende les — en overal in het schreefloze lettertype van de
+ * koppen, dat geen Arabische vormen heeft. De browser pakt er dan zelf iets
+ * bij, met regelafstand die niet klopt, en sneed de letters aan de boven- en
+ * onderkant af.
+ *
+ * De `.ar`-klasse zet het juiste lettertype, de leesrichting en een
+ * regelafstand van 1.9. Hij hoort er alleen bij als er werkelijk Arabisch in
+ * staat, want hij draait ook de richting om.
+ */
+export const heeftArabisch = (tekst: string): boolean => /[\u0600-\u06FF]/.test(tekst)
+
 export function lessonTitle(lesson: Lesson, lang: Lang): string {
   if (lang === 'nl') return lesson.title
   const pack = PACKS[lang].lessons
