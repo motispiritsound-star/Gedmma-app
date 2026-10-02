@@ -485,8 +485,11 @@ afsluiten, het boek opslaan en opzeggen. Bij een lancering met enkele tientallen
 kopers is dat te overzien, en 1.1 volgt binnen een week — maar het is de reden
 om 1.1 niet te laten liggen.
 
-**Indienen: de week ná de lancering.** Dan staat de app in de winkel en kost
-een afwijzing niets.
+**Indienen: zodra 1.0 live staat.** Dan kost een afwijzing niets meer. Sinds
+het besluit van 2 oktober gaat 1.0 stil live en gaat 1.1 er meteen achteraan;
+de aankondiging wacht op 1.1 en 1.3 — zie *Besloten op 2 oktober* onder
+**Naar go-live**. Dat haalt bovendien dit lek zo snel mogelijk uit de lucht,
+zonder dat er ooit veel mensen in dat raam hebben gezeten.
 
 **Het geluidsadvies per toestel.** De uitleg bij "er komt geen geluid uit"
 wees naar het stilteschuifje aan de zijkant van een iPhone. Op Android bestaat
@@ -2093,9 +2096,59 @@ Dat is één regel in `src/site/links.ts`.
 
 ## Naar go-live
 
+### Besloten op 2 oktober: stil live, daarna pas aankondigen
+
+De aankondiging wacht niet op de goedkeuring van 1.0 maar op de versie die je
+ook echt wilt laten zien. Concreet: 1.0 gaat zonder een woord de App Store in,
+1.1 gaat er meteen achteraan, en pas als allebei de winkels op de nieuwe versie
+staan gaat de communicatie los.
+
+Drie redenen, in volgorde van gewicht.
+
+**Het e-boek lekt in build 7.** Daar komt het boek bij het jaarabonnement
+meteen vrij, ook tijdens de proef van drie dagen: afsluiten, boek opslaan,
+opzeggen. Stil live gaan betekent dat vrijwel niemand in dat raam zit. Met een
+aankondiging zet je juist een deur open op het moment dat hij nog openstaat.
+
+**Een afwijzing op 1.1 kost dan niets.** En 1.1 is geen stempeltje: build 7
+heeft met opzet géén keuzescherm na de taalkeuze, géén kaartje na de laatste
+gratis les en géén knop in de kopbalk. Die drie voegt 1.1 toe, en dat is
+precies richtlijn 3.1.2 — degene waarop 1.0 al een keer omviel. Met 1.0 live
+blijft de app staan terwijl die discussie loopt; nu zou een afwijzing betekenen
+dat er niets in de winkel staat.
+
+**Een echte aankoop test je pas in productie.** Sandbox is niet productie. Het
+abonnement, het herstellen, de proefperiode en het moment waarop het e-boek
+vrijkomt: één keer goed doorlopen met een eigen Apple ID voordat er iemand
+meekijkt.
+
+Wat ertegen pleit, voor de eerlijkheid: Apple geeft een nieuwe app een kort
+zetje in de vindbaarheid, en dat besteed je dan in een week zonder verkeer.
+Klein en moeilijk hard te maken voor een nichetitel. En stil is niet
+onzichtbaar — hij is vindbaar in zoeken, dus er komen een paar installaties op
+build 7.
+
+De volgorde:
+
+1. **Winkelpagina nalopen.** Hij wordt openbaar op het moment dat je vrijgeeft.
+2. **1.0 vrijgeven.** Geen aankondiging, geen socials, geen mail.
+3. **Downloaden uit de App Store** op een eigen iPhone, en één echte aankoop
+   doen: abonnement, opzeggen, herstellen, en kijken wanneer het e-boek
+   vrijkomt.
+4. **1.1 (build 9) meteen indienen.** 1.0 blijft live tijdens de beoordeling.
+5. **Play met rust laten** tot inzending 4 erdoor is. Versiecode 5 nu uploaden
+   zet die beoordeling opnieuw, en dat is de enige manier waarop dit plan
+   misgaat.
+6. Zodra 4 erdoor is: **versiecode 5 (1.3) uploaden.**
+7. Pas als allebei de winkels op de nieuwe versie staan: **Play-pagina openbaar
+   maken, de website omzetten, en dan communiceren.**
+
+Google is sowieso de trage van de twee, dus dit kost geen dag extra — het
+gebruikt de wachttijd die er toch al was.
+
 De hele dag staat uitgeschreven in **`docs/GO-LIVE.md`**: de volgorde, de
-commando's, en alle berichten klaar om te plakken. Wat je daarvóór nog moet
-doen, staat hier.
+commando's, en alle berichten klaar om te plakken. Die berichten horen bij
+stap 7, niet bij stap 2. Wat je daarvóór nog moet doen, staat hier.
 
 De volgorde die een aankondiging mogelijk maakt: eerst laten goedkeuren, dan
 vasthouden, dan pas vrijgeven. Een winkel die bij goedkeuring meteen
@@ -2111,7 +2164,9 @@ terwijl de eerste teaser nog moet komen.
 3. De app zelf spelen: op een iPhone via TestFlight, op de Galaxy Tab via Play.
    De punten om op te letten staan in `docs/MAC.md` §D.
 4. Vrijgeven: eerst Apple (de goedkeuring is er dan al, publiceren duurt een
-   paar uur), Play erachteraan. Play is binnen het uur zichtbaar.
+   paar uur), Play erachteraan. Play is binnen het uur zichtbaar. Let op dat
+   dit sinds 2 oktober stap 2 én stap 7 is geworden: Apple gaat stil live met
+   1.0, en Play pas als 1.3 erdoor is — zie het besluit hierboven.
 5. De website omzetten met één commando, als allebei de winkeladressen echt
    opengaan:
 

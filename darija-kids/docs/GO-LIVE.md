@@ -11,21 +11,30 @@ mooi te zijn maar om te versturen.
 
 ---
 
-## Waar het nu staat — 1 oktober
+## Waar het nu staat — 2 oktober
 
 | | |
 |---|---|
-| **Apple** | 1.0 **goedgekeurd** om 16:46, en vastgehouden. Eén knop van live |
-| **Play** | inzending 4 nog in beoordeling. Reken op 5 of 6 oktober |
+| **Apple** | 1.0 **goedgekeurd**, eén knop van live · 1.1 (build 9) geüpload |
+| **Play** | inzending 4 nog in beoordeling · versiecode 5 (1.3) ligt gebouwd klaar |
 
 **Het besluit: allebei tegelijk, en Play bepaalt de dag.** De meeste mensen in
-het kanaal zitten op Android. Apple alleen vrijgeven maakt de aankondiging op
-voor de kleinste helft van je publiek, en dan moet je voor de rest een tweede
-keer komen met een bericht dat dan oud nieuws is.
+het kanaal zitten op Android. Apple alleen aankondigen maakt het moment op voor
+de kleinste helft van je publiek, en dan moet je voor de rest een tweede keer
+komen met een bericht dat dan oud nieuws is.
 
-Dat kost je niets wat je terugkrijgt. Een goedgekeurde app die wacht, kost
-geen dag levensduur; een lancering die je twee keer moet doen, kost je het
-moment.
+Dat kost je niets wat je terugkrijgt. Een lancering die je twee keer moet doen,
+kost je het moment.
+
+**Vrijgeven en aankondigen zijn sinds 2 oktober niet meer hetzelfde.** 1.0 gaat
+stil de App Store in, zonder een woord, zodat 1.1 er meteen achteraan kan — een
+afwijzing kost dan niets meer, en het e-boek dat in build 7 ook tijdens de proef
+vrijkomt zit dan niet in een raam waar je publiek naar wijst. De aankondiging
+wacht op 1.1 én 1.3. De volledige volgorde en de redenen staan in `STAND.md`
+onder *Besloten op 2 oktober: stil live, daarna pas aankondigen*.
+
+Alles hieronder gaat over die aankondiging — stap 7 van dat besluit, niet over
+het moment dat 1.0 live gaat.
 
 ## Vóór de goedkeuring — twee schakelaars
 
