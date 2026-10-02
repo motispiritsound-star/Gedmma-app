@@ -298,7 +298,7 @@ function Memory({ onExit }: { onExit: () => void }) {
               {shown ? (
                 tile.face === 'ar' ? (
                   <span className="flex h-full flex-col items-center justify-center gap-0.5">
-                    <span className="ar text-lg leading-tight font-bold">{w.ar}</span>
+                    <span className="ar text-lg font-bold">{w.ar}</span>
                     {/* Without this the Arabic side is unreadable to a child
                         who is still learning the script, and the pair becomes
                         a coin toss instead of a word. */}

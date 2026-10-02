@@ -233,6 +233,18 @@ body {
   background-position: 0 0, 17px 17px;
 }
 
+/*
+ * Let op: deze regel staat buiten elke laag, en Tailwind zet zijn klassen in
+ * `@layer utilities`. Een regel zonder laag wint altijd van een regel in een
+ * laag, dus alles wat hier staat wint van de Tailwind-klasse ernaast: zet je
+ * `hidden`, `block` of `leading-tight` op een element met `ar`, dan gebeurt er
+ * niets. Dat is hier twee keer misgegaan -- een `hidden sm:block` op het pad
+ * die niet verborg, en drie regelafstanden die niets deden.
+ *
+ * Wil je zo'n element verbergen of anders uitlijnen, zet die klasse dan op een
+ * omhulsel eromheen. Hem hier in een laag zetten zou de drie regelafstanden
+ * ineens wél laten werken, en `leading-tight` snijdt Arabisch af.
+ */
 .ar {
   font-family: var(--font-arabic);
   direction: rtl;

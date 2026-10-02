@@ -83,7 +83,7 @@ export function Landing() {
               {/* Which country, before the first word of the sentence. */}
               <span className="flex items-center gap-3">
                 <Vlag size={34} className="rounded shadow-sm" />
-                <p className="ar inline-block text-2xl font-bold text-zellige-600 dark:text-zellige-300">الدارجة</p>
+                <p className="ar text-2xl font-bold text-zellige-600 dark:text-zellige-300">الدارجة</p>
               </span>
               <h1 className="mt-1 font-display text-4xl leading-tight font-extrabold sm:text-6xl">
                 {t.landing.titel1}

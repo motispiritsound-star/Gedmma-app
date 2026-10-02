@@ -216,7 +216,15 @@ export function Learn() {
                 {/* De Arabische naam blijft staan, ook bij een unit die je
                     kunt in- en uitklappen — het pijltje komt erachter, niet
                     in de plaats ervan. */}
-                <span className="ar ms-auto hidden text-2xl font-bold opacity-70 sm:block">{unit.ar}</span>
+                {/* `hidden sm:block` op een omhulsel en niet op de `.ar` zelf.
+                    `.ar` staat buiten alle lagen in index.css en wint daarmee
+                    van elke Tailwind-klasse, `hidden` incluis -- die stond hier
+                    en deed niets. Nagemeten op 320px: de Arabische naam nam 70
+                    van de 248 pixels in, en de ondertitel van de unit hield er
+                    88 over: zes Duitse woorden over zes regels. */}
+                <span className="ms-auto hidden shrink-0 sm:block">
+                  <span className="ar text-2xl font-bold opacity-70">{unit.ar}</span>
+                </span>
                 {open && (
                   <span className="shrink-0 text-xl font-bold opacity-70 sm:ms-0 ms-auto" aria-hidden="true">{uit ? '⌃' : '⌄'}</span>
                 )}

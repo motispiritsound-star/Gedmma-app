@@ -747,7 +747,7 @@ function NewSentence({ exercise, onAnswer }: ExerciseProps) {
       <Prompt hint={t.lesson.nieuweZin}>
         <Card className="flex flex-col items-center gap-3 p-6 text-center">
           <span className="text-3xl" aria-hidden="true">💬</span>
-          {showScript && <p className="ar text-3xl font-bold leading-relaxed">{z.ar}</p>}
+          {showScript && <p className="ar text-3xl font-bold">{z.ar}</p>}
           {(showTranslit || !showScript) && (
             <p className="font-display text-lg font-bold text-zellige-600 dark:text-zellige-300">{z.tr}</p>
           )}
@@ -858,7 +858,7 @@ function SentenceChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { 
       <Prompt hint={mode === 'betekenis' ? t.lesson.watBetekentZin : t.lesson.welkeZinHoorJe}>
         {mode === 'betekenis' ? (
           <Card className="flex flex-col items-center gap-2 p-6 text-center">
-            <p className="ar text-2xl font-bold leading-relaxed">{z.ar}</p>
+            <p className="ar text-2xl font-bold">{z.ar}</p>
             <p className="font-display font-bold text-zellige-600 dark:text-zellige-300">{z.tr}</p>
             <SpeakButton ar={z.ar} tr={z.tr} />
           </Card>
