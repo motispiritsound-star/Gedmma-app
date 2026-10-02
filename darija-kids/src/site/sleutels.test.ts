@@ -80,8 +80,21 @@ describe('en er staat nu niets geheims in', () => {
       }
       // De test zelf noemt deze woorden, dus die slaan we over.
       if (bestand.endsWith('sleutels.test.ts')) continue
-      if (/-----BEGIN [A-Z ]*PRIVATE KEY|"private_key"\s*:|AIza[0-9A-Za-z_-]{30,}|AKIA[0-9A-Z]{16}/.test(inhoud)) {
-        verdacht.push(bestand)
+      const raak = /-----BEGIN [A-Z ]*PRIVATE KEY|"private_key"\s*:|AIza[0-9A-Za-z_-]{30,}|AKIA[0-9A-Z]{16}/.exec(inhoud)
+      if (raak) {
+        /*
+         * Mét de regel erbij, en niet alleen de bestandsnaam.
+         *
+         * Deze test is één keer omgevallen zonder dat hij daarna nog te
+         * reproduceren was -- tien keer achter elkaar groen. Met alleen een
+         * bestandsnaam valt er dan niets na te gaan: je weet niet of er echt
+         * een sleutel stond of dat de melding ergens anders vandaan kwam. Het
+         * regelnummer en de eerste dertig tekens van de treffer zijn genoeg om
+         * dat de volgende keer meteen te zien, en kort genoeg om zelf geen
+         * sleutel in de uitvoer te zetten.
+         */
+        const regel = inhoud.slice(0, raak.index).split('\n').length
+        verdacht.push(`${bestand}:${regel} (${raak[0].slice(0, 30)})`)
       }
     }
     expect(verdacht, 'deze bestanden lijken een sleutel te bevatten').toEqual([])

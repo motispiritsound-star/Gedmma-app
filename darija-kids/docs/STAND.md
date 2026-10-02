@@ -12,7 +12,7 @@ te lezen.
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
 | Tests | 1289, groen — daar zitten de 77 van de worker al in |
 | Google Play | 4 (1.2) op **Productie**, 177 landen — de winkelpagina is nog **niet publiek** |
-| App Store | **1.0 (build 7) goedgekeurd, wacht op vrijgeven** — 1.1 (build 8) staat klaar voor de week erna |
+| App Store | **1.0 (build 7) goedgekeurd, wacht op vrijgeven** — build 8 staat geüpload maar is ingehaald: zie *Build 8 is achterhaald* |
 | Uitbetalen | **rond bij allebei** — Google geverifieerd op 1 oktober |
 
 ### Goedgekeurd — 1 oktober, 16:46
@@ -1124,6 +1124,37 @@ overleefd, negentien rommelroutes opgevangen, vierendertig bladzijdeladingen
 zonder fout, negen combinaties van breedte en lettergrootte binnen beeld, vier
 liggende formaten binnen beeld, offline alle routes door, en de stoeitest
 zonder enige uitzondering.
+
+#### Build 8 is achterhaald — gebruik build 9 en versiecode 5
+
+Build 8 is op 1 oktober om 18:43 geüpload en staat in Xcode Organizer op
+*Uploaded to Apple*. Hij is nooit ingediend, en dat moet ook niet meer: hij is
+gebouwd vóór de doorlopen van 1 en 2 oktober en mist alles wat daarin is
+gerepareerd.
+
+**Niets van wat na 1 oktober 18:43 in de code is gekomen zit in een bundel bij
+een winkel.** Niet in build 7 (die lanceert), niet in build 8, en niet in
+versiecode 4. Het zit alleen in de tak en in `main`.
+
+Voor de volgende ronde dus:
+
+```bash
+npm run ios -- --build 9 --versie 1.1
+```
+
+```powershell
+npm --prefix $HOME\Gedmma-app\darija-kids run aab -- --versie 5 --naam 1.1
+```
+
+Build 9 en niet 8, want Apple weigert een buildnummer dat al geüpload is — ook
+als die build nooit is ingediend. Versiecode 5 om dezelfde reden bij Play: 4
+ligt er al.
+
+De "wat is er nieuw"-tekst in `store/wat-is-nieuw-1.1.md` dekt de reparaties
+van vóór 1 oktober. Wat er sindsdien bij is gekomen staat hieronder per
+doorloop; kies daaruit wat een gebruiker merkt — het leerpad dat inklapt, het
+woordenboek dat niet meer hapert, herhalen dat altijd kan, en de les die met
+het geluid uit ook te doen is.
 
 #### De zesde doorloop — wat er in de weg zat, niet wat er lelijk uitzag — 2 oktober
 
