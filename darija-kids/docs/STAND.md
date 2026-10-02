@@ -1290,11 +1290,23 @@ echt nummer erin, niet met punthaken.
 |---|---|
 | versiecode 4 · 1.2 | Play productie, live |
 | versiecode 5 · 1.3 | gesloten en interne test |
-| versiecode 6 · 1.3 | lokaal gebouwd, draait op de Tab, nog niet geüpload |
+| versiecode 6 · 1.3 | lokaal gebouwd, opent op de Tab, niet geüpload — twee plugins ontbraken |
+| versiecode 7 · 1.3 | gebouwd uit `c5eb94c`, 22,8 MB, vier klassen nagekeken |
 
-**De volgende bundel is dus versiecode 7.** Versiecode 6 is al gebouwd uit
-`0f5b16b`, maar met de onvolledige `node_modules` — daar zitten de twee plugins
-niet in. Die bundel moet niet naar Play.
+##### Versiecode 7 is de bundel die eruit moet — 2 oktober
+
+Gebouwd uit `c5eb94c`, nadat `npm install` de twee ontbrekende plugins had
+binnengehaald. `npm run watzitin` zet er vier vinkjes neer:
+
+```
+  ✓ de app zelf                    app.darijaforkids.learn.MainActivity
+  ✓ @capacitor/app                 com.capacitorjs.plugins.app.AppPlugin
+  ✓ @capacitor/haptics             com.capacitorjs.plugins.haptics.HapticsPlugin
+  ✓ @capacitor/local-notifications com.capacitorjs.plugins.localnotifications.LocalNotificationsPlugin
+```
+
+De dex is 8311 kB. Dat getal is het hele verhaal: in de bundels die Play
+afwees zat die klasse er niet in, en niets in de bouw zei daar iets over.
 
 ##### Versiecode 5 staat op de gesloten test — 2 oktober
 
