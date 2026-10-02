@@ -81,3 +81,15 @@ darija-kids/_*.mjs
 darija-kids/*-tmp.mjs
 darija-kids/src/**/_*.test.ts
 darija-kids/src/**/meet*.test.ts
+
+# En de werkmappen van agenten die in afzondering bouwen.
+#
+# Een onderzoeker die een ontwerp echt wil uitproberen krijgt een eigen
+# git-worktree, zodat vijf van hen tegelijk kunnen verbouwen zonder elkaars
+# bestanden te overschrijven. Die mappen zijn een volledige kopie van de
+# repository -- committen zou de hele boom er nog een keer in zetten.
+#
+# Ze ruimen zichzelf op als er niets in veranderd is. Verandert er wel wat,
+# dan blijven ze staan tot het werk eruit gehaald is, en in die tussentijd
+# hoort git ze niet te zien.
+.claude/worktrees/
