@@ -2132,15 +2132,24 @@ De volgorde:
 
 1. **Winkelpagina nalopen.** Hij wordt openbaar op het moment dat je vrijgeeft.
 2. **1.0 vrijgeven.** Geen aankondiging, geen socials, geen mail.
-3. **Downloaden uit de App Store** op een eigen iPhone, en één echte aankoop
+3. **De abonnementen afmaken, vóór je 1.1 indient.** Zolang er een versie in
+   beoordeling ligt zijn de aankopen alleen-lezen; nu 1.0 is goedgekeurd staat
+   dat slot open, en indienen van 1.1 zet het er weer op. Dit is dus het enige
+   raam voor de vier talen uit `store/abonnement-teksten.md` en voor de
+   proefperiode bij **Maand**. Allebei staan ze al maanden op de lijst, en
+   allebei kosten ze een kwartier.
+4. **Downloaden uit de App Store** op een eigen iPhone, en één echte aankoop
    doen: abonnement, opzeggen, herstellen, en kijken wanneer het e-boek
    vrijkomt.
-4. **1.1 (build 9) meteen indienen.** 1.0 blijft live tijdens de beoordeling.
-5. **Play met rust laten** tot inzending 4 erdoor is. Versiecode 5 nu uploaden
+5. **1.1 (build 9) indienen** — op *Automatically release*, niet handmatig.
+   De regel "altijd handmatig" bestond om te voorkomen dat een winkel je
+   lanceerdag bepaalt; die dag hangt nu niet meer aan het vrijgeven, en hoe
+   eerder 1.1 live staat hoe korter het e-boeklek openstaat.
+6. **Play met rust laten** tot inzending 4 erdoor is. Versiecode 5 nu uploaden
    zet die beoordeling opnieuw, en dat is de enige manier waarop dit plan
    misgaat.
-6. Zodra 4 erdoor is: **versiecode 5 (1.3) uploaden.**
-7. Pas als allebei de winkels op de nieuwe versie staan: **Play-pagina openbaar
+7. Zodra 4 erdoor is: **versiecode 5 (1.3) uploaden.**
+8. Pas als allebei de winkels op de nieuwe versie staan: **Play-pagina openbaar
    maken, de website omzetten, en dan communiceren.**
 
 Google is sowieso de trage van de twee, dus dit kost geen dag extra — het
