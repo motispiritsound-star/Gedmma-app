@@ -1143,18 +1143,29 @@ npm run ios -- --build 9 --versie 1.1
 ```
 
 ```powershell
-npm --prefix $HOME\Gedmma-app\darija-kids run aab -- --versie 5 --naam 1.1
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run aab -- --versie 5 --naam 1.3 } else { "darija-kids niet gevonden onder $HOME" }
 ```
 
 Build 9 en niet 8, want Apple weigert een buildnummer dat al geüpload is — ook
 als die build nooit is ingediend. Versiecode 5 om dezelfde reden bij Play: 4
 ligt er al.
 
-De "wat is er nieuw"-tekst in `store/wat-is-nieuw-1.1.md` dekt de reparaties
-van vóór 1 oktober. Wat er sindsdien bij is gekomen staat hieronder per
-doorloop; kies daaruit wat een gebruiker merkt — het leerpad dat inklapt, het
-woordenboek dat niet meer hapert, herhalen dat altijd kan, en de les die met
-het geluid uit ook te doen is.
+**En bij Play `--naam 1.3`, niet 1.1.** De twee winkels tellen apart: bij Apple
+is dit 1.1, want 1.0 is daar net goedgekeurd; bij Play is het 1.3, want 1.2
+staat er al op Productie. Dezelfde 1.3 staat in de kop van
+`store/wat-is-nieuw-1.1.md`. Play weigert een lagere naam niet — alleen de
+versiecode moet omhoog — dus dit gaat nergens piepen. Het staat dan gewoon
+verkeerd in de winkel, bij iemand die net 1.2 had.
+
+Hier is op 2 oktober een bundel mee gebouwd met `--naam 1.1`. Die is dus goed
+op versiecode maar verkeerd op naam, en moet opnieuw. Opnieuw bouwen kost
+negenentwintig seconden; het versienummer in de winkel terugdraaien kost een
+release.
+
+De "wat is er nieuw"-tekst in `store/wat-is-nieuw-1.1.md` is op 2 oktober
+bijgeschreven en dekt nu allebei de rondes: de reparaties van vóór 1 oktober
+én wat een gebruiker merkt van de doorloop daarna. Zes talen, alle zes onder de
+500 tekens van Play (de langste is 500, Spaans).
 
 #### De zesde doorloop — wat er in de weg zat, niet wat er lelijk uitzag — 2 oktober
 

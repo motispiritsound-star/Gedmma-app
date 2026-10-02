@@ -6,13 +6,18 @@ gevraagd wordt. Play staat 500 tekens toe per taal, Apple 4000.
 
 De nummers lopen uiteen omdat de winkels niet gelijk op gaan: bij Apple is
 1.0 de eerste die door de beoordeling kwam, bij Play staat 1.2 al live. Het
-is dezelfde bundel code.
+is dezelfde bundel code — bij Apple build 9, bij Play versiecode 5.
 
-Twee soorten wijzigingen zitten erin. De eerste is reparatie: het advies bij
-geluidsproblemen ging uit van een iPhone — een schuifje aan de zijkant dat op
-Android niet bestaat — en knoppen lagen onder de balk onderaan Android 15. De
-tweede is de weg naar het abonnement, die alleen te vinden was door ergens
+Deze release draagt twee rondes werk. De eerste was reparatie: het advies bij
+geluidsproblemen ging uit van een iPhone, knoppen lagen onder de balk onderaan
+Android 15, en de weg naar het abonnement was alleen te vinden door ergens
 tegen een slotje aan te lopen.
+
+De tweede ronde ging over wat er in de weg zat bij het leren zelf. Vier van de
+vijf regels hieronder komen daarvandaan: de volgende les begint met één tik,
+een pad dat niet meer tien schermen lang is, een woordenboek dat niet meer
+hapert, en lessen die ook te doen zijn met het geluid uit — daar stonden
+vragen in die je zonder geluid niet kón beantwoorden.
 
 En er staat één regel in die niemand graag schrijft: het e-boek bij het
 jaarabonnement komt pas vrij als de proefperiode voorbij is. Dat is minder dan
@@ -21,88 +26,111 @@ niet van zijn eigen ontdekking.
 
 ## nl-NL
 
-Volledige toegang is nu vanaf elk scherm te vinden, met een knop bovenin.
+Na een les begin je de volgende met één tik, en de knop zegt welke.
 
-De hulp bij geluid klopt per toestel. Op Android wees de app naar een
-stilteschuifje dat daar niet zit; nu staat er waar je het mediavolume vindt.
+Units die af zijn klappen dicht, dus je ziet meteen waar je bent.
 
-Knoppen liggen niet meer onder de balk onderaan het scherm.
+Het woordenboek zoekt vlotter en het zoekveld blijft in beeld.
 
-Het e-boek bij het jaarabonnement komt beschikbaar zodra de proefperiode
-voorbij is.
+Herhalen kan nu altijd, ook als er niets klaarstaat.
 
-Verder kleine tekstcorrecties.
+Met het geluid uit krijg je geen luistervragen meer.
+
+Volledige toegang vind je vanaf elk scherm.
+
+Het e-boek bij het jaarabonnement komt vrij zodra de proefperiode voorbij is.
+
+Verder reparaties aan schermranden, geluidshulp en teksten.
 
 ## fr-FR
 
-L’accès complet se trouve maintenant depuis chaque écran, avec un bouton en
-haut.
+Après une leçon, la suivante démarre d’une touche, et le bouton dit laquelle.
 
-L’aide pour le son s’adapte à l’appareil. Sur Android, l’application renvoyait
-vers un bouton silencieux qui n’existe pas ; elle indique désormais où se
-trouve le volume multimédia.
+Les unités terminées se replient : on voit tout de suite où on en est.
 
-Les boutons ne se glissent plus sous la barre du bas.
+Le dictionnaire répond plus vite, le champ de recherche reste visible.
 
-Le livre numérique de l’abonnement annuel arrive dès la fin de la période
-d’essai.
+La révision est toujours possible, même sans mots en attente.
 
-Et quelques corrections de texte.
+Sans le son, plus de questions d’écoute.
+
+L’accès complet se trouve depuis chaque écran.
+
+Le livre numérique de l’abonnement annuel arrive après la période d’essai.
+
+Et des corrections d’affichage et de texte.
 
 ## de-DE
 
-Der Vollzugang ist jetzt von jedem Bildschirm aus zu finden, über eine
-Schaltfläche oben.
+Nach einer Lektion startet die nächste mit einem Tipp, und die Schaltfläche
+sagt welche.
 
-Die Hilfe beim Ton passt zum Gerät. Unter Android verwies die App auf einen
-Stummschalter, den es dort nicht gibt; nun steht da, wo die Medienlautstärke
-sitzt.
+Fertige Einheiten klappen zu, man sieht sofort, wo man steht.
 
-Schaltflächen liegen nicht mehr unter der Leiste am unteren Rand.
+Das Wörterbuch sucht flüssiger und das Suchfeld bleibt sichtbar.
+
+Wiederholen geht jetzt immer, auch ohne offene Wörter.
+
+Ohne Ton keine Hörfragen mehr.
+
+Der Vollzugang ist von jedem Bildschirm aus zu finden.
 
 Das E-Book beim Jahresabo kommt, sobald die Testphase vorbei ist.
 
-Dazu kleine Textkorrekturen.
+Dazu Korrekturen an Rändern und Texten.
 
 ## es-ES
 
-El acceso completo se encuentra ahora desde cualquier pantalla, con un botón
-arriba.
+Al terminar una lección, la siguiente empieza con un toque, y el botón dice
+cuál.
 
-La ayuda con el sonido se ajusta al aparato. En Android la aplicación señalaba
-un interruptor de silencio que allí no existe; ahora indica dónde está el
-volumen multimedia.
+Las unidades completas se pliegan: ves enseguida dónde estás.
 
-Los botones ya no quedan debajo de la barra inferior.
+El diccionario busca más rápido y el campo de búsqueda sigue a la vista.
 
-El libro digital de la suscripción anual llega cuando termina el periodo de
-prueba.
+Repasar es posible siempre, aunque no haya nada pendiente.
 
-Además, pequeñas correcciones de texto.
+Sin sonido, ya no aparecen preguntas de escucha.
+
+El acceso completo se encuentra desde cualquier pantalla.
+
+El libro digital de la suscripción anual llega al terminar la prueba.
+
+Además, correcciones de bordes y textos.
 
 ## it-IT
 
-L’accesso completo si trova ora da ogni schermata, con un pulsante in alto.
+Finita una lezione, la successiva parte con un tocco, e il pulsante dice
+quale.
 
-L’aiuto per l’audio si adatta al dispositivo. Su Android l’applicazione
-rimandava a un interruttore del silenzioso che lì non c’è; adesso indica dove
-si trova il volume multimediale.
+Le unità completate si chiudono: vedi subito a che punto sei.
 
-I pulsanti non finiscono più sotto la barra in basso.
+Il dizionario cerca più in fretta e il campo di ricerca resta in vista.
 
-L’ebook dell’abbonamento annuale arriva quando finisce il periodo di prova.
+Il ripasso è sempre possibile, anche senza parole in attesa.
 
-E qualche correzione di testo.
+Senza audio, niente più domande di ascolto.
+
+L’accesso completo si trova da ogni schermata.
+
+L’ebook dell’abbonamento annuale arriva alla fine del periodo di prova.
+
+E correzioni ai bordi e ai testi.
 
 ## en-US
 
-Full access is now reachable from every screen, with a button at the top.
+After a lesson the next one starts with one tap, and the button says which.
 
-Sound help matches the device. On Android the app pointed at a silent switch
-that isn’t there; it now tells you where the media volume is.
+Finished units fold up, so you can see where you are at a glance.
 
-Buttons no longer sit under the bar at the bottom of the screen.
+The dictionary searches faster and the search field stays in view.
+
+Review is always available now, even with nothing due.
+
+With sound off, no more listening questions.
+
+Full access is reachable from every screen.
 
 The e-book that comes with the yearly plan arrives once the trial is over.
 
-Plus small wording fixes.
+Plus fixes to screen edges and wording.
