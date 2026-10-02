@@ -259,9 +259,8 @@ Dat ging vanzelf goed, maar het heeft een gevolg dat niet vanzelf goed gaat.
 
 Het veld hing aan `LIVE`, dus het is al weg — sinds het Apple-adres erin ging,
 niet pas volgende week. Van de zestig bladzijden houden er nog zes een
-e-mailveld, en dat zijn de zes van `/leesboeken` — `scripts/make-site.mjs`
-regel 1115, met
-een eigen onderschrift *Eén bericht zodra er een nieuw deel is*
+e-mailveld, en dat zijn de zes van `/leesboeken`: `scripts/make-site.mjs` regel
+1115, met een eigen onderschrift *Eén bericht zodra er een nieuw deel is*
 (`src/site/copy.ts` regel 235). Dat veld staat er onvoorwaardelijk en kijkt niet
 naar de winkeladressen, dus daar verandert niets aan, en die tekst gaat over een
 volgend deel en klopt na de lancering nog steeds.
@@ -276,16 +275,18 @@ grond; de bevestigde klik is dat wel. Zie `docs/STAND.md`, *Het ledenbestand*.
 ### 5. Klein: de FAQ noemt de drie dagen niet
 
 `src/i18n/nl.ts` regel 712 zegt *met de eerste dagen gratis*, en de vijf andere
-talen zeggen hetzelfde op regel 698. Het aanbodscherm in de app zegt *Na 3
-gratis dagen* (`src/i18n/nl.ts` regel 758), de abonnementsteksten voor de twee
-winkels zeggen *drie dagen gratis* (`store/abonnement-teksten.md` regel 43 en
-57), en de aankondiging zegt drie dagen.
+talen zeggen hetzelfde op regel 698. Het aanbodscherm in de app zegt het wel:
+*Na 3 gratis dagen* (`src/i18n/nl.ts` regel 758). De aankondiging zegt drie
+dagen, en `10.webp` draagt *3 dagen gratis* in zijn voetregel — op de
+startpagina van vijf van de zes talen. Daaronder staat dan de FAQ die het niet
+zegt.
 
 De zes winkelvermeldingen zeggen het trouwens net zo vaag als de FAQ:
 *de eerste dagen gratis*, `store/listing.nl.md` regel 64 en zijn vijf buren.
-Die vallen buiten dit stuk, maar het is dezelfde zin en hetzelfde werk.
+Die vallen buiten dit stuk; het is dezelfde zin en hetzelfde werk.
 
 En het e-boek bij het jaarabonnement staat er in de FAQ helemaal niet, terwijl
 het aanbodscherm op diezelfde bladzijde *incl. e-boek* laat zien.
 
-Twee woorden werk, zes talen. Het houdt de lancering niet tegen.
+In de FAQ is het twee woorden werk, zes talen. Het houdt de lancering niet
+tegen.
