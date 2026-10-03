@@ -15,7 +15,7 @@ import {
 import { missingArabicVoice, sfx } from '../engine/audio'
 import { useVoices } from '../ui/useVoices'
 import { Khatim, Khatims } from '../ui/Khatim'
-import type { Lesson } from '../content/types'
+import type { Lesson, Unit } from '../content/types'
 import { useLang, useT } from '../i18n'
 import { heeftArabisch, lessonTitle, unitSubtitle } from '../content/localise'
 
@@ -39,6 +39,20 @@ const KIND_ICON: Record<Lesson['kind'], string> = {
  * javascript per knoop -- en met vierenzeventig knopen op een vrijgespeeld pad
  * telt dat.
  */
+/**
+ * De laatste les van een unit.
+ *
+ * Met de hand en niet met `.at(-1)`. Die functie bestaat pas vanaf Chrome 92,
+ * en `minSdkVersion` is 24: de app mag op Android 7 geïnstalleerd worden, waar
+ * de WebView Chrome 51 kan zijn. Daar valt de app dan om op het moment dat
+ * deze regel draait -- en dat is bij het openen van het leerpad, dus meteen.
+ *
+ * `bundelcheck.mjs` ving het vóór het uploaden, op de bouwmachine. Dat is ook
+ * precies waar hij voor staat: hij leest de gebouwde bundel en niet de bron,
+ * dus hij ziet ook wat een afhankelijkheid meebrengt.
+ */
+const laatsteLes = (unit: Unit): Lesson => unit.lessons[unit.lessons.length - 1]!
+
 function Node({ lesson, index, accent, hier, avatar, kwamVan, rustig }: {
   lesson: Lesson
   index: number
@@ -553,7 +567,7 @@ export function Learn() {
                       kwamVan={i === 0
                         ? (ui === 0
                           ? Object.keys(state.lessons).length > 0
-                          : isDone(UNITS[ui - 1]!.lessons.at(-1)!.id, state))
+                          : isDone(laatsteLes(UNITS[ui - 1]!).id, state))
                         : isDone(unit.lessons[i - 1]!.id, state)}
                       rustig={rustig}
                     />

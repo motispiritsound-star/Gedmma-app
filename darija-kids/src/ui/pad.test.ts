@@ -63,7 +63,15 @@ describe('groen is wat achter je ligt', () => {
   /** En het eerste stuk van een unit kijkt naar de unit ervóór. */
   it('en het eerste stuk van een unit ook', () => {
     expect(leren).not.toContain('kwamVan={i === 0 || isDone(')
-    expect(leren).toContain("isDone(UNITS[ui - 1]!.lessons.at(-1)!.id, state)")
+    expect(leren).toContain('isDone(laatsteLes(UNITS[ui - 1]!).id, state)')
+    /*
+      `laatsteLes` en niet `.lessons.at(-1)`, wat hier eerst stond.
+      `Array.prototype.at` bestaat pas vanaf Chrome 92, en `minSdkVersion` is
+      24: op een Android 7 met een oude WebView valt de app dan om bij het
+      openen van het leerpad. `bundelcheck.mjs` ving het vóór het uploaden;
+      `oudewebview.test.ts` vangt het nu al tijdens het typen.
+    */
+    expect(leren).toContain('const laatsteLes = (unit: Unit): Lesson =>')
   })
 })
 

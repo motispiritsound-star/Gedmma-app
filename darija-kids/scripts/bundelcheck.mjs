@@ -32,27 +32,8 @@ import { fileURLToPath } from 'node:url'
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const ASSETS = path.join(ROOT, 'dist', 'assets')
 
-/**
- * Functies die er op een oudere WebView niet zijn, met de Chrome-versie erbij.
- *
- * Alleen dingen met een eigen naam: die zijn betrouwbaar te tellen, anders dan
- * syntaxis. Komt er een bij die we echt nodig hebben, zet hem dan in
- * `src/polyfill.ts` en niet in deze lijst.
- */
-const TE_NIEUW = [
-  // Let op de grens: zonder die `(?![A-Za-z])` matcht dit ook het begin van
-  // `Object.hasOwnProperty`, en dat is een functie die er altijd al was.
-  // Precies daar ben ik in getrapt: framer-motion gebruikt hasOwnProperty, en
-  // ik concludeerde dat de bundel Chrome 93 eiste.
-  ['Object.hasOwn', /Object\.hasOwn(?![A-Za-z])/g, 93],
-  ['structuredClone', /\bstructuredClone\s*\(/g, 98],
-  ['.findLast(', /\.findLast(?:Index)?\s*\(/g, 97],
-  ['Array.prototype.at', /\.at\s*\(\s*-?\d/g, 92],
-  ['crypto.randomUUID', /\brandomUUID\s*\(/g, 92],
-  ['.replaceAll(', /\.replaceAll\s*\(/g, 85],
-  ['Promise.any', /\bPromise\.any\s*\(/g, 85],
-  ['String.prototype.matchAll', /\.matchAll\s*\(/g, 73],
-]
+import { TE_NIEUW } from './lib/tenieuw.mjs'
+
 
 if (!existsSync(ASSETS)) {
   console.error('\nGeen dist/assets. Draai eerst de bouw; dit hoort achter `vite build`.\n')

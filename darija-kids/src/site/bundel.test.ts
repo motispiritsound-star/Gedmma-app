@@ -47,13 +47,24 @@ describe('waar de app op moet kunnen draaien', () => {
     expect(pkg.scripts.build, 'bundelcheck hangt niet meer aan de bouw').toContain('bundelcheck.mjs')
 
     const check = bron('../../scripts/bundelcheck.mjs')
-    expect(check, 'de lijst met te nieuwe functies is weg').toContain('const TE_NIEUW')
     expect(check, 'een fout laat de bouw niet meer omvallen').toContain('process.exit(1)')
+
+    /*
+      De lijst zelf staat sinds 3 oktober in `scripts/lib/tenieuw.mjs`, want er
+      zijn twee lezers: deze controle leest de gebóuwde bundel (en ziet dus ook
+      wat een afhankelijkheid meebrengt) en `oudewebview.test.ts` leest onze
+      eigen bron in elke testronde. Die tweede is er omdat deze pas achter
+      `vite build` draait: er stond een `.at(-1)` in het leerpad die de hele
+      testronde groen liet en pas opviel toen de winkelbundel gebouwd werd.
+    */
+    const lijst = bron('../../scripts/lib/tenieuw.mjs')
+    expect(check, 'de controle leest de lijst niet meer').toContain("from './lib/tenieuw.mjs'")
+    expect(lijst, 'de lijst met te nieuwe functies is weg').toContain('export const TE_NIEUW')
 
     // En de woordgrens: zonder die kijkt hij ook naar Object.hasOwnProperty,
     // een functie die er altijd al was. Daar ben ik in getrapt — ik concludeerde
     // dat framer-motion Chrome 93 eiste en schreef er een polyfill voor die
     // niets repareerde.
-    expect(check, 'de grens achter Object.hasOwn is weg').toContain('Object\\.hasOwn(?![A-Za-z])')
+    expect(lijst, 'de grens achter Object.hasOwn is weg').toContain('Object\\.hasOwn(?![A-Za-z])')
   })
 })
