@@ -1,7 +1,7 @@
 # Waar staan we
 
-Bijgewerkt op 3 oktober 2026, met de diplomaplank en de drie sloten op de
-oudersschermen. Dit bestand
+Bijgewerkt op 3 oktober 2026, met de vijf verbouwde oppervlakken, de
+diplomaplank en de drie sloten op de ouderschermen. Dit bestand
 is het antwoord op "wat moet er nog" zonder dat je drie andere bestanden hoeft
 te lezen.
 
@@ -116,6 +116,34 @@ geen enkele winkel:
 - **De drie gratis dagen staan in de vraag erover** (`b56ef7c`). Het plaatje
   zei "Start 3 dagen gratis", de vraag eronder "met de eerste dagen gratis" —
   zonder getal, op de ene plek waar iemand het nazoekt voordat hij betaalt.
+
+### De vijf oppervlakken, verbouwd en nagekeken — 3 oktober
+
+Vijf ontwerpers hebben elk één oppervlak van de app herbouwd, elk in een eigen
+werkmap, en vijf critici hebben het daarna stukgeslagen tegen de harde grenzen.
+Alle vijf kwamen uit op "nemen, met aanpassing", en die aanpassingen zijn
+gedaan en nagemeten voordat er iets de boom in ging.
+
+| Waar | Wat | Wat de criticus eruit haalde |
+|---|---|---|
+| Het leerpad (`d14db12`) | 26 stukken weg waar er nul waren; de titel naast de knoop in plaats van eronder, en daardoor kon de hele weg getekend worden. Bladzijde 9 tot 11 procent korter | De ring om "hier sta je" stond er in beweging helemaal niet vol (gemiddeld 0,336); groen beloofde twee keer een stuk weg dat niemand gelopen had; de tegelvloer verspringt een halve tegel bij elke bladzijdewissel |
+| Het startscherm (`d9e1a49`) | Vier stappen met een strook zellige, een mascotte per stap en een voorbeeldkaart die meebeweegt | Het paneel kon niet scrollen — op 320 bij 568 stond de kop van drie van de vier stappen boven de rand en was er geen manier om erbij te komen |
+| Het profiel (`ce7533f`) | Insignes om te willen in plaats van hangsloten; "wat je kent" in woorden | De weekgrafiek tekende nooit iets: alle zeven staven waren altijd nul pixels hoog |
+| De les (`a07f9fd`) | Zat al in de boom sinds `5b67b7c` | Een weggezakt antwoord was niet meer te lezen (2,95 op 1); twee vakjes naast elkaar waren 18 pixels in hoogte gaan verschillen; de beloningspil lag over een antwoord |
+| De tabbalk (`a1bbea5`) | Vijf emoji eruit, vijf lijntekeningen erin; waar je bent aan drie dingen te zien | De schuivende ruit wiste onderweg de tekens waar hij langs kwam (1,01 tot 2,26 op 1) |
+
+Wat er onderweg nog bijkwam: er is weer **één warme schaduw** en **één vraag
+of beweging uit moet**. Drie van de vijf hadden hun eigen bruin gekozen en twee
+hun eigen halve lezing van "rustig" — logisch bij vijf werkmappen, en precies
+wat je op het scherm ziet zonder het te kunnen aanwijzen.
+`eensysteem.test.ts` valt om bij de volgende die een eigen bruin kiest, en hij
+vond meteen een vierde geval dat er al stond.
+
+**Geparkeerd tot na de lancering:** het hoogtestelsel uit het tabbalk-ontwerp
+(vijf treden waar Tailwinds hele schaduwtrap naar wijst). Beter dan waar we nu
+staan, en het zou de omhulsels rond `Card` overbodig maken — maar het verandert
+elke kaart in de app in één keer, en dat is geen wijziging voor de dag voor een
+winkelbouw.
 - De plugincontrole vóór het bouwen en de klassencontrole erna.
 - `docs/versies.json`, en de releasenotities die vanzelf meegaan.
 - De Franse abonnementsteksten: die staan nog op *Prepare for Submission* en
@@ -132,7 +160,7 @@ beoordelaar naar vraagt en waar niets mee gebeurt.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 1858, groen — daar zitten de 77 van de worker al in |
+| Tests | 1898, groen — daar zitten de 77 van de worker al in |
 | Google Play | **versiecode 7 ingestuurd op 2 oktober** — productie én gesloten test, in beoordeling. De crash is gevonden, gerepareerd en twee keer bevestigd: `watzitin` ziet de vier klassen in de dex, en de app opent op de Galaxy Tab |
 | App Store | **1.0 (build 7) staat live** sinds 2 oktober, stil. **1.1 (build 9) ingediend op 2 oktober**, op *Automatically release* — met de Franse abonnementsteksten erbij |
 | Uitbetalen | **rond bij allebei** — Google geverifieerd op 1 oktober |
