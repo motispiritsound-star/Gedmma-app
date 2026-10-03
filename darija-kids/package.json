@@ -93,7 +93,8 @@
     "helden": "node scripts/make-helden.mjs",
     "reeksplaten": "node scripts/make-reeksplaten.mjs",
     "kanaalfoto": "node scripts/make-kanaalfoto.mjs",
-    "belangstelling": "node scripts/belangstelling.mjs"
+    "belangstelling": "node scripts/belangstelling.mjs",
+    "opstoestel": "node scripts/opstoestel.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",

@@ -102,9 +102,24 @@ installatiebestand meteen zelf:
 android/app/build/outputs/apk/release/app-release.apk
 ```
 
-Zet dat bestand op je telefoon (USB, of naar jezelf mailen) en open het daar.
-Android vraagt één keer om toestemming om een app buiten de winkel om te
-installeren; dat mag, hij is met jouw eigen sleutel ondertekend.
+Hangt het toestel aan de kabel, dan hoeft dat kopiëren niet:
+
+```bash
+npm run opstoestel
+```
+
+Die zoekt `adb` op in de SDK die Gradle ook gebruikt -- hij hoeft dus niet in
+je PATH te staan -- gooit de oude versie eraf en zet deze erop. Dat eerste is
+geen voorzichtigheid maar noodzaak: een bundel uit de Play Store is door Google
+ondertekend en deze `.apk` door jou, en Android weigert een vervanger met een
+andere handtekening. Dat geeft `INSTALL_FAILED_UPDATE_INCOMPATIBLE`, een
+melding waar niets in staat over handtekeningen. Wil je de voortgang op dat
+toestel houden, geef dan `-- --houd` mee; dan lukt het alleen als de vorige
+installatie van dezelfde sleutel kwam.
+
+Liever met de hand: zet het bestand op je telefoon (USB, of naar jezelf mailen)
+en open het daar. Android vraagt één keer om toestemming om een app buiten de
+winkel om te installeren; dat mag, hij is met jouw eigen sleutel ondertekend.
 
 Doe dit voor de eerste release. Het is het enige moment waarop je hoort of het
 geluid speelt, of de aankopen werken en of de app soepel loopt op iets anders
