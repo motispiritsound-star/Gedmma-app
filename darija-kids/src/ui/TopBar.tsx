@@ -137,7 +137,22 @@ export function TopBar() {
               to={l.to}
               onClick={() => sfx.nav()}
               className={({ isActive }) =>
-                `shrink-0 whitespace-nowrap rounded-xl px-3 py-1.5 text-sm font-bold transition ${isActive ? 'bg-[var(--surface-sunken)] text-zellige-600 dark:text-zellige-300' : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'}`
+                /*
+                  De gekozen kleur, en niet altijd zellige.
+
+                  Op een breed scherm is de tabbalk onderaan verborgen en staat
+                  de navigatie hier. Daar markeerde "waar ben ik" zich met
+                  `text-zellige-600`, dus wie mint of terracotta koos kreeg op
+                  een tablet groen-blauw te zien terwijl de hele app zijn eigen
+                  kleur draagt. Dezelfde vraag, twee antwoorden, afhankelijk van
+                  hoe breed het scherm is.
+
+                  `--accent-vlak` is de trede die als vlák nagemeten is (3,19
+                  tot 5,47 in het licht, 4,87 tot 7,98 in het donker); hier
+                  dient hij als letter op een verzonken vlak, en dan is hij
+                  ruim genoeg. Zie index.css.
+                */
+                `shrink-0 whitespace-nowrap rounded-xl px-3 py-1.5 text-sm font-bold transition ${isActive ? 'bg-[var(--surface-sunken)] text-[var(--accent-vlak)]' : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'}`
               }
             >
               {t.nav[l.key]}

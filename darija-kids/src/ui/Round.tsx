@@ -18,6 +18,7 @@ import { Button, Sheet } from './kit'
 import { Mascot } from './Mascot'
 import { ExerciseView } from './exercises'
 import { useRustig } from './rustig'
+import { Rond } from './tekens'
 import { SpeakButton, useMeaning, useNote } from './WordChip'
 import { useLang, useT } from '../i18n'
 
@@ -743,12 +744,21 @@ function HartjesOp({ onQuit }: { onQuit: () => void }) {
         <p className="mt-6 text-sm text-[var(--ink-soft)]">{t.lesson.hartjesTeWeinig(PRIJS_HARTEN)}</p>
       )}
 
+      {/*
+        Het teken van de tabbalk en niet 🔁.
+
+        Dit is een knop naar een bestemming die onderaan in de balk staat, en
+        daar is het sinds kort een lijntekening uit dezelfde hand als de
+        tellers in de kopbalk. Een emoji hier betekent dat dezelfde
+        bestemming op twee plekken in twee tekenstijlen staat -- en dat is het
+        bezwaar waarmee die verbouwing begon. Zie `src/ui/tekens.tsx`.
+      */}
       <Button
         variant="secondary"
-        className="mt-3 w-full py-3"
+        className="mt-3 flex w-full items-center justify-center gap-2 py-3"
         onClick={() => { sfx.nav(); nav('/herhalen') }}
       >
-        🔁 {t.nav.herhalen}
+        <Rond /> {t.nav.herhalen}
       </Button>
 
       <Button variant="ghost" className="mt-3 w-full" onClick={onQuit}>{t.common.terug}</Button>

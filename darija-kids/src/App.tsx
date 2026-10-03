@@ -45,6 +45,7 @@ import { TopBar } from './ui/TopBar'
 import { MotionConfig } from 'framer-motion'
 import { platform } from './engine/platform'
 import { Welcome } from './ui/Welcome'
+import { BoekTeken, Jij, Kompas, Rond, Steen } from './ui/tekens'
 import { Aanbod } from './ui/Aanbod'
 import { useStore } from './engine/store'
 import { listenForFirstGesture, sfx } from './engine/audio'
@@ -57,11 +58,11 @@ import { opPauze } from './engine/pauze'
 import { poortVergeet } from './ui/OuderPoort'
 
 const TABS = [
-  { to: '/leren', key: 'leren', icon: '🧭' },
-  { to: '/herhalen', key: 'herhalen', icon: '🔁' },
-  { to: '/woorden', key: 'woorden', icon: '📚' },
-  { to: '/spelen', key: 'spelen', icon: '🎮' },
-  { to: '/profiel', key: 'jij', icon: '🦊' },
+  { to: '/leren', key: 'leren', Icoon: Kompas },
+  { to: '/herhalen', key: 'herhalen', Icoon: Rond },
+  { to: '/woorden', key: 'woorden', Icoon: BoekTeken },
+  { to: '/spelen', key: 'spelen', Icoon: Steen },
+  { to: '/profiel', key: 'jij', Icoon: Jij },
 ] as const
 
 function useTheme() {
@@ -223,11 +224,60 @@ function Chrome() {
                   to={tab.to}
                   onClick={() => sfx.nav()}
                   className={({ isActive }) =>
-                    `flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-bold ${isActive ? 'text-zellige-600 dark:text-zellige-300' : 'text-[var(--ink-soft)]'}`
+                    `flex flex-col items-center gap-0.5 py-2 text-[11px] font-bold ${isActive ? 'text-[var(--ink)]' : 'text-[var(--ink-soft)]'}`
                   }
                 >
-                  <span className="text-xl" aria-hidden="true">{tab.icon}</span>
-                  {t.nav[tab.key]}
+                  {({ isActive }) => (
+                    <>
+                      <span className="relative grid h-9 w-9 place-items-center">
+                        {/*
+                          De ruit onder de tab waar je staat.
+
+                          Waar je bent was alleen aan een kleur te zien:
+                          hetzelfde plaatje, hetzelfde woord, groen in plaats
+                          van grijs. Dat is één signaal, en het valt weg voor
+                          wie kleur niet goed ziet -- en juist deze balk is waar
+                          een kind op kijkt om te weten waar het is.
+
+                          Nu zijn het er drie: de ruit staat eronder, het woord
+                          wordt donkerder in plaats van alleen anders gekleurd,
+                          en het teken staat in de inkt van die ruit. De ruit
+                          haalt tegen de balk minstens 3,19 op 1 in de lichte
+                          stand en 4,83 in de donkere -- zie `--accent-vlak` in
+                          index.css voor alle acht de metingen.
+
+                          De ruit en niet een rondje of een streepje: dat is de
+                          grondvorm van het zelligewerk dat op het pad, in de
+                          medaillons en op het handvat van elk paneel al staat.
+
+                          En hij verschijnt op zijn plek, hij schuift er niet
+                          naartoe. Dat was eerst wel zo, met `layoutId`, en het
+                          zag er beter uit dan het was: de ruit is een gevuld
+                          vlak dat ónder de tekens door reist, terwijl die
+                          tekens hun kleur al bij de tik veranderen. Nagemeten
+                          en gefotografeerd op 390, van Leren naar Spelen: in de
+                          donkere stand staat het teken van de tab die je net
+                          aantikte meteen op `--accent-ink` terwijl de ruit er
+                          nog niet is -- 1,14 op 1, dus een kwart seconde
+                          onzichtbaar. En de tekens waar hij langs komt staan in
+                          `--ink-soft` op het accentvlak: 1,32 tot 2,26 in het
+                          licht, 1,01 tot 1,39 in het donker. Tien keer per
+                          sessie werd er onderweg een teken uitgegumd. Een
+                          overgang die uitlegt waar je vandaan komt is mooi; een
+                          die drie tekens wist is dat niet.
+                        */}
+                        {isActive && (
+                          <span aria-hidden="true" className="absolute inset-0 grid place-items-center">
+                            <span className="block h-[26px] w-[26px] rotate-45 rounded-[5px] bg-[var(--accent-vlak)]" />
+                          </span>
+                        )}
+                        <span className={isActive ? 'text-[var(--accent-ink)]' : undefined}>
+                          <tab.Icoon />
+                        </span>
+                      </span>
+                      {t.nav[tab.key]}
+                    </>
+                  )}
                 </NavLink>
               </li>
             ))}

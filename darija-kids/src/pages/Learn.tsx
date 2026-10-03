@@ -586,10 +586,25 @@ export function Learn() {
       <Card className="p-5 text-center">
         <p className="font-display text-lg font-extrabold">{t.learn.klaarMetPad}</p>
         <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.learn.klaarMetPadUitleg}</p>
+        {/*
+          Drie woorden, geen emoji meer.
+
+          Er stond 📖 🔤 🎮 voor, en die laatste is Spelen -- een bestemming die
+          onderaan in de tabbalk staat, waar hij sinds kort een lijntekening is
+          uit dezelfde hand als de tellers in de kopbalk. Dezelfde plek op twee
+          manieren tekenen was precies het bezwaar waarmee die verbouwing
+          begon.
+
+          En dan één van de drie een getekend teken geven en de andere twee een
+          emoji is erger: dan staan er twee handen in één rij van drie knoppen.
+          Voor Verhalen en Letters bestaat dat teken niet, en er hier twee
+          verzinnen is een stelsel uitbreiden op de verkeerde plek. Dus:
+          woorden. Een knop met een woord erop is duidelijk.
+        */}
         <div className="mt-3 flex flex-wrap justify-center gap-2">
-          <Link to="/verhalen"><Button variant="secondary">📖 {t.nav.verhalen}</Button></Link>
-          <Link to="/letters"><Button variant="secondary">🔤 {t.nav.letters}</Button></Link>
-          <Link to="/spelen"><Button variant="secondary">🎮 {t.nav.spelen}</Button></Link>
+          <Link to="/verhalen"><Button variant="secondary">{t.nav.verhalen}</Button></Link>
+          <Link to="/letters"><Button variant="secondary">{t.nav.letters}</Button></Link>
+          <Link to="/spelen"><Button variant="secondary">{t.nav.spelen}</Button></Link>
         </div>
       </Card>
     </div>

@@ -48,7 +48,15 @@ export function Button({
         if (!mute) sfx[sound ?? PRESS[variant]]()
         onClick?.(e)
       }}
-      className={`btn3d select-none rounded-2xl border-2 px-5 py-3 font-display text-base font-extrabold tracking-wide uppercase disabled:cursor-not-allowed ${VARIANTS[variant]} ${className}`}
+      /*
+       * `btn3d-plat` voor de ghost, en alleen voor die.
+       *
+       * De vier andere varianten hebben een vlak en een rand, dus die mogen
+       * een richel hebben -- dat is wat `btn3d` is. De ghost heeft allebei
+       * niet, en kreeg daarmee een bruine balk van vier pixels onder niets.
+       * Zie `.btn3d.btn3d-plat` in index.css voor wat ervoor in de plaats komt.
+       */
+      className={`btn3d ${variant === 'ghost' ? 'btn3d-plat' : ''} select-none rounded-2xl border-2 px-5 py-3 font-display text-base font-extrabold tracking-wide uppercase disabled:cursor-not-allowed ${VARIANTS[variant]} ${className}`}
     >
       {children}
     </button>

@@ -173,6 +173,29 @@
    * Werd de richel daar vervangen in plaats van aangevuld, dan zakte die kaart
    * in het niets terwijl elke `Button` op zijn eigen rand zakt.
    */
+  /*
+   * De gekozen kleur als vlák, niet als lijn of letter.
+   *
+   * Een knop draagt `--accent-500` met donkere inkt erop, en dat is nagemeten
+   * op 4,5 -- maar een vlak dat zélf iets moet betekenen, zoals de ruit onder
+   * de tab waar je staat, wordt afgelezen tegen de balk eromheen, en daar is
+   * de norm 3 op 1. Die haalt `--accent-500` in de lichte stand niet:
+   * saffraan op de balk komt uit op 2,15. Een trede donkerder wel, en alle
+   * vier:
+   *
+   *   saffraan 3,19   terracotta 4,89   zellige 5,51   mint 3,30
+   *
+   * In het donker is het andersom -- daar staat het vlak op een bijna zwarte
+   * balk en is een donkere tint juist onzichtbaar -- dus daar is het de
+   * 500-trede:
+   *
+   *   saffraan 7,96   terracotta 4,83   zellige 6,87   mint 7,50
+   *
+   * En de inkt erop (`--accent-ink`) haalt op alle acht de combinaties
+   * minstens 3,3. Wie een vlak in de gekozen kleur nodig heeft pakt deze
+   * variabele en rekent het niet opnieuw uit.
+   */
+  --accent-vlak: var(--accent-600);
   --richel: rgb(0 0 0 / 0.16);
   --shadow-press: 0 4px 0 0 var(--richel);
   /*
@@ -264,6 +287,8 @@
   --ink-soft: #9aa3bb;
   --line: #26314e;
   --inkt-tekenen: #6fded0;
+  /* Een trede lichter dan in de lichte stand; zie `--accent-vlak` op :root. */
+  --accent-vlak: var(--accent-500);
   --richel: rgb(0 0 0 / 0.45);
   --shadow-press: 0 4px 0 0 var(--richel);
   --schaduw-laag: 0 1px 1px rgba(0, 0, 0, 0.40), 0 8px 16px -8px rgba(0, 0, 0, 0.60);
@@ -280,6 +305,8 @@
     --ink-soft: #9aa3bb;
     --line: #26314e;
     --inkt-tekenen: #6fded0;
+    /* Een trede lichter dan in de lichte stand; zie `--accent-vlak` op :root. */
+    --accent-vlak: var(--accent-500);
     --richel: rgb(0 0 0 / 0.45);
   --shadow-press: 0 4px 0 0 var(--richel);
     --schaduw-laag: 0 1px 1px rgba(0, 0, 0, 0.40), 0 8px 16px -8px rgba(0, 0, 0, 0.60);
@@ -392,6 +419,30 @@ body {
 .btn3d:active:not(:disabled) {
   transform: translateY(4px);
   box-shadow: 0 0 0 0 transparent;
+}
+
+/*
+ * De ghost-knop ligt in de bladzijde en hangt er niet boven.
+ *
+ * `.btn3d` geeft elke knop de richel van vier pixels, en dat is wat die klasse
+ * is: een knop als voorwerp. Maar de ghost heeft met opzet geen vlak en geen
+ * rand -- het is een tekstknop -- en dan is die richel een bruine balk van
+ * vier pixels onder niets. Op /volledig stonden "Voorwaarden" en "Privacy"
+ * daardoor als twee zwevende platen op de bladzijde terwijl het twee woorden
+ * zijn.
+ *
+ * Hij zakt nu één pixel in een verzonken vlak in plaats van vier op een
+ * richel. Dezelfde beweging, een trede lager -- en je ziet nog steeds dat je
+ * hem indrukt.
+ *
+ * `.btn3d.btn3d-plat` en niet `.btn3d-plat`: de regels hierboven staan ook
+ * buiten een laag, dus alleen een hogere soortelijkheid wint ervan.
+ */
+.btn3d.btn3d-plat { box-shadow: none; }
+.btn3d.btn3d-plat:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 2px rgba(84, 56, 24, 0.16);
+  background-color: var(--surface-sunken);
 }
 .btn3d:disabled { opacity: .5; }
 
