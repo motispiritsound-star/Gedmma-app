@@ -265,7 +265,47 @@ export interface State {
    * be a reward that evaporates.
    */
   history: string[]
+  /**
+   * Eén diploma per afgeronde unit, op de unit-id.
+   *
+   * De vorm en alles wat ermee gebeurt staat in `engine/diploma.ts`; hier
+   * staat alleen het veld, omdat `hydrate` de enige plek is waar een opslag
+   * van een oudere versie het erbij krijgt. Zonder dat is `diplomas`
+   * `undefined` bij iedereen die de app al heeft, en dan werpt de plank op de
+   * eerste `Object.keys`.
+   */
+  diplomas: Record<string, Diploma>
+  /**
+   * Welke ondertekende diploma's het kind al gezien heeft.
+   *
+   * Alleen om "nieuw" te kunnen zeggen op de kaart naar de plank. Een
+   * handtekening die een ouder zet terwijl het kind naar de telefoon kijkt
+   * ziet het meteen; een die hij 's avonds zet moet het de volgende dag nog
+   * kunnen vinden, en zonder dit is er niets dat het verschil weet.
+   */
+  diplomaGezien: string[]
   settings: Settings
+}
+
+/**
+ * Het diploma van één unit.
+ *
+ * Zo kort als het kan. Wat af te leiden is staat er niet in: hoeveel khatims
+ * er gehaald zijn komt uit `lessons`, en hoeveel er te halen waren uit
+ * `UNITS`. Dat is geen zuinigheid maar juistheid — een kind dat een les
+ * overdoet en van twee naar drie sterren gaat, hoort dat op zijn diploma
+ * terug te zien, en een opgeslagen aantal zou voor altijd de oude stand
+ * houden.
+ */
+export interface Diploma {
+  /** Wanneer de laatste les van de unit af was. */
+  op: number
+  /** Wie ondertekende, zoals de volwassene het zelf opschreef. Leeg: nog niet. */
+  door: string
+  /** Wanneer er ondertekend is, of null. */
+  getekendOp: number | null
+  /** Het compliment erbij. Mag leeg: een naam eronder is ook iets. */
+  woord: string
 }
 
 /**
@@ -407,6 +447,8 @@ const initial = (): State => ({
   aanbodGezien: false,
   seenTips: [],
   history: [],
+  diplomas: {},
+  diplomaGezien: [],
   settings: {
     theme: 'system',
     accent: 'saffraan',
@@ -529,6 +571,18 @@ export function hydrate(parsed: Partial<State>): State {
     badges: lijst(p.badges, base.badges),
     history: lijst(p.history, base.history),
     seenTips: lijst(p.seenTips, base.seenTips),
+    /*
+     * De plank. Een opslag van vóór deze versie heeft hem niet, en dan werpt
+     * `Object.keys(undefined)` op de bladzijde zelf -- precies de fout die
+     * `daily` en `cards` hierboven al vier keer hebben gemaakt.
+     *
+     * Leeg betekent niet "nog niets gehaald": `reikDiplomasUit` loopt bij het
+     * opstarten alle units na en reikt uit wat er al af was. Zonder dat zou
+     * iemand die de app een jaar heeft een plank krijgen die begint bij de
+     * unit die hij hierna doet.
+     */
+    diplomas: voorwerp(p.diplomas, base.diplomas),
+    diplomaGezien: lijst(p.diplomaGezien, base.diplomaGezien),
     // Een teller die geen getal is wordt NaN zodra er iets bij opgeteld wordt,
     // en NaN komt daarna nooit meer terug naar een getal.
     xp: getal(p.xp, base.xp),

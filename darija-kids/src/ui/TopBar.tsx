@@ -84,7 +84,10 @@ export function TopBar() {
   return (
     <header
       ref={balk}
-      className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--surface)]/90 backdrop-blur"
+      /* `niet-op-papier`: een diploma wordt afgedrukt, en dan hoort er geen
+         kopbalk met drie tellers en een hangslot boven op het vel te staan.
+         Zie de afdrukstijl onderaan index.css. */
+      className="niet-op-papier sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--surface)]/90 backdrop-blur"
       style={{ paddingTop: 'var(--rand-boven)' }}
     >
       {/*

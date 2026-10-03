@@ -1,12 +1,15 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { UNITS } from '../content/curriculum'
+import type { Unit } from '../content/types'
 import { allWords } from '../content/lexicon'
 import { billingAvailable, winkelGegevens, type WinkelRegel } from '../engine/billing'
+import { aantalDiplomas, aantalOndertekend, ondertekenaars, wachtOpHandtekening } from '../engine/diploma'
 import { levelOf, today, useStore } from '../engine/store'
 import { useLang, useT } from '../i18n'
 import { winkelnamen } from '../i18n/winkels'
-import { Button, Card, SectionTitle, Stat } from '../ui/kit'
+import { Button, Card, Progress, SectionTitle, Stat } from '../ui/kit'
+import { Ondertekenen } from '../ui/Diploma'
 import { Mascot } from '../ui/Mascot'
 import { OperatorBlock } from '../ui/Operator'
 import { FeedbackButton } from '../ui/Feedback'
@@ -28,10 +31,79 @@ export function Parents() {
   })
   const weekXp = week.reduce((a, b) => a + b, 0)
   const activeDays = week.filter((x) => x > 0).length
+  const diplomas = aantalDiplomas(state)
+  const getekend = aantalOndertekend(state)
+  const wacht = wachtOpHandtekening(state)
+  const tekenaars = ondertekenaars(state)
+  /** Welk diploma er ondertekend wordt, of null. */
+  const [teken, setTeken] = useState<Unit | null>(null)
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
       <SectionTitle kop="h1" sub={t.parents.uitleg}>{t.parents.titel}</SectionTitle>
+
+      {/*
+        De plank met diploma's, bóven de vier tellers.
+
+        Dat is geen willekeurige volgorde. XP, dagen en woorden zeggen hoeveel
+        er geoefend is; een diploma zegt wát er geleerd is, en het vraagt iets
+        van de lezer van deze bladzijde. De tellers blijven eronder staan voor
+        wie ze wil hebben.
+
+        En er staat bij dat deze bladzijde het enige kanaal is. Dat is geen
+        verontschuldiging: er is geen server, dus er kán geen bericht komen, en
+        de weg die overblijft is een kind dat zijn telefoon komt brengen. Dat is
+        precies de weg die we willen hebben.
+      */}
+      <Card className="mb-6 p-5">
+        <h2 className="font-display text-xl font-extrabold">{t.parents.samenTitel}</h2>
+        <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.parents.samenUitleg}</p>
+
+        {diplomas === 0 ? (
+          <p className="mt-4 text-sm text-[var(--ink-soft)]">{t.parents.samenGeen}</p>
+        ) : (
+          <>
+            <p className="mt-4 font-display font-extrabold">
+              {t.parents.samenStand(diplomas, UNITS.length, getekend)}
+            </p>
+            <Progress value={diplomas / UNITS.length} tone="accent" className="mt-2 h-3" />
+            {tekenaars.length > 0 && (
+              <p className="mt-2 text-sm text-[var(--ink-soft)]">
+                {t.diploma.ondertekendDoor}{' '}
+                {tekenaars.map((o) => `${o.naam} ${t.diploma.keer(o.aantal)}`).join(' · ')}
+              </p>
+            )}
+          </>
+        )}
+
+        {wacht.length > 0 && (
+          <div className="mt-5 rounded-2xl border-2 border-[var(--accent-600)] p-4">
+            <p className="font-display font-extrabold">{t.parents.samenWachtTitel}</p>
+            <ul className="mt-2 space-y-2">
+              {wacht.map((id) => {
+                const unit = UNITS.find((u) => u.id === id)!
+                return (
+                  <li key={id} className="flex flex-wrap items-center gap-2">
+                    <span className="text-xl" aria-hidden="true">{unit.emoji}</span>
+                    <span className="min-w-0 grow basis-32 font-display font-extrabold">{unit.title}</span>
+                    <Button variant="secondary" onClick={() => setTeken(unit)}>{t.diploma.tekenKort}</Button>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        )}
+
+        <div className="mt-4">
+          {/* `inline-block` op de link zelf: een `<a>` om een knop is anders
+              een inline vakje van negentien pixels hoog, en dan meet elk
+              gereedschap dat raakvlak in plaats van dat van de knop erin. */}
+          <Link to="/diplomas" className="inline-block"><Button variant="secondary">{t.parents.samenNaarPlank}</Button></Link>
+        </div>
+        <p className="mt-4 text-sm text-[var(--ink-soft)]">{t.parents.samenStil}</p>
+      </Card>
+
+      <Ondertekenen unit={teken} onKlaar={() => setTeken(null)} />
 
       <Card className="mb-8 p-5">
         <h2 className="font-display text-xl font-extrabold">{t.parents.dezeWeek}</h2>

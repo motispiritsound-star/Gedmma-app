@@ -27,7 +27,7 @@ const TALEN = arg('taal') ? [arg('taal')] : ['nl', 'fr', 'de', 'es', 'it', 'en']
 /** Every route a person can reach, plus the ones only the demo shows. */
 const ROUTES = [
   '/', '/leren', '/herhalen', '/woorden', '/letters', '/verhalen', '/spelen',
-  '/bonus', '/profiel', '/geschiedenis', '/ouders', '/instellingen',
+  '/bonus', '/profiel', '/geschiedenis', '/diplomas', '/ouders', '/instellingen',
   '/privacy', '/voorwaarden', '/volledig',
   '/uitspraak', '/opname', '/kaart/tariq', '/film/walili',
 ]

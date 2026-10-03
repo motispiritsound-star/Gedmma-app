@@ -9,6 +9,7 @@ import {
   isMijlpaal, knownIds, gratisDeelOp, lessonBehindPaywall, levelOf, markTipSeen, nextLesson, useStore,
   xpToday, type Badge,
 } from '../engine/store'
+import { reikDiplomasUit } from '../engine/diploma'
 import { TRIAL_DAYS } from '../engine/billing'
 import { sfx } from '../engine/audio'
 import { Button, Card, Sheet } from '../ui/kit'
@@ -16,7 +17,7 @@ import { Mascot } from '../ui/Mascot'
 import { RoundRunner, type RoundResult } from '../ui/Round'
 import { Film } from '../ui/Film'
 import { HistoryFilm } from '../ui/HistoryCard'
-import { Khatims } from '../ui/Khatim'
+import { Khatim, Khatims } from '../ui/Khatim'
 import { useLang, useT } from '../i18n'
 import { heeftArabisch, lessonTitle, tipOf, unitSubtitle } from '../content/localise'
 
@@ -58,6 +59,14 @@ function LesScherm({ lessonId }: { lessonId: string }) {
   const [attempt, setAttempt] = useState(0)
   // What finishing itself paid, on top of the answers that already paid out.
   const [bonus, setBonus] = useState({ xp: 0, gems: 0, levelled: false })
+  /**
+   * Welke units deze les afmaakte, en dus welke diploma's eruit kwamen.
+   *
+   * Bijna altijd nul of één. Twee kan: wie zijn abonnement neemt nadat hij de
+   * gratis lessen al deed, maakt met de toets van het alfabet soms ook de unit
+   * eronder af -- dus een lijst en geen enkel ding.
+   */
+  const [diplomas, setDiplomas] = useState<string[]>([])
   /** Wat deze les afsloot: het dagdoel, een mijlpaal, en een gebruikte vriesdag. */
   const [vieren, setVieren] = useState<{ doel: boolean; reeks: number | null; vries: boolean }>(
     { doel: false, reeks: null, vries: false })
@@ -182,6 +191,11 @@ function LesScherm({ lessonId }: { lessonId: string }) {
     })
     const badges = awardBadges()
     setWon(badges)
+    /*
+     * Het diploma, ná `completeLesson` en niet ervoor: pas dan staat de laatste
+     * les van de unit als afgerond in de staat, en is de unit werkelijk af.
+     */
+    setDiplomas(reikDiplomasUit())
     setResult(r)
     // The film carries its own music, so the flourish waits until after it.
     if (lesson.kind === 'toets') {
@@ -304,6 +318,26 @@ function LesScherm({ lessonId }: { lessonId: string }) {
           </div>
         </Card>
 
+        {/*
+          Het diploma, boven de insignes.
+
+          Het is van een andere orde dan een insigne en hoort er dus niet
+          tussen te staan: een unit is weken werk, en dit is het enige moment
+          waarop de app kan zeggen dat er iets te laten zien is. Er staat geen
+          "deel het" bij en er gaat niets naar buiten -- er staat waar het
+          voortaan hangt.
+        */}
+        {diplomas.length > 0 && (
+          <Card className="mt-4 border-2 border-[var(--accent-600)] p-4">
+            <Khatim size={40} className="mx-auto text-khatim-500 dark:text-khatim-400" />
+            <p className="mt-2 font-display text-lg font-extrabold">{t.lesson.diplomaTitel}</p>
+            <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.lesson.diplomaBody}</p>
+            <Link to="/diplomas" className="mt-3 inline-block">
+              <Button variant="secondary">{t.diploma.link}</Button>
+            </Link>
+          </Card>
+        )}
+
         {won.length > 0 && (
           <Card className="mt-4 p-4">
             <p className="font-display font-extrabold">{t.lesson.nieuweBeloning(won.length)}</p>
@@ -360,7 +394,7 @@ function LesScherm({ lessonId }: { lessonId: string }) {
           <Button
             variant="secondary"
             className="w-full"
-            onClick={() => { setResult(null); setWon([]); setBonus({ xp: 0, gems: 0, levelled: false }); setVieren({ doel: false, reeks: null, vries: false }); setAttempt((a) => a + 1) }}
+            onClick={() => { setResult(null); setWon([]); setDiplomas([]); setBonus({ xp: 0, gems: 0, levelled: false }); setVieren({ doel: false, reeks: null, vries: false }); setAttempt((a) => a + 1) }}
           >
             {t.common.nogEenKeer}
           </Button>

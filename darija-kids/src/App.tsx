@@ -30,6 +30,7 @@ const StoryReader = lazy(() => import('./pages/Stories').then((m) => ({ default:
 const Games = lazy(() => import('./pages/Games').then((m) => ({ default: m.Games })))
 const Profile = lazy(() => import('./pages/Profile').then((m) => ({ default: m.Profile })))
 const History = lazy(() => import('./pages/History').then((m) => ({ default: m.History })))
+const Diplomas = lazy(() => import('./pages/Diplomas').then((m) => ({ default: m.Diplomas })))
 const Parents = lazy(() => import('./pages/Parents').then((m) => ({ default: m.Parents })))
 const Unlock = lazy(() => import('./pages/Unlock').then((m) => ({ default: m.Unlock })))
 const Boek = lazy(() => import('./pages/Boek').then((m) => ({ default: m.Boek })))
@@ -50,6 +51,7 @@ import { listenForFirstGesture, sfx } from './engine/audio'
 import { initBilling } from './engine/billing'
 import { herstelHerinnering } from './engine/herinnering'
 import { meldVoortgang } from './engine/post'
+import { reikDiplomasUit } from './engine/diploma'
 import { localeOf, useLang, useT } from './i18n'
 
 const TABS = [
@@ -106,6 +108,17 @@ function Chrome() {
   }, [t])
   // Once a day at most, and only for a parent who asked for the weekly note.
   useEffect(() => { void meldVoortgang() }, [])
+  /*
+   * De plank bijwerken bij elke start.
+   *
+   * Niet alleen aan het eind van een les, en dat is de kern van deze regel:
+   * toen het alleen daar hing, begon de plank van iemand die de app al een
+   * jaar heeft bij de unit die hij hierna doet -- zestien lege vakken voor een
+   * kind dat alles al had gehaald. `reikDiplomasUit` loopt alle units na en
+   * zet de datum van de laatste les van die unit op het diploma, niet die van
+   * vandaag.
+   */
+  useEffect(() => { reikDiplomasUit() }, [])
 
   // The document language follows the interface, for screen readers and hyphenation.
   useEffect(() => {
@@ -159,6 +172,7 @@ function Chrome() {
             <Route path="/bonus/:bonusId?" element={<Bonus />} />
             <Route path="/profiel" element={<Profile />} />
             <Route path="/geschiedenis" element={<History />} />
+            <Route path="/diplomas" element={<Diplomas />} />
             <Route path="/ouders" element={<Parents />} />
             <Route path="/instellingen" element={<SettingsPage />} />
             <Route path="/privacy" element={<Privacy />} />
@@ -183,7 +197,9 @@ function Chrome() {
       {!inLesson && !isLanding && (
         <nav
           aria-label={t.nav.menu}
-          className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--line)] bg-[var(--surface-raised)]/95 backdrop-blur sm:hidden"
+          /* `niet-op-papier`: de tabbalk staat vast aan de onderrand en kwam
+             op elk afgedrukt vel terug. Zie de afdrukstijl in index.css. */
+          className="niet-op-papier fixed inset-x-0 bottom-0 z-40 border-t border-[var(--line)] bg-[var(--surface-raised)]/95 backdrop-blur sm:hidden"
           style={{ paddingBottom: 'var(--rand-onder)' }}
         >
           <ul className="mx-auto flex max-w-lg">

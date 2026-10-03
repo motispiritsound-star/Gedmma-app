@@ -180,7 +180,11 @@ export function Sheet({ open, onClose, onTerug, children, labelledBy }: {
 
   if (!open) return null
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/45 p-0 sm:items-center sm:p-6" onClick={onClose}>
+    /* `niet-op-papier`: een paneel ligt over de bladzijde, en op papier is er
+       geen bladzijde om over te liggen. Zonder dit drukt een afdruk die gestart
+       wordt terwijl er een paneel openstaat een grijs vlak af met het paneel
+       erin. Zie de afdrukstijl onderaan index.css. */
+    <div className="niet-op-papier fixed inset-0 z-50 flex items-end justify-center bg-black/45 p-0 sm:items-center sm:p-6" onClick={onClose}>
       <motion.div
         ref={paneel}
         tabIndex={-1}

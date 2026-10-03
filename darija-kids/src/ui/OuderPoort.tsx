@@ -18,7 +18,7 @@ import { Button, Sheet } from './kit'
  * The sum changes every time it opens, so it cannot be learned by heart, and
  * nothing happens until it is right.
  */
-export type PoortReden = 'abonnement' | 'post' | 'uit'
+export type PoortReden = 'abonnement' | 'post' | 'uit' | 'diploma'
 
 /**
  * Of er deze keer al een volwassene is langsgekomen.
@@ -77,11 +77,19 @@ export function OuderPoort({ open, onClose, onGoed, reden = 'abonnement' }: {
     onGoed()
   }
 
+  /*
+   * Vier redenen, vier zinnen. Dat is geen netheid: een poort die "abonnement"
+   * zegt vóór een handtekening leert een ouder om langs de woorden te klikken,
+   * en dan bewaakt hij niets meer — dezelfde reden die hierboven bij `reden`
+   * staat, nu met een vierde geval erbij.
+   */
   const vraag = reden === 'post'
     ? t.unlock.poortBodyPost(som.tekst)
     : reden === 'uit'
       ? t.unlock.poortBodyUit(som.tekst)
-      : t.unlock.poortBody(som.tekst)
+      : reden === 'diploma'
+        ? t.unlock.poortBodyDiploma(som.tekst)
+        : t.unlock.poortBody(som.tekst)
 
   return (
     <Sheet open={open} onClose={onClose} labelledBy="poort-titel">

@@ -44,6 +44,7 @@ export const nl = {
     voorwaarden: 'Voorwaarden',
     bonus: 'Bonus',
     geschiedenis: 'Geschiedenis',
+    diplomas: 'Diploma’s',
     menu: 'Hoofdmenu',
     onderdelen: 'Onderdelen',
   },
@@ -161,6 +162,15 @@ export const nl = {
     verderOpPad: 'Verder op het pad',
     volgendeLes: 'Volgende les',
     nieuweBeloning: (n: number): string => (n > 1 ? 'Nieuwe beloningen!' : 'Nieuwe beloning!'),
+    /*
+     * Wat er op het scorescherm staat als de unit zelf af is.
+     *
+     * "Er is een diploma" en niet "je hebt een diploma gewonnen": het is er,
+     * en het is nog niet af. Wat eraan ontbreekt is een naam eronder, en die
+     * haal je bij iemand -- dat staat er in de tweede regel.
+     */
+    diplomaTitel: 'De unit is af — er is een diploma',
+    diplomaBody: 'Het staat op je plank. Laat het aan een grote zien, dan zet die zijn naam eronder.',
     bestaatNiet: 'Deze les bestaat niet.',
     terugNaarPad: 'Terug naar het pad',
     nieuweLetter: 'Nieuwe letter',
@@ -461,9 +471,118 @@ export const nl = {
     'bonus-25': { naam: 'Vijfentwintig bonussen', hint: 'Rond 25 bonusrondes af' },
   },
 
+  /**
+   * De plank met diploma's.
+   *
+   * Eén ding om in de gaten te houden bij het vertalen: hier staat nergens
+   * "nog niet", "mist" of "haal nu". Een leeg vak op een plank hoort te
+   * zeggen wat er komt en niet wat er ontbreekt, en een diploma dat op een
+   * handtekening wacht is geen achterstand.
+   */
+  diploma: {
+    titel: 'Diploma’s',
+    uitleg: 'Elke unit die je afmaakt wordt een diploma op je plank. Een grote mens zet zijn naam eronder.',
+    link: 'Je plank',
+    plank: (n: number, totaal: number): string => `${n} van de ${totaal}`,
+    plankLeeg: 'Je eerste diploma komt als je de unit met de letters helemaal af hebt.',
+    plankBezig: 'De lege vakken blijven staan. Er zit geen tijd op en ze gaan niet weg.',
+    volTitel: 'De plank is vol',
+    volBody: (totaal: number): string =>
+      `Alle ${totaal} units af, en van elke unit hangt het diploma op de plank. Dat is de hele cursus, van de eerste letter tot het laatste feest.`,
+    ondertekendDoor: 'Ondertekend door',
+    keer: (n: number): string => `${n}×`,
+
+    /* De oorkonde zelf. Wat hier staat komt ook op papier terecht. */
+    kop: 'Diploma',
+    heeftAf: (unit: string): string => `heeft de unit ${unit} afgerond`,
+    oorkondeZonderNaam: (unit: string): string => `De unit ${unit} is afgerond`,
+    sterren: (n: number, max: number): string => `${n} van de ${max} khatims`,
+    handtekening: 'handtekening',
+    uitgereiktDoor: 'Darijaforkids · Marokkaans-Arabisch voor kinderen',
+
+    /* Ondertekenen. */
+    wacht: 'Wacht op een handtekening',
+    wachtAantal: (n: number): string =>
+      n === 1
+        ? 'Er staat één diploma klaar om ondertekend te worden.'
+        : `Er staan ${n} diploma’s klaar om ondertekend te worden.`,
+    laatZien: 'Laat het zien aan een grote',
+    /*
+     * Twee korte knoppen, naast de lange hierboven.
+     *
+     * In de lijst "wacht op een handtekening" staan ze drie keer onder elkaar,
+     * en dan is "Laat het zien aan een grote" drie keer dezelfde volle regel —
+     * gemeten op 320 pixels in het Duits liep de knop over drie regels. Op een
+     * diploma dat je openklapt staat de knop alleen, en daar mag hij wél de
+     * hele zin zijn.
+     */
+    laatZienKort: 'Laten zien',
+    tekenKort: 'Ondertekenen',
+    tekenTitel: 'Diploma ondertekenen',
+    tekenUitleg: 'Zet je naam eronder, en schrijf er iets bij als je wilt. Het blijft op dit toestel staan.',
+    vanWie: 'Van wie is de handtekening?',
+    vanWieTip: 'Mama, baba, oma, de meester…',
+    watErbij: 'Wil je er iets bij zeggen?',
+    watErbijTip: 'Een paar woorden. Mag ook leeg blijven.',
+    voorstellen: [
+      'Ik ben trots op je.',
+      'Je zei het precies goed tegen jeddti.',
+      'Wat een werk. Ga zo door.',
+      'Morgen leer je het mij.',
+    ],
+    tekenKnop: 'Zet je naam eronder',
+    opnieuw: 'Handtekening aanpassen',
+    /* Op de kaart op de plank, waar 157 pixels staat. De volle vorm brak daar
+       middenin het woord: HANDTEKENIN / G AANPASSEN. */
+    opnieuwKort: 'Aanpassen',
+    geenNaam: 'Vul eerst in van wie de handtekening is.',
+    getekendOp: (datum: string): string => `ondertekend op ${datum}`,
+
+    /* Wat de ouder te weten krijgt, op het moment dat hij ondertekent. */
+    sindsTitel: 'Sinds de vorige handtekening',
+    sindsBegin: 'Sinds het begin',
+    /*
+      Enkelvoud erbij. Er stond "1 lessen afgerond · 1 dagen geoefend", en dat
+      is precies de regel die een ouder leest op het moment dat hij een
+      compliment gaat geven.
+    */
+    sindsRegel: (lessen: number, dagen: number, xp: number): string =>
+      `${lessen === 1 ? '1 les' : `${lessen} lessen`} afgerond · ${dagen === 1 ? '1 dag' : `${dagen} dagen`} geoefend · ${xp} XP`,
+    sindsNiets: 'Hier komt te staan wat er sinds de vorige keer gebeurd is.',
+
+    /* Afdrukken. */
+    afdrukken: 'Afdrukken',
+    afdrukAlles: 'Alles afdrukken',
+    afdrukUitleg: 'Gaat naar de printer van dit toestel. Er gaat niets naar ons en niets naar internet.',
+    boekje: (naam: string): string => `Het boekje van ${naam}`,
+    boekjeZonderNaam: 'Het boekje',
+    boekjeBody: (n: number): string =>
+      n === 1 ? 'Eén diploma, en ruimte voor de volgende.' : `${n} diploma’s, in de volgorde waarin je ze haalde.`,
+
+    nieuw: 'Nieuw',
+    nieuwAantal: (n: number): string =>
+      n === 1 ? 'Er is een handtekening bijgekomen.' : `Er zijn ${n} handtekeningen bijgekomen.`,
+  },
+
   parents: {
     titel: 'Voor ouders en leerkrachten',
     uitleg: 'Wat deze app doet, wat hij bewust niet doet, en hoe het gaat.',
+    /*
+     * Het blok over de diploma's, bovenaan deze bladzijde.
+     *
+     * Hij staat boven "deze week", en dat is de hele reden dat hij bestaat:
+     * vier tellers zeggen hoeveel er geoefend is, een diploma zegt wát er
+     * geleerd is en vraagt iets van u. De tellers blijven eronder staan voor
+     * wie ze wil.
+     */
+    samenTitel: 'De plank met diploma’s',
+    samenUitleg: 'Elke afgeronde unit wordt een diploma. De app reikt het uit, u ondertekent het — en daarmee is het pas af.',
+    samenStand: (behaald: number, totaal: number, getekend: number): string =>
+      `${behaald} van de ${totaal} units af, waarvan ${getekend} ondertekend.`,
+    samenGeen: 'Er is nog geen unit helemaal af. Het eerste diploma komt uit de unit met de Arabische letters.',
+    samenWachtTitel: 'Klaar om te ondertekenen',
+    samenNaarPlank: 'Bekijk de plank',
+    samenStil: 'U krijgt hiervan geen bericht en geen melding: er is geen server die er een kan sturen. Deze bladzijde staat hier wanneer u kijkt, en uw kind komt het zelf laten zien — dat laatste is de bedoeling.',
     dezeWeek: 'Deze week',
     xpWeek: 'XP deze week',
     dagenGeoefend: 'dagen geoefend',
@@ -776,6 +895,15 @@ export const nl = {
     poortBody: (som: string): string => `Een abonnement afsluiten mag alleen met een ouder erbij. Hoeveel is ${som}?`,
     poortBodyPost: (som: string): string => `Een e-mailadres achterlaten mag alleen met een ouder erbij. Hoeveel is ${som}?`,
     poortBodyUit: (som: string): string => `Hierna ga je de app uit. Dat mag alleen met een ouder erbij. Hoeveel is ${som}?`,
+    /*
+     * De poort vóór een handtekening.
+     *
+     * Hij bewaakt hier geen geld en geen e-mailadres maar de betekenis van het
+     * diploma zelf: een "mama" die het kind er zelf onder tikt, is geen
+     * handtekening. Dit is dus geen formaliteit die we erbij zetten omdat de
+     * winkel hem vraagt — zonder deze som is de hele plank een stickervel.
+     */
+    poortBodyDiploma: (som: string): string => `Een diploma ondertekenen doet een grote mens. Hoeveel is ${som}?`,
     poortFout: 'Dat klopt niet helemaal. Probeer het nog eens.',
     poortKnop: 'Verder',
     slotTitel: 'Deze unit hoort bij de volledige toegang',

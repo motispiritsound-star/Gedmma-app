@@ -372,6 +372,87 @@ body {
   transition-duration: .01ms !important;
 }
 
+/* ------------------------------------------------------------------
+   Op papier
+
+   Een diploma dat je niet kunt ophangen is een plaatje. Er is geen
+   pdf-bibliotheek in deze app en die komt er ook niet bij: `window.print()`
+   zit in elke browser en in de WebView van Capacitor, en Android en iOS
+   hangen er hun eigen afdrukvenster aan — met "Opslaan als pdf" erin. Dat is
+   alles wat er nodig is, en het weegt nul byte.
+
+   Wat hier staat is dus de afdrukstijl, en die doet drie dingen.
+
+   Eén: de kleuren terugzetten op zwart op wit. Zonder dit drukt de donkere
+   stand een vel van #0d1220 af — een bladzijde vol inkt met een diploma erin
+   dat niemand wil ophangen. De tokens worden opnieuw gezet in plaats van
+   overal `print:`-klassen te hangen, en dit blok staat helemaal onderaan zodat
+   het van de twee donkere blokken hierboven wint.
+
+   Twee: wat niet op papier hoort gaat weg. `.niet-op-papier` staat op de
+   knoppen, de kopbalk en de navigatie; `.op-papier` is er alleen op papier.
+   Allebei buiten `@layer`, zoals `.ar` en `.btn3d` hierboven — dan winnen ze
+   van een Tailwind-klasse ernaast. Dat is hier precies de bedoeling.
+
+   Drie: elk diploma krijgt zijn eigen vel.
+------------------------------------------------------------------- */
+
+.op-papier { display: none; }
+
+@media print {
+  :root,
+  :root[data-theme="dark"] {
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --surface-sunken: #f2f2f2;
+    --ink: #000000;
+    /* #3f3f46 op wit haalt 10,0 op 1; `--ink-soft` uit de donkere stand haalt
+       op wit 2,6 en dat is de datum onder een handtekening. */
+    --ink-soft: #3f3f46;
+    --line: #8a8a8a;
+    --shadow-press: none;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --surface: #ffffff;
+      --surface-raised: #ffffff;
+      --surface-sunken: #f2f2f2;
+      --ink: #000000;
+      --ink-soft: #3f3f46;
+      --line: #8a8a8a;
+      color-scheme: light;
+    }
+  }
+
+  body {
+    background: #ffffff;
+    color: #000000;
+  }
+
+  .op-papier { display: block; }
+  .niet-op-papier { display: none !important; }
+
+  /* Eén diploma per vel, en de laatste zonder lege bladzijde erachter. */
+  .afdrukblad {
+    break-inside: avoid;
+    break-after: page;
+    border: 0;
+    box-shadow: none;
+    /* Een vel is hoog: zo staat het diploma in het midden en niet bovenaan. */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 90vh;
+  }
+  .afdrukblad:last-child { break-after: auto; }
+
+  @page {
+    size: A4 portrait;
+    margin: 14mm;
+  }
+}
+
 ::selection { background: var(--color-saffron-300); color: #1a1625; }
 
 .no-scrollbar::-webkit-scrollbar { display: none; }

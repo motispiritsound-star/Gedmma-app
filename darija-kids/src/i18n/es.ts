@@ -40,6 +40,7 @@ export const es: Strings = {
     voorwaarden: 'Condiciones',
     bonus: 'Bonus',
     geschiedenis: 'Historia',
+    diplomas: 'Diplomas',
     menu: 'Menú principal',
     onderdelen: 'Secciones',
   },
@@ -154,6 +155,8 @@ export const es: Strings = {
     verderOpPad: 'Seguir el camino',
     volgendeLes: 'Siguiente lección',
     nieuweBeloning: (n) => (n > 1 ? '¡Recompensas nuevas!' : '¡Recompensa nueva!'),
+    diplomaTitel: 'La unidad está terminada: hay un diploma',
+    diplomaBody: 'Está en tu estante. Enséñaselo a alguien mayor y pondrá su nombre debajo.',
     bestaatNiet: 'Esta lección no existe.',
     terugNaarPad: 'Volver al camino',
     nieuweLetter: 'Letra nueva',
@@ -447,9 +450,82 @@ export const es: Strings = {
     'bonus-25': { naam: 'Veinticinco bonus', hint: 'Termina 25 rondas bonus' },
   },
 
+  diploma: {
+    titel: 'Diplomas',
+    uitleg: 'Cada unidad que terminas se convierte en un diploma en tu estante. Una persona mayor pone su nombre debajo.',
+    link: 'Tu estante',
+    plank: (n, totaal) => `${n} de ${totaal}`,
+    plankLeeg: 'Tu primer diploma llega cuando la unidad de las letras esté terminada del todo.',
+    plankBezig: 'Los huecos vacíos se quedan ahí. No tienen plazo y no desaparecen.',
+    volTitel: 'El estante está lleno',
+    volBody: (totaal) =>
+      `Las ${totaal} unidades terminadas, y de cada una cuelga su diploma en el estante. Eso es el curso entero, de la primera letra a la última fiesta.`,
+    ondertekendDoor: 'Firmado por',
+    keer: (n) => `${n}×`,
+
+    kop: 'Diploma',
+    heeftAf: (unit) => `ha terminado la unidad ${unit}`,
+    oorkondeZonderNaam: (unit) => `La unidad ${unit} está terminada`,
+    sterren: (n, max) => `${n} de ${max} khatims`,
+    handtekening: 'firma',
+    uitgereiktDoor: 'Darijaforkids · árabe marroquí para niños',
+
+    wacht: 'Esperando una firma',
+    wachtAantal: (n) =>
+      n === 1 ? 'Hay un diploma esperando una firma.' : `Hay ${n} diplomas esperando una firma.`,
+    laatZien: 'Enséñalo a alguien mayor',
+    laatZienKort: 'Enseñar',
+    tekenKort: 'Firmar',
+    tekenTitel: 'Firmar el diploma',
+    tekenUitleg: 'Ponga su nombre debajo y añada unas palabras si quiere. Todo se queda en este aparato.',
+    vanWie: '¿De quién es la firma?',
+    vanWieTip: 'Mamá, baba, la abuela, el maestro…',
+    watErbij: '¿Quiere añadir algo?',
+    watErbijTip: 'Unas palabras. También puede dejarlo vacío.',
+    voorstellen: [
+      'Estoy orgulloso de ti.',
+      'Se lo dijiste justo bien a jeddti.',
+      'Qué trabajo. Sigue así.',
+      'Mañana me lo enseñas tú.',
+    ],
+    tekenKnop: 'Poner su nombre',
+    opnieuw: 'Cambiar la firma',
+    /* Op de kaart op de plank, waar 157 pixels staat. De volle vorm brak daar
+       middenin het woord: HANDTEKENIN / G AANPASSEN. */
+    opnieuwKort: 'Cambiar',
+    geenNaam: 'Indique primero de quién es la firma.',
+    getekendOp: (datum) => `firmado el ${datum}`,
+
+    sindsTitel: 'Desde la firma anterior',
+    sindsBegin: 'Desde el principio',
+    sindsRegel: (lessen, dagen, xp) =>
+      `${lessen === 1 ? '1 lección terminada' : `${lessen} lecciones terminadas`} · ${dagen === 1 ? '1 día' : `${dagen} días`} de práctica · ${xp} XP`,
+    sindsNiets: 'Aquí aparecerá lo que ha pasado desde la última vez.',
+
+    afdrukken: 'Imprimir',
+    afdrukAlles: 'Imprimir todo',
+    afdrukUitleg: 'Va a la impresora de este aparato. No nos llega nada y no sale nada a internet.',
+    boekje: (naam) => `El librito de ${naam}`,
+    boekjeZonderNaam: 'El librito',
+    boekjeBody: (n) =>
+      n === 1 ? 'Un diploma, y sitio para el siguiente.' : `${n} diplomas, en el orden en que los conseguiste.`,
+
+    nieuw: 'Nuevo',
+    nieuwAantal: (n) =>
+      n === 1 ? 'Ha llegado una firma.' : `Han llegado ${n} firmas.`,
+  },
+
   parents: {
     titel: 'Para madres, padres y docentes',
     uitleg: 'Qué hace esta aplicación, qué no hace a propósito y cómo va la cosa.',
+    samenTitel: 'El estante de los diplomas',
+    samenUitleg: 'Cada unidad terminada se convierte en un diploma. La aplicación lo entrega, usted lo firma, y solo así queda completo.',
+    samenStand: (behaald, totaal, getekend) =>
+      `${behaald} de ${totaal} unidades terminadas, de las cuales ${getekend} firmadas.`,
+    samenGeen: 'Todavía no hay ninguna unidad terminada del todo. El primer diploma saldrá de la unidad de las letras árabes.',
+    samenWachtTitel: 'Listo para firmar',
+    samenNaarPlank: 'Ver el estante',
+    samenStil: 'De esto no recibirá ningún mensaje ni ninguna notificación: no hay servidor que pueda enviarla. Esta página está aquí cuando usted mira, y su hijo vendrá a enseñárselo él mismo, que es justo la idea.',
     dezeWeek: 'Esta semana',
     xpWeek: 'XP esta semana',
     dagenGeoefend: 'días de práctica',
@@ -762,6 +838,7 @@ export const es: Strings = {
     poortBody: (som) => `Solo se suscribe con un adulto al lado. ¿Cuánto es ${som}?`,
     poortBodyPost: (som) => `Solo se deja un correo con un adulto al lado. ¿Cuánto es ${som}?`,
     poortBodyUit: (som) => `Esto sale de la aplicación, y eso solo con un adulto al lado. ¿Cuánto es ${som}?`,
+    poortBodyDiploma: (som) => `Un diploma lo firma una persona mayor. ¿Cuánto es ${som}?`,
     poortFout: 'No es del todo correcto. Prueba otra vez.',
     poortKnop: 'Continuar',
     slotTitel: 'Esta unidad forma parte del acceso completo',

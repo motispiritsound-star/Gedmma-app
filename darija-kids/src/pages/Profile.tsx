@@ -6,6 +6,7 @@ import {
   BADGES, kanVriesdagKopen, koopVriesdag, levelOf, MAX_VRIESDAGEN, PRIJS_VRIESDAG,
   AVATARS, progressOfUnit, reeksNu, setState, today, useStore,
 } from '../engine/store'
+import { aantalDiplomas, nieuweHandtekeningen } from '../engine/diploma'
 import { sfx } from '../engine/audio'
 import { Button, Card, Progress, SectionTitle, Stat } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
@@ -25,6 +26,8 @@ export function Profile() {
   const seen = Object.keys(state.cards).length
   const solid = Object.values(state.cards).filter((c) => c.strength >= 0.85).length
   const doneLessons = Object.keys(state.lessons).length
+  const diplomas = aantalDiplomas(state)
+  const nieuweDiplomas = nieuweHandtekeningen(state)
 
   /*
    * Vers betaald? Dan komt deze bladzijde uit `/volledig` en hoort er iets te
@@ -249,6 +252,42 @@ export function Profile() {
           )
         })}
       </ul>
+
+      {/*
+        De plank met diploma's, naast de insignes en de geschiedeniskaarten.
+
+        Hij staat hier en niet in de tabbalk, om dezelfde reden als de kaarten
+        eronder: het is iets dat je hébt, niet iets waar je naartoe gaat. Vijf
+        tabs zijn er al en een zesde haalt de ruimte weg van het pad.
+
+        Het pilletje "nieuw" is het enige wat de app zelf zegt over een
+        handtekening. Geen melding en geen pop-up: een ouder die 's avonds
+        ondertekent hoort zijn kind niet te laten schrikken, en een kind dat de
+        app morgen opent hoort het wel te kunnen vinden.
+      */}
+      <SectionTitle><span className="mt-8 block">{t.nav.diplomas}</span></SectionTitle>
+      <Link to="/diplomas" className="block">
+        <Card className="flex items-center gap-4 p-4">
+          <Khatim size={40} className="shrink-0 text-khatim-500 dark:text-khatim-400" />
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-display font-extrabold">{t.diploma.link}</span>
+              {nieuweDiplomas.length > 0 && (
+                <span className="rounded-full bg-[var(--accent-500)] px-2 py-0.5 text-[11px] font-extrabold text-[var(--accent-ink)]">
+                  {t.diploma.nieuw}
+                </span>
+              )}
+            </div>
+            <div className="text-sm text-[var(--ink-soft)]">
+              {nieuweDiplomas.length > 0
+                ? t.diploma.nieuwAantal(nieuweDiplomas.length)
+                : t.diploma.plank(diplomas, UNITS.length)}
+            </div>
+            <Progress value={diplomas / UNITS.length} tone="accent" className="mt-1 h-2" />
+          </div>
+          <span className="shrink-0 text-[var(--ink-soft)]" aria-hidden="true">›</span>
+        </Card>
+      </Link>
 
       {/* The history cards live here rather than on the tab bar: they are
           something you have, like the badges above, not somewhere you go. */}

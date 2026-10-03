@@ -20,6 +20,24 @@ Afgeronde dingen gaan eruit; `docs/STAND.md` houdt bij wat er gebeurd is.
 
 ## Daarna, op waarde gesorteerd
 
+- [ ] **"Er wacht een diploma op uw handtekening" in de voortgangsmail.** De
+      bouwer van de diplomaplank schreef dat er geen manier is om een ouder op
+      de hoogte te brengen; de jury vond er wel een, en die is al toegestaan.
+      `meldVoortgang()` in `src/engine/post.ts` stuurt vijf tellers naar onze
+      eigen server — maar alleen naar een ouder die het formulier achter de
+      ouderpoort invulde, zijn adres bevestigde en er zelf om vroeg, en
+      hoogstens een keer per dag. Een zesde teller valt binnen diezelfde regels.
+
+      **Niet gedaan, en met reden.** De server schrijft in een vaste tabel
+      (`server/src/index.ts`, de kolommen units, lessen, woorden, reeks, xp).
+      Een zesde teller is een kolom erbij in een draaiende Cloudflare-worker met
+      zijn D1-database, plus servercode en een mailsjabloon. Dat is een
+      schemawijziging op een live dienst, en die hoort niet in de nacht voor een
+      bouw, en niet zonder dat iemand erom vraagt.
+
+      Het is wel het juiste antwoord op "ouders op de hoogte houden", en het is
+      de enige weg die dat mag.
+
 - [ ] **Het e-boek in de Android-WebView** op een toestel bekijken. Op iOS is
       de PDF in een `iframe` nagekeken; op Android nooit.
 - [ ] **Een proeflesje op de website.** De site vertelt wat de app doet; hij
