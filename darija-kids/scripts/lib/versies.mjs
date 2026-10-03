@@ -48,6 +48,17 @@ export function hoogsteNaam(wortel) {
 }
 
 /**
+ * De naam die bij één bepaald nummer hoort, of null.
+ *
+ * `hoogsteNaam` is bijna altijd hetzelfde antwoord, maar niet als er iets
+ * ouders opgestuurd wordt -- en dan is "bijna altijd" precies verkeerd.
+ */
+export function naamVan(wortel, code) {
+  const regel = gebouwd(wortel).find((r) => Number(r.code) === Number(code))
+  return regel?.naam ?? null
+}
+
+/**
  * Een bouw bijschrijven. Hetzelfde nummer twee keer bouwen is geen fout -- dat
  * gebeurt als een eerdere bundel niet deugde -- dus dan wordt de regel
  * bijgewerkt in plaats van verdubbeld.

@@ -15,4 +15,5 @@ export interface Bouw {
 export function gebouwd(wortel: string): Bouw[]
 export function hoogste(wortel: string): number
 export function hoogsteNaam(wortel: string): string | null
+export function naamVan(wortel: string, code: number | string): string | null
 export function schrijfBij(wortel: string, code: number, naam?: string): void

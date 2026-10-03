@@ -12,6 +12,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { MAX, lees, nieuwsVoor, teLang } from '../../scripts/lib/nieuws.mjs'
+import { hoogste, naamVan } from '../../scripts/lib/versies.mjs'
 
 const WORTEL = new URL('../../', import.meta.url).pathname
 const TALEN = ['nl-NL', 'fr-FR', 'de-DE', 'es-ES', 'it-IT', 'en-US']
@@ -98,10 +99,39 @@ describe('elk wat-is-nieuw-bestand in de repository', () => {
 describe('wie het gebruikt', () => {
   const trackScript = readFileSync(new URL('../../scripts/naartrack.mjs', import.meta.url), 'utf8')
 
+  /**
+   * Deze test legde de fout vast in plaats van hem te vangen.
+   *
+   * Hij eiste letterlijk `nieuwsVoor(ROOT, bundel.versionName` -- en dat was
+   * precies de regel die niet werkte. Het antwoord van Google op een upload
+   * draagt alleen `versionCode`, `sha1` en `sha256`; `versionName` is er nooit
+   * in geweest. Dus zocht het script naar `wat-is-nieuw-undefined.md`, vond
+   * niets, meldde "deze release krijgt geen notities" en ging door. Versiecode
+   * 8 is zo op de testbaan beland zonder één van de zes teksten die klaarlagen.
+   *
+   * Een test die de vorm van een regel bewaakt in plaats van wat hij oplevert,
+   * is een test die een fout kan bevriezen. Daarom kijkt deze nu naar de
+   * uitkomst: komt er bij een bestaand versienummer ook werkelijk tekst uit.
+   */
   it('de upload naar de track', () => {
     expect(trackScript).toContain("from './lib/nieuws.mjs'")
-    expect(trackScript).toContain('nieuwsVoor(ROOT, bundel.versionName')
     expect(trackScript).toContain('releaseNotes: notities')
+    // De naam komt uit het register, want de upload geeft hem niet terug.
+    expect(trackScript).toContain('naamVan(ROOT, bundel.versionCode)')
+    expect(trackScript).not.toContain('nieuwsVoor(ROOT, bundel.versionName')
+  })
+
+  /**
+   * En de proef op de som: het nummer dat nu als laatste gebouwd is, moet langs
+   * dezelfde weg zijn zes teksten opleveren. Dit is de controle die er niet was.
+   */
+  it('en levert bij de laatst gebouwde versie ook echt tekst op', () => {
+    const code = hoogste(WORTEL)
+    const naam = naamVan(WORTEL, code)
+    expect(naam, `geen naam bij versiecode ${code} in docs/versies.json`).toBeTruthy()
+    const notities = nieuwsVoor(WORTEL, naam!)
+    expect(notities.length, `geen store/wat-is-nieuw-${naam}.md`).toBe(6)
+    for (const n of notities) expect(n.text.length, n.language).toBeLessThanOrEqual(500)
   })
 
   /** En breekt af bij een te lange tekst, in plaats van Play ernaar te laten kijken. */

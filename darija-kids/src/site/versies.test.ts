@@ -16,7 +16,7 @@ import { mkdtempSync, readFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import type { Bouw } from '../../scripts/lib/versies.mjs'
-import { gebouwd, hoogste, hoogsteNaam, schrijfBij } from '../../scripts/lib/versies.mjs'
+import { gebouwd, hoogste, hoogsteNaam, naamVan, schrijfBij } from '../../scripts/lib/versies.mjs'
 
 const WORTEL = new URL('../../', import.meta.url).pathname
 const lees = (pad: string) => readFileSync(new URL(pad, import.meta.url), 'utf8').replace(/\r\n/g, '\n')
@@ -51,8 +51,29 @@ describe('het boek zelf', () => {
     expect(hoogste(WORTEL)).toBeGreaterThan(inGradle)
   })
 
+  /**
+   * Niet op een vast nummer: dat verandert bij elke bouw, en dan valt deze
+   * test om op iets dat juist goed ging. Hij stond op '1.3' en viel om toen
+   * versiecode 8 (1.4) erbij kwam. Wat hier telt is dat de naam bij de hoogste
+   * code hoort en niet bij een willekeurige regel.
+   */
   it('en kent de naam die bij het hoogste nummer hoort', () => {
-    expect(hoogsteNaam(WORTEL)).toBe('1.3')
+    const boek = gebouwd(WORTEL)
+    const top = boek.reduce((h, r) => (Number(r.code) >= Number(h.code) ? r : h))
+    expect(hoogsteNaam(WORTEL)).toBe(top.naam)
+    expect(Number(top.code)).toBe(hoogste(WORTEL))
+  })
+
+  /**
+   * En de naam bij één bepaald nummer. `hoogsteNaam` is bijna altijd hetzelfde
+   * antwoord -- behalve als er iets ouders opgestuurd wordt (`--oud`), en dan
+   * is "bijna altijd" precies verkeerd.
+   */
+  it('en de naam bij elk afzonderlijk nummer', () => {
+    for (const regel of gebouwd(WORTEL)) {
+      expect(naamVan(WORTEL, regel.code), String(regel.code)).toBe(regel.naam)
+    }
+    expect(naamVan(WORTEL, 9999)).toBeNull()
   })
 })
 

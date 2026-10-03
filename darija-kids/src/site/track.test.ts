@@ -61,9 +61,45 @@ describe('insturen', () => {
   })
 })
 
+/**
+ * De releasenotities moeten bij de upload mee, en dat deden ze niet.
+ *
+ * Het script zocht de zes teksten op met `bundel.versionName` -- het antwoord
+ * van Google op de upload. Dat antwoord draagt alleen `versionCode`, `sha1` en
+ * `sha256`, dus de naam was altijd `undefined`, en het script zocht keurig
+ * naar `store/wat-is-nieuw-undefined.md`. Dat bestand bestaat niet, dus meldde
+ * het doodleuk "deze release krijgt geen notities" en ging door.
+ *
+ * Zo is versiecode 8 op de testbaan beland zonder één van de zes teksten die
+ * er klaarlagen. Op een testbaan is dat cosmetisch; op productie is het de
+ * tekst die elke bezoeker van de winkel leest.
+ *
+ * De naam komt nu uit `docs/versies.json`, waar `maak-aab.mjs` hem bij het
+ * bouwen in schrijft.
+ */
+describe('de naam van de versie', () => {
+  it('komt uit het register en niet uit het antwoord van Google', () => {
+    expect(track).toContain('naamVan(ROOT, bundel.versionCode)')
+    // En nergens meer als enige bron.
+    expect(track).not.toContain('nieuwsVoor(ROOT, bundel.versionName')
+  })
+
+  /**
+   * `naamVan` en niet `hoogsteNaam`: een oudere bundel opsturen mag (`--oud`),
+   * en dan is de hoogste naam precies de verkeerde.
+   */
+  it('en hoort bij dít nummer, niet bij het hoogste', () => {
+    expect(track).not.toContain('nieuwsVoor(ROOT, hoogsteNaam(')
+  })
+
+  it('en zegt het als hij hem niet vindt', () => {
+    expect(track).toContain('geen naam gevonden bij versiecode')
+  })
+})
+
 describe('de nummers in de opdrachten', () => {
   it('komen uit het versieboek, niet uit build.gradle alleen', () => {
-    expect(track).toContain("import { hoogste, hoogsteNaam } from './lib/versies.mjs'")
+    expect(track).toContain("import { hoogste, hoogsteNaam, naamVan } from './lib/versies.mjs'")
     expect(track).toMatch(/Math\.max\(Number\(bron\.match\(\/versionCode \(\\d\+\)\/\)\?\.\[1\]\) \|\| 0, hoogste\(ROOT\)\)/)
   })
 
