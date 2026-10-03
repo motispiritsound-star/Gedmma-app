@@ -904,6 +904,14 @@ export const nl = {
      * winkel hem vraagt — zonder deze som is de hele plank een stickervel.
      */
     poortBodyDiploma: (som: string): string => `Een diploma ondertekenen doet een grote mens. Hoeveel is ${som}?`,
+    /*
+     * De poort voor het wissen.
+     *
+     * Stond er niet, en dat was de enige deur van dit soort zonder slot: twee
+     * tikken en de voortgang van maanden was weg. Een abonnement kopen vraagt om
+     * een volwassene, een mailtje sturen ook -- alles weggooien niet.
+     */
+    poortBodyWissen: (som: string): string => `Hiermee verdwijnt alle voortgang, en dat is niet terug te draaien. Hoeveel is ${som}?`,
     poortFout: 'Dat klopt niet helemaal. Probeer het nog eens.',
     poortKnop: 'Verder',
     slotTitel: 'Deze unit hoort bij de volledige toegang',

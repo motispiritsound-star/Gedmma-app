@@ -108,17 +108,23 @@ describe('de app uit', () => {
 })
 
 describe('de ouderpoort', () => {
-  it('vraagt in elke taal iets anders voor geld, mail en de app uit', () => {
+  it('vraagt in elke taal iets anders per deur', () => {
     for (const lang of LANG_CODES) {
       const t = STRINGS[lang].unlock
-      const zinnen = [t.poortBody('3 × 4'), t.poortBodyPost('3 × 4'), t.poortBodyUit('3 × 4')]
+      const zinnen = [
+        t.poortBody('3 × 4'),
+        t.poortBodyPost('3 × 4'),
+        t.poortBodyUit('3 × 4'),
+        t.poortBodyDiploma('3 × 4'),
+        t.poortBodyWissen('3 × 4'),
+      ]
       for (const zin of zinnen) {
         expect(zin, `${lang}`).toContain('3 × 4')
         expect(zin.length, `${lang}`).toBeGreaterThan(20)
       }
-      // Drie redenen, drie zinnen: een poort die overal hetzelfde zegt,
+      // Vijf redenen, vijf zinnen: een poort die overal hetzelfde zegt,
       // leert een ouder om eroverheen te lezen.
-      expect(new Set(zinnen).size, `${lang}`).toBe(3)
+      expect(new Set(zinnen).size, `${lang}`).toBe(zinnen.length)
     }
   })
 })

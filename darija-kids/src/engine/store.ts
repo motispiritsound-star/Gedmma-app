@@ -1203,8 +1203,25 @@ export function importProgress(json: string): boolean {
   try {
     const parsed = JSON.parse(json) as State
     if (parsed.version !== 1) return false
-    const { unlocked, unlockedAt, ebook } = state
-    state = { ...hydrate(parsed), unlocked, unlockedAt, ebook }
+    /*
+     * De instellingen blijven van dít toestel, net als bij `resetProgress`.
+     *
+     * Ze gingen eerst mee, en dat gaf het ergste geval dat een terugzetknop
+     * kan geven: de taal zat erbij. Wie een bestand van een Frans sprekend
+     * neefje terugzette, kreeg een Franse app — en moest zijn eigen taal
+     * terugzoeken in een menu dat hij niet meer kon lezen. Hij heeft die knop
+     * net ingedrukt om voortgang terug te halen, niet om de app om te zetten.
+     *
+     * De knop heet ook "Voortgang terugzetten" en niet "Alles terugzetten",
+     * en dat is wat hij hoort te doen. Daar komt bij dat een deel van deze
+     * instellingen alleen op dit toestel iets betekent: `voice` is de naam van
+     * een stem die op de andere telefoon stond, en die hier dus niet bestaat.
+     *
+     * `langPicked` hoort bij hetzelfde: dat is de vraag of het welkomstscherm
+     * al geweest is op dit toestel, en niet iets uit een bestand.
+     */
+    const { unlocked, unlockedAt, ebook, settings, langPicked } = state
+    state = { ...hydrate(parsed), unlocked, unlockedAt, ebook, settings, langPicked }
     emit()
     return true
   } catch {

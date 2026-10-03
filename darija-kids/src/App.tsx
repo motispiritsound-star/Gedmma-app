@@ -53,6 +53,8 @@ import { herstelHerinnering } from './engine/herinnering'
 import { meldVoortgang } from './engine/post'
 import { reikDiplomasUit } from './engine/diploma'
 import { localeOf, useLang, useT } from './i18n'
+import { opPauze } from './engine/pauze'
+import { poortVergeet } from './ui/OuderPoort'
 
 const TABS = [
   { to: '/leren', key: 'leren', icon: '🧭' },
@@ -119,6 +121,18 @@ function Chrome() {
    * vandaag.
    */
   useEffect(() => { reikDiplomasUit() }, [])
+  /*
+   * De ouderpoort vergeet zijn antwoord zodra de app van het scherm af gaat.
+   *
+   * Hij vraagt de som één keer per keer dat de app open is, en dat is met
+   * opzet: wie de app aan het inrichten is doet hem anders tien keer op een
+   * avond, en een poort die zo vaak komt wordt een poort waar men blind langs
+   * klikt. Maar "één keer per keer dat de app open is" was zonder deze regel
+   * in de praktijk één keer en daarna nooit meer — een app op een tablet gaat
+   * niet dicht, hij gaat weg. Een ouder maakt de som, geeft de tablet aan zijn
+   * kind, en een uur later staat de poort nog steeds open.
+   */
+  useEffect(() => opPauze(poortVergeet), [])
 
   // The document language follows the interface, for screen readers and hyphenation.
   useEffect(() => {

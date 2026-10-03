@@ -841,6 +841,14 @@ export const de: Strings = {
     poortBodyPost: (som) => `Eine E-Mail-Adresse hinterlässt man nur mit einem Elternteil daneben. Wie viel ist ${som}?`,
     poortBodyUit: (som) => `Hier geht es aus der App hinaus, und das nur mit einem Elternteil daneben. Wie viel ist ${som}?`,
     poortBodyDiploma: (som) => `Ein Diplom unterschreibt ein Erwachsener. Wie viel ist ${som}?`,
+    /*
+     * De poort voor het wissen.
+     *
+     * Stond er niet, en dat was de enige deur van dit soort zonder slot: twee
+     * tikken en de voortgang van maanden was weg. Een abonnement kopen vraagt om
+     * een volwassene, een mailtje sturen ook -- alles weggooien niet.
+     */
+    poortBodyWissen: (som: string): string => `Damit ist der ganze Fortschritt weg, und das lässt sich nicht rückgängig machen. Wie viel ist ${som}?`,
     poortFout: 'Das stimmt noch nicht ganz. Versuch es noch einmal.',
     poortKnop: 'Weiter',
     slotTitel: 'Diese Einheit gehört zum vollen Zugang',

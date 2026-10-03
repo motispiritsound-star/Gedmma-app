@@ -18,7 +18,7 @@ import { Button, Sheet } from './kit'
  * The sum changes every time it opens, so it cannot be learned by heart, and
  * nothing happens until it is right.
  */
-export type PoortReden = 'abonnement' | 'post' | 'uit' | 'diploma'
+export type PoortReden = 'abonnement' | 'post' | 'uit' | 'diploma' | 'wissen'
 
 /**
  * Of er deze keer al een volwassene is langsgekomen.
@@ -46,7 +46,17 @@ let gehaald = false
 /** Waar: deze keer is de som al goed beantwoord. */
 export const poortAl = (): boolean => gehaald
 
-/** Alleen voor de tests: terug naar de stand bij het opstarten. */
+/**
+ * Terug naar de stand bij het opstarten.
+ *
+ * Dit hangt aan `pause`: zodra de app van het scherm af gaat, vergeet de poort
+ * zijn antwoord — zie `src/engine/pauze.ts` voor waarom dat die gebeurtenis is
+ * en geen andere. Zonder die regel betekende "één keer per keer dat de app
+ * open is" in de praktijk één keer en daarna nooit meer, want een app op een
+ * tablet gaat niet dicht maar weg.
+ *
+ * De tests gebruiken het ook, om met een schone poort te beginnen.
+ */
 export const poortVergeet = (): void => { gehaald = false }
 
 export function OuderPoort({ open, onClose, onGoed, reden = 'abonnement' }: {
@@ -89,7 +99,9 @@ export function OuderPoort({ open, onClose, onGoed, reden = 'abonnement' }: {
       ? t.unlock.poortBodyUit(som.tekst)
       : reden === 'diploma'
         ? t.unlock.poortBodyDiploma(som.tekst)
-        : t.unlock.poortBody(som.tekst)
+        : reden === 'wissen'
+          ? t.unlock.poortBodyWissen(som.tekst)
+          : t.unlock.poortBody(som.tekst)
 
   return (
     <Sheet open={open} onClose={onClose} labelledBy="poort-titel">

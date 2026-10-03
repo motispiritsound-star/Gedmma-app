@@ -839,6 +839,14 @@ export const it: Strings = {
     poortBodyPost: (som) => `Si lascia un indirizzo e-mail solo con un adulto accanto. Quanto fa ${som}?`,
     poortBodyUit: (som) => `Questo porta fuori dall'app, e si fa solo con un adulto accanto. Quanto fa ${som}?`,
     poortBodyDiploma: (som) => `Un diploma lo firma un adulto. Quanto fa ${som}?`,
+    /*
+     * De poort voor het wissen.
+     *
+     * Stond er niet, en dat was de enige deur van dit soort zonder slot: twee
+     * tikken en de voortgang van maanden was weg. Een abonnement kopen vraagt om
+     * een volwassene, een mailtje sturen ook -- alles weggooien niet.
+     */
+    poortBodyWissen: (som: string): string => `Così sparisce tutto il percorso, e non si può annullare. Quanto fa ${som}?`,
     poortFout: 'Non è proprio giusto. Riprova.',
     poortKnop: 'Avanti',
     slotTitel: 'Questa unità fa parte dell’accesso completo',

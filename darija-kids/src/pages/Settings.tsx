@@ -9,6 +9,7 @@ import {
   type SoundProbe,
 } from '../engine/audio'
 import { kanOpnemen } from '../engine/microfoon'
+import { OuderPoort, poortAl } from '../ui/OuderPoort'
 import { LIST_PRICE, TRIAL_DAYS } from '../engine/billing'
 import { gezinsdeling } from '../engine/platform'
 import { LANGS, localeOf, useT, type Lang } from '../i18n'
@@ -151,6 +152,8 @@ export function SettingsPage() {
   const s = state.settings
   const set = <K extends keyof Settings>(k: K) => (v: Settings[K]) => setSetting(k, v)
   const [confirmReset, setConfirmReset] = useState(false)
+  /* De poort vóór het wissen; zie de knop verderop voor waarom hij er is. */
+  const [wisPoort, setWisPoort] = useState(false)
   const [imported, setImported] = useState<string | null>(null)
   const file = useRef<HTMLInputElement>(null)
 
@@ -430,7 +433,7 @@ export function SettingsPage() {
         </Row>
         {/*
           De kleur, met de kleur erin.
-          
+
           Vier namen naast elkaar zeggen een kind niets -- "zellige" al
           helemaal niet. Dus staat de kleur zelf in de knop en de naam eronder
           voor wie hem voorleest. Dezelfde vier als op het startscherm; de
@@ -479,7 +482,26 @@ export function SettingsPage() {
           </>
         </Row>
         <Row title={t.settings.wissen} hint={t.settings.wissenHint}>
-          <Button variant="danger" onClick={() => setConfirmReset(true)}>{t.settings.wissenKnop}</Button>
+          {/*
+            De poort erbij, want dit was de enige deur van dit soort zonder slot.
+
+            Een abonnement kopen vraagt om een volwassene. Een mailadres
+            achterlaten ook. De app uit gaan ook. Maar alles weggooien waren twee
+            tikken: deze knop, en dan "Ja" in het venster — en een kind dat op
+            onderzoek is in Instellingen komt daar even makkelijk langs als
+            overal elders.
+
+            De som is dezelfde die de andere drie deuren bewaakt, en `poortAl()`
+            slaat hem over als er deze keer al een volwassene langs is geweest.
+            Het bevestigingsvenster blijft staan: de poort vraagt wie je bent,
+            het venster vraagt of je het zeker weet, en dat zijn twee vragen.
+          */}
+          <Button
+            variant="danger"
+            onClick={() => (poortAl() ? setConfirmReset(true) : setWisPoort(true))}
+          >
+            {t.settings.wissenKnop}
+          </Button>
         </Row>
       </Card>
 
@@ -515,6 +537,13 @@ export function SettingsPage() {
       <p className="text-center text-sm text-[var(--ink-soft)]">
         <Link to="/ouders" className="font-bold underline">{t.settings.oudersLink}</Link>
       </p>
+
+      <OuderPoort
+        open={wisPoort}
+        reden="wissen"
+        onClose={() => setWisPoort(false)}
+        onGoed={() => { setWisPoort(false); setConfirmReset(true) }}
+      />
 
       <Sheet open={confirmReset} onClose={() => setConfirmReset(false)} labelledBy="reset-title">
         <h2 id="reset-title" className="font-display text-xl font-extrabold">{t.settings.wissenZeker}</h2>

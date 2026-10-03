@@ -5,7 +5,7 @@ import {
 } from './exercises'
 import { BONUS, bonusOfTheDay, bonusTask, poolFrom, type BonusId, type BonusPool } from './bonus'
 import { countTrace, MASK, scoreTrace } from './scribe'
-import { getState, importProgress, mastery, setState, today, type State } from './store'
+import { getState, hydrate, importProgress, mastery, setState, today, type State } from './store'
 import { newCard, type Card } from './srs'
 import { LETTERS } from '../content/alphabet'
 import { ALL_SENTENCES } from '../content/sentences'
@@ -201,9 +201,20 @@ describe('an older save', () => {
     expect(s.quests.bonus).toBe(0)
     expect(s.quests.goed).toBe(4)
     expect(s.bonus).toEqual({ day: today(), today: 0, total: 0, reeks: 0, getekend: 0 })
+  })
+
+  /*
+   * De instellingen van zo'n oude opslag gaan langs `hydrate` en niet langs
+   * `importProgress`, want dat tweede houdt sinds kort de instellingen van het
+   * toestel — zie `terugzetten.test.ts` voor waarom. Dit is dus de weg die er
+   * echt toe doet: de opslag die bij het opstarten uit de schijf komt.
+   */
+  it('gains the settings this version added instead of switching them off', () => {
+    const s = hydrate(JSON.parse('{"version":1,"settings":{"lang":"nl"}}') as Partial<State>)
     // The setting added in the same version has to arrive too, or the writing
     // bonus is switched off for everybody who already had the app.
     expect(s.settings.schrijven).toBe(true)
+    // En wat er wél in stond blijft staan.
     expect(s.settings.lang).toBe('nl')
   })
 })

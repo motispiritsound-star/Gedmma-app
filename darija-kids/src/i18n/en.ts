@@ -839,6 +839,14 @@ export const en: Strings = {
     poortBodyPost: (som) => `Leaving an e-mail address only happens with a parent beside you. How much is ${som}?`,
     poortBodyUit: (som) => `This leads out of the app, and that only happens with a parent beside you. How much is ${som}?`,
     poortBodyDiploma: (som) => `A diploma is signed by a grown-up. How much is ${som}?`,
+    /*
+     * De poort voor het wissen.
+     *
+     * Stond er niet, en dat was de enige deur van dit soort zonder slot: twee
+     * tikken en de voortgang van maanden was weg. Een abonnement kopen vraagt om
+     * een volwassene, een mailtje sturen ook -- alles weggooien niet.
+     */
+    poortBodyWissen: (som: string): string => `This wipes all progress, and it cannot be undone. What is ${som}?`,
     poortFout: 'Not quite. Try again.',
     poortKnop: 'Continue',
     slotTitel: 'This unit is part of full access',

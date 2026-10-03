@@ -48,10 +48,51 @@ describe('de ouderpoort binnen één sessie', () => {
    * Eén die het vergeet, is een scherm dat de som wél blijft stellen terwijl
    * de rest hem overslaat — en dat voelt als een storing.
    */
-  it('wordt op alle vier de plekken overgeslagen', () => {
+  it('wordt op alle plekken overgeslagen', () => {
     const lees = (pad: string) => readFileSync(new URL(pad, import.meta.url), 'utf8')
     expect(lees('../pages/Unlock.tsx')).toContain('if (poortAl())')
     expect(lees('./Feedback.tsx')).toContain('poortAl()')
     expect(lees('./PostAanmelding.tsx')).toContain('poortAl()')
+    // En de wisknop, die er als laatste bij kwam.
+    expect(lees('../pages/Settings.tsx')).toContain('poortAl()')
+  })
+})
+
+/**
+ * En hij vergeet het weer zodra de app van het scherm af gaat.
+ *
+ * Zonder dat betekende "één keer per keer dat de app open is" in de praktijk:
+ * één keer, en daarna nooit meer. Een app op een tablet gaat niet dicht, hij
+ * gaat weg. De ouder maakt de som, geeft de tablet aan zijn kind, en een uur
+ * later staat de poort nog open — en dan is de versoepeling geen versoepeling
+ * meer maar een poort die er niet is.
+ */
+describe('en tussen twee keer openen', () => {
+  it('hangt de poort aan het wegvallen van de app', () => {
+    const app = readFileSync(new URL('../App.tsx', import.meta.url), 'utf8')
+    expect(app).toContain('useEffect(() => opPauze(poortVergeet), [])')
+    expect(app).toContain("import { opPauze } from './engine/pauze'")
+  })
+
+  /**
+   * `pause` en niet `appStateChange`. Dat tweede komt op iOS van
+   * `willResignActive` en gaat af bij elk venster van het systeem — een
+   * telefoontje, het bedieningspaneel, een melding. Dan zou de poort midden in
+   * een handeling terugkomen die al liep.
+   */
+  it('aan pause, niet aan elk systeemvenster', () => {
+    const bron = readFileSync(new URL('../engine/pauze.ts', import.meta.url), 'utf8')
+    expect(bron).toContain("addListener('pause'")
+    // Het woord staat in de toelichting erboven, dus kijk naar de aanroep en
+    // niet naar het bestand: anders valt deze test om op zijn eigen uitleg.
+    expect(bron).not.toContain("addListener('appStateChange'")
+  })
+
+  /** En meldt zich netjes af, anders blijft hij hangen na een herbouw. */
+  it('en meldt zich weer af', async () => {
+    const { opPauze } = await import('../engine/pauze')
+    // Zonder de plugin — in de browser en in de tests — doet het niets, en
+    // geeft het een opzegging die je zonder gevolgen mag aanroepen.
+    expect(() => opPauze(() => {})()).not.toThrow()
   })
 })

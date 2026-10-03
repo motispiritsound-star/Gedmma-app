@@ -839,6 +839,14 @@ export const fr: Strings = {
     poortBodyPost: (som) => `On ne laisse son adresse e-mail qu'avec un parent à côté. Combien font ${som} ?`,
     poortBodyUit: (som) => `Ceci fait sortir de l'application, et cela ne se fait qu'avec un parent à côté. Combien font ${som} ?`,
     poortBodyDiploma: (som) => `Signer un diplôme, c’est l’affaire d’un adulte. Combien font ${som} ?`,
+    /*
+     * De poort voor het wissen.
+     *
+     * Stond er niet, en dat was de enige deur van dit soort zonder slot: twee
+     * tikken en de voortgang van maanden was weg. Een abonnement kopen vraagt om
+     * een volwassene, een mailtje sturen ook -- alles weggooien niet.
+     */
+    poortBodyWissen: (som: string): string => `Cela efface toute la progression, et c’est définitif. Combien font ${som} ?`,
     poortFout: "Ce n'est pas tout à fait ça. Réessaie.",
     poortKnop: 'Continuer',
     slotTitel: "Cette unité fait partie de l'accès complet",
