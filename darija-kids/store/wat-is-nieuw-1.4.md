@@ -21,83 +21,89 @@ naam hoort. Nu zijn er vier stappen: taal, wie je bent, hoe je meeleest, en hoe
 het eruitziet. De derde is de keuze die het leren zelf raakt — Arabisch schrift,
 de klanken in ons alfabet, of allebei — en die stond eerst drie schermen diep.
 
+Het tweede wat erbij staat is de diplomaplank, en die staat er om een andere
+reden: hij is het enige in de app dat een ouder iets te doen geeft. Een module
+afmaken gaf tot nu toe een vinkje op een pad dat alleen het kind ziet. Nu geeft
+het een diploma, en daar hoort een handtekening en een woordje van een ouder of
+leerkracht bij. Dat is wat een winkelbezoeker zoekt die zich afvraagt of zijn
+kind dit alleen gaat zitten doen.
+
+Wat er níet in staat zijn de reparaties: een downloadknop die in de app niets
+deed, een poort die openbleef nadat de app weg was geweest, een wisknop zonder
+poort. Die horen in een winkeltekst niet thuis — wie leest dat er een lek
+gedicht is, hoort vooral dat er een lek was. Ze staan in de commits.
+
 De teksten staan daarom in de tegenwoordige tijd en vanuit het kind. Niet "het
 startscherm is toegevoegd", maar "je kiest een naam en een dier".
 
 ## nl-NL
 
-De app begint nu met vier vragen. In welke taal je leert. Wie je bent: je naam
-en een dier. Hoe je meeleest: het Arabische schrift, de klanken in ons alfabet,
-of allebei. En hoe het eruitziet: een kleur, licht of donker.
+De app begint nu met vier vragen: in welke taal je leert, wie je bent (je naam
+en een dier), hoe je meeleest — het Arabische schrift, de klanken in ons
+alfabet, of allebei — en welke kleur je wilt. Die kleur komt terug op je
+knoppen, je voortgang en je avatar.
 
-Die kleur komt terug op je knoppen, je voortgang en je avatar.
+Nieuw is de diplomaplank. Elke module die je afmaakt geeft een diploma, en je
+ouder of leerkracht zet er een handtekening en een woordje bij.
 
-Elke stap is door te klikken, en alles is later te veranderen.
-
-Na een abonnement kom je op je eigen kaart uit, met je naam en je dier erop.
+Na een abonnement kom je meteen op je eigen kaart uit.
 
 ## fr-FR
 
-L’application commence maintenant par quatre questions. Dans quelle langue tu
-apprends. Qui tu es : ton prénom et un animal. Comment tu lis : l’écriture
-arabe, les sons dans notre alphabet, ou les deux. Et quelle allure : une
-couleur, clair ou sombre.
+L’application commence par quatre questions : dans quelle langue tu apprends,
+qui tu es (ton prénom et un animal), comment tu lis — l’écriture arabe, les
+sons dans notre alphabet, ou les deux — et quelle couleur tu veux. Elle revient
+sur tes boutons, ta progression et ton avatar.
 
-Cette couleur revient sur tes boutons, ta progression et ton avatar.
+Nouveau : l’étagère à diplômes. Chaque module terminé donne un diplôme, et ton
+parent y met une signature et un petit mot.
 
-Chaque étape peut être passée, et tout se change plus tard.
-
-Après un abonnement, tu arrives sur ta propre carte, avec ton prénom et ton
-animal.
+Après un abonnement, tu arrives sur ta propre carte.
 
 ## de-DE
 
-Die App beginnt jetzt mit vier Fragen. In welcher Sprache du lernst. Wer du
-bist: dein Name und ein Tier. Wie du mitliest: arabische Schrift, die Laute in
-unserem Alphabet oder beides. Und wie es aussieht: eine Farbe, hell oder
-dunkel.
+Die App beginnt mit vier Fragen: in welcher Sprache du lernst, wer du bist
+(dein Name und ein Tier), wie du mitliest — arabische Schrift, die Laute in
+unserem Alphabet oder beides — und welche Farbe du willst. Die steht dann auf
+deinen Schaltflächen, deinem Fortschritt und deinem Avatar.
 
-Diese Farbe steht dann auf deinen Schaltflächen, deinem Fortschritt und deinem
-Avatar.
+Neu ist das Urkundenregal. Jedes fertige Modul gibt eine Urkunde, und ein
+Elternteil setzt eine Unterschrift und ein paar Worte dazu.
 
-Jeden Schritt kannst du überspringen, alles später ändern.
-
-Nach einem Abo landest du auf deiner eigenen Karte, mit Name und Tier darauf.
+Nach einem Abo landest du gleich auf deiner eigenen Karte.
 
 ## es-ES
 
-La aplicación empieza ahora con cuatro preguntas. En qué idioma aprendes. Quién
-eres: tu nombre y un animal. Cómo lees: escritura árabe, los sonidos en nuestro
-alfabeto, o las dos. Y qué aspecto quieres: un color, claro u oscuro.
+La aplicación empieza con cuatro preguntas: en qué idioma aprendes, quién eres
+(tu nombre y un animal), cómo lees — escritura árabe, los sonidos en nuestro
+alfabeto, o las dos — y qué color quieres. Ese color sale en tus botones, en tu
+progreso y en tu avatar.
 
-Ese color sale luego en tus botones, en tu progreso y en tu avatar.
+Nuevo: la estantería de diplomas. Cada módulo terminado da un diploma, y tu
+padre o madre le pone una firma y unas palabras.
 
-Cada paso se puede saltar, y todo se cambia más tarde.
-
-Tras una suscripción llegas a tu propia tarjeta, con tu nombre y tu animal.
+Tras una suscripción llegas a tu propia tarjeta.
 
 ## it-IT
 
-L’app comincia adesso con quattro domande. In quale lingua impari. Chi sei: il
-tuo nome e un animale. Come leggi: scrittura araba, i suoni nel nostro
-alfabeto, o entrambe. E che aspetto vuoi: un colore, chiaro o scuro.
+L’app comincia con quattro domande: in quale lingua impari, chi sei (il tuo
+nome e un animale), come leggi — scrittura araba, i suoni nel nostro alfabeto,
+o entrambe — e che colore vuoi. Quel colore torna sui tuoi pulsanti, sui
+progressi e sul tuo avatar.
 
-Quel colore torna poi sui tuoi pulsanti, sui progressi e sul tuo avatar.
+Nuovo: la mensola dei diplomi. Ogni modulo finito dà un diploma, e un genitore
+ci mette una firma e due parole.
 
-Ogni passo si può saltare, e tutto si cambia più tardi.
-
-Dopo un abbonamento arrivi sulla tua scheda, con il tuo nome e il tuo
-animale.
+Dopo un abbonamento arrivi subito sulla tua scheda.
 
 ## en-US
 
-The app now starts with four questions. Which language you learn in. Who you
-are: your name and an animal. How you read along: Arabic script, the sounds in
-our alphabet, or both. And how it looks: a colour, light or dark.
+The app now starts with four questions: which language you learn in, who you
+are (your name and an animal), how you read along — Arabic script, the sounds
+in our alphabet, or both — and which colour you want. That colour sits on your
+buttons, your progress and your avatar.
 
-That colour then sits on your buttons, your progress and your avatar.
+New is the diploma shelf. Every module you finish gives a diploma, and your
+parent or teacher adds a signature and a few words.
 
-Every step can be clicked past, and everything changed later.
-
-After a subscription you land on your own card, with your name and your animal
-on it.
+After a subscription you land on your own card right away.

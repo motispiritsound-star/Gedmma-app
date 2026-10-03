@@ -1,6 +1,7 @@
 # Waar staan we
 
-Bijgewerkt op 1 oktober 2026, met de openingsactie op de boeken. Dit bestand
+Bijgewerkt op 3 oktober 2026, met de diplomaplank en de drie sloten op de
+oudersschermen. Dit bestand
 is het antwoord op "wat moet er nog" zonder dat je drie andere bestanden hoeft
 te lezen.
 
@@ -87,8 +88,34 @@ geen enkele winkel:
   stempel op de wortel, dus een oude opslag ziet er precies zo uit als altijd.
   Nagekeken op schermafdrukken van 390 pixels in allebei de standen en
   goedgekeurd.
+- **De diplomaplank** (`f84402f`). Een module afmaken gaf tot nu toe een vinkje
+  op een pad dat alleen het kind ziet. Nu geeft het een diploma, en daar hoort
+  een handtekening en een woordje van een ouder of leerkracht bij — dat is het
+  enige in de app dat een ouder iets te doen geeft. De plank wordt bij elke
+  start bijgewerkt en niet alleen aan het eind van een les, want anders begint
+  de plank van iemand die de app al een jaar heeft bij de unit die hij hierna
+  doet.
+- **De les ziet er anders uit** (`5b67b7c`): wie het fout had, zag niet wat het
+  dan wél was. Zes standen voor een antwoord in plaats van twee, en de rand om
+  "dit was het juiste antwoord" haalde 2,28 op 1 — onder de norm, op precies
+  het moment dat een kind iets moet leren.
 - Na het betalen kom je op `/profiel?welkom=1` uit, waar naam en avatar bij
   elkaar staan (`621fb63`).
+- **Drie sloten die er niet waren** (`1ebc487`). "Alles wissen" had geen
+  ouderpoort: twee tikken en de voortgang van maanden was weg. De poort bleef
+  open nadat de app van het scherm af was geweest — een app op een tablet gaat
+  niet dicht maar weg, dus "één keer per sessie" was in de praktijk één keer en
+  daarna nooit meer. En terugzetten nam de taal van het andere toestel mee, dus
+  wie een bestand van een Frans neefje terugzette moest zijn eigen taal
+  terugzoeken in een menu dat hij niet meer kon lezen.
+- **"Voortgang opslaan" doet nu iets** (`b936d9c`). Die knop deed niets in
+  allebei de winkelbuilds: Capacitor zet geen `WKDownloadDelegate` en geen
+  `DownloadListener`, dus een webweergave laat een download stil vallen. Op het
+  web nog steeds een bestand, in de app een venster met de tekst en een
+  kopieerknop, en "Tekst plakken" om hem terug te zetten.
+- **De drie gratis dagen staan in de vraag erover** (`b56ef7c`). Het plaatje
+  zei "Start 3 dagen gratis", de vraag eronder "met de eerste dagen gratis" —
+  zonder getal, op de ene plek waar iemand het nazoekt voordat hij betaalt.
 - De plugincontrole vóór het bouwen en de klassencontrole erna.
 - `docs/versies.json`, en de releasenotities die vanzelf meegaan.
 - De Franse abonnementsteksten: die staan nog op *Prepare for Submission* en
@@ -105,7 +132,7 @@ beoordelaar naar vraagt en waar niets mee gebeurt.
 | --- | --- |
 | Inhoud | 17 units, 432 opnames, 304 woorden — af |
 | Website | 8 pagina's × 6 talen, nagekeken op dode links en losse eindjes |
-| Tests | 1289, groen — daar zitten de 77 van de worker al in |
+| Tests | 1858, groen — daar zitten de 77 van de worker al in |
 | Google Play | **versiecode 7 ingestuurd op 2 oktober** — productie én gesloten test, in beoordeling. De crash is gevonden, gerepareerd en twee keer bevestigd: `watzitin` ziet de vier klassen in de dex, en de app opent op de Galaxy Tab |
 | App Store | **1.0 (build 7) staat live** sinds 2 oktober, stil. **1.1 (build 9) ingediend op 2 oktober**, op *Automatically release* — met de Franse abonnementsteksten erbij |
 | Uitbetalen | **rond bij allebei** — Google geverifieerd op 1 oktober |
