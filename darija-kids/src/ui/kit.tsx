@@ -195,7 +195,33 @@ export function Sheet({ open, onClose, onTerug, children, labelledBy }: {
         animate={{ y: 0, opacity: 1, scale: 1 }}
         transition={{ type: 'spring', stiffness: 240, damping: 26 }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg rounded-t-3xl border border-[var(--line)] bg-[var(--surface-raised)] px-6 pt-6 shadow-2xl sm:rounded-3xl"
+        /*
+          `max-h-full overflow-y-auto`: zonder dat is alles wat boven de
+          bovenrand uitkomt onbereikbaar.
+
+          Dit omhulsel staat `fixed inset-0` met `items-end`, en de bladzijde
+          eronder staat op `overflow: hidden` zolang er een paneel openstaat --
+          met goede reden, zie hierboven. Maar het paneel zelf had geen
+          maximale hoogte en geen eigen scroll, dus een paneel dat hoger werd
+          dan het scherm groeide de bovenrand uit en daar hielp geen wiel en
+          geen veeg meer tegen.
+
+          Nagemeten op het startscherm, 320 bij 568: de kop van drie van de
+          vier stappen stond boven de rand (-7, -15 en -91 pixels), en op stap
+          drie begon het scherm midden in een zin. De mascotte, de vier ruiten,
+          de kop "Wie soll es aussehen?" en twee regels uitleg waren weg en
+          niet te bereiken. De knoppen bleven staan, dus de app bleef
+          bedienbaar -- wat weg was, is de vraag die de knoppen uitlegt. Op 360
+          bij 640, precies de klasse toestel waarvoor er op es2015 gebouwd
+          wordt, gold hetzelfde voor stap twee en drie, en op 390 bij 844 met
+          een letterstand van 125% voor stap drie.
+
+          Dit raakt elk paneel in de app en niet alleen dat ene: de
+          kopieerknop uit Instellingen zet er een veld van 160 pixels in, en
+          een tekst die een vertaling langer uitvalt kon elk ander paneel over
+          de rand duwen. `overscroll-contain` houdt de veeg binnen het paneel.
+        */
+        className="max-h-full w-full max-w-lg overflow-y-auto overscroll-contain rounded-t-3xl border border-[var(--line)] bg-[var(--surface-raised)] px-6 pt-6 shadow-2xl sm:rounded-3xl"
         /*
          * Op een telefoon plakt dit paneel tegen de onderrand -- zie
          * `items-end` hierboven. Met targetSdkVersion 36 tekent Android 15 tot

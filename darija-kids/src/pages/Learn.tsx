@@ -6,7 +6,8 @@ import { ACCENTS, Button, Card, Progress } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 import { Quests } from '../ui/Quests'
 import { BonusCard } from './Bonus'
-import { Begin, Einde, GAT, KNOOP, Overgang, Rozet, SCHADUW, Weg, verspring } from '../ui/Pad'
+import { Begin, Einde, GAT, KNOOP, Overgang, Rozet, Weg, verspring } from '../ui/Pad'
+import { ZWEEF } from '../ui/zweef'
 import {
   dueWordIds, isDone, lessonBehindPaywall, lessonUnlocked, markTipSeen, nextLesson, reeksNu,
   progressOfUnit, unitBehindPaywall, unitUnlocked, useStore,
@@ -324,7 +325,7 @@ export function Learn() {
         zweven, de kleinere kaarten eronder liggen gewoon op het papier. Dat
         verschil is de rangorde van het scherm.
       */}
-      <div className={`mb-6 rounded-3xl ${SCHADUW}`}>
+      <div className={`mb-6 rounded-3xl ${ZWEEF}`}>
         <Card className="relative flex flex-col items-center gap-4 overflow-hidden p-5 sm:flex-row">
           {/* Het zellige-raster als watermerk, niet als behang: één rozet in de
               hoek, op tien procent, achter alles wat gelezen moet worden. */}
@@ -482,7 +483,7 @@ export function Learn() {
             <li key={unit.id}>
               {open ? (
                 <div
-                  className={`${uit ? 'sticky z-10' : 'relative'} rounded-3xl ${SCHADUW}`}
+                  className={`${uit ? 'sticky z-10' : 'relative'} rounded-3xl ${ZWEEF}`}
                   style={uit ? { top: 'var(--kop-hoogte)' } : undefined}
                 >
                   <button type="button" aria-expanded={uit} onClick={() => wissel(unit.id, af)} className={kopKlasse}>

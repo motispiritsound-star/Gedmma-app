@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { motion } from 'framer-motion'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   btwInbegrepen, buyEbook, EBOOK, ebookKlaar, ebookWachtTot, FREE_LESSONS,
@@ -11,7 +12,10 @@ import { localeOf, useT } from '../i18n'
 import { sfx } from '../engine/audio'
 import { Button, Card, SectionTitle } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
+import { Motief } from '../ui/Motief'
 import { OuderPoort, poortAl, type PoortReden } from '../ui/OuderPoort'
+import { ZWEEF } from '../ui/zweef'
+import { useRustig } from '../ui/rustig'
 
 /**
  * The one thing in this app that costs money.
@@ -24,6 +28,16 @@ export function Unlock() {
   const t = useT()
   const billing = useBilling()
   const subscribed = useStore((s) => s.unlocked)
+  /**
+   * De rustige stand uit de instellingen, net als in `ui/Welcome.tsx`.
+   *
+   * De regel in index.css zet css-animaties stil en `MotionConfig
+   * reducedMotion="user"` dekt de voorkeur van het toestel. Geen van beide
+   * dekt wat framer-motion in javascript uitrekent voor wie in de app zélf om
+   * rust vroeg; die moet je hier lezen.
+   */
+  /* Allebei de voorkeuren, niet alleen de knop in de app. Zie rustig.ts. */
+  const kalm = useRustig()
   /**
    * Recht op het boek en het boek kunnen openen zijn twee dingen.
    *
@@ -125,7 +139,30 @@ export function Unlock() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <SectionTitle kop="h1" sub={t.unlock.sub(TRIAL_DAYS, price, gezin, jaar)}>{t.unlock.titel}</SectionTitle>
+      {/*
+        De bladzijde begon met een kop op een kale achtergrond, en daaronder
+        vier kaarten tekst. Dat leest als een formulier, en dit is het scherm
+        waar een ouder besluit zestig euro uit te geven aan iets wat hij nog
+        niet gezien heeft.
+
+        Nu opent hij met het gezicht van de app op een zelligeraster -- hetzelfde
+        `.zellige` uit index.css dat op het leerpad ligt, dus geen tweede
+        patroon. De kop zelf blijft precies waar hij was: `SectionTitle` met
+        `kop="h1"`, want een schermlezer springt met één toets naar de titel van
+        de bladzijde en die moet er één zijn (`kop.test.ts`).
+
+        `[&>div]:mb-0` haalt de onderruimte van `SectionTitle` weg, want hier
+        doet de opvulling van het vlak dat werk al.
+      */}
+      <div className={`relative mb-4 overflow-hidden rounded-3xl border border-[var(--line)] bg-[var(--surface-raised)] p-5 ${ZWEEF}`}>
+        <div className="zellige pointer-events-none absolute inset-0 opacity-70" aria-hidden="true" />
+        <div className="relative flex items-center gap-3">
+          <Mascot mood="juich" size={56} className="shrink-0" />
+          <div className="min-w-0 [&>div]:mb-0">
+            <SectionTitle kop="h1" sub={t.unlock.sub(TRIAL_DAYS, price, gezin, jaar)}>{t.unlock.titel}</SectionTitle>
+          </div>
+        </div>
+      </div>
 
       {subscribed ? (
         <>
@@ -150,20 +187,42 @@ export function Unlock() {
       ) : (
         <>
           {/* What happens and when, in three lines, before anything is asked. */}
-          <Card className="mb-4 p-5">
-            <ol className="space-y-3">
-              {t.unlock.tijdlijn(TRIAL_DAYS, price, jaar).map(([emoji, titel, body]) => (
-                <li key={titel} className="flex gap-3">
-                  <span className="text-xl" aria-hidden="true">{emoji}</span>
-                  <div className="min-w-0">
-                    <p className="font-display font-extrabold">{titel}</p>
-                    <p className="text-sm text-[var(--ink-soft)]">{body}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </Card>
+          {/*
+            Drie losse regels met een emoji ervoor waren drie losse feiten. Het
+            zijn er geen drie maar één -- vandaag, over drie dagen, en daarna --
+            en dat is precies wat een ouder op dit scherm wil weten. Dus staan de
+            tekens nu in een putje op een lijn, zoals de stappen op het leerpad:
+            je ziet dat het een volgorde is voordat je de woorden leest.
 
+            De lijn ligt achter de putjes (`z-10` op de putjes) en begint en
+            eindigt op hun midden, zodat hij nergens los uitsteekt.
+          */}
+          <div className={`mb-4 rounded-3xl ${ZWEEF}`}>
+            <Card className="p-5">
+              <ol className="relative space-y-3">
+                <span
+                  aria-hidden="true"
+                  className="absolute bottom-4 start-[17px] top-4 w-0.5 bg-[var(--line)]"
+                />
+                {t.unlock.tijdlijn(TRIAL_DAYS, price, jaar).map(([emoji, titel, body]) => (
+                  <li key={titel} className="relative flex gap-3">
+                    <span
+                      className="z-10 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[var(--line)] bg-[var(--surface-sunken)] text-lg"
+                      aria-hidden="true"
+                    >
+                      {emoji}
+                    </span>
+                    <div className="min-w-0 pt-1">
+                      <p className="font-display font-extrabold">{titel}</p>
+                      <p className="text-sm text-[var(--ink-soft)]">{body}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </Card>
+          </div>
+
+          <div className={`rounded-3xl ${ZWEEF}`}>
           <Card className="p-6">
             <p className="text-[var(--ink-soft)]">{t.unlock.intro(FREE_LESSONS)}</p>
             <ul className="mt-4 space-y-2">
@@ -189,9 +248,31 @@ export function Unlock() {
                     onClick={() => { sfx.pick(); setPlan(option.id) }}
                     aria-pressed={picked}
                     className={`btn3d relative rounded-2xl border-2 p-4 text-start transition ${
-                      picked ? 'border-zellige-500 bg-zellige-500/10' : 'border-[var(--line)] bg-[var(--surface-raised)]'
+                      picked ? 'border-transparent bg-zellige-500/10' : 'border-[var(--line)] bg-[var(--surface-raised)]'
                     }`}
                   >
+                    {/*
+                      De rand om het gekozen plan is één element dat van de ene
+                      kaart naar de andere schuift, en geen rand die op de ene
+                      uitgaat en op de andere aan. Met `layoutId` meet
+                      framer-motion beide plekken en beweegt hij ertussen, zodat
+                      je ziet dát je keuze verhuisde -- op een telefoon staan de
+                      twee kaarten onder elkaar en is dat een sprong omlaag of
+                      omhoog, op een iPad naast elkaar.
+
+                      `pointer-events-none`, want hij ligt over de knop heen.
+                      De rand van de knop zelf wordt doorzichtig als hij gekozen
+                      is; zonder dat staan er twee randen over elkaar en zie je
+                      de ring tijdens zijn reis dubbel.
+                    */}
+                    {picked && (
+                      <motion.span
+                        layoutId="plankeuze"
+                        aria-hidden="true"
+                        className="pointer-events-none absolute -inset-0.5 rounded-2xl border-2 border-zellige-500"
+                        transition={kalm ? { duration: 0 } : { type: 'spring', stiffness: 180, damping: 24 }}
+                      />
+                    )}
                     {option.best && vergelijking && (
                       <span className="absolute -top-3 end-3 rounded-full bg-saffron-500 px-2.5 py-1 text-[11px] font-extrabold text-night-950">
                         {t.unlock.voordeligst(vergelijking.korting)}
@@ -237,7 +318,10 @@ export function Unlock() {
                     )}
                     {option.id === 'jaar' && (
                       <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-zellige-500/15 px-2 py-0.5 text-[11px] font-extrabold text-zellige-700 dark:text-zellige-200">
-                        📖 {t.unlock.boek.inclusief}
+                        {/* `currentColor`, dus de tekening draagt de kleur van
+                            het badje en wordt in de donkere stand mee lichter. */}
+                        <Motief motief="boek" size={13} className="shrink-0" />
+                        {t.unlock.boek.inclusief}
                       </div>
                     )}
                   </button>
@@ -275,6 +359,7 @@ export function Unlock() {
               )}
             </div>
           </Card>
+          </div>
 
           {billing.available && (
             <Card className="mt-4 flex flex-wrap items-center gap-3 p-5">
@@ -296,9 +381,20 @@ export function Unlock() {
           `data-boekkaart` is waar `npm run reviewshot` naartoe scrolt: een
           opname van het boek moet het boek in beeld hebben, en een vast
           aantal pixels verschuift zodra de tekst erboven verandert. */}
-      <Card className="mt-4 p-6" data-boekkaart>
-        <div className="flex flex-wrap items-baseline gap-3">
-          <h2 className="font-display text-xl font-extrabold">📖 {t.unlock.boek.titel}</h2>
+      <div className={`mt-4 rounded-3xl ${ZWEEF}`}>
+      <Card className="p-6" data-boekkaart>
+        <div className="flex flex-wrap items-center gap-3">
+          {/*
+            De getekende boekrug uit `ui/Motief.tsx` in plaats van 📖.
+            Dezelfde lijntekening die op de geschiedeniskaart "het boek" staat,
+            dus het e-boek ziet eruit als iets uit deze app en niet als het
+            standaardplaatje van het toestel -- dat op iedere telefoon anders is
+            en op een oude Android een vierkantje.
+          */}
+          <h2 className="flex items-center gap-2 font-display text-xl font-extrabold">
+            <Motief motief="boek" size={26} className="shrink-0 text-zellige-600 dark:text-zellige-300" />
+            {t.unlock.boek.titel}
+          </h2>
           {!boek && !boekWacht && (
             <span className="font-display text-lg font-extrabold text-zellige-600 dark:text-zellige-300">
               {billing.prices.ebook ?? EBOOK.list}
@@ -358,6 +454,7 @@ export function Unlock() {
           </p>
         )}
       </Card>
+      </div>
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link to="/leren"><Button variant="ghost">{t.lesson.terugNaarPad}</Button></Link>

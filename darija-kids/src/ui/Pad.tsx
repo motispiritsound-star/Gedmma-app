@@ -210,19 +210,3 @@ export function Einde({ gelopen }: { gelopen: boolean }) {
     </div>
   )
 }
-
-/**
- * De warme slagschaduw waarmee een kaart boven het papier hangt.
- *
- * Twee lagen: een smalle donkere naad die zegt dat het ding ergens óp ligt, en
- * een wijde zachte die zegt hoe hoog. De kleur is bruin en geen grijs -- de app
- * staat op #fffaf3, en een grijze schaduw daarop maakt het papier vuil in
- * plaats van diep. In de donkere stand is hij zwart: daar is er geen licht om
- * te kleuren.
- *
- * Niet op iets met `btn3d`: die regel staat in index.css buiten elke laag en
- * wint van elke Tailwind-klasse, dus een `shadow-` ernaast doet niets. Wat
- * ingedrukt kan worden hoort `btn3d` te hebben; wat alleen zweeft deze.
- */
-export const SCHADUW =
-  'shadow-[0_1px_2px_rgba(94,62,27,0.07),0_10px_24px_-12px_rgba(94,62,27,0.32)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.5),0_12px_28px_-12px_rgba(0,0,0,0.8)]'

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import type { Exercise, LetterForm } from '../engine/exercises'
 import { checkTyped, normalise, tokenize, type Verdict } from '../engine/exercises'
 import { word } from '../content/lexicon'
@@ -10,6 +10,8 @@ import { maybeWord } from '../content/lexicon'
 import { say, sayLetter, sfx } from '../engine/audio'
 import { kanOpnemen, neemOp, type Opname } from '../engine/microfoon'
 import { useStore } from '../engine/store'
+import { ZWEEF } from './zweef'
+import { useRustig } from './rustig'
 import { Button } from './kit'
 import { Scribe } from './Scribe'
 import { SpeakButton, useMeaning, useNote, WordText } from './WordChip'
@@ -31,46 +33,7 @@ export interface ExerciseProps {
 
 /* ----------------------------------------------------- diepte en beweging */
 
-/**
- * Hoe een kaart boven het papier hangt.
- *
- * `Card` uit kit.tsx draagt `shadow-sm`: één laag grijs. Deze app staat niet op
- * wit maar op #fffaf3, en een grijze schaduw op een warm vlak leest koel -- je
- * ziet een lijn langs de rand in plaats van ruimte eronder. Dat is precies het
- * verschil tussen een kaart die erop geplakt zit en een die erboven hangt, en
- * het is het enige waar de hele les zijn diepte vandaan haalt.
- *
- * Drie lagen in de kleur van het papier zelf, want dat is wat één lichtbron
- * doet: een contactrandje van één pixel dat zegt wáár de kaart het vlak raakt,
- * een korte kernschaduw eronder, en een brede zachte die de kaart laat zweven.
- * Weglaten van de eerste maakt hem zwevend zonder plek; weglaten van de derde
- * maakt hem plat.
- *
- * In de donkere stand werkt het omgekeerd: op #0d1220 valt er met nóg meer
- * zwart langs de rand niets te winnen, dus daar zijn de lagen dieper en
- * strakker. Dezelfde drie lagen, andere sterkte -- geen tweede systeem.
- */
-const ZWEEF = 'shadow-[0_1px_1px_rgba(84,56,24,0.05),0_6px_12px_-6px_rgba(84,56,24,0.17),0_18px_32px_-18px_rgba(84,56,24,0.30)] dark:shadow-[0_1px_1px_rgba(0,0,0,0.40),0_8px_16px_-8px_rgba(0,0,0,0.60),0_26px_44px_-24px_rgba(0,0,0,0.95)]'
 
-/**
- * Of beweging uit moet.
- *
- * Er zijn twee schakelaars en geen van beide dekt wat hieronder gebeurt.
- * `MotionConfig reducedMotion="user"` in App.tsx luistert naar het toestel, en
- * de regel in index.css zet css-overgangen stil bij "rustig" -- maar een kaart
- * die naar je vinger kantelt is geen animatie, het is een stánd, en die zetten
- * ze allebei niet uit. Nagemeten in Chromium met `prefers-reduced-motion:
- * reduce`: de kanteling stond er gewoon, alleen zonder overgang ernaartoe.
- *
- * Dus allebei de voorkeuren, hier bij elkaar. `HistoryScene` leest de
- * instelling om dezelfde reden rechtstreeks; dit is diezelfde lezing plus die
- * van het toestel, op de plek waar een kind het grootste deel van zijn tijd
- * zit.
- */
-export function useRustig(): boolean {
-  const vanToestel = useReducedMotion()
-  return useStore((s) => s.settings.motion) !== 'full' || vanToestel === true
-}
 
 /** De veer waar `Progress` in kit.tsx al op loopt. Eén veer in de hele les. */
 const VEER = { type: 'spring', stiffness: 180, damping: 24 } as const

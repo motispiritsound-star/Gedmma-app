@@ -262,7 +262,30 @@ body {
 }
 
 /* The zellige tile grid, drawn once as a background and reused. */
+/*
+ * Het zellige-raster: twee rasters van 34 pixels, een halve tegel uit elkaar.
+ *
+ * Twee keer dezelfde tekening, en dat is een terugval en geen slordigheid. De
+ * tweede regel gebruikt `color-mix(in oklab, ...)` en de dubbele kleurstop
+ * (`<kleur> 0 2px`); een WebView van Android 7 kent geen van beide, en een
+ * waarde die hij niet kent gooit de hele `background-image` weg. Dan staat er
+ * niets -- geen patroon en geen terugval -- en de bouw mikt op es2015 juist
+ * voor dat toestel. De eerste regel is dezelfde tekening in oude taal: gewone
+ * `rgba()` en elke kleurstop apart. Wie de tweede begrijpt, gebruikt die.
+ *
+ * De twee zien er niet exact hetzelfde uit: `color-mix` in oklab mengt anders
+ * dan een alfa in sRGB. Voor stippen van twee pixels op 22 en 16 procent is
+ * dat niet te zien, en dit is de laag die de app Marokkaans laat aanvoelen op
+ * het eerste scherm -- bleke stippen zijn oneindig veel beter dan geen.
+ *
+ * De getallen zijn `--color-zellige-500` (#14b8a6) en `--color-saffron-500`
+ * (#f59e0b). Verandert een van die twee, dan hoort deze terugval mee te
+ * veranderen; `tegelterugval.test.ts` kijkt of ze nog bij elkaar horen.
+ */
 .zellige {
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(20, 184, 166, 0.22) 0, rgba(20, 184, 166, 0.22) 2px, transparent 3px),
+    radial-gradient(circle at 0% 0%, rgba(245, 158, 11, 0.16) 0, rgba(245, 158, 11, 0.16) 2px, transparent 3px);
   background-image:
     radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--color-zellige-500) 22%, transparent) 0 2px, transparent 3px),
     radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--color-saffron-500) 16%, transparent) 0 2px, transparent 3px);

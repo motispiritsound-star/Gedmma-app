@@ -135,7 +135,66 @@ describe('het startscherm', () => {
   it('en sluit pas aan het eind', () => {
     const laatste = welkom.slice(welkom.indexOf('{stap === 2 && ('))
     expect(laatste).toContain('setState({ langPicked: true })')
-    expect(welkom.slice(0, welkom.indexOf('{stap === 2 && ('))).not.toContain('langPicked: true')
+
+    /*
+     * Vóór de laatste stap mag de vlag maar op één plek staan, en dan met een
+     * slot erop: `onAnimationComplete` op het omhulsel, binnen `if (opent)`.
+     *
+     * Die haak kwam in de plaats van een `setTimeout` van 240 milliseconde.
+     * Daarmee bestond het geval "animatie klaar, vlag niet om": dan staat er
+     * een zwart vlak over de app met een paneel op dekking 0 erin, en
+     * `Welcome` geeft `Sheet` geen `onClose` — dus een tik ernaast en Escape
+     * doen niets en alleen opnieuw starten helpt. Klein, maar het is het
+     * állereerste scherm en de uitkomst is totaal.
+     *
+     * `opent` gaat alleen om door de knop op de laatste stap, dus de belofte
+     * van deze test blijft heel: het scherm sluit pas aan het eind.
+     */
+    const ervoor = welkom.slice(0, welkom.indexOf('{stap === 2 && ('))
+    for (const plek of ervoor.split('langPicked: true').slice(0, -1)) {
+      const regel = plek.slice(plek.lastIndexOf('\n') + 1)
+      expect(regel, 'een vlag zonder slot vóór de laatste stap').toContain('if (opent)')
+    }
+    // En de klok is weg: geen timer die de vlag ook zonder animatie omzet. De
+    // aanroep, niet het woord — het staat in de toelichting erboven, en een
+    // test die omvalt op zijn eigen uitleg bewaakt niets.
+    expect(welkom).not.toMatch(/setTimeout\(/)
+  })
+
+  /**
+   * De kaart op de laatste stap belooft geen prestatie.
+   *
+   * Er stonden drie khatims met twee ervan vol, en de balk eronder stond op
+   * 0,45 -- op het scherm vóór de eerste les. Dat leest als twee van de drie
+   * sterren bij iemand die nog niets gedaan heeft, en het is dezelfde
+   * verzonnen prestatie die dit bestand twintig regels hoger juist vermijdt
+   * bij de voortgangsruiten. Wat de kaart hier hoort te laten zien is zijn
+   * vorm, niet een stand.
+   */
+  it('en de voorbeeldkaart laat niets zien wat nog niet gebeurd is', () => {
+    expect(welkom).toContain('<Khatim key={n} size={13} filled={false} />')
+    expect(welkom).toContain('<Progress value={0} tone="accent"')
+    expect(welkom).not.toContain('value={0.45}')
+  })
+
+  /**
+   * Drie standen op de voortgangsruiten en niet twee.
+   *
+   * Eerst was alles tot en met de huidige stap gevuld in dezelfde kleur en was
+   * de huidige alleen anderhalf keer zo groot: vier gelijke ruiten waarvan de
+   * laatste iets groter. Daarvóór stond er een pil van 20 naast drie stipjes
+   * van 6 -- onmiskenbaar. "Waar ben ik" ging er dus op achteruit.
+   *
+   * En de tint: `--accent-500` haalt op de opgetilde kaart 2,15 op 1 bij
+   * saffraan, 2,28 bij mint en 2,49 bij zellige, waar 3 de norm is voor iets
+   * wat geen tekst is. De 600-trede haalt 3,19 tot 5,47.
+   */
+  it('en je ziet aan de ruiten waar je bent', () => {
+    const ruiten = welkom.slice(welkom.indexOf('{[0, 1, 2, 3].map('))
+    expect(ruiten.slice(0, 1800)).toContain('n === stap')
+    expect(ruiten.slice(0, 1800)).toContain('n < stap')
+    expect(ruiten.slice(0, 1800)).toContain('bg-[var(--accent-600)] dark:bg-[var(--accent-400)]')
+    expect(ruiten.slice(0, 1800)).not.toContain('bg-[var(--accent-500)]')
   })
 
   /** Wat je kiest staat meteen in de staat, dus halverwege afhaken kost niets. */

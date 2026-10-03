@@ -114,6 +114,35 @@ describe('wat het paneel zelf moet blijven doen', () => {
     expect(bron).toContain('stopTerug()')
   })
 
+  /**
+   * En het vierde ding, later gevonden: wat boven de bovenrand uitkwam was
+   * onbereikbaar.
+   *
+   * Dit omhulsel staat `fixed inset-0` met `items-end`, en de bladzijde eronder
+   * staat op `overflow: hidden` zolang er een paneel openstaat -- met goede
+   * reden, zie de test hieronder. Maar het paneel zelf had geen maximale hoogte
+   * en geen eigen scroll, dus een paneel dat hoger werd dan het scherm groeide
+   * de bovenrand uit en daar hielp geen wiel en geen veeg tegen.
+   *
+   * Gevonden op het startscherm en nagemeten op 320 bij 568 in het Duits: de
+   * kop van drie van de vier stappen stond boven de rand (-7, -15, -91), en op
+   * stap drie begon het scherm midden in een zin. De knoppen bleven staan, dus
+   * de app bleef bedienbaar; wat weg was, is de vraag die de knoppen uitlegt.
+   * Op 360 bij 640 -- de klasse toestel waarvoor er op es2015 gebouwd wordt --
+   * gold hetzelfde voor stap twee en drie.
+   *
+   * Het raakt elk paneel: de kopieerknop in Instellingen zet er een veld van
+   * 160 pixels in, en een vertaling die langer uitvalt kon elk ander paneel
+   * over de rand duwen.
+   */
+  it('kan scrollen als de inhoud hoger is dan het scherm', () => {
+    expect(bron).toContain('max-h-full')
+    expect(bron).toContain('overflow-y-auto')
+    // En de veeg blijft binnen het paneel, zodat hij niet doorslaat naar wat
+    // eronder ligt.
+    expect(bron).toContain('overscroll-contain')
+  })
+
   it('zet de bladzijde eronder stil en geeft hem daarna weer vrij', () => {
     expect(bron).toContain("document.body.style.overflow = 'hidden'")
     expect(bron).toContain('if (openPanelen === 0) document.body.style.overflow = terugNaar')

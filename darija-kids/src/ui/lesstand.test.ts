@@ -106,10 +106,19 @@ describe('de rustige stand', () => {
    * die naar je vinger kantelt is een stánd, geen animatie, en die bleef staan.
    */
   it('leest allebei de voorkeuren, want geen van beide dekt een stand', () => {
-    expect(oefeningen).toContain('export function useRustig(): boolean')
-    const lijf = oefeningen.slice(oefeningen.indexOf('export function useRustig'), oefeningen.indexOf('export function useRustig') + 220)
-    expect(lijf).toContain('useReducedMotion()')
-    expect(lijf).toContain("s.settings.motion) !== 'full'")
+    /*
+     * De hook staat sinds kort in `rustig.ts` en niet meer hier. Dat was nodig
+     * omdat het startscherm zijn eigen halve versie had geschreven --
+     * `settings.motion !== 'full'`, zonder de voorkeur van het toestel -- en
+     * twee lezingen van dezelfde vraag is één te veel. Zie `rustig.ts`.
+     */
+    const rustig = readFileSync(new URL('./rustig.ts', import.meta.url), 'utf8')
+    expect(rustig).toContain('export function useRustig(): boolean')
+    expect(rustig).toContain('useReducedMotion()')
+    expect(rustig).toContain("s.settings.motion) !== 'full'")
+    // En de les leest hem daar, in plaats van er een eigen te hebben.
+    expect(oefeningen).toContain("import { useRustig } from './rustig'")
+    expect(oefeningen).not.toContain('export function useRustig')
   })
 
   /** En de viering gaat eruit als het uit moet. */
