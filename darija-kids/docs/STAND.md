@@ -51,6 +51,73 @@ Google blijft op "binnenkort" tot versiecode 8 is goedgekeurd. De twee knoppen
 staan los van elkaar in `make-site.mjs`, dus Apple aanzetten laat Google met
 rust. Een knop naar een Play-pagina die nog niet bestaat is erger dan geen knop.
 
+## Waar het op staat — 3 oktober, 13:40
+
+Allebei de winkels hebben nu 1.4 liggen, en voor het eerst is dat in allebei
+hetzelfde nummer.
+
+| | |
+|---|---|
+| App Store | **1.4 (build 10) — Waiting for Review**, ingediend 3 oktober 13:33. 1.0 blijft live tot deze erdoor is |
+| Google Play, productie | versiecode 7 (1.3) — nog in beoordeling. Blijft staan tot het rapport van 8 binnen is |
+| Google Play, gesloten test | **versiecode 8 (1.4) — ingestuurd**, rapport vóór lancering loopt |
+| Google Play, beleid | afwijzing van 2 oktober staat open; zie hieronder waarom dat geen nieuw probleem is |
+
+### De afwijzing gaat alleen over versiecode 4 — nagekeken 3 oktober
+
+Op *Policy status* staan twee rode regels. Dat zijn geen twee problemen: de
+tweede ("Not adhering to Google Play Developer Program policies") is de
+paraplu waaronder Google de handhaving hangt, zonder eigen oorzaak. De eerste
+is de echte, en die noemt onder *Reviewed app bundles* precies één bundel:
+
+    4 (1.2)   Inactive   Target SDK 36   First published Sep 29, 2026
+
+Met als reden: *"Crashes: Your app crashes after opening."* Dat is de
+MainActivity-crash die op 2 oktober gevonden, gerepareerd en op de Galaxy Tab
+bevestigd is. Er is dus niets nieuwers kapot, en versiecode 7 en 8 dragen
+allebei de reparatie.
+
+**Niet in beroep gaan.** De pagina biedt het aan met vijf tot acht dagen
+wachttijd, en een beroep zegt: jullie hadden het mis. Google had het niet mis.
+De weg terug is een versie die niet meer crasht, en die ligt er. Google zegt
+er zelf bij wat wel helpt: *"Make use of test tracks to thoroughly test your
+app's quality"* — precies wat versiecode 8 nu doet.
+
+### Twee fouten die vandaag gevangen zijn
+
+**Een `.at(-1)` in het leerpad** (`37225ad`). `bundelcheck` sloeg alarm
+halverwege de winkelbouw: die functie bestaat pas vanaf Chrome 92, en
+`minSdkVersion` 24 laat een WebView van Chrome 51 toe. De app zou opengaan en
+meteen omvallen — dezelfde categorie als de afwijzing die openstaat. De lijst
+met te nieuwe functies staat nu in `scripts/lib/tenieuw.mjs`, met twee lezers:
+`bundelcheck` op de gebouwde bundel en `oudewebview.test.ts` op de bron, in
+elke testronde.
+
+**De releasenotities gingen niet mee** (`0b729a7`). `naartrack` zocht ze op met
+`bundel.versionName` — maar het antwoord van Google op een upload draagt alleen
+`versionCode`, `sha1` en `sha256`. Dus zocht het script naar
+`wat-is-nieuw-undefined.md` en meldde dat er geen notities waren. Versiecode 8
+staat daarom zonder teksten op de testbaan; dat is cosmetisch, maar bij de
+productierelease is het de tekst die elke bezoeker leest. De naam komt nu uit
+`docs/versies.json`.
+
+### Wat er nog te doen is
+
+1. **Rapport vóór lancering** van versiecode 8 lezen (Test and release →
+   Testing → Pre-launch report).
+2. Is dat schoon: **versiecode 7 weggooien en versiecode 8 naar productie**,
+   mét de zes teksten. Eén beoordelingsronde in plaats van twee, en de versie
+   die de winkel weer in gaat is meteen 1.4.
+3. Goedkeuring afwachten in allebei de winkels, dan vrijgeven.
+4. `npm run live -- --google` voor de Play-knop op de site.
+5. De communicatie uit `store/lancering/`.
+
+**Niet meegegaan met de iOS-inzending:** de drie abonnementen met de Franse
+teksten. Die stonden op *Prepare for Submission* en de inzending telt één item.
+Geen probleem — de producten zelf zijn goedgekeurd en verkopen door, alleen hun
+Franse vertaling ontbreekt, dus een Franse koper ziet de Engelse tekst. Gaan
+mee in de volgende ronde.
+
 ## Waar het vanavond op staat — 2 oktober
 
 Beide winkels hebben een inzending liggen, en voor het eerst is dat bij allebei
