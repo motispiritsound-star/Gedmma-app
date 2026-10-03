@@ -782,7 +782,7 @@ export const it: Strings = {
       ],
       [
         'Costa qualcosa?',
-        `Le prime quattro lezioni sono e restano gratis: tre pezzi dell’alfabeto arabo e le tue prime parole in darija. Il corso completo va con un abbonamento: 59,99 € all’anno (sono 5,00 € al mese) oppure 6,99 € al mese, IVA inclusa e i primi giorni gratis. ${n.welke === 'ios' ? 'Un abbonamento vale per tutta la famiglia: fino a sei persone, ognuna con i propri progressi.' : n.welke === 'android' ? 'L’abbonamento vale per l’account Google che lo sottoscrive.' : 'Su iPhone e iPad un abbonamento vale per tutta la famiglia: fino a sei persone, ognuna con i propri progressi. Su Android vale per l’account Google che lo sottoscrive.'} Si sottoscrive dentro l’app presa ${n.via}, e lì stesso si disdice quando vuoi. Nessuna pubblicità e nessun account: i tuoi progressi restano tuoi.`,
+        `Le prime quattro lezioni sono e restano gratis: tre pezzi dell’alfabeto arabo e le tue prime parole in darija. Il corso completo va con un abbonamento: 59,99 € all’anno (sono 5,00 € al mese) oppure 6,99 € al mese, IVA inclusa. I primi 3 giorni sono gratis: non viene addebitato nulla se disdici entro quei 3 giorni. ${n.welke === 'ios' ? 'Un abbonamento vale per tutta la famiglia: fino a sei persone, ognuna con i propri progressi.' : n.welke === 'android' ? 'L’abbonamento vale per l’account Google che lo sottoscrive.' : 'Su iPhone e iPad un abbonamento vale per tutta la famiglia: fino a sei persone, ognuna con i propri progressi. Su Android vale per l’account Google che lo sottoscrive.'} Si sottoscrive dentro l’app presa ${n.via}, e lì stesso si disdice quando vuoi. Nessuna pubblicità e nessun account: i tuoi progressi restano tuoi.`,
       ],
       [
         'Funziona senza connessione?',
