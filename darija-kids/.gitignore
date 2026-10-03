@@ -92,3 +92,7 @@ AuthKey_*
 # Komt er ooit Firebase of Google-aanmelden bij, dan horen deze er ook niet in.
 google-services.json
 GoogleService-Info.plist
+
+# De opgehaalde bronnen van Marokko 360°: andermans documenten, die horen
+# niet in deze repository. Het ophaalverslag staat wel in docs/.
+bronnen/
