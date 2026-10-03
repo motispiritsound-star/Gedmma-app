@@ -10,6 +10,7 @@ import {
 } from '../engine/audio'
 import { kanOpnemen } from '../engine/microfoon'
 import { OuderPoort, poortAl } from '../ui/OuderPoort'
+import { kanDownloaden, naarKlembord } from '../engine/klembord'
 import { LIST_PRICE, TRIAL_DAYS } from '../engine/billing'
 import { gezinsdeling } from '../engine/platform'
 import { LANGS, localeOf, useT, type Lang } from '../i18n'
@@ -156,6 +157,17 @@ export function SettingsPage() {
   const [wisPoort, setWisPoort] = useState(false)
   const [imported, setImported] = useState<string | null>(null)
   const file = useRef<HTMLInputElement>(null)
+  /*
+   * De twee vensters voor een kopie zonder bestand.
+   *
+   * `kopie` is de tekst die je meeneemt, `kopieStand` wat er van het kopiëren
+   * terechtkwam, en `plak` het veld waarin hij terugkomt. Zie
+   * `engine/klembord.ts` voor waarom dit er is: de downloadknop deed niets in
+   * de twee builds die in de winkel staan.
+   */
+  const [kopie, setKopie] = useState<string | null>(null)
+  const [kopieStand, setKopieStand] = useState<'niets' | 'goed' | 'mis'>('niets')
+  const [plak, setPlak] = useState<string | null>(null)
 
   const all = useVoices()
   const arabic = arabicVoices()
@@ -175,6 +187,12 @@ export function SettingsPage() {
     a.download = `darijaforkids-${new Date().toISOString().slice(0, 10)}.json`
     a.click()
     URL.revokeObjectURL(url)
+  }
+
+  /** De weg zonder bestand: de tekst op het scherm, het klembord in. */
+  const toonKopie = () => {
+    setKopieStand('niets')
+    setKopie(exportProgress())
   }
 
   return (
@@ -460,8 +478,19 @@ export function SettingsPage() {
         {DEMO ? (
           <Row title={t.settings.opslaan} hint={t.settings.opslaanDemo} />
         ) : (
-          <Row title={t.settings.opslaan} hint={t.settings.opslaanHint}>
-            <Button variant="secondary" onClick={download}>{t.settings.download}</Button>
+          /*
+            Een bestand op het web, de tekst in de app.
+
+            Hier stond één knop die een `<a download>` aantikte. In een browser
+            levert dat een bestand op; in de app niets — Capacitor zet geen
+            downloadluisteraar, dus de webweergave laat hem stil vallen. Geen
+            bestand, geen melding, en dit is de knop waar het wisscherm naar
+            verwijst. Zie `engine/klembord.ts`.
+          */
+          <Row title={t.settings.opslaan} hint={kanDownloaden() ? t.settings.opslaanHint : t.settings.opslaanGeenBestand}>
+            {kanDownloaden()
+              ? <Button variant="secondary" onClick={download}>{t.settings.download}</Button>
+              : <Button variant="secondary" onClick={toonKopie}>{t.settings.kopieerKnop}</Button>}
           </Row>
         )}
         <Row title={t.settings.terugzetten} hint={imported ?? t.settings.terugzettenHint}>
@@ -478,7 +507,15 @@ export function SettingsPage() {
                 setImported(importProgress(await f.text()) ? t.settings.terugzettenGelukt : t.settings.terugzettenMislukt)
               }}
             />
+            {/*
+              Twee wegen terug, want er zijn twee wegen heen. Een bestand kiezen
+              werkte altijd — een `<input type="file">` krijgt op Android een
+              kiezer van `BridgeWebChromeClient` en op iOS van de webweergave
+              zelf. Maar wie de tekst bewaarde in een notitie heeft geen
+              bestand, en dan is plakken de enige weg.
+            */}
             <Button variant="secondary" onClick={() => file.current?.click()}>{t.settings.kiesBestand}</Button>
+            <Button variant="secondary" onClick={() => { setImported(null); setPlak('') }}>{t.settings.plakKnop}</Button>
           </>
         </Row>
         <Row title={t.settings.wissen} hint={t.settings.wissenHint}>
@@ -537,6 +574,65 @@ export function SettingsPage() {
       <p className="text-center text-sm text-[var(--ink-soft)]">
         <Link to="/ouders" className="font-bold underline">{t.settings.oudersLink}</Link>
       </p>
+
+      {/*
+        De tekst om mee te nemen. `readOnly` en niet `disabled`: een
+        uitgeschakeld veld is niet te selecteren, en zelf selecteren is precies
+        wat er overblijft als het klembord geweigerd wordt.
+      */}
+      <Sheet open={kopie !== null} onClose={() => setKopie(null)} labelledBy="kopie-titel">
+        <h2 id="kopie-titel" className="font-display text-xl font-extrabold">{t.settings.kopieTitel}</h2>
+        <p className="mt-2 text-sm text-[var(--ink-soft)]">{t.settings.kopieUitleg}</p>
+        <textarea
+          readOnly
+          value={kopie ?? ''}
+          aria-label={t.settings.kopieTitel}
+          onFocus={(e) => e.currentTarget.select()}
+          className="mt-3 h-40 w-full rounded-2xl border-2 border-[var(--line)] bg-[var(--surface)] p-3 font-mono text-xs"
+        />
+        {kopieStand !== 'niets' && (
+          <p role="status" className={`mt-2 text-sm ${kopieStand === 'goed' ? 'text-zellige-600' : 'text-terra-500'}`}>
+            {kopieStand === 'goed' ? t.settings.gekopieerd : t.settings.kopieerHandmatig}
+          </p>
+        )}
+        <div className="mt-4 flex gap-3">
+          <Button variant="secondary" className="flex-1" onClick={() => setKopie(null)}>{t.common.sluiten}</Button>
+          <Button
+            className="flex-1"
+            onClick={async () => setKopieStand(await naarKlembord(kopie ?? '') ? 'goed' : 'mis')}
+          >
+            {t.settings.kopieerKnop}
+          </Button>
+        </div>
+      </Sheet>
+
+      {/* En terug. Hetzelfde `importProgress` als bij een bestand. */}
+      <Sheet open={plak !== null} onClose={() => setPlak(null)} labelledBy="plak-titel">
+        <h2 id="plak-titel" className="font-display text-xl font-extrabold">{t.settings.plakTitel}</h2>
+        <p className="mt-2 text-sm text-[var(--ink-soft)]">{t.settings.plakUitleg}</p>
+        <textarea
+          value={plak ?? ''}
+          aria-label={t.settings.plakUitleg}
+          onChange={(e) => setPlak(e.target.value)}
+          className="mt-3 h-40 w-full rounded-2xl border-2 border-[var(--line)] bg-[var(--surface)] p-3 font-mono text-xs"
+        />
+        <div className="mt-4 flex gap-3">
+          <Button variant="secondary" className="flex-1" onClick={() => setPlak(null)}>{t.common.annuleren}</Button>
+          <Button
+            className="flex-1"
+            disabled={!plak?.trim()}
+            onClick={() => {
+              const goed = importProgress(plak ?? '')
+              setImported(goed ? t.settings.terugzettenGelukt : t.settings.terugzettenMislukt)
+              // Alleen weg als het gelukt is: wie zich vergiste hoeft zijn
+              // tekst niet opnieuw te plakken om de melding te kunnen lezen.
+              if (goed) setPlak(null)
+            }}
+          >
+            {t.settings.plakBevestig}
+          </Button>
+        </div>
+      </Sheet>
 
       <OuderPoort
         open={wisPoort}
