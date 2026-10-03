@@ -24,6 +24,7 @@ import { SLEUTEL_VERTALINGEN, sleutelflapIn } from '../content/sleutels-talen'
 import { DELEN as PRENTENBOEKEN } from '../content/prentenboek'
 import { VERTALINGEN, flapIn } from '../content/prentenboek-talen'
 import { DELEN as ENCDELEN } from '../content/encyclopedie/delen'
+import { DEEL_VERTALINGEN, encdeelIn } from '../content/encyclopedie/delen-talen'
 import { HOOFDSTUKKEN, publiceerbaar } from '../content/encyclopedie'
 
 describe('de reeksen in de kast', () => {
@@ -127,5 +128,47 @@ describe('wat de encyclopedie over zichzelf zegt', () => {
   it('telt vijftien delen Marokko en twee al-Andalus', () => {
     expect(ENCDELEN.filter((d) => d.reeks === 'marokko')).toHaveLength(15)
     expect(ENCDELEN.filter((d) => d.reeks === 'andalus')).toHaveLength(2)
+  })
+})
+
+/**
+ * De indeling van de encyclopedie staat op de site in zes talen.
+ *
+ * Toen de reekspagina er net stond, las een Duitse bezoeker een Duitse
+ * inleiding met daaronder zeventien Nederlandse deeltitels. Niet zichtbaar
+ * onvertaald maar gewoon stuk — en de enige manier om dat tegen te houden is
+ * te eisen dat elke taal alle delen heeft, niet bijna alle.
+ */
+describe('de indeling van de encyclopedie in zes talen', () => {
+  const idsVanDeDelen = ENCDELEN.map((d) => d.id)
+
+  it('heeft in elke taal alle zeventien delen', () => {
+    for (const [taal, vertaling] of Object.entries(DEEL_VERTALINGEN)) {
+      expect(Object.keys(vertaling).sort(), taal).toEqual([...idsVanDeDelen].sort())
+    }
+  })
+
+  it('geeft de vertaalde titel en afbakening terug', () => {
+    for (const [taal, vertaling] of Object.entries(DEEL_VERTALINGEN)) {
+      for (const basis of ENCDELEN) {
+        const deel = encdeelIn(taal, basis)
+        expect(deel.titel).toBe(vertaling[basis.id]!.titel)
+        expect(deel.omvat).toBe(vertaling[basis.id]!.omvat)
+        expect(deel.omvat).not.toBe(basis.omvat)
+      }
+    }
+  })
+
+  /** Een thematisch deel heeft geen periode, en dat hoort in elke taal zo. */
+  it('houdt dezelfde delen thematisch', () => {
+    for (const [taal, vertaling] of Object.entries(DEEL_VERTALINGEN)) {
+      for (const basis of ENCDELEN) {
+        expect(Boolean(vertaling[basis.id]!.periode), `${taal} ${basis.id}`).toBe(Boolean(basis.periode))
+      }
+    }
+  })
+
+  it('valt terug op het Nederlands voor een taal die er niet is', () => {
+    expect(encdeelIn('nl', ENCDELEN[0]!)).toEqual(ENCDELEN[0])
   })
 })

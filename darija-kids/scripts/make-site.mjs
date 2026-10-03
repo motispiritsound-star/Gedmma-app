@@ -79,6 +79,7 @@ const [
   { DELEN: PRENTENBOEKEN },
   { flapIn: prentenflapIn },
   { DELEN: ENC_DELEN },
+  { encdeelIn },
   ...packs
 ] = await Promise.all([
   load('/src/i18n/languages.ts'),
@@ -102,6 +103,7 @@ const [
   load('/src/content/prentenboek.ts'),
   load('/src/content/prentenboek-talen.ts'),
   load('/src/content/encyclopedie/delen.ts'),
+  load('/src/content/encyclopedie/delen-talen.ts'),
   load('/src/i18n/nl.ts'),
   load('/src/i18n/fr.ts'),
   load('/src/i18n/de.ts'),
@@ -1341,7 +1343,7 @@ const reeksPage = (lang, plek) => {
    * bestrijkt en waarom de grens daar ligt. Dat is eerlijk op te schrijven
    * zonder één bron te hebben gelezen, en het is ook het enige.
    */
-  const encDelen = (reeks) => ENC_DELEN.filter((x) => x.reeks === reeks).map((deel) => `<li class="deel">
+  const encDelen = (reeks) => ENC_DELEN.filter((x) => x.reeks === reeks).map((basis) => encdeelIn(lang, basis)).map((deel) => `<li class="deel">
       <div class="over">
         <span class="nr">${esc(c.boekDeelWoord)} ${deel.nummer}</span>
         <h3>${esc(deel.titel)}</h3>
