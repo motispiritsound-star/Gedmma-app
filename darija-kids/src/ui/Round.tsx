@@ -14,9 +14,9 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { opTerug } from '../engine/terug'
 import { sfx } from '../engine/audio'
-import { Button, Progress, Sheet } from './kit'
+import { Button, Sheet } from './kit'
 import { Mascot } from './Mascot'
-import { ExerciseView } from './exercises'
+import { ExerciseView, useRustig } from './exercises'
 import { SpeakButton, useMeaning, useNote } from './WordChip'
 import { useLang, useT } from '../i18n'
 
@@ -61,6 +61,148 @@ interface Burst {
   gems: number
 }
 
+/**
+ * De grond waar de les op ligt.
+ *
+ * Op een telefoon van 390 bij 844 stond er boven de vraag bijna driehonderd
+ * pixels niets. Dat is geen rust, dat is een gat: de les begon nergens en de
+ * kaart hing in de lucht.
+ *
+ * Hier ligt nu een tegelvloer in. Dezelfde rozet die vóór elke vraag staat en
+ * om de afspeelknop -- twee vierkanten onder 45 graden, de vorm uit
+ * `Medaillon` -- maar dan als raster, zo flauw dat je hem eerder voelt dan
+ * ziet. Nagerekend op de krapste plek, met de eerste (te sterke) waarde van
+ * tien procent als bovengrens: de hintregel in `--ink-soft` boven een lijn van
+ * het raster haalt dan 5,94 op 1 in de lichte stand en 6,11 in de donkere,
+ * waar 4,5 de norm is. Op de waarden die er nu staan is er dus ruimte over.
+ *
+ * En hij schuift mee. Drie pixels per vraag, met een trage veer: de grond komt
+ * langzaam naar je toe terwijl je door de les loopt, en dat is het enige in dit
+ * scherm dat zegt dat je ergens heen gaat. Bij "rustig" staat hij stil -- de
+ * vloer blijft, de reis niet.
+ *
+ * Een `<pattern>` in SVG en niet de klasse `.zellige` uit index.css: die tekent
+ * zijn stippen met `color-mix()`, en dat kent de WebView van Android 7 niet.
+ * Daar zou hier dan niets staan, zonder dat iemand het merkt.
+ */
+function Zelligegrond({ stap, rustig }: { stap: number; rustig: boolean }) {
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" style={{ zIndex: -1 }} aria-hidden="true">
+      <motion.svg
+        /* Hoogte expliciet, niet via `-bottom-24`: een `svg` is een vervangen
+           element, en dan telt `bottom` niet mee zodra de hoogte op `auto`
+           staat -- hij viel terug op de 150 pixels die SVG als eigen maat
+           heeft, en dan staat er alleen bovenaan een strookje tegels. */
+        className="absolute inset-x-0 -top-24 h-[calc(100%+12rem)] w-full text-khatim-500 dark:text-zellige-300"
+        animate={{ y: rustig ? 0 : -Math.min(stap, 24) * 3 }}
+        transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+      >
+        <defs>
+          {/* Op tien procent met een lijn van anderhalf werd dit behang: op de
+              schermafdruk las je het raster eerder dan de vraag. En de twee
+              standen hebben niet dezelfde waarde nodig -- donkergroen op room
+              springt eruit waar lichtgroen op nachtblauw wegvalt, dus de
+              donkere stand krijgt bijna het dubbele. */}
+          <pattern id="les-zellige" width="48" height="48" patternUnits="userSpaceOnUse">
+            <g fill="none" stroke="currentColor" strokeWidth="1" className="opacity-[0.045] dark:opacity-[0.08]">
+              <rect x="10" y="10" width="28" height="28" rx="6" />
+              <rect x="10" y="10" width="28" height="28" rx="6" transform="rotate(45 24 24)" />
+            </g>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#les-zellige)" />
+      </motion.svg>
+    </div>
+  )
+}
+
+/**
+ * De balk boven de les.
+ *
+ * `Progress` uit kit.tsx tekende hier een gladde staaf, en die zei twee dingen
+ * niet die een kind op dit scherm wil weten: hoevéél vragen er nog komen, en of
+ * het antwoord dat het net gaf al geteld is.
+ *
+ * Dus is het een rij tegels geworden. Eén vakje per vraag, met een voeg ertussen
+ * in de kleur van het papier -- dat is wat zellige is, en het is hier geen
+ * versiering maar de telling: je ziet in één oogopslag dat er nog zes komen.
+ * En de vulling schuift al op het moment dat je goed antwoordt, niet pas als je
+ * op Verder drukt; dat is het verschil tussen een balk die meeleeft en een balk
+ * die bijhoudt.
+ *
+ * Erop loopt het dier dat het kind zelf koos, op zijn eigen kleur. Dat is de
+ * enige plek in de hele les waar die keuze terugkomt, en hij dóet daar iets:
+ * hij staat waar jij bent.
+ *
+ * Het randje eromheen is `--ink` en geen tweede accenttint, want het bolletje
+ * hangt precies op de naad en moet op allebei de helften te zien zijn. Het
+ * vlak zelf haalt dat niet: saffraan op de lichte baan is 1,83 op 1 en op de
+ * groene vulling 2,35 -- allebei onder de 3. De inktrand haalt er 15 op de
+ * baan en 3,5 op de vulling, en die draagt dus de vorm.
+ *
+ * `mint-700` in plaats van `mint-500`: op de lichte baan (#f4ece1) haalde de
+ * oude vulling 1,96 op 1, en de norm voor een grafisch element is 3. Nu 4,31,
+ * en in de donkere stand haalt `mint-400` op #080c17 er 11,1.
+ */
+function Lesbalk({ waarde, stappen, vonnis, rustig, avatar, label }: {
+  waarde: number
+  stappen: number
+  vonnis: Verdict | null
+  rustig: boolean
+  avatar: string
+  label: string
+}) {
+  const deel = Math.max(0, Math.min(1, waarde))
+  const pct = deel * 100
+  const sprong = vonnis === null ? { y: 0 } : vonnis === 'fout' ? { y: [0, 4, 0] } : { y: [0, -7, 0] }
+  return (
+    <div
+      className="relative h-3.5 min-w-0 flex-1"
+      role="progressbar"
+      aria-valuemin={0}
+      aria-valuemax={stappen}
+      aria-valuenow={Math.round(deel * stappen)}
+      aria-label={label}
+    >
+      <div className="h-full w-full overflow-hidden rounded-full bg-[var(--surface-sunken)] shadow-[inset_0_2px_3px_rgba(84,56,24,0.18)] dark:shadow-[inset_0_2px_3px_rgba(0,0,0,0.7)]">
+        <motion.div
+          className="h-full rounded-full bg-mint-700 dark:bg-mint-400"
+          initial={false}
+          animate={{ width: `${pct}%` }}
+          transition={{ type: 'spring', stiffness: 180, damping: 24 }}
+        />
+      </div>
+      {/* De voegen tussen de tegels. Geen informatie die je moet kúnnen lezen —
+          de balk zelf zegt hoe ver je bent — maar wel het ritme waarmee je ziet
+          dat er nog iets komt. */}
+      <div className="pointer-events-none absolute inset-0 flex overflow-hidden rounded-full" aria-hidden="true">
+        {Array.from({ length: Math.max(0, stappen - 1) }, (_, i) => (
+          <span key={i} className="flex-1 border-e border-[var(--surface)]" />
+        ))}
+        <span className="flex-1" />
+      </div>
+      {/*
+        Het middelpunt loopt van 14 tot breedte-min-14, niet van 0 tot 100%:
+        anders hangt het bolletje bij de eerste vraag half naast de balk, tegen
+        het kruisje aan.
+      */}
+      <div
+        className="pointer-events-none absolute top-1/2 -translate-x-1/2 -translate-y-1/2"
+        style={{ left: `calc(${pct}% + ${(14 - pct * 0.28).toFixed(2)}px)` }}
+      >
+        <motion.span
+          aria-hidden="true"
+          className="grid h-7 w-7 place-items-center rounded-full border-2 border-[var(--ink)] bg-[var(--accent-500)] text-base shadow-[0_2px_4px_-1px_rgba(84,56,24,0.5)]"
+          animate={rustig ? { y: 0 } : sprong}
+          transition={{ duration: 0.34 }}
+        >
+          {avatar}
+        </motion.span>
+      </div>
+    </div>
+  )
+}
+
 export function RoundRunner({
   exercises, onFinish, onQuit, useHearts = true, quitLabel, review = false, quiz = false,
 }: {
@@ -80,6 +222,7 @@ export function RoundRunner({
   const state = useStore((s) => s)
   const meaning = useMeaning()
   const note = useNote()
+  const rustig = useRustig()
   const heartsOn = useHearts && state.settings.hearts
   const [queue, setQueue] = useState<Exercise[]>(exercises)
   const [index, setIndex] = useState(0)
@@ -285,11 +428,42 @@ export function RoundRunner({
    */
   return (
     <div
-      className="mx-auto flex min-h-screen max-w-2xl flex-col px-4 pb-4 pt-[calc(1rem_+_var(--rand-boven))] md:max-w-3xl md:px-6 md:pb-6 md:pt-[calc(1.5rem_+_var(--rand-boven))]"
+      className="relative mx-auto flex min-h-screen max-w-2xl flex-col px-4 pb-4 pt-[calc(1rem_+_var(--rand-boven))] md:max-w-3xl md:px-6 md:pb-6 md:pt-[calc(1.5rem_+_var(--rand-boven))]"
     >
+      <Zelligegrond stap={index} rustig={rustig} />
+
       <div className="flex items-center gap-3">
-        <button onClick={() => { sfx.back(); setQuit(true) }} aria-label={t.common.sluiten} className="text-2xl text-[var(--ink-soft)] hover:text-[var(--ink)]">✕</button>
-        <Progress value={index / Math.max(1, queue.length)} tone="mint" />
+        {/*
+          Het kruisje is de enige weg uit een les, en het was 20 bij 32 —
+          allebei onder de 44 die Apple en Google aanhouden, op het scherm waar
+          een kind het slechtst mikt en waar weglopen het enige is wat iets
+          kost. Nagemeten in Chromium op 390: nu 44 bij 44.
+
+          De negatieve marges halen die 44 weer van de rij af, zodat er niets
+          verschuift: de rij blijft 32 hoog en het kruisje schuift 8 pixels op
+          in de breedte. Op 320 in het Duits is er daarna nog niets dat buiten
+          beeld loopt (gemeten: scrollWidth 320 van 320).
+        */}
+        <button
+          onClick={() => { sfx.back(); setQuit(true) }}
+          aria-label={t.common.sluiten}
+          className="-mx-2 -my-1.5 grid h-11 w-11 shrink-0 place-items-center text-2xl text-[var(--ink-soft)] hover:text-[var(--ink)]"
+        >
+          ✕
+        </button>
+        {/*
+          De balk schuift al bij het antwoord, niet pas bij Verder: een goed
+          antwoord hoort meteen ergens te landen. Bij fout blijft hij staan —
+          daar komt de vraag zo nog een keer terug.
+        */}
+        <Lesbalk
+          waarde={(index + (verdict && verdict !== 'fout' ? 1 : 0)) / Math.max(1, queue.length)}
+          stappen={Math.max(1, queue.length)}
+          vonnis={verdict}
+          rustig={rustig}
+          avatar={state.avatar}
+          label={`${Math.min(index + 1, queue.length)} ${t.common.van} ${queue.length}`}
+        />
         <AnimatePresence>
           {combo >= 2 && (
             <motion.span
@@ -297,10 +471,22 @@ export function RoundRunner({
               initial={{ scale: 0.6, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.6, opacity: 0 }}
-              className="shrink-0 rounded-full bg-saffron-500/20 px-2.5 py-1 font-display text-sm font-extrabold text-saffron-600 dark:text-saffron-300"
+              className="relative shrink-0 rounded-full bg-saffron-500/20 px-2.5 py-1 font-display text-sm font-extrabold text-saffron-600 dark:text-saffron-300"
               aria-label={t.lesson.opRij(combo)}
             >
               🔥 {combo}
+              {/* Elke vijfde klinkt al anders (`sfx.streak`); hier is dat ook
+                  te zien. Eén ring van 450 ms uit het pilletje zelf — niet een
+                  scherm vol confetti, want dat is na drie keer lawaai. */}
+              {combo % 5 === 0 && !rustig && (
+                <motion.span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 rounded-full border-2 border-saffron-600 dark:border-saffron-300"
+                  initial={{ opacity: 0.8, scale: 1 }}
+                  animate={{ opacity: 0, scale: 1.5 }}
+                  transition={{ duration: 0.45, ease: 'easeOut' }}
+                />
+              )}
             </motion.span>
           )}
         </AnimatePresence>
@@ -308,23 +494,31 @@ export function RoundRunner({
       </div>
 
       <div className="relative flex flex-1 flex-col justify-center py-6">
-        {/* The reward, on its way up. Announced politely, so a screen reader
-            hears what an answer was worth without losing its place. */}
+        {/*
+          The reward, on its way up. Announced politely, so a screen reader
+          hears what an answer was worth without losing its place.
+
+          Hij vertrok van bovenaan het vraagvak — een halve telefoon boven de
+          knop waar je net op drukte, dus precies waar je op dat moment niet
+          kijkt. Nu komt hij op van onderen, uit de hoek waar je duim zit, en
+          hij is korter: 0,9 seconde in plaats van 1,3. Alles wat langer duurt
+          dan een seconde staat in de weg bij het volgende antwoord.
+        */}
         <AnimatePresence>
           {burst && (
             <motion.div
               key={burst.id}
-              initial={{ opacity: 0, y: 10, scale: 0.8 }}
-              animate={{ opacity: [0, 1, 1, 0], y: -64, scale: 1 }}
-              transition={{ duration: 1.3, times: [0, 0.15, 0.6, 1] }}
-              className="pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-center gap-2"
+              initial={{ opacity: 0, y: 8, scale: 0.8 }}
+              animate={{ opacity: [0, 1, 1, 0], y: -52, scale: 1 }}
+              transition={{ duration: 0.9, times: [0, 0.14, 0.62, 1] }}
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center gap-2"
               role="status"
             >
-              <span className="rounded-full bg-mint-500 px-3 py-1 font-display text-sm font-extrabold text-night-950 shadow-lg">
+              <span className="rounded-full bg-mint-500 px-3 py-1 font-display text-sm font-extrabold text-night-950 shadow-[0_4px_10px_-3px_rgba(84,56,24,0.5)]">
                 {t.lesson.xpPlus(burst.xp)}
               </span>
               {burst.gems > 0 && (
-                <span className="rounded-full bg-saffron-500 px-3 py-1 font-display text-sm font-extrabold text-night-950 shadow-lg">
+                <span className="rounded-full bg-saffron-500 px-3 py-1 font-display text-sm font-extrabold text-night-950 shadow-[0_4px_10px_-3px_rgba(84,56,24,0.5)]">
                   💎 {t.lesson.gemPlus(burst.gems)}
                 </span>
               )}
@@ -372,15 +566,47 @@ export function RoundRunner({
               pointerEvents: verdict ? 'auto' : 'none',
               paddingBottom: 'calc(1rem + var(--rand-onder))',
             }}
-            className={`sticky bottom-0 -mx-4 border-t-2 px-4 pt-4 ${
-              verdict === 'goed' ? 'border-mint-500 bg-mint-500/15'
-              : verdict === 'bijna' ? 'border-saffron-500 bg-saffron-500/15'
-              : 'border-terra-500 bg-terra-500/15'
+            /*
+             * De balk hangt boven de bladzijde en ligt er niet op: de schaduw
+             * valt omhoog, want het licht komt van boven en dit is het enige
+             * vlak in de les dat vóór de rest staat. Zonder die schaduw loopt
+             * hij bij een lange lijst antwoorden visueel in de laatste knop
+             * over.
+             *
+             * `mint-600` en niet `mint-500` op de bovenrand, om dezelfde reden
+             * als bij de antwoordvakjes: 2,30 op 1 op een licht vlak is te
+             * weinig voor een lijn die zegt hoe het ging.
+             */
+            className={`sticky bottom-0 -mx-4 border-t-2 px-4 pt-4 shadow-[0_-10px_26px_-14px_rgba(84,56,24,0.45)] dark:shadow-[0_-10px_26px_-12px_rgba(0,0,0,0.85)] ${
+              verdict === 'goed' ? 'border-mint-600 bg-mint-500/15'
+              : verdict === 'bijna' ? 'border-saffron-600 bg-saffron-500/15'
+              : 'border-terra-600 bg-terra-500/15'
             }`}
           >
             <div className="flex items-start gap-3">
-              <span className="text-3xl" aria-hidden="true">{verdict === 'goed' ? '🎉' : verdict === 'bijna' ? '👌' : '💡'}</span>
-              <div className="min-w-0 flex-1">
+              {/*
+                Het teken komt met een veer binnen bij goed en vervaagt bij
+                fout. Dat is het verschil nog een keer, in beweging: een fout
+                hoort niet te stuiteren.
+              */}
+              <motion.span
+                className="text-3xl"
+                aria-hidden="true"
+                initial={rustig ? false : verdict === 'fout' ? { opacity: 0 } : { scale: 0.4, rotate: -14 }}
+                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                transition={verdict === 'fout' ? { duration: 0.22 } : { type: 'spring', stiffness: 320, damping: 15 }}
+              >
+                {verdict === 'goed' ? '🎉' : verdict === 'bijna' ? '👌' : '💡'}
+              </motion.span>
+              <motion.div
+                className="min-w-0 flex-1"
+                /* Eerst hoe het ging, dan welk woord het was. Zestig
+                   milliseconde ertussen is genoeg om er een volgorde van te
+                   maken en te weinig om op te wachten. */
+                initial={rustig ? false : { opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.06, duration: 0.18 }}
+              >
                 <p className="flex flex-wrap items-center gap-2 font-display text-lg font-extrabold">
                   {verdict === 'goed' ? t.lesson.lof[index % t.lesson.lof.length] : verdict === 'bijna' ? t.lesson.bijnaGoed : t.lesson.juisteAntwoord}
                   {verdict !== 'fout' && burst && (
@@ -402,7 +628,7 @@ export function RoundRunner({
                   </p>
                 )}
                 {subject.note && verdict !== 'goed' && <p className="mt-1 text-xs text-[var(--ink-soft)]">💡 {subject.note}</p>}
-              </div>
+              </motion.div>
               <SpeakButton ar={subject.ar} tr={subject.tr} className="mt-1" />
             </div>
             <Button variant={verdict === 'fout' ? 'danger' : 'success'} className="mt-3 w-full" autoFocus onClick={next}>

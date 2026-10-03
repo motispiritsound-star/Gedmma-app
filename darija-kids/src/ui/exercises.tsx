@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import type { Exercise, LetterForm } from '../engine/exercises'
 import { checkTyped, normalise, tokenize, type Verdict } from '../engine/exercises'
 import { word } from '../content/lexicon'
@@ -10,7 +10,7 @@ import { maybeWord } from '../content/lexicon'
 import { say, sayLetter, sfx } from '../engine/audio'
 import { kanOpnemen, neemOp, type Opname } from '../engine/microfoon'
 import { useStore } from '../engine/store'
-import { Button, Card } from './kit'
+import { Button } from './kit'
 import { Scribe } from './Scribe'
 import { SpeakButton, useMeaning, useNote, WordText } from './WordChip'
 import { useLang, useT } from '../i18n'
@@ -29,18 +29,300 @@ export interface ExerciseProps {
   locked: boolean
 }
 
-const optionButton = (chosen: string | null, id: string, answer: string, locked: boolean) => {
-  const isChosen = chosen === id
-  if (!locked || !isChosen) {
-    return `border-[var(--line)] bg-[var(--surface-raised)] ${isChosen ? 'border-zellige-500' : 'hover:border-zellige-400'}`
+/* ----------------------------------------------------- diepte en beweging */
+
+/**
+ * Hoe een kaart boven het papier hangt.
+ *
+ * `Card` uit kit.tsx draagt `shadow-sm`: één laag grijs. Deze app staat niet op
+ * wit maar op #fffaf3, en een grijze schaduw op een warm vlak leest koel -- je
+ * ziet een lijn langs de rand in plaats van ruimte eronder. Dat is precies het
+ * verschil tussen een kaart die erop geplakt zit en een die erboven hangt, en
+ * het is het enige waar de hele les zijn diepte vandaan haalt.
+ *
+ * Drie lagen in de kleur van het papier zelf, want dat is wat één lichtbron
+ * doet: een contactrandje van één pixel dat zegt wáár de kaart het vlak raakt,
+ * een korte kernschaduw eronder, en een brede zachte die de kaart laat zweven.
+ * Weglaten van de eerste maakt hem zwevend zonder plek; weglaten van de derde
+ * maakt hem plat.
+ *
+ * In de donkere stand werkt het omgekeerd: op #0d1220 valt er met nóg meer
+ * zwart langs de rand niets te winnen, dus daar zijn de lagen dieper en
+ * strakker. Dezelfde drie lagen, andere sterkte -- geen tweede systeem.
+ */
+const ZWEEF = 'shadow-[0_1px_1px_rgba(84,56,24,0.05),0_6px_12px_-6px_rgba(84,56,24,0.17),0_18px_32px_-18px_rgba(84,56,24,0.30)] dark:shadow-[0_1px_1px_rgba(0,0,0,0.40),0_8px_16px_-8px_rgba(0,0,0,0.60),0_26px_44px_-24px_rgba(0,0,0,0.95)]'
+
+/**
+ * Of beweging uit moet.
+ *
+ * Er zijn twee schakelaars en geen van beide dekt wat hieronder gebeurt.
+ * `MotionConfig reducedMotion="user"` in App.tsx luistert naar het toestel, en
+ * de regel in index.css zet css-overgangen stil bij "rustig" -- maar een kaart
+ * die naar je vinger kantelt is geen animatie, het is een stánd, en die zetten
+ * ze allebei niet uit. Nagemeten in Chromium met `prefers-reduced-motion:
+ * reduce`: de kanteling stond er gewoon, alleen zonder overgang ernaartoe.
+ *
+ * Dus allebei de voorkeuren, hier bij elkaar. `HistoryScene` leest de
+ * instelling om dezelfde reden rechtstreeks; dit is diezelfde lezing plus die
+ * van het toestel, op de plek waar een kind het grootste deel van zijn tijd
+ * zit.
+ */
+export function useRustig(): boolean {
+  const vanToestel = useReducedMotion()
+  return useStore((s) => s.settings.motion) !== 'full' || vanToestel === true
+}
+
+/** De veer waar `Progress` in kit.tsx al op loopt. Eén veer in de hele les. */
+const VEER = { type: 'spring', stiffness: 180, damping: 24 } as const
+
+/**
+ * De zellige-rozet: twee vierkanten onder 45 graden over elkaar.
+ *
+ * Dezelfde vorm die `Medaillon` in Motief.tsx om een tekening zet, en de
+ * eenvoudigste die er in een tegelpaneel in zit. Hij staat hier op twee
+ * plekken en allebei als rand of merkteken, nooit als plaatje: vóór elke vraag
+ * en om de afspeelknop. Eén vorm die terugkomt is een ritme; dezelfde vorm op
+ * tien plekken is behang.
+ */
+function Rozet({ size = 16, lijn = 7, className = '' }: { size?: number; lijn?: number; className?: string }) {
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} className={className} aria-hidden="true">
+      <g fill="none" stroke="currentColor" strokeWidth={lijn} strokeLinejoin="round">
+        <rect x="18" y="18" width="64" height="64" rx="12" />
+        <rect x="18" y="18" width="64" height="64" rx="12" transform="rotate(45 50 50)" />
+      </g>
+    </svg>
+  )
+}
+
+/**
+ * De kaart met de vraag erop.
+ *
+ * Hetzelfde als `Card` uit kit.tsx, met de schaduw van hierboven in plaats van
+ * `shadow-sm`. Een eigen component en geen extra klasse op `Card`, omdat twee
+ * schaduwklassen op één element van Tailwind er één maken en welke wint van de
+ * volgorde in de stylesheet afhangt -- niet van de volgorde in de JSX.
+ */
+function Vraagkaart({ children, className = '', ...rest }: { children: React.ReactNode; className?: string } & React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div {...rest} className={`rounded-3xl border border-[var(--line)] bg-[var(--surface-raised)] ${ZWEEF} ${className}`}>
+      {children}
+    </div>
+  )
+}
+
+/**
+ * De kaart kantelt naar je vinger.
+ *
+ * Een antwoordvakje aantikken voelde als aanklikken: er zakte iets vier pixels
+ * en dat was het, overal op de knop hetzelfde. Een echt plaatje op een echte
+ * tafel kantelt wég van de plek waar je duwt, en dat is wat dit uitrekent --
+ * waar in het vakje je landt, en hoe ver het dan wegkantelt. Tweeënhalve graad
+ * vanaf het midden, dus vijf van rand tot rand; nagemeten in Chromium gaf een
+ * druk linksonder `rotateX(-1.5deg) rotateY(-1.5deg)`. Meer leest als een
+ * klepje dat opengaat.
+ *
+ * Dit rijdt mee op de overgang die `.btn3d` al heeft (`transform 90ms ease`),
+ * dus er komt geen framer-motion aan te pas en geen tweede tijdsduur. Dat is
+ * ook waarom de verdict-beweging hieronder op het ómhulsel zit: twee dingen die
+ * tegelijk aan dezelfde `transform` trekken geven een slepende knop.
+ */
+function useKantel(uit: boolean) {
+  const [vorm, setVorm] = useState('')
+  const los = () => setVorm('')
+  const pak = (e: React.PointerEvent<HTMLElement>) => {
+    if (uit) return
+    const vak = e.currentTarget.getBoundingClientRect()
+    if (!vak.width || !vak.height) return
+    const dx = (e.clientX - vak.left) / vak.width - 0.5
+    const dy = (e.clientY - vak.top) / vak.height - 0.5
+    // Positieve rotateX brengt de ónderkant naar je toe, dus het minteken: de
+    // plek waar je duwt hoort weg te zakken, niet op te komen.
+    setVorm(`perspective(700px) translateY(3px) rotateX(${(-dy * 5).toFixed(2)}deg) rotateY(${(dx * 5).toFixed(2)}deg)`)
   }
-  return id === answer ? 'border-mint-500 bg-mint-500/15' : 'border-terra-500 bg-terra-500/15'
+  return { vorm, pak, los }
+}
+
+/**
+ * Wat er met een antwoordvakje gebeurt zodra er gekozen is.
+ *
+ * Eerst kreeg alleen het aangetikte vakje een kleur, en gingen alle vier op
+ * halve dekking omdat ze `disabled` werden (`.btn3d:disabled { opacity: .5 }`).
+ * Wie het fout had zag dus vier vale regels en één rode, en moest in de balk
+ * onderaan lézen welk antwoord het dan wel was -- terwijl dat antwoord gewoon
+ * op het scherm stond. Voor een kind van zes dat nog niet vlot leest is dat het
+ * verschil tussen leren en doorklikken.
+ *
+ * Nu zijn er vijf standen in plaats van twee: het goede vakje licht op, ook als
+ * je het niet aantikte, en alleen de vakjes die geen van beide zijn zakken weg.
+ * `disabled` is daarvoor vervangen door `aria-disabled` -- de dekking is nu een
+ * keuze per vakje en niet een regel die alles tegelijk raakt.
+ */
+type Stand = 'open' | 'gekozen' | 'goed' | 'onthuld' | 'fout' | 'weg'
+
+const standVan = (chosen: string | null, id: string, answer: string, locked: boolean): Stand =>
+  !locked ? (chosen === id ? 'gekozen' : 'open')
+  : id === answer ? (chosen === id ? 'goed' : 'onthuld')
+  : chosen === id ? 'fout'
+  : 'weg'
+
+/*
+ * `mint-600` en niet `mint-500`, en dat is nagerekend: #22c55e op een witte
+ * kaart haalt 2,30 op 1 en de norm voor een rand die betekenis draagt is 3.
+ * De rand die zegt "dit was goed" was dus de slechtst zichtbare rand van het
+ * hele scherm. #16a34a haalt 3,30 op wit en 5,19 op de donkere kaart.
+ * `terra-600` haalt 4,84 en 3,53 -- die kon blijven waar hij stond.
+ */
+const VAKJE: Record<Stand, string> = {
+  open: 'border-[var(--line)] bg-[var(--surface-raised)] hover:border-zellige-400',
+  gekozen: 'border-zellige-500 bg-zellige-500/10',
+  goed: 'border-mint-600 bg-mint-500/20',
+  onthuld: 'border-mint-600 bg-mint-500/15',
+  fout: 'border-terra-600 bg-terra-500/20',
+  weg: 'border-[var(--line)] bg-[var(--surface-raised)] opacity-45',
+}
+
+/**
+ * Goed en fout als beweging, niet alleen als kleur.
+ *
+ * Kleur alleen is twee dingen te weinig: een kind dat rood en groen niet uit
+ * elkaar houdt ziet geen verschil, en een kind dat wél kleuren ziet moet nog
+ * steeds kijken om het te weten. Beweging komt eerder binnen dan kleur, en
+ * deze twee bewegingen zijn elkaars tegengestelde -- omhoog tegen heen en weer.
+ *
+ * Goed groeit en blijft staan, en uit het vakje groeit één ring naar buiten.
+ * Fout schudt één keer, kort, en zakt terug: dat is hoofdschudden, niet straf.
+ * Het goede antwoord dat je níét aantikte komt rustig omhoog, zodat je oog
+ * ernaartoe gaat zonder dat er iets staat te schreeuwen.
+ */
+const BEWEGING: Record<Stand, Record<string, number | number[]>> = {
+  open: { scale: 1, x: 0, y: 0 },
+  gekozen: { scale: 1, x: 0, y: 0 },
+  goed: { scale: 1.03, x: 0, y: -3 },
+  onthuld: { scale: [1, 1.02, 1], x: 0, y: [0, -5, 0] },
+  fout: { scale: 1, x: [0, -7, 7, -5, 5, 0], y: 0 },
+  weg: { scale: 0.985, x: 0, y: 0 },
+}
+
+const STIL = { scale: 1, x: 0, y: 0 }
+
+function Antwoordknop({ stand, rustig, onKies, className = '', children }: {
+  stand: Stand
+  rustig: boolean
+  onKies: () => void
+  className?: string
+  children: React.ReactNode
+}) {
+  const vast = stand !== 'open' && stand !== 'gekozen'
+  const kantel = useKantel(rustig || vast)
+  return (
+    <motion.div
+      className="relative"
+      animate={rustig ? STIL : BEWEGING[stand]}
+      transition={stand === 'fout' ? { duration: 0.26 } : VEER}
+    >
+      <button
+        type="button"
+        aria-disabled={vast}
+        onClick={onKies}
+        onPointerDown={kantel.pak}
+        onPointerUp={kantel.los}
+        onPointerLeave={kantel.los}
+        onPointerCancel={kantel.los}
+        style={kantel.vorm ? { transform: kantel.vorm } : undefined}
+        // Marks the buttons that are answers, so the camera that films the app
+        // knows what to press. Nothing else hangs off it.
+        data-answer=""
+        className={`btn3d w-full rounded-2xl border-2 transition ${VAKJE[stand]} ${className}`}
+      >
+        {children}
+      </button>
+      {/* De ring die uit het vakje groeit dat je aantikte. Eén keer, 420 ms, en
+          dan weg -- een viering die je bij het derde goede antwoord nog leuk
+          vindt is een viering die niet over het scherm gaat. */}
+      {stand === 'goed' && !rustig && (
+        <motion.span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 rounded-2xl border-2 border-mint-600"
+          initial={{ opacity: 0.85, scale: 1 }}
+          animate={{ opacity: 0, scale: 1.12 }}
+          transition={{ duration: 0.42, ease: 'easeOut' }}
+        />
+      )}
+    </motion.div>
+  )
+}
+
+/**
+ * De knop die het woord afspeelt.
+ *
+ * Hier stond een bol met een verloop van `zellige-300` naar `zellige-700`. Een
+ * verloop van licht naar donker over een rond vlak is een geschilderd bolletje:
+ * het suggereert diepte die er niet is, het reageert nergens op, en het is het
+ * enige in de app dat glimt. Diepte hoort hier van het licht te komen -- een
+ * vlakke schijf die boven het papier hangt -- en van wat er gebeurt als je hem
+ * indrukt.
+ *
+ * De rozet erachter zijn twee vierkanten onder 45 graden over elkaar, dezelfde
+ * die `Medaillon` in Motief.tsx om een tekening zet. Hier als lijst om de knop
+ * en niet als plaatje erop: zellige is het raster waar iets in staat.
+ *
+ * `zellige-600` haalt op het lichte vlak 5,29 op 1 en `zellige-500` op het
+ * donkere 6,9 -- allebei ruim boven de 3 die een bedieningselement nodig heeft.
+ * Het oude verloop begon bij `zellige-300` en dat haalde de norm aan de lichte
+ * kant niet.
+ */
+function Luisterknop({ onSpeel, onTraag, label, rustig }: {
+  onSpeel: () => void
+  onTraag: () => void
+  label: string
+  rustig: boolean
+}) {
+  const [slag, setSlag] = useState(0)
+  return (
+    <div className="relative">
+      {/* Achtentwintig pixels ruimte rondom en niet zestien: op zestien stak
+          alleen een hoekje van de rozet onder de schijf uit en leek het een
+          vlek. Nu is het een lijst waar de knop in staat. */}
+      <Rozet size={168} lijn={2} className="pointer-events-none absolute -inset-7 text-zellige-600 opacity-30 dark:text-zellige-300" />
+      {/* De ring die naar buiten loopt als je hem indrukt. `say()` zoekt eerst
+          een opname op en valt anders terug op de spraakmotor, en dat duurt
+          soms een halve seconde; zonder dit lijkt het of de knop niets deed en
+          tikt een kind hem nog een keer aan -- waarna hij twee keer praat. */}
+      {slag > 0 && !rustig && (
+        <motion.span
+          key={slag}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 rounded-full border-2 border-zellige-500"
+          initial={{ opacity: 0.7, scale: 1 }}
+          animate={{ opacity: 0, scale: 1.6 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+        />
+      )}
+      <motion.button
+        type="button"
+        whileTap={{ scale: 0.94 }}
+        onClick={() => { setSlag((n) => n + 1); onSpeel() }}
+        onDoubleClick={onTraag}
+        className={`relative grid h-28 w-28 place-items-center rounded-full bg-zellige-600 text-5xl text-white dark:bg-zellige-500 ${ZWEEF}`}
+        aria-label={label}
+      >
+        🔊
+      </motion.button>
+    </div>
+  )
 }
 
 function Prompt({ children, hint }: { children: React.ReactNode; hint: string }) {
   return (
     <div className="mb-5">
-      <p className="mb-3 font-display text-lg font-extrabold text-[var(--ink-soft)]">{hint}</p>
+      <p className="mb-3 flex items-center gap-2 font-display text-lg font-extrabold text-[var(--ink-soft)]">
+        {/* Hetzelfde merkteken voor elke vraag, en alleen voor een vraag: zo
+            weet je zonder lezen of dit iets is dat je uitgelegd krijgt of iets
+            waar je antwoord op moet geven. */}
+        <Rozet className="shrink-0 text-zellige-600 dark:text-zellige-300" size={15} />
+        {hint}
+      </p>
       {children}
     </div>
   )
@@ -52,13 +334,25 @@ function NewWord({ exercise, onAnswer }: ExerciseProps) {
   const t = useT()
   const meaning = useMeaning()
   const note = useNote()
+  const rustig = useRustig()
   const w = word(exercise.wordId)
   useEffect(() => { say(w.ar, { tr: w.tr }) }, [w.ar, w.tr])
   return (
     <div>
       <Prompt hint={t.lesson.nieuwWoord}>
-        <Card className="flex flex-col items-center gap-3 p-6">
-          <div className="text-5xl" aria-hidden="true">{w.emoji ?? '✨'}</div>
+        <Vraagkaart className="flex flex-col items-center gap-3 p-6">
+          {/* Het woord wordt je aangereikt: het plaatje komt er als eerste in
+              en de rest staat er al. Eén element dat beweegt is genoeg om te
+              zeggen dat hier iets nieuws begint. */}
+          <motion.div
+            className="text-5xl"
+            aria-hidden="true"
+            initial={rustig ? false : { scale: 0.6, y: 8 }}
+            animate={{ scale: 1, y: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 18 }}
+          >
+            {w.emoji ?? '✨'}
+          </motion.div>
           <WordText word={w} size="lg" />
           <p className="text-center font-display text-xl font-extrabold">{meaning(w)}</p>
           <SpeakButton ar={w.ar} tr={w.tr} />
@@ -67,7 +361,7 @@ function NewWord({ exercise, onAnswer }: ExerciseProps) {
               💡 {note(w)}
             </p>
           )}
-        </Card>
+        </Vraagkaart>
       </Prompt>
       <Button className="w-full" sound="confirm" onClick={() => onAnswer('goed')}>{t.lesson.snapIk}</Button>
     </div>
@@ -80,6 +374,7 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
   const [chosen, setChosen] = useState<string | null>(null)
   const t = useT()
   const meaning = useMeaning()
+  const rustig = useRustig()
   const w = word(exercise.wordId)
   const options = exercise.options ?? []
 
@@ -122,38 +417,35 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
           niets: je moet nog steeds weten welk woord erboven staat.
         */}
         {mode === 'betekenis' && (
-          <Card className="flex items-center justify-center gap-4 p-6">
+          <Vraagkaart className="flex items-center justify-center gap-4 p-6">
             <WordText word={w} size="lg" />
             <SpeakButton ar={w.ar} tr={w.tr} />
-          </Card>
+          </Vraagkaart>
         )}
         {mode === 'darija' && (
-          <Card className="p-6 text-center">
+          <Vraagkaart className="p-6 text-center">
             <div className="text-4xl" aria-hidden="true">{w.emoji}</div>
             <p className="mt-2 font-display text-2xl font-extrabold">{meaning(w)}</p>
-          </Card>
+          </Vraagkaart>
         )}
         {mode === 'luister' && (
-          <div className="flex flex-col items-center gap-3">
-            <motion.button
-              whileTap={{ scale: 0.92 }}
-              onClick={() => say(w.ar, { tr: w.tr })}
-              onDoubleClick={() => say(w.ar, { tr: w.tr, slow: true })}
-              className="grid h-28 w-28 place-items-center rounded-full bg-gradient-to-br from-zellige-300 to-zellige-700 text-5xl text-white shadow-lg"
-              aria-label={t.lesson.speelAf}
-            >
-              🔊
-            </motion.button>
-            <button className="text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => say(w.ar, { tr: w.tr, slow: true })}>
+          <div className="flex flex-col items-center gap-5">
+            <Luisterknop
+              rustig={rustig}
+              onSpeel={() => say(w.ar, { tr: w.tr })}
+              onTraag={() => say(w.ar, { tr: w.tr, slow: true })}
+              label={t.lesson.speelAf}
+            />
+            <button className="min-h-11 px-3 text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => say(w.ar, { tr: w.tr, slow: true })}>
               {t.lesson.langzamer}
             </button>
           </div>
         )}
         {mode === 'script' && (
-          <Card className="p-6 text-center">
+          <Vraagkaart className="p-6 text-center">
             <p className="font-display text-3xl font-extrabold text-zellige-600 dark:text-zellige-300">{w.tr}</p>
             <p className="mt-1 text-sm text-[var(--ink-soft)]">{meaning(w)}</p>
-          </Card>
+          </Vraagkaart>
         )}
       </Prompt>
 
@@ -161,20 +453,18 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
         {options.map((id) => {
           const o = word(id)
           return (
-            <button
+            <Antwoordknop
               key={id}
-              disabled={locked}
-              onClick={() => choose(id)}
-              // Marks the buttons that are answers, so the camera that films
-              // the app knows what to press. Nothing else hangs off it.
-              data-answer=""
-              className={`btn3d rounded-2xl border-2 p-4 transition md:p-6 ${mode === 'script' ? 'text-center' : 'text-start'} ${optionButton(chosen, id, w.id, locked)}`}
+              rustig={rustig}
+              stand={standVan(chosen, id, w.id, locked)}
+              onKies={() => choose(id)}
+              className={`p-4 md:p-6 ${mode === 'script' ? 'text-center' : 'text-start'}`}
             >
               {mode === 'betekenis' && <span className="font-display text-lg font-bold md:text-xl">{o.emoji} {meaning(o)}</span>}
               {mode === 'darija' && <WordText word={o} />}
               {mode === 'luister' && <span className="ar text-2xl font-bold md:text-3xl">{o.ar}</span>}
               {mode === 'script' && <span className="ar text-3xl font-bold md:text-4xl">{o.ar}</span>}
-            </button>
+            </Antwoordknop>
           )
         })}
       </div>
@@ -187,6 +477,7 @@ function Choice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'b
 function Match({ exercise, onAnswer }: ExerciseProps) {
   const t = useT()
   const meaning = useMeaning()
+  const rustig = useRustig()
   const ids = exercise.pairIds ?? []
   const words = ids.map(word)
   const right = useMemo(() => [...words].sort((a, b) => a.nl.localeCompare(b.nl)), [exercise.id])
@@ -221,13 +512,36 @@ function Match({ exercise, onAnswer }: ExerciseProps) {
     }
   }
 
+  /*
+   * Dezelfde vier standen als bij de antwoordvakjes, en dezelfde twee
+   * bewegingen: een paar dat klopt zakt weg als iets dat af is, een paar dat
+   * niet klopt schudt. `mint-600` om dezelfde reden als daar -- `mint-500` op
+   * een witte kaart haalt 2,30 op 1 en een rand die zegt "dit paar is klaar"
+   * hoort gezien te worden.
+   */
+  const stand = (id: string, active: boolean): Stand =>
+    solved.includes(id) ? 'goed' : wrong === id ? 'fout' : active ? 'gekozen' : 'open'
+
   const tile = (id: string, active: boolean) =>
-    `btn3d rounded-2xl border-2 p-3 text-center transition ${
-      solved.includes(id) ? 'border-mint-500 bg-mint-500/15 opacity-60'
-      : wrong === id ? 'border-terra-500 bg-terra-500/15'
+    `btn3d w-full rounded-2xl border-2 p-3 text-center transition ${
+      solved.includes(id) ? 'border-mint-600 bg-mint-500/15 opacity-60'
+      : wrong === id ? 'border-terra-600 bg-terra-500/20'
       : active ? 'border-zellige-500 bg-zellige-500/10'
       : 'border-[var(--line)] bg-[var(--surface-raised)]'
     }`
+
+  /** Eén tegel: de klasse zegt wat er is, de beweging zegt wat er gebeurde. */
+  const tegel = (w: { id: string }, active: boolean, tik: () => void, inhoud: React.ReactNode) => (
+    <motion.li
+      key={w.id}
+      animate={rustig ? STIL : BEWEGING[stand(w.id, active)]}
+      transition={wrong === w.id ? { duration: 0.26 } : VEER}
+    >
+      <button className={tile(w.id, active)} onClick={tik} aria-disabled={solved.includes(w.id)}>
+        {inhoud}
+      </button>
+    </motion.li>
+  )
 
   return (
     <div>
@@ -236,22 +550,12 @@ function Match({ exercise, onAnswer }: ExerciseProps) {
       </Prompt>
       <div className="grid grid-cols-2 gap-3">
         <ul className="space-y-3">
-          {words.map((w) => (
-            <li key={w.id}>
-              <button className={`w-full ${tile(w.id, picked === w.id)}`} onClick={() => tapLeft(w.id)} disabled={solved.includes(w.id)}>
-                <WordText word={w} size="sm" />
-              </button>
-            </li>
-          ))}
+          {words.map((w) => tegel(w, picked === w.id, () => tapLeft(w.id), <WordText word={w} size="sm" />))}
         </ul>
         <ul className="space-y-3">
-          {right.map((w) => (
-            <li key={w.id}>
-              <button className={`w-full ${tile(w.id, false)}`} onClick={() => tapRight(w.id)} disabled={solved.includes(w.id)}>
-                <span className="font-display font-bold">{w.emoji} {meaning(w)}</span>
-              </button>
-            </li>
-          ))}
+          {right.map((w) => tegel(w, false, () => tapRight(w.id), (
+            <span className="font-display font-bold">{w.emoji} {meaning(w)}</span>
+          )))}
         </ul>
       </div>
     </div>
@@ -260,9 +564,41 @@ function Match({ exercise, onAnswer }: ExerciseProps) {
 
 /* ------------------------------------------------------------------- build */
 
+/**
+ * De regel waar je de zin in legt.
+ *
+ * Dit was een vak met een stippellijn eromheen, en een stippellijn is de
+ * tekening van een gat: hij zegt "hier hoort iets" en verder niets. Een vak dat
+ * écht lager ligt dan het papier zegt hetzelfde zonder lijn -- de schaduw valt
+ * naar binnen in plaats van naar buiten, precies andersom dan bij een kaart die
+ * zweeft. Dat is dezelfde lichtbron, één verdieping lager.
+ */
+const TROG = 'rounded-2xl bg-[var(--surface-sunken)] shadow-[inset_0_2px_4px_rgba(84,56,24,0.16),inset_0_-1px_0_rgba(255,255,255,0.5)] dark:shadow-[inset_0_2px_5px_rgba(0,0,0,0.7),inset_0_-1px_0_rgba(255,255,255,0.04)]'
+
+/** Een woordje dat op de regel landt, met de veer van de rest van de les. */
+function Blokje({ rustig, children, onClick, className }: {
+  rustig: boolean
+  children: React.ReactNode
+  onClick: () => void
+  className: string
+}) {
+  return (
+    <motion.li
+      initial={rustig ? false : { scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={VEER}
+    >
+      <button className={`btn3d rounded-xl border-2 px-3 py-2 font-display font-bold ${className}`} onClick={onClick}>
+        {children}
+      </button>
+    </motion.li>
+  )
+}
+
 function Build({ exercise, onAnswer, locked }: ExerciseProps) {
   const t = useT()
   const meaning = useMeaning()
+  const rustig = useRustig()
   const w = word(exercise.wordId)
   const answer = tokenize(w.tr)
   const [bank, setBank] = useState<string[]>(exercise.tokens ?? [])
@@ -295,20 +631,18 @@ function Build({ exercise, onAnswer, locked }: ExerciseProps) {
   return (
     <div>
       <Prompt hint={t.lesson.bouwZin}>
-        <Card className="p-5 text-center">
+        <Vraagkaart className="p-5 text-center">
           <p className="font-display text-xl font-extrabold">{meaning(w)}</p>
           <p className="mt-1 text-sm text-[var(--ink-soft)]">{w.phrase ? w.tr.replace(/\s+/g, ' · ') : w.en}</p>
-        </Card>
+        </Vraagkaart>
       </Prompt>
 
-      <div className="mb-4 min-h-16 rounded-2xl border-2 border-dashed border-[var(--line)] p-3">
+      <div className={`mb-4 min-h-16 p-3 ${TROG}`}>
         <ul className="flex flex-wrap gap-2">
           {line.map((t, i) => (
-            <li key={`${t}-${i}`}>
-              <button className="btn3d rounded-xl border-2 border-zellige-500 bg-zellige-500/10 px-3 py-2 font-display font-bold" onClick={() => putBack(i)}>
-                {t}
-              </button>
-            </li>
+            <Blokje key={`${t}-${i}`} rustig={rustig} onClick={() => putBack(i)} className="border-zellige-500 bg-zellige-500/10">
+              {t}
+            </Blokje>
           ))}
           {line.length === 0 && <li className="px-2 py-2 text-sm text-[var(--ink-soft)]">{t.lesson.bouwUitleg}</li>}
         </ul>
@@ -316,11 +650,9 @@ function Build({ exercise, onAnswer, locked }: ExerciseProps) {
 
       <ul className="mb-5 flex flex-wrap gap-2">
         {bank.map((t, i) => (
-          <li key={`${t}-${i}`}>
-            <button className="btn3d rounded-xl border-2 border-[var(--line)] bg-[var(--surface-raised)] px-3 py-2 font-display font-bold" onClick={() => take(i)}>
-              {t}
-            </button>
-          </li>
+          <Blokje key={`${t}-${i}`} rustig={rustig} onClick={() => take(i)} className="border-[var(--line)] bg-[var(--surface-raised)]">
+            {t}
+          </Blokje>
         ))}
       </ul>
 
@@ -358,7 +690,7 @@ function Type({ exercise, onAnswer, locked, mode = 'betekenis' }: ExerciseProps 
   return (
     <div>
       <Prompt hint={mode === 'dictee' ? t.bonus.dicteeVraag : t.lesson.schrijfDarija}>
-        <Card className="p-6 text-center">
+        <Vraagkaart className="p-6 text-center">
           {mode === 'dictee' ? (
             <div className="flex flex-col items-center gap-2">
               <SpeakButton ar={w.ar} tr={w.tr} className="scale-125" />
@@ -370,7 +702,7 @@ function Type({ exercise, onAnswer, locked, mode = 'betekenis' }: ExerciseProps 
               <p className="mt-2 font-display text-2xl font-extrabold">{meaning(w)}</p>
             </>
           )}
-        </Card>
+        </Vraagkaart>
       </Prompt>
 
       <label className="sr-only" htmlFor="answer">{t.lesson.jouwAntwoord}</label>
@@ -392,7 +724,10 @@ function Type({ exercise, onAnswer, locked, mode = 'betekenis' }: ExerciseProps 
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && submit()}
         placeholder={t.lesson.schrijfPlaceholder}
-        className="w-full rounded-2xl border-2 border-[var(--line)] bg-[var(--surface-raised)] px-4 py-4 text-center font-display text-2xl font-bold outline-none focus:border-zellige-500"
+        /* Een invoerveld is een gleuf en geen kaart: het licht valt erín, zoals
+           bij de regel van de bouwoefening. Zonder dat verschil stond hier een
+           witte balk die niet te onderscheiden was van de kaart erboven. */
+        className={`w-full border-2 border-[var(--line)] px-4 py-4 text-center font-display text-2xl font-bold outline-none focus:border-zellige-500 ${TROG}`}
       />
       <p className="mt-2 text-center text-xs text-[var(--ink-soft)]">{t.lesson.schrijfHint}</p>
       <Button className="mt-4 w-full" disabled={locked || !value.trim()} onClick={submit}>{t.lesson.controleer}</Button>
@@ -422,7 +757,7 @@ function Trace({ exercise, onAnswer, locked }: ExerciseProps) {
 
   return (
     <div>
-      <Card className="mb-4 flex items-center gap-3 p-4">
+      <Vraagkaart className="mb-4 flex items-center gap-3 p-4">
         <div className="ar text-3xl font-bold">{glyph}</div>
         <div className="min-w-0 flex-1">
           <p className="font-display font-extrabold">{spoken}</p>
@@ -431,7 +766,7 @@ function Trace({ exercise, onAnswer, locked }: ExerciseProps) {
           </p>
         </div>
         <SpeakButton ar={l ? l.ar : w!.ar} tr={spoken} />
-      </Card>
+      </Vraagkaart>
 
       <Scribe
         glyph={glyph}
@@ -536,10 +871,10 @@ function NaZeggen({ exercise, onAnswer, locked }: ExerciseProps) {
     return (
       <div>
         <Prompt hint={t.lesson.zegHardop}>
-          <Card className="p-6 text-center">
+          <Vraagkaart className="p-6 text-center">
             <WordText word={w} size="lg" showNl />
             <div className="mt-3 flex justify-center"><SpeakButton ar={w.ar} tr={w.tr} /></div>
-          </Card>
+          </Vraagkaart>
         </Prompt>
         <p className="mb-4 text-center text-sm text-[var(--ink-soft)]">{t.lesson.geenMicrofoon}</p>
         <Button className="w-full" onClick={() => onAnswer('goed')}>{t.lesson.gezegd}</Button>
@@ -550,10 +885,10 @@ function NaZeggen({ exercise, onAnswer, locked }: ExerciseProps) {
   return (
     <div>
       <Prompt hint={t.lesson.zegHardop}>
-        <Card className="flex flex-col items-center gap-3 p-6">
+        <Vraagkaart className="flex flex-col items-center gap-3 p-6">
           <WordText word={w} size="lg" showNl />
           <SpeakButton ar={w.ar} tr={w.tr} />
-        </Card>
+        </Vraagkaart>
       </Prompt>
 
       <div className="flex flex-col items-center gap-3">
@@ -562,7 +897,10 @@ function NaZeggen({ exercise, onAnswer, locked }: ExerciseProps) {
           disabled={locked}
           animate={opname ? { scale: [1, 1.08, 1] } : { scale: 1 }}
           transition={{ repeat: opname ? Infinity : 0, duration: 1 }}
-          className={`grid h-28 w-28 place-items-center rounded-full text-5xl text-white shadow-lg ${opname ? 'bg-terra-500' : 'bg-gradient-to-br from-zellige-300 to-zellige-700'}`}
+          /* Vlak en met de schaduw van de rest van de les, net als de
+             afspeelknop: het verloop dat hier stond was het enige bolletje in
+             de app dat deed alsof het bol was. */
+          className={`grid h-28 w-28 place-items-center rounded-full text-5xl text-white ${ZWEEF} ${opname ? 'bg-terra-600' : 'bg-zellige-600 dark:bg-zellige-500'}`}
           aria-label={opname ? t.lesson.stopOpname : t.lesson.neemOp}
         >
           {opname ? '⏹' : '🎤'}
@@ -621,7 +959,7 @@ function NewLetter({ exercise, onAnswer }: ExerciseProps) {
   return (
     <div>
       <Prompt hint={t.lesson.nieuweLetter}>
-        <Card className="flex flex-col items-center gap-3 p-6">
+        <Vraagkaart className="flex flex-col items-center gap-3 p-6">
           <div className="ar text-7xl font-bold">{l.ar}</div>
           <p className="font-display text-2xl font-extrabold">{l.name}</p>
           <p className="text-center text-[var(--ink-soft)]">{t.alphabet.klinktAls(l.sound)}</p>
@@ -652,7 +990,7 @@ function NewLetter({ exercise, onAnswer }: ExerciseProps) {
               <SpeakButton ar={example.ar} tr={example.tr} />
             </div>
           )}
-        </Card>
+        </Vraagkaart>
       </Prompt>
       <Button className="w-full" sound="confirm" onClick={() => onAnswer('goed')}>{t.lesson.snapIk}</Button>
       <p className="sr-only">{lang}</p>
@@ -664,6 +1002,7 @@ function NewLetter({ exercise, onAnswer }: ExerciseProps) {
 function LetterChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'klank' | 'naam' | 'vorm' }) {
   const t = useT()
   const formPlace = useFormPlace()
+  const rustig = useRustig()
   const [chosen, setChosen] = useState<string | null>(null)
   const l = letter(exercise.letterId!)
   const form = exercise.form ?? 'initial'
@@ -690,16 +1029,16 @@ function LetterChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mo
     <div>
       <Prompt hint={hint}>
         {mode === 'klank' ? (
-          <Card className="p-6 text-center">
+          <Vraagkaart className="p-6 text-center">
             <p className="font-display text-3xl font-extrabold">{l.name}</p>
             <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.alphabet.klinktAls(l.sound)}</p>
             <div className="mt-3 flex justify-center"><SpeakButton {...letterVoice(l)} zeg={(traag) => sayLetter(l, { slow: traag })} /></div>
-          </Card>
+          </Vraagkaart>
         ) : (
-          <Card className="flex items-center justify-center gap-4 p-6">
+          <Vraagkaart className="flex items-center justify-center gap-4 p-6">
             <span className="ar text-6xl font-bold">{l.ar}</span>
             <SpeakButton {...letterVoice(l)} zeg={(traag) => sayLetter(l, { slow: traag })} />
-          </Card>
+          </Vraagkaart>
         )}
       </Prompt>
 
@@ -707,19 +1046,17 @@ function LetterChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mo
         {ids.map((id) => {
           const o = letter(id)
           return (
-            <button
+            <Antwoordknop
               key={id}
-              disabled={locked}
-              onClick={() => choose(id)}
-              // Marks the buttons that are answers, so the camera that films
-              // the app knows what to press. Nothing else hangs off it.
-              data-answer=""
-              className={`btn3d rounded-2xl border-2 p-4 text-center transition ${optionButton(chosen, id, l.id, locked)}`}
+              rustig={rustig}
+              stand={standVan(chosen, id, l.id, locked)}
+              onKies={() => choose(id)}
+              className="p-4 text-center"
             >
               {mode === 'naam'
                 ? <span className="font-display text-lg font-bold">{o.name} <span className="text-[var(--ink-soft)]">· {o.tr}</span></span>
                 : <span className="ar text-4xl font-bold">{mode === 'vorm' ? o.forms[form] : o.ar}</span>}
-            </button>
+            </Antwoordknop>
           )
         })}
       </div>
@@ -745,7 +1082,7 @@ function NewSentence({ exercise, onAnswer }: ExerciseProps) {
   return (
     <div>
       <Prompt hint={t.lesson.nieuweZin}>
-        <Card className="flex flex-col items-center gap-3 p-6 text-center">
+        <Vraagkaart className="flex flex-col items-center gap-3 p-6 text-center">
           <span className="text-3xl" aria-hidden="true">💬</span>
           {showScript && <p className="ar text-3xl font-bold">{z.ar}</p>}
           {(showTranslit || !showScript) && (
@@ -754,7 +1091,7 @@ function NewSentence({ exercise, onAnswer }: ExerciseProps) {
           <p className="font-display text-xl font-extrabold">{meaning(z.id)}</p>
           <SpeakButton ar={z.ar} tr={z.tr} />
           <p className="text-xs text-[var(--ink-soft)]">{t.lesson.zinLangzaam}</p>
-        </Card>
+        </Vraagkaart>
       </Prompt>
       <Button className="w-full" sound="confirm" onClick={() => onAnswer('goed')}>{t.lesson.snapIk}</Button>
     </div>
@@ -764,6 +1101,7 @@ function NewSentence({ exercise, onAnswer }: ExerciseProps) {
 function SentenceBuild({ exercise, onAnswer, locked }: ExerciseProps) {
   const t = useT()
   const meaning = useSentenceMeaning()
+  const rustig = useRustig()
   const z = sentence(exercise.sentenceId!)
   const answer = tokenize(z.tr)
   const [bank, setBank] = useState<string[]>(exercise.tokens ?? [])
@@ -800,20 +1138,18 @@ function SentenceBuild({ exercise, onAnswer, locked }: ExerciseProps) {
   return (
     <div>
       <Prompt hint={t.lesson.bouwZin}>
-        <Card className="p-5 text-center">
+        <Vraagkaart className="p-5 text-center">
           <p className="font-display text-xl font-extrabold">{meaning(z.id)}</p>
           <div className="mt-2 flex justify-center"><SpeakButton ar={z.ar} tr={z.tr} /></div>
-        </Card>
+        </Vraagkaart>
       </Prompt>
 
-      <div className="mb-4 min-h-16 rounded-2xl border-2 border-dashed border-[var(--line)] p-3">
+      <div className={`mb-4 min-h-16 p-3 ${TROG}`}>
         <ul className="flex flex-wrap gap-2">
           {line.map((token, i) => (
-            <li key={`${token}-${i}`}>
-              <button className="btn3d rounded-xl border-2 border-zellige-500 bg-zellige-500/10 px-3 py-2 font-display font-bold" onClick={() => putBack(i)}>
-                {token}
-              </button>
-            </li>
+            <Blokje key={`${token}-${i}`} rustig={rustig} onClick={() => putBack(i)} className="border-zellige-500 bg-zellige-500/10">
+              {token}
+            </Blokje>
           ))}
           {line.length === 0 && <li className="px-2 py-2 text-sm text-[var(--ink-soft)]">{t.lesson.bouwUitleg}</li>}
         </ul>
@@ -821,11 +1157,9 @@ function SentenceBuild({ exercise, onAnswer, locked }: ExerciseProps) {
 
       <ul className="mb-5 flex flex-wrap gap-2">
         {bank.map((token, i) => (
-          <li key={`${token}-${i}`}>
-            <button className="btn3d rounded-xl border-2 border-[var(--line)] bg-[var(--surface-raised)] px-3 py-2 font-display font-bold" onClick={() => take(i)}>
-              {token}
-            </button>
-          </li>
+          <Blokje key={`${token}-${i}`} rustig={rustig} onClick={() => take(i)} className="border-[var(--line)] bg-[var(--surface-raised)]">
+            {token}
+          </Blokje>
         ))}
       </ul>
 
@@ -837,6 +1171,7 @@ function SentenceBuild({ exercise, onAnswer, locked }: ExerciseProps) {
 function SentenceChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mode: 'betekenis' | 'luister' }) {
   const t = useT()
   const meaning = useSentenceMeaning()
+  const rustig = useRustig()
   const [chosen, setChosen] = useState<string | null>(null)
   const z = sentence(exercise.sentenceId!)
   const ids = exercise.sentenceOptions ?? []
@@ -857,23 +1192,20 @@ function SentenceChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { 
     <div>
       <Prompt hint={mode === 'betekenis' ? t.lesson.watBetekentZin : t.lesson.welkeZinHoorJe}>
         {mode === 'betekenis' ? (
-          <Card className="flex flex-col items-center gap-2 p-6 text-center">
+          <Vraagkaart className="flex flex-col items-center gap-2 p-6 text-center">
             <p className="ar text-2xl font-bold">{z.ar}</p>
             <p className="font-display font-bold text-zellige-600 dark:text-zellige-300">{z.tr}</p>
             <SpeakButton ar={z.ar} tr={z.tr} />
-          </Card>
+          </Vraagkaart>
         ) : (
-          <div className="flex flex-col items-center gap-3">
-            <motion.button
-              whileTap={{ scale: 0.92 }}
-              onClick={() => say(z.ar, { tr: z.tr })}
-              onDoubleClick={() => say(z.ar, { tr: z.tr, slow: true })}
-              className="grid h-28 w-28 place-items-center rounded-full bg-gradient-to-br from-zellige-300 to-zellige-700 text-5xl text-white shadow-lg"
-              aria-label={t.lesson.speelAf}
-            >
-              🔊
-            </motion.button>
-            <button className="text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => say(z.ar, { tr: z.tr, slow: true })}>
+          <div className="flex flex-col items-center gap-5">
+            <Luisterknop
+              rustig={rustig}
+              onSpeel={() => say(z.ar, { tr: z.tr })}
+              onTraag={() => say(z.ar, { tr: z.tr, slow: true })}
+              label={t.lesson.speelAf}
+            />
+            <button className="min-h-11 px-3 text-sm font-bold text-[var(--ink-soft)] underline" onClick={() => say(z.ar, { tr: z.tr, slow: true })}>
               {t.lesson.langzamer}
             </button>
           </div>
@@ -882,17 +1214,17 @@ function SentenceChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { 
 
       <div className="grid gap-3">
         {ids.map((id) => (
-          <button
+          <Antwoordknop
             key={id}
-            disabled={locked}
-            onClick={() => choose(id)}
-            data-answer=""
-            className={`btn3d rounded-2xl border-2 p-4 text-start transition ${optionButton(chosen, id, z.id, locked)}`}
+            rustig={rustig}
+            stand={standVan(chosen, id, z.id, locked)}
+            onKies={() => choose(id)}
+            className="p-4 text-start"
           >
             {mode === 'betekenis'
               ? <span className="font-display text-base font-bold">{meaning(id)}</span>
               : <span className="ar text-xl font-bold">{sentence(id).ar}</span>}
-          </button>
+          </Antwoordknop>
         ))}
       </div>
     </div>
