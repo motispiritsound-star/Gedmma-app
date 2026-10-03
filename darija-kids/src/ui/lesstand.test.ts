@@ -99,6 +99,43 @@ describe('de kleuren die betekenis dragen', () => {
   })
 })
 
+/**
+ * Dekking is contrast, en daar keek geen enkele test naar.
+ *
+ * `kleuren.test.ts` controleert of een tint bestaat en `inkt.test.ts` rekent
+ * drie vaste paren na; het woord `opacity` komt in geen van beide voor. Een
+ * vakje dat op 45 procent dekking staat is dus 1 888 groene tests lang
+ * onzichtbaar gebleven voor de bewaking, terwijl de tekst erin meezakt --
+ * dekking werkt op de hele groep.
+ *
+ * Nagerekend op de samenstelling kwam 0,45 uit op 2,95 op 1 in de lichte stand
+ * en 3,97 in de donkere. De toestand ervóór was `disabled` met 0,5 en haalde
+ * 3,43 en 4,59, dus in de donkere stand ging het van geslaagd naar gezakt --
+ * en het is precies de tekst die een kind dat het fout had nog wil kunnen
+ * lezen: wat waren de andere antwoorden ook alweer.
+ */
+describe('wat er wegzakt blijft leesbaar', () => {
+  it('een weggezakt antwoord staat op 0,6 en niet lager', () => {
+    const regel = oefeningen.split('\n').find((r) => r.trim().startsWith('weg:') && r.includes('opacity'))
+    expect(regel, 'de stand `weg` zet geen dekking meer').toBeTruthy()
+    const m = regel!.match(/opacity-(\d+)/)
+    expect(m, 'geen opacity-klasse op de stand `weg`').toBeTruthy()
+    expect(Number(m![1])).toBeGreaterThanOrEqual(60)
+  })
+
+  /**
+   * En het vakje vult zijn rastercel. Het omhulsel is in een raster het
+   * rasteritem en rekt mee met de rijhoogte; de knop erbinnen had alleen
+   * `w-full` en kreeg zijn inhoudshoogte. Gemeten met twee vakjes naast
+   * elkaar, één met een omlopende Duitse regel: eerst allebei 72 pixels,
+   * daarna 72 tegen 54.
+   */
+  it('en twee vakjes naast elkaar zijn even hoog', () => {
+    expect(oefeningen).toContain('btn3d h-full w-full rounded-2xl')
+    expect(oefeningen).toContain('className="relative h-full"')
+  })
+})
+
 describe('de rustige stand', () => {
   /**
    * Twee schakelaars, en geen van beide dekte dit. `MotionConfig` luistert naar

@@ -193,7 +193,23 @@ function Lesbalk({ waarde, stappen, vonnis, rustig, avatar, label }: {
       >
         <motion.span
           aria-hidden="true"
-          className="grid h-7 w-7 place-items-center rounded-full border-2 border-[var(--ink)] bg-[var(--accent-500)] text-base shadow-[0_2px_4px_-1px_rgba(84,56,24,0.5)]"
+          /*
+            Twee randen: inkt naar binnen, papier naar buiten.
+
+            De inktrand haalt tegen de baan 15,13 in de lichte stand en 17,17
+            in de donkere, dus daar is hij in orde. Maar dit bolletje hangt per
+            definitie op de naad tussen gelopen en nog-te-gaan, en aan de
+            groene kant klopte het niet: in de donkere stand is `--ink` #f3f0ea
+            en de vulling mint-400, en dat is 1,53 op 1. Het accentvlak zelf
+            haalt daar 1,23 bij saffraan tot 2,02 bij terracotta, waar 3 de
+            norm is. De schijf verdween niet, maar de rand die hem zijn vorm
+            geeft was aan die kant niet te zien.
+
+            `ring-2 ring-[var(--surface)]`: papier tegen mint-700 is 4,83 in
+            het licht en tegen mint-400 10,72 in het donker. Dan heeft de
+            schijf in beide standen aan beide kanten een rand boven de norm.
+          */
+          className="grid h-7 w-7 place-items-center rounded-full border-2 border-[var(--ink)] bg-[var(--accent-500)] text-base ring-2 ring-[var(--surface)] shadow-[0_2px_4px_-1px_rgba(84,56,24,0.5)]"
           animate={rustig ? { y: 0 } : sprong}
           transition={{ duration: 0.34 }}
         >
@@ -496,36 +512,24 @@ export function RoundRunner({
 
       <div className="relative flex flex-1 flex-col justify-center py-6">
         {/*
-          The reward, on its way up. Announced politely, so a screen reader
-          hears what an answer was worth without losing its place.
+          De beloning vloog hier als een pil omhoog, en die is weg.
 
-          Hij vertrok van bovenaan het vraagvak — een halve telefoon boven de
-          knop waar je net op drukte, dus precies waar je op dat moment niet
-          kijkt. Nu komt hij op van onderen, uit de hoek waar je duim zit, en
-          hij is korter: 0,9 seconde in plaats van 1,3. Alles wat langer duurt
-          dan een seconde staat in de weg bij het volgende antwoord.
+          Hij vertrok eerst van bovenaan het vraagvak -- een halve telefoon
+          boven de knop waar je net op drukte, dus precies waar je op dat
+          moment niet kijkt. Daarna van onderen, uit de hoek waar de duim zit,
+          en korter: 0,9 seconde in plaats van 1,3.
+
+          Maar die plek was bezet. Nagekeken op schermafdrukken van 390 en van
+          320 in het Duits: "+2 XP" lag onderweg midden op het vierde
+          antwoordvakje, en bij een omgelopen Duitse regel dwars over de tekst.
+          En hij was overbodig geworden -- honderd pixels lager staat op
+          hetzelfde moment dezelfde "+2 XP" in de balk eronder.
+
+          Twee keer hetzelfde zeggen en er onderweg een antwoord mee afdekken
+          is slechter dan het één keer zeggen op de plek waar het oog al is.
+          De edelstenen stonden alleen in de vliegende pil, dus die staan nu
+          in die balk, naast de XP. Niets weg, één plek minder.
         */}
-        <AnimatePresence>
-          {burst && (
-            <motion.div
-              key={burst.id}
-              initial={{ opacity: 0, y: 8, scale: 0.8 }}
-              animate={{ opacity: [0, 1, 1, 0], y: -52, scale: 1 }}
-              transition={{ duration: 0.9, times: [0, 0.14, 0.62, 1] }}
-              className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center gap-2"
-              role="status"
-            >
-              <span className="rounded-full bg-mint-500 px-3 py-1 font-display text-sm font-extrabold text-night-950 shadow-[0_4px_10px_-3px_rgba(84,56,24,0.5)]">
-                {t.lesson.xpPlus(burst.xp)}
-              </span>
-              {burst.gems > 0 && (
-                <span className="rounded-full bg-saffron-500 px-3 py-1 font-display text-sm font-extrabold text-night-950 shadow-[0_4px_10px_-3px_rgba(84,56,24,0.5)]">
-                  💎 {t.lesson.gemPlus(burst.gems)}
-                </span>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -610,9 +614,32 @@ export function RoundRunner({
               >
                 <p className="flex flex-wrap items-center gap-2 font-display text-lg font-extrabold">
                   {verdict === 'goed' ? t.lesson.lof[index % t.lesson.lof.length] : verdict === 'bijna' ? t.lesson.bijnaGoed : t.lesson.juisteAntwoord}
+                  {/*
+                    De inkt van de bladzijde op een getinte pil, en niet een
+                    tint van dezelfde kleur.
+
+                    Hier stond `text-mint-700 dark:text-mint-200`, en dat is
+                    nagerekend op de samenstelling (mint-500 op een kwart
+                    dekking over het papier) 3,97 op 1 in de lichte stand --
+                    onder de 4,5 die tekst hoort te halen. Dat stond er al en
+                    is niet gemeten omdat `kleuren.test.ts` naar tinten kijkt
+                    en niet naar wat er bovenop komt. Met `--ink` wordt het
+                    14,02 en 9,91, en de pil houdt zijn kleur: die zit in het
+                    vlak eronder en niet in de letters.
+
+                    Dezelfde som voor de edelstenen: saffron-700 haalde 4,09 en
+                    `--ink` haalt 14,44 en 9,87.
+                  */}
                   {verdict !== 'fout' && burst && (
-                    <span className="rounded-full bg-mint-500/25 px-2 py-0.5 text-xs font-extrabold text-mint-700 dark:text-mint-200">
+                    <span className="rounded-full bg-mint-500/25 px-2 py-0.5 text-xs font-extrabold text-[var(--ink)]">
                       {t.lesson.xpPlus(burst.xp)}
+                    </span>
+                  )}
+                  {/* De edelstenen stonden alleen in de pil die hierboven
+                      wegvloog; zie de toelichting daar voor waarom die weg is. */}
+                  {verdict !== 'fout' && burst && burst.gems > 0 && (
+                    <span className="rounded-full bg-saffron-500/25 px-2 py-0.5 text-xs font-extrabold text-[var(--ink)]">
+                      💎 {t.lesson.gemPlus(burst.gems)}
                     </span>
                   )}
                 </p>

@@ -142,7 +142,19 @@ const VAKJE: Record<Stand, string> = {
   goed: 'border-mint-600 bg-mint-500/20',
   onthuld: 'border-mint-600 bg-mint-500/15',
   fout: 'border-terra-600 bg-terra-500/20',
-  weg: 'border-[var(--line)] bg-[var(--surface-raised)] opacity-45',
+  /*
+    0,6 en niet 0,45. Dekking werkt op de hele groep, dus de tekst gaat mee,
+    en nagerekend op de samenstelling kwam 0,45 uit op 2,95 op 1 in de lichte
+    stand en 3,97 in de donkere -- allebei onder de 4,5 voor tekst. De oude
+    toestand was `disabled` met 0,5 en haalde 3,43 en 4,59, dus in de donkere
+    stand ging het van geslaagd naar gezakt.
+
+    En het is precies de tekst die een kind dat het fout had nog wil kunnen
+    lezen: wat waren de andere antwoorden ook alweer. Met 0,6 wordt het 4,70
+    en 6,10. Noch `kleuren.test.ts` noch `inkt.test.ts` kijkt naar dekking, dus
+    1 888 groene tests zeiden hier niets; `lesstand.test.ts` doet het nu.
+  */
+  weg: 'border-[var(--line)] bg-[var(--surface-raised)] opacity-60',
 }
 
 /**
@@ -180,7 +192,10 @@ function Antwoordknop({ stand, rustig, onKies, className = '', children }: {
   const kantel = useKantel(rustig || vast)
   return (
     <motion.div
-      className="relative"
+      /* `h-full`: zie de knop hieronder. Zonder dit is het omhulsel zo hoog
+         als de rij en de knop zo hoog als zijn tekst, en dan trekt de ring bij
+         een goed antwoord de rastercel na in plaats van de knop. */
+      className="relative h-full"
       animate={rustig ? STIL : BEWEGING[stand]}
       transition={stand === 'fout' ? { duration: 0.26 } : VEER}
     >
@@ -196,7 +211,18 @@ function Antwoordknop({ stand, rustig, onKies, className = '', children }: {
         // Marks the buttons that are answers, so the camera that films the app
         // knows what to press. Nothing else hangs off it.
         data-answer=""
-        className={`btn3d w-full rounded-2xl border-2 transition ${VAKJE[stand]} ${className}`}
+        /*
+          `h-full` erbij. Het omhulsel hieronder is in een raster het
+          rasteritem, en dát rekt mee met de rijhoogte -- de knop erbinnen had
+          alleen `w-full` en kreeg dus zijn inhoudshoogte. Gemeten met twee
+          vakjes naast elkaar, één met een omlopende Duitse regel en één met een
+          kort woord: eerst allebei 72 pixels, daarna 72 tegen 54, met een gat
+          onder het korte vakje. Dat raakt `Choice` en `LetterChoice` vanaf 640
+          pixels, dus elke tablet, en het ondergraaft juist de schaduw: twee
+          kaarten naast elkaar op verschillende hoogte lezen niet als één
+          lichtbron.
+        */
+        className={`btn3d h-full w-full rounded-2xl border-2 transition ${VAKJE[stand]} ${className}`}
       >
         {children}
       </button>
