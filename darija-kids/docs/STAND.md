@@ -2327,11 +2327,89 @@ opnieuw de bak in (`npm run lezen -- --r2`).
 
 | Deel | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Blz | 33 | 42 | 35 | 29 | 31 | 46 | 31 | 29 | 28 | 27 | 27 | 27 | 26 | 28 | 25 |
+| Blz | 33 | 42 | 35 | 29 | 31 | 46 | 31 | 34 | 33 | 31 | 30 | 30 | 29 | 30 | 27 |
 
 Alle vijftien delen zijn uitgeschreven, en alle vijftien staan in **zes
 talen**: Nederlands, Frans, Duits, Spaans, Italiaans en Engels. Dat zijn
 negentig boeken.
+
+### Deel 8 t/m 15 opgetrokken — 3 oktober
+
+De diagnose van 25 september hierboven noemde het al: deel 1 tot en met 6
+stonden op 260 tot 390 woorden per hoofdstuk, deel 7 tot en met 15 op ongeveer
+200. Dat verschil zat niet in de lengte maar in de soort tekst. De eerste delen
+lieten iets gebeuren; de laatste vatten samen dat het gebeurd was. En een paar
+delen hadden twee hoofdstukken die hetzelfde uitlegden onder een andere titel.
+
+Deel 8 tot en met 15 staan nu op scènes, met de dubbele hoofdstukken langs hun
+eigen titel uit elkaar gehaald. In cijfers:
+
+| Deel | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Woorden, was | 2713 | 2753 | 2643 | 2381 | 2497 | 2337 | 2370 | 2386 |
+| Woorden, nu | 4447 | 3718 | 3620 | 3139 | 3190 | 3182 | 2976 | 3058 |
+| Per hoofdstuk, nu | 342 | 286 | 302 | 262 | 266 | 265 | 248 | 255 |
+
+Dat zijn alinea-woorden, dus de tekst zelf en niet de code eromheen; nagemeten
+tegen de versie van vlak vóór elke optrek-commit.
+
+Zes van de acht zitten daarmee in de band van deel 1 t/m 6 (260 – 390 woorden
+per hoofdstuk). **Deel 14 en 15 liggen er met 248 en 255 net onder.** Dat is
+niet weggepoetst door er alinea's bij te zetten om een getal te halen: die
+twee delen zijn de korte, stille delen aan het eind van de reeks — het ene
+gaat over een vrouw die haar naam leert schrijven, het andere over een jongen
+met vierentwintig woorden — en daar hoort geen extra tekst in. Wat ze nodig
+hadden was scènes in plaats van samenvattingen, en dat hebben ze nu.
+
+Daarmee staan alle vijftien delen op hetzelfde soort tekst, en is de reeks op
+dit punt af. Elke uitbreiding is in alle zes talen meegegaan, want anders valt
+de build — dat is precies waar `sleutels-talen.test.ts` voor is. Het heeft
+tussen de 2 en de 3 oktober de hele reeks aan vertalingen opnieuw door de
+molen gehaald.
+
+**Wat dit betekent voor wat al te koop is:** de zips en pdf's van deel 8 t/m 15
+liggen nu achter op de tekst. Voor de lancering moet dus nog:
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run winkel } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run lezen -- --r2 } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+### Marokko 360 — derde reeks, nog niet gepubliceerd
+
+Er staat een derde reeks op de website: **Marokko 360**, een naslagwerk in
+zeventien delen voor 12 jaar en ouder. Die staat er met zoveel woorden als
+*nog niet gepubliceerd* bij, met een noot op de bibliotheekpagina, en er hangt
+geen koopknop aan. Dat is met opzet: er is nog geen hoofdstuk dat de toets
+haalt.
+
+`bieb.test.ts` houdt dat eerlijk: zolang `HOOFDSTUKKEN.filter(publiceerbaar)`
+leeg is, kan er niets van in de winkel belanden. De delenindeling staat wel in
+alle zes talen (`src/content/encyclopedie/delen-talen.ts`), want een Duitse
+pagina met Nederlandse deeltitels is erger dan geen Duitse pagina.
+
+**Waar het op vastzit:** een hoofdstuk gaat pas op `gepubliceerd` als zijn
+bronnen op `gelezen` staan, en daarvoor moeten die bronnen opgehaald worden.
+Daar is `npm run bronnen` voor. Dat commando werkt, maar het krijgt op dit
+moment van elk adres hetzelfde antwoord:
+
+    CONNECT tunnel failed, response 403
+
+Dat is niet de website die stuk is en ook niet het script. Dat is de
+**uitgaande netwerktoegang van de werkomgeving**, en die staat uit. Het is
+hier op 3 oktober nog een keer nagemeten: allebei de adressen die ik probeerde
+weigeren tegelijk, en de proxy zelf meldt dat hij aan staat en alleen een
+vaste lijst aan hosts doorlaat.
+
+**Wat alleen Adil kan doen**, en wat ik niet kan: op claude.ai/code op het
+wolkje boven het tekstvak klikken, dan het tandwiel, dan *Network access* op
+**Custom** zetten. En daarna — dit is het stuk dat twee keer is misgegaan —
+**een nieuwe sessie starten**, want een gewijzigd netwerkbeleid geldt niet in
+een sessie die al loopt. Zolang dat niet gebeurd is, is dit het enige punt in
+dit project waar ik niet verder kom.
 
 De vertaling ligt alinea voor alinea naast het Nederlands, en daar staat een
 test op: een hoofdstuk dat wegvalt of een alinea die wordt samengevoegd laat
