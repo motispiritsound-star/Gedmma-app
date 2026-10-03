@@ -273,6 +273,39 @@ export const SLEUTEL_VERTALINGEN: Record<string, SleutelVertaling> =
  * Een verschil in het aantal hoofdstukken is geen vertaling maar een fout, en
  * dan stopt het hier in plaats van halverwege een boek.
  */
+/**
+ * De buitenkant van een deel in een taal: alles behalve de hoofdstukken.
+ *
+ * De boekenkast op de website zet vijftien delen neer met hun flaptekst, hun
+ * verteller en de twee lijsten achterin — en heeft de hoofdstukken daar niet
+ * voor nodig. `REEKS` draagt ze ook niet: dat is het geraamte en de verhalen
+ * staan eronder, deel voor deel.
+ *
+ * Vandaar dit los van `sleuteldeelIn`. Dat telt de hoofdstukken na, en op een
+ * deel dat er geen heeft is die telling geen controle maar een struikelblok.
+ * `sleuteldeelIn` gebruikt dit zelf, zodat er één plek is waar staat welk veld
+ * uit de vertaling komt — twee keer hetzelfde overschrijven is precies hoe de
+ * titels eerder uit elkaar liepen.
+ */
+export const sleutelflapIn = (
+  taal: string,
+  basis: Omit<Sleuteldeel, 'hoofdstukken'>,
+): Omit<Sleuteldeel, 'hoofdstukken'> => {
+  const vertaald = SLEUTEL_VERTALINGEN[taal]?.[basis.nummer]
+  if (!vertaald) return basis
+  return {
+    ...basis,
+    titel: vertaald.titel,
+    jaar: vertaald.jaar,
+    waar: vertaald.waar,
+    verteller: vertaald.verteller,
+    flap: vertaald.flap,
+    sleutel: vertaald.sleutel,
+    echt: vertaald.echt,
+    verzonnen: vertaald.verzonnen,
+  }
+}
+
 export const sleuteldeelIn = (taal: string, basis: Sleuteldeel): Sleuteldeel => {
   const vertaald = SLEUTEL_VERTALINGEN[taal]?.[basis.nummer]
   if (!vertaald) return basis
@@ -285,15 +318,7 @@ export const sleuteldeelIn = (taal: string, basis: Sleuteldeel): Sleuteldeel => 
   }
 
   return {
-    ...basis,
-    titel: vertaald.titel,
-    jaar: vertaald.jaar,
-    waar: vertaald.waar,
-    verteller: vertaald.verteller,
-    flap: vertaald.flap,
-    sleutel: vertaald.sleutel,
-    echt: vertaald.echt,
-    verzonnen: vertaald.verzonnen,
+    ...sleutelflapIn(taal, basis),
     hoofdstukken: basis.hoofdstukken.map((h, i) => ({
       nummer: h.nummer,
       titel: vertaald.hoofdstukken[i].titel,

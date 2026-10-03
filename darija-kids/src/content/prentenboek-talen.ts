@@ -46,6 +46,31 @@ export const VORDERING: Record<string, { klaar: number; totaal: number }> =
     totaal: DELEN.length,
   }]))
 
+/**
+ * De buitenkant van een prentenboek in een taal, zonder de bladzijden.
+ *
+ * Hetzelfde idee als `sleutelflapIn`: de boekenkast op de website laat zien
+ * waar een deel speelt en wat erna komt, en hoeft daar de twaalf bladen niet
+ * voor te laden. `deelIn` telt de bladen na omdat de tekeningen vastliggen, en
+ * een deel dat in een taal nog niet af is zou daarop omvallen — terwijl de
+ * titel en de plaats er wél zijn.
+ */
+export const flapIn = (taal: string, nummer: number): Omit<Deel, 'bladen'> => {
+  const basis = DELEN.find((d) => d.nummer === nummer)
+  if (!basis) throw new Error(`prentenboek: deel ${nummer} bestaat niet`)
+  const vertaald = VERTALINGEN[taal]?.[nummer]
+  if (!vertaald) return basis
+  return {
+    ...basis,
+    waar: vertaald.waar,
+    hierna: vertaald.hierna,
+    titel: vertaald.titel,
+    ondertitel: vertaald.ondertitel,
+    leeftijd: vertaald.leeftijd,
+    opdracht: vertaald.opdracht,
+  }
+}
+
 export const deelIn = (taal: string, nummer: number): Deel => {
   const basis = DELEN.find((d) => d.nummer === nummer)
   if (!basis) throw new Error(`prentenboek: deel ${nummer} bestaat niet`)

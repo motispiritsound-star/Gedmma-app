@@ -90,3 +90,14 @@ export const PATHS: Record<Lang, { home: string; privacy: string; terms: string;
   it: { home: '/it/', privacy: '/it/privacy', terms: '/it/condizioni', parents: '/it/genitori', name: '/it/nome', history: '/it/storia', books: '/it/libri', checkout: '/it/pagamento', read: '/it/leggere', portal: '/it/portale' },
   en: { home: '/en/', privacy: '/en/privacy', terms: '/en/terms', parents: '/en/parents', name: '/en/name', history: '/en/history', books: '/en/books', checkout: '/en/checkout', read: '/en/read', portal: '/en/portal' },
 }
+
+/**
+ * Waar de bladzijde van één reeks staat.
+ *
+ * Onder de boekenpagina, want dat is waar hij hoort: de kast staat op
+ * `/leesboeken` en de reeks is een plank daarin. Dat maakt het adres ook
+ * zelfverklarend — `/fr/livres/sleutels` zegt in welke taal en in welke kast
+ * je staat, en een bezoeker die het laatste stuk weghaalt komt bij de kast
+ * uit in plaats van bij een lege bladzijde.
+ */
+export const reeksPad = (lang: Lang, slug: string): string => `${PATHS[lang].books}/${slug}`

@@ -46,19 +46,6 @@ const server = await createServer({
 const load = (id) => server.ssrLoadModule(id)
 
 /**
- * De plaatsnamen bij De sleutels van Marokko.
- *
- * In `sleutels.ts` staat een Nederlandse zin ("Tanger, en de zeestraat naar
- * het noorden"); op de Spaanse pagina hoort daar geen Nederlands te staan.
- * Een plaatsnaam is in alle zes de talen hetzelfde, dus staat hier alleen de
- * naam. Het jaartal komt wel uit `sleutels.ts`: cijfers vertalen niet.
- */
-const SLEUTELPLEK = [
-  'Walili', 'Tanger', 'Fes', 'Marrakech', 'Ceuta', 'Tanger', 'Fes', 'Ksar el-Kebir',
-  'Marrakech', 'Essaouira', 'Salé', 'Rif', 'Rabat', 'Rabat', 'Atlas',
-]
-
-/**
  * De einddatum van de openingsactie, in de taal van de bladzijde.
  *
  * `ACTIE_TOT` staat in `shop.ts` als ISO-datum en niet als tekst, juist
@@ -73,7 +60,7 @@ const actieDatum = (lang) =>
 const [
   { LANGS, localeOf },
   { SITE },
-  { STORE, SITE_URL, PATHS, SOCIAL, FILM_YOUTUBE, POST_URL },
+  { STORE, SITE_URL, PATHS, SOCIAL, FILM_YOUTUBE, POST_URL, reeksPad },
   { SHOP, WINKEL_OPEN, ACTIE_TOT },
   { DELEN },
   { REEKS: SLEUTELREEKS },
@@ -86,8 +73,12 @@ const [
   { HISTORY },
   { unitSubtitle, lessonTitle, historyOf },
   { toestemmingVan },
-  { sleuteldeelIn, schilVanSleutel },
+  { sleuteldeelIn, sleutelflapIn, schilVanSleutel },
   { DEEL1_HOOFDSTUKKEN },
+  { REEKSEN },
+  { DELEN: PRENTENBOEKEN },
+  { flapIn: prentenflapIn },
+  { DELEN: ENC_DELEN },
   ...packs
 ] = await Promise.all([
   load('/src/i18n/languages.ts'),
@@ -107,6 +98,10 @@ const [
   load('/src/content/toestemming.ts'),
   load('/src/content/sleutels-talen.ts'),
   load('/src/content/sleutels-deel1.ts'),
+  load('/src/site/reeksen.ts'),
+  load('/src/content/prentenboek.ts'),
+  load('/src/content/prentenboek-talen.ts'),
+  load('/src/content/encyclopedie/delen.ts'),
   load('/src/i18n/nl.ts'),
   load('/src/i18n/fr.ts'),
   load('/src/i18n/de.ts'),
@@ -151,13 +146,23 @@ const vlagje = (l) =>
     ? `<span class="vlagje letters" aria-hidden="true">${esc(l.badge)}</span>`
     : `<img class="vlagje" src="/icons/vlag-${l.code}.svg" alt="" width="21" height="14">`
 
-const langRow = (lang, page) => LANGS.map((other) => {
-  const href = PATHS[other.code][page]
+/**
+ * De taalrij onderin de kiezer.
+ *
+ * `pad` is er voor de bladzijden die niet in `PATHS` staan: een reeks heeft
+ * per taal wel een adres, maar het staat samengesteld in `reeksPad` en niet
+ * als sleutel in de tabel. Zonder dit kwam de Franse vlag op de Nederlandse
+ * boekenpagina terecht — `PATHS.fr['sleutels']` is `undefined`, en dat wordt
+ * in een `href` een lege string.
+ */
+const langRow = (lang, page, pad) => LANGS.map((other) => {
+  const adres = pad ?? ((code) => PATHS[code][page])
+  const href = adres(other.code)
   const here = other.code === lang
   return `<li><a href="${href}"${here ? ' aria-current="page"' : ''} hreflang="${other.code}">${vlagje(other)}<span>${esc(other.name)}</span></a></li>`
 }).join('')
 
-const header = (lang, page, kaalNav = false) => {
+const header = (lang, page, kaalNav = false, pad = undefined) => {
   const c = SITE[lang]
   const here = LANGS.find((l) => l.code === lang)
   const home = PATHS[lang].home
@@ -196,7 +201,7 @@ const header = (lang, page, kaalNav = false) => {
     ${nav}
     <details class="langpick">
       <summary>${vlagje(here)}<span class="sr-name">${esc(here.name)}</span></summary>
-      <ul>${langRow(lang, page)}</ul>
+      <ul>${langRow(lang, page, pad)}</ul>
     </details>
   </div>
 </header>`
@@ -275,10 +280,19 @@ const kort = (tekst, max = 155) => {
   return `${stuk.slice(0, stuk.lastIndexOf(' ')).replace(/[,;:–—-]$/, '')}…`
 }
 
-const layout = ({ lang, page, title, description, body, ogImage = '/og.png', geenIndex = false, kaalNav = false }) => {
-  const canonical = SITE_URL + PATHS[lang][page === 'home' ? 'home' : page]
+const layout = ({ lang, page, title, description, body, ogImage = '/og.png', geenIndex = false, kaalNav = false, pad = undefined }) => {
+  /**
+   * Het adres van deze bladzijde in elke taal.
+   *
+   * Normaal staat dat in `PATHS`. Een reekspagina staat daar niet in — die
+   * hangt onder de boekenpagina en wordt door `reeksPad` samengesteld — dus
+   * die geeft zijn eigen `pad` mee. Canonical, de hreflang-regels en de
+   * taalkiezer lezen allemaal hieruit, zodat ze niet uit elkaar kunnen lopen.
+   */
+  const adres = pad ?? ((code) => PATHS[code][page === 'home' ? 'home' : page])
+  const canonical = SITE_URL + adres(lang)
   const alternates = LANGS.map((l) =>
-    `<link rel="alternate" hreflang="${l.code}" href="${SITE_URL}${PATHS[l.code][page === 'home' ? 'home' : page]}">`).join('\n  ')
+    `<link rel="alternate" hreflang="${l.code}" href="${SITE_URL}${adres(l.code)}">`).join('\n  ')
 
   return `<!doctype html>
 <html lang="${localeOf(lang)}">
@@ -291,7 +305,7 @@ const layout = ({ lang, page, title, description, body, ogImage = '/og.png', gee
   <link rel="canonical" href="${canonical}">
   ${geenIndex ? '<meta name="robots" content="noindex, nofollow">' : ''}
   ${alternates}
-  <link rel="alternate" hreflang="x-default" href="${SITE_URL}${PATHS.en[page === 'home' ? 'home' : page]}">
+  <link rel="alternate" hreflang="x-default" href="${SITE_URL}${adres('en')}">
   <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
   <!--
@@ -324,7 +338,7 @@ const layout = ({ lang, page, title, description, body, ogImage = '/og.png', gee
 </head>
 <body>
 <a class="skip" href="#main">${esc(SITE[lang].naarInhoud)}</a>
-${header(lang, page, kaalNav)}
+${header(lang, page, kaalNav, pad)}
 <main id="main">
 ${body}
 </main>
@@ -960,105 +974,58 @@ const historyPage = (lang) => {
  * gemaakt worden is geen loze belofte maar een peiling: wie hier op de
  * mailknop drukt, vertelt je welke van de twee reeksen je eerst moet maken.
  */
-const booksPage = (lang) => {
+/* ---------------------------------------------------------- de boekenkast */
+
+/**
+ * De prijs, met de doorgehaalde prijs ervoor als er een actie loopt.
+ *
+ * Het label ervoor staat buiten beeld maar wel in de tekst, want een
+ * doorgehaald bedrag is voor een schermlezer gewoon een bedrag: zonder dat
+ * woordje hoort een blinde bezoeker twee prijzen en geen actie. En het zegt
+ * "prijs na de actie", niet "normale prijs" — zie de uitleg in `shop.ts`.
+ */
+const prijsregel = (lang, koop) => {
   const c = SITE[lang]
-  const p = PATHS[lang]
-  const d = DELEN[lang]
+  const p = SHOP[koop]
+  if (!p?.na) return esc(p?.prijs ?? '')
+  return `<span class="was"><span class="buitenbeeld">${esc(c.boekActieNa)}: </span>`
+    + `<s>${esc(p.na)}</s></span> <span class="nu">${esc(p.prijs)}</span>`
+}
 
-  /**
-   * De prijs, met de doorgehaalde prijs ervoor als er een actie loopt.
-   *
-   * Het label ervoor staat buiten beeld maar wel in de tekst, want een
-   * doorgehaald bedrag is voor een schermlezer gewoon een bedrag: zonder dat
-   * woordje hoort een blinde bezoeker twee prijzen en geen actie. En het zegt
-   * "prijs na de actie", niet "normale prijs" — zie de uitleg in `shop.ts`.
-   */
-  const prijsregel = (koop) => {
-    const p = SHOP[koop]
-    if (!p?.na) return esc(p.prijs)
-    return `<span class="was"><span class="buitenbeeld">${esc(c.boekActieNa)}: </span>`
-      + `<s>${esc(p.na)}</s></span> <span class="nu">${esc(p.prijs)}</span>`
-  }
+/** Tot wanneer de introductieprijs geldt, en wat het daarna kost. */
+const actienoot = (lang, koop) =>
+  SHOP[koop]?.na
+    ? `<p class="actienoot">${esc(SITE[lang].boekActieNoot(actieDatum(lang), SHOP[koop].na))}</p>`
+    : ''
 
-  /** Tot wanneer de introductieprijs geldt, en wat het daarna kost. */
-  const actienoot = (koop) =>
-    SHOP[koop]?.na
-      ? `<p class="actienoot">${esc(c.boekActieNoot(actieDatum(lang), SHOP[koop].na))}</p>`
-      : ''
+/**
+ * De plaat bij een reeks.
+ *
+ * Staat er een geschilderde plaat in `site-assets/boeken/`, dan gaat die
+ * voor: die spreekt tot de verbeelding en een vectortekening doet dat niet.
+ * Zolang hij er niet is blijft de tekening staan, zodat de pagina nooit een
+ * gat heeft.
+ */
+const kunstwerk = (lang, bestand, terugval, alt) => {
+  const eigen = KUNSTTAAL[lang]?.has(bestand)
+  if (!eigen && !KUNST.has(bestand)) return terugval
+  const bron = eigen ? `/boeken/${lang}/${bestand}` : `/boeken/${bestand}`
+  return `<img src="${bron}" alt="${esc(alt)}" loading="lazy" decoding="async">`
+}
 
-  const reeks = (badge, titel, body, punten, kunst, koop) => `<article class="reeks">
-    <div class="kunst">${kunst}</div>
-    <div class="inhoud">
-      <span class="leeftijd">${esc(badge)}</span>
-      ${SHOP[koop]?.na ? `<span class="actiebadge">${esc(c.boekActie)}</span>` : ''}
-      <h2>${esc(titel)}</h2>
-      <p>${esc(body)}</p>
-      <ul>${punten.map((punt) => `<li>${esc(punt)}</li>`).join('')}</ul>
-      ${SHOP[koop]?.link
-        ? `<a class="mailbtn" href="${SHOP[koop].link}" rel="noopener">${esc(c.boekKoop)} — ${prijsregel(koop)}</a>`
-        : `<span class="status">${esc(c.boekStatus)} · ${prijsregel(koop)}</span>`}
-      ${actienoot(koop)}
-    </div>
-  </article>`
+/**
+ * De drie omslagen, als er nog geen geschilderde omslag is.
+ *
+ * De achtpuntige ster is in alle drie dezelfde vorm — de khatam die ook op de
+ * sleutel staat en in de vlag zit. Dat is geen versiering die ik erbij heb
+ * gezocht: het is het motief dat de drie reeksen aan elkaar bindt, en op een
+ * plank naast elkaar moet je kunnen zien dat ze bij elkaar horen.
+ */
+const khatam = (r, kleur) =>
+  `<g fill="${kleur}"><rect x="${-r}" y="${-r}" width="${r * 2}" height="${r * 2}" rx="${r / 6}"/>`
+  + `<rect x="${-r}" y="${-r}" width="${r * 2}" height="${r * 2}" rx="${r / 6}" transform="rotate(45)"/></g>`
 
-  /**
-   * Eén regel per deel: nummer, titel, waar het over gaat, prijs, knop.
-   *
-   * De knop verschijnt pas als er een betaallink is. Tot die tijd staat er
-   * "binnenkort" — geen dode knop, want een bezoeker die op een knop drukt en
-   * niets ziet gebeuren komt niet terug om het nog eens te proberen.
-   */
-  /**
-   * De delenlijst, met de plaat erbij waar er een is.
-   *
-   * De titel staat ook ín de plaat, en toch staat hij er nog eens onder. Dat
-   * is geen dubbelop: een voorlezer hoort geen plaatje, een zoekmachine leest
-   * er geen titel in, en tien van de vijftien delen van De sleutels hebben
-   * nog helemaal geen plaat. De lijst moet zonder beeld net zo goed werken.
-   */
-  const deelmap = { sbaReeks: 'sba', sleutelsReeks: 'sleutels' }
-  const lijst = (titels, bij, reeksId) => {
-    const map = deelmap[reeksId]
-    const heeft = DEELPLATEN[map]?.[lang] ?? new Set()
-    const plaat = (i) => {
-      const naam = `deel-${String(i + 1).padStart(2, '0')}.webp`
-      return heeft.has(naam)
-        ? `<img src="/reeks/${map}/${lang}/${naam}" alt="" width="1200" height="675" loading="lazy" decoding="async">`
-        : ''
-    }
-    return `<details class="delenlijst">
-    <summary>${esc(c.boekDelenKnop(titels.length))}</summary>
-    <ol>
-      ${titels.map((titel, i) => `<li${plaat(i) ? ' class="metplaat"' : ''}>
-        ${plaat(i)}
-        <span class="nr">${esc(c.boekDeelWoord)} ${i + 1}</span>
-        <span class="wat"><b>${esc(titel)}</b><i>${esc(bij(i))}</i></span>
-      </li>`).join('')}
-    </ol>
-    <p class="alles">${esc(c.boekAllesSamen(titels.length, SHOP[reeksId].prijs))}${
-      SHOP[reeksId].na ? ` ${esc(c.boekActieNoot(actieDatum(lang), SHOP[reeksId].na))}` : ''}</p>
-  </details>`
-  }
-
-  /**
-   * De plaat bij een reeks.
-   *
-   * Staat er een geschilderde plaat in `site-assets/boeken/`, dan gaat die
-   * voor: die spreekt tot de verbeelding en een vectortekening doet dat niet.
-   * Zolang hij er niet is blijft de tekening staan, zodat de pagina nooit een
-   * gat heeft.
-   */
-  const kunstwerk = (bestand, terugval, alt) => {
-    const eigen = KUNSTTAAL[lang]?.has(bestand)
-    if (!eigen && !KUNST.has(bestand)) return terugval
-    const bron = eigen ? `/boeken/${lang}/${bestand}` : `/boeken/${bestand}`
-    return `<img src="${bron}" alt="${esc(alt)}" loading="lazy" decoding="async">`
-  }
-
-  const leeuw = kunstwerk('sba.webp',
-    `<svg viewBox="0 0 300 230" aria-hidden="true">${sba(150, 80, 1.5, { tas: false })}</svg>`,
-    c.boekKleinTitel)
-  const sleutel = kunstwerk('sleutel.webp', `<svg viewBox="0 0 300 230" aria-hidden="true">
+const SLEUTELTEKENING = `<svg viewBox="0 0 300 230" aria-hidden="true">
     <circle cx="150" cy="115" r="96" fill="#1b2340"/>
     <g transform="translate(150 115) rotate(-30)" fill="#e8b93f">
       <circle cx="0" cy="-44" r="26"/><circle cx="0" cy="-44" r="11" fill="#1b2340"/>
@@ -1066,43 +1033,115 @@ const booksPage = (lang) => {
       <rect x="-6" y="30" width="26" height="11" rx="3"/>
       <rect x="-6" y="48" width="18" height="11" rx="3"/>
     </g>
-  </svg>`, c.boekGrootTitel)
+  </svg>`
 
-  /**
-   * Bovenaan, vóór de reeksen: wat voor boeken dit zijn en hoe je erbij komt.
-   *
-   * Een ouder die hier voor het eerst komt weet twee dingen niet: dat er wordt
-   * voorgelezen terwijl zijn kind meeleest, en waar het boek na het afrekenen
-   * blijft. Het eerste is het verschil met elk ander pdf-boek; het tweede is
-   * de vraag die anders per mail binnenkomt.
-   *
-   * Onderaan staat waar de stem vandaan komt. Dat is minder leuk nieuws, en
-   * daarom juist hier: wie op een iPhone koopt hoort de compacte stem, en dat
-   * hoort hij te lezen voordat hij afrekent en niet erna.
-   */
-  const luisteren = `<section class="luisteren">
-    <h2>${esc(c.boekLuisterKop)}</h2>
-    <p>${esc(c.boekLuisterLead)}</p>
-    <ol>${c.boekStappen.map(([kop, uitleg]) => `<li>
-      <b>${esc(kop)}</b>
-      <span>${esc(uitleg)}</span>
-    </li>`).join('')}</ol>
-    <p class="stemnoot">${esc(c.boekLuisterStem)}</p>
-  </section>`
+/**
+ * De encyclopedie: een roos van driehonderdzestig graden.
+ *
+ * Vierentwintig streepjes, elk vijftien graden — een windroos en geen klok.
+ * De ster in het midden is dezelfde khatam als op de sleutel, zodat de drie
+ * omslagen op één plank familie blijven.
+ */
+const enctekening = (lang) => `<svg viewBox="0 0 300 230" aria-hidden="true">
+    <rect width="300" height="230" fill="#1b2340"/>
+    <g transform="translate(150 96) scale(.74)">
+      <circle r="66" fill="none" stroke="#e8b93f" stroke-width="2" opacity=".55"/>
+      <g stroke="#e8b93f" stroke-width="3" stroke-linecap="round">
+        ${Array.from({ length: 24 }, (unused, i) => {
+          const hoek = (i * 15 * Math.PI) / 180
+          const lang = i % 6 === 0
+          const binnen = lang ? 70 : 76
+          const buiten = 86
+          const x = Math.sin(hoek)
+          const y = -Math.cos(hoek)
+          return `<line x1="${(x * binnen).toFixed(1)}" y1="${(y * binnen).toFixed(1)}"`
+            + ` x2="${(x * buiten).toFixed(1)}" y2="${(y * buiten).toFixed(1)}"${lang ? '' : ' opacity=".6"'}/>`
+        }).join('\n        ')}
+      </g>
+      ${khatam(26, '#e8b93f')}
+      ${khatam(11, '#1b2340')}
+    </g>
+    <text x="150" y="203" text-anchor="middle" fill="#e8b93f"
+      font-family="'Baloo 2', system-ui, sans-serif" font-size="25" font-weight="800"
+      >${esc(SITE[lang].boek360Titel)}</text>
+  </svg>`
 
-  const body = `<div class="wrap doc boeken">
-  <h1>${esc(c.boekTitel)}</h1>
-  <p class="intro">${esc(c.boekLead)}</p>
+/**
+ * De omslag van een reeks, de tekening erbij die erop lijkt.
+ *
+ * `sba.webp` en `sleutel.webp` bestaan als schilderij; de encyclopedie heeft
+ * er geen en krijgt er ook geen zolang er geen deel van geschreven is. Een
+ * omslag bij een leeg boek is een belofte, en deze reeks is juist de reeks die
+ * geen beloftes doet.
+ */
+const reeksomslag = (lang, id) => {
+  const c = SITE[lang]
+  if (id === 'sba') {
+    return kunstwerk(lang, 'sba.webp',
+      `<svg viewBox="0 0 300 230" aria-hidden="true">${sba(150, 80, 1.5, { tas: false })}</svg>`,
+      c.boekKleinTitel)
+  }
+  if (id === 'sleutels') return kunstwerk(lang, 'sleutel.webp', SLEUTELTEKENING, c.boekGrootTitel)
+  return enctekening(lang)
+}
 
-  ${luisteren}
+/**
+ * Wat er op de rug van een reeks staat: de drie reeksen in één tabel.
+ *
+ * Alle drie de bladzijden lezen hieruit — de kast, de reekspagina en de
+ * taalkiezer — zodat een titel niet op de ene plek anders kan heten dan op de
+ * andere. De delen komen uit de boeken zelf en staan hier niet overgeschreven;
+ * `delen.ts` legt uit waarom dat ooit vijfenvijftig verkeerde titels opleverde.
+ */
+const reeksinfo = (lang, plek) => {
+  const c = SITE[lang]
+  const d = DELEN[lang]
+  if (plek.id === 'sba') {
+    return {
+      badge: c.boekKlein,
+      titel: c.boekKleinTitel,
+      onder: '',
+      body: c.boekKleinBody,
+      punten: c.boekKleinPunten,
+      delen: d.sba.length,
+    }
+  }
+  if (plek.id === 'sleutels') {
+    return {
+      badge: c.boekGroot,
+      titel: c.boekGrootTitel,
+      onder: '',
+      body: c.boekGrootBody,
+      punten: c.boekGrootPunten,
+      delen: d.sleutels.length,
+    }
+  }
+  return {
+    badge: c.boek360,
+    titel: c.boek360Titel,
+    onder: c.boek360Onder,
+    body: c.boek360Body,
+    punten: c.boek360Punten,
+    delen: ENC_DELEN.filter((x) => x.reeks === 'marokko').length,
+  }
+}
 
-  ${reeks(c.boekKlein, c.boekKleinTitel, c.boekKleinBody, c.boekKleinPunten, leeuw, 'sbaReeks')}
-  ${lijst(d.sba, () => d.woorden(12), 'sbaReeks')}
-
-  ${reeks(c.boekGroot, c.boekGrootTitel, c.boekGrootBody, c.boekGrootPunten, sleutel, 'sleutelsReeks')}
-  ${lijst(d.sleutels, (i) => `${SLEUTELREEKS[i].jaar === 'Nu' ? d.nu : SLEUTELREEKS[i].jaar} · ${SLEUTELPLEK[i]}`, 'sleutelsReeks')}
-
-  <p class="proef">
+/**
+ * Het begin van De olijvenbrand, met stem, zonder account.
+ *
+ * De etalage laat horen wat er te koop is. Een pdf laat dat niet horen: die
+ * download je, opent in een ander programma, en zwijgt. Dit is drie
+ * hoofdstukken uit hetzelfde boek, met dezelfde knop erboven als na het
+ * afrekenen — wie dit hoort, weet wat hij koopt.
+ *
+ * Staat op twee bladzijden: in de kast, want dat is waar de meeste bezoekers
+ * binnenkomen, en op de bladzijde van De sleutels van Marokko, want daar
+ * hoort het boek. Eén functie, zodat de tweede niet achter kan gaan lopen.
+ */
+const proefblok = (lang) => {
+  const c = SITE[lang]
+  const d = DELEN[lang]
+  return `<p class="proef">
     <button type="button" class="mailbtn" id="proefknop">${esc(c.boekProef)}</button>
     <i>${esc(c.boekProefNoot(d.sleutels[0]))}</i>
     ${PROEF.has(`sleutels-deel-1-${lang}.pdf`)
@@ -1111,22 +1150,9 @@ const booksPage = (lang) => {
   </p>
   <div id="proef" class="lezer" hidden></div>
 
-  ${WINKEL_OPEN ? '' : `<p class="soon">${esc(c.boekSlot)}</p>`}
-  ${houForm(lang, c.houNootBoeken)}
-  <p class="slotknoppen"><a class="mailbtn zacht" href="${p.checkout}">${esc(c.afrekenLink)}</a></p>
-</div>
-
 <script src="/lezer.js"></script>
 <script>
 (() => {
-  /**
-   * Het begin van De olijvenbrand, met stem, zonder account.
-   *
-   * De etalage laat horen wat er te koop is. Een pdf laat dat niet horen: die
-   * download je, opent in een ander programma, en zwijgt. Dit is drie
-   * hoofdstukken uit hetzelfde boek, met dezelfde knop erboven als na het
-   * afrekenen — wie dit hoort, weet wat hij koopt.
-   */
   const knop = document.getElementById('proefknop')
   const vak = document.getElementById('proef')
   if (!knop || !vak) return
@@ -1159,11 +1185,230 @@ const booksPage = (lang) => {
   }
 })()
 </script>`
+}
+
+/**
+ * De kast: drie planken, en achter elke plank een bladzijde.
+ *
+ * Hier stond eerst de hele winkel op één bladzijde: twee reeksen met hun
+ * opsomming, hun prijs, en daaronder een dichtgeklapte lijst met de titels van
+ * de delen. Wie wilde weten waar deel vier over ging klikte die lijst open en
+ * kreeg één regel; de flaptekst, de verteller en de twee bladzijden achterin
+ * stonden er niet, hoewel ze in zes talen bestaan.
+ *
+ * Dus: deze bladzijde is de kast en verder niets. Een omslag, een leeftijd,
+ * hoeveel delen en wat het kost — genoeg om te kiezen, en één klik naar alles.
+ */
+const biebPage = (lang) => {
+  const c = SITE[lang]
+  const p = PATHS[lang]
+
+  const luisteren = `<section class="luisteren">
+    <h2>${esc(c.boekLuisterKop)}</h2>
+    <p>${esc(c.boekLuisterLead)}</p>
+    <ol>${c.boekStappen.map(([kop, uitleg]) => `<li>
+      <b>${esc(kop)}</b>
+      <span>${esc(uitleg)}</span>
+    </li>`).join('')}</ol>
+    <p class="stemnoot">${esc(c.boekLuisterStem)}</p>
+  </section>`
+
+  /**
+   * Eén plank. De hele kaart is de link en niet alleen de titel.
+   *
+   * Een omslag van twaalf centimeter breed waarvan alleen de vier woorden
+   * eronder aan te wijzen zijn, is op een telefoon een kaart die niet werkt.
+   */
+  const plank = (plek) => {
+    const i = reeksinfo(lang, plek)
+    const koopbaar = plek.koop && SHOP[plek.koop]?.link
+    const prijs = koopbaar
+      ? prijsregel(lang, plek.koop)
+      : `<span class="nogniet">${esc(c.boekStatus)}</span>`
+    return `<li class="plank">
+      <a href="${reeksPad(lang, plek.slug)}">
+        <span class="omslag">${reeksomslag(lang, plek.id)}</span>
+        <span class="rug">
+          <span class="insignes">
+            <span class="leeftijd">${esc(i.badge)}</span>
+            ${plek.koop && SHOP[plek.koop]?.na ? `<span class="actiebadge">${esc(c.boekActie)}</span>` : ''}
+          </span>
+          <b class="titel">${esc(i.titel)}</b>
+          ${i.onder ? `<i class="onder">${esc(i.onder)}</i>` : ''}
+          <span class="meta">${esc(c.biebDelen(i.delen))} · ${prijs}</span>
+          <span class="meer">${esc(c.biebBekijk)}</span>
+        </span>
+      </a>
+    </li>`
+  }
+
+  const body = `<div class="wrap doc boeken bieb">
+  <h1>${esc(c.boekTitel)}</h1>
+  <p class="intro">${esc(c.boekLead)}</p>
+
+  ${luisteren}
+
+  <section class="kast" aria-labelledby="kastkop">
+    <h2 id="kastkop">${esc(c.biebKop)}</h2>
+    <p class="kastlead">${esc(c.biebLead)}</p>
+    <ul class="planken">
+      ${REEKSEN.map(plank).join('\n      ')}
+    </ul>
+  </section>
+
+  ${proefblok(lang)}
+
+  ${WINKEL_OPEN ? '' : `<p class="soon">${esc(c.boekSlot)}</p>`}
+  ${houForm(lang, c.houNootBoeken)}
+  <p class="slotknoppen"><a class="mailbtn zacht" href="${p.checkout}">${esc(c.afrekenLink)}</a></p>
+</div>`
 
   return layout({
     lang, page: 'books', body,
     title: `${c.boekTitel} — Darijaforkids`,
     description: c.boekLead,
+  })
+}
+
+/**
+ * Eén reeks, deel voor deel.
+ *
+ * Alles wat van een deel bekend is staat hier: waar het speelt, wie het
+ * vertelt, wat er op de achterkant staat, en bij De sleutels van Marokko ook
+ * de twee lijsten achterin — wat er echt gebeurd is en wat verzonnen is. Die
+ * lijsten zijn volgens `docs/GESCHIEDENISREEKS.md` het beste deel van het
+ * boek, en ze stonden tot nu toe nergens op de site.
+ *
+ * Ze staan dichtgeklapt, want bij vijftien delen onder elkaar is dat anders
+ * een bladzijde van tienduizend woorden. Dichtgeklapt is hier wel het goede
+ * gereedschap: wie één deel wil nalezen klapt één deel open, en een
+ * zoekmachine leest een `details` gewoon mee.
+ */
+const reeksPage = (lang, plek) => {
+  const c = SITE[lang]
+  const p = PATHS[lang]
+  const d = DELEN[lang]
+  const i = reeksinfo(lang, plek)
+  const platen = plek.platen ? (DEELPLATEN[plek.platen]?.[lang] ?? new Set()) : new Set()
+
+  const plaat = (nummer) => {
+    const naam = `deel-${String(nummer).padStart(2, '0')}.webp`
+    return platen.has(naam)
+      ? `<img src="/reeks/${plek.platen}/${lang}/${naam}" alt="" width="1200" height="675" loading="lazy" decoding="async">`
+      : ''
+  }
+
+  const deelkaart = (nummer, titel, regels, binnen = '') => `<li class="deel${plaat(nummer) ? ' metplaat' : ''}">
+    ${plaat(nummer)}
+    <div class="over">
+      <span class="nr">${esc(c.boekDeelWoord)} ${nummer}</span>
+      <h3>${esc(titel)}</h3>
+      ${regels}
+      ${binnen}
+    </div>
+  </li>`
+
+  /** De twaalf prentenboeken: waar het speelt, voor wie, en hoeveel woorden. */
+  const sbaDelen = () => PRENTENBOEKEN.map((basis) => {
+    const deel = prentenflapIn(lang, basis.nummer)
+    return deelkaart(deel.nummer, deel.titel, `
+      ${deel.ondertitel ? `<p class="onder">${esc(deel.ondertitel)}</p>` : ''}
+      <p class="plek">${esc(deel.waar)} · ${esc(deel.leeftijd)} · ${esc(d.woorden(12))}</p>
+      ${deel.hierna ? `<p class="hierna"><b>${esc(c.reeksHierna)}</b> ${esc(deel.hierna)}</p>` : ''}`)
+  }).join('\n    ')
+
+  /** De vijftien leesboeken, met de bladzijden achterin erbij. */
+  const sleutelDelen = () => SLEUTELREEKS.map((basis) => {
+    const deel = sleutelflapIn(lang, basis)
+    const jaar = deel.jaar === 'Nu' ? d.nu : deel.jaar
+    const achterin = `<details class="echt">
+        <summary>${esc(c.reeksEchtKop)}</summary>
+        <ul>${deel.echt.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>
+        <p class="kop2">${esc(c.reeksVerzonnenKop)}</p>
+        <ul>${deel.verzonnen.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>
+        <p class="sleutelregel"><b>${esc(c.reeksSleutelKop)}</b> ${esc(deel.sleutel)}</p>
+      </details>`
+    return deelkaart(deel.nummer, deel.titel, `
+      <p class="plek">${esc(jaar)} · ${esc(deel.waar)}</p>
+      <p class="flap">${esc(deel.flap)}</p>
+      <p class="verteller"><b>${esc(c.reeksVerteller)}</b> ${esc(deel.verteller)}</p>`, achterin)
+  }).join('\n    ')
+
+  /**
+   * De encyclopedie: zeventien delen, en geen woord over wat erin staat.
+   *
+   * Want er staat nog niets in. Wat er wel is, is de afbakening: wat een deel
+   * bestrijkt en waarom de grens daar ligt. Dat is eerlijk op te schrijven
+   * zonder één bron te hebben gelezen, en het is ook het enige.
+   */
+  const encDelen = (reeks) => ENC_DELEN.filter((x) => x.reeks === reeks).map((deel) => `<li class="deel">
+      <div class="over">
+        <span class="nr">${esc(c.boekDeelWoord)} ${deel.nummer}</span>
+        <h3>${esc(deel.titel)}</h3>
+        ${deel.periode ? `<p class="plek">${esc(deel.periode)}</p>` : ''}
+        <p class="flap">${esc(deel.omvat)}</p>
+      </div>
+    </li>`).join('\n    ')
+
+  const delen = plek.id === 'sba' ? sbaDelen()
+    : plek.id === 'sleutels' ? sleutelDelen()
+    : encDelen('marokko')
+
+  const koopbaar = plek.koop && SHOP[plek.koop]?.link
+  const koopregel = plek.koop
+    ? (koopbaar
+      ? `<a class="mailbtn" href="${SHOP[plek.koop].link}" rel="noopener">${esc(c.boekKoop)} — ${prijsregel(lang, plek.koop)}</a>`
+      : `<span class="status">${esc(c.boekStatus)} · ${prijsregel(lang, plek.koop)}</span>`)
+    : `<span class="status">${esc(c.boekStatus)}</span>`
+
+  const samen = plek.koop
+    ? `<p class="alles">${esc(c.boekAllesSamen(i.delen, SHOP[plek.koop].prijs))}</p>`
+    : ''
+
+  const body = `<div class="wrap doc reekspagina">
+  <p class="kruimel"><a href="${p.books}">${esc(c.biebTerug)}</a></p>
+
+  <article class="reeks reekskop">
+    <div class="kunst">${reeksomslag(lang, plek.id)}</div>
+    <div class="inhoud">
+      <span class="leeftijd">${esc(i.badge)}</span>
+      ${plek.koop && SHOP[plek.koop]?.na ? `<span class="actiebadge">${esc(c.boekActie)}</span>` : ''}
+      <h1>${esc(i.titel)}</h1>
+      ${i.onder ? `<p class="onder">${esc(i.onder)}</p>` : ''}
+      <p>${esc(i.body)}</p>
+      <ul>${i.punten.map((punt) => `<li>${esc(punt)}</li>`).join('')}</ul>
+      ${koopregel}
+      ${actienoot(lang, plek.koop)}
+      ${samen}
+    </div>
+  </article>
+
+  ${plek.id === 'marokko360' ? `<p class="eerlijk">${esc(c.boek360Noot)}</p>` : ''}
+
+  <h2>${esc(c.reeksDelenKop)}</h2>
+  <ol class="delen">
+    ${delen}
+  </ol>
+
+  ${plek.id === 'marokko360' ? `<h2>${esc(c.boek360Andalus)}</h2>
+  <ol class="delen">
+    ${encDelen('andalus')}
+  </ol>` : ''}
+
+  ${plek.id === 'sleutels' ? proefblok(lang) : ''}
+
+  ${houForm(lang, c.houNootBoeken)}
+  <p class="slotknoppen">
+    <a class="mailbtn zacht" href="${p.books}">${esc(c.biebTerug)}</a>
+    <a class="mailbtn zacht" href="${p.checkout}">${esc(c.afrekenLink)}</a>
+  </p>
+</div>`
+
+  return layout({
+    lang, page: 'reeks', body,
+    pad: (code) => reeksPad(code, plek.slug),
+    title: `${i.titel} — Darijaforkids`,
+    description: i.body,
   })
 }
 
@@ -1946,11 +2191,12 @@ for (const { code: lang } of LANGS) {
   await write(PATHS[lang].parents, parentsPage(lang))
   await write(PATHS[lang].name, naamPage(lang))
   await write(PATHS[lang].history, historyPage(lang))
-  await write(PATHS[lang].books, booksPage(lang))
+  await write(PATHS[lang].books, biebPage(lang))
+  for (const plek of REEKSEN) await write(reeksPad(lang, plek.slug), reeksPage(lang, plek))
   await write(PATHS[lang].checkout, checkoutPage(lang))
   await write(PATHS[lang].read, readPage(lang))
   await write(PATHS[lang].portal, portaalPage(lang))
-  pages += 10
+  pages += 10 + REEKSEN.length
   if (!shots.length) missing.push(`de schermen voor ${lang}`)
   if (!film) missing.push(`de film voor ${lang}`)
 }
@@ -1975,8 +2221,11 @@ self.addEventListener('activate', (event) => {
 })
 `)
 
-const urls = LANGS.flatMap(({ code }) =>
-  ['home', 'privacy', 'terms', 'parents', 'name', 'history', 'books', 'checkout'].map((page) => SITE_URL + PATHS[code][page]))
+const urls = LANGS.flatMap(({ code }) => [
+  ...['home', 'privacy', 'terms', 'parents', 'name', 'history', 'books', 'checkout']
+    .map((page) => SITE_URL + PATHS[code][page]),
+  ...REEKSEN.map((plek) => SITE_URL + reeksPad(code, plek.slug)),
+])
 
 await writeFile(path.join(OUT, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

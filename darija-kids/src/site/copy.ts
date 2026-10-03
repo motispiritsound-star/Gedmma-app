@@ -28,7 +28,7 @@ const nl = {
   boekDeel1: 'Deel 1',
   boekAlleVijf: 'Alle twaalf',
   boekTitel: 'Leesboeken voor onderweg naar huis',
-  boekLead: 'Twee reeksen, twee leeftijden, en één bedoeling: dat een kind weet waar het vandaan komt.',
+  boekLead: 'Drie reeksen, van voorlezen tot naslaan, en één bedoeling: dat een kind weet waar het vandaan komt.',
   portaal: {
     titel: 'Mijn boeken',
     /**
@@ -105,6 +105,49 @@ const nl = {
   boekOverzicht: 'Alle delen op een rij',
   boekDelenKnop: (n: number): string => `Deel 1 tot en met deel ${n} — wat er in zit`,
   boekAllesSamen: (n: number, prijs: string): string => `Alle ${n} delen samen voor ${prijs} — je koopt de reeks, niet een deel.`,
+  /* ----------------------------------------------------- de boekenkast */
+
+  /**
+   * De kast, en per reeks een plank.
+   *
+   * Deze bladzijde verkocht eerst twee reeksen in twee blokken met de delen
+   * dichtgeklapt eronder. Wie wilde weten waar deel vier over ging, moest
+   * klikken en kreeg dan één regel. Nu is dit de kast en heeft elke reeks een
+   * eigen bladzijde — daar is ruimte voor wat een boek eigenlijk is.
+   */
+  biebKop: 'De boekenkast',
+  biebLead: 'Klik op een reeks, dan lees je waar hij over gaat en wat er in elk deel gebeurt.',
+  biebDelen: (n: number): string => `${n} delen`,
+  biebBekijk: 'Open de reeks',
+  biebTerug: 'Terug naar de boekenkast',
+
+  reeksDelenKop: 'De delen',
+  reeksVerteller: 'Verteld door',
+  reeksEchtKop: 'Wat hiervan is echt gebeurd',
+  reeksVerzonnenKop: 'Wat verzonnen is',
+  reeksSleutelKop: 'De sleutel',
+  reeksHierna: 'En hierna',
+
+  /**
+   * De derde plank: een naslagwerk en geen verhaal.
+   *
+   * Dat staat er met zoveel woorden bij, want het staat naast twee reeksen
+   * die wél verzonnen zijn, en een kind dat de ene voor de andere houdt
+   * leert iets dat niet waar is. En er staat bij dat er nog niets van te
+   * koop is — zie `boek360Noot`, dat is geen kleine letter maar de stand.
+   */
+  boek360: 'Naslagwerk · 12+',
+  boek360Titel: 'Marokko 360°',
+  boek360Onder: 'De historische encyclopedie van Marokko',
+  boek360Body: 'Vijftien delen over de geschiedenis van Marokko, en twee over al-Andalus. Hier wordt niets verteld: hier staat wat er werkelijk van bekend is, met bij elke bewering de bron erbij — wie het schreef, waarin, wanneer en op welke bladzijde. Waar geleerden het oneens zijn staat dat erbij, en waar iets onzeker is staat dat er ook.',
+  boek360Punten: [
+    'Bij elke bewering de bron, zonder uitzondering',
+    'Wat betwist is, staat erbij als betwist',
+    'Van de vroegste bewoners tot Tamazight in de grondwet',
+  ],
+  boek360Noot: 'Hiervan is nog geen deel te koop en geen hoofdstuk gepubliceerd. Een hoofdstuk gaat pas open als de bronnen eronder één voor één zijn ingezien — gelezen, niet gevonden. Wat hieronder staat is de voorgenomen indeling, en ook die kan na onderzoek nog schuiven.',
+  boek360Omvat: 'Wat dit deel bestrijkt',
+  boek360Andalus: 'Al-Andalus',
   boekDeelWoord: 'Deel',
   boekKoop: 'Kopen',
   boekActie: 'Openingsactie',
@@ -297,7 +340,7 @@ const fr: SiteCopy = {
   boekDeel1: 'Tome 1',
   boekAlleVijf: 'Les douze',
   boekTitel: 'Des livres pour le chemin du retour',
-  boekLead: 'Deux séries, deux âges, une seule idée : qu’un enfant sache d’où il vient.',
+  boekLead: 'Trois séries, de la lecture du soir à l’ouvrage de référence, une seule idée : qu’un enfant sache d’où il vient.',
   portaal: {
     titel: 'Mes livres',
     alGekocht: 'Vous avez acheté une série de livres ? Lisez-la ici.',
@@ -349,6 +392,32 @@ const fr: SiteCopy = {
   boekOverzicht: 'Tous les tomes',
   boekDelenKnop: (n: number): string => `Du tome 1 au tome ${n} — ce qu’il y a dedans`,
   boekAllesSamen: (n: number, prijs: string): string => `Les ${n} tomes ensemble pour ${prijs} — vous achetez la série, pas un tome.`,
+  /* ------------------------------------------------ la bibliothèque */
+  biebKop: 'La bibliothèque',
+  biebLead: 'Cliquez sur une série : vous y lirez de quoi elle parle et ce qui se passe dans chaque tome.',
+  biebDelen: (n: number): string => `${n} tomes`,
+  biebBekijk: 'Ouvrir la série',
+  biebTerug: 'Retour à la bibliothèque',
+
+  reeksDelenKop: 'Les tomes',
+  reeksVerteller: 'Raconté par',
+  reeksEchtKop: 'Ce qui s’est vraiment passé',
+  reeksVerzonnenKop: 'Ce qui est inventé',
+  reeksSleutelKop: 'La clé',
+  reeksHierna: 'Et ensuite',
+
+  boek360: 'Ouvrage de référence · 12+',
+  boek360Titel: 'Maroc 360°',
+  boek360Onder: 'L’encyclopédie historique du Maroc',
+  boek360Body: 'Quinze tomes sur l’histoire du Maroc, et deux sur al-Andalus. Ici on ne raconte rien : on écrit ce que l’on sait vraiment, avec pour chaque affirmation sa source — qui l’a écrite, dans quel ouvrage, quand et à quelle page. Là où les spécialistes ne sont pas d’accord, c’est indiqué ; là où quelque chose reste incertain, c’est indiqué aussi.',
+  boek360Punten: [
+    'Une source pour chaque affirmation, sans exception',
+    'Ce qui est contesté est signalé comme contesté',
+    'Des premiers habitants au tamazight dans la Constitution',
+  ],
+  boek360Noot: 'Aucun tome n’est encore en vente et aucun chapitre n’est publié. Un chapitre ne s’ouvre que lorsque ses sources ont été consultées une à une — lues, pas seulement trouvées. Ce qui suit est le découpage envisagé, et il peut encore bouger après les recherches.',
+  boek360Omvat: 'Ce que couvre ce tome',
+  boek360Andalus: 'Al-Andalus',
   boekDeelWoord: 'Tome',
   boekKoop: 'Acheter',
   boekActie: 'Offre de lancement',
@@ -526,7 +595,7 @@ const de: SiteCopy = {
   boekDeel1: 'Band 1',
   boekAlleVijf: 'Alle zwölf',
   boekTitel: 'Lesebücher für den Weg nach Hause',
-  boekLead: 'Zwei Reihen, zwei Altersgruppen, eine Absicht: dass ein Kind weiß, wo es herkommt.',
+  boekLead: 'Drei Reihen, vom Vorlesen bis zum Nachschlagen, eine Absicht: dass ein Kind weiß, wo es herkommt.',
   portaal: {
     titel: 'Meine Bücher',
     alGekocht: 'Eine Buchreihe gekauft? Hier liest du sie.',
@@ -578,6 +647,32 @@ const de: SiteCopy = {
   boekOverzicht: 'Alle Bände',
   boekDelenKnop: (n: number): string => `Band 1 bis Band ${n} — was drin ist`,
   boekAllesSamen: (n: number, prijs: string): string => `Alle ${n} Bände zusammen für ${prijs} — du kaufst die Reihe, nicht einen Band.`,
+  /* ----------------------------------------------------- das Bücherregal */
+  biebKop: 'Das Bücherregal',
+  biebLead: 'Klick auf eine Reihe, dann liest du, worum sie geht und was in jedem Band passiert.',
+  biebDelen: (n: number): string => `${n} Bände`,
+  biebBekijk: 'Reihe öffnen',
+  biebTerug: 'Zurück zum Bücherregal',
+
+  reeksDelenKop: 'Die Bände',
+  reeksVerteller: 'Erzählt von',
+  reeksEchtKop: 'Was davon wirklich passiert ist',
+  reeksVerzonnenKop: 'Was erfunden ist',
+  reeksSleutelKop: 'Der Schlüssel',
+  reeksHierna: 'Und danach',
+
+  boek360: 'Nachschlagewerk · 12+',
+  boek360Titel: 'Marokko 360°',
+  boek360Onder: 'Die historische Enzyklopädie Marokkos',
+  boek360Body: 'Fünfzehn Bände über die Geschichte Marokkos und zwei über al-Andalus. Hier wird nichts erzählt: hier steht, was wirklich bekannt ist, und bei jeder Aussage steht die Quelle dabei — wer sie geschrieben hat, worin, wann und auf welcher Seite. Wo die Forschung uneinig ist, steht das dabei, und wo etwas unsicher ist, steht das auch dabei.',
+  boek360Punten: [
+    'Bei jeder Aussage die Quelle, ohne Ausnahme',
+    'Was umstritten ist, steht als umstritten dabei',
+    'Von den frühesten Bewohnern bis zu Tamazight in der Verfassung',
+  ],
+  boek360Noot: 'Davon ist noch kein Band zu kaufen und kein Kapitel veröffentlicht. Ein Kapitel wird erst freigegeben, wenn seine Quellen einzeln eingesehen wurden — gelesen, nicht gefunden. Was unten steht, ist die geplante Einteilung, und auch die kann sich nach der Recherche noch verschieben.',
+  boek360Omvat: 'Was dieser Band abdeckt',
+  boek360Andalus: 'Al-Andalus',
   boekDeelWoord: 'Band',
   boekKoop: 'Kaufen',
   boekActie: 'Eröffnungsangebot',
@@ -755,7 +850,7 @@ const es: SiteCopy = {
   boekDeel1: 'Tomo 1',
   boekAlleVijf: 'Los doce',
   boekTitel: 'Libros para el camino a casa',
-  boekLead: 'Dos series, dos edades y una sola intención: que un niño sepa de dónde viene.',
+  boekLead: 'Tres series, de la lectura en voz alta a la obra de consulta, y una sola intención: que un niño sepa de dónde viene.',
   portaal: {
     titel: 'Mis libros',
     alGekocht: '¿Has comprado una serie de libros? Léela aquí.',
@@ -807,6 +902,32 @@ const es: SiteCopy = {
   boekOverzicht: 'Todos los tomos',
   boekDelenKnop: (n: number): string => `Del tomo 1 al tomo ${n} — qué incluye`,
   boekAllesSamen: (n: number, prijs: string): string => `Los ${n} tomos juntos por ${prijs}: compras la serie, no un tomo.`,
+  /* ----------------------------------------------------- la biblioteca */
+  biebKop: 'La biblioteca',
+  biebLead: 'Pulsa en una serie y leerás de qué trata y qué pasa en cada tomo.',
+  biebDelen: (n: number): string => `${n} tomos`,
+  biebBekijk: 'Abrir la serie',
+  biebTerug: 'Volver a la biblioteca',
+
+  reeksDelenKop: 'Los tomos',
+  reeksVerteller: 'Lo cuenta',
+  reeksEchtKop: 'Lo que ocurrió de verdad',
+  reeksVerzonnenKop: 'Lo que es inventado',
+  reeksSleutelKop: 'La llave',
+  reeksHierna: 'Y después',
+
+  boek360: 'Obra de consulta · 12+',
+  boek360Titel: 'Marruecos 360°',
+  boek360Onder: 'La enciclopedia histórica de Marruecos',
+  boek360Body: 'Quince tomos sobre la historia de Marruecos y dos sobre al-Ándalus. Aquí no se cuenta nada: aquí está lo que de verdad se sabe, y cada afirmación lleva su fuente — quién la escribió, en qué obra, cuándo y en qué página. Donde los especialistas no se ponen de acuerdo, se dice; y donde algo es incierto, también.',
+  boek360Punten: [
+    'Una fuente por afirmación, sin excepciones',
+    'Lo que se discute aparece como discutido',
+    'De los primeros habitantes al tamazight en la Constitución',
+  ],
+  boek360Noot: 'Todavía no hay ningún tomo en venta ni ningún capítulo publicado. Un capítulo solo se abre cuando sus fuentes se han consultado una a una: leídas, no solo encontradas. Lo que sigue es la división prevista, y también puede cambiar después de la investigación.',
+  boek360Omvat: 'Lo que abarca este tomo',
+  boek360Andalus: 'Al-Ándalus',
   boekDeelWoord: 'Tomo',
   boekKoop: 'Comprar',
   boekActie: 'Oferta de lanzamiento',
@@ -984,7 +1105,7 @@ const it: SiteCopy = {
   boekDeel1: 'Volume 1',
   boekAlleVijf: 'Tutti e dodici',
   boekTitel: 'Libri per la strada di casa',
-  boekLead: 'Due collane, due età e una sola intenzione: che un bambino sappia da dove viene.',
+  boekLead: 'Tre collane, dalla lettura ad alta voce all’opera di consultazione, e una sola intenzione: che un bambino sappia da dove viene.',
   portaal: {
     titel: 'I miei libri',
     alGekocht: 'Hai comprato una serie di libri? Leggila qui.',
@@ -1036,6 +1157,32 @@ const it: SiteCopy = {
   boekOverzicht: 'Tutti i volumi',
   boekDelenKnop: (n: number): string => `Dal volume 1 al volume ${n} — cosa contiene`,
   boekAllesSamen: (n: number, prijs: string): string => `Tutti i ${n} volumi insieme per ${prijs}: compri la collana, non un volume.`,
+  /* ----------------------------------------------------- la biblioteca */
+  biebKop: 'La biblioteca',
+  biebLead: 'Clicca su una collana e leggerai di cosa parla e cosa succede in ogni volume.',
+  biebDelen: (n: number): string => `${n} volumi`,
+  biebBekijk: 'Apri la collana',
+  biebTerug: 'Torna alla biblioteca',
+
+  reeksDelenKop: 'I volumi',
+  reeksVerteller: 'Raccontato da',
+  reeksEchtKop: 'Quello che è davvero accaduto',
+  reeksVerzonnenKop: 'Quello che è inventato',
+  reeksSleutelKop: 'La chiave',
+  reeksHierna: 'E poi',
+
+  boek360: 'Opera di consultazione · 12+',
+  boek360Titel: 'Marocco 360°',
+  boek360Onder: 'L’enciclopedia storica del Marocco',
+  boek360Body: 'Quindici volumi sulla storia del Marocco e due su al-Andalus. Qui non si racconta nulla: qui c’è ciò che si sa davvero, e ogni affermazione porta la sua fonte — chi l’ha scritta, in quale opera, quando e a quale pagina. Dove gli studiosi non sono d’accordo, è detto; e dove qualcosa è incerto, anche.',
+  boek360Punten: [
+    'Una fonte per ogni affermazione, senza eccezioni',
+    'Ciò che è controverso è indicato come controverso',
+    'Dai primi abitanti al tamazight nella Costituzione',
+  ],
+  boek360Noot: 'Di questa collana non c’è ancora nessun volume in vendita né nessun capitolo pubblicato. Un capitolo si apre solo quando le sue fonti sono state consultate una per una: lette, non soltanto trovate. Quella che segue è la suddivisione prevista, e anche quella può cambiare dopo la ricerca.',
+  boek360Omvat: 'Cosa copre questo volume',
+  boek360Andalus: 'Al-Andalus',
   boekDeelWoord: 'Volume',
   boekKoop: 'Acquista',
   boekActie: 'Offerta di lancio',
@@ -1213,7 +1360,7 @@ const en: SiteCopy = {
   boekDeel1: 'Book 1',
   boekAlleVijf: 'All twelve',
   boekTitel: 'Books for the way home',
-  boekLead: 'Two series, two ages, one intention: that a child knows where they come from.',
+  boekLead: 'Three series, from bedtime reading to looking things up, one intention: that a child knows where they come from.',
   portaal: {
     titel: 'My books',
     alGekocht: 'Bought a book series? Read it here.',
@@ -1265,6 +1412,32 @@ const en: SiteCopy = {
   boekOverzicht: 'Every book in the series',
   boekDelenKnop: (n: number): string => `Book 1 to book ${n} — what’s inside`,
   boekAllesSamen: (n: number, prijs: string): string => `All ${n} books together for ${prijs} — you buy the series, not a single book.`,
+  /* ----------------------------------------------------- the bookcase */
+  biebKop: 'The bookcase',
+  biebLead: 'Click a series to read what it is about and what happens in every book.',
+  biebDelen: (n: number): string => `${n} books`,
+  biebBekijk: 'Open the series',
+  biebTerug: 'Back to the bookcase',
+
+  reeksDelenKop: 'The books',
+  reeksVerteller: 'Told by',
+  reeksEchtKop: 'What really happened',
+  reeksVerzonnenKop: 'What is made up',
+  reeksSleutelKop: 'The key',
+  reeksHierna: 'And next',
+
+  boek360: 'Reference work · 12+',
+  boek360Titel: 'Morocco 360°',
+  boek360Onder: 'The historical encyclopedia of Morocco',
+  boek360Body: 'Fifteen volumes on the history of Morocco, and two on al-Andalus. Nothing is told here: here is what is actually known, and every claim carries its source — who wrote it, in what, when, and on which page. Where scholars disagree it says so, and where something is uncertain it says that too.',
+  boek360Punten: [
+    'A source for every claim, no exceptions',
+    'What is disputed is marked as disputed',
+    'From the earliest inhabitants to Tamazight in the constitution',
+  ],
+  boek360Noot: 'Not one volume of this is for sale and not one chapter is published. A chapter only opens once its sources have been consulted one by one — read, not merely found. What follows is the intended division, and that too may shift once the research is done.',
+  boek360Omvat: 'What this volume covers',
+  boek360Andalus: 'Al-Andalus',
   boekDeelWoord: 'Book',
   boekKoop: 'Buy',
   boekActie: 'Launch offer',
