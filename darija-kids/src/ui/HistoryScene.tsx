@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import type { Motief as MotiefKey, Tafereel } from '../content/history'
-import { useStore } from '../engine/store'
 import { Motief } from './Motief'
+import { useRustig } from './rustig'
 
 /**
  * The moving picture behind a history card.
@@ -353,7 +353,15 @@ export function HistoryScene({
   /** 0 while the drawing is being made, 1 once the telling has begun. */
   beat: 0 | 1
 }) {
-  const calm = useStore((s) => s.settings.motion) !== 'full'
+  /*
+    Allebei de voorkeuren, niet alleen de knop in de app.
+
+    Hier stond `settings.motion !== 'full'`, en dat leest alleen wat iemand in
+    Instellingen koos. Wie `prefers-reduced-motion` op zijn toestel aanzet
+    heeft daar een reden voor, en die reden geldt ook voor een verhaal dat
+    beweegt. `useRustig` leest ze allebei; zie `rustig.ts`.
+  */
+  const calm = useRustig()
   const Backdrop = BACKDROPS[tafereel]
   const medallion = 132
 

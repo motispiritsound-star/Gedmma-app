@@ -163,7 +163,54 @@
    * dat zag je niet omdat de kleur vastzat aan één waarde.
    */
   --inkt-tekenen: #0f766e;
-  --shadow-press: 0 4px 0 0 rgb(0 0 0 / 0.16);
+  /*
+   * De richel waar een ingedrukte knop op landt, los van de schaduw eromheen.
+   *
+   * `.btn3d:active` schuift een element vier pixels naar beneden, en deze
+   * harde lijn van vier pixels is waar het dan op zakt. Hij staat apart omdat
+   * `Profile.tsx` hem nodig heeft naast een hoogtetoken: een kaart die hangt
+   * én indrukt zet `--shadow-press` op `0 4px 0 0 var(--richel), var(--schaduw-laag)`.
+   * Werd de richel daar vervangen in plaats van aangevuld, dan zakte die kaart
+   * in het niets terwijl elke `Button` op zijn eigen rand zakt.
+   */
+  --richel: rgb(0 0 0 / 0.16);
+  --shadow-press: 0 4px 0 0 var(--richel);
+  /*
+   * Hoe hoog iets boven het papier hangt. Twee hoogtes, één bruin.
+   *
+   * De app staat op #fffaf3 en niet op wit. Een grijze slagschaduw maakt daar
+   * een vuile vlek van: je ziet een lijn langs de rand in plaats van ruimte
+   * eronder. Deze twee zijn daarom warm getint.
+   *
+   * En ze zijn gelaagd, want dat is wat één lichtbron doet: een contactrandje
+   * van één pixel dat zegt wáár iets het vlak raakt, een korte kernschaduw
+   * eronder, en -- alleen bij `hoog` -- een brede zachte die het optilt.
+   * Weglaten van de eerste maakt iets zwevend zonder plek, weglaten van de
+   * derde maakt het plat. In de donkere stand werkt het omgekeerd: op #0d1220
+   * valt er met nóg meer zwart langs de rand niets te winnen, dus daar zijn de
+   * lagen dieper en strakker.
+   *
+   * `rgba(84, 56, 24)` is hét bruin van deze app, en dat is geen detail. Drie
+   * ontwerpers hebben los van elkaar hun eigen warme schaduw gebouwd --
+   * rgba(120,82,36) voor het startscherm, rgba(94,62,27) voor het leerpad,
+   * rgba(122,58,30) hier -- op drie schermen die een kind achter elkaar ziet.
+   * Niemand kan dat aanwijzen en iedereen ziet het: dan hangt de app niet in
+   * één wereld. Er is er dus één, en het is dezelfde die `Round.tsx` al voor
+   * de rand van zijn onderbalk gebruikt.
+   *
+   * `--schaduw-hoog` is letterlijk de waarde die `ZWEEF` in `src/ui/zweef.ts`
+   * had; die klasse wijst nu hierheen, dus het getal staat op één plek. Let op
+   * dat zo'n `shadow-`klasse verliest van de `shadow-sm` die `Card` zelf
+   * draagt -- Tailwind zet zijn eigen trede later in het blad -- dus op een
+   * `Card` hoort het op een omhulsel eromheen of rechtstreeks als `box-shadow`
+   * in een stijl. Dat laatste kan alleen omdat dit een variabele is, en dat is
+   * precies waarom hij hier staat en niet alleen in die klasse.
+   *
+   * `--schaduw-hoog` kan ook in `--shadow-press` gezet worden op een element
+   * met `.btn3d`; dan hangt de kaart én drukt hij in. Zie `Profile.tsx`.
+   */
+  --schaduw-laag: 0 1px 1px rgba(84, 56, 24, 0.05), 0 6px 12px -6px rgba(84, 56, 24, 0.17);
+  --schaduw-hoog: 0 1px 1px rgba(84, 56, 24, 0.05), 0 6px 12px -6px rgba(84, 56, 24, 0.17), 0 18px 32px -18px rgba(84, 56, 24, 0.30);
   /*
    * De kleur die een gebruiker zelf kiest.
    *
@@ -217,7 +264,10 @@
   --ink-soft: #9aa3bb;
   --line: #26314e;
   --inkt-tekenen: #6fded0;
-  --shadow-press: 0 4px 0 0 rgb(0 0 0 / 0.45);
+  --richel: rgb(0 0 0 / 0.45);
+  --shadow-press: 0 4px 0 0 var(--richel);
+  --schaduw-laag: 0 1px 1px rgba(0, 0, 0, 0.40), 0 8px 16px -8px rgba(0, 0, 0, 0.60);
+  --schaduw-hoog: 0 1px 1px rgba(0, 0, 0, 0.40), 0 8px 16px -8px rgba(0, 0, 0, 0.60), 0 26px 44px -24px rgba(0, 0, 0, 0.95);
   color-scheme: dark;
 }
 
@@ -230,7 +280,10 @@
     --ink-soft: #9aa3bb;
     --line: #26314e;
     --inkt-tekenen: #6fded0;
-    --shadow-press: 0 4px 0 0 rgb(0 0 0 / 0.45);
+    --richel: rgb(0 0 0 / 0.45);
+  --shadow-press: 0 4px 0 0 var(--richel);
+    --schaduw-laag: 0 1px 1px rgba(0, 0, 0, 0.40), 0 8px 16px -8px rgba(0, 0, 0, 0.60);
+    --schaduw-hoog: 0 1px 1px rgba(0, 0, 0, 0.40), 0 8px 16px -8px rgba(0, 0, 0, 0.60), 0 26px 44px -24px rgba(0, 0, 0, 0.95);
     color-scheme: dark;
   }
 }

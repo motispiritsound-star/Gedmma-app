@@ -27,6 +27,16 @@
  * `Round.tsx` gebruikt voor de rand van zijn onderbalk. Dat is de kleur, en er
  * is er één.
  *
+ * De waarde zelf staat in `index.css` als `--schaduw-hoog`, met `--schaduw-laag`
+ * ernaast voor iets dat lager hangt. Dat is nodig omdat een CSS-variabele ook
+ * rechtstreeks in een `box-shadow` of in `--shadow-press` past, en een
+ * Tailwind-klasse niet; de profielbladzijde doet allebei. Deze klasse en die
+ * variabele zijn dus hetzelfde ding, met hetzelfde getal, op één plek
+ * opgeschreven.
+ *
+ * De donkere stand zit in de variabele en niet in een `dark:`-variant: een
+ * variabele die per stand iets anders betekent is precies waarvoor hij bestaat.
+ *
  * `rgba()` met komma's en niet `rgb(84 56 24 / .05)`: die tweede schrijfwijze
  * kent een WebView van Android 7 niet, en de bouw mikt op es2015 juist voor dat
  * toestel. Een schaduw die daar stilletjes niets doet is precies het soort
@@ -42,6 +52,4 @@
  * paar honderd tekens verderop. Deze klasse op een `Card` plakken doet dus
  * niets. Zet hem op een omhulsel eromheen.
  */
-export const ZWEEF =
-  'shadow-[0_1px_1px_rgba(84,56,24,0.05),0_6px_12px_-6px_rgba(84,56,24,0.17),0_18px_32px_-18px_rgba(84,56,24,0.30)] '
-  + 'dark:shadow-[0_1px_1px_rgba(0,0,0,0.40),0_8px_16px_-8px_rgba(0,0,0,0.60),0_26px_44px_-24px_rgba(0,0,0,0.95)]'
+export const ZWEEF = 'shadow-[var(--schaduw-hoog)]'

@@ -14,13 +14,27 @@
 const STAR = 'M50 2 L78.5 89.7 L3.8 35.5 L96.2 35.5 L21.5 89.7 Z'
 
 export function Khatim({
-  size = 24, filled = true, className = '', title,
+  size = 24, filled = true, className = '', title, leegDekking = 0.28,
 }: {
   size?: number
   /** An earned star is drawn in full; an empty one is the same line, faded. */
   filled?: boolean
   className?: string
   title?: string
+  /**
+   * Hoe bleek een lege khatim is. 0,28 bij de sterren van een les.
+   *
+   * Dat getal hoort bij een rij van drie naast elkaar, waar de twee volle
+   * sterren ernaast zeggen wat de derde zou zijn geweest. Daar is bleek goed:
+   * het is een plaatshouder en geen knop.
+   *
+   * Maar op het profiel zit zo'n lege khatim middenin een gesloten insigne, en
+   * dáár is hij de hele staat van een bedieningselement. Nagemeten op de
+   * bladzijde: 1,51 op 1 in de lichte stand en 1,63 in de donkere, waar
+   * richtlijn 1.4.11 er 3 vraagt. Vandaar deze knop aan de buitenkant in
+   * plaats van een tweede vorm die hetzelfde tekent.
+   */
+  leegDekking?: number
 }) {
   return (
     <svg
@@ -40,7 +54,7 @@ export function Khatim({
         strokeWidth={filled ? 9 : 6}
         strokeLinejoin="round"
         strokeLinecap="round"
-        opacity={filled ? 1 : 0.28}
+        opacity={filled ? 1 : leegDekking}
       />
     </svg>
   )

@@ -3,6 +3,8 @@ import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { sfx } from '../engine/audio'
 import { useStore } from '../engine/store'
+import { Plaat } from './Motief'
+import { useRustig } from './rustig'
 import { opTerug } from '../engine/terug'
 
 /** The building blocks the whole app is assembled from. */
@@ -268,16 +270,66 @@ export function SectionTitle({ children, sub, kop = 'h2' }: { children: ReactNod
 }
 
 /** A big number with a label — used for streaks, XP and the parent report. */
-export function Stat({ value, label, emoji }: { value: ReactNode; label: string; emoji?: string }) {
+export function Stat({ value, label, emoji, index }: {
+  value: ReactNode
+  label: string
+  emoji?: string
+  /**
+   * De plek in de rij, als de tegels één voor één binnen horen te komen.
+   *
+   * Zonder dit staat de tegel er gewoon. Met: vijftig milliseconde later dan
+   * de vorige, zodat een rij van vier leest als een rij en niet als een blok
+   * dat er ineens staat. Uit in de rustige stand, en dan staan ze er meteen --
+   * alle vier, niet alsnog met vertraging.
+   */
+  index?: number
+}) {
   // Hyphenation needs to know the language, or the browser will not break.
   const lang = useStore((s) => s.settings.lang)
+  const rustig = useRustig()
+  const komtBinnen = index !== undefined && !rustig
   return (
     // `min-w-0` because a grid cell refuses to shrink below its content, and
     // one long German word — "nachgezeichnet" — was enough to push the whole
     // page sideways on a narrow phone. `hyphens` lets it break instead.
-    <Card className="min-w-0 px-2 py-4 text-center">
-      {emoji && <div className="text-2xl">{emoji}</div>}
-      <div className="font-display text-3xl font-extrabold">{value}</div>
+    //
+    // De schaduw staat in een stijl en niet in een klasse: `Card` draagt zelf
+    // `shadow-sm`, en Tailwind zet zijn eigen trede later in het blad, dus een
+    // `shadow-[...]`-klasse hiernaast doet niets. Een variabele wel.
+    <motion.div
+      className="min-w-0 rounded-3xl border border-[var(--line)] bg-[var(--surface-raised)] px-2 py-4 text-center"
+      /*
+        De schaduw in een stijl en niet in een klasse: zo'n `shadow-[...]`
+        verliest van de `shadow-sm` die een `Card` draagt, omdat Tailwind zijn
+        eigen trede later in het blad zet. Een variabele niet. Daarom staat de
+        rand hier uitgeschreven in plaats van via `Card` te lopen -- het is
+        dezelfde rand, met een schaduw die wél aankomt.
+      */
+      style={{ boxShadow: 'var(--schaduw-laag)' }}
+      initial={komtBinnen ? { opacity: 0, y: 10 } : false}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: 'spring', stiffness: 180, damping: 24, delay: komtBinnen ? index * 0.05 : 0 }}
+    >
+      {/*
+        De emoji ligt op een plaat en zweeft er niet los boven.
+
+        Vier losse emoji's naast elkaar lezen als een rijtje; vier emoji's op
+        dezelfde zellige-plaat lezen als een set. Dit stond eerst alleen op
+        /profiel, als een eigen `Tegel` naast deze `Stat` -- en dan is de rij
+        van vier getallen op /profiel een andere dan die op /herhalen, /bonus en
+        /ouders, terwijl het dezelfde rij is.
+
+        Zellige en niet de gekozen kleur: die eigen kleur is op het profiel het
+        woord "jij" -- je avatar, je voortgang, vandaag, wat je behaald hebt.
+        Zet je hem ook onder elk getal, dan zegt hij niets meer.
+      */}
+      {emoji && (
+        <span className="relative mx-auto block h-10 w-10 text-zellige-500">
+          <Plaat vol />
+          <span className="absolute inset-0 grid place-items-center text-xl" aria-hidden="true">{emoji}</span>
+        </span>
+      )}
+      <div className="mt-1 font-display text-3xl font-extrabold">{value}</div>
       {/*
         Geen letterspatiëring, en een maat kleiner.
 
@@ -301,7 +353,7 @@ export function Stat({ value, label, emoji }: { value: ReactNode; label: string;
       >
         {label}
       </div>
-    </Card>
+    </motion.div>
   )
 }
 

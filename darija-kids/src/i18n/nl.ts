@@ -441,6 +441,24 @@ export const nl = {
     vastgezet: 'vastgezet',
     dezeWeek: 'Deze week',
     dezeWeekUitleg: 'De laatste zeven dagen. De stippellijn is je dagdoel.',
+    /*
+     * De weekgrafiek tekende zeven staafjes van nul pixels hoog -- de
+     * percentages stonden in een kolom zonder eigen hoogte. Nu hij iets laat
+     * zien, hoort er ook te staan wat je ziet: een rij staafjes zonder getal
+     * is nog steeds geen antwoord op "hoe ging mijn week".
+     */
+    weekTotaal: (xp: number): string => `${xp} XP deze week`,
+    weekDoelDagen: (n: number, van: number): string => `${n} van de ${van} dagen je doel gehaald`,
+    vandaag: 'vandaag',
+    /*
+     * "Je kent 304 woorden" zegt meer dan "je hebt 640 XP". XP is een getal
+     * dat de app zelf verzint; woorden zijn wat een kind er thuis mee kan.
+     */
+    kentTitel: 'Wat je kent',
+    kentUitleg: (vast: number, gezien: number): string =>
+      `${vast} woorden zitten vast. Je kwam er ${gezien} tegen.`,
+    beloningenTeller: (n: number, totaal: number): string => `${n} van de ${totaal} behaald`,
+    nietBehaald: 'nog niet behaald',
     beloningen: 'Beloningen',
     units: 'Units',
     nogGeenLes: 'Je hebt nog geen les afgerond. Begin bij Salam! — die duurt twee minuten.',

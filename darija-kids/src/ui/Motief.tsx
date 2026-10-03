@@ -264,3 +264,43 @@ export function Medaillon({ motief, size = 132, className = '' }: { motief: Key;
     </span>
   )
 }
+
+/**
+ * De plaat waar iets op ligt: twee vierkanten van 45 graden over elkaar, de
+ * eenvoudigste zellige-rozet.
+ *
+ * Dezelfde vorm als het `Medaillon` hierboven, zodat alles wat je verzameld
+ * hebt er familie van is. Het is een raster en geen sticker: hij draagt de
+ * emoji, hij ligt er niet naast. Vier losse emoji's naast elkaar lezen als een
+ * rijtje; vier emoji's op dezelfde plaat lezen als een set.
+ *
+ * `currentColor`, dus wat eromheen staat bepaalt de kleur.
+ *
+ * Let op: `Pad.tsx` heeft ook een `Rozet`, en dat is een ándere tekening --
+ * twee vierkanten mét een cirkel erin, in lijn, bedoeld als watermerk van 150
+ * pixels achter een unitkop. Deze is een plaat om iets op te leggen. Twee
+ * namen voor twee dingen, en daarom staat hier wat dit ding is.
+ */
+export function Plaat({ vol, dekking }: { vol: boolean; dekking?: number }) {
+  return (
+    <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-hidden="true">
+      <g
+        fill={vol ? 'currentColor' : 'none'}
+        stroke="currentColor"
+        strokeWidth={vol ? 0 : 5}
+        strokeLinejoin="round"
+        /*
+          Een volle plaat blijft bleek: daar ligt een emoji op, en die moet het
+          van de plaat winnen. Een lege plaat draagt een staat -- zie
+          `Profile.tsx`, waar hij in een knop zit -- en daar vraagt richtlijn
+          1.4.11 drie op één. Nagemeten op 0,4 haalde die omtrek 1,83 in de
+          lichte stand en 2,15 in de donkere.
+        */
+        opacity={dekking ?? (vol ? 0.2 : 0.8)}
+      >
+        <rect x="12" y="12" width="76" height="76" rx="14" />
+        <rect x="12" y="12" width="76" height="76" rx="14" transform="rotate(45 50 50)" />
+      </g>
+    </svg>
+  )
+}
