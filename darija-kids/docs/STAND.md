@@ -58,10 +58,32 @@ hetzelfde nummer.
 
 | | |
 |---|---|
-| App Store | **1.4 (build 10) — Waiting for Review**, ingediend 3 oktober 13:33. 1.0 blijft live tot deze erdoor is |
-| Google Play, productie | versiecode 7 (1.3) — nog in beoordeling. Blijft staan tot het rapport van 8 binnen is |
-| Google Play, gesloten test | **versiecode 8 (1.4) — ingestuurd**, rapport vóór lancering loopt |
+| App Store | **1.4 (build 10) — Waiting for Review**, ingediend 3 oktober 13:33, op *Manually release* |
+| App Store, live | 1.0 blijft staan tot 1.4 erdoor is |
+| Google Play, productie | **versiecode 8 (1.4) — in beoordeling**, 178 landen, volledige uitrol |
+| Google Play, gesloten test | versiecode 8 (1.4) — in beoordeling |
 | Google Play, beleid | afwijzing van 2 oktober staat open; zie hieronder waarom dat geen nieuw probleem is |
+
+Versiecode 7 is niet weggegooid maar **vervangen**. Weggooien kan niet zolang een
+release in beoordeling is -- die knop staat er wel en is grijs. Een nieuwe
+release aanmaken kan wél, en bij het insturen vraagt Play of je de lopende
+beoordeling opnieuw wilt starten. Dat is gedaan: wat je opgeeft is een
+beoordeling van een paar uur oud op **1.3**, en wat je ervoor terugkrijgt is één
+ronde op 1.4 in plaats van twee rondes achter elkaar.
+
+### Nagekeken op een echt toestel — 3 oktober
+
+Het rapport vóór lancering is nooit verschenen, ook niet nadat versiecode 8 op
+de testbaan was ingestuurd en daar netjes op *In review* stond. Waarom niet is
+niet uitgezocht; het vermoeden is dat Google die testrobots niet laat lopen
+zolang een app onder handhaving staat. Niet belangrijk genoeg om op te wachten,
+want de vraag die dat rapport moet beantwoorden -- gaat de app open op een
+echte Android -- is op de Galaxy Tab zelf beantwoord: **hij opent en ziet er
+goed uit**, met dezelfde `.apk` als de bundel die in de winkel ligt.
+
+Daar is `npm run opstoestel` voor gemaakt (`f40bb3b`): `adb` staat op Windows
+niet in het PATH, en de oude versie moet er eerst af omdat een bundel uit de
+Play Store door Google ondertekend is en een eigen `.apk` door onszelf.
 
 ### De afwijzing gaat alleen over versiecode 4 — nagekeken 3 oktober
 
