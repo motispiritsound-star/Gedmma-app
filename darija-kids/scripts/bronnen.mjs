@@ -20,6 +20,7 @@
  *
  * Draaien: npm run bronnen
  *          npm run bronnen -- --alleen walili      (één hoofdstuk of één id)
+ *          npm run bronnen -- --stand              (alleen kijken, niets ophalen)
  */
 import { createHash } from 'node:crypto'
 import { mkdir, writeFile } from 'node:fs/promises'
@@ -43,6 +44,63 @@ const server = await createServer({
   logLevel: 'error',
 })
 const { BRONNEN } = await server.ssrLoadModule('/src/content/encyclopedie/bronnen.ts')
+const encyclopedie = await server.ssrLoadModule('/src/content/encyclopedie/index.ts')
+
+/**
+ * Wat er precies tussen hier en een gepubliceerd hoofdstuk staat.
+ *
+ * `waaromNietPubliceerbaar` geeft die lijst al, maar hij staat in de test en
+ * in de code en niet op een plek waar je hem even opvraagt. En er zit een
+ * onderscheid in dat je niet ziet als je de klachten alleen opsomt: een blok
+ * dat wacht op een bron met een URL gaat open zodra het netwerk open is, en
+ * een blok dat alleen op een papieren boek rust niet. Die twee door elkaar
+ * lezen als "nog zeven dingen te doen" geeft een verkeerd beeld van hoe ver
+ * het is — en van wat eraan te doen valt.
+ */
+if (process.argv.includes('--stand')) {
+  const stand = encyclopedie.bronnenstand()
+  console.log(`\nBronnen: ${stand.gelezen} van de ${stand.totaal} gelezen` +
+    `, ${stand.gevonden} wel gevonden maar nog niet ingezien.`)
+
+  const zonderUrl = new Set(Object.values(BRONNEN).filter((b) => !b.url).map((b) => b.id))
+  if (zonderUrl.size) {
+    console.log('\nNiet op te halen, want er is geen adres — hiervoor moet iemand')
+    console.log('het werk zelf inzien:\n')
+    for (const id of zonderUrl) {
+      const b = Object.values(BRONNEN).find((x) => x.id === id)
+      console.log(`  ${id}`)
+      console.log(`    ${b.wie ?? ''} — ${b.titel}`)
+      if (b.waar) console.log(`    ${b.waar}`)
+    }
+  }
+
+  let online = 0
+  let papier = 0
+  for (const h of encyclopedie.HOOFDSTUKKEN) {
+    const klachten = encyclopedie.waaromNietPubliceerbaar(h)
+    console.log(`\n[${h.id}] ${h.titel}`)
+    console.log(`  stand: ${h.stand}` + (klachten.length ? '' : ' — niets staat meer in de weg'))
+    for (const k of klachten) {
+      // "blok 5: geen van de bronnen is gelezen (fentress-limane-2019)"
+      const ids = (k.match(/\(([^)]*)\)/)?.[1] ?? '').split(', ').filter(Boolean)
+      const online_ = ids.filter((id) => !zonderUrl.has(id))
+      if (ids.length && !online_.length) {
+        papier++
+        console.log(`  ✗ ${k}`)
+        console.log('      ↳ alleen op papier; het netwerk helpt hier niet')
+      } else {
+        if (ids.length) online++
+        console.log(`  ✗ ${k}`)
+      }
+    }
+  }
+
+  console.log(`\n${online} hiervan gaan open zodra de bronnen op te halen zijn.`)
+  if (papier) console.log(`${papier} niet: daar is een boek voor nodig.`)
+  console.log('')
+  await server.close()
+  process.exit(0)
+}
 await server.close()
 
 const alleen = arg('alleen')
