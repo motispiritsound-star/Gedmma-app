@@ -51,6 +51,61 @@ Google blijft op "binnenkort" tot versiecode 8 is goedgekeurd. De twee knoppen
 staan los van elkaar in `make-site.mjs`, dus Apple aanzetten laat Google met
 rust. Een knop naar een Play-pagina die nog niet bestaat is erger dan geen knop.
 
+## Apple heeft 1.4 goedgekeurd — 4 oktober, 07:22
+
+De mail van App Store Connect: *"Review of your submission has been completed.
+It is now eligible for distribution."* Ingediend 3 oktober 04:33 Pacific,
+goedgekeurd binnen een etmaal. Eén inzending, één item geaccepteerd: **App
+Version 1.4 for iOS**.
+
+Dat is de eerste van de twee goedkeuringen die de lancering nodig heeft.
+
+| | |
+|---|---|
+| App Store | **1.4 goedgekeurd** — eligible for distribution |
+| Google Play | versiecode 8 (1.4) — stand onbekend vanaf hier, zie hieronder |
+
+**De winkelknop op de site hoeft niet om.** `STORE.apple` staat sinds 2 oktober
+al op `apps.apple.com/app/id6813964474` en dat adres werkte toen al, want 1.0
+stond er. Er is op dit punt dus niets te doen aan de website; 1.4 schuift
+onder hetzelfde adres.
+
+### Het ene ding dat met de muis moet
+
+1.4 is ingestuurd op **Manually release**. Goedgekeurd is daarom niet hetzelfde
+als uitgeleverd: de versie blijft staan tot er op de knop gedrukt wordt. Dat
+kan niet met een commando, want er staat geen App Store Connect API-sleutel in
+dit project — geen `.p8`, geen issuer ID. Dus:
+
+**App Store Connect → Darijaforkids → versie 1.4 → de knop rechtsboven.**
+
+Wat die knop zegt, zegt meteen wat de stand is:
+
+- **Pending Developer Release** → er staat *Release This Version*. Druk erop.
+- **Ready for Distribution** → er is niets meer te doen, hij rolt uit.
+
+Daarna duurt het tot 24 uur voordat 1.4 overal in de winkel staat. De
+App Store-link blijft in die tussentijd gewoon werken; bezoekers krijgen alleen
+nog even 1.0.
+
+*Wil je dat dit de volgende keer wél een commando is: daar is een App Store
+Connect API-sleutel voor nodig (Users and Access → Integrations → een `.p8`,
+een key ID en een issuer ID). Zeg het, dan bouw ik er een `npm run release`
+omheen die de versie uitlevert zonder dat je hoeft te klikken.*
+
+### Wat ik hiervandaan niet kan nakijken
+
+De uitgaande netwerktoegang van deze werkomgeving staat uit (zie Marokko 360
+verderop), dus ik kan **de stand bij Google Play niet ophalen** en ook de
+App Store-pagina niet zelf controleren. Alles hierboven komt uit de mail en uit
+wat er in de repo vastligt, niet uit een eigen meting.
+
+### Dit raakt de boeken, niet de app
+
+De lancering gaat over allebei. Deel 8 t/m 15 zijn op 3 oktober uitgebreid,
+dus **de zips en pdf's in de winkel lopen achter op de tekst**. Dat moet nog
+voor de aankondiging; de twee commando's staan bij "De boeken" hieronder.
+
 ## Waar het op staat — 3 oktober, 13:40
 
 Allebei de winkels hebben nu 1.4 liggen, en voor het eerst is dat in allebei
