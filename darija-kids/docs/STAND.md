@@ -70,6 +70,37 @@ al op `apps.apple.com/app/id6813964474` en dat adres werkte toen al, want 1.0
 stond er. Er is op dit punt dus niets te doen aan de website; 1.4 schuift
 onder hetzelfde adres.
 
+### Vrijgeven is niet aankondigen — en vrijgeven moet nu
+
+Op deze vraag ben ik op 4 oktober in het gesprek de mist in gegaan, dus hij
+staat hier expliciet. *Moet 1.4 wachten tot Play ook zover is, omdat we samen
+willen lanceren?*
+
+**Nee.** Het besluit van 2 oktober koppelt die twee juist los: stap 2 is 1.0
+stil vrijgeven, stap 5 is de opvolger er meteen achteraan sturen, en pas stap 8
+is de aankondiging. Alleen stap 8 wacht op Play.
+
+**En er is een reden om haast te maken.** Zolang 1.0 in de winkel staat, staat
+het e-boeklek open: in build 7 komt het boek bij het jaarabonnement meteen vrij,
+ook tijdens de proef van drie dagen. Afsluiten, pdf opslaan, op dag twee
+opzeggen — nul betaald, een product van € 14,99 mee. 1.4 repareert dat
+(`ebookVanaf` naast `ebook`: het boek komt er pas als de proefdag voorbij is én
+de winkel dan nog zegt dat het abonnement loopt).
+
+Stap 5 van dat besluit zegt daarom met zoveel woorden dat de opvolger zelfs op
+*Automatically release* mag, "hoe eerder hij live staat hoe korter het
+e-boeklek openstaat". 1.4 is op handmatig ingestuurd, dus het equivalent
+daarvan is: nu op de knop drukken.
+
+Wat vrijgeven **niet** doet: het kondigt niets aan, het raakt de website niet
+(het Apple-adres stond al goed) en het verandert niets aan het Play-spoor.
+
+**En het zet het slot niet terug op de aankopen.** Alleen een versie *in
+beoordeling* maakt die velden alleen-lezen. Vrijgeven doet dat niet, dus het
+raam blijft na het vrijgeven gewoon open voor het laatste open punt: de vier
+talen bij de drie aankopen (`store/abonnement-teksten.md`). Dat raam sluit pas
+als er een volgende versie wordt ingestuurd.
+
 ### Het ene ding dat met de muis moet
 
 1.4 is ingestuurd op **Manually release**. Goedgekeurd is daarom niet hetzelfde
