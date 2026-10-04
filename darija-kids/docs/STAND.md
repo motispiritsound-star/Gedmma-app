@@ -51,7 +51,7 @@ Google blijft op "binnenkort" tot versiecode 8 is goedgekeurd. De twee knoppen
 staan los van elkaar in `make-site.mjs`, dus Apple aanzetten laat Google met
 rust. Een knop naar een Play-pagina die nog niet bestaat is erger dan geen knop.
 
-## Apple heeft 1.4 goedgekeurd — 4 oktober, 07:22
+## Apple: 1.4 staat live — 4 oktober
 
 De mail van App Store Connect: *"Review of your submission has been completed.
 It is now eligible for distribution."* Ingediend 3 oktober 04:33 Pacific,
@@ -101,28 +101,50 @@ raam blijft na het vrijgeven gewoon open voor het laatste open punt: de vier
 talen bij de drie aankopen (`store/abonnement-teksten.md`). Dat raam sluit pas
 als er een volgende versie wordt ingestuurd.
 
-### Het ene ding dat met de muis moet
+### Vrijgegeven — *Ready for Distribution*
 
-1.4 is ingestuurd op **Manually release**. Goedgekeurd is daarom niet hetzelfde
-als uitgeleverd: de versie blijft staan tot er op de knop gedrukt wordt. Dat
-kan niet met een commando, want er staat geen App Store Connect API-sleutel in
-dit project — geen `.p8`, geen issuer ID. Dus:
+Gedaan op 4 oktober. In App Store Connect staat bij iOS App nu **1.4 Ready for
+Distribution**, en dat is de status ná het vrijgeven; *Pending Developer
+Release* is weg.
 
-**App Store Connect → Darijaforkids → versie 1.4 → de knop rechtsboven.**
+**Daarmee is het e-boeklek dicht.** Dat was de hele reden om niet op Play te
+wachten: in build 7 kwam het boek bij het jaarabonnement meteen vrij, ook
+tijdens de proef van drie dagen.
 
-Wat die knop zegt, zegt meteen wat de stand is:
+Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
+hem via de gewone app-update binnen.
 
-- **Pending Developer Release** → er staat *Release This Version*. Druk erop.
-- **Ready for Distribution** → er is niets meer te doen, hij rolt uit.
+### Play wacht op Google, niet op jou
 
-Daarna duurt het tot 24 uur voordat 1.4 overal in de winkel staat. De
-App Store-link blijft in die tussentijd gewoon werken; bezoekers krijgen alleen
-nog even 1.0.
+Nagekeken op het Publishing overview, 4 oktober: **Changes ready to publish is
+leeg** — *"Changes that are ready to publish will appear here once they're
+approved by Google"*. Onder **Changes in review** staan versiecode 8 (1.4), de
+177 landen én *Resume track*.
 
-*Wil je dat dit de volgende keer wél een commando is: daar is een App Store
-Connect API-sleutel voor nodig (Users and Access → Integrations → een `.p8`,
-een key ID en een issuer ID). Zeg het, dan bouw ik er een `npm run release`
-omheen die de versie uitlevert zonder dat je hoeft te klikken.*
+Er is dus nog geen publiceerknop. Pas als Google goedkeurt, schuiven die
+regels naar boven en bestaat de winkelpagina.
+
+### De bijna-fout met de winkelknop, en wat eraan gedaan is
+
+`npm run live -- --google` is gedraaid terwijl die Play-pagina nog niet
+bestond. Het script schreef dat adres zonder één vraag in `links.ts` en zette
+er 78 pagina's mee. Er is niets naar buiten gegaan — niet doordat er iets op
+lette, maar doordat er toevallig gevraagd werd of die pagina wel openging.
+
+`live.mjs` kijkt nu elk winkeladres zelf na voor het iets wegschrijft, en
+schrijft niets bij een 404. Alleen 404 en 410 gelden als dood: bij het testen
+gaf een proxy 403 terug, en de eerste versie las dat als een dode pagina — die
+zou op een bedrijfsnetwerk een goed adres hebben afgekeurd.
+
+Er is ook `--google uit` en `--apple uit` bijgekomen, zodat één winkel terug
+kan zonder de andere mee te nemen. Daarmee was het terugzetten één opdracht in
+plaats van twee, en de controle draaide meteen goed mee:
+
+    De winkeladressen nakijken…
+      Apple   gaat open
+
+Die regel is op een echt netwerk gedraaid. De 404-weg is nog niet in het echt
+langsgekomen.
 
 ### Wat ik hiervandaan niet kan nakijken
 
