@@ -27,6 +27,9 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createServer } from 'vite'
+import { viaProxy } from './lib/proxy.mjs'
+
+viaProxy(import.meta.url)
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const MAP = path.join(ROOT, 'bronnen')

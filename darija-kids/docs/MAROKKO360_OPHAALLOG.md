@@ -8,11 +8,11 @@ De vingerafdruk staat erbij voor later. Een naslagwerk gaat jaren mee en
 bladzijden verhuizen; verandert de vingerafdruk, dan is het document niet
 meer hetzelfde als toen de bewering erop gebouwd werd.
 
-Laatst gedraaid: 2026-10-03
+Laatst gedraaid: 2026-10-05
 
 | Bron | Status | Soort | Omvang | Vingerafdruk (eerste 16) |
 |---|---|---|---|---|
 | `unesco-836` | 403 | — | — | geen document |
-| `unesco-836-evaluatie` | 403 | — | — | geen document |
-| `ucl-insap-project` | 403 | — | — | geen document |
-| `wmf-volubilis` | 403 | — | — | geen document |
+| `unesco-836-evaluatie` | 200 | text/html | 0 kB | `40a0457e763902ed` |
+| `ucl-insap-project` | 200 | text/html | 5 kB | `7361d997ed702ac0` |
+| `wmf-volubilis` | 404 | — | — | geen document |
