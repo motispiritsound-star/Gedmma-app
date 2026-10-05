@@ -45,55 +45,149 @@ niet is:
 | muntthee uit een hoge pot, tajine | shisha, dadels op een zilveren schaal |
 | een grootmoeder met tatoeage op de kin | een generieke "oosterse" oma |
 
-## Het script — veertig seconden
+## Het draaiboek — veertig seconden, scène voor scène
 
-Te plakken in **Use my script**. De regels tussen haakjes zijn
-beeldaanwijzingen, niet om voor te lezen.
+Zeven scènes. Per scène staat hier de tijdcode, wat de stem zegt, wat er in
+beeld geschreven staat, en de beeldprompt in het Engels — want daar genereert
+Steve AI op, en een Nederlandse aanwijzing levert daar niets op.
+
+**Over het tempo.** De Nederlandse stem zit op ongeveer 2,4 woorden per
+seconde; sneller klinkt gehaast en bij een advertentie over taalverlies is
+gehaast het verkeerde gevoel. Daarom staat bij elke scène hoeveel woorden erin
+passen. Schrijf je iets om, tel dan opnieuw. Drieëntachtig woorden in veertig
+seconden is de hele begroting.
+
+---
+
+### Scène 1 — 0:00 tot 0:04 · 5 woorden
+
+**Stem:** Je kind verstaat oma wel.
+
+**In beeld:** *Je kind verstaat oma wel.*
+
+**Beeldprompt:**
+```
+A Moroccan grandmother in her seventies sits at a kitchen table talking warmly
+to her nine-year-old grandchild. She wears a simple house kaftan and a loosely
+tied headscarf. The child listens closely and says nothing. Low warm afternoon
+light, a glass of mint tea on the table. Northern Moroccan home interior with
+plain plastered walls. Documentary feel, no studio lighting, no smiling at the
+camera.
+```
+
+### Scène 2 — 0:04 tot 0:08 · 6 woorden
+
+**Stem:** Antwoorden lukt alleen niet. Dus vertaal jij.
+
+**In beeld:** *Antwoorden lukt alleen niet.*
+
+**Beeldprompt:**
+```
+The same kitchen table, seconds later. The child turns away from the
+grandmother and looks up at a parent standing beside the table, asking for
+help with their eyes. The parent begins to speak. The grandmother waits. Same
+warm light, same documentary feel.
+```
+
+### Scène 3 — 0:08 tot 0:18 · 25 woorden
+
+**Stem:** De eerste generatie spreekt de taal. De tweede verstaat hem. De
+derde kent er nog een woord of vier van. En die gaan over eten.
+
+**In beeld:** niets. Laat de stem alleen staan.
+
+**Beeldprompt:** drie korte shots achter elkaar, elk ongeveer drie seconden.
+```
+Three short portrait shots in sequence, same warm documentary style.
+One: an elderly Moroccan woman with a small traditional chin tattoo, speaking,
+mid-sentence, hands moving.
+Two: a woman in her forties in everyday European clothing, listening, not
+speaking.
+Three: a boy of about twelve looking at a phone, earbuds in, not speaking at
+all.
+Each shot framed the same way, so they read as one family across three
+generations.
+```
+
+### Scène 4 — 0:18 tot 0:22 · 9 woorden
+
+**Stem:** Zo gaat een taal weg. Niet met een knal.
+
+**In beeld:** *Zo gaat een taal weg.*
+
+**Beeldprompt:**
+```
+Almost black. A single empty kitchen chair at the same table, no people.
+Very low light. Hold still, no camera movement.
+```
+
+### Scène 5 — 0:22 tot 0:30 · 21 woorden
+
+**Stem:** Darijaforkids leert kinderen Darija — de taal die thuis gesproken
+wordt. 432 opnames, geen computerstem. De eerste vier lessen zijn gratis.
+
+**In beeld:** *432 opnames, geen computerstem.*
+
+**Beeld:** **geen prompt. Hier komt de echte opname.**
+
+    store/video/nl/intro-verhaal.mp4
+
+Laat Steve AI hier niets genereren. Upload dit bestand en zet het op de plek
+van de scène. Knip er acht seconden uit — de eerste acht werken, maar kijk
+zelf even welk stuk het mooist loopt.
+
+### Scène 6 — 0:30 tot 0:36 · 11 woorden
+
+**Stem:** En dan, een zomer later, hoor je het. Niet perfect. Maar zelf.
+
+**In beeld:** niets.
+
+**Beeldprompt:**
+```
+A courtyard in Morocco in summer: whitewashed walls, zellige tilework on a low
+bench, a pot of mint tea. The same grandmother from the opening, and the same
+child, now a year older. This time the child is the one talking, and the
+grandmother laughs and answers. Bright natural daylight, shade from a vine
+overhead. Documentary feel, no posing.
+```
+
+De laatste woorden hoor je het kind zeggen, niet de verteller. Als Steve AI
+dat niet kan, laat de stem dan stil vallen na "hoor je het" en zet *Niet
+perfect. Maar zelf.* in beeld.
+
+### Scène 7 — 0:36 tot 0:40 · 6 woorden
+
+**Stem:** Darijaforkids. Begin vandaag, gratis. darijaforkids.eu
+
+**In beeld:** het logo, de achtpuntige ster, en `darijaforkids.eu`
+
+**Beeld:** gebruik `brand/social/profielfoto.png` of een schermafdruk uit
+`store/screenshots/nl/`. Niet laten natekenen: een logo dat bijna klopt is
+erger dan geen logo.
 
 ---
 
-**1. (0–4s)** *Beeld: een keukentafel. Een oma praat, een kind van een jaar of
-negen kijkt naar haar en zegt niets. Warm licht, Noord-Marokkaans interieur.*
+## Hetzelfde, in het Frans
 
-> Je kind verstaat oma wel.
+Je op een na grootste taalgroep, en de introfilm staat al klaar als
+`store/video/fr/intro-verhaal.mp4`. Dezelfde zeven scènes, dezelfde
+beeldprompts, alleen de stem en de tekst in beeld veranderen.
 
-**2. (4–8s)** *Beeld: het kind kijkt opzij naar een ouder, hulpzoekend. De
-ouder begint te vertalen.*
+| Scène | Stem | In beeld |
+|---|---|---|
+| 1 | Ton enfant comprend mamie. | *Ton enfant comprend mamie.* |
+| 2 | C’est répondre qui ne vient pas. Alors c’est toi qui traduis. | *C’est répondre qui ne vient pas.* |
+| 3 | La première génération parle la langue. La deuxième la comprend. La troisième en connaît encore quatre mots, et ils parlent de nourriture. | — |
+| 4 | C’est comme ça qu’une langue s’en va. Pas dans un fracas. | *C’est comme ça qu’une langue s’en va.* |
+| 5 | Darijaforkids apprend le darija aux enfants — la langue qu’on parle à la maison. 432 enregistrements, aucune voix de synthèse. Les quatre premières leçons sont gratuites. | *432 enregistrements, aucune voix de synthèse.* |
+| 6 | Et puis, un été plus tard, tu l’entends. Pas parfait. Mais tout seul. | — |
+| 7 | Darijaforkids. Commence aujourd’hui, gratuitement. darijaforkids.eu | `darijaforkids.eu` |
 
-> Antwoorden lukt alleen niet. Dus vertaal jij.
-
-**3. (8–16s)** *Beeld: drie korte shots achter elkaar — een grootmoeder, een
-ouder, een kind met een telefoon.*
-
-> De eerste generatie spreekt de taal.
-> De tweede verstaat hem.
-> De derde kent er nog een woord of vier van.
-> En die gaan over eten.
-
-**4. (16–20s)** *Beeld: stilte, zwart, alleen tekst.*
-
-> Zo gaat een taal weg. Niet met een knal.
-
-**5. (20–28s)** *Beeld: hier komt `intro-verhaal.mp4` — de echte app. Geen
-natekening.*
-
-> Darijaforkids leert kinderen Darija. Geen schooltaal: de taal die thuis
-> gesproken wordt. Vierhonderdtweeëndertig opnames, allemaal ingesproken door
-> iemand die de taal spreekt. De eerste vier lessen kosten niets.
-
-**6. (28–36s)** *Beeld: dezelfde keukentafel, maar nu in Marokko — een
-binnenplaats, muntthee. Hetzelfde kind, iets ouder. Nu praat het kind, en de
-oma lacht en antwoordt.*
-
-> En dan, een zomer later, hoor je het.
-> Niet perfect. Maar zelf.
-
-**7. (36–40s)** *Beeld: logo, de acht-puntige ster, het adres.*
-
-> Darijaforkids. Begin vandaag, gratis.
-> darijaforkids.eu
-
----
+De regels in de tabel zijn niet vertaald voor deze film: het zijn de koppen
+van de campagneplaten uit `scripts/make-social.mjs`, zodat de advertentie en
+de platen dezelfde zinnen gebruiken. Duits, Spaans en Italiaans staan daar
+ook, dus dezelfde film is in zes talen te maken zonder nieuwe tekst te
+verzinnen.
 
 ## De korte versie — vijftien seconden
 
@@ -123,6 +217,29 @@ tegelijk, en bij de ACM.
 **Niet zeggen:** dat een kind "vloeiend" wordt, dat het "in X weken" lukt, of
 iets over hoeveel kinderen het gebruiken. Het eerste is niet waar, het tweede
 weten we niet, en het derde weten we nog niet.
+
+## De controlelijst voor je exporteert
+
+Loop deze langs. Elk punt is iets wat eerder is misgegaan bij iemand anders,
+en ze kosten samen vijf minuten.
+
+- [ ] **Scène 5 is de echte opname** en geen gegenereerde telefoon.
+- [ ] **Elke scène is Marokkaans**, langs de tabel hierboven gelegd. Geen
+      thobe, geen glazen koepel, geen duinen als enige beeld.
+- [ ] **De oma in scène 1 en die in scène 6 zijn dezelfde persoon.** Een
+      beeldgenerator houdt een gezicht niet vanzelf vast over scènes heen, en
+      als de oma aan het eind iemand anders is, valt het hele verhaal om.
+      Hetzelfde voor het kind.
+- [ ] **De naam wordt goed uitgesproken:** *Da-ri-ja-for-kids*. Een stem die
+      "Darídja" zegt kost je precies het publiek dat je zoekt.
+- [ ] **Het adres onderaan is leesbaar op een telefoon**, niet alleen op je
+      scherm van 27 inch.
+- [ ] **Geen enkel cijfer dat niet in de tabel hierboven staat.**
+- [ ] **Eén keer bekeken met het geluid uit.** Zo zien de meeste mensen hem.
+      Werkt hij dan nog, dan werkt hij.
+- [ ] **Eén keer bekeken door iemand die de app niet kent.** Vraag daarna wat
+      de app doet. Komt daar iets anders uit dan "Darija leren", dan is scène
+      5 te kort.
 
 ## De werkwijze, stap voor stap
 
