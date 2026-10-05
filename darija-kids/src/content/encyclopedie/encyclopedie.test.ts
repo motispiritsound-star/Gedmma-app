@@ -46,12 +46,23 @@ describe('de regel', () => {
   })
 
   /**
-   * De eis die er het meest toe doet. Een bron waarvan alleen de URL bekend is,
-   * draagt niets — en dat is op dit moment de stand van het hele register.
+   * De eis die er het meest toe doet: een bron waarvan alleen de URL bekend is,
+   * draagt niets.
+   *
+   * Deze toets pakte eerst `unesco-836` als voorbeeld van een bron die nog niet
+   * gelezen was. Op 5 oktober is die bron gelezen en viel de toets om — terwijl
+   * er niets mis was. Een toets die een momentopname vastlegt, meldt vooruitgang
+   * als een storing. Nu zoekt hij zelf een bron die nog op `gevonden` staat, en
+   * als die er niet meer is, is dat geen fout maar het doel.
    */
   it('en minstens één bron die gelezen is, niet alleen gevonden', () => {
+    const nogNiet = BRONNEN.find((b) => b.stand === 'gevonden')
+    if (!nogNiet) {
+      expect(bronnenstand().gevonden).toBe(0)
+      return
+    }
     const h = gaaf()
-    h.blokken = [{ soort: 'feit', tekst: 'Iets.', bronnen: ['unesco-836'], zekerheid: 'vast' }]
+    h.blokken = [{ soort: 'feit', tekst: 'Iets.', bronnen: [nogNiet.id], zekerheid: 'vast' }]
     h.tijdlijn = []
     expect(waaromNietPubliceerbaar(h).join(' ')).toContain('geen van de bronnen is gelezen')
   })
@@ -90,12 +101,19 @@ describe('de regel', () => {
 })
 
 describe('wat er nu staat', () => {
-  it('geen enkel hoofdstuk is publiceerbaar, want geen enkele bron is gelezen', () => {
-    expect(bronnenstand().gelezen).toBe(0)
+  /**
+   * Niet meer "nul bronnen gelezen", want dat was een momentopname en die is
+   * sinds 5 oktober onwaar: het dossier van UNESCO en de projectsite van UCL
+   * zijn ingezien. Wat hier hoort te staan is de regel, en die luidt: zolang er
+   * één klacht openstaat, komt er niets op de openbare site.
+   */
+  it('zolang er een klacht openstaat, is een hoofdstuk niet publiceerbaar', () => {
     for (const h of HOOFDSTUKKEN) {
-      expect(publiceerbaar(h), h.id).toBe(false)
+      const open = waaromNietPubliceerbaar(h).length > 0
+      expect(publiceerbaar(h), h.id).toBe(!open && h.stand === 'gepubliceerd')
     }
-    expect(conceptHoofdstukken().length).toBe(HOOFDSTUKKEN.length)
+    expect(conceptHoofdstukken().length + HOOFDSTUKKEN.filter(publiceerbaar).length)
+      .toBe(HOOFDSTUKKEN.length)
   })
 
   it('en de openbare site krijgt in geen enkele taal een hoofdstuk', () => {
