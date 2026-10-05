@@ -2489,44 +2489,80 @@ if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -
 ### Marokko 360 — derde reeks, nog niet gepubliceerd
 
 Er staat een derde reeks op de website: **Marokko 360**, een naslagwerk in
-zeventien delen voor 12 jaar en ouder. Die staat er met zoveel woorden als
-*nog niet gepubliceerd* bij, met een noot op de bibliotheekpagina, en er hangt
-geen koopknop aan. Dat is met opzet: er is nog geen hoofdstuk dat de toets
-haalt.
+zeventien delen voor 12 jaar en ouder, met zoveel woorden als *nog niet
+gepubliceerd* erbij en zonder koopknop. `bieb.test.ts` houdt dat eerlijk:
+zolang `HOOFDSTUKKEN.filter(publiceerbaar)` leeg is, kan er niets van in de
+winkel belanden. De delenindeling staat wel in alle zes talen.
 
-`bieb.test.ts` houdt dat eerlijk: zolang `HOOFDSTUKKEN.filter(publiceerbaar)`
-leeg is, kan er niets van in de winkel belanden. De delenindeling staat wel in
-alle zes talen (`src/content/encyclopedie/delen-talen.ts`), want een Duitse
-pagina met Nederlandse deeltitels is erger dan geen Duitse pagina.
+Er is één hoofdstuk geschreven — **Walili: de stad die bleef toen Rome
+wegging** — en dat staat op `concept`.
 
-**Waar het op vastzit:** een hoofdstuk gaat pas op `gepubliceerd` als zijn
-bronnen op `gelezen` staan, en daarvoor moeten die bronnen opgehaald worden.
-Daar is `npm run bronnen` voor. Dat commando werkt, maar het krijgt op dit
-moment van elk adres hetzelfde antwoord:
+#### Het netwerk stond nooit dicht: het script keek de verkeerde kant op
 
-    CONNECT tunnel failed, response 403
+Hier stond tot 5 oktober dat de uitgaande toegang van de werkomgeving uitstond
+en dat Adil daar een instelling voor moest omzetten. **Dat klopte niet, en die
+conclusie heeft dagen standgehouden.**
 
-Dat is niet de website die stuk is en ook niet het script. Dat is de
-**uitgaande netwerktoegang van de werkomgeving**, en die staat uit. Het is
-hier op 3 oktober nog een keer nagemeten: allebei de adressen die ik probeerde
-weigeren tegelijk, en de proxy zelf meldt dat hij aan staat en alleen een
-vaste lijst aan hosts doorlaat.
+`npm run bronnen` gaf voor elke bron 403. Vier bronnen die alle vier hetzelfde
+antwoord geven lezen als "het netwerk staat dicht" — en dat is opgeschreven
+zonder het tegen te meten. Wat er werkelijk aan de hand was: een omgeving die
+het verkeer door een proxy stuurt zet dat adres in `HTTPS_PROXY`. `curl` leest
+die variabele vanzelf, **Node's `fetch` niet**. Die ging er rechtstreeks
+langs, en wat er dan terugkomt is geen nette foutmelding maar een gewone 403.
 
-**Wat alleen Adil kan doen**, en wat ik niet kan: op claude.ai/code op het
-wolkje boven het tekstvak klikken, dan het tandwiel, dan *Network access* op
-**Custom** zetten. En daarna — dit is het stuk dat twee keer is misgegaan —
-**een nieuwe sessie starten**, want een gewijzigd netwerkbeleid geldt niet in
-een sessie die al loopt. Zolang dat niet gebeurd is, is dit het enige punt in
-dit project waar ik niet verder kom.
+Zichtbaar gemaakt door hetzelfde adres twee keer op te halen:
 
-De vertaling ligt alinea voor alinea naast het Nederlands, en daar staat een
-test op: een hoofdstuk dat wegvalt of een alinea die wordt samengevoegd laat
-de build vallen. Dat is met opzet — een boek van dit soort leeft van de
-stiltes tussen de alinea's, en wie die samenvoegt haalt het tempo eruit.
+    node fetch: 403
+    curl:       200
 
-Historische foto's kunnen erin zodra ze in `store/sleutels/platen/<deel>/`
-staan, met `bronnen.txt` ernaast. Welke opname waar hoort staat in
-`store/sleutels/beeldenlijst.md`.
+`scripts/lib/proxy.mjs` start het proces nu opnieuw met `--use-env-proxy`
+zodra er een proxy is. Zonder proxy gebeurt er niets, dus op een gewone laptop
+merk je er niets van.
+
+**De les hiervan is niet "fetch is lastig".** Het is dat vier identieke
+foutmeldingen op een gedeelde oorzaak wijzen, en dat een gedeelde oorzaak
+dichter bij huis ligt dan bij vier verschillende websites tegelijk.
+
+#### Wat elke bron nu werkelijk doet
+
+Gemeten op 5 oktober, met het netwerk open en de proxy goed:
+
+| Bron | Wat er gebeurt | Wat eraan moet |
+|---|---|---|
+| `ucl-insap-project` | 200, maar de pagina is JavaScript en levert alleen een titel | met een browser ophalen |
+| `unesco-836` | 403 met een Cloudflare-controle (`cf-mitigated: challenge`) | via een archief; de controle staat er met opzet en daar werken we niet omheen |
+| `unesco-836-evaluatie` | 200, maar het archief van UNESCO geeft *Rate limit reached* | later opnieuw, rustig aan |
+| `wmf-volubilis` | 404; `/node/14142` bestaat niet meer en `/project/volubilis` stuurt door naar een adres dat ook 404 geeft | nieuw adres, of via een archief |
+| `fentress-limane-2019` | geen adres — het is een boek bij Brill | iemand moet het inzien |
+
+**`wmf-volubilis` houdt niets tegen**: geen enkel blok in het hoofdstuk
+verwijst ernaar. Dat is in `bronnen.ts` bij de bron zelf aangetekend, met wat
+er gemeten is, in plaats van de bron stilletjes weg te halen.
+
+#### De browser kan nu wél door de proxy heen
+
+Chromium viel om met `ERR_CERT_AUTHORITY_INVALID`: hij kende de CA van de
+proxy niet. Opgelost zoals het hoort — `libnss3-tools` erbij en de twee
+Anthropic-CA's uit `/root/.ccr/ca-bundle.crt` met `certutil` in de
+browserdatabase gezet. **Niet** door TLS-controle uit te zetten.
+
+Dat is niet alleen voor deze bronnen nuttig: elk script in dit project dat een
+browser gebruikt kan daarmee ook buiten de deur kijken.
+
+#### Wat er nog nodig is, en van wie
+
+1. **`web.archive.org` bij de toegestane domeinen.** Dat is naar verwachting
+   de route naar allebei de bronnen die nu vastzitten: de UNESCO-pagina achter
+   de Cloudflare-controle, en de verdwenen WMF-pagina. Niet nagemeten, want
+   dat adres is op dit moment geblokkeerd.
+2. **Het boek.** Fentress & Limane (red.), *Volubilis après Rome: Les fouilles
+   UCL/INSAP, 2000–2005*, Brill, Leiden. Blok 5 — de chronologie van verlaten,
+   opnieuw bewoond en tot in de negende eeuw — rust daar als enige op. Een
+   universiteitsbibliotheek, Brill online, of interbibliothecair leenverkeer.
+   Het jaartal 2019 in de bronverwijzing is zelf nog niet bevestigd.
+
+`npm run bronnen -- --stand` laat op elk moment zien wat er nog tussen hier en
+een gepubliceerd hoofdstuk staat, zonder iets op te halen.
 
 ## De winkel
 

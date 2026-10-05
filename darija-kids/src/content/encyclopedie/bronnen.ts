@@ -92,6 +92,14 @@ export const BRONNEN: Bron[] = [
     taal: 'en',
     noot: 'Een erfgoedorganisatie over de staat en bedreigingen van het terrein. '
       + 'Zegt iets over behoud, niet over geschiedenis.',
+    // Nagemeten op 5 oktober 2026: dit adres leeft niet meer. `/node/14142`
+    // geeft 404, en `/project/volubilis` stuurt door naar `/projects/volubilis`
+    // dat ook 404 geeft. De pagina is van de site van WMF verdwenen.
+    //
+    // Blijft voorlopig staan en wordt niet stilletjes weggehaald: geen enkel
+    // blok in het hoofdstuk over Walili verwijst ernaar, dus hij houdt niets
+    // tegen, en een bron die ooit bestaan heeft hoort via een archief terug
+    // te vinden te zijn in plaats van uit het register te verdwijnen.
   },
 ]
 
