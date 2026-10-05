@@ -32,7 +32,12 @@ export const BRONNEN: Bron[] = [
   {
     id: 'unesco-836',
     soort: 'erfgoed',
-    stand: 'gevonden',
+    stand: 'gelezen',
+    gelezenOp: '2026-10-05',
+    gelezenDoor: 'redactie',
+    plek: 'Outstanding Universal Value → Brief synthesis; Criteria (ii)(iii)(iv)(vi); '
+      + 'en het gegevensblok onderaan: Date of Inscription 1997, dossier 836bis, '
+      + 'Property 42 ha, Buffer zone 4.200 ha.',
     wie: 'UNESCO World Heritage Centre',
     titel: 'Archaeological Site of Volubilis',
     waar: 'World Heritage List, nr. 836',
@@ -43,6 +48,10 @@ export const BRONNEN: Bron[] = [
       + 'niet wat historisch vaststaat. Bruikbaar voor de inschrijving zelf, de '
       + 'begrenzing van het terrein en de staat van het monument; niet als enige '
       + 'bron voor datering of bewoningsgeschiedenis.',
+    // Gelezen op 5 oktober 2026 via het Internet Archive, omdat whc.unesco.org
+    // zelf achter een Cloudflare-controle staat die een geautomatiseerde
+    // browser niet doorlaat. Het adres hierboven blijft het adres van de bron;
+    // het archief is hoe hij is ingezien, niet waar hij staat.
   },
   {
     id: 'unesco-836-evaluatie',
@@ -73,7 +82,10 @@ export const BRONNEN: Bron[] = [
   {
     id: 'ucl-insap-project',
     soort: 'erfgoed',
-    stand: 'gevonden',
+    stand: 'gelezen',
+    gelezenOp: '2026-10-05',
+    gelezenDoor: 'redactie',
+    plek: 'www/english/index.htm en www/english/about/index.htm',
     wie: 'UCL Institute of Archaeology & INSAP',
     titel: 'Volubilis Archaeological Project',
     url: 'https://volubilis.lparchaeology.com/',
@@ -81,6 +93,23 @@ export const BRONNEN: Bron[] = [
     noot: 'De projectsite bij de opgraving hierboven, met veldwerkdocumentatie in '
       + 'het Engels en het Frans. Een projectsite is geen peer-reviewed publicatie; '
       + 'bruikbaar om te vinden wat waar gepubliceerd is.',
+    // Gelezen op 5 oktober 2026, en dat veranderde wat deze bron kan dragen.
+    //
+    // De site is voor het laatst bijgewerkt op 25 september 2003 -- dat staat er
+    // zelf onderaan elke bladzijde -- en dus vóór het einde van de opgraving van
+    // 2000-2005. De navigatie bestaat uit plaatjes en er staat nauwelijks tekst:
+    // de openingsbladzijde zegt dat Volubilis werelderfgoed is en noemt het
+    // Anglo-Moroccan Volubilis Project, en de bladzijde 'About Volubilis' bevat
+    // één regel die naar andere bladzijden verwijst.
+    //
+    // Daarmee draagt deze bron wél dat het project bestond en wie eraan werkte,
+    // en níét de jaartallen 2000-2005, niet dat het onderzoek zich op de
+    // bewoning ná Rome richtte, en al helemaal niet de chronologie die daaruit
+    // volgt. Hij is daarom uit de bronnenlijst van blok 4 en van de tijdlijnpost
+    // 'walili-ucl' gehaald: een bron die de bewering niet draagt hoort er niet
+    // onder te staan, ook niet als tweede naam.
+    //
+    // Wat overblijft voor die twee is het boek van Fentress en Limane.
   },
   {
     id: 'wmf-volubilis',

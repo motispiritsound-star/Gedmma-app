@@ -8,12 +8,24 @@
  * het schoolvoorbeeld van een plek waar de oude literatuur en het nieuwe
  * onderzoek elkaar tegenspreken — precies waar "wat weten we zeker" over gaat.
  *
- * **Dit hoofdstuk staat op `concept` en hoort dat voorlopig te blijven.** Geen
- * van de bronnen is geopend; zie `bronnen.ts` voor waarom dat in deze omgeving
- * niet kon. Wat hieronder staat is opgeschreven uit zoekresultaten die naar
- * deze bronnen verwijzen, en dat is nadrukkelijk niet hetzelfde als nalezen.
- * Elk blok wijst al wel naar de bron die het moet dragen, zodat het nalezen
- * een afvinkbare handeling wordt in plaats van een zoektocht.
+ * **Dit hoofdstuk staat op `concept`, en wat daar nog voor nodig is, is op
+ * 5 oktober 2026 teruggebracht tot één ding.**
+ *
+ * Het erfgoeddossier van UNESCO is gelezen en draagt de eerste drie blokken en
+ * de tijdlijnpost over 1997. Dat was het makkelijke deel.
+ *
+ * De projectsite van UCL en INSAP is óók gelezen, en dat pakte anders uit dan
+ * verwacht: hij is voor het laatst bijgewerkt in september 2003, vóór het
+ * einde van de opgraving zelf, en hij bevat nauwelijks tekst. Hij is daarom
+ * weggehaald onder blok 4 en onder de tijdlijnpost over de opgraving — niet
+ * omdat hij onbetrouwbaar is, maar omdat hij die beweringen niet doet. Dat is
+ * waar deze poort voor is: een bron opendoen kan betekenen dat je minder mag
+ * zeggen dan je had opgeschreven.
+ *
+ * Wat overblijft zijn blok 4, blok 5 en de tijdlijnpost over de opgraving, en
+ * die leunen alle drie op Fentress & Limane bij Brill. Dat boek staat niet
+ * online. Er is dus geen adres meer dat dit hoofdstuk opent — er is een
+ * bibliotheek voor nodig.
  */
 
 import type { Hoofdstuk } from '../types'
@@ -85,7 +97,7 @@ export const WALILI: Hoofdstuk = {
       tekst: 'De opgravingen van University College London en het Institut '
         + 'National des Sciences de l’Archéologie et du Patrimoine, tussen 2000 en '
         + '2005, richtten zich juist op de bewoning ná de Romeinse periode.',
-      bronnen: ['fentress-limane-2019', 'ucl-insap-project'],
+      bronnen: ['fentress-limane-2019'],
       zekerheid: 'waarschijnlijk',
     },
     {
@@ -118,7 +130,7 @@ export const WALILI: Hoofdstuk = {
       jaar: 2000,
       wanneer: '2000 – 2005',
       zekerheid: 'waarschijnlijk',
-      bronnen: ['fentress-limane-2019', 'ucl-insap-project'],
+      bronnen: ['fentress-limane-2019'],
       plaats: 'walili',
     },
   ],
