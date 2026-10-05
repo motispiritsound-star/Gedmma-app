@@ -54,8 +54,9 @@ Steve AI op, en een Nederlandse aanwijzing levert daar niets op.
 **Over het tempo.** De Nederlandse stem zit op ongeveer 2,4 woorden per
 seconde; sneller klinkt gehaast en bij een advertentie over taalverlies is
 gehaast het verkeerde gevoel. Daarom staat bij elke scène hoeveel woorden erin
-passen. Schrijf je iets om, tel dan opnieuw. Drieëntachtig woorden in veertig
-seconden is de hele begroting.
+passen. Schrijf je iets om, tel dan opnieuw. Zevenenzeventig woorden in veertig seconden is de
+hele begroting — minder dan in de eerste versie, omdat de app er nu zelf vijf
+seconden lang voor zichzelf spreekt.
 
 ---
 
@@ -75,7 +76,7 @@ plain plastered walls. Documentary feel, no studio lighting, no smiling at the
 camera.
 ```
 
-### Scène 2 — 0:04 tot 0:08 · 6 woorden
+### Scène 2 — 0:04 tot 0:07 · 6 woorden
 
 **Stem:** Antwoorden lukt alleen niet. Dus vertaal jij.
 
@@ -89,12 +90,12 @@ help with their eyes. The parent begins to speak. The grandmother waits. Same
 warm light, same documentary feel.
 ```
 
-### Scène 3 — 0:08 tot 0:18 · 25 woorden
+### Scène 3 — 0:07 tot 0:16 · 25 woorden
 
 **Stem:** De eerste generatie spreekt de taal. De tweede verstaat hem. De
 derde kent er nog een woord of vier van. En die gaan over eten.
 
-**In beeld:** niets. Laat de stem alleen staan.
+**In beeld:** pas bij het laatste portret: *Zo gaat een taal weg.*
 
 **Beeldprompt:** drie korte shots achter elkaar, elk ongeveer drie seconden.
 ```
@@ -109,34 +110,56 @@ Each shot framed the same way, so they read as one family across three
 generations.
 ```
 
-### Scène 4 — 0:18 tot 0:22 · 9 woorden
+De zin over de knal is uit de film gehaald als aparte scène met een lege stoel
+erin. Hij staat nu in beeld onder het derde portret: dezelfde zin, vier
+seconden minder, en die vier seconden gaan naar de app.
 
-**Stem:** Zo gaat een taal weg. Niet met een knal.
+---
 
-**In beeld:** *Zo gaat een taal weg.*
+### Scène 4 — 0:16 tot 0:30 · de app · 24 woorden
 
-**Beeldprompt:**
-```
-Almost black. A single empty kitchen chair at the same table, no people.
-Very low light. Hold still, no camera movement.
-```
+**Veertien seconden, en geen enkele daarvan wordt gegenereerd.**
 
-### Scène 5 — 0:22 tot 0:30 · 21 woorden
+In de eerste versie kreeg de app acht van de veertig seconden — twintig
+procent. De controlelijst van dit document zegt: laat de film zien aan iemand
+die de app niet kent en vraag daarna wat de app doet. Met acht seconden zakt
+hij voor zijn eigen toets.
 
-**Stem:** Darijaforkids leert kinderen Darija — de taal die thuis gesproken
-wordt. 432 opnames, geen computerstem. De eerste vier lessen zijn gratis.
+Er is bovendien veel meer materiaal dan één blok. `intro-verhaal.mp4` bestaat
+uit **zeven schermen van de echte app, elk 3,2 seconde**, met een vinger die
+tikt: het pad, de letters, een les, de geschiedenisfilmpjes, schrijven, een
+woord. Daar knip je drie verschillende beats uit.
 
-**In beeld:** *432 opnames, geen computerstem.*
+**4a — 0:16 tot 0:20 · het scherm met de Arabische letters**
 
-**Beeld:** **geen prompt. Hier komt de echte opname.**
+> Darijaforkids leert kinderen Darija — de taal die thuis gesproken wordt.
 
-    store/video/nl/intro-verhaal.mp4
+**In beeld:** *Alle 28 letters, met hun drie vormen.*
 
-Laat Steve AI hier niets genereren. Upload dit bestand en zet het op de plek
-van de scène. Knip er acht seconden uit — de eerste acht werken, maar kijk
-zelf even welk stuk het mooist loopt.
+**4b — 0:20 tot 0:25 · een woord dat wordt uitgesproken**
 
-### Scène 6 — 0:30 tot 0:36 · 11 woorden
+> *(geen stem — laat het geluid van de app zelf staan)*
+
+**In beeld:** *432 opnames. Geen computerstem.*
+
+Dit is het belangrijkste stuk van de hele film, en het bestaat uit vijf
+seconden waarin de verteller zijn mond houdt.
+
+"Geen computerstem" is een bewering zolang je hem uitspreekt. Laat je in
+plaats daarvan een echte stem een Darija-woord zeggen en een kind het
+nazeggen, dan is het geen bewering meer maar iets wat de kijker zelf hoort.
+Wie twijfelt of dit weer zo'n app met een robotstem is, heeft zijn antwoord
+zonder dat jij het hoeft te geven.
+
+**4c — 0:25 tot 0:30 · het pad met de units**
+
+> Van de eerste letter tot de souq. De eerste vier lessen zijn gratis.
+
+**In beeld:** *Geen account. Geen advertenties.*
+
+---
+
+### Scène 5 — 0:30 tot 0:36 · 11 woorden
 
 **Stem:** En dan, een zomer later, hoor je het. Niet perfect. Maar zelf.
 
@@ -155,7 +178,7 @@ De laatste woorden hoor je het kind zeggen, niet de verteller. Als Steve AI
 dat niet kan, laat de stem dan stil vallen na "hoor je het" en zet *Niet
 perfect. Maar zelf.* in beeld.
 
-### Scène 7 — 0:36 tot 0:40 · 6 woorden
+### Scène 6 — 0:36 tot 0:40 · 6 woorden
 
 **Stem:** Darijaforkids. Begin vandaag, gratis. darijaforkids.eu
 
@@ -245,6 +268,79 @@ tegelijk, en bij de ACM.
 iets over hoeveel kinderen het gebruiken. Het eerste is niet waar, het tweede
 weten we niet, en het derde weten we nog niet.
 
+## De instellingen in Steve AI
+
+Het scherm *Set Video Preferences* bepaalt meer dan het lijkt. Zo moeten ze
+staan, met de reden erbij.
+
+| | Zetten op | Waarom |
+|---|---|---|
+| Modus | **Generative AI** | je hebt per scène sturing nodig op wat Marokkaans beeld is; stockbeeld kies je niet, dat krijg je |
+| Video Size | **Vertical** | hetzelfde formaat als `intro-verhaal.mp4`, en het formaat waarin ouders kijken. Staat hij op Horizontal, dan moet je later alles herkaderen |
+| Video Type | Generative Clips | let op je tegoed, zie hieronder |
+| Language | **Dutch** | |
+| Voice Over | **een Nederlandse stem** | |
+| BGM | **Disable** | |
+| Category | Product Launch | |
+| Subtitles | **Enable** | de meeste mensen kijken zonder geluid |
+
+**De stem is de valkuil.** Language kan op Dutch staan terwijl bij Voice Over
+een Engelse stem geselecteerd is — die combinatie leest je Nederlandse script
+met een Engelse mond. Kijk dus niet of er "Dutch" staat bij Language, maar of
+er een Nederlandse naam onder de stem staat. En luister hem één keer af op de
+naam: *Da-ri-ja-for-kids*.
+
+**Muziek uit, en dat is geen vergissing.** `intro-verhaal.mp4` heeft zijn
+eigen geluid: de marimba en darbuka van de app zelf. Zet je daar BGM
+overheen, dan vechten twee muzieksporen in scène 4 — precies de scène waar de
+kijker de echte stem moet horen die een Darija-woord zegt. Eén geluidswereld,
+en die komt uit het product.
+
+**Het tegoed is je echte beperking.** Bij Generative Clips staat hoeveel
+seconden je nog hebt. Deze film heeft ongeveer 26 seconden gegenereerd beeld
+nodig (scène 1, 2, 3 en 5); scène 4 en het eindkaartje komen van je eigen
+bestanden. Elke keer dat je een scène opnieuw laat genereren, gaat dat van
+hetzelfde tegoed af. Schrijf de beeldprompt dus goed vóór je op genereren
+drukt, in plaats van te hopen dat de derde poging beter uitpakt.
+
+## Het logo en de app: uploaden, nooit genereren
+
+Dit is de belangrijkste regel van dit hele document, en hij heeft één zin
+nodig: **een beeldgenerator maakt geen logo en geen app-scherm, hij maakt iets
+wat erop lijkt.** Een logo dat bijna klopt is erger dan geen logo, en een
+nagetekend app-scherm met verzonnen knoppen belooft iets anders dan wat de
+kijker krijgt als hij downloadt.
+
+Alles wat je nodig hebt staat al op je schijf. Upload deze bestanden in Steve
+AI en zet ze op de plek van de scène, in plaats van er een prompt voor te
+schrijven.
+
+| Waarvoor | Bestand |
+|---|---|
+| Scène 4, de hele app (14 s) | `store/video/nl/intro-verhaal.mp4` |
+| Scène 6, het eindkaartje | `brand/social/profielfoto.png` |
+| Los app-beeld, als je een still wilt | `store/screenshots/nl/iphone-65/` — tien schermen |
+| Een kant-en-klare plaat met kop erop | `brand/social/posts/nl/1-oma-verhaal.png` |
+
+`brand/` staat in `.gitignore`, dus na een verse kloon zijn die twee er niet.
+Dan eerst:
+
+```
+npm run social
+```
+
+```
+npm run intro
+```
+
+**Hoe het uploaden gaat:** na *Generate Script* kom je in de editor, en daar
+zit een paneel voor eigen media. Upload het bestand daar en sleep het op de
+scène waar het gegenereerde beeld staat. Ziet dat er bij jou anders uit, stuur
+dan een schermafbeelding — dan wijs ik het aan in plaats van te raden.
+
+**En laat scène 4 niet eerst genereren om hem daarna te vervangen.** Dat kost
+je tegoed voor beeld dat je weggooit.
+
 ## De controlelijst voor je exporteert
 
 Loop deze langs. Elk punt is iets wat eerder is misgegaan bij iemand anders,
@@ -253,7 +349,7 @@ en ze kosten samen vijf minuten.
 - [ ] **Scène 5 is de echte opname** en geen gegenereerde telefoon.
 - [ ] **Elke scène is Marokkaans**, langs de tabel hierboven gelegd. Geen
       thobe, geen glazen koepel, geen duinen als enige beeld.
-- [ ] **De oma in scène 1 en die in scène 6 zijn dezelfde persoon.** Een
+- [ ] **De oma in scène 1 en die in scène 5 zijn dezelfde persoon.** Een
       beeldgenerator houdt een gezicht niet vanzelf vast over scènes heen, en
       als de oma aan het eind iemand anders is, valt het hele verhaal om.
       Hetzelfde voor het kind.
