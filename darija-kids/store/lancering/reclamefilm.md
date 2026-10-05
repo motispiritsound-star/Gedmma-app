@@ -177,7 +177,7 @@ beeldprompts, alleen de stem en de tekst in beeld veranderen.
 |---|---|---|
 | 1 | Ton enfant comprend mamie. | *Ton enfant comprend mamie.* |
 | 2 | C’est répondre qui ne vient pas. Alors c’est toi qui traduis. | *C’est répondre qui ne vient pas.* |
-| 3 | La première génération parle la langue. La deuxième la comprend. La troisième en connaît encore quatre mots, et ils parlent de nourriture. | — |
+| 3 | La première génération parle la langue. La deuxième la comprend. La troisième en connaît encore quatre mots, et ils portent sur la nourriture. | — |
 | 4 | C’est comme ça qu’une langue s’en va. Pas dans un fracas. | *C’est comme ça qu’une langue s’en va.* |
 | 5 | Darijaforkids apprend le darija aux enfants — la langue qu’on parle à la maison. 432 enregistrements, aucune voix de synthèse. Les quatre premières leçons sont gratuites. | *432 enregistrements, aucune voix de synthèse.* |
 | 6 | Et puis, un été plus tard, tu l’entends. Pas parfait. Mais tout seul. | — |
@@ -186,8 +186,35 @@ beeldprompts, alleen de stem en de tekst in beeld veranderen.
 De regels in de tabel zijn niet vertaald voor deze film: het zijn de koppen
 van de campagneplaten uit `scripts/make-social.mjs`, zodat de advertentie en
 de platen dezelfde zinnen gebruiken. Duits, Spaans en Italiaans staan daar
-ook, dus dezelfde film is in zes talen te maken zonder nieuwe tekst te
-verzinnen.
+ook, dus de resterende drie talen zijn op dezelfde manier te maken zonder
+nieuwe tekst te verzinnen.
+
+## En in het Engels
+
+`store/video/en/intro-verhaal.mp4` staat er ook — `npm run intro` maakt alle
+zes de talen in één keer.
+
+| Scène | Stem | In beeld |
+|---|---|---|
+| 1 | Your child understands grandma. | *Your child understands grandma.* |
+| 2 | It's answering that doesn't come. So you translate. | *It's answering that doesn't come.* |
+| 3 | The first generation speaks the language. The second understands it. The third still knows about four words of it, and they are about food. | — |
+| 4 | That is how a language goes away. Not with a bang. | *That is how a language goes away.* |
+| 5 | Darijaforkids teaches children Darija — the language spoken at home. 432 recordings, no computer voice. The first four lessons are free. | *432 recordings, no computer voice.* |
+| 6 | And then, one summer later, you hear it. Not perfect. But on their own. | — |
+| 7 | Darijaforkids. Start today, for free. darijaforkids.eu | `darijaforkids.eu` |
+
+**Eén ding om te weten voor je dit inspreekt.** De campagnekop in
+`make-social.mjs` luidt *"It is answering that does not come"*, en dat is een
+letterlijke vertaling van het Nederlands die in het Engels houterig klinkt —
+op een plaat lees je eroverheen, in een gesproken zin hoor je het meteen. In
+de tabel hierboven staat daarom *"It's answering that doesn't come"*.
+
+Dat is een verschil van twee samentrekkingen, dus de plaat en de film botsen
+niet zichtbaar. Wil je ze letterlijk gelijk hebben, pas dan de Engelse regel
+in `scripts/make-social.mjs` aan en zet de platen opnieuw. Doe dat dan wel in
+één keer, want de kop staat ook op de winkelpagina's.
+
 
 ## De korte versie — vijftien seconden
 
@@ -303,6 +330,12 @@ De urgentie voor een ouder zit niet in wat de app kan. Die zit in de drie
 regels van scène 3, en die zijn niet voor deze film bedacht: ze staan in deel
 15 van *De sleutels van Marokko*, waar een jongen van dertien met
 vierentwintig woorden drie weken bij zijn oma is.
+
+In alle drie de talen hierboven staat die regel **woord voor woord zoals hij
+in het boek staat**, en dat is met opzet. Wie de advertentie ziet en later het
+boek leest, komt dezelfde zin tegen. Verander hem hier niet zonder hem daar
+ook te veranderen — de test op alineatellingen vangt dat niet, want dit gaat
+over de bewoording.
 
 Een ouder die dat hoort, telt zichzelf mee. Dat is het moment waarop hij
 luistert naar wat daarna komt — en niet eerder.
