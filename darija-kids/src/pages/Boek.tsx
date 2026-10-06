@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ebookFile, ebookWachtTot } from '../engine/billing'
+import { ebookFile, ebookPagina, ebookWachtTot } from '../engine/billing'
 import { useStore } from '../engine/store'
 import { localeOf, useT } from '../i18n'
 import { Button, Card } from '../ui/kit'
@@ -95,8 +95,21 @@ export function Boek() {
         regel eronder staat er daarom altijd: een lezer die een leeg vlak ziet
         moet weten dat hij niet gek is en wat hij dan wél kan doen.
       */}
+      {/*
+        De leesversie, niet de pdf.
+
+        Een pdf in een iframe toont op een iPhone alleen de omslag: WKWebView
+        heeft daar geen pdf-lezer in zitten, dus je krijgt bladzijde één als
+        plaatje — niet bladeren, niet scrollen. Op een laptop en op Android zit
+        die lezer er wél in, en daarom is dit pas gevonden door het boek op een
+        echte telefoon te openen na een echte aankoop.
+
+        De html scrollt overal, de tekst is te selecteren en te doorzoeken, en
+        hij is tien keer kleiner. De pdf blijft bestaan voor wie hem wil
+        printen of bewaren; die staat onder het venster.
+      */}
       <iframe
-        src={ebookFile(lang)}
+        src={ebookPagina(lang)}
         title={t.unlock.boek.titel}
         className="min-h-0 flex-1 rounded-2xl border border-[var(--line)] bg-white"
         onError={() => setMislukt(true)}
@@ -104,6 +117,15 @@ export function Boek() {
 
       <Card className="mt-3 p-4">
         <p className="text-sm text-[var(--ink-soft)]">{t.unlock.boek.inApp}</p>
+        {/*
+          De pdf als tweede weg, en met zoveel woorden als "om te printen".
+          Wie hem op een telefoon opent krijgt weer alleen de omslag, dus hij
+          hoort niet de eerste knop te zijn — maar hij hoort er wel te zijn:
+          het is het bestand dat je bewaart.
+        */}
+        <a href={ebookFile(lang)} download className="mt-2 inline-block text-sm font-bold underline">
+          {t.unlock.boek.pdf}
+        </a>
         {mislukt && <p className="mt-2 text-sm font-bold">{t.unlock.boek.nietGelukt}</p>}
       </Card>
     </div>

@@ -904,6 +904,7 @@ export const de: Strings = {
       koop: (prijs: string): string => `E-Book kaufen — ${prijs} einmalig`,
       open: 'E-Book öffnen',
       vanJou: 'Das E-Book gehört dir. Es bleibt deins, auch wenn das Abo irgendwann endet.',
+      pdf: 'Oder speichere das PDF zum Ausdrucken',
       alleenInApp: (prijs: string, winkel: string): string =>
         `Das E-Book kaufst du in der App aus ${winkel} (${prijs}, einmalig). Im Jahresabo ist es enthalten.`,
     },

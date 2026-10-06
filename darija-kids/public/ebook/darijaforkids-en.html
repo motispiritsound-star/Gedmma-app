@@ -1,0 +1,2649 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Darijaforkids</title>
+<style>
+  @font-face { font-family:"Baloo 2"; src:url("../fonts/baloo2-600.woff2") format("woff2"); font-weight:600; font-display:swap }
+  @font-face { font-family:"Baloo 2"; src:url("../fonts/baloo2-800.woff2") format("woff2"); font-weight:800; font-display:swap }
+  @font-face { font-family:"Noto Naskh Arabic"; src:url("../fonts/noto-naskh-arabic-400.woff2") format("woff2"); font-weight:400; font-display:swap }
+  @font-face { font-family:"Noto Naskh Arabic"; src:url("../fonts/noto-naskh-arabic-700.woff2") format("woff2"); font-weight:700; font-display:swap }
+</style>
+<style>
+  @page { size: A4; margin: 18mm 16mm 20mm; }
+  :root {
+    --ink:#221a16; --soft:#5f5449; --faint:#8b8075; --line:#e4d8c5;
+    --saffron:#d97706; --zellige:#0f766e; --alam:#c1272d; --khatim:#006233;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"IBM Plex Sans",sans-serif; color:var(--ink); font-size:10.5pt; line-height:1.5; }
+  h1,h2,h3 { font-family:"Baloo 2",sans-serif; font-weight:800; margin:0; line-height:1.15; }
+  .ar { font-family:"Noto Naskh Arabic",serif; direction:rtl; font-weight:700; }
+
+  .cover { height:calc(297mm - 38mm); display:flex; flex-direction:column; justify-content:center; gap:14mm; page-break-after:always; }
+  .cover h1 { font-size:34pt; }
+  .cover .slogan { font-size:14pt; color:var(--soft); max-width:120mm; }
+  .cover .cijfers { font-size:10pt; color:var(--faint); font-family:"IBM Plex Sans"; }
+  .vlag { width:26mm; }
+
+  h2.deel { font-size:20pt; margin:0 0 2mm; page-break-before:always; padding-top:2mm; }
+  h2.deel + .intro { color:var(--soft); margin:0 0 6mm; max-width:150mm; }
+  h3 { font-size:12pt; margin:6mm 0 2mm; color:var(--zellige); }
+
+  table { width:100%; border-collapse:collapse; page-break-inside:auto; }
+  tr { page-break-inside:avoid; }
+  td { padding:1.6mm 2mm; border-bottom:.3pt solid var(--line); vertical-align:top; }
+  td.ar { width:34mm; font-size:14pt; text-align:right; }
+  td.tr { width:34mm; font-weight:600; color:var(--zellige); }
+  td.nl { color:var(--soft); }
+  .note { display:block; font-size:8.5pt; color:var(--faint); }
+  /* Hele zinnen zijn te lang voor een woordkolom en breken dan over drie regels. */
+  table.zinnen td.ar { width:62mm; }
+  table.zinnen td.tr { width:48mm; }
+
+  .slot { page-break-before:always; padding-top:4mm; }
+  .slot h2 { font-size:20pt; margin-bottom:3mm; }
+  .slot p { color:var(--soft); max-width:150mm; }
+
+  .letters { display:grid; grid-template-columns:1fr 1fr; gap:3mm; }
+  .letter { display:flex; gap:3mm; border:.4pt solid var(--line); border-radius:3mm; padding:2.5mm; page-break-inside:avoid; }
+  .letter .glyph { font-family:"Noto Naskh Arabic",serif; font-size:22pt; font-weight:700; width:12mm; text-align:center; }
+  .letter .naam { font-family:"Baloo 2"; font-weight:800; }
+  .letter .lat { color:var(--faint); font-weight:400; }
+  .letter .klank { font-size:8.5pt; color:var(--soft); }
+  .letter .vormen { font-family:"Noto Naskh Arabic",serif; direction:rtl; display:flex; gap:4mm; font-size:13pt; margin-top:1mm; }
+  .letter .vb { font-size:8.5pt; color:var(--faint); margin-top:1mm; }
+  .letter .vb .ar { font-size:11pt; }
+
+  .unit { page-break-inside:avoid; margin-bottom:5mm; }
+  .unit .kop { display:flex; align-items:baseline; gap:3mm; }
+  .unit .level { font-size:8pt; font-weight:600; color:var(--alam); border:.4pt solid var(--alam); border-radius:2mm; padding:.3mm 1.6mm; }
+  .unit .lessen { color:var(--faint); font-size:9pt; }
+  .tip { border-left:1mm solid var(--saffron); padding:1.5mm 0 1.5mm 3mm; margin:2mm 0; page-break-inside:avoid; }
+  .tip b { font-family:"Baloo 2"; }
+  .tip p { margin:.5mm 0 0; color:var(--soft); }
+
+  footer { position:fixed; bottom:-12mm; left:0; right:0; font-size:8pt; color:var(--faint); text-align:center; }
+</style><style>
+  @media screen {
+    body { font-size:16px; line-height:1.6; padding:20px 18px 64px; max-width:46rem; margin:0 auto; -webkit-text-size-adjust:100% }
+    /* De omslag is op papier een hele bladzijde; op een scherm is dat leegte. */
+    /* Geen streep onder de omslag: het eerste deel brengt zijn eigen bovenrand mee. */
+    .cover { height:auto; display:block; padding:8px 0 4px }
+    .cover h1 { font-size:2rem }
+    .cover .slogan { font-size:1.05rem; max-width:none; margin-top:.6rem }
+    .cover .cijfers { font-size:.85rem; margin-top:1rem }
+    .vlag { width:48px }
+    h2.deel { font-size:1.5rem; padding-top:1.4rem; margin-top:1.4rem; border-top:1px solid var(--line) }
+    h2.deel + .intro { max-width:none }
+    h3 { font-size:1.1rem; margin:1.4rem 0 .5rem }
+    td { padding:.5rem .4rem }
+    td.ar { width:auto; min-width:7.5rem; font-size:1.25rem }
+    td.tr { width:auto; min-width:7rem }
+    table.zinnen td.ar, table.zinnen td.tr { width:auto }
+    .slot { padding-top:1.4rem }
+    .slot p { max-width:none }
+    /* Twee kolommen letters passen niet op een telefoon. */
+    .letters { grid-template-columns:1fr; gap:.6rem }
+    .letter { gap:.7rem; border-radius:10px; padding:.7rem }
+    .letter .glyph { width:2.4rem; font-size:1.6rem }
+    .letter .vormen { gap:1rem; font-size:1.1rem }
+    .unit { margin-bottom:1.2rem }
+    .tip { border-left-width:4px; padding:.4rem 0 .4rem .8rem }
+  }
+  @media screen and (min-width:40rem) { .letters { grid-template-columns:1fr 1fr } }
+</style>
+</head><body>
+
+<section class="cover">
+  <svg class="vlag" viewBox="0 0 60 40"><rect width="60" height="40" rx="4" fill="#c1272d"></rect>
+    <g transform="translate(30 20) scale(0.3) translate(-50 -50)">
+      <path d="M50 2 L78.5 89.7 L3.8 35.5 L96.2 35.5 L21.5 89.7 Z" fill="none" stroke="#006233" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"></path>
+    </g></svg>
+  <div>
+    <h1>Darijaforkids</h1>
+    <p class="slogan">Every word, every letter and the grammar — the whole path on paper.</p>
+  </div>
+  <p class="cijfers">
+    17 units &middot; 28 letters &middot; 267 words &middot; 37 phrases &middot; 100 sentences
+  </p>
+</section>
+
+<h2 class="deel">The alphabet</h2>
+<p class="intro">Twenty-eight letters, in the groups the app teaches them in: letters that share a skeleton sit together, because ب ت ث differ only in dots. Each letter shows its three shapes — at the start, in the middle and at the end of a word.</p>
+<div class="letters">
+  <div class="letter">
+    <div class="glyph">ا</div>
+    <div class="over">
+      <div class="naam">alif <span class="lat">a</span></div>
+      <div class="klank">aa, zoals in “maan”</div>
+      <div class="vormen">
+        <span>ا</span><span>ـا</span><span>ـا</span>
+      </div>
+      <div class="vb"><span class="ar">انا</span> ana</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ب</div>
+    <div class="over">
+      <div class="naam">ba <span class="lat">b</span></div>
+      <div class="klank">b van bal</div>
+      <div class="vormen">
+        <span>بـ</span><span>ـبـ</span><span>ـب</span>
+      </div>
+      <div class="vb"><span class="ar">بحر</span> bhar</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ت</div>
+    <div class="over">
+      <div class="naam">ta <span class="lat">t</span></div>
+      <div class="klank">t van tas</div>
+      <div class="vormen">
+        <span>تـ</span><span>ـتـ</span><span>ـت</span>
+      </div>
+      <div class="vb"><span class="ar">تفاح</span> tfah</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ث</div>
+    <div class="over">
+      <div class="naam">tha <span class="lat">th</span></div>
+      <div class="klank">th van het Engelse “think” — zeldzaam in Darija</div>
+      <div class="vormen">
+        <span>ثـ</span><span>ـثـ</span><span>ـث</span>
+      </div>
+      
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ج</div>
+    <div class="over">
+      <div class="naam">jim <span class="lat">j</span></div>
+      <div class="klank">zj van “journaal”</div>
+      <div class="vormen">
+        <span>جـ</span><span>ـجـ</span><span>ـج</span>
+      </div>
+      <div class="vb"><span class="ar">جبن</span> jben</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ح</div>
+    <div class="over">
+      <div class="naam">ḥa <span class="lat">7 / ḥ</span></div>
+      <div class="klank">een geblazen h, diep uit de keel</div>
+      <div class="vormen">
+        <span>حـ</span><span>ـحـ</span><span>ـح</span>
+      </div>
+      <div class="vb"><span class="ar">حوت</span> hut</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">خ</div>
+    <div class="over">
+      <div class="naam">kha <span class="lat">kh</span></div>
+      <div class="klank">ch van “lachen”</div>
+      <div class="vormen">
+        <span>خـ</span><span>ـخـ</span><span>ـخ</span>
+      </div>
+      <div class="vb"><span class="ar">خبز</span> khobz</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">د</div>
+    <div class="over">
+      <div class="naam">dal <span class="lat">d</span></div>
+      <div class="klank">d van dag</div>
+      <div class="vormen">
+        <span>د</span><span>ـد</span><span>ـد</span>
+      </div>
+      <div class="vb"><span class="ar">الدار</span> ddar</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ذ</div>
+    <div class="over">
+      <div class="naam">dhal <span class="lat">dh</span></div>
+      <div class="klank">zachte th, zoals Engels “this”</div>
+      <div class="vormen">
+        <span>ذ</span><span>ـذ</span><span>ـذ</span>
+      </div>
+      
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ر</div>
+    <div class="over">
+      <div class="naam">ra <span class="lat">r</span></div>
+      <div class="klank">rollende r</div>
+      <div class="vormen">
+        <span>ر</span><span>ـر</span><span>ـر</span>
+      </div>
+      <div class="vb"><span class="ar">راس</span> ras</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ز</div>
+    <div class="over">
+      <div class="naam">zay <span class="lat">z</span></div>
+      <div class="klank">z van zon</div>
+      <div class="vormen">
+        <span>ز</span><span>ـز</span><span>ـز</span>
+      </div>
+      <div class="vb"><span class="ar">زربية</span> zerbiya</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">س</div>
+    <div class="over">
+      <div class="naam">sin <span class="lat">s</span></div>
+      <div class="klank">s van sok</div>
+      <div class="vormen">
+        <span>سـ</span><span>ـسـ</span><span>ـس</span>
+      </div>
+      <div class="vb"><span class="ar">ساروت</span> sarut</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ش</div>
+    <div class="over">
+      <div class="naam">shin <span class="lat">sh</span></div>
+      <div class="klank">sj van “sjaal”</div>
+      <div class="vormen">
+        <span>شـ</span><span>ـشـ</span><span>ـش</span>
+      </div>
+      <div class="vb"><span class="ar">شمس</span> shems</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ص</div>
+    <div class="over">
+      <div class="naam">ṣad <span class="lat">ṣ</span></div>
+      <div class="klank">zware, donkere s</div>
+      <div class="vormen">
+        <span>صـ</span><span>ـصـ</span><span>ـص</span>
+      </div>
+      <div class="vb"><span class="ar">صغير</span> sghir</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ض</div>
+    <div class="over">
+      <div class="naam">ḍad <span class="lat">ḍ</span></div>
+      <div class="klank">zware d — het Arabisch heet “de taal van de dad”</div>
+      <div class="vormen">
+        <span>ضـ</span><span>ـضـ</span><span>ـض</span>
+      </div>
+      <div class="vb"><span class="ar">بيض</span> byed</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ط</div>
+    <div class="over">
+      <div class="naam">ṭa <span class="lat">ṭ</span></div>
+      <div class="klank">zware t</div>
+      <div class="vormen">
+        <span>طـ</span><span>ـطـ</span><span>ـط</span>
+      </div>
+      <div class="vb"><span class="ar">طوير</span> twiar</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ظ</div>
+    <div class="over">
+      <div class="naam">ẓa <span class="lat">ẓ</span></div>
+      <div class="klank">zware z</div>
+      <div class="vormen">
+        <span>ظـ</span><span>ـظـ</span><span>ـظ</span>
+      </div>
+      
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ع</div>
+    <div class="over">
+      <div class="naam">ayn <span class="lat">3</span></div>
+      <div class="klank">een knijp in de keel — de beroemdste klank van het Arabisch</div>
+      <div class="vormen">
+        <span>عـ</span><span>ـعـ</span><span>ـع</span>
+      </div>
+      <div class="vb"><span class="ar">عافاك</span> 3afak</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">غ</div>
+    <div class="over">
+      <div class="naam">ghayn <span class="lat">gh</span></div>
+      <div class="klank">brouwende g, zoals de Franse r</div>
+      <div class="vormen">
+        <span>غـ</span><span>ـغـ</span><span>ـغ</span>
+      </div>
+      <div class="vb"><span class="ar">غالي</span> ghali</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ف</div>
+    <div class="over">
+      <div class="naam">fa <span class="lat">f</span></div>
+      <div class="klank">f van fiets</div>
+      <div class="vormen">
+        <span>فـ</span><span>ـفـ</span><span>ـف</span>
+      </div>
+      <div class="vb"><span class="ar">فلوس</span> flus</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ق</div>
+    <div class="over">
+      <div class="naam">qaf <span class="lat">q / 9</span></div>
+      <div class="klank">k diep achter in de mond</div>
+      <div class="vormen">
+        <span>قـ</span><span>ـقـ</span><span>ـق</span>
+      </div>
+      <div class="vb"><span class="ar">قهوة</span> qehwa</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ك</div>
+    <div class="over">
+      <div class="naam">kaf <span class="lat">k</span></div>
+      <div class="klank">k van kat</div>
+      <div class="vormen">
+        <span>كـ</span><span>ـكـ</span><span>ـك</span>
+      </div>
+      <div class="vb"><span class="ar">كناش</span> kunash</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ل</div>
+    <div class="over">
+      <div class="naam">lam <span class="lat">l</span></div>
+      <div class="klank">l van lam</div>
+      <div class="vormen">
+        <span>لـ</span><span>ـلـ</span><span>ـل</span>
+      </div>
+      <div class="vb"><span class="ar">الما</span> lma</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">م</div>
+    <div class="over">
+      <div class="naam">mim <span class="lat">m</span></div>
+      <div class="klank">m van maan</div>
+      <div class="vormen">
+        <span>مـ</span><span>ـمـ</span><span>ـم</span>
+      </div>
+      <div class="vb"><span class="ar">ماما</span> mama</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ن</div>
+    <div class="over">
+      <div class="naam">nun <span class="lat">n</span></div>
+      <div class="klank">n van neus</div>
+      <div class="vormen">
+        <span>نـ</span><span>ـنـ</span><span>ـن</span>
+      </div>
+      <div class="vb"><span class="ar">نيف</span> nif</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ه</div>
+    <div class="over">
+      <div class="naam">ha <span class="lat">h</span></div>
+      <div class="klank">gewone h</div>
+      <div class="vormen">
+        <span>هـ</span><span>ـهـ</span><span>ـه</span>
+      </div>
+      <div class="vb"><span class="ar">هنا</span> hnaya</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">و</div>
+    <div class="over">
+      <div class="naam">waw <span class="lat">w / oe</span></div>
+      <div class="klank">w van water, of oe</div>
+      <div class="vormen">
+        <span>و</span><span>ـو</span><span>ـو</span>
+      </div>
+      <div class="vb"><span class="ar">واخا</span> wakha</div>
+    </div>
+  </div>
+  <div class="letter">
+    <div class="glyph">ي</div>
+    <div class="over">
+      <div class="naam">ya <span class="lat">y / ie</span></div>
+      <div class="klank">j van jas, of ie</div>
+      <div class="vormen">
+        <span>يـ</span><span>ـيـ</span><span>ـي</span>
+      </div>
+      <div class="vb"><span class="ar">يد</span> yedd</div>
+    </div>
+  </div></div>
+
+<h2 class="deel">The path</h2>
+<p class="intro">Seventeen units, each built on the one before. Below, what is in each unit and the notes the app gives along the way — the grammar, in one place.</p>
+
+  <div class="unit">
+    <div class="kop">
+      <h3>🔤 Lhruf</h3>
+      <span class="level">A0</span>
+      <span class="ar">الحروف</span>
+    </div>
+    <div class="lessen">The Arabic alphabet, letter by letter &mdash; ا ب ت ث &middot; ج ح خ د ذ &middot; ر ز س ش &middot; ص ض ط ظ &middot; ع غ ف ق &middot; ك ل م ن &middot; ه و ي &middot; Checkpoint</div>
+    <div class="tip"><b>Right to left</b><p>Arabic is read and written from right to left. Letters join up, so the same letter looks different at the start, in the middle and at the end of a word. ب، ت and ث are exactly the same stroke — only the dots differ.</p></div><div class="tip"><b>Six letters never join forward</b><p>ا د ذ ر ز و never join to the letter after them. That is why a word sometimes breaks apart in the middle without being two words. Every other letter sticks on both sides.</p></div><div class="tip"><b>The heavy letters</b><p>ص ض ط ظ are the dark cousins of س د ت ز. You make them with your tongue flat and far back, as if you were talking with your mouth full. You can hear the difference: سيف (sword) and صيف (summer).</p></div><div class="tip"><b>The most famous sound</b><p>ع is the sound Arabic is famous for: a squeeze deep in your throat. In messages Moroccans write a 3 for it, because a 3 looks like ع. غ is the rasping French r, and ق a k right at the back.</p></div><div class="tip"><b>The last three</b><p>That is all twenty-eight letters. و and ي are the two that are sometimes a consonant (w, y) and sometimes a long vowel (oo, ee) — the word tells you which.</p></div>
+  </div>
+  <div class="unit">
+    <div class="kop">
+      <h3>👋 Salam!</h3>
+      <span class="level">A0</span>
+      <span class="ar">السلام</span>
+    </div>
+    <div class="lessen">Saying hello and goodbye &mdash; Hello and goodbye &middot; How are you? &middot; Yes, no, okay &middot; A fond goodbye &middot; Checkpoint</div>
+    <div class="tip"><b>What is Darija?</b><p>Darija is the language of the street in Morocco. It looks like Arabic, but with its own words from Amazigh, French and Spanish. Here you learn both the Arabic script and the letters Moroccans use in their messages.</p></div><div class="tip"><b>Boy or girl?</b><p>Darija changes the word when you speak to a girl: kif dayr? to a boy, kif dayra? to a girl. You will meet that -a everywhere.</p></div><div class="tip"><b>The numbers inside the words</b><p>In messages Moroccans write 3 for ع, 7 for ح and 9 (or q) for ق. Those sounds do not exist in English. 3afak = please, 7amdullah = thank God.</p></div>
+  </div>
+  <div class="unit">
+    <div class="kop">
+      <h3>🙋 Ana w nta</h3>
+      <span class="level">A0</span>
+      <span class="ar">انا ونتا</span>
+    </div>
+    <div class="lessen">Me, you, and who you are &mdash; Me and you &middot; What is your name? &middot; Where are you from? &middot; Checkpoint</div>
+    <div class="tip"><b>No “to be”</b><p>Darija has no word for “am”. “Ana ferhan” is literally “I happy” and means “I am happy”. That saves a lot of work.</p></div>
+  </div>
+  <div class="unit">
+    <div class="kop">
+      <h3>👨‍👩‍👧‍👦 L3a'ila</h3>
+      <span class="level">A0</span>
+      <span class="ar">العائلة</span>
+    </div>
+    <div class="lessen">Introducing your family &mdash; At home &middot; Uncles and aunts &middot; This is my… &middot; Checkpoint</div>
+    <div class="tip"><b>Two kinds of uncle</b><p>Your father's family (3ammi, 3ammti) and your mother's (khali, khalti) have their own words. Moroccans ask straight away: which side?</p></div><div class="tip"><b>The -i of “my”</b><p>Stick -i on a word and it is yours: khoya (my brother), sahbi (my friend), smiti (my name). Stick -ek on and it is the other person's: smitek (your name).</p></div>
+  </div>
+  <div class="unit">
+    <div class="kop">
+      <h3>🔢 L3dad</h3>
+      <span class="level">A0</span>
+      <span class="ar">الأعداد</span>
+    </div>
+    <div class="lessen">Counting to a hundred &mdash; One to five &middot; Six to ten &middot; Counting further &middot; How old are you? &middot; Checkpoint</div>
+    <div class="tip"><b>Two is “jouj”</b><p>For 2 Darija uses jouj (from Arabic zawj, “pair”), not tnayn. Jouj drari = two children.</p></div>
+  </div>
+  <div class="unit">
+    <div class="kop">
+      <h3>🎨 Lalwan</h3>
+      <span class="level">A0</span>
+      <span class="ar">الألوان</span>
+    </div>
+    <div class="lessen">The colours around you &mdash; The six basic colours &middot; More colours &middot; Checkpoint</div>
+    <div class="tip"><b>Colours take an -a too</b><p>A red car is tomobil hemra, a red book is ktab hmer. The word adapts to the thing you are describing.</p></div>
+  </div>
+  <div class="unit">
+    <div class="kop">
+      <h3>🍽️ Lmakla</h3>
+      <span class="level">A1</span>
+      <span class="ar">الماكلة</span>
+    </div>
+    <div class="lessen">Food, drink and tea &mdash; On the table &middot; Fruit and vegetables &middot; From the fridge &middot; Moroccan dishes &middot; I am hungry &middot; Checkpoint</div>
+    <div class="tip"><b>Atay is a ritual</b><p>Mint tea is poured from high up so it foams. Three glasses is the custom — refusing is almost rude.</p></div><div class="tip"><b>Friday is couscous day</b><p>After the Friday prayer almost all of Morocco eats kesksu, from one big dish in the middle of the table.</p></div>
+  </div>
+  <div class="unit">
+    <div class="kop">
+      <h3>🏠 Ddar</h3>
+      <span class="level">A1</span>
+      <span class="ar">الدار</span>
+    </div>
+    <div class="lessen">In and around the house &mdash; The rooms &middot; Furniture &middot; Things &middot; Checkpoint</div>
+    
+  </div>
+  <div class="unit">
+    <div class="kop">
+      <h3>🏫 Lmedrasa</h3>
+      <span class="level">A1</span>
+      <span class="ar">المدرسة</span>
+    </div>
+    <div class="lessen">In the classroom &mdash; Who is who &middot; In your bag &middot; I do (not) understand &middot; Checkpoint</div>
+    <div class="tip"><b>Saying no: ma … sh</b><p>Put ma in front of the verb and sh behind it: fhemt (I understand) becomes ma fhemtsh (I do not understand). 3endi becomes ma 3endish.</p></div>
+  </div>
+  <div class="unit">
+    <div class="kop">
+      <h3>🐾 Lhayawanat</h3>
+      <span class="level">A1</span>
+      <span class="ar">الحيوانات</span>
+    </div>
+    <div class="lessen">Animals near and far &mdash; Around the house &middot; On the farm &middot; Wild &middot; Checkpoint</div>
+    
+  </div>
+  <div class="unit">
+    <div class="kop">
+      <h3>🕰️ Lweqt</h3>
+      <span class="level">A1</span>
+      <span class="ar">الوقت</span>
+    </div>
+    <div class="lessen">Days, time and weather &mdash; When? &middot; The days &middot; Clock and calendar &middot; The weather &middot; Checkpoint</div>
+    <div class="tip"><b>The week starts on Sunday</b><p>lhedd (Sunday) comes from “one”, lethnin (Monday) from “two”, ttlat from “three”. The days are simply counted.</p></div>
+  </div>
+  <div class="unit">
+    <div class="kop">
+      <h3>💛 Ljism</h3>
+      <span class="level">A1</span>
+      <span class="ar">الجسم</span>
+    </div>
+    <div class="lessen">Body and feelings &mdash; Your face &middot; Your body &middot; How do you feel? &middot; Checkpoint</div>
+    <div class="tip"><b>Kanbghik</b><p>Kanbghik means both “I love you” and “I like you”. You say it to your mother, your grandmother and your best friend.</p></div>
+  </div>
+  <div class="unit">
+    <div class="kop">
+      <h3>⚡ Kanhder</h3>
+      <span class="level">A1</span>
+      <span class="ar">كنهضر</span>
+    </div>
+    <div class="lessen">Saying what you do &mdash; Every day &middot; More things to do &middot; Wanting and having &middot; Do it! &middot; Checkpoint</div>
+    <div class="tip"><b>The ka- of “now”</b><p>Put ka(n)- in front of a verb and it happens now or always: nakol (that I eat) becomes kanakol (I eat, I am eating).</p></div><div class="tip"><b>Giving an order</b><p>An order is the bare verb: sir (go), aji (come), shuf (look). To a girl an -i is added, to several people a -u: siri, siru.</p></div>
+  </div>
+  <div class="unit">
+    <div class="kop">
+      <h3>❓ Su'al</h3>
+      <span class="level">A1</span>
+      <span class="ar">السؤال</span>
+    </div>
+    <div class="lessen">Asking questions &mdash; The question words &middot; Questions you really use &middot; Checkpoint</div>
+    <div class="tip"><b>The question word may stay at the end</b><p>Unlike English, the sentence does not move: “smitek shnu?” (your name what?) works just as well as “shnu smitek?”.</p></div>
+  </div>
+  <div class="unit">
+    <div class="kop">
+      <h3>🛍️ Fssouq</h3>
+      <span class="level">A2</span>
+      <span class="ar">السوق</span>
+    </div>
+    <div class="lessen">At the market &mdash; Where and with what &middot; Haggling &middot; Big or small &middot; Checkpoint</div>
+    <div class="tip"><b>Haggling is part of it</b><p>At the souq the first price is an opening bid. Kindly name about half, smile, and meet in the middle.</p></div>
+  </div>
+  <div class="unit">
+    <div class="kop">
+      <h3>🗺️ Fin ghadi?</h3>
+      <span class="level">A2</span>
+      <span class="ar">فين غادي؟</span>
+    </div>
+    <div class="lessen">Asking the way &mdash; Left, right, straight on &middot; In the city &middot; Checkpoint</div>
+    
+  </div>
+  <div class="unit">
+    <div class="kop">
+      <h3>🇲🇦 Lmghrib dyalna</h3>
+      <span class="level">A2</span>
+      <span class="ar">المغرب ديالنا</span>
+    </div>
+    <div class="lessen">Country, cities and celebration &mdash; The country and its languages &middot; Celebration and tradition &middot; Checkpoint</div>
+    <div class="tip"><b>Two official languages</b><p>Morocco has Arabic and Tamazight (Amazigh) as official languages. Tamazight has its own alphabet, Tifinagh: ⵜⵉⴼⵉⵏⴰⵖ. Darija is what people speak at home.</p></div>
+  </div>
+
+<h2 class="deel">Every word</h2>
+<p class="intro">By topic, as in the app. The middle column is the Latin spelling Moroccans use in their own messages: 3 = ع, 7 = ح, 9 = ق.</p>
+
+  <h3>👋 Greetings</h3>
+  <table>
+  <tr>
+    <td class="ar">السلام</td>
+    <td class="tr">salam</td>
+    <td class="nl">hello<span class="note">The everyday hello, to anyone.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">بخير</td>
+    <td class="tr">bikhir</td>
+    <td class="nl">well, fine</td>
+  </tr>
+  <tr>
+    <td class="ar">شكرا</td>
+    <td class="tr">shukran</td>
+    <td class="nl">thank you</td>
+  </tr>
+  <tr>
+    <td class="ar">عافاك</td>
+    <td class="tr">3afak</td>
+    <td class="nl">please</td>
+  </tr>
+  <tr>
+    <td class="ar">معليش</td>
+    <td class="tr">ma3lish</td>
+    <td class="nl">never mind</td>
+  </tr>
+  <tr>
+    <td class="ar">بسلامة</td>
+    <td class="tr">bslama</td>
+    <td class="nl">goodbye</td>
+  </tr>
+  <tr>
+    <td class="ar">تهلا</td>
+    <td class="tr">thalla</td>
+    <td class="nl">take care<span class="note">A fond goodbye. To several people: thallaw.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">مرحبا</td>
+    <td class="tr">merhba</td>
+    <td class="nl">welcome</td>
+  </tr>
+  <tr>
+    <td class="ar">ايه</td>
+    <td class="tr">iyeh</td>
+    <td class="nl">yes<span class="note">Also: “ah”. Formally: na3am.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">لا</td>
+    <td class="tr">la</td>
+    <td class="nl">no</td>
+  </tr>
+  <tr>
+    <td class="ar">واخا</td>
+    <td class="tr">wakha</td>
+    <td class="nl">okay<span class="note">The most used word in Morocco.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">يلا</td>
+    <td class="tr">yalla</td>
+    <td class="nl">let's go</td>
+  </tr>
+  <tr>
+    <td class="ar">مزيان</td>
+    <td class="tr">mzyan</td>
+    <td class="nl">good, nice<span class="note">Feminine: mzyana.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">بزاف</td>
+    <td class="tr">bezzaf</td>
+    <td class="nl">a lot</td>
+  </tr>
+  <tr>
+    <td class="ar">إن شاء الله</td>
+    <td class="tr">inshallah</td>
+    <td class="nl">God willing<span class="note">For anything that has not happened yet.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">الحمد لله</td>
+    <td class="tr">lhamdullah</td>
+    <td class="nl">thank God</td>
+  </tr>
+  <tr>
+    <td class="ar">السلام عليكم</td>
+    <td class="tr">ssalamu 3alaykum</td>
+    <td class="nl">peace be upon you</td>
+  </tr>
+  <tr>
+    <td class="ar">وعليكم السلام</td>
+    <td class="tr">wa 3alaykum ssalam</td>
+    <td class="nl">and upon you peace</td>
+  </tr>
+  <tr>
+    <td class="ar">صباح الخير</td>
+    <td class="tr">sbah lkhir</td>
+    <td class="nl">good morning</td>
+  </tr>
+  <tr>
+    <td class="ar">مسا الخير</td>
+    <td class="tr">msa lkhir</td>
+    <td class="nl">good evening</td>
+  </tr>
+  <tr>
+    <td class="ar">لاباس؟</td>
+    <td class="tr">labas?</td>
+    <td class="nl">are you okay?</td>
+  </tr>
+  <tr>
+    <td class="ar">لاباس الحمد لله</td>
+    <td class="tr">labas, lhamdullah</td>
+    <td class="nl">I am fine, thank God</td>
+  </tr>
+  <tr>
+    <td class="ar">كيف داير؟</td>
+    <td class="tr">kif dayr?</td>
+    <td class="nl">how are you? (to a boy)</td>
+  </tr>
+  <tr>
+    <td class="ar">كيف دايرة؟</td>
+    <td class="tr">kif dayra?</td>
+    <td class="nl">how are you? (to a girl)</td>
+  </tr>
+  <tr>
+    <td class="ar">بارك الله فيك</td>
+    <td class="tr">barakallahu fik</td>
+    <td class="nl">bless you / thanks</td>
+  </tr>
+  <tr>
+    <td class="ar">لا شكرا على واجب</td>
+    <td class="tr">la shukran 3la wajib</td>
+    <td class="nl">you are welcome</td>
+  </tr>
+  <tr>
+    <td class="ar">سمح ليا</td>
+    <td class="tr">smeh liya</td>
+    <td class="nl">excuse me / sorry</td>
+  </tr>
+  <tr>
+    <td class="ar">ليلة سعيدة</td>
+    <td class="tr">lila sa3ida</td>
+    <td class="nl">good night</td>
+  </tr></table>
+  <h3>🙋 Me and you</h3>
+  <table>
+  <tr>
+    <td class="ar">انا</td>
+    <td class="tr">ana</td>
+    <td class="nl">I</td>
+  </tr>
+  <tr>
+    <td class="ar">نتا</td>
+    <td class="tr">nta</td>
+    <td class="nl">you (m)</td>
+  </tr>
+  <tr>
+    <td class="ar">نتي</td>
+    <td class="tr">nti</td>
+    <td class="nl">you (f)</td>
+  </tr>
+  <tr>
+    <td class="ar">هو</td>
+    <td class="tr">huwa</td>
+    <td class="nl">he</td>
+  </tr>
+  <tr>
+    <td class="ar">هي</td>
+    <td class="tr">hiya</td>
+    <td class="nl">she</td>
+  </tr>
+  <tr>
+    <td class="ar">حنا</td>
+    <td class="tr">hna</td>
+    <td class="nl">we</td>
+  </tr>
+  <tr>
+    <td class="ar">نتوما</td>
+    <td class="tr">ntuma</td>
+    <td class="nl">you (plural)</td>
+  </tr>
+  <tr>
+    <td class="ar">هوما</td>
+    <td class="tr">huma</td>
+    <td class="nl">they</td>
+  </tr>
+  <tr>
+    <td class="ar">سميتي</td>
+    <td class="tr">smiti...</td>
+    <td class="nl">my name is...</td>
+  </tr>
+  <tr>
+    <td class="ar">شنو سميتك؟</td>
+    <td class="tr">shnu smitek?</td>
+    <td class="nl">what is your name?</td>
+  </tr>
+  <tr>
+    <td class="ar">متشرفين</td>
+    <td class="tr">mtsherfin</td>
+    <td class="nl">nice to meet you</td>
+  </tr>
+  <tr>
+    <td class="ar">انا من هولندا</td>
+    <td class="tr">ana men Hulanda</td>
+    <td class="nl">I am from the Netherlands</td>
+  </tr>
+  <tr>
+    <td class="ar">انا من المغرب</td>
+    <td class="tr">ana men lMghrib</td>
+    <td class="nl">I am from Morocco</td>
+  </tr>
+  <tr>
+    <td class="ar">فين ساكن؟</td>
+    <td class="tr">fin sakn?</td>
+    <td class="nl">where do you live?</td>
+  </tr>
+  <tr>
+    <td class="ar">شحال ف عمرك؟</td>
+    <td class="tr">shhal f 3merek?</td>
+    <td class="nl">how old are you?</td>
+  </tr>
+  <tr>
+    <td class="ar">عندي عشر سنين</td>
+    <td class="tr">3endi 3achr snin</td>
+    <td class="nl">I am ten years old</td>
+  </tr>
+  <tr>
+    <td class="ar">كنهضر شوية دارجة</td>
+    <td class="tr">kanhder shwiya darija</td>
+    <td class="nl">I speak a little Darija</td>
+  </tr></table>
+  <h3>👨‍👩‍👧‍👦 Family</h3>
+  <table>
+  <tr>
+    <td class="ar">العائلة</td>
+    <td class="tr">l3a'ila</td>
+    <td class="nl">the family</td>
+  </tr>
+  <tr>
+    <td class="ar">بابا</td>
+    <td class="tr">baba</td>
+    <td class="nl">dad</td>
+  </tr>
+  <tr>
+    <td class="ar">ماما</td>
+    <td class="tr">mama</td>
+    <td class="nl">mum</td>
+  </tr>
+  <tr>
+    <td class="ar">الوالدين</td>
+    <td class="tr">lwalidin</td>
+    <td class="nl">the parents</td>
+  </tr>
+  <tr>
+    <td class="ar">خويا</td>
+    <td class="tr">khoya</td>
+    <td class="nl">my brother</td>
+  </tr>
+  <tr>
+    <td class="ar">ختي</td>
+    <td class="tr">khti</td>
+    <td class="nl">my sister</td>
+  </tr>
+  <tr>
+    <td class="ar">جدي</td>
+    <td class="tr">jeddi</td>
+    <td class="nl">my grandfather</td>
+  </tr>
+  <tr>
+    <td class="ar">جدتي</td>
+    <td class="tr">jeddti</td>
+    <td class="nl">my grandmother</td>
+  </tr>
+  <tr>
+    <td class="ar">عمي</td>
+    <td class="tr">3ammi</td>
+    <td class="nl">my uncle (father side)</td>
+  </tr>
+  <tr>
+    <td class="ar">عمتي</td>
+    <td class="tr">3ammti</td>
+    <td class="nl">my aunt (father side)</td>
+  </tr>
+  <tr>
+    <td class="ar">خالي</td>
+    <td class="tr">khali</td>
+    <td class="nl">my uncle (mother side)</td>
+  </tr>
+  <tr>
+    <td class="ar">خالتي</td>
+    <td class="tr">khalti</td>
+    <td class="nl">my aunt (mother side)</td>
+  </tr>
+  <tr>
+    <td class="ar">ولد</td>
+    <td class="tr">weld</td>
+    <td class="nl">boy, son</td>
+  </tr>
+  <tr>
+    <td class="ar">بنت</td>
+    <td class="tr">bent</td>
+    <td class="nl">girl, daughter</td>
+  </tr>
+  <tr>
+    <td class="ar">دراري</td>
+    <td class="tr">drari</td>
+    <td class="nl">kids</td>
+  </tr>
+  <tr>
+    <td class="ar">صاحبي</td>
+    <td class="tr">sahbi</td>
+    <td class="nl">my friend (m)</td>
+  </tr>
+  <tr>
+    <td class="ar">صاحبتي</td>
+    <td class="tr">sahbti</td>
+    <td class="nl">my friend (f)</td>
+  </tr>
+  <tr>
+    <td class="ar">هادي ختي</td>
+    <td class="tr">hadi khti</td>
+    <td class="nl">this is my sister</td>
+  </tr>
+  <tr>
+    <td class="ar">هادا خويا</td>
+    <td class="tr">hada khoya</td>
+    <td class="nl">this is my brother</td>
+  </tr></table>
+  <h3>🔢 Numbers</h3>
+  <table>
+  <tr>
+    <td class="ar">واحد</td>
+    <td class="tr">wahed</td>
+    <td class="nl">one</td>
+  </tr>
+  <tr>
+    <td class="ar">جوج</td>
+    <td class="tr">jouj</td>
+    <td class="nl">two</td>
+  </tr>
+  <tr>
+    <td class="ar">تلاتة</td>
+    <td class="tr">tlata</td>
+    <td class="nl">three</td>
+  </tr>
+  <tr>
+    <td class="ar">ربعة</td>
+    <td class="tr">reb3a</td>
+    <td class="nl">four</td>
+  </tr>
+  <tr>
+    <td class="ar">خمسة</td>
+    <td class="tr">khamsa</td>
+    <td class="nl">five</td>
+  </tr>
+  <tr>
+    <td class="ar">ستة</td>
+    <td class="tr">setta</td>
+    <td class="nl">six</td>
+  </tr>
+  <tr>
+    <td class="ar">سبعة</td>
+    <td class="tr">seb3a</td>
+    <td class="nl">seven</td>
+  </tr>
+  <tr>
+    <td class="ar">تمنية</td>
+    <td class="tr">tmnya</td>
+    <td class="nl">eight</td>
+  </tr>
+  <tr>
+    <td class="ar">تسعود</td>
+    <td class="tr">ts3ud</td>
+    <td class="nl">nine</td>
+  </tr>
+  <tr>
+    <td class="ar">عشرة</td>
+    <td class="tr">3achra</td>
+    <td class="nl">ten</td>
+  </tr>
+  <tr>
+    <td class="ar">حضاش</td>
+    <td class="tr">hdach</td>
+    <td class="nl">eleven</td>
+  </tr>
+  <tr>
+    <td class="ar">طناش</td>
+    <td class="tr">tnach</td>
+    <td class="nl">twelve</td>
+  </tr>
+  <tr>
+    <td class="ar">تلطاش</td>
+    <td class="tr">tltach</td>
+    <td class="nl">thirteen</td>
+  </tr>
+  <tr>
+    <td class="ar">ربعطاش</td>
+    <td class="tr">rb3tach</td>
+    <td class="nl">fourteen</td>
+  </tr>
+  <tr>
+    <td class="ar">خمسطاش</td>
+    <td class="tr">khmstach</td>
+    <td class="nl">fifteen</td>
+  </tr>
+  <tr>
+    <td class="ar">عشرين</td>
+    <td class="tr">3achrin</td>
+    <td class="nl">twenty</td>
+  </tr>
+  <tr>
+    <td class="ar">مية</td>
+    <td class="tr">mya</td>
+    <td class="nl">hundred</td>
+  </tr>
+  <tr>
+    <td class="ar">شحال</td>
+    <td class="tr">shhal</td>
+    <td class="nl">how much / how many</td>
+  </tr></table>
+  <h3>🎨 Colours</h3>
+  <table>
+  <tr>
+    <td class="ar">حمر</td>
+    <td class="tr">hmer</td>
+    <td class="nl">red<span class="note">Feminine: hemra.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">زرق</td>
+    <td class="tr">zreq</td>
+    <td class="nl">blue<span class="note">Feminine: zerqa.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">خضر</td>
+    <td class="tr">khder</td>
+    <td class="nl">green<span class="note">Feminine: khedra.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">صفر</td>
+    <td class="tr">sfer</td>
+    <td class="nl">yellow<span class="note">Feminine: sefra.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">بيض</td>
+    <td class="tr">byed</td>
+    <td class="nl">white<span class="note">Feminine: bida.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">كحل</td>
+    <td class="tr">khel</td>
+    <td class="nl">black<span class="note">Feminine: kehla.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">قهوي</td>
+    <td class="tr">qehwi</td>
+    <td class="nl">brown<span class="note">From qehwa = coffee.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">وردي</td>
+    <td class="tr">wardi</td>
+    <td class="nl">pink<span class="note">From werda = flower.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">رمادي</td>
+    <td class="tr">rmadi</td>
+    <td class="nl">grey</td>
+  </tr>
+  <tr>
+    <td class="ar">برتقالي</td>
+    <td class="tr">brtqali</td>
+    <td class="nl">orange</td>
+  </tr>
+  <tr>
+    <td class="ar">شنو اللون؟</td>
+    <td class="tr">shnu lloun?</td>
+    <td class="nl">what colour is it?</td>
+  </tr></table>
+  <h3>🍽️ Food</h3>
+  <table>
+  <tr>
+    <td class="ar">الماكلة</td>
+    <td class="tr">lmakla</td>
+    <td class="nl">the food</td>
+  </tr>
+  <tr>
+    <td class="ar">الما</td>
+    <td class="tr">lma</td>
+    <td class="nl">water</td>
+  </tr>
+  <tr>
+    <td class="ar">أتاي</td>
+    <td class="tr">atay</td>
+    <td class="nl">mint tea<span class="note">The heart of every Moroccan welcome.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">قهوة</td>
+    <td class="tr">qehwa</td>
+    <td class="nl">coffee</td>
+  </tr>
+  <tr>
+    <td class="ar">حليب</td>
+    <td class="tr">hlib</td>
+    <td class="nl">milk</td>
+  </tr>
+  <tr>
+    <td class="ar">خبز</td>
+    <td class="tr">khobz</td>
+    <td class="nl">bread<span class="note">In Morocco you eat almost everything with khobz.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">زبدة</td>
+    <td class="tr">zebda</td>
+    <td class="nl">butter</td>
+  </tr>
+  <tr>
+    <td class="ar">عسل</td>
+    <td class="tr">3sel</td>
+    <td class="nl">honey</td>
+  </tr>
+  <tr>
+    <td class="ar">البيض</td>
+    <td class="tr">lbid</td>
+    <td class="nl">eggs</td>
+  </tr>
+  <tr>
+    <td class="ar">جبن</td>
+    <td class="tr">jben</td>
+    <td class="nl">cheese</td>
+  </tr>
+  <tr>
+    <td class="ar">لحم</td>
+    <td class="tr">lhem</td>
+    <td class="nl">meat</td>
+  </tr>
+  <tr>
+    <td class="ar">دجاج</td>
+    <td class="tr">djaj</td>
+    <td class="nl">chicken</td>
+  </tr>
+  <tr>
+    <td class="ar">حوت</td>
+    <td class="tr">hut</td>
+    <td class="nl">fish</td>
+  </tr>
+  <tr>
+    <td class="ar">خضرا</td>
+    <td class="tr">khodra</td>
+    <td class="nl">vegetables</td>
+  </tr>
+  <tr>
+    <td class="ar">فاكية</td>
+    <td class="tr">fakya</td>
+    <td class="nl">fruit</td>
+  </tr>
+  <tr>
+    <td class="ar">تفاح</td>
+    <td class="tr">tfah</td>
+    <td class="nl">apple</td>
+  </tr>
+  <tr>
+    <td class="ar">بانان</td>
+    <td class="tr">banan</td>
+    <td class="nl">banana</td>
+  </tr>
+  <tr>
+    <td class="ar">ليمون</td>
+    <td class="tr">limun</td>
+    <td class="nl">orange (fruit)<span class="note">Careful: the lemon is called hamd.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">حامض</td>
+    <td class="tr">hamd</td>
+    <td class="nl">lemon</td>
+  </tr>
+  <tr>
+    <td class="ar">بطاطا</td>
+    <td class="tr">btata</td>
+    <td class="nl">potato</td>
+  </tr>
+  <tr>
+    <td class="ar">مطيشة</td>
+    <td class="tr">matisha</td>
+    <td class="nl">tomato</td>
+  </tr>
+  <tr>
+    <td class="ar">بصلة</td>
+    <td class="tr">bsla</td>
+    <td class="nl">onion</td>
+  </tr>
+  <tr>
+    <td class="ar">سكر</td>
+    <td class="tr">sokkar</td>
+    <td class="nl">sugar</td>
+  </tr>
+  <tr>
+    <td class="ar">ملحة</td>
+    <td class="tr">melha</td>
+    <td class="nl">salt</td>
+  </tr>
+  <tr>
+    <td class="ar">طاجين</td>
+    <td class="tr">tajine</td>
+    <td class="nl">tagine<span class="note">Also the name of the clay pot with the pointed lid.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">كسكسو</td>
+    <td class="tr">kesksu</td>
+    <td class="nl">couscous<span class="note">On Friday, after the prayer.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">حريرة</td>
+    <td class="tr">harira</td>
+    <td class="nl">harira soup<span class="note">The soup that closes the day in Ramadan.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">مسمن</td>
+    <td class="tr">msemmen</td>
+    <td class="nl">msemmen pancake</td>
+  </tr>
+  <tr>
+    <td class="ar">لذيذ</td>
+    <td class="tr">ldid</td>
+    <td class="nl">tasty<span class="note">Feminine: ldida.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">جوعان</td>
+    <td class="tr">ju3an</td>
+    <td class="nl">hungry<span class="note">Feminine: ju3ana.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">عطشان</td>
+    <td class="tr">3etshan</td>
+    <td class="nl">thirsty</td>
+  </tr>
+  <tr>
+    <td class="ar">بصحة</td>
+    <td class="tr">bsseha</td>
+    <td class="nl">enjoy your meal<span class="note">Also said after a shower or a fresh haircut.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">بغيت ناكل</td>
+    <td class="tr">bghit nakol</td>
+    <td class="nl">I want to eat</td>
+  </tr></table>
+  <h3>🏠 Home</h3>
+  <table>
+  <tr>
+    <td class="ar">الدار</td>
+    <td class="tr">ddar</td>
+    <td class="nl">the house</td>
+  </tr>
+  <tr>
+    <td class="ar">البيت</td>
+    <td class="tr">lbit</td>
+    <td class="nl">the room</td>
+  </tr>
+  <tr>
+    <td class="ar">بيت النعاس</td>
+    <td class="tr">bit nn3as</td>
+    <td class="nl">bedroom</td>
+  </tr>
+  <tr>
+    <td class="ar">كوزينا</td>
+    <td class="tr">kuzina</td>
+    <td class="nl">kitchen</td>
+  </tr>
+  <tr>
+    <td class="ar">حمام</td>
+    <td class="tr">hemmam</td>
+    <td class="nl">bathroom</td>
+  </tr>
+  <tr>
+    <td class="ar">باب</td>
+    <td class="tr">bab</td>
+    <td class="nl">door</td>
+  </tr>
+  <tr>
+    <td class="ar">شرجم</td>
+    <td class="tr">sherjem</td>
+    <td class="nl">window</td>
+  </tr>
+  <tr>
+    <td class="ar">طبلة</td>
+    <td class="tr">tebla</td>
+    <td class="nl">table</td>
+  </tr>
+  <tr>
+    <td class="ar">كرسي</td>
+    <td class="tr">kursi</td>
+    <td class="nl">chair</td>
+  </tr>
+  <tr>
+    <td class="ar">الفراش</td>
+    <td class="tr">lfrash</td>
+    <td class="nl">bed</td>
+  </tr>
+  <tr>
+    <td class="ar">تلفازة</td>
+    <td class="tr">telfaza</td>
+    <td class="nl">television</td>
+  </tr>
+  <tr>
+    <td class="ar">تيليفون</td>
+    <td class="tr">telifun</td>
+    <td class="nl">phone</td>
+  </tr>
+  <tr>
+    <td class="ar">ساروت</td>
+    <td class="tr">sarut</td>
+    <td class="nl">key</td>
+  </tr>
+  <tr>
+    <td class="ar">ضو</td>
+    <td class="tr">dou</td>
+    <td class="nl">light</td>
+  </tr>
+  <tr>
+    <td class="ar">زربية</td>
+    <td class="tr">zerbiya</td>
+    <td class="nl">carpet</td>
+  </tr>
+  <tr>
+    <td class="ar">مراية</td>
+    <td class="tr">mraya</td>
+    <td class="nl">mirror</td>
+  </tr>
+  <tr>
+    <td class="ar">سطح</td>
+    <td class="tr">stah</td>
+    <td class="nl">roof terrace<span class="note">Where the washing hangs and the neighbours talk.</span></td>
+  </tr></table>
+  <h3>🏫 School</h3>
+  <table>
+  <tr>
+    <td class="ar">المدرسة</td>
+    <td class="tr">lmedrasa</td>
+    <td class="nl">the school</td>
+  </tr>
+  <tr>
+    <td class="ar">القسم</td>
+    <td class="tr">lqism</td>
+    <td class="nl">the classroom</td>
+  </tr>
+  <tr>
+    <td class="ar">أستاد</td>
+    <td class="tr">lostad</td>
+    <td class="nl">the teacher (m)</td>
+  </tr>
+  <tr>
+    <td class="ar">أستادة</td>
+    <td class="tr">lostada</td>
+    <td class="nl">the teacher (f)</td>
+  </tr>
+  <tr>
+    <td class="ar">تلميذ</td>
+    <td class="tr">telmid</td>
+    <td class="nl">pupil</td>
+  </tr>
+  <tr>
+    <td class="ar">كتاب</td>
+    <td class="tr">ktab</td>
+    <td class="nl">book</td>
+  </tr>
+  <tr>
+    <td class="ar">كناش</td>
+    <td class="tr">kunash</td>
+    <td class="nl">notebook</td>
+  </tr>
+  <tr>
+    <td class="ar">ستيلو</td>
+    <td class="tr">stilu</td>
+    <td class="nl">pen</td>
+  </tr>
+  <tr>
+    <td class="ar">قلم</td>
+    <td class="tr">qlem</td>
+    <td class="nl">pencil</td>
+  </tr>
+  <tr>
+    <td class="ar">ممحاة</td>
+    <td class="tr">memha</td>
+    <td class="nl">eraser</td>
+  </tr>
+  <tr>
+    <td class="ar">سبورة</td>
+    <td class="tr">sebbura</td>
+    <td class="nl">blackboard</td>
+  </tr>
+  <tr>
+    <td class="ar">واجب</td>
+    <td class="tr">wajib</td>
+    <td class="nl">homework</td>
+  </tr>
+  <tr>
+    <td class="ar">عطلة</td>
+    <td class="tr">3otla</td>
+    <td class="nl">holiday</td>
+  </tr>
+  <tr>
+    <td class="ar">امتحان</td>
+    <td class="tr">imtihan</td>
+    <td class="nl">exam</td>
+  </tr>
+  <tr>
+    <td class="ar">بشوية</td>
+    <td class="tr">bshwiya</td>
+    <td class="nl">slowly<span class="note">Handy: “hder bshwiya 3afak” = speak slowly.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">فهمت</td>
+    <td class="tr">fhemt</td>
+    <td class="nl">I understand</td>
+  </tr>
+  <tr>
+    <td class="ar">مافهمتش</td>
+    <td class="tr">ma fhemtsh</td>
+    <td class="nl">I do not understand</td>
+  </tr>
+  <tr>
+    <td class="ar">عاود عافاك</td>
+    <td class="tr">3awd 3afak</td>
+    <td class="nl">repeat please</td>
+  </tr></table>
+  <h3>🐾 Animals</h3>
+  <table>
+  <tr>
+    <td class="ar">الحيوانات</td>
+    <td class="tr">lhayawanat</td>
+    <td class="nl">the animals</td>
+  </tr>
+  <tr>
+    <td class="ar">مش</td>
+    <td class="tr">mesh</td>
+    <td class="nl">cat</td>
+  </tr>
+  <tr>
+    <td class="ar">كلب</td>
+    <td class="tr">kelb</td>
+    <td class="nl">dog</td>
+  </tr>
+  <tr>
+    <td class="ar">كيدار</td>
+    <td class="tr">kaydar</td>
+    <td class="nl">horse</td>
+  </tr>
+  <tr>
+    <td class="ar">حمار</td>
+    <td class="tr">hmar</td>
+    <td class="nl">donkey</td>
+  </tr>
+  <tr>
+    <td class="ar">بقرة</td>
+    <td class="tr">bgra</td>
+    <td class="nl">cow</td>
+  </tr>
+  <tr>
+    <td class="ar">خروف</td>
+    <td class="tr">khruf</td>
+    <td class="nl">sheep</td>
+  </tr>
+  <tr>
+    <td class="ar">معزة</td>
+    <td class="tr">m3za</td>
+    <td class="nl">goat<span class="note">In the Souss they climb the argan trees.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">جمل</td>
+    <td class="tr">jmel</td>
+    <td class="nl">camel</td>
+  </tr>
+  <tr>
+    <td class="ar">دزازة</td>
+    <td class="tr">dzaza</td>
+    <td class="nl">hen</td>
+  </tr>
+  <tr>
+    <td class="ar">طوير</td>
+    <td class="tr">twiar</td>
+    <td class="nl">bird</td>
+  </tr>
+  <tr>
+    <td class="ar">فار</td>
+    <td class="tr">far</td>
+    <td class="nl">mouse</td>
+  </tr>
+  <tr>
+    <td class="ar">نملة</td>
+    <td class="tr">nemla</td>
+    <td class="nl">ant</td>
+  </tr>
+  <tr>
+    <td class="ar">سبع</td>
+    <td class="tr">sba3</td>
+    <td class="nl">lion<span class="note">The symbol of Morocco: Osud lAtlas, the Atlas Lions.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">قرد</td>
+    <td class="tr">qerd</td>
+    <td class="nl">monkey</td>
+  </tr>
+  <tr>
+    <td class="ar">فيل</td>
+    <td class="tr">fil</td>
+    <td class="nl">elephant</td>
+  </tr>
+  <tr>
+    <td class="ar">حنش</td>
+    <td class="tr">hensh</td>
+    <td class="nl">snake</td>
+  </tr>
+  <tr>
+    <td class="ar">فرططو</td>
+    <td class="tr">fertetto</td>
+    <td class="nl">butterfly</td>
+  </tr></table>
+  <h3>🕰️ Time &amp; weather</h3>
+  <table>
+  <tr>
+    <td class="ar">اليوم</td>
+    <td class="tr">lyum</td>
+    <td class="nl">today</td>
+  </tr>
+  <tr>
+    <td class="ar">غدا</td>
+    <td class="tr">ghedda</td>
+    <td class="nl">tomorrow</td>
+  </tr>
+  <tr>
+    <td class="ar">البارح</td>
+    <td class="tr">lbareh</td>
+    <td class="nl">yesterday</td>
+  </tr>
+  <tr>
+    <td class="ar">دابا</td>
+    <td class="tr">daba</td>
+    <td class="nl">now</td>
+  </tr>
+  <tr>
+    <td class="ar">صباح</td>
+    <td class="tr">sbah</td>
+    <td class="nl">morning</td>
+  </tr>
+  <tr>
+    <td class="ar">عشية</td>
+    <td class="tr">3shiya</td>
+    <td class="nl">afternoon</td>
+  </tr>
+  <tr>
+    <td class="ar">ليل</td>
+    <td class="tr">lil</td>
+    <td class="nl">night</td>
+  </tr>
+  <tr>
+    <td class="ar">الساعة</td>
+    <td class="tr">ssa3a</td>
+    <td class="nl">the hour</td>
+  </tr>
+  <tr>
+    <td class="ar">سيمانا</td>
+    <td class="tr">simana</td>
+    <td class="nl">week</td>
+  </tr>
+  <tr>
+    <td class="ar">شهر</td>
+    <td class="tr">shher</td>
+    <td class="nl">month</td>
+  </tr>
+  <tr>
+    <td class="ar">عام</td>
+    <td class="tr">3am</td>
+    <td class="nl">year</td>
+  </tr>
+  <tr>
+    <td class="ar">التنين</td>
+    <td class="tr">lethnin</td>
+    <td class="nl">Monday</td>
+  </tr>
+  <tr>
+    <td class="ar">التلات</td>
+    <td class="tr">ttlat</td>
+    <td class="nl">Tuesday</td>
+  </tr>
+  <tr>
+    <td class="ar">الاربع</td>
+    <td class="tr">larb3</td>
+    <td class="nl">Wednesday</td>
+  </tr>
+  <tr>
+    <td class="ar">الخميس</td>
+    <td class="tr">lekhmis</td>
+    <td class="nl">Thursday</td>
+  </tr>
+  <tr>
+    <td class="ar">الجمعة</td>
+    <td class="tr">jjem3a</td>
+    <td class="nl">Friday<span class="note">The day of couscous and the Friday prayer.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">السبت</td>
+    <td class="tr">ssebt</td>
+    <td class="nl">Saturday</td>
+  </tr>
+  <tr>
+    <td class="ar">الحد</td>
+    <td class="tr">lhedd</td>
+    <td class="nl">Sunday</td>
+  </tr>
+  <tr>
+    <td class="ar">الجو</td>
+    <td class="tr">jjaw</td>
+    <td class="nl">the weather</td>
+  </tr>
+  <tr>
+    <td class="ar">شتا</td>
+    <td class="tr">shta</td>
+    <td class="nl">rain</td>
+  </tr>
+  <tr>
+    <td class="ar">شمس</td>
+    <td class="tr">shems</td>
+    <td class="nl">sun</td>
+  </tr>
+  <tr>
+    <td class="ar">ريح</td>
+    <td class="tr">rih</td>
+    <td class="nl">wind<span class="note">Essaouira is famous for it.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">برد</td>
+    <td class="tr">bred</td>
+    <td class="nl">cold</td>
+  </tr>
+  <tr>
+    <td class="ar">سخون</td>
+    <td class="tr">skhun</td>
+    <td class="nl">hot</td>
+  </tr>
+  <tr>
+    <td class="ar">تلج</td>
+    <td class="tr">telj</td>
+    <td class="nl">snow<span class="note">Yes, it snows in the Atlas.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">شحال فالساعة؟</td>
+    <td class="tr">shhal f ssa3a?</td>
+    <td class="nl">what time is it?</td>
+  </tr></table>
+  <h3>💛 Body</h3>
+  <table>
+  <tr>
+    <td class="ar">راس</td>
+    <td class="tr">ras</td>
+    <td class="nl">head</td>
+  </tr>
+  <tr>
+    <td class="ar">شعر</td>
+    <td class="tr">sh3ar</td>
+    <td class="nl">hair</td>
+  </tr>
+  <tr>
+    <td class="ar">عين</td>
+    <td class="tr">3in</td>
+    <td class="nl">eye<span class="note">Two eyes: 3inin.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">ودن</td>
+    <td class="tr">wden</td>
+    <td class="nl">ear</td>
+  </tr>
+  <tr>
+    <td class="ar">نيف</td>
+    <td class="tr">nif</td>
+    <td class="nl">nose</td>
+  </tr>
+  <tr>
+    <td class="ar">فم</td>
+    <td class="tr">fomm</td>
+    <td class="nl">mouth</td>
+  </tr>
+  <tr>
+    <td class="ar">سنان</td>
+    <td class="tr">snan</td>
+    <td class="nl">teeth</td>
+  </tr>
+  <tr>
+    <td class="ar">يد</td>
+    <td class="tr">yedd</td>
+    <td class="nl">hand</td>
+  </tr>
+  <tr>
+    <td class="ar">رجل</td>
+    <td class="tr">rjel</td>
+    <td class="nl">leg, foot</td>
+  </tr>
+  <tr>
+    <td class="ar">كرش</td>
+    <td class="tr">kersh</td>
+    <td class="nl">belly</td>
+  </tr>
+  <tr>
+    <td class="ar">قلب</td>
+    <td class="tr">qelb</td>
+    <td class="nl">heart</td>
+  </tr>
+  <tr>
+    <td class="ar">فرحان</td>
+    <td class="tr">ferhan</td>
+    <td class="nl">happy<span class="note">Feminine: ferhana.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">حزين</td>
+    <td class="tr">hzin</td>
+    <td class="nl">sad</td>
+  </tr>
+  <tr>
+    <td class="ar">عيان</td>
+    <td class="tr">3eyyan</td>
+    <td class="nl">tired</td>
+  </tr>
+  <tr>
+    <td class="ar">مريض</td>
+    <td class="tr">mrid</td>
+    <td class="nl">ill</td>
+  </tr>
+  <tr>
+    <td class="ar">خايف</td>
+    <td class="tr">khayf</td>
+    <td class="nl">scared</td>
+  </tr>
+  <tr>
+    <td class="ar">كيضرني راسي</td>
+    <td class="tr">kayderni rasi</td>
+    <td class="nl">my head hurts</td>
+  </tr>
+  <tr>
+    <td class="ar">كنبغيك</td>
+    <td class="tr">kanbghik</td>
+    <td class="nl">I love you</td>
+  </tr></table>
+  <h3>⚡ Verbs</h3>
+  <table>
+  <tr>
+    <td class="ar">كناكل</td>
+    <td class="tr">kanakol</td>
+    <td class="nl">I eat<span class="note">The ka- in front means: now, usually.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">كنشرب</td>
+    <td class="tr">kanshreb</td>
+    <td class="nl">I drink</td>
+  </tr>
+  <tr>
+    <td class="ar">كنمشي</td>
+    <td class="tr">kanmshi</td>
+    <td class="nl">I go</td>
+  </tr>
+  <tr>
+    <td class="ar">كنجي</td>
+    <td class="tr">kanji</td>
+    <td class="nl">I come</td>
+  </tr>
+  <tr>
+    <td class="ar">كنقرا</td>
+    <td class="tr">kanqra</td>
+    <td class="nl">I study, I read</td>
+  </tr>
+  <tr>
+    <td class="ar">كنلعب</td>
+    <td class="tr">kanl3eb</td>
+    <td class="nl">I play</td>
+  </tr>
+  <tr>
+    <td class="ar">كنعس</td>
+    <td class="tr">kan3es</td>
+    <td class="nl">I sleep</td>
+  </tr>
+  <tr>
+    <td class="ar">كنشوف</td>
+    <td class="tr">kanshuf</td>
+    <td class="nl">I look, I see</td>
+  </tr>
+  <tr>
+    <td class="ar">كنسمع</td>
+    <td class="tr">kansme3</td>
+    <td class="nl">I listen</td>
+  </tr>
+  <tr>
+    <td class="ar">كنهضر</td>
+    <td class="tr">kanhder</td>
+    <td class="nl">I speak</td>
+  </tr>
+  <tr>
+    <td class="ar">كنكتب</td>
+    <td class="tr">kanktab</td>
+    <td class="nl">I write</td>
+  </tr>
+  <tr>
+    <td class="ar">كنضحك</td>
+    <td class="tr">kandhek</td>
+    <td class="nl">I laugh</td>
+  </tr>
+  <tr>
+    <td class="ar">كنجري</td>
+    <td class="tr">kanjri</td>
+    <td class="nl">I run</td>
+  </tr>
+  <tr>
+    <td class="ar">بغيت</td>
+    <td class="tr">bghit</td>
+    <td class="nl">I want</td>
+  </tr>
+  <tr>
+    <td class="ar">عندي</td>
+    <td class="tr">3endi</td>
+    <td class="nl">I have</td>
+  </tr>
+  <tr>
+    <td class="ar">ماعنديش</td>
+    <td class="tr">ma 3endish</td>
+    <td class="nl">I do not have</td>
+  </tr>
+  <tr>
+    <td class="ar">خصني</td>
+    <td class="tr">khessni</td>
+    <td class="nl">I need</td>
+  </tr>
+  <tr>
+    <td class="ar">ندير</td>
+    <td class="tr">ndir</td>
+    <td class="nl">I do</td>
+  </tr>
+  <tr>
+    <td class="ar">سير</td>
+    <td class="tr">sir</td>
+    <td class="nl">go! (m)<span class="note">To a girl: siri. To several: siru.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">اجي</td>
+    <td class="tr">aji</td>
+    <td class="nl">come!</td>
+  </tr>
+  <tr>
+    <td class="ar">شوف</td>
+    <td class="tr">shuf</td>
+    <td class="nl">look!</td>
+  </tr></table>
+  <h3>❓ Questions</h3>
+  <table>
+  <tr>
+    <td class="ar">شنو</td>
+    <td class="tr">shnu</td>
+    <td class="nl">what</td>
+  </tr>
+  <tr>
+    <td class="ar">شكون</td>
+    <td class="tr">shkun</td>
+    <td class="nl">who</td>
+  </tr>
+  <tr>
+    <td class="ar">فين</td>
+    <td class="tr">fin</td>
+    <td class="nl">where</td>
+  </tr>
+  <tr>
+    <td class="ar">فوقاش</td>
+    <td class="tr">fuqash</td>
+    <td class="nl">when</td>
+  </tr>
+  <tr>
+    <td class="ar">علاش</td>
+    <td class="tr">3lash</td>
+    <td class="nl">why</td>
+  </tr>
+  <tr>
+    <td class="ar">كيفاش</td>
+    <td class="tr">kifash</td>
+    <td class="nl">how</td>
+  </tr>
+  <tr>
+    <td class="ar">واش</td>
+    <td class="tr">wesh</td>
+    <td class="nl">question marker<span class="note">Put it in front to make a yes/no question: wesh nta mzyan?</span></td>
+  </tr>
+  <tr>
+    <td class="ar">شنو هادا؟</td>
+    <td class="tr">shnu hada?</td>
+    <td class="nl">what is this?</td>
+  </tr>
+  <tr>
+    <td class="ar">فين كاين؟</td>
+    <td class="tr">fin kayn...?</td>
+    <td class="nl">where is...?</td>
+  </tr></table>
+  <h3>🛍️ Shopping</h3>
+  <table>
+  <tr>
+    <td class="ar">السوق</td>
+    <td class="tr">ssouq</td>
+    <td class="nl">the market</td>
+  </tr>
+  <tr>
+    <td class="ar">حانوت</td>
+    <td class="tr">hanut</td>
+    <td class="nl">small shop<span class="note">The corner shop that has everything.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">فلوس</td>
+    <td class="tr">flus</td>
+    <td class="nl">money</td>
+  </tr>
+  <tr>
+    <td class="ar">درهم</td>
+    <td class="tr">derhem</td>
+    <td class="nl">dirham<span class="note">The currency of Morocco (MAD).</span></td>
+  </tr>
+  <tr>
+    <td class="ar">غالي</td>
+    <td class="tr">ghali</td>
+    <td class="nl">expensive</td>
+  </tr>
+  <tr>
+    <td class="ar">رخيص</td>
+    <td class="tr">rkhis</td>
+    <td class="nl">cheap</td>
+  </tr>
+  <tr>
+    <td class="ar">عطيني</td>
+    <td class="tr">3tini</td>
+    <td class="nl">give me...</td>
+  </tr>
+  <tr>
+    <td class="ar">كبير</td>
+    <td class="tr">kbir</td>
+    <td class="nl">big</td>
+  </tr>
+  <tr>
+    <td class="ar">صغير</td>
+    <td class="tr">sghir</td>
+    <td class="nl">small</td>
+  </tr>
+  <tr>
+    <td class="ar">جديد</td>
+    <td class="tr">jdid</td>
+    <td class="nl">new</td>
+  </tr>
+  <tr>
+    <td class="ar">قديم</td>
+    <td class="tr">qdim</td>
+    <td class="nl">old</td>
+  </tr>
+  <tr>
+    <td class="ar">شحال هادا؟</td>
+    <td class="tr">shhal hada?</td>
+    <td class="nl">how much is this?</td>
+  </tr>
+  <tr>
+    <td class="ar">غالي بزاف</td>
+    <td class="tr">ghali bezzaf!</td>
+    <td class="nl">too expensive!</td>
+  </tr>
+  <tr>
+    <td class="ar">بغيت هادا</td>
+    <td class="tr">bghit hada</td>
+    <td class="nl">I want this one</td>
+  </tr></table>
+  <h3>🗺️ Getting around</h3>
+  <table>
+  <tr>
+    <td class="ar">ليمن</td>
+    <td class="tr">limen</td>
+    <td class="nl">right</td>
+  </tr>
+  <tr>
+    <td class="ar">ليسار</td>
+    <td class="tr">lisar</td>
+    <td class="nl">left</td>
+  </tr>
+  <tr>
+    <td class="ar">نيشان</td>
+    <td class="tr">nishan</td>
+    <td class="nl">straight ahead</td>
+  </tr>
+  <tr>
+    <td class="ar">قدام</td>
+    <td class="tr">qeddam</td>
+    <td class="nl">in front, forward<span class="note">Shout qeddam! to cheer somebody on: forward!</span></td>
+  </tr>
+  <tr>
+    <td class="ar">مور</td>
+    <td class="tr">mor</td>
+    <td class="nl">behind</td>
+  </tr>
+  <tr>
+    <td class="ar">فوق</td>
+    <td class="tr">fuq</td>
+    <td class="nl">above, on</td>
+  </tr>
+  <tr>
+    <td class="ar">تحت</td>
+    <td class="tr">teht</td>
+    <td class="nl">under</td>
+  </tr>
+  <tr>
+    <td class="ar">حدا</td>
+    <td class="tr">hda</td>
+    <td class="nl">next to</td>
+  </tr>
+  <tr>
+    <td class="ar">هنا</td>
+    <td class="tr">hnaya</td>
+    <td class="nl">here</td>
+  </tr>
+  <tr>
+    <td class="ar">تما</td>
+    <td class="tr">temma</td>
+    <td class="nl">there</td>
+  </tr>
+  <tr>
+    <td class="ar">زنقة</td>
+    <td class="tr">zenqa</td>
+    <td class="nl">street</td>
+  </tr>
+  <tr>
+    <td class="ar">مدينة</td>
+    <td class="tr">medina</td>
+    <td class="nl">city, old town</td>
+  </tr>
+  <tr>
+    <td class="ar">بحر</td>
+    <td class="tr">bhar</td>
+    <td class="nl">sea</td>
+  </tr>
+  <tr>
+    <td class="ar">جبل</td>
+    <td class="tr">jbel</td>
+    <td class="nl">mountain</td>
+  </tr>
+  <tr>
+    <td class="ar">صحرا</td>
+    <td class="tr">sahra</td>
+    <td class="nl">desert</td>
+  </tr>
+  <tr>
+    <td class="ar">جامع</td>
+    <td class="tr">jame3</td>
+    <td class="nl">mosque</td>
+  </tr>
+  <tr>
+    <td class="ar">مستشفى</td>
+    <td class="tr">mustashfa</td>
+    <td class="nl">hospital</td>
+  </tr>
+  <tr>
+    <td class="ar">طوبيس</td>
+    <td class="tr">tobis</td>
+    <td class="nl">bus</td>
+  </tr>
+  <tr>
+    <td class="ar">طوموبيل</td>
+    <td class="tr">tomobil</td>
+    <td class="nl">car</td>
+  </tr>
+  <tr>
+    <td class="ar">بشكليط</td>
+    <td class="tr">bshklit</td>
+    <td class="nl">bicycle</td>
+  </tr></table>
+  <h3>🇲🇦 Culture</h3>
+  <table>
+  <tr>
+    <td class="ar">المغرب</td>
+    <td class="tr">lMghrib</td>
+    <td class="nl">Morocco<span class="note">Literally: the west.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">بلادي</td>
+    <td class="tr">bladi</td>
+    <td class="nl">my country<span class="note">What Moroccans abroad call Morocco, with a little homesickness in it.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">الدارجة</td>
+    <td class="tr">ddarija</td>
+    <td class="nl">Darija</td>
+  </tr>
+  <tr>
+    <td class="ar">تامازيغت</td>
+    <td class="tr">tamazight</td>
+    <td class="nl">Amazigh<span class="note">Morocco's second language, with an alphabet of its own: ⵜⵉⴼⵉⵏⴰⵖ.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">رمضان</td>
+    <td class="tr">Ramadan</td>
+    <td class="nl">Ramadan</td>
+  </tr>
+  <tr>
+    <td class="ar">العيد</td>
+    <td class="tr">l3id</td>
+    <td class="nl">Eid</td>
+  </tr>
+  <tr>
+    <td class="ar">حنة</td>
+    <td class="tr">henna</td>
+    <td class="nl">henna</td>
+  </tr>
+  <tr>
+    <td class="ar">جلابة</td>
+    <td class="tr">jellaba</td>
+    <td class="nl">djellaba</td>
+  </tr>
+  <tr>
+    <td class="ar">بلغة</td>
+    <td class="tr">belgha</td>
+    <td class="nl">babouche slippers</td>
+  </tr>
+  <tr>
+    <td class="ar">كناوة</td>
+    <td class="tr">gnawa</td>
+    <td class="nl">Gnawa music<span class="note">Music of the guembri and the iron qraqeb.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">الدار البيضاء</td>
+    <td class="tr">ddar lbida</td>
+    <td class="nl">Casablanca<span class="note">Literally: the white house.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">مراكش</td>
+    <td class="tr">Merrakch</td>
+    <td class="nl">Marrakesh</td>
+  </tr>
+  <tr>
+    <td class="ar">الرباط</td>
+    <td class="tr">Rrbat</td>
+    <td class="nl">Rabat<span class="note">The capital.</span></td>
+  </tr>
+  <tr>
+    <td class="ar">طنجة</td>
+    <td class="tr">Tanja</td>
+    <td class="nl">Tangier</td>
+  </tr>
+  <tr>
+    <td class="ar">فاس</td>
+    <td class="tr">Fas</td>
+    <td class="nl">Fez</td>
+  </tr>
+  <tr>
+    <td class="ar">أكادير</td>
+    <td class="tr">Agadir</td>
+    <td class="nl">Agadir</td>
+  </tr>
+  <tr>
+    <td class="ar">عيد مبارك</td>
+    <td class="tr">3id mubarak</td>
+    <td class="nl">happy Eid</td>
+  </tr></table>
+
+<h2 class="deel">Every sentence</h2>
+<p class="intro">A hundred sentences, in the order the path meets them.</p>
+<table class="zinnen">
+  <tr>
+    <td class="ar">السلام، مرحبا بيك</td>
+    <td class="tr">salam, merhba bik</td>
+    <td class="nl">Hello, welcome!</td>
+  </tr>
+  <tr>
+    <td class="ar">شكرا بزاف وبسلامة</td>
+    <td class="tr">shukran bezzaf w bslama</td>
+    <td class="nl">Thank you very much and goodbye.</td>
+  </tr>
+  <tr>
+    <td class="ar">السلام عليكم، كيف داير؟</td>
+    <td class="tr">ssalamu 3alaykum, kif dayr?</td>
+    <td class="nl">Peace be upon you, how are you?</td>
+  </tr>
+  <tr>
+    <td class="ar">لاباس الحمد لله، ونتا؟</td>
+    <td class="tr">labas lhamdullah, w nta?</td>
+    <td class="nl">Fine, thank God, and you?</td>
+  </tr>
+  <tr>
+    <td class="ar">واخا، مزيان بزاف</td>
+    <td class="tr">wakha, mzyan bezzaf</td>
+    <td class="nl">Okay, very good.</td>
+  </tr>
+  <tr>
+    <td class="ar">سمح ليا. معليش</td>
+    <td class="tr">smeh liya. ma3lish</td>
+    <td class="nl">Sorry. — Never mind.</td>
+  </tr>
+  <tr>
+    <td class="ar">تهلا فراسك، ليلة سعيدة</td>
+    <td class="tr">thalla f rasek, lila sa3ida</td>
+    <td class="nl">Take care of yourself, good night.</td>
+  </tr>
+  <tr>
+    <td class="ar">بارك الله فيك، إن شاء الله</td>
+    <td class="tr">barakallahu fik, inshallah</td>
+    <td class="nl">Thank you, God willing.</td>
+  </tr>
+  <tr>
+    <td class="ar">حنا مزيان، ونتوما؟</td>
+    <td class="tr">hna mzyan, w ntuma?</td>
+    <td class="nl">We are fine, and you?</td>
+  </tr>
+  <tr>
+    <td class="ar">هوا هنا وهيا تما</td>
+    <td class="tr">huwa hnaya w hiya temma</td>
+    <td class="nl">He is here and she is there.</td>
+  </tr>
+  <tr>
+    <td class="ar">شنو سميتك؟ سميتي يوسف</td>
+    <td class="tr">shnu smitek? smiti Youssef</td>
+    <td class="nl">What is your name? My name is Youssef.</td>
+  </tr>
+  <tr>
+    <td class="ar">متشرفين أ سارة</td>
+    <td class="tr">mtsherfin a Sara</td>
+    <td class="nl">Nice to meet you, Sara.</td>
+  </tr>
+  <tr>
+    <td class="ar">انا من المغرب، فين ساكن نتا؟</td>
+    <td class="tr">ana men lMghrib, fin sakn nta?</td>
+    <td class="nl">I am from Morocco, where do you live?</td>
+  </tr>
+  <tr>
+    <td class="ar">انا من هولندا وكنهضر شوية دارجة</td>
+    <td class="tr">ana men Hulanda w kanhder shwiya darija</td>
+    <td class="nl">I am from the Netherlands and I speak a little Darija.</td>
+  </tr>
+  <tr>
+    <td class="ar">هادا بابا وهادي ماما</td>
+    <td class="tr">hada baba w hadi mama</td>
+    <td class="nl">This is dad and this is mum.</td>
+  </tr>
+  <tr>
+    <td class="ar">عندي خويا وختي</td>
+    <td class="tr">3endi khoya w khti</td>
+    <td class="nl">I have a brother and a sister.</td>
+  </tr>
+  <tr>
+    <td class="ar">جدي وجدتي فالمغرب</td>
+    <td class="tr">jeddi w jeddti f lMghrib</td>
+    <td class="nl">My grandfather and grandmother are in Morocco.</td>
+  </tr>
+  <tr>
+    <td class="ar">العائلة ديالي كبيرة</td>
+    <td class="tr">l3a’ila dyali kbira</td>
+    <td class="nl">My family is big.</td>
+  </tr>
+  <tr>
+    <td class="ar">هادا صاحبي وهادي صاحبتي</td>
+    <td class="tr">hada sahbi w hadi sahbti</td>
+    <td class="nl">This is my friend and this is my girlfriend.</td>
+  </tr>
+  <tr>
+    <td class="ar">هادي ختي، سميتها نور</td>
+    <td class="tr">hadi khti, smitha Nour</td>
+    <td class="nl">This is my sister, her name is Nour.</td>
+  </tr>
+  <tr>
+    <td class="ar">عطيني جوج عافاك</td>
+    <td class="tr">3tini jouj 3afak</td>
+    <td class="nl">Give me two, please.</td>
+  </tr>
+  <tr>
+    <td class="ar">حنا ربعة فالدار</td>
+    <td class="tr">hna reb3a f ddar</td>
+    <td class="nl">There are four of us at home.</td>
+  </tr>
+  <tr>
+    <td class="ar">عندي عشرة ديال الدراهم</td>
+    <td class="tr">3endi 3achra dyal derahem</td>
+    <td class="nl">I have ten dirhams.</td>
+  </tr>
+  <tr>
+    <td class="ar">سبعة وتلاتة هوما عشرة</td>
+    <td class="tr">seb3a w tlata huma 3achra</td>
+    <td class="nl">Seven and three make ten.</td>
+  </tr>
+  <tr>
+    <td class="ar">شحال؟ عشرين درهم</td>
+    <td class="tr">shhal? 3achrin derhem</td>
+    <td class="nl">How much? Twenty dirhams.</td>
+  </tr>
+  <tr>
+    <td class="ar">عندي طناش سنة</td>
+    <td class="tr">3endi tnach sna</td>
+    <td class="nl">I am twelve years old.</td>
+  </tr>
+  <tr>
+    <td class="ar">شحال ف عمرك؟ عندي عشر سنين</td>
+    <td class="tr">shhal f 3merek? 3endi 3achr snin</td>
+    <td class="nl">How old are you? I am ten.</td>
+  </tr>
+  <tr>
+    <td class="ar">شحال هادا؟ عشرين درهم</td>
+    <td class="tr">shhal hada? 3achrin derhem</td>
+    <td class="nl">How much is this? Twenty dirhams.</td>
+  </tr>
+  <tr>
+    <td class="ar">الكتاب حمر والباب زرق</td>
+    <td class="tr">lktab hmer w lbab zreq</td>
+    <td class="nl">The book is red and the door is blue.</td>
+  </tr>
+  <tr>
+    <td class="ar">بغيت الزرق، ماشي الكحل</td>
+    <td class="tr">bghit zzreq, mashi lkhel</td>
+    <td class="nl">I want the blue one, not the black one.</td>
+  </tr>
+  <tr>
+    <td class="ar">شنو اللون ديالها؟ وردي</td>
+    <td class="tr">shnu lloun dyalha? wardi</td>
+    <td class="nl">What colour is it? Pink.</td>
+  </tr>
+  <tr>
+    <td class="ar">عندي بشكليط برتقالي</td>
+    <td class="tr">3endi bshklit brtqali</td>
+    <td class="nl">I have an orange bicycle.</td>
+  </tr>
+  <tr>
+    <td class="ar">بغيت أتاي بالسكر عافاك</td>
+    <td class="tr">bghit atay b ssokkar 3afak</td>
+    <td class="nl">I would like tea with sugar, please.</td>
+  </tr>
+  <tr>
+    <td class="ar">الخبز والما عافاك</td>
+    <td class="tr">lkhobz w lma 3afak</td>
+    <td class="nl">Bread and water, please.</td>
+  </tr>
+  <tr>
+    <td class="ar">كناكل التفاح والبانان</td>
+    <td class="tr">kanakol ttfah w lbanan</td>
+    <td class="nl">I eat apples and bananas.</td>
+  </tr>
+  <tr>
+    <td class="ar">بغيت مطيشة وبصلة</td>
+    <td class="tr">bghit matisha w bsla</td>
+    <td class="nl">I want tomatoes and onions.</td>
+  </tr>
+  <tr>
+    <td class="ar">كناكل الخبز بالزبدة</td>
+    <td class="tr">kanakol lkhobz b zzebda</td>
+    <td class="nl">I eat bread with butter.</td>
+  </tr>
+  <tr>
+    <td class="ar">بغيت الحوت، ماشي الدجاج</td>
+    <td class="tr">bghit lhut, mashi ddjaj</td>
+    <td class="nl">I want fish, not chicken.</td>
+  </tr>
+  <tr>
+    <td class="ar">الكسكسو بنين بزاف</td>
+    <td class="tr">lkesksu bnin bezzaf</td>
+    <td class="nl">The couscous is very tasty.</td>
+  </tr>
+  <tr>
+    <td class="ar">الطاجين والحريرة ماكلة مغربية</td>
+    <td class="tr">ttajine w lharira makla mghribiya</td>
+    <td class="nl">Tagine and harira are Moroccan food.</td>
+  </tr>
+  <tr>
+    <td class="ar">انا جوعان، بغيت ناكل</td>
+    <td class="tr">ana ju3an, bghit nakol</td>
+    <td class="nl">I am hungry, I want to eat.</td>
+  </tr>
+  <tr>
+    <td class="ar">انا عطشان، بغيت الما</td>
+    <td class="tr">ana 3etshan, bghit lma</td>
+    <td class="nl">I am thirsty, I want water.</td>
+  </tr>
+  <tr>
+    <td class="ar">الدار ديالنا فيها جوج بيوت</td>
+    <td class="tr">ddar dyalna fiha jouj byut</td>
+    <td class="nl">Our house has two rooms.</td>
+  </tr>
+  <tr>
+    <td class="ar">ماما فالكوزينا</td>
+    <td class="tr">mama f lkuzina</td>
+    <td class="nl">Mum is in the kitchen.</td>
+  </tr>
+  <tr>
+    <td class="ar">الطبلة والكرسي فالبيت</td>
+    <td class="tr">ttebla w lkursi f lbit</td>
+    <td class="nl">The table and the chair are in the room.</td>
+  </tr>
+  <tr>
+    <td class="ar">سد الباب عافاك</td>
+    <td class="tr">sedd lbab 3afak</td>
+    <td class="nl">Close the door, please.</td>
+  </tr>
+  <tr>
+    <td class="ar">فين الساروت ديالي؟</td>
+    <td class="tr">fin ssarut dyali?</td>
+    <td class="nl">Where is my key?</td>
+  </tr>
+  <tr>
+    <td class="ar">شعل الضو عافاك</td>
+    <td class="tr">sh3el ddou 3afak</td>
+    <td class="nl">Turn on the light, please.</td>
+  </tr>
+  <tr>
+    <td class="ar">انا تلميذ فالمدرسة</td>
+    <td class="tr">ana telmid f lmedrasa</td>
+    <td class="nl">I am a pupil at school.</td>
+  </tr>
+  <tr>
+    <td class="ar">الأستادة فالقسم</td>
+    <td class="tr">lostada f lqism</td>
+    <td class="nl">The teacher is in the classroom.</td>
+  </tr>
+  <tr>
+    <td class="ar">عندي كتاب وكناش جديد</td>
+    <td class="tr">3endi ktab w kunash jdid</td>
+    <td class="nl">I have a book and a new notebook.</td>
+  </tr>
+  <tr>
+    <td class="ar">عطيني الستيلو عافاك</td>
+    <td class="tr">3tini stilu 3afak</td>
+    <td class="nl">Give me the pen, please.</td>
+  </tr>
+  <tr>
+    <td class="ar">مافهمتش، عاود عافاك</td>
+    <td class="tr">ma fhemtsh, 3awd 3afak</td>
+    <td class="nl">I do not understand, say it again please.</td>
+  </tr>
+  <tr>
+    <td class="ar">هضر بشوية، دابا فهمت</td>
+    <td class="tr">hder bshwiya, daba fhemt</td>
+    <td class="nl">Speak slowly, now I understand.</td>
+  </tr>
+  <tr>
+    <td class="ar">المش كيلعب والكلب كينعس</td>
+    <td class="tr">lmesh kayl3eb w lkelb kayn3es</td>
+    <td class="nl">The cat is playing and the dog is sleeping.</td>
+  </tr>
+  <tr>
+    <td class="ar">عندي مش صغير</td>
+    <td class="tr">3endi mesh sghir</td>
+    <td class="nl">I have a small cat.</td>
+  </tr>
+  <tr>
+    <td class="ar">عند جدي بقرة ومعزة</td>
+    <td class="tr">3end jeddi bgra w m3za</td>
+    <td class="nl">My grandfather has a cow and a goat.</td>
+  </tr>
+  <tr>
+    <td class="ar">الجمل كبير والحمار صغير</td>
+    <td class="tr">ljmel kbir w lhmar sghir</td>
+    <td class="nl">The camel is big and the donkey is small.</td>
+  </tr>
+  <tr>
+    <td class="ar">السبع كبير والنملة صغيرة</td>
+    <td class="tr">ssba3 kbir w nnemla sghira</td>
+    <td class="nl">The lion is big and the ant is small.</td>
+  </tr>
+  <tr>
+    <td class="ar">كنبغي الحيوانات بزاف</td>
+    <td class="tr">kanbghi lhayawanat bezzaf</td>
+    <td class="nl">I love animals very much.</td>
+  </tr>
+  <tr>
+    <td class="ar">اليوم مزيان، غدا شتا</td>
+    <td class="tr">lyum mzyan, ghedda shta</td>
+    <td class="nl">Today is nice, tomorrow rain.</td>
+  </tr>
+  <tr>
+    <td class="ar">كنقرا فالصباح وكنلعب فالعشية</td>
+    <td class="tr">kanqra f sbah w kanl3eb f l3shiya</td>
+    <td class="nl">I study in the morning and play in the afternoon.</td>
+  </tr>
+  <tr>
+    <td class="ar">نهار الجمعة كناكلو الكسكسو</td>
+    <td class="tr">nhar jjem3a kanaklu lkesksu</td>
+    <td class="nl">On Friday we eat couscous.</td>
+  </tr>
+  <tr>
+    <td class="ar">السبت والحد عطلة</td>
+    <td class="tr">ssebt w lhedd 3otla</td>
+    <td class="nl">Saturday and Sunday are days off.</td>
+  </tr>
+  <tr>
+    <td class="ar">شحال فالساعة؟ الساعة تلاتة</td>
+    <td class="tr">shhal f ssa3a? ssa3a tlata</td>
+    <td class="nl">What time is it? It is three o’clock.</td>
+  </tr>
+  <tr>
+    <td class="ar">الشهر فيه ربعة ديال السيمانات</td>
+    <td class="tr">shher fih reb3a dyal ssimanat</td>
+    <td class="nl">A month has four weeks.</td>
+  </tr>
+  <tr>
+    <td class="ar">الجو سخون اليوم</td>
+    <td class="tr">jjaw skhun lyum</td>
+    <td class="nl">The weather is hot today.</td>
+  </tr>
+  <tr>
+    <td class="ar">كاينة الشتا والريح</td>
+    <td class="tr">kayna shta w rrih</td>
+    <td class="nl">There is rain and wind.</td>
+  </tr>
+  <tr>
+    <td class="ar">عندي جوج عينين وودنين</td>
+    <td class="tr">3endi jouj 3inin w wednin</td>
+    <td class="nl">I have two eyes and two ears.</td>
+  </tr>
+  <tr>
+    <td class="ar">كنغسل سناني فالصباح</td>
+    <td class="tr">kanghsel snani f sbah</td>
+    <td class="nl">I brush my teeth in the morning.</td>
+  </tr>
+  <tr>
+    <td class="ar">اليد ديالي صغيرة</td>
+    <td class="tr">lyedd dyali sghira</td>
+    <td class="nl">My hand is small.</td>
+  </tr>
+  <tr>
+    <td class="ar">كيضرني كرشي</td>
+    <td class="tr">kayderni kershi</td>
+    <td class="nl">My stomach hurts.</td>
+  </tr>
+  <tr>
+    <td class="ar">انا فرحان اليوم</td>
+    <td class="tr">ana ferhan lyum</td>
+    <td class="nl">I am happy today.</td>
+  </tr>
+  <tr>
+    <td class="ar">كيضرني راسي، انا عيان</td>
+    <td class="tr">kayderni rasi, ana 3eyyan</td>
+    <td class="nl">My head hurts, I am tired.</td>
+  </tr>
+  <tr>
+    <td class="ar">كناكل الخبز وكنشرب الحليب</td>
+    <td class="tr">kanakol lkhobz w kanshreb lhlib</td>
+    <td class="nl">I eat bread and drink milk.</td>
+  </tr>
+  <tr>
+    <td class="ar">كنمشي للمدرسة كل نهار</td>
+    <td class="tr">kanmshi l lmedrasa kul nhar</td>
+    <td class="nl">I go to school every day.</td>
+  </tr>
+  <tr>
+    <td class="ar">كنقرا الكتاب وكنكتب فالكناش</td>
+    <td class="tr">kanqra lktab w kanktab f lkunash</td>
+    <td class="nl">I read the book and write in the notebook.</td>
+  </tr>
+  <tr>
+    <td class="ar">كنشوف التلفازة وكنضحك</td>
+    <td class="tr">kanshuf ttelfaza w kandhek</td>
+    <td class="nl">I watch television and laugh.</td>
+  </tr>
+  <tr>
+    <td class="ar">عندي فلوس، بغيت خبز</td>
+    <td class="tr">3endi flus, bghit khobz</td>
+    <td class="nl">I have money, I want bread.</td>
+  </tr>
+  <tr>
+    <td class="ar">ماعنديش ستيلو، خصني واحد</td>
+    <td class="tr">ma 3endish stilu, khessni wahed</td>
+    <td class="nl">I have no pen, I need one.</td>
+  </tr>
+  <tr>
+    <td class="ar">اجي هنا وشوف</td>
+    <td class="tr">aji hnaya w shuf</td>
+    <td class="nl">Come here and look.</td>
+  </tr>
+  <tr>
+    <td class="ar">سير للدار عافاك</td>
+    <td class="tr">sir l ddar 3afak</td>
+    <td class="nl">Go home, please.</td>
+  </tr>
+  <tr>
+    <td class="ar">شكون هادا؟ هادا خويا</td>
+    <td class="tr">shkun hada? hada khoya</td>
+    <td class="nl">Who is this? This is my brother.</td>
+  </tr>
+  <tr>
+    <td class="ar">فين غادي؟ وفوقاش؟</td>
+    <td class="tr">fin ghadi? w fuqash?</td>
+    <td class="nl">Where are you going? And when?</td>
+  </tr>
+  <tr>
+    <td class="ar">شنو هادا؟ هادا كتاب</td>
+    <td class="tr">shnu hada? hada ktab</td>
+    <td class="nl">What is this? This is a book.</td>
+  </tr>
+  <tr>
+    <td class="ar">فين كاين الحمام عافاك؟</td>
+    <td class="tr">fin kayn lhemmam 3afak?</td>
+    <td class="nl">Where is the bathroom, please?</td>
+  </tr>
+  <tr>
+    <td class="ar">عندي فلوس، غادي للحانوت</td>
+    <td class="tr">3endi flus, ghadi l lhanut</td>
+    <td class="nl">I have money, I am going to the shop.</td>
+  </tr>
+  <tr>
+    <td class="ar">هادا غالي وهادا رخيص</td>
+    <td class="tr">hada ghali w hada rkhis</td>
+    <td class="nl">This is expensive and that is cheap.</td>
+  </tr>
+  <tr>
+    <td class="ar">شحال هادا؟ غالي بزاف</td>
+    <td class="tr">shhal hada? ghali bezzaf</td>
+    <td class="nl">How much is this? Far too expensive!</td>
+  </tr>
+  <tr>
+    <td class="ar">عطيني هادا عافاك</td>
+    <td class="tr">3tini hada 3afak</td>
+    <td class="nl">Give me this one, please.</td>
+  </tr>
+  <tr>
+    <td class="ar">بغيت واحد كبير، ماشي صغير</td>
+    <td class="tr">bghit wahed kbir, mashi sghir</td>
+    <td class="nl">I want a big one, not a small one.</td>
+  </tr>
+  <tr>
+    <td class="ar">الكتاب قديم والكناش جديد</td>
+    <td class="tr">lktab qdim w lkunash jdid</td>
+    <td class="nl">The book is old and the notebook is new.</td>
+  </tr>
+  <tr>
+    <td class="ar">سير نيشان، من بعد ليمن</td>
+    <td class="tr">sir nishan, men be3d limen</td>
+    <td class="nl">Go straight on, then right.</td>
+  </tr>
+  <tr>
+    <td class="ar">الحانوت حدا الجامع</td>
+    <td class="tr">lhanut hda jjame3</td>
+    <td class="nl">The shop is next to the mosque.</td>
+  </tr>
+  <tr>
+    <td class="ar">المستشفى فهاد الزنقة</td>
+    <td class="tr">lmustashfa f had zzenqa</td>
+    <td class="nl">The hospital is on this street.</td>
+  </tr>
+  <tr>
+    <td class="ar">كنمشي للمدينة بالطوبيس</td>
+    <td class="tr">kanmshi l lmedina b ttobis</td>
+    <td class="nl">I go to town by bus.</td>
+  </tr>
+  <tr>
+    <td class="ar">بلادي المغرب وكنهضر الدارجة</td>
+    <td class="tr">bladi lMghrib w kanhder ddarija</td>
+    <td class="nl">My country is Morocco and I speak Darija.</td>
+  </tr>
+  <tr>
+    <td class="ar">الدار البيضاء مدينة كبيرة</td>
+    <td class="tr">ddar lbida medina kbira</td>
+    <td class="nl">Casablanca is a big city.</td>
+  </tr>
+  <tr>
+    <td class="ar">فالعيد كنلبسو الجلابة</td>
+    <td class="tr">f l3id kanlebsu jellaba</td>
+    <td class="nl">At the feast we wear a djellaba.</td>
+  </tr>
+  <tr>
+    <td class="ar">كناوة موسيقى مغربية</td>
+    <td class="tr">gnawa musiqa mghribiya</td>
+    <td class="nl">Gnawa is Moroccan music.</td>
+  </tr></table>
+
+<div class="slot">
+  <h2>About this book</h2>
+  <p>This book is typeset from the app itself: every word, every letter and every note comes from the same source as the lessons. A word added to the course is in the next printing.</p>
+  <p>Hearing is half of it. Every word here is in the app too, recorded by a Moroccan voice — read here, listen there.</p>
+  <p style="margin-top:8mm;font-size:8.5pt;opacity:.7;line-height:1.55">
+    © 2026 Venship · darijaforkids.eu · KvK 77780868 · All rights reserved.<br>This book was bought for one family. Copying or sharing it is not allowed — not at school, not in a group chat, not on a website. If someone else would like to read it, send them the link; that is what keeps this going.
+  </p>
+</div>
+
+</body></html>

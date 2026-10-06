@@ -902,6 +902,7 @@ export const it: Strings = {
       koop: (prijs: string): string => `Compra l'e-book — ${prijs} una volta sola`,
       open: "Apri l'e-book",
       vanJou: "L'e-book è tuo. Resta tuo anche se un giorno lasci l'abbonamento.",
+      pdf: 'Oppure salva il PDF per stamparlo',
       alleenInApp: (prijs: string, winkel: string): string =>
         `L'e-book si compra nell'app ${winkel} (${prijs}, una volta sola). Con l'abbonamento annuale è compreso.`,
     },

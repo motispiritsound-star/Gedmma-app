@@ -360,6 +360,76 @@ await mkdir(path.dirname(OUT), { recursive: true })
 const tmp = path.join(tmpdir(), `.${path.basename(OUT)}.html`)
 await writeFile(tmp, html)
 
+/**
+ * Hetzelfde boek, maar om te lézen op een scherm.
+ *
+ * Een pdf in een `<iframe>` toont op een iPhone alleen bladzijde één. WKWebView
+ * heeft geen eigen pdf-lezer in een iframe: je krijgt de eerste bladzijde als
+ * plaatje, zonder bladeren en zonder scrollen. Op een laptop en op Android valt
+ * dat niet op, want daar zit die lezer er wél in — dus dit is precies het soort
+ * fout die je alleen ziet door het op een echte telefoon te doen.
+ *
+ * Nagemeten door zelf een jaarabonnement te kopen: het boek opende, en er stond
+ * de omslag met daaronder niets. Voor een product van € 14,99 is dat geen
+ * schoonheidsfoutje.
+ *
+ * Twee dingen moeten anders dan in de pdf:
+ *
+ * 1. **De letters uit de app zelf**, en niet van Google. De pdf wordt hier
+ *    gezet, met een verbinding; het boek wordt straks in de app gelezen, vaak
+ *    zonder. `public/fonts/` staat al in de bundel, dus die gebruiken we.
+ * 2. **De bladspiegel van A4 eraf.** `height:calc(297mm - 38mm)` op de omslag
+ *    is op papier een bladzijde en op een telefoon een leeg vlak van twee
+ *    schermen hoog — dat is de witruimte die je ziet. Op een scherm mag de
+ *    tekst gewoon doorlopen.
+ *
+ * De pdf blijft wat hij was: om te printen en om in de zip mee te gaan.
+ */
+const schermfonts = `<style>
+  @font-face { font-family:"Baloo 2"; src:url("../fonts/baloo2-600.woff2") format("woff2"); font-weight:600; font-display:swap }
+  @font-face { font-family:"Baloo 2"; src:url("../fonts/baloo2-800.woff2") format("woff2"); font-weight:800; font-display:swap }
+  @font-face { font-family:"Noto Naskh Arabic"; src:url("../fonts/noto-naskh-arabic-400.woff2") format("woff2"); font-weight:400; font-display:swap }
+  @font-face { font-family:"Noto Naskh Arabic"; src:url("../fonts/noto-naskh-arabic-700.woff2") format("woff2"); font-weight:700; font-display:swap }
+</style>`
+
+const schermstijl = `<style>
+  @media screen {
+    body { font-size:16px; line-height:1.6; padding:20px 18px 64px; max-width:46rem; margin:0 auto; -webkit-text-size-adjust:100% }
+    /* De omslag is op papier een hele bladzijde; op een scherm is dat leegte. */
+    /* Geen streep onder de omslag: het eerste deel brengt zijn eigen bovenrand mee. */
+    .cover { height:auto; display:block; padding:8px 0 4px }
+    .cover h1 { font-size:2rem }
+    .cover .slogan { font-size:1.05rem; max-width:none; margin-top:.6rem }
+    .cover .cijfers { font-size:.85rem; margin-top:1rem }
+    .vlag { width:48px }
+    h2.deel { font-size:1.5rem; padding-top:1.4rem; margin-top:1.4rem; border-top:1px solid var(--line) }
+    h2.deel + .intro { max-width:none }
+    h3 { font-size:1.1rem; margin:1.4rem 0 .5rem }
+    td { padding:.5rem .4rem }
+    td.ar { width:auto; min-width:7.5rem; font-size:1.25rem }
+    td.tr { width:auto; min-width:7rem }
+    table.zinnen td.ar, table.zinnen td.tr { width:auto }
+    .slot { padding-top:1.4rem }
+    .slot p { max-width:none }
+    /* Twee kolommen letters passen niet op een telefoon. */
+    .letters { grid-template-columns:1fr; gap:.6rem }
+    .letter { gap:.7rem; border-radius:10px; padding:.7rem }
+    .letter .glyph { width:2.4rem; font-size:1.6rem }
+    .letter .vormen { gap:1rem; font-size:1.1rem }
+    .unit { margin-bottom:1.2rem }
+    .tip { border-left-width:4px; padding:.4rem 0 .4rem .8rem }
+  }
+  @media screen and (min-width:40rem) { .letters { grid-template-columns:1fr 1fr } }
+</style>`
+
+const scherm = html
+  .replace(/<link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com[^>]*>/, schermfonts)
+  .replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">')
+  .replace('</head>', `${schermstijl}\n</head>`)
+
+const SCHERM = OUT.replace(/\.pdf$/, '.html')
+await writeFile(SCHERM, scherm)
+
 const printer = await startChroom()
 const sheet = await printer.newPage()
 await sheet.goto(pathToFileURL(tmp).href, { waitUntil: 'networkidle' })
@@ -380,3 +450,5 @@ await server.close()
 
 const bytes = (await readFile(OUT)).length
 console.log(`${path.relative(ROOT, OUT)} — ${(bytes / 1024 / 1024).toFixed(1)} MB`)
+const schermBytes = (await readFile(SCHERM)).length
+console.log(`${path.relative(ROOT, SCHERM)} — ${(schermBytes / 1024).toFixed(0)} kB, om te lezen in de app`)

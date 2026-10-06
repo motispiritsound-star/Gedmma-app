@@ -68,6 +68,20 @@ export const EBOOK = {
 export const ebookFile = (lang: string): string => `ebook/darijaforkids-${lang}.pdf`
 
 /**
+ * Hetzelfde boek om te lézen, in plaats van om te printen.
+ *
+ * De pdf in een `<iframe>` toont op een iPhone alleen bladzijde één: WKWebView
+ * heeft daar geen pdf-lezer in zitten. Op een laptop en op Android valt dat
+ * niet op, dus het is gevonden door het op een echte telefoon te doen — de
+ * omslag stond er, en daaronder niets.
+ *
+ * `make-ebook.mjs` zet daarom naast de pdf een html-versie neer, met de letters
+ * uit `public/fonts/` zodat hij ook zonder verbinding klopt. De pdf blijft wat
+ * hij was: om te printen, en om in de zip van de winkel mee te gaan.
+ */
+export const ebookPagina = (lang: string): string => `ebook/darijaforkids-${lang}.html`
+
+/**
  * The free trial, in days. Three is both the chosen length and the shortest
  * either store offers, so there is no reason to go lower.
  *

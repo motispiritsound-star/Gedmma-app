@@ -19,6 +19,7 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { ebookWachtTot, TRIAL_DAYS } from '../engine/billing'
 import { getState, setState } from '../engine/store'
+import { LANG_CODES } from '../i18n/languages'
 
 const bron = readFileSync(new URL('../pages/Boek.tsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n')
 
@@ -143,5 +144,39 @@ describe('het e-boek is te vinden na het betalen', () => {
    */
   it('en staat er niets als er geen recht op is', () => {
     expect(profiel).toContain('{(magBoek || boekWacht !== null) && (')
+  })
+})
+
+/**
+ * Dat het boek te lézen is, en niet alleen te openen.
+ *
+ * Een pdf in een `<iframe>` toont op een iPhone alleen bladzijde één: WKWebView
+ * heeft daar geen pdf-lezer in zitten. Op een laptop en op Android zit die er
+ * wél in, dus dit kwam pas boven door het boek na een echte aankoop op een
+ * echte telefoon te openen — de omslag stond er, en daaronder niets.
+ *
+ * Daarom moet het venster de html-versie laden en niet de pdf. Dit is een
+ * toets op de bron, want de fout was niet dat er iets kapot was maar dat er
+ * het verkeerde bestand in stond, en dat ziet er in een test op gedrag
+ * hetzelfde uit.
+ */
+describe('het boek wordt gelezen, niet geprint', () => {
+  const boek = readFileSync(new URL('../pages/Boek.tsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n')
+
+  it('het venster toont de leesversie', () => {
+    expect(boek).toContain('src={ebookPagina(lang)}')
+  })
+
+  it('en de pdf staat er als tweede weg, om te bewaren', () => {
+    expect(boek).toContain('href={ebookFile(lang)}')
+    expect(boek).toContain('t.unlock.boek.pdf')
+  })
+
+  /** Een leesversie die er niet staat is erger dan een pdf die maar half werkt. */
+  it('en er staat er een voor elke taal', () => {
+    for (const lang of LANG_CODES) {
+      const pad = new URL(`../../public/ebook/darijaforkids-${lang}.html`, import.meta.url)
+      expect(readFileSync(pad, 'utf8').length, lang).toBeGreaterThan(20_000)
+    }
   })
 })
