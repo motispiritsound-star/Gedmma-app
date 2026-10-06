@@ -49,6 +49,9 @@ android/.gradle/
 android/capacitor.settings.gradle
 android/app/capacitor.build.gradle
 /store/winkel/
+# Het beeldpakket: een zip van bestanden die hier al staan, dus een kopie van
+# iets dat we al hebben. Komt terug met `npm run mediakit`.
+/store/mediakit/
 /store/bladen/
 
 # Luisterboeken: opnames, bouwresultaat

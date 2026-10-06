@@ -28,6 +28,7 @@
     "stand": "node scripts/make-stand.mjs",
     "screenshots": "node scripts/make-screenshots.mjs",
     "marketing": "node scripts/make-marketing.mjs",
+    "mediakit": "node scripts/make-mediakit.mjs",
     "intro": "node scripts/make-intro.mjs",
     "feedbackcheck": "node scripts/feedbackcheck.mjs",
     "historycheck": "node scripts/historycheck.mjs",
