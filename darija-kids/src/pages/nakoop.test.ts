@@ -109,3 +109,40 @@ describe('de twee regels', () => {
     }
   })
 })
+
+/**
+ * Wat er ná het betalen te zien is.
+ *
+ * Het welkom bestond, en het bestond uit twee regels boven een naamveld: "vul
+ * hier je naam in en kies een dier". Dat is een instelling. Wat er niet stond
+ * was wát je gekocht had, en waar het e-boek bleef — en dat waren precies de
+ * twee vragen die na een echte aankoop als eerste kwamen.
+ *
+ * De getallen komen uit de inhoud zelf en niet uit een zin die iemand tikt.
+ * Een unit erbij hoort hier vanzelf te kloppen; een cijfer dat met de hand
+ * wordt bijgehouden wordt stilletjes onwaar.
+ */
+describe('het welkom na het betalen', () => {
+  const profiel = readFileSync(new URL('./Profile.tsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n')
+
+  it('zegt wat er open staat, met getallen uit de inhoud', () => {
+    expect(profiel).toContain('t.profile.welkomLijst(UNITS.length, allWords.length, LETTERS.length, HISTORY.length)')
+  })
+
+  /** Iemand die net geld uitgaf mag weten dat hij nog niets betaald heeft. */
+  it('en noemt de proefperiode', () => {
+    expect(profiel).toContain('t.profile.welkomProef(TRIAL_DAYS)')
+  })
+
+  it('en wijst één eerste stap aan', () => {
+    expect(profiel).toContain('t.profile.welkomStart')
+  })
+
+  /**
+   * Bovenaan, vóór de kaart met de naam. Het welkom is het bericht en de
+   * gouden kaart is het bewijs; in die volgorde.
+   */
+  it('en staat boven de kaart met de naam', () => {
+    expect(profiel.indexOf('t.profile.welkomKop')).toBeLessThan(profiel.indexOf('<Kantel className="mb-6"'))
+  })
+})

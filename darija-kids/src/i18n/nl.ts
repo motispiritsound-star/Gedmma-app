@@ -421,6 +421,18 @@ export const nl = {
      * heeft uitgegeven is dat te weinig, en het eerste wat een mens dan wil is
      * niet een les maar zichzelf: een naam op de kaart.
      */
+    welkomKop: 'Welkom bij Darijaforkids',
+    welkomDank: 'Je hebt de hele cursus in huis. Dit staat vanaf nu open:',
+    welkomLijst: (units: number, woorden: number, letters: number, films: number): string[] => [
+      `Alle ${units} units, van de eerste letter tot afdingen op de souq`,
+      `${woorden} woorden en zinnen, elk ingesproken door iemand die Darija spreekt`,
+      `Het Arabische schrift: ${letters} letters, met hun drie vormen`,
+      `${films} korte filmpjes uit de geschiedenis van Marokko`,
+      'Alle verhalen, en het oefenen zonder einde',
+    ],
+    welkomProef: (dagen: number): string =>
+      `De eerste ${dagen} dagen zijn gratis. Opzeggen kan altijd, en dan loopt het gewoon af.`,
+    welkomStart: 'Verder leren',
     welkomTitel: 'Welkom bij de volledige cursus',
     welkomUitleg: 'Vul hier je naam in en kies een dier. Dat staat voortaan op je kaart.',
     leerling: 'Leerling',

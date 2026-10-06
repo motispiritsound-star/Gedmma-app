@@ -3,12 +3,13 @@ import type { CSSProperties, ReactNode } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
 import { UNITS } from '../content/curriculum'
+import { LETTERS } from '../content/alphabet'
 import { allWords } from '../content/lexicon'
 import {
   BADGES, kanVriesdagKopen, koopVriesdag, levelOf, MAX_VRIESDAGEN, PRIJS_VRIESDAG,
   AVATARS, progressOfUnit, reeksNu, setState, today, useStore,
 } from '../engine/store'
-import { ebookWachtTot } from '../engine/billing'
+import { ebookWachtTot, TRIAL_DAYS } from '../engine/billing'
 import { aantalDiplomas, nieuweHandtekeningen } from '../engine/diploma'
 import type { Badge } from '../engine/store'
 import { sfx } from '../engine/audio'
@@ -291,6 +292,50 @@ export function Profile() {
         een regel eronder. Geen pop-up en geen felicitatie die je moet
         wegklikken: iets dat er gewoon staat, elke keer dat je kijkt.
       */}
+      {/*
+        Het welkom, en één keer.
+
+        Wie net betaald heeft kwam hier binnen en zag twee regels: "vul je naam
+        in en kies een dier". Dat is een instelling, geen welkom. Wat er niet
+        stond was wát je gekocht had en waar het e-boek bleef — en precies dat
+        is waar de eerste vraag over ging na een echte aankoop.
+
+        Geen pop-up die je moet wegklikken en geen confetti: een kaart die er
+        staat, met vijf regels die alle vijf nagemeten zijn. De getallen komen
+        uit de inhoud zelf (`UNITS`, `allWords`, `LETTERS`, `HISTORY`), zodat
+        een unit erbij hier vanzelf klopt en niemand een cijfer hoeft bij te
+        werken dat dan stilletjes onwaar wordt.
+
+        En de proefperiode staat erbij. Dat is het soort eerlijkheid dat je op
+        dit scherm kunt missen zonder dat iemand het merkt, en precies daarom
+        hoort het hier: iemand die net geld heeft uitgegeven mag weten dat hij
+        nog niets betaald heeft en wanneer dat verandert.
+
+        Hij komt via `?welkom=1`, dus wie de bladzijde later opnieuw opent
+        heeft hem niet meer.
+      */}
+      {welkom && (
+        <Card className="mb-6 border-2 border-saffron-400 p-5" style={{ boxShadow: 'var(--schaduw-hoog)' }}>
+          <p className="flex items-center gap-2 font-display text-xl font-extrabold">
+            <Khatim size={20} />
+            {t.profile.welkomKop}
+          </p>
+          <p className="mt-2 text-sm text-[var(--ink-soft)]">{t.profile.welkomDank}</p>
+          <ul className="mt-3 space-y-1.5">
+            {t.profile.welkomLijst(UNITS.length, allWords.length, LETTERS.length, HISTORY.length).map((regel) => (
+              <li key={regel} className="flex gap-2 text-sm">
+                <span aria-hidden="true" className="text-saffron-600">·</span>
+                <span>{regel}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4 text-xs text-[var(--ink-soft)]">{t.profile.welkomProef(TRIAL_DAYS)}</p>
+          <Link to="/leren" onClick={() => sfx.tap()} className="mt-4 inline-block">
+            <Button>{t.profile.welkomStart}</Button>
+          </Link>
+        </Card>
+      )}
+
       <Kantel className="mb-6" kracht={5}>
         <Card
           className={`relative overflow-hidden flex flex-wrap items-center gap-5 p-5 ${lid ? 'border-2 border-saffron-400' : ''}`}

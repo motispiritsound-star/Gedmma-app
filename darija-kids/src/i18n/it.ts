@@ -402,6 +402,18 @@ export const it: Strings = {
      * heeft uitgegeven is dat te weinig, en het eerste wat een mens dan wil is
      * niet een les maar zichzelf: een naam op de kaart.
      */
+    welkomKop: 'Benvenuto su Darijaforkids',
+    welkomDank: 'Hai il corso completo. Da adesso è aperto questo:',
+    welkomLijst: (units: number, woorden: number, letters: number, films: number): string[] => [
+      `Tutte le ${units} unità, dalla prima lettera al contrattare al souk`,
+      `${woorden} parole e frasi, ognuna detta da chi parla darija`,
+      `La scrittura araba: ${letters} lettere, con le loro tre forme`,
+      `${films} brevi filmati dalla storia del Marocco`,
+      'Tutte le storie, e l’esercizio senza fine',
+    ],
+    welkomProef: (dagen: number): string =>
+      `I primi ${dagen} giorni sono gratis. Puoi disdire quando vuoi, e finisce lì.`,
+    welkomStart: 'Continua a imparare',
     welkomTitel: 'Benvenuto nel corso completo',
     welkomUitleg: 'Scrivi qui il tuo nome e scegli un animale. Da ora compariranno sulla tua scheda.',
     leerling: 'Allievo',
