@@ -103,3 +103,45 @@ describe('de hoogte van de lezer', () => {
     expect(bron).toContain('className="min-h-0 flex-1 rounded-2xl')
   })
 })
+
+/**
+ * Dat een betalende klant het boek kan vínden.
+ *
+ * Dit is geen smaakkwestie maar een fout die één keer echt is gebeurd: na het
+ * kopen van een jaarabonnement was het e-boek nergens meer te bereiken. Het
+ * slotje in de bovenbalk toont alleen bij `!unlocked`, en alle andere wegen
+ * naar `/volledig` zitten achter sloten op lessen, woorden en verhalen — die
+ * er voor een betalende klant niet meer zijn. Wat overbleef was Jij →
+ * Aanpassen → helemaal naar beneden → Beheren.
+ *
+ * Deze toets kijkt naar de bron en niet naar een gerenderd scherm, want wat
+ * hier misging was niet een kapotte knop maar een ontbrekende. Verdwijnt de
+ * regel bij een herindeling, dan valt dit om in plaats van dat een klant
+ * erover mailt.
+ */
+describe('het e-boek is te vinden na het betalen', () => {
+  const profiel = readFileSync(new URL('../pages/Profile.tsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n')
+
+  it('de bladzijde Jij leest of het boek van je is, en vanaf wanneer', () => {
+    expect(profiel).toContain('const magBoek = useStore((s) => s.ebook)')
+    expect(profiel).toContain('const boekWacht = useStore((s) => ebookWachtTot(s))')
+  })
+
+  it('en wijst naar het boek zodra het open is', () => {
+    expect(profiel).toContain('to="/boek"')
+    expect(profiel).toContain('t.unlock.boek.open')
+  })
+
+  /** Wacht de proef nog, dan de datum en geen knop — net als op `/volledig`. */
+  it('toont bij het wachten dezelfde tekst met de datum', () => {
+    expect(profiel).toContain('t.unlock.boek.wacht(')
+  })
+
+  /**
+   * Een maandabonnement geeft geen recht op het boek. Dan hoort hier niets te
+   * staan: dit is de bladzijde van het kind, geen plek om iets te verkopen.
+   */
+  it('en staat er niets als er geen recht op is', () => {
+    expect(profiel).toContain('{(magBoek || boekWacht !== null) && (')
+  })
+})

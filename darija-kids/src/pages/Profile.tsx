@@ -8,6 +8,7 @@ import {
   BADGES, kanVriesdagKopen, koopVriesdag, levelOf, MAX_VRIESDAGEN, PRIJS_VRIESDAG,
   AVATARS, progressOfUnit, reeksNu, setState, today, useStore,
 } from '../engine/store'
+import { ebookWachtTot } from '../engine/billing'
 import { aantalDiplomas, nieuweHandtekeningen } from '../engine/diploma'
 import type { Badge } from '../engine/store'
 import { sfx } from '../engine/audio'
@@ -246,6 +247,23 @@ export function Profile() {
    * de dag van betalen, want de eerste drie dagen zijn gratis. "Lid sinds" is
    * dus eerlijk en "betaald op" zou dat niet zijn.
    */
+  /**
+   * Of het e-boek van je is, en zo niet: vanaf wanneer.
+   *
+   * Dit stond alleen op `/volledig`, en daar kwam je na het betalen niet meer.
+   * Het slotje in de bovenbalk verdwijnt zodra je toegang hebt, en alle andere
+   * wegen ernaartoe zitten achter sloten op lessen, woorden en verhalen — die
+   * voor een betalende klant ook weg zijn. Wat overbleef was Jij → Aanpassen →
+   * helemaal naar beneden → Beheren: drie stappen diep in een instellingen-
+   * scherm, en de bladzijde waar je als eerste kijkt wees er niet naartoe.
+   *
+   * Gevonden door zelf een jaarabonnement te kopen en het boek niet terug te
+   * kunnen vinden. Iemand die zestig euro uitgeeft en daarna moet zoeken naar
+   * wat erbij zat, mailt daarover — terecht.
+   */
+  const magBoek = useStore((s) => s.ebook)
+  const boekWacht = useStore((s) => ebookWachtTot(s))
+
   const lid = state.unlocked
   const sinds = state.unlockedAt
     ? new Intl.DateTimeFormat(localeOf(lang), { day: 'numeric', month: 'long' }).format(state.unlockedAt)
@@ -339,6 +357,36 @@ export function Profile() {
           <Link to="/instellingen" className="relative w-full sm:w-auto"><Button variant="secondary" className="w-full">{t.profile.aanpassen}</Button></Link>
         </Card>
       </Kantel>
+
+      {/*
+        Het e-boek, op de plek waar je het zoekt.
+
+        Alleen als er recht op is: wie een maandabonnement heeft krijgt hier
+        niets te zien, want dan is het boek niet van hem en is dit geen plek
+        om iets te verkopen.
+
+        Twee standen, dezelfde als op `/volledig` en op `/boek`. Wacht de
+        proefperiode nog, dan staat er de datum en géén knop — een knop die
+        niet werkt is erger dan geen knop, en zonder de datum leest dat als
+        een storing.
+      */}
+      {(magBoek || boekWacht !== null) && (
+        <Card className="mb-6 flex flex-wrap items-center justify-between gap-4 p-5">
+          <div className="min-w-0 flex-1 basis-56">
+            <h2 className="font-display text-lg font-extrabold">{t.unlock.boek.titel}</h2>
+            <p className="mt-1 text-sm text-[var(--ink-soft)]">
+              {boekWacht !== null
+                ? t.unlock.boek.wacht(new Intl.DateTimeFormat(localeOf(lang), { day: 'numeric', month: 'long' }).format(boekWacht))
+                : t.unlock.boek.vanJou}
+            </p>
+          </div>
+          {magBoek && (
+            <Link to="/boek" onClick={() => sfx.tap()} className="w-full sm:w-auto">
+              <Button className="w-full">{t.unlock.boek.open}</Button>
+            </Link>
+          )}
+        </Card>
+      )}
 
       {/*
         Wie je bent, op de bladzijde waar het staat.
