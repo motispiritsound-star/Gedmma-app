@@ -581,3 +581,44 @@ describe('de winkelteksten', () => {
     })
   }
 })
+
+/**
+ * De omleidingen: wat mensen intikken naar wat er staat.
+ *
+ * Search Console meldde op 7 oktober 404's, terwijl de sitemap klopte — alle
+ * zesenzestig adressen bestonden. Die 404's kwamen dus van adressen die
+ * iemand probeerde en die wij nooit hebben gehad.
+ *
+ * Deze toets kijkt naar de volgorde en niet alleen naar de inhoud, want de
+ * volgorde is hier het hele punt: Cloudflare past de eerste passende regel
+ * toe, en `/boeken/<taal>/sba.webp` zijn de omslagen op de bladzijde waar de
+ * boeken verkocht worden.
+ */
+describe('de omleidingen op de site', () => {
+  const pad = new URL('../../site/_redirects', import.meta.url)
+  const regels = readFileSync(pad, 'utf8').trim().split('\n')
+
+  it('stuurt /nl/… naar het kale domein, want daar staat het Nederlands', () => {
+    expect(regels).toContain('/nl/* /:splat 301')
+  })
+
+  it('en vangt /boeken op, het gewone woord voor /leesboeken', () => {
+    expect(regels).toContain('/boeken /leesboeken 301')
+  })
+
+  /**
+   * De doorlaatregel staat vóór de omleiding. Staat hij erachter, dan hángt
+   * het ervan af of een regel zonder sterretje exact matcht — en als dat
+   * tegenvalt zijn de omslagen weg op de verkooppagina.
+   */
+  it('en laat de omslagen met rust, omdat die regel erboven staat', () => {
+    const door = regels.indexOf('/boeken/* /boeken/:splat 200')
+    const om = regels.indexOf('/boeken /leesboeken 301')
+    expect(door).toBeGreaterThanOrEqual(0)
+    expect(door).toBeLessThan(om)
+  })
+
+  it('en elke regel wijst naar een pad en niet naar een volledig adres', () => {
+    for (const regel of regels) expect(regel.split(' ')[1]).toMatch(/^\//)
+  })
+})

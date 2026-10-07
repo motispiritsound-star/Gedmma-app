@@ -2268,6 +2268,64 @@ Sitemap: ${SITE_URL}/sitemap.xml
  * - De bladzijden zelf staan er niet bij en houden dus het standaardgedrag:
  *   elke keer navragen. Dat hoort ook, want daar staan de prijzen in.
  */
+/**
+ * Adressen die mensen intikken, naar de bladzijde die er werkelijk is.
+ *
+ * Aanleiding: Search Console meldde op 7 oktober dat er bladzijden niet
+ * geïndexeerd worden wegens "Not found (404)". De sitemap is nagemeten en
+ * klopt — alle zesenzestig adressen bestaan — dus die 404's komen van buiten:
+ * adressen die iemand of iets heeft geprobeerd en die wij nooit hebben gehad.
+ *
+ * Twee daarvan zijn geen gok maar een redelijke verwachting:
+ *
+ * `/nl/…` — de site draagt `/fr/`, `/de/`, `/es/`, `/it/` en `/en/` in het
+ * pad, en dan is `/nl/` het patroon afmaken. Dat het Nederlands op de kale
+ * domeinnaam staat weet alleen wie het al weet.
+ *
+ * `/boeken` — het gewone Nederlandse woord. De bladzijde heet `/leesboeken`
+ * om hem te onderscheiden van de prentenboeken, en dat verschil bestaat in
+ * het hoofd van de maker en niet in dat van de bezoeker. Let op: alleen het
+ * kale pad, want `/boeken/<taal>/…` is de map met de omslagen.
+ *
+ * De rest zijn namen die iemand hoort en intikt: de reeksen heten Sba en De
+ * sleutels, niet `/leesboeken/sba`.
+ *
+ * 301 en geen 302: dit zijn geen tijdelijke omleidingen maar een vaste
+ * vertaling van wat mensen typen naar wat er staat. Met 301 stopt Google er
+ * ook mee het oude adres te blijven proberen.
+ *
+ * Wat hier niet in staat is het weglaten van de schuine streep aan het eind
+ * en `www.` ervoor: dat doet Cloudflare zelf al, en een eigen regel ernaast
+ * zou daar alleen mee kunnen gaan botsen.
+ */
+const omleidingen = [
+  ['/nl/*', '/:splat'],
+  /*
+   * Deze twee horen in deze volgorde, en de eerste is er om een gok uit te
+   * sluiten.
+   *
+   * `/boeken/<taal>/sba.webp` zijn de omslagen op de verkooppagina. De regel
+   * eronder moet alleen het kále pad `/boeken` vangen. Dat is vrijwel zeker
+   * ook wat er gebeurt — een regel zonder sterretje matcht exact — maar
+   * "vrijwel zeker" is te weinig als de prijs het verdwijnen van de omslagen
+   * op de bladzijde is waar de boeken verkocht worden.
+   *
+   * Cloudflare past de eerste passende regel toe, en status 200 betekent
+   * "dien dit gewoon op". Met deze regel ervoor kan het kwaad niet gebeuren,
+   * en matcht `/boeken` toch exact, dan doet hij niets.
+   */
+  ['/boeken/*', '/boeken/:splat 200'],
+  ['/boeken', PATHS.nl.books],
+  ...REEKSEN.map((plek) => [`/${plek.slug}`, reeksPad('nl', plek.slug)]),
+  ['/app', '/'],
+  ['/download', '/'],
+]
+
+await writeFile(
+  path.join(OUT, '_redirects'),
+  `${omleidingen.map(([van, naar]) => (naar.endsWith(' 200') ? `${van} ${naar}` : `${van} ${naar} 301`)).join('\n')}\n`,
+)
+
 await writeFile(path.join(OUT, '_headers'), `/fonts/*
   Cache-Control: public, max-age=31536000, immutable
 

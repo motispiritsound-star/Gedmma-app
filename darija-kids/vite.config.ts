@@ -67,6 +67,27 @@ export default defineConfig(({ mode }) => {
     // De worker hoort erbij. Hij staat in een eigen map met een eigen
     // package.json, maar de winkelmelding die hij verwerkt is het stuk waar
     // een vergissing op diefstal lijkt — dat hoort onder dezelfde tests.
-    test: { environment: 'node', include: ['src/**/*.test.ts', 'server/src/**/*.test.ts'] },
+    /*
+     * De toetsen krijgen twintig seconden in plaats van vijf.
+     *
+     * Niet omdat ze traag zijn, maar omdat een deel van ze echt werk doet: een
+     * Node-proces starten, `git ls-files` draaien, honderden bestanden lezen.
+     * Vitest draait honderdzes werkers, elk met zijn eigen opstarttijd, en op
+     * een drukke machine duurt het starten van nóg een proces makkelijk tien
+     * keer zo lang als op een stille.
+     *
+     * Dat heeft drie keer een rode suite opgeleverd waar niets mis was. De
+     * eerste twee keer is de uitvoer weggefilterd en is het afgedaan als
+     * flakiness; de derde keer stond er gewoon:
+     *
+     *     Error: Test timed out in 5000ms.
+     *     106 workers spawned · ~154ms startup each
+     *
+     * Vijf seconden is de standaard van de bibliotheek en niet een keuze die
+     * hier ooit gemaakt is. Twintig is dat wel: ruim genoeg dat drukte op de
+     * machine geen storing meer meldt, en krap genoeg dat een toets die echt
+     * blijft hangen nog steeds omvalt in plaats van de bouw op te houden.
+     */
+    test: { environment: 'node', include: ['src/**/*.test.ts', 'server/src/**/*.test.ts'], testTimeout: 20_000 },
   }
 })
