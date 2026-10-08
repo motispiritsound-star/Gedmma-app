@@ -79,6 +79,35 @@ zit het er al bij, dus wie dat neemt hoeft dit niet apart te kopen.
 | Español | El libro digital | Todas las palabras, letras y gramática. |
 | Italiano | L’ebook | Tutte le parole, lettere e grammatica. |
 
+## Besloten op 8 oktober: drie talen, en dat is af
+
+**Nederlands, Engels (V.K.) en Frans**, op alle drie de aankopen én op de
+abonnementsgroep. Duits, Spaans en Italiaans zijn níét toegevoegd en dat is
+een keuze, geen achterstand — de tabellen hierboven blijven staan voor als het
+ooit alsnog gebeurt.
+
+De redenering: Engels dekt alle 174 landen buiten Nederland, Nederlands en
+Frans dekken de twee grootste groepen in het kanaal. Wat er dan nog bij komt
+is winst en geen voorwaarde, en drie talen die compleet zijn is beter dan zes
+die half af zijn.
+
+**De groepsnaam is in alle talen `Darijaforkids`.** Dat is nagekeken op het
+scherm en niet bedacht: bij Nederlands en Engels stond het al zo. "Volledige
+toegang" is de *referentienaam* van de groep — die staat bovenaan de bladzijde
+en ziet alleen jij. Hier is tegenin geadviseerd en dat was fout; een merknaam
+vertaal je niet.
+
+## Wat een nieuwe localisatie nog niet doet
+
+Een toegevoegde taal staat eerst op **Prepare for Submission** en is dan alleen
+in de console zichtbaar, niet bij een koper. Pas met **Add for Review**
+rechtsboven gaat hij echt mee.
+
+Dat is de stap die je vergeet, want het veld is ingevuld en de bladzijde ziet
+er af uit. Kijk dus bij alle drie de aankopen naar de kolom **Status**: staat
+er bij een taal nog *Prepare for Submission*, dan is het werk gedaan zonder
+het resultaat.
+
 ## Als je maar één taal doet
 
 Doe dan **English**. Dat is de vermelding voor iedereen buiten Nederland, in
