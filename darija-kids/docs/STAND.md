@@ -114,6 +114,71 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+### Waarom Play zo lang duurt — nagekeken 8 oktober
+
+Deze vraag kwam drie keer, dus hier staat het antwoord met de cijfers erbij.
+
+**De klok loopt sinds 3 oktober 16:20.** Dat is de inzending die telt.
+
+**Wat er in die ene inzending zit** — van het Publishing overview, 8 oktober:
+
+| Onderdeel | Wijziging |
+|---|---|
+| Productie | 8 (1.4), volledige uitrol |
+| Productie | 177 landen toevoegen |
+| Productie | rest van de wereld toevoegen |
+| Gesloten test — Alpha | 1.4, volledige uitrol |
+| Gesloten test — Alpha | **Track status: Resume track** |
+| Gesloten test — Alpha | testers via e-maillijst: Intern |
+| Winkelvermeldingen | en-US, de-DE, es-ES, fr-FR … toevoegen |
+
+Negen wijzigingen, en elk is apart te beoordelen. Daar zitten de drie zwaarste
+soorten tussen: een land-uitbreiding naar 177 markten, nieuwe taalvermeldingen,
+en het hervatten van een stilgezette baan. Bij een app die onder handhaving
+staat worden die niet door een robot afgetikt.
+
+**Daar komt de geschiedenis bij.** Submission activity toont zeven inzendingen
+in twaalf dagen: 1, 2, 5 en 6 ingetrokken, 3 en 4 afgewezen, 7 in beoordeling.
+Elke keer dat er iets werd ingestuurd terwijl er al iets liep, ging de vorige
+terug in de rij. Dat was bij 6 → 7 een bewuste keuze — één ronde op 1.4 in
+plaats van twee achter elkaar — maar het telt wel mee in hoe Google deze app
+inschaalt.
+
+**En het is een eerste goedkeuring, geen update.** Dat is de reden dat de
+cijfers die je overal leest ("1 tot 2 dagen") hier niet gelden. Die gaan over
+updates van een app die al gepubliceerd is. Voor een eerste publicatie in een
+gevoelige categorie — en een app voor kinderen is dat, via het Families-beleid
+— zijn doorlooptijden van twee tot drie weken gedocumenteerd.
+
+Eén ding dat meezit: dit is een **Organization account**. De verplichte
+veertien dagen gesloten test gelden alleen voor persoonlijke accounts.
+
+**Wanneer je je zorgen mag maken:** niet vóór maandag 12 oktober. Dat is dag
+negen. Pas dan is contact opnemen via de Play Console redelijk, en dan heb je
+met het Publishing overview meteen het verhaal: één inzending die sinds
+3 oktober loopt, zonder dat er sindsdien iets is aangeraakt.
+
+**Wat je tot die tijd niet doet**, en dit is het enige dat dit nog echt kan
+verpesten: *Remove changes*, een aangepaste bundel, of iets wijzigen onder App
+content. Dat laatste is zelf een wijziging die beoordeeld moet worden. Een
+achtste inzending zet nummer 7 bij dat rijtje "Canceled" en de klok op nul.
+
+**Twee dingen die alarmerend lijken en niets blokkeren.** *App status: Draft*
+betekent dat de app nog nooit is goedgekeurd, niet dat er niets klaarstaat —
+Productie staat Active in 177 landen. En *"Let anyone sign up to test your app
+— 1 of 4 complete"* gaat over een open testbaan, een aanbeveling.
+
+**Eén ding om na te kijken zodra 1.4 erdoor is**, en nu dus nadrukkelijk niet:
+op het Publishing overview staat bij en-US, de-DE én es-ES alle drie *Default
+store listing*. Er kan er maar één de standaard zijn. Dat is óf een
+eigenaardigheid van het label, óf iets dat niet klopt — niet uitgezocht, want
+eraan zitten kost je de lopende beoordeling.
+
+**De les voor 1.5:** stuur kleiner in. Een bundel met alleen de nieuwe versie
+erin wordt sneller beoordeeld dan een bundel waar ook landen, talen en een
+baanstatus in zitten. De landen en de talen staan er na deze ronde al; die
+hoeven nooit meer mee.
+
 ### Play wacht op Google, niet op jou
 
 Nagekeken op het Publishing overview, 4 oktober: **Changes ready to publish is
