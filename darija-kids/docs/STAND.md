@@ -130,12 +130,26 @@ Deze vraag kwam drie keer, dus hier staat het antwoord met de cijfers erbij.
 | Gesloten test — Alpha | 1.4, volledige uitrol |
 | Gesloten test — Alpha | **Track status: Resume track** |
 | Gesloten test — Alpha | testers via e-maillijst: Intern |
-| Winkelvermeldingen | en-US, de-DE, es-ES, fr-FR … toevoegen |
+| Winkelvermeldingen | **zes** talen toevoegen: en-US, de-DE, es-ES, fr-FR, it-IT, nl-NL |
+| App content | **Content Rating — Submit new questionnaire** |
+| App content | Target audience and content bijwerken |
+| App content | Privacy policy URL instellen |
 
-Negen wijzigingen, en elk is apart te beoordelen. Daar zitten de drie zwaarste
-soorten tussen: een land-uitbreiding naar 177 markten, nieuwe taalvermeldingen,
-en het hervatten van een stilgezette baan. Bij een app die onder handhaving
-staat worden die niet door een robot afgetikt.
+**Negentien wijzigingen**, en elk is apart te beoordelen. Hier stond eerst
+"negen": dat was geteld van het Publishing overview, waar de lijst afgekapt in
+beeld staat. Het getal komt van de inzending zelf — Submission activity →
+Submission 7 — en dat is de plek waar je het hoort te lezen.
+
+Daar zitten de zwaarste soorten tussen: een nieuwe
+leeftijdsclassificatie-vragenlijst, een land-uitbreiding naar 177 markten, zes
+nieuwe taalvermeldingen, en het hervatten van een stilgezette baan. Bij een app
+die onder handhaving staat wordt daar niets van door een robot afgetikt.
+
+**Nog een punt om na te kijken zodra 1.4 erdoor is**, en nu dus niet: bij
+Target audience staat *"Target age is 6 - 2147483647"*. Dat getal is de
+grootste waarde die in een 32-bits geheel getal past, dus vermoedelijk is het
+hoe de console "zes jaar en ouder, zonder bovengrens" weergeeft. Niet
+uitgezocht — eraan zitten kost de lopende beoordeling.
 
 **Daar komt de geschiedenis bij.** Submission activity toont zeven inzendingen
 in twaalf dagen: 1, 2, 5 en 6 ingetrokken, 3 en 4 afgewezen, 7 in beoordeling.
