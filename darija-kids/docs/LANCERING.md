@@ -314,6 +314,52 @@ probleem, niet het budget.
 
 ## 11. Meten zonder iets te verzamelen
 
+### Waar je ziet hoe vaak hij gedownload is
+
+De vraag die het vaakst terugkomt, dus hier het antwoord met de verschillen
+erbij — want beide winkels tellen iets anders en noemen het bijna hetzelfde.
+
+**Apple — App Store Connect.** Twee plekken, en ze geven niet hetzelfde getal:
+
+| Waar | Wat het getal is |
+|---|---|
+| *App Analytics* → **First-Time Downloads** | hoeveel **mensen** hem voor het eerst hebben gehaald |
+| *App Analytics* → **Total Downloads** | idem, plus opnieuw downloaden en een tweede toestel |
+| *Sales and Trends* → **Units** | hetzelfde als Total Downloads, maar in de financiële weergave |
+
+Neem **First-Time Downloads** als je wilt weten hoeveel mensen je bereikt. De
+cijfers lopen ongeveer een dag achter en worden per dag bijgewerkt. Je hebt er
+niets voor hoeven aanzetten.
+
+Op je telefoon kan het ook: de app **App Store Connect** in de App Store zelf
+zet dezelfde cijfers op een beginscherm. Dat scheelt inloggen op een laptop.
+
+**Google — Play Console.** Pas te zien zodra de app echt is uitgerold; zolang
+inzending 7 in beoordeling staat, staat hier niets.
+
+| Waar | Wat het getal is |
+|---|---|
+| *Statistics* → **New users acquired** | hoeveel mensen hem voor het eerst installeerden |
+| *Statistics* → **Active devices** | op hoeveel toestellen hij nu staat |
+
+Play telt per **gebruikersaccount** en Apple per **Apple-account**, dus de twee
+getallen zijn niet bij elkaar op te tellen tot "zoveel mensen gebruiken de
+app". Dat is geen afrondingsverschil: wie hem op een iPhone én een iPad haalt,
+is bij Apple één eerste download en twee totale.
+
+**En wat je níét in de winkels ziet:** hoeveel mensen de app daadwerkelijk
+openen, hoe ver ze komen, of ze terugkomen. De app verzamelt niets en stuurt
+niets door — dat is de hele belofte — dus die getallen bestaan nergens. Wat je
+wel hebt is het aantal gestarte proefperiodes en het aantal betalende
+abonnees, en dat zegt meer over of het werkt dan een openingstelling.
+
+Kijk **wekelijks**, niet dagelijks. In de eerste week is het getal klein en
+betekent het niets; het zegt pas iets als je het over vier weken naast elkaar
+legt.
+
+### Per kanaal meten
+
+
 De app verzamelt niets, en dat blijft zo — bij Apple en Google staat nu
 *Data Not Collected*, en dat is ook je verkoopargument. Toch kun je per kanaal
 meten, want dat gebeurt buiten de app:

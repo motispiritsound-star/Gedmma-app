@@ -72,7 +72,31 @@ const WOORDEN = [
   { id: 'darija', voorEind: 1.2 },
 ]
 
-await rm(OUT, { recursive: true, force: true })
+/**
+ * Alleen weghalen wat dit script ook terugzet.
+ *
+ * Hier stond `rm(OUT)`: de hele map site-assets/, in één keer. Dat klopte
+ * toen er niets anders in stond, en sindsdien schrijven vier andere scripts
+ * er in -- `make-omslagen`, `make-deelplaat`, `make-sleutelplaat` en
+ * `make-citaten`. Samen honderdeenentachtig bestanden die in git staan en die
+ * dit script niet terugmaakt. Eén `npm run siteassets` wiste ze dus allemaal,
+ * en omdat de boeken- en sleutelplaten met de hand gemaakt zijn kostte dat
+ * meer dan een herbouw.
+ *
+ * En het viel niet op: de site bouwt gewoon door zonder die platen, alleen
+ * met een lege plek waar een omslag hoorde.
+ *
+ * Dus per taal, en alleen de twee mappen die hieronder weer gevuld worden.
+ * De schermen bovendien alleen als er schermen zijn om neer te zetten: staat
+ * store/screenshots/ er niet (die map is gitignored), dan blijft wat er ligt
+ * liggen in plaats van te verdwijnen.
+ */
+for (const lang of LANGS) {
+  await rm(path.join(OUT, 'film', lang), { recursive: true, force: true })
+  const erZijnSchermen = (await readdir(path.join(ROOT, 'store', 'screenshots', lang, 'iphone')).catch(() => []))
+    .some((f) => f.endsWith('.png'))
+  if (erZijnSchermen) await rm(path.join(OUT, 'shots', lang), { recursive: true, force: true })
+}
 
 let total = 0
 
