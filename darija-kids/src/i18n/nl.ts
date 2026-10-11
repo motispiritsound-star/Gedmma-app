@@ -288,7 +288,7 @@ export const nl = {
   alphabet: {
     titel: 'Het Arabische schrift',
     uitleg:
-      "28 letters plus drie Marokkaanse extra's. Ze veranderen van vorm aan het begin, in het midden en aan het eind van een woord.",
+      "28 letters. Ze veranderen van vorm aan het begin, in het midden en aan het eind van een woord.",
     klinktAls: (klank: string): string => `Klinkt als: ${klank}`,
     slotUitleg: 'De letters uit je eerste lessen kun je horen. De rest staat er alvast — die gaan open met het abonnement.',
     latijn: 'Schrijfwijze in het Latijn',

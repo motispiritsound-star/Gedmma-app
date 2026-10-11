@@ -270,7 +270,7 @@ export const es: Strings = {
   alphabet: {
     titel: 'La escritura árabe',
     uitleg:
-      '28 letras más tres añadidos marroquíes. Cambian de forma al principio, en medio y al final de una palabra.',
+      '28 letras. Cambian de forma al principio, en medio y al final de una palabra.',
     klinktAls: (klank) => `Suena así: ${klank}`,
     slotUitleg: 'Las letras de tus primeras lecciones puedes escucharlas. El resto ya está ahí: se abre con la suscripción.',
     latijn: 'Escritura en letras latinas',

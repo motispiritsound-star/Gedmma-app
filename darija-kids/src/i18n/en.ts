@@ -270,7 +270,7 @@ export const en: Strings = {
   alphabet: {
     titel: 'The Arabic script',
     uitleg:
-      '28 letters plus three Moroccan extras. They change shape at the beginning, in the middle and at the end of a word.',
+      '28 letters. They change shape at the beginning, in the middle and at the end of a word.',
     klinktAls: (klank) => `Sounds like: ${klank}`,
     slotUitleg: 'You can hear the letters from your first lessons. The rest is already there — it opens with the subscription.',
     latijn: 'Written in Latin letters',

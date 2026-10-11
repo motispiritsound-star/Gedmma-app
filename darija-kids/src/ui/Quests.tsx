@@ -84,7 +84,25 @@ export function Quests() {
             animate={{ opacity: [0, 1, 1, 0], y: -40, scale: 1 }}
             transition={{ duration: 1.4, times: [0, 0.15, 0.6, 1] }}
             onAnimationComplete={() => setWon(null)}
-            className="pointer-events-none absolute inset-x-0 top-10 flex justify-center"
+            /**
+             * Onderaan de kaart, niet bovenaan.
+             *
+             * Dit stond op `top-10`: veertig pixels onder de bovenrand, en de
+             * kaart heeft `p-5`. Daar staat de kop. De pil met "+3" verscheen
+             * dus bovenop "Missies van vandaag" en sneed er een woord uit, en
+             * omdat hij van daaraf veertig pixels omhoog zweeft lag hij er de
+             * hele anderhalve seconde overheen.
+             *
+             * In de app duurt dat kort. In de promofilm niet: die fotografeert
+             * een beeld en houdt het twee seconden vast, dus daar stond de pil
+             * bevroren over de kop -- in alle vier de formaten, ook in de
+             * 886x1920 die Apple als app preview beoordeelt. Gevonden op
+             * 11 oktober door elk beeld van de film na te kijken.
+             *
+             * Vanaf de onderkant omhoog zweeft hij over de voortgangsbalken,
+             * waar niets te lezen valt, en nooit meer over een kop.
+             */
+            className="pointer-events-none absolute inset-x-0 bottom-8 flex justify-center"
             role="status"
           >
             <span className="rounded-full bg-saffron-500 px-4 py-1.5 font-display font-extrabold text-night-950 shadow-lg">

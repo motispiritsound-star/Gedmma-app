@@ -270,7 +270,7 @@ export const it: Strings = {
   alphabet: {
     titel: 'La scrittura araba',
     uitleg:
-      '28 lettere più tre aggiunte marocchine. Cambiano forma all’inizio, in mezzo e alla fine di una parola.',
+      '28 lettere. Cambiano forma all’inizio, in mezzo e alla fine di una parola.',
     klinktAls: (klank) => `Suona così: ${klank}`,
     slotUitleg: 'Le lettere delle tue prime lezioni puoi sentirle. Il resto è già lì: si apre con l’abbonamento.',
     latijn: 'Scrittura in lettere latine',

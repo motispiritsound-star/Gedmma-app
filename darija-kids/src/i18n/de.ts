@@ -270,7 +270,7 @@ export const de: Strings = {
   alphabet: {
     titel: 'Die arabische Schrift',
     uitleg:
-      '28 Buchstaben plus drei marokkanische Extras. Sie ändern ihre Form am Anfang, in der Mitte und am Ende eines Wortes.',
+      '28 Buchstaben. Sie ändern ihre Form am Anfang, in der Mitte und am Ende eines Wortes.',
     klinktAls: (klank) => `Klingt wie: ${klank}`,
     slotUitleg: 'Die Buchstaben aus deinen ersten Lektionen kannst du hören. Der Rest steht schon da — er geht mit dem Abo auf.',
     latijn: 'Schreibweise in lateinischen Buchstaben',
