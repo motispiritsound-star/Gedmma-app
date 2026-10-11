@@ -19,11 +19,32 @@
  * de enige die de afwijzing had kunnen tegenhouden.
  */
 import { describe, expect, it } from 'vitest'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { dexNaam, kwijtInDex, pluginklacht, pluginstand, verwachteKlassen } from '../../scripts/lib/plugins.mjs'
 
 const WORTEL = new URL('../../', import.meta.url).pathname
 const lees = (pad: string) => readFileSync(new URL(pad, import.meta.url), 'utf8').replace(/\r\n/g, '\n')
+
+/**
+ * Heeft `cap sync` hier al gedraaid?
+ *
+ * De inschrijvingslijst `android/app/src/main/assets/capacitor.plugins.json`
+ * is een product van die sync en staat in `android/.gitignore`, dus in een
+ * verse kloon bestaat hij niet. De twee helpers lezen hem dan als "geen enkele
+ * plugin ingeschreven" -- wat tijdens een bouw precies de bedoeling is, want
+ * `maak-aab.mjs` komt daar pas na de sync langs, maar in een kloon zonder sync
+ * drie plugins als vermist aanwijst die er gewoon zijn.
+ *
+ * Dat is op 11 oktober gebeurd: de hele testbundel liep rood in een verse
+ * container, met een melding over ontbrekende plugins die er alle drie in
+ * zaten. Een test die iets beweert over een bestand dat er niet hoeft te zijn,
+ * meldt niet wat er mis is -- hij meldt dat er niet gebouwd is. Dus zeggen we
+ * dat ook en slaan die beweringen over, in plaats van ze te verzwakken: zodra
+ * de sync wel gedraaid heeft tellen ze weer volledig mee. Wat zonder sync ook
+ * te controleren valt, blijft onvoorwaardelijk.
+ */
+const gesynct = existsSync(join(WORTEL, 'android', 'app', 'src', 'main', 'assets', 'capacitor.plugins.json'))
 
 const aab = lees('../../scripts/maak-aab.mjs')
 const watzitin = lees('../../scripts/watzitin.mjs')
@@ -42,10 +63,16 @@ describe('welke plugins horen erin', () => {
     expect(verwacht).not.toContain('@capacitor/core')
   })
 
-  it('en in deze werkmap zitten ze er allemaal in', () => {
-    const { ontbreekt, nietGeinstalleerd } = pluginstand(WORTEL, 'android')
-    expect(ontbreekt).toEqual([])
-    expect(nietGeinstalleerd).toEqual([])
+  /**
+   * Deze helft kan altijd: of een pakket in node_modules staat weet je zonder
+   * dat er iets gebouwd is.
+   */
+  it('en in deze werkmap staan ze allemaal in node_modules', () => {
+    expect(pluginstand(WORTEL, 'android').nietGeinstalleerd).toEqual([])
+  })
+
+  it.skipIf(!gesynct)('en na een cap sync zijn ze ook ingeschreven in de bundel', () => {
+    expect(pluginstand(WORTEL, 'android').ontbreekt).toEqual([])
     expect(pluginklacht(WORTEL, 'android')).toBeNull()
   })
 })
@@ -57,7 +84,7 @@ describe('welke klassen horen erin', () => {
     expect(ik?.klasse).toBe('app.darijaforkids.learn.MainActivity')
   })
 
-  it('en elke ingeschreven plugin', () => {
+  it.skipIf(!gesynct)('en elke ingeschreven plugin', () => {
     const klassen = verwachteKlassen(WORTEL).map((k) => k.wat)
     expect(klassen).toContain('@capacitor/haptics')
     expect(klassen).toContain('@capacitor/local-notifications')

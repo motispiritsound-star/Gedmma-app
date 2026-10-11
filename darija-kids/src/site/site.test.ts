@@ -595,14 +595,27 @@ describe('de winkelteksten', () => {
  * boeken verkocht worden.
  */
 describe('de omleidingen op de site', () => {
+  /*
+   * `site/` staat in `.gitignore` en wordt door `npm run site` geschreven. In
+   * een verse kloon is hij er dus niet, en dan hoort deze toets niets te
+   * zeggen in plaats van om te vallen -- zoals de toets op de bladzijden
+   * hierboven ook doet.
+   *
+   * Dit is hier misgegaan: de toets las het bestand meteen bij het opbouwen
+   * van het `describe`-blok, dus viel niet de toets om maar het hele
+   * bestand, en dan verdwijnen ook de 216 toetsen eromheen uit de uitslag.
+   * Gevonden doordat de container opnieuw begon en node_modules en site/
+   * allebei weg waren.
+   */
   const pad = new URL('../../site/_redirects', import.meta.url)
-  const regels = readFileSync(pad, 'utf8').trim().split('\n')
+  const gebouwd = existsSync(pad)
+  const regels = gebouwd ? readFileSync(pad, 'utf8').trim().split('\n') : []
 
-  it('stuurt /nl/… naar het kale domein, want daar staat het Nederlands', () => {
+  it.skipIf(!gebouwd)('stuurt /nl/… naar het kale domein, want daar staat het Nederlands', () => {
     expect(regels).toContain('/nl/* /:splat 301')
   })
 
-  it('en vangt /boeken op, het gewone woord voor /leesboeken', () => {
+  it.skipIf(!gebouwd)('en vangt /boeken op, het gewone woord voor /leesboeken', () => {
     expect(regels).toContain('/boeken /leesboeken 301')
   })
 
@@ -611,14 +624,14 @@ describe('de omleidingen op de site', () => {
    * het ervan af of een regel zonder sterretje exact matcht — en als dat
    * tegenvalt zijn de omslagen weg op de verkooppagina.
    */
-  it('en laat de omslagen met rust, omdat die regel erboven staat', () => {
+  it.skipIf(!gebouwd)('en laat de omslagen met rust, omdat die regel erboven staat', () => {
     const door = regels.indexOf('/boeken/* /boeken/:splat 200')
     const om = regels.indexOf('/boeken /leesboeken 301')
     expect(door).toBeGreaterThanOrEqual(0)
     expect(door).toBeLessThan(om)
   })
 
-  it('en elke regel wijst naar een pad en niet naar een volledig adres', () => {
+  it.skipIf(!gebouwd)('en elke regel wijst naar een pad en niet naar een volledig adres', () => {
     for (const regel of regels) expect(regel.split(' ')[1]).toMatch(/^\//)
   })
 })
