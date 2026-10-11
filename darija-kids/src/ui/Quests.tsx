@@ -44,6 +44,48 @@ export function Quests() {
         {done === QUESTS.length ? t.quests.klaar : t.quests.uitleg}
       </p>
 
+      {/**
+        * De beloningspil, in de ruimte tussen de uitleg en de lijst.
+        *
+        * Hij hing hiervoor `absolute` aan de kaart zelf, eerst op `top-10` en
+        * daarna op `bottom-8`, en allebei was mis. `top-10` is veertig pixels
+        * onder de bovenrand van een kaart met `p-5`: daar staat de kop, dus de
+        * pil sneed "Missies van vandaag" doormidden. `bottom-8` haalde hem
+        * daar weg maar hing hem aan de onderrand van de kaart, en die valt op
+        * een telefoon onder de vouw -- dan zie je een half afgesneden oranje
+        * vlek en verder niets.
+        *
+        * Nu hangt hij niet aan de kaart maar aan deze plek in de stroom: de
+        * lege regel tussen de uitleg en de eerste missie. Die ruimte is er
+        * altijd, waar de kaart ook staat en hoe lang hij ook is, en er valt
+        * niets te lezen. Hij zweeft van daaruit omhoog over de uitleg en
+        * vervaagt -- tekst die een hint is, geen gegeven.
+        *
+        * Dat dit uitmaakt is in de promofilm gevonden: die fotografeert een
+        * beeld en houdt het twee seconden vast, dus wat in de app een flits is
+        * staat daar stil. In alle vier de formaten, de 886x1920 die Apple als
+        * app preview beoordeelt incluis.
+        */}
+      <div className="relative">
+        <AnimatePresence>
+          {won && (
+            <motion.div
+              key={won.id}
+              initial={{ opacity: 0, y: 6, scale: 0.8 }}
+              animate={{ opacity: [0, 1, 1, 0], y: -26, scale: 1 }}
+              transition={{ duration: 1.4, times: [0, 0.15, 0.6, 1] }}
+              onAnimationComplete={() => setWon(null)}
+              className="pointer-events-none absolute inset-x-0 top-1 flex justify-center"
+              role="status"
+            >
+              <span className="rounded-full bg-saffron-500 px-4 py-1.5 font-display font-extrabold text-night-950 shadow-lg">
+                💎 +{won.gems}
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
       <ul className="mt-4 space-y-3">
         {rows.map((row) => (
           <li key={row.id} className="flex items-center gap-3">
@@ -76,41 +118,6 @@ export function Quests() {
         ))}
       </ul>
 
-      <AnimatePresence>
-        {won && (
-          <motion.div
-            key={won.id}
-            initial={{ opacity: 0, y: 8, scale: 0.8 }}
-            animate={{ opacity: [0, 1, 1, 0], y: -40, scale: 1 }}
-            transition={{ duration: 1.4, times: [0, 0.15, 0.6, 1] }}
-            onAnimationComplete={() => setWon(null)}
-            /**
-             * Onderaan de kaart, niet bovenaan.
-             *
-             * Dit stond op `top-10`: veertig pixels onder de bovenrand, en de
-             * kaart heeft `p-5`. Daar staat de kop. De pil met "+3" verscheen
-             * dus bovenop "Missies van vandaag" en sneed er een woord uit, en
-             * omdat hij van daaraf veertig pixels omhoog zweeft lag hij er de
-             * hele anderhalve seconde overheen.
-             *
-             * In de app duurt dat kort. In de promofilm niet: die fotografeert
-             * een beeld en houdt het twee seconden vast, dus daar stond de pil
-             * bevroren over de kop -- in alle vier de formaten, ook in de
-             * 886x1920 die Apple als app preview beoordeelt. Gevonden op
-             * 11 oktober door elk beeld van de film na te kijken.
-             *
-             * Vanaf de onderkant omhoog zweeft hij over de voortgangsbalken,
-             * waar niets te lezen valt, en nooit meer over een kop.
-             */
-            className="pointer-events-none absolute inset-x-0 bottom-8 flex justify-center"
-            role="status"
-          >
-            <span className="rounded-full bg-saffron-500 px-4 py-1.5 font-display font-extrabold text-night-950 shadow-lg">
-              💎 +{won.gems}
-            </span>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </Card>
   )
 }
