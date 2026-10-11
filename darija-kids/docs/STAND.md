@@ -114,6 +114,35 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+### Play, stand zondag 11 oktober
+
+Nog niets. Geen afwijzing, geen vraag, geen goedkeuring — inzending 7 staat
+nog op *In review*, en er is sinds 3 oktober 16:20 niets aangeraakt.
+
+Dat is teleurstellend en het is ook precies wat de tabel hieronder voorspelt.
+Even nageteld, want kalenderdagen geven hier een vertekend beeld: er is op een
+**zaterdag** ingediend, dus de eerste twee dagen hebben nooit meegedaan.
+
+| | |
+|---|---|
+| Ingediend | zaterdag 3 oktober, 16:20 |
+| Werkdagen verstreken | **vijf** — maandag 5 tot en met vrijdag 9 oktober |
+| Vandaag | zondag 11 oktober, een weekend: er wordt niet beoordeeld |
+| Werkdag 6 | **maandag 12 oktober** |
+
+Vijf werkdagen op een eerste goedkeuring met negentien wijzigingen erin is dus
+nog geen afwijking, maar wel het punt waarop vragen redelijk wordt. Daarom
+hoeft er vandaag niets te gebeuren en morgen mág er iets gebeuren.
+
+**Het bericht staat klaar:** `store/lancering/play-support.md` — Engelse tekst,
+klaar om te plakken, met de weg erheen in de console en de werkdagentabel
+eronder. Het vraagt niet om voorrang; het vraagt of er iets vastzit en of er
+iets van jou nodig is. Dat is het enige dat de ondersteuning kan beantwoorden,
+want zij hebben de beoordeling niet gedaan en kunnen hem niet versnellen.
+
+**En verder: niets aanraken.** Zie de laatste alinea van het stuk hieronder.
+Dat is onveranderd en het is het enige dat dit nog echt kan verpesten.
+
 ### Waarom Play zo lang duurt — nagekeken 8 oktober
 
 Deze vraag kwam drie keer, dus hier staat het antwoord met de cijfers erbij.
