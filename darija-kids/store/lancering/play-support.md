@@ -45,9 +45,12 @@ testing track and a new content rating questionnaire. I understand this
 is a larger submission than usual and that a first-time approval takes
 longer.
 
-Thank you,
-Adil Bekkali
+Thank you.
 ```
+
+Er staat met opzet geen naam onder. Je verstuurt dit vanuit je eigen
+Play Console-account, dus Google ziet al wie het vraagt; een ondertekening
+voegt niets toe en zet je naam in een bestand dat in de repository staat.
 
 **Wat er met opzet niet in staat:** geen "dit duurt onredelijk lang", geen
 verwijzing naar beloofde doorlooptijden, geen vraag om voorrang. Je vraagt of
