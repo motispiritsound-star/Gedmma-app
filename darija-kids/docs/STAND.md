@@ -114,6 +114,47 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+### Antwoord van Play-support — 12 oktober: versneld in de rij
+
+Binnen een dag antwoord, en inhoudelijker dan waar op gerekend was. Vier
+dingen staan erin, in volgorde van wat ze waard zijn.
+
+**1. "We have expedited your app to the Google Play Review Team."** Dit is het
+enige dat het ticket echt heeft opgeleverd, en het is geen standaardzin. De
+inzending is naar voren gehaald in de rij. Wat dat in dagen betekent zeggen ze
+niet, en ze beloven ook niets.
+
+**2. "There is currently no action required on your end and the review is
+progressing."** Daarmee is de vraag beantwoord waarvoor het ticket geschreven
+was: er zit niets vast, en er wordt niet op jou gewacht. Dat is precies wat je
+wilde weten en het is een opluchting waard.
+
+**3. "Our app review process typically takes up to 7 days."** Lees dit niet
+als een nieuwe termijn die vandaag begint. Het is hun eigen norm, en die is al
+voorbij: op 12 oktober loopt inzending 7 negen kalenderdagen. Dát is waarom
+er versneld is — het ticket liet zien dat de zaak buiten de eigen norm viel.
+
+**4. "Please refrain from submitting any further versions ... each new
+submission will reset the review turnaround time, as the evaluation period is
+counted from the date of the most recent change."** Zwart op wit wat hier al
+sinds 3 oktober als regel gold. Bewaar die mail: het is de bevestiging dat
+niets-aanraken de juiste keuze was, en het is het antwoord op elke toekomstige
+aandrang om "even iets te verbeteren" terwijl er een beoordeling loopt.
+
+**Wat het niet zegt:** geen datum, geen garantie, en geen enkele aanwijzing
+dat er inhoudelijk iets mis is. Er staat één zinsdeel dat anders kan klinken
+-- *"until the current review is finished and the issue is resolved"* -- maar
+"the issue" is hier de vertraging waarover het ticket ging. Was er een
+probleem met de app gevonden, dan had het in de Console gestaan en niet in een
+bijzin.
+
+**Wat nu verandert aan wat je doet:** alleen de frequentie van kijken. De
+Play Console is nu de plek waar het als eerste zichtbaar wordt, dus daar
+dagelijks even kijken is zinnig geworden in plaats van zenuwachtig. Is er
+vrijdag 16 oktober nog niets, dan gaat er een kort bericht in dezelfde
+supportdraad -- niet een nieuw ticket, want een draad met historie telt
+zwaarder dan een losse vraag.
+
 ### Ticket gestuurd — maandag 12 oktober, werkdag zes
 
 Inzending 7 stond maandagochtend nog steeds op *In review*. Daarmee is het
