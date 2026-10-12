@@ -114,6 +114,38 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+### Ticket gestuurd — maandag 12 oktober, werkdag zes
+
+Inzending 7 stond maandagochtend nog steeds op *In review*. Daarmee is het
+precies de dag geworden die hieronder stond: werkdag zes, het punt waarop
+vragen redelijk is. De tekst uit `store/lancering/play-support.md` is
+verstuurd via Play Console → Help & feedback → Contact support, onderwerp
+App review / Publishing.
+
+**Wat je op een antwoord mag rekenen.** Het eerste bericht terug is bijna
+altijd een standaardtekst binnen één tot twee werkdagen: dat de beoordeling
+loopt, dat doorlooptijden kunnen variëren, en dat je niets hoeft te doen. Dat
+is geen afpoeier maar wel weinig nieuws. Het komt pas ergens op aan als er in
+dat antwoord iets staat over een concreet onderdeel — de leeftijdsclassificatie,
+de doelgroep, het privacybeleid. Lees het dan woord voor woord voordat je iets
+aanraakt, want één wijziging onder App content start de klok opnieuw.
+
+**Wat het ticket wél oplevert, los van het antwoord.** Er ligt nu een
+vastgelegd spoor dat je op 12 oktober om een stand hebt gevraagd zonder de
+inzending te verstoren. Komt er over een week nog niets, dan is dat het
+aanknopingspunt voor een tweede bericht in dezelfde draad — dat telt zwaarder
+dan een nieuw ticket.
+
+**Wat ongewijzigd blijft:** niets aanraken. Geen *Remove changes*, geen nieuwe
+bundel, niets onder App content. Een achtste inzending zet nummer 7 bij het
+rijtje "Canceled" waar er al vier staan, en de klok op nul.
+
+**En Apple hoeft hier niet op te wachten.** 1.4 staat live, de website is
+sinds 11 oktober bij, en `store/lancering/kanaal-apple.md` ligt plakklaar —
+met de Android-regel zonder datum erin en het vervolgbericht eronder voor de
+dag dat Play wel doorkomt. Twee aankondigingen uit één goedkeuring is winst,
+geen verlies.
+
 ### Play, stand zondag 11 oktober
 
 Nog niets. Geen afwijzing, geen vraag, geen goedkeuring — inzending 7 staat
