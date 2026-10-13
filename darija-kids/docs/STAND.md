@@ -114,6 +114,43 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## Hij staat in allebei de winkels — 13 oktober
+
+Gepubliceerd. Op het dashboard: *You have no unpublished changes*, laatste
+productierelease **100%**, telefoons en tablets plus twee andere vormfactoren,
+en een groen vinkje achter `app.darijaforkids.learn`.
+
+| | |
+|---|---|
+| App Store | 1.4 (build 10), live sinds 4 oktober |
+| Google Play | 8 (1.4), live sinds 13 oktober, 177 landen |
+| Website | de Play-knop staat niet meer op *binnenkort* |
+
+Drieentwintig dagen na de eerste inzending bij Play, zeven inzendingen, twee
+afwijzingen en vier eigen intrekkingen verder.
+
+**`STORE.google` staat om.** Dat was de ene regel in `src/site/links.ts`
+waar de hele website op wachtte: `make-site.mjs` leest die leegte en zet
+anders *binnenkort* neer in plaats van een knop. Nageteld in de gebouwde
+site: nul keer "binnenkort", twee keer het Play-adres op de voorpagina.
+
+**Wat nu niet meer waar is in dit bestand.** Alles hierboven over wachten op
+Play, over werkdagen tellen en over niets aanraken, is geschiedenis. Het
+blijft staan omdat de redenering klopte en nog een keer van pas komt -- bij
+1.5 geldt hetzelfde: tijdens een beoordeling niets insturen.
+
+**Wat nog wél openstaat.**
+
+1. Het kanaalbericht. Nu `store/lancering/kanaal.md` -- de versie voor
+   allebei de winkels. `kanaal-apple.md` is een noodvariant geweest voor een
+   situatie die niet meer bestaat.
+2. De twee reparaties van 11 oktober zitten in geen van beide winkels: het
+   lettertal op het alfabetscherm en de beloningspil. Die gaan mee in 1.5.
+3. Nakijken zodra er rust is, en niet eerder: bij Target audience staat
+   *"Target age is 6 - 2147483647"*. Vermoedelijk de weergave van "zes jaar
+   en ouder", maar niet uitgezocht -- en zolang er iets in beoordeling was
+   kostte eraan zitten de hele ronde. Dat bezwaar is nu weg.
+
 ### Goedgekeurd — Publishing overview, 13 oktober
 
 Bevestigd op de plek die telt. Onder **Changes ready to publish** staat een

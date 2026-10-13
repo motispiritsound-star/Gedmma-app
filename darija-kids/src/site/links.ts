@@ -14,7 +14,7 @@ import type { Lang } from '../i18n/languages'
  */
 export const STORE = {
   apple: 'https://apps.apple.com/app/id6813964474',
-  google: '',
+  google: 'https://play.google.com/store/apps/details?id=app.darijaforkids.learn',
 }
 
 /** The application id, the same one android/app/build.gradle carries. */
