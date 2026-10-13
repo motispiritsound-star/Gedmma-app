@@ -536,6 +536,12 @@ export const de: Strings = {
       n === 1 ? 'Eine Unterschrift ist dazugekommen.' : `${n} Unterschriften sind dazugekommen.`,
   },
 
+  beoordeling: {
+    titel: 'Drei Urkunden — darf ich dich um etwas bitten?',
+    uitleg: 'Eine Bewertung im Store hilft anderen Eltern, diese App zu finden. Es dauert eine Minute, und es ist das Einzige, was ich nicht selbst tun kann.',
+    knop: 'Bewertung schreiben',
+    nietNu: 'Lieber nicht',
+  },
   parents: {
     titel: 'Für Eltern und Lehrkräfte',
     uitleg: 'Was diese App macht, was sie bewusst nicht macht, und wie es läuft.',

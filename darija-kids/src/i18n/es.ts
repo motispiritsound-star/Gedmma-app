@@ -534,6 +534,12 @@ export const es: Strings = {
       n === 1 ? 'Ha llegado una firma.' : `Han llegado ${n} firmas.`,
   },
 
+  beoordeling: {
+    titel: 'Tres diplomas: ¿te puedo pedir una cosa?',
+    uitleg: 'Una reseña en la tienda ayuda a otros padres a encontrar esta aplicación. Cuesta un minuto y es lo único que no puedo hacer yo mismo.',
+    knop: 'Escribir una reseña',
+    nietNu: 'Mejor no',
+  },
   parents: {
     titel: 'Para madres, padres y docentes',
     uitleg: 'Qué hace esta aplicación, qué no hace a propósito y cómo va la cosa.',

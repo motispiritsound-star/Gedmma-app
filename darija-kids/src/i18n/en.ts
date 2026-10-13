@@ -534,6 +534,12 @@ export const en: Strings = {
       n === 1 ? 'A signature has come in.' : `${n} signatures have come in.`,
   },
 
+  beoordeling: {
+    titel: 'Three diplomas — may I ask you something?',
+    uitleg: 'A review in the store helps other parents find this app. It takes a minute, and it is the one thing I cannot do myself.',
+    knop: 'Write a review',
+    nietNu: 'Rather not',
+  },
   parents: {
     titel: 'For parents and teachers',
     uitleg: 'What this app does, what it deliberately does not do, and how it is going.',

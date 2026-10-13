@@ -534,6 +534,12 @@ export const it: Strings = {
       n === 1 ? 'È arrivata una firma.' : `Sono arrivate ${n} firme.`,
   },
 
+  beoordeling: {
+    titel: 'Tre diplomi: posso chiederti una cosa?',
+    uitleg: 'Una recensione nello store aiuta altri genitori a trovare questa app. Ci vuole un minuto ed è l’unica cosa che non posso fare da solo.',
+    knop: 'Scrivi una recensione',
+    nietNu: 'Preferisco di no',
+  },
   parents: {
     titel: 'Per genitori e insegnanti',
     uitleg: 'Che cosa fa questa app, che cosa non fa apposta, e come sta andando.',

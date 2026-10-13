@@ -10,6 +10,7 @@ import { useLang, useT } from '../i18n'
 import { winkelnamen } from '../i18n/winkels'
 import { Button, Card, Progress, SectionTitle, Stat } from '../ui/kit'
 import { Ondertekenen } from '../ui/Diploma'
+import { BeoordelingKaart } from '../ui/Beoordeling'
 import { Mascot } from '../ui/Mascot'
 import { OperatorBlock } from '../ui/Operator'
 import { FeedbackButton } from '../ui/Feedback'
@@ -41,6 +42,16 @@ export function Parents() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
       <SectionTitle kop="h1" sub={t.parents.uitleg}>{t.parents.titel}</SectionTitle>
+
+      {/*
+        De vraag om een beoordeling, en hij staat hier bovenaan omdat de kaart
+        zichzelf pas laat zien als er drie diploma's liggen -- precies waar
+        deze bladzijde over gaat. Verder naar beneden zou hij onder de plank
+        staan die er de aanleiding voor is.
+
+        Hij verdwijnt zodra de vraag gesteld is, hoe hij ook beantwoord werd.
+      */}
+      <BeoordelingKaart />
 
       {/*
         De plank met diploma's, bóven de vier tellers.

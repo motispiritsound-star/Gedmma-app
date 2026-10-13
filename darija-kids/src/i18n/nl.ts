@@ -594,6 +594,12 @@ export const nl = {
       n === 1 ? 'Er is een handtekening bijgekomen.' : `Er zijn ${n} handtekeningen bijgekomen.`,
   },
 
+  beoordeling: {
+    titel: 'Drie diploma’s — mag ik iets vragen?',
+    uitleg: 'Een beoordeling in de winkel helpt andere ouders deze app te vinden. Het kost een minuut en het is het enige wat ik niet zelf kan doen.',
+    knop: 'Beoordeling schrijven',
+    nietNu: 'Liever niet',
+  },
   parents: {
     titel: 'Voor ouders en leerkrachten',
     uitleg: 'Wat deze app doet, wat hij bewust niet doet, en hoe het gaat.',

@@ -284,6 +284,19 @@ export interface State {
    * kunnen vinden, en zonder dit is er niets dat het verschil weet.
    */
   diplomaGezien: string[]
+  /**
+   * Wanneer er om een beoordeling gevraagd is, of 0.
+   *
+   * Eén keer, en daarna nooit meer. Een app die blijft vragen krijgt de
+   * beoordeling die daarbij hoort, en dit is bovendien een kinderapp: de
+   * vraag staat op het ouderscherm en niet in het pad van het kind.
+   *
+   * Het is een tijdstip en geen vlag omdat "wanneer" later nog iets kan
+   * betekenen -- bijvoorbeeld opnieuw vragen na een jaar en een hoop nieuwe
+   * lessen -- en een boolean dat niet meer kan worden zonder dat iedereen die
+   * de app al heeft zijn geschiedenis kwijt is.
+   */
+  beoordelingGevraagd: number
   settings: Settings
 }
 
@@ -449,6 +462,7 @@ const initial = (): State => ({
   history: [],
   diplomas: {},
   diplomaGezien: [],
+  beoordelingGevraagd: 0,
   settings: {
     theme: 'system',
     accent: 'saffraan',
@@ -583,6 +597,7 @@ export function hydrate(parsed: Partial<State>): State {
      */
     diplomas: voorwerp(p.diplomas, base.diplomas),
     diplomaGezien: lijst(p.diplomaGezien, base.diplomaGezien),
+    beoordelingGevraagd: getal(p.beoordelingGevraagd, base.beoordelingGevraagd),
     // Een teller die geen getal is wordt NaN zodra er iets bij opgeteld wordt,
     // en NaN komt daarna nooit meer terug naar een getal.
     xp: getal(p.xp, base.xp),

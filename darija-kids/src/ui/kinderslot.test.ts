@@ -44,6 +44,13 @@ const TOEGESTAAN: Record<string, string> = {
    * poort aan", houdt die belofte vast.
    */
   'src/engine/billing.ts': 'wisselCodeIn opent de Play Store; de poort staat bij elke aanroep',
+  /*
+   * Dezelfde opzet als billing.ts hierboven: `openBeoordeling` weet welk
+   * adres bij welke winkel hoort en kan dat alleen daar weten. De poort staat
+   * bij de aanroep, in `ui/Beoordeling.tsx`, en de test "en roept niemand
+   * openBeoordeling zonder poort aan" houdt dat vast.
+   */
+  'src/engine/beoordeling.ts': 'openBeoordeling gaat naar de winkel; de poort staat bij de aanroep',
 }
 
 /**
@@ -108,6 +115,26 @@ describe('de app uit', () => {
     for (const aanroep of aanroepen) {
       expect(aanroep).toMatch(/vraagPoort\(\{ reden: 'uit', doe: \(\) => wisselCodeIn\(/)
     }
+  })
+
+  /**
+   * `Beoordeling.tsx` zet de poort zelf, maar in een andere vorm dan
+   * `Unlock.tsx`: daar heet het `vraagPoort`, hier staat er een `OuderPoort`
+   * in de boom met `poortAl()` ervoor voor wie er net een langs heeft gehad.
+   * Allebei goed, en allebei moeten ze er zijn.
+   */
+  it('en roept niemand openBeoordeling zonder poort aan', () => {
+    const bron = readFileSync('src/ui/Beoordeling.tsx', 'utf8')
+    expect(bron).toContain('<OuderPoort')
+    expect(bron).toContain('reden="uit"')
+    expect(bron).toContain('poortAl()')
+    // En nergens anders in de app, want dan staat er een deur zonder poort.
+    const elders = appBestanden().filter(
+      (pad) => pad !== 'src/engine/beoordeling.ts'
+        && pad !== 'src/ui/Beoordeling.tsx'
+        && /openBeoordeling\(/.test(readFileSync(pad, 'utf8')),
+    )
+    expect(elders).toEqual([])
   })
 
   it('laat op Unlock.tsx geen deur zonder poort staan', () => {
