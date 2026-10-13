@@ -144,12 +144,47 @@ blijft staan omdat de redenering klopte en nog een keer van pas komt -- bij
 1. Het kanaalbericht. Nu `store/lancering/kanaal.md` -- de versie voor
    allebei de winkels. `kanaal-apple.md` is een noodvariant geweest voor een
    situatie die niet meer bestaat.
-2. De twee reparaties van 11 oktober zitten in geen van beide winkels: het
-   lettertal op het alfabetscherm en de beloningspil. Die gaan mee in 1.5.
-3. Nakijken zodra er rust is, en niet eerder: bij Target audience staat
+2. Nakijken zodra er rust is, en niet eerder: bij Target audience staat
    *"Target age is 6 - 2147483647"*. Vermoedelijk de weergave van "zes jaar
    en ouder", maar niet uitgezocht -- en zolang er iets in beoordeling was
    kostte eraan zitten de hele ronde. Dat bezwaar is nu weg.
+
+## Wat er in 1.5 hoort — nagekeken 13 oktober
+
+Hier stond eerst "de twee reparaties van 11 oktober". Dat klopte niet: het
+zijn er zes, en de vier die er bij komen zijn belangrijker dan de twee die er
+al stonden.
+
+**Twee reparaties, al gebouwd en gepusht.** Ze zitten in de code en in geen
+van beide winkels:
+
+| Wat | Waar |
+|---|---|
+| Het alfabetscherm beloofde 31 letters en toont er 28 | `src/i18n/*.ts`, commit `92dcc42` |
+| De beloningspil sneed de kop "Missies van vandaag" doormidden | `src/ui/Quests.tsx`, commit `a55daa3` |
+
+**Vier knoppen die nog niet bestaan, en zonder welke promotie niet kan
+werken.** `docs/LANCERING.md` §12 zet ze er al sinds de eerste versie in en
+noemt ze "wat er in de app moet, en in welke volgorde". Nagekeken in de code
+op 13 oktober: **geen van de vier is gebouwd.** Gezocht op `navigator.share`,
+op een invoerveld voor een code in `Unlock.tsx`, en op elke vorm van een
+beoordelingsverzoek -- nul treffers.
+
+| | Wat | Waarom het niet kan wachten |
+|---|---|---|
+| 1 | **"Ik heb een code"** op het abonnementsscherm | Zonder dit is geen enkele school- of influencercampagne te meten, en een kortingscode per weekendschool is de kern van de route die niet van geluk afhangt. Dit blokkeert marketing het hardst. |
+| 2 | **Deelkaart bij een mijlpaal** -- "Nour kent 100 woorden Darija" met een knop die naar WhatsApp deelt | WhatsApp is het kanaal met veruit de hoogste doorklik in deze gemeenschap. Dit zet dat kanaal aan het werk zonder dat de app iets verzamelt. |
+| 3 | **"Laat het aan oma zien"** op het ouderscherm | Dezelfde deelkaart, andere aanleiding -- en het raakt precies de snaar waar alles om draait. |
+| 4 | **Vraag om een beoordeling**, na het derde checkpoint en niet eerder | Sterren bepalen een groot deel van de installaties. Op dag één zijn het er nul, en dat blijft zo tot je het vraagt. |
+
+**De volgorde.** Eerst 1, want die blokkeert het meest en is het kleinst.
+Dan 4, want sterren beginnen pas te tellen als er een paar staan en dat duurt
+weken. Dan 2 en 3, die horen bij elkaar en delen dezelfde kaart.
+
+**En een waarschuwing die nu zwart op wit van Google komt** (de supportmail
+van 12 oktober): zodra 1.5 wordt ingediend, telt de beoordelingstermijn
+opnieuw vanaf die wijziging. Dus 1.5 gaat in één keer de deur uit, compleet,
+en niet in stukjes.
 
 ### Goedgekeurd — Publishing overview, 13 oktober
 
