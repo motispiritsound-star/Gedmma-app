@@ -114,6 +114,52 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+### Play staat op *Ready to publish* — 13 oktober
+
+Op de beginpagina van de Play Console staat in de kolom **Update status** nu
+*Ready to publish*, waar daar gisteren *In review* stond. De versnelling van
+support is dus binnen een dag doorgekomen.
+
+**Wat dat betekent.** Dit is precies de overgang die hier op 1 oktober al
+beschreven stond: *"Zodra het groen is verschuift het blok naar Changes ready
+to publish en verschijnt er een knop Publish."* Managed publishing staat aan
+(`docs/ACTIES.md`, nagekeken op 2244), dus Google zet een goedgekeurde release
+niet zelf live — hij wacht op jou.
+
+**Waar je het bevestigd ziet, en dat is de enige plek die telt:** Publishing
+overview. Daar hoort nu *Changes ready to publish* te staan met een knop
+**Publish**, en onder *Changes in review* niets meer. Staat daar nog wél iets
+in review, dan is maar een deel van inzending 7 rond en is wachten nog steeds
+het juiste.
+
+**Twee dingen op dat scherm die alarmerend lijken en het niet zijn.**
+*App status: Draft · Internal testing* betekent niet "er is niets goedgekeurd"
+maar "er is nog nooit iets naar productie uitgerold" — dat verschuift pas als
+jij publiceert. En *Installed audience 0* klopt gewoon: er is nog niemand die
+hem heeft.
+
+**De volgorde na Publish, en de derde stap is de stap die het vaakst wordt
+overgeslagen:**
+
+1. **Publish** op Publishing overview.
+2. **Wachten tot de winkelpagina echt bestaat.** Uitrollen duurt enkele uren,
+   soms tot een etmaal. Publiceren is niet hetzelfde als zichtbaar zijn.
+3. **Open het adres zelf, op een Android-toestel:**
+   `https://play.google.com/store/apps/details?id=app.darijaforkids.learn`
+   Een 404 betekent dat hij nog aan het uitrollen is, niet dat er iets stuk is.
+4. **Zeg het hier.** Dan gaat `STORE.google` in `src/site/links.ts` van leeg
+   naar dat adres — dat is één regel, en de knop op de website verandert van
+   *binnenkort* in een werkende Play-knop. Nu al omzetten zou de site naar een
+   pagina laten wijzen die er nog niet is.
+5. **Pas daarna het kanaalbericht.**
+
+**En let op welk kanaalbericht.** Is het Apple-bericht nog niet verstuurd, dan
+is `store/lancering/kanaal.md` nu weer het juiste — dat is de versie voor
+allebei de winkels, en daar is `kanaal-apple.md` een noodvariant van geweest
+voor een situatie die dan niet meer bestaat. Is het Apple-bericht wél al de
+deur uit, dan is het korte vervolgbericht onderaan `kanaal-apple.md` wat je
+stuurt.
+
 ### Antwoord van Play-support — 12 oktober: versneld in de rij
 
 Binnen een dag antwoord, en inhoudelijker dan waar op gerekend was. Vier
