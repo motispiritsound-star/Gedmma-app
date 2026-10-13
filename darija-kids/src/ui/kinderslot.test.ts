@@ -29,6 +29,21 @@ const UITGANGEN = /window\.open|location\.(?:href|assign)|openUrl|Browser\.open|
 const TOEGESTAAN: Record<string, string> = {
   'src/ui/Feedback.tsx': 'de mailknoppen — alle drie de ingangen staan achter useMailPoort()',
   'src/pages/Unlock.tsx': 'het e-boek openen en het abonnement beheren — allebei achter setPoort({ reden: "uit" })',
+  /*
+   * De enige uitgang die zijn eigen poort níét zet, en dat is met opzet.
+   *
+   * `wisselCodeIn` opent op Android de Play Store op het adres waar een code
+   * ingewisseld wordt. Dat is een uitgang, maar hij hoort bij de koopmachine
+   * en niet bij een scherm: Apple doet hetzelfde met een eigen venster in de
+   * app, en welke van de twee het wordt kan alleen `billing.ts` weten.
+   *
+   * De poort staat dus bij de aanroep, in `Unlock.tsx`. Dat is geen gat maar
+   * dezelfde opzet als `manageSubscription()`, die hier al jaren zo staat —
+   * die viel alleen nooit op omdat de plugin het venster opent in plaats van
+   * `window.open`. De test hieronder, "en roept niemand wisselCodeIn zonder
+   * poort aan", houdt die belofte vast.
+   */
+  'src/engine/billing.ts': 'wisselCodeIn opent de Play Store; de poort staat bij elke aanroep',
 }
 
 /**
@@ -74,6 +89,27 @@ describe('de app uit', () => {
     expect(bron).toContain('<OuderPoort open={p.poort} reden="uit"')
   })
 
+  /**
+   * `billing.ts` staat op de lijst hierboven omdat het de enige plek is die
+   * weet welke winkel welk venster opent. Die uitzondering is alleen te
+   * verdedigen zolang elke aanroep de poort meebrengt, dus dat wordt hier
+   * nagekeken en niet aangenomen.
+   */
+  it('en roept niemand wisselCodeIn zonder poort aan', () => {
+    const aanroepen: string[] = []
+    for (const pad of appBestanden()) {
+      if (pad === 'src/engine/billing.ts') continue
+      const bron = readFileSync(pad, 'utf8')
+      for (const regel of bron.split('\n')) {
+        if (regel.includes('wisselCodeIn(')) aanroepen.push(`${pad}: ${regel.trim()}`)
+      }
+    }
+    expect(aanroepen.length, 'nergens aangeroepen is ook verdacht').toBeGreaterThan(0)
+    for (const aanroep of aanroepen) {
+      expect(aanroep).toMatch(/vraagPoort\(\{ reden: 'uit', doe: \(\) => wisselCodeIn\(/)
+    }
+  })
+
   it('laat op Unlock.tsx geen deur zonder poort staan', () => {
     const bron = readFileSync('src/pages/Unlock.tsx', 'utf8')
     /*
@@ -88,7 +124,15 @@ describe('de app uit', () => {
      * De poort is er voor de app uit gaan en voor geld uitgeven. Lezen is
      * geen van beide.
      */
-    expect(bron.match(/vraagPoort\(\{ reden:/g) ?? []).toHaveLength(3)
+    /*
+     * Het waren er drie en het zijn er vijf. Erbij: "ik heb een code", twee
+     * keer, omdat de winkels het verschillend doen — Apple opent zijn eigen
+     * venster, Google vraagt hier om de code en gaat naar de Play Store. Dat
+     * zijn twee knoppen in de bron, ook al ziet een kind er maar één.
+     *
+     * Allebei gaan ze de app uit en allebei staan ze achter reden "uit".
+     */
+    expect(bron.match(/vraagPoort\(\{ reden:/g) ?? []).toHaveLength(5)
     // En niets zet de poort nog rechtstreeks: dat zou hem bij elke tik
     // terugbrengen, ook als er net een volwassene langs is geweest.
     expect(bron).not.toMatch(/\bsetPoort\(\{ reden:/)

@@ -857,6 +857,14 @@ export const it: Strings = {
     herstelHint: 'Dispositivo nuovo o app reinstallata? Recupera qui il tuo abbonamento: non costa niente.',
     beheer: 'Gestisci l’abbonamento',
     beheerHint: (winkel) => `La disdetta si fa dal tuo account ${winkel}. Questo pulsante ti ci porta subito.`,
+    code: {
+      titel: 'Ho un codice',
+      uitleg: 'Un codice della scuola, della tua moschea o di qualcuno che condivide l’app? Riscattalo qui.',
+      knop: 'Riscatta il codice',
+      veld: 'Il tuo codice',
+      appleHint: 'L’App Store ti chiede il codice e lo applica subito al tuo account.',
+      googleHint: 'Questo apre il Play Store, dove il tuo codice è già pronto.',
+    },
     alleenInApp: (prijs, jaar, winkel) =>
       `L’abbonamento si sottoscrive nell’app presa ${winkel} (${prijs} ${jaar ? 'all’anno' : 'al mese'}). Su questo sito le prime unità restano gratis.`,
     /** Als de app wél in een winkel staat maar die niet opstart. */

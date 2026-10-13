@@ -857,6 +857,14 @@ export const es: Strings = {
     herstelHint: '¿Dispositivo nuevo o aplicación reinstalada? Recupera aquí tu suscripción: no cuesta nada.',
     beheer: 'Gestionar la suscripción',
     beheerHint: (winkel) => `La cancelación se hace en tu cuenta de ${winkel}. Este botón te lleva allí directamente.`,
+    code: {
+      titel: 'Tengo un código',
+      uitleg: '¿Un código del colegio, de tu mezquita o de alguien que comparte la aplicación? Canjéalo aquí.',
+      knop: 'Canjear el código',
+      veld: 'Tu código',
+      appleHint: 'La App Store te pide el código y lo aplica directamente a tu cuenta.',
+      googleHint: 'Esto abre la Play Store, donde tu código ya está listo.',
+    },
     alleenInApp: (prijs, jaar, winkel) =>
       `La suscripción se contrata en la aplicación de ${winkel} (${prijs} ${jaar ? 'al año' : 'al mes'}). En esta web las primeras unidades siguen siendo gratis.`,
     /** Als de app wél in een winkel staat maar die niet opstart. */

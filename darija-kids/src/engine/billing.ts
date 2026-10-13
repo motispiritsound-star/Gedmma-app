@@ -172,6 +172,11 @@ interface CdvStore {
   update?: () => Promise<unknown>
   restorePurchases: () => Promise<unknown>
   manageSubscriptions: () => Promise<unknown> | void
+  /**
+   * De laag onder de winkel, per platform. Alleen die van Apple kan een code
+   * inwisselen; zie `wisselCodeIn`.
+   */
+  getAdapter?: (platform: string) => { presentCodeRedemptionSheet?: () => Promise<unknown> } | undefined
   error: (cb: (e: { message?: string }) => void) => void
 }
 interface CdvPurchase {
@@ -747,4 +752,62 @@ export async function restorePurchases(): Promise<void> {
  */
 export function manageSubscription(): void {
   void plugin()?.store.manageSubscriptions()
+}
+
+/* ------------------------------------------------------------- een code */
+
+/**
+ * Of er op dit toestel een code in te wisselen valt.
+ *
+ * Alleen in de twee winkel-apps. Op het web verkoopt deze app niets, dus daar
+ * is er ook niets om een code op toe te passen.
+ */
+export const codeMogelijk = (): boolean => billingAvailable()
+
+/**
+ * Een kortingscode inwisselen -- door de winkel, niet door ons.
+ *
+ * Dit is de knop waar elke schoolactie en elke influencer op staat of valt:
+ * zonder een plek om een code in te voeren is er geen manier om te zien welke
+ * weekendschool vijftig gezinnen opleverde en welke nul. `docs/LANCERING.md`
+ * zet hem daarom bovenaan de lijst van wat er in de app moet.
+ *
+ * Wat hij **niet** doet is codes bijhouden. Dat zou een server vragen, een
+ * eigen administratie en een manier om fraude tegen te houden -- en het is
+ * allemaal al gebouwd, twee keer, door Apple en Google. Apple noemt ze *offer
+ * codes*, Google *promo codes*; je maakt ze aan in de console, per stuk of
+ * per duizend, en de winkel rekent zelf uit of er recht op bestaat.
+ *
+ * De twee winkels doen het alleen niet op dezelfde manier, en dat verschil
+ * kun je niet gladstrijken:
+ *
+ * - **Apple** heeft er een eigen venster voor in de app zelf
+ *   (`presentCodeRedemptionSheet`). Daarin typt de koper zijn code, en de app
+ *   ziet daarna gewoon een nieuwe aankoop binnenkomen via `approved`. Wij
+ *   hoeven dus geen invoerveld te bouwen en we horen het vanzelf.
+ * - **Google** heeft dat venster niet. Daar gaat het via de Play Store-app,
+ *   op `play.google.com/redeem`, en de code mag in de link mee. Daarom vraagt
+ *   dit scherm op Android wél om de code: dan hoeft de koper hem niet
+ *   onthouden en overtypen in een andere app.
+ *
+ * Het openen gebeurt met `window.open(..., '_blank')`, en dat werkt hier juist
+ * wél -- zie de aantekening in `pages/Unlock.tsx` bij het e-boek, waar
+ * dezelfde aanroep een probleem wás omdat een bestand uit de app-bundel niet
+ * door de telefoon te bereiken is. Een adres op het web is dat wel.
+ */
+export function wisselCodeIn(code?: string): void {
+  const api = plugin()
+  if (!api) return
+
+  const apple = api.store.getAdapter?.(api.Platform.APPLE_APPSTORE)
+  if (apple?.presentCodeRedemptionSheet) {
+    void apple.presentCodeRedemptionSheet()
+    return
+  }
+
+  const schoon = (code ?? '').trim()
+  const naar = schoon
+    ? `https://play.google.com/redeem?code=${encodeURIComponent(schoon)}`
+    : 'https://play.google.com/redeem'
+  window.open(naar, '_blank')
 }

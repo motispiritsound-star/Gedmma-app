@@ -859,6 +859,14 @@ export const de: Strings = {
     herstelHint: 'Neues Gerät oder App neu installiert? Hol dein Abo hier zurück — das kostet nichts.',
     beheer: 'Abo verwalten',
     beheerHint: (winkel) => `Gekündigt wird über dein Konto ${winkel}. Dieser Knopf bringt dich direkt dorthin.`,
+    code: {
+      titel: 'Ich habe einen Code',
+      uitleg: 'Ein Code von der Schule, aus deiner Moschee oder von jemandem, der die App teilt? Hier einlösen.',
+      knop: 'Code einlösen',
+      veld: 'Dein Code',
+      appleHint: 'Der App Store fragt dich nach dem Code und schreibt ihn direkt deinem Konto gut.',
+      googleHint: 'Das öffnet den Play Store, wo dein Code schon bereitliegt.',
+    },
     alleenInApp: (prijs, jaar, winkel) =>
       `Abgeschlossen wird das Abo in der App aus ${winkel} (${prijs} ${jaar ? 'pro Jahr' : 'pro Monat'}). Auf dieser Website bleiben die ersten Einheiten kostenlos.`,
     /** Als de app wél in een winkel staat maar die niet opstart. */

@@ -857,6 +857,14 @@ export const fr: Strings = {
     herstelHint: 'Nouvel appareil, ou application réinstallée ? Restaure ton abonnement ici — c\'est gratuit.',
     beheer: "Gérer l'abonnement",
     beheerHint: (winkel) => `La résiliation se fait dans ton compte ${winkel}. Ce bouton t’y emmène directement.`,
+    code: {
+      titel: 'J’ai un code',
+      uitleg: 'Un code de l’école, de ta mosquée ou de quelqu’un qui partage l’application ? Utilise-le ici.',
+      knop: 'Utiliser le code',
+      veld: 'Ton code',
+      appleHint: 'L’App Store te demande le code et l’applique directement à ton compte.',
+      googleHint: 'Cela ouvre le Play Store, où ton code est déjà prêt.',
+    },
     alleenInApp: (prijs, jaar, winkel) =>
       `L'abonnement se souscrit dans l'application de ${winkel} (${prijs} ${jaar ? 'par an' : 'par mois'}). Sur ce site, les premières unités restent gratuites.`,
     /** Als de app wél in een winkel staat maar die niet opstart. */

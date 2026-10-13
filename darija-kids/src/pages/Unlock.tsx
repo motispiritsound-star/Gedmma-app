@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link, useNavigate } from 'react-router-dom'
 import {
-  btwInbegrepen, buyEbook, EBOOK, ebookKlaar, ebookWachtTot, FREE_LESSONS,
-  manageSubscription, PLANS, planOf,
+  btwInbegrepen, buyEbook, codeMogelijk, EBOOK, ebookKlaar, ebookWachtTot, FREE_LESSONS,
+  manageSubscription, PLANS, planOf, wisselCodeIn,
   restorePurchases, subscribe, TRIAL_DAYS, useBilling, YEAR_FULL_PRICE, YEAR_SAVING, type PlanId,
 } from '../engine/billing'
 import { gezinsdeling, platform, winkelVan } from '../engine/platform'
@@ -68,6 +68,8 @@ export function Unlock() {
   }
   // A year up front is the offer, so it is what the screen opens on.
   const [plan, setPlan] = useState<PlanId>('jaar')
+  /** Wat iemand in het codeveld typt. Alleen op Android; zie de kaart hieronder. */
+  const [code, setCode] = useState('')
 
   /** The price the store quotes, in the buyer's currency; otherwise our own. */
   const priceOf = (id: PlanId) => billing.prices[id] ?? planOf(id).list
@@ -371,6 +373,66 @@ export function Unlock() {
               <Button variant="secondary" disabled={billing.busy} onClick={() => void restorePurchases()}>
                 {t.unlock.herstel}
               </Button>
+            </Card>
+          )}
+
+          {/*
+            "Ik heb een code".
+
+            Hier staat of valt elke schoolactie op: een weekendschool krijgt
+            een eigen code, en zonder deze kaart is er geen plek om hem in te
+            voeren en geen manier om te zien welke school iets opleverde.
+
+            Twee vormen, omdat de winkels het verschillend doen. Apple opent
+            zijn eigen venster en vraagt daar zelf om de code -- dan is een
+            invoerveld hier dubbelop en bovendien misleidend, want wat je hier
+            typt gaat niet mee. Google heeft dat venster niet, dus daar vraagt
+            deze kaart wél om de code en gaat hij mee in de link naar de Play
+            Store; anders moet iemand hem onthouden en in een andere app
+            overtypen.
+
+            De ouderpoort zit ertussen, net als bij "abonnement beheren": dit
+            gaat de app uit, en dat is precies waar die poort voor is.
+          */}
+          {codeMogelijk() && (
+            <Card className="mt-4 p-5">
+              <p className="font-display font-extrabold">{t.unlock.code.titel}</p>
+              <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.unlock.code.uitleg}</p>
+              {platform() === 'android' ? (
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <label className="min-w-0 grow basis-48">
+                    <span className="sr-only">{t.unlock.code.veld}</span>
+                    <input
+                      type="text"
+                      inputMode="text"
+                      autoCapitalize="characters"
+                      autoComplete="off"
+                      spellCheck={false}
+                      value={code}
+                      onChange={(e) => setCode(e.target.value)}
+                      placeholder={t.unlock.code.veld}
+                      className="w-full rounded-2xl border border-[var(--rand)] bg-[var(--surface)] px-4 py-3 font-display tracking-wider"
+                    />
+                  </label>
+                  <Button
+                    variant="secondary"
+                    onClick={() => { sfx.tap(); vraagPoort({ reden: 'uit', doe: () => wisselCodeIn(code) }) }}
+                  >
+                    {t.unlock.code.knop}
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  variant="secondary"
+                  className="mt-4"
+                  onClick={() => { sfx.tap(); vraagPoort({ reden: 'uit', doe: () => wisselCodeIn() }) }}
+                >
+                  {t.unlock.code.knop}
+                </Button>
+              )}
+              <p className="mt-3 text-xs text-[var(--ink-soft)]">
+                {platform() === 'android' ? t.unlock.code.googleHint : t.unlock.code.appleHint}
+              </p>
             </Card>
           )}
         </>

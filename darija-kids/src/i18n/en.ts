@@ -857,6 +857,14 @@ export const en: Strings = {
     herstelHint: 'New device, or reinstalled the app? Bring your subscription back here — it costs nothing.',
     beheer: 'Manage subscription',
     beheerHint: (winkel) => `You cancel from your ${winkel} account. This button takes you straight there.`,
+    code: {
+      titel: 'I have a code',
+      uitleg: 'A code from school, from your mosque, or from somebody sharing the app? Redeem it here.',
+      knop: 'Redeem code',
+      veld: 'Your code',
+      appleHint: 'The App Store asks you for the code and puts it straight on your account.',
+      googleHint: 'This opens the Play Store, where your code is ready and waiting.',
+    },
     alleenInApp: (prijs, jaar, winkel) =>
       `Subscribing happens in the app from ${winkel} (${prijs} ${jaar ? 'a year' : 'a month'}). On this website the first units stay free.`,
     /** Als de app wél in een winkel staat maar die niet opstart. */

@@ -925,6 +925,14 @@ export const nl = {
     herstelHint: 'Nieuw toestel, of de app opnieuw geïnstalleerd? Zet je abonnement hier terug — dat kost niets.',
     beheer: 'Abonnement beheren',
     beheerHint: (winkel: string): string => `Opzeggen doe je ${winkel}. Deze knop brengt je er meteen heen.`,
+    code: {
+      titel: 'Ik heb een code',
+      uitleg: 'Een code van school, van je moskee of van iemand die de app deelt? Wissel hem hier in.',
+      knop: 'Code inwisselen',
+      veld: 'Je code',
+      appleHint: 'De App Store vraagt je om de code en zet hem meteen op je account.',
+      googleHint: 'Dit opent de Play Store, waar je code klaarstaat.',
+    },
     alleenInApp: (prijs: string, jaar: boolean, winkel: string): string =>
       `Een abonnement afsluiten kan in de app uit ${winkel} (${prijs} ${jaar ? 'per jaar' : 'per maand'}). Op deze website blijven de eerste units gewoon gratis.`,
     /** Als de app wél in een winkel staat maar die niet opstart. */
