@@ -114,6 +114,26 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+### Goedgekeurd — Publishing overview, 13 oktober
+
+Bevestigd op de plek die telt. Onder **Changes ready to publish** staat een
+knop **Publish 19 changes**, met daarin *Production 8 (1.4) — Start full
+rollout* en *Add 177 countries / regions*.
+
+**Negentien.** Dat is precies het getal dat op 8 oktober uit Submission
+activity → Submission 7 is geteld, en het is de controle die ertoe doet: er
+is niets achtergebleven onder *Changes in review*. De hele inzending is rond,
+inclusief de leeftijdsclassificatie en de zes winkelvermeldingen.
+
+Elf dagen na indienen, één dag na de versnelling door support.
+
+**De knop ernaast is de gevaarlijke.** *Remove changes* staat links van
+*Publish 19 changes* en gooit alle negentien weg — dan begint alles opnieuw.
+Dat is de enige manier waarop dit nu nog mis kan gaan.
+
+De banner over *Geo-blocking regulation* is algemene EU-voorlichting en heeft
+niets met deze app te maken; die mag weg met *Dismiss*.
+
 ### Play staat op *Ready to publish* — 13 oktober
 
 Op de beginpagina van de Play Console staat in de kolom **Update status** nu
