@@ -594,6 +594,18 @@ export const nl = {
       n === 1 ? 'Er is een handtekening bijgekomen.' : `Er zijn ${n} handtekeningen bijgekomen.`,
   },
 
+  delen: {
+    mijlpaalTitel: (n: number): string => `${n} woorden!`,
+    mijlpaalUitleg: 'Dat is een mijlpaal. Laat het even zien aan iemand die er blij van wordt.',
+    omaTitel: 'Laat het aan oma zien',
+    omaUitleg: 'Eén appje met hoe ver je kind is. Dat is ook precies hoe andere ouders deze app vinden.',
+    knop: 'Delen via WhatsApp',
+    nietNu: 'Liever niet',
+    bericht: (naam: string, n: number): string =>
+      `${naam} kent al ${n} woorden Darija \u{1F1F2}\u{1F1E6}\n\nWij leren het met Darijaforkids, twee minuten per dag.\ndarijaforkids.eu`,
+    berichtZonderNaam: (n: number): string =>
+      `Mijn kind kent al ${n} woorden Darija \u{1F1F2}\u{1F1E6}\n\nWij leren het met Darijaforkids, twee minuten per dag.\ndarijaforkids.eu`,
+  },
   beoordeling: {
     titel: 'Drie diploma’s — mag ik iets vragen?',
     uitleg: 'Een beoordeling in de winkel helpt andere ouders deze app te vinden. Het kost een minuut en het is het enige wat ik niet zelf kan doen.',

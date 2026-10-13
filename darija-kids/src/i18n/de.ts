@@ -536,6 +536,18 @@ export const de: Strings = {
       n === 1 ? 'Eine Unterschrift ist dazugekommen.' : `${n} Unterschriften sind dazugekommen.`,
   },
 
+  delen: {
+    mijlpaalTitel: (n) => `${n} Wörter!`,
+    mijlpaalUitleg: 'Das ist ein Meilenstein. Zeig ihn jemandem, der sich darüber freut.',
+    omaTitel: 'Zeig es Oma',
+    omaUitleg: 'Eine Nachricht mit dem Fortschritt deines Kindes. Genau so finden andere Eltern diese App.',
+    knop: 'Über WhatsApp teilen',
+    nietNu: 'Lieber nicht',
+    bericht: (naam, n) =>
+      `${naam} kann schon ${n} Wörter Darija \u{1F1F2}\u{1F1E6}\n\nWir lernen es mit Darijaforkids, zwei Minuten am Tag.\ndarijaforkids.eu`,
+    berichtZonderNaam: (n) =>
+      `Mein Kind kann schon ${n} Wörter Darija \u{1F1F2}\u{1F1E6}\n\nWir lernen es mit Darijaforkids, zwei Minuten am Tag.\ndarijaforkids.eu`,
+  },
   beoordeling: {
     titel: 'Drei Urkunden — darf ich dich um etwas bitten?',
     uitleg: 'Eine Bewertung im Store hilft anderen Eltern, diese App zu finden. Es dauert eine Minute, und es ist das Einzige, was ich nicht selbst tun kann.',

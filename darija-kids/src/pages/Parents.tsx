@@ -11,6 +11,7 @@ import { winkelnamen } from '../i18n/winkels'
 import { Button, Card, Progress, SectionTitle, Stat } from '../ui/kit'
 import { Ondertekenen } from '../ui/Diploma'
 import { BeoordelingKaart } from '../ui/Beoordeling'
+import { OmaKaart } from '../ui/Delen'
 import { Mascot } from '../ui/Mascot'
 import { OperatorBlock } from '../ui/Operator'
 import { FeedbackButton } from '../ui/Feedback'
@@ -52,6 +53,13 @@ export function Parents() {
         Hij verdwijnt zodra de vraag gesteld is, hoe hij ook beantwoord werd.
       */}
       <BeoordelingKaart />
+
+      {/*
+        "Laat het aan oma zien" -- hetzelfde bericht als bij een mijlpaal,
+        maar zonder mijlpaal: hier mag het altijd, want dit is het scherm waar
+        de ouder toch al staat te kijken hoe ver zijn kind is.
+      */}
+      <OmaKaart />
 
       {/*
         De plank met diploma's, bóven de vier tellers.

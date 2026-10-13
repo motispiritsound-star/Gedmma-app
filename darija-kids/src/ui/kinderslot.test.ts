@@ -51,6 +51,13 @@ const TOEGESTAAN: Record<string, string> = {
    * openBeoordeling zonder poort aan" houdt dat vast.
    */
   'src/engine/beoordeling.ts': 'openBeoordeling gaat naar de winkel; de poort staat bij de aanroep',
+  /*
+   * Derde van dezelfde soort. `deelNaarWhatsApp` opent `wa.me` met de tekst
+   * erin -- een gewoon adres, zodat er geen deelplugin bij hoeft. De poort
+   * staat in `ui/Delen.tsx`, bij allebei de kaarten, en de test hieronder
+   * kijkt na dat niemand anders die functie aanroept.
+   */
+  'src/engine/delen.ts': 'deelNaarWhatsApp opent wa.me; de poort staat bij de aanroep',
 }
 
 /**
@@ -133,6 +140,21 @@ describe('de app uit', () => {
       (pad) => pad !== 'src/engine/beoordeling.ts'
         && pad !== 'src/ui/Beoordeling.tsx'
         && /openBeoordeling\(/.test(readFileSync(pad, 'utf8')),
+    )
+    expect(elders).toEqual([])
+  })
+
+  it('en roept niemand deelNaarWhatsApp zonder poort aan', () => {
+    const bron = readFileSync('src/ui/Delen.tsx', 'utf8')
+    expect(bron).toContain('<OuderPoort')
+    expect(bron).toContain('reden="uit"')
+    expect(bron).toContain('poortAl()')
+    // Twee kaarten, dus twee poorten -- een mijlpaal en "laat het aan oma zien".
+    expect(bron.match(/<OuderPoort/g) ?? []).toHaveLength(2)
+    const elders = appBestanden().filter(
+      (pad) => pad !== 'src/engine/delen.ts'
+        && pad !== 'src/ui/Delen.tsx'
+        && /deelNaarWhatsApp\(/.test(readFileSync(pad, 'utf8')),
     )
     expect(elders).toEqual([])
   })

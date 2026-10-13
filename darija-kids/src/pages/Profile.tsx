@@ -15,6 +15,7 @@ import type { Badge } from '../engine/store'
 import { sfx } from '../engine/audio'
 import { Button, Card, Progress, SectionTitle, Stat } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
+import { MijlpaalKaart } from '../ui/Delen'
 import { Khatim } from '../ui/Khatim'
 import { Medaillon, Plaat } from '../ui/Motief'
 import { useRustig } from '../ui/rustig'
@@ -314,6 +315,16 @@ export function Profile() {
         Hij komt via `?welkom=1`, dus wie de bladzijde later opnieuw opent
         heeft hem niet meer.
       */}
+      {/*
+        De deelkaart bij een mijlpaal, bovenaan omdat een mijlpaal nieuws is.
+
+        Hij laat zichzelf alleen zien bij vijfentwintig, vijftig, honderd,
+        tweehonderd en alle woorden, en daarna niet meer voor diezelfde
+        mijlpaal -- zie `engine/delen.ts`. Op de meeste dagen staat hier dus
+        niets, en dat hoort zo.
+      */}
+      <MijlpaalKaart />
+
       {welkom && (
         <Card className="mb-6 border-2 border-saffron-400 p-5" style={{ boxShadow: 'var(--schaduw-hoog)' }}>
           <p className="flex items-center gap-2 font-display text-xl font-extrabold">

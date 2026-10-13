@@ -534,6 +534,18 @@ export const es: Strings = {
       n === 1 ? 'Ha llegado una firma.' : `Han llegado ${n} firmas.`,
   },
 
+  delen: {
+    mijlpaalTitel: (n) => `¡${n} palabras!`,
+    mijlpaalUitleg: 'Eso es un hito. Enséñaselo a alguien a quien le vaya a alegrar el día.',
+    omaTitel: 'Enséñaselo a la abuela',
+    omaUitleg: 'Un mensaje con lo que lleva aprendido tu hijo. Y es exactamente así como otros padres encuentran esta aplicación.',
+    knop: 'Compartir por WhatsApp',
+    nietNu: 'Mejor no',
+    bericht: (naam, n) =>
+      `${naam} ya sabe ${n} palabras en dariya \u{1F1F2}\u{1F1E6}\n\nLo aprendemos con Darijaforkids, dos minutos al día.\ndarijaforkids.eu`,
+    berichtZonderNaam: (n) =>
+      `Mi hijo ya sabe ${n} palabras en dariya \u{1F1F2}\u{1F1E6}\n\nLo aprendemos con Darijaforkids, dos minutos al día.\ndarijaforkids.eu`,
+  },
   beoordeling: {
     titel: 'Tres diplomas: ¿te puedo pedir una cosa?',
     uitleg: 'Una reseña en la tienda ayuda a otros padres a encontrar esta aplicación. Cuesta un minuto y es lo único que no puedo hacer yo mismo.',

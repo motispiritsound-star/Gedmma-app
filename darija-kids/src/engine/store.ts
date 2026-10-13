@@ -297,6 +297,14 @@ export interface State {
    * de app al heeft zijn geschiedenis kwijt is.
    */
   beoordelingGevraagd: number
+  /**
+   * De hoogste mijlpaal waarvan de deelkaart al getoond is.
+   *
+   * Eén kaart per mijlpaal: wie hem wegklikt krijgt hem bij de volgende weer,
+   * en dat is geen zeuren maar een nieuw feit — tussen vijfentwintig en
+   * vijftig woorden zitten weken.
+   */
+  mijlpaalGedeeld: number
   settings: Settings
 }
 
@@ -463,6 +471,7 @@ const initial = (): State => ({
   diplomas: {},
   diplomaGezien: [],
   beoordelingGevraagd: 0,
+  mijlpaalGedeeld: 0,
   settings: {
     theme: 'system',
     accent: 'saffraan',
@@ -598,6 +607,7 @@ export function hydrate(parsed: Partial<State>): State {
     diplomas: voorwerp(p.diplomas, base.diplomas),
     diplomaGezien: lijst(p.diplomaGezien, base.diplomaGezien),
     beoordelingGevraagd: getal(p.beoordelingGevraagd, base.beoordelingGevraagd),
+    mijlpaalGedeeld: getal(p.mijlpaalGedeeld, base.mijlpaalGedeeld),
     // Een teller die geen getal is wordt NaN zodra er iets bij opgeteld wordt,
     // en NaN komt daarna nooit meer terug naar een getal.
     xp: getal(p.xp, base.xp),

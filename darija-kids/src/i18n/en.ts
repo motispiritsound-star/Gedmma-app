@@ -534,6 +534,18 @@ export const en: Strings = {
       n === 1 ? 'A signature has come in.' : `${n} signatures have come in.`,
   },
 
+  delen: {
+    mijlpaalTitel: (n) => `${n} words!`,
+    mijlpaalUitleg: 'That is a milestone. Show it to somebody it will make happy.',
+    omaTitel: 'Show it to grandma',
+    omaUitleg: 'One message with how far your child has come. It is also exactly how other parents find this app.',
+    knop: 'Share on WhatsApp',
+    nietNu: 'Rather not',
+    bericht: (naam, n) =>
+      `${naam} already knows ${n} words of Darija \u{1F1F2}\u{1F1E6}\n\nWe learn it with Darijaforkids, two minutes a day.\ndarijaforkids.eu`,
+    berichtZonderNaam: (n) =>
+      `My child already knows ${n} words of Darija \u{1F1F2}\u{1F1E6}\n\nWe learn it with Darijaforkids, two minutes a day.\ndarijaforkids.eu`,
+  },
   beoordeling: {
     titel: 'Three diplomas — may I ask you something?',
     uitleg: 'A review in the store helps other parents find this app. It takes a minute, and it is the one thing I cannot do myself.',
