@@ -35,9 +35,16 @@ const arg = (naam, terug = '') => {
   const i = args.indexOf(`--${naam}`)
   return i >= 0 && args[i + 1] ? args[i + 1] : terug
 }
-/** Alle waarden van een vlag die vaker mag voorkomen. */
+/**
+ * Alle waarden van een vlag die vaker mag voorkomen.
+ *
+ * `!== undefined` en niet "is waar": een lege `--regel ""` is geen vergissing
+ * maar een witregel, en die heb je nodig zodra er een opsomming onder een
+ * openingszin staat. Met een waarheidstest verdween hij, en dan plakt de lijst
+ * tegen de zin erboven.
+ */
 const alle = (naam) =>
-  args.flatMap((a, i) => (a === `--${naam}` && args[i + 1] ? [args[i + 1]] : []))
+  args.flatMap((a, i) => (a === `--${naam}` && args[i + 1] !== undefined ? [args[i + 1]] : []))
 
 const kop = arg('kop', 'Wist je dat')
 const groot = arg('groot')
@@ -116,7 +123,7 @@ const html = `<!doctype html>
 </svg>
 <div class="kop">${esc(kop)}</div>
 ${groot ? `<div class="groot">${esc(groot)}</div>` : ''}
-<div class="regels">${regels.map((r) => `<p>${esc(r)}</p>`).join('')}</div>
+<div class="regels">${regels.map((r) => `<p>${r ? esc(r) : '&nbsp;'}</p>`).join('')}</div>
 ${voet ? `<div class="voet">${esc(voet)}</div>` : ''}
 <div class="merk">
   <svg width="38" height="38" viewBox="0 0 100 100"><path d="${STER}" fill="none" stroke="${SAFFRAAN}" stroke-width="7" stroke-linejoin="round"/></svg>
