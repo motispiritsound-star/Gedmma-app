@@ -59,6 +59,7 @@ const CITATEN = [
   { deel: 12, hoofdstuk: 1, zin: 'Itto was vijftien en haar vader gaf les in een kamer met zeven kinderen en geen ramen.' },
   { deel: 11, hoofdstuk: 1, zin: 'Brahim was veertien en hij schreef brieven over die hij niet begreep.' },
   { deel: 2, hoofdstuk: 1, zin: 'Ayyur was twaalf en hij was goed in twee dingen: paarden en wachten.' },
+  { deel: 2, hoofdstuk: 2, zin: 'Hij zag Tariq voor het eerst op een dinsdag, bij de paarden, en hij wist een halve minuut lang niet wie hij voor zich had.' },
 ]
 
 /**
