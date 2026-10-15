@@ -114,6 +114,43 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## De eerste cijfers — 15 oktober
+
+Twee dagen na de lancering in allebei de winkels, van het Apple-overzicht:
+
+| | 13 oktober | 14 oktober | erbij |
+|---|---|---|---|
+| Vertoningen | 365 | 437 | +72 |
+| Productpaginabezoeken | 85 | 101 | +16 |
+| Eerste downloads | 49 | 60 | +11 |
+| Opbrengst | $48 | $48 | 0 |
+
+**Alles aan de bovenkant groeit met ongeveer een vijfde in een dag.** Dat is
+wat posten doet, en het is de eerste keer dat die lijn beweegt sinds de app
+in juli zichtbaar werd.
+
+**Twee cijfers die hier niet verward mogen worden.** Apple's eigen
+*Conversion Rate* staat op 20% en dat is **vertoningen → downloads**. Het
+getal dat hier eerder is genoemd -- bijna zestig procent -- is
+**paginabezoek → download** (60 van 101). Allebei waar, allebei goed, en ze
+meten iets anders. Wie ze door elkaar haalt, noemt op enig moment een
+percentage dat drie keer te hoog is.
+
+**De opbrengst staat stil en dat hoort.** De proefperiode is drie dagen, dus
+wie op 13 of 14 oktober binnenkwam zit er nog in. De eerste afrekening van
+deze golf valt rond 16 of 17 oktober. Niets uit deze week zegt al iets over
+of de nieuwe downloads betalen.
+
+**En PAYING USERS staat nog steeds op een streep.** Dat is geen nul: Apple
+verbergt kleine aantallen. De $48 is het bewijs dat er betaald is -- dat
+bedrag kan niet bestaan zonder iemand die het heeft overgemaakt.
+
+**Wat er nog nagekeken moet worden:** of deze getallen een dagtotaal zijn of
+een doorlopende stand. De opbrengst is op allebei de schermen exact $48, en
+dat is onwaarschijnlijk voor twee losse dagen -- het ziet er dus naar uit dat
+het lopende totalen zijn. Eén keer de datumkiezer op een langer bereik zetten
+geeft het antwoord.
+
 ## Hij staat in allebei de winkels — 13 oktober
 
 Gepubliceerd. Op het dashboard: *You have no unpublished changes*, laatste
