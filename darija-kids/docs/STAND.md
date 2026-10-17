@@ -114,6 +114,50 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## 16 oktober: één betalend plan, en een percentage dat daalt zonder dat er iets misgaat
+
+| | 13 okt | 14 okt | 16 okt |
+|---|---|---|---|
+| Vertoningen | 365 | 437 | **508** |
+| Productpaginabezoeken | 85 | 101 | **119** |
+| Eerste downloads | 49 | 60 | **74** |
+| In-app aankopen | 4 | 4 | **5** |
+| Opbrengst | $48 | $48 | $48 |
+
+**Paid Plans: 1. Active Plans: 2.** Daarmee is de vraag beantwoord die sinds
+13 oktober openstond: er is één écht betalend abonnement, en daarnaast één
+actief plan dat nog in zijn proefperiode zit. De streep bij *Paying Users* was
+inderdaad een verborgen klein getal en geen nul.
+
+**En dan het getal dat alarmerend lijkt.** *Day 7 download to paid* ging van
+**9,09% naar 5,88%**. Dat ziet eruit als een halvering en het is er geen:
+
+| | Breuk | Percentage |
+|---|---|---|
+| 13 oktober | 1 van 11 | 9,09% |
+| 16 oktober | 1 van 17 | 5,88% |
+
+Exact dezelfde teller. Wat er veranderde is de noemer: er kwamen zes
+downloads bij in dat cohort en de ene betaler werd daarmee een kleiner
+aandeel. **Bij n=1 is dit percentage geen conversiecijfer maar ruis** -- het
+springt van 9 naar 6 naar 4 zonder dat er iemand afhaakt. Pas vanaf een stuk
+of tien betalers begint het iets te betekenen.
+
+Dezelfde voorzichtigheid geldt voor de in-app aankopen: die gingen van vier
+naar vijf terwijl de opbrengst op $48 bleef. Een aankoop zonder opbrengst is
+een gestarte proefperiode -- die telt als transactie en levert nul euro op tot
+de proef afloopt.
+
+**Wat wél hard is:** de bovenkant groeit gestaag met ongeveer zeven downloads
+per dag, en dat is sinds de app in juli zichtbaar werd de eerste keer dat die
+lijn beweegt. Vier dagen posten leverde 143 vertoningen en 25 downloads op.
+
+**Wat de volgende vraag wordt, en nu nog niet te beantwoorden is:** van 74
+downloads zijn er twee bij een abonnement uitgekomen. Of dat betekent dat
+mensen de betaalmuur niet halen of dat ze hem halen en nee zeggen, is van
+buiten niet te zien -- de app meet niets. De vier gratis lessen duren langer
+dan de meeste van deze downloads oud zijn, dus dit cijfer is nog niet rijp.
+
 ## De eerste cijfers — 15 oktober
 
 Twee dagen na de lancering in allebei de winkels, van het Apple-overzicht:
