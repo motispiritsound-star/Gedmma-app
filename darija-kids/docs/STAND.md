@@ -114,6 +114,55 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## 17 oktober: twee meldingen, en waarom het geen pushbericht is
+
+De vraag was: *wordt er een bericht gestuurd met "begin nu met de volledige
+versie"?* Nagekeken in de code: **nee, en dat kon ook niet.** De app gebruikt
+`@capacitor/local-notifications` en niets anders. Er is geen server, geen
+token, niets dat naar buiten gaat — dat is ook precies waarom de
+privacyverklaring in beide winkels *Data Not Collected* mag zeggen. Een
+pushbericht zou daar een server bij zetten, en die verklaring moeten
+herschrijven.
+
+Wat er wél stond: één wekker per dag, *"Yallah, even oefenen"*, uit tot een
+ouder hem in Instellingen aanzet. In de praktijk dus bij vrijwel niemand aan,
+want Instellingen is twee tikken en veertien regels diep.
+
+Daar zijn vandaag twee dingen bij gekomen, allebei zonder server:
+
+| | Wat | Waar |
+|---|---|---|
+| 1 | Het welkomstscherm biedt die dagelijkse wekker nu zelf aan, op de laatste stap, naast de prijs — het enige moment waarop de ouder zeker meekijkt | `src/ui/Welcome.tsx` |
+| 2 | Eén eenmalig seintje als de vier gratis lessen gedaan zijn, de volgende ochtend om tien uur | `src/engine/herinnering.ts` |
+
+Die twee horen bij elkaar en niet los. Het seintje uit 2 **vraagt zelf geen
+toestemming** — een systeemvenster op het moment dat het slot in beeld komt is
+een verkooppraatje met een knop erin. Het gaat alleen als de toestemming er al
+is, en de enige manier waarop die er komt is 1. Zonder het welkomstscherm
+bestaat het seintje alleen op papier.
+
+Drie dingen die het seintje met opzet niet doet, en die in
+`src/engine/seintje.test.ts` vastliggen omdat je ze in de code makkelijk
+wegpoetst:
+
+- **Het vraagt geen toestemming.** Alleen `checkPermissions`, nooit
+  `requestPermissions`.
+- **Het verkoopt niets.** Er staat *"De vier gratis lessen zijn gedaan / Wat
+  erna komt staat klaar in de app."* Geen prijs, geen "nu". Apple noemt
+  reclame per melding in richtlijn 4.5.4 met zoveel woorden, en dit is
+  bovendien een kinderapp.
+- **Het komt één keer.** `gratisOpGemeld` in de staat houdt bij dat het
+  geweest is, en een gratis les mag zo vaak opnieuw als een kind wil.
+
+En het is weg zodra er betaald is: `grant()` in `billing.ts` zegt de melding af,
+want *"de gratis lessen zijn gedaan"* tegen iemand die net een abonnement nam
+is op zijn best verwarrend. Dat is de enige plek waar de toegang opengaat, dus
+de enige plek waar dat kan.
+
+Hiermee staat 1.5 op acht punten. Nog niet ingediend — zie de waarschuwing van
+Google verderop: zodra 1.5 de deur uit gaat, telt de beoordelingstermijn
+opnieuw.
+
 ## 16 oktober: één betalend plan, en een percentage dat daalt zonder dat er iets misgaat
 
 | | 13 okt | 14 okt | 16 okt |

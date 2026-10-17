@@ -376,7 +376,7 @@ afleiding.
 
 ## 12. Wat er in de app moet, en in welke volgorde
 
-Marketing brengt mensen binnen; deze vier knoppen bepalen of ze betalen.
+Marketing brengt mensen binnen; deze knoppen bepalen of ze betalen.
 
 1. **"Ik heb een code"** op het abonnementsscherm — zonder dit geen enkele
    influencer- of schoolcampagne. Eerst bouwen.
@@ -389,6 +389,13 @@ Marketing brengt mensen binnen; deze vier knoppen bepalen of ze betalen.
 4. **Vraag om een beoordeling** na het derde checkpoint, niet eerder. Sterren
    in de winkel bepalen de helft van je installaties, en op dag één heb je er
    nul.
+5. **De dagelijkse wekker aanbieden in het welkomstscherm**, en één eenmalig
+   seintje als de vier gratis lessen gedaan zijn. Dit is geen pushbericht en
+   wordt het ook niet: het toestel zet een wekker, er gaat niets naar een
+   server, en de privacyverklaring blijft *Data Not Collected*. Het seintje
+   vraagt zelf geen toestemming en verkoopt niets — daarom hoort de wekker in
+   het welkomstscherm, want zonder dat ja bestaat het seintje alleen op papier.
+   Zie `src/engine/herinnering.ts` en `src/engine/seintje.test.ts`.
 
 ## 13. Negentig dagen
 

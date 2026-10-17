@@ -683,6 +683,10 @@ export const fr: Strings = {
     herinneringTijd: 'À quelle heure',
     herinneringTitel: 'Yallah, on s’entraîne',
     herinneringBody: 'Cinq minutes de darija et ta série reste en vie.',
+    /* De tekst van het eenmalige seintje uit herinnering.ts. Hij zegt wat er
+       gebeurd is en verkoopt niets -- zie de uitleg daar. */
+    seintjeTitel: 'Les quatre leçons gratuites sont terminées',
+    seintjeBody: 'La suite vous attend dans l’application.',
     film: 'Petit film après la leçon',
     filmHint: 'Un court dessin animé de Fnek quand tu termines une leçon.',
     voorlezen: 'Lecture à voix haute',
@@ -982,6 +986,8 @@ export const fr: Strings = {
     schriftKeuze: { arabisch: 'Écriture arabe', klanken: 'Les sons dans notre alphabet', allebei: 'Les deux' },
     kleurTitel: 'Quelle allure ?',
     kleurBody: 'Choisis une couleur, et clair ou sombre. Tu peux changer quand tu veux.',
+    seintje: 'Un petit rappel chaque jour ?',
+    seintjeHint: 'L’appareil met un réveil à l’heure que vous choisissez. Rien ne sort de l’appareil, et vous pouvez le désactiver à tout moment.',
     knop: 'Yallah, on commence',
   },
 

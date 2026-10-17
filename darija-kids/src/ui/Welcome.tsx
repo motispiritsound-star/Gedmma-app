@@ -3,8 +3,9 @@ import { motion } from 'framer-motion'
 import { LANGS, useT, type Lang } from '../i18n'
 import { sfx } from '../engine/audio'
 import { FREE_LESSONS, planOf, TRIAL_DAYS } from '../engine/billing'
+import { kanHerinneren, zetHerinnering } from '../engine/herinnering'
 import { ACCENTEN, ACCENTKLEUR, AVATARS, setSetting, setState, useStore } from '../engine/store'
-import { Button, Progress, Sheet } from './kit'
+import { Button, Progress, Sheet, Toggle } from './kit'
 import { Khatim } from './Khatim'
 import { Mascot } from './Mascot'
 import { ZWEEF } from './zweef'
@@ -30,9 +31,10 @@ import { useRustig } from './rustig'
  * houdt wat hij al koos. Alleen `langPicked` gaat aan het eind om: dat is de
  * vlag die dit scherm sluit, en hij hoort pas om als iemand echt klaar is.
  *
- * De prijs blijft op de laatste stap staan. Een ouder hoort te weten wat de
- * app kost voordat het eerste lesje begint, niet op het moment dat het pad
- * tegen een slot aan loopt.
+ * Op die laatste stap staan ook de twee dingen die voor de ouder zijn en niet
+ * voor het kind: de vraag of er elke dag een seintje mag komen, en de prijs.
+ * Een ouder hoort te weten wat de app kost voordat het eerste lesje begint,
+ * niet op het moment dat het pad tegen een slot aan loopt.
  */
 export function Welcome() {
   const t = useT()
@@ -44,6 +46,8 @@ export function Welcome() {
   const theme = useStore((s) => s.settings.theme)
   const schrift = useStore((s) => s.settings.showScript)
   const schriftTranslit = useStore((s) => s.settings.showTranslit)
+  const herinnering = useStore((s) => s.settings.herinnering)
+  const herinneringTijd = useStore((s) => s.settings.herinneringTijd)
   /**
    * De rustige stand, uit de instellingen.
    *
@@ -85,6 +89,9 @@ export function Welcome() {
   const veer = kalm
     ? ({ duration: 0 } as const)
     : ({ type: 'spring', stiffness: 180, damping: 24 } as const)
+
+  /* Dezelfde twee regels als in Instellingen: het is dezelfde wekker. */
+  const meldtekst = { titel: t.settings.herinneringTitel, body: t.settings.herinneringBody }
 
   const verder = () => { sfx.nav(); setHeen(1); setStap((n) => n + 1) }
   const terug = () => { sfx.tap(); setHeen(-1); setStap((n) => n - 1) }
@@ -472,6 +479,56 @@ export function Welcome() {
                 </button>
               ))}
             </div>
+
+            {/*
+              De herinnering, hier en niet alleen in Instellingen.
+
+              Hij staat uit tot iemand hem aanzet, en dat iemand moet hem dan
+              eerst vinden: Instellingen is twee tikken en een lijst van
+              veertien regels verderop. Dus stond hij in de praktijk bij
+              vrijwel niemand aan -- en dan is dit de enige app op het toestel
+              die nooit zelf iets van zich laat horen, terwijl een reeks die je
+              vergeet geen reeks is.
+
+              Hier is het één vraag, op het enige moment dat de ouder zeker
+              meekijkt. Overslaan kost niets: wie hem laat staan houdt precies
+              wat hij nu heeft.
+
+              En hij hangt aan `kanHerinneren()`, want een browser kan geen
+              wekker zetten die afgaat als hij dicht is. Op het web valt deze
+              vraag weg en blijft de stap wat hij was.
+            */}
+            {kanHerinneren() && (
+              <div className="mt-5 rounded-2xl border-2 border-[var(--line)] bg-[var(--surface-raised)] p-4 text-start">
+                <p className="font-display font-extrabold">{t.welcome.seintje}</p>
+                <p className="mt-1 text-xs text-[var(--ink-soft)]">{t.welcome.seintjeHint}</p>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <input
+                    type="time"
+                    value={herinneringTijd}
+                    aria-label={t.settings.herinneringTijd}
+                    onChange={(e) => {
+                      setSetting('herinneringTijd', e.target.value)
+                      /* Staat hij al aan, dan verzet de nieuwe tijd de wekker
+                         meteen -- anders gaat hij nog op de oude af. */
+                      if (herinnering) void zetHerinnering(true, e.target.value, meldtekst)
+                    }}
+                    className="rounded-xl border-2 border-[var(--line)] bg-[var(--surface)] px-3 py-1.5 font-display font-extrabold"
+                  />
+                  <Toggle
+                    on={herinnering}
+                    label={t.settings.herinnering}
+                    onChange={(aan) => {
+                      /* Pas aanzetten als het toestel ja zegt, net als in
+                         Instellingen: een schakelaar die aan staat terwijl er
+                         niets gebeurt is erger dan geen schakelaar. */
+                      void zetHerinnering(aan, herinneringTijd, meldtekst)
+                        .then((gelukt) => setSetting('herinnering', aan && gelukt))
+                    }}
+                  />
+                </div>
+              </div>
+            )}
 
             {/*
               De prijs blijft staan -- een ouder hoort te weten wat de app kost

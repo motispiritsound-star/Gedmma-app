@@ -86,8 +86,15 @@ describe('de instellingen', () => {
   it('geeft de schakelaars een knop van 44 om een baantje van 32', () => {
     // Het baantje hoort 32 te blijven: een schakelaar van 44 hoog is log.
     // Wat groeit is de knop eromheen, en die zie je niet.
-    expect(set).toContain('className="flex h-11 w-14 shrink-0 items-center"')
-    expect(set).toMatch(/block h-8 w-14 rounded-full border-2/)
+    //
+    // De schakelaar zelf staat in kit.tsx sinds het welkomstscherm er ook een
+    // heeft; Instellingen hoort hem daar te halen en er geen eigen te bouwen.
+    const kit = bron('./kit.tsx')
+    expect(kit).toContain('className="flex h-11 w-14 shrink-0 items-center"')
+    expect(kit).toMatch(/block h-8 w-14 rounded-full border-2/)
+    expect(set).toMatch(/import \{[^}]*\bToggle\b[^}]*\} from '\.\.\/ui\/kit'/)
+    expect(set, 'een tweede schakelaar is een tweede schakelaar')
+      .not.toContain('function Toggle(')
   })
 
   it('geeft de taalkeuze en het dagdoel dezelfde ondergrens', () => {

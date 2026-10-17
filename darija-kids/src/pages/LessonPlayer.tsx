@@ -6,9 +6,10 @@ import { cardForCheckpoint, type HistoryCard } from '../content/history'
 import { buildRound } from '../engine/exercises'
 import {
   awardBadges, checkpointsDone, collectHistory, completeLesson, getState, goalMet, heartsNow,
-  isMijlpaal, knownIds, gratisDeelOp, lessonBehindPaywall, levelOf, markTipSeen, nextLesson, useStore,
-  xpToday, type Badge,
+  isMijlpaal, knownIds, gratisDeelOp, lessonBehindPaywall, levelOf, markTipSeen, nextLesson, setState,
+  useStore, xpToday, type Badge,
 } from '../engine/store'
+import { seintjeGratisOp } from '../engine/herinnering'
 import { reikDiplomasUit } from '../engine/diploma'
 import { TRIAL_DAYS } from '../engine/billing'
 import { sfx } from '../engine/audio'
@@ -197,6 +198,23 @@ function LesScherm({ lessonId }: { lessonId: string }) {
      */
     setDiplomas(reikDiplomasUit())
     setResult(r)
+    /*
+     * Het seintje voor de ouder, als dit de vierde gratis les was.
+     *
+     * Hier en niet in `completeLesson`: de staat hoort geen meldingen te
+     * zetten, en `gratisDeelOp` is pas waar ná `completeLesson`. Zie
+     * herinnering.ts voor wat die melding wel en niet doet -- hij vraagt geen
+     * toestemming en verkoopt niets, dus wie geen meldingen aan heeft merkt
+     * hier niets van.
+     *
+     * `gratisOpGemeld` meteen wegzetten en niet pas als het gelukt is: lukt
+     * het niet, dan is er niets om morgen nog eens te proberen, en een gratis
+     * les mag zo vaak opnieuw als een kind wil.
+     */
+    if (gratisDeelOp(now) && !now.gratisOpGemeld) {
+      setState({ gratisOpGemeld: Date.now() })
+      void seintjeGratisOp({ titel: t.settings.seintjeTitel, body: t.settings.seintjeBody })
+    }
     // The film carries its own music, so the flourish waits until after it.
     if (lesson.kind === 'toets') {
       // The card is earned by passing the checkpoint, not by watching it, so

@@ -15,7 +15,7 @@ import { LIST_PRICE, TRIAL_DAYS } from '../engine/billing'
 import { gezinsdeling } from '../engine/platform'
 import { LANGS, localeOf, useT, type Lang } from '../i18n'
 import { useVoices } from '../ui/useVoices'
-import { Button, Card, SectionTitle, Sheet } from '../ui/kit'
+import { Button, Card, SectionTitle, Sheet, Toggle } from '../ui/kit'
 import { kanTrillen } from '../engine/trilling'
 import { kanHerinneren, zetHerinnering } from '../engine/herinnering'
 import { FeedbackButton } from '../ui/Feedback'
@@ -32,30 +32,6 @@ function Row({ title, hint, children }: { title: string; hint?: React.ReactNode;
       </div>
       {children && <div className="ms-auto max-w-full">{children}</div>}
     </div>
-  )
-}
-
-function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) => void; label: string }) {
-  return (
-    <button
-      role="switch"
-      aria-checked={on}
-      aria-label={label}
-      onClick={() => { sfx.toggle(!on); onChange(!on) }}
-      // De knop is 44 hoog, het baantje erin blijft 32.
-      //
-      // Zo hoort een schakelaar eruit te zien én aan te voelen: iOS doet het
-      // net zo, want een baantje van 44 pixels is log en een raakvlak van 32 is
-      // te klein. Er staan er acht onder elkaar in deze lijst; mis je er een,
-      // dan zet je de verkeerde instelling om en merk je dat pas later.
-      className="flex h-11 w-14 shrink-0 items-center"
-    >
-      <span
-        className={`block h-8 w-14 rounded-full border-2 p-0.5 transition ${on ? 'border-mint-600 bg-mint-500' : 'border-[var(--line)] bg-[var(--surface-sunken)]'}`}
-      >
-        <span className={`block h-6 w-6 rounded-full bg-white shadow transition ${on ? 'translate-x-6' : ''}`} />
-      </span>
-    </button>
   )
 }
 

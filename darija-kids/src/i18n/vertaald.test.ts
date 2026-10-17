@@ -10,7 +10,7 @@
  * staat in vijf andere talen in de winkel; één Nederlandse zin op een scherm
  * dat hij opent is genoeg voor "incomplete localization".
  *
- * Gemeten: 684 teksten per taal, en nul die nog gelijk zijn aan het
+ * Gemeten: 809 teksten per taal, en nul die nog gelijk zijn aan het
  * Nederlands.
  */
 import { describe, expect, it } from 'vitest'

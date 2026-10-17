@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react'
+import { wisSeintjeGratisOp } from './herinnering'
 import { FREE_LESSONS, getState, setState } from './store'
 
 /**
@@ -197,6 +198,15 @@ export const isSubscribed = (): boolean => getState().unlocked
 function grant(): void {
   if (getState().unlocked) return
   setState({ unlocked: true, unlockedAt: Date.now() })
+  /*
+   * En de wekker voor "de vier gratis lessen zijn gedaan" eraf.
+   *
+   * Die staat misschien voor morgenochtend gepland, en dat was waar toen hij
+   * gezet werd. Nu niet meer: er is betaald, en een melding over het einde van
+   * het gratis deel is dan op zijn best verwarrend. Dit is de enige plek waar
+   * de toegang opengaat, dus de enige plek waar dat kan.
+   */
+  void wisSeintjeGratisOp()
 }
 
 /**

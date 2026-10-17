@@ -683,6 +683,10 @@ export const it: Strings = {
     herinneringTijd: 'A che ora',
     herinneringTitel: 'Yallah, esercitiamoci',
     herinneringBody: 'Cinque minuti di darija tengono viva la tua serie.',
+    /* De tekst van het eenmalige seintje uit herinnering.ts. Hij zegt wat er
+       gebeurd is en verkoopt niets -- zie de uitleg daar. */
+    seintjeTitel: 'Le quattro lezioni gratuite sono fatte',
+    seintjeBody: 'Il resto è già pronto nell’app.',
     film: 'Filmato dopo la lezione',
     filmHint: 'Un cartone breve con Fnek quando finisci una lezione.',
     voorlezen: 'Lettura ad alta voce',
@@ -982,6 +986,8 @@ export const it: Strings = {
     schriftKeuze: { arabisch: 'Scrittura araba', klanken: 'I suoni nel nostro alfabeto', allebei: 'Entrambe' },
     kleurTitel: 'Che aspetto vuoi?',
     kleurBody: 'Scegli un colore e chiaro o scuro. Puoi cambiarlo quando vuoi.',
+    seintje: 'Un promemoria ogni giorno?',
+    seintjeHint: 'Il dispositivo mette una sveglia all’ora che scegli. Non esce niente dal dispositivo e puoi spegnerla quando vuoi.',
     knop: 'Yallah, si comincia',
   },
 

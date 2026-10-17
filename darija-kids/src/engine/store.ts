@@ -305,6 +305,17 @@ export interface State {
    * vijftig woorden zitten weken.
    */
   mijlpaalGedeeld: number
+  /**
+   * Wanneer het seintje "de vier gratis lessen zijn gedaan" gezet is, of 0.
+   *
+   * Eén keer per installatie. `gratisDeelOp` blijft waar zodra het waar is, en
+   * een gratis les mag opnieuw gespeeld worden -- zonder dit getal zou elke
+   * herhaling er een nieuwe melding bij plannen.
+   *
+   * Een tijdstip en geen vlag, om dezelfde reden als `beoordelingGevraagd`
+   * hierboven: wanneer kan later nog iets betekenen, een boolean nooit meer.
+   */
+  gratisOpGemeld: number
   settings: Settings
 }
 
@@ -472,6 +483,7 @@ const initial = (): State => ({
   diplomaGezien: [],
   beoordelingGevraagd: 0,
   mijlpaalGedeeld: 0,
+  gratisOpGemeld: 0,
   settings: {
     theme: 'system',
     accent: 'saffraan',
@@ -608,6 +620,7 @@ export function hydrate(parsed: Partial<State>): State {
     diplomaGezien: lijst(p.diplomaGezien, base.diplomaGezien),
     beoordelingGevraagd: getal(p.beoordelingGevraagd, base.beoordelingGevraagd),
     mijlpaalGedeeld: getal(p.mijlpaalGedeeld, base.mijlpaalGedeeld),
+    gratisOpGemeld: getal(p.gratisOpGemeld, base.gratisOpGemeld),
     // Een teller die geen getal is wordt NaN zodra er iets bij opgeteld wordt,
     // en NaN komt daarna nooit meer terug naar een getal.
     xp: getal(p.xp, base.xp),

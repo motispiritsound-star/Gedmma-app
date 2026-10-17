@@ -751,6 +751,10 @@ export const nl = {
     herinneringTijd: 'Hoe laat',
     herinneringTitel: 'Yallah, even oefenen',
     herinneringBody: 'Vijf minuten Darija houdt je reeks in leven.',
+    /* De tekst van het eenmalige seintje uit herinnering.ts. Hij zegt wat er
+       gebeurd is en verkoopt niets -- zie de uitleg daar. */
+    seintjeTitel: 'De vier gratis lessen zijn gedaan',
+    seintjeBody: 'Wat erna komt staat klaar in de app.',
     film: 'Filmpje na de les',
     filmHint: 'Een kort tekenfilmpje van Fnek als je een les afrondt.',
     voorlezen: 'Voorlezen',
@@ -1065,6 +1069,8 @@ export const nl = {
     schriftKeuze: { arabisch: 'Arabisch schrift', klanken: 'Klanken in ons alfabet', allebei: 'Allebei' },
     kleurTitel: 'Hoe wil je dat het eruitziet?',
     kleurBody: 'Kies een kleur en of het licht of donker is. Dit kun je altijd veranderen.',
+    seintje: 'Elke dag een seintje?',
+    seintjeHint: 'Het toestel zet een wekker op de tijd die je kiest. Er gaat niets naar buiten, en je kunt hem altijd weer uitzetten.',
     knop: 'Yallah, beginnen',
   },
 
