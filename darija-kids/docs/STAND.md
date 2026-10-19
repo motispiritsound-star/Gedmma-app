@@ -157,8 +157,26 @@ Twee dingen die onderweg bleken:
 
 `node scripts/checkvideo.mjs` kan deze bestanden hier niet nakijken: die
 gebruikt Chromium en de open versie daarvan speelt geen H.264 af. Met ffmpeg
-zelf nagemeten: 14,93 s, 1080×1920, H.264 met AAC-stereo, geluid op −21,9 dB
-gemiddeld en −0,9 dB piek.
+zelf nagemeten: 14,9 s, 1080×1920, H.264 met AAC-stereo op 48 kHz.
+
+**En het geluid stond te zacht.** Gemeld na de eerste versie: "ik hoor geen
+geluid op m'n iPhone". Nagemeten: er zat wél een geluidsspoor in, maar op
+−18,8 LUFS. Instagram, Facebook, TikTok en YouTube rekenen allemaal naar
+−14 LUFS toe, en wie zachter aanlevert blijft zachter — op een telefoonspeaker
+in een rumoerige kamer is bijna vijf dB het verschil tussen zacht en "er komt
+niets uit".
+
+Harder zetten kon niet met gewone versterking: de mix is in `intro.ts` al op
+0,89 afgetopt, dus er zat geen dB ruimte boven. `hercodeer` in
+`scripts/make-intro.mjs` doet nu een `loudnorm` in twee doorgangen — eerst
+meten, dan met die gemeten waarden hercoderen. Twee doorgangen en niet één,
+want in één doorgang moet hij raden hoe hard het nog wordt en schommelt hij
+mee met de muziek; met de meting erbij is de uitkomst bovendien elke keer
+dezelfde, en twee talen naast elkaar in een kanaal horen niet verschillend
+hard te staan.
+
+Uitkomst: **−13,9 LUFS**, alle vier de bestanden. Dit raakt ook de winkelfilm,
+en dat is goed: die stond om dezelfde reden te zacht.
 
 ## 19 oktober: de downloadcijfers als commando, en wat ze zeggen
 

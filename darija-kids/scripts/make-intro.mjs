@@ -38,10 +38,58 @@ const run = promisify(execFile)
  * waarom een upload het niet doet. `faststart` zet de index vooraan, zodat
  * een site hem kan afspelen voordat hij binnen is.
  */
+/**
+ * Hoe hard de film hoort te klinken.
+ *
+ * -14 LUFS is waar Instagram, Facebook, TikTok en YouTube naartoe rekenen: wie
+ * harder aanlevert wordt zachter gezet, wie zachter aanlevert blijft zachter.
+ * De film kwam uit de browser op -18,8 LUFS -- niet stil, maar bijna vijf dB
+ * onder de norm, en op een telefoonspeaker in een rumoerige kamer is dat het
+ * verschil tussen zacht en "er komt geen geluid uit". Precies dat is gemeld.
+ *
+ * Harder zetten kan niet met gewone versterking: de mix is in intro.ts al op
+ * 0,89 afgetopt, dus er zit nog geen dB ruimte boven. `loudnorm` doet het wél
+ * goed -- het rekent de waargenomen luidheid om en begrenst de ware piek.
+ */
+const LUIDHEID = { I: '-14', TP: '-1.5', LRA: '11' }
+
+/**
+ * Twee keer meten, één keer snijden.
+ *
+ * `loudnorm` in één doorgang moet raden hoe hard het nog gaat worden en
+ * schommelt daardoor mee met de muziek. Met de gemeten waarden van een eerste
+ * doorgang erbij weet hij het precies, en dan is de uitkomst bovendien elke
+ * keer dezelfde. Dat laatste telt hier: twee talen naast elkaar in een kanaal
+ * horen niet verschillend hard te staan.
+ */
+async function meetLuidheid(ruw) {
+  const meting = `loudnorm=I=${LUIDHEID.I}:TP=${LUIDHEID.TP}:LRA=${LUIDHEID.LRA}:print_format=json`
+  const { stderr } = await run(ffmpeg, ['-hide_banner', '-y', '-i', ruw, '-af', meting, '-f', 'null', '-'])
+  // De json staat aan het eind van wat ffmpeg naar stderr schrijft.
+  const json = stderr.slice(stderr.lastIndexOf('{'), stderr.lastIndexOf('}') + 1)
+  try {
+    return JSON.parse(json)
+  } catch {
+    return null // dan maar in één doorgang; zachter is beter dan niets
+  }
+}
+
 async function hercodeer(ruw, naar) {
+  const m = await meetLuidheid(ruw)
+  const af = m
+    ? `loudnorm=I=${LUIDHEID.I}:TP=${LUIDHEID.TP}:LRA=${LUIDHEID.LRA}`
+      + `:measured_I=${m.input_i}:measured_TP=${m.input_tp}`
+      + `:measured_LRA=${m.input_lra}:measured_thresh=${m.input_thresh}`
+      + `:offset=${m.target_offset}:linear=true`
+    : `loudnorm=I=${LUIDHEID.I}:TP=${LUIDHEID.TP}:LRA=${LUIDHEID.LRA}`
+
   await run(ffmpeg, ['-hide_banner', '-loglevel', 'error', '-y', '-i', ruw,
     '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2', '-pix_fmt', 'yuv420p',
     '-crf', '20', '-preset', 'medium', '-r', '30',
+    '-af', af,
+    // 48 kHz er expliciet achter: `loudnorm` werkt intern op 192 kHz en laat
+    // dat staan als je het niet terugzet. Een AAC-spoor van 192 kHz is geen
+    // fout, maar niet elke speler wil hem.
     '-c:a', 'aac', '-b:a', '160k', '-ar', '48000',
     '-movflags', '+faststart', naar])
   await rm(ruw, { force: true })
