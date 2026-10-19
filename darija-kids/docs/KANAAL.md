@@ -19,6 +19,21 @@
   moeten voordat het eerste bericht met een getal de deur uitgaat.
 -->
 
+## De kanalen
+
+| | Link |
+|---|---|
+| WhatsApp-kanaal Nederlands | https://whatsapp.com/channel/0029VbD7rT99Gv7NHDpzhm2S |
+| WhatsApp-kanaal Frans | https://whatsapp.com/channel/0029VbDpt9XBA1exBp7PSb45 |
+| App Store | https://apps.apple.com/app/id6813964474 |
+| Google Play | https://play.google.com/store/apps/details?id=app.darijaforkids.learn |
+
+Ze staan hier omdat ze onder elke post horen die buiten het kanaal zelf gaat —
+een Facebookgroep weet niet wat een kanaalverwijzing is. Binnen het kanaal is
+de regel een andere: doorsturen neemt de verwijzing al mee, dus daar kost een
+link alleen regels. Zie §3 hieronder.
+
+
 # Het kanaal, als systeem
 
 Een voorraad en een vaste week, zodat er elke dag iets op kan zonder dat er iets bedacht of opgezocht hoeft te worden. Alles hieronder is Nederlands, gericht aan de ouder, en kort genoeg om in één oogopslag te lezen.
