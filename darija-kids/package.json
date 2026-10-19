@@ -99,6 +99,7 @@
     "kanaalfoto": "node scripts/make-kanaalfoto.mjs",
     "belangstelling": "node scripts/belangstelling.mjs",
     "opstoestel": "node scripts/opstoestel.mjs",
+    "sketch": "node scripts/make-sketch.mjs",
     "weetje": "node scripts/make-weetje.mjs"
   },
   "dependencies": {
