@@ -85,6 +85,7 @@
     "platencheck": "node scripts/platencheck.mjs",
     "vertelstem": "node scripts/make-vertelstem.mjs",
     "crashes": "node scripts/crashcheck.mjs",
+    "downloads": "node scripts/downloadcheck.mjs",
     "bundelcheck": "node scripts/bundelcheck.mjs",
     "track": "node scripts/naartrack.mjs",
     "watzitin": "node scripts/watzitin.mjs",

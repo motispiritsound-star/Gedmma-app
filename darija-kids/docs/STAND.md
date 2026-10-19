@@ -114,6 +114,55 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## 19 oktober: de downloadcijfers als commando, en wat ze zeggen
+
+Stand op het dashboard van vandaag:
+
+| | Play | Apple |
+|---|---|---|
+| Downloads | **26** installs sinds 13 okt | **82** first-time downloads (17 okt) |
+| Betalend | — | 1 betaald plan, 2 actieve plannen |
+| Opbrengst | — | $48 |
+
+Die *Device acquisitions: 6* bij Play is geen tegenspraak met de 26: dat zijn
+de acquisitierapporten, en die lopen een paar dagen achter. De 26 is het getal
+dat telt.
+
+**Nieuw: `npm run downloads`.** Tot nu toe stond dit getal alleen in Play
+Console, achter een inlog op een scherm dat niet voor een telefoon gemaakt is.
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run downloads } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+Het drukt drie getallen af, want Play heeft er drie die allemaal "downloads"
+heten: **nieuwe gebruikers** (mensen), **installaties** (gebeurtenissen, dus
+hoger) en **toestellen erop** (een stand, loopt terug bij verwijderen). Naast
+Apple's *first-time downloads* hoort het eerste getal — allebei tellen ze
+mensen.
+
+**Waarom dit een csv uit een emmer leest en geen API aanroept.** Nagekeken: de
+Play Developer Reporting API, waar `npm run crashes` mee praat, geeft alleen
+vitals. De Android Publisher API heeft geen cijfers. Google zet de
+installatierapporten maandelijks als csv in Cloud Storage, en dat is de enige
+machinaal leesbare bron die er is.
+
+**Eén ding moet jij nog doen, één keer.** Het serviceaccount uit
+`play-api.json` mag die rapporten niet vanzelf lezen — dat staat los van de
+rechten om uit te geven. In Play Console onder **Users and permissions**, bij
+het adres dat het script afdrukt, het vinkje **View app information and
+download bulk reports**. Google heeft daarna ongeveer een dag nodig. Zolang dat
+niet staat zegt het script precies dat, met het adres erbij, in plaats van een
+lege lijst.
+
+Twee valkuilen zitten in `scripts/lib/installs.mjs` afgevangen en in
+`src/site/installs.test.ts` vastgelegd: de bestanden zijn **UTF-16** (als UTF-8
+gelezen krijg je geen foutmelding maar niets), en de kolomnamen zijn in de loop
+der jaren hernoemd, dus ze worden op naam gezocht en niet op volgnummer. Ook
+afgevangen: een emmer die niet bestaat geeft dezelfde 404 als een maandbestand
+dat er nog niet is, dus de emmer wordt apart nagekeken — anders keek het script
+in de verkeerde emmer en meldde dat er nog geen cijfers waren.
+
 ## 17 oktober: twee meldingen, en waarom het geen pushbericht is
 
 De vraag was: *wordt er een bericht gestuurd met "begin nu met de volledige

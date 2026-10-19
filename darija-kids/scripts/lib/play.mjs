@@ -74,10 +74,18 @@ export function leesSleutel(gegeven = null) {
   return { pad, ...JSON.parse(readFileSync(pad, 'utf8')) }
 }
 
-/** De twee scopes die hier gebruikt worden. */
+/**
+ * De scopes die hier gebruikt worden.
+ *
+ * `cijfers` is de Reporting API en die geeft alleen vitals -- crashes, ANR's,
+ * trage starts. De installatiecijfers staan nergens in een API: Google zet ze
+ * als maandelijks csv-bestand in een Cloud Storage-emmer, en daar is `opslag`
+ * voor. Zie scripts/downloadcheck.mjs.
+ */
 export const SCOPES = {
   uitgeven: 'https://www.googleapis.com/auth/androidpublisher',
   cijfers: 'https://www.googleapis.com/auth/playdeveloperreporting',
+  opslag: 'https://www.googleapis.com/auth/devstorage.read_only',
 }
 
 /**

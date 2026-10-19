@@ -411,3 +411,50 @@ gaan meestal binnen een dag.
 - Beide punten hieronder zijn inmiddels gedaan: de prijs staat overal op
   € 59,99 (€ 5,00 per maand), en de gezinsregel verschijnt alleen op iOS.
 - Schriftelijke toestemming voor de stemopnames — zie `store/press-kit.md`.
+
+---
+
+## 9. Hoe vaak is de app gedownload?
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run downloads } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+Dat drukt drie getallen af, en ze betekenen alle drie iets anders:
+
+| | Wat het telt |
+|---|---|
+| **nieuwe gebruikers** | Mensen die de app voor het eerst installeerden |
+| **installaties** | Installaties, dus inclusief een herinstallatie of een tweede toestel — altijd hoger |
+| **toestellen erop** | Hoeveel toestellen hem nú hebben; loopt terug bij verwijderen |
+
+**Leg "nieuwe gebruikers" naast Apple, niet "installaties".** *First-time
+downloads* in App Store Connect telt mensen; zet je daar Play's installaties
+naast, dan vergelijk je mensen met gebeurtenissen en lijkt Android beter te
+lopen dan het doet.
+
+Er zijn ook `-- --dagen` voor de losse dagen en `-- --maand 202610` voor één
+maand.
+
+### Waarom dit een csv-bestand uit een emmer leest
+
+Omdat er geen API is. De Play Developer Reporting API, waar `npm run crashes`
+mee praat, geeft alleen vitals — crashes, ANR's, trage starts. De Android
+Publisher API heeft helemaal geen cijfers. Google zet de installatierapporten
+maandelijks als csv in een Cloud Storage-emmer, en dat is de enige machinaal
+leesbare bron die bestaat.
+
+Twee dingen die daarbij makkelijk misgaan en die in `scripts/lib/installs.mjs`
+zijn afgevangen: die bestanden zijn **UTF-16** (als UTF-8 gelezen krijg je geen
+foutmelding maar een leeg resultaat), en de kolommen zijn in de loop der jaren
+hernoemd, dus ze worden op naam gezocht en niet op volgnummer.
+
+### Eerste keer: één vinkje
+
+Het serviceaccount uit `play-api.json` mag de rapporten niet vanzelf lezen —
+dat staat los van de rechten om uit te geven. In Play Console onder **Users and
+permissions**, bij het adres dat het script afdrukt, het vinkje **View app
+information and download bulk reports**. Google heeft daarna ongeveer een dag
+nodig voordat het werkt.
+
+Zolang dat niet staat, zegt het script precies dat, met het adres erbij.
