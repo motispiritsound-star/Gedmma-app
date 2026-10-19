@@ -20,7 +20,7 @@ import { promisify } from 'node:util'
 import ffmpeg from 'ffmpeg-static'
 import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
-import { CHECK, GO_ON, GOT_IT, ONWARD, seeded } from './lib/profile.mjs'
+import { CHECK, GO_ON, GOT_IT, NEEM_OP, ONWARD, seeded, STOP_OPNAME } from './lib/profile.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const PORT = 4312
@@ -411,20 +411,82 @@ const SCENES = [
       }
     },
   },
+  {
+    id: 'spreken',
+    /**
+     * De spreekbonus: horen, jezelf opnemen, jezelf terughoren.
+     *
+     * Drie toestanden, en ze zijn alle drie het filmen waard omdat een
+     * schermafdruk er niets van laat zien: de groene knop die rood wordt en
+     * gaat kloppen, en de twee knoppen die daarna verschijnen.
+     *
+     * Er wordt niets herkend en niets goedgekeurd -- dat kan ook niet, geen
+     * enkele spraakmotor kent Darija. Zie de uitleg boven `NaZeggen` in
+     * exercises.tsx. De film laat dus zien wat er echt gebeurt, en niet een
+     * computer die "goed" zegt.
+     */
+    take: async (page) => {
+      await page.goto(`${BASE}/bonus/spreken`, { waitUntil: 'networkidle' })
+      await wait(page, 1000)
+
+      const mic = page.getByRole('button', { name: NEEM_OP }).first()
+      if (!(await mic.count())) throw new Error('geen opnameknop op /bonus/spreken')
+      const target = await spot(page, mic)
+      const scroll = await scrollNow(page)
+
+      // Stil: de knop, groen.
+      const frames = [await shot(page, scroll)]
+
+      // Opnemen: de knop wordt rood en klopt, en eronder staat "ik neem op".
+      await mic.click({ force: true })
+      await wait(page, 700)
+      frames.push(await shot(page, scroll))
+      await wait(page, 600)
+      frames.push(await shot(page, scroll))
+
+      // Stoppen: de twee knoppen eronder verschijnen.
+      const stop = page.getByRole('button', { name: STOP_OPNAME }).first()
+      if (!(await stop.count())) throw new Error('geen stopknop tijdens de opname')
+      await stop.click({ force: true })
+      await wait(page, 900)
+      frames.push(await shot(page, scroll))
+
+      return {
+        frames,
+        /*
+         * Eén vinger die twee keer dezelfde knop raakt: starten en stoppen.
+         * `steps` schakelt het beeld door, zodat de knop onder de vinger van
+         * kleur wisselt in plaats van ervoor of erna.
+         */
+        acts: [{
+          at: 0.9,
+          dur: 2.2,
+          path: [target, target],
+          steps: [[0.08, 1], [0.45, 2], [0.86, 3]],
+          frame: 3,
+          sound: 'tap',
+          endSound: 'correct',
+        }],
+      }
+    },
+  },
 ]
 
 /** The app, filmed at the size the film draws it. */
-const photograph = async (browser, lang) => {
+const photograph = async (browser, lang, wil) => {
   const taken = {}
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
     deviceScaleFactor: 3,
+    // De spreekoefening opent de microfoon. Zonder dit staat er een
+    // toestemmingsvraag in beeld in plaats van een opname.
+    permissions: ['microphone'],
   })
   const page = await context.newPage()
   await page.goto(`${BASE}/`, { waitUntil: 'networkidle' })
   await page.evaluate((state) => localStorage.setItem('darijakids.v1', JSON.stringify(state)), seeded(lang))
 
-  for (const scene of SCENES) {
+  for (const scene of SCENES.filter((s) => wil.includes(s.id))) {
     // Every scene starts from the same save, so claiming a mission in the
     // first one does not empty the card in the last.
     await page.evaluate(
@@ -457,6 +519,12 @@ const browser = await startChroom({
     // The film starts its own AudioContext and there is nobody to tap the
     // screen, so the browser has to be told that is expected.
     '--autoplay-policy=no-user-gesture-required',
+    // En een microfoon die er niet is. De spreekoefening vraagt er echt een
+    // op -- `kanOpnemen()` kijkt naar `getUserMedia` en `MediaRecorder` -- en
+    // zonder deze twee vlaggen staat er in de film het scherm "geen
+    // microfoon" in plaats van de oefening.
+    '--use-fake-device-for-media-stream',
+    '--use-fake-ui-for-media-stream',
     '--disable-background-timer-throttling',
     '--disable-backgrounding-occluded-windows',
     '--disable-renderer-backgrounding',
@@ -464,8 +532,35 @@ const browser = await startChroom({
 })
 
 const langs = arg('lang', 'nl,fr,de,es,it,en').split(',')
-const shapes = arg('shape', 'appstore,verhaal,vierkant,breed').split(',')
 const still = arg('still', null)
+
+/**
+ * Welke film, en welke schermen die nodig heeft.
+ *
+ * De lijst staat hier én in FILMS in dev/intro.ts, en dat is één plek te
+ * veel -- maar dit script moet weten wat het fotograferen moet vóórdat de
+ * filmpagina geladen is, en die pagina kent de app niet. Blijft het uit de
+ * pas lopen, dan valt dat meteen op: `load` gooit "geen beelden voor ...".
+ */
+const FILMS = {
+  intro: {
+    shots: ['pad', 'leren', 'letters', 'les', 'geschiedenis', 'schrijven', 'woord'],
+    shapes: 'appstore,verhaal,vierkant,breed',
+  },
+  bonus: {
+    shots: ['schrijven', 'spreken'],
+    // Verhaal en vierkant: dat is wat een WhatsApp-kanaal en een
+    // Facebookgroep tonen. Breed wordt daar aan twee kanten afgesneden.
+    shapes: 'verhaal,vierkant',
+  },
+}
+
+const film = arg('film', 'intro')
+if (!FILMS[film]) {
+  console.error(`\nOnbekende film: ${film}. Er zijn er twee: intro, bonus.\n`)
+  process.exit(1)
+}
+const shapes = arg('shape', FILMS[film].shapes).split(',')
 
 const page = await (await browser.newContext({ viewport: { width: 700, height: 760 } })).newPage()
 const problems = []
@@ -476,7 +571,7 @@ page.on('requestfailed', (r) => problems.push(`mislukt ${r.url()}`))
 
 for (const lang of langs) {
   console.log(`\n${lang} — de app fotograferen`)
-  const taken = await photograph(browser, lang)
+  const taken = await photograph(browser, lang, FILMS[film].shots)
   await mkdir(path.join(OUT, lang), { recursive: true })
   await page.goto(`${BASE}/dev/intro.html`, { waitUntil: 'networkidle' })
   await page.evaluate(([l, shots]) => { (window.darijaShots ??= {})[l] = shots }, [lang, taken])
@@ -486,10 +581,10 @@ for (const lang of langs) {
       // A comma-separated list, so one run of the camera checks a whole film.
       for (const moment of still.split(',')) {
         const url = await page.evaluate(
-          ([l, s, t]) => window.darijaIntro.still(l, s, Number(t)),
-          [lang, shape, moment],
+          ([l, s, t, f]) => window.darijaIntro.still(l, s, Number(t), f),
+          [lang, shape, moment, film],
         )
-        const file = path.join(OUT, lang, `beeld-${shape}-${moment}s.png`)
+        const file = path.join(OUT, lang, `beeld-${film}-${shape}-${moment}s.png`)
         await writeFile(file, Buffer.from(url.split(',')[1], 'base64'))
         console.log(`  ${path.relative(ROOT, file)}`)
       }
@@ -497,14 +592,14 @@ for (const lang of langs) {
     }
     const started = Date.now()
     const url = await page.evaluate(
-      ([l, s]) => window.darijaIntro.record(l, s),
-      [lang, shape],
+      ([l, s, f]) => window.darijaIntro.record(l, s, f),
+      [lang, shape, film],
     )
     const kind = url.slice(5, url.indexOf(';'))
     const ext = kind.includes('mp4') ? 'mp4' : 'webm'
     const data = Buffer.from(url.slice(url.indexOf(',') + 1), 'base64')
-    const ruw = path.join(OUT, lang, `intro-${shape}.ruw.${ext}`)
-    const file = path.join(OUT, lang, `intro-${shape}.mp4`)
+    const ruw = path.join(OUT, lang, `${film}-${shape}.ruw.${ext}`)
+    const file = path.join(OUT, lang, `${film}-${shape}.mp4`)
     await writeFile(ruw, data)
     await hercodeer(ruw, file)
     const { size } = await stat(file)
@@ -518,7 +613,7 @@ for (const lang of langs) {
 await browser.close()
 await server.close()
 
-if (still === null) {
+if (still === null && film === 'intro') {
   await writeFile(
     path.join(OUT, 'README.md'),
     `# Video\n\nGemaakt met \`npm run intro\`.\n\n` +
@@ -526,6 +621,11 @@ if (still === null) {
       `- \`intro-verhaal\` — 1080×1920, voor stories, reels en TikTok\n` +
       `- \`intro-vierkant\` — 1080×1080, voor Instagram en Facebook\n` +
       `- \`intro-breed\` — 1920×1080, voor YouTube en de website\n\n` +
+      `En de korte film, met \`npm run bonusfilm\`: vijftien seconden over de twee\n` +
+      `oefeningen die een schermafdruk niet kan laten zien — schrijven met je\n` +
+      `vinger en jezelf opnemen. Die staat als \`bonus-verhaal\` en \`bonus-vierkant\`\n` +
+      `in dezelfde mappen, en is bedoeld voor het WhatsApp-kanaal en voor\n` +
+      `Facebookgroepen.\n\n` +
       `Alle vier in H.264 met AAC-geluid: dat is wat Instagram, TikTok en de \n` +
       `App Store aannemen. De opname van de browser zelf is VP9 en wordt \n` +
       `hercodeerd voordat hij hier terechtkomt.\n\n` +

@@ -12,11 +12,14 @@
  * `billing.ts` en de echte inhoud.
  */
 
+/** Welke film. Zie FILMS in intro.ts. */
+export type FilmId = 'intro' | 'bonus'
+
 export interface Copy {
   /** Under the title, in the opening card. */
   sub: string
-  /** One line per screen, in the order of SHOTS. */
-  lines: [string, string, string, string, string, string, string]
+  /** One line per screen, in the order of SHOTS -- dus zeven of twee. */
+  lines: string[]
   /** The last card. */
   cta: string
   price: string
@@ -35,7 +38,7 @@ export interface Copy {
  * stond op € 4,99 lang nadat die prijs was losgelaten, en een film met een
  * verkeerd bedrag erin gaat naar de App Store, Google Play en TikTok.
  */
-export const COPY: Record<string, Copy> = {
+const INTRO: Record<string, Copy> = {
   nl: {
     sub: 'Voor jong — en stiekem ook voor oud',
     lines: [
@@ -127,3 +130,50 @@ export const COPY: Record<string, Copy> = {
     price: 'From € 5.00 a month',
   },
 }
+
+
+/**
+ * De korte film, voor WhatsApp en Facebook.
+ *
+ * Twee schermen in plaats van zeven, en ze zijn met opzet dezelfde twee die in
+ * geen enkele schermafdruk goed overkomen: schrijven met je vinger en jezelf
+ * opnemen. Allebei zijn het bewegingen -- een stilstaand beeld laat er niets
+ * van zien.
+ *
+ * Alleen de ondertitel en de twee regels staan hier. De slotkaart -- de prijs,
+ * de getallen, de knop -- komt ongewijzigd uit de winkelfilm, zodat er geen
+ * tweede plek is waar een prijs kan verouderen. Dat is precies hoe de € 4,99
+ * hierboven is blijven staan.
+ */
+const KORT: Record<string, Pick<Copy, 'sub' | 'lines'>> = {
+  nl: {
+    sub: 'Twee dingen die een boek niet kan',
+    lines: ['Schrijven met je vinger.\nVan rechts naar links.', 'En jezelf terughoren,\nnaast de stem.'],
+  },
+  fr: {
+    sub: 'Deux choses qu\u2019un livre ne peut pas faire',
+    lines: ['\u00c9crire avec le doigt.\nDe droite \u00e0 gauche.', 'Et s\u2019\u00e9couter soi-m\u00eame,\n\u00e0 c\u00f4t\u00e9 de la voix.'],
+  },
+  de: {
+    sub: 'Zwei Dinge, die ein Buch nicht kann',
+    lines: ['Mit dem Finger schreiben.\nVon rechts nach links.', 'Und sich selbst h\u00f6ren,\nneben der Stimme.'],
+  },
+  es: {
+    sub: 'Dos cosas que un libro no puede hacer',
+    lines: ['Escribir con el dedo.\nDe derecha a izquierda.', 'Y escucharte a ti mismo,\njunto a la voz.'],
+  },
+  it: {
+    sub: 'Due cose che un libro non pu\u00f2 fare',
+    lines: ['Scrivere con il dito.\nDa destra a sinistra.', 'E riascoltarti,\naccanto alla voce.'],
+  },
+  en: {
+    sub: 'Two things a book cannot do',
+    lines: ['Write with your finger.\nRight to left.', 'And hear yourself back,\nnext to the voice.'],
+  },
+}
+
+const BONUS: Record<string, Copy> = Object.fromEntries(
+  Object.entries(INTRO).map(([taal, c]) => [taal, { ...c, ...(KORT[taal] ?? KORT.nl!) }]),
+)
+
+export const COPY: Record<FilmId, Record<string, Copy>> = { intro: INTRO, bonus: BONUS }

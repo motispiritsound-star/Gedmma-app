@@ -114,6 +114,52 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## 19 oktober: een korte film over de twee oefeningen die je niet kunt fotograferen
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run bonusfilm } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+Vijftien seconden, met geluid, in `store/video/<taal>/bonus-verhaal.mp4` en
+`bonus-vierkant.mp4`. Staand voor een WhatsApp-status, vierkant voor een
+Facebookgroep — breed is er niet bij, want dat wordt daar aan twee kanten
+afgesneden.
+
+**Waarom juist deze twee.** Schrijven met je vinger en jezelf opnemen zijn de
+enige twee dingen in de app die een schermafdruk niet kan laten zien: het zijn
+bewegingen. De winkelfilm laat het schrijven in 3,2 seconde langskomen; hier
+houdt elk scherm 4,8 seconde aan, zodat je de letter werkelijk onder de vinger
+ziet verschijnen en de opnameknop rood ziet worden.
+
+**De spreekoefening herkent niets en keurt niets goed**, en de film laat dat
+ook zo zien. Dat is geen tekortkoming maar het ontwerp: geen enkele
+spraakmotor kent Darija, ze zijn allemaal op Standaardarabisch getraind, dus
+een kind dat het goed zegt zou "fout" te horen krijgen. Wat er wél gebeurt:
+je hoort hoe het hoort, je zegt het na, en je hoort jezelf ernaast. Zie de
+uitleg boven `NaZeggen` in `src/ui/exercises.tsx`.
+
+**Wat er technisch veranderd is.** De filmmachine maakte één film met een
+vaste dienstregeling — zeven schermen, 2,8 titel, 3,2 per scherm — en die
+getallen zaten door de muziek, de vinger en het ingesproken woord heen. Nu
+hangt de dienstregeling aan een film (`FILMS` in `dev/intro.ts`) en wordt hij
+één keer uitgerekend voordat er getekend wordt. De winkelfilm is ongewijzigd;
+dat is nagekeken door hem opnieuw te laten tekenen.
+
+Twee dingen die onderweg bleken:
+
+- De opnameknop werd gezocht met een regex die ik zelf had bedacht. Die ving
+  het Nederlands en niet het Frans, waar de knop "Enregistre" heet. Nu staan
+  de echte teksten uit `src/i18n/*.ts` in `NEEM_OP` en `STOP_OPNAME` in
+  `scripts/lib/profile.mjs`, naast de vier knoppen die daar al zo stonden.
+- De browser heeft een nepmicrofoon nodig
+  (`--use-fake-device-for-media-stream`), anders filmt hij het scherm "geen
+  microfoon" in plaats van de oefening.
+
+`node scripts/checkvideo.mjs` kan deze bestanden hier niet nakijken: die
+gebruikt Chromium en de open versie daarvan speelt geen H.264 af. Met ffmpeg
+zelf nagemeten: 14,93 s, 1080×1920, H.264 met AAC-stereo, geluid op −21,9 dB
+gemiddeld en −0,9 dB piek.
+
 ## 19 oktober: de downloadcijfers als commando, en wat ze zeggen
 
 Stand op het dashboard van vandaag:

@@ -67,6 +67,19 @@ export const seeded = (lang, opts = {}) => {
   }
 }
 
+/**
+ * De opnameknop in de spreekoefening, in elke taal.
+ *
+ * Hier stond eerst een regex die ik zelf had bedacht -- /opnem|neem|microf/ --
+ * en die ving het Nederlands wel en het Frans niet: daar heet de knop
+ * "Enregistre". De film liep dan door tot "geen opnameknop op /bonus/spreken",
+ * vijf talen te laat. Dit zijn de echte teksten uit `src/i18n/*.ts`.
+ */
+export const NEEM_OP = /^(Neem op|Enregistre|Aufnehmen|Graba|Registra|Record)$/
+
+/** En de knop die hem stopt, in diezelfde zes talen. */
+export const STOP_OPNAME = /^(Stop de opname|Arrête l’enregistrement|Aufnahme stoppen|Para la grabación|Ferma la registrazione|Stop recording)$/
+
 /** The button that leaves a lesson's opening tip, in every language. */
 export const GO_ON = /Aan de slag|Allons-y|Los geht|A por ello|Si comincia|Let’s go/
 

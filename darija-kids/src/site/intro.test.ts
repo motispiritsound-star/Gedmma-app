@@ -25,7 +25,11 @@ import { allWords } from '../content/lexicon'
 import { ALL_SENTENCES } from '../content/sentences'
 import { UNITS } from '../content/curriculum'
 
-const TALEN = Object.keys(COPY)
+const TALEN = Object.keys(COPY.intro)
+
+/** Elke tekst van elke film in elke taal, met zijn herkomst erbij. */
+const ALLES = Object.entries(COPY).flatMap(([film, perTaal]) =>
+  Object.entries(perTaal).map(([taal, c]) => [film, taal, c] as const))
 
 /** Alleen de cijfers, zodat "€ 5,00" en "5.00 €" hetzelfde opleveren. */
 const cijfers = (tekst: string) => (tekst.match(/\d+[.,]\d{2}|\d+/g) ?? []).map((n) => n.replace(',', '.'))
@@ -43,14 +47,14 @@ describe('de slotkaart van de promofilm', () => {
   it('noemt het bedrag dat de app echt vraagt', () => {
     const echt = cijfers(planOf('jaar').perMonth)
     expect(echt).toEqual(['5.00'])
-    for (const taal of TALEN) {
-      expect(cijfers(COPY[taal]!.price), `${taal}: ${COPY[taal]!.price}`).toEqual(echt)
+    for (const [film, taal, c] of ALLES) {
+      expect(cijfers(c.price), `${film}/${taal}: ${c.price}`).toEqual(echt)
     }
   })
 
   it('en noemt nergens een prijs die nergens anders bestaat', () => {
-    for (const taal of TALEN) {
-      expect(COPY[taal]!.price, taal).not.toMatch(/4[.,]99/)
+    for (const [film, taal, c] of ALLES) {
+      expect(c.price, `${film}/${taal}`).not.toMatch(/4[.,]99/)
     }
   })
 
@@ -60,15 +64,40 @@ describe('de slotkaart van de promofilm', () => {
    */
   it('telt de units, woorden en zinnen die er echt zijn', () => {
     const echt = [String(UNITS.length), String(allWords.length), String(ALL_SENTENCES.length)]
-    for (const taal of TALEN) {
-      expect(cijfers(COPY[taal]!.feiten), `${taal}: ${COPY[taal]!.feiten}`).toEqual(echt)
+    for (const [film, taal, c] of ALLES) {
+      expect(cijfers(c.feiten), `${film}/${taal}: ${c.feiten}`).toEqual(echt)
     }
   })
 
-  it('en heeft per taal zeven regels, één per scherm', () => {
+  /*
+   * Eén regel per scherm, en de twee films hebben niet evenveel schermen: de
+   * winkelfilm zeven, de korte voor WhatsApp en Facebook twee. Staat er een
+   * regel te weinig, dan valt er een scherm zonder tekst in beeld; staat er
+   * een te veel, dan wordt hij nooit gelezen.
+   */
+  const SCHERMEN: Record<string, number> = { intro: 7, bonus: 2 }
+
+  it('en heeft per taal één regel per scherm', () => {
+    for (const [film, taal, c] of ALLES) {
+      expect(c.lines, `${film}/${taal}`).toHaveLength(SCHERMEN[film]!)
+      for (const regel of c.lines) expect(regel.trim(), `${film}/${taal}`).not.toBe('')
+    }
+  })
+
+  /* De korte film erft de slotkaart van de winkelfilm, zodat er geen tweede
+     plek is waar een prijs kan verouderen -- zie de uitleg in intro-copy.ts. */
+  it('laat de korte film de slotkaart van de winkelfilm erven', () => {
     for (const taal of TALEN) {
-      expect(COPY[taal]!.lines, taal).toHaveLength(7)
-      for (const regel of COPY[taal]!.lines) expect(regel.trim(), taal).not.toBe('')
+      expect(COPY.bonus[taal]!.price, taal).toBe(COPY.intro[taal]!.price)
+      expect(COPY.bonus[taal]!.cta, taal).toBe(COPY.intro[taal]!.cta)
+      expect(COPY.bonus[taal]!.feiten, taal).toBe(COPY.intro[taal]!.feiten)
+    }
+  })
+
+  it('en geeft de korte film een eigen ondertitel en eigen regels', () => {
+    for (const taal of TALEN) {
+      expect(COPY.bonus[taal]!.sub, taal).not.toBe(COPY.intro[taal]!.sub)
+      expect(COPY.bonus[taal]!.lines, taal).not.toEqual(COPY.intro[taal]!.lines)
     }
   })
 })

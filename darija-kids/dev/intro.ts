@@ -15,32 +15,93 @@ import { CLIPS } from '../src/engine/clips'
 
 /* ------------------------------------------------------------------ the copy */
 
-type ShotId = 'pad' | 'leren' | 'letters' | 'les' | 'geschiedenis' | 'schrijven' | 'woord'
+type ShotId = 'pad' | 'leren' | 'letters' | 'les' | 'geschiedenis' | 'schrijven' | 'woord' | 'spreken'
 
-import { COPY, type Copy } from './intro-copy'
-
-const SHOTS: ShotId[] = ['pad', 'leren', 'letters', 'les', 'geschiedenis', 'schrijven', 'woord']
+import { COPY, type Copy, type FilmId } from './intro-copy'
 
 /* ------------------------------------------------------------- the timetable */
 
 /**
- * Under half a minute, on purpose: the App Store rejects an app preview
- * longer than thirty seconds, and a recording always runs a little over what
- * it was asked for. Six screens rather than five now, so each one holds a
- * little less: three to open, 3.7 per screen, 3.3 to ask. Just over 28.
+ * Twee films uit één machine.
+ *
+ * `intro` is de winkelfilm: zeven schermen, net onder de dertig seconden,
+ * want de App Store weigert een preview die langer is en een opname loopt
+ * altijd een beetje uit.
+ *
+ * `bonus` is er voor WhatsApp en Facebook, en doet precies één ding: twee
+ * oefeningen laten zien die je nergens anders ziet -- schrijven met je vinger
+ * en jezelf opnemen. Korter, en elk scherm houdt langer aan, want er valt hier
+ * iets te volgen in plaats van langs te komen. Wie een filmpje in een groep
+ * deelt heeft geen half minuut; vijftien seconden is al veel.
  */
-const TITLE = 2.8
-const HOLD = 3.2
-const END = TITLE + SHOTS.length * HOLD
-export const DURATION = END + 3.3
+interface Film {
+  shots: ShotId[]
+  /** Hoe lang de titelkaart staat. */
+  titel: number
+  /** Hoe lang één scherm blijft. */
+  hold: number
+  /** Hoe lang de slotkaart staat. */
+  slot: number
+  /** Welke van de vijf filmdeuntjes, in welke volgorde. */
+  deunen: number[]
+}
+
+const FILMS: Record<FilmId, Film> = {
+  intro: {
+    shots: ['pad', 'leren', 'letters', 'les', 'geschiedenis', 'schrijven', 'woord'],
+    titel: 2.8, hold: 3.2, slot: 3.3, deunen: [1, 2, 0, 3],
+  },
+  bonus: {
+    shots: ['schrijven', 'spreken'],
+    titel: 2.2, hold: 4.8, slot: 3.0, deunen: [1, 2],
+  },
+}
 
 interface Beat { kind: 'title' | 'shot' | 'cta'; at: number; until: number; shot?: number }
 
-const BEATS: Beat[] = [
-  { kind: 'title', at: 0, until: TITLE },
-  ...SHOTS.map((_, i) => ({ kind: 'shot' as const, at: TITLE + i * HOLD, until: TITLE + (i + 1) * HOLD, shot: i })),
-  { kind: 'cta', at: END, until: DURATION },
-]
+/*
+ * De dienstregeling was zeven vaste getallen bovenin dit bestand, en de
+ * muziek, de vinger en het ingesproken woord rekenden er alle drie mee. Nu
+ * hangt hij aan de gekozen film en wordt hij één keer uitgerekend, vóór er
+ * getekend wordt. Alles wat ze leest doet dat tijdens het tekenen, dus die
+ * code is niet veranderd -- alleen waar de getallen vandaan komen.
+ */
+let film: FilmId = 'intro'
+let SHOTS = FILMS.intro.shots
+let TITLE = FILMS.intro.titel
+let HOLD = FILMS.intro.hold
+let END = TITLE + SHOTS.length * HOLD
+export let DURATION = END + FILMS.intro.slot
+let BEATS: Beat[] = []
+let WOORD_AT = 0
+
+function kiesFilm(id: FilmId): void {
+  const f = FILMS[id]
+  film = id
+  SHOTS = f.shots
+  TITLE = f.titel
+  HOLD = f.hold
+  END = TITLE + SHOTS.length * HOLD
+  DURATION = END + f.slot
+  BEATS = [
+    { kind: 'title', at: 0, until: TITLE },
+    ...SHOTS.map((_, i) => ({ kind: 'shot' as const, at: TITLE + i * HOLD, until: TITLE + (i + 1) * HOLD, shot: i })),
+    { kind: 'cta', at: END, until: DURATION },
+  ]
+  /*
+   * Precies wanneer de vinger het luidsprekertje raakt, plus een haar.
+   *
+   * De tik zit op 1,2 seconde in de scène `woord`. Een kwart seconde later
+   * begint de opname -- zo lang duurt het in de app ook voordat er geluid
+   * komt, en zonder dat gaatje valt het woord samen met het tikje.
+   *
+   * Staat die scène niet in deze film, dan is dit -1 en wordt het woord
+   * overgeslagen in plaats van op een verzonnen moment afgespeeld.
+   */
+  const i = SHOTS.indexOf('woord')
+  WOORD_AT = i < 0 ? -1 : TITLE + i * HOLD + 1.45
+}
+kiesFilm('intro')
 
 /* ----------------------------------------------------------------- the shapes */
 
@@ -429,12 +490,13 @@ function pill(
 /** A film tune is nineteen notes at 0.3s, and then a note left ringing. */
 const TUNE = 5.7
 
-const CUES: [SoundName, number, number][] = [
+const cues = (): [SoundName, number, number][] => [
   // the opening: a run-up under the title
   ['quizStart', 0, 0.2],
-  // four of the five film tunes, all in hijaz on D, each handing over to the
-  // next while its own last note is still ringing
-  ...[1, 2, 0, 3].map((melody, i): [SoundName, number, number] => ['film', melody, TITLE - 0.3 + i * TUNE]),
+  // film tunes, all in hijaz on D, each handing over to the next while its
+  // own last note is still ringing. Hoeveel er zijn hangt aan de film: de
+  // korte heeft er twee, en een derde zou over de slotkaart heen lopen.
+  ...FILMS[film].deunen.map((melody, i): [SoundName, number, number] => ['film', melody, TITLE - 0.3 + i * TUNE]),
   // the ask, over the tail of the last tune rather than after it
   ['cheer', 0, END],
   ['levelUp', 0, END + 0.9],
@@ -487,16 +549,6 @@ function gestureCues(cast: Cast): [SoundName, number, number][] {
  */
 const WOORD = 'darija'
 
-/**
- * Precies wanneer de vinger het luidsprekertje raakt, plus een haar.
- *
- * Het scherm waarop dat gebeurt is het laatste van de zeven; de tik zit op 1,2
- * seconde in die scène. Een kwart seconde later begint de opname — zo lang
- * duurt het in de app ook voordat er geluid komt, en zonder dat gaatje valt
- * het woord samen met het tikje.
- */
-const WOORD_AT = TITLE + SHOTS.indexOf('woord') * HOLD + 1.45
-
 async function hetWoord(off: OfflineAudioContext, bus: AudioNode): Promise<void> {
   const url = CLIPS[WOORD]
   if (!url) throw new Error(`geen opname voor "${WOORD}"`)
@@ -524,8 +576,8 @@ async function soundtrack(cast: Cast): Promise<AudioBuffer> {
   const rate = 48000
   const off = new OfflineAudioContext(2, Math.ceil((DURATION + 1) * rate), rate)
   const { bus } = busFor(off)
-  for (const [name, arg, at] of [...CUES, ...gestureCues(cast)]) VOICES[name](stageAt(off, bus, at), arg)
-  await hetWoord(off, bus)
+  for (const [name, arg, at] of [...cues(), ...gestureCues(cast)]) VOICES[name](stageAt(off, bus, at), arg)
+  if (WOORD_AT >= 0) await hetWoord(off, bus)
   const rendered = await off.startRendering()
 
   // Four tunes, applause and a taps track can sum past the limiter's ceiling,
@@ -676,8 +728,9 @@ declare global {
     darijaIntro: {
       duration: number
       shapes: string[]
-      still: (lang: string, shape: ShapeId, t: number) => Promise<string>
-      record: (lang: string, shape: ShapeId) => Promise<string>
+      still: (lang: string, shape: ShapeId, t: number, film?: FilmId) => Promise<string>
+      record: (lang: string, shape: ShapeId, film?: FilmId) => Promise<string>
+      duur: (film: FilmId) => number
     }
   }
 }
@@ -685,8 +738,17 @@ declare global {
 let cast: Cast | null = null
 let castLang = ''
 
-async function load(lang: string): Promise<Cast> {
-  if (cast && castLang === lang) return cast
+/**
+ * De spullen voor één film in één taal.
+ *
+ * De sleutel is taal én film, want de twee films gebruiken niet dezelfde
+ * schermen. Stond alleen de taal erin, dan hergebruikte de tweede film de
+ * zeven scènes van de eerste en kwam er een onbegrijpelijk beeld uit.
+ */
+async function load(lang: string, welke: FilmId = 'intro'): Promise<Cast> {
+  kiesFilm(welke)
+  const sleutel = `${lang}/${welke}`
+  if (cast && castLang === sleutel) return cast
   await document.fonts.load('800 80px "Baloo 2"')
   await document.fonts.load('600 80px "Baloo 2"')
   // The screens arrive as data URLs rather than files: writing PNGs into the
@@ -700,8 +762,8 @@ async function load(lang: string): Promise<Cast> {
     if (!shot?.frames.length) throw new Error(`geen beelden voor ${id}`)
     return { frames: await Promise.all(shot.frames.map(image)), acts: shot.acts ?? [] }
   }))
-  cast = { mark, fnek, scenes, copy: COPY[lang] ?? COPY.nl! }
-  castLang = lang
+  cast = { mark, fnek, scenes, copy: COPY[welke][lang] ?? COPY[welke].nl! }
+  castLang = sleutel
   return cast
 }
 
@@ -721,17 +783,23 @@ window.darijaIntro = {
   duration: DURATION,
   shapes: Object.keys(SHAPES),
 
+  /** Hoe lang een film duurt. Per film, want ze zijn niet even lang. */
+  duur(welke) {
+    kiesFilm(welke)
+    return DURATION
+  },
+
   /** One frame as a PNG, for checking the layout without taping anything. */
-  async still(lang, shape, t) {
-    const dressed = await load(lang)
+  async still(lang, shape, t, welke = 'intro') {
+    const dressed = await load(lang, welke)
     const { canvas, ctx } = prepare(shape)
     frame(ctx, SHAPES[shape], dressed, t)
     return canvas.toDataURL('image/png')
   },
 
   /** The whole film, as a data URL. */
-  async record(lang, shape) {
-    const dressed = await load(lang)
+  async record(lang, shape, welke = 'intro') {
+    const dressed = await load(lang, welke)
     const { canvas, ctx } = prepare(shape)
     const music = await soundtrack(dressed)
 
