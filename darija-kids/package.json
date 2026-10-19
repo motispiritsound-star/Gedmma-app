@@ -100,6 +100,7 @@
     "belangstelling": "node scripts/belangstelling.mjs",
     "opstoestel": "node scripts/opstoestel.mjs",
     "sketch": "node scripts/make-sketch.mjs",
+    "tafereel": "node scripts/make-tafereel.mjs",
     "weetje": "node scripts/make-weetje.mjs"
   },
   "dependencies": {
