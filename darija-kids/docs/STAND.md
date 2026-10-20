@@ -114,6 +114,48 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## 20 oktober: de winkelpagina werkt, het bereik niet
+
+| | 13 okt | 16 okt | 17 okt | 18 okt |
+|---|---|---|---|---|
+| Vertoningen (Apple) | 365 | 508 | 549 | **598** |
+| Productpaginabezoeken | 85 | 119 | 128 | **141** |
+| Eerste downloads | 49 | 74 | 82 | **92** |
+| In-app aankopen | 4 | 5 | 5 | **7** |
+| Opbrengst | $48 | $48 | $48 | **$54** |
+| Betaalde plannen | — | 1 | 1 | **2** |
+| Play — installs | — | — | 26 | **27** |
+
+**Het getal dat ertoe doet: 92 van de 141.** Van iedereen die de Apple-pagina
+opent, downloadt 65 procent de app. Dat is geen matige pagina die beter moet;
+dat is een pagina die bijna iedereen overtuigt die hem ziet. De tekst, de
+platen en de film doen hun werk.
+
+**En dus is bereik het enige echte probleem.** 598 vertoningen in ruim twee
+weken. Dat zijn er ongeveer veertig per dag, en bijna allemaal van mensen die
+een link uit een kanaal of een groep volgden. Zoeken in de winkel levert vrijwel
+niets op — en dat is precies het kanaal dat gratis is en zichzelf opbouwt.
+
+**Wat géén probleem is, al ziet het er zo uit.** *Day 7 download to paid* zakt:
+9,09 → 5,88 → 5,26 → 4,17 procent. Dat is geen verslechtering maar rekenwerk:
+de noemer vult zich met downloads van gisteren, die nog geen zeven dagen oud
+zijn en dus nooit in de teller kunnen staan. Zolang het aantal downloads per dag
+stijgt, zakt dit percentage vanzelf. Kijk in plaats daarvan naar het aantal
+betaalde plannen, en dat ging van 1 naar 2.
+
+**Play blijft achter: 27 tegen 92.** Deels verklaarbaar — Play staat negen
+dagen korter live. Maar niet helemaal, en dat is het nakijken waard: 17
+maandelijks actieve toestellen op 27 installs is gezond, dus het ligt niet aan
+de app. Het ligt aan wie hem ziet.
+
+**De opbrengst zegt iets over wát er verkocht wordt.** $54 op 7 in-app
+aankopen is gemiddeld bijna $8 netto per aankoop. Een abonnement van € 59,99
+levert na btw en Apple ongeveer € 42 op, een e-boek van € 14,99 ongeveer
+€ 10,50. Zeven aankopen en twee betaalde plannen betekent dus dat er meer
+e-boeken dan abonnementen over de toonbank gaan. Na te kijken onder Sales, en
+als het klopt is het goed nieuws: het boek is de makkelijkste eerste aankoop
+en de opstap naar de rest.
+
 ## 19 oktober: een korte film over de twee oefeningen die je niet kunt fotograferen
 
 ```powershell
