@@ -1012,6 +1012,11 @@ export const fr: Strings = {
     titel: 'Passe à la version complète',
     body: (dagen: number, prijs: string): string =>
       `Toutes les unités, tous les mots et toutes les histoires. Les ${dagen} premiers jours sont gratuits, ensuite à partir de ${prijs} par mois — résiliable à tout moment.`,
+    /* Voor wie van de winkel geen proefperiode meer krijgt. Op het éérste
+       scherm dat een ouder ziet hoort net zo min iets gratis te staan als
+       op het abonnementsscherm -- zie `heeftProef` in engine/billing.ts. */
+    bodyDirect: (prijs: string): string =>
+      `Toutes les unités, tous les mots et toutes les histoires. À partir de ${prijs} par mois — résiliable à tout moment.`,
     knop: 'Voir l’accès complet',
     later: (vrij: number): string => `D’abord les ${vrij} leçons gratuites`,
   },

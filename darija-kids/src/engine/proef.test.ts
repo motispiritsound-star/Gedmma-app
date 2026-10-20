@@ -93,6 +93,45 @@ describe('het abonnementsscherm', () => {
   })
 })
 
+describe('het aanbod bij de eerste start', () => {
+  const aanbod = readFileSync(new URL('../ui/Aanbod.tsx', import.meta.url), 'utf8')
+
+  /*
+   * Dit is het eerste bedrag dat een ouder van deze app te zien krijgt, en het
+   * stond er in euro's: `planOf('jaar').perMonth`, met zoveel woorden de
+   * terugval voor de wébsite. Wie dit scherm in Marokko of de Verenigde Staten
+   * opende las "€ 5,00" terwijl de winkel straks dirham of dollar afschrijft.
+   */
+  it('neemt de prijs van de winkel en het vaste getal alleen als terugval', () => {
+    expect(aanbod).toContain('const perMaand = billing.yearPerMonth ?? planOf(\'jaar\').perMonth')
+    expect(aanbod, 'het vaste getal mag nergens rechtstreeks in beeld staan')
+      .not.toMatch(/\{t\.aanbod\.body\([^)]*planOf\(/)
+  })
+
+  it('belooft ook hier geen proef die de winkel niet geeft', () => {
+    expect(aanbod).toContain('const magProef = billing.proef.jaar === true')
+    expect(aanbod).toContain('magProef ? t.aanbod.body(TRIAL_DAYS, perMaand) : t.aanbod.bodyDirect(perMaand)')
+  })
+
+  /*
+   * Een keuze die je wegmoffelt is geen keuze, en Apple leest een weggewerkte
+   * afsluitknop bij een abonnement als een donkere knop -- richtlijn 3.1.2.
+   * Allebei de knoppen zijn `w-full`, en dat hoort zo te blijven.
+   */
+  it('houdt "later" even groot als "bekijken"', () => {
+    expect(aanbod).toContain('{t.aanbod.later(FREE_LESSONS)}')
+    const later = aanbod.slice(aanbod.indexOf('onClick={() => { sfx.nav(); sluit() }}'))
+    expect(later).toContain('w-full')
+  })
+
+  /* Kopen gebeurt op /volledig, waar de ouderpoort en de voorwaarden staan.
+     Dat hier nog eens bouwen zou de poort kunnen laten ontbreken. */
+  it('koopt hier niets maar stuurt naar het scherm met de ouderpoort', () => {
+    expect(aanbod).toContain("nav('/volledig')")
+    expect(aanbod).not.toContain('subscribe(')
+  })
+})
+
 describe('de teksten zelf', () => {
   const TALEN = ['nl', 'fr', 'de', 'es', 'it', 'en'] as const
 

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useT } from '../i18n'
 import { sfx } from '../engine/audio'
-import { billingAvailable, FREE_LESSONS, planOf, TRIAL_DAYS } from '../engine/billing'
+import { billingAvailable, FREE_LESSONS, planOf, TRIAL_DAYS, useBilling } from '../engine/billing'
 import { setState, useStore } from '../engine/store'
 import { Button, Sheet } from './kit'
 import { Mascot } from './Mascot'
@@ -32,6 +32,25 @@ export function Aanbod() {
   const gezien = useStore((s) => s.aanbodGezien)
   const unlocked = useStore((s) => s.unlocked)
   const nav = useNavigate()
+  const billing = useBilling()
+
+  /*
+   * De prijs van de winkel, en pas als die er niet is het vaste getal.
+   *
+   * Hier stond `planOf('jaar').perMonth` -- "€ 5,00" -- en dat is met zoveel
+   * woorden de terugval voor de wébsite. In de app hoort hij nergens te staan:
+   * wie dit scherm in Marokko of in de Verenigde Staten opent, las een bedrag
+   * in euro's terwijl de winkel straks dirham of dollar afschrijft. Dit is het
+   * eerste bedrag dat een ouder van deze app te zien krijgt.
+   */
+  const perMaand = billing.yearPerMonth ?? planOf('jaar').perMonth
+
+  /*
+   * En of er voor déze koper nog een proefperiode is. Zelfde reden als op het
+   * abonnementsscherm: onbekend telt als nee, want beloven wat je niet weet is
+   * hetzelfde probleem. Zie `heeftProef` in engine/billing.ts.
+   */
+  const magProef = billing.proef.jaar === true
 
   /*
    * Niet op de website. Daar is niets te koop — `billingAvailable()` is dan
@@ -60,7 +79,9 @@ export function Aanbod() {
       <div className="text-center">
         <Mascot mood="juich" size={78} className="mx-auto" />
         <h2 id="aanbod-title" className="mt-2 font-display text-2xl font-extrabold">{t.aanbod.titel}</h2>
-        <p className="mt-2 text-[var(--ink-soft)]">{t.aanbod.body(TRIAL_DAYS, planOf('jaar').perMonth)}</p>
+        <p className="mt-2 text-[var(--ink-soft)]">
+          {magProef ? t.aanbod.body(TRIAL_DAYS, perMaand) : t.aanbod.bodyDirect(perMaand)}
+        </p>
 
         <Button className="mt-5 w-full" onClick={() => { sfx.nav(); sluit(); nav('/volledig') }}>
           {t.aanbod.knop}
