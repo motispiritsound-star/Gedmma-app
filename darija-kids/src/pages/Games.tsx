@@ -266,7 +266,7 @@ function Memory({ onExit }: { onExit: () => void }) {
           <Khatim size={20} className="text-saffron-500" />
           {found.length}/{tiles.length / 2}
         </span>
-        <span>{tries} {t.common.beurten}</span>
+        <span>{t.common.beurten(tries)}</span>
       </div>
 
       {/* Drie kolommen, ook onder de 360 punten.

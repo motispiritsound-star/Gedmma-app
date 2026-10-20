@@ -22,7 +22,7 @@ export const es: Strings = {
     woorden: 'palabras',
     goed: 'bien',
     dagen: 'días',
-    beurten: 'turnos',
+    beurten: (n) => (n === 1 ? '1 turno' : `${n} turnos`),
     van: 'de',
   },
 

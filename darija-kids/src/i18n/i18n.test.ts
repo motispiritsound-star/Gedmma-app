@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { STRINGS, LANG_CODES, detectLang, isLang, localeOf } from './index'
 import { nl } from './nl'
@@ -170,5 +171,40 @@ describe('content packs', () => {
         }
       }
     }
+  })
+
+  /**
+   * De beurtenteller van het geheugenspel telt enkelvoud.
+   *
+   * Hij stond als los zelfstandig naamwoord in `common` en werd in `Games`
+   * achter het getal geplakt: `{tries} {t.common.beurten}`. Bij de eerste
+   * beurt -- en dat is elke partij -- las dat als "1 beurten", "1 turns",
+   * "1 Zuege", "1 turnos", "1 mosse", "1 tours". Het stond ook vol in beeld
+   * in de promofilm van het spel, en daar viel het pas op.
+   *
+   * De rest van `i18n` doet dit al met `(n) => n === 1 ? ... : ...`; deze
+   * sleutel was de uitzondering. De test kijkt niet naar de woorden zelf --
+   * die mogen veranderen -- maar naar de vorm: het getal staat vooraan, en
+   * een partij met een beurt heet anders dan een partij met meer.
+   */
+  it('counts turns in the singular', () => {
+    for (const lang of LANG_CODES) {
+      const beurten = STRINGS[lang].common.beurten
+      expect(beurten(1), lang).toMatch(/^1\s/)
+      expect(beurten(7), lang).toMatch(/^7\s/)
+      // Het woord achter het getal, zonder het getal zelf.
+      const woord = (n: number) => beurten(n).replace(/^\d+\s*/, '')
+      expect(woord(1), lang).not.toBe(woord(7))
+      expect(woord(7), lang).toBe(woord(2))
+    }
+    // Het Frans rekent de nul bij het enkelvoud, de andere talen niet.
+    expect(STRINGS.fr.common.beurten(0)).toBe('0 tour')
+    expect(STRINGS.nl.common.beurten(0)).toBe('0 beurten')
+  })
+
+  it('does not glue the count onto the turn word by hand', () => {
+    const spellen = readFileSync(new URL('../pages/Games.tsx', import.meta.url), 'utf8')
+    expect(spellen).toContain('t.common.beurten(tries)')
+    expect(spellen).not.toContain('{tries} {t.common.beurten}')
   })
 })

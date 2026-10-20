@@ -22,7 +22,9 @@ export const fr: Strings = {
     woorden: 'mots',
     goed: 'correct',
     dagen: 'jours',
-    beurten: 'tours',
+    // Het Frans rekent de nul bij het enkelvoud, en deze teller begint op
+    // nul. Vandaar `n <= 1` en niet `n === 1` zoals in de andere talen.
+    beurten: (n) => (n <= 1 ? `${n} tour` : `${n} tours`),
     van: 'de',
   },
 

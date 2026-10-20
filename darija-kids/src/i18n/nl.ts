@@ -26,7 +26,7 @@ export const nl = {
     woorden: 'woorden',
     goed: 'goed',
     dagen: 'dagen',
-    beurten: 'beurten',
+    beurten: (n: number): string => (n === 1 ? '1 beurt' : `${n} beurten`),
     van: 'van',
   },
 

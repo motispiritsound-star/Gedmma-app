@@ -22,7 +22,7 @@ export const it: Strings = {
     woorden: 'parole',
     goed: 'giuste',
     dagen: 'giorni',
-    beurten: 'mosse',
+    beurten: (n) => (n === 1 ? '1 mossa' : `${n} mosse`),
     van: 'di',
   },
 
