@@ -599,6 +599,36 @@ const SCENES = [
     },
   },
   {
+    id: 'herhalen',
+    /**
+     * Het herhaalscherm: wat de app onthoudt terwijl jij dat niet hoeft.
+     *
+     * Dit is het enige scherm dat niet aan het kind maar aan de ouder
+     * uitlegt waar het geld heen gaat. Drie tellers -- nu te herhalen,
+     * woorden gezien, vastgezet -- en daaronder een lijst met de woorden
+     * die nog het minst vastzitten, elk met het woord, de klank en de
+     * vertaling erbij.
+     *
+     * Geen vinger: het scherm is langer dan de telefoon en er valt niets
+     * te drukken dat beter vertelt dan wat er al staat. Twee standen dus,
+     * net als bij `pad` -- de tellers en de lijst. De opgeslagen stand
+     * heeft acht achterstallige kaarten, waardoor er echt iets te
+     * herhalen is in plaats van een leeg scherm met een aanmoediging.
+     */
+    take: async (page) => {
+      await page.goto(`${BASE}/herhalen`, { waitUntil: 'networkidle' })
+      await wait(page, 1100)
+      const frames = []
+      for (const y of [0, 600]) {
+        await page.evaluate((to) => window.scrollTo({ top: to, behavior: 'instant' }), y)
+        await wait(page, 300)
+        frames.push(await shot(page, y))
+      }
+      await page.evaluate(() => window.scrollTo(0, 0))
+      return { frames, acts: [{ at: 0.6, dur: 3.4, path: [], steps: [[0.5, 1]], frame: 1 }] }
+    },
+  },
+  {
     id: 'verhaal',
     /**
      * Een verhaal, en het is met opzet dat ene: Yasmin bij haar jeddti.
@@ -718,6 +748,18 @@ const FILMS = {
   },
   weetje: {
     shots: ['geschiedenis', 'memory'],
+    shapes: 'verhaal,vierkant',
+  },
+  alfabet: {
+    shots: ['letters', 'woord'],
+    shapes: 'verhaal,vierkant',
+  },
+  route: {
+    shots: ['pad', 'les'],
+    shapes: 'verhaal,vierkant',
+  },
+  onthouden: {
+    shots: ['herhalen', 'leren'],
     shapes: 'verhaal,vierkant',
   },
 }

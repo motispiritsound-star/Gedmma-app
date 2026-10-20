@@ -16,7 +16,7 @@ import { CLIPS } from '../src/engine/clips'
 /* ------------------------------------------------------------------ the copy */
 
 type ShotId = 'pad' | 'leren' | 'letters' | 'les' | 'geschiedenis' | 'schrijven' | 'woord' | 'spreken'
-  | 'memory' | 'verhaal'
+  | 'memory' | 'verhaal' | 'herhalen'
 
 import { COPY, type Copy, type FilmId } from './intro-copy'
 
@@ -70,6 +70,23 @@ const FILMS: Record<FilmId, Film> = {
   weetje: {
     shots: ['geschiedenis', 'memory'],
     titel: 2.2, hold: 4.8, slot: 3.0, deunen: [3, 1],
+  },
+  /*
+   * De laatste drie van de reeks. Zelfde maat als de andere korte films --
+   * vijftien seconden, twee schermen -- en samen dekken ze af wat de eerste
+   * drie lieten liggen: het schrift, de route, en wat de app onthoudt.
+   */
+  alfabet: {
+    shots: ['letters', 'woord'],
+    titel: 2.2, hold: 4.8, slot: 3.0, deunen: [2, 0],
+  },
+  route: {
+    shots: ['pad', 'les'],
+    titel: 2.2, hold: 4.8, slot: 3.0, deunen: [1, 3],
+  },
+  onthouden: {
+    shots: ['herhalen', 'leren'],
+    titel: 2.2, hold: 4.8, slot: 3.0, deunen: [0, 2],
   },
 }
 

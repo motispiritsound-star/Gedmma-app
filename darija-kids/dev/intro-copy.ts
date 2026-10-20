@@ -14,6 +14,7 @@
 
 /** Welke film. Zie FILMS in intro.ts. */
 export type FilmId = 'intro' | 'bonus' | 'spelen' | 'weetje'
+  | 'alfabet' | 'route' | 'onthouden'
 
 export interface Copy {
   /** Under the title, in the opening card. */
@@ -262,4 +263,122 @@ const WEET: Record<string, Copy> = Object.fromEntries(
   Object.entries(INTRO).map(([taal, c]) => [taal, { ...c, ...(WEETJE[taal] ?? WEETJE.nl!) }]),
 )
 
-export const COPY: Record<FilmId, Record<string, Copy>> = { intro: INTRO, bonus: BONUS, spelen: SPEL, weetje: WEET }
+/**
+ * Deel vier: het schrift.
+ *
+ * De drempel die ouders noemen is niet de taal maar het alfabet -- dat
+ * ziet eruit als iets waar je jaren voor nodig hebt. Achtentwintig is
+ * een getal dat je kunt overzien, en `src/content/alphabet.ts` heeft er
+ * precies zoveel.
+ */
+const ALFABET_T: Record<string, Pick<Copy, 'sub' | 'lines'>> = {
+  nl: {
+    sub: 'Het schrift is niet het moeilijke deel',
+    lines: ['Achtentwintig letters,\néén voor één.', 'En dan lees je je\neerste woord zelf.'],
+  },
+  fr: {
+    sub: 'L’écriture n’est pas le plus dur',
+    lines: ['Vingt-huit lettres,\nune par une.', 'Et tu lis ton premier\nmot toi-même.'],
+  },
+  de: {
+    sub: 'Die Schrift ist nicht das Schwere',
+    lines: ['Achtundzwanzig Buchstaben,\neiner nach dem anderen.', 'Und dann liest du dein\nerstes Wort selbst.'],
+  },
+  es: {
+    sub: 'La escritura no es lo difícil',
+    lines: ['Veintiocho letras,\nuna por una.', 'Y entonces lees tu\nprimera palabra solo.'],
+  },
+  it: {
+    sub: 'La scrittura non è la parte difficile',
+    lines: ['Ventotto lettere,\nuna alla volta.', 'E poi leggi la tua\nprima parola da solo.'],
+  },
+  en: {
+    sub: 'The script is not the hard part',
+    lines: ['Twenty-eight letters,\none at a time.', 'And then you read your\nfirst word yourself.'],
+  },
+}
+
+const ALFA: Record<string, Copy> = Object.fromEntries(
+  Object.entries(INTRO).map(([taal, c]) => [taal, { ...c, ...(ALFABET_T[taal] ?? ALFABET_T.nl!) }]),
+)
+
+/**
+ * Deel vijf: de route.
+ *
+ * Wat een app voor Darija eigenlijk is, in één beeld: zeventien units die
+ * ergens heen gaan. Het getal staat ook in `feiten` en wordt daar tegen
+ * de echte inhoud gelegd.
+ */
+const ROUTE_T: Record<string, Pick<Copy, 'sub' | 'lines'>> = {
+  nl: {
+    sub: 'Je ziet meteen waar het eindigt',
+    lines: ['Zeventien units, van de\neerste letter tot de souq.', 'Horen, kiezen, herhalen —\ntot het blijft hangen.'],
+  },
+  fr: {
+    sub: 'On voit tout de suite où ça mène',
+    lines: ['Dix-sept unités, de la\npremière lettre au souk.', 'Écouter, choisir, répéter —\njusqu’à ce que ça reste.'],
+  },
+  de: {
+    sub: 'Man sieht sofort, wo es endet',
+    lines: ['Siebzehn Einheiten, vom\nersten Buchstaben zum Souk.', 'Hören, wählen, wiederholen —\nbis es sitzt.'],
+  },
+  es: {
+    sub: 'Se ve enseguida adónde lleva',
+    lines: ['Diecisiete unidades, de la\nprimera letra al zoco.', 'Escuchar, elegir, repetir —\nhasta que se queda.'],
+  },
+  it: {
+    sub: 'Si vede subito dove si arriva',
+    lines: ['Diciassette unità, dalla\nprima lettera al souk.', 'Ascoltare, scegliere, ripetere —\nfinché non resta.'],
+  },
+  en: {
+    sub: 'You can see where it ends',
+    lines: ['Seventeen units, from the\nfirst letter to the souk.', 'Listen, choose, repeat —\nuntil it sticks.'],
+  },
+}
+
+const ROUTE: Record<string, Copy> = Object.fromEntries(
+  Object.entries(INTRO).map(([taal, c]) => [taal, { ...c, ...(ROUTE_T[taal] ?? ROUTE_T.nl!) }]),
+)
+
+/**
+ * Deel zes: wat de app onthoudt.
+ *
+ * Het enige deel dat aan de ouder uitlegt waar het geld heen gaat. Niet
+ * met een belofte maar met een scherm: drie tellers en een lijst met de
+ * woorden die nog het minst vastzitten.
+ */
+const ONTHOUD_T: Record<string, Pick<Copy, 'sub' | 'lines'>> = {
+  nl: {
+    sub: 'Jij hoeft niet bij te houden wat je vergeet',
+    lines: ['Woorden komen terug net\nvoordat je ze vergeet.', 'En elke dag een opdracht\ndie af kan.'],
+  },
+  fr: {
+    sub: 'Tu n’as pas à suivre ce que tu oublies',
+    lines: ['Les mots reviennent juste\navant que tu les oublies.', 'Et chaque jour une mission\nqu’on peut finir.'],
+  },
+  de: {
+    sub: 'Du musst nicht nachhalten, was du vergisst',
+    lines: ['Wörter kommen zurück, kurz\nbevor du sie vergisst.', 'Und jeden Tag eine Aufgabe,\ndie zu schaffen ist.'],
+  },
+  es: {
+    sub: 'No tienes que llevar la cuenta de lo que olvidas',
+    lines: ['Las palabras vuelven justo\nantes de que las olvides.', 'Y cada día una misión\nque se puede terminar.'],
+  },
+  it: {
+    sub: 'Non devi tenere il conto di ciò che dimentichi',
+    lines: ['Le parole tornano poco\nprima che tu le dimentichi.', 'E ogni giorno una missione\nche si può finire.'],
+  },
+  en: {
+    sub: 'You do not have to track what you forget',
+    lines: ['Words come back just before\nyou forget them.', 'And a daily mission small\nenough to finish.'],
+  },
+}
+
+const ONTHOUD: Record<string, Copy> = Object.fromEntries(
+  Object.entries(INTRO).map(([taal, c]) => [taal, { ...c, ...(ONTHOUD_T[taal] ?? ONTHOUD_T.nl!) }]),
+)
+
+export const COPY: Record<FilmId, Record<string, Copy>> = {
+  intro: INTRO, bonus: BONUS, spelen: SPEL, weetje: WEET,
+  alfabet: ALFA, route: ROUTE, onthouden: ONTHOUD,
+}
