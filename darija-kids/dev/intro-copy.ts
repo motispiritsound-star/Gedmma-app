@@ -350,27 +350,27 @@ const ROUTE: Record<string, Copy> = Object.fromEntries(
 const ONTHOUD_T: Record<string, Pick<Copy, 'sub' | 'lines'>> = {
   nl: {
     sub: 'Jij hoeft niet bij te houden wat je vergeet',
-    lines: ['Woorden komen terug net\nvoordat je ze vergeet.', 'En elke dag een opdracht\ndie af kan.'],
+    lines: ['De app ziet welke woorden\nlos beginnen te zitten.', 'En elke dag een opdracht\ndie af kan.'],
   },
   fr: {
     sub: 'Tu n’as pas à suivre ce que tu oublies',
-    lines: ['Les mots reviennent juste\navant que tu les oublies.', 'Et chaque jour une mission\nqu’on peut finir.'],
+    lines: ['L’appli voit quels mots\ncommencent à se défaire.', 'Et chaque jour une mission\nqu’on peut finir.'],
   },
   de: {
     sub: 'Du musst nicht nachhalten, was du vergisst',
-    lines: ['Wörter kommen zurück, kurz\nbevor du sie vergisst.', 'Und jeden Tag eine Aufgabe,\ndie zu schaffen ist.'],
+    lines: ['Die App sieht, welche Wörter\nsich zu lösen beginnen.', 'Und jeden Tag eine Aufgabe,\ndie zu schaffen ist.'],
   },
   es: {
     sub: 'No tienes que llevar la cuenta de lo que olvidas',
-    lines: ['Las palabras vuelven justo\nantes de que las olvides.', 'Y cada día una misión\nque se puede terminar.'],
+    lines: ['La app ve qué palabras\nempiezan a aflojarse.', 'Y cada día una misión\nque se puede terminar.'],
   },
   it: {
     sub: 'Non devi tenere il conto di ciò che dimentichi',
-    lines: ['Le parole tornano poco\nprima che tu le dimentichi.', 'E ogni giorno una missione\nche si può finire.'],
+    lines: ['L’app vede quali parole\niniziano ad allentarsi.', 'E ogni giorno una missione\nche si può finire.'],
   },
   en: {
     sub: 'You do not have to track what you forget',
-    lines: ['Words come back just before\nyou forget them.', 'And a daily mission small\nenough to finish.'],
+    lines: ['The app sees which words\nare starting to slip.', 'And a daily mission small\nenough to finish.'],
   },
 }
 
