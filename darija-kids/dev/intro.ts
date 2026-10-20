@@ -65,6 +65,12 @@ const FILMS: Record<FilmId, Film> = {
     shots: ['memory', 'verhaal'],
     titel: 2.2, hold: 4.8, slot: 3.0, deunen: [0, 3],
   },
+  /* Een weetje en een spel: de geschiedeniskaart na een toets, en het
+     geheugenspel erachteraan. */
+  weetje: {
+    shots: ['geschiedenis', 'memory'],
+    titel: 2.2, hold: 4.8, slot: 3.0, deunen: [3, 1],
+  },
 }
 
 interface Beat { kind: 'title' | 'shot' | 'cta'; at: number; until: number; shot?: number }

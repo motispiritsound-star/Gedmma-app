@@ -530,6 +530,32 @@ const SCENES = [
      * De startknop is de tweede van twee: de kaart van het tijdspel staat
      * erboven. Zonder `force`, want met `force` klikte hij eerder dwars door
      * de onderbalk heen en kwam de film in het woordenboek terecht.
+     *
+     * Twee dingen zijn hier eerder misgegaan, allebei stil -- de film kwam er
+     * gewoon uit, alleen met twaalf dichte kaartjes en een kaptioen die zegt
+     * dat je woorden leert.
+     *
+     * Het eerste is een wedloop. Klopt het paar niet, dan klapt `Memory` het
+     * na 800 ms weer dicht. De scene wachtte 650 ms en `shot()` legt daar zijn
+     * eigen 120 ms bovenop, dus de sluiter viel precies op dat moment. De
+     * kleuren waren nog onderweg terug -- Tailwinds `transition` doet er
+     * 150 ms over -- en dat is waarom het kaartje wit met een groene rand op
+     * de foto staat terwijl het woord er al af is.
+     *
+     * Het telt nu de open kaartjes *voor* de foto en niet erna. Dat is geen
+     * smaak: op driedubbele resolutie is een schermafdruk 1170 bij 2532, en
+     * het coderen daarvan duurt lang genoeg om zelf over de 800 ms heen te
+     * gaan. Een telling achteraf klaagde dus over een foto die prima was.
+     * Vastleggen gebeurt bij de aanroep, coderen daarna -- dus wie ervoor
+     * telt, weet wat er op de plaat staat. Vanaf de klik: 260 ms wachten,
+     * tellen, en dan de 120 ms van `shot()`; rond de 400 ms, met de helft van
+     * het raam over.
+     *
+     * Het tweede is de keuze van de kaartjes. `hasNotText` houdt alleen de
+     * dichte kaartjes over, en zodra het eerste openklapt valt het uit de
+     * lijst -- waarna `nth(5)` het zesde kaartje is. De vinger, die zijn route
+     * ervoor opmeet, wees dus naar een kaartje dat nooit openging. Het bord
+     * heeft altijd twaalf knoppen, open of dicht, dus daar tellen we nu op.
      */
     take: async (page) => {
       await page.goto(`${BASE}/spelen`, { waitUntil: 'networkidle' })
@@ -541,19 +567,21 @@ const SCENES = [
       await wait(page, 1100)
 
       const scroll = await scrollNow(page)
-      const tegels = page.locator('main button').filter({ hasNotText: /./ })
+      const tegels = page.locator('main .grid button')
       const hoeveel = await tegels.count()
-      if (hoeveel < 4) throw new Error(`het bord heeft maar ${hoeveel} kaartjes`)
+      if (hoeveel !== 12) throw new Error(`het bord heeft ${hoeveel} kaartjes in plaats van twaalf`)
 
       const eerste = await spot(page, tegels.nth(0))
-      const tweede = await spot(page, tegels.nth(hoeveel > 5 ? 5 : 1))
+      const tweede = await spot(page, tegels.nth(5))
 
       const frames = [await shot(page, scroll)]
       await tegels.nth(0).click()
-      await wait(page, 450)
+      await wait(page, 420)
       frames.push(await shot(page, scroll))
-      await tegels.nth(hoeveel > 5 ? 5 : 1).click()
-      await wait(page, 650)
+      await tegels.nth(5).click()
+      await wait(page, 260)
+      const open = await tegels.filter({ hasText: /./ }).count()
+      if (open < 2) throw new Error(`na twee klikken staan er ${open} kaartjes open; het woord komt niet op de foto`)
       frames.push(await shot(page, scroll))
 
       return {
@@ -686,6 +714,10 @@ const FILMS = {
   },
   spelen: {
     shots: ['memory', 'verhaal'],
+    shapes: 'verhaal,vierkant',
+  },
+  weetje: {
+    shots: ['geschiedenis', 'memory'],
     shapes: 'verhaal,vierkant',
   },
 }

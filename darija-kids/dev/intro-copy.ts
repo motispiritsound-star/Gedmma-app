@@ -13,7 +13,7 @@
  */
 
 /** Welke film. Zie FILMS in intro.ts. */
-export type FilmId = 'intro' | 'bonus' | 'spelen'
+export type FilmId = 'intro' | 'bonus' | 'spelen' | 'weetje'
 
 export interface Copy {
   /** Under the title, in the opening card. */
@@ -218,4 +218,48 @@ const SPEL: Record<string, Copy> = Object.fromEntries(
   Object.entries(INTRO).map(([taal, c]) => [taal, { ...c, ...(SPELEN[taal] ?? SPELEN.nl!) }]),
 )
 
-export const COPY: Record<FilmId, Record<string, Copy>> = { intro: INTRO, bonus: BONUS, spelen: SPEL }
+
+/**
+ * De vierde: een weetje en een spel.
+ *
+ * De geschiedeniskaart die na elke toets komt -- een tekening die zichzelf
+ * tekent, en op de achterkant een wist-je-dat -- naast het geheugenspel. Samen
+ * zeggen ze wat de andere films niet zeggen: dat er geleerd wordt op plekken
+ * die niet naar een les ruiken.
+ *
+ * Het geheugenspel staat ook in `spelen`. Dat mag: het zijn twee posts die
+ * weken uit elkaar liggen, en het spel is daar de hoofdzaak en hier het
+ * tweede beeld.
+ */
+const WEETJE: Record<string, Pick<Copy, 'sub' | 'lines'>> = {
+  nl: {
+    sub: 'Leren zit niet alleen in de lessen',
+    lines: ['Na elke toets een stukje\nMarokko, met een wist-je-dat.', 'En een spel waarin je leert\nzonder dat je het merkt.'],
+  },
+  fr: {
+    sub: 'Apprendre ne se passe pas que dans les le\u00e7ons',
+    lines: ['Apr\u00e8s chaque test, un bout\nde Maroc, et un le-saviez-vous.', 'Et un jeu o\u00f9 l\u2019on apprend\nsans s\u2019en rendre compte.'],
+  },
+  de: {
+    sub: 'Lernen steckt nicht nur in den Lektionen',
+    lines: ['Nach jedem Test ein St\u00fcck\nMarokko, mit einem Wusstest-du.', 'Und ein Spiel, in dem du lernst,\nohne es zu merken.'],
+  },
+  es: {
+    sub: 'Aprender no ocurre solo en las lecciones',
+    lines: ['Tras cada prueba, un trozo\nde Marruecos, con un sab\u00edas-que.', 'Y un juego donde aprendes\nsin darte cuenta.'],
+  },
+  it: {
+    sub: 'Imparare non succede solo nelle lezioni',
+    lines: ['Dopo ogni test un pezzo\ndi Marocco, con un lo-sapevi.', 'E un gioco in cui impari\nsenza accorgertene.'],
+  },
+  en: {
+    sub: 'Learning does not only happen in the lessons',
+    lines: ['After every checkpoint a piece\nof Morocco, with a did-you-know.', 'And a game where you learn\nwithout noticing.'],
+  },
+}
+
+const WEET: Record<string, Copy> = Object.fromEntries(
+  Object.entries(INTRO).map(([taal, c]) => [taal, { ...c, ...(WEETJE[taal] ?? WEETJE.nl!) }]),
+)
+
+export const COPY: Record<FilmId, Record<string, Copy>> = { intro: INTRO, bonus: BONUS, spelen: SPEL, weetje: WEET }

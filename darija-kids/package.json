@@ -32,6 +32,7 @@
     "intro": "node scripts/make-intro.mjs",
     "bonusfilm": "node scripts/make-intro.mjs --film bonus",
     "speelfilm": "node scripts/make-intro.mjs --film spelen",
+    "weetjefilm": "node scripts/make-intro.mjs --film weetje",
     "feedbackcheck": "node scripts/feedbackcheck.mjs",
     "historycheck": "node scripts/historycheck.mjs",
     "lettercheck": "node scripts/lettercheck.mjs",
