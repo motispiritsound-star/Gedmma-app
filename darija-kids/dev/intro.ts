@@ -162,7 +162,9 @@ const SHAPES: Record<ShapeId, Shape> = {
   // A feed post: words left, phone right.
   vierkant: {
     w: 1080, h: 1080,
-    text: { cx: 340, cy: 540, width: 540, size: 60 },
+    // De kolom houdt afstand van het toestel: dat staat met zijn linkerrand
+    // op 600, en 515 breed vanaf 332 loopt tot 590.
+    text: { cx: 332, cy: 540, width: 515, size: 60 },
     phone: { cx: 812, cy: 560, height: 920 },
     hero: { cx: 540, cy: 540 },
   },
@@ -381,17 +383,64 @@ function lines(
   size: number,
   colour: string,
   weight = 800,
+  /**
+   * Hoeveel ruimte de tekst heeft. Nul betekent: meten hoeft niet.
+   *
+   * `SHAPES` had deze maat al staan, maar niemand las hem -- de tekst werd
+   * op vaste grootte midden in zijn kolom gezet en liep er stilletjes uit.
+   * In het vierkante formaat is die kolom 540 breed en staat de telefoon
+   * er pal naast, dus "De app ziet welke woorden" verdween voor een derde
+   * achter het toestel en aan de linkerkant uit beeld. De film kwam er
+   * gewoon uit; het viel pas op bij het nakijken van een plaatje.
+   *
+   * Past de breedste regel er niet in, dan gaat de hele tekst evenredig
+   * omlaag tot hij past. Dus niet per regel, want dan staan twee regels
+   * van dezelfde zin op twee maten.
+   */
+  width = 0,
 ): void {
   const rows = text.split('\n')
-  const lead = size * 1.16
   ctx.save()
-  ctx.font = `${weight} ${size}px "Baloo 2", system-ui, sans-serif`
+  const stel = (px: number): void => {
+    ctx.font = `${weight} ${px}px "Baloo 2", system-ui, sans-serif`
+  }
+  stel(size)
+  if (width > 0) {
+    const breedste = rows.reduce((b, row) => Math.max(b, ctx.measureText(row).width), 0)
+    if (breedste > width) stel((size *= width / breedste))
+  }
+  const lead = size * 1.16
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
   ctx.fillStyle = colour
   const top = cy - ((rows.length - 1) * lead) / 2
   rows.forEach((row, i) => ctx.fillText(row, cx, top + i * lead))
   ctx.restore()
+}
+
+/**
+ * De grootste maat waarop elk bijschrift van deze film in zijn kolom past.
+ *
+ * Per bijschrift meten zou genoeg zijn om niets te laten overlopen, maar dan
+ * staat het ene scherm op 60 en het volgende op 44 -- binnen een film van
+ * vijftien seconden zie je dat springen. Dus eenmaal de breedste regel van
+ * alle schermen samen, en die maat voor allemaal.
+ */
+function passend(
+  ctx: CanvasRenderingContext2D,
+  teksten: string[],
+  size: number,
+  width: number,
+): number {
+  if (width <= 0) return size
+  ctx.save()
+  ctx.font = `800 ${size}px "Baloo 2", system-ui, sans-serif`
+  let breedste = 0
+  for (const tekst of teksten) {
+    for (const rij of tekst.split('\n')) breedste = Math.max(breedste, ctx.measureText(rij).width)
+  }
+  ctx.restore()
+  return breedste > width ? size * (width / breedste) : size
 }
 
 /** A phone: the screenshot, a cream bezel around it, and a shadow under it. */
@@ -665,20 +714,23 @@ function card(
     // laid out from the top of the stack down so no shape has to be tuned.
     const unit = Math.min(w, h)
     const size = shape.text.size
+    // De kaarten staan midden op het doek en hebben dus het hele vel,
+    // op een marge na.
+    const ruim = shape.w - 140
     const mark = unit * (beat.kind === 'title' ? 0.24 : 0.19)
     const rows: { gap: number; height: number; draw: (y: number) => void }[] =
       beat.kind === 'title'
         ? [
             { gap: 0, height: mark, draw: (y) => ctx.drawImage(cast.mark, shape.hero.cx - mark / 2, y, mark, mark) },
-            { gap: size * 0.5, height: size * 1.34, draw: (y) => lines(ctx, 'Darijaforkids', shape.hero.cx, y + size * 0.67, size * 1.34, ink) },
-            { gap: size * 0.3, height: size * 0.62, draw: (y) => lines(ctx, cast.copy.sub, shape.hero.cx, y + size * 0.31, size * 0.55, ink, 600) },
+            { gap: size * 0.5, height: size * 1.34, draw: (y) => lines(ctx, 'Darijaforkids', shape.hero.cx, y + size * 0.67, size * 1.34, ink, 800, ruim) },
+            { gap: size * 0.3, height: size * 0.62, draw: (y) => lines(ctx, cast.copy.sub, shape.hero.cx, y + size * 0.31, size * 0.55, ink, 600, ruim) },
           ]
         : [
             { gap: 0, height: mark, draw: (y) => ctx.drawImage(cast.mark, shape.hero.cx - mark / 2, y, mark, mark) },
-            { gap: size * 0.34, height: size * 0.9, draw: (y) => lines(ctx, 'Darijaforkids', shape.hero.cx, y + size * 0.45, size * 0.9, ink) },
+            { gap: size * 0.34, height: size * 0.9, draw: (y) => lines(ctx, 'Darijaforkids', shape.hero.cx, y + size * 0.45, size * 0.9, ink, 800, ruim) },
             { gap: size * 0.45, height: size * 1.3, draw: (y) => pill(ctx, cast.copy.cta, shape.hero.cx, y + size * 0.65, size * 0.62, '#f59e0b', INK) },
-            { gap: size * 0.3, height: size * 0.5, draw: (y) => lines(ctx, cast.copy.price, shape.hero.cx, y + size * 0.25, size * 0.44, ink, 600) },
-            { gap: size * 0.22, height: size * 0.44, draw: (y) => lines(ctx, cast.copy.feiten, shape.hero.cx, y + size * 0.22, size * 0.36, ink, 600) },
+            { gap: size * 0.3, height: size * 0.5, draw: (y) => lines(ctx, cast.copy.price, shape.hero.cx, y + size * 0.25, size * 0.44, ink, 600, ruim) },
+            { gap: size * 0.22, height: size * 0.44, draw: (y) => lines(ctx, cast.copy.feiten, shape.hero.cx, y + size * 0.22, size * 0.36, ink, 600, ruim) },
             { gap: size * 0.4, height: unit * 0.14, draw: (y) => ctx.drawImage(cast.fnek, shape.hero.cx - unit * 0.07, y, unit * 0.14, unit * 0.14) },
           ]
     const total = rows.reduce((sum, r) => sum + r.gap + r.height, 0)
@@ -691,7 +743,8 @@ function card(
   } else {
     const i = beat.shot ?? 0
     const scene = cast.scenes[i]
-    lines(ctx, cast.copy.lines[i] ?? '', shape.text.cx, shape.text.cy + rise, shape.text.size, ink)
+    const maat = passend(ctx, cast.copy.lines, shape.text.size, shape.text.width)
+    lines(ctx, cast.copy.lines[i] ?? '', shape.text.cx, shape.text.cy + rise, maat, ink)
     if (!scene) { ctx.restore(); return }
 
     // How far into this screen we are — which is what decides everything the

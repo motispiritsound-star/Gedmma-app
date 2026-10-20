@@ -18,6 +18,7 @@
  * echte inhoud gelegd. Niet de formulering — die mag per taal anders — maar
  * het bedrag en de aantallen.
  */
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { COPY } from '../../dev/intro-copy'
 import { planOf } from '../engine/billing'
@@ -104,5 +105,50 @@ describe('de slotkaart van de promofilm', () => {
       }
       expect(COPY.spelen[taal]!.lines, taal).not.toEqual(COPY.bonus[taal]!.lines)
     }
+  })
+
+  /**
+   * De tekstkolom mag niet onder de telefoon lopen.
+   *
+   * In het vierkante formaat staan de woorden links en het toestel rechts, en
+   * daar stond de kolom op 540 breed vanaf 340 -- tot 610, terwijl de
+   * linkerrand van het toestel op 600 ligt. Tien pixels overlap op papier, en
+   * in beeld veel meer, want `lines()` las die breedte helemaal niet: het
+   * bijschrift werd op vaste grootte gezet en liep er aan twee kanten uit. Een
+   * hele reeks films is zo de deur uit gegaan met een halve zin in beeld.
+   *
+   * Dit rekent de maten na zonder de filmmachine te starten -- die hangt bij
+   * het inladen meteen aan `window`. Alleen de vormen waar tekst en toestel
+   * naast elkaar staan; bij `verhaal` en `appstore` staat de tekst erboven en
+   * mogen ze elkaar horizontaal overlappen.
+   */
+  it('keeps the words clear of the phone', () => {
+    const bron = readFileSync(new URL('../../dev/intro.ts', import.meta.url), 'utf8')
+    const vorm = /(\w+): \{\s*\n\s*w: (\d+), h: (\d+),[\s\S]*?text: \{ cx: (\d+), cy: (\d+), width: (\d+), size: (\d+) \},[\s\S]*?phone: \{ cx: (\d+), cy: (\d+), height: (\d+) \}/g
+    const vormen = [...bron.matchAll(vorm)]
+    expect(vormen.length, 'vormen gevonden in dev/intro.ts').toBe(4)
+
+    for (const m of vormen) {
+      const [naam, w, , tcx, tcy, breedte, , pcx, pcy, hoogte] = m.slice(1).map((v, i) => (i === 0 ? v : Number(v))) as [string, ...number[]]
+      // Het toestel is 390 bij 844 en wordt op hoogte geschaald.
+      const half = (hoogte! * (390 / 844)) / 2
+      const links = tcx! - breedte! / 2
+      const rechts = tcx! + breedte! / 2
+
+      expect(links, `${naam}: tekst begint buiten het doek`).toBeGreaterThan(0)
+      expect(rechts, `${naam}: tekst loopt het doek uit`).toBeLessThanOrEqual(w!)
+
+      const naastElkaar = Math.abs(tcy! - pcy!) < hoogte! / 2
+      if (!naastElkaar) continue
+      expect(rechts, `${naam}: de tekstkolom loopt tot onder de telefoon`).toBeLessThanOrEqual(pcx! - half)
+    }
+  })
+
+  it('measures the caption against the column it has', () => {
+    const bron = readFileSync(new URL('../../dev/intro.ts', import.meta.url), 'utf8')
+    // `passend` kiest één maat voor alle schermen van een film; zonder die
+    // stap staat het ene bijschrift op 60 en het volgende op 44.
+    expect(bron).toContain('const maat = passend(ctx, cast.copy.lines, shape.text.size, shape.text.width)')
+    expect(bron).not.toMatch(/lines\(ctx, cast\.copy\.lines\[i\] \?\? '', shape\.text\.cx, shape\.text\.cy \+ rise, shape\.text\.size/)
   })
 })
