@@ -45,6 +45,16 @@ describe('het boek zelf', () => {
   /**
    * Het punt van het hele bestand. Wat in de repository staat is 1; wat Play
    * gezien heeft is meer. Zijn die weer gelijk, dan zegt het boek niets meer.
+   *
+   * Deze test is op 20 oktober omgevallen, en terecht. `npm run aab` schrijft
+   * het nummer in build.gradle om te kunnen bouwen, en dat bestand bleef op de
+   * bouwmachine gewijzigd achter. Toen een pull daarop vastliep is dat bestand
+   * meegecommit -- waarmee de repository op 10 kwam te staan, net als het
+   * boek, en dit bestand dus niets meer wist.
+   *
+   * Wat je ná een bouw commit is `docs/versies.json`, zoals het script zelf
+   * ook zegt. Blijft build.gradle gewijzigd achter, dan hoort daar
+   * `git checkout android/app/build.gradle` overheen.
    */
   it('weet meer dan build.gradle', () => {
     const inGradle = Number(lees('../../android/app/build.gradle').match(/versionCode (\d+)/)?.[1])
