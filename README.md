@@ -224,3 +224,15 @@ The mechanics of the deploy itself — Cloudflare Pages settings, the nameserver
 change at the registrar, the Fly commands for the API — are in
 [docs/DEPLOY.md](docs/DEPLOY.md). The website can go live on its own; the API
 is only needed before the sign-up form can store anything.
+
+---
+
+# Dilimiz
+
+De derde map in deze repository is **[`dilimiz/`](dilimiz/README.md)** — een
+leerapp waarmee kinderen en gezinnen uit de Turkse diaspora in Europa Turks
+leren. Gebouwd op de techniek van `darija-kids/`, met een eigen naam, merk,
+didactiek en inhoud; die twee delen verder niets.
+
+`darija-kids/` staat in deze repository als **alleen-lezen referentie** en
+hoort niet gewijzigd te worden.

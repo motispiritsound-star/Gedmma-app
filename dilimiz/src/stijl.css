@@ -1,0 +1,445 @@
+/*
+ * Dilimiz — het ontwerpsysteem.
+ *
+ * Licht eerst. De app waar de techniek van komt is 's nachts gezet: donkerblauw
+ * oppervlak met warme accenten erboven. Deze is 's ochtends gezet — koel
+ * papier, diep çini-blauw, warme kleuren als accent. Dat is de snelste manier
+ * om twee apps naast elkaar niet op elkaar te laten lijken, en het past bij de
+ * inhoud: İznik-keramiek is blauw op wit, niet goud op nacht.
+ *
+ * Geen Tailwind. Zie docs/decisions.md A-3: de klassennamen van die app dragen
+ * het oude palet in hun naam mee, en overnemen zou het oude ontwerp
+ * meesmokkelen.
+ *
+ * ÉÉN REGEL DIE JE NIET MAG VERGETEN: nergens `text-transform` op een element
+ * dat Turks bevat. `text-transform: uppercase` maakt van een `i` een `I` en
+ * niet een `İ`, en dat is precies de letter die deze app onderwijst. Wil je
+ * hoofdletters, gebruik `naarHoofd()` uit engine/turks.ts.
+ */
+
+/* ------------------------------------------------------------- de tokens */
+
+:root {
+  /* İznik-kobalt: het hoofdaccent, draagt het merk. */
+  --cini-50: #eef2fb;
+  --cini-100: #dbe3f6;
+  --cini-200: #b9c8ed;
+  --cini-300: #8da4e0;
+  --cini-400: #5c78cb;
+  --cini-500: #2f4fa8;
+  --cini-600: #26408a;
+  --cini-700: #1e3270;
+
+  /* Kayısı, abrikoos: voortgang en belonen. */
+  --kayisi-100: #fdecdc;
+  --kayisi-300: #f8c396;
+  --kayisi-500: #f2994a;
+  --kayisi-600: #d87c2c;
+
+  /* Fıstık, pistache: "juist". */
+  --fistik-100: #e4f3dc;
+  --fistik-300: #a8d492;
+  --fistik-500: #5fa845;
+  --fistik-600: #4a8a34;
+
+  /* Gül, roos: nadruk en "nog eens". Terughoudend gebruikt — een kinderapp
+     hoort niet rood te knipperen bij een fout antwoord. */
+  --gul-100: #fbe0e7;
+  --gul-300: #efa3b6;
+  --gul-500: #d94f70;
+  --gul-600: #bd3a59;
+
+  /* Gece, nacht: het donkere oppervlak. Aubergine en niet marineblauw, want
+     marineblauw is de grondtoon van de andere app. */
+  --gece-700: #312c5e;
+  --gece-800: #241f46;
+  --gece-900: #1d1b3a;
+  --gece-950: #14122a;
+
+  /* De vier accenten waaruit een kind kiest. Deze waarden horen gelijk te
+     lopen met ACCENTKLEUR in merk/kleuren.ts; merk.test.ts meet dat na. */
+  --accent-cini: #2f4fa8;
+  --accent-kayisi: #f2994a;
+  --accent-fistik: #5fa845;
+  --accent-gul: #d94f70;
+
+  --font-kop: 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-tekst: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /*
+   * Het Turks krijgt hetzelfde lettertype als de rest, en dat is met opzet:
+   * Turks is Latijns schrift en hoort niet als vreemd te worden gezet. Wat het
+   * wél nodig heeft is volledige dekking voor ı İ ğ Ğ ş Ş ç Ç ö Ö ü Ü — een
+   * lettertype dat op `ğ` terugvalt naar een ander font maakt van het
+   * belangrijkste leerpunt een rommelige regel.
+   */
+  --font-turks: var(--font-kop);
+
+  --rond-s: 10px;
+  --rond-m: 16px;
+  --rond-l: 24px;
+  --rond-vol: 999px;
+
+  --ruimte-1: 4px;
+  --ruimte-2: 8px;
+  --ruimte-3: 12px;
+  --ruimte-4: 16px;
+  --ruimte-5: 24px;
+  --ruimte-6: 32px;
+  --ruimte-7: 48px;
+
+  --schaduw-s: 0 1px 2px rgb(29 27 58 / 8%);
+  --schaduw-m: 0 4px 16px rgb(29 27 58 / 10%);
+  --schaduw-l: 0 12px 32px rgb(29 27 58 / 14%);
+
+  --rand-boven: env(safe-area-inset-top, 0px);
+  --rand-onder: env(safe-area-inset-bottom, 0px);
+  --kop-hoogte: 56px;
+  --tab-hoogte: 60px;
+
+  /* De lichte stand. */
+  --papier: #f6f8fd;
+  --papier-op: #ffffff;
+  --papier-in: #e9eef8;
+  --inkt: #16213e;
+  --inkt-zacht: #5a6283;
+  --lijn: #d6def0;
+  --accent: var(--accent-cini);
+  --accent-op: #ffffff;
+  color-scheme: light;
+}
+
+/* De donkere stand, als tweede en niet als eerste. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-thema='licht']) {
+    --papier: #1d1b3a;
+    --papier-op: #241f46;
+    --papier-in: #14122a;
+    --inkt: #eef1f8;
+    --inkt-zacht: #a8aecb;
+    --lijn: #3a3466;
+    --accent: #6f8fe0;
+    --accent-op: #14122a;
+    color-scheme: dark;
+  }
+}
+
+:root[data-thema='donker'] {
+  --papier: #1d1b3a;
+  --papier-op: #241f46;
+  --papier-in: #14122a;
+  --inkt: #eef1f8;
+  --inkt-zacht: #a8aecb;
+  --lijn: #3a3466;
+  --accent: #6f8fe0;
+  --accent-op: #14122a;
+  color-scheme: dark;
+}
+
+/* Het gekozen accent. Eén attribuut op <html>, en alles volgt. */
+:root[data-accent='kayisi'] { --accent: var(--accent-kayisi); --accent-op: #241f46; }
+:root[data-accent='fistik'] { --accent: var(--accent-fistik); --accent-op: #ffffff; }
+:root[data-accent='gul'] { --accent: var(--accent-gul); --accent-op: #ffffff; }
+
+/* Minder beweging: zowel de systeemvoorkeur als de eigen schakelaar. */
+@media (prefers-reduced-motion: reduce) {
+  :root { --beweging: 0; }
+}
+:root[data-beweging='rustig'] { --beweging: 0; }
+
+/*
+ * Makkelijker te lezen letters.
+ *
+ * Geen apart dyslexie-lettertype maar meer ruimte: lettersafstand,
+ * regelafstand en woordafstand. Dat helpt breder en kost geen extra bestand
+ * dat gedownload moet worden -- en de app moet offline werken.
+ */
+:root[data-lezen='dyslexie'] {
+  --font-tekst: Verdana, 'Segoe UI', system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  word-spacing: 0.08em;
+}
+
+/* --------------------------------------------------------------- de basis */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #wortel { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--papier);
+  color: var(--inkt);
+  font-family: var(--font-tekst);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  /* Geen dubbeltik-zoom op een knop die een kind snel twee keer aantikt. */
+  touch-action: manipulation;
+  /* Geen tekstselectie bij het slepen van tegels. Invoervelden hieronder
+     krijgen het terug. */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+input, textarea { -webkit-user-select: text; user-select: text; }
+
+h1, h2, h3 {
+  font-family: var(--font-kop);
+  line-height: 1.2;
+  margin: 0;
+  /* Geen text-transform. Zie de kop van dit bestand. */
+}
+
+h1 { font-size: 1.6rem; font-weight: 800; }
+h2 { font-size: 1.2rem; font-weight: 700; }
+h3 { font-size: 1rem; font-weight: 700; }
+
+p { margin: 0 0 var(--ruimte-3); }
+
+button { font: inherit; color: inherit; }
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--rond-s);
+}
+
+/* ------------------------------------------------------------- bouwstenen */
+
+.schil {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.blad {
+  flex: 1;
+  padding: calc(var(--rand-boven) + var(--ruimte-4)) var(--ruimte-4)
+           calc(var(--rand-onder) + var(--ruimte-6));
+}
+
+.blad--met-tabs { padding-bottom: calc(var(--rand-onder) + var(--tab-hoogte) + var(--ruimte-5)); }
+
+.knop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ruimte-2);
+  min-height: 52px;
+  padding: 0 var(--ruimte-5);
+  border: 0;
+  border-radius: var(--rond-vol);
+  background: var(--accent);
+  color: var(--accent-op);
+  font-family: var(--font-kop);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.knop:active { transform: translateY(1px) scale(0.99); }
+.knop:disabled { opacity: 0.45; cursor: default; transform: none; }
+
+.knop--breed { width: 100%; }
+.knop--stil { background: var(--papier-in); color: var(--inkt); }
+.knop--rand { background: transparent; color: var(--accent); box-shadow: inset 0 0 0 2px currentColor; }
+.knop--goed { background: var(--fistik-500); color: #fff; }
+.knop--nogeens { background: var(--gul-500); color: #fff; }
+.knop--klein { min-height: 40px; padding: 0 var(--ruimte-4); font-size: 0.9rem; }
+
+.kaart {
+  background: var(--papier-op);
+  border-radius: var(--rond-l);
+  padding: var(--ruimte-5);
+  box-shadow: var(--schaduw-s);
+}
+
+.kaart--in { background: var(--papier-in); box-shadow: none; }
+
+.keuze {
+  display: flex;
+  align-items: center;
+  gap: var(--ruimte-3);
+  width: 100%;
+  min-height: 60px;
+  padding: var(--ruimte-3) var(--ruimte-4);
+  border: 2px solid var(--lijn);
+  border-radius: var(--rond-m);
+  background: var(--papier-op);
+  font-size: 1.05rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.keuze[aria-pressed='true'] { border-color: var(--accent); background: var(--cini-50); }
+.keuze--goed { border-color: var(--fistik-500); background: var(--fistik-100); }
+.keuze--fout { border-color: var(--gul-500); background: var(--gul-100); }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-thema='licht']) .keuze[aria-pressed='true'] { background: var(--gece-700); }
+  :root:not([data-thema='licht']) .keuze--goed { background: #2c4426; }
+  :root:not([data-thema='licht']) .keuze--fout { background: #4a2435; }
+}
+
+/*
+ * Turkse tekst.
+ *
+ * Eigen klasse, niet om hem vreemd te zetten maar om twee dingen te kunnen
+ * garanderen: het lettertype dekt ı İ ğ ş ç ö ü, en `lang="tr"` staat erop
+ * zodat een schermlezer hem in het Turks voorleest in plaats van in het
+ * Nederlands. Dat laatste is het verschil tussen "mer-ha-ba" en "merr-habba".
+ */
+.tr {
+  font-family: var(--font-turks);
+  font-weight: 700;
+  font-variant-ligatures: none;
+}
+
+.tr--groot { font-size: 2rem; line-height: 1.15; }
+.tr--kop { font-size: 2.6rem; line-height: 1.1; }
+
+.balk {
+  height: 10px;
+  border-radius: var(--rond-vol);
+  background: var(--papier-in);
+  overflow: hidden;
+}
+
+.balk > i {
+  display: block;
+  height: 100%;
+  border-radius: var(--rond-vol);
+  background: var(--accent);
+  transition: width 240ms ease;
+}
+
+.tabs {
+  position: sticky;
+  bottom: 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: var(--ruimte-1);
+  padding: var(--ruimte-1) var(--ruimte-2) calc(var(--rand-onder) + var(--ruimte-1));
+  background: color-mix(in srgb, var(--papier) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--lijn);
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--ruimte-2) 0;
+  border: 0;
+  border-radius: var(--rond-m);
+  background: transparent;
+  color: var(--inkt-zacht);
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.tab[aria-current='page'] { color: var(--accent); }
+.tab > span:first-child { font-size: 1.25rem; line-height: 1; }
+
+.rij { display: flex; align-items: center; gap: var(--ruimte-3); }
+.rij--tussen { justify-content: space-between; }
+.kolom { display: flex; flex-direction: column; gap: var(--ruimte-3); }
+.kolom--wijd { gap: var(--ruimte-5); }
+
+.zacht { color: var(--inkt-zacht); }
+.klein { font-size: 0.85rem; }
+.midden { text-align: center; }
+
+.tegels { display: flex; flex-wrap: wrap; gap: var(--ruimte-2); }
+
+.tegel {
+  padding: var(--ruimte-2) var(--ruimte-4);
+  border: 2px solid var(--lijn);
+  border-radius: var(--rond-m);
+  background: var(--papier-op);
+  font-family: var(--font-turks);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tegel--gekozen { border-color: var(--accent); background: var(--cini-50); }
+.tegel--leeg { opacity: 0.3; cursor: default; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-thema='licht']) .tegel--gekozen { background: var(--gece-700); }
+}
+
+.invoer {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 var(--ruimte-4);
+  border: 2px solid var(--lijn);
+  border-radius: var(--rond-m);
+  background: var(--papier-op);
+  color: var(--inkt);
+  font-family: var(--font-turks);
+  font-size: 1.2rem;
+}
+
+.invoer:focus { border-color: var(--accent); }
+
+/* De hulprij met ç ğ ı İ ö ş ü, voor een toetsenbord dat ze niet heeft. */
+.hulptoetsen { display: flex; flex-wrap: wrap; gap: var(--ruimte-1); }
+
+.hulptoets {
+  min-width: 42px;
+  min-height: 42px;
+  border: 1px solid var(--lijn);
+  border-radius: var(--rond-s);
+  background: var(--papier-in);
+  font-family: var(--font-turks);
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.plaat {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: var(--rond-l);
+  background: var(--papier-in);
+  font-size: 2rem;
+}
+
+.lint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ruimte-1);
+  padding: 2px var(--ruimte-3);
+  border-radius: var(--rond-vol);
+  background: var(--papier-in);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.lint--let-op { background: var(--kayisi-100); color: #7a4410; }
+
+.slot { opacity: 0.55; }
+
+/* Alleen voor een schermlezer. */
+.alleen-lezer {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

@@ -1,0 +1,32 @@
+node_modules/
+dist/
+dist-ssr/
+*.local
+.DS_Store
+.vite/
+coverage/
+
+# Native schillen worden gegenereerd met `npx cap add` en horen pas in de
+# repository als de app-id definitief is (docs/decisions.md B-2).
+# android/
+# ios/
+
+# Ondertekensleutels en wachtwoorden horen nooit in git.
+*.keystore
+*.jks
+keystore.properties
+android/local.properties
+
+# Omgevingsbestanden. .env.example gaat wel mee: daar staat alleen in welke
+# namen bestaan, niet wat erin hoort.
+.env
+.env.*
+!.env.example
+
+# Opnames in ruwe vorm zijn groot en horen niet in git; de gebundelde
+# mp3/opus-bestanden wel.
+src/audio/ruw/
+
+# Gegenereerd met `npm run nakijklijst` en `npm run opnamelijst`.
+nakijklijst.md
+opnamelijst.md
