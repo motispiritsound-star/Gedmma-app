@@ -316,6 +316,16 @@ export interface State {
    * hierboven: wanneer kan later nog iets betekenen, een boolean nooit meer.
    */
   gratisOpGemeld: number
+  /**
+   * Wanneer er een proefperiode is begonnen, of 0 als er geen bij zat.
+   *
+   * Niet af te leiden uit de winkel zodra de koop rond is: dan laat die de
+   * aanbieding weg bij dat product. Dus wordt het vastgelegd op het moment van
+   * bestellen -- zie `proefBijKoop` in billing.ts. Zonder dit zei het
+   * welkomscherm ná het betalen tegen iedereen dat de eerste dagen gratis
+   * waren, ook tegen wie meteen was afgeschreven.
+   */
+  proefGestart: number
   settings: Settings
 }
 
@@ -484,6 +494,7 @@ const initial = (): State => ({
   beoordelingGevraagd: 0,
   mijlpaalGedeeld: 0,
   gratisOpGemeld: 0,
+  proefGestart: 0,
   settings: {
     theme: 'system',
     accent: 'saffraan',
@@ -621,6 +632,7 @@ export function hydrate(parsed: Partial<State>): State {
     beoordelingGevraagd: getal(p.beoordelingGevraagd, base.beoordelingGevraagd),
     mijlpaalGedeeld: getal(p.mijlpaalGedeeld, base.mijlpaalGedeeld),
     gratisOpGemeld: getal(p.gratisOpGemeld, base.gratisOpGemeld),
+    proefGestart: getal(p.proefGestart, base.proefGestart),
     // Een teller die geen getal is wordt NaN zodra er iets bij opgeteld wordt,
     // en NaN komt daarna nooit meer terug naar een getal.
     xp: getal(p.xp, base.xp),

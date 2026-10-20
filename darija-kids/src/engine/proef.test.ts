@@ -132,6 +132,28 @@ describe('het aanbod bij de eerste start', () => {
   })
 })
 
+describe('het welkom na het betalen', () => {
+  const profiel = readFileSync(new URL('../pages/Profile.tsx', import.meta.url), 'utf8')
+
+  /*
+   * Derde plek met dezelfde fout, en de pijnlijkste: deze zin staat er direct
+   * ná het afrekenen. Wie zonder proefperiode kocht las "de eerste 3 dagen
+   * zijn gratis" op het scherm dat hem bedankt voor zijn geld.
+   */
+  it('noemt de proefperiode alleen als er een begonnen is', () => {
+    expect(profiel).toContain('proefGestart ? t.profile.welkomProef(TRIAL_DAYS) : t.profile.welkomGeenProef')
+  })
+
+  /*
+   * En de knop ging naar /leren: zeventien units met een slot dat net open is,
+   * en zelf maar uitzoeken waar je begint. `nextLesson` weet het antwoord al.
+   */
+  it('gaat rechtstreeks de volgende les in, niet naar het pad', () => {
+    expect(profiel).toContain('to={`/les/${eersteLes}`}')
+    expect(profiel).toContain('const eersteLes = useStore(nextLesson)')
+  })
+})
+
 describe('de teksten zelf', () => {
   const TALEN = ['nl', 'fr', 'de', 'es', 'it', 'en'] as const
 

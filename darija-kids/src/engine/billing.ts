@@ -197,7 +197,7 @@ export const isSubscribed = (): boolean => getState().unlocked
 
 function grant(): void {
   if (getState().unlocked) return
-  setState({ unlocked: true, unlockedAt: Date.now() })
+  setState({ unlocked: true, unlockedAt: Date.now(), proefGestart: proefBijKoop ? Date.now() : 0 })
   /*
    * En de wekker voor "de vier gratis lessen zijn gedaan" eraf.
    *
@@ -736,11 +736,25 @@ export const foutVan = (uit: WinkelFout | undefined): string | null =>
   uit?.isError === true && uit.code !== AFGEBROKEN ? (uit.message ?? 'onbekend') : null
 
 /** Opens the store's own payment sheet for one of the two plans, trial and all. */
+/**
+ * Zat er een proefperiode bij de aankoop die nu wordt afgerond?
+ *
+ * Vastgelegd op het moment van bestellen en niet later afgeleid, want later is
+ * het antwoord weg: zodra de koop rond is laat de winkel de aanbieding weg bij
+ * dat product. Het welkomscherm ná het betalen zei daardoor tegen iedereen
+ * "de eerste 3 dagen zijn gratis", ook tegen wie meteen is afgeschreven.
+ *
+ * Een herstel zet hem niet aan, en dat klopt: terugzetten is geen nieuwe
+ * proefperiode.
+ */
+let proefBijKoop = false
+
 export async function subscribe(plan: PlanId = 'jaar'): Promise<void> {
   const api = plugin()
   if (!api) return
   publish({ busy: true, error: null })
   try {
+    proefBijKoop = heeftProef(api.store.get(planOf(plan).product))
     const offer = api.store.get(planOf(plan).product)?.getOffer()
     if (!offer) throw new Error('product-onbekend')
     naBestelling(await offer.order())

@@ -432,6 +432,11 @@ export const nl = {
     ],
     welkomProef: (dagen: number): string =>
       `De eerste ${dagen} dagen zijn gratis. Opzeggen kan altijd, en dan loopt het gewoon af.`,
+    /* Voor wie zonder proefperiode kocht. Zie `proefGestart` in store.ts:
+       na de koop laat de winkel de aanbieding weg, dus het wordt bij het
+       bestellen vastgelegd. Hier stond anders "de eerste dagen zijn
+       gratis" tegen iemand die net is afgeschreven. */
+    welkomGeenProef: 'Opzeggen kan altijd, en dan loopt het gewoon af.',
     welkomStart: 'Verder leren',
     welkomTitel: 'Welkom bij de volledige cursus',
     welkomUitleg: 'Vul hier je naam in en kies een dier. Dat staat voortaan op je kaart.',

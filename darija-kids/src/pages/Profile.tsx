@@ -7,7 +7,7 @@ import { LETTERS } from '../content/alphabet'
 import { allWords } from '../content/lexicon'
 import {
   BADGES, kanVriesdagKopen, koopVriesdag, levelOf, MAX_VRIESDAGEN, PRIJS_VRIESDAG,
-  AVATARS, progressOfUnit, reeksNu, setState, today, useStore,
+  AVATARS, nextLesson, progressOfUnit, reeksNu, setState, today, useStore,
 } from '../engine/store'
 import { ebookWachtTot, TRIAL_DAYS } from '../engine/billing'
 import { aantalDiplomas, nieuweHandtekeningen } from '../engine/diploma'
@@ -221,6 +221,10 @@ export function Profile() {
    */
   const [params] = useSearchParams()
   const welkom = params.get('welkom') === '1'
+  /* Of er bij deze aankoop werkelijk een proefperiode zat, en waar het kind
+     verder gaat. Allebei alleen voor de welkomskaart hierboven. */
+  const proefGestart = useStore((s) => s.proefGestart)
+  const eersteLes = useStore(nextLesson)
   const naamVeld = useRef<HTMLInputElement>(null)
 
   // Het toetsenbord niet opengooien; alleen de cursor klaarzetten op het veld
@@ -340,8 +344,20 @@ export function Profile() {
               </li>
             ))}
           </ul>
-          <p className="mt-4 text-xs text-[var(--ink-soft)]">{t.profile.welkomProef(TRIAL_DAYS)}</p>
-          <Link to="/leren" onClick={() => sfx.tap()} className="mt-4 inline-block">
+          {/* Alleen als er werkelijk een proefperiode bij zat. Zie `proefGestart`
+              in store.ts -- hier stond "de eerste 3 dagen zijn gratis" tegen
+              iedereen, ook tegen wie meteen was afgeschreven. */}
+          <p className="mt-4 text-xs text-[var(--ink-soft)]">
+            {proefGestart ? t.profile.welkomProef(TRIAL_DAYS) : t.profile.welkomGeenProef}
+          </p>
+          {/*
+            Rechtstreeks de les in, en niet naar het pad.
+            Wie net betaald heeft kwam op /leren terecht en moest daar zelf
+            zoeken waar hij moest beginnen -- zeventien units met een slot dat
+            net open is gegaan. `nextLesson` weet het antwoord al; die wordt
+            overal elders in de app ook gebruikt om "verder" te betekenen.
+          */}
+          <Link to={`/les/${eersteLes}`} onClick={() => sfx.tap()} className="mt-4 inline-block">
             <Button>{t.profile.welkomStart}</Button>
           </Link>
         </Card>
