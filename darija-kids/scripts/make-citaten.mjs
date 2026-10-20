@@ -42,24 +42,38 @@ const arg = (naam, terug) => {
  * De citaten, met de bron erbij.
  *
  * Met de hand gekozen en niet door een regel gevonden, want een goed citaat is
- * een oordeel. Wat ze gemeen hebben: ze staan allemaal vooraan in hun
- * hoofdstuk, ze vertellen in één zin wie er voor je staat, en geen ervan
- * verklapt iets.
+ * een oordeel. Ze staan allemaal vooraan in hun hoofdstuk -- dat moet ook, want
+ * de plaat zet `tekst[0]` in beeld en `zin` is alleen de controle.
+ *
+ * **Wat er veranderd is.** Hier stonden tien openingen van hoofdstuk 1: "Hind
+ * was dertien en ze droeg water", "Tala werd wakker van de geur". Mooi, en ze
+ * verklappen niets, maar ze doen allemaal hetzelfde -- ze stellen iemand voor.
+ * Wie zo'n plaat voorbij ziet komen weet daarna wie de hoofdpersoon is en
+ * verder niets, en dat is te weinig om op te klikken.
+ *
+ * Deze tien zijn gekozen op één vraag: zet de zin een vraag in je hoofd die je
+ * alleen in het boek beantwoord krijgt? Waarom las Musa dat ene hoofdstuk nooit
+ * voor. Wat zat er in die kist. In welke taal onderhandel je met iemand wiens
+ * taal niemand spreekt. Ze zijn daardoor wat langer, en dat mag: twee regels
+ * die je meetrekken lezen sneller weg dan één die je koud laat.
+ *
+ * Wat niet mag veranderen: geen enkele verklapt een afloop. Een citaat dat het
+ * einde weggeeft verkoopt het boek één keer en daarna nooit meer.
  *
  * `hoofdstuk` is het nummer zoals het in het boek staat, niet de plek in de
  * reeks — dat scheelt als er ooit een hoofdstuk bij komt.
  */
 const CITATEN = [
-  { deel: 3, hoofdstuk: 1, zin: 'Hind was dertien en ze droeg water, en dat was alles wat iemand van haar wist.' },
-  { deel: 6, hoofdstuk: 1, zin: 'Op de ochtend dat ze vertrokken, huilde Musa niet, en daar is hij later trots op geweest en heeft hij zich later voor geschaamd.' },
-  { deel: 1, hoofdstuk: 1, zin: 'Tala werd wakker van de geur.' },
-  { deel: 13, hoofdstuk: 1, zin: 'Nadia was veertien en ze rook naar inkt, en dat is haar hele jeugd in één zin.' },
-  { deel: 8, hoofdstuk: 1, zin: 'Driss was veertien en hij sloeg de trom, en dat betekent iets anders dan je denkt.' },
-  { deel: 5, hoofdstuk: 1, zin: 'Sanaa was veertien en ze kon inkt maken die niet verbleekte, en dat was in haar familie het enige wat telde.' },
-  { deel: 12, hoofdstuk: 1, zin: 'Itto was vijftien en haar vader gaf les in een kamer met zeven kinderen en geen ramen.' },
-  { deel: 11, hoofdstuk: 1, zin: 'Brahim was veertien en hij schreef brieven over die hij niet begreep.' },
-  { deel: 2, hoofdstuk: 1, zin: 'Ayyur was twaalf en hij was goed in twee dingen: paarden en wachten.' },
-  { deel: 2, hoofdstuk: 2, zin: 'Hij zag Tariq voor het eerst op een dinsdag, bij de paarden, en hij wist een halve minuut lang niet wie hij voor zich had.' },
+  { deel: 15, hoofdstuk: 9, zin: 'Met vierentwintig woorden en twee handen en zijn moeder erbij voor de moeilijke stukken, heeft hij in die drie weken meer over zijn familie gehoord dan in dertien jaar.' },
+  { deel: 13, hoofdstuk: 3, zin: 'Wat er toen gebeurde, is het soort ding dat je in een geschiedenisboek leest en waarvan je denkt: dat verzinnen ze.' },
+  { deel: 7, hoofdstuk: 13, zin: 'In 1527 werd Rome geplunderd door een leger dat niemand had zien aankomen. De stad brandde, de paus zat opgesloten, en in de chaos verdween Hassan.' },
+  { deel: 6, hoofdstuk: 16, zin: 'Op de weg terug liepen ze de pest in, en dat is het enige hoofdstuk van dit deel dat Musa nooit aan iemand heeft voorgelezen.' },
+  { deel: 11, hoofdstuk: 6, zin: 'Er is één praktische vraag die in geen enkel geschiedenisboek staat en die Brahim de hele dag bezighield: in welke taal doe je dit?' },
+  { deel: 4, hoofdstuk: 12, zin: 'De sleutel kwam bij hem terecht op de manier waarop de meeste dingen bij mensen terechtkomen: per ongeluk en zonder dat iemand oplette.' },
+  { deel: 2, hoofdstuk: 15, zin: 'Eind oktober kwam Yunus het kamp door met een kist onder zijn arm, op zoek naar iemand die met paarden kon rijden en de weg wist langs de kust.' },
+  { deel: 1, hoofdstuk: 12, zin: 'Het duurde nog drie weken voordat er echt iets veranderde, en dat was de langste les van die zomer: dat de waarheid niet werkt zoals in een verhaal, waar je hem zegt en iedereen knikt.' },
+  { deel: 6, hoofdstuk: 9, zin: 'Er is één vraag die kinderen altijd stellen als je dit verhaal vertelt, en het is de beste vraag: waar betaalden ze het van.' },
+  { deel: 9, hoofdstuk: 4, zin: 'In het jaar dat Lalla vierendertig werd, kwam er iets in Marrakech aan waar de hele stad over praatte: een gezantschap dat terugkwam uit Engeland.' },
 ]
 
 /**
