@@ -94,6 +94,15 @@ export function Unlock() {
     : { totaal: YEAR_FULL_PRICE, korting: YEAR_SAVING }
   const price = priceOf(plan)
   const jaar = plan === 'jaar'
+  /*
+   * Biedt de winkel déze koper nog een proefperiode aan?
+   *
+   * Onbekend telt als nee. Hier stond `TRIAL_DAYS` onvoorwaardelijk in de knop
+   * en in de voorwaarden, en dus beloofde het scherm drie gratis dagen aan
+   * iedereen -- ook aan wie zijn proef al had gehad en meteen afgerekend
+   * wordt. Zie `heeftProef` in engine/billing.ts.
+   */
+  const magProef = billing.proef[plan] === true
   /**
    * Of we het gezin mogen beloven. Apple deelt een abonnement met de
    * gezinsgroep, Google Play niet — en dit staat op het scherm waar iemand
@@ -334,7 +343,7 @@ export function Unlock() {
             <div className="mt-6">
               {billing.available ? (
                 <Button className="w-full py-4 text-lg" disabled={billing.busy} onClick={() => vraagPoort({ reden: 'abonnement', doe: () => void subscribe(plan) })}>
-                  {billing.busy ? t.unlock.bezig : t.unlock.koop(TRIAL_DAYS)}
+                  {billing.busy ? t.unlock.bezig : magProef ? t.unlock.koop(TRIAL_DAYS) : t.unlock.koopDirect}
                 </Button>
               ) : (
                 <p className="rounded-2xl bg-saffron-500/10 px-4 py-3 text-sm">
@@ -349,9 +358,13 @@ export function Unlock() {
                   uit een winkel die het exclusief rekent, is een onjuiste
                   mededeling op het scherm waar iemand besluit te betalen. */}
               <p className="mt-3 text-xs leading-relaxed text-[var(--ink-soft)]">
-                {jaar
-                  ? t.unlock.voorwaardenJaar(TRIAL_DAYS, price, winkel)
-                  : t.unlock.voorwaarden(TRIAL_DAYS, price, winkel)}{' '}
+                {magProef
+                  ? (jaar
+                      ? t.unlock.voorwaardenJaar(TRIAL_DAYS, price, winkel)
+                      : t.unlock.voorwaarden(TRIAL_DAYS, price, winkel))
+                  : (jaar
+                      ? t.unlock.voorwaardenJaarDirect(price, winkel)
+                      : t.unlock.voorwaardenDirect(price, winkel))}{' '}
                 {t.unlock.btwRegel(btwInbegrepen(billing.currency))}
               </p>
               {billing.error && (

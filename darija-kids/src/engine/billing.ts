@@ -417,6 +417,13 @@ export interface BillingState {
   /** Each product's price in the buyer's own currency, once the store has said. */
   prices: Partial<Record<PlanId | 'ebook', string>>
   /**
+   * Per plan: biedt de winkel déze koper nog een proefperiode aan?
+   *
+   * Leeg tot de winkel geantwoord heeft, en dan telt onbekend als nee -- zie
+   * `heeftProef`. Het scherm hangt zijn hele voorwaardentekst hieraan op.
+   */
+  proef: Partial<Record<PlanId, boolean>>
+  /**
    * Wat het jaarplan per maand kost, uitgerekend uit de echte jaarprijs.
    *
    * Niet hetzelfde als `planOf('jaar').perMonth`: dat is een vast getal dat
@@ -440,7 +447,7 @@ export interface BillingState {
   error: string | null
 }
 
-let state: BillingState = { available: false, price: null, currency: null, prices: {}, yearPerMonth: null, vergelijking: null, busy: false, error: null }
+let state: BillingState = { available: false, price: null, currency: null, prices: {}, proef: {}, yearPerMonth: null, vergelijking: null, busy: false, error: null }
 const listeners = new Set<() => void>()
 
 const publish = (patch: Partial<BillingState>) => {
@@ -483,6 +490,31 @@ export const betaalFase = (
   const betaald = fasen.filter((fase) => bedragVan(fase) !== null)
   if (betaald.length) return betaald[betaald.length - 1]!
   return bedragVan(product?.pricing) !== null ? product?.pricing ?? null : null
+}
+
+/**
+ * Krijgt déze koper de proefperiode nog?
+ *
+ * `TRIAL_DAYS` is bewoording en geen belofte -- dat staat al bij die constante.
+ * Maar het scherm gebruikte hem wél als belofte: er stond altijd "na 3 gratis
+ * dagen", ook tegen iemand die zijn proef allang had gehad. Dat is precies wat
+ * richtlijn 3.1.2 van Apple verbiedt en wat een boze recensie oplevert: je
+ * rekent meteen af bij iemand aan wie je net drie gratis dagen beloofde.
+ *
+ * De winkel weet het antwoord en stuurt het mee. Een abonnement zonder
+ * aanbieding heeft één prijsfase; een abonnement mét proefperiode heeft er
+ * meer, en de eerste kost niets. Apple en Google laten die eerste fase weg
+ * zodra het account de aanbieding al eens gebruikt heeft -- dus "één fase"
+ * betekent hier: voor deze koper is er geen proef meer.
+ *
+ * Onbekend telt als géén proef. Beloof niets wat je niet weet.
+ */
+export const heeftProef = (
+  product?: { pricing?: Fase | null; offers?: { pricingPhases?: Fase[] }[] } | null,
+): boolean => {
+  const fasen = (product?.offers ?? []).flatMap((aanbod) => aanbod.pricingPhases ?? [])
+  if (fasen.length < 2) return false
+  return bedragVan(fasen[0]) === null
 }
 
 /** Eén regel van wat de winkel over een product zei. */
@@ -595,6 +627,7 @@ export async function initBilling(): Promise<void> {
 
   const refresh = () => {
     const prices: Partial<Record<PlanId | 'ebook', string>> = {}
+    const proef: Partial<Record<PlanId, boolean>> = {}
     let owned: boolean | undefined
     let yearPerMonth: string | null = null
     let valuta: string | null = null
@@ -603,6 +636,7 @@ export async function initBilling(): Promise<void> {
       const fase = betaalFase(product)
       const prijs = prijsVan(fase)
       if (prijs) prices[plan.id] = prijs
+      proef[plan.id] = heeftProef(product)
       if (!valuta && fase?.currency) valuta = fase.currency
       if (plan.id === 'jaar') yearPerMonth = perMaandVan(fase)
       // Either plan being owned opens the whole course.
@@ -613,7 +647,7 @@ export async function initBilling(): Promise<void> {
     if (boekPrijs) prices.ebook = boekPrijs
     if (book?.owned) grantEbook(false)
     else if (store.get(planOf('jaar').product)?.owned) grantEbook(true)
-    publish({ prices, yearPerMonth, vergelijking: vergelijkingVan(store), price: prices.maand ?? null, currency: valuta })
+    publish({ prices, proef, yearPerMonth, vergelijking: vergelijkingVan(store), price: prices.maand ?? null, currency: valuta })
     if (owned !== undefined) syncFromStore(owned, bonnenBinnen)
   }
 

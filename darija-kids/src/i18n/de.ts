@@ -875,6 +875,14 @@ export const de: Strings = {
     koop: (dagen) => `${dagen} Tage gratis starten`,
     voorwaarden: (dagen, prijs, winkel) =>
       `Nach ${dagen} Gratistagen werden ${prijs} pro Monat über dein Konto ${winkel} abgebucht, bis du kündigst. Wer vor Ende der Testphase kündigt, zahlt nichts.`,
+    /* Voor wie van de winkel geen proefperiode meer krijgt. Zie `heeftProef`
+       in engine/billing.ts: een abonnement zonder aanbieding heeft één
+       prijsfase, en dan mag er nergens "gratis" staan. */
+    voorwaardenJaarDirect: (prijs: string, winkel: string): string =>
+      `${prijs} wird jetzt über dein Konto ${winkel} abgebucht und danach jedes Jahr erneut, bis du kündigst. Für dieses Konto ist keine kostenlose Testphase verfügbar.`,
+    voorwaardenDirect: (prijs: string, winkel: string): string =>
+      `${prijs} wird jetzt über dein Konto ${winkel} abgebucht und danach jeden Monat erneut, bis du kündigst. Für dieses Konto ist keine kostenlose Testphase verfügbar.`,
+    koopDirect: 'Abo starten',
     btwRegel: (inbegrepen: boolean): string =>
       inbegrepen ? 'Preis inklusive Mehrwertsteuer.' : 'Der Store berechnet die in deinem Land geltende Steuer.',
     herstel: 'Kauf wiederherstellen',

@@ -873,6 +873,14 @@ export const en: Strings = {
     koop: (dagen) => `Start ${dagen} days free`,
     voorwaarden: (dagen, prijs, winkel) =>
       `After ${dagen} free days, ${prijs} is charged every month through your ${winkel} account, until you cancel. Cancel before the trial ends and you pay nothing.`,
+    /* Voor wie van de winkel geen proefperiode meer krijgt. Zie `heeftProef`
+       in engine/billing.ts: een abonnement zonder aanbieding heeft één
+       prijsfase, en dan mag er nergens "gratis" staan. */
+    voorwaardenJaarDirect: (prijs: string, winkel: string): string =>
+      `${prijs} will be charged now through your ${winkel} account, and every year after that until you cancel. No free trial is available for this account.`,
+    voorwaardenDirect: (prijs: string, winkel: string): string =>
+      `${prijs} will be charged now through your ${winkel} account, and every month after that until you cancel. No free trial is available for this account.`,
+    koopDirect: 'Start subscription',
     btwRegel: (inbegrepen: boolean): string =>
       inbegrepen ? 'VAT included.' : 'The store adds whatever tax applies in your country.',
     herstel: 'Restore purchase',
