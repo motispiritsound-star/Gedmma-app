@@ -1,11 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  koopRegels, legKoopVast, PLANNEN, planVan, proefRest, useAbonnement,
-  winkelNaam, type PlanId, type WinkelProduct,
+  HET_PLAN, koopRegels, legKoopVast, platformNu, proefRest, useAbonnement, winkelNaam,
 } from '../engine/abonnement'
+import { winkel, type WinkelProduct } from '../engine/winkel'
 import { AANTAL_GRATIS } from '../engine/toegang'
-import { WINKEL_NAGEBOOTST } from '../engine/abonnement'
 import { useT, vul } from '../i18n'
 import { Kaart, Knop, Kop, Lint, Melding } from '../ui/kit'
 import { Ouderpoort } from '../ui/Ouderpoort'
@@ -13,14 +12,14 @@ import { Ouderpoort } from '../ui/Ouderpoort'
 /**
  * Het abonnementsscherm, achter de ouderpoort.
  *
- * Alle vier de dingen staan vóór de koopknop: prijs, proefduur, verlenging en
- * opzeggen. Dat is een winkeleis van beide partijen én het eerlijke minimum.
+ * Eén plan: € 5,99 per maand, maandelijks opzegbaar. Alle vier de dingen staan
+ * vóór de koopknop -- prijs, proefduur, verlenging en opzeggen -- en dat is
+ * een winkeleis van beide partijen én het eerlijke minimum.
  *
- * Geen aftelklok, geen "nog maar vandaag", geen verborgen verlenging. En --
- * dit is de duurste les uit de overdracht van de vorige app -- het scherm
- * belooft GEEN proefperiode tenzij de winkel er bij dit product ook een meldt.
- * Daar stond de proef wekenlang alleen op het maandplan terwijl het scherm hem
- * aan iedereen beloofde. Zie docs/decisions.md B-6.
+ * Geen aftelklok en geen kunstmatige haast. En het scherm belooft GEEN
+ * proefperiode tenzij de winkel er bij dit product ook een meldt: dat is de
+ * duurste les uit de overdracht van de vorige app, waar het scherm drie gratis
+ * dagen aan iedereen beloofde die op het jaarplan niet waren ingesteld.
  */
 export function Abonnement() {
   return (
@@ -32,35 +31,39 @@ export function Abonnement() {
   )
 }
 
-/**
- * Wat de winkel over elk product zegt.
- *
- * `cordova-plugin-purchase` bestaat alleen in de native schil, en die schil is
- * nog niet aangemaakt (docs/mvp-backlog.md #24, #26). Tot dan: in een
- * test-omgeving nagebootst, en op het web `null` -- dan zegt het scherm
- * "kopen kan alleen in de app" en belooft het niets.
- */
-function winkelgegevens(): Record<PlanId, WinkelProduct | null> {
-  if (!WINKEL_NAGEBOOTST) {
-    // Hier komt de aanroep van de winkel. Zolang die er niet is: niets
-    // beloven. Zwijgen is beter dan een belofte die niet nagekomen wordt.
-    return { jaar: null, maand: null }
-  }
-  return {
-    jaar: { product: planVan('jaar').product, prijs: planVan('jaar').lijst, heeftProef: true, proefDagen: 3 },
-    maand: { product: planVan('maand').product, prijs: planVan('maand').lijst, heeftProef: true, proefDagen: 3 },
-  }
-}
+type Stand = 'laden' | 'gereed' | 'bezig'
 
 function AbonnementBlad() {
   const t = useT()
   const navigeer = useNavigate()
   const abonnement = useAbonnement()
-  const [melding, zetMelding] = useState<string | null>(null)
-  const winkel = winkelgegevens()
+  const platform = platformNu()
 
-  const platform: 'ios' | 'android' | 'web' = 'web'
-  const kanKopen = WINKEL_NAGEBOOTST
+  const [stand, zetStand] = useState<Stand>('laden')
+  const [product, zetProduct] = useState<WinkelProduct | null>(null)
+  const [melding, zetMelding] = useState<string | null>(null)
+
+  /*
+   * De winkel wordt pas hier aangesproken en niet bij het starten van de app.
+   *
+   * Dat is met opzet: een kind dat de app opent hoort geen winkelverbinding te
+   * veroorzaken, en op Android verschijnt bij `initialize` soms een
+   * accountkeuze. Achter de ouderpoort is dat wél verwacht.
+   */
+  useEffect(() => {
+    let nogGeldig = true
+    const w = winkel()
+    w.start()
+      .then(() => { if (nogGeldig) zetProduct(w.product(HET_PLAN.product)) })
+      .catch(() => { /* geen winkel: het scherm zegt dat hieronder zelf */ })
+      .finally(() => { if (nogGeldig) zetStand('gereed') })
+    return () => { nogGeldig = false }
+  }, [])
+
+  const regels = koopRegels(HET_PLAN, product)
+  const kanKopen = winkel().beschikbaar() && product !== null
+
+  /* -- al een abonnement -------------------------------------------------- */
 
   if (abonnement.actief) {
     const rest = proefRest()
@@ -81,13 +84,38 @@ function AbonnementBlad() {
     )
   }
 
-  const koop = (plan: PlanId) => {
-    const regels = koopRegels(planVan(plan), winkel[plan])
-    if (!kanKopen) { zetMelding(t.abonnement.nietBeschikbaar); return }
-    // De proefvlag komt van de winkel en niet van ons: `proefDagen` is null
-    // als de winkel bij dit product geen proefperiode meldt.
-    legKoopVast(plan, regels.proefDagen !== null)
-    navigeer('/')
+  /* -- kopen -------------------------------------------------------------- */
+
+  const koop = async () => {
+    zetStand('bezig')
+    zetMelding(null)
+    const uitkomst = await winkel().koop(HET_PLAN.product)
+    zetStand('gereed')
+
+    if (uitkomst.stand === 'gekocht') {
+      // De proefvlag komt van de winkel en wordt hier vastgelegd, want zodra
+      // de koop rond is laat de winkel de aanbieding bij dit product weg.
+      legKoopVast('maand', uitkomst.metProef)
+      navigeer('/')
+      return
+    }
+    // Afgebroken is geen fout: de gebruiker heeft nee gezegd, en daar hoort
+    // geen rode melding bij.
+    if (uitkomst.stand === 'afgebroken') return
+    zetMelding(uitkomst.stand === 'nietBeschikbaar' ? t.abonnement.nietBeschikbaar : t.abonnement.mislukt)
+  }
+
+  const herstel = async () => {
+    zetStand('bezig')
+    const gevonden = await winkel().herstel()
+    zetStand('gereed')
+    if (gevonden) {
+      // Hersteld, dus niet opnieuw een proefperiode beloven.
+      legKoopVast('maand', false)
+      zetMelding(t.abonnement.herstelGelukt)
+    } else {
+      zetMelding(t.abonnement.herstelNiets)
+    }
   }
 
   return (
@@ -95,59 +123,48 @@ function AbonnementBlad() {
       <Kop onder={vul(t.abonnement.intro, { gratis: AANTAL_GRATIS })}>{t.abonnement.kop}</Kop>
       {melding ? <Melding tekst={melding} /> : null}
 
-      {PLANNEN.map((plan) => {
-        const regels = koopRegels(plan, winkel[plan.id])
-        return (
-          <Kaart key={plan.id}>
-            <div className="kolom">
-              <div className="rij rij--tussen">
-                <strong style={{ fontFamily: 'var(--font-kop)', fontSize: '1.1rem' }}>
-                  {regels.prijs} <span className="zacht klein">
-                    {plan.id === 'jaar' ? t.abonnement.perJaar : t.abonnement.perMaand}
-                  </span>
-                </strong>
-                {plan.beste ? <Lint>{t.abonnement.besteKeuze}</Lint> : null}
-              </div>
+      <Kaart>
+        <div className="kolom">
+          <div className="rij rij--tussen">
+            <strong style={{ fontFamily: 'var(--font-kop)', fontSize: '1.4rem' }}>
+              {regels.prijs}{' '}
+              <span className="zacht klein" style={{ fontWeight: 400 }}>{t.abonnement.perMaand}</span>
+            </strong>
+            <Lint>{t.abonnement.maandelijksOpzegbaar}</Lint>
+          </div>
 
-              {plan.id === 'jaar' ? (
-                <p className="zacht klein" style={{ margin: 0 }}>
-                  {vul(t.abonnement.perMaandBijJaar, { prijs: plan.perMaand })}
-                </p>
-              ) : null}
+          {/*
+            De proefperiode staat hier alleen als de winkel hem meldt. Bij de
+            lancering staat er geen op het product, dus staat hier niets --
+            geen "mogelijk gratis", geen kleine lettertjes.
+          */}
+          {regels.proefDagen !== null ? (
+            <p style={{ margin: 0 }}>
+              <strong>{vul(t.abonnement.proef, { dagen: regels.proefDagen, prijs: regels.prijs })}</strong>
+              <br />
+              <span className="zacht klein">{vul(t.abonnement.proefUitleg, { dagen: regels.proefDagen })}</span>
+            </p>
+          ) : null}
 
-              {/*
-                De proefperiode staat hier alleen als de winkel hem meldt.
-                `regels.proefDagen` is null zodra dat niet zo is, en dan staat
-                er niets -- geen "mogelijk gratis", geen kleine lettertjes.
-              */}
-              {regels.proefDagen !== null ? (
-                <p style={{ margin: 0 }}>
-                  <strong>{vul(t.abonnement.proef, { dagen: regels.proefDagen, prijs: regels.prijs })}</strong>
-                  <br />
-                  <span className="zacht klein">{vul(t.abonnement.proefUitleg, { dagen: regels.proefDagen })}</span>
-                </p>
-              ) : null}
+          {/* Verlenging en opzeggen, vóór de knop. Altijd. */}
+          <p className="zacht klein" style={{ margin: 0 }}>{t.abonnement.verlenging}</p>
+          <p className="zacht klein" style={{ margin: 0 }}>{t.abonnement.opzeggen}</p>
+          {platform !== 'web' ? (
+            <p className="zacht klein" style={{ margin: 0 }}>
+              {vul(t.abonnement.viaWinkel, { winkel: winkelNaam(platform) })}
+            </p>
+          ) : null}
 
-              {/* Verlenging en opzeggen, vóór de knop. Altijd. */}
-              <p className="zacht klein" style={{ margin: 0 }}>{t.abonnement.verlenging}</p>
-              <p className="zacht klein" style={{ margin: 0 }}>{t.abonnement.opzeggen}</p>
-              {platform !== 'web' ? (
-                <p className="zacht klein" style={{ margin: 0 }}>
-                  {vul(t.abonnement.viaWinkel, { winkel: winkelNaam(platform) })}
-                </p>
-              ) : null}
+          <Knop breed disabled={!kanKopen || stand !== 'gereed'} onClick={koop}>
+            {stand === 'bezig' ? t.abonnement.bezig : t.abonnement.kies}
+          </Knop>
+        </div>
+      </Kaart>
 
-              <Knop breed disabled={!kanKopen} onClick={() => koop(plan.id)}>
-                {t.abonnement.kies}
-              </Knop>
-            </div>
-          </Kaart>
-        )
-      })}
+      {stand === 'laden' ? <p className="zacht klein midden">{t.abonnement.bezig}</p> : null}
+      {stand === 'gereed' && !kanKopen ? <Melding tekst={t.abonnement.nietBeschikbaar} /> : null}
 
-      {!kanKopen ? <Melding tekst={t.abonnement.nietBeschikbaar} /> : null}
-
-      <Knop soort="stil" breed onClick={() => zetMelding(t.abonnement.herstelNiets)}>
+      <Knop soort="stil" breed disabled={stand === 'bezig'} onClick={herstel}>
         {t.abonnement.herstel}
       </Knop>
       <Knop soort="stil" breed onClick={() => navigeer('/')}>{t.algemeen.terug}</Knop>

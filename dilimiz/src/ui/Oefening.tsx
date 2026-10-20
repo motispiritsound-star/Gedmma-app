@@ -181,9 +181,11 @@ export function Oefening({ oefening, onKlaar }: Props) {
   }
 
   if (oefening.keuzes && oefening.soort === 'letter-klank' && letter) {
+    // "Welke letter is dit?" en niet "Welke hoorde je?": bij deze vorm staat
+    // de klankbeschrijving op het scherm en klinkt er niets.
     return (
       <Keuze
-        vraag={t.les.welkHoordeJe}
+        vraag={t.les.welkeLetter}
         boven={<p style={{ fontSize: '1.05rem', margin: 0 }}><Uitleg tekst={letter.klank[taal]} /></p>}
         keuzes={oefening.keuzes}
         goed={letter.id}

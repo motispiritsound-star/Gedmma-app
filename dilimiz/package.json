@@ -13,17 +13,28 @@
     "test:watch": "vitest",
     "rook": "node scripts/rook.mjs",
     "bouw-en-rook": "npm run build && node scripts/rook-start.mjs",
+    "rook-koop": "node scripts/rook-koop-start.mjs",
     "nakijklijst": "node scripts/nakijklijst.mjs",
     "opnamelijst": "node scripts/opnamelijst.mjs",
     "android": "npm run build && npx cap sync android",
+    "sleutel": "node scripts/sleutel.mjs",
+    "aab": "node scripts/aab.mjs",
+    "beeld": "node scripts/beeld.mjs",
+    "schermen": "node scripts/schermen.mjs",
+    "privacy": "node scripts/privacy.mjs",
     "ios": "npm run build && npx cap sync ios"
   },
   "dependencies": {
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.5.3",
+    "cordova-plugin-purchase": "^13.19.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-router-dom": "^7.18.3"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/cli": "^8.5.3",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/react": "^16.3.3",
     "@types/node": "^22.20.5",

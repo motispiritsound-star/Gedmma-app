@@ -176,7 +176,7 @@ try {
     }
   })
 
-  await stap('abonnementsscherm noemt prijs, proef, verlenging en opzeggen', async () => {
+  await stap('abonnementsscherm: prijs, maandelijks opzegbaar, verlenging, opzeggen', async () => {
     await pagina.goto(`${BASIS}#/abonnement`, { waitUntil: 'networkidle' })
     const vraag = await pagina.textContent('label[for="poort"]')
     const [, a, b] = vraag.match(/(\d+)\s*×\s*(\d+)/)
@@ -184,10 +184,29 @@ try {
     await pagina.getByRole('button', { name: /^Verder$/ }).click()
     await pagina.getByRole('heading', { name: /hele cursus/ }).waitFor({ timeout: 3000 })
     const tekst = await pagina.textContent('body')
-    for (const moet of ['59,99', 'per jaar', 'verlengt automatisch', 'Opzeggen kan altijd']) {
+    for (const moet of ['5,99', 'per maand', 'Maandelijks opzegbaar', 'verlengt automatisch', 'Opzeggen kan altijd']) {
       if (!tekst.includes(moet)) throw new Error(`"${moet}" staat er niet`)
     }
     if (/aftelklok|nog maar|laatste kans/i.test(tekst)) throw new Error('aftelklok of haast gevonden')
+  })
+
+  await stap('belooft geen proefperiode die er niet is', async () => {
+    // Dit is de duurste les uit de overdracht van de vorige app. Er staat geen
+    // proefperiode op het product, dus hoort het scherm er niets over te
+    // zeggen -- ook niet "mogelijk gratis".
+    const tekst = await pagina.textContent('body')
+    if (/dagen gratis|gratis dagen|kostenlos/i.test(tekst)) {
+      throw new Error('het scherm belooft een proefperiode die niet is ingesteld')
+    }
+  })
+
+  await stap('zegt dat kopen alleen in de app kan, want dit is het web', async () => {
+    const tekst = await pagina.textContent('body')
+    if (!/alleen in de app/i.test(tekst)) throw new Error('geen melding dat kopen hier niet kan')
+    const knop = pagina.getByRole('button', { name: /^Kiezen$/ })
+    if (await knop.count() && await knop.first().isEnabled()) {
+      throw new Error('de koopknop staat aan terwijl er geen winkel is')
+    }
   })
 
   await stap('geen enkel netwerkverzoek naar buiten', async () => {

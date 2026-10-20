@@ -6,15 +6,28 @@ dist-ssr/
 .vite/
 coverage/
 
-# Native schillen worden gegenereerd met `npx cap add` en horen pas in de
-# repository als de app-id definitief is (docs/decisions.md B-2).
-# android/
+# De Android-schil gaat WÉL mee in git.
+#
+# De .gitignore in de wortel van deze repository negeert `android/` voor het
+# hele project. Dat klopt daar, maar niet hier: in `android/` staan de
+# ondertekeningsconfiguratie en het app-pictogram, en die zijn met de hand
+# aangepast. Zouden ze niet meegaan, dan bouwt een verse kloon een
+# niet-ondertekende app met het Capacitor-logo erop.
+#
+# Deze regel staat in een diepere .gitignore en wint daarom van die in de
+# wortel. Wat Capacitor zelf genereert blijft erbuiten: `android/.gitignore`
+# houdt build/, .gradle/ en de gekopieerde webbestanden tegen.
+!android/
+
+# De iOS-schil bestaat nog niet. Zie docs/decisions.md B-8: geen iOS bij de
+# lancering -- daar is een Mac voor nodig en $99 per jaar.
 # ios/
 
 # Ondertekensleutels en wachtwoorden horen nooit in git.
 *.keystore
 *.jks
 keystore.properties
+android/keystore.properties
 android/local.properties
 
 # Omgevingsbestanden. .env.example gaat wel mee: daar staat alleen in welke
@@ -22,6 +35,7 @@ android/local.properties
 .env
 .env.*
 !.env.example
+!.env.test
 
 # Opnames in ruwe vorm zijn groot en horen niet in git; de gebundelde
 # mp3/opus-bestanden wel.
@@ -30,3 +44,4 @@ src/audio/ruw/
 # Gegenereerd met `npm run nakijklijst` en `npm run opnamelijst`.
 nakijklijst.md
 opnamelijst.md
+dist-test/

@@ -51,11 +51,9 @@ export function Alfabet() {
       </section>
 
       <section className="kolom kolom--wijd" style={{ marginTop: 'var(--ruimte-6)' }}>
-        <h2>{t.les.welkHoordeJe}</h2>
-        <p className="zacht klein" style={{ margin: 0 }}>
-          {/* De klankparen staan hier als naslag: twee echte woorden die in één
-              letter verschillen. Dat is wat het verschil hoorbaar maakt. */}
-        </p>
+        {/* Twee echte woorden die in één letter verschillen: dat is wat het
+            verschil hoorbaar maakt, en uitleggen lukt niet. */}
+        <h2>{t.alfabet.hoorVerschil}</h2>
         {KLANKPAREN.map((p) => (
           <Kaart key={p.id} in>
             <div className="rij rij--tussen">

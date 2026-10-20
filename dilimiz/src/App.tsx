@@ -4,6 +4,7 @@ import { useStaat } from './engine/opslag'
 import { localeVan } from './i18n/talen'
 import { useT, useTaal } from './i18n'
 import { wekStemmen } from './engine/audio'
+import { OMGEVING } from './engine/omgeving'
 import { Welkom } from './pages/Welkom'
 import { Pad, NietGevonden } from './pages/Pad'
 import { Les } from './pages/Les'
@@ -73,6 +74,28 @@ function Schil() {
 
   return (
     <div className="schil">
+      {/*
+        Een testbouw heeft alle lessen open en een nagebootste winkel. Dat is
+        precies de bouw die je niet moet uploaden, en zonder dit lint is dat
+        niet te zien -- de app ziet er verder hetzelfde uit.
+      */}
+      {OMGEVING === 'test' ? (
+        <div
+          // Geen role="status": dat is voor meldingen die tijdens het gebruik
+          // verschijnen, en dit lint staat er permanent. Met een rol erop
+          // matchte hij ook elke zoekopdracht naar een melding -- wat de
+          // koop-rooktest meteen liet struikelen.
+          data-testbouw
+          style={{
+            position: 'sticky', top: 0, zIndex: 99,
+            background: 'var(--gul-500)', color: '#fff',
+            font: '700 12px/1 var(--font-kop)', letterSpacing: '0.04em',
+            padding: '6px', textAlign: 'center',
+          }}
+        >
+          TESTBOUW — alles open, winkel nagebootst
+        </div>
+      ) : null}
       <Routes>
         <Route path="/" element={<Pad />} />
         <Route path="/les/:id" element={<Les />} />

@@ -53,6 +53,11 @@ src/
 | `npm run bouw-en-rook` | **Bouwt en loopt de app door in een echte browser** |
 | `npm run nakijklijst` | Schrijft alle Turkse inhoud als één bestand om te laten nakijken |
 | `npm run opnamelijst` | Schrijft het opnamescript voor de stemacteurs |
+| `npm run sleutel` | Maakt de upload-sleutel voor Google Play |
+| `npm run beeld` | Pictogram, startscherm en winkelbeelden uit het merkteken |
+| `npm run schermen` | Schermafdrukken voor de winkelvermelding |
+| `npm run privacy -- --mail …` | De privacyverklaring als één html-bestand |
+| `npm run aab` | Bouwt de bundle voor Google Play |
 | `npm run ios` | Alleen op een Mac |
 
 **Draai `npm run bouw-en-rook` voordat je iets oplevert.** De unittests gaven
@@ -128,12 +133,15 @@ Verzamel niets erbij. Als je denkt dat je iets nodig hebt: lees eerst
 Alleen via de officiële betaalstromen van Apple en Google. Geen eigen
 betaalpagina.
 
+**Eén plan: € 5,99 per maand, maandelijks opzegbaar, geen proefperiode.** Zie
+`docs/decisions.md` B-6.
+
 **En de duurste les uit de overdracht van de vorige app:** het scherm belooft
 geen proefperiode tenzij de winkel er bij dát product ook een meldt. Daar stond
-de proef wekenlang alleen op het maandplan terwijl het scherm hem aan iedereen
-beloofde. `belooftNietsOnwaars()` in `src/engine/abonnement.ts` dwingt dat af —
-maar geen test in deze app kan zien wat er in de Play Console staat. Zet hem
-daar in **beide** consoles op **beide** plannen.
+de proef wekenlang alleen op één plan terwijl het scherm hem aan iedereen
+beloofde. `belooftNietsOnwaars()` in `src/engine/abonnement.ts` dwingt dat af.
+Daardoor kost een proefperiode toevoegen later geen regel code: zet hem in de
+Play Console aan en het scherm volgt.
 
 Prijs, proefduur, verlenging en opzeggen staan vóór de koopknop. Altijd. Geen
 aftelklok, geen kunstmatige haast; `abonnement.test.ts` scant de teksten erop.
@@ -159,3 +167,4 @@ aftelklok, geen kunstmatige haast; `abonnement.test.ts` scant de teksten erop.
 | Wat slaan we op en wat niet? | `docs/privacy-and-safety.md` |
 | Voor wie is dit, en waarom? | `docs/product-brief.md` |
 | Hoe ziet het eruit? | `docs/brand-brief.md` |
+| Hoe komt dit live? | `docs/lanceren.md` |

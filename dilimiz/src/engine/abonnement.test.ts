@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
-  belooftNietsOnwaars, inProef, koopRegels, legKoopVast, legVerlopenVast,
-  planVan, PLANNEN, PROEFDAGEN, proefDagenOpScherm, proefRest, winkelNaam,
-  type WinkelProduct,
+  belooftNietsOnwaars, HET_PLAN, inProef, koopRegels, legKoopVast, legVerlopenVast,
+  platformNu, planVan, PLANNEN, PROEFDAGEN, proefDagenOpScherm, proefRest, winkelNaam,
 } from './abonnement'
+import { dagenUit, nagebootsteWinkel, type WinkelProduct } from './winkel'
 import { haalStaat, _zetTerugVoorTest } from './opslag'
 import { MERK, noemtVerbodenNaam } from '../merk/merk'
 import { TEKSTEN } from '../i18n'
@@ -16,51 +16,58 @@ beforeEach(() => {
 })
 
 const product = (deel: Partial<WinkelProduct> = {}): WinkelProduct => ({
-  product: MERK.abonnement.jaar,
-  prijs: '€ 59,99',
+  product: MERK.abonnement.maand,
+  prijs: '€ 5,99',
   heeftProef: false,
   proefDagen: null,
+  inBezit: false,
   ...deel,
 })
 
-describe('de plannen', () => {
-  it('zijn er twee, jaar en maand, met het jaar vooropgezet', () => {
-    expect(PLANNEN.map((p) => p.id)).toEqual(['jaar', 'maand'])
-    expect(PLANNEN.filter((p) => p.beste)).toHaveLength(1)
-    expect(planVan('jaar').beste).toBe(true)
+describe('het plan waarmee gelanceerd wordt', () => {
+  it('is er één: maandelijks', () => {
+    // Elk extra product is een product dat in beide consoles aangemaakt,
+    // geprijsd en nagekeken moet worden.
+    expect(PLANNEN).toHaveLength(1)
+    expect(HET_PLAN.id).toBe('maand')
+    expect(planVan()).toBe(HET_PLAN)
   })
 
-  it('gebruikt de product-ids uit merk.ts, zodat er één bron is', () => {
-    expect(planVan('jaar').product).toBe(MERK.abonnement.jaar)
-    expect(planVan('maand').product).toBe(MERK.abonnement.maand)
+  it('kost € 5,99', () => {
+    expect(HET_PLAN.lijst).toBe('€ 5,99')
   })
 
-  it('hergebruikt geen enkel product-id van de andere app', () => {
-    for (const p of PLANNEN) expect(noemtVerbodenNaam(p.product), p.product).toBeNull()
+  it('gebruikt het product-id uit merk.ts, zodat er één bron is', () => {
+    expect(HET_PLAN.product).toBe(MERK.abonnement.maand)
   })
 
-  it('is per maand voordeliger bij het jaarplan', () => {
-    const getal = (s: string) => Number(s.replace(/[^\d,]/g, '').replace(',', '.'))
-    expect(getal(planVan('jaar').perMaand)).toBeLessThan(getal(planVan('maand').perMaand))
+  it('hergebruikt geen product-id van de andere app', () => {
+    expect(noemtVerbodenNaam(HET_PLAN.product)).toBeNull()
+  })
+
+  it('zegt in elke taal dat het maandelijks opzegbaar is', () => {
+    // Dat is de belofte waarmee gelanceerd wordt, en in Duitsland is het ook
+    // wat een koper verwacht te lezen vóór hij op de knop drukt.
+    for (const taal of TAALCODES) {
+      expect(TEKSTEN[taal].abonnement.maandelijksOpzegbaar.trim(), taal).toBeTruthy()
+    }
+    expect(TEKSTEN.de.abonnement.maandelijksOpzegbaar).toContain('kündbar')
   })
 })
 
 describe('de proefperiode belooft niets onwaars', () => {
   /*
-   * Dit is de duurste les uit de overdracht van de vorige app: daar stond de
+   * De duurste les uit de overdracht van de vorige app: daar stond de
    * proefperiode wekenlang alleen op het maandplan terwijl het scherm hem aan
    * iedereen beloofde. Deze test kan niet zien wat er in de Play Console
-   * staat -- hij kan wél afdwingen dat het scherm alleen zegt wat de winkel
-   * terugmeldt.
+   * staat -- hij dwingt af dat het scherm alleen zegt wat de winkel meldt.
    */
-  it('zegt niets over een proefperiode als de winkel die niet meldt', () => {
+  it('zegt niets als de winkel geen proefperiode meldt', () => {
     expect(belooftNietsOnwaars(product({ heeftProef: false }))).toBe(false)
     expect(proefDagenOpScherm(product({ heeftProef: false }))).toBeNull()
   })
 
   it('zegt niets als er helemaal geen winkelgegevens zijn', () => {
-    // Het web, of een winkel die niet antwoordt. Zwijgen is beter dan een
-    // belofte die niet nagekomen wordt.
     expect(belooftNietsOnwaars(null)).toBe(false)
     expect(proefDagenOpScherm(null)).toBeNull()
   })
@@ -72,12 +79,35 @@ describe('de proefperiode belooft niets onwaars', () => {
   it('valt op het eigen getal terug als de winkel geen aantal geeft', () => {
     expect(proefDagenOpScherm(product({ heeftProef: true, proefDagen: null }))).toBe(PROEFDAGEN)
   })
+
+  it('lanceert zonder proefperiode, en past zich aan als die er later op komt', () => {
+    // Geen codewijziging nodig: het scherm leest de winkel.
+    expect(proefDagenOpScherm(nagebootsteWinkel().product(MERK.abonnement.maand))).toBeNull()
+    const metProef = nagebootsteWinkel({ heeftProef: true, proefDagen: 3 })
+    expect(proefDagenOpScherm(metProef.product(MERK.abonnement.maand))).toBe(3)
+  })
+})
+
+describe('de duur uit de winkel lezen', () => {
+  it('rekent ISO-8601 om naar dagen', () => {
+    expect(dagenUit('P3D')).toBe(3)
+    expect(dagenUit('P1W')).toBe(7)
+    expect(dagenUit('P1M')).toBe(30)
+    expect(dagenUit('P2W')).toBe(14)
+  })
+
+  it('geeft null bij iets wat geen duur is', () => {
+    // Dan zegt het scherm `PROEFDAGEN` of niets, in plaats van NaN dagen.
+    expect(dagenUit(undefined)).toBeNull()
+    expect(dagenUit('')).toBeNull()
+    expect(dagenUit('drie dagen')).toBeNull()
+    expect(dagenUit('P0D')).toBeNull()
+  })
 })
 
 describe('wat er vóór de koopknop moet staan', () => {
   it('geeft prijs, proefduur, verlenging en opzeggen', () => {
-    // Winkeleis van beide partijen, en het eerlijke minimum.
-    const regels = koopRegels(planVan('jaar'), product({ heeftProef: true, proefDagen: 3 }))
+    const regels = koopRegels(HET_PLAN, product({ heeftProef: true, proefDagen: 3 }))
     expect(regels.prijs).toBeTruthy()
     expect(regels.proefDagen).toBe(3)
     expect(regels.verlengtAutomatisch).toBe(true)
@@ -85,12 +115,13 @@ describe('wat er vóór de koopknop moet staan', () => {
   })
 
   it('gebruikt de prijs van de winkel en niet de lijstprijs', () => {
-    // De winkelprijs staat in de munt van de koper en inclusief zijn btw.
-    expect(koopRegels(planVan('jaar'), product({ prijs: '₺ 1.299,00' })).prijs).toBe('₺ 1.299,00')
+    // De winkelprijs staat in de munt van de koper en inclusief zijn btw. Een
+    // Duitse koper ziet € 5,99 met 19% MwSt erin; dat rekent Google uit.
+    expect(koopRegels(HET_PLAN, product({ prijs: '5,99 €' })).prijs).toBe('5,99 €')
   })
 
   it('valt op de lijstprijs terug als er geen winkel te vragen is', () => {
-    expect(koopRegels(planVan('maand'), null).prijs).toBe(planVan('maand').lijst)
+    expect(koopRegels(HET_PLAN, null).prijs).toBe(HET_PLAN.lijst)
   })
 
   it('heeft in elke taal een tekst voor verlenging en opzeggen', () => {
@@ -101,7 +132,6 @@ describe('wat er vóór de koopknop moet staan', () => {
   })
 
   it('gebruikt in geen enkele taal een aftelklok of kunstmatige haast', () => {
-    // Geen dark patterns. Zie docs/privacy-and-safety.md.
     for (const taal of TAALCODES) {
       const tekst = JSON.stringify(TEKSTEN[taal].abonnement).toLowerCase()
       for (const woord of ['nog maar', 'laatste kans', 'verloopt over', 'nur noch', 'letzte chance', 'only today', 'hurry', 'dernière chance']) {
@@ -111,20 +141,49 @@ describe('wat er vóór de koopknop moet staan', () => {
   })
 })
 
-describe('de levensloop van een abonnement', () => {
-  it('legt een koop met proefperiode vast op het moment van bestellen', () => {
-    /*
-     * Niet later uit de winkel af te leiden: zodra de koop rond is laat die de
-     * aanbieding bij dat product weg. Zonder dit zou het welkomstscherm ná het
-     * betalen tegen iedereen zeggen dat de eerste dagen gratis waren -- ook
-     * tegen wie meteen is afgeschreven.
-     */
-    const nu = 1_700_000_000_000
-    legKoopVast('jaar', true, nu)
-    expect(haalStaat().abonnement).toEqual({ actief: true, sinds: nu, proefGestart: nu, plan: 'jaar' })
+describe('de nagebootste winkel', () => {
+  it('levert het product met de lanceerprijs', () => {
+    const p = nagebootsteWinkel().product(MERK.abonnement.maand)
+    expect(p?.prijs).toBe('€ 5,99')
+    expect(p?.inBezit).toBe(false)
   })
 
-  it('legt een koop zónder proefperiode vast als er geen bij zat', () => {
+  it('kent geen ander product dan het onze', () => {
+    expect(nagebootsteWinkel().product('app.iets.anders')).toBeNull()
+  })
+
+  it('verkoopt, en weet daarna dat er bezit is', async () => {
+    const w = nagebootsteWinkel()
+    expect(await w.herstel()).toBe(false)
+    const uitkomst = await w.koop(MERK.abonnement.maand)
+    expect(uitkomst.stand).toBe('gekocht')
+    expect(await w.herstel()).toBe(true)
+    expect(w.product(MERK.abonnement.maand)?.inBezit).toBe(true)
+  })
+
+  it('kan een mislukte koop nabootsen, zonder iets vast te leggen', async () => {
+    const w = nagebootsteWinkel({ faalt: true })
+    const uitkomst = await w.koop(MERK.abonnement.maand)
+    expect(uitkomst.stand).toBe('mislukt')
+    expect(await w.herstel()).toBe(false)
+  })
+
+  it('kan een winkel nabootsen die er niet is, zoals op het web', async () => {
+    const w = nagebootsteWinkel({ beschikbaar: false })
+    expect(w.beschikbaar()).toBe(false)
+    expect(w.product(MERK.abonnement.maand)).toBeNull()
+    expect((await w.koop(MERK.abonnement.maand)).stand).toBe('nietBeschikbaar')
+  })
+})
+
+describe('de levensloop van een abonnement', () => {
+  it('legt een koop met proefperiode vast op het moment van bestellen', () => {
+    const nu = 1_700_000_000_000
+    legKoopVast('maand', true, nu)
+    expect(haalStaat().abonnement).toEqual({ actief: true, sinds: nu, proefGestart: nu, plan: 'maand' })
+  })
+
+  it('legt een koop zónder proefperiode vast, zoals bij de lancering', () => {
     legKoopVast('maand', false, 1_700_000_000_000)
     expect(haalStaat().abonnement.proefGestart).toBe(0)
     expect(inProef(1_700_000_000_000)).toBe(false)
@@ -132,26 +191,32 @@ describe('de levensloop van een abonnement', () => {
 
   it('rekent de resterende proefdagen af vanaf het bestelmoment', () => {
     const nu = 1_700_000_000_000
-    legKoopVast('jaar', true, nu)
+    legKoopVast('maand', true, nu)
     expect(proefRest(nu)).toBe(PROEFDAGEN)
     expect(proefRest(nu + 1.5 * 86_400_000)).toBe(2)
     expect(proefRest(nu + 3.5 * 86_400_000)).toBe(0)
-    expect(inProef(nu + 3.5 * 86_400_000)).toBe(false)
   })
 
   it('zet bij verlopen het abonnement uit maar houdt vast wat er gekocht was', () => {
     const nu = 1_700_000_000_000
-    legKoopVast('jaar', true, nu)
+    legKoopVast('maand', false, nu)
     legVerlopenVast()
     const a = haalStaat().abonnement
     expect(a.actief).toBe(false)
-    expect(a.plan).toBe('jaar')
+    expect(a.plan).toBe('maand')
     expect(a.sinds).toBe(nu)
   })
+})
 
+describe('het platform', () => {
   it('noemt de winkel waarin gekocht wordt', () => {
     expect(winkelNaam('ios')).toBe('App Store')
     expect(winkelNaam('android')).toBe('Google Play')
     expect(winkelNaam('web')).toBe('')
+  })
+
+  it('zegt web als er geen native schil omheen zit', () => {
+    // Een iPad die de app in een browser opent is geen App Store-aankoop.
+    expect(platformNu()).toBe('web')
   })
 })

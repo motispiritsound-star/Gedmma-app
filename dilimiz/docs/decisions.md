@@ -262,35 +262,63 @@ de prijs van geen server, en hij is bewust betaald.
 
 ---
 
-## B-6 · Freemium: hoe veel gratis, en hoe lang de proef? · **jij**
+## B-6 · Eén maandplan van € 5,99, maandelijks opzegbaar · **beslist**
 
-**20 oktober 2026 · aanname, te toetsen**
+**20 oktober 2026 · vastgelegd door de eigenaar**
 
-Voorstel, overgenomen uit de referentie-app omdat het daar doordacht is:
-
-| | Voorstel |
+| | |
 |---|---|
 | Altijd gratis | De eerste 4 lessen: 3 uit unit 0 (letters) en de eerste van groeten |
-| Proefperiode | 3 dagen volledige toegang, op **beide** plannen |
-| Jaar | € 59,99 (≈ € 5,00 per maand) |
-| Maand | € 6,99 |
+| Abonnement | € 5,99 per maand, maandelijks opzegbaar |
+| Proefperiode | **Geen** bij de lancering |
+| Jaarplan | **Niet** bij de lancering |
+| Eerste markt | Duitsland |
 
-**Waarom lessen en geen units:** een unit afmaken is weken werk, en tegen die
-tijd probeert niemand de app meer uit. Vier lessen is ongeveer twintig
-minuten: lang genoeg om het alfabet te kunnen lezen en `merhaba`, `teşekkür
-ederim` en `görüşürüz` te kunnen zeggen — iets wat een kind dezelfde avond kan
-laten zien — en kort genoeg dat de vraag "en dan?" komt terwijl het nog leuk
-is.
+**Waarom één plan en geen twee.** Elk extra product moet in de console
+aangemaakt, geprijsd en nagekeken worden, en de duurste fout van de vorige app
+ontstond juist doordat twee plannen niet gelijk stonden. Een jaarplan erbij is
+later één regel in `abonnement.ts`, één id in `merk.ts` en één product in de
+console.
 
-**Wat jij moet doen, en dit is de duurste les uit de overdracht:** zet de
-proefperiode in **beide** consoles op **beide** plannen. Bij de eerste app
-stond hij wekenlang alleen op het maandplan terwijl het scherm hem aan
-iedereen beloofde. `abonnement.test.ts` controleert nu dat het scherm niets
-belooft wat niet in de productgegevens staat, maar een test in de app kan niet
-zien wat er in de Play Console staat.
+**Waarom geen proefperiode.** De vier gratis lessen zijn het proberen. Een
+proefperiode is een extra instelling die goed moet staan voordat er betaald
+verkeer op komt. En het kost niets om hem later toe te voegen: het scherm
+leest de winkel, dus zet hem in de Play Console aan en de app past zich aan —
+zonder codewijziging. `abonnement.test.ts` legt dat vast.
 
-**De prijs is een aanname.** € 59,99 per jaar is overgenomen van een app in
-een kleinere markt. Te toetsen.
+**Waarom lessen en geen units gratis.** Een unit afmaken is weken werk, en
+tegen die tijd probeert niemand de app meer uit. Vier lessen is ongeveer
+twintig minuten: lang genoeg om het Turkse alfabet te kunnen lezen en
+`merhaba`, `teşekkür ederim` en `görüşürüz` te kunnen zeggen — iets wat een
+kind dezelfde avond kan laten zien — en kort genoeg dat de vraag "en dan?"
+komt terwijl het nog leuk is.
+
+**Wat open blijft.** Of € 5,99 het goede bedrag is. Dat is niet te beredeneren
+en wel te meten: zie `docs/lanceren.md` §Wat je in de eerste week meet.
+
+---
+
+## B-8 · Duitsland eerst, Android eerst, geen website · **beslist**
+
+**20 oktober 2026 · vastgelegd door de eigenaar**
+
+De lancering is Google Play in Duitsland. Geen iOS bij de start (een Mac en
+€ 99 per jaar), geen website, geen marketingsite. Verspreiding via
+Facebook-groepen.
+
+**Wat dat schrapt:** de Cloudflare-opzet, de etalagepagina's, de
+winkelteksten voor vijf landen, en het domein. `MERK.domein` blijft leeg.
+
+**Wat het níet schrapt:** de privacyverklaring. Beide winkels eisen die op een
+openbaar webadres, ook als de app niets verzamelt. Dat is één bestand en geen
+website — `npm run privacy` schrijft het, en het staat in dertig seconden
+online via Netlify Drop.
+
+**Het risico dat hierbij hoort, en het is het echte:** Duitsland is de grootste
+Turkstalige markt van Europa, dus ook de markt met de meeste ouders die zelf
+Turks spreken. Een fout in les één kost daar een betalende klant. Dat maakt
+B-1 (de inhoud laten nakijken) geen nette bijzaak maar de belangrijkste stap
+vóór er betaald verkeer op komt.
 
 ---
 
@@ -313,9 +341,10 @@ stille kamer. `npm run opnamelijst` schrijft de lijst.
 
 | | Wat | Blokkeert |
 |---|---|---|
-| B-2 | Naam, domein, merkcheck | Native schillen, winkel, logo |
+| — | **Play-ontwikkelaarsaccount aanvragen** — dit duurt het langst | Alles aan de winkelkant |
+| B-2 | Merkcheck op de naam (het domein is niet meer nodig) | Niets technisch |
 | B-1 | Turkse inhoud laten nakijken | Publicatie |
 | B-7 | Opnames regelen | Publicatie |
-| B-6 | Prijs en proefperiode bevestigen, en in bééde consoles zetten | Betaalde toegang |
+| B-6 | ✅ Beslist: € 5,99 per maand, geen proefperiode, Duitsland eerst | — |
 | B-3 | Besluit over de boekenreeks | Niets in de MVP |
 | B-4 | Leeftijdsgroepen bevestigen | Niets in de MVP |

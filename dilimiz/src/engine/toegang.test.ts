@@ -5,6 +5,7 @@ import {
 } from './toegang'
 import { legeStaat, type Staat } from './opslag'
 import { PAD, UNITS } from '../content/curriculum'
+import { allesOpen, OMGEVING } from './omgeving'
 
 const met = (deel: Partial<Staat> = {}): Staat => ({ ...legeStaat(), ...deel })
 const gedaan = (...ids: string[]): Partial<Staat> => ({
@@ -162,5 +163,29 @@ describe('waar "verder" naartoe gaat', () => {
   it('wijst bij alles gedaan naar een les die bestaat', () => {
     const s = met({ ...gedaan(...PAD.map(({ les }) => les.id)), ...betaald() })
     expect(PAD.some(({ les }) => les.id === volgendeLes(s))).toBe(true)
+  })
+})
+
+describe('de omgeving zet niet per ongeluk alles open', () => {
+  it('draait deze tests met de sloten aan', () => {
+    /*
+     * Zonder dit meten de tests hierboven niets.
+     *
+     * `.env.test` zet `VITE_OMGEVING=test`, en vitest draait standaard in mode
+     * `test` -- dus laadde hij dat bestand, zette `allesOpen()` op true en
+     * gingen alle toegangstests groen terwijl er geen enkel slot meer werkte.
+     * Gevonden doordat vijf tests tegelijk omvielen nadat `.env.test` erbij
+     * kwam. Nu staat de omgeving vastgepind in vite.config.ts, en deze test
+     * merkt het als dat ooit losgaat.
+     */
+    expect(OMGEVING).not.toBe('test')
+    expect(allesOpen()).toBe(false)
+  })
+
+  it('valt zonder omgevingsvariabele terug op productie', () => {
+    // De strengste stand. Een vergeten variabele hoort niet alle lessen open
+    // te zetten -- dat is het soort fout dat pas opvalt als er niemand meer
+    // betaalt.
+    expect(['dev', 'test', 'prod']).toContain(OMGEVING)
   })
 })

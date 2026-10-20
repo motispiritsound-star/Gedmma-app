@@ -23,6 +23,17 @@ export default defineConfig({
     sourcemap: false,
   },
   test: {
+    /*
+     * Vitest draait standaard in mode `test` en laadt dan `.env.test`, waar
+     * `VITE_OMGEVING=test` in staat. Dat zet in de app alle lessen open -- en
+     * dus ook in elke unittest, waardoor de toegangstests groen werden terwijl
+     * ze niets meer maten.
+     *
+     * Hier vastgepind op `dev`: de unittests draaien met de sloten aan, zoals
+     * een gebruiker ze krijgt. Wie het gedrag van de testomgeving wil toetsen,
+     * doet dat met `npm run rook-koop`, dat écht met mode `test` bouwt.
+     */
+    env: { VITE_OMGEVING: 'dev' },
     environment: 'node',
     include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
     // De paar tests die een DOM nodig hebben zeggen dat bovenaan met

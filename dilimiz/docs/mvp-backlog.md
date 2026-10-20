@@ -36,23 +36,28 @@ Status: `klaar` · `deels` · `open` · `jij` (alleen de eigenaar kan dit)
 
 ## M1 — wat er moet zijn vóór een winkel
 
+> Bijgewerkt 20 oktober: de lancering is Google Play / Duitsland / € 5,99 per
+> maand. Zie `docs/lanceren.md` voor de volgorde.
+
 | # | Wat | Status | Toelichting |
 |---|---|---|---|
-| 20 | **Domein vastleggen en merkcheck** | `jij` | B-2. De naam is Dilimiz; domein en vrijheid van gebruik nog open. Blokkeert 26, 27, 28 |
+| 20 | **Play-ontwikkelaarsaccount** | `jij` | € 25, identiteitscontrole duurt dagen tot weken. Begin hiermee |
+| 20b | Merkcheck op de naam | `jij` | Geen domein meer nodig (B-8) |
 | 21 | **Turkse inhoud nagekeken door moedertaalspreker** | `jij` | B-1. Blokkeert publicatie |
 | 22 | **Audio-opnames units 0–3** | `jij` | B-7. Blokkeert publicatie |
-| 23 | Spreekoefening met microfoon, niets opgeslagen | `open` | Nu een plaatshouder: de oefening staat er, de microfoon nog niet |
+| 23 | Spreekoefening met microfoon, niets opgeslagen | `open` | Niet blokkerend: de oefening werkt, er wordt alleen niets opgenomen |
 | 23b | Het pad toont 20 slotjes onder elkaar bij een nieuwe gebruiker | `open` | Gezien in de rooktest. Eerlijk, maar het leest als "bijna alles kost geld". Overweeg één samenvattende regel in plaats van een rij |
-| 24 | Abonnementsmachine: koop, herstel, verlopen, opgezegd | `deels` | Logica en scherm staan er; `cordova-plugin-purchase` nog niet aangesloten |
+| 24 | Abonnementsmachine: koop, herstel, verlopen, opgezegd | `klaar` | Aangesloten op `cordova-plugin-purchase`. Hele stroom getest met de nagebootste winkel (`npm run rook-koop`); de échte koop nog niet op een toestel |
 | 25 | Abonnementsscherm: prijs, proefduur, verlenging, opzeggen vóór de knop | `klaar` | Winkeleis |
-| 26 | Native schillen `android/` en `ios/` | `open` | App-id staat vast (`app.dilimiz.learn`); kan nu met één `cap add` |
-| 27 | Logo, pictogram, startscherm | `open` | Naam staat vast, dus dit kan nu getekend worden. Nu een plaatshouder-SVG met de D |
-| 28 | Privacyverklaring op een werkend webadres | `open` | Beide winkels eisen dit |
-| 29 | Winkelvermeldingen in vier talen | `open` | |
+| 26 | Android-schil | `klaar` | `android/`, app-id `app.dilimiz.learn`, ondertekening gekoppeld |
+| 26b | iOS-schil | `open` | Niet bij de lancering: Mac nodig en € 99 per jaar (B-8) |
+| 27 | Pictogram, startscherm, winkelbeelden | `klaar` | `npm run beeld` en `npm run schermen`. Het merkteken blijft een plaatshouder tot er een logo getekend is |
+| 28 | Privacyverklaring op een werkend webadres | `deels` | `npm run privacy` schrijft hem in vier talen; online zetten is `jij` |
+| 29 | Winkelvermelding | `klaar` | Duitse teksten staan in `docs/lanceren.md`, met de Facebook-tekst erbij |
 | 30 | Juridische controle van de lijst in `privacy-and-safety.md` | `jij` | |
-| 31 | Proefperiode in **beide** consoles op **beide** plannen | `jij` | B-6. De duurste les uit de overdracht |
+| 31 | Abonnement aanmaken: `app.dilimiz.monthly`, € 5,99, geen proef | `jij` | B-6. En koop hem één keer zelf met een testaccount |
 | 32 | `geennetwerk.test.ts` over de echte bundel in CI | `open` | Nu over de bronbestanden |
-| 33 | Uitgeefscripts overnemen uit `darija-kids/scripts/` | `open` | Pas ná de naamkeuze; ze dragen de oude merknaam |
+| 33 | Uitgeefscripts | `klaar` | Eigen versies: `sleutel`, `aab`, `beeld`, `schermen`, `privacy` |
 | 34 | Toegankelijkheid: contrast, schermlezer, grote letters | `deels` | Tokens zijn nagemeten; schermlezer nog niet getest |
 
 ---

@@ -1,7 +1,6 @@
 import { MERK } from '../merk/merk'
+import type { WinkelProduct } from './winkel'
 import { haalStaat, useStaat, zetStaat } from './opslag'
-import { winkelNagebootst } from './omgeving'
-import { AANTAL_GRATIS } from './toegang'
 
 /**
  * Het abonnement, via de App Store en Google Play.
@@ -23,53 +22,58 @@ import { AANTAL_GRATIS } from './toegang'
  * kan zien wat er in de Play Console is ingevuld. Zie docs/decisions.md B-6.
  */
 
-export type PlanId = 'jaar' | 'maand'
+export type PlanId = 'maand'
 
 export interface Plan {
   id: PlanId
   /** Het product-id in beide winkels. Nieuw aangemaakt, niets hergebruikt. */
   product: string
-  /** De prijs voor de website, waar geen winkel te vragen is. */
+  /**
+   * De prijs die de app noemt als de winkel niet te vragen is.
+   *
+   * In de app zelf komt de prijs altijd uit de winkel: in de munt van de
+   * koper en inclusief zijn btw. Een Duitse koper ziet € 5,99 met 19% MwSt
+   * erin verwerkt, en dat getal rekent Google uit, niet wij.
+   */
   lijst: string
-  /** Wat het per maand uitkomt, voor de regel onder de prijs. */
-  perMaand: string
-  /** Op het plan dat het scherm vooropzet. */
-  beste?: boolean
 }
 
+/**
+ * Eén plan: maandelijks, € 5,99, maandelijks opzegbaar.
+ *
+ * Geen jaarplan bij de lancering. Dat is geen prijsstrategie maar een
+ * lanceerkeuze: elk extra product is een product dat in beide consoles
+ * aangemaakt, geprijsd en nagekeken moet worden, en de proefperiode-fout uit
+ * de vorige app ontstond juist doordat twee plannen niet gelijk stonden.
+ *
+ * Een jaarplan erbij is later één regel hier, één id in merk.ts en één product
+ * in de console.
+ */
 export const PLANNEN: Plan[] = [
-  { id: 'jaar', product: MERK.abonnement.jaar, lijst: '€ 59,99', perMaand: '€ 5,00', beste: true },
-  { id: 'maand', product: MERK.abonnement.maand, lijst: '€ 6,99', perMaand: '€ 6,99' },
+  { id: 'maand', product: MERK.abonnement.maand, lijst: '€ 5,99' },
 ]
 
-export const planVan = (id: PlanId): Plan => PLANNEN.find((p) => p.id === id) ?? PLANNEN[0]!
+export const planVan = (_id: PlanId = 'maand'): Plan => PLANNEN[0]!
+
+/** Het ene plan waarmee gelanceerd wordt. */
+export const HET_PLAN: Plan = PLANNEN[0]!
 
 /**
- * De proefperiode in dagen.
+ * De proefperiode in dagen, als terugval.
  *
- * Drie is zowel de gekozen lengte als de kortste die beide winkels aanbieden,
- * dus er is geen reden om lager te gaan. Dit getal is alléén de tekst op het
- * scherm: de echte proefperiode staat in het winkelproduct, en de twee moeten
- * hetzelfde zeggen.
+ * Bij de lancering staat er GEEN proefperiode op het product: de vier gratis
+ * lessen zijn het proberen, en een proefperiode is een extra ding dat in de
+ * console goed moet staan voordat er betaald verkeer op komt.
+ *
+ * Dit getal wordt alleen gebruikt als de winkel wél een proef meldt maar er
+ * geen aantal dagen bij geeft. Zet er later een proefperiode op en de app
+ * past zich vanzelf aan -- er hoeft geen regel code voor te veranderen, want
+ * het scherm leest de winkel en niet dit bestand.
  */
 export const PROEFDAGEN = 3
 
-/**
- * Wat de winkel over een product terugmeldt.
- *
- * Komt van `cordova-plugin-purchase` in de native schil. Op het web bestaat
- * dat niet, dus daar blijft alles `null` en zegt het scherm "kopen kan alleen
- * in de app".
- */
-export interface WinkelProduct {
-  product: string
-  /** De prijs in de munt van de koper, zoals de winkel hem geeft. */
-  prijs: string | null
-  /** Of de winkel bij DIT product een proefperiode meldt. */
-  heeftProef: boolean
-  /** Hoeveel dagen, als de winkel dat zegt. */
-  proefDagen: number | null
-}
+/* Wat de winkel terugmeldt, staat in winkel.ts. */
+export type { WinkelProduct } from './winkel'
 
 /**
  * Of het scherm mag zeggen dat er een proefperiode is.
@@ -144,6 +148,20 @@ export function winkelNaam(platform: 'ios' | 'android' | 'web'): string {
 }
 
 /**
+ * Op welk platform de app draait.
+ *
+ * Uit de user agent en niet uit het toestelmerk: een iPad die de app in een
+ * browser opent is geen App Store-aankoop, en dan hoort er "kopen kan alleen
+ * in de app" te staan.
+ */
+export function platformNu(): 'ios' | 'android' | 'web' {
+  if (typeof navigator === 'undefined') return 'web'
+  const cap = (globalThis as unknown as { Capacitor?: { getPlatform?: () => string } }).Capacitor
+  const p = cap?.getPlatform?.()
+  return p === 'ios' || p === 'android' ? p : 'web'
+}
+
+/**
  * Wat het scherm vóór de koopknop moet zeggen.
  *
  * Alle vier de dingen, en in deze volgorde: prijs, proefduur, verlenging,
@@ -167,6 +185,3 @@ export function koopRegels(plan: Plan, winkel: WinkelProduct | null): KoopRegels
     opzeggenUitgelegd: true,
   }
 }
-
-export const AANTAL_GRATIS_LESSEN = AANTAL_GRATIS
-export const WINKEL_NAGEBOOTST = winkelNagebootst()

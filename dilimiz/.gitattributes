@@ -1,5 +1,26 @@
+# LF in de repository, ongeacht de lokale Git-instelling. Op Windows zet Git
+# standaard "Checkout Windows-style" aan, en dan zet `core.autocrlf` CRLF in de
+# werkmap -- waarna een script dat op `\n` zoekt niets vindt en iets heel anders
+# meldt dan wat er aan de hand is.
 * text=auto eol=lf
+
+# Behalve deze. `gradlew.bat` is een Windows-batchbestand en moet CRLF houden:
+# met LF leest de interpreter de regels verkeerd en valt de bouw om met een
+# melding die nergens over gaat.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# En deze moeten juist LF houden én uitvoerbaar blijven, ook als je ze op
+# Windows uitcheckt en op een Mac bouwt.
+gradlew text eol=lf
+
+*.jar binary
 *.png binary
 *.webp binary
+*.jpg binary
 *.wav binary
 *.mp3 binary
+*.aab binary
+*.apk binary
+*.keystore binary
+*.jks binary

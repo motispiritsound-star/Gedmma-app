@@ -28,8 +28,16 @@ export interface Merk {
   appNaam: string
   /** Nog te kiezen. Leeg betekent: er is nog geen website. */
   domein: string
-  /** De winkelproducten. Nieuw aangemaakt, niets hergebruikt. */
-  abonnement: { jaar: string; maand: string }
+  /**
+   * Het abonnementsproduct in beide winkels. Nieuw aangemaakt, niets
+   * hergebruikt.
+   *
+   * Eén product en geen twee: de lancering is maandelijks, € 5,99, maandelijks
+   * opzegbaar. Een jaarplan erbij is later één regel hier, één regel in
+   * `PLANNEN` en één product in elke console -- maar elk product dat je nu
+   * aanmaakt is een product dat je nu ook moet nakijken, en dat vertraagt.
+   */
+  abonnement: { maand: string }
   /** Het Apple-id van de app, zodra die bestaat. Leeg tot dan. */
   appleId: string
   /** De sleutel waaronder de voortgang op het toestel staat. */
@@ -45,7 +53,6 @@ export const MERK: Merk = {
   // niet bestaat is erger dan geen link, en de winkels controleren erop.
   domein: '',
   abonnement: {
-    jaar: 'app.dilimiz.yearly',
     maand: 'app.dilimiz.monthly',
   },
   appleId: '',
