@@ -114,6 +114,63 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## 20 oktober: 1.5 ingestuurd bij Play, en het gat zat in de console
+
+| | |
+|---|---|
+| Play | **versiecode 10 · 1.5** ingestuurd, volledige uitrol, in beoordeling |
+| Apple | 1.4 live; build 11 moet nog op de Mac gebouwd worden |
+| Managed publishing | **aan** — na goedkeuring is de app nog niet live, dat is een tweede handeling |
+
+**De belangrijkste vondst van vandaag zat niet in de code maar in Play
+Console: het jaarabonnement had nooit een proefperiode.**
+
+`app.darijaforkids.monthly` had `proef-maand`, actief, 175 landen.
+`app.darijaforkids.yearly` had een streepje — geen enkele offer. En dat is net
+het plan dat de app standaard voorstelt (`subscribe()` kiest 'jaar', en het
+staat als beste keuze bovenaan).
+
+Wat er dus gebeurde bij wie het jaarplan koos: het scherm zei *"Na 3 gratis
+dagen wordt € 59,99 afgeschreven"*, en Google schreef meteen af. Geen drie
+dagen. Dat stond live sinds 13 oktober.
+
+Nu staat `proef-jaar` actief: Free trial, 3 dagen, 175 landen, *Never had any
+subscription*. Die laatste keuze is met opzet dezelfde als bij Apple, waar een
+introductieaanbieding per abonnementsgroep geldt — anders gedraagt Android zich
+anders dan iOS en is dat verschil niet uit te leggen.
+
+**Bij Apple stond het al goed**, op allebei de producten: *Free for the first
+3 days*, 175 landen, geen einddatum, sinds 19 september. Het vermoeden dat het
+daar ook misging was onjuist.
+
+**Het mooiste eraan: door die offer te activeren is 1.4 ook meteen waar
+geworden.** De app belooft daar drie gratis dagen, en vanaf nu geeft Google ze
+ook. Dat werkte zonder app-update, voor iedereen die nu binnenkomt.
+
+Wat 1.5 daar bovenop doet is het omgekeerde geval afvangen: wie géén recht
+meer heeft op een proef, krijgt hem ook niet beloofd. Drie plekken zeiden
+onvoorwaardelijk "3 dagen gratis" — het abonnementsscherm, het aanbod bij de
+eerste start, en het welkom ná het betalen. Alle drie hangen nu aan wat de
+winkel zei toen er besteld werd.
+
+### Wat er nog moet
+
+1. **Wachten op Google.** De vorige ronde duurde ruim een week.
+2. **Daarna zelf publiceren.** Managed publishing staat aan; goedgekeurd is
+   niet live. Dat heeft op 13 oktober al een keer voor verwarring gezorgd.
+3. **iOS build 11 op de Mac**: `npm run ios -- --build 11 --versie 1.5`.
+
+### En een fout van mij, voor de volgende keer
+
+`npm run aab` schrijft het versienummer in `android/app/build.gradle`, en dat
+bestand blijft op de bouwmachine gewijzigd achter. Toen een pull daarop
+vastliep heb ik geadviseerd het mee te committen. Dat is verkeerd: dan staat de
+repository op 10 en weet `docs/versies.json` niets meer dan `build.gradle` —
+waar `versies.test.ts` precies op let, en waarop hij ook keurig omviel.
+
+Na een bouw commit je `docs/versies.json`, en zet je build.gradle terug met
+`git checkout android/app/build.gradle`.
+
 ## 20 oktober: de winkelpagina werkt, het bereik niet
 
 | | 13 okt | 16 okt | 17 okt | 18 okt |
