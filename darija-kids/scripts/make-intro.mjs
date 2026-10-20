@@ -532,7 +532,7 @@ const SCENES = [
      * de onderbalk heen en kwam de film in het woordenboek terecht.
      *
      * Twee dingen zijn hier eerder misgegaan, allebei stil -- de film kwam er
-     * gewoon uit, alleen met twaalf dichte kaartjes en een kaptioen die zegt
+     * gewoon uit, alleen met twaalf dichte kaartjes en een bijschrift dat zegt
      * dat je woorden leert.
      *
      * Het eerste is een wedloop. Klopt het paar niet, dan klapt `Memory` het
