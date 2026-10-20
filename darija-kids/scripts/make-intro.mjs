@@ -20,7 +20,7 @@ import { promisify } from 'node:util'
 import ffmpeg from 'ffmpeg-static'
 import { startChroom } from './lib/chroom.mjs'
 import { createServer } from 'vite'
-import { CHECK, GO_ON, GOT_IT, NEEM_OP, ONWARD, seeded, STOP_OPNAME } from './lib/profile.mjs'
+import { CHECK, GO_ON, GOT_IT, NEEM_OP, ONWARD, seeded, START, STOP_OPNAME } from './lib/profile.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const PORT = 4312
@@ -518,6 +518,89 @@ const SCENES = [
       }
     },
   },
+  {
+    id: 'memory',
+    /**
+     * Het geheugenspel: twaalf kaartjes met de khatim op de rug.
+     *
+     * Twee kaartjes omdraaien is het hele spel, en het is precies wat een
+     * schermafdruk niet laat zien. Of het paar klopt doet er voor de film
+     * niet toe -- wat je ziet is dat er een woord onder een kaartje zit.
+     *
+     * De startknop is de tweede van twee: de kaart van het tijdspel staat
+     * erboven. Zonder `force`, want met `force` klikte hij eerder dwars door
+     * de onderbalk heen en kwam de film in het woordenboek terecht.
+     */
+    take: async (page) => {
+      await page.goto(`${BASE}/spelen`, { waitUntil: 'networkidle' })
+      await wait(page, 900)
+
+      const starten = page.getByRole('button', { name: START, exact: true })
+      if (await starten.count() < 2) throw new Error('geen twee startknoppen op /spelen')
+      await starten.nth(1).click()
+      await wait(page, 1100)
+
+      const scroll = await scrollNow(page)
+      const tegels = page.locator('main button').filter({ hasNotText: /./ })
+      const hoeveel = await tegels.count()
+      if (hoeveel < 4) throw new Error(`het bord heeft maar ${hoeveel} kaartjes`)
+
+      const eerste = await spot(page, tegels.nth(0))
+      const tweede = await spot(page, tegels.nth(hoeveel > 5 ? 5 : 1))
+
+      const frames = [await shot(page, scroll)]
+      await tegels.nth(0).click()
+      await wait(page, 450)
+      frames.push(await shot(page, scroll))
+      await tegels.nth(hoeveel > 5 ? 5 : 1).click()
+      await wait(page, 650)
+      frames.push(await shot(page, scroll))
+
+      return {
+        frames,
+        acts: [{
+          at: 0.8,
+          dur: 2.1,
+          path: [eerste, tweede],
+          steps: [[0.3, 1], [0.78, 2]],
+          frame: 2,
+          sound: 'tap',
+          endSound: 'correct',
+        }],
+      }
+    },
+  },
+  {
+    id: 'verhaal',
+    /**
+     * Een verhaal, en het is met opzet dat ene: Yasmin bij haar jeddti.
+     *
+     * Twee mensen die elkaar begroeten in het Darija, met de vertaling
+     * eronder. Dat is waar deze hele app over gaat, en het is het enige scherm
+     * waarop je dat gesprek werkelijk ziet staan.
+     *
+     * Geen vinger hier. Er valt niets te tikken; wat je laat zien is dat het
+     * doorloopt, en dat doe je door te zakken in plaats van te wijzen.
+     */
+    take: async (page) => {
+      await page.goto(`${BASE}/verhalen`, { waitUntil: 'networkidle' })
+      await wait(page, 700)
+
+      const jedda = page.locator('a[href^="/verhalen/"]').first()
+      if (!(await jedda.count())) throw new Error('geen verhalen gevonden')
+      await jedda.click()
+      await wait(page, 1200)
+
+      const frames = [await shot(page)]
+      for (const hoogte of [150, 300]) {
+        await page.evaluate((y) => window.scrollTo({ top: y }), hoogte)
+        await wait(page, 320)
+        frames.push(await shot(page, hoogte))
+      }
+
+      return { frames, acts: [{ at: 1.0, dur: 2.4, path: [], steps: [[0.34, 1], [0.7, 2]], frame: 2 }] }
+    },
+  },
 ]
 
 /** The app, filmed at the size the film draws it. */
@@ -599,6 +682,10 @@ const FILMS = {
     shots: ['schrijven', 'spreken'],
     // Verhaal en vierkant: dat is wat een WhatsApp-kanaal en een
     // Facebookgroep tonen. Breed wordt daar aan twee kanten afgesneden.
+    shapes: 'verhaal,vierkant',
+  },
+  spelen: {
+    shots: ['memory', 'verhaal'],
     shapes: 'verhaal,vierkant',
   },
 }

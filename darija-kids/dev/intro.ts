@@ -16,6 +16,7 @@ import { CLIPS } from '../src/engine/clips'
 /* ------------------------------------------------------------------ the copy */
 
 type ShotId = 'pad' | 'leren' | 'letters' | 'les' | 'geschiedenis' | 'schrijven' | 'woord' | 'spreken'
+  | 'memory' | 'verhaal'
 
 import { COPY, type Copy, type FilmId } from './intro-copy'
 
@@ -54,6 +55,15 @@ const FILMS: Record<FilmId, Film> = {
   bonus: {
     shots: ['schrijven', 'spreken'],
     titel: 2.2, hold: 4.8, slot: 3.0, deunen: [1, 2],
+  },
+  /*
+   * De derde: wat er te doen is als de les klaar is. Het geheugenspel en de
+   * verhalen -- allebei oefenen zonder dat het oefenen heet. Zelfde maat als
+   * `bonus`, want het is dezelfde soort post.
+   */
+  spelen: {
+    shots: ['memory', 'verhaal'],
+    titel: 2.2, hold: 4.8, slot: 3.0, deunen: [0, 3],
   },
 }
 

@@ -80,6 +80,9 @@ export const NEEM_OP = /^(Neem op|Enregistre|Aufnehmen|Graba|Registra|Record)$/
 /** En de knop die hem stopt, in diezelfde zes talen. */
 export const STOP_OPNAME = /^(Stop de opname|Arrête l’enregistrement|Aufnahme stoppen|Para la grabación|Ferma la registrazione|Stop recording)$/
 
+/** De startknop op een spelkaart, in elke taal. */
+export const START = /^(Start|Démarrer|Empezar|Inizia)$/
+
 /** The button that leaves a lesson's opening tip, in every language. */
 export const GO_ON = /Aan de slag|Allons-y|Los geht|A por ello|Si comincia|Let’s go/
 

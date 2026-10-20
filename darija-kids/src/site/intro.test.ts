@@ -75,7 +75,7 @@ describe('de slotkaart van de promofilm', () => {
    * regel te weinig, dan valt er een scherm zonder tekst in beeld; staat er
    * een te veel, dan wordt hij nooit gelezen.
    */
-  const SCHERMEN: Record<string, number> = { intro: 7, bonus: 2 }
+  const SCHERMEN: Record<string, number> = { intro: 7, bonus: 2, spelen: 2 }
 
   it('en heeft per taal één regel per scherm', () => {
     for (const [film, taal, c] of ALLES) {
@@ -86,18 +86,23 @@ describe('de slotkaart van de promofilm', () => {
 
   /* De korte film erft de slotkaart van de winkelfilm, zodat er geen tweede
      plek is waar een prijs kan verouderen -- zie de uitleg in intro-copy.ts. */
-  it('laat de korte film de slotkaart van de winkelfilm erven', () => {
+  it('laat elke korte film de slotkaart van de winkelfilm erven', () => {
     for (const taal of TALEN) {
-      expect(COPY.bonus[taal]!.price, taal).toBe(COPY.intro[taal]!.price)
-      expect(COPY.bonus[taal]!.cta, taal).toBe(COPY.intro[taal]!.cta)
-      expect(COPY.bonus[taal]!.feiten, taal).toBe(COPY.intro[taal]!.feiten)
+      for (const film of ['bonus', 'spelen'] as const) {
+        expect(COPY[film][taal]!.price, `${film}/${taal}`).toBe(COPY.intro[taal]!.price)
+        expect(COPY[film][taal]!.cta, `${film}/${taal}`).toBe(COPY.intro[taal]!.cta)
+        expect(COPY[film][taal]!.feiten, `${film}/${taal}`).toBe(COPY.intro[taal]!.feiten)
+      }
     }
   })
 
-  it('en geeft de korte film een eigen ondertitel en eigen regels', () => {
+  it('en geeft elke korte film een eigen ondertitel en eigen regels', () => {
     for (const taal of TALEN) {
-      expect(COPY.bonus[taal]!.sub, taal).not.toBe(COPY.intro[taal]!.sub)
-      expect(COPY.bonus[taal]!.lines, taal).not.toEqual(COPY.intro[taal]!.lines)
+      for (const film of ['bonus', 'spelen'] as const) {
+        expect(COPY[film][taal]!.sub, `${film}/${taal}`).not.toBe(COPY.intro[taal]!.sub)
+        expect(COPY[film][taal]!.lines, `${film}/${taal}`).not.toEqual(COPY.intro[taal]!.lines)
+      }
+      expect(COPY.spelen[taal]!.lines, taal).not.toEqual(COPY.bonus[taal]!.lines)
     }
   })
 })

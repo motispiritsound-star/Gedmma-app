@@ -13,7 +13,7 @@
  */
 
 /** Welke film. Zie FILMS in intro.ts. */
-export type FilmId = 'intro' | 'bonus'
+export type FilmId = 'intro' | 'bonus' | 'spelen'
 
 export interface Copy {
   /** Under the title, in the opening card. */
@@ -176,4 +176,46 @@ const BONUS: Record<string, Copy> = Object.fromEntries(
   Object.entries(INTRO).map(([taal, c]) => [taal, { ...c, ...(KORT[taal] ?? KORT.nl!) }]),
 )
 
-export const COPY: Record<FilmId, Record<string, Copy>> = { intro: INTRO, bonus: BONUS }
+
+/**
+ * De derde film: wat er te doen is als de les klaar is.
+ *
+ * Het geheugenspel en de verhalen. Allebei zijn ze oefenen zonder dat het
+ * oefenen heet, en allebei laten ze iets zien wat een schermafdruk niet kan:
+ * een kaartje dat omdraait, en een gesprek dat doorloopt.
+ *
+ * Net als bij de korte film erft de slotkaart -- prijs, getallen, knop --
+ * ongewijzigd van de winkelfilm. Eén plek waar een prijs staat.
+ */
+const SPELEN: Record<string, Pick<Copy, 'sub' | 'lines'>> = {
+  nl: {
+    sub: 'Oefenen zonder dat het oefenen heet',
+    lines: ['Twaalf kaartjes, zes paren.\nEn ondertussen leer je woorden.', 'En verhalen waarin je\nmeeluistert bij jedda.'],
+  },
+  fr: {
+    sub: 'S\u2019entra\u00eener sans que \u00e7a en ait l\u2019air',
+    lines: ['Douze cartes, six paires.\nEt des mots en chemin.', 'Et des histoires o\u00f9 l\u2019on\n\u00e9coute chez jedda.'],
+  },
+  de: {
+    sub: '\u00dcben, ohne dass es nach \u00dcben aussieht',
+    lines: ['Zw\u00f6lf Karten, sechs Paare.\nUnd nebenbei W\u00f6rter.', 'Und Geschichten, in denen du\nbei Jedda mith\u00f6rst.'],
+  },
+  es: {
+    sub: 'Practicar sin que lo parezca',
+    lines: ['Doce cartas, seis parejas.\nY palabras por el camino.', 'E historias donde escuchas\nen casa de jedda.'],
+  },
+  it: {
+    sub: 'Allenarsi senza che sembri un esercizio',
+    lines: ['Dodici carte, sei coppie.\nE parole lungo la strada.', 'E storie in cui ascolti\na casa di jedda.'],
+  },
+  en: {
+    sub: 'Practice that does not feel like practice',
+    lines: ['Twelve cards, six pairs.\nAnd words along the way.', 'And stories where you listen\nin at jedda\u2019s.'],
+  },
+}
+
+const SPEL: Record<string, Copy> = Object.fromEntries(
+  Object.entries(INTRO).map(([taal, c]) => [taal, { ...c, ...(SPELEN[taal] ?? SPELEN.nl!) }]),
+)
+
+export const COPY: Record<FilmId, Record<string, Copy>> = { intro: INTRO, bonus: BONUS, spelen: SPEL }
