@@ -36,6 +36,7 @@
     "alfabetfilm": "node scripts/make-intro.mjs --film alfabet",
     "routefilm": "node scripts/make-intro.mjs --film route",
     "onthoudfilm": "node scripts/make-intro.mjs --film onthouden",
+    "verzamelfilm": "node scripts/make-intro.mjs --film verzamelen",
     "feedbackcheck": "node scripts/feedbackcheck.mjs",
     "historycheck": "node scripts/historycheck.mjs",
     "lettercheck": "node scripts/lettercheck.mjs",

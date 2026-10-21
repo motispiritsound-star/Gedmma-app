@@ -70,10 +70,10 @@ if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -
 
 **Waarom donderdag de meeste voorraad krijgt.** Maandag, dinsdag, zaterdag en zondag maakt de app zelf: veertien kaarten, vijftien delen met verteller, honderdzestig platen. Die dagen raken niet leeg. Donderdag is de enige dag waarvoor niets klaarligt, en dus de enige dag waarop iets verzonnen zou worden. Daar zit hieronder vijf maanden in.
 
-**En de woensdag is nu een reeks.** Zes films van vijftien seconden, elk met
+**En de woensdag is nu een reeks.** Zeven films van vijftien seconden, elk met
 twee schermen uit de echte app -- geen montage van losse schermafdrukken maar
 de app die bediend wordt, met zijn eigen geluiden eronder. Eén per week, in
-deze volgorde. Na zes weken is de hele app langsgekomen en begint hij opnieuw;
+deze volgorde. Na zeven weken is de hele app langsgekomen en begint hij opnieuw;
 tegen die tijd zit er ander publiek in de groepen.
 
 | # | Opdracht | Wat erin zit | Waarom hij daar staat |
@@ -84,6 +84,7 @@ tegen die tijd zit er ander publiek in de groepen.
 | 4 | `npm run alfabetfilm` | Het alfabet, letter voor letter, en een woord | Haalt de drempel weg waar ouders over beginnen |
 | 5 | `npm run routefilm` | De route van zeventien units, en een les van binnen | Het antwoord op "en wat krijg je er dan voor" |
 | 6 | `npm run onthoudfilm` | Het herhaalscherm en de dagopdracht | De enige die aan de ouder uitlegt waar het geld heen gaat |
+| 7 | `npm run verzamelfilm` | De kaartenplank met twaalf sloten, en het tijdspel | Sluit de kring: deel 1 liet één kaart zien, dit laat zien hoeveel er nog zijn |
 
 Elke opdracht zet zes talen klaar in twee vormen: `verhaal` (9:16, voor een
 status en een kanaal) en `vierkant` (1:1, voor een tijdlijn). Ze staan in

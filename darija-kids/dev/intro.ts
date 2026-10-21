@@ -16,7 +16,7 @@ import { CLIPS } from '../src/engine/clips'
 /* ------------------------------------------------------------------ the copy */
 
 type ShotId = 'pad' | 'leren' | 'letters' | 'les' | 'geschiedenis' | 'schrijven' | 'woord' | 'spreken'
-  | 'memory' | 'verhaal' | 'herhalen'
+  | 'memory' | 'verhaal' | 'herhalen' | 'kast' | 'race'
 
 import { COPY, type Copy, type FilmId } from './intro-copy'
 
@@ -87,6 +87,11 @@ const FILMS: Record<FilmId, Film> = {
   onthouden: {
     shots: ['herhalen', 'leren'],
     titel: 2.2, hold: 4.8, slot: 3.0, deunen: [0, 2],
+  },
+  /* De zevende: wat er te verzamelen en te winnen valt. */
+  verzamelen: {
+    shots: ['kast', 'race'],
+    titel: 2.2, hold: 4.8, slot: 3.0, deunen: [3, 0],
   },
 }
 

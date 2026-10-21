@@ -599,6 +599,98 @@ const SCENES = [
     },
   },
   {
+    id: 'kast',
+    /**
+     * De kaartenverzameling: wat er nog te halen valt.
+     *
+     * De losse geschiedeniskaart staat al in `weetje`. Dit is de plank
+     * eronder -- veertien kaarten van de Romeinse stad in de heuvels tot
+     * het alfabet dat in 2011 officieel werd, met de verdiende bovenaan en
+     * de rest op slot met alleen hun jaartal erbij. Dat laatste doet het
+     * werk: een slot met "789 - 808" ernaast is een vraag.
+     *
+     * De opgeslagen stand heeft er twee van de veertien, dus de balk staat
+     * net niet op nul en net niet vol.
+     *
+     * Twee standen, geen vinger -- net als bij `pad` en `herhalen`.
+     */
+    take: async (page) => {
+      await page.goto(`${BASE}/geschiedenis`, { waitUntil: 'networkidle' })
+      await wait(page, 1100)
+      // Niet verder dan 380. Op 560 stonden er zeven sloten onder elkaar met
+      // zeven keer "Nog niet verdiend" ernaast, en dat leest als een muur in
+      // plaats van als een plank. Nu blijft de laatste verdiende kaart boven
+      // in beeld en staan de sloten eronder.
+      const frames = []
+      for (const y of [0, 380]) {
+        await page.evaluate((to) => window.scrollTo({ top: to, behavior: 'instant' }), y)
+        await wait(page, 300)
+        frames.push(await shot(page, y))
+      }
+      await page.evaluate(() => window.scrollTo(0, 0))
+      return { frames, acts: [{ at: 0.6, dur: 3.4, path: [], steps: [[0.5, 1]], frame: 1 }] }
+    },
+  },
+  {
+    id: 'race',
+    /**
+     * Het tijdspel: zestig seconden, een woord, vier antwoorden.
+     *
+     * De startknop is de eerste van twee -- de kaart van het tijdspel staat
+     * boven die van het geheugenspel. Zonder `force`, om dezelfde reden als
+     * daar: met `force` klikte hij dwars door de onderbalk heen.
+     *
+     * De klok loopt, dus dit is de enige scene waar de tijd tussen twee
+     * foto's zichtbaar is in het beeld zelf. Dat is precies de bedoeling:
+     * 59s op de eerste en een paar seconden minder op de laatste, met een
+     * goed antwoord ertussen.
+     */
+    take: async (page) => {
+      await page.goto(`${BASE}/spelen`, { waitUntil: 'networkidle' })
+      await wait(page, 900)
+
+      const starten = page.getByRole('button', { name: START, exact: true })
+      if (await starten.count() < 2) throw new Error('geen twee startknoppen op /spelen')
+      await starten.nth(0).click()
+      await wait(page, 1200)
+
+      const scroll = await scrollNow(page)
+      const keuzes = page.locator('main .grid button')
+      const hoeveel = await keuzes.count()
+      if (hoeveel < 4) throw new Error(`het tijdspel heeft maar ${hoeveel} antwoorden`)
+
+      // Het goede antwoord is te herkennen aan de emoji: die staat op de
+      // woordkaart en nog een keer voor de vertaling die erbij hoort. Blind de
+      // bovenste aanklikken was een kans van een op vier, en de eerste keer
+      // was het mis -- de teller stond daarna op nul, onder een bijschrift dat
+      // zegt dat je zoveel mogelijk mag raden.
+      const emoji = (await page.locator('main div.text-4xl[aria-hidden="true"]').first().innerText()).trim()
+      const teksten = await keuzes.allInnerTexts()
+      const goed = teksten.findIndex((tekst) => tekst.trim().startsWith(emoji))
+      if (goed < 0) throw new Error(`geen antwoord met de emoji ${emoji} van het woord`)
+
+      const doel = await spot(page, keuzes.nth(goed))
+      const frames = [await shot(page, scroll)]
+      await keuzes.nth(goed).click()
+      await wait(page, 700)
+      frames.push(await shot(page, scroll))
+      const stand = await page.locator('main').innerText()
+      if (/✅ 0/.test(stand)) throw new Error('de teller staat nog op nul; het antwoord was fout')
+
+      return {
+        frames,
+        acts: [{
+          at: 1.0,
+          dur: 2.0,
+          path: [doel],
+          steps: [[0.7, 1]],
+          frame: 1,
+          sound: 'tap',
+        }],
+      }
+    },
+  },
+  {
     id: 'herhalen',
     /**
      * Het herhaalscherm: wat de app onthoudt terwijl jij dat niet hoeft.
@@ -760,6 +852,10 @@ const FILMS = {
   },
   onthouden: {
     shots: ['herhalen', 'leren'],
+    shapes: 'verhaal,vierkant',
+  },
+  verzamelen: {
+    shots: ['kast', 'race'],
     shapes: 'verhaal,vierkant',
   },
 }

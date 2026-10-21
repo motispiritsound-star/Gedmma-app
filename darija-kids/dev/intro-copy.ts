@@ -14,7 +14,7 @@
 
 /** Welke film. Zie FILMS in intro.ts. */
 export type FilmId = 'intro' | 'bonus' | 'spelen' | 'weetje'
-  | 'alfabet' | 'route' | 'onthouden'
+  | 'alfabet' | 'route' | 'onthouden' | 'verzamelen'
 
 export interface Copy {
   /** Under the title, in the opening card. */
@@ -378,7 +378,48 @@ const ONTHOUD: Record<string, Copy> = Object.fromEntries(
   Object.entries(INTRO).map(([taal, c]) => [taal, { ...c, ...(ONTHOUD_T[taal] ?? ONTHOUD_T.nl!) }]),
 )
 
+/**
+ * Deel zeven: wat je verzamelt en wat je wint.
+ *
+ * De losse geschiedeniskaart staat in deel een; dit is de plank eronder,
+ * met de twaalf die nog op slot staan en alleen hun jaartal laten zien.
+ * Daarnaast het tijdspel, want een plank alleen is stil.
+ *
+ * Veertien is nageteld in `src/content/history.ts`, zestig seconden staat
+ * zo in `TimeRace`.
+ */
+const VERZAMEL_T: Record<string, Pick<Copy, 'sub' | 'lines'>> = {
+  nl: {
+    sub: 'Er valt iets te verzamelen',
+    lines: ['Veertien kaarten. Elke toets\ndie je haalt levert er een.', 'En zestig seconden om\nzoveel mogelijk te raden.'],
+  },
+  fr: {
+    sub: 'Il y a de quoi collectionner',
+    lines: ['Quatorze cartes. Chaque test\nréussi en donne une.', 'Et soixante secondes pour\nen deviner un maximum.'],
+  },
+  de: {
+    sub: 'Es gibt etwas zu sammeln',
+    lines: ['Vierzehn Karten. Jeder Test,\nden du schaffst, bringt eine.', 'Und sechzig Sekunden, um\nso viel wie möglich zu raten.'],
+  },
+  es: {
+    sub: 'Hay algo que coleccionar',
+    lines: ['Catorce cartas. Cada prueba\nque apruebas da una.', 'Y sesenta segundos para\nacertar todo lo que puedas.'],
+  },
+  it: {
+    sub: 'C’è qualcosa da collezionare',
+    lines: ['Quattordici carte. Ogni test\nsuperato ne dà una.', 'E sessanta secondi per\nindovinarne il più possibile.'],
+  },
+  en: {
+    sub: 'There is something to collect',
+    lines: ['Fourteen cards. Every checkpoint\nyou pass hands you one.', 'And sixty seconds to guess\nas many as you can.'],
+  },
+}
+
+const VERZAMEL: Record<string, Copy> = Object.fromEntries(
+  Object.entries(INTRO).map(([taal, c]) => [taal, { ...c, ...(VERZAMEL_T[taal] ?? VERZAMEL_T.nl!) }]),
+)
+
 export const COPY: Record<FilmId, Record<string, Copy>> = {
   intro: INTRO, bonus: BONUS, spelen: SPEL, weetje: WEET,
-  alfabet: ALFA, route: ROUTE, onthouden: ONTHOUD,
+  alfabet: ALFA, route: ROUTE, onthouden: ONTHOUD, verzamelen: VERZAMEL,
 }
