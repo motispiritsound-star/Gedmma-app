@@ -1,3 +1,4 @@
+import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { LANG_CODES } from './languages'
 import { STRINGS } from './index'
@@ -62,5 +63,53 @@ describe('Arabisch in een zin die van links naar rechts loopt', () => {
 
   it('vindt een fragment zonder isolatie ook echt', () => {
     expect(losFragment('brood is خبز in het Arabisch')).toBe(true)
+  })
+
+  /**
+   * Niets inline naast een Arabisch woord.
+   *
+   * `.ar` zet `display: inline-block` -- een Arabische reeks middenin een
+   * Nederlandse lijst moet aan het begin van de regel staan en niet door zijn
+   * eigen richting naar de rechterrand geduwd worden. Die regel staat buiten
+   * elke laag en wint dus van de Tailwind-klasse ernaast; `index.css` zegt er
+   * zelf bij dat `block` op zo'n element niets doet.
+   *
+   * Gevolg: zet je er een knop of een span achter, dan komt die ernaast in
+   * plaats van eronder. In het tijdspel stond de uitspraak zo tegen het woord
+   * aan geplakt -- "بسلامةbslama - luister", zonder spatie ertussen. Twaalf
+   * andere plekken hebben hetzelfde `ar` op een div, maar daar volgt een
+   * echt blokelement en gaat het goed.
+   *
+   * Vandaar dat dit naar de buur kijkt en niet naar de div zelf.
+   */
+  it('keeps inline neighbours off an Arabic line', () => {
+    const wortel = new URL('../', import.meta.url)
+    const bestanden: string[] = []
+    const loop = (map: URL): void => {
+      for (const naam of readdirSync(map)) {
+        const pad = new URL(`${naam}`, map)
+        if (statSync(pad).isDirectory()) loop(new URL(`${naam}/`, map))
+        else if (naam.endsWith('.tsx')) bestanden.push(pad.pathname)
+      }
+    }
+    loop(wortel)
+    expect(bestanden.length, 'tsx-bestanden gevonden').toBeGreaterThan(10)
+
+    for (const pad of bestanden) {
+      const regels = readFileSync(pad, 'utf8').split('\n')
+      regels.forEach((regel, i) => {
+        // De klassenlijst uit elkaar halen en op `ar` zoeken als heel woord.
+        // Een patroon dat `ar` middenin de lijst probeerde te vinden was hier
+        // eerst stuk -- het eiste een spatie of een aanhalingsteken ervoor, en
+        // `className="ar mt-2"` heeft daar niets van. De test wees toen nul
+        // regels aan en keurde de fout goed die hij moest vangen.
+        const klasse = /<(?:div|p|h[1-6])\b[^>]*className=(?:"([^"]*)"|\{`([^`]*)`\})/.exec(regel)
+        if (!klasse) return
+        const namen = (klasse[1] ?? klasse[2] ?? '').replace(/\$\{[^}]*\}/g, ' ').split(/\s+/)
+        if (!namen.includes('ar')) return
+        const buur = regels[i + 1] ?? ''
+        expect(buur.trimStart(), `${pad.split('/src/')[1]}:${i + 2}`).not.toMatch(/^<(?:button|span|a)\b/)
+      })
+    }
   })
 })
