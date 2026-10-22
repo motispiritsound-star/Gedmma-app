@@ -512,8 +512,40 @@ precies waar geluid anders werkt dan overal:
 | `The bundle version must be higher than…` | Buildnummer omhoog en opnieuw archiveren |
 | *Archive* is grijs | Het doel staat nog op een simulator; zet het op *Any iOS Device* |
 | Xcode wil een nieuwere macOS | Werk macOS bij via **Systeeminstellingen → Algemeen → Software-update** |
+| `Unable to authenticate with App Store Connect` | Je Apple-sessie in Xcode is verlopen — zie hieronder |
+| `No App Store Connect access for the team` | Hetzelfde; die twee regels komen samen |
 
-Loopt het ergens vast: kopieer de hele foutmelding en stuur hem door. De
+### De Apple-sessie in Xcode verloopt
+
+Tussen twee releases zit al gauw drie weken, en dan is de sessie van je Apple
+ID in Xcode verlopen. Bij het uploaden staat er dan:
+
+```
+App Store Connect access for "Adil Bekkali" is required.
+
+abekkali@live.nl    Unable to authenticate with App Store Connect
+abekkali@live.nl    No App Store Connect access for the team
+```
+
+Twee regels voor hetzelfde adres: een verlopen vermelding naast een goede. Het
+zegt niets over de app of over de build — die staat gewoon klaar in Organizer.
+
+1. **Manage Accounts…** in datzelfde foutvenster.
+2. Staan er twee vermeldingen van hetzelfde adres, haal de onderste weg met de
+   **–** linksonder.
+3. **Sign In…**, inloggen, en de tweestapscode van je iPhone overtypen.
+4. Daarna hoort het team erbij te staan, met App Store Connect-toegang.
+5. Venster sluiten, terug naar Organizer, opnieuw **Distribute App**.
+
+Blijft de tweestapsverificatie rondjes draaien, dan is de omweg de losse
+**Transporter**-app uit de Mac App Store, met een app-specifiek wachtwoord uit
+appleid.apple.com. Die praat rechtstreeks met Apple en heeft Xcode niet nodig.
+
+Gebeurd op 22 oktober, bij build 11. De vorige upload was 3 oktober.
+
+---
+
+Loopt het ergens anders vast: kopieer de hele foutmelding en stuur hem door. De
 melding is bijna altijd het antwoord.
 
 ## Voor de volgende keer
