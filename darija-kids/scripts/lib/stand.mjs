@@ -67,14 +67,37 @@ export function toonStand(wortel, tak = 'main') {
   }
 
   /*
-   * Met opzet alleen een waarschuwing en geen afbreking: soms bouw je met
-   * voordacht een oudere stand, bijvoorbeeld om een foutmelding na te doen.
-   * Maar dan heb je het zelf gekozen, en staat het er zwart op wit.
+   * Dit stopte hier eerst niet, met het argument dat je soms met voordacht een
+   * oudere stand bouwt. Twee keer bijna een winkel in:
+   *
+   *   20 oktober  de aab kwam uit commit 0dcfba2, 41 commits achter
+   *   22 oktober  build 11 voor iOS kwam uit 0b729a7, 96 commits achter -- de
+   *               app van 3 oktober, met 1.5 op het etiket
+   *
+   * Allebei keren stond de waarschuwing er gewoon, en allebei keren ging het
+   * mis. De reden is de volgorde: hierna schrijft de beller het versie- en
+   * buildnummer weg en meldt `versie -> 1.5` en `build -> 11`. Dat zijn de
+   * laatste twee regels op het scherm, en die lezen als "gelukt". De
+   * waarschuwing staat dan al boven de vouw.
+   *
+   * Dus stopt hij nu, en wel voor dat wegschrijven -- dat is het stuk dat niet
+   * terug kan. Apple weigert een buildnummer dat al geupload is, dus een
+   * bundel met het verkeerde nummer erop kost een echt nummer.
+   *
+   * Wie met opzet oud bouwt geeft `--ook-als-oud` mee.
    */
-  console.log(
+  console.error(
     `\n  !! ${achter} ${achter === 1 ? 'commit' : 'commits'} achter op origin/${tak}.\n`
-    + `     Deze bundel krijgt een nieuw versienummer met oude code erin.\n`
-    + `     Afbreken en eerst trekken:  git pull origin ${tak}\n`
-    + `     Op Windows gaat dat pas na: git checkout -- android/app/build.gradle\n`,
+    + `     Deze bundel zou een nieuw versienummer met oude code erin krijgen.\n`
+    + `     Eerst trekken:              git pull origin ${tak}\n`
+    + `     Lukt dat niet, dan staat er lokaal iets in de weg:\n`
+    + `                                 git checkout -- android/app/build.gradle\n`,
   )
+
+  if (process.argv.includes('--ook-als-oud')) {
+    console.error(`     Toch doorgegaan: --ook-als-oud stond erbij.\n`)
+    return
+  }
+  console.error(`     Gestopt. Met opzet oud bouwen? Zet --ook-als-oud erachter.\n`)
+  process.exit(1)
 }

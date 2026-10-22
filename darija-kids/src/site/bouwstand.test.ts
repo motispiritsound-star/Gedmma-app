@@ -47,13 +47,35 @@ describe('de melder zelf', () => {
   })
 
   /**
-   * En het breekt het bouwen niet af. Soms bouw je met voordacht een oudere
-   * stand, bijvoorbeeld om een foutmelding na te doen — maar dan heb je het
-   * zelf gekozen en staat het zwart op wit.
+   * En het breekt het bouwen wél af.
+   *
+   * Hier stond het omgekeerde, met het argument dat je soms met voordacht een
+   * oudere stand bouwt. Dat argument klopt, maar het weegt niet op tegen wat
+   * er twee keer bijna gebeurd is:
+   *
+   *   20 oktober  de aab kwam uit commit 0dcfba2, 41 commits achter
+   *   22 oktober  build 11 voor iOS kwam uit 0b729a7, 96 commits achter — de
+   *               app van 3 oktober, met 1.5 op het etiket
+   *
+   * Allebei keren stond de waarschuwing er gewoon. De volgorde is het
+   * probleem: na deze melding schrijft de beller het versie- en buildnummer
+   * weg en meldt `versie → 1.5` en `build → 11`. Dat zijn de laatste twee
+   * regels op het scherm en die lezen als "gelukt".
+   *
+   * Dus stoppen, en voor dat wegschrijven — dat is het stuk dat niet terug
+   * kan. Wie met opzet oud bouwt geeft `--ook-als-oud` mee.
    */
-  it('breekt niet af, en overleeft een machine zonder git of zonder net', () => {
-    expect(stand).not.toMatch(/process\.exit/)
+  it('stopt voordat er een nummer op oude code gaat', () => {
+    expect(stand).toMatch(/process\.exit\(1\)/)
+    expect(stand).toContain('--ook-als-oud')
+  })
+
+  /** Maar een machine zonder git of zonder net houdt het bouwen niet tegen. */
+  it('overleeft een machine zonder git of zonder net', () => {
     expect(stand.match(/catch/g)?.length).toBeGreaterThanOrEqual(2)
+    // Beide vangnetten keren terug in plaats van te stoppen.
+    expect(stand).toMatch(/\/\/ Geen git, of geen repository\. Dat mag; het bouwen gaat gewoon door\.\n    return/)
+    expect(stand).toMatch(/Niet nagekeken bij origin[^\n]*\n    return/)
   })
 })
 
