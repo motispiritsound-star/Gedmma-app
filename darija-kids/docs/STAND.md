@@ -279,6 +279,25 @@ e-boeken dan abonnementen over de toonbank gaan. Na te kijken onder Sales, en
 als het klopt is het goed nieuws: het boek is de makkelijkste eerste aankoop
 en de opstap naar de rest.
 
+> **Nagekeken op 22 oktober, en maar half waar.** Over 14 tot 20 oktober is
+> de hele opbrengst één productregel: **Maand (Darijaforkids)**, US$ 7,98,
+> Nederland. Geen e-boek, geen jaar. In díé week gingen er dus geen boeken
+> over de toonbank. Voor de periode daarvóór houdt het wel stand: de som komt
+> alleen uit op $54 als er e-boeken bij zitten (vier maandabonnementen plus
+> drie boeken geeft $55, zeven maandabonnementen maar $37).
+>
+> **En er is nog geen jaarabonnement betaald.** Eén jaar levert in zijn eentje
+> al $45 op; samen met zes andere aankopen zou de teller dan op minstens $77
+> staan in plaats van op $54. Dat sluit niet uit dat er één in zijn
+> proefperiode zit — drie actieve plannen tegen twee betaalde laat daar ruimte
+> voor — maar betaald heeft er nog geen.
+>
+> Dat is opmerkelijk, want het jaar staat vóórgeselecteerd op het
+> abonnementsscherm (`useState<PlanId>('jaar')`), draagt het label *best* en
+> laat € 5,00 per maand zien naast € 6,99. Wie koopt, klikt dus actief weg van
+> wat er klaarstaat. Met zeven aankopen is dat te weinig om een scherm op om
+> te gooien; het is iets om te volgen.
+
 ## 19 oktober: een korte film over de twee oefeningen die je niet kunt fotograferen
 
 ```powershell
