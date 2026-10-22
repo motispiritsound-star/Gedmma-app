@@ -154,20 +154,26 @@ wél staat is drie actieve plannen tegen twee betaalde — er zit er dus precies
 (9,09 → 5,88 → 5,26 → 4,17 → 2): de noemer vult zich met downloads die nog geen
 zeven dagen oud zijn. Kijk naar betaalde plannen.
 
-**Play is nu echt achter, en het leeftijdsexcuus is op.** De console meldt 18
-toestelacquisities over 28 dagen, 19 maandelijks actieve toestellen en € 6,99
-omzet. Dat laatste bedrag is precies één maandabonnement — Play heeft dus één
-betalende klant. Apple deed er in de laatste twee dagen alleen al zestien
-downloads bij. Negen dagen later live zijn verklaart een verschil van negen
-dagen, niet van een factor zes na ruim een week.
+**Play blijft achter, maar minder dan het overzicht suggereert.** Het
+Grow-users-blok meldt 18 toestelacquisities over 28 dagen en 19 maandelijks
+actieve toestellen; het overzicht van de productieweg meldt **36 installaties**
+in totaal. Dat zijn twee verschillende dingen, en het tweede is hier het
+bruikbare: 27 op 18 oktober, 36 op 22 oktober, dus ruim twee per dag tegen acht
+bij Apple. Ongeveer drie keer achter, niet zes — dat stond hier eerst verkeerd,
+gerekend op de 28-daagse teller.
 
-Twee dingen om na te lopen voordat er een conclusie onder gaat:
+De omzet is € 6,99, en dat is precies één maandabonnement. Play heeft dus één
+betalende klant.
 
-1. **Staat 1.5 echt in de winkel bij Play?** Hij is op 20 oktober ingestuurd
-   met managed publishing aan, en dan is goedgekeurd niet hetzelfde als live.
-2. Apple meldt één enkele update-download op 108 installaties. Dat past bij een
-   winkel waar sinds de eerste golf geen nieuwe versie langsgekomen is — iOS
-   staat nog op 1.4, build 11 is nooit gemaakt.
+**En 1.5 staat nog in beoordeling.** Het overzicht van de productieweg zegt
+"Release 10 (1.5) in review", twee dagen na insturen. Er staan twee adviezen
+bij die niets blokkeren: edge-to-edge en R8-optimalisatie.
+
+**Op iOS is 1.5 nooit ingestuurd.** Build 11 is niet gemaakt, dus de App Store
+serveert nog 1.4. Dat sluit aan bij de ene enkele update-download op 108
+installaties die Apple meldt. Alles wat 1.5 aan de verkoopkant verandert — het
+aanbod meteen bij de eerste start in plaats van pas bij les vijf — is dus nog
+nergens live.
 
 **Bijna alles is Nederland.** Over 14 tot 20 oktober zit 94 tot 97 procent in
 Nederland, met België op één per dag en Saoedi-Arabië op één. De Franse kant
