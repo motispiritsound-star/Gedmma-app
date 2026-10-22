@@ -337,6 +337,14 @@ Doe je dit niet, dan blijft *Archive* grijs.
 
 ### C6. Archiveren en uploaden
 
+**Niet op het wolkje, en niet op Integrate.** Boven in de werkbalk staat een
+wolkje naast het waarschuwingsdriehoekje, en in de menubalk staat **Integrate**.
+Allebei openen ze Xcode Cloud — de bouwdienst van Apple, die je hier niet nodig
+hebt en die apart geld kost. Op 22 oktober liep het daar vast op *"This
+operation could not be completed"*, en dat leest als een fout in de app terwijl
+er niets aan de hand was. Kom je er toch in: **Cancel**, en gewoon verder bij
+stap 1 hieronder.
+
 1. Menubalk: **Product → Archive**.
 2. Wachten. Vijf tot tien minuten. Rechtsboven draait een balkje.
 3. Als het klaar is opent het venster **Organizer** met jouw archief erin.
