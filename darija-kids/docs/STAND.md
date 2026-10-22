@@ -114,6 +114,66 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## 22 oktober: meer ogen, evenveel downloads
+
+| | 13 okt | 16 okt | 17 okt | 18 okt | **20 okt** |
+|---|---|---|---|---|---|
+| Vertoningen (Apple) | 365 | 508 | 549 | 598 | **742** |
+| Productpaginabezoeken | 85 | 119 | 128 | 141 | **170** |
+| Eerste downloads | 49 | 74 | 82 | 92 | **108** |
+| In-app aankopen | 4 | 5 | 5 | 7 | **7** |
+| Opbrengst | $48 | $48 | $48 | $54 | **$54** |
+| Betaalde plannen | — | 1 | 1 | 2 | **2** |
+| Actieve plannen | — | — | — | — | **3** |
+
+**Het bereik is met de helft omhoog en de downloads staan stil.** Tussen 13 en
+18 oktober kwamen er 46,6 vertoningen per dag bij, tussen 18 en 20 oktober 72.
+De downloads gingen in diezelfde twee periodes van 8,6 naar 8,0 per dag. Meer
+mensen zien de app, evenveel mensen halen hem.
+
+Dat zit in de laatste stap. Van de paginabezoekers die er tussen 13 en 18
+oktober bij kwamen, downloadde 77 procent; van die tussen 18 en 20 oktober 55
+procent. Cumulatief staat de pagina nog altijd op 63,5 procent (108 van 170),
+dus de pagina zelf is niet slechter geworden — het publiek is kouder. De eerste
+golf was familie en bekenden die een link volgden en toch al van plan waren te
+kijken. Wat er nu bij komt, kijkt eerst.
+
+Zestien downloads op negenentwintig bezoekers is weinig om een conclusie op te
+bouwen. Maar als dit volhoudt is het de eerste keer dat er aan de winkelpagina
+zelf iets te verbeteren valt in plaats van aan het bereik, en dan zijn de
+schermafdrukken en de eerste twee regels van de beschrijving aan de beurt.
+
+**De opbrengst staat stil, en dat hoort zo.** $54 op 18 oktober, $54 op 20
+oktober, zeven in-app aankopen allebei de keren. De zestien downloads uit die
+twee dagen kónden nog niet omslaan: de proefperiode duurt drie dagen. Wat er
+wél staat is drie actieve plannen tegen twee betaalde — er zit er dus precies
+één in zijn proef. Dat is het eerste harde bewijs dat de proef draait sinds
+`proef-jaar` op 20 oktober aan is gezet.
+
+**Day 7 download to paid staat op 2 procent.** Zelfde rekenwerk als eerder
+(9,09 → 5,88 → 5,26 → 4,17 → 2): de noemer vult zich met downloads die nog geen
+zeven dagen oud zijn. Kijk naar betaalde plannen.
+
+**Play is nu echt achter, en het leeftijdsexcuus is op.** De console meldt 18
+toestelacquisities over 28 dagen, 19 maandelijks actieve toestellen en € 6,99
+omzet. Dat laatste bedrag is precies één maandabonnement — Play heeft dus één
+betalende klant. Apple deed er in de laatste twee dagen alleen al zestien
+downloads bij. Negen dagen later live zijn verklaart een verschil van negen
+dagen, niet van een factor zes na ruim een week.
+
+Twee dingen om na te lopen voordat er een conclusie onder gaat:
+
+1. **Staat 1.5 echt in de winkel bij Play?** Hij is op 20 oktober ingestuurd
+   met managed publishing aan, en dan is goedgekeurd niet hetzelfde als live.
+2. Apple meldt één enkele update-download op 108 installaties. Dat past bij een
+   winkel waar sinds de eerste golf geen nieuwe versie langsgekomen is — iOS
+   staat nog op 1.4, build 11 is nooit gemaakt.
+
+**Bijna alles is Nederland.** Over 14 tot 20 oktober zit 94 tot 97 procent in
+Nederland, met België op één per dag en Saoedi-Arabië op één. De Franse kant
+levert niets meetbaars, terwijl de films, de winkelteksten en het kanaal er in
+het Frans klaarstaan.
+
 ## 20 oktober: 1.5 ingestuurd bij Play, en het gat zat in de console
 
 | | |
