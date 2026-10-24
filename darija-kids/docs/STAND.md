@@ -119,7 +119,7 @@ hem via de gewone app-update binnen.
 | | |
 |---|---|
 | App Store | **1.5 · build 11 — live sinds 24 oktober**, *Ready for Distribution* |
-| Play | 1.5 · versiecode 10 — stond 22 oktober nog *in review* |
+| Play | **1.5 · versiecode 10 — live sinds 24 oktober 19:49**, 100% uitgerold |
 
 Daarmee is 1.5 voor het eerst bij allebei de winkels aangeboden. Tot nu toe
 serveerde de App Store nog 1.4 uit build 10 van 3 oktober, en dat is waarom
@@ -151,6 +151,26 @@ nieuwe iPhone-gebruiker ziet.
 
 Vijf uur en een half van insturen tot in de winkel. Bij 1.4 duurde dat een dag;
 daar viel niets uit af te leiden, en nu dus ook niet.
+
+**Play stond vier dagen in beoordeling en werd op 24 oktober goedgekeurd.**
+Daarna bleef 1.4 gewoon de versie die mensen kregen -- managed publishing staat
+aan, en goedgekeurd is dan niet hetzelfde als live. Het verschil was zichtbaar
+aan twee vinkjes: 1.5 blauw met *Goedgekeurd*, 1.4 groen met *Beschikbaar op
+Play*. Na de knop *Wijzigingen publiceren* stond 1.5 om 19:49 op 100%.
+
+Google deed er vier dagen over en Apple vijfenhalf uur, en tóch stond Apple
+eerder in de winkel -- puur door die ene instelling.
+
+**Daarmee draait 1.5 in allebei de winkels.** Het betaalscherm bij de eerste
+start, de proefperiode van drie dagen en de prijs uit de winkel zelf zijn vanaf
+nu wat een nieuwe gebruiker ziet, op iOS en op Android.
+
+**Wat nu te volgen is.** Niet *day 7 download to paid* -- dat percentage zakt
+mechanisch zolang het aantal downloads stijgt. Wel: het aantal betaalde
+plannen, en het aantal gebruikers tegenover het aantal installaties. Play meldt
+35 gebruikers op 38 installaties; zakt dat verschil hard zodra 1.5 overal
+binnen is, dan vraagt het betaalscherm te vroeg. Dat is het enige echte risico
+van deze release, en het is aan dat ene getal te zien.
 
 **En wat het oplevert komt niet meteen.** De 108 bestaande iPhone-gebruikers
 zien het aanbod bij de eerste start pas als ze de app bijwerken; wie nieuw
