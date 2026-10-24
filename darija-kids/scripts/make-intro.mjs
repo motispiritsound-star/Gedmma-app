@@ -599,6 +599,69 @@ const SCENES = [
     },
   },
   {
+    id: 'leerpad',
+    /*
+     * Een stand waarin de hele route open ligt. Met de gewone stand staat er
+     * tussen elk paar kaarten "Maak unit 5 af om deze te openen" -- zeventien
+     * schermen lang een muur van sloten, in een film die juist moet laten zien
+     * hoe ver het loopt.
+     */
+    save: { alles: true },
+    /**
+     * De hele route, een stand per unit.
+     *
+     * Zeventien foto's van hetzelfde scherm, telkens zo gerold dat de
+     * volgende unit bovenin staat. De film hangt er zijn eigen bijschrift
+     * onder -- zie `vast` bij Film in `dev/intro.ts`.
+     *
+     * De standen worden hier uitgerekend en niet ingetypt. Een lijst
+     * pixelposities veroudert zodra er een les bij komt, en dan wijst de film
+     * stilletjes naar de verkeerde unit terwijl het bijschrift klopt. Dat is
+     * precies de soort fout die je pas ziet als hij al gedeeld is.
+     */
+    take: async (page) => {
+      await page.goto(`${BASE}/leren`, { waitUntil: 'networkidle' })
+      await wait(page, 1500)
+
+      const koppen = await page.evaluate(() => {
+        const gevonden = []
+        for (const el of document.querySelectorAll('main *')) {
+          const tekst = (el.textContent || '').trim()
+          const m = /^(\d{1,2})\.\s+\S+/.exec(tekst)
+          if (m && el.children.length <= 6 && tekst.length < 90) {
+            gevonden.push({ nr: Number(m[1]), y: Math.round(el.getBoundingClientRect().top + window.scrollY), len: tekst.length })
+          }
+        }
+        // Per unit het kleinste element dat met zijn nummer begint: de kop
+        // zelf, niet de kaart of de kolom eromheen.
+        const beste = new Map()
+        for (const k of gevonden) if (!beste.has(k.nr) || k.len < beste.get(k.nr).len) beste.set(k.nr, k)
+        return [...beste.values()].sort((a, b) => a.nr - b.nr).map((k) => k.y)
+      })
+      if (koppen.length < 10) throw new Error(`maar ${koppen.length} units op het pad gevonden`)
+
+      // De lijst unit-namen in `profile.mjs` staat met de hand uitgeschreven,
+      // want een `.mjs` kan het curriculum niet inlezen. Verloopt die lijst,
+      // dan blijven er sloten staan en is dat op geen enkele manier te zien
+      // aan de film die eruit komt. Dus hier geteld.
+      const pad = await page.locator('main').innerText()
+      const sloten = (pad.match(/\u{1F512}/gu) ?? []).length
+      if (sloten) throw new Error(`nog ${sloten} sloten op het pad; de unitlijst in profile.mjs klopt niet meer`)
+
+      const frames = []
+      for (const y of koppen) {
+        // 230 omhoog: dan staat de unit net onder de bovenbalk in plaats van
+        // er half achter.
+        const naar = Math.max(0, y - 230)
+        await page.evaluate((to) => window.scrollTo({ top: to, behavior: 'instant' }), naar)
+        await wait(page, 260)
+        frames.push(await shot(page, naar))
+      }
+      await page.evaluate(() => window.scrollTo(0, 0))
+      return { frames, acts: [] }
+    },
+  },
+  {
     id: 'kast',
     /**
      * De kaartenverzameling: wat er nog te halen valt.
@@ -856,6 +919,10 @@ const FILMS = {
   },
   verzamelen: {
     shots: ['kast', 'race'],
+    shapes: 'verhaal,vierkant',
+  },
+  leerpad: {
+    shots: ['leerpad'],
     shapes: 'verhaal,vierkant',
   },
 }

@@ -11,7 +11,32 @@ export const seeded = (lang, opts = {}) => {
     const d = new Date(Date.now() - n * 86400000)
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
   }
+  /**
+   * De zeventien units, voor een stand waarin de hele route open ligt.
+   *
+   * Nodig voor de routefilm. Met de gewone stand -- twee units af -- staat er
+   * tussen elk paar kaarten "Maak unit 5 af om deze te openen", zeventien
+   * schermen lang. Dat is een eerlijke weergave van een verse installatie en
+   * een slechte reclame: wie hem deelt laat vooral sloten zien.
+   *
+   * De namen staan hier uitgeschreven omdat een `.mjs` het curriculum niet
+   * kan inlezen. Verloopt deze lijst, dan blijven er sloten staan -- en
+   * daarom kijkt de scene zelf na of ze weg zijn in plaats van erop te
+   * vertrouwen.
+   */
+  const UNITS = ['hruf', 'groeten', 'ik-en-jij', 'familie', 'cijfers', 'kleuren', 'eten',
+    'huis', 'school', 'dieren', 'tijd', 'lichaam', 'werkwoorden', 'vragen', 'winkelen',
+    'weg', 'cultuur']
+
   const lessons = {}
+  if (opts.alles) {
+    // Ruimer dan nodig: lesnummers die niet bestaan worden gewoon niet
+    // opgezocht, en zo hoeft het aantal lessen per unit hier niet te staan.
+    for (const unit of UNITS) {
+      for (let n = 1; n <= 8; n++) lessons[`${unit}-${n}`] = { stars: 3, runs: 2, bestScore: 1, lastDone: Date.now() - 86400000 }
+      lessons[`${unit}-toets`] = { stars: 3, runs: 2, bestScore: 1, lastDone: Date.now() - 86400000 }
+    }
+  }
   // De twee toetsen horen erbij: wie unit 1 en 2 heeft afgerond heeft ze
   // gehaald, en elke gehaalde toets levert een geschiedeniskaart op. Zonder
   // die twee staat de verzameling op nul en fotografeert hij als een slot.

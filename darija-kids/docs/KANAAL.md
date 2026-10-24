@@ -86,6 +86,17 @@ tegen die tijd zit er ander publiek in de groepen.
 | 6 | `npm run onthoudfilm` | Het herhaalscherm en de dagopdracht | De enige die aan de ouder uitlegt waar het geld heen gaat |
 | 7 | `npm run verzamelfilm` | De kaartenplank met twaalf sloten, en het tijdspel | Sluit de kring: deel 1 liet één kaart zien, dit laat zien hoeveel er nog zijn |
 
+**En er is er een achtste, die niet in de reeks hoort.** `npm run leerpadfilm`
+loopt de hele route af: zeventien schermen, een per unit, met de ondertitel van
+die unit en drie echte woorden eruit. Vijfendertig seconden, dus te lang voor
+de winkel en te lang voor een terloopse post -- maar het is het antwoord op de
+vraag die in elke groep terugkomt: *"en wat leert mijn kind er dan precies?"*
+Bewaar hem daarvoor, en voor de dag dat iemand zegt dat het "maar een
+woordjes-app" is.
+
+De schermen en de teksten komen uit `curriculum.ts`, niet uit een lijst die
+hier is overgetypt. Komt er een unit bij, dan groeit de film mee.
+
 Elke opdracht zet zes talen klaar in twee vormen: `verhaal` (9:16, voor een
 status en een kanaal) en `vierkant` (1:1, voor een tijdlijn). Ze staan in
 `store/video/<taal>/<film>-<vorm>.mp4`, buiten de repository.

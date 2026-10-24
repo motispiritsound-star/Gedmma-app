@@ -12,9 +12,14 @@
  * `billing.ts` en de echte inhoud.
  */
 
+import { UNITS } from '../src/content/curriculum'
+import { unitSubtitle } from '../src/content/localise'
+import { word } from '../src/content/lexicon'
+import type { Lang } from '../src/i18n/languages'
+
 /** Welke film. Zie FILMS in intro.ts. */
 export type FilmId = 'intro' | 'bonus' | 'spelen' | 'weetje'
-  | 'alfabet' | 'route' | 'onthouden' | 'verzamelen'
+  | 'alfabet' | 'route' | 'onthouden' | 'verzamelen' | 'leerpad'
 
 export interface Copy {
   /** Under the title, in the opening card. */
@@ -419,7 +424,55 @@ const VERZAMEL: Record<string, Copy> = Object.fromEntries(
   Object.entries(INTRO).map(([taal, c]) => [taal, { ...c, ...(VERZAMEL_T[taal] ?? VERZAMEL_T.nl!) }]),
 )
 
+/** De ondertitel op de titelkaart van de routefilm. */
+const PAD_SUB: Record<string, string> = {
+  nl: 'Zeventien units, van de eerste letter tot de souq',
+  fr: 'Dix-sept unit\u00e9s, de la premi\u00e8re lettre au souk',
+  de: 'Siebzehn Einheiten, vom ersten Buchstaben zum Souk',
+  es: 'Diecisiete unidades, de la primera letra al zoco',
+  it: 'Diciassette unit\u00e0, dalla prima lettera al souk',
+  en: 'Seventeen units, from the first letter to the souk',
+}
+
+/**
+ * Deel acht: de hele route, unit voor unit.
+ *
+ * Anders dan de andere films: geen twee schermen maar zeventien, een per
+ * unit. Het bijschrift mag daarom niet herhalen wat er op het kaartje staat
+ * -- de naam en de ondertitel zijn daar al te lezen. Het geeft drie echte
+ * woorden uit die unit, en dat is het enige wat een kaartje niet laat zien:
+ * dat er iets concreets in zit.
+ *
+ * De lijst wordt uit `curriculum.ts` gelezen in plaats van hier uitgeschreven.
+ * Honderd regels met de hand overtypen in zes talen is honderd kansen om iets
+ * te laten staan dat elders veranderd is, en de ondertitels staan al vertaald
+ * in de inhoudspakketten.
+ */
+const DRIE_LETTERS = 'alif \u00b7 ba \u00b7 ta'
+
+function woordenVan(unit: (typeof UNITS)[number]): string {
+  const tr: string[] = []
+  for (const id of unit.lessons.flatMap((les) => les.words ?? [])) {
+    try {
+      const w = word(id)
+      if (w?.tr && !tr.includes(w.tr)) tr.push(w.tr)
+    } catch { /* geen woord maar een letter; die unit vangt DRIE_LETTERS op */ }
+    if (tr.length === 3) break
+  }
+  // De alfabet-unit leert letters, geen woorden, en levert dus niets op.
+  return tr.length ? tr.join(' \u00b7 ') : DRIE_LETTERS
+}
+
+const LEERPAD: Record<string, Copy> = Object.fromEntries(
+  Object.entries(INTRO).map(([taal, c]) => [taal, {
+    ...c,
+    sub: PAD_SUB[taal] ?? PAD_SUB.nl!,
+    lines: UNITS.map((unit) => `${unitSubtitle(unit, taal as Lang)}\n${woordenVan(unit)}`),
+  }]),
+)
+
 export const COPY: Record<FilmId, Record<string, Copy>> = {
   intro: INTRO, bonus: BONUS, spelen: SPEL, weetje: WEET,
   alfabet: ALFA, route: ROUTE, onthouden: ONTHOUD, verzamelen: VERZAMEL,
+  leerpad: LEERPAD,
 }

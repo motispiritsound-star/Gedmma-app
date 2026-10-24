@@ -16,7 +16,7 @@ import { CLIPS } from '../src/engine/clips'
 /* ------------------------------------------------------------------ the copy */
 
 type ShotId = 'pad' | 'leren' | 'letters' | 'les' | 'geschiedenis' | 'schrijven' | 'woord' | 'spreken'
-  | 'memory' | 'verhaal' | 'herhalen' | 'kast' | 'race'
+  | 'memory' | 'verhaal' | 'herhalen' | 'kast' | 'race' | 'leerpad'
 
 import { COPY, type Copy, type FilmId } from './intro-copy'
 
@@ -45,7 +45,23 @@ interface Film {
   slot: number
   /** Welke van de vijf filmdeuntjes, in welke volgorde. */
   deunen: number[]
+  /**
+   * Welk frame elk scherm laat zien, als het niet uit de scene mag komen.
+   *
+   * Normaal bepaalt `frameAt` dat uit de handelingen van de scene: de vinger
+   * drukt, en het volgende plaatje hoort erbij. De routefilm werkt andersom --
+   * zeventien schermen die allemaal dezelfde scene zijn, met per scherm een
+   * andere stand van hetzelfde pad. Staat dit er niet, dan verandert er niets
+   * aan de zeven films die er al waren.
+   */
+  vast?: number[]
 }
+
+/**
+ * Hoeveel schermen de routefilm heeft: precies zoveel als er bijschriften
+ * zijn, en die komen uit het curriculum. Een los getal hier zou verlopen.
+ */
+const PAD = { length: COPY.leerpad.nl!.lines.length }
 
 const FILMS: Record<FilmId, Film> = {
   intro: {
@@ -92,6 +108,21 @@ const FILMS: Record<FilmId, Film> = {
   verzamelen: {
     shots: ['kast', 'race'],
     titel: 2.2, hold: 4.8, slot: 3.0, deunen: [3, 0],
+  },
+  /*
+   * De achtste, en de enige lange: de hele route, unit voor unit.
+   *
+   * Het aantal schermen komt uit het aantal bijschriften, en die komen uit
+   * `curriculum.ts`. Komt er een unit bij, dan groeit de film mee in plaats
+   * van stilletijd een unit over te slaan. Zeventien schermen van 1,7 seconde
+   * plus de twee kaarten is bijna vijfendertig seconden -- te lang voor een
+   * app preview in de winkel, maar dit is er dan ook voor een groep waar je
+   * laat zien hoe ver het loopt.
+   */
+  leerpad: {
+    shots: Array.from(PAD, () => 'leerpad' as const),
+    vast: Array.from(PAD, (_, i) => i),
+    titel: 2.8, hold: 1.7, slot: 3.0, deunen: [1, 2, 0, 3, 1, 2],
   },
 }
 
@@ -757,7 +788,10 @@ function card(
     const u = t - beat.at
     // The phone slides up as it appears, and breathes a little while it stands.
     const drift = Math.sin(u * 0.7) * h * 0.004
-    const screen = phone(ctx, frameAt(scene, u), shape.phone.cx, shape.phone.cy + rise * 1.6 + drift, shape.phone.height)
+    // Een film mag het plaatje vastzetten per scherm; zie `vast` bij Film.
+    const vast = FILMS[film].vast?.[i]
+    const beeld = vast == null ? frameAt(scene, u) : scene.frames[vast] ?? scene.frames[0]!
+    const screen = phone(ctx, beeld, shape.phone.cx, shape.phone.cy + rise * 1.6 + drift, shape.phone.height)
 
     const hand = fingerAt(scene, u)
     if (hand) {

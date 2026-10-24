@@ -37,6 +37,7 @@
     "routefilm": "node scripts/make-intro.mjs --film route",
     "onthoudfilm": "node scripts/make-intro.mjs --film onthouden",
     "verzamelfilm": "node scripts/make-intro.mjs --film verzamelen",
+    "leerpadfilm": "node scripts/make-intro.mjs --film leerpad",
     "feedbackcheck": "node scripts/feedbackcheck.mjs",
     "historycheck": "node scripts/historycheck.mjs",
     "lettercheck": "node scripts/lettercheck.mjs",
