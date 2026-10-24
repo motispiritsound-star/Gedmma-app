@@ -118,7 +118,7 @@ hem via de gewone app-update binnen.
 
 | | |
 |---|---|
-| App Store | **1.5 · build 11 — geupload 24 oktober 13:23**, nog niet ingestuurd |
+| App Store | **1.5 · build 11 — ingestuurd 24 oktober 13:42**, *Waiting for Review* |
 | Play | 1.5 · versiecode 10 — stond 22 oktober nog *in review* |
 
 Daarmee is 1.5 voor het eerst bij allebei de winkels aangeboden. Tot nu toe
@@ -138,10 +138,20 @@ Apple maar één enkele update-download op 108 installaties meldde.
    twee regels voor hetzelfde adres. Staat in `docs/MAC.md` onder *Als er iets
    misgaat*, met de Transporter-omweg erbij.
 
-**Wat er nog moet in App Store Connect:** build 11 kiezen bij versie 1.5, de
-tekst uit `store/wat-is-nieuw-1.5.md` per taal erbij, de release-instelling
-nakijken (1.4 stond op *Manually release*, en dan is goedgekeurd niet
-hetzelfde als live) en insturen.
+**Gedaan in App Store Connect.** Versie 1.5 bestond daar nog niet -- een
+geuploade build hangt nergens aan tot je de versie zelf aanmaakt met het ⊕
+naast *iOS App*. Daarna build 11 gekozen, de tekst uit
+`store/wat-is-nieuw-1.5.md` per taal erbij, en ingestuurd.
+
+**Nog na te kijken: de release-instelling.** 1.4 stond op *Manually release*.
+Staat 1.5 daar ook op, dan is goedgekeurd niet hetzelfde als live en moet er
+na de beoordeling nog op *Release* gedrukt worden -- precies wat Play nu ook
+doet met managed publishing.
+
+**En wat het oplevert komt niet meteen.** De 108 bestaande iPhone-gebruikers
+zien het aanbod bij de eerste start pas als ze de app bijwerken; wie nieuw
+downloadt krijgt het direct. De cijfers over het betaalscherm zijn dus pas na
+een week of twee iets waard.
 
 ## 22 oktober: meer ogen, evenveel downloads
 
