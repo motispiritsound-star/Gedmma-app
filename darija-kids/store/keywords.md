@@ -31,16 +31,52 @@ precies vier plekken: de naam, de ondertitel, het pictogram en de
 schermafdrukken. Zoekwoorden ziet niemand, en "arabisch voor kinderen" is
 precies waar een ouder op zoekt.
 
-**Zoekwoorden** (elk precies binnen de 100 tekens):
+**Zoekwoorden** (elk binnen de 100 tekens):
 
 ```
-nl: darija,marokkaans,arabisch,marokko,taal,leren,kind,school,woorden,uitspraak,alfabet,gezin
-fr: darija,marocain,arabe,maroc,langue,apprendre,enfant,ecole,mots,prononciation,alphabet,famille
-de: darija,marokkanisch,arabisch,marokko,sprache,lernen,kind,schule,woerter,aussprache,alphabet
-es: dariya,marroqui,arabe,marruecos,idioma,aprender,nino,escuela,palabras,pronunciacion,alfabeto
-it: darija,marocchino,arabo,marocco,lingua,imparare,bambini,scuola,parole,pronuncia,alfabeto
-en: darija,moroccan,arabic,morocco,language,learn,kids,school,words,pronunciation,alphabet,family
+nl: darija,marokko,kinderen,kind,uitspraak,alfabet,moedertaal,tweetalig,taal,school,woorden,gezin
+fr: darija,maroc,enfants,enfant,prononciation,alphabet,bilingue,maternelle,langue,école,mots,famille
+de: darija,marokko,kinder,kind,aussprache,alphabet,muttersprache,zweisprachig,sprache,schule,wörter
+es: darija,dariya,marruecos,niños,pronunciación,alfabeto,bilingüe,materna,idioma,escuela,palabras
+it: darija,marocco,bambini,pronuncia,alfabeto,bilingue,madrelingua,lingua,scuola,parole,famiglia,parlare
+en: darija,morocco,kids,children,pronunciation,alphabet,bilingual,heritage,language,school,words,family
 ```
+
+**Deze lijst stond hierboven zijn eigen regel te overtreden.** De eis "herhaal
+nooit iets dat al in de naam of ondertitel staat" is juist, maar de vorige
+lijst begon in elke taal met precies die drie woorden: `marokkaans,arabisch`
+plus `leren`, terwijl de ondertitel *Marokkaans-Arabisch leren* heet. In alle
+zes de talen hetzelfde, want elke ondertitel bevat die drie begrippen.
+
+Nagemeten op het Nederlandse veld: **26 van de 91 tekens** gingen op aan
+woorden die Apple al had. Bijna een derde.
+
+Wat er op 24 oktober werkelijk in de console stond was nog een slag slechter
+dan de lijst hierboven:
+
+```
+darija,marokkaans,arabisch,marokko,taal,kinderen,leren,woordenschat,arabisch schrift,gratis
+```
+
+Daar zitten drie dingen in die weg moeten:
+
+- `arabisch schrift` — een spatie kost een teken, en `arabisch` stond er al
+  twee keer in (los én in de ondertitel).
+- `gratis` — een van de meest beconcurreerde woorden in elke winkel, en het
+  belooft iets wat een app met een abonnement niet is.
+- `school`, `uitspraak`, `alfabet` en `gezin` ontbraken, terwijl dat precies de
+  woorden zijn waarop iemand zoekt die weet wat hij wil.
+
+De nieuwe lijst gebruikt de vrijgekomen ruimte voor termen met echte bedoeling
+erachter: **moedertaal** en **tweetalig** zijn hoe een ouder in de diaspora
+zijn eigen vraag formuleert, en **uitspraak** en **alfabet** zijn wat deze app
+heeft en de meeste andere niet.
+
+`src/site/zoekwoorden.test.ts` bewaakt de lengte en de overlap, zodat dit niet
+nog een keer stilletjes terugkomt.
+
+**Zoekwoorden veranderen kan alleen bij een nieuwe versie.** 1.5 is op 24
+oktober ingestuurd en staat in beoordeling; deze lijst gaat dus mee met 1.6.
 
 Vergeet niet dat Apple ook zoekt op de **categorie** en op de naam van je
 uitgever. Kies **Onderwijs** als hoofdcategorie en **Naslagwerken** als tweede.
