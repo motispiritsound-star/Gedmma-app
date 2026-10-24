@@ -114,6 +114,35 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## 24 oktober: build 11 ligt bij Apple
+
+| | |
+|---|---|
+| App Store | **1.5 · build 11 — geupload 24 oktober 13:23**, nog niet ingestuurd |
+| Play | 1.5 · versiecode 10 — stond 22 oktober nog *in review* |
+
+Daarmee is 1.5 voor het eerst bij allebei de winkels aangeboden. Tot nu toe
+serveerde de App Store nog 1.4 uit build 10 van 3 oktober, en dat is waarom
+Apple maar één enkele update-download op 108 installaties meldde.
+
+**Drie dingen gingen onderweg mis, alle drie nu vastgelegd:**
+
+1. De eerste bouw kwam uit commit `0b729a7` van 3 oktober, 96 commits achter.
+   De `git pull` was niet gelukt en het script bouwde gewoon door. Dat stopt
+   nu (`scripts/lib/stand.mjs`); zie de notitie bij 22 oktober.
+2. Het wolkje in de Xcode-werkbalk en het menu *Integrate* openen Xcode Cloud,
+   niet de upload. Dat liep vast op een melding die als een fout in de app
+   leest. Staat in `docs/MAC.md` bij C6.
+3. De Apple-sessie in Xcode was verlopen — de vorige upload was 3 oktober.
+   *Unable to authenticate* naast *No App Store Connect access for the team*,
+   twee regels voor hetzelfde adres. Staat in `docs/MAC.md` onder *Als er iets
+   misgaat*, met de Transporter-omweg erbij.
+
+**Wat er nog moet in App Store Connect:** build 11 kiezen bij versie 1.5, de
+tekst uit `store/wat-is-nieuw-1.5.md` per taal erbij, de release-instelling
+nakijken (1.4 stond op *Manually release*, en dan is goedgekeurd niet
+hetzelfde als live) en insturen.
+
 ## 22 oktober: meer ogen, evenveel downloads
 
 | | 13 okt | 16 okt | 17 okt | 18 okt | **20 okt** |
