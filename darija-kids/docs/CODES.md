@@ -203,6 +203,26 @@ meten wie er via wie binnenkomt zonder dat er een gratis periode tegenover
 staat. Het mist wat een code wél heeft — een naam, iets om te noemen, een
 reden om er nú op te klikken — maar het kost je niets.
 
+**De eerste afspraak, zoals hij gemaakt is.** Drie maanden gratis op het
+jaarabonnement, een genoemde code op naam van de maker, alleen voor nieuwe
+abonnees, en tien procent per omgezet abonnement.
+
+Twee dingen om bij die drie maanden te weten. Bij een jaarabonnement schuift
+de eerste afschrijving drie maanden op en dekt daarna twaalf maanden: het is
+dus **vijftien maanden voor de prijs van twaalf**. En de omzetting komt pas na
+die drie maanden in beeld, dus de eerste afrekening met de maker valt een
+kwartaal later dan de eerste inwisselingen.
+
+Het bedrag hoort in euro's in de afspraak, niet alleen als percentage:
+
+| | Bedrag | 10% |
+|---|---|---|
+| Prijs zonder btw | € 49,58 | € 4,96 |
+| Netto-uitbetaling van de winkel | € 42,14 | € 4,21 |
+
+"Tien procent netto ex btw" leest over een jaar weer als allebei. "€ 4,21 per
+omgezet jaarabonnement" leest maar op één manier.
+
 **Geen namen van personen in dit bestand.** Dezelfde reden als bij de
 schoolacties: dit staat in twee consoles en in je administratie. In je eigen
 boekhouding hoort de naam wel.
