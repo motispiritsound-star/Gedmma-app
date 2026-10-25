@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>WonderBox — hoe het werkt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap">
+<!--
+  Animated explainer, rendered in the browser and captured to video by
+  scripts/record-explainer.mts.
+
+  Deliberately an illustration, not a fake photograph: nobody should be able to
+  mistake this for footage of a product that does not exist yet. Shapes are
+  flat, the palette is the product's own, and every scene is driven by one
+  explicit timeline so a capture is deterministic.
+
+  Language: ?lang=nl (default) or ?lang=en.
+-->
+<style>
+  :root {
+    --paper:  #faf8f4;
+    --ink:    #23242c;
+    --soft:   #6b6d79;
+    --indigo: #4a5bd0;
+    --indigo-deep: #3644a8;
+    --wash:   #eceefb;
+    --card:   #ffffff;
+    --rule:   #e2ddd1;
+    --moss:   #2f7a56;
+    --amber:  #d99a3e;
+    --coral:  #d4694a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 1280px; height: 720px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    overflow: hidden;
+  }
+
+  #stage { position: relative; width: 1280px; height: 720px; }
+
+  .scene {
+    position: absolute; inset: 0;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center; gap: 4rem;
+    padding: 0 5.5rem;
+    opacity: 0; transform: translateY(18px);
+    transition: opacity .55s ease, transform .55s ease;
+    pointer-events: none;
+  }
+  .scene.on { opacity: 1; transform: none; }
+
+  .copy { max-width: 26rem; }
+  .step {
+    display: inline-block;
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    font-size: .78rem; font-weight: 700; letter-spacing: .16em;
+    color: var(--indigo-deep); background: var(--wash);
+    padding: .38rem .8rem; border-radius: 999px; margin-bottom: 1.4rem;
+  }
+  .headline { font-size: 3.35rem; line-height: 1.06; letter-spacing: -.025em; font-weight: 700; text-wrap: balance; }
+  .sub { margin-top: 1.15rem; font-size: 1.38rem; line-height: 1.5; color: var(--soft); }
+
+  .art { display: grid; place-items: center; height: 100%; }
+
+  /* --- scene 1: the box ------------------------------------------------- */
+  .box-wrap { position: relative; width: 420px; height: 340px; }
+  .lid {
+    position: absolute; left: 30px; top: 96px; width: 360px; height: 46px;
+    background: var(--indigo); border-radius: 8px;
+    transform-origin: 50% 100%;
+    transition: transform .9s cubic-bezier(.32,.9,.4,1) .35s;
+  }
+  .on .lid { transform: translateY(-92px) rotate(-9deg); }
+  .base {
+    position: absolute; left: 40px; top: 140px; width: 340px; height: 168px;
+    background: #d9cbb4; border-radius: 6px 6px 12px 12px;
+    box-shadow: inset 0 14px 26px -14px rgba(0,0,0,.28);
+  }
+  .base::after {
+    content: ''; position: absolute; left: 0; right: 0; top: 52px; height: 3px; background: rgba(0,0,0,.07);
+  }
+  .pop {
+    position: absolute; border-radius: 50%;
+    opacity: 0; transform: translateY(28px) scale(.6);
+    transition: opacity .5s ease, transform .7s cubic-bezier(.3,1.5,.5,1);
+  }
+  .on .pop { opacity: 1; transform: none; }
+  .pop.p1 { left: 96px;  top: 96px;  width: 54px; height: 66px; background: var(--coral);  border-radius: 50% 50% 46% 46%; transition-delay: .95s; }
+  .pop.p2 { left: 178px; top: 78px;  width: 62px; height: 62px; background: var(--amber);  transition-delay: 1.1s; }
+  .pop.p3 { left: 258px; top: 100px; width: 50px; height: 62px; background: var(--moss);   border-radius: 8px; transition-delay: 1.25s; }
+  .card-stack {
+    position: absolute; left: 132px; top: 150px; width: 150px; height: 96px;
+    background: var(--card); border: 2px solid var(--rule); border-radius: 8px;
+    opacity: 0; transform: translateY(20px) rotate(-4deg);
+    transition: opacity .5s ease 1.35s, transform .6s ease 1.35s;
+  }
+  .on .card-stack { opacity: 1; transform: rotate(-4deg); }
+  .card-stack span { position: absolute; left: 14px; right: 14px; height: 6px; background: var(--rule); border-radius: 3px; }
+  .card-stack span:nth-child(1) { top: 20px; }
+  .card-stack span:nth-child(2) { top: 38px; right: 46px; }
+  .card-stack span:nth-child(3) { top: 56px; right: 32px; }
+
+  /* --- scene 2: the code ------------------------------------------------ */
+  .lid-insert {
+    width: 420px; padding: 2.4rem 2rem; background: var(--card);
+    border: 2px solid var(--rule); border-radius: 16px; text-align: center;
+    box-shadow: 0 24px 48px -28px rgba(35,36,44,.4);
+  }
+  .lid-insert .hint { font-size: .95rem; color: var(--soft); margin-bottom: .9rem; }
+  .code {
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    font-size: 2.35rem; font-weight: 700; letter-spacing: .1em; color: var(--indigo-deep);
+  }
+  .code .ch { opacity: 0; transition: opacity .12s linear; }
+  .field {
+    margin-top: 2rem; width: 420px; padding: 1.05rem 1.2rem;
+    background: var(--card); border: 2px solid var(--indigo); border-radius: 12px;
+    font-family: ui-monospace, monospace; font-size: 1.5rem; letter-spacing: .12em;
+    color: var(--ink); text-align: center; position: relative;
+  }
+  .field::after {
+    content: ''; position: absolute; top: 50%; margin-left: 3px; width: 2px; height: 1.5rem;
+    transform: translateY(-50%); background: var(--indigo); animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .tick {
+    margin-top: 1.3rem; font-size: 1.05rem; font-weight: 700; color: var(--moss);
+    opacity: 0; transition: opacity .4s ease;
+  }
+  .tick.show { opacity: 1; }
+
+  /* --- scene 3: listening ----------------------------------------------- */
+  .companion { width: 460px; }
+  .wave { display: flex; align-items: center; justify-content: center; gap: 7px; height: 132px; }
+  .wave i {
+    display: block; width: 9px; border-radius: 5px; background: var(--indigo);
+    height: 18px; transition: height .18s ease, background .3s ease;
+  }
+  .wave.paused i { height: 9px !important; background: var(--rule); }
+  .waiting {
+    text-align: center; font-size: 1.02rem; color: var(--soft); height: 1.6rem;
+    opacity: 0; transition: opacity .35s ease;
+  }
+  .waiting.show { opacity: 1; }
+  .buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 1.5rem; }
+  .btn {
+    background: var(--card); border: 3px solid var(--rule); border-radius: 18px;
+    padding: 1.1rem .6rem; text-align: center; font-weight: 700; font-size: .96rem;
+    transition: border-color .25s ease, transform .25s ease;
+  }
+  .btn .ico { display: block; font-size: 1.7rem; margin-bottom: .3rem; }
+  .btn.hit { border-color: var(--indigo); transform: translateY(-4px); }
+
+  /* --- scene 4: the summary --------------------------------------------- */
+  .summary {
+    width: 460px; background: var(--card); border: 2px solid var(--rule);
+    border-radius: 18px; padding: 1.9rem;
+    box-shadow: 0 24px 48px -28px rgba(35,36,44,.4);
+  }
+  .summary h4 { font-size: 1.28rem; margin-bottom: 1.2rem; }
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .tile { background: var(--wash); border-radius: 12px; padding: 1rem .5rem; text-align: center; }
+  .tile b {
+    display: block; font-size: 2.1rem; line-height: 1; color: var(--indigo-deep);
+    font-variant-numeric: tabular-nums;
+  }
+  .tile span { display: block; font-size: .76rem; color: var(--soft); margin-top: .4rem; }
+  .nograde {
+    margin-top: 1.4rem; padding-top: 1.1rem; border-top: 1px solid var(--rule);
+    font-size: .95rem; color: var(--soft);
+  }
+
+  /* --- end card ---------------------------------------------------------- */
+  #end {
+    position: absolute; inset: 0; display: grid; place-content: center; justify-items: center;
+    gap: 1rem; background: var(--paper); opacity: 0;
+    transition: opacity .6s ease; pointer-events: none;
+  }
+  #end.on { opacity: 1; }
+  #end .mark { font-size: 4.2rem; font-weight: 700; letter-spacing: -.03em; }
+  #end .tag { font-size: 1.45rem; color: var(--soft); text-align: center; max-width: 34rem; }
+  #end .promise {
+    margin-top: 1.4rem; display: flex; gap: 1.6rem; font-size: .98rem; color: var(--soft);
+  }
+  #end .promise b { color: var(--ink); font-weight: 700; }
+
+  /* --- progress rail ----------------------------------------------------- */
+  #rail { position: absolute; left: 0; bottom: 0; height: 5px; width: 0; background: var(--indigo); }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <section class="scene" id="s1">
+    <div class="copy">
+      <span class="step" data-t="step1">STAP 1</span>
+      <h2 class="headline" data-t="h1">Elke maand komt er een doos.</h2>
+      <p class="sub" data-t="p1">Materialen, proefkaarten en een verhaal rond één thema. Ruimte, natuur, elektriciteit, het lichaam.</p>
+    </div>
+    <div class="art">
+      <div class="box-wrap">
+        <div class="lid"></div>
+        <div class="base"></div>
+        <div class="pop p1"></div>
+        <div class="pop p2"></div>
+        <div class="pop p3"></div>
+        <div class="card-stack"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene" id="s2">
+    <div class="copy">
+      <span class="step" data-t="step2">STAP 2</span>
+      <h2 class="headline" data-t="h2">Eén korte code in het deksel.</h2>
+      <p class="sub" data-t="p2">Die koppelt de doos aan jullie gezin. Later volstaat een tik met de doos zelf.</p>
+    </div>
+    <div class="art">
+      <div>
+        <div class="lid-insert">
+          <p class="hint" data-t="insert">Aan de binnenkant van het deksel</p>
+          <p class="code" id="printed"></p>
+        </div>
+        <div class="field" id="typed"></div>
+        <p class="tick" id="tick" data-t="tick">Gelukt — de doos staat klaar.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene" id="s3">
+    <div class="copy">
+      <span class="step" data-t="step3">STAP 3</span>
+      <h2 class="headline" data-t="h3">Het maatje leest voor. En wacht.</h2>
+      <p class="sub" data-t="p3">Geen scherm nodig. Het vertelt, stelt een vraag, en houdt zijn mond terwijl je kind aan het bouwen is.</p>
+    </div>
+    <div class="art">
+      <div class="companion">
+        <div class="wave" id="wave"></div>
+        <p class="waiting" id="waiting" data-t="waiting">— wacht tot je klaar bent —</p>
+        <div class="buttons">
+          <div class="btn" id="b1"><span class="ico">▶</span><span data-t="b1">Afspelen</span></div>
+          <div class="btn" id="b2"><span class="ico">↺</span><span data-t="b2">Nog een keer</span></div>
+          <div class="btn" id="b3"><span class="ico">🐢</span><span data-t="b3">Langzamer</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene" id="s4">
+    <div class="copy">
+      <span class="step" data-t="step4">STAP 4</span>
+      <h2 class="headline" data-t="h4">Jij ziet wat er gedaan is.</h2>
+      <p class="sub" data-t="p4">Welke hoofdstukken af zijn en welke onderwerpen langskwamen. Geen cijfers, geen niveaus.</p>
+    </div>
+    <div class="art">
+      <div class="summary">
+        <h4 data-t="sumtitle">Wat we gedaan hebben — Noor</h4>
+        <div class="tiles">
+          <div class="tile"><b id="t1">0</b><span data-t="tile1">hoofdstukken</span></div>
+          <div class="tile"><b id="t2">0</b><span data-t="tile2">proefjes</span></div>
+          <div class="tile"><b id="t3">0</b><span data-t="tile3">minuten</span></div>
+        </div>
+        <p class="nograde" data-t="nograde">WonderBox geeft geen cijfers en meet geen ontwikkeling. Dit is alleen wat er gebeurd is.</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="end">
+    <p class="mark">WonderBox</p>
+    <p class="tag" data-t="tag">Ontdekken met je handen, begeleid door je oren.</p>
+    <p class="promise">
+      <span data-t="pr1">Geen advertenties</span>
+      <b>·</b>
+      <span data-t="pr2">Geen vrije AI-chat</span>
+      <b>·</b>
+      <span data-t="pr3">Geen opnames van je kind</span>
+    </p>
+  </div>
+
+  <div id="rail"></div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  const EN = {
+    step1: 'STEP 1', step2: 'STEP 2', step3: 'STEP 3', step4: 'STEP 4',
+    h1: 'A box arrives every month.',
+    p1: 'Materials, experiment cards and a story around one theme. Space, nature, electricity, the body.',
+    h2: 'One short code inside the lid.',
+    p2: 'It ties the box to your family. Later, a tap of the box itself will do.',
+    insert: 'On the inside of the lid',
+    tick: 'Done — the box is ready.',
+    h3: 'The companion reads along. And waits.',
+    p3: 'No screen needed. It tells, asks a question, and stays quiet while your child is building.',
+    waiting: '— waiting until you are ready —',
+    b1: 'Play', b2: 'Say it again', b3: 'Slower',
+    h4: 'You see what was done.',
+    p4: 'Which chapters are finished and which topics came up. No grades, no levels.',
+    sumtitle: 'What we did — Noor',
+    tile1: 'chapters', tile2: 'experiments', tile3: 'minutes',
+    nograde: 'WonderBox does not grade and does not measure development. This is simply what happened.',
+    tag: 'Discover with your hands, guided by your ears.',
+    pr1: 'No advertising', pr2: 'No open AI chat', pr3: 'No recordings of your child',
+  };
+
+  const lang = new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'nl';
+  if (lang === 'en') {
+    document.documentElement.lang = 'en';
+    for (const node of document.querySelectorAll('[data-t]')) {
+      const value = EN[node.dataset.t];
+      if (value) node.textContent = value;
+    }
+  }
+
+  const CODE = 'WB-3F7K-22AA-M9X1';
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  const $ = (id) => document.getElementById(id);
+
+  // Build the waveform bars once.
+  const wave = $('wave');
+  for (let i = 0; i < 34; i += 1) wave.appendChild(document.createElement('i'));
+  const bars = [...wave.children];
+
+  // The printed code, character by character.
+  $('printed').innerHTML = [...CODE].map((c) => `<span class="ch">${c}</span>`).join('');
+  const printedChars = [...$('printed').children];
+
+  let waveTimer = null;
+  function animateWave(active) {
+    clearInterval(waveTimer);
+    if (!active) return;
+    waveTimer = setInterval(() => {
+      bars.forEach((bar, i) => {
+        // A speech-shaped envelope: loud in the middle, quiet at the edges.
+        const envelope = Math.sin((i / bars.length) * Math.PI);
+        bar.style.height = `${10 + Math.random() * 92 * envelope}px`;
+      });
+    }, 90);
+  }
+
+  function countTo(el, target, ms) {
+    const start = performance.now();
+    const tick = (now) => {
+      const p = Math.min((now - start) / ms, 1);
+      el.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  const show = (id) => $(id).classList.add('on');
+  const hide = (id) => $(id).classList.remove('on');
+
+  const TOTAL = 34_000;
+
+  async function run() {
+    const rail = $('rail');
+    rail.style.transition = `width ${TOTAL}ms linear`;
+    requestAnimationFrame(() => { rail.style.width = '1280px'; });
+
+    // --- 1. the box
+    await wait(400);
+    show('s1');
+    await wait(6600);
+    hide('s1');
+
+    // --- 2. the code
+    await wait(500);
+    show('s2');
+    await wait(700);
+    for (const ch of printedChars) { ch.style.opacity = '1'; await wait(55); }
+    await wait(700);
+    const field = $('typed');
+    for (let i = 0; i < CODE.length; i += 1) { field.textContent = CODE.slice(0, i + 1); await wait(85); }
+    await wait(500);
+    $('tick').classList.add('show');
+    await wait(1900);
+    hide('s2');
+
+    // --- 3. listening
+    await wait(500);
+    show('s3');
+    animateWave(true);
+    await wait(2600);
+    $('b1').classList.add('hit');
+    await wait(1200);
+    $('b1').classList.remove('hit');
+    await wait(1400);
+
+    // The pause: the waveform flattens and stays flat. This is the product.
+    wave.classList.add('paused');
+    animateWave(false);
+    $('waiting').classList.add('show');
+    await wait(3000);
+
+    $('b3').classList.add('hit');
+    await wait(900);
+    $('b3').classList.remove('hit');
+    wave.classList.remove('paused');
+    $('waiting').classList.remove('show');
+    animateWave(true);
+    await wait(1800);
+    animateWave(false);
+    hide('s3');
+
+    // --- 4. the summary
+    await wait(500);
+    show('s4');
+    await wait(600);
+    countTo($('t1'), 4, 1100);
+    countTo($('t2'), 2, 1100);
+    countTo($('t3'), 47, 1400);
+    await wait(4200);
+    hide('s4');
+
+    // --- end card
+    await wait(500);
+    show('end');
+    await wait(3200);
+
+    window.__explainerDone = true;
+  }
+
+  // The timeline is started explicitly rather than on load. A recorder calls
+  // window.startExplainer() once it is ready; opening the file in a browser
+  // starts it after a short beat. Either way a slow font host can never show
+  // up as dead air at the head of a capture.
+  let started = false;
+  window.startExplainer = () => {
+    if (started) return;
+    started = true;
+    run();
+  };
+  if (!new URLSearchParams(location.search).has('manual')) {
+    Promise.race([
+      document.fonts.ready,
+      new Promise((resolve) => setTimeout(resolve, 1500)),
+    ]).then(() => window.startExplainer());
+  }
+})();
+</script>
+</body>
+</html>

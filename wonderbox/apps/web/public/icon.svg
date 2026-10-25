@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="WonderBox">
+  <rect width="192" height="192" rx="42" fill="#4c5fd5"/>
+  <path d="M40 74h112v66a10 10 0 0 1-10 10H50a10 10 0 0 1-10-10V74Z" fill="#fff" opacity=".92"/>
+  <path d="M34 52h124a6 6 0 0 1 6 6v16H28V58a6 6 0 0 1 6-6Z" fill="#fff"/>
+  <circle cx="96" cy="116" r="22" fill="#4c5fd5"/>
+  <path d="M88 105v22l19-11-19-11Z" fill="#fff"/>
+</svg>

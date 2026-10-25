@@ -1,0 +1,15 @@
+{
+  "name": "WonderBox",
+  "short_name": "WonderBox",
+  "description": "Maandelijkse ontdekdozen met een schermloos audiomaatje.",
+  "start_url": "/play",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#faf9f6",
+  "theme_color": "#4c5fd5",
+  "lang": "nl",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
