@@ -142,6 +142,71 @@ Je krijgt in allebei de gevallen een lijst codes om te downloaden. Die lijst
 is wat je naar de school stuurt, en hij hoort **niet in deze repository** —
 het is een stapel waardebonnen.
 
+## Een code voor een maker, met een percentage erop
+
+Een andere vorm dan de schoolactie: iemand met bereik krijgt een eigen code op
+zijn naam, en jij betaalt hem een deel van wat die code oplevert. Vier dingen
+zitten daar anders in dan hierboven, en ze gaan allemaal mis als je ze niet
+vooraf afspreekt.
+
+**Een genoemde code kan bij Apple wel en bij Google maar één keer.** Apple
+laat meerdere genoemde codes toe, in te wisselen via de redeem-link hierboven
+— dus in een bio, onder een filmpje, overal. Google geeft er **één per
+abonnement**, en die is alleen ín de app in te wisselen. Sinds 1.5 staat de
+knop *"Ik heb een code"* bij het abonnement, dus die weg bestaat nu, maar het
+blijft: installeren, openen, knop zoeken, typen. Reken erop dat de Android-kant
+een fractie oplevert van de iOS-kant, en dat dat niets zegt over de maker.
+
+En let op wat je uitgeeft: je hébt er maar twee, één op het jaar en één op de
+maand. Geef je ze allebei weg, dan is er voor de volgende nooit meer een
+genoemde code op Android.
+
+**Een inwisseling is nog geen betaling.** Een code is een gratis periode; de
+winkel schrijft pas af als die afloopt. Wie op dag één inwisselt met een maand
+gratis, is pas over een maand een betalende klant — en een deel haakt
+daarvoor af. Je kunt dus niet uitbetalen op inwisselingen, alleen op
+omzettingen, en die lopen weken achter. Spreek af dat er per kwartaal wordt
+afgerekend over wat er in dat kwartaal werkelijk betaald is.
+
+**Tien procent waarvan.** Dit is het punt waar de meeste afspraken scheef
+lopen. Van € 59,99 blijft na btw en de commissie van de winkel ongeveer
+€ 42,14 over.
+
+| | Jaar € 59,99 | Maand € 6,99 |
+|---|---|---|
+| Netto voor jou | € 42,14 | € 4,91 |
+| 10% van de winkelprijs | € 6,00 — dat is **14,2%** van je netto | € 0,70 |
+| 10% van je netto | € 4,21 | € 0,49 |
+
+Zet in de afspraak dus **tien procent van wat de winkel uitbetaalt**, niet van
+de prijs op de schap. En zet erbij of het de eerste betaalde periode geldt of
+ook de verlengingen; laat je dat open, dan is het stilzwijgend voor altijd.
+
+**Uitbetalen gaat op factuur.** Je betaalt een persoon voor een prestatie. Met
+een factuur van zijn onderneming is het een gewone inkoopfactuur; zonder die
+factuur is het in Nederland rommelig en kan het als loon of als resultaat uit
+overige werkzaamheden worden gezien. Vraag de factuur dus vooraf, en zet de
+afspraak op één A4: de code, het percentage, waarvan, hoe lang, per wanneer
+afgerekend, en wie de cijfers aanlevert (jij, uit de twee consoles).
+
+**Wat je kunt meten.** Allebei de consoles rapporteren hoe vaak een code is
+ingewisseld, per aanbieding. Maak voor deze maker daarom een **eigen
+aanbieding** aan en hang de code daar alleen aan, anders loopt hij door je
+schoolacties heen en is er niets meer uit elkaar te halen. Hoe fijnmazig de
+koppeling van inwisseling naar bétaalde omzetting is, verschilt per console en
+is hier niet nagemeten — kijk dat na zodra er een eerste inwisseling in staat,
+vóórdat je het eerste bedrag overmaakt.
+
+**En het alternatief, als je niets weg wilt geven.** Allebei de winkels kennen
+campagnelinks (Apple: App Analytics-campagnes, Google: de URL-bouwer). Die
+meten wie er via wie binnenkomt zonder dat er een gratis periode tegenover
+staat. Het mist wat een code wél heeft — een naam, iets om te noemen, een
+reden om er nú op te klikken — maar het kost je niets.
+
+**Geen namen van personen in dit bestand.** Dezelfde reden als bij de
+schoolacties: dit staat in twee consoles en in je administratie. In je eigen
+boekhouding hoort de naam wel.
+
 ## Bronnen
 
 - [Apple, *Set up subscription offer codes*](https://developer.apple.com/help/app-store-connect/manage-subscriptions/set-up-subscription-offer-codes)
