@@ -114,6 +114,68 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## 28 oktober: de warme golf is op
+
+| | 13 okt | 18 okt | 20 okt | **26 okt** |
+|---|---|---|---|---|
+| Vertoningen (Apple) | 365 | 598 | 742 | **1150** |
+| Productpaginabezoeken | 85 | 141 | 170 | **210** |
+| Eerste downloads | 49 | 92 | 108 | **131** |
+| In-app aankopen | 4 | 7 | 7 | **10** |
+| Opbrengst | $48 | $54 | $54 | **$102** |
+| Actieve plannen | — | — | 3 | **4** |
+| Betaalde plannen | — | 2 | 2 | **3** |
+| Updates | — | — | 1 | **70** |
+
+Per dag, tussen de metingen:
+
+| | 13→18 okt | 18→20 okt | **20→26 okt** |
+|---|---|---|---|
+| Vertoningen per dag | 46,6 | 72,0 | **68,0** |
+| Downloads per dag | 8,6 | 8,0 | **3,8** |
+| Bezoek per vertoning | 24,0% | 20,1% | **9,8%** |
+| Download per bezoek | 76,8% | 55,2% | 57,5% |
+
+**Het bereik houdt stand en de downloads halveren.** Achtenzestig vertoningen
+per dag, bijna evenveel als de week ervoor, maar 3,8 downloads per dag tegen
+8,0. Het breekt op één plek: van vertoning naar paginabezoek. Dat was 24
+procent, toen 20, en nu 9,8.
+
+De stap daarna doet het nog steeds goed — 57 procent van wie de pagina opent
+downloadt, cumulatief 131 van de 210. **De pagina overtuigt dus nog net zo
+goed als eerst; er komt alleen een heel ander soort mens langs.**
+
+Dat is wat er gebeurt als de eerste golf op is. De eerste honderd downloads
+kwamen van bekenden die een link volgden en toch al nieuwsgierig waren; een
+vertoning was toen bijna een bezoeker. Wat er nu bij komt, ziet de app ergens
+in een lijst staan en kijkt verder. Voor die mensen beslist niet de
+winkelpagina maar wat er in het zoekresultaat zelf staat: het pictogram, de
+naam, de ondertitel en de eerste twee schermafdrukken.
+
+**Dat verschuift waar het werk ligt.** Tot nu toe was de diagnose "niemand
+ziet ons". Dat klopt niet meer: ruim duizend vertoningen. Het is nu "ze zien
+ons en klikken niet". Zoekwoorden brengen vertoningen, en die zijn er al —
+wat er mist is de reden om te tikken. De schermafdrukken en de ondertitel
+staan dus hoger op de lijst dan de zoekwoorden uit `store/keywords.md`,
+en allebei kunnen ze alleen mee met een nieuwe versie.
+
+**De opbrengst is bijna verdubbeld: $54 → $102.** Dat is +$48 op drie
+aankopen, oftewel zestien dollar per aankoop — meer dan een maandabonnement
+($5,30) en meer dan een e-boek ($11,40) netto opleveren. Er zit dus iets
+groters bij, en het eerste betaalde jaarabonnement is de waarschijnlijkste
+kandidaat. Na te kijken onder Sales per product, zoals op 22 oktober.
+
+Vier actieve plannen tegen drie betaalde: er zit er één in zijn proef, en
+*conversion to paid* staat op twee.
+
+**Zeventig updates op 131 installaties.** Ruim de helft van de bestaande
+gebruikers draait nu 1.5, dus het betaalscherm bij de eerste start begint
+echt te meten. Op 20 oktober stond die teller nog op één.
+
+**Play blijft vlak.** Rond de 35 gebruikers, al een week, terwijl Apple er in
+zes dagen 23 downloads bij deed. Wel voor het eerst iets buiten de Lage
+Landen: Frankrijk en Italië staan er allebei met één.
+
 ## 24 oktober: build 11 ligt bij Apple
 
 | | |
