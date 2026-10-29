@@ -28,7 +28,8 @@
     "google:env": "tsx --import ./src/lib/env.ts src/setup-google.ts",
     "wachtrij": "tsx --import ./src/lib/env.ts src/wachtrij.ts",
     "beeld:nl-001": "node scripts/nl-001/build.mjs",
-    "stemtest": "tsx --import ./src/lib/env.ts src/stemtest.ts"
+    "stemtest": "tsx --import ./src/lib/env.ts src/stemtest.ts",
+    "beeldkosten": "tsx --import ./src/lib/env.ts src/beeldkosten.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.125.0",
