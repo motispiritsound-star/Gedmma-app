@@ -114,6 +114,67 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## 3 november: minder downloads, veel meer geld
+
+| | 20 okt | 26 okt | **1 nov** |
+|---|---|---|---|
+| Vertoningen (Apple) | 742 | 1150 | **1460** |
+| Productpaginabezoeken | 170 | 210 | **233** |
+| Eerste downloads | 108 | 131 | **149** |
+| In-app aankopen | 7 | 10 | **12** |
+| Opbrengst | $54 | $102 | **$156** |
+| Actieve plannen | 3 | 4 | **5** |
+| Betaalde plannen | 2 | 3 | **5** |
+| Updates | 1 | 70 | **75** |
+
+Per dag:
+
+| | 13→18 okt | 18→20 okt | 20→26 okt | **27 okt→1 nov** |
+|---|---|---|---|---|
+| Downloads per dag | 8,6 | 8,0 | 3,8 | **3,0** |
+| Opbrengst per dag | $1,20 | $0,00 | $8,00 | **$10,80** |
+
+**De downloads zakken door en de opbrengst versnelt.** Dat is geen
+tegenstelling maar precies waarvoor 1.5 gebouwd is. Per download:
+
+| | 20 okt | 26 okt | **1 nov** |
+|---|---|---|---|
+| Opbrengst per download | $0,50 | $0,78 | **$1,05** |
+
+Cumulatief verdubbeld in twaalf dagen. Marginaal is het sterker: de 41
+downloads sinds 20 oktober brachten $102 op, ofwel $2,49 per stuk, tegen $0,50
+voor alles daarvoor.
+
+**Betaalde plannen gingen van twee naar vijf.** Het oude cohort zette 2 van de
+108 om (1,9%); sindsdien kwamen er drie bij op 41 downloads (7,3%). Vier keer
+zo goed — maar dat getal is een bovengrens, want er staan ook 75 updates
+tegenover: een deel van die drie kan net zo goed een bestaande gebruiker zijn
+die 1.5 binnenkreeg en het aanbod voor het eerst zag. Welke van de twee het is,
+valt met deze aantallen niet uit elkaar te trekken. Dat het aanbod werkt staat
+wel vast.
+
+**Vijf actieve plannen tegen vijf betaalde:** er zit er nu geen meer in zijn
+proefperiode. En *monthly recurring revenue* staat voor het eerst op een
+getal in plaats van op *Not Enough Data*: $8. Bij vijf plannen zegt dat nog
+niets over de hoogte, alleen dat de teller loopt.
+
+**De laatste twee aankopen waren samen $54**, dus $27 per stuk. Een
+maandabonnement levert netto $5,30 op en een e-boek $11,40; daar zit dus iets
+groters bij, en een jaarabonnement is de enige kandidaat. Dat zou het eerste
+zijn.
+
+**Het bereik zakt nu ook.** 72 → 68 → 50 vertoningen per dag. De doorklik
+blijft laag (7,6%), maar wie wél doorklikt downloadt in 79 procent van de
+gevallen — terug op het niveau van de eerste week. Bij negentien
+paginabezoeken in vijf dagen is dat een ruw getal.
+
+**Wat dit verandert aan de volgorde.** De diagnose van 28 oktober blijft staan
+-- het zoekresultaat is waar het breekt -- maar de urgentie verschuift. Een
+bezoeker is nu vijf keer meer waard dan in september, en dat maakt elke vorm
+van bereik vijf keer rendabeler dan ze toen was. De makerscode is daarmee niet
+alleen een goed idee maar het best renderende ding op de lijst, want die brengt
+warm publiek en dat converteert op tientallen procenten in plaats van op zeven.
+
 ## 28 oktober: de warme golf is op
 
 | | 13 okt | 18 okt | 20 okt | **26 okt** |
