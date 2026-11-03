@@ -174,9 +174,26 @@ Vier dingen zeggen iets, in deze volgorde:
    proef duurt drie dagen en een deel van de mensen twijfelt langer. Hieraan
    meten binnen een week heeft geen zin.
 
-**Wat deze meting niet kan.** Er zit geen campagnelink onder de posts, dus er
-is geen manier om een download aan Facebook toe te schrijven. Het enige
-bewijs is het verschil in tempo rond deze datum. Wil je dat de volgende keer
+**Waar je het opzoekt.** Niet in een teller op de website: `darijaforkids.eu`
+meet alleen bezoeken aan die site, en een download gebeurt in de winkel. Daar
+komt bij dat de posts rechtstreeks naar de winkels linken, dus er loopt
+nauwelijks iemand langs de site.
+
+Het staat in de consoles zelf. Bij Apple onder **Acquisition → Sources**: daar
+worden vertoningen en downloads uitgesplitst naar App Store Search, App Store
+Browse, **Web Referrer** en **App Referrer**. Wie vanuit Facebook op een link
+klikt komt binnen als een van die laatste twee -- App Referrer vanuit de
+Facebook-app, Web Referrer vanuit een browser. Bij Google onder **Grow users →
+Acquisition reports**, met een uitsplitsing naar zoeken, verkennen en externe
+verwijzers.
+
+Dezelfde dagvertraging geldt daar, dus de dag zelf staat er nog niet op.
+
+**Wat deze meting niet kan.** Vijftien groepen uit elkaar houden. `Sources`
+laat zien dát er verkeer van buiten kwam, niet uit welke groep of welke post.
+Daarvoor zijn campagnelinks nodig -- het tabblad **Campaigns** onder Acquisition
+bij Apple, de URL-bouwer bij Google. Zonder die links is het enige verdere
+bewijs het verschil in tempo rond deze datum. Wil je dat de volgende keer
 wél hard kunnen maken, dan is daar gereedschap voor in allebei de consoles --
 zie de notitie over campagnelinks in `docs/CODES.md`.
 
