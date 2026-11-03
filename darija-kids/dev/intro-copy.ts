@@ -495,27 +495,27 @@ const LEERPAD: Record<string, Copy> = Object.fromEntries(
 const ALVAST_T: Record<string, Pick<Copy, 'sub' | 'lines'>> = {
   nl: {
     sub: 'Heb je hem al geprobeerd?',
-    lines: ['Bijna tweehonderd keer\ngedownload in vier weken.', 'En er zit meer in dan woorden:\nna elke toets een stukje Marokko.'],
+    lines: ['Bijna tweehonderd keer\ngedownload in vier weken.', 'Schrijven met je vinger,\nvan rechts naar links.', 'En er zit meer in dan woorden:\nna elke toets een stukje Marokko.'],
   },
   fr: {
     sub: 'Tu l’as déjà essayée ?',
-    lines: ['Presque deux cents\ntéléchargements en quatre semaines.', 'Et il y a plus que des mots :\naprès chaque test, un bout de Maroc.'],
+    lines: ['Presque deux cents\ntéléchargements en quatre semaines.', 'Écrire avec le doigt,\nde droite à gauche.', 'Et il y a plus que des mots :\naprès chaque test, un bout de Maroc.'],
   },
   de: {
     sub: 'Hast du sie schon probiert?',
-    lines: ['Fast zweihundert Mal\nheruntergeladen in vier Wochen.', 'Und es steckt mehr drin als Wörter:\nnach jedem Test ein Stück Marokko.'],
+    lines: ['Fast zweihundert Mal\nheruntergeladen in vier Wochen.', 'Mit dem Finger schreiben,\nvon rechts nach links.', 'Und es steckt mehr drin als Wörter:\nnach jedem Test ein Stück Marokko.'],
   },
   es: {
     sub: '¿Ya la has probado?',
-    lines: ['Casi doscientas descargas\nen cuatro semanas.', 'Y hay más que palabras:\ntras cada prueba, un trozo de Marruecos.'],
+    lines: ['Casi doscientas descargas\nen cuatro semanas.', 'Escribir con el dedo,\nde derecha a izquierda.', 'Y hay más que palabras:\ntras cada prueba, un trozo de Marruecos.'],
   },
   it: {
     sub: 'L’hai già provata?',
-    lines: ['Quasi duecento download\nin quattro settimane.', 'E c’è più delle parole:\ndopo ogni test, un pezzo di Marocco.'],
+    lines: ['Quasi duecento download\nin quattro settimane.', 'Scrivere con il dito,\nda destra a sinistra.', 'E c’è più delle parole:\ndopo ogni test, un pezzo di Marocco.'],
   },
   en: {
     sub: 'Have you tried it yet?',
-    lines: ['Almost two hundred downloads\nin four weeks.', 'And there is more than words:\nafter every test, a piece of Morocco.'],
+    lines: ['Almost two hundred downloads\nin four weeks.', 'Writing with your finger,\nright to left.', 'And there is more than words:\nafter every test, a piece of Morocco.'],
   },
 }
 

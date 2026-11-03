@@ -78,7 +78,7 @@ describe('de slotkaart van de promofilm', () => {
    */
   const SCHERMEN: Record<string, number> = { intro: 7, bonus: 2, spelen: 2, weetje: 2, alfabet: 2, route: 2, onthouden: 2, verzamelen: 2,
     // De routefilm heeft een scherm per unit; een los getal zou verlopen.
-    leerpad: UNITS.length, alvast: 2 }
+    leerpad: UNITS.length, alvast: 3 }
 
   it('en heeft per taal één regel per scherm', () => {
     for (const [film, taal, c] of ALLES) {

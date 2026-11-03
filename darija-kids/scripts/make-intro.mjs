@@ -926,7 +926,7 @@ const FILMS = {
     shapes: 'verhaal,vierkant',
   },
   alvast: {
-    shots: ['leren', 'geschiedenis'],
+    shots: ['leren', 'schrijven', 'geschiedenis'],
     shapes: 'verhaal,vierkant',
   },
 }

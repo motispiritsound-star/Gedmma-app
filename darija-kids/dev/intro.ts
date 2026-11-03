@@ -126,8 +126,8 @@ const FILMS: Record<FilmId, Film> = {
      `ContentPack` heeft geen veld voor letters. In een Franse film stond zo
      "th van het Engelse think" op het scherm. */
   alvast: {
-    shots: ['leren', 'geschiedenis'],
-    titel: 2.4, hold: 4.6, slot: 3.6, deunen: [2, 1],
+    shots: ['leren', 'schrijven', 'geschiedenis'],
+    titel: 2.4, hold: 4.2, slot: 3.6, deunen: [2, 1, 3],
   },
   leerpad: {
     shots: Array.from(PAD, () => 'leerpad' as const),
