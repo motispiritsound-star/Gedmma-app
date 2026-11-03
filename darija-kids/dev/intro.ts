@@ -119,6 +119,16 @@ const FILMS: Record<FilmId, Film> = {
    * app preview in de winkel, maar dit is er dan ook voor een groep waar je
    * laat zien hoe ver het loopt.
    */
+  /* De negende: een herinnering voor wie hem al eens voorbij zag komen. De
+     slotkaart duurt hier langer, want er staat een adres bij om te lezen. */
+  /* `leren` en niet `les`: die laatste filmt een alfabetles, en de
+     klankbeschrijving van een letter staat alleen in het Nederlands --
+     `ContentPack` heeft geen veld voor letters. In een Franse film stond zo
+     "th van het Engelse think" op het scherm. */
+  alvast: {
+    shots: ['leren', 'geschiedenis'],
+    titel: 2.4, hold: 4.6, slot: 3.6, deunen: [2, 1],
+  },
   leerpad: {
     shots: Array.from(PAD, () => 'leerpad' as const),
     vast: Array.from(PAD, (_, i) => i),
@@ -767,6 +777,11 @@ function card(
             { gap: size * 0.45, height: size * 1.3, draw: (y) => pill(ctx, cast.copy.cta, shape.hero.cx, y + size * 0.65, size * 0.62, '#f59e0b', INK) },
             { gap: size * 0.3, height: size * 0.5, draw: (y) => lines(ctx, cast.copy.price, shape.hero.cx, y + size * 0.25, size * 0.44, ink, 600, ruim) },
             { gap: size * 0.22, height: size * 0.44, draw: (y) => lines(ctx, cast.copy.feiten, shape.hero.cx, y + size * 0.22, size * 0.36, ink, 600, ruim) },
+            // Waar je hem haalt, in de saffraankleur zodat hij losstaat van de
+            // regel cijfers erboven. Alleen de films die hem meegeven.
+            ...(cast.copy.waar
+              ? [{ gap: size * 0.3, height: size * 0.5, draw: (y: number) => lines(ctx, cast.copy.waar!, shape.hero.cx, y + size * 0.25, size * 0.44, '#f59e0b', 800, ruim) }]
+              : []),
             { gap: size * 0.4, height: unit * 0.14, draw: (y) => ctx.drawImage(cast.fnek, shape.hero.cx - unit * 0.07, y, unit * 0.14, unit * 0.14) },
           ]
     const total = rows.reduce((sum, r) => sum + r.gap + r.height, 0)

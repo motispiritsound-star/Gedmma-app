@@ -78,7 +78,7 @@ describe('de slotkaart van de promofilm', () => {
    */
   const SCHERMEN: Record<string, number> = { intro: 7, bonus: 2, spelen: 2, weetje: 2, alfabet: 2, route: 2, onthouden: 2, verzamelen: 2,
     // De routefilm heeft een scherm per unit; een los getal zou verlopen.
-    leerpad: UNITS.length }
+    leerpad: UNITS.length, alvast: 2 }
 
   it('en heeft per taal één regel per scherm', () => {
     for (const [film, taal, c] of ALLES) {
@@ -91,7 +91,7 @@ describe('de slotkaart van de promofilm', () => {
      plek is waar een prijs kan verouderen -- zie de uitleg in intro-copy.ts. */
   it('laat elke korte film de slotkaart van de winkelfilm erven', () => {
     for (const taal of TALEN) {
-      for (const film of ['bonus', 'spelen', 'weetje', 'alfabet', 'route', 'onthouden', 'verzamelen', 'leerpad'] as const) {
+      for (const film of ['bonus', 'spelen', 'weetje', 'alfabet', 'route', 'onthouden', 'verzamelen', 'leerpad', 'alvast'] as const) {
         expect(COPY[film][taal]!.price, `${film}/${taal}`).toBe(COPY.intro[taal]!.price)
         expect(COPY[film][taal]!.cta, `${film}/${taal}`).toBe(COPY.intro[taal]!.cta)
         expect(COPY[film][taal]!.feiten, `${film}/${taal}`).toBe(COPY.intro[taal]!.feiten)
@@ -101,7 +101,7 @@ describe('de slotkaart van de promofilm', () => {
 
   it('en geeft elke korte film een eigen ondertitel en eigen regels', () => {
     for (const taal of TALEN) {
-      for (const film of ['bonus', 'spelen', 'weetje', 'alfabet', 'route', 'onthouden', 'verzamelen', 'leerpad'] as const) {
+      for (const film of ['bonus', 'spelen', 'weetje', 'alfabet', 'route', 'onthouden', 'verzamelen', 'leerpad', 'alvast'] as const) {
         expect(COPY[film][taal]!.sub, `${film}/${taal}`).not.toBe(COPY.intro[taal]!.sub)
         expect(COPY[film][taal]!.lines, `${film}/${taal}`).not.toEqual(COPY.intro[taal]!.lines)
       }

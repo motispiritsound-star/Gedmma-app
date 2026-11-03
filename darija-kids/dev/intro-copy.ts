@@ -19,7 +19,7 @@ import type { Lang } from '../src/i18n/languages'
 
 /** Welke film. Zie FILMS in intro.ts. */
 export type FilmId = 'intro' | 'bonus' | 'spelen' | 'weetje'
-  | 'alfabet' | 'route' | 'onthouden' | 'verzamelen' | 'leerpad'
+  | 'alfabet' | 'route' | 'onthouden' | 'verzamelen' | 'leerpad' | 'alvast'
 
 export interface Copy {
   /** Under the title, in the opening card. */
@@ -31,6 +31,14 @@ export interface Copy {
   price: string
   /** One line of plain numbers, so the film ends on something checkable. */
   feiten: string
+  /**
+   * Waar je hem haalt, onder aan de slotkaart. Alleen waar hij hoort.
+   *
+   * Een winkel-url is onleesbaar op beeld en in een film niet aan te klikken,
+   * dus hier staat het adres van de site -- kort, te onthouden, en daar staan
+   * de twee winkelknoppen. De klikbare links horen in de tekst onder de post.
+   */
+  waar?: string
 }
 
 /**
@@ -471,8 +479,54 @@ const LEERPAD: Record<string, Copy> = Object.fromEntries(
   }]),
 )
 
+/**
+ * Deel negen: de herinnering, met het adres erbij.
+ *
+ * Voor wie de app al eens voorbij zag komen en er niets mee deed. De
+ * titelkaart stelt de vraag, het eerste scherm geeft de reden om hem nu wel te
+ * halen, en de slotkaart zegt waar.
+ *
+ * Het getal is wat de twee consoles tellen en niet meer dan dat: 149
+ * iOS-downloads en 38 Android-installaties op 3 november, samen 187. Er zit
+ * geen enkele meting in de app zelf -- dat is met opzet zo -- dus over
+ * gebruikers valt niets te zeggen, alleen over downloads. Loopt het over de
+ * driehonderd, dan mag hier "honderden" staan en is het nog steeds waar.
+ */
+const ALVAST_T: Record<string, Pick<Copy, 'sub' | 'lines'>> = {
+  nl: {
+    sub: 'Heb je hem al geprobeerd?',
+    lines: ['Bijna tweehonderd keer\ngedownload in vier weken.', 'En er zit meer in dan woorden:\nna elke toets een stukje Marokko.'],
+  },
+  fr: {
+    sub: 'Tu l’as déjà essayée ?',
+    lines: ['Presque deux cents\ntéléchargements en quatre semaines.', 'Et il y a plus que des mots :\naprès chaque test, un bout de Maroc.'],
+  },
+  de: {
+    sub: 'Hast du sie schon probiert?',
+    lines: ['Fast zweihundert Mal\nheruntergeladen in vier Wochen.', 'Und es steckt mehr drin als Wörter:\nnach jedem Test ein Stück Marokko.'],
+  },
+  es: {
+    sub: '¿Ya la has probado?',
+    lines: ['Casi doscientas descargas\nen cuatro semanas.', 'Y hay más que palabras:\ntras cada prueba, un trozo de Marruecos.'],
+  },
+  it: {
+    sub: 'L’hai già provata?',
+    lines: ['Quasi duecento download\nin quattro settimane.', 'E c’è più delle parole:\ndopo ogni test, un pezzo di Marocco.'],
+  },
+  en: {
+    sub: 'Have you tried it yet?',
+    lines: ['Almost two hundred downloads\nin four weeks.', 'And there is more than words:\nafter every test, a piece of Morocco.'],
+  },
+}
+
+const ALVAST: Record<string, Copy> = Object.fromEntries(
+  Object.entries(INTRO).map(([taal, c]) => [taal, {
+    ...c, ...(ALVAST_T[taal] ?? ALVAST_T.nl!), waar: 'darijaforkids.eu',
+  }]),
+)
+
 export const COPY: Record<FilmId, Record<string, Copy>> = {
   intro: INTRO, bonus: BONUS, spelen: SPEL, weetje: WEET,
   alfabet: ALFA, route: ROUTE, onthouden: ONTHOUD, verzamelen: VERZAMEL,
-  leerpad: LEERPAD,
+  leerpad: LEERPAD, alvast: ALVAST,
 }

@@ -925,6 +925,10 @@ const FILMS = {
     shots: ['leerpad'],
     shapes: 'verhaal,vierkant',
   },
+  alvast: {
+    shots: ['leren', 'geschiedenis'],
+    shapes: 'verhaal,vierkant',
+  },
 }
 
 const film = arg('film', 'intro')
