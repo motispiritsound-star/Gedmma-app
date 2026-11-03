@@ -168,6 +168,30 @@ blijft laag (7,6%), maar wie wél doorklikt downloadt in 79 procent van de
 gevallen — terug op het niveau van de eerste week. Bij negentien
 paginabezoeken in vijf dagen is dat een ruw getal.
 
+**En Play loopt nu echt niet mee.** Op 3 november: 38 installaties, 39
+toestelacquisities over 28 dagen, en een omzet van € 6,99 -- precies één
+maandabonnement, onveranderd sinds 22 oktober. In twaalf dagen geen enkele
+nieuwe betalende klant, terwijl Apple er drie bij kreeg. Android is daarmee 20
+procent van de downloads en 5 procent van de opbrengst.
+
+Twee dingen die daar wél goed staan: *Publishing overview* meldt geen
+onuitgegeven wijzigingen, dus 1.5 is volledig uit, en de **install base staat
+op 84,4%** -- van wie hem installeerde heeft ruim vier op de vijf hem nog. Het
+betaalscherm jaagt dus niemand weg; dat was het risico van deze release en het
+is er niet.
+
+**Eén getal daar is het nakijken waard: 39 toestelacquisities tegen 17 eerste
+keren openen.** Klopt dat, dan installeert meer dan de helft de app en opent
+hem nooit -- een ander en ernstiger probleem dan tegenvallend bereik, want dat
+gebeurt vóór het betaalscherm. Te scheiden onder *Grow users → Store
+performance*: veel bezoekers en weinig installaties wijst op de listing, weinig
+van allebei op het bereik. Op 22 oktober stond dat veld nog op een streepje,
+dus het kan ook een meting zijn die net begonnen is.
+
+**En de belastinggegevens voor Ierland staan er nog open** bij het
+betaalprofiel. Bij € 6,99 omzet kost dat niets, maar het blijft staan tot het
+ingevuld is -- zie de notitie bij 24 oktober.
+
 **Wat dit verandert aan de volgorde.** De diagnose van 28 oktober blijft staan
 -- het zoekresultaat is waar het breekt -- maar de urgentie verschuift. Een
 bezoeker is nu vijf keer meer waard dan in september, en dat maakt elke vorm
