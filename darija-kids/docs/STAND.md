@@ -114,6 +114,72 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## 3 november: een Facebook-campagne, en de stand ervoor
+
+**Vandaag is er voor het eerst bewust en op grote schaal gedeeld in
+Facebookgroepen**, met de films en de teksten uit deze week. Tot nu toe
+gebeurde dat verspreid en ongedateerd, waardoor elke beweging in de cijfers
+achteraf aan van alles toegeschreven kon worden. Dit is de eerste ingreep met
+een datum eronder.
+
+Daarom staat hieronder de stand van vlak ervóór. Niet de optelsommen -- die
+lopen vanzelf op en zeggen weinig -- maar het tempo per dag, want dat is wat
+een campagne hoort te veranderen.
+
+**De uitgangspositie, gemeten over 27 oktober tot 1 november:**
+
+| Per dag | |
+|---|---|
+| Vertoningen | 50,0 |
+| Paginabezoeken | 3,8 |
+| Downloads | 3,0 |
+| Opbrengst | $10,80 |
+
+| Verhouding | |
+|---|---|
+| Bezoek per vertoning | 7,6% |
+| Download per bezoek | 78,9% |
+| Opbrengst per download, cumulatief | $1,05 |
+
+**De tellers op het moment van delen:**
+
+| Apple (1 nov) | | Play (3 nov) | |
+|---|---|---|---|
+| Vertoningen | 1460 | Installaties | 38 |
+| Paginabezoeken | 233 | Toestelacquisities (28 dgn) | 39 |
+| Eerste downloads | 149 | Eerste keren openen (28 dgn) | 17 |
+| Herdownloads | 6 | Maandelijks actieve toestellen | 38 |
+| In-app aankopen | 12 | Omzet | € 6,99 |
+| Opbrengst | $156 | Install base | 84,4% |
+| Actieve plannen | 5 | | |
+| Betaalde plannen | 5 | | |
+| Updates | 75 | | |
+
+**Wanneer kijken, en waarnaar.** Een Facebookpost doet zijn werk in twee tot
+drie dagen en heeft daarna een staart van een week. Meet dus op **10 november**
+(een week) en op **17 november** (twee weken), en zet er telkens het aantal
+dagen onder zodat het tempo vergeleken wordt en niet de optelsom.
+
+Vier dingen zeggen iets, in deze volgorde:
+
+1. **Vertoningen per dag.** Dit is het enige wat een campagne direct raakt.
+   Gaat dit niet omhoog, dan is de post niet gezien en heeft de rest geen
+   betekenis.
+2. **Bezoek per vertoning.** Stond op 7,6% en zakte al weken. Komt er publiek
+   via een gedeelde link, dan hoort dit juist omhoog te gaan -- die mensen
+   klikken gericht. Blijft het laag terwijl de vertoningen stijgen, dan komt
+   de groei uit de winkel zelf en niet uit Facebook.
+3. **Downloads per dag.** Stond op 3,0.
+4. **Betaalde plannen.** Stond op 5. Dit is het traagste getal van de vier: de
+   proef duurt drie dagen en een deel van de mensen twijfelt langer. Hieraan
+   meten binnen een week heeft geen zin.
+
+**Wat deze meting niet kan.** Er zit geen campagnelink onder de posts, dus er
+is geen manier om een download aan Facebook toe te schrijven. Het enige
+bewijs is het verschil in tempo rond deze datum. Wil je dat de volgende keer
+wél hard kunnen maken, dan is daar gereedschap voor in allebei de consoles --
+zie de notitie over campagnelinks in `docs/CODES.md`.
+
 ## 3 november: minder downloads, veel meer geld
 
 | | 20 okt | 26 okt | **1 nov** |
