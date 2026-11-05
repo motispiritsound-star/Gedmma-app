@@ -114,6 +114,35 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## 5 november: handelaarsstatus, voor februari
+
+Google vraagt om een verklaring onder de Digital Services Act. **Het antwoord
+is "This is a trader account".** Venship is een ingeschreven eenmanszaak met
+een btw-nummer die abonnementen en een e-boek verkoopt; dat valt onder de
+definitie die Google zelf geeft -- *acting for purposes relating to their
+trade, business, craft, or profession*. Non-trader zou een onjuiste verklaring
+zijn, en Google legt hem naast de gegevens bij het betaalprofiel.
+
+Niet antwoorden is geen optie: vanaf februari gaan apps zonder voltooide
+verklaring uit de EU.
+
+**Wat eraan vastzit, en wat je vooraf bekijkt.** De DSA wil dat een koper weet
+bij wie hij koopt, dus de contactgegevens komen op de Play-pagina te staan. Bij
+een eenmanszaak is dat het opgegeven adres, en dat is vaak het huisadres. Het
+venster laat je de gegevens nakijken voordat je afrondt -- doe dat, en kijk
+specifiek welk adres publiek wordt. Een zakelijk adres of postbus lost het op,
+maar dat moet vooraf geregeld zijn.
+
+Daarna vraagt Google per app nog een eigen bevestiging plus een
+voorwaardenlink, onder **App content**:
+`https://darijaforkids.eu/voorwaarden`.
+
+**En Apple heeft dezelfde verplichting**, onder *Business* in App Store
+Connect. De app staat live in de EU, dus daar geldt dezelfde deadline. Na te
+kijken of dat al compleet is.
+
+Dit komt terug bij de tweede app -- zie `docs/TWEEDE-APP.md`.
+
 ## 3 november: een Facebook-campagne, en de stand ervoor
 
 **Vandaag is er voor het eerst bewust en op grote schaal gedeeld in
