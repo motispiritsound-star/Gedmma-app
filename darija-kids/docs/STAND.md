@@ -114,6 +114,91 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## 10 november: de audit, en drie dingen die hierboven niet meer kloppen
+
+In `growth-audit/` staat een volledige doorlichting: product, techniek,
+conversie, marketing, prijs, concurrentie, plan, meting. Negen documenten, met
+bij elke bewering of hij **BEWEZEN**, **WAARSCHIJNLIJK**, **HYPOTHESE** of
+**ONBEKEND** is. Wie één ding leest: `growth-audit/09-executive-summary.md`.
+
+De korte uitkomst, omdat hij de vraag omdraait: **de conversie is niet het
+probleem, het volume is dat.** 5 betaalde plannen op 149 downloads is 3,4%, en
+dat is voor een consumentenapp van vijf weken normaal tot goed. Er zijn drie
+downloads per dag. MRR is ongeveer € 38.
+
+En de app kan niet uit zichzelf groeien, want beide ingebouwde
+groeimechanismen zitten achter de betaalmuur:
+
+| Mechanisme | Drempel | Gratis plafond | Bereikbaar? |
+|---|---|---|---|
+| WhatsApp-deelkaart | 25 onthouden woorden | **7 woorden** | **nee** |
+| Verzoek om winkelbeoordeling | 3 diploma's | **0 haalbaar** | **nee** |
+
+Nagerekend uit `MIJLPALEN` in `src/engine/delen.ts` en
+`DIPLOMAS_VOOR_VRAAG` in `src/engine/beoordeling.ts:42`, tegen
+`GRATIS_LESSEN = { hruf: 3, groeten: 1 }` in `src/engine/store.ts:35`. Vier
+lessen van de 74 staan open: 7 woorden, 13 letters, nul diploma's.
+
+### Wat hieronder niet meer klopt
+
+**1. Het jaarabonnement verkoopt wél.** Op 22 oktober staat hier dat er nog
+geen jaarabonnement omzet had opgeleverd. Dat was toen waar en is het niet
+meer: ASC In-App Purchases op 10 november geeft **9 maand en 4 jaar**. Bijna
+een derde van de kopers kiest het duurste plan.
+
+**2. Dit is geen Nederlands product.** Per territorium: **Nederland 9,
+Duitsland 2, Frankrijk 2.** Dat is 31% van de aankopen van buiten Nederland,
+en in Duitsland is nooit iets gedeeld. Daar komt Qatar bij: op 9 november een
+e-boek van QAR 63,00 en een proefperiode op het maandabonnement, allebei
+volledig koud.
+
+Dat maakt de onvertaalde klankbeschrijvingen van het alfabet duurder dan ze
+leken. `src/content/alphabet.ts` heeft geen taalvariant — `ContentPack` kent
+geen `letters`-veld — dus een Duitse of Franse gebruiker leest daar
+Nederlands. 28 letters × 5 talen. Twee keer eerder gemeld, nog steeds open.
+
+**3. De negatieve weekbalk is geen gat in de betaalketen.** De opbrengstgrafiek
+over 26 weken toont één negatieve week van ongeveer US$ −50. In het totaal zit
+niets onverklaard: **US$ 114 / US$ 163 = 69,9%**, en dat is exact de
+70/30-verdeling van Apple. Het is dus waarschijnlijk één terugbetaling binnen
+een kloppend geheel. **Wát het was staat nog open** — op te zoeken onder
+*Payments and Financial Reports*, week 2–8 november.
+
+### Wat alleen jij kunt opzoeken, en het kost een half uur
+
+1. **Proefconversie.** ASC → Subscriptions → Trial conversion. Dit is het
+   enige echte conversiecijfer dat vandaag al bestaat en nog niemand heeft
+   bekeken. Het beslist of drie dagen proef werkt.
+2. **De negatieve weekbalk**, zie hierboven.
+3. **Play: installaties tegen eerste keren openen.** De tabel van 3 november
+   zegt 39 acquisities, 17 eerste keren openen én 38 maandelijks actieve
+   toestellen. Die drie kunnen niet alle drie waar zijn. Opent werkelijk maar
+   de helft, dan is dat het grootste lek in het hele dossier.
+4. **Hoeveel mailadressen** er via het ouderscherm zijn aangemeld.
+
+### De vijf prioriteiten
+
+| # | Wat | P | Werk |
+|---|---|---|---|
+| 1 | Eerstelijns trechtermeting — anoniem, geen derden (Kinderen-categorie) | **P0** | 1–2 dagen |
+| 2 | Campagneparameters op elke winkellink | **P0** | 2 uur |
+| 3 | Gratis deel naar `{ hruf: 8, groeten: 5 }` — zet beide groeiloops aan | **P1** | 1 dag |
+| 4 | Dagelijkse herinnering standaard aan (`store.ts:512` staat op `false`) | **P1** | 1 uur |
+| 5 | Positioneren als kindercursus in plaats van als Darija-app | **P1** | 1 dag, geen code |
+
+Nummer 2 is het eerste dat ik zou doen, en niet omdat het de grootste impact
+heeft: het is de enige fout hier die zich blijft herhalen en niet te
+herstellen is. De vijftien groepen van 3 november zijn niet meer toe te
+rekenen; de volgende vijftien hoeven dat niet te zijn.
+
+Nummer 5 kan nu voor het eerst. Apple wees 1.0 twee keer af omdat de
+ondertitel zei dat de app voor kinderen is terwijl hij niet in de
+Kinderen-categorie stond (`docs/APPLE-2.3.8.md`). Hij staat er nu in. Die
+beperking is weg en is nog niet opgepakt.
+
+**Er is in deze ronde niets aan de app gewijzigd**, geen prijs aangepast en
+geen winkelinstelling aangeraakt. Dit was diagnose.
+
 ## 5 november: handelaarsstatus, voor februari
 
 Google vraagt om een verklaring onder de Digital Services Act. **Het antwoord
