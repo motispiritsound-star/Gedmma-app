@@ -114,6 +114,108 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## 12 november: de trechtermeting is gebouwd, en staat uit
+
+De meting uit `growth-audit/08-metrics-experiments.md` is er. Negen tellers,
+een eigen tabel in de bestaande D1, een route op de eigen worker, en
+`npm run cijfers` om het terug te lezen. **En hij staat uit** -- één regel in
+`src/engine/telbesluit.ts`. Die regel is geen vergetelheid, zie hieronder.
+
+### Wat er geteld wordt
+
+| Teller | Wanneer |
+|---|---|
+| `start` | de app is open, hoogstens één keer per dag per toestel |
+| `welkom_af` | het welkomstscherm is doorlopen |
+| `aanbod_zien` / `aanbod_later` | het eenmalige abonnementsaanbod, en wie "later" koos |
+| `les_af:1` t/m `les_af:74` | hoe diep iemand in het pad kwam, in negen treden |
+| `gratis_op` | het slot bereikt: de laatste gratis les af |
+| `paywall_zien` | het abonnementsscherm geopend |
+| `koop_start` | een aankoop gestart bij de winkel |
+| `deel_zien` | de deelkaart getoond |
+| `beoord_zien` | om een winkelbeoordeling gevraagd |
+
+Wat er meegaat is de dag (niet het tijdstip), de taal, het soort toestel en
+het versienummer. Geen gebruikers-id, geen apparaat-id, geen sessie, geen ip,
+niets van het kind. De server telt op en bewaart alleen het totaal.
+
+### Twee dingen die ik kleiner heb gemaakt dan gevraagd
+
+**`les_af:<lesid>` is `les_af:<trede>` geworden.** De verkenning vond dat
+`privacy.ts` belooft dat de app *niets van het oefenen* naar een server
+stuurt, en "hruf-3 was op 18 november af" is precies dat. Een trede zegt
+alleen hoe ver iemand kwam, en dat is wat de trechter nodig heeft.
+
+**`deel_klik` bestaat niet.** `engine/delen.ts` belooft: *"De app ziet niet of
+er iets verstuurd is, aan wie, of hóe vaak."* Een teller op die knop legt dat
+laatste letterlijk vast. Alleen `deel_zien` dus -- onze eigen kaart op ons
+eigen scherm. Ik had dit gemeld en geen antwoord gehad; bij een belofte die
+zwart op wit staat is de voorzichtige kant de juiste, en `deel_zien` bewijst
+nog steeds wat de audit nodig had: dat die kaart nu onbereikbaar is.
+
+### Waarom hij uit staat
+
+Het aanzetten is geen technische handeling. Het verandert wat de app over
+zichzelf verklaart op vier plaatsen buiten deze repository, en **een onjuiste
+privacyverklaring is bij Apple een afwijzingsgrond op zichzelf** -- zwaarder
+dan deze meting ooit waard is.
+
+| Wat | Nu | Wordt |
+|---|---|---|
+| **Apple App Privacy** | *Data Not Collected* | *Usage Data → Product Interaction*, **Linked: nee**, **Tracking: nee** |
+| **Google Data Safety** | verzamelt geen gegevens | **verzamelt: ja, deelt: nee**, *App activity → App interactions* |
+| **`docs/APPLE-1.3.md`** | "we do not count installs, sessions, screen views" | die zin wordt onjuist; het *antwoord* op vraag 1 blijft nee (geen SDK, geen derde partij) |
+| **`privacy.ts`, veld `updated`** | de oude datum | de datum van de wijziging, zes keer |
+
+Let bij Google op één vraag: *"Is deze gegevensverzameling optioneel?"*
+Zolang de trechter altijd loopt is het eerlijke antwoord **vereist**, en dat is
+op een app onder het Families-beleid een zichtbaar label. Wil je "optioneel"
+kunnen aanvinken, dan hoort er een uit-schakelaar bij Instellingen -- dat is
+een productbesluit en het hoort vóór het invullen genomen te worden.
+
+Wat in de Kinderen-categorie verboden is, is analytics van **derden**. Dat
+blijft nee: er komt geen SDK bij, de tien productie-afhankelijkheden
+veranderen niet, en het eindpunt staat in onze eigen worker naast
+`/aanmelden`. Dat onderscheid draagt het hele antwoord, dus laat het nooit via
+een dienst van buiten lopen.
+
+**De verklaring kan niet uit de pas lopen.** `i18n/privacy.ts` leest dezelfde
+constante en schrijft de ene of de andere alinea, in alle zes de talen.
+Nagelopen door de schakelaar om te zetten: dan valt er precies één test om --
+de wacht zelf -- en schuiven alle zes de talen mee naar de versie die
+beschrijft wat er weggaat. Staat hij uit, dan belóóft de app dat er niet
+geteld wordt én telt hij niet.
+
+### Wat de cijfers wel en niet zijn
+
+Een ondergrens. Wat offline gebeurt gaat verloren (geen wachtrij, met opzet:
+een dag die klopt is hier meer waard dan een totaal dat klopt). Het eindpunt
+is open, want de app kan geen geheim dragen -- de witte lijst begrenst wát er
+geteld kan worden, niet hoe vaak. En `aanbod_zien` en `beoord_zien` tellen
+getoonde kaarten en geen mensen.
+
+Lees dus de verhoudingen tussen de stappen, en vergelijk weken met weken.
+`npm run cijfers` drukt het zo af.
+
+### Opdrachten
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run cijfers } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+De tabel staat nog niet op de echte database. Dat gaat zo, en het is een
+handeling naar buiten, dus doe hem zelf:
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run schema } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+De route en de tabel zijn lokaal nagelopen met een echte worker: een geldige
+telling komt erin, een tweede telt op, en een verzonnen naam, een niet-
+bestaande trede, een SQL-injectie in het naamveld en een datum in 1999
+schrijven alle vier niets. Alle vier kregen 200, want een foutcode laat een
+app opnieuw proberen op iets wat al gelukt kan zijn.
+
 ## 10 november: de audit, en drie dingen die hierboven niet meer kloppen
 
 In `growth-audit/` staat een volledige doorlichting: product, techniek,

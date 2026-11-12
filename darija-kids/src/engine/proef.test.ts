@@ -120,7 +120,14 @@ describe('het aanbod bij de eerste start', () => {
    */
   it('houdt "later" even groot als "bekijken"', () => {
     expect(aanbod).toContain('{t.aanbod.later(FREE_LESSONS)}')
-    const later = aanbod.slice(aanbod.indexOf('onClick={() => { sfx.nav(); sluit() }}'))
+    /*
+     * Vanaf het `<button>` dat dat label draagt, en niet vanaf de tekst van
+     * een onClick: die veranderde toen de teller `aanbod_later` erbij kwam, en
+     * toen keurde deze test een lege string goed. Nu is de bewering waar hij
+     * over gaat -- deze knop is even breed als de andere.
+     */
+    const tot = aanbod.indexOf('{t.aanbod.later(FREE_LESSONS)}')
+    const later = aanbod.slice(aanbod.lastIndexOf('<button', tot), tot)
     expect(later).toContain('w-full')
   })
 

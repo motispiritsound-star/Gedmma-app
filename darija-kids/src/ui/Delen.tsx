@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { deelNaarWhatsApp, nieuweMijlpaal, onthoudMijlpaal, woordenVast } from '../engine/delen'
 import { useStore } from '../engine/store'
+import { tel } from '../engine/tellen'
 import { sfx } from '../engine/audio'
 import { useT } from '../i18n'
 import { Button, Card } from './kit'
@@ -50,6 +51,26 @@ export function MijlpaalKaart() {
   const mijlpaal = nieuweMijlpaal(state)
   const bericht = useBericht(mijlpaal)
   const p = useDeelPoort(bericht)
+
+  /*
+   * Tellen dat deze kaart te zien was, en verder niets.
+   *
+   * Dit is de teller waar de hele groeiaudit om begon: `growth-audit/01` en
+   * `03` bewijzen dat de deelkaart met zeven gratis woorden onbereikbaar is,
+   * en dit is het getal dat laat zien of dat na een ruimer gratis deel
+   * verandert.
+   *
+   * **En hier stopt het.** Er komt geen teller op de deelknop zelf, hoe
+   * waardevol dat getal ook zou zijn. `engine/delen.ts` belooft: "De app ziet
+   * niet of er iets verstuurd is, aan wie, of hóe vaak." Dat laatste is
+   * letterlijk wat een teller op die knop zou vastleggen. Een getoonde kaart
+   * is dat niet: die staat op ons eigen scherm.
+   *
+   * `[mijlpaal]` als afhankelijkheid, dus één keer per mijlpaal in plaats van
+   * bij elke hertekening -- regel hierboven is `useStore((s) => s)`, dus dit
+   * onderdeel tekent bij élke staatswijziging opnieuw.
+   */
+  useEffect(() => { if (mijlpaal) void tel('deel_zien') }, [mijlpaal])
 
   if (!mijlpaal) return null
 

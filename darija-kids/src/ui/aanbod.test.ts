@@ -42,10 +42,17 @@ describe('het keuzescherm na de taalkeuze', () => {
    * een abonnement dat je er niet kunt afsluiten is erger dan geen knop.
    */
   it('verschijnt alleen als alle vier de voorwaarden kloppen', () => {
-    const regel = bron.match(/if \(!picked.*return null/)?.[0] ?? ''
-    for (const voorwaarde of ['!picked', 'gezien', 'unlocked', '!billingAvailable()']) {
+    /*
+     * De vier voorwaarden staan sinds de teller `aanbod_zien` in `magTonen`,
+     * want een hook mag niet ónder een vroege `return null` staan. De wacht
+     * zelf is daardoor `if (!magTonen) return null`, en de bewering verhuist
+     * mee naar de regel waar de voorwaarden nu staan.
+     */
+    const regel = bron.match(/const magTonen = .*/)?.[0] ?? ''
+    for (const voorwaarde of ['picked', '!gezien', '!unlocked', 'billingAvailable()']) {
       expect(regel).toContain(voorwaarde)
     }
+    expect(bron).toContain('if (!magTonen) return null')
   })
 
   /**

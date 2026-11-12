@@ -11,6 +11,7 @@ import {
 } from '../engine/store'
 import { seintjeGratisOp } from '../engine/herinnering'
 import { reikDiplomasUit } from '../engine/diploma'
+import { tel, tredeVan } from '../engine/tellen'
 import { TRIAL_DAYS } from '../engine/billing'
 import { sfx } from '../engine/audio'
 import { Button, Card, Sheet } from '../ui/kit'
@@ -199,6 +200,21 @@ function LesScherm({ lessonId }: { lessonId: string }) {
     setDiplomas(reikDiplomasUit())
     setResult(r)
     /*
+     * Hoe diep iemand nu in het pad staat, als dit een trede is.
+     *
+     * Een aantal en geen lesnaam: zie `TREDEN` in engine/tellen.ts. Ná
+     * `completeLesson`, want pas dan staat deze les erin -- `now` is de staat
+     * van na die aanroep.
+     *
+     * `finish` heeft twee aanroepers (de laatste kaart en het vangnet-effect in
+     * Round.tsx), dus dit kan in theorie dubbel vuren. Een trede is daar
+     * ongevoelig voor: hetzelfde aantal lessen geeft tweemaal dezelfde naam op
+     * dezelfde dag, en dat is één rij die één te hoog staat -- niet een curve
+     * die scheef trekt.
+     */
+    const trede = tredeVan(Object.keys(now.lessons).length)
+    if (trede) void tel(trede)
+    /*
      * Het seintje voor de ouder, als dit de vierde gratis les was.
      *
      * Hier en niet in `completeLesson`: de staat hoort geen meldingen te
@@ -214,6 +230,15 @@ function LesScherm({ lessonId }: { lessonId: string }) {
     if (gratisDeelOp(now) && !now.gratisOpGemeld) {
       setState({ gratisOpGemeld: Date.now() })
       void seintjeGratisOp({ titel: t.settings.seintjeTitel, body: t.settings.seintjeBody })
+      /*
+       * Binnen deze wacht en niet ernaast, want hij ís precies "het slot is
+       * net bereikt": de vlag zorgt dat het één keer gebeurt.
+       *
+       * Prijs daarvan: wie dit punt al vóór de uitrol voorbij was, telt nooit
+       * mee. `gratis_op` is dus structureel lager dan het werkelijke aantal
+       * tot er een cohort door is dat de meting van begin af aan had.
+       */
+      void tel('gratis_op')
     }
     // The film carries its own music, so the flourish waits until after it.
     if (lesson.kind === 'toets') {

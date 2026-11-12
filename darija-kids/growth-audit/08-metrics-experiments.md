@@ -48,6 +48,22 @@ Drie van de zes zijn onbekend. Dat is de reden dat meting P0 is.
 
 ## Het ontwerp van de meting
 
+> **Gebouwd op 12 november, en uitgezet.** Wat hieronder staat is uitgevoerd,
+> met twee afwijkingen die strenger zijn dan het ontwerp:
+>
+> - `les_af:<lesid>` is **`les_af:<trede>`** geworden — negen treden (1, 2, 3,
+>   4, 5, 10, 20, 40, 74) in plaats van 74 lesnamen. `privacy.ts` belooft dat
+>   de app niets van het oefenen naar een server stuurt, en een lesnaam met een
+>   datum is dat.
+> - **`deel_klik` bestaat niet.** `engine/delen.ts` belooft dat de app niet
+>   ziet of er gedeeld is, aan wie, of hoe vaak. Alleen `deel_zien`.
+>
+> De meting staat uit tot de verklaringen bij Apple en Google bij zijn: zie
+> `src/engine/telbesluit.ts` voor de vier dingen die daarvoor moeten gebeuren,
+> en het verslag van 12 november in `docs/STAND.md`.
+>
+> Teruglezen gaat met `npm run cijfers`.
+
 Harde eis: de app staat in Apples **Kinderen-categorie**, waar analytics van
 derden verboden zijn. Dus geen Firebase, geen PostHog, geen Sentry. Eerstelijns
 en anoniem.

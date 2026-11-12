@@ -134,7 +134,18 @@ describe('het startscherm', () => {
   /** De vlag die dit scherm sluit gaat pas om op de laatste stap. */
   it('en sluit pas aan het eind', () => {
     const laatste = welkom.slice(welkom.indexOf('{stap === 2 && ('))
-    expect(laatste).toContain('setState({ langPicked: true })')
+    expect(laatste).toContain('klaar()')
+
+    /*
+     * De vlag gaat sinds de teller `welkom_af` op precies één plek om, in
+     * `klaar()`. Dat is strenger dan wat hier eerst stond: toen mocht
+     * `setState({ langPicked: true })` op meerdere plekken staan zolang elke
+     * plek een slot had. Nu is er één plek, en die telt de doorlopen
+     * welkomst ook -- een tweede uitgang zou dus niet alleen de vlag maar ook
+     * de meting omzeilen.
+     */
+    expect(welkom.split('langPicked: true')).toHaveLength(2)
+    expect(welkom).toContain('const klaar = () => { setState({ langPicked: true }); void tel(')
 
     /*
      * Vóór de laatste stap mag de vlag maar op één plek staan, en dan met een
@@ -151,9 +162,11 @@ describe('het startscherm', () => {
      * van deze test blijft heel: het scherm sluit pas aan het eind.
      */
     const ervoor = welkom.slice(0, welkom.indexOf('{stap === 2 && ('))
-    for (const plek of ervoor.split('langPicked: true').slice(0, -1)) {
+    for (const plek of ervoor.split('klaar()').slice(0, -1)) {
       const regel = plek.slice(plek.lastIndexOf('\n') + 1)
-      expect(regel, 'een vlag zonder slot vóór de laatste stap').toContain('if (opent)')
+      // De definitie zelf is geen aanroep; alleen aanroepen hebben een slot nodig.
+      if (regel.includes('const klaar =')) continue
+      expect(regel, 'een aanroep zonder slot vóór de laatste stap').toContain('if (opent)')
     }
     // En de klok is weg: geen timer die de vlag ook zonder animatie omzet. De
     // aanroep, niet het woord — het staat in de toelichting erboven, en een

@@ -8,6 +8,7 @@ import {
 } from '../engine/billing'
 import { gezinsdeling, platform, winkelVan } from '../engine/platform'
 import { useStore } from '../engine/store'
+import { tel } from '../engine/tellen'
 import { localeOf, useT } from '../i18n'
 import { sfx } from '../engine/audio'
 import { Button, Card, SectionTitle } from '../ui/kit'
@@ -123,6 +124,19 @@ export function Unlock() {
   useEffect(() => {
     if (subscribed) setPoort(null)
   }, [subscribed])
+
+  /*
+   * Tellen dat dit scherm geopend is.
+   *
+   * Lege afhankelijkheden, met opzet: dit onderdeel wordt lui geladen en komt
+   * één keer op bij elk bezoek aan /volledig. Op `[subscribed]` zou het
+   * effect hieronder -- dat na een aankoop wegnavigeert -- op het koopmoment
+   * een tweede opening schrijven.
+   *
+   * Niet voor wie al betaalt: die komt hier voor het opzeggen of het e-boek,
+   * en dat is geen paywall.
+   */
+  useEffect(() => { if (!subscribed) void tel('paywall_zien') }, [])
 
   /*
    * Na het betalen door naar het profiel.

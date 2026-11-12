@@ -1,5 +1,11 @@
 # Google Play, van account tot publicatie
 
+> **Let op zodra de trechtermeting aangaat.** Dit bestand beschrijft een app
+> die niets verzamelt, en dat is waar zolang `TELLEN` in
+> `src/engine/telbesluit.ts` op `false` staat. Gaat die regel om, dan moet wat
+> hier staat mee -- de volledige lijst van wat er dan verandert, en waarom het
+> niet achteraf kan, staat in dat bestand.
+
 Eén lijst, in de volgorde waarin de Play Console hem afdwingt. Elk blok zegt
 waar je moet zijn, wat je invult en waarom het zo moet — zodat je niet hoeft te
 gokken als een scherm er net iets anders uitziet.

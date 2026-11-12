@@ -1,8 +1,10 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useT } from '../i18n'
 import { sfx } from '../engine/audio'
 import { billingAvailable, FREE_LESSONS, planOf, TRIAL_DAYS, useBilling } from '../engine/billing'
 import { setState, useStore } from '../engine/store'
+import { tel } from '../engine/tellen'
 import { Button, Sheet } from './kit'
 import { Mascot } from './Mascot'
 
@@ -57,7 +59,23 @@ export function Aanbod() {
    * onwaar — en een knop naar een abonnement dat je er niet kunt afsluiten is
    * erger dan geen knop.
    */
-  if (!picked || gezien || unlocked || !billingAvailable()) return null
+  const magTonen = picked && !gezien && !unlocked && billingAvailable()
+
+  /*
+   * Tellen dat dit scherm te zien was.
+   *
+   * Boven de vroege `return null` hieronder, want een hook eronder breekt de
+   * hookvolgorde zodra die wacht van waar naar onwaar gaat. De voorwaarde van
+   * die wacht staat daarom hier nog een keer, in `magTonen`.
+   *
+   * Dit telt getoonde kaarten en geen mensen: `aanbodGezien` gaat pas om in
+   * `sluit`, dus wie de app hier wegklikt en opnieuw opent, telt twee keer.
+   * `aanbod_zien` kan daardoor hoger uitkomen dan het aantal installaties --
+   * zie de aantekening over de ondergrens in engine/tellen.ts.
+   */
+  useEffect(() => { if (magTonen) void tel('aanbod_zien') }, [magTonen])
+
+  if (!magTonen) return null
 
   /*
    * `onTerug` en niet `onClose` op het paneel hieronder: de terugknop van
@@ -94,7 +112,12 @@ export function Aanbod() {
           groot, alleen rustiger van kleur.
         */}
         <button
-          onClick={() => { sfx.nav(); sluit() }}
+          /*
+           * De teller hier en niet in `sluit`: dat wordt ook aangeroepen door
+           * de koopknop hierboven en door `onTerug`. Een teller daarin zou
+           * elke koper als een afhaker opschrijven.
+           */
+          onClick={() => { sfx.nav(); void tel('aanbod_later'); sluit() }}
           className="mt-2 w-full rounded-2xl border-2 border-[var(--line)] px-4 py-3 font-display font-extrabold text-[var(--ink)]"
         >
           {t.aanbod.later(FREE_LESSONS)}

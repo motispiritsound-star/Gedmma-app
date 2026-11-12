@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { magOmBeoordelingVragen, onthoudGevraagd, openBeoordeling } from '../engine/beoordeling'
 import { useStore } from '../engine/store'
+import { tel } from '../engine/tellen'
 import { sfx } from '../engine/audio'
 import { useT } from '../i18n'
 import { Button, Card } from './kit'
@@ -25,7 +26,23 @@ export function BeoordelingKaart() {
   const state = useStore((s) => s)
   const [poort, setPoort] = useState(false)
 
-  if (!magOmBeoordelingVragen(state)) return null
+  const magVragen = magOmBeoordelingVragen(state)
+
+  /*
+   * Tellen dat de vraag te zien was. Boven de vroege `return null`, anders
+   * breekt de hookvolgorde zodra die wacht omslaat.
+   *
+   * Dit telt getoonde kaarten, geen gevraagde ouders: de kaart blijft staan
+   * tot `onthoudGevraagd` loopt, dus elk bezoek aan /ouders telt opnieuw
+   * zolang de ouder niet geantwoord heeft.
+   *
+   * En niet verder dan dit. `engine/beoordeling.ts` zegt: "of iemand
+   * werkelijk iets schrijft weten we niet en kunnen we niet weten, en dat is
+   * maar goed ook." Er komt dus geen teller op de uitkomst.
+   */
+  useEffect(() => { if (magVragen) void tel('beoord_zien') }, [magVragen])
+
+  if (!magVragen) return null
 
   const naarDeWinkel = () => { sfx.tap(); openBeoordeling() }
 

@@ -379,6 +379,74 @@ async function voortgang(verzoek: Request, env: Env): Promise<Response> {
   return json({ ok: true })
 }
 
+/**
+ * De trechter, in totalen. Eén gebeurtenis erbij, en verder niets.
+ *
+ * Wat hier binnenkomt is een naam uit een vaste lijst, een dag, een taal, een
+ * platform en een versienummer. Geen gebruiker, geen toestel, geen sessie,
+ * geen ip — er wordt niets bewaard waarmee een rij aan een persoon vastzit.
+ * Zie `src/engine/tellen.ts` voor de hele afweging.
+ *
+ * **Dit eindpunt is open, en dat kan niet anders.** De app kan geen geheim
+ * dragen: alles met een `VITE_`-voorvoegsel staat in de bundel, en
+ * `src/site/sleutels.test.ts` houdt die lijst met opzet kort. Wie het adres
+ * vindt, kan de tellers opblazen. Daarom staat de witte lijst hieronder er:
+ * die begrenst niet hoe váák er geteld kan worden, maar wel wát — zodat een
+ * vreemde de tafel niet kan volschrijven met namen van zijn eigen makelij, en
+ * een opgeblazen teller altijd een teller is die wij zelf ook kennen.
+ *
+ * **Altijd 200, ook als er niets gebeurd is.** Twee redenen, en ze zijn
+ * dezelfde als bij `/koop`: een foutcode laat een cliënt opnieuw proberen op
+ * iets wat misschien al gelukt is, en dat is bij een teller een dubbele
+ * telling. En een eindpunt dat verschillend antwoordt op geldige en ongeldige
+ * namen, vertelt een vreemde welke namen bestaan.
+ */
+async function tel(verzoek: Request, env: Env): Promise<Response> {
+  const body = await verzoek.json().catch(() => null) as
+    { t?: string; d?: string; l?: string; p?: string; v?: string } | null
+  if (!body) return json({ ok: true })
+
+  /*
+   * De witte lijst, gelijk aan `TELLERS` en `TREDEN` in src/engine/tellen.ts.
+   * Twee plekken met dezelfde lijst is precies hoe lijsten uit elkaar gaan
+   * lopen, dus legt `server/src/tel.test.ts` ze naast elkaar.
+   */
+  const NAMEN = new Set([
+    'start', 'welkom_af', 'aanbod_zien', 'aanbod_later',
+    'gratis_op', 'paywall_zien', 'koop_start', 'deel_zien', 'beoord_zien',
+  ])
+  const TREDEN = new Set([1, 2, 3, 4, 5, 10, 20, 40, 74])
+
+  const naam = typeof body.t === 'string' ? body.t : ''
+  const trede = naam.startsWith('les_af:') ? Number(naam.slice(7)) : NaN
+  const bekend = NAMEN.has(naam) || (Number.isInteger(trede) && TREDEN.has(trede))
+  if (!bekend) return json({ ok: true })
+
+  /* De dag komt van het toestel, dus hij moet gecontroleerd worden: een klok
+     die verkeerd staat mag geen rij in 1970 of 2098 maken. Een week marge aan
+     beide kanten, want de tijdzone van de lezer schuift. */
+  const dag = typeof body.d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(body.d) ? body.d : ''
+  if (!dag) return json({ ok: true })
+  const week = 7 * 24 * 3600 * 1000
+  const stip = Date.parse(`${dag}T12:00:00Z`)
+  if (!Number.isFinite(stip) || Math.abs(stip - Date.now()) > week) return json({ ok: true })
+
+  const uit = (v: unknown, toegestaan: readonly string[]): string =>
+    typeof v === 'string' && toegestaan.includes(v) ? v : 'onbekend'
+  const taal = uit(body.l, ['nl', 'fr', 'de', 'es', 'it', 'en'])
+  const platform = uit(body.p, ['ios', 'android'])
+  /* Het versienummer is vrije tekst van buiten, dus kort en streng: cijfers en
+     punten, en anders 'onbekend'. Ongefilterd zou het in een logregel en in
+     een overzicht belanden. */
+  const versie = typeof body.v === 'string' && /^\d{1,2}(\.\d{1,2}){0,2}$/.test(body.v) ? body.v : 'onbekend'
+
+  await env.DB.prepare(
+    `INSERT INTO teller (naam, dag, taal, platform, versie, aantal) VALUES (?, ?, ?, ?, ?, 1)
+     ON CONFLICT (naam, dag, taal, platform, versie) DO UPDATE SET aantal = aantal + 1`,
+  ).bind(naam, dag, taal, platform, versie).run()
+  return json({ ok: true })
+}
+
 /* ------------------------------------------------------------ the weekly run */
 
 /**
@@ -1084,6 +1152,7 @@ export default {
     try {
       if (url.pathname === '/aanmelden' && verzoek.method === 'POST') return metAdres(await aanmelden(verzoek, env))
       if (url.pathname === '/voortgang' && verzoek.method === 'POST') return metAdres(await voortgang(verzoek, env))
+      if (url.pathname === '/tel' && verzoek.method === 'POST') return metAdres(await tel(verzoek, env))
       if (url.pathname === '/bevestig') return metAdres(await bevestig(url, env, verzoek.method === 'POST'))
       // Mail clients unsubscribe with a POST, people with a click.
       if (url.pathname === '/uitschrijven') return metAdres(await uitschrijven(url, env, verzoek.method === 'POST'))

@@ -1,5 +1,11 @@
 # Apple, richtlijn 1.3 — de vier vragen
 
+> **Let op zodra de trechtermeting aangaat.** Dit bestand beschrijft een app
+> die niets verzamelt, en dat is waar zolang `TELLEN` in
+> `src/engine/telbesluit.ts` op `false` staat. Gaat die regel om, dan moet wat
+> hier staat mee -- de volledige lijst van wat er dan verandert, en waarom het
+> niet achteraf kan, staat in dat bestand.
+
 App Review vraagt bij de Kinderen-categorie om aanvullende informatie. Hieronder
 staat eerst wat er is nagegaan en waar dat in de code staat, en daarna de tekst
 die je in App Store Connect kunt plakken.

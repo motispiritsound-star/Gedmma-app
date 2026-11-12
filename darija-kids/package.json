@@ -110,7 +110,8 @@
     "sketch": "node scripts/make-sketch.mjs",
     "tafereel": "node scripts/make-tafereel.mjs",
     "weetje": "node scripts/make-weetje.mjs",
-    "kanaallinks": "node scripts/kanaallinks.mjs"
+    "kanaallinks": "node scripts/kanaallinks.mjs",
+    "cijfers": "node scripts/cijfers.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",

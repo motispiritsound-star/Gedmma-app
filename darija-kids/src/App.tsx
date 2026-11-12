@@ -52,6 +52,7 @@ import { listenForFirstGesture, sfx } from './engine/audio'
 import { initBilling } from './engine/billing'
 import { herstelHerinnering } from './engine/herinnering'
 import { meldVoortgang } from './engine/post'
+import { tel } from './engine/tellen'
 import { reikDiplomasUit } from './engine/diploma'
 import { localeOf, useLang, useT } from './i18n'
 import { opPauze } from './engine/pauze'
@@ -111,6 +112,15 @@ function Chrome() {
   }, [t])
   // Once a day at most, and only for a parent who asked for the weekly note.
   useEffect(() => { void meldVoortgang() }, [])
+  /*
+   * Eén telling dat de app open is gegaan, hoogstens één per dag per toestel.
+   *
+   * Lege afhankelijkheden en niet `[t]` zoals de wekker hierboven: die vuurt
+   * opnieuw bij elke taalwissel, en dat is voor een wekkertekst juist en voor
+   * een teller onzin. De dagrem zit in `tel` zelf -- een tablet gaat niet
+   * dicht, hij gaat weg en komt terug.
+   */
+  useEffect(() => { void tel('start', true) }, [])
   /*
    * De plank bijwerken bij elke start.
    *

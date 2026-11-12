@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import { wisSeintjeGratisOp } from './herinnering'
 import { FREE_LESSONS, getState, setState } from './store'
+import { tel } from './tellen'
 
 /**
  * The subscription, through the App Store and Google Play.
@@ -757,6 +758,16 @@ export async function subscribe(plan: PlanId = 'jaar'): Promise<void> {
     proefBijKoop = heeftProef(api.store.get(planOf(plan).product))
     const offer = api.store.get(planOf(plan).product)?.getOffer()
     if (!offer) throw new Error('product-onbekend')
+    /*
+     * Hier en niet bovenaan `subscribe`: pas op deze regel vragen we de winkel
+     * werkelijk om een venster. Erboven zou `product-onbekend` meetellen als
+     * een gestarte aankoop, terwijl de koper dan nooit iets te zien kreeg.
+     *
+     * Een afgebroken aankoop telt wél mee, en dat is de bedoeling: de vraag is
+     * hoeveel mensen het venster bereikten, niet hoeveel er betaalden -- dat
+     * laatste staat in de winkelconsole.
+     */
+    void tel('koop_start')
     naBestelling(await offer.order())
   } catch (e) {
     publish({ busy: false, error: e instanceof Error ? e.message : String(e) })

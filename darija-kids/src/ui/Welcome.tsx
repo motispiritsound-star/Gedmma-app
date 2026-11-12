@@ -5,6 +5,7 @@ import { sfx } from '../engine/audio'
 import { FREE_LESSONS, planOf, TRIAL_DAYS } from '../engine/billing'
 import { kanHerinneren, zetHerinnering } from '../engine/herinnering'
 import { ACCENTEN, ACCENTKLEUR, AVATARS, setSetting, setState, useStore } from '../engine/store'
+import { tel } from '../engine/tellen'
 import { Button, Progress, Sheet, Toggle } from './kit'
 import { Khatim } from './Khatim'
 import { Mascot } from './Mascot'
@@ -95,6 +96,17 @@ export function Welcome() {
 
   const verder = () => { sfx.nav(); setHeen(1); setStap((n) => n + 1) }
   const terug = () => { sfx.tap(); setHeen(-1); setStap((n) => n - 1) }
+
+  /*
+   * Het welkomstscherm sluiten, en dat één keer tellen.
+   *
+   * Eén hulpje voor twee uitgangen, en dat is de hele reden dat het bestaat:
+   * `langPicked` gaat op twee plekken om -- als de deur is opengegaan, en
+   * meteen op de "rustig"-stand, waar die animatie niet loopt. Wie er één
+   * vergeet, mist precies de toegankelijkheidsroute, dus een stille
+   * onderschatting bij juist die groep.
+   */
+  const klaar = () => { setState({ langPicked: true }); void tel('welkom_af') }
 
   /**
    * Waar een stap vandaan komt.
@@ -190,7 +202,7 @@ export function Welcome() {
           snelkoppeling hieronder hoeft alleen nog te bestaan voor de "rustig"
           -knop in de app zelf.
         */
-        onAnimationComplete={() => { if (opent) setState({ langPicked: true }) }}
+        onAnimationComplete={() => { if (opent) klaar() }}
       >
         {/*
           Een strook zellige over de bovenrand, waar de mascotte voor staat.
@@ -556,7 +568,7 @@ export function Welcome() {
                 className="flex-1"
                 sound="confirm"
                 onClick={() => {
-                  if (kalm) { setState({ langPicked: true }); return }
+                  if (kalm) { klaar(); return }
                   setOpent(true)
                 }}
               >

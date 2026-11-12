@@ -1,5 +1,11 @@
 # Lanceren
 
+> **Let op zodra de trechtermeting aangaat.** Dit bestand beschrijft een app
+> die niets verzamelt, en dat is waar zolang `TELLEN` in
+> `src/engine/telbesluit.ts` op `false` staat. Gaat die regel om, dan moet wat
+> hier staat mee -- de volledige lijst van wat er dan verandert, en waarom het
+> niet achteraf kan, staat in dat bestand.
+
 > **Kort antwoord op "wat moet er nog": [docs/STAND.md](STAND.md).**
 
 Eén lijst, van "de app is af" tot "hij staat in de winkel". Alles wat de code

@@ -1,5 +1,6 @@
 import type { Lang } from './languages'
 import { winkelnamen, type Winkelnamen } from './winkels'
+import { TELLEN } from '../engine/telbesluit'
 
 /**
  * The privacy statement, in every interface language.
@@ -20,15 +21,40 @@ export interface PrivacyText {
 /** A section as it is written below: a heading and its paragraphs. */
 type Section = [title: string, body: string[]]
 
+/*
+ * Of de app zijn trechter telt, uit `engine/telbesluit.ts`.
+ *
+ * Elke taal hieronder schrijft op drie plekken de ene of de andere tekst, en
+ * dat is precies waarom deze constante hier binnenkomt in plaats van dat
+ * iemand de verklaring met de hand bijwerkt zodra de meting aangaat. Een
+ * verklaring die met de hand moet volgen, is een verklaring die een keer niet
+ * volgt -- en bij Apple is een onjuiste privacyverklaring een afwijzingsgrond
+ * op zichzelf.
+ *
+ * Staat hij op onwaar, dan belooft de app dat er niet geteld wordt en telt hij
+ * ook niet. Dat is geen halve waarheid die op een uitrol wacht: het is wat er
+ * in deze bouw gebeurt.
+ */
+const MEET = TELLEN
+
 const SECTIONS_NL = (n: Winkelnamen): Section[] => [
   ['Wat we verzamelen', [
-    'Van het kind: niets. Darijaforkids heeft geen account, vraagt een kind nooit om een e-mailadres en stuurt niets van het oefenen naar een server.',
-    'Er is één uitzondering, en die is van de ouder: laat een ouder op het ouderscherm zelf een e-mailadres achter, dan bewaren wij dat adres. Zie “Mail aan ouders” hieronder.',
+    MEET
+      ? 'Van het kind: geen naam, geen adres, geen antwoorden. Darijaforkids heeft geen account en vraagt een kind nooit om een e-mailadres.'
+      : 'Van het kind: niets. Darijaforkids heeft geen account, vraagt een kind nooit om een e-mailadres en stuurt niets van het oefenen naar een server.',
+    MEET
+      ? 'Twee dingen verlaten het toestel wél, en ze staan allebei hieronder: het e-mailadres dat een ouder zelf achterlaat, en een paar tellers waarin niemand terug te vinden is. Zie “Mail aan ouders” en “Advertenties en meten”.'
+      : 'Er is één uitzondering, en die is van de ouder: laat een ouder op het ouderscherm zelf een e-mailadres achter, dan bewaren wij dat adres. Zie “Mail aan ouders” hieronder.',
     'Je voortgang — geleerde woorden, reeks, beloningen en instellingen — staat in de opslag van je eigen browser of app, op je eigen apparaat. Wij kunnen er niet bij.',
   ]],
-  ['Advertenties en meten', [
-    'Er zijn geen advertenties, geen trackers, geen analytics en geen cookies van derden. We tellen niet hoeveel mensen de app gebruiken.',
-  ]],
+  ['Advertenties en meten', MEET
+    ? [
+        'Er zijn geen advertenties, geen trackers, geen analytics van derden en geen cookies van derden. Er zit geen enkele meetdienst in de app.',
+        'Wel tellen we een paar stappen, op onze eigen server: dat de app is opengegaan, dat het welkomstscherm is doorlopen, hoeveel lessen er af zijn, dat het abonnementsscherm is bekeken. Bij elke telling gaat de dag mee, de taal, het soort toestel en het versienummer — en verder niets. Geen naam, geen gebruikersnummer, geen toestelnummer, geen advertentienummer, niets waarmee een telling bij een persoon of een toestel hoort. Wij zien alleen totalen en kunnen daarin niemand terugvinden, ook niet als we dat zouden willen. Het is er voor één vraag: waar houden mensen op.',
+      ]
+    : [
+        'Er zijn geen advertenties, geen trackers, geen analytics en geen cookies van derden. We tellen niet hoeveel mensen de app gebruiken.',
+      ]],
   ['Geluid', [
     'De uitspraak komt uit opnames die in de app zelf zitten: een Marokkaanse stem die alles heeft ingesproken. Ze worden op je eigen apparaat afgespeeld. Is er voor iets geen opname, dan valt de app terug op de stem die al op je apparaat staat. In beide gevallen wordt er niets opgenomen en niets verstuurd.',
     'Bij de spreekoefeningen neem je jezelf op en hoor je je eigen stem meteen terug, vlak na de stem die het goed zegt. Die opname blijft op je eigen apparaat: ze wordt nergens naartoe gestuurd, ook niet naar ons, en na de oefening wordt ze weggegooid. Er komt geen spraakherkenning aan te pas — die zat er eerder in en is eruit gehaald, omdat geen enkele herkenner Darija kent. Wil je de microfoon helemaal niet gebruiken, zet spreekoefeningen dan uit bij Instellingen; de rest van de app werkt gewoon door.',
@@ -60,13 +86,22 @@ const SECTIONS_NL = (n: Winkelnamen): Section[] => [
 
 const SECTIONS_FR = (n: Winkelnamen): Section[] => [
   ['Ce que nous collectons', [
-    'De l’enfant : rien. Darijaforkids n’a pas de compte, ne demande jamais son adresse e-mail à un enfant et n’envoie rien de ses exercices à un serveur.',
-    'Il y a une exception, et elle vient du parent : si un parent laisse lui-même une adresse sur l’écran des parents, nous conservons cette adresse. Voir « Courrier aux parents » plus bas.',
+    MEET
+      ? 'De l’enfant : ni nom, ni adresse, ni réponses. Darijaforkids n’a pas de compte et ne demande jamais son adresse e-mail à un enfant.'
+      : 'De l’enfant : rien. Darijaforkids n’a pas de compte, ne demande jamais son adresse e-mail à un enfant et n’envoie rien de ses exercices à un serveur.',
+    MEET
+      ? 'Deux choses quittent l’appareil, et toutes deux sont décrites ci-dessous : l’adresse e-mail qu’un parent laisse lui-même, et quelques compteurs où personne n’est identifiable. Voir « Courrier aux parents » et « Publicité et mesure ».'
+      : 'Il y a une exception, et elle vient du parent : si un parent laisse lui-même une adresse sur l’écran des parents, nous conservons cette adresse. Voir « Courrier aux parents » plus bas.',
     'Ta progression — mots appris, série, récompenses et réglages — reste dans le stockage de ton navigateur ou de ton application, sur ton appareil. Nous n’y avons pas accès.',
   ]],
-  ['Publicité et mesure', [
-    'Pas de publicité, pas de traceurs, pas d’analytics, pas de cookies tiers. Nous ne comptons même pas le nombre d’utilisateurs.',
-  ]],
+  ['Publicité et mesure', MEET
+    ? [
+        'Pas de publicité, pas de traceurs, pas d’analytics tiers, pas de cookies tiers. Aucun service de mesure n’est intégré à l’application.',
+        'En revanche, nous comptons quelques étapes sur notre propre serveur : que l’application a été ouverte, que l’écran d’accueil a été parcouru, combien de leçons sont terminées, que l’écran d’abonnement a été consulté. Chaque comptage transporte le jour, la langue, le type d’appareil et le numéro de version — et rien d’autre. Pas de nom, pas d’identifiant d’utilisateur, pas d’identifiant d’appareil, pas d’identifiant publicitaire, rien qui rattache un comptage à une personne ou à un appareil. Nous ne voyons que des totaux et nous n’y retrouvons personne, même si nous le voulions. Cela sert à une seule question : où les gens s’arrêtent-ils.',
+      ]
+    : [
+        'Pas de publicité, pas de traceurs, pas d’analytics, pas de cookies tiers. Nous ne comptons même pas le nombre d’utilisateurs.',
+      ]],
   ['Le son', [
     'La prononciation vient d’enregistrements contenus dans l’application elle-même : une voix marocaine qui a tout dit. Ils sont joués sur ton propre appareil. S’il n’existe pas d’enregistrement pour quelque chose, l’application se rabat sur la voix déjà installée sur ton appareil. Dans les deux cas, rien n’est enregistré ni envoyé.',
     'Dans les exercices de prononciation, tu t’enregistres et tu te réécoutes aussitôt, juste après la voix qui le dit correctement. Cet enregistrement reste sur ton appareil : il n’est envoyé nulle part, pas même chez nous, et il est supprimé après l’exercice. Aucune reconnaissance vocale n’intervient — il y en avait une, elle a été retirée, parce qu’aucun moteur ne connaît le darija. Si tu préfères ne pas utiliser le micro, désactive les exercices de prononciation dans les Réglages ; le reste de l’application continue de fonctionner.',
@@ -98,13 +133,22 @@ const SECTIONS_FR = (n: Winkelnamen): Section[] => [
 
 const SECTIONS_DE = (n: Winkelnamen): Section[] => [
   ['Was wir erheben', [
-    'Vom Kind: nichts. Darijaforkids hat kein Konto, fragt ein Kind nie nach einer E-Mail-Adresse und schickt nichts vom Üben an einen Server.',
-    'Eine Ausnahme gibt es, und sie kommt von den Eltern: hinterlässt ein Elternteil auf dem Elternbildschirm selbst eine Adresse, dann bewahren wir diese Adresse auf. Siehe „Post an Eltern“ weiter unten.',
+    MEET
+      ? 'Vom Kind: kein Name, keine Adresse, keine Antworten. Darijaforkids hat kein Konto und fragt ein Kind nie nach einer E-Mail-Adresse.'
+      : 'Vom Kind: nichts. Darijaforkids hat kein Konto, fragt ein Kind nie nach einer E-Mail-Adresse und schickt nichts vom Üben an einen Server.',
+    MEET
+      ? 'Zwei Dinge verlassen das Gerät doch, und beide stehen weiter unten: die E-Mail-Adresse, die ein Elternteil selbst hinterlässt, und ein paar Zähler, in denen niemand wiederzufinden ist. Siehe „Post an Eltern“ und „Werbung und Messung“.'
+      : 'Eine Ausnahme gibt es, und sie kommt von den Eltern: hinterlässt ein Elternteil auf dem Elternbildschirm selbst eine Adresse, dann bewahren wir diese Adresse auf. Siehe „Post an Eltern“ weiter unten.',
     'Dein Fortschritt — gelernte Wörter, Serie, Belohnungen und Einstellungen — bleibt im Speicher deines Browsers oder deiner App, auf deinem Gerät. Wir kommen nicht daran.',
   ]],
-  ['Werbung und Messung', [
-    'Keine Werbung, keine Tracker, keine Analytics, keine Cookies von Dritten. Wir zählen nicht einmal, wie viele Menschen die App benutzen.',
-  ]],
+  ['Werbung und Messung', MEET
+    ? [
+        'Keine Werbung, keine Tracker, keine Analytics von Dritten, keine Cookies von Dritten. In der App steckt kein einziger Messdienst.',
+        'Wir zählen allerdings ein paar Schritte auf unserem eigenen Server: dass die App geöffnet wurde, dass der Willkommensbildschirm durchlaufen wurde, wie viele Lektionen fertig sind, dass der Abo-Bildschirm angesehen wurde. Bei jedem Zählen gehen der Tag, die Sprache, die Geräteart und die Versionsnummer mit — und sonst nichts. Kein Name, keine Benutzernummer, keine Gerätenummer, keine Werbe-ID, nichts, was ein Zählen an eine Person oder ein Gerät bindet. Wir sehen nur Summen und finden darin niemanden wieder, auch wenn wir es wollten. Es dient einer einzigen Frage: wo hören Menschen auf.',
+      ]
+    : [
+        'Keine Werbung, keine Tracker, keine Analytics, keine Cookies von Dritten. Wir zählen nicht einmal, wie viele Menschen die App benutzen.',
+      ]],
   ['Ton', [
     'Die Aussprache kommt aus Aufnahmen, die in der App selbst stecken: eine marokkanische Stimme, die alles eingesprochen hat. Sie werden auf deinem eigenen Gerät abgespielt. Gibt es für etwas keine Aufnahme, greift die App auf die Stimme zurück, die bereits auf deinem Gerät installiert ist. In beiden Fällen wird nichts aufgenommen und nichts verschickt.',
     'Bei den Sprechübungen nimmst du dich selbst auf und hörst dich gleich danach — direkt nach der Stimme, die es richtig sagt. Diese Aufnahme bleibt auf deinem Gerät: sie wird nirgendwohin geschickt, auch nicht zu uns, und nach der Übung wird sie verworfen. Eine Spracherkennung kommt nicht vor — es gab eine, sie wurde ausgebaut, weil kein Erkenner Darija kennt. Willst du das Mikrofon gar nicht benutzen, schalte die Sprechübungen in den Einstellungen aus; der Rest der App läuft weiter.',
@@ -136,13 +180,22 @@ const SECTIONS_DE = (n: Winkelnamen): Section[] => [
 
 const SECTIONS_IT = (n: Winkelnamen): Section[] => [
   ['Che cosa raccogliamo', [
-    'Del bambino: niente. Darijaforkids non ha un account, non chiede mai a un bambino il suo indirizzo e-mail e non manda niente degli esercizi a un server.',
-    'C’è un’eccezione, e viene dal genitore: se un genitore lascia lui stesso un indirizzo nella schermata dei genitori, noi conserviamo quell’indirizzo. Vedi «Posta ai genitori» più sotto.',
+    MEET
+      ? 'Del bambino: nessun nome, nessun indirizzo, nessuna risposta. Darijaforkids non ha un account e non chiede mai a un bambino il suo indirizzo e-mail.'
+      : 'Del bambino: niente. Darijaforkids non ha un account, non chiede mai a un bambino il suo indirizzo e-mail e non manda niente degli esercizi a un server.',
+    MEET
+      ? 'Due cose lasciano comunque il dispositivo, e sono entrambe descritte qui sotto: l’indirizzo e-mail che un genitore lascia lui stesso, e alcuni contatori in cui nessuno è rintracciabile. Vedi «Posta ai genitori» e «Pubblicità e misurazioni».'
+      : 'C’è un’eccezione, e viene dal genitore: se un genitore lascia lui stesso un indirizzo nella schermata dei genitori, noi conserviamo quell’indirizzo. Vedi «Posta ai genitori» più sotto.',
     'I tuoi progressi — parole imparate, serie, premi e impostazioni — restano nella memoria del tuo browser o della tua app, sul tuo dispositivo. Noi non possiamo accedervi.',
   ]],
-  ['Pubblicità e misurazioni', [
-    'Nessuna pubblicità, nessun tracciatore, nessuna analitica, nessun cookie di terzi. Non contiamo nemmeno quante persone usano l’app.',
-  ]],
+  ['Pubblicità e misurazioni', MEET
+    ? [
+        'Nessuna pubblicità, nessun tracciatore, nessuna analitica di terzi, nessun cookie di terzi. Nell’app non c’è alcun servizio di misurazione.',
+        'Contiamo però alcuni passaggi sul nostro server: che l’app è stata aperta, che la schermata di benvenuto è stata completata, quante lezioni sono finite, che la schermata dell’abbonamento è stata vista. Ogni conteggio porta con sé il giorno, la lingua, il tipo di dispositivo e il numero di versione — e nient’altro. Nessun nome, nessun numero utente, nessun numero di dispositivo, nessun identificativo pubblicitario, niente che leghi un conteggio a una persona o a un dispositivo. Vediamo solo totali e non ci ritroviamo nessuno, nemmeno se volessimo. Serve a una sola domanda: dove si fermano le persone.',
+      ]
+    : [
+        'Nessuna pubblicità, nessun tracciatore, nessuna analitica, nessun cookie di terzi. Non contiamo nemmeno quante persone usano l’app.',
+      ]],
   ['L’audio', [
     'La pronuncia viene da registrazioni contenute nell’app stessa: una voce marocchina che ha letto tutto. Vengono riprodotte sul tuo dispositivo. Se per qualcosa non esiste una registrazione, l’app ripiega sulla voce già installata sul dispositivo. In entrambi i casi non viene registrato né inviato niente.',
     'Negli esercizi di pronuncia ti registri e ti riascolti subito, appena dopo la voce che lo dice bene. Quella registrazione resta sul tuo dispositivo: non viene mandata da nessuna parte, nemmeno a noi, e dopo l’esercizio viene buttata. Non c’è di mezzo nessun riconoscimento vocale — c’era, è stato tolto, perché nessun motore conosce il darija. Se preferisci non usare il microfono, disattiva gli esercizi di pronuncia nelle Impostazioni; il resto dell’app continua a funzionare.',
@@ -174,13 +227,22 @@ const SECTIONS_IT = (n: Winkelnamen): Section[] => [
 
 const SECTIONS_EN = (n: Winkelnamen): Section[] => [
   ['What we collect', [
-    'From the child: nothing. Darijaforkids has no account, never asks a child for an email address, and sends nothing about the practising to a server.',
-    'There is one exception, and it comes from the parent: if a parent leaves an address themselves on the parents\u2019 screen, we keep that address. See \u201cMail to parents\u201d below.',
+    MEET
+      ? 'From the child: no name, no address, no answers. Darijaforkids has no account and never asks a child for an email address.'
+      : 'From the child: nothing. Darijaforkids has no account, never asks a child for an email address, and sends nothing about the practising to a server.',
+    MEET
+      ? 'Two things do leave the device, and both are described below: the email address a parent leaves themselves, and a few counters in which nobody can be found. See “Mail to parents” and “Advertising and measurement”.'
+      : 'There is one exception, and it comes from the parent: if a parent leaves an address themselves on the parents\u2019 screen, we keep that address. See \u201cMail to parents\u201d below.',
     'Your progress — words learned, streak, rewards and settings — stays in your own browser or app storage, on your own device. We cannot reach it.',
   ]],
-  ['Advertising and measurement', [
-    'No adverts, no trackers, no analytics, no third-party cookies. We do not even count how many people use the app.',
-  ]],
+  ['Advertising and measurement', MEET
+    ? [
+        'No adverts, no trackers, no third-party analytics, no third-party cookies. There is not a single measurement service in the app.',
+        'We do count a few steps, on our own server: that the app was opened, that the welcome screen was completed, how many lessons are finished, that the subscription screen was viewed. Each count carries the day, the language, the kind of device and the version number — and nothing else. No name, no user number, no device number, no advertising identifier, nothing that ties a count to a person or a device. We see totals only, and we cannot find anyone in them, even if we wanted to. It is there for one question: where do people stop.',
+      ]
+    : [
+        'No adverts, no trackers, no analytics, no third-party cookies. We do not even count how many people use the app.',
+      ]],
   ['Sound', [
     'Pronunciation comes from recordings held inside the app itself: a Moroccan voice that read everything out. They are played on your own device. Where there is no recording for something, the app falls back on the voice already installed on your device. In neither case is anything recorded or sent.',
     'In the speaking exercises you record yourself and hear your own voice straight back, right after the voice that says it properly. That recording stays on your own device: it is not sent anywhere, not even to us, and it is thrown away after the exercise. No speech recognition is involved — there was some, it was taken out, because no recogniser knows Darija. If you would rather not use the microphone at all, switch the speaking exercises off in Settings; the rest of the app carries on.',
@@ -212,13 +274,22 @@ const SECTIONS_EN = (n: Winkelnamen): Section[] => [
 
 const SECTIONS_ES = (n: Winkelnamen): Section[] => [
   ['Qué recogemos', [
-    'Del niño: nada. Darijaforkids no tiene cuenta, nunca le pide a un niño su dirección de correo y no manda nada de los ejercicios a ningún servidor.',
-    'Hay una excepción, y viene del adulto: si un padre o una madre deja una dirección en la pantalla para adultos, guardamos esa dirección. Véase «Correo a los padres» más abajo.',
+    MEET
+      ? 'Del niño: ningún nombre, ninguna dirección, ninguna respuesta. Darijaforkids no tiene cuenta y nunca le pide a un niño su dirección de correo.'
+      : 'Del niño: nada. Darijaforkids no tiene cuenta, nunca le pide a un niño su dirección de correo y no manda nada de los ejercicios a ningún servidor.',
+    MEET
+      ? 'Dos cosas sí salen del dispositivo, y las dos se explican más abajo: la dirección de correo que un adulto deja por su cuenta, y unos contadores en los que no se puede encontrar a nadie. Véase «Correo a los padres» y «Publicidad y medición».'
+      : 'Hay una excepción, y viene del adulto: si un padre o una madre deja una dirección en la pantalla para adultos, guardamos esa dirección. Véase «Correo a los padres» más abajo.',
     'Tu progreso —palabras aprendidas, racha, recompensas y ajustes— se queda en el almacenamiento de tu navegador o de tu aplicación, en tu dispositivo. Nosotros no podemos acceder a él.',
   ]],
-  ['Publicidad y medición', [
-    'Sin publicidad, sin rastreadores, sin analítica, sin cookies de terceros. Ni siquiera contamos cuánta gente usa la aplicación.',
-  ]],
+  ['Publicidad y medición', MEET
+    ? [
+        'Sin publicidad, sin rastreadores, sin analítica de terceros, sin cookies de terceros. En la aplicación no hay ningún servicio de medición.',
+        'Sí contamos unos pasos, en nuestro propio servidor: que la aplicación se ha abierto, que se ha completado la pantalla de bienvenida, cuántas lecciones están terminadas, que se ha visto la pantalla de suscripción. Cada recuento lleva el día, el idioma, el tipo de dispositivo y el número de versión —y nada más. Ningún nombre, ningún número de usuario, ningún número de dispositivo, ningún identificador publicitario, nada que ligue un recuento a una persona o a un dispositivo. Solo vemos totales y en ellos no podemos encontrar a nadie, ni aunque quisiéramos. Está para una sola pregunta: dónde se detiene la gente.',
+      ]
+    : [
+        'Sin publicidad, sin rastreadores, sin analítica, sin cookies de terceros. Ni siquiera contamos cuánta gente usa la aplicación.',
+      ]],
   ['El sonido', [
     'La pronunciación viene de grabaciones que están dentro de la propia app: una voz marroquí que lo ha leído todo. Se reproducen en tu propio dispositivo. Si de algo no hay grabación, la app recurre a la voz que ya está instalada en el dispositivo. En ninguno de los dos casos se graba ni se envía nada.',
     'En los ejercicios de pronunciación te grabas y te vuelves a oír al momento, justo después de la voz que lo dice bien. Esa grabación se queda en tu propio dispositivo: no se envía a ninguna parte, tampoco a nosotros, y se descarta después del ejercicio. No hay ningún reconocimiento de voz de por medio — lo hubo y se quitó, porque ningún motor conoce el darija. Si prefieres no usar el micrófono, desactiva los ejercicios de pronunciación en los Ajustes; el resto de la aplicación sigue funcionando.',
