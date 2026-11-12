@@ -169,6 +169,12 @@ woorden is wat een vreemde te zien krijgt.
 
 ### Lek 4 — geen van de twee groeilussen kan vuren
 
+> **Gerepareerd op 12 november, voor de helft.** Het gratis deel ging van 4
+> naar 8 lessen (27 woorden) en de eerste mijlpaal van 25 naar 20, dus de
+> deelkaart vuurt nu voor wie niet betaalt. Het beoordelingsverzoek niet: dat
+> vraagt drie diploma's en een gratis gebruiker haalt er één. Zie
+> `docs/STAND.md`, 12 november.
+
 | Lus | Drempel | Gratis plafond | Bereikbaar? |
 | --- | --- | --- | --- |
 | WhatsApp-deelkaart | 25 woorden vast | 7 woorden | **nee** |

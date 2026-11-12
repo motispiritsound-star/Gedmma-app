@@ -758,7 +758,7 @@ export const nl = {
     herinneringBody: 'Vijf minuten Darija houdt je reeks in leven.',
     /* De tekst van het eenmalige seintje uit herinnering.ts. Hij zegt wat er
        gebeurd is en verkoopt niets -- zie de uitleg daar. */
-    seintjeTitel: 'De vier gratis lessen zijn gedaan',
+    seintjeTitel: 'De gratis lessen zijn gedaan',
     seintjeBody: 'Wat erna komt staat klaar in de app.',
     film: 'Filmpje na de les',
     filmHint: 'Een kort tekenfilmpje van Fnek als je een les afrondt.',
@@ -896,7 +896,7 @@ export const nl = {
       ],
       [
         'Kost het iets?',
-        `De eerste vier lessen zijn en blijven gratis: drie stukken van het Arabische alfabet en je eerste woorden Darija. Wil je de hele cursus, dan is dat een abonnement: € 59,99 per jaar (dat is € 5,00 per maand) of € 6,99 per maand, inclusief btw. De eerste 3 dagen zijn gratis: er wordt niets afgeschreven zolang je binnen die 3 dagen opzegt. ${n.welke === 'ios' ? 'Eén abonnement geldt voor het hele gezin: tot zes personen, ieder met zijn eigen voortgang.' : n.welke === 'android' ? 'Het abonnement geldt voor het Google-account waarmee je het afsluit.' : 'Op iPhone en iPad geldt één abonnement voor het hele gezin: tot zes personen, ieder met zijn eigen voortgang. Op Android geldt het voor het Google-account waarmee je het afsluit.'} Je sluit het af in de app via ${n.via} en je zegt daar ook op, wanneer je wilt. Geen advertenties en geen account: je voortgang blijft van jou.`,
+        `De eerste acht lessen zijn en blijven gratis: drie stukken van het Arabische alfabet en je eerste woorden Darija. Wil je de hele cursus, dan is dat een abonnement: € 59,99 per jaar (dat is € 5,00 per maand) of € 6,99 per maand, inclusief btw. De eerste 3 dagen zijn gratis: er wordt niets afgeschreven zolang je binnen die 3 dagen opzegt. ${n.welke === 'ios' ? 'Eén abonnement geldt voor het hele gezin: tot zes personen, ieder met zijn eigen voortgang.' : n.welke === 'android' ? 'Het abonnement geldt voor het Google-account waarmee je het afsluit.' : 'Op iPhone en iPad geldt één abonnement voor het hele gezin: tot zes personen, ieder met zijn eigen voortgang. Op Android geldt het voor het Google-account waarmee je het afsluit.'} Je sluit het af in de app via ${n.via} en je zegt daar ook op, wanneer je wilt. Geen advertenties en geen account: je voortgang blijft van jou.`,
       ],
       [
         'Werkt het offline?',

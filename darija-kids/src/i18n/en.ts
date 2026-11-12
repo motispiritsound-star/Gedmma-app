@@ -690,7 +690,7 @@ export const en: Strings = {
     herinneringBody: 'Five minutes of Darija keeps your streak alive.',
     /* De tekst van het eenmalige seintje uit herinnering.ts. Hij zegt wat er
        gebeurd is en verkoopt niets -- zie de uitleg daar. */
-    seintjeTitel: 'The four free lessons are done',
+    seintjeTitel: 'The free lessons are done',
     seintjeBody: 'What comes next is waiting in the app.',
     film: 'Little film after a lesson',
     filmHint: 'A short cartoon with Fnek when you finish a lesson.',
@@ -828,7 +828,7 @@ export const en: Strings = {
       ],
       [
         'Does it cost anything?',
-        `The first four lessons are free and stay free: three pieces of the Arabic script and your first words of Darija. The whole course comes with a subscription: € 59.99 a year (that is € 5.00 a month) or € 6.99 a month, VAT included. The first 3 days are free: nothing is charged if you cancel within those 3 days. ${n.welke === 'ios' ? 'One subscription covers the whole family: up to six people, each with their own progress.' : n.welke === 'android' ? 'The subscription covers the Google account that takes it out.' : 'On iPhone and iPad one subscription covers the whole family: up to six people, each with their own progress. On Android it covers the Google account that takes it out.'} You subscribe inside the app through ${n.via}, and you cancel in the same place whenever you like. No adverts and no account: your progress stays yours.`,
+        `The first eight lessons are free and stay free: three pieces of the Arabic script and your first words of Darija. The whole course comes with a subscription: € 59.99 a year (that is € 5.00 a month) or € 6.99 a month, VAT included. The first 3 days are free: nothing is charged if you cancel within those 3 days. ${n.welke === 'ios' ? 'One subscription covers the whole family: up to six people, each with their own progress.' : n.welke === 'android' ? 'The subscription covers the Google account that takes it out.' : 'On iPhone and iPad one subscription covers the whole family: up to six people, each with their own progress. On Android it covers the Google account that takes it out.'} You subscribe inside the app through ${n.via}, and you cancel in the same place whenever you like. No adverts and no account: your progress stays yours.`,
       ],
       [
         'Does it work offline?',

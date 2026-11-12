@@ -61,7 +61,7 @@ ALLES KLINKT
 Elk woord en elke zin kun je horen, één tik voor normaal en twee voor langzaam. Heeft je toestel geen Arabische stem, dan zegt de app dat eerlijk en leest hij de Latijnse schrijfwijze zo goed mogelijk voor.
 
 GRATIS BEGINNEN
-De eerste vier lessen zijn en blijven gratis: drie stukken van het Arabische alfabet en je eerste woorden Darija. De hele cursus hoort bij de volledige toegang: de eerste dagen gratis, daarna € 5,00 per maand bij een jaarabonnement (€ 59,99 in één keer) of € 6,99 per maand, inclusief btw. Opzegbaar in je eigen App Store-account; zeg je op vóór het einde van de proefperiode, dan betaal je niets.
+De eerste acht lessen zijn en blijven gratis: drie stukken van het Arabische alfabet en je eerste woorden Darija. De hele cursus hoort bij de volledige toegang: de eerste dagen gratis, daarna € 5,00 per maand bij een jaarabonnement (€ 59,99 in één keer) of € 6,99 per maand, inclusief btw. Opzegbaar in je eigen App Store-account; zeg je op vóór het einde van de proefperiode, dan betaal je niets.
 
 GEMAAKT OM AAN EEN KIND TE GEVEN
 • Geen account en geen inloggen — een kind vult hier niets in

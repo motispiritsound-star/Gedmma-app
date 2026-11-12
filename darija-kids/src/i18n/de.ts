@@ -692,7 +692,7 @@ export const de: Strings = {
     herinneringBody: 'Fünf Minuten Darija halten deine Serie am Leben.',
     /* De tekst van het eenmalige seintje uit herinnering.ts. Hij zegt wat er
        gebeurd is en verkoopt niets -- zie de uitleg daar. */
-    seintjeTitel: 'Die vier kostenlosen Lektionen sind geschafft',
+    seintjeTitel: 'Die kostenlosen Lektionen sind geschafft',
     seintjeBody: 'Wie es weitergeht, steht in der App bereit.',
     film: 'Filmchen nach der Lektion',
     filmHint: 'Ein kurzer Zeichentrick mit Fnek, wenn du eine Lektion abschließt.',
@@ -830,7 +830,7 @@ export const de: Strings = {
       ],
       [
         'Kostet es etwas?',
-        `Die ersten vier Lektionen sind und bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs läuft über ein Abo: 59,99 € pro Jahr (das sind 5,00 € pro Monat) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Die ersten 3 Tage sind gratis: es wird nichts abgebucht, solange du innerhalb dieser 3 Tage kündigst. ${n.welke === 'ios' ? 'Ein Abo gilt für die ganze Familie: bis zu sechs Personen, jede mit ihrem eigenen Fortschritt.' : n.welke === 'android' ? 'Das Abo gilt für das Google-Konto, das es abschließt.' : 'Auf iPhone und iPad gilt ein Abo für die ganze Familie: bis zu sechs Personen, jede mit ihrem eigenen Fortschritt. Auf Android gilt es für das Google-Konto, das es abschließt.'} Abgeschlossen wird es in der App über ${n.via}, und dort kündigst du es auch, wann du willst. Keine Werbung und kein Konto: dein Fortschritt bleibt deiner.`,
+        `Die ersten acht Lektionen sind und bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs läuft über ein Abo: 59,99 € pro Jahr (das sind 5,00 € pro Monat) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Die ersten 3 Tage sind gratis: es wird nichts abgebucht, solange du innerhalb dieser 3 Tage kündigst. ${n.welke === 'ios' ? 'Ein Abo gilt für die ganze Familie: bis zu sechs Personen, jede mit ihrem eigenen Fortschritt.' : n.welke === 'android' ? 'Das Abo gilt für das Google-Konto, das es abschließt.' : 'Auf iPhone und iPad gilt ein Abo für die ganze Familie: bis zu sechs Personen, jede mit ihrem eigenen Fortschritt. Auf Android gilt es für das Google-Konto, das es abschließt.'} Abgeschlossen wird es in der App über ${n.via}, und dort kündigst du es auch, wann du willst. Keine Werbung und kein Konto: dein Fortschritt bleibt deiner.`,
       ],
       [
         'Funktioniert es offline?',

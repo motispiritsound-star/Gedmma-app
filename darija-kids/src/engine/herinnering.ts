@@ -4,7 +4,7 @@ import { getState } from './store'
  * De meldingen die dit toestel aan zichzelf stuurt. Er zijn er twee.
  *
  * De herinnering: één melding per dag, op een tijd die de ouder kiest. En
- * daarnaast, onderaan dit bestand, één eenmalig seintje als de vier gratis
+ * daarnaast, onderaan dit bestand, één eenmalig seintje als de gratis
  * lessen gedaan zijn.
  *
  * Apple schrijft er in richtlijn 4.2 zelf bij dat een melding op zichzelf
@@ -34,7 +34,7 @@ type Meldingen = {
  * 1 is de dagelijkse wekker. Altijd dezelfde, zodat opnieuw inplannen de oude
  * overschrijft in plaats van er een tweede naast te zetten.
  *
- * 2 is het enige eenmalige seintje dat deze app kent: dat de vier gratis
+ * 2 is het enige eenmalige seintje dat deze app kent: dat de gratis
  * lessen gedaan zijn. Het heeft een eigen nummer nodig, want anders wist het
  * zetten van de dagelijkse wekker het weg -- en omgekeerd.
  */
@@ -111,9 +111,15 @@ export async function herstelHerinnering(tekst: { titel: string; body: string })
 /* ------------------------------------------------- het gratis deel is op */
 
 /**
- * Het seintje dat de vier gratis lessen gedaan zijn.
+ * Het seintje dat de gratis lessen gedaan zijn.
  *
- * Het kind maakt de vierde les af en ziet dat op het scorescherm staan. De
+ * Geen getal in deze tekst, en dat is met opzet: hoeveel lessen er gratis
+ * zijn staat in `GRATIS_LESSEN` in store.ts en is op 12 november van vier
+ * naar acht gegaan. Een toelichting die het getal herhaalt, is een
+ * toelichting die bij de volgende wijziging stil gaat liegen.
+ *
+ * Het kind maakt de laatste gratis les af en ziet dat op het scorescherm
+ * staan. De
  * ouder, die beslist of er verder geleerd wordt, zit op dat moment meestal
  * niet mee te kijken -- en dit is de enige plek in de app waar die twee niet
  * dezelfde persoon zijn. Daarom één melding, de volgende ochtend.
@@ -164,7 +170,7 @@ export async function seintjeGratisOp(tekst: { titel: string; body: string }): P
 /**
  * Het seintje weghalen.
  *
- * Wordt er betaald tussen het afmaken van de vierde les en de volgende
+ * Wordt er betaald tussen het afmaken van de laatste gratis les en de volgende
  * ochtend, dan hoort die melding niet meer te komen: "de gratis lessen zijn
  * gedaan" tegen iemand die net een abonnement nam is op zijn best verwarrend.
  * `grant()` in billing.ts is de enige plek waar de toegang opengaat, en dus de

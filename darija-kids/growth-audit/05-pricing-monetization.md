@@ -147,6 +147,25 @@ belangrijker dan het experiment forceren.
 
 ### Strategie B — Eén complete unit gratis, in plaats van vier losse lessen
 
+> **Uitgevoerd op 12 november, en op twee punten anders dan hier staat.**
+>
+> Het gratis deel ging naar **`{ hruf: 3, groeten: 5 }`** — acht lessen, niet
+> dertien. Reden: met `hruf` er helemaal bij worden alle 28 letters gratis en
+> staat het complete alfabetscherm open, precies waar `store.ts` tegen
+> waarschuwt. Acht lessen leveren dezelfde 27 woorden en houden 13 van de 28
+> letters op slot.
+>
+> **En deze audit had het mis over de tweede groeilus.** Hieronder staat dat
+> het beoordelingsverzoek bereikbaar wordt. Dat is niet zo: dat vuurt na drie
+> diploma's en een gratis gebruiker haalt er één. Die lus blijft dicht, en dat
+> is na afweging zo gelaten — de drempel verlagen zou de vraag om een
+> beoordeling precies laten samenvallen met het moment waarop het slot
+> dichtgaat.
+>
+> De deelkaart gaat wél open. Daarvoor moest de eerste mijlpaal van 25 naar
+> 20: 25 van 27 woorden beheersen is 93%, en dan vuurt de kaart in de praktijk
+> niet. Zie `docs/STAND.md`, 12 november.
+
 **Wat:** `GRATIS_LESSEN` van `{ hruf: 3, groeten: 1 }` naar
 **`{ hruf: 8, groeten: 5 }`** — de hele alfabet-unit plus de hele
 groeten-unit. Dertien van de 74 lessen.

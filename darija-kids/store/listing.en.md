@@ -61,7 +61,7 @@ EVERYTHING SOUNDS
 Every word and sentence can be heard: one tap for normal, two for slow. If your device has no Arabic voice, the app says so honestly and reads the Latin spelling as closely as it can.
 
 FREE TO START
-The first four lessons are free and stay free: three pieces of the Arabic script and your first words of Darija. The whole course comes with full access: the first days free, then € 5.00 a month on the yearly plan (€ 59.99 charged once) or € 6.99 a month, including VAT. Cancel in your own App Store account; cancel before the trial ends and you pay nothing.
+The first eight lessons are free and stay free: three pieces of the Arabic script and your first words of Darija. The whole course comes with full access: the first days free, then € 5.00 a month on the yearly plan (€ 59.99 charged once) or € 6.99 a month, including VAT. Cancel in your own App Store account; cancel before the trial ends and you pay nothing.
 
 MADE TO HAND TO A CHILD
 • No account, no login — a child fills in nothing here

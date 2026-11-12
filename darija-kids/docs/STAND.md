@@ -114,6 +114,88 @@ tijdens de proef van drie dagen.
 Het duurt tot 24 uur voor 1.4 overal in de winkel staat. Wie 1.0 had, krijgt
 hem via de gewone app-update binnen.
 
+## 12 november: het gratis deel van vier naar acht lessen
+
+`GRATIS_LESSEN` staat op `{ hruf: 3, groeten: 5 }`. Acht lessen in plaats van
+vier, de hele groeten-unit erbij. En de eerste deelmijlpaal van 25 naar 20
+woorden.
+
+| | Was | Is |
+|---|---|---|
+| Lessen gratis | 4 van 74 | **8 van 74** |
+| Woorden | **7** | **27** |
+| Letters | 13 van 28 | 13 van 28 (ongewijzigd) |
+| Diploma's haalbaar | 0 | **1** |
+| Muur staat bij | les 5 | les 9 |
+| **Deelkaart (WhatsApp)** | **onbereikbaar** | **vuurt** |
+| Beoordelingsverzoek | onbereikbaar | nog steeds onbereikbaar |
+
+Nagelopen met een gesimuleerde gratis gebruiker die alle acht lessen doet en
+zijn 27 woorden vastzet: de deelkaart vuurt op 20 woorden, het
+beoordelingsverzoek niet.
+
+### Waarom acht en niet dertien
+
+De audit stelde `{ hruf: 8, groeten: 5 }` voor — dertien lessen, twee hele
+units. Dat is afgewogen en afgevallen op twee punten.
+
+**Alle 28 letters zouden gratis worden.** `hruf` helemaal openzetten maakt
+`letterOpSlot` permanent onwaar en zet het complete alfabetscherm open. De
+aantekening bij `GRATIS_WOORDEN` in `store.ts` waarschuwt daar woordelijk
+tegen: *"wie daarheen loopt komt bij alle 304 woorden en alle 28 letters, ook
+zonder ooit een les te doen. Dan is het pad een formaliteit."* Met acht lessen
+blijven het er 13 van de 28.
+
+**En de muur zou naar les 14 schuiven.** Apple meet dat 83% van de conversies
+tussen dag 7 en dag 35 valt (zie hieronder). Bij een product dat toch al traag
+gekocht wordt, is het gratis deel verder oprekken de verkeerde kant op.
+
+Acht lessen leveren **dezelfde 27 woorden** als dertien, want `hruf` bevat
+geen woorden — het zijn de letters. Alle winst, de helft van de kosten.
+
+### Drie fouten in mijn eigen audit, nu gerepareerd
+
+**`growth-audit/05` beweerde dat beide groeilussen opengingen.** Dat klopt
+niet. Het beoordelingsverzoek vuurt na drie diploma's
+(`DIPLOMAS_VOOR_VRAAG`) en een gratis gebruiker haalt er één. Die lus blijft
+dicht — bewust: de drempel verlagen tot wat gratis haalbaar is, zou de vraag
+om een beoordeling precies laten samenvallen met het moment waarop het slot
+dichtgaat, en dat is wat de aantekening bij die constante juist wilde
+vermijden.
+
+**De deelkaart zou ook met 27 woorden niet gevuurd hebben.** De drempel stond
+op 25, dus 93% van je woorden beheersen — en met een `bump` van 0,22 per goed
+antwoord kost elk woord ongeveer vier juiste herhalingen. Daarom nu 20: 74%,
+nog steeds verdiend, en haalbaar. Voor wie betaalt verandert er vrijwel niets.
+
+**En de trechtermeting zag de muur niet.** `TREDEN` ging van negen naar tien
+waarden met 8 erbij; zonder dat werd de belangrijkste stap van de hele
+trechter nergens geteld. `gratisop.test.ts` legt de twee nu naast elkaar.
+
+### Wat dit buiten de repo kost
+
+Ik heb dit eerder "één constante" genoemd. Dat was het niet. Bijgewerkt in de
+repo: de app-teksten in zes talen, de voorwaarden, de licentieovereenkomst,
+de zes winkelteksten, de website, het antwoord op richtlijn 4.2 en de
+controlelijst in `store/lancering/kanaal.md` — die stond zelf met het oude
+getal naar de bron te wijzen die hem weerlegde.
+
+**Wat jij moet doen, en wat niet meer te repareren valt:**
+
+| Waar | Wat |
+|---|---|
+| App Store Connect | de beschrijving in zes talen overtypen uit `store/listing.<taal>.md` |
+| App Store Connect | de licentieovereenkomst vervangen door `store/appstore-eula.md` |
+| App Store Connect | de review-schermafdrukken bij de drie aankopen opnieuw: `npm run reviewshot` |
+| Play Console | de volledige beschrijving in zes talen, zelfde bron |
+| Beide | winkelschermafbeeldingen tonen nu acht open lessen: `npm run screenshots` |
+| **De reclamefilms** | **zeggen ingesproken "de eerste vier lessen zijn gratis". Niet te repareren zonder opnieuw opnemen.** `store/lancering/reclamefilm.md` draagt nu een waarschuwing bovenaan. |
+| Socialkaarten | de kaart `4-gratis` heeft het getal in de PNG. Opnieuw genereren of niet meer gebruiken. |
+| Al geplaatst | de lanceermail en de berichten in de groepen zeggen vier. Deels te bewerken, deels niet. |
+
+Niets hiervan blokkeert de app zelf — die klopt nu. Het is de buitenkant die
+achterloopt tot je ze bijwerkt.
+
 ## 12 november: de trechtermeting is gebouwd, en staat uit
 
 De meting uit `growth-audit/08-metrics-experiments.md` is er. Negen tellers,

@@ -51,7 +51,7 @@ describe('de witte lijst', () => {
   it('kent precies de treden die de app stuurt', () => {
     const uitApp = (app.match(/export const TREDEN = \[([^\]]+)\]/)?.[1] ?? '').match(/\d+/g) ?? []
     const uitServer = (tel.match(/const TREDEN = new Set\(\[([^\]]+)\]\)/)?.[1] ?? '').match(/\d+/g) ?? []
-    expect(uitApp.length).toBe(9)
+    expect(uitApp.length).toBe(10)
     expect(uitServer).toEqual(uitApp)
   })
 

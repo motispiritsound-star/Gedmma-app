@@ -184,10 +184,14 @@ wat hij zich voorneemt.
 - **Geen datum en geen "deze week nog".** Als dit bericht de deur uit gaat,
   staat hij er. Anders gaat het niet de deur uit.
 - **Geen enkel getal dat niet nagerekend is.** 17 units, 304 woorden, 100
-  zinnen, 432 opnames, 6 talen, 4 gratis lessen, 3 dagen, 2 winkels. De eerste
-  vier staan in `docs/STAND.md`, de inhoud zelf in `src/content/`, de talen in
-  `src/i18n/languages.ts`, de vier lessen in `GRATIS_LESSEN` en de drie dagen in
-  `TRIAL_DAYS` — die laatste twee in `src/engine/`.
+  zinnen, 432 opnames, 6 talen, **8 gratis lessen**, 3 dagen, 2 winkels. De
+  eerste vier staan in `docs/STAND.md`, de inhoud zelf in `src/content/`, de
+  talen in `src/i18n/languages.ts`, de gratis lessen in `GRATIS_LESSEN` en de
+  drie dagen in `TRIAL_DAYS` — die laatste twee in `src/engine/`.
+
+  Het waren er vier tot 12 november. Deze regel stond zelf een tijd met het
+  verkeerde getal naar de bron te wijzen die hem weerlegde; schrijf het aantal
+  hier dus niet over uit het geheugen maar uit `GRATIS_LESSEN`.
 
 ## Vier dingen om na te kijken vóór je het stuurt
 

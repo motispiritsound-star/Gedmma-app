@@ -150,12 +150,22 @@ Niet meer bezoekers. **Geschikter** bezoek, dat zich vermenigvuldigt.
 
 Dit is marketing die in de code zit en nu uit staat:
 
-1. Maak de deelkaart bereikbaar voor niet-betalende gebruikers (open één hele
-   unit gratis → 25 woorden haalbaar).
-2. Maak het beoordelingsverzoek bereikbaar (één haalbaar diploma).
-3. Zet campagneparameters op elke winkellink.
+1. ~~Maak de deelkaart bereikbaar voor niet-betalende gebruikers.~~
+   **Gedaan, 12 november:** gratis deel naar acht lessen (27 woorden), eerste
+   mijlpaal van 25 naar 20. De kaart vuurt nu zonder abonnement.
+2. ~~Maak het beoordelingsverzoek bereikbaar.~~ **Niet gedaan, en bewust.**
+   Dat vuurt na drie diploma's en een gratis gebruiker haalt er één. De
+   drempel verlagen zou die vraag laten samenvallen met het moment waarop het
+   slot dichtgaat; dat is erger dan de lus dicht laten.
+3. ~~Zet campagneparameters op elke winkellink.~~ **Gedaan, 12 november:**
+   `npm run kanaallinks`. De Apple-helft wacht nog op de providercode uit de
+   console.
 
-Kosten: een paar regels. Dit zijn de drie goedkoopste dingen in dit hele
+Kosten: dit bleek geen paar regels te zijn. Het aantal gratis lessen staat
+ook in winkelteksten in zes talen bij twee winkels, in de
+licentieovereenkomst, op de review-schermafdrukken, in socialkaarten waar het
+in de PNG zit, en in de ingesproken tekst van de reclamefilms. Die laatste
+zijn niet te repareren zonder opnieuw op te nemen. Dit zijn de drie goedkoopste dingen in dit hele
 document en ze gaan allemaal over mechanismen die al gebouwd zijn.
 
 ### Prioriteit 2 — België, dan Frankrijk (P1)

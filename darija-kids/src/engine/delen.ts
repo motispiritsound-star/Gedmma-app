@@ -32,10 +32,30 @@ import { getState, setState, type State } from './store'
  * geen woord dat je kent, en een deelbericht dat dat beweert is een bericht
  * waar de ontvanger de app op afrekent.
  *
- * Vijfentwintig is de eerste, want daar is het nog een verrassing. Daarna
- * ongeveer een verdubbeling, en de laatste is alles wat er is.
+ * Twintig is de eerste, want daar is het nog een verrassing. Daarna ongeveer
+ * een verdubbeling, en de laatste is alles wat er is.
+ *
+ * ## Waarom twintig en niet vijfentwintig
+ *
+ * Vijfentwintig stond hier tot 12 november, en toen het gratis deel van vier
+ * naar acht lessen ging, bleek dat getal de hele bedoeling te ondermijnen.
+ * Een gratis gebruiker heeft 27 woorden tot zijn beschikking
+ * (`GRATIS_WOORDEN` in store.ts). Vijfentwintig daarvan op `strength >= 0.85`
+ * krijgen is 93% beheersing — en met een `bump` van 0,22 per goed antwoord
+ * (zie srs.ts) kost elk woord ongeveer vier juiste herhalingen. Dat is geen
+ * verrassing meer, dat is een eindexamen.
+ *
+ * Twintig van 27 is 74%: nog steeds verdiend, nog steeds een bericht waar een
+ * ontvanger iets aan heeft, maar haalbaar voor een kind dat een paar keer
+ * herhaalt. En het verandert voor wie betaalt vrijwel niets: die haalt twintig
+ * een paar dagen eerder dan vijfentwintig, en de mijlpalen daarna staan waar
+ * ze stonden.
+ *
+ * Dit is de reden dat de deelkaart het punt van de hele wijziging was: hij
+ * was onbereikbaar met zeven woorden, en hij zou het met zevenentwintig
+ * woorden en een drempel van vijfentwintig in de praktijk gebleven zijn.
  */
-export const MIJLPALEN = [25, 50, 100, 200, 304] as const
+export const MIJLPALEN = [20, 50, 100, 200, 304] as const
 
 /** Hoeveel woorden er echt vastzitten. */
 export const woordenVast = (s: State = getState()): number =>

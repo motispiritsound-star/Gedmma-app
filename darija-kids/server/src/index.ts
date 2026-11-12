@@ -415,7 +415,7 @@ async function tel(verzoek: Request, env: Env): Promise<Response> {
     'start', 'welkom_af', 'aanbod_zien', 'aanbod_later',
     'gratis_op', 'paywall_zien', 'koop_start', 'deel_zien', 'beoord_zien',
   ])
-  const TREDEN = new Set([1, 2, 3, 4, 5, 10, 20, 40, 74])
+  const TREDEN = new Set([1, 2, 3, 4, 5, 8, 10, 20, 40, 74])
 
   const naam = typeof body.t === 'string' ? body.t : ''
   const trede = naam.startsWith('les_af:') ? Number(naam.slice(7)) : NaN

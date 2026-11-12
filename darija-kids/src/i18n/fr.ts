@@ -692,7 +692,7 @@ export const fr: Strings = {
     herinneringBody: 'Cinq minutes de darija et ta série reste en vie.',
     /* De tekst van het eenmalige seintje uit herinnering.ts. Hij zegt wat er
        gebeurd is en verkoopt niets -- zie de uitleg daar. */
-    seintjeTitel: 'Les quatre leçons gratuites sont terminées',
+    seintjeTitel: 'Les leçons gratuites sont terminées',
     seintjeBody: 'La suite vous attend dans l’application.',
     film: 'Petit film après la leçon',
     filmHint: 'Un court dessin animé de Fnek quand tu termines une leçon.',
@@ -830,7 +830,7 @@ export const fr: Strings = {
       ],
       [
         'Est-ce que c’est payant ?',
-        `Les quatre premières leçons sont et restent gratuites : trois morceaux de l’alphabet arabe et tes premiers mots en darija. Pour le cours complet, c’est un abonnement : 59,99 € par an (soit 5,00 € par mois) ou 6,99 € par mois, TTC. Les 3 premiers jours sont gratuits : rien n’est prélevé si tu résilies dans ces 3 jours. ${n.welke === 'ios' ? 'Un seul abonnement vaut pour toute la famille : jusqu’à six personnes, chacune avec sa propre progression.' : n.welke === 'android' ? 'L’abonnement vaut pour le compte Google qui le souscrit.' : 'Sur iPhone et iPad, un seul abonnement vaut pour toute la famille : jusqu’à six personnes, chacune avec sa propre progression. Sur Android, il vaut pour le compte Google qui le souscrit.'} Tu le souscris dans l’application via ${n.via}, et tu le résilies au même endroit quand tu veux. Pas de publicité et pas de compte : ta progression reste à toi.`,
+        `Les huit premières leçons sont et restent gratuites : trois morceaux de l’alphabet arabe et tes premiers mots en darija. Pour le cours complet, c’est un abonnement : 59,99 € par an (soit 5,00 € par mois) ou 6,99 € par mois, TTC. Les 3 premiers jours sont gratuits : rien n’est prélevé si tu résilies dans ces 3 jours. ${n.welke === 'ios' ? 'Un seul abonnement vaut pour toute la famille : jusqu’à six personnes, chacune avec sa propre progression.' : n.welke === 'android' ? 'L’abonnement vaut pour le compte Google qui le souscrit.' : 'Sur iPhone et iPad, un seul abonnement vaut pour toute la famille : jusqu’à six personnes, chacune avec sa propre progression. Sur Android, il vaut pour le compte Google qui le souscrit.'} Tu le souscris dans l’application via ${n.via}, et tu le résilies au même endroit quand tu veux. Pas de publicité et pas de compte : ta progression reste à toi.`,
       ],
       [
         'Ça marche hors ligne ?',

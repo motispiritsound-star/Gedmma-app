@@ -43,7 +43,7 @@ Context that may help the review:
 - There is no account and no sign-in. A child enters nothing at all.
 - Nothing recorded with the microphone leaves the device. It is played back
   and then discarded.
-- The first four lessons are free. To see the whole course, please start the
+- The first eight lessons are free. To see the whole course, please start the
   free trial with a sandbox account, or let us know and we will arrange
   access.
 

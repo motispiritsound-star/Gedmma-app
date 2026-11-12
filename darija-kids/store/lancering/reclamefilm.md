@@ -1,5 +1,12 @@
 # De reclamefilm
 
+> **De gemaakte films zeggen "vier lessen", en dat klopt sinds 12 november
+> niet meer.** Het gratis deel is acht lessen (`GRATIS_LESSEN` in
+> `src/engine/store.ts`). De films zelf zijn niet te repareren — het getal is
+> ingesproken en zit in de montage. Wie dit script hergebruikt, past die regel
+> aan vóór het opnemen; wie een bestaande film opnieuw deelt, weet dat de
+> slotzin te laag telt.
+
 Een advertentie van veertig seconden voor ouders, gemaakt met Steve AI
 (`app.steve.ai/prompt`). Dit bestand is het script en de werkwijze.
 

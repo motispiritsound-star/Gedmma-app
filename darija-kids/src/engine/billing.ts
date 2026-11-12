@@ -200,7 +200,7 @@ function grant(): void {
   if (getState().unlocked) return
   setState({ unlocked: true, unlockedAt: Date.now(), proefGestart: proefBijKoop ? Date.now() : 0 })
   /*
-   * En de wekker voor "de vier gratis lessen zijn gedaan" eraf.
+   * En de wekker voor "de gratis lessen zijn gedaan" eraf.
    *
    * Die staat misschien voor morgenochtend gepland, en dat was waar toen hij
    * gezet werd. Nu niet meer: er is betaald, en een melding over het einde van

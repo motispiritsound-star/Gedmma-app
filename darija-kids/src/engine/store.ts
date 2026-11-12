@@ -19,20 +19,54 @@ export const MAX_HEARTS = 5
 /**
  * What is free, per unit: the first so many lessons, not whole units.
  *
- * Three pieces of the alphabet and the first lesson of greetings. That is
- * about twelve minutes: long enough to read a handful of Arabic letters and
- * to say hello, thank you and goodbye — something a child can show to someone
- * the same evening — and short enough that the question "and then?" arrives
- * while they are still enjoying it.
+ * Three pieces of the alphabet and the whole greetings unit. Eight lessons:
+ * long enough to read a handful of Arabic letters and to hold the first few
+ * exchanges — hello, thank you, goodbye, how are you — and short enough that
+ * the question "and then?" arrives while a child is still enjoying it.
  *
- * A whole unit free was too much: finishing one is weeks of work, and by then
- * nobody is trying the thing out any more. Counting in lessons instead of in
- * units also lets the free part end inside the alphabet, so what comes next is
- * visible on the path rather than hidden behind a unit that never opens.
+ * ## Waarom dit op 12 november van vier naar acht ging
+ *
+ * Het stond op `{ hruf: 3, groeten: 1 }`, en dat waren vier lessen met
+ * **zeven woorden** erin. De redenering eronder was goed — een hele unit is
+ * weken werk, en wie iets uitprobeert haakt daar eerder af dan dat hij
+ * overtuigd raakt — maar ze was doorgeschoten: zeven woorden is te weinig om
+ * iets te laten zien, en te weinig om iets te besluiten.
+ *
+ * Het sloot ook, zonder dat iemand dat bedoelde, het enige mechanisme af
+ * waarmee de app uit zichzelf groeit. De deelkaart in `engine/delen.ts` vuurt
+ * bij 25 onthouden woorden, en de kop van dat bestand noemt WhatsApp "de
+ * motor" van dit product. Met zeven beschikbare woorden was die motor
+ * onbereikbaar voor iedereen die niet betaalde. Zie
+ * `growth-audit/03-conversion-audit.md`.
+ *
+ * ## Waarom precies deze twee getallen, en niet ruimer
+ *
+ * `groeten` erbij levert 27 woorden — genoeg voor de deelkaart. `hruf` blijft
+ * met opzet op drie van zijn acht lessen staan, en dat is het hele verschil
+ * met de ruimere varianten die zijn afgewogen: zet je `hruf` ook open, dan
+ * zijn alle 28 letters gratis, wordt `letterOpSlot` hieronder permanent
+ * onwaar, en staat het complete alfabetscherm open. Dat is precies waar de
+ * aantekening bij `GRATIS_WOORDEN` tegen waarschuwt. Nu blijven het er 13 van
+ * de 28.
+ *
+ * Dat de muur hiermee van les 5 naar les 9 schuift en niet naar les 14, is
+ * de tweede reden. Apple meet dat 83% van de conversies tussen dag 7 en dag
+ * 35 valt (zie `docs/STAND.md`); het gratis deel verder oprekken duwt de
+ * vraag verder naar achteren bij een product dat toch al traag wordt gekocht.
+ *
+ * ## Wat dit níét oplost
+ *
+ * Het beoordelingsverzoek blijft achter de betaalmuur. Dat vuurt na drie
+ * diploma's (`DIPLOMAS_VOOR_VRAAG` in `engine/beoordeling.ts`) en een gratis
+ * gebruiker haalt er één: `groeten` is af, `hruf` niet. Dat is een bewuste
+ * keuze en geen vergetelheid — de drempel verlagen tot wat gratis haalbaar is,
+ * zou de vraag om een beoordeling precies laten samenvallen met het moment
+ * waarop het slot dichtgaat, en dat is wat de aantekening bij die constante
+ * juist wilde vermijden.
  *
  * Everything past this is the subscription, with three free days first.
  */
-export const GRATIS_LESSEN: Record<string, number> = { hruf: 3, groeten: 1 }
+export const GRATIS_LESSEN: Record<string, number> = { hruf: 3, groeten: 5 }
 
 /** How many lessons that is altogether — the number the app quotes. */
 export const FREE_LESSONS = Object.values(GRATIS_LESSEN).reduce((a, b) => a + b, 0)
@@ -306,7 +340,7 @@ export interface State {
    */
   mijlpaalGedeeld: number
   /**
-   * Wanneer het seintje "de vier gratis lessen zijn gedaan" gezet is, of 0.
+   * Wanneer het seintje "de gratis lessen zijn gedaan" gezet is, of 0.
    *
    * Eén keer per installatie. `gratisDeelOp` blijft waar zodra het waar is, en
    * een gratis les mag opnieuw gespeeld worden -- zonder dit getal zou elke

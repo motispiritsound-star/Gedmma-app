@@ -61,7 +61,7 @@ TUTTO SI SENTE
 Ogni parola e ogni frase si possono ascoltare: un tocco per la velocità normale, due per quella lenta. Senza una voce araba sul dispositivo, l'app lo dice e legge la scrittura latina come meglio può.
 
 INIZIARE GRATIS
-Le prime quattro lezioni restano gratis: tre pezzi dell'alfabeto arabo e le tue prime parole in darija. Il corso intero va con l'accesso completo: i primi giorni gratis e poi 5,00 € al mese con l’abbonamento annuale (59,99 € in una volta) oppure 6,99 € al mese, IVA inclusa. Disdicibile dal tuo account App Store; se disdici prima della fine della prova, non paghi niente.
+Le prime otto lezioni restano gratis: tre pezzi dell'alfabeto arabo e le tue prime parole in darija. Il corso intero va con l'accesso completo: i primi giorni gratis e poi 5,00 € al mese con l’abbonamento annuale (59,99 € in una volta) oppure 6,99 € al mese, IVA inclusa. Disdicibile dal tuo account App Store; se disdici prima della fine della prova, non paghi niente.
 
 FATTA PER DARLA IN MANO A UN BAMBINO
 • Nessun account, nessun accesso: un bambino qui non scrive niente

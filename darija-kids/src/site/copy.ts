@@ -254,7 +254,7 @@ const nl = {
 
   downloadTitel: 'Begin vanavond nog',
   downloadBody:
-    'De eerste les duurt twee minuten. Daarna kan je kind hallo zeggen, bedanken en afscheid nemen in het Darija. De eerste vier lessen zijn gratis — geen account, geen advertenties, niets in te vullen.',
+    'De eerste les duurt twee minuten. Daarna kan je kind hallo zeggen, bedanken en afscheid nemen in het Darija. De eerste acht lessen zijn gratis — geen account, geen advertenties, niets in te vullen.',
   stickyKnop: 'Download de app',
   appStore: 'App Store',
   playStore: 'Google Play',
@@ -516,7 +516,7 @@ const fr: SiteCopy = {
 
   downloadTitel: 'Commencez ce soir',
   downloadBody:
-    "La première leçon dure deux minutes. Ensuite, votre enfant sait dire bonjour, merci et au revoir en darija. Les quatre premières leçons sont gratuites — sans compte, sans publicité, rien à remplir.",
+    "La première leçon dure deux minutes. Ensuite, votre enfant sait dire bonjour, merci et au revoir en darija. Les huit premières leçons sont gratuites — sans compte, sans publicité, rien à remplir.",
   stickyKnop: 'Télécharger l’application',
   appStore: 'App Store',
   playStore: 'Google Play',
@@ -771,7 +771,7 @@ const de: SiteCopy = {
 
   downloadTitel: 'Fangen Sie heute Abend an',
   downloadBody:
-    'Die erste Lektion dauert zwei Minuten. Danach kann Ihr Kind auf Darija hallo sagen, danke sagen und sich verabschieden. Die ersten vier Lektionen sind kostenlos — kein Konto, keine Werbung, nichts auszufüllen.',
+    'Die erste Lektion dauert zwei Minuten. Danach kann Ihr Kind auf Darija hallo sagen, danke sagen und sich verabschieden. Die ersten acht Lektionen sind kostenlos — kein Konto, keine Werbung, nichts auszufüllen.',
   stickyKnop: 'App herunterladen',
   appStore: 'App Store',
   playStore: 'Google Play',
@@ -1026,7 +1026,7 @@ const es: SiteCopy = {
 
   downloadTitel: 'Empieza esta misma noche',
   downloadBody:
-    'La primera lección dura dos minutos. Después tu hijo sabe saludar, dar las gracias y despedirse en dariya. Las cuatro primeras lecciones son gratis: sin cuenta, sin anuncios, nada que rellenar.',
+    'La primera lección dura dos minutos. Después tu hijo sabe saludar, dar las gracias y despedirse en dariya. Las ocho primeras lecciones son gratis: sin cuenta, sin anuncios, nada que rellenar.',
   stickyKnop: 'Descargar la app',
   appStore: 'App Store',
   playStore: 'Google Play',
@@ -1281,7 +1281,7 @@ const it: SiteCopy = {
 
   downloadTitel: 'Comincia stasera',
   downloadBody:
-    'La prima lezione dura due minuti. Dopo, tuo figlio sa dire ciao, grazie e arrivederci in darija. Le prime quattro lezioni sono gratis: senza account, senza pubblicità, niente da compilare.',
+    'La prima lezione dura due minuti. Dopo, tuo figlio sa dire ciao, grazie e arrivederci in darija. Le prime otto lezioni sono gratis: senza account, senza pubblicità, niente da compilare.',
   stickyKnop: 'Scarica l’app',
   appStore: 'App Store',
   playStore: 'Google Play',
@@ -1536,7 +1536,7 @@ const en: SiteCopy = {
 
   downloadTitel: 'Start tonight',
   downloadBody:
-    'The first lesson takes two minutes. After it your child can say hello, thank you and goodbye in Darija. The first four lessons are free — no account, no ads, nothing to fill in.',
+    'The first lesson takes two minutes. After it your child can say hello, thank you and goodbye in Darija. The first eight lessons are free — no account, no ads, nothing to fill in.',
   stickyKnop: 'Download the app',
   appStore: 'App Store',
   playStore: 'Google Play',

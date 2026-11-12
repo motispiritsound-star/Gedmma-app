@@ -61,7 +61,7 @@ ALLES KLINGT
 Jedes Wort und jeder Satz lässt sich anhören: einmal tippen für normal, zweimal langsam. Ohne arabische Stimme sagt die App das ehrlich und liest die lateinische Schreibweise vor.
 
 KOSTENLOS ANFANGEN
-Die ersten vier Lektionen bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs gehört zum vollen Zugang: die ersten Tage gratis, danach 5,00 € pro Monat im Jahresabo (59,99 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Kündbar im eigenen App-Store-Konto; wer vor Ende der Testphase kündigt, zahlt nichts.
+Die ersten acht Lektionen bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs gehört zum vollen Zugang: die ersten Tage gratis, danach 5,00 € pro Monat im Jahresabo (59,99 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Kündbar im eigenen App-Store-Konto; wer vor Ende der Testphase kündigt, zahlt nichts.
 
 GEMACHT, UM ES EINEM KIND ZU GEBEN
 • Kein Konto, kein Login — ein Kind trägt hier nichts ein

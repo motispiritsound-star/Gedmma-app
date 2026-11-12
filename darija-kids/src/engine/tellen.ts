@@ -101,11 +101,18 @@ export const TELLERS = [
  * oefenen. Een trede zegt alleen hoe ver iemand kwam, en dat is precies wat de
  * trechter nodig heeft.
  *
- * Grof, en met een reden: de eerste vier treden zijn het gratis deel, en daar
- * zit de vraag. Daarna is elke trede een verdubbeling, want een curve met 74
- * punten op drie downloads per dag is 74 keer niets.
+ * Grof, en met een reden: de eerste treden dekken het gratis deel, en daar
+ * zit de vraag. Daarna is elke trede ongeveer een verdubbeling, want een
+ * curve met 74 punten op drie downloads per dag is 74 keer niets.
+ *
+ * **Acht staat erin omdat daar de muur zit.** `GRATIS_LESSEN` in store.ts
+ * geeft acht gratis lessen, en de trede die daarmee samenvalt is het
+ * belangrijkste punt van de hele trechter: hoeveel mensen komen tot waar de
+ * vraag om geld staat. Verandert dat getal ooit weer, dan hoort hier de
+ * nieuwe waarde bij -- `gratisop.test.ts` legt de twee naast elkaar, zodat
+ * het niet stil mis kan gaan.
  */
-export const TREDEN = [1, 2, 3, 4, 5, 10, 20, 40, 74] as const
+export const TREDEN = [1, 2, 3, 4, 5, 8, 10, 20, 40, 74] as const
 
 export type Teller = (typeof TELLERS)[number] | `les_af:${(typeof TREDEN)[number]}`
 

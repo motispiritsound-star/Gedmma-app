@@ -61,7 +61,7 @@ TOUT SE PRONONCE
 Chaque mot et chaque phrase s'écoute : une touche pour la vitesse normale, deux pour la lente. Sans voix arabe sur l'appareil, l'application le dit et lit l'écriture latine du mieux qu'elle peut.
 
 COMMENCER GRATUITEMENT
-Les quatre premières leçons restent gratuites : trois morceaux de l'alphabet arabe et tes premiers mots en darija. Le cours complet va avec l'accès complet : les premiers jours offerts, puis 5,00 € par mois avec un abonnement annuel (59,99 € en une fois) ou 6,99 € par mois, TTC. Résiliable dans ton compte App Store ; en résiliant avant la fin de l'essai, tu ne paies rien.
+Les huit premières leçons restent gratuites : trois morceaux de l'alphabet arabe et tes premiers mots en darija. Le cours complet va avec l'accès complet : les premiers jours offerts, puis 5,00 € par mois avec un abonnement annuel (59,99 € en une fois) ou 6,99 € par mois, TTC. Résiliable dans ton compte App Store ; en résiliant avant la fin de l'essai, tu ne paies rien.
 
 FAIT POUR ÊTRE CONFIÉ À UN ENFANT
 • Pas de compte, pas de connexion — un enfant ne remplit rien ici
