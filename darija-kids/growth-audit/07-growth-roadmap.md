@@ -202,13 +202,24 @@ Focus: herhaalbare acquisitie, met leesbare uitkomst.
 | --- | --- |
 | P1 | België: dezelfde films en teksten, Nederlands én Frans, **met campagnelinks** |
 | P1 | De creator-code live, met eigen campagneparameter |
-| P2 | Frankrijk: tweede ronde groepen, per groep een eigen campagnenaam |
+| P2 | Frankrijk: tweede ronde groepen, onder de vaste campagnenaam `fb-fr` |
 | P2 | Eén deadline-bericht testen ("deze zomer naar Marokko") tegen het huidige bericht |
 | P2 | Eén mail aan bestaande aangemelde ouders over de boekenreeks — **eerst nagaan hoeveel adressen er zijn**; onder de tien is dit geen experiment |
 | P3 | Apple Search Ads op de eigen merknaam, paar euro per dag, als verzekering |
 
 Aan het eind van deze fase moet de trechter voor het eerst volledig leesbaar
 zijn voor minstens één cohort.
+
+> **Correctie, 12 november.** Hierboven stond eerst "per groep een eigen
+> campagnenaam". Dat kan niet, en de reden is hard: Apple laat een campagne
+> pas in Analytics zien zodra die eerste-downloads van **minstens vijf
+> verschillende personen** heeft opgeleverd, en Google rolt kleine waarden op
+> in een "Other"-emmer. Bij drie downloads per dag haalt geen enkele
+> afzonderlijke groep die drempel, en dan lijkt een kanaal dat wél werkt leeg.
+>
+> Daarom negen vaste kanaalnamen zonder datum erin (`src/site/links.ts`,
+> `KANALEN`), en de periode lees je op de tijdas die beide dashboards toch al
+> hebben. Groepen onderling vergelijken kan pas als het volume er is.
 
 ## Fase D — dag 31 t/m 90 (december t/m februari)
 
