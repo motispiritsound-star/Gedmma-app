@@ -45,6 +45,51 @@ Nog iets dat rechtgezet moet worden, want het verandert wat deze week nodig is: 
 
 ### 1. Campagnelinks en UTM-links, vóór het kanaalbericht de deur uit gaat
 
+> **Bijgewerkt 12 november.** Dit stuk stond hier sinds 17 oktober en is in die
+> 26 dagen niet gedaan. Sindsdien zijn er twee grootschalige
+> Facebook-campagnes uitgegaan — 3 en 12 november, samen meer dan dertig
+> groepen — en van allebei is niet meer na te gaan wat ze opleverden. Dat is
+> precies wat de alinea *Waarom dit het eerste is* hieronder voorspelde.
+>
+> De code is nu wel klaar. Eén opdracht drukt alle links af:
+>
+> ```powershell
+> if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run kanaallinks } else { "darija-kids niet gevonden onder $HOME" }
+> ```
+>
+> **De Play-links werken meteen** — die hebben niets uit een console nodig. Dus
+> de Android-helft van elk bericht is vanaf nu te taggen zonder dat je iets
+> hoeft op te zoeken.
+>
+> **De Apple-links wachten op één getal.** De providercode is de enige waarde
+> in dit hele dossier die niet te bedenken is; Apple zegt het zelf: *"You must
+> generate a campaign link in App Store Connect first to obtain your provider
+> token. You can't create one manually."* Haal hem op zoals hieronder staat en
+> zet hem met:
+>
+> ```powershell
+> if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run kanaallinks -- --pt HETGETAL } else { "darija-kids niet gevonden onder $HOME" }
+> ```
+>
+> Vervang `HETGETAL` door de cijfers die achter `pt=` staan in de link die de
+> console je geeft. Daarna werken de Apple-links overal, ook in de knoppen op
+> darijaforkids.eu, want de sitegenerator leest dezelfde constante.
+>
+> **Negen kanaalnamen staan vast** in `src/site/links.ts` (`KANALEN`), met een
+> test eromheen die ze toetst aan de regels van beide winkels:
+> `fb-nl`, `fb-fr`, `whatsapp`, `instagram`, `tiktok`, `youtube`, `creator`,
+> `mail`, `web`.
+>
+> **Geen datum in de naam.** Dat wijkt af van wat je elders leest, en de reden
+> staat in de drempels hieronder: Apple laat een campagne pas zien bij
+> eerste-downloads van minstens vijf verschillende personen, en Google rolt
+> kleine waarden op in een "Other"-emmer. Bij drie downloads per dag haalt
+> `fb-nl-w46` die drempel nooit, en dan lijkt een kanaal dat wél werkt leeg.
+> De tijdas zit al in beide dashboards. Een vaste naam heeft er een tweede
+> voordeel bij: je maakt hem één keer aan in App Store Connect, voor altijd.
+
+
+
 **Waar het zit.** Apple: App Store Connect → je app → tabblad **Analytics** → in de zijbalk onder **Acquisition** → **Campaigns** → de **+** ernaast. Google: nergens in de console — je plakt de staart zelf achter je Play-link, en het resultaat verschijnt later in **Store performance → Store analysis** bij het UTM-kanaal.
 
 **Wat je invult.** Bij Apple één veld: een campagnenaam. Die naam *is* je campagnecode. Tot 30 letters, cijfers en spaties, geen spatie vooraan of achteraan. De console bouwt er een link van in deze vorm:

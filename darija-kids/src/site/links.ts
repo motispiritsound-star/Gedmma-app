@@ -21,6 +21,17 @@ export const STORE = {
 export const APP_ID = 'app.darijaforkids.learn'
 
 /**
+ * Het Apple-nummer, uit `STORE.apple` gelezen in plaats van er nog een keer
+ * neergezet.
+ *
+ * `scripts/live.mjs` herschrijft het STORE-blok hierboven machinaal met een
+ * reguliere uitdrukking. Een tweede, met de hand getypt exemplaar van
+ * hetzelfde nummer is dus een exemplaar dat stil achterloopt zodra dat script
+ * draait.
+ */
+export const APPLE_ID = STORE.apple.match(/id(\d{8,})/)?.[1] ?? ''
+
+/**
  * The App Store address, from whatever App Store Connect hands you.
  *
  * That can be the bare Apple ID, `id6751234567`, or the long share link with
@@ -40,6 +51,101 @@ export const appleStoreUrl = (input: string): string => {
  */
 export const playStoreUrl = (id: string = APP_ID): string =>
   `https://play.google.com/store/apps/details?id=${id}`
+
+/**
+ * De providercode van App Store Connect. Leeg tot hij is opgehaald.
+ *
+ * Dit is de enige waarde in dit bestand die niet te bedenken is. Apple zegt
+ * het zelf: *"You must generate a campaign link in App Store Connect first to
+ * obtain your provider token. You can't create one manually."* Hij hoort bij
+ * het account, blijft daarna altijd hetzelfde, en staat in de link die de
+ * console je geeft zodra je onder Analytics -> Acquisition -> Campaigns één
+ * campagne aanmaakt.
+ *
+ * Zolang hij leeg is geeft `appleKanaalUrl` het gewone winkeladres terug --
+ * dezelfde afspraak als `STORE` hierboven en `SHOP` in shop.ts: leeg betekent
+ * nog niet klaar, en dan liever een link die werkt zonder meting dan een link
+ * die meet en niet werkt.
+ *
+ * Zetten gaat met `npm run kanaallinks -- --pt <de code uit de console>`;
+ * dat script schrijft hem hier en drukt daarna alle links af.
+ */
+export const PROVIDER_TOKEN = ''
+
+/**
+ * De kanalen waarvan we willen weten of ze iets opleveren.
+ *
+ * **Waarom er geen datum in de naam staat.** Apple laat een campagne pas zien
+ * zodra er eerste-downloads van minstens vijf verschillende personen zijn, en
+ * Google rolt kleine waarden op in een "Other"-emmer. Bij drie downloads per
+ * dag haalt een naam met een week of een dag erin die drempel nooit, en dan
+ * lijkt een kanaal dat wél werkt leeg. De tijdas zit al in beide dashboards;
+ * die is gratis. Dus: een vaste naam per kanaal, en de periode lees je op de
+ * as.
+ *
+ * Dat heeft een tweede voordeel dat zwaarder weegt dan het lijkt: elke
+ * Apple-campagne moet met de hand in de console worden aangemaakt en er is
+ * geen publieke API voor. Een vaste naam maak je één keer aan, voor altijd.
+ *
+ * **De tekenset** is de doorsnede van beide winkels: a-z, 0-9 en een
+ * streepje. Apple staat veel meer toe -- spaties, `&`, `%`, `#` -- maar elk
+ * van die tekens moet aan de Google-kant door een coderingslaag heen en maakt
+ * de link onleesbaar voor wie hem met het oog controleert. En Apple's regel
+ * dat een spatie niet vooraan of achteraan mag staan, wordt zo irrelevant.
+ *
+ * `source` en `medium` zijn alleen voor Google; Apple heeft één veld.
+ */
+export const KANALEN = {
+  'fb-nl': { source: 'facebook', medium: 'groep', waar: 'Nederlandstalige Facebook-groepen' },
+  'fb-fr': { source: 'facebook', medium: 'groep', waar: 'Franstalige Facebook-groepen' },
+  whatsapp: { source: 'whatsapp', medium: 'kanaal', waar: 'het WhatsApp-kanaal en familiegroepen' },
+  instagram: { source: 'instagram', medium: 'bio', waar: 'het linkveld in de Instagram-bio' },
+  tiktok: { source: 'tiktok', medium: 'bio', waar: 'het linkveld in de TikTok-bio' },
+  youtube: { source: 'youtube', medium: 'film', waar: 'onder de films op YouTube' },
+  creator: { source: 'creator', medium: 'code', waar: 'de samenwerking met de creator-code' },
+  mail: { source: 'mail', medium: 'brief', waar: 'de mail aan aangemelde ouders' },
+  web: { source: 'website', medium: 'knop', waar: 'de winkelknoppen op darijaforkids.eu zelf' },
+} as const
+
+export type Kanaal = keyof typeof KANALEN
+
+/** Wat Apple in een campagnenaam toestaat waar wij ons aan houden. */
+export const KANAAL_MAX = 30
+
+/**
+ * Het Apple-adres met de campagnecode erachter.
+ *
+ * In Apple's eigen gedocumenteerde vorm, en dat is met opzet niet de korte
+ * `/app/id<id>` die `appleStoreUrl` bouwt. Apple documenteert `ct` uitsluitend
+ * op `/app/apple-store/id<id>`; of de parameter op de korte vorm meereist
+ * staat nergens zwart op wit. `apple-store` is daarin een vaste tekst en niet
+ * de naam van onze app, dus we leveren er niets voor in: nog steeds geen
+ * landcode, nog steeds geen slug die kan verouderen.
+ *
+ * `mt=8` staat in elk voorbeeld van Apple en wordt door Apple nergens
+ * uitgelegd. Hij gaat mee omdat alle officiële voorbeelden hem hebben, niet
+ * omdat we weten wat hij doet.
+ */
+export const appleKanaalUrl = (kanaal: Kanaal, pt: string = PROVIDER_TOKEN, id: string = APPLE_ID): string => {
+  if (!pt) return STORE.apple
+  return `https://apps.apple.com/app/apple-store/id${id}?pt=${pt}&ct=${kanaal}&mt=8`
+}
+
+/**
+ * Het Play-adres met de campagnecode erachter. Heeft geen code uit een console
+ * nodig, dus deze werken vanaf vandaag.
+ *
+ * De utm-tekst gaat gecodeerd als *waarde* van `referrer`, en dat is geen
+ * opsmuk: laat je de `&` ertussen onverpakt staan, dan ziet Play losse
+ * queryparameters en breekt de verwijzing af bij de eerste. Dan krijgt de app
+ * `utm_source=google-play&utm_medium=organic` terug in plaats van wat wij
+ * erin zetten.
+ */
+export const playKanaalUrl = (kanaal: Kanaal, id: string = APP_ID): string => {
+  const { source, medium } = KANALEN[kanaal]
+  const referrer = `utm_source=${source}&utm_medium=${medium}&utm_campaign=${kanaal}`
+  return `${playStoreUrl(id)}&referrer=${encodeURIComponent(referrer)}`
+}
 
 /** The website's own address, for canonical links and the sitemap. */
 export const SITE_URL = 'https://darijaforkids.eu'

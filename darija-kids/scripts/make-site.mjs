@@ -60,7 +60,7 @@ const actieDatum = (lang) =>
 const [
   { LANGS, localeOf },
   { SITE },
-  { STORE, SITE_URL, PATHS, SOCIAL, FILM_YOUTUBE, POST_URL, reeksPad },
+  { STORE, SITE_URL, PATHS, SOCIAL, FILM_YOUTUBE, POST_URL, reeksPad, appleKanaalUrl, playKanaalUrl },
   { SHOP, WINKEL_OPEN, ACTIE_TOT },
   { DELEN },
   { REEKS: SLEUTELREEKS },
@@ -392,16 +392,34 @@ Array.prototype.forEach.call(document.querySelectorAll('.collage'), function (co
 /** Zolang geen van beide winkels een adres heeft, is de app nog niet te krijgen. */
 const LIVE = Boolean(STORE.apple || STORE.google)
 
+/*
+ * `esc(href)` en niet `href`: de campagnelink naar Play is het eerste adres op
+ * deze hele site met een `&` erin, en in een attribuut hoort dat `&amp;` te
+ * zijn. Browsers slikken de kale vorm, maar geldige HTML is het niet -- en een
+ * adres dat door een validator of een linkchecker gaat, hoort te kloppen.
+ */
 const storeButton = (label, sub, href) => href
-  ? `<a class="store" href="${href}" rel="noopener"><span><span class="small">${esc(sub)}</span><span class="big">${esc(label)}</span></span></a>`
+  ? `<a class="store" href="${esc(href)}" rel="noopener"><span><span class="small">${esc(sub)}</span><span class="big">${esc(label)}</span></span></a>`
   : `<span class="store" aria-disabled="true"><span><span class="small">${esc(sub)}</span><span class="big">${esc(label)}</span></span></span>`
 
+/*
+ * De twee knoppen dragen het kanaal `web`.
+ *
+ * Dit is de enige plek op de hele site waar iemand naar een winkel doorklikt,
+ * en de vraag die het beantwoordt is precies één vraag: stuurt deze site
+ * mensen door, of niet. Dat was tot nu toe onbekend -- de berichten in de
+ * groepen linken rechtstreeks naar de winkels, dus er loopt nauwelijks iemand
+ * langs de site, en hóeveel "nauwelijks" is wist niemand.
+ *
+ * `STORE.apple` blijft de aan/uit-vlag: is er geen adres, dan hoort er een
+ * uitgeschakelde knop te staan en geen campagnelink naar niets.
+ */
 const downloadBlock = (lang) => {
   const c = SITE[lang]
   const live = LIVE
   return `<div class="buttons">
-      ${storeButton(c.appStore, STORE.apple ? c.downloadOp : c.binnenkort, STORE.apple)}
-      ${storeButton(c.playStore, STORE.google ? c.verkrijgbaarOp : c.binnenkort, STORE.google)}
+      ${storeButton(c.appStore, STORE.apple ? c.downloadOp : c.binnenkort, STORE.apple && appleKanaalUrl('web'))}
+      ${storeButton(c.playStore, STORE.google ? c.verkrijgbaarOp : c.binnenkort, STORE.google && playKanaalUrl('web'))}
     </div>
     <p class="trust">${esc(c.trustLine)}</p>
     ${live ? '' : `<p class="soon">${esc(c.binnenkortBody)}</p>
