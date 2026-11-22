@@ -110,7 +110,19 @@ describe('het aanbod bij de eerste start', () => {
 
   it('belooft ook hier geen proef die de winkel niet geeft', () => {
     expect(aanbod).toContain('const magProef = billing.proef.jaar === true')
-    expect(aanbod).toContain('magProef ? t.aanbod.body(TRIAL_DAYS, perMaand) : t.aanbod.bodyDirect(perMaand)')
+    /*
+     * Op het gedrag en niet op de precieze regel. Deze bewering pinde de hele
+     * aanroep als één string, en viel dus om toen er aantallen en het gezin
+     * bij kwamen -- een wijziging die niets met de proefperiode te maken had.
+     * Wat bewaakt moet worden is: `magProef` kiest, en de tak zonder proef
+     * roept `bodyDirect` aan.
+     */
+    const keuze = aanbod.slice(aanbod.indexOf('{magProef'), aanbod.indexOf('}', aanbod.indexOf('bodyDirect')))
+    expect(keuze).toContain('t.aanbod.body(TRIAL_DAYS')
+    expect(keuze).toContain('t.aanbod.bodyDirect(')
+    expect(keuze.indexOf('bodyDirect')).toBeGreaterThan(keuze.indexOf('body(TRIAL_DAYS'))
+    // En `bodyDirect` krijgt TRIAL_DAYS nooit mee: dat is het hele punt.
+    expect(keuze).not.toMatch(/bodyDirect\([^)]*TRIAL_DAYS/)
   })
 
   /*

@@ -88,8 +88,20 @@ describe('de teksten van het keuzescherm', () => {
       expect(a.knop.length, taal).toBeGreaterThan(4)
       expect(a.later(4).length, taal).toBeGreaterThan(4)
       expect(a.knop, taal).not.toBe(a.later(4))
-      expect(a.body(3, '€ 5,00'), taal).toContain('3')
-      expect(a.body(3, '€ 5,00'), taal).toContain('€ 5,00')
+      const tekst = a.body(3, '€ 5,00', 432, 17, true)
+      expect(tekst, taal).toContain('3')
+      expect(tekst, taal).toContain('€ 5,00')
+      /*
+       * En de twee dingen die er sinds 22 november bij staan: de aantallen,
+       * en het gezin. Dit scherm is het eerste waarop een ouder een bedrag
+       * ziet, en het zei "alle units, alle woorden" zonder een enkel getal.
+       */
+      expect(tekst, taal).toContain('432')
+      expect(tekst, taal).toContain('17')
+      /* Op iOS geldt een abonnement voor zes personen; dat is het sterkste
+         prijsargument dat dit product heeft en het stond hier niet. */
+      expect(a.body(3, '€ 5,00', 432, 17, true).length, taal)
+        .toBeGreaterThan(a.body(3, '€ 5,00', 432, 17, false).length)
     }
   })
 

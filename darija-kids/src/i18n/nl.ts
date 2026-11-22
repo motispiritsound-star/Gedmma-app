@@ -925,11 +925,32 @@ export const nl = {
       `${dagen} dagen gratis, daarna ${prijs} per ${jaar ? 'jaar' : 'maand'}${gezin ? ' voor het hele gezin' : ''}`,
     intro: (vrij: number): string =>
       `De eerste ${vrij} lessen zijn en blijven gratis — drie stukken van het Arabische alfabet en je eerste woorden Darija. De rest van de cursus hoort bij het abonnement.`,
-    krijgt: (gezin: boolean): string[] => [
-      'Alle 17 units, van het alfabet en eten tot afdingen op de souq',
-      'Alle woorden en zinnen van de cursus, met uitspraak',
-      'Alle verhalen en hun vragen',
-      'Elke nieuwe les die we toevoegen',
+    /*
+     * Wat je krijgt, met de aantallen erbij en de Marokkaanse stem bovenaan.
+     *
+     * Dit stond hier als zes regels zonder een enkel getal, waarvan er een
+     * zei "alle woorden en zinnen van de cursus, met uitspraak". Dat laatste
+     * is wat elke app met de voorleesstem van je telefoon ook biedt -- en in
+     * ditzelfde bestand staat op `settings.stemUitleg` waarom dat juist niet
+     * hetzelfde is: die stem spreekt Modern Standaard Arabisch, geen
+     * Marokkaans.
+     *
+     * De goede lijst bestond al, twintig schermen verderop: `profile.welkomLijst`
+     * wordt met echte, uitgerekende aantallen getoond -- aan iemand die al
+     * betaald heeft en dus niet meer overtuigd hoeft te worden. En de
+     * e-boekkaart twintig regels lager op dit scherm verkoopt een product van
+     * EUR 14,99 met vier exacte getallen, terwijl het abonnement van EUR 59,99
+     * erboven het met "alle" deed.
+     *
+     * Vandaar deze vorm. Dezelfde aantallen, live geteld, op het scherm waar
+     * de beslissing valt.
+     */
+    krijgt: (gezin: boolean, units: number, woorden: number, letters: number, zinnen: number, opnames: number, films: number): string[] => [
+      `${opnames} opnames: elk woord, elke letter en elke zin ingesproken door iemand die Darija spreekt — niet door de stem van je telefoon`,
+      `Alle ${units} units, van het alfabet en eten tot afdingen op de souq`,
+      `${woorden} woorden en ${zinnen} zinnen, met het Arabische schrift erbij: ${letters} letters in hun drie vormen`,
+      `${films} korte filmpjes uit de geschiedenis van Marokko`,
+      'Alle verhalen, de spelletjes, en het herhalen dat nooit ophoudt',
       ...(gezin ? ['Voor het hele gezin: tot zes personen delen één abonnement'] : []),
       'Werkt offline, op al je apparaten met hetzelfde winkelaccount',
     ],
@@ -1105,13 +1126,27 @@ export const nl = {
    */
   aanbod: {
     titel: 'Ga voor de volledige versie',
-    body: (dagen: number, prijs: string): string =>
-      `Alle units, alle woorden en alle verhalen. De eerste ${dagen} dagen gratis, daarna vanaf ${prijs} per maand — opzeggen kan altijd.`,
+    /*
+     * Met de aantallen erbij, en het gezin waar dat waar is.
+     *
+     * Hier stond "Alle units, alle woorden en alle verhalen" -- drie keer
+     * "alle" en geen enkel getal, op het scherm dat volgens de toelichting
+     * hierboven juist bedoeld is voor wie al overtuigd binnenkomt. Wie van
+     * een bekende hoorde dat dit goed is, wil hier bevestiging zien, en
+     * 432 opnames van een Marokkaanse stem is die bevestiging.
+     *
+     * `gezin` is alleen op iOS waar (zie `gezinsdeling` in engine/platform.ts:
+     * Apple deelt abonnementen met tot zes gezinsleden, Google niet). Voor een
+     * gezin met drie kinderen verandert dat de rekensom van EUR 5,00 per maand
+     * naar EUR 1,67, en dat is precies het soort som dat een ouder zelf maakt.
+     */
+    body: (dagen: number, prijs: string, opnames: number, units: number, gezin: boolean): string =>
+      `${units} units en ${opnames} opnames, elk woord ingesproken door iemand die Darija spreekt. De eerste ${dagen} dagen gratis, daarna vanaf ${prijs} per maand${gezin ? ' voor het hele gezin' : ''} — opzeggen kan altijd.`,
     /* Voor wie van de winkel geen proefperiode meer krijgt. Op het éérste
        scherm dat een ouder ziet hoort net zo min iets gratis te staan als
        op het abonnementsscherm -- zie `heeftProef` in engine/billing.ts. */
-    bodyDirect: (prijs: string): string =>
-      `Alle units, alle woorden en alle verhalen. Vanaf ${prijs} per maand — opzeggen kan altijd.`,
+    bodyDirect: (prijs: string, opnames: number, units: number, gezin: boolean): string =>
+      `${units} units en ${opnames} opnames, elk woord ingesproken door iemand die Darija spreekt. Vanaf ${prijs} per maand${gezin ? ' voor het hele gezin' : ''} — opzeggen kan altijd.`,
     knop: 'Bekijk volledige toegang',
     later: (vrij: number): string => `Eerst de ${vrij} gratis lessen`,
   },

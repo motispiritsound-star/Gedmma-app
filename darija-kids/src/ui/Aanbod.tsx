@@ -2,7 +2,12 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useT } from '../i18n'
 import { sfx } from '../engine/audio'
+import { UNITS } from '../content/curriculum'
+import { LETTERS } from '../content/alphabet'
+import { ALL_SENTENCES } from '../content/sentences'
+import { WORDS } from '../content/words'
 import { billingAvailable, FREE_LESSONS, planOf, TRIAL_DAYS, useBilling } from '../engine/billing'
+import { gezinsdeling } from '../engine/platform'
 import { setState, useStore } from '../engine/store'
 import { tel } from '../engine/tellen'
 import { Button, Sheet } from './kit'
@@ -28,6 +33,9 @@ import { Mascot } from './Mascot'
  * nog eens bouwen zou het twee keer onderhouden zijn, en bij een kinderapp is
  * de ouderpoort nu juist het stuk dat niet mag ontbreken.
  */
+/** Zelfde telling als op /volledig: elk woord, elke letter en elke zin. */
+const OPNAMES = WORDS.length + LETTERS.length + ALL_SENTENCES.length
+
 export function Aanbod() {
   const t = useT()
   const picked = useStore((s) => s.langPicked)
@@ -53,6 +61,16 @@ export function Aanbod() {
    * hetzelfde probleem. Zie `heeftProef` in engine/billing.ts.
    */
   const magProef = billing.proef.jaar === true
+
+  /*
+   * Of een abonnement hier voor het hele gezin geldt.
+   *
+   * Alleen op iOS waar -- zie `gezinsdeling` in engine/platform.ts. Dit stond
+   * wel op /volledig en niet hier, terwijl dit het éérste scherm is waarop een
+   * ouder een bedrag ziet. Voor een gezin met drie kinderen is dat het
+   * verschil tussen EUR 5,00 en EUR 1,67 per kind per maand.
+   */
+  const gezin = gezinsdeling()
 
   /*
    * Niet op de website. Daar is niets te koop — `billingAvailable()` is dan
@@ -98,7 +116,9 @@ export function Aanbod() {
         <Mascot mood="juich" size={78} className="mx-auto" />
         <h2 id="aanbod-title" className="mt-2 font-display text-2xl font-extrabold">{t.aanbod.titel}</h2>
         <p className="mt-2 text-[var(--ink-soft)]">
-          {magProef ? t.aanbod.body(TRIAL_DAYS, perMaand) : t.aanbod.bodyDirect(perMaand)}
+          {magProef
+            ? t.aanbod.body(TRIAL_DAYS, perMaand, OPNAMES, UNITS.length, gezin)
+            : t.aanbod.bodyDirect(perMaand, OPNAMES, UNITS.length, gezin)}
         </p>
 
         <Button className="mt-5 w-full" onClick={() => { sfx.nav(); sluit(); nav('/volledig') }}>

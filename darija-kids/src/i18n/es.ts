@@ -857,13 +857,14 @@ export const es: Strings = {
       `${dagen} días gratis y después ${prijs} al ${jaar ? 'año' : 'mes'}${gezin ? ' para toda la familia' : ''}`,
     intro: (vrij) =>
       `Las ${vrij} primeras lecciones son y seguirán siendo gratis: tres partes del alfabeto árabe y tus primeras palabras en dariya. El resto del curso va con la suscripción.`,
-    krijgt: (gezin) => [
-      'Las 17 unidades, del alfabeto y la comida hasta regatear en el zoco',
-      'Todas las palabras y frases del curso, con pronunciación',
-      'Todas las historias y sus preguntas',
-      'Cada lección nueva que añadamos',
+    krijgt: (gezin, units, woorden, letters, zinnen, opnames, films) => [
+      `${opnames} grabaciones: cada palabra, cada letra y cada frase dichas por alguien que habla dariya, no por la voz de tu teléfono`,
+      `Las ${units} unidades, del alfabeto y la comida hasta regatear en el zoco`,
+      `${woorden} palabras y ${zinnen} frases, con la escritura árabe: ${letters} letras en sus tres formas`,
+      `${films} películas cortas sobre la historia de Marruecos`,
+      'Todas las historias, los juegos, y el repaso que nunca termina',
       ...(gezin ? ['Para toda la familia: hasta seis personas comparten una suscripción'] : []),
-      'Sin conexión, en todos tus dispositivos con la misma cuenta de la tienda',
+      'Funciona sin conexión, en todos tus dispositivos con la misma cuenta',
     ],
     plan: { jaar: 'Un año', maand: 'Al mes' },
     voordeligst: (pct: number): string => `${pct} % más barato`,
@@ -1015,13 +1016,13 @@ export const es: Strings = {
    */
   aanbod: {
     titel: 'Hazte con la versión completa',
-    body: (dagen: number, prijs: string): string =>
-      `Todas las unidades, todas las palabras y todos los cuentos. Los primeros ${dagen} días son gratis y después desde ${prijs} al mes; puedes cancelar cuando quieras.`,
+    body: (dagen, prijs, opnames, units, gezin) =>
+      `${units} unidades y ${opnames} grabaciones, cada palabra dicha por alguien que habla dariya. Los primeros ${dagen} días son gratis, después desde ${prijs} al mes${gezin ? ' para toda la familia' : ''} — puedes cancelar cuando quieras.`,
     /* Voor wie van de winkel geen proefperiode meer krijgt. Op het éérste
        scherm dat een ouder ziet hoort net zo min iets gratis te staan als
        op het abonnementsscherm -- zie `heeftProef` in engine/billing.ts. */
-    bodyDirect: (prijs: string): string =>
-      `Todas las unidades, todas las palabras y todas las historias. Desde ${prijs} al mes — puedes cancelar cuando quieras.`,
+    bodyDirect: (prijs, opnames, units, gezin) =>
+      `${units} unidades y ${opnames} grabaciones, cada palabra dicha por alguien que habla dariya. Desde ${prijs} al mes${gezin ? ' para toda la familia' : ''} — puedes cancelar cuando quieras.`,
     knop: 'Ver el acceso completo',
     later: (vrij: number): string => `Primero las ${vrij} lecciones gratis`,
   },

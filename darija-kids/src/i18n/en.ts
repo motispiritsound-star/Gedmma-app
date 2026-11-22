@@ -857,13 +857,14 @@ export const en: Strings = {
       `${dagen} days free, then ${prijs} a ${jaar ? 'year' : 'month'}${gezin ? ' for the whole family' : ''}`,
     intro: (vrij) =>
       `The first ${vrij} lessons are free and stay free — three pieces of the Arabic script and your first words of Darija. The rest of the course comes with the subscription.`,
-    krijgt: (gezin) => [
-      'All 17 units, from the alphabet and food to haggling at the souq',
-      'Every word and phrase in the course, with pronunciation',
-      'Every story and its questions',
-      'Every new lesson we add',
+    krijgt: (gezin, units, woorden, letters, zinnen, opnames, films) => [
+      `${opnames} recordings: every word, every letter and every sentence spoken by someone who speaks Darija — not by your phone's voice`,
+      `All ${units} units, from the alphabet and food to haggling at the souk`,
+      `${woorden} words and ${zinnen} sentences, with the Arabic script too: ${letters} letters in their three forms`,
+      `${films} short films from the history of Morocco`,
+      'All the stories, the games, and the reviewing that never ends',
       ...(gezin ? ['For the whole family: up to six people share one subscription'] : []),
-      'Offline, on all your devices with the same store account',
+      'Works offline, on all your devices with the same store account',
     ],
     plan: { jaar: 'A year', maand: 'Monthly' },
     voordeligst: (pct: number): string => `${pct}% cheaper`,
@@ -1015,13 +1016,13 @@ export const en: Strings = {
    */
   aanbod: {
     titel: 'Go for the full version',
-    body: (dagen: number, prijs: string): string =>
-      `Every unit, every word and every story. The first ${dagen} days are free, then from ${prijs} a month — cancel any time.`,
+    body: (dagen, prijs, opnames, units, gezin) =>
+      `${units} units and ${opnames} recordings, every word spoken by someone who speaks Darija. The first ${dagen} days are free, then from ${prijs} a month${gezin ? ' for the whole family' : ''} — cancel any time.`,
     /* Voor wie van de winkel geen proefperiode meer krijgt. Op het éérste
        scherm dat een ouder ziet hoort net zo min iets gratis te staan als
        op het abonnementsscherm -- zie `heeftProef` in engine/billing.ts. */
-    bodyDirect: (prijs: string): string =>
-      `All units, all words and all stories. From ${prijs} a month — cancel any time.`,
+    bodyDirect: (prijs, opnames, units, gezin) =>
+      `${units} units and ${opnames} recordings, every word spoken by someone who speaks Darija. From ${prijs} a month${gezin ? ' for the whole family' : ''} — cancel any time.`,
     knop: 'See full access',
     later: (vrij: number): string => `First the ${vrij} free lessons`,
   },

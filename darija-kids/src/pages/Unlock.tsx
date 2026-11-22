@@ -6,6 +6,11 @@ import {
   manageSubscription, PLANS, planOf, wisselCodeIn,
   restorePurchases, subscribe, TRIAL_DAYS, useBilling, YEAR_FULL_PRICE, YEAR_SAVING, type PlanId,
 } from '../engine/billing'
+import { UNITS } from '../content/curriculum'
+import { LETTERS } from '../content/alphabet'
+import { ALL_SENTENCES } from '../content/sentences'
+import { HISTORY } from '../content/history'
+import { WORDS } from '../content/words'
 import { gezinsdeling, platform, winkelVan } from '../engine/platform'
 import { useStore } from '../engine/store'
 import { tel } from '../engine/tellen'
@@ -25,6 +30,20 @@ import { useRustig } from '../ui/rustig'
  * page only asks for it, says plainly what it will cost and when, and puts a
  * question in front of it that a small child cannot answer alone.
  */
+/**
+ * Hoeveel opnames er in de app zitten, uitgerekend in plaats van opgeschreven.
+ *
+ * Elk woord uit het woordenboek, elke letter en elke zin is één bestand:
+ * `docs/ANDROID.md` telt ze in de bundel met `find ... -name '*.wav' | wc -l`
+ * en komt op 432 uit, en 304 + 28 + 100 is precies dat.
+ *
+ * Afgeleid en niet getypt, want dit getal staat straks op het scherm waar
+ * iemand besluit te betalen, en het is het enige argument dat geen enkele
+ * concurrent kan namaken: er bestáát geen Darija-stem in een spraakmachine.
+ * Een hardgecodeerde 432 zou bij de eerste nieuwe zin stil gaan liegen.
+ */
+const OPNAMES = WORDS.length + LETTERS.length + ALL_SENTENCES.length
+
 export function Unlock() {
   const t = useT()
   const billing = useBilling()
@@ -251,7 +270,7 @@ export function Unlock() {
           <Card className="p-6">
             <p className="text-[var(--ink-soft)]">{t.unlock.intro(FREE_LESSONS)}</p>
             <ul className="mt-4 space-y-2">
-              {t.unlock.krijgt(gezin).map((line) => (
+              {t.unlock.krijgt(gezin, UNITS.length, WORDS.length, LETTERS.length, ALL_SENTENCES.length, OPNAMES, HISTORY.length).map((line) => (
                 /* `min-w-0`: een tekst naast een vinkje in een flex-rij
                    krimpt anders niet onder zijn eigen minimumbreedte, en loopt
                    bij grote letters het scherm uit. */
