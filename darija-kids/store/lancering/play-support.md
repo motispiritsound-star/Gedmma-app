@@ -4,7 +4,7 @@ Twee soorten berichten, en ze gaan allebei over Play.
 
 | | |
 |---|---|
-| **Deel 1** | wat jíj aan Google vraagt als de beoordeling te lang duurt |
+| **Deel 1** | wat jíj aan Google vraagt als de beoordeling te lang duurt — nu niets in beoordeling, zie daar |
 | **Deel 2** | wat jij antwoordt aan iemand die jóu iets vraagt over een afschrijving |
 
 Deel 2 is er sinds 23 november, en dat is geen bijzaak: er zijn geen gratis
@@ -35,14 +35,17 @@ Engels, want daar wordt het in behandeld. Kort, feitelijk, geen klacht: de
 mensen die dit lezen hebben de beoordeling niet gedaan en kunnen hem niet
 versnellen — ze kunnen alleen kijken of er iets vastzit.
 
-**Kijk eerst welke inzending er op dit moment in beoordeling staat.** De vijf
-regels boven *Hello* hieronder zijn die van inzending 7, ingediend op
-3 oktober. Er loopt sindsdien een nieuwe ronde: `docs/STAND.md` zet
-versiecode 8 (1.4) in beoordeling en versiecode 7 bij wat weggegooid wordt.
-Welk nummer en welke datum er nu kloppen leest Play Console je voor onder
-*Publishing overview*; neem die over in de vijf regels en in de
-onderwerpregel voordat je verstuurt. Een statusvraag over een inzending die er
-niet meer is, kost je een ronde heen en weer.
+**Die beoordeling is voorbij, dus dit bericht gaat vandaag niet de deur uit.**
+Inzending 7 — versiecode 8 (1.4) — is goedgekeurd en op 13 oktober vrijgegeven,
+en sinds 24 oktober staat 1.5 live als versiecode 10 (`docs/STAND.md`). Er
+staat niets in beoordeling. Wat hieronder staat is dus geen openstaande vraag
+meer, maar het model voor een volgende ronde die blijft hangen.
+
+**Gebruik je het opnieuw, vervang dan eerst de vijf regels boven *Hello*.** Die
+staan nog op inzending 7, ingediend 3 oktober. Welk nummer en welke datum er dan
+kloppen leest Play Console je voor onder *Publishing overview*; neem die over in
+de vijf regels en in de onderwerpregel voordat je verstuurt. Een statusvraag
+over een inzending die er niet meer is, kost je een ronde heen en weer.
 
 ```
 Subject: Submission 7 in review since 3 October — request for status

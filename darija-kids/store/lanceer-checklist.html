@@ -270,12 +270,6 @@
     </li>
     <li data-blok="3">
       <label>
-        <input type="checkbox" data-id="3-3" data-vast="1">
-        <span class="tekst">Beide: 3 dagen gratis als <strong>Introductory Offer</strong>, alle 175 landen</span>
-      </label>
-    </li>
-    <li data-blok="3">
-      <label>
         <input type="checkbox" data-id="3-4" data-vast="1">
         <span class="tekst">Beide: <strong>Family Sharing</strong> aan</span>
       </label>
@@ -334,6 +328,18 @@
         <span class="tekst">E-boek: review-screenshot vervangen — de versie met alleen het boek erop</span>
       </label>
     </li>
+    <li data-blok="3">
+      <label>
+        <input type="checkbox" data-id="3-14">
+        <span class="tekst">Apple: de proefaanbieding uitzetten — het abonnement → <strong>View all Subscription Pricing</strong> → <strong>Introductory Offers</strong>, waar <strong>Free for the first 3 days</strong> staat voor 175 landen zonder einddatum. Zet er een einddatum op. Bij <code>app.darijaforkids.monthly</code> apart; bij <code>app.darijaforkids.yearly</code> doet de actie hieronder het in één handeling, want er geldt één introductieaanbieding per abonnement per land</span>
+      </label>
+    </li>
+    <li data-blok="3">
+      <label>
+        <input type="checkbox" data-id="3-15">
+        <span class="tekst">Apple: de actie aanzetten bij <code>app.darijaforkids.yearly</code> — <strong>Introductory Offer</strong>, type <strong>Pay Up Front</strong>, 1 jaar, <strong>€ 29,99</strong> voor het eerste jaar (€ 2,50 per maand), met een echte einddatum. Dit moet vóór het uploaden van de winkelafbeeldingen: die hebben € 29,99 in het beeld gebakken</span>
+      </label>
+    </li>
   </ul>
 
   <h2>De producten — Google Play<span class="van" id="tel-4"></span></h2>
@@ -352,12 +358,6 @@
     </li>
     <li data-blok="4">
       <label>
-        <input type="checkbox" data-id="4-2" data-vast="1">
-        <span class="tekst">Beide een aanbieding <strong>gratis proefperiode, 3 dagen</strong></span>
-      </label>
-    </li>
-    <li data-blok="4">
-      <label>
         <input type="checkbox" data-id="4-3" data-vast="1">
         <span class="tekst">Eenmalig product <code>app.darijaforkids.ebook</code>, € 14,99, <strong>Gezinsbibliotheek aan</strong></span>
       </label>
@@ -372,6 +372,30 @@
       <label>
         <input type="checkbox" data-id="4-5" data-vast="1">
         <span class="tekst"><strong>De eurolanden met de hand op hetzelfde bedrag.</strong> Google stelt per land</span>
+      </label>
+    </li>
+    <li data-blok="4">
+      <label>
+        <input type="checkbox" data-id="4-6">
+        <span class="tekst">Google: de twee proefaanbiedingen deactiveren — <code>proef-jaar</code> bij <code>app.darijaforkids.yearly</code> en <code>proef-maand</code> bij <code>app.darijaforkids.monthly</code>, elk bij het basisabonnement</span>
+      </label>
+    </li>
+    <li data-blok="4">
+      <label>
+        <input type="checkbox" data-id="4-7">
+        <span class="tekst">Google: de actie aanzetten bij <code>app.darijaforkids.yearly</code> → basisabonnement <code>jaar</code> — een nieuwe aanbieding, type <strong>Korting</strong>, één fase van 1 jaar op <strong>€ 29,99</strong> (€ 2,50 per maand), met een einddatum. Ook dit vóór de winkelafbeeldingen</span>
+      </label>
+    </li>
+    <li data-blok="4">
+      <label>
+        <input type="checkbox" data-id="4-8">
+        <span class="tekst">De actie staat in alle vijf de eurolanden — Nederland, Frankrijk, Duitsland, Spanje en Italië. De aanbodopname bestaat alleen in die vijf talen. Staat € 29,99 straks alleen in Nederland, dan belooft de Franse winkelbladzijde een prijs die de Franse winkel niet rekent — Apple 2.3.1</span>
+      </label>
+    </li>
+    <li data-blok="4">
+      <label>
+        <input type="checkbox" data-id="4-9">
+        <span class="tekst">Nagekeken op het aankoopvenster zelf, op een telefoon, in de app uit de winkel — bij beide abonnementen. De console zegt wat er ingesteld is, niet wat de koper leest</span>
       </label>
     </li>
   </ul>
@@ -460,6 +484,24 @@
       <label>
         <input type="checkbox" data-id="5-13">
         <span class="tekst">iOS: <code>npx cap add ios</code>, archiveren in Xcode, naar TestFlight — stap voor stap in <code>docs/MAC.md</code></span>
+      </label>
+    </li>
+    <li data-blok="5">
+      <label>
+        <input type="checkbox" data-id="5-14">
+        <span class="tekst">De winkelafbeeldingen opnieuw zetten en uploaden, pas nadat de actie in beide consoles staat — <code>npm run screenshots</code> en <code>npm run playpakket</code> met <code>--lang nl,fr,de,es,it,en</code>, daarna <code>npm run play</code> zonder vlag — die stuurt alle zes de talen in één keer. De plakbare regels staan kant-en-klaar in <code>docs/STAND.md</code></span>
+      </label>
+    </li>
+    <li data-blok="5">
+      <label>
+        <input type="checkbox" data-id="5-16">
+        <span class="tekst"><strong>De fotostrook op de website opnieuw zetten</strong> — <code>npm run screenshots</code>, dan <code>npm run siteassets</code>, dan <code>site-assets/</code> vastleggen en de website opnieuw uitrollen. Dit staat er los van: <code>site-assets/shots/</code> is sinds 17 oktober niet aangeraakt, dus plek twee van de startpagina draagt in nl, fr, de, es en it nog het oude aanbodscherm — <strong>3 dagen gratis</strong> en € 5,00 per maand zonder het jaarbedrag ernaast. Dat is nú onwaar, in de drie talen van de campagne, op de bladzijde waar de campagne naartoe wijst</span>
+      </label>
+    </li>
+    <li data-blok="5">
+      <label>
+        <input type="checkbox" data-id="5-15">
+        <span class="tekst">De einddatum van de actie in de agenda, met één taak erbij: de commando's hierboven opnieuw, de website mee, met de jaarprijs terug op € 59,99 (€ 5,00 per maand), en <code>pil1</code> in <code>scripts/make-screenshots.mjs</code> mee. Loopt de actie af, dan worden die plaatjes onwaar zonder dat een console het meldt</span>
       </label>
     </li>
   </ul>
@@ -554,6 +596,24 @@
       <label>
         <input type="checkbox" data-id="6-14" data-vast="1">
         <span class="tekst">Op de website staat <strong>Binnenkort beschikbaar</strong> boven de kop, in zes talen —</span>
+      </label>
+    </li>
+    <li data-blok="6">
+      <label>
+        <input type="checkbox" data-id="6-15">
+        <span class="tekst">Apple: de <strong>review notes</strong> bijwerken — zonder abonnement komt de beoordelaar nergens meer binnen: geen gratis les, geen gratis woord, geen gratis letter. De tekst staat klaar in <code>docs/LAUNCH.md</code> <span class="para">§5</span>; meet het lessenaantal daarin na tegen <code>LESSONS.length</code> in <code>src/content/curriculum.ts</code> voor je hem overneemt — dit is de tekst die App Review leest</span>
+      </label>
+    </li>
+    <li data-blok="6">
+      <label>
+        <input type="checkbox" data-id="6-16">
+        <span class="tekst">Google: het veld <strong>App access</strong> bijwerken naar <strong>Alle of een deel van mijn app is beperkt</strong>, met de instructies eronder — een leeg veld is een afwijzing om niets. De tekst staat klaar in <code>docs/PLAY.md</code> onder <strong>App-toegang</strong></span>
+      </label>
+    </li>
+    <li data-blok="6">
+      <label>
+        <input type="checkbox" data-id="6-17">
+        <span class="tekst">Google: het e-mailadres van de beoordelaar als <strong>licentietester</strong> in <strong>Play Console → Instellingen → Licentietests</strong> — een instelling van het hele account, niet van deze app. Staat het er niet bij, dan rekent zijn testaankoop echt af</span>
       </label>
     </li>
   </ul>
@@ -746,6 +806,12 @@
         <span class="tekst">Zou een beoordelaar die drie minuten heeft het bijzondere vinden? Zo nee,</span>
       </label>
     </li>
+    <li data-blok="10">
+      <label>
+        <input type="checkbox" data-id="10-11">
+        <span class="tekst"><code>[EINDDATUM]</code> overal vervangen door dezelfde datum die in de twee consoles staat — zoek erop in <code>store/lancering/</code>. Laat je hem staan, dan gaat <code>[EINDDATUM]</code> als woord de deur uit</span>
+      </label>
+    </li>
   </ul>
 
   <h2>Aanmelden<span class="van" id="tel-11"></span></h2>
@@ -829,7 +895,7 @@
 </div>
 
 <script>
-const VAST = ["0-0","0-1","0-2","0-3","0-4","0-5","1-0","1-1","1-2","1-3","1-4","2-0","2-1","2-2","2-3","2-4","2-5","2-6","2-7","2-10","2-11","2-12","2-13","3-0","3-1","3-2","3-3","3-4","3-5","3-7","3-10","3-11","3-12","3-13","4-0","4-1","4-2","4-3","4-4","4-5","5-0","5-1","5-2","5-3","5-4","5-5","5-6","5-7","5-8","5-9","5-10","5-11","5-12","6-0","6-1","6-3","6-4","6-5","6-7","6-8","6-9","6-10","6-11","6-12","6-13","6-14","7-0","7-1","8-0","8-1","8-2","8-3","8-4","8-5","8-6","9-0","9-1","9-2","9-3","9-4","9-5","10-1","10-4"]
+const VAST = ["0-0","0-1","0-2","0-3","0-4","0-5","1-0","1-1","1-2","1-3","1-4","2-0","2-1","2-2","2-3","2-4","2-5","2-6","2-7","2-10","2-11","2-12","2-13","3-0","3-1","3-2","3-4","3-5","3-7","3-10","3-11","3-12","3-13","4-0","4-1","4-3","4-4","4-5","5-0","5-1","5-2","5-3","5-4","5-5","5-6","5-7","5-8","5-9","5-10","5-11","5-12","6-0","6-1","6-3","6-4","6-5","6-7","6-8","6-9","6-10","6-11","6-12","6-13","6-14","7-0","7-1","8-0","8-1","8-2","8-3","8-4","8-5","8-6","9-0","9-1","9-2","9-3","9-4","9-5","10-1","10-4"]
 const vakjes = [...document.querySelectorAll('input[type=checkbox]')]
 let staat = {}
 try { staat = JSON.parse(localStorage.getItem('darija.lanceer') || '{}') } catch (e) { staat = {} }

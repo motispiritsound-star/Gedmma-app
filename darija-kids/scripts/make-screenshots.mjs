@@ -192,12 +192,23 @@ const SHOTS = [
  * niet in Amerika of Marokko — en een prijs die niet klopt is een reden tot
  * afkeuring. Daar staat wat overal waar is.
  *
- * `pil1` staat op de actieprijs van het jaarabonnement. De omgerekende
- * maandprijs mag daar groot staan, maar nooit zonder het bedrag dat de winkel
- * werkelijk afschrijft: Apple keurde deze app eerder af op richtlijn 3.1.2(c)
- * omdat de omrekening opvallender was dan het echte bedrag. Vandaar dat de
- * kleine regel onder `pil1` € 29,99 per jaar noemt. `pil2` is de losse
- * maandprijs en heeft niets om te vergelijken.
+ * `pil1` staat op de actieprijs van het jaarabonnement, en het bedrag dat de
+ * winkel werkelijk afschrijft staat daar **groot**. De omrekening naar een
+ * maandprijs staat eronder, klein.
+ *
+ * Die orde is geen smaak. Apple wees build 5 af op richtlijn 3.1.2(c), met
+ * zoveel woorden: *"displays the monthly calculated pricing for the
+ * subscription more clearly and conspicuously than the billed amount"*. Hier
+ * stond eerst de omrekening groot en helemaal geen jaarbedrag, en daarna de
+ * omrekening groot met het jaarbedrag eronder -- en dat tweede is dezelfde
+ * vorm als de afwijzing, alleen netter. Wat Apple eist is niet dát het bedrag
+ * er staat maar dat het het duidelijkste prijselement is, in positie én
+ * grootte. Het abonnementsscherm in de app doet het zo en
+ * `src/pages/prijsweergave.test.ts` bewaakt het daar; dit kader gaat naar
+ * dezelfde beoordelaar.
+ *
+ * `pil2` is de losse maandprijs: dat ís het afgeschreven bedrag, dus daar valt
+ * niets om te vergelijken.
  *
  * In de voetregel staat geen proefperiode, want die is er niet. Wat er staat
  * gaat over wat er na het betalen opengaat: de hele cursus in één keer.
@@ -206,7 +217,7 @@ const AANBOD = {
   nl: {
     kicker: 'De taal van thuis',
     titel: 'Eindelijk Darija leren',
-    pil1: { groot: '\u20ac 2,50 p/m', klein: '\u20ac 29,99 per jaar, nu 50% korting' },
+    pil1: { groot: '\u20ac 29,99 per jaar', klein: 'nu 50% korting \u00b7 \u20ac 2,50 per maand' },
     pil2: { groot: '\u20ac 6,99 p/m', klein: 'per maand opzegbaar' },
     voet: {
       apple: 'De hele cursus in \u00e9\u00e9n keer \u00b7 \u00e9\u00e9n abonnement voor het hele gezin',
@@ -216,7 +227,7 @@ const AANBOD = {
   fr: {
     kicker: 'La langue de la maison',
     titel: 'Enfin apprendre la darija',
-    pil1: { groot: '2,50 \u20ac/mois', klein: '29,99 \u20ac par an, remise de 50 %' },
+    pil1: { groot: '29,99 \u20ac par an', klein: 'remise de 50 % \u00b7 2,50 \u20ac par mois' },
     pil2: { groot: '6,99 \u20ac/mois', klein: 'r\u00e9siliable chaque mois' },
     voet: {
       apple: 'Tout le cours d\u2019un coup \u00b7 un abonnement pour toute la famille',
@@ -226,7 +237,7 @@ const AANBOD = {
   de: {
     kicker: 'Die Sprache von zu Hause',
     titel: 'Endlich Darija lernen',
-    pil1: { groot: '2,50 \u20ac/Monat', klein: '29,99 \u20ac pro Jahr, jetzt 50 % Rabatt' },
+    pil1: { groot: '29,99 \u20ac pro Jahr', klein: '50 % Rabatt \u00b7 2,50 \u20ac pro Monat' },
     pil2: { groot: '6,99 \u20ac/Monat', klein: 'monatlich k\u00fcndbar' },
     voet: {
       apple: 'Der ganze Kurs auf einmal \u00b7 ein Abo f\u00fcr die ganze Familie',
@@ -236,7 +247,7 @@ const AANBOD = {
   es: {
     kicker: 'La lengua de casa',
     titel: 'Por fin aprender d\u00e1rija',
-    pil1: { groot: '2,50 \u20ac/mes', klein: '29,99 \u20ac al a\u00f1o, 50 % de descuento' },
+    pil1: { groot: '29,99 \u20ac al a\u00f1o', klein: '50 % de descuento \u00b7 2,50 \u20ac al mes' },
     pil2: { groot: '6,99 \u20ac/mes', klein: 'cancelable cada mes' },
     voet: {
       apple: 'Todo el curso de una vez \u00b7 una suscripci\u00f3n para toda la familia',
@@ -246,7 +257,7 @@ const AANBOD = {
   it: {
     kicker: 'La lingua di casa',
     titel: 'Finalmente imparare la darija',
-    pil1: { groot: '2,50 \u20ac/mese', klein: '29,99 \u20ac all\u2019anno, 50 % di sconto' },
+    pil1: { groot: '29,99 \u20ac all\u2019anno', klein: '50 % di sconto \u00b7 2,50 \u20ac al mese' },
     pil2: { groot: '6,99 \u20ac/mese', klein: 'disdicibile ogni mese' },
     voet: {
       apple: 'Tutto il corso in una volta \u00b7 un abbonamento per tutta la famiglia',

@@ -207,6 +207,30 @@ er bij die taal weer op.
 
 ### 2. De tweede foto op de startpagina is het abonnementsscherm
 
+> **Achterhaald op 23 november, en dit gaat niet vanzelf goed.** Er zijn geen
+> gratis lessen meer en geen proefperiode — zie de aantekening boven `magLeren`
+> in `src/engine/store.ts`. `scripts/make-screenshots.mjs` is mee omgezet: de
+> voetregel van de aanbodopname noemt geen gratis dagen meer en `pil1` draagt
+> de actieprijs. Maar `site-assets/shots/` is na dat besluit niet opnieuw
+> gezet, dus het beeld dat hieronder beschreven staat is nog precies wat een
+> bezoeker ziet — op plek twee van de startpagina, in vijf van de zes talen, en
+> dat is de bladzijde waar de campagne naartoe wijst. Een belofte van drie
+> gratis dagen die de winkel niet meer geeft, is bij Apple richtlijn 2.3.1, en
+> die geldt woordelijk ook buiten de App Store.
+>
+> Twee dingen om te weten vóór je die strook opnieuw zet. De nieuwe
+> aanbodopname heeft € 2,50 per maand als groot bedrag met € 29,99 per jaar
+> eronder, dus daarmee komt een tijdelijke actieprijs op de website te staan —
+> en met de omrekening vóór en groter dan het bedrag dat werkelijk wordt
+> afgeschreven, wat precies de vorm is waarop deze app eerder is afgewezen
+> (Apple 3.1.2(c)). Die volgorde zit in `pil1` van
+> `scripts/make-screenshots.mjs` en niet in dit bestand; kijk hem na voordat je
+> het beeld op de campagnebladzijde zet.
+> En `site-assets/` staat in git: het beweegt niet mee als de actie afloopt.
+> Dat is dezelfde reden waarom de promofilm met opzet de staande prijs draagt
+> en niet de actie — `docs/STAND.md` onder *23 november: de films, en welke wel
+> en niet mee kunnen*.
+
 De fotostrook *Zo ziet het eruit* leest `site-assets/shots/<taal>/` en sorteert
 die met een kale `.sort()` — `scripts/make-site.mjs` regel 1940. Daardoor komt
 `10.webp` tussen `1.webp` en `2.webp` te staan.
@@ -274,6 +298,22 @@ Wie er nu op de lijst staat, staat in de tafel `lid` en wordt gemaild via
 grond; de bevestigde klik is dat wel. Zie `docs/STAND.md`, *Het ledenbestand*.
 
 ### 5. Klein: de FAQ noemt de drie dagen niet
+
+> **Achterhaald op 23 november: het werk hieronder is omgedraaid, en het is
+> gedaan.** Er zijn geen drie dagen meer om te noemen — zie de aantekening
+> boven `magLeren` in `src/engine/store.ts`. De vraag was *hoe noem je de drie
+> dagen*; ze is nu *noem ze niet*. De FAQ zegt in alle zes de talen dat de app
+> gratis te downloaden is en de cursus een abonnement, met € 59,99 per jaar
+> (dat is € 5,00 per maand) of € 6,99 per maand: het afgeschreven bedrag
+> vooraan en de omrekening erachter, want een omrekening die opvallender is dan
+> het bedrag dat werkelijk wordt afgeschreven is precies waarop deze app eerder
+> is afgewezen (Apple 3.1.2(c)). De zes winkelvermeldingen zijn mee; *de eerste
+> dagen gratis* staat in geen van de zes meer. De regelnummers hieronder zijn
+> daarmee ook verschoven.
+>
+> Eén ding uit dit punt staat nog open, en het is niet het stuk over de drie
+> dagen: het e-boek bij het jaarabonnement staat nog steeds niet in de FAQ,
+> terwijl het aanbodscherm op diezelfde bladzijde *incl. e-boek* laat zien.
 
 `src/i18n/nl.ts` regel 712 zegt *met de eerste dagen gratis*, en de vijf andere
 talen zeggen hetzelfde op regel 698. Het aanbodscherm in de app zegt het wel:

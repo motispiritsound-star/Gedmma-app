@@ -233,12 +233,22 @@ is, niet wat de koper leest.
 ### Wat er in de winkelafbeeldingen staat
 
 De aanbodopname (`AANBOD` in `scripts/make-screenshots.mjs`) heeft nu
-€ 2,50 per maand als groot bedrag, met € 29,99 per jaar eronder. Dat tweede is
-geen opmaak maar een eis: Apple heeft deze app één keer afgewezen op richtlijn
-**3.1.2(c)** omdat de omgerekende maandprijs opvallender was dan het bedrag dat
-werkelijk werd afgeschreven. Een omrekening mag, nooit zonder het echte bedrag
-ernaast. `src/pages/prijsweergave.test.ts` bewaakt dat in de app; in dit script
-is het handwerk.
+**€ 29,99 per jaar** als groot bedrag, met *nu 50% korting · € 2,50 per maand*
+eronder.
+
+Die orde is geen opmaak maar een eis, en ik had hem eerst fout. Apple heeft
+deze app één keer afgewezen op richtlijn **3.1.2(c)**, woordelijk: *"displays
+the monthly calculated pricing for the subscription more clearly and
+conspicuously than the billed amount"*. Hier stond eerst € 5,00 p/m groot en
+geen jaarbedrag; mijn eerste reparatie zette € 2,50 p/m groot met € 29,99
+eronder — het bedrag erín, maar nog steeds de omrekening als grootste getal.
+Dat is dezelfde afwijzing in een nettere jas. De eis is niet dát het bedrag er
+staat maar dat het het duidelijkste prijselement is, in positie én grootte.
+
+`src/pages/prijsweergave.test.ts` bewaakt het nu op allebei de plekken: in de
+app, en in dit script. De toets vergelijkt de twee getallen in de pil — een
+jaarbedrag is altijd groter dan datzelfde bedrag gedeeld door twaalf — dus hij
+blijft staan als de prijzen veranderen.
 
 **Twee dingen die hieraan vastzitten, en die niemand je herinnert.**
 

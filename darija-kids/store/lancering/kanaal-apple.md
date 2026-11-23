@@ -1,9 +1,20 @@
 # De lanceringsdag op het kanaal — alleen Apple
 
-`kanaal.md` is geschreven voor de dag dat 1.4 in **allebei** de winkels staat.
-Die dag is er nog niet: Apple heeft 1.4 goedgekeurd, Google beoordeelt nog —
-`docs/STAND.md`. Dit bestand is hetzelfde bericht voor de situatie die er wél
-is: App Store build 10 staat op *Ready for Distribution*, Google nog niet.
+> **Niet versturen: dit bestand is achterhaald.** Het is het bericht voor de
+> dagen dat 1.4 alleen bij Apple stond, en die situatie bestaat niet meer. Play
+> gaf versiecode 8 (1.4) vrij op 13 oktober, en sinds 24 oktober staat 1.5 in
+> allebei de winkels — App Store build 11, Play versiecode 10, allebei volledig
+> uitgerold (`docs/STAND.md`, *24 oktober: build 11 ligt bij Apple*). Datzelfde
+> bestand zegt het woordelijk: *"`kanaal-apple.md` is een noodvariant geweest
+> voor een situatie die niet meer bestaat."*
+>
+> **Het bericht dat je wél stuurt is `store/lancering/kanaal.md`.**
+>
+> Twee regels hieronder zijn onwaar zodra je ze plakt: *"hij ligt bij Google ter
+> beoordeling"* en *"Android volgt zodra Google klaar is"*. Ook *"Kijk of er 1.4
+> staat"* in de controlelijst klopt niet meer. De prijsregels zijn op
+> 23 november wél bijgewerkt, zodat dit bestand niemand op een oude prijs of op
+> een gratis les zet als het nog eens open gaat.
 
 Alles uit `kanaal.md` onder "Waarom het bericht zo is" en "Wat er niet in
 staat" geldt hier onverkort. Wat hieronder staat is alleen wat er anders is.

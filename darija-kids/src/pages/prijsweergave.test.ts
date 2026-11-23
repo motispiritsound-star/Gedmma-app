@@ -96,3 +96,65 @@ describe('de prijs die wordt afgeschreven', () => {
     expect(tekst, `${taal}: jaarVooruit ontbreekt`).toContain('jaarVooruit:')
   })
 })
+
+/**
+ * En dezelfde regel op de winkelafbeelding, want die gaat naar dezelfde
+ * beoordelaar.
+ *
+ * `AANBOD` in `scripts/make-screenshots.mjs` is de ene opname die iets
+ * verkoopt in plaats van iets toont: een kop, twee prijsblokken en een
+ * voetregel, met de prijs in het beeld gebakken. Daar is dezelfde fout twee
+ * keer gemaakt. Eerst stond er `groot: '€ 5,00 p/m'` met `klein: 'bij een
+ * jaarabonnement'` — de omrekening groot en het afgeschreven bedrag nergens.
+ * Daarna, bij het invoeren van de actie, `groot: '€ 2,50 p/m'` met
+ * `klein: '€ 29,99 per jaar'` — het jaarbedrag erbij, maar nog steeds de
+ * omrekening als grootste getal. Dat is de afwijzing in een nettere jas.
+ *
+ * De regel is niet "het bedrag moet erbij" maar "het bedrag moet het
+ * duidelijkste zijn". Die is hier in één vergelijking te vatten: wat er in
+ * `groot` staat is een jaar, wat er in `klein` staat is datzelfde jaar gedeeld
+ * door twaalf, en een jaarbedrag is altijd het grootste getal van de twee.
+ * Zo blijft de toets ook staan als de prijzen veranderen.
+ */
+describe('de prijspil op de winkelafbeelding', () => {
+  const script = bron('../../scripts/make-screenshots.mjs')
+  const blok = /const AANBOD = \{[\s\S]*?\n\}/.exec(script)?.[0]
+
+  it('heeft een AANBOD-kader om te lezen', () => {
+    expect(blok, 'AANBOD is niet te vinden in scripts/make-screenshots.mjs').toBeTruthy()
+  })
+
+  /** De eerste prijs uit een stukje tekst, als getal. */
+  const bedrag = (tekst: string): number | null => {
+    const m = /(\d+)[.,](\d{2})/.exec(tekst)
+    return m ? Number(`${m[1]}.${m[2]}`) : null
+  }
+
+  it('zet in elk kader het afgeschreven bedrag groot en de omrekening klein', () => {
+    const pillen = [...blok!.matchAll(/pil1: \{ groot: '([^']*)', klein: '([^']*)' \}/g)]
+    // Vijf eurotalen; de Engelse vermelding is de terugval voor de hele wereld
+    // en krijgt met opzet geen aanbodplaatje — zie `langs` bij de tiende opname.
+    expect(pillen.length, 'niet elk kader heeft een pil1').toBe(5)
+    for (const [heel, groot, klein] of pillen) {
+      const bovenaan = bedrag(groot)
+      const eronder = bedrag(klein)
+      expect(bovenaan, `het grote bedrag ontbreekt: ${heel}`).not.toBeNull()
+      expect(eronder, `de omrekening ontbreekt: ${heel}`).not.toBeNull()
+      expect(bovenaan!, `de omrekening staat groter dan het afgeschreven bedrag: ${heel}`)
+        .toBeGreaterThan(eronder!)
+    }
+  })
+
+  /**
+   * En de losse maandprijs blijft zichzelf. Dat `is` het afgeschreven bedrag,
+   * dus daar hoort geen tweede getal onder — een omrekening van een maand naar
+   * een maand is een getal te veel op een plaatje.
+   */
+  it('laat het maandblok met rust', () => {
+    const pillen = [...blok!.matchAll(/pil2: \{ groot: '([^']*)', klein: '([^']*)' \}/g)]
+    expect(pillen.length).toBe(5)
+    for (const [heel, , klein] of pillen) {
+      expect(bedrag(klein), `er staat een bedrag onder de maandprijs: ${heel}`).toBeNull()
+    }
+  })
+})

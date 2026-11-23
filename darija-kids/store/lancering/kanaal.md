@@ -1,9 +1,16 @@
 # De lanceringsdag op het kanaal
 
-Eén bericht voor het WhatsApp-kanaal, op de dag dat 1.4 in allebei de winkels
-staat — App Store build 10, Play versiecode 8. Te plakken zoals het staat.
-Daaronder een kortere versie voor wie het wil doorsturen, en daaronder waarom
-het bericht zo is.
+Eén bericht voor het WhatsApp-kanaal, voor de dag dat de app in allebei de
+winkels staat. Te plakken zoals het staat, op de openingsregel na — zie het
+punt daarover hieronder. Daaronder een kortere versie voor wie het wil
+doorsturen, en daaronder waarom het bericht zo is.
+
+**"Vanaf vandaag" is niet meer waar.** Play gaf 1.4 vrij op 13 oktober en sinds
+24 oktober staat 1.5 in allebei de winkels — App Store build 11, Play
+versiecode 10 (`docs/STAND.md`). Wat er op 23 november nieuw is, is niet dat de
+app er staat maar wat hij kost. Stuur je dit bericht nu, dan is de openingsregel
+het enige wat nog een beslissing vraagt; het staat als eerste punt in de
+controlelijst onderaan.
 
 **Wat hieronder over geld staat, is van 23 november.** Er zijn geen gratis
 lessen meer en geen proefperiode: de app is gratis te downloaden, de cursus is
@@ -255,10 +262,16 @@ wat hij zich voorneemt.
   er nog wel, maar is bewoording en geen belofte: de app leest de proef uit
   `billing.proef.jaar`, dus dat getal zegt niets over wat de winkel geeft.
 
-## Vijf dingen om na te kijken vóór je het stuurt
+## Zes dingen om na te kijken vóór je het stuurt
 
-1. **De actie van € 29,99 staat werkelijk in beide consoles.** Dit is het
-   eerste punt omdat het bericht die prijs noemt, en omdat een bericht dat een
+1. **De openingsregel, want "vanaf vandaag" is niet waar.** De app staat sinds
+   13 oktober in allebei de winkels en sinds 24 oktober op 1.5 — `docs/STAND.md`.
+   Wat op 23 november nieuw is, is de prijs. Zeg dus niet dat hij er vanaf
+   vandaag staat, maar wat er vanaf vandaag geldt: dat het eerste jaar de helft
+   kost. De rest van het bericht blijft staan zoals het staat; het is één regel
+   bovenaan het blok, en het is de enige regel die je zelf nog moet schrijven.
+2. **De actie van € 29,99 staat werkelijk in beide consoles.** Dit punt staat
+   vooraan omdat het bericht die prijs noemt, en omdat een bericht dat een
    prijs belooft die de winkel niet rekent bij Apple richtlijn 2.3.1 is —
    woordelijk ook buiten de App Store. Wat je waar zet staat in `docs/STAND.md`
    onder *23 november: de tijdelijke actie van 50% op het jaar*. Staat ze er
@@ -271,7 +284,7 @@ wat hij zich voorneemt.
    uit staat** — bij Apple bij beide abonnementen, bij Google `proef-jaar` en
    `proef-maand`. Dit bericht noemt geen gratis dagen, dus zolang de winkel ze
    wél geeft, zegt het bericht iets anders dan het aankoopvenster.
-2. **`[EINDDATUM]` is vervangen.** Eén treffer, in de prijsregel van het
+3. **`[EINDDATUM]` is vervangen.** Eén treffer, in de prijsregel van het
    bericht. In het korte blok staat hij niet: daar staat "nu de helft", en dat
    is een uitspraak over vandaag die zonder datum al waar is — dezelfde keuze
    als in de voorbeeldtekst van `store/lancering/mail.md`. Vul dezelfde datum
@@ -280,21 +293,22 @@ wat hij zich voorneemt.
    niet kunt onderbouwen. Is ze nog niet gekozen, haal dan "Tijdelijk, tot
    [EINDDATUM]." weg en laat de rest staan; de zin blijft dan waar. Blokhaken
    worden meegeplakt.
-3. **Staan ze er allebei echt.** Niet goedgekeurd — zichtbaar. Play houdt een
+4. **Staan ze er allebei echt.** Niet goedgekeurd — zichtbaar. Play houdt een
    goedgekeurde release vast tot jij op de knop drukt (*Publishing overview →
    Publish*), en bij Apple doet *Manually release this version* hetzelfde. Een
    404 op een winkelpagina terwijl de release op Productie staat betekent dat
    hij op jou wacht, en niet dat er iets stuk is. Dit bericht zegt "in allebei
    de winkels"; dat moet waar zijn op de minuut dat het verstuurd wordt.
-4. **Open de twee adressen zelf, op een toestel.** Niet op de Mac en niet in
+5. **Open de twee adressen zelf, op een toestel.** Niet op de Mac en niet in
    een tabblad waar je al ingelogd bent. Een verkeerd adres is niet terug te
    nemen, en een bericht met een dode link komt maar één keer voorbij —
-   `docs/LANCERING.md`. Kijk daar ook of de versie die live staat 1.4 is: bij
-   Apple build 10, bij Play versiecode 8. De nummers zijn gelijkgetrokken omdat
+   `docs/LANCERING.md`. Kijk daar ook welke versie live staat: sinds 24 oktober
+   is dat 1.5 — bij Apple build 11, bij Play versiecode 10 (`docs/STAND.md`).
+   De nummers zijn gelijkgetrokken omdat
    twee nummers voor één product al een keer tot een fout heeft geleid; dit is
    het eerste bericht waarin dat uitmaakt, want er staat één app in twee
    winkels.
-5. **Stuur het eerst naar jezelf.** Plak de tekst en de twee regels eronder in
+6. **Stuur het eerst naar jezelf.** Plak de tekst en de twee regels eronder in
    een gesprek met jezelf en kijk wat WhatsApp ermee doet: of er een
    voorbeeldkaartje onder komt, bij welke van de twee links, en of de regels
    niet midden in een adres afbreken. Wat je daar ziet, zien zij ook.

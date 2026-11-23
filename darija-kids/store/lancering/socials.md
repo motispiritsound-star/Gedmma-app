@@ -1,7 +1,15 @@
 # De socials op de lanceringsdag
 
-Vier berichten voor vier kanalen, op de dag dat 1.4 in allebei de winkels
-staat — App Store build 10, Play versiecode 8. Te plakken zoals het staat.
+Vier berichten voor vier kanalen. Te plakken zoals het staat.
+
+**Nagekeken op 23 november: de lanceringsdag waarvoor dit geschreven is, is
+voorbij.** Hier stond *"op de dag dat 1.4 in allebei de winkels staat — App
+Store build 10, Play versiecode 8"*. Volgens `docs/STAND.md` (*24 oktober:
+build 11 ligt bij Apple*) staat **1.5 — bij Apple build 11, bij Play
+versiecode 10 — sinds 24 oktober in allebei de winkels**, 100% uitgerold. Alle
+vier de berichten openen met *"Hij staat er … vanaf vandaag te downloaden"*, en
+dat is niet waar. Dat is een besluit en geen redactiewerk: zie het eerste punt
+onder *Vóór je plaatst*.
 
 Het bericht voor het WhatsApp-kanaal staat apart, in
 `store/lancering/kanaal.md`. Dit zijn Instagram, TikTok, YouTube en Facebook.
@@ -30,8 +38,13 @@ Dus krijgt elk kanaal het stuk van de lancering dat daar werkt:
 | YouTube | zocht hierop | de titel draagt de zoekwoorden, de beschrijving vertelt het hele verhaal |
 | Facebook | leest meer, en is ouder | het langste stuk: waarom, wat het kost, en waar de app zelf aan twijfelt |
 
-**En voor alle vier geldt: niemand hier weet wat 1.4 is.** 1.0 staat sinds
-2 oktober stil in de App Store en Play heeft nooit iets uitgebracht. Het
+**En voor alle vier geldt: niemand hier weet welke versie dit is.** Hier stond
+*"1.0 staat sinds 2 oktober stil in de App Store en Play heeft nooit iets
+uitgebracht"*; dat is sinds oktober niet meer waar — bij Apple ging 1.4 op
+4 oktober live en bij allebei de winkels staat 1.5 sinds 24 oktober
+(`docs/STAND.md`). De conclusie verandert er niet door, maar de reden wel: niet
+omdat er nooit iets is uitgebracht, maar omdat er bij 149 downloads en 38
+Play-installaties bijna niemand zit voor wie dit een wijziging ís. Het
 startscherm in vier stappen is dus geen wijziging die je aankondigt, het is
 hoe de app begint. `store/wat-is-nieuw-1.4.md` zegt het al: dit is voor bijna
 iedereen niet "wat is er nieuw" maar het eerste wat hij van de app ziet. Het
@@ -39,14 +52,18 @@ woord "nieuw" staat daarom in geen van de vier berichten.
 
 ## Wat er van beeld echt ligt
 
-Alles hieronder staat er nu, in het Nederlands én in het Frans. Wat in
-`brand/` staat, staat in `.gitignore` en komt met één opdracht terug.
+Alles hieronder is er in het Nederlands én in het Frans. Let op dat geen van
+deze paden in git staat — `/brand/`, `/store/marketing/`, `/store/screenshots/`
+en `/store/video/` staan alle vier in `.gitignore` — dus "het ligt er" geldt
+per machine, en op een verse kloon ligt er niets. Alles komt terug met de
+opdrachten onder de tabel; kijk dus eerst of het bestand er werkelijk staat
+voor je het in een bericht plant.
 
 | Wat | Waar | Formaat |
 |---|---|---|
 | De aankondigingsplaat | `store/marketing/nl/social-vierkant.png`, `social-verhaal.png` | 1080×1080 en 1080×1920 |
 | De vijf campagneposts | `brand/social/posts/nl/1-oma-vierkant.png` t/m `5-geschiedenis-verhaal.png` | tien bestanden per taal |
-| De introfilm | `store/video/nl/intro-vierkant.mp4`, `intro-verhaal.mp4`, `intro-breed.mp4` | 1:1, 9:16, 16:9 |
+| De introfilm | `store/video/nl/intro-breed.mp4` ligt er; `intro-vierkant.mp4` en `intro-verhaal.mp4` komen met `npm run intro` | 16:9, en 1:1 en 9:16 |
 | Schermafdrukken | `store/screenshots/nl/iphone-65/1-pad.png` t/m `10-aanbod.png` | tien schermen |
 | Profielfoto en omslagen | `brand/social/profielfoto.png`, `banner-youtube-nl.png`, `omslag-facebook-nl.png` | |
 | Citaatplaten uit de boeken | `brand/citaten/nl/deel03-h1-vierkant.png` en acht andere | over de reeks, niet over de app |
@@ -63,41 +80,37 @@ er geen bestand bij.
 
 ## Twee dingen die eerst gerepareerd moeten
 
-### 1. De slotkaart van de introfilm klopt niet
+### 1. De slotkaart van de introfilm: de tekst is om, de opname nog niet
 
-Op de laatste kaart van `store/video/<taal>/intro-*.mp4` staan twee regels die
-niet meer kunnen. Ze staan als gewone tekst in `dev/intro-copy.ts` — niet in
-`dev/intro.ts`, dat ze alleen afbeeldt — en in alle zes de talen.
+**Nagekeken op 23 november: de helft hiervan is gedaan.** Hier stond dat de
+slotkaart twee regels droeg die niet meer konden — `cta` zei in alle zes de
+talen *"Gratis beginnen"* ("Commencer gratuitement", "Kostenlos starten",
+"Empezar gratis", "Inizia gratis", "Start free") en `price` zei *"Vanaf € 5,00
+per maand"*, een omrekening zonder het afgeschreven bedrag ernaast, precies
+waarop Apple onder richtlijn 3.1.2(c) heeft afgewezen. Dat is sinds commit
+`dca8cd8` niet meer de stand:
 
-**`cta` zegt "Gratis beginnen"**, en in de andere talen "Commencer
-gratuitement", "Kostenlos starten", "Empezar gratis", "Inizia gratis", "Start
-free". Dat is sinds 23 november onwaar: er is niets gratis te beginnen. De app
-is gratis te downloaden, de cursus is een abonnement, en dat wordt op het
-eerste scherm gevraagd — zie de aantekening boven `magLeren` in
-`src/engine/store.ts`.
+| | Wat er nu staat |
+|---|---|
+| `cta` in `dev/intro-copy.ts` | *Gratis downloaden* — en dat mag, want de app ís gratis te downloaden; alleen de cursus is een abonnement (zie de aantekening boven `magLeren` in `src/engine/store.ts`) |
+| `price` in `dev/intro-copy.ts` | *€ 59,99 per jaar · € 5,00 per maand* — het afgeschreven bedrag voorop, de omrekening erachter |
+| `src/site/intro.test.ts` | omgedraaid: hij eist nu beide bedragen met het afgeschreven bedrag eerst, en laat een woord voor "gratis" alleen toe in dezelfde adem als downloaden |
 
-**`price` zegt "Vanaf € 5,00 per maand"**, en in de andere talen "À partir de
-5,00 € par mois", "Ab 5,00 € pro Monat", "Desde 5,00 € al mes", "Da 5,00 € al
-mese", "From € 5.00 a month". Dat is € 59,99 gedeeld door twaalf, en het bedrag
-dat werkelijk wordt afgeschreven staat er niet naast. Apple wees 1.0 af op
-richtlijn 3.1.2(c) omdat precies zo'n omrekening duidelijker stond dan het
-bedrag dat van de rekening gaat. Het is dezelfde regel die onder *Wat er niet
-in staat* hieronder staat, en op deze kaart is ze geschonden.
+Hier stond ook dat die test het oude eiste — *"precies `planOf('jaar').perMonth`,
+€ 5,00 en niets anders"* — en dat hij dus mee moest veranderen. Dat is gebeurd.
+`docs/STAND.md` zegt het onder *23 november: de films*: **"De promofilm uit de
+app mag wel — die is nu waar."**
 
-Hier stond dat de kaart **"Vanaf € 4,99 per maand"** zei — een prijs die deze
-app nooit heeft gerekend. Dat is niet meer de stand: € 4,99 is uit
-`dev/intro-copy.ts` weg en `src/site/intro.test.ts` houdt hem eruit. Wat
-ervoor in de plaats kwam is de omrekening hierboven, en die moet er ook uit.
+**Met opzet de staande prijs en niet de actie van € 29,99.** Deze film staat in
+git en wordt niet opnieuw gezet als een actie afloopt; de actie hoort op de
+plekken die wél meebewegen — de winkelafbeeldingen en de teksten hieronder.
 
-**Let op wie het repareert.** `src/site/intro.test.ts` *eist* dat `price`
-precies `planOf('jaar').perMonth` noemt — € 5,00 en niets anders — dus die test
-moet mee veranderen, anders laat hij een goede slotkaart niet toe. Naar `cta`
-kijkt hij niet. Geen van beide bestanden hoort bij dit document.
-
-De film is de lanceringsvideo op YouTube. Daar is niets weg te knippen, dus
-daar moet `dev/intro-copy.ts` eerst goed en moet `npm run intro` opnieuw. Let op
-het staartje: YouTube vervangt het bestand onder een bestaande link niet, dus
-een nieuwe opname is een nieuwe link. Die link staat op twee plekken buiten
+**Wat er nog wél moet: de upload.** De opname zelf is om —
+`store/video/<taal>/intro-breed.mp4` is wat `scripts/make-siteassets.mjs` tot
+de zes nieuwe `site-assets/film/<taal>/intro.mp4` heeft hercodeerd, dus die
+draagt de goede slotkaart. Wat er nog op YouTube staat is de oude. Let op het
+staartje: YouTube vervangt het bestand onder een bestaande link niet, dus een
+nieuwe opname is een nieuwe link. Die link staat op twee plekken buiten
 YouTube:
 
 | Waar | Wat er blijft staan als je hem vergeet |
@@ -147,11 +160,12 @@ De twee adressen, Android eerst — dezelfde volgorde en dezelfde vorm als in
 | `🤖 Android —` | `play.google.com/store/apps/details?id=app.darijaforkids.learn` — dat is `playStoreUrl()` in `src/site/links.ts` |
 | `📱 iPhone en iPad —` | het adres uit `STORE.apple` in `src/site/links.ts`, nu `apps.apple.com/app/id6813964474` |
 
-Beide adressen bestaan al vóór de release zichtbaar is. Een 404 betekent dus
-niet dat het adres fout is, maar dat de release op jou wacht — bij Play onder
-*Publishing overview → Manage*, bij Apple onder *Manually release this
-version*. Open ze op een toestel voordat je plaatst, niet op de Mac en niet in
-een tabblad waar je al ingelogd bent.
+**Allebei de pagina's staan open.** Hier stond dat een 404 betekende dat de
+release nog op jou wachtte; sinds 24 oktober staat 1.5 bij Apple op *Ready for
+Distribution* en bij Play op 100% uitgerold (`docs/STAND.md`). Krijg je hier nu
+een 404, dan is het het adres en niet de release. Open ze op een toestel
+voordat je plaatst, niet op de Mac en niet in een tabblad waar je al ingelogd
+bent.
 
 En geen derde bestemming. `darijaforkids.eu` staat al afgedrukt op de platen
 en in de YouTube-beschrijving; in de berichten zelf staan twee plekken om
@@ -180,7 +194,9 @@ In het Frans staan beide bestanden klaar onder `brand/social/posts/fr/` en
 
 Twee dingen die níét op deze plek horen. `brand/social/binnenkort-vierkant-nl.png`
 zegt "binnenkort". En `store/video/nl/intro-vierkant.mp4` is de film, geen
-plaat; die kan er de dag erna staan, en pas nadat de prijskaart gerepareerd is.
+plaat; die kan er de dag erna staan. De prijskaart is inmiddels in orde (zie
+hierboven), maar het vierkante bestand zelf moet nog gezet worden met
+`npm run intro`.
 
 ## Het onderschrift
 
@@ -250,6 +266,16 @@ doorlopen, en dan de eerste les. Staand, 9:16. Elke scène blijft drie seconden
 staan; dat is dezelfde regel als in `store/kanaal-sleutels.md` en
 `docs/VIDEO.md`.
 
+**Let op wat er sinds 23 november tussen stap vier en die eerste les staat: het
+abonnementsscherm.** `Poort` in `src/App.tsx` stuurt iedereen zonder
+abonnement naar `/volledig`, en het welkomstscherm met de vier stappen komt
+dáárvoor — zie de aantekening boven `magLeren` in `src/engine/store.ts`. Op een
+verse installatie is dit filmpje dus niet in één doorloop op te nemen: neem het
+abonnement (of zet een eerdere aankoop terug) vóór je de laatste drie seconden
+opneemt. En knip die kassa er niet tussenuit op een manier die suggereert dat
+de les uit zichzelf volgt op het instellen — dat zou met beelden de belofte
+doen die hieronder in woorden verboden is.
+
 **De tekst in beeld moet het alleen af kunnen.** De meeste mensen kijken zonder
 geluid (`store/kanaal-sleutels.md`), dus de gesproken regels komen er bovenop
 en vervangen niets. En geen logo in de eerste drie seconden; die staan ten
@@ -300,8 +326,10 @@ iPhone et sur Android — le lien est dans la bio.
 # YouTube
 
 De video is `store/video/nl/intro-breed.mp4`, nu geüpload als
-`youtube.com/watch?v=3iHXGpubnaI` en op *Niet vermeld*. Eerst de prijskaart
-repareren en opnieuw opnemen — zie hierboven — en daarna op openbaar zetten.
+`youtube.com/watch?v=3iHXGpubnaI` en op *Niet vermeld*. Hier stond dat de
+prijskaart eerst gerepareerd moest worden; dat is gebeurd (zie hierboven). Wat
+er nog moet is de nieuwe opname uploaden — de film onder die link is nog de
+oude — en daarna op openbaar zetten.
 
 De film laat zeven schermen uit de echte app zien en niet het startscherm in
 vier stappen; die scène bestaat nog niet. De beschrijving beschrijft dus de
@@ -425,7 +453,9 @@ het anders, dan heeft jouw oma gelijk — dat zegt de app zelf ook.
 ```
 
 Het beeld eronder: `store/marketing/nl/social-vierkant.png`, of
-`store/video/nl/intro-vierkant.mp4` zodra de film opnieuw is gemaakt.
+`store/video/nl/intro-vierkant.mp4` zodra dat bestand gezet is — de slotkaart
+is al in orde, maar van de vier vormen staat alleen `intro-breed` er; de
+vierkante komt met `npm run intro`.
 
 Geen hashtags. Op Facebook doen ze niets, en vijf woorden met een hekje
 ervoor onder een bericht van een pagina lezen als een advertentie.
@@ -451,8 +481,11 @@ en Facebook staat de naam al in het account.
 # Wat er niet in staat, en waarom
 
 - **Geen aantal.** Geen volgers, geen downloads, geen recensies, geen sterren.
-  Die zijn er niet, en op de dag van de lancering is dat ook het eerlijke
-  beeld. De beoordeling vraag je op dag 3 (`docs/GO-LIVE.md`, *De dagen erna*).
+  Hier stond dat die er niet zijn; dat is sinds oktober niet meer waar —
+  `docs/STAND.md` telt 149 downloads bij Apple, 38 installaties bij Play en
+  vijf betaalde plannen. Het besluit blijft, want dat zijn geen getallen
+  waarmee je iemand overhaalt, en recensies en sterren zijn er inderdaad niet.
+  De beoordeling vraag je op dag 3 (`docs/GO-LIVE.md`, *De dagen erna*).
 - **Geen citaat van een ouder en geen kind dat iets tegen zijn oma zegt.** Dat
   is de sterkste post die dit project kan hebben, en hij is vandaag onmogelijk
   echt te hebben. Dag 7, met een ouder die het zelf opstuurt.
@@ -461,8 +494,9 @@ en Facebook staat de naam al in het account.
   precies waarop Apple 1.0 afwees onder richtlijn 3.1.2(c). Hierboven staat ze
   daarom nooit als eerste getal, maar tussen haakjes achter het bedrag dat
   werkelijk wordt afgeschreven: "€ 29,99 voor het eerste jaar (€ 2,50 per
-  maand)". Dezelfde reden dat de slotkaart van de introfilm nog niet goed is —
-  daar staat de omrekening er alleen.
+  maand)". Om diezelfde reden is de slotkaart van de introfilm op 23 november
+  omgezet: daar stond de omrekening alleen, en er staat nu *€ 59,99 per jaar ·
+  € 5,00 per maand* — zie hierboven.
 - **Geen gratis les en geen proefperiode.** Niet in een onderschrift, niet in
   beeld, niet gesproken. Sinds 23 november zijn ze er niet, en een belofte
   over geld die de winkel niet nakomt is bij Apple richtlijn 2.3.1 — en die
@@ -501,13 +535,28 @@ geschreven: de beelden in `brand/social/posts/<taal>/`, de bijschriften in
 de app anders doet, dan het schrift, dan de prijs, en tot slot het stuk dat
 mensen doorsturen. Eén per keer, twee per week. Schrijf ze niet opnieuw.
 
-**Op één na.** De vierde ging over dat beginnen gratis is, en dat is sinds
-23 november niet meer zo — zie de aantekening boven `magLeren` in
-`src/engine/store.ts`. Die ene moet herschreven worden, en hij is nu de
-sterkste van de vijf, want hij gaat over de actie: € 29,99 voor het eerste
-jaar in plaats van € 59,99. De tekst staat in `store/social.md` en niet hier.
+**Op één na, en die is al om.** De vierde ging over dat beginnen gratis is.
+Hier stond dat hij herschreven moest worden; dat is gebeurd in commit
+`2c8e998` — hij heet nu *4 — Eén abonnement, alles open* en zegt in zes talen
+dat de app gratis te downloaden is en de cursus een abonnement. Zie de
+aantekening boven `magLeren` in `src/engine/store.ts`.
+
+Wat er nog wél aan mankeert: hij noemt alleen de staande prijs (€ 59,99 per
+jaar, dat is € 5,00 per maand, of € 6,99 per maand) en niet de tijdelijke
+€ 29,99 voor het eerste jaar. Dat is de haak van deze campagne, en deze post is
+de plek waar hij hoort. De tekst staat in `store/social.md` en niet hier.
 
 # Vóór je plaatst
+
+**Eerst het besluit dat bovenaan dit bestand openstaat: wat kondig je aan?**
+Alle vier de berichten openen met *"Hij staat er … vanaf vandaag te
+downloaden"*, en dat is sinds 24 oktober niet waar (`docs/STAND.md`). Twee
+uitwegen, en dit document kiest er geen: de berichten gaan over de app die er
+al is — dan moet *vanaf vandaag* eruit, in nl en fr, inclusief de twee
+onderschriften onder de TikTok- en Instagram-video — of ze gaan over de
+tijdelijke actie op het jaarabonnement, en dan is de actie de kop en niet een
+regel onderaan. Op een Facebook-pagina met het bereik dat deze campagne wil,
+is een onjuiste openingszin het eerste wat iemand leest.
 
 1. **De actie van € 29,99 staat werkelijk in beide consoles, in alle vijf de
    eurolanden.** Dit is de eerste regel omdat elk bericht hierboven die prijs
@@ -531,12 +580,14 @@ jaar in plaats van € 59,99. De tekst staat in `store/social.md` en niet hier.
    zolang de winkel ze wél geeft zegt de advertentie iets anders dan het
    aankoopvenster. Bij `app.darijaforkids.yearly` doet de actie uit stap 1 dit
    in één handeling; bij Maand niet.
-4. **De film is opnieuw gemaakt.** `dev/intro-copy.ts` met een goede slotkaart
-   — geen "Gratis beginnen" en geen losse omrekening per maand, zie hierboven,
-   en `src/site/intro.test.ts` moet mee — `npm run intro` gedraaid, de nieuwe
-   opname geüpload, en de nieuwe link in `src/site/links.ts` én in Play Console
-   gezet. Zolang dat niet gebeurd is, gaat de YouTube-video niet op openbaar en
-   gaat er geen filmfragment naar Instagram of TikTok.
+4. **De nieuwe film is geüpload.** De slotkaart zelf is om in commit
+   `dca8cd8` — `dev/intro-copy.ts` zegt nu *Gratis downloaden* en *€ 59,99 per
+   jaar · € 5,00 per maand*, en `src/site/intro.test.ts` bewaakt het; zie
+   hierboven. Hier stond dat die twee nog moesten gebeuren. Wat er nog wél
+   moet: de nieuwe opname naar YouTube, en de nieuwe link in
+   `src/site/links.ts` én in Play Console. Zolang dat niet gebeurd is, gaat de
+   YouTube-video niet op openbaar en gaat er geen filmfragment naar Instagram
+   of TikTok.
 5. **De YouTube-video staat op openbaar.** Hij staat nu op *Niet vermeld*,
    met opzet, en die stand verandert niet van zichzelf.
 6. **De handle `@darijaforkidsapp` is gezet** (Instellingen → Kanaal →
@@ -548,9 +599,18 @@ jaar in plaats van € 59,99. De tekst staat in `store/social.md` en niet hier.
 8. **Beide winkelpagina's openen op een toestel.** Niet op de Mac, niet in een
    tabblad waar je al ingelogd bent. Een verkeerd adres onder een bericht is
    niet terug te nemen.
-9. **De versie die live staat is 1.4** — bij Apple build 10, bij Play
-   versiecode 8. Dit is het eerste bericht waarin dat uitmaakt: er staat één
-   app in twee winkels.
+9. **Kijk welke versie er live staat.** Dat is sinds 24 oktober 1.5 — bij
+   Apple build 11, bij Play versiecode 10 (`docs/STAND.md`). Hier stond *"1.4,
+   bij Apple build 10, bij Play versiecode 8"*, en dat is 1.4 — bij Apple live
+   sinds 4 oktober, bij Play sinds 13 oktober. En let op het tweede deel: de
+   app met de betaalmuur bij de
+   download is commit `123a8c1` en die is **nog niet ingediend** — in
+   `docs/STAND.md` blokkeert het accepteren van de Apple Developer Program
+   License Agreement al het andere. Zolang dat zo is geeft de app uit de winkel
+   nog acht gratis lessen, terwijl deze vier berichten zeggen dat de cursus een
+   abonnement is dat op het eerste scherm gevraagd wordt. Die kant is niet wat
+   Apple 2.3.1 bestraft, maar het is wél een verschil tussen de advertentie en
+   wat de lezer aantreft.
 10. **De profielen staan niet leeg.** Profielfoto en omslag uit
     `brand/social/`, en op Instagram liever al twee of drie platen. Wie op een
     leeg profiel aankomt, komt niet terug om nog eens te kijken

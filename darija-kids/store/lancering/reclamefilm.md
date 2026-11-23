@@ -15,8 +15,8 @@
 > montage. Dus **geen bestaande film op de Franse, Nederlandse of Duitse
 > Facebook-pagina's voordat hij opnieuw is ingesproken** met de slotregel van
 > scène 6 hieronder. Een post die een gratis deel belooft dat de app niet
-> geeft, is geen kleine fout: Apple-richtlijn 2.3.1 geldt woordelijk "whether
-> within or outside of the App Store", dus een Facebook-post valt eronder.
+> geeft, is geen kleine fout. Apple-richtlijn 2.3.1 geldt woordelijk
+> "whether within or outside of the App Store" — dus ook een Facebook-post.
 
 **Waar die films staan.** De afgemonteerde film staat niet in deze repository.
 Hij komt uit Steve AI — stap 8 *Exporteer* onderaan dit bestand — en staat op
@@ -90,8 +90,9 @@ Steve AI op, en een Nederlandse aanwijzing levert daar niets op.
 hieronder nummert 1 tot 6: scène 4 is de app en bestaat uit drie beats, 4a tot
 4c. De Franse en Engelse tabellen verderop nummeren dezelfde film 1 tot 7,
 omdat de regel die onder het derde portret in beeld komt daar een eigen rij
-heeft. Waar in dit bestand "scène 5" staat voor de echte opname van de app, is
-dat scène 4 in het Nederlandse draaiboek; de slotscène is 7 daar en 6 hier.
+heeft. **Alles buiten die twee tabellen nummert op de Nederlandse manier**, dus
+de app is scène 4 en de slotscène is scène 6; in de Franse en Engelse tabel zijn
+dat de rijen 5 en 7.
 
 **Over het tempo.** De Nederlandse stem zit op ongeveer 2,4 woorden per
 seconde; sneller klinkt gehaast en bij een advertentie over taalverlies is
@@ -311,7 +312,8 @@ in `scripts/make-social.mjs` aan en zet de platen opnieuw. Doe dat dan wel in
 ## De korte versie — vijftien seconden
 
 Voor TikTok en voor een advertentie waar je per seconde betaalt. Scène 1, 2,
-5 en 7, en verder niets.
+4 en 6, en verder niets — in de Nederlandse nummering, dus de hook, de app en
+de slotregel. In de Franse en Engelse tabel zijn dat de rijen 1, 2, 5 en 7.
 
 > Je kind verstaat oma wel. Antwoorden lukt alleen niet.
 > *(de echte app, vier seconden)*
@@ -484,7 +486,7 @@ je tegoed voor beeld dat je weggooit.
 Loop deze langs. Elk punt is iets wat eerder is misgegaan bij iemand anders,
 en ze kosten samen vijf minuten.
 
-- [ ] **Scène 5 is de echte opname** en geen gegenereerde telefoon.
+- [ ] **Scène 4 is de echte opname** en geen gegenereerde telefoon.
 - [ ] **Elke scène is Marokkaans**, langs de tabel hierboven gelegd. Geen
       thobe, geen glazen koepel, geen duinen als enige beeld.
 - [ ] **De oma in scène 1 en die in scène 5 zijn dezelfde persoon.** Een
@@ -509,7 +511,7 @@ en ze kosten samen vijf minuten.
       Werkt hij dan nog, dan werkt hij.
 - [ ] **Eén keer bekeken door iemand die de app niet kent.** Vraag daarna wat
       de app doet. Komt daar iets anders uit dan "Darija leren", dan is scène
-      5 te kort.
+      4 te kort.
 
 ## De werkwijze, stap voor stap
 
@@ -532,7 +534,7 @@ en ze kosten samen vijf minuten.
 5. **Laat de scènes genereren en loop ze één voor één langs** met de tabel
    "Wel / Niet" hierboven ernaast. Reken erop dat je er een paar vervangt.
 
-6. **Vervang scène 5 door de echte opname.** Upload `intro-verhaal.mp4` en zet
+6. **Vervang scène 4 door de echte opname.** Upload `intro-verhaal.mp4` en zet
    die op de plek van het gegenereerde app-beeld. Dit is de stap die het
    verschil maakt tussen een advertentie die eruitziet als duizend andere, en
    een die het echte product laat zien.

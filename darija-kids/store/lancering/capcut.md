@@ -10,14 +10,15 @@
 >
 > | Wat | Wat erop staat | Waar het hieronder staat |
 > |---|---|---|
-> | de slotkaart van `intro-*.mp4`, vanaf 25,2 seconden | "Gratis beginnen", met een omgerekende maandprijs | *Film* |
+> | de slotkaart van `intro-*.mp4`, vanaf 25,2 seconden | een knop om gratis te beginnen, met een omgerekende maandprijs | *Film* |
 > | `10-aanbod.png` van vóór 23 november | de voetregel met de proefperiode van drie dagen | *Schermafdrukken* |
 > | `4-gratis-*.png` van vóór 23 november | "Beginnen kost niets." | *Platen met tekst erop* |
 > | de al ingesproken reclamefilms | "De eerste vier lessen zijn gratis" | *En het script* |
 >
 > Een advertentie die iets gratis belooft dat de app niet geeft, valt onder
-> Apple-richtlijn 2.3.1, en die geldt woordelijk "whether within or outside of
-> the App Store" — dus ook een bericht op een Facebook-pagina.
+> Apple-richtlijn 2.3.1, en die geldt woordelijk
+> "whether within or outside of the App Store" — dus ook een bericht op een
+> Facebook-pagina.
 
 Een lijst van wat er klaarstaat, waar het staat, en met welk commando het
 terugkomt als het er niet is. Geen enkel bestand hieronder is gegenereerd
@@ -58,8 +59,8 @@ niet meer kunnen: een knop die zegt dat je gratis kunt beginnen, en een
 omgerekende maandprijs zonder het bedrag dat werkelijk wordt afgeschreven
 ernaast. Die teksten staan als gewone tekst in `dev/intro-copy.ts`, in alle zes
 de talen; wat er met die kaart moet gebeuren staat in
-`store/lancering/socials.md`, onder *De slotkaart van de introfilm klopt niet*,
-en dat bestand is er de eigenaar van.
+`store/lancering/socials.md`, in de eerste genummerde sectie over *de
+slotkaart van de introfilm*, en dat bestand is er de eigenaar van.
 
 **Knip dus vóór 25,2 seconden, in elke verhouding en in elke taal**, en zet er
 je eigen eindkaart achter. Wil je de kaart uit de film tóch gebruiken, lees hem
@@ -120,6 +121,16 @@ in beeld brengt. Er staat nu "€ 2,50 p/m" groot op, met "€ 29,99 per jaar, n
 50% korting" eronder (`AANBOD` in `scripts/make-screenshots.mjs`), dus gebruik
 hem niet zolang die aanbieding niet werkelijk in de winkel staat: zie
 `docs/STAND.md`, *23 november: de tijdelijke actie van 50% op het jaar*.
+
+**En let op de volgorde op die plaat.** Het grote bedrag is de omrekening
+(€ 2,50 per maand) en het bedrag dat werkelijk wordt afgeschreven (€ 29,99 per
+jaar) staat er klein onder. In een advertentie hoort het precies andersom —
+het afgeschreven bedrag eerst en het opvallendst, want dat is waarop Apple deze
+app eerder heeft afgewezen onder richtlijn 3.1.2(c). Breng je die plaat in
+beeld, zet dan de prijs er in je eigen tekst bij in de goede orde:
+"€ 29,99 voor het eerste jaar (€ 2,50 per maand)". De plaat zelf is van
+`scripts/make-screenshots.mjs` en `docs/STAND.md`; dit bestand beschrijft hem
+alleen.
 
 **Terug met:** `npm run screenshots`
 
@@ -243,7 +254,7 @@ bij de ACM.
 | Mag | Nagemeten |
 |---|---|
 | 432 opnames, geen computerstem | 28 + 304 + 100 bestanden in `src/audio/` |
-| 304 woorden en 100 zinnen | uit `lexicon.ts` |
+| 304 woorden en 100 zinnen | `WORDS` in `words.ts` en `ALL_SENTENCES` in `sentences.ts` — 304 en 100, en even zoveel bestanden in `src/audio/woorden/` en `src/audio/zinnen/` |
 | alle 28 Arabische letters, met hun drie vormen | uit `alphabet.ts` |
 | 17 units, van het alfabet tot de souq | uit `curriculum.ts` |
 | veertien filmpjes uit de geschiedenis van Marokko | uit `history.ts` — veertien kaarten in `HISTORY` |

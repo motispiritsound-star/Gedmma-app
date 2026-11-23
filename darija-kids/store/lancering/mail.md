@@ -1,8 +1,23 @@
 # De mail aan de wachtlijst
 
-Eén mail, op de dag dat 1.4 in allebei de winkels staat — App Store build 10,
-Play versiecode 8. In zes talen, want het formulier staat in zes talen en de
-taal gaat met de aanmelding mee.
+Eén mail, in zes talen, want het formulier staat in zes talen en de taal gaat
+met de aanmelding mee.
+
+**Nagekeken op 23 november: de lanceringsdag waarvoor dit geschreven is, is
+voorbij.** Hier stond *"op de dag dat 1.4 in allebei de winkels staat — App
+Store build 10, Play versiecode 8"*. Dat nummer is achterhaald: volgens
+`docs/STAND.md` (*24 oktober: build 11 ligt bij Apple*) staat **1.5 — bij Apple
+build 11, bij Play versiecode 10 — sinds 24 oktober in allebei de winkels**,
+100% uitgerold. Daarvóór stond 1.4 live: bij Apple build 10 sinds 4 oktober,
+bij Play versiecode 8 sinds 13 oktober — in allebei de winkels staat de app
+dus al sinds 13 oktober.
+
+Dat raakt de teksten zelf, en dat is geen redactiewerk maar een besluit: alle
+zes de talen openen met *"Hij is er. Darijaforkids staat vanaf vandaag in
+allebei de winkels"*, en dat is niet waar — hij staat er sinds oktober. Kies
+vóór het versturen waar deze mail over gaat: de app die er al is, of de
+tijdelijke actie op het jaarabonnement. Zie het punt onderaan onder
+*Vóór je verstuurt*.
 
 Deze mensen hebben op *Hou me op de hoogte* gedrukt en daarna de link in de
 bevestigingsmail aangeklikt. Wanneer dat was staat per rij in `aangemeld_op`;
@@ -135,8 +150,8 @@ De regels krijgen een label dat het toestel noemt en niet de winkel:
 
 | De regel | Wat erachter komt |
 |---|---|
-| `Android —` | de Play-pagina, zodra versiecode 8 is uitgerold |
-| `iPhone en iPad —` | de App Store-pagina, zodra 1.4 op *Ready for Distribution* staat |
+| `Android —` | de Play-pagina; versiecode 10 is sinds 24 oktober 100% uitgerold |
+| `iPhone en iPad —` | de App Store-pagina; 1.5 staat sinds 24 oktober op *Ready for Distribution* |
 
 ### Wanneer ze ingevuld kunnen worden
 
@@ -145,18 +160,19 @@ mail voor twee winkels; hij zegt dat de app in allebei staat, en dat moet waar
 zijn op de minuut dat hij verstuurd wordt. Eén werkend adres en één 404 is
 erger dan een dag later mailen.
 
-Wat er nu al is, en wat dat niet betekent:
+**Nagekeken op 23 november: die voorwaarde is al vervuld.** Hier stond dat
+`STORE.google` leeg was en dat de Play-pagina op 30 september **404 — Not found
+on this server** gaf. Volgens `docs/STAND.md` staat 1.5 sinds 24 oktober in
+allebei de winkels — bij Apple *Ready for Distribution*, bij Play 100%
+uitgerold — dus allebei de pagina's gaan open.
 
 - `STORE.apple` in `src/site/links.ts` staat gevuld —
-  `https://apps.apple.com/app/id6813964474`. Dat adres werkt al, want 1.0 staat
-  sinds 2 oktober live. Het wijst alleen nog niet naar 1.4.
-- `STORE.google` is leeg. `playStoreUrl()` bouwt het Play-adres uit het
-  applicatie-id, dus de vórm is al bekend — maar de pagina gaf op 30 september
-  **404 — Not found on this server**, en dat blijft zo tot de release is
-  uitgerold.
+  `https://apps.apple.com/app/id6813964474`.
+- `STORE.google` is nog steeds leeg in `links.ts`; `playStoreUrl()` bouwt het
+  Play-adres uit het applicatie-id, dus het adres is er wel.
 
-Een adres kennen is dus niet hetzelfde als een pagina die opengaat. De
-controle is dat allebei de adressen opengaan op een toestel, niet op de Mac en
+Een adres kennen is nog niet hetzelfde als een pagina die opengaat, dus de
+controle blijft: allebei de adressen opengaan op een toestel, niet op de Mac en
 niet in een tabblad waar je al ingelogd bent. Pas daarna gaan de twee regels
 erin.
 
@@ -543,15 +559,18 @@ tientallen adressen en wel bij duizenden.
 
 # Wat er niet in staat, en waarom
 
-- **Niets over 1.4.** Wie zich via de site aanmeldde heeft de app nog nooit
-  geopend, dus het startscherm in vier stappen is voor hem geen nieuws maar
+- **Niets over welke versie het is.** Wie zich via de site aanmeldde heeft de
+  app nog nooit geopend, dus het startscherm in vier stappen is voor hem geen nieuws maar
   gewoon hoe de app begint. Wie via de ouderpagina binnenkwam heeft hem wél
   geopend, maar in de tafel is dat niet te zien en één mail kan niet twee
   kanten op. Wie het wil lezen vindt het in de winkel onder *wat is er nieuw*.
   Hetzelfde geldt voor "haal de update op" — die regel staat in
   `store/lancering/kanaal.md` omdat daar mensen zitten die hem al hebben.
 - **Geen aantal.** Geen gebruikers, geen downloads, geen recensies, geen
-  sterren. Die zijn er niet.
+  sterren. Hier stond dat die er niet zijn; dat is sinds oktober niet meer waar
+  — `docs/STAND.md` telt bij Apple 149 downloads en vijf betaalde plannen en bij
+  Play 38 installaties. Het zijn alleen geen getallen waarmee je iemand
+  overhaalt, en recensies en sterren zijn er inderdaad niet.
 - **Geen citaat van een ouder.** Er is er geen, en op dag één kan er geen zijn.
 - **Geen gezinsdeling.** Bij Apple deelt het hele gezin één abonnement, tot zes
   personen; bij Google niet. Dat is waar en het is een goed argument, maar één
@@ -590,6 +609,16 @@ tientallen adressen en wel bij duizenden.
 
 # Vóór je verstuurt
 
+**Eerst het besluit dat hierboven openstaat: waar gaat deze mail over?** Alle
+zes de talen openen met *"Hij is er. Darijaforkids staat vanaf vandaag in
+allebei de winkels"*, en dat is sinds 24 oktober niet meer waar
+(`docs/STAND.md`). Twee uitwegen, en dit document kiest er geen: de mail gaat
+over de app die er al is — dan moet *vanaf vandaag* eruit, in zes talen,
+inclusief de onderwerpregels en de voorbeeldteksten — of de mail gaat over de
+tijdelijke actie op het jaarabonnement, en dan is de actie de kop en niet een
+regel onderaan. Een onjuiste openingszin naar de hele lijst is niet terug te
+nemen, en het is de eerste regel die iemand leest.
+
 1. **Zoek op `[[`.** In alle zes de talen, in de samengestelde tekst, en ook in
    de HTML-versie. Eén treffer betekent: niet versturen.
 2. **Staat de actie werkelijk in beide consoles?** Zo niet, dan gaat de
@@ -605,9 +634,17 @@ tientallen adressen en wel bij duizenden.
    dan gaat `[EINDDATUM]` als woord de deur uit.
 4. **Open de twee adressen op een toestel.** Allebei, en niet op de Mac en niet
    in een tabblad waar je al ingelogd bent.
-5. **Kijk of wat er live staat 1.4 is** — bij Apple build 10, bij Play
-   versiecode 8. Dit is de eerste keer dat het één nummer is voor allebei de
-   winkels, en dat is ook de reden dat het nagekeken moet worden.
+5. **Kijk welke versie er live staat.** Volgens `docs/STAND.md` is dat sinds
+   24 oktober 1.5 — bij Apple build 11, bij Play versiecode 10. Hier stond
+   *"1.4, bij Apple build 10, bij Play versiecode 8"*, en dat is 1.4 — bij Apple
+   live sinds 4 oktober, bij Play sinds 13 oktober. Let op het tweede deel
+   hiervan: de app met de betaalmuur bij de
+   download is commit `123a8c1` en die is **nog niet ingediend** — in
+   `docs/STAND.md` blokkeert het accepteren van de Apple Developer Program
+   License Agreement al het andere. Zolang dat zo is geeft de app uit de winkel
+   nog acht gratis lessen, terwijl deze mail zegt dat de cursus een abonnement
+   is. Dat is niet de kant die Apple 2.3.1 bestraft, maar het is wél een
+   verschil tussen de mail en wat de lezer aantreft.
 6. **Stuur hem eerst naar jezelf**, in minstens twee talen. Kijk of de voet
    eronder staat, of de uitschrijflink werkt, en of de twee adressen klikbaar
    zijn geworden of als kale tekst in beeld staan.
