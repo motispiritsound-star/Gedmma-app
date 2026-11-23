@@ -29,9 +29,12 @@ kost je het moment.
 **Vrijgeven en aankondigen zijn sinds 2 oktober niet meer hetzelfde.** 1.0 gaat
 stil de App Store in, zonder een woord, zodat 1.1 er meteen achteraan kan — een
 afwijzing kost dan niets meer, en het e-boek dat in build 7 ook tijdens de proef
-vrijkomt zit dan niet in een raam waar je publiek naar wijst. De aankondiging
-wacht op 1.1 én 1.3. De volledige volgorde en de redenen staan in `STAND.md`
-onder *Besloten op 2 oktober: stil live, daarna pas aankondigen*.
+vrijkwam zit dan niet in een raam waar je publiek naar wijst. (Sinds 23 november
+is er geen proefperiode: het e-boek komt nu meteen vrij bij het afsluiten, omdat
+er dan ook meteen is afgeschreven — zie `grantEbook` in
+`src/engine/billing.ts`.) De aankondiging wacht op 1.1 én 1.3. De volledige
+volgorde en de redenen staan in `STAND.md` onder *Besloten op 2 oktober: stil
+live, daarna pas aankondigen*.
 
 Alles hieronder gaat over die aankondiging — stap 7 van dat besluit, niet over
 het moment dat 1.0 live gaat.
@@ -108,38 +111,51 @@ alles bij elkaar, waarvan vijftig minuten persoonlijke WhatsApp-berichten.
 
 ## De volgorde
 
-### 0. Eerst de proefperiode, vóór je iets vrijgeeft
+### 0. Eerst de twee proefaanbiedingen uit, vóór je iets vrijgeeft
 
-**Dit is een blokkade, geen aanbeveling.** Op het koopscherm van de app staat
-*start 3 dagen gratis*, in zes talen. Dat getal komt uit `TRIAL_DAYS` in
-`src/engine/billing.ts` en staat er ongeacht wat de winkel weet. Bestaat de
-aanbieding bij Apple niet, dan leest de eerste koper drie dagen gratis en
-schrijft Apple meteen € 59,99 af — terugbetalingen, eensterbeoordelingen in de
-eerste week, en een afwijzing op richtlijn 3.1.2 bij de eerstvolgende versie.
+**Dit is een blokkade, geen aanbeveling.** Sinds 23 november is er geen
+proefperiode en geen gratis deel meer: wie het abonnement neemt betaalt bij het
+afsluiten, en dat wordt op het eerste scherm gevraagd. De app is daar al op
+gebouwd en leest niet een vast getal maar wat de winkel teruggeeft
+(`billing.proef.jaar`), dus hij klapt om op het moment dat je de aanbieding in
+de console uitzet — **er hoeft geen nieuwe build naartoe.** Staat de aanbieding
+er nog wél, dan belooft het koopvenster drie gratis dagen die niemand meer wil
+geven: terugbetalingen, eensterbeoordelingen in de eerste week, en een
+afwijzing op richtlijn 3.1.2 bij de eerstvolgende versie.
 
-Bij `app.darijaforkids.yearly` is het op 1 oktober aangetoond: in de tabel
-onder *Subscription Prices* staat de kolom **INTRODUCTORY OFFERS (175)** met
-*Free for the first 3 days*. De andere drie zijn nog niet nagekeken. Dus vóór
-het vrijgeven:
+Hier stond het omgekeerde: een stappenplan om die proefperiode juist aan te
+maken, met *Free Trial, 3 dagen* bij Apple en *Gratis proefperiode* bij Google.
+Dat is op 23 november teruggedraaid — zie de aantekening boven `magLeren` in
+`src/engine/store.ts`, en `docs/STAND.md` onder *23 november: de proefperiode
+eruit, en wat er in de consoles moet*.
 
-1. ~~App Store Connect → **Jaar**~~ — **staat er**, 175 landen.
-2. Hetzelfde bij **Maand**: App Store Connect → Subscriptions → *Volledige
-   toegang* → **Maand**, en kijken of de kolom *Introductory Offers* in de
-   prijzentabel gevuld is. Is hij leeg: de blauwe ⊕ naast *Subscription
-   Prices* → **Create Introductory Offer**, type *Free Trial*, **3 dagen**,
-   alle landen, voor wie nog niet geabonneerd is.
-3. Play Console → het abonnement → basisplan → **Aanbieding** → *Gratis
-   proefperiode*, **3 dagen**. Ook hier twee keer.
+Hier is geen commando voor; het zijn twee webconsoles, en Apple's API kent
+abonnementsaanbiedingen wel maar wil er eerst een ASC-sleutel op de schijf voor
+hebben. Dus vóór het vrijgeven:
+
+1. **App Store Connect** → het abonnement → **View all Subscription Pricing** →
+   tabblad **Introductory Offers**. Daar staat *Free for the first 3 days*, 175
+   landen, *No End Date*. Zet er een einddatum op. Dit moet bij **beide**
+   abonnementen: `app.darijaforkids.yearly` én `app.darijaforkids.monthly`.
+2. **Play Console** → het abonnement → basisplan → de aanbieding.
+   `app.darijaforkids.yearly` heeft `proef-jaar`,
+   `app.darijaforkids.monthly` heeft `proef-maand`. Allebei deactiveren.
+3. Let op bij Apple: er geldt **één introductieaanbieding per abonnement per
+   land**, en een nieuwe overschrijft de bestaande. Komt de tijdelijke korting
+   van 50 % op het jaarabonnement er als *Pay Up Front* introductieaanbieding,
+   dan vervangt die de proefperiode in één handeling — dan hoef je bij **Jaar**
+   niets apart uit te zetten. Bij **Maand** wel.
 4. **Nameten op een toestel**, want de console is niet het bewijs: koop in
    TestFlight en kijk naar het aankoopvenster van Apple zelf, dat over het
-   scherm van de app heen komt. Staat er *3 dagen gratis, daarna € 59,99*,
-   dan klopt het. Staat er alleen € 59,99, dan niet.
+   scherm van de app heen komt. Staat er € 59,99 — of € 29,99 zolang de actie
+   loopt — en nergens een gratis dag, dan klopt het. Staat er *3 dagen gratis*,
+   dan niet.
 
-Lukt het aanmaken niet op tijd, dan is er één eerlijke uitweg en dat is níét
-toch vrijgeven: zet `TRIAL_DAYS` op 0 in `src/engine/billing.ts`. De teksten
-passen zich in alle zes talen aan en de app belooft dan niets meer wat de
-winkel niet doet. Dat kost conversie — wie geen proef krijgt moet meteen
-betalen — maar het kost je geen terugbetalingen en geen beoordeling.
+Lukt het uitzetten niet op tijd, dan is er één eerlijke uitweg en dat is níét
+toch vrijgeven: wacht. De app zegt wat de winkel zegt, dus zolang de
+aanbieding aan staat kríjgt de koper die drie dagen ook werkelijk — maar dan
+verkoop je iets anders dan er op 23 november is besloten, en de eerste
+afschrijving komt drie dagen later dan de koper verwacht.
 
 ### 1. Vrijgeven
 
@@ -191,8 +207,10 @@ Vanaf dat moment kost een afwijzing je niets meer: de app staat in de winkel
 en blijft daar staan, ook als 1.1 wordt teruggestuurd. De winkelteksten staan
 klaar in `store/wat-is-nieuw-1.1.md`, in zes talen.
 
-Wat de lancering tot die tijd draagt, staat in `docs/STAND.md` — met de enige
-die geld kost: het e-boek komt in build 7 tijdens de proefperiode meteen vrij.
+Wat de lancering tot die tijd draagt, staat in `docs/STAND.md`. Het punt dat
+daar geld kostte — het e-boek dat in build 7 al tijdens de proefperiode vrijkwam
+— kost dat sinds 23 november niet meer: er is geen proefperiode, dus wie het
+boek krijgt heeft al betaald (`grantEbook` in `src/engine/billing.ts`).
 
 ### 2. De website omzetten
 
@@ -246,6 +264,24 @@ naar één familiegroep levert meer op dan een hele dag posten.
 
 ## De teksten
 
+**Twee dingen over de prijzen die hieronder staan.**
+
+**De regel over de € 29,99 gaat er pas in als de aanbieding werkelijk in beide
+consoles staat.** Hij is op 23 november besloten en nog niet ingesteld: zie
+`docs/STAND.md` onder *23 november: de tijdelijke actie van 50% op het jaar*
+voor wat je waar zet. Zolang die aanbieding er niet staat, laat je de hele
+regel weg en noem je alleen € 6,99 per maand of € 59,99 per jaar. Een bericht
+dat een prijs belooft die de winkel niet rekent is bij Apple richtlijn 2.3.1,
+en dat is grond voor verwijdering. Controleer het op het aankoopvenster zelf,
+op een telefoon, in de app uit de winkel — de console zegt wat er ingesteld is,
+niet wat de koper leest.
+
+**En € 29,99 bereikt alleen wie nooit eerder een abonnement in deze groep
+had.** Een introductieaanbieding werkt zo bij beide winkels. Wie vóór
+23 november de proef van drie dagen heeft genomen en opgezegd, ziet de korting
+dus niet. Dat is nu een klein aantal mensen, en het verklaart straks waarom
+iemand in de reacties zegt dat hij € 59,99 ziet staan.
+
 ### WhatsApp — persoonlijk, en het kanaal
 
 Die staat in `docs/LANCERING.md` §4, met de link erin. Eén kopie, zodat er
@@ -262,7 +298,8 @@ Je kind verstaat oma wel. Maar het antwoordt in het Nederlands.
 Daar is nu een app voor. Marokkaans-Arabisch — Darija, niet het Arabisch
 uit het schoolboek. Twee minuten per dag.
 
-De eerste vier lessen zijn gratis. Link in bio.
+Gratis te downloaden, geen advertenties. De cursus is een abonnement.
+Link in bio.
 
 #darija #marokko #marokkaansearabisch #darijaforkids #tweetalig
 ```
@@ -285,8 +322,10 @@ Darijaforkids: het Arabische alfabet, 304 woorden en 100 zinnen, allemaal
 ingesproken door een Marokkaanse stem. Zeventien units, van de letters tot
 afdingen op de souq. Twee minuten per dag, als een spelletje.
 
-De eerste vier lessen zijn gratis. Geen account, geen advertenties, niets in
-te vullen — ook niet door een kind.
+De app is gratis te downloaden. Geen account, geen advertenties, niets in te
+vullen — ook niet door een kind — en alles werkt zonder internet. De hele
+cursus zit in één abonnement en gaat in één keer open: € 29,99 voor het eerste
+jaar in plaats van € 59,99, dat is € 2,50 per maand.
 
 👉 darijaforkids.eu
 
@@ -298,7 +337,7 @@ het meest mee.
 
 ```
 Hij staat er 🎉 Darijaforkids is vanaf vandaag te downloaden, voor iPhone en
-Android. De eerste vier lessen zijn gratis.
+Android. Gratis te downloaden, geen advertenties; de cursus is een abonnement.
 
 👉 darijaforkids.eu
 ```
@@ -331,9 +370,11 @@ Hoi,
 Je hebt een tijdje geleden gevraagd om een bericht zodra Darijaforkids er
 zou zijn. Vanaf vandaag kun je hem downloaden, op iPhone en op Android.
 
-De eerste vier lessen zijn gratis en blijven gratis — geen account, niets
-in te vullen. Wil je verder, dan kun je het eerst drie dagen gratis
-proberen.
+De app is gratis te downloaden — geen account, niets in te vullen, geen
+advertenties, en alles werkt zonder internet. De cursus zelf is een
+abonnement, en dat vraag ik meteen op het eerste scherm: € 6,99 per maand of
+€ 59,99 per jaar, en zolang de actie loopt € 29,99 voor het eerste jaar.
+Daarna staat de hele cursus in één keer open.
 
 darijaforkids.eu
 
@@ -360,8 +401,8 @@ Marokkaans-Arabisch wel verstaan maar niet spreken. Vanaf vandaag staat het
 in de App Store en in Google Play.
 
 Darijaforkids — het Arabische alfabet, 304 woorden en 100 zinnen, ingesproken
-door een Marokkaanse stem. Twee minuten per dag. De eerste vier lessen zijn
-gratis, zonder account.
+door een Marokkaanse stem. Twee minuten per dag. Gratis te downloaden, zonder
+account en zonder advertenties; de cursus zelf is een abonnement.
 
 darijaforkids.eu
 
@@ -383,7 +424,9 @@ kanalen waar dat past:
 Votre enfant comprend sa grand-mère. Mais il répond en français.
 
 Darijaforkids : l'arabe marocain — le darija, pas l'arabe des manuels.
-Deux minutes par jour. Les quatre premières leçons sont gratuites.
+Deux minutes par jour. Téléchargement gratuit, sans publicité. Le cours
+complet est un abonnement, et tout s'ouvre d'un seul coup : 29,99 € la
+première année au lieu de 59,99 €, soit 2,50 € par mois.
 
 👉 darijaforkids.eu
 ```
@@ -394,7 +437,21 @@ Deux minutes par jour. Les quatre premières leçons sont gratuites.
 Your child understands their grandmother. But answers in English.
 
 Darijaforkids: Moroccan Arabic — Darija, not the Arabic from the textbook.
-Two minutes a day. The first four lessons are free.
+Two minutes a day. Free to download, no ads; the whole course is one
+subscription that opens all at once.
+
+👉 darijaforkids.eu
+```
+
+**Duits**
+
+```
+Dein Kind versteht seine Großmutter. Aber es antwortet auf Deutsch.
+
+Darijaforkids: marokkanisches Arabisch — Darija, nicht das Arabisch aus dem
+Lehrbuch. Zwei Minuten am Tag. Der Download ist kostenlos, ohne Werbung. Der
+ganze Kurs ist ein Abo und wird auf einmal freigeschaltet: 29,99 € im ersten
+Jahr statt 59,99 €, das sind 2,50 € pro Monat.
 
 👉 darijaforkids.eu
 ```
@@ -459,14 +516,22 @@ Ik wel.
 **6 — wat het kost.** Eerlijk en compleet, één keer, en daarna nooit meer.
 
 ```
-Voor wie het zich afvraagt: de eerste vier lessen zijn gratis. Geen account,
-geen advertenties, niets in te vullen — ook niet door een kind.
+Voor wie het zich afvraagt: de app is gratis te downloaden. Geen account,
+geen advertenties, niets in te vullen — ook niet door een kind — en alles
+werkt zonder internet.
 
-Wil je verder, dan kost het € 6,99 per maand of € 59,99 per jaar, voor het
-hele gezin.
+De cursus zelf is een abonnement, en dat vraag ik meteen op het eerste
+scherm: € 6,99 per maand of € 59,99 per jaar, voor het hele gezin. Zolang de
+actie loopt is het eerste jaar € 29,99, dat is € 2,50 per maand. Na het
+afsluiten gaat de hele cursus in één keer open — alle zeventien units, niet
+in porties.
 
 Ik zeg het liever nu dan dat je er straks achter komt.
 ```
+
+Ook hier: die ene regel over € 29,99 laat je weg zolang de aanbieding niet
+werkelijk in beide consoles staat — zie de twee waarschuwingen boven
+*De teksten*.
 
 **7 — morgen.** Eén zin, één plaatje. Ga je meteen live, sla deze dan over.
 
@@ -501,9 +566,15 @@ hoofdstukken staan gratis online, voorgelezen inbegrepen:
 
 ## Wat je die dag niet doet
 
-- **Geen prijs in de eerste boodschap.** Dat hoort op T-2, eerlijk en
-  compleet, en daarna nooit meer. Wie het op de dag zelf ontdekt, voelt zich
-  beetgenomen — dus verstop het ook niet.
+- **Geen prijslijst in de eerste boodschap, maar wel dat het een abonnement
+  is.** Dit stond hier als *geen prijs in de eerste boodschap, dat hoort op
+  T-2*, en dat kan sinds 23 november niet meer: er is geen gratis deel, dus
+  iedereen die de app opent komt meteen op het abonnementsscherm (zie
+  `magLeren` in `src/engine/store.ts`). Eén regel is genoeg — gratis te
+  downloaden, de cursus is een abonnement. De volledige prijzen staan in post
+  6, en in de advertentieteksten voor de campagne; eerder, en zonder mijlpaal
+  ervan te maken, hoort het in je weetjes van de week ervoor
+  (`LANCERING.md` §16 fase 2).
 - **Geen winkellink in de app.** De app verwijst nergens naar de boeken. Dat
   is met opzet: een betaalde app die naar een andere winkel wijst, is voor
   Apple een reden om te weigeren, en voor een ouder een reden om te
@@ -563,9 +634,20 @@ Bij 1.0 heeft het geen zin: er is nog niemand om gefaseerd aan uit te delen.
 ### En controleer eerst in TestFlight
 
 Build 8 staat er al. Zet hem op een toestel en loop de nieuwe dingen na
-vóórdat je indient: het keuzescherm na de taalkeuze, het kaartje als de gratis
-lessen op zijn, de knop in de kopbalk, en of het e-boek op `/boek` ook
-werkelijk zichtbaar is. Dat laatste is op Android nog niet nagemeten.
+vóórdat je indient:
+
+- het keuzescherm na de taalkeuze
+- **de poort**: wie geen abonnement heeft komt na het welkomstscherm meteen op
+  `/volledig` en niet op het pad (`Poort` in `src/App.tsx`). Op het web geldt
+  die poort met opzet niet, dus dit meet je op het toestel.
+- **het abonnementskaartje op het scorescherm**: dat staat er na élke les voor
+  wie geen abonnement heeft (`t.lesson.abonnementTitel` / `abonnementBody` in
+  `src/pages/LessonPlayer.tsx`), onder de beloningen. Hier stond *het kaartje
+  als de gratis lessen op zijn*; dat kaartje bestaat sinds 23 november niet
+  meer, want er is geen laatste gratis les.
+- de knop in de kopbalk
+- of het e-boek op `/boek` ook werkelijk zichtbaar is — dat is op Android nog
+  niet nagemeten
 
 ## Als er iets misgaat
 

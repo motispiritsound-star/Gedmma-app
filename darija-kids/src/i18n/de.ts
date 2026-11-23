@@ -92,17 +92,18 @@ export const de: Strings = {
   lesson: {
 
     /**
-     * Wat er op het scorescherm staat als de gratis lessen op zijn.
+     * Wat er op het scorescherm staat voor wie geen abonnement heeft.
      *
-     * Geen "koop nu" maar een mededeling: er is geen volgende les meer. Dat
-     * is waar, en het is de enige plek waar de app uit zichzelf over geld
-     * begint nadat het keuzescherm bij de start is weggeklikt.
+     * Hier stond "Dit was je laatste gratis les", met een tak erin voor de
+     * proefperiode. Gratis lessen zijn er niet meer en een proef ook niet, dus
+     * wat er nu staat is waarom er geen volgende les is -- en wat er wél kan.
+     *
+     * Geen "koop nu" maar een mededeling. Het is de enige plek waar de app uit
+     * zichzelf over geld begint nadat het keuzescherm bij de start is
+     * weggeklikt.
      */
-    gratisOpTitel: 'Das war deine letzte kostenlose Lektion',
-    gratisOpBody: (dagen: number): string =>
-      dagen > 0
-        ? `Der Weg geht weiter, aber der Rest gehört zum Vollzugang. Die ersten ${dagen} Tage sind kostenlos.`
-        : `Der Weg geht weiter, aber der Rest gehört zum Vollzugang.`,
+    abonnementTitel: 'Hier endet der Pfad',
+    abonnementBody: 'Deine eigenen Lektionen kannst du immer wiederholen. Der Rest des Kurses gehört zum Abo.',
     nieuwWoord: 'Neues Wort',
     snapIk: 'Verstanden!',
     watBetekent: 'Was bedeutet das?',
@@ -316,6 +317,7 @@ export const de: Strings = {
   },
 
   bonus: {
+    slotUitleg: 'Die Bonusrunde übt den ganzen Wortschatz und gehört zum Abo.',
     titel: 'Bonus',
     uitleg: 'Der Kurs hört irgendwann auf. Eine Sprache nicht. Hier wartet immer etwas, gebaut aus dem, was du schon kennst.',
     naarBonus: 'Zum Bonus',
@@ -692,10 +694,6 @@ export const de: Strings = {
     herinneringTijd: 'Um wie viel Uhr',
     herinneringTitel: 'Yallah, kurz üben',
     herinneringBody: 'Fünf Minuten Darija halten deine Serie am Leben.',
-    /* De tekst van het eenmalige seintje uit herinnering.ts. Hij zegt wat er
-       gebeurd is en verkoopt niets -- zie de uitleg daar. */
-    seintjeTitel: 'Die kostenlosen Lektionen sind geschafft',
-    seintjeBody: 'Wie es weitergeht, steht in der App bereit.',
     film: 'Filmchen nach der Lektion',
     filmHint: 'Ein kurzer Zeichentrick mit Fnek, wenn du eine Lektion abschließt.',
     voorlezen: 'Vorlesen',
@@ -772,14 +770,13 @@ export const de: Strings = {
   landing: {
     voorOuders: 'Für Eltern',
     woordenboek: 'Wörterbuch',
-    beginGratis: 'Kostenlos starten',
+    bekijkCursus: 'Den Kurs ansehen',
     gaVerder: 'Weiter',
     titel1: 'Lern ',
     titelAccent: 'Darija',
     titel2: ', die Sprache von zu Hause.',
     intro:
-      'Marokkanisches Arabisch für Kinder und Jugendliche. Kurze Lektionen, echte Wörter, Spiele und ein Pfad, der sich daran anpasst, was du noch nicht kennst. Kostenlos starten, ohne Werbung, funktioniert offline.',
-    startLes1: 'Mit Lektion 1 starten',
+      'Marokkanisches Arabisch für Kinder und Jugendliche. Kurze Lektionen, echte Wörter, Spiele und ein Pfad, der sich daran anpasst, was du noch nicht kennst. Ohne Werbung, ohne Konto, funktioniert offline.',
     bekijkWoorden: 'Die Wörter ansehen',
     cijfers: (woorden, units, letters) =>
       `${woorden} Wörter · ${units} Einheiten · ${letters} Buchstaben · kein Konto nötig`,
@@ -832,7 +829,7 @@ export const de: Strings = {
       ],
       [
         'Kostet es etwas?',
-        `Die ersten acht Lektionen sind und bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs läuft über ein Abo: 59,99 € pro Jahr (das sind 5,00 € pro Monat) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Die ersten 3 Tage sind gratis: es wird nichts abgebucht, solange du innerhalb dieser 3 Tage kündigst. ${n.welke === 'ios' ? 'Ein Abo gilt für die ganze Familie: bis zu sechs Personen, jede mit ihrem eigenen Fortschritt.' : n.welke === 'android' ? 'Das Abo gilt für das Google-Konto, das es abschließt.' : 'Auf iPhone und iPad gilt ein Abo für die ganze Familie: bis zu sechs Personen, jede mit ihrem eigenen Fortschritt. Auf Android gilt es für das Google-Konto, das es abschließt.'} Abgeschlossen wird es in der App über ${n.via}, und dort kündigst du es auch, wann du willst. Keine Werbung und kein Konto: dein Fortschritt bleibt deiner.`,
+        `Die App lässt sich kostenlos herunterladen; der Kurs läuft über ein Abo: 59,99 € pro Jahr (das sind 5,00 € pro Monat) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Der Betrag wird beim Abschließen abgebucht und danach immer wieder, bis du kündigst. ${n.welke === 'ios' ? 'Ein Abo gilt für die ganze Familie: bis zu sechs Personen, jede mit ihrem eigenen Fortschritt.' : n.welke === 'android' ? 'Das Abo gilt für das Google-Konto, das es abschließt.' : 'Auf iPhone und iPad gilt ein Abo für die ganze Familie: bis zu sechs Personen, jede mit ihrem eigenen Fortschritt. Auf Android gilt es für das Google-Konto, das es abschließt.'} Abgeschlossen wird es in der App über ${n.via}, und dort kündigst du es auch, wann du willst. Keine Werbung und kein Konto: dein Fortschritt bleibt deiner.`,
       ],
       [
         'Funktioniert es offline?',
@@ -867,8 +864,7 @@ export const de: Strings = {
       dagen > 0
         ? `${dagen} Tage gratis, danach ${prijs} pro ${jaar ? 'Jahr' : 'Monat'}${gezin ? ' für die ganze Familie' : ''}`
         : `${prijs} pro ${jaar ? 'Jahr' : 'Monat'}${gezin ? ' für die ganze Familie' : ''}`,
-    intro: (vrij) =>
-      `Die ersten ${vrij} Lektionen sind und bleiben kostenlos — drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der Rest des Kurses gehört zum Abo.`,
+    intro: 'Der ganze Kurs in einem Abo: alle Einheiten, alle Wörter und alle Aufnahmen stehen auf einmal offen. Nichts in Häppchen, keine Werbung, kein Konto.',
     krijgt: (gezin, units, woorden, letters, zinnen, opnames, films) => [
       `${opnames} Aufnahmen: jedes Wort, jeder Buchstabe und jeder Satz gesprochen von jemandem, der Darija spricht — nicht von der Stimme deines Telefons`,
       `Alle ${units} Einheiten, vom Alphabet und Essen bis zum Handeln im Souk`,
@@ -1007,7 +1003,7 @@ export const de: Strings = {
       dagen > 0
         ? `Der ganze Kurs ist ein Abo: die ersten ${dagen} Tage kostenlos, danach ab ${prijs} pro Monat. Jederzeit kündbar.`
         : `Der ganze Kurs ist ein Abo: ab ${prijs} pro Monat. Jederzeit kündbar.`,
-    gratisDeel: (vrij: number): string => `Die ersten ${vrij} Lektionen bleiben immer kostenlos, auch ohne Abo.`,
+    allesOpen: 'Nach dem Bezahlen steht der ganze Kurs auf einmal offen.',
     titel: 'Ahlan! Willkommen bei Darijaforkids',
     body: 'In welcher Sprache möchtest du lernen? Du kannst das später jederzeit ändern.',
     wieTitel: 'Wer bist du?',
@@ -1041,7 +1037,7 @@ export const de: Strings = {
     bodyDirect: (prijs, opnames, units, gezin) =>
       `${units} Einheiten und ${opnames} Aufnahmen, jedes Wort gesprochen von jemandem, der Darija spricht. Ab ${prijs} pro Monat${gezin ? ' für die ganze Familie' : ''} — jederzeit kündbar.`,
     knop: 'Vollzugang ansehen',
-    later: (vrij: number): string => `Erst die ${vrij} kostenlosen Lektionen`,
+    later: 'Vielleicht später',
   },
 
   feedback: {

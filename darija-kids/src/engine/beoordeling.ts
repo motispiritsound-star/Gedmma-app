@@ -36,8 +36,12 @@ import { platform } from './platform'
 /**
  * Hoeveel diploma's er moeten liggen voordat de vraag verschijnt.
  *
- * Drie, en niet vier: bij vier ben je al voorbij de gratis lessen en zit de
- * ouder in een gesprek over geld. Die twee vragen moet je niet stapelen.
+ * Drie, en niet vier. Dat kwam uit het gratis deel: bij vier diploma's was je
+ * daar al voorbij en zat de ouder in een gesprek over geld, en die twee vragen
+ * moet je niet stapelen. Sinds 23 november staat het gesprek over geld bij de
+ * download en is dat argument vervallen -- maar drie blijft het betere getal:
+ * iemand die drie units heeft afgerond heeft weken met de app gewerkt, en dat
+ * is het moment waarop een beoordeling ergens over gaat.
  */
 export const DIPLOMAS_VOOR_VRAAG = 3
 

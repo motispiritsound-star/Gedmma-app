@@ -76,7 +76,7 @@ const card = async () => {
     <div class="ar">الدارجة</div>
     <h1>Leer Darija,<br>de taal van thuis.</h1>
     <p>Marokkaans-Arabisch voor kinderen en jongeren.</p>
-    <div class="row"><span>Gratis</span><span>Offline</span><span>Zonder advertenties</span></div>
+    <div class="row"><span>Offline</span><span>Geen account</span><span>Zonder advertenties</span></div>
   </div>`
 }
 

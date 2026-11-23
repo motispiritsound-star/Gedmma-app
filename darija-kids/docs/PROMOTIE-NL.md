@@ -191,7 +191,7 @@ Daarna: schrijf in je lijst op wat de tien plekken van gisteren hebben geantwoor
 
 De twee weken waarin families aan tafel zitten en met Marokko bellen. Drie berichten in die periode, allemaal over hetzelfde beeld: de telefoon gaat naar Marokko en het kind zwijgt.
 
-Dit is ook je moment voor het **jaarabonnement**, en dan reken je in plaats van af te prijzen: € 59,99 per jaar is € 5,00 per maand, met een leesboek van € 14,99 erbij; per maand is het € 6,99. Wie nu begint heeft de hele zomer nog voor zich. Verkoop in deze maanden bewust geen maandabonnement.
+Dit is ook je moment voor het **jaarabonnement**: € 59,99 per jaar — dat is € 5,00 per maand — met een leesboek van € 14,99 erbij; per maand is het € 6,99. Loopt de tijdelijke actie van 50 % nog, dan is het eerste jaar € 29,99 (€ 2,50 per maand), en dan zet je dat bedrag erbij en niet alleen de maandprijs: Apple heeft deze app één keer afgewezen op richtlijn 3.1.2(c) omdat de omrekening opvallender was dan wat er werkelijk werd afgeschreven. Hier stond "en dan reken je in plaats van af te prijzen"; dat gold toen er geen actie was. Wie nu begint heeft de hele zomer nog voor zich. Verkoop in deze maanden bewust geen maandabonnement.
 
 **De grootouder.** Hij is je tweede koper, maar er bestaat geen cadeaubon: er zijn geen accounts, en een code is een proefperiode waarvoor een betaalmiddel nodig is. In de praktijk betaalt oma en zet de ouder hem op de telefoon. Zeg dat zo, en verzin er niets bij.
 
@@ -225,7 +225,7 @@ Vanaf 1 april sta je op ongeveer honderd dagen. Dán zet je de aftelling aan, ni
 >
 > Een vader uit [stad] heeft een app gemaakt waarmee kinderen Darija leren práten — het Marokkaans van thuis, niet het Standaardarabisch van de les. Hij heeft alle opnames zelf ingesproken, dus het is een echte stem en geen computer. Hij werkt zonder internet, er zitten geen advertenties in en er is geen account nodig.
 >
-> De eerste vier lessen zijn gratis, dus je kunt het eerst gewoon proberen; daarna is het een abonnement. darijaforkids.eu
+> De app is gratis te downloaden; de cursus zelf is een abonnement, en dan gaat alles in één keer open. darijaforkids.eu
 >
 > Hij zei het zelf zo, en ik moest er wel om lachen omdat het bij ons precies zo is: je kind verstaat oma wel, maar het antwoordt in het Nederlands.
 
@@ -275,7 +275,7 @@ Die laatste alinea is lelijk en hij moet er staan. Een belofte van "gratis" die 
 > U heeft gelijk dat Darija geen schrijftaal is, en ik kom niet beweren dat het uw les vervangt. Wat u geeft kan ik niet geven: lezen, schrijven, Koran. En wat ik geef kunt u in uw uur niet geven — dat een kind dúrft te praten met zijn oma. Het werkt trouwens de andere kant op ook: een kind dat thuis al praat, hoort uw letters in woorden die het al kent.
 
 **"Jullie verdienen er geld aan" / "in de moskee doen we geen commercie."**
-> Ik verdien hier geld aan, ja. Ik zeg het liever zelf dan dat u het straks zelf ontdekt. De eerste vier lessen zijn gratis en er zitten geen advertenties in. Daarna kost het € 6,99 per maand, of € 59,99 voor een jaar met een boek erbij. Ik verkoop hier vandaag niets en ik neem geen geld aan in dit gebouw; wie het wil zoekt het thuis op. En voor deze plek heb ik briefjes met drie maanden gratis, één per gezin — met er eerlijk op wat het daarna kost.
+> Ik verdien hier geld aan, ja. Ik zeg het liever zelf dan dat u het straks zelf ontdekt. De app is gratis te downloaden, er zitten geen advertenties in, er wordt niets van uw kind verzameld en alles werkt zonder internet. De cursus zelf is een abonnement: € 6,99 per maand, of € 59,99 voor een jaar met een boek erbij — en zolang de actie loopt € 29,99 voor het eerste jaar *[dat laatste alleen zeggen als die aanbieding werkelijk in beide consoles staat — zie `docs/STAND.md`, 23 november]*. Ik verkoop hier vandaag niets en ik neem geen geld aan in dit gebouw; wie het wil zoekt het thuis op. En voor deze plek heb ik briefjes met drie maanden gratis, één per gezin — met er eerlijk op wat het daarna kost.
 
 **"Mijn moeder spreekt Tarifit, geen Darija."**
 > Dan moet ik eerlijk zijn: de app leert Darija, niet Tarifit. Als uw moeder alleen Riffijns praat, doet dit niet wat u hoopt, en dat ga ik niet mooier maken dan het is. Wat het wél doet: Darija is de taal waarin uw kind in Marokko boodschappen doet, afdingt op de souq, met zijn neven en nichten praat, en op straat terechtkomt. Voor het gesprek met uw moeder heb ik niets. Voor de rest van die zes weken wel.
@@ -374,7 +374,7 @@ Dat is het enige bericht in het hele plan waarin niet jij de verspreider bent en
 |---|---|---|
 | **Installaties deze week** | App Store Connect → App Analytics; Play Console → Acquisitie | Het enige getal dat alles samenvat. Let vooral op de dagen waarop je *niets* hebt gedaan: lopen die op, dan wordt hij doorgegeven, en dat is het hele doel. |
 | **Ingewisselde codes, per plek** | De rapportage bij je aanbiedingen in beide consoles | De zuiverste meting die je hebt en de enige die per plek vertelt wat een ja waard was. "Vijf plekken zeiden ja" is geen cijfer; "plek drie leverde elf gezinnen" wel. |
-| **Betalende abonnees** | Abonnementen per product in beide consoles | Proeven van drie dagen zeggen weinig; wie na de proef betaalt, zegt alles. Codegezinnen verschijnen hier pas in maand vier. |
+| **Betalende abonnees** | Abonnementen per product in beide consoles | Hier stond dat proeven van drie dagen weinig zeggen en dat het pas iets betekent als iemand ná de proef betaalt. Sinds 23 november is er geen proefperiode: wie het abonnement neemt betaalt bij het afsluiten, dus dit getal staat er meteen. Codegezinnen verschijnen hier pas in maand vier. |
 | **Beoordelingen: aantal en gemiddelde** | Beide consoles | Nul sterren is nu je grootste rem in de winkel, en het is het enige getal waar je direct iets aan kunt doen: vragen. |
 
 Wat je **niet** wekelijks meet: volgers, weergaven, likes, plaatstijden. Bij tientallen weergaven vergelijk je ruis met ruis, en je gooit goede openingszinnen weg op grond van niets. En vanaf week vijf, één keer per maand: schrap het ene ding dat het minst heeft opgeleverd, ook als je er het meeste werk in hebt gestopt.

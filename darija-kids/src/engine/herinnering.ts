@@ -1,11 +1,11 @@
-import { getState } from './store'
+import { getState, magLeren } from './store'
 
 /**
- * De meldingen die dit toestel aan zichzelf stuurt. Er zijn er twee.
+ * De melding die dit toestel aan zichzelf stuurt. Er is er één.
  *
- * De herinnering: één melding per dag, op een tijd die de ouder kiest. En
- * daarnaast, onderaan dit bestand, één eenmalig seintje als de gratis
- * lessen gedaan zijn.
+ * De herinnering: één melding per dag, op een tijd die de ouder kiest. Hier
+ * stond daarnaast één eenmalig seintje, voor als de gratis lessen gedaan
+ * waren; dat is op 23 november vervallen met het gratis deel zelf.
  *
  * Apple schrijft er in richtlijn 4.2 zelf bij dat een melding op zichzelf
  * niets bewijst, en dat klopt. Hij staat hier niet om een vinkje te halen maar
@@ -29,17 +29,15 @@ type Meldingen = {
 }
 
 /**
- * Twee vaste ids, en meer worden het niet.
+ * Eén vast id, en het blijft er één.
  *
- * 1 is de dagelijkse wekker. Altijd dezelfde, zodat opnieuw inplannen de oude
- * overschrijft in plaats van er een tweede naast te zetten.
- *
- * 2 is het enige eenmalige seintje dat deze app kent: dat de gratis
- * lessen gedaan zijn. Het heeft een eigen nummer nodig, want anders wist het
- * zetten van de dagelijkse wekker het weg -- en omgekeerd.
+ * Altijd hetzelfde nummer, zodat opnieuw inplannen de oude wekker overschrijft
+ * in plaats van er een tweede naast te zetten. Nummer 2 was van het eenmalige
+ * seintje over het gratis deel; dat bestaat niet meer, en als er ooit weer een
+ * tweede melding komt hoort die een eigen nummer te krijgen — anders wist de
+ * één de ander weg.
  */
 const ID = 1
-const ID_GRATIS_OP = 2
 
 const plugin = (): Meldingen | null =>
   (window as { Capacitor?: { Plugins?: { LocalNotifications?: Meldingen } } })
@@ -76,6 +74,17 @@ export async function zetHerinnering(
   try {
     await api.cancel?.({ notifications: [{ id: ID }] })
     if (!aan) return false
+    /*
+     * Geen wekker voor wie niets kan doen.
+     *
+     * Sinds er geen gratis lessen meer zijn, zou een dagelijkse melding voor
+     * een niet-betaler een uitnodiging zijn voor iets wat achter de kassa
+     * staat -- elke dag opnieuw. Dat is precies de melding waar Apple in
+     * richtlijn 4.5.4 naar kijkt, en in de kindercategorie wil je die niet
+     * sturen. De voorkeur blijft wel staan: zodra er betaald is, zet
+     * `herstelHerinnering` hem bij de volgende start gewoon aan.
+     */
+    if (!magLeren(getState())) return false
 
     const toestemming = (await api.requestPermissions?.())?.display
     if (toestemming !== 'granted') return false
@@ -103,83 +112,9 @@ export async function zetHerinnering(
  * start opnieuw zetten kost niets en scheelt een reeks.
  */
 export async function herstelHerinnering(tekst: { titel: string; body: string }): Promise<void> {
+  // De wacht op `magLeren` zit in `zetHerinnering`, dus hij geldt hier ook.
+
   const s = getState().settings
   if (!s.herinnering) return
   await zetHerinnering(true, s.herinneringTijd, tekst)
-}
-
-/* ------------------------------------------------- het gratis deel is op */
-
-/**
- * Het seintje dat de gratis lessen gedaan zijn.
- *
- * Geen getal in deze tekst, en dat is met opzet: hoeveel lessen er gratis
- * zijn staat in `GRATIS_LESSEN` in store.ts en is op 12 november van vier
- * naar acht gegaan. Een toelichting die het getal herhaalt, is een
- * toelichting die bij de volgende wijziging stil gaat liegen.
- *
- * Het kind maakt de laatste gratis les af en ziet dat op het scorescherm
- * staan. De
- * ouder, die beslist of er verder geleerd wordt, zit op dat moment meestal
- * niet mee te kijken -- en dit is de enige plek in de app waar die twee niet
- * dezelfde persoon zijn. Daarom één melding, de volgende ochtend.
- *
- * Drie dingen die hij met opzet níét doet:
- *
- *   - Hij vraagt geen toestemming. Een systeemvenster op het moment dat het
- *     slot in beeld komt is een verkooppraatje met een knop erin. Staat de
- *     toestemming er al -- omdat de ouder de dagelijkse wekker aanzette -- dan
- *     gaat hij; anders niet, en daar blijft het bij. Dat is ook waarom het
- *     welkomstscherm die wekker aanbiedt: zonder dat ja bestaat dit seintje
- *     alleen op papier.
- *   - Hij zegt niet "koop nu". Er staat wat er gebeurd is. Wie wil weten wat
- *     het kost opent de app, waar de prijs staat. Apple noemt een melding die
- *     wel verkoopt in richtlijn 4.5.4 met zoveel woorden, en terecht.
- *   - Hij herhaalt zich niet. `gratisOpGemeld` in de staat houdt bij dat hij
- *     geweest is; een gratis les die opnieuw gespeeld wordt levert er geen
- *     tweede op.
- *
- * Tien uur 's ochtends, de dag erna: ver genoeg van de avond dat hij niet
- * boven op de dagelijkse wekker valt, en op een tijd dat een telefoon
- * doorgaans in een hand ligt.
- */
-export async function seintjeGratisOp(tekst: { titel: string; body: string }): Promise<boolean> {
-  const api = plugin()
-  if (!api) return false
-  try {
-    const toestemming = (await api.checkPermissions?.())?.display
-    if (toestemming !== 'granted') return false
-
-    const wanneer = new Date()
-    wanneer.setDate(wanneer.getDate() + 1)
-    wanneer.setHours(10, 0, 0, 0)
-    await api.schedule?.({
-      notifications: [{
-        id: ID_GRATIS_OP,
-        title: tekst.titel,
-        body: tekst.body,
-        schedule: { at: wanneer, allowWhileIdle: true },
-      }],
-    })
-    return true
-  } catch {
-    return false
-  }
-}
-
-/**
- * Het seintje weghalen.
- *
- * Wordt er betaald tussen het afmaken van de laatste gratis les en de volgende
- * ochtend, dan hoort die melding niet meer te komen: "de gratis lessen zijn
- * gedaan" tegen iemand die net een abonnement nam is op zijn best verwarrend.
- * `grant()` in billing.ts is de enige plek waar de toegang opengaat, en dus de
- * enige plek die dit hoort aan te roepen.
- */
-export async function wisSeintjeGratisOp(): Promise<void> {
-  const api = plugin()
-  if (!api) return
-  try {
-    await api.cancel?.({ notifications: [{ id: ID_GRATIS_OP }] })
-  } catch { /* niets te wissen is geen fout */ }
 }

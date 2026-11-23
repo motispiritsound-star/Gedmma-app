@@ -6,13 +6,11 @@ import { cardForCheckpoint, type HistoryCard } from '../content/history'
 import { buildRound } from '../engine/exercises'
 import {
   awardBadges, checkpointsDone, collectHistory, completeLesson, getState, goalMet, heartsNow,
-  isMijlpaal, knownIds, gratisDeelOp, lessonBehindPaywall, levelOf, markTipSeen, nextLesson, setState,
+  isMijlpaal, knownIds, lessonBehindPaywall, levelOf, markTipSeen, nextLesson,
   useStore, xpToday, type Badge,
 } from '../engine/store'
-import { seintjeGratisOp } from '../engine/herinnering'
 import { reikDiplomasUit } from '../engine/diploma'
 import { tel, tredeVan } from '../engine/tellen'
-import { TRIAL_DAYS, useBilling } from '../engine/billing'
 import { sfx } from '../engine/audio'
 import { Button, Card, Sheet } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
@@ -43,15 +41,6 @@ export function LessonPlayer() {
 function LesScherm({ lessonId }: { lessonId: string }) {
   const t = useT()
   const lang = useLang()
-  /*
-    Het aantal gratis dagen komt van de winkel en niet uit `TRIAL_DAYS`. Stond
-    hier het getal zelf, dan beloofde het scorescherm "de eerste 3 dagen zijn
-    gratis" ook nadat de proefperiode uit het aanbod was gehaald -- en dat is
-    een mededeling over geld die niet klopt, op de plek waar iemand net tegen
-    het slot aanloopt. Is er geen proef, dan is dit nul en laat `gratisOpBody`
-    die zin weg. Dezelfde regel staat in Settings.tsx en Welcome.tsx.
-  */
-  const proefDagen = useBilling().proef.jaar === true ? TRIAL_DAYS : 0
   const navigate = useNavigate()
   const lesson = lessonById(lessonId)
   const unit = unitOfLesson(lessonId)
@@ -100,13 +89,16 @@ function LesScherm({ lessonId }: { lessonId: string }) {
   const [card, setCard] = useState<HistoryCard | null>(null)
   const lessonsDone = useStore((s) => Object.keys(s.lessons).length)
   /**
-   * Of dit de laatste gratis les was.
+   * Of er een abonnement is.
    *
-   * Uitgelezen op het scorescherm en niet eerder: tijdens de les hoort er
-   * niets over geld te staan, en vóór `completeLesson` is deze les nog niet
-   * geteld — dan zou hij altijd onwaar zijn.
+   * Hier stond `gratisDeelOp`: of dit de laatste gratis les was. Die vraag
+   * bestaat niet meer, en het antwoord is nu eenvoudiger dan het was. Zonder
+   * abonnement staat alleen open wat al gedaan is, dus voor een niet-betaler
+   * is er na élke les geen volgende — en hoort de mededeling er élke keer bij.
+   * Alleen op het scorescherm: tijdens de les hoort er niets over geld te
+   * staan.
    */
-  const gratisOp = useStore(gratisDeelOp)
+  const gekocht = useStore((s) => s.unlocked)
 
   /*
    * Welke les hierna komt, en de knop die hem meteen begint.
@@ -124,7 +116,7 @@ function LesScherm({ lessonId }: { lessonId: string }) {
    * dan blijft het pad de bovenste knop.
    */
   const volgendeId = useStore(nextLesson)
-  const volgende = volgendeId === lessonId ? undefined : lessonById(volgendeId)
+  const volgende = volgendeId === null || volgendeId === lessonId ? undefined : lessonById(volgendeId)
 
   // The round is built once per attempt, from what the learner already knows.
   const exercises = useMemo(
@@ -223,32 +215,6 @@ function LesScherm({ lessonId }: { lessonId: string }) {
      */
     const trede = tredeVan(Object.keys(now.lessons).length)
     if (trede) void tel(trede)
-    /*
-     * Het seintje voor de ouder, als dit de vierde gratis les was.
-     *
-     * Hier en niet in `completeLesson`: de staat hoort geen meldingen te
-     * zetten, en `gratisDeelOp` is pas waar ná `completeLesson`. Zie
-     * herinnering.ts voor wat die melding wel en niet doet -- hij vraagt geen
-     * toestemming en verkoopt niets, dus wie geen meldingen aan heeft merkt
-     * hier niets van.
-     *
-     * `gratisOpGemeld` meteen wegzetten en niet pas als het gelukt is: lukt
-     * het niet, dan is er niets om morgen nog eens te proberen, en een gratis
-     * les mag zo vaak opnieuw als een kind wil.
-     */
-    if (gratisDeelOp(now) && !now.gratisOpGemeld) {
-      setState({ gratisOpGemeld: Date.now() })
-      void seintjeGratisOp({ titel: t.settings.seintjeTitel, body: t.settings.seintjeBody })
-      /*
-       * Binnen deze wacht en niet ernaast, want hij ís precies "het slot is
-       * net bereikt": de vlag zorgt dat het één keer gebeurt.
-       *
-       * Prijs daarvan: wie dit punt al vóór de uitrol voorbij was, telt nooit
-       * mee. `gratis_op` is dus structureel lager dan het werkelijke aantal
-       * tot er een cohort door is dat de meting van begin af aan had.
-       */
-      void tel('gratis_op')
-    }
     // The film carries its own music, so the flourish waits until after it.
     if (lesson.kind === 'toets') {
       // The card is earned by passing the checkpoint, not by watching it, so
@@ -402,25 +368,25 @@ function LesScherm({ lessonId }: { lessonId: string }) {
         )}
 
         {/*
-          De enige plek waar het scorescherm over het abonnement begint, en
-          alleen als er werkelijk geen volgende les meer is. Hij staat ónder
-          de beloningen: eerst krijg je waar je voor gewerkt hebt, dan pas de
-          mededeling.
+          De enige plek waar het scorescherm over het abonnement begint. Hij
+          staat ónder de beloningen: eerst krijg je waar je voor gewerkt hebt,
+          dan pas de mededeling.
         */}
-        {gratisOp && (
+        {!gekocht && (
           <Card className="mt-4 p-4 text-start">
-            <p className="font-display font-extrabold">{t.lesson.gratisOpTitel}</p>
-            <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.lesson.gratisOpBody(proefDagen)}</p>
+            <p className="font-display font-extrabold">{t.lesson.abonnementTitel}</p>
+            <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.lesson.abonnementBody}</p>
           </Card>
         )}
 
         <div className="mt-6 space-y-3">
           {/*
-            Als het pad op is, is "verder op pad" een knop naar een slotje.
-            Dan wisselen de twee van plek — niet om te duwen, maar omdat de
-            bovenste knop hoort te doen wat de lezer nu wil.
+            Zonder abonnement is "verder op pad" een knop naar een pad
+            zonder volgende les. Dan wisselen de twee van plek — niet om te
+            duwen, maar omdat de bovenste knop hoort te doen wat de lezer nu
+            wil.
           */}
-          {gratisOp ? (
+          {!gekocht ? (
             <Link to="/volledig" className="block"><Button className="w-full">{t.unlock.slotKnop}</Button></Link>
           ) : volgende ? (
             <Button className="w-full" onClick={() => navigate(`/les/${volgende.id}`)}>
@@ -438,7 +404,7 @@ function LesScherm({ lessonId }: { lessonId: string }) {
           ) : (
             <Button className="w-full" onClick={() => navigate('/leren')}>{t.lesson.verderOpPad}</Button>
           )}
-          {!gratisOp && volgende && (
+          {gekocht && volgende && (
             <Button variant="secondary" className="w-full" onClick={() => navigate('/leren')}>
               {t.lesson.verderOpPad}
             </Button>
@@ -450,7 +416,7 @@ function LesScherm({ lessonId }: { lessonId: string }) {
           >
             {t.common.nogEenKeer}
           </Button>
-          {gratisOp && (
+          {!gekocht && (
             <Button variant="secondary" className="w-full" onClick={() => navigate('/leren')}>
               {t.lesson.verderOpPad}
             </Button>

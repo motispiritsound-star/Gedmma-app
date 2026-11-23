@@ -1,33 +1,75 @@
 # Het abonnement, en hoe het geld bij jou komt
 
-De **eerste vier lessen** zijn gratis en blijven gratis: drie stukken van het alfabet en de eerste les groeten. De rest van de cursus
-hoort bij **volledige toegang**: een paar dagen gratis proberen, daarna
-**€ 59,99 voor een jaar vooruit (€ 5,00 per maand) of € 6,99 per maand**,
-inclusief btw en altijd opzegbaar. Daarnaast staat er één ding los te koop:
-het **e-boek** voor **€ 14,99 eenmalig** — bij het jaarabonnement zit het erbij.
-De betaling loopt
-volledig via de App Store en Google Play — zij innen, zij rekenen de btw af,
-zij houden de proefperiode bij, en zij storten maandelijks op jouw rekening.
+De app is **gratis te downloaden**; de cursus is een **abonnement**, en dat
+wordt op het eerste scherm gevraagd. Er zijn geen gratis lessen en geen
+proefperiode: na het betalen staat alles in één keer open. Wie de app vóór
+23 november 2026 had en lessen afrondde, houdt precies die afgeronde lessen
+open — zie de aantekening boven `magLeren` in `src/engine/store.ts`.
+
+Het abonnement kost **€ 59,99 voor een jaar vooruit (€ 5,00 per maand) of
+€ 6,99 per maand**, inclusief btw en altijd opzegbaar. Op het jaar komt een
+tijdelijke actie van 50%: **€ 29,99 voor het eerste jaar** (€ 2,50 per maand),
+voor de campagne op de Franse, Nederlandse en Duitse Facebook-pagina's.
+Daarnaast staat er één ding los te koop: het **e-boek** voor **€ 14,99
+eenmalig** — bij het jaarabonnement zit het erbij.
+
+De betaling loopt volledig via de App Store en Google Play — zij innen, zij
+rekenen de btw af, en zij storten maandelijks op jouw rekening.
 
 > **Kort:** je maakt in beide winkels twee abonnementsproducten aan —
 > `app.darijaforkids.yearly` en `app.darijaforkids.monthly` — in dezelfde
 > abonnementsgroep, plus één eenmalig product `app.darijaforkids.ebook`, zet de
-> prijzen en de gratis periode, koppelt je bankrekening, en de winkels betalen
-> uit wat er binnenkwam minus hun commissie.
+> prijzen, zet de proefaanbieding uit en de actie op het jaar aan, koppelt je
+> bankrekening, en de winkels betalen uit wat er binnenkwam minus hun
+> commissie.
 
 ## Twee dingen om te weten voor je begint
 
-**1. De proefperiode is drie dagen.** Dat is ook het minimum van beide
-winkels: Apple biedt als kortste gratis periode 3 dagen (daarna 1 week, 2
-weken, 1 maand, …) en Google Play hanteert hetzelfde minimum, dus korter kan
-sowieso niet. Het getal staat op één plek, `TRIAL_DAYS` in
-`src/engine/billing.ts`, en moet gelijk zijn aan wat je in de winkels instelt.
-Wil je later langer geven — een week doet het in dit soort apps vaak beter —
-dan is dat één getal hier en één instelling daar. Helemaal geen proefperiode
-kan ook: `TRIAL_DAYS` op 0, en de teksten passen zich aan.
+**1. Er is geen proefperiode.** De drie gratis dagen zijn op 23 november uit
+het aanbod gegaan: wie het abonnement neemt, betaalt bij het afsluiten.
+Opzeggen kan nog altijd en dan loopt de betaalde periode af — dat is de winkel
+en dat verandert niet.
 
-**1b. De proef loopt via de winkel, niet via de app.** Er zijn twee manieren
-om drie dagen gratis te geven, en het verschil is groter dan het lijkt.
+De app leest dat niet uit een getal in de code maar uit wat de winkel
+teruggeeft (`heeftProef` in `src/engine/billing.ts`, per plan in
+`billing.proef`): een abonnement zonder aanbieding heeft één prijsfase, een
+abonnement mét proefperiode heeft er meer en de eerste kost niets. Onbekend
+telt als géén proef — beloof niets wat je niet weet. De teksten hebben in alle
+zes de talen een tak voor nul dagen, dus **de app klapt om op het moment dat
+de aanbieding uit de console gaat; er hoeft geen nieuwe build naartoe.**
+`TRIAL_DAYS` is daarmee geen belofte meer: dat getal doet alleen nog werk als
+wachttijd voor het e-boek (punt 1c).
+
+Wat er in de twee consoles voor moet gebeuren, en waarvoor geen commando
+bestaat — Apple's API kent abonnementsaanbiedingen wel, maar daarvoor moet er
+eerst een ASC-API-sleutel op de schijf staan, en dat is meer werk dan de twee
+klikken:
+
+| Waar | Wat |
+|---|---|
+| **App Store Connect** | het abonnement → **View all Subscription Pricing** → tabblad **Introductory Offers**: zet een einddatum op de regel *Free for the first 3 days*. Bij **beide** abonnementen: `app.darijaforkids.yearly` én `app.darijaforkids.monthly`. |
+| **Play Console** | het abonnement → basisplan → de aanbieding: deactiveer `proef-jaar` bij `app.darijaforkids.yearly` en `proef-maand` bij `app.darijaforkids.monthly`. |
+
+Bij Apple geldt **één introductieaanbieding per abonnement per land**, en een
+nieuwe overschrijft de bestaande. Komt de actie van 50% op het jaar er als
+*Pay Up Front* introductieaanbieding, dan vervangt die de proefperiode in één
+handeling — dan hoeft er bij Jaar niets apart uit. Bij Maand wel.
+
+Controleer het daarna op het aankoopvenster zelf, op een telefoon, in de app
+uit de winkel. Dat venster is het enige echte bewijs: de console zegt wat er
+ingesteld is, niet wat de koper leest.
+
+**1b. De proef liep via de winkel, niet via de app.**
+
+> **Achterhaald op 23 november.** Er is geen proefperiode meer — zie punt 1,
+> en voor het gratis deel de aantekening boven `magLeren` in
+> `src/engine/store.ts`. De afweging hieronder is die van toen, en ze blijft
+> staan om twee redenen: ze verklaart waarom de app zelf nooit dagen telt (en
+> dus waarom hij omklapt zodra de winkel iets anders zegt), en ze is het
+> antwoord als er ooit weer een proefperiode in het aanbod komt.
+
+Er zijn twee manieren om drie dagen gratis te geven, en het verschil is groter
+dan het lijkt.
 
 De ene is dat de **app** zelf drie dagen meetelt en daarna dichtgaat. Die weg
 is hier afgevallen, om twee redenen. Hij is niet te handhaven: deze app heeft
@@ -48,15 +90,23 @@ Het verschil in opbrengst zit in één woord: bij de app-weg moet de koper ná
 de proef nog *ja* zeggen, bij de winkel-weg moet hij *nee* zeggen. Dat is
 dezelfde proefperiode en een heel ander aantal betalende gebruikers.
 
-Let op dat dit niet de eerste drempel is. Die staat eerder en is lager: vier
-lessen gratis, voorgoed, zonder pas en zonder e-mailadres. Pas wie verder wil
-komt bij de proef. Drie stappen dus — gratis lessen, proef met pas, betalend —
-en alleen de middelste heeft een winkelproduct nodig.
+En de drempel die hier eerder voor stond — vier lessen gratis, voorgoed,
+zonder pas en zonder e-mailadres — staat er niet meer. Er is nu één drempel en
+die staat op het eerste scherm: downloaden is gratis, de cursus is het
+abonnement. Twee stappen dus in plaats van drie, en de tweede is de enige die
+een winkelproduct nodig heeft.
 
-**1c. Het e-boek komt pas na de proefperiode.** Het boek zit bij het
+**1c. Het e-boek komt vrij zodra er betaald is.** Het boek zit bij het
 jaarabonnement, en het is een pdf: wie hem één keer opent, houdt hem. Zonder
-grens kon iemand het jaar afsluiten, het boek opslaan en op dag twee opzeggen
-— nul betaald, een product van € 14,99 mee.
+proefperiode is er bij het afsluiten ook echt afgeschreven, en geeft
+`grantEbook()` het boek meteen vrij: het kijkt naar de aankoop zelf — een
+bestelling waar geen proeffase bij zat — en niet naar een datum.
+
+De grens die daar eerst voor stond blijft in de code, want de winkel kan nog
+altijd een proefperiode meegeven: een aanbieding die terugkomt, of een oude
+aankoop die wordt teruggezet en waarbij we niets weten. Zonder die grens kon
+iemand het jaar afsluiten, het boek opslaan en op dag twee opzeggen — nul
+betaald, een product van € 14,99 mee.
 
 **Een datum alleen is niet genoeg**, en dat was de eerste reparatie wél. Wie
 op dag twee opzegde en op dag vier terugkwam, had een datum die voorbij was en
@@ -78,8 +128,8 @@ Los gekocht gaat er geen proef overheen, dus dat geeft meteen vrij. En wie al
 langer dan de proefperiode betaalt en nú overstapt op het jaar, wacht ook
 nergens op — zijn proef is allang geweest en de winkel geeft er geen tweede.
 
-Op het abonnementsscherm staat in die drie dagen de datum, want een knop die
-er zonder uitleg niet is leest als een storing.
+Staat er wél een wachttijd, dan staat de datum op het abonnementsscherm, want
+een knop die er zonder uitleg niet is leest als een storing.
 
 Twee dingen die dit **niet** oplost, en die je moet weten voordat je het voor
 beveiliging aanziet:
@@ -96,7 +146,8 @@ beveiliging aanziet:
   tegelijk op.
 
 **2. Beide bedragen zijn Apple-prijspunten.** Apple werkt met vaste
-prijspunten; € 6,99 en € 59,99 zijn er twee van. Let op: Apple heeft géén
+prijspunten; € 6,99 en € 59,99 zijn er twee van, en € 29,99 — de actieprijs op
+het jaar — is er een derde. Let op: Apple heeft géén
 59,88, en twaalf maal € 4,99 bestaat daar dus niet. Google Play laat per land
 wel een vrij bedrag toe, maar we houden er € 59,99 aan: één bedrag in beide
 winkels scheelt een uitzondering in elke tekst, en het komt neer op € 5,00 per
@@ -114,17 +165,23 @@ ongeluk twee abonnementen hebben.
 - Het abonnementsproduct, de knop, de prijs uit de winkel, en de verplichte
   knoppen **Aankoop terugzetten** en **Abonnement beheren** (die laatste opent
   het opzegscherm van de winkel zelf).
-- De **verplichte voorwaardentekst** vóór de aankoop, in zes talen: hoe lang
-  gratis, wat het daarna kost, dat het maandelijks doorloopt tot je opzegt, en
-  dat opzeggen vóór het einde van de proefperiode niets kost.
+- De **verplichte voorwaardentekst** vóór de aankoop, in zes talen: wat er nu
+  wordt afgeschreven, en dat het jaarlijks of maandelijks doorloopt tot je
+  opzegt. Biedt de winkel déze koper wél een proefperiode aan, dan staat er de
+  tak bij die zegt hoe lang die duurt en dat opzeggen vóór het einde niets
+  kost.
 - Een **ouderpoort**: een rekensom die een volwassene moet beantwoorden. Apple
   eist dat voor apps in de kindercategorie, en bij een doorlopend abonnement
   hoort het sowieso.
 - Toegang die weer **dicht kan**: zegt de winkel dat het abonnement niet meer
   loopt, dan sluit de app de betaalde units weer af — maar nooit op een gok, en
   nooit zomaar omdat er even geen verbinding is.
-- De grens tussen gratis en betaald staat op één plek: `FREE_UNITS` in
-  `src/engine/store.ts`.
+- De grens staat op één plek: `magLeren` en `lessonBehindPaywall` in
+  `src/engine/store.ts` — zonder abonnement staat alleen open wat deze
+  leerling al had afgerond, en na het betalen staat alles open, in één keer.
+  `Poort` in `src/App.tsx` stuurt wie niets open heeft naar het
+  abonnementsscherm, maar nooit weg van de instellingen, de voorwaarden of de
+  knop om een eerdere aankoop terug te zetten.
 
 Wat er **niet** in zit: een eigen server die de bon narekent. Bij een
 abonnement is dat een grotere beperking dan bij een eenmalige aankoop, want
@@ -146,7 +203,8 @@ Gebruik in beide winkels **hetzelfde id**, anders werkt de code niet:
 | Product-id | `app.darijaforkids.yearly` en `app.darijaforkids.monthly` | dezelfde twee |
 | Duur | 1 jaar en 1 maand, beide automatisch verlengend | idem |
 | Prijs | € 59,99 en € 6,99 | € 59,99 en € 6,99 |
-| Gratis periode | **Introductory Offer → Free Trial → 3 dagen** | **Aanbieding → Gratis proefperiode → 3 dagen** |
+| Gratis periode | **geen** — staat er nog een *Free Trial*, zet er een einddatum op | **geen** — deactiveer `proef-jaar` en `proef-maand` |
+| Actie op het jaar | Introductory Offer → *Pay Up Front* → **€ 29,99**, met einddatum | Aanbieding → **Korting**, één fase van 1 jaar op **€ 29,99**, met einddatum |
 | Naam voor de koper | Volledige toegang | Volledige toegang |
 
 Bij Apple hoort bij elk abonnement een schermafbeelding en een beschrijving;
@@ -277,12 +335,21 @@ een eenmalige aankoop. Zorg dat dit klopt, want hierop worden apps afgewezen:
 - **Google**: Play Console → **Licentietests** met je eigen account, in een
   interne testrelease. Ook daar lopen abonnementen versneld.
 
-Test in elk geval: afsluiten met proefperiode, opzeggen tijdens de proefperiode
-(er mag dan niets worden afgeschreven), verlengen, en opnieuw installeren met
-**Aankoop terugzetten**.
+Test in elk geval: afsluiten zonder proefperiode (er wordt meteen
+afgeschreven), verlengen, opzeggen, en opnieuw installeren met **Aankoop
+terugzetten**. En lees het aankoopvenster zelf na: daar mag nergens meer een
+gratis periode staan.
 
 ## En de website?
 
-Op de website kan niet betaald worden. De eerste units blijven daar gratis en
-de pagina *Volledige toegang* legt uit dat het abonnement in de app loopt — met
-de prijs erbij, zodat niemand voor een verrassing komt te staan.
+Op de website kan niet betaald worden, en daarom staat de poort daar niet:
+`Poort` in `src/App.tsx` slaat zichzelf over als `platform() === 'web'`. Er is
+op het web niets te koop — `billingAvailable()` is onwaar — en een poort zou
+een bezoeker wegsturen van het enige wat de website te bieden heeft:
+rondkijken. Dat geldt voor darijaforkids.eu en voor de webversie van de app.
+
+De lessen zelf zitten daar wél achter hun eigen slot: zonder abonnement gaat
+er ook op het web geen les open. De pagina *Volledige toegang* legt uit dat het
+abonnement in de app loopt — met de prijs erbij, zodat niemand voor een
+verrassing komt te staan. Die prijs komt daar uit `PLANS` in
+`src/engine/billing.ts`, want er is geen winkel om hem aan te vragen.

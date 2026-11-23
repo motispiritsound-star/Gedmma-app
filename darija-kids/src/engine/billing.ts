@@ -1,6 +1,5 @@
 import { useSyncExternalStore } from 'react'
-import { wisSeintjeGratisOp } from './herinnering'
-import { FREE_LESSONS, getState, setState } from './store'
+import { getState, setState } from './store'
 import { tel } from './tellen'
 
 /**
@@ -118,8 +117,6 @@ export const YEAR_FULL_PRICE = `€ ${YEAR_FULL.toFixed(2).replace('.', ',')}`
 /** Hoeveel een jaar vooruit scheelt, in hele procenten. */
 export const YEAR_SAVING = Math.round((1 - cijfer(planOf('jaar').list) / YEAR_FULL) * 100)
 
-export { FREE_LESSONS }
-
 /* ------------------------------------------ the sliver of the plugin we use */
 
 /**
@@ -199,15 +196,6 @@ export const isSubscribed = (): boolean => getState().unlocked
 function grant(): void {
   if (getState().unlocked) return
   setState({ unlocked: true, unlockedAt: Date.now(), proefGestart: proefBijKoop ? Date.now() : 0 })
-  /*
-   * En de wekker voor "de gratis lessen zijn gedaan" eraf.
-   *
-   * Die staat misschien voor morgenochtend gepland, en dat was waar toen hij
-   * gezet werd. Nu niet meer: er is betaald, en een melding over het einde van
-   * het gratis deel is dan op zijn best verwarrend. Dit is de enige plek waar
-   * de toegang opengaat, dus de enige plek waar dat kan.
-   */
-  void wisSeintjeGratisOp()
 }
 
 /**

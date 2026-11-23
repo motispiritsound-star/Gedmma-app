@@ -37,23 +37,27 @@ import { getState, setState, type State } from './store'
  *
  * ## Waarom twintig en niet vijfentwintig
  *
- * Vijfentwintig stond hier tot 12 november, en toen het gratis deel van vier
- * naar acht lessen ging, bleek dat getal de hele bedoeling te ondermijnen.
- * Een gratis gebruiker heeft 27 woorden tot zijn beschikking
- * (`GRATIS_WOORDEN` in store.ts). Vijfentwintig daarvan op `strength >= 0.85`
- * krijgen is 93% beheersing — en met een `bump` van 0,22 per goed antwoord
- * (zie srs.ts) kost elk woord ongeveer vier juiste herhalingen. Dat is geen
- * verrassing meer, dat is een eindexamen.
+ * Vijfentwintig stond hier tot 12 november. Toen het gratis deel van vier naar
+ * acht lessen ging, bleek dat getal de hele bedoeling te ondermijnen: een
+ * gratis gebruiker had 27 woorden tot zijn beschikking, en vijfentwintig
+ * daarvan op `strength >= 0.85` krijgen is 93% beheersing. Met een `bump` van
+ * 0,22 per goed antwoord (zie srs.ts) kost elk woord ongeveer vier juiste
+ * herhalingen. Dat is geen verrassing meer, dat is een eindexamen. Twintig was
+ * 74%: verdiend, en haalbaar.
  *
- * Twintig van 27 is 74%: nog steeds verdiend, nog steeds een bericht waar een
- * ontvanger iets aan heeft, maar haalbaar voor een kind dat een paar keer
- * herhaalt. En het verandert voor wie betaalt vrijwel niets: die haalt twintig
- * een paar dagen eerder dan vijfentwintig, en de mijlpalen daarna staan waar
- * ze stonden.
+ * ## En waarom het blijft staan nu er geen gratis deel meer is
  *
- * Dit is de reden dat de deelkaart het punt van de hele wijziging was: hij
- * was onbereikbaar met zeven woorden, en hij zou het met zevenentwintig
- * woorden en een drempel van vijfentwintig in de praktijk gebleven zijn.
+ * Sinds 23 november is deze kaart alleen nog te halen door iemand die betaald
+ * heeft. Dat is een echt verlies en het hoort hier opgeschreven: dit was de
+ * enige lus waarmee de app uit zichzelf groeide -- de kop van dit bestand
+ * noemt WhatsApp "de motor" van dit product -- en die staat nu volledig achter
+ * de kassa.
+ *
+ * Twintig blijft toch de eerste mijlpaal. Voor wie betaalt is het verschil met
+ * vijfentwintig een paar dagen, en de kaart hoort te komen op het moment dat
+ * het nog een verrassing is in plaats van een examen. Wie de drempel nu
+ * verhoogt omdat "de gratis gebruiker toch weg is", verschuift een cadeautje
+ * naar later voor de enige mensen die er nog zijn.
  */
 export const MIJLPALEN = [20, 50, 100, 200, 304] as const
 

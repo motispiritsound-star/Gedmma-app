@@ -17,6 +17,14 @@ je eigen cijfers:
 | installatie → proef gestart | 10–20 % | 150.000 – 300.000 installaties |
 | proef → betaald | 30–45 % | 25.000 – 33.000 proeven |
 
+**De onderste twee regels zijn van vóór 23 november en bestaan niet meer.** Op
+die dag zijn het gratis deel en de proefperiode allebei vervallen: wie het
+abonnement neemt betaalt bij het afsluiten, en dat wordt op het eerste scherm
+gevraagd. Er is dus één stap van installatie naar betalend in plaats van twee,
+en wat die ene stap omzet is nog niet gemeten — zet er geen percentage neer dat
+je niet hebt. De onderbouwing staat bij `magLeren` in `src/engine/store.ts`. De
+bovenste regel en de rekensom eronder blijven staan zoals ze waren.
+
 Vertaald naar bereik: bij een video die 1 % van zijn kijkers tot installeren
 beweegt — en 1 % is goed — is dat **ongeveer twintig miljoen views in negentig
 dagen**. Via WhatsApp ligt die verhouding veel gunstiger (5–15 % van de
@@ -110,7 +118,8 @@ Darijaforkids — Marokkaans-Arabisch, niet het Arabisch uit het schoolboek.
 Twee minuten per dag, als een spelletje, ingesproken door een Marokkaanse
 stem. Het hele Arabische alfabet, 304 woorden, 100 zinnen.
 
-De eerste vier lessen zijn gratis, zonder account:
+Gratis te downloaden, zonder account en zonder advertenties. De cursus zelf
+is een abonnement, en dan gaat alles in één keer open:
 👉 darijaforkids.eu
 
 Filmpje van een halve minuut: https://www.youtube.com/watch?v=3iHXGpubnaI
@@ -226,7 +235,8 @@ kinderen"*, *"apprendre le darija"*, en daar staat weinig goeds.
   beantwoorden: *"Het Arabische alfabet in 10 minuten"*, *"De 50 Darija-woorden
   die je kind het eerst nodig heeft"*, *"Darija of Standaardarabisch: wat moet
   mijn kind leren?"*
-- Elke video eindigt op één zin: de eerste vier lessen zijn gratis.
+- Elke video eindigt op één zin: de app is gratis te downloaden, de cursus is
+  een abonnement.
 - Die lange video's blijven jaren verkeer opleveren. TikTok is dood na drie
   dagen.
 
@@ -350,8 +360,9 @@ is bij Apple één eerste download en twee totale.
 **En wat je níét in de winkels ziet:** hoeveel mensen de app daadwerkelijk
 openen, hoe ver ze komen, of ze terugkomen. De app verzamelt niets en stuurt
 niets door — dat is de hele belofte — dus die getallen bestaan nergens. Wat je
-wel hebt is het aantal gestarte proefperiodes en het aantal betalende
-abonnees, en dat zegt meer over of het werkt dan een openingstelling.
+wel hebt is het aantal betalende abonnees, en dat zegt meer over of het werkt
+dan een openingstelling. Hier stond *gestarte proefperiodes* ernaast; sinds
+23 november is er geen proefperiode meer, dus wie betaalt staat er meteen in.
 
 Kijk **wekelijks**, niet dagelijks. In de eerste week is het getal klein en
 betekent het niets; het zegt pas iets als je het over vier weken naast elkaar
@@ -370,9 +381,9 @@ meten, want dat gebeurt buiten de app:
 - **Kortingscodes** per school en per influencer: dat is je zuiverste meting
 - **Abonnementen** per land en per product in beide consoles
 
-Kijk **wekelijks**, niet dagelijks, en maar naar vier getallen: installaties,
-gestarte proeven, betalende abonnees, en de kosten per abonnee. De rest is
-afleiding.
+Kijk **wekelijks**, niet dagelijks, en maar naar drie getallen: installaties,
+betalende abonnees, en de kosten per abonnee. *Gestarte proeven* stond hier als
+vierde; sinds 23 november is er geen proefperiode meer. De rest is afleiding.
 
 ## 12. Wat er in de app moet, en in welke volgorde
 
@@ -389,13 +400,18 @@ Marketing brengt mensen binnen; deze knoppen bepalen of ze betalen.
 4. **Vraag om een beoordeling** na het derde checkpoint, niet eerder. Sterren
    in de winkel bepalen de helft van je installaties, en op dag één heb je er
    nul.
-5. **De dagelijkse wekker aanbieden in het welkomstscherm**, en één eenmalig
-   seintje als de vier gratis lessen gedaan zijn. Dit is geen pushbericht en
-   wordt het ook niet: het toestel zet een wekker, er gaat niets naar een
-   server, en de privacyverklaring blijft *Data Not Collected*. Het seintje
-   vraagt zelf geen toestemming en verkoopt niets — daarom hoort de wekker in
-   het welkomstscherm, want zonder dat ja bestaat het seintje alleen op papier.
-   Zie `src/engine/herinnering.ts` en `src/engine/seintje.test.ts`.
+5. **De dagelijkse wekker aanbieden in het welkomstscherm.** Dit is geen
+   pushbericht en wordt het ook niet: het toestel zet een wekker, er gaat niets
+   naar een server, en de privacyverklaring blijft *Data Not Collected*. Hier
+   stond daarnaast *één eenmalig seintje als de vier gratis lessen gedaan
+   zijn*; dat is op 23 november vervallen met het gratis deel zelf — er is geen
+   laatste gratis les meer, dus geen moment waarop hij kon afgaan. In zijn
+   plaats staat er een rem: de wekker gaat niet af zolang er zonder abonnement
+   niets te doen is, want dan is een dagelijkse melding voor een niet-betaler
+   elke dag een uitnodiging voor iets achter de kassa, en dat is precies waar
+   Apple in richtlijn 4.5.4 naar kijkt. De voorkeur blijft bewaard en komt
+   terug zodra er betaald is. Zie `src/engine/herinnering.ts` en
+   `src/engine/seintje.test.ts`.
 
 ## 13. Negentig dagen
 
@@ -448,7 +464,10 @@ Zodat je het na negentig dagen eerlijk kunt nakijken:
 - [ ] **Tien influencers** hebben werkelijk iets geplaatst
 - [ ] Frankrijk draait mee vanaf week negen
 - [ ] De app staat op **4,5 sterren of hoger** in beide winkels
-- [ ] De proef zet meer dan 30 % om naar betalend
+- [ ] Je kent je eigen omzetting van installatie naar betalend en meet hem
+      elke week. *(Hier stond "de proef zet meer dan 30 % om naar betalend";
+      sinds 23 november is er geen proefperiode, en een percentage dat niet
+      gemeten is hoort hier niet.)*
 
 Vallen daar vier of meer van weg, dan wordt het geen tienduizend. Vallen ze
 er allemaal in, dan is tienduizend niet gek — en dan is het tweede kwartaal
@@ -686,22 +705,38 @@ bericht hieronder, en de dag erna ga je weer verder met het woordje van de
 dag. Geen opbouw, geen aankondiging van een aankondiging.
 
 Eén ding is het waard om in die dagelijkse reeks een plek te geven, en niet
-omdat het de lancering helpt: **wat het kost.** De eerste vier lessen gratis
-en voorgoed, daarna drie dagen proberen en dan de prijs. Wie dat op de dag
-zelf voor het eerst leest, voelt zich beetgenomen — ook als het eerlijke
-voorwaarden zijn. Maak er gewoon een van je weetjes van, een week of twee
-voor het zover is, zonder er een mijlpaal van te maken.
+omdat het de lancering helpt: **wat het kost.** De app is gratis te
+downloaden; de cursus is een abonnement, dat wordt op het eerste scherm
+gevraagd, en daarna gaat alles in één keer open — € 6,99 per maand of € 59,99
+per jaar, en zolang de actie loopt € 29,99 voor het eerste jaar. Hier stond
+*de eerste vier lessen gratis en voorgoed, daarna drie dagen proberen en dan
+de prijs*; dat is op 23 november teruggedraaid, zie de aantekening boven `magLeren` in
+`src/engine/store.ts`. Wie dit op de dag zelf voor het eerst leest, voelt zich
+beetgenomen — en nu er niets gratis meer te doen is, ziet iedereen die de app
+opent dat scherm meteen, dus het is niet langer iets wat je kúnt uitstellen.
+Maak er een van je weetjes van, een week of twee voor het zover is, zonder er
+een mijlpaal van te maken.
 
-Het lanceringsbericht:
+Het lanceringsbericht. **De laatste regel gaat er pas in als de aanbieding van
+€ 29,99 werkelijk in beide consoles staat** — op 23 november besloten, nog niet
+ingesteld, zie `docs/STAND.md` onder *23 november: de tijdelijke actie van 50%
+op het jaar*. Staat hij er niet, dan laat je die regel weg en noem je alleen
+€ 6,99 per maand of € 59,99 per jaar; een prijs beloven die de winkel niet
+rekent is bij Apple richtlijn 2.3.1. En de korting bereikt alleen wie nooit
+eerder een abonnement in deze groep had, dus niet wie vóór 23 november de proef
+nam en opzegde.
 
 ```
 Hij staat er 🎉
 
 Darijaforkids is vanaf vandaag te downloaden — op iPhone én op Android.
 
-De eerste vier lessen zijn gratis en blijven gratis. Geen account, geen
-advertenties, niets in te vullen. Het hele Arabische alfabet, 304 woorden
-en 100 zinnen, ingesproken door een Marokkaanse stem.
+Gratis te downloaden. Geen account, geen advertenties, niets in te vullen, en
+alles werkt zonder internet. Het hele Arabische alfabet, 304 woorden en 100
+zinnen, ingesproken door een Marokkaanse stem.
+
+De hele cursus zit in één abonnement en gaat in één keer open: € 29,99 voor
+het eerste jaar in plaats van € 59,99, dat is € 2,50 per maand.
 
 👉 darijaforkids.eu
 

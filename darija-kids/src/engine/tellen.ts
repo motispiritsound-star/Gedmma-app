@@ -80,7 +80,14 @@ export const TELLERS = [
   'aanbod_zien',
   /** Er is op "later" gedrukt in dat aanbod. */
   'aanbod_later',
-  /** Het slot is bereikt: de laatste gratis les is af. */
+  /*
+   * Het slot is bereikt: de laatste gratis les is af.
+   *
+   * Niemand telt dit nog -- het gratis deel is op 23 november vervallen. De
+   * teller blijft in de lijst staan omdat de server dezelfde witte lijst
+   * heeft en er rijen in de tabel staan die dit woord gebruiken; weghalen
+   * maakt die rijen onleesbaar zonder iets op te lossen.
+   */
   'gratis_op',
   /** Het abonnementsscherm is geopend. Telt openingen, niet mensen. */
   'paywall_zien',
@@ -101,16 +108,19 @@ export const TELLERS = [
  * oefenen. Een trede zegt alleen hoe ver iemand kwam, en dat is precies wat de
  * trechter nodig heeft.
  *
- * Grof, en met een reden: de eerste treden dekken het gratis deel, en daar
- * zit de vraag. Daarna is elke trede ongeveer een verdubbeling, want een
+ * Grof, en met een reden: de eerste treden liggen dicht bij elkaar omdat daar
+ * de afhakers zitten. Daarna is elke trede ongeveer een verdubbeling, want een
  * curve met 74 punten op drie downloads per dag is 74 keer niets.
  *
- * **Acht staat erin omdat daar de muur zit.** `GRATIS_LESSEN` in store.ts
- * geeft acht gratis lessen, en de trede die daarmee samenvalt is het
- * belangrijkste punt van de hele trechter: hoeveel mensen komen tot waar de
- * vraag om geld staat. Verandert dat getal ooit weer, dan hoort hier de
- * nieuwe waarde bij -- `gratisop.test.ts` legt de twee naast elkaar, zodat
- * het niet stil mis kan gaan.
+ * De muur zat bij acht, en dat was de reden dat acht hier stond: `GRATIS_LESSEN`
+ * gaf acht gratis lessen, en die trede was het belangrijkste punt van de hele
+ * trechter -- hoeveel mensen komen tot waar de vraag om geld staat. Sinds 23
+ * november staat die vraag op het eerste scherm en is er geen les meer die je
+ * zonder abonnement kunt afronden. Deze treden meten vanaf nu dus het oefenen
+ * van wie betaald heeft, en acht blijft staan als gewone mijlpaal.
+ *
+ * Wat de trechter nu meet zit niet hier maar in `TELLERS`: `start`,
+ * `volledig_zien`, `koop_start`, `koop_af`. Zie `engine/telbesluit.ts`.
  */
 export const TREDEN = [1, 2, 3, 4, 5, 8, 10, 20, 40, 74] as const
 

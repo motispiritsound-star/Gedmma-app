@@ -680,20 +680,26 @@ kiest bij de eerste start zelf een taal en die is niet per se Engels.
 Apple leest dit veld echt. Zet er dit in:
 
 > Darijaforkids teaches children Moroccan Arabic (Darija). No account and no
-> login is needed — the app opens straight into the first lesson.
+> login is needed. The app is free to download; the course itself is a
+> subscription, and the app asks for it on the first screen.
 >
-> To test the subscription: tap "Leren" (Learn) in the bottom bar and open the
-> fourth lesson of the first unit (Lhruf). The first three alphabet lessons and
-> the first lesson of unit 2 are free; everything after that asks for the
-> subscription. Any word with a padlock in "Woorden" (Words) or "Alfabet"
-> (Alphabet) does the same. The subscription screen has a parental gate: a
-> multiplication you must answer before the purchase opens. Any correct answer
-> works.
+> **How to get in.** After the four-step welcome screen (pick a language, a
+> name and an animal), the app goes straight to the subscription screen. There
+> are no free lessons: without a subscription no lesson, word or letter opens.
+> The subscription screen has a parental gate — a multiplication you must
+> answer before the purchase opens. Any correct answer works. Complete a
+> sandbox purchase of app.darijaforkids.yearly there and the whole course opens
+> at once: 17 units, 83 lessons, 304 words, 28 letters, the stories and the
+> games. "Restore purchase" at the bottom of the same screen brings it back on
+> a second device.
 >
 > The subscriptions are app.darijaforkids.yearly (EUR 59.99 per year) and
-> app.darijaforkids.monthly (EUR 6.99 per month), both with a 3-day free trial.
-> Separately there is app.darijaforkids.ebook (EUR 14.99, one-off): the e-book
-> containing the whole course, which is included with the yearly plan.
+> app.darijaforkids.monthly (EUR 6.99 per month). Separately there is
+> app.darijaforkids.ebook (EUR 14.99, one-off): the e-book containing the whole
+> course, which is included with the yearly plan.
+>
+> Nothing in the app is time-limited and there is no trial: the amount is
+> charged when the subscription is taken out.
 >
 > Terms of use and the privacy policy are reachable from the subscription
 > screen inside the app, and online at https://darijaforkids.eu/voorwaarden and

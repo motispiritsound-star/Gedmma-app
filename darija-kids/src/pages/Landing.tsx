@@ -31,6 +31,10 @@ export function Landing() {
   const meaning = useMeaning()
   const state = useStore((s) => s)
   const started = state.xp > 0
+  /* De les waar "ga verder" heen gaat, of niets. Zonder abonnement staat
+     alleen open wat al gedaan is, dus voor een bezoeker die hier voor het
+     eerst komt is dit `null` en gaat de knop naar het pad. */
+  const volgende = started ? nextLesson(state) : null
   const [taste, setTaste] = useState(0)
   const w = word(TASTER[taste % TASTER.length]!)
 
@@ -72,8 +76,14 @@ export function Landing() {
               <Link to="/woorden" className="hidden rounded-xl px-3 py-2 text-sm font-bold text-[var(--ink-soft)] hover:text-[var(--ink)] sm:block">
                 {t.landing.woordenboek}
               </Link>
-              <Link to={started ? `/les/${nextLesson(state)}` : '/leren'}>
-                <Button>{started ? t.landing.gaVerder : t.landing.beginGratis}</Button>
+              {/*
+                `beginGratis` is hier weggegaan: gratis beginnen kan niet meer,
+                de cursus is een abonnement. En `nextLesson` kan nu `null` zijn
+                -- dan is er niets open en is het pad zelf de bestemming, waar
+                de zeventien units met hun slot te zien zijn.
+              */}
+              <Link to={volgende ? `/les/${volgende}` : '/leren'}>
+                <Button>{started ? t.landing.gaVerder : t.landing.bekijkCursus}</Button>
               </Link>
             </div>
           </nav>
@@ -94,8 +104,8 @@ export function Landing() {
               </h1>
               <p className="mt-4 max-w-lg text-lg text-[var(--ink-soft)]">{t.landing.intro}</p>
               <div className="mt-7 flex flex-wrap gap-3">
-                <Link to={started ? `/les/${nextLesson(state)}` : '/leren'}>
-                  <Button className="px-8 py-4 text-lg">{started ? `🔥 ${t.landing.gaVerder}` : t.landing.startLes1}</Button>
+                <Link to={volgende ? `/les/${volgende}` : '/leren'}>
+                  <Button className="px-8 py-4 text-lg">{started ? `🔥 ${t.landing.gaVerder}` : t.landing.bekijkCursus}</Button>
                 </Link>
                 <Link to="/woorden"><Button variant="secondary" className="px-6 py-4 text-lg">{t.landing.bekijkWoorden}</Button></Link>
               </div>

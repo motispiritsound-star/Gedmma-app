@@ -1,9 +1,113 @@
 # Waar staan we
 
-Bijgewerkt op 3 oktober 2026, met de vijf verbouwde oppervlakken, de
-diplomaplank en de drie sloten op de ouderschermen. Dit bestand
-is het antwoord op "wat moet er nog" zonder dat je drie andere bestanden hoeft
-te lezen.
+Bijgewerkt op 23 november 2026: het gratis deel is eruit en de betaalmuur
+staat bij de download. Dit bestand is het antwoord op "wat moet er nog" zonder
+dat je drie andere bestanden hoeft te lezen.
+
+## 23 november: het gratis deel eruit, de betaalmuur bij de download
+
+Besloten, en ingrijpender dan de proefperiode: **er zijn geen gratis lessen
+meer.** De app is gratis te downloaden, de cursus is een abonnement, en dat
+wordt gevraagd op het eerste scherm. Na het betalen gaat alles in één keer open
+— geen porties van acht lessen.
+
+Wie de app vóór vandaag had en lessen heeft afgerond, houdt precies die lessen.
+Dat is geen vriendelijkheid maar een belofte die al gedaan is: de voorwaarden
+die hij heeft gelezen zeiden over die acht lessen "zijn gratis en blijven
+gratis". Ze terugnemen levert niets op — hij had ze al — en het is het soort
+besluit dat je terugleest in de beoordelingen, op precies de winkelbladzijde
+waar de campagne naartoe wijst.
+
+### Wat er in de code is veranderd
+
+`GRATIS_LESSEN`, `FREE_LESSONS`, `GRATIS_WOORDEN`, `GRATIS_LETTERS` en
+`gratisDeelOp` bestaan niet meer. In hun plaats staat één regel, en die hangt
+aan `isDone`:
+
+| | |
+|---|---|
+| `magLeren(s)` | of er zonder abonnement nog iets te doen is: betaald, of al een les afgerond |
+| `lessonBehindPaywall(id, s)` | nu `!s.unlocked && !isDone(id, s)` |
+| `unitBehindPaywall(id, s)` | dicht tenzij er iets in de unit gedaan is — zo houdt een oude gebruiker zijn voortgangsbalk en zijn 100%-stempel |
+| `geleerd(s)` | de woorden en letters uit de lessen die al gedaan zijn; `woordOpSlot` en `letterOpSlot` lezen die |
+| `nextLesson(s)` | geeft nu `string \| null`. Hier stond `LESSONS[0]!.id` als terugval — een les achter het slot, waar elke "ga verder"-knop naar wees |
+| `Poort` in `App.tsx` | stuurt iedereen zonder abonnement naar `/volledig`. Niet op het web, en niet voor de instellingen, de voorwaarden, het ouderscherm of de knop om een aankoop terug te zetten |
+
+Vier dingen zijn dichtgegaan die openstonden: het letterspel op `/letters` (dat
+koos uit alle 28 letters en schreef voortgang weg zonder dat er een les
+openging — daarmee was het het ene gat in de regel waarmee de app oude
+gebruikers van nieuwe onderscheidt), de bonusronde, de dagelijkse missies en de
+kaart "Klaar met het pad?" onderaan het leerpad. En het eenmalige seintje "de
+gratis lessen zijn gedaan" is vervallen, met de dagelijkse wekker die voor een
+niet-betaler niet meer wordt gezet: dat zou elke dag een uitnodiging zijn voor
+iets dat achter de kassa staat, en dat is precies de melding waar Apple in
+richtlijn 4.5.4 naar kijkt.
+
+`src/engine/geengratis.test.ts` bewaakt het geheel, en het staat vol met wat er
+anders stilletjes misgaat.
+
+### Wat dit kost, en dat hoort hier te staan
+
+Beide groeilussen staan nu volledig achter de kassa. De deelkaart op WhatsApp
+(bij twintig onthouden woorden) en het verzoek om een winkelbeoordeling (na
+drie diploma's) zijn alleen nog te halen door iemand die betaald heeft. Dat was
+de hele aanleiding van `growth-audit/` en het is nu bewust omgedraaid: het
+volume moet van de voorkant komen, niet van de app.
+
+### Wat alleen Adil kan doen, in deze orde
+
+1. **Apple Developer Program License Agreement accepteren.** Zolang die niet
+   geaccepteerd is kan er niets ingediend worden. Dit blokkeert al het andere.
+2. **De proefaanbiedingen uitzetten** — zie de volgende kop.
+3. **De actie aanzetten** — zie de kop daarna. Doe dit vóór stap 4.
+4. **De winkelafbeeldingen opnieuw zetten en uploaden**, per taal:
+
+   ```powershell
+   if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run screenshots -- --lang nl,fr,de,es,it,en } else { "darija-kids niet gevonden onder $HOME" }
+   ```
+
+   ```powershell
+   if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run playpakket -- --lang nl,fr,de,es,it,en } else { "darija-kids niet gevonden onder $HOME" }
+   ```
+
+   ```powershell
+   if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run play } else { "darija-kids niet gevonden onder $HOME" }
+   ```
+
+   De eerste fotografeert de app zelf in elke taal — `seeded(lang)` zet
+   `settings: { lang }` — dus de Franse vermelding krijgt Franse schermen. Dat
+   is de reden dat er nu Nederlandse tekst op de Franse bladzijde staat: die
+   set is nooit gezet en nooit geüpload, dus Play valt terug op de grafische
+   bestanden van de standaardvermelding. `npm run play` gooit eerst weg wat er
+   staat en uploadt dan per taal naar `/listings/fr-FR/phoneScreenshots`.
+
+   **Niet eerder dan na stap 3.** De aanbodopname heeft nu € 2,50 per maand en
+   € 29,99 per jaar in het beeld gebakken. Staat die aanbieding nog niet in de
+   console, dan belooft je winkelbladzijde een prijs die de winkel niet rekent
+   — en dat is bij Apple 2.3.1 een grond voor verwijdering.
+
+5. **Bij Apple: App access / review notes bijwerken.** De beoordelaar komt
+   niet meer binnen: er is geen gratis les, geen gratis woord en geen gratis
+   letter. De tekst die erin moet staat in `docs/LAUNCH.md` §5 en voor Google
+   in `docs/PLAY.md` onder *App-toegang*. Bij Google moet het e-mailadres van
+   de beoordelaar als **licentietester** in *Play Console → Instellingen →
+   Licentietests* staan, anders rekent de testaankoop echt af.
+6. **Trader status** aangeven vóór februari, en de waarschuwing *"Action
+   required with your payments account"* in Play wegwerken.
+
+### De meting staat nog uit, en dat is nu minder erg
+
+`TELLEN` in `src/engine/telbesluit.ts` staat op `false`. Aanzetten verandert
+wat de app over zichzelf verklaart op vier plaatsen buiten de repo (Apple App
+Privacy, Google Data Safety, de antwoorden in `docs/APPLE-1.3.md` en de datum
+in `i18n/privacy.ts`) — en op een app onder het Families-beleid wordt
+"verzamelt gegevens: vereist" een zichtbaar label. Dat besluit is niet van mij.
+
+Het hoeft ook niet voor deze campagne. Met een betaalmuur bij de download ís de
+winkel de trechter: App Store Connect en Play Console geven downloads en
+abonnementen per land en per dag, en dat is precies wat je van drie
+Facebook-pagina's wil weten. In-app meten zou je alleen vertellen hoeveel
+mensen het betaalscherm wegklikten.
 
 ## 23 november: de proefperiode eruit, en wat er in de consoles moet
 
@@ -45,6 +149,58 @@ apart uit te zetten. Bij Maand wel.
 En controleer het op het aankoopvenster zelf, op een telefoon, in de app uit
 de winkel. Dat venster is het enige echte bewijs; de console zegt wat er
 ingesteld is, niet wat de koper leest.
+
+## 23 november: de tijdelijke actie van 50% op het jaar
+
+Voor de campagne op de Franse, Nederlandse en Duitse Facebook-pagina's:
+**€ 29,99 voor het eerste jaar in plaats van € 59,99.** Omgerekend € 2,50 per
+maand. € 29,99 is een bestaand Apple-prijspunt, dus het past precies.
+
+**De app is hier al op gebouwd en er hoeft geen build naartoe.** `nuFase` en
+`betaalFase` in `engine/billing.ts` lezen twee bedragen uit de winkel; zodra
+die verschillen zet het abonnementsscherm de oude prijs doorgestreept naast de
+nieuwe en voegt het de zin toe die zegt wat er ná de actie wordt afgeschreven.
+`src/engine/actieprijs.test.ts` bewaakt dat, inclusief het geval dat er geen
+actie is — dan verandert er niets.
+
+### Wat je in de consoles instelt
+
+| Waar | Wat |
+|---|---|
+| **App Store Connect** | bij `app.darijaforkids.yearly`: **Introductory Offer**, type **Pay Up Front**, duur **1 jaar**, prijs **€ 29,99**. Zet een **einddatum**. |
+| **Play Console** | bij `app.darijaforkids.yearly` → basisplan `jaar` → nieuwe aanbieding: type **Korting**, één fase van 1 jaar op € 29,99, met een **einddatum**. |
+
+Drie dingen die je moet weten voordat je dit instelt:
+
+1. **Bij Apple vervangt dit de proefperiode in één handeling.** Er geldt één
+   introductieaanbieding per abonnement per land, en een nieuwe overschrijft de
+   bestaande. Bij `app.darijaforkids.yearly` ben je de proef dus kwijt zodra je
+   dit zet. Bij `app.darijaforkids.monthly` moet je `proef-maand` nog apart
+   uitzetten.
+2. **Een introductieaanbieding bereikt alleen wie nooit eerder een abonnement
+   in die groep had.** Wie de 3-daagse proef heeft genomen en opgezegd, ziet
+   € 29,99 dus niet. Voor die groep bestaat een aparte soort: Win-Back of
+   Promotional Offer. Klein aantal nu, maar het verklaart straks waarom iemand
+   klaagt dat hij de korting niet ziet.
+3. **Zet er een echte einddatum op.** "Tijdelijk" zonder einddatum is bij Apple
+   gewoon de nieuwe prijs, en in een campagne is het een bewering die je niet
+   kunt onderbouwen. De EU-regel over de laagste prijs van de afgelopen dertig
+   dagen (Omnibus) geldt voor goederen en niet voor digitale diensten, dus
+   daar zit het bezwaar niet — het zit in wat je zelf beweert.
+
+En controleer het op het aankoopvenster zelf, op een telefoon, in de app uit de
+winkel. Dat venster is het enige echte bewijs; de console zegt wat er ingesteld
+is, niet wat de koper leest.
+
+### Wat er in de winkelafbeeldingen staat
+
+De aanbodopname (`AANBOD` in `scripts/make-screenshots.mjs`) heeft nu
+€ 2,50 per maand als groot bedrag, met € 29,99 per jaar eronder. Dat tweede is
+geen opmaak maar een eis: Apple heeft deze app één keer afgewezen op richtlijn
+**3.1.2(c)** omdat de omgerekende maandprijs opvallender was dan het bedrag dat
+werkelijk werd afgeschreven. Een omrekening mag, nooit zonder het echte bedrag
+ernaast. `src/pages/prijsweergave.test.ts` bewaakt dat in de app; in dit script
+is het handwerk.
 
 ## De lancering: volgende week, met aankondiging — besloten 2 oktober
 

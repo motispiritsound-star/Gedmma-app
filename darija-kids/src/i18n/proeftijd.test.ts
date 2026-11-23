@@ -1,20 +1,21 @@
 /**
- * De drie gratis dagen staan ook in de veelgestelde vragen.
+ * Wat de veelgestelde vragen over geld zeggen.
  *
- * Op de site stond het plaatje erboven wél: "Start 3 dagen gratis". De vraag
- * eronder — "Kost het iets?" — zei "met de eerste dagen gratis", zonder
- * getal. Dat is de ene plek waar iemand het nazoekt voordat hij betaalt, en
- * daar bleef het vaag. Een proefperiode zonder lengte is geen belofte: dan is
- * het een onbekend aantal dagen tot de eerste afschrijving.
+ * Dit bestand heette zo omdat het de drie gratis dagen bewaakte: de vraag
+ * "Kost het iets?" zei eerst "met de eerste dagen gratis", zonder getal, en
+ * dat is de ene plek waar iemand het nazoekt voordat hij betaalt. Een
+ * proefperiode zonder lengte is geen belofte maar een onbekend aantal dagen
+ * tot de eerste afschrijving, dus stond het getal er daarna in, bewaakt tegen
+ * `TRIAL_DAYS`.
  *
- * Het getal staat nu in de zin, en deze test houdt hem bij `TRIAL_DAYS`. Dat
- * is bewust geen interpolatie: `faq` krijgt alleen de winkelnamen mee, en de
- * prijzen staan er ook met de hand in. Verandert de proefperiode, dan valt
- * deze test om in alle zes de talen — en dan is de vraag niet "hoe krijg ik de
- * test groen" maar "waar staat dit getal nog meer".
+ * Op 23 november is de proefperiode vervallen, en het gratis deel erna. Wat
+ * deze test nu bewaakt is de andere kant van dezelfde zorg: dat er in geen
+ * enkele taal nog iets gratis belooft wordt op de plek waar een ouder de prijs
+ * nazoekt. Het is de tekst die ook met de winkelinzending meegaat, en een
+ * onware mededeling over geld is bij Apple een grond voor verwijdering van de
+ * app (richtlijn 2.3.1).
  */
 import { describe, expect, it } from 'vitest'
-import { TRIAL_DAYS } from '../engine/billing'
 import { STRINGS } from '.'
 import { LANG_CODES } from './languages'
 import { winkelnamen } from './winkels'
@@ -27,30 +28,54 @@ const geldvraag = (lang: typeof LANG_CODES[number]) => {
   return rij![1]
 }
 
-describe('de proefperiode in de veelgestelde vragen', () => {
-  it('noemt het aantal dagen in alle zes de talen', () => {
+describe('de vraag over de prijs', () => {
+  /**
+   * Geen proefperiode, in geen enkele taal.
+   *
+   * De woordenlijst is dezelfde als in `proef.test.ts`: dat waren de woorden
+   * waarmee de proefperiode uit de teksten werd gehaald, en ze staan hier om
+   * dezelfde reden opnieuw.
+   */
+  it('belooft in geen enkele taal nog iets gratis', () => {
+    /*
+     * "Gratis te downloaden" mag, want dat is waar: de app kost niets, de
+     * cursus is het abonnement. Al het andere niet -- geen gratis les, geen
+     * gratis unit, geen gratis dag.
+     *
+     * Dus geen lijst met toegestane zinnen per taal, want die is bij de eerste
+     * herformulering achterhaald en valt dan om op iets wat juist is. De regel
+     * is: elk woord voor "gratis" moet in dezelfde ademtocht over downloaden
+     * gaan. Staat het ergens anders, dan is het een belofte.
+     */
+    const gratis = /gratis|gratuit\w*|kostenlos\w*|gratuita|gratuito|free/gi
+    const download = /download|t[\u00e9e]l[\u00e9e]charg|herunterladen|descarga|scarica/i
     for (const lang of LANG_CODES) {
-      expect(geldvraag(lang), lang).toContain(String(TRIAL_DAYS))
+      const antwoord = geldvraag(lang)
+      for (const m of antwoord.matchAll(gratis)) {
+        const rond = antwoord.slice(Math.max(0, m.index - 40), m.index + m[0].length + 40)
+        expect(download.test(rond), `${lang}: "${m[0]}" gaat hier niet over downloaden -- ${rond.trim()}`).toBe(true)
+      }
     }
   })
 
   /**
-   * En zegt wat er in die dagen gebeurt. "3 dagen gratis" alleen laat de vraag
-   * open die een ouder écht heeft: word ik na die dagen afgeschreven als ik
-   * niets doe, en kan ik er vóór die tijd nog uit?
+   * En zegt wel wat er gebeurt. "Een abonnement" alleen laat de vraag open die
+   * een ouder écht heeft: wanneer wordt er afgeschreven, en kan ik eruit?
    */
-  it('en zegt dat er niets afgeschreven wordt als je opzegt', () => {
-    const woorden = /afgeschreven|prélevé|abgebucht|cobra|addebitato|charged/i
+  it('zegt wanneer er wordt afgeschreven', () => {
+    const woorden = /afgeschreven|prélev|abgebucht|cobra|addebit|charged/i
     for (const lang of LANG_CODES) {
       expect(geldvraag(lang), lang).toMatch(woorden)
     }
   })
 
-  /** En de app zelf zegt hetzelfde getal, want dat is dezelfde belofte. */
-  it('en loopt niet uit de pas met de app', () => {
+  /** En het jaarbedrag en het maandbedrag staan er beide, met de btw erbij. */
+  it('noemt beide bedragen', () => {
     for (const lang of LANG_CODES) {
-      const tijdlijn = STRINGS[lang].unlock.tijdlijn(TRIAL_DAYS, '€ 6,99', false)
-      expect(tijdlijn[0][1], lang).toContain(String(TRIAL_DAYS))
+      const antwoord = geldvraag(lang)
+      /* Het Engels zet een punt waar de rest een komma zet. */
+      expect(antwoord, `${lang}: het jaarbedrag`).toMatch(/59[.,]99/)
+      expect(antwoord, `${lang}: het maandbedrag`).toMatch(/6[.,]99/)
     }
   })
 })

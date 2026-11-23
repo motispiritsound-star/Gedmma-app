@@ -5,7 +5,7 @@ import { UNITS } from '../content/curriculum'
 import { LANG_CODES } from '../i18n/languages'
 import { alsPrijs, bedragVan, betaalFase, EBOOK, ebookFile, prijsVan, PRODUCTS, toegangNa } from './billing'
 import {
-  FREE_LESSONS, getState, GRATIS_LESSEN, importProgress, isDone, lessonBehindPaywall, lessonUnlocked,
+  getState, importProgress, isDone, lessonBehindPaywall, lessonUnlocked, magLeren,
   nextLesson, resetProgress, setState, unitBehindPaywall, unitUnlocked, type State,
 } from './store'
 
@@ -20,44 +20,33 @@ const finished = (upToUnit: number, unlocked = false): State => {
   return { ...getState(), lessons, unlocked }
 }
 
-/** De lessen die gratis horen te zijn, in de volgorde van het pad. */
-const gratisLessen = UNITS.flatMap((u) => u.lessons.slice(0, GRATIS_LESSEN[u.id] ?? 0).map((l) => l.id))
-
 describe('what is free and what is paid', () => {
-  it('counts the free lessons the way the app quotes them', () => {
-    expect(gratisLessen).toHaveLength(FREE_LESSONS)
-    expect(FREE_LESSONS).toBeGreaterThan(0)
-  })
-
-  it('leaves exactly those lessons open to everybody', () => {
+  /*
+   * Niets, sinds 23 november. Zie `magLeren` in store.ts en de toetsen in
+   * `geengratis.test.ts`, die de nieuwe regel van alle kanten nalopen; hier
+   * staat alleen wat deze bestanden erover te zeggen hadden.
+   */
+  it('leaves nothing open to somebody who has not paid', () => {
     const leeg = finished(0)
-    for (const id of gratisLessen) {
-      expect(lessonBehindPaywall(id, leeg), id).toBe(false)
+    expect(magLeren(leeg)).toBe(false)
+    for (const les of UNITS.flatMap((u) => u.lessons)) {
+      expect(lessonBehindPaywall(les.id, leeg), les.id).toBe(true)
     }
-    const alle = UNITS.flatMap((u) => u.lessons.map((l) => l.id))
-    for (const id of alle.filter((id) => !gratisLessen.includes(id))) {
-      expect(lessonBehindPaywall(id, leeg), id).toBe(true)
-    }
-    expect(alle.length).toBeGreaterThan(gratisLessen.length)
   })
 
-  it('opens the free lesson of the next unit without finishing the paid half of this one', () => {
-    // Drie stukken alfabet gedaan; de rest van het alfabet zit achter het slot.
-    const lessons: State['lessons'] = {}
-    for (const id of UNITS[0]!.lessons.slice(0, GRATIS_LESSEN[UNITS[0]!.id]!).map((l) => l.id)) {
-      lessons[id] = { stars: 3, runs: 1, bestScore: 1, lastDone: 1 }
+  it('keeps open what somebody had already finished', () => {
+    const oud = finished(2)
+    for (const les of UNITS.slice(0, 2).flatMap((u) => u.lessons)) {
+      expect(lessonBehindPaywall(les.id, oud), les.id).toBe(false)
     }
-    const state: State = { ...getState(), lessons, unlocked: false }
-    expect(lessonUnlocked(UNITS[0]!.lessons[3]!.id, state)).toBe(false)
-    expect(lessonUnlocked(UNITS[1]!.lessons[0]!.id, state)).toBe(true)
-    expect(lessonUnlocked(UNITS[1]!.lessons[1]!.id, state)).toBe(false)
+    for (const les of UNITS.slice(2).flatMap((u) => u.lessons)) {
+      expect(lessonBehindPaywall(les.id, oud), les.id).toBe(true)
+    }
   })
 
-  it('puts a unit without any free lesson behind the purchase', () => {
+  it('puts a unit nobody has touched behind the purchase', () => {
     const leeg = finished(0)
-    const betaald = UNITS.filter((u) => !(GRATIS_LESSEN[u.id] ?? 0))
-    expect(betaald.length).toBeGreaterThan(0)
-    for (const unit of betaald) {
+    for (const unit of UNITS) {
       expect(unitBehindPaywall(unit.id, leeg), unit.id).toBe(true)
     }
   })
@@ -75,10 +64,17 @@ describe('what is free and what is paid', () => {
   })
 
   it('never points "continue" at a locked lesson', () => {
-    for (const state of [finished(0), finished(1), finished(2)]) {
+    /*
+     * `null` is het eerlijke antwoord als er niets open staat, en dat is sinds
+     * 23 november het geval voor een verse installatie zonder abonnement.
+     * Hier stond `LESSONS[0]!.id` als terugval -- een les achter het slot.
+     */
+    expect(nextLesson(finished(0))).toBeNull()
+    for (const state of [finished(1), finished(2), finished(0, true), finished(2, true)]) {
       const next = nextLesson(state)
-      expect(lessonUnlocked(next, state) || isDone(next, state), next).toBe(true)
-      expect(lessonBehindPaywall(next, state), next).toBe(false)
+      expect(next, 'er hoort hier wel iets open te staan').not.toBeNull()
+      expect(lessonUnlocked(next!, state) || isDone(next!, state), next!).toBe(true)
+      expect(lessonBehindPaywall(next!, state), next!).toBe(false)
     }
   })
 

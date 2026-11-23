@@ -104,7 +104,17 @@ export function Alphabet() {
           <p className="font-display text-lg font-extrabold">{t.alphabet.spel}</p>
           <p className="text-sm text-[var(--ink-soft)]">{t.alphabet.spelUitleg} {done ? `· ${t.alphabet.alGehaald}` : ''}</p>
         </div>
-        <Button onClick={() => setGame(true)}>{t.common.spelen}</Button>
+        {/*
+          Het spel hoort bij de cursus, net als de spelletjes op /spelen.
+          Het koos uit alle 28 letters en keek niet naar `unlocked`, dus het
+          was het hele alfabet, gratis -- en het schreef via
+          `completeLesson('letters', ...)` voortgang weg zonder dat er ooit een
+          les open was gegaan. Daarmee was het ook het ene gat in de regel
+          waarmee de app oude gebruikers van nieuwe onderscheidt (`magLeren`).
+        */}
+        {gekocht
+          ? <Button onClick={() => setGame(true)}>{t.common.spelen}</Button>
+          : <Link to="/volledig"><Button variant="secondary">🔒 {t.unlock.slotKnop}</Button></Link>}
       </Card>
 
       <p className="mt-6 text-center text-sm text-[var(--ink-soft)]">{t.alphabet.voetnoot}</p>

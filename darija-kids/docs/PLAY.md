@@ -111,8 +111,10 @@ twee afmaken.
 | Gratis of betaald | **Gratis** |
 
 De app is gratis met aankopen in de app. Kies je "betaald", dan kun je dat
-nooit meer terugdraaien en verlies je het gratis begin waar je hele marketing
-op rust.
+nooit meer terugdraaien — en dan rekent Google af bij de download, niet bij het
+abonnement, en bestaat er geen abonnement meer om op te zeggen. Gratis
+downloaden met een abonnement erin is wat deze app is, ook sinds het gratis
+deel eruit is: de betaalmuur staat op het eerste scherm, niet in de winkel.
 
 De standaardtaal is en-US omdat dat is wat iemand ziet in elk land waarvoor je
 geen vertaling hebt. Nederlands voeg je straks toe als vertaling.
@@ -193,9 +195,35 @@ https://darijaforkids.eu/privacy
 ```
 
 ### App-toegang
-"Alle functionaliteit is beschikbaar zonder speciale toegang." De app heeft
-geen inlog. De betaalde units zijn geen speciale toegang — Google bedoelt hier
-afgeschermde delen die een reviewer niet kan bereiken.
+**Niet meer "alle functionaliteit is beschikbaar zonder speciale toegang".**
+Dat stond hier, met de redenering dat de betaalde units geen speciale toegang
+zijn omdat Google afgeschermde delen bedoelt die een reviewer niet kan
+bereiken. Sinds 23 november klopt die redenering niet meer: er is geen gratis
+les, geen gratis woord en geen gratie letter — zonder abonnement is er
+letterlijk niets te bereiken.
+
+Kies **"Alle of een deel van mijn app is beperkt"** en zet in *Overige
+instructies* deze tekst (Google leest dit veld echt, en een leeg veld is een
+afwijzing om niets):
+
+```
+No account and no login is needed. The app is free to download; the course
+itself is a subscription, and the app asks for it on the first screen.
+
+After the four-step welcome screen the app goes straight to the subscription
+screen. There are no free lessons: without a subscription no lesson, word or
+letter opens. The subscription screen has a parental gate -- a multiplication
+you must answer before the purchase opens; any correct answer works. Complete a
+test purchase of app.darijaforkids.yearly there (licence testing, so nothing is
+charged) and the whole course opens at once: 17 units, 83 lessons, 304 words,
+28 letters, the stories and the games. "Restore purchase" at the bottom of the
+same screen brings it back on another device.
+```
+
+Daarvoor moet het Google-account van de beoordelaar een licentietester zijn:
+dat staat in **Play Console > Instellingen > Licentietests**, en dat is een
+instelling van het hele account, niet van deze app. Staat het e-mailadres daar
+niet bij, dan rekent de testaankoop echt af.
 
 ### Advertenties
 **Nee**, de app bevat geen advertenties.
@@ -333,8 +361,10 @@ zelf, bij *Publishing overview*.
 
 **Monetisatie → Producten.** Google's model verschilt van dat van Apple: een
 abonnement heeft een **basisabonnement** (de looptijd en de prijs) en daaronder
-eventueel **aanbiedingen** (de gratis proefperiode). Twee lagen dus, waar Apple
-er één heeft.
+eventueel **aanbiedingen** (een korting of een proefperiode). Twee lagen dus,
+waar Apple er één heeft. Een aanbieding kan maximaal twee fasen hebben, en de
+tijdelijke 50%-actie op het jaar is er één van: één fase van een jaar op
+€ 29,99, daarna de gewone prijs.
 
 ### Abonnementen
 
@@ -345,14 +375,20 @@ er één heeft.
 - Naam: `Een jaar`
 - Basisabonnement: ID `jaar`, type **Automatisch verlengend**, factureringsperiode **1 jaar**
 - Prijs: **€ 59,99** in Nederland, de rest door Google laten omrekenen
-- Aanbieding: type **Gratis proefperiode**, duur **3 dagen**, voor iedereen die nog niet geabonneerd is, alle regio's
+- Aanbieding: **geen proefperiode.** De aanbieding `proef-jaar` moet uitgezet
+  worden als hij er nog staat — zie de kop over de proefperiode in
+  `docs/STAND.md`.
+- Actie-aanbieding: type **Korting**, één fase van **1 jaar** op **€ 29,99**
+  (50%), daarna automatisch door op € 59,99. Zet er een **einddatum** op; zonder
+  einddatum is het geen actie maar de nieuwe prijs.
 
 **Maand**
 - Product-ID: `app.darijaforkids.monthly`
 - Naam: `Per maand`
 - Basisabonnement: ID `maand`, **Automatisch verlengend**, factureringsperiode **1 maand**
 - Prijs: **€ 6,99**
-- Aanbieding: **Gratis proefperiode**, **3 dagen**, alle regio's
+- Aanbieding: **geen.** De aanbieding `proef-maand` moet uitgezet worden als hij
+  er nog staat. De actie geldt alleen op het jaar.
 
 > **€ 59,99 en niet € 59,88.** Apple werkt met vaste prijspunten en daar bestaat
 > € 59,88 niet. Zet je Play op hetzelfde bedrag, dan toont de app in beide

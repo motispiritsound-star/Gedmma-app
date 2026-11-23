@@ -244,7 +244,7 @@ const nl = {
   heroTitel2: ' — spelenderwijs.',
   heroLead:
     'Darija leer je niet uit een schoolboek: je leert het van je oma, aan tafel, in de auto, aan de telefoon. Maar dat gesprek stokt. Het kind antwoordt in het Nederlands, jeddti in het Darija, en daartussen valt een taal weg. Darijaforkids geeft je kind de woorden terug — twee minuten per dag, als een spelletje, met een échte Marokkaanse stem in de oren.',
-  trustLine: 'Gratis beginnen · Geen account · Geen advertenties · Werkt offline',
+  trustLine: 'Gratis te downloaden · Geen account · Geen advertenties · Werkt offline',
   slogans: [
     'Twee minuten per dag. Een taal voor het leven.',
     'De taal van oma verdwijnt in één generatie. Tenzij je nu begint.',
@@ -254,7 +254,7 @@ const nl = {
 
   downloadTitel: 'Begin vanavond nog',
   downloadBody:
-    'De eerste les duurt twee minuten. Daarna kan je kind hallo zeggen, bedanken en afscheid nemen in het Darija. De eerste acht lessen zijn gratis — geen account, geen advertenties, niets in te vullen.',
+    'De eerste les duurt twee minuten. Daarna kan je kind hallo zeggen, bedanken en afscheid nemen in het Darija. De hele cursus zit in één abonnement: zeventien units, 304 woorden, allemaal ingesproken — geen account, geen advertenties, niets in te vullen.',
   stickyKnop: 'Download de app',
   appStore: 'App Store',
   playStore: 'Google Play',
@@ -506,7 +506,7 @@ const fr: SiteCopy = {
   heroTitel2: ' — en jouant.',
   heroLead:
     "La darija ne s'apprend pas dans un manuel — elle s'apprend de sa grand-mère, à table, en voiture, au téléphone. Mais la conversation s'enraye : l'enfant répond en français, la grand-mère en darija, et entre les deux une langue disparaît. Darijaforkids rend les mots à votre enfant. En jouant, deux minutes par jour, avec une vraie voix marocaine dans les oreilles.",
-  trustLine: 'Gratuit pour commencer · Sans compte · Sans publicité · Fonctionne hors ligne',
+  trustLine: 'Téléchargement gratuit · Sans compte · Sans publicité · Fonctionne hors ligne',
   slogans: [
     'Deux minutes par jour. Une langue pour la vie.',
     'La langue de mamie disparaît en une génération. Sauf si vous commencez maintenant.',
@@ -516,7 +516,7 @@ const fr: SiteCopy = {
 
   downloadTitel: 'Commencez ce soir',
   downloadBody:
-    "La première leçon dure deux minutes. Ensuite, votre enfant sait dire bonjour, merci et au revoir en darija. Les huit premières leçons sont gratuites — sans compte, sans publicité, rien à remplir.",
+    "La première leçon dure deux minutes. Ensuite, votre enfant sait dire bonjour, merci et au revoir en darija. Tout le cours tient dans un seul abonnement : dix-sept unités, 304 mots, tous enregistrés par une voix marocaine — sans compte, sans publicité, rien à remplir.",
   stickyKnop: 'Télécharger l’application',
   appStore: 'App Store',
   playStore: 'Google Play',
@@ -761,7 +761,7 @@ const de: SiteCopy = {
   heroTitel2: ' — spielerisch.',
   heroLead:
     'Darija lernt man nicht aus dem Schulbuch — man lernt es von der Großmutter, am Tisch, im Auto, am Telefon. Aber das Gespräch stockt: Das Kind antwortet auf Deutsch, die Großmutter auf Darija, und dazwischen geht eine Sprache verloren. Darijaforkids gibt Ihrem Kind die Wörter zurück. Spielerisch, zwei Minuten am Tag, mit einer echten marokkanischen Stimme im Ohr.',
-  trustLine: 'Kostenlos starten · Kein Konto · Keine Werbung · Funktioniert offline',
+  trustLine: 'Kostenloser Download · Kein Konto · Keine Werbung · Funktioniert offline',
   slogans: [
     'Zwei Minuten am Tag. Eine Sprache fürs Leben.',
     'Die Sprache der Großmutter verschwindet in einer Generation. Es sei denn, Sie fangen jetzt an.',
@@ -771,7 +771,7 @@ const de: SiteCopy = {
 
   downloadTitel: 'Fangen Sie heute Abend an',
   downloadBody:
-    'Die erste Lektion dauert zwei Minuten. Danach kann Ihr Kind auf Darija hallo sagen, danke sagen und sich verabschieden. Die ersten acht Lektionen sind kostenlos — kein Konto, keine Werbung, nichts auszufüllen.',
+    'Die erste Lektion dauert zwei Minuten. Danach kann Ihr Kind auf Darija hallo sagen, danke sagen und sich verabschieden. Der ganze Kurs steckt in einem Abo: siebzehn Einheiten, 304 Wörter, alle von einer marokkanischen Stimme eingesprochen — kein Konto, keine Werbung, nichts auszufüllen.',
   stickyKnop: 'App herunterladen',
   appStore: 'App Store',
   playStore: 'Google Play',
@@ -1016,7 +1016,7 @@ const es: SiteCopy = {
   heroTitel2: ' — jugando.',
   heroLead:
     'El dariya no se aprende en un libro de texto: se aprende de la abuela, en la mesa, en el coche, por teléfono. Pero la conversación se atasca: el niño responde en español, la abuela en dariya, y entremedias se pierde una lengua. Darijaforkids le devuelve las palabras a tu hijo. Jugando, dos minutos al día, con una voz marroquí de verdad al oído.',
-  trustLine: 'Empieza gratis · Sin cuenta · Sin anuncios · Funciona sin conexión',
+  trustLine: 'Descarga gratuita · Sin cuenta · Sin anuncios · Funciona sin conexión',
   slogans: [
     'Dos minutos al día. Una lengua para toda la vida.',
     'La lengua de la abuela desaparece en una generación. A menos que empieces hoy.',
@@ -1026,7 +1026,7 @@ const es: SiteCopy = {
 
   downloadTitel: 'Empieza esta misma noche',
   downloadBody:
-    'La primera lección dura dos minutos. Después tu hijo sabe saludar, dar las gracias y despedirse en dariya. Las ocho primeras lecciones son gratis: sin cuenta, sin anuncios, nada que rellenar.',
+    'La primera lección dura dos minutos. Después tu hijo sabe saludar, dar las gracias y despedirse en dariya. Todo el curso está en una sola suscripción: diecisiete unidades, 304 palabras, todas grabadas por una voz marroquí — sin cuenta, sin anuncios, nada que rellenar.',
   stickyKnop: 'Descargar la app',
   appStore: 'App Store',
   playStore: 'Google Play',
@@ -1271,7 +1271,7 @@ const it: SiteCopy = {
   heroTitel2: ' — giocando.',
   heroLead:
     'Il darija non si impara sui libri di scuola: si impara dalla nonna, a tavola, in macchina, al telefono. Ma la conversazione si inceppa: il bambino risponde in italiano, la nonna in darija, e in mezzo si perde una lingua. Darijaforkids restituisce le parole a tuo figlio. Giocando, due minuti al giorno, con una vera voce marocchina nelle orecchie.',
-  trustLine: 'Inizi gratis · Senza account · Senza pubblicità · Funziona offline',
+  trustLine: 'Download gratuito · Senza account · Senza pubblicità · Funziona offline',
   slogans: [
     'Due minuti al giorno. Una lingua per tutta la vita.',
     'La lingua della nonna sparisce in una generazione. A meno che tu non cominci oggi.',
@@ -1281,7 +1281,7 @@ const it: SiteCopy = {
 
   downloadTitel: 'Comincia stasera',
   downloadBody:
-    'La prima lezione dura due minuti. Dopo, tuo figlio sa dire ciao, grazie e arrivederci in darija. Le prime otto lezioni sono gratis: senza account, senza pubblicità, niente da compilare.',
+    'La prima lezione dura due minuti. Dopo, tuo figlio sa dire ciao, grazie e arrivederci in darija. Tutto il corso sta in un unico abbonamento: diciassette unità, 304 parole, tutte registrate da una voce marocchina — senza account, senza pubblicità, niente da compilare.',
   stickyKnop: 'Scarica l’app',
   appStore: 'App Store',
   playStore: 'Google Play',
@@ -1526,7 +1526,7 @@ const en: SiteCopy = {
   heroTitel2: ' — through play.',
   heroLead:
     'Darija is not learned from a textbook — it is learned from your grandmother, at the table, in the car, on the phone. But the conversation stalls: the child answers in English, the grandmother in Darija, and somewhere in between a language slips away. Darijaforkids gives your child the words back. Through play, two minutes a day, with a real Moroccan voice in their ears.',
-  trustLine: 'Free to start · No account · No ads · Works offline',
+  trustLine: 'Free to download · No account · No ads · Works offline',
   slogans: [
     'Two minutes a day. A language for life.',
     'Grandma’s language disappears in one generation. Unless you start now.',
@@ -1536,7 +1536,7 @@ const en: SiteCopy = {
 
   downloadTitel: 'Start tonight',
   downloadBody:
-    'The first lesson takes two minutes. After it your child can say hello, thank you and goodbye in Darija. The first eight lessons are free — no account, no ads, nothing to fill in.',
+    'The first lesson takes two minutes. After it your child can say hello, thank you and goodbye in Darija. The whole course sits in one subscription: seventeen units, 304 words, every one recorded by a Moroccan voice — no account, no ads, nothing to fill in.',
   stickyKnop: 'Download the app',
   appStore: 'App Store',
   playStore: 'Google Play',

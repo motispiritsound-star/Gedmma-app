@@ -67,8 +67,8 @@ const SECTIONS_NL = (n: Winkelnamen): Section[] => [
     `Download je de app uit ${n.download}, dan weet ${n.bedrijfOf} dát je hem hebt gedownload, en kunnen zij technische crashgegevens verzamelen volgens hun eigen voorwaarden. Dat staat los van ons: wij krijgen daar geen persoonsgegevens uit.`,
   ]],
   ['Betalen', [
-    `De eerste units zijn gratis. Neem je de volledige toegang, dan loopt die betaling helemaal via ${n.via}: zij innen het bedrag, zij rekenen de btw af, zij houden de proefperiode bij en zij weten wie je bent. Darijaforkids krijgt van hen alleen te horen dát het abonnement loopt — geen kaartgegevens, geen adres, geen naam.`,
-    'Het is een maandabonnement dat doorloopt tot je opzegt, en opzeggen doe je in je eigen winkelaccount; wij kunnen dat niet voor je doen en zien ook niet wanneer je het doet. Voordat er iets afgesloten kan worden, staat er een rekensom die een volwassene moet beantwoorden.',
+    `De cursus is een abonnement, en die betaling loopt helemaal via ${n.via}: zij innen het bedrag, zij rekenen de btw af en zij weten wie je bent. Darijaforkids krijgt van hen alleen te horen dát het abonnement loopt — geen kaartgegevens, geen adres, geen naam.`,
+    'Het loopt per maand of per jaar door tot je opzegt, en opzeggen doe je in je eigen winkelaccount; wij kunnen dat niet voor je doen en zien ook niet wanneer je het doet. Voordat er iets afgesloten kan worden, staat er een rekensom die een volwassene moet beantwoorden.',
   ]],
   ['Mail aan ouders', [
     'Op het ouderscherm kan een ouder een e-mailadres achterlaten, om te horen wanneer er iets nieuws is of om één keer per week te lezen hoe het leren gaat. Dat is het enige dat wij van iemand bewaren, en het gebeurt alleen als iemand het zelf invult.',
@@ -114,8 +114,8 @@ const SECTIONS_FR = (n: Winkelnamen): Section[] => [
     `Si tu télécharges l’application sur ${n.download}, ${n.bedrijfOf} sait que tu l’as téléchargée et peuvent collecter des données techniques de plantage selon leurs propres conditions. Cela ne dépend pas de nous et ne nous transmet aucune donnée personnelle.`,
   ]],
   ['Le paiement', [
-    `Les premières unités sont gratuites. Si tu prends l’accès complet, ce paiement passe entièrement par ${n.via} : ce sont eux qui encaissent, qui reversent la TVA, qui gèrent la période d’essai et qui savent qui tu es. Darijaforkids apprend seulement que l’abonnement est actif — aucune donnée de carte, aucune adresse, aucun nom.`,
-    'C’est un abonnement mensuel qui court jusqu’à résiliation, et la résiliation se fait dans ton propre compte du magasin ; nous ne pouvons pas le faire à ta place et nous ne voyons pas non plus quand tu le fais. Avant toute souscription, une petite opération doit être résolue par un adulte.',
+    `Le cours est un abonnement, et ce paiement passe entièrement par ${n.via} : ce sont eux qui encaissent, qui reversent la TVA et qui savent qui tu es. Darijaforkids apprend seulement que l’abonnement est actif — aucune donnée de carte, aucune adresse, aucun nom.`,
+    'Il court au mois ou à l’année jusqu’à résiliation, et la résiliation se fait dans ton propre compte du magasin ; nous ne pouvons pas le faire à ta place et nous ne voyons pas non plus quand tu le fais. Avant toute souscription, une petite opération doit être résolue par un adulte.',
   ]],
   ['Courrier aux parents', [
     "Sur l'écran des parents, un parent peut laisser une adresse e-mail, pour savoir quand il y a du nouveau ou pour lire une fois par semaine comment se passe l'apprentissage. C'est la seule chose que nous conservons de quelqu'un, et uniquement si cette personne la saisit elle-même.",
@@ -161,8 +161,8 @@ const SECTIONS_DE = (n: Winkelnamen): Section[] => [
     `Lädst du die App ${n.download}, weiß ${n.bedrijfOf}, dass du sie geladen hast, und können nach ihren eigenen Bedingungen technische Absturzdaten erheben. Das liegt außerhalb unseres Einflusses; personenbezogene Daten erhalten wir daraus nicht.`,
   ]],
   ['Bezahlen', [
-    `Die ersten Einheiten sind kostenlos. Nimmst du den vollen Zugang, läuft diese Zahlung vollständig über ${n.via}: sie ziehen den Betrag ein, sie führen die Mehrwertsteuer ab, sie verwalten die Testphase und sie wissen, wer du bist. Darijaforkids erfährt nur, dass das Abo läuft — keine Kartendaten, keine Adresse, kein Name.`,
-    'Es ist ein Monatsabo, das bis zur Kündigung weiterläuft, und gekündigt wird im eigenen Store-Konto; wir können das nicht für dich tun und sehen auch nicht, wann du es tust. Vor jedem Abschluss steht eine kleine Rechenaufgabe, die ein Erwachsener lösen muss.',
+    `Der Kurs ist ein Abo, und diese Zahlung läuft vollständig über ${n.via}: sie ziehen den Betrag ein, sie führen die Mehrwertsteuer ab und sie wissen, wer du bist. Darijaforkids erfährt nur, dass das Abo läuft — keine Kartendaten, keine Adresse, kein Name.`,
+    'Es läuft monatlich oder jährlich bis zur Kündigung weiter, und gekündigt wird im eigenen Store-Konto; wir können das nicht für dich tun und sehen auch nicht, wann du es tust. Vor jedem Abschluss steht eine kleine Rechenaufgabe, die ein Erwachsener lösen muss.',
   ]],
   ['Post an Eltern', [
     'Auf dem Elternbildschirm kann ein Elternteil eine E-Mail-Adresse hinterlassen, um zu hören, wenn es etwas Neues gibt, oder um einmal pro Woche zu lesen, wie das Lernen läuft. Das ist das Einzige, was wir von jemandem aufbewahren, und nur, wenn er es selbst einträgt.',
@@ -208,8 +208,8 @@ const SECTIONS_IT = (n: Winkelnamen): Section[] => [
     `Se scarichi l’app ${n.download}, ${n.bedrijfOf} sa che l’hai scaricata e possono raccogliere dati tecnici sui crash secondo le loro condizioni. Questo è fuori dalla nostra portata e non ci fornisce nessun dato personale.`,
   ]],
   ['Il pagamento', [
-    `Le prime unità sono gratis. Se prendi l’accesso completo, quel pagamento passa interamente ${n.via}: sono loro a incassare, loro a versare l’IVA, loro a gestire la prova gratuita e loro a sapere chi sei. Darijaforkids viene a sapere soltanto che l’abbonamento è attivo: niente dati della carta, niente indirizzo, niente nome.`,
-    'È un abbonamento che continua finché non lo disdici, e la disdetta si fa nel tuo account del negozio; noi non possiamo farlo al posto tuo e non vediamo nemmeno quando lo fai. Prima di sottoscrivere qualsiasi cosa c’è un piccolo calcolo che deve risolvere una persona adulta.',
+    `Il corso è un abbonamento, e quel pagamento passa interamente ${n.via}: sono loro a incassare, loro a versare l’IVA e loro a sapere chi sei. Darijaforkids viene a sapere soltanto che l’abbonamento è attivo: niente dati della carta, niente indirizzo, niente nome.`,
+    'Si rinnova ogni mese o ogni anno finché non lo disdici, e la disdetta si fa nel tuo account del negozio; noi non possiamo farlo al posto tuo e non vediamo nemmeno quando lo fai. Prima di sottoscrivere qualsiasi cosa c’è un piccolo calcolo che deve risolvere una persona adulta.',
   ]],
   ['Posta ai genitori', [
     "Nella schermata dei genitori un genitore può lasciare un indirizzo e-mail, per sapere quando c'è qualcosa di nuovo o per leggere una volta a settimana come va lo studio. È l'unica cosa che conserviamo di qualcuno, e solo se è lui stesso a scriverla.",
@@ -255,8 +255,8 @@ const SECTIONS_EN = (n: Winkelnamen): Section[] => [
     `If you download the app from ${n.download}, ${n.bedrijfOf} knows that you downloaded it and may collect technical crash data under their own terms. That is outside our control and gives us no personal data.`,
   ]],
   ['Paying', [
-    `The first units are free. If you take full access, that payment runs entirely through ${n.via}: they take the money, they account for the VAT, they run the free trial and they know who you are. Darijaforkids is only told that the subscription is active — no card details, no address, no name.`,
-    'It is a monthly subscription that runs until you cancel, and cancelling happens in your own store account; we cannot do it for you and we cannot see when you do. Before anything can be taken out, a small sum has to be answered by an adult.',
+    `The course is a subscription, and that payment runs entirely through ${n.via}: they take the money, they account for the VAT and they know who you are. Darijaforkids is only told that the subscription is active — no card details, no address, no name.`,
+    'It runs by the month or by the year until you cancel, and cancelling happens in your own store account; we cannot do it for you and we cannot see when you do. Before anything can be taken out, a small sum has to be answered by an adult.',
   ]],
   ['Mail to parents', [
     'On the parents’ screen a parent can leave an email address, to hear when something new arrives or to read once a week how the learning is going. It is the only thing we keep about anybody, and only if they type it in themselves.',
@@ -302,8 +302,8 @@ const SECTIONS_ES = (n: Winkelnamen): Section[] => [
     `Si descargas la aplicación en ${n.download}, ${n.bedrijfOf} sabe que la has descargado y pueden recoger datos técnicos de fallos según sus propias condiciones. Eso queda fuera de nuestro alcance y no nos aporta ningún dato personal.`,
   ]],
   ['El pago', [
-    `Las primeras unidades son gratis. Si coges el acceso completo, ese pago pasa entero por ${n.via}: ellos cobran el importe, ellos liquidan el IVA, ellos llevan la prueba gratuita y ellos saben quién eres. Darijaforkids solo se entera de que la suscripción está activa: ni datos de la tarjeta, ni dirección, ni nombre.`,
-    'Es una suscripción mensual que sigue hasta que la canceles, y la cancelación se hace en tu propia cuenta de la tienda; nosotros no podemos hacerlo por ti y tampoco vemos cuándo lo haces. Antes de contratar nada hay una pequeña operación que debe resolver una persona adulta.',
+    `El curso es una suscripción, y ese pago pasa entero por ${n.via}: ellos cobran el importe, ellos liquidan el IVA y ellos saben quién eres. Darijaforkids solo se entera de que la suscripción está activa: ni datos de la tarjeta, ni dirección, ni nombre.`,
+    'Se renueva cada mes o cada año hasta que la canceles, y la cancelación se hace en tu propia cuenta de la tienda; nosotros no podemos hacerlo por ti y tampoco vemos cuándo lo haces. Antes de contratar nada hay una pequeña operación que debe resolver una persona adulta.',
   ]],
   ['Correo a los padres', [
     'En la pantalla para adultos, un padre o una madre puede dejar una dirección de correo, para saber cuándo hay algo nuevo o para leer una vez por semana cómo va el aprendizaje. Es lo único que guardamos de alguien, y solo si lo escribe esa persona.',

@@ -364,15 +364,38 @@ export function Learn() {
             )}
           </div>
           <div className="relative flex w-full shrink-0 flex-col gap-2 sm:w-auto">
-            <Link to={`/les/${next}`}>
-              <Button className="w-full">{eersteKeer ? t.learn.beginnen : t.learn.gaVerder}</Button>
-            </Link>
+            {/*
+              `nextLesson` geeft `null` zodra er niets meer open staat, en dat
+              gebeurt op twee heel verschillende manieren.
+              Wie de hele cursus af heeft: dan is herhalen het enige dat er nog
+              te doen is. En wie niet betaald heeft: op het web staat de poort
+              niet, dus daar komt een bezoeker hier met nul open lessen -- en
+              dan is dit de knop die hem vertelt waarom. Een knop naar
+              `/les/null` is in beide gevallen geen knop.
+            */}
+            {next ? (
+              <Link to={`/les/${next}`}>
+                <Button className="w-full">{eersteKeer ? t.learn.beginnen : t.learn.gaVerder}</Button>
+              </Link>
+            ) : state.unlocked ? (
+              <Link to="/herhalen"><Button className="w-full">{t.learn.herhalen}</Button></Link>
+            ) : (
+              <Link to="/volledig"><Button className="w-full">{t.unlock.slotKnop}</Button></Link>
+            )}
             {due > 0 && <Link to="/herhalen"><Button variant="secondary" className="w-full">{t.learn.herhalen}</Button></Link>}
           </div>
         </Card>
       </div>
 
-      <Quests />
+      {/*
+        De missies horen bij de cursus.
+
+        Zonder abonnement is 'Maak 4 zinnen' niet te halen -- zinoefeningen
+        komen alleen uit een les -- en dan staat er elke dag een kaart met een
+        balkje dat nooit vol komt en een insigne ('missies') dat nooit meer
+        verdiend kan worden.
+      */}
+      {state.unlocked && <Quests />}
 
       {/* Right under the missions, because the fifth one is a bonus round and
           this is where a child who has finished today's lesson ends up. */}
@@ -597,6 +620,16 @@ export function Learn() {
 
       <Einde gelopen={UNITS.every((u) => progressOfUnit(u.id, state) >= 1)} />
 
+      {/*
+        Alleen voor wie de cursus heeft.
+
+        Deze kaart stond er onvoorwaardelijk, en dat werkte zolang er een
+        gratis deel was. Nu niet meer: een niet-betaler zou "Klaar met het
+        pad?" lezen onder zeventien slotstroken, met drie knoppen die alle
+        drie op een slot uitkomen -- Verhalen, Letters en Spelen staan sinds
+        dit besluit allemaal achter het abonnement.
+      */}
+      {state.unlocked && (
       <Card className="p-5 text-center">
         <p className="font-display text-lg font-extrabold">{t.learn.klaarMetPad}</p>
         <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.learn.klaarMetPadUitleg}</p>
@@ -621,6 +654,7 @@ export function Learn() {
           <Link to="/spelen"><Button variant="secondary">{t.nav.spelen}</Button></Link>
         </div>
       </Card>
+      )}
     </div>
   )
 }

@@ -63,7 +63,7 @@ npm run icons      # tekent de iconen en het deelplaatje opnieuw
 | | |
 |---|---|
 | **6 interfacetalen** | Nederlands, Frans, Duits, Spaans, Italiaans en Engels — interface, betekenissen, uitleg, tips en verhalen |
-| **Gratis beginnen** | de eerste vier lessen zijn open; de rest is één aankoop via de App Store of Google Play |
+| **Eén abonnement** | de app is gratis te downloaden; de cursus loopt via de App Store of Google Play en staat na het afsluiten in één keer helemaal open |
 | **17 units** | van het Arabische alfabet en *Salam!* tot afdingen op de souq, oplopend van A0 naar A2 |
 | **304 woorden** | elk met Arabisch schrift, Latijnse schrijfwijze en een betekenis in alle vijf de talen |
 | **100 zinnen** | twee aan het eind van elke les, gemaakt van de woorden die die les net leerde — horen, bouwen, herkennen |
@@ -266,14 +266,20 @@ staat ook zo op de ouderpagina.
 
 ## Wat het kost
 
-De eerste vier lessen zijn gratis en blijven gratis — drie stukken van het
-Arabische alfabet en je eerste woorden Darija. Samen een minuut of twaalf:
-genoeg om een handvol letters te lezen en hallo te zeggen. De rest van de
-cursus hoort bij **volledige toegang**: een paar dagen gratis, daarna
+De app is gratis te downloaden; de cursus is een **abonnement**, en dat wordt
+op het eerste scherm gevraagd. Er zijn geen gratis lessen en geen
+proefperiode: na het betalen staat alles in één keer open, geen porties.
 **€ 59,99 voor een heel jaar** — € 5,00 per maand — of **€ 6,99 per maand**,
-beide inclusief btw en opzegbaar. De App Store en Google Play regelen de
-proefperiode, de afschrijving en de btw; de producten heten
+beide inclusief btw en opzegbaar. Op het jaar loopt een tijdelijke actie van
+50%: **€ 29,99 voor het eerste jaar**, € 2,50 per maand, voor de campagne op de
+Franse, Nederlandse en Duitse Facebook-pagina's. De App Store en Google Play
+regelen de afschrijving en de btw; de producten heten
 `app.darijaforkids.yearly` en `app.darijaforkids.monthly`.
+
+Wie de app vóór 23 november had en lessen afrondde, houdt precies die
+afgeronde lessen open. Dat is geen vriendelijkheid maar een belofte niet
+terugnemen — de aantekening boven `magLeren` in `src/engine/store.ts` legt uit
+waarom het aan de voortgang hangt en niet aan een lijst.
 
 Los daarvan is er één ding te koop dat geen abonnement is: **het e-boek**, de
 hele cursus op papier — alle 28 letters met hun drie vormen, alle 17 units met
@@ -282,20 +288,21 @@ het jaarabonnement zit het erbij. Het boek wordt met `npm run ebook` uit
 dezelfde bestanden gezet als de lessen, staat als PDF in `public/ebook/` in alle
 zes talen, en blijft van wie het kocht — ook als het abonnement stopt.
 
-De grens tussen gratis en betaald staat op één plek:
-`FREE_UNITS` in `src/engine/store.ts`, de proefperiode en de vangnetprijs in
+De grens staat op één plek: `magLeren` en `lessonBehindPaywall` in
+`src/engine/store.ts` — zonder abonnement staat alleen open wat al is
+afgerond — en `Poort` in `src/App.tsx` stuurt iedereen zonder abonnement naar
+`/volledig`. De vangnetprijs voor de website staat in `PLANS` in
 `src/engine/billing.ts`.
 
 De app zet zelf geen prijs: die komt uit de winkel, in de munt van de koper.
-Vóór het afsluiten staan de voorwaarden in beeld — hoe lang gratis, wat het
-daarna kost, dat het doorloopt tot je opzegt — en staat er een ouderpoort voor,
+Vóór het afsluiten staan de voorwaarden in beeld — wat er nu wordt
+afgeschreven, dat het doorloopt tot je opzegt — en staat er een ouderpoort voor,
 een rekensom die een volwassene moet beantwoorden. Opzeggen kan met één tik
 vanuit de app, via het winkelaccount.
 
-Eén ding bepalen de winkels en niet wij: de kortste gratis periode is **drie
-dagen** — twee bestaat er niet. Apple kent geen € 59,88 — twaalf maal € 4,99 bestaat daar niet als
-prijspunt — dus staat het jaar in beide winkels op € 59,99, oftewel
-€ 5,00 per maand. Beide staan uitgelegd in
+Eén ding bepalen de winkels en niet wij: Apple kent geen € 59,88 — twaalf maal
+€ 4,99 bestaat daar niet als prijspunt — dus staat het jaar in beide winkels op
+€ 59,99, oftewel € 5,00 per maand. Dat staat uitgelegd in
 [docs/PAYMENTS.md](docs/PAYMENTS.md), samen met de bank- en belastinginstellingen
 waarmee het geld op je rekening komt.
 

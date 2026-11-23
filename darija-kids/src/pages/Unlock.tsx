@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link, useNavigate } from 'react-router-dom'
 import {
-  btwInbegrepen, buyEbook, codeMogelijk, EBOOK, ebookKlaar, ebookWachtTot, FREE_LESSONS,
+  btwInbegrepen, buyEbook, codeMogelijk, EBOOK, ebookKlaar, ebookWachtTot,
   manageSubscription, PLANS, planOf, wisselCodeIn,
   restorePurchases, subscribe, TRIAL_DAYS, useBilling, YEAR_FULL_PRICE, YEAR_SAVING, type PlanId,
 } from '../engine/billing'
@@ -277,7 +277,7 @@ export function Unlock() {
 
           <div className={`rounded-3xl ${ZWEEF}`}>
           <Card className="p-6">
-            <p className="text-[var(--ink-soft)]">{t.unlock.intro(FREE_LESSONS)}</p>
+            <p className="text-[var(--ink-soft)]">{t.unlock.intro}</p>
             <ul className="mt-4 space-y-2">
               {t.unlock.krijgt(gezin, UNITS.length, WORDS.length, LETTERS.length, ALL_SENTENCES.length, OPNAMES, HISTORY.length).map((line) => (
                 /* `min-w-0`: een tekst naast een vinkje in een flex-rij

@@ -86,8 +86,8 @@ describe('de teksten van het keuzescherm', () => {
       const a = STRINGS[taal].aanbod
       expect(a.titel.length, taal).toBeGreaterThan(4)
       expect(a.knop.length, taal).toBeGreaterThan(4)
-      expect(a.later(4).length, taal).toBeGreaterThan(4)
-      expect(a.knop, taal).not.toBe(a.later(4))
+      expect(a.later.length, taal).toBeGreaterThan(4)
+      expect(a.knop, taal).not.toBe(a.later)
       const tekst = a.body(3, '€ 5,00', 432, 17, true)
       expect(tekst, taal).toContain('3')
       expect(tekst, taal).toContain('€ 5,00')
@@ -110,14 +110,20 @@ describe('de teksten van het keuzescherm', () => {
    *
    * Die zin stond er wel — "je begint gratis, na 3 dagen kost de cursus …" —
    * en hij las als een proefperiode die bij de installatie begint. Dat is niet
-   * wat er gebeurt: de gratis lessen verlopen nooit, en de drie dagen horen bij
-   * het abonnement en beginnen pas als iemand dat afsluit. De zin heeft die
-   * verwarring aantoonbaar veroorzaakt, dus staat hij hier vast.
+   * wat er gebeurt: een proefperiode hoort bij het abonnement en begint pas
+   * als iemand dat afsluit. De zin heeft die verwarring aantoonbaar
+   * veroorzaakt, dus staat hij hier vast.
+   *
+   * `gratisDeel` stond hier naast, met het aantal gratis lessen erin. Die
+   * sleutel is op 23 november vervallen; wat ervoor in de plaats staat belooft
+   * geen getal maar zegt wat er na het betalen opengaat, en mag dus in geen
+   * enkele taal nog een cijfer bevatten.
    */
   it('laten het welkomscherm de proef aan het abonnement hangen', () => {
     for (const taal of LANG_CODES) {
-      expect(STRINGS[taal].welcome.gratisDeel(4), taal).toContain('4')
       expect(STRINGS[taal].welcome.plan(3, '€ 5,00'), taal).toContain('3')
+      expect(STRINGS[taal].welcome.allesOpen, taal).not.toMatch(/\d/)
+      expect(STRINGS[taal].welcome.allesOpen.length, taal).toBeGreaterThan(20)
     }
   })
 })

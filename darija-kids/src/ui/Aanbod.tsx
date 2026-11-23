@@ -6,9 +6,9 @@ import { UNITS } from '../content/curriculum'
 import { LETTERS } from '../content/alphabet'
 import { ALL_SENTENCES } from '../content/sentences'
 import { WORDS } from '../content/words'
-import { billingAvailable, FREE_LESSONS, planOf, TRIAL_DAYS, useBilling } from '../engine/billing'
+import { billingAvailable, planOf, TRIAL_DAYS, useBilling } from '../engine/billing'
 import { gezinsdeling } from '../engine/platform'
-import { setState, useStore } from '../engine/store'
+import { magLeren, setState, useStore } from '../engine/store'
 import { tel } from '../engine/tellen'
 import { Button, Sheet } from './kit'
 import { Mascot } from './Mascot'
@@ -77,7 +77,15 @@ export function Aanbod() {
    * onwaar — en een knop naar een abonnement dat je er niet kunt afsluiten is
    * erger dan geen knop.
    */
-  const magTonen = picked && !gezien && !unlocked && billingAvailable()
+  /*
+   * En of er zonder abonnement nog iets te doen is. Zo niet, dan is
+   * `/volledig` sinds 23 november het eerste scherm (zie `Poort` in App.tsx)
+   * en zou dit blad daar bovenop komen: dezelfde vraag twee keer, met een
+   * wegklikbare versie erboven. Dit blad is er nu voor wie de app al had.
+   */
+  const mag = useStore(magLeren)
+
+  const magTonen = picked && !gezien && !unlocked && billingAvailable() && mag
 
   /*
    * Tellen dat dit scherm te zien was.
@@ -140,7 +148,7 @@ export function Aanbod() {
           onClick={() => { sfx.nav(); void tel('aanbod_later'); sluit() }}
           className="mt-2 w-full rounded-2xl border-2 border-[var(--line)] px-4 py-3 font-display font-extrabold text-[var(--ink)]"
         >
-          {t.aanbod.later(FREE_LESSONS)}
+          {t.aanbod.later}
         </button>
       </div>
     </Sheet>

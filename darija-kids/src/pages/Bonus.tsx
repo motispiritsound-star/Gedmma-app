@@ -103,9 +103,40 @@ export function Bonus() {
     )
   }
 
+  /*
+   * De bonusronde hoort bij de cursus, net als de spelletjes en de verhalen.
+   *
+   * Hij stond open, en dat werkte zolang de gratis lessen letters en zinnen in
+   * de poel legden. Zonder gratis deel blijven `pool.letters` en
+   * `pool.sentences` leeg voor wie niet betaalt -- `gradeExtra` wordt alleen in
+   * een les aangeroepen -- en dan zijn twee van de vijf rondes onhaalbaar,
+   * met een uitleg eronder ("Leer eerst een paar letters") die naar iets wijst
+   * dat niet te bereiken is. Dicht is eerlijker dan half.
+   */
+  /*
+   * Eén kop, voor beide uitgangen hieronder. Niet twee keer uitgeschreven:
+   * `kop.test.ts` eist één `h1` per bladzijde, en dat is geen regeltje maar de
+   * reden dat een schermlezer op de titel landt en niet op de eerste kop die
+   * hij tegenkomt.
+   */
+  const kop = <SectionTitle kop="h1" sub={t.bonus.uitleg}>{t.bonus.titel}</SectionTitle>
+
+  if (!state.unlocked) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-6">
+        {kop}
+        <Card className="flex flex-wrap items-center gap-3 p-4">
+          <span className="text-xl" aria-hidden="true">🔒</span>
+          <p className="min-w-0 grow basis-48 text-sm">{t.bonus.slotUitleg}</p>
+          <Link to="/volledig"><Button variant="secondary">{t.unlock.slotKnop}</Button></Link>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="mx-auto max-w-3xl lg:max-w-5xl px-4 py-6">
-      <SectionTitle kop="h1" sub={t.bonus.uitleg}>{t.bonus.titel}</SectionTitle>
+      {kop}
 
       {result && (
         <Card className="mb-6 flex items-center gap-4 p-5">
@@ -195,6 +226,13 @@ export function BonusCard() {
   const open = BONUS.filter((b) => b.ready(pool))
   const highlight = bonusOfTheDay(today(), open.map((b) => b.id))
   if (!highlight) return null
+  /*
+   * En niet voor wie geen abonnement heeft. Deze kaart staat op het leerpad en
+   * op de spelletjesbladzijde, en /bonus zit sinds 23 november achter het slot
+   * -- dan is dit een uitnodiging naar een dichte deur. Iemand die de app al
+   * had komt nog op /leren, dus dit is geen theoretisch geval.
+   */
+  if (!state.unlocked) return null
 
   return (
     <Card className="flex flex-wrap items-center gap-4 p-5">

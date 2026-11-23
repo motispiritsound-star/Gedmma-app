@@ -357,7 +357,7 @@ export function Profile() {
             net open is gegaan. `nextLesson` weet het antwoord al; die wordt
             overal elders in de app ook gebruikt om "verder" te betekenen.
           */}
-          <Link to={`/les/${eersteLes}`} onClick={() => sfx.tap()} className="mt-4 inline-block">
+          <Link to={eersteLes ? `/les/${eersteLes}` : '/leren'} onClick={() => sfx.tap()} className="mt-4 inline-block">
             <Button>{t.profile.welkomStart}</Button>
           </Link>
         </Card>

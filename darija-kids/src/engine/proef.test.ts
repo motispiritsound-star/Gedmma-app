@@ -131,14 +131,14 @@ describe('het aanbod bij de eerste start', () => {
    * Allebei de knoppen zijn `w-full`, en dat hoort zo te blijven.
    */
   it('houdt "later" even groot als "bekijken"', () => {
-    expect(aanbod).toContain('{t.aanbod.later(FREE_LESSONS)}')
+    expect(aanbod).toContain('{t.aanbod.later}')
     /*
      * Vanaf het `<button>` dat dat label draagt, en niet vanaf de tekst van
      * een onClick: die veranderde toen de teller `aanbod_later` erbij kwam, en
      * toen keurde deze test een lege string goed. Nu is de bewering waar hij
      * over gaat -- deze knop is even breed als de andere.
      */
-    const tot = aanbod.indexOf('{t.aanbod.later(FREE_LESSONS)}')
+    const tot = aanbod.indexOf('{t.aanbod.later}')
     const later = aanbod.slice(aanbod.lastIndexOf('<button', tot), tot)
     expect(later).toContain('w-full')
   })
@@ -168,7 +168,7 @@ describe('het welkom na het betalen', () => {
    * en zelf maar uitzoeken waar je begint. `nextLesson` weet het antwoord al.
    */
   it('gaat rechtstreeks de volgende les in, niet naar het pad', () => {
-    expect(profiel).toContain('to={`/les/${eersteLes}`}')
+    expect(profiel).toContain("to={eersteLes ? `/les/${eersteLes}` : '/leren'}")
     expect(profiel).toContain('const eersteLes = useStore(nextLesson)')
   })
 })

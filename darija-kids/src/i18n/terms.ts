@@ -36,8 +36,9 @@ const SECTIONS_NL = (n: Winkelnamen): Section[] => [
     'Je mag Darijaforkids gebruiken op de apparaten die bij jouw eigen winkelaccount horen, voor jezelf en je gezin. Dat is een gebruiksrecht, geen eigendom: de app, de lessen, de stemmen en de tekeningen blijven van de uitgever.',
     'Wat niet mag: de app doorverkopen of verhuren, de lessen kopiëren om ze elders aan te bieden, of proberen de code uit elkaar te halen om er iets anders van te maken.',
   ]],
-  ['Het gratis deel', [
-    'De eerste acht lessen zijn gratis en blijven gratis. Daar hoef je niets voor af te sluiten en niets voor in te vullen.',
+  ['Downloaden en meedoen', [
+    'De app zelf is gratis te downloaden. De cursus is een abonnement: zonder abonnement gaat er geen les open.',
+    'Heb je de app vóór 23 november 2026 gebruikt en lessen afgerond toen de eerste acht gratis waren, dan blijven precies die lessen voor jou open. Dat is wat er toen is afgesproken en dat nemen we niet terug.',
   ]],
   ['Het abonnement', [
     `De volledige cursus loopt via een abonnement. Je kiest zelf: ${yearPrice} voor een heel jaar vooruit — dat is ${yearPerMonth} per maand — of ${price} per maand. Beide zijn inclusief btw. Het bedrag wordt bij het afsluiten afgeschreven via ${n.account} en daarna telkens opnieuw, jaarlijks of maandelijks, net zolang tot je opzegt.`,
@@ -70,8 +71,9 @@ const SECTIONS_FR = (n: Winkelnamen): Section[] => [
     'Tu peux utiliser Darijaforkids sur les appareils liés à ton propre compte de boutique, pour toi et ta famille. C’est un droit d’usage, pas une propriété : l’application, les leçons, les voix et les dessins restent à l’éditeur.',
     'Ce qui n’est pas permis : revendre ou louer l’application, copier les leçons pour les proposer ailleurs, ou tenter de démonter le code pour en faire autre chose.',
   ]],
-  ['La partie gratuite', [
-    'Les huit premières leçons sont gratuites et le restent. Il n’y a rien à souscrire et rien à remplir pour cela.',
+  ['Télécharger et commencer', [
+    'L’application est gratuite à télécharger. Le cours, lui, est un abonnement : sans abonnement, aucune leçon ne s’ouvre.',
+    'Si tu as utilisé l’application avant le 23 novembre 2026 et terminé des leçons à l’époque où les huit premières étaient gratuites, ces leçons-là restent ouvertes pour toi. C’est ce qui était convenu alors, et nous ne revenons pas dessus.',
   ]],
   ['L’abonnement', [
     `Le cours complet passe par un abonnement, au choix : ${yearPrice} pour une année entière payée d’avance — soit ${yearPerMonth} par mois — ou ${price} par mois. Les deux sont TTC. Le montant est prélevé via ${n.account} dès la souscription, puis à chaque échéance, annuelle ou mensuelle, jusqu’à ce que tu résilies.`,
@@ -104,8 +106,9 @@ const SECTIONS_DE = (n: Winkelnamen): Section[] => [
     'Du darfst Darijaforkids auf den Geräten deines eigenen Store-Kontos nutzen, für dich und deine Familie. Das ist ein Nutzungsrecht, kein Eigentum: Die App, die Lektionen, die Stimmen und die Zeichnungen bleiben beim Herausgeber.',
     'Was nicht erlaubt ist: die App weiterverkaufen oder vermieten, die Lektionen kopieren, um sie anderswo anzubieten, oder versuchen, den Code auseinanderzunehmen und daraus etwas anderes zu bauen.',
   ]],
-  ['Der kostenlose Teil', [
-    'Die ersten acht Lektionen sind kostenlos und bleiben es. Dafür musst du nichts abschließen und nichts ausfüllen.',
+  ['Herunterladen und mitmachen', [
+    'Die App selbst lässt sich kostenlos herunterladen. Der Kurs ist ein Abo: Ohne Abo geht keine Lektion auf.',
+    'Hast du die App vor dem 23. November 2026 genutzt und Lektionen abgeschlossen, als die ersten acht kostenlos waren, dann bleiben genau diese Lektionen für dich offen. So war es damals abgesprochen, und das nehmen wir nicht zurück.',
   ]],
   ['Das Abo', [
     `Der ganze Kurs läuft über ein Abo, und du hast die Wahl: ${yearPrice} für ein ganzes Jahr im Voraus — das sind ${yearPerMonth} pro Monat — oder ${price} pro Monat. Beides inklusive Mehrwertsteuer. Der Betrag wird beim Abschluss über ${n.account} abgebucht und danach jeweils erneut, jährlich oder monatlich, bis du kündigst.`,
@@ -138,8 +141,9 @@ const SECTIONS_ES = (n: Winkelnamen): Section[] => [
     'Puedes usar Darijaforkids en los dispositivos vinculados a tu propia cuenta de la tienda, para ti y tu familia. Es un derecho de uso, no una propiedad: la aplicación, las lecciones, las voces y los dibujos siguen siendo de quien la publica.',
     'Lo que no se puede: revender o alquilar la aplicación, copiar las lecciones para ofrecerlas en otro sitio, o intentar desmontar el código para hacer otra cosa con él.',
   ]],
-  ['La parte gratuita', [
-    'Las ocho primeras lecciones son gratis y lo seguirán siendo. No hay que contratar nada ni rellenar nada para eso.',
+  ['Descargar y empezar', [
+    'La aplicación en sí se descarga gratis. El curso es una suscripción: sin suscripción no se abre ninguna lección.',
+    'Si usaste la aplicación antes del 23 de noviembre de 2026 y terminaste lecciones cuando las ocho primeras eran gratis, siguen abiertas para ti exactamente esas lecciones. Es lo que se acordó entonces y no lo retiramos.',
   ]],
   ['La suscripción', [
     `El curso completo va con una suscripción, y eliges tú: ${yearPrice} por un año entero pagado por adelantado —son ${yearPerMonth} al mes— o ${price} al mes. Ambas con IVA incluido. El importe se cobra a través de ${n.account} al contratar, y así cada año o cada mes, hasta que canceles.`,
@@ -172,8 +176,9 @@ const SECTIONS_IT = (n: Winkelnamen): Section[] => [
     'Puoi usare Darijaforkids sui dispositivi collegati al tuo account del negozio, per te e per la tua famiglia. È un diritto d’uso, non una proprietà: l’app, le lezioni, le voci e i disegni restano di chi la pubblica.',
     'Quello che non si può fare: rivendere o noleggiare l’app, copiare le lezioni per offrirle altrove, o provare a smontare il codice per ricavarne qualcos’altro.',
   ]],
-  ['La parte gratuita', [
-    'Le prime otto lezioni sono gratis e lo restano. Non c’è niente da sottoscrivere e niente da compilare.',
+  ['Scaricare e iniziare', [
+    'L’app in sé si scarica gratis. Il corso è un abbonamento: senza abbonamento non si apre nessuna lezione.',
+    'Se hai usato l’app prima del 23 novembre 2026 e hai completato delle lezioni quando le prime otto erano gratis, restano aperte per te esattamente quelle lezioni. È quello che era stato concordato allora, e non lo ritiriamo.',
   ]],
   ['L’abbonamento', [
     `Il corso completo va con un abbonamento, e scegli tu: ${yearPrice} per un anno intero pagato in anticipo — sono ${yearPerMonth} al mese — oppure ${price} al mese. Entrambi IVA inclusa. L’importo viene addebitato tramite ${n.account} alla sottoscrizione, e così ogni anno o ogni mese, finché non disdici.`,
@@ -206,8 +211,9 @@ const SECTIONS_EN = (n: Winkelnamen): Section[] => [
     'You may use Darijaforkids on the devices tied to your own store account, for yourself and your family. That is a right to use it, not ownership: the app, the lessons, the voices and the drawings stay with the publisher.',
     'What is not allowed: reselling or renting out the app, copying the lessons to offer them elsewhere, or trying to take the code apart to make something else of it.',
   ]],
-  ['The free part', [
-    'The first eight lessons are free and stay free. There is nothing to sign up for and nothing to fill in.',
+  ['Downloading and joining in', [
+    'The app itself is free to download. The course is a subscription: without a subscription no lesson opens.',
+    'If you used the app before 23 November 2026 and finished lessons back when the first eight were free, exactly those lessons stay open for you. That is what was agreed then, and we are not taking it back.',
   ]],
   ['The subscription', [
     `The full course runs on a subscription, and you choose: ${yearPrice} for a whole year up front — that is ${yearPerMonth} a month — or ${price} a month. Both include VAT. The amount is charged through ${n.account} when you subscribe, and again every year or every month, until you cancel.`,

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense, useEffect, type ReactNode } from 'react'
 import { BrowserRouter, HashRouter, Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Landing } from './pages/Landing'
@@ -47,7 +47,7 @@ import { platform } from './engine/platform'
 import { Welcome } from './ui/Welcome'
 import { BoekTeken, Jij, Kompas, Rond, Steen } from './ui/tekens'
 import { Aanbod } from './ui/Aanbod'
-import { useStore } from './engine/store'
+import { magLeren, useStore } from './engine/store'
 import { listenForFirstGesture, sfx } from './engine/audio'
 import { initBilling } from './engine/billing'
 import { herstelHerinnering } from './engine/herinnering'
@@ -57,6 +57,37 @@ import { reikDiplomasUit } from './engine/diploma'
 import { localeOf, useLang, useT } from './i18n'
 import { opPauze } from './engine/pauze'
 import { poortVergeet } from './ui/OuderPoort'
+
+/**
+ * De poort: zonder abonnement is het abonnementsscherm het eerste scherm.
+ *
+ * Sinds 23 november is er geen gratis deel meer (zie `magLeren` in
+ * engine/store.ts). Zonder deze poort kwam een nieuwe gebruiker na het
+ * welkomstscherm op `/leren` terecht -- zeventien units met een hangslot, geen
+ * les die opengaat, en geen enkel scherm dat nog een prijs noemde. Het
+ * aanbodblad is daar geen antwoord op: dat is wegklikbaar, `aanbodGezien`
+ * blijft bewaard, en op het web komt het helemaal niet.
+ *
+ * Twee dingen die hij met opzet niet doet:
+ *
+ *   - Hij geldt niet op het web. Daar is niets te koop -- `billingAvailable()`
+ *     is onwaar -- dus zou de poort een bezoeker wegsturen van het enige wat
+ *     de website te bieden heeft: rondkijken. De lessen zelf zitten daar nog
+ *     steeds achter hun eigen slot.
+ *   - Hij staat niet voor `/profiel`, `/instellingen`, `/ouders`, `/privacy`,
+ *     `/voorwaarden`, `/volledig` of `/boek`. Wie niet betaalt moet nog altijd
+ *     bij zijn instellingen, bij de voorwaarden en bij de knop om een eerdere
+ *     aankoop terug te zetten kunnen. Een poort die daar ook voor staat is een
+ *     app die je niet meer uit komt.
+ *
+ * `replace`, zodat de terugknop van Android niet heen en weer blijft kaatsen
+ * tussen het slot en de poort.
+ */
+function Poort({ children }: { children: ReactNode }) {
+  const mag = useStore(magLeren)
+  if (!mag && platform() !== 'web') return <Navigate to="/volledig" replace />
+  return <>{children}</>
+}
 
 const TABS = [
   { to: '/leren', key: 'leren', Icoon: Kompas },
@@ -183,18 +214,18 @@ function Chrome() {
               bladzijde waar hij nooit is geweest.
             */}
             <Route path="/" element={platform() === 'web' ? <Landing /> : <Navigate to="/leren" replace />} />
-            <Route path="/leren" element={<Learn />} />
-            <Route path="/les/:lessonId" element={<LessonPlayer />} />
-            <Route path="/herhalen/:running?" element={<Review />} />
-            <Route path="/woorden" element={<Words />} />
-            <Route path="/letters" element={<Alphabet />} />
-            <Route path="/verhalen" element={<Stories />} />
-            <Route path="/verhalen/:storyId" element={<StoryReader />} />
-            <Route path="/spelen" element={<Games />} />
+            <Route path="/leren" element={<Poort><Learn /></Poort>} />
+            <Route path="/les/:lessonId" element={<Poort><LessonPlayer /></Poort>} />
+            <Route path="/herhalen/:running?" element={<Poort><Review /></Poort>} />
+            <Route path="/woorden" element={<Poort><Words /></Poort>} />
+            <Route path="/letters" element={<Poort><Alphabet /></Poort>} />
+            <Route path="/verhalen" element={<Poort><Stories /></Poort>} />
+            <Route path="/verhalen/:storyId" element={<Poort><StoryReader /></Poort>} />
+            <Route path="/spelen" element={<Poort><Games /></Poort>} />
             {/* One route with an optional part, not two: a second Route would
                 be a second element, and the page would be thrown away and
                 rebuilt on the way out of a round — taking the score with it. */}
-            <Route path="/bonus/:bonusId?" element={<Bonus />} />
+            <Route path="/bonus/:bonusId?" element={<Poort><Bonus /></Poort>} />
             <Route path="/profiel" element={<Profile />} />
             <Route path="/geschiedenis" element={<History />} />
             <Route path="/diplomas" element={<Diplomas />} />

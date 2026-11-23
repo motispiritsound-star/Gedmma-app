@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { LANGS, useT, type Lang } from '../i18n'
 import { sfx } from '../engine/audio'
-import { FREE_LESSONS, planOf, TRIAL_DAYS, useBilling } from '../engine/billing'
+import { planOf, TRIAL_DAYS, useBilling } from '../engine/billing'
 import { kanHerinneren, zetHerinnering } from '../engine/herinnering'
 import { ACCENTEN, ACCENTKLEUR, AVATARS, setSetting, setState, useStore } from '../engine/store'
 import { tel } from '../engine/tellen'
@@ -559,7 +559,10 @@ export function Welcome() {
                   belofte die de zin erachter niet doet. Hetzelfde slotje als in
                   `unlock.tijdlijn`, dat op dezelfde schakelaar omklapt. */}
               <p className="text-sm font-bold">{proefDagen > 0 ? '🎁' : '🔓'} {t.welcome.plan(proefDagen, planOf('jaar').perMonth)}</p>
-              <p className="mt-1 text-xs text-[var(--ink-soft)]">{t.welcome.gratisDeel(FREE_LESSONS)}</p>
+              {/* Hier stond "de eerste acht lessen blijven altijd gratis".
+                  Dat is vervallen; wat er nu staat is wat er na het betalen
+                  opengaat -- alles, in één keer. */}
+              <p className="mt-1 text-xs text-[var(--ink-soft)]">{t.welcome.allesOpen}</p>
             </div>
 
             <div className="mt-4 flex gap-2">

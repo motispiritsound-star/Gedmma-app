@@ -40,18 +40,23 @@ describe('de knop onder het scorescherm', () => {
    * de les laat overdoen die je net deed.
    */
   it('valt terug op het pad als er geen volgende les is', () => {
-    expect(code).toMatch(/volgendeId === lessonId \? undefined : lessonById\(volgendeId\)/)
+    expect(code).toMatch(/volgendeId === null \|\| volgendeId === lessonId \? undefined : lessonById\(volgendeId\)/)
     expect(code).toMatch(/\) : \(\s*<Button className="w-full" onClick=\{\(\) => navigate\('\/leren'\)\}>\{t\.lesson\.verderOpPad\}<\/Button>/)
   })
 
   /** Het pad blijft bereikbaar, een knop lager. */
   it('houdt "verder op pad" eronder staan', () => {
-    expect(code).toMatch(/\{!gratisOp && volgende && \(/)
+    expect(code).toMatch(/\{gekocht && volgende && \(/)
   })
 
-  /** Is het gratis deel op, dan gaat de bovenste knop daarover. Dat blijft. */
+  /**
+   * Zonder abonnement gaat de bovenste knop over het abonnement. Dat was
+   * `gratisOp` -- of dit de laatste gratis les was -- en is sinds 23 november
+   * eenvoudiger: zonder abonnement staat alleen open wat al gedaan is, dus er
+   * is na elke les geen volgende.
+   */
   it('laat het slot voorgaan', () => {
-    expect(code).toMatch(/\{gratisOp \? \(/)
+    expect(code).toMatch(/\{!gekocht \? \(/)
   })
 
   it('de knop staat in alle zes de talen', () => {

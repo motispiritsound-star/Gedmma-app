@@ -17,65 +17,62 @@ const KEY = 'darijakids.v1'
 export const MAX_HEARTS = 5
 
 /**
- * What is free, per unit: the first so many lessons, not whole units.
+ * Wat er zonder abonnement open staat: wat deze leerling al heeft gedaan.
  *
- * Three pieces of the alphabet and the whole greetings unit. Eight lessons:
- * long enough to read a handful of Arabic letters and to hold the first few
- * exchanges — hello, thank you, goodbye, how are you — and short enough that
- * the question "and then?" arrives while a child is still enjoying it.
+ * ## Waarom er geen gratis lessen meer zijn
  *
- * ## Waarom dit op 12 november van vier naar acht ging
+ * Hier stond `GRATIS_LESSEN = { hruf: 3, groeten: 5 }` — acht lessen die
+ * iedereen mocht doen, met daarboven veertig regels over waarom het er vier
+ * waren en waarom het er acht werden. Op 23 november is het nul geworden.
  *
- * Het stond op `{ hruf: 3, groeten: 1 }`, en dat waren vier lessen met
- * **zeven woorden** erin. De redenering eronder was goed — een hele unit is
- * weken werk, en wie iets uitprobeert haakt daar eerder af dan dat hij
- * overtuigd raakt — maar ze was doorgeschoten: zeven woorden is te weinig om
- * iets te laten zien, en te weinig om iets te besluiten.
+ * De redenering onder dat getal was dat wie acht lessen heeft gedaan
+ * overtuigd raakt en dan koopt. Die is gemeten en klopte niet: van 179 eerste
+ * installaties namen vijf mensen een abonnement, en de vraag om geld kwam pas
+ * bij les negen — dagen nadat de app was weggelegd. Wat het gratis deel wél
+ * deed, was de app volledig bruikbaar maken voor wie nooit van plan was te
+ * betalen.
  *
- * Het sloot ook, zonder dat iemand dat bedoelde, het enige mechanisme af
- * waarmee de app uit zichzelf groeit. De deelkaart in `engine/delen.ts` vuurt
- * bij 25 onthouden woorden, en de kop van dat bestand noemt WhatsApp "de
- * motor" van dit product. Met zeven beschikbare woorden was die motor
- * onbereikbaar voor iedereen die niet betaalde. Zie
- * `growth-audit/03-conversion-audit.md`.
+ * De regel is nu: downloaden is gratis, de cursus is een abonnement, en dat
+ * wordt gevraagd op het eerste scherm. Na het betalen staat alles open — in
+ * één keer, geen porties van acht lessen meer.
  *
- * ## Waarom precies deze twee getallen, en niet ruimer
+ * ## Wat iemand die de app al had, houdt
  *
- * `groeten` erbij levert 27 woorden — genoeg voor de deelkaart. `hruf` blijft
- * met opzet op drie van zijn acht lessen staan, en dat is het hele verschil
- * met de ruimere varianten die zijn afgewogen: zet je `hruf` ook open, dan
- * zijn alle 28 letters gratis, wordt `letterOpSlot` hieronder permanent
- * onwaar, en staat het complete alfabetscherm open. Dat is precies waar de
- * aantekening bij `GRATIS_WOORDEN` tegen waarschuwt. Nu blijven het er 13 van
- * de 28.
+ * Alles wat hij heeft afgerond. Dat is geen vriendelijkheid maar een belofte
+ * terughouden die al gedaan is: de voorwaarden die hij heeft gelezen zeiden
+ * over precies die lessen "zijn gratis en blijven gratis". Ze met
+ * terugwerkende kracht op slot zetten levert niets op — hij had ze al — en
+ * het is het soort besluit dat je terugleest in de beoordelingen, op de
+ * winkelbladzijde waar de campagne naartoe wijst.
  *
- * Dat de muur hiermee van les 5 naar les 9 schuift en niet naar les 14, is
- * de tweede reden. Apple meet dat 83% van de conversies tussen dag 7 en dag
- * 35 valt (zie `docs/STAND.md`); het gratis deel verder oprekken duwt de
- * vraag verder naar achteren bij een product dat toch al traag wordt gekocht.
- *
- * ## Wat dit níét oplost
- *
- * Het beoordelingsverzoek blijft achter de betaalmuur. Dat vuurt na drie
- * diploma's (`DIPLOMAS_VOOR_VRAAG` in `engine/beoordeling.ts`) en een gratis
- * gebruiker haalt er één: `groeten` is af, `hruf` niet. Dat is een bewuste
- * keuze en geen vergetelheid — de drempel verlagen tot wat gratis haalbaar is,
- * zou de vraag om een beoordeling precies laten samenvallen met het moment
- * waarop het slot dichtgaat, en dat is wat de aantekening bij die constante
- * juist wilde vermijden.
- *
- * Everything past this is the subscription, with three free days first.
+ * Daarom hangt alles hieronder aan `isDone` en niet aan een lijst: een
+ * afgeronde les blijft open, een nieuwe gaat dicht. Een vlag in de opslag zou
+ * hier niet werken — een opslag van vóór deze versie heeft hem niet, en
+ * `hydrate` kent geen migratiestap. De voortgang zelf is het enige
+ * onderscheid dat er is, en het is een sluitend onderscheid zolang er geen
+ * enkele manier is om zonder abonnement een les af te ronden. Dat is de reden
+ * dat het letterspel op `/letters` nu ook achter het slot staat: dat schreef
+ * via `completeLesson('letters', ...)` voortgang weg zonder ooit een les te
+ * openen.
  */
-export const GRATIS_LESSEN: Record<string, number> = { hruf: 3, groeten: 5 }
-
-/** How many lessons that is altogether — the number the app quotes. */
-export const FREE_LESSONS = Object.values(GRATIS_LESSEN).reduce((a, b) => a + b, 0)
-
-/** The lessons themselves, in the order of the path. */
-const gratisLes = UNITS.flatMap((u) => u.lessons.slice(0, GRATIS_LESSEN[u.id] ?? 0))
 
 /**
- * Wat er buiten de lessen om open staat: precies wat in een gratis les zit.
+ * Of er zonder abonnement nog iets te doen is.
+ *
+ * Voor wie de app vandaag downloadt is het antwoord nee, en dat is de hele
+ * bedoeling — `App.tsx` stuurt hem dan naar het abonnementsscherm in plaats
+ * van naar het pad. Voor wie de app al had is het ja, zolang hij lessen heeft
+ * afgerond.
+ *
+ * Het leest `LESSONS` en niet `Object.keys(s.lessons)`, want daar staat ook
+ * `letters` in: de voortgang van het letterspel, dat geen les uit het pad is.
+ */
+export const magLeren = (s: State = state): boolean =>
+  s.unlocked || LESSONS.some((l) => isDone(l.id, s))
+
+/**
+ * Wat er buiten de lessen om te horen is: de woorden en letters uit de lessen
+ * die al gedaan zijn.
  *
  * Het woordenboek, het alfabet, de verhalen en de spelletjes hangen niet aan
  * het pad — wie daarheen loopt komt bij alle 304 woorden en alle 28 letters,
@@ -83,20 +80,37 @@ const gratisLes = UNITS.flatMap((u) => u.lessons.slice(0, GRATIS_LESSEN[u.id] ??
  * cursus gratis, en dat is precies waarom iemand zou blijven hangen zonder
  * ooit te betalen.
  *
- * De regel is nu simpel en uit te leggen: je kunt horen wat je geleerd hebt.
- * De rest staat er wel, zichtbaar en met slotje, want zien wat er nog komt is
- * de beste reden om verder te willen.
+ * De regel is dezelfde als altijd en nu letterlijk waar: je kunt horen wat je
+ * geleerd hebt. De rest staat er wel, zichtbaar en met slotje, want zien wat
+ * er nog komt is de beste reden om verder te willen.
+ *
+ * Onthouden op de identiteit van `lessons`: dit wordt per woord op het
+ * woordenboekscherm aangeroepen — driehonderd keer achter elkaar — en
+ * `setState` levert bij elke afgeronde les een nieuw `lessons`-object op, dus
+ * de vergelijking is sluitend en het opnieuw bouwen kost niets.
  */
-export const GRATIS_WOORDEN = new Set(gratisLes.flatMap((l) => l.words))
-export const GRATIS_LETTERS = new Set(gratisLes.flatMap((l) => l.letters ?? []))
+let geleerdVan: State['lessons'] | null = null
+let geleerdNu: { woorden: Set<string>; letters: Set<string> } = { woorden: new Set(), letters: new Set() }
 
-/** True als dit woord buiten de gratis lessen valt en er niet is betaald. */
+export function geleerd(s: State = state): { woorden: Set<string>; letters: Set<string> } {
+  if (s.lessons !== geleerdVan) {
+    const les = LESSONS.filter((l) => isDone(l.id, s))
+    geleerdVan = s.lessons
+    geleerdNu = {
+      woorden: new Set(les.flatMap((l) => l.words)),
+      letters: new Set(les.flatMap((l) => l.letters ?? [])),
+    }
+  }
+  return geleerdNu
+}
+
+/** True als dit woord nog niet geleerd is en er niet is betaald. */
 export const woordOpSlot = (id: string, s: State = state): boolean =>
-  !s.unlocked && !GRATIS_WOORDEN.has(id)
+  !s.unlocked && !geleerd(s).woorden.has(id)
 
 /** Idem voor een letter van het alfabet. */
 export const letterOpSlot = (id: string, s: State = state): boolean =>
-  !s.unlocked && !GRATIS_LETTERS.has(id)
+  !s.unlocked && !geleerd(s).letters.has(id)
 
 /** What one right answer is worth, paid out the moment it happens. */
 export const XP_PER_CORRECT = 2
@@ -340,17 +354,6 @@ export interface State {
    */
   mijlpaalGedeeld: number
   /**
-   * Wanneer het seintje "de gratis lessen zijn gedaan" gezet is, of 0.
-   *
-   * Eén keer per installatie. `gratisDeelOp` blijft waar zodra het waar is, en
-   * een gratis les mag opnieuw gespeeld worden -- zonder dit getal zou elke
-   * herhaling er een nieuwe melding bij plannen.
-   *
-   * Een tijdstip en geen vlag, om dezelfde reden als `beoordelingGevraagd`
-   * hierboven: wanneer kan later nog iets betekenen, een boolean nooit meer.
-   */
-  gratisOpGemeld: number
-  /**
    * Wanneer er een proefperiode is begonnen, of 0 als er geen bij zat.
    *
    * Niet af te leiden uit de winkel zodra de koop rond is: dan laat die de
@@ -527,7 +530,6 @@ const initial = (): State => ({
   diplomaGezien: [],
   beoordelingGevraagd: 0,
   mijlpaalGedeeld: 0,
-  gratisOpGemeld: 0,
   proefGestart: 0,
   settings: {
     theme: 'system',
@@ -665,7 +667,6 @@ export function hydrate(parsed: Partial<State>): State {
     diplomaGezien: lijst(p.diplomaGezien, base.diplomaGezien),
     beoordelingGevraagd: getal(p.beoordelingGevraagd, base.beoordelingGevraagd),
     mijlpaalGedeeld: getal(p.mijlpaalGedeeld, base.mijlpaalGedeeld),
-    gratisOpGemeld: getal(p.gratisOpGemeld, base.gratisOpGemeld),
     proefGestart: getal(p.proefGestart, base.proefGestart),
     // Een teller die geen getal is wordt NaN zodra er iets bij opgeteld wordt,
     // en NaN komt daarna nooit meer terug naar een getal.
@@ -1122,42 +1123,41 @@ export function completeLesson(lessonId: string, score: number, xp: number): voi
 
 export const isDone = (lessonId: string, s: State = state): boolean => !!s.lessons[lessonId]
 
-/** True when this lesson is past the free part and has not been bought. */
-export function lessonBehindPaywall(lessonId: string, s: State = state): boolean {
-  if (s.unlocked) return false
-  const unit = UNITS.find((u) => u.lessons.some((l) => l.id === lessonId))
-  if (!unit) return false
-  return unit.lessons.findIndex((l) => l.id === lessonId) >= (GRATIS_LESSEN[unit.id] ?? 0)
-}
-
 /**
- * Alle gratis lessen gedaan, en niet betaald: hier houdt het pad op.
+ * True zolang deze les niet gekocht is en nog niet gedaan.
  *
- * Dit is het enige moment waarop de app ongevraagd over geld begint, en het
- * is ook het eerlijke moment: er is letterlijk geen volgende les. Zonder dit
- * loopt iemand van zijn laatste gratis les rechtstreeks tegen een slotje aan
- * waar niemand hem voor gewaarschuwd heeft.
- *
- * Het telt de lessen en niet de dagen. Wie er drie weken over doet krijgt
- * hetzelfde scherm als wie het in één avond doet — de app rekent nergens met
- * een klok, en de drie gratis dagen beginnen pas bij het abonnement zelf.
+ * Hier stond een vergelijking met `GRATIS_LESSEN`: de eerste zoveel lessen
+ * van een unit waren open. Nu is er geen gratis deel meer en is `isDone` het
+ * hele antwoord — wie de app al had houdt wat hij af heeft, de rest zit achter
+ * het abonnement. Zie de aantekening bij `magLeren` hierboven.
  */
-export const gratisDeelOp = (s: State = state): boolean =>
-  !s.unlocked && gratisLes.every((l) => isDone(l.id, s))
-
-/** True when nothing in this unit is free and it has not been bought. */
-export function unitBehindPaywall(unitId: string, s: State = state): boolean {
-  return !s.unlocked && !(GRATIS_LESSEN[unitId] ?? 0)
+export function lessonBehindPaywall(lessonId: string, s: State = state): boolean {
+  return !s.unlocked && !isDone(lessonId, s)
 }
 
 /**
- * A unit opens once the one before it is finished — and, past the free part,
- * once the course has been bought. The first unit is always open.
+ * True zolang er in deze unit niets gekocht en niets gedaan is.
+ *
+ * Eén les af houdt de hele unit open op het pad, en dat is met opzet ruimer
+ * dan `lessonBehindPaywall`: hieraan hangt de volle kop met de voortgangsbalk
+ * en het honderd-procentstempel (`Learn.tsx`). Zonder die ruimte zou iemand
+ * die de app al had zijn afgeronde `groeten` terugzien als een grijze strook
+ * met een hangslot — zijn eigen werk, onzichtbaar geworden door een update.
+ */
+export function unitBehindPaywall(unitId: string, s: State = state): boolean {
+  if (s.unlocked) return false
+  const unit = UNITS.find((u) => u.id === unitId)
+  return !unit || !unit.lessons.some((l) => isDone(l.id, s))
+}
+
+/**
+ * A unit opens once the one before it is finished — and, without a
+ * subscription, only if something in it was already done.
  *
  * "Finished" means everything that was open to this learner. Without that, a
- * free learner who has done the three free alphabet lessons would never reach
- * the greetings lesson underneath: the rest of the alphabet is behind the
- * paywall and can never be ticked off.
+ * learner who has done the three free alphabet lessons from before this
+ * version would never reach the greetings lesson underneath: the rest of the
+ * alphabet is behind the paywall and can never be ticked off.
  */
 export function unitUnlocked(unitId: string, s: State = state): boolean {
   if (unitBehindPaywall(unitId, s)) return false
@@ -1177,11 +1177,16 @@ export function lessonUnlocked(lessonId: string, s: State = state): boolean {
 /**
  * The lesson the “continue” button should open: the first unfinished one that
  * is actually open. When everything open is finished it points back at the
- * last one rather than at something locked — the path itself offers the way
- * past the paywall.
+ * last one rather than at something locked.
+ *
+ * `null` als er niets open staat, en dat is sinds 23 november het antwoord
+ * voor iedereen die niet betaald heeft en de app vandaag binnenkomt. Hier
+ * stond `LESSONS[0]!.id` als terugval, en dat gaf een les terug die achter het
+ * slot zit: elke “ga verder”-knop wees dan naar het slotscherm. Een knop die
+ * nergens heen kan hoort er niet te staan — zie de aanroepers.
  */
-export function nextLesson(s: State = state): string {
-  let last = LESSONS[0]!.id
+export function nextLesson(s: State = state): string | null {
+  let last: string | null = null
   for (const unit of UNITS) {
     if (!unitUnlocked(unit.id, s)) break
     for (const lesson of unit.lessons) {

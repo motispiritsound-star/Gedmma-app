@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  ACCENTEN, ACCENTKLEUR, exportProgress, heeftStilteschakelaar, importProgress, resetProgress, setSetting,
-  setState, useStore, type Settings,
+  ACCENTEN, ACCENTKLEUR, exportProgress, heeftStilteschakelaar, importProgress, magLeren, resetProgress,
+  setSetting, setState, useStore, type Settings,
 } from '../engine/store'
 import {
   arabicVoices, bruikbareStemmen, canNarrate, canSpeak, prepareSamples, probeSound, say, sfx, voicePlan,
@@ -377,8 +377,16 @@ export function SettingsPage() {
         )}
         {/* Ook alleen in de app. Een browser kan geen wekker zetten die
             afgaat als hij dicht is, en dat is precies wat een reeks nodig
-            heeft. */}
-        {kanHerinneren() && (
+            heeft.
+
+            En alleen voor wie iets te oefenen heeft. `zetHerinnering` plant
+            niets zolang `magLeren` onwaar is -- een dagelijkse melding voor
+            een niet-betaler is elke dag een uitnodiging voor iets dat achter
+            de kassa staat. Deze schakelaar zou dan omgaan en terugspringen,
+            zonder dat er staat waarom. Beter niet tonen. Zodra er betaald is
+            staat hij er weer, en op het welkomstscherm blijft de vraag staan
+            zodat het antwoord er al is. */}
+        {kanHerinneren() && magLeren() && (
           <Row title={t.settings.herinnering} hint={t.settings.herinneringHint}>
             <div className="flex flex-wrap items-center justify-end gap-3">
               <input

@@ -170,7 +170,15 @@ describe('de schermen geven het dagental van de winkel door', () => {
    * en dat is woordelijk dezelfde regel op alle drie.
    */
   const AFLEIDING = 'const proefDagen = useBilling().proef.jaar === true ? TRIAL_DAYS : 0'
-  const SCHERMEN = ['../pages/LessonPlayer.tsx', '../pages/Settings.tsx', '../ui/Welcome.tsx']
+  /*
+   * Twee, en niet meer drie. `LessonPlayer.tsx` stond hier ook: het
+   * scorescherm zei "de eerste 3 dagen zijn gratis" onder de mededeling dat de
+   * gratis lessen op waren. Die mededeling bestaat sinds 23 november niet meer
+   * -- er is geen gratis les en dus geen laatste gratis les -- en het scherm
+   * noemt nu geen dagen. Zie `geengratis.test.ts`, dat erop staat dat er in
+   * dat bestand geen `proefDagen` en geen `TRIAL_DAYS` meer voorkomt.
+   */
+  const SCHERMEN = ['../pages/Settings.tsx', '../ui/Welcome.tsx']
 
   for (const pad of SCHERMEN) {
     it(`${pad.split('/').pop()} leidt proefDagen af van de winkel`, () => {
