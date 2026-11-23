@@ -56,44 +56,104 @@ volume moet van de voorkant komen, niet van de app.
 
 ### Wat alleen Adil kan doen, in deze orde
 
-1. **Apple Developer Program License Agreement accepteren.** Zolang die niet
-   geaccepteerd is kan er niets ingediend worden. Dit blokkeert al het andere.
-2. **De proefaanbiedingen uitzetten** — zie de volgende kop.
-3. **De actie aanzetten** — zie de kop daarna. Doe dit vóór stap 4.
-4. **De winkelafbeeldingen opnieuw zetten en uploaden**, per taal:
+Dit is de volgorde, en de volgorde doet ertoe: elke stap maakt iets waar dat de
+stap erna beweert. **De versie die hiermee naar de winkels gaat is 1.6 — bij
+Apple build 12, bij Play versiecode 11.** 1.5 staat sinds 24 oktober live en is
+klaar; de releasetekst voor 1.6 staat in `store/wat-is-nieuw-1.6.md`.
 
-   ```powershell
-   if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run screenshots -- --lang nl,fr,de,es,it,en } else { "darija-kids niet gevonden onder $HOME" }
-   ```
+**1. De Apple Developer Program License Agreement accepteren.**
+In App Store Connect, op de hoofdpagina. Zolang die niet geaccepteerd is kan er
+niets ingediend worden. Dit blokkeert alles hieronder.
 
-   ```powershell
-   if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run playpakket -- --lang nl,fr,de,es,it,en } else { "darija-kids niet gevonden onder $HOME" }
-   ```
+**2. De proefperiodes uitzetten.**
 
-   ```powershell
-   if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run play } else { "darija-kids niet gevonden onder $HOME" }
-   ```
+| Waar | Wat |
+|---|---|
+| App Store Connect | het abonnement → **View all Subscription Pricing** → **Introductory Offers**. Daar staat *Free for the first 3 days*, 175 landen, *No End Date*. Einddatum erop. Bij **beide** producten: `app.darijaforkids.yearly` én `app.darijaforkids.monthly`. |
+| Play Console | het abonnement → basisplan → de aanbieding. `proef-jaar` bij het jaar, `proef-maand` bij de maand. Allebei deactiveren. |
 
-   De eerste fotografeert de app zelf in elke taal — `seeded(lang)` zet
-   `settings: { lang }` — dus de Franse vermelding krijgt Franse schermen. Dat
-   is de reden dat er nu Nederlandse tekst op de Franse bladzijde staat: die
-   set is nooit gezet en nooit geüpload, dus Play valt terug op de grafische
-   bestanden van de standaardvermelding. `npm run play` gooit eerst weg wat er
-   staat en uploadt dan per taal naar `/listings/fr-FR/phoneScreenshots`.
+**3. De actie van 50% aanzetten.** Zie de kop *de tijdelijke actie* hieronder
+voor de precieze instellingen. Drie dingen om te onthouden: bij Apple vervangt
+dit de proef bij Jaar in één handeling (stap 2 geldt bij Jaar dan alleen voor
+de zekerheid), er moet een **einddatum** op, en de aanbieding moet in **alle
+vijf de eurolanden** staan — Nederland, Frankrijk, Duitsland, Spanje, Italië —
+want de winkelafbeeldingen van die vijf talen dragen € 29,99 in het beeld.
 
-   **Niet eerder dan na stap 3.** De aanbodopname heeft nu € 2,50 per maand en
-   € 29,99 per jaar in het beeld gebakken. Staat die aanbieding nog niet in de
-   console, dan belooft je winkelbladzijde een prijs die de winkel niet rekent
-   — en dat is bij Apple 2.3.1 een grond voor verwijdering.
+**4. Nakijken op een telefoon.** Open de app uit de winkel, ga naar het
+abonnementsscherm, en kijk naar het aankoopvenster van Apple of Google zelf.
+Staat daar geen gratis dag meer en wel € 29,99? Dan klopt stap 2 en 3. Dat
+venster is het enige echte bewijs; de console zegt wat er ingesteld is, niet
+wat de koper leest.
 
-5. **Bij Apple: App access / review notes bijwerken.** De beoordelaar komt
-   niet meer binnen: er is geen gratis les, geen gratis woord en geen gratis
-   letter. De tekst die erin moet staat in `docs/LAUNCH.md` §5 en voor Google
-   in `docs/PLAY.md` onder *App-toegang*. Bij Google moet het e-mailadres van
-   de beoordelaar als **licentietester** in *Play Console → Instellingen →
-   Licentietests* staan, anders rekent de testaankoop echt af.
-6. **Trader status** aangeven vóór februari, en de waarschuwing *"Action
-   required with your payments account"* in Play wegwerken.
+**5. De winkelafbeeldingen zetten en uploaden.** Drie regels, in deze orde, in
+PowerShell:
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run screenshots -- --lang nl,fr,de,es,it,en } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run playpakket -- --lang nl,fr,de,es,it,en } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run play } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+De eerste fotografeert de app zelf in elke taal — `seeded(lang)` zet
+`settings: { lang }` — dus de Franse vermelding krijgt Franse schermen. Dat is
+de reden dat er nu Nederlandse tekst op de Franse bladzijde staat: die set is
+nooit gezet en nooit geüpload, dus Play valt terug op de grafische bestanden
+van de standaardvermelding. De derde gooit eerst weg wat er staat en uploadt
+dan per taal naar `/listings/fr-FR/phoneScreenshots`.
+
+**Niet eerder dan na stap 3**, en **alleen Google**. `npm run play` praat niet
+met Apple: daar upload je de opnames met de hand, bij de versie in App Store
+Connect. Ze staan klaar in `store/screenshots/<taal>/`.
+
+**6. De teksten in de winkels bijwerken.** Bij Google doet `npm run play` dat
+mee. Bij Apple met de hand, uit `store/listing.<taal>.md` — de beschrijving, de
+trefwoorden (die zijn veranderd: *gratis* mocht er niet in, richtlijn 2.3.7) en
+de promotietekst, per taal.
+
+**7. Review notes en App access.** Een beoordelaar komt niet meer binnen: er is
+geen gratis les, geen gratis woord en geen gratis letter. De tekst staat klaar
+in `docs/LAUNCH.md` §5 (Apple) en `docs/PLAY.md` onder *App-toegang* (Google).
+Bij Google moet het e-mailadres van de beoordelaar bovendien als
+**licentietester** in *Play Console → Instellingen → Licentietests* staan,
+anders rekent zijn testaankoop echt af.
+
+**8. Bouwen.** Android op Windows:
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run aab -- --versie 11 --naam 1.6 } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+iOS kan alleen op de Mac, en daar is het zsh en geen PowerShell:
+
+```bash
+npm run ios -- --build 12 --versie 1.6
+```
+
+Daarna in Xcode archiveren — zie `docs/MAC.md`.
+
+**9. Insturen**, met de tekst per taal uit `store/wat-is-nieuw-1.6.md`. Bij
+Play staat managed publishing aan: goedgekeurd is niet live, je moet daarna
+zelf op *Wijzigingen publiceren*.
+
+**10. Wachten tot het er écht staat.** Niet tot het goedgekeurd is — tot het
+uitgerold is en je het op een telefoon uit de winkel kunt halen.
+
+**11. Pas dan de campagne.** Zoek in `store/lancering/mail.md` en
+`store/lancering/socials.md` op `[EINDDATUM]` — tien plekken — en vul de
+einddatum van de actie in. Dan pas plaatsen.
+
+**En niet: de ingesproken reclamefilm.** Die zegt *"de eerste vier lessen zijn
+gratis"*, hij staat niet in deze repo, en er is geen commando dat hem
+repareert. Zie de kop over de films hierboven. De promofilm uit de app mag wel.
+
+**12. Los daarvan, maar voor februari:** trader status aangeven, en de
+waarschuwing *"Action required with your payments account"* in Play wegwerken.
 
 ### De meting staat nog uit, en dat is nu minder erg
 
