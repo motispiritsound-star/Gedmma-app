@@ -43,9 +43,11 @@ Context that may help the review:
 - There is no account and no sign-in. A child enters nothing at all.
 - Nothing recorded with the microphone leaves the device. It is played back
   and then discarded.
-- The first eight lessons are free. To see the whole course, please start the
-  free trial with a sandbox account, or let us know and we will arrange
-  access.
+- There is no free lesson, not a single free word or letter. The course is a
+  subscription, and the app asks for it on the first screen. To see the whole
+  course, please subscribe with a sandbox account: sandbox purchases are not
+  charged. If that does not work from your side, let us know and we will
+  arrange access another way.
 
 Kind regards,
 Adil Bekkali

@@ -1,5 +1,40 @@
 # 09 — Samenvatting en besluiten
 
+> **Vervallen op 23 november 2026 — lees dit eerst.**
+>
+> Er is geen gratis deel meer: geen gratis lessen en geen proefperiode.
+> Downloaden is gratis, de cursus is een abonnement en dat wordt op het eerste
+> scherm gevraagd; na het betalen gaat alles in één keer open. Wie de app vóór
+> 23 november had en lessen afrondde, houdt precies die afgeronde lessen open.
+> Daarmee is prioriteit 3 hieronder ("Eén complete unit gratis") vervallen, en
+> is wat dit document over de gratis versie zegt een beschrijving van begin
+> november en niet van nu.
+>
+> Gemeten reden: van 179 eerste installaties namen vijf mensen een abonnement,
+> en de vraag om geld kwam pas bij les negen — dagen nadat de app was
+> weggelegd. De volledige onderbouwing staat bij `magLeren` in
+> `src/engine/store.ts`; het besluit staat ook bovenaan `00-leeswijzer.md`.
+>
+> **Wat dit besluit kost: beide groeilussen staan nu volledig achter de
+> kassa.** Dat hoort hier te staan, want het is de keerzijde van de
+> belangrijkste bevinding van deze audit.
+>
+> - **De WhatsApp-deelkaart.** De aantekening bij `MIJLPALEN` in
+>   `src/engine/delen.ts` schrijft het daar zelf op: sinds 23 november is deze
+>   kaart alleen nog te halen door iemand die betaald heeft. Dat is een echt
+>   verlies — dit was de enige lus waarmee de app uit zichzelf groeide, en de
+>   kop van dat bestand noemt WhatsApp "de motor" van dit product.
+> - **Het verzoek om een winkelbeoordeling.** Net zo. `DIPLOMAS_VOOR_VRAAG`
+>   staat nog op drie (`src/engine/beoordeling.ts`), en zonder abonnement is
+>   er geen les af te ronden en dus geen diploma te halen. De aantekening daar
+>   zegt dat drie het betere getal blijft, nu om een andere reden: wie drie
+>   units heeft afgerond, heeft weken met de app gewerkt.
+> - **Daarmee hangt het volume aan de voorkant.** Wat er binnenkomt moet uit
+>   betaalde of handmatige promotie komen — de campagne op de Franse,
+>   Nederlandse en Duitse Facebook-pagina's — en niet meer uit de app zelf.
+>   Deze audit noemt dat bij Lek 4 in `03-conversion-audit.md` "compounding
+>   kost", en dat is precies wat het is. Dat is de prijs van dit besluit.
+
 ## Het bericht in één alinea
 
 De aanname onder de opdracht klopt niet. Darijaforkids converteert niet slecht:
@@ -120,6 +155,11 @@ ASC → Subscriptions. Dat is het enige echte conversiecijfer dat er nu is.
 | 4 | Dagelijkse herinnering standaard aan | **P1** | 1 uur |
 | 5 | Positioneren als kindercursus in plaats van als Darija-app | **P1** | 1 dag, geen code |
 
+> **Nummer 3 is vervallen op 23 november.** Zie de markering bovenaan dit
+> document: er is geen gratis deel meer, dus deze ingreep is van de baan en de
+> alinea hierna gaat over een constante die niet meer bestaat. De nummers 1,
+> 2, 4 en 5 staan nog.
+
 Nummer 3 is de enige ingreep die tegelijk conversie, retentie, de virale lus
 en de vindbaarheid raakt — en het is één constante in `src/engine/store.ts:35`:
 van `{ hruf: 3, groeten: 1 }` naar `{ hruf: 8, groeten: 5 }`. Nagerekend, want
@@ -181,6 +221,12 @@ uitvoering is doorgeschoten tot er niets meer te ervaren valt, en hij heeft
 onbedoeld twee groeimechanismen uitgeschakeld. Bij `DIPLOMAS_VOOR_VRAAG = 3`
 staat zelfs de overweging dat vier te veel zou zijn omdat je dan "voorbij de
 gratis lessen" bent. Bij nul ben je dat al.
+
+> **Teruggedraaid op 23 november, en de andere kant op.** Deze kritiek is niet
+> opgevolgd door het gratis deel te verruimen maar door het af te schaffen: er
+> is geen gratis versie meer. "Bij nul ben je dat al" is daarmee letterlijk de
+> stand. Wat dat kost staat bovenaan dit document. Zie `magLeren` in
+> `src/engine/store.ts`.
 
 **Er is uitzonderlijk veel zorg aan de app besteed en bijna geen aan het
 meten ervan.** 2098 tests, acht uitgangen achter een ouderpoort, kleurcontrast

@@ -109,6 +109,15 @@ genoeg om een verbetering van 10% te zien.
 | `deel_zien` / `deel_klik` | de deelkaart |
 | `beoord_zien` | het beoordelingsverzoek |
 
+> **`gratis_op` is vervallen op 23 november.** Er is geen laatste gratis les
+> meer, dus niemand telt die gebeurtenis nog. De naam staat nog wél in
+> `src/engine/tellen.ts`: de server heeft dezelfde witte lijst en er staan
+> rijen in de tabel die dit woord gebruiken, en weghalen maakt die rijen
+> onleesbaar zonder iets op te lossen. De stap die deze teller moest meten —
+> hoeveel mensen komen tot waar de vraag om geld staat — zit nu bij het eerste
+> scherm. Zie de aantekening bij die teller en bij `magLeren` in
+> `src/engine/store.ts`.
+
 Tien namen. Geen funnel-SDK, geen dashboardproduct — een tabel in de bestaande
 D1-database van `server/` en een query. Dat is bewust karig: dit is een
 meetinstrument, geen analyticsplatform.
@@ -162,6 +171,12 @@ Dat eerste is een scherp criterium: die twee tellers kunnen vandaag niet
 boven nul komen, hoe goed het product ook is. Als ze dat na de wijziging wel
 doen, is een kapot mechanisme gerepareerd. Dat is geen percentage dat
 geïnterpreteerd moet worden.
+
+> **De eerste regel van deze tabel is vervallen op 23 november.** "Eén
+> complete unit gratis" gaat niet door, dus `deel_zien` en `beoord_zien`
+> kunnen alleen nog boven nul komen door iemand die betaald heeft. Daarmee is
+> het geen eenrichtingsverbetering meer maar een meting van het betaalde deel.
+> Zie `magLeren` in `src/engine/store.ts`.
 
 ### Soort 2 — echte experimenten (hoog in de trechter, waar de aantallen zijn)
 

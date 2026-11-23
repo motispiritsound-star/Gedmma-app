@@ -67,12 +67,12 @@ Twee dingen maken dit nu uitvoerbaar waar het dat vorige week niet was:
 
 `docs/MARKT.md` opent met de regel die alles bepaalt: deze app wordt niet gevonden, hij wordt doorgegeven. Twee dingen die al gebouwd zijn doen dat werk:
 
-- **De deelkaart** (`src/engine/delen.ts`): bij 25, 50, 100, 200 en 304 woorden die echt vastzitten komt er een kaart — *"Nour kent al 100 woorden Darija"* — met een knop naar WhatsApp. Dat is een bericht over het kínd, verstuurd door de ouder zelf, in de familiegroep. Jij kunt zo'n bericht niet maken en geen advertentie kan het kopen.
+- **De deelkaart** (`src/engine/delen.ts`): bij 20, 50, 100, 200 en 304 woorden die echt vastzitten komt er een kaart — *"Nour kent al 100 woorden Darija"* — met een knop naar WhatsApp. Dat is een bericht over het kínd, verstuurd door de ouder zelf, in de familiegroep. Jij kunt zo'n bericht niet maken en geen advertentie kan het kopen.
 - **`npm run woordjes`**: één commando maakt van elk woord een filmpje van acht seconden met jouw eigen stem erin. `--aantal 90` is een kwartaal inhoud in één avond. Dat is de reden dat route 2 bijna geen tijd kost.
 
 ### Waarom route 1 eerst, en route 2 eronder
 
-De deelkaart vuurt pas bij 25 woorden die *vastzitten* (`strength ≥ 0.85`). Dat is weken echt gebruik. De beoordelingsvraag komt pas na drie diploma's. **Route 2 kan de eerste dertig dagen dus niets opleveren, want er zijn nog geen gebruikers om hem aan te zetten.** Route 1 levert die gebruikers. Daarna versterken ze elkaar: elk gezin dat via een school binnenkomt, wordt over een maand of twee een deelkaart in een familiegroep waar jij nooit komt.
+De deelkaart vuurt pas bij 20 woorden die *vastzitten* (`strength ≥ 0.85`) — twintig sinds 12 november, daarvoor vijfentwintig; `MIJLPALEN` in `src/engine/delen.ts`. Dat is weken echt gebruik. De beoordelingsvraag komt pas na drie diploma's. **Route 2 kan de eerste dertig dagen dus niets opleveren, want er zijn nog geen gebruikers om hem aan te zetten.** En sinds 23 november ligt die eerste mijlpaal achter het abonnement: zonder abonnement gaat er geen les open, dus komen er geen woorden bij. Route 2 begint dus bij een gezin dat al betaalt — zie de aantekening bij `MIJLPALEN` in `src/engine/delen.ts`. Route 1 levert die gebruikers. Daarna versterken ze elkaar: elk gezin dat via een school binnenkomt, wordt over een maand of twee een deelkaart in een familiegroep waar jij nooit komt.
 
 ### Wat eruit gaat, en waarom
 

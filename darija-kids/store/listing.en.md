@@ -11,7 +11,7 @@ For App Store Connect (UK, Ireland, rest of world) and Google Play Console (en-G
 `Learn Moroccan Arabic`
 
 **Keywords (max 100)**
-`darija,moroccan,arabic,morocco,language,kids,learn,vocabulary,arabic script,free`
+`darija,morocco,kids,children,pronunciation,alphabet,bilingual,heritage,language,school,words,family`
 
 **Promotional text (max 170)**
 `New: a short film from the history of Morocco after every test, read aloud in your own language.`
@@ -60,8 +60,8 @@ Every checkpoint hands over a short film: fourteen cards in the order they happe
 EVERYTHING SOUNDS
 Every word and sentence can be heard: one tap for normal, two for slow. If your device has no Arabic voice, the app says so honestly and reads the Latin spelling as closely as it can.
 
-FREE TO START
-The first eight lessons are free and stay free: three pieces of the Arabic script and your first words of Darija. The whole course comes with full access: the first days free, then € 5.00 a month on the yearly plan (€ 59.99 charged once) or € 6.99 a month, including VAT. Cancel in your own App Store account; cancel before the trial ends and you pay nothing.
+THE WHOLE COURSE IN ONE SUBSCRIPTION
+The app is free to download; the course is a subscription, asked for on the very first screen. Once you pay, everything opens in one go — all the units, every word, every recording, nothing drip-fed. € 59.99 a year (that is € 5.00 a month) or € 6.99 a month, including VAT, charged again at every renewal. Cancel in your own App Store account.
 
 MADE TO HAND TO A CHILD
 • No account, no login — a child fills in nothing here

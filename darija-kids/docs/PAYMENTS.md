@@ -25,10 +25,17 @@ rekenen de btw af, en zij storten maandelijks op jouw rekening.
 
 ## Twee dingen om te weten voor je begint
 
-**1. Er is geen proefperiode.** De drie gratis dagen zijn op 23 november uit
-het aanbod gegaan: wie het abonnement neemt, betaalt bij het afsluiten.
-Opzeggen kan nog altijd en dan loopt de betaalde periode af — dat is de winkel
-en dat verandert niet.
+**1. Er is geen proefperiode.** De drie gratis dagen gaan op 23 november uit
+het aanbod: wie het abonnement neemt, betaalt bij het afsluiten. Opzeggen kan
+nog altijd en dan loopt de betaalde periode af — dat is de winkel en dat
+verandert niet.
+
+**Maar het staat nog niet in de consoles.** Het besluit is genomen en de app is
+erop gebouwd; de twee aanbiedingen zijn nog niet uitgezet. Zolang ze aan staan
+geeft de winkel die drie dagen nog wél, en leest de koper ze ook in het
+aankoopvenster. De tabel hieronder is dus geen naslag maar werk dat nog gedaan
+moet worden — `docs/GO-LIVE.md` zet het als stap 0, vóór de campagne, omdat de
+€ 29,99 bij Apple de plek van de proef nodig heeft.
 
 De app leest dat niet uit een getal in de code maar uit wat de winkel
 teruggeeft (`heeftProef` in `src/engine/billing.ts`, per plan in
@@ -37,8 +44,10 @@ abonnement mét proefperiode heeft er meer en de eerste kost niets. Onbekend
 telt als géén proef — beloof niets wat je niet weet. De teksten hebben in alle
 zes de talen een tak voor nul dagen, dus **de app klapt om op het moment dat
 de aanbieding uit de console gaat; er hoeft geen nieuwe build naartoe.**
-`TRIAL_DAYS` is daarmee geen belofte meer: dat getal doet alleen nog werk als
-wachttijd voor het e-boek (punt 1c).
+`TRIAL_DAYS` is daarmee geen belofte meer maar bewoording — zo staat het ook
+bij die constante zelf. Het getal vult de tekst alleen in zodra de winkel
+déze koper wél een proef aanbiedt, en het is de wachttijd voor het e-boek
+(punt 1c). Biedt de winkel niets aan, dan komt het nergens op het scherm.
 
 Wat er in de twee consoles voor moet gebeuren, en waarvoor geen commando
 bestaat — Apple's API kent abonnementsaanbiedingen wel, maar daarvoor moet er
@@ -90,11 +99,12 @@ Het verschil in opbrengst zit in één woord: bij de app-weg moet de koper ná
 de proef nog *ja* zeggen, bij de winkel-weg moet hij *nee* zeggen. Dat is
 dezelfde proefperiode en een heel ander aantal betalende gebruikers.
 
-En de drempel die hier eerder voor stond — vier lessen gratis, voorgoed,
-zonder pas en zonder e-mailadres — staat er niet meer. Er is nu één drempel en
-die staat op het eerste scherm: downloaden is gratis, de cursus is het
-abonnement. Twee stappen dus in plaats van drie, en de tweede is de enige die
-een winkelproduct nodig heeft.
+En de drempel die hier eerder voor stond — acht lessen gratis, voorgoed,
+zonder pas en zonder e-mailadres — staat er niet meer. Het waren er vier toen
+deze afweging werd opgeschreven; op 12 november werden het acht, en op
+23 november nul. Er is nu één drempel en die staat op het eerste scherm:
+downloaden is gratis, de cursus is het abonnement. Twee stappen dus in plaats
+van drie, en de tweede is de enige die een winkelproduct nodig heeft.
 
 **1c. Het e-boek komt vrij zodra er betaald is.** Het boek zit bij het
 jaarabonnement, en het is een pdf: wie hem één keer opent, houdt hem. Zonder

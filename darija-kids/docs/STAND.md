@@ -202,6 +202,23 @@ werkelijk werd afgeschreven. Een omrekening mag, nooit zonder het echte bedrag
 ernaast. `src/pages/prijsweergave.test.ts` bewaakt dat in de app; in dit script
 is het handwerk.
 
+**Twee dingen die hieraan vastzitten, en die niemand je herinnert.**
+
+De opname bestaat alleen in de vijf eurotalen — nl, fr, de, es, it. De Engelse
+vermelding is bij beide winkels de terugval voor de hele wereld, en een
+Amerikaan die daar euro's op een plaatje ziet terwijl hij dollars betaalt is
+een afkeuring. Dat zat er al in (`langs` bij de tiende opname) en het blijft zo.
+Maar het betekent ook: **de aanbieding moet in alle vijf die landen staan.** Zet
+je € 29,99 alleen in Nederland, dan belooft de Franse winkelbladzijde een prijs
+die de Franse winkel niet rekent.
+
+En als de actie afloopt, worden deze vijf plaatjes onwaar. Ze zijn geen
+instelling in een console maar een afbeelding in een vermelding, dus ze gaan
+niet automatisch mee. Zet de einddatum van de actie dus ook in je agenda met
+*één* taak erbij: de drie commando's hierboven opnieuw draaien met de
+jaarprijs terug op € 5,00 p/m, en `pil1` in `scripts/make-screenshots.mjs`
+mee. Dat is de enige plek waar een verlopen actie stil blijft staan.
+
 ## De lancering: volgende week, met aankondiging — besloten 2 oktober
 
 Tot vandaag was het plan stil lanceren en later communiceren. Dat is nu een

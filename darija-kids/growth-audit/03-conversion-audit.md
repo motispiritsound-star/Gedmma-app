@@ -93,6 +93,14 @@ Afgelezen uit `src/App.tsx`, `src/ui/Welcome.tsx`, `src/ui/Aanbod.tsx` en
   3 dagen proef  →  afschrijving
 ```
 
+> **Vervallen op 23 november.** Deze reis bestaat niet meer. `gratisDeelOp`
+> bestaat niet meer in de code en er is geen proefperiode: wie afsluit, betaalt
+> meteen. In de app stuurt `Poort` (`src/App.tsx`) iedereen zonder abonnement
+> na het welkomstscherm meteen naar `/volledig`; de vier lessen ertussen zijn
+> er niet meer. Op het web geldt die poort niet — daar is niets te koop en
+> blijven de lessen achter hun eigen slot. Zie `magLeren` in
+> `src/engine/store.ts`.
+
 Er is **geen registratie en geen inlog**. Dat is een pluspunt dat in een audit
 zelden voorkomt: nul accountfrictie, nul wachtwoorden, nul e-mailverificatie.
 De vraag uit de masterprompt over het registratieproces is daarmee niet van
@@ -142,6 +150,12 @@ eind gebouwd voor publiek dat de maker vertrouwt. Daarom converteert hij goed
 
 ### Lek 3 — vier lessen, zeven woorden
 
+> **Vervallen op 23 november.** Niet gerepareerd maar teruggedraaid: er is
+> geen gratis deel meer, dus ook geen vier lessen en geen zeven woorden. Wie
+> de app nu binnenkomt, krijgt de vraag om een abonnement op het eerste
+> scherm. De knik van 24% naar 7,6% hieronder is gemeten en blijft staan. Zie
+> `magLeren` in `src/engine/store.ts`.
+
 Het gratis deel is 4 van 74 lessen: **7 woorden, 13 letters, 0 diploma's**.
 **BEWEZEN** — zie `01-product-audit.md`.
 
@@ -174,6 +188,13 @@ woorden is wat een vreemde te zien krijgt.
 > deelkaart vuurt nu voor wie niet betaalt. Het beoordelingsverzoek niet: dat
 > vraagt drie diploma's en een gratis gebruiker haalt er één. Zie
 > `docs/STAND.md`, 12 november.
+>
+> **En op 23 november teruggedraaid.** Het gratis deel is vervallen, dus de
+> deelkaart vuurt niet meer zonder abonnement: beide lussen staan weer
+> volledig achter de kassa, nu niet door een drempel maar door de betaalmuur
+> zelf. Het verslag hierboven blijft staan als wat er op 12 november gebeurde.
+> Zie `magLeren` in `src/engine/store.ts` en de aantekening bij `MIJLPALEN` in
+> `src/engine/delen.ts`. Wat het kost staat in `09-executive-summary.md`.
 
 | Lus | Drempel | Gratis plafond | Bereikbaar? |
 | --- | --- | --- | --- |
@@ -253,6 +274,14 @@ achteraf op te halen.
 | Hoeveel proeven worden betalend? | **ONBEKEND** | ASC → *Subscriptions* → Trial conversion |
 | Welke Facebook-groep leverde wat? | **ONBEKEND, voorgoed** | campagneparameters op de links |
 | Wat was de negatieve weekbalk? | **ONBEKEND** | ASC → Payments and Financial Reports |
+
+> **Twee regels zijn vervallen op 23 november.** "Hoeveel komen bij het slot
+> (na les 4)?" bestaat niet meer: er is geen gratis deel, dus geen les waar
+> het slot valt, en `gratis_op` wordt niet meer geteld (zie de aantekening
+> bij die teller in `src/engine/tellen.ts`). "Hoeveel proeven worden
+> betalend?" net zo min: er is geen proefperiode meer, dus dat getal gaat
+> alleen nog over de kopers van vóór 23 november. Zie `magLeren` in
+> `src/engine/store.ts`.
 
 De eerste zes vragen de meetlaag uit `08-metrics-experiments.md`. De laatste
 twee zijn op te zoeken in de consoles, vandaag.

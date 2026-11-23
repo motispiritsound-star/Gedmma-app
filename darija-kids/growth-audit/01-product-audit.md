@@ -68,6 +68,14 @@ meten moet eerstelijns zijn, anoniem en via de eigen server. Daar kom ik in
 
 ### 1. De gratis versie bewijst vrijwel niets
 
+> **Vervallen op 23 november.** Er is geen gratis versie meer: geen gratis
+> lessen en geen proefperiode. Downloaden is gratis, de cursus is een
+> abonnement, en dat wordt op het eerste scherm gevraagd. De aanbeveling van
+> deze paragraaf — het gratis deel verruimen — is daarmee omgedraaid, en
+> `GRATIS_LESSEN` hieronder bestaat niet meer in de code. Wat hier staat is
+> wat er begin november te zien was. Waarom het is teruggedraaid staat bij
+> `magLeren` in `src/engine/store.ts` en bovenaan `00-leeswijzer.md`.
+
 Dit is de belangrijkste bevinding van de hele audit.
 
 ```
@@ -191,6 +199,12 @@ meting die dit zou beslissen):
   `05-pricing-monetization.md` — maar het is geen app-functie.
 
 ## Ontbreekt er één cruciale functionaliteit?
+
+> **Vervallen op 23 november.** Het gratis moment waar deze paragraaf om
+> vraagt, komt er niet: er is geen gratis ervaring meer om het in te leggen.
+> `GRATIS_LESSEN` bestaat niet meer, dus `{ hruf: 8, groeten: 5 }` hieronder
+> is ook geen wijziging die nog te maken is. Zie `magLeren` in
+> `src/engine/store.ts`.
 
 **HYPOTHESE, en de belangrijkste van deze audit:** niet een functie ontbreekt,
 maar een *moment*. Er is geen punt in de gratis ervaring waarop een ouder

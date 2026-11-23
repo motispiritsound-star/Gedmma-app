@@ -148,6 +148,12 @@ Niet meer bezoekers. **Geschikter** bezoek, dat zich vermenigvuldigt.
 
 ### Prioriteit 1 — zet de groeilussen aan (P0/P1)
 
+> **Vervallen op 23 november.** De groeilussen gaan niet aan. Het gratis deel
+> is vervallen, dus de deelkaart (punt 1) is weer alleen te halen door iemand
+> die betaald heeft, en het beoordelingsverzoek (punt 2) net zo. Punt 3, de
+> campagneparameters, staat nog en is gedaan. Zie `magLeren` in
+> `src/engine/store.ts`; wat dit kost staat in `09-executive-summary.md`.
+
 Dit is marketing die in de code zit en nu uit staat:
 
 1. ~~Maak de deelkaart bereikbaar voor niet-betalende gebruikers.~~
@@ -167,6 +173,14 @@ licentieovereenkomst, op de review-schermafdrukken, in socialkaarten waar het
 in de PNG zit, en in de ingesproken tekst van de reclamefilms. Die laatste
 zijn niet te repareren zonder opnieuw op te nemen. Dit zijn de drie goedkoopste dingen in dit hele
 document en ze gaan allemaal over mechanismen die al gebouwd zijn.
+
+> **Vervallen op 23 november.** Deze kostenpost ging over het verruimen van
+> het gratis deel. Dat deel bestaat niet meer, dus er is ook geen aantal
+> gratis lessen meer om ergens te zetten. De les blijft wel staan, en nu voor
+> het omgekeerde bericht: een getal uit de code staat ook in winkelteksten in
+> zes talen bij twee winkels, in de licentieovereenkomst, op de
+> schermafdrukken en in de ingesproken films. Zie `magLeren` in
+> `src/engine/store.ts`.
 
 ### Prioriteit 2 — België, dan Frankrijk (P1)
 

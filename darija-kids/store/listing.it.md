@@ -11,7 +11,7 @@ Per App Store Connect (Italia) e Google Play Console (it-IT).
 `Impara l’arabo marocchino`
 
 **Parole chiave (max 100)**
-`darija,marocchino,arabo,marocco,lingua,bambini,imparare,vocaboli,alfabeto,famiglia`
+`darija,marocco,bambini,pronuncia,alfabeto,bilingue,madrelingua,lingua,scuola,parole,famiglia,parlare`
 
 **Testo promozionale (max 170)**
 `Novità: dopo ogni test un cortometraggio sulla storia del Marocco, letto ad alta voce nella tua lingua.`
@@ -60,8 +60,8 @@ Ogni checkpoint regala un cortometraggio: quattordici carte in ordine storico, d
 TUTTO SI SENTE
 Ogni parola e ogni frase si possono ascoltare: un tocco per la velocità normale, due per quella lenta. Senza una voce araba sul dispositivo, l'app lo dice e legge la scrittura latina come meglio può.
 
-INIZIARE GRATIS
-Le prime otto lezioni restano gratis: tre pezzi dell'alfabeto arabo e le tue prime parole in darija. Il corso intero va con l'accesso completo: i primi giorni gratis e poi 5,00 € al mese con l’abbonamento annuale (59,99 € in una volta) oppure 6,99 € al mese, IVA inclusa. Disdicibile dal tuo account App Store; se disdici prima della fine della prova, non paghi niente.
+TUTTO IL CORSO IN UN UNICO ABBONAMENTO
+L’app si scarica gratis; il corso è un abbonamento, chiesto già nella prima schermata. Dopo il pagamento si apre tutto in una volta sola: tutte le unità, tutte le parole, tutte le registrazioni, niente col contagocce. 59,99 € all’anno (sono 5,00 € al mese) oppure 6,99 € al mese, IVA inclusa, e si rinnova finché non disdici. Disdicibile dal tuo account App Store.
 
 FATTA PER DARLA IN MANO A UN BAMBINO
 • Nessun account, nessun accesso: un bambino qui non scrive niente

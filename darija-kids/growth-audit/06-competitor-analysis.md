@@ -40,6 +40,14 @@ zoeker iets anders bedoelde.
 | Yalla Darija | $ 2,99/mnd · $ 29,99/jr | leren + vertalen |
 | Darija Translator / MoroAI | € 3,99/mnd · € 39,99/jr | vertalen |
 
+> **Te lezen met 23 november erbij.** Drie van de zeven apps hierboven zijn
+> gratis te beginnen met aankopen erin. Darijaforkids staat sinds 23 november
+> aan de andere kant: gratis te downloaden, maar de cursus is een abonnement
+> en dat wordt op het eerste scherm gevraagd — geen gratis lessen en geen
+> proefperiode. Wat de instap van deze zeven in de praktijk vraagt, is niet
+> uit een winkelvermelding te lezen en blijft **ONBEKEND**. Het prijsanker
+> hieronder verandert er niet door. Zie `magLeren` in `src/engine/store.ts`.
+
 Dit zijn reis- en beginnersapps. Ze mikken op een toerist in Marrakech of een
 expat, niet op een gezin in Rotterdam. Morolingo wordt in Frankrijk met 4,86
 van 5 beoordeeld en één recensent zegt dat zijn kinderen hem ook gebruiken —

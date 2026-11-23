@@ -40,7 +40,7 @@ denkt dat er twee aankopen zoek zijn.
 
 ## Wat waar
 
-`app.darijaforkids.yearly` — € 59,99 per jaar, drie dagen gratis.
+`app.darijaforkids.yearly` — € 59,99 per jaar.
 **Het e-boek zit erbij**; dat regelt de app zelf (`src/engine/billing.ts`),
 er is geen apart bundelproduct. Dat hoort dus in de beschrijving te staan,
 want het is het verschil met per maand.
@@ -54,7 +54,7 @@ want het is het verschil met per maand.
 | Español | Un año | 17 unidades, 304 palabras y el libro digital. |
 | Italiano | Un anno | 17 unità, 304 parole e l'ebook. |
 
-`app.darijaforkids.monthly` — € 6,99 per maand, drie dagen gratis. Geen
+`app.darijaforkids.monthly` — € 6,99 per maand. Geen
 e-boek; dat is een los product van € 14,99.
 
 | Taal | Naam (≤30) | Beschrijving (≤45) |

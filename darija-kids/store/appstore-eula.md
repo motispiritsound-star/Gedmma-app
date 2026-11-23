@@ -80,7 +80,7 @@ er gaat niets verloren. Dat is ook wat er in dit bestand is weggehaald:
 
 ## De hele tekst, als je liever in één keer plakt
 
-### Dutch — 3942 van de 4000 tekens
+### Dutch — 3899 van de 4000 tekens
 
 ```
 Laat je kind zijn moedertaal leren — spelenderwijs.
@@ -124,8 +124,8 @@ Elk checkpoint levert een kort filmpje op: veertien kaarten op volgorde van de g
 ALLES KLINKT
 Elk woord en elke zin kun je horen, één tik voor normaal en twee voor langzaam. Heeft je toestel geen Arabische stem, dan zegt de app dat eerlijk en leest hij de Latijnse schrijfwijze zo goed mogelijk voor.
 
-GRATIS BEGINNEN
-De eerste acht lessen zijn en blijven gratis: drie stukken van het Arabische alfabet en je eerste woorden Darija. De hele cursus hoort bij de volledige toegang: de eerste dagen gratis, daarna € 5,00 per maand bij een jaarabonnement (€ 59,99 in één keer) of € 6,99 per maand, inclusief btw. Opzegbaar in je eigen App Store- of Google Play-account; zeg je op vóór het einde van de proefperiode, dan betaal je niets.
+DE HELE CURSUS IN ÉÉN ABONNEMENT
+De app is gratis te downloaden; de cursus is een abonnement, en dat vraagt de app op het eerste scherm. Na het betalen gaat alles in één keer open — alle units, alle woorden, alle opnames, geen porties. € 59,99 per jaar (dat is € 5,00 per maand) of € 6,99 per maand, inclusief btw, telkens opnieuw tot je opzegt. Opzegbaar in je eigen App Store-account.
 
 GEMAAKT OM AAN EEN KIND TE GEVEN
 • Geen account en geen inloggen — een kind vult hier niets in
@@ -142,7 +142,7 @@ Darija verschilt per stad en per familie, en heeft geen officiële spelling. Wij
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
-### French — 3980 van de 4000 tekens
+### French — 3969 van de 4000 tekens
 
 ```
 Faites apprendre à votre enfant sa langue maternelle — en jouant.
@@ -186,8 +186,8 @@ Chaque étape donne un court film : quatorze cartes dans l’ordre de l’histoi
 TOUT SE PRONONCE
 Chaque mot et chaque phrase s'écoute : une touche pour la vitesse normale, deux pour la lente. Sans voix arabe sur l'appareil, l'application le dit et lit l'écriture latine du mieux qu'elle peut.
 
-COMMENCER GRATUITEMENT
-Les huit premières leçons restent gratuites : trois morceaux de l'alphabet arabe et tes premiers mots en darija. Le cours complet va avec l'accès complet : les premiers jours offerts, puis 5,00 € par mois avec un abonnement annuel (59,99 € en une fois) ou 6,99 € par mois, TTC. Résiliable dans ton compte App Store ou Google Play ; en résiliant avant la fin de l'essai, tu ne paies rien.
+TOUT LE COURS DANS UN SEUL ABONNEMENT
+L'application est gratuite à télécharger ; le cours est un abonnement, demandé dès le premier écran. Après le paiement, tout s'ouvre d'un coup : toutes les unités, tous les mots, tous les enregistrements, rien au compte-gouttes. 59,99 € par an (soit 5,00 € par mois) ou 6,99 € par mois, TTC, prélevés à chaque renouvellement. Résiliable dans ton compte App Store.
 
 FAIT POUR ÊTRE CONFIÉ À UN ENFANT
 • Pas de compte, pas de connexion — un enfant ne remplit rien ici
@@ -248,8 +248,8 @@ Jeder Checkpoint bringt einen kurzen Film: vierzehn Karten in historischer Reihe
 ALLES KLINGT
 Jedes Wort und jeder Satz lässt sich anhören: einmal tippen für normal, zweimal langsam. Ohne arabische Stimme sagt die App das ehrlich und liest die lateinische Schreibweise vor.
 
-KOSTENLOS ANFANGEN
-Die ersten acht Lektionen bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs gehört zum vollen Zugang: die ersten Tage gratis, danach 5,00 € pro Monat im Jahresabo (59,99 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Kündbar im eigenen App-Store- oder Google-Play-Konto; wer vor Ende der Testphase kündigt, zahlt nichts.
+DER GANZE KURS IN EINEM ABO
+Die App lässt sich kostenlos herunterladen; der Kurs läuft über ein Abo, schon auf dem ersten Bildschirm gefragt. Nach dem Bezahlen steht alles auf einmal offen — alle Einheiten, alle Wörter, alle Aufnahmen, nichts in Häppchen. 59,99 € pro Jahr (5,00 € pro Monat) oder 6,99 € pro Monat, inklusive Mehrwertsteuer, immer wieder bis zur Kündigung. Kündbar im eigenen App-Store-Konto.
 
 GEMACHT, UM ES EINEM KIND ZU GEBEN
 • Kein Konto, kein Login — ein Kind trägt hier nichts ein
@@ -266,7 +266,7 @@ Darija unterscheidet sich von Stadt zu Stadt und von Familie zu Familie und hat 
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
-### Spanish — 3972 van de 4000 tekens
+### Spanish — 3955 van de 4000 tekens
 
 ```
 Deja que tu hijo aprenda su lengua materna — jugando.
@@ -310,8 +310,8 @@ Cada control te da un corto: catorce cartas en orden histórico, desde la ciudad
 TODO SUENA
 Cada palabra y cada frase se puede escuchar: un toque para la velocidad normal, dos para la lenta. Sin voz árabe en el dispositivo, la aplicación lo dice y lee la escritura latina lo mejor que puede.
 
-EMPEZAR GRATIS
-Las ocho primeras lecciones siguen siendo gratis: tres partes del alfabeto árabe y tus primeras palabras en dariya. El curso completo va con el acceso completo: los primeros días gratis y después 5,00 € al mes con la suscripción anual (59,99 € de una vez) o 6,99 € al mes, con IVA incluido. Cancelable en tu cuenta de la App Store o de Google Play; si cancelas antes de que termine la prueba, no pagas nada.
+TODO EL CURSO EN UNA SOLA SUSCRIPCIÓN
+La aplicación se descarga gratis; el curso es una suscripción, y se pide ya en la primera pantalla. Después de pagar, todo se abre de una vez: todas las unidades, todas las palabras, todas las grabaciones, nada a cuentagotas. 59,99 € al año (son 5,00 € al mes) o 6,99 € al mes, con IVA incluido, y se renueva hasta que canceles. Cancelable en tu cuenta de la App Store.
 
 HECHA PARA DÁRSELA A UN NIÑO
 • Sin cuenta y sin inicio de sesión: un niño no escribe nada aquí
@@ -328,7 +328,7 @@ El dariya cambia de ciudad a ciudad y de familia a familia, y no tiene ortograf�
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
-### Italian — 3967 van de 4000 tekens
+### Italian — 3968 van de 4000 tekens
 
 ```
 Fai imparare a tuo figlio la sua lingua madre — giocando.
@@ -372,8 +372,8 @@ Ogni checkpoint regala un cortometraggio: quattordici carte in ordine storico, d
 TUTTO SI SENTE
 Ogni parola e ogni frase si possono ascoltare: un tocco per la velocità normale, due per quella lenta. Senza una voce araba sul dispositivo, l'app lo dice e legge la scrittura latina come meglio può.
 
-INIZIARE GRATIS
-Le prime otto lezioni restano gratis: tre pezzi dell'alfabeto arabo e le tue prime parole in darija. Il corso intero va con l'accesso completo: i primi giorni gratis e poi 5,00 € al mese con l’abbonamento annuale (59,99 € in una volta) oppure 6,99 € al mese, IVA inclusa. Disdicibile dal tuo account App Store o Google Play; se disdici prima della fine della prova, non paghi niente.
+TUTTO IL CORSO IN UN UNICO ABBONAMENTO
+L’app si scarica gratis; il corso è un abbonamento, chiesto già nella prima schermata. Dopo il pagamento si apre tutto in una volta sola: tutte le unità, tutte le parole, tutte le registrazioni, niente col contagocce. 59,99 € all’anno (sono 5,00 € al mese) oppure 6,99 € al mese, IVA inclusa, e si rinnova finché non disdici. Disdicibile dal tuo account App Store.
 
 FATTA PER DARLA IN MANO A UN BAMBINO
 • Nessun account, nessun accesso: un bambino qui non scrive niente
@@ -390,7 +390,7 @@ Il darija cambia da città a città e da famiglia a famiglia, e non ha un'ortogr
 https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
-### English — 3869 van de 4000 tekens
+### English — 3862 van de 4000 tekens
 
 ```
 Let your child learn their mother tongue — by playing.
@@ -434,8 +434,8 @@ Every checkpoint hands over a short film: fourteen cards in the order they happe
 EVERYTHING SOUNDS
 Every word and sentence can be heard: one tap for normal, two for slow. If your device has no Arabic voice, the app says so honestly and reads the Latin spelling as closely as it can.
 
-FREE TO START
-The first eight lessons are free and stay free: three pieces of the Arabic script and your first words of Darija. The whole course comes with full access: the first days free, then € 5.00 a month on the yearly plan (€ 59.99 charged once) or € 6.99 a month, including VAT. Cancel in your own App Store or Google Play account; cancel before the trial ends and you pay nothing.
+THE WHOLE COURSE IN ONE SUBSCRIPTION
+The app is free to download; the course is a subscription, asked for on the very first screen. Once you pay, everything opens in one go — all the units, every word, every recording, nothing drip-fed. € 59.99 a year (that is € 5.00 a month) or € 6.99 a month, including VAT, charged again at every renewal. Cancel in your own App Store account.
 
 MADE TO HAND TO A CHILD
 • No account, no login — a child fills in nothing here

@@ -11,7 +11,7 @@ Para App Store Connect (España) y Google Play Console (es-ES).
 `Aprende árabe marroquí`
 
 **Palabras clave (máx. 100)**
-`dariya,darija,marroquí,árabe,marruecos,idioma,niños,aprender,vocabulario,gratis`
+`darija,dariya,marruecos,niños,pronunciación,alfabeto,bilingüe,materna,idioma,escuela,palabras`
 
 **Texto promocional (máx. 170)**
 `Nuevo: después de cada test, un corto sobre la historia de Marruecos, leído en voz alta en tu propio idioma.`
@@ -60,8 +60,8 @@ Cada control te da un corto: catorce cartas en orden histórico, desde la ciudad
 TODO SUENA
 Cada palabra y cada frase se puede escuchar: un toque para la velocidad normal, dos para la lenta. Sin voz árabe en el dispositivo, la aplicación lo dice y lee la escritura latina lo mejor que puede.
 
-EMPEZAR GRATIS
-Las ocho primeras lecciones siguen siendo gratis: tres partes del alfabeto árabe y tus primeras palabras en dariya. El curso completo va con el acceso completo: los primeros días gratis y después 5,00 € al mes con la suscripción anual (59,99 € de una vez) o 6,99 € al mes, con IVA incluido. Cancelable en tu cuenta de la App Store; si cancelas antes de que termine la prueba, no pagas nada.
+TODO EL CURSO EN UNA SOLA SUSCRIPCIÓN
+La aplicación se descarga gratis; el curso es una suscripción, y se pide ya en la primera pantalla. Después de pagar, todo se abre de una vez: todas las unidades, todas las palabras, todas las grabaciones, nada a cuentagotas. 59,99 € al año (son 5,00 € al mes) o 6,99 € al mes, con IVA incluido, y se renueva hasta que canceles. Cancelable en tu cuenta de la App Store.
 
 HECHA PARA DÁRSELA A UN NIÑO
 • Sin cuenta y sin inicio de sesión: un niño no escribe nada aquí

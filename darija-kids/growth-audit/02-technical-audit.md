@@ -126,6 +126,12 @@ Daarmee is geen van deze vragen te beantwoorden:
 - Hoeveel openen `/volledig` en haken daar af?
 - Hoeveel komen op dag 2 terug?
 
+> **De tweede vraag is vervallen op 23 november.** Er zijn geen gratis lessen
+> die ophouden, dus er is ook geen les 5 waar het slot valt: de vraag om geld
+> staat nu op het eerste scherm. De andere vier vragen staan nog, en de meting
+> die ze zou beantwoorden is er inmiddels — `src/engine/tellen.ts`, met de
+> schakelaar `TELLEN` nog uit. Zie `magLeren` in `src/engine/store.ts`.
+
 Niet "we hebben die cijfers nog niet verzameld" — ze bestaan niet en kunnen
 niet achteraf worden opgehaald. Elke uitspraak over waar de trechter lekt is
 daarmee **HYPOTHESE**, inclusief de mijne.

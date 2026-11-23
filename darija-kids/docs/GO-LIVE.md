@@ -143,7 +143,7 @@ eruit, en wat er in de consoles moet*.
 
 Hier is geen commando voor; het zijn twee webconsoles, en Apple's API kent
 abonnementsaanbiedingen wel maar wil er eerst een ASC-sleutel op de schijf voor
-hebben. Dus vóór het vrijgeven:
+hebben. Dus vóór de aankondiging en vóór de campagne:
 
 1. **App Store Connect** → het abonnement → **View all Subscription Pricing** →
    tabblad **Introductory Offers**. Daar staat *Free for the first 3 days*, 175

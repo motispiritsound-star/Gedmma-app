@@ -9,7 +9,7 @@
  * waar dat ding gebeurt — geen mock-up, maar de app zoals hij draait, met een
  * profiel dat al een tijdje bezig is. De volgorde is een campagne: eerst het
  * probleem dat de lezer herkent, dan wat de app anders doet, dan het schrift,
- * dan dat beginnen gratis is, en tot slot het stuk dat mensen doorsturen.
+ * dan wat één abonnement opent, en tot slot het stuk dat mensen doorsturen.
  *
  * Draai eerst `npm run preview`, dan:
  *   node scripts/make-social.mjs [baseUrl] [--lang nl,fr]
@@ -48,7 +48,7 @@ const POSTS = [
   { id: '1-oma', pad: '/leren' },
   { id: '2-stem', pad: '/woorden' },
   { id: '3-schrift', pad: '/letters' },
-  { id: '4-gratis', pad: '/verhalen' },
+  { id: '4-abonnement', pad: '/verhalen' },
   { id: '5-geschiedenis', pad: '/geschiedenis' },
 ]
 
@@ -64,7 +64,7 @@ const TEKST = {
     '1-oma': { kop: 'Je kind verstaat oma wel.', sub: 'Antwoorden lukt alleen niet.' },
     '2-stem': { kop: '432 opnames, geen computerstem.', sub: 'Elk woord gezegd door iemand die Darija spreekt.' },
     '3-schrift': { kop: 'Het Arabische schrift,\nletter voor letter.', sub: 'Alle 28, met hun drie vormen.' },
-    '4-gratis': { kop: 'Beginnen kost niets.', sub: 'De eerste vier lessen zijn gratis. Geen account, geen advertenties.' },
+    '4-abonnement': { kop: 'Eén abonnement, alles open.', sub: 'Geen advertenties, geen gegevens over je kind.' },
     '5-geschiedenis': { kop: 'Veertien filmpjes uit\nde geschiedenis van Marokko.', sub: 'Na elke toets eentje, in je eigen taal.' },
     cta: 'darijaforkids.eu',
   },
@@ -72,7 +72,7 @@ const TEKST = {
     '1-oma': { kop: 'Ton enfant comprend mamie.', sub: 'C’est répondre qui ne vient pas.' },
     '2-stem': { kop: '432 enregistrements, aucune voix de synthèse.', sub: 'Chaque mot dit par quelqu’un qui parle darija.' },
     '3-schrift': { kop: 'L’écriture arabe,\nlettre par lettre.', sub: 'Les 28, avec leurs trois formes.' },
-    '4-gratis': { kop: 'Commencer ne coûte rien.', sub: 'Les quatre premières leçons sont gratuites. Sans compte, sans publicité.' },
+    '4-abonnement': { kop: 'Un abonnement, tout est là.', sub: 'Sans publicité, sans données sur ton enfant.' },
     '5-geschiedenis': { kop: 'Quatorze courts récits\nde l’histoire du Maroc.', sub: 'Un après chaque test, dans ta langue.' },
     cta: 'darijaforkids.eu',
   },
@@ -80,7 +80,7 @@ const TEKST = {
     '1-oma': { kop: 'Dein Kind versteht Oma.', sub: 'Nur antworten klappt nicht.' },
     '2-stem': { kop: '432 Aufnahmen, keine Computerstimme.', sub: 'Jedes Wort von jemandem, der Darija spricht.' },
     '3-schrift': { kop: 'Die arabische Schrift,\nBuchstabe für Buchstabe.', sub: 'Alle 28, mit ihren drei Formen.' },
-    '4-gratis': { kop: 'Anfangen kostet nichts.', sub: 'Die ersten vier Lektionen sind gratis. Kein Konto, keine Werbung.' },
+    '4-abonnement': { kop: 'Ein Abo, alles freigeschaltet.', sub: 'Keine Werbung, keine Daten über dein Kind.' },
     '5-geschiedenis': { kop: 'Vierzehn kurze Filme\naus der Geschichte Marokkos.', sub: 'Nach jedem Test einer, in deiner Sprache.' },
     cta: 'darijaforkids.eu',
   },
@@ -88,7 +88,7 @@ const TEKST = {
     '1-oma': { kop: 'Tu hijo entiende a la abuela.', sub: 'Lo que no sale es responder.' },
     '2-stem': { kop: '432 grabaciones, ninguna voz artificial.', sub: 'Cada palabra dicha por alguien que habla dariya.' },
     '3-schrift': { kop: 'La escritura árabe,\nletra a letra.', sub: 'Las 28, con sus tres formas.' },
-    '4-gratis': { kop: 'Empezar no cuesta nada.', sub: 'Las cuatro primeras lecciones son gratis. Sin cuenta, sin anuncios.' },
+    '4-abonnement': { kop: 'Una suscripción, todo desbloqueado.', sub: 'Sin anuncios, sin datos sobre tu hijo.' },
     '5-geschiedenis': { kop: 'Catorce vídeos cortos\nde la historia de Marruecos.', sub: 'Uno después de cada test, en tu idioma.' },
     cta: 'darijaforkids.eu',
   },
@@ -96,7 +96,7 @@ const TEKST = {
     '1-oma': { kop: 'Tuo figlio capisce la nonna.', sub: 'È rispondere che non gli viene.' },
     '2-stem': { kop: '432 registrazioni, nessuna voce sintetica.', sub: 'Ogni parola detta da chi parla darija.' },
     '3-schrift': { kop: 'La scrittura araba,\nlettera per lettera.', sub: 'Tutte e 28, con le loro tre forme.' },
-    '4-gratis': { kop: 'Cominciare non costa nulla.', sub: 'Le prime quattro lezioni sono gratis. Senza account, senza pubblicità.' },
+    '4-abonnement': { kop: 'Un abbonamento, tutto sbloccato.', sub: 'Senza pubblicità, senza dati su tuo figlio.' },
     '5-geschiedenis': { kop: 'Quattordici filmati\ndalla storia del Marocco.', sub: 'Uno dopo ogni test, nella tua lingua.' },
     cta: 'darijaforkids.eu',
   },
@@ -104,7 +104,7 @@ const TEKST = {
     '1-oma': { kop: 'Your child understands grandma.', sub: 'It is answering that does not come.' },
     '2-stem': { kop: '432 recordings, no computer voice.', sub: 'Every word said by someone who speaks Darija.' },
     '3-schrift': { kop: 'The Arabic script,\nletter by letter.', sub: 'All 28, with their three forms.' },
-    '4-gratis': { kop: 'Starting costs nothing.', sub: 'The first four lessons are free. No account, no adverts.' },
+    '4-abonnement': { kop: 'One subscription, everything open.', sub: 'No adverts, no data about your child.' },
     '5-geschiedenis': { kop: 'Fourteen short films\nfrom the history of Morocco.', sub: 'One after every test, in your own language.' },
     cta: 'darijaforkids.eu',
   },

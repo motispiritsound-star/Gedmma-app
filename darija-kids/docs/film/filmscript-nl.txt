@@ -1,3 +1,46 @@
+==============================================================================
+LET OP — DE AL GEMAAKTE FILMS MOGEN NIET IN DE CAMPAGNE
+==============================================================================
+De slotregel van scène 13 is op 23 november veranderd. Elke film die al van
+dit script is gemaakt zegt INGESPROKEN "De eerste vier lessen zijn gratis", en
+dat is niet meer waar: er zijn geen gratis lessen en geen proefperiode. De app
+is gratis te downloaden, de cursus is een abonnement, en dat wordt op het
+eerste scherm gevraagd. De onderbouwing staat in de aantekening boven
+`magLeren` in src/engine/store.ts; het besluit staat in docs/STAND.md onder
+23 november.
+
+Die regel is hier niet te repareren — hij zit in de stem en in de montage. Dus
+geen bestaande film op de Franse, Nederlandse of Duitse Facebook-pagina's
+voordat hij opnieuw is ingesproken met de nieuwe slotregel hieronder. Dit is
+het soort fout waar een winkel een app voor afwijst: een film die iets gratis
+belooft dat de app niet geeft.
+
+WAAR DIE FILMS STAAN
+De afgemonteerde advertentie staat niet in de repository: die wordt uit Steve
+AI geëxporteerd (store/lancering/reclamefilm.md, stap 8) en staat op de
+Windows-machine en op de plekken waar hij is geüpload. Wat hier wél staat is
+site-assets/film/<taal>/intro.mp4, met poster.webp, voor de, en, es, fr, it en
+nl: achtentwintig seconden van de app zelf uit `npm run intro`, met het eigen
+geluid van de app en zonder stem, dus zonder deze regel. Hun eigen probleem is
+de prijskaart op het laatste beeld, en dat staat in store/lancering/socials.md.
+store/video/<taal>/ is dezelfde opname in drie verhoudingen en staat niet in de
+repository (.gitignore, regel 8).
+
+docs/STAND.md noemt de reclamefilms al als niet te repareren zonder opnieuw
+opnemen — bij 12 november, toen het getal nog van vier naar acht ging — en legt
+onder 3 november vast dat ze in de Facebookgroepen zijn gedeeld. Wat daar nog
+staat, zegt vier gratis lessen.
+
+Om te zien welke geëxporteerde films op de Windows-machine staan, nieuwste
+eerst, is dit één regel in PowerShell:
+
+Get-ChildItem $HOME -Recurse -Depth 5 -Include *.mp4 -File -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 40 FullName, LastWriteTime
+
+De slotregel in de andere talen staat in docs/VIDEO.md, onder "The closing
+line, per voicing". docs/film/filmscript-fr.txt draagt op regel 81 en 82 nog
+de oude Franse slotregel.
+==============================================================================
+
 DARIJAFORKIDS — MARKETINGFILM — 60 SECONDEN — NEDERLANDS
 
 STEM: één man, warm, rustig. Geen omroeper — een vader die iets vertelt waar
@@ -79,8 +122,10 @@ IN BEELD: —
 
 SCÈNE 13 — 0:56–1:00
 BEELD: Logo, de Marokkaanse vlag, het adres.
-STEM: Darijaforkids. De eerste vier lessen zijn gratis.
-IN BEELD: darijaforkids.eu · De eerste vier lessen gratis
+STEM: Darijaforkids. Gratis te downloaden, zonder advertenties.
+IN BEELD: darijaforkids.eu · Gratis te downloaden · Geen advertenties
+  (Nieuw sinds 23 november. De al ingesproken films zeggen hier "De eerste
+  vier lessen zijn gratis" — zie het blok bovenaan dit bestand.)
 
 ---
 

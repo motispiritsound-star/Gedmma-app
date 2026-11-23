@@ -191,56 +191,66 @@ const SHOTS = [
  * terugval voor de hele wereld, dus een screenshot met euro's erop klopt dan
  * niet in Amerika of Marokko — en een prijs die niet klopt is een reden tot
  * afkeuring. Daar staat wat overal waar is.
+ *
+ * `pil1` staat op de actieprijs van het jaarabonnement. De omgerekende
+ * maandprijs mag daar groot staan, maar nooit zonder het bedrag dat de winkel
+ * werkelijk afschrijft: Apple keurde deze app eerder af op richtlijn 3.1.2(c)
+ * omdat de omrekening opvallender was dan het echte bedrag. Vandaar dat de
+ * kleine regel onder `pil1` € 29,99 per jaar noemt. `pil2` is de losse
+ * maandprijs en heeft niets om te vergelijken.
+ *
+ * In de voetregel staat geen proefperiode, want die is er niet. Wat er staat
+ * gaat over wat er na het betalen opengaat: de hele cursus in één keer.
  */
 const AANBOD = {
   nl: {
     kicker: 'De taal van thuis',
     titel: 'Eindelijk Darija leren',
-    pil1: { groot: '\u20ac 5,00 p/m', klein: 'bij een jaarabonnement' },
+    pil1: { groot: '\u20ac 2,50 p/m', klein: '\u20ac 29,99 per jaar, nu 50% korting' },
     pil2: { groot: '\u20ac 6,99 p/m', klein: 'per maand opzegbaar' },
     voet: {
-      apple: '3 dagen gratis \u00b7 \u00e9\u00e9n abonnement voor het hele gezin',
-      google: '3 dagen gratis \u00b7 daarna opzegbaar wanneer je wilt',
+      apple: 'De hele cursus in \u00e9\u00e9n keer \u00b7 \u00e9\u00e9n abonnement voor het hele gezin',
+      google: 'De hele cursus in \u00e9\u00e9n keer \u00b7 opzegbaar wanneer je wilt',
     },
   },
   fr: {
     kicker: 'La langue de la maison',
     titel: 'Enfin apprendre la darija',
-    pil1: { groot: '5,00 \u20ac/mois', klein: 'avec l\u2019abonnement annuel' },
+    pil1: { groot: '2,50 \u20ac/mois', klein: '29,99 \u20ac par an, remise de 50 %' },
     pil2: { groot: '6,99 \u20ac/mois', klein: 'r\u00e9siliable chaque mois' },
     voet: {
-      apple: '3 jours gratuits \u00b7 un abonnement pour toute la famille',
-      google: '3 jours gratuits \u00b7 r\u00e9siliable quand tu veux',
+      apple: 'Tout le cours d\u2019un coup \u00b7 un abonnement pour toute la famille',
+      google: 'Tout le cours d\u2019un coup \u00b7 r\u00e9siliable quand tu veux',
     },
   },
   de: {
     kicker: 'Die Sprache von zu Hause',
     titel: 'Endlich Darija lernen',
-    pil1: { groot: '5,00 \u20ac/Monat', klein: 'im Jahresabo' },
+    pil1: { groot: '2,50 \u20ac/Monat', klein: '29,99 \u20ac pro Jahr, jetzt 50 % Rabatt' },
     pil2: { groot: '6,99 \u20ac/Monat', klein: 'monatlich k\u00fcndbar' },
     voet: {
-      apple: '3 Tage gratis \u00b7 ein Abo f\u00fcr die ganze Familie',
-      google: '3 Tage gratis \u00b7 jederzeit k\u00fcndbar',
+      apple: 'Der ganze Kurs auf einmal \u00b7 ein Abo f\u00fcr die ganze Familie',
+      google: 'Der ganze Kurs auf einmal \u00b7 jederzeit k\u00fcndbar',
     },
   },
   es: {
     kicker: 'La lengua de casa',
     titel: 'Por fin aprender d\u00e1rija',
-    pil1: { groot: '5,00 \u20ac/mes', klein: 'con el plan anual' },
+    pil1: { groot: '2,50 \u20ac/mes', klein: '29,99 \u20ac al a\u00f1o, 50 % de descuento' },
     pil2: { groot: '6,99 \u20ac/mes', klein: 'cancelable cada mes' },
     voet: {
-      apple: '3 d\u00edas gratis \u00b7 una suscripci\u00f3n para toda la familia',
-      google: '3 d\u00edas gratis \u00b7 cancelable cuando quieras',
+      apple: 'Todo el curso de una vez \u00b7 una suscripci\u00f3n para toda la familia',
+      google: 'Todo el curso de una vez \u00b7 cancelable cuando quieras',
     },
   },
   it: {
     kicker: 'La lingua di casa',
     titel: 'Finalmente imparare la darija',
-    pil1: { groot: '5,00 \u20ac/mese', klein: 'con l\u2019abbonamento annuale' },
+    pil1: { groot: '2,50 \u20ac/mese', klein: '29,99 \u20ac all\u2019anno, 50 % di sconto' },
     pil2: { groot: '6,99 \u20ac/mese', klein: 'disdicibile ogni mese' },
     voet: {
-      apple: '3 giorni gratis \u00b7 un abbonamento per tutta la famiglia',
-      google: '3 giorni gratis \u00b7 disdicibile quando vuoi',
+      apple: 'Tutto il corso in una volta \u00b7 un abbonamento per tutta la famiglia',
+      google: 'Tutto il corso in una volta \u00b7 disdicibile quando vuoi',
     },
   },
 }

@@ -11,7 +11,7 @@ Für App Store Connect (Deutschland, Österreich, Schweiz) und Google Play Conso
 `Marokkanisch-Arabisch lernen`
 
 **Schlüsselwörter (max. 100)**
-`darija,marokkanisch,arabisch,marokko,sprache,kinder,lernen,wortschatz,arabische schrift,gratis`
+`darija,marokko,kinder,kind,aussprache,alphabet,muttersprache,zweisprachig,sprache,schule,wörter`
 
 **Werbetext (max. 170)**
 `Neu: Nach jedem Test ein kurzer Film aus der Geschichte Marokkos, vorgelesen in deiner eigenen Sprache.`
@@ -60,8 +60,8 @@ Jeder Checkpoint bringt einen kurzen Film: vierzehn Karten in historischer Reihe
 ALLES KLINGT
 Jedes Wort und jeder Satz lässt sich anhören: einmal tippen für normal, zweimal langsam. Ohne arabische Stimme sagt die App das ehrlich und liest die lateinische Schreibweise vor.
 
-KOSTENLOS ANFANGEN
-Die ersten acht Lektionen bleiben kostenlos: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Der ganze Kurs gehört zum vollen Zugang: die ersten Tage gratis, danach 5,00 € pro Monat im Jahresabo (59,99 € auf einmal) oder 6,99 € pro Monat, inklusive Mehrwertsteuer. Kündbar im eigenen App-Store-Konto; wer vor Ende der Testphase kündigt, zahlt nichts.
+DER GANZE KURS IN EINEM ABO
+Die App lässt sich kostenlos herunterladen; der Kurs läuft über ein Abo, schon auf dem ersten Bildschirm gefragt. Nach dem Bezahlen steht alles auf einmal offen — alle Einheiten, alle Wörter, alle Aufnahmen, nichts in Häppchen. 59,99 € pro Jahr (5,00 € pro Monat) oder 6,99 € pro Monat, inklusive Mehrwertsteuer, immer wieder bis zur Kündigung. Kündbar im eigenen App-Store-Konto.
 
 GEMACHT, UM ES EINEM KIND ZU GEBEN
 • Kein Konto, kein Login — ein Kind trägt hier nichts ein

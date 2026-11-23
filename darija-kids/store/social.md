@@ -73,7 +73,7 @@ Dezelfde grap in de andere vier talen:
 
 > Je kind verstaat oma wel, maar antwoordt in het Nederlands. 🇲🇦
 > Darijaforkids leert de taal van thuis — niet het Arabisch uit het schoolboek.
-> Gratis beginnen 👇
+> Gratis te downloaden 👇
 
 **Facebook-groep of familie-app**
 
@@ -85,8 +85,8 @@ Dezelfde grap in de andere vier talen:
 > afdingen op de souq, en alles kun je horen. In het Nederlands, Frans, Duits,
 > Spaans, Italiaans en Engels, dus ook voor neefjes en nichtjes over de grens.
 >
-> De eerste vier lessen zijn gratis, er zitten geen advertenties in en er wordt
-> niets van je kind verzameld.
+> De app is gratis te downloaden, de cursus is een abonnement. Er zitten geen
+> advertenties in en er wordt niets van je kind verzameld.
 
 **LinkedIn**
 
@@ -112,7 +112,7 @@ Dezelfde grap in de andere vier talen:
 
 > Ton enfant comprend mamie, mais répond en français. 🇲🇦
 > Darijaforkids enseigne la langue de la maison — pas l’arabe du manuel.
-> Gratuit pour commencer 👇
+> Téléchargement gratuit 👇
 
 **Groupe Facebook ou famille**
 
@@ -124,8 +124,8 @@ Dezelfde grap in de andere vier talen:
 > les chiffres, et finit par négocier au souk. Tout se prononce. En français,
 > néerlandais, allemand, espagnol, italien et anglais, donc aussi pour les cousins.
 >
-> L’alphabet et les premières salutations sont gratuits, il n’y a aucune
-> publicité et rien n’est collecté sur ton enfant.
+> L’application est gratuite à télécharger, le cours est un abonnement. Il n’y
+> a aucune publicité et rien n’est collecté sur ton enfant.
 
 ---
 
@@ -135,7 +135,7 @@ Dezelfde grap in de andere vier talen:
 
 > Dein Kind versteht Oma, antwortet aber auf Deutsch. 🇲🇦
 > Darijaforkids bringt die Sprache von zu Hause bei — nicht das Schulbucharabisch.
-> Kostenlos anfangen 👇
+> Kostenlos herunterladen 👇
 
 **Facebook-Gruppe oder Familie**
 
@@ -147,8 +147,8 @@ Dezelfde grap in de andere vier talen:
 > zum Handeln auf dem Souk, und alles lässt sich anhören. Auf Deutsch,
 > Niederländisch, Französisch, Spanisch, Italienisch und Englisch.
 >
-> Das Alphabet und die ersten Begrüßungen sind kostenlos, es gibt keine Werbung
-> und es wird nichts über dein Kind gesammelt.
+> Die App lässt sich kostenlos herunterladen, der Kurs läuft über ein Abo. Es
+> gibt keine Werbung und es wird nichts über dein Kind gesammelt.
 
 ---
 
@@ -158,7 +158,7 @@ Dezelfde grap in de andere vier talen:
 
 > Tu hijo entiende a la abuela, pero responde en español. 🇲🇦
 > Darijaforkids enseña el idioma de casa, no el árabe del libro de texto.
-> Empieza gratis 👇
+> Descárgala gratis 👇
 
 **Grupo de Facebook o familia**
 
@@ -169,8 +169,8 @@ Dezelfde grap in de andere vier talen:
 > y acaba regateando en el zoco. Todo se puede escuchar. En español, neerlandés,
 > francés, alemán, italiano e inglés.
 >
-> El alfabeto y los primeros saludos son gratis, no hay publicidad y no se
-> recoge nada sobre tu hijo.
+> La aplicación se descarga gratis, el curso es una suscripción. No hay
+> publicidad y no se recoge nada sobre tu hijo.
 
 ---
 
@@ -180,7 +180,7 @@ Dezelfde grap in de andere vier talen:
 
 > Tuo figlio capisce la nonna, ma risponde in italiano. 🇲🇦
 > Darijaforkids insegna la lingua di casa, non l’arabo del libro di scuola.
-> Inizia gratis 👇
+> Scaricala gratis 👇
 
 **Gruppo Facebook o chat di famiglia**
 
@@ -191,8 +191,8 @@ Dezelfde grap in de andere vier talen:
 > arriva a contrattare al souk. Tutto si può ascoltare. In italiano, olandese,
 > francese, tedesco, spagnolo e inglese, quindi anche per i cugini all’estero.
 >
-> L’alfabeto e i primi saluti sono gratis, non ci sono pubblicità e non si
-> raccoglie nulla su tuo figlio.
+> L’app si scarica gratis, il corso è un abbonamento. Non ci sono pubblicità e
+> non si raccoglie nulla su tuo figlio.
 
 **Tre ganci per un reel o TikTok**
 
@@ -212,7 +212,7 @@ Dezelfde grap in de andere vier talen:
 
 > Your child understands grandma, but answers in English. 🇲🇦
 > Darijaforkids teaches the language of home — not textbook Arabic.
-> Free to start 👇
+> Free to download 👇
 
 **Facebook group or family chat**
 
@@ -223,8 +223,8 @@ Dezelfde grap in de andere vier talen:
 > ends at haggling in the souq. Everything can be heard out loud. In English,
 > Dutch, French, German, Spanish and Italian.
 >
-> The alphabet and the first greetings are free, there are no adverts, and
-> nothing about your child is collected.
+> The app is free to download, the course is a subscription. There are no
+> adverts, and nothing about your child is collected.
 
 ---
 
@@ -234,18 +234,18 @@ De beelden staan in `brand/social/posts/<taal>/` — vijf berichten, elk in
 vierkant voor de feed en staand voor stories, reels en TikTok. Hieronder wat
 eronder komt. Eén post per keer, twee per week, in deze volgorde: eerst het
 probleem dat de lezer herkent, dan wat de app anders doet, dan het schrift, dan
-dat beginnen gratis is, en tot slot het stuk dat mensen doorsturen.
+wat het kost, en tot slot het stuk dat mensen doorsturen.
 
 ### 1 — Je kind verstaat oma wel
 
 | | |
 |---|---|
-| **nl** | Hij verstaat alles wat jeddti zegt. Antwoorden lukt alleen niet — en dat is precies het moment waarop een taal uit een familie verdwijnt. Darijaforkids begint bij het alfabet en eindigt bij afdingen op de souq. De eerste vier lessen zijn gratis. |
-| **fr** | Il comprend tout ce que dit jeddti. C'est répondre qui ne vient pas — et c'est exactement là qu'une langue quitte une famille. Darijaforkids commence à l'alphabet et finit au souk. Les quatre premières leçons sont gratuites. |
-| **de** | Er versteht alles, was jeddti sagt. Nur antworten klappt nicht — und genau da verlässt eine Sprache eine Familie. Darijaforkids beginnt beim Alphabet und endet beim Handeln auf dem Souk. Die ersten vier Lektionen sind gratis. |
-| **es** | Entiende todo lo que dice jeddti. Lo que no sale es responder, y ahí es justo donde un idioma se va de una familia. Darijaforkids empieza por el alfabeto y acaba regateando en el zoco. Las cuatro primeras lecciones son gratis. |
-| **it** | Capisce tutto quello che dice jeddti. È rispondere che non gli viene — ed è esattamente lì che una lingua esce da una famiglia. Darijaforkids parte dall'alfabeto e arriva al souk. Le prime quattro lezioni sono gratis. |
-| **en** | He understands everything jeddti says. It is answering that does not come — and that is exactly where a language leaves a family. Darijaforkids starts at the alphabet and ends at haggling in the souq. The first four lessons are free. |
+| **nl** | Hij verstaat alles wat jeddti zegt. Antwoorden lukt alleen niet — en dat is precies het moment waarop een taal uit een familie verdwijnt. Darijaforkids begint bij het alfabet en eindigt bij afdingen op de souq. Eén abonnement, en de hele cursus staat open. |
+| **fr** | Il comprend tout ce que dit jeddti. C'est répondre qui ne vient pas — et c'est exactement là qu'une langue quitte une famille. Darijaforkids commence à l'alphabet et finit au souk. Un seul abonnement, et tout le cours est ouvert. |
+| **de** | Er versteht alles, was jeddti sagt. Nur antworten klappt nicht — und genau da verlässt eine Sprache eine Familie. Darijaforkids beginnt beim Alphabet und endet beim Handeln auf dem Souk. Ein Abo, und der ganze Kurs steht offen. |
+| **es** | Entiende todo lo que dice jeddti. Lo que no sale es responder, y ahí es justo donde un idioma se va de una familia. Darijaforkids empieza por el alfabeto y acaba regateando en el zoco. Una sola suscripción, y todo el curso está abierto. |
+| **it** | Capisce tutto quello che dice jeddti. È rispondere che non gli viene — ed è esattamente lì che una lingua esce da una famiglia. Darijaforkids parte dall'alfabeto e arriva al souk. Un unico abbonamento, e tutto il corso è aperto. |
+| **en** | He understands everything jeddti says. It is answering that does not come — and that is exactly where a language leaves a family. Darijaforkids starts at the alphabet and ends at haggling in the souq. One subscription, and the whole course is open. |
 
 ### 2 — 432 opnames, geen computerstem
 
@@ -269,16 +269,16 @@ dat beginnen gratis is, en tot slot het stuk dat mensen doorsturen.
 | **it** | Tutte e 28 le lettere, con la loro forma all'inizio, in mezzo e alla fine di una parola. Tuo figlio impara a leggere la scrittura prima di accorgersi che dovrebbe essere difficile. |
 | **en** | All 28 letters, with their shape at the start, in the middle and at the end of a word. Your child learns to read the script before realising it is supposed to be hard. |
 
-### 4 — Beginnen kost niets
+### 4 — Eén abonnement, alles open
 
 | | |
 |---|---|
-| **nl** | De eerste vier lessen zijn gratis, en blijven dat: drie stukken van het Arabische alfabet en je eerste woorden Darija. Samen een minuut of twaalf — genoeg om je kind iets te laten zeggen tegen jeddti nog voor je iets hebt uitgegeven. Geen account, geen advertenties, werkt offline. |
-| **fr** | Les quatre premières leçons sont gratuites, et le restent : trois morceaux de l'alphabet arabe et tes premiers mots en darija. Douze minutes en tout — de quoi faire dire quelque chose à ton enfant avant même d'avoir dépensé un euro. Sans compte, sans publicité, hors ligne. |
-| **de** | Die ersten vier Lektionen sind gratis und bleiben es: drei Stücke des arabischen Alphabets und deine ersten Wörter Darija. Zwölf Minuten — genug, damit dein Kind etwas sagen kann, bevor du einen Cent ausgegeben hast. Kein Konto, keine Werbung, offline. |
-| **es** | Las cuatro primeras lecciones son gratis, y lo siguen siendo: tres partes del alfabeto árabe y tus primeras palabras en dariya. Doce minutos, suficiente para que tu hijo diga algo antes de que hayas gastado un euro. Sin cuenta, sin anuncios, sin conexión. |
-| **it** | Le prime quattro lezioni sono gratis, e restano gratis: tre pezzi dell'alfabeto arabo e le tue prime parole in darija. Dodici minuti, abbastanza perché tuo figlio dica qualcosa prima che tu abbia speso un euro. Senza account, senza pubblicità, offline. |
-| **en** | The first four lessons are free, and stay free: three pieces of the Arabic script and your first words of Darija. Twelve minutes — enough for your child to say something before you have spent a penny. No account, no adverts, works offline. |
+| **nl** | De app is gratis te downloaden; de cursus is een abonnement. Na het betalen gaat alles in één keer open: alle zeventien units, 304 woorden en alle 432 opnames — geen porties en geen volgend slotje. € 59,99 per jaar (dat is € 5,00 per maand) of € 6,99 per maand. Geen account, geen advertenties, werkt offline. |
+| **fr** | L'application est gratuite à télécharger ; le cours est un abonnement. Après le paiement, tout s'ouvre d'un coup : les dix-sept unités, 304 mots et les 432 enregistrements — rien au compte-gouttes, plus un seul cadenas. 59,99 € par an (soit 5,00 € par mois) ou 6,99 € par mois. Sans compte, sans publicité, hors ligne. |
+| **de** | Die App lässt sich kostenlos herunterladen; der Kurs läuft über ein Abo. Nach dem Bezahlen steht alles auf einmal offen: alle siebzehn Einheiten, 304 Wörter und alle 432 Aufnahmen — nichts in Häppchen, kein weiteres Schloss. 59,99 € pro Jahr (das sind 5,00 € pro Monat) oder 6,99 € pro Monat. Kein Konto, keine Werbung, offline. |
+| **es** | La aplicación se descarga gratis; el curso es una suscripción. Después de pagar, todo se abre de una vez: las diecisiete unidades, 304 palabras y las 432 grabaciones, nada a cuentagotas y ningún candado más. 59,99 € al año (son 5,00 € al mes) o 6,99 € al mes. Sin cuenta, sin anuncios, sin conexión. |
+| **it** | L’app si scarica gratis; il corso è un abbonamento. Dopo il pagamento si apre tutto in una volta sola: tutte e diciassette le unità, 304 parole e tutte le 432 registrazioni, niente col contagocce e nessun altro lucchetto. 59,99 € all’anno (sono 5,00 € al mese) oppure 6,99 € al mese. Senza account, senza pubblicità, offline. |
+| **en** | The app is free to download; the course is a subscription. Once you pay, everything opens in one go: all seventeen units, 304 words and all 432 recordings — nothing drip-fed, not one more padlock. € 59.99 a year (that is € 5.00 a month) or € 6.99 a month. No account, no adverts, works offline. |
 
 ### 5 — Veertien filmpjes uit de geschiedenis van Marokko
 

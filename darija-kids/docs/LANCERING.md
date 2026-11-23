@@ -22,8 +22,15 @@ die dag zijn het gratis deel en de proefperiode allebei vervallen: wie het
 abonnement neemt betaalt bij het afsluiten, en dat wordt op het eerste scherm
 gevraagd. Er is dus één stap van installatie naar betalend in plaats van twee,
 en wat die ene stap omzet is nog niet gemeten — zet er geen percentage neer dat
-je niet hebt. De onderbouwing staat bij `magLeren` in `src/engine/store.ts`. De
-bovenste regel en de rekensom eronder blijven staan zoals ze waren.
+je niet hebt. De onderbouwing staat bij `magLeren` in `src/engine/store.ts`.
+
+De percentages in de bovenste regel blijven staan, maar de getallen in de
+derde kolom niet: die zijn van onder naar boven door de twee vervallen regels
+heen gerekend. De installaties en de winkelbezoeken bij 10.000 betalend volgen
+dus niet meer uit iets, en dat geldt ook voor de views en het bereik in de
+alinea hieronder, die aan dat installatiegetal hangen. Er komt geen nieuw
+getal in de plaats tot je de omzetting van installatie naar betalend hebt
+gemeten.
 
 Vertaald naar bereik: bij een video die 1 % van zijn kijkers tot installeren
 beweegt — en 1 % is goed — is dat **ongeveer twintig miljoen views in negentig
@@ -394,7 +401,12 @@ Marketing brengt mensen binnen; deze knoppen bepalen of ze betalen.
 2. **Deelkaart bij een mijlpaal**: "Nour kent 100 woorden Darija 🇲🇦", met een
    knop die rechtstreeks naar WhatsApp deelt. Dit past bij een app zonder
    accounts en het zet je motor uit §4 aan het werk zonder dat je iets
-   verzamelt.
+   verzamelt. Let op wat 23 november hiermee doet: zonder abonnement gaat er
+   geen les open, dus komen er geen woorden bij en wordt de eerste mijlpaal
+   nooit gehaald. Deze kaart en de volgende staan daarmee volledig achter de
+   kassa: ze houden wie betaalt aan het praten, maar ze halen niemand meer
+   over om te betalen. De aantekening bij `MIJLPALEN` in
+   `src/engine/delen.ts` schrijft dat verlies op.
 3. **"Laat het aan oma zien"** op het ouderscherm — dezelfde deelkaart, andere
    aanleiding.
 4. **Vraag om een beoordeling** na het derde checkpoint, niet eerder. Sterren

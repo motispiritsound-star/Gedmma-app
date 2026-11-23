@@ -11,7 +11,7 @@ Voor App Store Connect (Nederland, België) en Google Play Console (nl-NL).
 `Marokkaans-Arabisch leren`
 
 **Trefwoorden (max 100, komma's zonder spaties)**
-`darija,marokkaans,arabisch,marokko,taal,kinderen,leren,woordenschat,arabisch schrift,gratis`
+`darija,marokko,kinderen,kind,uitspraak,alfabet,moedertaal,tweetalig,taal,school,woorden,gezin`
 
 **Promotietekst (max 170)**
 `Nieuw: na elke toets een kort filmpje uit de geschiedenis van Marokko, voorgelezen in jouw eigen taal.`
@@ -60,8 +60,8 @@ Elk checkpoint levert een kort filmpje op: veertien kaarten op volgorde van de g
 ALLES KLINKT
 Elk woord en elke zin kun je horen, één tik voor normaal en twee voor langzaam. Heeft je toestel geen Arabische stem, dan zegt de app dat eerlijk en leest hij de Latijnse schrijfwijze zo goed mogelijk voor.
 
-GRATIS BEGINNEN
-De eerste acht lessen zijn en blijven gratis: drie stukken van het Arabische alfabet en je eerste woorden Darija. De hele cursus hoort bij de volledige toegang: de eerste dagen gratis, daarna € 5,00 per maand bij een jaarabonnement (€ 59,99 in één keer) of € 6,99 per maand, inclusief btw. Opzegbaar in je eigen App Store-account; zeg je op vóór het einde van de proefperiode, dan betaal je niets.
+DE HELE CURSUS IN ÉÉN ABONNEMENT
+De app is gratis te downloaden; de cursus is een abonnement, en dat vraagt de app op het eerste scherm. Na het betalen gaat alles in één keer open — alle units, alle woorden, alle opnames, geen porties. € 59,99 per jaar (dat is € 5,00 per maand) of € 6,99 per maand, inclusief btw, telkens opnieuw tot je opzegt. Opzegbaar in je eigen App Store-account.
 
 GEMAAKT OM AAN EEN KIND TE GEVEN
 • Geen account en geen inloggen — een kind vult hier niets in

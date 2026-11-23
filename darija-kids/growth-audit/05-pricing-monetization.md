@@ -14,6 +14,16 @@
 **BEWEZEN** — `src/engine/billing.ts:43-46`, `:65`, `:92`;
 `src/site/shop.ts`; `src/engine/store.ts:35`.
 
+> **Twee regels in deze tabel zijn vervallen op 23 november.** Er is geen
+> proefperiode meer — wie afsluit, betaalt meteen — en er is geen gratis deel
+> meer: downloaden is gratis, de cursus is een abonnement, en dat wordt op het
+> eerste scherm gevraagd. `GRATIS_LESSEN` op `src/engine/store.ts:35` bestaat
+> daarmee niet meer; de onderbouwing staat bij `magLeren` in dat bestand. De
+> twee abonnementen zelf staan er nog zoals hier: `billing.ts:44-45` draagt
+> € 59,99 (€ 5,00 per maand) en € 6,99. Daarbij komt een tijdelijke actie van
+> 50% op het jaar: € 29,99 voor het eerste jaar, dat is € 2,50 per maand (zie
+> `docs/PAYMENTS.md`).
+
 Het jaar is 28% goedkoper dan twaalf maanden plus het e-boek
 (`YEAR_SAVING`, `billing.ts:118`).
 
@@ -84,6 +94,13 @@ In-App Purchases, 10 november. Dat corrigeert een eerdere conclusie in
 `docs/STAND.md` dat het jaar niets opleverde.
 
 ## Gratis versus betaald
+
+> **Vervallen op 23 november.** Er is geen gratis deel meer om tegen het
+> betaalde deel af te wegen: downloaden is gratis, de cursus is een
+> abonnement, en dat wordt op het eerste scherm gevraagd. De oplossing die
+> hieronder wordt uitgewerkt — "precies één compleet stuk", de alfabet-unit —
+> is daarmee van de baan. De twee bezwaren in deze paragraaf blijven staan als
+> wat er begin november te zien was. Zie `magLeren` in `src/engine/store.ts`.
 
 Dit is in `01-product-audit.md` en `03-conversion-audit.md` uitgewerkt; hier
 wat het voor de prijs betekent.
@@ -165,6 +182,11 @@ belangrijker dan het experiment forceren.
 > De deelkaart gaat wél open. Daarvoor moest de eerste mijlpaal van 25 naar
 > 20: 25 van 27 woorden beheersen is 93%, en dan vuurt de kaart in de praktijk
 > niet. Zie `docs/STAND.md`, 12 november.
+>
+> **En op 23 november teruggedraaid.** Het gratis deel is helemaal vervallen,
+> dus deze strategie bestaat niet meer. Wat hieronder staat blijft staan als
+> de onderbouwing die er op 12 november lag. Zie `magLeren` in
+> `src/engine/store.ts`.
 
 **Wat:** `GRATIS_LESSEN` van `{ hruf: 3, groeten: 1 }` naar
 **`{ hruf: 8, groeten: 5 }`** — de hele alfabet-unit plus de hele
@@ -265,6 +287,9 @@ opzoeken, want onder de tien is dit geen experiment maar een anekdote.
   betaalde plannen, en Apple's eigen conversiecijfers staan in de console —
   **haal die eerst op** (ASC → Subscriptions → Trial conversion) voordat hier
   aan gedraaid wordt.
+
+  **Vervallen op 23 november:** er is geen proefperiode meer om te verlengen
+  — wie afsluit, betaalt meteen. Zie `magLeren` in `src/engine/store.ts`.
 - **Een tweede valuta of regioprijzen handmatig zetten.** Apple en Google doen
   dit al, en `billing.ts` leest de prijs uit de winkel in de munt van de
   koper. Hier is niets te verbeteren.

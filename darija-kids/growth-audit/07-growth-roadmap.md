@@ -13,6 +13,11 @@ in dit document.
 | 4 | Dagelijkse herinnering standaard aan | **P1** | middel–hoog | 1 uur | dag-2-retentie |
 | 5 | Positioneren als kindercursus | **P1** | middel–hoog | 1 dag, geen code | bezoek per vertoning |
 
+> **Nummer 3 is vervallen op 23 november.** "Eén complete unit gratis" gaat
+> niet door: het gratis deel is helemaal weg en de cursus is een abonnement
+> dat op het eerste scherm wordt gevraagd. De nummers 1, 2, 4 en 5 staan nog.
+> Zie de markering bij 3 hieronder en `magLeren` in `src/engine/store.ts`.
+
 De eerste twee leveren zelf geen omzet op. Ze zijn P0 omdat zonder hen elke
 volgende beslissing een gok is en elke uitkomst onleesbaar. Nummer 3 is de
 enige ingreep die tegelijk conversie, retentie, de virale lus en de ASO raakt.
@@ -89,6 +94,12 @@ reports.
 > De deelkaart gaat wél open. Daarvoor moest de eerste mijlpaal van 25 naar
 > 20: 25 van 27 woorden beheersen is 93%, en dan vuurt de kaart in de praktijk
 > niet. Zie `docs/STAND.md`, 12 november.
+>
+> **En op 23 november teruggedraaid.** Er is geen gratis deel meer, dus deze
+> ingreep bestaat niet meer en de twee loops die hij zou openen staan weer
+> allebei achter de kassa. Het verslag hierboven blijft staan als wat er op 12
+> november is gedaan. Zie `magLeren` in `src/engine/store.ts`; wat het kost
+> staat in `09-executive-summary.md`.
 
 **Wat.** `GRATIS_LESSEN` van `{ hruf: 3, groeten: 1 }` naar
 **`{ hruf: 8, groeten: 5 }`**: de alfabet-unit én de groeten-unit, 13 van de
@@ -209,6 +220,11 @@ Focus: de gratis ervaring en de release die het naar buiten brengt.
 | P1 | De nieuwe zoekwoorden uit `store/keywords.md` |
 | P1 | **1.6 bouwen en indienen** — dit draagt alles hierboven |
 | P2 | De twee aanbiedingscodes in de consoles aanmaken voor de creator-samenwerking |
+
+> **De eerste regel is vervallen op 23 november.** "Eén complete unit gratis"
+> is niet doorgegaan; het gratis deel is op die dag helemaal vervallen. De
+> focusregel boven deze tabel — "de gratis ervaring" — geldt daarmee ook niet
+> meer. Zie `magLeren` in `src/engine/store.ts`.
 
 1.6 is de spil van deze week. De zoekwoorden, de teksten en de nieuwe gratis
 grens kunnen alle drie niet live zonder.

@@ -19,10 +19,16 @@ een pad dat niet meer tien schermen lang is, een woordenboek dat niet meer
 hapert, en lessen die ook te doen zijn met het geluid uit — daar stonden
 vragen in die je zonder geluid niet kón beantwoorden.
 
-En er staat één regel in die niemand graag schrijft: het e-boek bij het
-jaarabonnement komt pas vrij als de proefperiode voorbij is. Dat is minder dan
-wat een koper eerder kreeg, en juist daarom hoort hij het van jou te horen en
-niet van zijn eigen ontdekking.
+En er staat één regel in die niemand graag schrijft: het gratis deel is
+vervallen. De cursus is één abonnement, en dat vraagt de app op het eerste
+scherm. Daar hoort het tweede deel van die regel bij, want dat is de kant die
+een koper iets oplevert: na het betalen gaat alles in één keer open, geen
+porties van acht lessen meer. Wie de app al had en lessen had afgerond, houdt
+precies die lessen — dat terugnemen levert niets op en leest een koper terug in
+zijn beoordeling.
+
+De regel over het slot vanaf elk scherm is weg: er staat nu een poort op het
+eerste scherm, dus dat is geen nieuws meer.
 
 ## nl-NL
 
@@ -36,9 +42,9 @@ Herhalen kan nu altijd, ook als er niets klaarstaat.
 
 Met het geluid uit krijg je geen luistervragen meer.
 
-Volledige toegang vind je vanaf elk scherm.
+De cursus is nu één abonnement: na het betalen gaat alles in één keer open.
 
-Het e-boek bij het jaarabonnement komt vrij zodra de proefperiode voorbij is.
+Lessen die je al had afgerond, blijven open.
 
 Verder reparaties aan schermranden, geluidshulp en teksten.
 
@@ -54,9 +60,9 @@ La révision est toujours possible, même sans mots en attente.
 
 Sans le son, plus de questions d’écoute.
 
-L’accès complet se trouve depuis chaque écran.
+Le cours devient un seul abonnement : après le paiement, tout s’ouvre d’un coup.
 
-Le livre numérique de l’abonnement annuel arrive après la période d’essai.
+Les leçons déjà terminées restent ouvertes.
 
 Et des corrections d’affichage et de texte.
 
@@ -73,9 +79,9 @@ Wiederholen geht jetzt immer, auch ohne offene Wörter.
 
 Ohne Ton keine Hörfragen mehr.
 
-Der Vollzugang ist von jedem Bildschirm aus zu finden.
+Der Kurs ist jetzt ein einziges Abo: nach dem Bezahlen steht alles auf einmal offen.
 
-Das E-Book beim Jahresabo kommt, sobald die Testphase vorbei ist.
+Schon abgeschlossene Lektionen bleiben offen.
 
 Dazu Korrekturen an Rändern und Texten.
 
@@ -92,9 +98,9 @@ Repasar es posible siempre, aunque no haya nada pendiente.
 
 Sin sonido, ya no aparecen preguntas de escucha.
 
-El acceso completo se encuentra desde cualquier pantalla.
+El curso es ahora una sola suscripción: al pagar, todo se abre de una vez.
 
-El libro digital de la suscripción anual llega al terminar la prueba.
+Las lecciones ya terminadas siguen abiertas.
 
 Además, correcciones de bordes y textos.
 
@@ -111,9 +117,9 @@ Il ripasso è sempre possibile, anche senza parole in attesa.
 
 Senza audio, niente più domande di ascolto.
 
-L’accesso completo si trova da ogni schermata.
+Il corso ora è un unico abbonamento: dopo il pagamento si apre tutto in una volta sola.
 
-L’ebook dell’abbonamento annuale arriva alla fine del periodo di prova.
+Le lezioni già completate restano aperte.
 
 E correzioni ai bordi e ai testi.
 
@@ -129,8 +135,8 @@ Review is always available now, even with nothing due.
 
 With sound off, no more listening questions.
 
-Full access is reachable from every screen.
+The course is now a single subscription: once you pay, everything opens in one go.
 
-The e-book that comes with the yearly plan arrives once the trial is over.
+Lessons you had already finished stay open.
 
 Plus fixes to screen edges and wording.
