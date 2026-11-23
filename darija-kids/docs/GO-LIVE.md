@@ -111,21 +111,33 @@ alles bij elkaar, waarvan vijftig minuten persoonlijke WhatsApp-berichten.
 
 ## De volgorde
 
-### 0. Eerst de twee proefaanbiedingen uit, vóór je iets vrijgeeft
+### 0. Eerst de twee proefaanbiedingen uit
 
-**Dit is een blokkade, geen aanbeveling.** Sinds 23 november is er geen
+**Dit gaat vóór de aankondiging en vóór de campagne, en het is een blokkade,
+geen aanbeveling.** Sinds 23 november is er geen
 proefperiode en geen gratis deel meer: wie het abonnement neemt betaalt bij het
 afsluiten, en dat wordt op het eerste scherm gevraagd. De app is daar al op
 gebouwd en leest niet een vast getal maar wat de winkel teruggeeft
 (`billing.proef.jaar`), dus hij klapt om op het moment dat je de aanbieding in
-de console uitzet — **er hoeft geen nieuwe build naartoe.** Staat de aanbieding
-er nog wél, dan belooft het koopvenster drie gratis dagen die niemand meer wil
-geven: terugbetalingen, eensterbeoordelingen in de eerste week, en een
-afwijzing op richtlijn 3.1.2 bij de eerstvolgende versie.
+de console uitzet — **er hoeft geen nieuwe build naartoe.**
 
-Hier stond het omgekeerde: een stappenplan om die proefperiode juist aan te
-maken, met *Free Trial, 3 dagen* bij Apple en *Gratis proefperiode* bij Google.
-Dat is op 23 november teruggedraaid — zie de aantekening boven `magLeren` in
+Daarmee is het risico omgedraaid. Hier stond de omgekeerde waarschuwing: de app
+zei onvoorwaardelijk *3 dagen gratis* en kon dus iets beloven wat de winkel niet
+gaf, met een afwijzing op richtlijn 3.1.2 erachteraan. Dat kan niet meer, want
+de app zegt nu wat de winkel zegt. Wat er wél misgaat als de aanbieding aan
+blijft staan:
+
+- Je verkoopt de proefperiode die op 23 november is laten vallen, en de eerste
+  afschrijving komt drie dagen later dan je denkt.
+- De actie van 50 % kan er bij Apple niet naast: er geldt één
+  introductieaanbieding per abonnement per land. Zolang de proef die plek
+  bezet, bestaat de € 29,99 van je campagne niet.
+- En dan belooft je advertentietekst een prijs die het aankoopvenster niet
+  toont. Dat is bij Apple richtlijn 2.3.1.
+
+Hier stond een stappenplan om die proefperiode juist aan te maken, met *Free
+Trial, 3 dagen* bij Apple en *Gratis proefperiode* bij Google. Dat is op
+23 november teruggedraaid — zie de aantekening boven `magLeren` in
 `src/engine/store.ts`, en `docs/STAND.md` onder *23 november: de proefperiode
 eruit, en wat er in de consoles moet*.
 
@@ -151,11 +163,11 @@ hebben. Dus vóór het vrijgeven:
    loopt — en nergens een gratis dag, dan klopt het. Staat er *3 dagen gratis*,
    dan niet.
 
-Lukt het uitzetten niet op tijd, dan is er één eerlijke uitweg en dat is níét
-toch vrijgeven: wacht. De app zegt wat de winkel zegt, dus zolang de
-aanbieding aan staat kríjgt de koper die drie dagen ook werkelijk — maar dan
-verkoop je iets anders dan er op 23 november is besloten, en de eerste
-afschrijving komt drie dagen later dan de koper verwacht.
+Lukt het uitzetten niet op tijd, dan is de eerlijke uitweg níét om de campagne
+toch te starten. Vrijgeven kan: de app vertelt dan precies wat de winkel doet,
+en de koper krijgt die drie dagen ook werkelijk. Wat wacht zijn de
+advertentieteksten en elke regel met € 29,99 erin — tot het aankoopvenster op
+een toestel geen gratis dag meer laat zien.
 
 ### 1. Vrijgeven
 
