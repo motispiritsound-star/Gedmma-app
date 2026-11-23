@@ -1,11 +1,39 @@
 # De reclamefilm
 
-> **De gemaakte films zeggen "vier lessen", en dat klopt sinds 12 november
-> niet meer.** Het gratis deel is acht lessen (`GRATIS_LESSEN` in
-> `src/engine/store.ts`). De films zelf zijn niet te repareren — het getal is
-> ingesproken en zit in de montage. Wie dit script hergebruikt, past die regel
-> aan vóór het opnemen; wie een bestaande film opnieuw deelt, weet dat de
-> slotzin te laag telt.
+## Stop — de al gemaakte films mogen niet in de campagne
+
+> **Elke film die al van dit script is gemaakt zegt ingesproken "De eerste
+> vier lessen zijn gratis", en dat is sinds 23 november niet waar.** Er zijn
+> geen gratis lessen meer en geen proefperiode: de app is gratis te
+> downloaden, de cursus is een abonnement, en dat wordt op het eerste scherm
+> gevraagd. Na het betalen gaat alles in één keer open. De onderbouwing staat
+> in de aantekening boven `magLeren` in `src/engine/store.ts`; het besluit zelf
+> staat in `docs/STAND.md` onder *23 november: het gratis deel eruit, de
+> betaalmuur bij de download*.
+>
+> **Die regel is hier niet te repareren.** Hij zit in de stem en in de
+> montage. Dus **geen bestaande film op de Franse, Nederlandse of Duitse
+> Facebook-pagina's voordat hij opnieuw is ingesproken** met de slotregel van
+> scène 6 hieronder. Een post die een gratis deel belooft dat de app niet
+> geeft, is geen kleine fout: Apple-richtlijn 2.3.1 geldt woordelijk "whether
+> within or outside of the App Store", dus een Facebook-post valt eronder.
+
+**Waar die films staan.** De afgemonteerde film staat niet in deze repository.
+Hij komt uit Steve AI — stap 8 *Exporteer* onderaan dit bestand — en staat op
+de Windows-machine van de eigenaar en op de plekken waar hij geüpload is. Wat
+hier wél staat is de app zelf op film: `site-assets/film/<taal>/intro.mp4` en
+`store/video/<taal>/intro-*.mp4`, zonder stem en dus zonder deze regel. Hun
+eigen probleem is de slotkaart, en dat staat in `store/lancering/socials.md`.
+
+Welke geëxporteerde films op de Windows-machine staan, nieuwste eerst:
+
+```powershell
+Get-ChildItem $HOME -Recurse -Depth 5 -Include *.mp4 -File -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 40 FullName, LastWriteTime
+```
+
+Dezelfde waarschuwing staat in `docs/VIDEO.md` en in
+`docs/film/filmscript-nl.txt`: dat is het script van de andere film — zestig
+seconden, dertien scènes — waarin dezelfde regel is ingesproken.
 
 Een advertentie van veertig seconden voor ouders, gemaakt met Steve AI
 (`app.steve.ai/prompt`). Dit bestand is het script en de werkwijze.
@@ -57,6 +85,13 @@ niet is:
 Zeven scènes. Per scène staat hier de tijdcode, wat de stem zegt, wat er in
 beeld geschreven staat, en de beeldprompt in het Engels — want daar genereert
 Steve AI op, en een Nederlandse aanwijzing levert daar niets op.
+
+**Over de nummering, want die verschilt per tabel.** Het Nederlandse draaiboek
+hieronder nummert 1 tot 6: scène 4 is de app en bestaat uit drie beats, 4a tot
+4c. De Franse en Engelse tabellen verderop nummeren dezelfde film 1 tot 7,
+omdat de regel die onder het derde portret in beeld komt daar een eigen rij
+heeft. Waar in dit bestand "scène 5" staat voor de echte opname van de app, is
+dat scène 4 in het Nederlandse draaiboek; de slotscène is 7 daar en 6 hier.
 
 **Over het tempo.** De Nederlandse stem zit op ongeveer 2,4 woorden per
 seconde; sneller klinkt gehaast en bij een advertentie over taalverlies is
@@ -134,8 +169,15 @@ hij voor zijn eigen toets.
 
 Er is bovendien veel meer materiaal dan één blok. `intro-verhaal.mp4` bestaat
 uit **zeven schermen van de echte app, elk 3,2 seconde**, met een vinger die
-tikt: het pad, de letters, een les, de geschiedenisfilmpjes, schrijven, een
-woord. Daar knip je drie verschillende beats uit.
+tikt: het pad, leren, de letters, een les, de geschiedenisfilmpjes, schrijven,
+een woord. Daar knip je drie verschillende beats uit.
+
+**Maar niet tot het eind.** Na die zeven schermen komt de slotkaart van de
+introfilm, en die begint op 2,8 + 7 × 3,2 = **25,2 seconden**. In een opname
+van vóór 23 november staat daar een knop die zegt dat je gratis kunt beginnen,
+met een omgerekende maandprijs eronder — precies de twee dingen die niet meer
+mogen. Knip ervóór. Die teksten komen uit `dev/intro-copy.ts`, en
+`store/lancering/socials.md` legt uit wat er met die kaart moet gebeuren.
 
 **4a — 0:16 tot 0:20 · het scherm met de Arabische letters**
 
@@ -160,9 +202,14 @@ zonder dat jij het hoeft te geven.
 
 **4c — 0:25 tot 0:30 · het pad met de units**
 
-> Van de eerste letter tot de souq. De eerste vier lessen zijn gratis.
+> Van de eerste letter tot de souq. Zeventien units, in één keer open.
 
 **In beeld:** *Geen account. Geen advertenties.*
+
+Hier stond "De eerste vier lessen zijn gratis". Die lessen bestaan niet meer,
+en wat ervoor in de plaats komt is geen prijs in de stem maar een regel in de
+tekst boven de film — zie *De actieprijs* hieronder. Dertien woorden, net als
+de oude regel, dus de begroting van scène 4 verandert niet.
 
 ---
 
@@ -187,13 +234,23 @@ perfect. Maar zelf.* in beeld.
 
 ### Scène 6 — 0:36 tot 0:40 · 6 woorden
 
-**Stem:** Darijaforkids. Begin vandaag, gratis. darijaforkids.eu
+**Stem:** Darijaforkids. Gratis te downloaden, zonder advertenties.
 
-**In beeld:** het logo, de achtpuntige ster, en `darijaforkids.eu`
+**In beeld:** *darijaforkids.eu · Gratis te downloaden · Geen advertenties*
 
-**Beeld:** gebruik `brand/social/profielfoto.png` of een schermafdruk uit
+**Beeld:** het logo en de achtpuntige ster — gebruik
+`brand/social/profielfoto.png` of een schermafdruk uit
 `store/screenshots/nl/`. Niet laten natekenen: een logo dat bijna klopt is
 erger dan geen logo.
+
+**Deze twee regels staan vast.** Ze zijn woordelijk dezelfde als in
+`docs/VIDEO.md`, onder *The closing line, per voicing*, en als scène 13 van
+`docs/film/filmscript-nl.txt`; ze zijn afgeleid van `trustLine` in
+`src/site/copy.ts`, zodat de film en de site hetzelfde beloven. Twee
+documenten die twee verschillende slotregels voorschrijven is erger dan één
+verouderde, dus verander ze hier niet zonder ze daar ook te veranderen. Het
+adres is uit de stem gehaald en staat alleen nog in beeld — zes woorden, en
+dat is wat er in vier seconden past.
 
 ---
 
@@ -209,15 +266,20 @@ beeldprompts, alleen de stem en de tekst in beeld veranderen.
 | 2 | C’est répondre qui ne vient pas. Alors c’est toi qui traduis. | *C’est répondre qui ne vient pas.* |
 | 3 | La première génération parle la langue. La deuxième la comprend. La troisième en connaît encore quatre mots, et ils portent sur la nourriture. | — |
 | 4 | C’est comme ça qu’une langue s’en va. Pas dans un fracas. | *C’est comme ça qu’une langue s’en va.* |
-| 5 | Darijaforkids apprend le darija aux enfants — la langue qu’on parle à la maison. 432 enregistrements, aucune voix de synthèse. Les quatre premières leçons sont gratuites. | *432 enregistrements, aucune voix de synthèse.* |
+| 5 | Darijaforkids apprend le darija aux enfants — la langue qu’on parle à la maison. 432 enregistrements, aucune voix de synthèse. Dix-sept unités, et tout s’ouvre d’un coup. | *432 enregistrements, aucune voix de synthèse.* |
 | 6 | Et puis, un été plus tard, tu l’entends. Pas parfait. Mais tout seul. | — |
-| 7 | Darijaforkids. Commence aujourd’hui, gratuitement. darijaforkids.eu | `darijaforkids.eu` |
+| 7 | Darijaforkids. Téléchargement gratuit, sans publicité. | *darijaforkids.eu · Téléchargement gratuit · Sans publicité* |
 
 De regels in de tabel zijn niet vertaald voor deze film: het zijn de koppen
 van de campagneplaten uit `scripts/make-social.mjs`, zodat de advertentie en
-de platen dezelfde zinnen gebruiken. Duits, Spaans en Italiaans staan daar
-ook, dus de resterende drie talen zijn op dezelfde manier te maken zonder
-nieuwe tekst te verzinnen.
+de platen dezelfde zinnen gebruiken.
+
+**De slotregel komt daar niet uit.** Die staat in `docs/VIDEO.md`, onder *The
+closing line, per voicing*, in zes talen, en is afgeleid van `trustLine` in
+`src/site/copy.ts`. Neem hem woordelijk over — ook de regel in beeld. Duits,
+Spaans en Italiaans staan in beide bestanden, dus de resterende drie talen zijn
+op dezelfde manier te maken zonder nieuwe tekst te verzinnen: de koppen uit
+`make-social.mjs`, de slotregel uit `docs/VIDEO.md`.
 
 ## En in het Engels
 
@@ -230,9 +292,9 @@ zes de talen in één keer.
 | 2 | It's answering that doesn't come. So you translate. | *It's answering that doesn't come.* |
 | 3 | The first generation speaks the language. The second understands it. The third still knows about four words of it, and they are about food. | — |
 | 4 | That is how a language goes away. Not with a bang. | *That is how a language goes away.* |
-| 5 | Darijaforkids teaches children Darija — the language spoken at home. 432 recordings, no computer voice. The first four lessons are free. | *432 recordings, no computer voice.* |
+| 5 | Darijaforkids teaches children Darija — the language spoken at home. 432 recordings, no computer voice. Seventeen units, all open at once. | *432 recordings, no computer voice.* |
 | 6 | And then, one summer later, you hear it. Not perfect. But on their own. | — |
-| 7 | Darijaforkids. Start today, for free. darijaforkids.eu | `darijaforkids.eu` |
+| 7 | Darijaforkids. Free to download, no ads. | *darijaforkids.eu · Free to download · No ads* |
 
 **Eén ding om te weten voor je dit inspreekt.** De campagnekop in
 `make-social.mjs` luidt *"It is answering that does not come"*, en dat is een
@@ -253,8 +315,8 @@ Voor TikTok en voor een advertentie waar je per seconde betaalt. Scène 1, 2,
 
 > Je kind verstaat oma wel. Antwoorden lukt alleen niet.
 > *(de echte app, vier seconden)*
-> Darijaforkids. De eerste vier lessen zijn gratis.
-> darijaforkids.eu
+> Darijaforkids. Gratis te downloaden, zonder advertenties.
+> *(in beeld: darijaforkids.eu · Gratis te downloaden · Geen advertenties)*
 
 ## Wat er in de film mag staan, en wat niet
 
@@ -264,16 +326,79 @@ tegelijk, en bij de ACM.
 
 | Mag | Waarom |
 |---|---|
-| 432 opnames, geen computerstem | geteld; het enige cijfer dat niemand kan naschrijven |
-| de eerste vier lessen gratis | zo staat het in de app |
+| 432 opnames, geen computerstem | 28 + 304 + 100 bestanden in `src/audio/`; het enige cijfer dat niemand kan naschrijven |
+| gratis te downloaden | waar: ophalen kost niets. De cursus is een abonnement, en dat staat op het eerste scherm |
 | geen account, geen advertenties | waar, en het is een echt verschil |
-| 304 woorden en 100 zinnen | staat op de winkelpagina |
-| alle 28 Arabische letters, met hun drie vormen | staat in de app |
-| veertien filmpjes uit de geschiedenis van Marokko | staat in de app |
+| er wordt niets van je kind verzameld | waar; zonder account is er niets om te verzamelen |
+| werkt offline | waar, en het is `trustLine` in `src/site/copy.ts` |
+| 304 woorden en 100 zinnen | 304 en 100 bestanden in `src/audio/woorden/` en `src/audio/zinnen/` |
+| alle 28 Arabische letters, met hun drie vormen | `src/content/alphabet.ts`, en 28 bestanden in `src/audio/letters/` |
+| zeventien units, van het alfabet tot de souq | `UNITS` in `src/content/curriculum.ts` — zeventien |
+| veertien filmpjes uit de geschiedenis van Marokko | `HISTORY` in `src/content/history.ts` — veertien kaarten |
+| na het betalen gaat alles in één keer open | zo werkt het sinds 23 november; geen porties van acht lessen meer |
 
 **Niet zeggen:** dat een kind "vloeiend" wordt, dat het "in X weken" lukt, of
 iets over hoeveel kinderen het gebruiken. Het eerste is niet waar, het tweede
 weten we niet, en het derde weten we nog niet.
+
+**En sinds 23 november ook niet:** dat er lessen gratis zijn, dat je gratis
+kunt beginnen, of dat er een proefperiode is. Er is er geen van de drie, en het
+enige dat gratis is, is de download.
+
+**Noem je een prijs, dan staat het bedrag dat werkelijk wordt afgeschreven
+erbij, en ervóór.** Dus "€ 29,99 voor het eerste jaar (€ 2,50 per maand)", nooit
+"€ 2,50 per maand" alleen. Apple wees deze app eerder af op richtlijn 3.1.2(c)
+omdat de omrekening opvallender stond dan het bedrag dat van de rekening ging.
+Waar die regel wél hoort staat hieronder.
+
+## De actieprijs: in de advertentietekst, niet in de stem
+
+De haak van de campagne is **€ 29,99 voor het eerste jaar in plaats van
+€ 59,99** — de helft, omgerekend € 2,50 per maand. Die hoort in de campagne. Hij
+hoort niet in deze film.
+
+**Waarom niet in de film.** Een bedrag in de stem is niet te repareren; dat is
+het hele onderwerp van het blok bovenaan dit bestand. De actie heeft een
+einddatum en de film niet, dus een film met € 29,99 erin wordt op de dag dat de
+actie stopt precies hetzelfde probleem als de film met de vier gratis lessen —
+en onder Apple-richtlijn 2.3.1 ook buiten de winkel een probleem. Tekst in
+beeld helpt niet: die zit na het exporteren even vast als de stem.
+
+**Waar hij dan wel staat:** in de tekst boven de film, bij het plaatsen. Daar
+is hij in tien seconden aangepast, en daar wordt hij ook gelezen. Dit zijn de
+regels, in dezelfde bewoording als `store/lancering/mail.md` en
+`store/lancering/socials.md`:
+
+```
+Gratis te downloaden. De cursus is een abonnement: € 6,99 per maand, of
+€ 59,99 per jaar met het e-boek erbij. Nu de helft van de jaarprijs: € 29,99
+voor het eerste jaar (€ 2,50 per maand), tot [EINDDATUM].
+```
+
+```
+Téléchargement gratuit. Le cours est un abonnement : 6,99 € par mois, ou
+59,99 € par an avec le livre numérique. En ce moment l’année est à moitié
+prix : 29,99 € la première année (soit 2,50 € par mois), jusqu’au [EINDDATUM].
+```
+
+```
+Free to download. The course is a subscription: € 6.99 a month, or € 59.99 a
+year with the e-book included. Right now the year is half price: € 29.99 for
+the first year (€ 2.50 a month), until [EINDDATUM].
+```
+
+**`[EINDDATUM]` is geen vergeten gat.** De einddatum is nog niet gekozen. De
+markering staat met enkele haken, net als in `mail.md` en `socials.md`, zodat
+één zoekopdracht alle drie de bestanden vindt. Vul hem in zodra de aanbieding in
+beide consoles staat, óf haal het stukje erachter weg — de zin blijft dan staan
+en blijft waar. Verzin geen datum.
+
+**En de actiezin gaat er pas in als de aanbieding er werkelijk staat**, in
+beide consoles en in alle vijf de eurolanden. Wat je waar zet staat in
+`docs/STAND.md` onder *23 november: de tijdelijke actie van 50% op het jaar*.
+Staat ze er nog niet, dan noem je alleen € 6,99 per maand of € 59,99 per jaar.
+Controleer het op het aankoopvenster zelf, op een telefoon, in de app uit de
+winkel: de console zegt wat er ingesteld is, niet wat de koper leest.
 
 ## De instellingen in Steve AI
 
@@ -329,6 +454,12 @@ schrijven.
 | Los app-beeld, als je een still wilt | `store/screenshots/nl/iphone-65/` — tien schermen |
 | Een kant-en-klare plaat met kop erop | `brand/social/posts/nl/1-oma-verhaal.png` |
 
+**Van `intro-verhaal.mp4` gebruik je de eerste 25 seconden en niet meer.** De
+slotkaart daarna is in een opname van vóór 23 november onbruikbaar — zie *Maar
+niet tot het eind*, bij scène 4 hierboven. Scène 4 is maar veertien seconden,
+dus bij de afspraak hierboven kom je er niet aan toe; wie zelf gaat knippen,
+komt er wel.
+
 `brand/` staat in `.gitignore`, dus na een verse kloon zijn die twee er niet.
 Dan eerst:
 
@@ -365,6 +496,15 @@ en ze kosten samen vijf minuten.
 - [ ] **Het adres onderaan is leesbaar op een telefoon**, niet alleen op je
       scherm van 27 inch.
 - [ ] **Geen enkel cijfer dat niet in de tabel hierboven staat.**
+- [ ] **De slotregel is de nieuwe**, woordelijk zoals in scène 6 hierboven en
+      in `docs/VIDEO.md`. Geen "Begin vandaag, gratis", en geen vier lessen.
+- [ ] **Niets belooft dat er iets gratis is behalve de download.** Niet in de
+      stem, niet in beeld, en niet in de ondertitels die Steve AI zelf maakt.
+- [ ] **Geen prijs in de film.** Die staat in de tekst boven de film — zie
+      *De actieprijs* hierboven.
+- [ ] **Het stuk uit `intro-verhaal.mp4` reikt niet tot de slotkaart.** Die
+      begint op 25,2 seconden, en in een opname van vóór 23 november staat daar
+      een knop die zegt dat je gratis kunt beginnen.
 - [ ] **Eén keer bekeken met het geluid uit.** Zo zien de meeste mensen hem.
       Werkt hij dan nog, dan werkt hij.
 - [ ] **Eén keer bekeken door iemand die de app niet kent.** Vraag daarna wat
@@ -403,6 +543,12 @@ en ze kosten samen vijf minuten.
 
 8. **Exporteer, en kijk hem één keer met het geluid uit.** Als de film dan nog
    werkt, werkt hij. De meeste mensen zien hem zo.
+
+   En luister hem één keer mét geluid tot het eind. Dit is het bestand dat op
+   Facebook terechtkomt, en in de export is de stem niet meer te repareren —
+   zie het blok bovenaan dit bestand. De export zelf staat niet in deze
+   repository; hij staat op de Windows-machine en op de plekken waar je hem
+   uploadt.
 
 ## Als je toch het promptvak wilt proberen
 

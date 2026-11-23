@@ -435,7 +435,7 @@ EVERYTHING SOUNDS
 Every word and sentence can be heard: one tap for normal, two for slow. If your device has no Arabic voice, the app says so honestly and reads the Latin spelling as closely as it can.
 
 THE WHOLE COURSE IN ONE SUBSCRIPTION
-The app is free to download; the course is a subscription, asked for on the very first screen. Once you pay, everything opens in one go — all the units, every word, every recording, nothing drip-fed. € 59.99 a year (that is € 5.00 a month) or € 6.99 a month, including VAT, charged again at every renewal. Cancel in your own App Store account.
+The app is free to download; the course is a subscription, asked for on the very first screen. Once you pay, everything opens in one go — all the units, every word, every recording, nothing drip-fed. € 59.99 a year (that is € 5.00 a month) or € 6.99 a month, including VAT, charged again at every renewal. Prices are in euros; outside the euro area your store shows the price in your own currency. Cancel in your own App Store account.
 
 MADE TO HAND TO A CHILD
 • No account, no login — a child fills in nothing here

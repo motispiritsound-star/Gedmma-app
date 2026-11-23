@@ -41,21 +41,60 @@ describe('de slotkaart van de promofilm', () => {
   })
 
   /**
-   * Het goedkoopste wat je per maand kwijt bent is het jaarplan gedeeld door
-   * twaalf, en dat is wat `perMonth` zegt. De maandprijs zelf is hoger, dus
-   * "vanaf" hoort bij het jaarplan te staan.
+   * Het jaarbedrag voorop, de omrekening erachter.
+   *
+   * Hier stond dat de kaart precies één getal mocht noemen: `perMonth`, de
+   * jaarprijs gedeeld door twaalf. Dat is de eis die Apple op build 5 heeft
+   * afgewezen -- richtlijn 3.1.2(c): de omgerekende maandprijs mag niet
+   * opvallender zijn dan het bedrag dat de winkel afschrijft. In de app is dat
+   * gerepareerd en bewaakt (`src/pages/prijsweergave.test.ts`); deze kaart
+   * gaat naar dezelfde winkel en stond nog op de oude eis.
+   *
+   * Dus allebei de bedragen, en het afgeschreven bedrag eerst -- de orde doet
+   * hier het werk, want "€ 5,00 per maand (€ 59,99 per jaar)" is dezelfde
+   * afwijzing met meer woorden.
    */
-  it('noemt het bedrag dat de app echt vraagt', () => {
-    const echt = cijfers(planOf('jaar').perMonth)
-    expect(echt).toEqual(['5.00'])
+  it('noemt het bedrag dat de app echt afschrijft, en pas daarna de omrekening', () => {
+    const jaar = cijfers(planOf('jaar').list)
+    const perMaand = cijfers(planOf('jaar').perMonth)
+    expect(jaar).toEqual(['59.99'])
+    expect(perMaand).toEqual(['5.00'])
     for (const [film, taal, c] of ALLES) {
-      expect(cijfers(c.price), `${film}/${taal}: ${c.price}`).toEqual(echt)
+      expect(cijfers(c.price), `${film}/${taal}: ${c.price}`).toEqual([...jaar, ...perMaand])
     }
   })
 
   it('en noemt nergens een prijs die nergens anders bestaat', () => {
     for (const [film, taal, c] of ALLES) {
       expect(c.price, `${film}/${taal}`).not.toMatch(/4[.,]99/)
+    }
+  })
+
+  /**
+   * En de kaart belooft nergens iets gratis behalve de download.
+   *
+   * De knop zei "Gratis beginnen", in alle zes de talen, uit de tijd dat de
+   * eerste lessen gratis waren. Dat is op 23 november vervallen -- zie de
+   * aantekening boven `magLeren` in engine/store.ts -- en het is geen detail:
+   * dit is het woord dat het grootst op het laatste beeld staat, en dat beeld
+   * gaat als voorvertoning naar de App Store, als promofilm naar Google Play
+   * en naar TikTok. Apple 2.3.1 noemt een misleidende prijsbelofte grond voor
+   * verwijdering, binnen én buiten de App Store.
+   *
+   * Geen lijst met toegestane zinnen per taal, want die is bij de eerste
+   * herformulering achterhaald en valt dan om op iets wat juist is. De regel
+   * is: elk woord voor "gratis" moet in dezelfde ademtocht over downloaden
+   * gaan. Staat het ergens anders, dan is het een belofte.
+   */
+  it('belooft nergens iets gratis behalve de download', () => {
+    const gratis = /gratis|gratuit\w*|kostenlos\w*|gratuita|gratuito|free/gi
+    const download = /download|t[\u00e9e]l[\u00e9e]charg|herunterladen|descarga|scarica/i
+    for (const [film, taal, c] of ALLES) {
+      const alles = [c.sub, c.cta, c.price, c.feiten, c.waar ?? '', ...c.lines].join(' \u00b7 ')
+      for (const m of alles.matchAll(gratis)) {
+        const rond = alles.slice(Math.max(0, m.index - 40), m.index + m[0].length + 40)
+        expect(download.test(rond), `${film}/${taal}: "${m[0]}" gaat hier niet over downloaden -- ${rond}`).toBe(true)
+      }
     }
   })
 

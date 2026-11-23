@@ -26,8 +26,39 @@ export interface Copy {
   sub: string
   /** One line per screen, in the order of SHOTS -- dus zeven of twee. */
   lines: string[]
-  /** The last card. */
+  /**
+   * De knop op de slotkaart: het grootste element van het laatste beeld.
+   *
+   * Hier stond "Gratis beginnen" -- en zijn vijf vertalingen -- uit de tijd dat
+   * de eerste lessen gratis waren. Sinds 23 november is dat onwaar, en het is
+   * geen detail: deze kaart gaat als voorvertoning naar de App Store, als
+   * promofilm naar Google Play en naar TikTok, en dit is het woord dat er het
+   * grootst op staat. Apple 2.3.1 noemt een misleidende prijsbelofte grond
+   * voor verwijdering, binnen én buiten de App Store.
+   *
+   * Wat er nu staat is waar en verkoopt hetzelfde: de app is gratis te
+   * downloaden. De prijs van de cursus staat er één regel onder, dus niemand
+   * leest dit als "de cursus kost niets".
+   */
   cta: string
+  /**
+   * De prijs op de slotkaart, met het bedrag dat werkelijk wordt afgeschreven
+   * eróór.
+   *
+   * Hier stond alleen de omrekening -- "Vanaf € 5,00 per maand" -- en dat is
+   * precies waarop Apple build 5 heeft afgewezen: richtlijn 3.1.2(c), de
+   * omgerekende maandprijs mag niet opvallender zijn dan het bedrag dat de
+   * winkel afschrijft. Die afwijzing ging over het abonnementsscherm in de app
+   * (`src/pages/prijsweergave.test.ts` bewaakt het daar), maar deze kaart gaat
+   * naar dezelfde winkel -- als voorvertoning bij Apple, als promofilm bij
+   * Google, en naar TikTok. Dus staat het jaarbedrag er nu voorop en de
+   * omrekening erachter.
+   *
+   * Met opzet de staande prijs en niet de tijdelijke actie van € 29,99: deze
+   * film staat in git (`site-assets/film/<taal>/intro.mp4`) en wordt niet
+   * opnieuw gezet als een actie afloopt. De actie hoort op de plekken die wél
+   * meebewegen -- de winkelafbeeldingen en de campagneteksten.
+   */
   price: string
   /** One line of plain numbers, so the film ends on something checkable. */
   feiten: string
@@ -64,9 +95,9 @@ const INTRO: Record<string, Copy> = {
       'En schrijven, met je vinger.\nLetter voor letter.',
       'En pik zelf stiekem\nwat mee.',
     ],
-    cta: 'Gratis beginnen',
+    cta: 'Gratis downloaden',
     feiten: '17 units · 304 woorden · 100 zinnen',
-    price: 'Vanaf € 5,00 per maand',
+    price: '€ 59,99 per jaar · € 5,00 per maand',
   },
   fr: {
     sub: 'Pour les jeunes — et pour les grands aussi',
@@ -79,9 +110,9 @@ const INTRO: Record<string, Copy> = {
       'Et écrire, au doigt.\nLettre par lettre.',
       'Et rafraîchis la tienne\nsans rien dire.',
     ],
-    cta: 'Commencer gratuitement',
+    cta: 'Télécharger gratuitement',
     feiten: '17 unités · 304 mots · 100 phrases',
-    price: 'À partir de 5,00 € par mois',
+    price: '59,99 € par an · 5,00 € par mois',
   },
   de: {
     sub: 'Für die Jungen — und heimlich für dich',
@@ -94,9 +125,9 @@ const INTRO: Record<string, Copy> = {
       'Und schreiben, mit dem Finger.\nBuchstabe für Buchstabe.',
       'Und frisch deins ganz\nnebenbei auf.',
     ],
-    cta: 'Kostenlos starten',
+    cta: 'Gratis herunterladen',
     feiten: '17 Einheiten · 304 Wörter · 100 Sätze',
-    price: 'Ab 5,00 € pro Monat',
+    price: '59,99 € pro Jahr · 5,00 € pro Monat',
   },
   es: {
     sub: 'Para los jóvenes — y también para ti',
@@ -109,9 +140,9 @@ const INTRO: Record<string, Copy> = {
       'Y escribir, con el dedo.\nLetra a letra.',
       'Y refresca la tuya\nde paso.',
     ],
-    cta: 'Empezar gratis',
+    cta: 'Descargar gratis',
     feiten: '17 unidades · 304 palabras · 100 frases',
-    price: 'Desde 5,00 € al mes',
+    price: '59,99 € al año · 5,00 € al mes',
   },
   it: {
     sub: 'Per i giovani — e anche per te',
@@ -124,8 +155,8 @@ const INTRO: Record<string, Copy> = {
       'E scrivere, con il dito.\nLettera per lettera.',
       'E tu, ripassala\nsenza dirlo a nessuno.',
     ],
-    cta: 'Inizia gratis',
-    price: 'Da 5,00 € al mese',
+    cta: 'Scarica gratis',
+    price: '59,99 € all’anno · 5,00 € al mese',
     feiten: '17 unità · 304 parole · 100 frasi',
   },
   en: {
@@ -139,9 +170,9 @@ const INTRO: Record<string, Copy> = {
       'And writing, with a finger.\nLetter by letter.',
       'And quietly pick some up\nyourself.',
     ],
-    cta: 'Start free',
+    cta: 'Free to download',
     feiten: '17 units · 304 words · 100 sentences',
-    price: 'From € 5.00 a month',
+    price: '€ 59.99 a year · € 5.00 a month',
   },
 }
 

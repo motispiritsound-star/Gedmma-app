@@ -150,6 +150,44 @@ En controleer het op het aankoopvenster zelf, op een telefoon, in de app uit
 de winkel. Dat venster is het enige echte bewijs; de console zegt wat er
 ingesteld is, niet wat de koper leest.
 
+## 23 november: de films, en welke wel en niet mee kunnen
+
+Er zijn twee soorten film, en ze hebben niet hetzelfde probleem.
+
+**De promofilm uit de app** — `site-assets/film/<taal>/intro.mp4`, achtentwintig
+seconden van de echte app, zonder stem. Die staat in git en op de website. Zijn
+slotkaart droeg twee onjuistheden, allebei nu weg: de knop zei in alle zes de
+talen **"Gratis beginnen"** (het grootste woord op het laatste beeld van een
+film die als voorvertoning naar de App Store gaat), en de prijsregel zei
+**"Vanaf € 5,00 per maand"** — een omrekening zonder het afgeschreven bedrag,
+precies waarop build 5 is afgewezen onder 3.1.2(c). Er staat nu
+*Gratis downloaden* en *€ 59,99 per jaar · € 5,00 per maand*, in zes talen, en
+de zes films zijn opnieuw gezet. `src/site/intro.test.ts` bewaakt het nu
+allebei: het jaarbedrag móét erbij staan en móét voorop, en een woord voor
+"gratis" mag alleen in dezelfde adem als downloaden.
+
+Met opzet de staande prijs en niet de actie van € 29,99: deze film staat in
+git en wordt niet opnieuw gezet als een actie afloopt. De actie hoort op de
+plekken die wél meebewegen — de winkelafbeeldingen en de campagneteksten.
+
+Opnieuw zetten, als er ooit iets aan verandert:
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run intro -- --lang nl,fr,de,es,it,en --shape breed } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+**De ingesproken reclamefilm** is een ander verhaal, en die kan niet mee in de
+campagne. Daar zit **ingesproken** in: *"Darijaforkids. De eerste vier lessen
+zijn gratis."* Die film staat niet in deze repository — hij komt uit Steve AI
+en staat op je eigen machine en op de plekken waar hij geplaatst is. Er is dus
+geen commando dat hem repareert: hij moet opnieuw ingesproken worden. De nieuwe
+slotregel staat in zes talen klaar in `docs/VIDEO.md` en in
+`store/lancering/reclamefilm.md`, en beide bestanden dragen bovenaan een blok
+dat dit zegt.
+
+Zolang dat niet gebeurd is: **geen reclamefilm in de Facebook-campagne.** De
+promofilm uit de app mag wel — die is nu waar.
+
 ## 23 november: de tijdelijke actie van 50% op het jaar
 
 Voor de campagne op de Franse, Nederlandse en Duitse Facebook-pagina's:
