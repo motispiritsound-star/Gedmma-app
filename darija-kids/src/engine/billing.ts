@@ -442,13 +442,26 @@ export interface BillingState {
    * maar gemaakt van de bedragen die de koper werkelijk te zien krijgt — en
    * niet ingevuld zolang die er niet allemaal zijn.
    */
-  vergelijking: { totaal: string; korting: number } | null
+  vergelijking: { totaal: string; korting: number; actie: boolean } | null
+  /**
+   * Wat het plan ná een lopende actie kost — alleen gevuld als er één loopt.
+   *
+   * `prices` draagt wat er nú wordt afgeschreven, want dat is het bedrag dat
+   * op de kaart hoort te staan (richtlijn 3.1.2(c): het getal dat de koper
+   * betaalt, niet een omrekening of een oude prijs). Loopt er een tijdelijke
+   * korting, dan is dat niet hetzelfde als de verlengprijs, en dan moet het
+   * scherm allebei kunnen noemen — anders staat er in de voorwaarden een
+   * bedrag dat volgend jaar niet klopt.
+   *
+   * Leeg betekent: geen actie. Dat is vandaag de stand.
+   */
+  naActie: Partial<Record<PlanId, string>>
   busy: boolean
   /** Set when a purchase failed, in the store's own words. */
   error: string | null
 }
 
-let state: BillingState = { available: false, price: null, currency: null, prices: {}, proef: {}, yearPerMonth: null, vergelijking: null, busy: false, error: null }
+let state: BillingState = { available: false, price: null, currency: null, prices: {}, proef: {}, yearPerMonth: null, vergelijking: null, naActie: {}, busy: false, error: null }
 const listeners = new Set<() => void>()
 
 const publish = (patch: Partial<BillingState>) => {
@@ -490,6 +503,33 @@ export const betaalFase = (
   const fasen = (product?.offers ?? []).flatMap((aanbod) => aanbod.pricingPhases ?? [])
   const betaald = fasen.filter((fase) => bedragVan(fase) !== null)
   if (betaald.length) return betaald[betaald.length - 1]!
+  return bedragVan(product?.pricing) !== null ? product?.pricing ?? null : null
+}
+
+/**
+ * Wat er NU van de kaart gaat, als dat iets anders is dan de verlengprijs.
+ *
+ * De spiegeling van `betaalFase` hierboven: die pakt de láátste betaalde fase
+ * — wat het elke periode kost — en deze de eerste. Zonder aanbieding is er
+ * maar één betaalde fase en geven ze dus hetzelfde terug; dan verandert er
+ * nergens iets.
+ *
+ * Met een tijdelijke korting zijn het er twee: `[€ 29,99, € 59,99]`. Dan is
+ * dit € 29,99 en `betaalFase` € 59,99, en lopen de twee uit elkaar. Dat
+ * verschil ís de aanbieding — er is geen vlaggetje van de winkel dat zegt
+ * "er loopt een actie", er zijn alleen fasen.
+ *
+ * De gratis proefperiode wordt overgeslagen, want die heeft geen bedrag. Dit
+ * is dus niet "de eerste fase" maar "de eerste fase waar geld in zit", en dat
+ * onderscheid is het hele punt: anders stond er € 0,00 op de kaart, en dat was
+ * precies de fout die `betaalFase` ooit repareerde.
+ */
+export const nuFase = (
+  product?: { pricing?: Fase | null; offers?: { pricingPhases?: Fase[] }[] } | null,
+): Fase | null => {
+  const fasen = (product?.offers ?? []).flatMap((aanbod) => aanbod.pricingPhases ?? [])
+  const betaald = fasen.filter((fase) => bedragVan(fase) !== null)
+  if (betaald.length) return betaald[0]!
   return bedragVan(product?.pricing) !== null ? product?.pricing ?? null : null
 }
 
@@ -568,21 +608,40 @@ export const winkelGegevens = (): WinkelRegel[] => {
 }
 
 /**
- * Twaalf maanden plus het boek, uit de winkel, met de korting erbij.
+ * Waarmee het jaarplan wordt vergeleken, en dat hangt ervan af.
  *
- * Alles of niets: ontbreekt één van de drie bedragen, dan komt er niets uit.
+ * **Loopt er een tijdelijke korting, dan is dat de vergelijking.** Het
+ * eerlijke doorgehaalde bedrag is dan de prijs ná de actie, niet "twaalf
+ * maanden plus het boek": wie € 29,99 betaalt waar straks € 59,99 staat, wil
+ * dát weten. Twee doorgehaalde bedragen naast elkaar op één kaart is geen
+ * aanbieding meer maar ruis, dus het is het een of het ander.
+ *
+ * Het verschil tussen `nuFase` en `betaalFase` ís de actie — zie `nuFase`.
+ * `actie: true` zegt het scherm welk bijschrift erbij hoort: "prijs na de
+ * actie" in plaats van "in plaats van".
+ *
+ * **Anders het oude gedrag:** twaalf maanden plus het boek, uit de winkel,
+ * alles of niets. Ontbreekt één van de drie bedragen, dan komt er niets uit.
  * Half rekenen met een eigen europrijs ernaast levert een vergelijking op die
  * nergens op slaat, en dat is erger dan geen vergelijking.
  */
-const vergelijkingVan = (store: CdvStore): { totaal: string; korting: number } | null => {
-  const jaar = betaalFase(store.get(planOf('jaar').product))
+const vergelijkingVan = (store: CdvStore): { totaal: string; korting: number; actie: boolean } | null => {
+  const jaarProduct = store.get(planOf('jaar').product)
+  const jaar = betaalFase(jaarProduct)
+  const jaarBedrag = bedragVan(jaar)
+
+  const nu = bedragVan(nuFase(jaarProduct))
+  if (nu !== null && jaarBedrag !== null && jaarBedrag > nu) {
+    const totaal = bedragAls(jaar?.price, jaar?.currency, jaarBedrag)
+    return totaal ? { totaal, korting: Math.round((1 - nu / jaarBedrag) * 100), actie: true } : null
+  }
+
   const maand = bedragVan(betaalFase(store.get(planOf('maand').product)))
   const boek = bedragVan(betaalFase(store.get(EBOOK.product)))
-  const jaarBedrag = bedragVan(jaar)
   if (!jaarBedrag || !maand || !boek) return null
   const vol = maand * 12 + boek
   const totaal = bedragAls(jaar?.price, jaar?.currency, vol)
-  return totaal ? { totaal, korting: Math.round((1 - jaarBedrag / vol) * 100) } : null
+  return totaal ? { totaal, korting: Math.round((1 - jaarBedrag / vol) * 100), actie: false } : null
 }
 
 let started = false
@@ -629,14 +688,25 @@ export async function initBilling(): Promise<void> {
   const refresh = () => {
     const prices: Partial<Record<PlanId | 'ebook', string>> = {}
     const proef: Partial<Record<PlanId, boolean>> = {}
+    const naActie: Partial<Record<PlanId, string>> = {}
     let owned: boolean | undefined
     let yearPerMonth: string | null = null
     let valuta: string | null = null
     for (const plan of PLANS) {
       const product = store.get(plan.product)
-      const fase = betaalFase(product)
+      /*
+       * `nuFase` en niet `betaalFase`: op de kaart hoort het bedrag te staan
+       * dat werkelijk van de kaart gaat. Zonder actie zijn die twee gelijk en
+       * verandert er niets; mét actie is dit € 29,99 waar het eerst € 59,99
+       * toonde terwijl de winkel € 29,99 afschreef.
+       */
+      const fase = nuFase(product)
+      const verleng = betaalFase(product)
       const prijs = prijsVan(fase)
       if (prijs) prices[plan.id] = prijs
+      /* Alleen als het verschilt. Leeg betekent: geen actie. */
+      const later = prijsVan(verleng)
+      if (later && later !== prijs) naActie[plan.id] = later
       proef[plan.id] = heeftProef(product)
       if (!valuta && fase?.currency) valuta = fase.currency
       if (plan.id === 'jaar') yearPerMonth = perMaandVan(fase)
@@ -648,7 +718,7 @@ export async function initBilling(): Promise<void> {
     if (boekPrijs) prices.ebook = boekPrijs
     if (book?.owned) grantEbook(false)
     else if (store.get(planOf('jaar').product)?.owned) grantEbook(true)
-    publish({ prices, proef, yearPerMonth, vergelijking: vergelijkingVan(store), price: prices.maand ?? null, currency: valuta })
+    publish({ prices, proef, naActie, yearPerMonth, vergelijking: vergelijkingVan(store), price: prices.maand ?? null, currency: valuta })
     if (owned !== undefined) syncFromStore(owned, bonnenBinnen)
   }
 

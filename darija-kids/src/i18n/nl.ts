@@ -959,6 +959,14 @@ export const nl = {
     jaarVooruit: 'per jaar, vooruit betaald',
     perMaandBerekend: (prijs: string): string => `dat is ${prijs} per maand`,
     jaarInPlaatsVan: 'in plaats van',
+    /*
+     * Het bijschrift bij het doorgehaalde bedrag als er een tijdelijke actie
+     * loopt. "In plaats van" zou dan onwaar zijn: die prijs is niet wat het
+     * ergens anders kost, maar wat het hier straks zelf kost. Het verschil
+     * tussen die twee zinnen is precies het verschil tussen een eerlijke
+     * aankondiging en een misleidende handelspraktijk.
+     */
+    jaarNaActie: 'prijs na de actie:',
     perMaandLos: 'maandelijks opzegbaar',
     /** Hoe de winkel heet waar deze app vandaan komt; zie engine/platform.ts. */
     winkelnaam: { ios: 'bij de App Store', android: 'bij Google Play', beide: 'bij de App Store of bij Google Play' },
@@ -974,6 +982,20 @@ export const nl = {
       `${prijs} wordt nu afgeschreven via je account ${winkel}, en daarna elk jaar opnieuw tot je opzegt. Voor dit account is er geen gratis proefperiode beschikbaar.`,
     voorwaardenDirect: (prijs: string, winkel: string): string =>
       `${prijs} wordt nu afgeschreven via je account ${winkel}, en daarna elke maand opnieuw tot je opzegt. Voor dit account is er geen gratis proefperiode beschikbaar.`,
+    /*
+     * De zin die erbij komt als er een tijdelijke korting loopt.
+     *
+     * De voorwaarden hierboven zeggen "en daarna elk jaar opnieuw", en dat
+     * leest bij een actie als "elk jaar € 29,99". Dat is onwaar, en het staat
+     * in de verplichte tekst vlak voor de koopknop — precies waar een
+     * onjuiste mededeling het duurst is.
+     *
+     * Eén zin die bij alle vier de varianten past, in plaats van vier nieuwe
+     * varianten per taal. Hij verschijnt alleen als de winkel twee
+     * verschillende bedragen teruggeeft; zie `naActie` in engine/billing.ts.
+     */
+    naActieJaar: (na: string): string =>
+      `Dit is de actieprijs voor het eerste jaar. Daarna wordt ${na} per jaar afgeschreven.`,
     koopDirect: 'Abonnement starten',
     btwRegel: (inbegrepen: boolean): string =>
       inbegrepen ? 'De prijs is inclusief btw.' : 'De winkel rekent de belasting die in jouw land geldt.',

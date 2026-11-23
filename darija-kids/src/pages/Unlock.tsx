@@ -111,7 +111,9 @@ export function Unlock() {
   const uitWinkel = billing.prices.jaar != null
   const vergelijking = uitWinkel
     ? billing.vergelijking
-    : { totaal: YEAR_FULL_PRICE, korting: YEAR_SAVING }
+    /* Op de website is er geen winkel en dus ook geen actie: de terugval is
+       altijd de vaste som van twaalf maanden plus het boek. */
+    : { totaal: YEAR_FULL_PRICE, korting: YEAR_SAVING, actie: false }
   const price = priceOf(plan)
   const jaar = plan === 'jaar'
   /*
@@ -354,9 +356,13 @@ export function Unlock() {
                     )}
                     {/* Het bedrag waar de koper mee vergelijkt: twaalf maanden
                         plus het e-boek, doorgestreept naast wat hij betaalt. */}
+                    {/* Loopt er een tijdelijke korting, dan is het doorgehaalde
+                        bedrag de prijs ná de actie en niet "twaalf maanden plus
+                        het boek" — en dan hoort er een ander bijschrift bij.
+                        Zie `vergelijkingVan` in engine/billing.ts. */}
                     {option.id === 'jaar' && vergelijking && (
                       <div className="mt-0.5 text-xs text-[var(--ink-soft)]">
-                        {t.unlock.jaarInPlaatsVan}{' '}
+                        {vergelijking.actie ? t.unlock.jaarNaActie : t.unlock.jaarInPlaatsVan}{' '}
                         <s>{vergelijking.totaal}</s>
                       </div>
                     )}
@@ -398,6 +404,15 @@ export function Unlock() {
                   : (jaar
                       ? t.unlock.voorwaardenJaarDirect(price, winkel)
                       : t.unlock.voorwaardenDirect(price, winkel))}{' '}
+                {/* Loopt er een tijdelijke korting op het jaar, dan zeggen de
+                    voorwaarden hierboven "en daarna elk jaar opnieuw" over een
+                    bedrag dat volgend jaar niet meer geldt. Deze zin noemt het
+                    bedrag dat er dan werkelijk afgaat. Verschijnt alleen als de
+                    winkel twee verschillende bedragen teruggeeft; zie `naActie`
+                    in engine/billing.ts. */}
+                {jaar && billing.naActie.jaar && (
+                  <>{t.unlock.naActieJaar(billing.naActie.jaar)}{' '}</>
+                )}
                 {t.unlock.btwRegel(btwInbegrepen(billing.currency))}
               </p>
               {billing.error && (

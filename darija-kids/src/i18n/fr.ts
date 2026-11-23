@@ -873,6 +873,7 @@ export const fr: Strings = {
     jaarVooruit: 'par an, payé d’avance',
     perMaandBerekend: (prijs: string): string => `soit ${prijs} par mois`,
     jaarInPlaatsVan: 'au lieu de',
+    jaarNaActie: 'prix après l\u2019offre :',
     perMaandLos: 'résiliable chaque mois',
     /** Hoe de winkel heet waar deze app vandaan komt; zie engine/platform.ts. */
     winkelnaam: { ios: 'App Store', android: 'Google Play', beide: 'App Store ou Google Play' },
@@ -888,6 +889,8 @@ export const fr: Strings = {
       `${prijs} sera débité maintenant via votre compte ${winkel}, puis chaque année jusqu\u2019à résiliation. Aucune période d\u2019essai gratuite n\u2019est disponible pour ce compte.`,
     voorwaardenDirect: (prijs: string, winkel: string): string =>
       `${prijs} sera débité maintenant via votre compte ${winkel}, puis chaque mois jusqu\u2019à résiliation. Aucune période d\u2019essai gratuite n\u2019est disponible pour ce compte.`,
+    naActieJaar: (na) =>
+      `C\u2019est le prix de l\u2019offre pour la premi\u00e8re ann\u00e9e. Ensuite, ${na} sera pr\u00e9lev\u00e9 chaque ann\u00e9e.`,
     koopDirect: 'Commencer l\u2019abonnement',
     btwRegel: (inbegrepen: boolean): string =>
       inbegrepen ? 'Prix TTC.' : 'La boutique applique la taxe en vigueur dans ton pays.',

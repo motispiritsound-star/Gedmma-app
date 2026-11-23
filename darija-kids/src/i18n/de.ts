@@ -873,6 +873,7 @@ export const de: Strings = {
     jaarVooruit: 'pro Jahr, im Voraus bezahlt',
     perMaandBerekend: (prijs: string): string => `das sind ${prijs} pro Monat`,
     jaarInPlaatsVan: 'statt',
+    jaarNaActie: 'Preis nach der Aktion:',
     perMaandLos: 'monatlich kündbar',
     /** Hoe de winkel heet waar deze app vandaan komt; zie engine/platform.ts. */
     winkelnaam: { ios: 'beim App Store', android: 'bei Google Play', beide: 'beim App Store oder bei Google Play' },
@@ -888,6 +889,8 @@ export const de: Strings = {
       `${prijs} wird jetzt über dein Konto ${winkel} abgebucht und danach jedes Jahr erneut, bis du kündigst. Für dieses Konto ist keine kostenlose Testphase verfügbar.`,
     voorwaardenDirect: (prijs: string, winkel: string): string =>
       `${prijs} wird jetzt über dein Konto ${winkel} abgebucht und danach jeden Monat erneut, bis du kündigst. Für dieses Konto ist keine kostenlose Testphase verfügbar.`,
+    naActieJaar: (na) =>
+      `Das ist der Aktionspreis für das erste Jahr. Danach werden ${na} pro Jahr abgebucht.`,
     koopDirect: 'Abo starten',
     btwRegel: (inbegrepen: boolean): string =>
       inbegrepen ? 'Preis inklusive Mehrwertsteuer.' : 'Der Store berechnet die in deinem Land geltende Steuer.',
