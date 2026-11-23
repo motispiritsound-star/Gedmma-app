@@ -11,7 +11,7 @@ import {
 import { kanOpnemen } from '../engine/microfoon'
 import { OuderPoort, poortAl } from '../ui/OuderPoort'
 import { kanDownloaden, naarKlembord } from '../engine/klembord'
-import { LIST_PRICE, TRIAL_DAYS } from '../engine/billing'
+import { LIST_PRICE, TRIAL_DAYS, useBilling } from '../engine/billing'
 import { gezinsdeling } from '../engine/platform'
 import { LANGS, localeOf, useT, type Lang } from '../i18n'
 import { useVoices } from '../ui/useVoices'
@@ -126,6 +126,9 @@ function Choice<T extends string | number>({ value, options, onChange }: {
 export function SettingsPage() {
   const t = useT()
   const state = useStore((s) => s)
+  /* Nul dagen betekent geen proefperiode; onbekend telt als nee. Zie
+     `heeftProef` in engine/billing.ts. */
+  const proefDagen = useBilling().proef.jaar === true ? TRIAL_DAYS : 0
   const s = state.settings
   const set = <K extends keyof Settings>(k: K) => (v: Settings[K]) => setSetting(k, v)
   const [confirmReset, setConfirmReset] = useState(false)
@@ -222,11 +225,11 @@ export function SettingsPage() {
       <Card className="mb-6">
         <Row
           title={t.unlock.titel}
-          hint={state.unlocked ? t.unlock.alOpen : t.unlock.sub(TRIAL_DAYS, LIST_PRICE, gezinsdeling(), false)}
+          hint={state.unlocked ? t.unlock.alOpen : t.unlock.sub(proefDagen, LIST_PRICE, gezinsdeling(), false)}
         >
           <Link to="/volledig">
             <Button variant={state.unlocked ? 'secondary' : 'primary'}>
-              {state.unlocked ? t.unlock.beheer : t.unlock.koop(TRIAL_DAYS)}
+              {state.unlocked ? t.unlock.beheer : proefDagen > 0 ? t.unlock.koop(TRIAL_DAYS) : t.unlock.koopDirect}
             </Button>
           </Link>
         </Row>

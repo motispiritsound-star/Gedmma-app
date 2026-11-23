@@ -59,20 +59,35 @@ describe('de prijs die wordt afgeschreven', () => {
   it('noemt in de ondertitel het bedrag van het gekozen plan', () => {
     // `price` is priceOf(plan); `perMaandJaar` is de omrekening. Die tweede
     // stond hier, en dan opende het scherm met een prijs die niemand betaalt.
+    //
+    // Het eerste argument staat hier als naam open: dat was `TRIAL_DAYS` toen
+    // de proef er nog was en is nu `proefDagen` (nul zonder proef). Wat de
+    // toets vasthoudt is het tweede argument -- `price` en niet de omrekening.
     expect(unlock, 'de ondertitel toont niet het afgeschreven bedrag')
-      .toContain('t.unlock.sub(TRIAL_DAYS, price, gezin, jaar)')
+      .toMatch(/t\.unlock\.sub\(\w+, price, gezin, jaar\)/)
     expect(unlock, 'de omrekening zit weer in de ondertitel')
       .not.toContain('jaar ? perMaandJaar : price')
   })
 
   it.each(TALEN)('%s: de ondertitel kiest de juiste eenheid', (taal) => {
     const tekst = bron(`../i18n/${taal}.ts`)
-    // nl heeft een geannoteerd retourtype (`): string =>`), de rest niet.
-    const m = /sub: \(dagen[^)]*\)(?:: string)? =>\s*`([^`]*)`/.exec(tekst)
-    expect(m, `${taal}: sub() is niet te vinden`).toBeTruthy()
-    // Zonder `jaar` in de tekst staat er "per maand" onder een jaarbedrag.
-    expect(m![1], `${taal}: de ondertitel maakt geen onderscheid tussen jaar en maand`)
-      .toMatch(/\$\{jaar \?/)
+    // `sub()` heeft sinds het vervallen van de proef twee takken: met `dagen`
+    // en zonder. Daarom niet de eerste regel na de `=>` lezen maar het hele
+    // lichaam, tot de volgende sleutel op dezelfde inspringing -- en dan elke
+    // tekst erin nalopen. Een tak die het bedrag of de eenheid vergeet is
+    // precies de afwijzing van build 5, ook als de andere tak klopt.
+    const lichaam = /sub: \(dagen[\s\S]*?\n    \w+:/.exec(tekst)?.[0]
+    expect(lichaam, `${taal}: sub() is niet te vinden`).toBeTruthy()
+    const takken = lichaam!.match(/`[^`]*`/g) ?? []
+    expect(takken.length, `${taal}: sub() geeft geen tekst terug`).toBeGreaterThan(0)
+    for (const tak of takken) {
+      // Zonder `jaar` in de tekst staat er "per maand" onder een jaarbedrag.
+      expect(tak, `${taal}: deze tak maakt geen onderscheid tussen jaar en maand: ${tak}`)
+        .toMatch(/\$\{jaar \?/)
+      // En zonder `prijs` staat het afgeschreven bedrag er helemaal niet.
+      expect(tak, `${taal}: deze tak noemt het afgeschreven bedrag niet: ${tak}`)
+        .toContain('${prijs}')
+    }
   })
 
   it.each(TALEN)('%s: de omrekening leest als een rekensom', (taal) => {

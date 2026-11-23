@@ -125,6 +125,13 @@ export function Unlock() {
    * wordt. Zie `heeftProef` in engine/billing.ts.
    */
   const magProef = billing.proef[plan] === true
+  /*
+   * Nul dagen betekent: geen proefperiode. De ondertitel en de tijdlijn
+   * gingen er onvoorwaardelijk van uit dat er drie waren, terwijl de knop en
+   * de voorwaarden eronder allang naar de winkel luisterden. Dan staat er
+   * bovenaan "3 dagen gratis" en onderaan dat er nu wordt afgeschreven.
+   */
+  const proefDagen = magProef ? TRIAL_DAYS : 0
   /**
    * Of we het gezin mogen beloven. Apple deelt een abonnement met de
    * gezinsgroep, Google Play niet — en dit staat op het scherm waar iemand
@@ -205,7 +212,7 @@ export function Unlock() {
         <div className="relative flex items-center gap-3">
           <Mascot mood="juich" size={56} className="shrink-0" />
           <div className="min-w-0 [&>div]:mb-0">
-            <SectionTitle kop="h1" sub={t.unlock.sub(TRIAL_DAYS, price, gezin, jaar)}>{t.unlock.titel}</SectionTitle>
+            <SectionTitle kop="h1" sub={t.unlock.sub(proefDagen, price, gezin, jaar)}>{t.unlock.titel}</SectionTitle>
           </div>
         </div>
       </div>
@@ -250,7 +257,7 @@ export function Unlock() {
                   aria-hidden="true"
                   className="absolute bottom-4 start-[17px] top-4 w-0.5 bg-[var(--line)]"
                 />
-                {t.unlock.tijdlijn(TRIAL_DAYS, price, jaar).map(([emoji, titel, body]) => (
+                {t.unlock.tijdlijn(proefDagen, price, jaar).map(([emoji, titel, body]) => (
                   <li key={titel} className="relative flex gap-3">
                     <span
                       className="z-10 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[var(--line)] bg-[var(--surface-sunken)] text-lg"

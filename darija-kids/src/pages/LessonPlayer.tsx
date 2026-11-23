@@ -12,7 +12,7 @@ import {
 import { seintjeGratisOp } from '../engine/herinnering'
 import { reikDiplomasUit } from '../engine/diploma'
 import { tel, tredeVan } from '../engine/tellen'
-import { TRIAL_DAYS } from '../engine/billing'
+import { TRIAL_DAYS, useBilling } from '../engine/billing'
 import { sfx } from '../engine/audio'
 import { Button, Card, Sheet } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
@@ -43,6 +43,15 @@ export function LessonPlayer() {
 function LesScherm({ lessonId }: { lessonId: string }) {
   const t = useT()
   const lang = useLang()
+  /*
+    Het aantal gratis dagen komt van de winkel en niet uit `TRIAL_DAYS`. Stond
+    hier het getal zelf, dan beloofde het scorescherm "de eerste 3 dagen zijn
+    gratis" ook nadat de proefperiode uit het aanbod was gehaald -- en dat is
+    een mededeling over geld die niet klopt, op de plek waar iemand net tegen
+    het slot aanloopt. Is er geen proef, dan is dit nul en laat `gratisOpBody`
+    die zin weg. Dezelfde regel staat in Settings.tsx en Welcome.tsx.
+  */
+  const proefDagen = useBilling().proef.jaar === true ? TRIAL_DAYS : 0
   const navigate = useNavigate()
   const lesson = lessonById(lessonId)
   const unit = unitOfLesson(lessonId)
@@ -401,7 +410,7 @@ function LesScherm({ lessonId }: { lessonId: string }) {
         {gratisOp && (
           <Card className="mt-4 p-4 text-start">
             <p className="font-display font-extrabold">{t.lesson.gratisOpTitel}</p>
-            <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.lesson.gratisOpBody(TRIAL_DAYS)}</p>
+            <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.lesson.gratisOpBody(proefDagen)}</p>
           </Card>
         )}
 

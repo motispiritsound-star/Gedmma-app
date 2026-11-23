@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { LANGS, useT, type Lang } from '../i18n'
 import { sfx } from '../engine/audio'
-import { FREE_LESSONS, planOf, TRIAL_DAYS } from '../engine/billing'
+import { FREE_LESSONS, planOf, TRIAL_DAYS, useBilling } from '../engine/billing'
 import { kanHerinneren, zetHerinnering } from '../engine/herinnering'
 import { ACCENTEN, ACCENTKLEUR, AVATARS, setSetting, setState, useStore } from '../engine/store'
 import { tel } from '../engine/tellen'
@@ -60,6 +60,9 @@ export function Welcome() {
    */
   /* Allebei de voorkeuren, niet alleen de knop in de app. Zie rustig.ts. */
   const kalm = useRustig()
+  /* Onbekend telt als geen proef -- dezelfde regel als op /volledig: beloof
+     niets wat de winkel niet geeft. */
+  const proefDagen = useBilling().proef.jaar === true ? TRIAL_DAYS : 0
   const [stap, setStap] = useState(0)
   /** -1 of 1: waar de volgende stap vandaan komt. Zie `komtVan` hieronder. */
   const [heen, setHeen] = useState(1)
@@ -551,7 +554,11 @@ export function Welcome() {
               aantekening van; de knop eronder blijft het zwaarste wat er staat.
             */}
             <div className="mt-5 rounded-2xl border-s-4 border-[var(--accent-500)] bg-[var(--surface-sunken)] p-4 text-start">
-              <p className="text-sm font-bold">🎁 {t.welcome.plan(TRIAL_DAYS, planOf('jaar').perMonth)}</p>
+              {/* Een cadeautje is het pas als er iets gratis bij zit. Zonder
+                  proefperiode staat hier een prijs, en dan is 🎁 ervoor een
+                  belofte die de zin erachter niet doet. Hetzelfde slotje als in
+                  `unlock.tijdlijn`, dat op dezelfde schakelaar omklapt. */}
+              <p className="text-sm font-bold">{proefDagen > 0 ? '🎁' : '🔓'} {t.welcome.plan(proefDagen, planOf('jaar').perMonth)}</p>
               <p className="mt-1 text-xs text-[var(--ink-soft)]">{t.welcome.gratisDeel(FREE_LESSONS)}</p>
             </div>
 

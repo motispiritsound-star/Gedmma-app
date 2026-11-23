@@ -249,6 +249,23 @@ export function grantEbook(wachten: boolean): void {
    */
   const alBetaald = s.unlocked && s.unlockedAt !== null && Date.now() - s.unlockedAt >= TRIAL_DAYS * 864e5
   if (alBetaald) { setState({ ebook: true, ebookVanaf: Date.now() }); return }
+  /*
+   * En wie zojuist bestelde zonder dat er een proefperiode bij zat, wacht
+   * nergens op: bij hem is meteen afgeschreven.
+   *
+   * Het wachten bestaat omdat er tijdens een proef nog niets betaald is, en
+   * een boek van EUR 14,99 weggeven aan iemand die op dag twee opzegt is het
+   * weggeven. Valt die proef weg -- en dat gebeurt zodra de aanbieding uit de
+   * winkel gaat, of zodra er een korting voor in de plaats komt -- dan valt
+   * de reden weg en blijft alleen de wachttijd over. Dan laat je een klant die
+   * zojuist EUR 59,99 betaalde drie dagen wachten op iets wat hij heeft
+   * gekocht.
+   *
+   * Allebei de vlaggen, en niet alleen `proefBijKoop`: die staat ook op
+   * `false` bij het herstellen van een oude aankoop, en daar weten we niets.
+   * Dan blijft het oude gedrag staan.
+   */
+  if (bestellingGedaan && !proefBijKoop) { setState({ ebook: true, ebookVanaf: Date.now() }); return }
   // Een toezegging die er al staat blijft staan; anders schuift de dag mee
   // met elke keer dat de app opstart en komt hij nooit.
   if (s.ebookVanaf === null) setState({ ebookVanaf: Date.now() + TRIAL_DAYS * 864e5 })
@@ -819,6 +836,16 @@ export const foutVan = (uit: WinkelFout | undefined): string | null =>
  * proefperiode.
  */
 let proefBijKoop = false
+/*
+ * Of er in deze sessie werkelijk een bestelling is gedaan.
+ *
+ * `proefBijKoop` alleen is niet genoeg om te weten of er meteen geld is
+ * gemoeid: hij staat ook op `false` bij het herstellen van een oude aankoop,
+ * waar we niets weten. Samen zeggen deze twee precies één ding: er is zojuist
+ * besteld, en de winkel bood daarbij geen proefperiode. Dan is er nú
+ * afgeschreven.
+ */
+let bestellingGedaan = false
 
 export async function subscribe(plan: PlanId = 'jaar'): Promise<void> {
   const api = plugin()
@@ -826,6 +853,7 @@ export async function subscribe(plan: PlanId = 'jaar'): Promise<void> {
   publish({ busy: true, error: null })
   try {
     proefBijKoop = heeftProef(api.store.get(planOf(plan).product))
+    bestellingGedaan = true
     const offer = api.store.get(planOf(plan).product)?.getOffer()
     if (!offer) throw new Error('product-onbekend')
     /*

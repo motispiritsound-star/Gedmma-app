@@ -100,7 +100,9 @@ export const it: Strings = {
      */
     gratisOpTitel: 'Questa era la tua ultima lezione gratuita',
     gratisOpBody: (dagen: number): string =>
-      `Il percorso continua, ma il resto fa parte dell’accesso completo. I primi ${dagen} giorni sono gratis.`,
+      dagen > 0
+        ? `Il percorso continua, ma il resto fa parte dell’accesso completo. I primi ${dagen} giorni sono gratis.`
+        : `Il percorso continua, ma il resto fa parte dell’accesso completo.`,
     nieuwWoord: 'Parola nuova',
     snapIk: 'Ho capito!',
     watBetekent: 'Che cosa vuol dire?',
@@ -848,13 +850,21 @@ export const it: Strings = {
 
   unlock: {
     tijdlijn: (dagen, prijs, jaar) => [
-      ['🎁', `Oggi: ${dagen} giorni gratis`, 'Tutto aperto e ancora non paghi niente.'],
-      ['📅', `Dopo ${dagen} giorni: ${prijs} ${jaar ? 'all’anno' : 'al mese'}`, jaar ? 'Il negozio lo addebita una volta all’anno.' : 'Il negozio lo addebita ogni mese.'],
-      ['🛑', 'Disdicibile sempre', `Un tocco nel tuo account. Se disdici entro ${dagen} giorni, non paghi niente.`],
+      dagen > 0
+        ? ['🎁', `Oggi: ${dagen} giorni gratis`, 'Tutto aperto e ancora non paghi niente.']
+        : ['🔓', `Oggi: tutto è aperto`, `${prijs} viene addebitato ora.`],
+      dagen > 0
+        ? ['📅', `Dopo ${dagen} giorni: ${prijs} ${jaar ? 'all’anno' : 'al mese'}`, jaar ? 'Il negozio lo addebita una volta all’anno.' : 'Il negozio lo addebita ogni mese.']
+        : ['📅', jaar ? `E poi ogni anno` : `E poi ogni mese`, jaar ? 'Il negozio lo addebita una volta all’anno.' : 'Il negozio lo addebita ogni mese.'],
+      ['🛑', 'Disdicibile sempre', dagen > 0
+        ? `Un tocco nel tuo account. Se disdici entro ${dagen} giorni, non paghi niente.`
+        : `Un tocco nel tuo account. Tieni il periodo che hai pagato.`],
     ],
     titel: 'Accesso completo',
     sub: (dagen, prijs, gezin, jaar) =>
-      `${dagen} giorni gratis, poi ${prijs} ${jaar ? 'all’anno' : 'al mese'}${gezin ? ' per tutta la famiglia' : ''}`,
+      dagen > 0
+        ? `${dagen} giorni gratis, poi ${prijs} ${jaar ? 'all’anno' : 'al mese'}${gezin ? ' per tutta la famiglia' : ''}`
+        : `${prijs} ${jaar ? 'all’anno' : 'al mese'}${gezin ? ' per tutta la famiglia' : ''}`,
     intro: (vrij) =>
       `Le prime ${vrij} lezioni sono e restano gratis: tre pezzi dell’alfabeto arabo e le tue prime parole in darija. Il resto del corso va con l’abbonamento.`,
     krijgt: (gezin, units, woorden, letters, zinnen, opnames, films) => [
@@ -992,7 +1002,9 @@ export const it: Strings = {
   },
   welcome: {
     plan: (dagen: number, prijs: string): string =>
-      `Il corso completo è un abbonamento: i primi ${dagen} giorni sono gratis, poi da ${prijs} al mese. Puoi disdire quando vuoi.`,
+      dagen > 0
+        ? `Il corso completo è un abbonamento: i primi ${dagen} giorni sono gratis, poi da ${prijs} al mese. Puoi disdire quando vuoi.`
+        : `Il corso completo è un abbonamento: da ${prijs} al mese. Puoi disdire quando vuoi.`,
     gratisDeel: (vrij: number): string => `Le prime ${vrij} lezioni restano gratis, anche senza abbonamento.`,
     titel: 'Ahlan! Benvenuto in Darijaforkids',
     body: 'In quale lingua vuoi imparare? Puoi sempre cambiarla più tardi.',

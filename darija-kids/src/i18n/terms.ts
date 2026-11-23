@@ -1,6 +1,6 @@
 import type { Lang } from './languages'
 import { winkelnamen, type Winkelnamen } from './winkels'
-import { planOf, TRIAL_DAYS } from '../engine/billing'
+import { planOf } from '../engine/billing'
 
 /**
  * The terms of use, in all five interface languages.
@@ -13,8 +13,9 @@ import { planOf, TRIAL_DAYS } from '../engine/billing'
  *
  * Written to be read by a parent on a phone rather than by a lawyer: short
  * sentences, no defined terms, and nothing claimed that is not true. The price
- * and the trial come from billing.ts, so the page can never quote a figure the
- * app no longer charges.
+ * comes from billing.ts, so the page can never quote a figure the app no
+ * longer charges. There is no free trial: the first charge is immediate, and
+ * no sentence on this page may suggest otherwise.
  */
 export interface TermsText {
   title: string
@@ -29,7 +30,6 @@ type Section = [title: string, body: string[]]
 const price = planOf('maand').list
 const yearPrice = planOf('jaar').list
 const yearPerMonth = planOf('jaar').perMonth
-const days = String(TRIAL_DAYS)
 
 const SECTIONS_NL = (n: Winkelnamen): Section[] => [
   ['Wat je krijgt', [
@@ -40,8 +40,8 @@ const SECTIONS_NL = (n: Winkelnamen): Section[] => [
     'De eerste acht lessen zijn gratis en blijven gratis. Daar hoef je niets voor af te sluiten en niets voor in te vullen.',
   ]],
   ['Het abonnement', [
-    `De volledige cursus loopt via een abonnement. Je kiest zelf: ${yearPrice} voor een heel jaar vooruit — dat is ${yearPerMonth} per maand — of ${price} per maand. Beide zijn inclusief btw. Je begint met ${days} dagen gratis; daarna wordt het bedrag afgeschreven via ${n.account} en daarna telkens opnieuw, jaarlijks of maandelijks, net zolang tot je opzegt.`,
-    'Opzeggen doe je in dat winkelaccount, niet bij ons — wij kunnen er niet bij. Zeg je op vóór het einde van de gratis dagen, dan betaal je niets. Zeg je later op, dan loopt je toegang door tot het einde van de periode die je al betaald hebt — het jaar of de maand.',
+    `De volledige cursus loopt via een abonnement. Je kiest zelf: ${yearPrice} voor een heel jaar vooruit — dat is ${yearPerMonth} per maand — of ${price} per maand. Beide zijn inclusief btw. Het bedrag wordt bij het afsluiten afgeschreven via ${n.account} en daarna telkens opnieuw, jaarlijks of maandelijks, net zolang tot je opzegt.`,
+    'Opzeggen doe je in dat winkelaccount, niet bij ons — wij kunnen er niet bij. Zeg je op, dan loopt je toegang door tot het einde van de periode die je al betaald hebt — het jaar of de maand.',
     `De verkoper is ${n.bedrijfEn}: daar wordt het geld geïnd, daar wordt de btw afgedragen en daar gelden eigen regels voor terugbetaling. Een verzoek om je geld terug gaat dus daarheen.`,
     'Verandert de prijs ooit, dan laat de winkel dat weten vóór het ingaat, en kun je opzeggen in plaats van mee te gaan.',
   ]],
@@ -74,8 +74,8 @@ const SECTIONS_FR = (n: Winkelnamen): Section[] => [
     'Les huit premières leçons sont gratuites et le restent. Il n’y a rien à souscrire et rien à remplir pour cela.',
   ]],
   ['L’abonnement', [
-    `Le cours complet passe par un abonnement, au choix : ${yearPrice} pour une année entière payée d’avance — soit ${yearPerMonth} par mois — ou ${price} par mois. Les deux sont TTC. Tu commences par ${days} jours offerts ; ensuite le montant est prélevé via ${n.account}, puis à chaque échéance, annuelle ou mensuelle, jusqu’à ce que tu résilies.`,
-    'La résiliation se fait dans ce compte de boutique, pas chez nous — nous n’y avons pas accès. Si tu résilies avant la fin des jours offerts, tu ne paies rien. Plus tard, ton accès continue jusqu’à la fin de la période déjà payée — l’année ou le mois.',
+    `Le cours complet passe par un abonnement, au choix : ${yearPrice} pour une année entière payée d’avance — soit ${yearPerMonth} par mois — ou ${price} par mois. Les deux sont TTC. Le montant est prélevé via ${n.account} dès la souscription, puis à chaque échéance, annuelle ou mensuelle, jusqu’à ce que tu résilies.`,
+    'La résiliation se fait dans ce compte de boutique, pas chez nous — nous n’y avons pas accès. Si tu résilies, ton accès continue jusqu’à la fin de la période déjà payée — l’année ou le mois.',
     `Le vendeur, c’est ${n.bedrijfEn} : c’est là que l’argent est encaissé, que la TVA est reversée et que les règles de remboursement sont fixées. Une demande de remboursement va donc là.`,
     'Si le prix change un jour, la boutique te prévient avant que cela s’applique, et tu peux résilier au lieu de suivre.',
   ]],
@@ -108,8 +108,8 @@ const SECTIONS_DE = (n: Winkelnamen): Section[] => [
     'Die ersten acht Lektionen sind kostenlos und bleiben es. Dafür musst du nichts abschließen und nichts ausfüllen.',
   ]],
   ['Das Abo', [
-    `Der ganze Kurs läuft über ein Abo, und du hast die Wahl: ${yearPrice} für ein ganzes Jahr im Voraus — das sind ${yearPerMonth} pro Monat — oder ${price} pro Monat. Beides inklusive Mehrwertsteuer. Du beginnst mit ${days} Tagen gratis; danach wird der Betrag über ${n.account} abgebucht und danach jeweils erneut, jährlich oder monatlich, bis du kündigst.`,
-    'Gekündigt wird in diesem Store-Konto, nicht bei uns — wir kommen da nicht heran. Kündigst du vor Ende der Gratistage, zahlst du nichts. Kündigst du später, läuft dein Zugang bis zum Ende des bereits bezahlten Zeitraums — des Jahres oder des Monats.',
+    `Der ganze Kurs läuft über ein Abo, und du hast die Wahl: ${yearPrice} für ein ganzes Jahr im Voraus — das sind ${yearPerMonth} pro Monat — oder ${price} pro Monat. Beides inklusive Mehrwertsteuer. Der Betrag wird beim Abschluss über ${n.account} abgebucht und danach jeweils erneut, jährlich oder monatlich, bis du kündigst.`,
+    'Gekündigt wird in diesem Store-Konto, nicht bei uns — wir kommen da nicht heran. Kündigst du, läuft dein Zugang bis zum Ende des bereits bezahlten Zeitraums — des Jahres oder des Monats.',
     `Verkäufer ist ${n.bedrijfEn}: dort wird das Geld eingezogen, dort wird die Mehrwertsteuer abgeführt und dort gelten eigene Regeln für Erstattungen. Ein Erstattungswunsch geht also dorthin.`,
     'Ändert sich der Preis irgendwann, sagt der Store das vorher, und du kannst kündigen, statt mitzugehen.',
   ]],
@@ -142,8 +142,8 @@ const SECTIONS_ES = (n: Winkelnamen): Section[] => [
     'Las ocho primeras lecciones son gratis y lo seguirán siendo. No hay que contratar nada ni rellenar nada para eso.',
   ]],
   ['La suscripción', [
-    `El curso completo va con una suscripción, y eliges tú: ${yearPrice} por un año entero pagado por adelantado —son ${yearPerMonth} al mes— o ${price} al mes. Ambas con IVA incluido. Empiezas con ${days} días gratis; después se cobra el importe a través de ${n.account}, y así cada año o cada mes, hasta que canceles.`,
-    'Se cancela en esa cuenta de la tienda, no con nosotros: no tenemos acceso. Si cancelas antes de que acaben los días gratis, no pagas nada. Si cancelas más tarde, mantienes el acceso hasta el final del periodo ya pagado: el año o el mes.',
+    `El curso completo va con una suscripción, y eliges tú: ${yearPrice} por un año entero pagado por adelantado —son ${yearPerMonth} al mes— o ${price} al mes. Ambas con IVA incluido. El importe se cobra a través de ${n.account} al contratar, y así cada año o cada mes, hasta que canceles.`,
+    'Se cancela en esa cuenta de la tienda, no con nosotros: no tenemos acceso. Si cancelas, mantienes el acceso hasta el final del periodo ya pagado: el año o el mes.',
     `El vendedor es ${n.bedrijfEn}: ahí se cobra el importe, ahí se liquida el IVA y ahí rigen sus propias normas de devolución. Una petición de devolución va, por tanto, ahí.`,
     'Si algún día cambia el precio, la tienda te avisa antes de que se aplique y puedes cancelar en lugar de seguir.',
   ]],
@@ -176,8 +176,8 @@ const SECTIONS_IT = (n: Winkelnamen): Section[] => [
     'Le prime otto lezioni sono gratis e lo restano. Non c’è niente da sottoscrivere e niente da compilare.',
   ]],
   ['L’abbonamento', [
-    `Il corso completo va con un abbonamento, e scegli tu: ${yearPrice} per un anno intero pagato in anticipo — sono ${yearPerMonth} al mese — oppure ${price} al mese. Entrambi IVA inclusa. Inizi con ${days} giorni gratis; poi l’importo viene addebitato tramite ${n.account}, e così ogni anno o ogni mese, finché non disdici.`,
-    'La disdetta si fa in quell’account del negozio, non da noi: non ci possiamo arrivare. Se disdici prima che finiscano i giorni gratis, non paghi niente. Se disdici più tardi, l’accesso resta fino alla fine del periodo già pagato: l’anno o il mese.',
+    `Il corso completo va con un abbonamento, e scegli tu: ${yearPrice} per un anno intero pagato in anticipo — sono ${yearPerMonth} al mese — oppure ${price} al mese. Entrambi IVA inclusa. L’importo viene addebitato tramite ${n.account} alla sottoscrizione, e così ogni anno o ogni mese, finché non disdici.`,
+    'La disdetta si fa in quell’account del negozio, non da noi: non ci possiamo arrivare. Se disdici, l’accesso resta fino alla fine del periodo già pagato: l’anno o il mese.',
     `Il venditore è ${n.bedrijfEn}: è lì che si incassa, lì che si versa l’IVA e lì che valgono le proprie regole di rimborso. Una richiesta di rimborso va quindi lì.`,
     'Se un giorno il prezzo cambia, il negozio te lo comunica prima che entri in vigore e puoi disdire invece di proseguire.',
   ]],
@@ -210,8 +210,8 @@ const SECTIONS_EN = (n: Winkelnamen): Section[] => [
     'The first eight lessons are free and stay free. There is nothing to sign up for and nothing to fill in.',
   ]],
   ['The subscription', [
-    `The full course runs on a subscription, and you choose: ${yearPrice} for a whole year up front — that is ${yearPerMonth} a month — or ${price} a month. Both include VAT. You start with ${days} days free; after that the amount is charged through ${n.account}, and again every year or every month, until you cancel.`,
-    'Cancelling happens in that store account, not with us — we cannot reach it. Cancel before the free days end and you pay nothing. Cancel later and your access runs to the end of the period you already paid for — the year or the month.',
+    `The full course runs on a subscription, and you choose: ${yearPrice} for a whole year up front — that is ${yearPerMonth} a month — or ${price} a month. Both include VAT. The amount is charged through ${n.account} when you subscribe, and again every year or every month, until you cancel.`,
+    'Cancelling happens in that store account, not with us — we cannot reach it. Cancel and your access runs to the end of the period you already paid for — the year or the month.',
     `The seller is ${n.bedrijfEn}: that is where the payment is taken, where the VAT is settled and where the refund rules are set. A request for your money back therefore goes there.`,
     'If the price ever changes, the store tells you before it applies, and you can cancel rather than follow it.',
   ]],
@@ -252,42 +252,42 @@ const build = (
 const OPBOUW: Record<Lang, (n: Winkelnamen) => TermsText> = {
   nl: (n) => build(
     'Gebruiksvoorwaarden',
-    'Laatst gewijzigd: september 2026',
+    'Laatst gewijzigd: november 2026',
     'Dit zijn de afspraken tussen jou en de uitgever van Darijaforkids. Ze zijn kort, want de app doet weinig dat afspraken nodig heeft: hij leert je een taal en bewaart niets over je.',
     'Vragen over deze voorwaarden?',
     SECTIONS_NL(n),
   ),
   fr: (n) => build(
     'Conditions d’utilisation',
-    'Dernière modification : septembre 2026',
+    'Dernière modification : novembre 2026',
     'Voici l’accord entre toi et l’éditeur de Darijaforkids. Il est court, parce que l’application fait peu de choses qui demandent un accord : elle t’apprend une langue et ne garde rien sur toi.',
     'Une question sur ces conditions ?',
     SECTIONS_FR(n),
   ),
   de: (n) => build(
     'Nutzungsbedingungen',
-    'Zuletzt geändert: September 2026',
+    'Zuletzt geändert: November 2026',
     'Das ist die Vereinbarung zwischen dir und dem Herausgeber von Darijaforkids. Sie ist kurz, denn die App tut wenig, wofür man eine Vereinbarung braucht: Sie bringt dir eine Sprache bei und speichert nichts über dich.',
     'Fragen zu diesen Bedingungen?',
     SECTIONS_DE(n),
   ),
   es: (n) => build(
     'Condiciones de uso',
-    'Última modificación: septiembre de 2026',
+    'Última modificación: noviembre de 2026',
     'Este es el acuerdo entre tú y quien publica Darijaforkids. Es corto, porque la aplicación hace pocas cosas que necesiten un acuerdo: te enseña un idioma y no guarda nada sobre ti.',
     '¿Dudas sobre estas condiciones?',
     SECTIONS_ES(n),
   ),
   it: (n) => build(
     'Condizioni d’uso',
-    'Ultima modifica: settembre 2026',
+    'Ultima modifica: novembre 2026',
     'Questo è l’accordo fra te e chi pubblica Darijaforkids. È corto, perché l’app fa poche cose che abbiano bisogno di un accordo: ti insegna una lingua e non conserva niente su di te.',
     'Domande su queste condizioni?',
     SECTIONS_IT(n),
   ),
   en: (n) => build(
     'Terms of use',
-    'Last changed: September 2026',
+    'Last changed: November 2026',
     'This is the agreement between you and the publisher of Darijaforkids. It is short, because the app does little that needs an agreement: it teaches you a language and keeps nothing about you.',
     'Questions about these terms?',
     SECTIONS_EN(n),

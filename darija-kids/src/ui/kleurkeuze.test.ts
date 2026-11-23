@@ -221,7 +221,12 @@ describe('het startscherm', () => {
   /** De prijs hoort vóór de eerste les, niet bij het eerste slot. */
   it('en noemt wat het kost voordat je begint', () => {
     const laatste = welkom.slice(welkom.indexOf('{stap === 3 && ('))
-    expect(laatste).toContain('t.welcome.plan(TRIAL_DAYS')
+    // Het eerste argument van `plan()` is het aantal gratis dagen, en dat is
+    // hier geen vast getal meer: zonder proefperiode geeft de winkel er geen,
+    // en dan is het nul. Wat de toets vasthoudt is dat de laatste stap de
+    // jaarprijs noemt -- niet hoe het dagental heet.
+    expect(laatste, 'de laatste stap noemt de prijs niet')
+      .toMatch(/t\.welcome\.plan\(.*planOf\('jaar'\)\.perMonth\)/)
   })
 })
 
