@@ -3792,6 +3792,21 @@ vrijgeven. Hij staat nu als stap 0 in `docs/GO-LIVE.md`.
 
 #### En wat het trechtermodel nu is
 
+> **Achterhaald op 23 november, en op één punt aantoonbaar onjuist.** Het
+> trechtermodel hieronder is dat van toen: vier gratis lessen, daarna een proef
+> van drie dagen. Allebei zijn vervallen — zie de aantekening boven `magLeren`
+> in `src/engine/store.ts` en de twee koppen van 23 november bovenaan dit
+> bestand.
+>
+> De zin aan het eind van deze paragraaf — *"wie een harde betaalmuur bij de
+> download wil, moet van een gratis app met aankopen naar een betaalde app"* —
+> is niet alleen achterhaald maar onjuist, en dat is het nalezen waard, want
+> hij heeft dit besluit maanden tegengehouden. Het klopt niet: de app is nog
+> steeds gratis te downloaden met aankopen erin, en de muur staat op het eerste
+> scherm in plaats van in de winkel. `Poort` in `src/App.tsx` is er tien regels
+> voor. Een betaalde app zou je pakketnaam, je beoordelingen en je
+> gezinsdeling kosten; dit kostte een redirect.
+
 Het is geen betaalmuur vóór de download, en dat is met opzet:
 
 1. **Downloaden is gratis.** Beide winkels, geen bedrag vooraf.
