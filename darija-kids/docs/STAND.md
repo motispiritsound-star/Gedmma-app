@@ -5,6 +5,47 @@ diplomaplank en de drie sloten op de ouderschermen. Dit bestand
 is het antwoord op "wat moet er nog" zonder dat je drie andere bestanden hoeft
 te lezen.
 
+## 23 november: de proefperiode eruit, en wat er in de consoles moet
+
+Besloten: de drie gratis dagen gaan uit het aanbod. Wie het abonnement neemt,
+betaalt bij het afsluiten. Opzeggen kan nog altijd en dan loopt de betaalde
+periode af — dat verandert niet, dat is de winkel.
+
+**De app is klaar en staat live.** Hij leest het niet uit `TRIAL_DAYS` maar
+uit wat de winkel teruggeeft (`billing.proef.jaar`), en drie schermen rekenen
+dat om naar `proefDagen`, nul als er geen proef is. De teksten hebben daar in
+alle zes de talen een tak voor. **De app klapt dus om op het moment dat je de
+aanbieding in de console uitzet — er hoeft geen nieuwe build naartoe.**
+
+Wat er nog moest kloppen en nu klopt: `unlock.sub` en `unlock.tijdlijn` kregen
+het getal onvoorwaardelijk binnen, `welcome.plan` had alleen in het Nederlands
+een tak voor nul dagen (de vijf andere zeiden "the first 0 days are free"),
+`lesson.gratisOpBody` had er geen, en de gebruiksvoorwaarden — die beide
+winkels eisen en die een koper vóór het betalen leest — zeiden in alle zes de
+talen "Je begint met 3 dagen gratis". `src/i18n/geenproef.test.ts` bewaakt het
+nu.
+
+### Wat alleen Adil kan doen
+
+Twee aanbiedingen uitzetten, in twee webconsoles. Hier is geen commando voor:
+Apple's API kent abonnementsaanbiedingen wel, maar daarvoor moet er eerst een
+ASC-API-sleutel op de schijf staan, en dat is meer werk dan de twee klikken.
+
+| Waar | Wat |
+|---|---|
+| **App Store Connect** | het abonnement → **View all Subscription Pricing** → tabblad **Introductory Offers**. Daar staat één regel *Free for the first 3 days*, 175 landen, *No End Date*. Zet er een einddatum op. Dit moet bij **beide** abonnementen: `app.darijaforkids.yearly` én `app.darijaforkids.monthly`. |
+| **Play Console** | het abonnement → basisplan → de aanbieding. `app.darijaforkids.yearly` heeft `proef-jaar`, `app.darijaforkids.monthly` heeft `proef-maand`. Allebei deactiveren. |
+
+Let op bij Apple: er geldt **één introductieaanbieding per abonnement per
+land**, en een nieuwe overschrijft de bestaande. Komt de tijdelijke korting
+van 50% op het jaarabonnement er als *Pay Up Front* introductieaanbieding,
+dan vervangt die de proefperiode in één handeling — dan hoef je bij Jaar niets
+apart uit te zetten. Bij Maand wel.
+
+En controleer het op het aankoopvenster zelf, op een telefoon, in de app uit
+de winkel. Dat venster is het enige echte bewijs; de console zegt wat er
+ingesteld is, niet wat de koper leest.
+
 ## De lancering: volgende week, met aankondiging — besloten 2 oktober
 
 Tot vandaag was het plan stil lanceren en later communiceren. Dat is nu een
@@ -3444,6 +3485,12 @@ gat in de API. Het staat hier opgeschreven zodat niemand het nog eens
 uitzoekt.
 
 ### De proefperiode: in de app beloofd, in de winkels nog niet aangetoond
+
+> **Achterhaald op 23 november.** De proefperiode gaat uit het aanbod; zie
+> *23 november: de proefperiode eruit* bovenaan dit bestand. Wat hieronder
+> staat beschrijft hoe het tot die dag was en waar de twee aanbiedingen in de
+> consoles te vinden zijn — dat tweede is nog waar.
+
 
 De app zegt in zes talen dat de eerste **drie dagen gratis** zijn, en dat
 opzeggen binnen die drie dagen niets kost. Dat getal staat op één plek in de
