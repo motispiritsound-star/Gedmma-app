@@ -6,6 +6,13 @@ staat — App Store build 10, Play versiecode 8. Te plakken zoals het staat.
 Het bericht voor het WhatsApp-kanaal staat apart, in
 `store/lancering/kanaal.md`. Dit zijn Instagram, TikTok, YouTube en Facebook.
 
+**Wat hieronder over geld staat, is van 23 november.** Er zijn geen gratis
+lessen meer en geen proefperiode: de app is gratis te downloaden, de cursus is
+een abonnement, en dat wordt op het eerste scherm gevraagd. Op het jaar loopt
+een tijdelijke actie van 50%. De onderbouwing staat boven `magLeren` in
+`src/engine/store.ts`; wat er in de consoles moet staat in `docs/STAND.md`.
+Elke regel over geld in dit bestand is daarop nagekeken.
+
 ## Waarom niet één bericht, vier keer geplaatst
 
 Dat is de fout die `store/kanaal-socials.md` uitlegt. De kanalen zijn aan de
@@ -56,21 +63,39 @@ er geen bestand bij.
 
 ## Twee dingen die eerst gerepareerd moeten
 
-### 1. De introfilm noemt een prijs die niet bestaat
+### 1. De slotkaart van de introfilm klopt niet
 
-Op de laatste kaart van `store/video/<taal>/intro-*.mp4` staat **"Vanaf
-€ 4,99 per maand"**. Die prijs bestaat niet. Hij staat in `dev/intro.ts`
-(`price`, in alle zes de talen) en er is geen test die hem nakijkt.
+Op de laatste kaart van `store/video/<taal>/intro-*.mp4` staan twee regels die
+niet meer kunnen. Ze staan als gewone tekst in `dev/intro-copy.ts` — niet in
+`dev/intro.ts`, dat ze alleen afbeeldt — en in alle zes de talen.
 
-Twee redenen waarom dit de film tegenhoudt en niet alleen een slordigheid is.
-Het is een bedrag dat nergens anders voorkomt — het abonnement is € 6,99 per
-maand of € 59,99 per jaar. En het is een omrekening per maand van een bedrag
-dat per jaar wordt afgeschreven: Apple wees 1.0 af op richtlijn 3.1.2(c) omdat
-precies zo'n omrekening duidelijker stond dan het bedrag dat van de rekening
-gaat.
+**`cta` zegt "Gratis beginnen"**, en in de andere talen "Commencer
+gratuitement", "Kostenlos starten", "Empezar gratis", "Inizia gratis", "Start
+free". Dat is sinds 23 november onwaar: er is niets gratis te beginnen. De app
+is gratis te downloaden, de cursus is een abonnement, en dat wordt op het
+eerste scherm gevraagd — zie de aantekening boven `magLeren` in
+`src/engine/store.ts`.
+
+**`price` zegt "Vanaf € 5,00 per maand"**, en in de andere talen "À partir de
+5,00 € par mois", "Ab 5,00 € pro Monat", "Desde 5,00 € al mes", "Da 5,00 € al
+mese", "From € 5.00 a month". Dat is € 59,99 gedeeld door twaalf, en het bedrag
+dat werkelijk wordt afgeschreven staat er niet naast. Apple wees 1.0 af op
+richtlijn 3.1.2(c) omdat precies zo'n omrekening duidelijker stond dan het
+bedrag dat van de rekening gaat. Het is dezelfde regel die onder *Wat er niet
+in staat* hieronder staat, en op deze kaart is ze geschonden.
+
+Hier stond dat de kaart **"Vanaf € 4,99 per maand"** zei — een prijs die deze
+app nooit heeft gerekend. Dat is niet meer de stand: € 4,99 is uit
+`dev/intro-copy.ts` weg en `src/site/intro.test.ts` houdt hem eruit. Wat
+ervoor in de plaats kwam is de omrekening hierboven, en die moet er ook uit.
+
+**Let op wie het repareert.** `src/site/intro.test.ts` *eist* dat `price`
+precies `planOf('jaar').perMonth` noemt — € 5,00 en niets anders — dus die test
+moet mee veranderen, anders laat hij een goede slotkaart niet toe. Naar `cta`
+kijkt hij niet. Geen van beide bestanden hoort bij dit document.
 
 De film is de lanceringsvideo op YouTube. Daar is niets weg te knippen, dus
-daar moet `dev/intro.ts` eerst goed en moet `npm run intro` opnieuw. Let op
+daar moet `dev/intro-copy.ts` eerst goed en moet `npm run intro` opnieuw. Let op
 het staartje: YouTube vervangt het bestand onder een bestaande link niet, dus
 een nieuwe opname is een nieuwe link. Die link staat op twee plekken buiten
 YouTube:
@@ -169,11 +194,13 @@ app. 17 units, van de letters tot afdingen op de souq. 304 woorden, 100
 zinnen, 432 opnames — allemaal ingesproken door een Marokkaanse stem, geen
 computerstem.
 
-De eerste vier lessen zijn gratis. Geen account, niets in te vullen, geen
-advertenties. Hij werkt offline.
+Geen account, niets in te vullen, geen advertenties, en er wordt niets van je
+kind verzameld. Hij werkt offline.
 
-Daarna € 6,99 per maand, of € 59,99 per jaar met het e-boek erbij. Drie dagen
-om het te proberen, opzeggen doe je in de winkel zelf.
+De app is gratis te downloaden; de cursus is een abonnement, en na het betalen
+staat alles open. Nu de helft van de jaarprijs: € 29,99 voor het eerste jaar
+(€ 2,50 per maand) in plaats van € 59,99, met het e-boek erbij. Of € 6,99 per
+maand. De actie loopt tot [EINDDATUM]; opzeggen doe je in de winkel zelf.
 
 De twee links staan in de bio.
 
@@ -193,11 +220,14 @@ commence cette application. 17 unités, de l'alphabet jusqu'au marchandage au
 souk. 304 mots, 100 phrases, 432 enregistrements — tous dits par une voix
 marocaine, aucune voix de synthèse.
 
-Les quatre premières leçons sont gratuites. Sans compte, rien à remplir, sans
-publicité. Elle fonctionne hors ligne.
+Sans compte, rien à remplir, sans publicité, et rien n'est collecté sur ton
+enfant. Elle fonctionne hors ligne.
 
-Ensuite 6,99 € par mois, ou 59,99 € par an avec le livre numérique. Trois
-jours pour l'essayer, et on résilie dans la boutique elle-même.
+L'application se télécharge gratuitement ; le cours, lui, est un abonnement, et
+tout s'ouvre dès le paiement. En ce moment l'année est à moitié prix : 29,99 €
+la première année (soit 2,50 € par mois) au lieu de 59,99 €, livre numérique
+compris. Ou 6,99 € par mois. Offre valable jusqu'au [EINDDATUM] ; on résilie
+dans la boutique elle-même.
 
 Les deux liens sont dans la bio.
 
@@ -231,7 +261,7 @@ dienste van de eerste regel.
 | 0:03–0:06 | Stap twee: een naam getypt, een dier aangetikt. | Een naam. Een dier. | "Dus begint het hier. Een naam, een dier." |
 | 0:06–0:09 | Stap drie: de drie manieren van meelezen, één wordt gekozen. | Arabisch schrift, de klanken, of allebei. | "Hoe hij meeleest: het Arabische schrift, de klanken in ons eigen alfabet, of allebei." |
 | 0:09–0:12 | Stap vier: een kleur aangetikt. De knop en de voortgangsbalk kleuren mee. | Zijn kleur, op zijn knoppen. | "En een kleur. Die zit daarna op zijn knoppen en op zijn voortgang." |
-| 0:12–0:15 | De eerste les. Een woord in Arabisch schrift, de stem zegt het. | Darijaforkids · De eerste vier lessen zijn gratis | "Dan beginnen de lessen. De eerste vier zijn gratis." |
+| 0:12–0:15 | De eerste les. Een woord in Arabisch schrift, de stem zegt het. | Darijaforkids · Nu € 29,99 het eerste jaar | "Dan beginnen de lessen. Nu het eerste jaar voor de helft: € 29,99." |
 
 Het enige geluid naast de stem is het woord dat de app zelf uitspreekt. Dat is
 een opname van een Marokkaanse stem, en het is het enige in dit filmpje dat
@@ -256,7 +286,7 @@ Zelfde opname, Franse tekst in beeld.
 | 0:03–0:06 | Étape deux : un prénom tapé, un animal choisi. | Un prénom. Un animal. | « Alors ça commence ici. Un prénom, un animal. » |
 | 0:06–0:09 | Étape trois : les trois façons de lire, une est choisie. | L'écriture arabe, les sons, ou les deux. | « Comment il lit : l'écriture arabe, les sons dans notre alphabet, ou les deux. » |
 | 0:09–0:12 | Étape quatre : une couleur choisie. Le bouton et la barre de progression se colorent. | Sa couleur, sur ses boutons. | « Et une couleur. Elle sera ensuite sur ses boutons et sur sa progression. » |
-| 0:12–0:15 | La première leçon. Un mot en écriture arabe, la voix le dit. | Darijaforkids · Les quatre premières leçons sont gratuites | « Puis les leçons commencent. Les quatre premières sont gratuites. » |
+| 0:12–0:15 | La première leçon. Un mot en écriture arabe, la voix le dit. | Darijaforkids · 29,99 € la première année | « Puis les leçons commencent. En ce moment, la première année est à moitié prix : 29,99 €. » |
 
 ```
 La première minute dans Darijaforkids. Téléchargeable depuis aujourd'hui, sur
@@ -320,9 +350,11 @@ De uitleg staat in zes talen: Nederlands, Frans, Duits, Spaans, Italiaans en
 Engels.
 
 WAT HET KOST
-De eerste vier lessen zijn gratis en blijven gratis. Daarna € 6,99 per maand,
-of € 59,99 per jaar met het e-boek erbij. Drie dagen om het te proberen, en
-opzeggen doe je in de winkel zelf.
+De app is gratis te downloaden; de cursus is een abonnement, en dat wordt op
+het eerste scherm gevraagd. Na het betalen staat alles in één keer open.
+€ 59,99 per jaar met het e-boek erbij, of € 6,99 per maand. Nu de helft van de
+jaarprijs: € 29,99 voor het eerste jaar (€ 2,50 per maand), tot [EINDDATUM].
+Opzeggen doe je in de winkel zelf.
 
 darijaforkids.eu
 info@darijaforkids.eu
@@ -377,10 +409,14 @@ trackers. Alles blijft op het toestel; er gaat niets naar een server. De app
 werkt offline, ook in het vliegtuig en in Marokko.
 
 WAT HET KOST
-De eerste vier lessen zijn gratis en blijven gratis. Daarna € 6,99 per maand,
-of € 59,99 per jaar met het e-boek erbij. Drie dagen om het te proberen, en
-opzeggen doe je in de winkel zelf. Bij Apple deelt het hele gezin één
-abonnement, tot zes personen. Bij Google niet.
+De app is gratis te downloaden. De cursus is een abonnement, en dat wordt op
+het eerste scherm gevraagd; na het betalen staat alles in één keer open, geen
+porties. € 59,99 per jaar met het e-boek erbij, of € 6,99 per maand.
+
+En nu de helft van de jaarprijs: € 29,99 voor het eerste jaar (€ 2,50 per
+maand) in plaats van € 59,99. Tijdelijk, tot [EINDDATUM]. Opzeggen doe je in
+de winkel zelf. Bij Apple deelt het hele gezin één abonnement, tot zes
+personen. Bij Google niet.
 
 EERLIJK OVER DE TAAL
 Darija verschilt per stad en per familie en heeft geen officiële spelling. De
@@ -420,9 +456,20 @@ en Facebook staat de naam al in het account.
 - **Geen citaat van een ouder en geen kind dat iets tegen zijn oma zegt.** Dat
   is de sterkste post die dit project kan hebben, en hij is vandaag onmogelijk
   echt te hebben. Dag 7, met een ouder die het zelf opstuurt.
-- **Geen "€ 5,00 per maand".** Dat is € 59,99 gedeeld door twaalf, en het is
-  de omrekening waarop Apple 1.0 afwees onder richtlijn 3.1.2(c). Dezelfde
-  reden dat de introfilm zijn slotkaart kwijt moet.
+- **Geen omrekening per maand die alleen staat.** € 5,00 is € 59,99 gedeeld
+  door twaalf en € 2,50 is € 29,99 gedeeld door twaalf, en zo'n omrekening is
+  precies waarop Apple 1.0 afwees onder richtlijn 3.1.2(c). Hierboven staat ze
+  daarom nooit als eerste getal, maar tussen haakjes achter het bedrag dat
+  werkelijk wordt afgeschreven: "€ 29,99 voor het eerste jaar (€ 2,50 per
+  maand)". Dezelfde reden dat de slotkaart van de introfilm nog niet goed is —
+  daar staat de omrekening er alleen.
+- **Geen gratis les en geen proefperiode.** Niet in een onderschrift, niet in
+  beeld, niet gesproken. Sinds 23 november zijn ze er niet, en een belofte
+  over geld die de winkel niet nakomt is bij Apple richtlijn 2.3.1 — en die
+  geldt woordelijk "whether within or outside of the App Store", dus ook voor
+  een bericht op Facebook. Wat er in de plaats van komt verkoopt beter: gratis
+  te downloaden, 432 opnames van een echte stem, geen advertenties, er wordt
+  niets verzameld, werkt offline, en nu de helft van de jaarprijs.
 - **Gezinsdeling staat alleen op Facebook.** Bij Apple deelt het gezin één
   abonnement, bij Google niet, en dat is een goed argument met een voorbehoud
   eraan vast. `store/lancering/kanaal.md` laat het daarom weg uit één bericht
@@ -451,35 +498,63 @@ en Facebook staat de naam al in het account.
 Dit bestand gaat over één dag. De vijf posts daarna zijn al gemaakt én al
 geschreven: de beelden in `brand/social/posts/<taal>/`, de bijschriften in
 `store/social.md`, en de volgorde is de campagne — eerst het probleem, dan wat
-de app anders doet, dan het schrift, dan dat beginnen gratis is, en tot slot
-het stuk dat mensen doorsturen. Eén per keer, twee per week. Schrijf ze niet
-opnieuw.
+de app anders doet, dan het schrift, dan de prijs, en tot slot het stuk dat
+mensen doorsturen. Eén per keer, twee per week. Schrijf ze niet opnieuw.
+
+**Op één na.** De vierde ging over dat beginnen gratis is, en dat is sinds
+23 november niet meer zo — zie de aantekening boven `magLeren` in
+`src/engine/store.ts`. Die ene moet herschreven worden, en hij is nu de
+sterkste van de vijf, want hij gaat over de actie: € 29,99 voor het eerste
+jaar in plaats van € 59,99. De tekst staat in `store/social.md` en niet hier.
 
 # Vóór je plaatst
 
-1. **De film is opnieuw gemaakt.** `dev/intro.ts` zonder de prijsregel,
-   `npm run intro` gedraaid, de nieuwe opname geüpload, en de nieuwe link in
-   `src/site/links.ts` én in Play Console gezet. Zolang dat niet gebeurd is,
-   gaat de YouTube-video niet op openbaar en gaat er geen filmfragment naar
-   Instagram of TikTok.
-2. **De YouTube-video staat op openbaar.** Hij staat nu op *Niet vermeld*,
+1. **De actie van € 29,99 staat werkelijk in beide consoles, in alle vijf de
+   eurolanden.** Dit is de eerste regel omdat elk bericht hierboven die prijs
+   noemt. Wat je waar zet staat in `docs/STAND.md` onder *23 november: de
+   tijdelijke actie van 50% op het jaar*. Staat de aanbieding er nog niet, dan
+   gaat de hele actieregel eruit en noem je alleen € 59,99 per jaar of € 6,99
+   per maand — een bericht dat een prijs belooft die de winkel niet rekent is
+   bij Apple richtlijn 2.3.1, en dat geldt woordelijk "whether within or
+   outside of the App Store". Controleer het op het aankoopvenster zelf, op een
+   toestel, in de app uit de winkel: de console zegt wat er ingesteld is, niet
+   wat de koper leest.
+2. **`[EINDDATUM]` is overal vervangen.** Hij staat in het onderschrift van
+   Instagram (nl en fr), in de YouTube-beschrijving en in het Facebook-bericht.
+   Dezelfde datum als de einddatum die je in de twee consoles hebt gezet — een
+   actie zonder einddatum is bij Apple gewoon de nieuwe prijs, en in een
+   campagne een bewering die je niet kunt onderbouwen. Zoek erop voordat je
+   plaatst; punthaken en blokhaken worden meegeplakt.
+3. **De proefperiode van drie dagen staat uit.** Bij Apple bij beide
+   abonnementen, bij Google `proef-jaar` en `proef-maand` — `docs/GO-LIVE.md`
+   zegt waar. Geen enkel bericht hierboven noemt nog drie gratis dagen, dus
+   zolang de winkel ze wél geeft zegt de advertentie iets anders dan het
+   aankoopvenster. Bij `app.darijaforkids.yearly` doet de actie uit stap 1 dit
+   in één handeling; bij Maand niet.
+4. **De film is opnieuw gemaakt.** `dev/intro-copy.ts` met een goede slotkaart
+   — geen "Gratis beginnen" en geen losse omrekening per maand, zie hierboven,
+   en `src/site/intro.test.ts` moet mee — `npm run intro` gedraaid, de nieuwe
+   opname geüpload, en de nieuwe link in `src/site/links.ts` én in Play Console
+   gezet. Zolang dat niet gebeurd is, gaat de YouTube-video niet op openbaar en
+   gaat er geen filmfragment naar Instagram of TikTok.
+5. **De YouTube-video staat op openbaar.** Hij staat nu op *Niet vermeld*,
    met opzet, en die stand verandert niet van zichzelf.
-3. **De handle `@darijaforkidsapp` is gezet** (Instellingen → Kanaal →
+6. **De handle `@darijaforkidsapp` is gezet** (Instellingen → Kanaal →
    Geavanceerd). Zonder dat geeft `youtube.com/@darijaforkidsapp` een
    foutpagina, en dat adres staat in het bericht aan het WhatsApp-kanaal.
-4. **De Facebook-pagina heeft een gebruikersnaam.** Anders is het adres
+7. **De Facebook-pagina heeft een gebruikersnaam.** Anders is het adres
    `facebook.com/profile.php?id=…`, en dat is niet af te drukken en niet door
    te sturen.
-5. **Beide winkelpagina's openen op een toestel.** Niet op de Mac, niet in een
+8. **Beide winkelpagina's openen op een toestel.** Niet op de Mac, niet in een
    tabblad waar je al ingelogd bent. Een verkeerd adres onder een bericht is
    niet terug te nemen.
-6. **De versie die live staat is 1.4** — bij Apple build 10, bij Play
+9. **De versie die live staat is 1.4** — bij Apple build 10, bij Play
    versiecode 8. Dit is het eerste bericht waarin dat uitmaakt: er staat één
    app in twee winkels.
-7. **De profielen staan niet leeg.** Profielfoto en omslag uit
-   `brand/social/`, en op Instagram liever al twee of drie platen. Wie op een
-   leeg profiel aankomt, komt niet terug om nog eens te kijken
-   (`store/kanaal-socials.md`).
-8. **Lees de vier berichten naast elkaar.** Als twee ervan hetzelfde zeggen in
-   een andere lengte, is er één te veel. Dan is dit bestand voor niets
-   geschreven.
+10. **De profielen staan niet leeg.** Profielfoto en omslag uit
+    `brand/social/`, en op Instagram liever al twee of drie platen. Wie op een
+    leeg profiel aankomt, komt niet terug om nog eens te kijken
+    (`store/kanaal-socials.md`).
+11. **Lees de vier berichten naast elkaar.** Als twee ervan hetzelfde zeggen in
+    een andere lengte, is er één te veel. Dan is dit bestand voor niets
+    geschreven.

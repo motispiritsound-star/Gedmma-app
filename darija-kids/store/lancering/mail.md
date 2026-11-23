@@ -117,6 +117,13 @@ blok dat een gat heeft: `<de waarde van KOOP_GEHEIM>` is bij Gumroad in het
 veld beland, punthaken en al. Een mail is erger dan een veld bij Gumroad, want
 die is niet terug te nemen.
 
+Er staat nog een derde markering in de teksten, `[EINDDATUM]`, en die heeft
+**enkele** haken. Dat is geen slordigheid: die mag blijven ontbreken, want de
+zin eromheen is zonder datum al waar. Hij hoort dus niet in een controle die
+zegt dat er niets uit mag. Waarom hij er staat en wat je ermee doet staat onder
+*De tijdelijke actie, en de einddatum die nog niet gekozen is*; dat hij
+nagekeken wordt staat in *Vóór je verstuurt*.
+
 **Android eerst, iPhone eronder.** Dezelfde volgorde als in
 `store/lancering/kanaal.md`. De reden staat in `docs/STAND.md`: de meeste
 mensen in het kanaal zitten op Android. Over deze lijst zegt dat niets: in de
@@ -172,13 +179,70 @@ Het prijsformaat volgt per taal de winkeltekst in `store/listing.<taal>.md`:
 € ervoor in het Nederlands en het Engels, erachter in het Frans, Duits, Spaans
 en Italiaans, en een punt als decimaalteken in het Engels.
 
+## Wat er sinds 23 november niet meer in mag
+
+**Geen gratis lessen, en geen proefperiode.** Tot 23 november stond hier in
+alle zes de talen dat de eerste vier lessen gratis waren en dat je drie dagen
+kon proberen. Allebei vervallen. Het getal was daarbij al langer fout: op
+12 november werden het acht lessen, en nu zijn het er nul. Er is geen gratis
+deel meer — de
+onderbouwing staat in de aantekening boven `magLeren` in `src/engine/store.ts`,
+en wat er in de winkels bij hoort staat in `docs/STAND.md`.
+
+Wat er in plaats daarvan staat en net zo hard verkoopt: **de app is gratis te
+downloaden**, de cursus is een abonnement, en na het betalen gaat alles in één
+keer open — niet in porties. Geen account, niets in te vullen, geen
+advertenties.
+
+Dit is niet alleen netjes. Apple 2.3.1 noemt een misleidende prijsbelofte grond
+om de app te verwijderen, **"whether within or outside of the App Store"**. Een
+mail aan de hele lijst valt daar net zo goed onder als de winkelbladzijde zelf,
+en een mail is het enige van de twee dat je niet kunt terugnemen.
+
+## De tijdelijke actie, en de einddatum die nog niet gekozen is
+
+Zolang de actie loopt is het jaarabonnement **€ 29,99 voor het eerste jaar** in
+plaats van € 59,99. Dat is de haak van de campagne en die hoort hier te staan,
+met drie voorwaarden.
+
+**Eén: nooit "€ 2,50 per maand" alleen.** De omrekening mag erbij, maar het
+bedrag dat werkelijk wordt afgeschreven staat ernaast en staat vooraan. Apple
+heeft deze app één keer afgewezen op richtlijn **3.1.2(c)** omdat de omgerekende
+maandprijs duidelijker stond dan het bedrag dat van de rekening gaat. Zie ook
+het punt over € 5,00 onderaan: dat blijft er helemaal uit.
+
+**Twee: de einddatum is nog niet gekozen.** Daarom staat er in alle zes de
+talen `[EINDDATUM]` op de plek waar hij hoort, en is de zin eromheen zo
+geschreven dat hij zonder die datum al waar is — *zolang de actie loopt*, en
+niet een datum die niemand heeft vastgesteld. Eén zoekopdracht op `[EINDDATUM]`
+vindt alle zes.
+
+**Enkele haken, met opzet.** De twee adresgaten hierboven hebben
+dubbele haken omdat `[[` de controle is die zegt: dan gaat er niets uit. Deze
+is van een andere soort — vul de datum in zodra hij in beide consoles staat,
+óf haal het stukje tussen haakjes weg, want de zin blijft dan staan en blijft
+waar. Daarom valt hij buiten de `[[`-controle en staat hij als eigen stap in
+*Vóór je verstuurt*.
+
+**Drie: de actiezin gaat er pas in als de aanbieding werkelijk in beide
+consoles staat.** Wat je waar zet staat in `docs/STAND.md` onder *de tijdelijke
+actie van 50% op het jaar*. Staat ze er nog niet, dan haal je de actiezin uit
+alle zes de talen en noem je alleen € 6,99 per maand of € 59,99 per jaar.
+Controleer het op het aankoopvenster zelf, op een telefoon, in de app uit de
+winkel: de console zegt wat er ingesteld is, niet wat de koper leest.
+
+En € 29,99 bereikt alleen wie nooit eerder een abonnement in deze groep had.
+Wie vóór 23 november de proef van drie dagen nam en opzegde, ziet de korting
+dus niet. Dat is nu een klein aantal mensen, en het verklaart straks waarom
+iemand terugschrijft dat hij € 59,99 ziet staan.
+
 ## nl-NL
 
 **Onderwerp**
 `Darijaforkids staat in de winkel`
 
 **Voorbeeldtekst**
-`Voor iPhone en voor Android. De eerste vier lessen zijn gratis.`
+`Voor iPhone en voor Android. Gratis te downloaden; tijdelijk € 29,99 voor het eerste jaar.`
 
 **Kop**
 `Hij staat er`
@@ -193,18 +257,19 @@ Hij is er. Darijaforkids staat vanaf vandaag in allebei de winkels.
 Android — [[ANDROID]]
 iPhone en iPad — [[APPLE]]
 
-De eerste vier lessen zijn gratis: geen account, niets in te vullen, geen
-advertenties. Daarachter liggen 17 units, van de letters tot afdingen op de
-souq — 304 woorden en 100 zinnen, ingesproken door een Marokkaanse stem en
-niet door een computer.
+De app is gratis te downloaden: geen account, niets in te vullen, geen
+advertenties. De cursus is een abonnement en gaat na het betalen in één keer
+open: 17 units, van de letters tot afdingen op de souq — 304 woorden en 100
+zinnen, ingesproken door een Marokkaanse stem en niet door een computer.
 
-Daarna € 6,99 per maand, of € 59,99 per jaar met het e-boek erbij. Drie dagen
-om het te proberen, en opzeggen doe je in de winkel zelf.
+€ 6,99 per maand, of € 59,99 per jaar met het e-boek erbij. Zolang de actie
+loopt (tot [EINDDATUM]) is het eerste jaar € 29,99, dat is € 2,50 per maand.
+Opzeggen doe je in de winkel zelf.
 
 Shukran voor het wachten.
 ```
 
-95 woorden, de twee adresregels niet meegerekend.
+115 woorden, de twee adresregels niet meegerekend.
 
 ## fr-FR
 
@@ -212,7 +277,7 @@ Shukran voor het wachten.
 `Darijaforkids est disponible`
 
 **Voorbeeldtekst**
-`Sur iPhone et sur Android. Les quatre premières leçons sont gratuites.`
+`Sur iPhone et sur Android. Téléchargement gratuit ; 29,99 € la première année, pour un temps limité.`
 
 **Kop**
 `Elle est là`
@@ -228,18 +293,19 @@ boutiques.
 Android — [[ANDROID]]
 iPhone et iPad — [[APPLE]]
 
-Les quatre premières leçons sont gratuites : pas de compte, rien à remplir,
-pas de publicité. Derrière, il y a 17 unités, des lettres au marchandage au
-souk — 304 mots et 100 phrases, enregistrés par une voix marocaine et non par
-un ordinateur.
+L’application est gratuite à télécharger : pas de compte, rien à remplir, pas
+de publicité. Le cours est un abonnement et, une fois payé, tout s’ouvre d’un
+coup : 17 unités, des lettres au marchandage au souk — 304 mots et 100
+phrases, enregistrés par une voix marocaine et non par un ordinateur.
 
-Ensuite 6,99 € par mois, ou 59,99 € par an avec le livre numérique. Trois
-jours pour essayer, et la résiliation se fait dans la boutique elle-même.
+6,99 € par mois, ou 59,99 € par an avec le livre numérique. Tant que l’offre
+dure (jusqu’au [EINDDATUM]), la première année est à 29,99 €, soit 2,50 € par
+mois. La résiliation se fait dans la boutique elle-même.
 
 Shukran pour votre patience.
 ```
 
-94 woorden, de twee adresregels niet meegerekend.
+112 woorden, de twee adresregels niet meegerekend.
 
 ## de-DE
 
@@ -247,7 +313,7 @@ Shukran pour votre patience.
 `Darijaforkids ist da`
 
 **Voorbeeldtekst**
-`Für iPhone und für Android. Die ersten vier Lektionen sind gratis.`
+`Für iPhone und für Android. Download kostenlos; vorübergehend 29,99 € im ersten Jahr.`
 
 **Kop**
 `Sie ist da`
@@ -262,18 +328,20 @@ Sie ist da. Darijaforkids steht ab heute in beiden Stores.
 Android — [[ANDROID]]
 iPhone und iPad — [[APPLE]]
 
-Die ersten vier Lektionen sind gratis: kein Konto, nichts auszufüllen, keine
-Werbung. Dahinter liegen 17 Einheiten, von den Buchstaben bis zum Handeln im
-Souk — 304 Wörter und 100 Sätze, eingesprochen von einer marokkanischen Stimme
-und nicht von einem Computer.
+Die App lässt sich kostenlos herunterladen: kein Konto, nichts auszufüllen,
+keine Werbung. Der Kurs läuft über ein Abo und steht nach dem Bezahlen auf
+einmal offen: 17 Einheiten, von den Buchstaben bis zum Handeln im Souk — 304
+Wörter und 100 Sätze, eingesprochen von einer marokkanischen Stimme und nicht
+von einem Computer.
 
-Danach 6,99 € im Monat, oder 59,99 € im Jahr mit dem E-Book dazu. Drei Tage
-zum Ausprobieren, und gekündigt wird im Store selbst.
+6,99 € im Monat, oder 59,99 € im Jahr mit dem E-Book dazu. Solange die Aktion
+läuft (bis [EINDDATUM]), kostet das erste Jahr 29,99 €, das sind 2,50 € im
+Monat. Gekündigt wird im Store selbst.
 
 Shukran fürs Warten.
 ```
 
-87 woorden, de twee adresregels niet meegerekend.
+109 woorden, de twee adresregels niet meegerekend.
 
 ## es-ES
 
@@ -281,7 +349,7 @@ Shukran fürs Warten.
 `Darijaforkids ya está en las tiendas`
 
 **Voorbeeldtekst**
-`Para iPhone y para Android. Las cuatro primeras lecciones son gratis.`
+`Para iPhone y para Android. Descarga gratuita; por tiempo limitado, 29,99 € el primer año.`
 
 **Kop**
 `Ya está`
@@ -296,17 +364,19 @@ Ya está. Darijaforkids se puede descargar desde hoy en las dos tiendas.
 Android — [[ANDROID]]
 iPhone y iPad — [[APPLE]]
 
-Las cuatro primeras lecciones son gratis: sin cuenta, sin rellenar nada, sin
-publicidad. Detrás hay 17 unidades, de las letras al regateo en el souk — 304
-palabras y 100 frases, grabadas por una voz marroquí y no por un ordenador.
+La aplicación se descarga gratis: sin cuenta, sin rellenar nada, sin
+publicidad. El curso es una suscripción y, después de pagar, todo se abre de
+una vez: 17 unidades, de las letras al regateo en el souk — 304 palabras y 100
+frases, grabadas por una voz marroquí y no por un ordenador.
 
-Después 6,99 € al mes, o 59,99 € al año con el libro digital incluido. Tres
-días para probarlo, y la baja se da en la propia tienda.
+6,99 € al mes, o 59,99 € al año con el libro digital incluido. Mientras dure
+la oferta (hasta el [EINDDATUM]), el primer año cuesta 29,99 €, son 2,50 € al
+mes. La baja se da en la propia tienda.
 
 Shukran por la espera.
 ```
 
-91 woorden, de twee adresregels niet meegerekend.
+113 woorden, de twee adresregels niet meegerekend.
 
 ## it-IT
 
@@ -314,7 +384,7 @@ Shukran por la espera.
 `Darijaforkids è negli store`
 
 **Voorbeeldtekst**
-`Per iPhone e per Android. Le prime quattro lezioni sono gratis.`
+`Per iPhone e per Android. Download gratuito; per un periodo limitato, 29,99 € il primo anno.`
 
 **Kop**
 `È arrivata`
@@ -329,18 +399,19 @@ Hai lasciato il tuo indirizzo per sapere quando sarebbe arrivata l’app.
 Android — [[ANDROID]]
 iPhone e iPad — [[APPLE]]
 
-Le prime quattro lezioni sono gratis: nessun account, niente da compilare,
-nessuna pubblicità. Dietro ci sono 17 unità, dalle lettere alla contrattazione
-al souk — 304 parole e 100 frasi, registrate da una voce marocchina e non da
-un computer.
+L’app si scarica gratis: nessun account, niente da compilare, nessuna
+pubblicità. Il corso è un abbonamento e, dopo il pagamento, si apre tutto in
+una volta sola: 17 unità, dalle lettere alla contrattazione al souk — 304
+parole e 100 frasi, registrate da una voce marocchina e non da un computer.
 
-Poi 6,99 € al mese, o 59,99 € all’anno con l’ebook incluso. Tre giorni per
-provare, e la disdetta si fa nello store stesso.
+6,99 € al mese, o 59,99 € all’anno con l’ebook incluso. Finché l’offerta dura
+(fino al [EINDDATUM]), il primo anno costa 29,99 €, sono 2,50 € al mese. La
+disdetta si fa nello store stesso.
 
 Shukran per l’attesa.
 ```
 
-86 woorden, de twee adresregels niet meegerekend.
+106 woorden, de twee adresregels niet meegerekend.
 
 ## en-US
 
@@ -348,7 +419,7 @@ Shukran per l’attesa.
 `Darijaforkids is in the stores`
 
 **Voorbeeldtekst**
-`For iPhone and for Android. The first four lessons are free.`
+`For iPhone and for Android. Free to download; € 29.99 for the first year, for a limited time.`
 
 **Kop**
 `It is here`
@@ -363,17 +434,19 @@ It is here. Darijaforkids is in both stores from today.
 Android — [[ANDROID]]
 iPhone and iPad — [[APPLE]]
 
-The first four lessons are free: no account, nothing to fill in, no ads.
-Behind them are 17 units, from the letters to haggling at the souk — 304 words
-and 100 sentences, recorded by a Moroccan voice and not by a computer.
+The app is free to download: no account, nothing to fill in, no ads. The
+course is a subscription, and once you pay it all opens in one go: 17 units,
+from the letters to haggling at the souk — 304 words and 100 sentences,
+recorded by a Moroccan voice and not by a computer.
 
-After that it is € 6.99 a month, or € 59.99 a year with the e-book included.
-Three days to try it, and you cancel in the store itself.
+€ 6.99 a month, or € 59.99 a year with the e-book included. While the offer
+runs (until [EINDDATUM]) the first year is € 29.99, that is € 2.50 a month.
+You cancel in the store itself.
 
 Shukran for waiting.
 ```
 
-93 woorden, de twee adresregels niet meegerekend.
+111 woorden, de twee adresregels niet meegerekend.
 
 ---
 
@@ -484,10 +557,24 @@ tientallen adressen en wel bij duizenden.
   personen; bij Google niet. Dat is waar en het is een goed argument, maar één
   mail voor twee winkels kan het niet noemen zonder per winkel een voetnoot.
   Het hoort op het koopscherm, waar de app weet in welke winkel hij staat.
+- **Geen gratis lessen en geen proefperiode.** Die bestaan niet meer — zie
+  *Wat er sinds 23 november niet meer in mag*. Tot die dag stond hier in alle
+  zes de talen dat de eerste vier lessen gratis waren en dat je drie dagen kon
+  proberen; het eerste getal was al sinds 12 november fout en is nu nul. Er is
+  niets voor in de plaats gekomen dat erop líjkt: *gratis te downloaden* gaat
+  over de app en niet over de cursus, en dat onderscheid moet in elke taal in
+  één zin te zien blijven.
 - **Geen "€ 5,00 per maand".** Dat is € 59,99 gedeeld door twaalf. Apple wees
   1.0 af op richtlijn 3.1.2(c) omdat die omrekening duidelijker stond dan het
-  bedrag dat van de rekening gaat. Wat hier staat zijn de twee bedragen die
-  afgeschreven worden.
+  bedrag dat van de rekening gaat. De bedragen die hier vooraan staan zijn de
+  bedragen die afgeschreven worden: € 6,99, € 59,99 en € 29,99. De enige
+  omrekening die er wél staat is € 2,50 per maand, en die staat in geen van de
+  zes talen zonder € 29,99 voor het eerste jaar ernaast.
+- **Niet dat het abonnement op het eerste scherm gevraagd wordt.** Dat de
+  cursus een abonnement is staat er wel, en in dezelfde zin als wat er na het
+  betalen opengaat; dat is de verwachting die een nieuwe download nodig heeft.
+  Waar precies de kassa staat, past niet meer binnen de 120 woorden en staat op
+  de winkelbladzijde, één tik later.
 - **Niet dat de app offline werkt, en niet dat er niets naar een server gaat.**
   Allebei waar, allebei sterk, en allebei een reden om de mail langer te maken
   dan hij hoeft te zijn. Ze staan in de winkeltekst, één tik verder, bij iemand
@@ -505,13 +592,24 @@ tientallen adressen en wel bij duizenden.
 
 1. **Zoek op `[[`.** In alle zes de talen, in de samengestelde tekst, en ook in
    de HTML-versie. Eén treffer betekent: niet versturen.
-2. **Open de twee adressen op een toestel.** Allebei, en niet op de Mac en niet
+2. **Staat de actie werkelijk in beide consoles?** Zo niet, dan gaat de
+   actiezin — de zin met € 29,99 erin — uit alle zes de talen, en blijven
+   alleen € 6,99 per maand en € 59,99 per jaar staan. Kijk niet in de console
+   maar op het aankoopvenster zelf, op een telefoon, in de app uit de winkel:
+   de console zegt wat er ingesteld is, niet wat de koper leest. Een mail die
+   een prijs belooft die de winkel niet rekent is Apple 2.3.1, en die geldt
+   ook buiten de App Store.
+3. **Zoek op `[EINDDATUM]`.** Zes treffers, één per taal. Vul per taal de datum
+   in die je in de consoles hebt gezet, of haal het stukje tussen haakjes weg
+   — de zin blijft dan staan en blijft waar. Wat niet mag is hem laten staan:
+   dan gaat `[EINDDATUM]` als woord de deur uit.
+4. **Open de twee adressen op een toestel.** Allebei, en niet op de Mac en niet
    in een tabblad waar je al ingelogd bent.
-3. **Kijk of wat er live staat 1.4 is** — bij Apple build 10, bij Play
+5. **Kijk of wat er live staat 1.4 is** — bij Apple build 10, bij Play
    versiecode 8. Dit is de eerste keer dat het één nummer is voor allebei de
    winkels, en dat is ook de reden dat het nagekeken moet worden.
-4. **Stuur hem eerst naar jezelf**, in minstens twee talen. Kijk of de voet
+6. **Stuur hem eerst naar jezelf**, in minstens twee talen. Kijk of de voet
    eronder staat, of de uitschrijflink werkt, en of de twee adressen klikbaar
    zijn geworden of als kale tekst in beeld staan.
-5. **Alleen `bevestigd`.** Niet `wacht`. `npm run belangstelling` drukt de twee
+7. **Alleen `bevestigd`.** Niet `wacht`. `npm run belangstelling` drukt de twee
    aantallen apart af; het tweede aantal mag deze mail niet krijgen.
