@@ -295,7 +295,26 @@ dus het kan niet uit de pas gaan lopen.
 3. Meld je aan voor het **App Store Small Business Program**: commissie **15%**
    in plaats van 30% zolang je onder $1 miljoen per jaar blijft. Los daarvan
    zakt de commissie op een abonnement na één onafgebroken jaar sowieso naar
-   15% — maar het programma is sneller en simpeler.
+   15% — maar het programma is sneller en simpeler. Het gaat zo:
+
+   - Aanmelden kan alleen de **accounthouder**, op
+     `developer.apple.com/app-store/small-business-program/enroll/`.
+   - Apple eist daarbij dat de **laatste Paid Apps-overeenkomst** (Schedule 2
+     bij de Developer Program License Agreement) is geaccepteerd. Staat er in
+     App Store Connect een gele balk dat de overeenkomst is bijgewerkt, dan is
+     dat niet alleen een rem op het indienen van een versie — het houdt deze
+     aanmelding ook tegen. Eerst accepteren, dan aanmelden.
+   - Je moet opgeven hoeveel **Associated Developer Accounts** je hebt: andere
+     Apple-ontwikkelaarsaccounts die jij beheert of die jou beheren. Bij één
+     eigen account is het antwoord nul.
+   - **Wanneer het ingaat:** vijftien dagen na het einde van de fiscale maand
+     waarin je aanmelding is goédgekeurd. Apple's eigen voorbeeld: goedgekeurd
+     op 10 februari, verhoogde opbrengst vanaf 14 maart. Alles wat vóór die
+     datum verkocht wordt, gaat nog tegen 30%. Doe het dus ruim vóór een
+     campagne en niet tijdens.
+
+   Bij Google hoeft dit niet: daar is het 15% vanaf de eerste maand, zonder
+   aanmelding.
 4. Uitbetaling **maandelijks**, binnen 45 dagen na de laatste dag van de
    fiscale maand waarin de aankoop viel — grofweg zes weken later dus. Er geldt
    een minimumbedrag, maar voor een Nederlandse rekening in euro's is dat

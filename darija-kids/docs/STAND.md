@@ -187,9 +187,24 @@ Op een jaarabonnement van € 59,99 scheelt dat ongeveer € 9 per verkoop.
 
 Je mag mee zolang je onder één miljoen dollar per jaar blijft, en dat is hier
 geen grens die in zicht komt. `docs/PAYMENTS.md` noemt het al als stap 3 onder
-*Apple*, maar het is nooit afgevinkt. Doe het vóór de campagne: aanmelden gaat
-per maand in, dus wie zich in de maand van de campagne aanmeldt, loopt de
-eerste golf mis.
+*Apple*, maar het is nooit afgevinkt.
+
+**Hoe, nagelopen op 24 november.** Aanmelden doet de accounthouder op
+`developer.apple.com/app-store/small-business-program/enroll/`. Apple eist
+daarvoor dat de laatste Paid Apps-overeenkomst is geaccepteerd — dus de gele
+balk in App Store Connect over de bijgewerkte Developer Program License
+Agreement blokkeert niet alleen het indienen van 1.6, maar ook deze aanmelding.
+Dat zijn punt 1 en punt 13 van deze lijst, en ze zitten aan elkaar vast: doe
+punt 1 en punt 13 is nog maar een formulier. Verder vraagt Apple hoeveel
+*Associated Developer Accounts* je hebt; bij één eigen account is dat nul.
+
+**En de ingangsdatum is scherper dan hier eerst stond.** Het is niet "per
+maand": je opbrengst wordt aangepast **vijftien dagen na het einde van de
+fiscale maand waarin je aanmelding is goedgekeurd**. Apple's eigen voorbeeld is
+goedgekeurd op 10 februari, aangepast vanaf 14 maart. Krijg je het deze maand
+rond, dan geldt het dus pas vanaf ongeveer half december, en alles wat daarvóór
+verkocht wordt gaat nog tegen 70/30. Dat is de reden om het nu te doen en niet
+in de week van de campagne.
 
 Let op dat de commissie op een abonnement na één onafgebroken jaar sowieso naar
 15% zakt — maar dat geldt per abonnee en duurt een jaar. Het programma geldt
