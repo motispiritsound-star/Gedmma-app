@@ -296,22 +296,44 @@ dus het kan niet uit de pas gaan lopen.
    in plaats van 30% zolang je onder $1 miljoen per jaar blijft. Los daarvan
    zakt de commissie op een abonnement na één onafgebroken jaar sowieso naar
    15% — maar het programma is sneller en simpeler.
-4. Uitbetaling **maandelijks**, ongeveer 33 dagen na het einde van de maand,
-   boven de drempel voor jouw land.
+4. Uitbetaling **maandelijks**, binnen 45 dagen na de laatste dag van de
+   fiscale maand waarin de aankoop viel — grofweg zes weken later dus. Er geldt
+   een minimumbedrag, maar voor een Nederlandse rekening in euro's is dat
+   0,02 USD: in de praktijk geen drempel.
 
-**Waar je het terugziet: App Store Connect → Business.** Dat is de plek met
-*Payments and Financial Reports* — wat er is uitbetaald, wat er openstaat, en
-de maandrapporten per regio. Daar staan ook de overeenkomsten, de
-bankgegevens, de belastingformulieren en de aanmelding voor het Small
-Business Program, dus het is in de praktijk de enige bladzijde die over geld
-gaat.
+**Waar je het terugziet: App Store Connect → Reports.** Dat is *Payments and
+Financial Reports*. Bovenaan staat per maand wat er is uitbetaald of wat er nog
+openstaat; daaronder per land de aantallen, de gehanteerde koers en het bedrag
+in de valuta van je bank. Daar staan ook de maandrapporten om te downloaden, en
+linksboven je Vendor Number.
 
-Niet verwarren met de twee buren in diezelfde balk. *Trends* en *Reports* gaan
-over verkopen — wat er besteld is — en de *Proceeds* op het Analytics-overzicht
-is een schátting van wat je toekomt. Alleen onder Business staat wat je bank
-werkelijk heeft gezien. Dat verschil is de reden dat iemand denkt dat er geld
-mist: het staat er wel, maar onder de drempel, en schuift door naar de maand
-erna.
+**Niet onder Business.** Dat is de bladzijde ernaast, en die gaat over wíe er
+betaald wordt en waarheen: de overeenkomsten, de bankrekening, de
+belastingformulieren, de naleving. Bedragen staan er niet.
+
+Dit is hier op 24 november misgegaan — eerst stond Business in dit bestand,
+waarna die bladzijde alleen *Agreements*, *Bank Accounts* en *Tax Forms* bleek
+te tonen. Apple's eigen handleiding zegt het in één regel: *Select Reports at
+the top of the page.* De verwarring is begrijpelijk, want het inríchten gebeurt
+wél onder Business; alleen het terugkijken niet.
+
+En *Trends* is nog iets anders: dat zijn verkopen — wat er besteld is. De
+*Proceeds* op het Analytics-overzicht is een schátting van wat je toekomt.
+Alleen onder Reports staat wat er werkelijk is overgemaakt.
+
+**Staat er niets?** Reken eerst op de termijn: de cijfers van de vorige maand
+verschijnen pas vanaf de eerste woensdag van de lopende maand, compleet op de
+eerste vrijdag, en het geld zelf komt binnen 45 dagen na het einde van die
+maand. Een jonge app heeft dus al gauw twee maanden waarin er nog niets te zien
+is. De drempel is het in Nederland niet — die is 0,02 USD. De rol ook niet,
+zolang je zelf de Account Holder bent (anders is Admin of Finance nodig).
+
+Blijft het leeg terwijl de termijn voorbij is, kijk dan onder Business → Bank
+Accounts bij *See More* naar de kolom *Royalty Currencies*: daar hoort de valuta
+van je verkopen bij te staan. Op 24 november stond daar alleen USD, naast een
+rekening in euro's. Dat hoeft niet fout te zijn — Apple rekent om naar de valuta
+van de rekening — maar het is het eerste wat je nakijkt als de euro-opbrengst
+nergens landt.
 
 ### Google
 

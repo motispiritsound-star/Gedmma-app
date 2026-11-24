@@ -837,7 +837,8 @@ over 26 weken toont één negatieve week van ongeveer US$ −50. In het totaal z
 niets onverklaard: **US$ 114 / US$ 163 = 69,9%**, en dat is exact de
 70/30-verdeling van Apple. Het is dus waarschijnlijk één terugbetaling binnen
 een kloppend geheel. **Wát het was staat nog open** — op te zoeken onder
-*Payments and Financial Reports*, week 2–8 november.
+*Payments and Financial Reports* — dat is **Reports** in de bovenbalk van App
+Store Connect, niet Business — week 2–8 november.
 
 ### Wat alleen jij kunt opzoeken, en het kost een half uur
 
