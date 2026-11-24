@@ -179,6 +179,22 @@ repareert. Zie de kop over de films hierboven. De promofilm uit de app mag wel.
 **12. Los daarvan, maar voor februari:** trader status aangeven, en de
 waarschuwing *"Action required with your payments account"* in Play wegwerken.
 
+**13. En dit kost nu geld: meld je aan voor het App Store Small Business
+Program.** De opbrengstverhouding die op 22 november in App Store Connect
+stond — US$ 114 van US$ 163 — is **69,9%**, en dat is exact de 70/30 van
+Apple. Dat betekent dat je er niet in zit: in het programma is het 85/15.
+Op een jaarabonnement van € 59,99 scheelt dat ongeveer € 9 per verkoop.
+
+Je mag mee zolang je onder één miljoen dollar per jaar blijft, en dat is hier
+geen grens die in zicht komt. `docs/PAYMENTS.md` noemt het al als stap 3 onder
+*Apple*, maar het is nooit afgevinkt. Doe het vóór de campagne: aanmelden gaat
+per maand in, dus wie zich in de maand van de campagne aanmeldt, loopt de
+eerste golf mis.
+
+Let op dat de commissie op een abonnement na één onafgebroken jaar sowieso naar
+15% zakt — maar dat geldt per abonnee en duurt een jaar. Het programma geldt
+meteen en voor alles, ook voor het e-boek.
+
 ### De meting staat nog uit, en dat is nu minder erg
 
 `TELLEN` in `src/engine/telbesluit.ts` staat op `false`. Aanzetten verandert
