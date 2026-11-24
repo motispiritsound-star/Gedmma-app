@@ -11,6 +11,7 @@
  *   npm run play -- --taal nl-NL    één taal
  *   npm run play -- --proef         niets versturen, alleen tonen wat er zou gaan
  *   npm run play -- --tekst         alleen de teksten, rechtstreeks uit store/listing.*.md
+ *   npm run play -- --beelden       alleen de beelden, de teksten blijven staan
  *   npm run play -- --video <url>   de YouTube-link in het videoveld, in alle talen
  *
  * Die laatste is voor een tekstwijziging na de lancering: de beelden staan er
@@ -46,6 +47,26 @@ const arg = (naam, terugval = null) => {
 }
 const PROEF = process.argv.includes('--proef')
 const TEKST = process.argv.includes('--tekst')
+/*
+ * Alleen de beelden, en de teksten laten staan zoals ze staan.
+ *
+ * De tegenhanger van `--tekst`, en hij bestaat om een reden die zich herhaalt:
+ * de teksten in `store/listing.*.md` lopen vooruit op de versie die in de
+ * winkel staat. Op 24 november beschreven ze 1.6 -- geen gratis lessen, het
+ * abonnement op het eerste scherm -- terwijl Play nog 1.5 serveerde, waar de
+ * eerste acht lessen wél gratis waren. Die teksten meesturen zou de winkel
+ * iets anders laten zeggen dan de app doet.
+ *
+ * De beelden hebben dat probleem niet: die worden met `unlocked: true`
+ * gefotografeerd, dus ze tonen de cursus en geen betaalmuur. Die kunnen dus
+ * wél vooruit, en dat is precies wat je wilt als er op een Franse pagina nog
+ * Nederlandse plaatjes staan.
+ */
+const BEELDEN_ALLEEN = process.argv.includes('--beelden')
+if (TEKST && BEELDEN_ALLEEN) {
+  console.error('\n--tekst en --beelden sluiten elkaar uit: kies er een.\n')
+  process.exit(1)
+}
 
 /**
  * De film bij de vermelding.
@@ -197,13 +218,17 @@ for (const bron of bronnen) {
   const { taal, dir } = bron
   const t = teksten(await readFile(bron.tekst, 'utf8'), path.relative(ROOT, bron.tekst))
   console.log(`${taal}`)
-  console.log(`  titel   ${t.titel}`)
-  console.log(`  kort    ${t.kort.slice(0, 60)}${t.kort.length > 60 ? '…' : ''}`)
-  console.log(`  vol     ${t.vol.length} tekens`)
+  if (BEELDEN_ALLEEN) {
+    console.log('  teksten blijven staan zoals ze zijn (--beelden)')
+  } else {
+    console.log(`  titel   ${t.titel}`)
+    console.log(`  kort    ${t.kort.slice(0, 60)}${t.kort.length > 60 ? '…' : ''}`)
+    console.log(`  vol     ${t.vol.length} tekens`)
+  }
 
   if (VIDEO) console.log(`  video   ${VIDEO}`)
 
-  if (!PROEF) {
+  if (!PROEF && !BEELDEN_ALLEEN) {
     // Wat er nu staat ophalen, zodat een veld dat we niet meesturen blijft
     // staan. De vermelding bestaat nog niet bij een eerste keer; dan is er
     // ook niets te behouden.

@@ -325,6 +325,45 @@ export const es: ContentPack = {
     cultuur: "País, ciudades y fiesta",
   },
 
+  /**
+   * Hoe elke letter klinkt. Zie de aantekening bij `letters` in `./types.ts`:
+   * een klank leg je uit met een woord dat de lezer al kent, dus dit zijn
+   * Spaanse voorbeeldwoorden en geen vertalingen van de Nederlandse.
+   *
+   * Vier plekken waar het Spaans een eigen keuze vraagt. De `kha` heeft het
+   * Spaans precies: dat is de j van "jamón". De `tha` en de `dhal` ook, want
+   * de Castiliaanse z is die th en de d tussen twee klinkers ("cada") is de
+   * zachte. De `ra` is de gewone rr van "perro" en vraagt nauwelijks uitleg.
+   * Maar pas op bij de `zay`: de Spaanse z klinkt in Spanje als th, dus die
+   * staat op de zoemende s van "mismo", met erbij dat het niet de z van
+   * "zapato" is — dat is precies de verwarring die hier dreigt. En de `jim`
+   * bestaat in het Spaans niet; die leunt op de Franse j en de Argentijnse
+   * ll.
+   */
+  letters: {
+    alif: "aa, la a de «casa» pero más larga",
+    ba: "b como en «balón»", ta: "t como en «taza»",
+    tha: "la z de «zapato» — poco frecuente en dariya",
+    jim: "la j francesa de «jour», o la ll argentina de «lluvia»",
+    ha: "una h fuerte y soplada, desde el fondo de la garganta",
+    kha: "la j de «jamón»", dal: "d como en «dedo»",
+    dhal: "la d suave de «cada», el th del inglés «this»",
+    ra: "la rr de «perro»",
+    zay: "la s que zumba de «mismo», no la z de «zapato»",
+    sin: "s como en «sol»", shin: "sh, el sonido de pedir silencio: ¡shhh!",
+    sad: "una s fuerte y oscura, con la lengua plana",
+    dad: "una d fuerte — el árabe se llama a sí mismo «la lengua del dad»",
+    "ta-emf": "una t fuerte y oscura", "za-emf": "una s zumbante y fuerte",
+    ayn: "un apretón en el fondo de la garganta — el sonido más famoso del árabe",
+    ghayn: "la g suave de «amigo», raspando el fondo de la garganta",
+    fa: "f como en «flor»", qaf: "una k muy al fondo de la boca",
+    kaf: "k como en «koala»", lam: "l como en «luna»",
+    mim: "m como en «mano»", nun: "n como en «nariz»",
+    "ha-soft": "la h suave del inglés «hello» — en español la h no suena",
+    waw: "w como en «huevo», o una u larga",
+    ya: "y como en «yogur», o una i larga",
+  },
+
   lessons: {
     toets: "Prueba",
     "groeten-1": "Hola y adiós",

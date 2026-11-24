@@ -153,7 +153,7 @@ Er staat nog een derde markering in de teksten, en sinds 24 november is dat
 Die heeft **enkele** haken, en dat is geen slordigheid — `[[` is de controle
 die zegt dat er niets uit mag, en deze markering is van een andere soort. Hij
 is wel strenger dan zijn voorganger: `[EINDDATUM]` mocht wegvallen, want de
-zin eromheen was zonder datum al waar, maar *nog [WEKEN] weken wel* is zonder
+zin eromheen was zonder datum al waar, maar *in [WEKEN] weken wel* is zonder
 getal geen zin. Waarom hij er staat en wat je ermee doet staat onder *De zomer,
 en het getal dat je niet verzint*; dat hij nagekeken wordt staat in *Vóór je
 verstuurt*.
@@ -328,9 +328,9 @@ in de aantekening bovenaan `scripts/aftellen.mjs`.
 **Enkele haken, met opzet**, net als bij `[EINDDATUM]` hiervoor. De twee
 adresgaten hebben dubbele haken omdat `[[` de controle is die zegt: dan gaat er
 niets uit. Deze is van een andere soort, maar hij laat zich niet weglaten zoals
-`[EINDDATUM]` dat mocht — *nog [WEKEN] weken wel* is zonder getal geen zin.
-Vul hem dus in, of herschrijf die ene zin naar het grove getal (*nog een maand
-of zeven*), wat niet stil veroudert. Hij blijft buiten de `[[`-controle en
+`[EINDDATUM]` dat mocht — *in [WEKEN] weken wel* is zonder getal geen zin.
+Vul hem dus in, of herschrijf die ene zin naar het grove getal (*in een maand
+of zeven wel*), wat niet stil veroudert. Hij blijft buiten de `[[`-controle en
 staat als eigen stap in *Vóór je verstuurt*.
 
 **Waarom de onderwerpregel en de voorbeeldtekst geen `[WEKEN]` dragen.** Daar
@@ -362,7 +362,7 @@ Android — [[ANDROID]]
 iPhone en iPad — [[APPLE]]
 
 Komende zomer praat je kind met zijn oma. Een taal leer je niet in twee weken;
-nog [WEKEN] weken wel. Een korte les per dag, en in juli kan hij groeten,
+in [WEKEN] weken wel. Een korte les per dag, en in juli kan hij groeten,
 bedanken, afdingen op de souq en de familie verstaan.
 
 De app is gratis te downloaden: geen account, geen advertenties. De cursus is
@@ -412,7 +412,7 @@ mois. La résiliation se fait dans la boutique elle-même.
 Shukran pour votre patience.
 ```
 
-116 woorden, de twee adresregels niet meegerekend.
+114 woorden, de twee adresregels niet meegerekend.
 
 ## de-DE
 
@@ -733,13 +733,13 @@ openingszin naar de hele lijst is niet terug te nemen.
    de overige treffers staan in het proza hierboven, waar de markering
    besproken wordt. Draai
    `npm run aftellen -- --tot <de datum die je kiest>`, vul dat ene getal zes
-   keer in, en lees daarna één taal hardop: *nog 31 weken wel* leest anders dan
-   *nog 3 weken wel*, en bij een laag getal is dat de zin niet meer die je
+   keer in, en lees daarna één taal hardop: *in 31 weken wel* leest anders dan
+   *in 3 weken wel*, en bij een laag getal is dat de zin niet meer die je
    bedoelde. Wat niet mag is de markering laten staan — dan gaat `[WEKEN]` als
    woord de deur uit — en wegstrepen mag ook niet, want anders dan
    `[EINDDATUM]` laat deze een zin achter die niet meer loopt. Wil je hem kwijt,
-   herschrijf de zin dan naar het grove getal uit datzelfde commando (*nog een
-   maand of zeven*).
+   herschrijf de zin dan naar het grove getal uit datzelfde commando (*in een
+   maand of zeven wel*).
 3. **Rekent de winkel de prijs die in de mail staat?** € 59,99 per jaar en
    € 6,99 per maand, de staande prijs; de actie van 50% gaat niet door
    (`docs/STAND.md`, *24 november*). Staat er in een van de consoles tóch nog
