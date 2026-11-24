@@ -196,6 +196,11 @@ const SHOTS = [
  * winkel werkelijk afschrijft staat daar **groot**. De omrekening naar een
  * maandprijs staat eronder, klein.
  *
+ * Hier staat de staande prijs en geen actieprijs. Op 24 november is besloten
+ * de campagne op de huidige prijzen te doen, met een aftelling naar de
+ * zomervakantie als haak in plaats van een korting. Komt er ooit weer een
+ * actie, dan verandert alleen het bedrag -- de orde hieronder blijft.
+ *
  * Die orde is geen smaak. Apple wees build 5 af op richtlijn 3.1.2(c), met
  * zoveel woorden: *"displays the monthly calculated pricing for the
  * subscription more clearly and conspicuously than the billed amount"*. Hier
@@ -217,7 +222,7 @@ const AANBOD = {
   nl: {
     kicker: 'De taal van thuis',
     titel: 'Eindelijk Darija leren',
-    pil1: { groot: '\u20ac 29,99 per jaar', klein: 'nu 50% korting \u00b7 \u20ac 2,50 per maand' },
+    pil1: { groot: '\u20ac 59,99 per jaar', klein: 'dat is \u20ac 5,00 per maand' },
     pil2: { groot: '\u20ac 6,99 p/m', klein: 'per maand opzegbaar' },
     voet: {
       apple: 'De hele cursus in \u00e9\u00e9n keer \u00b7 \u00e9\u00e9n abonnement voor het hele gezin',
@@ -227,7 +232,7 @@ const AANBOD = {
   fr: {
     kicker: 'La langue de la maison',
     titel: 'Enfin apprendre la darija',
-    pil1: { groot: '29,99 \u20ac par an', klein: 'remise de 50 % \u00b7 2,50 \u20ac par mois' },
+    pil1: { groot: '59,99 \u20ac par an', klein: 'soit 5,00 \u20ac par mois' },
     pil2: { groot: '6,99 \u20ac/mois', klein: 'r\u00e9siliable chaque mois' },
     voet: {
       apple: 'Tout le cours d\u2019un coup \u00b7 un abonnement pour toute la famille',
@@ -237,7 +242,7 @@ const AANBOD = {
   de: {
     kicker: 'Die Sprache von zu Hause',
     titel: 'Endlich Darija lernen',
-    pil1: { groot: '29,99 \u20ac pro Jahr', klein: '50 % Rabatt \u00b7 2,50 \u20ac pro Monat' },
+    pil1: { groot: '59,99 \u20ac pro Jahr', klein: 'das sind 5,00 \u20ac pro Monat' },
     pil2: { groot: '6,99 \u20ac/Monat', klein: 'monatlich k\u00fcndbar' },
     voet: {
       apple: 'Der ganze Kurs auf einmal \u00b7 ein Abo f\u00fcr die ganze Familie',
@@ -247,7 +252,7 @@ const AANBOD = {
   es: {
     kicker: 'La lengua de casa',
     titel: 'Por fin aprender d\u00e1rija',
-    pil1: { groot: '29,99 \u20ac al a\u00f1o', klein: '50 % de descuento \u00b7 2,50 \u20ac al mes' },
+    pil1: { groot: '59,99 \u20ac al a\u00f1o', klein: 'son 5,00 \u20ac al mes' },
     pil2: { groot: '6,99 \u20ac/mes', klein: 'cancelable cada mes' },
     voet: {
       apple: 'Todo el curso de una vez \u00b7 una suscripci\u00f3n para toda la familia',
@@ -257,7 +262,7 @@ const AANBOD = {
   it: {
     kicker: 'La lingua di casa',
     titel: 'Finalmente imparare la darija',
-    pil1: { groot: '29,99 \u20ac all\u2019anno', klein: '50 % di sconto \u00b7 2,50 \u20ac al mese' },
+    pil1: { groot: '59,99 \u20ac all\u2019anno', klein: 'sono 5,00 \u20ac al mese' },
     pil2: { groot: '6,99 \u20ac/mese', klein: 'disdicibile ogni mese' },
     voet: {
       apple: 'Tutto il corso in una volta \u00b7 un abbonamento per tutta la famiglia',

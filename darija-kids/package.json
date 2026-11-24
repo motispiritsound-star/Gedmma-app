@@ -68,6 +68,8 @@
     "woordjes": "node scripts/make-woordjes.mjs",
     "playpakket": "node scripts/make-playpakket.mjs",
     "play": "node scripts/play-vermelding.mjs",
+    "playstand": "node scripts/play-stand.mjs",
+    "aftellen": "node scripts/aftellen.mjs",
     "playzip": "cd store && rm -f darijaforkids-play.zip && zip -rq darijaforkids-play.zip play-pakket && ls -lh darijaforkids-play.zip",
     "applepakket": "node scripts/make-applepakket.mjs",
     "reviewshot": "node scripts/make-reviewshot.mjs",

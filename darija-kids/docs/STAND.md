@@ -72,12 +72,12 @@ niets ingediend worden. Dit blokkeert alles hieronder.
 | App Store Connect | het abonnement → **View all Subscription Pricing** → **Introductory Offers**. Daar staat *Free for the first 3 days*, 175 landen, *No End Date*. Einddatum erop. Bij **beide** producten: `app.darijaforkids.yearly` én `app.darijaforkids.monthly`. |
 | Play Console | het abonnement → basisplan → de aanbieding. `proef-jaar` bij het jaar, `proef-maand` bij de maand. Allebei deactiveren. |
 
-**3. De actie van 50% aanzetten.** Zie de kop *de tijdelijke actie* hieronder
-voor de precieze instellingen. Drie dingen om te onthouden: bij Apple vervangt
-dit de proef bij Jaar in één handeling (stap 2 geldt bij Jaar dan alleen voor
-de zekerheid), er moet een **einddatum** op, en de aanbieding moet in **alle
-vijf de eurolanden** staan — Nederland, Frankrijk, Duitsland, Spanje, Italië —
-want de winkelafbeeldingen van die vijf talen dragen € 29,99 in het beeld.
+**3. Geen actie aanzetten.** Op 24 november is besloten de campagne op de
+huidige prijzen te doen, met de aftelling naar de zomer als haak. Er valt hier
+dus niets in te stellen — maar één ding wordt er wél moeilijker door: de
+*Pay Up Front* van € 29,99 zou bij Apple de proefperiode bij Jaar in één
+handeling hebben vervangen. Die komt er niet, dus **stap 2 moet bij
+`app.darijaforkids.yearly` écht gedaan worden.** Er komt niets overheen.
 
 **4. Nakijken op een telefoon.** Open de app uit de winkel, ga naar het
 abonnementsscherm, en kijk naar het aankoopvenster van Apple of Google zelf.
@@ -107,9 +107,26 @@ nooit gezet en nooit geüpload, dus Play valt terug op de grafische bestanden
 van de standaardvermelding. De derde gooit eerst weg wat er staat en uploadt
 dan per taal naar `/listings/fr-FR/phoneScreenshots`.
 
-**Niet eerder dan na stap 3**, en **alleen Google**. `npm run play` praat niet
-met Apple: daar upload je de opnames met de hand, bij de versie in App Store
-Connect. Ze staan klaar in `store/screenshots/<taal>/`.
+**Alleen Google.** `npm run play` praat niet met Apple: daar upload je de
+opnames met de hand, bij de versie in App Store Connect. Ze staan klaar in
+`store/screenshots/<taal>/`.
+
+De waarschuwing die hier stond — *niet eerder dan na stap 3* — is met het
+vervallen van de actie weg. De plaatjes dragen nu de staande prijs, en die
+staat al in de winkel.
+
+En als je wilt nakijken wat er op dit moment wérkelijk in Play staat, per taal,
+vóór én na het uploaden:
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run playstand } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+Dat leest alleen; het maakt een edit, haalt per taal de titel, de twee
+beschrijvingen en het aantal beelden op, en gooit de edit weg zonder te
+committen. Een vak met nul beelden is het antwoord waar dat script voor
+bestaat: dan toont Play daar stilletjes de beelden van de standaardvermelding,
+en dat is hoe er Nederlandse tekst op de Franse bladzijde komt.
 
 **6. De teksten in de winkels bijwerken.** Bij Google doet `npm run play` dat
 mee. Bij Apple met de hand, uit `store/listing.<taal>.md` — de beschrijving, de
@@ -144,9 +161,16 @@ zelf op *Wijzigingen publiceren*.
 **10. Wachten tot het er écht staat.** Niet tot het goedgekeurd is — tot het
 uitgerold is en je het op een telefoon uit de winkel kunt halen.
 
-**11. Pas dan de campagne.** Zoek in `store/lancering/mail.md` en
-`store/lancering/socials.md` op `[EINDDATUM]` — tien plekken — en vul de
-einddatum van de actie in. Dan pas plaatsen.
+**11. Pas dan de campagne.** Draai het aftelcommando, zoek in
+`store/lancering/` op `[WEKEN]` en vul het getal in. Dan pas plaatsen.
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run aftellen -- --tot 2027-07-10 } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+Die 10 juli is een voorbeeld, geen besluit — zie de kop over de zomeraftelling
+bovenaan dit bestand voor welke datum je neemt en waarom dat per land scheelt.
+Zonder `--tot` rekent hij naar de eerstvolgende 1 juli en zegt hij dat erbij.
 
 **En niet: de ingesproken reclamefilm.** Die zegt *"de eerste vier lessen zijn
 gratis"*, hij staat niet in deze repo, en er is geen commando dat hem
@@ -326,6 +350,62 @@ niet automatisch mee. Zet de einddatum van de actie dus ook in je agenda met
 *één* taak erbij: de drie commando's hierboven opnieuw draaien met de
 jaarprijs terug op € 5,00 p/m, en `pil1` in `scripts/make-screenshots.mjs`
 mee. Dat is de enige plek waar een verlopen actie stil blijft staan.
+
+## 24 november: geen korting, maar een aftelling naar de zomer
+
+De actie van 50% gaat niet door. De campagne draait op de **huidige prijzen** —
+€ 59,99 per jaar (€ 5,00 per maand) of € 6,99 per maand — met als haak:
+*leer je kind Darija vóór de volgende zomervakantie.*
+
+**Dat is een betere haak dan een korting, en niet alleen goedkoper.** Een
+korting zegt: koop nu, want straks is het duurder. Dat is een reden om te
+betalen, geen reden om te beginnen. En bij dit product zit de twijfel niet bij
+vijf euro per maand maar bij de vraag of een kind het ooit echt gaat spreken.
+
+De zomer draait dat om, en het is waar: een taal leer je niet in twee weken.
+Wie in juli in Marokko staat en wil dat zijn kind met zijn oma praat, moet nu
+beginnen. Dat is geen verkooptruc maar het argument van het product zelf — en
+het is het enige dat van "ooit eens" een "deze week" maakt.
+
+### Wat dat in de repo verandert
+
+De winkelafbeelding staat weer op de staande prijs: `pil1` in
+`scripts/make-screenshots.mjs` draagt **€ 59,99 per jaar** groot met *dat is
+€ 5,00 per maand* eronder, in alle vijf de eurotalen. De orde blijft zoals hij
+was — het afgeschreven bedrag groot, de omrekening klein — want dat is
+richtlijn 3.1.2(c) en die geldt bij elke prijs.
+`src/pages/prijsweergave.test.ts` bewaakt het.
+
+De campagneteksten in `store/lancering/` zijn omgeschreven: de actie eruit, de
+zomerboodschap erin. Waar `[EINDDATUM]` stond staat nu **`[WEKEN]`**.
+
+**De consolestappen 2 en 3 worden er eenvoudiger van.** De proefperiodes moeten
+nog steeds uit — vier aanbiedingen, twee per winkel — maar er hoeft geen actie
+meer aangezet. Bij Apple betekent dat wel iets: de *Pay Up Front* van € 29,99
+zou de proef bij Jaar in één handeling hebben vervangen. Dat gebeurt nu niet,
+dus **de proefaanbieding bij `app.darijaforkids.yearly` moet je echt zelf
+uitzetten** — er komt niets overheen.
+
+### Het weekgetal: `npm run aftellen`
+
+Er staat geen cijfer in de teksten, en dat is met opzet. Een cijfer in een
+kant-en-klare tekst in zes talen op vier kanalen veroudert stil: wie in januari
+plaatst wat in november is geschreven, plaatst "nog 31 weken" terwijl het er 24
+zijn.
+
+```powershell
+if (-not $p) { $p = (Get-ChildItem $HOME -Recurse -Depth 5 -Filter darija-kids -Directory -ErrorAction SilentlyContinue | Select-Object -First 1).FullName }; if ($p) { npm --prefix $p run aftellen -- --tot 2027-07-10 } else { "darija-kids niet gevonden onder $HOME" }
+```
+
+Draai dat op de dag dat je plaatst, zoek in `store/lancering/` op `[WEKEN]` en
+vul het getal in. Stand vandaag: **31 weken** tot 1 juli 2027, 32 tot 10 juli.
+
+**Welke datum.** Er is geen "de" zomervakantie: Frankrijk begint begin juli in
+het hele land, Nederland in juli maar per regio ruim twee weken uit elkaar,
+Duitsland per Bundesland van eind juni tot eind juli. De campagne loopt op
+Franse, Nederlandse en Duitse pagina's, dus neem de vroegste van die drie — dan
+klopt het getal overal, of het is er hooguit een paar te weinig. Een aftelling
+die te vroeg afloopt is erger dan een die een week overhoudt.
 
 ## 24 november: wat Apple nu meet, en het cijfer dat een aanname omvergooit
 
