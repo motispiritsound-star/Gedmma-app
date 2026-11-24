@@ -1,7 +1,7 @@
 # Waar staan we
 
-Bijgewerkt op 23 november 2026: het gratis deel is eruit en de betaalmuur
-staat bij de download. Dit bestand is het antwoord op "wat moet er nog" zonder
+Bijgewerkt op 24 november 2026: het gratis deel is eruit en de betaalmuur
+staat bij de download; de eerste Apple-afrekening is binnen. Dit bestand is het antwoord op "wat moet er nog" zonder
 dat je drie andere bestanden hoeft te lezen.
 
 ## 23 november: het gratis deel eruit, de betaalmuur bij de download
@@ -481,14 +481,89 @@ vooraan dat afgeronde lessen open blijven.
 € 59,99 levert netto ongeveer € 42, een e-boek van € 14,99 ongeveer € 10,50.
 Zestien aankopen naast vijf betaalde plannen betekent dus nog steeds dat er
 meer e-boeken dan abonnementen gaan — zie de aantekening van 22 oktober.
-Bij de actie wordt een jaarabonnement € 29,99, netto ongeveer € 21.
+(Hier stond nog een regel over de actieprijs van € 29,99. Die actie is diezelfde
+dag losgelaten, zie het kopje hierboven: de campagne telt af naar de zomer en de
+prijs blijft € 59,99.)
 
 **En de rekensom voor de campagne.** 5 betaalde plannen op 216 downloads is
 2,3%. Houdt dat percentage stand en levert de campagne 1000 downloads op, dan
-zijn dat 23 abonnementen — bij de actieprijs ongeveer € 480 netto. De
+zijn dat 23 abonnementen — bij de staande prijs ongeveer € 800 netto, en bij
+70/30 in plaats van het Small Business Program ongeveer € 670. De
 betaalmuur bij de download is bedoeld om dat percentage omhoog te krijgen;
 blijft het rond 2,3%, dan is het volume en niet de conversie dat het werk
 moet doen.
+
+## 24 november: het eerste geld, en waar het per winkel staat
+
+Twee consoles opengetrokken om een simpele vraag te beantwoorden — *waar zie ik
+de uitbetalingen* — en het antwoord is in allebei de winkels een andere
+bladzijde dan je zou denken. Het staat uitgeschreven in `docs/PAYMENTS.md`;
+hier de korte versie en wat eruit bleek.
+
+| | Apple | Google |
+|---|---|---|
+| Waar je het **inricht** | App Store Connect → **Business** | Play Console → *Manage account → Play apps settings → Monetization settings → Payments profile* |
+| Waar je het **terugziet** | App Store Connect → **Reports** | *Manage account → Play apps reports → Financial* (een CSV), en `payments.google.com/merchant` voor het saldo |
+| Wanneer | binnen 45 dagen na de fiscale maand | rond de 15e van de volgende maand |
+| Drempel | 0,02 USD | € 1,00 |
+
+Allebei de keren zat de val op dezelfde plek: de bladzijde waar je je
+bankrekening invult is niet de bladzijde waar je je geld ziet. Bij Apple staat
+het geld onder *Reports* en niet onder *Business*; bij Google staat het in een
+download en niet op een scherm.
+
+### Apple: oktober is afgerekend
+
+| | |
+|---|---|
+| Opbrengst oktober | **€ 136,28** |
+| Verkopen | 5 |
+| Belasting en correcties | 0,00 |
+| Regio | Euro-Zone (EUR) |
+| Verwachte betaaldatum | **3 december 2026** |
+
+Dit is de eerste echte afrekening, en hij maakt twee eerdere aantekeningen
+preciezer. De **US$ 162** uit Analytics van 22 november is geen ander bedrag
+maar een andere meting: een schatting, in dollars, over een andere periode. En
+de zorg over de uitbetaalvaluta is weg — de regel heet *Euro-Zone (EUR)* en het
+bedrag staat in euro's, ondanks dat de kolom *Royalty Currencies* bij de
+bankrekening alleen USD noemt.
+
+Vijf verkopen voor € 136,28 is € 27 netto per verkoop. Bij 70/30 en 21% btw
+levert een jaarabonnement van € 59,99 ongeveer € 34,70 op en het e-boek van
+€ 14,99 ongeveer € 8,70; de mengverhouding klopt dus ruwweg met wat er op
+22 oktober over de verhouding e-boeken/abonnementen stond.
+
+### Play: acht keer zo vaak gezien, evenveel installaties
+
+Afgelezen uit *Grow users → Your performance on Play*, laatste 28 dagen
+(27 oktober t/m 23 november), gemeten per toestel.
+
+| | | |
+|---|---|---|
+| Vertoningen | **13,7K** | **+732%** |
+| Installaties | 32 | +3% |
+| Eerste keren openen | 15 | −6% |
+| Maandelijks actieve toestellen | 27 | −25% |
+| Retentie na 7 dagen | geen gegevens | |
+| Conversie van de winkelpagina (90 dagen) | 37,02% | |
+
+**Het getal dat telt is de combinatie van de eerste twee regels.** De app is
+acht keer zo vaak getoond en dat heeft één extra installatie opgeleverd. Dat is
+geen bereikprobleem meer; dat is de etalage. Wie de winkelpagina werkelijk
+opent, installeert in 37% van de gevallen — dat is geen slecht cijfer. Het gat
+zit ervoor: tussen gezien worden in een lijstje en doorklikken.
+
+Daarmee verschuift het gewicht van punt 5 op de lijst hierboven. De
+taalvrije uitgelichte afbeelding (`npm run marketing -- --darija`) en de beelden
+per taal (`npm run play -- --beelden`) waren "nog even netjes maken voor de
+campagne"; ze zijn nu het enige wat die 13,7K vertoningen in installaties kan
+omzetten. Doe ze voor de campagne, niet erna.
+
+**En het oude gat staat er nog**: 32 installaties tegen 15 eerste keren openen.
+Op 3 november was dat 39 tegen 17. Meer dan de helft opent de app nooit, twee
+metingen op rij. Met de betaalmuur bij de download wordt die groep duurder — ze
+komen niet eens tot het aanbod.
 
 ## De lancering: volgende week, met aankondiging — besloten 2 oktober
 
@@ -1063,7 +1138,11 @@ dus het kan ook een meting zijn die net begonnen is.
 
 **En de belastinggegevens voor Ierland staan er nog open** bij het
 betaalprofiel. Bij € 6,99 omzet kost dat niets, maar het blijft staan tot het
-ingevuld is -- zie de notitie bij 24 oktober.
+ingevuld is. Je vindt het onder *Manage account → Play apps settings →
+Monetization settings → Payments profile*, in de sectie *Settings* achter
+*Manage settings*. (Hier stond "zie de notitie bij 24 oktober"; die notitie
+bestaat niet — nagelopen op 24 november, Ierland komt in dit bestand verder
+nergens voor.)
 
 **Wat dit verandert aan de volgorde.** De diagnose van 28 oktober blijft staan
 -- het zoekresultaat is waar het breekt -- maar de urgentie verschuift. Een

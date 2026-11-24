@@ -218,10 +218,20 @@ Het bedrag hoort in euro's in de afspraak, niet alleen als percentage:
 | | Bedrag | 10% |
 |---|---|---|
 | Prijs zonder btw | € 49,58 | € 4,96 |
-| Netto-uitbetaling van de winkel | € 42,14 | € 4,21 |
+| Netto-uitbetaling van de winkel, bij 15% commissie | € 42,14 | € 4,21 |
+| Netto-uitbetaling van de winkel, bij 30% commissie | € 34,71 | € 3,47 |
 
 "Tien procent netto ex btw" leest over een jaar weer als allebei. "€ 4,21 per
 omgezet jaarabonnement" leest maar op één manier.
+
+**Maar zet dat bedrag pas vast als je weet welke regel geldt.** € 42,14 gaat
+uit van 15% commissie. Bij Google klopt dat vanaf de eerste maand; bij Apple
+alleen als je in het **App Store Small Business Program** zit, en op
+24 november bleek uit de opbrengstverhouding in App Store Connect dat dit
+account er nog niet in zit — daar is het vandaag 70/30, dus € 34,71 en
+€ 3,47. Meld je eerst aan (zie punt 13 in `docs/STAND.md`), en noem daarna pas
+een bedrag in een afspraak. Een toezegging van € 4,21 terwijl er € 34,71
+binnenkomt, is tien procent die er niet is.
 
 **Geen namen van personen in dit bestand.** Dezelfde reden als bij de
 schoolacties: dit staat in twee consoles en in je administratie. In je eigen

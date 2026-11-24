@@ -337,10 +337,80 @@ nergens landt.
 
 ### Google
 
-1. **Play Console → Instellingen → Betalingsprofiel** aanmaken of koppelen.
-2. **Bankrekening** toevoegen en verifiëren, **belastinggegevens** invullen.
-3. Commissie op abonnementen is **15%** vanaf de eerste maand.
-4. Uitbetaling **maandelijks**, rond de 15e van de volgende maand.
+Dit is allemaal al gedaan; het staat hier om na te kijken, niet om te doen.
+De console van dit account staat in het **Engels**, dus de paden hieronder ook.
+
+1. **Het betalingsprofiel** zit in de Play Console zelf: *Manage account →
+   Play apps settings → Monetization settings → Payments profile*. Zoek het
+   niet onder *Developer account* — daar staat het niet, en dat heeft op
+   24 oktober een half uur gekost. Die bladzijde ververst niet meteen maar
+   binnen een dag na een uitbetaling.
+2. **Bankrekening en belastinggegevens**: allebei klaar, 30 september en
+   1 oktober. De verdiensten staan er in euro's, dus de dollarwissel die bij
+   Apple speelt is hier geen punt. Nog wel open: de belastinggegevens voor
+   Ierland bij het betaalprofiel.
+3. Commissie op abonnementen is **15%** vanaf de eerste maand — anders dan bij
+   Apple, waar je je daar apart voor moet aanmelden. Nooit tegen de console
+   nagemeten: daar was de Play-omzet tot nu toe te klein voor.
+4. Uitbetaling **rond de 15e van de volgende maand**, boven € 1,00.
+
+**Waar je het terugziet: nergens als bedrag op je scherm.** Dat is het verschil
+met Apple, en het is de reden dat je ernaar zoekt. Play verdeelt het over drie
+plekken.
+
+**1. Het officiele bedrag is een download.** Op accountniveau, dus zonder een
+app geselecteerd: *Manage account → Play apps reports → Financial*. Daar staan
+twee kopjes naast elkaar, en het verschil ertussen is het hele punt:
+
+| | |
+|---|---|
+| **Earnings reports** | het geld: na commissie, na btw, in jouw uitbetaalvaluta. Dit hoort bij de uitbetaling. Klaar rond de 5e van de volgende maand. |
+| **Estimated sales reports** | wat kopers betaalden, voor aftrek van belasting en Google-fee, in hun eigen valuta. Dagelijks ververst. Google schrijft er zelf bij: *not recommended for accounting*. |
+
+Het maandbedrag haal je uit het earnings report door in de kolom
+`Merchant Currency` de regels op te tellen waar `Transaction Type` op *Charge*
+of *Charge refund* staat. De rapporten gaan over **alle apps in het account**,
+ook al vraagt de downloadpagina je er een te kiezen.
+
+Wat je per app op het scherm ziet — *Monetize with Play → Revenue* — is
+uitdrukkelijk de schatting, inclusief belasting. Niet wat er komt.
+
+**2. Het saldo en de gedane overmakingen** staan in het Google payments center,
+een ander product: `payments.google.com/merchant` → *Payments profile →
+Subscriptions & services*, bij *Merchant services* op *Manage*, dan *View
+transactions*. Dat lijkt het meest op wat App Store Connect onder Reports laat
+zien: saldo, nog niet uitbetaalde inkomsten, en per uitbetaling het bedrag.
+
+**3. De instellingen** staan op de Payments profile-bladzijde uit stap 1:
+betaalmethode, verificatiestatus, belastinggegevens.
+
+**Wanneer.** Alles wat tussen de 1e en het eind van een maand is afgerekend,
+teruggestort of teruggevorderd, gaat **rond de 15e van de volgende maand** de
+deur uit. Rond, niet op: Google stort niet in het weekend of op een bankvrije
+dag, en dan schuift het naar de eerstvolgende werkdag. Dat is bovendien het
+moment waarop Google de betaling *start*; bij een overboeking in euro's duurt
+het daarna nog twee tot drie werkdagen. Een maand sneller dan Apple, die pas
+binnen 45 dagen na de fiscale maand betaalt.
+
+**De drempel is € 1,00.** Dat is het minimum voor een uitbetaling in euro's.
+De US$ 100 die Google ook noemt geldt voor dollaroverboekingen per wire, en zo
+wordt een Nederlandse rekening niet betaald. Je kunt de drempel zelf verhogen,
+niet verlagen.
+
+**Staat er niets?** Google's eigen volgorde: is de uitbetaaldatum al geweest
+(een weekend schuift op, en je bank doet er daarna nog dagen over), haalt het
+saldo de drempel, en is je bankrekening geverifieerd. Die verificatie duurt tot
+vijf dagen. Daarnaast kan er tot 35 dagen een hold op staan terwijl Google het
+account beoordeelt; daar hoef je dan niets voor te doen en het vastgehouden
+saldo komt bij de volgende ronde mee. Vraagt Google wel om gegevens, dan blijft
+de uitbetaling staan tot de controle rond is — die identiteitscontrole heet
+voor verkopers in de EU ook *seller verification* of **SVID**, maar het is
+dezelfde controle en geen tweede.
+
+En kijk eerst naar de melding die er al staat: *"Action required with your
+payments account"*. Die staat in `docs/STAND.md` als punt 12 op de lijst voor
+februari, naast de handelaarsstatus. Zolang die er staat is hij de eerste
+verdachte als er geld uitblijft.
 
 ### Btw en belasting
 
