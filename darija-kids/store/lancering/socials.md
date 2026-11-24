@@ -267,8 +267,19 @@ gezet en nooit geüpload, dus Play valt daar terug op de beelden van de
 standaardvermelding — met Nederlandse tekst erop. Dat staat in `docs/STAND.md`
 bij stap 5, en het gaat weg met `npm run screenshots` en `npm run play`;
 `npm run playstand` leest voor én na wat er werkelijk per taal in staat. Een
-Franse post die naar een Nederlandse winkelbladzijde wijst, is de ene plek waar
-deze campagne nog zichtbaar niet klopt.
+Franse post die naar een Nederlandse winkelbladzijde wijst, is het grootste gat
+dat deze campagne nog heeft.
+
+**En bij Apple gaat het per taal met de hand.** De beschrijving, de
+trefwoorden en de promotietekst staan in `store/listing.fr.md`, maar er is geen
+opdracht die ze naar App Store Connect zet — `npm run applepakket -- --lang fr`
+legt alleen de beelden en de teksten in één map klaar om over te nemen. Dat is
+stap 6 in `docs/STAND.md`, en die staat nog open. Daar komt bij dat
+`docs/STAND.md` (*2 oktober*) de Franse teksten van de drie abonnementen niet
+mee heeft kunnen sturen met de iOS-inzending: die gaan mee met 1.6, en tot die
+ronde leest een Franse koper de abonnementsnamen in het Engels. Allebei de
+winkelpagina's zijn dus voor een Franse post nog niet af; de link ernaartoe is
+dat wel.
 
 **Allebei de pagina's staan open.** Hier stond dat een 404 betekende dat de
 release nog op jou wachtte; sinds 24 oktober staat 1.5 bij Apple op *Ready for
@@ -721,9 +732,10 @@ qui a raison — l'application le dit elle-même.
 ```
 
 Het beeld eronder: `store/marketing/fr/social-vierkant.png`, en de twee
-linkregels in het Frans (*Waar de links komen* hierboven). En let op de ene
-plek waar het nog niet klopt: de Franse Play-bladzijde toont nog Nederlandse
-schermafdrukken — zie dezelfde paragraaf.
+linkregels in het Frans (*Waar de links komen* hierboven). En let op wat er
+onder een Franse post nog niet klopt: de Franse Play-bladzijde toont nog
+Nederlandse schermafdrukken, en bij Apple staan de Franse teksten nog niet
+overal — zie dezelfde paragraaf.
 
 ## Het beeld onder het Nederlandse bericht
 
@@ -874,7 +886,18 @@ openingszin het eerste wat iemand leest.
    in plaats daarvan na dat er géén aanbieding loopt die de teksten niet
    noemen. Controleer het op het aankoopvenster zelf, op een toestel, in de app
    uit de winkel: de console zegt wat er ingesteld is, niet wat de koper leest.
-2. **`[WEKEN]` is overal vervangen.** Vier plekken: het onderschrift van
+2. **De plaat onder het bericht is opnieuw gezet met `npm run marketing`.** De
+   `cta` op `store/marketing/<taal>/social-vierkant.png` en
+   `social-verhaal.png` zei tot 24 november *Gratis beginnen* (fr *Commencer
+   gratuitement*), uit de tijd dat de eerste lessen gratis waren.
+   `scripts/make-marketing.mjs` zegt sinds commit `0af1696` *Gratis
+   downloaden* / *Télécharger gratuitement*, maar `store/marketing/` staat in
+   `.gitignore`: op de machine waar je plaatst ligt nog de oude plaat. Een
+   bericht dat zegt dat de cursus een abonnement is, met daarboven een beeld
+   dat zegt dat beginnen gratis is, is dezelfde belofte waar richtlijn 2.3.1
+   over gaat — en de plaat is het eerste wat iemand ziet. Zelfde regel voor
+   `store/video/<taal>/intro-vierkant.mp4` (`npm run intro`).
+3. **`[WEKEN]` is overal vervangen.** Vier plekken: het onderschrift van
    Instagram (nl en fr) en het Facebook-bericht (nl en fr). Het getal komt uit
    `npm run aftellen`, gedraaid op de dag dat je plaatst — de opdracht en de
    keuze van de datum staan onder *Het getal zelf* bovenaan. Plaats je later
@@ -882,15 +905,15 @@ openingszin het eerste wat iemand leest.
    plaatst; punthaken en blokhaken worden meegeplakt. En zet er een getal in,
    geen datum: in de storyboards, de onderschriften onder de video's en de
    YouTube-beschrijving hoort met opzet helemaal geen getal.
-3. **De proefperiode van drie dagen staat uit.** Bij Apple bij beide
+4. **De proefperiode van drie dagen staat uit.** Bij Apple bij beide
    abonnementen, bij Google `proef-jaar` en `proef-maand` — `docs/GO-LIVE.md`
    zegt waar. Geen enkel bericht hierboven noemt nog drie gratis dagen, dus
    zolang de winkel ze wél geeft zegt de advertentie iets anders dan het
-   aankoopvenster. Hier stond dat de actie uit stap 1 dit bij
-   `app.darijaforkids.yearly` in één handeling deed. Die actie komt er niet,
-   dus **moet de proefaanbieding bij het jaar écht zelf uitgezet worden** — er
-   komt niets overheen (`docs/STAND.md`, stap 2 en 3).
-4. **De nieuwe film is geüpload.** De slotkaart zelf is om in commit
+   aankoopvenster. Hier stond dat de tijdelijke actie, die toen het eerste punt
+   van deze lijst was, dit bij `app.darijaforkids.yearly` in één handeling deed.
+   Die actie komt er niet, dus **moet de proefaanbieding bij het jaar écht zelf
+   uitgezet worden** — er komt niets overheen (`docs/STAND.md`, stap 2 en 3).
+5. **De nieuwe film is geüpload.** De slotkaart zelf is om in commit
    `dca8cd8` — `dev/intro-copy.ts` zegt nu *Gratis downloaden* en *€ 59,99 per
    jaar · € 5,00 per maand*, en `src/site/intro.test.ts` bewaakt het; zie
    hierboven. Hier stond dat die twee nog moesten gebeuren. Wat er nog wél
@@ -898,35 +921,35 @@ openingszin het eerste wat iemand leest.
    `src/site/links.ts` én in Play Console. Zolang dat niet gebeurd is, gaat de
    YouTube-video niet op openbaar en gaat er geen filmfragment naar Instagram
    of TikTok.
-5. **De YouTube-video staat op openbaar.** Hij staat nu op *Niet vermeld*,
+6. **De YouTube-video staat op openbaar.** Hij staat nu op *Niet vermeld*,
    met opzet, en die stand verandert niet van zichzelf.
-6. **De handle `@darijaforkidsapp` is gezet** (Instellingen → Kanaal →
+7. **De handle `@darijaforkidsapp` is gezet** (Instellingen → Kanaal →
    Geavanceerd). Zonder dat geeft `youtube.com/@darijaforkidsapp` een
    foutpagina, en dat adres staat in het bericht aan het WhatsApp-kanaal.
-7. **De Facebook-pagina heeft een gebruikersnaam.** Anders is het adres
+8. **De Facebook-pagina heeft een gebruikersnaam.** Anders is het adres
    `facebook.com/profile.php?id=…`, en dat is niet af te drukken en niet door
    te sturen.
-8. **Beide winkelpagina's openen op een toestel.** Niet op de Mac, niet in een
+9. **Beide winkelpagina's openen op een toestel.** Niet op de Mac, niet in een
    tabblad waar je al ingelogd bent. Een verkeerd adres onder een bericht is
    niet terug te nemen.
-9. **Kijk welke versie er live staat.** Dat is sinds 24 oktober 1.5 — bij
-   Apple build 11, bij Play versiecode 10 (`docs/STAND.md`). Hier stond *"1.4,
-   bij Apple build 10, bij Play versiecode 8"*, en dat is 1.4 — bij Apple live
-   sinds 4 oktober, bij Play sinds 13 oktober. En let op het tweede deel: de
-   app met de betaalmuur bij de download is commit `123a8c1` en gaat als
-   **1.6 — bij Apple build 12, bij Play versiecode 11** naar de winkels
-   (`docs/STAND.md`). Die is **nog niet ingediend** — in
-   `docs/STAND.md` blokkeert het accepteren van de Apple Developer Program
-   License Agreement al het andere. Zolang dat zo is geeft de app uit de winkel
-   nog acht gratis lessen, terwijl deze vier berichten zeggen dat de cursus een
-   abonnement is dat op het eerste scherm gevraagd wordt. Die kant is niet wat
-   Apple 2.3.1 bestraft, maar het is wél een verschil tussen de advertentie en
-   wat de lezer aantreft. `docs/STAND.md` zet de campagne daarom na stap 10:
-   plaatsen als 1.6 er werkelijk staat en van een telefoon te halen is.
-10. **De profielen staan niet leeg.** Profielfoto en omslag uit
+10. **Kijk welke versie er live staat.** Dat is sinds 24 oktober 1.5 — bij
+    Apple build 11, bij Play versiecode 10 (`docs/STAND.md`). Hier stond *"1.4,
+    bij Apple build 10, bij Play versiecode 8"*, en dat is 1.4 — bij Apple live
+    sinds 4 oktober, bij Play sinds 13 oktober. En let op het tweede deel: de
+    app met de betaalmuur bij de download is commit `123a8c1` en gaat als
+    **1.6 — bij Apple build 12, bij Play versiecode 11** naar de winkels
+    (`docs/STAND.md`). Die is **nog niet ingediend** — in
+    `docs/STAND.md` blokkeert het accepteren van de Apple Developer Program
+    License Agreement al het andere. Zolang dat zo is geeft de app uit de winkel
+    nog acht gratis lessen, terwijl deze vier berichten zeggen dat de cursus een
+    abonnement is dat op het eerste scherm gevraagd wordt. Die kant is niet wat
+    Apple 2.3.1 bestraft, maar het is wél een verschil tussen de advertentie en
+    wat de lezer aantreft. `docs/STAND.md` zet de campagne daarom na stap 10:
+    plaatsen als 1.6 er werkelijk staat en van een telefoon te halen is.
+11. **De profielen staan niet leeg.** Profielfoto en omslag uit
     `brand/social/`, en op Instagram liever al twee of drie platen. Wie op een
     leeg profiel aankomt, komt niet terug om nog eens te kijken
     (`store/kanaal-socials.md`).
-11. **Lees de vier berichten naast elkaar.** Als twee ervan hetzelfde zeggen in
+12. **Lees de vier berichten naast elkaar.** Als twee ervan hetzelfde zeggen in
     een andere lengte, is er één te veel. Dan is dit bestand voor niets
     geschreven.

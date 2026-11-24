@@ -355,7 +355,7 @@ export const it: ContentPack = {
     ghayn: 'una g che raschia, come la r francese', fa: 'la f di «fiore»',
     qaf: 'una k molto in fondo alla bocca', kaf: 'la c dura di «cane»',
     lam: 'la l di «luna»', mim: 'la m di «mamma»', nun: 'la n di «naso»',
-    'ha-soft': 'una h leggera, come l’inglese «hello» — in italiano è muta',
+    'ha-soft': 'una h leggera, come l’inglese «hello» — in italiano è muta, qui si sente',
     waw: 'la w di «kiwi», oppure una u lunga',
     ya: 'la i di «ieri», oppure una i lunga',
   },

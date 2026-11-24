@@ -130,8 +130,11 @@ voorbij.
 Het bericht hierboven is voor het kanaal. Wie het doorstuurt naar een
 familiegroep, stuurt een lap tekst zonder beeld — `store/kanaal-socials.md`
 staat daar al bij stil. Dit blok is voor die groep, met dezelfde twee links
-eronder. Dit is ook het blok dat `docs/LANCERING.md` §7 om 09:00
-aanwijst voor de persoonlijke berichten, een uur vóór het kanaal:
+eronder. Het is ook het blok voor de persoonlijke berichten, een uur vóór het
+kanaal: `docs/GO-LIVE.md` zet die om 09:00 en het kanaal om 10:00. Hier stond
+`docs/LANCERING.md` §7, en dat is een verkeerde verwijzing — §7 daar gaat over
+Facebook en de zestig mensen staan in §4. `docs/werk/draaiboek-concept-1.4.md`
+wees die fout zelf al aan, voor dit bestand en voor `socials.md`:
 
 ```
 Komende zomer praat je kind met zijn oma, zelf. Een taal leer je niet in twee
@@ -393,15 +396,17 @@ wat hij zich voorneemt.
    kost dat sinds 24 november één handeling meer: de *Pay Up Front* van € 29,99
    zou de proef bij Jaar in één keer hebben vervangen, en die komt er niet — dus
    moet die aanbieding bij `app.darijaforkids.yearly` er echt met de hand af.
-3. **`[WEKEN]` is vervangen.** Eén treffer, in de derde alinea van het bericht;
-   in het korte blok staat hij met opzet niet — zie het punt daaronder. Het
-   getal komt uit `npm run aftellen`, gedraaid op de dag dat je plaatst: de
-   opdracht en de keuze van de datum staan onder *Het weekgetal* hierboven.
-   Plaats je het bericht later alsnog, draai hem dan opnieuw, want het getal
-   loopt mee. Blokhaken worden meegeplakt. Hier stond `[EINDDATUM]`, en die
-   mocht ook helemaal weg: de zin eromheen bleef zonder datum waar. Deze niet —
-   *nog [WEKEN] weken* is zonder getal geen zin. Vul hem dus in, of herschrijf
-   die ene zin naar het grovere getal uit hetzelfde commando ("nog een maand of
+3. **`[WEKEN]` is vervangen.** Eén treffer in plakbare tekst: de derde alinea
+   van het bericht; in het korte blok staat hij met opzet niet — zie het punt
+   daaronder. De andere treffers van een zoekopdracht staan in de uitleg
+   hierboven en blijven staan — die wordt niet geplakt. Het getal komt uit
+   `npm run aftellen`, gedraaid op de dag dat je plaatst: de opdracht en de
+   keuze van de datum staan onder *Het weekgetal* hierboven. Plaats je het
+   bericht later alsnog, draai hem dan opnieuw, want het getal loopt mee.
+   Blokhaken worden meegeplakt. Hier stond `[EINDDATUM]`, en die mocht ook
+   helemaal weg: de zin eromheen bleef zonder datum waar. Deze niet — *nog
+   [WEKEN] weken* is zonder getal geen zin. Vul hem dus in, of herschrijf die
+   ene zin naar het grovere getal uit hetzelfde commando ("nog een maand of
    zeven"), wat niet stil veroudert.
 4. **Staan ze er allebei echt.** Niet goedgekeurd — zichtbaar. Play houdt een
    goedgekeurde release vast tot jij op de knop drukt (*Publishing overview →

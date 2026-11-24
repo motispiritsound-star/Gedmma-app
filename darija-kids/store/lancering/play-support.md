@@ -209,35 +209,29 @@ het is de enige vraag in deze lijst waar een knop in de app het antwoord is.
 
 ## "Ik zie de korting van 50% niet"
 
-De kern: € 29,99 voor het eerste jaar is een **introductieaanbieding**, en die
-bereikt alleen wie nooit eerder een abonnement in die groep had. Wie de proef
-van drie dagen nam en opzegde, ziet € 29,99 dus niet. Dat staat zo in
-`docs/STAND.md` onder *23 november: de tijdelijke actie van 50% op het jaar*.
-
-Beloof hier niets. Er bestaat bij beide winkels een soort aanbieding die deze
-groep wél bereikt — bij Apple Win-Back of Promotional Offer — maar zolang die
-niet is aangemaakt, is er niets om aan te bieden.
+> **Vervallen op 24 november.** Er is geen korting. De campagne draait op een
+> aftelling naar de zomervakantie en niet op een actieprijs, dus deze vraag
+> hoort niemand meer te stellen — zie `docs/STAND.md`. Het antwoord blijft
+> staan voor wie er in een oude post of een oud bericht nog over leest, en
+> omdat de redenering eronder opnieuw geldt zodra er ooit wél een
+> introductieaanbieding komt.
 
 ```
-De halve jaarprijs is een introductieaanbieding, en zo'n aanbieding geeft
-de winkel alleen aan wie nog nooit een abonnement op deze app heeft
-gehad. Heb je er eerder een gehad — ook als dat de proefperiode van drie
-dagen was die er vroeger bij zat, en ook als je die hebt opgezegd — dan
-ziet de winkel je niet als nieuwe abonnee, en dan staat er € 59,99 per
-jaar of € 6,99 per maand in het aankoopvenster.
+Er loopt op dit moment geen korting op Darijaforkids. Het abonnement is
+€ 59,99 per jaar — dat is € 5,00 per maand — of € 6,99 per maand, en bij
+het jaarabonnement zit het e-boek inbegrepen.
 
-Dat is niets wat ik aan jouw kant kan omzetten: wie welke prijs ziet,
-bepaalt de winkel.
-
-Wat er wél staat in het aankoopvenster is altijd het bedrag dat
-afgeschreven wordt. Staat daar € 59,99 per jaar, dan is dat wat je
-betaalt — ook als een bericht van mij € 29,99 noemde.
+Heb je ergens een actieprijs zien staan, laat me dan weten waar: dan is
+dat een oud bericht en haal ik het weg.
 ```
 
-Krijg je deze vraag vaker dan een paar keer, dan is dat een signaal en geen
-klacht: het betekent dat de campagne mensen bereikt die de proef eerder al
-hadden genomen. Dan is een Win-Back-aanbieding aanmaken de oplossing, niet een
-beter antwoord.
+**En als er ooit weer een introductieaanbieding komt**, geldt dit: zo'n
+aanbieding bereikt alleen wie nooit eerder een abonnement in die groep had.
+Wie de proef van drie dagen nam en opzegde, ziet de actieprijs dus niet. Dat
+is niet aan onze kant om te zetten — de winkel bepaalt wie welke prijs ziet.
+Er bestaat bij beide winkels een soort aanbieding die die groep wél bereikt
+(bij Apple Win-Back of Promotional Offer), maar zolang die niet is aangemaakt
+is er niets om aan te bieden, en beloof je het dus niet.
 
 ## Wat je in geen van de drie zet
 

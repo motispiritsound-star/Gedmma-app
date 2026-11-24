@@ -181,13 +181,15 @@ toen. *Vóór de zomervakantie* veroudert niet, en het zegt hetzelfde.
    dit bericht niet noemt. Controleer het op het aankoopvenster zelf, op een
    telefoon, in de app uit de winkel: de console zegt wat er ingesteld is, niet
    wat de koper leest.
-3. **`[WEKEN]` is vervangen.** Eén treffer, in de derde alinea van het
-   bericht; in het korte blok staat hij met opzet niet. Het getal komt uit
-   `npm run aftellen`, gedraaid op de dag dat je plaatst — de opdracht en de
-   keuze van de datum staan in `store/lancering/kanaal.md` onder *Het
-   weekgetal*. Hier stond `[EINDDATUM]`, en die mocht ook helemaal weg; deze
-   niet, want *nog [WEKEN] weken* is zonder getal geen zin. Vul hem in of
-   herschrijf die zin naar een grover getal. Blokhaken worden meegeplakt.
+3. **`[WEKEN]` is vervangen.** Eén treffer in plakbare tekst: de derde alinea
+   van het bericht; in het korte blok staat hij met opzet niet. De andere
+   treffers van een zoekopdracht staan in de uitleg hierboven en blijven
+   staan, en die wordt niet geplakt. Het getal komt uit `npm run aftellen`,
+   gedraaid op de dag dat je plaatst — de opdracht en de keuze van de datum
+   staan in `store/lancering/kanaal.md` onder *Het weekgetal*. Hier stond
+   `[EINDDATUM]`, en die mocht ook helemaal weg; deze niet, want *nog [WEKEN]
+   weken* is zonder getal geen zin. Vul hem in of herschrijf die zin naar een
+   grover getal. Blokhaken worden meegeplakt.
 4. **De proefperiode van drie dagen staat uit**, bij beide abonnementen. In
    App Store Connect is dat de regel *Free for the first 3 days* onder
    **Introductory Offers**. Hier stond dat de actie uit stap 1 dat bij

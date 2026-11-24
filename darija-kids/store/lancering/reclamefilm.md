@@ -353,18 +353,20 @@ erbij, en ervóór.** Dus "€ 29,99 voor het eerste jaar (€ 2,50 per maand)",
 omdat de omrekening opvallender stond dan het bedrag dat van de rekening ging.
 Waar die regel wél hoort staat hieronder.
 
-## De actieprijs: in de advertentietekst, niet in de stem
+## De prijs: in de advertentietekst, niet in de stem
 
-De haak van de campagne is **€ 29,99 voor het eerste jaar in plaats van
-€ 59,99** — de helft, omgerekend € 2,50 per maand. Die hoort in de campagne. Hij
-hoort niet in deze film.
+De campagne draait op een **aftelling naar de zomervakantie** en niet op een
+korting — besloten op 24 november, zie `docs/STAND.md`. De prijzen blijven
+€ 59,99 per jaar (dat is € 5,00 per maand) of € 6,99 per maand. Die horen in
+de tekst bij de film. Ze horen niet in de film zelf.
 
 **Waarom niet in de film.** Een bedrag in de stem is niet te repareren; dat is
-het hele onderwerp van het blok bovenaan dit bestand. De actie heeft een
-einddatum en de film niet, dus een film met € 29,99 erin wordt op de dag dat de
-actie stopt precies hetzelfde probleem als de film met de vier gratis lessen —
-en onder Apple-richtlijn 2.3.1 ook buiten de winkel een probleem. Tekst in
-beeld helpt niet: die zit na het exporteren even vast als de stem.
+het hele onderwerp van het blok bovenaan dit bestand. Een prijs verandert, een
+film niet — en dan wordt hij precies hetzelfde probleem als de film met de
+vier gratis lessen, onder Apple-richtlijn 2.3.1 ook buiten de winkel. Tekst in
+beeld helpt niet: die zit na het exporteren even vast als de stem. Dat geldt
+voor de staande prijs, en het gold des te meer voor de tijdelijke korting die
+hier tot 24 november stond.
 
 **Waar hij dan wel staat:** in de tekst boven de film, bij het plaatsen. Daar
 is hij in tien seconden aangepast, en daar wordt hij ook gelezen. Dit zijn de
@@ -372,24 +374,26 @@ regels, in dezelfde bewoording als `store/lancering/mail.md` en
 `store/lancering/socials.md`:
 
 ```
-Gratis te downloaden. De cursus is een abonnement: € 6,99 per maand, of
-€ 59,99 per jaar met het e-boek erbij. Nu de helft van de jaarprijs: € 29,99
-voor het eerste jaar (€ 2,50 per maand), tot [EINDDATUM].
+Gratis te downloaden. De cursus is een abonnement: € 59,99 per jaar (dat is
+€ 5,00 per maand) met het e-boek erbij, of € 6,99 per maand. Nog [WEKEN] weken
+tot de zomervakantie — een taal leer je niet in twee weken.
 ```
 
 ```
-Téléchargement gratuit. Le cours est un abonnement : 6,99 € par mois, ou
-59,99 € par an avec le livre numérique. En ce moment l’année est à moitié
-prix : 29,99 € la première année (soit 2,50 € par mois), jusqu’au [EINDDATUM].
+Téléchargement gratuit. Le cours est un abonnement : 59,99 € par an (soit
+5,00 € par mois) avec le livre numérique, ou 6,99 € par mois. Encore [WEKEN]
+semaines avant les grandes vacances — une langue ne s’apprend pas en quinze jours.
 ```
 
 ```
-Free to download. The course is a subscription: € 6.99 a month, or € 59.99 a
-year with the e-book included. Right now the year is half price: € 29.99 for
-the first year (€ 2.50 a month), until [EINDDATUM].
+Free to download. The course is a subscription: € 59.99 a year (that is € 5.00
+a month) with the e-book included, or € 6.99 a month. [WEKEN] weeks to go
+before the summer holidays — a language is not learned in a fortnight.
 ```
 
-**`[EINDDATUM]` is geen vergeten gat.** De einddatum is nog niet gekozen. De
+**`[WEKEN]` is geen vergeten gat.** Het aantal weken rekent `npm run aftellen`
+uit op de dag dat je plaatst; een getal dat hier vast zou staan, klopt over
+drie weken niet meer. De
 markering staat met enkele haken, net als in `mail.md` en `socials.md`, zodat
 één zoekopdracht alle drie de bestanden vindt. Vul hem in zodra de aanbieding in
 beide consoles staat, óf haal het stukje erachter weg — de zin blijft dan staan
