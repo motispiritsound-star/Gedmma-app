@@ -6,7 +6,7 @@ import type { Grade } from '../engine/srs'
 import { word } from '../content/lexicon'
 import { letter } from '../content/alphabet'
 import { sentence } from '../content/sentences'
-import { sentenceMeaning } from '../content/localise'
+import { sentenceMeaning, soundOf } from '../content/localise'
 import {
   bumpQuest, countSentence, gradeExtra, gradeWord, heartsNow, kanHartenKopen, koopHarten,
   letterKey, loseHeart, msUntilNextHeart, PRIJS_HARTEN, scoreCorrect, sentenceKey, useStore,
@@ -311,7 +311,7 @@ export function RoundRunner({
   const subject: Subject = isLetterExercise(current)
     ? (() => {
         const l = letter(current.letterId!)
-        return { ar: l.ar, tr: l.name, meaning: t.alphabet.klinktAls(l.sound) }
+        return { ar: l.ar, tr: l.name, meaning: t.alphabet.klinktAls(soundOf(l, lang)) }
       })()
     : isSentenceExercise(current)
       ? (() => {

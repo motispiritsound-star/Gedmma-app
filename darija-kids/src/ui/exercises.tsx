@@ -5,7 +5,7 @@ import { checkTyped, normalise, tokenize, type Verdict } from '../engine/exercis
 import { word } from '../content/lexicon'
 import { connects, letter } from '../content/alphabet'
 import { sentence } from '../content/sentences'
-import { sentenceMeaning } from '../content/localise'
+import { sentenceMeaning, soundOf } from '../content/localise'
 import { maybeWord } from '../content/lexicon'
 import { say, sayLetter, sfx } from '../engine/audio'
 import { kanOpnemen, neemOp, type Opname } from '../engine/microfoon'
@@ -951,7 +951,7 @@ function NewLetter({ exercise, onAnswer }: ExerciseProps) {
         <Vraagkaart className="flex flex-col items-center gap-3 p-6">
           <div className="ar text-7xl font-bold">{l.ar}</div>
           <p className="font-display text-2xl font-extrabold">{l.name}</p>
-          <p className="text-center text-[var(--ink-soft)]">{t.alphabet.klinktAls(l.sound)}</p>
+          <p className="text-center text-[var(--ink-soft)]">{t.alphabet.klinktAls(soundOf(l, lang))}</p>
           <SpeakButton {...letterVoice(l)} zeg={(traag) => sayLetter(l, { slow: traag })} />
 
           <ul className="mt-2 grid w-full grid-cols-3 gap-2 text-center">
@@ -1009,6 +1009,7 @@ function LetterChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mo
     onAnswer(id === l.id ? 'goed' : 'fout')
   }
 
+  const lang = useLang()
   const hint =
     mode === 'klank' ? t.lesson.welkeLetter
     : mode === 'naam' ? t.lesson.hoeHeetLetter
@@ -1020,7 +1021,7 @@ function LetterChoice({ exercise, onAnswer, locked, mode }: ExerciseProps & { mo
         {mode === 'klank' ? (
           <Vraagkaart className="p-6 text-center">
             <p className="font-display text-3xl font-extrabold">{l.name}</p>
-            <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.alphabet.klinktAls(l.sound)}</p>
+            <p className="mt-1 text-sm text-[var(--ink-soft)]">{t.alphabet.klinktAls(soundOf(l, lang))}</p>
             <div className="mt-3 flex justify-center"><SpeakButton {...letterVoice(l)} zeg={(traag) => sayLetter(l, { slow: traag })} /></div>
           </Vraagkaart>
         ) : (

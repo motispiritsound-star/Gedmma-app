@@ -1,5 +1,5 @@
 import type { Lang } from '../i18n/languages'
-import type { Lesson, LessonTip, Sentence, Story, Unit, Word } from './types'
+import type { Lesson, LessonTip, Letter, Sentence, Story, Unit, Word } from './types'
 import type { ContentPack } from './lang/types'
 import type { HistoryCard } from './history'
 import { fr } from './lang/fr'
@@ -38,6 +38,20 @@ export function noteOf(word: Word, lang: Lang): string | undefined {
 
 export const unitSubtitle = (unit: Unit, lang: Lang): string =>
   lang === 'nl' ? unit.subtitle : PACKS[lang].units[unit.id] ?? unit.subtitle
+
+/**
+ * Hoe een letter klinkt, in de taal van de lezer.
+ *
+ * `alphabet.ts` draagt de Nederlandse omschrijving, net als `words.ts` de
+ * Nederlandse betekenis draagt. De terugval is hier met opzet de Nederlandse
+ * tekst en niet het Engels, anders dan bij `meaningOf`: een ontbrekende
+ * letter is een gat in een pak van achtentwintig en hoort op te vallen bij
+ * het nalezen, niet stilletjes in het Engels door te gaan. `lettersvertaald.test.ts`
+ * eist dat alle achtentwintig er in alle vijf de pakken staan, dus in de
+ * praktijk komt deze terugval nooit aan bod.
+ */
+export const soundOf = (letter: Letter, lang: Lang): string =>
+  lang === 'nl' ? letter.sound : PACKS[lang].letters?.[letter.id] ?? letter.sound
 
 /**
  * Of er Arabisch schrift in staat.

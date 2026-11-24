@@ -12,19 +12,27 @@ build 11, bij Play versiecode 10 — sinds 24 oktober in allebei de winkels**,
 bij Play versiecode 8 sinds 13 oktober — in allebei de winkels staat de app
 dus al sinds 13 oktober.
 
-Dat raakt de teksten zelf, en dat is geen redactiewerk maar een besluit: alle
-zes de talen openen met *"Hij is er. Darijaforkids staat vanaf vandaag in
-allebei de winkels"*, en dat is niet waar — hij staat er sinds oktober. Kies
-vóór het versturen waar deze mail over gaat: de app die er al is, of de
-tijdelijke actie op het jaarabonnement. Zie het punt onderaan onder
-*Vóór je verstuurt*.
+Dat raakte de teksten zelf: alle zes de talen openden met *"Hij is er.
+Darijaforkids staat vanaf vandaag in allebei de winkels"*, en dat was niet waar
+— hij staat er sinds oktober.
+
+**Op 24 november is die keuze gemaakt, en anders dan de twee die hier
+openstonden.** Deze mail gaat niet over de dag dat de app er kwam en niet over
+een korting, maar over de zomer: *leer je kind Darija vóór de volgende
+zomervakantie.* De tijdelijke actie van 50% — € 29,99 voor het eerste jaar,
+€ 2,50 per maand — gaat niet door; `docs/STAND.md` legt dat vast onder
+*24 november: geen korting, maar een aftelling naar de zomer*. Daarmee is
+*vanaf vandaag* uit alle zes de talen weg, en de prijzen die er staan zijn de
+staande prijzen. Wat er in de plaats kwam en hoe je het schrijft staat onder
+*De zomer, en het getal dat je niet verzint*.
 
 Deze mensen hebben op *Hou me op de hoogte* gedrukt en daarna de link in de
 bevestigingsmail aangeklikt. Wanneer dat was staat per rij in `aangemeld_op`;
 `npm run belangstelling` zet het per dag uit. Waar ze niet om hebben gevraagd
 is een verslag van wat er gebouwd is: ze hebben om één bericht gevraagd,
 namelijk dat hij er is. Dat is dus wat er in staat, en verder zo weinig
-mogelijk.
+mogelijk: de zomerboodschap die er sinds 24 november bij staat is één alinea
+en geen tweede vraag.
 
 Daarom is de mail kort gehouden: hoogstens 120 woorden per taal, en alle zes
 blijven daaronder — de telling staat onder elke taal. Wat er niet in past hoort
@@ -80,6 +88,14 @@ gedaan dan wat er stond. Wat er hierna nog naar deze mensen gaat is dus een
 eigen vraag met een eigen antwoord, en niet iets dat deze mail stilzwijgend
 meebrengt.
 
+**En daar verandert de zomer niets aan.** De haak is nieuw, de mail is
+dezelfde soort: één bericht, onder de honderdtwintig woorden, met de twee
+adressen erin en de uitschrijflink eronder. Wat de zomer toevoegt is geen
+tweede vraag maar een reden om hem vandaag te openen in plaats van ooit — en
+wie dat niet wil, heeft nog steeds één klik nodig om eraf te komen. Een tweede
+mail over dezelfde campagne valt hier níet onder: dat blijft een eigen vraag
+met een eigen antwoord.
+
 In de app staat een ruimer vinkje: `post.nieuws` in `src/i18n/<taal>.ts`,
 *"Stuur me nieuws over nieuwe units, verhalen en aanbiedingen"*. Wie via de
 ouderpagina binnenkwam valt daaronder. In de tafel is dat onderscheid niet te
@@ -132,12 +148,15 @@ blok dat een gat heeft: `<de waarde van KOOP_GEHEIM>` is bij Gumroad in het
 veld beland, punthaken en al. Een mail is erger dan een veld bij Gumroad, want
 die is niet terug te nemen.
 
-Er staat nog een derde markering in de teksten, `[EINDDATUM]`, en die heeft
-**enkele** haken. Dat is geen slordigheid: die mag blijven ontbreken, want de
-zin eromheen is zonder datum al waar. Hij hoort dus niet in een controle die
-zegt dat er niets uit mag. Waarom hij er staat en wat je ermee doet staat onder
-*De tijdelijke actie, en de einddatum die nog niet gekozen is*; dat hij
-nagekeken wordt staat in *Vóór je verstuurt*.
+Er staat nog een derde markering in de teksten, en sinds 24 november is dat
+`[WEKEN]` in plaats van `[EINDDATUM]`: het aantal weken tot de zomervakantie.
+Die heeft **enkele** haken, en dat is geen slordigheid — `[[` is de controle
+die zegt dat er niets uit mag, en deze markering is van een andere soort. Hij
+is wel strenger dan zijn voorganger: `[EINDDATUM]` mocht wegvallen, want de
+zin eromheen was zonder datum al waar, maar *nog [WEKEN] weken wel* is zonder
+getal geen zin. Waarom hij er staat en wat je ermee doet staat onder *De zomer,
+en het getal dat je niet verzint*; dat hij nagekeken wordt staat in *Vóór je
+verstuurt*.
 
 **Android eerst, iPhone eronder.** Dezelfde volgorde als in
 `store/lancering/kanaal.md`. De reden staat in `docs/STAND.md`: de meeste
@@ -152,6 +171,33 @@ De regels krijgen een label dat het toestel noemt en niet de winkel:
 |---|---|
 | `Android —` | de Play-pagina; versiecode 10 is sinds 24 oktober 100% uitgerold |
 | `iPhone en iPad —` | de App Store-pagina; 1.5 staat sinds 24 oktober op *Ready for Distribution* |
+
+### De adressen dragen geen taal, en dat is goed zo
+
+Nagekeken op 24 november, omdat de vraag opkwam of de Franse mail wel een
+Franse winkelbladzijde opent. Allebei de adressen zijn taalloos, en allebei de
+winkels kiezen de taal zelf:
+
+| | |
+|---|---|
+| Apple | `apps.apple.com/app/id6813964474` — de korte vorm, zonder land en zonder slug. `src/site/links.ts` zegt waarom: apps.apple.com stuurt een bezoeker naar zijn eigen winkel, en deze app verkoopt in zes talen. |
+| Play | `play.google.com/store/apps/details?id=app.darijaforkids.learn` — `playStoreUrl()` zet er geen `&hl=` achter, dus Play volgt de taal van het Google-account. |
+
+Een `&hl=fr` of een `/fr/` in het adres zou het juist slechter maken: dan leest
+een Franse lezer met een Belgische of Marokkaanse winkel een bladzijde van de
+verkeerde winkel, of hij komt op een land uit waar hij niet kan kopen. Het
+enige wat hier taal heeft zijn de labels ernaast, en in het Franse blok staan
+die in het Frans: `Android —` (een merknaam, in elke taal hetzelfde) en
+`iPhone et iPad —`. Hetzelfde in de vier andere talen: `iPhone und iPad`,
+`iPhone y iPad`, `iPhone e iPad`, `iPhone and iPad`.
+
+Wat de Franse lezer op die bladzijde aantreft is een andere vraag dan deze
+mail, en het antwoord staat in `docs/STAND.md`: de Franse Play-vermelding heeft
+nog geen eigen beelden, dus Play toont daar stilletjes de beelden van de
+standaardvermelding — met Nederlandse tekst erop. `npm run playstand` leest per
+taal wat er werkelijk staat; `npm run playpakket -- --lang fr` maakt de Franse
+set en `npm run play` zet hem erin. Dat hoort vóór deze mail te gebeuren, want
+het is de bladzijde waar de mail naartoe wijst.
 
 ### Wanneer ze ingevuld kunnen worden
 
@@ -168,8 +214,10 @@ uitgerold — dus allebei de pagina's gaan open.
 
 - `STORE.apple` in `src/site/links.ts` staat gevuld —
   `https://apps.apple.com/app/id6813964474`.
-- `STORE.google` is nog steeds leeg in `links.ts`; `playStoreUrl()` bouwt het
-  Play-adres uit het applicatie-id, dus het adres is er wel.
+- **En `STORE.google` ook, nagekeken op 24 november.** Hier stond dat hij nog
+  leeg was en dat `playStoreUrl()` het adres uit het applicatie-id bouwde. In
+  `links.ts` staat nu
+  `https://play.google.com/store/apps/details?id=app.darijaforkids.learn`.
 
 Een adres kennen is nog niet hetzelfde als een pagina die opengaat, dus de
 controle blijft: allebei de adressen opengaan op een toestel, niet op de Mac en
@@ -215,254 +263,299 @@ om de app te verwijderen, **"whether within or outside of the App Store"**. Een
 mail aan de hele lijst valt daar net zo goed onder als de winkelbladzijde zelf,
 en een mail is het enige van de twee dat je niet kunt terugnemen.
 
-## De tijdelijke actie, en de einddatum die nog niet gekozen is
+## De zomer, en het getal dat je niet verzint
 
-Zolang de actie loopt is het jaarabonnement **€ 29,99 voor het eerste jaar** in
-plaats van € 59,99. Dat is de haak van de campagne en die hoort hier te staan,
-met drie voorwaarden.
+De haak is niet de prijs maar de zomervakantie: *leer je kind Darija vóór de
+volgende zomervakantie.* De prijzen blijven staan — € 59,99 per jaar (dat is
+€ 5,00 per maand) of € 6,99 per maand, inclusief btw, en het e-boek (los
+€ 14,99) hoort bij het jaar.
 
-**Eén: nooit "€ 2,50 per maand" alleen.** De omrekening mag erbij, maar het
-bedrag dat werkelijk wordt afgeschreven staat ernaast en staat vooraan. Apple
-heeft deze app één keer afgewezen op richtlijn **3.1.2(c)** omdat de omgerekende
-maandprijs duidelijker stond dan het bedrag dat van de rekening gaat. Zie ook
-het punt over € 5,00 onderaan: dat blijft er helemaal uit.
+**Waarom dat beter werkt dan de korting die hier stond.** Een korting zegt:
+koop nu, want straks is het duurder. Dat is een reden om te betalen en geen
+reden om te beginnen, en bij dit product zit de twijfel niet bij vijf euro per
+maand — die zit bij de vraag of een kind het ooit echt gaat spreken. De zomer
+draait dat om, en het is waar: een taal leer je niet in twee weken. Wie in juli
+in Marokko staat en wil dat zijn kind met zijn oma praat, moet nu beginnen en
+niet in juni. Dat is geen verkooptruc maar het argument van het product zelf,
+en het is het enige dat van "ooit eens" een "deze week" maakt.
 
-**Twee: de einddatum is nog niet gekozen.** Daarom staat er in alle zes de
-talen `[EINDDATUM]` op de plek waar hij hoort, en is de zin eromheen zo
-geschreven dat hij zonder die datum al waar is — *zolang de actie loopt*, en
-niet een datum die niemand heeft vastgesteld. Eén zoekopdracht op `[EINDDATUM]`
-vindt alle zes.
+**De belofte eerst, het getal erna.** In alle zes de talen staat de zomer in de
+eerste zin van die alinea en het aantal weken in de tweede. Het getal
+onderbouwt de belofte; het is niet zelf de belofte. Daarom draagt ook de
+onderwerpregel de zomer en geen cijfer: een onderwerpregel met een getal of een
+prijs erin wordt geopend door wie al wilde kopen, en dat is niet de groep die
+deze mail nodig heeft.
 
-**Enkele haken, met opzet.** De twee adresgaten hierboven hebben
-dubbele haken omdat `[[` de controle is die zegt: dan gaat er niets uit. Deze
-is van een andere soort — vul de datum in zodra hij in beide consoles staat,
-óf haal het stukje tussen haakjes weg, want de zin blijft dan staan en blijft
-waar. Daarom valt hij buiten de `[[`-controle en staat hij als eigen stap in
-*Vóór je verstuurt*.
+**De aftelling is een reden om te beginnen, nooit een reden om te haasten met
+betalen.** Er loopt niets af en er wordt niets duurder. Daarom staat er in geen
+van de zes talen *laatste kans*, *nu of nooit* of *op = op*: dat zou een
+urgentie zijn die er niet is, en het is precies het soort bewering waar een
+winkel een campagne op afrekent. Wat er wél staat is wat er in die maanden
+gebeurt: een korte les per dag, en in juli groeten, bedanken, afdingen op de
+souq en de familie verstaan. Dat zijn de units `groeten` (*salam*, *shukran*),
+`winkelen` (*shhal hada*, *ghali bezzaf*) en `familie` (*jedda*, oma) uit
+`src/content/curriculum.ts` — wat de app werkelijk leert, en niet een lijstje
+dat mooi klinkt.
 
-**Drie: de actiezin gaat er pas in als de aanbieding werkelijk in beide
-consoles staat.** Wat je waar zet staat in `docs/STAND.md` onder *de tijdelijke
-actie van 50% op het jaar*. Staat ze er nog niet, dan haal je de actiezin uit
-alle zes de talen en noem je alleen € 6,99 per maand of € 59,99 per jaar.
-Controleer het op het aankoopvenster zelf, op een telefoon, in de app uit de
-winkel: de console zegt wat er ingesteld is, niet wat de koper leest.
+### `[WEKEN]`, en waarom er geen cijfer staat
 
-En € 29,99 bereikt alleen wie nooit eerder een abonnement in deze groep had.
-Wie vóór 23 november de proef van drie dagen nam en opzegde, ziet de korting
-dus niet. Dat is nu een klein aantal mensen, en het verklaart straks waarom
-iemand terugschrijft dat hij € 59,99 ziet staan.
+Op de plek van het aantal weken staat de markering **`[WEKEN]`**, precies zo
+geschreven, één keer per taal. Daar stond `[EINDDATUM]`, en de reden is
+dezelfde: een cijfer in een kant-en-klare tekst in zes talen veroudert stil.
+Wie in januari verstuurt wat in november geschreven is, stuurt "nog 31 weken"
+terwijl het er 24 zijn.
+
+Het getal reken je uit op de dag dat je verstuurt:
+
+| | |
+|---|---|
+| `npm run aftellen` | naar 1 juli van het eerstvolgende jaar |
+| `npm run aftellen -- --tot 2027-07-10` | naar een datum die je zelf kiest |
+
+Hij drukt het aantal weken, het aantal dagen en een grover getal af — op
+24 november: *31 weken*, *219 dagen*, *een maand of 7* tot 1 juli 2027 — en
+zegt er altijd bij naar welke datum hij gerekend heeft. Zoek daarna op
+`[WEKEN]` en vul het in — zes keer, één per taal.
+
+**Welke datum je neemt, is geen detail.** Er is geen "de" zomervakantie:
+Frankrijk begint begin juli in het hele land, Nederland in juli maar per regio
+ruim twee weken uit elkaar, Duitsland per Bundesland van eind juni tot eind
+juli. Neem de vroegste van de landen waar deze mail naartoe gaat; dan klopt het
+getal overal, of het is er hooguit een paar te weinig. Een aftelling die te
+vroeg afloopt is erger dan een die een week overhoudt. Dezelfde afweging staat
+in de aantekening bovenaan `scripts/aftellen.mjs`.
+
+**Enkele haken, met opzet**, net als bij `[EINDDATUM]` hiervoor. De twee
+adresgaten hebben dubbele haken omdat `[[` de controle is die zegt: dan gaat er
+niets uit. Deze is van een andere soort, maar hij laat zich niet weglaten zoals
+`[EINDDATUM]` dat mocht — *nog [WEKEN] weken wel* is zonder getal geen zin.
+Vul hem dus in, of herschrijf die ene zin naar het grove getal (*nog een maand
+of zeven*), wat niet stil veroudert. Hij blijft buiten de `[[`-controle en
+staat als eigen stap in *Vóór je verstuurt*.
+
+**Waarom de onderwerpregel en de voorbeeldtekst geen `[WEKEN]` dragen.** Daar
+staat de zomer zonder getal, en dat is een keuze per plek. Een onderwerpregel
+is het eerste dat iemand leest en het enige dat hij later citeert als hij
+terugschrijft dat het niet klopt. En de voorbeeldtekst wordt in het postvak
+afgekapt, dus een getal kan daar halverwege afbreken. Zes markeringen, zes
+plekken om te vullen: dezelfde telling als `[EINDDATUM]` had, en dus dezelfde
+controle.
 
 ## nl-NL
 
 **Onderwerp**
-`Darijaforkids staat in de winkel`
+`Komende zomer praat je kind met zijn oma`
 
 **Voorbeeldtekst**
-`Voor iPhone en voor Android. Gratis te downloaden; tijdelijk € 29,99 voor het eerste jaar.`
+`Een taal leer je niet in twee weken. Begin nu, niet pas in juni.`
 
 **Kop**
-`Hij staat er`
+`Vóór de volgende zomer`
 
 **Tekst**
 
 ```
-Je hebt je adres achtergelaten om te horen wanneer de app er is.
-
-Hij is er. Darijaforkids staat vanaf vandaag in allebei de winkels.
+Je hebt je adres achtergelaten om te horen wanneer de app er is. Hij staat in
+allebei de winkels.
 
 Android — [[ANDROID]]
 iPhone en iPad — [[APPLE]]
 
-De app is gratis te downloaden: geen account, niets in te vullen, geen
-advertenties. De cursus is een abonnement en gaat na het betalen in één keer
-open: 17 units, van de letters tot afdingen op de souq — 304 woorden en 100
-zinnen, ingesproken door een Marokkaanse stem en niet door een computer.
+Komende zomer praat je kind met zijn oma. Een taal leer je niet in twee weken;
+nog [WEKEN] weken wel. Een korte les per dag, en in juli kan hij groeten,
+bedanken, afdingen op de souq en de familie verstaan.
 
-€ 6,99 per maand, of € 59,99 per jaar met het e-boek erbij. Zolang de actie
-loopt (tot [EINDDATUM]) is het eerste jaar € 29,99, dat is € 2,50 per maand.
-Opzeggen doe je in de winkel zelf.
+De app is gratis te downloaden: geen account, geen advertenties. De cursus is
+een abonnement en gaat na het betalen in één keer open — 17 units, ingesproken
+door een Marokkaanse stem.
+
+€ 59,99 per jaar (dat is € 5,00 per maand) met het e-boek erbij, of € 6,99 per
+maand. Opzeggen doe je in de winkel zelf.
 
 Shukran voor het wachten.
 ```
 
-115 woorden, de twee adresregels niet meegerekend.
+117 woorden, de twee adresregels niet meegerekend.
 
 ## fr-FR
 
 **Onderwerp**
-`Darijaforkids est disponible`
+`Cet été, votre enfant parlera à sa grand-mère`
 
 **Voorbeeldtekst**
-`Sur iPhone et sur Android. Téléchargement gratuit ; 29,99 € la première année, pour un temps limité.`
+`Une langue ne s’apprend pas en deux semaines. Commencez maintenant, pas en juin.`
 
 **Kop**
-`Elle est là`
+`Avant l’été`
 
 **Tekst**
 
 ```
 Vous avez laissé votre adresse pour savoir quand l’application serait prête.
-
-Elle est là. Darijaforkids est disponible dès aujourd’hui dans les deux
-boutiques.
+Elle est dans les deux boutiques.
 
 Android — [[ANDROID]]
 iPhone et iPad — [[APPLE]]
 
-L’application est gratuite à télécharger : pas de compte, rien à remplir, pas
-de publicité. Le cours est un abonnement et, une fois payé, tout s’ouvre d’un
-coup : 17 unités, des lettres au marchandage au souk — 304 mots et 100
-phrases, enregistrés par une voix marocaine et non par un ordinateur.
+Cet été, votre enfant parlera à sa grand-mère. Une langue ne s’apprend pas en
+deux semaines ; en [WEKEN] semaines, oui. Une courte leçon par jour, et en
+juillet il saura saluer, remercier, marchander au souk et comprendre la
+famille.
 
-6,99 € par mois, ou 59,99 € par an avec le livre numérique. Tant que l’offre
-dure (jusqu’au [EINDDATUM]), la première année est à 29,99 €, soit 2,50 € par
+L’application est gratuite à télécharger : pas de compte, pas de publicité. Le
+cours est un abonnement et, une fois payé, tout s’ouvre d’un coup — 17 unités,
+enregistrées par une voix marocaine.
+
+59,99 € par an (soit 5,00 € par mois) avec le livre numérique, ou 6,99 € par
 mois. La résiliation se fait dans la boutique elle-même.
 
 Shukran pour votre patience.
 ```
 
-112 woorden, de twee adresregels niet meegerekend.
+116 woorden, de twee adresregels niet meegerekend.
 
 ## de-DE
 
 **Onderwerp**
-`Darijaforkids ist da`
+`Nächsten Sommer spricht dein Kind mit seiner Oma`
 
 **Voorbeeldtekst**
-`Für iPhone und für Android. Download kostenlos; vorübergehend 29,99 € im ersten Jahr.`
+`Eine Sprache lernt man nicht in zwei Wochen. Fang jetzt an, nicht erst im Juni.`
 
 **Kop**
-`Sie ist da`
+`Vor dem nächsten Sommer`
 
 **Tekst**
 
 ```
-Du hast deine Adresse hinterlassen, um zu hören, wann die App da ist.
-
-Sie ist da. Darijaforkids steht ab heute in beiden Stores.
+Du hast deine Adresse hinterlassen, um zu hören, wann die App da ist. Sie steht
+in beiden Stores.
 
 Android — [[ANDROID]]
 iPhone und iPad — [[APPLE]]
 
-Die App lässt sich kostenlos herunterladen: kein Konto, nichts auszufüllen,
-keine Werbung. Der Kurs läuft über ein Abo und steht nach dem Bezahlen auf
-einmal offen: 17 Einheiten, von den Buchstaben bis zum Handeln im Souk — 304
-Wörter und 100 Sätze, eingesprochen von einer marokkanischen Stimme und nicht
-von einem Computer.
+Nächsten Sommer spricht dein Kind mit seiner Oma. Eine Sprache lernt man nicht
+in zwei Wochen; in [WEKEN] Wochen schon. Eine kurze Lektion pro Tag, und im
+Juli kann es grüßen, danken, im Souk handeln und die Familie verstehen.
 
-6,99 € im Monat, oder 59,99 € im Jahr mit dem E-Book dazu. Solange die Aktion
-läuft (bis [EINDDATUM]), kostet das erste Jahr 29,99 €, das sind 2,50 € im
+Die App lässt sich kostenlos herunterladen: kein Konto, keine Werbung. Der Kurs
+läuft über ein Abo und steht nach dem Bezahlen auf einmal offen — 17 Einheiten,
+eingesprochen von einer marokkanischen Stimme.
+
+59,99 € im Jahr (das sind 5,00 € im Monat) mit dem E-Book dazu, oder 6,99 € im
 Monat. Gekündigt wird im Store selbst.
 
 Shukran fürs Warten.
 ```
 
-109 woorden, de twee adresregels niet meegerekend.
+112 woorden, de twee adresregels niet meegerekend.
 
 ## es-ES
 
 **Onderwerp**
-`Darijaforkids ya está en las tiendas`
+`El próximo verano tu hijo hablará con su abuela`
 
 **Voorbeeldtekst**
-`Para iPhone y para Android. Descarga gratuita; por tiempo limitado, 29,99 € el primer año.`
+`Un idioma no se aprende en dos semanas. Empieza ahora, no en junio.`
 
 **Kop**
-`Ya está`
+`Antes del próximo verano`
 
 **Tekst**
 
 ```
-Dejaste tu dirección para saber cuándo estaría la aplicación.
-
-Ya está. Darijaforkids se puede descargar desde hoy en las dos tiendas.
+Dejaste tu dirección para saber cuándo estaría la aplicación. Ya está en las
+dos tiendas.
 
 Android — [[ANDROID]]
 iPhone y iPad — [[APPLE]]
 
-La aplicación se descarga gratis: sin cuenta, sin rellenar nada, sin
-publicidad. El curso es una suscripción y, después de pagar, todo se abre de
-una vez: 17 unidades, de las letras al regateo en el souk — 304 palabras y 100
-frases, grabadas por una voz marroquí y no por un ordenador.
+El próximo verano tu hijo hablará con su abuela. Un idioma no se aprende en dos
+semanas; en [WEKEN] semanas, sí. Una lección corta al día, y en julio sabrá
+saludar, dar las gracias, regatear en el souk y entender a la familia.
 
-6,99 € al mes, o 59,99 € al año con el libro digital incluido. Mientras dure
-la oferta (hasta el [EINDDATUM]), el primer año cuesta 29,99 €, son 2,50 € al
+La aplicación se descarga gratis: sin cuenta, sin publicidad. El curso es una
+suscripción y, después de pagar, todo se abre de una vez — 17 unidades,
+grabadas por una voz marroquí.
+
+59,99 € al año (son 5,00 € al mes) con el libro digital incluido, o 6,99 € al
 mes. La baja se da en la propia tienda.
 
 Shukran por la espera.
 ```
 
-113 woorden, de twee adresregels niet meegerekend.
+117 woorden, de twee adresregels niet meegerekend.
 
 ## it-IT
 
 **Onderwerp**
-`Darijaforkids è negli store`
+`L’estate prossima tuo figlio parlerà con la nonna`
 
 **Voorbeeldtekst**
-`Per iPhone e per Android. Download gratuito; per un periodo limitato, 29,99 € il primo anno.`
+`Una lingua non si impara in due settimane. Comincia adesso, non a giugno.`
 
 **Kop**
-`È arrivata`
+`Prima della prossima estate`
 
 **Tekst**
 
 ```
-Hai lasciato il tuo indirizzo per sapere quando sarebbe arrivata l’app.
-
-È arrivata. Darijaforkids si scarica da oggi in entrambi gli store.
+Hai lasciato il tuo indirizzo per sapere quando sarebbe arrivata l’app. È in
+entrambi gli store.
 
 Android — [[ANDROID]]
 iPhone e iPad — [[APPLE]]
 
-L’app si scarica gratis: nessun account, niente da compilare, nessuna
-pubblicità. Il corso è un abbonamento e, dopo il pagamento, si apre tutto in
-una volta sola: 17 unità, dalle lettere alla contrattazione al souk — 304
-parole e 100 frasi, registrate da una voce marocchina e non da un computer.
+L’estate prossima tuo figlio parlerà con la nonna. Una lingua non si impara in
+due settimane; in [WEKEN] settimane, sì. Una lezione breve al giorno, e a
+luglio saprà salutare, ringraziare, contrattare al souk e capire la famiglia.
 
-6,99 € al mese, o 59,99 € all’anno con l’ebook incluso. Finché l’offerta dura
-(fino al [EINDDATUM]), il primo anno costa 29,99 €, sono 2,50 € al mese. La
-disdetta si fa nello store stesso.
+L’app si scarica gratis: nessun account, nessuna pubblicità. Il corso è un
+abbonamento e, dopo il pagamento, si apre tutto in una volta — 17 unità,
+registrate da una voce marocchina.
+
+59,99 € all’anno (sono 5,00 € al mese) con l’ebook incluso, o 6,99 € al mese.
+La disdetta si fa nello store stesso.
 
 Shukran per l’attesa.
 ```
 
-106 woorden, de twee adresregels niet meegerekend.
+107 woorden, de twee adresregels niet meegerekend.
 
 ## en-US
 
 **Onderwerp**
-`Darijaforkids is in the stores`
+`Next summer your child talks to their grandmother`
 
 **Voorbeeldtekst**
-`For iPhone and for Android. Free to download; € 29.99 for the first year, for a limited time.`
+`You do not learn a language in two weeks. Start now, not in June.`
 
 **Kop**
-`It is here`
+`Before next summer`
 
 **Tekst**
 
 ```
-You left your address to hear when the app was ready.
-
-It is here. Darijaforkids is in both stores from today.
+You left your address to hear when the app was ready. It is in both stores.
 
 Android — [[ANDROID]]
 iPhone and iPad — [[APPLE]]
 
-The app is free to download: no account, nothing to fill in, no ads. The
-course is a subscription, and once you pay it all opens in one go: 17 units,
-from the letters to haggling at the souk — 304 words and 100 sentences,
-recorded by a Moroccan voice and not by a computer.
+Next summer your child talks to their grandmother. You do not learn a language
+in two weeks; in [WEKEN] weeks you do. One short lesson a day, and by July they
+can greet, say thank you, haggle at the souk and understand the family.
 
-€ 6.99 a month, or € 59.99 a year with the e-book included. While the offer
-runs (until [EINDDATUM]) the first year is € 29.99, that is € 2.50 a month.
-You cancel in the store itself.
+The app is free to download: no account, no ads. The course is a subscription,
+and once you pay it all opens in one go — 17 units, recorded by a Moroccan
+voice.
+
+€ 59.99 a year (that is € 5.00 a month) with the e-book included, or € 6.99 a
+month. You cancel in the store itself.
 
 Shukran for waiting.
 ```
 
-111 woorden, de twee adresregels niet meegerekend.
+117 woorden, de twee adresregels niet meegerekend.
 
 ---
 
@@ -529,6 +622,12 @@ mail. Er zijn hier twee adressen, dus een van de drie:
 Zolang 3 er niet is, is 1 de keuze. Daarom staan de twee adressen in de tekst
 en niet in een knop.
 
+**Er staat dus geen knoptekst in deze mail**, en daarmee ook niets aan een knop
+dat over de vervallen actie ging — nagekeken op 24 november, `knop` blijft
+leeg. Komt die tweede knop er wel, dan is de tekst *Begin vandaag* en niet
+*Profiteer nu*: een knop hoort hetzelfde te beloven als de onderwerpregel, en
+haast beloven mag hij niet, want er loopt niets af.
+
 ## Wat er nog niet is: de verzending
 
 Er is geen opdracht die deze mail verstuurt. `scripts/` heeft
@@ -583,12 +682,18 @@ tientallen adressen en wel bij duizenden.
   niets voor in de plaats gekomen dat erop líjkt: *gratis te downloaden* gaat
   over de app en niet over de cursus, en dat onderscheid moet in elke taal in
   één zin te zien blijven.
-- **Geen "€ 5,00 per maand".** Dat is € 59,99 gedeeld door twaalf. Apple wees
-  1.0 af op richtlijn 3.1.2(c) omdat die omrekening duidelijker stond dan het
-  bedrag dat van de rekening gaat. De bedragen die hier vooraan staan zijn de
-  bedragen die afgeschreven worden: € 6,99, € 59,99 en € 29,99. De enige
-  omrekening die er wél staat is € 2,50 per maand, en die staat in geen van de
-  zes talen zonder € 29,99 voor het eerste jaar ernaast.
+- **Geen omrekening zonder het bedrag dat afgeschreven wordt.** Hier stond dat
+  "€ 5,00 per maand" er helemaal uit bleef. Dat was de voorzichtige vorm van de
+  regel, in een mail die toen twee jaarprijzen en twee omrekeningen droeg; de
+  regel zelf is de órde. Apple wees 1.0 af op richtlijn **3.1.2(c)** omdat de
+  omrekening duidelijker stond dan het bedrag dat van de rekening gaat. In die
+  orde staat hij nu in alle zes de talen: *€ 59,99 per jaar (dat is € 5,00 per
+  maand)* — het afgeschreven bedrag eerst, de omrekening tussen haakjes
+  erachter, nooit los. Dat is woord voor woord de zin die het antwoord over de
+  prijs in `faq` (`src/i18n/<taal>.ts`) ook gebruikt, en dezelfde orde als op
+  de winkelafbeelding (`pil1` in `scripts/make-screenshots.mjs`, bewaakt door
+  `src/pages/prijsweergave.test.ts`). De bedragen die hier vooraan staan zijn
+  de bedragen die afgeschreven worden: € 59,99 en € 6,99.
 - **Niet dat het abonnement op het eerste scherm gevraagd wordt.** Dat de
   cursus een abonnement is staat er wel, en in dezelfde zin als wat er na het
   betalen opengaat; dat is de verwachting die een nieuwe download nodig heeft.
@@ -604,34 +709,45 @@ tientallen adressen en wel bij duizenden.
 - **Geen "eindelijk" en geen terugblik.** Iemand die zijn adres heeft gegeven,
   wil weten waar hij de app haalt. Hoe lang het geduurd heeft gaat over de
   maker.
-- **Geen datum en geen "deze week nog".** Gaat deze mail de deur uit, dan staat
-  hij er. Anders gaat hij niet de deur uit.
+- **Geen datum, en geen "deze week nog".** De aftelling staat in weken en niet
+  in een datum: welke dag de zomervakantie begint hangt van het land en van de
+  regio af, en die keuze ligt bij wie verstuurt. *Laatste kans* en *op = op*
+  staan er evenmin, want er loopt niets af en er wordt niets duurder. Wat de
+  aftelling zegt is niet dat de prijs verandert maar dat de tijd verstrijkt, en
+  dat is waar.
 
 # Vóór je verstuurt
 
-**Eerst het besluit dat hierboven openstaat: waar gaat deze mail over?** Alle
-zes de talen openen met *"Hij is er. Darijaforkids staat vanaf vandaag in
-allebei de winkels"*, en dat is sinds 24 oktober niet meer waar
-(`docs/STAND.md`). Twee uitwegen, en dit document kiest er geen: de mail gaat
-over de app die er al is — dan moet *vanaf vandaag* eruit, in zes talen,
-inclusief de onderwerpregels en de voorbeeldteksten — of de mail gaat over de
-tijdelijke actie op het jaarabonnement, en dan is de actie de kop en niet een
-regel onderaan. Een onjuiste openingszin naar de hele lijst is niet terug te
-nemen, en het is de eerste regel die iemand leest.
+**Het besluit dat hier openstond, is op 24 november genomen:** deze mail gaat
+over de zomer, niet over de dag dat de app er kwam en niet over een korting.
+Daarmee is *"Hij is er. Darijaforkids staat vanaf vandaag in allebei de
+winkels"* uit alle zes de talen weg — die zin stond er en was sinds 24 oktober
+niet meer waar (`docs/STAND.md`). Wat er nu staat noemt geen dag: *hij staat in
+allebei de winkels*, en dat blijft waar zolang hij daar staat. Lees de eerste
+regel van elke taal nog één keer na met die vraag in je hoofd, want een onjuiste
+openingszin naar de hele lijst is niet terug te nemen.
 
 1. **Zoek op `[[`.** In alle zes de talen, in de samengestelde tekst, en ook in
    de HTML-versie. Eén treffer betekent: niet versturen.
-2. **Staat de actie werkelijk in beide consoles?** Zo niet, dan gaat de
-   actiezin — de zin met € 29,99 erin — uit alle zes de talen, en blijven
-   alleen € 6,99 per maand en € 59,99 per jaar staan. Kijk niet in de console
-   maar op het aankoopvenster zelf, op een telefoon, in de app uit de winkel:
-   de console zegt wat er ingesteld is, niet wat de koper leest. Een mail die
-   een prijs belooft die de winkel niet rekent is Apple 2.3.1, en die geldt
-   ook buiten de App Store.
-3. **Zoek op `[EINDDATUM]`.** Zes treffers, één per taal. Vul per taal de datum
-   in die je in de consoles hebt gezet, of haal het stukje tussen haakjes weg
-   — de zin blijft dan staan en blijft waar. Wat niet mag is hem laten staan:
-   dan gaat `[EINDDATUM]` als woord de deur uit.
+2. **Zoek op `[WEKEN]`.** Zes treffers in de plakbare blokken, één per taal;
+   de overige treffers staan in het proza hierboven, waar de markering
+   besproken wordt. Draai
+   `npm run aftellen -- --tot <de datum die je kiest>`, vul dat ene getal zes
+   keer in, en lees daarna één taal hardop: *nog 31 weken wel* leest anders dan
+   *nog 3 weken wel*, en bij een laag getal is dat de zin niet meer die je
+   bedoelde. Wat niet mag is de markering laten staan — dan gaat `[WEKEN]` als
+   woord de deur uit — en wegstrepen mag ook niet, want anders dan
+   `[EINDDATUM]` laat deze een zin achter die niet meer loopt. Wil je hem kwijt,
+   herschrijf de zin dan naar het grove getal uit datzelfde commando (*nog een
+   maand of zeven*).
+3. **Rekent de winkel de prijs die in de mail staat?** € 59,99 per jaar en
+   € 6,99 per maand, de staande prijs; de actie van 50% gaat niet door
+   (`docs/STAND.md`, *24 november*). Staat er in een van de consoles tóch nog
+   een introductieaanbieding aan, dan is dat wat de koper leest en niet wat hier
+   staat. Kijk niet in de console maar op het aankoopvenster zelf, op een
+   telefoon, in de app uit de winkel: de console zegt wat er ingesteld is, niet
+   wat de koper ziet. Een mail die een prijs noemt die de winkel niet rekent is
+   Apple 2.3.1, en die geldt ook buiten de App Store.
 4. **Open de twee adressen op een toestel.** Allebei, en niet op de Mac en niet
    in een tabblad waar je al ingelogd bent.
 5. **Kijk welke versie er live staat.** Volgens `docs/STAND.md` is dat sinds

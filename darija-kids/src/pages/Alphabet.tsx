@@ -10,7 +10,7 @@ import { Button, Card, SectionTitle } from '../ui/kit'
 import { Mascot } from '../ui/Mascot'
 import { SpeakButton } from '../ui/WordChip'
 import { useLang, useT } from '../i18n'
-import { meaningOf } from '../content/localise'
+import { meaningOf, soundOf } from '../content/localise'
 import { letterVoice } from '../content/pronunciation'
 
 /**
@@ -69,7 +69,7 @@ export function Alphabet() {
           <div className="ar text-7xl font-bold">{letter.ar}</div>
           <div className="min-w-0 grow basis-48">
             <h2 className="font-display text-2xl font-extrabold">{letter.name}</h2>
-            <p className="text-[var(--ink-soft)]">{t.alphabet.klinktAls(letter.sound)}</p>
+            <p className="text-[var(--ink-soft)]">{t.alphabet.klinktAls(soundOf(letter, lang))}</p>
             <p className="mt-1 text-sm">{t.alphabet.latijn}: <strong>{letter.tr}</strong></p>
           </div>
           <SpeakButton {...letterVoice(letter)} zeg={(traag) => sayLetter(letter, { slow: traag })} />
@@ -124,6 +124,7 @@ export function Alphabet() {
 
 function LetterGame({ onDone }: { onDone: () => void }) {
   const t = useT()
+  const lang = useLang()
   const [round, setRound] = useState(0)
   const [score, setScore] = useState(0)
   const [chosen, setChosen] = useState<string | null>(null)
@@ -159,7 +160,7 @@ function LetterGame({ onDone }: { onDone: () => void }) {
     <div className="mx-auto max-w-md px-4 py-10 text-center">
       <p className="text-sm font-bold text-[var(--ink-soft)]">{t.alphabet.ronde(round + 1, score)}</p>
       <h1 className="mt-4 font-display text-3xl font-extrabold">{target.name}</h1>
-      <p className="text-[var(--ink-soft)]">{t.alphabet.klinktAls(target.sound)}</p>
+      <p className="text-[var(--ink-soft)]">{t.alphabet.klinktAls(soundOf(target, lang))}</p>
 
       <div className="mt-8 grid grid-cols-2 gap-3">
         {options.map((l) => (

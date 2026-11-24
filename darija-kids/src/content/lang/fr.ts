@@ -327,6 +327,35 @@ export const fr: ContentPack = {
     cultuur: "Le pays, les villes et la fête",
   },
 
+  /**
+   * Hoe elke letter klinkt. Zie de aantekening bij `letters` in `./types.ts`:
+   * een klank leg je uit met een woord dat de lezer al kent, dus hier staan
+   * Franse voorbeeldwoorden en geen vertalingen van de Nederlandse.
+   */
+  letters: {
+    alif: "aa, le a de « papa » mais tenu plus longtemps",
+    ba: "b comme dans « ballon »", ta: "t comme dans « table »",
+    tha: "le th de l'anglais « think » — rare en darija",
+    jim: "j comme dans « jour »",
+    ha: "un h soufflé, du fond de la gorge — en français il serait muet, ici on l'entend",
+    kha: "un raclement au fond de la gorge, tout en souffle",
+    dal: "d comme dans « dix »", dhal: "le th doux de l'anglais « this »",
+    ra: "un r roulé du bout de la langue, pas le r français",
+    zay: "z comme dans « zèbre »", sin: "s comme dans « sac »",
+    shin: "ch comme dans « chat »",
+    sad: "un s lourd et sombre, la langue à plat",
+    dad: "un d lourd — l'arabe s'appelle « la langue du dad »",
+    "ta-emf": "un t lourd", "za-emf": "un z lourd",
+    ayn: "un serrement au fond de la gorge — le son le plus célèbre de l'arabe",
+    ghayn: "le r français, celui qui roule dans la gorge",
+    fa: "f comme dans « fleur »", qaf: "un k tout au fond de la bouche",
+    kaf: "k comme dans « kangourou »", lam: "l comme dans « lune »",
+    mim: "m comme dans « maman »", nun: "n comme dans « nez »",
+    "ha-soft": "un h léger, comme dans l'anglais « hello » — on le souffle, il n'est pas muet",
+    waw: "w comme dans « kiwi », ou un ou long",
+    ya: "y comme dans « yaourt », ou un i long",
+  },
+
   lessons: {
     toets: "Contrôle",
     "groeten-1": "Bonjour et au revoir",

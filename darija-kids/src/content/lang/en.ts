@@ -85,6 +85,26 @@ export const en: ContentPack = {
     cultuur: "Country, cities and celebration",
   },
 
+  /**
+   * Hoe elke letter klinkt. Zie de aantekening bij `letters` in `./types.ts`:
+   * een klank leg je uit met een woord dat de lezer al kent, dus dit zijn
+   * Engelse voorbeeldwoorden en geen vertalingen van de Nederlandse.
+   */
+  letters: {
+    alif: 'aa, like in \u201cfather\u201d', ba: 'b as in ball', ta: 't as in table',
+    tha: 'th as in \u201cthink\u201d \u2014 rare in Darija', jim: 'zh as in \u201cmeasure\u201d',
+    ha: 'a breathy h, deep in the throat', kha: 'ch as in the Scottish \u201cloch\u201d',
+    dal: 'd as in day', dhal: 'soft th, as in \u201cthis\u201d', ra: 'a rolled r',
+    zay: 'z as in zoo', sin: 's as in sock', shin: 'sh as in \u201cshawl\u201d',
+    sad: 'a heavy, dark s',
+    dad: 'a heavy d \u2014 Arabic calls itself \u201cthe language of the dad\u201d',
+    'ta-emf': 'a heavy t', 'za-emf': 'a heavy z',
+    ayn: 'a squeeze in the throat \u2014 the most famous sound in Arabic',
+    ghayn: 'a throaty g, like the French r', fa: 'f as in fish',
+    qaf: 'a k deep at the back of the mouth', kaf: 'k as in cat', lam: 'l as in lamb',
+    mim: 'm as in moon', nun: 'n as in nose', 'ha-soft': 'a plain h',
+    waw: 'w as in water, or oo', ya: 'y as in yes, or ee',
+  },
   lessons: {
     toets: "Checkpoint",
     "groeten-1": "Hello and goodbye",

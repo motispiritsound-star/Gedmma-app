@@ -325,6 +325,38 @@ export const de: ContentPack = {
     cultuur: "Land, Städte und Fest",
   },
 
+  /**
+   * Hoe elke letter klinkt. Zie de aantekening bij `letters` in `./types.ts`:
+   * een klank leg je uit met een woord dat de lezer al kent, dus dit zijn
+   * Duitse voorbeeldwoorden en geen vertalingen van de Nederlandse.
+   *
+   * Drie plekken waar het Duits een eigen keuze vraagt. De `w` is in het
+   * Duits een v, dus `waw` kan niet naar een Duits woord wijzen en leunt op
+   * het Engelse "water"; de `j` is wel de Nederlandse j, dus `ya` kan dat
+   * wel. En een `s` aan het begin van een Duits woord is stemhebbend
+   * ("Sonne" klinkt als zonne), dus `sin` wijst naar de s van "Maus" en
+   * `zay` naar die van "Rose".
+   */
+  letters: {
+    alif: 'das lange a von „Vater“', ba: 'b wie in Ball', ta: 't wie in Tisch',
+    tha: 'th wie im englischen „think“ — in Darija selten',
+    jim: 'das g von „Garage“', ha: 'ein gehauchtes h, tief aus der Kehle',
+    kha: 'das ch von „Bach“', dal: 'd wie in Daumen',
+    dhal: 'weiches th, wie im englischen „this“',
+    ra: 'ein gerolltes r mit der Zungenspitze, nicht aus der Kehle',
+    zay: 'das summende s von „Rose“', sin: 'das scharfe s von „Maus“',
+    shin: 'sch wie in Schule', sad: 'ein schweres, dunkles s',
+    dad: 'ein schweres d — Arabisch nennt sich selbst „die Sprache des Dad“',
+    'ta-emf': 'ein schweres t', 'za-emf': 'ein schweres, summendes s',
+    ayn: 'ein Drücken tief in der Kehle — der berühmteste Laut des Arabischen',
+    ghayn: 'das kratzende r von „rot“, ganz hinten in der Kehle',
+    fa: 'f wie in Fisch', qaf: 'ein k ganz weit hinten im Mund',
+    kaf: 'k wie in Katze', lam: 'l wie in Lampe', mim: 'm wie in Mond',
+    nun: 'n wie in Nase', 'ha-soft': 'das einfache h von „Hand“',
+    waw: 'das w im englischen „water“, oder ein langes u',
+    ya: 'j wie in „ja“, oder ein langes i',
+  },
+
   lessons: {
     toets: "Test",
     "groeten-1": "Hallo und tschüss",
