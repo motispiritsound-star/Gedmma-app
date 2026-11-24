@@ -299,6 +299,20 @@ dus het kan niet uit de pas gaan lopen.
 4. Uitbetaling **maandelijks**, ongeveer 33 dagen na het einde van de maand,
    boven de drempel voor jouw land.
 
+**Waar je het terugziet: App Store Connect → Business.** Dat is de plek met
+*Payments and Financial Reports* — wat er is uitbetaald, wat er openstaat, en
+de maandrapporten per regio. Daar staan ook de overeenkomsten, de
+bankgegevens, de belastingformulieren en de aanmelding voor het Small
+Business Program, dus het is in de praktijk de enige bladzijde die over geld
+gaat.
+
+Niet verwarren met de twee buren in diezelfde balk. *Trends* en *Reports* gaan
+over verkopen — wat er besteld is — en de *Proceeds* op het Analytics-overzicht
+is een schátting van wat je toekomt. Alleen onder Business staat wat je bank
+werkelijk heeft gezien. Dat verschil is de reden dat iemand denkt dat er geld
+mist: het staat er wel, maar onder de drempel, en schuift door naar de maand
+erna.
+
 ### Google
 
 1. **Play Console → Instellingen → Betalingsprofiel** aanmaken of koppelen.
