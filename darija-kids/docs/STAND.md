@@ -327,6 +327,73 @@ niet automatisch mee. Zet de einddatum van de actie dus ook in je agenda met
 jaarprijs terug op € 5,00 p/m, en `pil1` in `scripts/make-screenshots.mjs`
 mee. Dat is de enige plek waar een verlopen actie stil blijft staan.
 
+## 24 november: wat Apple nu meet, en het cijfer dat een aanname omvergooit
+
+Afgelezen uit App Store Connect → Analytics → Overview, stand 22 november.
+Dit is de **nulmeting vóór de campagne**: alles wat er daarna gebeurt, meet je
+hiertegen af.
+
+| | |
+|---|---|
+| Eerste downloads | **216** |
+| Opnieuw gedownload | 8 |
+| Updates | **83** |
+| Vertoningen | 2,52K |
+| Bezoek aan de productpagina | 344 |
+| Opbrengst | **$162** |
+| In-app aankopen | 16 |
+| Actieve plannen | 6 |
+| Betaalde plannen | **5** |
+| Maandelijks terugkerende omzet | $8 |
+| *Day 1 download to paid* | te weinig gegevens |
+| *Day 7 download to paid* | **2,43%** |
+| *Day 35 download to paid* | **3,13%** |
+
+### Het cijfer dat een aanname omvergooit
+
+Hierboven, bij de wijziging van 12 november, staat: *"Apple meet dat 83% van de
+conversies tussen dag 7 en dag 35 valt."* Dat was een argument om het gratis
+deel niet te verkleinen — als mensen pas na weken kopen, moet je ze weken de
+tijd geven.
+
+**Dat klopt niet meer, en waarschijnlijk klopte het nooit.** Day 7 staat op
+2,43% en day 35 op 3,13%. Dat is 0,70 procentpunt verschil, geen factor zes.
+
+Twee dingen om eerlijk bij te zeggen. Ten eerste zijn die twee percentages
+geen schone optelsom: ze hebben een ándere noemer. *Day 7* telt downloads die
+minstens zeven dagen oud zijn, *day 35* alleen die minstens vijfendertig dagen
+oud zijn. Het verschil ertussen is dus geen "zoveel procent koopt laat".
+
+Ten tweede verklaart dát juist waar de 83% vandaan kwam. Toen dat getal werd
+afgelezen stond day 35 op 14,3% — op een cohort dat toen nog bijna leeg was,
+want er waren nauwelijks downloads van vijfendertig dagen oud. Eén aankoop op
+zeven downloads is 14%. Nu de teller gevuld is, staat er 3,13%.
+
+**Wat er wél uit volgt**, en het is de richting die telt: er is geen lange
+staart van mensen die na weken alsnog kopen. Wie koopt, koopt snel. Dat is
+precies de aanname onder het besluit van 23 november, en hij is hiermee
+gemeten in plaats van gehoopt — en het betekent ook dat je de campagne **binnen
+een week kunt beoordelen** en niet pas na vijf.
+
+### Wat dit zegt over de campagne
+
+**83 updates.** Dat is de groep die 1.6 binnenkrijgt en de betaalmuur tegenkomt
+zonder erom gevraagd te hebben. Daarom staat in `store/wat-is-nieuw-1.6.md`
+vooraan dat afgeronde lessen open blijven.
+
+**$162 op 16 aankopen** is ruim $10 netto per aankoop. Een jaarabonnement van
+€ 59,99 levert netto ongeveer € 42, een e-boek van € 14,99 ongeveer € 10,50.
+Zestien aankopen naast vijf betaalde plannen betekent dus nog steeds dat er
+meer e-boeken dan abonnementen gaan — zie de aantekening van 22 oktober.
+Bij de actie wordt een jaarabonnement € 29,99, netto ongeveer € 21.
+
+**En de rekensom voor de campagne.** 5 betaalde plannen op 216 downloads is
+2,3%. Houdt dat percentage stand en levert de campagne 1000 downloads op, dan
+zijn dat 23 abonnementen — bij de actieprijs ongeveer € 480 netto. De
+betaalmuur bij de download is bedoeld om dat percentage omhoog te krijgen;
+blijft het rond 2,3%, dan is het volume en niet de conversie dat het werk
+moet doen.
+
 ## De lancering: volgende week, met aankondiging — besloten 2 oktober
 
 Tot vandaag was het plan stil lanceren en later communiceren. Dat is nu een
@@ -471,6 +538,12 @@ blijven het er 13 van de 28.
 **En de muur zou naar les 14 schuiven.** Apple meet dat 83% van de conversies
 tussen dag 7 en dag 35 valt (zie hieronder). Bij een product dat toch al traag
 gekocht wordt, is het gratis deel verder oprekken de verkeerde kant op.
+
+> **Die 83% is op 24 november nagemeten en houdt geen stand.** Day 7 staat op
+> 2,43% en day 35 op 3,13% — 0,70 procentpunt, geen factor zes. De 14,3% waar
+> dit op rustte, was afgelezen op een day-35-cohort dat toen nog bijna leeg
+> was. Er is geen lange staart: wie koopt, koopt snel. Zie de kop van
+> 24 november bovenaan dit bestand.
 
 Acht lessen leveren **dezelfde 27 woorden** als dertien, want `hruf` bevat
 geen woorden — het zijn de letters. Alle winst, de helft van de kosten.
