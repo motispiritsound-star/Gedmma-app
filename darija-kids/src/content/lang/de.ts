@@ -340,7 +340,7 @@ export const de: ContentPack = {
   letters: {
     alif: 'das lange a von „Vater“', ba: 'b wie in Ball', ta: 't wie in Tisch',
     tha: 'th wie im englischen „think“ — in Darija selten',
-    jim: 'das g von „Garage“', ha: 'ein gehauchtes h, tief aus der Kehle',
+    jim: 'das zweite g von „Garage“', ha: 'ein gehauchtes h, tief aus der Kehle',
     kha: 'das ch von „Bach“', dal: 'd wie in Daumen',
     dhal: 'weiches th, wie im englischen „this“',
     ra: 'ein gerolltes r mit der Zungenspitze, nicht aus der Kehle',

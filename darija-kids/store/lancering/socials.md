@@ -57,9 +57,13 @@ Drie regels waaraan elke tekst hieronder gehouden is:
    urgentie zijn, en het is precies het soort bewering waar een winkel een
    campagne op afrekent. De twee Facebook-berichten zeggen in zoveel woorden
    dat er niets afloopt — dat is daar geen voorbehoud maar het argument zelf.
-3. **Concreet wat er in die maanden gebeurt.** Eén les per dag, en elke les
-   eindigt met de woorden van die les in twee zinnen — `src/content/sentences.ts`
-   zet er twee per les. En in juli kan een kind begroeten, bedanken, vragen hoe
+3. **Concreet wat er in die maanden gebeurt.** Eén les per dag, en elke
+   woordles eindigt met de woorden van die les in twee zinnen. Let op het woord
+   *woordles*: `src/content/sentences.ts` zet er precies twee bij elk van de
+   vijftig woordlessen, en nul bij de zeven letterlessen en de zeventien
+   toetsen — van de 74 lessen in `src/content/curriculum.ts` hebben er dus 50
+   zinnen. "Elke les" zou daarmee een belofte zijn die de app op een derde van
+   de lessen niet doet. En in juli kan een kind begroeten, bedanken, vragen hoe
    het gaat, zeggen wie wie is in de familie, tellen, en afdingen op de souq.
    Dat zijn de units `groeten`, `familie`, `cijfers` en `winkelen` uit
    `src/content/curriculum.ts`, en er staat niets in de teksten wat daarbuiten
@@ -90,9 +94,10 @@ eerstvolgende 1 juli en drukt dat erbij af. Hij geeft ook de dagen en een
 
 **En op drie soorten plekken staat met opzet géén markering.** In de twee
 storyboards, in de onderschriften onder de video's en in de YouTube-beschrijving
-staat *komende zomer*, *vóór de zomervakantie* of *cet été*, zonder aantal. Dat zijn de teksten
-die blijven staan of opnieuw gebruikt worden — een video is gerenderd en een
-YouTube-beschrijving leest niemand terug — dus een getal daarin veroudert stil.
+staat *komende zomer*, *vóór de zomervakantie* of *cet été*, zonder aantal. Dat
+zijn de teksten die blijven staan of opnieuw gebruikt worden — een video is
+gerenderd en een YouTube-beschrijving leest niemand terug — dus een getal
+daarin veroudert stil.
 Een onderschrift en een Facebook-bericht worden op één dag geplaatst, en daar is
 het exacte getal het sterkst.
 
@@ -118,7 +123,7 @@ Dus krijgt elk kanaal het stuk van de lancering dat daar werkt:
 uitgebracht"*; dat is sinds oktober niet meer waar — bij Apple ging 1.4 op
 4 oktober live en bij allebei de winkels staat 1.5 sinds 24 oktober
 (`docs/STAND.md`). De conclusie verandert er niet door, maar de reden wel: niet
-omdat er nooit iets is uitgebracht, maar omdat er bij 149 downloads en 38
+omdat er nooit iets is uitgebracht, maar omdat er bij 216 downloads en 38
 Play-installaties bijna niemand zit voor wie dit een wijziging ís. Het
 startscherm in vier stappen is dus geen wijziging die je aankondigt, het is
 hoe de app begint. `store/wat-is-nieuw-1.4.md` zegt het al: dit is voor bijna
@@ -323,7 +328,7 @@ In juli kan hij begroeten, bedanken, vragen hoe het gaat, zeggen wie wie is in
 de familie, tellen, en afdingen op de souq.
 
 Geen account, niets in te vullen, geen advertenties, en er wordt niets van je
-kind verzameld. Hij werkt offline, ook in Marokko.
+kind verzameld. De app werkt offline, ook in Marokko.
 
 De app is gratis te downloaden; de cursus is een abonnement, en na het betalen
 staat alles open. € 59,99 per jaar (dat is € 5,00 per maand) met het e-boek
@@ -504,9 +509,10 @@ Engels.
 
 WAAROM VÓÓR DE ZOMER
 Een taal leer je niet in twee weken. Wie wil dat zijn kind in juli met jeddti
-praat, begint in de winter: één les per dag, en elke les eindigt met de woorden
-van die les in twee zinnen. In juli kan het begroeten, bedanken, vragen hoe het
-gaat, zeggen wie wie is in de familie, tellen, en afdingen op de souq.
+praat, begint in de winter: één les per dag, en elke woordles eindigt met de
+woorden van die les in twee zinnen. In juli kan het begroeten, bedanken,
+vragen hoe het gaat, zeggen wie wie is in de familie, tellen, en afdingen op de
+souq.
 
 WAT HET KOST
 De app is gratis te downloaden; de cursus is een abonnement, en dat wordt op
@@ -551,9 +557,9 @@ autour de ton avatar. Puis les leçons commencent.
 POURQUOI AVANT L'ÉTÉ
 Une langue ne s'apprend pas en deux semaines. Pour qu'en juillet ton enfant
 parle avec jeddti, il faut commencer en hiver : une leçon par jour, et chaque
-leçon se termine par ses mots dans deux phrases. En juillet, il saura dire bonjour et
-merci, demander comment ça va, dire qui est qui dans la famille, compter, et
-marchander au souk.
+leçon de vocabulaire se termine par ses mots dans deux phrases. En juillet, il
+saura dire bonjour et merci, demander comment ça va, dire qui est qui dans la
+famille, compter, et marchander au souk.
 
 CE QU'IL Y A DERRIÈRE
 • 17 unités, de l'alphabet jusqu'au marchandage au souk
@@ -593,9 +599,9 @@ te zeggen die elders niet passen: waarom de app bestaat, wat er per winkel
 anders is, en waar de app zelf een voorbehoud maakt.
 
 Hieronder staan de twee berichten voor de **pagina's**, nl en fr. Voor een
-bericht in een ouder- of familiegroep staat er al een in `store/social.md` — persoonlijk, met "ik" erin,
-en met de weg erheen in `docs/LANCERING.md` §7. Die twee verschillen met opzet
-en moeten niet door elkaar lopen.
+bericht in een ouder- of familiegroep staat er al een in `store/social.md` —
+persoonlijk, met "ik" erin, en met de weg erheen in `docs/LANCERING.md` §7.
+Die twee verschillen met opzet en moeten niet door elkaar lopen.
 
 ```
 Komende zomer praat je kind met jeddti. Zelf, zonder dat jij ertussen zit om te
@@ -605,13 +611,13 @@ bericht vandaag komt en niet in juni.
 WAAROM NU EN NIET IN JUNI
 Een taal leer je niet in twee weken. Twee weken vakantie zijn goed om een taal
 te gebruiken, niet om hem te leren. Wie wil dat zijn kind in juli meepraat,
-begint in de winter: één les per dag, en elke les eindigt met de woorden van
-die les in twee zinnen. Er loopt niets af en er wordt niets duurder — de enige
-reden om vandaag te beginnen, is dat het in juli dan klaar is.
+begint in de winter: één les per dag, en elke woordles eindigt met de woorden
+van die les in twee zinnen. Er loopt niets af en er wordt niets duurder — de
+enige reden om vandaag te beginnen, is dat het in juli dan klaar is.
 
 WAT HIJ IN JULI KAN
 Begroeten en bedanken. Vragen hoe het gaat, en antwoorden. Zeggen wie wie is in
-de familie — jeddi, jedda, ammi, khalti. Tellen. En afdingen op de souq, want
+de familie — jeddi, jeddti, khali, khalti. Tellen. En afdingen op de souq, want
 dat hoort erbij en de app leert het ook zo.
 
 WAAR HET OVER GAAT
@@ -667,12 +673,13 @@ POURQUOI MAINTENANT ET PAS EN JUIN
 Une langue ne s'apprend pas en deux semaines. Deux semaines de vacances, c'est
 bon pour s'en servir, pas pour l'apprendre. Pour qu'en juillet ton enfant
 suive la conversation, il faut commencer en hiver : une leçon par jour, et
-chaque leçon se termine par ses mots dans deux phrases. Rien n'expire et rien n'augmente —
-la seule raison de commencer aujourd'hui, c'est qu'en juillet ce sera prêt.
+chaque leçon de vocabulaire se termine par ses mots dans deux phrases. Rien
+n'expire et rien n'augmente — la seule raison de commencer aujourd'hui, c'est
+qu'en juillet ce sera prêt.
 
 CE QU'IL SAURA EN JUILLET
 Dire bonjour et merci. Demander comment ça va, et répondre. Dire qui est qui
-dans la famille — jeddi, jedda, ammi, khalti. Compter. Et marchander au souk,
+dans la famille — jeddi, jeddti, khali, khalti. Compter. Et marchander au souk,
 parce que ça fait partie du jeu, et l'application le lui apprend comme ça.
 
 DE QUOI IL S'AGIT
@@ -714,7 +721,7 @@ qui a raison — l'application le dit elle-même.
 ```
 
 Het beeld eronder: `store/marketing/fr/social-vierkant.png`, en de twee
-linkregels in het Frans (*Waar de links komen* hierboven). En let op de één
+linkregels in het Frans (*Waar de links komen* hierboven). En let op de ene
 plek waar het nog niet klopt: de Franse Play-bladzijde toont nog Nederlandse
 schermafdrukken — zie dezelfde paragraaf.
 
@@ -766,9 +773,10 @@ en Facebook staat de naam al in het account.
   "€ 59,99 per jaar (dat is € 5,00 per maand)", en in het Frans "59,99 € par an
   (soit 5,00 € par mois)". **Deze regel hing niet aan de actie en geldt
   onverminderd nu er geen actie is**; alleen het voorbeeld is veranderd, want
-  € 2,50 en € 29,99 komen niet meer voor. Om diezelfde reden is de slotkaart van
-  de introfilm op 23 november omgezet: daar stond de omrekening alleen, en er
-  staat nu *€ 59,99 per jaar · € 5,00 per maand* — zie hierboven. En op de
+  € 2,50 en € 29,99 staan in geen enkele tekst hierboven meer, en alleen nog in
+  deze aantekeningen. Om diezelfde reden is de slotkaart van de introfilm op
+  23 november omgezet: daar stond de omrekening alleen, en er staat nu
+  *€ 59,99 per jaar · € 5,00 per maand* — zie hierboven. En op de
   slotkaart van de twee storyboards staat sinds 24 november helemaal geen prijs
   meer: drie seconden zijn te kort om er een uit te leggen.
 - **Geen gratis les en geen proefperiode.** Niet in een onderschrift, niet in
