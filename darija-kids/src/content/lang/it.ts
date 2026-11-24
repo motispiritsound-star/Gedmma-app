@@ -325,6 +325,41 @@ export const it: ContentPack = {
     cultuur: "Paese, città e festa",
   },
 
+  /**
+   * Hoe elke letter klinkt. Zie de aantekening bij `letters` in `./types.ts`:
+   * een klank leg je uit met een woord dat de lezer al kent, dus dit zijn
+   * Italiaanse voorbeeldwoorden en geen vertalingen van de Nederlandse.
+   *
+   * Vier plekken waar het Italiaans een eigen oplossing nodig had. De `kha`
+   * bestaat in het Italiaans niet en wordt omschreven. De `ra` is juist wél de
+   * gewone Italiaanse r, dus daar hoeft niets bij. De h is in het Italiaans
+   * stom, dus bij `ha-soft` staat erbij dat hij hier echt klinkt. En de
+   * Italiaanse z is /ts/ en niet /z/: de `zay` gaat daarom via de s van
+   * «rosa», en de `za-emf` net zo. De «» en de ’ zijn de tekens die dit
+   * bestand verder ook gebruikt.
+   */
+  letters: {
+    alif: 'una a lunga, come in «papà»', ba: 'la b di «barca»',
+    ta: 'la t di «tavolo»',
+    tha: 'la th inglese di «think», lingua tra i denti — rara in darija',
+    jim: 'la g finale di «garage»', ha: 'un soffio caldo dal fondo della gola',
+    kha: 'una k soffiata, che raschia in fondo alla gola',
+    dal: 'la d di «dito»', dhal: 'la th inglese di «this», più morbida',
+    ra: 'la r di «rana», proprio come in italiano',
+    zay: 'una s che ronza, come in «rosa»', sin: 'la s di «sole»',
+    shin: 'la sc di «pesce»', sad: 'una s pesante e scura',
+    dad: 'una d pesante — l’arabo si chiama «la lingua del dad»',
+    'ta-emf': 'una t pesante e scura',
+    'za-emf': 'la s di «rosa», ma pesante e scura',
+    ayn: 'una stretta profonda in gola — il suono più famoso dell’arabo',
+    ghayn: 'una g che raschia, come la r francese', fa: 'la f di «fiore»',
+    qaf: 'una k molto in fondo alla bocca', kaf: 'la c dura di «cane»',
+    lam: 'la l di «luna»', mim: 'la m di «mamma»', nun: 'la n di «naso»',
+    'ha-soft': 'una h leggera, come l’inglese «hello» — in italiano è muta',
+    waw: 'la w di «kiwi», oppure una u lunga',
+    ya: 'la i di «ieri», oppure una i lunga',
+  },
+
   lessons: {
     toets: "Prova",
     "groeten-1": "Ciao e arrivederci",
